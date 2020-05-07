@@ -7,9 +7,9 @@ import com.github.javaparser.ParserConfiguration;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
+import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
@@ -17,11 +17,11 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import org.junit.Before;
 import org.junit.Test;
 
+import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertBoolean;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getInterfaceBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
-import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
 import static org.junit.Assert.*;
 
 public class DataInterfaceDecoratorTest extends DecoratorTestCase {
@@ -35,14 +35,14 @@ public class DataInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDInterface clazz = getInterfaceBy("ASTA", cd);
     this.glex.setGlobalValue("service", new AbstractService(cd));
 
-    MethodDecorator methodDecorator = new MethodDecorator(glex);
+    MethodDecorator methodDecorator = new MethodDecorator(glex, new ASTService(cd));
     InterfaceDecorator dataDecorator = new InterfaceDecorator(this.glex, new DataDecoratorUtil(), methodDecorator, new ASTService(cd));
     ASTCDInterface changeInterface = CD4AnalysisMill.cDInterfaceBuilder().setName(clazz.getName())
         .setModifier(clazz.getModifier())
         .build();
     this.dataInterface = dataDecorator.decorate(clazz, changeInterface);
 
-    this.glex.setGlobalValue("astHelper", new DecorationHelper());
+    this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
   }
 
   @Test
@@ -57,7 +57,7 @@ public class DataInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(49, dataInterface.sizeCDMethods());
+    assertEquals(51, dataInterface.sizeCDMethods());
   }
 
   @Test

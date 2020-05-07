@@ -35,7 +35,9 @@ public final class VisitorConstants {
 
   public static final String TRAVERSE = "traverse";
 
-  public static final String HANDLE_INHERITANCE_TEMPLATE = "_visitor.inheritance.Handle";
+  public static final String HANDLE_AST_INHERITANCE_TEMPLATE = "_visitor.inheritance.HandleASTInheritance";
+  
+  public static final String HANDLE_SYMTAB_INHERITANCE_TEMPLATE = "_visitor.inheritance.HandleSymTabInheritance";
 
   public static final String HANDLE_TEMPLATE = "_visitor.Handle";
 
@@ -51,7 +53,7 @@ public final class VisitorConstants {
 
   public static final String VISITOR_METHODS_DELEGATOR_TEMPLATE = "_visitor.delegator.VisitorMethods";
 
-  public static final String  TRAVERSE_SCOPE_TEMPLATE= "_visitor.scope.Traverse";
+  public static final String TRAVERSE_SCOPE_TEMPLATE= "_visitor.scope.Traverse";
 
 
   private VisitorConstants() {}

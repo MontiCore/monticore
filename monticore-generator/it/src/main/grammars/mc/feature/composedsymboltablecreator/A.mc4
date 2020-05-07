@@ -1,0 +1,19 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.feature.composedsymboltablecreator;
+
+grammar A extends mc.common.Basics, mc.grammar.literals.ItTestLiterals {
+
+    interface scope symbol Type = Name;
+
+    symbol scope C = "foo" Name;
+
+    scope D = "for" Literal;
+
+    symbol E = Name;
+
+    F = "bar" Name;
+
+    G implements Type = Name;
+
+
+}

@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.feature.composedsymboltablecreator;
+
+grammar B extends mc.common.Basics {
+
+    symbol Method = Name;
+
+    scope IfStatement = "if" Name;
+
+}

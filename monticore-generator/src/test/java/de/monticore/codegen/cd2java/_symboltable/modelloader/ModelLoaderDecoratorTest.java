@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._symboltable.modelloader;
 
 import com.github.javaparser.JavaParser;
@@ -7,24 +8,23 @@ import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
+import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.types.MCTypeFacade;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Optional;
 
+import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
-import static de.monticore.cd.facade.CDModifier.*;
 import static org.junit.Assert.*;
 
 public class ModelLoaderDecoratorTest extends DecoratorTestCase {
@@ -47,14 +47,14 @@ public class ModelLoaderDecoratorTest extends DecoratorTestCase {
     this.glex = new GlobalExtensionManagement();
     this.MCTypeFacade = MCTypeFacade.getInstance();
 
-    this.glex.setGlobalValue("astHelper", new DecorationHelper());
+    this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
 
     this.decorator = new ModelLoaderDecorator(this.glex,
-        new SymbolTableService(decoratedCompilationUnit), new AccessorDecorator(glex));
+        new SymbolTableService(decoratedCompilationUnit), new AccessorDecorator(glex, new SymbolTableService(decoratedCompilationUnit)));
 
     Optional<ASTCDClass> astcdClass = decorator.decorate(decoratedCompilationUnit);
     assertTrue(astcdClass.isPresent());
@@ -87,7 +87,7 @@ public class ModelLoaderDecoratorTest extends DecoratorTestCase {
   @Test
   public void testSuperInterfaces() {
     assertDeepEquals("de.monticore.modelloader.IModelLoader<de.monticore.codegen.ast.automaton._ast.ASTAutomaton" +
-        ",de.monticore.codegen.ast.automaton._symboltable.IAutomatonGlobalScope>", modelLoaderClass.getInterface(0));
+        ",de.monticore.codegen.ast.automaton._symboltable.AutomatonGlobalScope>", modelLoaderClass.getInterface(0));
   }
 
   @Test
@@ -159,7 +159,7 @@ public class ModelLoaderDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(String.class, method.getCDParameter(1).getMCType());
     assertEquals("modelName", method.getCDParameter(1).getName());
 
-    assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.IAutomatonGlobalScope", method.getCDParameter(2).getMCType());
+    assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.AutomatonGlobalScope", method.getCDParameter(2).getMCType());
     assertEquals("enclosingScope", method.getCDParameter(2).getName());
   }
 
@@ -179,7 +179,7 @@ public class ModelLoaderDecoratorTest extends DecoratorTestCase {
     assertDeepEquals("de.monticore.io.paths.ModelPath", method.getCDParameter(1).getMCType());
     assertEquals("modelPath", method.getCDParameter(1).getName());
 
-    assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.IAutomatonGlobalScope", method.getCDParameter(2).getMCType());
+    assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.AutomatonGlobalScope", method.getCDParameter(2).getMCType());
     assertEquals("enclosingScope", method.getCDParameter(2).getName());
   }
 

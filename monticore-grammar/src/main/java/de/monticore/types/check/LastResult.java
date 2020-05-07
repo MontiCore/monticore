@@ -10,8 +10,17 @@ public class LastResult{
 
   private Optional<SymTypeExpression> last;
 
+  private boolean type;
+
+  private boolean method;
+
+  private boolean field;
+
   public LastResult(){
     this.last = Optional.empty();
+    this.field = false;
+    this.method = false;
+    this.type = false;
   }
 
   public SymTypeExpression getLast() {
@@ -28,5 +37,46 @@ public class LastResult{
   
   public void setLastAbsent() {
     this.last = Optional.empty();
+  }
+
+  public void reset(){
+    setLastAbsent();
+    type = false;
+    method = false;
+    type = false;
+  }
+
+  public void setType() {
+    this.type = true;
+    this.field = false;
+    this.method = false;
+  }
+
+  public void setMethod() {
+    this.method = true;
+    this.type=false;
+    this.field=false;
+  }
+
+  public void setField() {
+    this.field = true;
+    this.type=false;
+    this.method=false;
+  }
+
+  public void unsetType(){
+    this.type=false;
+  }
+
+  public boolean isField() {
+    return field;
+  }
+
+  public boolean isMethod() {
+    return method;
+  }
+
+  public boolean isType() {
+    return type;
   }
 }

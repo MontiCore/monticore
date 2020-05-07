@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._symboltable.symbol;
 
 import com.github.javaparser.JavaParser;
@@ -7,9 +8,9 @@ import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
+import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
@@ -45,7 +46,7 @@ public class SymbolLoaderBuilderDecoratorTest extends DecoratorTestCase {
     this.mcTypeFacade = MCTypeFacade.getInstance();
     this.glex = new GlobalExtensionManagement();
 
-    this.glex.setGlobalValue("astHelper", new DecorationHelper());
+    this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
@@ -53,7 +54,7 @@ public class SymbolLoaderBuilderDecoratorTest extends DecoratorTestCase {
 
 
     SymbolLoaderBuilderDecorator decorator = new SymbolLoaderBuilderDecorator(this.glex, new SymbolTableService(decoratedCompilationUnit),
-        new AccessorDecorator(glex));
+        new AccessorDecorator(glex, new SymbolTableService(decoratedCompilationUnit)));
     //creates ScopeSpanningSymbol
     ASTCDClass automatonClass = getClassBy("ASTAutomaton", decoratedCompilationUnit);
     this.builderClass = decorator.decorate(automatonClass);
@@ -94,7 +95,7 @@ public class SymbolLoaderBuilderDecoratorTest extends DecoratorTestCase {
   @Test
   public void testDefaultConstructor() {
     ASTCDConstructor cdConstructor = builderClass.getCDConstructor(0);
-    assertDeepEquals(PROTECTED, cdConstructor.getModifier());
+    assertDeepEquals(PUBLIC, cdConstructor.getModifier());
     assertEquals("AutomatonSymbolLoaderBuilder", cdConstructor.getName());
 
     assertTrue(cdConstructor.isEmptyCDParameters());

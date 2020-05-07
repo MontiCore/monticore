@@ -6,8 +6,8 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
+import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.parser.ParserGeneratorHelper;
 import de.monticore.grammar.concepts.antlr.antlr._ast.ASTAntlrLexerAction;
 import de.monticore.grammar.concepts.antlr.antlr._ast.ASTAntlrParserAction;
@@ -140,7 +140,7 @@ public class MCGrammarInfo {
   
 
   private Collection<String> addLeftRecursiveRuleForProd(ASTClassProd ast) {
-    List<ASTProd> superProds = GeneratorHelper.getAllSuperProds(ast);
+    List<ASTProd> superProds = TransformationHelper.getAllSuperProds(ast);
     Collection<String> names = new ArrayList<>();
     superProds.forEach(s -> names.add(s.getName()));
     DirectLeftRecursionDetector detector = new DirectLeftRecursionDetector();
@@ -296,18 +296,18 @@ public class MCGrammarInfo {
   private void findAllKeywords() {
     for (ProdSymbol ruleSymbol : grammarSymbol.getProdsWithInherited().values()) {
       if (ruleSymbol.isParserProd()) {
-        Optional<ASTProd> astProd = ruleSymbol.getAstNodeOpt();
-        if (astProd.isPresent() && astProd.get() instanceof ASTClassProd) {
+        if (ruleSymbol.isPresentAstNode() && ruleSymbol.getAstNode() instanceof ASTClassProd) {
+          ASTProd astProd = ruleSymbol.getAstNode();
           Optional<MCGrammarSymbol> refGrammarSymbol = MCGrammarSymbolTableHelper
-              .getMCGrammarSymbol(astProd.get().getEnclosingScope());
+              .getMCGrammarSymbol(astProd.getEnclosingScope());
           boolean isRefGrammarSymbol = refGrammarSymbol.isPresent();
-          for (ASTTerminal keyword : ASTNodes.getSuccessors(astProd.get(), ASTTerminal.class)) {
+          for (ASTTerminal keyword : ASTNodes.getSuccessors(astProd, ASTTerminal.class)) {
             if (isKeyword(keyword.getName(), grammarSymbol)
                 || (isRefGrammarSymbol && isKeyword(keyword.getName(), refGrammarSymbol.get()))) {
               keywords.add(keyword.getName());
             }
           }
-          for (ASTConstant keyword : ASTNodes.getSuccessors(astProd.get(), ASTConstant.class)) {
+          for (ASTConstant keyword : ASTNodes.getSuccessors(astProd, ASTConstant.class)) {
             if (isKeyword(keyword.getName(), grammarSymbol)
                 || (isRefGrammarSymbol && isKeyword(keyword.getName(), refGrammarSymbol.get()))) {
               keywords.add(keyword.getName());
@@ -332,11 +332,11 @@ public class MCGrammarInfo {
     }
     
     for (ProdSymbol rule : grammar.getProdsWithInherited().values()) {
-      if (rule.isIsLexerProd()) {
-        if (!MCGrammarSymbolTableHelper.isFragment(rule.getAstNodeOpt())) {
+      if (rule.isPresentAstNode() && rule.isIsLexerProd()) {
+        if (!MCGrammarSymbolTableHelper.isFragment(rule.getAstNode())) {
           Optional<Pattern> lexPattern = MCGrammarSymbolTableHelper.calculateLexPattern(
               grammar,
-              rule.getAstNodeOpt());
+                  (ASTLexProd) rule.getAstNode());
           
           if (lexPattern.isPresent()) {
             patterns.add(lexPattern.get());

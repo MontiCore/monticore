@@ -2,27 +2,20 @@
 
 package de.monticore.codegen.cd2java._symboltable.serialization;
 
-import de.monticore.antlr4.MCConcreteParser;
 import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._parser.CD4AnalysisParser;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.StringHookPoint;
-import de.monticore.io.paths.ModelPath;
-import de.monticore.types.typesymbols._symboltable.*;
+import de.monticore.types.typesymbols._symboltable.BuiltInJavaTypeSymbolResolvingDelegate;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 /**
- * TODO
  *
- * @author (last commit)
- * @version , 08.11.2019
- * @since TODO
  */
 public class DeSerMapTest {
 
@@ -34,7 +27,7 @@ public class DeSerMapTest {
 
   protected HookPoint getHookPointFor(String attr){
     return DeSerMap.getDeserializationImplementation(parse(attr), "deserializeFoo()",
-        "symbolJson", BuiltInJavaTypeSymbolResolvingDelegate.gs); //TODO AB Replace this line after release of 5.4.0-SNAPSHOT
+        "symbolJson", BuiltInJavaTypeSymbolResolvingDelegate.getScope()); //TODO AB Replace this line after release of 5.4.0-SNAPSHOT
   }
 
   protected ASTCDAttribute parse(String attr){

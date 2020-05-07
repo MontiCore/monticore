@@ -8,15 +8,14 @@ import org.junit.Test;
 
 /**
  * A simple test for MyDSL tool.
- *
  */
 public class MyDSLToolTest {
-  
+
   @Test
   public void executeMain() {
-    MyDSLTool.main(new String[] { "src/test/resources/example/MyModel.mydsl" });
-    
+    MyDSLTool.main(new String[]{"src/test/resources/example/MyModel.mydsl"});
+
     assertTrue(!false);
   }
-  
+
 }

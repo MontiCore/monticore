@@ -74,6 +74,11 @@ public final class DecoratorAssert {
     // TODO Alte Fassung: assertDeepEquals(CD_TYPE_FACADE.createIntType(), actual);
   }
 
+  public static void assertFloat(ASTNode actual){
+    assertTrue(actual instanceof ASTMCPrimitiveType);
+    assertTrue(((ASTMCPrimitiveType) actual).isFloat());
+  }
+
   public static void assertVoid(ASTNode acutal) {
     assertDeepEquals(CD_TYPE_FACADE.createVoidType(), acutal);
   }
@@ -102,12 +107,11 @@ public final class DecoratorAssert {
   public static void assertListOf(String name, ASTNode actual) {
     assertDeepEquals(CD_TYPE_FACADE.createListTypeOf(name), actual);
   }
-/* TODO Check
   public static void assertArrayOf(Class<?> clazz, ASTNode actual) {
     assertDeepEquals(CD_TYPE_FACADE.createArrayType(clazz, DEFAULT_ARRAY_DIMENSION), actual);
   }
 
   public static void assertArrayOf(String name, ASTNode actual) {
     assertDeepEquals(CD_TYPE_FACADE.createArrayType(name, DEFAULT_ARRAY_DIMENSION), actual);
-  }*/
+  }
 }

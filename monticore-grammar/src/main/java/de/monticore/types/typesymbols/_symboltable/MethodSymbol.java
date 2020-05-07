@@ -1,8 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.typesymbols._symboltable;
 
 import com.google.common.collect.Lists;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MethodSymbol extends MethodSymbolTOP {
 
@@ -18,6 +21,7 @@ public class MethodSymbol extends MethodSymbolTOP {
     clone.setReturnType(this.getReturnType().deepClone());
     clone.setEnclosingScope(this.enclosingScope);
     clone.setFullName(this.fullName);
+    clone.setIsStatic(this.isStatic);
     if(isPresentAstNode()) {
       clone.setAstNode(this.getAstNode());
     }
@@ -29,8 +33,38 @@ public class MethodSymbol extends MethodSymbolTOP {
     for(FieldSymbol parameter: this.getParameterList()){
       parameterClone.add(parameter.deepClone());
     }
-    clone.setParameterList(parameterClone);
     return clone;
   }
 
+  public List<TypeVarSymbol> getTypeVariableList(){
+    if (spannedScope == null) {
+      return Lists.newArrayList();
+    }
+    return spannedScope.getLocalTypeVarSymbols();
+  }
+
+  public List<TypeVarSymbol> getAllAccessibleTypeVariables(){
+    List<TypeVarSymbol> typeVarSymbolList = getTypeVariableList();
+    typeVarSymbolList.addAll(getTypeVariablesOfEnclosingType());
+    return typeVarSymbolList;
+  }
+
+  public List<TypeVarSymbol> getTypeVariablesOfEnclosingType(){
+    List<TypeVarSymbol> typeVarSymbolList = new ArrayList<>();
+    ITypeSymbolsScope scope = spannedScope;
+    while(scope.getEnclosingScope()!=null){
+      scope = scope.getEnclosingScope();
+      if(scope.isPresentSpanningSymbol() && scope.getSpanningSymbol() instanceof TypeSymbol){
+        typeVarSymbolList.addAll(((TypeSymbol)(scope.getSpanningSymbol())).getTypeParameterList());
+      }
+    }
+    return typeVarSymbolList;
+  }
+
+  public List<FieldSymbol> getParameterList(){
+    return spannedScope.getLocalFieldSymbols()
+        .stream()
+        .filter(FieldSymbol::isIsParameter)
+        .collect(Collectors.toList());
+  }
 }

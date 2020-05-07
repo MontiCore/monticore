@@ -782,7 +782,7 @@ public class GrammarPrettyPrinter
     }
     println(" {");
     getPrinter().indent();
-    if (a.getGrammarOptionOpt().isPresent()) {
+    if (a.isPresentGrammarOption()) {
       a.getGrammarOption().accept(getRealThis());
     }
     printList(a.getLexProdList().iterator(), "");
@@ -793,11 +793,11 @@ public class GrammarPrettyPrinter
     printList(a.getAbstractProdList().iterator(), "");
     printList(a.getASTRuleList().iterator(), "");
     printList(a.getConceptList().iterator(), "");
-    if (a.getStartRuleOpt().isPresent()) {
+    if (a.isPresentStartRule()) {
       a.getStartRule().accept(getRealThis());
     }
     printList(a.getSymbolRuleList().iterator(), "");
-    if (a.getScopeRuleOpt().isPresent()) {
+    if (a.isPresentScopeRule()) {
       a.getScopeRule().accept(getRealThis());
     }
 
@@ -1018,25 +1018,22 @@ public class GrammarPrettyPrinter
   public void handle(ASTSymbolDefinition node) {
     if (node.isGenSymbol()) {
       getPrinter().print(" symbol ");
-      if (node.isPresentSymbolName()) {
-        getPrinter().print(node.getSymbolName() + " ");
-      }
     }
     if (node.isGenScope()) {
       getPrinter().print(" scope ");
-      if (node.isOrdered() || node.isNo_shadowing() || node.isExporting()) {
+      if (node.isOrdered() || node.isShadowing() || node.isNon_exporting()) {
         getPrinter().print("(");
         if (node.isOrdered()) {
           getPrinter().print(" ordered ");
         }
-        if (node.isNo_shadowing()) {
-          getPrinter().print(" no_shadowing ");
+        if (node.isShadowing()) {
+          getPrinter().print(" shadowing ");
         }
-        if (node.isExporting()) {
-          getPrinter().print(" exporting ");
+        if (node.isNon_exporting()) {
+          getPrinter().print(" non_exporting ");
         }
         getPrinter().print(")");
-     }
+      }
     }
   }
 

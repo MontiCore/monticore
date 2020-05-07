@@ -3,6 +3,7 @@ package de.monticore.testsymtabmill;
 
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.ImportStatement;
+import de.monticore.testsymtabmill.testsymtabmill.TestSymTabMillMill;
 import de.monticore.testsymtabmill.testsymtabmill._symboltable.*;
 import org.junit.Test;
 
@@ -13,13 +14,13 @@ public class MillTest {
 
   @Test
   public void testMill(){
-    TestSymTabMillLanguage language = TestSymTabMillSymTabMill.testSymTabMillLanguageBuilder().build();
-    TestSymTabMillModelLoader modelLoader = TestSymTabMillSymTabMill.testSymTabMillModelLoaderBuilder().setModelingLanguage(language).build();
-    TestSymTabMillScope scope = TestSymTabMillSymTabMill.testSymTabMillScopeBuilder().build();
-    TestSymTabMillArtifactScope artifactScope = TestSymTabMillSymTabMill.testSymTabMillArtifactScopeBuilder().addImport(new ImportStatement("a.b.c",false)).setPackageName("sym").build();
-    TestSymTabMillGlobalScope globalScope = TestSymTabMillSymTabMill.testSymTabMillGlobalScopeBuilder().setTestSymTabMillLanguage(language).setModelPath(new ModelPath()).build();
-    TestSymTabMillSymbolTableCreator symbolTableCreator = TestSymTabMillSymTabMill.testSymTabMillSymbolTableCreatorBuilder().addToScopeStack(scope).build();
-    TestSymTabMillSymbolTableCreatorDelegator symbolTableCreatorDelegator = TestSymTabMillSymTabMill.testSymTabMillSymbolTableCreatorDelegatorBuilder().setGlobalScope(globalScope).build();
+    TestSymTabMillLanguage language = TestSymTabMillMill.testSymTabMillLanguageBuilder().build();
+    TestSymTabMillModelLoader modelLoader = TestSymTabMillMill.testSymTabMillModelLoaderBuilder().setModelingLanguage(language).build();
+    TestSymTabMillScope scope = TestSymTabMillMill.testSymTabMillScopeBuilder().build();
+    TestSymTabMillArtifactScope artifactScope = TestSymTabMillMill.testSymTabMillArtifactScopeBuilder().addImport(new ImportStatement("a.b.c",false)).setPackageName("sym").build();
+    TestSymTabMillGlobalScope globalScope = TestSymTabMillMill.testSymTabMillGlobalScopeBuilder().setTestSymTabMillLanguage(language).setModelPath(new ModelPath()).build();
+    TestSymTabMillSymbolTableCreator symbolTableCreator = TestSymTabMillMill.testSymTabMillSymbolTableCreatorBuilder().addToScopeStack(scope).build();
+    TestSymTabMillSymbolTableCreatorDelegator symbolTableCreatorDelegator = TestSymTabMillMill.testSymTabMillSymbolTableCreatorDelegatorBuilder().setGlobalScope(globalScope).build();
 
     assertTrue(language.getFileExtension().equals("ts"));
     assertTrue(modelLoader.getModelingLanguage().equals(language));

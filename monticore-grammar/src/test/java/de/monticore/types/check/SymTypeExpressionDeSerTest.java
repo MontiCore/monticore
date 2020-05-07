@@ -1,8 +1,4 @@
-/*
- * Copyright (c) 2019 RWTH Aachen. All rights reserved.
- *
- * http://www.se-rwth.de/
- */
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
 import com.google.common.collect.Lists;
@@ -11,65 +7,58 @@ import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 import de.monticore.types.typesymbols._symboltable.TypeSymbolsArtifactScope;
 import de.monticore.types.typesymbols._symboltable.TypeSymbolsScope;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import static de.monticore.types.check.SymTypeExpressionFactory.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 public class SymTypeExpressionDeSerTest {
   private static TypeSymbolsScope scope = BuiltInJavaTypeSymbolResolvingDelegate.getScope();
 
-  protected static final String TEST_SYMBOL_STORE_LOCATION = "target/generated-test-sources/monticore/symbols";
-
   // setup of objects (unchanged during tests)
   // these should be the same as those of SymTypeExpressionText
-  SymTypeExpression teDouble = createTypeConstant("double");
+  SymTypeConstant teDouble = createTypeConstant("double");
 
-  SymTypeExpression teInt = createTypeConstant("int");
+  SymTypeConstant teInt = createTypeConstant("int");
 
-  SymTypeExpression teVarA = createTypeVariable("A", scope);
+  SymTypeVariable teVarA = createTypeVariable("A", scope);
 
-  SymTypeExpression teVarB = createTypeVariable("B", scope);
+  SymTypeVariable teVarB = createTypeVariable("B", scope);
 
-  SymTypeExpression teP = createTypeObject("de.x.Person", scope);
+  SymTypeOfObject teP = createTypeObject("de.x.Person", scope);
 
-  SymTypeExpression teH = createTypeObject("Human", scope);  // on purpose: package missing
+  SymTypeOfObject teH = createTypeObject("Human", scope);  // on purpose: package missing
 
-  SymTypeExpression teVoid = createTypeVoid();
+  SymTypeVoid teVoid = createTypeVoid();
 
-  SymTypeExpression teNull = createTypeOfNull();
+  SymTypeOfNull teNull = createTypeOfNull();
 
-  SymTypeExpression teArr1 = createTypeArray(teH.print(), scope, 1, teH);
+  SymTypeArray teArr1 = createTypeArray(teH.print(), scope, 1, teH);
 
-  SymTypeExpression teArr3 = createTypeArray(teInt.print(), scope, 3, teInt);
+  SymTypeArray teArr3 = createTypeArray(teInt.print(), scope, 3, teInt);
 
-  SymTypeExpression teSet = createGenerics("java.util.Set", scope, Lists.newArrayList(teP));
+  SymTypeOfGenerics teSet = createGenerics("java.util.Set", scope, Lists.newArrayList(teP));
 
-  SymTypeExpression teSetA = createGenerics("java.util.Set", scope, Lists.newArrayList(teVarA));
+  SymTypeOfGenerics teSetA = createGenerics("java.util.Set", scope, Lists.newArrayList(teVarA));
 
-  SymTypeExpression teMap = createGenerics("Map", scope,
+  SymTypeOfGenerics teMap = createGenerics("Map", scope,
       Lists.newArrayList(teInt, teP)); // no package!
 
-  SymTypeExpression teFoo = createGenerics("x.Foo", scope,
+  SymTypeOfGenerics teFoo = createGenerics("x.Foo", scope,
       Lists.newArrayList(teP, teDouble, teInt, teH));
 
-  SymTypeExpression teDeep1 = createGenerics("java.util.Set", scope, Lists.newArrayList(teMap));
+  SymTypeOfGenerics teDeep1 = createGenerics("java.util.Set", scope, Lists.newArrayList(teMap));
 
-  SymTypeExpression teDeep2 = createGenerics("java.util.Map2", scope,
+  SymTypeOfGenerics teDeep2 = createGenerics("java.util.Map2", scope,
       Lists.newArrayList(teInt, teDeep1));
 
   @BeforeClass
   public static void init() {
     Log.enableFailQuick(false);
-    LogStub.init();
 
     scope.add(new TypeSymbol("A"));
     scope.add(new TypeSymbol("B"));
@@ -108,6 +97,21 @@ public class SymTypeExpressionDeSerTest {
     performRoundTripSerialization(teFoo);
     performRoundTripSerialization(teDeep1);
     performRoundTripSerialization(teDeep2);
+
+    performRoundTripSerializationSymTypeConstant(teDouble);
+    performRoundTripSerializationSymTypeConstant(teInt);
+    performRoundTripSerializationSymTypeVariable(teVarA);
+    performRoundTripSerializationSymTypeVariable(teVarB);
+    performRoundTripSerializationSymTypeOfObject(teP);
+    performRoundTripSerializationSymTypeOfObject(teH);
+    performRoundTripSerializationSymTypeArray(teArr1);
+    performRoundTripSerializationSymTypeArray(teArr3);
+    performRoundTripSerializationSymTypeOfGenerics(teSet);
+    performRoundTripSerializationSymTypeOfGenerics(teSetA);
+    performRoundTripSerializationSymTypeOfGenerics(teMap);
+    performRoundTripSerializationSymTypeOfGenerics(teFoo);
+    performRoundTripSerializationSymTypeOfGenerics(teDeep1);
+    performRoundTripSerializationSymTypeOfGenerics(teDeep2);
   }
 
   protected void performRoundTripSerialization(SymTypeExpression expr) {
@@ -125,36 +129,110 @@ public class SymTypeExpressionDeSerTest {
     assertEquals(expectedTS.getName(), actualTS.getName());
   }
 
-  @Test
-  public void testRoundtripLoadStore() throws MalformedURLException {
-    performRoundtripLoadStore(teDouble);
-    performRoundtripLoadStore(teInt);
-    performRoundtripLoadStore(teVarA);
-    performRoundtripLoadStore(teVarB);
-    performRoundtripLoadStore(teP);
-    performRoundtripLoadStore(teH);
-    performRoundtripLoadStore(teVoid);
-    performRoundtripLoadStore(teNull);
-    performRoundtripLoadStore(teArr1);
-    performRoundtripLoadStore(teArr3);
-    performRoundtripLoadStore(teSet);
-    performRoundtripLoadStore(teSetA);
-    performRoundtripLoadStore(teMap);
-    performRoundtripLoadStore(teFoo);
-    performRoundtripLoadStore(teDeep1);
-    performRoundtripLoadStore(teDeep2);
+  protected void performRoundTripSerializationSymTypeOfGenerics(SymTypeOfGenerics expr){
+    SymTypeOfGenericsDeSer deser = new SymTypeOfGenericsDeSer();
+
+    String serialized = deser.serialize(expr);
+
+    SymTypeExpression deserialized = deser.deserialize(serialized,scope);
+    assertNotNull(deserialized);
+
+    assertEquals(expr.print(),deserialized.print());
+    assertEquals(expr.printAsJson(),deserialized.printAsJson());
+    TypeSymbol expectedTS = deserialized.getTypeInfo();
+    TypeSymbol actualTS = deserialized.getTypeInfo();
+    assertEquals(expectedTS.getName(),actualTS.getName());
   }
 
-  protected void performRoundtripLoadStore(SymTypeExpression expr) throws MalformedURLException {
+  protected void performRoundTripSerializationSymTypeOfObject(SymTypeOfObject expr){
+    SymTypeOfObjectDeSer deser = new SymTypeOfObjectDeSer();
+
+    String serialized = deser.serialize(expr);
+
+    SymTypeExpression deserialized = deser.deserialize(serialized,scope);
+    assertNotNull(deserialized);
+
+    assertEquals(expr.print(),deserialized.print());
+    assertEquals(expr.printAsJson(),deserialized.printAsJson());
+    TypeSymbol expectedTS = deserialized.getTypeInfo();
+    TypeSymbol actualTS = deserialized.getTypeInfo();
+    assertEquals(expectedTS.getName(),actualTS.getName());
+  }
+
+  protected void performRoundTripSerializationSymTypeVariable(SymTypeVariable expr){
+    SymTypeVariableDeSer deser = new SymTypeVariableDeSer();
+
+    String serialized = deser.serialize(expr);
+
+    SymTypeExpression deserialized = deser.deserialize(serialized,scope);
+    assertNotNull(deserialized);
+
+    assertEquals(expr.print(),deserialized.print());
+    assertEquals(expr.printAsJson(),deserialized.printAsJson());
+    TypeSymbol expectedTS = deserialized.getTypeInfo();
+    TypeSymbol actualTS = deserialized.getTypeInfo();
+    assertEquals(expectedTS.getName(),actualTS.getName());
+  }
+
+  protected void performRoundTripSerializationSymTypeArray(SymTypeArray expr){
+    SymTypeArrayDeSer deser = new SymTypeArrayDeSer();
+
+    String serialized = deser.serialize(expr);
+
+    SymTypeExpression deserialized = deser.deserialize(serialized,scope);
+    assertNotNull(deserialized);
+
+    assertEquals(expr.print(),deserialized.print());
+    assertEquals(expr.printAsJson(),deserialized.printAsJson());
+    TypeSymbol expectedTS = deserialized.getTypeInfo();
+    TypeSymbol actualTS = deserialized.getTypeInfo();
+    assertEquals(expectedTS.getName(),actualTS.getName());
+  }
+
+  protected void performRoundTripSerializationSymTypeConstant(SymTypeConstant expr){
+    SymTypeConstantDeSer deser = new SymTypeConstantDeSer();
+
+    String serialized = deser.serialize(expr);
+
+    SymTypeExpression deserialized = deser.deserialize(serialized);
+    assertNotNull(deserialized);
+
+    assertEquals(expr.print(),deserialized.print());
+    assertEquals(expr.printAsJson(),deserialized.printAsJson());
+    TypeSymbol expectedTS = deserialized.getTypeInfo();
+    TypeSymbol actualTS = deserialized.getTypeInfo();
+    assertEquals(expectedTS.getName(),actualTS.getName());
+  }
+
+
+
+  @Test
+  public void testRoundtrip2() throws MalformedURLException {
+    performRoundtrip2(teDouble);
+    performRoundtrip2(teInt);
+    performRoundtrip2(teVarA);
+    performRoundtrip2(teVarB);
+    performRoundtrip2(teP);
+    performRoundtrip2(teH);
+    performRoundtrip2(teVoid);
+    performRoundtrip2(teNull);
+    performRoundtrip2(teArr1);
+    performRoundtrip2(teArr3);
+    performRoundtrip2(teSet);
+    performRoundtrip2(teSetA);
+    performRoundtrip2(teMap);
+    performRoundtrip2(teFoo);
+    performRoundtrip2(teDeep1);
+    performRoundtrip2(teDeep2);
+  }
+
+  protected void performRoundtrip2(SymTypeExpression expr) throws MalformedURLException {
     SymTypeExpressionDeSer deser = SymTypeExpressionDeSer.getInstance();
-    String symbolName = expr.getTypeInfo().getFullName();
     //first serialize the expression using the deser
-    deser.store(expr, TEST_SYMBOL_STORE_LOCATION);
-    URL url = Paths.get(TEST_SYMBOL_STORE_LOCATION, expr.getTypeInfo().getPackageName(),
-        expr.getTypeInfo().getName()+".symtype").toUri().toURL();
+    String serialized = deser.serialize(expr);
 
     // then deserialize it
-    SymTypeExpression loaded = deser.load(url, scope);
+    SymTypeExpression loaded = deser.deserialize(serialized, scope);
     assertNotNull(loaded);
     // and assert that the serialized and deserialized symtype expression equals the one before
     assertEquals(expr.print(), loaded.print());
@@ -162,6 +240,38 @@ public class SymTypeExpressionDeSerTest {
     TypeSymbol expectedTS = loaded.getTypeInfo();
     TypeSymbol actualTS = expr.getTypeInfo();
     assertEquals(expectedTS.getName(), actualTS.getName());
+  }
+
+  @Test
+  public void testInvalidJsonForSerializingReturnsError(){
+    String invalidJsonForSerializing = "\"Foo\":\"bar\"";
+    String invalidJsonForSerializing2 = "{\n\t\"symTypeExpression\": {\n\t\t\"foo\":\"bar\", \n\t\t\"foo2\":\"bar2\"\n\t}\n}";
+
+    SymTypeExpressionDeSer.getInstance().deserialize(invalidJsonForSerializing, scope);
+    assertTrue(Log.getFindings().get(Log.getFindings().size()-1).getMsg().startsWith("0x823F3"));
+
+    SymTypeExpressionDeSer.getInstance().deserialize(invalidJsonForSerializing2,scope);
+    assertTrue(Log.getFindings().get(Log.getFindings().size()-1).getMsg().startsWith("0x823FE"));
+
+    SymTypeOfGenericsDeSer symTypeOfGenericsDeSer = new SymTypeOfGenericsDeSer();
+    symTypeOfGenericsDeSer.deserialize(invalidJsonForSerializing, scope);
+    assertTrue(Log.getFindings().get(Log.getFindings().size()-1).getMsg().startsWith("0x823F6"));
+
+    SymTypeArrayDeSer symTypeArrayDeSer = new SymTypeArrayDeSer();
+    symTypeArrayDeSer.deserialize(invalidJsonForSerializing,scope);
+    assertTrue(Log.getFindings().get(Log.getFindings().size()-1).getMsg().startsWith("0x823F2"));
+
+    SymTypeOfObjectDeSer symTypeOfObjectDeSer = new SymTypeOfObjectDeSer();
+    symTypeOfObjectDeSer.deserialize(invalidJsonForSerializing,scope);
+    assertTrue(Log.getFindings().get(Log.getFindings().size()-1).getMsg().startsWith("0x823F4"));
+
+    SymTypeVariableDeSer symTypeVariableDeSer = new SymTypeVariableDeSer();
+    symTypeVariableDeSer.deserialize(invalidJsonForSerializing,scope);
+    assertTrue(Log.getFindings().get(Log.getFindings().size()-1).getMsg().startsWith("0x823F5"));
+
+    SymTypeConstantDeSer symTypeConstantDeser = new SymTypeConstantDeSer();
+    symTypeConstantDeser.deserialize(invalidJsonForSerializing);
+    assertTrue(Log.getFindings().get(Log.getFindings().size()-1).getMsg().startsWith("0x823F1"));
   }
 
 }

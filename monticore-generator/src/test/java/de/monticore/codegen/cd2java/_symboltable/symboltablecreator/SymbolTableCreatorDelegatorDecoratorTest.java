@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._symboltable.symboltablecreator;
 
 import com.github.javaparser.JavaParser;
@@ -7,23 +8,20 @@ import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
+import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.types.MCTypeFacade;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Optional;
 
-import static de.monticore.cd.facade.CDModifier.PROTECTED;
-import static de.monticore.cd.facade.CDModifier.PROTECTED_FINAL;
-import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
@@ -43,7 +41,7 @@ public class SymbolTableCreatorDelegatorDecoratorTest extends DecoratorTestCase 
 
   private SymbolTableCreatorDelegatorDecorator decorator;
 
-  private static final String I_AUTOMATON_GLOBAL_SCOPE = "de.monticore.codegen.symboltable.automaton._symboltable.IAutomatonGlobalScope";
+  private static final String AUTOMATON_GLOBAL_SCOPE = "de.monticore.codegen.symboltable.automaton._symboltable.AutomatonGlobalScope";
 
   private static final String AUTOMATON_SYMBOL_TABLE_CREATOR = "AutomatonSymbolTableCreator";
 
@@ -57,7 +55,7 @@ public class SymbolTableCreatorDelegatorDecoratorTest extends DecoratorTestCase 
     this.glex = new GlobalExtensionManagement();
     this.MCTypeFacade = MCTypeFacade.getInstance();
 
-    this.glex.setGlobalValue("astHelper", new DecorationHelper());
+    this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "Automaton");
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
@@ -113,7 +111,7 @@ public class SymbolTableCreatorDelegatorDecoratorTest extends DecoratorTestCase 
     assertEquals("AutomatonSymbolTableCreatorDelegator", cdConstructor.getName());
 
     assertEquals(1, cdConstructor.sizeCDParameters());
-    assertDeepEquals(I_AUTOMATON_GLOBAL_SCOPE, cdConstructor.getCDParameter(0).getMCType());
+    assertDeepEquals(AUTOMATON_GLOBAL_SCOPE, cdConstructor.getCDParameter(0).getMCType());
     assertEquals("globalScope", cdConstructor.getCDParameter(0).getName());
 
 
@@ -143,7 +141,7 @@ public class SymbolTableCreatorDelegatorDecoratorTest extends DecoratorTestCase 
   public void testGlobalScopeAttribute() {
     ASTCDAttribute astcdAttribute = getAttributeBy("globalScope", symTabCreator);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
-    assertDeepEquals(I_AUTOMATON_GLOBAL_SCOPE, astcdAttribute.getMCType());
+    assertDeepEquals(AUTOMATON_GLOBAL_SCOPE, astcdAttribute.getMCType());
   }
 
   @Test

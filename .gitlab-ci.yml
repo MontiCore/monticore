@@ -28,6 +28,7 @@ stages:
   - build
   - test1
   - test2
+  - report
 
 build_dev:
   stage: build
@@ -36,7 +37,7 @@ build_dev:
     - cd monticore-gradle
     - "./gradlew build"
     - "./gradlew publish -PmavenPassword=$password -PmavenUser=$username"
-    - awk -F"," '{ instructions += $12 + $13; covered += $13 } END { print covered, "/", instructions, "methods covered"; print 100*covered/instructions, "% covered" }' ../*/target/site/jacoco/jacoco.csv
+    - awk -F"," '{ instructions += $4 + $5; covered += $5 } END { print covered, "/", instructions, "instructions covered"; print 100*covered/instructions, "% covered" }' ../*/target/site/jacoco/jacoco.csv
   coverage: '/\d+.\d+ \% covered/'
   only:
     - dev
@@ -45,11 +46,23 @@ build_dev:
     paths:
       - "*/target"
     expire_in: 1 week
-    
+
 build_branches:
   stage: build
   script:
     - "mvn $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS install"
+    - "cd monticore-generator/it/experiments"
+    - "mvn --settings ../../../settings.xml --batch-mode $MC_MAVEN_OPTS install"
+    - "cd ../../../monticore-grammar/monticore-grammar-it"
+    - "mvn --settings ../../settings.xml --batch-mode $MC_MAVEN_OPTS install"
+    - "cd ../../monticore-generator/it"
+    - "mvn --settings ../../settings.xml --batch-mode $MC_MAVEN_OPTS install"
+    - "mvn --settings ../../settings.xml --batch-mode $MC_MAVEN_OPTS clean install -P emf-it-tests"
+    - "cd ../../monticore-templateclassgenerator/it/monticore-templateclassgenerator-it"
+    - "mvn --settings ../../../settings.xml --batch-mode $MC_MAVEN_OPTS install"
+  only:
+    - merge_requests
+    - branches
   except:
     - dev
     - master
@@ -65,18 +78,7 @@ it-gradle:
     - "./gradlew build $GRADLE_OPTS"
   only:
     - dev
-
-it-maven:
-  stage: test2
-  dependencies: []
-  script:
-    - cd monticore-generator/it
-    - "mvn --settings ../../settings.xml --batch-mode $MC_MAVEN_OPTS install"
-    - "mvn --settings ../../settings.xml --batch-mode $MC_MAVEN_OPTS clean install -P emf-it-tests"
-    - "cd ../../monticore-templateclassgenerator/it/monticore-templateclassgenerator-it"
-    - "mvn --settings ../../../settings.xml --batch-mode $MC_MAVEN_OPTS install"
-  except:
-    - dev
+    - master
 
   #rules:
   #  - if: '$CI_COMMIT_REF_SLUG == "dev"'
@@ -94,18 +96,7 @@ it-experiments-grammar-gradle:
     - "./gradlew build $GRADLE_OPTS"
   only:
     - dev
-
-# build experiments and grammar with maven for all other branches
-it-experiments-grammar-maven:
-  stage: test1
-  dependencies: []
-  script:
-    - cd monticore-generator/it/experiments
-    - "mvn --settings ../../../settings.xml --batch-mode $MC_MAVEN_OPTS install"
-    - "cd ../../../monticore-grammar/monticore-grammar-it"
-    - "mvn --settings ../../settings.xml --batch-mode $MC_MAVEN_OPTS install"
-  except:
-    - dev
+    - master
 
 trigger-automata:
   stage: test1
@@ -122,3 +113,24 @@ trigger-cd4a:
     branch: develop
   only:
     - dev
+
+pages:
+  stage: report
+  dependencies: []
+  image: python:alpine
+  before_script:
+    - apk add gcc musl-dev python3-dev
+    - pip install cython
+    - pip install mkdocs
+    - pip install mkdocs-material
+  script:
+    - sh docs/scripts/preprocessing.sh
+    - mkdocs build
+    - mv site public
+  artifacts:
+    paths:
+      - public
+  only:
+    - schedules
+
+

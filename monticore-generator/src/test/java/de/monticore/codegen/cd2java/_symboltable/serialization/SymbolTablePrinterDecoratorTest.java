@@ -1,23 +1,21 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._symboltable.serialization;
 
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
-import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
+import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
+import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
-import de.monticore.types.MCTypeFacade;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.types.MCTypeFacade;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
@@ -25,10 +23,10 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static de.monticore.codegen.cd2java.DecoratorAssert.*;
-import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java.DecoratorAssert.*;
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
 import static org.junit.Assert.*;
 
 public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
@@ -55,7 +53,7 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
 
   private static final String I_SCOPE_SPANNING_SYMBOL = "de.monticore.symboltable.IScopeSpanningSymbol";
 
-  private static final String SYMBOL_INTERFACE = "de.monticore.codegen.symboltable.automaton._symboltable.SymbolInterfaceSymbol";
+  private static final String JSON_PRINTER = "de.monticore.symboltable.serialization.JsonPrinter";
 
   @Before
   public void setUp() {
@@ -63,7 +61,7 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
     this.mcTypeFacade = MCTypeFacade.getInstance();
     this.glex = new GlobalExtensionManagement();
 
-    this.glex.setGlobalValue("astHelper", new DecorationHelper());
+    this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "Automaton");
 
@@ -88,14 +86,12 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterfacesCountAutomatonSymbol() {
-    assertEquals(2, symbolTablePrinter.sizeInterfaces());
+    assertEquals(1, symbolTablePrinter.sizeInterfaces());
   }
 
   @Test
   public void testSuperInterfacesAutomatonSymbol() {
-    assertDeepEquals("de.monticore.codegen.symboltable.automaton._visitor.AutomatonSymbolVisitor", symbolTablePrinter.getInterface(0));
-    assertDeepEquals("de.monticore.codegen.symboltable.automaton._visitor.AutomatonScopeVisitor", symbolTablePrinter.getInterface(1));
-
+    assertDeepEquals("de.monticore.codegen.symboltable.automaton._visitor.AutomatonVisitor", symbolTablePrinter.getInterface(0));
   }
 
   @Test
@@ -104,25 +100,53 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testNoConstructor() {
-    assertTrue(symbolTablePrinter.isEmptyCDConstructors());
+  public void testConstructor() {
+    assertEquals(2, symbolTablePrinter.getCDConstructorList().size());
+    ASTCDConstructor astcdConstructor = symbolTablePrinter.getCDConstructor(0);
+    assertDeepEquals(PUBLIC, astcdConstructor.getModifier());
+
+    ASTCDConstructor constructor2 = symbolTablePrinter.getCDConstructor(1);
+    assertDeepEquals(PUBLIC, constructor2.getModifier());
+    assertEquals(1, constructor2.sizeCDParameters());
+    assertEquals("printer", constructor2.getCDParameter(0).getName());
+    assertDeepEquals(this.mcTypeFacade.createQualifiedType(JSON_PRINTER), constructor2.getCDParameter(0).getMCType());
   }
 
   @Test
   public void testAttributesSize() {
-    assertEquals(1, symbolTablePrinter.sizeCDAttributes());
+    assertEquals(2, symbolTablePrinter.sizeCDAttributes());
   }
 
   @Test
   public void testJsonPrinterAttribute() {
     ASTCDAttribute astcdAttribute = getAttributeBy("printer", symbolTablePrinter);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
-    assertDeepEquals("de.monticore.symboltable.serialization.JsonPrinter", astcdAttribute.getMCType());
+    assertDeepEquals(JSON_PRINTER, astcdAttribute.getMCType());
   }
 
   @Test
   public void testMethods() {
-    assertEquals(42, symbolTablePrinter.getCDMethodList().size());
+    assertEquals(44, symbolTablePrinter.getCDMethodList().size());
+  }
+
+  @Test
+  public void testGetJsonPrinterMethod(){
+    ASTCDMethod method = getMethodBy("getJsonPrinter", symbolTablePrinter);
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals("de.monticore.symboltable.serialization.JsonPrinter", method.getMCReturnType().getMCType());
+    assertTrue(method.isEmptyCDParameters());
+  }
+
+  @Test
+  public void testSetJsonPrinterMethod(){
+    ASTCDMethod method = getMethodBy("setJsonPrinter", symbolTablePrinter);
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    assertFalse(method.isEmptyCDParameters());
+    assertEquals(1, method.getCDParameterList().size());
+    assertEquals("printer", method.getCDParameter(0).getName());
+    assertDeepEquals("de.monticore.symboltable.serialization.JsonPrinter", method.getCDParameter(0).getMCType());
   }
 
   @Test
@@ -134,6 +158,18 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getCDParameterList().size() == 1);
     assertTrue(method.getCDParameter(0).getName().equals("node"));
     assertDeepEquals("de.monticore.codegen.symboltable.automaton._symboltable.FooSymbol", method.getCDParameter(0).getMCType());
+  }
+
+  @Test
+  public void testSerializeLocalSymbolsMethod(){
+    ASTCDMethod method = getMethodBy("serializeLocalSymbols", symbolTablePrinter);
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    assertFalse(method.isEmptyCDParameters());
+    assertEquals(1, method.getCDParameterList().size());
+    assertEquals("node", method.getCDParameter(0).getName());
+    ASTMCType parameterType = this.mcTypeFacade.createQualifiedType(I_AUTOMATON_SCOPE);
+    assertDeepEquals(parameterType, method.getCDParameter(0).getMCType());
   }
 
   @Test

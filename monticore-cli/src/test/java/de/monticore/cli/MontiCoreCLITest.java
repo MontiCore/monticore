@@ -15,7 +15,6 @@ import static org.junit.Assert.assertTrue;
  * do not really test something but are written to try out certain argument
  * combinations and hence designed to not fail.
  *
- * @since 4.0.0
  */
 public class MontiCoreCLITest {
   

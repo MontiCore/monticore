@@ -1,9 +1,31 @@
 /* (c) https://github.com/MontiCore/monticore */
 
+/* This is a MontiCore stable grammar.
+ * Adaptations -- if any -- are conservative. */
+
+/**
+ * This grammar defines the all Java statements.
+ * This is neither a generalized approximation nor a restricted overapproximation, 
+ * but exact.
+ * Because all nonterminals are inherited the grammar is basically empty.
+ *
+ * This grammar is part of a hierarchy of statements, namely
+ * * statements/MCStatementsBasis.mc4
+ * * -- statements/MCAssertStatements.mc4
+ * * -- statements/MCCommonStatements.mc4
+ * * -- -- statements/MCExceptionStatements.mc4
+ * * -- -- statements/MCSynchronizedStatements.mc4
+ * * -- statements/MCLowLevelStatements.mc4
+ * * -- statements/MCReturnStatements.mc4
+ *
+ * and the composition of all statement grammmars to full Java:
+ * * -- -- statements/MCFullJavaStatements.mc4
+ *
+*/
+
 package de.monticore.statements;
 
-component grammar MCFullJavaStatements extends de.monticore.statements.MCCommonStatements,
-                                               de.monticore.statements.MCAssertStatements,
+component grammar MCFullJavaStatements extends de.monticore.statements.MCAssertStatements,
                                                de.monticore.statements.MCExceptionStatements,
                                                de.monticore.statements.MCLowLevelStatements,
                                                de.monticore.statements.MCReturnStatements,

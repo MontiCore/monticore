@@ -22,7 +22,7 @@ public class ASTRuleAndNTUseSameAttrNameForDiffNTsTest extends CocoTest{
   @Test
   public void testInvalid() {
     testInvalidGrammar(grammar, ASTRuleAndNTUseSameAttrNameForDiffNTs.ERROR_CODE,
-        String.format(ASTRuleAndNTUseSameAttrNameForDiffNTs.ERROR_MSG_FORMAT, "E", "a", "B", "B", "A"),
+        String.format(ASTRuleAndNTUseSameAttrNameForDiffNTs.ERROR_MSG_FORMAT, "E", "a", "B", "A"),
         checker);
   }
 

@@ -1,5 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
+import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor;
 import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
@@ -11,7 +14,7 @@ import java.util.Optional;
  * i.e. for
  *    types/MCBasicTypes.mc4
  */
-public class SynthesizeSymTypeFromMCBasicTypes implements MCBasicTypesVisitor {
+public class SynthesizeSymTypeFromMCBasicTypes implements MCBasicTypesVisitor, ISynthesize {
   
   /**
    * Using the visitor functionality to calculate the SymType Expression
@@ -23,6 +26,12 @@ public class SynthesizeSymTypeFromMCBasicTypes implements MCBasicTypesVisitor {
   // (the Vistors are then composed using theRealThis Pattern)
   //
   MCBasicTypesVisitor realThis = this;
+
+  protected IExpressionsBasisScope scope;
+
+  public SynthesizeSymTypeFromMCBasicTypes(IExpressionsBasisScope scope){
+    this.scope = scope;
+  }
   
   @Override
   public void setRealThis(MCBasicTypesVisitor realThis) {
@@ -40,14 +49,18 @@ public class SynthesizeSymTypeFromMCBasicTypes implements MCBasicTypesVisitor {
    * Storage in the Visitor: result of the last endVisit.
    * This attribute is synthesized upward.
    */
-  public Optional<SymTypeExpression> result;
+  public LastResult lastResult = new LastResult();
   
   public Optional<SymTypeExpression> getResult() {
-    return result;
+    return Optional.of(lastResult.getLast());
   }
   
   public void init() {
-    result = Optional.empty();
+    lastResult = new LastResult();
+  }
+
+  public void setLastResult(LastResult lastResult){
+    this.lastResult = lastResult;
   }
   
   // ---------------------------------------------------------- Visting Methods
@@ -60,11 +73,11 @@ public class SynthesizeSymTypeFromMCBasicTypes implements MCBasicTypesVisitor {
   public void endVisit(ASTMCPrimitiveType primitiveType) {
     SymTypeConstant typeConstant =
             SymTypeExpressionFactory.createTypeConstant(primitiveType.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()));
-    result = Optional.of(typeConstant);
+    lastResult.setLast(typeConstant);
   }
   
   public void endVisit(ASTMCVoidType voidType) {
-    result = Optional.of(SymTypeExpressionFactory.createTypeVoid());
+    lastResult.setLast(SymTypeExpressionFactory.createTypeVoid());
   }
   
   /**
@@ -77,12 +90,16 @@ public class SynthesizeSymTypeFromMCBasicTypes implements MCBasicTypesVisitor {
    */
   public void endVisit(ASTMCQualifiedType qType) {
     // Otherwise the Visitor is applied to the wrong AST (and an internal error 0x893F62 is issued
-    SymTypeExpression tex =
-        SymTypeExpressionFactory.createTypeObject(new TypeSymbolLoader(qType.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()), qType.getEnclosingScope()));
+    lastResult.setLast(
+        SymTypeExpressionFactory.createTypeObject(new TypeSymbolLoader(qType.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()), scope)));
   }
   
   public void endVisit(ASTMCReturnType rType) {
     // result is pushed upward (no change)
+  }
+
+  protected void setScope(IExpressionsBasisScope scope){
+    this.scope=scope;
   }
   
 }

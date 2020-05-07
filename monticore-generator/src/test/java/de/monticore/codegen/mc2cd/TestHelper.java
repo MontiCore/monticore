@@ -15,6 +15,7 @@ import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConcep
 import de.monticore.io.paths.ModelPath;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
+import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
 import parser.MCGrammarParser;
 
 import java.nio.file.Path;
@@ -96,7 +97,8 @@ public class TestHelper {
     if (type.getMCTypeArgumentList().size() != 1) {
       return false;
     }
-    if (!type.getMCTypeArgumentList().get(0).getMCTypeOpt().get().printType().equals(typeArg)) {
+    if (!type.getMCTypeArgumentList().get(0).getMCTypeOpt().get()
+            .printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()).equals(typeArg)) {
       return false;
     }
     return true;

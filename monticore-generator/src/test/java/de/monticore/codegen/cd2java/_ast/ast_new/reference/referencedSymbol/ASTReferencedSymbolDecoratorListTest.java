@@ -8,10 +8,10 @@ import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
+import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.ast_class.reference.ASTReferenceDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -19,9 +19,9 @@ import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
+import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
-import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
-import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
 import static org.junit.Assert.*;
 
 public class ASTReferencedSymbolDecoratorListTest extends DecoratorTestCase {
@@ -32,18 +32,18 @@ public class ASTReferencedSymbolDecoratorListTest extends DecoratorTestCase {
 
   private ASTCDClass originalClass;
 
-  private static final String NAME_SYMBOL_MAP = "Map<String,Optional<de.monticore.codegen.ast.referencedsymbol._symboltable.FooSymbol>>";
+  private static final String NAME_SYMBOL_MAP = "Map<String,de.monticore.codegen.ast.referencedsymbol._symboltable.FooSymbolLoader>";
 
   @Before
   public void setup() {
     LogStub.init();
     LogStub.enableFailQuick(false);
-    this.glex.setGlobalValue("astHelper", new DecorationHelper());
+    this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
     ASTCDCompilationUnit ast = this.parse("de", "monticore", "codegen", "ast", "ReferencedSymbol");
     this.glex.setGlobalValue("service", new AbstractService(ast));
 
-    ASTReferenceDecorator decorator = new ASTReferenceDecorator(this.glex, new SymbolTableService(ast));
+    ASTReferenceDecorator<ASTCDClass> decorator = new ASTReferenceDecorator(this.glex, new SymbolTableService(ast));
     originalClass= getClassBy("ASTBarList", ast);
     ASTCDClass changedClass = CD4AnalysisMill.cDClassBuilder().setName(originalClass.getName())
         .setModifier(originalClass.getModifier())
@@ -77,14 +77,22 @@ public class ASTReferencedSymbolDecoratorListTest extends DecoratorTestCase {
 
   @Test
   public void testSymbolAttribute() {
-    ASTCDAttribute symbolAttribute = getAttributeBy("nameSymbol", astClass);
+    ASTCDAttribute symbolAttribute = getAttributeBy("nameSymbolLoader", astClass);
     assertTrue(symbolAttribute.getModifier().isProtected());
     assertDeepEquals(NAME_SYMBOL_MAP, symbolAttribute.getMCType());
   }
 
   @Test
   public void testMethods() {
-    assertEquals(38, astClass.getCDMethodList().size());
+    assertEquals(39, astClass.getCDMethodList().size());
+  }
+
+  @Test
+  public void testUpdateNameSymbolLoaderListMethod() {
+    ASTCDMethod method = getMethodBy("updateNameSymbolLoader", astClass);
+    assertDeepEquals(PROTECTED, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    assertTrue(method.isEmptyCDParameters());
   }
 
   @Test

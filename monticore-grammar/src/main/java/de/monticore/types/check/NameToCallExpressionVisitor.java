@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
 import de.monticore.expressions.commonexpressions._ast.ASTCallExpression;
@@ -50,5 +51,6 @@ public class NameToCallExpressionVisitor implements CommonExpressionsVisitor {
       lastName = expr.getName();
     }
   }
+
 
 }

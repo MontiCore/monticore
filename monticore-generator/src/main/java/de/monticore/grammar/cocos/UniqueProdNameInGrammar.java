@@ -5,7 +5,7 @@ package de.monticore.grammar.cocos;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar._symboltable.ProdSymbolTOP;
+import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
@@ -21,14 +21,14 @@ public class UniqueProdNameInGrammar implements GrammarASTMCGrammarCoCo {
 
   public static final String ERROR_CODE = "0xA0112";
 
-  public static final String ERROR_MSG_FORMAT = " Grammar '%s' contains two Prods named '%s'. Prod names must be unique within a grammar.";
+  public static final String ERROR_MSG_FORMAT = " Grammar '%s' contains two productions named '%s'. Production names must be unique within a grammar.";
 
   @Override
   public void check(ASTMCGrammar node) {
     MCGrammarSymbol grammarSymbol = node.getSymbol();
     List<String> prodNames = grammarSymbol.getProds()
         .stream()
-        .map(ProdSymbolTOP::getName)
+        .map(ProdSymbol::getName)
         .collect(Collectors.toList());
     for (int i = 0; i < prodNames.size(); i++) {
       for (int j = i + 1; j < prodNames.size(); j++) {

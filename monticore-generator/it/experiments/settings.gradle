@@ -1,4 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
+
 pluginManagement {
   repositories {
     mavenLocal()
@@ -28,10 +29,17 @@ include(':patternAccess')
 include(':questionnaire')
 include(':S01_intro')
 include(':scannerless')
+include(':scopes')
 include(':spaceOnOff-negative')
 include(':spacesOffWithPositionCheck')
+include(':stcomposition01')
+include(':stcomposition02')
+include(':stcomposition03')
 include(':symbols')
 include(':visit_L_inherit')
 project(':automaton_experiments').projectDir = file('automaton')
 project(':S01_intro').projectDir = file('S01.intro')
 project(':visit_L_inherit').projectDir = file('visit.L.inherit')
+include 'templates'
+include 'textoutput'
+

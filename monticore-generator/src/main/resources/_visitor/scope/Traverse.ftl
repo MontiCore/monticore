@@ -1,17 +1,12 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("superSymbols", "ownSymbol")}
+${tc.signature("symbols")}
   // traverse symbols within the scope
-<#list superSymbols as superSymbol>
-    <#assign simpleName = superSymbol>
-    <#if superSymbol?contains(".")>
-      <#assign simpleName= superSymbol?substring(superSymbol?last_index_of(".")+1)>
+<#list symbols as symbol>
+    <#assign simpleName = symbol>
+    <#if symbol?contains(".")>
+      <#assign simpleName= symbol?substring(symbol?last_index_of(".")+1)>
     </#if>
-  for (${superSymbol} s : node.getLocal${simpleName}s()) {
+  for (${symbol} s : node.getLocal${simpleName}s()) {
     s.accept(getRealThis());
   }
 </#list>
-
-  // traverse sub-scopes
-  for (${ownSymbol} s : node.getSubScopes()) {
-    s.accept(getRealThis());
-  }

@@ -6,10 +6,12 @@ package de.monticore.grammar.grammar._symboltable;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.symboltable.modifiers.AccessModifier;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 
-import static de.monticore.codegen.GeneratorHelper.isQualified;
 import static de.monticore.symboltable.modifiers.AccessModifier.ALL_INCLUSION;
 import static de.se_rwth.commons.Names.getSimpleName;
 import static java.util.Optional.empty;
@@ -107,6 +109,28 @@ public interface IGrammarScope extends IGrammarScopeTOP {
 
   default Optional<ProdSymbol> resolveInSuperGrammar(String name, MCGrammarSymbol superGrammar) {
     return superGrammar.getSpannedScope().resolveProdImported(name, ALL_INCLUSION);
+  }
+
+  default boolean isQualified(MCGrammarSymbolLoader grammarRef) {
+    if (grammarRef.getName().contains(".")) {
+      return true;
+    }
+    if (grammarRef.isSymbolLoaded()) {
+      MCGrammarSymbol grammarSymbol = grammarRef.getLoadedSymbol();
+      if (!grammarSymbol.getFullName().contains(".")) {
+        // The complete name has no package name, therefore the grammarRefName
+        // without "." is qualified
+        return true;
+      }
+    }
+    return false;
+  }
+
+  default boolean isQualified(String name) {
+    if (name.contains(".")) {
+      return true;
+    }
+    return false;
   }
 
 }

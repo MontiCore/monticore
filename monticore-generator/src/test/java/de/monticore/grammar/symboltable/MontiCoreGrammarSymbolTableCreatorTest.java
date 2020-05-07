@@ -6,14 +6,12 @@ import de.monticore.GrammarGlobalScopeTestFactory;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.*;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
-import de.monticore.symboltable.resolving.ResolvedSeveralEntriesForSymbolException;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
-import parser.MCGrammarParser;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
@@ -76,49 +74,21 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
     testLinkBetweenSymbolAndAst(entryActionProd);
     
     // test prod components
-    Collection<RuleComponentSymbol> bla = entryActionProd.getProdComponents();
-    assertEquals(3, entryActionProd.getProdComponents().size());
-    RuleComponentSymbol prodComp = entryActionProd.getProdComponent("entry").orElse(null);
-    assertNotNull(prodComp);
-    assertEquals("entry", prodComp.getName());
-    assertEquals("", prodComp.getUsageName());
-    assertEquals("de.monticore.statechart.Statechart.EntryAction.entry", prodComp.getFullName());
-    assertEquals("de.monticore.statechart", prodComp.getPackageName());
-    assertTrue(prodComp.isIsTerminal());
-    assertFalse(prodComp.isIsList());
-    assertFalse(prodComp.isIsOptional());
-    assertSame(entryActionProd.getSpannedScope(), prodComp.getEnclosingScope());
-    // generic vs specific
-    Optional<RuleComponentSymbol> resolvedProdComp = entryActionProd.getSpannedScope()
-        .resolveRuleComponent("entry");
-    assertTrue(resolvedProdComp.isPresent());
-    assertSame(prodComp, resolvedProdComp.get());
-    
-    // AST
-    testLinkBetweenSymbolAndAst(prodComp);
-    
-    prodComp = entryActionProd.getProdComponent(":").orElse(null);
-    assertNotNull(prodComp);
-    assertEquals(":", prodComp.getName());
-    assertEquals("", prodComp.getUsageName());
-    assertTrue(prodComp.isIsTerminal());
-    assertFalse(prodComp.isIsList());
-    assertFalse(prodComp.isIsOptional());
-    assertSame(entryActionProd.getSpannedScope(), prodComp.getEnclosingScope());
-    
-    prodComp = entryActionProd.getProdComponent("block").orElse(null);
-    assertNotNull(prodComp);
-    assertEquals("block", prodComp.getName());
-    assertEquals("block", prodComp.getUsageName());
-    assertTrue(prodComp.isIsNonterminal());
-    assertTrue(prodComp.isPresentAstNode());
-    assertFalse(prodComp.isIsList());
-    assertFalse(prodComp.isIsOptional());
-    assertSame(entryActionProd.getSpannedScope(), prodComp.getEnclosingScope());
+    Collection<RuleComponentSymbol> rcsList = entryActionProd.getProdComponents();
+    assertEquals(1, rcsList.size());
+
+    List<RuleComponentSymbol> prodComps = entryActionProd.getSpannedScope().resolveRuleComponentDownMany("block");
+    assertFalse(prodComps.isEmpty());
+    assertEquals("block", prodComps.get(0).getName());
+    assertTrue(prodComps.get(0).isIsNonterminal());
+    assertTrue(prodComps.get(0).isPresentAstNode());
+    assertFalse(prodComps.get(0).isIsList());
+    assertFalse(prodComps.get(0).isIsOptional());
+    assertSame(entryActionProd.getSpannedScope(), prodComps.get(0).getEnclosingScope());
     // reference to defining prod
-    assertEquals("BlockStatement", prodComp.getReferencedProd().get().getName());
-    assertTrue(prodComp.getReferencedProd().get().isSymbolLoaded());
-    assertTrue(prodComp.getReferencedProd().get().getLoadedSymbol().isIsExternal());
+    assertEquals("BlockStatement", prodComps.get(0).getReferencedProd().get().getName());
+    assertTrue(prodComps.get(0).getReferencedProd().get().isSymbolLoaded());
+    assertTrue(prodComps.get(0).getReferencedProd().get().getLoadedSymbol().isIsExternal());
     
     ProdSymbol scStructure = grammar.getProd("SCStructure").orElse(null);
     assertNotNull(scStructure);
@@ -152,13 +122,13 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
     // AST
     testLinkBetweenSymbolAndAst(stateProd);
     
-    RuleComponentSymbol initialComponent = stateProd.getProdComponent("initial").orElse(null);
-    assertNotNull(initialComponent);
+    List<RuleComponentSymbol> initialComponents = stateProd.getSpannedScope().resolveRuleComponentDownMany("initial");
+    assertFalse(initialComponents.isEmpty());
+    RuleComponentSymbol initialComponent = initialComponents.get(0);
     assertEquals("de.monticore.statechart.Statechart.State.initial",
         initialComponent.getFullName());
     assertEquals("initial", initialComponent.getName());
-    assertEquals("initial", initialComponent.getUsageName());
-    
+
     ProdSymbol classBody = grammar.getProd("Classbody").orElse(null);
     assertNotNull(classBody);
     assertEquals("Classbody", classBody.getName());
@@ -170,12 +140,12 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
     ProdSymbol codeProd = grammar.getProd("Code").orElse(null);
     assertNotNull(codeProd);
     assertEquals("Code", codeProd.getName());
-    assertEquals(2, codeProd.getProdComponents().size());
-    prodComp = codeProd.getProdComponent("body").get();
-    assertEquals("body", prodComp.getUsageName());
-    assertTrue(prodComp.getReferencedProd().isPresent());
-    assertTrue(prodComp.getReferencedProd().get().isSymbolLoaded());
-    assertSame(classBody, prodComp.getReferencedProd().get().getLoadedSymbol());
+    assertEquals(1, codeProd.getProdComponents().size());
+    prodComps = codeProd.getSpannedScope().resolveRuleComponentDownMany("body");
+    assertFalse((prodComps.isEmpty()));
+    assertTrue(prodComps.get(0).getReferencedProd().isPresent());
+    assertTrue(prodComps.get(0).getReferencedProd().get().isSymbolLoaded());
+    assertSame(classBody, prodComps.get(0).getReferencedProd().get().getLoadedSymbol());
     testLinkBetweenSymbolAndAst(codeProd);
   }
   
@@ -314,13 +284,9 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
     ProdSymbol transition = grammar.getProd("Transition").orElse(null);
     assertNotNull(transition);
     
-    try {
-      Optional<RuleComponentSymbol> r = transition.getSpannedScope().resolveRuleComponent("arg");
-      assertTrue(r.isPresent());
-    }
-    catch (ResolvedSeveralEntriesForSymbolException e) {
-      fail("Only one prod component should be resolved instead of " + e.getSymbols().size());
-    }
+    List<RuleComponentSymbol> r = transition.getSpannedScope().resolveRuleComponentMany("arg");
+    assertEquals(2, r.size());
+    assertTrue(r.get(0).isIsList());
   }
   
   private int countExternalProd(MCGrammarSymbol grammar) {
@@ -364,7 +330,6 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
     assertTrue(stateProd.isIsSymbolDefinition());
   }
   
-  @Ignore
   @Test
   public void testRuleWithSymbolReference() {
     final Grammar_WithConceptsGlobalScope globalScope = GrammarGlobalScopeTestFactory.createUsingEssentialMCLanguage();
@@ -382,21 +347,20 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
     assertEquals("S", s.getName());
     
     ProdSymbol t = grammar.getProd("T").orElse(null);
-    assertTrue(t.isIsSymbolDefinition());
-    assertEquals("S", t.getName());
-    
-    // The symbol kinds are determined transitively, i.e., A -> T -> S, hence, the symbol kind of
-    // prod A is S.
+    assertEquals("T", t.getName());
+    assertFalse(t.isIsSymbolDefinition());
+
     ProdSymbol a = grammar.getProd("A").orElse(null);
-    assertTrue(a.isIsSymbolDefinition());
-    assertEquals("S", a.getName());
-    
+    assertEquals("A", a.getName());
+    assertFalse(a.isIsSymbolDefinition());
+
     ProdSymbol b = grammar.getProd("B").orElse(null);
     assertFalse(b.isIsSymbolDefinition());
-    RuleComponentSymbol aComponent = b.getProdComponent("an").get();
+    List<RuleComponentSymbol> comps = b.getSpannedScope().resolveRuleComponentDownMany("an");
+    assertFalse(comps.isEmpty());
+    RuleComponentSymbol aComponent = comps.get(0);
     assertEquals("Name", aComponent.getReferencedProd().get().getName());
-    assertEquals(a.getName(), aComponent.getReferencedSymbolName());
-    
+
     ProdSymbol e = grammar.getProd("E").orElse(null);
     assertTrue(e.isIsExternal());
     assertTrue(e.isIsSymbolDefinition());
@@ -424,48 +388,49 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
     // no usage name
     Optional<ProdSymbol> aProd = grammar.getSpannedScope().resolveProd("A");
     assertTrue(aProd.isPresent());
-    Optional<RuleComponentSymbol> aBRule= aProd.get().getProdComponent("b");
-    assertTrue(aBRule.isPresent());
-    assertFalse(aBRule.get().isIsList());
+    List<RuleComponentSymbol> comps = aProd.get().getSpannedScope().resolveRuleComponentDownMany("b");
+    assertFalse(comps.isEmpty());
+    RuleComponentSymbol aBRule= comps.get(0);
+    assertFalse(aBRule.isIsList());
 
     // with usage name
     Optional<ProdSymbol> bProd = grammar.getSpannedScope().resolveProd("B");
     assertTrue(bProd.isPresent());
-    Optional<RuleComponentSymbol> bBRule= bProd.get().getProdComponent("b");
-    assertTrue(bBRule.isPresent());
-    assertTrue(bBRule.get().isIsList());
+    List<RuleComponentSymbol> bBRules = bProd.get().getSpannedScope().resolveRuleComponentMany("b");
+    assertTrue(!bBRules.isEmpty());
+    assertTrue(bBRules.get(0).isIsList());
 
     // no usage name
     Optional<ProdSymbol> cProd = grammar.getSpannedScope().resolveProd("C");
     assertTrue(cProd.isPresent());
-    Optional<RuleComponentSymbol> cBRule= cProd.get().getProdComponent("b");
-    assertTrue(cBRule.isPresent());
-    assertFalse(cBRule.get().isIsList());
+    List<RuleComponentSymbol> cBRules= cProd.get().getSpannedScope().resolveRuleComponentMany("b");
+    assertFalse(cBRules.isEmpty());
+    assertFalse(cBRules.get(0).isIsList());
 
     // no usage name
     Optional<ProdSymbol> dProd = grammar.getSpannedScope().resolveProd("D");
     assertTrue(dProd.isPresent());
-    Optional<RuleComponentSymbol> dBRule= dProd.get().getProdComponent("b");
-    assertTrue(dBRule.isPresent());
-    assertFalse(dBRule.get().isIsList());
+    List<RuleComponentSymbol> dBRules= dProd.get().getSpannedScope().resolveRuleComponentMany("b");
+    assertFalse(dBRules.isEmpty());
+    assertFalse(dBRules.get(0).isIsList());
 
     // with usage name
     Optional<ProdSymbol> eProd = grammar.getSpannedScope().resolveProd("E");
     assertTrue(eProd.isPresent());
-    Optional<RuleComponentSymbol> eBRule= eProd.get().getProdComponent("b");
-    assertTrue(eBRule.isPresent());
-    assertTrue(eBRule.get().isIsList());
+    List<RuleComponentSymbol> eBRules = eProd.get().getSpannedScope().resolveRuleComponentMany("b");
+    assertTrue(!eBRules.isEmpty());
+    assertTrue(eBRules.get(0).isIsList());
 
     // no usage name
     Optional<ProdSymbol> fProd = grammar.getSpannedScope().resolveProd("F");
     assertTrue(fProd.isPresent());
-    Optional<RuleComponentSymbol> fBRule= fProd.get().getProdComponent("b");
-    assertFalse(fBRule.isPresent());
+    List<RuleComponentSymbol> fBRules = fProd.get().getSpannedScope().resolveRuleComponentMany("b");
+    assertTrue(fBRules.isEmpty());
 
     // with usage name
     Optional<ProdSymbol> gProd = grammar.getSpannedScope().resolveProd("G");
     assertTrue(gProd.isPresent());
-    Optional<RuleComponentSymbol> gBRule= gProd.get().getProdComponent("b");
-    assertTrue(gBRule.isPresent());
+    List<RuleComponentSymbol> gBRules = gProd.get().getSpannedScope().resolveRuleComponentMany("b");
+    assertFalse(gBRules.isEmpty());
   }
 }

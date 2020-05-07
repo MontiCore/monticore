@@ -3,6 +3,9 @@ package de.monticore.codegen.cd2java._symboltable;
 
 public class SymbolTableConstants {
 
+  private SymbolTableConstants() {
+  }
+
   /**
    * packages
    */
@@ -108,6 +111,8 @@ public class SymbolTableConstants {
   public static final String AST_NODE_VAR = "astNode";
 
   public static final String SHADOWING_VAR = "shadowing";
+
+  public static final String ORDERED_VAR = "ordered";
 
   public static final String MODEL_PATH_VAR = "modelPath";
 

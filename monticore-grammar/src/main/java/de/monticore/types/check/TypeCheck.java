@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
@@ -5,7 +6,7 @@ import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._ast.ASTMCVoidType;
-import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
+import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
 import de.se_rwth.commons.logging.Log;
 
@@ -34,7 +35,7 @@ public class TypeCheck {
    * Synthesizing the SymTypeExpression from an AST Type.
    * May also be of a subclass;
    */
-  protected SynthesizeSymTypeFromMCBasicTypes synthesizeSymType;
+  protected ISynthesize iSynthesize;
   
   /**
    * Configuration: Visitor for Function 2b:
@@ -49,9 +50,26 @@ public class TypeCheck {
    * @param  iTypesCalculator defines, which AST Literals are handled
    *                               through the Expression type recognition
    */
-  public TypeCheck(SynthesizeSymTypeFromMCBasicTypes synthesizeSymType,
+  public TypeCheck(ISynthesize synthesizeSymType,
                    ITypesCalculator iTypesCalculator) {
-    this.synthesizeSymType = synthesizeSymType;
+    this.iSynthesize = synthesizeSymType;
+    this.iTypesCalculator = iTypesCalculator;
+  }
+
+  /**
+   *
+   * @param synthesizeSymType defines, which AST Types are mapped (and how)
+   */
+  public TypeCheck(ISynthesize synthesizeSymType){
+    this.iSynthesize = synthesizeSymType;
+  }
+
+  /**
+   *
+   * @param iTypesCalculator defines, which AST Literals are handled
+   *                               through the Expression type recognition
+   */
+  public TypeCheck(ITypesCalculator iTypesCalculator){
     this.iTypesCalculator = iTypesCalculator;
   }
   
@@ -65,9 +83,9 @@ public class TypeCheck {
    * (SynthesizeSymType.*Types.*Test)
    */
   public SymTypeExpression symTypeFromAST(ASTMCType astMCType) {
-    synthesizeSymType.init();
-    astMCType.accept(synthesizeSymType);
-    Optional<SymTypeExpression> result = synthesizeSymType.getResult();
+    iSynthesize.init();
+    astMCType.accept(iSynthesize);
+    Optional<SymTypeExpression> result = iSynthesize.getResult();
     if(!result.isPresent()) {
       Log.error("0xE9FD4 Internal Error: No SymType for: "
               + astMCType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()) + ". Probably TypeCheck mis-configured.");
@@ -91,9 +109,9 @@ public class TypeCheck {
    * (SynthesizeSymType.*Types.*Test)
    */
   public SymTypeExpression symTypeFromAST(ASTMCReturnType astMCReturnType) {
-    synthesizeSymType.init();
-    astMCReturnType.accept(synthesizeSymType);
-    Optional<SymTypeExpression> result = synthesizeSymType.getResult();
+    iSynthesize.init();
+    astMCReturnType.accept(iSynthesize);
+    Optional<SymTypeExpression> result = iSynthesize.getResult();
     if(!result.isPresent()) {
       Log.error("0xE9FD5 Internal Error: No SymType for return type: "
               + astMCReturnType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter())
@@ -307,6 +325,10 @@ public class TypeCheck {
 
   public static boolean isVoid(SymTypeExpression type){
     return "void".equals(unbox(type.print()));
+  }
+
+  public static boolean isString(SymTypeExpression type){
+    return "String".equals(type.print());
   }
   
   

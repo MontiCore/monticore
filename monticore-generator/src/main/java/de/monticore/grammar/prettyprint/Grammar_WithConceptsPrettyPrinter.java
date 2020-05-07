@@ -9,7 +9,7 @@ import de.monticore.expressions.bitexpressions._ast.ASTBitExpressionsNode;
 import de.monticore.expressions.commonexpressions._ast.ASTCommonExpressionsNode;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpressionsBasisNode;
 import de.monticore.expressions.javaclassexpressions._ast.ASTJavaClassExpressionsNode;
-import de.monticore.expressions.prettyprint2.*;
+import de.monticore.expressions.prettyprint.*;
 import de.monticore.grammar.concepts.antlr.antlr._ast.ASTAntlrNode;
 import de.monticore.grammar.grammar._ast.ASTGrammarNode;
 import de.monticore.grammar.grammar_withconcepts._ast.*;

@@ -1,9 +1,56 @@
 /* (c) https://github.com/MontiCore/monticore */
-
 package de.monticore.statements;
+
+/* This is a MontiCore stable grammar.
+ * Adaptations -- if any -- are conservative. */
+
+/**
+ * This grammar defines the core interface for statements.
+ * A hierarchy of conservative extensions to this grammar realize
+ * these interfaces in various forms.
+ *
+ * The language developer may choose the subset of statements
+ * of interest 
+ *
+ * This modularity of statements greatly eases
+ * the reuse of statements in languages similar to Java
+ *
+ *
+ * This grammar is part of a hierarchy of statements, namely
+ * * statements/MCStatementsBasis.mc4
+ * * -- statements/MCAssertStatements.mc4
+ * * -- statements/MCCommonStatements.mc4
+ * * -- -- statements/MCExceptionStatements.mc4
+ * * -- -- statements/MCSynchronizedStatements.mc4
+ * * -- statements/MCLowLevelStatements.mc4
+ * * -- statements/MCReturnStatements.mc4
+ *
+ * and the composition of all statement grammmars to full Java:
+ * * -- -- statements/MCFullJavaStatements.mc4
+ *
+*/
 
 component grammar MCStatementsBasis  {
 
-interface MCStatement ;
+/** 
+ * MCBlockStatements are typically the staments possible within blocks, such as
+ * { ... block ... }
+ * These MCBlockStatements contain all usuall statements plus the possibility
+ * to define local variables, such as:  int a = 7;
+*/
+
+interface MCBlockStatement;
+
+/**
+ * MCStatement is the basic interface for all kinds of statements,
+ * which are defined in sub-grammars.
+ * It is explicitly meant for extension.
+ * Like in Java, ordinary MCStatements do not allow to introduce new 
+ * local variables (this is only part of the MCBlockStatements)
+*/ 
+
+interface MCStatement extends MCBlockStatement;
+
+interface MCModifier ;
 
 }

@@ -10,9 +10,10 @@ import java.io.Writer;
 import java.nio.file.Path;
 import java.util.Arrays;
 
+import de.monticore.ast.ASTCNode;
 import de.monticore.ast.ASTNode;
-import de.monticore.ast.ASTNodeNull;
 import de.monticore.generating.templateengine.TemplateController;
+import de.monticore.symboltable.IScope;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -68,9 +69,19 @@ public class GeneratorEngine {
     Log.errorIfNull(filePath);
 
     TemplateController tc = setup.getNewTemplateController(templateName);
-    tc.writeArgs(templateName, filePath, new ASTNodeNull(), Arrays.asList(templateArguments));
-  }
+    ASTCNode dummyAST = new ASTCNode(){
 
+      @Override public IScope getEnclosingScope() {
+        return null;
+      }
+
+      @Override public ASTNode deepClone() {
+        return this;
+      }
+    };
+
+    tc.writeArgs(templateName, filePath, dummyAST, Arrays.asList(templateArguments));
+  }
 
   /**
    * Processes the template <code>templateName</code> with the <code>node</code> and the given
@@ -95,7 +106,7 @@ public class GeneratorEngine {
       writer.write(sb.toString());
     }
     catch (IOException e) {
-      Log.error("0xA4060 Template " + templateName + " cannot write the content");   
+      Log.error("0xA4110 Template " + templateName + " cannot write the content");
     }
   }
   
@@ -106,7 +117,7 @@ public class GeneratorEngine {
    * specified in the {@link de.monticore.generating.GeneratorSetup}.
    *
    * @param templateName the template to be processes
-   * @param filePath the writer in which the content is to be written
+   * @param writer the writer in which the content is to be written
    * @param templateArguments additional template arguments (if needed).
    */
   public void generateNoA(String templateName, Writer writer, Object... templateArguments) {

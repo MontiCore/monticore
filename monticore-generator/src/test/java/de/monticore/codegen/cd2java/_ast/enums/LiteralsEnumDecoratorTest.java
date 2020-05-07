@@ -8,9 +8,9 @@ import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.facade.CDModifier;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
+import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
@@ -38,12 +38,12 @@ public class LiteralsEnumDecoratorTest extends DecoratorTestCase {
   public void setUp() {
     this.glex = new GlobalExtensionManagement();
 
-    this.glex.setGlobalValue("astHelper", new DecorationHelper());
+    this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
     originalCompilationUnit= decoratedCompilationUnit.deepClone();
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
 
-    EnumDecorator decorator = new EnumDecorator(this.glex, new AccessorDecorator(glex), new ASTService(decoratedCompilationUnit));
+    EnumDecorator decorator = new EnumDecorator(this.glex, new AccessorDecorator(glex, new ASTService(decoratedCompilationUnit)), new ASTService(decoratedCompilationUnit));
     this.cdEnum = decorator.decorate(getEnumBy("AutomatonLiterals", decoratedCompilationUnit));
   }
 

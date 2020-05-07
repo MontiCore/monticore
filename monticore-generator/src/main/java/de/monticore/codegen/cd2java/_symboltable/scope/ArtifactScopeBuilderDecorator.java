@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._symboltable.scope;
 
 import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
@@ -15,12 +16,12 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 import java.util.List;
 import java.util.Optional;
 
+import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILD_METHOD;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.ENCLOSING_SCOPE_VAR;
-import static de.monticore.cd.facade.CDModifier.*;
 
 
 public class ArtifactScopeBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
@@ -63,7 +64,7 @@ public class ArtifactScopeBuilderDecorator extends AbstractCreator<ASTCDClass, A
         .filter(m -> BUILD_METHOD.equals(m.getName()))
         .findFirst();
     buildMethod.ifPresent(b -> this.replaceTemplate(EMPTY_BODY, b,
-        new TemplateHookPoint(TEMPLATE_PATH + "Build", scopeClass.getName())));
+        new TemplateHookPoint(TEMPLATE_PATH + "BuildArtifactScope", scopeClass.getName())));
 
     BuilderMutatorMethodDecorator builderMutatorMethodDecorator = new BuilderMutatorMethodDecorator(glex,
         getMCTypeFacade().createQualifiedType(scopeBuilderName));

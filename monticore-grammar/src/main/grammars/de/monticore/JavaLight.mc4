@@ -1,6 +1,23 @@
 /* (c) https://github.com/MontiCore/monticore */
-
 package de.monticore;
+
+/* Beta-version: This is intended to become a MontiCore stable grammar. */
+
+/**
+ * JavaLight is a subset of Java that MontiCore itself
+ * uses as intermediate language for the code generation process.
+ * JavaLight doesn't provide all forms of classes (e.g. inner classes)
+ * and reduces the type system to normal generic types.
+ *
+ * However, that is suffiecient for representation of all generated
+ * pieces of code that MontiCore wants to make.
+ *
+ * JavaLight can be used for other generator tools as well,
+ * especially as core template are reusable and new templates
+ * for specific method bodies can be added using MontiCore's
+ * Hook-Mechanisms.
+ *
+*/
 
 component grammar JavaLight extends de.monticore.expressions.CommonExpressions,
                                     de.monticore.expressions.AssignmentExpressions,
@@ -11,14 +28,7 @@ external ExtTypeParameters;
 
 // Type declarations
 interface TypeDeclaration extends ClassMemberDeclaration,
-        InterfaceMemberDeclaration, AnnotationTypeElementDeclaration;
-
-ExtendedBlockStatement extends BlockStatement
-    = LocalVariableDeclaration
-    | MCStatement
-    | TypeDeclaration
-    ;
-
+        InterfaceMemberDeclaration, AnnotationTypeElementDeclaration, MCBlockStatement;
 
 EmptyDeclaration implements TypeDeclaration
     =   ";"
@@ -54,7 +64,7 @@ ConstDeclaration implements InterfaceMemberDeclaration
     ;
 
 ConstantDeclarator
-    =   Name (dim:"[" "]")* "=" VariableInititializerOrExpression
+    =   Name (dim:"[" "]")* "=" VariableInit
     ;
 
 InterfaceMethodDeclaration implements InterfaceMemberDeclaration
@@ -86,11 +96,11 @@ FormalParameterListing
     ;
 
 FormalParameter
-    =   PrimitiveModifier* MCType DeclaratorId
+    =   JavaModifier* MCType DeclaratorId
     ;
 
 LastFormalParameter
-    =   PrimitiveModifier* MCType "..." DeclaratorId
+    =   JavaModifier* MCType "..." DeclaratorId
     ;
 
 // ANNOTATIONS
@@ -112,7 +122,7 @@ ElementValuePair
 interface ElementValue;
 
 ElementValueOrExpr implements AnnotationArguments
-	= ElementValue | Expression;
+    = ElementValue | Expression;
 
 ElementValueArrayInitializer implements ElementValue
     =   "{" (ElementValueOrExpr || ",")* (",")? "}"
@@ -141,7 +151,7 @@ DefaultValue
     ;
 
 CreatorExpression implements Expression <235> =
-	"new" Creator;
+    "new" Creator;
 
 interface Creator ;
 
@@ -158,7 +168,7 @@ ArrayCreator implements Creator
 interface ArrayDimensionSpecifier ;
     
 ArrayDimensionByInitializer implements ArrayDimensionSpecifier
-    =   (dim:"[" "]")+ ArrayInitializer
+    =   (dim:"[" "]")+ ArrayInit
     ;
     
 ArrayDimensionByExpression implements ArrayDimensionSpecifier

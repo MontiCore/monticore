@@ -1,11 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import automaton._ast.ASTAutomaton;
-import automaton._ast.ASTState;
-import automaton._cocos.AutomatonCoCoChecker;
-import automaton._parser.AutomatonParser;
-import automaton._symboltable.*;
-import automaton.cocos.TransitionSourceExists;
+import automata._ast.ASTAutomaton;
+import automata._ast.ASTState;
+import automata._cocos.AutomataCoCoChecker;
+import automata._parser.AutomataParser;
+import automata._symboltable.*;
+import automata.cocos.TransitionSourceExists;
 import de.monticore.ast.ASTNode;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
@@ -25,8 +25,8 @@ import static org.junit.Assert.assertTrue;
 public class TransitionSourceExistsTest {
   
   // setup the language infrastructure
-  AutomatonLanguage lang = new AutomatonLanguage();
-  AutomatonParser parser = new AutomatonParser() ;
+  AutomataLanguage lang = new AutomataLanguage();
+  AutomataParser parser = new AutomataParser() ;
   
   @BeforeClass
   public static void init() {
@@ -61,7 +61,7 @@ public class TransitionSourceExistsTest {
     ).get();
     
     // setup the symbol table
-    AutomatonArtifactScope modelTopScope = createSymbolTable(lang, ast);
+    AutomataArtifactScope modelTopScope = createSymbolTable(lang, ast);
 
     // can be used for resolving names in the model
     Optional<StateSymbol> aSymbol = modelTopScope.resolveState("Simple.A");
@@ -80,10 +80,10 @@ public class TransitionSourceExistsTest {
     ).get();
     
     // setup the symbol table
-    AutomatonArtifactScope modelTopScope = createSymbolTable(lang, ast);
+    AutomataArtifactScope modelTopScope = createSymbolTable(lang, ast);
 
     // setup context condition infrastructure & check
-    AutomatonCoCoChecker checker = new AutomatonCoCoChecker();
+    AutomataCoCoChecker checker = new AutomataCoCoChecker();
     checker.addCoCo(new TransitionSourceExists());
 
     checker.checkAll(ast);
@@ -100,10 +100,10 @@ public class TransitionSourceExistsTest {
     ).get();
     
     // setup the symbol table
-    AutomatonArtifactScope modelTopScope = createSymbolTable(lang, ast);
+    AutomataArtifactScope modelTopScope = createSymbolTable(lang, ast);
 
     // setup context condition infrastructure & check
-    AutomatonCoCoChecker checker = new AutomatonCoCoChecker();
+    AutomataCoCoChecker checker = new AutomataCoCoChecker();
     checker.addCoCo(new TransitionSourceExists());
 
     checker.checkAll(ast);
@@ -122,11 +122,11 @@ public class TransitionSourceExistsTest {
    * @param ast
    * @return
    */
-  public static AutomatonArtifactScope createSymbolTable(AutomatonLanguage lang, ASTAutomaton ast) {
+  public static AutomataArtifactScope createSymbolTable(AutomataLanguage lang, ASTAutomaton ast) {
 
-    AutomatonGlobalScope globalScope = new AutomatonGlobalScope(new ModelPath(), lang);
+    AutomataGlobalScope globalScope = new AutomataGlobalScope(new ModelPath(), lang);
 
-    AutomatonSymbolTableCreatorDelegator symbolTable = lang.getSymbolTableCreator(globalScope);
+    AutomataSymbolTableCreatorDelegator symbolTable = lang.getSymbolTableCreator(globalScope);
     return symbolTable.createFromAST(ast);
   }
 

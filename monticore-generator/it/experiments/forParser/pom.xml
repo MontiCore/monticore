@@ -1,6 +1,6 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <!-- == PROJECT COORDINATES ============================================= -->
@@ -8,7 +8,7 @@
   <parent>
     <groupId>de.monticore</groupId>
     <artifactId>experiments</artifactId>
-    <version>6.0.0</version>
+    <version>6.1.0</version>
   </parent>
 
   <artifactId>forParser</artifactId>
@@ -20,7 +20,7 @@
   <!-- == PROJECT DEPENDENCIES ============================================ -->
 
   <dependencies>
-     <dependency>
+    <dependency>
       <groupId>de.monticore</groupId>
       <artifactId>monticore-runtime</artifactId>
     </dependency>
@@ -35,7 +35,7 @@
       <artifactId>monticore-generator</artifactId>
     </dependency>
 
-	<dependency>
+    <dependency>
       <groupId>de.monticore</groupId>
       <artifactId>monticore-grammar</artifactId>
       <classifier>${grammars.classifier}</classifier>
@@ -74,6 +74,35 @@
       <plugin>
         <groupId>de.monticore.mojo</groupId>
         <artifactId>monticore-maven-plugin</artifactId>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>3.1.1</version>
+        <executions>
+          <execution>
+            <id>copy</id>
+            <phase>process-test-sources</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <artifactItems>
+            <artifactItem>
+              <groupId>de.monticore</groupId>
+              <artifactId>monticore-grammar</artifactId>
+              <classifier>${grammars.classifier}</classifier>
+              <version>6.0.0</version>
+              <type>jar</type>
+              <overWrite>true</overWrite>
+              <outputDirectory>${project.build.directory}</outputDirectory>
+              <destFileName>monticore-grammar-grammars.jar</destFileName>
+            </artifactItem>
+          </artifactItems>
+        </configuration>
       </plugin>
     </plugins>
   </build>

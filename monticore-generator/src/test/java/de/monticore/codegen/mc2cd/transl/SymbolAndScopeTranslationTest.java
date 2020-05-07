@@ -1,9 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.mc2cd.transl;
 
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
 import de.monticore.codegen.mc2cd.TestHelper;
+import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,6 +21,8 @@ public class SymbolAndScopeTranslationTest {
 
   @Before
   public void setUp() {
+    Log.init();
+    Log.enableFailQuick(false);
     symbolCD = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/SymbolAndScopeTranslation.mc4")).get();
   }
@@ -203,5 +207,41 @@ public class SymbolAndScopeTranslationTest {
     assertEquals(1, astType.getModifier().getStereotype().getValueList().size());
     assertEquals("scope", astType.getModifier().getStereotype().getValue(0).getName());
     assertFalse(astType.getModifier().getStereotype().getValue(0).isPresentValue());
+  }
+
+  @Test
+  public void testNoShadowingScopeClass() {
+    ASTCDClass astType = getClassBy("ASTScopeShadowing", symbolCD);
+    assertTrue(astType.isPresentModifier());
+    assertTrue(astType.getModifier().isPresentStereotype());
+    assertEquals(2, astType.getModifier().getStereotype().getValueList().size());
+    assertEquals("scope", astType.getModifier().getStereotype().getValue(0).getName());
+    assertFalse(astType.getModifier().getStereotype().getValue(0).isPresentValue());
+    assertEquals("shadowing", astType.getModifier().getStereotype().getValue(1).getName());
+    assertFalse(astType.getModifier().getStereotype().getValue(1).isPresentValue());
+  }
+
+  @Test
+  public void testNoExportingScopeClass() {
+    ASTCDClass astType = getClassBy("ASTScopeNonExporting", symbolCD);
+    assertTrue(astType.isPresentModifier());
+    assertTrue(astType.getModifier().isPresentStereotype());
+    assertEquals(2, astType.getModifier().getStereotype().getValueList().size());
+    assertEquals("scope", astType.getModifier().getStereotype().getValue(0).getName());
+    assertFalse(astType.getModifier().getStereotype().getValue(0).isPresentValue());
+    assertEquals("non_exporting", astType.getModifier().getStereotype().getValue(1).getName());
+    assertFalse(astType.getModifier().getStereotype().getValue(1).isPresentValue());
+  }
+
+  @Test
+  public void testOrderedScopeClass() {
+    ASTCDClass astType = getClassBy("ASTScopeOrdered", symbolCD);
+    assertTrue(astType.isPresentModifier());
+    assertTrue(astType.getModifier().isPresentStereotype());
+    assertEquals(2, astType.getModifier().getStereotype().getValueList().size());
+    assertEquals("scope", astType.getModifier().getStereotype().getValue(0).getName());
+    assertFalse(astType.getModifier().getStereotype().getValue(0).isPresentValue());
+    assertEquals("ordered", astType.getModifier().getStereotype().getValue(1).getName());
+    assertFalse(astType.getModifier().getStereotype().getValue(1).isPresentValue());
   }
 }

@@ -61,6 +61,7 @@ public class GrammarCoCos {
     checker.addCoCo(new SymbolProdOverwrittenBySymbol());
     checker.addCoCo(new ScopeProdOverwrittenByScope());
     checker.addCoCo(new UniqueProdNameInGrammar());
+    checker.addCoCo(new ProdExtendsNotExistingProd());
     // checker.addCoCo(new NoNTInheritanceCycle());
 
     return checker;

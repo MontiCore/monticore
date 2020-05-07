@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._symboltable.symbol;
 
 import de.monticore.cd.cd4analysis._ast.*;
@@ -27,11 +28,13 @@ public class SymbolResolvingDelegateInterfaceDecorator extends AbstractCreator<A
     String symbolResolvingDelegateInterface = symbolTableService.getSymbolResolvingDelegateInterfaceSimpleName(input);
     String symbolFullName = symbolTableService.getSymbolFullName(input);
     String symbolSimpleName = symbolTableService.getSymbolSimpleName(input);
-
+    ASTModifier modifier = input.isPresentModifier() ?
+        symbolTableService.createModifierPublicModifier(input.getModifier()):
+        PUBLIC.build();
 
     return CD4AnalysisMill.cDInterfaceBuilder()
         .setName(symbolResolvingDelegateInterface)
-        .setModifier(PUBLIC.build())
+        .setModifier(modifier)
         .addCDMethod(createResolveAdaptedStateSymbol(symbolFullName, symbolSimpleName))
         .build();
   }

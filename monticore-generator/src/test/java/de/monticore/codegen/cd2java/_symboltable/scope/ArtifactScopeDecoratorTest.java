@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._symboltable.scope;
 
 import com.github.javaparser.JavaParser;
@@ -8,15 +9,14 @@ import de.monticore.cd.facade.CDModifier;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
+import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.types.MCTypeFacade;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
@@ -63,7 +63,7 @@ public class ArtifactScopeDecoratorTest extends DecoratorTestCase {
     this.glex = new GlobalExtensionManagement();
     this.MCTypeFacade = MCTypeFacade.getInstance();
 
-    this.glex.setGlobalValue("astHelper", new DecorationHelper());
+    this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
@@ -71,7 +71,7 @@ public class ArtifactScopeDecoratorTest extends DecoratorTestCase {
 
     ArtifactScopeDecorator decorator = new ArtifactScopeDecorator(this.glex,
         new SymbolTableService(decoratedCompilationUnit),new VisitorService(decoratedCompilationUnit),
-        new MethodDecorator(glex));
+        new MethodDecorator(glex, new SymbolTableService(decoratedCompilationUnit)));
 
     //creates normal Symbol
     this.scopeClass = decorator.decorate(decoratedCompilationUnit);
@@ -312,7 +312,7 @@ public class ArtifactScopeDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals("de.monticore.codegen.ast.automaton._visitor.AutomatonScopeVisitor", method.getCDParameter(0).getMCType());
+    assertDeepEquals("de.monticore.codegen.ast.automaton._visitor.AutomatonVisitor", method.getCDParameter(0).getMCType());
     assertEquals("visitor", method.getCDParameter(0).getName());
   }
 

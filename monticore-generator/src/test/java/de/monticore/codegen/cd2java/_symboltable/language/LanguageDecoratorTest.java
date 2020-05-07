@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._symboltable.language;
 
 import com.github.javaparser.JavaParser;
@@ -7,10 +8,10 @@ import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
+import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._parser.ParserService;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
@@ -20,10 +21,10 @@ import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
 
+import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
-import static de.monticore.cd.facade.CDModifier.*;
 import static org.junit.Assert.*;
 
 public class LanguageDecoratorTest extends DecoratorTestCase {
@@ -43,14 +44,14 @@ public class LanguageDecoratorTest extends DecoratorTestCase {
   public void setUp() {
     Log.init();
     this.glex = new GlobalExtensionManagement();
-    this.glex.setGlobalValue("astHelper", new DecorationHelper());
+    this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
 
     LanguageDecorator decorator = new LanguageDecorator(this.glex,
-        new SymbolTableService(decoratedCompilationUnit), new ParserService(decoratedCompilationUnit), new AccessorDecorator(glex));
+        new SymbolTableService(decoratedCompilationUnit), new ParserService(decoratedCompilationUnit), new AccessorDecorator(glex, new SymbolTableService(decoratedCompilationUnit)));
 
     //creates normal Symbol
     decorator.setLanguageTop(false);
@@ -77,7 +78,7 @@ public class LanguageDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterfaces() {
-    assertDeepEquals("de.monticore.IModelingLanguage<AutomatonModelLoader>", languageClass.getInterface(0));
+    assertDeepEquals("de.monticore.IModelingLanguage", languageClass.getInterface(0));
   }
 
   @Test
@@ -182,10 +183,10 @@ public class LanguageDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = getMethodBy("getSymbolTableCreator", languageClass);
 
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.AutomatonSymbolTableCreatorDelegator", method.getMCReturnType().getMCType());
+    assertDeepEquals("AutomatonSymbolTableCreatorDelegator", method.getMCReturnType().getMCType());
 
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.IAutomatonGlobalScope", method.getCDParameter(0).getMCType());
+    assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.AutomatonGlobalScope", method.getCDParameter(0).getMCType());
     assertEquals("enclosingScope", method.getCDParameter(0).getName());
   }
 

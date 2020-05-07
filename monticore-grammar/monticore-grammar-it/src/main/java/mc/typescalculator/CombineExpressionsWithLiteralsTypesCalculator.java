@@ -1,22 +1,17 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.typescalculator;
 
-import de.monticore.ast.ASTNode;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.types.check.*;
 import mc.typescalculator.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsDelegatorVisitor;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpressionsWithLiteralsDelegatorVisitor implements ITypesCalculator {
 
   private CombineExpressionsWithLiteralsDelegatorVisitor realThis;
-
-  private Map<ASTNode, SymTypeExpression> types;
 
   private DeriveSymTypeOfAssignmentExpressions assignmentExpressionTypesCalculator;
 
@@ -62,7 +57,6 @@ public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpres
     commonLiteralsTypesCalculator = new DeriveSymTypeOfMCCommonLiterals();
     commonExpressionTypesCalculator.setLastResult(lastResult);
     setMCCommonLiteralsVisitor(commonLiteralsTypesCalculator);
-    this.commonLiteralsTypesCalculator=commonLiteralsTypesCalculator;
 
     setLastResult(lastResult);
   }
@@ -73,7 +67,7 @@ public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpres
     if (lastResult.isPresentLast()) {
       last = Optional.ofNullable(lastResult.getLast());
     }
-    lastResult.setLastAbsent();
+    lastResult.reset();
     return last;
   }
 
@@ -84,7 +78,7 @@ public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpres
     if (lastResult.isPresentLast()) {
       last = Optional.ofNullable(lastResult.getLast());
     }
-    lastResult.setLastAbsent();
+    lastResult.reset();
     return last;
   }
 
@@ -119,5 +113,12 @@ public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpres
     expressionsBasisTypesCalculator.setLastResult(lastResult);
     deriveSymTypeOfLiterals.setResult(lastResult);
     commonLiteralsTypesCalculator.setResult(lastResult);
+  }
+
+  public void setPrettyPrinter(IDerivePrettyPrinter prettyPrinter){
+    assignmentExpressionTypesCalculator.setPrettyPrinter(prettyPrinter);
+    commonExpressionTypesCalculator.setPrettyPrinter(prettyPrinter);
+    deriveSymTypeOfBitExpressions.setPrettyPrinter(prettyPrinter);
+    expressionsBasisTypesCalculator.setPrettyPrinter(prettyPrinter);
   }
 }

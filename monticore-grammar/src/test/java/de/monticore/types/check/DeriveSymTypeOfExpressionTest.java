@@ -3,9 +3,11 @@ package de.monticore.types.check;
 
 import com.google.common.collect.Lists;
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
+import de.monticore.expressions.expressionsbasis.ExpressionsBasisMill;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
-import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
+import de.monticore.expressions.prettyprint.CombineExpressionsWithLiteralsPrettyPrinter;
+import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.typesymbols._symboltable.*;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
@@ -13,8 +15,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import static de.monticore.types.check.DefsTypeBasic.*;
 import static org.junit.Assert.assertEquals;
@@ -38,7 +38,7 @@ public class DeriveSymTypeOfExpressionTest {
   public void setupForEach() {
     // Setting up a Scope Infrastructure (without a global Scope)
     scope =
-            ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder()
+        ExpressionsBasisMill.expressionsBasisScopeBuilder()
                     .setEnclosingScope(null)       // No enclosing Scope: Search ending here
                 .setExportingSymbols(true)
                     .setAstNode(null)
@@ -57,9 +57,12 @@ public class DeriveSymTypeOfExpressionTest {
 
     // some FieldSymbols (ie. Variables, Attributes)
     TypeSymbol p = new TypeSymbol("Person");
+    add2scope(scope,p);
     TypeSymbol s = new TypeSymbol("Student");
+    add2scope(scope,s);
     s.setSuperTypeList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Person", scope)));
     TypeSymbol f = new TypeSymbol("FirstSemesterStudent");
+    add2scope(scope,f);
     f.setSuperTypeList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student", scope)));
     add2scope(scope, field("foo", _intSymType));
     add2scope(scope, field("bar2", _booleanSymType));
@@ -93,7 +96,7 @@ public class DeriveSymTypeOfExpressionTest {
   DeriveSymTypeOfExpression derEx = new DeriveSymTypeOfExpression();
 
   // This is an auxiliary
-  DeriveSymTypeOfCombineExpressions derLit = new DeriveSymTypeOfCombineExpressions(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build());
+  DeriveSymTypeOfCombineExpressionsDelegator derLit = new DeriveSymTypeOfCombineExpressionsDelegator(ExpressionsBasisMill.expressionsBasisScopeBuilder().build(), new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter()));
   
   // other arguments not used (and therefore deliberately null)
   

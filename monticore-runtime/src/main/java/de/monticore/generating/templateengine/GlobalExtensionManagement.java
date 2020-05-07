@@ -198,7 +198,7 @@ public class GlobalExtensionManagement {
       return BeansWrapper.getDefaultInstance().unwrap(globalData.get(name));
     }
     catch (TemplateModelException e) {
-      Log.error("0xA0123 Internal Error on global value for \"" + name + "\"");
+      Log.error("0xA0121 Internal Error on global value for \"" + name + "\"");
     }
     return null;
   }
@@ -520,7 +520,7 @@ public class GlobalExtensionManagement {
     Reporting.reportASTSpecificTemplateReplacement(oldTemplate, node, newHp);
 
     Map<ASTNode, HookPoint> replacedTemplates = this.specificReplacement.get(oldTemplate);
-    if (replacedTemplates != null && !replacedTemplates.containsKey(node)) {
+    if (replacedTemplates != null) {
       replacedTemplates.put(node, newHp);
     }
     else {

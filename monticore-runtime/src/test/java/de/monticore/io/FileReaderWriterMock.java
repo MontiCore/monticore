@@ -12,14 +12,14 @@ import com.google.common.collect.Maps;
 import de.monticore.io.FileReaderWriter;
 
 public class FileReaderWriterMock extends FileReaderWriter {
-  
+
   private Map<Path, String> storedFilesAndContents = Maps.newHashMap();
   
   /**
-   * @see de.monticore.io.FileReaderWriter#storeInFile(java.nio.file.Path, String)
+   * @see de.monticore.io.FileReaderWriter#_storeInFile(java.nio.file.Path, String)
    */
   @Override
-  public void storeInFile(Path targetPath, String content) {
+  public void _storeInFile(Path targetPath, String content) {
     storedFilesAndContents.put(targetPath, content);
   }
   

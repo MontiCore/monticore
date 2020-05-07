@@ -12,8 +12,6 @@ import de.monticore.codegen.cd2java._ast.builder.ASTBuilderDecorator;
 import de.monticore.codegen.cd2java._ast.constants.ASTConstantsDecorator;
 import de.monticore.codegen.cd2java._ast.enums.EnumDecorator;
 import de.monticore.codegen.cd2java._ast.factory.NodeFactoryDecorator;
-import de.monticore.codegen.cd2java._ast.mill.MillDecorator;
-import de.monticore.codegen.cd2java._ast.mill.MillForSuperDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 
 import java.util.ArrayList;
@@ -39,10 +37,6 @@ public class ASTCDDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDC
 
   protected final NodeFactoryDecorator nodeFactoryDecorator;
 
-  protected final MillDecorator millDecorator;
-
-  protected final MillForSuperDecorator millForSuperDecorator;
-
   protected final ASTConstantsDecorator astConstantsDecorator;
 
   protected final EnumDecorator enumDecorator;
@@ -54,8 +48,6 @@ public class ASTCDDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDC
                         final ASTLanguageInterfaceDecorator astLanguageInterfaceDecorator,
                         final ASTBuilderDecorator astBuilderDecorator,
                         final NodeFactoryDecorator nodeFactoryDecorator,
-                        final MillDecorator millDecorator,
-                        final MillForSuperDecorator millForSuperDecorator,
                         final ASTConstantsDecorator astConstantsDecorator,
                         final EnumDecorator enumDecorator,
                         final FullASTInterfaceDecorator astInterfaceDecorator) {
@@ -64,8 +56,6 @@ public class ASTCDDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDC
     this.astLanguageInterfaceDecorator = astLanguageInterfaceDecorator;
     this.astBuilderDecorator = astBuilderDecorator;
     this.nodeFactoryDecorator = nodeFactoryDecorator;
-    this.millDecorator = millDecorator;
-    this.millForSuperDecorator = millForSuperDecorator;
     this.astConstantsDecorator = astConstantsDecorator;
     this.enumDecorator = enumDecorator;
     this.astInterfaceDecorator = astInterfaceDecorator;
@@ -81,8 +71,6 @@ public class ASTCDDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDC
         .addAllCDClasss(createASTClasses(ast))
         .addAllCDClasss(createASTBuilderClasses(ast))
         .addCDClass(createNodeFactoryClass(ast))
-        .addCDClass(createMillClass(ast))
-        .addAllCDClasss(createMillForSuperClasses(ast))
         .addCDClass(createASTConstantsClass(ast))
         .addAllCDInterfaces(createASTInterfaces(ast))
         .addCDInterface(createLanguageInterface(ast))
@@ -92,17 +80,23 @@ public class ASTCDDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDC
     // change the package and add deprecated annotations to all classes, interfaces, enums
     for (ASTCDClass cdClass : astCD.getCDClassList()) {
       this.replaceTemplate(PACKAGE, cdClass, createPackageHookPoint(astPackage));
-      this.replaceTemplate(ANNOTATIONS, cdClass, createAnnotationsHookPoint(cdClass.getModifierOpt()));
+      if (cdClass.isPresentModifier()) {
+        this.replaceTemplate(ANNOTATIONS, cdClass, createAnnotationsHookPoint(cdClass.getModifier()));
+      }
     }
 
     for (ASTCDInterface cdInterface : astCD.getCDInterfaceList()) {
       this.replaceTemplate(CoreTemplates.PACKAGE, cdInterface, createPackageHookPoint(astPackage));
-      this.replaceTemplate(ANNOTATIONS, cdInterface, createAnnotationsHookPoint(cdInterface.getModifierOpt()));
+      if (cdInterface.isPresentModifier()) {
+        this.replaceTemplate(ANNOTATIONS, cdInterface, createAnnotationsHookPoint(cdInterface.getModifier()));
+      }
     }
 
     for (ASTCDEnum cdEnum : astCD.getCDEnumList()) {
       this.replaceTemplate(CoreTemplates.PACKAGE, cdEnum, createPackageHookPoint(astPackage));
-      this.replaceTemplate(ANNOTATIONS, cdEnum, createAnnotationsHookPoint(cdEnum.getModifierOpt()));
+      if (cdEnum.isPresentModifier()) {
+        this.replaceTemplate(ANNOTATIONS, cdEnum, createAnnotationsHookPoint(cdEnum.getModifier()));
+      }
     }
 
     return CD4AnalysisMill.cDCompilationUnitBuilder()
@@ -137,14 +131,6 @@ public class ASTCDDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDC
 
   protected ASTCDClass createNodeFactoryClass(final ASTCDCompilationUnit ast) {
     return nodeFactoryDecorator.decorate(ast);
-  }
-
-  protected ASTCDClass createMillClass(final ASTCDCompilationUnit ast) {
-    return millDecorator.decorate(ast);
-  }
-
-  protected List<ASTCDClass> createMillForSuperClasses(final ASTCDCompilationUnit ast) {
-    return millForSuperDecorator.decorate(ast);
   }
 
   protected ASTCDClass createASTConstantsClass(final ASTCDCompilationUnit ast) {

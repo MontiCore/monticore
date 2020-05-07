@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._symboltable.modelloader;
 
 import de.monticore.cd.cd4analysis._ast.*;
@@ -15,9 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
-import static de.monticore.cd.facade.CDModifier.*;
 
 /**
  * creates modelLoader class from grammar if the grammar has a start prod
@@ -44,11 +45,11 @@ public class ModelLoaderDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     if (startProdAstFullName.isPresent()) {
       String astFullName = startProdAstFullName.get();
       String modelLoaderClassName = symbolTableService.getModelLoaderClassSimpleName();
-      String globalScopeInterfaceName = symbolTableService.getGlobalScopeInterfaceFullName();
+      String globalScopeName = symbolTableService.getGlobalScopeFullName();
       String languageClassName = symbolTableService.getLanguageClassFullName();
 
       ASTMCGenericType iModelLoader = getMCTypeFacade().createBasicGenericTypeOf(
-          I_MODEL_LOADER, astFullName, globalScopeInterfaceName);
+          I_MODEL_LOADER, astFullName, globalScopeName);
 
 
       ASTCDAttribute modelingLanguageAttribute = createModelingLanguageAttribute(languageClassName);
@@ -61,7 +62,7 @@ public class ModelLoaderDecorator extends AbstractCreator<ASTCDCompilationUnit, 
           .addCDAttribute(modelingLanguageAttribute)
           .addAllCDMethods(modelingLanguageMethods)
           .addCDAttribute(createAStProviderAttribute(astFullName))
-          .addAllCDMethods(createModelLoaderMethod(astFullName, globalScopeInterfaceName, modelLoaderClassName))
+          .addAllCDMethods(createModelLoaderMethod(astFullName, globalScopeName, modelLoaderClassName))
           .build();
       return Optional.ofNullable(modelLoaderClass);
     }
@@ -71,7 +72,7 @@ public class ModelLoaderDecorator extends AbstractCreator<ASTCDCompilationUnit, 
   protected ASTCDConstructor createConstructor(String modelLoaderName, String languageName) {
     ASTCDParameter language = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(languageName), "language");
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), modelLoaderName, language);
-    this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint(TEMPLATE_PATH + "Constructor"));
+    this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint(TEMPLATE_PATH + "ConstructorModelLoader"));
     return constructor;
   }
 
@@ -118,8 +119,12 @@ public class ModelLoaderDecorator extends AbstractCreator<ASTCDCompilationUnit, 
 
     ASTCDMethod createSymbolTableFromAST = getCDMethodFacade().createMethod(PUBLIC, "createSymbolTableFromAST",
         astParam, modelNameParam, enclosingScopeParam);
+    String generatedErrorCode = symbolTableService.getGeneratedErrorCode(modelLoader + createSymbolTableFromAST.getName());
+    String generatedErrorCode2 = symbolTableService.getGeneratedErrorCode(modelLoader + createSymbolTableFromAST.getName() + 2);
+
     this.replaceTemplate(EMPTY_BODY, createSymbolTableFromAST, new TemplateHookPoint(
-        TEMPLATE_PATH + "CreateSymbolTableFromAST", symbolTableCreatorDelegator, modelLoader, scopeInterface, artifactScope));
+        TEMPLATE_PATH + "CreateSymbolTableFromAST", symbolTableCreatorDelegator, modelLoader,
+        scopeInterface, artifactScope, generatedErrorCode, generatedErrorCode2));
     return createSymbolTableFromAST;
   }
 

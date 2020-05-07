@@ -5,7 +5,6 @@ import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
 import de.monticore.codegen.cd2java.AbstractCreator;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
@@ -67,8 +66,7 @@ public abstract class ListMethodDecorator extends AbstractCreator<ASTCDAttribute
   }
 
   public String getCapitalizedAttributeNameWithS(ASTCDAttribute attribute) {
-    //todo find better util than the DecorationHelper
-    return StringUtils.capitalize(DecorationHelper.getNativeAttributeName(attribute.getName()));
+    return StringUtils.capitalize(getDecorationHelper().getNativeAttributeName(attribute.getName()));
   }
 
   public String getAttributeType(ASTCDAttribute attribute) {

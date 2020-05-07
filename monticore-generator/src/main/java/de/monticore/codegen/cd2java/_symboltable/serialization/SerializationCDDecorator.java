@@ -1,9 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._symboltable.serialization;
 
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4code._ast.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractDecorator;
-import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 

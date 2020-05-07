@@ -9,24 +9,24 @@ import de.monticore.cd.facade.CDModifier;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
+import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.builder.BuilderDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
-import de.monticore.types.MCTypeFacade;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.types.MCTypeFacade;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
+import static de.monticore.cd.facade.CDModifier.PROTECTED;
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertBoolean;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
-import static de.monticore.cd.facade.CDModifier.PROTECTED;
-import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static org.junit.Assert.*;
 
 public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
@@ -55,10 +55,10 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
     ASTCDClass cdClass = getClassBy("ASymbol", ast);
     this.glex.setGlobalValue("service", new AbstractService(ast));
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
-    this.glex.setGlobalValue("astHelper", new DecorationHelper());
+    this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
 
 
-    AccessorDecorator methodDecorator = new AccessorDecorator(glex);
+    AccessorDecorator methodDecorator = new AccessorDecorator(glex, new SymbolTableService(ast));
     BuilderDecorator builderDecorator = new BuilderDecorator(glex, methodDecorator, new SymbolTableService(ast));
     SymbolBuilderDecorator astNodeBuilderDecorator = new SymbolBuilderDecorator(glex, builderDecorator);
     this.builderClass = astNodeBuilderDecorator.decorate(cdClass);
@@ -87,7 +87,7 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
   @Test
   public void testDefaultConstructor() {
     ASTCDConstructor cdConstructor = builderClass.getCDConstructor(0);
-    assertDeepEquals(PROTECTED, cdConstructor.getModifier());
+    assertDeepEquals(PUBLIC, cdConstructor.getModifier());
     assertEquals("ASymbolBuilder", cdConstructor.getName());
     assertTrue(cdConstructor.isEmptyCDParameters());
     assertTrue(cdConstructor.isEmptyExceptions());

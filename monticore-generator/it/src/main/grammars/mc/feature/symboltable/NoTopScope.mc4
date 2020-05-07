@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package mc.feature.symboltable;
+
+grammar NoTopScope extends mc.common.Basics {
+
+  // only defines a symbol and NO SCOPE!
+  // special case, because most of our languages have a start prod which is a scope spanning symbol
+  symbol Foo = Name "{" Bar* "}";
+
+  Bar = "test" Name;
+
+
+}

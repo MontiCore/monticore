@@ -8,9 +8,9 @@ import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
+import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
@@ -19,10 +19,10 @@ import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
-import static de.monticore.codegen.cd2java.DecoratorAssert.*;
-import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java.DecoratorAssert.*;
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
 import static org.junit.Assert.*;
 
 public class DataDecoratorTest extends DecoratorTestCase {
@@ -40,14 +40,14 @@ public class DataDecoratorTest extends DecoratorTestCase {
     this.glex.setGlobalValue("service", new AbstractService(cd));
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
 
-    MethodDecorator methodDecorator = new MethodDecorator(glex);
+    MethodDecorator methodDecorator = new MethodDecorator(glex,new ASTService(cd));
     DataDecorator dataDecorator = new DataDecorator(this.glex, methodDecorator, new ASTService(cd), new DataDecoratorUtil());
     ASTCDClass changedClass = CD4AnalysisMill.cDClassBuilder().setName(clazz.getName())
         .setModifier(clazz.getModifier())
         .build();
     this.dataClass = dataDecorator.decorate(clazz, changedClass);
 
-    this.glex.setGlobalValue("astHelper", new DecorationHelper());
+    this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
   }
 
   @Test
@@ -256,14 +256,14 @@ public class DataDecoratorTest extends DecoratorTestCase {
 
     ASTCDClass clazz = getClassBy("ASTAutomaton", cd);
 
-    MethodDecorator methodDecorator = new MethodDecorator(glex);
+    MethodDecorator methodDecorator = new MethodDecorator(glex, new ASTService(cd));
     DataDecorator dataDecorator = new DataDecorator(glex, methodDecorator, new ASTService(cd), new DataDecoratorUtil());
     ASTCDClass changedClass = CD4AnalysisMill.cDClassBuilder().setName(clazz.getName())
         .setModifier(clazz.getModifier())
         .build();
     clazz = dataDecorator.decorate(clazz, changedClass);
 
-    glex.setGlobalValue("astHelper", new DecorationHelper());
+    glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
     GeneratorSetup generatorSetup = new GeneratorSetup();
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);

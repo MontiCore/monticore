@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._symboltable.language;
 
 import com.github.javaparser.JavaParser;
@@ -7,10 +8,10 @@ import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
+import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.builder.BuilderDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
@@ -40,14 +41,14 @@ public class LanguageBuilderDecoratorTest extends DecoratorTestCase {
     Log.init();
     this.glex = new GlobalExtensionManagement();
 
-    this.glex.setGlobalValue("astHelper", new DecorationHelper());
+    this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "cdForBuilder", "Language_Builder");
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
 
     LanguageBuilderDecorator decorator = new LanguageBuilderDecorator(this.glex,
-        new BuilderDecorator(glex, new AccessorDecorator(glex), new SymbolTableService(decoratedCompilationUnit)));
+        new BuilderDecorator(glex, new AccessorDecorator(glex, new SymbolTableService(decoratedCompilationUnit)), new SymbolTableService(decoratedCompilationUnit)));
     ASTCDClass cdClass = getClassBy("ALanguage", decoratedCompilationUnit);
     //creates normal Symbol
     this.builderClass = decorator.decorate(cdClass);
@@ -82,7 +83,7 @@ public class LanguageBuilderDecoratorTest extends DecoratorTestCase {
   @Test
   public void testDefaultConstructor() {
     ASTCDConstructor cdConstructor = builderClass.getCDConstructor(0);
-    assertDeepEquals(PROTECTED, cdConstructor.getModifier());
+    assertDeepEquals(PUBLIC, cdConstructor.getModifier());
     assertEquals("ALanguageBuilder", cdConstructor.getName());
 
     assertTrue(cdConstructor.isEmptyCDParameters());

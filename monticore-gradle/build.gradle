@@ -5,7 +5,7 @@ plugins {
   id 'maven-publish'
 //  id 'cz.malohlava.visteg' version '1.0.5'  // produces a task graph visualization
 }
-version = "6.0.0"
+version = "6.1.0"
 group = "de.monticore"
 
 repositories {
@@ -18,10 +18,10 @@ repositories {
 }
 
 dependencies {
-  compile gradleApi()
-  compile localGroovy()
-  compile group: 'de.monticore', name: 'monticore-cli', version: "$version"
-  compile group: 'de.monticore', name: 'monticore-generator', version: "$version"
+  implementation gradleApi()
+  implementation localGroovy()
+  implementation group: 'de.monticore', name: 'monticore-cli', version: "$version"
+  implementation group: 'de.monticore', name: 'monticore-generator', version: "$version"
 }
 
 gradlePlugin.plugins {

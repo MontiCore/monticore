@@ -3,7 +3,6 @@
 package de.monticore.codegen.parser;
 
 import com.google.common.base.Joiner;
-import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.parser.antlr.AntlrTool;
 import de.monticore.codegen.parser.antlr.Grammar2Antlr;
@@ -39,11 +38,13 @@ public class ParserGenerator {
    * @param astGrammar - grammar AST
    * @param targetDir - target file
    */
-  public static void generateFullParser(GlobalExtensionManagement glex,
-                                        ASTMCGrammar astGrammar,
-                                        Grammar_WithConceptsGlobalScope symbolTable,
-                                        IterablePath handcodedPath,
-                                        File targetDir) {
+  public static void generateFullParser(
+          GlobalExtensionManagement glex,
+          ASTMCGrammar astGrammar,
+          Grammar_WithConceptsGlobalScope symbolTable,
+          IterablePath handcodedPath,
+          File targetDir)
+  {
     generateParser(glex, astGrammar, symbolTable, handcodedPath, targetDir);
     generateParserWrapper(glex, astGrammar, symbolTable, handcodedPath, targetDir);
   }
@@ -57,11 +58,12 @@ public class ParserGenerator {
    * @param astGrammar - grammar AST
    * @param targetDir - target file
    */
-  public static void generateParser(GlobalExtensionManagement glex,
-                                    ASTMCGrammar astGrammar,
-                                    Grammar_WithConceptsGlobalScope symbolTable,
-                                    IterablePath handcodedPath,
-                                    File targetDir) {
+  public static void generateParser(
+          GlobalExtensionManagement glex,
+          ASTMCGrammar astGrammar,
+          Grammar_WithConceptsGlobalScope symbolTable,
+          IterablePath handcodedPath,
+          File targetDir) {
     generateParser(glex, astGrammar, symbolTable, handcodedPath, targetDir, true, Languages.JAVA);
   }
 
@@ -75,13 +77,14 @@ public class ParserGenerator {
    * @param targetDir - target file
    * @param embeddedJavaCode - embed Java Code
    */
-  public static void generateParser(GlobalExtensionManagement glex,
-                                    ASTMCGrammar astGrammar,
-                                    Grammar_WithConceptsGlobalScope symbolTable,
-                                    IterablePath handcodedPath,
-                                    File targetDir,
-                                    boolean embeddedJavaCode,
-                                    Languages lang) {
+  public static void generateParser(
+          GlobalExtensionManagement glex,
+          ASTMCGrammar astGrammar,
+          Grammar_WithConceptsGlobalScope symbolTable,
+          IterablePath handcodedPath,
+          File targetDir,
+          boolean embeddedJavaCode,
+          Languages lang) {
     if (astGrammar.isComponent()) {
       Log.info("No parser generation for the grammar " + astGrammar.getName(), LOG);
       return;
@@ -131,9 +134,12 @@ public class ParserGenerator {
    * @param astGrammar - grammar AST
    * @param targetDir - target dir
    */
-  public static void generateParserWrapper(GlobalExtensionManagement glex, ASTMCGrammar astGrammar,
-                                           Grammar_WithConceptsGlobalScope symbolTable,
-                                           IterablePath handcodedPath, File targetDir) {
+  public static void generateParserWrapper(
+          GlobalExtensionManagement glex,
+          ASTMCGrammar astGrammar,
+          Grammar_WithConceptsGlobalScope symbolTable,
+          IterablePath handcodedPath,
+          File targetDir) {
     if (astGrammar.isComponent()) {
       return;
     }
@@ -154,12 +160,12 @@ public class ParserGenerator {
     final GeneratorEngine generator = new GeneratorEngine(setup);
     // Generate wrapper
     String parserWrapperSuffix = TransformationHelper.existsHandwrittenClass(handcodedPath,
-            GeneratorHelper.getDotPackageName(
-                    GeneratorHelper.getPackageName(astGrammar, PARSER_PACKAGE)) + astGrammar.getName()
-                    + PARSER_WRAPPER) ? GeneratorSetup.GENERATED_CLASS_SUFFIX : "";
+        ParserGeneratorHelper.getDotPackageName(
+            ParserGeneratorHelper.getPackageName(astGrammar, PARSER_PACKAGE)) + astGrammar.getName()
+            + PARSER_WRAPPER) ? GeneratorSetup.GENERATED_CLASS_SUFFIX : "";
     final Path path = Paths.get(
-            Names.getPathFromPackage(GeneratorHelper.getPackageName(astGrammar, PARSER_PACKAGE)),
-            astGrammar.getName() + "Parser" + parserWrapperSuffix + ".java");
+        Names.getPathFromPackage(ParserGeneratorHelper.getPackageName(astGrammar, PARSER_PACKAGE)),
+        astGrammar.getName() + "Parser" + parserWrapperSuffix + ".java");
     generator.generate("parser.MCParser", path, astGrammar, astGrammar,
             parserWrapperSuffix, grammarSymbol.getProdsWithInherited().values());
   }

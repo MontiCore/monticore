@@ -1,7 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions;
 
-/* Beta-version: This is intended to become a MontiCore stable grammar. */
+/* This is a MontiCore stable grammar.
+ * Adaptations -- if any -- are conservative. */
 
 /**
  * This grammar defines core interfaces for expressions and the
@@ -16,7 +17,7 @@ package de.monticore.expressions;
  * the reuse of type structures in languages similar to Java
  *
  *
- * This grammar is part of a hierarchy of types, namely
+ * This grammar is part of a hierarchy of expressions, namely
  * * expressions/ExpressionsBasis.mc4
  * * --  expressions/CommonExpressions.mc4
  * * --  --  expressions/JavaClassExpressions.mc4
@@ -27,8 +28,7 @@ package de.monticore.expressions;
  *
 */
 
-component grammar ExpressionsBasis extends de.monticore.MCBasics,
-                                   de.monticore.types.TypeSymbols,
+component grammar ExpressionsBasis extends de.monticore.types.TypeSymbols,
                                    de.monticore.literals.MCLiteralsBasis {
 
   /*=================================================================*/

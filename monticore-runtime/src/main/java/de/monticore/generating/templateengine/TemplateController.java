@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import de.monticore.io.FileReaderWriter;
 import org.apache.commons.io.FilenameUtils;
 
 import com.google.common.base.Strings;
@@ -420,7 +421,7 @@ public class TemplateController {
 
     Reporting.reportFileCreation(qualifiedTemplateName, filePath, ast);
 
-    config.getFileHandler().storeInFile(completeFilePath, content.toString());
+    FileReaderWriter.storeInFile(completeFilePath, content.toString());
 
     Log.debug(completeFilePath + " written successfully!", this.getClass().getName());
 
@@ -584,7 +585,7 @@ public class TemplateController {
       return BeansWrapper.getDefaultInstance().unwrap(data.get(name));
     }
     catch (TemplateModelException e) {
-      Log.error("0xA0124 Could not find value for \"" + name + "\" in template \"" + templatename
+      Log.error("0xA0139 Could not find value for \"" + name + "\" in template \"" + templatename
           + "\"", e);
     }
     return null;

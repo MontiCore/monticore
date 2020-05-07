@@ -82,23 +82,14 @@ public class SymTypeExpressionFactory {
    * @param argument         the argument type (of the elements)
    * @return
    */
-  public static SymTypeArray createTypeArray(TypeSymbolLoader typeSymbolLoader, int dim, SymTypeExpression argument) {
+  public static SymTypeArray createTypeArray(TypeSymbolLoader typeSymbolLoader, int dim,
+      SymTypeExpression argument) {
     return new SymTypeArray(typeSymbolLoader, dim, argument);
   }
 
-  public static SymTypeArray createTypeArray(String name, ITypeSymbolsScope typeSymbolsScope, int dim, SymTypeExpression argument) {
+  public static SymTypeArray createTypeArray(String name, ITypeSymbolsScope typeSymbolsScope,
+      int dim, SymTypeExpression argument) {
     return new SymTypeArray(new TypeSymbolLoader(name, typeSymbolsScope), dim, argument);
-  }
-
-  /**
-   * creates a TypeExpression for primitives, such as "int", for "null", "void" and
-   * also for object types, such as "Person" from a given symbol
-   *
-   * @param typeScope
-   * @return
-   */
-  public static SymTypeExpression createTypeExpression(ITypeSymbolsScope typeScope) {
-    return createTypeExpression(typeScope.getName(), typeScope);
   }
 
   /**
@@ -114,16 +105,18 @@ public class SymTypeExpressionFactory {
     SymTypeExpression o;
     if (typeConstants.containsKey(name)) {
       o = createTypeConstant(name);
-    } else if ("void".equals(name)) {
+    }
+    else if ("void".equals(name)) {
       o = createTypeVoid();
-    } else if ("null".equals(name)) {
+    }
+    else if ("null".equals(name)) {
       o = createTypeOfNull();
-    } else {
+    }
+    else {
       o = createTypeObject(name, type);
     }
     return o;
   }
-
 
   /**
    * createGenerics: for a generic Type
@@ -134,11 +127,13 @@ public class SymTypeExpressionFactory {
     return new SymTypeOfGenerics(typeSymbolLoader);
   }
 
-  public static SymTypeOfGenerics createGenerics(TypeSymbolLoader typeSymbolLoader, List<SymTypeExpression> arguments) {
+  public static SymTypeOfGenerics createGenerics(TypeSymbolLoader typeSymbolLoader,
+      List<SymTypeExpression> arguments) {
     return new SymTypeOfGenerics(typeSymbolLoader, arguments);
   }
 
-  public static SymTypeOfGenerics createGenerics(TypeSymbolLoader typeSymbolLoader, SymTypeExpression... arguments) {
+  public static SymTypeOfGenerics createGenerics(TypeSymbolLoader typeSymbolLoader,
+      SymTypeExpression... arguments) {
     return new SymTypeOfGenerics(typeSymbolLoader, Arrays.asList(arguments));
   }
 
@@ -149,11 +144,14 @@ public class SymTypeExpressionFactory {
     return new SymTypeOfGenerics(new TypeSymbolLoader(name, enclosingScope));
   }
 
-  public static SymTypeOfGenerics createGenerics(String name, ITypeSymbolsScope enclosingScope, List<SymTypeExpression> arguments) {
+  public static SymTypeOfGenerics createGenerics(String name, ITypeSymbolsScope enclosingScope,
+      List<SymTypeExpression> arguments) {
     return new SymTypeOfGenerics(new TypeSymbolLoader(name, enclosingScope), arguments);
   }
 
-  public static SymTypeOfGenerics createGenerics(String name, ITypeSymbolsScope enclosingScope, SymTypeExpression... arguments) {
-    return new SymTypeOfGenerics(new TypeSymbolLoader(name, enclosingScope), Arrays.asList(arguments));
+  public static SymTypeOfGenerics createGenerics(String name, ITypeSymbolsScope enclosingScope,
+      SymTypeExpression... arguments) {
+    return new SymTypeOfGenerics(new TypeSymbolLoader(name, enclosingScope),
+        Arrays.asList(arguments));
   }
 }

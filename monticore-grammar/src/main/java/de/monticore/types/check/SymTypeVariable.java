@@ -1,11 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
-import de.monticore.symboltable.serialization.JsonConstants;
+import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonPrinter;
-import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
-import de.monticore.types.typesymbols._symboltable.TypeVarSymbol;
 
 public class SymTypeVariable extends SymTypeExpression {
 
@@ -39,7 +37,7 @@ public class SymTypeVariable extends SymTypeExpression {
     JsonPrinter jp = new JsonPrinter();
     jp.beginObject();
     // Care: the following String needs to be adapted if the package was renamed
-    jp.member(JsonConstants.KIND, "de.monticore.types.check.SymTypeVariable");
+    jp.member(JsonDeSers.KIND, "de.monticore.types.check.SymTypeVariable");
     jp.member("varName", getVarName());
     jp.endObject();
     return jp.getContent();

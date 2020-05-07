@@ -1,0 +1,27 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+plugins {
+  // provides a convenient way to have multiple test sets
+  id 'org.unbroken-dome.test-sets' version '3.0.0'
+}
+
+dependencies {
+  implementation project(":automaton_experiments")
+}
+
+// create an additional test set called productTest
+testSets{
+  productTest { extendsFrom unitTest }
+}
+
+sourceSets {
+  // add output dir to the sources of productTest
+  productTest.java.srcDirs += ["$buildDir/statepattern" , "$projectDir/src/product/java"]
+}
+
+// let productTest depend on test as test produces code for productTest
+compileProductTestJava.dependsOn(test)
+
+// let check depend on productTest such that it is included in the build
+check.dependsOn(productTest)
+

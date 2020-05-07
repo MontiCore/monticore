@@ -4,6 +4,7 @@ package de.monticore.codegen.cd2java._ast.ast_new;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.CD4AnalysisMill;
+import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.ast_class.*;
 import de.monticore.codegen.cd2java._ast.ast_class.reference.ASTReferenceDecorator;
@@ -12,7 +13,6 @@ import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.data.DataDecorator;
 import de.monticore.codegen.cd2java.data.DataDecoratorUtil;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import org.junit.Before;
@@ -34,7 +34,7 @@ public class ASTFullDecoratorTest extends DecoratorTestCase {
 
   @Before
   public void setup() {
-    this.glex.setGlobalValue("astHelper", new DecorationHelper());
+    this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "AST");
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
     ASTService astService = new ASTService(decoratedCompilationUnit);
@@ -43,9 +43,9 @@ public class ASTFullDecoratorTest extends DecoratorTestCase {
     NodeFactoryService nodeFactoryService = new NodeFactoryService(decoratedCompilationUnit);
     ASTSymbolDecorator astSymbolDecorator = new ASTSymbolDecorator(glex, symbolTableService);
     ASTScopeDecorator astScopeDecorator = new ASTScopeDecorator(glex,  symbolTableService);
-    DataDecorator dataDecorator = new DataDecorator(glex, new MethodDecorator(glex), new ASTService(decoratedCompilationUnit), new DataDecoratorUtil());
+    DataDecorator dataDecorator = new DataDecorator(glex, new MethodDecorator(glex, astService), new ASTService(decoratedCompilationUnit), new DataDecoratorUtil());
     ASTDecorator astDecorator = new ASTDecorator(glex, astService, visitorService, nodeFactoryService,
-        astSymbolDecorator, astScopeDecorator, new MethodDecorator(glex), symbolTableService);
+        astSymbolDecorator, astScopeDecorator, new MethodDecorator(glex, astService), symbolTableService);
     ASTReferenceDecorator astReferencedSymbolDecorator = new ASTReferenceDecorator(glex, symbolTableService);
     ASTFullDecorator fullDecorator = new ASTFullDecorator(dataDecorator, astDecorator, astReferencedSymbolDecorator);
 

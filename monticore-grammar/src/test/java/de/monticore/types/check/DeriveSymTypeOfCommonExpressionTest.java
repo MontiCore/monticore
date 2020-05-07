@@ -1,11 +1,16 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
 import com.google.common.collect.Lists;
 import de.monticore.ast.ASTNode;
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
+import de.monticore.expressions.expressionsbasis.ExpressionsBasisMill;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.*;
+import de.monticore.expressions.prettyprint.CombineExpressionsWithLiteralsPrettyPrinter;
+import de.monticore.expressions.testoclexpressions._ast.ASTExtType;
 import de.monticore.io.paths.ModelPath;
+import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.ImportStatement;
 import de.monticore.types.typesymbols._symboltable.*;
 import de.se_rwth.commons.logging.Log;
@@ -16,9 +21,11 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 import static de.monticore.types.check.DefsTypeBasic.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class DeriveSymTypeOfCommonExpressionTest {
 
@@ -48,9 +55,10 @@ public class DeriveSymTypeOfCommonExpressionTest {
   DeriveSymTypeOfExpression derEx = new DeriveSymTypeOfExpression();
 
   // This is an auxiliary
-  DeriveSymTypeOfCombineExpressions derLit = new DeriveSymTypeOfCombineExpressions(ExpressionsBasisSymTabMill
+  DeriveSymTypeOfCombineExpressionsDelegator derLit = new DeriveSymTypeOfCombineExpressionsDelegator(ExpressionsBasisMill
       .expressionsBasisScopeBuilder()
-      .build());
+      .build(),
+      new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter()));
 
   // other arguments not used (and therefore deliberately null)
 
@@ -84,10 +92,10 @@ public class DeriveSymTypeOfCommonExpressionTest {
   public void testInvalidPlusExpression() throws IOException {
     String s = "3+true";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try {
+    try{
       tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals("0xA0188 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0210"));
     }
   }
 
@@ -111,10 +119,10 @@ public class DeriveSymTypeOfCommonExpressionTest {
   public void testInvalidMinusExpression() throws IOException {
     String s = "3-true";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try {
+    try{
       tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals("0xA0191 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0213"));
     }
   }
 
@@ -138,10 +146,10 @@ public class DeriveSymTypeOfCommonExpressionTest {
   public void testInvalidMultExpression() throws IOException {
     String s = "3*true";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try {
+    try{
       tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals("0xA0189 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0211"));
     }
   }
 
@@ -165,10 +173,10 @@ public class DeriveSymTypeOfCommonExpressionTest {
   public void testInvalidDivideExpression() throws IOException {
     String s = "3/true";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try {
+    try{
       tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals("0xA0190 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0212"));
     }
   }
 
@@ -192,10 +200,10 @@ public class DeriveSymTypeOfCommonExpressionTest {
   public void testInvalidModuloExpression() throws IOException {
     String s = "3%true";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try {
+    try{
       tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals("0xA0192 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0214"));
     }
   }
 
@@ -219,10 +227,10 @@ public class DeriveSymTypeOfCommonExpressionTest {
   public void testInvalidLessEqualExpression() throws IOException {
     String s = "3<=true";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try {
+    try{
       tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals("0xA0193 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0215"));
     }
   }
 
@@ -246,10 +254,10 @@ public class DeriveSymTypeOfCommonExpressionTest {
   public void testInvalidGreaterEqualExpression() throws IOException {
     String s = "3>=true";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try {
+    try{
       tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals("0xA0194 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0216"));
     }
   }
 
@@ -273,10 +281,10 @@ public class DeriveSymTypeOfCommonExpressionTest {
   public void testInvalidLessThanExpression() throws IOException {
     String s = "3<true";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try {
+    try{
       tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals("0xA0195 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0217"));
     }
   }
 
@@ -300,10 +308,10 @@ public class DeriveSymTypeOfCommonExpressionTest {
   public void testInvalidGreaterThanExpression() throws IOException {
     String s = "3>true";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try {
+    try{
       tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals("0xA0196 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0218"));
     }
   }
 
@@ -369,20 +377,24 @@ public class DeriveSymTypeOfCommonExpressionTest {
 
     String s = "3==true";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try {
+    try{
       tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals("0xA0197 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0219"));
     }
+  }
 
-    LogStub.init();
+  @Test
+  public void testInvalidEqualsExpression2() throws IOException{
+    init_basic();
+
     //person1 has the type Person, foo is a boolean
-    s = "person1==foo";
-    astex = p.parse_StringExpression(s).get();
-    try {
+    String s = "person1==foo";
+    ASTExpression astex = p.parse_StringExpression(s).get();
+    try{
       tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals("0xA0197 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0219"));
     }
   }
 
@@ -416,20 +428,23 @@ public class DeriveSymTypeOfCommonExpressionTest {
 
     String s = "3!=true";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try {
+    try{
       tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals("0xA0198 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0220"));
     }
+  }
 
-    LogStub.init();
+  @Test
+  public void testInvalidNotEqualsExpression2() throws IOException{
+    init_basic();
     //person1 is a Person, foo is a boolean
-    s = "person1!=foo";
-    astex = p.parse_StringExpression(s).get();
-    try {
+    String s = "person1!=foo";
+    ASTExpression astex = p.parse_StringExpression(s).get();
+    try{
       tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals("0xA0198 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0220"));
     }
   }
 
@@ -453,10 +468,10 @@ public class DeriveSymTypeOfCommonExpressionTest {
     //only possible with two booleans
     String s = "3&&true";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try {
+    try{
       tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals("0xA0199 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0223"));
     }
   }
 
@@ -480,10 +495,10 @@ public class DeriveSymTypeOfCommonExpressionTest {
     //only possible with two booleans
     String s = "3||true";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try {
+    try{
       tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals("0xA0200 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0226"));
     }
   }
 
@@ -507,10 +522,10 @@ public class DeriveSymTypeOfCommonExpressionTest {
     //only possible with a boolean as inner expression
     String s = "!4";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try {
+    try{
       tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals("0xA0201 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0228"));
     }
   }
 
@@ -543,10 +558,10 @@ public class DeriveSymTypeOfCommonExpressionTest {
     //a cannot be resolved -> a has no type
     String s = "(a)";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try {
+    try{
       tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals("The type of the inner expression cannot be calculated", Log.getFindings().get(0).getMsg());
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0229"));
     }
   }
 
@@ -584,23 +599,24 @@ public class DeriveSymTypeOfCommonExpressionTest {
     //true and 7 are not of the same type
     String s = "3<4?true:7";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try {
+    try{
       tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals("0xA0204 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
-    }
-
-    //3 is not a boolean condition
-    LogStub.init();
-    s = "3?true:false";
-    astex = p.parse_StringExpression(s).get();
-    try {
-      tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals("0xA0204 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0234"));
     }
   }
 
+  @Test
+  public void testInvalidConditionalExpression2() throws IOException {
+    //3 is not a boolean condition
+    String s = "3?true:false";
+    ASTExpression astex = p.parse_StringExpression(s).get();
+    try{
+      tc.typeOf(astex);
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0234"));
+    }
+  }
   /**
    * test BooleanNotExpression
    */
@@ -621,10 +637,10 @@ public class DeriveSymTypeOfCommonExpressionTest {
     //only possible with an integral type (int, long, char, short, byte)
     String s = "~3.4";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try {
+    try{
       tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals("0xA0205 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0236"));
     }
   }
 
@@ -674,20 +690,28 @@ public class DeriveSymTypeOfCommonExpressionTest {
     add2scope(scope, method("isInt", _booleanSymType));
     add2scope(scope, add(method("isInt", _booleanSymType), field("maxLength", _intSymType)));
     FieldSymbol fs = field("variable", _intSymType);
+    fs.setIsStatic(true);
     MethodSymbol ms = method("store", _doubleSymType);
-    MethodSymbol ms1 = add(method("pay", _voidSymType),
-        TypeSymbolsSymTabMill.fieldSymbolBuilder().setName("cost").setType(_intSymType).build()
-    );
-    ExpressionsBasisScope testSpannedScope = scope(scope2, "");
-    testSpannedScope.add(fs);
-    testSpannedScope.add(ms);
-    testSpannedScope.add(ms1);
-    TypeSymbol testType = DefsTypeBasic.type("Test");
-    testType = add(add(add(testType, fs), ms1), ms);
-    testType.setSpannedScope(testSpannedScope);
-    add2scope(scope2, testType);
-    add2scope(scope3, testType);
-    add2scope(scope, testType);
+    ms.setIsStatic(true);
+    MethodSymbol ms1 = add(method("pay", _voidSymType), field("cost",_intSymType));
+    ms1.setIsStatic(true);
+    TypeSymbol testType = type("Test",Lists.newArrayList(ms,ms1),Lists.newArrayList(fs),Lists.newArrayList(),Lists.newArrayList(),scope);
+    TypeSymbol testType2 = type("Test",Lists.newArrayList(ms,ms1),Lists.newArrayList(fs),Lists.newArrayList(),Lists.newArrayList(),scope2);
+    TypeSymbol testType3 = type("Test",Lists.newArrayList(ms,ms1),Lists.newArrayList(fs),Lists.newArrayList(),Lists.newArrayList(),scope3);
+    ExpressionsBasisScope testScope = (ExpressionsBasisScope) testType3.getSpannedScope();
+
+    FieldSymbol testVariable = field("testVariable",_shortSymType);
+    testVariable.setIsStatic(true);
+    TypeSymbol testInnerType = type("TestInnerType",Lists.newArrayList(),Lists.newArrayList(testVariable),Lists.newArrayList(),Lists.newArrayList(),testScope);
+    testInnerType.setIsStatic(true);
+    add2scope(testScope,testInnerType);
+    add2scope(testInnerType.getSpannedScope(),testVariable);
+
+    testType3.setSpannedScope(testScope);
+
+    add2scope(scope2, testType2);
+    add2scope(scope3, testType3);
+    add2scope(scope,testType);
 
     derLit.setScope(scope);
     tc = new TypeCheck(null, derLit);
@@ -724,6 +748,11 @@ public class DeriveSymTypeOfCommonExpressionTest {
     s = "Test";
     astex = p.parse_StringExpression(s).get();
     assertEquals("Test", tc.typeOf(astex).print());
+
+    //test for variable in inner type
+    s="types2.types3.types2.Test.TestInnerType.testVariable";
+    astex = p.parse_StringExpression(s).get();
+    assertEquals("short",tc.typeOf(astex).print());
   }
 
   /**
@@ -770,10 +799,10 @@ public class DeriveSymTypeOfCommonExpressionTest {
     //method isNot() is not in scope -> method cannot be resolved -> method has no return type
     String s = "isNot()";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    try {
+    try{
       tc.typeOf(astex);
-    } catch (RuntimeException e) {
-      assertEquals("0xA0217 The resulting type cannot be calculated", Log.getFindings().get(0).getMsg());
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0240"));
     }
   }
 
@@ -933,7 +962,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     );
     FieldSymbol f1 = field("f1", SymTypeExpressionFactory.createTypeVariable("S", scope));
     FieldSymbol f2 = field("f2", SymTypeExpressionFactory.createTypeVariable("V", scope));
-    TypeSymbol genSup = type("GenSup", Lists.newArrayList(load), Lists.newArrayList(f1, f2),
+    TypeSymbol genSup = type("GenSup", Lists.newArrayList(load,load.deepClone()), Lists.newArrayList(f1, f2),
         Lists.newArrayList(), Lists.newArrayList(t1, t2)
     );
     add2scope(scope, genSup);
@@ -948,7 +977,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     SymTypeExpression genTypeSV = SymTypeExpressionFactory.
         createGenerics("GenSup", scope, Lists.newArrayList(SymTypeExpressionFactory.
             createTypeVariable("S", scope), SymTypeExpressionFactory.createTypeVariable("V", scope)));
-    TypeSymbol genSub = type("GenSub", Lists.newArrayList(), Lists.newArrayList(),
+    TypeSymbol genSub = type("GenSub", Lists.newArrayList(), Lists.newArrayList(f1.deepClone()),
         Lists.newArrayList(genTypeSV.deepClone()), Lists.newArrayList(t1, t2)
     );
     add2scope(scope, genSub);
@@ -971,6 +1000,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
         createGenerics("GenSubSub", scope, Lists.newArrayList(_StringSymType, _intSymType));
     FieldSymbol genSubSubVar = field("genSubSubVar", genSubSubType);
     add2scope(scope, genSubSubVar);
+
 
     derLit.setScope(scope);
     tc = new TypeCheck(null, derLit);
@@ -1364,15 +1394,151 @@ public class DeriveSymTypeOfCommonExpressionTest {
     assertEquals("boolean", tc.typeOf(astex).print());
   }
 
+  public void init_static_example(){
+    //types A and B
+    scope = scope();
+    MethodSymbol atest = method("test",_voidSymType);
+    atest.setIsStatic(true);
+    FieldSymbol afield = field("field",_intSymType);
+    afield.setIsStatic(true);
+    TypeSymbol a = type("A",Lists.newArrayList(atest),Lists.newArrayList(afield),Lists.newArrayList(),Lists.newArrayList(),scope);
+    TypeSymbol aD = type("D",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),(ExpressionsBasisScope) a.getSpannedScope());
+    aD.setIsStatic(true);
+    a.getSpannedScope().add(aD);
+
+    add2scope(scope,a);
+
+    MethodSymbol btest = method("test",_voidSymType);
+    FieldSymbol bfield = field("field",_intSymType);
+    TypeSymbol b = type("B",Lists.newArrayList(btest),Lists.newArrayList(bfield),Lists.newArrayList(),Lists.newArrayList(),scope);
+    TypeSymbol bD = type("D",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(),(ExpressionsBasisScope) b.getSpannedScope());
+    b.getSpannedScope().add(bD);
+
+    add2scope(scope,b);
+    //A has static method test, static field field, static type D
+    //B has normal method test, normal field field, normal type D
+    //type C extends A and has no method, field or type
+    SymTypeExpression aSymType = SymTypeExpressionFactory.createTypeObject("A",scope);
+    TypeSymbol c = type("C",Lists.newArrayList(),Lists.newArrayList(),Lists.newArrayList(aSymType),Lists.newArrayList(),scope);
+    add2scope(scope,c);
+
+    derLit.setScope(scope);
+    tc = new TypeCheck(null,derLit);
+  }
+
+  @Test
+  public void testStaticType() throws IOException {
+    init_static_example();
+
+    Optional<ASTExpression> sType = p.parse_StringExpression("A.D");
+    assertTrue(sType.isPresent());
+    assertEquals("D",tc.typeOf(sType.get()).print());
+  }
+
+  @Test
+  public void testInvalidStaticType() throws IOException {
+    init_static_example();
+
+    Optional<ASTExpression> sType = p.parse_StringExpression("B.D");
+    assertTrue(sType.isPresent());
+    try{
+      tc.typeOf(sType.get());
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0303"));
+    }
+  }
+
+  @Test
+  public void testStaticField() throws IOException {
+    init_static_example();
+
+    Optional<ASTExpression> sField = p.parse_StringExpression("A.field");
+    assertTrue(sField.isPresent());
+    assertEquals("int",tc.typeOf(sField.get()).print());
+  }
+
+  @Test
+  public void testInvalidStaticField() throws IOException {
+    init_static_example();
+
+    Optional<ASTExpression> sField = p.parse_StringExpression("B.field");
+    assertTrue(sField.isPresent());
+    try{
+      tc.typeOf(sField.get());
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0237"));
+    }
+  }
+
+  @Test
+  public void testStaticMethod() throws IOException {
+    init_static_example();
+
+    Optional<ASTExpression> sMethod = p.parse_StringExpression("A.test()");
+    assertTrue(sMethod.isPresent());
+    assertEquals("void",tc.typeOf(sMethod.get()).print());
+  }
+
+  @Test
+  public void testInvalidStaticMethod() throws IOException {
+    init_static_example();
+
+    Optional<ASTExpression> sMethod = p.parse_StringExpression("B.test()");
+    assertTrue(sMethod.isPresent());
+    try{
+      tc.typeOf(sMethod.get());
+    }catch (RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0239"));
+    }
+  }
+
+  @Test
+  public void testSubClassesDoNotKnowStaticMethodsOfSuperClasses() throws IOException{
+    init_static_example();
+
+    Optional<ASTExpression> sMethod = p.parse_StringExpression("C.test()");
+    assertTrue(sMethod.isPresent());
+
+    try{
+      tc.typeOf(sMethod.get());
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0239"));
+    }
+  }
+
+  @Test
+  public void testSubClassesDoNotKnowStaticFieldsOfSuperClasses() throws IOException{
+    init_static_example();
+
+    Optional<ASTExpression> sField = p.parse_StringExpression("C.field");
+    assertTrue(sField.isPresent());
+
+    try{
+      tc.typeOf(sField.get());
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0306"));
+    }
+  }
+
+  //TODO: the same for types
+  @Test
+  public void testSubClassesDoNotKnowStaticTypesOfSuperClasses() throws IOException{
+    init_static_example();
+
+    Optional<ASTExpression> sType = p.parse_StringExpression("C.D");
+    assertTrue(sType.isPresent());
+    //TODO
+  }
+
   /**
    * create a scope (some defaults apply)
    */
   public static ExpressionsBasisScope scope() {
-    return ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
+    return ExpressionsBasisMill.expressionsBasisScopeBuilder().build();
   }
 
   public static ExpressionsBasisScope scope(IExpressionsBasisScope enclosingScope, boolean exportingSymbols, ASTNode astnode, String name) {
-    return ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder()
+    return ExpressionsBasisMill.expressionsBasisScopeBuilder()
         .setEnclosingScope(enclosingScope)
         .setExportingSymbols(exportingSymbols)
         .setAstNode(astnode)
@@ -1381,7 +1547,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
   }
 
   public static ExpressionsBasisScope scope(IExpressionsBasisScope enclosingScope, String name) {
-    return ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder()
+    return ExpressionsBasisMill.expressionsBasisScopeBuilder()
         .setEnclosingScope(enclosingScope)
         .setName(name)
         .build();
@@ -1391,7 +1557,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
    * create a global scope (some defaults apply)
    */
   public static ExpressionsBasisGlobalScope globalScope(ExpressionsBasisLanguage expressionsBasisLanguage, ModelPath modelPath) {
-    return ExpressionsBasisSymTabMill.expressionsBasisGlobalScopeBuilder()
+    return ExpressionsBasisMill.expressionsBasisGlobalScopeBuilder()
         .setExpressionsBasisLanguage(expressionsBasisLanguage)
         .setModelPath(modelPath)
         .build();
@@ -1401,7 +1567,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
    * create an artifact scope (some defaults apply)
    */
   public static ExpressionsBasisArtifactScope artifactScope(IExpressionsBasisScope enclosingScope, List<ImportStatement> importList, String packageName) {
-    return ExpressionsBasisSymTabMill.expressionsBasisArtifactScopeBuilder()
+    return ExpressionsBasisMill.expressionsBasisArtifactScopeBuilder()
         .setEnclosingScope(enclosingScope)
         .setImportList(importList)
         .setPackageName(packageName)

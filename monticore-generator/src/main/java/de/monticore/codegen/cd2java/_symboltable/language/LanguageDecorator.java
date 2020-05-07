@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._symboltable.language;
 
 import de.monticore.cd.cd4analysis._ast.*;
@@ -10,12 +11,14 @@ import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCSetType;
+import de.se_rwth.commons.StringTransformations;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static de.monticore.cd.facade.CDModifier.*;
+import static de.monticore.codegen.cd2java.CoreTemplates.ANNOTATIONS;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 
@@ -52,8 +55,8 @@ public class LanguageDecorator extends AbstractCreator<ASTCDCompilationUnit, AST
   public ASTCDClass decorate(ASTCDCompilationUnit input) {
     String languageClassName = symbolTableService.getLanguageClassSimpleName();
     String modelLoaderClassName = symbolTableService.getModelLoaderClassSimpleName();
-    ASTMCObjectType iModelingLanguage = getMCTypeFacade().createBasicGenericTypeOf(
-        I_MODELING_LANGUAGE, modelLoaderClassName);
+    ASTMCObjectType iModelingLanguage = getMCTypeFacade().createQualifiedType(I_MODELING_LANGUAGE);
+    String symTabMillFullName = symbolTableService.getMillFullName();
 
     List<ASTCDType> symbolDefiningProds = symbolTableService.getSymbolDefiningProds(input.getCDDefinition());
     symbolDefiningProds.addAll(symbolTableService.getSymbolDefiningSuperProds());
@@ -65,9 +68,12 @@ public class LanguageDecorator extends AbstractCreator<ASTCDCompilationUnit, AST
     ASTCDAttribute fileExtensionAttribute = createFileExtensionAttribute();
     List<ASTCDMethod> fileExtensionMethods = accessorDecorator.decorate(fileExtensionAttribute);
 
+    ASTModifier modifier = PUBLIC_ABSTRACT.build();
+    symbolTableService.addDeprecatedStereotype(modifier, Optional.empty());
+
     ASTCDClass languageClass = CD4AnalysisMill.cDClassBuilder()
         .setName(languageClassName)
-        .setModifier(PUBLIC_ABSTRACT.build())
+        .setModifier(modifier)
         .addInterface(iModelingLanguage)
         .addCDConstructor(createConstructor(languageClassName))
         .addCDAttribute(modelLoaderAttribute)
@@ -76,12 +82,13 @@ public class LanguageDecorator extends AbstractCreator<ASTCDCompilationUnit, AST
         .addAllCDMethods(modelLoaderMethods)
         .addAllCDMethods(nameMethods)
         .addAllCDMethods(fileExtensionMethods)
-        .addCDMethod(createGetSymbolTableCreatorMethod())
-        .addCDMethod(createProvideModelLoaderMethod(modelLoaderClassName))
+        .addCDMethod(createGetSymbolTableCreatorMethod(symTabMillFullName))
+        .addCDMethod(createProvideModelLoaderMethod(modelLoaderClassName, symTabMillFullName))
         .addAllCDMethods(createCalculateModelNameMethods(symbolDefiningProds))
         .build();
     Optional<ASTCDMethod> getParserMethod = createGetParserMethod(input.getCDDefinition());
     getParserMethod.ifPresent(languageClass::addCDMethod);
+
     return languageClass;
   }
 
@@ -90,7 +97,7 @@ public class LanguageDecorator extends AbstractCreator<ASTCDCompilationUnit, AST
     ASTCDParameter fileEnding = getCDParameterFacade().createParameter(String.class, "fileEnding");
 
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), languageClassName, langName, fileEnding);
-    this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint(TEMPLATE_PATH + "Constructor"));
+    this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint(TEMPLATE_PATH + "ConstructorLanguage"));
     return constructor;
   }
 
@@ -116,25 +123,26 @@ public class LanguageDecorator extends AbstractCreator<ASTCDCompilationUnit, AST
     return Optional.empty();
   }
 
-  protected ASTCDMethod createGetSymbolTableCreatorMethod() {
-    String symbolTableCreatorDelegatorFullName = symbolTableService.getSymbolTableCreatorDelegatorFullName();
-    String globalScopeInterfaceFullName = symbolTableService.getGlobalScopeInterfaceFullName();
-    ASTCDParameter enclosingScope = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(globalScopeInterfaceFullName), ENCLOSING_SCOPE_VAR);
+  protected ASTCDMethod createGetSymbolTableCreatorMethod(String symTabMillFullName) {
+    String symbolTableCreatorDelegatorName = symbolTableService.getSymbolTableCreatorDelegatorSimpleName();
+    String globalScopeFullName = symbolTableService.getGlobalScopeFullName();
+    ASTCDParameter enclosingScope = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(globalScopeFullName), ENCLOSING_SCOPE_VAR);
 
     ASTCDMethod getSymbolTableCreatorMethod = getCDMethodFacade().createMethod(PUBLIC,
-        getMCTypeFacade().createQualifiedType(symbolTableCreatorDelegatorFullName), "getSymbolTableCreator", enclosingScope);
-    this.replaceTemplate(EMPTY_BODY, getSymbolTableCreatorMethod, new StringHookPoint(" return new " + symbolTableCreatorDelegatorFullName + "(" + ENCLOSING_SCOPE_VAR + ");"));
+        getMCTypeFacade().createQualifiedType(symbolTableCreatorDelegatorName), "getSymbolTableCreator", enclosingScope);
+    this.replaceTemplate(EMPTY_BODY, getSymbolTableCreatorMethod, new StringHookPoint(" return " + symTabMillFullName + "." +
+        StringTransformations.uncapitalize(symbolTableCreatorDelegatorName) + "Builder().setGlobalScope(" + ENCLOSING_SCOPE_VAR + ").build();"));
     return getSymbolTableCreatorMethod;
   }
 
-  protected ASTCDMethod createProvideModelLoaderMethod(String modelLoaderName) {
+  protected ASTCDMethod createProvideModelLoaderMethod(String modelLoaderName, String symTabMillFullName) {
     ASTCDMethod provideModelLoaderMethod = getCDMethodFacade().createMethod(PROTECTED,
         getMCTypeFacade().createQualifiedType(modelLoaderName), "provideModelLoader");
     if (isLanguageTop()) {
       provideModelLoaderMethod.getModifier().setAbstract(true);
     } else {
-      this.replaceTemplate(EMPTY_BODY, provideModelLoaderMethod, new StringHookPoint("return new " + modelLoaderName + "(this);"));
-    }
+      this.replaceTemplate(EMPTY_BODY, provideModelLoaderMethod, new StringHookPoint("return " + symTabMillFullName + "." +
+          StringTransformations.uncapitalize(modelLoaderName) + "Builder().setModelingLanguage(this).build();"));    }
     return provideModelLoaderMethod;
   }
 

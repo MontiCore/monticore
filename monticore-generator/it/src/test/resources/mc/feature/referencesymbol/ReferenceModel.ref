@@ -1,18 +1,20 @@
 begin ReferenceTest {
   symbol A;
-  ref A ;
   symbol B;
   symbol C;
+
+  ref A ;
   ref B;
+  ref Z;
 
   optRef A;
+  optRef Z;
 
   noRef a;
   noRef A;
 
   listRef A B C;
-
   listRef ;
-
   listRef A B C D;
+  listRef X Y Z;
 } end

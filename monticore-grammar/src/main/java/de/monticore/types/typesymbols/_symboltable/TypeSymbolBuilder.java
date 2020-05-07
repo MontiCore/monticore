@@ -15,7 +15,7 @@ import java.util.stream.Stream;
 public  class TypeSymbolBuilder extends TypeSymbolBuilderTOP {
 
 
-protected TypeSymbolBuilder()  {
+public TypeSymbolBuilder()  {
    this.realBuilder = (TypeSymbolBuilder) this;
 }
 

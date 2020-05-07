@@ -10,6 +10,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.util.Optional;
 
+import mc.examples.lwc.odl.odl.ODLMill;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
@@ -17,7 +18,6 @@ import com.google.common.collect.Lists;
 import mc.GeneratorIntegrationsTest;
 import mc.examples.lwc.odl.odl._ast.ASTInstances;
 import mc.examples.lwc.odl.odl._ast.ASTODLCompilationUnit;
-import mc.examples.lwc.odl.odl._ast.ODLMill;
 import mc.examples.lwc.odl.odl._parser.ODLParser;
 
 public class TestODL extends GeneratorIntegrationsTest {

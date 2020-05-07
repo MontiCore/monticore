@@ -4,12 +4,11 @@
 // concrete type of the element.
 // Instead we double-dispatch the call, to call the correctly typed
 // traverse(...) method with the elements concrete type.
-${tc.signature("cdClass")}
+${tc.signature("cdClass", "isScopeSpanning")}
 <#assign genHelper = glex.getGlobalVar("astHelper")>
-<#assign service = glex.getGlobalVar("service")>
 
 <#list cdClass.getCDAttributeList() as attr>
-  <#assign attrName = service.getNativeAttributeName(attr.getName())>
+  <#assign attrName = genHelper.getNativeAttributeName(attr.getName())>
   <#if genHelper.isSimpleAstNode(attr) || genHelper.isOptionalAstNode(attr) >
     <#assign attrGetter = "get"+ attrName?cap_first>
     <#if genHelper.isOptional(attr.getMCType())>
@@ -23,7 +22,7 @@ ${tc.signature("cdClass")}
     </#if>
   <#elseif genHelper.isListAstNode(attr)>
     <#assign attrGetter = "get"+ attrName?remove_ending("s")?cap_first + "List">
-    <#assign astChildTypeName = genHelper.getAstClassNameForASTLists(attr)>
+    <#assign astChildTypeName = genHelper.getNativeTypeName(attr.getMCType())>
     {
       Iterator<${astChildTypeName}> iter_${attrName} = node.${attrGetter}().iterator();
       while (iter_${attrName}.hasNext()) {
@@ -32,3 +31,12 @@ ${tc.signature("cdClass")}
     }
   </#if>
 </#list>
+
+<#if isScopeSpanning>
+    // although we generally assume that the symbol table is always available,
+    // there are cases, where this is not true (for example construction of the
+    // symbol table itself. Thus, the null-check is necessary.
+    if (node.getSpannedScope() != null) {
+      node.getSpannedScope().accept(getRealThis());
+    }
+</#if>

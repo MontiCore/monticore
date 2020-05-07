@@ -1,10 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
-import de.monticore.symboltable.serialization.JsonConstants;
+import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonPrinter;
-import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
-import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
 import de.se_rwth.commons.logging.Log;
 
@@ -32,13 +30,8 @@ public class SymTypeConstant extends SymTypeExpression {
     return parts[parts.length - 1];
   }
 
-  public void setConstName(String constName) {
-    String c = unbox(constName);
-    if (primitiveTypes.contains(constName)) {
-      this.typeSymbolLoader.setName(constName);
-    } else {
-      Log.error("0xD34B2 Only primitive types allowed (" + primitiveTypes.toString() + "), but was:" + constName);
-    }
+  public void setConstName(String constName){
+    typeSymbolLoader.setName(constName);
   }
 
   /**
@@ -56,7 +49,7 @@ public class SymTypeConstant extends SymTypeExpression {
     JsonPrinter jp = new JsonPrinter();
     jp.beginObject();
     // Care: the following String needs to be adapted if the package was renamed
-    jp.member(JsonConstants.KIND, "de.monticore.types.check.SymTypeConstant");
+    jp.member(JsonDeSers.KIND, "de.monticore.types.check.SymTypeConstant");
     jp.member("constName", getConstName());
     jp.endObject();
     return jp.getContent();
@@ -104,7 +97,6 @@ public class SymTypeConstant extends SymTypeExpression {
     unboxMap.put("Long", "long");
     unboxMap.put("Float", "float");
     unboxMap.put("Double", "double");
-    unboxMap.put("String", "String");
 
     boxMap = new HashMap<String, String>();
     boxMap.put("boolean", "java.lang.Boolean");

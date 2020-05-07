@@ -1,6 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.prettyprint;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.expressions.javaclassexpressions.JavaClassExpressionsMill;
 import de.monticore.expressions.javaclassexpressions._ast.*;
 import de.monticore.expressions.testjavaclassexpressions._ast.ASTExtType;
 import de.monticore.expressions.testjavaclassexpressions._parser.TestJavaClassExpressionsParser;
@@ -95,7 +97,7 @@ public class JavaClassExpressionsPrettyPrinterTest {
 
   @Test
   public void testPrimaryGenericInvocationExpressionExpression() throws IOException {
-    Optional<ASTPrimaryGenericInvocationExpression> result = parser.parse_StringPrimaryGenericInvocationExpression("Integer super(a)");
+    Optional<ASTPrimaryGenericInvocationExpression> result = parser.parse_StringPrimaryGenericInvocationExpression("<Integer> super(a)");
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
     ASTPrimaryGenericInvocationExpression ast = result.get();
@@ -104,7 +106,7 @@ public class JavaClassExpressionsPrettyPrinterTest {
 
     // does not print 'Integer' because functionality for type printing has to be added over delegation form
     // prettyprinter of langauge that fills the external
-    assertEquals(" super(a)", output);
+    assertEquals("<> super(a)", output);
   }
 
   @Test
@@ -175,7 +177,7 @@ public class JavaClassExpressionsPrettyPrinterTest {
   @Test
   public void testGenericInvocationExpressionExpression() throws IOException {
     Optional<ASTExpression> a = parser.parse_StringExpression("a");
-    Optional<ASTPrimaryGenericInvocationExpression> b = parser.parse_StringPrimaryGenericInvocationExpression("a.d c(b)");
+    Optional<ASTPrimaryGenericInvocationExpression> b = parser.parse_StringPrimaryGenericInvocationExpression("<D> c(b)");
     assertFalse(parser.hasErrors());
     assertTrue(a.isPresent());
     assertTrue(b.isPresent());
@@ -188,7 +190,7 @@ public class JavaClassExpressionsPrettyPrinterTest {
 
     // does not print 'd' because functionality for type printing has to be added over delegation form
     // prettyprinter of langauge that fills the external
-    assertEquals("a. c(b)", output);
+    assertEquals("a.<> c(b)", output);
   }
 
   @Test

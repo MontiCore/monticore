@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.grammar.cocos;
 
 import de.monticore.grammar.grammar._ast.*;
@@ -50,29 +51,52 @@ public class NoNestedGenericsInAdditionalAttributes implements GrammarASTMCGramm
       ASTMCType mcType = astAdditionalAttribute.getMCType();
 
       if (mcType instanceof ASTMCGenericType) {
-        if (((ASTMCGenericType) mcType).getMCTypeArgumentList()
-            .stream()
-            .filter(ta -> ta.getMCTypeOpt().isPresent())
-            .anyMatch(ta -> ta.getMCTypeOpt().get() instanceof ASTMCGenericType)) {
+        if (hasNestedGeneric(mcType)) {
           // for e.g. A<B<C>>
-          Log.error(ERROR_CODE + String.format(ERROR_MSG_FORMAT, ruleName, grammarName, prodName,
-              printASTAdditionalAttribute(astAdditionalAttribute)));
+          logError(ruleName, grammarName, prodName, astAdditionalAttribute);
         } else if (astAdditionalAttribute.isPresentCard()) {
-          if (astAdditionalAttribute.getCard().getIteration() == STAR || astAdditionalAttribute.getCard().getIteration() == PLUS ||
-              astAdditionalAttribute.getCard().getIteration() == QUESTION) {
+          if (hasGenericIteration(astAdditionalAttribute)) {
             // for e.g. A<B>*
-            Log.error(ERROR_CODE + String.format(ERROR_MSG_FORMAT,ruleName, grammarName, prodName,
-                printASTAdditionalAttribute(astAdditionalAttribute)));
-          } else if ((astAdditionalAttribute.getCard().isPresentMax() && (astAdditionalAttribute.getCard().getMax().equals("*") ||
-              Integer.parseInt(astAdditionalAttribute.getCard().getMax()) > 1) ||
-              (astAdditionalAttribute.getCard().isPresentMin() && Integer.parseInt(astAdditionalAttribute.getCard().getMin()) == 0))) {
+            logError(ruleName, grammarName, prodName, astAdditionalAttribute);
+          } else if (hasGenericMaxValue(astAdditionalAttribute)) {
             // for e.g. A<B> min=0 or A<B> max=2 or A<B> max=*
-            Log.error(ERROR_CODE + String.format(ERROR_MSG_FORMAT,ruleName, grammarName, prodName,
-                printASTAdditionalAttribute(astAdditionalAttribute)));
+            logError(ruleName, grammarName, prodName, astAdditionalAttribute);
           }
         }
       }
     }
+  }
+
+  /**
+   * for e.g. A<B<C>>
+   */
+  private boolean hasNestedGeneric(ASTMCType mcType){
+    return((ASTMCGenericType) mcType).getMCTypeArgumentList()
+        .stream()
+        .filter(ta -> ta.getMCTypeOpt().isPresent())
+        .anyMatch(ta -> ta.getMCTypeOpt().get() instanceof ASTMCGenericType);
+  }
+
+  /**
+   * for e.g. A<B>*, A<B>+, A<B>?
+   */
+  private boolean hasGenericIteration(ASTAdditionalAttribute astAdditionalAttribute){
+    return astAdditionalAttribute.getCard().getIteration() == STAR || astAdditionalAttribute.getCard().getIteration() == PLUS ||
+        astAdditionalAttribute.getCard().getIteration() == QUESTION;
+  }
+
+  /**
+   * for e.g. A<B> min=0, A<B> max=2, A<B> max=*
+   */
+  private boolean hasGenericMaxValue(ASTAdditionalAttribute astAdditionalAttribute){
+    return (astAdditionalAttribute.getCard().isPresentMax() && ("*".equals(astAdditionalAttribute.getCard().getMax()) ||
+        Integer.parseInt(astAdditionalAttribute.getCard().getMax()) > 1) ||
+        (astAdditionalAttribute.getCard().isPresentMin() && Integer.parseInt(astAdditionalAttribute.getCard().getMin()) == 0));
+  }
+
+  private void logError(String ruleName, String grammarName, String prodName, ASTAdditionalAttribute astAdditionalAttribute) {
+    Log.error(ERROR_CODE + String.format(ERROR_MSG_FORMAT, ruleName, grammarName, prodName,
+        printASTAdditionalAttribute(astAdditionalAttribute)));
   }
 
   private String printASTAdditionalAttribute(ASTAdditionalAttribute astAdditionalAttribute) {

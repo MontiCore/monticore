@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._symboltable.symbol;
 
 import de.monticore.cd.cd4analysis._ast.*;
@@ -11,12 +12,13 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 
 import java.util.List;
 
+import static de.monticore.cd.facade.CDModifier.PROTECTED;
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.REAL_BUILDER;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.ENCLOSING_SCOPE_VAR;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.NAME_VAR;
-import static de.monticore.cd.facade.CDModifier.*;
 
 public class SymbolLoaderBuilderDecorator extends AbstractCreator<ASTCDType, ASTCDClass> {
 
@@ -39,6 +41,9 @@ public class SymbolLoaderBuilderDecorator extends AbstractCreator<ASTCDType, AST
     String symbolLoaderName = symbolTableService.getSymbolLoaderSimpleName(input);
     String symbolLoaderBuilderName = symbolLoaderName + BUILDER_SUFFIX;
     String scopeInterfaceFullName = symbolTableService.getScopeInterfaceFullName();
+    ASTModifier modifier = input.isPresentModifier() ?
+        symbolTableService.createModifierPublicModifier(input.getModifier()):
+        PUBLIC.build();
 
     BuilderMutatorMethodDecorator builderMutatorMethodDecorator = new BuilderMutatorMethodDecorator(glex,
         getMCTypeFacade().createQualifiedType(symbolLoaderBuilderName));
@@ -52,7 +57,7 @@ public class SymbolLoaderBuilderDecorator extends AbstractCreator<ASTCDType, AST
 
     return CD4AnalysisMill.cDClassBuilder()
         .setName(symbolLoaderBuilderName)
-        .setModifier(PUBLIC.build())
+        .setModifier(modifier)
         .addCDConstructor(createDefaultConstructor(symbolLoaderBuilderName))
         .addCDAttribute(createRealThisAttribute(symbolLoaderBuilderName))
         .addCDAttribute(nameAttribute)
@@ -64,7 +69,7 @@ public class SymbolLoaderBuilderDecorator extends AbstractCreator<ASTCDType, AST
   }
 
   protected ASTCDConstructor createDefaultConstructor(String symbolLoaderBuilderName) {
-    ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PROTECTED, symbolLoaderBuilderName);
+    ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC, symbolLoaderBuilderName);
     this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("this." + REAL_BUILDER + " = (" + symbolLoaderBuilderName + ") this;"));
     return constructor;
   }
@@ -83,7 +88,7 @@ public class SymbolLoaderBuilderDecorator extends AbstractCreator<ASTCDType, AST
 
   protected ASTCDMethod createBuildMethod(String symbolLoader) {
     ASTCDMethod buildMethod = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createQualifiedType(symbolLoader), "build");
-    this.replaceTemplate(EMPTY_BODY, buildMethod, new TemplateHookPoint(TEMPLATE_PATH + "Build", symbolLoader));
+    this.replaceTemplate(EMPTY_BODY, buildMethod, new TemplateHookPoint(TEMPLATE_PATH + "BuildSymbolLoader", symbolLoader));
     return buildMethod;
   }
 }

@@ -85,11 +85,6 @@ public class GeneratorSetup {
   private Optional<String> modelName = Optional.empty();
 
   /**
-   * The handler for File IO (also manages reporting)
-   */
-  private FileReaderWriter fileHandler;
-
-  /**
    * The real engine provided by FreeMarker
    */
   private FreeMarkerTemplateEngine freeMarkerTemplateEngine;
@@ -179,13 +174,7 @@ public class GeneratorSetup {
 
   /*******************************************************/
   public void setFileHandler(FileReaderWriter o) {
-    this.fileHandler = o;
-  }
-
-  public FileReaderWriter getFileHandler() {
-    if (this.fileHandler == null)
-        this.fileHandler = new FileReaderWriter(); //default
-    return fileHandler;
+    FileReaderWriter.init(o);
   }
 
   /*******************************************************/

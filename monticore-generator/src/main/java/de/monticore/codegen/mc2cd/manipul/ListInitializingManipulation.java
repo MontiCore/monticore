@@ -4,7 +4,6 @@ package de.monticore.codegen.mc2cd.manipul;
 
 import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.utils.ASTNodes;
 
 import java.util.function.UnaryOperator;

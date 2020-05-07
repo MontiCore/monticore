@@ -1,6 +1,5 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.mccollectiontypes._ast;
-
-import de.se_rwth.commons.logging.Log;
 
 public class ASTMCMapTypeBuilder extends ASTMCMapTypeBuilderTOP {
 
@@ -36,9 +35,6 @@ public class ASTMCMapTypeBuilder extends ASTMCMapTypeBuilderTOP {
 
   @Override
   public boolean isValid() {
-    if (key == null && value == null && (mCTypeArguments == null || mCTypeArguments.size() != 2)) {
-      return false;
-    }
-    return true;
+    return !(key == null && value == null && (mCTypeArguments == null || mCTypeArguments.size() != 2));
   }
 }

@@ -45,10 +45,10 @@ public class Grammar_WithConceptsParser extends Grammar_WithConceptsParserTOP {
 
       // Use pathName instead of filename (because of correct separators)
       String pathName = Paths.get(fileName).toString();
-      String simpleFileName = Files.getNameWithoutExtension(pathName);
+      String simpleFileName = Files.getNameWithoutExtension(fileName);
       String modelName = ast.get().getName();
-      String packageName = Names.getPackageFromPath(Names.getPathFromFilename(pathName));
-      String packageDeclaration = Names.getQualifiedName(ast.get().getPackageList());
+      String packageName = Names.getPathFromFilename(pathName);
+      String packageDeclaration = Names.getPathFromPackage(Names.getQualifiedName(ast.get().getPackageList()));
       if (!modelName.equals(simpleFileName)) {
         Log.error("0xA4003 The grammar name " + modelName + " must be identical to the file name "
                 + simpleFileName + " of "

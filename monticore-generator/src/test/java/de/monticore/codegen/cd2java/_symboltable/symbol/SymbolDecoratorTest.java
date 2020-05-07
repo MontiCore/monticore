@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._symboltable.symbol;
 
 import com.github.javaparser.JavaParser;
@@ -7,10 +8,10 @@ import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
+import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
@@ -53,7 +54,7 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
 
   private static final String I_AUTOMATON_SCOPE = "de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.IAutomatonSymbolCDScope";
 
-  private static final String AUTOMATON_VISITOR = "de.monticore.codegen.symboltable.automatonsymbolcd._visitor.AutomatonSymbolCDSymbolVisitor";
+  private static final String AUTOMATON_VISITOR = "de.monticore.codegen.symboltable.automatonsymbolcd._visitor.AutomatonSymbolCDVisitor";
 
   @Before
   public void setUp() {
@@ -61,7 +62,7 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     this.mcTypeFacade = MCTypeFacade.getInstance();
     this.glex = new GlobalExtensionManagement();
 
-    this.glex.setGlobalValue("astHelper", new DecorationHelper());
+    this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "AutomatonSymbolCD");
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
@@ -69,7 +70,7 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
 
 
     SymbolDecorator decorator = new SymbolDecorator(this.glex, new SymbolTableService(decoratedCompilationUnit), new VisitorService(decoratedCompilationUnit),
-        new MethodDecorator(glex));
+        new MethodDecorator(glex, new SymbolTableService(decoratedCompilationUnit)));
     //creates ScopeSpanningSymbol
     ASTCDClass automatonClass = getClassBy("Automaton", decoratedCompilationUnit);
     this.symbolClassAutomaton = decorator.decorate(automatonClass);
@@ -80,7 +81,7 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
 
     //creates normal Symbol with top class
     SymbolDecorator mockDecorator = Mockito.spy(new SymbolDecorator(this.glex, new SymbolTableService(decoratedCompilationUnit), new VisitorService(decoratedCompilationUnit),
-        new MethodDecorator(glex)));
+        new MethodDecorator(glex, new SymbolTableService(decoratedCompilationUnit))));
     Mockito.doReturn(true).when(mockDecorator).isSymbolTop();
     ASTCDClass stateClass = getClassBy("State", decoratedCompilationUnit);
     this.symbolClassState = mockDecorator.decorate(stateClass);

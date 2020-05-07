@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+description = 'Experiments: scopes'
+
+task generate (type: MCTask) {
+  grammar = file "$projectDir/$grammarDir/Automata.mc4"
+  outputDir = file outDir
+  def uptoDate = incCheck("Automata.mc4")
+  outputs.upToDateWhen { uptoDate }
+}
+
+

@@ -53,4 +53,6 @@ public interface IArtifactScope {
     return potentialSymbolNames;
   }
 
+  String getPackageName ();
+
 }

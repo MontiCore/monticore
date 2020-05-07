@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("scopeInterface", "artifactScope", "globalScope")}
+${tc.signature("scopeInterface")}
   if (enclosingScope == null) {
     // There should not be a symbol that is not defined in any scope. This case should only
     // occur while the symbol is built (by the symbol table creator). So, here the full name
@@ -23,8 +23,8 @@ ${tc.signature("scopeInterface", "artifactScope", "globalScope")}
         break;
       }
 
-      if (!(currentScope instanceof ${globalScope})) {
-        if (currentScope instanceof ${artifactScope}) {
+      if (!(currentScope instanceof IGlobalScope)) {
+        if (currentScope instanceof IArtifactScope) {
           // We have reached the artifact scope. Get the package name from the
           // symbol itself, since it might be set manually.
           if (!getPackageName().isEmpty()) {

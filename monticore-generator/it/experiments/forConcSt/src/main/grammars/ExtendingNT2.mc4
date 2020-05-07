@@ -17,7 +17,7 @@ grammar ExtendingNT2 extends de.monticore.MCBasics {
 
   State = "...1" ;
 
-  Transition = "...1" ;
+  Transition = "...2" ;
 
 }
 

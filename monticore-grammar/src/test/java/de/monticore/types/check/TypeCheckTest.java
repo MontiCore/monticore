@@ -4,9 +4,11 @@ package de.monticore.types.check;
 
 import com.google.common.collect.Lists;
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
+import de.monticore.expressions.expressionsbasis.ExpressionsBasisMill;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
-import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
+import de.monticore.expressions.prettyprint.CombineExpressionsWithLiteralsPrettyPrinter;
+import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 import org.junit.Test;
 
@@ -23,7 +25,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class TypeCheckTest {
 
-  TypeCheck tc = new TypeCheck(null, new DeriveSymTypeOfCombineExpressions(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build()));
+  TypeCheck tc = new TypeCheck(null, new DeriveSymTypeOfCombineExpressionsDelegator(ExpressionsBasisMill.expressionsBasisScopeBuilder().build(), new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter())));
   CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
 
   @Test
@@ -64,7 +66,7 @@ public class TypeCheckTest {
     add2scope(scope, person);
     add2scope(scope, student);
     add2scope(scope, firstsemesterstudent);
-    DeriveSymTypeOfCombineExpressions derLit = new DeriveSymTypeOfCombineExpressions(scope);
+    DeriveSymTypeOfCombineExpressionsDelegator derLit = new DeriveSymTypeOfCombineExpressionsDelegator(scope, new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter()));
     tc = new TypeCheck(null, derLit);
 
     //non-primitives
@@ -125,7 +127,7 @@ public class TypeCheckTest {
     add2scope(scope, person);
     add2scope(scope, student);
     add2scope(scope, firstsemesterstudent);
-    DeriveSymTypeOfCombineExpressions derLit = new DeriveSymTypeOfCombineExpressions(scope);
+    DeriveSymTypeOfCombineExpressionsDelegator derLit = new DeriveSymTypeOfCombineExpressionsDelegator(scope, new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter()));
     tc = new TypeCheck(null, derLit);
 
     //non-primitives

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._symboltable.symbol;
 
 import com.github.javaparser.JavaParser;
@@ -7,10 +8,10 @@ import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
+import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._symboltable.symbol.symbolloadermutator.MandatoryMutatorSymbolLoaderDecorator;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
@@ -52,7 +53,7 @@ public class SymbolLoaderDecoratorTest extends DecoratorTestCase {
     this.mcTypeFacade = MCTypeFacade.getInstance();
     this.glex = new GlobalExtensionManagement();
 
-    this.glex.setGlobalValue("astHelper", new DecorationHelper());
+    this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "AutomatonSymbolCD");
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
@@ -60,7 +61,7 @@ public class SymbolLoaderDecoratorTest extends DecoratorTestCase {
 
     SymbolLoaderDecorator decorator = new SymbolLoaderDecorator(this.glex,
         new SymbolTableService(decoratedCompilationUnit),
-        new MethodDecorator(glex),
+        new MethodDecorator(glex, new SymbolTableService(decoratedCompilationUnit)),
         new MandatoryMutatorSymbolLoaderDecorator(glex));
     //creates ScopeSpanningSymbol
     ASTCDClass automatonClass = getClassBy("Automaton", decoratedCompilationUnit);

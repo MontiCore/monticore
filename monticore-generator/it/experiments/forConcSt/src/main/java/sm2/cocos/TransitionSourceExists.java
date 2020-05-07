@@ -19,7 +19,7 @@ public class TransitionSourceExists implements SM2ASTTransitionCoCo {
     
     if (!sourceState.isPresent()) {
       // Issue error...
-      Log.error("0xAUT03 The source state of the transition does not exist.",
+      Log.error("0xAUT04 The source state of the transition does not exist.",
           node.get_SourcePositionStart());
     }
   }

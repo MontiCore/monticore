@@ -19,7 +19,7 @@ public class LeftRecursiveRulesInBlock implements GrammarASTClassProdCoCo {
   
   public static final String ERROR_CODE = "0xA4056";
   
-  public static final String ERROR_MSG_FORMAT = " The left recursive rule %s is not allowed in blocks, because it doesn't work in Antlr. ";
+  public static final String ERROR_MSG_FORMAT = " The left recursive rule %s is not allowed in blocks, because it is not supported in Antlr. ";
   
   @Override
   public void check(ASTClassProd a) {
