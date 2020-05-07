@@ -49,7 +49,7 @@ A component grammar is ment for extension. MontiCore therefore provides four(!)
   * Disadvantage: the designer of `A` explicitly has to design the *hole* `X` 
     and add it it into the production.
 * Overriding (empty) nonterminal in the super-grammar
-  * Use a normal nonterminal `X` and overide it in a sub-grammar.
+  * Use a normal nonterminal `X` and override it in a sub-grammar.
   ```
   component grammar A {  
     X = "";
@@ -57,7 +57,7 @@ A component grammar is ment for extension. MontiCore therefore provides four(!)
   }
   grammar B extends A {
     @Override
-    X = "my" "thing"
+    X = "my" "thing";
   }
   ```
   * Advantage: *Default* implementation "" exists, no explicit filling needed.
