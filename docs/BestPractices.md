@@ -2,54 +2,32 @@
 
 # MontiCore Best Practices - A Guide of Small Solutions
 
-[MontiCore](http://www.monticore.de) is a language workbench
-with an explicit notion of language components. It uses 
-grammars to describe textual DSLs. MontiCore uses an extended 
-grammar format that allows to compose language components, 
-to inherit, extend, embed
-and aggregate language components (see the
-[**reference manual**](http://monticore.de/MontiCore_Reference-Manual.2017.pdf)
-for details).
+[MontiCore](http://www.monticore.de) provides a number of options to design 
+languages, access and modify the abstract syntax tree and produce output files.
 
-A **language component** is mainly represented through the grammar 
-describing concrete and abstract syntax of the language plus 
-Java-classes implementing specific functionalities plus 
-Freemarker-Templates helping to print a model to text.
-However, language components are often identified with their main 
-component grammar.
+This (currently unsorted and evolving) list of practices discusses solutions 
+that we identified and applied as well as alternatives and their specfic 
+advantages and drawbacks. They also mention, where the solution have been
+found and the applied first.
 
-Language components are currently organized in two levels:
-In this list you mainly find grammars for 
-**complete (but also reusable and adaptable) languages**.
-A list of
-[**grammar components**](../monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
-with individual reusable nonterminals is also available in
-the MontiCore core project.
+This file is partially temporary and also contains compact (incomplete) solutions.
+More detailed descriptions of best practices can be found in the 
+[MontiCore reference manual](http://monticore.de/MontiCore_Reference-Manual.2017.pdf).
 
-The following list presents links to the language development projects, their
-main grammars, and a short description 
-of the language, available language tools and its development status.
-The different development stati for grammars are explained 
-[**here**](../00.org/Explanations/StatusOfGrammars.md).
-
-The list covers the language grammars to be found in the several 
-`MontiCore` projects, such as `cd4analysis/cd4analysis`
-usually in folders like `src/main/grammars/` organized in packages 
-`de.monticore.cd`.
-MontiCore projects are hosted at
-
-* [`https://git.rwth-aachen.de/monticore`](https://git.rwth-aachen.de/monticore), 
-    and partially also at
-* [`https://github.com/MontiCore/`](https://github.com/MontiCore/monticore)
+## Designing Concrete and Abstract Syntax 
 
 
-## List of Languages 
+### Specific keywords that shall be used as normal words elsewhere
+* `A = "foo" B` introduces `foo` as a keyword that can be used as an ordinary 
+  (variable) name anymore. To prevent that we may use:
+* `A = key("foo") B` instead, which introduces `foo` only at that specific point.
+* In general, we use all Java keywords as permanent, but abstain from other
+  permanent keywords, especially if only used for a specific purpose in a composable
+  sublanguage, like `in` in the OCL.
+* Defined by: BR
 
-<!--
-### [Activity Diagrams](INSERT LINK HERE) (not adressed yet)
-* TO be added
--->
+
+## Designing Symbols, Scopes and SymbolTables 
 
 
-### [Class Diagram For Analysis (CD4A)](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis) (Beta: In Stabilization)
-* Responsible: SVa, AGe
+## Generating Code with Templates 
