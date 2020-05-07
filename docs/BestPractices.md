@@ -40,14 +40,82 @@ A component grammar is ment for extension. MontiCore therefore provides four(!)
     interface X;
     N = "bla" X "blubb";
   }
-  grammar B {
+  grammar B extends A {
     Y implements X = "specific" "thing"
   }
   ```
-  * Advantage: Multiple extensions are possible at the same time
+  * Advantage: Multiple extensions are possible at the same time.
+            An NT `Y` can also implement multiple interfaces (like in Java). 
   * Disadvantage: the designer of `A` explicitly has to design the *hole* `X` 
-    and inject it into other places
+    and add it it into the production.
+* Overriding (empty) nonterminal in the super-grammar
+  * Use a normal nonterminal `X` and overide it in a sub-grammar.
+  ```
+  component grammar A {  
+    X = "";
+    N = "bla" X "blubb";
+  }
+  grammar B extends A {
+    @Override
+    X = "my" "thing"
+  }
+  ```
+  * Advantage: *Default* implementation "" exists, no explicit filling needed.
+  * Disadvantage: 
+    1. The designer of `A` explicitly has to design the *hole* `X` 
+      and inject it into other places. 
+    1. Only one overriding alternative possible.
+* Extending nonterminal in the super-grammar.
+  * Use a normal nonterminal `X` and extend it in a sub-grammar.
+  ```
+  component grammar A {  
+    X = "";
+    N = "bla" X "blubb";
+  }
+  grammar B extends A {
+    Y implements X = "this" 
+  }
+  ```
+  * Advantage: *Default* implementation "" exists, no explicit filling needed.
+  * Disadvantage: 
+    1. The designer of `A` explicitly has to design the *hole* `X` 
+       and inject it into other places. 
+    1. `Y` can only adapt one nonterminal.
+* Using `external` nonterminals in the super-grammar.
+  * Mark nonterminal `X` as external.
+  ```
+  component grammar A {  
+    external X = "";
+    N = "bla" X "blubb";
+  }
+  grammar B extends A {
+    X = "your"
+  }
+  ```
+  * Advantage: Explctely marks a nonterminal as *hole* in the grammar.
+        Please observe that interface terminals may or not may be meant to be
+        extended in sub-grammars. `external` is clearer here.
+  * Disadvantage: 
+    1. Leads to more objects in the AST. Both classes `a.X` and `b.X` are 
+       instantiated and `a.X` only links to `b.X`.
+    2. Only one filling of the `hole` is possible.
 
+* Overriding the whole production.
+  * If you don't want to add a hole at any possible place of extension:
+  ```
+  component grammar A {  
+    N = "bla" "blubb";
+  }
+  grammar B extends A {
+    @Override
+    N = "bla" "my" "blubb" "now";
+  }
+  ```
+  * Advantage: Compact definition. No "*framework thinking*" needed (no need
+    to forecast all potential extension points)
+  * Disadvantage: 
+    The entire production is overriden (some redundancy). 
+* Combinations are possible.
 * Defined by: BR
 
 
