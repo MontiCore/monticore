@@ -35,13 +35,14 @@ A component grammar is ment for extension. MontiCore therefore provides four(!)
   briefly discussed here: 
 * Interface in the super-grammar
   * Introduce an interface, and allow building of sub-nonterminals in sub-grammars.
-  ```component grammar A {  
-        interface X;
-        N = "bla" X "blubb";
-     }
-     grammar B {
-        Y implements X = "specific" "thing"
-     }
+  ```
+  component grammar A {  
+    interface X;
+    N = "bla" X "blubb";
+  }
+  grammar B {
+    Y implements X = "specific" "thing"
+  }
   ```
   * Advantage: Multiple extensions are possible at the same time
   * Disadvantage: the designer of `A` explicitly has to design the *hole* `X` 
