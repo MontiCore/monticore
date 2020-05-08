@@ -271,12 +271,15 @@ A component grammar is ment for extension. MontiCore therefore provides five(!)
   6. Software architecture (of the overal system), software stack
 * These dimensions are not orthogonal, but also not completely interelated.
   The actual organisation will depend on the form of project.
-* One general principle for *adaptation* that works for the *generator* 
-  as well as for the *generated code* and the *RTE* is to design each of them
+* A principle for *adaptation* for the *generator*, 
+  the *generated code*, and the *RTE* is to design each of them
   like a *framework* with explicit extension points.
   Extension points may be (empty) hook methods to be filled, Java interfaces
   to be implemented and their objects injected to the code e.g. via 
   factories, builders od simply method parameters.
+* A principle for *modularity* for the the *generator*, 
+  the *generated code*, and the *RTE* is to design parts of them as 
+  independent library functions (or larger: components) that can be used if needed.
 * We recommend to modularize whenever complexity overwhelms or extendibility and
   adaptability are important:
   1. MontiCore has powerful techniques for adaptation, extension and 
