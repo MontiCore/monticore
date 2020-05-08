@@ -47,7 +47,7 @@ The grammar builds an extended version of Statemachines reusing
 existing grammar components, here `Automata`, `MCBasicTypes`, `SetExpressions` and `MCCommonLiterals`.
 The grammar has 5 productions introducing 4 new nonterminals
 and overrides `Transition`,
-which is inherited from `Statemachine`.
+which is inherited from `Automata`.
 `Transition` additionally has an optional `Expression?` as firing condition.
 `LogicalNotExpr`, `XorExpr`, and `LetExpr` extend the already existing
 `Expression` nonterminal and add new forms of expressions.
@@ -64,7 +64,7 @@ frontend and a larger part of the backend of
 a statemachine processor.
 We now can write statemachines like:
 
-    statemachine PingPong {                                           // MyStatemachine
+    statemachine PingPong {                                         // MyStatemachine
       state Ping, Pong;
       Ping : (speed > 14km/h && !missedBall) -> Pong
     }
