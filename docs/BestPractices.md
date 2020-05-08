@@ -16,7 +16,7 @@ More detailed descriptions of best practices can be found in the
 Some of the best practices here will also be incorporated in the next version
 of the reference manual.
 
-## Designing Concrete and Abstract Syntax 
+## **Designing Concrete and Abstract Syntax**
 
 
 ### **Specific keywords** that shall be used as normal words elsewhere
@@ -227,11 +227,42 @@ A component grammar is ment for extension. MontiCore therefore provides five(!)
     1. very extensible in various ways (even beyond mere keywords) 
     2. visitor can easily adress the keywords (i.e. by `visit(P1)` ...)
     3. Disadvantage: Clumsy notation and visitors are always needed.
-* Defined by: SVa.
+* Defined by: SVa, BR.
   
  
 
-## Designing Symbols, Scopes and SymbolTables 
+## **Designing Symbols, Scopes and SymbolTables** 
 
 
-## Generating Code with Templates 
+
+
+## **Generating Code with Templates** 
+
+
+
+## **Language design in the large**
+
+
+### Grammar Extensions
+* When the grammar inclusion hierachy becomes larger, there will be redundancy.
+  In:
+  ```
+    grammar A { .. } ;
+    grammar B extends A { .. } ;
+    grammar C extends A,B { .. } ;
+    grammar D extends B { .. } ;
+  ```
+  Grammars `C` and `D` actually include the same nonterminals.
+* If `A` is made explicit, you have more infromation right at hand, but also
+  larger grammars. It is a matter of taste.
+* A potential recommendation: when you use nonterminals from A explicitly, then also 
+  make the extension explicit. However, be consistent.
+
+
+  
+  
+
+
+
+
+
