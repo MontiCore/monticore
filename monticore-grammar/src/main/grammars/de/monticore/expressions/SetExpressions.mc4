@@ -3,23 +3,23 @@ package de.monticore.expressions;
 
 /* Alpha-version: This is intended to become a MontiCore stable grammar.
  */
- 
+
 /**
  * This grammar defines set expressions like union, intersection etc.
- * these operations are typical for a logic with set operations, like 
+ * these operations are typical for a logic with set operations, like
  * UML's OCL.
  *
- * There are also other kinds of expressions defined in the 
- * grammars mentioned below. These expression definitions can savely be 
+ * There are also other kinds of expressions defined in the
+ * grammars mentioned below. These expression definitions can savely be
  * composed if desired.
- * 
- * This grammar is part of a hierarchy of types, namely 
+ *
+ * This grammar is part of a hierarchy of expressions, namely
  * * expressions/ExpressionsBasis.mc4
- * * --  expressions/CommonExpressions.mc4      
+ * * --  expressions/CommonExpressions.mc4
  * * --  --  expressions/JavaClassExpressions.mc4
  * * --  --  expressions/SetExpressions.mc4
- * * --  expressions/AssignmentExpressions.mc4  
- * * --  expressions/BitExpressions.mc4         
+ * * --  expressions/AssignmentExpressions.mc4
+ * * --  expressions/BitExpressions.mc4
  * * --  expressions/OCLExpressions.mc4
  *
 */
