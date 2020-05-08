@@ -2,11 +2,11 @@
 package mc.feature.symboltableprinter;
 
 import de.monticore.symboltable.serialization.JsonPrinter;
+import mc.feature.symboltableprinter.symboltableprintersub.SymbolTablePrinterSubMill;
 import mc.feature.symboltableprinter.symboltableprintersub._symboltable.SymbolTablePrinterSubScope;
-import mc.feature.symboltableprinter.symboltableprintersub._symboltable.SymbolTablePrinterSubSymTabMill;
 import mc.feature.symboltableprinter.symboltableprintersub._symboltable.serialization.SymbolTablePrinterSubSymbolTablePrinter;
-import mc.feature.symboltableprinter.symboltableprintersup1._symboltable.SymbolTablePrinterSup1SymTabMill;
-import mc.feature.symboltableprinter.symboltableprintersup2._symboltable.SymbolTablePrinterSup2SymTabMill;
+import mc.feature.symboltableprinter.symboltableprintersup1.SymbolTablePrinterSup1Mill;
+import mc.feature.symboltableprinter.symboltableprintersup2.SymbolTablePrinterSup2Mill;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -26,10 +26,10 @@ public class STPForLanguageCompositionTest {
   @Test
   public void testSerializeLocalSymbols(){
     //create scope with symbols of the grammar SymbolTablePrinterSub and both of its supergrammars
-    SymbolTablePrinterSubScope scope = SymbolTablePrinterSubSymTabMill.symbolTablePrinterSubScopeBuilder().build();
-    scope.add(SymbolTablePrinterSup1SymTabMill.aSymbolBuilder().setName("a").build());
-    scope.add(SymbolTablePrinterSup2SymTabMill.bSymbolBuilder().setName("b").build());
-    scope.add(SymbolTablePrinterSubSymTabMill.cSymbolBuilder().setName("c").build());
+    SymbolTablePrinterSubScope scope = SymbolTablePrinterSubMill.symbolTablePrinterSubScopeBuilder().build();
+    scope.add(SymbolTablePrinterSup1Mill.aSymbolBuilder().setName("a").build());
+    scope.add(SymbolTablePrinterSup2Mill.bSymbolBuilder().setName("b").build());
+    scope.add(SymbolTablePrinterSubMill.cSymbolBuilder().setName("c").build());
 
     //serialize symbols and assert that the serialized String contains all the symbols
     symTabPrinter.serializeLocalSymbols(scope);

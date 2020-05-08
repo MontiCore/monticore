@@ -2,6 +2,7 @@
 package de.monticore.typepersistence;
 
 import de.monticore.io.paths.ModelPath;
+import de.monticore.typepersistence.variable.VariableMill;
 import de.monticore.typepersistence.variable._ast.ASTVar;
 import de.monticore.typepersistence.variable._parser.VariableParser;
 import de.monticore.typepersistence.variable._symboltable.*;
@@ -36,7 +37,7 @@ public class TypePersistenceTest {
     //Parse blah model
     VariableParser blahParser = new VariableParser();
     Optional<ASTVar> varModel = blahParser.parse_String("var String a");
-    VariableSymbolTableCreator varSymbolTableCreator = VariableSymTabMill.variableSymbolTableCreatorBuilder().addToScopeStack(globalScope).build();
+    VariableSymbolTableCreator varSymbolTableCreator = VariableMill.variableSymbolTableCreatorBuilder().addToScopeStack(globalScope).build();
     IVariableScope blahSymbolTable = varSymbolTableCreator.createFromAST(varModel.get());
 ASTMCType a;
     assertTrue(varModel.isPresent());

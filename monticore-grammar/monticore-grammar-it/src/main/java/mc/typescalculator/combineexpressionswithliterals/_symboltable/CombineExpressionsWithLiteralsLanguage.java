@@ -1,6 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.typescalculator.combineexpressionswithliterals._symboltable;
 
+import mc.typescalculator.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
+
 public class CombineExpressionsWithLiteralsLanguage extends CombineExpressionsWithLiteralsLanguageTOP {
 
   public CombineExpressionsWithLiteralsLanguage(){
@@ -9,7 +11,7 @@ public class CombineExpressionsWithLiteralsLanguage extends CombineExpressionsWi
 
   @Override
   protected CombineExpressionsWithLiteralsModelLoader provideModelLoader() {
-    return CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsModelLoaderBuilder().setModelingLanguage(this).build();
+    return CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsModelLoaderBuilder().setModelingLanguage(this).build();
   }
 
 }

@@ -4,8 +4,8 @@ package mc.feature.symboltable;
 
 import de.monticore.symboltable.IScopeSpanningSymbol;
 import mc.GeneratorIntegrationsTest;
+import mc.feature.symboltable.automatonwithstinfo4.AutomatonWithSTInfo4Mill;
 import mc.feature.symboltable.automatonwithstinfo4._ast.ASTState;
-import mc.feature.symboltable.automatonwithstinfo4._ast.AutomatonWithSTInfo4Mill;
 import mc.feature.symboltable.automatonwithstinfo4._symboltable.*;
 import org.junit.Test;
 

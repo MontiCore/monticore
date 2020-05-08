@@ -1,5 +1,5 @@
 // (c) https://github.com/MontiCore/monticore
-package de.monticore.codegen.cd2java._ast.mill;
+package de.monticore.codegen.cd2java.mill;
 
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
@@ -61,7 +61,7 @@ public class MillForSuperDecoratorTest extends DecoratorTestCase {
   @Test
   public void testSuperClass() {
     assertTrue(millClass.isPresentSuperclass());
-    assertDeepEquals("de.monticore.codegen.ast.lexicals._ast.LexicalsMill", millClass.getSuperclass());
+    assertDeepEquals("de.monticore.codegen.ast.lexicals.LexicalsMill", millClass.getSuperclass());
   }
 
   @Test

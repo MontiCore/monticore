@@ -1,8 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._visitor.builder;
 
-import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.cd.cd4code._ast.CD4CodeMill;
+import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
+import de.monticore.cd.cd4analysis._ast.ASTCDClass;
+import de.monticore.cd.cd4analysis._ast.ASTCDConstructor;
+import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
+import de.monticore.cd.cd4code.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._ast.builder.buildermethods.BuilderMutatorMethodDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
@@ -19,14 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
-import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
-import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILD_INIT_TEMPLATE;
-import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILD_METHOD;
-import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.IS_VALID;
-import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.REAL_BUILDER;
-import static de.monticore.cd.facade.CDModifier.*;
+import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.*;
 
 /**
  * Creates a DelegatorVisitorBuilder class from a grammar

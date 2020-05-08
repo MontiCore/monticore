@@ -3,6 +3,7 @@ package de.monticore.templateclassgenerator;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.ast.Comment;
+import de.monticore.symboltable.IScope;
 import de.se_rwth.commons.SourcePosition;
 
 import java.util.*;
@@ -84,7 +85,12 @@ public class EmptyNode implements ASTNode {
   public boolean isPresent_SourcePositionStart() {
     return false;
   }
-  
+
+  @Override
+  public IScope getEnclosingScope() {
+    return null;
+  }
+
   /**
    * @see de.monticore.ast.ASTNode#equalAttributes(java.lang.Object)
    */

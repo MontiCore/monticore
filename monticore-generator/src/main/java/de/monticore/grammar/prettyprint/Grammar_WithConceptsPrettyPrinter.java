@@ -21,7 +21,11 @@ import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.prettyprint.JavaLightPrettyPrinter;
 import de.monticore.prettyprint.MCBasicsPrettyPrinter;
 import de.monticore.statements.mccommonstatements._ast.ASTMCCommonStatementsNode;
-import de.monticore.statements.prettyprint.*;
+import de.monticore.statements.mcstatementsbasis._ast.ASTMCStatementsBasisNode;
+import de.monticore.statements.prettyprint.MCCommonStatementsPrettyPrinter;
+import de.monticore.statements.prettyprint.MCExceptionStatementsPrettyPrinter;
+import de.monticore.statements.prettyprint.MCReturnStatementsPrettyPrinter;
+import de.monticore.statements.prettyprint.MCVarDeclarationStatementsPrettyPrinter;
 import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
 import de.monticore.types.prettyprint.MCBasicTypesPrettyPrinter;
 import de.monticore.types.prettyprint.MCCollectionTypesPrettyPrinter;
@@ -59,6 +63,7 @@ public class Grammar_WithConceptsPrettyPrinter implements Grammar_WithConceptsVi
     visitor.setMCReturnStatementsVisitor(new MCReturnStatementsPrettyPrinter(out));
     visitor.setMCCommonStatementsVisitor(new MCCommonStatementsPrettyPrinter(out));
     visitor.setJavaLightVisitor(new JavaLightPrettyPrinter(out));
+    visitor.setMCVarDeclarationStatementsVisitor(new MCVarDeclarationStatementsPrettyPrinter(out));
   }
   
   @Override public void setRealThis(Grammar_WithConceptsVisitor realThis) {
@@ -91,6 +96,11 @@ public class Grammar_WithConceptsPrettyPrinter implements Grammar_WithConceptsVi
     return printer.getContent();
   }
 
+  public String prettyprint(ASTJavaLightNode a) {
+    printer.clearBuffer();
+    a.accept(getRealThis());
+    return printer.getContent();
+  }
 
   @Override
   public void handle(ASTExtReturnType node) {
@@ -109,12 +119,12 @@ public class Grammar_WithConceptsPrettyPrinter implements Grammar_WithConceptsVi
   @Override
   public void handle(ASTAction node) {
     CommentPrettyPrinter.printPreComments(node, printer);
-    node.getBlockStatementList().stream().forEach(a -> a.accept(getRealThis()));
+    node.getMCBlockStatementList().stream().forEach(a -> a.accept(getRealThis()));
     CommentPrettyPrinter.printPostComments(node, printer);
   }
 
   @Override
-  public void handle(ASTExtTypeArguments node) {
+  public void handle(ASTExtTypeArgument node) {
     CommentPrettyPrinter.printPreComments(node, printer);
     printer.print("<");
     String sep = "";
@@ -124,12 +134,6 @@ public class Grammar_WithConceptsPrettyPrinter implements Grammar_WithConceptsVi
       sep = ", ";
     }
     CommentPrettyPrinter.printPostComments(node, printer);
-  }
-
-  public String prettyprint(ASTJavaLightNode a) {
-    printer.clearBuffer();
-    a.accept(getRealThis());
-    return printer.getContent();
   }
 
   public String prettyprint(ASTMCCommonStatementsNode a) {
@@ -167,4 +171,11 @@ public class Grammar_WithConceptsPrettyPrinter implements Grammar_WithConceptsVi
     a.accept(getRealThis());
     return printer.getContent();
   }
+
+  public String prettyprint(ASTMCStatementsBasisNode a) {
+    printer.clearBuffer();
+    a.accept(getRealThis());
+    return printer.getContent();
+  }
+
 }

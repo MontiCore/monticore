@@ -1,12 +1,12 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.codegen.cd2java._symboltable;
 
+import de.monticore.cd.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDDefinition;
 import de.monticore.cd.cd4analysis._ast.ASTModifier;
 import de.monticore.cd.cd4analysis._parser.CD4AnalysisParser;
-import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisSymTabMill;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.types.MCTypeFacade;
@@ -271,7 +271,7 @@ public class SymbolTableServiceTest extends DecoratorTestCase {
 
   @Test
   public void testGetSymbolFullName() throws IOException {
-    CDDefinitionSymbol bar = CD4AnalysisSymTabMill.cDDefinitionSymbolBuilder().setName("Bar").build();
+    CDDefinitionSymbol bar = CD4AnalysisMill.cDDefinitionSymbolBuilder().setName("Bar").build();
     CD4AnalysisParser cd4AnalysisParser = new CD4AnalysisParser();
 
     Optional<ASTCDClass> astcdClass = cd4AnalysisParser.parse_StringCDClass(

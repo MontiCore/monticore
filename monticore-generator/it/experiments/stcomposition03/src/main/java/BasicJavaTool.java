@@ -1,5 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
+import basicjava.BasicJavaMill;
 import basicjava._ast.ASTCompilationUnit;
 import basicjava._parser.BasicJavaParser;
 import basicjava._symboltable.*;
@@ -14,13 +15,13 @@ public class BasicJavaTool {
 
   public static BasicJavaArtifactScope createJavaSymTab(String model, ModelPath modelPath) {
     ASTCompilationUnit ast = parse(model);
-    BasicJavaGlobalScope globalScope = BasicJavaSymTabMill.basicJavaGlobalScopeBuilder()
+    BasicJavaGlobalScope globalScope = BasicJavaMill.basicJavaGlobalScopeBuilder()
         .setModelPath(modelPath)
         .setBasicJavaLanguage(new BasicJavaLanguage()) //will be removed soon
         .build();
 
     //initialize symbol table creators
-    BasicJavaSymbolTableCreator stc = BasicJavaSymTabMill
+    BasicJavaSymbolTableCreator stc = BasicJavaMill
         .basicJavaSymbolTableCreatorBuilder()
         .addToScopeStack(globalScope)
         .build();

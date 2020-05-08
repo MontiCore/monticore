@@ -95,7 +95,7 @@ public class SymbolLoaderBuilderDecoratorTest extends DecoratorTestCase {
   @Test
   public void testDefaultConstructor() {
     ASTCDConstructor cdConstructor = builderClass.getCDConstructor(0);
-    assertDeepEquals(PROTECTED, cdConstructor.getModifier());
+    assertDeepEquals(PUBLIC, cdConstructor.getModifier());
     assertEquals("AutomatonSymbolLoaderBuilder", cdConstructor.getName());
 
     assertTrue(cdConstructor.isEmptyCDParameters());

@@ -4,6 +4,7 @@ import basicjava._ast.ASTCompilationUnit;
 import basicjava._symboltable.MethodSymbol;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
+import javaaut.JavaAutMill;
 import javaaut._parser.JavaAutParser;
 import javaaut._symboltable.*;
 import org.antlr.v4.runtime.RecognitionException;
@@ -35,13 +36,13 @@ public class SymTabTest {
    */
   public static JavaAutArtifactScope createSymTab(String model) {
     ASTCompilationUnit ast = parse(model);
-    JavaAutGlobalScope globalScope = JavaAutSymTabMill.javaAutGlobalScopeBuilder()
+    JavaAutGlobalScope globalScope = JavaAutMill.javaAutGlobalScopeBuilder()
         .setModelPath(new ModelPath())
         .setJavaAutLanguage(new JavaAutLanguage()) //will be removed soon
         .build();
 
     //initialize symbol table creators
-    JavaAutSymbolTableCreatorDelegator stc = JavaAutSymTabMill
+    JavaAutSymbolTableCreatorDelegator stc = JavaAutMill
         .javaAutSymbolTableCreatorDelegatorBuilder()
         .setGlobalScope(globalScope)
         .build();
