@@ -196,6 +196,38 @@ A component grammar is ment for extension. MontiCore therefore provides five(!)
   `"[["` (vs. nested lists), or
   `"<-"` (vs. `3 < -2`).
 * Defined by: MC team.
+
+
+### How to define **keyword enumerations** 
+
+* A finite set of kewyword-based alternatives can be defined in several forms:  
+* Standard thre keywords act as alternative:
+  ```
+  N = (["public"] | ["protected"] | ["private"]) ;
+  ```
+  * Effects: 
+    1. not extensible without overriding and repetition
+    2. introduces boolean flags, where only one can be true at a time
+* Use an enumeration nonterminal
+  ```
+  enumeration E = "public" | "protected" | "private" ;
+  N = E ;
+  ```
+  * Effects: 
+    1. not extensible 
+* Use an interface and subclasses with almost empty body:
+  ```
+  interface E ;
+  P1 implements E = "public"    ;
+  P2 implements E = "protected" ;
+  P3 implements E = "private"   ;
+  N = E ;
+  ```
+  * Effects: 
+    1. very extensible in various ways (even beyond mere keywords) 
+    2. visitor can easily adress the keywords (i.e. by `visit(P1)` ...)
+    3. Disadvantage: Clumsy notation and visitors are always needed.
+* Defined by: SVa.
   
  
 
