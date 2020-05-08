@@ -287,7 +287,7 @@ A component grammar is ment for extension. MontiCore therefore provides five(!)
     the models independent (and thus storable, versionable, reusable) artifacts,
     while they are semantically and through the generator technology well integrated. 
     The appropriate approach is based on *using* foreign models, e.g. through 
-    `import` statements and shiring `*symbol*` infrastructures as described in the
+    `import` statements and sharing *symbol* infrastructures as described in the
     [reference manual](http://monticore.de/MontiCore_Reference-Manual.2017.pdf).
   3. The generator provides (a) many Java classes and methods that can be overridden
     (b) Freemarker templates hook points to extend and replace templates, and (c)
