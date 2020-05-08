@@ -121,7 +121,9 @@ A component grammar is ment for extension. MontiCore therefore provides five(!)
   adaptatations option 1, 2, 3 and 5 are in use.
 * Defined by: BR
 
-### Avoid empty nonterminals (if body is known)
+
+### Avoid **empty nonterminals** (if body is known)
+
 * From the two variants:
   ```
     A = "bla" B? C*;
@@ -141,6 +143,33 @@ A component grammar is ment for extension. MontiCore therefore provides five(!)
 * Defined by: SVa, BR
 
 
+### Avoid **complex tokens** (1)
+
+* The token definitions can only define regular expressions.
+  Furthermore, the token parser (i.e. the lexer) does not consider backtracking.
+* If combinations of characters may be split into several token sequences
+  this leads to problems. E.g. in `3-2` and `(-2)` the `-` has different roles.
+* Solution: instead of defining a complex token like
+  ```
+    token NegativeNat = "-" Digits;
+  ```
+  we split the token and allow individual parsing into nonterminals:
+  ```
+    NegativeNat = negative:["-"] Digits {noSpace()}? 
+  ```
+* As wa wrokaround, we use the semantic predicate `{noSpace()}?` that ensures 
+  that between the two last processed token there is no space inbetween. 
+  If one of the token is optional we have to split the alternatives:
+  ```
+  SignedNatLiteral = 
+          (negative:["-"]) Digits {noSpace()}? 
+        |                  Digits              ;  
+  ```
+* Adding a handcoded function like `getValue()` via `astrule` or the
+  TOP-mechanism allows to use `SignedNatLiteral` like a token.
+* Defined in: `MCCommonLiterals.mc4` and other literals grammars.
+
+ 
 
 ## Designing Symbols, Scopes and SymbolTables 
 
