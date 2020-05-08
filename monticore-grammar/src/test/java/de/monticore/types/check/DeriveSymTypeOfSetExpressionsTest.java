@@ -2,16 +2,16 @@
 package de.monticore.types.check;
 
 import com.google.common.collect.Lists;
+import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
-import de.monticore.expressions.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsSymTabMill;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsScope;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.prettyprint.CombineExpressionsWithLiteralsPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.types.typesymbols.TypeSymbolsMill;
 import de.monticore.types.typesymbols._symboltable.FieldSymbol;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
-import de.monticore.types.typesymbols._symboltable.TypeSymbolsSymTabMill;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
@@ -45,7 +45,7 @@ public class DeriveSymTypeOfSetExpressionsTest {
     // Setting up a Scope Infrastructure (without a global Scope)
     DefsTypeBasic.setup();
     scope =
-        CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsScopeBuilder()
+        CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder()
             .setEnclosingScope(null)       // No enclosing Scope: Search ending here
             .setExportingSymbols(true)
             .setAstNode(null)
@@ -111,8 +111,8 @@ public class DeriveSymTypeOfSetExpressionsTest {
   public void testSetInExpression() throws IOException{
     //TEST 1: double in Set<double>
     TypeSymbolLoader loader = new TypeSymbolLoader("Set",scope);
-    TypeSymbol setDoubleType = TypeSymbolsSymTabMill.typeSymbolBuilder()
-        .setSpannedScope(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build())
+    TypeSymbol setDoubleType = TypeSymbolsMill.typeSymbolBuilder()
+        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setName("Set")
         .setTypeParameterList(Lists.newArrayList(typeVariable("T")))
         .setEnclosingScope(scope)
@@ -142,8 +142,8 @@ public class DeriveSymTypeOfSetExpressionsTest {
   public void testInvalidSetInExpression() throws IOException{
     //TEST 1: Error: double in Set<int>
     TypeSymbolLoader loader = new TypeSymbolLoader("Set",scope);
-    TypeSymbol setIntType = TypeSymbolsSymTabMill.typeSymbolBuilder()
-        .setSpannedScope(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build())
+    TypeSymbol setIntType = TypeSymbolsMill.typeSymbolBuilder()
+        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setName("Set")
         .setTypeParameterList(Lists.newArrayList(typeVariable("T")))
         .setEnclosingScope(scope)
@@ -172,8 +172,8 @@ public class DeriveSymTypeOfSetExpressionsTest {
   public void testIsInExpression() throws IOException{
     //TEST 1: double in Set<double>
     TypeSymbolLoader loader = new TypeSymbolLoader("Set",scope);
-    TypeSymbol setDoubleType = TypeSymbolsSymTabMill.typeSymbolBuilder()
-        .setSpannedScope(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build())
+    TypeSymbol setDoubleType = TypeSymbolsMill.typeSymbolBuilder()
+        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setName("Set")
         .setTypeParameterList(Lists.newArrayList(typeVariable("T")))
         .setEnclosingScope(scope)
@@ -203,8 +203,8 @@ public class DeriveSymTypeOfSetExpressionsTest {
   public void testInvalidIsInExpression() throws IOException{
     //TEST 1: Error: double isin Set<int>
     TypeSymbolLoader loader = new TypeSymbolLoader("Set",scope);
-    TypeSymbol setIntType = TypeSymbolsSymTabMill.typeSymbolBuilder()
-        .setSpannedScope(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build())
+    TypeSymbol setIntType = TypeSymbolsMill.typeSymbolBuilder()
+        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setName("Set")
         .setTypeParameterList(Lists.newArrayList(typeVariable("T")))
         .setEnclosingScope(scope)
@@ -233,8 +233,8 @@ public class DeriveSymTypeOfSetExpressionsTest {
   public void testUnionExpressionInfix() throws IOException{
     //create Set<int> and Set<double>
     TypeSymbolLoader loader = new TypeSymbolLoader("Set",scope);
-    TypeSymbol setinttype = TypeSymbolsSymTabMill.typeSymbolBuilder()
-        .setSpannedScope(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build())
+    TypeSymbol setinttype = TypeSymbolsMill.typeSymbolBuilder()
+        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setName("Set")
         .setTypeParameterList(Lists.newArrayList(typeVariable("T")))
         .setEnclosingScope(scope)
@@ -268,8 +268,8 @@ public class DeriveSymTypeOfSetExpressionsTest {
   public void testInvalidUnionInfixExpression() throws IOException{
     //TEST 1: Error: no SetType union SetType
     TypeSymbolLoader loader = new TypeSymbolLoader("Set",scope);
-    TypeSymbol setIntType = TypeSymbolsSymTabMill.typeSymbolBuilder()
-        .setSpannedScope(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build())
+    TypeSymbol setIntType = TypeSymbolsMill.typeSymbolBuilder()
+        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setName("Set")
         .setTypeParameterList(Lists.newArrayList(typeVariable("T")))
         .setEnclosingScope(scope)
@@ -297,8 +297,8 @@ public class DeriveSymTypeOfSetExpressionsTest {
   public void testInvalidUnionInfixExpression2() throws IOException{
     //TEST 2: Error: set<boolean> union set<int>
     TypeSymbolLoader loader = new TypeSymbolLoader("Set",scope);
-    TypeSymbol setIntType = TypeSymbolsSymTabMill.typeSymbolBuilder()
-        .setSpannedScope(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build())
+    TypeSymbol setIntType = TypeSymbolsMill.typeSymbolBuilder()
+        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setName("Set")
         .setTypeParameterList(Lists.newArrayList(typeVariable("T")))
         .setEnclosingScope(scope)
@@ -330,8 +330,8 @@ public class DeriveSymTypeOfSetExpressionsTest {
   public void testIntersectionExpressionInfix() throws IOException{
     //create Set<int> and Set<double>
     TypeSymbolLoader loader = new TypeSymbolLoader("Set",scope);
-    TypeSymbol setinttype = TypeSymbolsSymTabMill.typeSymbolBuilder()
-        .setSpannedScope(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build())
+    TypeSymbol setinttype = TypeSymbolsMill.typeSymbolBuilder()
+        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setName("Set")
         .setTypeParameterList(Lists.newArrayList(typeVariable("T")))
         .setEnclosingScope(scope)
@@ -365,8 +365,8 @@ public class DeriveSymTypeOfSetExpressionsTest {
   public void testInvalidIntersectionInfixExpression() throws IOException{
     //TEST 1: Error: no SetType intersect SetType
     TypeSymbolLoader loader = new TypeSymbolLoader("Set",scope);
-    TypeSymbol setIntType = TypeSymbolsSymTabMill.typeSymbolBuilder()
-        .setSpannedScope(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build())
+    TypeSymbol setIntType = TypeSymbolsMill.typeSymbolBuilder()
+        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setName("Set")
         .setTypeParameterList(Lists.newArrayList(typeVariable("T")))
         .setEnclosingScope(scope)
@@ -395,8 +395,8 @@ public class DeriveSymTypeOfSetExpressionsTest {
   public void testInvalidIntersectionInfixExpression2() throws IOException{
     //TEST 2: Error: set<boolean> intersect set<int>
     TypeSymbolLoader loader = new TypeSymbolLoader("Set",scope);
-    TypeSymbol setIntType = TypeSymbolsSymTabMill.typeSymbolBuilder()
-        .setSpannedScope(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build())
+    TypeSymbol setIntType = TypeSymbolsMill.typeSymbolBuilder()
+        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setName("Set")
         .setTypeParameterList(Lists.newArrayList(typeVariable("T")))
         .setEnclosingScope(scope)

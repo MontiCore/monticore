@@ -4,8 +4,8 @@ package mc.typescalculator;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.types.check.*;
+import de.monticore.types.typesymbols.TypeSymbolsMill;
 import de.monticore.types.typesymbols._symboltable.TypeSymbolsScope;
-import de.monticore.types.typesymbols._symboltable.TypeSymbolsSymTabMill;
 import mc.typescalculator.myownlanguage._visitor.MyOwnLanguageDelegatorVisitor;
 
 import java.util.Optional;
@@ -46,7 +46,6 @@ public class DeriveSymTypeOfMyOwnLanguage
   @Override
   public void init() {
     typeCheckResult = new TypeCheckResult();
-    TypeSymbolsScope scope = TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build();
     deriveSymTypeOfCommonExpressions = new DeriveSymTypeOfCommonExpressions();
     deriveSymTypeOfCommonExpressions.setTypeCheckResult(typeCheckResult);
     setCommonExpressionsVisitor(deriveSymTypeOfCommonExpressions);

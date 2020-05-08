@@ -2,6 +2,7 @@
 package de.monticore.types.check;
 
 import com.google.common.collect.Lists;
+import de.monticore.types.typesymbols.TypeSymbolsMill;
 import de.monticore.types.typesymbols._symboltable.*;
 import de.se_rwth.commons.logging.Log;
 
@@ -102,7 +103,7 @@ public abstract class SymTypeExpression {
         fieldSymbols.add(parameter.deepClone());
       }
       MethodSymbol copiedMethodSymbol = method.deepClone();
-      TypeSymbolsScope scope = TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build();
+      TypeSymbolsScope scope = TypeSymbolsMill.typeSymbolsScopeBuilder().build();
       for(FieldSymbol parameter: fieldSymbols){
         scope.add(parameter);
       }

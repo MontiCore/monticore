@@ -2,12 +2,14 @@
 package de.monticore.types.check;
 
 import com.google.common.collect.Lists;
+import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.*;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.prettyprint.CombineExpressionsWithLiteralsPrettyPrinter;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.types.typesymbols.TypeSymbolsMill;
 import de.monticore.types.typesymbols._symboltable.*;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -315,29 +317,29 @@ public class DeriveSymTypeOfCommonExpressionTest {
   public void init_basic() {
     // No enclosing Scope: Search ending here
 
-    scope = CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsScopeBuilder()
+    scope = CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder()
         .setEnclosingScope(null)
         .setExportingSymbols(true)
         .setAstNode(null)
         .setName("Phantasy2")
         .build();
 
-    TypeSymbol person = TypeSymbolsSymTabMill.typeSymbolBuilder()
+    TypeSymbol person = TypeSymbolsMill.typeSymbolBuilder()
         .setName("Person")
-        .setSpannedScope(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build())
+        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setEnclosingScope(scope)
         .build();
     add2scope(scope, person);
-    TypeSymbol student = TypeSymbolsSymTabMill.typeSymbolBuilder()
+    TypeSymbol student = TypeSymbolsMill.typeSymbolBuilder()
         .setName("Student")
-        .setSpannedScope(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build())
+        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setSuperTypeList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Person",scope)))
         .setEnclosingScope(scope)
         .build();
     add2scope(scope, student);
-    TypeSymbol firstsemesterstudent = TypeSymbolsSymTabMill.typeSymbolBuilder()
+    TypeSymbol firstsemesterstudent = TypeSymbolsMill.typeSymbolBuilder()
         .setName("FirstSemesterStudent")
-        .setSpannedScope(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build())
+        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setSuperTypeList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student",scope)))
         .setEnclosingScope(scope)
         .build();
@@ -670,7 +672,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
    * testing (mostly used for FieldAccessExpressions)
    */
   public void init_advanced() {
-    CombineExpressionsWithLiteralsGlobalScope globalScope = CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsGlobalScopeBuilder()
+    CombineExpressionsWithLiteralsGlobalScope globalScope = CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsGlobalScopeBuilder()
         .setCombineExpressionsWithLiteralsLanguage(
             new CombineExpressionsWithLiteralsLanguage("CombineExpressionsWithLiterals","ce") {
               @Override
@@ -681,58 +683,58 @@ public class DeriveSymTypeOfCommonExpressionTest {
         .setModelPath(new ModelPath())
         .build();
 
-    CombineExpressionsWithLiteralsArtifactScope artifactScope1 = CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsArtifactScopeBuilder()
+    CombineExpressionsWithLiteralsArtifactScope artifactScope1 = CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsArtifactScopeBuilder()
         .setEnclosingScope(globalScope)
         .setImportList(Lists.newArrayList())
         .setPackageName("")
         .build();
-    CombineExpressionsWithLiteralsArtifactScope artifactScope2 = CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsArtifactScopeBuilder()
+    CombineExpressionsWithLiteralsArtifactScope artifactScope2 = CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsArtifactScopeBuilder()
         .setEnclosingScope(globalScope)
         .setImportList(Lists.newArrayList())
         .setPackageName("")
         .build();
-    CombineExpressionsWithLiteralsArtifactScope artifactScope3 = CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsArtifactScopeBuilder()
+    CombineExpressionsWithLiteralsArtifactScope artifactScope3 = CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsArtifactScopeBuilder()
         .setEnclosingScope(globalScope)
         .setImportList(Lists.newArrayList())
         .setPackageName("types2")
         .build();
-    CombineExpressionsWithLiteralsArtifactScope artifactScope4 = CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsArtifactScopeBuilder()
+    CombineExpressionsWithLiteralsArtifactScope artifactScope4 = CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsArtifactScopeBuilder()
         .setEnclosingScope(artifactScope3)
         .setImportList(Lists.newArrayList())
         .setPackageName("types3")
         .build();
-    scope = CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsScopeBuilder()
+    scope = CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder()
         .setEnclosingScope(artifactScope1)
         .setExportingSymbols(true)
         .setAstNode(null)
         .setName("Phantasy2")
         .build();
     // No enclosing Scope: Search ending here
-    CombineExpressionsWithLiteralsScope scope2 = CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsScopeBuilder()
+    CombineExpressionsWithLiteralsScope scope2 = CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder()
         .setName("types")
         .setEnclosingScope(artifactScope2)
         .build();
-    CombineExpressionsWithLiteralsScope scope3 = CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsScopeBuilder()
+    CombineExpressionsWithLiteralsScope scope3 = CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder()
         .setName("types2")
         .setEnclosingScope(artifactScope4)
         .build();
     scope3.setEnclosingScope(artifactScope4);
 
     // some FieldSymbols (ie. Variables, Attributes)
-    TypeSymbol person = TypeSymbolsSymTabMill.typeSymbolBuilder()
+    TypeSymbol person = TypeSymbolsMill.typeSymbolBuilder()
         .setName("Person")
-        .setSpannedScope(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build())
+        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setEnclosingScope(scope)
         .build();
-    TypeSymbol student = TypeSymbolsSymTabMill.typeSymbolBuilder()
+    TypeSymbol student = TypeSymbolsMill.typeSymbolBuilder()
         .setName("Student")
-        .setSpannedScope(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build())
+        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setSuperTypeList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Person",scope)))
         .setEnclosingScope(scope)
         .build();
-    TypeSymbol firstsemesterstudent = TypeSymbolsSymTabMill.typeSymbolBuilder()
+    TypeSymbol firstsemesterstudent = TypeSymbolsMill.typeSymbolBuilder()
         .setName("FirstSemesterStudent")
-        .setSpannedScope(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build())
+        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setSuperTypeList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student",scope)))
         .setEnclosingScope(scope)
         .build();
@@ -765,23 +767,23 @@ public class DeriveSymTypeOfCommonExpressionTest {
     ms.setIsStatic(true);
     MethodSymbol ms1 = add(method("pay", _voidSymType), field("cost",_intSymType));
     ms1.setIsStatic(true);
-    TypeSymbol testType = TypeSymbolsSymTabMill.typeSymbolBuilder()
+    TypeSymbol testType = TypeSymbolsMill.typeSymbolBuilder()
         .setName("Test")
-        .setSpannedScope(CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
         .setMethodList(Lists.newArrayList(ms,ms1))
         .setFieldList(Lists.newArrayList(fs))
         .setEnclosingScope(scope)
         .build();
-    TypeSymbol testType2 = TypeSymbolsSymTabMill.typeSymbolBuilder()
+    TypeSymbol testType2 = TypeSymbolsMill.typeSymbolBuilder()
         .setName("Test")
-        .setSpannedScope(CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
         .setMethodList(Lists.newArrayList(ms,ms1))
         .setFieldList(Lists.newArrayList(fs))
         .setEnclosingScope(scope2)
         .build();
-    TypeSymbol testType3 = TypeSymbolsSymTabMill.typeSymbolBuilder()
+    TypeSymbol testType3 = TypeSymbolsMill.typeSymbolBuilder()
         .setName("Test")
-        .setSpannedScope(CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
         .setMethodList(Lists.newArrayList(ms,ms1))
         .setFieldList(Lists.newArrayList(fs))
         .setEnclosingScope(scope3)
@@ -790,9 +792,9 @@ public class DeriveSymTypeOfCommonExpressionTest {
 
     FieldSymbol testVariable = field("testVariable",_shortSymType);
     testVariable.setIsStatic(true);
-    TypeSymbol testInnerType = TypeSymbolsSymTabMill.typeSymbolBuilder()
+    TypeSymbol testInnerType = TypeSymbolsMill.typeSymbolBuilder()
         .setName("TestInnerType")
-        .setSpannedScope(CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
         .setFieldList(Lists.newArrayList(testVariable))
         .setEnclosingScope(testScope)
         .build();
@@ -919,7 +921,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
    */
   public void init_inheritance() {
     // No enclosing Scope: Search ending here
-    scope = CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsScopeBuilder()
+    scope = CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder()
         .setEnclosingScope(null)
         .setExportingSymbols(true)
         .setAstNode(null)
@@ -930,9 +932,9 @@ public class DeriveSymTypeOfCommonExpressionTest {
     //super
     MethodSymbol add = add(method("add", _voidSymType), field("element", _StringSymType));
     FieldSymbol field = field("field", _booleanSymType);
-    TypeSymbol superclass = TypeSymbolsSymTabMill.typeSymbolBuilder()
+    TypeSymbol superclass = TypeSymbolsMill.typeSymbolBuilder()
         .setName("AList")
-        .setSpannedScope(CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
         .setMethodList(Lists.newArrayList(add))
         .setFieldList(Lists.newArrayList(field))
         .setEnclosingScope(scope)
@@ -941,9 +943,9 @@ public class DeriveSymTypeOfCommonExpressionTest {
     SymTypeExpression supclass = SymTypeExpressionFactory.createTypeObject("AList", scope);
 
     //sub
-    TypeSymbol subclass = TypeSymbolsSymTabMill.typeSymbolBuilder()
+    TypeSymbol subclass = TypeSymbolsMill.typeSymbolBuilder()
         .setName("MyList")
-        .setSpannedScope(CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
         .setSuperTypeList(Lists.newArrayList(supclass))
         .setEnclosingScope(scope)
         .build();
@@ -954,9 +956,9 @@ public class DeriveSymTypeOfCommonExpressionTest {
     add2scope(scope, myList);
 
     //subsub
-    TypeSymbol subsubclass = TypeSymbolsSymTabMill.typeSymbolBuilder()
+    TypeSymbol subsubclass = TypeSymbolsMill.typeSymbolBuilder()
         .setName("MySubList")
-        .setSpannedScope(CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
         .setSuperTypeList(Lists.newArrayList(sub))
         .setEnclosingScope(scope)
         .build();
@@ -1007,7 +1009,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
    */
   public void init_scope() {
     // No enclosing Scope: Search ending here
-    scope = CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsScopeBuilder()
+    scope = CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder()
         .setEnclosingScope(null)
         .setExportingSymbols(true)
         .setAstNode(null)
@@ -1029,8 +1031,8 @@ public class DeriveSymTypeOfCommonExpressionTest {
         field("x", SymTypeExpressionFactory.createTypeVariable("T", scope))
     );
     FieldSymbol nextField = field("next", SymTypeExpressionFactory.createTypeVariable("T", scope));
-    TypeSymbol sym = TypeSymbolsSymTabMill.typeSymbolBuilder()
-        .setSpannedScope(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build())
+    TypeSymbol sym = TypeSymbolsMill.typeSymbolBuilder()
+        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setName("List")
         .setMethodList(Lists.newArrayList(addMethod))
         .setFieldList(Lists.newArrayList(nextField))
@@ -1048,8 +1050,8 @@ public class DeriveSymTypeOfCommonExpressionTest {
     SymTypeExpression listTSymTypeExp = SymTypeExpressionFactory
         .createGenerics("List", scope,
             Lists.newArrayList(SymTypeExpressionFactory.createTypeVariable("T", scope)));
-    TypeSymbol subsym = TypeSymbolsSymTabMill.typeSymbolBuilder()
-        .setSpannedScope(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build())
+    TypeSymbol subsym = TypeSymbolsMill.typeSymbolBuilder()
+        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setName("ArrayList")
         .setSuperTypeList(Lists.newArrayList(listTSymTypeExp))
         .setTypeParameterList(Lists.newArrayList(arrayListT))
@@ -1106,8 +1108,8 @@ public class DeriveSymTypeOfCommonExpressionTest {
     );
     FieldSymbol f1 = field("f1", SymTypeExpressionFactory.createTypeVariable("S", scope));
     FieldSymbol f2 = field("f2", SymTypeExpressionFactory.createTypeVariable("V", scope));
-    TypeSymbol genSup = TypeSymbolsSymTabMill.typeSymbolBuilder()
-        .setSpannedScope(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build())
+    TypeSymbol genSup = TypeSymbolsMill.typeSymbolBuilder()
+        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setName("GenSup")
         .setMethodList(Lists.newArrayList(load,load.deepClone()))
         .setFieldList(Lists.newArrayList(f1,f2))
@@ -1126,8 +1128,8 @@ public class DeriveSymTypeOfCommonExpressionTest {
     SymTypeExpression genTypeSV = SymTypeExpressionFactory.
         createGenerics("GenSup", scope, Lists.newArrayList(SymTypeExpressionFactory.
             createTypeVariable("S", scope), SymTypeExpressionFactory.createTypeVariable("V", scope)));
-    TypeSymbol genSub = TypeSymbolsSymTabMill.typeSymbolBuilder()
-        .setSpannedScope(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build())
+    TypeSymbol genSub = TypeSymbolsMill.typeSymbolBuilder()
+        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setName("GenSub")
         .setSuperTypeList(Lists.newArrayList(genTypeSV))
         .setFieldList(Lists.newArrayList(f1.deepClone()))
@@ -1147,8 +1149,8 @@ public class DeriveSymTypeOfCommonExpressionTest {
     SymTypeExpression genSubTypeSV = SymTypeExpressionFactory.
         createGenerics("GenSub", scope, Lists.newArrayList(SymTypeExpressionFactory.createTypeVariable("S", scope),
             SymTypeExpressionFactory.createTypeVariable("V", scope)));
-    TypeSymbol genSubSub = TypeSymbolsSymTabMill.typeSymbolBuilder()
-        .setSpannedScope(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build())
+    TypeSymbol genSubSub = TypeSymbolsMill.typeSymbolBuilder()
+        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setName("GenSubSub")
         .setSuperTypeList(Lists.newArrayList(genSubTypeSV))
         .setTypeParameterList(Lists.newArrayList(t2,t1))
@@ -1230,8 +1232,8 @@ public class DeriveSymTypeOfCommonExpressionTest {
         field("a", SymTypeExpressionFactory.createTypeVariable("A", scope))
     );
     FieldSymbol next2 = field("next", SymTypeExpressionFactory.createTypeVariable("A", scope));
-    TypeSymbol fixGen = TypeSymbolsSymTabMill.typeSymbolBuilder()
-        .setSpannedScope(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build())
+    TypeSymbol fixGen = TypeSymbolsMill.typeSymbolBuilder()
+        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setName("FixGen")
         .setMethodList(Lists.newArrayList(add2))
         .setFieldList(Lists.newArrayList(next2))
@@ -1248,8 +1250,8 @@ public class DeriveSymTypeOfCommonExpressionTest {
     TypeVarSymbol n = typeVariable("N");
     add2scope(scope, n);
     MethodSymbol calculate = method("calculate", SymTypeExpressionFactory.createTypeVariable("N", scope));
-    TypeSymbol varGenType = TypeSymbolsSymTabMill.typeSymbolBuilder()
-        .setSpannedScope(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build())
+    TypeSymbol varGenType = TypeSymbolsMill.typeSymbolBuilder()
+        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setName("VarGen")
         .setMethodList(Lists.newArrayList(calculate))
         .setSuperTypeList(Lists.newArrayList(fixGenType))
@@ -1298,8 +1300,8 @@ public class DeriveSymTypeOfCommonExpressionTest {
         field("x", SymTypeExpressionFactory.createTypeVariable("T", scope))
     );
     FieldSymbol nextField = field("next", SymTypeExpressionFactory.createTypeVariable("T", scope));
-    TypeSymbol sym = TypeSymbolsSymTabMill.typeSymbolBuilder()
-        .setSpannedScope(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build())
+    TypeSymbol sym = TypeSymbolsMill.typeSymbolBuilder()
+        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setName("List")
         .setMethodList(Lists.newArrayList(addMethod))
         .setFieldList(Lists.newArrayList(nextField))
@@ -1322,8 +1324,8 @@ public class DeriveSymTypeOfCommonExpressionTest {
         method("insert", SymTypeExpressionFactory.createTypeVariable("T", scope)),
         field("x", SymTypeExpressionFactory.createTypeVariable("F", scope))
     );
-    TypeSymbol moreGenType = TypeSymbolsSymTabMill.typeSymbolBuilder()
-        .setSpannedScope(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build())
+    TypeSymbol moreGenType = TypeSymbolsMill.typeSymbolBuilder()
+        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setName("MoreGen")
         .setSuperTypeList(Lists.newArrayList(listTSymTypeExp))
         .setMethodList(Lists.newArrayList(insert))
@@ -1372,8 +1374,8 @@ public class DeriveSymTypeOfCommonExpressionTest {
         field("x", SymTypeExpressionFactory.createTypeVariable("T", scope))
     );
     FieldSymbol nextField = field("next", SymTypeExpressionFactory.createTypeVariable("T", scope));
-    TypeSymbol sym = TypeSymbolsSymTabMill.typeSymbolBuilder()
-        .setSpannedScope(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build())
+    TypeSymbol sym = TypeSymbolsMill.typeSymbolBuilder()
+        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setName("List")
         .setMethodList(Lists.newArrayList(addMethod))
         .setFieldList(Lists.newArrayList(nextField))
@@ -1387,8 +1389,8 @@ public class DeriveSymTypeOfCommonExpressionTest {
     add2scope(scope, listVar);
 
     //subtype without generic parameter NotGen extends List<int>
-    TypeSymbol notgeneric = TypeSymbolsSymTabMill.typeSymbolBuilder()
-        .setSpannedScope(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build())
+    TypeSymbol notgeneric = TypeSymbolsMill.typeSymbolBuilder()
+        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setName("NotGen")
         .setSuperTypeList(Lists.newArrayList(listIntSymTypeExp))
         .setEnclosingScope(scope)
@@ -1427,8 +1429,8 @@ public class DeriveSymTypeOfCommonExpressionTest {
     add2scope(scope, t);
     MethodSymbol testA = method("testA", SymTypeExpressionFactory.createTypeVariable("T", scope));
     FieldSymbol currentA = field("currentA", SymTypeExpressionFactory.createTypeVariable("T", scope));
-    TypeSymbol supA = TypeSymbolsSymTabMill.typeSymbolBuilder()
-        .setSpannedScope(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build())
+    TypeSymbol supA = TypeSymbolsMill.typeSymbolBuilder()
+        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setName("SupA")
         .setMethodList(Lists.newArrayList(testA))
         .setFieldList(Lists.newArrayList(currentA))
@@ -1443,8 +1445,8 @@ public class DeriveSymTypeOfCommonExpressionTest {
     t = typeVariable("T");
     MethodSymbol testB = method("testB", SymTypeExpressionFactory.createTypeVariable("T", scope));
     FieldSymbol currentB = field("currentB", SymTypeExpressionFactory.createTypeVariable("T", scope));
-    TypeSymbol supB = TypeSymbolsSymTabMill.typeSymbolBuilder()
-        .setSpannedScope(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build())
+    TypeSymbol supB = TypeSymbolsMill.typeSymbolBuilder()
+        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setName("SupB")
         .setMethodList(Lists.newArrayList(testB))
         .setFieldList(Lists.newArrayList(currentB))
@@ -1457,8 +1459,8 @@ public class DeriveSymTypeOfCommonExpressionTest {
 
     //subType SubA<T>
     t = typeVariable("T");
-    TypeSymbol subA = TypeSymbolsSymTabMill.typeSymbolBuilder()
-        .setSpannedScope(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build())
+    TypeSymbol subA = TypeSymbolsMill.typeSymbolBuilder()
+        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setName("SubA")
         .setSuperTypeList(Lists.newArrayList(supATExpr, supBTExpr))
         .setTypeParameterList(Lists.newArrayList(t))
@@ -1508,8 +1510,8 @@ public class DeriveSymTypeOfCommonExpressionTest {
     add2scope(scope, t);
     MethodSymbol testA = method("testA", SymTypeExpressionFactory.createTypeVariable("T", scope));
     FieldSymbol currentA = field("currentA", SymTypeExpressionFactory.createTypeVariable("T", scope));
-    TypeSymbol supA = TypeSymbolsSymTabMill.typeSymbolBuilder()
-        .setSpannedScope(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build())
+    TypeSymbol supA = TypeSymbolsMill.typeSymbolBuilder()
+        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setName("SupA")
         .setMethodList(Lists.newArrayList(testA))
         .setFieldList(Lists.newArrayList(currentA))
@@ -1523,8 +1525,8 @@ public class DeriveSymTypeOfCommonExpressionTest {
     TypeVarSymbol s = typeVariable("S");
     MethodSymbol testB = method("testB", SymTypeExpressionFactory.createTypeVariable("S", scope));
     FieldSymbol currentB = field("currentB", SymTypeExpressionFactory.createTypeVariable("S", scope));
-    TypeSymbol supB = TypeSymbolsSymTabMill.typeSymbolBuilder()
-        .setSpannedScope(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build())
+    TypeSymbol supB = TypeSymbolsMill.typeSymbolBuilder()
+        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setName("SupB")
         .setMethodList(Lists.newArrayList(testB))
         .setFieldList(Lists.newArrayList(currentB))
@@ -1538,8 +1540,8 @@ public class DeriveSymTypeOfCommonExpressionTest {
     //subType SubA<T>
     t = typeVariable("T");
     s = typeVariable("S");
-    TypeSymbol subA = TypeSymbolsSymTabMill.typeSymbolBuilder()
-        .setSpannedScope(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build())
+    TypeSymbol subA = TypeSymbolsMill.typeSymbolBuilder()
+        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setName("SubA")
         .setSuperTypeList(Lists.newArrayList(supATExpr, supBTExpr))
         .setTypeParameterList(Lists.newArrayList(s, t))
@@ -1584,16 +1586,16 @@ public class DeriveSymTypeOfCommonExpressionTest {
 
     //super
     FieldSymbol elementField = field("element", _StringSymType);
-    MethodSymbol add = TypeSymbolsSymTabMill.methodSymbolBuilder()
+    MethodSymbol add = TypeSymbolsMill.methodSymbolBuilder()
         .setReturnType(_voidSymType)
         .setName("add")
         .build();
-    add.setSpannedScope(CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsScopeBuilder().build());
+    add.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
     elementField.setIsParameter(true);
     add.getSpannedScope().add(elementField);
     FieldSymbol field = field("field", _booleanSymType);
-    TypeSymbol superclass = TypeSymbolsSymTabMill.typeSymbolBuilder()
-        .setSpannedScope(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build())
+    TypeSymbol superclass = TypeSymbolsMill.typeSymbolBuilder()
+        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setName("AList")
         .setMethodList(Lists.newArrayList(add))
         .setFieldList(Lists.newArrayList(field))
@@ -1603,8 +1605,8 @@ public class DeriveSymTypeOfCommonExpressionTest {
     SymTypeExpression supclass = SymTypeExpressionFactory.createTypeObject("AList", scope);
 
     //sub
-    TypeSymbol subclass = TypeSymbolsSymTabMill.typeSymbolBuilder()
-        .setSpannedScope(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build())
+    TypeSymbol subclass = TypeSymbolsMill.typeSymbolBuilder()
+        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setName("MyList")
         .setSuperTypeList(Lists.newArrayList(supclass))
         .setEnclosingScope(scope)
@@ -1617,13 +1619,13 @@ public class DeriveSymTypeOfCommonExpressionTest {
 
     //subsub
     FieldSymbol myNext = field("myNext", _StringSymType);
-    MethodSymbol myAdd = TypeSymbolsSymTabMill.methodSymbolBuilder()
+    MethodSymbol myAdd = TypeSymbolsMill.methodSymbolBuilder()
         .setName("myAdd")
         .setReturnType(_voidSymType)
         .build();
-    myAdd.setSpannedScope(CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsScopeBuilder().build());
-    TypeSymbol subsubclass = TypeSymbolsSymTabMill.typeSymbolBuilder()
-        .setSpannedScope(CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsScopeBuilder().build())
+    myAdd.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
+    TypeSymbol subsubclass = TypeSymbolsMill.typeSymbolBuilder()
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
         .setName("MySubList")
         .setMethodList(Lists.newArrayList(myAdd))
         .setFieldList(Lists.newArrayList(myNext))
@@ -1675,16 +1677,16 @@ public class DeriveSymTypeOfCommonExpressionTest {
     atest.setIsStatic(true);
     FieldSymbol afield = field("field",_intSymType);
     afield.setIsStatic(true);
-    TypeSymbol a = TypeSymbolsSymTabMill.typeSymbolBuilder()
-        .setSpannedScope(CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsScopeBuilder().build())
+    TypeSymbol a = TypeSymbolsMill.typeSymbolBuilder()
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
         .setName("A")
         .setFieldList(Lists.newArrayList(afield))
         .setMethodList(Lists.newArrayList(atest))
         .setEnclosingScope(scope)
         .build();
     //A has static inner type D
-    TypeSymbol aD = TypeSymbolsSymTabMill.typeSymbolBuilder()
-        .setSpannedScope(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build())
+    TypeSymbol aD = TypeSymbolsMill.typeSymbolBuilder()
+        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setName("D")
         .setEnclosingScope(a.getSpannedScope())
         .build();
@@ -1695,16 +1697,16 @@ public class DeriveSymTypeOfCommonExpressionTest {
 
     MethodSymbol btest = method("test",_voidSymType);
     FieldSymbol bfield = field("field",_intSymType);
-    TypeSymbol b = TypeSymbolsSymTabMill.typeSymbolBuilder()
-        .setSpannedScope(CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsScopeBuilder().build())
+    TypeSymbol b = TypeSymbolsMill.typeSymbolBuilder()
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
         .setName("B")
         .setFieldList(Lists.newArrayList(bfield))
         .setMethodList(Lists.newArrayList(btest))
         .setEnclosingScope(scope)
         .build();
     //B has not static inner type D
-    TypeSymbol bD = TypeSymbolsSymTabMill.typeSymbolBuilder()
-        .setSpannedScope(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build())
+    TypeSymbol bD = TypeSymbolsMill.typeSymbolBuilder()
+        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setName("D")
         .setEnclosingScope(b.getSpannedScope())
         .build();
@@ -1715,8 +1717,8 @@ public class DeriveSymTypeOfCommonExpressionTest {
     //B has normal method test, normal field field, normal type D
     //type C extends A and has no method, field or type
     SymTypeExpression aSymType = SymTypeExpressionFactory.createTypeObject("A",scope);
-    TypeSymbol c = TypeSymbolsSymTabMill.typeSymbolBuilder()
-        .setSpannedScope(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build())
+    TypeSymbol c = TypeSymbolsMill.typeSymbolBuilder()
+        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setName("C")
         .setSuperTypeList(Lists.newArrayList(aSymType))
         .setEnclosingScope(scope)

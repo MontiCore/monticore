@@ -3,14 +3,13 @@
 package de.monticore.types.check;
 
 import com.google.common.collect.Lists;
+import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
-import de.monticore.expressions.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsSymTabMill;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsScope;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.prettyprint.CombineExpressionsWithLiteralsPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
-import de.monticore.types.typesymbols._symboltable.TypeSymbolsSymTabMill;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
@@ -45,7 +44,7 @@ public class TypeCheckTest {
     // Setting up a Scope Infrastructure (without a global Scope)
     DefsTypeBasic.setup();
     scope =
-        CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsScopeBuilder()
+        CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder()
             .setEnclosingScope(null)       // No enclosing Scope: Search ending here
             .setExportingSymbols(true)
             .setAstNode(null)

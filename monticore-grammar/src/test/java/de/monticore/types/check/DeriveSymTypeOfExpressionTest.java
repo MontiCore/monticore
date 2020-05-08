@@ -2,12 +2,13 @@
 package de.monticore.types.check;
 
 import com.google.common.collect.Lists;
+import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
-import de.monticore.expressions.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsSymTabMill;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsScope;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.prettyprint.CombineExpressionsWithLiteralsPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.types.typesymbols.TypeSymbolsMill;
 import de.monticore.types.typesymbols._symboltable.*;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
@@ -38,7 +39,7 @@ public class DeriveSymTypeOfExpressionTest {
   public void setupForEach() {
     // Setting up a Scope Infrastructure (without a global Scope)
     scope =
-            CombineExpressionsWithLiteralsSymTabMill.combineExpressionsWithLiteralsScopeBuilder()
+            CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder()
                     .setEnclosingScope(null)       // No enclosing Scope: Search ending here
                 .setExportingSymbols(true)
                     .setAstNode(null)
@@ -74,16 +75,16 @@ public class DeriveSymTypeOfExpressionTest {
 
     //testing for generics
     TypeVarSymbol genArgs = typeVariable("GenArg");
-    TypeSymbol genSuperType = TypeSymbolsSymTabMill.typeSymbolBuilder()
-        .setSpannedScope(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build())
+    TypeSymbol genSuperType = TypeSymbolsMill.typeSymbolBuilder()
+        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setTypeParameterList(Lists.newArrayList(genArgs))
         .setEnclosingScope(scope)
         .setName("GenSuper")
         .build();
     SymTypeExpression genArg = SymTypeExpressionFactory.createTypeVariable(new TypeSymbolLoader("GenArg",scope));
     SymTypeExpression genSuper = SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader("GenSuper",scope),genArg);
-    TypeSymbol genSubType = TypeSymbolsSymTabMill.typeSymbolBuilder()
-        .setSpannedScope(TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build())
+    TypeSymbol genSubType = TypeSymbolsMill.typeSymbolBuilder()
+        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setName("GenSub").setSuperTypeList(Lists.newArrayList(genSuper))
         .setTypeParameterList(Lists.newArrayList(genArgs))
         .setEnclosingScope(scope)

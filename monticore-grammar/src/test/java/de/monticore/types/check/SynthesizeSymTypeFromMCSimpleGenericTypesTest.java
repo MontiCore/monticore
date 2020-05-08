@@ -6,7 +6,7 @@ package de.monticore.types.check;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._ast.ASTMCVoidType;
-import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
+import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mcsimplegenerictypestest._parser.MCSimpleGenericTypesTestParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;

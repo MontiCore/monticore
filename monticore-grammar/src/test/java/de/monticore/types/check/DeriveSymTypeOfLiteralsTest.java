@@ -2,10 +2,9 @@
 package de.monticore.types.check;
 
 import de.monticore.expressions.prettyprint.CombineExpressionsWithLiteralsPrettyPrinter;
-import de.monticore.literals.mccommonliterals._ast.MCCommonLiteralsMill;
+import de.monticore.literals.mccommonliterals.MCCommonLiteralsMill;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.types.typesymbols._symboltable.TypeSymbolsSymTabMill;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
 import org.junit.Test;
