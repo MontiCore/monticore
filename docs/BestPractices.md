@@ -124,15 +124,19 @@ A component grammar is ment for extension. MontiCore therefore provides four(!)
 ### Avoid empty nonterminals (if body is known)
 * From the two variants:
   ```
-    B = "bla" A? ;
-    A = "blubb" ;
+    A = "bla" B? C*;
+    B = "B's body" ;
+    C = "C's body" ;
   ```
   and
   ```
-    B = "bla" A ;
-    A = "blubb"? ;
+    A = "bla" B C;
+    B = ("B's body")? ;
+    C = ("C's body")* ;
   ```
-  we generally prefer the first one. 
+  we generally prefer the first one, i.e. add multiplicities when 
+  using a nonterminal. 
+* This is a matter of taste, but useful to keep this consistent.
 * Sometimes exceptions are useful.
 * Defined by: SVa, BR
 
