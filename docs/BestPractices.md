@@ -149,6 +149,8 @@ A component grammar is ment for extension. MontiCore therefore provides five(!)
   Furthermore, the token parser (i.e. the lexer) does not consider backtracking.
 * If combinations of characters may be split into several token sequences
   this leads to problems. E.g. in `3-2` and `(-2)` the `-` has different roles.
+  Unfortunately these problems also occur when composing languages
+  that make excessive use of (conflicting) token definitions.
 * Solution: instead of defining a complex token like
   ```
     token NegativeNat = "-" Digits;
@@ -157,7 +159,8 @@ A component grammar is ment for extension. MontiCore therefore provides five(!)
   ```
     NegativeNat = negative:["-"] Digits {noSpace()}? 
   ```
-* As wa wrokaround, we use the semantic predicate `{noSpace()}?` that ensures 
+  (where we assume `Digits` is a given token).
+* As a workaround, we use the semantic predicate `{noSpace()}?` that ensures 
   that between the two last processed token there is no space inbetween. 
   If one of the token is optional we have to split the alternatives:
   ```
@@ -167,8 +170,33 @@ A component grammar is ment for extension. MontiCore therefore provides five(!)
   ```
 * Adding a handcoded function like `getValue()` via `astrule` or the
   TOP-mechanism allows to use `SignedNatLiteral` like a token.
-* Defined in: `MCCommonLiterals.mc4` and other literals grammars.
+* *Scannerless parsing* is a principle where the tokens are reduced to simple
+  characters (or character classes, such as `[a-z]`). Scannerless parsing
+  generally avoids this kinds of problems, but is way slower.
+  This kind of solution tries to mediate between the two extremes benefitting 
+  from both approaches.
+* Defined by: MB, in: `MCCommonLiterals.mc4` and other literals grammars.
 
+
+### Avoid **complex tokens** (2)
+
+* Same general problem. In language composition conflicting token may lead to issues.  
+* For example Java allows `42.` as a literal of type float. 
+  UML allows to define cardinalities like `[42..44]`. Composition clashes.
+* Solution: In a Java sublanguage we split the token:
+  ```
+  SignedBasicFloatLiteral =
+     ... 
+     | Digits "." {noSpace()}? ... ;
+  ```
+* This will ensure that `[42..44]` will be parsed like `[ 42 .. 44 ]` 
+  in a language composition as well.
+* It generally seems that overly complex composed tokens may lead to issues 
+  especially if the language allows compact models. Suboptimal tokens may be e.g.
+  `"[["` (vs. nested lists), or
+  `"<-"` (vs. `3 < -2`).
+* Defined by: MC team.
+  
  
 
 ## Designing Symbols, Scopes and SymbolTables 
