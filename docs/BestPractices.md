@@ -121,6 +121,21 @@ A component grammar is ment for extension. MontiCore therefore provides four(!)
   adaptatations option 1, 2, 3 and 5 are in use.
 * Defined by: BR
 
+### Avoid empty nonterminals (if body is known)
+* From the two variants:
+  ```
+    B = "bla" A? ;
+    A = "blubb" ;
+  ```
+  and
+  ```
+    B = "bla" A ;
+    A = "blubb"? ;
+  ```
+  we generally prefer the first one. 
+* Sometimes exceptions are useful.
+* Defined by: SVa, BR
+
 
 
 ## Designing Symbols, Scopes and SymbolTables 
