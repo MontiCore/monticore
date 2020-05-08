@@ -261,7 +261,7 @@ A component grammar is ment for extension. MontiCore therefore provides five(!)
 
 ### Modularity
 * Modularity in general is an important design principle.
-* In the case of model-based code generation, complexity involves the following 
+  In the case of model-based code generation, complexity involves the following 
   dimensions:
   1. Modelling languages
   2. Models
@@ -273,29 +273,29 @@ A component grammar is ment for extension. MontiCore therefore provides five(!)
   The actual organisation will depend on the form of project.
 * We recommend to modularize whenver complexity overwhelms, or extendibility and
   adaptability are important.
-* add 1: MontiCore has powerful techniques for adaptation, extension and 
-  composition of modelling languages (through their grammars). See the
-  [reference manual](http://monticore.de/MontiCore_Reference-Manual.2017.pdf).
-* add 2: MontiCore has powerful techniques for the composition of models --
-  using the same principles as programming languages, namely allowing to keep 
-  the models independent (and thus storable, versionable, reusable) artifacts,
-  while they are semantically and through the generator technology well integrated. 
-  The appropriate approach is based on *using* foreign models, e.g. through 
-  `import` statements and shiring `*symbol*` infrastructures as described in the
-  [reference manual](http://monticore.de/MontiCore_Reference-Manual.2017.pdf).
-* add 3: One general principle for *adaptation* that works for the *generator* 
-  as well as for the *generated code* and the *RTE* is to design each of them
-  like a *framework* with explicit extension points.
-* add 4: Extension ponts may be (empty) hook methods to be filled, Java interfaces
-  to be implemented and their objects injected to the code e.g. via 
-  factories, builders od simply method parameters.
-* add 5: The generator provides (a) many Java classes and methods that can be overridden
-  (b) Freemarker templates hook points to extend and replace templates, and (c)
-  can be customized using a groovy script.
-* add 6: The generated code must be designed appropriately by the generator designer, 
-  by generating builders, mills, etc. for each form of product - quite similar 
-  to MontiCore itself.
-* The RTE is to be designed like a normal framework.
+  1. MontiCore has powerful techniques for adaptation, extension and 
+    composition of *modelling languages* (through their grammars). See the
+    [reference manual](http://monticore.de/MontiCore_Reference-Manual.2017.pdf).
+  2. MontiCore has powerful techniques for the *aggregation of models* --
+    using the same principles as programming languages, namely allowing to keep 
+    the models independent (and thus storable, versionable, reusable) artifacts,
+    while they are semantically and through the generator technology well integrated. 
+    The appropriate approach is based on *using* foreign models, e.g. through 
+    `import` statements and shiring `*symbol*` infrastructures as described in the
+    [reference manual](http://monticore.de/MontiCore_Reference-Manual.2017.pdf).
+* One general principle for *adaptation* that works for the *generator* 
+    as well as for the *generated code* and the *RTE* is to design each of them
+    like a *framework* with explicit extension points.
+    Extension points may be (empty) hook methods to be filled, Java interfaces
+    to be implemented and their objects injected to the code e.g. via 
+    factories, builders od simply method parameters.
+  3. The generator provides (a) many Java classes and methods that can be overridden
+    (b) Freemarker templates hook points to extend and replace templates, and (c)
+    can be customized using a groovy script.
+  4. The generated code must be designed appropriately by the generator designer, 
+    by generating builders, mills, etc. for each form of product - quite similar 
+    to MontiCore itself.
+  5. The RTE is to be designed like a normal framework.
 * Please note: it is not easy to design extensibility from beginning.
   Framework design has shown that this is an iterative optimizing process.
   It must be avoided to design too many extension elements into the system
