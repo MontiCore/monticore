@@ -33,7 +33,7 @@ of the reference manual.
 A component grammar is ment for extension. MontiCore therefore provides four(!) 
   mechanisms that can be used when a sub-grammer shall extend a super-grammar
   briefly discussed here: 
-* Interface in the super-grammar
+1. Interface in the super-grammar
   * Introduce an interface, and allow building of sub-nonterminals in sub-grammars.
   ```
   component grammar A {  
@@ -48,7 +48,7 @@ A component grammar is ment for extension. MontiCore therefore provides four(!)
             An NT `Y` can also implement multiple interfaces (like in Java). 
   * Disadvantage: the designer of `A` explicitly has to design the *hole* `X` 
     and add it it into the production.
-* Overriding (empty) nonterminal in the super-grammar
+2. Overriding (empty) nonterminal from the super-grammar
   * Use a normal nonterminal `X` and override it in a sub-grammar.
   ```
   component grammar A {  
@@ -66,7 +66,7 @@ A component grammar is ment for extension. MontiCore therefore provides four(!)
       and inject it into other places. 
     1. Only one overriding alternative possible (i.e. multiple overriding in 
        subgrammars are allowed, but only the most specific resides) .
-* Extending nonterminal in the super-grammar.
+3. Extending nonterminal from the super-grammar.
   * Use a normal nonterminal `X` and extend it in a sub-grammar.
   ```
   component grammar A {  
@@ -79,10 +79,10 @@ A component grammar is ment for extension. MontiCore therefore provides four(!)
   ```
   * Advantage: *Default* implementation "" exists, no explicit filling needed.
   * Disadvantage: 
-    1. The designer of `A` explicitly has to design the *hole* `X` 
+       The designer of `A` explicitly has to design the *hole* `X` 
        and inject it into other places. 
-    1. `Y` can only adapt one nonterminal.
-* Using `external` nonterminals in the super-grammar.
+  * Care: Extension still allows the (empty) alternative `X`.
+4. Using `external` nonterminals in the super-grammar.
   * Mark nonterminal `X` as external.
   ```
   component grammar A {  
@@ -101,7 +101,7 @@ A component grammar is ment for extension. MontiCore therefore provides four(!)
        instantiated and `a.X` only links to `b.X`.
     2. Only one filling of the `hole` is possible.
 
-* Overriding the whole production.
+5. Overriding the whole production.
   * If you don't want to add a hole at any possible place of extension:
   ```
   component grammar A {  
@@ -117,7 +117,8 @@ A component grammar is ment for extension. MontiCore therefore provides four(!)
   * Disadvantage: 
     1. The entire production is overriden (some redundancy). 
     2. Only one overriding alternative possible. 
-* Combinations are possible.
+* Combinations are possible. Dependend on the anticipated forms of 
+  adaptatations option 1, 2, 3 and 5 are in use.
 * Defined by: BR
 
 
