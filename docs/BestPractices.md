@@ -271,8 +271,14 @@ A component grammar is ment for extension. MontiCore therefore provides five(!)
   6. Software architecture (of the overal system), software stack
 * These dimensions are not orthogonal, but also not completely interelated.
   The actual organisation will depend on the form of project.
-* We recommend to modularize whenver complexity overwhelms, or extendibility and
-  adaptability are important.
+* One general principle for *adaptation* that works for the *generator* 
+  as well as for the *generated code* and the *RTE* is to design each of them
+  like a *framework* with explicit extension points.
+  Extension points may be (empty) hook methods to be filled, Java interfaces
+  to be implemented and their objects injected to the code e.g. via 
+  factories, builders od simply method parameters.
+* We recommend to modularize whenever complexity overwhelms or extendibility and
+  adaptability are important:
   1. MontiCore has powerful techniques for adaptation, extension and 
     composition of *modelling languages* (through their grammars). See the
     [reference manual](http://monticore.de/MontiCore_Reference-Manual.2017.pdf).
@@ -283,18 +289,16 @@ A component grammar is ment for extension. MontiCore therefore provides five(!)
     The appropriate approach is based on *using* foreign models, e.g. through 
     `import` statements and shiring `*symbol*` infrastructures as described in the
     [reference manual](http://monticore.de/MontiCore_Reference-Manual.2017.pdf).
-* One general principle for *adaptation* that works for the *generator* 
-    as well as for the *generated code* and the *RTE* is to design each of them
-    like a *framework* with explicit extension points.
-    Extension points may be (empty) hook methods to be filled, Java interfaces
-    to be implemented and their objects injected to the code e.g. via 
-    factories, builders od simply method parameters.
   3. The generator provides (a) many Java classes and methods that can be overridden
     (b) Freemarker templates hook points to extend and replace templates, and (c)
     can be customized using a groovy script.
+    The generator iteself is often structured along the software architecture / stack,
+    e.g. in frontend, application backend, data base, transport layer, etc.
   4. The generated code must be designed appropriately by the generator designer, 
     by generating builders, mills, etc. for each form of product - quite similar 
     to MontiCore itself.
+    The generated code is usually structured along the components or sub-systems
+    that the software architecture defines.
   5. The RTE is to be designed like a normal framework.
 * Please note: it is not easy to design extensibility from beginning.
   Framework design has shown that this is an iterative optimizing process.
@@ -303,8 +307,5 @@ A component grammar is ment for extension. MontiCore therefore provides five(!)
 * Defined by: BR  
 
   
-
-
-
 
 
