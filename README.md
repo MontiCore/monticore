@@ -21,10 +21,12 @@ grammar languages are rather comfortable.
 To show a little of MontiCore's capabilities, the following (incomplete) 
 grammar might help:
 
-    grammar MyStatemachine extends Statemachine, Types, SetExpressions             // MontiCore grammar 
-    {
-      @Override
-      Transition = from:State ":" Expression? "->" to:State
+    grammar MyStatemachine extends Automata,                  // MontiCore grammar 
+                                   MCBasicTypes, SetExpressions, MCCommonLiterals {     
+      start Automaton;
+    
+      // @Override
+      Transition = from:Name@State ":" Expression? "->" to:Name@State;
 
       // add new variants of expressions
       LogicalNotExpr implements Expression = "!" Expression;
@@ -35,35 +37,34 @@ grammar might help:
       scope LetExpr  implements Expression =
             "let" (VarDeclaration || ",")+ "in" Expression;
 
-      symbol VarDeclaration = Type? Name "=" Expression ;
+      symbol VarDeclaration = MCType? Name "=" Expression ;
     }
 
 The grammar language has a variety of mechanisms to define
 new nonterminals using constants `"!"`, 
 brackets `(..)`, optionals `?`, lists `*`, repetitions `(..||..)+`, etc. 
 The grammar builds an extended version of Statemachines reusing
-existing grammar components, here `Statemachine`, `Types`, and `SetExpressions`.
+existing grammar components, here `Automata`, `MCBasicTypes`, `SetExpressions` and `MCCommonLiterals`.
 The grammar has 5 productions introducing 4 new nonterminals
 and overrides `Transition`,
 which is inherited from `Statemachine`.
-`Transition` becomes an optional `Expression?` as 
-firing condition.
+`Transition` additionally has an optional `Expression?` as firing condition.
 `LogicalNotExpr`, `XorExpr`, and `LetExpr` extend the already existing
 `Expression` nonterminal and add new forms of expressions.
 
 `LetExpr` introduces a new local variable, which is
-visible only in that `scope` (indicated by keyword).
-`VarDeclaration` defines the new place to define `symbol`s (that have a `Name`).
-Heavy infrastructure exists to manage definition of names, visibility, etc.
+visible only in that _scope_ (indicated by keyword).
+`VarDeclaration` defines the new place to define _symbols_ (that have a `Name`).
+There is an extensive infrastructure to manage the definition of names, visibility, etc.
 
 MontiCore compiles the above grammar 
-into `TODO-XXX` classes with in 
-total `TODO-XXX` lines of code that define the complete
+into `78` classes with in 
+total `18629` lines of code that define the complete
 frontend and a larger part of the backend of
 a statemachine processor.
 We now can write statemachines like:
 
-    statemachine PingPong {                                                   // MyStatemachine
+    statemachine PingPong {                                           // MyStatemachine
       state Ping, Pong;
       Ping : (speed > 14km/h && !missedBall) -> Pong
     }
@@ -77,7 +78,7 @@ We include these forms of expressions by importing their grammars.
 Please note that in both cases (extension and
 overwriting existing nonterminals), we do not 
 touch nor copy/paste the predefined grammars,
-but achieve a out-of-the-box reuse.
+but achieve an out-of-the-box reuse.
 Out-of-the-box reuse also includes reuse of
 predefined typechecks, code generation, etc. 
 They only need to be extended to the added variants.
