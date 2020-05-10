@@ -11,8 +11,9 @@ package de.monticore;
 /**
  * Grammar for common elements of the UML/P-Language-Family
  */
-component grammar MCCommon extends de.monticore.Cardinality,
-  de.monticore.Completeness, de.monticore.UMLModifier,
-  de.monticore.UMLStereotype
-{
+component grammar MCCommon
+          extends de.monticore.Cardinality,
+	          de.monticore.Completeness,
+	          de.monticore.UMLModifier,
+                  de.monticore.UMLStereotype                           {
 }
