@@ -9,8 +9,9 @@ package de.monticore;
  *
  * This grammar defines UML Cardinalities of forms "*", "[n..m]" "[n..*]"
  */
-component grammar Cardinality extends
-              de.monticore.MCBasics, de.monticore.literals.MCCommonLiterals
+component grammar Cardinality
+          extends de.monticore.MCBasics,
+	          de.monticore.literals.MCCommonLiterals
 {
 
   /** ASTCardinality represents a Cardinality in the UML/P
