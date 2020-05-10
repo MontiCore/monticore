@@ -1,8 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions;
 
-/* Alpha-version: This is intended to become a MontiCore stable grammar.
- */
+/* Alpha-version: This is intended to become a MontiCore stable grammar. */
 
 /**
  * This grammar defines set expressions like union, intersection etc.
