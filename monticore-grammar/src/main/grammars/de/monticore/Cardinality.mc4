@@ -11,7 +11,7 @@ package de.monticore;
  */
 component grammar Cardinality
           extends de.monticore.MCBasics,
-	          de.monticore.literals.MCCommonLiterals
+                  de.monticore.literals.MCCommonLiterals
 {
 
   /** ASTCardinality represents a Cardinality in the UML/P

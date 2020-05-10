@@ -230,7 +230,7 @@ several smaller grammars are also available:
 * The grammar contains the modifiers that UML provides.
 * This includes "public" "private", "protected", "final", "abstract", "local",
           "derived", "readonly", and "static", but also the 
-	  compact syntactic versions "+", "#", "-", "/" and "?" (for readonly).
+          compact syntactic versions "+", "#", "-", "/" and "?" (for readonly).
 * UML modifiers are not identical to Java modifiers (e.g. "native" or 
   "threadsafe" are missing.)
 

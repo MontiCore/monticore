@@ -13,7 +13,7 @@ package de.monticore;
  */
 component grammar MCCommon
           extends de.monticore.Cardinality,
-	          de.monticore.Completeness,
-	          de.monticore.UMLModifier,
+                  de.monticore.Completeness,
+                  de.monticore.UMLModifier,
                   de.monticore.UMLStereotype                           {
 }
