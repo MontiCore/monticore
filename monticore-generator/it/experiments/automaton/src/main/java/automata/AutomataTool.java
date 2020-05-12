@@ -26,8 +26,6 @@ import java.util.Optional;
  */
 public class AutomataTool {
 
-  public static final Path DEFAULT_SYMBOL_LOCATION = Paths.get("target");
-
   /**
    * Use the single argument for specifying the single input automaton file.
    *
@@ -39,8 +37,8 @@ public class AutomataTool {
     Log.init();
 
     // Retrieve the model name
-    if (args.length != 1) {
-      Log.error("0xEE7400 Please specify only one single path to the input model.");
+    if (args.length != 2) {
+      Log.error("0xEE7400 Please specify 1. the path to the input model and 2. the path to store symbols.");
       return;
     }
     Log.info("Automaton DSL Tool", AutomataTool.class.getName());
@@ -70,7 +68,7 @@ public class AutomataTool {
           AutomataTool.class.getName());
     }
 
-    // setup context condition insfrastructure
+    // setup context condition infrastructure
     AutomataCoCoChecker checker = new AutomataCoCoChecker();
 
     // add a custom set of context conditions
@@ -86,7 +84,7 @@ public class AutomataTool {
     // store artifact scope and its symbols
     AutomataScopeDeSer deser = new AutomataScopeDeSer();
     deser.setSymbolFileExtension("autsym");
-    deser.store(modelTopScope, DEFAULT_SYMBOL_LOCATION);
+    deser.store(modelTopScope, Paths.get(args[1]));
 
     // analyze the model with a visitor
     CountStates cs = new CountStates();
