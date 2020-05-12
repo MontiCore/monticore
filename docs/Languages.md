@@ -255,6 +255,7 @@ and
     * [SI primitive type (exemplary syntax)](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/lang/types/PrimitiveWithSIUnitTypes.mc4)
 * Example projects:
     * [SI Java](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/test/grammars/de/monticore/lang/testsijava/TestSIJava.mc4) 
+* [*detailed description*](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/SIUnits.md)  
 <!-- Status: TODO: Teaser Erstellen, siehe CD4A -->
 
 
