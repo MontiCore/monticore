@@ -238,8 +238,23 @@ and
 
 
 ### [SI Units](https://git.rwth-aachen.de/monticore/languages/siunits) (Alpha: Intention to become stable)
-* Caretaker: EK, NJ, DS
-* allows a language developer to use physical units in a language
+* Caretaker: EK
+* The international system of units (SI units) is a physical unit system widely used in the entire world. It is based on the seven basis units 
+  `s, m, kg, A, K, mol, cd`, but
+  also provides a variety of derived units, which, furthremore, can be refined using prefixes such as m(milli), k(kilo), etc.
+* The SI Unit project aims to deliver SI units to MontiCore-based languages. It provides a grammar defining most relevant SI units 
+  as well as the corresponding prefixes.
+  The language developer can use SIUnitLiterals similar to standard literals to build assignments, expressions etc. 
+  made from literals accompanied by units, e.g. 5 kg, 30 m, etc.
+  Furthermore, the language extensions provides a facility for checking unit compatibility, e.g. in sums 
+  (`5 kg + 5 m` is an invalid expression) and assignments (`a = 5 kg` only if a is declared with a unit compatible with kilogram)
+* Main grammars:
+    * [SI units](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/lang/SIUnits.mc4)
+    * [SI unit literals](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/lang/literals/SIUnitLiterals.mc4)
+    * [SI unit types](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/lang/types/SIUnitTypes.mc4)
+    * [SI primitive type (exemplary syntax)](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/lang/types/PrimitiveWithSIUnitTypes.mc4)
+* Example projects:
+    * [SI Java](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/test/grammars/de/monticore/lang/testsijava/TestSIJava.mc4) 
 <!-- Status: TODO: Teaser Erstellen, siehe CD4A -->
 
 
