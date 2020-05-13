@@ -90,30 +90,36 @@ component grammar MCCommonLiterals extends de.monticore.MCBasics,
          @attribute source String-representation (including '"').
      */
    BasicLongLiteral implements NumericLiteral <1> =
-     Digits key("l" | "L") {noSpace()}?;
+     Digits LongExtension {noSpace()}?;
+
+   LongExtension =
+     key("l" | "L");
 
   /** ASTSignedLongLiteral represents a positive or negative Decimal number.
          @attribute source String-representation (including '"').
      */
    SignedBasicLongLiteral implements SignedNumericLiteral <1> =
-      negative:["-"] Digits {noSpace()}? key("l" | "L") {noSpace()}? |
-                     Digits              key("l" | "L") {noSpace()}?;
+      negative:["-"] Digits {noSpace()}? LongExtension {noSpace()}? |
+                     Digits              LongExtension {noSpace()}?;
 
   /** ASTFloatLiteral represents a positive float.
         @attribute source String-representation (including '"').
     */
   BasicFloatLiteral implements NumericLiteral <1> =
     pre:Digits "." {noSpace()}?
-      post:Digits {noSpace()}? key("f" | "F") {noSpace()}?;
+      post:Digits {noSpace()}? FloatExtension {noSpace()}?;
+
+   FloatExtension =
+     key("f" | "F");
 
   /** ASTSignedFloatLiteral represents a positive or negative float.
         @attribute source String-representation (including '"').
     */
   SignedBasicFloatLiteral implements SignedNumericLiteral <1> =
      negative:["-"] pre:Digits {noSpace()}? "." {noSpace()}?
-         post:Digits {noSpace()}? key("f" | "F") {noSpace()}? |
+         post:Digits {noSpace()}? FloatExtension {noSpace()}? |
                     pre:Digits              "." {noSpace()}?
-         post:Digits {noSpace()}? key("f" | "F") {noSpace()}?;
+         post:Digits {noSpace()}? FloatExtension {noSpace()}?;
 
   /** ASTDoubleLiteral represents a positive double.
         @attribute source String-representation (including '"').
@@ -282,38 +288,5 @@ component grammar MCCommonLiterals extends de.monticore.MCBasics,
     }
   ;
 
-  concept antlr {
-    parserjava {
-      public boolean cmpTokens(int i, String... strs) {
-        for (String str: strs) {
-          if (cmpToken(i, str)) {
-            return true;
-          }
-        }
-        return false;
-      }
-
-      public boolean noSpace(int i) {
-        org.antlr.v4.runtime.Token t1 = _input.LT(i);
-        org.antlr.v4.runtime.Token t2 = _input.LT(i - 1);
-        if ((t1 == null) || (t2==null)) {
-          return false;
-        }
-        // token are on same line
-        // and columns differ exactly length of earlier token (t2)
-        return ((t1.getLine() == t2.getLine()) &&
-          (t1.getCharPositionInLine() == t2.getCharPositionInLine() + t2.getText().length()));
-      }
-
-      public boolean noSpaces(Integer... is) {
-        for (Integer i: is) {
-          if (!noSpace(i)) {
-            return false;
-          }
-        }
-        return true;
-      }
-    }
-  }
 }
 
