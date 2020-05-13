@@ -216,7 +216,7 @@ and
 * Main grammar 
   [`ocl.monticoreocl.OCL`](https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/master/src/main/grammars/ocl/monticoreocl/OCL.mc4)
   and 
-  [*detailed description*](https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/master/OCL.md)
+  [*detailed description*](https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/master/src/main/grammars/ocl/monticoreocl/OCL.md)
 <!-- Status: ok, BR 20.03.22 -->
 
 
