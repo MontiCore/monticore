@@ -185,7 +185,7 @@ and
 * MontiArc is an architecture and behavior modeling language and framework 
     that provides an integrated, platform independent structure and behavior 
     modeling language with an extensible code generation framework.
-* The Documentation [MontiArc.md](https://git.rwth-aachen.de/monticore/montiarc/core/-/blob/modularization/MontiArc.md)
+* The Documentation [MontiArc.md](https://git.rwth-aachen.de/monticore/montiarc/core/-/blob/modularization/languages/montiarc-fe/src/main/grammars/MontiArc.md)
 * The MontiArc language family contains the following grammar
     * [Arc](https://git.rwth-aachen.de/monticore/montiarc/core/-/blob/modularization/languages/arc-fe/src/main/grammars/Arc.mc4) 
     for modeling architectural diagrams.
