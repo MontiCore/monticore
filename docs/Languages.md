@@ -267,7 +267,7 @@ and
   **UseCaseDiagrams**, and general **SysMLBasics**
 * [Main grammars](https://git.rwth-aachen.de/monticore/languages/sysml2/sysml2official/-/tree/master/src%2Fmain%2Fgrammars%2Fde%2Fmonticore%2Flang%2Fsysml)
   and 
-  [*detailed description*](https://git.rwth-aachen.de/monticore/languages/sysml2/sysml2official/-/blob/master/sysml2.md)
+  [*detailed description*](https://git.rwth-aachen.de/monticore/languages/sysml2/sysml2official/-/blob/master/src/main/grammars/de/monticore/lang/sysml/sysml2.md)
 
 
 ### [Tagging](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging) (Alpha: Intention to become stable)
