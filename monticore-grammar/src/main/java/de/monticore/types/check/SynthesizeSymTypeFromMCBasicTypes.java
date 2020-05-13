@@ -2,6 +2,7 @@
 package de.monticore.types.check;
 
 import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
+import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor;
 import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;

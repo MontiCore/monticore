@@ -4,12 +4,12 @@ package mc.feature.visitor.inheritance.delegator;
 
 import static org.junit.Assert.assertEquals;
 
+import mc.feature.visitor.inheritance.a.AMill;
+import mc.feature.visitor.inheritance.b.BMill;
 import org.junit.Before;
 import org.junit.Test;
 
-import mc.feature.visitor.inheritance.a._ast.AMill;
 import mc.feature.visitor.inheritance.a._visitor.AVisitor;
-import mc.feature.visitor.inheritance.b._ast.BMill;
 import mc.feature.visitor.inheritance.b._visitor.BVisitor;
 import mc.feature.visitor.inheritance.c._visitor.CDelegatorVisitor;
 import mc.feature.visitor.inheritance.c._visitor.CVisitor;

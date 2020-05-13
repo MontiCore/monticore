@@ -13,7 +13,7 @@ package de.monticore.expressions;
  * grammars mentioned below. These expression definitions can savely be
  * composed if desired.
  *
- * This grammar is part of a hierarchy of types, namely
+ * This grammar is part of a hierarchy of expressions, namely
  * * expressions/ExpressionsBasis.mc4
  * * --  expressions/CommonExpressions.mc4
  * * --  --  expressions/JavaClassExpressions.mc4
@@ -31,10 +31,10 @@ component grammar AssignmentExpressions
 
   IncSuffixExpression implements Expression <220> =
     Expression "++";
-        
+
   DecSuffixExpression implements Expression <220> =
     Expression "--";
-        
+
   PlusPrefixExpression implements Expression <210> =
     "+" Expression;
 

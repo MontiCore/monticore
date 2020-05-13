@@ -12,7 +12,7 @@ import de.monticore.grammar.grammar._symboltable.ProdSymbolLoader;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCArrayType;
-import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
+import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 

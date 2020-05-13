@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.codegen.cd2java._ast.mill;
+package de.monticore.codegen.cd2java.mill;
 
 public class MillConstants {
 

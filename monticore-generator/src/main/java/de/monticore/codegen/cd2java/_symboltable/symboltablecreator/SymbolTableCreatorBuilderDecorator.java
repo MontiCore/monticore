@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._symboltable.symboltablecreator;
 
+import de.monticore.cd.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
@@ -55,7 +56,7 @@ public class SymbolTableCreatorBuilderDecorator extends AbstractCreator<ASTCDCom
   }
 
   protected ASTCDConstructor createConstructor(String symTabCreatorBuilder) {
-    return getCDConstructorFacade().createConstructor(PROTECTED.build(), symTabCreatorBuilder);
+    return getCDConstructorFacade().createConstructor(PUBLIC.build(), symTabCreatorBuilder);
   }
 
   protected ASTCDMethod createBuildMethod(String symTabCreator) {

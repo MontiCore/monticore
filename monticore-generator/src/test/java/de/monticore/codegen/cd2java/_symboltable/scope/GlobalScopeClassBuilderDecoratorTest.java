@@ -86,7 +86,7 @@ public class GlobalScopeClassBuilderDecoratorTest extends DecoratorTestCase {
   @Test
   public void testDefaultConstructor() {
     ASTCDConstructor cdConstructor = scopeClass.getCDConstructor(0);
-    assertDeepEquals(PROTECTED, cdConstructor.getModifier());
+    assertDeepEquals(PUBLIC, cdConstructor.getModifier());
     assertEquals("AGlobalScopeBuilder", cdConstructor.getName());
 
     assertTrue(cdConstructor.isEmptyCDParameters());

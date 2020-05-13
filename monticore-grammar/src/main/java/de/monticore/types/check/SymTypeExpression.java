@@ -2,8 +2,8 @@
 package de.monticore.types.check;
 
 import com.google.common.collect.Lists;
+import de.monticore.expressions.expressionsbasis.ExpressionsBasisMill;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
-import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
 import de.monticore.types.typesymbols._symboltable.*;
 import de.se_rwth.commons.logging.Log;
 
@@ -104,7 +104,7 @@ public abstract class SymTypeExpression {
         fieldSymbols.add(parameter.deepClone());
       }
       MethodSymbol copiedMethodSymbol = method.deepClone();
-      ExpressionsBasisScope scope = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
+      ExpressionsBasisScope scope = ExpressionsBasisMill.expressionsBasisScopeBuilder().build();
       for(FieldSymbol parameter: fieldSymbols){
         scope.add(parameter);
       }

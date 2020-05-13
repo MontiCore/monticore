@@ -88,7 +88,7 @@ public class SymbolTableCreatorBuilderDecoratorTest extends DecoratorTestCase {
   @Test
   public void testConstructor() {
     ASTCDConstructor cdConstructor = symTabCreatorClass.getCDConstructor(0);
-    assertDeepEquals(PROTECTED, cdConstructor.getModifier());
+    assertDeepEquals(PUBLIC, cdConstructor.getModifier());
     assertEquals("AutomatonSymbolTableCreatorBuilder", cdConstructor.getName());
 
     assertTrue(cdConstructor.isEmptyCDParameters());

@@ -17,7 +17,7 @@ public class TopDecorator extends AbstractCreator<ASTCDCompilationUnit,ASTCDComp
   Attention! does not actually create a new CD object, because then the glex has the wrong objects referenced
    */
 
-  private static final String TOP_SUFFIX = "TOP";
+  public static final String TOP_SUFFIX = "TOP";
 
   private final IterablePath hwPath;
 

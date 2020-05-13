@@ -3,7 +3,7 @@ package de.monticore.codegen.cd2java._symboltable.serialization;
 
 import com.google.common.collect.Lists;
 import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.cd.cd4code._ast.CD4CodeMill;
+import de.monticore.cd.cd4code.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
@@ -11,11 +11,10 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.io.paths.ModelPath;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
+import de.monticore.types.typesymbols._symboltable.BuiltInJavaTypeSymbolResolvingDelegate;
 import de.monticore.utils.Names;
 import de.se_rwth.commons.StringTransformations;
-import de.monticore.types.typesymbols._symboltable.BuiltInJavaTypeSymbolResolvingDelegate;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -161,7 +160,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
       String scopeClassName,
       String artifactScopeName, String simpleName,
       List<ASTCDAttribute> scopeRuleAttributes) {
-    String symTabMillFullName = symbolTableService.getSymTabMillFullName();
+    String symTabMillFullName = symbolTableService.getMillFullName();
     ASTCDParameter scopeJsonParam = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(JSON_OBJECT), SCOPE_JSON_VAR);
 
     ASTCDMethod deserializeStringMethod = createDeserializeStringMethod(artifactScopeName);

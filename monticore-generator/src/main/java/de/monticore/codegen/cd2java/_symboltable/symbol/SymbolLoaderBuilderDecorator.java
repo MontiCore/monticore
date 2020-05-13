@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._symboltable.symbol;
 
+import de.monticore.cd.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._ast.builder.buildermethods.BuilderMutatorMethodDecorator;
@@ -69,7 +70,7 @@ public class SymbolLoaderBuilderDecorator extends AbstractCreator<ASTCDType, AST
   }
 
   protected ASTCDConstructor createDefaultConstructor(String symbolLoaderBuilderName) {
-    ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PROTECTED, symbolLoaderBuilderName);
+    ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC, symbolLoaderBuilderName);
     this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("this." + REAL_BUILDER + " = (" + symbolLoaderBuilderName + ") this;"));
     return constructor;
   }

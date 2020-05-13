@@ -5,5 +5,5 @@ ${tc.signature("attributeNameList", "superSymbolList")}
     mill${attributeName} = null;
   </#list>
   <#list superSymbolList as superSymbol>
-    ${superSymbol.getFullName()?lower_case}._ast.${superSymbol.getName()}Mill.reset();
+    ${superSymbol.getFullName()?lower_case}.${superSymbol.getName()}Mill.reset();
   </#list>

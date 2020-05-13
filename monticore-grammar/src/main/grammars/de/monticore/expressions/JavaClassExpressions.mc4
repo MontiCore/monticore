@@ -3,28 +3,28 @@ package de.monticore.expressions;
 
 /* This is a MontiCore stable grammar.
  * Adaptations -- if any -- are conservative. */
- 
+
 /**
- * This grammar defines Java specific class expressions like super, 
+ * This grammar defines Java specific class expressions like super,
  * this, type cast, etc.
- * 
+ *
  * This grammar should only be included, when a mapping to Java is
- * intended and the full power of Java should be available in the 
+ * intended and the full power of Java should be available in the
  * modelling language.
- *  
- * There are also other kinds of expressions defined in the 
- * grammars mentioned below. These expression definitions can savely be 
+ *
+ * There are also other kinds of expressions defined in the
+ * grammars mentioned below. These expression definitions can savely be
  * composed if desired.
- * 
+ *
  * The grammar has several extension points for types to be filled when used.
- * 
- * This grammar is part of a hierarchy of types, namely 
+ *
+ * This grammar is part of a hierarchy of expressions, namely
  * * expressions/ExpressionsBasis.mc4
- * * --  expressions/CommonExpressions.mc4      
+ * * --  expressions/CommonExpressions.mc4
  * * --  --  expressions/JavaClassExpressions.mc4
  * * --  --  expressions/SetExpressions.mc4
- * * --  expressions/AssignmentExpressions.mc4  
- * * --  expressions/BitExpressions.mc4         
+ * * --  expressions/AssignmentExpressions.mc4
+ * * --  expressions/BitExpressions.mc4
  * * --  expressions/OCLExpressions.mc4
  *
 */
@@ -70,7 +70,7 @@ component grammar JavaClassExpressions
 
   TypeCastExpression implements Expression <230> =
     "(" ExtType ")" Expression;
-        
+
   PrimarySuperExpression implements Expression <330> =
     "super";
 
@@ -78,7 +78,7 @@ component grammar JavaClassExpressions
 
   ClassExpression implements Expression <360> =
     ExtReturnType "." "class";
-   
+
   PrimaryGenericInvocationExpression implements Expression <370> =
     "<"(ExtTypeArgument||",")+">" GenericInvocationSuffix;
 
@@ -87,12 +87,12 @@ component grammar JavaClassExpressions
     |   ["this"] Arguments
     |   Name Arguments
     ;
-    
+
   SuperSuffix
     =   Arguments
     |   "." ("<"(ExtTypeArgument||",")+">")? Name Arguments?
     ;
-    
+
   /*=================================================================*/
 
   InstanceofExpression implements Expression <140> =

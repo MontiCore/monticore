@@ -1,6 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-package automata._ast;
+package automata;
+
+import automata._ast.ASTTransitionBuilder;
+import automata._ast.MyTransitionBuilder;
 
 public class AutomataMill extends AutomataMillTOP {
   

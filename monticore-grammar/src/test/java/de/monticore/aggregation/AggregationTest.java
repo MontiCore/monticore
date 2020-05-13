@@ -1,9 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.aggregation;
 
+import de.monticore.aggregation.blah.BlahMill;
 import de.monticore.aggregation.blah._ast.ASTBlahModel;
 import de.monticore.aggregation.blah._parser.BlahParser;
 import de.monticore.aggregation.blah._symboltable.*;
+import de.monticore.aggregation.foo.FooMill;
 import de.monticore.aggregation.foo._ast.ASTBar;
 import de.monticore.aggregation.foo._parser.FooParser;
 import de.monticore.aggregation.foo._symboltable.*;
@@ -38,7 +40,7 @@ public class AggregationTest {
     */
  
   //Create global scope for our language combination
-  BlahLanguage blahLang = BlahSymTabMill.blahLanguageBuilder().build();
+  BlahLanguage blahLang = BlahMill.blahLanguageBuilder().build();
   FooLanguage fooLanguage = new FooLanguage("FooLangName","foo") {};
 
   FooBlahGlobalScope globalScope = new FooBlahGlobalScope(new ModelPath(), fooLanguage);
@@ -57,7 +59,7 @@ public class AggregationTest {
   );
   
   // create symbol table for "blah"
-  BlahSymbolTableCreator blahSymbolTableCreator = BlahSymTabMill.blahSymbolTableCreatorBuilder().addToScopeStack(globalScope.getIBlahGS()).build();
+  BlahSymbolTableCreator blahSymbolTableCreator = BlahMill.blahSymbolTableCreatorBuilder().addToScopeStack(globalScope.getIBlahGS()).build();
   BlahScope blahSymbolTable = blahSymbolTableCreator.createFromAST(blahModel.get());
   
   // check dummy symbol is present in local scope
@@ -87,7 +89,7 @@ public class AggregationTest {
   assertTrue(fooModel.isPresent());
  
   // create symbol table for "foo"
-  FooSymbolTableCreatorDelegator fooSymbolTableCreator = FooSymTabMill.fooSymbolTableCreatorDelegatorBuilder().setGlobalScope(globalScope).build();
+  FooSymbolTableCreatorDelegator fooSymbolTableCreator = FooMill.fooSymbolTableCreatorDelegatorBuilder().setGlobalScope(globalScope).build();
   FooScope fooScope = fooSymbolTableCreator.createFromAST(fooModel.get());
   
   // check symbol is resolvable

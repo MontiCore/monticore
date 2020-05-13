@@ -3,9 +3,9 @@ package de.monticore.types.check;
 
 import com.google.common.collect.Lists;
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
+import de.monticore.expressions.expressionsbasis.ExpressionsBasisMill;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
-import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
 import de.monticore.expressions.prettyprint.CombineExpressionsWithLiteralsPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
@@ -41,7 +41,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     // Setting up a Scope Infrastructure (without a global Scope)
     DefsTypeBasic.setup();
     scope =
-        ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder()
+        ExpressionsBasisMill.expressionsBasisScopeBuilder()
             .setEnclosingScope(null)       // No enclosing Scope: Search ending here
             .setExportingSymbols(true)
             .setAstNode(null)
@@ -90,7 +90,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
   CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
 
   // This is an auxiliary
-  DeriveSymTypeOfCombineExpressionsDelegator derLit = new DeriveSymTypeOfCombineExpressionsDelegator(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build(), new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter()));
+  DeriveSymTypeOfCombineExpressionsDelegator derLit = new DeriveSymTypeOfCombineExpressionsDelegator(ExpressionsBasisMill.expressionsBasisScopeBuilder().build(), new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter()));
 
   // other arguments not used (and therefore deliberately null)
 

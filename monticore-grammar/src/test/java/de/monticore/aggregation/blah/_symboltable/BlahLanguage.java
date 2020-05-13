@@ -2,6 +2,7 @@
 package de.monticore.aggregation.blah._symboltable;
 
 import com.google.common.collect.ImmutableSet;
+import de.monticore.aggregation.blah.BlahMill;
 import de.monticore.utils.Names;
 
 import java.util.Collections;
@@ -16,7 +17,7 @@ public class BlahLanguage extends BlahLanguageTOP {
 
   @Override
   protected BlahModelLoader provideModelLoader() {
-    return BlahSymTabMill.blahModelLoaderBuilder().setModelingLanguage(this).build();
+    return BlahMill.blahModelLoaderBuilder().setModelingLanguage(this).build();
   }
 
   @Override

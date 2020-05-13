@@ -1,15 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.typescalculator;
 
-import de.monticore.ast.ASTNode;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.types.check.*;
 import mc.typescalculator.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsDelegatorVisitor;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpressionsWithLiteralsDelegatorVisitor implements ITypesCalculator {

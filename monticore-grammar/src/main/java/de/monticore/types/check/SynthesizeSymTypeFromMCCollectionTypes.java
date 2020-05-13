@@ -3,7 +3,7 @@ package de.monticore.types.check;
 
 import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
-import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
+import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCMapType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
@@ -11,8 +11,6 @@ import de.monticore.types.mccollectiontypes._ast.ASTMCSetType;
 import de.monticore.types.mccollectiontypes._visitor.MCCollectionTypesVisitor;
 import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
 import de.se_rwth.commons.logging.Log;
-
-import java.util.Optional;
 
 /**
  * Visitor for Derivation of SymType from MCBasicTypes

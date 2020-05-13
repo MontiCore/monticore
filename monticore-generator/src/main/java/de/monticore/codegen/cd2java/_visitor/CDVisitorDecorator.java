@@ -5,7 +5,7 @@ import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDDefinition;
 import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
-import de.monticore.cd.cd4code._ast.CD4CodeMill;
+import de.monticore.cd.cd4code.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java._visitor.builder.DelegatorVisitorBuilderDecorator;

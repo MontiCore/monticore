@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._symboltable.language;
 
+import de.monticore.cd.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._parser.ParserService;
@@ -56,7 +57,7 @@ public class LanguageDecorator extends AbstractCreator<ASTCDCompilationUnit, AST
     String languageClassName = symbolTableService.getLanguageClassSimpleName();
     String modelLoaderClassName = symbolTableService.getModelLoaderClassSimpleName();
     ASTMCObjectType iModelingLanguage = getMCTypeFacade().createQualifiedType(I_MODELING_LANGUAGE);
-    String symTabMillFullName = symbolTableService.getSymTabMillFullName();
+    String symTabMillFullName = symbolTableService.getMillFullName();
 
     List<ASTCDType> symbolDefiningProds = symbolTableService.getSymbolDefiningProds(input.getCDDefinition());
     symbolDefiningProds.addAll(symbolTableService.getSymbolDefiningSuperProds());

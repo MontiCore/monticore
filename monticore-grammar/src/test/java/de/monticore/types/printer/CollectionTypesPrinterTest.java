@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.printer;
 
+import de.monticore.types.mccollectiontypes.MCCollectionTypesMill;
 import de.monticore.types.mccollectiontypes._ast.*;
 import de.monticore.types.mccollectiontypestest._parser.MCCollectionTypesTestParser;
 import de.monticore.types.prettyprint.MCCollectionTypesPrettyPrinter;

@@ -1,9 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.typescalculator;
 
+import de.monticore.expressions.expressionsbasis.ExpressionsBasisMill;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
-import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.types.check.*;
 import mc.typescalculator.myownlanguage._visitor.MyOwnLanguageDelegatorVisitor;
@@ -46,7 +46,7 @@ public class DeriveSymTypeOfMyOwnLanguage
   @Override
   public void init() {
     lastResult = new LastResult();
-    ExpressionsBasisScope scope = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
+    ExpressionsBasisScope scope = ExpressionsBasisMill.expressionsBasisScopeBuilder().build();
     deriveSymTypeOfCommonExpressions = new DeriveSymTypeOfCommonExpressions();
     deriveSymTypeOfCommonExpressions.setLastResult(lastResult);
     deriveSymTypeOfCommonExpressions.setScope(scope);

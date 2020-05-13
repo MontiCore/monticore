@@ -2,10 +2,11 @@
 package mc.typescalculator;
 
 import com.google.common.collect.Lists;
-import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
+import de.monticore.expressions.expressionsbasis.ExpressionsBasisMill;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfGenerics;
+import de.monticore.types.typesymbols.TypeSymbolsMill;
 import de.monticore.types.typesymbols._symboltable.*;
 import mc.testcd4analysis._symboltable.*;
 
@@ -28,7 +29,7 @@ public class CD2EHelper {
   private Map<String, MethodSymbol> methodSymbolMap = new HashMap<>();
 
   public CD2EHelper() {
-    this.iTypeSymbolsScope = TypeSymbolsSymTabMill.typeSymbolsScopeBuilder().build();
+    this.iTypeSymbolsScope = TypeSymbolsMill.typeSymbolsScopeBuilder().build();
   }
 
   public TypeSymbol createTypeSymbolFormCDTypeSymbol(CDTypeSymbol cdTypeSymbol) {
@@ -36,9 +37,9 @@ public class CD2EHelper {
       return typeSymbolMap.get(cdTypeSymbol.getName());
     } else {
       // add to map
-      TypeSymbol typeSymbol = TypeSymbolsSymTabMill.typeSymbolBuilder()
+      TypeSymbol typeSymbol = TypeSymbolsMill.typeSymbolBuilder()
           .setName(cdTypeSymbol.getName())
-          .setSpannedScope(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build())
+          .setSpannedScope(ExpressionsBasisMill.expressionsBasisScopeBuilder().build())
           .build();
       typeSymbolMap.put(cdTypeSymbol.getName(), typeSymbol);
 
@@ -83,7 +84,7 @@ public class CD2EHelper {
       return fieldSymbolMap.get(cdFieldSymbol.getName());
     } else {
       // add to map
-      FieldSymbol fieldSymbol = TypeSymbolsSymTabMill.fieldSymbolBuilder()
+      FieldSymbol fieldSymbol = TypeSymbolsMill.fieldSymbolBuilder()
           .setName(cdFieldSymbol.getName())
           .build();
       fieldSymbolMap.put(cdFieldSymbol.getName(), fieldSymbol);
@@ -101,7 +102,7 @@ public class CD2EHelper {
       return methodSymbolMap.get(cdMethOrConstrSymbol.getName());
     } else {
       // add to map
-      MethodSymbol methodSymbol = TypeSymbolsSymTabMill.methodSymbolBuilder()
+      MethodSymbol methodSymbol = TypeSymbolsMill.methodSymbolBuilder()
           .setName(cdMethOrConstrSymbol.getName())
           .build();
       methodSymbolMap.put(cdMethOrConstrSymbol.getName(), methodSymbol);
@@ -139,9 +140,9 @@ public class CD2EHelper {
         } else {
           // if typeSymbol could not be loaded
           String typeName = symbolLoader.getName();
-          TypeSymbol typeSymbol = TypeSymbolsSymTabMill.typeSymbolBuilder()
+          TypeSymbol typeSymbol = TypeSymbolsMill.typeSymbolBuilder()
               .setName(typeName)
-              .setSpannedScope(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build())
+              .setSpannedScope(ExpressionsBasisMill.expressionsBasisScopeBuilder().build())
               .build();
           iTypeSymbolsScope.add(typeSymbol);
           symTypeExpression = SymTypeExpressionFactory.createTypeExpression(typeSymbol.getName(), iTypeSymbolsScope);

@@ -8,7 +8,7 @@ import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
+import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

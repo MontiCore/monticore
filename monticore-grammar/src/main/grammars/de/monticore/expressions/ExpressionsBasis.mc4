@@ -41,10 +41,10 @@ component grammar ExpressionsBasis extends de.monticore.types.TypeSymbols,
   /*=================================================================*/
 
 
-  NameExpression implements Expression<350>
+  NameExpression implements Expression <350>
     = Name;
 
-  LiteralExpression implements Expression<340>
+  LiteralExpression implements Expression <340>
     = Literal;
 
 }
