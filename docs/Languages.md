@@ -176,7 +176,7 @@ and
 * Main grammar 
   [`de.monticore.lang.JSON`](https://git.rwth-aachen.de/monticore/languages/json/-/blob/master/src/main/grammars/de/monticore/lang/JSON.mc4)
   and 
-  [*detailed description*](https://git.rwth-aachen.de/monticore/languages/json/-/blob/master/json.md)
+  [*detailed description*](https://git.rwth-aachen.de/monticore/languages/json/-/blob/master/src/main/grammars/de/monticore/lang/json.md)
 <!-- Status: MC4 stable; TODO: symbols, better explanation, BR 1.5.20 -->
 
 
