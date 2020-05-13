@@ -117,7 +117,7 @@ data sources.
 includes definitions of MontiGem visualisation components, which are based on
 abstract concepts, described in
 [core grammar `GUIDSLCore`](https://git.rwth-aachen.de/macoco/gui-dsl/-/blob/master/src/main/grammars/GUIDSLCore.mc4).
-[*Detailed description*](https://git.rwth-aachen.de/macoco/gui-dsl/-/blob/master/GUIDSL.md)
+[*Detailed description*](https://git.rwth-aachen.de/macoco/gui-dsl/-/blob/master/src/main/grammars/GUIDSL.md)
 and
 [*documentation*](https://git.rwth-aachen.de/macoco/gui-dsl/wikis/home).
 <!-- Status: TODO: Teaser Erstellen, siehe CD4A -->
