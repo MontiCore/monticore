@@ -67,11 +67,10 @@ MontiCore projects are hosted at
   data transport infrastructures in cloud and distributed systems.
 * [Main grammar `de.monticore.cd.CD4Analysis`](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/blob/develop/src/main/grammars/de/monticore/cd/CD4Analysis.mc4)
   and 
-  [*detailed description*](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/-/blob/develop/cd4analysis.md)
-<!-- Status: ok, BR 20.03.22 -->
+  [*detailed description*](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/-/blob/develop/src/main/grammars/de/monticore/cd/cd4analysis.md)
 
 
-### [Class Diagram for Code (CD4Code)](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis) (Beta: In Stabilization)
+### [Class Diagram for Code (CD4Code)](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/-/blob/develop/src/main/grammars/de/monticore/cd/cd4analysis.mds) (Beta: In Stabilization)
 * Responsible: SVa, AGe
 * CD4Code describes **UML class diagrams**.
 * CD4Code is a conservative extension of **CD4A**, 
@@ -83,9 +82,8 @@ MontiCore projects are hosted at
   -> Decoration by monitoring methods -> Java code.
 * Main grammar [`de.monticore.cd.CD4Code`](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/blob/develop/src/main/grammars/de/monticore/cd/CD4Code.mc4)
   and 
-  [*detailed description*](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/-/blob/develop/cd4analysis.md) 
+  [*detailed description*](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/-/blob/develop/src/main/grammars/de/monticore/cd/cd4analysis.md) 
   (see Section *CD4Code*)
-<!-- Status: ok, BR 20.03.22 -->
 
 
 ### [Feature Diagrams](https://git.rwth-aachen.de/monticore/languages/feature-diagram) (Beta: In Stabilization)
@@ -97,7 +95,6 @@ MontiCore projects are hosted at
 * Main grammar [`FeatureDiagram`](https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/master/fd-lang/src/main/grammars/FeatureDiagram.mc4)
   and 
   [*detailed description*](https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/master/fd-lang/src/main/grammars/FeatureDiagram.md)
-<!-- Status: TODO: Teaser Erstellen, siehe CD4A -->
 
 
 ### [GUI DSL](https://git.rwth-aachen.de/macoco/gui-dsl) (Alpha: Intention to become stable)
@@ -117,11 +114,9 @@ data sources.
 includes definitions of MontiGem visualisation components, which are based on
 abstract concepts, described in
 [core grammar `GUIDSLCore`](https://git.rwth-aachen.de/macoco/gui-dsl/-/blob/master/src/main/grammars/GUIDSLCore.mc4).
-[*Detailed description*](https://git.rwth-aachen.de/macoco/gui-dsl/-/blob/master/GUIDSL.md)
+[*Detailed description*](https://git.rwth-aachen.de/macoco/gui-dsl/-/blob/master/src/main/grammars/GUIDSL.md)
 and
 [*documentation*](https://git.rwth-aachen.de/macoco/gui-dsl/wikis/home).
-<!-- Status: TODO: Teaser Erstellen, siehe CD4A -->
-<!-- Status: TODO AGe: mit Lukas Netz abstimmen und aktualisieren -->
 
 
 ### [MontiCore Grammar](https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-generator) (MontiCore Stable)
@@ -157,7 +152,6 @@ and
   binds the external, imported expressions, method bodies, etc.
 * [*Detailed description*](http://monticore.de/MontiCore_Reference-Manual.2017.pdf)
   in the MontiCore Reference Manual.
-<!-- Status: ok, BR 20.03.22 -->
   
 
 ### [JSON](https://git.rwth-aachen.de/monticore/languages/json) (MontiCore Stable)
@@ -176,8 +170,7 @@ and
 * Main grammar 
   [`de.monticore.lang.JSON`](https://git.rwth-aachen.de/monticore/languages/json/-/blob/master/src/main/grammars/de/monticore/lang/JSON.mc4)
   and 
-  [*detailed description*](https://git.rwth-aachen.de/monticore/languages/json/-/blob/master/json.md)
-<!-- Status: MC4 stable; TODO: symbols, better explanation, BR 1.5.20 -->
+  [*detailed description*](https://git.rwth-aachen.de/monticore/languages/json/-/blob/master/src/main/grammars/de/monticore/lang/json.md)
 
 
 ### [MontiArc](https://git.rwth-aachen.de/monticore/montiarc/core) (Beta: In Stabilization)
@@ -185,7 +178,7 @@ and
 * MontiArc is an architecture and behavior modeling language and framework 
     that provides an integrated, platform independent structure and behavior 
     modeling language with an extensible code generation framework.
-* The Documentation [MontiArc.md](https://git.rwth-aachen.de/monticore/montiarc/core/-/blob/modularization/MontiArc.md)
+* The Documentation [MontiArc.md](https://git.rwth-aachen.de/monticore/montiarc/core/-/blob/modularization/languages/montiarc-fe/src/main/grammars/MontiArc.md)
 * The MontiArc language family contains the following grammar
     * [Arc](https://git.rwth-aachen.de/monticore/montiarc/core/-/blob/modularization/languages/arc-fe/src/main/grammars/Arc.mc4) 
     for modeling architectural diagrams.
@@ -193,7 +186,6 @@ and
     for component behavior description.
     * [MontiArc](https://git.rwth-aachen.de/monticore/montiarc/core/-/blob/modularization/languages/montiarc-fe/src/main/grammars/MontiArc.mc4)
     combining architectural diagrams with automata behavior descriptions.
-<!-- Status: TODO: Teaser Erstellen, siehe CD4A -->
 
 
 ### [OCL/P](https://git.rwth-aachen.de/monticore/languages/OCL) (Alpha: Intention to become stable)
@@ -216,8 +208,7 @@ and
 * Main grammar 
   [`ocl.monticoreocl.OCL`](https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/master/src/main/grammars/ocl/monticoreocl/OCL.mc4)
   and 
-  [*detailed description*](https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/master/OCL.md)
-<!-- Status: ok, BR 20.03.22 -->
+  [*detailed description*](https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/master/src/main/grammars/ocl/monticoreocl/OCL.md)
 
 
 ### [Object Diagrams](https://git.rwth-aachen.de/monticore/languages/od) (Beta: In Stabilization)
@@ -234,21 +225,34 @@ and
 * Caretaker: RE
 * Grammar to parse Sequence Diagrams
 * Can be used with testing generator to derive test cases
-<!-- Status: TODO: Teaser Erstellen, siehe CD4A -->
 
 
 ### [SI Units](https://git.rwth-aachen.de/monticore/languages/siunits) (Alpha: Intention to become stable)
-* Caretaker: EK, NJ, DS
-* allows a language developer to use physical units in a language
-<!-- Status: TODO: Teaser Erstellen, siehe CD4A -->
+* Caretaker: EK
+* The international system of units (SI units) is a physical unit system widely used in the entire world. It is based on the seven basis units 
+  `s, m, kg, A, K, mol, cd`, but
+  also provides a variety of derived units, which, furthremore, can be refined using prefixes such as m(milli), k(kilo), etc.
+* The SI Unit project aims to deliver SI units to MontiCore-based languages. It provides a grammar defining most relevant SI units 
+  as well as the corresponding prefixes.
+  The language developer can use SIUnitLiterals similar to standard literals to build assignments, expressions etc. 
+  made from literals accompanied by units, e.g. 5 kg, 30 m, etc.
+  Furthermore, the language extensions provides a facility for checking unit compatibility, e.g. in sums 
+  (`5 kg + 5 m` is an invalid expression) and assignments (`a = 5 kg` only if a is declared with a unit compatible with kilogram)
+* Main grammars:
+    * [SI units](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/lang/SIUnits.mc4)
+    * [SI unit literals](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/lang/literals/SIUnitLiterals.mc4)
+    * [SI unit types](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/lang/types/SIUnitTypes.mc4)
+    * [SI primitive type (exemplary syntax)](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/lang/types/PrimitiveWithSIUnitTypes.mc4)
+* Example projects:
+    * [SI Java](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/test/grammars/de/monticore/lang/testsijava/TestSIJava.mc4) 
+* [*detailed description*](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/lang/SIUnits.md)  
 
 
 ### [Statecharts](https://git.rwth-aachen.de/monticore/statechart/sc-language) (Beta: In Stabilization) (90% to MC6)
 * Caretaker: RE supported by KH with two Hiwis 
 * Language to parse Statecharts
 * creates transformation language within SC and sc<->cd4a
-<!-- Status: TODO: Teaser Erstellen, siehe CD4A -->
-
+* [*Detailed description*](https://git.rwth-aachen.de/monticore/statechart/sc-language/-/blob/develop/scgrammar/src/main/grammars/de/monticore/umlsc/Statechart.md) 
 
 ### [SysML_2](https://git.rwth-aachen.de/monticore/languages/sysml2/sysml2official) (Alpha: Intention to become stable)
 * Caretaker: NJ
@@ -263,8 +267,7 @@ and
   **UseCaseDiagrams**, and general **SysMLBasics**
 * [Main grammars](https://git.rwth-aachen.de/monticore/languages/sysml2/sysml2official/-/tree/master/src%2Fmain%2Fgrammars%2Fde%2Fmonticore%2Flang%2Fsysml)
   and 
-  [*detailed description*](https://git.rwth-aachen.de/monticore/languages/sysml2/sysml2official/-/blob/master/sysml2.md)
-<!-- Status: Teaser erstellt -->
+  [*detailed description*](https://git.rwth-aachen.de/monticore/languages/sysml2/sysml2official/-/blob/master/src/main/grammars/de/monticore/lang/sysml/sysml2.md)
 
 
 ### [Tagging](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging) (Alpha: Intention to become stable)
@@ -297,8 +300,7 @@ and
   there is a 
   [main grammar `ocl.monticore.lang.Tagging`](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging/-/blob/master/src/main/grammars/de/monticore/lang/Tagging.mc4),
   where the tagging language is derived from.
-  See also [*detailed description*](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging/-/blob/master/Tagging.md)
-<!-- Status: TODO SV: Check 20.03.23 -->
+  See also [*detailed description*](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging/-/blob/master/src/main/grammars/de/monticore/lang/Tagging.md)
 
 
 ### [XML](https://git.rwth-aachen.de/monticore/languages/xml) (Alpha: Intention to become stable)
@@ -309,8 +311,7 @@ and
 * Main grammar 
   [`de.monticore.lang.XML`](https://git.rwth-aachen.de/monticore/languages/xml/-/blob/master/src/main/grammars/de/monticore/lang/XML.mc4)
   and 
-  [*detailed description*](https://git.rwth-aachen.de/monticore/languages/xml/-/blob/master/xml.md)
-<!-- Status: Teaser erstellt -->
+  [*detailed description*](https://git.rwth-aachen.de/monticore/languages/xml/-/blob/master/src/main/grammars/de/monticore/lang/xml.md)
 
 
 ### [JavaLight](https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/JavaLight.mc4) (Beta: In Stabilization)
@@ -326,8 +327,7 @@ and
   Java methods. 
 * [Main grammar `de.monticore.JavaLight`]((https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/JavaLight.mc4)
   and 
-  [*detailed description*](https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-grammar/JavaLight.md).
-<!-- Status: TODO: Symbole definieren und Beschreibung anpassen (Entwicklung im Branch) -->
+  [*detailed description*](https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/monticore-grammar/src/main/grammars/de/monticore/JavaLight.md).
 
 
 
@@ -336,8 +336,7 @@ and
 * This is the full Java' Language (as Opposed to JavaLight).
 * Main Grammar [`JavaDSL`](https://git.rwth-aachen.de/monticore/javaDSL/-/blob/dev/javaDSL/src/main/grammars/de/monticore/java/JavaDSL.mc4)
   and
-  [*detailed description*](https://git.rwth-aachen.de/monticore/javaDSL/-/blob/dev/javaDSL/JavaDSL.md).
- <!-- Status: TODO: Sobald die Umstellung auf MC6 abgeschlossen ist, Beschreibung hinzufügen -->
+  [*detailed description*](https://git.rwth-aachen.de/monticore/javaDSL/-/blob/dev/javaDSL/src/main/grammars/de/monticore/java/JavaDSL.md).
 
 
 ## Further Information

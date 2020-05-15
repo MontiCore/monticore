@@ -20,7 +20,7 @@ package de.monticore.expressions;
  * This modularity of expressions and associated types greatly eases
  * the reuse of type structures in languages similar to Java
  *
- * This grammar is part of a hierarchy of types, namely
+ * This grammar is part of a hierarchy of expressions, namely
  * * expressions/ExpressionsBasis.mc4
  * * --  expressions/CommonExpressions.mc4
  * * --  --  expressions/JavaClassExpressions.mc4
@@ -85,10 +85,10 @@ component grammar CommonExpressions
 
   ModuloExpression implements Expression <180>, InfixExpression =
     left:Expression operator:"%" right:Expression;
-    
+
   PlusExpression implements Expression <170>, InfixExpression =
     left:Expression operator:"+" right:Expression;
-        
+
   MinusExpression implements Expression <170>, InfixExpression =
     left:Expression operator:"-" right:Expression;
 
@@ -129,8 +129,8 @@ component grammar CommonExpressions
 
   BracketExpression implements Expression <310>
     =  "(" Expression ")";
-    
+
   Arguments
     =   "(" (Expression || ",")* ")";
-    
+
 }

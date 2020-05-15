@@ -31,21 +31,21 @@ component grammar MCJavaLiterals extends de.monticore.literals.MCCommonLiterals 
   /** ASTIntLiteral represents a positive Integer number.
         @attribute source String-representation (including '"').
     */
-  IntLiteral implements NumericLiteral<100> =
+  IntLiteral implements NumericLiteral <100> =
     source:Num_Int ;
 
 
   /** ASTLongLiteral represents a positive Long number.
         @attribute source String-representation (including '"').
     */
-  LongLiteral implements NumericLiteral<99> =
+  LongLiteral implements NumericLiteral <99> =
     source:Num_Long ;
 
 
   /** ASTFloatLiteral represents a positive Float number.
         @attribute source String-representation (including '"').
     */
-  FloatLiteral implements NumericLiteral<100> =
+  FloatLiteral implements NumericLiteral <100> =
      source:Num_Float ;
 
 
@@ -53,7 +53,7 @@ component grammar MCJavaLiterals extends de.monticore.literals.MCCommonLiterals 
   /** ASTDoubleLiteral represents a positive Double number.
         @attribute source String-representation (including '"').
     */
-  DoubleLiteral implements NumericLiteral<100> =
+  DoubleLiteral implements NumericLiteral <100> =
     source:Num_Double ;
 
 
