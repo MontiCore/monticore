@@ -92,8 +92,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
   CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
 
   // This is an auxiliary
-  DeriveSymTypeOfCombineExpressionsDelegator derLit = new DeriveSymTypeOfCombineExpressionsDelegator(
-      new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter()));
+  DeriveSymTypeOfCombineExpressionsDelegator derLit = new DeriveSymTypeOfCombineExpressionsDelegator();
 
   // This is the TypeChecker under Test:
   TypeCheck tc = new TypeCheck(null, derLit);

@@ -36,43 +36,35 @@ public class DeriveSymTypeOfCombineExpressionsDelegator extends CombineExpressio
 
   private SynthesizeSymTypeFromMCSimpleGenericTypes symTypeFromMCSimpleGenericTypes;
 
-  private IDerivePrettyPrinter prettyPrinter;
 
   private TypeCheckResult typeCheckResult = new TypeCheckResult();
 
 
-  public DeriveSymTypeOfCombineExpressionsDelegator(IDerivePrettyPrinter prettyPrinter){
+  public DeriveSymTypeOfCombineExpressionsDelegator(){
     this.realThis=this;
-    this.prettyPrinter = prettyPrinter;
 
     deriveSymTypeOfCommonExpressions = new DeriveSymTypeOfCommonExpressions();
     deriveSymTypeOfCommonExpressions.setTypeCheckResult(typeCheckResult);
-    deriveSymTypeOfCommonExpressions.setPrettyPrinter(prettyPrinter);
     setCommonExpressionsVisitor(deriveSymTypeOfCommonExpressions);
 
     deriveSymTypeOfAssignmentExpressions = new DeriveSymTypeOfAssignmentExpressions();
     deriveSymTypeOfAssignmentExpressions.setTypeCheckResult(typeCheckResult);
-    deriveSymTypeOfAssignmentExpressions.setPrettyPrinter(prettyPrinter);
     setAssignmentExpressionsVisitor(deriveSymTypeOfAssignmentExpressions);
 
     deriveSymTypeOfBitExpressions = new DeriveSymTypeOfBitExpressions();
     deriveSymTypeOfBitExpressions.setTypeCheckResult(typeCheckResult);
-    deriveSymTypeOfBitExpressions.setPrettyPrinter(prettyPrinter);
     setBitExpressionsVisitor(deriveSymTypeOfBitExpressions);
 
     deriveSymTypeOfExpression = new DeriveSymTypeOfExpression();
     deriveSymTypeOfExpression.setTypeCheckResult(typeCheckResult);
-    deriveSymTypeOfExpression.setPrettyPrinter(prettyPrinter);
     setExpressionsBasisVisitor(deriveSymTypeOfExpression);
 
     deriveSymTypeOfJavaClassExpressions = new DeriveSymTypeOfJavaClassExpressions();
     deriveSymTypeOfJavaClassExpressions.setTypeCheckResult(typeCheckResult);
-    deriveSymTypeOfJavaClassExpressions.setPrettyPrinter(prettyPrinter);
     setJavaClassExpressionsVisitor(deriveSymTypeOfJavaClassExpressions);
 
     deriveSymTypeOfSetExpressions = new DeriveSymTypeOfSetExpressions();
     deriveSymTypeOfSetExpressions.setTypeCheckResult(typeCheckResult);
-    deriveSymTypeOfSetExpressions.setPrettyPrinter(prettyPrinter);
     setSetExpressionsVisitor(deriveSymTypeOfSetExpressions);
 
     deriveSymTypeOfLiterals = new DeriveSymTypeOfLiterals();

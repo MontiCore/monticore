@@ -59,7 +59,6 @@ public class CombineExpressionsWithLiteralsTest {
     globalScope1.add(field("b",SymTypeExpressionFactory.createTypeObject(new TypeSymbolLoader("B",classB.get().getEnclosingScope()))));
 
     CombineExpressionsWithLiteralsTypesCalculator calc = new CombineExpressionsWithLiteralsTypesCalculator();
-    calc.setPrettyPrinter(new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter()));
 
     CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
 
@@ -73,13 +72,11 @@ public class CombineExpressionsWithLiteralsTest {
     assertTrue(j.isPresent());
     assertEquals("int", unbox(j.get().print()));
 
-    CombineExpressionsWithLiteralsTypesCalculator calc2 = new CombineExpressionsWithLiteralsTypesCalculator();
-    calc2.setPrettyPrinter(new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter()));
     Optional<ASTExpression> expr2 = p.parse_StringExpression("s+=s");
     assertTrue(expr2.isPresent());
     del.createFromAST(expr2.get());
 
-    Optional<SymTypeExpression> j2 = calc2.calculateType(expr2.get());
+    Optional<SymTypeExpression> j2 = calc.calculateType(expr2.get());
     assertTrue(j2.isPresent());
     assertEquals("int",j2.get().print());
 

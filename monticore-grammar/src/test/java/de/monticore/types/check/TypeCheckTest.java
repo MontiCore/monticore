@@ -29,7 +29,7 @@ import static org.junit.Assert.assertTrue;
 public class TypeCheckTest {
 
   private ICombineExpressionsWithLiteralsScope scope;
-  private TypeCheck tc = new TypeCheck(null, new DeriveSymTypeOfCombineExpressionsDelegator(new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter())));
+  private TypeCheck tc = new TypeCheck(null, new DeriveSymTypeOfCombineExpressionsDelegator());
   private CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
   private FlatExpressionScopeSetter flatExpressionScopeSetter;
 

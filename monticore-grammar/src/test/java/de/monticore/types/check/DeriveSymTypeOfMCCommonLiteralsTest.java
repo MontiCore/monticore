@@ -28,7 +28,7 @@ public class DeriveSymTypeOfMCCommonLiteralsTest {
   }
   
   // This is the core Visitor under Test (but rather empty)
-  DeriveSymTypeOfCombineExpressionsDelegator derLit = new DeriveSymTypeOfCombineExpressionsDelegator(new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter()));
+  DeriveSymTypeOfCombineExpressionsDelegator derLit = new DeriveSymTypeOfCombineExpressionsDelegator();
   
   // other arguments not used (and therefore deliberately null)
   

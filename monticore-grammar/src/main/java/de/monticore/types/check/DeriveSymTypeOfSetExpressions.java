@@ -52,14 +52,14 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
     if(typeCheckResult.isPresentLast()){
       elemResult = typeCheckResult.getLast();
     }else{
-      Log.error("0xA0286"+String.format(ERROR_MSG,prettyPrinter.prettyprint(node.getElem())));
+      logError("0xA0286",node.getElem().get_SourcePositionStart());
     }
     //set
     node.getSet().accept(realThis);
     if(typeCheckResult.isPresentLast()){
       setResult = typeCheckResult.getLast();
     }else{
-      Log.error("0xA0287"+String.format(ERROR_MSG,prettyPrinter.prettyprint(node.getSet())));
+      logError("0xA0287",node.getSet().get_SourcePositionStart());
     }
     List<String> collections = Lists.newArrayList("List","Set");
     boolean correct = false;
@@ -79,7 +79,7 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
       typeCheckResult.setLast(wholeResult);
     }else{
       typeCheckResult.reset();
-      Log.error("0xA0288"+String.format(ERROR_MSG,prettyPrinter.prettyprint(node)));
+      logError("0xA0288",node.get_SourcePositionStart());
     }
   }
 
@@ -96,14 +96,14 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
     if(typeCheckResult.isPresentLast()){
       elemResult = typeCheckResult.getLast();
     }else{
-      Log.error("0xA0289"+String.format(ERROR_MSG,prettyPrinter.prettyprint(node.getElem())));
+      logError("0xA0289",node.getElem().get_SourcePositionStart());
     }
     //set
     node.getSet().accept(realThis);
     if(typeCheckResult.isPresentLast()){
       setResult = typeCheckResult.getLast();
     }else{
-      Log.error("0xA0290"+String.format(ERROR_MSG,prettyPrinter.prettyprint(node.getSet())));
+      logError("0xA0290",node.getSet().get_SourcePositionStart());
     }
     List<String> collections = Lists.newArrayList("List","Set");
     boolean correct = false;
@@ -123,7 +123,7 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
       typeCheckResult.setLast(wholeResult);
     }else{
       typeCheckResult.reset();
-      Log.error("0xA0291"+String.format(ERROR_MSG,prettyPrinter.prettyprint(node)));
+      logError("0xA0291",node.get_SourcePositionStart());
     }
   }
 
@@ -136,7 +136,7 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
       typeCheckResult.setLast(wholeResult.get());
     }else{
       typeCheckResult.reset();
-      Log.error("0xA0292"+String.format(ERROR_MSG,prettyPrinter.prettyprint(node)));
+      logError("0xA0292",node.get_SourcePositionStart());
     }
   }
 
@@ -149,7 +149,7 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
       typeCheckResult.setLast(wholeResult.get());
     }else{
       typeCheckResult.reset();
-      Log.error("0xA0293"+String.format(ERROR_MSG,prettyPrinter.prettyprint(node)));
+      logError("0xA0293",node.get_SourcePositionStart());
     }
   }
 
@@ -163,14 +163,14 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
     if(typeCheckResult.isPresentLast()){
       leftResult = typeCheckResult.getLast();
     }else{
-      Log.error("0xA0294"+String.format(ERROR_MSG,prettyPrinter.prettyprint(leftExpr)));
+      logError("0xA0294",leftExpr.get_SourcePositionStart());
     }
     //set
     rightExpr.accept(realThis);
     if(typeCheckResult.isPresentLast()){
       rightResult = typeCheckResult.getLast();
     }else{
-      Log.error("0xA0295"+String.format(ERROR_MSG,prettyPrinter.prettyprint(rightExpr)));
+      logError("0xA0295",rightExpr.get_SourcePositionStart());
     }
     List<String> collections = Lists.newArrayList("List","Set");
     if(rightResult.isGenericType()&&leftResult.isGenericType()){

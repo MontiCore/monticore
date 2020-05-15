@@ -4,8 +4,6 @@ package mc.typescalculator;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.types.check.*;
-import de.monticore.types.typesymbols.TypeSymbolsMill;
-import de.monticore.types.typesymbols._symboltable.TypeSymbolsScope;
 import mc.typescalculator.myownlanguage._visitor.MyOwnLanguageDelegatorVisitor;
 
 import java.util.Optional;
@@ -15,14 +13,6 @@ public class DeriveSymTypeOfMyOwnLanguage
     implements ITypesCalculator {
 
   private MyOwnLanguageDelegatorVisitor realThis;
-
-  private DeriveSymTypeOfMyOwnExpressionGrammar deriveSymTypeOfMyOwnExpressionGrammar;
-
-  private DeriveSymTypeOfCommonExpressions deriveSymTypeOfCommonExpressions;
-
-  private DeriveSymTypeOfExpression deriveSymTypeOfExpression;
-
-  private DeriveSymTypeOfMCCommonLiterals deriveSymTypeOfMCCommonLiterals;
 
   private TypeCheckResult typeCheckResult = new TypeCheckResult();
 
@@ -46,17 +36,17 @@ public class DeriveSymTypeOfMyOwnLanguage
   @Override
   public void init() {
     typeCheckResult = new TypeCheckResult();
-    deriveSymTypeOfCommonExpressions = new DeriveSymTypeOfCommonExpressions();
-    deriveSymTypeOfCommonExpressions.setTypeCheckResult(typeCheckResult);
-    setCommonExpressionsVisitor(deriveSymTypeOfCommonExpressions);
-    deriveSymTypeOfExpression = new DeriveSymTypeOfExpression();
-    deriveSymTypeOfExpression.setTypeCheckResult(typeCheckResult);
-    setExpressionsBasisVisitor(deriveSymTypeOfExpression);
-    deriveSymTypeOfMyOwnExpressionGrammar = new DeriveSymTypeOfMyOwnExpressionGrammar();
-    deriveSymTypeOfMyOwnExpressionGrammar.setTypeCheckResult(typeCheckResult);
-    setMyOwnExpressionGrammarVisitor(deriveSymTypeOfMyOwnExpressionGrammar);
-    deriveSymTypeOfMCCommonLiterals = new DeriveSymTypeOfMCCommonLiterals();
-    deriveSymTypeOfMCCommonLiterals.setResult(typeCheckResult);
-    setMCCommonLiteralsVisitor(deriveSymTypeOfMCCommonLiterals);
+    DeriveSymTypeOfCommonExpressions ce = new DeriveSymTypeOfCommonExpressions();
+    ce.setTypeCheckResult(typeCheckResult);
+    setCommonExpressionsVisitor(ce);
+    DeriveSymTypeOfExpression eb = new DeriveSymTypeOfExpression();
+    eb.setTypeCheckResult(typeCheckResult);
+    setExpressionsBasisVisitor(eb);
+    DeriveSymTypeOfMyOwnExpressionGrammar moeg = new DeriveSymTypeOfMyOwnExpressionGrammar();
+    moeg.setTypeCheckResult(typeCheckResult);
+    setMyOwnExpressionGrammarVisitor(moeg);
+    DeriveSymTypeOfMCCommonLiterals cl = new DeriveSymTypeOfMCCommonLiterals();
+    cl.setResult(typeCheckResult);
+    setMCCommonLiteralsVisitor(cl);
   }
 }

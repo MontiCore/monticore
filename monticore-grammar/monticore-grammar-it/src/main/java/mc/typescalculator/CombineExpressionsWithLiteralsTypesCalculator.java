@@ -104,11 +104,4 @@ public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpres
     deriveSymTypeOfLiterals.setResult(typeCheckResult);
     commonLiteralsTypesCalculator.setResult(typeCheckResult);
   }
-
-  public void setPrettyPrinter(IDerivePrettyPrinter prettyPrinter){
-    assignmentExpressionTypesCalculator.setPrettyPrinter(prettyPrinter);
-    commonExpressionTypesCalculator.setPrettyPrinter(prettyPrinter);
-    deriveSymTypeOfBitExpressions.setPrettyPrinter(prettyPrinter);
-    expressionsBasisTypesCalculator.setPrettyPrinter(prettyPrinter);
-  }
 }

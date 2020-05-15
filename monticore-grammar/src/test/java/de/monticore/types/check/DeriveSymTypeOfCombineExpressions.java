@@ -8,11 +8,10 @@ import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineE
 
 import java.util.Optional;
 
-public class DeriveSymTypeOfCombineExpressions implements CombineExpressionsWithLiteralsVisitor {
+public class DeriveSymTypeOfCombineExpressions extends DeriveSymTypeOfExpression implements CombineExpressionsWithLiteralsVisitor {
 
   private CombineExpressionsWithLiteralsVisitor realThis;
   private SynthesizeSymTypeFromMCBasicTypes synthesizer;
-  private TypeCheckResult typeCheckResult;
 
   @Override
   public void setRealThis(CombineExpressionsWithLiteralsVisitor realThis) {
@@ -26,7 +25,6 @@ public class DeriveSymTypeOfCombineExpressions implements CombineExpressionsWith
 
   public DeriveSymTypeOfCombineExpressions(SynthesizeSymTypeFromMCBasicTypes synthesizer){
     this.realThis=this;
-    this.typeCheckResult = new TypeCheckResult();
     this.synthesizer = synthesizer;
   }
 
@@ -82,11 +80,4 @@ public class DeriveSymTypeOfCombineExpressions implements CombineExpressionsWith
     }
   }
 
-  public void setTypeCheckResult(TypeCheckResult typeCheckResult) {
-    this.typeCheckResult = typeCheckResult;
-  }
-
-  public TypeCheckResult getTypeCheckResult() {
-    return typeCheckResult;
-  }
 }

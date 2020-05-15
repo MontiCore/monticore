@@ -7,6 +7,7 @@ import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisito
 import de.monticore.types.typesymbols._symboltable.FieldSymbol;
 import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
+import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
@@ -28,14 +29,11 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
     return (ITypeSymbolsScope) expressionsBasisScope;
   }
 
-  @Deprecated //TODO find better solution for prettyprinter
-  protected IDerivePrettyPrinter prettyPrinter;
-
   protected TypeCheckResult typeCheckResult;
 
   private ExpressionsBasisVisitor realThis;
 
-  protected static final String ERROR_MSG = " The expression %s cannot be calculated.";
+  protected static final String ERROR_MSG = " The expression at source position %s cannot be calculated.";
 
   @Override
   public void setRealThis(ExpressionsBasisVisitor realThis) {
@@ -64,7 +62,8 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
     } else {
       //No type found --> error
       typeCheckResult.reset();
-      Log.error("0xA0250"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
+
+      logError("0xA0250",expr.get_SourcePositionStart());
     }
   }
 
@@ -105,7 +104,7 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
     this.typeCheckResult = typeCheckResult;
   }
 
-  public void setPrettyPrinter(IDerivePrettyPrinter prettyPrinter){
-    this.prettyPrinter = prettyPrinter;
+  protected void logError(String errorCode, SourcePosition start){
+    Log.error(errorCode+String.format(ERROR_MSG, start));
   }
 }

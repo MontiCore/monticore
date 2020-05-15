@@ -36,7 +36,6 @@ public class DeriveSymTypeOfMyOwnExpressionGrammar
           "cannot be calculated");
     }
 
-    //absolute amount is only possible for numeric types
    if(inner.isPrimitive()
        &&((SymTypeConstant)inner).isNumericType()){
       result = inner.deepClone();

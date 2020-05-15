@@ -32,10 +32,6 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
     realThis = this;
   }
 
-  public void setTypeCheckResult(TypeCheckResult typeCheckResult){
-    this.typeCheckResult = typeCheckResult;
-  }
-
   @Override
   public void traverse(ASTLeftShiftExpression expr){
     Optional<SymTypeExpression> wholeResult = calculateTypeShift(expr.getLeft(),expr.getRight());
@@ -44,7 +40,7 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
       typeCheckResult.setLast(wholeResult.get());
     }else{
       typeCheckResult.reset();
-      Log.error("0xA0200"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
+      logError("0xA0200", expr.get_SourcePositionStart());
     }
   }
 
@@ -56,7 +52,7 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
       typeCheckResult.setLast(wholeResult.get());
     }else{
       typeCheckResult.reset();
-      Log.error("0xA0201"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
+      logError("0xA0201", expr.get_SourcePositionStart());
     }
   }
 
@@ -68,7 +64,7 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
       typeCheckResult.setLast(wholeResult.get());
     }else{
       typeCheckResult.reset();
-      Log.error("0xA0202"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
+      logError("0xA0202", expr.get_SourcePositionStart());
     }
   }
 
@@ -80,7 +76,7 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
       typeCheckResult.setLast(wholeResult.get());
     }else{
       typeCheckResult.reset();
-      Log.error("0xA0203"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
+      logError("0xA0203", expr.get_SourcePositionStart());
     }
   }
 
@@ -92,7 +88,7 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
       typeCheckResult.setLast(wholeResult.get());
     }else{
       typeCheckResult.reset();
-      Log.error("0xA0204"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
+      logError("0xA0204", expr.get_SourcePositionStart());
     }
   }
 
@@ -104,7 +100,7 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
       typeCheckResult.setLast(wholeResult.get());
     }else{
       typeCheckResult.reset();
-      Log.error("0xA0205"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
+      logError("0xA0205", expr.get_SourcePositionStart());
     }
   }
 
@@ -120,7 +116,7 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
       //store the type of the left expression in a variable for later use
       leftResult = typeCheckResult.getLast();
     }else{
-      Log.error("0xA0206"+String.format(ERROR_MSG,prettyPrinter.prettyprint(left)));
+      logError("0xA0206", left.get_SourcePositionStart());
     }
 
     right.accept(getRealThis());
@@ -128,7 +124,7 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
       //store the type of the right expression in a variable for later use
       rightResult = typeCheckResult.getLast();
     }else{
-      Log.error("0xA0207"+String.format(ERROR_MSG,prettyPrinter.prettyprint(right)));
+      logError("0xA0207", right.get_SourcePositionStart());
     }
     
     if(leftResult.isPrimitive()&&rightResult.isPrimitive()){
@@ -156,7 +152,8 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
       //store the type of the left expression in a variable for later use
       leftResult = typeCheckResult.getLast();
     }else{
-      Log.error("0xA0208"+String.format(ERROR_MSG,prettyPrinter.prettyprint(left)));
+      logError("0xA0208", left.get_SourcePositionStart());
+
     }
 
     right.accept(getRealThis());
@@ -164,7 +161,7 @@ public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression imp
       //store the type of the right expression in a variable for later use
       rightResult = typeCheckResult.getLast();
     }else{
-      Log.error("0xA0209"+String.format(ERROR_MSG,prettyPrinter.prettyprint(right)));
+      logError("0xA0209", right.get_SourcePositionStart());
     }
     
     if(leftResult.isPrimitive()&&rightResult.isPrimitive()) {
