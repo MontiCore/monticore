@@ -339,19 +339,19 @@ public class MontiCoreScriptTest {
     assertEquals(15, symbolPackageCD.getCDDefinition().sizeCDClasss());
     assertEquals("StatechartScope", symbolPackageCD.getCDDefinition().getCDClass(0).getName());
     assertEquals("StatechartScopeBuilder", symbolPackageCD.getCDDefinition().getCDClass(1).getName());
-    assertEquals("StatechartSymbolTablePrinter", symbolPackageCD.getCDDefinition().getCDClass(7).get(2).getName());
+    assertEquals("StatechartSymbolTablePrinter", symbolPackageCD.getCDDefinition().getCDClass(2).getName());
     assertEquals("StatechartGlobalScope", symbolPackageCD.getCDDefinition().getCDClass(3).getName());
     assertEquals("StatechartGlobalScopeBuilder", symbolPackageCD.getCDDefinition().getCDClass(4).getName());
     assertEquals("StatechartArtifactScope", symbolPackageCD.getCDDefinition().getCDClass(5).getName());
     assertEquals("StatechartArtifactScopeBuilder", symbolPackageCD.getCDDefinition().getCDClass(6).getName());
     assertEquals("StatechartScopeDeSer", symbolPackageCD.getCDDefinition().getCDClass(7).getName());
-    assertEquals("StatechartLanguage", symbolPackageCD.getCDDefinition().getCDClass(7).getName());
-    assertEquals("StatechartModelLoader", symbolPackageCD.getCDDefinition().getCDClass(8).getName());
-    assertEquals("StatechartModelLoaderBuilder", symbolPackageCD.getCDDefinition().getCDClass(9).getName());
-    assertEquals("StatechartSymbolTableCreator", symbolPackageCD.getCDDefinition().getCDClass(10).getName());
-    assertEquals("StatechartSymbolTableCreatorBuilder", symbolPackageCD.getCDDefinition().getCDClass(11).getName());
-    assertEquals("StatechartSymbolTableCreatorDelegator", symbolPackageCD.getCDDefinition().getCDClass(12).getName());
-    assertEquals("StatechartSymbolTableCreatorDelegatorBuilder", symbolPackageCD.getCDDefinition().getCDClass(13).getName());
+    assertEquals("StatechartLanguage", symbolPackageCD.getCDDefinition().getCDClass(8).getName());
+    assertEquals("StatechartModelLoader", symbolPackageCD.getCDDefinition().getCDClass(9).getName());
+    assertEquals("StatechartModelLoaderBuilder", symbolPackageCD.getCDDefinition().getCDClass(10).getName());
+    assertEquals("StatechartSymbolTableCreator", symbolPackageCD.getCDDefinition().getCDClass(11).getName());
+    assertEquals("StatechartSymbolTableCreatorBuilder", symbolPackageCD.getCDDefinition().getCDClass(12).getName());
+    assertEquals("StatechartSymbolTableCreatorDelegator", symbolPackageCD.getCDDefinition().getCDClass(13).getName());
+    assertEquals("StatechartSymbolTableCreatorDelegatorBuilder", symbolPackageCD.getCDDefinition().getCDClass(14).getName());
 
     assertEquals(2, symbolPackageCD.getCDDefinition().sizeCDInterfaces());
     assertEquals("IStatechartScope", symbolPackageCD.getCDDefinition().getCDInterface(0).getName());

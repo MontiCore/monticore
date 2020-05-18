@@ -99,7 +99,7 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
         name+=cdDefinitionSymbol.getPackageName()+".";
       }
       classNames.add(name+cdDefinitionSymbol.getName().toLowerCase()
-          +"."+SYMBOL_TABLE_PACKAGE+"."+SERIALIZATION_PACKAGE+"."+cdDefinitionSymbol.getName()+SYMBOL_TABLE_PRINTER_SUFFIX);
+          +"."+SYMBOL_TABLE_PACKAGE+"."+cdDefinitionSymbol.getName()+SYMBOL_TABLE_PRINTER_SUFFIX);
     }
     return classNames;
   }

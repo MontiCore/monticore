@@ -13,7 +13,6 @@ import de.monticore.codegen.cd2java._symboltable.scope.*;
 import de.monticore.codegen.cd2java._symboltable.serialization.ScopeDeSerDecorator;
 import de.monticore.codegen.cd2java._symboltable.serialization.SymbolDeSerDecorator;
 import de.monticore.codegen.cd2java._symboltable.serialization.SymbolTablePrinterDecorator;
-import de.monticore.codegen.cd2java._symboltable.symbTabMill.SymTabMillDecorator;
 import de.monticore.codegen.cd2java._symboltable.symbol.*;
 import de.monticore.codegen.cd2java._symboltable.symboltablecreator.*;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -116,7 +115,7 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
                                 final SymbolTableCreatorDelegatorDecorator symbolTableCreatorDelegatorDecorator,
                                 final SymbolTableCreatorForSuperTypes symbolTableCreatorForSuperTypes,
                                 final SymbolTableCreatorDelegatorBuilderDecorator symbolTableCreatorDelegatorBuilderDecorator,
-                                final SymbolTableCreatorForSuperTypesBuilder symbolTableCreatorForSuperTypesBuilder) {
+                                final SymbolTableCreatorForSuperTypesBuilder symbolTableCreatorForSuperTypesBuilder,
                                 final SymbolDeSerDecorator symbolDeSerDecorator,
                                 final ScopeDeSerDecorator scopeDeSerDecorator,
                                 final SymbolTablePrinterDecorator symbolTablePrinterDecorator) {
