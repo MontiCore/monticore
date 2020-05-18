@@ -283,14 +283,14 @@ public class SymTypeExpressionTest {
 
     //SymTypeVariable
     assertTrue(teVarA.deepClone() instanceof SymTypeVariable);
-    assertFalse(teVarA.deepClone().isPrimitive());
+    assertFalse(teVarA.deepClone().isTypeConstant());
     assertTrue(teVarA.deepClone().isTypeVariable());
     assertEquals(teVarA.print(),teVarA.deepClone().print());
 
     //SymTypeConstant
     assertTrue(teInt.deepClone() instanceof SymTypeConstant);
     assertEquals(teInt.getTypeInfo(), teInt.deepClone().getTypeInfo());
-    assertTrue(teInt.deepClone().isPrimitive());
+    assertTrue(teInt.deepClone().isTypeConstant());
     assertEquals(teInt.print(),teInt.deepClone().print());
 
     //SymTypeOfObject
@@ -459,7 +459,7 @@ public class SymTypeExpressionTest {
 
     //streamArguments
     Stream<SymTypeExpression> stream =teFoo2.streamArguments();
-    List<SymTypeExpression> list = stream.filter(SymTypeExpression::isPrimitive)
+    List<SymTypeExpression> list = stream.filter(SymTypeExpression::isTypeConstant)
           .collect(Collectors.toList());
     assertEquals(2,list.size());
     assertEquals(teDouble,list.get(0));
@@ -467,7 +467,7 @@ public class SymTypeExpressionTest {
 
     //parallelStreamArguments
     Stream<SymTypeExpression> parStream = teFoo2.parallelStreamArguments();
-    List<SymTypeExpression> parList = parStream.filter(SymTypeExpression::isPrimitive)
+    List<SymTypeExpression> parList = parStream.filter(SymTypeExpression::isTypeConstant)
         .collect(Collectors.toList());
     assertEquals(2,parList.size());
     assertEquals(teDouble,parList.get(0));
@@ -549,7 +549,7 @@ public class SymTypeExpressionTest {
     assertTrue(teFoo2.equalsArguments(arguments));
 
     //removeIfArgument
-    teFoo2.removeIfArgument(SymTypeExpression::isPrimitive);
+    teFoo2.removeIfArgument(SymTypeExpression::isTypeConstant);
     assertEquals(2,teFoo2.sizeArguments());
   }
 

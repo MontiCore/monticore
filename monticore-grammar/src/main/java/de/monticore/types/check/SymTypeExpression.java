@@ -34,7 +34,7 @@ public abstract class SymTypeExpression {
    * Am I primitive? (such as "int")
    * (default: no)
    */
-  public boolean isPrimitive() {
+  public boolean isTypeConstant() {
     return false;
   }
 
@@ -51,6 +51,36 @@ public abstract class SymTypeExpression {
   public boolean isTypeVariable(){
     return false;
   }
+
+  /**
+   * Am I an array?
+   */
+  public boolean isArrayType(){
+    return false;
+  }
+
+  /**
+   * Am I of void type?
+   */
+  public boolean isVoidType(){
+    return false;
+  }
+
+  /**
+   * Am I of null type?
+   */
+  public boolean isNullType(){
+    return false;
+  }
+
+  /**
+   * Am I an object type? (e.g. "String", "Person")
+   */
+  public boolean isObjectType(){
+    return false;
+  }
+
+
 
   public abstract SymTypeExpression deepClone();
 

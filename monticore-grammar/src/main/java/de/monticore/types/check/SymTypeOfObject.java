@@ -68,6 +68,11 @@ public class SymTypeOfObject extends SymTypeExpression {
     String[] parts = getObjName().split("\\.");
     return parts[parts.length - 1];
   }
-  
+
+  @Override
+  public boolean isObjectType() {
+    return true;
+  }
+
   // --------------------------------------------------------------------------
 }

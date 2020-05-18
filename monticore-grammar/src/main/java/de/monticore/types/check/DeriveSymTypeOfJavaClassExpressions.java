@@ -112,7 +112,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     }
 
     //the type of the index has to be an integral type
-    if(indexResult.isPrimitive() && ((SymTypeConstant)indexResult).isIntegralType() && arrayTypeResult instanceof SymTypeArray){
+    if(indexResult.isTypeConstant() && ((SymTypeConstant)indexResult).isIntegralType() && arrayTypeResult instanceof SymTypeArray){
       SymTypeArray arrayResult = (SymTypeArray) arrayTypeResult;
       wholeResult = getCorrectResultArrayExpression(node.getEnclosingScope(), indexResult, arrayTypeResult, arrayResult);
     }

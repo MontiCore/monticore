@@ -2,12 +2,12 @@
 package de.monticore.types.check;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.literals.mccommonliterals._ast.ASTSignedLiteral;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._ast.ASTMCVoidType;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
-import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Optional;
@@ -157,7 +157,26 @@ public class TypeCheck {
     }
     return result.get();
   }
-  
+
+  /**
+   * Function 2b: Derive the SymTypeExpression of a Literal
+   * This defines the Type that a Literal has and will be used to
+   * determine the Type of Expressions.
+   *
+   * Tests for this Function are combined in the Visitor tests
+   * (DeriveSymType.*Literals.*Test)
+   */
+  public SymTypeExpression typeOf(ASTSignedLiteral lit) {
+    iTypesCalculator.init();
+    Optional<SymTypeExpression> result = iTypesCalculator.calculateType(lit);
+    if(!result.isPresent()) {
+      Log.error("0xED670 Internal Error: No Type for Literal " + lit
+          + " Probably TypeCheck mis-configured.");
+    }
+    return result.get();
+  }
+
+
   /*************************************************************************/
   
   /**
@@ -185,7 +204,7 @@ public class TypeCheck {
    * are compatible, by refining the assignments a-> long, b->List<c>
    */
   public static boolean compatible(SymTypeExpression left, SymTypeExpression right) {
-    if(left.isPrimitive()&&right.isPrimitive()){
+    if(left.isTypeConstant()&&right.isTypeConstant()){
       SymTypeConstant leftType = (SymTypeConstant) left;
       SymTypeConstant rightType = (SymTypeConstant) right;
       if(isBoolean(leftType)&&isBoolean(rightType)){
@@ -245,7 +264,7 @@ public class TypeCheck {
    * @param superType the SymTypeExpression that could be a supertype of the other SymTypeExpression
    */
   public static boolean isSubtypeOf(SymTypeExpression subType, SymTypeExpression superType){
-    if(subType.isPrimitive()&&superType.isPrimitive()) {
+    if(subType.isTypeConstant()&&superType.isTypeConstant()) {
       SymTypeConstant sub = (SymTypeConstant) subType;
       SymTypeConstant supert = (SymTypeConstant) superType;
       if (isDouble(supert) && sub.isNumericType() &&!isDouble(sub)) {
@@ -261,8 +280,8 @@ public class TypeCheck {
         return true;
       }
       return false;
-    }else if((subType.isPrimitive() && !superType.isPrimitive()) ||
-        (superType.isPrimitive() && !subType.isPrimitive())){
+    }else if((subType.isTypeConstant() && !superType.isTypeConstant()) ||
+        (superType.isTypeConstant() && !subType.isTypeConstant())){
       return false;
     }
     return isSubtypeOfRec(subType,superType);

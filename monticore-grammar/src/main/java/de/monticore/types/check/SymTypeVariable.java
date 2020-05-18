@@ -46,7 +46,7 @@ public class SymTypeVariable extends SymTypeExpression {
   /**
    * Am I primitive? (such as "int")
    */
-  public boolean isPrimitive() {
+  public boolean isTypeConstant() {
     return false;
     /**
      *     Please note that the var itself is not a primitive type, but it might

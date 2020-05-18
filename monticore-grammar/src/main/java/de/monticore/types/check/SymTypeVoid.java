@@ -30,5 +30,8 @@ public class SymTypeVoid extends SymTypeExpression {
     return new SymTypeVoid();
   }
 
-  
+  @Override
+  public boolean isVoidType() {
+    return true;
+  }
 }

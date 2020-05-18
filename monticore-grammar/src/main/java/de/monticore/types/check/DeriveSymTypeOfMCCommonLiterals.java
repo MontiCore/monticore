@@ -68,6 +68,26 @@ public class DeriveSymTypeOfMCCommonLiterals extends DeriveSymTypeOfLiterals
     result.setLast(DefsTypeBasic._StringSymType);
   }
 
+  @Override
+  public void visit(ASTSignedNatLiteral lit) {
+    result.setLast(DefsTypeBasic._intSymType);
+  }
+
+  @Override
+  public void visit(ASTSignedBasicDoubleLiteral lit) {
+    result.setLast(DefsTypeBasic._doubleSymType);
+  }
+
+  @Override
+  public void visit(ASTSignedBasicFloatLiteral lit) {
+    result.setLast(DefsTypeBasic._floatSymType);
+  }
+
+  @Override
+  public void visit(ASTSignedBasicLongLiteral lit) {
+    result.setLast(DefsTypeBasic._longSymType);
+  }
+
   /**
    * Literal "null" gets marked with implicit SymType _null
    */

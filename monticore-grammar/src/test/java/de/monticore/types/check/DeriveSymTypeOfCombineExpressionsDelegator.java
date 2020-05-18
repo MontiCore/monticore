@@ -3,6 +3,7 @@ package de.monticore.types.check;
 
 import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsDelegatorVisitor;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.literals.mccommonliterals._ast.ASTSignedLiteral;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 
 import java.util.Optional;
@@ -137,6 +138,17 @@ public class DeriveSymTypeOfCombineExpressionsDelegator extends CombineExpressio
    */
   @Override
   public Optional<SymTypeExpression> calculateType(ASTLiteral lit) {
+    lit.accept(realThis);
+    Optional<SymTypeExpression> result = Optional.empty();
+    if (typeCheckResult.isPresentLast()) {
+      result = Optional.ofNullable(typeCheckResult.getLast());
+    }
+    typeCheckResult.reset();
+    return result;
+  }
+
+  @Override
+  public Optional<SymTypeExpression> calculateType(ASTSignedLiteral lit) {
     lit.accept(realThis);
     Optional<SymTypeExpression> result = Optional.empty();
     if (typeCheckResult.isPresentLast()) {

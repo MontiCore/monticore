@@ -39,6 +39,11 @@ public class SymTypeOfNull extends SymTypeExpression {
     return new SymTypeOfNull();
   }
 
+  @Override
+  public boolean isNullType() {
+    return true;
+  }
+
   // --------------------------------------------------------------------------
 
 

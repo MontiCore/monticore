@@ -4,6 +4,7 @@ package de.monticore.types.check;
 import de.monticore.expressions.expressionsbasis._ast.*;
 import de.monticore.expressions.expressionsbasis._symboltable.*;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisitor;
+import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.types.typesymbols._symboltable.FieldSymbol;
 import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
@@ -13,6 +14,7 @@ import de.se_rwth.commons.logging.Log;
 import java.util.*;
 
 import static de.monticore.types.check.SymTypeExpressionFactory.*;
+import static de.monticore.types.check.TypeCheck.*;
 
 /**
  * This Visitor can calculate a SymTypeExpression (type) for the expressions in ExpressionsBasis
@@ -51,24 +53,33 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
 
   @Override
   public void traverse(ASTLiteralExpression expr) {
-    SymTypeExpression wholeResult = null;
+    Optional<SymTypeExpression> wholeResult = calculateLiteralExpression(expr);
+    storeResultOrLogError(wholeResult, expr, "0xA0250");
+  }
+
+  protected Optional<SymTypeExpression> calculateLiteralExpression(ASTLiteralExpression expr){
+    SymTypeExpression wholeResult = acceptThisAndReturnSymTypeExpression(expr.getLiteral());
     //get the type of the literal
     expr.getLiteral().accept(getRealThis());
     if (typeCheckResult.isPresentLast()) {
       wholeResult = typeCheckResult.getLast();
     }
-    if (wholeResult != null) {
-      typeCheckResult.setLast(wholeResult);
-    } else {
-      //No type found --> error
-      typeCheckResult.reset();
-
-      logError("0xA0250",expr.get_SourcePositionStart());
-    }
+    return Optional.of(wholeResult);
   }
 
   @Override
   public void traverse(ASTNameExpression expr) {
+    Optional<SymTypeExpression> wholeResult = calculateNameExpression(expr);
+    if(wholeResult.isPresent()){
+      typeCheckResult.setLast(wholeResult.get());
+    }else{
+     //name not found --> package or nothing
+     typeCheckResult.reset();
+     Log.info("package suspected", "DeriveSymTypeOfExpression");
+    }
+  }
+
+  protected Optional<SymTypeExpression> calculateNameExpression(ASTNameExpression expr){
     Optional<FieldSymbol> optVar = getScope(expr.getEnclosingScope()).resolveField(expr.getName());
     Optional<TypeSymbol> optType = getScope(expr.getEnclosingScope()).resolveType(expr.getName());
     if (optVar.isPresent()) {
@@ -86,18 +97,15 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
         res = createTypeExpression(var.getType().print(), var.getType().getTypeInfo().getEnclosingScope());
       }
       typeCheckResult.setField();
-      typeCheckResult.setLast(res);
+      return Optional.of(res);
     } else if (optType.isPresent()) {
       //no variable found, test if name is type
       TypeSymbol type = optType.get();
       SymTypeExpression res = createTypeExpression(type.getName(), type.getEnclosingScope());
       typeCheckResult.setType();
-      typeCheckResult.setLast(res);
-    }else{
-     //name not found --> package or nothing
-     typeCheckResult.reset();
-      Log.info("package suspected", "DeriveSymTypeOfExpression");
+      return Optional.of(res);
     }
+    return Optional.empty();
   }
 
   public void setTypeCheckResult(TypeCheckResult typeCheckResult) {
@@ -107,4 +115,88 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
   protected void logError(String errorCode, SourcePosition start){
     Log.error(errorCode+String.format(ERROR_MSG, start));
   }
+
+  /**
+   * Helper method to store the calculated result or log an error if it is not present
+   * @param result the calculated result
+   * @param expression the expression the SymTypeExpressions is calculated for
+   * @param errorCode the code which is logged in case of an error
+   */
+  protected void storeResultOrLogError(Optional<SymTypeExpression> result, ASTExpression expression, String errorCode){
+    if(result.isPresent()){
+      //store the result of the expression in the last result
+      typeCheckResult.setLast(result.get());
+    }else{
+      typeCheckResult.reset();
+      logError(errorCode, expression.get_SourcePositionStart());
+    }
+  }
+
+  /**
+   * Helper method to calculate the SymTypeExpression of a subexpression in a traverse method
+   * @param expression the expression the SymTypeExpressions is calculated for
+   * @return the SymTypeExpression of the expression
+   */
+  protected SymTypeExpression acceptThisAndReturnSymTypeExpression(ASTExpression expression){
+    SymTypeExpression result = null;
+    expression.accept(getRealThis());
+    if(typeCheckResult.isPresentLast()){
+      result = typeCheckResult.getLast();
+    }
+    return result;
+  }
+
+  /**
+   * Helper method to calculate the SymTypeExpression of a subliteral in a traverse method
+   * @param literal the literal the SymTypeExpressions is calculated for
+   * @return the SymTypeExpression of the literal
+   */
+  protected SymTypeExpression acceptThisAndReturnSymTypeExpression(ASTLiteral literal){
+    SymTypeExpression result = null;
+    literal.accept(getRealThis());
+    if(typeCheckResult.isPresentLast()){
+      result = typeCheckResult.getLast();
+    }
+    return result;
+  }
+
+  /**
+   * Helper method to calculate the SymTypeExpression of a subexpression in a traverse method or log
+   *  an error if it could not be calculated
+   * @param expression the expression the SymTypeExpressions is calculated for
+   * @param errorCode the code which is logged in case of an error
+   * @return the SymTypeExpression of the expression
+   */
+  protected SymTypeExpression acceptThisAndReturnSymTypeExpressionOrLogError(ASTExpression expression, String errorCode) {
+    SymTypeExpression result = null;
+    if (expression != null) {
+      result = acceptThisAndReturnSymTypeExpression(expression);
+    }
+    if (result == null) {
+      logError(errorCode, expression.get_SourcePositionStart());
+    }
+    return result;
+  }
+
+  /**
+   * test if the expression is of numeric type (double, float, long, int, char, short, byte)
+   */
+  public boolean isNumericType(SymTypeExpression type) {
+    return (isDouble(type) || isFloat(type) ||
+       isIntegralType(type));
+  }
+
+  /**
+   * test if the expression is of integral type (long, int, char, short, byte)
+   */
+  public boolean isIntegralType(SymTypeExpression type) {
+    return (isLong(type) || isInt(type) ||
+        isChar(type) || isShort(type) ||
+        isByte(type));
+  }
+
+
+
+
+
 }
