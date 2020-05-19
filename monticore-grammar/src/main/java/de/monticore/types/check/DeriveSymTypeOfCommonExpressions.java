@@ -575,7 +575,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
   /**
    * helper method for the calculation of the ASTBooleanNotExpression
    */
-  public static Optional<SymTypeExpression> getUnaryIntegralPromotionType(SymTypeExpression type) {
+  protected Optional<SymTypeExpression> getUnaryIntegralPromotionType(SymTypeExpression type) {
     if(!isLong(type)&&type.isTypeConstant()&&((SymTypeConstant)type).isIntegralType()){
       return Optional.of(SymTypeExpressionFactory.createTypeConstant("int"));
     }

@@ -319,7 +319,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
   /**
    * helper method for the calculation of the ASTBooleanNotExpression
    */
-  public static Optional<SymTypeExpression> getUnaryNumericPromotionType(SymTypeExpression type) {
+  protected Optional<SymTypeExpression> getUnaryNumericPromotionType(SymTypeExpression type) {
     if (isByte(type) || isShort(type) || isChar(type) || isInt(type)) {
       return Optional.of(SymTypeExpressionFactory.createTypeConstant("int"));
     }
