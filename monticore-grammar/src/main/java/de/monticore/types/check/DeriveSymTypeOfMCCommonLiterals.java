@@ -2,7 +2,10 @@
 package de.monticore.types.check;
 
 import de.monticore.literals.mccommonliterals._ast.*;
+import de.monticore.literals.mccommonliterals._symboltable.MCCommonLiteralsScope;
 import de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor;
+import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
+import de.se_rwth.commons.logging.Log;
 
 /**
  * Visitor for Derivation of SymType from Literals
@@ -12,7 +15,6 @@ import de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor;
  */
 public class DeriveSymTypeOfMCCommonLiterals extends DeriveSymTypeOfLiterals
                               implements MCCommonLiteralsVisitor {
-  
   // ----------------------------------------------------------  realThis start
   // setRealThis, getRealThis are necessary to make the visitor compositional
   //
