@@ -326,6 +326,50 @@ do not introduce new symbol instances. Instead, these refer to the first occuran
   from the beginning, because this adds a lot of complexity.
 * Defined by: BR  
 
-  
+### Realizing Embedding through an Interface Nonterminal Extension Point
+
+Consider the following scenario: 
+A language `Host` defines an extension point through an interface nonterminal.
+
+```
+grammar Host { A = I*; interface I; }
+```
+
+Another language `Embedded` that has no connection to the `Host` language, 
+defines a class nonterminal `E`.
+
+```
+grammar Embedded { E = "something"; }
+```
+
+MontiCore provides alternative solutions to embed the language `Embedded`
+into the language `Host` at the extension point `I`. All solutions presented here
+require to implement a new grammar `G` that extends the grammars `Embedded` and `Host`, 
+which reuses the start nonterminal of the `Host` grammar:
+
+```
+grammar G extends Host, Embedded { start A; }
+```
+
+The connection between extension point and extension is performed by an additional
+grammar rule in the grammar `G`. This can be realized in one of the following ways, each 
+of which has its own advantages and disadvantages:
+
+1. Embedding through overriding of extension rule and implementing extension point rule:
+  * `E implements I;`
+  * Advantage: simple embedding rule
+  * Disadvantage: does not work in combination with inheritance of extension rule
+  * Should therefore only be used, it `E` is not used anywhere else (= in not other language that is potentially used in combination with this language) 
+2. Embedding through extending extension rule and implementing extension point rule:
+  * `IE extends E implements I = "something";`
+  * Advantage: does work in combination with inheritance of extension rule
+  * Disadvantage: cloning of RHS of the extension rule can produce inconsistencies if `E` is changed
+  * Can be used if it is assured that this rule is adjusted whenever `E` is changed, e.g., by assuming that `E` is not modified at all
+3. Embedding through implementing extension point rule and providing extension on right-hand side:
+  * `IE implements I = E;`
+  * Advantage: does work in combination with inheritance of extension rule
+  * Disadvantage: introduces new level of indirection in AST that invalidates check whether required abstract syntax (RHS of interface nonterminal) is present
+  * Should therefore not be used, if the interface has a right-hand side
+* Defined by: AB
 
 
