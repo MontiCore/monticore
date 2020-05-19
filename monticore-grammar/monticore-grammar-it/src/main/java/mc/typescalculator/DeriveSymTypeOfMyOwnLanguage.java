@@ -53,7 +53,7 @@ public class DeriveSymTypeOfMyOwnLanguage
     moeg.setTypeCheckResult(typeCheckResult);
     setMyOwnExpressionGrammarVisitor(moeg);
     DeriveSymTypeOfMCCommonLiterals cl = new DeriveSymTypeOfMCCommonLiterals();
-    cl.setResult(typeCheckResult);
+    cl.setTypeCheckResult(typeCheckResult);
     setMCCommonLiteralsVisitor(cl);
   }
 }
