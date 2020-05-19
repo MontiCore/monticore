@@ -4,8 +4,6 @@ package de.monticore.types.check;
 import de.monticore.expressions.expressionsbasis.ExpressionsBasisMill;
 import de.monticore.expressions.prettyprint.CombineExpressionsWithLiteralsPrettyPrinter;
 import de.monticore.literals.mccommonliterals.MCCommonLiteralsMill;
-import de.monticore.literals.mccommonliterals._ast.ASTFloatExtension;
-import de.monticore.literals.mccommonliterals._ast.ASTLongExtension;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.prettyprint.IndentPrinter;
 import de.se_rwth.commons.logging.Log;
@@ -74,17 +72,14 @@ public class DeriveSymTypeOfMCCommonLiteralsTest {
 
   @Test
   public void deriveTFromLiteral1BasicLong() throws IOException {
-    ASTLongExtension longExt = MCCommonLiteralsMill.longExtensionBuilder().build();
-    ASTLiteral lit = MCCommonLiteralsMill.basicLongLiteralBuilder().setDigits("17").setLongExtension(longExt).build();
+    ASTLiteral lit = MCCommonLiteralsMill.basicLongLiteralBuilder().setDigits("17").build();
     assertEquals("long", tc.typeOf(lit).print());
   }
 
 
   @Test
   public void deriveTFromLiteral1BasicFloat() throws IOException {
-    ASTFloatExtension floatExt = MCCommonLiteralsMill.floatExtensionBuilder().build();
-    ASTLiteral lit = MCCommonLiteralsMill.basicFloatLiteralBuilder().setPre("10").setPost("03")
-            .setFloatExtension(floatExt).build();
+    ASTLiteral lit = MCCommonLiteralsMill.basicFloatLiteralBuilder().setPre("10").setPost("03").build();
     assertEquals("float", tc.typeOf(lit).print());
   }
 
