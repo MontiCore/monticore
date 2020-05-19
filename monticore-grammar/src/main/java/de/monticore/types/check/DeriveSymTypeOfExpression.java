@@ -86,16 +86,7 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
       //no method here, test variable first
       // durch AST-Umbau kann ASTNameExpression keine Methode sein
       FieldSymbol var = optVar.get();
-      SymTypeExpression res;
-      if (var.getType() instanceof SymTypeOfGenerics) {
-        res = createGenerics(((SymTypeOfGenerics) var.getType()).getTypeConstructorFullName(), var.getType().getTypeInfo().getEnclosingScope(),
-            ((SymTypeOfGenerics) var.getType()).getArgumentList());
-      } else if (var.getType() instanceof SymTypeArray) {
-        res = createTypeArray(((SymTypeArray) var.getType()).getArgument().getTypeInfo().getName(), var.getType().getTypeInfo().getEnclosingScope(),
-            ((SymTypeArray) var.getType()).getDim(),((SymTypeArray) var.getType()).getArgument());
-      } else {
-        res = createTypeExpression(var.getType().print(), var.getType().getTypeInfo().getEnclosingScope());
-      }
+      SymTypeExpression res = var.getType().deepClone();
       typeCheckResult.setField();
       return Optional.of(res);
     } else if (optType.isPresent()) {
