@@ -113,7 +113,7 @@ public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpres
     commonExpressionTypesCalculator.setTypeCheckResult(typeCheckResult);
     deriveSymTypeOfBitExpressions.setTypeCheckResult(typeCheckResult);
     expressionsBasisTypesCalculator.setTypeCheckResult(typeCheckResult);
-    deriveSymTypeOfLiterals.setResult(typeCheckResult);
-    commonLiteralsTypesCalculator.setResult(typeCheckResult);
+    deriveSymTypeOfLiterals.setTypeCheckResult(typeCheckResult);
+    commonLiteralsTypesCalculator.setTypeCheckResult(typeCheckResult);
   }
 }
