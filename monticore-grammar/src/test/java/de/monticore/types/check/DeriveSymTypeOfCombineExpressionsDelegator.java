@@ -70,11 +70,11 @@ public class DeriveSymTypeOfCombineExpressionsDelegator extends CombineExpressio
 
     deriveSymTypeOfLiterals = new DeriveSymTypeOfLiterals();
     setMCLiteralsBasisVisitor(deriveSymTypeOfLiterals);
-    deriveSymTypeOfLiterals.setResult(typeCheckResult);
+    deriveSymTypeOfLiterals.setTypeCheckResult(typeCheckResult);
 
     commonLiteralsTypesCalculator = new DeriveSymTypeOfMCCommonLiterals();
     setMCCommonLiteralsVisitor(commonLiteralsTypesCalculator);
-    commonLiteralsTypesCalculator.setResult(typeCheckResult);
+    commonLiteralsTypesCalculator.setTypeCheckResult(typeCheckResult);
 
     symTypeFromMCSimpleGenericTypes = new SynthesizeSymTypeFromMCSimpleGenericTypes();
 
@@ -106,10 +106,10 @@ public class DeriveSymTypeOfCombineExpressionsDelegator extends CombineExpressio
    */
   public void setTypeCheckResult(TypeCheckResult typeCheckResult){
     deriveSymTypeOfAssignmentExpressions.setTypeCheckResult(typeCheckResult);
-    deriveSymTypeOfMCCommonLiterals.setResult(typeCheckResult);
+    deriveSymTypeOfMCCommonLiterals.setTypeCheckResult(typeCheckResult);
     deriveSymTypeOfCommonExpressions.setTypeCheckResult(typeCheckResult);
     deriveSymTypeOfExpression.setTypeCheckResult(typeCheckResult);
-    deriveSymTypeOfLiterals.setResult(typeCheckResult);
+    deriveSymTypeOfLiterals.setTypeCheckResult(typeCheckResult);
     deriveSymTypeOfBitExpressions.setTypeCheckResult(typeCheckResult);
     deriveSymTypeOfJavaClassExpressions.setTypeCheckResult(typeCheckResult);
     deriveSymTypeOfSetExpressions.setTypeCheckResult(typeCheckResult);
