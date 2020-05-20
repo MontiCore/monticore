@@ -249,10 +249,30 @@ and
 
 
 ### [Statecharts](https://git.rwth-aachen.de/monticore/statechart/sc-language) (Beta: In Stabilization) (90% to MC6)
-* Caretaker: RE supported by KH with two Hiwis 
+* Caretaker: RE supported by KH  
 * Language to parse Statecharts
 * creates transformation language within SC and sc<->cd4a
 * [*Detailed description*](https://git.rwth-aachen.de/monticore/statechart/sc-language/-/blob/develop/scgrammar/src/main/grammars/de/monticore/umlsc/Statechart.md) 
+* A compact teaser for the Statechart language:
+    ```
+    statechart Door {
+      state Opened
+      initial state Closed
+      state Locked
+    
+      Opened -> Closed close() /
+      Closed -> Opened open() / {ringTheDoorBell();}
+      Closed -> Locked timeOut() / { lockDoor(); } [doorIsLocked]
+      Locked -> Closed [isAuthorized] unlock() /
+    }
+    ```
+  This example models the different states of a door: `Opened`, `Closed`, and `Locked`.
+  When in state `Opened`, it is possible to close the door using `close()` and 
+  open the door when it is `Closed` using `open()`. In the latter case the action
+  `ringDoorBell()` is executed. When the door is `Closed` it is automatically locked
+  after some time due to a `timeout()` event that triggers the `lockDoor()` action.
+  Consequently, the post condition `doorIsLocked` holds. In case the door is locked,
+  it can be opened by using `unlock()` if the pre condition `isAuthorized` is fulfilled.
 
 ### [SysML_2](https://git.rwth-aachen.de/monticore/languages/sysml2/sysml2official) (Alpha: Intention to become stable)
 * Caretaker: NJ
