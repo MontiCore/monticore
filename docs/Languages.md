@@ -96,24 +96,24 @@ MontiCore projects are hosted at
   and 
   [*detailed description*](https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/master/fd-lang/src/main/grammars/FeatureDiagram.md)
 * A small teaser for the feature diagram syntax:
-```
-featurediagram Phone {
-  Phone -> Memory & OS & Camera? & Screen;
-  Memory -> Internal & External?;
-  Internal -> [1..2] of {Small, Medium, Large};
-  OS -> iOS ^ Android;
-  Screen -> Flexible | FullHD;
+  ```
+  featurediagram Phone {
+    Phone -> Memory & OS & Camera? & Screen;
+    Memory -> Internal & External?;
+    Internal -> [1..2] of {Small, Medium, Large};
+    OS -> iOS ^ Android;
+    Screen -> Flexible | FullHD;
 
-  External ? Flexible => Android  : iOS && Android ;
-}
-```
-Each feature model has a name and a body that is surrounded by curly brackets.
-The body contains rules that define the feature tree. Each rule describes a 
-feature group with a parent feature (left-hand side) followed by an arrow 
-(`->`) and children features (right-hand side). 
-The root of the feature tree is detected automatically. 
-Further, a feature model may define cross-tree constraints
-and use Java-like expressions to formulate these.
+    External ? Flexible => Android : iOS && Android ;
+  }
+  ```
+  Each feature model has a name and a body that is surrounded by curly brackets.
+  The body contains rules that define the feature tree. Each rule describes a 
+  feature group with a parent feature (left-hand side) followed by an arrow 
+  (`->`) and children features (right-hand side). 
+  The root of the feature tree is detected automatically. 
+  Further, a feature model may define cross-tree constraints
+  and use Java-like expressions to formulate these.
 
 ### [GUI DSL](https://git.rwth-aachen.de/macoco/gui-dsl) (Alpha: Intention to become stable)
 * Caretaker: LN
