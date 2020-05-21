@@ -91,7 +91,7 @@ MontiCore projects are hosted at
 * Responsible: SVa, AGe
 * CD4Code describes **UML class diagrams**.
 * CD4Code is a conservative extension of **CD4A**, 
-  which includes method signatures.
+  which includes method signatures. An example:
   ```
   classdiagram MyLife2 {
     // like CD4A but also allows:
