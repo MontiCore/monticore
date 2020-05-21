@@ -76,7 +76,7 @@ MontiCore projects are hosted at
     association phonebook Person [String] -> TelefoneNumber ;
   }
   ```
-* It focusses on the analysis phase in typical data-driven development 
+* CD4A focusses on the analysis phase in typical data-driven development 
   projects and is therefore mainly for data modelling.
   Consequently, it omits method signatures and complex generics.
   CD4A primary use is therefore **data modelling**. It has various 
