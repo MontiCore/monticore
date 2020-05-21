@@ -92,6 +92,16 @@ MontiCore projects are hosted at
 * CD4Code describes **UML class diagrams**.
 * CD4Code is a conservative extension of **CD4A**, 
   which includes method signatures.
+  ```
+  classdiagram MyLife2 {
+    // like CD4A but also allows:
+    class Person {
+      protected List<Person> closestFriends(int n);
+      void addFriend(Person friends...);
+    }
+  }
+  ```
+
 * CD4Code is often used as tool-internal intermediate AST that allows to
   map any kind of source models to a class/attribute/method/association based
   intermediate structure, before it is printed e.g. as Java code. 
