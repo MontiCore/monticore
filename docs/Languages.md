@@ -58,7 +58,24 @@ MontiCore projects are hosted at
 * CD4A covers **classes, interfaces, inheritance, attributes with types,
   visibilities**,
   and all kinds of **associations** and **composition**, including **qualified**
-  and **ordered associations**. 
+  and **ordered associations**. An example:
+  ```
+  classdiagram MyLife { 
+    abstract class Person {
+      int age;
+      Date birthday;
+      List<String> nickNames;
+    }
+    class Student extends Person {
+      StudentStatus status;
+    }
+    enum StudentStatus { ENROLLED, FINISHED; }
+    
+    composition Person -> Address [*]  {ordered};
+    association [0..2] Person (parent) <-> (child) Person [*];
+    association phonebook Person [String] -> TelefoneNumber ;
+  }
+```
 * It focusses on the analysis phase in typical data-driven development 
   projects and is therefore mainly for data modelling.
   Consequently, it omits method signatures and complex generics.
