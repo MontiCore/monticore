@@ -66,7 +66,7 @@ MontiCore projects are hosted at
       Date birthday;
       List<String> nickNames;
     }
-    class Student extends Person {
+    <<myStereotype>> class Student extends Person {
       StudentStatus status;
     }
     enum StudentStatus { ENROLLED, FINISHED; }
