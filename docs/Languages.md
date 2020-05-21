@@ -101,11 +101,11 @@ MontiCore projects are hosted at
     }
   }
   ```
-
-* CD4Code is often used as tool-internal intermediate AST that allows to
+* CD4Code is often used as tool-internal AST that allows to
   map any kind of source models to a class/attribute/method/association based
   intermediate structure, before it is printed e.g. as Java code. 
-  A typical path is e.g. Statechart -> State pattern encoded in CD4Code 
+  For example a transformation sequence could be: 
+  Statechart -> State pattern encoded in CD4Code 
   -> Decoration by monitoring methods -> Java code.
 * Main grammar [`de.monticore.cd.CD4Code`](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/blob/develop/src/main/grammars/de/monticore/cd/CD4Code.mc4)
   and 
