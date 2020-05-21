@@ -75,7 +75,7 @@ MontiCore projects are hosted at
     association [0..2] Person (parent) <-> (child) Person [*];
     association phonebook Person [String] -> TelefoneNumber ;
   }
-```
+  ```
 * It focusses on the analysis phase in typical data-driven development 
   projects and is therefore mainly for data modelling.
   Consequently, it omits method signatures and complex generics.
