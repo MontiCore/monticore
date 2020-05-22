@@ -34,10 +34,11 @@ of the language, available language tools and its development status.
 The different development stati for grammars are explained 
 [**here**](../00.org/Explanations/StatusOfGrammars.md).
 
-The list covers the language grammars to be found in the several 
-`MontiCore` projects, such as `cd4analysis/cd4analysis`
-usually in folders like `src/main/grammars/` organized in packages 
-`de.monticore.cd`.
+This list contains the language grammars found in the
+`MontiCore` projects, such as `cd4analysis/cd4analysis`.
+They are usually contained in project folders like `src/main/grammars/` 
+and organized in packages like `de.monticore.cd` 
+(which amounts to a deeply nested directory structure).
 MontiCore projects are hosted at
 
 * [`https://git.rwth-aachen.de/monticore`](https://git.rwth-aachen.de/monticore), 
