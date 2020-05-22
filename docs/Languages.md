@@ -13,9 +13,9 @@ language components via inheritance, embedding and aggregation (see the
 for details).
 
 A **language component** is mainly represented through 
-1. the grammar describing concrete and abstract syntax of the language, 
-1. Java-classes implementing specific functionalities, and 
-1. Freemarker-Templates helping to print a model to text.
+(1) the grammar describing concrete and abstract syntax of the language, 
+(2) Java-classes implementing specific functionalities, and 
+(3) Freemarker-Templates helping to print a model to text.
 However, language components are often identified with their main 
 component grammar.
 
@@ -25,19 +25,13 @@ In this list you mainly find grammars for
 A list of
 [**grammar components**](../monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
 with individual reusable nonterminals is also available in
-the MontiCore core project.
+the MontiCore core project 
+([development status](../00.org/Explanations/StatusOfGrammars.md)).
 
-The following list presents links to the language development projects, their
-main grammars, and a short description 
-of the language, available language tools and its development status.
-The different development stati for grammars are explained 
-[**here**](../00.org/Explanations/StatusOfGrammars.md).
-
-This list contains the language grammars found in the
+The following list contains the language grammars found in the
 `MontiCore` projects, such as `cd4analysis/cd4analysis`.
 They are usually contained in project folders like `src/main/grammars/` 
-and organized in packages like `de.monticore.cd` 
-(which amounts to a deeply nested directory structure).
+and organized in packages like `de.monticore.cd`.
 MontiCore projects are hosted at
 
 * [`https://git.rwth-aachen.de/monticore`](https://git.rwth-aachen.de/monticore), 
