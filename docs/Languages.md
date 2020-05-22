@@ -13,9 +13,9 @@ language components via inheritance, embedding and aggregation (see the
 for details).
 
 A **language component** is mainly represented through 
-# the grammar describing concrete and abstract syntax of the language, 
-# Java-classes implementing specific functionalities, and 
-# Freemarker-Templates helping to print a model to text.
+1. the grammar describing concrete and abstract syntax of the language, 
+1. Java-classes implementing specific functionalities, and 
+1. Freemarker-Templates helping to print a model to text.
 However, language components are often identified with their main 
 component grammar.
 
