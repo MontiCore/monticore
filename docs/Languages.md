@@ -227,23 +227,27 @@ and
 ### [MontiArc](https://git.rwth-aachen.de/monticore/montiarc/core) (Beta: In Stabilization)
 * Caretaker: DS 
 * MontiArc is an architecture and behavior modeling language and framework 
-    that provides an integrated, platform independent structure and behavior 
+    that provides an platform independent structure and behavior 
     modeling language with an extensible code generation framework.
-* MontiArc covers **components**, **ports**, and **connectors** with 
-  **embedded statecharts** for component behavior description. An example:
+* MontiArc covers **components** their **ports**, **connectors** between 
+  components and  
+  embedded **statecharts** for component behavior description. 
+* Statecharts define states and transitions with conditions on 
+  the incoming messages as well as transition actions. 
+  An example:
 ```
-component InteriorLight {
-  port in Boolean lightSignal,
+component InteriorLight {                           // MontiArc language
+  port in Boolean lightSignal,          // ports
        in Boolean doorSignal
        out OnOff status;
-  ORGate or;
-  lightSignal -> or.a;
+  ORGate or;                            // used subcomponents
+  lightSignal -> or.a;                  // connectors
   doorSignal -> or.b;
   or.c -> cntr.signal;
-  component LightController cntr {
+  component LightController cntr {      // freshly defined subcomponent 
     port in OnOff signal,
          out OnOff status;
-    statechart {
+    statechart {                        // with behavior by a Statechart
       initial state Off / {status = OFF};
       state On;
       Off -> On [ signal == true ] / {status = ON}
@@ -253,14 +257,19 @@ component InteriorLight {
   cntr.status -> status;
 }
 ```
-* The Documentation [MontiArc.md](https://git.rwth-aachen.de/monticore/montiarc/core/-/blob/modularization/languages/montiarc-fe/src/main/grammars/MontiArc.md)
-* The MontiArc language family contains the following grammar
-    * [Arc](https://git.rwth-aachen.de/monticore/montiarc/core/-/blob/modularization/languages/arc-fe/src/main/grammars/Arc.mc4) 
-    for modeling architectural diagrams.
-    * [IOAutomata](https://git.rwth-aachen.de/monticore/montiarc/core/-/blob/modularization/languages/automata-fe/src/main/grammars/IOAutomata.mc4)
-    for component behavior description.
-    * [MontiArc](https://git.rwth-aachen.de/monticore/montiarc/core/-/blob/modularization/languages/montiarc-fe/src/main/grammars/MontiArc.mc4)
-    combining architectural diagrams with automata behavior descriptions.
+* MontiArcs main goal is to provide a textual notation for Component&Connector 
+  diagrams, which is used quite often in various variants in industry.
+  E.g. SysML's BDD, UML's component composition diagrams use the same 
+  paradigm. 
+* MontiArc does not define data types for their signals, but assumes 
+  that these types can be imported (e.g. from a class diagram).
+* MontiArc itself also has no timing predefined, but for a complete 
+  language a concrete timing, such as formally grounded by Focus, 
+  should be added.
+* Main grammar 
+  [`MontiArc.mc4`](https://git.rwth-aachen.de/monticore/montiarc/core/-/blob/modularization/languages/montiarc-fe/src/main/grammars/MontiArc.mc4)
+  and 
+  [*detailed description*](https://git.rwth-aachen.de/monticore/montiarc/core/-/blob/modularization/languages/montiarc-fe/src/main/grammars/MontiArc.md)
 
 
 ### [OCL/P](https://git.rwth-aachen.de/monticore/languages/OCL) (Alpha: Intention to become stable)
