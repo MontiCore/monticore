@@ -285,7 +285,7 @@ and
   (`5 kg + 5 m` is an invalid expression) and assignments (`a = 5 kg` only if a is declared with a unit compatible with kilogram)
 * The following listing shows an example language using the SI Units extensions to integrate units into its type system and literals. 
 * A numeric type optionally contains a unit in brackets. Operations like assignments and additions are only possible with type and unit compatible
-* variables:
+variables:
   ```
   siclass MyClass {
       double<h> var = 3.0s+6min;
