@@ -47,7 +47,7 @@ public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpres
     setExpressionsBasisVisitor(expressionsBasisTypesCalculator);
   
     DeriveSymTypeOfLiterals deriveSymTypeOfLiterals = new DeriveSymTypeOfLiterals();
-    deriveSymTypeOfLiterals.setResult(typeCheckResult);
+    deriveSymTypeOfLiterals.setTypeCheckResult(typeCheckResult);
     setMCLiteralsBasisVisitor(deriveSymTypeOfLiterals);
     this.deriveSymTypeOfLiterals = deriveSymTypeOfLiterals;
 
