@@ -6,17 +6,16 @@
 
 [MontiCore](http://www.monticore.de) is a language workbench
 with an explicit notion of language components. It uses 
-grammars to describe textual DSLs. MontiCore uses an extended 
-grammar format that allows to compose language components, 
-to inherit, extend, embed
-and aggregate language components (see the
+grammars to describe textual DSLs. 
+MontiCore uses an extended grammar format that allows to compose 
+language components via inheritance, embedding and aggregation (see the 
 [**reference manual**](http://monticore.de/MontiCore_Reference-Manual.2017.pdf)
 for details).
 
-A **language component** is mainly represented through the grammar 
-describing concrete and abstract syntax of the language plus 
-Java-classes implementing specific functionalities plus 
-Freemarker-Templates helping to print a model to text.
+A **language component** is mainly represented through 
+# the grammar describing concrete and abstract syntax of the language, 
+# Java-classes implementing specific functionalities, and 
+# Freemarker-Templates helping to print a model to text.
 However, language components are often identified with their main 
 component grammar.
 
