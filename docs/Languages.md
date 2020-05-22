@@ -201,14 +201,25 @@ and
 
 ### [JSON](https://git.rwth-aachen.de/monticore/languages/json) (MontiCore Stable)
 * Responsible: NJ
-* The MontiCore language for parsing JSON artifacts.
+* The MontiCore language for parsing JSON artifacts. An example:
+  ```
+  { "Alice": {
+      "name": "Alice Anderson",
+      "address": {
+        "postal_code": 10459, 
+        "street": "Beck Street",
+        "number": 56              }  },
+    "Bob": { ... },
+    "Caroll": { ... }, ...
+  }
+  ```
 * The JSON grammar adheres to the common **JSON standard** and allows parsing 
   arbitrary JSON artifacts for further processing.
 * Actually the grammar represents a slight superset to the official JSON standard. 
   It is intended for parsing JSON-compliant artifacts. Further well-formedness
   checks are not included, because we assume to parse correctly produced JSON 
   documents only.
-* Please note that JSON (like XML or ASCII) is just a carrier language.
+* Please note that JSON (like XML or ASCII) is mainly a carrier language.
   The concrete JSON dialect and the question, how to recreate the
   real objects / data structures, etc. behind the JSON tree structure
   is beyond this grammar, but can be applied to the AST defined here.
@@ -283,20 +294,6 @@ and
   made from literals accompanied by units, e.g. 5 kg, 30 m, etc.
   Furthermore, the language extensions provides a facility for checking unit compatibility, e.g. in sums 
   (`5 kg + 5 m` is an invalid expression) and assignments (`a = 5 kg` only if a is declared with a unit compatible with kilogram)
-* The following listing shows an example language using the SI Units extensions to integrate units into its type system and literals. 
-* A numeric type optionally contains a unit in brackets. Operations like assignments and additions are only possible with type and unit compatible
-variables:
-  ```
-  siclass MyClass {
-      double<h> var = 3.0s+6min;
-      int varInt = 3;
-      fun int<m> method1() {
-          double<km/ms^2> var2 = 4m/s^2;
-          var2 = 5m/(2s*5ms);
-          return var2*var^2;
-      }
-  }
-  ```
 * Main grammars:
     * [SI units](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/lang/SIUnits.mc4)
     * [SI unit literals](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/lang/literals/SIUnitLiterals.mc4)
