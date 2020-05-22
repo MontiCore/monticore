@@ -115,14 +115,10 @@ MontiCore projects are hosted at
 
 ### [Feature Diagrams](https://git.rwth-aachen.de/monticore/languages/feature-diagram) (Beta: In Stabilization)
 * Caretaker: AB, DS
-* Language for textual feature models and feature configurations
-* Feature diagrams are used to model (software) product lines
-* Feature configurations select a subset of features of a feature model 
-  to describe a product of the product line
-* Main grammar [`FeatureDiagram`](https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/master/fd-lang/src/main/grammars/FeatureDiagram.mc4)
-  and 
-  [*detailed description*](https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/master/fd-lang/src/main/grammars/FeatureDiagram.md)
-* A small teaser for the feature diagram syntax:
+* Language for feature models and feature configurations.
+* **Feature diagrams** are used to model (software) **product lines** and their **variants**.
+* **Feature configurations** select a subset of features of a feature model 
+  to describe a product of the product line. An example:
   ```
   featurediagram Phone {
     Phone -> Memory & OS & Camera? & Screen;
@@ -131,16 +127,19 @@ MontiCore projects are hosted at
     OS -> iOS ^ Android;
     Screen -> Flexible | FullHD;
 
-    External ? Flexible => Android : iOS && Android ;
+    External || Flexible => iOS && Android ;
   }
   ```
-  Each feature model has a name and a body that is surrounded by curly brackets.
-  The body contains rules that define the feature tree. Each rule describes a 
-  feature group with a parent feature (left-hand side) followed by an arrow 
-  (`->`) and children features (right-hand side). 
-  The root of the feature tree is detected automatically. 
-  Further, a feature model may define cross-tree constraints
-  and use Java-like expressions to formulate these.
+  Rules `F -> ...` have a parent feature (left-hand side) 
+  and its child features (right-hand side). 
+  Operators are: **optional** feature `?`, **and** `&`, **or** `|`, **xor** `^`,
+  and **subset cardinality** constraints, like `[1..2] of ...`.
+  Further, a feature model may define cross-tree constraints using logic 
+  operators **and** `&&`, **or** `||`, **implication** `=>`, etc.
+* Main grammar [`FeatureDiagram`](https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/master/fd-lang/src/main/grammars/FeatureDiagram.mc4)
+  and 
+  [*detailed description*](https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/master/fd-lang/src/main/grammars/FeatureDiagram.md)
+
 
 ### [GUI DSL](https://git.rwth-aachen.de/macoco/gui-dsl) (Alpha: Intention to become stable)
 * Caretaker: LN
