@@ -120,14 +120,14 @@ MontiCore projects are hosted at
 * **Feature configurations** select a subset of features of a feature model 
   to describe a product of the product line. An example:
   ```
-  featurediagram Phone {
+  featurediagram MyPhones {
     Phone -> Memory & OS & Camera? & Screen;
     Memory -> Internal & External?;
     Internal -> [1..2] of {Small, Medium, Large};
     OS -> iOS ^ Android;
     Screen -> Flexible | FullHD;
 
-    External || Flexible => iOS && Android ;
+    Camera => (iOS && External) || Android ;
   }
   ```
   Rules `F -> ...` have a parent feature (left-hand side) 
