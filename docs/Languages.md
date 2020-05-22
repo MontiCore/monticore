@@ -2,6 +2,8 @@
 
 # MontiCore Languages - an Overview
 
+[[_TOC_]]
+
 [MontiCore](http://www.monticore.de) is a language workbench
 with an explicit notion of language components. It uses 
 grammars to describe textual DSLs. MontiCore uses an extended 
@@ -113,7 +115,7 @@ MontiCore projects are hosted at
   (see Section *CD4Code*)
 
 
-### [Feature Diagrams](https://git.rwth-aachen.de/monticore/languages/feature-diagram) (Beta: In Stabilization)
+### [Feature Diagrams](https://git.rwth-aachen.de/monticore/languages/feature-diagram) (Status: noch undefiniert)
 * Caretaker: AB, DS
 * Language for feature models and feature configurations.
 * **Feature diagrams** are used to model (software) **product lines** and their **variants**.
