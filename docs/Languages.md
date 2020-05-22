@@ -2,6 +2,8 @@
 
 # MontiCore Languages - an Overview
 
+[[_TOC_]]
+
 [MontiCore](http://www.monticore.de) is a language workbench
 with an explicit notion of language components. It uses 
 grammars to describe textual DSLs. MontiCore uses an extended 
