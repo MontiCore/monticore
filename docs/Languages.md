@@ -418,8 +418,8 @@ and
 
 ## Further Information
 
-* see also [**MontiCore Reference Manual**](http://www.monticore.de/)
-
-* [MontiCore project](../README.md) - MontiCore
+* [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
+* [MontiCore documentation](http://www.monticore.de/)
+* [Licence definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
 
 
