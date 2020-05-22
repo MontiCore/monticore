@@ -283,6 +283,20 @@ and
   made from literals accompanied by units, e.g. 5 kg, 30 m, etc.
   Furthermore, the language extensions provides a facility for checking unit compatibility, e.g. in sums 
   (`5 kg + 5 m` is an invalid expression) and assignments (`a = 5 kg` only if a is declared with a unit compatible with kilogram)
+* The following listing shows an example language using the SI Units extensions to integrate units into its type system and literals. 
+* A numeric type optionally contains a unit in brackets. Operations like assignments and additions are only possible with type and unit compatible
+* variables:
+  ```
+  siclass MyClass {
+      double<h> var = 3.0s+6min;
+      int varInt = 3;
+      fun int<m> method1() {
+          double<km/ms^2> var2 = 4m/s^2;
+          var2 = 5m/(2s*5ms);
+          return var2*var^2;
+      }
+  }
+  ```
 * Main grammars:
     * [SI units](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/lang/SIUnits.mc4)
     * [SI unit literals](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/lang/literals/SIUnitLiterals.mc4)
