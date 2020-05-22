@@ -234,6 +234,30 @@ and
 * MontiArc is an architecture and behavior modeling language and framework 
     that provides an integrated, platform independent structure and behavior 
     modeling language with an extensible code generation framework.
+* MontiArc covers **components**, **ports**, and **connectors** with 
+  **embedded statecharts** for component behavior description. An example:
+```
+component InteriorLight {
+  port in Boolean lightSignal,
+       in Boolean doorSignal
+       out OnOff status;
+  ORGate or;
+  lightSignal -> or.a;
+  doorSignal -> or.b;
+  or.c -> cntr.signal;
+  component LightController cntr {
+    port in OnOff signal,
+         out OnOff status;
+    statechart {
+      initial state Off / {status = OFF};
+      state On;
+      Off -> On [ signal == true ] / {status = ON}
+      On -> Off [ signal == false ] / {status = OFF}
+    }
+  }
+  cntr.status -> status;
+}
+```
 * The Documentation [MontiArc.md](https://git.rwth-aachen.de/monticore/montiarc/core/-/blob/modularization/languages/montiarc-fe/src/main/grammars/MontiArc.md)
 * The MontiArc language family contains the following grammar
     * [Arc](https://git.rwth-aachen.de/monticore/montiarc/core/-/blob/modularization/languages/arc-fe/src/main/grammars/Arc.mc4) 
