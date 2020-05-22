@@ -233,23 +233,34 @@ A component grammar is ment for extension. MontiCore therefore provides five(!)
 
 ## **Designing Symbols, Scopes and SymbolTables** 
 
-### Define Symbol Usage without Symbol Definition
-```
-grammar E { A = Name@S; symbol S = Name; }
-```
+### How to define a Symbol Usage without a given Symbol Definition
+  ```
+  grammar E { 
+    A = Name@S; 
+    symbol S = Name; 
+  }
+  ```
 
-* We can define symbols of kind `S` through the grammar in a grammar rule that 
-is never reached by the parser from the start production.
-* Through this, MontiCores generates:
+* If you want to use a sepcial form of symbol that shall neither be defined 
+  inside the grammar of a language, nor shall it be imported.
+* We can define symbols of kind `S` in the grammar in a grammar rule that 
+  is never reached by the parser from the start production.
+  Through this, MontiCores generates:
   * symbol table infrastructure for handling `S` symbols
   * symbol table infrastructure for resolving these in `E` scopes, and 
-  * integration of `S` symbols these with the AST of `A`.
-* However, `S` symbols are never instantiated automatically through the generated symbol table creator. Instantiation instead has to be described manually, e.g., by extending the symbol table creator with the TOP mechanism or via providing an adapter translating a symbol into an `S` symbol.
-* This can be used, e.g., in the following scenarios: 
+  * integration of `S` symbols with the AST of `A`.
+* However, `S` symbols not automatically instantiated. 
+  This has to be described manually, e.g., by extending the symbol table 
+  creator or via providing an adapter translating a foreign symbol into an `S` symbol.
+* This can be used, e.g., in these scenarios: 
   * A name of a certain kind is introduced automatically the first time it is occurs 
-in a model. If it occurs more than once, all other occurances of the name 
-do not introduce new symbol instances. Instead, these refer to the first occurance.
-  * A name in a language `E` refers to a named element of another language, but the language is decoupled from `E`. Therefore, `E` introduces a symbol `S` as an extension point on the level of symbols, which is implemented by providing an adapter.
+    in a model. If it occurs more than once, all other occurences of the name 
+    do not introduce new symbols. (e.g. this happens with features in FDs,
+    and works because features do not have a body.)
+  * A name in a language `E` refers to a named element of another language, 
+    but the language shall be decoupled from `E`. 
+    Therefore, `E` introduces a symbol `S` and an adapter maps other symbols
+    to `S` symbols.
 * Defined by: AB, BR
 
 
