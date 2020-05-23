@@ -6,17 +6,16 @@
 
 [MontiCore](http://www.monticore.de) is a language workbench
 with an explicit notion of language components. It uses 
-grammars to describe textual DSLs. MontiCore uses an extended 
-grammar format that allows to compose language components, 
-to inherit, extend, embed
-and aggregate language components (see the
+grammars to describe textual DSLs. 
+MontiCore uses an extended grammar format that allows to compose 
+language components via inheritance, embedding and aggregation (see the 
 [**reference manual**](http://monticore.de/MontiCore_Reference-Manual.2017.pdf)
 for details).
 
-A **language component** is mainly represented through the grammar 
-describing concrete and abstract syntax of the language plus 
-Java-classes implementing specific functionalities plus 
-Freemarker-Templates helping to print a model to text.
+A **language component** is mainly represented through 
+(1) the grammar describing concrete and abstract syntax of the language, 
+(2) Java-classes implementing specific functionalities, and 
+(3) Freemarker-Templates helping to print a model to text.
 However, language components are often identified with their main 
 component grammar.
 
@@ -26,18 +25,13 @@ In this list you mainly find grammars for
 A list of
 [**grammar components**](../monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
 with individual reusable nonterminals is also available in
-the MontiCore core project.
+the MontiCore core project 
+([development status](../00.org/Explanations/StatusOfGrammars.md)).
 
-The following list presents links to the language development projects, their
-main grammars, and a short description 
-of the language, available language tools and its development status.
-The different development stati for grammars are explained 
-[**here**](../00.org/Explanations/StatusOfGrammars.md).
-
-The list covers the language grammars to be found in the several 
-`MontiCore` projects, such as `cd4analysis/cd4analysis`
-usually in folders like `src/main/grammars/` organized in packages 
-`de.monticore.cd`.
+The following list contains the language grammars found in the
+`MontiCore` projects, such as `cd4analysis/cd4analysis`.
+They are usually contained in project folders like `src/main/grammars/` 
+and organized in packages like `de.monticore.cd`.
 MontiCore projects are hosted at
 
 * [`https://git.rwth-aachen.de/monticore`](https://git.rwth-aachen.de/monticore), 
@@ -220,7 +214,7 @@ and
   It is intended for parsing JSON-compliant artifacts. Further well-formedness
   checks are not included, because we assume to parse correctly produced JSON 
   documents only.
-* Please note that JSON (like XML or ASCII) is mainly a carrier language.
+* Please note that JSON (like XML or ASCII) is primarily a carrier language.
   The concrete JSON dialect and the question, how to recreate the
   real objects / data structures, etc. behind the JSON tree structure
   is beyond this grammar, but can be applied to the AST defined here.
@@ -233,23 +227,27 @@ and
 ### [MontiArc](https://git.rwth-aachen.de/monticore/montiarc/core) (Beta: In Stabilization)
 * Caretaker: DS 
 * MontiArc is an architecture and behavior modeling language and framework 
-    that provides an integrated, platform independent structure and behavior 
+    that provides an platform independent structure and behavior 
     modeling language with an extensible code generation framework.
-* MontiArc covers **components**, **ports**, and **connectors** with 
-  **embedded statecharts** for component behavior description. An example:
+* MontiArc covers **components** their **ports**, **connectors** between 
+  components and  
+  embedded **statecharts** for component behavior description. 
+* Statecharts define states and transitions with conditions on 
+  the incoming messages as well as transition actions. 
+  An example:
 ```
-component InteriorLight {
-  port in Boolean lightSignal,
+component InteriorLight {                           // MontiArc language
+  port in Boolean lightSignal,          // ports
        in Boolean doorSignal
        out OnOff status;
-  ORGate or;
-  lightSignal -> or.a;
+  ORGate or;                            // used subcomponents
+  lightSignal -> or.a;                  // connectors
   doorSignal -> or.b;
   or.c -> cntr.signal;
-  component LightController cntr {
+  component LightController cntr {      // freshly defined subcomponent 
     port in OnOff signal,
          out OnOff status;
-    statechart {
+    statechart {                        // with behavior by a Statechart
       initial state Off / {status = OFF};
       state On;
       Off -> On [ signal == true ] / {status = ON}
@@ -259,14 +257,19 @@ component InteriorLight {
   cntr.status -> status;
 }
 ```
-* The Documentation [MontiArc.md](https://git.rwth-aachen.de/monticore/montiarc/core/-/blob/modularization/languages/montiarc-fe/src/main/grammars/MontiArc.md)
-* The MontiArc language family contains the following grammar
-    * [Arc](https://git.rwth-aachen.de/monticore/montiarc/core/-/blob/modularization/languages/arc-fe/src/main/grammars/Arc.mc4) 
-    for modeling architectural diagrams.
-    * [IOAutomata](https://git.rwth-aachen.de/monticore/montiarc/core/-/blob/modularization/languages/automata-fe/src/main/grammars/IOAutomata.mc4)
-    for component behavior description.
-    * [MontiArc](https://git.rwth-aachen.de/monticore/montiarc/core/-/blob/modularization/languages/montiarc-fe/src/main/grammars/MontiArc.mc4)
-    combining architectural diagrams with automata behavior descriptions.
+* MontiArcs main goal is to provide a textual notation for Component&Connector 
+  diagrams, which is used quite often in various variants in industry.
+  E.g. SysML's BDD, UML's component composition diagrams use the same 
+  paradigm. 
+* MontiArc does not define data types for their signals, but assumes 
+  that these types can be imported (e.g. from a class diagram).
+* MontiArc itself also has no timing predefined, but for a complete 
+  language a concrete timing, such as formally grounded by Focus, 
+  should be added.
+* Main grammar 
+  [`MontiArc.mc4`](https://git.rwth-aachen.de/monticore/montiarc/core/-/blob/modularization/languages/montiarc-fe/src/main/grammars/MontiArc.mc4)
+  and 
+  [*detailed description*](https://git.rwth-aachen.de/monticore/montiarc/core/-/blob/modularization/languages/montiarc-fe/src/main/grammars/MontiArc.md)
 
 
 ### [OCL/P](https://git.rwth-aachen.de/monticore/languages/OCL) (Alpha: Intention to become stable)
