@@ -412,7 +412,21 @@ component InteriorLight {                           // MontiArc language
 * Responsible: NJ
 * The MontiCore language for parsing XML artifacts
 * The XML grammar adheres to the common **standard** and allows parsing 
-  arbitrary XML artifacts for further processing
+  arbitrary XML artifacts for further processing. An example:
+```xml
+<Calendar>
+  <Appointment name="Daily Standup">
+    <Date>24.04.2021</Date>
+    <Time>10:00</Time>
+    <Location>zoom</Location>
+  </Appointment>
+  <Appointment name="Lunch">
+    <Date>24.04.2021</Date>
+    <Time>11:30</Time>
+    <Location>Grand Hotel</Location>
+  </Appointment>
+</Calendar>
+```
 * Main grammar 
   [`de.monticore.lang.XML`](https://git.rwth-aachen.de/monticore/languages/xml/-/blob/master/src/main/grammars/de/monticore/lang/XML.mc4)
   and 
