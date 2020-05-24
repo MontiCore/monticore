@@ -313,9 +313,10 @@ component InteriorLight {                           // MontiArc language
 
 ### [SI Units](https://git.rwth-aachen.de/monticore/languages/siunits) (Alpha: Intention to become stable)
 * Caretaker: EK
-* The international system of units (SI units) is a physical unit system widely used in the entire world. It is based on the seven basis units 
-  `s, m, kg, A, K, mol, cd`, but
-  also provides a variety of derived units, which, furthremore, can be refined using prefixes such as m(milli), k(kilo), etc.
+* The international system of units (SI units) is a physical unit system widely used in the entire world. 
+  It is based on the basis units `s, m, kg, A, K, mol, cd`, 
+  provides a variety of derived units, and can be refined using prefixes such 
+  as `m`(milli), `k`(kilo), etc.
 * The SI Unit project aims to deliver SI units to MontiCore-based languages. It provides a grammar defining most relevant SI units 
   as well as the corresponding prefixes.
   The language developer can use SIUnitLiterals similar to standard literals to build assignments, expressions etc. 
