@@ -22,7 +22,7 @@ public class TransitionSourceExists
     if (!sourceState.isPresent()) {
       // Issue error...
       Log.error(
-        "0xAUT03 Source state of transition missing.",
+        "0xADD03 Source state of transition missing.",
          node.get_SourcePositionStart());
     }
   }
