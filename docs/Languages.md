@@ -317,17 +317,25 @@ component InteriorLight {                           // MontiArc language
   It is based on the basis units `s, m, kg, A, K, mol, cd`, 
   provides a variety of derived units, and can be refined using prefixes such 
   as `m`(milli), `k`(kilo), etc.
-* The SI Unit project aims to deliver SI units to MontiCore-based languages. It provides a grammar defining most relevant SI units 
-  as well as the corresponding prefixes.
-  The language developer can use SIUnitLiterals similar to standard literals to build assignments, expressions etc. 
-  made from literals accompanied by units, e.g. 5 kg, 30 m, etc.
-  Furthermore, the language extensions provides a facility for checking unit compatibility, e.g. in sums 
-  (`5 kg + 5 m` is an invalid expression) and assignments (`a = 5 kg` only if a is declared with a unit compatible with kilogram)
-* Main grammars:
-    * [SI units](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/lang/SIUnits.mc4)
+* The SI Unit project aims to deliver SI units to MontiCore-based languages. 
+  It provides a grammar for all types of SI units and prefixes.
+* Second, we provide the SI Unit literals, such as "5 km" as expression values
+  and a language for SI unit types, such as "km/h" or "km/h<long>". Some examples:
+  ```
+    km/h speed = 5 m / 27 s                         // variable definition
+    speed = (3 * 4m + 17km/h * 10h) / 3.5 h         // assignment
+    °C/s<float> coolingSpeed; 
+    g/mm^2<int> pressure; 
+    Map<Location,°C> temperatures;
+  ```
+  The SI unit lietrals integrate with MontiCore's expressions and the
+  SI Unit types integrate with MontiCore's type system. 
+  The SI unit language remains type safe.
+* Main grammar components:
     * [SI unit literals](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/lang/literals/SIUnitLiterals.mc4)
-    * [SI unit types](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/lang/types/SIUnitTypes.mc4)
-    * [SI primitive type (exemplary syntax)](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/lang/types/PrimitiveWithSIUnitTypes.mc4)
+    * [SI unit types for math](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/lang/types/SIUnitTypes.mc4)
+    * [SI unit types for computations](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/lang/types/PrimitiveWithSIUnitTypes.mc4)
+    *           (other alternatives are possible; SI has not standardized anything here)
 * Example projects:
     * [SI Java](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/test/grammars/de/monticore/lang/testsijava/TestSIJava.mc4) 
 * [*detailed description*](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/lang/SIUnits.md)  
