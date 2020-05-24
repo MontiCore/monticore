@@ -311,7 +311,7 @@ component InteriorLight {                           // MontiArc language
 * Can be used with testing generator to derive test cases
 
 
-### [SI Units](https://git.rwth-aachen.de/monticore/languages/siunits) (Alpha: Intention to become stable)
+### [SI Units](https://git.rwth-aachen.de/monticore/languages/siunits) (Beta: In Stabilization)
 * Caretaker: EK
 * The international system of units (SI units) is a physical unit system widely used in the entire world. 
   It is based on the basis units `s, m, kg, A, K, mol, cd`, 
