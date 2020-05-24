@@ -328,7 +328,7 @@ component InteriorLight {                           // MontiArc language
     g/mm^2<int> pressure; 
     Map<Location,°C> temperatures;
   ```
-  The SI unit lietrals integrate with MontiCore's expressions and the
+  The SI unit literals integrate with MontiCore's expressions and the
   SI Unit types integrate with MontiCore's type system. 
   The SI unit language remains type safe.
 * Main grammar components:
