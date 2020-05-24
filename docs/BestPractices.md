@@ -2,6 +2,8 @@
 
 # MontiCore Best Practices - A Guide of Small Solutions
 
+[_TOC_]
+
 [MontiCore](http://www.monticore.de) provides a number of options to design 
 languages, access and modify the abstract syntax tree, and produce output files.
 
