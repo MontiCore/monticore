@@ -18,8 +18,36 @@ More detailed descriptions of best practices can be found in the
 Some of the best practices here will also be incorporated in the next version
 of the reference manual.
 
-## **Designing Concrete and Abstract Syntax**
+## **Designing A Language**
 
+### Correct language vs. superset?
+* When you know that the incoming model will be correct, because they are generated
+  by algorithm, you can decide to pass a (slight) superset 
+* This may simplify the development process for two reasons: 
+  (a) you may derive a simpler grammar and (b) you may omit definition of 
+  context conditions.
+* But beware: (a) situations may change and manually changed models might come in
+  or (b) the is adapted by an ill-behaving pre-processor or (c) the model
+  may come in a wrong version.
+* This applies mainly for unreadable languages, such as JSON or XML.
+* Defined by: BR
+
+### Versioning an evolving langauge?
+* When languages evolve, models may become invalid, because 
+  certain (now obligatory) parts are missing, or old keywords are used.
+* We generally believe that a language that is made for long lasting 
+  models should not embody its version in the models (i.e. like Java, C++ and 
+  other GPLs and unlike XML dialects).
+* When evolving a language, you should only evolve it in conservative form, i.e.
+  * All new elements are optional by `.?`, `.*` or offer new alternatives `(old | new)`
+  * Old elements or keywords are not simply removed, but 
+    forbidden by coco warnings, marking them as deprecated for a while. 
+* Downward compatibility of newer models, however, is not useful. 
+  We can savely enforce developers should normally use the newest 
+  versions of their tools.
+* Defined by: BR
+
+## **Designing Concrete and Abstract Syntax**
 
 ### **Specific keywords** that shall be used as normal words elsewhere
 * `A = "foo" B` introduces `foo` as a keyword that cannot be used as an ordinary 
