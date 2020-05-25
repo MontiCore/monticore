@@ -31,7 +31,7 @@ public class Grammar_WithConceptsSymbolTableCreator extends Grammar_WithConcepts
     * @return the first scope that was created
     */
   public Grammar_WithConceptsArtifactScope createFromAST(de.monticore.grammar.grammar._ast.ASTMCGrammar rootNode) {
-    Log.errorIfNull(rootNode, "0xA7004x630 Error by creating of the Grammar_WithConceptsSymbolTableCreator symbol table: top ast node is null");
+    Log.errorIfNull(rootNode, "0xA7FE4 Error by creating of the Grammar_WithConceptsSymbolTableCreator symbol table: top ast node is null");
     Grammar_WithConceptsArtifactScope artifactScope = new Grammar_WithConceptsArtifactScope(Optional.empty(), Names.getQualifiedName(rootNode.getPackageList()), new ArrayList<>());
     putOnStack(artifactScope);
     rootNode.accept(getRealThis());
