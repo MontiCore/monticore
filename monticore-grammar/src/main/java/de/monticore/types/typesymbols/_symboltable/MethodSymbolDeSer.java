@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.types.typesymbols._symboltable.serialization;
+package de.monticore.types.typesymbols._symboltable;
 
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.monticore.types.check.SymTypeExpression;
@@ -14,3 +14,4 @@ public class MethodSymbolDeSer extends MethodSymbolDeSerTOP {
   }
 
 }
+//

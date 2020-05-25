@@ -4,7 +4,7 @@ package mc.feature.symboltableprinter;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import mc.feature.symboltableprinter.symboltableprintersub.SymbolTablePrinterSubMill;
 import mc.feature.symboltableprinter.symboltableprintersub._symboltable.SymbolTablePrinterSubScope;
-import mc.feature.symboltableprinter.symboltableprintersub._symboltable.serialization.SymbolTablePrinterSubSymbolTablePrinter;
+import mc.feature.symboltableprinter.symboltableprintersub._symboltable.SymbolTablePrinterSubSymbolTablePrinter;
 import mc.feature.symboltableprinter.symboltableprintersup1.SymbolTablePrinterSup1Mill;
 import mc.feature.symboltableprinter.symboltableprintersup2.SymbolTablePrinterSup2Mill;
 import org.junit.Test;
