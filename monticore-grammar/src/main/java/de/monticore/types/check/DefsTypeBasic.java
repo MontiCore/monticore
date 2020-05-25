@@ -1,8 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
-import de.monticore.expressions.expressionsbasis.ExpressionsBasisMill;
-import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.types.typesymbols.TypeSymbolsMill;
 import de.monticore.types.typesymbols._symboltable.*;
@@ -66,7 +64,7 @@ public class DefsTypeBasic {
    */
   public static TypeSymbol type(String name, String fullName) {
     return TypeSymbolsMill.typeSymbolBuilder()
-            .setSpannedScope(ExpressionsBasisMill.expressionsBasisScopeBuilder().build())
+            .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
             .setName(name)
             .setFullName(fullName)
             .setAccessModifier(AccessModifier.ALL_INCLUSION)
@@ -78,7 +76,7 @@ public class DefsTypeBasic {
 
   public static TypeSymbol type(String name, List<SymTypeExpression> superTypes){
     return TypeSymbolsMill.typeSymbolBuilder()
-            .setSpannedScope(ExpressionsBasisMill.expressionsBasisScopeBuilder().build())
+            .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
             .setName(name)
             .setFullName(name)
             .setSuperTypeList(superTypes)
@@ -86,7 +84,7 @@ public class DefsTypeBasic {
   }
 
   public static TypeSymbol type(String name, List<SymTypeExpression> superTypes, List<TypeVarSymbol> typeArguments){
-    ExpressionsBasisScope spannedScope = ExpressionsBasisMill.expressionsBasisScopeBuilder().build();
+    TypeSymbolsScope spannedScope = TypeSymbolsMill.typeSymbolsScopeBuilder().build();
     return TypeSymbolsMill.typeSymbolBuilder()
             .setSpannedScope(spannedScope)
             .setName(name)
@@ -99,7 +97,7 @@ public class DefsTypeBasic {
   public static TypeSymbol type(String name, List<MethodSymbol> methodList, List<FieldSymbol> fieldList,
                                 List<SymTypeExpression> superTypeList, List<TypeVarSymbol> typeVariableList){
     return TypeSymbolsMill.typeSymbolBuilder()
-          .setSpannedScope(ExpressionsBasisMill.expressionsBasisScopeBuilder().build())
+          .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
           .setName(name)
           .setFullName(name)
           .setTypeParameterList(typeVariableList)
@@ -111,10 +109,10 @@ public class DefsTypeBasic {
 
   public static TypeSymbol type(String name, List<MethodSymbol> methodList, List<FieldSymbol> fieldList,
                                 List<SymTypeExpression> superTypeList, List<TypeVarSymbol> typeVariableList,
-                                ExpressionsBasisScope enclosingScope){
+                                ITypeSymbolsScope enclosingScope){
     TypeSymbol t = TypeSymbolsMill.typeSymbolBuilder()
         .setEnclosingScope(enclosingScope)
-        .setSpannedScope(ExpressionsBasisMill.expressionsBasisScopeBuilder().build())
+        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setName(name)
         .setFullName(name)
         .setTypeParameterList(typeVariableList)
@@ -155,13 +153,13 @@ public class DefsTypeBasic {
    */
   public static MethodSymbol method(String name, SymTypeExpression returnType) {
     MethodSymbol m = TypeSymbolsMill.methodSymbolBuilder()
-            .setSpannedScope(ExpressionsBasisMill.expressionsBasisScopeBuilder().build())
+            .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
             .setName(name)
             .setFullName(name)  // can later be adapted, when fullname of Type is known
             .setAccessModifier(AccessModifier.ALL_INCLUSION)
             .setReturnType(returnType)
             .build();
-    m.setSpannedScope(ExpressionsBasisMill.expressionsBasisScopeBuilder().build());
+    m.setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build());
     return m;
   }
   
@@ -321,7 +319,7 @@ public class DefsTypeBasic {
 
   public static void link_String() {
     MethodSymbol m; FieldSymbol f;
-    ExpressionsBasisScope scope = ExpressionsBasisMill.expressionsBasisScopeBuilder().build();
+    TypeSymbolsScope scope = TypeSymbolsMill.typeSymbolsScopeBuilder().build();
     
     // hashCode()
     add(_String, method("hashCode", _intSymType));

@@ -6,6 +6,7 @@ import de.monticore.expressions.commonexpressions._cocos.CommonExpressionsASTPlu
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.TypeCheck;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import mc.typescalculator.DeriveSymTypeOfMyOwnLanguage;
 
 public class PlusExpressionReturnsInt implements CommonExpressionsASTPlusExpressionCoCo {
@@ -17,7 +18,6 @@ public class PlusExpressionReturnsInt implements CommonExpressionsASTPlusExpress
   @Override
   public void check(ASTPlusExpression node) {
     TypeCheck typeCheck = new TypeCheck(null, new DeriveSymTypeOfMyOwnLanguage());
-
     SymTypeExpression result = typeCheck.typeOf(node);
     if(!TypeCheck.isInt(result)){
       Log.error(String.format(ERROR_CODE+ERROR_MSG_FORMAT,result.print()));

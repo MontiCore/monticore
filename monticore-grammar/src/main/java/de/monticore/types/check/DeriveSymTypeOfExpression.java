@@ -5,7 +5,9 @@ import de.monticore.expressions.expressionsbasis._ast.*;
 import de.monticore.expressions.expressionsbasis._symboltable.*;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisitor;
 import de.monticore.types.typesymbols._symboltable.FieldSymbol;
+import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
+import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
@@ -17,18 +19,21 @@ import static de.monticore.types.check.SymTypeExpressionFactory.*;
  * It can be combined with other expressions in your language by creating a DelegatorVisitor
  */
 public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
+  
+  public ITypeSymbolsScope getScope (IExpressionsBasisScope expressionsBasisScope){
+    // is accepted only here, decided on 07.04.2020
+    if(!(expressionsBasisScope instanceof ITypeSymbolsScope)){
+      Log.error("0xA0307 the enclosing scope of the expression does not implement the interface ITypeSymbolsScope");
+    }
+    // is accepted only here, decided on 07.04.2020
+    return (ITypeSymbolsScope) expressionsBasisScope;
+  }
 
-  protected IExpressionsBasisScope scope;
-
-  protected IDerivePrettyPrinter prettyPrinter;
-
-  protected SymTypeExpression result;
-
-  protected LastResult lastResult;
+  protected TypeCheckResult typeCheckResult;
 
   private ExpressionsBasisVisitor realThis;
 
-  protected static final String ERROR_MSG = " The expression %s cannot be calculated.";
+  protected static final String ERROR_MSG = " The expression at source position %s cannot be calculated.";
 
   @Override
   public void setRealThis(ExpressionsBasisVisitor realThis) {
@@ -49,23 +54,23 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
     SymTypeExpression wholeResult = null;
     //get the type of the literal
     expr.getLiteral().accept(getRealThis());
-    if (lastResult.isPresentLast()) {
-      wholeResult = lastResult.getLast();
+    if (typeCheckResult.isPresentLast()) {
+      wholeResult = typeCheckResult.getLast();
     }
     if (wholeResult != null) {
-      this.result = wholeResult;
-      lastResult.setLast(wholeResult);
+      typeCheckResult.setLast(wholeResult);
     } else {
       //No type found --> error
-      lastResult.reset();
-      Log.error("0xA0250"+String.format(ERROR_MSG,prettyPrinter.prettyprint(expr)));
+      typeCheckResult.reset();
+
+      logError("0xA0250",expr.get_SourcePositionStart());
     }
   }
 
   @Override
   public void traverse(ASTNameExpression expr) {
-    Optional<FieldSymbol> optVar = scope.resolveField(expr.getName());
-    Optional<TypeSymbol> optType = scope.resolveType(expr.getName());
+    Optional<FieldSymbol> optVar = getScope(expr.getEnclosingScope()).resolveField(expr.getName());
+    Optional<TypeSymbol> optType = getScope(expr.getEnclosingScope()).resolveType(expr.getName());
     if (optVar.isPresent()) {
       //no method here, test variable first
       // durch AST-Umbau kann ASTNameExpression keine Methode sein
@@ -80,32 +85,26 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
       } else {
         res = createTypeExpression(var.getType().print(), var.getType().getTypeInfo().getEnclosingScope());
       }
-      this.result = res;
-      lastResult.setField();
-      lastResult.setLast(res);
+      typeCheckResult.setField();
+      typeCheckResult.setLast(res);
     } else if (optType.isPresent()) {
       //no variable found, test if name is type
       TypeSymbol type = optType.get();
       SymTypeExpression res = createTypeExpression(type.getName(), type.getEnclosingScope());
-      this.result = res;
-      lastResult.setType();
-      lastResult.setLast(res);
+      typeCheckResult.setType();
+      typeCheckResult.setLast(res);
     }else{
      //name not found --> package or nothing
-     lastResult.reset();
-      Log.info("package suspected", "ExpressionBasisTypesCalculator");
+     typeCheckResult.reset();
+      Log.info("package suspected", "DeriveSymTypeOfExpression");
     }
   }
 
-  public void setScope(IExpressionsBasisScope scope) {
-    this.scope = scope;
+  public void setTypeCheckResult(TypeCheckResult typeCheckResult) {
+    this.typeCheckResult = typeCheckResult;
   }
 
-  public void setLastResult(LastResult lastResult) {
-    this.lastResult = lastResult;
-  }
-
-  public void setPrettyPrinter(IDerivePrettyPrinter prettyPrinter){
-    this.prettyPrinter = prettyPrinter;
+  protected void logError(String errorCode, SourcePosition start){
+    Log.error(errorCode+String.format(ERROR_MSG, start));
   }
 }

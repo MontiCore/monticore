@@ -6,6 +6,7 @@ import mc.common.Basics;
 classdiagram TestCD{
 
   class B{
+    B b;
     Double a;
     C x;
     static D z;

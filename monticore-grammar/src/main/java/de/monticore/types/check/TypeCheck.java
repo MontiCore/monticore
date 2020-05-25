@@ -233,7 +233,7 @@ public class TypeCheck {
    * @param type the Type it needs to have (e.g. the Type of a variable used for assignment, or the
    *             type of a channel where to send a value)
    */
-  public boolean isOfTypeForAssign(SymTypeExpression type, ASTExpression exp, ITypeSymbolsScope symbolTable) {
+  public boolean isOfTypeForAssign(SymTypeExpression type, ASTExpression exp) {
     return compatible(  type, typeOf(exp));
     // DONE: that is all what is needed
   }

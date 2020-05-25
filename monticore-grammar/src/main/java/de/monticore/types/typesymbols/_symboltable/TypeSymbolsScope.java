@@ -1,31 +1,28 @@
-/* (c) https://github.com/MontiCore/monticore */
-package de.monticore.expressions.expressionsbasis._symboltable;
+package de.monticore.types.typesymbols._symboltable;
 
+import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
 import de.monticore.symboltable.IScopeSpanningSymbol;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.types.check.SymTypeExpression;
-import de.monticore.types.typesymbols._symboltable.FieldSymbol;
-import de.monticore.types.typesymbols._symboltable.MethodSymbol;
-import de.monticore.types.typesymbols._symboltable.TypeSymbol;
 
 import java.util.List;
 import java.util.function.Predicate;
 
-public class ExpressionsBasisScope extends ExpressionsBasisScopeTOP {
+public class TypeSymbolsScope extends TypeSymbolsScopeTOP {
 
-  public ExpressionsBasisScope() {
+  public TypeSymbolsScope() {
     super();
   }
 
-  public ExpressionsBasisScope(boolean isShadowingScope) {
+  public TypeSymbolsScope(boolean isShadowingScope) {
     super(isShadowingScope);
   }
 
-  public ExpressionsBasisScope(IExpressionsBasisScope enclosingScope) {
+  public TypeSymbolsScope(ITypeSymbolsScope enclosingScope) {
     this(enclosingScope, false);
   }
 
-  public ExpressionsBasisScope(IExpressionsBasisScope enclosingScope, boolean isShadowingScope) {
+  public TypeSymbolsScope(ITypeSymbolsScope enclosingScope, boolean isShadowingScope) {
     super(enclosingScope,isShadowingScope);
   }
 
@@ -79,17 +76,16 @@ public class ExpressionsBasisScope extends ExpressionsBasisScopeTOP {
   @Override
   public List<TypeSymbol> resolveTypeLocallyMany(boolean foundSymbols, String name, AccessModifier modifier, Predicate predicate){
     List<TypeSymbol> result = super.resolveTypeLocallyMany(foundSymbols,name,modifier,predicate);
-//    TODO ND: uncomment when adding inner types
-//    if(this.isPresentSpanningSymbol()){
-//      IScopeSpanningSymbol spanningSymbol = getSpanningSymbol();
-//      if(spanningSymbol instanceof TypeSymbol){
-//        TypeSymbol typeSymbol = (TypeSymbol) spanningSymbol;
-//        for(SymTypeExpression superType : typeSymbol.getSuperTypeList()){
-//          result.addAll(superType.getInnerTypeList(name));
-//        }
-//      }
-//    }
+    //    TODO ND: uncomment when adding inner types
+    //    if(this.isPresentSpanningSymbol()){
+    //      IScopeSpanningSymbol spanningSymbol = getSpanningSymbol();
+    //      if(spanningSymbol instanceof TypeSymbol){
+    //        TypeSymbol typeSymbol = (TypeSymbol) spanningSymbol;
+    //        for(SymTypeExpression superType : typeSymbol.getSuperTypeList()){
+    //          result.addAll(superType.getInnerTypeList(name));
+    //        }
+    //      }
+    //    }
     return result;
   }
-
 }

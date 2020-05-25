@@ -49,17 +49,17 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
 
     //element
     node.getElem().accept(realThis);
-    if(lastResult.isPresentLast()){
-      elemResult = lastResult.getLast();
+    if(typeCheckResult.isPresentLast()){
+      elemResult = typeCheckResult.getLast();
     }else{
-      Log.error("0xA0286"+String.format(ERROR_MSG,prettyPrinter.prettyprint(node.getElem())));
+      logError("0xA0286",node.getElem().get_SourcePositionStart());
     }
     //set
     node.getSet().accept(realThis);
-    if(lastResult.isPresentLast()){
-      setResult = lastResult.getLast();
+    if(typeCheckResult.isPresentLast()){
+      setResult = typeCheckResult.getLast();
     }else{
-      Log.error("0xA0287"+String.format(ERROR_MSG,prettyPrinter.prettyprint(node.getSet())));
+      logError("0xA0287",node.getSet().get_SourcePositionStart());
     }
     List<String> collections = Lists.newArrayList("List","Set");
     boolean correct = false;
@@ -76,11 +76,10 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
     }
 
     if(null!=wholeResult){
-      lastResult.setLast(wholeResult);
-      result = wholeResult;
+      typeCheckResult.setLast(wholeResult);
     }else{
-      lastResult.reset();
-      Log.error("0xA0288"+String.format(ERROR_MSG,prettyPrinter.prettyprint(node)));
+      typeCheckResult.reset();
+      logError("0xA0288",node.get_SourcePositionStart());
     }
   }
 
@@ -94,17 +93,17 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
 
     //element
     node.getElem().accept(realThis);
-    if(lastResult.isPresentLast()){
-      elemResult = lastResult.getLast();
+    if(typeCheckResult.isPresentLast()){
+      elemResult = typeCheckResult.getLast();
     }else{
-      Log.error("0xA0289"+String.format(ERROR_MSG,prettyPrinter.prettyprint(node.getElem())));
+      logError("0xA0289",node.getElem().get_SourcePositionStart());
     }
     //set
     node.getSet().accept(realThis);
-    if(lastResult.isPresentLast()){
-      setResult = lastResult.getLast();
+    if(typeCheckResult.isPresentLast()){
+      setResult = typeCheckResult.getLast();
     }else{
-      Log.error("0xA0290"+String.format(ERROR_MSG,prettyPrinter.prettyprint(node.getSet())));
+      logError("0xA0290",node.getSet().get_SourcePositionStart());
     }
     List<String> collections = Lists.newArrayList("List","Set");
     boolean correct = false;
@@ -121,60 +120,57 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
     }
 
     if(null!=wholeResult){
-      lastResult.setLast(wholeResult);
-      result = wholeResult;
+      typeCheckResult.setLast(wholeResult);
     }else{
-      lastResult.reset();
-      Log.error("0xA0291"+String.format(ERROR_MSG,prettyPrinter.prettyprint(node)));
+      typeCheckResult.reset();
+      logError("0xA0291",node.get_SourcePositionStart());
     }
   }
 
   @Override
   public void traverse(ASTUnionExpressionInfix node) {
     //union of two sets -> both sets need to have the same type or their types need to be sub/super types
-    Optional<SymTypeExpression> wholeResult = calculateUnionAndIntersectionInfix(node.getLeft(),node.getRight());
+    Optional<SymTypeExpression> wholeResult = calculateUnionAndIntersectionInfix(node, node.getLeft(),node.getRight());
 
     if(wholeResult.isPresent()){
-      lastResult.setLast(wholeResult.get());
-      result = wholeResult.get();
+      typeCheckResult.setLast(wholeResult.get());
     }else{
-      lastResult.reset();
-      Log.error("0xA0292"+String.format(ERROR_MSG,prettyPrinter.prettyprint(node)));
+      typeCheckResult.reset();
+      logError("0xA0292",node.get_SourcePositionStart());
     }
   }
 
   @Override
   public void traverse(ASTIntersectionExpressionInfix node) {
     //intersection of two sets -> both sets need to have the same type or their types need to be sub/super types
-    Optional<SymTypeExpression> wholeResult = calculateUnionAndIntersectionInfix(node.getLeft(),node.getRight());
+    Optional<SymTypeExpression> wholeResult = calculateUnionAndIntersectionInfix(node, node.getLeft(),node.getRight());
 
     if(wholeResult.isPresent()){
-      lastResult.setLast(wholeResult.get());
-      result = wholeResult.get();
+      typeCheckResult.setLast(wholeResult.get());
     }else{
-      lastResult.reset();
-      Log.error("0xA0293"+String.format(ERROR_MSG,prettyPrinter.prettyprint(node)));
+      typeCheckResult.reset();
+      logError("0xA0293",node.get_SourcePositionStart());
     }
   }
 
-  public Optional<SymTypeExpression> calculateUnionAndIntersectionInfix(ASTExpression leftExpr, ASTExpression rightExpr){
+  public Optional<SymTypeExpression> calculateUnionAndIntersectionInfix(ASTExpression expr, ASTExpression leftExpr, ASTExpression rightExpr){
     SymTypeExpression leftResult = null;
     SymTypeExpression rightResult = null;
     Optional<SymTypeExpression> wholeResult = Optional.empty();
 
     //element
     leftExpr.accept(realThis);
-    if(lastResult.isPresentLast()){
-      leftResult = lastResult.getLast();
+    if(typeCheckResult.isPresentLast()){
+      leftResult = typeCheckResult.getLast();
     }else{
-      Log.error("0xA0294"+String.format(ERROR_MSG,prettyPrinter.prettyprint(leftExpr)));
+      logError("0xA0294",leftExpr.get_SourcePositionStart());
     }
     //set
     rightExpr.accept(realThis);
-    if(lastResult.isPresentLast()){
-      rightResult = lastResult.getLast();
+    if(typeCheckResult.isPresentLast()){
+      rightResult = typeCheckResult.getLast();
     }else{
-      Log.error("0xA0295"+String.format(ERROR_MSG,prettyPrinter.prettyprint(rightExpr)));
+      logError("0xA0295",rightExpr.get_SourcePositionStart());
     }
     List<String> collections = Lists.newArrayList("List","Set");
     if(rightResult.isGenericType()&&leftResult.isGenericType()){
@@ -184,11 +180,11 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
       String right = rightGeneric.getTypeInfo().getName();
       if(collections.contains(left) && unbox(left).equals(unbox(right))) {
         if(unbox(leftGeneric.getArgument(0).print()).equals(unbox(rightGeneric.getArgument(0).print()))) {
-          wholeResult = Optional.of(SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader(left,scope),leftGeneric.getArgument(0).deepClone()));
+          wholeResult = Optional.of(SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader(left,getScope(expr.getEnclosingScope())),leftGeneric.getArgument(0).deepClone()));
         }else if(isSubtypeOf(leftGeneric.getArgument(0),rightGeneric.getArgument(0))){
-          wholeResult = Optional.of(SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader(right,scope),rightGeneric.getArgument(0).deepClone()));
+          wholeResult = Optional.of(SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader(right,getScope(expr.getEnclosingScope())),rightGeneric.getArgument(0).deepClone()));
         }else if(isSubtypeOf(rightGeneric.getArgument(0),leftGeneric.getArgument(0))){
-          wholeResult = Optional.of(SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader(left,scope),leftGeneric.getArgument(0).deepClone()));
+          wholeResult = Optional.of(SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader(left,getScope(expr.getEnclosingScope())),leftGeneric.getArgument(0).deepClone()));
         }
       }
     }
