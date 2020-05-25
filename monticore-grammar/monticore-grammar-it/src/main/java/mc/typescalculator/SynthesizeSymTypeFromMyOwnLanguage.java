@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.typescalculator;
 
-import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
 import de.monticore.types.check.*;
+import de.monticore.types.typesymbols._symboltable.TypeSymbolsScope;
 import mc.typescalculator.myownlanguage._visitor.MyOwnLanguageDelegatorVisitor;
 
 import java.util.Optional;
@@ -12,7 +12,7 @@ public class SynthesizeSymTypeFromMyOwnLanguage extends MyOwnLanguageDelegatorVi
   protected SynthesizeSymTypeFromMCBasicTypes symTypeFromMCBasicTypes;
   protected SynthesizeSymTypeFromMCCollectionTypes symTypeFromMCCollectionTypes;
   protected SynthesizeSymTypeFromUnitTypes symTypeFromUnitTypes;
-  protected LastResult result = new LastResult();
+  protected TypeCheckResult result = new TypeCheckResult();
   private MyOwnLanguageDelegatorVisitor realThis;
 
   @Override
@@ -20,16 +20,16 @@ public class SynthesizeSymTypeFromMyOwnLanguage extends MyOwnLanguageDelegatorVi
     return realThis;
   }
 
-  public SynthesizeSymTypeFromMyOwnLanguage(ExpressionsBasisScope scope){
+  public SynthesizeSymTypeFromMyOwnLanguage(){
     realThis = this;
-    symTypeFromMCBasicTypes = new SynthesizeSymTypeFromMCBasicTypes(scope);
-    symTypeFromMCBasicTypes.setLastResult(result);
+    symTypeFromMCBasicTypes = new SynthesizeSymTypeFromMCBasicTypes();
+    symTypeFromMCBasicTypes.setTypeCheckResult(result);
     setMCBasicTypesVisitor(symTypeFromMCBasicTypes);
-    symTypeFromMCCollectionTypes = new SynthesizeSymTypeFromMCCollectionTypes(scope);
-    symTypeFromMCCollectionTypes.setLastResult(result);
+    symTypeFromMCCollectionTypes = new SynthesizeSymTypeFromMCCollectionTypes();
+    symTypeFromMCCollectionTypes.setTypeCheckResult(result);
     setMCCollectionTypesVisitor(symTypeFromMCCollectionTypes);
-    symTypeFromUnitTypes = new SynthesizeSymTypeFromUnitTypes(scope);
-    symTypeFromUnitTypes.setLastResult(result);
+    symTypeFromUnitTypes = new SynthesizeSymTypeFromUnitTypes();
+    symTypeFromUnitTypes.setTypeCheckResult(result);
     setUnitTypesVisitor(symTypeFromUnitTypes);
   }
 
@@ -41,12 +41,12 @@ public class SynthesizeSymTypeFromMyOwnLanguage extends MyOwnLanguageDelegatorVi
 
   @Override
   public void init() {
-    result = new LastResult();
-    symTypeFromUnitTypes.setLastResult(result);
+    result = new TypeCheckResult();
+    symTypeFromUnitTypes.setTypeCheckResult(result);
     setUnitTypesVisitor(symTypeFromUnitTypes);
-    symTypeFromMCCollectionTypes.setLastResult(result);
+    symTypeFromMCCollectionTypes.setTypeCheckResult(result);
     setMCCollectionTypesVisitor(symTypeFromMCCollectionTypes);
-    symTypeFromMCBasicTypes.setLastResult(result);
+    symTypeFromMCBasicTypes.setTypeCheckResult(result);
     setMCBasicTypesVisitor(symTypeFromMCBasicTypes);
   }
 }

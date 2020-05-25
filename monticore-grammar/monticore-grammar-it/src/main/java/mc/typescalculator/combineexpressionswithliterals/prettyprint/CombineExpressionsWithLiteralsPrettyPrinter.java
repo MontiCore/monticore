@@ -7,10 +7,9 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.prettyprint.*;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.types.check.IDerivePrettyPrinter;
 import mc.typescalculator.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsDelegatorVisitor;
 
-public class CombineExpressionsWithLiteralsPrettyPrinter extends CombineExpressionsWithLiteralsDelegatorVisitor implements IDerivePrettyPrinter {
+public class CombineExpressionsWithLiteralsPrettyPrinter extends CombineExpressionsWithLiteralsDelegatorVisitor {
 
   protected IndentPrinter printer;
   private CombineExpressionsWithLiteralsDelegatorVisitor realThis;
@@ -26,14 +25,12 @@ public class CombineExpressionsWithLiteralsPrettyPrinter extends CombineExpressi
     setMCCommonLiteralsVisitor(new MCCommonLiteralsPrettyPrinter(printer));
   }
 
-  @Override
   public String prettyprint(ASTExpression node) {
     this.printer.clearBuffer();
     node.accept(getRealThis());
     return this.printer.getContent();
   }
 
-  @Override
   public String prettyprint(ASTLiteral node) {
     this.printer.clearBuffer();
     node.accept(getRealThis());

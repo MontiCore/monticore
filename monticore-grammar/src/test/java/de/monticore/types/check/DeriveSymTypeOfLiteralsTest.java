@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
-import de.monticore.expressions.expressionsbasis.ExpressionsBasisMill;
 import de.monticore.expressions.prettyprint.CombineExpressionsWithLiteralsPrettyPrinter;
 import de.monticore.literals.mccommonliterals.MCCommonLiteralsMill;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
@@ -26,8 +25,7 @@ public class DeriveSymTypeOfLiteralsTest {
   }
 
   // This is the core Visitor under Test (but rather empty)
-  ITypesCalculator derLit = new DeriveSymTypeOfCombineExpressionsDelegator(ExpressionsBasisMill.expressionsBasisScopeBuilder().build(),
-      new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter()));
+  ITypesCalculator derLit = new DeriveSymTypeOfCombineExpressionsDelegator();
   
   // other arguments not used (and therefore deliberately null)
   

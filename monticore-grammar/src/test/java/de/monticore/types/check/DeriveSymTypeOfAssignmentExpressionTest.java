@@ -2,10 +2,10 @@
 package de.monticore.types.check;
 
 import com.google.common.collect.Lists;
+import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
-import de.monticore.expressions.expressionsbasis.ExpressionsBasisMill;
+import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsScope;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
 import de.monticore.expressions.prettyprint.CombineExpressionsWithLiteralsPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.typesymbols._symboltable.TypeSymbol;
@@ -23,7 +23,8 @@ import static org.junit.Assert.assertTrue;
 
 public class DeriveSymTypeOfAssignmentExpressionTest {
 
-  private ExpressionsBasisScope scope;
+  private ICombineExpressionsWithLiteralsScope scope;
+  private FlatExpressionScopeSetter flatExpressionScopeSetter;
 
   /**
    * Focus: Deriving Type of Literals, here:
@@ -41,7 +42,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     // Setting up a Scope Infrastructure (without a global Scope)
     DefsTypeBasic.setup();
     scope =
-        ExpressionsBasisMill.expressionsBasisScopeBuilder()
+        CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder()
             .setEnclosingScope(null)       // No enclosing Scope: Search ending here
             .setExportingSymbols(true)
             .setAstNode(null)
@@ -80,8 +81,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     add2scope(scope, field("student1", SymTypeExpressionFactory.createTypeObject("Student", scope)));
     add2scope(scope, field("student2", SymTypeExpressionFactory.createTypeObject("Student", scope)));
     add2scope(scope, field("firstsemester", SymTypeExpressionFactory.createTypeObject("FirstSemesterStudent", scope)));
-    derLit.setScope(scope);
-
+    flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
     LogStub.init();
   }
 
@@ -90,7 +90,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
   CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
 
   // This is an auxiliary
-  DeriveSymTypeOfCombineExpressionsDelegator derLit = new DeriveSymTypeOfCombineExpressionsDelegator(ExpressionsBasisMill.expressionsBasisScopeBuilder().build(), new CombineExpressionsWithLiteralsPrettyPrinter(new IndentPrinter()));
+  DeriveSymTypeOfCombineExpressionsDelegator derLit = new DeriveSymTypeOfCombineExpressionsDelegator();
 
   // other arguments not used (and therefore deliberately null)
 
@@ -107,16 +107,19 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     //example with int
     String s = "3++";
     ASTExpression astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     assertEquals("int", tc.typeOf(astex).print());
 
     //example with float
     s = "4.5f++";
     astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     assertEquals("float", tc.typeOf(astex).print());
 
     //example with char
     s = "\'e\'++";
     astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     assertEquals("int", tc.typeOf(astex).print());
   }
 
@@ -125,6 +128,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     //only possible with numeric types
     String s = "\"Hello\"++";
     ASTExpression astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     try{
       tc.typeOf(astex);
     }catch(RuntimeException e){
@@ -140,11 +144,13 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     //example with int
     String s = "12--";
     ASTExpression astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     assertEquals("int", tc.typeOf(astex).print());
 
     //example with double
     s = "4.2--";
     astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     assertEquals("double", tc.typeOf(astex).print());
   }
 
@@ -153,6 +159,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     //only possible with numeric types
     String s = "\"Hello\"--";
     ASTExpression astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     try{
       tc.typeOf(astex);
     }catch(RuntimeException e){
@@ -168,11 +175,13 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     //example with int
     String s = "++3";
     ASTExpression astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     assertEquals("int", tc.typeOf(astex).print());
 
     //example with long
     s = "++6L";
     astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     assertEquals("long", tc.typeOf(astex).print());
   }
 
@@ -181,6 +190,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     //only possible with numeric types
     String s = "++\"Hello\"";
     ASTExpression astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     try{
       tc.typeOf(astex);
     }catch(RuntimeException e){
@@ -196,11 +206,13 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     //example with int
     String s = "--1";
     ASTExpression astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     assertEquals("int", tc.typeOf(astex).print());
 
     //example with float
     s = "--6.7f";
     astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     assertEquals("float", tc.typeOf(astex).print());
   }
 
@@ -209,6 +221,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     //only possible with numeric types
     String s = "--\"Hello\"";
     ASTExpression astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     try{
       tc.typeOf(astex);
     }catch(RuntimeException e){
@@ -224,11 +237,13 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     //example with int
     String s = "-5";
     ASTExpression astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     assertEquals("int", tc.typeOf(astex).print());
 
     //example with double
     s = "-15.7";
     astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     assertEquals("double", tc.typeOf(astex).print());
   }
 
@@ -237,6 +252,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     //only possible with numeric types
     String s = "-\"Hello\"";
     ASTExpression astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     try{
       tc.typeOf(astex);
     }catch(RuntimeException e){
@@ -252,11 +268,13 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     //example with int
     String s = "+34";
     ASTExpression astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     assertEquals("int", tc.typeOf(astex).print());
 
     //example with long
     s = "+4L";
     astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     assertEquals("long", tc.typeOf(astex).print());
   }
 
@@ -266,6 +284,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     //only possible with numeric types
     String s = "+\"Hello\"";
     ASTExpression astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     try{
       tc.typeOf(astex);
     }catch(RuntimeException e){
@@ -281,14 +300,17 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     //example with int - int
     String s = "foo+=7";
     ASTExpression astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     assertEquals("int", tc.typeOf(astex).print());
     //example with long - double
     s = "varlong+=5.6";
     astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     assertEquals("long", tc.typeOf(astex).print());
     //example with String - Person
     s = "varString+=person1";
     astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     assertEquals("String", tc.typeOf(astex).print());
   }
 
@@ -297,6 +319,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     //not possible because int = int + (int) String returns a casting error
     String s = "varint+=\"Hello\"";
     ASTExpression astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     try{
       tc.typeOf(astex);
     }catch(RuntimeException e){
@@ -312,10 +335,12 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     //example with int - int
     String s = "varint-=9";
     ASTExpression astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     assertEquals("int", tc.typeOf(astex).print());
     //example with char - float
     s = "varchar-=4.5f";
     astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     assertEquals("char", tc.typeOf(astex).print());
   }
 
@@ -324,6 +349,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     //not possible because int = int - (int) String returns a casting error
     String s = "varint-=\"Hello\"";
     ASTExpression astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     try{
       tc.typeOf(astex);
     }catch(RuntimeException e){
@@ -339,10 +365,12 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     //example with int - int
     String s = "varint*=9";
     ASTExpression astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     assertEquals("int", tc.typeOf(astex).print());
     //example with double - int
     s = "vardouble*=5";
     astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     assertEquals("double", tc.typeOf(astex).print());
   }
 
@@ -351,6 +379,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     //not possible because int = int * (int) String returns a casting error
     String s = "varint*=\"Hello\"";
     ASTExpression astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     try{
       tc.typeOf(astex);
     }catch(RuntimeException e){
@@ -366,10 +395,12 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     //example with int - int
     String s = "varint/=9";
     ASTExpression astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     assertEquals("int", tc.typeOf(astex).print());
     //example with float - long
     s = "varfloat/=4L";
     astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     assertEquals("float", tc.typeOf(astex).print());
   }
 
@@ -378,6 +409,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     //not possible because int = int / (int) String returns a casting error
     String s = "varint/=\"Hello\"";
     ASTExpression astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     try{
       tc.typeOf(astex);
     }catch(RuntimeException e){
@@ -393,10 +425,12 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     //example with int - int
     String s = "varint%=9";
     ASTExpression astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     assertEquals("int", tc.typeOf(astex).print());
     //example with int - float
     s = "foo%=9.8f";
     astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     assertEquals("int", tc.typeOf(astex).print());
   }
 
@@ -405,6 +439,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     //not possible because int = int % (int) String returns a casting error
     String s = "varint%=\"Hello\"";
     ASTExpression astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     try{
       tc.typeOf(astex);
     }catch(RuntimeException e){
@@ -420,14 +455,17 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     //example with int - int
     String s = "varint&=9";
     ASTExpression astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     assertEquals("int", tc.typeOf(astex).print());
     //example with boolean - boolean
     s = "bar2&=false";
     astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     assertEquals("boolean", tc.typeOf(astex).print());
     //example with char - int
     s = "varchar&=4";
     astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     assertEquals("char", tc.typeOf(astex).print());
   }
 
@@ -436,6 +474,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     //not possible because int = int & (int) String returns a casting error
     String s = "varint&=\"Hello\"";
     ASTExpression astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     try{
       tc.typeOf(astex);
     }catch(RuntimeException e){
@@ -451,10 +490,12 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     //example with int - int
     String s = "varint|=9";
     ASTExpression astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     assertEquals("int", tc.typeOf(astex).print());
     //example with boolean - boolean
     s = "bar2|=true";
     astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     assertEquals("boolean", tc.typeOf(astex).print());
   }
 
@@ -463,6 +504,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     //not possible because int = int | (int) String returns a casting error
     String s = "varint|=\"Hello\"";
     ASTExpression astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     try{
       tc.typeOf(astex);
     }catch(RuntimeException e){
@@ -478,14 +520,17 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     //example with int - int
     String s = "varint^=9";
     ASTExpression astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     assertEquals("int", tc.typeOf(astex).print());
     //example with boolean - boolean
     s = "bar2^=false";
     astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     assertEquals("boolean", tc.typeOf(astex).print());
 
     s = "true^=false";
     astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     assertEquals("boolean", tc.typeOf(astex).print());
   }
 
@@ -494,6 +539,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     //not possible because int = int ^ (int) String returns a casting error
     String s = "varint^=\"Hello\"";
     ASTExpression astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     try{
       tc.typeOf(astex);
     }catch(RuntimeException e){
@@ -509,10 +555,12 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     //example with int - int
     String s = "varint<<=9";
     ASTExpression astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     assertEquals("int", tc.typeOf(astex).print());
     //example with int - char
     s = "foo<<=\'c\'";
     astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     assertEquals("int", tc.typeOf(astex).print());
   }
 
@@ -521,6 +569,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     //not possible because int = int << (int) String returns a casting error
     String s = "varint<<=\"Hello\"";
     ASTExpression astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     try{
       tc.typeOf(astex);
     }catch(RuntimeException e){
@@ -536,10 +585,12 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     //example with int - int
     String s = "varint>>=9";
     ASTExpression astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     assertEquals("int", tc.typeOf(astex).print());
     //example with char - int
     s = "varchar>>=12";
     astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     assertEquals("char", tc.typeOf(astex).print());
   }
 
@@ -548,6 +599,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     //not possible because int = int >> (int) String returns a casting error
     String s = "varint>>=\"Hello\"";
     ASTExpression astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     try{
       tc.typeOf(astex);
     }catch(RuntimeException e){
@@ -563,10 +615,12 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     //example with int - int
     String s = "varint>>>=9";
     ASTExpression astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     assertEquals("int", tc.typeOf(astex).print());
     //example with char - char
     s = "varchar>>>=\'3\'";
     astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     assertEquals("char", tc.typeOf(astex).print());
   }
 
@@ -575,6 +629,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     //not possible because int = int >>> (int) String returns a casting error
     String s = "varint>>>=\"Hello\"";
     ASTExpression astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     try{
       tc.typeOf(astex);
     }catch(RuntimeException e){
@@ -590,18 +645,22 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     //example with int - int
     String s = "varint=9";
     ASTExpression astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     assertEquals("int", tc.typeOf(astex).print());
     //example with double - int
     s = "vardouble=12";
     astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     assertEquals("double", tc.typeOf(astex).print());
     //example with person - student
     s = "person1 = student2";
     astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     assertEquals("Person", tc.typeOf(astex).print());
     //example with person - firstsemesterstudent
     s = "person2 = firstsemester";
     astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     assertEquals("Person", tc.typeOf(astex).print());
   }
 
@@ -610,6 +669,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     //not possible because int = (int) String returns a casting error
     String s = "varint=\"Hello\"";
     ASTExpression astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     try{
       tc.typeOf(astex);
     }catch(RuntimeException e){
@@ -622,6 +682,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     //test with no field on the left side of the assignment
     String s = "3=4";
     ASTExpression astex = p.parse_StringExpression(s).get();
+    astex.accept(flatExpressionScopeSetter);
     try{
       tc.typeOf(astex);
     }catch(RuntimeException e){
