@@ -296,7 +296,8 @@ public class MontiCoreScriptTest {
     Grammar_WithConceptsGlobalScope symbolTable = TestHelper.createGlobalScope(modelPath);
     mc.createSymbolsFromAST(symbolTable, grammar);
     CD4AnalysisGlobalScope cd4AGlobalScope = mc.createCD4AGlobalScope(modelPath);
-    ASTCDCompilationUnit cdCompilationUnit = mc.deriveCD(grammar, new GlobalExtensionManagement(), cd4AGlobalScope);
+    ASTCDCompilationUnit cdCompilationUnit = mc.deriveCD(grammar,
+        new GlobalExtensionManagement(), cd4AGlobalScope);
     assertNotNull(cdCompilationUnit);
     assertNotNull(cdCompilationUnit.getCDDefinition());
     assertEquals("Statechart", cdCompilationUnit.getCDDefinition().getName());

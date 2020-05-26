@@ -3,6 +3,7 @@ package de.monticore.codegen.cd2java.data;
 
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.cd2java.AbstractTransformer;
+import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 
 import java.util.List;
 
@@ -34,9 +35,18 @@ public class ListSuffixDecorator extends AbstractTransformer<ASTCDCompilationUni
 
   protected void addSToListAttributes(List<ASTCDAttribute> attributeList) {
     for (ASTCDAttribute astcdAttribute : attributeList) {
-      if (getDecorationHelper().isListType(astcdAttribute.printType())) {
+      if (getDecorationHelper().isListType(astcdAttribute.printType()) &&
+          hasDerivedAttributeName(astcdAttribute)) {
         astcdAttribute.setName(getAttributeNameWithListSuffix(astcdAttribute));
       }
     }
+  }
+
+  protected boolean hasDerivedAttributeName(ASTCDAttribute astcdAttribute) {
+    return astcdAttribute.isPresentModifier() && astcdAttribute.getModifier().isPresentStereotype()
+        && astcdAttribute.getModifier().getStereotype().sizeValues() > 0 &&
+        astcdAttribute.getModifier().getStereotype().getValueList()
+            .stream()
+            .anyMatch(v -> v.getName().equals(MC2CDStereotypes.DERIVED_ATTRIBUTE_NAME.toString()));
   }
 }

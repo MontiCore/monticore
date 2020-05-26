@@ -29,6 +29,7 @@ public class CDSymbolTranslation implements UnaryOperator<Link<ASTMCGrammar, AST
         .andThen(new ComponentTranslation())
         .andThen(new StartProdTranslation())
         .andThen(new SymbolDeprecatedTranslation())
+        .andThen(new DerivedAttributeName())
         .apply(rootLink);
   }
 }

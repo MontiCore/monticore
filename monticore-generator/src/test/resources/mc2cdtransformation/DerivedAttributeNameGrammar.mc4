@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package mc2cdtransformation;
+
+grammar DerivedAttributeNameGrammar {
+
+    Foo = foo:"foo";
+
+    Bar = "bar" abc:[ "a" | "b" | "c"] ["d"];
+
+    Blub = Foo* bar2:Bar+ fooOpt:Foo? efg:key("efg");
+
+    Test = Blub faa:Foo Bar? key("new") k:["k"];
+}
