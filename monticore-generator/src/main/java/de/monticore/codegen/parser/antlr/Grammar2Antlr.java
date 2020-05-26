@@ -323,7 +323,9 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     if (!iterated) {
       ASTConstant x = ast.getConstantList().get(0);
       addToCodeSection("(");
-      if (!grammarInfo.isKeyword(x.getName(), grammarEntry)) {
+      if (x.isPresentKeyConstant()) {
+        addToCodeSection(createPredicate(x.getKeyConstant().getStringList()));
+      } else if (!grammarInfo.isKeyword(x.getName(), grammarEntry)) {
         addToCodeSection(parserHelper.getLexSymbolName(x.getName()));
       } else {
         addToCodeSection("'" + x.getName() + "'");
@@ -346,7 +348,9 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
         addToCodeSection(del);
         ASTConstant x = iter.next();
 
-        if (!grammarInfo.isKeyword(x.getName(), grammarEntry)) {
+        if (x.isPresentKeyConstant()) {
+          addToCodeSection(createPredicate(x.getKeyConstant().getStringList()));
+        } else if (!grammarInfo.isKeyword(x.getName(), grammarEntry)) {
           addToCodeSection(parserHelper.getLexSymbolName(x.getName()));
         } else {
           addToCodeSection("'" + x.getName() + "'");
@@ -529,19 +533,24 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
 
   }
 
-  @Override
-  public void visit(ASTKeyTerminal ast) {
-
-    startCodeSection("ASTKeyTerminal " + ast.getName());
-
-    String rulename = "({next(";
+  private String createPredicate(List<String> stringList) {
+    String rulename = "{next(";
     String sep = "";
-    for (String key: ast.getStringList()) {
+    for (String key: stringList) {
       rulename += sep;
       sep = ", ";
       rulename += "\"" + key + "\"";
     }
     rulename += ")}? Name";
+    return rulename;
+  }
+
+  @Override
+  public void visit(ASTKeyTerminal ast) {
+
+    startCodeSection("ASTKeyTerminal " + ast.getName());
+    addToCodeSection("(");
+    String rulename = createPredicate(ast.getKeyConstant().getStringList());
 
     // No actions in predicates
     // Template engine cannot be used for substition in rare cases

@@ -249,8 +249,13 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
   protected void initialize_ConstantGroup(RuleComponentSymbol symbol, ASTConstantGroup ast) {
     symbol.setIsConstantGroup(true);
     for (ASTConstant c : ast.getConstantList()) {
-      String name = c.isPresentHumanName()?c.getHumanName():c.getName();
-      symbol.addSubProd(name);
+      if (c.isPresentHumanName()) {
+        symbol.addSubProd(c.getHumanName());
+      } else if (c.isPresentKeyConstant()) {
+        symbol.addSubProd(c.getKeyConstant().getString(0));
+      } else {
+        symbol.addSubProd(c.getName());
+      }
     }
   }
 

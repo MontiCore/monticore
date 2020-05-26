@@ -139,6 +139,13 @@ public class GrammarPrettyPrinter
     if (a.isPresentUsageName()) {
       print("" + a.getUsageName() + ":");
     }
+    a.getKeyConstant().accept(getRealThis());
+    outputIteration(a.getIteration());
+    CommentPrettyPrinter.printPostComments(a, getPrinter());
+  }
+
+  @Override
+  public void handle(ASTKeyConstant a) {
     print(" key(");
     String sep = "";
     for (String name: a.getStringList()) {
@@ -147,8 +154,6 @@ public class GrammarPrettyPrinter
       sep = " | ";
     }
     print(")");
-    outputIteration(a.getIteration());
-    CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
 
   @Override
@@ -229,9 +234,11 @@ public class GrammarPrettyPrinter
     if (a.isPresentHumanName()) {
       print(a.getHumanName() + ":");
     }
-
-    print(QUOTE + a.getName() + QUOTE);
-
+    if (a.isPresentKeyConstant()) {
+      a.getKeyConstant().accept(getRealThis());
+    } else {
+      print(QUOTE + a.getName() + QUOTE);
+    }
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
 
