@@ -30,7 +30,7 @@ fileTree(grammarDir).matching { include '**/*.mc4'}.each {
   task  "generate${it.getName().substring(0,it.getName().lastIndexOf('.'))}EMF" (type: MCTask) {
     grammar = file g
     outputDir = file outDir
-    script file('../../../src/main/resources/de/monticore/monticore_emf.groovy')
+    script = 'de/monticore/monticore_emf.groovy'
     handcodedPath file("../forAst/src/main/java")
     def grammarIncludingPackage = file(grammarDir).toURI().relativize(g.toURI()).toString()
     def uptoDate = incCheck(grammarIncludingPackage)
