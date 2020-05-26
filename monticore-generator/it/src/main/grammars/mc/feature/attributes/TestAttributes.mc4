@@ -13,7 +13,7 @@ component grammar TestAttributes extends mc.grammar.lexicals.ItTestLexicals  {
 	 *                list of all concretions of attributes
 	 */
 	ConceptAttributes =
-		"{" (AttributeDefinition:AttributeDefinition | AttributeConcretion:AttributeConcretion)* "}";
+		"{" (attributeDefinition:AttributeDefinition | attributeConcretion:AttributeConcretion)* "}";
 	
 	astrule ConceptAttributes =
 		method public String toString() {
@@ -31,7 +31,7 @@ component grammar TestAttributes extends mc.grammar.lexicals.ItTestLexicals  {
 	 *                   list of all assigned attributes and their calculations
 	 */
 	AttributeConcretion = 
-		Name "{" (Calculation:Calculation)+ "}";
+		Name "{" (calculation:Calculation)+ "}";
 
 	/**
 	 * A calculation consists of the grammar where the attribute is defined and
@@ -44,7 +44,7 @@ component grammar TestAttributes extends mc.grammar.lexicals.ItTestLexicals  {
 	 *                java class where the calculation rule is implemented 
 	 */
 	Calculation =
-		((Name:Name | Name:"grammar" | Name:"ast") ("." (Name:Name | Name:"grammar" | Name:"ast"))*) ("=" CalculationClass:ExternalAttributeType)?;
+		((name:Name | name:"grammar" | name:"ast") ("." (name:Name | name:"grammar" | name:"ast"))*) ("=" calculationClass:ExternalAttributeType)?;
 	
 	astrule Calculation =
 		method public String getGrammarname() {
@@ -92,16 +92,16 @@ component grammar TestAttributes extends mc.grammar.lexicals.ItTestLexicals  {
 	 */
 	AttributeDefinition = 
 	
-    Kind:["inh"|"syn"|"global"] Name ( ":" Type:ReferenceInAttributes ("{" Overrides* "}" | ";") | "{" Overrides+ "}" );
+    kind:["inh"|"syn"|"global"] Name ( ":" type:ReferenceInAttributes ("{" Overrides* "}" | ";") | "{" Overrides+ "}" );
   
-    Overrides = Rules:(Name || ",")+ ":" Type:ReferenceInAttributes ";" ;
+    Overrides = rules:(Name || ",")+ ":" type:ReferenceInAttributes ";" ;
     
 //-----------------------------------------------------------------------------
 // copied (and marginally modified) from mc.grammar.Grammar	  
 	interface ReferenceInAttributes;  
 	
 	RuleReferenceInAttribute implements ReferenceInAttributes =
-		Name (Iterated:["*"])? ;
+		Name (iterated:["*"])? ;
 
 	ExternalAttributeType implements ReferenceInAttributes = 
 		"/" GenericAttributeType ;
@@ -115,12 +115,12 @@ component grammar TestAttributes extends mc.grammar.lexicals.ItTestLexicals  {
 		};
 
 	GenericAttributeType  = 
-		(Name:Name | Name:"grammar" | Name:"ast") ("." (Name:Name | Name:"grammar" | Name:"ast") )* ("<" Generic:GenericAttributeType ("," Generic:GenericAttributeType)*  ">")? {a.setDimension(0);}  ("[""]"{a.setDimension(a.getDimension()+1);} )*;
+		(name:Name | name:"grammar" | name:"ast") ("." (name:Name | name:"grammar" | name:"ast") )* ("<" generic:GenericAttributeType ("," generic:GenericAttributeType)*  ">")? {a.setDimension(0);}  ("[""]"{a.setDimension(a.getDimension()+1);} )*;
 
 	astrule GenericAttributeType =
 		method public String toString() {
 			return String.join(", ",getNameList());
 		}
-		Dimension:int
+		dimension:int
 		;
 }
