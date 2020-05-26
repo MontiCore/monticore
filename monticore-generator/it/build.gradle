@@ -2,18 +2,19 @@
 import de.monticore.MCTask
 
 plugins {
+  id "de.set.ecj" version "1.4.1" // Eclipse compiler as it's much faster than javac
   id 'java'
-  id "monticore" version "6.1.0-SNAPSHOT"
+  id "monticore" version "6.2.0-SNAPSHOT"
 }
 
 group = 'de.monticore'
-version = '6.1.0-SNAPSHOT'
+version = '6.2.0-SNAPSHOT'
 description = 'MontiCore Generator Main Integration Test'
 sourceCompatibility = '1.8'
 
 ext.grammarDir = 'src/main/grammars'
-ext.grammar_version = '6.1.0-SNAPSHOT'
-ext.mc_version = '6.1.0-SNAPSHOT'
+ext.grammar_version = '6.2.0-SNAPSHOT'
+ext.mc_version = '6.2.0-SNAPSHOT'
 ext.junit_version = '4.12'
 
 configurations {grammar}
@@ -40,12 +41,16 @@ if (!hasProperty('buildProfile')) ext.buildProfile = 'default'  // chooses the p
 apply from: "profile-${buildProfile}.gradle"  // includes the corresponding build file
 
 tasks.withType(JavaCompile) {
+  options.warnings = false
   options.encoding = 'UTF-8'
 }
 
 compileJava {
   dependsOn project.collect { it.tasks.withType(MCTask) }
 }
+
+// Fixes issue with java plugin in projects without resources
+compileTestJava.doFirst { mkdir sourceSets.main.output.resourcesDir }
 
 test {
   testLogging {

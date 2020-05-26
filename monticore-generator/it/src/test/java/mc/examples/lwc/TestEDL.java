@@ -10,6 +10,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.util.Optional;
 
+import mc.examples.lwc.edl.edl.EDLMill;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
@@ -17,7 +18,6 @@ import com.google.common.collect.Lists;
 import mc.GeneratorIntegrationsTest;
 import mc.examples.lwc.edl.edl._ast.ASTEDLCompilationUnit;
 import mc.examples.lwc.edl.edl._ast.ASTEntity;
-import mc.examples.lwc.edl.edl._ast.EDLMill;
 import mc.examples.lwc.edl.edl._parser.EDLParser;
 
 public class TestEDL extends GeneratorIntegrationsTest {

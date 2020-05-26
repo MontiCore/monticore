@@ -5,9 +5,10 @@ import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDDefinition;
 import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
-import de.monticore.cd.cd4code._ast.CD4CodeMill;
+import de.monticore.cd.cd4code.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.CoreTemplates;
+import de.monticore.codegen.cd2java._visitor.builder.DelegatorVisitorBuilderDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.IterablePath;
 
@@ -23,17 +24,15 @@ import static de.monticore.utils.Names.constructQualifiedName;
 
 public class CDVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCompilationUnit> {
 
-  protected final ASTVisitorDecorator astVisitorDecorator;
-
-  protected final SymbolVisitorDecorator symbolVisitorDecorator;
-
-  protected final ScopeVisitorDecorator scopeVisitorDecorator;
+  protected final VisitorDecorator astVisitorDecorator;
 
   protected final DelegatorVisitorDecorator delegatorVisitorDecorator;
 
   protected final InheritanceVisitorDecorator inheritanceVisitorDecorator;
 
   protected final ParentAwareVisitorDecorator parentAwareVisitorDecorator;
+
+  protected final DelegatorVisitorBuilderDecorator delegatorVisitorBuilderDecorator;
 
   protected final IterablePath handCodedPath;
 
@@ -42,21 +41,19 @@ public class CDVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, AS
   public CDVisitorDecorator(final GlobalExtensionManagement glex,
                             final IterablePath handCodedPath,
                             final VisitorService visitorService,
-                            final ASTVisitorDecorator astVisitorDecorator,
-                            final SymbolVisitorDecorator symbolVisitorDecorator,
-                            final ScopeVisitorDecorator scopeVisitorDecorator,
+                            final VisitorDecorator astVisitorDecorator,
                             final DelegatorVisitorDecorator delegatorVisitorDecorator,
                             final InheritanceVisitorDecorator inheritanceVisitorDecorator,
-                            final ParentAwareVisitorDecorator parentAwareVisitorDecorator) {
+                            final ParentAwareVisitorDecorator parentAwareVisitorDecorator,
+                            final DelegatorVisitorBuilderDecorator delegatorVisitorBuilderDecorator) {
     super(glex);
     this.handCodedPath = handCodedPath;
     this.visitorService = visitorService;
     this.astVisitorDecorator = astVisitorDecorator;
-    this.symbolVisitorDecorator = symbolVisitorDecorator;
-    this.scopeVisitorDecorator = scopeVisitorDecorator;
     this.delegatorVisitorDecorator = delegatorVisitorDecorator;
     this.inheritanceVisitorDecorator = inheritanceVisitorDecorator;
     this.parentAwareVisitorDecorator = parentAwareVisitorDecorator;
+    this.delegatorVisitorBuilderDecorator = delegatorVisitorBuilderDecorator;
   }
 
   @Override
@@ -66,14 +63,15 @@ public class CDVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, AS
 
     setIfExistsHandwrittenFile(visitorPackage);
 
+    ASTCDClass delegatorVisitor = delegatorVisitorDecorator.decorate(input);
+
     ASTCDDefinition astCD = CD4CodeMill.cDDefinitionBuilder()
         .setName(input.getCDDefinition().getName())
         .addCDInterface(astVisitorDecorator.decorate(input))
-        .addCDInterface(symbolVisitorDecorator.decorate(input))
-        .addCDInterface(scopeVisitorDecorator.decorate(input))
-        .addCDClass(delegatorVisitorDecorator.decorate(input))
+        .addCDClass(delegatorVisitor)
         .addCDInterface(inheritanceVisitorDecorator.decorate(input))
         .addCDClass(parentAwareVisitorDecorator.decorate(input))
+        .addCDClass(delegatorVisitorBuilderDecorator.decorate(delegatorVisitor))
         .build();
 
     for (ASTCDClass cdClass : astCD.getCDClassList()) {
@@ -92,15 +90,7 @@ public class CDVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, AS
 
   protected void setIfExistsHandwrittenFile(List<String> visitorPackage) {
     boolean isVisitorHandCoded = existsHandwrittenClass(handCodedPath,
-        constructQualifiedName(visitorPackage, visitorService.getSymbolVisitorSimpleName()));
+        constructQualifiedName(visitorPackage, visitorService.getVisitorSimpleName()));
     astVisitorDecorator.setTop(isVisitorHandCoded);
-
-    boolean isScopeVisitorHandCoded = existsHandwrittenClass(handCodedPath,
-        constructQualifiedName(visitorPackage, visitorService.getSymbolVisitorSimpleName()));
-    scopeVisitorDecorator.setTop(isScopeVisitorHandCoded);
-
-    boolean isSymbolVisitorHandCoded = existsHandwrittenClass(handCodedPath,
-        constructQualifiedName(visitorPackage, visitorService.getSymbolVisitorSimpleName()));
-    symbolVisitorDecorator.setTop(isSymbolVisitorHandCoded);
   }
 }

@@ -20,7 +20,7 @@ package de.monticore.expressions;
  * This modularity of expressions and associated types greatly eases
  * the reuse of type structures in languages similar to Java
  *
- * This grammar is part of a hierarchy of types, namely
+ * This grammar is part of a hierarchy of expressions, namely
  * * expressions/ExpressionsBasis.mc4
  * * --  expressions/CommonExpressions.mc4
  * * --  --  expressions/JavaClassExpressions.mc4
@@ -57,12 +57,13 @@ component grammar CommonExpressions
 
   /*=================================================================*/
 
-  /** Field access: e.g. obj.attr or also (b ? getobject() : obj).attribute
-   *  This is similar to package names:
+  /** Field access: e.g. obj.attr or also (b ? getobject() : obj).attr
+   *  This is syntactically similar to package names:
    *  So when the language shall also allow QualifiedNames as Expressions,
-   *  they might be parsed here. E.g. in "x.y.Person", "x" might be
+   *  they might be parsed here. E.g. in "x.y.Person", "x" is 
    *  parsed as NameExpression, even though it is a package name.
-   *  This is to be resolved via SymbolTable
+   *  This is to be resolved via SymbolTable.
+   *  When resolved, the AST should be restructured directly after the parsing.
    */
   FieldAccessExpression implements Expression <290> =
     Expression "." Name;
@@ -85,10 +86,10 @@ component grammar CommonExpressions
 
   ModuloExpression implements Expression <180>, InfixExpression =
     left:Expression operator:"%" right:Expression;
-    
+
   PlusExpression implements Expression <170>, InfixExpression =
     left:Expression operator:"+" right:Expression;
-        
+
   MinusExpression implements Expression <170>, InfixExpression =
     left:Expression operator:"-" right:Expression;
 
@@ -129,8 +130,8 @@ component grammar CommonExpressions
 
   BracketExpression implements Expression <310>
     =  "(" Expression ")";
-    
+
   Arguments
     =   "(" (Expression || ",")* ")";
-    
+
 }

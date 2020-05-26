@@ -5,7 +5,7 @@ package de.monticore.grammar.grammar._symboltable;
 import com.google.common.collect.ImmutableSet;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsArtifactScope;
-import de.monticore.grammar.grammar_withconcepts._symboltable.IGrammar_WithConceptsGlobalScope;
+import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
 import de.se_rwth.commons.Names;
 
 import java.util.*;
@@ -156,7 +156,7 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
         break;
       }
 
-      if (!(currentScope instanceof IGrammar_WithConceptsGlobalScope)) {
+      if (!(currentScope instanceof Grammar_WithConceptsGlobalScope)) {
         if (currentScope instanceof Grammar_WithConceptsArtifactScope) {
           // We have reached the artifact scope. Get the package name from the
           // symbol itself, since it might be set manually.

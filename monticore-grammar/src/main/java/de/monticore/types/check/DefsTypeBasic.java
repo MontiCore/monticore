@@ -1,9 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
-import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
-import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
 import de.monticore.symboltable.modifiers.AccessModifier;
+import de.monticore.types.typesymbols.TypeSymbolsMill;
 import de.monticore.types.typesymbols._symboltable.*;
 
 import java.util.ArrayList;
@@ -64,8 +63,8 @@ public class DefsTypeBasic {
   /** create TypeSymbols (some defaults apply)
    */
   public static TypeSymbol type(String name, String fullName) {
-    return TypeSymbolsSymTabMill.typeSymbolBuilder()
-            .setSpannedScope(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build())
+    return TypeSymbolsMill.typeSymbolBuilder()
+            .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
             .setName(name)
             .setFullName(fullName)
             .setAccessModifier(AccessModifier.ALL_INCLUSION)
@@ -76,8 +75,8 @@ public class DefsTypeBasic {
   }
 
   public static TypeSymbol type(String name, List<SymTypeExpression> superTypes){
-    return TypeSymbolsSymTabMill.typeSymbolBuilder()
-            .setSpannedScope(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build())
+    return TypeSymbolsMill.typeSymbolBuilder()
+            .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
             .setName(name)
             .setFullName(name)
             .setSuperTypeList(superTypes)
@@ -85,8 +84,8 @@ public class DefsTypeBasic {
   }
 
   public static TypeSymbol type(String name, List<SymTypeExpression> superTypes, List<TypeVarSymbol> typeArguments){
-    ExpressionsBasisScope spannedScope = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
-    return TypeSymbolsSymTabMill.typeSymbolBuilder()
+    TypeSymbolsScope spannedScope = TypeSymbolsMill.typeSymbolsScopeBuilder().build();
+    return TypeSymbolsMill.typeSymbolBuilder()
             .setSpannedScope(spannedScope)
             .setName(name)
             .setFullName(name)
@@ -97,8 +96,8 @@ public class DefsTypeBasic {
 
   public static TypeSymbol type(String name, List<MethodSymbol> methodList, List<FieldSymbol> fieldList,
                                 List<SymTypeExpression> superTypeList, List<TypeVarSymbol> typeVariableList){
-    return TypeSymbolsSymTabMill.typeSymbolBuilder()
-          .setSpannedScope(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build())
+    return TypeSymbolsMill.typeSymbolBuilder()
+          .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
           .setName(name)
           .setFullName(name)
           .setTypeParameterList(typeVariableList)
@@ -110,10 +109,10 @@ public class DefsTypeBasic {
 
   public static TypeSymbol type(String name, List<MethodSymbol> methodList, List<FieldSymbol> fieldList,
                                 List<SymTypeExpression> superTypeList, List<TypeVarSymbol> typeVariableList,
-                                ExpressionsBasisScope enclosingScope){
-    TypeSymbol t = TypeSymbolsSymTabMill.typeSymbolBuilder()
+                                ITypeSymbolsScope enclosingScope){
+    TypeSymbol t = TypeSymbolsMill.typeSymbolBuilder()
         .setEnclosingScope(enclosingScope)
-        .setSpannedScope(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build())
+        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setName(name)
         .setFullName(name)
         .setTypeParameterList(typeVariableList)
@@ -134,7 +133,7 @@ public class DefsTypeBasic {
    * create TypeVariableSymbols (some defaults apply)
    */
   public static TypeVarSymbol typeVariable(String name){
-    return TypeSymbolsSymTabMill.typeVarSymbolBuilder()
+    return TypeSymbolsMill.typeVarSymbolBuilder()
         .setName(name)
         .setFullName(name)
         .build();
@@ -153,14 +152,14 @@ public class DefsTypeBasic {
   /** create MethodSymbols (some defaults apply)
    */
   public static MethodSymbol method(String name, SymTypeExpression returnType) {
-    MethodSymbol m = TypeSymbolsSymTabMill.methodSymbolBuilder()
-            .setSpannedScope(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build())
+    MethodSymbol m = TypeSymbolsMill.methodSymbolBuilder()
+            .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
             .setName(name)
             .setFullName(name)  // can later be adapted, when fullname of Type is known
             .setAccessModifier(AccessModifier.ALL_INCLUSION)
             .setReturnType(returnType)
             .build();
-    m.setSpannedScope(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build());
+    m.setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build());
     return m;
   }
   
@@ -173,7 +172,7 @@ public class DefsTypeBasic {
   /** create FieldSymbols (some defaults apply)
    */
   public static FieldSymbol field(String name, SymTypeExpression type) {
-    return TypeSymbolsSymTabMill.fieldSymbolBuilder()
+    return TypeSymbolsMill.fieldSymbolBuilder()
             .setName(name)
             .setFullName(name)  // can later be adapted, when fullname of Type is known
             .setAccessModifier(AccessModifier.ALL_INCLUSION)
@@ -320,7 +319,7 @@ public class DefsTypeBasic {
 
   public static void link_String() {
     MethodSymbol m; FieldSymbol f;
-    ExpressionsBasisScope scope = ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build();
+    TypeSymbolsScope scope = TypeSymbolsMill.typeSymbolsScopeBuilder().build();
     
     // hashCode()
     add(_String, method("hashCode", _intSymType));

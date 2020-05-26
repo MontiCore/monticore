@@ -1,13 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
-import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._ast.ASTMCVoidType;
-import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
+import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mcbasictypestest._parser.MCBasicTypesTestParser;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -28,14 +28,14 @@ public class SynthesizeSymTypeFromMCBasicTypesTest {
   
   @BeforeClass
   public static void setup() {
-    Log.init();
+    LogStub.init();
     Log.enableFailQuick(false);
   }
   
   // Parer used for convenience:
   MCBasicTypesTestParser parser = new MCBasicTypesTestParser();
   // This is the TypeChecker under Test:
-  TypeCheck tc = new TypeCheck(new SynthesizeSymTypeFromMCBasicTypes(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build()),null);
+  TypeCheck tc = new TypeCheck(new SynthesizeSymTypeFromMCBasicTypes(),null);
   
   // ------------------------------------------------------  Tests for Function 1, 1b, 1c
   

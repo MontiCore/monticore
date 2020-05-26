@@ -8,7 +8,7 @@
   <parent>
     <groupId>de.monticore</groupId>
     <artifactId>experiments</artifactId>
-    <version>6.1.0-SNAPSHOT</version>
+    <version>6.2.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>extensionvariants</artifactId>
@@ -74,6 +74,10 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
+          <!-- Eclipse-Compiler doesn't work with target excludes -->
+          <compilerId>javac</compilerId>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
           <excludes>
             <exclude>eproblemoptinheritance/**/*.java</exclude>
             <exclude>eproblemstarinheritance/**/*.java</exclude>

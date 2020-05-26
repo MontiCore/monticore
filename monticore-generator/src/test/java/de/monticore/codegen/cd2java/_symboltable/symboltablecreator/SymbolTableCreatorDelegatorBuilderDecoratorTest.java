@@ -88,7 +88,7 @@ public class SymbolTableCreatorDelegatorBuilderDecoratorTest extends DecoratorTe
   @Test
   public void testConstructor() {
     ASTCDConstructor cdConstructor = builderClass.getCDConstructor(0);
-    assertDeepEquals(PROTECTED, cdConstructor.getModifier());
+    assertDeepEquals(PUBLIC, cdConstructor.getModifier());
     assertEquals("ASymbolTableCreatorDelegatorBuilder", cdConstructor.getName());
 
     assertTrue(cdConstructor.isEmptyCDParameters());

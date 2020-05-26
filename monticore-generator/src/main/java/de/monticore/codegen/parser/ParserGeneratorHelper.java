@@ -21,7 +21,7 @@ import de.monticore.grammar.grammar_withconcepts._ast.ASTJavaCode;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
 import de.monticore.javalight._ast.ASTClassMemberDeclaration;
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.statements.mccommonstatements._ast.ASTBlockStatement;
+import de.monticore.statements.mcstatementsbasis._ast.ASTMCBlockStatement;
 import de.se_rwth.commons.JavaNamesHelper;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
@@ -372,7 +372,7 @@ public class ParserGeneratorHelper {
 
     if (node instanceof ASTAction) {
       StringBuilder buffer = new StringBuilder();
-      for (ASTBlockStatement action : ((ASTAction) node).getBlockStatementList()) {
+      for (ASTMCBlockStatement action : ((ASTAction) node).getMCBlockStatementList()) {
         buffer.append(getPrettyPrinter().prettyprint(action));
       }
       return buffer.toString();

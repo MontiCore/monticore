@@ -10,6 +10,7 @@ import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
+import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
@@ -63,10 +64,11 @@ public class DelegatorVisitorDecoratorTest extends DecoratorTestCase {
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
 
     this.glex.setGlobalValue("service", new VisitorService(decoratedCompilationUnit));
-
+    VisitorService visitorService = new VisitorService(decoratedCompilationUnit);
+    SymbolTableService symbolTableService = new SymbolTableService(decoratedCompilationUnit);
 
     DelegatorVisitorDecorator decorator = new DelegatorVisitorDecorator(this.glex,
-        new VisitorService(decoratedCompilationUnit));
+        visitorService, symbolTableService);
     this.visitorClass = decorator.decorate(decoratedCompilationUnit);
   }
 
@@ -121,7 +123,7 @@ public class DelegatorVisitorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(37, visitorClass.sizeCDMethods());
+    assertEquals(69, visitorClass.sizeCDMethods());
   }
 
   @Test

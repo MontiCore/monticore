@@ -1,5 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
+import automata.AutomataMill;
 import automata._ast.*;
 import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.RecognitionException;

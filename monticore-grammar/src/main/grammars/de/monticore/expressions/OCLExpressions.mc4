@@ -2,20 +2,20 @@
 package de.monticore.expressions;
 
 /**
- * This grammar defines a expressions typical to UMLs OCL 
- * 
- * There are also other kinds of expressions defined in the 
- * grammars mentioned below. These expression definitions can savely 
- * (i.e. as conservative extensions) be composed if desired. 
+ * This grammar defines a expressions typical to UMLs OCL
+ *
+ * There are also other kinds of expressions defined in the
+ * grammars mentioned below. These expression definitions can savely
+ * (i.e. as conservative extensions) be composed if desired.
  * Especially common expressions should be added.
- * 
- * This grammar is part of a hierarchy of types, namely 
+ *
+ * This grammar is part of a hierarchy of expressions, namely
  * * expressions/ExpressionsBasis.mc4
- * * --  expressions/CommonExpressions.mc4      
+ * * --  expressions/CommonExpressions.mc4
  * * --  --  expressions/JavaClassExpressions.mc4
  * * --  --  expressions/SetExpressions.mc4
- * * --  expressions/AssignmentExpressions.mc4  
- * * --  expressions/BitExpressions.mc4         
+ * * --  expressions/AssignmentExpressions.mc4
+ * * --  expressions/BitExpressions.mc4
  * * --  expressions/OCLExpressions.mc4
  *
 */
@@ -148,7 +148,7 @@ component grammar OCLExpressions
     /** ASTInExpr defines a collection like "int x in y" or "Auction a" as
         shortform of "Auction a in Auction.allInstances").
     */
-    InExpr implements Expression <50> 
+    InExpr implements Expression <50>
         =   ExtType  varName:(Name || ",")+
         |   ExtType? varName:(Name || ",")+ ("in" Expression)
         ;

@@ -8,7 +8,7 @@ import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
+import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -107,12 +107,11 @@ public final class DecoratorAssert {
   public static void assertListOf(String name, ASTNode actual) {
     assertDeepEquals(CD_TYPE_FACADE.createListTypeOf(name), actual);
   }
-/* TODO Check
   public static void assertArrayOf(Class<?> clazz, ASTNode actual) {
     assertDeepEquals(CD_TYPE_FACADE.createArrayType(clazz, DEFAULT_ARRAY_DIMENSION), actual);
   }
 
   public static void assertArrayOf(String name, ASTNode actual) {
     assertDeepEquals(CD_TYPE_FACADE.createArrayType(name, DEFAULT_ARRAY_DIMENSION), actual);
-  }*/
+  }
 }

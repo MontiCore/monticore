@@ -50,7 +50,7 @@ public class CDReporting {
                           String subDirectory) {
     Path path = createDestinationFile(fileName, fileExtension, outputPath, subDirectory);
     String output = cdPrettyPrinterDelegator.prettyprint(ast);
-    new FileReaderWriter().storeInFile(path, output);
+    FileReaderWriter.storeInFile(path, output);
   }
 
   private Path createDestinationFile(String fileName, String fileExtension,

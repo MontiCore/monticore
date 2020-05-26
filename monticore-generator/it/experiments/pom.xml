@@ -8,7 +8,7 @@
   <parent>
     <groupId>de.monticore</groupId>
     <artifactId>monticore</artifactId>
-    <version>6.1.0-SNAPSHOT</version>
+    <version>6.2.0-SNAPSHOT</version>
     <relativePath>../../../pom.xml</relativePath>
   </parent>
 
@@ -36,10 +36,14 @@
     <module>questionnaire</module>
     <module>S01.intro</module>
     <module>scannerless</module>
+	<module>scopes</module>
     <module>spaceOnOff-negative</module>
     <module>spacesOffWithPositionCheck</module>
     <module>symbols</module>
     <module>visit.L.inherit</module>
+    <module>stcomposition01</module>
+    <module>stcomposition02</module>
+    <module>stcomposition03</module>
   </modules>
 
   <build>

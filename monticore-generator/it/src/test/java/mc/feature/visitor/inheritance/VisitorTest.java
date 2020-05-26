@@ -4,16 +4,16 @@ package mc.feature.visitor.inheritance;
 
 import static org.junit.Assert.assertEquals;
 
+import mc.feature.visitor.inheritance.a.AMill;
+import mc.feature.visitor.inheritance.b.BMill;
+import mc.feature.visitor.inheritance.c.CMill;
 import org.junit.Test;
 
 import de.monticore.ast.ASTNode;
 import mc.GeneratorIntegrationsTest;
-import mc.feature.visitor.inheritance.a._ast.AMill;
 import mc.feature.visitor.inheritance.a._ast.ASTXA;
 import mc.feature.visitor.inheritance.b._ast.ASTXB;
-import mc.feature.visitor.inheritance.b._ast.BMill;
 import mc.feature.visitor.inheritance.c._ast.ASTXC;
-import mc.feature.visitor.inheritance.c._ast.CMill;
 import mc.feature.visitor.inheritance.c._visitor.CInheritanceVisitor;
 import mc.feature.visitor.inheritance.c._visitor.CVisitor;
 

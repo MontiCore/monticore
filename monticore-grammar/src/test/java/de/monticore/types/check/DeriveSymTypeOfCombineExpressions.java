@@ -1,21 +1,17 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
-import com.google.common.collect.Lists;
 import de.monticore.expressions.combineexpressionswithliterals._ast.ASTExtReturnType;
 import de.monticore.expressions.combineexpressionswithliterals._ast.ASTExtType;
 import de.monticore.expressions.combineexpressionswithliterals._ast.ASTExtTypeArgument;
 import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsVisitor;
-import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
 
-import java.util.List;
 import java.util.Optional;
 
-public class DeriveSymTypeOfCombineExpressions implements CombineExpressionsWithLiteralsVisitor {
+public class DeriveSymTypeOfCombineExpressions extends DeriveSymTypeOfExpression implements CombineExpressionsWithLiteralsVisitor {
 
   private CombineExpressionsWithLiteralsVisitor realThis;
   private SynthesizeSymTypeFromMCBasicTypes synthesizer;
-  private LastResult lastResult;
 
   @Override
   public void setRealThis(CombineExpressionsWithLiteralsVisitor realThis) {
@@ -29,7 +25,6 @@ public class DeriveSymTypeOfCombineExpressions implements CombineExpressionsWith
 
   public DeriveSymTypeOfCombineExpressions(SynthesizeSymTypeFromMCBasicTypes synthesizer){
     this.realThis=this;
-    this.lastResult = new LastResult();
     this.synthesizer = synthesizer;
   }
 
@@ -42,10 +37,10 @@ public class DeriveSymTypeOfCombineExpressions implements CombineExpressionsWith
       wholeResult=result.get();
     }
     if(wholeResult!=null){
-      lastResult.setLast(wholeResult);
-      lastResult.setType();
+      typeCheckResult.setLast(wholeResult);
+      typeCheckResult.setType();
     }else{
-      lastResult.reset();
+      typeCheckResult.reset();
     }
   }
 
@@ -61,10 +56,10 @@ public class DeriveSymTypeOfCombineExpressions implements CombineExpressionsWith
       }
     }
     if(wholeResult!=null){
-      lastResult.setLast(wholeResult);
-      lastResult.setType();
+      typeCheckResult.setLast(wholeResult);
+      typeCheckResult.setType();
     }else{
-      lastResult.reset();
+      typeCheckResult.reset();
     }
   }
 
@@ -78,18 +73,11 @@ public class DeriveSymTypeOfCombineExpressions implements CombineExpressionsWith
       }
     }
     if(wholeResult!=null){
-      lastResult.setLast(wholeResult);
-      lastResult.setType();
+      typeCheckResult.setLast(wholeResult);
+      typeCheckResult.setType();
     }else{
-      lastResult.reset();
+      typeCheckResult.reset();
     }
   }
 
-  public void setLastResult(LastResult lastResult) {
-    this.lastResult = lastResult;
-  }
-
-  public LastResult getLastResult() {
-    return lastResult;
-  }
 }

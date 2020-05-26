@@ -1,0 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package mc.feature.interfaces;
+
+grammar InterfaceExtensionRecursive extends mc.feature.interfaces.Sup {
+
+  interface I;
+
+  interface E extends I;
+
+  interface C extends E;
+
+}

@@ -10,22 +10,23 @@ package de.monticore.statements;
  * many languages that use statements, synchronization is done in
  * different forms and sucgh this statement isn't needed.
  *
- *
  * This grammar is part of a hierarchy of statements, namely
  * * statements/MCStatementsBasis.mc4
  * * -- statements/MCAssertStatements.mc4
- * * -- statements/MCCommonStatements.mc4
- * * -- -- statements/MCExceptionStatements.mc4
- * * -- -- statements/MCSynchronizedStatements.mc4
+ * * -- statements/MCVarDeclarationStatements.mc4
+ * * -- -- statements/MCCommonStatements.mc4
+ * * -- -- -- statements/MCExceptionStatements.mc4
+ * * -- -- -- statements/MCSynchronizedStatements.mc4
  * * -- statements/MCLowLevelStatements.mc4
  * * -- statements/MCReturnStatements.mc4
  *
- * and the composition of all statement grammmars to full Java:
+ * and the composition of all statement grammars to full Java:
  * * -- -- statements/MCFullJavaStatements.mc4
  *
 */
 
-component grammar MCSynchronizedStatements extends de.monticore.statements.MCCommonStatements {
+component grammar MCSynchronizedStatements 
+          extends de.monticore.statements.MCCommonStatements {
 
 SynchronizedStatement implements MCStatement
     =   "synchronized" "(" Expression ")" MCJavaBlock

@@ -1,15 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.typescalculator;
 
-import de.monticore.ast.ASTNode;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.types.check.*;
+import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
 import mc.typescalculator.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsDelegatorVisitor;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpressionsWithLiteralsDelegatorVisitor implements ITypesCalculator {
@@ -28,49 +25,45 @@ public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpres
 
   private DeriveSymTypeOfMCCommonLiterals commonLiteralsTypesCalculator;
 
-  private LastResult lastResult = new LastResult();
+  private TypeCheckResult typeCheckResult = new TypeCheckResult();
 
 
-  public CombineExpressionsWithLiteralsTypesCalculator(IExpressionsBasisScope scope){
+  public CombineExpressionsWithLiteralsTypesCalculator(){
     this.realThis=this;
     commonExpressionTypesCalculator = new DeriveSymTypeOfCommonExpressions();
-    commonExpressionTypesCalculator.setScope(scope);
-    commonExpressionTypesCalculator.setLastResult(lastResult);
+    commonExpressionTypesCalculator.setTypeCheckResult(typeCheckResult);
     setCommonExpressionsVisitor(commonExpressionTypesCalculator);
 
     deriveSymTypeOfBitExpressions = new DeriveSymTypeOfBitExpressions();
-    deriveSymTypeOfBitExpressions.setScope(scope);
     setBitExpressionsVisitor(deriveSymTypeOfBitExpressions);
 
     assignmentExpressionTypesCalculator = new DeriveSymTypeOfAssignmentExpressions();
-    assignmentExpressionTypesCalculator.setScope(scope);
-    assignmentExpressionTypesCalculator.setLastResult(lastResult);
+    assignmentExpressionTypesCalculator.setTypeCheckResult(typeCheckResult);
     setAssignmentExpressionsVisitor(assignmentExpressionTypesCalculator);
 
     expressionsBasisTypesCalculator = new DeriveSymTypeOfExpression();
-    expressionsBasisTypesCalculator.setScope(scope);
-    expressionsBasisTypesCalculator.setLastResult(lastResult);
+    expressionsBasisTypesCalculator.setTypeCheckResult(typeCheckResult);
     setExpressionsBasisVisitor(expressionsBasisTypesCalculator);
   
     DeriveSymTypeOfLiterals deriveSymTypeOfLiterals = new DeriveSymTypeOfLiterals();
-    deriveSymTypeOfLiterals.setResult(lastResult);
+    deriveSymTypeOfLiterals.setResult(typeCheckResult);
     setMCLiteralsBasisVisitor(deriveSymTypeOfLiterals);
     this.deriveSymTypeOfLiterals = deriveSymTypeOfLiterals;
 
     commonLiteralsTypesCalculator = new DeriveSymTypeOfMCCommonLiterals();
-    commonExpressionTypesCalculator.setLastResult(lastResult);
+    commonExpressionTypesCalculator.setTypeCheckResult(typeCheckResult);
     setMCCommonLiteralsVisitor(commonLiteralsTypesCalculator);
 
-    setLastResult(lastResult);
+    setTypeCheckResult(typeCheckResult);
   }
 
   public Optional<SymTypeExpression> calculateType(ASTExpression e){
     e.accept(realThis);
     Optional<SymTypeExpression> last = Optional.empty();
-    if (lastResult.isPresentLast()) {
-      last = Optional.ofNullable(lastResult.getLast());
+    if (typeCheckResult.isPresentLast()) {
+      last = Optional.ofNullable(typeCheckResult.getLast());
     }
-    lastResult.reset();
+    typeCheckResult.reset();
     return last;
   }
 
@@ -78,10 +71,10 @@ public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpres
   public Optional<SymTypeExpression> calculateType(ASTLiteral lit) {
     lit.accept(realThis);
     Optional<SymTypeExpression> last = Optional.empty();
-    if (lastResult.isPresentLast()) {
-      last = Optional.ofNullable(lastResult.getLast());
+    if (typeCheckResult.isPresentLast()) {
+      last = Optional.ofNullable(typeCheckResult.getLast());
     }
-    lastResult.reset();
+    typeCheckResult.reset();
     return last;
   }
 
@@ -93,7 +86,7 @@ public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpres
     commonExpressionTypesCalculator = new DeriveSymTypeOfCommonExpressions();
     assignmentExpressionTypesCalculator = new DeriveSymTypeOfAssignmentExpressions();
     expressionsBasisTypesCalculator = new DeriveSymTypeOfExpression();
-    setLastResult(lastResult);
+    setTypeCheckResult(typeCheckResult);
   }
 
   @Override
@@ -101,27 +94,14 @@ public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpres
     return realThis;
   }
 
-  public void setScope(IExpressionsBasisScope scope){
-    assignmentExpressionTypesCalculator.setScope(scope);
-    expressionsBasisTypesCalculator.setScope(scope);
-    commonExpressionTypesCalculator.setScope(scope);
-    deriveSymTypeOfBitExpressions.setScope(scope);
-  }
 
-  public void setLastResult(LastResult lastResult){
-    this.lastResult = lastResult;
-    assignmentExpressionTypesCalculator.setLastResult(lastResult);
-    commonExpressionTypesCalculator.setLastResult(lastResult);
-    deriveSymTypeOfBitExpressions.setLastResult(lastResult);
-    expressionsBasisTypesCalculator.setLastResult(lastResult);
-    deriveSymTypeOfLiterals.setResult(lastResult);
-    commonLiteralsTypesCalculator.setResult(lastResult);
-  }
-
-  public void setPrettyPrinter(IDerivePrettyPrinter prettyPrinter){
-    assignmentExpressionTypesCalculator.setPrettyPrinter(prettyPrinter);
-    commonExpressionTypesCalculator.setPrettyPrinter(prettyPrinter);
-    deriveSymTypeOfBitExpressions.setPrettyPrinter(prettyPrinter);
-    expressionsBasisTypesCalculator.setPrettyPrinter(prettyPrinter);
+  public void setTypeCheckResult(TypeCheckResult typeCheckResult){
+    this.typeCheckResult = typeCheckResult;
+    assignmentExpressionTypesCalculator.setTypeCheckResult(typeCheckResult);
+    commonExpressionTypesCalculator.setTypeCheckResult(typeCheckResult);
+    deriveSymTypeOfBitExpressions.setTypeCheckResult(typeCheckResult);
+    expressionsBasisTypesCalculator.setTypeCheckResult(typeCheckResult);
+    deriveSymTypeOfLiterals.setResult(typeCheckResult);
+    commonLiteralsTypesCalculator.setResult(typeCheckResult);
   }
 }

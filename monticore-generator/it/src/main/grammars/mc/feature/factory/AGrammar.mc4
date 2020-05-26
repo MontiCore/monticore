@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.feature.factory;
+
+grammar AGrammar extends mc.grammar.lexicals.ItTestLexicals{
+
+  Foo = "foo" Name;
+
+  Bar = "bar" Foo bar:Name;
+
+}

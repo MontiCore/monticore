@@ -86,10 +86,7 @@ for (astGrammar in getParsedGrammars()) {
 
   decoratedSymbolTableCd = decorateForSymbolTablePackage(glex, cdScope, astClassDiagram, symbolClassDiagramm, scopeClassDiagramm, handcodedPath)
   generateFromCD(glex, astClassDiagram, decoratedSymbolTableCd, out, handcodedPath)
-
-  decoratedSerializationCd = decorateForSerializationPackage(glex, cdScope, astClassDiagram, symbolClassDiagramm, scopeClassDiagramm, handcodedPath)
-  generateFromCD(glex, astClassDiagram, decoratedSerializationCd, out, handcodedPath)
-
+  
   // M9 Generate ast classes, visitor and context condition
   decoratedVisitorCD = decorateForVisitorPackage(glex, cdScope, astClassDiagram, handcodedPath)
   generateEmfFromCD(glex, astClassDiagram, decoratedVisitorCD, out, handcodedPath)
@@ -104,6 +101,10 @@ for (astGrammar in getParsedGrammars()) {
   // M7: decorate Class Diagram AST
   decoratedASTClassDiagramm = decorateEmfForASTPackage(glex, cdScope, astClassDiagram, handcodedPath)
   generateEmfFromCD(glex, astClassDiagram, decoratedASTClassDiagramm, out, handcodedPath)
+
+  // decorate and generate CD for the mills
+  decoratedMillCD = decorateMill(glex, cdScope,astClassDiagram, decoratedASTClassDiagramm,decoratedVisitorCD, decoratedSymbolTableCd, handcodedPath)
+  generateFromCD(glex, astClassDiagram, decoratedMillCD, out, handcodedPath)
 
   Log.info("Grammar " + astGrammar.getName() + " processed successfully!", LOG_ID)
 

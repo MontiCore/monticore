@@ -29,7 +29,7 @@ public class Automata16Tool {
 
     // Retrieve the model name
     if (args.length != 1) {
-      Log.error("Please specify only one single path to the input model.");
+      Log.error("0xEE752 Please specify only one single path to the input model.");
       return;
     }
     Log.info("Automaton16 DSL Tool", Automata16Tool.class.getName());
@@ -61,10 +61,10 @@ public class Automata16Tool {
       if (!parser.hasErrors() && optAutomaton.isPresent()) {
         return optAutomaton.get();
       }
-      Log.error("Model could not be parsed.");
+      Log.error("0xEE852 Model could not be parsed.");
     }
     catch (RecognitionException | IOException e) {
-      Log.error("Failed to parse " + model, e);
+      Log.error("0xEE652 Failed to parse " + model, e);
     }
     System.exit(1);
     return null;

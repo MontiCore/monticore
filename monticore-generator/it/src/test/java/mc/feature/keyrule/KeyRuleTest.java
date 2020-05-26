@@ -7,6 +7,7 @@ import mc.feature.aststring.aststring._ast.ASTStart;
 import mc.feature.aststring.aststring._parser.AststringParser;
 import mc.feature.keyrule.keyrule._ast.ASTA;
 import mc.feature.keyrule.keyrule._ast.ASTB;
+import mc.feature.keyrule.keyrule._ast.ASTJ;
 import mc.feature.keyrule.keyrule._parser.KeyRuleParser;
 import org.junit.Test;
 
@@ -37,6 +38,11 @@ public class KeyRuleTest extends GeneratorIntegrationsTest {
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
     assertEquals("bla2", ast.get().getBla());
+    Optional<ASTJ> astj = parser.parse_StringJ("blaj");
+    assertFalse(parser.hasErrors());
+    assertTrue(astj.isPresent());
+    astj = parser.parse_StringJ("blax");
+    assertTrue(parser.hasErrors());
   }
   
 }

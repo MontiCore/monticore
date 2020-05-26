@@ -38,12 +38,10 @@ public class SubrulesUseInterfaceNTsTest extends CocoTest {
         String.format(MESSAGE, "D", "e", "A"), checker);
   }
 
-  // TODO MB: Was macht man mit Terminals ohne UsageName? Diese müssen über den AST verglichen werden
-  @Ignore
   @Test
   public void TestInvalid4() {
     testInvalidGrammar(grammar + "d", SubrulesUseInterfaceNTs.ERROR_CODE,
-      String.format(MESSAGE, "B", "Foo", "A"), checker);
+      String.format(MESSAGE, "B", "foo", "A"), checker);
   }
 
   @Test

@@ -4,7 +4,7 @@ package mc.examples.coord.transform;
 
 import mc.examples.cartesian.coordcartesian._ast.ASTCoordinateFile;
 import mc.examples.cartesian.coordcartesian._visitor.CoordcartesianVisitor;
-import mc.examples.polar.coordpolar._ast.CoordpolarMill;
+import mc.examples.polar.coordpolar.CoordpolarMill;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
