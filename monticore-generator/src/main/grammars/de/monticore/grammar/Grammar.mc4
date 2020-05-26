@@ -423,7 +423,8 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
     plusKeywords:["&"]? iteration:["?"|"*"|"+"]?;
 
 
-  interface ITerminal;
+  interface ITerminal =
+    usageName:Name?;
 
   astrule ITerminal =
       Name;
@@ -444,6 +445,14 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
     KeyConstant
     iteration:["?"|"*"|"+"]?;
 
+  TokenTerminal implements RuleComponent, ITerminal =
+    (usageName:Name&  ":")?
+    TokenConstant
+    iteration:["?"|"*"|"+"]?;
+
+  TokenConstant =
+    "token" "(" String ")";
+
   KeyConstant =
     "key" "(" (String || "|")+ ")";
 
@@ -451,7 +460,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
     Constants are constant string but lead to an attribute
   */
   Constant implements ITerminal =
-    (humanName:Name& ":")? (String | KeyConstant) ;
+    (usageName:Name& ":")? (String | KeyConstant | TokenConstant) ;
 
   /**
     Constants are sth like keywords which one needs to know that they

@@ -173,6 +173,34 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
   }
 
   @Override
+  public void visit(ASTTokenTerminal node) {
+    // only create a symbol for ASTKeyTerminals that have a usage name
+    // only with usage name is shown in AST
+    if(node.isPresentUsageName()){
+      super.visit(node);
+    } else {
+      // must still add the scope to the ASTKeyTerminal, even if it defines no symbol
+      if (getCurrentScope().isPresent()) {
+        node.setEnclosingScope(getCurrentScope().get());
+      } else {
+        Log.error(String.format(SET_SCOPE_ERROR, node));
+      }
+    }
+  }
+
+  @Override
+  protected RuleComponentSymbol create_TokenTerminal(ASTTokenTerminal ast) {
+    final String symbolName = ast.isPresentUsageName()?ast.getUsageName():"";
+    return new RuleComponentSymbol(symbolName);
+  }
+
+  @Override
+  public void initialize_TokenTerminal(RuleComponentSymbol prodComponent, ASTTokenTerminal ast) {
+    prodComponent.setIsTerminal(true);
+    setComponentMultiplicity(prodComponent, ast);
+  }
+
+  @Override
   protected RuleComponentSymbol create_NonTerminal(ASTNonTerminal ast) {
     final String symbolName = ast.isPresentUsageName() ? ast.getUsageName() : StringTransformations.uncapitalize(ast.getName());
     return new RuleComponentSymbol(symbolName);
@@ -249,8 +277,8 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
   protected void initialize_ConstantGroup(RuleComponentSymbol symbol, ASTConstantGroup ast) {
     symbol.setIsConstantGroup(true);
     for (ASTConstant c : ast.getConstantList()) {
-      if (c.isPresentHumanName()) {
-        symbol.addSubProd(c.getHumanName());
+      if (c.isPresentUsageName()) {
+        symbol.addSubProd(c.getUsageName());
       } else if (c.isPresentKeyConstant()) {
         symbol.addSubProd(c.getKeyConstant().getString(0));
       } else {

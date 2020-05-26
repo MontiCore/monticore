@@ -194,7 +194,7 @@ public class HelperGrammar {
   }
 
   public static boolean hasValidName(ASTConstant astConstant) {
-    if (astConstant.isPresentHumanName()) {
+    if (astConstant.isPresentUsageName()) {
       return true;
     }
     String constName = astConstant.getName();
@@ -226,8 +226,8 @@ public class HelperGrammar {
   public static String getAttributeNameForConstant(ASTConstant astConstant) {
     String name;
 
-    if (astConstant.isPresentHumanName()) {
-      name = astConstant.getHumanName();
+    if (astConstant.isPresentUsageName()) {
+      name = astConstant.getUsageName();
     } else {
       String constName = astConstant.getName();
       if (matchesJavaIdentifier(constName)) {

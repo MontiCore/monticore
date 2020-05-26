@@ -23,8 +23,8 @@ public class EnumTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCDCo
         .getLinks(ASTEnumProd.class, ASTCDEnum.class)) {
       for (ASTConstant constant : link.source().getConstantList()) {
         String name;
-        if (constant.isPresentHumanName()) {
-          name = constant.getHumanName();
+        if (constant.isPresentUsageName()) {
+          name = constant.getUsageName();
         } else {
            name = constant.getName();
         }

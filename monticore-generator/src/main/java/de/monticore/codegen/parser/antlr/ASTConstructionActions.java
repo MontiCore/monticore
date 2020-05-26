@@ -216,8 +216,8 @@ public class ASTConstructionActions {
   public String getActionForTerminalIgnore(ASTTerminal a) {
     return "";
   }
-  
-  public String getActionForTerminalNotIteratedAttribute(ASTTerminal a) {
+
+  public String getActionForTerminalNotIteratedAttribute(ASTITerminal a) {
 
     String tmp = "_aNode.set%u_usage%(\"%text%\");";
 
@@ -232,22 +232,7 @@ public class ASTConstructionActions {
 
   }
 
-  public String getActionForKeyTerminalNotIteratedAttribute(ASTKeyTerminal a) {
-
-    String tmp = "_aNode.set%u_usage%(%text%);";
-
-    if (!a.isPresentUsageName()) {
-      return "";
-    }
-    // Replace templates
-    tmp = tmp.replaceAll("%u_usage%", StringTransformations.capitalize(a.getUsageName()));
-    tmp = tmp.replaceAll("%text%", "_input.LT(-1).getText()");
-
-    return tmp;
-
-  }
-
-  public String getActionForTerminalIteratedAttribute(ASTTerminal a) {
+  public String getActionForTerminalIteratedAttribute(ASTITerminal a) {
 
     if (!a.isPresentUsageName()) {
       return "";
@@ -263,20 +248,28 @@ public class ASTConstructionActions {
     return tmp;
   }
 
+  public String getActionForKeyTerminalNotIteratedAttribute(ASTKeyTerminal a) {
+
+    String tmp = "_aNode.set%u_usage%(_input.LT(-1).getText());";
+
+    if (!a.isPresentUsageName()) {
+      return "";
+    }
+    // Replace templates
+    return tmp.replaceAll("%u_usage%", StringTransformations.capitalize(a.getUsageName()));
+   }
+
   public String getActionForKeyTerminalIteratedAttribute(ASTKeyTerminal a) {
 
     if (!a.isPresentUsageName()) {
       return "";
     }
 
-    String tmp = "_aNode.get%u_usage%().add(%text%);";
+    String tmp = "_aNode.get%u_usage%().add(_input.LT(-1).getText());";
 
     // Replace templates
     String usageName = StringTransformations.capitalize(a.getUsageName());
-    tmp = tmp.replaceAll("%u_usage%", StringTransformations.capitalize(usageName + DecorationHelper.GET_SUFFIX_LIST));
-    tmp = tmp.replaceAll("%text%", "_input.LT(-1).getText()");
-
-    return tmp;
+    return tmp.replaceAll("%u_usage%", StringTransformations.capitalize(usageName + DecorationHelper.GET_SUFFIX_LIST));
   }
 
 }
