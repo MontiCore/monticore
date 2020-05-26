@@ -10,13 +10,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Iterables;
@@ -91,10 +85,24 @@ public final class ModelPath {
 
     List<URL> resolvedURLS = classloaderMap.keySet().stream()
         .map(classloader -> FileReaderWriter.getResource(classloader, fixedPath))
-        .filter(opturl -> opturl.isPresent())
-        .map(url -> url.get())
-        .distinct()
+        .filter(Optional::isPresent)
+        .map(Optional::get)
         .collect(Collectors.toList());
+
+    if(1 < resolvedURLS.size()) {
+      List<URL> resolvedURLSfinal = resolvedURLS;
+      Set<URL> duplicateURLs = resolvedURLS.stream()
+              .filter(i -> Collections.frequency(resolvedURLSfinal, i) >1)
+              .collect(Collectors.toSet());
+      if(1 < duplicateURLs.size()) {
+        duplicateURLs.forEach(duplicateURL ->{
+          Log.warn("0xA1293 Multiple duplicate matching entries where located in the modelpath for the model "
+            + fixedPath + "\n" + duplicateURL.toString());
+        });
+      }
+    }
+
+    resolvedURLS = resolvedURLS.stream().distinct().collect(Collectors.toList());
 
     if (1 < resolvedURLS.size()) {
       StringBuilder ambiguitiyArray = new StringBuilder("{");
