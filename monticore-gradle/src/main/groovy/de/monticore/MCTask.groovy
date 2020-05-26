@@ -217,7 +217,7 @@ public class MCTask extends DefaultTask {
     params.addAll(handcodedPath)
     params.add("-fp")
     params.addAll(templatePath)
-    if (script != null || !script.isEmpty()) {
+    if (script != null) {
       params.add("-s")
       params.add(script)
     }
