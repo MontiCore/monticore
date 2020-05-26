@@ -25,7 +25,7 @@ grammar might help:
                                    MCBasicTypes, SetExpressions, MCCommonLiterals {     
       start Automaton;
     
-      // @Override
+      // overriding a nonterminal (to add optional conditions):
       Transition = from:Name@State ":" Expression? "->" to:Name@State;
 
       // add new variants of expressions

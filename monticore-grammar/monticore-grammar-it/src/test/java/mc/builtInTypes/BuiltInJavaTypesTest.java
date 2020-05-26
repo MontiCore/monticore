@@ -9,6 +9,7 @@ import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
@@ -365,15 +366,19 @@ public class BuiltInJavaTypesTest {
 
     //test some methods
     ITypeSymbolsScope setSpannedScope = setsymtype.get().getSpannedScope();
-    Optional<MethodSymbol> add = setSpannedScope.resolveMethod("add");
-    Optional<MethodSymbol> hashCode = setSpannedScope.resolveMethod("hashCode");
+    //add is a method of the set type and a method of its super type collection
+    List<MethodSymbol> addMethods = setSpannedScope.resolveMethodMany("add");
+    //hashCode is a method of the set type and a method of its transitive super type object
+    List<MethodSymbol> hashCodeMethods = setSpannedScope.resolveMethodMany("hashCode");
 
-    assertTrue(add.isPresent());
-    assertTrue(hashCode.isPresent());
+    assertEquals(2, addMethods.size());
+    assertEquals(2, hashCodeMethods.size());
 
     //test for one method
-    assertEquals("int",hashCode.get().getReturnType().print());
-    assertTrue(hashCode.get().getParameterList().isEmpty());
+    for(MethodSymbol hashCode: hashCodeMethods) {
+      assertEquals("int", hashCode.getReturnType().print());
+      assertTrue(hashCode.getParameterList().isEmpty());
+    }
   }
 
   @Test
@@ -495,9 +500,9 @@ public class BuiltInJavaTypesTest {
 
     ITypeSymbolsScope stringSpannedScope = stringType.get().getSpannedScope();
 
-    //test if some methods are present
-    Optional<MethodSymbol> equals = stringSpannedScope.resolveMethod("equals");
-    Optional<MethodSymbol> hashCode = stringSpannedScope.resolveMethod("hashCode");
+    //test if some methods are present, some are methods from object
+    List<MethodSymbol> equalsMethods = stringSpannedScope.resolveMethodMany("equals");
+    List<MethodSymbol> hashCodeMethods = stringSpannedScope.resolveMethodMany("hashCode");
     Optional<MethodSymbol> length = stringSpannedScope.resolveMethod("length");
     Optional<MethodSymbol> isEmpty = stringSpannedScope.resolveMethod("isEmpty");
     Optional<MethodSymbol> charAt = stringSpannedScope.resolveMethod("charAt");
@@ -514,8 +519,8 @@ public class BuiltInJavaTypesTest {
     Optional<MethodSymbol> valueOf = stringSpannedScope.resolveMethod("valueOf");
     Optional<MethodSymbol> matches = stringSpannedScope.resolveMethod("matches");
 
-    assertTrue(equals.isPresent());
-    assertTrue(hashCode.isPresent());
+    assertEquals(2, equalsMethods.size());
+    assertEquals(2, hashCodeMethods.size());
     assertTrue(length.isPresent());
     assertTrue(isEmpty.isPresent());
     assertTrue(charAt.isPresent());

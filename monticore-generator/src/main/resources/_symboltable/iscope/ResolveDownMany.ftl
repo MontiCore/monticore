@@ -1,30 +1,32 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("simpleName", "symbolFullName", "scopeInterface")}
-  if (!is${simpleName}SymbolsAlreadyResolved()) {
-    set${simpleName}SymbolsAlreadyResolved(true);
-  } else {
+  // skip resolution of the symbol, if the symbol has already been resolved in this scope instance
+  // during the current execution of the resolution algorithm
+  if (is${simpleName}SymbolsAlreadyResolved()) {
     return new ArrayList<>();
   }
 
-  // 1. Conduct search locally in the current scope
-  final List<${symbolFullName}> resolved = this.resolve${simpleName}LocallyMany(foundSymbols, name, modifier, predicate);
-
-  foundSymbols = foundSymbols | resolved.size() > 0;
+  // (1) resolve symbol locally. During this, the 'already resolved' flag is set to true,
+  // to prevent resolving cycles caused by cyclic symbol adapters
+  set${simpleName}SymbolsAlreadyResolved(true);
+  final List<${symbolFullName}> resolvedSymbols = this.resolve${simpleName}LocallyMany(foundSymbols, name, modifier, predicate);
+  foundSymbols = foundSymbols | resolvedSymbols.size() > 0;
+  set${simpleName}SymbolsAlreadyResolved(false);
 
   final String resolveCall = "resolveDownMany(\"" + name + "\", \"" + "${simpleName}Symbol"
     + "\") in scope \"" + (isPresentName() ? getName() : "") + "\"";
-  Log.trace("START " + resolveCall + ". Found #" + resolved.size() + " (local)", "");
+  Log.trace("START " + resolveCall + ". Found #" + resolvedSymbols.size() + " (local)", "");
   // If no matching symbols have been found...
-  if (resolved.isEmpty()) {
-    // 2. Continue search in sub scopes and ...
+  if (resolvedSymbols.isEmpty()) {
+    // (2) Continue search in sub scopes and ...
     for (${scopeInterface} subScope : getSubScopes()) {
       final List<${symbolFullName}> resolvedFromSub = subScope
         .continueAs${simpleName}SubScope(foundSymbols, name, modifier, predicate);
-      foundSymbols = foundSymbols | resolved.size() > 0;
-      // 3. unify results
-      resolved.addAll(resolvedFromSub);
+      foundSymbols = foundSymbols | resolvedFromSub.size() > 0;
+      // (3) unify results
+      resolvedSymbols.addAll(resolvedFromSub);
     }
   }
-  Log.trace("END " + resolveCall + ". Found #" + resolved.size(), "");
+  Log.trace("END " + resolveCall + ". Found #" + resolvedSymbols.size(), "");
   set${simpleName}SymbolsAlreadyResolved(false);
-  return resolved;
+  return resolvedSymbols;

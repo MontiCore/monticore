@@ -1,9 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.typescalculator;
 
-import de.monticore.expressions.expressionsbasis.ExpressionsBasisMill;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.types.check.*;
 import mc.typescalculator.myownlanguage._visitor.MyOwnLanguageDelegatorVisitor;
@@ -16,15 +14,7 @@ public class DeriveSymTypeOfMyOwnLanguage
 
   private MyOwnLanguageDelegatorVisitor realThis;
 
-  private DeriveSymTypeOfMyOwnExpressionGrammar deriveSymTypeOfMyOwnExpressionGrammar;
-
-  private DeriveSymTypeOfCommonExpressions deriveSymTypeOfCommonExpressions;
-
-  private DeriveSymTypeOfExpression deriveSymTypeOfExpression;
-
-  private DeriveSymTypeOfMCCommonLiterals deriveSymTypeOfMCCommonLiterals;
-
-  private LastResult lastResult = new LastResult();
+  private TypeCheckResult typeCheckResult = new TypeCheckResult();
 
   public DeriveSymTypeOfMyOwnLanguage(){
     this.realThis = this;
@@ -34,32 +24,29 @@ public class DeriveSymTypeOfMyOwnLanguage
   @Override
   public Optional<SymTypeExpression> calculateType(ASTExpression ex) {
     ex.accept(realThis);
-    return Optional.of(lastResult.getLast());
+    return Optional.of(typeCheckResult.getLast());
   }
 
   @Override
   public Optional<SymTypeExpression> calculateType(ASTLiteral lit) {
     lit.accept(realThis);
-    return Optional.of(lastResult.getLast());
+    return Optional.of(typeCheckResult.getLast());
   }
 
   @Override
   public void init() {
-    lastResult = new LastResult();
-    ExpressionsBasisScope scope = ExpressionsBasisMill.expressionsBasisScopeBuilder().build();
-    deriveSymTypeOfCommonExpressions = new DeriveSymTypeOfCommonExpressions();
-    deriveSymTypeOfCommonExpressions.setLastResult(lastResult);
-    deriveSymTypeOfCommonExpressions.setScope(scope);
-    setCommonExpressionsVisitor(deriveSymTypeOfCommonExpressions);
-    deriveSymTypeOfExpression = new DeriveSymTypeOfExpression();
-    deriveSymTypeOfExpression.setLastResult(lastResult);
-    deriveSymTypeOfExpression.setScope(scope);
-    setExpressionsBasisVisitor(deriveSymTypeOfExpression);
-    deriveSymTypeOfMyOwnExpressionGrammar = new DeriveSymTypeOfMyOwnExpressionGrammar();
-    deriveSymTypeOfMyOwnExpressionGrammar.setLastResult(lastResult);
-    setMyOwnExpressionGrammarVisitor(deriveSymTypeOfMyOwnExpressionGrammar);
-    deriveSymTypeOfMCCommonLiterals = new DeriveSymTypeOfMCCommonLiterals();
-    deriveSymTypeOfMCCommonLiterals.setResult(lastResult);
-    setMCCommonLiteralsVisitor(deriveSymTypeOfMCCommonLiterals);
+    typeCheckResult = new TypeCheckResult();
+    DeriveSymTypeOfCommonExpressions ce = new DeriveSymTypeOfCommonExpressions();
+    ce.setTypeCheckResult(typeCheckResult);
+    setCommonExpressionsVisitor(ce);
+    DeriveSymTypeOfExpression eb = new DeriveSymTypeOfExpression();
+    eb.setTypeCheckResult(typeCheckResult);
+    setExpressionsBasisVisitor(eb);
+    DeriveSymTypeOfMyOwnExpressionGrammar moeg = new DeriveSymTypeOfMyOwnExpressionGrammar();
+    moeg.setTypeCheckResult(typeCheckResult);
+    setMyOwnExpressionGrammarVisitor(moeg);
+    DeriveSymTypeOfMCCommonLiterals cl = new DeriveSymTypeOfMCCommonLiterals();
+    cl.setResult(typeCheckResult);
+    setMCCommonLiteralsVisitor(cl);
   }
 }
