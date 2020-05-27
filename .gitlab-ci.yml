@@ -51,6 +51,8 @@ build_branches:
   stage: build
   script:
     - "mvn $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS install"
+    - cd monticore-gradle
+    - "./gradlew build $GRADLE_OPTS"
     - "cd monticore-generator/it/experiments"
     - "./gradlew build $GRADLE_OPTS"
     - "cd ../../../monticore-grammar/monticore-grammar-it"
