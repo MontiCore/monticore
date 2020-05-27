@@ -59,7 +59,7 @@ public class MCTask extends DefaultTask {
 
   List<String> includeConfigs = []
 
-  File script
+  String script
 
   boolean help = false
 
@@ -117,9 +117,9 @@ public class MCTask extends DefaultTask {
     return grammarConfigFiles
   }
 
-  @InputFile
+  @Input
   @Optional
-  File getScript() {
+  String getScript() {
     return script
   }
 
@@ -275,6 +275,13 @@ public class MCTask extends DefaultTask {
       return false
     }
     return true
+  }
+
+  protected File fromBasePath(String filePath) {
+    File file = new File(filePath);
+    return !file.isAbsolute()
+            ? new File(project.getProjectDir(), filePath)
+            : file;
   }
 
 }

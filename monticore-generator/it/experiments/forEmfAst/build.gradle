@@ -1,0 +1,39 @@
+/* (c) https://github.com/MontiCore/monticore */
+description = 'Experiments: forEmfAst'
+
+// use grammars from forAst
+ext.grammarDir = '../forAst/src/main/grammars'
+
+// eclipse versions
+def compare_version = '1.2.0'
+def ecore_version = '2.15.0'
+def equinox_version ='3.10.400'
+
+// add sources which lay at forAst
+sourceSets.main.java.srcDirs += [ '../forAst/src' ]
+
+// emf dependencies
+dependencies {
+  implementation group:'de.monticore', name:'monticore-emf-runtime', version:mc_version
+  implementation group:'de.monticore', name:'monticore-emf-grammar', version:mc_version
+  implementation group:"org.eclipse.emf", name:"org.eclipse.emf.ecore", version:ecore_version
+  implementation group:"org.eclipse.emf", name:"org.eclipse.emf.common", version:ecore_version
+  implementation group:"org.eclipse.emf", name:"org.eclipse.emf.compare", version:compare_version
+  implementation group:"org.eclipse.emf", name:"org.eclipse.emf.compare.match", version:compare_version
+  implementation group:"org.eclipse.emf", name:"org.eclipse.emf.compare.diff", version:compare_version
+  implementation group:"org.eclipse.platform", name:"org.eclipse.equinox.common", version:equinox_version
+}
+
+// generate from grammars in forAst with emf groovy script
+fileTree(grammarDir).matching { include '**/*.mc4'}.each {
+  def g = it
+  task  "generate${it.getName().substring(0,it.getName().lastIndexOf('.'))}EMF" (type: MCTask) {
+    grammar = file g
+    outputDir = file outDir
+    script = 'de/monticore/monticore_emf.groovy'
+    handcodedPath file("../forAst/src/main/java")
+    def grammarIncludingPackage = file(grammarDir).toURI().relativize(g.toURI()).toString()
+    def uptoDate = incCheck(grammarIncludingPackage)
+    outputs.upToDateWhen { uptoDate }
+  }
+}
