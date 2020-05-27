@@ -175,6 +175,17 @@ public abstract class MCParser extends Parser {
   }
 
   /*
+   * Returns if the string of the token (counting from the current token) matches the given string
+   */
+  public boolean cmpTokenRegEx(int i, String regEx) {
+    org.antlr.v4.runtime.Token t1 = _input.LT(i);
+    if (t1==null) {
+      return false;
+    }
+    return t1.getText().matches(regEx);
+  }
+
+  /*
    * Compare the string of the actual token with the given strings
    */
   public boolean is(String... str) {
