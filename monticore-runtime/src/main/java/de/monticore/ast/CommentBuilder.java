@@ -23,7 +23,7 @@ public class CommentBuilder {
       return res;
     }
     else {
-      Log.error("0xA7222x717 text of type String must not be null");
+      Log.error("0xA4322 text of type String must not be null");
       throw new IllegalStateException();
     }
   }

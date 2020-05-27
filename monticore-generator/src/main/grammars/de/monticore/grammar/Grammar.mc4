@@ -137,7 +137,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
     "start" Name ";";
 
   DeprecatedAnnotation =
-    "@" key("Deprecated") {noSpace()}? ( "(" message:String ")" )?;
+    "@Deprecated" ( "(" message:String ")" )?;
 
   // --------------------------------------------------------------------
   // Productions
@@ -441,14 +441,17 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
   */
   KeyTerminal implements RuleComponent, ITerminal =
     (usageName:Name&  ":")?
-    "key" "(" (String || "|")+ ")"
+    KeyConstant
     iteration:["?"|"*"|"+"]?;
+
+  KeyConstant =
+    "key" "(" (String || "|")+ ")";
 
   /**
     Constants are constant string but lead to an attribute
   */
   Constant implements ITerminal =
-    (humanName:Name& ":")? name:String ;
+    (humanName:Name& ":")? (String | KeyConstant) ;
 
   /**
     Constants are sth like keywords which one needs to know that they

@@ -110,7 +110,7 @@ public class TransitionSourceExistsTest {
 
     // we expect two errors in the findings
     assertEquals(1, Log.getFindings().size());
-    assertEquals("0xAUT03 Source state of transition missing.",
+    assertEquals("0xADD03 Source state of transition missing.",
        		Log.getFindings().get(0).getMsg());
   }
 

@@ -1,13 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
-import de.monticore.expressions.expressionsbasis.ExpressionsBasisMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._ast.ASTMCVoidType;
 import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mccollectiontypestest._parser.MCCollectionTypesTestParser;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -26,7 +26,7 @@ public class SynthesizeSymTypeFromMCCollectionTypesTest {
   
   @Before
   public void setup() {
-    Log.init();
+    LogStub.init();
     Log.enableFailQuick(false);
   }
   
@@ -34,7 +34,7 @@ public class SynthesizeSymTypeFromMCCollectionTypesTest {
   MCCollectionTypesTestParser parser = new MCCollectionTypesTestParser();
   
   // This is Visitor for Collection types under test:
-  SynthesizeSymTypeFromMCCollectionTypes synt = new SynthesizeSymTypeFromMCCollectionTypes(ExpressionsBasisMill.expressionsBasisScopeBuilder().build());
+  SynthesizeSymTypeFromMCCollectionTypes synt = new SynthesizeSymTypeFromMCCollectionTypes();
   
   // other arguments not used (and therefore deliberately null)
   

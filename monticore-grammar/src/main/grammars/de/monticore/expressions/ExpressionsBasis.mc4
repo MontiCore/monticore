@@ -28,7 +28,7 @@ package de.monticore.expressions;
  *
 */
 
-component grammar ExpressionsBasis extends de.monticore.types.TypeSymbols,
+component grammar ExpressionsBasis extends de.monticore.MCBasics,
                                    de.monticore.literals.MCLiteralsBasis {
 
   /*=================================================================*/
@@ -41,9 +41,18 @@ component grammar ExpressionsBasis extends de.monticore.types.TypeSymbols,
   /*=================================================================*/
 
 
+  /**
+   * Various Forms of Names are allowed
+   * (we allow among others variable names, attribute names, rolenames
+   *  and OCL e.g. also class names. These different forms of names
+   *  prevent to use Name@SymbolForm)
+   */
   NameExpression implements Expression <350>
     = Name;
 
+  /**
+   * Atomic Elements of Expressions: the Literals
+   */
   LiteralExpression implements Expression <340>
     = Literal;
 

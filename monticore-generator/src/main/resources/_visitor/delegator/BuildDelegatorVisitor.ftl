@@ -5,7 +5,7 @@ ${tc.signature("visitorName", "attributes")}
 if (!isValid()) {
 <#list attributes as attribute>
   if (${attribute.getName()} == null) {
-    Log.error("0xA7222 ${attribute.getName()} of type ${attribute.printType()} must not be null");
+    Log.error("0xA4422 ${attribute.getName()} of type ${attribute.printType()} must not be null");
   }
 </#list>
   throw new IllegalStateException();

@@ -1,4 +1,7 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
+
+<!-- Alpha-version: This is intended to become a MontiCore stable explanation. -->
+
 In MontiCore, the TypeCheck is used to calculate the type of a set of expressions.
 This happens by traversing the AST of an expression, calculating the types of its
 sub-expressions and combining them to the type of the main expression.

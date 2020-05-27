@@ -4,7 +4,7 @@ package automata;
 import automata._ast.*;
 import automata._symboltable.*;
 import automata._parser.AutomataParser;
-import automata._symboltable.serialization.AutomataScopeDeSer;
+import automata._symboltable.AutomataScopeDeSer;
 import com.google.common.collect.Lists;
 import de.monticore.generating.*;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;

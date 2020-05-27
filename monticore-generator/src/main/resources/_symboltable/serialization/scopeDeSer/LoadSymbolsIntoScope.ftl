@@ -10,5 +10,6 @@
 
   //3. Load symbol table into enclosing global scope if a file has been found
   if (modelCoordinate.hasLocation()) {
-    load(modelCoordinate.getLocation(), enclosingScope);
+    java.net.URL url = modelCoordinate.getLocation();
+    enclosingScope.addSubScope(load(url));
   }

@@ -1,5 +1,7 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 
+<!-- Alpha-version: This is intended to become a MontiCore stable explanation. -->
+
 # MontiCore Core Grammars - an Overview
 
 [MontiCore](http://www.monticore.de) is a language workbench. It uses 
