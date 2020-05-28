@@ -431,7 +431,7 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName,
         foundSymbolsParameter, nameParameter, accessModifierParameter, predicateParameter);
     this.replaceTemplate(EMPTY_BODY, method,
-        new TemplateHookPoint(TEMPLATE_PATH + "ResolveMany", className, fullSymbolName));
+        new TemplateHookPoint(TEMPLATE_PATH + "ResolveMany4IScope", className, fullSymbolName));
     return method;
   }
 
@@ -472,7 +472,7 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName,
         foundSymbolsParameter, nameParameter, accessModifierParameter, predicateParameter);
     this.replaceTemplate(EMPTY_BODY, method,
-        new TemplateHookPoint(TEMPLATE_PATH + "ContinueWithEnclosingScope", className));
+        new TemplateHookPoint(TEMPLATE_PATH + "ContinueWithEnclosingScope4IScope", className));
     return method;
   }
 

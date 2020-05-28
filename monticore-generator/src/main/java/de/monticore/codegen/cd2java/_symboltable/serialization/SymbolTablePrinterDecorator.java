@@ -229,7 +229,7 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
 
   protected ASTCDMethod createVisitScopeMethod(String scopeName) {
     ASTCDMethod visitorMethod = visitorService.getVisitorMethod(VISIT, getMCTypeFacade().createQualifiedType(scopeName));
-    this.replaceTemplate(EMPTY_BODY, visitorMethod, new TemplateHookPoint(TEMPLATE_PATH + "symbolTablePrinter.VisitScope", scopeName));
+    this.replaceTemplate(EMPTY_BODY, visitorMethod, new TemplateHookPoint(TEMPLATE_PATH + "symbolTablePrinter.VisitScope4STP", scopeName));
     return visitorMethod;
   }
 

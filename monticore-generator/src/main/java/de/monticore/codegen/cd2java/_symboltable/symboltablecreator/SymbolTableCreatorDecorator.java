@@ -244,7 +244,7 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
   protected ASTCDMethod createSymbolVisitMethod(String astFullName, String symbolFullName, String simpleName) {
     ASTCDMethod visitMethod = visitorService.getVisitorMethod(VISIT, getMCTypeFacade().createQualifiedType(astFullName));
     this.replaceTemplate(EMPTY_BODY, visitMethod, new TemplateHookPoint(
-        TEMPLATE_PATH + "Visit", symbolFullName, simpleName));
+        TEMPLATE_PATH + "Visit4STC", symbolFullName, simpleName));
     return visitMethod;
   }
 
@@ -330,7 +330,7 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
   protected ASTCDMethod createScopeVisitMethod(String astFullName, String scopeInterface, String simpleName) {
     ASTCDMethod visitMethod = visitorService.getVisitorMethod(VISIT, getMCTypeFacade().createQualifiedType(astFullName));
     this.replaceTemplate(EMPTY_BODY, visitMethod, new TemplateHookPoint(
-        TEMPLATE_PATH + "VisitScope", scopeInterface, simpleName));
+        TEMPLATE_PATH + "VisitScope4STC", scopeInterface, simpleName));
     return visitMethod;
   }
 
