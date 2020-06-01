@@ -371,7 +371,7 @@ component InteriorLight {                           // MontiArc language
 ### [SysML_2](https://git.rwth-aachen.de/monticore/languages/sysml2/sysml2official) (Alpha: Intention to become stable)
 * Caretaker: NJ
 * MontiCore languages for parsing artifacts of the SysML 2 language famlily. 
-  An example:
+  Examples:
 ```
 package 'Vehicles' { 
   private import ScalarValues::*; 
