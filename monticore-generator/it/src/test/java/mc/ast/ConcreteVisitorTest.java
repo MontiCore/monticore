@@ -14,9 +14,9 @@ public class ConcreteVisitorTest extends GeneratorIntegrationsTest {
   public void testA() {
     
     ASTAutomaton a = FeatureDSLNodeFactory.createASTAutomaton();
-    a.getStatesList().add(FeatureDSLNodeFactory.createASTState());
-    a.getStatesList().add(FeatureDSLNodeFactory.createASTState());
-    a.getStatesList().add(FeatureDSLNodeFactory.createASTState());
+    a.getStateList().add(FeatureDSLNodeFactory.createASTState());
+    a.getStateList().add(FeatureDSLNodeFactory.createASTState());
+    a.getStateList().add(FeatureDSLNodeFactory.createASTState());
     
     TestVisitor v = new TestVisitor();
     v.run(a);
