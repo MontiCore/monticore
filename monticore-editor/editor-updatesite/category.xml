@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- (c) https://github.com/MontiCore/monticore -->
 <site>
-   <bundle id="editor-bundle" version="6.0.0.1.qualifier">
+   <bundle id="editor-bundle" version="6.0.0.1">
       <category name="mc-editor"/>
    </bundle>
-   <bundle id="texteditor-core" version="6.0.0.1.qualifier">
+   <bundle id="texteditor-core" version="6.0.0.1">
       <category name="mc-editor"/>
    </bundle>
-   <bundle id="grammar-editor" version="6.0.0.1.qualifier">
+   <bundle id="grammar-editor" version="6.0.0.1">
       <category name="mc-editor"/>
    </bundle>
    <category-def name="mc-editor" label="Grammar Editor"/>

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Language Text Editor Core
 Bundle-SymbolicName: texteditor-core;singleton:=true
-Bundle-Version: 6.0.0.1.qualifier
+Bundle-Version: 6.0.0.1
 Require-Bundle: org.eclipse.jface.text;bundle-version="3.9.2",
  org.eclipse.ui.editors;bundle-version="3.8.200",
  org.eclipse.ui.views;bundle-version="3.7.0",

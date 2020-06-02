@@ -9,16 +9,16 @@ buildscript {
 
 plugins {
   id 'java'
-  id "monticore" version "6.0.0.1-SNAPSHOT"
+  id "monticore" version "6.0.0.1"
 }
 
-ext.mc_version = '6.0.0.1-SNAPSHOT'
+ext.mc_version = '6.0.0.1'
 ext.junit_version = '4.12'
 ext.commons_version = '1.7.9'
 ext.javaDSL_version = '4.3.17'
 
 group = 'de.monticore'
-version = '6.0.0.1-SNAPSHOT'
+version = '6.0.0.1'
 sourceCompatibility = '1.8'
 
 dependencies {
