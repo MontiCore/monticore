@@ -182,5 +182,9 @@ public abstract class SymTypeExpression {
     return typeSymbolLoader.getLoadedSymbol();
   }
 
+  public boolean isTypeInfoLoadable(){
+    return typeSymbolLoader.isSymbolLoaded();
+  }
+
   // --------------------------------------------------------------------------
 }
