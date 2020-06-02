@@ -5,6 +5,7 @@ import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.cd2java.AbstractTransformer;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ListSuffixDecorator extends AbstractTransformer<ASTCDCompilationUnit> {
@@ -19,12 +20,15 @@ public class ListSuffixDecorator extends AbstractTransformer<ASTCDCompilationUni
   public ASTCDCompilationUnit decorate(final ASTCDCompilationUnit originalInput, ASTCDCompilationUnit changedInput) {
     for (ASTCDInterface astcdInterface : changedInput.getCDDefinition().getCDInterfaceList()) {
       addSToListAttributes(astcdInterface.getCDAttributeList());
+      astcdInterface.setCDAttributeList(getAttributesUniqueAgain(astcdInterface.getCDAttributeList()));
     }
     for (ASTCDClass astcdClass : changedInput.getCDDefinition().getCDClassList()) {
       addSToListAttributes(astcdClass.getCDAttributeList());
+      astcdClass.setCDAttributeList(getAttributesUniqueAgain(astcdClass.getCDAttributeList()));
     }
     for (ASTCDEnum astcdEnum : changedInput.getCDDefinition().getCDEnumList()) {
       addSToListAttributes(astcdEnum.getCDAttributeList());
+      astcdEnum.setCDAttributeList(getAttributesUniqueAgain(astcdEnum.getCDAttributeList()));
     }
     return originalInput;
   }
@@ -40,6 +44,22 @@ public class ListSuffixDecorator extends AbstractTransformer<ASTCDCompilationUni
         astcdAttribute.setName(getAttributeNameWithListSuffix(astcdAttribute));
       }
     }
+  }
+
+  /**
+   * because of the s addition it is possible that now two attributes with the same name exist
+   * to avoid double names for attributes, make them unique again here
+   * @param attributeList
+   * @return list of attribute with unique names
+   */
+  protected List<ASTCDAttribute> getAttributesUniqueAgain(List<ASTCDAttribute> attributeList) {
+    List<ASTCDAttribute> uniqueAttributes = new ArrayList<>();
+    for (ASTCDAttribute astcdAttribute : attributeList) {
+      if(uniqueAttributes.stream().noneMatch(attr-> astcdAttribute.getName().equals(attr.getName()))){
+        uniqueAttributes.add(astcdAttribute);
+      }
+    }
+    return uniqueAttributes;
   }
 
   protected boolean hasDerivedAttributeName(ASTCDAttribute astcdAttribute) {
