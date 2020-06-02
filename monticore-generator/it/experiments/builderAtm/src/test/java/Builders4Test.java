@@ -68,7 +68,7 @@ public class Builders4Test {
                 .build();
     assertTrue(t7 == s.getA());
     assertTrue(t8 == s.getB());
-    assertEquals(5, s.sizeCs());  // 3 are predefined in the hc builder
+    assertEquals(5, s.sizeC());  // 3 are predefined in the hc builder
     assertTrue(t10 == s.getC(4));
     assertEquals(g2._ast.ASTS.class, s.getClass());
   }
@@ -82,7 +82,7 @@ public class Builders4Test {
                 .build();
     assertEquals(g2._ast.ASTS.class, s.getClass());
     // 3 are predefined in the hc builder
-    assertEquals(3, ((g2._ast.ASTS)s).sizeCs());
+    assertEquals(3, ((g2._ast.ASTS)s).sizeC());
   }
 
   // tests: Builder from G3 derived through G1
@@ -94,7 +94,7 @@ public class Builders4Test {
                 .build();
     // the hwc Mill from G2 doesn't operate anymore, because S is
     // overwritten (so the result is 0) 
-    assertEquals(0, s2.sizeCs());
+    assertEquals(0, s2.sizeC());
     assertEquals(g3._ast.ASTS.class, s2.getClass());
   }
 
@@ -107,7 +107,7 @@ public class Builders4Test {
                 .build();
     // the hwc Mill from G2 doesn't operate anymore, because S is 
     // overwritten (so the result is 0)
-    assertEquals(0, s3.sizeCs());  
+    assertEquals(0, s3.sizeC());
     assertEquals(g3._ast.ASTS.class, s3.getClass());
   }
 
