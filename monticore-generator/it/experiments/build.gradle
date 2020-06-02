@@ -1,11 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 import de.monticore.MCTask
 plugins {
-  id "monticore" version "5.4.0" // MontiCore Plugin
+  id "monticore" version "6.0.0.1-SNAPSHOT" // MontiCore Plugin
 }
 allprojects {
   group = 'de.monticore'
-  version = '5.4.0'
+  version = '6.0.0.1-SNAPSHOT'
 }
 
 subprojects {
@@ -24,8 +24,8 @@ subprojects {
   }
   
   ext.grammarDir = 'src/main/grammars'
-  ext.grammar_version = '5.4.0'
-  ext.mc_version = '5.4.0'
+  ext.grammar_version = '6.0.0.1-SNAPSHOT'
+  ext.mc_version = '6.0.0.1-SNAPSHOT'
   ext.junit_version = '4.12'
   ext.outDir = "$buildDir/generated-sources/monticore/sourcecode"
   

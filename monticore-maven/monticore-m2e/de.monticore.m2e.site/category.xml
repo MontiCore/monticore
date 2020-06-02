@@ -2,7 +2,7 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 <site>
   <feature url="features/de.monticore.m2e.feature_5.0.5-SNAPSHOT.jar"
-    id="de.monticore.m2e.feature" version="6.0.0">
+    id="de.monticore.m2e.feature" version="6.0.0.1-SNAPSHOT">
     <category name="de.monticore.m2e.site" />
   </feature>
   <category-def name="de.monticore.m2e.site" label="M2E Extensions" />
