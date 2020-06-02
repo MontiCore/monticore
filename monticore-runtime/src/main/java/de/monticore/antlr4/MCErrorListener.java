@@ -3,14 +3,11 @@
 package de.monticore.antlr4;
 
 import com.google.common.collect.Lists;
+import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.StringTransformations;
+import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.*;
 
-import de.se_rwth.commons.SourcePosition;
-import de.se_rwth.commons.logging.Log;
-import org.antlr.v4.runtime.misc.IntervalSet;
-
-import java.util.Collections;
 import java.util.List;
 
 public class MCErrorListener extends BaseErrorListener {
