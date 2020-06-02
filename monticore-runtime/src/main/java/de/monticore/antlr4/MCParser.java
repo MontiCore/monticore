@@ -70,7 +70,7 @@ public abstract class MCParser extends Parser {
       column += text.length();
     }
     else {
-      String[] splitted = text.split("\n");
+      String[] splitted = text.split("\n", -1);
       line += splitted.length - 1;
       // +1: if there is 1 character on the last line, sourcepos must
       // be 2...
