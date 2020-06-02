@@ -24,8 +24,16 @@ public class MCErrorListener extends BaseErrorListener {
   
   @Override
   public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
-    // Determine rule stack without eof-rule
+    // Improve error message
     if (recognizer instanceof Parser) {
+      if ((e instanceof org.antlr.v4.runtime.InputMismatchException) && (offendingSymbol instanceof CommonToken)) {
+        // add the found token type to the message
+        String s = parser.getVocabulary().getSymbolicName(((CommonToken) offendingSymbol).getType());
+        if (!s.isEmpty()) {
+          msg += "(found: " + s + ")";
+        }
+      }
+      // Determine rule stack without eof-rule
       List<String> stack = ((Parser) recognizer).getRuleInvocationStack();
       List<String> rules = Lists.newArrayList();
       for (int i = stack.size() - 1; i >= 0; i--) {
