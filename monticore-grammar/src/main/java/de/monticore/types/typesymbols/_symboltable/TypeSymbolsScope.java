@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.typesymbols._symboltable;
 
 import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
