@@ -50,7 +50,7 @@ component grammar MCCollectionTypes
   */
 
   MCListType implements MCGenericType <200> =
-       {next("List")}? Name "<" mCTypeArgument:MCTypeArgument ">";
+       {next("List")}? names:Name "<" mCTypeArguments:MCTypeArgument ">";
   astrule MCListType =
     mCTypeArguments:de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument*
     names:String*
@@ -58,7 +58,7 @@ component grammar MCCollectionTypes
 
 
   MCOptionalType implements MCGenericType <200> =
-       {next("Optional")}? Name "<" mCTypeArgument:MCTypeArgument ">";
+       {next("Optional")}? names:Name "<" mCTypeArguments:MCTypeArgument ">";
   astrule MCOptionalType =
       mCTypeArguments:de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument*
       names:String*
@@ -66,7 +66,7 @@ component grammar MCCollectionTypes
 
 
   MCMapType implements MCGenericType <200> =
-      {next("Map")}? Name
+      {next("Map")}? names:Name
        "<" key:MCTypeArgument "," value:MCTypeArgument ">";
   astrule MCMapType =
       mCTypeArguments:de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument*
@@ -75,7 +75,7 @@ component grammar MCCollectionTypes
 
 
   MCSetType implements MCGenericType <200> =
-       {next("Set")}? Name "<" mCTypeArgument:MCTypeArgument ">";
+       {next("Set")}? names:Name "<" mCTypeArguments:MCTypeArgument ">";
   astrule MCSetType =
       mCTypeArguments:de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument*
       names:String*
