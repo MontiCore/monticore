@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 grammar CombiningGrammar extends Automaton, de.monticore.inherited.Supergrammar {
     NewProd = Name "new" Automaton X;
 }
