@@ -6,7 +6,7 @@ image: maven:3.5.4-jdk-8-alpine
 
 variables:
   MC_MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2"
-  GRADLE_OPTS: ""
+  GRADLE_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2"
   MC_MAVEN_CLI_OPTS: "--settings settings.xml --batch-mode -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn"
 
 
@@ -35,8 +35,8 @@ build_dev:
   script:
     - "mvn $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS deploy -Dpass=$password -Duser=$username -DdeployAtEnd=true"
     - cd monticore-gradle
-    - "./gradlew build"
-    - "./gradlew publish -PmavenPassword=$password -PmavenUser=$username"
+    - "./gradlew build $GRADLE_OPTS"
+    - "./gradlew publish -PmavenPassword=$password -PmavenUser=$username $GRADLE_OPTS"
     - awk -F"," '{ instructions += $4 + $5; covered += $5 } END { print covered, "/", instructions, "instructions covered"; print 100*covered/instructions, "% covered" }' ../*/target/site/jacoco/jacoco.csv
   coverage: '/\d+.\d+ \% covered/'
   only:
@@ -52,16 +52,16 @@ build_branches:
   script:
     - "mvn $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS install"
     - cd monticore-gradle
-    - "./gradlew build publishToMavenLocal $GRADLE_OPTS"
+    - "./gradlew build publishToMavenLocal $GRADLE_OPTS –PuseLocalRepo=true --refresh-dependencies"
     - "cd ../monticore-generator/it/experiments"
-    - "./gradlew build $GRADLE_OPTS"
+    - "./gradlew build $GRADLE_OPTS –PuseLocalRepo=true --refresh-dependencies"
     - "cd ../../../monticore-grammar/monticore-grammar-it"
-    - "./gradlew build $GRADLE_OPTS"
+    - "./gradlew build $GRADLE_OPTS –PuseLocalRepo=true --refresh-dependencies"
     - "cd ../../monticore-generator/it"
-    - "./gradlew build $GRADLE_OPTS"
-    - "./gradlew build -PbuildProfile=emf $GRADLE_OPTS"
+    - "./gradlew build $GRADLE_OPTS –PuseLocalRepo=true --refresh-dependencies"
+    - "./gradlew build -PbuildProfile=emf $GRADLE_OPTS –PuseLocalRepo=true --refresh-dependencies"
     - "cd ../../monticore-templateclassgenerator/it/monticore-templateclassgenerator-it"
-    - "./gradlew build $GRADLE_OPTS"
+    - "./gradlew build $GRADLE_OPTS –PuseLocalRepo=true --refresh-dependencies"
   only:
     - merge_requests
     - branches
