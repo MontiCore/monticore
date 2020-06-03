@@ -397,7 +397,7 @@ package 'Coffee' {                      // a SysML activity diagram
   (which is still under improvement currently).
 * Actually these grammars represents a slight superset to the official SysML 2
   standard. It is intended for parsing SysML 2-compliant models. 
-  Well-formedness checks are are kept to a minimum, because we assume to parse
+  Well-formedness checks are kept to a minimum, because we assume to parse
   correctly produced SysML 2 models only.
 * MontiCore's SysML 2 is a language familiy that comes with a textual 
   representation to describe SysML 2 diagrams with respect to the standard. 
