@@ -26,10 +26,11 @@
 
 package de.monticore.statements;
 
-component grammar MCFullJavaStatements extends de.monticore.statements.MCAssertStatements,
-                                               de.monticore.statements.MCExceptionStatements,
-                                               de.monticore.statements.MCLowLevelStatements,
-                                               de.monticore.statements.MCReturnStatements,
-                                               de.monticore.statements.MCSynchronizedStatements {
+component grammar MCFullJavaStatements extends 
+    de.monticore.statements.MCAssertStatements,
+    de.monticore.statements.MCExceptionStatements,
+    de.monticore.statements.MCLowLevelStatements,
+    de.monticore.statements.MCReturnStatements,
+    de.monticore.statements.MCSynchronizedStatements {
 
 }

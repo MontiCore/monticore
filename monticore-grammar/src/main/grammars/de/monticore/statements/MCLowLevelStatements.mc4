@@ -35,7 +35,7 @@ ContinueStatement implements MCStatement
     =   "continue" label:Name? ";"
     ;
 
-// TODO: Symbol eingefuehrt --> als Symbol behandeln (deshalb nur Alpha)
+// TODO: ! Symbol eingefuehrt --> als Symbol behandeln (deshalb nur Alpha)
 // MB -> BR: Das ist zur Zeit in einem anderen Branch in Arbeit
 LabeledStatement implements MCStatement
     =   label:Name ":" MCStatement

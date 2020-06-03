@@ -37,7 +37,7 @@ VariableDeclarator
     =   DeclaratorId ("=" VariableInit)?
     ;
 
-// TODO: Variable wird deklariert! --> Symbol nutzen (deshalb nur Alpha)
+// TODO: ! Variable wird deklariert! --> Symbol nutzen (deshalb nur Alpha)
 // MB -> BR: Das ist zur Zeit in einem anderen Branch in Arbeit
 DeclaratorId
     =   Name (dim:"[" "]")*
