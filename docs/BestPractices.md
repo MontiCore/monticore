@@ -301,7 +301,7 @@ A component grammar is ment for extension. MontiCore therefore provides five(!)
 ## **Language Design in the Large**
 
 
-### Making Transitively Inherited Grammar Explicit?
+### Making Transitively Inherited Grammars Explicit?
 * When the grammar inclusion hierachy becomes larger, there will be redundancy.
   In:
   ```
