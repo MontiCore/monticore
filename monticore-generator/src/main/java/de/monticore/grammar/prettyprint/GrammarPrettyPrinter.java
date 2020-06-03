@@ -157,6 +157,24 @@ public class GrammarPrettyPrinter
   }
 
   @Override
+  public void handle(ASTTokenTerminal a) {
+    CommentPrettyPrinter.printPreComments(a, getPrinter());
+    if (a.isPresentUsageName()) {
+      print("" + a.getUsageName() + ":");
+    }
+    a.getTokenConstant().accept(getRealThis());
+    outputIteration(a.getIteration());
+    CommentPrettyPrinter.printPostComments(a, getPrinter());
+  }
+
+  @Override
+  public void handle(ASTTokenConstant a) {
+    print(" token(");
+    print(a.getString());
+    print(")");
+  }
+
+  @Override
   public void handle(ASTTerminal a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     // output("ASTTerminal Iteration " + a.getIteration());
@@ -231,11 +249,13 @@ public class GrammarPrettyPrinter
   @Override
   public void handle(ASTConstant a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
-    if (a.isPresentHumanName()) {
-      print(a.getHumanName() + ":");
+    if (a.isPresentUsageName()) {
+      print(a.getUsageName() + ":");
     }
     if (a.isPresentKeyConstant()) {
       a.getKeyConstant().accept(getRealThis());
+    }else if (a.isPresentTokenConstant()) {
+      a.getTokenConstant().accept(getRealThis());
     } else {
       print(QUOTE + a.getName() + QUOTE);
     }

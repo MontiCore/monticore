@@ -34,7 +34,6 @@ public class InheritedAttributesTranslation implements
       handleInheritedNonTerminals(link);
       handleInheritedConstantGroup(link);
       handleInheritedTerminals(link);
-      handleInheritedKeyTerminals(link);
       handleInheritedAttributeInASTs(link);
       //overwritten
       Optional<ASTProd> overwrittenProdIfNoNewRightSide = getOverwrittenProdIfNoNewRightSide(link.source());
@@ -70,17 +69,23 @@ public class InheritedAttributesTranslation implements
           .collect(Collectors.toList());
       handleInheritedRuleComponents(link, entry.getKey(), terminalWithUsageName);
     }
-  }
-
-  private void handleInheritedKeyTerminals(Link<ASTClassProd, ASTCDClass> link) {
     for (Entry<ASTProd, List<ASTKeyTerminal>> entry : getInheritedKeyTerminal(link.source())
-        .entrySet()) {
-      // only attributes for keyTerminals with a usage name
-      List<ASTKeyTerminal> keyTerminalWithUsageName = entry.getValue()
-          .stream()
-          .filter(ASTKeyTerminal::isPresentUsageName)
-          .collect(Collectors.toList());
-      handleInheritedRuleComponents(link, entry.getKey(), keyTerminalWithUsageName);
+            .entrySet()) {
+      // only attributes for terminals with a usage name
+      List<ASTKeyTerminal> terminalWithUsageName = entry.getValue()
+              .stream()
+              .filter(ASTKeyTerminal::isPresentUsageName)
+              .collect(Collectors.toList());
+      handleInheritedRuleComponents(link, entry.getKey(), terminalWithUsageName);
+    }
+    for (Entry<ASTProd, List<ASTTokenTerminal>> entry : getInheritedTokenTerminal(link.source())
+            .entrySet()) {
+      // only attributes for terminals with a usage name
+      List<ASTTokenTerminal> terminalWithUsageName = entry.getValue()
+              .stream()
+              .filter(ASTTokenTerminal::isPresentUsageName)
+              .collect(Collectors.toList());
+      handleInheritedRuleComponents(link, entry.getKey(), terminalWithUsageName);
     }
   }
 
@@ -141,6 +146,12 @@ public class InheritedAttributesTranslation implements
             astProd -> ASTNodes.getSuccessors(astProd, ASTKeyTerminal.class)));
   }
 
+  private Map<ASTProd, List<ASTTokenTerminal>> getInheritedTokenTerminal(ASTProd sourceNode) {
+    return TransformationHelper.getAllSuperProds(sourceNode).stream()
+            .distinct()
+            .collect(Collectors.toMap(Function.identity(),
+                    astProd -> ASTNodes.getSuccessors(astProd, ASTTokenTerminal.class)));
+  }
 
   /**
    * all attributes from a astrule for a Prod

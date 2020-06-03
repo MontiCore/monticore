@@ -8,6 +8,9 @@ public class ASTConstant extends ASTConstantTOP {
     if (isPresentKeyConstant()) {
       return getKeyConstant().getString(0);
     }
+    if (isPresentTokenConstant()) {
+      return getTokenConstant().getString();
+    }
     return getString();
   }
 }
