@@ -50,7 +50,7 @@ IfStatement implements MCStatement
     =   "if" "(" condition:Expression ")" 
                     thenStatement:MCStatement 
             ("else" elseStatement:MCStatement)?
-   // we use "elseStatement" instead of "else", because the 
+   // we use "elseStatement", because the 
    // generated Java code doesn't allow "else" as Name 
     ;
 
@@ -103,11 +103,11 @@ SwitchBlockStatementGroup
 interface SwitchLabel ;
 
 ConstantExpressionSwitchLabel implements SwitchLabel
-    =   "case" constantExpression:Expression ":"
+    =   "case" constant:Expression ":"
     ;
 
 EnumConstantSwitchLabel implements SwitchLabel
-    =   "case" enumConstantName:Name ":"
+    =   "case" enumConstant:Name ":"
     ;
 
 DefaultSwitchLabel implements SwitchLabel
