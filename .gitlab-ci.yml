@@ -7,7 +7,7 @@ image: maven:3.5.4-jdk-8-alpine
 variables:
   MC_MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2"
   GRADLE_OPTS: ""
-  MC_MAVEN_CLI_OPTS: "--settings settings.xml --batch-mode"
+  MC_MAVEN_CLI_OPTS: "--settings settings.xml --batch-mode -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn"
 
 
 before_script:
@@ -18,11 +18,11 @@ before_script:
   - chmod +x monticore-grammar/monticore-grammar-it/gradlew
   - export GRADLE_USER_HOME=`pwd`/.gradle
 
-cache:
-  paths:
-    - .m2/
-    - .gradle/wrapper
-  key: ${CI_COMMIT_REF_SLUG} # Cache per branch
+#cache:
+#  paths:
+#    - .m2/
+#    - .gradle/wrapper
+#  key: ${CI_COMMIT_REF_SLUG} # Cache per branch
 
 stages:
   - build

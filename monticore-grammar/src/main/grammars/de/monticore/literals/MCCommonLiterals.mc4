@@ -31,14 +31,14 @@ component grammar MCCommonLiterals extends de.monticore.MCBasics,
   /** The interface ASTNumericLiteral combines the numeric literal types for
         Integer, Long, Float and Double without '-' at the beginning)
     */
-  interface NumericLiteral extends Literal;
+  interface NumericLiteral extends Literal <100>;
 
 
   /** The interface ASTNumericLiteral combines the numeric literal types for
         Integer, Long, Float and Double.
         Compared to NumericLiteral it also includes negative numbers.
     */
-  interface SignedNumericLiteral extends SignedLiteral;
+  interface SignedNumericLiteral extends SignedLiteral <100>;
 
 
   /*========================================================================*/
@@ -76,57 +76,57 @@ component grammar MCCommonLiterals extends de.monticore.MCBasics,
   /** ASTNatLiteral represents a positive Decimal number.
         @attribute source String-representation (including '"').
     */
-  NatLiteral implements NumericLiteral <1> =
+  NatLiteral implements NumericLiteral<1> =
     Digits;
 
   /** ASTSignedNatLiteral represents a positive or negative Decimal number.
         @attribute source String-representation (including '"').
     */
-  SignedNatLiteral implements SignedNumericLiteral <1> =
-     (negative:["-"]) Digits {noSpace()}? |
-                      Digits;
+  SignedNatLiteral implements SignedNumericLiteral<1> =
+    {noSpace(2)}? (negative:["-"]) Digits |
+                                   Digits;
 
-   /** ASTLongLiteral represents a positive Decimal number.
+  /** ASTLongLiteral represents a positive Decimal number.
          @attribute source String-representation (including '"').
-     */
-   BasicLongLiteral implements NumericLiteral <1> =
-     Digits key("l" | "L") {noSpace()}?;
+    */
+  BasicLongLiteral implements NumericLiteral<1> =
+    { cmpToken(2,"l","L") && noSpace(2) }? Digits key("l" | "L");
 
-   /** ASTSignedLongLiteral represents a positive or negative Decimal number.
+  /** ASTSignedLongLiteral represents a positive or negative Decimal number.
          @attribute source String-representation (including '"').
-     */
-   SignedBasicLongLiteral implements SignedNumericLiteral <1> =
-      negative:["-"] Digits {noSpace()}? key("l" | "L") {noSpace()}? |
-                     Digits              key("l" | "L") {noSpace()}?;
+    */
+  SignedBasicLongLiteral implements SignedNumericLiteral<1> =
+    { cmpToken(3,"l","L") && noSpace(2,3) }? negative:["-"] Digits key("l" | "L") |
+    { cmpToken(2,"l","L") && noSpace(2) }?                  Digits key("l" | "L");
 
   /** ASTFloatLiteral represents a positive float.
         @attribute source String-representation (including '"').
     */
-  BasicFloatLiteral implements NumericLiteral <1> =
-    pre:Digits "." {noSpace()}?
-      post:Digits {noSpace()}? key("f" | "F") {noSpace()}?;
+  BasicFloatLiteral implements NumericLiteral<1> =
+    { cmpToken(4,"f","F") && noSpace(2,3,4) }?
+      pre:Digits "." post:Digits key("f" | "F");
 
   /** ASTSignedFloatLiteral represents a positive or negative float.
         @attribute source String-representation (including '"').
     */
-  SignedBasicFloatLiteral implements SignedNumericLiteral <1> =
-     negative:["-"] pre:Digits {noSpace()}? "." {noSpace()}?
-         post:Digits {noSpace()}? key("f" | "F") {noSpace()}? |
-                    pre:Digits              "." {noSpace()}?
-         post:Digits {noSpace()}? key("f" | "F") {noSpace()}?;
+  SignedBasicFloatLiteral implements SignedNumericLiteral<1> =
+    { cmpToken(5,"f","F") && noSpace(2,3,4,5)}?
+      negative:["-"] pre:Digits "." post:Digits key("f" | "F") |
+    { cmpToken(4,"f","F") && noSpace(2,3,4) }?
+      pre:Digits "." post:Digits key("f" | "F");
 
   /** ASTDoubleLiteral represents a positive double.
         @attribute source String-representation (including '"').
     */
-  BasicDoubleLiteral implements NumericLiteral <1> =
-    pre:Digits "." {noSpace()}? post:Digits {noSpace()}?;
+  BasicDoubleLiteral implements NumericLiteral<1> =
+    { noSpace(2,3) }? pre:Digits "." post:Digits;
 
   /** ASTSignedDoubleLiteral represents a positive or negative double.
         @attribute source String-representation (including '"').
     */
-  SignedBasicDoubleLiteral implements SignedNumericLiteral <1> =
-     negative:["-"] pre:Digits {noSpace()}? "." {noSpace()}? post:Digits {noSpace()}? |
-                    pre:Digits              "." {noSpace()}? post:Digits {noSpace()}?;
+  SignedBasicDoubleLiteral implements SignedNumericLiteral<1> =
+    { noSpace(2,3,4) }? negative:["-"] pre:Digits "." post:Digits |
+    { noSpace(2,3) }?                  pre:Digits "." post:Digits;
 
   /*========================================================================*/
   /*============================ LEXER RULES ===============================*/
@@ -181,10 +181,10 @@ component grammar MCCommonLiterals extends de.monticore.MCBasics,
   fragment token ZeroToThree
     = '0'..'3' ;
 
- fragment token HexDigit
+  fragment token HexDigit
     = '0'..'9'  | 'a'..'f'  | 'A'..'F' ;
 
- fragment token OctalDigit
+  fragment token OctalDigit
     = '0'..'7' ;
 
 
@@ -281,5 +281,6 @@ component grammar MCCommonLiterals extends de.monticore.MCBasics,
       return de.monticore.MCLiteralsDecoder.decodeDouble(getSource());
     }
   ;
+
 }
 
