@@ -373,7 +373,7 @@ component InteriorLight {                           // MontiArc language
 * MontiCore languages for parsing artifacts of the SysML 2 language famlily. 
   Examples:
 ```
-package 'Vehicles' { 
+package 'Vehicles' {                      // a SysML block diagram
   private import ScalarValues::*; 
   block Vehicle; 
   block Truck is Vehicle; 
@@ -381,7 +381,7 @@ package 'Vehicles' {
 }
 ```
 ```
-package 'Coffee' {
+package 'Coffee' {                      // a SysML activity diagram
   activity BrewCoffee (in beans : CoffeeBeans, in, water : Water, out coffee : Coffee) { 
     bind grind::beans = beans;
     action grind : Grind (in beans, out powder);
@@ -392,10 +392,11 @@ package 'Coffee' {
   }
 }
 ```
-* The SysML 2 grammars adhere to the general upcoming SysML 2 specification.
+* The SysML 2 grammars adhere to the general upcoming SysML 2 specification 
+  (which is still under improvement currently).
 * Actually these grammars represents a slight superset to the official SysML 2
-  standard. It is intended for parsing SysML 2-compliant models. Further
-  well-formedness checks are are kept to a minimum, because we assume to parse
+  standard. It is intended for parsing SysML 2-compliant models. 
+  Well-formedness checks are are kept to a minimum, because we assume to parse
   correctly produced SysML 2 models only.
 * MontiCore's SysML 2 is a language familiy that comes with a textual 
   representation to describe SysML 2 diagrams with respect to the standard. 
