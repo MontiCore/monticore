@@ -20,4 +20,6 @@ grammar KeyRule extends mc.common.Basics {
   H =  key("b") {next("c")}? b:Name;
 
   I =  b:key("b") {next("c")}? b:Name;
+
+  J = b:[key("blaj")];
 }

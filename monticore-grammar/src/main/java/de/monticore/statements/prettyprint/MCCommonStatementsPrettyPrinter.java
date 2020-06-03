@@ -163,7 +163,7 @@ public class MCCommonStatementsPrettyPrinter implements
   public void handle(ASTConstantExpressionSwitchLabel a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     getPrinter().println("case ");
-    a.getConstantExpression().accept(getRealThis());
+    a.getConstant().accept(getRealThis());
     getPrinter().println(":");
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
@@ -172,7 +172,7 @@ public class MCCommonStatementsPrettyPrinter implements
   public void handle(ASTEnumConstantSwitchLabel a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     getPrinter().println("case ");
-    printNode(a.getEnumConstantName());
+    printNode(a.getEnumConstant());
     getPrinter().println(":");
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }

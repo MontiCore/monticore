@@ -150,14 +150,24 @@ public class FileReaderWriter {
     try {
       Reporting.reportOpenInputFile(sourcePath.toString());
       Reader reader = new InputStreamReader(sourcePath.openStream(), charset.name());
-      BufferedReader buffer = new BufferedReader(reader);
-      content = buffer.lines().collect(Collectors.joining());
+      content = _readFromFile(reader);
     }
     catch (IOException e) {
       Log.error("0xA0577 IOException occured.", e);
       Log.debug("IOException while trying to read the content of " + sourcePath
           + ".", e, this.getClass().getName());
     }
+    Log.errorIfNull(content);
+    return content;
+  }
+
+  public static String readFromFile(Reader reader) {
+    return getFileReaderWriter()._readFromFile(reader);
+  }
+
+  protected String _readFromFile(Reader reader) {
+    BufferedReader buffer = new BufferedReader(reader);
+    String content = buffer.lines().collect(Collectors.joining());
     Log.errorIfNull(content);
     return content;
   }

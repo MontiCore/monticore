@@ -18,9 +18,9 @@ nav:
   - 'Getting Started': 'docs/GettingStarted.md'
   - Grammars:
       - 'General': 'monticore-grammar/src/main/grammars/de/monticore/Grammars.md'
-      - 'Expressions': 'monticore-grammar/src/main/grammars/de/monticore/expressions/README.md'
-      - 'Literals': 'monticore-grammar/src/main/grammars/de/monticore/literals/README.md'
-      - 'Types': 'monticore-grammar/src/main/java/de/monticore/types/check/README.md'
+      - 'Expressions': 'monticore-grammar/src/main/grammars/de/monticore/expressions/Expressions.md'
+      - 'Literals': 'monticore-grammar/src/main/grammars/de/monticore/literals/Literals.md'
+      - 'Types': 'monticore-grammar/src/main/java/de/monticore/types/check/Types.md'
   - Languages: 'docs/DevelopedLanguages.md'
   - Publications: 'docs/Publications.md'
   - 'More Information':

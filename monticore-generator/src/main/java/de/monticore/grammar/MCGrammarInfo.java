@@ -241,7 +241,7 @@ public class MCGrammarInfo {
     boolean found = false;
     
     // Check with options
-    if (mustBeKeyword(name, grammar)) {
+    if (mustBeKeyword(name)) {
       matches = true;
       found = true;
     }
@@ -308,9 +308,11 @@ public class MCGrammarInfo {
             }
           }
           for (ASTConstant keyword : ASTNodes.getSuccessors(astProd, ASTConstant.class)) {
-            if (isKeyword(keyword.getName(), grammarSymbol)
-                || (isRefGrammarSymbol && isKeyword(keyword.getName(), refGrammarSymbol.get()))) {
-              keywords.add(keyword.getName());
+            if (!keyword.isPresentKeyConstant()) {
+              if (isKeyword(keyword.getName(), grammarSymbol)
+                      || (isRefGrammarSymbol && isKeyword(keyword.getName(), refGrammarSymbol.get()))) {
+                keywords.add(keyword.getName());
+              }
             }
           }
         }
@@ -346,7 +348,7 @@ public class MCGrammarInfo {
     }
   }
   
-  private boolean mustBeKeyword(String rule, MCGrammarSymbol grammar) {
+  private boolean mustBeKeyword(String rule) {
     return keywords.contains(rule);
   }
   

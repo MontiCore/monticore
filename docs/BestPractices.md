@@ -1,6 +1,8 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 
-# MontiCore Best Practices - A Guide of Small Solutions
+# MontiCore Best Practices - A Guide For Small Solutions
+
+[[_TOC_]]
 
 [MontiCore](http://www.monticore.de) provides a number of options to design 
 languages, access and modify the abstract syntax tree, and produce output files.
@@ -16,8 +18,36 @@ More detailed descriptions of best practices can be found in the
 Some of the best practices here will also be incorporated in the next version
 of the reference manual.
 
-## **Designing Concrete and Abstract Syntax**
+## **Designing A Language**
 
+### Correct language vs. superset?
+* When you know that the incoming model will be correct, because they are generated
+  by algorithm, you can decide to pass a (slight) superset 
+* This may simplify the development process for two reasons: 
+  (a) you may derive a simpler grammar and (b) you may omit definition of 
+  context conditions.
+* But beware: (a) situations may change and manually changed models might come in
+  or (b) the is adapted by an ill-behaving pre-processor or (c) the model
+  may come in a wrong version.
+* This applies mainly for unreadable languages, such as JSON or XML.
+* Defined by: BR
+
+### Versioning an evolving langauge?
+* When languages evolve, models may become invalid, because 
+  certain (now obligatory) parts are missing, or old keywords are used.
+* We generally believe that a language that is made for long lasting 
+  models should not embody its version in the models (i.e. like Java, C++ and 
+  other GPLs and unlike XML dialects).
+* When evolving a language, you should only evolve it in conservative form, i.e.
+  * All new elements are optional by `.?`, `.*` or offer new alternatives `(old | new)`
+  * Old elements or keywords are not simply removed, but 
+    forbidden by coco warnings, marking them as deprecated for a while. 
+* Downward compatibility of newer models, however, is not useful. 
+  We can savely enforce developers should normally use the newest 
+  versions of their tools.
+* Defined by: BR
+
+## **Designing Concrete and Abstract Syntax**
 
 ### **Specific keywords** that shall be used as normal words elsewhere
 * `A = "foo" B` introduces `foo` as a keyword that cannot be used as an ordinary 
@@ -233,7 +263,35 @@ A component grammar is ment for extension. MontiCore therefore provides five(!)
 
 ## **Designing Symbols, Scopes and SymbolTables** 
 
+### How to define a Symbol Usage without a given Symbol Definition
+  ```
+  grammar E { 
+    A = Name@S; 
+    symbol S = Name; 
+  }
+  ```
 
+* If you want to use a sepcial form of symbol that shall neither be defined 
+  inside the grammar of a language, nor shall it be imported.
+* We can define symbols of kind `S` in the grammar in a grammar rule that 
+  is never reached by the parser from the start production.
+  Through this, MontiCores generates:
+  * symbol table infrastructure for handling `S` symbols
+  * symbol table infrastructure for resolving these in `E` scopes, and 
+  * integration of `S` symbols with the AST of `A`.
+* However, `S` symbols not automatically instantiated. 
+  This has to be described manually, e.g., by extending the symbol table 
+  creator or via providing an adapter translating a foreign symbol into an `S` symbol.
+* This can be used, e.g., in these scenarios: 
+  * A name of a certain kind is introduced automatically the first time it is occurs 
+    in a model. If it occurs more than once, all other occurences of the name 
+    do not introduce new symbols. (e.g. this happens with features in FDs,
+    and works because features do not have a body.)
+  * A name in a language `E` refers to a named element of another language, 
+    but the language shall be decoupled from `E`. 
+    Therefore, `E` introduces a symbol `S` and an adapter maps other symbols
+    to `S` symbols.
+* Defined by: AB, BR
 
 
 ## **Generating Code with Templates** 
@@ -243,7 +301,7 @@ A component grammar is ment for extension. MontiCore therefore provides five(!)
 ## **Language Design in the Large**
 
 
-### Grammar Extensions
+### Making Transitively Inherited Grammars Explicit?
 * When the grammar inclusion hierachy becomes larger, there will be redundancy.
   In:
   ```
@@ -253,15 +311,15 @@ A component grammar is ment for extension. MontiCore therefore provides five(!)
     grammar D extends B { .. } ;
   ```
   Grammars `C` and `D` actually include the same nonterminals.
-* If `A` is made explicit, you have more infromation right at hand, but also
+* If `A` is made explicit, you have more information right at hand, but also
   larger grammars. It is a matter of taste.
-* A potential recommendation: when you use nonterminals from A explicitly, then also 
+* A recommendation: when you use nonterminals from A explicitly, then also 
   make the extension explicit. However, be consistent.
 
 
-### Modularity
+### How to Achieve Modularity (in the Sense of Decoupling)
 * Modularity in general is an important design principle.
-  In the case of model-based code generation, complexity involves the following 
+  In the case of model-based code generation, modularity involves the following 
   dimensions:
   1. Modelling languages
   2. Models
@@ -271,6 +329,12 @@ A component grammar is ment for extension. MontiCore therefore provides five(!)
   6. Software architecture (of the overal system), software stack
 * These dimensions are not orthogonal, but also not completely interelated.
   The actual organisation will depend on the form of project.
+* A weak form of modularity would be to organize things in
+  well understood substructures such as packages. 
+  A deeper form of modularity deals with possibility for individual *reuse* 
+  and thus an explicit *decoupling* of individual components. We aim for 
+  decoupling (even if developed in the same git project).
+* Modularity also deals with *extensibility* and *adaptation*.
 * A principle for *adaptation* for the *generator*, 
   the *generated code*, and the *RTE* is to design each of them
   like a *framework* with explicit extension points.
@@ -280,7 +344,7 @@ A component grammar is ment for extension. MontiCore therefore provides five(!)
 * A principle for *modularity* for the the *generator*, 
   the *generated code*, and the *RTE* is to design parts of them as 
   independent library functions (or larger: components) that can be used if needed.
-* We recommend to modularize whenever complexity overwhelms or extendibility and
+* We recommend to modularize whenever complexity overwhelms or extensibility and
   adaptability are important:
   1. MontiCore has powerful techniques for adaptation, extension and 
     composition of *modelling languages* (through their grammars). See the
@@ -302,13 +366,57 @@ A component grammar is ment for extension. MontiCore therefore provides five(!)
     to MontiCore itself.
     The generated code is usually structured along the components or sub-systems
     that the software architecture defines.
-  5. The RTE is to be designed like a normal framework.
-* Please note: it is not easy to design extensibility from beginning.
+  5. The RTE is probably well designed if it is usable a normal framework.
+* Please note: it is not easy to design modularity and extensibility from beginning.
   Framework design has shown that this is an iterative optimizing process.
   It must be avoided to design too many extension elements into the system
   from the beginning, because this adds a lot of complexity.
 * Defined by: BR  
 
-  
+### Realizing Embedding through an Interface Nonterminal Extension Point
+
+Consider the following scenario: 
+A language `Host` defines an extension point through an interface nonterminal.
+
+```
+grammar Host { A = I*; interface I; }
+```
+
+Another language `Embedded` that has no connection to the `Host` language, 
+defines a class nonterminal `E`.
+
+```
+grammar Embedded { E = "something"; }
+```
+
+MontiCore provides alternative solutions to embed the language `Embedded`
+into the language `Host` at the extension point `I`. All solutions presented here
+require to implement a new grammar `G` that extends the grammars `Embedded` and `Host`, 
+which reuses the start nonterminal of the `Host` grammar:
+
+```
+grammar G extends Host, Embedded { start A; }
+```
+
+The connection between extension point and extension is performed by an additional
+grammar rule in the grammar `G`. This can be realized in one of the following ways, each 
+of which has its own advantages and disadvantages:
+
+1. Embedding through overriding of extension rule and implementing extension point rule:
+  * `E implements I;`
+  * Advantage: simple embedding rule
+  * Disadvantage: does not work in combination with inheritance of extension rule
+  * Should therefore only be used, it `E` is not used anywhere else (= in not other language that is potentially used in combination with this language) 
+2. Embedding through extending extension rule and implementing extension point rule:
+  * `IE extends E implements I = "something";`
+  * Advantage: does work in combination with inheritance of extension rule
+  * Disadvantage: cloning of RHS of the extension rule can produce inconsistencies if `E` is changed
+  * Can be used if it is assured that this rule is adjusted whenever `E` is changed, e.g., by assuming that `E` is not modified at all
+3. Embedding through implementing extension point rule and providing extension on right-hand side:
+  * `IE implements I = E;`
+  * Advantage: does work in combination with inheritance of extension rule
+  * Disadvantage: introduces new level of indirection in AST that invalidates check whether required abstract syntax (RHS of interface nonterminal) is present
+  * Should therefore not be used, if the interface has a right-hand side
+* Defined by: AB
 
 
