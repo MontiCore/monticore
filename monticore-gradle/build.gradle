@@ -9,12 +9,14 @@ version = "6.2.0-SNAPSHOT"
 group = "de.monticore"
 
 repositories {
+  if(("true").equals(getProperty('useLocalRepo'))){
+    mavenLocal()
+  }
   maven {
     credentials.username mavenUser
     credentials.password mavenPassword
     url repo
   }
-  mavenLocal()
 }
 
 dependencies {

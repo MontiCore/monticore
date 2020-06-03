@@ -1,7 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 pluginManagement {
   repositories {
-    mavenLocal()
+    if(("true").equals(getProperty('useLocalRepo'))){
+      mavenLocal()
+    }
     maven {
       credentials.username mavenUser
       credentials.password mavenPassword
