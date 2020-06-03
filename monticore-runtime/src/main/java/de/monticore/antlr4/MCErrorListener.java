@@ -26,7 +26,7 @@ public class MCErrorListener extends BaseErrorListener {
       if ((e instanceof org.antlr.v4.runtime.InputMismatchException) && (offendingSymbol instanceof CommonToken)) {
         // add the found token type to the message
         String s = parser.getVocabulary().getSymbolicName(((CommonToken) offendingSymbol).getType());
-        if (!s.isEmpty()) {
+        if (s != null && !s.isEmpty()) {
           msg += "(found: " + s + ")";
         }
       }
