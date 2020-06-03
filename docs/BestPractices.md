@@ -104,7 +104,7 @@ A component grammar is ment for extension. MontiCore therefore provides five(!)
     N = "bla" X "blubb";
   }
   grammar B extends A {
-    Y extends X = "this" 
+    Y extends X = "this";
   }
   ```
   * Advantage: *Default* implementation "" exists, no explicit filling needed.
@@ -120,7 +120,7 @@ A component grammar is ment for extension. MontiCore therefore provides five(!)
     N = "bla" X "blubb";
   }
   grammar B extends A {
-    X = "your"
+    X = "your";
   }
   ```
   * Advantage: Explctely marks a nonterminal as *hole* (extension point) in the grammar.
