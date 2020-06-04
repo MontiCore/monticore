@@ -156,18 +156,18 @@ public class InheritedAttributesTranslation implements
   /**
    * all attributes from a astrule for a Prod
    */
-  private Map<ASTProd, Collection<AdditionalAttributeSymbol>> getInheritedAttributeInASTs(
+  protected Map<ASTProd, Collection<AdditionalAttributeSymbol>> getInheritedAttributeInASTs(
       ASTProd astNode) {
     return TransformationHelper.getAllSuperProds(astNode).stream()
         .distinct()
         .collect(Collectors.toMap(Function.identity(), prod -> prod.isPresentSymbol() ?
-            prod.getSymbol().getSpannedScope().getLocalAdditionalAttributeSymbols() : Collections.emptyList()));
+            prod.getSymbol().getSpannedScope().getAstAttributeList() : Collections.emptyList()));
   }
 
   /**
    * create Attribute with a inherited flag
    */
-  private ASTCDAttribute createCDAttribute(ASTProd inheritingNode, ASTProd definingNode) {
+  protected ASTCDAttribute createCDAttribute(ASTProd inheritingNode, ASTProd definingNode) {
     List<ASTInterfaceProd> interfacesWithoutImplementation = getAllInterfacesWithoutImplementation(
         inheritingNode);
 
@@ -226,7 +226,7 @@ public class InheritedAttributesTranslation implements
    * class higher up in the type hierarchy. (the list includes interfaces
    * extended transitively by other interfaces)
    */
-  private List<ASTInterfaceProd> getAllInterfacesWithoutImplementation(ASTProd astNode) {
+  protected List<ASTInterfaceProd> getAllInterfacesWithoutImplementation(ASTProd astNode) {
     List<ASTInterfaceProd> directInterfaces = TransformationHelper.getDirectSuperProds(astNode).stream()
         .filter(ASTInterfaceProd.class::isInstance)
         .map(ASTInterfaceProd.class::cast)

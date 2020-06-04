@@ -5,14 +5,13 @@ package de.monticore.prettyprint;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.javalight._ast.*;
 import de.monticore.javalight._visitor.JavaLightVisitor;
-import de.monticore.statements.mcvardeclarationstatements._ast.ASTVariableDeclarator;
 import de.monticore.statements.prettyprint.MCCommonStatementsPrettyPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 
 import java.util.Iterator;
 
 public class JavaLightPrettyPrinter extends MCCommonStatementsPrettyPrinter implements
-    JavaLightVisitor {
+        JavaLightVisitor {
 
   private JavaLightVisitor realThis = this;
 
@@ -38,91 +37,11 @@ public class JavaLightPrettyPrinter extends MCCommonStatementsPrettyPrinter impl
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
 
-  @Override
-  public void handle(ASTAnnotationTypeDeclaration a) {
-    CommentPrettyPrinter.printPreComments(a, getPrinter());
-    a.getMCModifierList().stream().forEach(m -> {m.accept(getRealThis()); getPrinter().print(" ");});
-    getPrinter().print("@ interface ");
-    printNode(a.getName());
-    a.getAnnotationTypeBody().accept(getRealThis());
-    CommentPrettyPrinter.printPostComments(a, getPrinter());
-  }
-
-  @Override
-  public void handle(ASTAnnotationTypeBody a) {
-    CommentPrettyPrinter.printPreComments(a, getPrinter());
-    getPrinter().println(" {");
-    getPrinter().indent();
-    printJavaLightList(a.getAnnotationTypeElementDeclarationList().iterator(), "");
-    getPrinter().unindent();
-    getPrinter().println("}");
-    CommentPrettyPrinter.printPostComments(a, getPrinter());
-  }
-
-
-  @Override
-  public void handle(ASTAnnotationMethod a) {
-    CommentPrettyPrinter.printPreComments(a, getPrinter());
-    a.getMCModifierList().stream().forEach(m -> {m.accept(getRealThis()); getPrinter().print(" ");});
-    a.getMCType().accept(getRealThis());
-    getPrinter().print(" ");
-    printNode(a.getName());
-    getPrinter().print("()");
-    if (a.isPresentDefaultValue()) {
-      a.getDefaultValue().accept(getRealThis());
-    }
-    getPrinter().print(";");
-    CommentPrettyPrinter.printPostComments(a, getPrinter());
-  }
-
-  @Override
-  public void handle(ASTAnnotationConstant a) {
-    CommentPrettyPrinter.printPreComments(a, getPrinter());
-    a.getMCModifierList().stream().forEach(m -> {m.accept(getRealThis()); getPrinter().print(" ");});
-    a.getMCType().accept(getRealThis());
-    getPrinter().print(" ");
-    String sep = "";
-    for (ASTVariableDeclarator v: a.getVariableDeclaratorList()) {
-      getPrinter().print(sep);
-      sep = ", ";
-      v.accept(getRealThis());
-    }
-    getPrinter().println(";");
-    CommentPrettyPrinter.printPostComments(a, getPrinter());
-  }
-
-  @Override
-  public void handle(ASTDefaultValue a) {
-    CommentPrettyPrinter.printPreComments(a, getPrinter());
-    getPrinter().print(" default ");
-    a.getElementValueOrExpr().accept(getRealThis());
-    CommentPrettyPrinter.printPostComments(a, getPrinter());
-  }
 
   @Override
   public void handle(ASTMethodDeclaration a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
-    a.getMethodSignature().accept(getRealThis());
-    if (a.isPresentMethodBody()) {
-      a.getMethodBody().accept(getRealThis());
-    } else {
-      getPrinter().println(";");
-    }
-    CommentPrettyPrinter.printPostComments(a, getPrinter());
-  }
-
-  @Override
-  public void handle(ASTInterfaceMethodDeclaration a) {
-    CommentPrettyPrinter.printPreComments(a, getPrinter());
-    a.getMethodSignature().accept(getRealThis());
-    getPrinter().print(";");
-    CommentPrettyPrinter.printPostComments(a, getPrinter());
-  }
-
-  @Override
-  public void handle(ASTMethodSignature a) {
-    CommentPrettyPrinter.printPreComments(a, getPrinter());
-    a.getMCModifierList().stream().forEach(m -> {m.accept(getRealThis()); getPrinter().print(" ");});
+    a.getMCModifierList().stream().forEach(m -> {getPrinter().print(" "); m.accept(getRealThis()); getPrinter().print(" ");});
     if (a.isPresentExtTypeParameters()) {
       a.getExtTypeParameters().accept(getRealThis());
     }
@@ -137,8 +56,38 @@ public class JavaLightPrettyPrinter extends MCCommonStatementsPrettyPrinter impl
       getPrinter().print(" throws ");
       a.getThrows().accept(getRealThis());
     }
+    if (!a.getMCBlockStatementList().isEmpty()) {
+      getPrinter().println("{");
+      a.getMCBlockStatementList().forEach(b -> b.accept(getRealThis()));
+      getPrinter().println("}");
+    } else {
+      getPrinter().println(";");
+    }
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
+
+  @Override
+  public void handle(ASTInterfaceMethodDeclaration a) {
+    CommentPrettyPrinter.printPreComments(a, getPrinter());
+    a.getMCModifierList().stream().forEach(m -> {getPrinter().print(" "); m.accept(getRealThis()); getPrinter().print(" ");});
+    if (a.isPresentExtTypeParameters()) {
+      a.getExtTypeParameters().accept(getRealThis());
+    }
+    a.getMCReturnType().accept(getRealThis());
+    getPrinter().print(" ");
+    printNode(a.getName());
+    a.getFormalParameters().accept(getRealThis());
+    for (int i = 0; i < a.getDimList().size(); i++) {
+      getPrinter().print("[]");
+    }
+    if (a.isPresentThrows()) {
+      getPrinter().print(" throws ");
+      a.getThrows().accept(getRealThis());
+    }
+    getPrinter().print(";");
+    CommentPrettyPrinter.printPostComments(a, getPrinter());
+  }
+
 
   @Override
   public void handle(ASTThrows a) {
@@ -155,7 +104,7 @@ public class JavaLightPrettyPrinter extends MCCommonStatementsPrettyPrinter impl
   public void handle(ASTConstructorDeclaration a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     getPrinter().println();
-    a.getMCModifierList().stream().forEach(m -> {m.accept(getRealThis()); getPrinter().print(" ");});
+    a.getMCModifierList().stream().forEach(m -> {getPrinter().print(" "); m.accept(getRealThis()); getPrinter().print(" ");});
     if (a.isPresentExtTypeParameters()) {
       a.getExtTypeParameters().accept(getRealThis());
     }
@@ -167,46 +116,17 @@ public class JavaLightPrettyPrinter extends MCCommonStatementsPrettyPrinter impl
       a.getThrows().accept(getRealThis());
     }
     getPrinter().print(" ");
-    a.getConstructorBody().accept(getRealThis());
-    CommentPrettyPrinter.printPostComments(a, getPrinter());
-  }
-
-  @Override
-  public void handle(ASTFieldDeclaration a) {
-    CommentPrettyPrinter.printPreComments(a, getPrinter());
-    a.getMCModifierList().stream().forEach(m -> {m.accept(getRealThis()); getPrinter().print(" ");});
-    a.getMCType().accept(getRealThis());
-    getPrinter().print(" ");
-    String sep = "";
-    for (ASTVariableDeclarator v: a.getVariableDeclaratorList()) {
-      getPrinter().print(sep);
-      sep = ", ";
-      v.accept(getRealThis());
-    }
-    getPrinter().println(";");
+    getPrinter().println("{");
+    a.getMCBlockStatementList().forEach(b -> b.accept(getRealThis()));
+    getPrinter().println("}");
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
 
   @Override
   public void handle(ASTConstDeclaration a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
-    a.getMCModifierList().stream().forEach(m -> {m.accept(getRealThis()); getPrinter().print(" ");});
-    a.getMCType().accept(getRealThis());
-    getPrinter().print(" ");
-    printJavaLightList(a.getConstantDeclaratorList().iterator(), ", ");
+    a.getLocalVariableDeclaration().accept(getRealThis());
     getPrinter().println(";");
-    CommentPrettyPrinter.printPostComments(a, getPrinter());
-  }
-
-  @Override
-  public void handle(ASTConstantDeclarator a) {
-    CommentPrettyPrinter.printPreComments(a, getPrinter());
-    printNode(a.getName());
-    for (int i = 0; i < a.getDimList().size(); i++) {
-      getPrinter().print("[] ");
-    }
-    getPrinter().print(" = ");
-    a.getVariableInit().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
 
@@ -292,13 +212,6 @@ public class JavaLightPrettyPrinter extends MCCommonStatementsPrettyPrinter impl
       a.getElementValueOrExpr(i).accept(getRealThis());
     }
     getPrinter().print("}");
-    CommentPrettyPrinter.printPostComments(a, getPrinter());
-  }
-
-  @Override
-  public void handle(ASTEmptyDeclaration a) {
-    CommentPrettyPrinter.printPreComments(a, getPrinter());
-    getPrinter().print(";");
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
 

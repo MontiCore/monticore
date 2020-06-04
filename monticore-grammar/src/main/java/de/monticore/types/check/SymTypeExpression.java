@@ -54,6 +54,8 @@ public abstract class SymTypeExpression {
 
   public abstract SymTypeExpression deepClone();
 
+  public abstract boolean deepEquals(SymTypeExpression sym);
+
   protected List<MethodSymbol> methodList = new ArrayList<>();
 
   /**

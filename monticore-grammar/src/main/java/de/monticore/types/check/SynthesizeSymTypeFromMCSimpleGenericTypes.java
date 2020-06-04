@@ -2,13 +2,12 @@
 
 package de.monticore.types.check;
 
+import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
-import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesVisitor;
-import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
 import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
 import de.se_rwth.commons.logging.Log;
 

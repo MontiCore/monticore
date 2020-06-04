@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._symboltable.symbol;
 
+import com.google.common.collect.Lists;
 import de.monticore.cd.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.cd2java.AbstractCreator;
@@ -17,6 +18,7 @@ import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
@@ -68,66 +70,85 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
   public ASTCDClass decorate(ASTCDClass symbolInput) {
     String scopeInterface = symbolTableService.getScopeInterfaceFullName();
     String symbolName = symbolTableService.getNameWithSymbolSuffix(symbolInput);
+    boolean hasInheritedSymbol = symbolTableService.hasInheritedSymbolStereotype(symbolInput.getModifier());
     ASTModifier modifier = symbolInput.isPresentModifier() ?
-        symbolTableService.createModifierPublicModifier(symbolInput.getModifier()):
-        PUBLIC.build();
+            symbolTableService.createModifierPublicModifier(symbolInput.getModifier()) :
+            PUBLIC.build();
 
     // uses symbol rule methods and attributes
-    List<ASTCDAttribute> symbolRuleAttributes = symbolInput.deepClone().getCDAttributeList();
+    List<ASTCDAttribute> symbolRuleAttributes = symbolInput.deepClone().getCDAttributeList()
+            .stream().filter(attr -> !symbolTableService.isInheritedAttribute(attr)).collect(Collectors.toList());
     symbolRuleAttributes.forEach(a -> getDecorationHelper().addAttributeDefaultValues(a, this.glex));
     List<ASTCDMethod> symbolRuleAttributeMethods = symbolRuleAttributes
-        .stream()
-        .map(methodDecorator::decorate)
-        .flatMap(List::stream)
-        .collect(Collectors.toList());
+            .stream()
+            .map(methodDecorator::decorate)
+            .flatMap(List::stream)
+            .collect(Collectors.toList());
     List<ASTCDMethod> symbolRuleMethods = symbolInput.deepClone().getCDMethodList();
 
-    List<ASTCDAttribute> symbolAttributes = createSymbolAttributes(symbolInput.getName(), scopeInterface);
-    List<ASTCDMethod> symbolMethods = symbolAttributes
-        .stream()
-        .map(methodDecorator::decorate)
-        .flatMap(List::stream)
-        .collect(Collectors.toList());
-
-    List<ASTCDAttribute> symbolNameAttributes = createSymbolNameAttributes();
-    List<ASTCDMethod> symbolNameMethods = symbolNameAttributes
-        .stream()
-        .map(this::createNameMethods)
-        .flatMap(List::stream)
-        .collect(Collectors.toList());
+    List<ASTCDAttribute> symbolAttributes = Lists.newArrayList();
+    List<ASTCDMethod> symbolMethods = Lists.newArrayList();
+    List<ASTCDAttribute> symbolNameAttributes = Lists.newArrayList();
+    List<ASTCDMethod> symbolNameMethods = Lists.newArrayList();
+    if (hasInheritedSymbol) {
+      symbolAttributes.add(this.getCDAttributeFacade().createAttribute(PROTECTED, scopeInterface, ENCLOSING_SCOPE_VAR));
+    } else {
+      symbolAttributes = createSymbolAttributes(symbolInput.getName(), scopeInterface);
+      symbolNameAttributes = createSymbolNameAttributes();
+    }
+    symbolMethods = symbolAttributes
+            .stream()
+            .map(methodDecorator::decorate)
+            .flatMap(List::stream)
+            .collect(Collectors.toList());
+    symbolNameMethods = symbolNameAttributes
+            .stream()
+            .map(this::createNameMethods)
+            .flatMap(List::stream)
+            .collect(Collectors.toList());
 
     ASTCDParameter constructorParam = getCDParameterFacade().createParameter(getMCTypeFacade().createStringType(), NAME_VAR);
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), symbolName, constructorParam);
-    this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("this." + NAME_VAR + " = " + NAME_VAR + ";"));
+    if (hasInheritedSymbol) {
+      this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("super(" + NAME_VAR + ");"));
+    } else {
+      this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("this." + NAME_VAR + " = " + NAME_VAR + ";"));
+    }
 
     ASTCDClass symbolClass = CD4AnalysisMill.cDClassBuilder()
-        .setName(symbolName)
-        .setModifier(modifier)
-        .addInterface(getMCTypeFacade().createQualifiedType(symbolTableService.getCommonSymbolInterfaceFullName()))
-        .addAllInterfaces(symbolInput.getInterfaceList())
-        .addCDConstructor(constructor)
-        .addAllCDAttributes(symbolAttributes)
-        .addAllCDAttributes(symbolNameAttributes)
-        .addAllCDAttributes(symbolRuleAttributes)
-        .addAllCDMethods(symbolRuleAttributeMethods)
-        .addAllCDMethods(symbolRuleMethods)
-        .addAllCDMethods(symbolMethods)
-        .addAllCDMethods(symbolNameMethods)
-        .addCDMethod(createAcceptMethod(symbolName))
-        .addCDMethod(createDeterminePackageName(scopeInterface))
-        .addCDMethod(createDetermineFullName(scopeInterface))
-        .build();
+            .setName(symbolName)
+            .setModifier(modifier)
+            .addInterface(getMCTypeFacade().createQualifiedType(symbolTableService.getCommonSymbolInterfaceFullName()))
+            .addAllInterfaces(symbolInput.getInterfaceList())
+            .addCDConstructor(constructor)
+            .addAllCDAttributes(symbolAttributes)
+            .addAllCDAttributes(symbolNameAttributes)
+            .addAllCDAttributes(symbolRuleAttributes)
+            .addAllCDMethods(symbolRuleAttributeMethods)
+            .addAllCDMethods(symbolRuleMethods)
+            .addAllCDMethods(symbolMethods)
+            .addAllCDMethods(symbolNameMethods)
+            .addCDMethod(createAcceptMethod(symbolName))
+            .addCDMethod(createDeterminePackageName(scopeInterface))
+            .addCDMethod(createDetermineFullName(scopeInterface))
+            .build();
 
     // add only for scope spanning symbols
     if (symbolInput.isPresentModifier() && (symbolTableService.hasScopeStereotype(symbolInput.getModifier())
-        || symbolTableService.hasInheritedScopeStereotype(symbolInput.getModifier()))) {
+            || symbolTableService.hasInheritedScopeStereotype(symbolInput.getModifier()))) {
       ASTCDAttribute spannedScopeAttribute = createSpannedScopeAttribute();
-      List<ASTCDMethod> spannedScopeMethods = createSpannedScopeMethods(spannedScopeAttribute);
+      List<ASTCDMethod> spannedScopeMethods = createSpannedScopeMethods(spannedScopeAttribute, hasInheritedSymbol);
       symbolClass.addCDAttribute(spannedScopeAttribute);
       symbolClass.addAllCDMethods(spannedScopeMethods);
       symbolClass.addInterface(getMCTypeFacade().createQualifiedType(I_SCOPE_SPANNING_SYMBOL));
     }
-    if (symbolInput.isPresentSuperclass()) {
+    if (hasInheritedSymbol) {
+      Map<ASTCDClass, String> values = symbolTableService.getInheritedSymbolPropertyClasses(Lists.newArrayList(symbolInput));
+      String value = values.getOrDefault(symbolInput, "");
+      if (!value.isEmpty()) {
+        symbolClass.setSuperclass(getMCTypeFacade().createQualifiedType(value));
+      }
+    } else if (symbolInput.isPresentSuperclass()) {
       symbolClass.setSuperclass(symbolInput.getSuperclass());
     }
     return symbolClass;
@@ -164,7 +185,7 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
     // template for getter mus be changed
     List<ASTCDMethod> packageNameMethod = accessorDecorator.decorate(symbolAttribute);
     packageNameMethod.forEach(m -> this.replaceTemplate(EMPTY_BODY, m,
-        new TemplateHookPoint(TEMPLATE_PATH + "NameSetter", symbolAttribute.getName())));
+            new TemplateHookPoint(TEMPLATE_PATH + "NameSetter", symbolAttribute.getName())));
     symbolMethods.addAll(packageNameMethod);
     accessorDecorator.enableTemplates();
     return symbolMethods;
@@ -174,12 +195,12 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
     return getCDAttributeFacade().createAttribute(PROTECTED, symbolTableService.getScopeInterfaceType(), String.format(SPANNED_SCOPE_VAR, ""));
   }
 
-  protected List<ASTCDMethod> createSpannedScopeMethods(ASTCDAttribute spannedScopeAttribute) {
+  protected List<ASTCDMethod> createSpannedScopeMethods(ASTCDAttribute spannedScopeAttribute, boolean isInherited) {
     List<ASTCDMethod> methodList = new ArrayList<>(accessorDecorator.decorate(spannedScopeAttribute));
     mutatorDecorator.disableTemplates();
     List<ASTCDMethod> setter = mutatorDecorator.decorate(spannedScopeAttribute);
-    setter.forEach(m -> this.replaceTemplate(EMPTY_BODY, m, new StringHookPoint("this.spannedScope = spannedScope;\n" +
-        "      getSpannedScope().setSpanningSymbol(this);")));
+    setter.forEach(m -> this.replaceTemplate(EMPTY_BODY, m,
+            new TemplateHookPoint("_symboltable.symbol.SetSpannedScope", isInherited)));
     methodList.addAll(setter);
     mutatorDecorator.enableTemplates();
     return methodList;
@@ -194,7 +215,7 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
     } else {
       String errorCode = symbolTableService.getGeneratedErrorCode(symbolName + ACCEPT_METHOD);
       this.replaceTemplate(EMPTY_BODY, acceptMethod, new TemplateHookPoint(
-          "_symboltable.AcceptTop", symbolName, errorCode));
+              "_symboltable.AcceptTop", symbolName, errorCode));
     }
     return acceptMethod;
   }
@@ -204,7 +225,7 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
 
     ASTCDMethod method = getCDMethodFacade().createMethod(PROTECTED, stringType, "determinePackageName");
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "DeterminePackageName",
-        scopeInterface));
+            scopeInterface));
     return method;
   }
 
@@ -213,7 +234,7 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
 
     ASTCDMethod method = getCDMethodFacade().createMethod(PROTECTED, stringType, "determineFullName");
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "DetermineFullName",
-        scopeInterface));
+            scopeInterface));
     return method;
   }
 

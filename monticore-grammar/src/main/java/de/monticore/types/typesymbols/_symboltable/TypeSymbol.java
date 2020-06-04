@@ -3,29 +3,37 @@ package de.monticore.types.typesymbols._symboltable;
 
 import com.google.common.collect.Lists;
 import de.monticore.types.check.SymTypeExpression;
+import de.se_rwth.commons.logging.Log;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class TypeSymbol extends TypeSymbolTOP {
 
-  private boolean isClass;
-  private boolean isInterface;
-  private boolean isEnum;
-  private boolean isAbstract;
-
   public TypeSymbol(String name) {
     super(name);
-    isClass = false;
-    isInterface = false;
-    isEnum = false;
-    isAbstract = false;
+  }
+
+  protected List<MethodSymbol> methodList=new ArrayList<>();
+
+  public void setMethodList(List<MethodSymbol> methodList){
+    this.methodList = methodList;
+    for(MethodSymbol method: methodList){
+      spannedScope.add(method);
+    }
   }
 
   public List<SymTypeExpression> getSuperClassesOnly(){
     return superTypes.stream()
         .filter(type -> type.getTypeInfo().isClass)
         .collect(Collectors.toList());
+  }
+
+  public List<SymTypeExpression> getInterfaceList(){
+    return superTypes.stream()
+            .filter(type -> type.getTypeInfo().isInterface)
+            .collect(Collectors.toList());
   }
 
   /**
@@ -82,35 +90,18 @@ public class TypeSymbol extends TypeSymbolTOP {
     spannedScope.add(m);
   }
 
-  public boolean isClass() {
-    return isClass;
+  public boolean isPresentSuperClass() {
+    return !getSuperClassesOnly().isEmpty();
   }
 
-  public void setClass(boolean aClass) {
-    isClass = aClass;
+  public SymTypeExpression getSuperClass() {
+    if (isPresentSuperClass()) {
+      return getSuperClassesOnly().get(0);
+    }
+    Log.error("0xA1067 SuperClass does not exist");
+    // Normally this statement is not reachable
+    throw new IllegalStateException();
   }
 
-  public boolean isInterface() {
-    return isInterface;
-  }
 
-  public void setInterface(boolean anInterface) {
-    isInterface = anInterface;
-  }
-
-  public boolean isEnum() {
-    return isEnum;
-  }
-
-  public void setEnum(boolean anEnum) {
-    isEnum = anEnum;
-  }
-
-  public boolean isAbstract() {
-    return isAbstract;
-  }
-
-  public void setAbstract(boolean anAbstract) {
-    isAbstract = anAbstract;
-  }
 }

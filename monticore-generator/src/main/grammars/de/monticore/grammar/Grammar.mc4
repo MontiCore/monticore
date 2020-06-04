@@ -572,7 +572,8 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
     Card?;
 
   symbolrule AdditionalAttribute =
-    type:String;
+    type:String
+    isAstAttr:boolean;
 
   // --------------------------------------------------------------------
   // Lexer

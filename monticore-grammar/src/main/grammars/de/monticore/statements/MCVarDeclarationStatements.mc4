@@ -27,9 +27,14 @@ package de.monticore.statements;
 component grammar MCVarDeclarationStatements
           extends de.monticore.statements.MCStatementsBasis,
                   de.monticore.types.MCBasicTypes,
-                  de.monticore.expressions.ExpressionsBasis {
+                  de.monticore.expressions.ExpressionsBasis,
+                  de.monticore.types.TypeSymbols {
 
-LocalVariableDeclaration implements MCBlockStatement
+LocalVariableDeclarationStatement implements MCBlockStatement
+    = LocalVariableDeclaration ";"
+    ;
+
+LocalVariableDeclaration
     =   MCModifier* MCType (VariableDeclarator || ",")+
     ;
 
@@ -37,9 +42,7 @@ VariableDeclarator
     =   DeclaratorId ("=" VariableInit)?
     ;
 
-// TODO: ! Variable wird deklariert! --> Symbol nutzen (deshalb nur Alpha)
-// MB -> BR: Das ist zur Zeit in einem anderen Branch in Arbeit
-DeclaratorId
+DeclaratorId implements Variable
     =   Name (dim:"[" "]")*
     ;
 
@@ -51,5 +54,16 @@ SimpleInit implements VariableInit =
 ArrayInit implements VariableInit
      =   "{" (VariableInit || ",")* (",")? "}"
      ;
+
+interface symbol Variable extends Field;
+
+symbolrule Variable =
+    annotations: de.monticore.types.check.SymTypeExpression*
+    isFinal: boolean
+    isReadOnly: boolean
+    isVolatile: boolean
+    isTransient: boolean
+    isEllipsis: boolean
+;
 
 }
