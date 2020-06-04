@@ -271,4 +271,10 @@ These can also be used if someone is interested:
 * [MCNumbers.mc4](../../../examples/MCNumbers.mc4)
 
 
+## Further Information
+
+* [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
+* [**List of languages**](docs/Languages.md).
+* [MontiCore documentation](http://www.monticore.de/)
+
 
