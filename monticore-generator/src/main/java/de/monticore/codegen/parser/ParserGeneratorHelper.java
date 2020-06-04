@@ -269,8 +269,8 @@ public class ParserGeneratorHelper {
 
   public String getConstantNameForConstant(ASTConstant x) {
     String name;
-    if (x.isPresentHumanName()) {
-      name = x.getHumanName();
+    if (x.isPresentUsageName()) {
+      name = x.getUsageName();
     }
     else {
       name = grammarInfo.getLexNamer().getConstantName(x.getName());

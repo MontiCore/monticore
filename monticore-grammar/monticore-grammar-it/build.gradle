@@ -28,7 +28,9 @@ dependencies {
 
 // has to be placed directly under the dependency definition, since otherwise the grammar configurations are not found
 repositories {
-  mavenLocal()
+  if(("true").equals(getProperty('useLocalRepo'))){
+    mavenLocal()
+  }
   maven {
     credentials.username mavenUser
     credentials.password mavenPassword

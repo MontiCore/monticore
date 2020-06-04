@@ -316,7 +316,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     boolean iterated = false;
     if (ast.isPresentSymbol()) {
       iterated = MCGrammarSymbolTableHelper
-              .isConstGroupIterated((RuleComponentSymbol) ast.getSymbol());
+              .isConstGroupIterated(ast.getSymbol());
     }
 
     // One entry leads to boolean isMethods
@@ -324,7 +324,9 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
       ASTConstant x = ast.getConstantList().get(0);
       addToCodeSection("(");
       if (x.isPresentKeyConstant()) {
-        addToCodeSection(createPredicate(x.getKeyConstant().getStringList()));
+        addToCodeSection(createKeyPredicate(x.getKeyConstant().getStringList()));
+      } else if (x.isPresentTokenConstant()) {
+        addToCodeSection(createTokenPredicate(x.getTokenConstant().getString()));
       } else if (!grammarInfo.isKeyword(x.getName(), grammarEntry)) {
         addToCodeSection(parserHelper.getLexSymbolName(x.getName()));
       } else {
@@ -349,7 +351,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
         ASTConstant x = iter.next();
 
         if (x.isPresentKeyConstant()) {
-          addToCodeSection(createPredicate(x.getKeyConstant().getStringList()));
+          addToCodeSection(createKeyPredicate(x.getKeyConstant().getStringList()));
         } else if (!grammarInfo.isKeyword(x.getName(), grammarEntry)) {
           addToCodeSection(parserHelper.getLexSymbolName(x.getName()));
         } else {
@@ -533,7 +535,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
 
   }
 
-  private String createPredicate(List<String> stringList) {
+  private String createKeyPredicate(List<String> stringList) {
     String rulename = "{next(";
     String sep = "";
     for (String key: stringList) {
@@ -545,12 +547,23 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     return rulename;
   }
 
+  private String createTokenPredicate(String str) {
+    String rulename = "";
+    String sep = " ";
+    for (char c: str.toCharArray()) {
+      rulename += "'" + c + "'";
+      rulename += sep;
+      sep = " {noSpace()}? ";
+    }
+    return rulename;
+  }
+
   @Override
   public void visit(ASTKeyTerminal ast) {
 
     startCodeSection("ASTKeyTerminal " + ast.getName());
     addToCodeSection("(");
-    String rulename = createPredicate(ast.getKeyConstant().getStringList());
+    String rulename = createKeyPredicate(ast.getKeyConstant().getStringList());
 
     // No actions in predicates
     // Template engine cannot be used for substition in rare cases
@@ -567,6 +580,38 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
           addToAction(astActions.getActionForKeyTerminalNotIteratedAttribute(ast));
         }
        }
+    }
+
+    addActionToCodeSection();
+    addToCodeSection(")");
+    addToCodeSection(printIteration(ast.getIteration()));
+
+    endCodeSection(ast);
+
+  }
+
+  @Override
+  public void visit(ASTTokenTerminal ast) {
+
+    startCodeSection("ASTTokenTerminal " + ast.getName());
+    addToCodeSection("(");
+    String rulename = createTokenPredicate(ast.getTokenConstant().getString());
+
+    // No actions in predicates
+    // Template engine cannot be used for substition in rare cases
+    addToCodeSection(rulename); // + " %initaction% %actions% ) %iteration% ";
+
+    if (embeddedJavaCode) {
+      boolean isAttribute = ast.isPresentUsageName();
+      boolean isList = ast.isPresentSymbol() && ast.getSymbol().isIsList();
+      // Add Actions
+      if (isAttribute) {
+        if (isList) {
+          addToAction(astActions.getActionForTerminalIteratedAttribute(ast));
+        } else {
+          addToAction(astActions.getActionForTerminalNotIteratedAttribute(ast));
+        }
+      }
     }
 
     addActionToCodeSection();
