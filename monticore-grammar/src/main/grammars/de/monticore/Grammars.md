@@ -52,11 +52,11 @@ other. Some snipets for type definitions:
                     import a.b.Foo.*;
   MCCollectionTypes List<.>   Set<.>
                     Optional<.>   Map<.,.>
-  MCSimpleGenericTypes    	
+  MCSimpleGenericTypes
                     Foo<.>  a.b.Bar<.,..,.>
   MCFullGenericTypes
                     Foo<? extends .>
-	                Foo<? super .>
+                    Foo<? super .>
                     Person[]
   ```
   
