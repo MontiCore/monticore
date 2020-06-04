@@ -42,8 +42,22 @@ It should be useful in many languages.
 ## Types: List of Grammars in package `de.monticore.types`
 
 These grammars generally deal with type definitions and build on each 
-other:
-
+other. Some snipets for type definitions:
+  ```
+  MCBasicTypes      boolean  byte  short  int
+                    long  char  float  double
+                    void  Person  a.b.Person
+                    import a.b.Foo.*;
+  MCCollectionTypes	List<.>   Set<.>
+  	                Optional<.>   Map<.,.>
+  MCSimpleGenericTypes    	
+                    Foo<.>  a.b.Bar<.,..,.>
+  MCFullGenericTypes
+                    Foo<? extends .>
+	                Foo<? super .>
+                	Person[]
+  ```
+  
 ### [MCBasicTypes.mc4](types/MCBasicTypes.mc4) (stable)
 * This grammar defines basic types. This eases the reuse of type 
 structures in languages similar to Java, that are somewhat 
@@ -87,7 +101,17 @@ infrastructure.
 
 This modularity of expressions and associated types greatly eases 
 the reuse of type structures in languages similar to Java.
-
+Some snipets for operators definrd in expressions:
+  ```
+  CommonExp	     / % + - <= >= == > < != ~. !. .?.:.
+  PLogicExp:     && || ~. 
+  AssigementExp: ++ --  = += -= *= /= &= |= ^= >>= >>>= <<= %=
+  BitExp:	     & | ^ << >> <<< >>>
+  OclExp:	     implies <=> | & forall exists let.in .@pre .[.] **
+        	     Set{.|.}
+  JavaClass:     this .[.] (.). Super .instanceof.
+  SetExp:	     .isin. .in. union intersect setand setor
+  ```
 
 ### [ExpressionsBasis.mc4](expressions/ExpressionsBasis.mc4) (stable)
 * This grammar defines core interfaces for expressions and imports the 
@@ -142,7 +166,13 @@ UML's OCL.
 ## Literals: List of Grammars in package `de.monticore.literals`
 
 Literals are the basic elements of expressions, such as numbers, strings, 
-truth values:
+truth values. Some snipets:
+  ```
+  MCCommonLit	    3  -3  2.17  -4  true  false  'c'  '\03AE' 
+        	    	3L  2.17d  2.17f  0xAF  "string" "str\b\n\\"  
+		            "str\uAF01\u0001\377"  null
+  MCJavaLiterals	999_999 0x3F2A 0b0001_0101 0567 1.2e-7F
+  ```
 
 ### [MCLiteralsBasis.mc4](literals/MCLiteralsBasis.mc4) (stable)
 * This grammar defines core interface for literals.
@@ -178,7 +208,23 @@ change variables, call functions, send messages etc.
 The following hierarchy of statement definitions should allow
 the developers to choose needed forms of statements and extend it 
 by their own additional needs. The provided list of statements
-is inspired by Java (actually subset of Java):
+is inspired by Java (actually subset of Java). Some example statements:
+  ```
+  Person p[] = { foo(3+7), p2, ...}
+  if (.) then . else .
+  for ( i = .; .; .) {.}
+  while (.) .
+  do . while (.)
+  switch (.) { case .: .; default: .}
+  return .
+  assert . : .
+  try {.} catch (.) {.} finally {.}
+  throw .
+  break .
+  continue .
+  label:
+  private  static  final  native ...
+  ```
 
 ### [MCStatementsBasis.mc4](statements/MCStatementsBasis.mc4) (stable)
 * This grammar defines the core interface for statements.
