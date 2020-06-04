@@ -106,9 +106,9 @@ Some snipets for operators definrd in expressions:
   CommonExp:     /  %  +  -  <=  >=  ==  >  <  !=  ~.  !.  .?.:.
   PLogicExp:     &&  ||  ~. 
   AssigementExp: ++  --  =  +=  -=  *=  /=  &=  |=  ^=  >>=  >>>=  <<=  %=
-  BitExp:	     &  |  ^  <<  >>  >>>
-  OclExp:	     implies  <=>  |  &  forall  exists  let.in. .@pre  .[.]  .**
-        	     Set{.|.}
+  BitExp:        &  |  ^  <<  >>  >>>
+  OclExp:        implies  <=>  |  &  forall  exists  let.in. .@pre  .[.]  .**
+                 Set{.|.}
   JavaClass:     this  .[.]  (.).  super  .instanceof.
   SetExp:	     .isin.  .in.  union  intersect  setand  setor
   ```
