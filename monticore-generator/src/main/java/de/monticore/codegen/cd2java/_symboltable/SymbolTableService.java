@@ -16,9 +16,7 @@ import de.se_rwth.commons.Names;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PACKAGE;
-import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
-import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.NODE_SUFFIX;
+import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.*;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.utils.Names.getSimpleName;
@@ -412,7 +410,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   public String getSymbolSimpleName(ASTCDType clazz) {
     // if in grammar other symbol Name is defined e.g. 'symbol (MCType) MCQualifiedType implements MCObjectType = MCQualifiedName;'
     // this will evaluate to MCTypeSymbol
-    if (clazz.isPresentModifier()) {
+    if (clazz.isPresentModifier() && !hasSymbolStereotype(clazz.getModifier())) {
       Optional<String> symbolTypeValue = getSymbolTypeValue(clazz.getModifier());
       if (symbolTypeValue.isPresent()) {
         return Names.getSimpleName(symbolTypeValue.get());
@@ -428,7 +426,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
 
   public String getSymbolFullName(ASTCDType clazz, CDDefinitionSymbol cdDefinitionSymbol) {
     //if in grammar other symbol Name is defined e.g. 'symbol (MCType) MCQualifiedType implements MCObjectType = MCQualifiedName;'
-    if (clazz.isPresentModifier()) {
+    if (clazz.isPresentModifier() && !hasSymbolStereotype(clazz.getModifier())) {
       Optional<String> symbolTypeValue = getSymbolTypeValue(clazz.getModifier());
       if (symbolTypeValue.isPresent()) {
         return symbolTypeValue.get();
@@ -445,12 +443,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   public Optional<String> getDefiningSymbolFullName(ASTCDType clazz, CDDefinitionSymbol cdDefinitionSymbol) {
     //if in grammar other symbol Name is defined e.g. 'symbol (MCType) MCQualifiedType implements MCObjectType = MCQualifiedName;'
     if (clazz.isPresentModifier()) {
-      Optional<String> symbolTypeValue = getSymbolTypeValue(clazz.getModifier());
-      if (symbolTypeValue.isPresent()) {
-        // is a symbol, but no defining one
-        return Optional.empty();
-      } else if (hasSymbolStereotype(clazz.getModifier())) {
-        // is a defining symbol
+      if (hasSymbolStereotype(clazz.getModifier())) {
         return Optional.of(getPackage(cdDefinitionSymbol) + "." + getNameWithSymbolSuffix(clazz));
       }
     }
@@ -461,11 +454,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   public Optional<String> getDefiningSymbolSimpleName(ASTCDType clazz) {
     // does only return symbol defining parts, not parts with e.g. symbol (MCType)
     if (clazz.isPresentModifier()) {
-      Optional<String> symbolTypeValue = getSymbolTypeValue(clazz.getModifier());
-      if (symbolTypeValue.isPresent()) {
-        // is a symbol, but no defining one
-        return Optional.empty();
-      } else if (hasSymbolStereotype(clazz.getModifier())) {
+      if (hasSymbolStereotype(clazz.getModifier())) {
         // is a defining symbol
         return Optional.ofNullable(getNameWithSymbolSuffix(clazz));
       }
@@ -616,9 +605,8 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
 
   public List<ASTCDType> getSymbolDefiningProds(List<? extends ASTCDType> astcdClasses) {
     return astcdClasses.stream()
-        .filter(c -> ((ASTCDType) c).isPresentModifier())
+        .filter(c -> c.isPresentModifier())
         .filter(c -> hasSymbolStereotype(c.getModifier()))
-        .filter(c -> !getSymbolTypeValue(c.getModifier()).isPresent())
         .collect(Collectors.toList());
   }
 
@@ -636,12 +624,24 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
       // classes with inherited symbol property
       if (astcdClass.isPresentModifier() && hasInheritedSymbolStereotype(astcdClass.getModifier())) {
         List<String> stereotypeValues = getStereotypeValues(astcdClass.getModifier(), MC2CDStereotypes.INHERITED_SYMBOL);
-        if (stereotypeValues.size() == 1) {
-          inheritedSymbolProds.put(astcdClass, stereotypeValues.get(0));
+        // multiple inherited symbols possible
+        for (String stereotypeValue : stereotypeValues) {
+          inheritedSymbolProds.put(astcdClass, stereotypeValue);
         }
       }
     }
     return inheritedSymbolProds;
+  }
+
+  public String getInheritedSymbol(ASTCDType astcdClass ) {
+    // classes with inherited symbol property
+    if (astcdClass.isPresentModifier() && hasInheritedSymbolStereotype(astcdClass.getModifier())) {
+      List<String> stereotypeValues = getStereotypeValues(astcdClass.getModifier(), MC2CDStereotypes.INHERITED_SYMBOL);
+      if (!stereotypeValues.isEmpty()) {
+        return stereotypeValues.get(0);
+      }
+    }
+    return "";
   }
 
   public List<ASTCDType> getNoSymbolAndScopeDefiningClasses(List<ASTCDClass> astcdClasses) {

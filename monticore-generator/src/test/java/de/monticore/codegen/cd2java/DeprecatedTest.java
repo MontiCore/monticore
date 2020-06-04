@@ -89,7 +89,7 @@ public class DeprecatedTest extends DecoratorTestCase {
 
     symbolDecorator = new SymbolDecorator(this.glex, symbolTableService, visitorService, methodDecorator);
 
-    symbolBuilderDecorator = new SymbolBuilderDecorator(glex, builderDecorator);
+    symbolBuilderDecorator = new SymbolBuilderDecorator(glex, symbolTableService, builderDecorator);
 
     symbolLoaderDecorator = new SymbolLoaderDecorator(this.glex, symbolTableService, methodDecorator,
         new MandatoryMutatorSymbolLoaderDecorator(glex));

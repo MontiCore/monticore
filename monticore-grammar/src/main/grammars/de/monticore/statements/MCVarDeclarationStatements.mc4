@@ -27,9 +27,14 @@ package de.monticore.statements;
 component grammar MCVarDeclarationStatements
           extends de.monticore.statements.MCStatementsBasis,
                   de.monticore.types.MCBasicTypes,
-                  de.monticore.expressions.ExpressionsBasis {
+                  de.monticore.expressions.ExpressionsBasis,
+                  de.monticore.types.TypeSymbols {
 
-LocalVariableDeclaration implements MCBlockStatement
+LocalVariableDeclarationStatement implements MCBlockStatement
+    = LocalVariableDeclaration ";"
+    ;
+
+LocalVariableDeclaration
     =   MCModifier* MCType (VariableDeclarator || ",")+
     ;
 
@@ -37,11 +42,15 @@ VariableDeclarator
     =   DeclaratorId ("=" VariableInit)?
     ;
 
+<<<<<<< HEAD
 // TODO: ! Variable wird deklariert! --> Symbol nutzen (deshalb nur Alpha)
 // MB -> BR: Das ist zur Zeit in einem anderen Branch in Arbeit
 // BR -> MB: (3.6.) Ich gehe davon aus, dass hier ein VariableSymbol genutzt wird
 // und via SymbolMill wird da ggf. dann in Wirklichkeit ein FieldSymbol erzeugt?
 DeclaratorId
+=======
+DeclaratorId implements Variable
+>>>>>>> e69e3ffba5d709003e022dfd859251da19682aa7
     =   Name (dim:"[" "]")*
     ;
 
@@ -53,5 +62,16 @@ SimpleInit implements VariableInit =
 ArrayInit implements VariableInit
      =   "{" (VariableInit || ",")* (",")? "}"
      ;
+
+interface symbol Variable extends Field;
+
+symbolrule Variable =
+    annotations: de.monticore.types.check.SymTypeExpression*
+    isFinal: boolean
+    isReadOnly: boolean
+    isVolatile: boolean
+    isTransient: boolean
+    isEllipsis: boolean
+;
 
 }

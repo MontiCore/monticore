@@ -193,6 +193,32 @@ public class SymTypeOfGenerics extends SymTypeExpression {
     return new SymTypeOfGenerics(new TypeSymbolLoader(typeSymbolLoader.getName(), typeSymbolLoader.getEnclosingScope()), getArgumentList());
   }
 
+  @Override
+  public boolean deepEquals(SymTypeExpression sym){
+    if(!(sym instanceof SymTypeOfGenerics)){
+      return false;
+    }
+    SymTypeOfGenerics symGen = (SymTypeOfGenerics) sym;
+    if(this.typeSymbolLoader== null ||symGen.typeSymbolLoader==null){
+      return false;
+    }
+    if(!this.typeSymbolLoader.getEnclosingScope().equals(symGen.typeSymbolLoader.getEnclosingScope())){
+      return false;
+    }
+    if(!this.typeSymbolLoader.getName().equals(symGen.typeSymbolLoader.getName())){
+      return false;
+    }
+    if(this.sizeArguments()!=symGen.sizeArguments()){
+      return false;
+    }
+    for(int i = 0;i<this.sizeArguments();i++){
+      if(!this.getArgument(i).deepEquals(symGen.getArgument(i))){
+        return false;
+      }
+    }
+    return this.print().equals(symGen.print());
+  }
+
   // --------------------------------------------------------------------------
   // From here on: Standard functionality to access the list of arguments
   // (was copied from a created class)

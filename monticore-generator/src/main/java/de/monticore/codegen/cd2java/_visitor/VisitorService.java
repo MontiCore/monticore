@@ -199,4 +199,14 @@ public class VisitorService extends AbstractService<VisitorService> {
         .map(this::getVisitorType)
         .collect(Collectors.toList());
   }
+
+  public List<ASTMCQualifiedType> getSuperSymbolVisitors() {
+    //only direct super cds, not transitive
+    List<CDDefinitionSymbol> superCDs = getSuperCDsDirect();
+    return superCDs
+            .stream()
+            .map(this::getVisitorFullName)
+            .map(getMCTypeFacade()::createQualifiedType)
+            .collect(Collectors.toList());
+  }
 }

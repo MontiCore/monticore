@@ -106,10 +106,13 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
 
         methodDecorator.disableTemplates();
         List<ASTCDMethod> methods = methodDecorator.getMutatorDecorator().decorate(attribute);
-        String generatedErrorCode = astService.getGeneratedErrorCode(clazz.getName() + attribute.getName());
-        methods.forEach(m ->
-            this.replaceTemplate(EMPTY_BODY, m, new TemplateHookPoint("_ast.ast_class.symboltable.InheritedSetEnclosingScope", generatedErrorCode,
+        String errorCode = astService.getGeneratedErrorCode(clazz.getName());
+        methods.stream().filter(m -> m.getName().equals("setEnclosingScope")).forEach(m ->
+            this.replaceTemplate(EMPTY_BODY, m, new TemplateHookPoint("_ast.ast_class.symboltable.InheritedSetEnclosingScope", errorCode,
                 MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(m.getCDParameter(0).getMCType()), scopeInterfaceType)));
+        methods.stream().filter(m -> m.getName().equals("setSpannedScope")).forEach(m ->
+                this.replaceTemplate(EMPTY_BODY, m, new TemplateHookPoint("_ast.ast_class.symboltable.InheritedSetSpannedScope", errorCode,
+                        MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(m.getCDParameter(0).getMCType()), scopeInterfaceType)));
         methodDecorator.enableTemplates();
         clazz.addAllCDMethods(methods);
       }

@@ -215,13 +215,28 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
   @Override
   public void visit(ASTASTRule ast) {
     final Optional<ProdSymbol> prodSymbol = grammarSymbol.getProdWithInherited(ast.getType());
-    if (!prodSymbol.isPresent()) {
+    if (prodSymbol.isPresent()) {
+      ast.getAdditionalAttributeList().forEach(a -> addAttributeInAST(prodSymbol.get(), a, true));
+    } else {
       error(
           "0xA4076 There must not exist an AST rule for the nonterminal " + ast.getType()
               + " because there exists no production defining " + ast.getType(),
           ast.get_SourcePositionStart());
     }
-    ast.getAdditionalAttributeList().forEach(a -> addAttributeInAST(prodSymbol.get(), a));
+    ast.setEnclosingScope(getCurrentScope().get());
+  }
+
+  @Override
+  public void visit(ASTSymbolRule ast) {
+    final Optional<ProdSymbol> prodSymbol = grammarSymbol.getProdWithInherited(ast.getType());
+    if (prodSymbol.isPresent()) {
+      ast.getAdditionalAttributeList().forEach(a -> addAttributeInAST(prodSymbol.get(), a, false));
+    } else {
+      error(
+              "0xA4077 There must not exist an AST rule for the nonterminal " + ast.getType()
+                      + " because there exists no production defining " + ast.getType(),
+              ast.get_SourcePositionStart());
+    }
     ast.setEnclosingScope(getCurrentScope().get());
   }
 
@@ -461,8 +476,9 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
    * @param mcProdSymbol
    * @param astAttribute
    */
-  private void addAttributeInAST(ProdSymbol mcProdSymbol, ASTAdditionalAttribute astAttribute) {
+  private void addAttributeInAST(ProdSymbol mcProdSymbol, ASTAdditionalAttribute astAttribute, boolean isAstAttr) {
     AdditionalAttributeSymbol symbol = create_AdditionalAttribute(astAttribute);
+    symbol.setIsAstAttr(isAstAttr);
     initialize_AdditionalAttribute(symbol,astAttribute);
     mcProdSymbol.getSpannedScope().add(symbol);
     setLinkBetweenSymbolAndNode(symbol, astAttribute);
