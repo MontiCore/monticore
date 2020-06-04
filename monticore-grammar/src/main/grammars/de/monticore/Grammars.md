@@ -171,7 +171,7 @@ truth values. Some snipets:
   MCCommonLit       3  -3  2.17  -4  true  false  'c'  '\03AE' 
                     3L  2.17d  2.17f  0xAF  "string" "str\b\n\\"  
                     "str\uAF01\u0001\377"  null
-  MCJavaLiterals    999_999 0x3F2A 0b0001_0101 0567 1.2e-7F
+  MCJavaLiterals    999_999  0x3F2A  0b0001_0101  0567  1.2e-7F
   ```
 
 ### [MCLiteralsBasis.mc4](literals/MCLiteralsBasis.mc4) (stable)
@@ -210,12 +210,12 @@ the developers to choose needed forms of statements and extend it
 by their own additional needs. The provided list of statements
 is inspired by Java (actually subset of Java). Some example statements:
   ```
-  Person p[] = { foo(3+7), p2, ...}
+  int i;   int j = 2;                     Person p[] = { foo(3+7), p2, ...}
   if (.) then . else .                    for ( i = .; .; .) {.}
   while (.) .                             do . while (.)
   switch (.) { case .: .; default: .}
   foo(1,2,3)                              return .                                
-  assert . : .
+  assert . : "..."
   try {.} catch (.) {.} finally {.}       throw .           
   break .                                 continue .
   label:                                  private  static  final  native ...
