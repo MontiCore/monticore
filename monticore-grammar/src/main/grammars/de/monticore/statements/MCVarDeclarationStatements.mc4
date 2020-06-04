@@ -39,6 +39,8 @@ VariableDeclarator
 
 // TODO: ! Variable wird deklariert! --> Symbol nutzen (deshalb nur Alpha)
 // MB -> BR: Das ist zur Zeit in einem anderen Branch in Arbeit
+// BR -> MB: (3.6.) Ich gehe davon aus, dass hier ein VariableSymbol genutzt wird
+// und via SymbolMill wird da ggf. dann in Wirklichkeit ein FieldSymbol erzeugt?
 DeclaratorId
     =   Name (dim:"[" "]")*
     ;
