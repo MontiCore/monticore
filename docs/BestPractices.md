@@ -100,7 +100,7 @@ A component grammar is ment for extension. MontiCore therefore provides five(!)
   * Use a normal nonterminal `X` and extend it in a sub-grammar.
   ```
   component grammar A {  
-    X = "";
+    X = "that";
     N = "bla" X "blubb";
   }
   grammar B extends A {
@@ -116,7 +116,7 @@ A component grammar is ment for extension. MontiCore therefore provides five(!)
   * Mark nonterminal `X` as external.
   ```
   component grammar A {  
-    external X = "";
+    external X;
     N = "bla" X "blubb";
   }
   grammar B extends A {
