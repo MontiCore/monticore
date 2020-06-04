@@ -199,7 +199,7 @@ and
 * The MontiCore language for parsing JSON artifacts. An example:
   ```
   { "Alice": {
-      "name": "Alice Anderson",
+      "fullname": "Alice Anderson",
       "address": {
         "postal_code": 10459, 
         "street": "Beck Street",
