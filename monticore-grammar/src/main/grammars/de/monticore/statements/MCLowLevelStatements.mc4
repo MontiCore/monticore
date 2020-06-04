@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.statements;
 
-/* Alpha-version: This is intended to become a MontiCore stable grammar. */
+/* Beta-version: This is intended to become a MontiCore stable grammar. */
 
 /**
  * This grammar defines three low-level statements that Java provides.
