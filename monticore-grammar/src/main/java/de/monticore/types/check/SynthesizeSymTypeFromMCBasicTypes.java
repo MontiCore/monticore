@@ -54,7 +54,7 @@ public class SynthesizeSymTypeFromMCBasicTypes implements MCBasicTypesVisitor, I
     // is accepted only here, decided on 07.04.2020
     return (ITypeSymbolsScope) mcBasicTypesScope;
   }
-  
+
   /**
    * Storage in the Visitor: result of the last endVisit.
    * This attribute is synthesized upward.

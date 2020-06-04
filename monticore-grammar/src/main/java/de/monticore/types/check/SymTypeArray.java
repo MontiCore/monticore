@@ -84,5 +84,29 @@ public class SymTypeArray extends SymTypeExpression {
         this.dim, this.argument.deepClone());
   }
 
+  @Override
+  public boolean deepEquals(SymTypeExpression sym){
+    if(!(sym instanceof SymTypeArray)){
+      return false;
+    }
+    SymTypeArray symArr = (SymTypeArray) sym;
+    if(this.dim!=symArr.dim){
+      return false;
+    }
+    if(this.typeSymbolLoader== null ||symArr.typeSymbolLoader==null){
+      return false;
+    }
+    if(!this.typeSymbolLoader.getEnclosingScope().equals(symArr.typeSymbolLoader.getEnclosingScope())){
+      return false;
+    }
+    if(!this.typeSymbolLoader.getName().equals(symArr.typeSymbolLoader.getName())){
+      return false;
+    }
+    if(!this.getArgument().deepEquals(symArr.getArgument())){
+      return false;
+    }
+    return this.print().equals(symArr.print());
+  }
+
   // --------------------------------------------------------------------------
 }

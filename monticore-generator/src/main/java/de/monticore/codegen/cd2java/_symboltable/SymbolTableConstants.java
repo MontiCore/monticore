@@ -102,7 +102,7 @@ public class SymbolTableConstants {
 
   public static final String ENCLOSING_SCOPE_VAR = "enclosingScope";
 
-  public static final String SPANNED_SCOPE_VAR = "spanned%sScope";
+  public static final String SPANNED_SCOPE_VAR = "spannedScope";
 
   public static final String PACKAGE_NAME_VAR = "packageName";
 

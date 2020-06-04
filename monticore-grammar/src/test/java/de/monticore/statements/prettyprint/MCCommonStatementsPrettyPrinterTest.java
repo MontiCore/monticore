@@ -39,8 +39,8 @@ public class MCCommonStatementsPrettyPrinterTest {
   }
 
   @Test
-  public void testMCJavaBlock() throws IOException {
-    Optional<ASTMCJavaBlock> result = parser.parse_StringMCJavaBlock("{ private Integer foo = a }");
+  public void testBlock() throws IOException {
+    Optional<ASTMCJavaBlock> result = parser.parse_StringMCJavaBlock("{ private Integer foo = a; }");
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
     ASTMCJavaBlock ast = result.get();
@@ -56,7 +56,7 @@ public class MCCommonStatementsPrettyPrinterTest {
 
   @Test
   public void testBlockStatement() throws IOException {
-    Optional<ASTMCBlockStatement> result = parser.parse_StringMCBlockStatement("private Integer foo = a");
+    Optional<ASTMCBlockStatement> result = parser.parse_StringMCBlockStatement("private Integer foo = a;");
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
     ASTMCBlockStatement ast = result.get();

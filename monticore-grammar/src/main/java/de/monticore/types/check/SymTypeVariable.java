@@ -66,5 +66,23 @@ public class SymTypeVariable extends SymTypeExpression {
     return new SymTypeVariable(new TypeSymbolLoader(typeSymbolLoader.getName(), typeSymbolLoader.getEnclosingScope()));
   }
 
+  @Override
+  public boolean deepEquals(SymTypeExpression sym){
+    if(!(sym instanceof SymTypeVariable)){
+      return false;
+    }
+    SymTypeVariable symVar = (SymTypeVariable) sym;
+    if(this.typeSymbolLoader== null ||symVar.typeSymbolLoader==null){
+      return false;
+    }
+    if(!this.typeSymbolLoader.getEnclosingScope().equals(symVar.typeSymbolLoader.getEnclosingScope())){
+      return false;
+    }
+    if(!this.typeSymbolLoader.getName().equals(symVar.typeSymbolLoader.getName())){
+      return false;
+    }
+    return this.print().equals(symVar.print());
+  }
+
   // --------------------------------------------------------------------------
 }
