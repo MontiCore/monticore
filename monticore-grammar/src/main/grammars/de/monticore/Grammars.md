@@ -110,7 +110,7 @@ Some snipets for operators definrd in expressions:
   OclExp:        implies  <=>  |  &  forall  exists  let.in. .@pre  .[.]  .**
                  Set{.|.}
   JavaClass:     this  .[.]  (.).  super  .instanceof.
-  SetExp:	     .isin.  .in.  union  intersect  setand  setor
+  SetExp:        .isin.  .in.  union  intersect  setand  setor
   ```
 
 ### [ExpressionsBasis.mc4](expressions/ExpressionsBasis.mc4) (stable)
