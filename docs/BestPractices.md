@@ -97,10 +97,10 @@ A component grammar is ment for extension. MontiCore therefore provides five(!)
     2. Only one overriding alternative possible (i.e. multiple overriding in 
        subgrammars are allowed, but only the most specific resides) .
 3. Extending nonterminal from the super-grammar.
-  * Use a normal nonterminal `X` and extend it in a sub-grammar.
+  * Use an empty normal nonterminal `X` and extend it in a sub-grammar.
   ```
   component grammar A {  
-    X = "that";
+    X = ;
     N = "bla" X "blubb";
   }
   grammar B extends A {
