@@ -30,6 +30,8 @@ project under `monticore-grammar/src/main/grammars/` in packages
 * `de.monticore.statements`
 * `de.monticore.types`
 
+For [more langauges, see here](docs/Languages.md).
+ 
 
 ## General: List of Grammars in package `de.monticore`
 
