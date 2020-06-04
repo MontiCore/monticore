@@ -268,22 +268,22 @@ is inspired by Java (actually subset of Java). Some example statements:
 several smaller grammars are also available:
 
 ### [Cardinality.mc4](Cardinality.mc4) (stable)
-* This grammar defines UML Cardinalities of forms "*", "[n..m]" "[n..*]".
+* This grammar defines UML Cardinalities of forms ``*``, ``[n..m]`` or ``[n..*]``.
 
 ### [Completeness.mc4](Completeness.mc4) (stable)
 * This grammar defines completeness information in UML
-  like "...", "(c)", but also "(...,c)".
+  like ``...``, ``(c)``, but also ``(...,c)``.
 
 ### [UMLModifier.mc4](UMLModifier.mc4) (stable)
 * The grammar contains the modifiers that UML provides.
-* This includes "public" "private", "protected", "final", "abstract", "local",
-          "derived", "readonly", and "static", but also the 
-          compact syntactic versions "+", "#", "-", "/" and "?" (for readonly).
-* UML modifiers are not identical to Java modifiers (e.g. "native" or 
-  "threadsafe" are missing.)
+* This includes ``public`` ``private``, ``protected``, ``final``, ``abstract``, ``local``,
+          ``derived``, ``readonly``, and ``static``, but also the 
+          compact syntactic versions ``+``, ``#``, ``-``, ``/`` and ``?`` (for readonly).
+* UML modifiers are not identical to Java modifiers (e.g. ``native`` or 
+  ``threadsafe`` are missing.)
 
 ### [UMLStereotype.mc4](UMLStereotype.mc4) (stable)
-* This grammars defines Stereotypes like *<<val1,val2="text",...>>*
+* This grammars defines Stereotypes like *``<<val1,val2="text",...>>``*
 * Methods contains(name), getValue(name) assist Stereotype retrieval.
 * Values may only be of type String.
   The real value unfortunately in UML is only encoded as String.
