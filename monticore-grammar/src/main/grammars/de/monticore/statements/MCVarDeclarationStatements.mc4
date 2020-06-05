@@ -42,15 +42,9 @@ VariableDeclarator
     =   DeclaratorId ("=" VariableInit)?
     ;
 
-<<<<<<< HEAD
-// TODO: ! Variable wird deklariert! --> Symbol nutzen (deshalb nur Alpha)
-// MB -> BR: Das ist zur Zeit in einem anderen Branch in Arbeit
-// BR -> MB: (3.6.) Ich gehe davon aus, dass hier ein VariableSymbol genutzt wird
+//  TODO BR -> MB: (3.6.) Ich gehe davon aus, dass hier ein VariableSymbol genutzt wird
 // und via SymbolMill wird da ggf. dann in Wirklichkeit ein FieldSymbol erzeugt?
-DeclaratorId
-=======
 DeclaratorId implements Variable
->>>>>>> e69e3ffba5d709003e022dfd859251da19682aa7
     =   Name (dim:"[" "]")*
     ;
 
