@@ -313,5 +313,9 @@ public abstract class SymTypeExpression {
     return typeSymbols;
   }
 
+  public boolean isTypeInfoLoadable(){
+    return typeSymbolLoader.isSymbolLoaded();
+  }
+
   // --------------------------------------------------------------------------
 }
