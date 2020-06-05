@@ -8,7 +8,7 @@
   <parent>
     <groupId>de.monticore</groupId>
     <artifactId>experiments</artifactId>
-    <version>6.1.0</version>
+    <version>6.1.0.1-SNAPSHOT</version>
   </parent>
 
   <artifactId>S01.intro</artifactId>
