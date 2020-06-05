@@ -6,7 +6,7 @@
   <parent>
     <artifactId>monticore</artifactId>
     <groupId>de.monticore</groupId>
-    <version>6.1.0.1-SNAPSHOT</version>
+    <version>6.1.0.1</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   
