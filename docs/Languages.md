@@ -338,7 +338,7 @@ component InteriorLight {                           // MontiArc language
     * [SI unit types for computations](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/siunits/SIUnitTypes4Computing.mc4)
     *           (other alternatives are possible; SI has not standardized anything here)
 * Example projects:
-    * [SI Java](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/test/grammars/de/monticore/siunits/testsijava/TestSIJava.mc4) 
+    * [SI Java](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/test/grammars/de/monticore/lang/testsijava/TestSIJava.mc4) 
 * [*detailed description*](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/siunits/SIUnits.md)  
 
 
