@@ -29,7 +29,6 @@ public class CDASTCreator implements UnaryOperator<Link<ASTMCGrammar, ASTCDCompi
         .andThen(new AttributeInASTsToCDAttributes())
         .andThen(new NonTerminalsToCDAttributes())
         .andThen(new TerminalsToCDAttributes())
-        .andThen(new KeyTerminalsToCDAttributes())
         .andThen(new ConstantGroupsToCDAttributes())
         .apply(rootLink);
   }

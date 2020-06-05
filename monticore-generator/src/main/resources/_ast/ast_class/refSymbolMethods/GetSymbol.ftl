@@ -1,3 +1,4 @@
+
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("attributeName", "referencedProdName")}
 <#assign service = glex.getGlobalVar("service")>

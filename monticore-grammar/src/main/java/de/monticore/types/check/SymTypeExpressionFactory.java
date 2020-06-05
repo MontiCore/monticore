@@ -154,4 +154,12 @@ public class SymTypeExpressionFactory {
     return new SymTypeOfGenerics(new TypeSymbolLoader(name, enclosingScope),
         Arrays.asList(arguments));
   }
+
+  public static SymTypeOfWildcard createWildcard(boolean isUpper, SymTypeExpression bound){
+    return new SymTypeOfWildcard(isUpper,bound);
+  }
+
+  public static SymTypeOfWildcard createWildcard(){
+    return new SymTypeOfWildcard();
+  }
 }

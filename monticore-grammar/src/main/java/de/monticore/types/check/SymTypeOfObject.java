@@ -74,5 +74,24 @@ public class SymTypeOfObject extends SymTypeExpression {
     return true;
   }
 
+
+  @Override
+  public boolean deepEquals(SymTypeExpression sym){
+    if(!(sym instanceof SymTypeOfObject)){
+      return false;
+    }
+    SymTypeOfObject symCon = (SymTypeOfObject) sym;
+    if(this.typeSymbolLoader== null ||symCon.typeSymbolLoader==null){
+      return false;
+    }
+    if(!this.typeSymbolLoader.getEnclosingScope().equals(symCon.typeSymbolLoader.getEnclosingScope())){
+      return false;
+    }
+    if(!this.typeSymbolLoader.getName().equals(symCon.typeSymbolLoader.getName())){
+      return false;
+    }
+    return this.print().equals(symCon.print());
+  }
+
   // --------------------------------------------------------------------------
 }

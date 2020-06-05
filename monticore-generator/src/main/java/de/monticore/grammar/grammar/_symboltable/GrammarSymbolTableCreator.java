@@ -173,6 +173,34 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
   }
 
   @Override
+  public void visit(ASTTokenTerminal node) {
+    // only create a symbol for ASTKeyTerminals that have a usage name
+    // only with usage name is shown in AST
+    if(node.isPresentUsageName()){
+      super.visit(node);
+    } else {
+      // must still add the scope to the ASTKeyTerminal, even if it defines no symbol
+      if (getCurrentScope().isPresent()) {
+        node.setEnclosingScope(getCurrentScope().get());
+      } else {
+        Log.error(String.format(SET_SCOPE_ERROR, node));
+      }
+    }
+  }
+
+  @Override
+  protected RuleComponentSymbol create_TokenTerminal(ASTTokenTerminal ast) {
+    final String symbolName = ast.isPresentUsageName()?ast.getUsageName():"";
+    return new RuleComponentSymbol(symbolName);
+  }
+
+  @Override
+  public void initialize_TokenTerminal(RuleComponentSymbol prodComponent, ASTTokenTerminal ast) {
+    prodComponent.setIsTerminal(true);
+    setComponentMultiplicity(prodComponent, ast);
+  }
+
+  @Override
   protected RuleComponentSymbol create_NonTerminal(ASTNonTerminal ast) {
     final String symbolName = ast.isPresentUsageName() ? ast.getUsageName() : StringTransformations.uncapitalize(ast.getName());
     return new RuleComponentSymbol(symbolName);
@@ -187,13 +215,28 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
   @Override
   public void visit(ASTASTRule ast) {
     final Optional<ProdSymbol> prodSymbol = grammarSymbol.getProdWithInherited(ast.getType());
-    if (!prodSymbol.isPresent()) {
+    if (prodSymbol.isPresent()) {
+      ast.getAdditionalAttributeList().forEach(a -> addAttributeInAST(prodSymbol.get(), a, true));
+    } else {
       error(
           "0xA4076 There must not exist an AST rule for the nonterminal " + ast.getType()
               + " because there exists no production defining " + ast.getType(),
           ast.get_SourcePositionStart());
     }
-    ast.getAdditionalAttributeList().forEach(a -> addAttributeInAST(prodSymbol.get(), a));
+    ast.setEnclosingScope(getCurrentScope().get());
+  }
+
+  @Override
+  public void visit(ASTSymbolRule ast) {
+    final Optional<ProdSymbol> prodSymbol = grammarSymbol.getProdWithInherited(ast.getType());
+    if (prodSymbol.isPresent()) {
+      ast.getAdditionalAttributeList().forEach(a -> addAttributeInAST(prodSymbol.get(), a, false));
+    } else {
+      error(
+              "0xA4077 There must not exist an AST rule for the nonterminal " + ast.getType()
+                      + " because there exists no production defining " + ast.getType(),
+              ast.get_SourcePositionStart());
+    }
     ast.setEnclosingScope(getCurrentScope().get());
   }
 
@@ -249,8 +292,8 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
   protected void initialize_ConstantGroup(RuleComponentSymbol symbol, ASTConstantGroup ast) {
     symbol.setIsConstantGroup(true);
     for (ASTConstant c : ast.getConstantList()) {
-      if (c.isPresentHumanName()) {
-        symbol.addSubProd(c.getHumanName());
+      if (c.isPresentUsageName()) {
+        symbol.addSubProd(c.getUsageName());
       } else if (c.isPresentKeyConstant()) {
         symbol.addSubProd(c.getKeyConstant().getString(0));
       } else {
@@ -433,8 +476,9 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
    * @param mcProdSymbol
    * @param astAttribute
    */
-  private void addAttributeInAST(ProdSymbol mcProdSymbol, ASTAdditionalAttribute astAttribute) {
+  private void addAttributeInAST(ProdSymbol mcProdSymbol, ASTAdditionalAttribute astAttribute, boolean isAstAttr) {
     AdditionalAttributeSymbol symbol = create_AdditionalAttribute(astAttribute);
+    symbol.setIsAstAttr(isAstAttr);
     initialize_AdditionalAttribute(symbol,astAttribute);
     mcProdSymbol.getSpannedScope().add(symbol);
     setLinkBetweenSymbolAndNode(symbol, astAttribute);

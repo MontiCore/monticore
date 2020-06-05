@@ -53,8 +53,8 @@ public class GrammarCoCos {
     checker.addCoCo(new ReferencedSymbolExists());
     checker.addCoCo(new ConservativeExtensionCheck());
     checker.addCoCo(new NoTokenDefined());
-    checker.addCoCo(new InheritedSymbolProperty());
-    checker.addCoCo(new InheritedScopeProperty());
+    // checker.addCoCo(new InheritedSymbolProperty());
+    // checker.addCoCo(new InheritedScopeProperty());
     checker.addCoCo(new SymbolRuleWithoutSymbolRef());
     checker.addCoCo(new NoNestedGenericsInAdditionalAttributes());
     checker.addCoCo(new NoMultipleSymbolRule());
@@ -62,6 +62,8 @@ public class GrammarCoCos {
     checker.addCoCo(new ScopeProdOverwrittenByScope());
     checker.addCoCo(new UniqueProdNameInGrammar());
     checker.addCoCo(new ProdExtendsNotExistingProd());
+    checker.addCoCo(new TokenConstantInvalid());
+
     // checker.addCoCo(new NoNTInheritanceCycle());
 
     return checker;

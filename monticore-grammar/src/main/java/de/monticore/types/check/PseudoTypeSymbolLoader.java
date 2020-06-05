@@ -21,7 +21,13 @@ public class PseudoTypeSymbolLoader extends TypeSymbolLoader {
     this.pseudoSymbol = pseudoSymbol;
   }
 
-  @Override public Optional<TypeSymbol> loadSymbol() {
-    return Optional.of(pseudoSymbol);
+  @Override
+  public boolean isSymbolLoaded() {
+    return true;
+  }
+
+  @Override
+  public TypeSymbol getLoadedSymbol() {
+    return pseudoSymbol;
   }
 }

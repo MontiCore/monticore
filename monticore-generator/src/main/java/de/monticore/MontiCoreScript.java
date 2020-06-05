@@ -456,6 +456,17 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     // No star imports in reporting CDs
     astCdForReporting.getMCImportStatementList().forEach(s -> s.setStar(false));
     new CDReporting().prettyPrintAstCd(astCdForReporting, outputDirectory, reportSubDir);
+
+    cd = getSymbolCDOfParsedGrammar(astCd);
+    if (cd != null) {
+      new CDReporting().prettyPrintAstCd(cd, outputDirectory, reportSubDir+"_symbol");
+    }
+
+    cd = getScopeCDOfParsedGrammar(astCd);
+    if (cd != null) {
+      new CDReporting().prettyPrintAstCd(cd, outputDirectory, reportSubDir+"_scope");
+    }
+
   }
 
 
@@ -478,7 +489,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
     SymbolDecorator symbolDecorator = new SymbolDecorator(glex, symbolTableService, visitorService, methodDecorator);
     BuilderDecorator builderDecorator = new BuilderDecorator(glex, accessorDecorator, symbolTableService);
-    SymbolBuilderDecorator symbolBuilderDecorator = new SymbolBuilderDecorator(glex, builderDecorator);
+    SymbolBuilderDecorator symbolBuilderDecorator = new SymbolBuilderDecorator(glex, symbolTableService, builderDecorator);
     ScopeClassDecorator scopeClassDecorator = new ScopeClassDecorator(glex, symbolTableService, visitorService, methodDecorator);
     ScopeClassBuilderDecorator scopeClassBuilderDecorator = new ScopeClassBuilderDecorator(glex, builderDecorator);
     ScopeInterfaceDecorator scopeInterfaceDecorator = new ScopeInterfaceDecorator(glex, symbolTableService, visitorService, methodDecorator);

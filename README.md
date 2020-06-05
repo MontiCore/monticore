@@ -100,8 +100,8 @@ Please also note that `PlusExpr` is mutually left-recursive.
    predefined *language components*, usually identified through an appropriate 
    *component grammar* allowing to define your own language as a
    composition of reusable assets efficiently. reusable assets are among others: 
-   several sets of *literals*, *expressions* and *types*, which are relatively 
-   freely composable.
+   several sets of *literals*, *expressions*, *types*, and *statements*, 
+   which are freely composable.
 
 * [**List of languages**](docs/Languages.md).
    This is a list of languages that can be used out of the box. Some of them

@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static de.monticore.symboltable.modifiers.AccessModifier.ALL_INCLUSION;
 import static de.se_rwth.commons.Names.getSimpleName;
@@ -105,6 +106,14 @@ public interface IGrammarScope extends IGrammarScopeTOP {
       return true;
     }
     return false;
+  }
+
+  default List<AdditionalAttributeSymbol> getAstAttributeList () {
+    return getLocalAdditionalAttributeSymbols().stream().filter(a -> a.isAstAttr).collect(Collectors.toList());
+  }
+
+  default List<AdditionalAttributeSymbol> getSymbolAttributeList () {
+    return getLocalAdditionalAttributeSymbols().stream().filter(a -> !a.isAstAttr).collect(Collectors.toList());
   }
 
 }

@@ -56,6 +56,14 @@ public class SymTypeExpressionDeSerTest {
   SymTypeOfGenerics teDeep2 = createGenerics("java.util.Map2", scope,
       Lists.newArrayList(teInt, teDeep1));
 
+  SymTypeOfWildcard teLowerBound = createWildcard(false,teInt);
+
+  SymTypeOfWildcard teUpperBound = createWildcard(true, teH);
+
+  SymTypeOfWildcard teWildcard = createWildcard();
+
+  SymTypeOfGenerics teMap2 = createGenerics("Map",scope,Lists.newArrayList(teUpperBound,teWildcard));
+
   @BeforeClass
   public static void init() {
     Log.enableFailQuick(false);
@@ -97,6 +105,10 @@ public class SymTypeExpressionDeSerTest {
     performRoundTripSerialization(teFoo);
     performRoundTripSerialization(teDeep1);
     performRoundTripSerialization(teDeep2);
+    performRoundTripSerialization(teLowerBound);
+    performRoundTripSerialization(teUpperBound);
+    performRoundTripSerialization(teWildcard);
+    performRoundTripSerialization(teMap2);
 
     performRoundTripSerializationSymTypeConstant(teDouble);
     performRoundTripSerializationSymTypeConstant(teInt);
@@ -112,6 +124,7 @@ public class SymTypeExpressionDeSerTest {
     performRoundTripSerializationSymTypeOfGenerics(teFoo);
     performRoundTripSerializationSymTypeOfGenerics(teDeep1);
     performRoundTripSerializationSymTypeOfGenerics(teDeep2);
+    performRoundTripSerializationSymTypeOfGenerics(teMap2);
   }
 
   protected void performRoundTripSerialization(SymTypeExpression expr) {
@@ -124,9 +137,11 @@ public class SymTypeExpressionDeSerTest {
     // and assert that the serialized and deserialized symtype expression equals the one before
     assertEquals(expr.print(), deserialized.print());
     assertEquals(expr.printAsJson(), deserialized.printAsJson());
-    TypeSymbol expectedTS = deserialized.getTypeInfo();
-    TypeSymbol actualTS = expr.getTypeInfo();
-    assertEquals(expectedTS.getName(), actualTS.getName());
+    if(!(deserialized instanceof SymTypeOfWildcard)) {
+      TypeSymbol expectedTS = deserialized.getTypeInfo();
+      TypeSymbol actualTS = expr.getTypeInfo();
+      assertEquals(expectedTS.getName(), actualTS.getName());
+    }
   }
 
   protected void performRoundTripSerializationSymTypeOfGenerics(SymTypeOfGenerics expr){
@@ -224,6 +239,10 @@ public class SymTypeExpressionDeSerTest {
     performRoundtrip2(teFoo);
     performRoundtrip2(teDeep1);
     performRoundtrip2(teDeep2);
+    performRoundtrip2(teUpperBound);
+    performRoundtrip2(teLowerBound);
+    performRoundtrip2(teWildcard);
+    performRoundtrip2(teMap2);
   }
 
   protected void performRoundtrip2(SymTypeExpression expr) throws MalformedURLException {
@@ -237,9 +256,11 @@ public class SymTypeExpressionDeSerTest {
     // and assert that the serialized and deserialized symtype expression equals the one before
     assertEquals(expr.print(), loaded.print());
     assertEquals(expr.printAsJson(), loaded.printAsJson());
-    TypeSymbol expectedTS = loaded.getTypeInfo();
-    TypeSymbol actualTS = expr.getTypeInfo();
-    assertEquals(expectedTS.getName(), actualTS.getName());
+    if(!(loaded instanceof SymTypeOfWildcard)) {
+      TypeSymbol expectedTS = loaded.getTypeInfo();
+      TypeSymbol actualTS = expr.getTypeInfo();
+      assertEquals(expectedTS.getName(), actualTS.getName());
+    }
   }
 
   @Test
@@ -272,6 +293,10 @@ public class SymTypeExpressionDeSerTest {
     SymTypeConstantDeSer symTypeConstantDeser = new SymTypeConstantDeSer();
     symTypeConstantDeser.deserialize(invalidJsonForSerializing);
     assertTrue(Log.getFindings().get(Log.getFindings().size()-1).getMsg().startsWith("0x823F1"));
+
+    SymTypeOfWildcardDeSer symTypeOfWildcardDeSer = new SymTypeOfWildcardDeSer();
+    symTypeOfWildcardDeSer.deserialize(invalidJsonForSerializing,scope);
+    assertTrue(Log.getFindings().get(Log.getFindings().size()-1).getMsg().startsWith("0x823F7"));
   }
 
 }

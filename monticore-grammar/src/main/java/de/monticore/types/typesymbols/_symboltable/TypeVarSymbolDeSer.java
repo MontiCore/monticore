@@ -13,10 +13,10 @@ import java.util.List;
 public class TypeVarSymbolDeSer extends TypeVarSymbolDeSerTOP {
 
   @Override
-  protected List<SymTypeExpression> deserializeUpperBound(JsonObject symbolJson,
+  protected List<SymTypeExpression> deserializeSuperTypes(JsonObject symbolJson,
       ITypeSymbolsScope enclosingScope) {
     List<SymTypeExpression> result = new ArrayList<>();
-    for (JsonElement e : symbolJson.getMember("upperBound").getAsJsonArray().getValues()) {
+    for (JsonElement e : symbolJson.getMember("superTypes").getAsJsonArray().getValues()) {
       result.add(SymTypeExpressionDeSer.getInstance().deserialize(e, enclosingScope));
     }
     return result;

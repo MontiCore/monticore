@@ -21,7 +21,7 @@ import static de.monticore.types.check.TypeCheck.*;
  * It can be combined with other expressions in your language by creating a DelegatorVisitor
  */
 public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
-  
+
   public ITypeSymbolsScope getScope (IExpressionsBasisScope expressionsBasisScope){
     // is accepted only here, decided on 07.04.2020
     if(!(expressionsBasisScope instanceof ITypeSymbolsScope)){

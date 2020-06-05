@@ -30,6 +30,8 @@ project under `monticore-grammar/src/main/grammars/` in packages
 * `de.monticore.statements`
 * `de.monticore.types`
 
+For [more langauges, see here](docs/Languages.md).
+ 
 
 ## General: List of Grammars in package `de.monticore`
 
@@ -42,8 +44,22 @@ It should be useful in many languages.
 ## Types: List of Grammars in package `de.monticore.types`
 
 These grammars generally deal with type definitions and build on each 
-other:
-
+other. Some snipets for type definitions:
+  ```
+  MCBasicTypes      boolean  byte  short  int
+                    long  char  float  double
+                    void  Person  a.b.Person
+                    import a.b.Foo.*;
+  MCCollectionTypes List<.>   Set<.>
+                    Optional<.>   Map<.,.>
+  MCSimpleGenericTypes
+                    Foo<.>  a.b.Bar<.,..,.>
+  MCFullGenericTypes
+                    Foo<? extends .>
+                    Foo<? super .>
+                    Person[]
+  ```
+  
 ### [MCBasicTypes.mc4](types/MCBasicTypes.mc4) (stable)
 * This grammar defines basic types. This eases the reuse of type 
 structures in languages similar to Java, that are somewhat 
@@ -87,7 +103,17 @@ infrastructure.
 
 This modularity of expressions and associated types greatly eases 
 the reuse of type structures in languages similar to Java.
-
+Some snipets for operators definrd in expressions:
+  ```
+  CommonExp:     /  %  +  -  <=  >=  ==  >  <  !=  ~.  !.  .?.:.
+  PLogicExp:     &&  ||  ~. 
+  AssigementExp: ++  --  =  +=  -=  *=  /=  &=  |=  ^=  >>=  >>>=  <<=  %=
+  BitExp:        &  |  ^  <<  >>  >>>
+  OclExp:        implies  <=>  |  &  forall  exists  let.in. .@pre  .[.]  .**
+                 Set{.|.}
+  JavaClass:     this  .[.]  (.).  super  .instanceof.
+  SetExp:        .isin.  .in.  union  intersect  setand  setor
+  ```
 
 ### [ExpressionsBasis.mc4](expressions/ExpressionsBasis.mc4) (stable)
 * This grammar defines core interfaces for expressions and imports the 
@@ -142,7 +168,13 @@ UML's OCL.
 ## Literals: List of Grammars in package `de.monticore.literals`
 
 Literals are the basic elements of expressions, such as numbers, strings, 
-truth values:
+truth values. Some snipets:
+  ```
+  MCCommonLit       3  -3  2.17  -4  true  false  'c'  '\03AE' 
+                    3L  2.17d  2.17f  0xAF  "string" "str\b\n\\"  
+                    "str\uAF01\u0001\377"  null
+  MCJavaLiterals    999_999  0x3F2A  0b0001_0101  0567  1.2e-7F
+  ```
 
 ### [MCLiteralsBasis.mc4](literals/MCLiteralsBasis.mc4) (stable)
 * This grammar defines core interface for literals.
@@ -178,7 +210,18 @@ change variables, call functions, send messages etc.
 The following hierarchy of statement definitions should allow
 the developers to choose needed forms of statements and extend it 
 by their own additional needs. The provided list of statements
-is inspired by Java (actually subset of Java):
+is inspired by Java (actually subset of Java). Some example statements:
+  ```
+  int i;   int j = 2;                     Person p[] = { foo(3+7), p2, ...}
+  if (.) then . else .                    for ( i = .; .; .) {.}
+  while (.) .                             do . while (.)
+  switch (.) { case .: .; default: .}
+  foo(1,2,3)                              return .                                
+  assert . : "..."
+  try {.} catch (.) {.} finally {.}       throw .           
+  break .                                 continue .
+  label:                                  private  static  final  native ...
+  ```
 
 ### [MCStatementsBasis.mc4](statements/MCStatementsBasis.mc4) (stable)
 * This grammar defines the core interface for statements.
@@ -222,22 +265,22 @@ is inspired by Java (actually subset of Java):
 several smaller grammars are also available:
 
 ### [Cardinality.mc4](Cardinality.mc4) (stable)
-* This grammar defines UML Cardinalities of forms "*", "[n..m]" "[n..*]".
+* This grammar defines UML Cardinalities of forms ``*``, ``[n..m]`` or ``[n..*]``.
 
 ### [Completeness.mc4](Completeness.mc4) (stable)
 * This grammar defines completeness information in UML
-  like "...", "(c)", but also "(...,c)".
+  like ``...``, ``(c)``, but also ``(...,c)``.
 
 ### [UMLModifier.mc4](UMLModifier.mc4) (stable)
 * The grammar contains the modifiers that UML provides.
-* This includes "public" "private", "protected", "final", "abstract", "local",
-          "derived", "readonly", and "static", but also the 
-          compact syntactic versions "+", "#", "-", "/" and "?" (for readonly).
-* UML modifiers are not identical to Java modifiers (e.g. "native" or 
-  "threadsafe" are missing.)
+* This includes ``public`` ``private``, ``protected``, ``final``, ``abstract``, ``local``,
+          ``derived``, ``readonly``, and ``static``, but also the 
+          compact syntactic versions ``+``, ``#``, ``-``, ``/`` and ``?`` (for readonly).
+* UML modifiers are not identical to Java modifiers (e.g. ``native`` or 
+  ``threadsafe`` are missing.)
 
 ### [UMLStereotype.mc4](UMLStereotype.mc4) (stable)
-* This grammars defines Stereotypes like *<<val1,val2="text",...>>*
+* This grammars defines Stereotypes like *``<<val1,val2="text",...>>``*
 * Methods contains(name), getValue(name) assist Stereotype retrieval.
 * Values may only be of type String.
   The real value unfortunately in UML is only encoded as String.
@@ -270,5 +313,11 @@ These can also be used if someone is interested:
 * [MCHexNumbers.mc4](../../../examples/MCHexNumbers.mc4)
 * [MCNumbers.mc4](../../../examples/MCNumbers.mc4)
 
+
+## Further Information
+
+* [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
+* [**List of languages**](docs/Languages.md).
+* [MontiCore documentation](http://www.monticore.de/)
 
 

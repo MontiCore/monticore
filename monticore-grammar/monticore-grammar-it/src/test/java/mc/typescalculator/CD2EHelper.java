@@ -131,8 +131,7 @@ public class CD2EHelper {
         symTypeExpression = SymTypeExpressionFactory.createTypeExpression(typeSymbol.getName(), iTypeSymbolsScope);
       } else {
         // if typeSymbol can be loaded
-        Optional<CDTypeSymbol> cdTypeSymbol = symbolLoader.loadSymbol();
-        if (cdTypeSymbol.isPresent()) {
+        if (symbolLoader.isSymbolLoaded()) {
           TypeSymbol typeSymbol = createTypeSymbolFormCDTypeSymbol(symbolLoader.getLoadedSymbol());
           iTypeSymbolsScope.add(typeSymbol);
           symTypeExpression = SymTypeExpressionFactory.createTypeExpression(typeSymbol.getName(), iTypeSymbolsScope);

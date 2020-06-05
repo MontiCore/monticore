@@ -29,6 +29,8 @@ public class SymTypeExpressionDeSer {
 
   protected SymTypeVariableDeSer symTypeVariableDeSer;
 
+  protected SymTypeOfWildcardDeSer symTypeOfWildcardDeSer;
+
   protected SymTypeExpressionDeSer() {
     //this is a singleton, do not use constructor
     this.symTypeArrayDeSer = new SymTypeArrayDeSer();
@@ -36,6 +38,7 @@ public class SymTypeExpressionDeSer {
     this.symTypeOfGenericsDeSer = new SymTypeOfGenericsDeSer();
     this.symTypeOfObjectDeSer = new SymTypeOfObjectDeSer();
     this.symTypeVariableDeSer = new SymTypeVariableDeSer();
+    this.symTypeOfWildcardDeSer = new SymTypeOfWildcardDeSer();
   }
 
   public static SymTypeExpressionDeSer getInstance() {
@@ -102,6 +105,8 @@ public class SymTypeExpressionDeSer {
     }
     else if (JsonDeSers.isCorrectDeSerForKind(symTypeVariableDeSer.SERIALIZED_KIND, serialized)) {
       return symTypeVariableDeSer.deserialize(serialized, enclosingScope);
+    }else if(JsonDeSers.isCorrectDeSerForKind(symTypeOfWildcardDeSer.SERIALIZED_KIND, serialized)){
+      return symTypeOfWildcardDeSer.deserialize(serialized,enclosingScope);
     }
     else {
       Log.error(

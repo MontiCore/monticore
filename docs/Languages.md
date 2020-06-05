@@ -199,7 +199,7 @@ and
 * The MontiCore language for parsing JSON artifacts. An example:
   ```
   { "Alice": {
-      "name": "Alice Anderson",
+      "fullname": "Alice Anderson",
       "address": {
         "postal_code": 10459, 
         "street": "Beck Street",
@@ -332,14 +332,14 @@ component InteriorLight {                           // MontiArc language
   SI Unit types integrate with MontiCore's type system. 
   The SI unit language remains type safe.
 * Main grammar components:
-    * [SI units](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/lang/SIUnits.mc4)
-    * [SI unit literals](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/lang/literals/SIUnitLiterals.mc4)
-    * [SI unit types for math](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/lang/types/SIUnitTypes4Math.mc4)
-    * [SI unit types for computations](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/lang/types/SIUnitTypes4Computing.mc4)
+    * [SI units](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/siunits/SIUnits.mc4)
+    * [SI unit literals](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/siunits/SIUnitLiterals.mc4)
+    * [SI unit types for math](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/siunits/SIUnitTypes4Math.mc4)
+    * [SI unit types for computations](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/siunits/SIUnitTypes4Computing.mc4)
     *           (other alternatives are possible; SI has not standardized anything here)
 * Example projects:
     * [SI Java](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/test/grammars/de/monticore/lang/testsijava/TestSIJava.mc4) 
-* [*detailed description*](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/lang/SIUnits.md)  
+* [*detailed description*](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/siunits/SIUnits.md)  
 
 
 ### [Statecharts](https://git.rwth-aachen.de/monticore/statechart/sc-language) (Beta: In Stabilization) (90% to MC6)
@@ -397,7 +397,7 @@ package 'Coffee' {                      // a SysML activity diagram
   (which is still under improvement currently).
 * Actually these grammars represents a slight superset to the official SysML 2
   standard. It is intended for parsing SysML 2-compliant models. 
-  Well-formedness checks are are kept to a minimum, because we assume to parse
+  Well-formedness checks are kept to a minimum, because we assume to parse
   correctly produced SysML 2 models only.
 * MontiCore's SysML 2 is a language familiy that comes with a textual 
   representation to describe SysML 2 diagrams with respect to the standard. 

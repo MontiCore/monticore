@@ -4,6 +4,7 @@ package de.monticore.types.check;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.literals.mccommonliterals._ast.ASTSignedLiteral;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._ast.ASTMCVoidType;
@@ -119,7 +120,25 @@ public class TypeCheck {
     }
     return result.get();
   }
-  
+
+  /**
+   * Function 15: extracting the SymTypeExpression from the AST MCQualifiedName
+   *
+   * Tests for this Function are combined in the Visitor tests
+   * (SynthesizeSymType.*Types.*Test)
+   */
+  public SymTypeExpression symTypeFromAST(ASTMCQualifiedName astMCQualifiedName) {
+    iSynthesize.init();
+    astMCQualifiedName.accept(iSynthesize);
+    Optional<SymTypeExpression> result = iSynthesize.getResult();
+    if(!result.isPresent()) {
+      Log.error("0xE9FD5 Internal Error: No SymType for MCQualifiedName: "
+              + astMCQualifiedName.getBaseName()
+              + ". Probably TypeCheck mis-configured.");
+    }
+    return result.get();
+  }
+
   /*************************************************************************/
   
   /**
