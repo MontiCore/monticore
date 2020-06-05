@@ -309,7 +309,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
     Optional<SymTypeExpression> wholeResult = Optional.empty();
     if (isNumericType(leftResult) && isNumericType(rightResult) && compatible(leftResult, rightResult)) {
       wholeResult = Optional.of(SymTypeExpressionFactory.createTypeConstant(leftResult.print()));
-    } else if (rightResult.print().equals(leftResult.print()) || isSubtypeOf(rightResult, leftResult)) {
+    } else if (compatible(leftResult, rightResult)) {
       //option two: none of them are primitive types and they are either from the same class or stand in a super/subtype relation with the supertype on the left side
       wholeResult = Optional.of(leftResult);
     }

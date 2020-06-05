@@ -251,10 +251,14 @@ public class TypeCheck {
         return true;
       }
       return false;
-    }else {
-      if(isSubtypeOf(right,left)||right.print().equals(left.print())){
-        return true;
-      }
+    } else if(unbox(left.print()).equals(unbox(right.print()))) {
+      return true;
+    } else if(isSubtypeOf(right,left)){
+      return true;
+    } else if (right.print().equals(left.print())) {
+      return true;
+    } else if (left.deepEquals(right) || right.deepEquals(left)) {
+      return true;
     }
     return false;
   }

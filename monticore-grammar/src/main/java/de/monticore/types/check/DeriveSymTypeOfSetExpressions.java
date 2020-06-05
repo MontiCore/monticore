@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static de.monticore.types.check.SymTypeConstant.unbox;
+import static de.monticore.types.check.TypeCheck.compatible;
 import static de.monticore.types.check.TypeCheck.isSubtypeOf;
 
 /**
@@ -23,103 +24,108 @@ import static de.monticore.types.check.TypeCheck.isSubtypeOf;
  */
 public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression implements SetExpressionsVisitor {
 
-  private SetExpressionsVisitor realThis;
+    private SetExpressionsVisitor realThis;
 
-  protected final List<String> collections = Lists.newArrayList("List","Set");
+    protected final List<String> collections = Lists.newArrayList("List", "Set");
 
-  public DeriveSymTypeOfSetExpressions(){
-    this.realThis = this;
-  }
-
-  @Override
-  public void setRealThis(SetExpressionsVisitor realThis) {
-    this.realThis = realThis;
-  }
-
-  @Override
-  public SetExpressionsVisitor getRealThis(){
-    return realThis;
-  }
-
-  @Override
-  public void traverse(ASTIsInExpression node) {
-    //e isin E checks whether e is an Element in Set E and can only be calculated if e is a subtype or the same type as the set type
-    Optional<SymTypeExpression> wholeResult = calculateIsInExpression(node);
-    storeResultOrLogError(wholeResult, node, "0xA0288");
-  }
-
-  protected Optional<SymTypeExpression> calculateIsInExpression(ASTIsInExpression node){
-    SymTypeExpression elemResult = acceptThisAndReturnSymTypeExpressionOrLogError(node.getElem(),"0xA0286");
-    SymTypeExpression setResult = acceptThisAndReturnSymTypeExpressionOrLogError(node.getSet(),"0xA0287");;
-    Optional<SymTypeExpression> wholeResult = Optional.empty();
-
-    boolean correct = false;
-    for(String s: collections) {
-      if (setResult.isGenericType() && setResult.getTypeInfo().getName().equals(s)) {
-        correct = true;
-      }
+    public DeriveSymTypeOfSetExpressions() {
+        this.realThis = this;
     }
-    if(correct){
-      SymTypeOfGenerics genericResult = (SymTypeOfGenerics) setResult;
-      if(unbox(elemResult.print()).equals(unbox(genericResult.getArgument(0).print()))||isSubtypeOf(elemResult,genericResult.getArgument(0))){
-        wholeResult = Optional.of(SymTypeExpressionFactory.createTypeConstant("boolean"));
-      }
+
+    @Override
+    public void setRealThis(SetExpressionsVisitor realThis) {
+        this.realThis = realThis;
     }
-    return wholeResult;
-  }
 
-  @Override
-  public void traverse(ASTSetInExpression node) {
-    Optional<SymTypeExpression> wholeResult = calculateSetInExpression(node);
-    storeResultOrLogError(wholeResult, node, "0xA0291");
-  }
-
-  protected Optional<SymTypeExpression> calculateSetInExpression(ASTSetInExpression node){
-    SymTypeExpression elemResult = acceptThisAndReturnSymTypeExpressionOrLogError(node.getElem(),"0xA0289");
-    SymTypeExpression setResult = acceptThisAndReturnSymTypeExpressionOrLogError(node.getSet(),"0xA0290");
-    Optional<SymTypeExpression> wholeResult = Optional.empty();
-
-    boolean correct = false;
-    for(String s: collections) {
-      if (setResult.isGenericType() && setResult.getTypeInfo().getName().equals(s)) {
-        correct = true;
-      }
+    @Override
+    public SetExpressionsVisitor getRealThis() {
+        return realThis;
     }
-    if(correct){
-      SymTypeOfGenerics genericResult = (SymTypeOfGenerics) setResult;
-      if(unbox(elemResult.print()).equals(unbox(genericResult.getArgument(0).print()))||isSubtypeOf(elemResult,genericResult.getArgument(0))){
-        wholeResult = Optional.of(genericResult.getArgument(0).deepClone());
-      }
+
+    @Override
+    public void traverse(ASTIsInExpression node) {
+        //e isin E checks whether e is an Element in Set E and can only be calculated if e is a subtype or the same type as the set type
+        Optional<SymTypeExpression> wholeResult = calculateIsInExpression(node);
+        storeResultOrLogError(wholeResult, node, "0xA0288");
     }
-    return wholeResult;
-  }
 
-  @Override
-  public void traverse(ASTUnionExpressionInfix node) {
-    //union of two sets -> both sets need to have the same type or their types need to be sub/super types
-    Optional<SymTypeExpression> wholeResult = calculateUnionExpressionInfix(node);
-    storeResultOrLogError(wholeResult,node,"0xA0292");
-  }
+    protected Optional<SymTypeExpression> calculateIsInExpression(ASTIsInExpression node) {
+        SymTypeExpression elemResult = acceptThisAndReturnSymTypeExpressionOrLogError(node.getElem(), "0xA0286");
+        SymTypeExpression setResult = acceptThisAndReturnSymTypeExpressionOrLogError(node.getSet(), "0xA0287");
+        ;
+        Optional<SymTypeExpression> wholeResult = Optional.empty();
 
-  protected Optional<SymTypeExpression> calculateUnionExpressionInfix(ASTUnionExpressionInfix node){
-    return calculateUnionAndIntersectionInfix(node, node.getLeft(), node.getRight());
-  }
+        boolean correct = false;
+        for (String s : collections) {
+            if (setResult.isGenericType() && setResult.getTypeInfo().getName().equals(s)) {
+                correct = true;
+            }
+        }
+        if (correct) {
+            SymTypeOfGenerics genericResult = (SymTypeOfGenerics) setResult;
+            if (unbox(elemResult.print()).equals(unbox(genericResult.getArgument(0).print()))) {
+                wholeResult = Optional.of(SymTypeExpressionFactory.createTypeConstant("boolean"));
+            }else if (isSubtypeOf(elemResult, genericResult.getArgument(0))) {
+                wholeResult = Optional.of(SymTypeExpressionFactory.createTypeConstant("boolean"));
+            }else if(elemResult.deepEquals(genericResult.getArgument(0))) {
+                wholeResult = Optional.of(SymTypeExpressionFactory.createTypeConstant("boolean"));
+            }
+        }
+        return wholeResult;
+    }
 
-  @Override
-  public void traverse(ASTIntersectionExpressionInfix node) {
-    //intersection of two sets -> both sets need to have the same type or their types need to be sub/super types
-    Optional<SymTypeExpression> wholeResult = calculateIntersectionExpressionInfix(node);
-    storeResultOrLogError(wholeResult,node,"0xA0293");
-  }
+    @Override
+    public void traverse(ASTSetInExpression node) {
+        Optional<SymTypeExpression> wholeResult = calculateSetInExpression(node);
+        storeResultOrLogError(wholeResult, node, "0xA0291");
+    }
 
-  protected Optional<SymTypeExpression> calculateIntersectionExpressionInfix(ASTIntersectionExpressionInfix node){
-    return calculateUnionAndIntersectionInfix(node, node.getLeft(), node.getRight());
-  }
+    protected Optional<SymTypeExpression> calculateSetInExpression(ASTSetInExpression node) {
+        SymTypeExpression elemResult = acceptThisAndReturnSymTypeExpressionOrLogError(node.getElem(), "0xA0289");
+        SymTypeExpression setResult = acceptThisAndReturnSymTypeExpressionOrLogError(node.getSet(), "0xA0290");
+        Optional<SymTypeExpression> wholeResult = Optional.empty();
 
-  public Optional<SymTypeExpression> calculateUnionAndIntersectionInfix(ASTExpression expr, ASTExpression leftExpr, ASTExpression rightExpr){
-    SymTypeExpression leftResult = acceptThisAndReturnSymTypeExpressionOrLogError(leftExpr,"0xA0294");
-    SymTypeExpression rightResult = acceptThisAndReturnSymTypeExpressionOrLogError(rightExpr, "0xA0295");
-    Optional<SymTypeExpression> wholeResult = Optional.empty();
+        boolean correct = false;
+        for (String s : collections) {
+            if (setResult.isGenericType() && setResult.getTypeInfo().getName().equals(s)) {
+                correct = true;
+            }
+        }
+        if (correct) {
+            SymTypeOfGenerics genericResult = (SymTypeOfGenerics) setResult;
+            if (compatible(genericResult.getArgument(0), elemResult)) {
+                wholeResult = Optional.of(genericResult.getArgument(0).deepClone());
+            }
+        }
+        return wholeResult;
+    }
+
+    @Override
+    public void traverse(ASTUnionExpressionInfix node) {
+        //union of two sets -> both sets need to have the same type or their types need to be sub/super types
+        Optional<SymTypeExpression> wholeResult = calculateUnionExpressionInfix(node);
+        storeResultOrLogError(wholeResult, node, "0xA0292");
+    }
+
+    protected Optional<SymTypeExpression> calculateUnionExpressionInfix(ASTUnionExpressionInfix node) {
+        return calculateUnionAndIntersectionInfix(node, node.getLeft(), node.getRight());
+    }
+
+    @Override
+    public void traverse(ASTIntersectionExpressionInfix node) {
+        //intersection of two sets -> both sets need to have the same type or their types need to be sub/super types
+        Optional<SymTypeExpression> wholeResult = calculateIntersectionExpressionInfix(node);
+        storeResultOrLogError(wholeResult, node, "0xA0293");
+    }
+
+    protected Optional<SymTypeExpression> calculateIntersectionExpressionInfix(ASTIntersectionExpressionInfix node) {
+        return calculateUnionAndIntersectionInfix(node, node.getLeft(), node.getRight());
+    }
+
+    public Optional<SymTypeExpression> calculateUnionAndIntersectionInfix(ASTExpression expr, ASTExpression leftExpr, ASTExpression rightExpr) {
+        SymTypeExpression leftResult = acceptThisAndReturnSymTypeExpressionOrLogError(leftExpr, "0xA0294");
+        SymTypeExpression rightResult = acceptThisAndReturnSymTypeExpressionOrLogError(rightExpr, "0xA0295");
+        Optional<SymTypeExpression> wholeResult = Optional.empty();
 
     if(rightResult.isGenericType()&&leftResult.isGenericType()){
       SymTypeOfGenerics leftGeneric = (SymTypeOfGenerics) leftResult;
@@ -127,12 +133,10 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
       String left = leftGeneric.getTypeInfo().getName();
       String right = rightGeneric.getTypeInfo().getName();
       if(collections.contains(left) && unbox(left).equals(unbox(right))) {
-        if(unbox(leftGeneric.getArgument(0).print()).equals(unbox(rightGeneric.getArgument(0).print()))) {
-          wholeResult = Optional.of(SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader(left,getScope(expr.getEnclosingScope())),leftGeneric.getArgument(0).deepClone()));
-        }else if(isSubtypeOf(leftGeneric.getArgument(0),rightGeneric.getArgument(0))){
-          wholeResult = Optional.of(SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader(right,getScope(expr.getEnclosingScope())),rightGeneric.getArgument(0).deepClone()));
-        }else if(isSubtypeOf(rightGeneric.getArgument(0),leftGeneric.getArgument(0))){
-          wholeResult = Optional.of(SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader(left,getScope(expr.getEnclosingScope())),leftGeneric.getArgument(0).deepClone()));
+        if (compatible(leftGeneric.getArgument(0), rightGeneric.getArgument(0))) {
+            wholeResult = Optional.of(SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader(left,getScope(expr.getEnclosingScope())),leftGeneric.getArgument(0).deepClone()));
+        } else if(compatible(rightGeneric.getArgument(0), leftGeneric.getArgument(0))) {
+            wholeResult = Optional.of(SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader(right,getScope(expr.getEnclosingScope())),rightGeneric.getArgument(0).deepClone()));
         }
       }
     }

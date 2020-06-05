@@ -274,11 +274,9 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     //condition has to be boolean
     if (isBoolean(conditionResult)) {
       //check if "then" and "else" are either from the same type or are in sub-supertype relation
-      if (trueResult.print().equals(falseResult.print())) {
+      if (compatible(trueResult, falseResult)) {
         wholeResult = Optional.of(trueResult);
-      } else if (isSubtypeOf(falseResult, trueResult)) {
-        wholeResult = Optional.of(trueResult);
-      } else if (isSubtypeOf(trueResult, falseResult)) {
+      } else if (compatible(falseResult, trueResult)) {
         wholeResult = Optional.of(falseResult);
       } else {
         // first argument can be null since it should not be relevant to the type calculation
@@ -405,7 +403,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
         if (fittingMethods.size() > 1) {
           SymTypeExpression returnType = fittingMethods.get(0).getReturnType();
           for (MethodSymbol method : fittingMethods) {
-            if (!returnType.print().equals(method.getReturnType().print())) {
+            if (!returnType.deepEquals(method.getReturnType())) {
               logError("0xA0238", expr.get_SourcePositionStart());
             }
           }
@@ -443,7 +441,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
         for (int i = 0; i < method.getParameterList().size(); i++) {
           expr.getArguments().getExpression(i).accept(getRealThis());
           //test if every single argument is correct
-          if (!method.getParameterList().get(i).getType().print().equals(typeCheckResult.getLast().print()) &&
+          if (!method.getParameterList().get(i).getType().deepEquals(typeCheckResult.getLast()) &&
               !compatible(typeCheckResult.getLast(), method.getParameterList().get(i).getType())) {
             success = false;
           }
@@ -503,10 +501,8 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     }
     //Option two: none of them is a primitive type and they are either the same type or in a super/sub type relation
     if (!leftResult.isTypeConstant() && !rightResult.isTypeConstant() &&
-        (leftResult.print().equals(rightResult.print())
-            || isSubtypeOf(rightResult, leftResult)
-            || isSubtypeOf(leftResult, rightResult)
-        )) {
+        (compatible(leftResult, rightResult) || compatible(rightResult, leftResult))
+    ) {
       return Optional.of(SymTypeExpressionFactory.createTypeConstant("boolean"));
     }
     //should never happen, no valid result, error will be handled in traverse

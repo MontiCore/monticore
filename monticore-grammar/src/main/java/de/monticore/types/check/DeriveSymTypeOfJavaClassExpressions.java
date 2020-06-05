@@ -502,11 +502,11 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
             //there is a typevariable that cannot be resolved to the correct type -> wrong method
             continue outer;
           }
-          if(!argsList.get(j).print().equals(transformMap.get(param.getType().print()).print())&&!compatible(transformMap.get(param.getType().print()),argsList.get(j))){
+          if(!argsList.get(j).deepEquals(transformMap.get(param.getType().print()))&&!compatible(transformMap.get(param.getType().print()),argsList.get(j))){
             continue outer;
           }
         }else{
-          if(!argsList.get(j).print().equals(param.getType().print())&&!compatible(param.getType(),argsList.get(j))){
+          if(!argsList.get(j).deepEquals(param.getType())&&!compatible(param.getType(),argsList.get(j))){
             continue outer;
           }
         }
