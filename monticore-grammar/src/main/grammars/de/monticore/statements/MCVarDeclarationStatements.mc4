@@ -57,6 +57,7 @@ ArrayInit implements VariableInit
      =   "{" (VariableInit || ",")* (",")? "}"
      ;
 
+// TODO BR -> MB: (6.6.) Umbau Variable gemaess Besprechung
 interface symbol Variable extends Field;
 
 symbolrule Variable =
