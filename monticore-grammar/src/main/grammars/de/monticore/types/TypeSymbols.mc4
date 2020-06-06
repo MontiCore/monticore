@@ -24,8 +24,10 @@ component grammar TypeSymbols extends de.monticore.MCBasics {
    * A type (in an OO sense) has a name,
    * methods, fields, supertypes.
    * All of them are represented as Symbols.
-   * TODO BR: What to do with: typeParameters (then it should not be a type, but a typeconstructor)
+   * TODO BR: !  What to do with: typeParameters (then it should not be a type, but a typeconstructor)
+   * TODO: BR das wuerde ich noch gerne verstehen: Wo sind die TypParameter?
    */
+  // TODO BR -> MB (6.6.) : Type einbauen (als Oberklasse von OOType)
   interface scope symbol Type = Name;
   symbolrule Type =
     superTypes: de.monticore.types.check.SymTypeExpression*
@@ -51,6 +53,7 @@ component grammar TypeSymbols extends de.monticore.MCBasics {
   /**
    * A Field (Java Attribute) has a type
    */
+  // TODO BR -> MB (6.6.) : Variable einbauen (als Oberklasse von Field)
   interface symbol Field = Name ;
   symbolrule Field =
     type: de.monticore.types.check.SymTypeExpression
@@ -67,8 +70,8 @@ component grammar TypeSymbols extends de.monticore.MCBasics {
   /**
    * A Method has a return type, and a list of parameters, which
    * are stored as field symbols.
-   * TODO: what about "..." extension?
    */
+  // TODO BR -> MB (6.6.) : Function einbauen (als Oberklasse von Method)
   interface scope symbol Method = Name;
   symbolrule Method =
     returnType: de.monticore.types.check.SymTypeExpression
