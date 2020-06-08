@@ -609,6 +609,84 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     }
   }
 
+  @Override
+  public void traverse(ASTCreatorExpression expr){
+    expr.getCreator().accept(getRealThis());
+    if(typeCheckResult.isPresentLast()){
+      if(!typeCheckResult.isType()){
+        typeCheckResult.reset();
+        logError("0xA0309",expr.getCreator().get_SourcePositionStart());
+      }
+    }else{
+      typeCheckResult.reset();
+      logError("0xA0310",expr.get_SourcePositionStart());
+    }
+  }
+
+  @Override
+  public void traverse(ASTAnonymousClass creator){
+    SymTypeExpression extType = null;
+    SymTypeExpression wholeResult = null;
+    creator.getExtType().accept(getRealThis());
+    if(typeCheckResult.isPresentLast()){
+      extType = typeCheckResult.getLast();
+    }else{
+      typeCheckResult.reset();
+      logError("0xA0311",creator.getExtType().get_SourcePositionStart());
+    }
+    if(!extType.isPrimitive()){
+      //see if there is a constructor fitting for the arguments
+      List<MethodSymbol> constructors = extType.getMethodList(extType.getTypeInfo().getName());
+      if(!constructors.isEmpty()){
+        if(testForCorrectArguments(constructors, creator.getArguments())){
+          wholeResult = extType;
+        }
+      }else if(creator.getArguments().isEmptyExpressions()){
+        //no constructor in this class -> default constructor without arguments, only possible if arguments in creator are empty
+        wholeResult = extType;
+      }
+    }
+
+    if(wholeResult != null){
+      typeCheckResult.setLast(wholeResult);
+    }else{
+      typeCheckResult.reset();
+      logError("0xA0312",creator.get_SourcePositionStart());
+    }
+  }
+
+  private List<SymTypeExpression> calculateCorrectArguments(ASTArguments args) {
+    List<SymTypeExpression> argList = Lists.newArrayList();
+    for(int i = 0;i<args.getExpressionList().size();i++){
+      args.getExpression(i).accept(getRealThis());
+      if(typeCheckResult.isPresentLast()){
+        argList.add(typeCheckResult.getLast());
+      }else{
+        logError("0xA0313",args.getExpressionList().get(i).get_SourcePositionStart());
+      }
+    }
+    return argList;
+  }
+
+  private boolean testForCorrectArguments(List<MethodSymbol> constructors, ASTArguments arguments) {
+    List<SymTypeExpression> symTypeOfArguments = calculateCorrectArguments(arguments);
+    outer: for(MethodSymbol constructor: constructors){
+      if(constructor.getParameterList().size() == symTypeOfArguments.size()){
+        //get the types of the constructor arguments
+        List<SymTypeExpression> constructorArguments = constructor.getParameterList().stream().map(FieldSymbol::getType).collect(Collectors.toList());
+        for(int i = 0;i<constructorArguments.size();i++){
+          if(!compatible(constructorArguments.get(i),symTypeOfArguments.get(i))){
+            //wrong constructor, argument is not compatible to constructor definition
+            continue outer;
+          }
+        }
+        //if this is reached, then the arguments match a constructor's arguments -> return true
+        return true;
+      }
+    }
+    return false;
+  }
+
   private TypeSymbol searchForTypeSymbolSpanningEnclosingScope(ITypeSymbolsScope scope) {
     //search for the nearest type symbol in the enclosing scopes -> for this and super to get the
     //current object

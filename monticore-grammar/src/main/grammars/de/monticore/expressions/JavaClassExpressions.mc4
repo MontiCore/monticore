@@ -74,6 +74,15 @@ component grammar JavaClassExpressions
   PrimarySuperExpression implements Expression <330> =
     "super";
 
+  CreatorExpression implements Expression <235> =
+    "new" Creator;
+
+  interface Creator ;
+
+  AnonymousClass implements Creator
+      =  ExtType Arguments
+      ;
+
   /*=================================================================*/
 
   ClassExpression implements Expression <360> =
