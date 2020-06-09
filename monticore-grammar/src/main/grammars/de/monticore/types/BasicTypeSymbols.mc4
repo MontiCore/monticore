@@ -1,0 +1,61 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.types;
+
+/* Beta-version: This is intended to become a MontiCore stable grammar. */
+
+/**
+ * This grammar is used to generate an abstract Syntax only.
+ * These AST-classes are then used to store typing information
+ * in the SymbolTable.
+ *
+ * The grammar introduces the symbols for
+ * Types, Methods, Fields and TypeVariables
+ *
+ * These symbols can be used elsewhere, when actual implementations
+ * of these symbols become available.
+ *
+*/
+
+component grammar BasicTypeSymbols extends de.monticore.MCBasics {
+
+  /*=================================================================*/
+
+  /**
+   * A type (in an OO sense) has a name,
+   * methods, fields, supertypes.
+   * All of them are represented as Symbols.
+   */
+  interface scope symbol Type = Name;
+  symbolrule Type =
+    superTypes: de.monticore.types.check.SymTypeExpression*
+  ;
+
+  /*=================================================================*/
+
+  /**
+   * A typeVar may be bounded (see Java)
+   */
+  interface symbol TypeVar extends Type = Name;
+
+  /*=================================================================*/
+
+  /**
+   * A Variable (Java Attribute) has a type
+   */
+  interface symbol Variable = Name ;
+  symbolrule Variable =
+    type: de.monticore.types.check.SymTypeExpression
+   ;
+
+  /*=================================================================*/
+
+  /**
+   * A function has a return type, and a list of parameters, which
+   * are stored as variable symbols.
+   */
+  interface scope symbol Function = Name;
+  symbolrule Function =
+    returnType: de.monticore.types.check.SymTypeExpression
+  ;
+
+}

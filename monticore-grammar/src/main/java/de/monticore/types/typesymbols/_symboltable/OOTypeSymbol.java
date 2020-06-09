@@ -2,6 +2,7 @@
 package de.monticore.types.typesymbols._symboltable;
 
 import com.google.common.collect.Lists;
+import de.monticore.types.basictypesymbols._symboltable.TypeVarSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.se_rwth.commons.logging.Log;
 
@@ -9,10 +10,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class TypeSymbol extends TypeSymbolTOP {
+public class OOTypeSymbol extends OOTypeSymbolTOP {
 
-  public TypeSymbol(String name) {
+  public OOTypeSymbol(String name) {
     super(name);
+  }
+
+  @Override
+  public void setSpannedScope(ITypeSymbolsScope spannedScope) {
+    super.setSpannedScope(spannedScope);
+    this.spannedScope = spannedScope;
   }
 
   protected List<MethodSymbol> methodList=new ArrayList<>();
@@ -43,14 +50,14 @@ public class TypeSymbol extends TypeSymbolTOP {
     if (spannedScope == null) {
       return Lists.newArrayList();
     }
-    return spannedScope.getLocalMethodSymbols();
+    return getSpannedScope().getLocalMethodSymbols();
   }
 
   /**
    * search in the scope for methods with a specific name
    */
   public List<MethodSymbol> getMethodList(String methodname) {
-    return spannedScope.resolveMethodMany(methodname);
+    return getSpannedScope().resolveMethodMany(methodname);
   }
 
   /**
@@ -60,14 +67,14 @@ public class TypeSymbol extends TypeSymbolTOP {
     if (spannedScope == null) {
       return Lists.newArrayList();
     }
-    return spannedScope.getLocalFieldSymbols();
+    return getSpannedScope().getLocalFieldSymbols();
   }
 
   /**
    * search in the scope for methods with a specific name
    */
   public List<FieldSymbol> getFieldList(String fieldname) {
-    return spannedScope.resolveFieldMany(fieldname);
+    return getSpannedScope().resolveFieldMany(fieldname);
   }
 
   public List<TypeVarSymbol> getTypeParameterList() {

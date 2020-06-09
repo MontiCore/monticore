@@ -91,21 +91,21 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
     List<ASTCDAttribute> symbolNameAttributes = Lists.newArrayList();
     List<ASTCDMethod> symbolNameMethods = Lists.newArrayList();
     if (hasInheritedSymbol) {
-      symbolAttributes.add(this.getCDAttributeFacade().createAttribute(PROTECTED, scopeInterface, ENCLOSING_SCOPE_VAR));
+      symbolMethods.addAll(createInheritedScopeMethods(scopeInterface));
     } else {
       symbolAttributes = createSymbolAttributes(symbolInput.getName(), scopeInterface);
       symbolNameAttributes = createSymbolNameAttributes();
+      symbolMethods = symbolAttributes
+              .stream()
+              .map(methodDecorator::decorate)
+              .flatMap(List::stream)
+              .collect(Collectors.toList());
+      symbolNameMethods = symbolNameAttributes
+              .stream()
+              .map(this::createNameMethods)
+              .flatMap(List::stream)
+              .collect(Collectors.toList());
     }
-    symbolMethods = symbolAttributes
-            .stream()
-            .map(methodDecorator::decorate)
-            .flatMap(List::stream)
-            .collect(Collectors.toList());
-    symbolNameMethods = symbolNameAttributes
-            .stream()
-            .map(this::createNameMethods)
-            .flatMap(List::stream)
-            .collect(Collectors.toList());
 
     ASTCDParameter constructorParam = getCDParameterFacade().createParameter(getMCTypeFacade().createStringType(), NAME_VAR);
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), symbolName, constructorParam);
@@ -152,6 +152,24 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
       symbolClass.setSuperclass(symbolInput.getSuperclass());
     }
     return symbolClass;
+  }
+
+  protected List<ASTCDMethod> createInheritedScopeMethods(String scopeInterface) {
+    List<ASTCDMethod> methods = Lists.newArrayList();
+    // getEnclosingScope
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createQualifiedType(scopeInterface), "getEnclosingScope");
+    String errorCode = symbolTableService.getGeneratedErrorCode(scopeInterface+"getEnclosingScope");
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "GetEnclosingScope",
+            scopeInterface, errorCode));
+    methods.add(method);
+
+    // setEnclosingScope
+    ASTCDParameter parameter = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(scopeInterface), "scope");
+    method = getCDMethodFacade().createMethod(PUBLIC, "setEnclosingScope", parameter);
+    this.replaceTemplate(EMPTY_BODY,method, new StringHookPoint("enclosingScope = scope;"));
+    methods.add(method);
+
+    return methods;
   }
 
   protected List<ASTCDAttribute> createSymbolAttributes(String astClassName, String scopeInterface) {

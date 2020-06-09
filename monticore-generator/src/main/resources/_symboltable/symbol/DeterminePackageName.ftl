@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("scopeInterface")}
-${scopeInterface} optCurrentScope = enclosingScope;
+${scopeInterface} optCurrentScope = getEnclosingScope();
 while (optCurrentScope != null) {
 final ${scopeInterface} currentScope = optCurrentScope;
     if (currentScope.isPresentSpanningSymbol()) {

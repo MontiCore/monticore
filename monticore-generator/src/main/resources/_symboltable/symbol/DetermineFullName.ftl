@@ -10,7 +10,7 @@ ${tc.signature("scopeInterface")}
   final Deque<String> nameParts = new ArrayDeque<>();
     nameParts.addFirst(name);
 
-    ${scopeInterface} optCurrentScope = enclosingScope;
+    ${scopeInterface} optCurrentScope = getEnclosingScope();
 
   while (optCurrentScope != null) {
   final ${scopeInterface} currentScope = optCurrentScope;

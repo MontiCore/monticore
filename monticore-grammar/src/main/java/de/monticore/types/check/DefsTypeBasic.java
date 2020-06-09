@@ -2,6 +2,7 @@
 package de.monticore.types.check;
 
 import de.monticore.symboltable.modifiers.AccessModifier;
+import de.monticore.types.basictypesymbols._symboltable.TypeVarSymbol;
 import de.monticore.types.typesymbols.TypeSymbolsMill;
 import de.monticore.types.typesymbols._symboltable.*;
 
@@ -56,14 +57,14 @@ public class DefsTypeBasic {
    * Helpers that efficiently create Symbols
    * (which by the way can also later be extended)
    */
-  public static TypeSymbol type(String name) {
+  public static OOTypeSymbol type(String name) {
     return type(name,name);
   }
   
   /** create TypeSymbols (some defaults apply)
    */
-  public static TypeSymbol type(String name, String fullName) {
-    return TypeSymbolsMill.typeSymbolBuilder()
+  public static OOTypeSymbol type(String name, String fullName) {
+    return TypeSymbolsMill.oOTypeSymbolBuilder()
             .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
             .setName(name)
             .setFullName(fullName)
@@ -74,8 +75,8 @@ public class DefsTypeBasic {
             .build();
   }
 
-  public static TypeSymbol type(String name, List<SymTypeExpression> superTypes){
-    return TypeSymbolsMill.typeSymbolBuilder()
+  public static OOTypeSymbol type(String name, List<SymTypeExpression> superTypes){
+    return TypeSymbolsMill.oOTypeSymbolBuilder()
             .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
             .setName(name)
             .setFullName(name)
@@ -83,9 +84,9 @@ public class DefsTypeBasic {
             .build();
   }
 
-  public static TypeSymbol type(String name, List<SymTypeExpression> superTypes, List<TypeVarSymbol> typeArguments){
+  public static OOTypeSymbol type(String name, List<SymTypeExpression> superTypes, List<TypeVarSymbol> typeArguments){
     TypeSymbolsScope spannedScope = TypeSymbolsMill.typeSymbolsScopeBuilder().build();
-    return TypeSymbolsMill.typeSymbolBuilder()
+    return TypeSymbolsMill.oOTypeSymbolBuilder()
             .setSpannedScope(spannedScope)
             .setName(name)
             .setFullName(name)
@@ -94,9 +95,9 @@ public class DefsTypeBasic {
             .build();
   }
 
-  public static TypeSymbol type(String name, List<MethodSymbol> methodList, List<FieldSymbol> fieldList,
-                                List<SymTypeExpression> superTypeList, List<TypeVarSymbol> typeVariableList){
-    return TypeSymbolsMill.typeSymbolBuilder()
+  public static OOTypeSymbol type(String name, List<MethodSymbol> methodList, List<FieldSymbol> fieldList,
+                                  List<SymTypeExpression> superTypeList, List<TypeVarSymbol> typeVariableList){
+    return TypeSymbolsMill.oOTypeSymbolBuilder()
           .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
           .setName(name)
           .setFullName(name)
@@ -107,10 +108,10 @@ public class DefsTypeBasic {
           .build();
   }
 
-  public static TypeSymbol type(String name, List<MethodSymbol> methodList, List<FieldSymbol> fieldList,
-                                List<SymTypeExpression> superTypeList, List<TypeVarSymbol> typeVariableList,
-                                ITypeSymbolsScope enclosingScope){
-    TypeSymbol t = TypeSymbolsMill.typeSymbolBuilder()
+  public static OOTypeSymbol type(String name, List<MethodSymbol> methodList, List<FieldSymbol> fieldList,
+                                  List<SymTypeExpression> superTypeList, List<TypeVarSymbol> typeVariableList,
+                                  ITypeSymbolsScope enclosingScope){
+    OOTypeSymbol t = TypeSymbolsMill.oOTypeSymbolBuilder()
         .setEnclosingScope(enclosingScope)
         .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setName(name)
@@ -139,12 +140,12 @@ public class DefsTypeBasic {
         .build();
   }
   
-  public static TypeSymbol add(TypeSymbol t, FieldSymbol f) {
+  public static OOTypeSymbol add(OOTypeSymbol t, FieldSymbol f) {
     t.addFieldSymbol(f);
     return t;
   }
   
-  public static TypeSymbol add(TypeSymbol t, MethodSymbol m) {
+  public static OOTypeSymbol add(OOTypeSymbol t, MethodSymbol m) {
     t.addMethodSymbol(m);
     return t;
   }
@@ -182,7 +183,7 @@ public class DefsTypeBasic {
   
   /** add a Type to a Scope (bidirectional)
    */
-  public static void add2scope(ITypeSymbolsScope p, TypeSymbol s) {
+  public static void add2scope(ITypeSymbolsScope p, OOTypeSymbol s) {
     s.setEnclosingScope(p);
     p.add(s);
   }
@@ -215,7 +216,7 @@ public class DefsTypeBasic {
    * So this functions does that for Types,Methods,Fields afterwards
    * (only the Type needs a full name, the rest is added)
    */
-  public static void completeFullnames(TypeSymbol s) {
+  public static void completeFullnames(OOTypeSymbol s) {
     // in the class Fullname must already set
     String prefix = s.getPackageName();
     for (MethodSymbol m : s.getMethodList()) {
@@ -261,7 +262,7 @@ public class DefsTypeBasic {
    *        müssen nicht nach Java 10 gehen, sondern evtl. eine frühere Version ...)
    *
    */
-  public static TypeSymbol _array;
+  public static OOTypeSymbol _array;
   // SymTypeExpression _arraySymType  cannot be defined, because Arrays are generics and have varying arguments
   
   public static void set_array() {
@@ -303,12 +304,12 @@ public class DefsTypeBasic {
    * We deliberately choose Java 10 here and take methods from:
    * https://docs.oracle.com/javase/10/docs/api/java/lang/String.html
    */
-  public static TypeSymbol _String;
+  public static OOTypeSymbol _String;
   public static SymTypeOfObject _StringSymType;
   
   public static void set_String() {
     _String = type("String");
-    _StringSymType = new SymTypeOfObject(new TypeSymbolLoader("String", createScopeWithString()));
+    _StringSymType = new SymTypeOfObject(new OOTypeSymbolLoader("String", createScopeWithString()));
   }
 
   public static ITypeSymbolsScope createScopeWithString() {
@@ -364,7 +365,7 @@ public class DefsTypeBasic {
    * We deliberately choose Java 10 here and take methods from:
    * https://docs.oracle.com/javase/10/docs/api/java/lang/Object.html
    */
-  public static TypeSymbol _Object;
+  public static OOTypeSymbol _Object;
   public static SymTypeOfObject _ObjectSymType;
   
   public static void set_Object() {
@@ -383,7 +384,7 @@ public class DefsTypeBasic {
     // TODO RE: this function is very incomplete; ersetzen oder komplettieren
     
     completeFullnames(_Object);
-    _ObjectSymType = new SymTypeOfObject(new TypeSymbolLoader("Object", createScopeWithObject()));
+    _ObjectSymType = new SymTypeOfObject(new OOTypeSymbolLoader("Object", createScopeWithObject()));
   }
 
   public static ITypeSymbolsScope createScopeWithObject() {
@@ -400,21 +401,21 @@ public class DefsTypeBasic {
    * This is the predefined Symbol for all Primitives, such as "int"
    * which has empty Fields and Methods
    */
-  public static TypeSymbol _int;
+  public static OOTypeSymbol _int;
   public static SymTypeConstant _intSymType;
-  public static TypeSymbol _char;
+  public static OOTypeSymbol _char;
   public static SymTypeConstant _charSymType;
-  public static TypeSymbol _boolean;
+  public static OOTypeSymbol _boolean;
   public static SymTypeConstant _booleanSymType;
-  public static TypeSymbol _double;
+  public static OOTypeSymbol _double;
   public static SymTypeConstant _doubleSymType;
-  public static TypeSymbol _float;
+  public static OOTypeSymbol _float;
   public static SymTypeConstant _floatSymType;
-  public static TypeSymbol _long;
+  public static OOTypeSymbol _long;
   public static SymTypeConstant _longSymType;
-  public static TypeSymbol _byte;
+  public static OOTypeSymbol _byte;
   public static SymTypeConstant _byteSymType;
-  public static TypeSymbol _short;
+  public static OOTypeSymbol _short;
   public static SymTypeConstant _shortSymType;
   
   
@@ -425,41 +426,41 @@ public class DefsTypeBasic {
     TypeSymbolsScope typeSymbolsScope = new TypeSymbolsScope();
     _int = type("int");
     typeSymbolsScope.add(_int);
-    _intSymType = new SymTypeConstant(new TypeSymbolLoader("int", typeSymbolsScope));
+    _intSymType = new SymTypeConstant(new OOTypeSymbolLoader("int", typeSymbolsScope));
     typeConstants.put("int", _intSymType);
 
     _boolean = type("boolean");
     typeSymbolsScope.add(_boolean);
-    _booleanSymType = new SymTypeConstant(new TypeSymbolLoader("boolean", typeSymbolsScope));
+    _booleanSymType = new SymTypeConstant(new OOTypeSymbolLoader("boolean", typeSymbolsScope));
     typeConstants.put("boolean", _booleanSymType);
 
     _char = type("char");
     typeSymbolsScope.add(_char);
-    _charSymType = new SymTypeConstant(new TypeSymbolLoader("char", typeSymbolsScope));
+    _charSymType = new SymTypeConstant(new OOTypeSymbolLoader("char", typeSymbolsScope));
     typeConstants.put("char", _charSymType);
 
     _double = type("double");
     typeSymbolsScope.add(_double);
-    _doubleSymType = new SymTypeConstant(new TypeSymbolLoader("double", typeSymbolsScope));
+    _doubleSymType = new SymTypeConstant(new OOTypeSymbolLoader("double", typeSymbolsScope));
     typeConstants.put("double", _doubleSymType);
     _float = type("float");
     typeSymbolsScope.add(_float);
-    _floatSymType = new SymTypeConstant(new TypeSymbolLoader("float", typeSymbolsScope));
+    _floatSymType = new SymTypeConstant(new OOTypeSymbolLoader("float", typeSymbolsScope));
     typeConstants.put("float", _floatSymType);
 
     _long = type("long");
     typeSymbolsScope.add(_long);
-    _longSymType = new SymTypeConstant(new TypeSymbolLoader("long", typeSymbolsScope));
+    _longSymType = new SymTypeConstant(new OOTypeSymbolLoader("long", typeSymbolsScope));
     typeConstants.put("long", _longSymType);
 
     _byte = type("byte");
     typeSymbolsScope.add(_byte);
-    _byteSymType = new SymTypeConstant(new TypeSymbolLoader("byte", typeSymbolsScope));
+    _byteSymType = new SymTypeConstant(new OOTypeSymbolLoader("byte", typeSymbolsScope));
     typeConstants.put("byte", _byteSymType);
 
     _short = type("short");
     typeSymbolsScope.add(_short);
-    _shortSymType = new SymTypeConstant(new TypeSymbolLoader("short", typeSymbolsScope));
+    _shortSymType = new SymTypeConstant(new OOTypeSymbolLoader("short", typeSymbolsScope));
     typeConstants.put("short", _shortSymType);
   }
   
@@ -471,12 +472,13 @@ public class DefsTypeBasic {
    * It is used for internal derivations, but of course not for real type results
    *
    */
-  public static TypeSymbol _void;
+  public static OOTypeSymbol _void;
   public static SymTypeVoid _voidSymType;
   public static final String _voidTypeString = "voidType";
   
   public static void set_Void() {
     _void = type(_voidTypeString);           // the name shouldn't be used
+    _void.setEnclosingScope(new TypeSymbolsScope());
     _voidSymType = new SymTypeVoid();
   }
   
@@ -488,12 +490,13 @@ public class DefsTypeBasic {
    * This is a predefined Dummy Symbol mimicking the
    * pseudoType "null" with no Fields, no Methods, etc.
    */
-  public static TypeSymbol _null;
+  public static OOTypeSymbol _null;
   public static SymTypeOfNull _nullSymType;
   public static final String _nullTypeString = "nullType";
   
   public static void set_Null() {
     _null = type(_nullTypeString);    // and the name shouldn't be used anyway, but it is at DeSer
+    _null.setEnclosingScope(new TypeSymbolsScope());
     _nullSymType = new SymTypeOfNull();
   }
   

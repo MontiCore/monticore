@@ -10,7 +10,7 @@ import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TypeSymbolDeSer extends TypeSymbolDeSerTOP {
+public class OOTypeSymbolDeSer extends OOTypeSymbolDeSerTOP {
 
   @Override
   protected List<SymTypeExpression> deserializeSuperTypes(JsonObject symbolJson, ITypeSymbolsScope enclosingScope) {

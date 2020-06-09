@@ -1,19 +1,18 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.javalight._symboltable;
 
-import de.monticore.javalight.JavaLightMill;
 import de.monticore.javalight._ast.*;
 import de.monticore.statements.mccommonstatements._ast.ASTJavaModifier;
 import de.monticore.statements.mcstatementsbasis._ast.ASTMCModifier;
-import de.monticore.statements.mcvardeclarationstatements._symboltable.VariableSymbol;
-import de.monticore.types.check.*;
+import de.monticore.statements.mcvardeclarationstatements._symboltable.VarDeclSymbol;
+import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.check.SymTypeExpressionFactory;
+import de.monticore.types.check.SymTypeOfNull;
+import de.monticore.types.check.SynthesizeSymTypeFromMCFullGenericTypes;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
-import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
-import de.se_rwth.commons.logging.Log;
 
 import java.util.Deque;
 
@@ -69,14 +68,14 @@ public class JavaLightSymbolTableCreator extends JavaLightSymbolTableCreatorTOP 
 
   @Override
   public void endVisit(ASTFormalParameter ast) {
-    VariableSymbol symbol = ast.getDeclaratorId().getSymbol();
+    VarDeclSymbol symbol = ast.getDeclaratorId().getSymbol();
     symbol.setType(createTypeLoader(ast.getMCType()));
     symbol.setIsParameter(true);
   }
 
   @Override
   public void endVisit(ASTLastFormalParameter ast) {
-    VariableSymbol symbol = ast.getDeclaratorId().getSymbol();
+    VarDeclSymbol symbol = ast.getDeclaratorId().getSymbol();
     symbol.setType(createTypeLoader(ast.getMCType()));
     symbol.setIsParameter(true);
   }

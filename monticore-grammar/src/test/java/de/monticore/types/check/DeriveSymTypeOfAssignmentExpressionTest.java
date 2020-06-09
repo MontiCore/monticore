@@ -6,11 +6,8 @@ import de.monticore.expressions.combineexpressionswithliterals.CombineExpression
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsScope;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.expressions.prettyprint.CombineExpressionsWithLiteralsPrettyPrinter;
-import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.types.typesymbols._symboltable.TypeSymbol;
+import de.monticore.types.typesymbols._symboltable.OOTypeSymbol;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -34,7 +31,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
   @BeforeClass
   public static void setup() {
     Log.init();
-    Log.enableFailQuick(false);
+   // Log.enableFailQuick(false);
   }
 
   @Before
@@ -60,12 +57,12 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     add2scope(scope, DefsTypeBasic._String);
 
     // some FieldSymbols (ie. Variables, Attributes)
-    TypeSymbol p = new TypeSymbol("Person");
+    OOTypeSymbol p = new OOTypeSymbol("Person");
     scope.add(p);
-    TypeSymbol s = new TypeSymbol("Student");
+    OOTypeSymbol s = new OOTypeSymbol("Student");
     scope.add(s);
     s.setSuperTypeList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Person", scope)));
-    TypeSymbol f = new TypeSymbol("FirstSemesterStudent");
+    OOTypeSymbol f = new OOTypeSymbol("FirstSemesterStudent");
     scope.add(f);
     f.setSuperTypeList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student", scope)));
     add2scope(scope, field("foo", _intSymType));
@@ -82,7 +79,6 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     add2scope(scope, field("student2", SymTypeExpressionFactory.createTypeObject("Student", scope)));
     add2scope(scope, field("firstsemester", SymTypeExpressionFactory.createTypeObject("FirstSemesterStudent", scope)));
     flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
-    LogStub.init();
   }
 
   // Parer used for convenience:
