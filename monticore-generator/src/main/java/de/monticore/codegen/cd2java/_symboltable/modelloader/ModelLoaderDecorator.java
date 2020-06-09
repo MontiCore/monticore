@@ -158,7 +158,7 @@ public class ModelLoaderDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, booleanType, "loadSymbolsIntoScope",
         qualifiedModelNameParam, modelPathParam, enclosingScopeParam);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(
-        TEMPLATE_PATH + "LoadSymbolsIntoScope", scopeInterface, scopeDeSer));
+        TEMPLATE_PATH + "LoadSymbolsIntoScope4ModelLoader", scopeInterface, scopeDeSer));
     return method;
   }
 
