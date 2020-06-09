@@ -53,7 +53,7 @@ grammar Attributes  {
 
   Keywords = "step" step:Name;
 
-
+  Bla = token("::") Name;
 
 
 }

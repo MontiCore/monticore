@@ -4,7 +4,7 @@ package de.monticore.statements;
 /* Beta-version: This is intended to become a MontiCore stable grammar. */
 
 /**
- * This grammar defines typical statements, such as 
+ * This grammar defines typical statements, such as
  * method calls (which are actually expressions),
  * assignment of variables, if, for, while, switch statements, and blocks.
  *
@@ -26,13 +26,13 @@ package de.monticore.statements;
  *
 */
 
-component grammar MCCommonStatements 
+component grammar MCCommonStatements
           extends de.monticore.statements.MCVarDeclarationStatements {
 
-/** 
+/**
  * Standard Form of a block { ... }
  */
-MCJavaBlock implements MCStatement
+scope MCJavaBlock implements MCStatement
     =   "{" MCBlockStatement* "}"
     ;
 
@@ -45,16 +45,15 @@ JavaModifier implements MCModifier =
         | "const" | "volatile" | "strictfp"]
         ;
 
-
 IfStatement implements MCStatement
-    =   "if" "(" condition:Expression ")" 
-                    thenStatement:MCStatement 
+    =   "if" "(" condition:Expression ")"
+                    thenStatement:MCStatement
             ("else" elseStatement:MCStatement)?
-   // we use "elseStatement" instead of "else", because the 
+   // we use "elseStatement", because the
    // generated Java code doesn't allow "else" as Name 
     ;
 
-ForStatement implements MCStatement
+scope ForStatement implements MCStatement
     =   "for" "(" ForControl ")" MCStatement
     ;
 
@@ -81,7 +80,7 @@ DoWhileStatement implements MCStatement
     ;
 
 SwitchStatement implements MCStatement
-    =   "switch" "(" Expression ")" 
+    =   "switch" "(" Expression ")"
            "{" SwitchBlockStatementGroup* SwitchLabel* "}"
     ;
 
@@ -94,7 +93,7 @@ ExpressionStatement implements MCStatement
     ;
 
 // Matches cases then statements, both of which are mandatory.
-// To handle empty cases at the end, SwitchLabel* is explicitely added 
+// To handle empty cases at the end, SwitchLabel* is explicitely added
 // in  the statement body
 SwitchBlockStatementGroup
     =   SwitchLabel+ MCBlockStatement+
@@ -103,11 +102,11 @@ SwitchBlockStatementGroup
 interface SwitchLabel ;
 
 ConstantExpressionSwitchLabel implements SwitchLabel
-    =   "case" constantExpression:Expression ":"
+    =   "case" constant:Expression ":"
     ;
 
 EnumConstantSwitchLabel implements SwitchLabel
-    =   "case" enumConstantName:Name ":"
+    =   "case" enumConstant:Name ":"
     ;
 
 DefaultSwitchLabel implements SwitchLabel

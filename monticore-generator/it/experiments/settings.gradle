@@ -2,7 +2,9 @@
 
 pluginManagement {
   repositories {
-    mavenLocal()
+    if(("true").equals(getProperty('useLocalRepo'))){
+      mavenLocal()
+    }
     maven {
       credentials.username mavenUser
       credentials.password mavenPassword
@@ -21,6 +23,7 @@ include(':composition')
 include(':extensionvariants')
 include(':forAst')
 include(':forConcSt')
+include(':forEmfAst')
 include(':forParser')
 include(':forVisitors')
 include(':generator')

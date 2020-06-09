@@ -13,7 +13,7 @@ fileTree(dir: grammarDir, include: '**/*.mc4').each {
     outputDir = file outDir
     handcodedPath file("$projectDir/src/main/java")
     modelPath file("$projectDir/$grammarDir")
-    script file('it-emf.groovy')
+    script = 'it-emf.groovy'
     def grammarIncludingPackage = file(grammarDir).toURI().relativize(g.toURI()).toString()
     def uptoDate = incCheck(grammarIncludingPackage)
     outputs.upToDateWhen { uptoDate }

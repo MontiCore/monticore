@@ -199,7 +199,7 @@ and
 * The MontiCore language for parsing JSON artifacts. An example:
   ```
   { "Alice": {
-      "name": "Alice Anderson",
+      "fullname": "Alice Anderson",
       "address": {
         "postal_code": 10459, 
         "street": "Beck Street",
@@ -332,13 +332,14 @@ component InteriorLight {                           // MontiArc language
   SI Unit types integrate with MontiCore's type system. 
   The SI unit language remains type safe.
 * Main grammar components:
-    * [SI unit literals](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/lang/literals/SIUnitLiterals.mc4)
-    * [SI unit types for math](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/lang/types/SIUnitTypes.mc4)
-    * [SI unit types for computations](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/lang/types/PrimitiveWithSIUnitTypes.mc4)
+    * [SI units](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/siunits/SIUnits.mc4)
+    * [SI unit literals](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/siunits/SIUnitLiterals.mc4)
+    * [SI unit types for math](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/siunits/SIUnitTypes4Math.mc4)
+    * [SI unit types for computations](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/siunits/SIUnitTypes4Computing.mc4)
     *           (other alternatives are possible; SI has not standardized anything here)
 * Example projects:
     * [SI Java](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/test/grammars/de/monticore/lang/testsijava/TestSIJava.mc4) 
-* [*detailed description*](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/lang/SIUnits.md)  
+* [*detailed description*](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/siunits/SIUnits.md)  
 
 
 ### [Statecharts](https://git.rwth-aachen.de/monticore/statechart/sc-language) (Beta: In Stabilization) (90% to MC6)
@@ -370,9 +371,34 @@ component InteriorLight {                           // MontiArc language
 
 ### [SysML_2](https://git.rwth-aachen.de/monticore/languages/sysml2/sysml2official) (Alpha: Intention to become stable)
 * Caretaker: NJ
-* Project for the SysML 2 language famlily. It will be compatible with the 
-  general upcoming SysML 2 specification.
-
+* MontiCore languages for parsing artifacts of the SysML 2 language famlily. 
+  Examples:
+```
+package 'Vehicles' {                      // a SysML block diagram
+  private import ScalarValues::*; 
+  block Vehicle; 
+  block Truck is Vehicle; 
+  value type Torque is ISQ::TorqueValue; 
+}
+```
+```
+package 'Coffee' {                      // a SysML activity diagram
+  activity BrewCoffee (in beans : CoffeeBeans, in, water : Water, out coffee : Coffee) { 
+    bind grind::beans = beans;
+    action grind : Grind (in beans, out powder);
+    flow grind::powder to brew::powder;
+    bind brew::water = water;
+    action brew : Brew (in powder, in water, out coffee); 
+    bind brew::coffee = coffee;
+  }
+}
+```
+* The SysML 2 grammars adhere to the general upcoming SysML 2 specification 
+  (which is still under improvement currently).
+* Actually these grammars represents a slight superset to the official SysML 2
+  standard. It is intended for parsing SysML 2-compliant models. 
+  Well-formedness checks are kept to a minimum, because we assume to parse
+  correctly produced SysML 2 models only.
 * MontiCore's SysML 2 is a language familiy that comes with a textual 
   representation to describe SysML 2 diagrams with respect to the standard. 
 
@@ -419,23 +445,26 @@ component InteriorLight {                           // MontiArc language
 
 ### [XML](https://git.rwth-aachen.de/monticore/languages/xml) (Alpha: Intention to become stable)
 * Responsible: NJ
-* The MontiCore language for parsing XML artifacts
-* The XML grammar adheres to the common **standard** and allows parsing 
-  arbitrary XML artifacts for further processing. An example:
-```xml
-<Calendar>
-  <Appointment name="Daily Standup">
-    <Date>24.04.2021</Date>
-    <Time>10:00</Time>
-    <Location>zoom</Location>
-  </Appointment>
-  <Appointment name="Lunch">
-    <Date>24.04.2021</Date>
-    <Time>11:30</Time>
-    <Location>Grand Hotel</Location>
-  </Appointment>
-</Calendar>
-```
+* The MontiCore language for parsing XML artifacts. An example:
+  ```
+  <Calendar>
+    <Appointment name="lunch">
+      <Date>24.04.2020</Date>
+      <Time>11:30</Time>
+      <Location>cafeteria</Location>
+    </Appointment>
+  </Calendar>
+  ```
+* The XML grammar adheres to the common **XML standard** and allows parsing 
+  arbitrary XML artifacts for further processing.
+* Actually the grammar represents a slight superset to the official XML standard. 
+  It is intended for parsing XML-compliant artifacts. Further well-formedness
+  checks are not included, because we assume to parse correctly produced XML 
+  documents only.
+* Please note that XML (like JSON or ASCII) is mainly a carrier language.
+  The concrete XML dialect and the question, how to recreate the
+  real objects / data structures, etc. behind the XML structure
+  is beyond this grammar, but can be applied to the AST defined here.
 * Main grammar 
   [`de.monticore.lang.XML`](https://git.rwth-aachen.de/monticore/languages/xml/-/blob/master/src/main/grammars/de/monticore/lang/XML.mc4)
   and 

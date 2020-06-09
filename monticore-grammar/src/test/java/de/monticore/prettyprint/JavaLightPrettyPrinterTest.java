@@ -2,6 +2,7 @@
 package de.monticore.prettyprint;
 
 import de.monticore.javalight._ast.*;
+import de.monticore.statements.mcvardeclarationstatements._ast.ASTLocalVariableDeclaration;
 import de.monticore.testjavalight._parser.TestJavaLightParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -33,24 +34,8 @@ public class JavaLightPrettyPrinterTest {
   }
 
   @Test
-  public void testEmptyDeclaration() throws IOException {
-    Optional<ASTEmptyDeclaration> result = parser.parse_StringEmptyDeclaration(";");
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
-    ASTEmptyDeclaration ast = result.get();
-
-    String output = prettyPrinter.prettyprint(ast);
-
-    result = parser.parse_StringEmptyDeclaration(output);
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
-
-    assertTrue(ast.deepEquals(result.get()));
-  }
-
-  @Test
   public void testClassBlock() throws IOException {
-    Optional<ASTClassBlock> result = parser.parse_StringClassBlock("static { private Integer foo = a }");
+    Optional<ASTClassBlock> result = parser.parse_StringClassBlock("static { private Integer foo = a;}");
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
     ASTClassBlock ast = result.get();
@@ -66,7 +51,7 @@ public class JavaLightPrettyPrinterTest {
 
   @Test
   public void testMethodDeclaration() throws IOException {
-    Optional<ASTMethodDeclaration> result = parser.parse_StringMethodDeclaration("private static final int foo(String s, boolean b)[][][] throws e.Exception { private Integer foo = a }");
+    Optional<ASTMethodDeclaration> result = parser.parse_StringMethodDeclaration("private static final int foo(String s, boolean b)[][][] throws e.Exception { private Integer foo = a; }");
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
     ASTMethodDeclaration ast = result.get();
@@ -82,7 +67,7 @@ public class JavaLightPrettyPrinterTest {
 
   @Test
   public void testConstructorDeclaration() throws IOException {
-    Optional<ASTConstructorDeclaration> result = parser.parse_StringConstructorDeclaration("public ClassName(String s, boolean b) throws e.Exception { private Integer foo = a }");
+    Optional<ASTConstructorDeclaration> result = parser.parse_StringConstructorDeclaration("public ClassName(String s, boolean b) throws e.Exception { private Integer foo = a;}");
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
     ASTConstructorDeclaration ast = result.get();
@@ -98,14 +83,15 @@ public class JavaLightPrettyPrinterTest {
 
   @Test
   public void testFieldDeclaration() throws IOException {
-    Optional<ASTFieldDeclaration> result = parser.parse_StringFieldDeclaration("private static List a = b, c = d;");
+    Optional<ASTLocalVariableDeclaration> result = parser.parse_StringLocalVariableDeclaration("private static List a = b, c = d");
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
-    ASTFieldDeclaration ast = result.get();
+    ASTLocalVariableDeclaration ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    prettyPrinter.handle(ast);
+    String output = prettyPrinter.getPrinter().getContent();
 
-    result = parser.parse_StringFieldDeclaration(output);
+    result = parser.parse_StringLocalVariableDeclaration(output);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
 
@@ -129,22 +115,6 @@ public class JavaLightPrettyPrinterTest {
   }
 
   @Test
-  public void testConstantDeclarator() throws IOException {
-    Optional<ASTConstantDeclarator> result = parser.parse_StringConstantDeclarator("foo [][][] = a");
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
-    ASTConstantDeclarator ast = result.get();
-
-    String output = prettyPrinter.prettyprint(ast);
-
-    result = parser.parse_StringConstantDeclarator(output);
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
-
-    assertTrue(ast.deepEquals(result.get()));
-  }
-
-  @Test
   public void testInterfaceMethodDeclaration() throws IOException {
     Optional<ASTInterfaceMethodDeclaration> result = parser.parse_StringInterfaceMethodDeclaration("private static final int foo(String s, boolean b)[][][] throws e.Exception;");
     assertFalse(parser.hasErrors());
@@ -154,22 +124,6 @@ public class JavaLightPrettyPrinterTest {
     String output = prettyPrinter.prettyprint(ast);
 
     result = parser.parse_StringInterfaceMethodDeclaration(output);
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
-
-    assertTrue(ast.deepEquals(result.get()));
-  }
-
-  @Test
-  public void testMethodSignature() throws IOException {
-    Optional<ASTMethodSignature> result = parser.parse_StringMethodSignature("private static final int foo(String s, boolean b)[][][] throws e.Exception");
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
-    ASTMethodSignature ast = result.get();
-
-    String output = prettyPrinter.prettyprint(ast);
-
-    result = parser.parse_StringMethodSignature(output);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
 
@@ -288,21 +242,6 @@ public class JavaLightPrettyPrinterTest {
     assertTrue(ast.deepEquals(result.get()));
   }
 
-  @Test
-  public void testAnnotationTypeDeclaration() throws IOException {
-    Optional<ASTAnnotationTypeDeclaration> result = parser.parse_StringAnnotationTypeDeclaration("private static @ interface IScope {private double a();}");
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
-    ASTAnnotationTypeDeclaration ast = result.get();
-
-    String output = prettyPrinter.prettyprint(ast);
-
-    result = parser.parse_StringAnnotationTypeDeclaration(output);
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
-
-    assertTrue(ast.deepEquals(result.get()));
-  }
 
   @Test
   public void testElementValueOrExpr() throws IOException {
@@ -346,70 +285,6 @@ public class JavaLightPrettyPrinterTest {
     String output = prettyPrinter.prettyprint(ast);
 
     result = parser.parse_StringElementValuePair(output);
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
-
-    assertTrue(ast.deepEquals(result.get()));
-  }
-
-  @Test
-  public void testAnnotationTypeBody() throws IOException {
-    Optional<ASTAnnotationTypeBody> result = parser.parse_StringAnnotationTypeBody("{private double a();}");
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
-    ASTAnnotationTypeBody ast = result.get();
-
-    String output = prettyPrinter.prettyprint(ast);
-
-    result = parser.parse_StringAnnotationTypeBody(output);
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
-
-    assertTrue(ast.deepEquals(result.get()));
-  }
-
-  @Test
-  public void testDefaultValue() throws IOException {
-    Optional<ASTDefaultValue> result = parser.parse_StringDefaultValue("default a");
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
-    ASTDefaultValue ast = result.get();
-
-    String output = prettyPrinter.prettyprint(ast);
-
-    result = parser.parse_StringDefaultValue(output);
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
-
-    assertTrue(ast.deepEquals(result.get()));
-  }
-
-  @Test
-  public void testAnnotationMethod() throws IOException {
-    Optional<ASTAnnotationMethod> result = parser.parse_StringAnnotationMethod("private double a();");
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
-    ASTAnnotationMethod ast = result.get();
-
-    String output = prettyPrinter.prettyprint(ast);
-
-    result = parser.parse_StringAnnotationMethod(output);
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
-
-    assertTrue(ast.deepEquals(result.get()));
-  }
-
-  @Test
-  public void testAnnotationConstant() throws IOException {
-    Optional<ASTAnnotationConstant> result = parser.parse_StringAnnotationConstant("private ASTNode a = foo, e = d;");
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
-    ASTAnnotationConstant ast = result.get();
-
-    String output = prettyPrinter.prettyprint(ast);
-
-    result = parser.parse_StringAnnotationConstant(output);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
 

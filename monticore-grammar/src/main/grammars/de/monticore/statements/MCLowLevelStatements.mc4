@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.statements;
 
-/* Alpha-version: This is intended to become a MontiCore stable grammar. */
+/* Beta-version: This is intended to become a MontiCore stable grammar. */
 
 /**
  * This grammar defines three low-level statements that Java provides.
@@ -35,7 +35,7 @@ ContinueStatement implements MCStatement
     =   "continue" label:Name? ";"
     ;
 
-// TODO: Symbol eingefuehrt --> als Symbol behandeln (deshalb nur Alpha)
+// TODO: ! Symbol eingefuehrt --> als Symbol behandeln (deshalb nur Alpha)
 // MB -> BR: Das ist zur Zeit in einem anderen Branch in Arbeit
 LabeledStatement implements MCStatement
     =   label:Name ":" MCStatement

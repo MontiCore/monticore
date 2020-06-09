@@ -372,15 +372,15 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
         wholeResult = SymTypeExpressionFactory.createTypeConstant(typeSymbol.getName());
       }else {
         //the return type is an object
-        wholeResult = SymTypeExpressionFactory.createTypeObject(typeSymbol.getName(), scope);
+        wholeResult = SymTypeExpressionFactory.createTypeObject(typeSymbol.getName(), typeSymbol.getEnclosingScope());
       }
     }else {
       //the return type must be a generic
       List<SymTypeExpression> typeArgs = Lists.newArrayList();
       for(TypeVarSymbol s : typeSymbol.getTypeParameterList()){
-        typeArgs.add(SymTypeExpressionFactory.createTypeVariable(s.getName(),scope));
+        typeArgs.add(SymTypeExpressionFactory.createTypeVariable(s.getName(),typeSymbol.getEnclosingScope()));
       }
-      wholeResult = SymTypeExpressionFactory.createGenerics(typeSymbol.getName(), scope, typeArgs);
+      wholeResult = SymTypeExpressionFactory.createGenerics(typeSymbol.getName(), typeSymbol.getEnclosingScope(), typeArgs);
     }
     return wholeResult;
   }

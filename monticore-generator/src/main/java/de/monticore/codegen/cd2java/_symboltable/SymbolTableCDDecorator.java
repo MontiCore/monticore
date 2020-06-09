@@ -165,7 +165,7 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
     ASTCDDefinition symTabCD = CD4AnalysisMill.cDDefinitionBuilder()
         .setName(astCD.getCDDefinition().getName())
         .addAllCDClasss(decoratedSymbolClasses)
-        .addAllCDClasss(createSymbolBuilderClasses(decoratedSymbolClasses))
+        .addAllCDClasss(createSymbolBuilderClasses(symbolCD.getCDDefinition().getCDClassList()))
         .addCDClass(scopeClass)
         .addCDClass(createScopeClassBuilder(scopeClass))
         .addCDInterface(createScopeInterface(scopeCD, symbolCD))

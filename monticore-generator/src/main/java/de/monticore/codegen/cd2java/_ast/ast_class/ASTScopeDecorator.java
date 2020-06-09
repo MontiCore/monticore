@@ -10,6 +10,7 @@ import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import org.omg.CORBA.VisibilityHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,16 +36,15 @@ public class ASTScopeDecorator extends AbstractCreator<ASTCDType, List<ASTCDAttr
   @Override
   public List<ASTCDAttribute> decorate(final ASTCDType clazz) {
     List<ASTCDAttribute> attributeList = new ArrayList<>();
+    boolean isInheritedScope = symbolTableService.hasInheritedScopeStereotype(clazz.getModifier());
     ASTMCType scopeInterfaceType = symbolTableService.getScopeInterfaceType();
-    Optional<ASTCDType> scopeInfo = symbolTableService.getTypeWithScopeInfo(clazz);
-    boolean hasSuperScope = false;
-    if (scopeInfo.isPresent()) {
-      attributeList.add(createSpannedScopeAttribute(scopeInterfaceType));
-      hasSuperScope = !scopeInfo.get().equals(clazz);
-    } else if ((clazz.isPresentModifier() && symbolTableService.hasInheritedScopeStereotype(clazz.getModifier()))) {
-      // also create spannedScopeAttribute if the scope property is inherited
-      attributeList.add(createSpannedScopeAttribute(scopeInterfaceType));
+
+    // IsScopeSpanning?
+    if (symbolTableService.hasScopeStereotype(clazz.getModifier()) || isInheritedScope) {
+      ASTCDAttribute spannedScopeAttribute = createSpannedScopeAttribute(scopeInterfaceType);
+      attributeList.add(spannedScopeAttribute);
     }
+
     //always add enclosingScope for attribute that has a scope
     attributeList.add(createEnclosingScopeAttribute(scopeInterfaceType));
 
@@ -56,7 +56,9 @@ public class ASTScopeDecorator extends AbstractCreator<ASTCDType, List<ASTCDAttr
       ASTCDAttribute enclosingScopeAttribute = createEnclosingScopeAttribute(superScopeInterfaceType);
       TransformationHelper.addStereotypeValue(enclosingScopeAttribute.getModifier(), MC2CDStereotypes.INHERITED.toString());
       attributeList.add(enclosingScopeAttribute);
-      if (hasSuperScope && superCD.getType(scopeInfo.get().getName()).isPresent()) {
+      if (isInheritedScope) {
+        // Todo (MB, NP): Vielleicht sollte man hier nicht alle Methoden generieren, sondern nur für die Scopes,
+        // die zur Scope-Definition erforderlich sind
         ASTCDAttribute spannedScopeAttribute = createSpannedScopeAttribute(superScopeInterfaceType);
         TransformationHelper.addStereotypeValue(spannedScopeAttribute.getModifier(), MC2CDStereotypes.INHERITED.toString());
         attributeList.add(spannedScopeAttribute);

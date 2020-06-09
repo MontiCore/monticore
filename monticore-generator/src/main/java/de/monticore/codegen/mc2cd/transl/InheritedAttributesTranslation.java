@@ -34,7 +34,6 @@ public class InheritedAttributesTranslation implements
       handleInheritedNonTerminals(link);
       handleInheritedConstantGroup(link);
       handleInheritedTerminals(link);
-      handleInheritedKeyTerminals(link);
       handleInheritedAttributeInASTs(link);
       //overwritten
       Optional<ASTProd> overwrittenProdIfNoNewRightSide = getOverwrittenProdIfNoNewRightSide(link.source());
@@ -70,17 +69,23 @@ public class InheritedAttributesTranslation implements
           .collect(Collectors.toList());
       handleInheritedRuleComponents(link, entry.getKey(), terminalWithUsageName);
     }
-  }
-
-  private void handleInheritedKeyTerminals(Link<ASTClassProd, ASTCDClass> link) {
     for (Entry<ASTProd, List<ASTKeyTerminal>> entry : getInheritedKeyTerminal(link.source())
-        .entrySet()) {
-      // only attributes for keyTerminals with a usage name
-      List<ASTKeyTerminal> keyTerminalWithUsageName = entry.getValue()
-          .stream()
-          .filter(ASTKeyTerminal::isPresentUsageName)
-          .collect(Collectors.toList());
-      handleInheritedRuleComponents(link, entry.getKey(), keyTerminalWithUsageName);
+            .entrySet()) {
+      // only attributes for terminals with a usage name
+      List<ASTKeyTerminal> terminalWithUsageName = entry.getValue()
+              .stream()
+              .filter(ASTKeyTerminal::isPresentUsageName)
+              .collect(Collectors.toList());
+      handleInheritedRuleComponents(link, entry.getKey(), terminalWithUsageName);
+    }
+    for (Entry<ASTProd, List<ASTTokenTerminal>> entry : getInheritedTokenTerminal(link.source())
+            .entrySet()) {
+      // only attributes for terminals with a usage name
+      List<ASTTokenTerminal> terminalWithUsageName = entry.getValue()
+              .stream()
+              .filter(ASTTokenTerminal::isPresentUsageName)
+              .collect(Collectors.toList());
+      handleInheritedRuleComponents(link, entry.getKey(), terminalWithUsageName);
     }
   }
 
@@ -141,22 +146,28 @@ public class InheritedAttributesTranslation implements
             astProd -> ASTNodes.getSuccessors(astProd, ASTKeyTerminal.class)));
   }
 
+  private Map<ASTProd, List<ASTTokenTerminal>> getInheritedTokenTerminal(ASTProd sourceNode) {
+    return TransformationHelper.getAllSuperProds(sourceNode).stream()
+            .distinct()
+            .collect(Collectors.toMap(Function.identity(),
+                    astProd -> ASTNodes.getSuccessors(astProd, ASTTokenTerminal.class)));
+  }
 
   /**
    * all attributes from a astrule for a Prod
    */
-  private Map<ASTProd, Collection<AdditionalAttributeSymbol>> getInheritedAttributeInASTs(
+  protected Map<ASTProd, Collection<AdditionalAttributeSymbol>> getInheritedAttributeInASTs(
       ASTProd astNode) {
     return TransformationHelper.getAllSuperProds(astNode).stream()
         .distinct()
         .collect(Collectors.toMap(Function.identity(), prod -> prod.isPresentSymbol() ?
-            prod.getSymbol().getSpannedScope().getLocalAdditionalAttributeSymbols() : Collections.emptyList()));
+            prod.getSymbol().getSpannedScope().getAstAttributeList() : Collections.emptyList()));
   }
 
   /**
    * create Attribute with a inherited flag
    */
-  private ASTCDAttribute createCDAttribute(ASTProd inheritingNode, ASTProd definingNode) {
+  protected ASTCDAttribute createCDAttribute(ASTProd inheritingNode, ASTProd definingNode) {
     List<ASTInterfaceProd> interfacesWithoutImplementation = getAllInterfacesWithoutImplementation(
         inheritingNode);
 
@@ -215,7 +226,7 @@ public class InheritedAttributesTranslation implements
    * class higher up in the type hierarchy. (the list includes interfaces
    * extended transitively by other interfaces)
    */
-  private List<ASTInterfaceProd> getAllInterfacesWithoutImplementation(ASTProd astNode) {
+  protected List<ASTInterfaceProd> getAllInterfacesWithoutImplementation(ASTProd astNode) {
     List<ASTInterfaceProd> directInterfaces = TransformationHelper.getDirectSuperProds(astNode).stream()
         .filter(ASTInterfaceProd.class::isInstance)
         .map(ASTInterfaceProd.class::cast)

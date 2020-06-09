@@ -37,11 +37,11 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
 
   private MCTypeFacade mcTypeFacade;
 
-  private static final String ENCLOSING_SCOPE_TYPE = "de.monticore.codegen.builder.builder._symboltable.IBuilderScope";
+  private static final String ENCLOSING_SCOPE_TYPE = "de.monticore.codegen.symboltable.cdforbuilder.symbol_builder._symboltable.ISymbol_BuilderScope";
 
-  private static final String A_NODE_TYPE_OPT = "Optional<de.monticore.codegen.builder.builder._ast.ASTA>";
+  private static final String A_NODE_TYPE_OPT = "Optional<de.monticore.codegen.symboltable.cdforbuilder.symbol_builder._ast.ASTA>";
 
-  private static final String A_NODE_TYPE = "de.monticore.codegen.builder.builder._ast.ASTA";
+  private static final String A_NODE_TYPE = "de.monticore.codegen.symboltable.cdforbuilder.symbol_builder._ast.ASTA";
 
   private static final String ACCESS_MODIFIER_TYPE = "de.monticore.symboltable.modifiers.AccessModifier";
 
@@ -52,7 +52,7 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
     this.mcTypeFacade = MCTypeFacade.getInstance();
 
     ASTCDCompilationUnit ast = parse("de", "monticore", "codegen", "symboltable","cdForBuilder", "Symbol_Builder");
-    ASTCDClass cdClass = getClassBy("ASymbol", ast);
+    ASTCDClass cdClass = getClassBy("A", ast);
     this.glex.setGlobalValue("service", new AbstractService(ast));
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
     this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
@@ -60,7 +60,8 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
 
     AccessorDecorator methodDecorator = new AccessorDecorator(glex, new SymbolTableService(ast));
     BuilderDecorator builderDecorator = new BuilderDecorator(glex, methodDecorator, new SymbolTableService(ast));
-    SymbolBuilderDecorator astNodeBuilderDecorator = new SymbolBuilderDecorator(glex, builderDecorator);
+    SymbolBuilderDecorator astNodeBuilderDecorator = new SymbolBuilderDecorator(glex, new SymbolTableService(ast),
+            builderDecorator);
     this.builderClass = astNodeBuilderDecorator.decorate(cdClass);
   }
 

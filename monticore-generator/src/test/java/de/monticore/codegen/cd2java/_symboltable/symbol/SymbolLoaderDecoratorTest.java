@@ -21,8 +21,7 @@ import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
 
-import static de.monticore.cd.facade.CDModifier.PROTECTED;
-import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java.DecoratorAssert.*;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
 import static org.junit.Assert.assertEquals;
@@ -164,7 +163,7 @@ public class SymbolLoaderDecoratorTest extends DecoratorTestCase {
   @Test
   public void testLoadSymbolMethod() {
     ASTCDMethod method = getMethodBy("loadSymbol", symbolClassAutomaton);
-    assertDeepEquals(PUBLIC, method.getModifier());
+    assertDeepEquals(PRIVATE, method.getModifier());
     assertOptionalOf(AUTOMATON_SYMBOL, method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());

@@ -40,6 +40,16 @@ public class MCCommonStatementsPrettyPrinter implements
     }
   }
 
+  protected void printMCTypeList(Iterator<? extends ASTMCType> iter, String separator) {
+    // print by iterate through all items
+    String sep = "";
+    while (iter.hasNext()) {
+      getPrinter().print(sep);
+      iter.next().accept(getRealThis());
+      sep = separator;
+    }
+  }
+
   @Override
   public void handle(ASTMCJavaBlock a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
@@ -163,7 +173,7 @@ public class MCCommonStatementsPrettyPrinter implements
   public void handle(ASTConstantExpressionSwitchLabel a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     getPrinter().println("case ");
-    a.getConstantExpression().accept(getRealThis());
+    a.getConstant().accept(getRealThis());
     getPrinter().println(":");
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
@@ -172,7 +182,7 @@ public class MCCommonStatementsPrettyPrinter implements
   public void handle(ASTEnumConstantSwitchLabel a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     getPrinter().println("case ");
-    printNode(a.getEnumConstantName());
+    printNode(a.getEnumConstant());
     getPrinter().println(":");
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }

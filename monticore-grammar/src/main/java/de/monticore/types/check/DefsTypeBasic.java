@@ -44,7 +44,7 @@ public class DefsTypeBasic {
     link_array();
     link_String();
     link_Object();
-    
+
     // TODO: A SymbolTable Structure that correctly reflects
     // the above objects could be helpful?
   }
@@ -168,7 +168,7 @@ public class DefsTypeBasic {
     m.getSpannedScope().add(f);
     return m;
   }
-  
+
   /** create FieldSymbols (some defaults apply)
    */
   public static FieldSymbol field(String name, SymTypeExpression type) {
@@ -272,26 +272,26 @@ public class DefsTypeBasic {
      // TODO: Offen, Array ist eigentlich generisch?
      // zur Zeit aber, leerer Typparameter: .setTypeParameter(new ArrayList<>());
      // die aktuell gelisteten Methoden haben auch keine generischen argumente
-  
+
     MethodSymbol m; FieldSymbol f;
-  
+
     // toString()
     add(_array, method("toString", _StringSymType))
             .setFullName("java.lang.Object.toString");
-  
+
     // equals(Object)
     m = method("equals", _booleanSymType);
     m.setFullName("java.lang.Object.equals");
     add(m, field("o", _ObjectSymType));
     add(_array, m);
-  
+
     // length field
     add(_array, field("length", _intSymType));
-  
+
     // TODO RE: this function is very incomplete; ersetzen oder komplettieren
-  
+
     completeFullnames(_array);
-    
+
   }
   
   /*********************************************************************/

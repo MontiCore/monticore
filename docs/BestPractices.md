@@ -97,14 +97,14 @@ A component grammar is ment for extension. MontiCore therefore provides five(!)
     2. Only one overriding alternative possible (i.e. multiple overriding in 
        subgrammars are allowed, but only the most specific resides) .
 3. Extending nonterminal from the super-grammar.
-  * Use a normal nonterminal `X` and extend it in a sub-grammar.
+  * Use an empty normal nonterminal `X` and extend it in a sub-grammar.
   ```
   component grammar A {  
-    X = "";
+    X = ;
     N = "bla" X "blubb";
   }
   grammar B extends A {
-    Y extends X = "this" 
+    Y extends X = "this";
   }
   ```
   * Advantage: *Default* implementation "" exists, no explicit filling needed.
@@ -116,11 +116,11 @@ A component grammar is ment for extension. MontiCore therefore provides five(!)
   * Mark nonterminal `X` as external.
   ```
   component grammar A {  
-    external X = "";
+    external X;
     N = "bla" X "blubb";
   }
   grammar B extends A {
-    X = "your"
+    X = "your";
   }
   ```
   * Advantage: Explctely marks a nonterminal as *hole* (extension point) in the grammar.
@@ -301,7 +301,7 @@ A component grammar is ment for extension. MontiCore therefore provides five(!)
 ## **Language Design in the Large**
 
 
-### Grammar Extensions
+### Making Transitively Inherited Grammars Explicit?
 * When the grammar inclusion hierachy becomes larger, there will be redundancy.
   In:
   ```
@@ -311,15 +311,15 @@ A component grammar is ment for extension. MontiCore therefore provides five(!)
     grammar D extends B { .. } ;
   ```
   Grammars `C` and `D` actually include the same nonterminals.
-* If `A` is made explicit, you have more infromation right at hand, but also
+* If `A` is made explicit, you have more information right at hand, but also
   larger grammars. It is a matter of taste.
-* A potential recommendation: when you use nonterminals from A explicitly, then also 
+* A recommendation: when you use nonterminals from A explicitly, then also 
   make the extension explicit. However, be consistent.
 
 
-### Modularity
+### How to Achieve Modularity (in the Sense of Decoupling)
 * Modularity in general is an important design principle.
-  In the case of model-based code generation, complexity involves the following 
+  In the case of model-based code generation, modularity involves the following 
   dimensions:
   1. Modelling languages
   2. Models
@@ -329,6 +329,12 @@ A component grammar is ment for extension. MontiCore therefore provides five(!)
   6. Software architecture (of the overal system), software stack
 * These dimensions are not orthogonal, but also not completely interelated.
   The actual organisation will depend on the form of project.
+* A weak form of modularity would be to organize things in
+  well understood substructures such as packages. 
+  A deeper form of modularity deals with possibility for individual *reuse* 
+  and thus an explicit *decoupling* of individual components. We aim for 
+  decoupling (even if developed in the same git project).
+* Modularity also deals with *extensibility* and *adaptation*.
 * A principle for *adaptation* for the *generator*, 
   the *generated code*, and the *RTE* is to design each of them
   like a *framework* with explicit extension points.
@@ -338,7 +344,7 @@ A component grammar is ment for extension. MontiCore therefore provides five(!)
 * A principle for *modularity* for the the *generator*, 
   the *generated code*, and the *RTE* is to design parts of them as 
   independent library functions (or larger: components) that can be used if needed.
-* We recommend to modularize whenever complexity overwhelms or extendibility and
+* We recommend to modularize whenever complexity overwhelms or extensibility and
   adaptability are important:
   1. MontiCore has powerful techniques for adaptation, extension and 
     composition of *modelling languages* (through their grammars). See the
@@ -360,8 +366,8 @@ A component grammar is ment for extension. MontiCore therefore provides five(!)
     to MontiCore itself.
     The generated code is usually structured along the components or sub-systems
     that the software architecture defines.
-  5. The RTE is to be designed like a normal framework.
-* Please note: it is not easy to design extensibility from beginning.
+  5. The RTE is probably well designed if it is usable a normal framework.
+* Please note: it is not easy to design modularity and extensibility from beginning.
   Framework design has shown that this is an iterative optimizing process.
   It must be avoided to design too many extension elements into the system
   from the beginning, because this adds a lot of complexity.
