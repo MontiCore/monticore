@@ -6,11 +6,14 @@
 
 package de.monticore.grammar.grammar_withconcepts._symboltable;
 
+import de.monticore.symboltable.ImportStatement;
+import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.Deque;
+import java.util.List;
 import java.util.Optional;
 
 public class Grammar_WithConceptsSymbolTableCreator extends Grammar_WithConceptsSymbolTableCreatorTOP {
@@ -32,11 +35,12 @@ public class Grammar_WithConceptsSymbolTableCreator extends Grammar_WithConcepts
     */
   public Grammar_WithConceptsArtifactScope createFromAST(de.monticore.grammar.grammar._ast.ASTMCGrammar rootNode) {
     Log.errorIfNull(rootNode, "0xA7FE4 Error by creating of the Grammar_WithConceptsSymbolTableCreator symbol table: top ast node is null");
-    Grammar_WithConceptsArtifactScope artifactScope = new Grammar_WithConceptsArtifactScope(Optional.empty(), Names.getQualifiedName(rootNode.getPackageList()), new ArrayList<>());
+    List<ImportStatement> imports = new ArrayList<>();
+    rootNode.getImportStatementList().stream().forEach(i -> imports.add(new ImportStatement(i.getQName(), i.isStar())));
+    Grammar_WithConceptsArtifactScope artifactScope = new Grammar_WithConceptsArtifactScope(Optional.empty(), Names.getQualifiedName(rootNode.getPackageList()), imports);
     putOnStack(artifactScope);
     rootNode.accept(getRealThis());
     return artifactScope;
   }
-
 
 }
