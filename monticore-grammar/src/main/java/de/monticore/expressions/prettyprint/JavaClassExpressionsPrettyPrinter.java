@@ -163,6 +163,14 @@ public class JavaClassExpressionsPrettyPrinter extends CommonExpressionsPrettyPr
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
 
+  @Override
+  public void handle(ASTCreatorExpression a) {
+    CommentPrettyPrinter.printPreComments(a, getPrinter());
+    getPrinter().print("new ");
+    a.getCreator().accept(getRealThis());
+    CommentPrettyPrinter.printPostComments(a, getPrinter());
+  }
+
   public IndentPrinter getPrinter() {
     return this.printer;
   }

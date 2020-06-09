@@ -117,36 +117,6 @@ ElementValueArrayInitializer implements ElementValue
 
 interface AnnotationTypeElementDeclaration ;
 
-CreatorExpression implements Expression <235> =
-    "new" Creator;
-
-interface Creator ;
-
-// TODO Reicht das so? Siehe ursprüngliche Definition
-// =   TypeArguments? CreatedName ClassCreatorRest
-AnonymousClass implements Creator
-    =  CreatedName Arguments
-    ;
-
-ArrayCreator implements Creator
-    =   CreatedName ArrayDimensionSpecifier
-    ;
-
-interface ArrayDimensionSpecifier ;
-    
-ArrayDimensionByInitializer implements ArrayDimensionSpecifier
-    =   (dim:"[" "]")+ ArrayInit
-    ;
-    
-ArrayDimensionByExpression implements ArrayDimensionSpecifier
-    =   ("[" Expression "]")+ (dim:"[" "]")*
-    ;
-    
-CreatedName
-    =   (MCObjectType || ".")+
-    |   MCPrimitiveType
-    ;
-
 EnhancedForControl implements ForControl
     =   FormalParameter ":" Expression
     ;

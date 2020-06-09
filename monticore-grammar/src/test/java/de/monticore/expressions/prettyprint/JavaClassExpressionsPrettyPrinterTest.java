@@ -240,4 +240,18 @@ public class JavaClassExpressionsPrettyPrinterTest {
 
     assertTrue(ast.deepEquals(result.get()));
   }
+
+  @Test
+  public void testCreatorExpression() throws IOException {
+    Optional<ASTCreatorExpression> result = parser.parse_StringCreatorExpression("new Integer(a,b)");
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
+    ASTCreatorExpression ast = result.get();
+
+    String output = prettyPrinter.prettyprint(ast);
+
+    // does not print 'Integer' because functionality for type printing has to be added over delegation from
+    // prettyprinter of language that fills the external
+    assertEquals("new (a,b)", output);
+  }
 }
