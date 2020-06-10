@@ -2,8 +2,6 @@
 
 # MontiCore Best Practices - A Guide For Small Solutions
 
-[[_TOC_]]
-
 [MontiCore](http://www.monticore.de) provides a number of options to design 
 languages, access and modify the abstract syntax tree, and produce output files.
 
@@ -22,7 +20,7 @@ of the reference manual.
 
 
 * [**Designing A Language**](BestPractices-Language-Design.md)
-  * Includes: Language Design in the Large
+  includes: Language Design in the Large
 
 * [**Designing Concrete and Abstract Syntax**](BestPractices-Syntax-Design.md)
 
@@ -31,7 +29,7 @@ of the reference manual.
 * [**Designing Symbols, Scopes and SymbolTables**](BestPractices-Symbols-Scopes.md) 
 
 * **Generating Code with Templates**
-  * (still no practice defined here) 
+  (no practice defined here yet) 
 
 
 Further Information
