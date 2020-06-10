@@ -3,14 +3,15 @@ package de.monticore.types.check;
 
 import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonPrinter;
-import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
+import de.monticore.types.typesymbols._symboltable.OOTypeSymbolLoader;
+
 
 public class SymTypeVariable extends SymTypeExpression {
 
   /**
    * Constructor:
    */
-  public SymTypeVariable(TypeSymbolLoader typeSymbolLoader) {
+  public SymTypeVariable(OOTypeSymbolLoader typeSymbolLoader) {
     this.typeSymbolLoader = typeSymbolLoader;
   }
 
@@ -63,7 +64,7 @@ public class SymTypeVariable extends SymTypeExpression {
 
   @Override
   public SymTypeVariable deepClone() {
-    return new SymTypeVariable(new TypeSymbolLoader(typeSymbolLoader.getName(), typeSymbolLoader.getEnclosingScope()));
+    return new SymTypeVariable(new OOTypeSymbolLoader(typeSymbolLoader.getName(), typeSymbolLoader.getEnclosingScope()));
   }
 
   @Override

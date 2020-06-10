@@ -7,7 +7,7 @@ import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisito
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.types.typesymbols._symboltable.FieldSymbol;
 import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
-import de.monticore.types.typesymbols._symboltable.TypeSymbol;
+import de.monticore.types.typesymbols._symboltable.OOTypeSymbol;
 import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
 
@@ -81,7 +81,7 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
 
   protected Optional<SymTypeExpression> calculateNameExpression(ASTNameExpression expr){
     Optional<FieldSymbol> optVar = getScope(expr.getEnclosingScope()).resolveField(expr.getName());
-    Optional<TypeSymbol> optType = getScope(expr.getEnclosingScope()).resolveType(expr.getName());
+    Optional<OOTypeSymbol> optType = getScope(expr.getEnclosingScope()).resolveOOType(expr.getName());
     if (optVar.isPresent()) {
       //no method here, test variable first
       // durch AST-Umbau kann ASTNameExpression keine Methode sein
@@ -91,7 +91,7 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
       return Optional.of(res);
     } else if (optType.isPresent()) {
       //no variable found, test if name is type
-      TypeSymbol type = optType.get();
+      OOTypeSymbol type = optType.get();
       SymTypeExpression res = createTypeExpression(type.getName(), type.getEnclosingScope());
       typeCheckResult.setType();
       return Optional.of(res);

@@ -16,7 +16,7 @@ package de.monticore.types;
  *
 */
 
-component grammar TypeSymbols extends de.monticore.MCBasics {
+component grammar TypeSymbols extends de.monticore.types.BasicTypeSymbols {
 
   /*=================================================================*/
 
@@ -24,11 +24,9 @@ component grammar TypeSymbols extends de.monticore.MCBasics {
    * A type (in an OO sense) has a name,
    * methods, fields, supertypes.
    * All of them are represented as Symbols.
-   * TODO BR: What to do with: typeParameters (then it should not be a type, but a typeconstructor)
    */
-  interface scope symbol Type = Name;
-  symbolrule Type =
-    superTypes: de.monticore.types.check.SymTypeExpression*
+  interface scope symbol OOType extends Type = Name;
+  symbolrule OOType =
     isClass: boolean
     isInterface: boolean
     isEnum: boolean
@@ -42,18 +40,10 @@ component grammar TypeSymbols extends de.monticore.MCBasics {
   /*=================================================================*/
 
   /**
-   * A typeVar may be bounded (see Java)
-   */
-  interface symbol TypeVar extends Type = Name;
-
-  /*=================================================================*/
-
-  /**
    * A Field (Java Attribute) has a type
    */
-  interface symbol Field = Name ;
+  interface symbol Field extends Variable = Name ;
   symbolrule Field =
-    type: de.monticore.types.check.SymTypeExpression
     isParameter: boolean
     isVariable: boolean
     isPrivate: boolean
@@ -67,11 +57,9 @@ component grammar TypeSymbols extends de.monticore.MCBasics {
   /**
    * A Method has a return type, and a list of parameters, which
    * are stored as field symbols.
-   * TODO: what about "..." extension?
    */
-  interface scope symbol Method = Name;
+  interface symbol Method extends Function = Name;
   symbolrule Method =
-    returnType: de.monticore.types.check.SymTypeExpression
     isConstructor: boolean
     isMethod: boolean
     isPrivate: boolean

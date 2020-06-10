@@ -1,8 +1,8 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("scopeInterface")}
-${scopeInterface} optCurrentScope = enclosingScope;
+IScope optCurrentScope = enclosingScope;
 while (optCurrentScope != null) {
-final ${scopeInterface} currentScope = optCurrentScope;
+final IScope currentScope = optCurrentScope;
     if (currentScope.isPresentSpanningSymbol()) {
       // If one of the enclosing scope(s) is spanned by a symbol, take its
       // package name. This check is important, since the package name of the

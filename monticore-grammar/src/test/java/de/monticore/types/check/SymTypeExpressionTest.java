@@ -79,8 +79,8 @@ public class SymTypeExpressionTest {
   @BeforeClass
   public static void setUpScope(){
     LogStub.init();
-    scope.add(new TypeSymbol("long"));
-    scope.add(new TypeSymbol("Human"));
+    scope.add(new OOTypeSymbol("long"));
+    scope.add(new OOTypeSymbol("Human"));
   }
 
   @Test
@@ -347,15 +347,15 @@ public class SymTypeExpressionTest {
     assertEquals("int",tInt.print());
     assertTrue(tInt.isIntegralType());
 
-    SymTypeOfGenerics tA = SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader("A",scope));
+    SymTypeOfGenerics tA = SymTypeExpressionFactory.createGenerics(new OOTypeSymbolLoader("A",scope));
     assertEquals("A<>",tA.print());
     assertTrue(tA.isEmptyArguments());
 
-    SymTypeOfGenerics tB = SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader("B",scope),Lists.newArrayList(teArr1,teIntA));
+    SymTypeOfGenerics tB = SymTypeExpressionFactory.createGenerics(new OOTypeSymbolLoader("B",scope),Lists.newArrayList(teArr1,teIntA));
     assertEquals("B<Human[],java.lang.Integer>",tB.print());
     assertEquals(2,tB.sizeArguments());
 
-    SymTypeOfGenerics tC = SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader("C",scope),teDeep1,teDeep2);
+    SymTypeOfGenerics tC = SymTypeExpressionFactory.createGenerics(new OOTypeSymbolLoader("C",scope),teDeep1,teDeep2);
     assertEquals("C<java.util.Set<Map<int,de.x.Person>>,java.util.Map2<int,java.util.Set<Map<int,de.x.Person>>>>",tC.print());
     assertEquals(2,tC.sizeArguments());
 
@@ -371,7 +371,7 @@ public class SymTypeExpressionTest {
     assertEquals("F<Human,de.x.Person>",tF.print());
     assertEquals(2,tF.sizeArguments());
 
-    SymTypeArray tHuman = SymTypeExpressionFactory.createTypeArray(new TypeSymbolLoader("Human",scope),1,teH);
+    SymTypeArray tHuman = SymTypeExpressionFactory.createTypeArray(new OOTypeSymbolLoader("Human",scope),1,teH);
     assertEquals("Human[]",tHuman.print());
     assertEquals(1,tHuman.getDim());
     assertEquals("Human",tHuman.getArgument().print());
@@ -381,13 +381,13 @@ public class SymTypeExpressionTest {
     assertEquals(2,tPerson.getDim());
     assertEquals("de.x.Person",tPerson.getArgument().print());
 
-    SymTypeOfObject tG = SymTypeExpressionFactory.createTypeObject(new TypeSymbolLoader("G",scope));
+    SymTypeOfObject tG = SymTypeExpressionFactory.createTypeObject(new OOTypeSymbolLoader("G",scope));
     assertEquals("G",tG.print());
 
     SymTypeOfObject tH = SymTypeExpressionFactory.createTypeObject("H",scope);
     assertEquals("H",tH.print());
 
-    SymTypeVariable tT = SymTypeExpressionFactory.createTypeVariable(new TypeSymbolLoader("T",scope));
+    SymTypeVariable tT = SymTypeExpressionFactory.createTypeVariable(new OOTypeSymbolLoader("T",scope));
     assertEquals("T",tT.print());
 
     SymTypeVariable tS = SymTypeExpressionFactory.createTypeVariable("S",scope);
@@ -581,7 +581,7 @@ public class SymTypeExpressionTest {
 
   @Test
   public void symTypeArrayTest(){
-    SymTypeArray array = SymTypeExpressionFactory.createTypeArray(new TypeSymbolLoader("int",scope),1,_intSymType);
+    SymTypeArray array = SymTypeExpressionFactory.createTypeArray(new OOTypeSymbolLoader("int",scope),1,_intSymType);
     assertEquals("int[]",array.print());
     array.setDim(2);
     assertEquals("int[][]",array.print());

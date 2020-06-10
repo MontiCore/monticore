@@ -107,8 +107,8 @@ public class TransitionSourceExistsTest {
     checker.addCoCo(new TransitionSourceExists());
 
     checker.checkAll(ast);
-
-    // we expect two errors in the findings
+  
+    // we expect one error in the findings
     assertEquals(1, Log.getFindings().size());
     assertEquals("0xADD03 Source state of transition missing.",
        		Log.getFindings().get(0).getMsg());

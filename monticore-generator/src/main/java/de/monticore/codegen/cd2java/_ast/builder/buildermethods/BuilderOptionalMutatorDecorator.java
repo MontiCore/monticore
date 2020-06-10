@@ -35,7 +35,7 @@ public class BuilderOptionalMutatorDecorator extends OptionalMutatorDecorator {
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, name, parameter);
     ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(builderType).build();
     method.setMCReturnType(returnType);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.builder.opt.Set", attribute));
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.builder.opt.Set4ASTBuilderOpt", attribute));
     return method;
   }
 
@@ -45,7 +45,7 @@ public class BuilderOptionalMutatorDecorator extends OptionalMutatorDecorator {
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, name);
     ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(builderType).build();
     method.setMCReturnType(returnType);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.builder.opt.SetAbsent", attribute));
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.builder.opt.SetAbsent4ASTBuilderOpt", attribute));
     return method;
   }
 }

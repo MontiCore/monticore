@@ -3,7 +3,7 @@ package de.monticore.types.check;
 
 import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonPrinter;
-import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
+import de.monticore.types.typesymbols._symboltable.OOTypeSymbolLoader;
 
 /**
  * An objectType is a full qualified class name.
@@ -15,7 +15,7 @@ public class SymTypeOfObject extends SymTypeExpression {
   /**
    * Constructor: with a TypeSymbolLoader that contains the name and enclosingScope
    */
-  public SymTypeOfObject(TypeSymbolLoader typeSymbolLoader)
+  public SymTypeOfObject(OOTypeSymbolLoader typeSymbolLoader)
   {
     this.typeSymbolLoader = typeSymbolLoader;
   }
@@ -51,7 +51,7 @@ public class SymTypeOfObject extends SymTypeExpression {
 
   @Override
   public SymTypeOfObject deepClone() {
-    return  new SymTypeOfObject(new TypeSymbolLoader(typeSymbolLoader.getName(), typeSymbolLoader.getEnclosingScope()));
+    return  new SymTypeOfObject(new OOTypeSymbolLoader(typeSymbolLoader.getName(), typeSymbolLoader.getEnclosingScope()));
   }
 
   /**

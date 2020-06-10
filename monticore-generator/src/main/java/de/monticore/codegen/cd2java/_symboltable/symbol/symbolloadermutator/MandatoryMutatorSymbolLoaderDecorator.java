@@ -21,7 +21,7 @@ public class MandatoryMutatorSymbolLoaderDecorator extends MandatoryMutatorDecor
   protected ASTCDMethod createSetter(final ASTCDAttribute ast) {
     String name = String.format(SET, StringUtils.capitalize(getDecorationHelper().getNativeAttributeName(ast.getName())));
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, name, this.getCDParameterFacade().createParameters(ast));
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_symboltable.symbolloader.Set", ast));
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_symboltable.symbolloader.Set4SymbolLoader", ast));
     return method;
   }
 

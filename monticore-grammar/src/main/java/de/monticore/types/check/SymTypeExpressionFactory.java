@@ -25,10 +25,10 @@ public class SymTypeExpressionFactory {
    * createTypeVariable vor Variables
    */
   public static SymTypeVariable createTypeVariable(String name, ITypeSymbolsScope typeSymbol) {
-    return new SymTypeVariable(new TypeSymbolLoader(name, typeSymbol));
+    return new SymTypeVariable(new OOTypeSymbolLoader(name, typeSymbol));
   }
 
-  public static SymTypeVariable createTypeVariable(TypeSymbolLoader typeSymbolLoader) {
+  public static SymTypeVariable createTypeVariable(OOTypeSymbolLoader typeSymbolLoader) {
     return new SymTypeVariable(typeSymbolLoader);
   }
 
@@ -47,7 +47,7 @@ public class SymTypeExpressionFactory {
   /**
    * for ObjectTypes, as e.g. "Person"
    */
-  public static SymTypeOfObject createTypeObject(TypeSymbolLoader typeSymbolLoader) {
+  public static SymTypeOfObject createTypeObject(OOTypeSymbolLoader typeSymbolLoader) {
     return new SymTypeOfObject(typeSymbolLoader);
   }
 
@@ -55,7 +55,7 @@ public class SymTypeExpressionFactory {
    * for ObjectTypes, as e.g. "Person"
    */
   public static SymTypeOfObject createTypeObject(String name, ITypeSymbolsScope enclosingScope) {
-    return new SymTypeOfObject(new TypeSymbolLoader(name, enclosingScope));
+    return new SymTypeOfObject(new OOTypeSymbolLoader(name, enclosingScope));
   }
 
   /**
@@ -82,14 +82,14 @@ public class SymTypeExpressionFactory {
    * @param argument         the argument type (of the elements)
    * @return
    */
-  public static SymTypeArray createTypeArray(TypeSymbolLoader typeSymbolLoader, int dim,
+  public static SymTypeArray createTypeArray(OOTypeSymbolLoader typeSymbolLoader, int dim,
       SymTypeExpression argument) {
     return new SymTypeArray(typeSymbolLoader, dim, argument);
   }
 
   public static SymTypeArray createTypeArray(String name, ITypeSymbolsScope typeSymbolsScope,
       int dim, SymTypeExpression argument) {
-    return new SymTypeArray(new TypeSymbolLoader(name, typeSymbolsScope), dim, argument);
+    return new SymTypeArray(new OOTypeSymbolLoader(name, typeSymbolsScope), dim, argument);
   }
 
   /**
@@ -123,16 +123,16 @@ public class SymTypeExpressionFactory {
    *
    * @return
    */
-  public static SymTypeOfGenerics createGenerics(TypeSymbolLoader typeSymbolLoader) {
+  public static SymTypeOfGenerics createGenerics(OOTypeSymbolLoader typeSymbolLoader) {
     return new SymTypeOfGenerics(typeSymbolLoader);
   }
 
-  public static SymTypeOfGenerics createGenerics(TypeSymbolLoader typeSymbolLoader,
+  public static SymTypeOfGenerics createGenerics(OOTypeSymbolLoader typeSymbolLoader,
       List<SymTypeExpression> arguments) {
     return new SymTypeOfGenerics(typeSymbolLoader, arguments);
   }
 
-  public static SymTypeOfGenerics createGenerics(TypeSymbolLoader typeSymbolLoader,
+  public static SymTypeOfGenerics createGenerics(OOTypeSymbolLoader typeSymbolLoader,
       SymTypeExpression... arguments) {
     return new SymTypeOfGenerics(typeSymbolLoader, Arrays.asList(arguments));
   }
@@ -141,17 +141,17 @@ public class SymTypeExpressionFactory {
    * createGenerics: is created using the enclosing Scope to ask for the appropriate symbol.
    */
   public static SymTypeOfGenerics createGenerics(String name, ITypeSymbolsScope enclosingScope) {
-    return new SymTypeOfGenerics(new TypeSymbolLoader(name, enclosingScope));
+    return new SymTypeOfGenerics(new OOTypeSymbolLoader(name, enclosingScope));
   }
 
   public static SymTypeOfGenerics createGenerics(String name, ITypeSymbolsScope enclosingScope,
       List<SymTypeExpression> arguments) {
-    return new SymTypeOfGenerics(new TypeSymbolLoader(name, enclosingScope), arguments);
+    return new SymTypeOfGenerics(new OOTypeSymbolLoader(name, enclosingScope), arguments);
   }
 
   public static SymTypeOfGenerics createGenerics(String name, ITypeSymbolsScope enclosingScope,
       SymTypeExpression... arguments) {
-    return new SymTypeOfGenerics(new TypeSymbolLoader(name, enclosingScope),
+    return new SymTypeOfGenerics(new OOTypeSymbolLoader(name, enclosingScope),
         Arrays.asList(arguments));
   }
 

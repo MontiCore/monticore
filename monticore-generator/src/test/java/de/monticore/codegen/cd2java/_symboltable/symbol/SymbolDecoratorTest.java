@@ -402,7 +402,7 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(mcTypeFacade.createQualifiedType(I_AUTOMATON_SCOPE),
         method.getCDParameter(0).getMCType());
-    assertEquals("spannedScope", method.getCDParameter(0).getName());
+    assertEquals("scope", method.getCDParameter(0).getName());
   }
 
   @Test

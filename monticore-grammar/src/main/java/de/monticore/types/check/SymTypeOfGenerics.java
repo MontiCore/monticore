@@ -3,7 +3,7 @@ package de.monticore.types.check;
 
 import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonPrinter;
-import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
+import de.monticore.types.typesymbols._symboltable.OOTypeSymbolLoader;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -114,11 +114,11 @@ public class SymTypeOfGenerics extends SymTypeExpression {
   /**
    * Constructor with all parameters that are stored:
    */
-  public SymTypeOfGenerics(TypeSymbolLoader typeSymbolLoader) {
+  public SymTypeOfGenerics(OOTypeSymbolLoader typeSymbolLoader) {
     this.typeSymbolLoader = typeSymbolLoader;
   }
 
-  public SymTypeOfGenerics(TypeSymbolLoader typeSymbolLoader, List<SymTypeExpression> arguments) {
+  public SymTypeOfGenerics(OOTypeSymbolLoader typeSymbolLoader, List<SymTypeExpression> arguments) {
     this.typeSymbolLoader = typeSymbolLoader;
     this.arguments = arguments;
   }
@@ -190,7 +190,7 @@ public class SymTypeOfGenerics extends SymTypeExpression {
    */
   @Override
   public SymTypeOfGenerics deepClone() {
-    return new SymTypeOfGenerics(new TypeSymbolLoader(typeSymbolLoader.getName(), typeSymbolLoader.getEnclosingScope()), getArgumentList());
+    return new SymTypeOfGenerics(new OOTypeSymbolLoader(typeSymbolLoader.getName(), typeSymbolLoader.getEnclosingScope()), getArgumentList());
   }
 
   @Override

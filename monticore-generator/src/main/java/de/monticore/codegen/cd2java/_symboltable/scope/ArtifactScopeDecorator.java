@@ -185,7 +185,7 @@ public class ArtifactScopeDecorator extends AbstractCreator<ASTCDCompilationUnit
         ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createListTypeOf(definingSymbolFullName.get()),
             methodName, parameterFoundSymbols, parameterName, parameterModifier, parameterPredicate);
         this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(
-            TEMPLATE_PATH + "ContinueWithEnclosingScope", definingSymbolFullName.get(), className, globalScope));
+            TEMPLATE_PATH + "ContinueWithEnclosingScope4ArtifactScope", definingSymbolFullName.get(), className, globalScope));
         methodList.add(method);
       }
     }

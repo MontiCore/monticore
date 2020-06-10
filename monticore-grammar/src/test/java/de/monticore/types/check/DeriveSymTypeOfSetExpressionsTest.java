@@ -6,12 +6,10 @@ import de.monticore.expressions.combineexpressionswithliterals.CombineExpression
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsScope;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.expressions.prettyprint.CombineExpressionsWithLiteralsPrettyPrinter;
-import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.typesymbols.TypeSymbolsMill;
 import de.monticore.types.typesymbols._symboltable.FieldSymbol;
-import de.monticore.types.typesymbols._symboltable.TypeSymbol;
-import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
+import de.monticore.types.typesymbols._symboltable.OOTypeSymbol;
+import de.monticore.types.typesymbols._symboltable.OOTypeSymbolLoader;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
@@ -63,12 +61,12 @@ public class DeriveSymTypeOfSetExpressionsTest {
     add2scope(scope, DefsTypeBasic._String);
 
     // some FieldSymbols (ie. Variables, Attributes)
-    TypeSymbol p = new TypeSymbol("Person");
+    OOTypeSymbol p = new OOTypeSymbol("Person");
     scope.add(p);
-    TypeSymbol s = new TypeSymbol("Student");
+    OOTypeSymbol s = new OOTypeSymbol("Student");
     scope.add(s);
     s.setSuperTypeList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Person", scope)));
-    TypeSymbol f = new TypeSymbol("FirstSemesterStudent");
+    OOTypeSymbol f = new OOTypeSymbol("FirstSemesterStudent");
     scope.add(f);
     f.setSuperTypeList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student", scope)));
     add2scope(scope, field("foo", _intSymType));
@@ -110,8 +108,8 @@ public class DeriveSymTypeOfSetExpressionsTest {
   @Test
   public void testSetInExpression() throws IOException{
     //TEST 1: double in Set<double>
-    TypeSymbolLoader loader = new TypeSymbolLoader("Set",scope);
-    TypeSymbol setDoubleType = TypeSymbolsMill.typeSymbolBuilder()
+    OOTypeSymbolLoader loader = new OOTypeSymbolLoader("Set",scope);
+    OOTypeSymbol setDoubleType = TypeSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setName("Set")
         .setTypeParameterList(Lists.newArrayList(typeVariable("T")))
@@ -141,8 +139,8 @@ public class DeriveSymTypeOfSetExpressionsTest {
   @Test
   public void testInvalidSetInExpression() throws IOException{
     //TEST 1: Error: double in Set<int>
-    TypeSymbolLoader loader = new TypeSymbolLoader("Set",scope);
-    TypeSymbol setIntType = TypeSymbolsMill.typeSymbolBuilder()
+    OOTypeSymbolLoader loader = new OOTypeSymbolLoader("Set",scope);
+    OOTypeSymbol setIntType = TypeSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setName("Set")
         .setTypeParameterList(Lists.newArrayList(typeVariable("T")))
@@ -171,8 +169,8 @@ public class DeriveSymTypeOfSetExpressionsTest {
   @Test
   public void testIsInExpression() throws IOException{
     //TEST 1: double in Set<double>
-    TypeSymbolLoader loader = new TypeSymbolLoader("Set",scope);
-    TypeSymbol setDoubleType = TypeSymbolsMill.typeSymbolBuilder()
+    OOTypeSymbolLoader loader = new OOTypeSymbolLoader("Set",scope);
+    OOTypeSymbol setDoubleType = TypeSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setName("Set")
         .setTypeParameterList(Lists.newArrayList(typeVariable("T")))
@@ -202,8 +200,8 @@ public class DeriveSymTypeOfSetExpressionsTest {
   @Test
   public void testInvalidIsInExpression() throws IOException{
     //TEST 1: Error: double isin Set<int>
-    TypeSymbolLoader loader = new TypeSymbolLoader("Set",scope);
-    TypeSymbol setIntType = TypeSymbolsMill.typeSymbolBuilder()
+    OOTypeSymbolLoader loader = new OOTypeSymbolLoader("Set",scope);
+    OOTypeSymbol setIntType = TypeSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setName("Set")
         .setTypeParameterList(Lists.newArrayList(typeVariable("T")))
@@ -232,8 +230,8 @@ public class DeriveSymTypeOfSetExpressionsTest {
   @Test
   public void testUnionExpressionInfix() throws IOException{
     //create Set<int> and Set<double>
-    TypeSymbolLoader loader = new TypeSymbolLoader("Set",scope);
-    TypeSymbol setinttype = TypeSymbolsMill.typeSymbolBuilder()
+    OOTypeSymbolLoader loader = new OOTypeSymbolLoader("Set",scope);
+    OOTypeSymbol setinttype = TypeSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setName("Set")
         .setTypeParameterList(Lists.newArrayList(typeVariable("T")))
@@ -267,8 +265,8 @@ public class DeriveSymTypeOfSetExpressionsTest {
   @Test
   public void testInvalidUnionInfixExpression() throws IOException{
     //TEST 1: Error: no SetType union SetType
-    TypeSymbolLoader loader = new TypeSymbolLoader("Set",scope);
-    TypeSymbol setIntType = TypeSymbolsMill.typeSymbolBuilder()
+    OOTypeSymbolLoader loader = new OOTypeSymbolLoader("Set",scope);
+    OOTypeSymbol setIntType = TypeSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setName("Set")
         .setTypeParameterList(Lists.newArrayList(typeVariable("T")))
@@ -296,8 +294,8 @@ public class DeriveSymTypeOfSetExpressionsTest {
   @Test
   public void testInvalidUnionInfixExpression2() throws IOException{
     //TEST 2: Error: set<boolean> union set<int>
-    TypeSymbolLoader loader = new TypeSymbolLoader("Set",scope);
-    TypeSymbol setIntType = TypeSymbolsMill.typeSymbolBuilder()
+    OOTypeSymbolLoader loader = new OOTypeSymbolLoader("Set",scope);
+    OOTypeSymbol setIntType = TypeSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setName("Set")
         .setTypeParameterList(Lists.newArrayList(typeVariable("T")))
@@ -329,8 +327,8 @@ public class DeriveSymTypeOfSetExpressionsTest {
   @Test
   public void testIntersectionExpressionInfix() throws IOException{
     //create Set<int> and Set<double>
-    TypeSymbolLoader loader = new TypeSymbolLoader("Set",scope);
-    TypeSymbol setinttype = TypeSymbolsMill.typeSymbolBuilder()
+    OOTypeSymbolLoader loader = new OOTypeSymbolLoader("Set",scope);
+    OOTypeSymbol setinttype = TypeSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setName("Set")
         .setTypeParameterList(Lists.newArrayList(typeVariable("T")))
@@ -364,8 +362,8 @@ public class DeriveSymTypeOfSetExpressionsTest {
   @Test
   public void testInvalidIntersectionInfixExpression() throws IOException{
     //TEST 1: Error: no SetType intersect SetType
-    TypeSymbolLoader loader = new TypeSymbolLoader("Set",scope);
-    TypeSymbol setIntType = TypeSymbolsMill.typeSymbolBuilder()
+    OOTypeSymbolLoader loader = new OOTypeSymbolLoader("Set",scope);
+    OOTypeSymbol setIntType = TypeSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setName("Set")
         .setTypeParameterList(Lists.newArrayList(typeVariable("T")))
@@ -394,8 +392,8 @@ public class DeriveSymTypeOfSetExpressionsTest {
   @Test
   public void testInvalidIntersectionInfixExpression2() throws IOException{
     //TEST 2: Error: set<boolean> intersect set<int>
-    TypeSymbolLoader loader = new TypeSymbolLoader("Set",scope);
-    TypeSymbol setIntType = TypeSymbolsMill.typeSymbolBuilder()
+    OOTypeSymbolLoader loader = new OOTypeSymbolLoader("Set",scope);
+    OOTypeSymbol setIntType = TypeSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setName("Set")
         .setTypeParameterList(Lists.newArrayList(typeVariable("T")))
