@@ -27,7 +27,7 @@ public class OOTypeSymbol extends OOTypeSymbolTOP {
   public void setMethodList(List<MethodSymbol> methodList){
     this.methodList = methodList;
     for(MethodSymbol method: methodList){
-      spannedScope.add(method);
+      getSpannedScope().add(method);
     }
   }
 
@@ -81,20 +81,20 @@ public class OOTypeSymbol extends OOTypeSymbolTOP {
     if(spannedScope==null){
       return Lists.newArrayList();
     }
-    return spannedScope.getLocalTypeVarSymbols();
+    return getSpannedScope().getLocalTypeVarSymbols();
   }
 
 
   public void addTypeVarSymbol(TypeVarSymbol t) {
-    spannedScope.add(t);
+    getSpannedScope().add(t);
   }
 
   public void addFieldSymbol(FieldSymbol f) {
-    spannedScope.add(f);
+    getSpannedScope().add(f);
   }
 
   public void addMethodSymbol(MethodSymbol m) {
-    spannedScope.add(m);
+    getSpannedScope().add(m);
   }
 
   public boolean isPresentSuperClass() {

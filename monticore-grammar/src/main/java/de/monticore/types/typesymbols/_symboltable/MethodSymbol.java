@@ -52,7 +52,7 @@ public class MethodSymbol extends MethodSymbolTOP {
 
   public List<TypeVarSymbol> getTypeVariablesOfEnclosingType(){
     List<TypeVarSymbol> typeVarSymbolList = new ArrayList<>();
-    ITypeSymbolsScope scope = spannedScope;
+    ITypeSymbolsScope scope = getSpannedScope();
     while(scope.getEnclosingScope()!=null){
       scope = scope.getEnclosingScope();
       if(scope.isPresentSpanningSymbol() && scope.getSpanningSymbol() instanceof OOTypeSymbol){
@@ -63,7 +63,7 @@ public class MethodSymbol extends MethodSymbolTOP {
   }
 
   public List<FieldSymbol> getParameterList(){
-    return spannedScope.getLocalFieldSymbols()
+    return getSpannedScope().getLocalFieldSymbols()
         .stream()
         .filter(FieldSymbol::isIsParameter)
         .collect(Collectors.toList());

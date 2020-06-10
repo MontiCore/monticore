@@ -75,7 +75,7 @@ public class TypeSymbolsScope extends TypeSymbolsScopeTOP {
 
   @Override
   public List<OOTypeSymbol> resolveOOTypeLocallyMany(boolean foundSymbols, String name, AccessModifier modifier, Predicate predicate){
-    List<OOTypeSymbol> result = super.resolveTypeLocallyMany(foundSymbols,name,modifier,predicate);
+    List<OOTypeSymbol> result = super.resolveOOTypeLocallyMany(foundSymbols,name,modifier,predicate);
     //    TODO ND: uncomment when adding inner types
     //    if(this.isPresentSpanningSymbol()){
     //      IScopeSpanningSymbol spanningSymbol = getSpanningSymbol();

@@ -91,7 +91,7 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
     List<ASTCDAttribute> symbolNameAttributes = Lists.newArrayList();
     List<ASTCDMethod> symbolNameMethods = Lists.newArrayList();
     if (hasInheritedSymbol) {
-      symbolMethods.addAll(createInheritedScopeMethods(scopeInterface));
+      symbolMethods.addAll(createEnclosingScopeMethods(scopeInterface));
     } else {
       symbolAttributes = createSymbolAttributes(symbolInput.getName(), scopeInterface);
       symbolNameAttributes = createSymbolNameAttributes();
@@ -134,12 +134,13 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
             .build();
 
     // add only for scope spanning symbols
-    if (symbolInput.isPresentModifier() && (symbolTableService.hasScopeStereotype(symbolInput.getModifier())
-            || symbolTableService.hasInheritedScopeStereotype(symbolInput.getModifier()))) {
+    if (symbolInput.isPresentModifier() &&
+            (symbolTableService.hasScopeStereotype(symbolInput.getModifier()) || symbolTableService.hasInheritedScopeStereotype(symbolInput.getModifier()))) {
       ASTCDAttribute spannedScopeAttribute = createSpannedScopeAttribute();
-      List<ASTCDMethod> spannedScopeMethods = createSpannedScopeMethods(spannedScopeAttribute, hasInheritedSymbol);
-      symbolClass.addCDAttribute(spannedScopeAttribute);
-      symbolClass.addAllCDMethods(spannedScopeMethods);
+      if (!symbolTableService.hasInheritedScopeStereotype(symbolInput.getModifier())) {
+        symbolClass.addCDAttribute(spannedScopeAttribute);
+      }
+      symbolClass.addAllCDMethods(createSpannedScopeMethods(scopeInterface));
       symbolClass.addInterface(getMCTypeFacade().createQualifiedType(I_SCOPE_SPANNING_SYMBOL));
     }
     if (hasInheritedSymbol) {
@@ -154,13 +155,13 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
     return symbolClass;
   }
 
-  protected List<ASTCDMethod> createInheritedScopeMethods(String scopeInterface) {
+  protected List<ASTCDMethod> createEnclosingScopeMethods(String scopeInterface) {
     List<ASTCDMethod> methods = Lists.newArrayList();
     // getEnclosingScope
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createQualifiedType(scopeInterface), "getEnclosingScope");
-    String errorCode = symbolTableService.getGeneratedErrorCode(scopeInterface+"getEnclosingScope");
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "GetEnclosingScope",
-            scopeInterface, errorCode));
+    String errorCode = symbolTableService.getGeneratedErrorCode(scopeInterface+"getScope");
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "GetScope",
+            ENCLOSING_SCOPE_VAR, scopeInterface, errorCode));
     methods.add(method);
 
     // setEnclosingScope
@@ -213,15 +214,23 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
     return getCDAttributeFacade().createAttribute(PROTECTED, symbolTableService.getScopeInterfaceType(), String.format(SPANNED_SCOPE_VAR, ""));
   }
 
-  protected List<ASTCDMethod> createSpannedScopeMethods(ASTCDAttribute spannedScopeAttribute, boolean isInherited) {
-    List<ASTCDMethod> methodList = new ArrayList<>(accessorDecorator.decorate(spannedScopeAttribute));
-    mutatorDecorator.disableTemplates();
-    List<ASTCDMethod> setter = mutatorDecorator.decorate(spannedScopeAttribute);
-    setter.forEach(m -> this.replaceTemplate(EMPTY_BODY, m,
-            new TemplateHookPoint("_symboltable.symbol.SetSpannedScope", isInherited)));
-    methodList.addAll(setter);
-    mutatorDecorator.enableTemplates();
-    return methodList;
+  protected List<ASTCDMethod> createSpannedScopeMethods(String scopeInterface) {
+    List<ASTCDMethod> methods = Lists.newArrayList();
+    // getSpannedScope
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createQualifiedType(scopeInterface), "getSpannedScope");
+    String errorCode = symbolTableService.getGeneratedErrorCode(scopeInterface+"getSpannedScope");
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "GetScope",
+            SPANNED_SCOPE_VAR, scopeInterface, errorCode));
+    methods.add(method);
+
+    // setSpannedScope
+    ASTCDParameter parameter = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(scopeInterface), "scope");
+    method = getCDMethodFacade().createMethod(PUBLIC, "setSpannedScope", parameter);
+    this.replaceTemplate(EMPTY_BODY,method, new TemplateHookPoint(TEMPLATE_PATH + "SetSpannedScope"));
+    methods.add(method);
+
+    return methods;
+
   }
 
   protected ASTCDMethod createAcceptMethod(String symbolName) {

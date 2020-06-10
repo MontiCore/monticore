@@ -2,7 +2,10 @@
 package de.monticore.types.check;
 
 import de.monticore.symboltable.modifiers.AccessModifier;
+import de.monticore.types.basictypesymbols._symboltable.FunctionSymbol;
+import de.monticore.types.basictypesymbols._symboltable.TypeSymbol;
 import de.monticore.types.basictypesymbols._symboltable.TypeVarSymbol;
+import de.monticore.types.basictypesymbols._symboltable.VariableSymbol;
 import de.monticore.types.typesymbols.TypeSymbolsMill;
 import de.monticore.types.typesymbols._symboltable.*;
 

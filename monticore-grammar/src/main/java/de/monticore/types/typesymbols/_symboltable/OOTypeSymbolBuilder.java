@@ -2,11 +2,9 @@
 
 package de.monticore.types.typesymbols._symboltable;
 
-
 import de.monticore.types.basictypesymbols._symboltable.TypeVarSymbol;
 
-import java.util.*;
-
+import java.util.List;
 
 public  class OOTypeSymbolBuilder extends OOTypeSymbolBuilderTOP {
 
@@ -15,13 +13,6 @@ public OOTypeSymbolBuilder()  {
    this.realBuilder = (OOTypeSymbolBuilder) this;
 }
 
-
-  @Override
-  public OOTypeSymbolBuilder setSpannedScope(ITypeSymbolsScope spannedScope) {
-    this.spannedScope = spannedScope;
-    return super.setSpannedScope(spannedScope);
-  }
-
   public OOTypeSymbolBuilder setTypeParameterList(List<TypeVarSymbol> typeVariableList) {
     for(TypeVarSymbol t : typeVariableList) {
       spannedScope.add(t);
@@ -29,16 +20,16 @@ public OOTypeSymbolBuilder()  {
     return this.realBuilder;
   }
 
-   public OOTypeSymbolBuilder setMethodList(List<MethodSymbol> methodList) {
+  public OOTypeSymbolBuilder setMethodList(List<MethodSymbol> methodList) {
       for(MethodSymbol m : methodList) {
-        spannedScope.add(m);
+        getSpannedScope().add(m);
       }
       return this.realBuilder;
    }
 
    public OOTypeSymbolBuilder setFieldList(List<FieldSymbol> fieldList) {
       for(FieldSymbol f : fieldList) {
-        spannedScope.add(f);
+        getSpannedScope().add(f);
       }
       return this.realBuilder;
    }

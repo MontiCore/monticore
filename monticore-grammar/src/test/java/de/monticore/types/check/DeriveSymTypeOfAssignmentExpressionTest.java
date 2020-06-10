@@ -8,6 +8,7 @@ import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICom
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.types.typesymbols._symboltable.OOTypeSymbol;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -31,7 +32,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
   @BeforeClass
   public static void setup() {
     Log.init();
-   // Log.enableFailQuick(false);
+    Log.enableFailQuick(false);
   }
 
   @Before
@@ -79,6 +80,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     add2scope(scope, field("student2", SymTypeExpressionFactory.createTypeObject("Student", scope)));
     add2scope(scope, field("firstsemester", SymTypeExpressionFactory.createTypeObject("FirstSemesterStudent", scope)));
     flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
+    LogStub.init();
   }
 
   // Parer used for convenience:

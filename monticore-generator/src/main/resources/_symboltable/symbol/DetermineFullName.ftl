@@ -10,10 +10,10 @@ ${tc.signature("scopeInterface")}
   final Deque<String> nameParts = new ArrayDeque<>();
     nameParts.addFirst(name);
 
-    ${scopeInterface} optCurrentScope = getEnclosingScope();
+    IScope optCurrentScope = enclosingScope;
 
   while (optCurrentScope != null) {
-  final ${scopeInterface} currentScope = optCurrentScope;
+  final IScope currentScope = optCurrentScope;
       if (currentScope.isPresentSpanningSymbol()) {
         // If one of the enclosing scope(s) is spanned by a symbol, the full name
         // of that symbol is the missing prefix, and hence, the calculation
