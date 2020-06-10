@@ -3,7 +3,7 @@ package de.monticore.types.check;
 
 import com.google.common.collect.Lists;
 import de.monticore.types.typesymbols._symboltable.BuiltInJavaTypeSymbolResolvingDelegate;
-import de.monticore.types.typesymbols._symboltable.TypeSymbol;
+import de.monticore.types.typesymbols._symboltable.OOTypeSymbol;
 import de.monticore.types.typesymbols._symboltable.TypeSymbolsArtifactScope;
 import de.monticore.types.typesymbols._symboltable.TypeSymbolsScope;
 import de.se_rwth.commons.logging.Log;
@@ -68,22 +68,22 @@ public class SymTypeExpressionDeSerTest {
   public static void init() {
     Log.enableFailQuick(false);
 
-    scope.add(new TypeSymbol("A"));
-    scope.add(new TypeSymbol("B"));
-    scope.add(new TypeSymbol("Human"));
-    scope.add(new TypeSymbol("Map"));
+    scope.add(new OOTypeSymbol("A"));
+    scope.add(new OOTypeSymbol("B"));
+    scope.add(new OOTypeSymbol("Human"));
+    scope.add(new OOTypeSymbol("Map"));
 
     TypeSymbolsArtifactScope javaUtilAS = new TypeSymbolsArtifactScope("java.util",
         new ArrayList<>());
-    javaUtilAS.add(new TypeSymbol("Map2"));
+    javaUtilAS.add(new OOTypeSymbol("Map2"));
     scope.addSubScope(javaUtilAS);
 
     TypeSymbolsArtifactScope deXAS = new TypeSymbolsArtifactScope("de.x", new ArrayList<>());
-    deXAS.add(new TypeSymbol("Person"));
+    deXAS.add(new OOTypeSymbol("Person"));
     scope.addSubScope(deXAS);
 
     TypeSymbolsArtifactScope xAS = new TypeSymbolsArtifactScope("x", new ArrayList<>());
-    xAS.add(new TypeSymbol("Foo"));
+    xAS.add(new OOTypeSymbol("Foo"));
     scope.addSubScope(xAS);
   }
 
@@ -138,8 +138,8 @@ public class SymTypeExpressionDeSerTest {
     assertEquals(expr.print(), deserialized.print());
     assertEquals(expr.printAsJson(), deserialized.printAsJson());
     if(!(deserialized instanceof SymTypeOfWildcard)) {
-      TypeSymbol expectedTS = deserialized.getTypeInfo();
-      TypeSymbol actualTS = expr.getTypeInfo();
+      OOTypeSymbol expectedTS = deserialized.getTypeInfo();
+      OOTypeSymbol actualTS = expr.getTypeInfo();
       assertEquals(expectedTS.getName(), actualTS.getName());
     }
   }
@@ -154,8 +154,8 @@ public class SymTypeExpressionDeSerTest {
 
     assertEquals(expr.print(),deserialized.print());
     assertEquals(expr.printAsJson(),deserialized.printAsJson());
-    TypeSymbol expectedTS = deserialized.getTypeInfo();
-    TypeSymbol actualTS = deserialized.getTypeInfo();
+    OOTypeSymbol expectedTS = deserialized.getTypeInfo();
+    OOTypeSymbol actualTS = deserialized.getTypeInfo();
     assertEquals(expectedTS.getName(),actualTS.getName());
   }
 
@@ -169,8 +169,8 @@ public class SymTypeExpressionDeSerTest {
 
     assertEquals(expr.print(),deserialized.print());
     assertEquals(expr.printAsJson(),deserialized.printAsJson());
-    TypeSymbol expectedTS = deserialized.getTypeInfo();
-    TypeSymbol actualTS = deserialized.getTypeInfo();
+    OOTypeSymbol expectedTS = deserialized.getTypeInfo();
+    OOTypeSymbol actualTS = deserialized.getTypeInfo();
     assertEquals(expectedTS.getName(),actualTS.getName());
   }
 
@@ -184,8 +184,8 @@ public class SymTypeExpressionDeSerTest {
 
     assertEquals(expr.print(),deserialized.print());
     assertEquals(expr.printAsJson(),deserialized.printAsJson());
-    TypeSymbol expectedTS = deserialized.getTypeInfo();
-    TypeSymbol actualTS = deserialized.getTypeInfo();
+    OOTypeSymbol expectedTS = deserialized.getTypeInfo();
+    OOTypeSymbol actualTS = deserialized.getTypeInfo();
     assertEquals(expectedTS.getName(),actualTS.getName());
   }
 
@@ -199,8 +199,8 @@ public class SymTypeExpressionDeSerTest {
 
     assertEquals(expr.print(),deserialized.print());
     assertEquals(expr.printAsJson(),deserialized.printAsJson());
-    TypeSymbol expectedTS = deserialized.getTypeInfo();
-    TypeSymbol actualTS = deserialized.getTypeInfo();
+    OOTypeSymbol expectedTS = deserialized.getTypeInfo();
+    OOTypeSymbol actualTS = deserialized.getTypeInfo();
     assertEquals(expectedTS.getName(),actualTS.getName());
   }
 
@@ -214,8 +214,8 @@ public class SymTypeExpressionDeSerTest {
 
     assertEquals(expr.print(),deserialized.print());
     assertEquals(expr.printAsJson(),deserialized.printAsJson());
-    TypeSymbol expectedTS = deserialized.getTypeInfo();
-    TypeSymbol actualTS = deserialized.getTypeInfo();
+    OOTypeSymbol expectedTS = deserialized.getTypeInfo();
+    OOTypeSymbol actualTS = deserialized.getTypeInfo();
     assertEquals(expectedTS.getName(),actualTS.getName());
   }
 
@@ -257,8 +257,8 @@ public class SymTypeExpressionDeSerTest {
     assertEquals(expr.print(), loaded.print());
     assertEquals(expr.printAsJson(), loaded.printAsJson());
     if(!(loaded instanceof SymTypeOfWildcard)) {
-      TypeSymbol expectedTS = loaded.getTypeInfo();
-      TypeSymbol actualTS = expr.getTypeInfo();
+      OOTypeSymbol expectedTS = loaded.getTypeInfo();
+      OOTypeSymbol actualTS = expr.getTypeInfo();
       assertEquals(expectedTS.getName(), actualTS.getName());
     }
   }

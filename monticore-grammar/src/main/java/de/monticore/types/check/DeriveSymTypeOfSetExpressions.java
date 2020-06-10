@@ -8,8 +8,7 @@ import de.monticore.expressions.setexpressions._ast.ASTIsInExpression;
 import de.monticore.expressions.setexpressions._ast.ASTSetInExpression;
 import de.monticore.expressions.setexpressions._ast.ASTUnionExpressionInfix;
 import de.monticore.expressions.setexpressions._visitor.SetExpressionsVisitor;
-import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
-import de.se_rwth.commons.logging.Log;
+import de.monticore.types.typesymbols._symboltable.OOTypeSymbolLoader;
 
 import java.util.List;
 import java.util.Optional;
@@ -180,11 +179,12 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
       String right = rightGeneric.getTypeInfo().getName();
       if(collections.contains(left) && unbox(left).equals(unbox(right))) {
         if(unbox(leftGeneric.getArgument(0).print()).equals(unbox(rightGeneric.getArgument(0).print()))) {
-          wholeResult = Optional.of(SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader(left,getScope(expr.getEnclosingScope())),leftGeneric.getArgument(0).deepClone()));
+          wholeResult = Optional.of(SymTypeExpressionFactory.createGenerics(new OOTypeSymbolLoader(left,getScope(expr.getEnclosingScope())),leftGeneric.getArgument(0).deepClone()));
         }else if(isSubtypeOf(leftGeneric.getArgument(0),rightGeneric.getArgument(0))){
-          wholeResult = Optional.of(SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader(right,getScope(expr.getEnclosingScope())),rightGeneric.getArgument(0).deepClone()));
+          wholeResult = Optional.of(SymTypeExpressionFactory.createGenerics(new OOTypeSymbolLoader(right,getScope(expr.getEnclosingScope())),rightGeneric.getArgument(0).deepClone()));
         }else if(isSubtypeOf(rightGeneric.getArgument(0),leftGeneric.getArgument(0))){
-          wholeResult = Optional.of(SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader(left,getScope(expr.getEnclosingScope())),leftGeneric.getArgument(0).deepClone()));
+
+          wholeResult = Optional.of(SymTypeExpressionFactory.createGenerics(new OOTypeSymbolLoader(left,getScope(expr.getEnclosingScope())),leftGeneric.getArgument(0).deepClone()));
         }
       }
     }

@@ -4,11 +4,11 @@ package mc.typescalculator;
 import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.types.check.SymTypeExpression;
-import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
+import de.monticore.types.typesymbols._symboltable.OOTypeSymbolLoader;
 
 public class SymTypeOfSIUnit extends SymTypeExpression {
 
-  public SymTypeOfSIUnit(TypeSymbolLoader typeSymbolLoader){
+  public SymTypeOfSIUnit(OOTypeSymbolLoader typeSymbolLoader){
     this.typeSymbolLoader = typeSymbolLoader;
   }
 
@@ -30,7 +30,7 @@ public class SymTypeOfSIUnit extends SymTypeExpression {
 
   @Override
   public SymTypeOfSIUnit deepClone() {
-    return new SymTypeOfSIUnit(new TypeSymbolLoader(typeSymbolLoader.getName(),typeSymbolLoader.getEnclosingScope()));
+    return new SymTypeOfSIUnit(new OOTypeSymbolLoader(typeSymbolLoader.getName(),typeSymbolLoader.getEnclosingScope()));
   }
 
   @Override
