@@ -7,6 +7,7 @@
 [MontiCore](http://www.monticore.de) provides a number of options to design 
 languages, access and modify the abstract syntax tree, and produce output files.
 
+Some general questions on how to design a complete languages are adressed here. 
 
 ## **Designing A Language**
 
