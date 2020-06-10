@@ -3,6 +3,7 @@ package de.monticore.expressions.prettyprint;
 
 import de.monticore.expressions.commonexpressions.CommonExpressionsMill;
 import de.monticore.expressions.commonexpressions._ast.*;
+import de.monticore.expressions.expressionsbasis._ast.ASTArguments;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.testcommonexpressions._parser.TestCommonExpressionsParser;
 import de.monticore.prettyprint.IndentPrinter;
