@@ -123,7 +123,7 @@ MontiCore projects are hosted at
     OS -> iOS ^ Android;
     Screen -> Flexible | FullHD;
 
-    Camera => (iOS && External) || Android ;
+    Camera requires (iOS && External) || Android ;
   }
   ```
   Rules `F -> ...` have a parent feature (left-hand side) 
