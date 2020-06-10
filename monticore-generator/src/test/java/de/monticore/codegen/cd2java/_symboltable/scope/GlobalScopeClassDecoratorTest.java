@@ -103,11 +103,12 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testConstructorCount() {
-    assertEquals(1, scopeClass.sizeCDConstructors());
+    assertEquals(2, scopeClass.sizeCDConstructors());
   }
 
   @Test
-  public void testConstructor() {
+  public void testConstructors() {
+    // this(modelPath, modelLoader)
     ASTCDConstructor cdConstructor = scopeClass.getCDConstructor(0);
     assertDeepEquals(PUBLIC, cdConstructor.getModifier());
     assertEquals("AutomatonGlobalScope", cdConstructor.getName());
@@ -116,8 +117,19 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(MODEL_PATH, cdConstructor.getCDParameter(0).getMCType());
     assertEquals("modelPath", cdConstructor.getCDParameter(0).getName());
 
-    assertDeepEquals("AutomatonLanguage", cdConstructor.getCDParameter(1).getMCType());
-    assertEquals("language", cdConstructor.getCDParameter(1).getName());
+    assertDeepEquals("AutomatonModelLoader", cdConstructor.getCDParameter(1).getMCType());
+    assertEquals("modelLoader", cdConstructor.getCDParameter(1).getName());
+
+    assertTrue(cdConstructor.isEmptyExceptions());
+
+    // this(modelPath)
+    cdConstructor = scopeClass.getCDConstructor(1);
+    assertDeepEquals(PUBLIC, cdConstructor.getModifier());
+    assertEquals("AutomatonGlobalScope", cdConstructor.getName());
+
+    assertEquals(1, cdConstructor.sizeCDParameters());
+    assertDeepEquals(MODEL_PATH, cdConstructor.getCDParameter(0).getMCType());
+    assertEquals("modelPath", cdConstructor.getCDParameter(0).getName());
 
     assertTrue(cdConstructor.isEmptyExceptions());
   }
@@ -135,10 +147,10 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testLanguageAttribute() {
-    ASTCDAttribute astcdAttribute = getAttributeBy("automatonLanguage", scopeClass);
+  public void testModelLoaderAttribute() {
+    ASTCDAttribute astcdAttribute = getAttributeBy("modelLoader", scopeClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
-    assertDeepEquals("AutomatonLanguage", astcdAttribute.getMCType());
+    assertDeepEquals("Optional<AutomatonModelLoader>", astcdAttribute.getMCType());
   }
 
   @Test
@@ -244,7 +256,7 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(127, scopeClass.getCDMethodList().size());
+    assertEquals(130, scopeClass.getCDMethodList().size());
   }
 
   @Test
@@ -258,11 +270,21 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testGetAutomatonLanguageMethod() {
-    ASTCDMethod method = getMethodBy("getAutomatonLanguage", scopeClass);
+  public void testGetModelLoaderMethod() {
+    ASTCDMethod method = getMethodBy("getModelLoader", scopeClass);
 
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals("AutomatonLanguage", method.getMCReturnType().getMCType());
+    assertDeepEquals("AutomatonModelLoader", method.getMCReturnType().getMCType());
+
+    assertTrue(method.isEmptyCDParameters());
+  }
+
+  @Test
+  public void testIsPresentModelLoaderMethod() {
+    ASTCDMethod method = getMethodBy("isPresentModelLoader", scopeClass);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertDeepEquals("boolean", method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
   }

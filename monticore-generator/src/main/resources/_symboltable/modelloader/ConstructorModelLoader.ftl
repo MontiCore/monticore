@@ -1,3 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
   this.astProvider = astProvider;
-  this.stc = stc;
+  this.symbolTableCreator = symbolTableCreator;
+  this.modelFileExtension = modelFileExtension;
+  this.symbolFileExtension = symbolFileExtension;

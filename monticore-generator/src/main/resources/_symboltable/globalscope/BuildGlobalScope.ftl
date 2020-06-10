@@ -1,4 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("scopeClassName", "simpleName")}
-  ${scopeClassName} scope = new ${scopeClassName}(modelPath, ${simpleName?uncap_first}Language);
-  return scope;
+  if(modelLoader.isPresent()){
+    return new ${scopeClassName}(modelPath, modelLoader.get());
+  }
+  return new ${scopeClassName}(modelPath);

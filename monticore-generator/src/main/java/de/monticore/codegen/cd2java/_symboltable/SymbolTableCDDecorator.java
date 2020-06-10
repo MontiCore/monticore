@@ -5,8 +5,6 @@ import de.monticore.cd.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java.CoreTemplates;
-import de.monticore.codegen.cd2java._symboltable.language.LanguageBuilderDecorator;
-import de.monticore.codegen.cd2java._symboltable.language.LanguageDecorator;
 import de.monticore.codegen.cd2java._symboltable.modelloader.ModelLoaderBuilderDecorator;
 import de.monticore.codegen.cd2java._symboltable.modelloader.ModelLoaderDecorator;
 import de.monticore.codegen.cd2java._symboltable.scope.*;
@@ -60,10 +58,6 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
 
   protected final CommonSymbolInterfaceDecorator commonSymbolInterfaceDecorator;
 
-  protected final LanguageDecorator languageDecorator;
-
-  protected final LanguageBuilderDecorator languageBuilderDecorator;
-
   protected final IterablePath handCodedPath;
 
   protected final ModelLoaderDecorator modelLoaderDecorator;
@@ -105,8 +99,6 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
                                 final ArtifactScopeDecorator artifactScopeDecorator,
                                 final ArtifactScopeBuilderDecorator artifactScopeBuilderDecorator,
                                 final CommonSymbolInterfaceDecorator commonSymbolInterfaceDecorator,
-                                final LanguageDecorator languageDecorator,
-                                final LanguageBuilderDecorator languageBuilderDecorator,
                                 final ModelLoaderDecorator modelLoaderDecorator,
                                 final ModelLoaderBuilderDecorator modelLoaderBuilderDecorator,
                                 final SymbolResolvingDelegateInterfaceDecorator symbolResolvingDelegateInterfaceDecorator,
@@ -133,9 +125,7 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
     this.artifactScopeBuilderDecorator = artifactScopeBuilderDecorator;
     this.symbolReferenceBuilderDecorator = symbolReferenceBuilderDecorator;
     this.commonSymbolInterfaceDecorator = commonSymbolInterfaceDecorator;
-    this.languageDecorator = languageDecorator;
     this.handCodedPath = handCodedPath;
-    this.languageBuilderDecorator = languageBuilderDecorator;
     this.modelLoaderDecorator = modelLoaderDecorator;
     this.modelLoaderBuilderDecorator = modelLoaderBuilderDecorator;
     this.symbolResolvingDelegateInterfaceDecorator = symbolResolvingDelegateInterfaceDecorator;
@@ -196,16 +186,6 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
 
       // scope deser
       symTabCD.addCDClass(createScopeDeSerClass(scopeCD, symbolCD));
-
-      // language
-      // needs to know if it is overwritten to generate method differently
-      // set boolean if language is TOPed or not
-      this.languageDecorator.setLanguageTop(isLanguageHandCoded);
-      ASTCDClass languageClass = createLanguage(astCD);
-      symTabCD.addCDClass(languageClass);
-      if (isLanguageHandCoded) {
-        symTabCD.addCDClass(createLanguageBuilder(languageClass));
-      }
 
       // model loader
       Optional<ASTCDClass> modelLoader = createModelLoader(astCD);
@@ -340,14 +320,6 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
 
   protected ASTCDInterface createICommonSymbol(ASTCDCompilationUnit compilationUnit) {
     return commonSymbolInterfaceDecorator.decorate(compilationUnit);
-  }
-
-  protected ASTCDClass createLanguage(ASTCDCompilationUnit compilationUnit) {
-    return languageDecorator.decorate(compilationUnit);
-  }
-
-  protected ASTCDClass createLanguageBuilder(ASTCDClass astcdClass) {
-    return languageBuilderDecorator.decorate(astcdClass);
   }
 
   protected Optional<ASTCDClass> createModelLoader(ASTCDCompilationUnit compilationUnit) {
