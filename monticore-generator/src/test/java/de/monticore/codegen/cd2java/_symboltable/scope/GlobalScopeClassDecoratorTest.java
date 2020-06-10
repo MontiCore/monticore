@@ -465,4 +465,6 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
     ParseResult parseResult = parser.parse(sb.toString());
     assertTrue(parseResult.isSuccessful());
   }
+
+
 }

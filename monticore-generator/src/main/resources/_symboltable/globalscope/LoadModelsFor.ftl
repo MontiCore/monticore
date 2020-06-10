@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("simpleName", "definitionName")}
-  if(isPresentModelLoader() {
+  if(isPresentModelLoader()) {
     for (String calculatedModelName : calculateModelNamesFor${simpleName}(name)) {
       if (continueWithModelLoader(calculatedModelName, getModelLoader())) {
         getModelLoader().loadModelsIntoScope(calculatedModelName, getModelPath(), getRealThis());
