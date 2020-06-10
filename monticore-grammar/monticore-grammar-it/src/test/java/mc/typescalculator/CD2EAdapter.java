@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-public class CD2EAdapter implements ITypeSymbolResolvingDelegate, IMethodSymbolResolvingDelegate, IFieldSymbolResolvingDelegate {
+public class CD2EAdapter implements IOOTypeSymbolResolvingDelegate, IMethodSymbolResolvingDelegate, IFieldSymbolResolvingDelegate {
 
   private TestCD4AnalysisGlobalScope cd4ascope;
 
@@ -36,11 +36,11 @@ public class CD2EAdapter implements ITypeSymbolResolvingDelegate, IMethodSymbolR
   }
 
   @Override
-  public List<TypeSymbol> resolveAdaptedTypeSymbol(boolean foundSymbols, String symbolName, AccessModifier modifier, Predicate<TypeSymbol> predicate) {
-    List<TypeSymbol> result = Lists.newArrayList();
+  public List<OOTypeSymbol> resolveAdaptedOOTypeSymbol(boolean foundSymbols, String symbolName, AccessModifier modifier, Predicate<OOTypeSymbol> predicate) {
+    List<OOTypeSymbol> result = Lists.newArrayList();
     Optional<CDTypeSymbol> typeSymbolOpt = cd4ascope.resolveCDType(symbolName, modifier);
     if (typeSymbolOpt.isPresent()) {
-      TypeSymbol res = cd2EHelper.createTypeSymbolFormCDTypeSymbol(typeSymbolOpt.get());
+      OOTypeSymbol res = cd2EHelper.createOOTypeSymbolFormCDTypeSymbol(typeSymbolOpt.get());
       result.add(res);
     }
     return result;
