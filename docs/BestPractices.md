@@ -273,7 +273,8 @@ A component grammar is ment for extension. MontiCore therefore provides five(!)
      context conditions.
   2. Think of allowing more general expressions?
   3. If especially the syntax of `if . then . else .` shall be reused, 
-     why not defining this in a new nonterminal.
+     why not defining this in a new nonterminal and ignoring that the same
+     syntactic constructs were already available in another production.
 * Defined by: CKi, BR.
   
  
