@@ -1,26 +1,14 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 
-# MontiCore Best Practices - A Guide For Small Solutions
+# MontiCore Best Practices - Understanding Errors, Defining Errors
 
 [[_TOC_]]
 
-[MontiCore](http://www.monticore.de) provides a number of options to design 
-languages, access and modify the abstract syntax tree, and produce output files.
-
-This (currently unsorted and evolving) list of practices discusses solutions 
-that we identified and applied as well as alternatives and their specfic 
-advantages and drawbacks. The list also mentions where the solutions have been
-found and where they have been applied first.
-
-This file is partially temporary and also contains compact (incomplete) solutions.
-More detailed descriptions of best practices can be found in the 
-[MontiCore reference manual](http://monticore.de/MontiCore_Reference-Manual.2017.pdf).
-Some of the best practices here will also be incorporated in the next version
-of the reference manual.
+Errors happen.
 
 ## **Handling Errors 0x.....** 
 
-### How to use **Expressions** 
+### How to use **Expressions** (0xA0129) 
 
 * `Expression` is a predefined nonterminal in the MontiCore basic grammars. 
   Because of the infix notation of some operators and similar challenges,
