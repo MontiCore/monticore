@@ -5,6 +5,15 @@
 [[_TOC_]]
 
 Errors happen.
+Some happen because of faults in the code (we call that internal errors),
+some happen because we haven't well explained how to use MontiCore and 
+how to use the generated code.
+
+Here we try to add infromation how to handle occuring errors.
+We use the eror code for an easier identification. Error code start with 
+`0x`and use 5(!) hex characters and thus should be at the same time 
+memorizable (because not completely unknown, but still not so common that
+they could be taken for something else).
 
 ## **Handling Errors 0x.....** 
 
