@@ -30,6 +30,28 @@ of the reference manual.
   sublanguage, like `in` in the OCL.
 * Defined by: BR
 
+### **Complex Token** clashing with other uses of sub-tokens
+* For example `<-` is supposed to be used as arrow, but in an expression
+  `3<-10` is also syntactically allowed.
+* The problem: as soon as `"<-"` is defined as token in any part of the
+  current or any extended grammars, the expression `3<-10` would not be
+  parsed as `3 < -10` anymore.
+* Solutions: 
+  1. We might decompose the token to `"<" "-"` which in its consequence 
+     means that we put more burden to the contextfree parser and less to the 
+     regular scanner. ("scannerless parsing")
+     * Drawback: spaces would now be allowed inbetween.
+  2. Decompose the token to `{noSpace(2)}? "<" "-"`. This (slightly
+     hacking approach) prevents spaces between two tokens.
+* The challenge: when designing a language component, we don't know yet
+  what further uses will bring. This may include sub-tokens to come up
+  with new interactions. This would require an (already defined) grammar 
+  with the complex token to be adapted afterwards (and thus conflict 
+  with the library idea). 
+* Remark: A forthcoming enhancement will provide an improved solution,
+  keeping parsing efficiency and compositionality of grammars.
+* Defined by: BR
+
 
 ### **Extension** forms in a  component grammar
 A component grammar is ment for extension. MontiCore therefore provides five(!) 
