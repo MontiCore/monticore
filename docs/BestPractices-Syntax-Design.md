@@ -1,6 +1,6 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 
-# MontiCore Best Practices - A Guide For Small Solutions
+# MontiCore Best Practices - Concrete and Abstract Syntax
 
 [[_TOC_]]
 
