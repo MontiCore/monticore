@@ -234,7 +234,7 @@ A component grammar is ment for extension. MontiCore therefore provides five(!)
 
 ## Further Information
 
-* [Overview Best practices](BestPractices.md)
+* [Overview Best Practices](BestPractices.md)
 * [MontiCore project](../../README.md) - MontiCore
 * see also [**MontiCore Reference Manual**](http://www.monticore.de/)
 

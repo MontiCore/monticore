@@ -20,6 +20,7 @@ of the reference manual.
 
 
 * [**Designing A Language**](BestPractices-Language-Design.md)
+
   includes: Language Design in the Large
 
 * [**Designing Concrete and Abstract Syntax**](BestPractices-Syntax-Design.md)
@@ -29,6 +30,7 @@ of the reference manual.
 * [**Designing Symbols, Scopes and SymbolTables**](BestPractices-Symbols-Scopes.md) 
 
 * **Generating Code with Templates**
+
   (no practice defined here yet) 
 
 

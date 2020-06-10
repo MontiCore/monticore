@@ -48,7 +48,7 @@ to design, but powerful in their use.
 
 ## Further Information
 
-* [Overview Best practices](BestPractices.md)
+* [Overview Best Practices](BestPractices.md)
 * [MontiCore project](../../README.md) - MontiCore
 * see also [**MontiCore Reference Manual**](http://www.monticore.de/)
 
