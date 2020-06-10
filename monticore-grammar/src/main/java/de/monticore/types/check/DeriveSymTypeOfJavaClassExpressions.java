@@ -3,7 +3,7 @@ package de.monticore.types.check;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import de.monticore.expressions.commonexpressions._ast.ASTArguments;
+import de.monticore.expressions.expressionsbasis._ast.ASTArguments;
 import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
 import de.monticore.expressions.javaclassexpressions._ast.*;
 import de.monticore.expressions.javaclassexpressions._visitor.JavaClassExpressionsVisitor;
