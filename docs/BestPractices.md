@@ -258,6 +258,23 @@ A component grammar is ment for extension. MontiCore therefore provides five(!)
     2. visitor can easily adress the keywords (i.e. by `visit(P1)` ...)
     3. Disadvantage: Clumsy notation and visitors are always needed.
 * Defined by: SVa, BR.
+
+## **Handling Errors 0x.....** 
+
+### How to use **Expressions** 
+
+* `Expression` is a predefined nonterminal in the MontiCore basic grammars. 
+  Because of the infix notation of some operators and similar challenges,
+  it is usually not possible to use a subset of the expressions only. 
+  For example use of `ConditionalExpression` may lead to a parser generation 
+  error (i.e. `0xA0129`).
+* Solutions:
+  1. Use nonterminal `Expression` and forbid all unwanted alternatives through 
+     context conditions.
+  2. Think of allowing more general expressions?
+  3. If especially the syntax of `if . then . else .` shall be reused, 
+     why not defining this in a new nonterminal.
+* Defined by: CKi, BR.
   
  
 
