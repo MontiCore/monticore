@@ -115,8 +115,6 @@ ElementValueArrayInitializer implements ElementValue
     =   "{" (ElementValueOrExpr || ",")* (",")? "}"
     ;
 
-interface AnnotationTypeElementDeclaration ;
-
 EnhancedForControl implements ForControl
     =   FormalParameter ":" Expression
     ;
