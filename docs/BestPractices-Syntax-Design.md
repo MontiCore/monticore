@@ -21,7 +21,7 @@ of the reference manual.
 
 ## **Designing Concrete and Abstract Syntax**
 
-### **Specific keywords** that shall be used as normal words elsewhere
+### **Specific keywords** that shall be used as normal names elsewhere
 * `A = "foo" B` introduces `foo` as a keyword that cannot be used as an ordinary 
   (variable) name anymore. To prevent that we may use:
 * `A = key("foo") B` instead, which introduces `foo` only at that specific point.
@@ -252,6 +252,27 @@ A component grammar is ment for extension. MontiCore therefore provides five(!)
     2. visitor can easily adress the keywords (i.e. by `visit(P1)` ...)
     3. Disadvantage: Clumsy notation and visitors are always needed.
 * Defined by: SVa, BR.
+
+
+### Common AST-Access to Syntactically Similar Nonterminals 
+
+* Sometimes the following occurs (e.g. in associations of CDs or 
+  interactions of SD):  
+  ```
+  A = X Y Z;
+  B = Z Y X;
+  ```
+  * The concrete syntax differs (in order), but the syntactic concepts are 
+    the same. 
+* To allow common access, a common interface nonterminal is introduced
+  that is not used in the grammar directly. 
+  This doesn't change the concrete syntax but allows common AST access:
+  ```
+  interface F = X Y Z;      // order is irrelevant
+  A implements F = X Y Z;
+  B implements F = Z Y X;
+  ```
+* Defined by: BR.
 
 
 ## Further Information
