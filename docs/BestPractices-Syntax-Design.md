@@ -274,7 +274,25 @@ A component grammar is ment for extension. MontiCore therefore provides five(!)
   ```
 * Defined by: BR.
 
+### How and when to use names for Nonterminals 
 
+* Normally names like `expr:Expr`can be avoided, which makes a grammar easier to read
+  and more concise, i.e. `Expr` alone has the same effect.
+* There may be two reasons to use a name:
+  1. Nonterminal `X` occurs several times and we want to distinguish: 
+     `left:Expr "*" right:Expr`
+  2. We can also use the name to describe the purpose of the nonterminal, i.e.
+  ```
+   MyVariable implements Variable = Name "=" initial:Expression;
+  ```
+  vs:
+    ```
+   MyParameter implements Variable = Name "=" default:Expression;
+  ```
+* Defined by: BR.
+
+ 
+ 
 ## Further Information
 
 * [Overview Best Practices](BestPractices.md)
