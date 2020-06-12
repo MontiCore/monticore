@@ -58,12 +58,8 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
   }
 
   protected Optional<SymTypeExpression> calculateLiteralExpression(ASTLiteralExpression expr){
-    SymTypeExpression wholeResult = acceptThisAndReturnSymTypeExpression(expr.getLiteral());
     //get the type of the literal
-    expr.getLiteral().accept(getRealThis());
-    if (typeCheckResult.isPresentLast()) {
-      wholeResult = typeCheckResult.getLast();
-    }
+    SymTypeExpression wholeResult = acceptThisAndReturnSymTypeExpression(expr.getLiteral());
     return Optional.of(wholeResult);
   }
 
