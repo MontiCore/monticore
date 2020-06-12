@@ -44,8 +44,6 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
   private static final String AUTOMATON_SCOPE = "de.monticore.codegen.ast.automaton._symboltable.AutomatonScope";
 
-  private static final String I_GLOBAL_SCOPE = "de.monticore.symboltable.IGlobalScope";
-
   private static final String I_AUTOMATON_SCOPE = "de.monticore.codegen.ast.automaton._symboltable.IAutomatonScope";
 
   private static final String AUTOMATON_SYMBOL = "de.monticore.codegen.ast.automaton._symboltable.AutomatonSymbol";
@@ -93,7 +91,8 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterfaces() {
-    assertDeepEquals(I_GLOBAL_SCOPE, scopeClass.getInterface(0));
+    assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.IAutomatonGlobalScope",
+        scopeClass.getInterface(0));
   }
 
   @Test
@@ -256,7 +255,7 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(130, scopeClass.getCDMethodList().size());
+    assertEquals(128, scopeClass.getCDMethodList().size());
   }
 
   @Test

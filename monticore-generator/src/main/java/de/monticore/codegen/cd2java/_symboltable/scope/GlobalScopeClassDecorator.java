@@ -68,6 +68,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
   public ASTCDClass decorate(ASTCDCompilationUnit input) {
     String globalScopeName = symbolTableService.getGlobalScopeSimpleName();
     ASTMCQualifiedType scopeType = symbolTableService.getScopeType();
+    ASTMCQualifiedType globalScopeInterface = symbolTableService.getGlobalScopeInterfaceType();
     String definitionName = input.getCDDefinition().getName();
     String modelLoaderClassName = symbolTableService.getModelLoaderClassSimpleName();
 
@@ -94,7 +95,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
         .setName(globalScopeName)
         .setModifier(PUBLIC.build())
         .setSuperclass(scopeType)
-        .addInterface(getMCTypeFacade().createQualifiedType(I_GLOBAL_SCOPE_TYPE))
+        .addInterface(globalScopeInterface)
         .addCDConstructor(createConstructor(globalScopeName, definitionName))
         .addCDConstructor(createConstructor(globalScopeName))
         .addCDAttribute(modelPathAttribute)
@@ -108,7 +109,6 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
         .addCDMethod(createIsPresentNameMethod())
         .addCDMethod(createCacheMethod(definitionName))
         .addCDMethod(createContinueWithModelLoaderMethod(modelLoaderClassName))
-        .addAllCDMethods(createCalculateModelNameMethods(symbolClasses))
         .addAllCDMethods(resolvingDelegateMethods)
         .addAllCDMethods(createAlreadyResolvedMethods(symbolProds))
         .addAllCDMethods(createAlreadyResolvedSuperMethods())
@@ -157,20 +157,6 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     this.replaceTemplate(EMPTY_BODY, getSymbolTableCreatorMethod, new StringHookPoint(" return " + symTabMillFullName + "." +
         StringTransformations.uncapitalize(symbolTableCreatorDelegatorName) + "Builder().setGlobalScope(" + ENCLOSING_SCOPE_VAR + ").build();"));
     return getSymbolTableCreatorMethod;
-  }
-
-  protected List<ASTCDMethod> createCalculateModelNameMethods(List<ASTCDType> symbolProds) {
-    List<ASTCDMethod> methodList = new ArrayList<>();
-    for (ASTCDType symbolProd : symbolProds) {
-      String simpleName = symbolTableService.removeASTPrefix(symbolProd);
-      ASTMCSetType setTypeOfString = getMCTypeFacade().createSetTypeOf(String.class);
-      ASTCDParameter nameParam = getCDParameterFacade().createParameter(String.class, NAME_VAR);
-      ASTCDMethod method = getCDMethodFacade().createMethod(PROTECTED, setTypeOfString,
-          String.format("calculateModelNamesFor%s", simpleName), nameParam);
-      this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "CalculateModelNamesFor"));
-      methodList.add(method);
-    }
-    return methodList;
   }
 
   protected ASTCDAttribute createModelPathAttribute() {

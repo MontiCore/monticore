@@ -152,24 +152,33 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     return getGlobalScopeSimpleName(getCDSymbol());
   }
 
+
   /**
-   * language class names e.g. AutomataLanguage
+   * global scope interface names e.g. IAutomataGlobalScope
    */
 
-  public String getLanguageClassFullName(CDDefinitionSymbol cdSymbol) {
-    return getPackage(cdSymbol) + "." + getLanguageClassSimpleName(cdSymbol);
+  public String getGlobalScopeInterfaceFullName(CDDefinitionSymbol cdSymbol) {
+    return getPackage(cdSymbol) + "." + getGlobalScopeInterfaceSimpleName(cdSymbol);
   }
 
-  public String getLanguageClassFullName() {
-    return getLanguageClassFullName(getCDSymbol());
+  public String getGlobalScopeInterfaceFullName() {
+    return getGlobalScopeInterfaceFullName(getCDSymbol());
   }
 
-  public String getLanguageClassSimpleName(CDDefinitionSymbol cdSymbol) {
-    return cdSymbol.getName() + LANGUAGE_SUFFIX;
+  public String getGlobalScopeInterfaceSimpleName(CDDefinitionSymbol cdSymbol) {
+    return INTERFACE_PREFIX + cdSymbol.getName() + GLOBAL_SUFFIX + SCOPE_SUFFIX;
   }
 
-  public String getLanguageClassSimpleName() {
-    return getLanguageClassSimpleName(getCDSymbol());
+  public String getGlobalScopeInterfaceSimpleName() {
+    return getGlobalScopeInterfaceSimpleName(getCDSymbol());
+  }
+
+  public ASTMCQualifiedType getGlobalScopeInterfaceType(CDDefinitionSymbol cdSymbol) {
+    return getMCTypeFacade().createQualifiedType(getGlobalScopeInterfaceFullName(cdSymbol));
+  }
+
+  public ASTMCQualifiedType getGlobalScopeInterfaceType() {
+    return getGlobalScopeInterfaceType(getCDSymbol());
   }
 
   /**

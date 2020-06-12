@@ -50,6 +50,8 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
 
   protected final GlobalScopeClassDecorator globalScopeClassDecorator;
 
+  protected final GlobalScopeInterfaceDecorator globalScopeInterfaceDecorator;
+
   protected final GlobalScopeClassBuilderDecorator globalScopeClassBuilderDecorator;
 
   protected final ArtifactScopeDecorator artifactScopeDecorator;
@@ -91,9 +93,10 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
                                 final SymbolBuilderDecorator symbolBuilderDecorator,
                                 final SymbolLoaderDecorator symbolReferenceDecorator,
                                 final SymbolLoaderBuilderDecorator symbolReferenceBuilderDecorator,
+                                final ScopeInterfaceDecorator scopeInterfaceDecorator,
                                 final ScopeClassDecorator scopeClassDecorator,
                                 final ScopeClassBuilderDecorator scopeClassBuilderDecorator,
-                                final ScopeInterfaceDecorator scopeInterfaceDecorator,
+                                final GlobalScopeInterfaceDecorator globalScopeInterfaceDecorator,
                                 final GlobalScopeClassDecorator globalScopeClassDecorator,
                                 final GlobalScopeClassBuilderDecorator globalScopeClassBuilderDecorator,
                                 final ArtifactScopeDecorator artifactScopeDecorator,
@@ -116,9 +119,10 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
     this.symbolBuilderDecorator = symbolBuilderDecorator;
     this.symbolReferenceDecorator = symbolReferenceDecorator;
     this.symbolTableService = symbolTableService;
+    this.scopeInterfaceDecorator = scopeInterfaceDecorator;
     this.scopeClassDecorator = scopeClassDecorator;
     this.scopeClassBuilderDecorator = scopeClassBuilderDecorator;
-    this.scopeInterfaceDecorator = scopeInterfaceDecorator;
+    this.globalScopeInterfaceDecorator = globalScopeInterfaceDecorator;
     this.globalScopeClassDecorator = globalScopeClassDecorator;
     this.globalScopeClassBuilderDecorator = globalScopeClassBuilderDecorator;
     this.artifactScopeDecorator = artifactScopeDecorator;
@@ -167,11 +171,9 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
         .addAllCDInterfaces(createSymbolResolvingDelegateInterfaces(symbolProds))
         .build();
 
-    boolean isLanguageHandCoded = existsHandwrittenClass(handCodedPath,
-        constructQualifiedName(symbolTablePackage, symbolTableService.getLanguageClassSimpleName()));
-
     if (symbolTableService.hasStartProd(astCD.getCDDefinition())) {
       // global scope
+      symTabCD.addCDInterface(createGlobalScopeInterface(astCD, symbolTablePackage));
       ASTCDClass globalScopeClass = createGlobalScopeClass(astCD, symbolTablePackage);
       symTabCD.addCDClass(globalScopeClass);
       symTabCD.addCDClass(createGlobalScopeClassBuilder(globalScopeClass));
@@ -304,6 +306,13 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
         constructQualifiedName(symbolTablePackage, symbolTableService.getGlobalScopeSimpleName()));
     globalScopeClassDecorator.setGlobalScopeTop(isGlobalScopeTop);
     return globalScopeClassDecorator.decorate(compilationUnit);
+  }
+
+  protected ASTCDInterface createGlobalScopeInterface(ASTCDCompilationUnit compilationUnit, List<String> symbolTablePackage) {
+    boolean isGlobalScopeInterfaceTop = existsHandwrittenClass(handCodedPath,
+        constructQualifiedName(symbolTablePackage, symbolTableService.getGlobalScopeInterfaceSimpleName()));
+    globalScopeInterfaceDecorator.setGlobalScopeInterfaceTop(isGlobalScopeInterfaceTop);
+    return globalScopeInterfaceDecorator.decorate(compilationUnit);
   }
 
   protected ASTCDClass createGlobalScopeClassBuilder(ASTCDClass globalScopeClass) {

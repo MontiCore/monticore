@@ -4,7 +4,7 @@ ${tc.signature("simpleName", "definitionName")}
     for (String calculatedModelName : calculateModelNamesFor${simpleName}(name)) {
       if (continueWithModelLoader(calculatedModelName, getModelLoader())) {
         getModelLoader().loadModelsIntoScope(calculatedModelName, getModelPath(), getRealThis());
-        cache(calculatedModelNames.iterator().next());
+        cache(calculatedModelName);
       } else {
         Log.debug("Already tried to load model for '" + name + "'. If model exists, continue with cached version.",
           "${definitionName}GlobalScope");
