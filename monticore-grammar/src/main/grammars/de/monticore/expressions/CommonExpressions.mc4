@@ -136,7 +136,4 @@ component grammar CommonExpressions
   BracketExpression implements Expression <310>
     =  "(" Expression ")";
 
-  Arguments
-    =   "(" (Expression || ",")* ")";
-
 }

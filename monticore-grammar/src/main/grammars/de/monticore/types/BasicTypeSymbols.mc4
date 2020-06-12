@@ -1,0 +1,74 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.types;
+
+/* Beta-version: This is intended to become a MontiCore stable grammar. */
+
+/**
+ * This grammar is used to generate an abstract syntax only.
+ * These AST-classes are then used to store typing information
+ * in the SymbolTable.
+ *
+ * The grammar introduces the symbols for
+ * Types (of all kinds), Functions, Variables and TypeVariables
+ *
+ * These symbols are of general nature and do not precluse (and thus also
+ * not assist) static, private or other specialities.
+ * Extensions of these symbols can be found in the subgrammar
+ * TypeSymbols that add such specific elements.
+ * 
+ * These symbols can be used in other grammars, when actual implementations
+ * of these symbols become available or these symbols need to be imported 
+ * from other artifacts.
+ *
+ */
+
+component grammar BasicTypeSymbols extends de.monticore.MCBasics {
+
+  /*=================================================================*/
+
+  /**
+   * A type has a name and possible supertypes.
+   * 
+   * It may also contain potentially variables (record elements, fields, 
+   * attributes, etc.) or associated functions (the OO methods).
+   * These are represented as Symbols in the body of the type 
+   * and thus made available through the associated scope object.
+   */
+  interface scope symbol Type = Name;
+  symbolrule Type =
+    superTypes: de.monticore.types.check.SymTypeExpression*
+  ;
+
+  /*=================================================================*/
+
+  /**
+   * A typeVar is used as unbound argument in generic types,
+   * e.g. Map<int,T> has a type variable T
+   * TypeVars are instantiated with concrete types upon use.
+   */
+  interface symbol TypeVar extends Type = Name;
+
+  /*=================================================================*/
+
+  /**
+   * A Variable (Local variable, Java Attribute, etc.) has a type
+   */
+  interface symbol Variable = Name ;
+  symbolrule Variable =
+    type: de.monticore.types.check.SymTypeExpression
+   ;
+// TODO: Wollten wir das readOnly hier noch einfügen?
+
+  /*=================================================================*/
+
+  /**
+   * A function is defined by its signature.
+   * A signature consists of a return type, and a list of parameters.
+   * The parameters are stored as variable symbols (in an associated scope).
+   */
+  interface scope symbol Function = Name;
+  symbolrule Function =
+    returnType: de.monticore.types.check.SymTypeExpression
+  ;
+
+}

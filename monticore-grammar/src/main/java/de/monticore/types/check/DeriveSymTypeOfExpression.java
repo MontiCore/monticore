@@ -6,7 +6,7 @@ import de.monticore.expressions.expressionsbasis._symboltable.*;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisitor;
 import de.monticore.types.typesymbols._symboltable.FieldSymbol;
 import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
-import de.monticore.types.typesymbols._symboltable.TypeSymbol;
+import de.monticore.types.typesymbols._symboltable.OOTypeSymbol;
 import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
 
@@ -70,7 +70,7 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
   @Override
   public void traverse(ASTNameExpression expr) {
     Optional<FieldSymbol> optVar = getScope(expr.getEnclosingScope()).resolveField(expr.getName());
-    Optional<TypeSymbol> optType = getScope(expr.getEnclosingScope()).resolveType(expr.getName());
+    Optional<OOTypeSymbol> optType = getScope(expr.getEnclosingScope()).resolveOOType(expr.getName());
     if (optVar.isPresent()) {
       //no method here, test variable first
       // durch AST-Umbau kann ASTNameExpression keine Methode sein
@@ -89,7 +89,7 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
       typeCheckResult.setLast(res);
     } else if (optType.isPresent()) {
       //no variable found, test if name is type
-      TypeSymbol type = optType.get();
+      OOTypeSymbol type = optType.get();
       SymTypeExpression res = createTypeExpression(type.getName(), type.getEnclosingScope());
       typeCheckResult.setType();
       typeCheckResult.setLast(res);

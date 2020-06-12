@@ -31,7 +31,12 @@ project under `monticore-grammar/src/main/grammars/` in packages
 * `de.monticore.types`
 
 For [more langauges, see here](docs/Languages.md).
- 
+
+
+Table of Contents:
+
+[[_TOC_]]
+
 
 ## General: List of Grammars in package `de.monticore`
 
@@ -66,7 +71,8 @@ structures in languages similar to Java, that are somewhat
 simplified, e.g. without generics.
 * The grammar contains types from Java, e.g., primitives, void, 
 classes (also sometimes called "reference types").
- 
+
+
 ### [MCCollectionTypes.mc4](types/MCCollectionTypes.mc4) (stable)
 * This grammar defines four generics: `List<A>`, `Map<A,B>`, `Set<A>` and 
 `Optional<A>` on top of basic types.
@@ -91,6 +97,26 @@ Java.
 support the full Java type system including wildcards Blubb<? extends A>
 * A general advice: When you are not sure that you need this kind of
 types, then use a simpler version from above. Type checking ist tricky.
+
+
+### [BasicTypeSymbols.mc4](types/BasicTypeSymbols.mc4) (Beta: In Stabilization)
+* This grammar defines symbols for *Types* (of all kinds), *Functions*, 
+  *Variables* and *TypeVariables*.
+* The defined symbols are of general form and can be used in functional, OO
+  and other contexts. They do not preculde a concrete syntax and do not yet 
+  embody OO specifics.
+* Remark: This grammar is not intended to define concrete or abstract syntax, but the
+  infrastructure for symbols. 
+
+
+### [TypeSymbols.mc4](types/TypeSymbols.mc4) (Beta: In Stabilization)
+* This grammar defines symbols for *objectoriented Types*, *Methods*, and
+  *Fields* by mainly extending the symbols defined in `BasicTypeSymbols`.
+* The newly defined symbols extend the general ones by typical 
+  objectoriented features, such as private, static, etc.
+  Again they do not preculde a concrete syntax.
+* Remark: This grammar is not intended to define concrete or abstract syntax, but the
+  infrastructure for symbols in objectoriented context. 
 
 
 

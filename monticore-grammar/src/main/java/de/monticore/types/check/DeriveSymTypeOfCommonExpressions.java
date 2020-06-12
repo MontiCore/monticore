@@ -436,10 +436,10 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
       //store the type of the inner expression in a variable
       innerResult = typeCheckResult.getLast();
       //look for this type in our scope
-      TypeSymbol innerResultType = innerResult.getTypeInfo();
+      OOTypeSymbol innerResultType = innerResult.getTypeInfo();
       //search for a method, field or type in the scope of the type of the inner expression
       List<FieldSymbol> fieldSymbols = innerResult.getFieldList(expr.getName(), typeCheckResult.isType());
-      Optional<TypeSymbol> typeSymbolOpt = innerResultType.getSpannedScope().resolveType(expr.getName());
+      Optional<OOTypeSymbol> typeSymbolOpt = innerResultType.getSpannedScope().resolveOOType(expr.getName());
       if (!fieldSymbols.isEmpty()) {
         //cannot be a method, test variable first
         //durch AST-Umbau kann ASTFieldAccessExpression keine Methode sein
@@ -459,7 +459,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
         }
       } else if (typeSymbolOpt.isPresent()) {
         //no variable found, test type
-        TypeSymbol typeSymbol = typeSymbolOpt.get();
+        OOTypeSymbol typeSymbol = typeSymbolOpt.get();
         boolean match = true;
         //if the last result is a type and the type is not static then it is not accessible
         if(typeCheckResult.isType()&&!typeSymbol.isIsStatic()){
@@ -480,9 +480,9 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     } else {
       //inner type has no result --> try to resolve a type
       String toResolve = printer.prettyprint(expr);
-      Optional<TypeSymbol> typeSymbolOpt = getScope(expr.getEnclosingScope()).resolveType(toResolve);
+      Optional<OOTypeSymbol> typeSymbolOpt = getScope(expr.getEnclosingScope()).resolveOOType(toResolve);
       if (typeSymbolOpt.isPresent()) {
-        TypeSymbol typeSymbol = typeSymbolOpt.get();
+        OOTypeSymbol typeSymbol = typeSymbolOpt.get();
         SymTypeExpression type = SymTypeExpressionFactory.createTypeExpression(typeSymbol.getName(), typeSymbol.getEnclosingScope());
         typeCheckResult.setType();
         typeCheckResult.setLast(type);

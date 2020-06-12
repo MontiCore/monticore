@@ -9,7 +9,7 @@ import de.se_rwth.commons.logging.Log;
  */
 public class CommentBuilder {
   
-  protected String text = "";
+  protected String text = null;
   
   protected SourcePosition start = SourcePosition.getDefaultSourcePosition();
   
@@ -29,7 +29,7 @@ public class CommentBuilder {
   }
   
   public boolean isValid() {
-    return this.text == null;
+    return this.text != null;
   }
   
   public SourcePosition get_SourcePositionEnd() {

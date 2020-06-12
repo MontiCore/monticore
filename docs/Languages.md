@@ -123,7 +123,7 @@ MontiCore projects are hosted at
     OS -> iOS ^ Android;
     Screen -> Flexible | FullHD;
 
-    Camera => (iOS && External) || Android ;
+    Camera requires (iOS && External) || Android ;
   }
   ```
   Rules `F -> ...` have a parent feature (left-hand side) 
@@ -339,7 +339,7 @@ component InteriorLight {                           // MontiArc language
     *           (other alternatives are possible; SI has not standardized anything here)
 * Example projects:
     * [SI Java](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/test/grammars/de/monticore/lang/testsijava/TestSIJava.mc4) 
-* [*detailed description*](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/siunits/SIUnits.md)  
+* [*detailed description*](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/SIUnits.md)  
 
 
 ### [Statecharts](https://git.rwth-aachen.de/monticore/statechart/sc-language) (Beta: In Stabilization) (90% to MC6)
@@ -481,7 +481,12 @@ package 'Coffee' {                      // a SysML activity diagram
   does not provide class or interface definitions and
   also no wildcards in the type system.
 * One main usage of JavaLight is in the Grammar-language to model e.g. 
-  Java methods. 
+  Java methods. An example:
+  ```
+  public void print(String name) {
+    System.out.println("Hello " + name);
+  }
+  ```
 * [Main grammar `de.monticore.JavaLight`]((https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/JavaLight.mc4)
   and 
   [*detailed description*](https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/monticore-grammar/src/main/grammars/de/monticore/JavaLight.md).

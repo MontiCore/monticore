@@ -34,8 +34,8 @@ The symbol receives the additional attributes:
   - isNative
   - isStrictfp
   
- - A VariableSymbol is created for formal parameters and variable declarations.
- The VariableSymbol is  defined in MCVarDeclarationStatements and extends
+ - A VarDeclSymbol is created for formal parameters and variable declarations.
+ The VarDeclSymbol is  defined in MCVarDeclarationStatements and extends
  TypeSymbols.Field.
  
 ## Functionality
