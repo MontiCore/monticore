@@ -274,7 +274,7 @@ A component grammar is ment for extension. MontiCore therefore provides five(!)
   ```
 * Defined by: BR.
 
-### How and when to use names for Nonterminals 
+### How and when to use Names for Nonterminals 
 
 * Normally names like `expr:Expr`can be avoided, which makes a grammar easier to read
   and more concise, i.e. `Expr` alone has the same effect.
