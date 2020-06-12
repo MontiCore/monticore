@@ -54,7 +54,7 @@ of the reference manual.
 
 
 ### **Extension** forms in a  component grammar
-A component grammar is ment for extension. MontiCore therefore provides five(!) 
+A component grammar is meant for extension. MontiCore therefore provides five(!) 
   mechanisms that can be used when a sub-grammer shall extend a super-grammar.
   The solutions are briefly discussed here: 
 1. Interface in the super-grammar
