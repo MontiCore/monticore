@@ -339,7 +339,7 @@ component InteriorLight {                           // MontiArc language
     *           (other alternatives are possible; SI has not standardized anything here)
 * Example projects:
     * [SI Java](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/test/grammars/de/monticore/lang/testsijava/TestSIJava.mc4) 
-* [*detailed description*](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/siunits/SIUnits.md)  
+* [*detailed description*](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/SIUnits.md)  
 
 
 ### [Statecharts](https://git.rwth-aachen.de/monticore/statechart/sc-language) (Beta: In Stabilization) (90% to MC6)
