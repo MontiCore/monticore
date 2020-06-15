@@ -648,7 +648,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
         typeCheckResult.reset();
         logError("0xA0311",creator.getExtType().get_SourcePositionStart());
       }
-      if(!extType.isPrimitive()){
+      if(!extType.isTypeConstant()){
         //see if there is a constructor fitting for the arguments
         List<MethodSymbol> constructors = extType.getMethodList(extType.getTypeInfo().getName());
         if(!constructors.isEmpty()){
