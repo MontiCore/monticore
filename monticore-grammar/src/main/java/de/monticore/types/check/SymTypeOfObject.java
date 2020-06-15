@@ -70,6 +70,12 @@ public class SymTypeOfObject extends SymTypeExpression {
   }
 
   @Override
+  public boolean isObjectType() {
+    return true;
+  }
+
+
+  @Override
   public boolean deepEquals(SymTypeExpression sym){
     if(!(sym instanceof SymTypeOfObject)){
       return false;
@@ -86,6 +92,6 @@ public class SymTypeOfObject extends SymTypeExpression {
     }
     return this.print().equals(symCon.print());
   }
-  
+
   // --------------------------------------------------------------------------
 }

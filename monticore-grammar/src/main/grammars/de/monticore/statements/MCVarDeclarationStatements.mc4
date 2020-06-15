@@ -59,6 +59,7 @@ ArrayInit implements VariableInit
 
 interface symbol VarDecl extends Field;
 
+//  TODO BR: 15.6.: ueber die Attribute hie rmüssen wir reden
 symbolrule VarDecl =
     annotations: de.monticore.types.check.SymTypeExpression*
     isFinal: boolean
