@@ -1336,7 +1336,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
      */
 
     //Bsp1
-    TypeSymbol bsp1 = CombineExpressionsWithLiteralsMill.typeSymbolBuilder()
+    OOTypeSymbol bsp1 = CombineExpressionsWithLiteralsMill.oOTypeSymbolBuilder()
         .setName("Bsp1")
         .setEnclosingScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
         .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
@@ -1352,7 +1352,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
 
     bsp2constr.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
 
-    TypeSymbol bsp2 = CombineExpressionsWithLiteralsMill.typeSymbolBuilder()
+    OOTypeSymbol bsp2 = CombineExpressionsWithLiteralsMill.oOTypeSymbolBuilder()
         .setName("Bsp2")
         .setEnclosingScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
         .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
@@ -1397,7 +1397,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
         .build();
     bsp3constr2.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
 
-    TypeSymbol bsp3 = CombineExpressionsWithLiteralsMill.typeSymbolBuilder()
+    OOTypeSymbol bsp3 = CombineExpressionsWithLiteralsMill.oOTypeSymbolBuilder()
         .setName("Bsp3")
         .setEnclosingScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
         .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
@@ -1460,7 +1460,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
   public void failDeriveFromCreatorExpression2() throws IOException {
     //2) No constructor, Creator-Expression with Arguments
     //Bsp2
-    TypeSymbol bsp2 = CombineExpressionsWithLiteralsMill.typeSymbolBuilder()
+    OOTypeSymbol bsp2 = CombineExpressionsWithLiteralsMill.oOTypeSymbolBuilder()
         .setName("Bsp2")
         .setEnclosingScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
         .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
@@ -1505,7 +1505,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     add2scope(bsp3constr.getSpannedScope(), field1);
     add2scope(bsp3constr.getSpannedScope(), field2);
 
-    TypeSymbol bsp3 = CombineExpressionsWithLiteralsMill.typeSymbolBuilder()
+    OOTypeSymbol bsp3 = CombineExpressionsWithLiteralsMill.oOTypeSymbolBuilder()
         .setName("Bsp3")
         .setEnclosingScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
         .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
@@ -1553,7 +1553,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
         .setReturnType(_intSymType)
         .build();
 
-    TypeSymbol bsp4 = CombineExpressionsWithLiteralsMill.typeSymbolBuilder()
+    OOTypeSymbol bsp4 = CombineExpressionsWithLiteralsMill.oOTypeSymbolBuilder()
         .setName("Bsp4")
         .setEnclosingScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
         .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
