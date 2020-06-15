@@ -73,8 +73,9 @@ public class GlobalScopeInterfaceDecorator
     List<ASTMCQualifiedType> result = new ArrayList<>();
     for (CDDefinitionSymbol superGrammar : symbolTableService.getSuperCDsDirect()) {
       if (superGrammar.isPresentAstNode() && superGrammar.getAstNode().isPresentModifier()) {
-        ASTModifier modifier = superGrammar.getAstNode().getModifier();
-        if (symbolTableService.hasComponentStereotype(modifier)) {
+//        ASTModifier modifier = superGrammar.getAstNode().getModifier();
+//        if (symbolTableService.hasComponentStereotype(modifier)) {
+        if (symbolTableService.hasStartProd(superGrammar.getAstNode())) {
           result.add(symbolTableService.getGlobalScopeInterfaceType(superGrammar));
         }
       }

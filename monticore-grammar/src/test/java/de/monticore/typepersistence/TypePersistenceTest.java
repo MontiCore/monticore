@@ -5,7 +5,9 @@ import de.monticore.io.paths.ModelPath;
 import de.monticore.typepersistence.variable.VariableMill;
 import de.monticore.typepersistence.variable._ast.ASTVar;
 import de.monticore.typepersistence.variable._parser.VariableParser;
-import de.monticore.typepersistence.variable._symboltable.*;
+import de.monticore.typepersistence.variable._symboltable.IVariableScope;
+import de.monticore.typepersistence.variable._symboltable.VariableGlobalScope;
+import de.monticore.typepersistence.variable._symboltable.VariableSymbolTableCreator;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import org.junit.Test;
 
@@ -29,10 +31,7 @@ public class TypePersistenceTest {
     */
 
     //Create global scope for our language combination
-    VariableLanguage varLang = new VariableLanguage("VariableLangName", "var") {
-    };
-
-    VariableGlobalScope globalScope = new VariableGlobalScope(new ModelPath(), varLang);
+    VariableGlobalScope globalScope = new VariableGlobalScope(new ModelPath());
 
     //Parse blah model
     VariableParser blahParser = new VariableParser();
