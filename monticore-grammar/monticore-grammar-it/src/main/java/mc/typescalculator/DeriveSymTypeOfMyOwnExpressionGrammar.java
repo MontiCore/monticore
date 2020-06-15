@@ -36,7 +36,7 @@ public class DeriveSymTypeOfMyOwnExpressionGrammar
           "cannot be calculated");
     }
 
-   if(inner.isPrimitive()
+   if(inner.isTypeConstant()
        &&((SymTypeConstant)inner).isNumericType()){
       result = inner.deepClone();
     }
