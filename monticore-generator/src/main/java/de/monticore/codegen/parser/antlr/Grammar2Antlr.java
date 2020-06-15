@@ -512,12 +512,15 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
 
     // No actions in predicates
     // Template engine cannot be used for substition in rare cases
+    boolean isAttribute = ast.isPresentUsageName();
+    boolean isList = ast.isPresentSymbol() && ast.getSymbol().isIsList();
+    if (isAttribute && isList) {
+      addToCodeSection("(");
+    }
     addToCodeSection(rulename); // + " %initaction% %actions% ) %iteration% ";
 
     if (embeddedJavaCode) {
-      boolean isAttribute = ast.isPresentUsageName();
-      boolean isList = ast.isPresentSymbol() && ast.getSymbol().isIsList();
-      // Add Actions
+       // Add Actions
       if (isAttribute) {
         if (isList) {
           addToAction(astActions.getActionForTerminalIteratedAttribute(ast));
@@ -531,6 +534,9 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
 
     addActionToCodeSection();
 
+    if (isAttribute && isList) {
+      addToCodeSection(")");
+    }
     addToCodeSection(printIteration(ast.getIteration()));
 
     endCodeSection(ast);

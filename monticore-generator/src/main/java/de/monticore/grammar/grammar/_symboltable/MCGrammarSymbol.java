@@ -3,6 +3,7 @@
 package de.monticore.grammar.grammar._symboltable;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsArtifactScope;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
@@ -120,6 +121,20 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
       ret.put(prodSymbol.getName(), prodSymbol);
     }
 
+    return ret;
+  }
+
+  public List<String> getTokenRulesWithInherited() {
+    final List<String> ret = Lists.newArrayList();
+
+    for (int i = superGrammars.size() - 1; i >= 0; i--) {
+      final MCGrammarSymbolLoader superGrammarRef = superGrammars.get(i);
+
+      if (superGrammarRef.isSymbolLoaded()) {
+        ret.addAll(superGrammarRef.getLoadedSymbol().getTokenRulesWithInherited());
+      }
+    }
+    forEachTokenRules(t -> ret.add(t));
     return ret;
   }
 

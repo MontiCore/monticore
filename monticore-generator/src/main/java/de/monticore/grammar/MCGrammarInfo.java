@@ -61,6 +61,12 @@ public class MCGrammarInfo {
    * Internal: LexNamer for naming lexer symbols in the antlr source code
    */
   private LexNamer lexNamer = new LexNamer();
+
+  public List<String> getTokenRules() {
+    return tokenRules;
+  }
+
+  private List<String> tokenRules;
   
   /**
    * The symbol of the processed grammar
@@ -71,6 +77,7 @@ public class MCGrammarInfo {
     this.grammarSymbol = grammarSymbol;
     buildLexPatterns();
     findAllKeywords();
+    tokenRules = grammarSymbol.getTokenRulesWithInherited();
     addSubRules();
     addHWAntlrCode();
     addLeftRecursiveRules();

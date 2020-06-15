@@ -150,7 +150,26 @@ public class ParserGeneratorHelper {
    */
   public String getLexSymbolName(String constName) {
     Log.errorIfNull(constName);
-    return grammarInfo.getLexNamer().getLexName(grammarSymbol, constName);
+    if (grammarInfo.getTokenRules().contains(constName)) {
+      // Split the token
+      StringBuilder sb = new StringBuilder();
+      String sep = "";
+      sb.append("({noSpace(");
+      for (int i = 2; i<=constName.length(); i++) {
+        sb.append(sep);
+        sep = ", ";
+        sb.append(i);
+      }
+      sb.append(")}?");
+      for (char c: constName.toCharArray()) {
+        sb.append(grammarInfo.getLexNamer().getLexName(grammarSymbol, String.valueOf(c)));
+        sb.append(" ");
+      }
+      sb.append(")");
+      return sb.toString();
+    } else {
+      return grammarInfo.getLexNamer().getLexName(grammarSymbol, constName);
+    }
   }
 
   /**

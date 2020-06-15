@@ -175,6 +175,15 @@ public class GrammarPrettyPrinter
   }
 
   @Override
+  public void handle(ASTTokenRule a) {
+    CommentPrettyPrinter.printPreComments(a, getPrinter());
+    print("split_token ");
+    print(a.getString());
+    println (";");
+    CommentPrettyPrinter.printPostComments(a, getPrinter());
+  }
+
+  @Override
   public void handle(ASTTerminal a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     // output("ASTTerminal Iteration " + a.getIteration());
