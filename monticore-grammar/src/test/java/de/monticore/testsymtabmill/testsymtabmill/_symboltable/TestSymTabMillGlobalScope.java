@@ -8,8 +8,8 @@ public class TestSymTabMillGlobalScope extends TestSymTabMillGlobalScopeTOP {
   public TestSymTabMillGlobalScope(ModelPath modelPath){
     super(modelPath);
   }
-  public TestSymTabMillGlobalScope(ModelPath modelPath, TestSymTabMillModelLoader modelLoader){
-    super(modelPath, modelLoader);
+  public TestSymTabMillGlobalScope(ModelPath modelPath, String modelFileExtension){
+    super(modelPath, modelFileExtension);
   }
 
   @Override public TestSymTabMillGlobalScope getRealThis() {

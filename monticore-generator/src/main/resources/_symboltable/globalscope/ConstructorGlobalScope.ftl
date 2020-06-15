@@ -1,20 +1,20 @@
-${tc.signature("languageName", "millName", "parserName")}
+${tc.signature("grammarName", "grammarPackage")}
   this.modelPath = Log.errorIfNull(modelPath);
 
   de.monticore.modelloader.ParserBasedAstProvider astProvider =
-  new de.monticore.modelloader.ParserBasedAstProvider(new ${millName}(), "${languageName}");
+  new de.monticore.modelloader.ParserBasedAstProvider(new ${grammarPackage}._parser.${grammarName}Parser(), "${grammarName}");
 
-  ${languageName}SymbolTableCreator stc = ${millName}
-  .${languageName?uncap_first}SymbolTableCreatorBuilder()
+  ${grammarPackage}._symboltable.${grammarName}SymbolTableCreator stc = ${grammarPackage}.${grammarName}Mill
+  .${grammarName?uncap_first}SymbolTableCreatorBuilder()
   .addToScopeStack(this)
   .build();
 
-  ${languageName}ModelLoader ml = ${millName}
-  .${languageName?uncap_first}ModelLoaderBuilder()
+  ${grammarPackage}._symboltable.${grammarName}ModelLoader ml = ${grammarPackage}.${grammarName}Mill
+  .${grammarName?uncap_first}ModelLoaderBuilder()
   .setAstProvider(astProvider)
   .setSymbolTableCreator(stc)
-  .setModelFileExtension(fileExtension)
-  .setSymbolFileExtension(fileExtension+"sym")
+  .setModelFileExtension(modelFileExtension)
+  .setSymbolFileExtension(modelFileExtension+"sym")
   .build();
 
   this.modelLoader = Optional.ofNullable(ml);

@@ -1,6 +1,7 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("scopeClassName", "simpleName")}
+  ${scopeClassName} globalScope = new ${scopeClassName}(modelPath);
   if(modelLoader.isPresent()){
-    return new ${scopeClassName}(modelPath, modelLoader.get());
+    globalScope.setModelLoader(modelLoader.get());
   }
-  return new ${scopeClassName}(modelPath);
+  return globalScope;
