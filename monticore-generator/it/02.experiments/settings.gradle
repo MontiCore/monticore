@@ -1,0 +1,20 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+pluginManagement {
+  repositories {
+    if(("true").equals(getProperty('useLocalRepo'))){
+      mavenLocal()
+    }
+    maven {
+      credentials.username mavenUser
+      credentials.password mavenPassword
+      url repo
+    }
+    gradlePluginPortal()
+  }
+}
+
+rootProject.name = '02.experiments'
+include(':scopes')
+include(':symbols')
+

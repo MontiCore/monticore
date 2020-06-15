@@ -502,7 +502,9 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     startCodeSection("ASTTerminal " + ast.getName());
 
     String rulename;
-    if (grammarInfo.isKeyword(ast.getName(), grammarEntry)) {
+    if (ast.getName().isEmpty()) {
+      rulename = "";
+    } else if (grammarInfo.isKeyword(ast.getName(), grammarEntry)) {
       rulename = "'" + ast.getName() + "'";
     } else {
       rulename = parserHelper.getLexSymbolName(ast.getName().intern());

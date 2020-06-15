@@ -44,7 +44,7 @@ VariableDeclarator
 
 //  TODO BR -> MB: (3.6.) Ich gehe davon aus, dass hier ein VariableSymbol genutzt wird
 // und via SymbolMill wird da ggf. dann in Wirklichkeit ein FieldSymbol erzeugt?
-DeclaratorId implements Variable
+DeclaratorId implements VarDecl
     =   Name (dim:"[" "]")*
     ;
 
@@ -57,10 +57,9 @@ ArrayInit implements VariableInit
      =   "{" (VariableInit || ",")* (",")? "}"
      ;
 
-// TODO BR -> MB: (6.6.) Umbau Variable gemaess Besprechung
-interface symbol Variable extends Field;
+interface symbol VarDecl extends Field;
 
-symbolrule Variable =
+symbolrule VarDecl =
     annotations: de.monticore.types.check.SymTypeExpression*
     isFinal: boolean
     isReadOnly: boolean

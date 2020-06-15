@@ -3,10 +3,11 @@ package de.monticore.types.check;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import de.monticore.expressions.commonexpressions._ast.ASTArguments;
+import de.monticore.expressions.expressionsbasis._ast.ASTArguments;
 import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
 import de.monticore.expressions.javaclassexpressions._ast.*;
 import de.monticore.expressions.javaclassexpressions._visitor.JavaClassExpressionsVisitor;
+import de.monticore.types.basictypesymbols._symboltable.TypeVarSymbol;
 import de.monticore.types.typesymbols._symboltable.*;
 import de.se_rwth.commons.logging.Log;
 
@@ -61,9 +62,9 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
       if(getScope(node.getEnclosingScope()).getEnclosingScope()!=null){
         ITypeSymbolsScope testScope = getScope(node.getEnclosingScope());
         while (testScope!=null) {
-          if(testScope.isPresentSpanningSymbol()&&testScope.getSpanningSymbol() instanceof TypeSymbol) {
+          if(testScope.isPresentSpanningSymbol()&&testScope.getSpanningSymbol() instanceof OOTypeSymbol) {
             count++;
-            TypeSymbol sym = (TypeSymbol) testScope.getSpanningSymbol();
+            OOTypeSymbol sym = (OOTypeSymbol) testScope.getSpanningSymbol();
             if (sym.getName().equals(innerResult.getTypeInfo().getName())&&count>1) {
               wholeResult = innerResult;
               break;
@@ -223,9 +224,9 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     boolean isOuterType = false;
     ITypeSymbolsScope testScope = getScope(node.getEnclosingScope());
     while (testScope!=null) {
-      if(testScope.isPresentSpanningSymbol()&&testScope.getSpanningSymbol() instanceof TypeSymbol) {
+      if(testScope.isPresentSpanningSymbol()&&testScope.getSpanningSymbol() instanceof OOTypeSymbol) {
         count++;
-        TypeSymbol sym = (TypeSymbol) testScope.getSpanningSymbol();
+        OOTypeSymbol sym = (OOTypeSymbol) testScope.getSpanningSymbol();
         if (sym.getName().equals(beforeSuperType.getTypeInfo().getName())&&count>1) {
           isOuterType = true;
           break;
@@ -352,7 +353,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
   public void traverse(ASTPrimaryThisExpression node) {
     //search for the nearest TypeSymbol and return its Type
     SymTypeExpression wholeResult = null;
-    TypeSymbol typeSymbol=searchForTypeSymbolSpanningEnclosingScope(getScope(node.getEnclosingScope()));
+    OOTypeSymbol typeSymbol=searchForTypeSymbolSpanningEnclosingScope(getScope(node.getEnclosingScope()));
     if(typeSymbol!=null) {
       wholeResult = getResultOfPrimaryThisExpression(getScope(node.getEnclosingScope()), typeSymbol);
     }
@@ -364,7 +365,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     }
   }
 
-  private SymTypeExpression getResultOfPrimaryThisExpression(ITypeSymbolsScope scope, TypeSymbol typeSymbol) {
+  private SymTypeExpression getResultOfPrimaryThisExpression(ITypeSymbolsScope scope, OOTypeSymbol typeSymbol) {
     SymTypeExpression wholeResult;
     if(typeSymbol.getTypeParameterList().isEmpty()){
       //if the return type is a primitive
@@ -389,7 +390,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
   public void traverse(ASTPrimarySuperExpression node) {
     SymTypeExpression wholeResult=null;
 
-    TypeSymbol typeSymbol = searchForTypeSymbolSpanningEnclosingScope(getScope(node.getEnclosingScope()));
+    OOTypeSymbol typeSymbol = searchForTypeSymbolSpanningEnclosingScope(getScope(node.getEnclosingScope()));
     if(typeSymbol!=null) {
       if (typeSymbol.getSuperClassesOnly().size() == 1) {
         wholeResult = typeSymbol.getSuperClassesOnly().get(0);
@@ -569,7 +570,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
         //case 2: <TypeVariable>this(Args) -> similar to PrimaryThisExpression, use method checkMethodsAndReplaceTypeVariables
         //can only be accessed solely -> there cannot be a lastresult
         //search for the nearest enclosingscope spanned by a typesymbol
-        TypeSymbol typeSymbol = searchForTypeSymbolSpanningEnclosingScope(getScope(node.getEnclosingScope()));
+        OOTypeSymbol typeSymbol = searchForTypeSymbolSpanningEnclosingScope(getScope(node.getEnclosingScope()));
         if(typeSymbol!=null) {
           //get the constructors of the typesymbol
           List<MethodSymbol> methods = typeSymbol.getSpannedScope().resolveMethodMany(typeSymbol.getName());
@@ -586,7 +587,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
       if(!superSuffix.isPresentName()){
         //case 3: <TypeVariable>super(Args) -> find the constructor of the super class, use method checkMethodsAndReplaceTypeVariables
         //search for the nearest enclosingscope spanned by a typesymbol
-        TypeSymbol subType = searchForTypeSymbolSpanningEnclosingScope(getScope(node.getEnclosingScope()));
+        OOTypeSymbol subType = searchForTypeSymbolSpanningEnclosingScope(getScope(node.getEnclosingScope()));
         //get the superclass of this typesymbol and search for its fitting constructor
         if(subType!=null&&subType.getSuperClassesOnly().size()==1){
           SymTypeExpression superClass = subType.getSuperClassesOnly().get(0);
@@ -609,94 +610,94 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     }
   }
 
-  @Override
-  public void traverse(ASTCreatorExpression expr){
-    expr.getCreator().accept(getRealThis());
-    if(typeCheckResult.isPresentLast()){
-      if(!typeCheckResult.isType()){
-        typeCheckResult.reset();
-        logError("0xA0309",expr.getCreator().get_SourcePositionStart());
-      }
-    }else{
-      typeCheckResult.reset();
-      logError("0xA0310",expr.get_SourcePositionStart());
-    }
-  }
-
-  @Override
-  public void traverse(ASTAnonymousClass creator){
-    SymTypeExpression extType = null;
-    SymTypeExpression wholeResult = null;
-    creator.getExtType().accept(getRealThis());
-    if(typeCheckResult.isPresentLast()){
-      extType = typeCheckResult.getLast();
-    }else{
-      typeCheckResult.reset();
-      logError("0xA0311",creator.getExtType().get_SourcePositionStart());
-    }
-    if(!extType.isPrimitive()){
-      //see if there is a constructor fitting for the arguments
-      List<MethodSymbol> constructors = extType.getMethodList(extType.getTypeInfo().getName());
-      if(!constructors.isEmpty()){
-        if(testForCorrectArguments(constructors, creator.getArguments())){
-          wholeResult = extType;
-        }
-      }else if(creator.getArguments().isEmptyExpressions()){
-        //no constructor in this class -> default constructor without arguments, only possible if arguments in creator are empty
-        wholeResult = extType;
-      }
-    }
-
-    if(wholeResult != null){
-      typeCheckResult.setLast(wholeResult);
-    }else{
-      typeCheckResult.reset();
-      logError("0xA0312",creator.get_SourcePositionStart());
-    }
-  }
-
-  private List<SymTypeExpression> calculateCorrectArguments(ASTArguments args) {
-    List<SymTypeExpression> argList = Lists.newArrayList();
-    for(int i = 0;i<args.getExpressionList().size();i++){
-      args.getExpression(i).accept(getRealThis());
-      if(typeCheckResult.isPresentLast()){
-        argList.add(typeCheckResult.getLast());
-      }else{
-        logError("0xA0313",args.getExpressionList().get(i).get_SourcePositionStart());
-      }
-    }
-    return argList;
-  }
-
-  private boolean testForCorrectArguments(List<MethodSymbol> constructors, ASTArguments arguments) {
-    List<SymTypeExpression> symTypeOfArguments = calculateCorrectArguments(arguments);
-    outer: for(MethodSymbol constructor: constructors){
-      if(constructor.getParameterList().size() == symTypeOfArguments.size()){
-        //get the types of the constructor arguments
-        List<SymTypeExpression> constructorArguments = constructor.getParameterList().stream().map(FieldSymbol::getType).collect(Collectors.toList());
-        for(int i = 0;i<constructorArguments.size();i++){
-          if(!compatible(constructorArguments.get(i),symTypeOfArguments.get(i))){
-            //wrong constructor, argument is not compatible to constructor definition
-            continue outer;
-          }
-        }
-        //if this is reached, then the arguments match a constructor's arguments -> return true
-        return true;
-      }
-    }
-    return false;
-  }
-
-  private TypeSymbol searchForTypeSymbolSpanningEnclosingScope(ITypeSymbolsScope scope) {
+  private OOTypeSymbol searchForTypeSymbolSpanningEnclosingScope(ITypeSymbolsScope scope) {
     //search for the nearest type symbol in the enclosing scopes -> for this and super to get the
     //current object
     while(scope!=null){
-      if(scope.isPresentSpanningSymbol()&&scope.getSpanningSymbol() instanceof TypeSymbol){
-        return (TypeSymbol)scope.getSpanningSymbol();
+      if(scope.isPresentSpanningSymbol()&&scope.getSpanningSymbol() instanceof OOTypeSymbol){
+        return (OOTypeSymbol)scope.getSpanningSymbol();
       }
       scope = scope.getEnclosingScope();
     }
     //no typesymbol found
     return null;
   }
+
+    @Override
+    public void traverse(ASTCreatorExpression expr){
+      expr.getCreator().accept(getRealThis());
+      if(typeCheckResult.isPresentLast()){
+        if(!typeCheckResult.isType()){
+          typeCheckResult.reset();
+          logError("0xA0309",expr.getCreator().get_SourcePositionStart());
+        }
+      }else{
+        typeCheckResult.reset();
+        logError("0xA0310",expr.get_SourcePositionStart());
+      }
+    }
+
+    @Override
+    public void traverse(ASTAnonymousClass creator){
+      SymTypeExpression extType = null;
+      SymTypeExpression wholeResult = null;
+      creator.getExtType().accept(getRealThis());
+      if(typeCheckResult.isPresentLast()){
+        extType = typeCheckResult.getLast();
+      }else{
+        typeCheckResult.reset();
+        logError("0xA0311",creator.getExtType().get_SourcePositionStart());
+      }
+      if(!extType.isPrimitive()){
+        //see if there is a constructor fitting for the arguments
+        List<MethodSymbol> constructors = extType.getMethodList(extType.getTypeInfo().getName());
+        if(!constructors.isEmpty()){
+          if(testForCorrectArguments(constructors, creator.getArguments())){
+            wholeResult = extType;
+          }
+        }else if(creator.getArguments().isEmptyExpressions()){
+          //no constructor in this class -> default constructor without arguments, only possible if arguments in creator are empty
+          wholeResult = extType;
+        }
+      }
+
+      if(wholeResult != null){
+        typeCheckResult.setLast(wholeResult);
+      }else{
+        typeCheckResult.reset();
+        logError("0xA0312",creator.get_SourcePositionStart());
+      }
+    }
+
+    private List<SymTypeExpression> calculateCorrectArguments(ASTArguments args) {
+      List<SymTypeExpression> argList = Lists.newArrayList();
+      for(int i = 0;i<args.getExpressionList().size();i++){
+        args.getExpression(i).accept(getRealThis());
+        if(typeCheckResult.isPresentLast()){
+          argList.add(typeCheckResult.getLast());
+        }else{
+          logError("0xA0313",args.getExpressionList().get(i).get_SourcePositionStart());
+        }
+      }
+      return argList;
+    }
+
+    private boolean testForCorrectArguments(List<MethodSymbol> constructors, ASTArguments arguments) {
+      List<SymTypeExpression> symTypeOfArguments = calculateCorrectArguments(arguments);
+      outer: for(MethodSymbol constructor: constructors){
+        if(constructor.getParameterList().size() == symTypeOfArguments.size()){
+          //get the types of the constructor arguments
+          List<SymTypeExpression> constructorArguments = constructor.getParameterList().stream().map(FieldSymbol::getType).collect(Collectors.toList());
+          for(int i = 0;i<constructorArguments.size();i++){
+            if(!compatible(constructorArguments.get(i),symTypeOfArguments.get(i))){
+              //wrong constructor, argument is not compatible to constructor definition
+              continue outer;
+            }
+          }
+          //if this is reached, then the arguments match a constructor's arguments -> return true
+          return true;
+        }
+      }
+      return false;
+    }
 }

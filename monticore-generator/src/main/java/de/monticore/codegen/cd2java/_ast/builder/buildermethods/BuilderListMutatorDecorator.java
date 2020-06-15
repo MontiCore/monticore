@@ -41,7 +41,7 @@ public class BuilderListMutatorDecorator extends ListMutatorDecorator {
       String parameterCall = m.getCDParameterList().stream()
           .map(ASTCDParameter::getName)
           .collect(Collectors.joining(", "));
-      this.replaceTemplate(EMPTY_BODY, m, new TemplateHookPoint("_ast.builder.MethodDelegate", capitalizedAttributeNameWithOutS, methodName, parameterCall));
+      this.replaceTemplate(EMPTY_BODY, m, new TemplateHookPoint("_ast.builder.MethodDelegate4ASTBuilder", capitalizedAttributeNameWithOutS, methodName, parameterCall));
     }
     return methods;
   }
@@ -52,7 +52,7 @@ public class BuilderListMutatorDecorator extends ListMutatorDecorator {
     ASTCDMethod method = this.getCDMethodFacade().createMethodByDefinition(signature);
     ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(builderType).build();
     method.setMCReturnType(returnType);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.builder.Set", ast));
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.builder.Set4ASTBuilder", ast));
     return method;
   }
 }

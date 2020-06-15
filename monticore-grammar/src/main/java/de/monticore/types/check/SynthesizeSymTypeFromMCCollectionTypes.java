@@ -1,15 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes.MCBasicTypesMill;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCMapType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCSetType;
 import de.monticore.types.mccollectiontypes._visitor.MCCollectionTypesVisitor;
-import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
-import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
+import de.monticore.types.typesymbols._symboltable.OOTypeSymbolLoader;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -62,7 +61,7 @@ public class SynthesizeSymTypeFromMCCollectionTypes extends SynthesizeSymTypeFro
   public void endVisit(ASTMCListType t) {
     // argument Type has been processed and stored in result:
     SymTypeExpression tex =
-        SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader("List", getScope(t.getEnclosingScope())), typeCheckResult.getLast());
+        SymTypeExpressionFactory.createGenerics(new OOTypeSymbolLoader("List", getScope(t.getEnclosingScope())), typeCheckResult.getLast());
     if (!typeCheckResult.isPresentLast()) {
       Log.error("0xE9FD6 Internal Error: No SymType argument for List type. "
           + " Probably TypeCheck mis-configured.");
@@ -73,7 +72,7 @@ public class SynthesizeSymTypeFromMCCollectionTypes extends SynthesizeSymTypeFro
   public void endVisit(ASTMCSetType t) {
     // argument Type has been processed and stored in result:
     SymTypeExpression tex =
-        SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader("Set", getScope(t.getEnclosingScope())), typeCheckResult.getLast());
+        SymTypeExpressionFactory.createGenerics(new OOTypeSymbolLoader("Set", getScope(t.getEnclosingScope())), typeCheckResult.getLast());
     if (!typeCheckResult.isPresentLast()) {
       Log.error("0xE9FD7 Internal Error: No SymType argument for Set type. "
           + " Probably TypeCheck mis-configured.");
@@ -84,7 +83,7 @@ public class SynthesizeSymTypeFromMCCollectionTypes extends SynthesizeSymTypeFro
   public void endVisit(ASTMCOptionalType t) {
     // argument Type has been processed and stored in result:
     SymTypeExpression tex =
-        SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader("Optional", getScope(t.getEnclosingScope())), typeCheckResult.getLast());
+        SymTypeExpressionFactory.createGenerics(new OOTypeSymbolLoader("Optional", getScope(t.getEnclosingScope())), typeCheckResult.getLast());
     if (!typeCheckResult.isPresentLast()) {
       Log.error("0xE9FD8 Internal Error: No SymType argument for Optional type. "
           + " Probably TypeCheck mis-configured.");
@@ -118,7 +117,7 @@ public class SynthesizeSymTypeFromMCCollectionTypes extends SynthesizeSymTypeFro
     SymTypeExpression argument2 = typeCheckResult.getLast();
     // Construct new TypeExpression:
     SymTypeExpression tex =
-        SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader(
+        SymTypeExpressionFactory.createGenerics(new OOTypeSymbolLoader(
             "Map", getScope(node.getEnclosingScope())), argument1, argument2);
     typeCheckResult.setLast(tex);
   }
@@ -136,7 +135,7 @@ public class SynthesizeSymTypeFromMCCollectionTypes extends SynthesizeSymTypeFro
    */
   @Override
   public void endVisit(ASTMCQualifiedType qType) {
-    typeCheckResult.setLast(SymTypeExpressionFactory.createTypeObject(new TypeSymbolLoader(qType.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()), getScope(qType.getEnclosingScope()))));
+    typeCheckResult.setLast(SymTypeExpressionFactory.createTypeObject(new OOTypeSymbolLoader(qType.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()), getScope(qType.getEnclosingScope()))));
   }
 
   // ASTMCTypeArgument, ASTMCBasicTypeArgument and  MCPrimitiveTypeArgument:

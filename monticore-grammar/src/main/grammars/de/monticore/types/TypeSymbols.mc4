@@ -4,33 +4,41 @@ package de.monticore.types;
 /* Beta-version: This is intended to become a MontiCore stable grammar. */
 
 /**
- * This grammar is used to generate an abstract Syntax only.
+ * This grammar is used to generate an abstract syntax only.
  * These AST-classes are then used to store typing information
  * in the SymbolTable.
  *
  * The grammar introduces the symbols for
- * Types, Methods, Fields and TypeVariables
+ * OOTypes, Methods, and Fields 
+ * which are specializations of the alredy defined 
+ * Types (of all kinds), Functions, and Variables.
+ * The latter (and TypeVariables) are already defined in BasicTypeSymbols.
+ *
+ * here we mainly add the possibilities to store static, private, etc. flags
+ * and extend the signature of methods for elliptic extensibility.
  *
  * These symbols can be used elsewhere, when actual implementations
  * of these symbols become available.
  *
 */
 
-component grammar TypeSymbols extends de.monticore.MCBasics {
+component grammar TypeSymbols extends de.monticore.types.BasicTypeSymbols {
 
   /*=================================================================*/
 
   /**
    * A type (in an OO sense) has a name,
    * methods, fields, supertypes.
-   * All of them are represented as Symbols.
-   * TODO BR: !  What to do with: typeParameters (then it should not be a type, but a typeconstructor)
-   * TODO: BR das wuerde ich noch gerne verstehen: Wo sind die TypParameter?
+   *
+   * It may also contain potentially fields and OO methods.
+   * These are represented as Symbols in the body of the type 
+   * and thus made available through the associated scope object.
+   *
+   * The new symbol OOTypeSymbol mainly adds OO specific properties.
+   *
    */
-  // TODO BR -> MB (6.6.) : Type einbauen (als Oberklasse von OOType)
-  interface scope symbol Type = Name;
-  symbolrule Type =
-    superTypes: de.monticore.types.check.SymTypeExpression*
+  interface scope symbol OOType extends Type = Name;
+  symbolrule OOType =
     isClass: boolean
     isInterface: boolean
     isEnum: boolean
@@ -44,19 +52,14 @@ component grammar TypeSymbols extends de.monticore.MCBasics {
   /*=================================================================*/
 
   /**
-   * A typeVar may be bounded (see Java)
+   * A Field (local variable, method parameter, Java attribute) has a type
+   * and a visibility. It may also be used in isolation (static).
+   *
+   * The new symbol FieldSymbol inherits from VariableSymbol
+   * and mainly adds OO specific properties.
    */
-  interface symbol TypeVar extends Type = Name;
-
-  /*=================================================================*/
-
-  /**
-   * A Field (Java Attribute) has a type
-   */
-  // TODO BR -> MB (6.6.) : Variable einbauen (als Oberklasse von Field)
-  interface symbol Field = Name ;
+  interface symbol Field extends Variable = Name ;
   symbolrule Field =
-    type: de.monticore.types.check.SymTypeExpression
     isParameter: boolean
     isVariable: boolean
     isPrivate: boolean
@@ -64,17 +67,27 @@ component grammar TypeSymbols extends de.monticore.MCBasics {
     isPublic: boolean
     isStatic:boolean
   ;
+// TODO !: die neue fassung ist schon deutlich näher am ideal, allerdings
+// sind die beiden Flags hier immer noch viel am Platz, denn sie
+// beschreiben nicht eine Eigenschaft des Symbols, sondern eine 
+// Eigenschaft der Nutzung des Symbols von draußen.
+// Meine Alternativorschlag steht: 2 Scopes nehmen / die könnte man auch schachteln
+// oder zwei separate Listen in diesem ominösen, 
+// überladenen Function- Scope, die halt beide durchsucht werden ...
+// (wobei in externen Artefakten die zweite Liste eh immer leer bleibt)
+
 
   /*=================================================================*/
 
   /**
    * A Method has a return type, and a list of parameters, which
    * are stored as field symbols.
+   *
+   * The new symbol MethodSymbol inherits from FunctionSymbol and 
+   * mainly adds OO specific properties.
    */
-  // TODO BR -> MB (6.6.) : Function einbauen (als Oberklasse von Method)
-  interface scope symbol Method = Name;
+  interface symbol Method extends Function = Name;
   symbolrule Method =
-    returnType: de.monticore.types.check.SymTypeExpression
     isConstructor: boolean
     isMethod: boolean
     isPrivate: boolean
@@ -82,5 +95,7 @@ component grammar TypeSymbols extends de.monticore.MCBasics {
     isPublic: boolean
     isStatic:boolean
   ;
+  // TODO: fehlt hier noch isElliptic  um die spezielle Form der Darstellung
+  // des letzten Arguments (Typ: [.] las erweiterbare Liste zu erlauben?
 
 }

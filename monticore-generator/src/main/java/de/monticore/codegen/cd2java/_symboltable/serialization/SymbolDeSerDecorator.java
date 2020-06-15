@@ -106,7 +106,7 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
         .createMethod(PUBLIC, getMCTypeFacade().createQualifiedType(symbolFullName), DESERIALIZE,
             stringParam, enclosingScopeParameter);
     this.replaceTemplate(EMPTY_BODY, deserializeMethod,
-        new TemplateHookPoint(TEMPLATE_PATH + "DeserializeString", symbolSimpleName));
+        new TemplateHookPoint(TEMPLATE_PATH + "DeserializeString4SymbolDeSer", symbolSimpleName));
     return deserializeMethod;
   }
 
@@ -118,7 +118,7 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
         .createMethod(PROTECTED, getMCTypeFacade().createQualifiedType(symbolFullName),
             DESERIALIZE + symbolSimpleName, jsonParam, enclosingScopeParameter);
     this.replaceTemplate(EMPTY_BODY, deserializeMethod,
-        new TemplateHookPoint(TEMPLATE_PATH + "DeserializeSymbol",
+        new TemplateHookPoint(TEMPLATE_PATH + "DeserializeSymbol4SymbolDeSer",
             symbolBuilderFullName, symbolBuilderSimpleName, symTabMill, symbolFullName,
             symbolRuleAttributes));
     return deserializeMethod;

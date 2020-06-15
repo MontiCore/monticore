@@ -1,5 +1,7 @@
+// (c) https://github.com/MontiCore/monticore
+
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.types.typesymbols._symboltable;
+package de.monticore.types.basictypesymbols._symboltable;
 
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
@@ -12,7 +14,6 @@ import java.util.List;
 
 public class TypeVarSymbolDeSer extends TypeVarSymbolDeSerTOP {
 
-  @Override
   protected List<SymTypeExpression> deserializeSuperTypes(JsonObject symbolJson,
       ITypeSymbolsScope enclosingScope) {
     List<SymTypeExpression> result = new ArrayList<>();

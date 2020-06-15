@@ -109,7 +109,7 @@ MontiCore projects are hosted at
   (see Section *CD4Code*)
 
 
-### [Feature Diagrams](https://git.rwth-aachen.de/monticore/languages/feature-diagram) (Status: noch undefiniert)
+### [Feature Diagrams](https://git.rwth-aachen.de/monticore/languages/feature-diagram) (Beta: In Stabilization)
 * Caretaker: AB, DS
 * Language for feature models and feature configurations.
 * **Feature diagrams** are used to model (software) **product lines** and their **variants**.
@@ -123,7 +123,7 @@ MontiCore projects are hosted at
     OS -> iOS ^ Android;
     Screen -> Flexible | FullHD;
 
-    Camera => (iOS && External) || Android ;
+    Camera requires (iOS && External) || Android ;
   }
   ```
   Rules `F -> ...` have a parent feature (left-hand side) 
@@ -305,7 +305,8 @@ component InteriorLight {                           // MontiArc language
     * [DateLiterals](https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/lang/DateLiterals.mc4)
 * [*Detailed description*](https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/lang/ODBasics.md) 
 
-### [Sequence Diagrams](https://git.rwth-aachen.de/monticore/statechart/sd-language)  (Beta: In Stabilization) )(50% to MC6)
+
+### [Sequence Diagrams](https://git.rwth-aachen.de/monticore/statechart/sd-language)  (MontiCore stable) 
 * Caretaker: RE
 * Grammar to parse Sequence Diagrams
 * Can be used with testing generator to derive test cases
@@ -339,7 +340,7 @@ component InteriorLight {                           // MontiArc language
     *           (other alternatives are possible; SI has not standardized anything here)
 * Example projects:
     * [SI Java](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/test/grammars/de/monticore/lang/testsijava/TestSIJava.mc4) 
-* [*detailed description*](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/siunits/SIUnits.md)  
+* [*detailed description*](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/SIUnits.md)  
 
 
 ### [Statecharts](https://git.rwth-aachen.de/monticore/statechart/sc-language) (Beta: In Stabilization) (90% to MC6)
@@ -481,7 +482,12 @@ package 'Coffee' {                      // a SysML activity diagram
   does not provide class or interface definitions and
   also no wildcards in the type system.
 * One main usage of JavaLight is in the Grammar-language to model e.g. 
-  Java methods. 
+  Java methods. An example:
+  ```
+  public void print(String name) {
+    System.out.println("Hello " + name);
+  }
+  ```
 * [Main grammar `de.monticore.JavaLight`]((https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/JavaLight.mc4)
   and 
   [*detailed description*](https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/monticore-grammar/src/main/grammars/de/monticore/JavaLight.md).
