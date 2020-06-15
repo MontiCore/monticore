@@ -91,7 +91,7 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
     List<ASTCDAttribute> symbolNameAttributes = Lists.newArrayList();
     List<ASTCDMethod> symbolNameMethods = Lists.newArrayList();
     if (hasInheritedSymbol) {
-      symbolMethods.addAll(createEnclosingScopeMethods(scopeInterface));
+      symbolMethods.addAll(createOverridingSymbolMethods(symbolInput.getName(), scopeInterface));
     } else {
       symbolAttributes = createSymbolAttributes(symbolInput.getName(), scopeInterface);
       symbolNameAttributes = createSymbolNameAttributes();
@@ -155,7 +155,7 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
     return symbolClass;
   }
 
-  protected List<ASTCDMethod> createEnclosingScopeMethods(String scopeInterface) {
+  protected List<ASTCDMethod> createOverridingSymbolMethods(String astClassName, String scopeInterface) {
     List<ASTCDMethod> methods = Lists.newArrayList();
     // getEnclosingScope
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createQualifiedType(scopeInterface), "getEnclosingScope");
@@ -170,6 +170,11 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
     this.replaceTemplate(EMPTY_BODY,method, new StringHookPoint("enclosingScope = scope;"));
     methods.add(method);
 
+    // getASTNode
+    ASTMCQualifiedType retType = getMCTypeFacade().createQualifiedType(symbolTableService.getASTPackage() + "." + AST_PREFIX + astClassName);
+    method = getCDMethodFacade().createMethod(PUBLIC, retType, "getASTNode");
+    this.replaceTemplate(EMPTY_BODY,method, new StringHookPoint("return getASTNode();"));
+    methods.add(method);
     return methods;
   }
 
