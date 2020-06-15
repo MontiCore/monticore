@@ -31,7 +31,7 @@ component grammar Completeness {
      [complete:"(c)"]
           // separate brackets to avoid
           // lexer-symbol clash
-     | ("(" [incomplete:"..."] {noSpace()}? ")" {noSpace()}?)
+     | {noSpace(2,3)}? "(" [incomplete:"..."] ")" 
      | [incomplete:"(...,...)"]
      | [complete:"(c,c)"]
      | [rightComplete:"(...,c)"]

@@ -8,7 +8,7 @@ package de.monticore;
  * Grammar for common elements of the UML/P-Language-Family
  * 
  * This grammars defines Stereotypes like 
-     <<val1,val2="text",...>>
+ *   <<val1,val2="text",...>>
  * Values may only be of type String.
  * The real value unfortunately in UML is only encoded as String.
  * 
@@ -75,7 +75,7 @@ component grammar UMLStereotype extends de.monticore.literals.MCCommonLiterals {
         @attribute values List of Values of this Stereotype
     */
     Stereotype =
-         "<<" value:(StereoValue || ",")+ ">" ">" {noSpace()}? ;
+         {noSpace(2)}? "<" "<" value:(StereoValue || ",")+ {noSpace(2)}? ">" ">" ;
         // It is not possible to define ">>" in one string.
         // Parsing generic types like "List<List<String>>"
         // is then not working.
