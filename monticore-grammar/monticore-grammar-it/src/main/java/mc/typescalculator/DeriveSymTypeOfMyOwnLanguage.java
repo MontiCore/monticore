@@ -2,6 +2,7 @@
 package mc.typescalculator;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.literals.mccommonliterals._ast.ASTSignedLiteral;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.types.check.*;
 import mc.typescalculator.myownlanguage._visitor.MyOwnLanguageDelegatorVisitor;
@@ -34,6 +35,12 @@ public class DeriveSymTypeOfMyOwnLanguage
   }
 
   @Override
+  public Optional<SymTypeExpression> calculateType(ASTSignedLiteral lit) {
+    lit.accept(realThis);
+    return Optional.of(typeCheckResult.getLast());
+  }
+
+  @Override
   public void init() {
     typeCheckResult = new TypeCheckResult();
     DeriveSymTypeOfCommonExpressions ce = new DeriveSymTypeOfCommonExpressions();
@@ -46,7 +53,7 @@ public class DeriveSymTypeOfMyOwnLanguage
     moeg.setTypeCheckResult(typeCheckResult);
     setMyOwnExpressionGrammarVisitor(moeg);
     DeriveSymTypeOfMCCommonLiterals cl = new DeriveSymTypeOfMCCommonLiterals();
-    cl.setResult(typeCheckResult);
+    cl.setTypeCheckResult(typeCheckResult);
     setMCCommonLiteralsVisitor(cl);
   }
 }

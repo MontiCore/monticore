@@ -2,7 +2,9 @@
 package de.monticore.types.check;
 
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
+import de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisScope;
 import de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisVisitor;
+import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -12,6 +14,15 @@ import de.se_rwth.commons.logging.Log;
  *    literals/MCLiteralsBasis.mc4
  */
 public class DeriveSymTypeOfLiterals implements MCLiteralsBasisVisitor {
+
+  public ITypeSymbolsScope getScope (IMCLiteralsBasisScope mcLiteralsBasisScope){
+    // is accepted only here, decided on 07.04.2020
+    if(!(mcLiteralsBasisScope instanceof ITypeSymbolsScope)){
+      Log.error("0xA0309 the enclosing scope of the literal does not implement the interface ITypeSymbolsScope");
+    }
+    // is accepted only here, decided on 07.04.2020
+    return (ITypeSymbolsScope) mcLiteralsBasisScope;
+  }
   
   // ----------------------------------------------------------  realThis start
   // setRealThis, getRealThis are necessary to make the visitor compositional
@@ -38,7 +49,7 @@ public class DeriveSymTypeOfLiterals implements MCLiteralsBasisVisitor {
    */
   protected TypeCheckResult result;
   
-  public TypeCheckResult getResult() {
+  public TypeCheckResult getTypeCheckResult() {
     return result;
   }
   
@@ -60,7 +71,7 @@ public class DeriveSymTypeOfLiterals implements MCLiteralsBasisVisitor {
             + " Probably TypeCheck mis-configured.");
   }
 
-  public void setResult(TypeCheckResult result) {
+  public void setTypeCheckResult(TypeCheckResult result) {
     this.result = result;
   }
 }
