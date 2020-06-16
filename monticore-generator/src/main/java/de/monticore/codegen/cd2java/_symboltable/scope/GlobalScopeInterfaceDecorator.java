@@ -7,7 +7,6 @@ import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
-import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
@@ -64,20 +63,17 @@ public class GlobalScopeInterfaceDecorator
     return CD4AnalysisMill.cDInterfaceBuilder()
         .setName(globalScopeInterfaceName)
         .setModifier(PUBLIC.build())
-        .addAllInterfaces(getNonComponentSuperGrammars(input))
+        .addAllInterfaces(getSuperGlobalScopeInterfaces())
         .addAllCDMethods(createCalculateModelNameMethods(symbolClasses))
         .build();
   }
 
-  private List<ASTMCQualifiedType> getNonComponentSuperGrammars(ASTCDCompilationUnit input) {
+  private List<ASTMCQualifiedType> getSuperGlobalScopeInterfaces() {
     List<ASTMCQualifiedType> result = new ArrayList<>();
     for (CDDefinitionSymbol superGrammar : symbolTableService.getSuperCDsDirect()) {
-      if (superGrammar.isPresentAstNode() && superGrammar.getAstNode().isPresentModifier()) {
-//        ASTModifier modifier = superGrammar.getAstNode().getModifier();
-//        if (symbolTableService.hasComponentStereotype(modifier)) {
-        if (symbolTableService.hasStartProd(superGrammar.getAstNode())) {
-          result.add(symbolTableService.getGlobalScopeInterfaceType(superGrammar));
-        }
+      if (superGrammar.isPresentAstNode() && symbolTableService.hasStartProd(superGrammar.getAstNode())) {
+//      if (superGrammar.isPresentAstNode() && !symbolTableService.hasComponentStereotype(superGrammar.getAstNode())) {
+        result.add(symbolTableService.getGlobalScopeInterfaceType(superGrammar));
       }
     }
     if (result.isEmpty()) {

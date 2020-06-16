@@ -479,7 +479,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   /**
    * Computes a set of all symbol defining rules in a class diagram, stored as
    * their qualified names.
-   * 
+   *
    * @param cdSymbol The input symbol of a class diagram
    * @return The set of symbol names within the class diagram
    */
@@ -504,7 +504,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
 
   /**
    * Computes the MCQualifiedType of the symbol from its corresponding CD type.
-   * 
+   *
    * @param node The input ASTCDType. Either a class or interface
    * @return The qualified type of the symbol as MCQualifiedType
    */
@@ -692,7 +692,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
    * language interface. This check is supposed to be invoked when exactly one
    * interface is present. Otherwise, this method returns true as the CD is
    * assumed to have more interfaces, thus having at least one production.
-   * 
+   *
    * @param astcdDefinition The input cd which is checked for interfaces
    * @return True if the single interface matches the language interface name,
    *         false otherwise
@@ -706,14 +706,14 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     if (interfaceName.equals(getSimpleLanguageInterfaceName())) {
       return false;
     }
-    
+
     // check qualified interface name if symbol is available
     if (astcdDefinition.isPresentSymbol()) {
       CDDefinitionSymbol sym = astcdDefinition.getSymbol();
       String qualifiedName = getASTPackage(sym) + "." + AST_PREFIX + sym.getName() + NODE_SUFFIX;
       return !(interfaceName.equals(qualifiedName));
     }
-    
+
     // per default, we assume that productions are available
     return true;
   }
@@ -790,6 +790,11 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
       }
     }
     return false;
+  }
+
+  public boolean hasComponentStereotype(ASTCDDefinition astcdDefinition) {
+    return astcdDefinition.isPresentModifier() &&
+        hasComponentStereotype(astcdDefinition.getModifier());
   }
 
   public boolean hasInheritedSymbolStereotype(ASTModifier modifier) {

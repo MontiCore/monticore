@@ -135,7 +135,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     //if grammar is not a component grammar, a parser is present and MontiCore offers a second constructor
     if(symbolTableService.getCDSymbol().isPresentAstNode()){
       ASTCDDefinition ast = symbolTableService.getCDSymbol().getAstNode();
-      if(!(ast.isPresentModifier() && symbolTableService.hasComponentStereotype(ast.getModifier()))){
+      if(!symbolTableService.hasComponentStereotype(ast)){
         constructors.add(createMLConstructor(globalScopeClassName));
       }
     }
