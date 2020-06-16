@@ -13,9 +13,8 @@ import java.util.stream.Collectors;
 
 public class CompositeGlobalScope extends CompositeGlobalScopeTOP{
 
-  public CompositeGlobalScope(ModelPath modelPath,
-      CompositeLanguage language) {
-    super(modelPath, language);
+  public CompositeGlobalScope(ModelPath modelPath) {
+    super(modelPath, "host");
   }
 
   @Override public List<ContentSymbol> resolveAdaptedContent(boolean foundSymbols,
