@@ -19,7 +19,6 @@ public class JavaAndAutTool {
     ASTAutomaton ast = parseAut(model);
     Automata6GlobalScope globalScope = Automata6Mill.automata6GlobalScopeBuilder()
         .setModelPath(modelPath)
-        .setAutomata6Language(new Automata6Language()) //will be removed soon
         .build();
     globalScope.addAdaptedStimulusSymbolResolvingDelegate(new AutomataResolvingDelegate(modelPath));
 

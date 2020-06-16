@@ -38,7 +38,6 @@ public class SymTabTest {
     ASTCompilationUnit ast = parse(model);
     JavaAutGlobalScope globalScope = JavaAutMill.javaAutGlobalScopeBuilder()
         .setModelPath(new ModelPath())
-        .setJavaAutLanguage(new JavaAutLanguage()) //will be removed soon
         .build();
 
     //initialize symbol table creators
