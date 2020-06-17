@@ -77,28 +77,6 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
     return getUnaryNumericPromotionType(innerResult);
   }
 
-  @Override
-  public void traverse(ASTPlusPrefixExpression expr) {
-    SymTypeExpression innerResult = acceptThisAndReturnSymTypeExpression(expr.getExpression());
-    Optional<SymTypeExpression> wholeResult = calculatePlusPrefixExpression(expr, innerResult);
-    storeResultOrLogError(wholeResult, expr, "0xA0174");
-  }
-
-  protected Optional<SymTypeExpression> calculatePlusPrefixExpression(ASTPlusPrefixExpression expr, SymTypeExpression innerResult) {
-    return getUnaryNumericPromotionType(innerResult);
-  }
-
-  @Override
-  public void traverse(ASTMinusPrefixExpression expr) {
-    SymTypeExpression innerResult = acceptThisAndReturnSymTypeExpression(expr.getExpression());
-    Optional<SymTypeExpression> wholeResult = calculateMinusPrefixExpression(expr, innerResult);
-    storeResultOrLogError(wholeResult, expr, "0xA0175");
-  }
-
-  protected Optional<SymTypeExpression> calculateMinusPrefixExpression(ASTMinusPrefixExpression expr, SymTypeExpression innerResult) {
-    return getUnaryNumericPromotionType(innerResult);
-  }
-
   protected void calculatePlusAssignment(ASTAssignmentExpression expr) {
     Optional<SymTypeExpression> wholeResult = calculateTypeArithmeticWithString(expr, expr.getLeft(), expr.getRight());
     storeResultOrLogError(wholeResult, expr, "0xA0176");
@@ -316,16 +294,4 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
     return wholeResult;
   }
 
-  /**
-   * helper method for the calculation of the ASTBooleanNotExpression
-   */
-  protected Optional<SymTypeExpression> getUnaryNumericPromotionType(SymTypeExpression type) {
-    if (isByte(type) || isShort(type) || isChar(type) || isInt(type)) {
-      return Optional.of(SymTypeExpressionFactory.createTypeConstant("int"));
-    }
-    if (isLong(type) || isDouble(type) || isFloat(type)) {
-      return Optional.of(SymTypeExpressionFactory.createTypeConstant(unbox(type.print())));
-    }
-    return Optional.empty();
-  }
 }

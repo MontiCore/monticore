@@ -6,7 +6,9 @@ import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisi
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.prettyprint.CommonExpressionsPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.types.typesymbols._symboltable.*;
+import de.monticore.types.typesymbols._symboltable.FieldSymbol;
+import de.monticore.types.typesymbols._symboltable.MethodSymbol;
+import de.monticore.types.typesymbols._symboltable.OOTypeSymbol;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -38,6 +40,29 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
   public DeriveSymTypeOfCommonExpressions() {
     realThis = this;
   }
+
+  @Override
+  public void traverse(ASTPlusPrefixExpression expr) {
+    SymTypeExpression innerResult = acceptThisAndReturnSymTypeExpression(expr.getExpression());
+    Optional<SymTypeExpression> wholeResult = calculatePlusPrefixExpression(expr, innerResult);
+    storeResultOrLogError(wholeResult, expr, "0xA0174");
+  }
+
+  protected Optional<SymTypeExpression> calculatePlusPrefixExpression(ASTPlusPrefixExpression expr, SymTypeExpression innerResult) {
+    return getUnaryNumericPromotionType(innerResult);
+  }
+
+  @Override
+  public void traverse(ASTMinusPrefixExpression expr) {
+    SymTypeExpression innerResult = acceptThisAndReturnSymTypeExpression(expr.getExpression());
+    Optional<SymTypeExpression> wholeResult = calculateMinusPrefixExpression(expr, innerResult);
+    storeResultOrLogError(wholeResult, expr, "0xA0175");
+  }
+
+  protected Optional<SymTypeExpression> calculateMinusPrefixExpression(ASTMinusPrefixExpression expr, SymTypeExpression innerResult) {
+    return getUnaryNumericPromotionType(innerResult);
+  }
+
 
   /**
    * We use traverse to collect the results of the two parts of the expression and calculate the result for the whole expression
