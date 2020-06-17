@@ -4,6 +4,7 @@ package de.monticore.codegen.parser;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
@@ -150,23 +151,8 @@ public class ParserGeneratorHelper {
    */
   public String getLexSymbolName(String constName) {
     Log.errorIfNull(constName);
-    if (grammarInfo.getTokenRules().contains(constName)) {
-      // Split the token
-      StringBuilder sb = new StringBuilder();
-      String sep = "";
-      sb.append("({noSpace(");
-      for (int i = 2; i<=constName.length(); i++) {
-        sb.append(sep);
-        sep = ", ";
-        sb.append(i);
-      }
-      sb.append(")}?");
-      for (char c: constName.toCharArray()) {
-        sb.append(grammarInfo.getLexNamer().getLexName(grammarSymbol, String.valueOf(c)));
-        sb.append(" ");
-      }
-      sb.append(")");
-      return sb.toString();
+    if (grammarInfo.getSplitRules().containsKey(constName)) {
+      return grammarInfo.getSplitRules().get(constName);
     } else {
       return grammarInfo.getLexNamer().getLexName(grammarSymbol, constName);
     }
@@ -180,6 +166,36 @@ public class ParserGeneratorHelper {
    */
   public Set<String> getLexSymbolsWithInherited() {
     return grammarInfo.getLexNamer().getLexnames();
+  }
+
+  /**
+   * Get all splitted LexSymbols
+   *
+   * @return list of rules for all splitted LexSymbols
+   */
+  public List<String> getSplitLexSymbolsWithInherited() {
+    List<String> retList = Lists.newArrayList();
+    for (Entry<String, String> e: grammarInfo.getSplitRules().entrySet()) {
+      StringBuilder sb = new StringBuilder();
+      sb.append(e.getValue());
+      sb.append(" : ");
+      // Split the token
+      String sep = "";
+      sb.append("{noSpace(");
+      for (int i = 2; i <= e.getKey().length(); i++) {
+        sb.append(sep);
+        sep = ", ";
+        sb.append(i);
+      }
+      sb.append(")}? ");
+      for (char c : e.getKey().toCharArray()) {
+        sb.append(grammarInfo.getLexNamer().getLexName(grammarSymbol, String.valueOf(c)));
+        sb.append(" ");
+      }
+      sb.append(";");
+      retList.add(sb.toString());
+    }
+    return retList;
   }
 
   /**

@@ -6,6 +6,6 @@ grammar A4062b {
 
   A = "-";
 
-  split_token "-";
+  splittoken "-";
 
 }

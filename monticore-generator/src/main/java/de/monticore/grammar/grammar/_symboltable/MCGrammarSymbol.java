@@ -134,7 +134,7 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
         ret.addAll(superGrammarRef.getLoadedSymbol().getTokenRulesWithInherited());
       }
     }
-    forEachTokenRules(t -> ret.add(t));
+    forEachSplitRules(t -> ret.add(t));
     return ret;
   }
 

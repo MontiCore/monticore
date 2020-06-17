@@ -62,11 +62,11 @@ public class MCGrammarInfo {
    */
   private LexNamer lexNamer = new LexNamer();
 
-  public List<String> getTokenRules() {
-    return tokenRules;
+  public Map<String, String> getSplitRules() {
+    return splitRules;
   }
 
-  private List<String> tokenRules;
+  private Map<String, String> splitRules;
   
   /**
    * The symbol of the processed grammar
@@ -77,12 +77,23 @@ public class MCGrammarInfo {
     this.grammarSymbol = grammarSymbol;
     buildLexPatterns();
     findAllKeywords();
-    tokenRules = grammarSymbol.getTokenRulesWithInherited();
+    buildSplitRules();
     addSubRules();
     addHWAntlrCode();
     addLeftRecursiveRules();
   }
-  
+
+  private void buildSplitRules() {
+    splitRules = Maps.newHashMap();
+    for (String s:grammarSymbol.getTokenRulesWithInherited()) {
+      String name = "";
+      for (char c:s.toCharArray()) {
+        name += getLexNamer().getConstantName(String.valueOf(c));
+      }
+      splitRules.put(s, name.toLowerCase());
+    }
+  }
+
   // ------------- Handling of the antlr concept -----------------------------
   
   /**

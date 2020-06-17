@@ -69,7 +69,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
          |
            StartRule
          |
-           TokenRule
+           SplitRule
          )*
       "}" ;
 
@@ -81,7 +81,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
  
   symbolrule MCGrammar =
     isComponent:boolean
-    tokenRules:String*;
+    splitRules:String*;
 
 
   /**
@@ -625,8 +625,8 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
   LexOption =
     "options" "{" iD:Name "=" value:Name ";" "}";
 
-  TokenRule =
-    "split_token" String ";";
+  SplitRule =
+    "splittoken" (String || ",")+ ";";
 
   // --------------------------------------------------------------------
   // Symbol Table

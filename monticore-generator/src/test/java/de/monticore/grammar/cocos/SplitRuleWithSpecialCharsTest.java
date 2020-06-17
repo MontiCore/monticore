@@ -7,7 +7,7 @@ import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class TokenRuleWithSpecialCharsTest extends CocoTest {
+public class SplitRuleWithSpecialCharsTest extends CocoTest {
 
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
   private final String grammar = "cocos.invalid.A4062.A4062";
@@ -15,19 +15,19 @@ public class TokenRuleWithSpecialCharsTest extends CocoTest {
   @BeforeClass
   public static void disableFailQuick() {
     LogStub.enableFailQuick(false);
-    checker.addCoCo(new TokenRuleWithSpecialChars());
+    checker.addCoCo(new SplitRuleWithSpecialChars());
   }
 
   @Test
   public void testInvalid1() {
-    testInvalidGrammar(grammar+"a", TokenRuleWithSpecialChars.ERROR_CODE,
-            String.format(TokenRuleWithSpecialChars.ERROR_MSG_FORMAT, "b-"), checker);
+    testInvalidGrammar(grammar+"a", SplitRuleWithSpecialChars.ERROR_CODE,
+            String.format(SplitRuleWithSpecialChars.ERROR_MSG_FORMAT, "b-"), checker);
   }
 
   @Test
   public void testInvalid2() {
-    testInvalidGrammar(grammar+"b", TokenRuleWithSpecialChars.ERROR_CODE,
-            String.format(TokenRuleWithSpecialChars.ERROR_MSG_FORMAT, "-"), checker);
+    testInvalidGrammar(grammar+"b", SplitRuleWithSpecialChars.ERROR_CODE,
+            String.format(SplitRuleWithSpecialChars.ERROR_MSG_FORMAT, "-"), checker);
   }
 
   @Test

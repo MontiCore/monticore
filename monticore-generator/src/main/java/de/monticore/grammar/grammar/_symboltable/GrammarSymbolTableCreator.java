@@ -45,9 +45,9 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
   }
 
   @Override
-  public void visit(ASTTokenRule ast) {
+  public void visit(ASTSplitRule ast) {
     super.visit(ast);
-    grammarSymbol.addTokenRule(ast.getString());
+    grammarSymbol.addAllSplitRules(ast.getStringList());
   }
 
   @Override

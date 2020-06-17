@@ -55,6 +55,6 @@ grammar Attributes  {
 
   Bla = token("::") Name;
 
-  split_token ":::";
+  splittoken ":::";
 
 }
