@@ -326,7 +326,8 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
       if (x.isPresentKeyConstant()) {
         addToCodeSection(createKeyPredicate(x.getKeyConstant().getStringList()));
       } else if (x.isPresentTokenConstant()) {
-        addToCodeSection(createTokenPredicate(x.getTokenConstant().getString()));
+        grammarInfo.addSplitRule(x.getTokenConstant().getString());
+        addToCodeSection(parserHelper.getLexSymbolName(x.getTokenConstant().getString()));
       } else if (!grammarInfo.isKeyword(x.getName(), grammarEntry)) {
         addToCodeSection(parserHelper.getLexSymbolName(x.getName()));
       } else {
@@ -555,17 +556,6 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     return rulename;
   }
 
-  private String createTokenPredicate(String str) {
-    String rulename = "";
-    String sep = " ";
-    for (char c: str.toCharArray()) {
-      rulename += "'" + c + "'";
-      rulename += sep;
-      sep = " {noSpace()}? ";
-    }
-    return rulename;
-  }
-
   @Override
   public void visit(ASTKeyTerminal ast) {
 
@@ -603,11 +593,9 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
 
     startCodeSection("ASTTokenTerminal " + ast.getName());
     addToCodeSection("(");
-    String rulename = createTokenPredicate(ast.getTokenConstant().getString());
+    grammarInfo.addSplitRule(ast.getTokenConstant().getString());
 
-    // No actions in predicates
-    // Template engine cannot be used for substition in rare cases
-    addToCodeSection(rulename); // + " %initaction% %actions% ) %iteration% ";
+    addToCodeSection(parserHelper.getLexSymbolName(ast.getTokenConstant().getString()));
 
     if (embeddedJavaCode) {
       boolean isAttribute = ast.isPresentUsageName();
