@@ -6,6 +6,7 @@ import de.monticore.io.paths.ModelPath;
 import javaandaut.Class2StimulusAdapter;
 import javaandaut.JavaAndAutTool;
 import org.junit.Test;
+import java.util.Optional;
 
 import java.nio.file.Paths;
 
