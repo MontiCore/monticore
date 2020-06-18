@@ -17,7 +17,6 @@ public class BasicJavaTool {
     ASTCompilationUnit ast = parse(model);
     BasicJavaGlobalScope globalScope = BasicJavaMill.basicJavaGlobalScopeBuilder()
         .setModelPath(modelPath)
-        .setBasicJavaLanguage(new BasicJavaLanguage()) //will be removed soon
         .build();
 
     //initialize symbol table creators

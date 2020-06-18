@@ -4,9 +4,7 @@ package javaandaut;
 
 import automata6._symboltable.*;
 import basicjava.BasicJavaMill;
-import basicjava._symboltable.BasicJavaGlobalScope;
-import basicjava._symboltable.BasicJavaLanguage;
-import basicjava._symboltable.ClassDeclarationSymbol;
+import basicjava._symboltable.*;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.modifiers.AccessModifier;
 
@@ -24,7 +22,6 @@ public class AutomataResolvingDelegate implements IStimulusSymbolResolvingDelega
     javaGS =   BasicJavaMill
         .basicJavaGlobalScopeBuilder()
         .setModelPath(mp) //hand over modelpath
-        .setBasicJavaLanguage(new BasicJavaLanguage()) //will be removed soon
         .build();
   }
 
