@@ -27,8 +27,12 @@ ${tc.includeArgs("parser.LexerMember", [antlrGenerator, parserHelper.getGrammarS
   </#list>
 </#list>
 
-<#list genHelper.getSplitLexSymbolsWithInherited() as prodForLex>
- ${prodForLex}
+<#list genHelper.getNoKeyordsWithInherited() as noKeyword>
+  ${noKeyword}
+</#list>
+
+<#list genHelper.getSplitLexSymbolsWithInherited() as splitSymbol>
+ ${splitSymbol}
 </#list>
  
 <#list genHelper.getLexSymbolsWithInherited() as lexSymbol>

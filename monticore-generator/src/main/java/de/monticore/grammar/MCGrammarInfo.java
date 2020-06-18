@@ -63,7 +63,9 @@ public class MCGrammarInfo {
   private LexNamer lexNamer = new LexNamer();
 
   private Map<String, String> splitRules = Maps.newHashMap();
-  
+
+  private List<String> keywordRules = Lists.newArrayList();
+
   /**
    * The symbol of the processed grammar
    */
@@ -74,6 +76,7 @@ public class MCGrammarInfo {
     buildLexPatterns();
     findAllKeywords();
     grammarSymbol.getTokenRulesWithInherited().forEach(t -> addSplitRule(t));
+    grammarSymbol.getKeywordRulesWithInherited().forEach(k -> keywordRules.add(k));
     addSubRules();
     addHWAntlrCode();
     addLeftRecursiveRules();
@@ -89,6 +92,10 @@ public class MCGrammarInfo {
 
   public Map<String, String> getSplitRules() {
     return splitRules;
+  }
+
+  public List<String> getKeywordRules() {
+    return keywordRules;
   }
 
   // ------------- Handling of the antlr concept -----------------------------

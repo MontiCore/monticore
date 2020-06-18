@@ -70,6 +70,8 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
            StartRule
          |
            SplitRule
+         |
+           KeywordRule
          )*
       "}" ;
 
@@ -81,7 +83,8 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
  
   symbolrule MCGrammar =
     isComponent:boolean
-    splitRules:String*;
+    splitRules:String*
+    noKeywords:String*;
 
 
   /**
@@ -627,6 +630,9 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
 
   SplitRule =
     "splittoken" (String || ",")+ ";";
+
+  KeywordRule =
+    "nokeyword" (String || ",")+ ";";
 
   // --------------------------------------------------------------------
   // Symbol Table

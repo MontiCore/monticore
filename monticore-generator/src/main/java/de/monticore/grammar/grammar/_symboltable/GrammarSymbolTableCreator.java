@@ -51,6 +51,12 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
   }
 
   @Override
+  public void visit(ASTKeywordRule ast) {
+    super.visit(ast);
+    grammarSymbol.addAllNoKeywords(ast.getStringList());
+  }
+
+  @Override
   public void initialize_MCGrammar(MCGrammarSymbol symbol, ASTMCGrammar astGrammar) {
     this.astGrammar = astGrammar;
     this.grammarSymbol = symbol;

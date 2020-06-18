@@ -138,6 +138,20 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
     return ret;
   }
 
+  public List<String> getKeywordRulesWithInherited() {
+    final List<String> ret = Lists.newArrayList();
+
+    for (int i = superGrammars.size() - 1; i >= 0; i--) {
+      final MCGrammarSymbolLoader superGrammarRef = superGrammars.get(i);
+
+      if (superGrammarRef.isSymbolLoaded()) {
+        ret.addAll(superGrammarRef.getLoadedSymbol().getKeywordRulesWithInherited());
+      }
+    }
+    forEachNoKeywords(t -> ret.add(t));
+    return ret;
+  }
+
   public Optional<ASTMCGrammar> getAstGrammar() {
     return this.astNode;
   }

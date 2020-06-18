@@ -7,27 +7,21 @@ import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class SplitRuleWithSpecialCharsTest extends CocoTest {
+public class KeywordRuleInvalidTest extends CocoTest {
 
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
-  private final String grammar = "cocos.invalid.A4062.A4062";
+  private final String grammar = "cocos.invalid.A4064.A4064";
 
   @BeforeClass
   public static void disableFailQuick() {
     LogStub.enableFailQuick(false);
-    checker.addCoCo(new SplitRuleWithSpecialChars());
+    checker.addCoCo(new KeywordRuleInvalid());
   }
 
   @Test
   public void testInvalid1() {
-    testInvalidGrammar(grammar+"a", SplitRuleWithSpecialChars.ERROR_CODE,
-            String.format(SplitRuleWithSpecialChars.ERROR_MSG_FORMAT, "b-"), checker);
-  }
-
-  @Test
-  public void testInvalid2() {
-    testInvalidGrammar(grammar+"b", SplitRuleWithSpecialChars.ERROR_CODE,
-            String.format(SplitRuleWithSpecialChars.ERROR_MSG_FORMAT, "-"), checker);
+    testInvalidGrammar(grammar, KeywordRuleInvalid.ERROR_CODE,
+            String.format(KeywordRuleInvalid.ERROR_MSG_FORMAT, "--"), checker);
   }
 
   @Test

@@ -44,6 +44,8 @@ public class ParserGeneratorHelper {
 
   public static final String RIGHTASSOC = "<assoc=right>";
 
+  public static final String NOKEYWORD = "_NOKEYWORD";
+
   private static Grammar_WithConceptsPrettyPrinter prettyPrinter;
 
   private ASTMCGrammar astGrammar;
@@ -194,6 +196,20 @@ public class ParserGeneratorHelper {
       }
       sb.append(";");
       retList.add(sb.toString());
+    }
+    return retList;
+  }
+
+  /**
+   * Get all keyords replaced by name
+   *
+   * @return list of keywords
+   */
+  public List<String> getNoKeyordsWithInherited() {
+    List<String> retList = Lists.newArrayList();
+    for (String s: grammarSymbol.getKeywordRulesWithInherited()) {
+      String r = s + NOKEYWORD + " : {next(\"" + s + "\")}? Name;";
+      retList.add(r);
     }
     return retList;
   }

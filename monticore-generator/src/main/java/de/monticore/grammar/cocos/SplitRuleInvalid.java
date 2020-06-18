@@ -7,7 +7,7 @@ import de.monticore.grammar.grammar._cocos.GrammarASTSplitRuleCoCo;
 import de.se_rwth.commons.logging.Log;
 
 
-public class SplitRuleWithSpecialChars implements GrammarASTSplitRuleCoCo {
+public class SplitRuleInvalid implements GrammarASTSplitRuleCoCo {
 
   public static final String ERROR_CODE = "0xA4062";
 

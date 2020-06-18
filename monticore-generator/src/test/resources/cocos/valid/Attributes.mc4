@@ -55,6 +55,10 @@ grammar Attributes  {
 
   Bla = token("::") Name;
 
+  Bla2 = key("unused") Name;
+
   splittoken ":::";
+
+  nokeyword "automaton";
 
 }
