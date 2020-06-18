@@ -172,16 +172,16 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
         .build();
 
     //if the grammar is not a component grammar
-    if (!symbolTableService.hasComponentStereotype(astCD.getCDDefinition())) {
+//    if (!symbolTableService.hasComponentStereotype(astCD.getCDDefinition())) {
+//    }
+
+    if (symbolTableService.hasStartProd(astCD.getCDDefinition())) {
       // symboltable creator delegator
       Optional<ASTCDClass> symbolTableCreatorDelegator = createSymbolTableCreatorDelegator(astCD);
       if (symbolTableCreatorDelegator.isPresent()) {
         symTabCD.addCDClass(symbolTableCreatorDelegator.get());
         symTabCD.addCDClass(createSymbolTableCreatorDelegatorBuilder(symbolTableCreatorDelegator.get()));
       }
-    }
-
-    if (symbolTableService.hasStartProd(astCD.getCDDefinition())) {
       // global scope
       ASTCDClass globalScopeClass = createGlobalScopeClass(astCD, symbolTablePackage);
       symTabCD.addCDClass(globalScopeClass);
