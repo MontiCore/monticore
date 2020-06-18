@@ -109,7 +109,7 @@ public class ModelLoaderDecoratorTest extends DecoratorTestCase {
     assertEquals(4, cdConstructor.sizeCDParameters());
     assertDeepEquals("de.monticore.modelloader.AstProvider<de.monticore.codegen.ast.automaton._ast.ASTAutomaton>", cdConstructor.getCDParameter(0).getMCType());
     assertEquals("astProvider", cdConstructor.getCDParameter(0).getName());
-    assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.AutomatonSymbolTableCreator", cdConstructor.getCDParameter(1).getMCType());
+    assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.AutomatonSymbolTableCreatorDelegator", cdConstructor.getCDParameter(1).getMCType());
     assertEquals("symbolTableCreator", cdConstructor.getCDParameter(1).getName());
     assertDeepEquals("String", cdConstructor.getCDParameter(2).getMCType());
     assertEquals("modelFileExtension", cdConstructor.getCDParameter(2).getName());
@@ -126,7 +126,7 @@ public class ModelLoaderDecoratorTest extends DecoratorTestCase {
   public void testSymbolTableCreatorAttribute() {
     ASTCDAttribute astcdAttribute = getAttributeBy("symbolTableCreator", modelLoaderClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
-    assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.AutomatonSymbolTableCreator", astcdAttribute.getMCType());
+    assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.AutomatonSymbolTableCreatorDelegator", astcdAttribute.getMCType());
   }
 
   @Test

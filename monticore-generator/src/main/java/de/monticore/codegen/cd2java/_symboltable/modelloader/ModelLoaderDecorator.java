@@ -48,7 +48,7 @@ public class ModelLoaderDecorator extends AbstractCreator<ASTCDCompilationUnit, 
       String astFullName = startProdAstFullName.get();
       String modelLoaderClassName = symbolTableService.getModelLoaderClassSimpleName();
       String globalScopeName = symbolTableService.getGlobalScopeFullName();
-      String stcName = symbolTableService.getSymbolTableCreatorFullName();
+      String stcName = symbolTableService.getSymbolTableCreatorDelegatorFullName();
 
       ASTMCGenericType iModelLoader = getMCTypeFacade().createBasicGenericTypeOf(
           I_MODEL_LOADER, astFullName, globalScopeName);
