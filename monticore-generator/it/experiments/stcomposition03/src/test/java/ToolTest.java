@@ -8,7 +8,6 @@ import javaandaut.JavaAndAutTool;
 import org.junit.Test;
 
 import java.nio.file.Paths;
-import java.util.Optional;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;

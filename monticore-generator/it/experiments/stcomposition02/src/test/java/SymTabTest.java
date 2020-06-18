@@ -11,7 +11,6 @@ import org.antlr.v4.runtime.RecognitionException;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.Optional;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
