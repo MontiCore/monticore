@@ -19,10 +19,7 @@ public class AutomataResolvingDelegate implements IStimulusSymbolResolvingDelega
   BasicJavaGlobalScope javaGS;
 
   public AutomataResolvingDelegate(ModelPath mp){
-    javaGS =   BasicJavaMill
-        .basicJavaGlobalScopeBuilder()
-        .setModelPath(mp) //hand over modelpath
-        .build();
+    javaGS =   new BasicJavaGlobalScope(mp, "javamodel");
   }
 
 
