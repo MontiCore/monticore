@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.builtInTypes;
 
-import de.monticore.antlr4.MCConcreteParser;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.types.typesymbols.TypeSymbolsMill;
 import de.monticore.types.typesymbols._symboltable.*;
@@ -23,12 +22,6 @@ public class BuiltInJavaTypesTest {
     LogStub.init();
     gs = TypeSymbolsMill
         .typeSymbolsGlobalScopeBuilder()
-        .setTypeSymbolsLanguage(new TypeSymbolsLanguage("TypeSymbols","ts") {
-          @Override
-          public MCConcreteParser getParser() {
-            return null;
-          }
-        })
         .setModelPath(new ModelPath())
         .build();
     gs.addAdaptedOOTypeSymbolResolvingDelegate(new BuiltInJavaTypeSymbolResolvingDelegate());
