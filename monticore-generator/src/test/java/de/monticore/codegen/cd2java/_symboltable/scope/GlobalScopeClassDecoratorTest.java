@@ -103,13 +103,13 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testConstructorCount() {
-    assertEquals(2, scopeClass.sizeCDConstructors());
+    assertEquals(1, scopeClass.sizeCDConstructors());
   }
 
   @Test
   public void testConstructors() {
     // this(modelPath, modelFileExtension)
-    ASTCDConstructor cdConstructor = scopeClass.getCDConstructor(1);
+    ASTCDConstructor cdConstructor = scopeClass.getCDConstructor(0);
     assertDeepEquals(PUBLIC, cdConstructor.getModifier());
     assertEquals("AutomatonGlobalScope", cdConstructor.getName());
 
@@ -121,22 +121,11 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
     assertEquals("modelFileExtension", cdConstructor.getCDParameter(1).getName());
 
     assertTrue(cdConstructor.isEmptyExceptions());
-
-    // this(modelPath)
-    cdConstructor = scopeClass.getCDConstructor(0);
-    assertDeepEquals(PUBLIC, cdConstructor.getModifier());
-    assertEquals("AutomatonGlobalScope", cdConstructor.getName());
-
-    assertEquals(1, cdConstructor.sizeCDParameters());
-    assertDeepEquals(MODEL_PATH, cdConstructor.getCDParameter(0).getMCType());
-    assertEquals("modelPath", cdConstructor.getCDParameter(0).getName());
-
-    assertTrue(cdConstructor.isEmptyExceptions());
   }
 
   @Test
   public void testAttributeSize() {
-    assertEquals(6, scopeClass.sizeCDAttributes());
+    assertEquals(7, scopeClass.sizeCDAttributes());
   }
 
   @Test
@@ -151,6 +140,13 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute astcdAttribute = getAttributeBy("modelLoader", scopeClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertDeepEquals("Optional<AutomatonModelLoader>", astcdAttribute.getMCType());
+  }
+
+  @Test
+  public void testFileExtensionAttribute() {
+    ASTCDAttribute astcdAttribute = getAttributeBy("modelFileExtension", scopeClass);
+    assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
+    assertDeepEquals("String", astcdAttribute.getMCType());
   }
 
   @Test
@@ -268,7 +264,7 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(130, scopeClass.getCDMethodList().size());
+    assertEquals(134, scopeClass.getCDMethodList().size());
   }
 
   @Test

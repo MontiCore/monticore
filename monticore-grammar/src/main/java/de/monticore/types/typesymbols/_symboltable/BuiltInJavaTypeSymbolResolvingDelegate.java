@@ -27,7 +27,7 @@ public class BuiltInJavaTypeSymbolResolvingDelegate implements IOOTypeSymbolReso
   protected static TypeSymbolsGlobalScope gs = initScope();
 
   protected static TypeSymbolsGlobalScope initScope() {
-    gs = new TypeSymbolsGlobalScope(new ModelPath());
+    gs = new TypeSymbolsGlobalScope(new ModelPath(), "ts");
     //package java.lang
     TypeSymbolsArtifactScope javalang = new TypeSymbolsArtifactScope("java.lang",
         new ArrayList<>());

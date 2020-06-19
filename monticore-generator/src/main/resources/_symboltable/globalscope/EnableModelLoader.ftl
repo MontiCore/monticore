@@ -1,6 +1,4 @@
 ${tc.signature("grammarName", "grammarPackage")}
-  this.modelPath = Log.errorIfNull(modelPath);
-
   de.monticore.modelloader.ParserBasedAstProvider astProvider =
   new de.monticore.modelloader.ParserBasedAstProvider(new ${grammarPackage}._parser.${grammarName}Parser(), "${grammarName}");
 
@@ -13,8 +11,8 @@ ${tc.signature("grammarName", "grammarPackage")}
   .${grammarName?uncap_first}ModelLoaderBuilder()
   .setAstProvider(astProvider)
   .setSymbolTableCreator(stc)
-  .setModelFileExtension(modelFileExtension)
-  .setSymbolFileExtension(modelFileExtension+"sym")
+  .setModelFileExtension(getModelFileExtension())
+  .setSymbolFileExtension(getModelFileExtension()+"sym")
   .build();
 
   this.modelLoader = Optional.ofNullable(ml);

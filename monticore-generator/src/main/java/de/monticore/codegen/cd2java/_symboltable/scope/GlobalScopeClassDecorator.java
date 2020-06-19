@@ -82,6 +82,11 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     List<ASTCDMethod> modelLoaderMethods = accessorDecorator.decorate(modelLoaderAttribute);
     modelLoaderMethods.addAll(mutatorDecorator.decorate(modelLoaderAttribute));
 
+    ASTCDAttribute fileExtensionAttribute = getCDAttributeFacade().createAttribute(PROTECTED,
+        getMCTypeFacade().createStringType(),  FILE_EXTENSION_VAR);
+    List<ASTCDMethod> fileExtensionMethods = accessorDecorator.decorate(fileExtensionAttribute);
+    fileExtensionMethods.addAll(mutatorDecorator.decorate(fileExtensionAttribute));
+
     Map<String, ASTCDAttribute> resolvingDelegateAttributes = createResolvingDelegateAttributes(symbolProds);
     resolvingDelegateAttributes.putAll(createResolvingDelegateSuperAttributes());
 
@@ -98,13 +103,17 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
         .setModifier(PUBLIC.build())
         .setSuperclass(scopeType)
         .addInterface(globalScopeInterface)
-        .addAllCDConstructors(createConstructors(globalScopeName))
+        .addCDConstructor(createConstructor(globalScopeName))
         .addCDAttribute(modelPathAttribute)
         .addAllCDMethods(modelPathMethods)
         .addCDAttribute(modelLoaderAttribute)
         .addAllCDMethods(modelLoaderMethods)
+        .addCDAttribute(fileExtensionAttribute)
+        .addAllCDMethods(fileExtensionMethods)
         .addCDAttribute(createModelName2ModelLoaderCacheAttribute(modelLoaderClassName))
         .addAllCDAttributes(resolvingDelegateAttributes.values())
+        .addCDMethod(createEnableModelLoader(globalScopeName))
+        .addCDMethod(createDisableModelLoader())
         .addCDMethod(createGetNameMethod(globalScopeName))
         .addCDMethod(createIsPresentNameMethod())
         .addCDMethod(createCacheMethod(definitionName))
@@ -123,35 +132,47 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
         .build();
   }
 
-  protected List<ASTCDConstructor> createConstructors(String globalScopeClassName) {
-    List<ASTCDConstructor> constructors = new ArrayList<>();
+  protected ASTCDConstructor createConstructor(String globalScopeClassName) {
+    StringBuilder sb = new StringBuilder();
+
     ASTMCType modelPathType = getMCTypeFacade().createQualifiedType(MODEL_PATH_TYPE);
     ASTCDParameter modelPathParameter = getCDParameterFacade().createParameter(modelPathType, MODEL_PATH_VAR);
-    ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), globalScopeClassName, modelPathParameter);
-    this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("this." + MODEL_PATH_VAR + " = Log.errorIfNull(" + MODEL_PATH_VAR + ");\n" +
-        "    this.modelLoader = Optional.empty();"));
-    constructors.add(constructor);
+    sb.append("this." + MODEL_PATH_VAR + " = Log.errorIfNull(" + MODEL_PATH_VAR + ");\n");
+
+    ASTCDParameter fileExtensionParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createStringType(), FILE_EXTENSION_VAR);
+    ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), globalScopeClassName, modelPathParameter, fileExtensionParameter);
+    sb.append("this." + FILE_EXTENSION_VAR + " = Log.errorIfNull(" + FILE_EXTENSION_VAR + ");\n");
 
     //if grammar is not a component grammar, a parser is present and MontiCore offers a second constructor
     if(symbolTableService.getCDSymbol().isPresentAstNode()){
       ASTCDDefinition ast = symbolTableService.getCDSymbol().getAstNode();
       if(!symbolTableService.hasComponentStereotype(ast)){
-        constructors.add(createMLConstructor(globalScopeClassName));
+        sb.append("this.enableModelLoader();");
       }
     }
-
-    return constructors;
+    this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint(sb.toString()));
+    return constructor;
   }
 
-  protected ASTCDConstructor createMLConstructor(String globalScopeClassName) {
-    ASTMCType modelPathType = getMCTypeFacade().createQualifiedType(MODEL_PATH_TYPE);
-    ASTCDParameter modelPathParameter = getCDParameterFacade().createParameter(modelPathType, MODEL_PATH_VAR);
-    ASTCDParameter fileExtensionParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createStringType(), "modelFileExtension");
-    ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), globalScopeClassName, modelPathParameter, fileExtensionParameter);
+  protected ASTCDMethod createEnableModelLoader(String globalScopeName) {
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), "enableModelLoader");
+      if(symbolTableService.hasComponentStereotype(symbolTableService.getCDSymbol().getAstNode())){
+        this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint(
+            "Log.error(\"0xA6102" + symbolTableService.getGeneratedErrorCode(globalScopeName)
+                + " Global scopes of component grammars do not have model loaders.\");"));
+      }
+      else{
+        this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH
+            + "EnableModelLoader", symbolTableService.getCDName(), symbolTableService.getQualifiedCDName().toLowerCase()));
+    }
+    return method;
+  }
 
-    this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint(TEMPLATE_PATH
-        + "ConstructorGlobalScope", symbolTableService.getCDName(), symbolTableService.getQualifiedCDName().toLowerCase()));
-    return constructor;
+  protected ASTCDMethod createDisableModelLoader() {
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), "disableModelLoader");
+    this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint(
+        "this."+MODEL_LOADER_VAR+" = Optional.empty();"));
+    return method;
   }
 
   protected ASTCDAttribute createModelPathAttribute() {

@@ -112,6 +112,8 @@ public class SymbolTableConstants {
 
   public static final String MODEL_PATH_VAR = "modelPath";
 
+  public static final String FILE_EXTENSION_VAR = "modelFileExtension";
+
   public static final String MODEL_LOADER_VAR = "modelLoader";
 
   public static final String FOUND_SYMBOLS_VAR = "foundSymbols";
