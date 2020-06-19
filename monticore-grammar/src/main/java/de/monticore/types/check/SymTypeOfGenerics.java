@@ -190,7 +190,9 @@ public class SymTypeOfGenerics extends SymTypeExpression {
    */
   @Override
   public SymTypeOfGenerics deepClone() {
-    return new SymTypeOfGenerics(new OOTypeSymbolLoader(typeSymbolLoader.getName(), typeSymbolLoader.getEnclosingScope()), getArgumentList());
+    OOTypeSymbolLoader loader = new OOTypeSymbolLoader(typeSymbolLoader.getName());
+    loader.setEnclosingScope(typeSymbolLoader.getEnclosingScope());
+    return new SymTypeOfGenerics(loader, getArgumentList());
   }
 
   @Override

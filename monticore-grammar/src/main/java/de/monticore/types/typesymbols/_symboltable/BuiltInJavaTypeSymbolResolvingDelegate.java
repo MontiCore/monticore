@@ -46,30 +46,64 @@ public class BuiltInJavaTypeSymbolResolvingDelegate implements IOOTypeSymbolReso
     //some SymTypeExpressions to use for methods and fields
 
     //java.lang
-    final SymTypeExpression objectSymType = SymTypeExpressionFactory.createTypeObject(new OOTypeSymbolLoader("Object",javalang));
-    final SymTypeExpression intWrapperSymType = SymTypeExpressionFactory.createTypeObject(new OOTypeSymbolLoader("Integer",javalang));
-    final SymTypeExpression doubleWrapperSymType = SymTypeExpressionFactory.createTypeObject(new OOTypeSymbolLoader("Double",javalang));
-    final SymTypeExpression floatWrapperSymType = SymTypeExpressionFactory.createTypeObject(new OOTypeSymbolLoader("Float",javalang));
-    final SymTypeExpression longWrapperSymType = SymTypeExpressionFactory.createTypeObject(new OOTypeSymbolLoader("Long",javalang));
-    final SymTypeExpression charWrapperSymType = SymTypeExpressionFactory.createTypeObject(new OOTypeSymbolLoader("Character",javalang));
-    final SymTypeExpression byteWrapperSymType = SymTypeExpressionFactory.createTypeObject(new OOTypeSymbolLoader("Byte",javalang));
-    final SymTypeExpression shortWrapperSymType = SymTypeExpressionFactory.createTypeObject(new OOTypeSymbolLoader("Short",javalang));
-    final SymTypeExpression booleanWrapperSymType = SymTypeExpressionFactory.createTypeObject(new OOTypeSymbolLoader("Boolean",javalang));
-    final SymTypeExpression stringSymType = SymTypeExpressionFactory.createTypeObject(new OOTypeSymbolLoader("String",javalang));
-    final SymTypeExpression numberSymType = SymTypeExpressionFactory.createTypeObject(new OOTypeSymbolLoader("Number",javalang));
+    OOTypeSymbolLoader loader = new OOTypeSymbolLoader("Object");
+    loader.setEnclosingScope(javalang);
+    final SymTypeExpression objectSymType = SymTypeExpressionFactory.createTypeObject(loader);
+    loader = new OOTypeSymbolLoader("Integer");
+    loader.setEnclosingScope(javalang);
+    final SymTypeExpression intWrapperSymType = SymTypeExpressionFactory.createTypeObject(loader);
+    loader = new OOTypeSymbolLoader("Double");
+    loader.setEnclosingScope(javalang);
+    final SymTypeExpression doubleWrapperSymType = SymTypeExpressionFactory.createTypeObject(loader);
+    loader = new OOTypeSymbolLoader("Float");
+    loader.setEnclosingScope(javalang);
+    final SymTypeExpression floatWrapperSymType = SymTypeExpressionFactory.createTypeObject(loader);
+    loader = new OOTypeSymbolLoader("Long");
+    loader.setEnclosingScope(javalang);
+    final SymTypeExpression longWrapperSymType = SymTypeExpressionFactory.createTypeObject(loader);
+    loader = new OOTypeSymbolLoader("Character");
+    loader.setEnclosingScope(javalang);
+    final SymTypeExpression charWrapperSymType = SymTypeExpressionFactory.createTypeObject(loader);
+    loader = new OOTypeSymbolLoader("Byte");
+    loader.setEnclosingScope(javalang);
+    final SymTypeExpression byteWrapperSymType = SymTypeExpressionFactory.createTypeObject(loader);
+    loader = new OOTypeSymbolLoader("Short");
+    loader.setEnclosingScope(javalang);
+    final SymTypeExpression shortWrapperSymType = SymTypeExpressionFactory.createTypeObject(loader);
+    loader = new OOTypeSymbolLoader("Boolean");
+    loader.setEnclosingScope(javalang);
+    final SymTypeExpression booleanWrapperSymType = SymTypeExpressionFactory.createTypeObject(loader);
+    loader = new OOTypeSymbolLoader("String");
+    loader.setEnclosingScope(javalang);
+    final SymTypeExpression stringSymType = SymTypeExpressionFactory.createTypeObject(loader);
+    loader = new OOTypeSymbolLoader("Number");
+    loader.setEnclosingScope(javalang);
+    final SymTypeExpression numberSymType = SymTypeExpressionFactory.createTypeObject(loader);
 
 
     //java.util
     //TypeSymbolLoader for the Generics -> enclosingScopes have to be set later on when the type symbol is created
-    OOTypeSymbolLoader eVarSymbolCollectionLoader = new OOTypeSymbolLoader("E",gs);
-    OOTypeSymbolLoader eVarSymbolListLoader = new OOTypeSymbolLoader("E",gs);
-    OOTypeSymbolLoader eVarSymbolSetLoader = new OOTypeSymbolLoader("E",gs);
-    OOTypeSymbolLoader tVarSymbolOptionalLoader = new OOTypeSymbolLoader("T",gs);
-    OOTypeSymbolLoader kVarSymbolMapLoader = new OOTypeSymbolLoader("K",gs);
-    OOTypeSymbolLoader vVarSymbolMapLoader = new OOTypeSymbolLoader("V",gs);
+    loader = new OOTypeSymbolLoader("E");
+    loader.setEnclosingScope(gs);
+    OOTypeSymbolLoader eVarSymbolCollectionLoader = loader;
+    OOTypeSymbolLoader eVarSymbolListLoader = loader;
+    OOTypeSymbolLoader eVarSymbolSetLoader = loader;
+    loader = new OOTypeSymbolLoader("T");
+    loader.setEnclosingScope(gs);
+    OOTypeSymbolLoader tVarSymbolOptionalLoader = loader;
+    loader = new OOTypeSymbolLoader("K");
+    loader.setEnclosingScope(gs);
+    OOTypeSymbolLoader kVarSymbolMapLoader = loader;
+    loader = new OOTypeSymbolLoader("V");
+    loader.setEnclosingScope(gs);
+    OOTypeSymbolLoader vVarSymbolMapLoader = loader;
 
-    SymTypeExpression optionalSymType = SymTypeExpressionFactory.createGenerics(new OOTypeSymbolLoader("Optional",javautil),SymTypeExpressionFactory.createTypeVariable(tVarSymbolOptionalLoader));
-    SymTypeExpression collectionSymType = SymTypeExpressionFactory.createGenerics(new OOTypeSymbolLoader("Collection",javautil),SymTypeExpressionFactory.createTypeVariable(eVarSymbolCollectionLoader));
+    loader = new OOTypeSymbolLoader("Optional");
+    loader.setEnclosingScope(javautil);
+    SymTypeExpression optionalSymType = SymTypeExpressionFactory.createGenerics(loader,SymTypeExpressionFactory.createTypeVariable(tVarSymbolOptionalLoader));
+    loader = new OOTypeSymbolLoader("Collection");
+    loader.setEnclosingScope(javautil);
+    SymTypeExpression collectionSymType = SymTypeExpressionFactory.createGenerics(loader,SymTypeExpressionFactory.createTypeVariable(eVarSymbolCollectionLoader));
 
     //primitives
     final SymTypeExpression intSymType = SymTypeExpressionFactory.createTypeConstant("int");

@@ -51,7 +51,9 @@ public class SymTypeOfObject extends SymTypeExpression {
 
   @Override
   public SymTypeOfObject deepClone() {
-    return  new SymTypeOfObject(new OOTypeSymbolLoader(typeSymbolLoader.getName(), typeSymbolLoader.getEnclosingScope()));
+    OOTypeSymbolLoader ooTypeSymbolLoader = new OOTypeSymbolLoader(typeSymbolLoader.getName());
+    ooTypeSymbolLoader.setEnclosingScope(typeSymbolLoader.getEnclosingScope());
+    return  new SymTypeOfObject(ooTypeSymbolLoader);
   }
 
   /**

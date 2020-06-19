@@ -326,7 +326,7 @@ public abstract class SymTypeExpression {
   protected OOTypeSymbolLoader typeSymbolLoader;
 
   public OOTypeSymbol getTypeInfo() {
-    return typeSymbolLoader.getLoadedSymbol();
+    return typeSymbolLoader.lazyLoadDelegate();
   }
 
   public List<OOTypeSymbol> getInnerTypeList(String name) {

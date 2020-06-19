@@ -15,7 +15,8 @@ public class PseudoTypeSymbolLoader extends OOTypeSymbolLoader {
   protected OOTypeSymbol pseudoSymbol;
 
   public PseudoTypeSymbolLoader(OOTypeSymbol pseudoSymbol) {
-    super(pseudoSymbol.getName(), pseudoSymbol.getEnclosingScope());
+    super(pseudoSymbol.getName());
+    setEnclosingScope(pseudoSymbol.getEnclosingScope());
     this.pseudoSymbol = pseudoSymbol;
   }
 
@@ -25,7 +26,7 @@ public class PseudoTypeSymbolLoader extends OOTypeSymbolLoader {
   }
 
   @Override
-  public OOTypeSymbol getLoadedSymbol() {
+  public OOTypeSymbol lazyLoadDelegate() {
     return pseudoSymbol;
   }
 }

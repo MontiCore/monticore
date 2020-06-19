@@ -64,7 +64,9 @@ public class SymTypeVariable extends SymTypeExpression {
 
   @Override
   public SymTypeVariable deepClone() {
-    return new SymTypeVariable(new OOTypeSymbolLoader(typeSymbolLoader.getName(), typeSymbolLoader.getEnclosingScope()));
+    OOTypeSymbolLoader loader = new OOTypeSymbolLoader(typeSymbolLoader.getName());
+    loader.setEnclosingScope(typeSymbolLoader.getEnclosingScope());
+    return new SymTypeVariable(loader);
   }
 
   @Override

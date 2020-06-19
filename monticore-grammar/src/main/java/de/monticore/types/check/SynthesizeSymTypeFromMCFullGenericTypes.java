@@ -61,7 +61,7 @@ public class SynthesizeSymTypeFromMCFullGenericTypes extends SynthesizeSymTypeFr
               + " Probably TypeCheck mis-configured.");
     }
     SymTypeExpression tex = SymTypeExpressionFactory.createTypeArray(
-            new OOTypeSymbolLoader(arrayType.printTypeWithoutBrackets(), getScope(arrayType.getEnclosingScope())),
+            arrayType.printTypeWithoutBrackets(), getScope(arrayType.getEnclosingScope()),
             arrayType.getDimensions(),
             typeCheckResult.getLast());
     typeCheckResult.setLast(tex);

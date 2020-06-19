@@ -312,7 +312,9 @@ public class DefsTypeBasic {
   
   public static void set_String() {
     _String = type("String");
-    _StringSymType = new SymTypeOfObject(new OOTypeSymbolLoader("String", createScopeWithString()));
+    OOTypeSymbolLoader loader = new OOTypeSymbolLoader("String");
+    loader.setEnclosingScope(createScopeWithString());
+    _StringSymType = new SymTypeOfObject(loader);
   }
 
   public static ITypeSymbolsScope createScopeWithString() {
@@ -387,7 +389,9 @@ public class DefsTypeBasic {
     // TODO RE: this function is very incomplete; ersetzen oder komplettieren
     
     completeFullnames(_Object);
-    _ObjectSymType = new SymTypeOfObject(new OOTypeSymbolLoader("Object", createScopeWithObject()));
+    OOTypeSymbolLoader loader = new OOTypeSymbolLoader("Object");
+    loader.setEnclosingScope(createScopeWithObject());
+    _ObjectSymType = new SymTypeOfObject(loader);
   }
 
   public static ITypeSymbolsScope createScopeWithObject() {
@@ -429,41 +433,58 @@ public class DefsTypeBasic {
     TypeSymbolsScope typeSymbolsScope = new TypeSymbolsScope();
     _int = type("int");
     typeSymbolsScope.add(_int);
-    _intSymType = new SymTypeConstant(new OOTypeSymbolLoader("int", typeSymbolsScope));
+    OOTypeSymbolLoader loader = new OOTypeSymbolLoader("int");
+    loader.setEnclosingScope(typeSymbolsScope);
+    _intSymType = new SymTypeConstant(loader);
     typeConstants.put("int", _intSymType);
 
     _boolean = type("boolean");
     typeSymbolsScope.add(_boolean);
-    _booleanSymType = new SymTypeConstant(new OOTypeSymbolLoader("boolean", typeSymbolsScope));
+    loader = new OOTypeSymbolLoader("boolean");
+    loader.setEnclosingScope(typeSymbolsScope);
+    _booleanSymType = new SymTypeConstant(loader);
     typeConstants.put("boolean", _booleanSymType);
 
     _char = type("char");
     typeSymbolsScope.add(_char);
-    _charSymType = new SymTypeConstant(new OOTypeSymbolLoader("char", typeSymbolsScope));
+    loader = new OOTypeSymbolLoader("char");
+    loader.setEnclosingScope(typeSymbolsScope);
+    _charSymType = new SymTypeConstant(loader);
     typeConstants.put("char", _charSymType);
 
     _double = type("double");
     typeSymbolsScope.add(_double);
-    _doubleSymType = new SymTypeConstant(new OOTypeSymbolLoader("double", typeSymbolsScope));
+    loader = new OOTypeSymbolLoader("double");
+    loader.setEnclosingScope(typeSymbolsScope);
+    _doubleSymType = new SymTypeConstant(loader);
     typeConstants.put("double", _doubleSymType);
+
     _float = type("float");
     typeSymbolsScope.add(_float);
-    _floatSymType = new SymTypeConstant(new OOTypeSymbolLoader("float", typeSymbolsScope));
+    loader = new OOTypeSymbolLoader("float");
+    loader.setEnclosingScope(typeSymbolsScope);
+    _floatSymType = new SymTypeConstant(loader);
     typeConstants.put("float", _floatSymType);
 
     _long = type("long");
     typeSymbolsScope.add(_long);
-    _longSymType = new SymTypeConstant(new OOTypeSymbolLoader("long", typeSymbolsScope));
+    loader = new OOTypeSymbolLoader("long");
+    loader.setEnclosingScope(typeSymbolsScope);
+    _longSymType = new SymTypeConstant(loader);
     typeConstants.put("long", _longSymType);
 
     _byte = type("byte");
     typeSymbolsScope.add(_byte);
-    _byteSymType = new SymTypeConstant(new OOTypeSymbolLoader("byte", typeSymbolsScope));
+    loader = new OOTypeSymbolLoader("byte");
+    loader.setEnclosingScope(typeSymbolsScope);
+    _byteSymType = new SymTypeConstant(loader);
     typeConstants.put("byte", _byteSymType);
 
     _short = type("short");
     typeSymbolsScope.add(_short);
-    _shortSymType = new SymTypeConstant(new OOTypeSymbolLoader("short", typeSymbolsScope));
+    loader = new OOTypeSymbolLoader("short");
+    loader.setEnclosingScope(typeSymbolsScope);
+    _shortSymType = new SymTypeConstant(loader);
     typeConstants.put("short", _shortSymType);
   }
   

@@ -25,7 +25,9 @@ public class SymTypeExpressionFactory {
    * createTypeVariable vor Variables
    */
   public static SymTypeVariable createTypeVariable(String name, ITypeSymbolsScope typeSymbol) {
-    return new SymTypeVariable(new OOTypeSymbolLoader(name, typeSymbol));
+    OOTypeSymbolLoader loader = new OOTypeSymbolLoader(name);
+    loader.setEnclosingScope(typeSymbol);
+    return new SymTypeVariable(loader);
   }
 
   public static SymTypeVariable createTypeVariable(OOTypeSymbolLoader typeSymbolLoader) {
@@ -55,7 +57,9 @@ public class SymTypeExpressionFactory {
    * for ObjectTypes, as e.g. "Person"
    */
   public static SymTypeOfObject createTypeObject(String name, ITypeSymbolsScope enclosingScope) {
-    return new SymTypeOfObject(new OOTypeSymbolLoader(name, enclosingScope));
+    OOTypeSymbolLoader loader = new OOTypeSymbolLoader(name);
+    loader.setEnclosingScope(enclosingScope);
+    return new SymTypeOfObject(loader);
   }
 
   /**
@@ -89,7 +93,9 @@ public class SymTypeExpressionFactory {
 
   public static SymTypeArray createTypeArray(String name, ITypeSymbolsScope typeSymbolsScope,
       int dim, SymTypeExpression argument) {
-    return new SymTypeArray(new OOTypeSymbolLoader(name, typeSymbolsScope), dim, argument);
+    OOTypeSymbolLoader loader = new OOTypeSymbolLoader(name);
+    loader.setEnclosingScope(typeSymbolsScope);
+    return new SymTypeArray(loader, dim, argument);
   }
 
   /**
@@ -141,17 +147,23 @@ public class SymTypeExpressionFactory {
    * createGenerics: is created using the enclosing Scope to ask for the appropriate symbol.
    */
   public static SymTypeOfGenerics createGenerics(String name, ITypeSymbolsScope enclosingScope) {
-    return new SymTypeOfGenerics(new OOTypeSymbolLoader(name, enclosingScope));
+    OOTypeSymbolLoader loader = new OOTypeSymbolLoader(name);
+    loader.setEnclosingScope(enclosingScope);
+    return new SymTypeOfGenerics(loader);
   }
 
   public static SymTypeOfGenerics createGenerics(String name, ITypeSymbolsScope enclosingScope,
       List<SymTypeExpression> arguments) {
-    return new SymTypeOfGenerics(new OOTypeSymbolLoader(name, enclosingScope), arguments);
+    OOTypeSymbolLoader loader = new OOTypeSymbolLoader(name);
+    loader.setEnclosingScope(enclosingScope);
+    return new SymTypeOfGenerics(loader, arguments);
   }
 
   public static SymTypeOfGenerics createGenerics(String name, ITypeSymbolsScope enclosingScope,
       SymTypeExpression... arguments) {
-    return new SymTypeOfGenerics(new OOTypeSymbolLoader(name, enclosingScope),
+    OOTypeSymbolLoader loader = new OOTypeSymbolLoader(name);
+    loader.setEnclosingScope(enclosingScope);
+    return new SymTypeOfGenerics(loader,
         Arrays.asList(arguments));
   }
 

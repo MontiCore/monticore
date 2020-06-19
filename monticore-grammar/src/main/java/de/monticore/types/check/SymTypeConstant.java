@@ -173,7 +173,9 @@ public class SymTypeConstant extends SymTypeExpression {
 
   @Override
   public SymTypeConstant deepClone() {
-    SymTypeConstant clone = new SymTypeConstant(new OOTypeSymbolLoader(typeSymbolLoader.getName(), typeSymbolLoader.getEnclosingScope()));
+    OOTypeSymbolLoader loader = new OOTypeSymbolLoader(typeSymbolLoader.getName());
+    loader.setEnclosingScope(typeSymbolLoader.getEnclosingScope());
+    SymTypeConstant clone = new SymTypeConstant(loader);
     return clone;
   }
 

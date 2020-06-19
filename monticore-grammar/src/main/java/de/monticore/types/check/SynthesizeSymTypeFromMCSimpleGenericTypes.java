@@ -8,6 +8,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesVisitor;
+import de.monticore.types.typesymbols._symboltable.OOTypeSymbol;
 import de.monticore.types.typesymbols._symboltable.OOTypeSymbolLoader;
 import de.se_rwth.commons.logging.Log;
 
@@ -76,9 +77,10 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypes extends SynthesizeSymType
       }
       arguments.add(typeCheckResult.getLast());
     }
-
+    OOTypeSymbolLoader loader = new OOTypeSymbolLoader(genericType.printWithoutTypeArguments());
+    loader.setEnclosingScope(getScope(genericType.getEnclosingScope()));
     SymTypeExpression tex = SymTypeExpressionFactory.createGenerics(
-        new OOTypeSymbolLoader(genericType.printWithoutTypeArguments(), getScope(genericType.getEnclosingScope())), arguments);
+        loader, arguments);
     typeCheckResult.setLast(tex);
   }
 
@@ -101,12 +103,16 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypes extends SynthesizeSymType
     // type could also be a boxed Primitive or an Type Variable!
     // We need the SymbolTable to distinguish this stuff
     // PS: that also applies to other Visitors.
-    typeCheckResult.setLast(SymTypeExpressionFactory.createTypeObject(new OOTypeSymbolLoader(qType.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()), getScope(qType.getEnclosingScope()))));
+    OOTypeSymbolLoader loader = new OOTypeSymbolLoader(qType.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()));
+    loader.setEnclosingScope(getScope(qType.getEnclosingScope()));
+    typeCheckResult.setLast(SymTypeExpressionFactory.createTypeObject(loader));
   }
 
   @Override
   public void endVisit(ASTMCQualifiedName qName) {
-    SymTypeOfObject oType = createTypeObject(new OOTypeSymbolLoader(qName.getQName(), getScope(qName.getEnclosingScope())));
+    OOTypeSymbolLoader loader = new OOTypeSymbolLoader(qName.getQName());
+    loader.setEnclosingScope(getScope(qName.getEnclosingScope()));
+    SymTypeOfObject oType = createTypeObject(loader);
     typeCheckResult.setLast(oType);
   }
 

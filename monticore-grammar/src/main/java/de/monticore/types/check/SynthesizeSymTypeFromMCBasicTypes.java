@@ -101,7 +101,7 @@ public class SynthesizeSymTypeFromMCBasicTypes implements MCBasicTypesVisitor, I
   public void endVisit(ASTMCQualifiedType qType) {
     // Otherwise the Visitor is applied to the wrong AST (and an internal error 0x893F62 is issued
     typeCheckResult.setLast(
-        SymTypeExpressionFactory.createTypeObject(new OOTypeSymbolLoader(qType.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()), getScope(qType.getEnclosingScope()))));
+        SymTypeExpressionFactory.createTypeObject(qType.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()), getScope(qType.getEnclosingScope())));
   }
   
   public void endVisit(ASTMCReturnType rType) {

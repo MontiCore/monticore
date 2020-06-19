@@ -38,7 +38,9 @@ public class MCVarDeclarationStatementsSymbolTableCreator extends MCVarDeclarati
           SymTypeArray arraySymType = (SymTypeArray) simpleType;
           arraySymType.setDim(arraySymType.getDim() + v.getDeclaratorId().getDimList().size());
         } else {
-          simpleType = new SymTypeArray(new OOTypeSymbolLoader(v.getDeclaratorId().getName(), v.getDeclaratorId().getEnclosingScope()),
+          OOTypeSymbolLoader loader = new OOTypeSymbolLoader(v.getDeclaratorId().getName());
+          loader.setEnclosingScope(v.getDeclaratorId().getEnclosingScope());
+          simpleType = new SymTypeArray(loader,
                   v.getDeclaratorId().getDimList().size(), simpleType);
         }
       }

@@ -3,6 +3,7 @@ package de.monticore.types.check;
 
 import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonPrinter;
+import de.monticore.types.typesymbols._symboltable.OOTypeSymbol;
 import de.monticore.types.typesymbols._symboltable.OOTypeSymbolLoader;
 
 /**
@@ -86,7 +87,9 @@ public class SymTypeArray extends SymTypeExpression {
 
   @Override
   public SymTypeArray deepClone() {
-    return new SymTypeArray(new OOTypeSymbolLoader(typeSymbolLoader.getName(), typeSymbolLoader.getEnclosingScope()),
+    OOTypeSymbolLoader loader = new OOTypeSymbolLoader(typeSymbolLoader.getName());
+    loader.setEnclosingScope(typeSymbolLoader.getEnclosingScope());
+    return new SymTypeArray(loader,
         this.dim, this.argument.deepClone());
   }
 
