@@ -174,10 +174,10 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
 
     // getASTNode
     ASTMCQualifiedType retType = getMCTypeFacade().createQualifiedType(symbolTableService.getASTPackage() + "." + AST_PREFIX + astClassName);
-    method = getCDMethodFacade().createMethod(PUBLIC, retType, "getASTNode");
+    method = getCDMethodFacade().createMethod(PUBLIC, retType, "getAstNode");
     this.replaceTemplate(EMPTY_BODY,method, new StringHookPoint("return ("
             + retType.printType(new MCFullGenericTypesPrettyPrinter(new IndentPrinter()))
-            + ") super.getASTNode();"));
+            + ") super.getAstNode();"));
     methods.add(method);
     return methods;
   }
