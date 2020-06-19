@@ -72,7 +72,6 @@ public class SymbolLoaderDecorator extends AbstractCreator<ASTCDClass, ASTCDClas
             .addCDAttribute(delegateAttribute)
             .addCDAttribute(enclosingScopeAttribute)
             .addAllCDMethods(enclosingScopeMethods)
-            .addCDMethod(createIsSymbolLoadedMethod())
             .addCDMethod(createLazyLoadDelegateMethod(symbolLoaderSimpleName, symbolFullName, simpleName))
             .build();
   }
@@ -96,12 +95,6 @@ public class SymbolLoaderDecorator extends AbstractCreator<ASTCDClass, ASTCDClas
     ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PROTECTED, getMCTypeFacade().createOptionalTypeOf(symbolType), "delegate");
     getDecorationHelper().addAttributeDefaultValues(attribute, glex);
     return attribute;
-  }
-
-  protected ASTCDMethod createIsSymbolLoadedMethod() {
-    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createBooleanType(), "isSymbolLoaded");
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "IsSymbolLoaded"));
-    return method;
   }
 
   protected ASTCDMethod createLazyLoadDelegateMethod(String symbolLoaderName, String symbolName, String simpleName) {

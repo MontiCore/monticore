@@ -119,7 +119,7 @@ public class SymbolLoaderDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethods() {
-    assertEquals(6, symbolClassAutomaton.getCDMethodList().size());
+    assertEquals(5, symbolClassAutomaton.getCDMethodList().size());
   }
 
   @Test
@@ -148,15 +148,6 @@ public class SymbolLoaderDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = getMethodBy("lazyLoadDelegate", symbolClassAutomaton);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertDeepEquals(AUTOMATON_SYMBOL, method.getMCReturnType().getMCType());
-
-    assertTrue(method.isEmptyCDParameters());
-  }
-
-  @Test
-  public void testIsSymbolLoadedMethod() {
-    ASTCDMethod method = getMethodBy("isSymbolLoaded", symbolClassAutomaton);
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertBoolean(method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
   }
