@@ -8,7 +8,6 @@ import de.monticore.ast.ASTNode;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.symboltable.IScope;
 import de.monticore.symboltable.ISymbol;
-import de.monticore.symboltable.ISymbolLoader;
 import de.se_rwth.commons.SourcePosition;
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
@@ -175,20 +174,6 @@ public class ReportingRepository {
   public String getSymbolNameFormatted(ISymbol symbol) {
     String name = astNodeIdentHelper.getIdent(symbol);
     return getNameFormatted(symbol, name, symbol.getSourcePosition());
-  }
-  
-  /**
-   * Method that converts the SymbolReference into a formatted string with a source position if this
-   * is possible. The structure of the string is
-   * 
-   * @symbolName!symbolType(x,y) or @symbolName!symbolType(!ID).
-   * @param symbolReference The symbol that should be converted into unique String
-   * @return representation of the ASTNode that contains either the position or a unique
-   * identification number for the object
-   */
-  public String getSymbolNameFormatted(ISymbolLoader symbolReference) {
-    String name = astNodeIdentHelper.getIdent(symbolReference);
-    return getNameFormatted(symbolReference, name, SourcePosition.getDefaultSourcePosition());
   }
   
   /**

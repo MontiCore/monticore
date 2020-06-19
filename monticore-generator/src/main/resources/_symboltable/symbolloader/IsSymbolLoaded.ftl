@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-  if (!isAlreadyLoaded) {
-    loadSymbol();
+  if (!delegate.isPresent()) {
+    lazyLoadDelegate();
   }
-  return loadedSymbol.isPresent();
+  return delegate.isPresent();
