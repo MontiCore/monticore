@@ -11,9 +11,11 @@ import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
+import de.monticore.types.prettyprint.MCFullGenericTypesPrettyPrinter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -173,7 +175,9 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
     // getASTNode
     ASTMCQualifiedType retType = getMCTypeFacade().createQualifiedType(symbolTableService.getASTPackage() + "." + AST_PREFIX + astClassName);
     method = getCDMethodFacade().createMethod(PUBLIC, retType, "getASTNode");
-    this.replaceTemplate(EMPTY_BODY,method, new StringHookPoint("return getASTNode();"));
+    this.replaceTemplate(EMPTY_BODY,method, new StringHookPoint("return ("
+            + retType.printType(new MCFullGenericTypesPrettyPrinter(new IndentPrinter()))
+            + ") super.getASTNode();"));
     methods.add(method);
     return methods;
   }
