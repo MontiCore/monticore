@@ -672,6 +672,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
   public void init_advanced() {
     CombineExpressionsWithLiteralsGlobalScope globalScope = CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsGlobalScopeBuilder()
         .setModelPath(new ModelPath())
+        .setModelFileExtension("ce")
         .build();
 
     CombineExpressionsWithLiteralsArtifactScope artifactScope1 = CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsArtifactScopeBuilder()

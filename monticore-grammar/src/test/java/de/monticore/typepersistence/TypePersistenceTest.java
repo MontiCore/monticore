@@ -31,7 +31,7 @@ public class TypePersistenceTest {
     */
 
     //Create global scope for our language combination
-    VariableGlobalScope globalScope = new VariableGlobalScope(new ModelPath());
+    VariableGlobalScope globalScope = new VariableGlobalScope(new ModelPath(), "tp");
 
     //Parse blah model
     VariableParser blahParser = new VariableParser();

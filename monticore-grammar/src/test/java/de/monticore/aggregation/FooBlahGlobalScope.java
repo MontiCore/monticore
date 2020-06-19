@@ -17,8 +17,8 @@ import java.util.function.Predicate;
 public class FooBlahGlobalScope extends FooGlobalScope {
 
   public FooBlahGlobalScope(ModelPath modelPath){
-    super(modelPath);
-    iBlahGS = new BlahGlobalScope(modelPath);
+    super(modelPath, "blah");
+    iBlahGS = new BlahGlobalScope(modelPath, "blah");
   }
 
   BlahGlobalScope iBlahGS;
