@@ -16,9 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
-import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_GLOBAL_SCOPE_TYPE;
-import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.NAME_VAR;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 
 /**
  * creates a globalScope class from a grammar
@@ -64,7 +64,9 @@ public class GlobalScopeInterfaceDecorator
         .setName(globalScopeInterfaceName)
         .setModifier(PUBLIC.build())
         .addAllInterfaces(getSuperGlobalScopeInterfaces())
+        .addInterface(symbolTableService.getScopeInterfaceType())
         .addAllCDMethods(createCalculateModelNameMethods(symbolClasses))
+        .addCDMethod(createCacheMethod())
         .build();
   }
 
@@ -80,6 +82,17 @@ public class GlobalScopeInterfaceDecorator
       result.add(getMCTypeFacade().createQualifiedType(I_GLOBAL_SCOPE_TYPE));
     }
     return result;
+  }
+
+  /**
+   * This creates only an abstract method, because the implementation of the cache method requires
+   * private attributes of the global scope class, such as e.g., the modelName2ModelLoaderCache
+   * @return
+   */
+  protected ASTCDMethod createCacheMethod() {
+    ASTCDParameter parameter = getCDParameterFacade().createParameter(getMCTypeFacade().createStringType(), CALCULATED_MODEL_NAME);
+    ASTCDMethod cacheMethod = getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, "cache", parameter);
+    return cacheMethod;
   }
 
   protected List<ASTCDMethod> createCalculateModelNameMethods(List<ASTCDType> symbolProds) {

@@ -16,9 +16,12 @@ import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
 
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class GlobalScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
@@ -63,13 +66,15 @@ public class GlobalScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterfacesCount() {
-    assertEquals(1, scopeInterface.sizeInterfaces());
+    assertEquals(2, scopeInterface.sizeInterfaces());
   }
 
   @Test
   public void testSuperInterfaces() {
     assertDeepEquals("de.monticore.symboltable.IGlobalScope",
         scopeInterface.getInterface(0));
+    assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.IAutomatonScope",
+        scopeInterface.getInterface(1));
   }
 
   @Test
@@ -90,9 +95,22 @@ public class GlobalScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertEquals("name", method.getCDParameter(0).getName());
   }
 
+
+  @Test
+  public void testCacheMethod() {
+    ASTCDMethod method = getMethodBy("cache", scopeInterface);
+
+    assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+
+    assertEquals(1, method.sizeCDParameters());
+    assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
+    assertEquals("calculatedModelName", method.getCDParameter(0).getName());
+  }
+
   @Test
   public void testMethodCount() {
-    assertEquals(2, scopeInterface.getCDMethodList().size());
+    assertEquals(3, scopeInterface.getCDMethodList().size());
   }
 
 }
