@@ -9,6 +9,11 @@ public class CombineExpressionsWithLiteralsGlobalScope extends CombineExpression
     super(mp,"cex");
   }
 
+  public CombineExpressionsWithLiteralsGlobalScope(ModelPath modelPath,
+      String modelFileExtension) {
+    super(modelPath, modelFileExtension);
+  }
+
   @Override
   public CombineExpressionsWithLiteralsGlobalScope getRealThis() {
     return this;

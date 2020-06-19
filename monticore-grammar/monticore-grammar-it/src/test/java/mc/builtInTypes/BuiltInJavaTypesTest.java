@@ -23,6 +23,7 @@ public class BuiltInJavaTypesTest {
     gs = TypeSymbolsMill
         .typeSymbolsGlobalScopeBuilder()
         .setModelPath(new ModelPath())
+        .setModelFileExtension("bijt")
         .build();
     gs.addAdaptedOOTypeSymbolResolvingDelegate(new BuiltInJavaTypeSymbolResolvingDelegate());
 

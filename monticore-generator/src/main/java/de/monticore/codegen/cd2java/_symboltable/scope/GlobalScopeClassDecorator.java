@@ -143,12 +143,11 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), globalScopeClassName, modelPathParameter, fileExtensionParameter);
     sb.append("this." + FILE_EXTENSION_VAR + " = Log.errorIfNull(" + FILE_EXTENSION_VAR + ");\n");
 
-    //if grammar is not a component grammar, a parser is present and MontiCore offers a second constructor
-    if(symbolTableService.getCDSymbol().isPresentAstNode()){
-      ASTCDDefinition ast = symbolTableService.getCDSymbol().getAstNode();
-      if(!symbolTableService.hasComponentStereotype(ast)){
-        sb.append("this.enableModelLoader();");
-      }
+    if(!symbolTableService.hasComponentStereotype(symbolTableService.getCDSymbol().getAstNode())){
+      sb.append("this.enableModelLoader();");
+    }
+    else{
+      sb.append("this."+MODEL_LOADER_VAR+" = Optional.empty();");
     }
     this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint(sb.toString()));
     return constructor;
