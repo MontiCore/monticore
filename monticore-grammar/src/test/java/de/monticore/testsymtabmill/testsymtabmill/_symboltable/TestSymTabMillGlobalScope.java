@@ -8,6 +8,7 @@ public class TestSymTabMillGlobalScope extends TestSymTabMillGlobalScopeTOP {
   public TestSymTabMillGlobalScope(ModelPath modelPath){
     super(modelPath, "tsm");
   }
+
   public TestSymTabMillGlobalScope(ModelPath modelPath, String modelFileExtension){
     super(modelPath, modelFileExtension);
   }

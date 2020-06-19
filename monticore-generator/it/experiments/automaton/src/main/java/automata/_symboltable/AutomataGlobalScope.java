@@ -15,6 +15,10 @@ public class AutomataGlobalScope extends AutomataGlobalScopeTOP {
     super(mp, "aut");
   }
 
+  public AutomataGlobalScope(ModelPath modelPath, String modelFileExtension) {
+    super(modelPath, modelFileExtension);
+  }
+
   @Override
   public Set<String> calculateModelNamesForState(String name) {
     // e.g., if p.Automaton.State, return p.Automaton

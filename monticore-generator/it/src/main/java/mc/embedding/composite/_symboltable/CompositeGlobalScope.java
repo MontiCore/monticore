@@ -17,6 +17,10 @@ public class CompositeGlobalScope extends CompositeGlobalScopeTOP{
     super(modelPath, "host");
   }
 
+  public CompositeGlobalScope(ModelPath modelPath, String modelFileExtension) {
+    super(modelPath, modelFileExtension);
+  }
+
   @Override public List<ContentSymbol> resolveAdaptedContent(boolean foundSymbols,
                                                               String symbolName, AccessModifier modifier, Predicate<ContentSymbol> predicate) {
     Collection<TextSymbol> symbols = resolveTextMany(foundSymbols, symbolName, modifier, x -> true);
