@@ -21,11 +21,6 @@ public class PseudoTypeSymbolLoader extends OOTypeSymbolLoader {
   }
 
   @Override
-  public boolean isSymbolLoaded() {
-    return true;
-  }
-
-  @Override
   public OOTypeSymbol lazyLoadDelegate() {
     return pseudoSymbol;
   }
