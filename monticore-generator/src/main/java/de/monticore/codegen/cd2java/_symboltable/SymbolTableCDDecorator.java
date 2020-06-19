@@ -174,7 +174,8 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
     //if the grammar is not a component grammar
 //    if (!symbolTableService.hasComponentStereotype(astCD.getCDDefinition())) {
 //    }
-    if (symbolTableService.hasStartProd(astCD.getCDDefinition()) || !symbolTableService.getSymbolDefiningSuperProds().isEmpty()) {
+    if (symbolTableService.hasStartProd(astCD.getCDDefinition())
+        || !symbolTableService.getSymbolDefiningSuperProds().isEmpty()) {
       symTabCD.addCDInterface(createGlobalScopeInterface(astCD, symbolTablePackage));
     }
     if (symbolTableService.hasStartProd(astCD.getCDDefinition())) {
