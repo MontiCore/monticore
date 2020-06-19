@@ -11,6 +11,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCSetType;
+import net.sourceforge.plantuml.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,8 +74,12 @@ public class GlobalScopeInterfaceDecorator
   private List<ASTMCQualifiedType> getSuperGlobalScopeInterfaces() {
     List<ASTMCQualifiedType> result = new ArrayList<>();
     for (CDDefinitionSymbol superGrammar : symbolTableService.getSuperCDsDirect()) {
-      if (superGrammar.isPresentAstNode() && symbolTableService.hasStartProd(superGrammar.getAstNode())) {
-//      if (superGrammar.isPresentAstNode() && !symbolTableService.hasComponentStereotype(superGrammar.getAstNode())) {
+      if(!superGrammar.isPresentAstNode()){
+        Log.error("0xA4323 Unable to load AST of '" +superGrammar.getFullName()
+            + "' that is supergrammar of '" + symbolTableService.getCDName() + "'.");
+        continue;
+      }
+      if (symbolTableService.hasStartProd(superGrammar.getAstNode())) {
         result.add(symbolTableService.getGlobalScopeInterfaceType(superGrammar));
       }
     }
