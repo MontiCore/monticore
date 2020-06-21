@@ -298,7 +298,27 @@ component InteriorLight {                           // MontiArc language
 ### [Object Diagrams](https://git.rwth-aachen.de/monticore/languages/od) (Beta: In Stabilization)
 * Caretaker: SH
 * Language for textual object diagrams. In its current state the language is mostly used for (i) data structures in certain projects (e.g. artifact toolchain)
-   and (ii) as a report format for languages developed with MontiCore. The OD language provides the possiblility to use expressions in its attributes.
+   and (ii) as a report format for languages developed with MontiCore. The OD language provides the possiblility to use expressions in its attributes. An example:
+  ```
+  objectdiagram SimpleOD{
+  alice:Person{
+    T3 att1 = fooBar3;
+    linkList1 = [
+        :T1{},
+        fooBar2:T2{
+          foo = fooBar3:T3{
+                private content = "on4";
+          };
+        }
+      ];
+    };
+
+   bob:Person{};
+
+   link knows alice -> bob;
+  }
+
+  ```
 * Main grammars:
     * [ODBasics](https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/lang/ODBasics.mc4)
     * [OD4Report](https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/lang/OD4Report.mc4)
