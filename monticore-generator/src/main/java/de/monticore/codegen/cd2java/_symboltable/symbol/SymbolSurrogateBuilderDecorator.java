@@ -25,17 +25,17 @@ import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.REAL_BU
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.ENCLOSING_SCOPE_VAR;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.NAME_VAR;
 
-public class SymbolLoaderBuilderDecorator extends AbstractCreator<ASTCDType, ASTCDClass> {
+public class SymbolSurrogateBuilderDecorator extends AbstractCreator<ASTCDType, ASTCDClass> {
 
   protected final SymbolTableService symbolTableService;
 
   protected final AccessorDecorator accessorDecorator;
 
-  protected static final String TEMPLATE_PATH = "_symboltable.symbolloader.";
+  protected static final String TEMPLATE_PATH = "_symboltable.symbolsurrogate.";
 
-  public SymbolLoaderBuilderDecorator(final GlobalExtensionManagement glex,
-                                      final SymbolTableService symbolTableService,
-                                      final AccessorDecorator accessorDecorator) {
+  public SymbolSurrogateBuilderDecorator(final GlobalExtensionManagement glex,
+                                         final SymbolTableService symbolTableService,
+                                         final AccessorDecorator accessorDecorator) {
     super(glex);
     this.symbolTableService = symbolTableService;
     this.accessorDecorator = accessorDecorator;
@@ -43,15 +43,12 @@ public class SymbolLoaderBuilderDecorator extends AbstractCreator<ASTCDType, AST
 
   @Override
   public ASTCDClass decorate(ASTCDType input) {
-    String symbolLoaderName = symbolTableService.getSymbolLoaderSimpleName(input);
-    String symbolLoaderBuilderName = symbolLoaderName + BUILDER_SUFFIX;
+    String symbolSurrogateName = symbolTableService.getSymbolSurrogateSimpleName(input);
+    String symbolSurrogateBuilderName = symbolSurrogateName + BUILDER_SUFFIX;
     String scopeInterfaceFullName = symbolTableService.getScopeInterfaceFullName();
     ASTModifier modifier = input.isPresentModifier() ?
         symbolTableService.createModifierPublicModifier(input.getModifier()):
         PUBLIC.build();
-
-    BuilderMutatorMethodDecorator builderMutatorMethodDecorator = new BuilderMutatorMethodDecorator(glex,
-        getMCTypeFacade().createQualifiedType(symbolLoaderBuilderName));
 
     List<ASTCDAttribute> builderAttributes = input.getCDAttributeList().stream()
         .map(ASTCDAttribute::deepClone)
@@ -63,18 +60,12 @@ public class SymbolLoaderBuilderDecorator extends AbstractCreator<ASTCDType, AST
         .filter(a -> !a.getName().equals("enclosingScope"))
         .collect(Collectors.toList());
 
-    List<ASTCDAttribute> mandatoryAttributes = builderAttributes.stream()
-        .filter(a -> !getDecorationHelper().isListType(a.printType()))
-        .filter(a -> !getDecorationHelper().isOptional(a.printType()))
-        .filter(a -> !(a.getMCType() instanceof ASTMCPrimitiveType))
-        .collect(Collectors.toList());
-
     List<ASTCDMethod> accessorMethods = builderAttributes.stream()
         .map(accessorDecorator::decorate)
         .flatMap(List::stream)
         .collect(Collectors.toList());
 
-    BuilderMutatorMethodDecorator mutatorDecorator = new BuilderMutatorMethodDecorator(glex, getMCTypeFacade().createQualifiedType(symbolLoaderBuilderName));
+    BuilderMutatorMethodDecorator mutatorDecorator = new BuilderMutatorMethodDecorator(glex, getMCTypeFacade().createQualifiedType(symbolSurrogateBuilderName));
     List<ASTCDMethod> mutatorMethods = builderAttributes.stream()
         .map(mutatorDecorator::decorate)
         .flatMap(List::stream)
@@ -91,10 +82,10 @@ public class SymbolLoaderBuilderDecorator extends AbstractCreator<ASTCDType, AST
     builderAttributes.forEach(this::addAttributeDefaultValues);
 
     return CD4AnalysisMill.cDClassBuilder()
-        .setName(symbolLoaderBuilderName)
+        .setName(symbolSurrogateBuilderName)
         .setModifier(modifier)
-        .addCDConstructor(createDefaultConstructor(symbolLoaderBuilderName))
-        .addCDAttribute(createRealThisAttribute(symbolLoaderBuilderName))
+        .addCDConstructor(createDefaultConstructor(symbolSurrogateBuilderName))
+        .addCDAttribute(createRealThisAttribute(symbolSurrogateBuilderName))
         .addAllCDAttributes(builderAttributes)
         .addCDAttribute(nameAttribute)
         .addCDAttribute(enclosingScopeAttribute)
@@ -104,13 +95,13 @@ public class SymbolLoaderBuilderDecorator extends AbstractCreator<ASTCDType, AST
         .addAllCDMethods(nameAccessorMethods)
         .addAllCDMethods(enclosingScopeAccessorMethods)
         .addAllCDMethods(enclosingScopeMutatorMethods)
-        .addCDMethod(createBuildMethod(symbolLoaderName, builderAttributes))
+        .addCDMethod(createBuildMethod(symbolSurrogateName, builderAttributes))
         .build();
   }
 
-  protected ASTCDConstructor createDefaultConstructor(String symbolLoaderBuilderName) {
-    ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC, symbolLoaderBuilderName);
-    this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("this." + REAL_BUILDER + " = (" + symbolLoaderBuilderName + ") this;"));
+  protected ASTCDConstructor createDefaultConstructor(String symbolSurrogateBuilderName) {
+    ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC, symbolSurrogateBuilderName);
+    this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("this." + REAL_BUILDER + " = (" + symbolSurrogateBuilderName + ") this;"));
     return constructor;
   }
 
@@ -122,13 +113,13 @@ public class SymbolLoaderBuilderDecorator extends AbstractCreator<ASTCDType, AST
     return this.getCDAttributeFacade().createAttribute(PROTECTED, scopeInterface, ENCLOSING_SCOPE_VAR);
   }
 
-  protected ASTCDAttribute createRealThisAttribute(String symbolLoaderBuilderName) {
-    return this.getCDAttributeFacade().createAttribute(PROTECTED, symbolLoaderBuilderName, REAL_BUILDER);
+  protected ASTCDAttribute createRealThisAttribute(String symbolSurrogateBuilderName) {
+    return this.getCDAttributeFacade().createAttribute(PROTECTED, symbolSurrogateBuilderName, REAL_BUILDER);
   }
 
-  protected ASTCDMethod createBuildMethod(String symbolLoader, List<ASTCDAttribute> attributeList) {
-    ASTCDMethod buildMethod = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createQualifiedType(symbolLoader), "build");
-    this.replaceTemplate(EMPTY_BODY, buildMethod, new TemplateHookPoint(TEMPLATE_PATH + "BuildSymbolLoader", symbolLoader, attributeList));
+  protected ASTCDMethod createBuildMethod(String symbolSurrogate, List<ASTCDAttribute> attributeList) {
+    ASTCDMethod buildMethod = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createQualifiedType(symbolSurrogate), "build");
+    this.replaceTemplate(EMPTY_BODY, buildMethod, new TemplateHookPoint(TEMPLATE_PATH + "BuildSymbolSurrogate", symbolSurrogate, attributeList));
     return buildMethod;
   }
 

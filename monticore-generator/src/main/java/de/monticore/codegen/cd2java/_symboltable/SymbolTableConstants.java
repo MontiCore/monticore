@@ -42,7 +42,7 @@ public class SymbolTableConstants {
 
   public static final String LANGUAGE_SUFFIX = "Language";
 
-  public static final String LOADER_SUFFIX = "Loader";
+  public static final String SURROGATE_SUFFIX = "Surrogate";
 
   public static final String DE_SER_SUFFIX = "DeSer";
 
@@ -63,8 +63,6 @@ public class SymbolTableConstants {
   public static final String I_GLOBAL_SCOPE_TYPE = "de.monticore.symboltable.IGlobalScope";
 
   public static final String IMPORT_STATEMENT = "de.monticore.symboltable.ImportStatement";
-
-  public static final String I_SYMBOL_LOADER = "de.monticore.symboltable.ISymbolLoader";
 
   public static final String I_MODELING_LANGUAGE = "de.monticore.IModelingLanguage";
 

@@ -38,9 +38,9 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
 
   protected final SymbolBuilderDecorator symbolBuilderDecorator;
 
-  protected final SymbolLoaderDecorator symbolReferenceDecorator;
+  protected final SymbolSurrogateDecorator symbolReferenceDecorator;
 
-  protected final SymbolLoaderBuilderDecorator symbolReferenceBuilderDecorator;
+  protected final SymbolSurrogateBuilderDecorator symbolReferenceBuilderDecorator;
 
   protected final SymbolTableService symbolTableService;
 
@@ -95,8 +95,8 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
                                 final SymbolTableService symbolTableService,
                                 final SymbolDecorator symbolDecorator,
                                 final SymbolBuilderDecorator symbolBuilderDecorator,
-                                final SymbolLoaderDecorator symbolReferenceDecorator,
-                                final SymbolLoaderBuilderDecorator symbolReferenceBuilderDecorator,
+                                final SymbolSurrogateDecorator symbolReferenceDecorator,
+                                final SymbolSurrogateBuilderDecorator symbolReferenceBuilderDecorator,
                                 final ScopeClassDecorator scopeClassDecorator,
                                 final ScopeClassBuilderDecorator scopeClassBuilderDecorator,
                                 final ScopeInterfaceDecorator scopeInterfaceDecorator,

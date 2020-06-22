@@ -146,8 +146,8 @@ public class FullASTInterfaceDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testUpdateNameSymbolLoaderListMethod() {
-    ASTCDMethod method = getMethodBy("updateFooSymbolLoader", astcdInterface);
+  public void testUpdateNameSymbolSurrogateListMethod() {
+    ASTCDMethod method = getMethodBy("updateFooSymbolSurrogate", astcdInterface);
     assertDeepEquals(PROTECTED_ABSTRACT, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertTrue(method.isEmptyCDParameters());

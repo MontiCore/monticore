@@ -196,31 +196,31 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
    * symbol reference class names e.g. AutomatonSymbolReference
    */
 
-  public String getSymbolLoaderFullName(ASTCDType astcdType, CDDefinitionSymbol cdSymbol) {
-    return getPackage(cdSymbol) + "." + getSymbolLoaderSimpleName(astcdType);
+  public String getSymbolSurrogateFullName(ASTCDType astcdType, CDDefinitionSymbol cdSymbol) {
+    return getPackage(cdSymbol) + "." + getSymbolSurrogateSimpleName(astcdType);
   }
 
-  public String getSymbolLoaderFullName(ASTCDType astcdType) {
-    return getSymbolLoaderFullName(astcdType, getCDSymbol());
+  public String getSymbolSurrogateFullName(ASTCDType astcdType) {
+    return getSymbolSurrogateFullName(astcdType, getCDSymbol());
   }
 
-  public String getSymbolLoaderSimpleName(ASTCDType astcdType) {
-    return getSymbolSimpleName(astcdType) + LOADER_SUFFIX;
+  public String getSymbolSurrogateSimpleName(ASTCDType astcdType) {
+    return getSymbolSimpleName(astcdType) + SURROGATE_SUFFIX;
   }
 
   /**
-   * symbol builder class name e.g. AutomatonSymbolLoaderBuilder
+   * symbol builder class name e.g. AutomatonSymbolSurrogateBuilder
    */
-  public String getSymbolLoaderBuilderSimpleName(ASTCDType astcdType) {
-    return getSymbolLoaderSimpleName(astcdType) + BUILDER_SUFFIX;
+  public String getSymbolSurrogateBuilderSimpleName(ASTCDType astcdType) {
+    return getSymbolSurrogateSimpleName(astcdType) + BUILDER_SUFFIX;
   }
 
-  public String getSymbolLoaderBuilderFullName(ASTCDType astcdType, CDDefinitionSymbol cdDefinitionSymbol) {
-    return getSymbolLoaderFullName(astcdType, cdDefinitionSymbol) + BUILDER_SUFFIX;
+  public String getSymbolSurrogateBuilderFullName(ASTCDType astcdType, CDDefinitionSymbol cdDefinitionSymbol) {
+    return getSymbolSurrogateFullName(astcdType, cdDefinitionSymbol) + BUILDER_SUFFIX;
   }
 
-  public String getSymbolLoaderBuilderFullName(ASTCDType astcdType) {
-    return getSymbolLoaderBuilderFullName(astcdType, getCDSymbol());
+  public String getSymbolSurrogateBuilderFullName(ASTCDType astcdType) {
+    return getSymbolSurrogateBuilderFullName(astcdType, getCDSymbol());
   }
 
   /**

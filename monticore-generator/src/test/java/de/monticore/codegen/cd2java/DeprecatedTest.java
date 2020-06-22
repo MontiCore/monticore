@@ -17,7 +17,7 @@ import de.monticore.codegen.cd2java._cocos.CoCoInterfaceDecorator;
 import de.monticore.codegen.cd2java._cocos.CoCoService;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._symboltable.symbol.*;
-import de.monticore.codegen.cd2java._symboltable.symbol.symbolloadermutator.MandatoryMutatorSymbolLoaderDecorator;
+import de.monticore.codegen.cd2java._symboltable.symbol.symbolsurrogatemutator.MandatoryMutatorSymbolSurrogateDecorator;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
@@ -49,8 +49,8 @@ public class DeprecatedTest extends DecoratorTestCase {
   private CoCoInterfaceDecorator coCoInterfaceDecorator;
   private SymbolDecorator symbolDecorator;
   private SymbolBuilderDecorator symbolBuilderDecorator;
-  private SymbolLoaderDecorator symbolLoaderDecorator;
-  private SymbolLoaderBuilderDecorator symbolLoaderBuilderDecorator;
+  private SymbolSurrogateDecorator symbolSurrogateDecorator;
+  private SymbolSurrogateBuilderDecorator symbolSurrogateBuilderDecorator;
   private SymbolResolvingDelegateInterfaceDecorator symbolResolvingDelegateInterfaceDecorator;
   private EnumDecorator enumDecorator;
   private ASTInterfaceDecorator astInterfaceDecorator;
@@ -91,10 +91,10 @@ public class DeprecatedTest extends DecoratorTestCase {
 
     symbolBuilderDecorator = new SymbolBuilderDecorator(glex, symbolTableService, builderDecorator);
 
-    symbolLoaderDecorator = new SymbolLoaderDecorator(this.glex, symbolTableService, methodDecorator,
-        new MandatoryMutatorSymbolLoaderDecorator(glex));
+    symbolSurrogateDecorator = new SymbolSurrogateDecorator(this.glex, symbolTableService, methodDecorator,
+        new MandatoryMutatorSymbolSurrogateDecorator(glex));
 
-    symbolLoaderBuilderDecorator = new SymbolLoaderBuilderDecorator(this.glex, symbolTableService,
+    symbolSurrogateBuilderDecorator = new SymbolSurrogateBuilderDecorator(this.glex, symbolTableService,
         new AccessorDecorator(glex, symbolTableService));
 
     symbolResolvingDelegateInterfaceDecorator = new SymbolResolvingDelegateInterfaceDecorator(this.glex, symbolTableService);
@@ -174,7 +174,7 @@ public class DeprecatedTest extends DecoratorTestCase {
 
   @Test
   public void testASymbolLoaderDeprecated() {
-    ASTCDClass symbolLoaderA = symbolLoaderDecorator.decorate(clazzA);
+    ASTCDClass symbolLoaderA = symbolSurrogateDecorator.decorate(clazzA);
     assertTrue(symbolLoaderA.isPresentModifier());
     assertTrue(symbolLoaderA.getModifier().isPresentStereotype());
 
@@ -186,7 +186,7 @@ public class DeprecatedTest extends DecoratorTestCase {
 
   @Test
   public void testASymbolLoaderBuilderDeprecated() {
-    ASTCDClass symbolLoaderBuilderA = symbolLoaderBuilderDecorator.decorate(clazzA);
+    ASTCDClass symbolLoaderBuilderA = symbolSurrogateBuilderDecorator.decorate(clazzA);
     assertTrue(symbolLoaderBuilderA.isPresentModifier());
     assertTrue(symbolLoaderBuilderA.getModifier().isPresentStereotype());
 
@@ -240,7 +240,7 @@ public class DeprecatedTest extends DecoratorTestCase {
 
   @Test
   public void testISymbolLoaderBuilderDeprecated() {
-    ASTCDClass symbolLoaderBuilderA = symbolLoaderBuilderDecorator.decorate(interfaceI);
+    ASTCDClass symbolLoaderBuilderA = symbolSurrogateBuilderDecorator.decorate(interfaceI);
     assertTrue(symbolLoaderBuilderA.isPresentModifier());
     assertTrue(symbolLoaderBuilderA.getModifier().isPresentStereotype());
 

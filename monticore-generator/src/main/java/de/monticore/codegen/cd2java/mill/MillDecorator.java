@@ -214,13 +214,13 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
     this.replaceTemplate(EMPTY_BODY, builderMethod, new StringHookPoint("return " + millFullName + "." + symbolBuilderSimpleName + "();"));
     superMethods.add(builderMethod);
 
-    // create corresponding builder for SymbolLoader
-    String symbolLoaderBuilderFullName = service.getSymbolLoaderBuilderFullName(type.getAstNode(), superSymbol);
-    String symbolLoaderBuilderSimpleName = StringTransformations.uncapitalize(service.getSymbolLoaderBuilderSimpleName(type.getAstNode()));
+    // create corresponding builder for symbolSurrogate
+    String symbolSurrogateBuilderFullName = service.getSymbolSurrogateBuilderFullName(type.getAstNode(), superSymbol);
+    String symbolSurrogateBuilderSimpleName = StringTransformations.uncapitalize(service.getSymbolSurrogateBuilderSimpleName(type.getAstNode()));
     ASTCDMethod builderLoaderMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC,
-        getMCTypeFacade().createQualifiedType(symbolLoaderBuilderFullName), symbolLoaderBuilderSimpleName);
+        getMCTypeFacade().createQualifiedType(symbolSurrogateBuilderFullName), symbolSurrogateBuilderSimpleName);
 
-    this.replaceTemplate(EMPTY_BODY, builderLoaderMethod, new StringHookPoint("return " + millFullName + "." + symbolLoaderBuilderSimpleName + "();"));
+    this.replaceTemplate(EMPTY_BODY, builderLoaderMethod, new StringHookPoint("return " + millFullName + "." + symbolSurrogateBuilderSimpleName + "();"));
     superMethods.add(builderLoaderMethod);
     return superMethods;
   }

@@ -26,7 +26,7 @@ import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
 import static org.junit.Assert.*;
 
-public class SymbolLoaderBuilderDecoratorTest extends DecoratorTestCase {
+public class SymbolSurrogateBuilderDecoratorTest extends DecoratorTestCase {
 
   private ASTCDClass builderClass;
 
@@ -53,7 +53,7 @@ public class SymbolLoaderBuilderDecoratorTest extends DecoratorTestCase {
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
 
 
-    SymbolLoaderBuilderDecorator decorator = new SymbolLoaderBuilderDecorator(this.glex, new SymbolTableService(decoratedCompilationUnit),
+    SymbolSurrogateBuilderDecorator decorator = new SymbolSurrogateBuilderDecorator(this.glex, new SymbolTableService(decoratedCompilationUnit),
         new AccessorDecorator(glex, new SymbolTableService(decoratedCompilationUnit)));
     //creates ScopeSpanningSymbol
     ASTCDClass automatonClass = getClassBy("ASTAutomaton", decoratedCompilationUnit);
@@ -72,7 +72,7 @@ public class SymbolLoaderBuilderDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testClassNameAutomatonSymbol() {
-    assertEquals("AutomatonSymbolLoaderBuilder", builderClass.getName());
+    assertEquals("AutomatonSymbolSurrogateBuilder", builderClass.getName());
   }
 
   @Test
@@ -96,7 +96,7 @@ public class SymbolLoaderBuilderDecoratorTest extends DecoratorTestCase {
   public void testDefaultConstructor() {
     ASTCDConstructor cdConstructor = builderClass.getCDConstructor(0);
     assertDeepEquals(PUBLIC, cdConstructor.getModifier());
-    assertEquals("AutomatonSymbolLoaderBuilder", cdConstructor.getName());
+    assertEquals("AutomatonSymbolSurrogateBuilder", cdConstructor.getName());
 
     assertTrue(cdConstructor.isEmptyCDParameters());
 
@@ -126,7 +126,7 @@ public class SymbolLoaderBuilderDecoratorTest extends DecoratorTestCase {
   public void testRealBuilderAttribute() {
     ASTCDAttribute astcdAttribute = getAttributeBy("realBuilder", builderClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
-    assertDeepEquals("AutomatonSymbolLoaderBuilder", astcdAttribute.getMCType());
+    assertDeepEquals("AutomatonSymbolSurrogateBuilder", astcdAttribute.getMCType());
   }
 
   @Test
@@ -142,7 +142,7 @@ public class SymbolLoaderBuilderDecoratorTest extends DecoratorTestCase {
   public void testSetNameMethod() {
     ASTCDMethod method = getMethodBy("setName", builderClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(mcTypeFacade.createQualifiedType("AutomatonSymbolLoaderBuilder"), method.getMCReturnType().getMCType());
+    assertDeepEquals(mcTypeFacade.createQualifiedType("AutomatonSymbolSurrogateBuilder"), method.getMCReturnType().getMCType());
 
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
@@ -162,7 +162,7 @@ public class SymbolLoaderBuilderDecoratorTest extends DecoratorTestCase {
   public void testSetEnclosingScopeMethod() {
     ASTCDMethod method = getMethodBy("setEnclosingScope", builderClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(mcTypeFacade.createQualifiedType("AutomatonSymbolLoaderBuilder"), method.getMCReturnType().getMCType());
+    assertDeepEquals(mcTypeFacade.createQualifiedType("AutomatonSymbolSurrogateBuilder"), method.getMCReturnType().getMCType());
 
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(I_AUTOMATON_SCOPE, method.getCDParameter(0).getMCType());
