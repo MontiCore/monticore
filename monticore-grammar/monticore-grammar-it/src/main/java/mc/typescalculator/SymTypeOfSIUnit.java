@@ -4,17 +4,17 @@ package mc.typescalculator;
 import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.types.check.SymTypeExpression;
-import de.monticore.types.typesymbols._symboltable.OOTypeSymbolLoader;
+import de.monticore.types.typesymbols._symboltable.OOTypeSymbolSurrogate;
 
 public class SymTypeOfSIUnit extends SymTypeExpression {
 
-  public SymTypeOfSIUnit(OOTypeSymbolLoader typeSymbolLoader){
-    this.typeSymbolLoader = typeSymbolLoader;
+  public SymTypeOfSIUnit(OOTypeSymbolSurrogate typeSymbolSurrogate){
+    this.typeSymbolSurrogate = typeSymbolSurrogate;
   }
 
   @Override
   public String print() {
-    return typeSymbolLoader.getName();
+    return typeSymbolSurrogate.getName();
   }
 
   @Override
@@ -30,7 +30,9 @@ public class SymTypeOfSIUnit extends SymTypeExpression {
 
   @Override
   public SymTypeOfSIUnit deepClone() {
-    return new SymTypeOfSIUnit(new OOTypeSymbolLoader(typeSymbolLoader.getName(),typeSymbolLoader.getEnclosingScope()));
+    OOTypeSymbolSurrogate surrogate = new OOTypeSymbolSurrogate(typeSymbolSurrogate.getName());
+    surrogate.setEnclosingScope(typeSymbolSurrogate.getEnclosingScope());
+    return new SymTypeOfSIUnit(surrogate);
   }
 
   @Override
@@ -39,13 +41,13 @@ public class SymTypeOfSIUnit extends SymTypeExpression {
       return false;
     }
     SymTypeOfSIUnit symSi = (SymTypeOfSIUnit) sym;
-    if(this.typeSymbolLoader== null ||symSi.typeSymbolLoader==null){
+    if(this.typeSymbolSurrogate== null ||symSi.typeSymbolSurrogate==null){
       return false;
     }
-    if(!this.typeSymbolLoader.getEnclosingScope().equals(symSi.typeSymbolLoader.getEnclosingScope())){
+    if(!this.typeSymbolSurrogate.getEnclosingScope().equals(symSi.typeSymbolSurrogate.getEnclosingScope())){
       return false;
     }
-    if(!this.typeSymbolLoader.getName().equals(symSi.typeSymbolLoader.getName())){
+    if(!this.typeSymbolSurrogate.getName().equals(symSi.typeSymbolSurrogate.getName())){
       return false;
     }
     return this.print().equals(symSi.print());

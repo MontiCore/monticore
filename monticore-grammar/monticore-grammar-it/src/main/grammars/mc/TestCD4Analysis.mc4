@@ -118,7 +118,7 @@ grammar TestCD4Analysis extends de.monticore.types.MCSimpleGenericTypes, de.mont
     isReadOnly: boolean
     isInitialized: boolean
     isParameter: boolean
-    type: mc.testcd4analysis._symboltable.CDTypeSymbolLoader
+    type: mc.testcd4analysis._symboltable.CDTypeSymbolSurrogate
   ;
 
   symbolrule CDMethOrConstr =
@@ -131,8 +131,8 @@ grammar TestCD4Analysis extends de.monticore.types.MCSimpleGenericTypes, de.mont
     isStatic: boolean
     isAbstract: boolean
     isEllipsis: boolean
-    returnType: mc.testcd4analysis._symboltable.CDTypeSymbolLoader
-    exceptions: mc.testcd4analysis._symboltable.CDTypeSymbolLoader*
+    returnType: mc.testcd4analysis._symboltable.CDTypeSymbolSurrogate
+    exceptions: mc.testcd4analysis._symboltable.CDTypeSymbolSurrogate*
   ;
 
   symbolrule CDType =
@@ -144,8 +144,8 @@ grammar TestCD4Analysis extends de.monticore.types.MCSimpleGenericTypes, de.mont
     isProtected: boolean
     isPublic: boolean
     isFinal: boolean
-    cdInterfaces: mc.testcd4analysis._symboltable.CDTypeSymbolLoader*
-    superClass: mc.testcd4analysis._symboltable.CDTypeSymbolLoader?
+    cdInterfaces: mc.testcd4analysis._symboltable.CDTypeSymbolSurrogate*
+    superClass: mc.testcd4analysis._symboltable.CDTypeSymbolSurrogate?
   ;
 
 }
