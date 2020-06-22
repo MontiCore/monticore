@@ -1013,7 +1013,9 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
               + " */");
 
       // TODO PN, GV
-      for(String y : grammarInfo.getKeywords()) {
+      ArrayList<String> keys = Lists.newArrayList(grammarInfo.getKeywords());
+      keys.removeAll(grammarInfo.getKeywordRules());
+      for(String y : keys) {
         addToAntlrCode(" | ");
         ASTTerminal term = GrammarNodeFactory.createASTTerminal();
         ast.get_Children().add(term);
