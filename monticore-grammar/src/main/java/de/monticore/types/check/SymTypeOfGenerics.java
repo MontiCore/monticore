@@ -3,7 +3,7 @@ package de.monticore.types.check;
 
 import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonPrinter;
-import de.monticore.types.typesymbols._symboltable.OOTypeSymbolLoader;
+import de.monticore.types.typesymbols._symboltable.OOTypeSymbolSurrogate;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -114,17 +114,17 @@ public class SymTypeOfGenerics extends SymTypeExpression {
   /**
    * Constructor with all parameters that are stored:
    */
-  public SymTypeOfGenerics(OOTypeSymbolLoader typeSymbolLoader) {
-    this.typeSymbolLoader = typeSymbolLoader;
+  public SymTypeOfGenerics(OOTypeSymbolSurrogate typeSymbolSurrogate) {
+    this.typeSymbolSurrogate = typeSymbolSurrogate;
   }
 
-  public SymTypeOfGenerics(OOTypeSymbolLoader typeSymbolLoader, List<SymTypeExpression> arguments) {
-    this.typeSymbolLoader = typeSymbolLoader;
+  public SymTypeOfGenerics(OOTypeSymbolSurrogate typeSymbolSurrogate, List<SymTypeExpression> arguments) {
+    this.typeSymbolSurrogate = typeSymbolSurrogate;
     this.arguments = arguments;
   }
 
   public String getTypeConstructorFullName() {
-    return typeSymbolLoader.getName();
+    return typeSymbolSurrogate.getName();
   }
   
   /**
@@ -190,8 +190,8 @@ public class SymTypeOfGenerics extends SymTypeExpression {
    */
   @Override
   public SymTypeOfGenerics deepClone() {
-    OOTypeSymbolLoader loader = new OOTypeSymbolLoader(typeSymbolLoader.getName());
-    loader.setEnclosingScope(typeSymbolLoader.getEnclosingScope());
+    OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate(typeSymbolSurrogate.getName());
+    loader.setEnclosingScope(typeSymbolSurrogate.getEnclosingScope());
     return new SymTypeOfGenerics(loader, getArgumentList());
   }
 
@@ -201,13 +201,13 @@ public class SymTypeOfGenerics extends SymTypeExpression {
       return false;
     }
     SymTypeOfGenerics symGen = (SymTypeOfGenerics) sym;
-    if(this.typeSymbolLoader== null ||symGen.typeSymbolLoader==null){
+    if(this.typeSymbolSurrogate== null ||symGen.typeSymbolSurrogate==null){
       return false;
     }
-    if(!this.typeSymbolLoader.getEnclosingScope().equals(symGen.typeSymbolLoader.getEnclosingScope())){
+    if(!this.typeSymbolSurrogate.getEnclosingScope().equals(symGen.typeSymbolSurrogate.getEnclosingScope())){
       return false;
     }
-    if(!this.typeSymbolLoader.getName().equals(symGen.typeSymbolLoader.getName())){
+    if(!this.typeSymbolSurrogate.getName().equals(symGen.typeSymbolSurrogate.getName())){
       return false;
     }
     if(this.sizeArguments()!=symGen.sizeArguments()){

@@ -323,10 +323,10 @@ public abstract class SymTypeExpression {
    * Furthermore, each SymTypeExpression knows this TypeSymbol (i.e. the
    * TypeSymbols are loaded (or created) upon creation of the SymType.
    */
-  protected OOTypeSymbolLoader typeSymbolLoader;
+  protected OOTypeSymbolSurrogate typeSymbolSurrogate;
 
   public OOTypeSymbol getTypeInfo() {
-    return typeSymbolLoader.lazyLoadDelegate();
+    return typeSymbolSurrogate.lazyLoadDelegate();
   }
 
   public List<OOTypeSymbol> getInnerTypeList(String name) {

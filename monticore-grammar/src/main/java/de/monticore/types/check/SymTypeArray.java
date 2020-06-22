@@ -4,7 +4,7 @@ package de.monticore.types.check;
 import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.types.typesymbols._symboltable.OOTypeSymbol;
-import de.monticore.types.typesymbols._symboltable.OOTypeSymbolLoader;
+import de.monticore.types.typesymbols._symboltable.OOTypeSymbolSurrogate;
 
 /**
  * Arrays of a certain dimension (>= 1)
@@ -27,10 +27,10 @@ public class SymTypeArray extends SymTypeExpression {
    *
    * @param dim      dimension
    * @param argument Argument Type
-   * @param typeSymbolLoader loader for the Type-Symbol that defines this type
+   * @param typeSymbolSurrogate loader for the Type-Symbol that defines this type
    */
-  public SymTypeArray(OOTypeSymbolLoader typeSymbolLoader, int dim, SymTypeExpression argument) {
-    this.typeSymbolLoader = typeSymbolLoader;
+  public SymTypeArray(OOTypeSymbolSurrogate typeSymbolSurrogate, int dim, SymTypeExpression argument) {
+    this.typeSymbolSurrogate = typeSymbolSurrogate;
     this.dim = dim;
     this.argument = argument;
   }
@@ -87,8 +87,8 @@ public class SymTypeArray extends SymTypeExpression {
 
   @Override
   public SymTypeArray deepClone() {
-    OOTypeSymbolLoader loader = new OOTypeSymbolLoader(typeSymbolLoader.getName());
-    loader.setEnclosingScope(typeSymbolLoader.getEnclosingScope());
+    OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate(typeSymbolSurrogate.getName());
+    loader.setEnclosingScope(typeSymbolSurrogate.getEnclosingScope());
     return new SymTypeArray(loader,
         this.dim, this.argument.deepClone());
   }
@@ -102,13 +102,13 @@ public class SymTypeArray extends SymTypeExpression {
     if(this.dim!=symArr.dim){
       return false;
     }
-    if(this.typeSymbolLoader== null ||symArr.typeSymbolLoader==null){
+    if(this.typeSymbolSurrogate== null ||symArr.typeSymbolSurrogate==null){
       return false;
     }
-    if(!this.typeSymbolLoader.getEnclosingScope().equals(symArr.typeSymbolLoader.getEnclosingScope())){
+    if(!this.typeSymbolSurrogate.getEnclosingScope().equals(symArr.typeSymbolSurrogate.getEnclosingScope())){
       return false;
     }
-    if(!this.typeSymbolLoader.getName().equals(symArr.typeSymbolLoader.getName())){
+    if(!this.typeSymbolSurrogate.getName().equals(symArr.typeSymbolSurrogate.getName())){
       return false;
     }
     if(!this.getArgument().deepEquals(symArr.getArgument())){
