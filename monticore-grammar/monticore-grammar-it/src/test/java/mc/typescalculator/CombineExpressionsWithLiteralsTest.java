@@ -8,13 +8,13 @@ import de.monticore.symboltable.ImportStatement;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.typesymbols._symboltable.OOTypeSymbol;
-import de.monticore.types.typesymbols._symboltable.OOTypeSymbolLoader;
+import de.monticore.types.typesymbols._symboltable.OOTypeSymbolSurrogate;
 import de.se_rwth.commons.logging.LogStub;
 import mc.testcd4analysis._symboltable.TestCD4AnalysisGlobalScope;
 import mc.testcd4analysis._symboltable.TestCD4AnalysisLanguage;
 import mc.typescalculator.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 import mc.typescalculator.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
-import mc.typescalculator.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsArtifactScope;
+import mc.typescalculatorf.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsArtifactScope;
 import mc.typescalculator.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsGlobalScope;
 import mc.typescalculator.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsLanguage;
 import mc.typescalculator.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsSymbolTableCreatorDelegator;
@@ -56,8 +56,14 @@ public class CombineExpressionsWithLiteralsTest {
     Optional<OOTypeSymbol> classB = globalScope1.resolveOOType("mc.typescalculator.TestCD.B");
     assertTrue(classB.isPresent());
 
-    globalScope1.add(field("d", SymTypeExpressionFactory.createTypeObject(new OOTypeSymbolLoader("D",classD.get().getEnclosingScope()))));
-    globalScope1.add(field("b",SymTypeExpressionFactory.createTypeObject(new OOTypeSymbolLoader("B",classB.get().getEnclosingScope()))));
+    OOTypeSymbolSurrogate dSurrogate = new OOTypeSymbolSurrogate("D");
+    dSurrogate.setEnclosingScope(classD.get().getEnclosingScope());
+
+    OOTypeSymbolSurrogate bSurrogate = new OOTypeSymbolSurrogate("B");
+    bSurrogate.setEnclosingScope(classB.get().getEnclosingScope());
+
+    globalScope1.add(field("d", SymTypeExpressionFactory.createTypeObject(dSurrogate)));
+    globalScope1.add(field("b",SymTypeExpressionFactory.createTypeObject(bSurrogate)));
 
     CombineExpressionsWithLiteralsTypesCalculator calc = new CombineExpressionsWithLiteralsTypesCalculator();
 
