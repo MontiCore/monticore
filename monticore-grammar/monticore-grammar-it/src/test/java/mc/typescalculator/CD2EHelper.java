@@ -130,27 +130,18 @@ public class CD2EHelper {
       return symTypeExpressionMap.get(symbolLoader.getName());
     } else {
       SymTypeExpression symTypeExpression;
-      if (symbolLoader.lazyLoadDelegate()!=null) {
-        // if typeSymbol is already loaded
-        OOTypeSymbol typeSymbol = createOOTypeSymbolFormCDTypeSymbol(symbolLoader.lazyLoadDelegate());
+      try{
+        OOTypeSymbol type = createOOTypeSymbolFormCDTypeSymbol(symbolLoader.lazyLoadDelegate());
+        iTypeSymbolsScope.add(type);
+        symTypeExpression = SymTypeExpressionFactory.createTypeExpression(type.getName(), iTypeSymbolsScope);
+      }catch(Exception e){
+        String typeName = symbolLoader.getName();
+        OOTypeSymbol typeSymbol = TypeSymbolsMill.oOTypeSymbolBuilder()
+            .setName(typeName)
+            .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
+            .build();
         iTypeSymbolsScope.add(typeSymbol);
         symTypeExpression = SymTypeExpressionFactory.createTypeExpression(typeSymbol.getName(), iTypeSymbolsScope);
-      } else {
-        // if typeSymbol can be loaded
-        if (symbolLoader.lazyLoadDelegate()!=null) {
-          OOTypeSymbol typeSymbol = createOOTypeSymbolFormCDTypeSymbol(symbolLoader.lazyLoadDelegate());
-          iTypeSymbolsScope.add(typeSymbol);
-          symTypeExpression = SymTypeExpressionFactory.createTypeExpression(typeSymbol.getName(), iTypeSymbolsScope);
-        } else {
-          // if typeSymbol could not be loaded
-          String typeName = symbolLoader.getName();
-          OOTypeSymbol typeSymbol = TypeSymbolsMill.oOTypeSymbolBuilder()
-              .setName(typeName)
-              .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
-              .build();
-          iTypeSymbolsScope.add(typeSymbol);
-          symTypeExpression = SymTypeExpressionFactory.createTypeExpression(typeSymbol.getName(), iTypeSymbolsScope);
-        }
       }
       symTypeExpressionMap.put(symbolLoader.getName(), symTypeExpression);
       return symTypeExpression;
