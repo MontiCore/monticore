@@ -13,7 +13,7 @@ import de.monticore.types.typesymbols._symboltable.OOTypeSymbol;
 import mc.testcd4analysis._symboltable.CDFieldSymbol;
 import mc.testcd4analysis._symboltable.CDMethOrConstrSymbol;
 import mc.testcd4analysis._symboltable.CDTypeSymbol;
-import mc.testcd4analysis._symboltable.CDTypeSymbolLoader;
+import mc.testcd4analysis._symboltable.CDTypeSymbolSurrogate;
 
 import java.util.HashMap;
 import java.util.List;
@@ -125,20 +125,20 @@ public class CD2EHelper {
     }
   }
 
-  public SymTypeExpression createSymTypeExpressionFormCDTypeSymbolReference(CDTypeSymbolLoader symbolLoader) {
+  public SymTypeExpression createSymTypeExpressionFormCDTypeSymbolReference(CDTypeSymbolSurrogate symbolLoader) {
     if (symTypeExpressionMap.containsKey(symbolLoader.getName())) {
       return symTypeExpressionMap.get(symbolLoader.getName());
     } else {
       SymTypeExpression symTypeExpression;
-      if (symbolLoader.isSymbolLoaded()) {
+      if (symbolLoader.lazyLoadDelegate()!=null) {
         // if typeSymbol is already loaded
-        OOTypeSymbol typeSymbol = createOOTypeSymbolFormCDTypeSymbol(symbolLoader.getLoadedSymbol());
+        OOTypeSymbol typeSymbol = createOOTypeSymbolFormCDTypeSymbol(symbolLoader.lazyLoadDelegate());
         iTypeSymbolsScope.add(typeSymbol);
         symTypeExpression = SymTypeExpressionFactory.createTypeExpression(typeSymbol.getName(), iTypeSymbolsScope);
       } else {
         // if typeSymbol can be loaded
-        if (symbolLoader.isSymbolLoaded()) {
-          OOTypeSymbol typeSymbol = createOOTypeSymbolFormCDTypeSymbol(symbolLoader.getLoadedSymbol());
+        if (symbolLoader.lazyLoadDelegate()!=null) {
+          OOTypeSymbol typeSymbol = createOOTypeSymbolFormCDTypeSymbol(symbolLoader.lazyLoadDelegate());
           iTypeSymbolsScope.add(typeSymbol);
           symTypeExpression = SymTypeExpressionFactory.createTypeExpression(typeSymbol.getName(), iTypeSymbolsScope);
         } else {
@@ -157,12 +157,12 @@ public class CD2EHelper {
     }
   }
 
-  public SymTypeOfGenerics createSymTypeListFormCDTypeSymbolReference(CDTypeSymbolLoader cdTypeSymbolReference) {
+  public SymTypeOfGenerics createSymTypeListFormCDTypeSymbolReference(CDTypeSymbolSurrogate cdTypeSymbolReference) {
     SymTypeExpression symTypeExpression = createSymTypeExpressionFormCDTypeSymbolReference(cdTypeSymbolReference);
     return SymTypeExpressionFactory.createGenerics("List", iTypeSymbolsScope, Lists.newArrayList(symTypeExpression));
   }
 
-  public SymTypeOfGenerics createSymTypeOptionalFormCDTypeSymbolReference(CDTypeSymbolLoader cdTypeSymbolReference) {
+  public SymTypeOfGenerics createSymTypeOptionalFormCDTypeSymbolReference(CDTypeSymbolSurrogate cdTypeSymbolReference) {
     SymTypeExpression symTypeExpression = createSymTypeExpressionFormCDTypeSymbolReference(cdTypeSymbolReference);
     return SymTypeExpressionFactory.createGenerics("Optional", iTypeSymbolsScope, Lists.newArrayList(symTypeExpression));
   }
