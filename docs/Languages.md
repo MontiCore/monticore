@@ -314,7 +314,7 @@ component InteriorLight {                           // MontiArc language
         },
         tiger:Jaguar {
           color = RED;
-          length = 5,3; 
+          length = 5.3; 
         }
       ];
     };
