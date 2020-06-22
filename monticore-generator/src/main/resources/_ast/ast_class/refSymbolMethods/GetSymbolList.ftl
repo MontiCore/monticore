@@ -1,12 +1,12 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("attributeName", "referencedSymbol", "simpleSymbolName")}
-    update${attributeName?cap_first}Loader();
+    update${attributeName?cap_first}Surrogate();
     java.util.List<Optional<${referencedSymbol}>> temp = new java.util.ArrayList<>();
         if (getEnclosingScope() != null) {
             for (String element : this.names) {
                 //create the returned list, because the names list has not changed
-                if (${attributeName}Loader.get(element).isSymbolLoaded()) {
-                    temp.add(Optional.ofNullable(${attributeName}Loader.get(element).getLoadedSymbol()));
+                if (${attributeName}Surrogate.get(element).lazyLoadDelegate()!=null) {
+                    temp.add(Optional.ofNullable(${attributeName}Surrogate.get(element).lazyLoadDelegate()));
                 } else {
                     temp.add(Optional.empty());
                 }

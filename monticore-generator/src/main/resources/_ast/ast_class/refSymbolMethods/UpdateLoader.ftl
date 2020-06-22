@@ -2,7 +2,8 @@
 ${tc.signature("loaderAttributeName", "atributeName", "attributeType", "wasOptional")}
 <#if !wasOptional>
     if (${loaderAttributeName} == null) {
-      ${loaderAttributeName} = new ${attributeType}(this.get${atributeName?cap_first}(), this.getEnclosingScope());
+      ${loaderAttributeName} = new ${attributeType}(this.get${atributeName?cap_first}());
+      ${loaderAttributeName}.setEnclosingScope(this.getEnclosingScope());
     } else {
         if (get${atributeName?cap_first}() != null && !get${atributeName?cap_first}().equals(${loaderAttributeName}.getName())) {
           ${loaderAttributeName}.setName(get${atributeName?cap_first}());
@@ -11,7 +12,8 @@ ${tc.signature("loaderAttributeName", "atributeName", "attributeType", "wasOptio
         }
 <#else>
     if (${loaderAttributeName} == null) {
-      ${loaderAttributeName} = new ${attributeType}(isPresent${atributeName?cap_first}() ? this.get${atributeName?cap_first}() : null, this.getEnclosingScope());
+      ${loaderAttributeName} = new ${attributeType}(isPresent${atributeName?cap_first}() ? this.get${atributeName?cap_first}() : null);
+      ${loaderAttributeName}.setEnclosingScope(this.getEnclosingScope());
     } else {
         if (isPresent${atributeName?cap_first}() && !get${atributeName?cap_first}().equals(${loaderAttributeName}.getName())) {
           ${loaderAttributeName}.setName(get${atributeName?cap_first}());

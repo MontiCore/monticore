@@ -2,11 +2,15 @@
 ${tc.signature("loaderAttributeName", "attributeName", "attributeType")}
     for (String name : ${attributeName}) {
         if (!${loaderAttributeName}.containsKey(name)) {
-            ${loaderAttributeName}.put(name, new ${attributeType}(name, this.getEnclosingScope()));
+            ${attributeType} attr = new ${attributeType}(name);
+            attr.setEnclosingScope(this.getEnclosingScope());
+            ${loaderAttributeName}.put(name, attr);
         }
-        ${attributeType} loader = namesSymbolLoader.get(name);
+        ${attributeType} loader = namesSymbolSurrogate.get(name);
         if (loader == null) {
-            ${loaderAttributeName}.put(name, new ${attributeType}(name, this.getEnclosingScope()));
+            ${attributeType} attr = new ${attributeType}(name);
+            attr.setEnclosingScope(this.getEnclosingScope());
+            ${loaderAttributeName}.put(name, attr);
         } else if (!loader.getName().equals(name)) {
             loader.setName(name);
         } else if (getEnclosingScope() != null && !getEnclosingScope().equals(loader.getEnclosingScope())) {
