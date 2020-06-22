@@ -105,7 +105,7 @@ public class SymbolLoaderBuilderDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeCount() {
-    assertEquals(3, builderClass.sizeCDAttributes());
+    assertEquals(5, builderClass.sizeCDAttributes());
   }
 
   @Test

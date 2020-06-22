@@ -32,8 +32,6 @@ public class SymbolLoaderDecorator extends AbstractCreator<ASTCDClass, ASTCDClas
 
   protected MethodDecorator methodDecorator;
 
-  protected AbstractCreator<ASTCDAttribute, List<ASTCDMethod>> mutatorDecorator;
-
   protected MandatoryMutatorSymbolLoaderDecorator symbolLoaderMethodDecorator;
 
   protected static final String TEMPLATE_PATH = "_symboltable.symbolloader.";
@@ -69,6 +67,7 @@ public class SymbolLoaderDecorator extends AbstractCreator<ASTCDClass, ASTCDClas
         .map(methodDecorator.getAccessorDecorator()::decorate)
         .flatMap(List::stream)
         .collect(Collectors.toList()));
+    //name and enclosing scope methods do not delegate to the symbol
     List<ASTCDMethod> delegateMethods = symbolRuleAttributeMethods.stream()
         .filter(m -> !m.getName().equals("setName"))
         .filter(m -> !m.getName().equals("getName"))
