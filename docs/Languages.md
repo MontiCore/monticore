@@ -300,7 +300,7 @@ component InteriorLight {                           // MontiArc language
 * OD is a language for textual denotation of object diagrams. The OD language
   has several purposes (when combined with appropriate language extensions):
   1. specification language for object structures (as part of the [UML/P](http://mbse.se-rwth.de/))
-  1. strage and transport of data sets (e.g. the artifact analysis toolchain), and
+  1. stage and transport of data sets (e.g. the artifact analysis toolchain), and
   1. as a report format for the MontiCore tool infrastructure. 
 * OD covers **named and anonymous objects, links, attributes, attribute values, lists**, and
   **visibilities**. For a comfortable definition, objects may be nested. An example:
@@ -331,9 +331,9 @@ component InteriorLight {                           // MontiArc language
   (e.g. by composing ODs with JavaExpressions). Furthermore, only 
   interesting attributes need to be defined (underspecification) and conformity
   to a CD4A model can be checked.
-* The ODs differ from JSON structures e.g. in 
-  the possibility to give the object a name, e.g. `tiger`, or `alice` 
-  and use that name to define real graph structures.
+* The ODs differ from JSON structures, e.g., in 
+  the possibility to give the object a name as it is the case for `tiger`, or `alice` 
+  enabaling the definition real graph structures.
 * Main grammars:
     * [ODBasics](https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/lang/ODBasics.mc4)
     * [OD4Report](https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/lang/OD4Report.mc4)
