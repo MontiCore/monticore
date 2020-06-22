@@ -4,10 +4,15 @@ import basicjava._ast.ASTCompilationUnit;
 import basicjava._symboltable.MethodSymbol;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import javaaut.JavaAutMill;
 import javaaut._parser.JavaAutParser;
-import javaaut._symboltable.*;
+import javaaut._symboltable.Automaton2MethodAdapter;
+import javaaut._symboltable.JavaAutArtifactScope;
+import javaaut._symboltable.JavaAutGlobalScope;
+import javaaut._symboltable.JavaAutSymbolTableCreatorDelegator;
 import org.antlr.v4.runtime.RecognitionException;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -17,6 +22,12 @@ import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 
 public class SymTabTest {
+
+  @BeforeClass
+  public static void setUp(){
+    LogStub.init();
+//    Log.enableFailQuick(false);
+  }
 
   @Test
   public void testPingPong() {
@@ -38,6 +49,7 @@ public class SymTabTest {
     ASTCompilationUnit ast = parse(model);
     JavaAutGlobalScope globalScope = JavaAutMill.javaAutGlobalScopeBuilder()
         .setModelPath(new ModelPath())
+        .setModelFileExtension("javaaut")
         .build();
 
     //initialize symbol table creators
