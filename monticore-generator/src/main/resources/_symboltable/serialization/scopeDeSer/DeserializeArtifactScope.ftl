@@ -4,8 +4,7 @@ ${tc.signature("symTabMill", "artifactScope", "artifactScopeBuilder", "scopeRule
   de.monticore.symboltable.serialization.JsonDeSers.checkCorrectDeSerForKind("${artifactScope}", scopeJson);
   String name = scopeJson.getStringMember(de.monticore.symboltable.serialization.JsonDeSers.NAME);
   String packageName = scopeJson.getStringMemberOpt(de.monticore.symboltable.serialization.JsonDeSers.PACKAGE).orElse("");
-  List<de.monticore.symboltable.ImportStatement> imports = de.monticore.symboltable.serialization.JsonDeSers.deserializeImports(scopeJson);
-   ${artifactScope} scope = ${symTabMill}.${artifactScopeBuilder?uncap_first}().setPackageName(packageName) .setImportList(imports).build();
+  ${artifactScope} scope = ${symTabMill}.${artifactScopeBuilder?uncap_first}().setPackageName(packageName).build();
   scope.setName(name);
   scope.setExportingSymbols(true);
 
