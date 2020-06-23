@@ -86,6 +86,7 @@ public class JsonPrinter {
    * Prints the begin of an object in Json notation.
    */
   public void beginObject() {
+    printBufferedBeginArray();
     printCommaIfNecessary();
     print("{");
     isFirstAttribute = true;
@@ -182,13 +183,8 @@ public class JsonPrinter {
    * Prints the end of a collection in Json notation.
    */
   public void endArray() {
-    if (isInEmptyArray && serializeEmptyLists) {
-      if (indentBeforeNewLine) {
-        indent();
-        indentBeforeNewLine = false;
-      }
-      isInEmptyArray = false;
-      print(arrayBeginBuffer);
+    if (serializeEmptyLists) {
+      printBufferedBeginArray();
     }
     if (!isInEmptyArray) {
       println("");
@@ -438,6 +434,12 @@ public class JsonPrinter {
   }
 
   private void internalValue(Object value) {
+    printBufferedBeginArray();
+    printCommaIfNecessary();
+    print(value);
+  }
+
+  private void printBufferedBeginArray(){
     if (indentBeforeNewLine) {
       indent();
       indentBeforeNewLine = false;
@@ -446,8 +448,6 @@ public class JsonPrinter {
       isInEmptyArray = false;
       print(arrayBeginBuffer);
     }
-    printCommaIfNecessary();
-    print(value);
   }
 
   /**
