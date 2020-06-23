@@ -3,7 +3,9 @@ ${tc.signature("artifactScope")}
   printer.beginObject();
   printer.member(de.monticore.symboltable.serialization.JsonDeSers.KIND, "${artifactScope}");
   printer.member(de.monticore.symboltable.serialization.JsonDeSers.NAME, node.getName());
-  printer.member(de.monticore.symboltable.serialization.JsonDeSers.PACKAGE, node.getPackageName());
+  if(node.getPackageName()!=""){
+    printer.member(de.monticore.symboltable.serialization.JsonDeSers.PACKAGE, node.getPackageName());
+  }
   printer.member(de.monticore.symboltable.serialization.JsonDeSers.EXPORTS_SYMBOLS, node.isExportingSymbols());
   printer.beginArray(de.monticore.symboltable.serialization.JsonDeSers.IMPORTS);
   node.getImportList().forEach(x -> printer.value(x.toString()));
