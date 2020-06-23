@@ -20,7 +20,7 @@ public class AutomatonWithSTInfo3Test extends GeneratorIntegrationsTest {
   public void test() {
     AutomatonSymbol automatonSymbol = new AutomatonSymbol("A");
     assertFalse(automatonSymbol instanceof IScopeSpanningSymbol);
-    AutomatonSymbolLoader automatonSymbolLoader;
+    AutomatonSymbolSurrogate automatonSymbolSurrogate;
     AutomatonWithSTInfo3Language automatonWithSTInfo3Language;
     AutomatonWithSTInfo3ModelLoader automatonWithSTInfo3ModelLoader;
     AutomatonWithSTInfo3SymbolTableCreator automatonWithSTInfo3SymbolTableCreator;
@@ -34,7 +34,7 @@ public class AutomatonWithSTInfo3Test extends GeneratorIntegrationsTest {
     ICommonAutomatonWithSTInfo3Symbol iCommonAutomatonWithSTInfo3Symbol;
     StateSymbol stateSymbol = new StateSymbol("S");
     assertFalse(stateSymbol instanceof IScopeSpanningSymbol);
-    StateSymbolLoader stateSymbolLoader;
+    StateSymbolSurrogate stateSymbolSurrogate;
   }
 
 }

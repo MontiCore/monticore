@@ -5,9 +5,9 @@ ${tc.signature("attributeName", "referencedSymbol", "simpleSymbolName")}
         if (getEnclosingScope() != null) {
             for (String element : this.names) {
                 //create the returned list, because the names list has not changed
-                if (${attributeName}Surrogate.get(element).lazyLoadDelegate()!=null) {
+                try{
                     temp.add(Optional.ofNullable(${attributeName}Surrogate.get(element).lazyLoadDelegate()));
-                } else {
+                }catch(Exception e){
                     temp.add(Optional.empty());
                 }
             }

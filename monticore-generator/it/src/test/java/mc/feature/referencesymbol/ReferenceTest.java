@@ -88,22 +88,20 @@ public class ReferenceTest {
     assertEquals(astReferenceToTest.getNameSymbol(), a);
 
     //test setter
-    astReferenceToTest.setName("B");
+    astReferenceToTest = astRand.getReferenceToTest(1);
     assertTrue(astReferenceToTest.isPresentNameSymbol());
     assertTrue(astReferenceToTest.isPresentNameDefinition());
     assertEquals(astReferenceToTest.getNameSymbol(), b);
     assertEquals(astReferenceToTest.getNameDefinition(), b.getAstNode());
 
-    // set name null
-    astReferenceToTest.setName(null);
-    assertFalse(astReferenceToTest.isPresentNameDefinition());
-    assertFalse(astReferenceToTest.isPresentNameSymbol());
-
     // set enclosing scope null
-    astReferenceToTest.setName("A");
+    astReferenceToTest = astRand.getReferenceToTest(0);
+    IReferenceScope enclosingScope = astReferenceToTest.getEnclosingScope();
     astReferenceToTest.setEnclosingScope(null);
     assertFalse(astReferenceToTest.isPresentNameDefinition());
     assertFalse(astReferenceToTest.isPresentNameSymbol());
+
+    astReferenceToTest.setEnclosingScope(enclosingScope);
   }
 
   @Test
@@ -137,25 +135,19 @@ public class ReferenceTest {
     assertEquals(astOptionalRef.getNameDefinition(), astTest);
     assertEquals(astOptionalRef.getNameSymbol(), a);
 
-    //test setter
-    astOptionalRef.setName("B");
-    assertTrue(astOptionalRef.isPresentNameDefinition());
-    assertTrue(astOptionalRef.isPresentNameSymbol());
-    assertEquals(astOptionalRef.getNameDefinition(), b.getAstNode());
-    assertEquals(astOptionalRef.getNameSymbol(), b);
-
-    astOptionalRef.setName("C");
-    assertTrue(astOptionalRef.isPresentNameSymbol());
-    assertTrue(astOptionalRef.isPresentNameDefinition());
-    assertEquals(astOptionalRef.getNameSymbol(), c);
-    assertEquals(astOptionalRef.getNameDefinition(), c.getAstNode());
-
-    astOptionalRef.setNameAbsent();
+    astOptionalRef = astRand.getOptionalRef(1);
     assertFalse(astOptionalRef.isPresentNameSymbol());
     assertFalse(astOptionalRef.isPresentNameDefinition());
 
+    String name = astOptionalRef.getName();
+    astOptionalRef.setNameAbsent();
+    assertFalse(astOptionalRef.isPresentNameSymbol());
+    assertFalse(astOptionalRef.isPresentNameDefinition());
+    astOptionalRef.setName(name);
+
     // set enclosing scope null
-    astOptionalRef.setName("A");
+    astOptionalRef = astRand.getOptionalRef(0);
+    IReferenceScope enclosingScope = astOptionalRef.getEnclosingScope();
     astOptionalRef.setEnclosingScope(null);
     assertFalse(astOptionalRef.isPresentNameDefinition());
     assertFalse(astOptionalRef.isPresentNameSymbol());
