@@ -76,13 +76,13 @@ public class MCGrammarInfo {
     buildLexPatterns();
     findAllKeywords();
     grammarSymbol.getTokenRulesWithInherited().forEach(t -> addSplitRule(t));
-    grammarSymbol.getKeywordRulesWithInherited().forEach(k -> keywordRules.add(k));
+    keywordRules = Lists.newArrayList(keywordRules);
     addSubRules();
     addHWAntlrCode();
     addLeftRecursiveRules();
   }
 
-  public void addSplitRule(String s) {
+  private void addSplitRule(String s) {
     String name = "";
     for (char c:s.toCharArray()) {
       name += getLexNamer().getConstantName(String.valueOf(c));

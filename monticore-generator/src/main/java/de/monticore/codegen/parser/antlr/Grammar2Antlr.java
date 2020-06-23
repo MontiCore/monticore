@@ -326,10 +326,8 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
       if (x.isPresentKeyConstant()) {
         addToCodeSection(createKeyPredicate(x.getKeyConstant().getStringList()));
       } else if (x.isPresentTokenConstant()) {
-        grammarInfo.addSplitRule(x.getTokenConstant().getString());
         addToCodeSection(parserHelper.getLexSymbolName(x.getTokenConstant().getString()));
       } else if (!grammarInfo.isKeyword(x.getName(), grammarEntry)) {
-        grammarInfo.getKeywordRules().add(x.getName());
         addToCodeSection(parserHelper.getLexSymbolName(x.getName()));
       } else if (grammarInfo.getKeywordRules().contains(x.getName())) {
         addToCodeSection(x.getName() + parserHelper.NOKEYWORD);
@@ -552,14 +550,15 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
   }
 
   private String createKeyPredicate(List<String> stringList) {
-    String rulename = "{next(";
+    String rulename = "(";
     String sep = "";
     for (String key: stringList) {
       rulename += sep;
-      sep = ", ";
-      rulename += "\"" + key + "\"";
+      sep = " | ";
+      rulename +=  key + parserHelper.NOKEYWORD;
+
     }
-    rulename += ")}? Name";
+    rulename += ")";
     return rulename;
   }
 
@@ -600,7 +599,6 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
 
     startCodeSection("ASTTokenTerminal " + ast.getName());
     addToCodeSection("(");
-    grammarInfo.addSplitRule(ast.getTokenConstant().getString());
 
     addToCodeSection(parserHelper.getLexSymbolName(ast.getTokenConstant().getString()));
 

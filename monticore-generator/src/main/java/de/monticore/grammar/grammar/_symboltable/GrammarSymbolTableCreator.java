@@ -160,6 +160,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
   public void visit(ASTKeyTerminal node) {
     // only create a symbol for ASTKeyTerminals that have a usage name
     // only with usage name is shown in AST
+    grammarSymbol.noKeywords.addAll(node.getKeyConstant().getStringList());
     if(node.isPresentUsageName()){
       super.visit(node);
     } else {
@@ -198,6 +199,18 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
         Log.error(String.format(SET_SCOPE_ERROR, node));
       }
     }
+  }
+
+  @Override
+  public void visit(ASTTokenConstant node) {
+    super.visit(node);
+    grammarSymbol.splitRules.add(node.getString());
+  }
+
+  @Override
+  public void visit(ASTKeyConstant node) {
+    super.visit(node);
+    grammarSymbol.noKeywords.addAll(node.getStringList());
   }
 
   @Override
