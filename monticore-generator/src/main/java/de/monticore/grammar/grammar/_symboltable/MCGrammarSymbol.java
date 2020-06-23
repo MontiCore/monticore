@@ -4,6 +4,8 @@ package de.monticore.grammar.grammar._symboltable;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsArtifactScope;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
@@ -124,8 +126,8 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
     return ret;
   }
 
-  public List<String> getTokenRulesWithInherited() {
-    final List<String> ret = Lists.newArrayList();
+  public Collection<String> getTokenRulesWithInherited() {
+    final Collection<String> ret = Sets.newHashSet();
 
     for (int i = superGrammars.size() - 1; i >= 0; i--) {
       final MCGrammarSymbolLoader superGrammarRef = superGrammars.get(i);
@@ -138,8 +140,8 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
     return ret;
   }
 
-  public List<String> getKeywordRulesWithInherited() {
-    final List<String> ret = Lists.newArrayList();
+  public Collection<String> getKeywordRulesWithInherited() {
+    final Collection<String> ret = Sets.newHashSet();
 
     for (int i = superGrammars.size() - 1; i >= 0; i--) {
       final MCGrammarSymbolLoader superGrammarRef = superGrammars.get(i);
