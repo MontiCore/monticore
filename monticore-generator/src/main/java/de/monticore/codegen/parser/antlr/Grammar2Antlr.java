@@ -330,7 +330,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
       } else if (!grammarInfo.isKeyword(x.getName(), grammarEntry)) {
         addToCodeSection(parserHelper.getLexSymbolName(x.getName()));
       } else if (grammarInfo.getKeywordRules().contains(x.getName())) {
-        addToCodeSection(x.getName() + parserHelper.NOKEYWORD);
+        addToCodeSection(parserHelper.getKeyRuleName(x.getName()));
       } else {
         addToCodeSection("'" + x.getName() + "'");
       }
@@ -508,7 +508,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
       rulename = "";
     } else if (grammarInfo.isKeyword(ast.getName(), grammarEntry)) {
       if (grammarInfo.getKeywordRules().contains(ast.getName())) {
-        rulename = ast.getName() + parserHelper.NOKEYWORD;
+        rulename = parserHelper.getKeyRuleName(ast.getName());
       } else {
         rulename = "'" + ast.getName() + "'";
       }
@@ -555,7 +555,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     for (String key: stringList) {
       rulename += sep;
       sep = " | ";
-      rulename +=  key + parserHelper.NOKEYWORD;
+      rulename +=  parserHelper.getKeyRuleName(key);
 
     }
     rulename += ")";

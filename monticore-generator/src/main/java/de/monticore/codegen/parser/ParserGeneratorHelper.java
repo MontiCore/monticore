@@ -4,7 +4,6 @@ package de.monticore.codegen.parser;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
@@ -44,7 +43,7 @@ public class ParserGeneratorHelper {
 
   public static final String RIGHTASSOC = "<assoc=right>";
 
-  public static final String NOKEYWORD = "_NOKEYWORD";
+  private static final String NOKEYWORD = "nokeyword_";
 
   private static Grammar_WithConceptsPrettyPrinter prettyPrinter;
 
@@ -161,6 +160,13 @@ public class ParserGeneratorHelper {
   }
 
   /**
+   * @return the name for a rule replacing a keyword
+   */
+  public String getKeyRuleName(String key) {
+    return NOKEYWORD + key + key.hashCode();
+  }
+
+  /**
    * Get all used LexSymbols, different form information in AST, as inherited
    * ones are integrated as well
    *
@@ -208,7 +214,7 @@ public class ParserGeneratorHelper {
   public List<String> getNoKeyordsWithInherited() {
     List<String> retList = Lists.newArrayList();
     for (String s: grammarSymbol.getKeywordRulesWithInherited()) {
-      String r = s + NOKEYWORD + " : {next(\"" + s + "\")}? Name;";
+      String r = getKeyRuleName(s) + " : {next(\"" + s + "\")}? Name;";
       retList.add(r);
     }
     return retList;
