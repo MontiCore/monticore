@@ -56,8 +56,10 @@ component grammar BasicTypeSymbols extends de.monticore.MCBasics {
   interface symbol Variable = Name ;
   symbolrule Variable =
     type: de.monticore.types.check.SymTypeExpression
+    isReadOnly: boolean
    ;
-// TODO: Wollten wir das readOnly hier noch einfügen?
+// TODO: Wollten wir das readOnly hier noch einfï¿½gen?
+//MB: Kein Problem
 
   /*=================================================================*/
 

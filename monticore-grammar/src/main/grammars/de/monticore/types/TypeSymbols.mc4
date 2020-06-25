@@ -67,13 +67,13 @@ component grammar TypeSymbols extends de.monticore.types.BasicTypeSymbols {
     isPublic: boolean
     isStatic:boolean
   ;
-// TODO !: die neue fassung ist schon deutlich näher am ideal, allerdings
+// TODO !: die neue fassung ist schon deutlich nï¿½her am ideal, allerdings
 // sind die beiden Flags hier immer noch viel am Platz, denn sie
-// beschreiben nicht eine Eigenschaft des Symbols, sondern eine 
-// Eigenschaft der Nutzung des Symbols von draußen.
-// Meine Alternativorschlag steht: 2 Scopes nehmen / die könnte man auch schachteln
-// oder zwei separate Listen in diesem ominösen, 
-// überladenen Function- Scope, die halt beide durchsucht werden ...
+// beschreiben nicht eine Eigenschaft des Symbols, sondern eine
+// Eigenschaft der Nutzung des Symbols von drauï¿½en.
+// Meine Alternativorschlag steht: 2 Scopes nehmen / die kï¿½nnte man auch schachteln
+// oder zwei separate Listen in diesem ominï¿½sen,
+// ï¿½berladenen Function- Scope, die halt beide durchsucht werden ...
 // (wobei in externen Artefakten die zweite Liste eh immer leer bleibt)
 
 
@@ -94,8 +94,10 @@ component grammar TypeSymbols extends de.monticore.types.BasicTypeSymbols {
     isProtected: boolean
     isPublic: boolean
     isStatic:boolean
+    isElliptic
   ;
   // TODO: fehlt hier noch isElliptic  um die spezielle Form der Darstellung
   // des letzten Arguments (Typ: [.] las erweiterbare Liste zu erlauben?
+  // MB: Es waurde ursprÃ¼nglich erst eine Ebene spÃ¤ter  definiert
 
 }

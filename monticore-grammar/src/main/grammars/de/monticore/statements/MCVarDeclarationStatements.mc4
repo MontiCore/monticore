@@ -63,7 +63,6 @@ interface symbol VarDecl extends Field;
 symbolrule VarDecl =
     annotations: de.monticore.types.check.SymTypeExpression*
     isFinal: boolean
-    isReadOnly: boolean
     isVolatile: boolean
     isTransient: boolean
     isEllipsis: boolean

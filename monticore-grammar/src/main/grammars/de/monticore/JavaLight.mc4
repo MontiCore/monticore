@@ -40,7 +40,6 @@ interface scope symbol MethOrConstr extends Method = Name;
 symbolrule MethOrConstr =
     exceptions: de.monticore.types.check.SymTypeExpression*
     annotations: de.monticore.types.check.SymTypeExpression*
-    isEllipsisParameterMethod: boolean
     isFinal: boolean
     isAbstract: boolean
     isSynchronized: boolean
