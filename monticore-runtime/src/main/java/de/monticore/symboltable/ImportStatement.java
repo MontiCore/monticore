@@ -6,7 +6,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
 /**
- * @Deprecated This will be removed soon. Instead, symbol table creators should
+ * @deprecated This will be removed soon. Instead, symbol table creators should
  * qualify names pointing to symbols of foreign models with the respective import statements
  * in the model.
  */

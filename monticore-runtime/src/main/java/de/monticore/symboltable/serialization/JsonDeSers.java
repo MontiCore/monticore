@@ -33,10 +33,13 @@ public class JsonDeSers {
 
   /**
    * This method deserializes a list of import statements in the passed Json object
-   *
+   * @deprecated This method will be removed soon. Instead, symbol table creators should
+   *  * qualify names pointing to symbols of foreign models with the respective import statements
+   *  * in the model.
    * @param scope
    * @return
    */
+  @Deprecated
   public static List<ImportStatement> deserializeImports(JsonObject scope) {
     List<ImportStatement> result = new ArrayList<>();
     if (scope.hasMember(IMPORTS)) {

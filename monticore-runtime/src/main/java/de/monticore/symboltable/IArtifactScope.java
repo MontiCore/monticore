@@ -25,7 +25,11 @@ public interface IArtifactScope {
    * @param packageName the possible package name
    * @param imports     the import statements
    * @return a set of possible qualified names for the <code>simpleName</code>
+   * @deprecated This method will be removed soon. Instead, symbol table creators should
+   *  qualify names pointing to symbols of foreign models with the respective
+   *  import statements in the model.
    */
+  @Deprecated
   default public Set<String> calculateQualifiedNames(String name, String packageName, List<ImportStatement> imports) {
     final Set<String> potentialSymbolNames = new LinkedHashSet<>();
 

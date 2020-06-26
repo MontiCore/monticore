@@ -30,8 +30,4 @@ public  class ASTMCImportStatement extends ASTMCImportStatementTOP {
     return vi.getPrinter().getContent();
   }
 
-  public ImportStatement getImportStatement(){
-    return new ImportStatement(this.getQName(), this.isStar());
-  }
-
 }
