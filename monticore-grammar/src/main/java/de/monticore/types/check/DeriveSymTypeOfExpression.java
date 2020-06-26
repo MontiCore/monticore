@@ -13,6 +13,7 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
 
+import static de.monticore.types.check.SymTypeConstant.unbox;
 import static de.monticore.types.check.SymTypeExpressionFactory.*;
 import static de.monticore.types.check.TypeCheck.*;
 
@@ -182,8 +183,17 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
         isByte(type));
   }
 
-
-
-
+  /**
+   * helper method for the calculation of the ASTBooleanNotExpression
+   */
+  protected Optional<SymTypeExpression> getUnaryNumericPromotionType(SymTypeExpression type) {
+    if (isByte(type) || isShort(type) || isChar(type) || isInt(type)) {
+      return Optional.of(SymTypeExpressionFactory.createTypeConstant("int"));
+    }
+    if (isLong(type) || isDouble(type) || isFloat(type)) {
+      return Optional.of(SymTypeExpressionFactory.createTypeConstant(unbox(type.print())));
+    }
+    return Optional.empty();
+  }
 
 }
