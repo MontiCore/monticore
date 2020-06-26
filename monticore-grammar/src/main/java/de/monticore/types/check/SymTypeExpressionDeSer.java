@@ -7,6 +7,9 @@ import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
 import de.se_rwth.commons.logging.Log;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * This DeSer reailizes serialization and deserialization of SymTypeExpressions.
  */
@@ -64,6 +67,21 @@ public class SymTypeExpressionDeSer {
 
   public String serialize(SymTypeExpression toSerialize) {
     return toSerialize.printAsJson();
+  }
+
+  /**
+   * This method is a shortcut, as there are many symbolrules indicating that a symbol has a
+   * a List of SymTypeExpressions as member.
+   * @param serializedMember
+   * @param enclosingScope
+   * @return
+   */
+  public List<SymTypeExpression> deserializeList(JsonElement serializedMember, ITypeSymbolsScope enclosingScope) {
+    List<SymTypeExpression> result = new ArrayList<>();
+    for (JsonElement e : serializedMember.getAsJsonArray().getValues()) {
+      result.add(deserialize(e, enclosingScope));
+    }
+    return result;
   }
 
   public SymTypeExpression deserialize(String serialized, ITypeSymbolsScope enclosingScope) {

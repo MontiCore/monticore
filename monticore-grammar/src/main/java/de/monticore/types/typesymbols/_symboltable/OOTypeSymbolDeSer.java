@@ -13,7 +13,7 @@ import java.util.List;
 public class OOTypeSymbolDeSer extends OOTypeSymbolDeSerTOP {
 
   @Override
-  protected List<SymTypeExpression> deserializeSuperTypes(JsonObject symbolJson, ITypeSymbolsScope enclosingScope) {
+  public List<SymTypeExpression> deserializeSuperTypes(JsonObject symbolJson, ITypeSymbolsScope enclosingScope) {
     List<SymTypeExpression> result = new ArrayList<>();
     for(JsonElement e : symbolJson.getMember("superTypes").getAsJsonArray().getValues()){
       result.add(SymTypeExpressionDeSer.getInstance().deserialize(e,enclosingScope));

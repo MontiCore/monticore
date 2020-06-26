@@ -9,9 +9,8 @@ import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
 public class MethodSymbolDeSer extends MethodSymbolDeSerTOP {
   
   @Override
-  protected SymTypeExpression deserializeReturnType(JsonObject symbolJson, ITypeSymbolsScope enclosingScope) {
+  public SymTypeExpression deserializeReturnType(JsonObject symbolJson, ITypeSymbolsScope enclosingScope) {
     return SymTypeExpressionDeSer.getInstance().deserialize(symbolJson.getMember("returnType"), enclosingScope);
   }
 
 }
-//

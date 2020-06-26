@@ -12,15 +12,12 @@ import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TypeVarSymbolDeSer extends TypeVarSymbolDeSerTOP {
+public class TypeSymbolDeSer extends TypeSymbolDeSerTOP {
 
   protected List<SymTypeExpression> deserializeSuperTypes(JsonObject symbolJson,
       ITypeSymbolsScope enclosingScope) {
-    List<SymTypeExpression> result = new ArrayList<>();
-    for (JsonElement e : symbolJson.getMember("superTypes").getAsJsonArray().getValues()) {
-      result.add(SymTypeExpressionDeSer.getInstance().deserialize(e, enclosingScope));
-    }
-    return result;
+    JsonElement superTypes = symbolJson.getMember("superTypes");
+    return SymTypeExpressionDeSer.getInstance().deserializeList(superTypes, enclosingScope);
   }
 
 }
