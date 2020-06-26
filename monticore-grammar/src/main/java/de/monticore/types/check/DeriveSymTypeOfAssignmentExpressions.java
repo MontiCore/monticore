@@ -101,7 +101,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpress
   public void traverse(ASTAssignmentExpression expr) {
     //there has to be a variable on the left side of an assignmentexpression
     acceptThisAndReturnSymTypeExpressionOrLogError(expr.getLeft(), "0xA0181");
-    if (typeCheckResult.isPresentLast()) {
+    if (typeCheckResult.isPresentCurrentResult()) {
       if (!typeCheckResult.isField()) {
         typeCheckResult.reset();
         Log.error("0xA0180 The expression at Source position "+ expr.getLeft().get_SourcePositionStart()+" must be a field");

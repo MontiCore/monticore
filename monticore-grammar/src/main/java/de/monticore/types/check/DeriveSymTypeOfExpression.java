@@ -68,7 +68,7 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
   public void traverse(ASTNameExpression expr) {
     Optional<SymTypeExpression> wholeResult = calculateNameExpression(expr);
     if(wholeResult.isPresent()){
-      typeCheckResult.setLast(wholeResult.get());
+      typeCheckResult.setCurrentResult(wholeResult.get());
     }else{
      //name not found --> package or nothing
      typeCheckResult.reset();
@@ -113,7 +113,7 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
   protected void storeResultOrLogError(Optional<SymTypeExpression> result, ASTExpression expression, String errorCode){
     if(result.isPresent()){
       //store the result of the expression in the last result
-      typeCheckResult.setLast(result.get());
+      typeCheckResult.setCurrentResult(result.get());
     }else{
       typeCheckResult.reset();
       logError(errorCode, expression.get_SourcePositionStart());
@@ -128,8 +128,8 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
   protected SymTypeExpression acceptThisAndReturnSymTypeExpression(ASTExpression expression){
     SymTypeExpression result = null;
     expression.accept(getRealThis());
-    if(typeCheckResult.isPresentLast()){
-      result = typeCheckResult.getLast();
+    if(typeCheckResult.isPresentCurrentResult()){
+      result = typeCheckResult.getCurrentResult();
     }
     return result;
   }
@@ -142,8 +142,8 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
   protected SymTypeExpression acceptThisAndReturnSymTypeExpression(ASTLiteral literal){
     SymTypeExpression result = null;
     literal.accept(getRealThis());
-    if(typeCheckResult.isPresentLast()){
-      result = typeCheckResult.getLast();
+    if(typeCheckResult.isPresentCurrentResult()){
+      result = typeCheckResult.getCurrentResult();
     }
     return result;
   }

@@ -8,7 +8,7 @@ import java.util.Optional;
  */
 public class TypeCheckResult {
 
-  private Optional<SymTypeExpression> last;
+  private Optional<SymTypeExpression> currentResult;
 
   private boolean type;
 
@@ -17,30 +17,30 @@ public class TypeCheckResult {
   private boolean field;
 
   public TypeCheckResult(){
-    this.last = Optional.empty();
+    this.currentResult = Optional.empty();
     this.field = false;
     this.method = false;
     this.type = false;
   }
 
-  public SymTypeExpression getLast() {
-    return last.get();
+  public SymTypeExpression getCurrentResult() {
+    return currentResult.get();
   }
 
-  public boolean isPresentLast() {
-    return last.isPresent();
+  public boolean isPresentCurrentResult() {
+    return currentResult.isPresent();
   }
 
-  public void setLast(SymTypeExpression last){
-    this.last = Optional.of(last);
+  public void setCurrentResult(SymTypeExpression currentResult){
+    this.currentResult = Optional.of(currentResult);
   }
   
-  public void setLastAbsent() {
-    this.last = Optional.empty();
+  public void setCurrentResultAbsent() {
+    this.currentResult = Optional.empty();
   }
 
   public void reset(){
-    setLastAbsent();
+    setCurrentResultAbsent();
     type = false;
     method = false;
     type = false;

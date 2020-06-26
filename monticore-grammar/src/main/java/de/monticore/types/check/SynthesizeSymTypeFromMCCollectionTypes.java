@@ -61,34 +61,34 @@ public class SynthesizeSymTypeFromMCCollectionTypes extends SynthesizeSymTypeFro
   public void endVisit(ASTMCListType t) {
     // argument Type has been processed and stored in result:
     SymTypeExpression tex =
-        SymTypeExpressionFactory.createGenerics(new OOTypeSymbolLoader("List", getScope(t.getEnclosingScope())), typeCheckResult.getLast());
-    if (!typeCheckResult.isPresentLast()) {
+        SymTypeExpressionFactory.createGenerics(new OOTypeSymbolLoader("List", getScope(t.getEnclosingScope())), typeCheckResult.getCurrentResult());
+    if (!typeCheckResult.isPresentCurrentResult()) {
       Log.error("0xE9FD6 Internal Error: No SymType argument for List type. "
           + " Probably TypeCheck mis-configured.");
     }
-    typeCheckResult.setLast(tex);
+    typeCheckResult.setCurrentResult(tex);
   }
 
   public void endVisit(ASTMCSetType t) {
     // argument Type has been processed and stored in result:
     SymTypeExpression tex =
-        SymTypeExpressionFactory.createGenerics(new OOTypeSymbolLoader("Set", getScope(t.getEnclosingScope())), typeCheckResult.getLast());
-    if (!typeCheckResult.isPresentLast()) {
+        SymTypeExpressionFactory.createGenerics(new OOTypeSymbolLoader("Set", getScope(t.getEnclosingScope())), typeCheckResult.getCurrentResult());
+    if (!typeCheckResult.isPresentCurrentResult()) {
       Log.error("0xE9FD7 Internal Error: No SymType argument for Set type. "
           + " Probably TypeCheck mis-configured.");
     }
-    typeCheckResult.setLast(tex);
+    typeCheckResult.setCurrentResult(tex);
   }
 
   public void endVisit(ASTMCOptionalType t) {
     // argument Type has been processed and stored in result:
     SymTypeExpression tex =
-        SymTypeExpressionFactory.createGenerics(new OOTypeSymbolLoader("Optional", getScope(t.getEnclosingScope())), typeCheckResult.getLast());
-    if (!typeCheckResult.isPresentLast()) {
+        SymTypeExpressionFactory.createGenerics(new OOTypeSymbolLoader("Optional", getScope(t.getEnclosingScope())), typeCheckResult.getCurrentResult());
+    if (!typeCheckResult.isPresentCurrentResult()) {
       Log.error("0xE9FD8 Internal Error: No SymType argument for Optional type. "
           + " Probably TypeCheck mis-configured.");
     }
-    typeCheckResult.setLast(tex);
+    typeCheckResult.setCurrentResult(tex);
   }
 
   /**
@@ -100,26 +100,26 @@ public class SynthesizeSymTypeFromMCCollectionTypes extends SynthesizeSymTypeFro
     if (null != node.getKey()) {
       node.getKey().accept(getRealThis());
     }
-    if (!typeCheckResult.isPresentLast()) {
+    if (!typeCheckResult.isPresentCurrentResult()) {
       Log.error("0xE9FDA Internal Error: Missing SymType argument 1 for Map type. "
           + " Probably TypeCheck mis-configured.");
     }
-    SymTypeExpression argument1 = typeCheckResult.getLast();
+    SymTypeExpression argument1 = typeCheckResult.getCurrentResult();
 
     // Argument 2:
     if (null != node.getValue()) {
       node.getValue().accept(getRealThis());
     }
-    if (!typeCheckResult.isPresentLast()) {
+    if (!typeCheckResult.isPresentCurrentResult()) {
       Log.error("0xE9FDB Internal Error: Missing SymType argument 1 for Map type. "
           + " Probably TypeCheck mis-configured.");
     }
-    SymTypeExpression argument2 = typeCheckResult.getLast();
+    SymTypeExpression argument2 = typeCheckResult.getCurrentResult();
     // Construct new TypeExpression:
     SymTypeExpression tex =
         SymTypeExpressionFactory.createGenerics(new OOTypeSymbolLoader(
             "Map", getScope(node.getEnclosingScope())), argument1, argument2);
-    typeCheckResult.setLast(tex);
+    typeCheckResult.setCurrentResult(tex);
   }
 
   /**
@@ -135,7 +135,7 @@ public class SynthesizeSymTypeFromMCCollectionTypes extends SynthesizeSymTypeFro
    */
   @Override
   public void endVisit(ASTMCQualifiedType qType) {
-    typeCheckResult.setLast(SymTypeExpressionFactory.createTypeObject(new OOTypeSymbolLoader(qType.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()), getScope(qType.getEnclosingScope()))));
+    typeCheckResult.setCurrentResult(SymTypeExpressionFactory.createTypeObject(new OOTypeSymbolLoader(qType.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()), getScope(qType.getEnclosingScope()))));
   }
 
   // ASTMCTypeArgument, ASTMCBasicTypeArgument and  MCPrimitiveTypeArgument:

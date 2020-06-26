@@ -29,8 +29,8 @@ public class DeriveSymTypeOfMyOwnExpressionGrammar
     SymTypeExpression result = null;
 
     expr.getExpression().accept(getRealThis());
-    if(typeCheckResult.isPresentLast()){
-      inner = typeCheckResult.getLast();
+    if(typeCheckResult.isPresentCurrentResult()){
+      inner = typeCheckResult.getCurrentResult();
     }else{
       Log.error("0xB0001 the inner result " +
           "cannot be calculated");
@@ -42,7 +42,7 @@ public class DeriveSymTypeOfMyOwnExpressionGrammar
     }
 
     if(result!=null){
-      typeCheckResult.setLast(result);
+      typeCheckResult.setCurrentResult(result);
     }else{
       typeCheckResult.reset();
       Log.error("0xB0003 the result" +
