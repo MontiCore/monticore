@@ -43,6 +43,8 @@ public class ParserGeneratorHelper {
 
   public static final String RIGHTASSOC = "<assoc=right>";
 
+  private static final String NOKEYWORD = "nokeyword_";
+
   private static Grammar_WithConceptsPrettyPrinter prettyPrinter;
 
   private ASTMCGrammar astGrammar;
@@ -150,7 +152,18 @@ public class ParserGeneratorHelper {
    */
   public String getLexSymbolName(String constName) {
     Log.errorIfNull(constName);
-    return grammarInfo.getLexNamer().getLexName(grammarSymbol, constName);
+    if (grammarInfo.getSplitRules().containsKey(constName)) {
+      return grammarInfo.getSplitRules().get(constName);
+    } else {
+      return grammarInfo.getLexNamer().getLexName(grammarSymbol, constName);
+    }
+  }
+
+  /**
+   * @return the name for a rule replacing a keyword
+   */
+  public String getKeyRuleName(String key) {
+    return NOKEYWORD + key + key.hashCode();
   }
 
   /**
@@ -161,6 +174,50 @@ public class ParserGeneratorHelper {
    */
   public Set<String> getLexSymbolsWithInherited() {
     return grammarInfo.getLexNamer().getLexnames();
+  }
+
+  /**
+   * Get all splitted LexSymbols
+   *
+   * @return list of rules for all splitted LexSymbols
+   */
+  public List<String> getSplitLexSymbolsWithInherited() {
+    List<String> retList = Lists.newArrayList();
+    for (Entry<String, String> e: grammarInfo.getSplitRules().entrySet()) {
+      StringBuilder sb = new StringBuilder();
+      sb.append(e.getValue());
+      sb.append(" : ");
+      // Split the token
+      String sep = "";
+      sb.append("{noSpace(");
+      for (int i = 2; i <= e.getKey().length(); i++) {
+        sb.append(sep);
+        sep = ", ";
+        sb.append(i);
+      }
+      sb.append(")}? ");
+      for (char c : e.getKey().toCharArray()) {
+        sb.append(grammarInfo.getLexNamer().getLexName(grammarSymbol, String.valueOf(c)));
+        sb.append(" ");
+      }
+      sb.append(";");
+      retList.add(sb.toString());
+    }
+    return retList;
+  }
+
+  /**
+   * Get all keyords replaced by name
+   *
+   * @return list of keywords
+   */
+  public List<String> getNoKeyordsWithInherited() {
+    List<String> retList = Lists.newArrayList();
+    for (String s: grammarSymbol.getKeywordRulesWithInherited()) {
+      String r = getKeyRuleName(s) + " : {next(\"" + s + "\")}? Name;";
+      retList.add(r);
+    }
+    return retList;
   }
 
   /**
