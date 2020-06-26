@@ -82,8 +82,8 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
     nameMethods.addAll(symbolSurrogateMethodDecorator.decorate(nameAttribute));
 
     ASTCDAttribute enclosingScopeAttribute = createEnclosingScopeAttribute(scopeInterfaceType);
-    List<ASTCDMethod> enclosingScopeMethods = methodDecorator.getAccessorDecorator().decorate(enclosingScopeAttribute);
-    enclosingScopeMethods.addAll(symbolSurrogateMethodDecorator.decorate(enclosingScopeAttribute));
+    List<ASTCDMethod> enclosingScopeMethods = symbolSurrogateMethodDecorator.decorate(enclosingScopeAttribute);
+    enclosingScopeMethods.add(createGetEnclosingScopeMethod(enclosingScopeAttribute));
 
     ASTCDClassBuilder builder = CD4AnalysisMill.cDClassBuilder()
             .setName(symbolSurrogateSimpleName)
@@ -116,6 +116,12 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
 
   protected ASTCDAttribute createEnclosingScopeAttribute(String scopeType) {
     return getCDAttributeFacade().createAttribute(PROTECTED, scopeType, "enclosingScope");
+  }
+
+  protected ASTCDMethod createGetEnclosingScopeMethod(ASTCDAttribute enclosingScopeAttribute){
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, enclosingScopeAttribute.getMCType(), "getEnclosingScope");
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "GetEnclosingScopeSymbolSurrogate"));
+    return method;
   }
 
   protected ASTCDAttribute createDelegateAttribute(String symbolType) {
