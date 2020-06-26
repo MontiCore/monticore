@@ -189,7 +189,7 @@ public class TypeCheck {
     iTypesCalculator.init();
     Optional<SymTypeExpression> result = iTypesCalculator.calculateType(lit);
     if(!result.isPresent()) {
-      Log.error("0xED670 Internal Error: No Type for Literal " + lit
+      Log.error("0xED672 Internal Error: No Type for Literal " + lit
           + " Probably TypeCheck mis-configured.");
     }
     return result.get();

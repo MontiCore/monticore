@@ -55,36 +55,36 @@ public class SynthesizeSymTypeFromMCFullGenericTypes extends SynthesizeSymTypeFr
 
   public void traverse(ASTMCArrayType arrayType) {
     arrayType.getMCType().accept(getRealThis());
-    if (!typeCheckResult.isPresentLast()) {
+    if (!typeCheckResult.isPresentCurrentResult()) {
       Log.error("0xE9CDA Internal Error: SymType argument missing for generic type. "
               + " Probably TypeCheck mis-configured.");
     }
     SymTypeExpression tex = SymTypeExpressionFactory.createTypeArray(
             arrayType.printTypeWithoutBrackets(), getScope(arrayType.getEnclosingScope()),
             arrayType.getDimensions(),
-            typeCheckResult.getLast());
-    typeCheckResult.setLast(tex);
+            typeCheckResult.getCurrentResult());
+    typeCheckResult.setCurrentResult(tex);
   }
 
   public void traverse(ASTMCWildcardTypeArgument wildcardType) {
     SymTypeOfWildcard tex;
     if (wildcardType.isPresentLowerBound()) {
       wildcardType.getLowerBound().accept(getRealThis());
-      if (!typeCheckResult.isPresentLast()) {
+      if (!typeCheckResult.isPresentCurrentResult()) {
         Log.error("0xE9CDA Internal Error: SymType argument missing for generic type. "
                 + " Probably TypeCheck mis-configured.");
       }
-      tex = SymTypeExpressionFactory.createWildcard(false, typeCheckResult.getLast());
+      tex = SymTypeExpressionFactory.createWildcard(false, typeCheckResult.getCurrentResult());
     } else if (wildcardType.isPresentUpperBound()) {
       wildcardType.getUpperBound().accept(getRealThis());
-      if (!typeCheckResult.isPresentLast()) {
+      if (!typeCheckResult.isPresentCurrentResult()) {
         Log.error("0xE9CDA Internal Error: SymType argument missing for generic type. "
                 + " Probably TypeCheck mis-configured.");
       }
-      tex = SymTypeExpressionFactory.createWildcard(true, typeCheckResult.getLast());
+      tex = SymTypeExpressionFactory.createWildcard(true, typeCheckResult.getCurrentResult());
     } else {
       tex = SymTypeExpressionFactory.createWildcard();
     }
-    typeCheckResult.setLast(tex);
+    typeCheckResult.setCurrentResult(tex);
   }
 }

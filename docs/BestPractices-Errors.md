@@ -38,6 +38,6 @@ they could be taken for something else).
 ## Further Information
 
 * [Overview Best Practices](BestPractices.md)
-* [MontiCore project](../../README.md) - MontiCore
+* [MontiCore project](../README.md) - MontiCore
 * see also [**MontiCore Reference Manual**](http://www.monticore.de/)
 

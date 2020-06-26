@@ -2,10 +2,8 @@
 package de.monticore.types.check;
 
 import de.monticore.literals.mccommonliterals._ast.*;
-import de.monticore.literals.mccommonliterals._symboltable.MCCommonLiteralsScope;
 import de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor;
 import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
-import de.se_rwth.commons.logging.Log;
 
 /**
  * Visitor for Derivation of SymType from Literals
@@ -37,57 +35,57 @@ public class DeriveSymTypeOfMCCommonLiterals extends DeriveSymTypeOfLiterals
   
   @Override
   public void visit(ASTNatLiteral lit){
-    result.setLast(DefsTypeBasic._intSymType);
+    result.setCurrentResult(DefsTypeBasic._intSymType);
   }
 
   @Override
   public void visit(ASTCharLiteral lit){
-    result.setLast(DefsTypeBasic._charSymType);
+    result.setCurrentResult(DefsTypeBasic._charSymType);
   }
 
   @Override
   public void visit(ASTBooleanLiteral lit){
-    result.setLast(DefsTypeBasic._booleanSymType);
+    result.setCurrentResult(DefsTypeBasic._booleanSymType);
   }
 
   @Override
   public void visit(ASTBasicDoubleLiteral lit){
-    result.setLast(DefsTypeBasic._doubleSymType);
+    result.setCurrentResult(DefsTypeBasic._doubleSymType);
   }
 
   @Override
   public void visit(ASTBasicFloatLiteral lit){
-    result.setLast(DefsTypeBasic._floatSymType);
+    result.setCurrentResult(DefsTypeBasic._floatSymType);
   }
 
   @Override
   public void visit(ASTBasicLongLiteral lit){
-    result.setLast(DefsTypeBasic._longSymType);
+    result.setCurrentResult(DefsTypeBasic._longSymType);
   }
 
   @Override
   public void visit(ASTStringLiteral lit){
-    result.setLast(DefsTypeBasic._StringSymType);
+    result.setCurrentResult(DefsTypeBasic._StringSymType);
   }
 
   @Override
   public void visit(ASTSignedNatLiteral lit) {
-    result.setLast(DefsTypeBasic._intSymType);
+    result.setCurrentResult(DefsTypeBasic._intSymType);
   }
 
   @Override
   public void visit(ASTSignedBasicDoubleLiteral lit) {
-    result.setLast(DefsTypeBasic._doubleSymType);
+    result.setCurrentResult(DefsTypeBasic._doubleSymType);
   }
 
   @Override
   public void visit(ASTSignedBasicFloatLiteral lit) {
-    result.setLast(DefsTypeBasic._floatSymType);
+    result.setCurrentResult(DefsTypeBasic._floatSymType);
   }
 
   @Override
   public void visit(ASTSignedBasicLongLiteral lit) {
-    result.setLast(DefsTypeBasic._longSymType);
+    result.setCurrentResult(DefsTypeBasic._longSymType);
   }
 
   /**
@@ -95,7 +93,7 @@ public class DeriveSymTypeOfMCCommonLiterals extends DeriveSymTypeOfLiterals
    */
   @Override
   public void visit(ASTNullLiteral lit){
-    result.setLast(DefsTypeBasic._nullSymType);
+    result.setCurrentResult(DefsTypeBasic._nullSymType);
   }
   
 }

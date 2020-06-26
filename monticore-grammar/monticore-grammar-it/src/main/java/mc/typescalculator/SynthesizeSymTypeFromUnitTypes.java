@@ -29,6 +29,6 @@ public class SynthesizeSymTypeFromUnitTypes extends SynthesizeSymTypeFromMCBasic
   public void endVisit(ASTMinuteType type){
     OOTypeSymbolSurrogate surrogate = new OOTypeSymbolSurrogate(type.getUnit());
     surrogate.setEnclosingScope(getScope(type.getEnclosingScope()));
-    typeCheckResult.setLast(new SymTypeOfSIUnit(surrogate));
+    typeCheckResult.setCurrentResult(new SymTypeOfSIUnit(surrogate));
   }
 }

@@ -36,7 +36,7 @@ public class SynthesizeSymTypeFromMyOwnLanguage extends MyOwnLanguageDelegatorVi
 
   @Override
   public Optional<SymTypeExpression> getResult() {
-    return Optional.ofNullable(result.getLast());
+    return Optional.ofNullable(result.getCurrentResult());
   }
 
   @Override

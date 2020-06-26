@@ -70,17 +70,17 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypes extends SynthesizeSymType
         arg.accept(getRealThis());
       }
 
-      if (!typeCheckResult.isPresentLast()) {
+      if (!typeCheckResult.isPresentCurrentResult()) {
         Log.error("0xE9CDA Internal Error: SymType argument missing for generic type. "
             + " Probably TypeCheck mis-configured.");
       }
-      arguments.add(typeCheckResult.getLast());
+      arguments.add(typeCheckResult.getCurrentResult());
     }
     OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate(genericType.printWithoutTypeArguments());
     loader.setEnclosingScope(getScope(genericType.getEnclosingScope()));
     SymTypeExpression tex = SymTypeExpressionFactory.createGenerics(
         loader, arguments);
-    typeCheckResult.setLast(tex);
+    typeCheckResult.setCurrentResult(tex);
   }
 
   /**
@@ -104,7 +104,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypes extends SynthesizeSymType
     // PS: that also applies to other Visitors.
     OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate(qType.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()));
     loader.setEnclosingScope(getScope(qType.getEnclosingScope()));
-    typeCheckResult.setLast(SymTypeExpressionFactory.createTypeObject(loader));
+    typeCheckResult.setCurrentResult(SymTypeExpressionFactory.createTypeObject(loader));
   }
 
   @Override
@@ -112,7 +112,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypes extends SynthesizeSymType
     OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate(qName.getQName());
     loader.setEnclosingScope(getScope(qName.getEnclosingScope()));
     SymTypeOfObject oType = createTypeObject(loader);
-    typeCheckResult.setLast(oType);
+    typeCheckResult.setCurrentResult(oType);
   }
 
 }

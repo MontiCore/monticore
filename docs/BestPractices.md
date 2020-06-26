@@ -36,7 +36,7 @@ of the reference manual.
 
 Further Information
 
-* [MontiCore project](../../README.md) - MontiCore
+* [MontiCore project](../README.md) - MontiCore
 * see also [**MontiCore Reference Manual**](http://www.monticore.de/)
 
 
