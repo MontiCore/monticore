@@ -26,22 +26,22 @@ public class DeriveSymTypeOfMCJavaLiterals extends DeriveSymTypeOfMCCommonLitera
 
   @Override
   public void visit(ASTIntLiteral lit){
-    result.setLast(SymTypeExpressionFactory.createTypeConstant("int"));
+    result.setCurrentResult(SymTypeExpressionFactory.createTypeConstant("int"));
   }
 
   @Override
   public void visit(ASTLongLiteral lit){
-    result.setLast(SymTypeExpressionFactory.createTypeConstant("long"));
+    result.setCurrentResult(SymTypeExpressionFactory.createTypeConstant("long"));
   }
 
   @Override
   public void visit(ASTFloatLiteral lit){
-    result.setLast(SymTypeExpressionFactory.createTypeConstant("float"));
+    result.setCurrentResult(SymTypeExpressionFactory.createTypeConstant("float"));
   }
 
   @Override
   public void visit(ASTDoubleLiteral lit){
-    result.setLast(SymTypeExpressionFactory.createTypeConstant("double"));
+    result.setCurrentResult(SymTypeExpressionFactory.createTypeConstant("double"));
   }
 
 }

@@ -27,6 +27,6 @@ public class SynthesizeSymTypeFromUnitTypes extends SynthesizeSymTypeFromMCBasic
 
   @Override
   public void endVisit(ASTMinuteType type){
-    typeCheckResult.setLast(new SymTypeOfSIUnit(new OOTypeSymbolLoader(type.getUnit(),getScope(type.getEnclosingScope()))));
+    typeCheckResult.setCurrentResult(new SymTypeOfSIUnit(new OOTypeSymbolLoader(type.getUnit(),getScope(type.getEnclosingScope()))));
   }
 }

@@ -23,6 +23,21 @@ public class CommonExpressionsPrettyPrinter extends ExpressionsBasisPrettyPrinte
     realThis = this;
   }
 
+  @Override
+  public void handle(ASTPlusPrefixExpression node) {
+    CommentPrettyPrinter.printPreComments(node, getPrinter());
+    getPrinter().print("+");
+    node.getExpression().accept(getRealThis());
+    CommentPrettyPrinter.printPostComments(node, getPrinter());
+  }
+
+  @Override
+  public void handle(ASTMinusPrefixExpression node) {
+    CommentPrettyPrinter.printPreComments(node, getPrinter());
+    getPrinter().print("-");
+    node.getExpression().accept(getRealThis());
+    CommentPrettyPrinter.printPostComments(node, getPrinter());
+  }
 
   @Override
   public void handle(ASTFieldAccessExpression node){

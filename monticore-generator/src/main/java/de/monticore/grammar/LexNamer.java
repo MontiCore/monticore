@@ -46,7 +46,6 @@ public class LexNamer {
       goodNames.put("<", "LT");
       goodNames.put("=", "EQUALS");
       goodNames.put("+", "PLUS");
-      goodNames.put("++", "PLUSPLUS");
       goodNames.put("-", "MINUS");
       goodNames.put("*", "STAR");
       goodNames.put("%", "PERCENT");

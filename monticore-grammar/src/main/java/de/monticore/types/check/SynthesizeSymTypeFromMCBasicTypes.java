@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
-import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
 import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope;
@@ -62,7 +61,7 @@ public class SynthesizeSymTypeFromMCBasicTypes implements MCBasicTypesVisitor, I
   public TypeCheckResult typeCheckResult = new TypeCheckResult();
   
   public Optional<SymTypeExpression> getResult() {
-    return Optional.of(typeCheckResult.getLast());
+    return Optional.of(typeCheckResult.getCurrentResult());
   }
   
   public void init() {
@@ -83,11 +82,11 @@ public class SynthesizeSymTypeFromMCBasicTypes implements MCBasicTypesVisitor, I
   public void endVisit(ASTMCPrimitiveType primitiveType) {
     SymTypeConstant typeConstant =
             SymTypeExpressionFactory.createTypeConstant(primitiveType.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()));
-    typeCheckResult.setLast(typeConstant);
+    typeCheckResult.setCurrentResult(typeConstant);
   }
   
   public void endVisit(ASTMCVoidType voidType) {
-    typeCheckResult.setLast(SymTypeExpressionFactory.createTypeVoid());
+    typeCheckResult.setCurrentResult(SymTypeExpressionFactory.createTypeVoid());
   }
   
   /**
@@ -100,7 +99,7 @@ public class SynthesizeSymTypeFromMCBasicTypes implements MCBasicTypesVisitor, I
    */
   public void endVisit(ASTMCQualifiedType qType) {
     // Otherwise the Visitor is applied to the wrong AST (and an internal error 0x893F62 is issued
-    typeCheckResult.setLast(
+    typeCheckResult.setCurrentResult(
         SymTypeExpressionFactory.createTypeObject(new OOTypeSymbolLoader(qType.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()), getScope(qType.getEnclosingScope()))));
   }
   
