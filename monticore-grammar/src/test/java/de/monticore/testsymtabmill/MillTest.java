@@ -14,7 +14,7 @@ public class MillTest {
   @Test
   public void testMill(){
     TestSymTabMillScope scope = TestSymTabMillMill.testSymTabMillScopeBuilder().build();
-    TestSymTabMillArtifactScope artifactScope = TestSymTabMillMill.testSymTabMillArtifactScopeBuilder().addImport(new ImportStatement("a.b.c",false)).setPackageName("sym").build();
+    TestSymTabMillArtifactScope artifactScope = TestSymTabMillMill.testSymTabMillArtifactScopeBuilder().setPackageName("sym").build();
     TestSymTabMillGlobalScope globalScope = TestSymTabMillMill.testSymTabMillGlobalScopeBuilder().setModelPath(new ModelPath()).setModelFileExtension("mill").build();
     TestSymTabMillSymbolTableCreator symbolTableCreator = TestSymTabMillMill.testSymTabMillSymbolTableCreatorBuilder().addToScopeStack(scope).build();
     TestSymTabMillSymbolTableCreatorDelegator symbolTableCreatorDelegator = TestSymTabMillMill.testSymTabMillSymbolTableCreatorDelegatorBuilder().setGlobalScope(globalScope).build();

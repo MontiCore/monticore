@@ -371,7 +371,7 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
     // elem autoSerializable? -> gen method that serializes or errorCode if elem complex
     // additional serialize Optional iff present
     ASTCDParameter serializeParameter = CDParameterFacade.getInstance().createParameter(attr);
-    ASTCDMethod serializeAttrMethod = CDMethodFacade.getInstance().createMethod(PROTECTED, methodName, serializeParameter);
+    ASTCDMethod serializeAttrMethod = CDMethodFacade.getInstance().createMethod(PUBLIC, methodName, serializeParameter);
 
     if (isAutoSerialized(attr)) {
       if (isSerializedAsList(attr)) {
