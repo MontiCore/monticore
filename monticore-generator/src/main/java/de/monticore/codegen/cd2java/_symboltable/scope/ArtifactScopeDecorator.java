@@ -84,7 +84,6 @@ public class ArtifactScopeDecorator extends AbstractCreator<ASTCDCompilationUnit
         .addCDMethod(createIsPresentNameMethod())
         .addCDMethod(createGetTopLevelSymbolMethod(symbolProds))
         .addCDMethod(createCheckIfContinueAsSubScopeMethod())
-        .addCDMethod(createGetFilePathMethod())
         .addCDMethod(createGetRemainingNameForResolveDownMethod())
         .addAllCDMethods(createContinueWithEnclosingScopeMethods(symbolProds, symbolTableService.getCDSymbol()))
         .addAllCDMethods(createSuperContinueWithEnclosingScopeMethods())
@@ -160,13 +159,6 @@ public class ArtifactScopeDecorator extends AbstractCreator<ASTCDCompilationUnit
     ASTCDMethod getRemainingNameForResolveDown = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createStringType(), "getRemainingNameForResolveDown", parameter);
     this.replaceTemplate(EMPTY_BODY, getRemainingNameForResolveDown, new TemplateHookPoint(TEMPLATE_PATH + "GetRemainingNameForResolveDown"));
     return getRemainingNameForResolveDown;
-  }
-
-  protected ASTCDMethod createGetFilePathMethod() {
-    ASTCDParameter parameter = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(symbolTableService.getLanguageClassFullName()), "lang");
-    ASTCDMethod getFilePath = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createQualifiedType(PATH), "getFilePath", parameter);
-    this.replaceTemplate(EMPTY_BODY, getFilePath, new TemplateHookPoint(TEMPLATE_PATH + "GetFilePath"));
-    return getFilePath;
   }
 
   protected List<ASTCDMethod> createContinueWithEnclosingScopeMethods(List<ASTCDType> symbolProds, CDDefinitionSymbol definitionSymbol) {

@@ -10,7 +10,6 @@ import mc.feature.symboltable.subnotopscope._ast.ASTSubFoo;
 import mc.feature.symboltable.subnotopscope._parser.SubNoTopScopeParser;
 import mc.feature.symboltable.subnotopscope._symboltable.SubNoTopScopeArtifactScope;
 import mc.feature.symboltable.subnotopscope._symboltable.SubNoTopScopeGlobalScope;
-import mc.feature.symboltable.subnotopscope._symboltable.SubNoTopScopeLanguage;
 import mc.feature.symboltable.subnotopscope._symboltable.SubNoTopScopeSymbolTableCreatorDelegator;
 import org.junit.Test;
 
@@ -39,8 +38,7 @@ public class NoTopScopeTest {
 
     // create symboltable
     ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/mc/feature/symboltable"));
-    NoTopScopeLanguage lang = new NoTopScopeLanguage();
-    NoTopScopeGlobalScope globalScope = new NoTopScopeGlobalScope(modelPath, lang);
+    NoTopScopeGlobalScope globalScope = new NoTopScopeGlobalScope(modelPath, "st");
     NoTopScopeSymbolTableCreatorDelegator symbolTableCreator = new NoTopScopeSymbolTableCreatorDelegator(globalScope);
     NoTopScopeArtifactScope scope = symbolTableCreator.createFromAST(astSup.get());
 
@@ -66,8 +64,7 @@ public class NoTopScopeTest {
 
     // create symboltable
     ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/mc/feature/symboltable"));
-    SubNoTopScopeLanguage lang = new SubNoTopScopeLanguage();
-    SubNoTopScopeGlobalScope globalScope = new SubNoTopScopeGlobalScope(modelPath, lang);
+    SubNoTopScopeGlobalScope globalScope = new SubNoTopScopeGlobalScope(modelPath, "st");
     SubNoTopScopeSymbolTableCreatorDelegator symbolTableCreator = new SubNoTopScopeSymbolTableCreatorDelegator(globalScope);
     SubNoTopScopeArtifactScope scope = symbolTableCreator.createFromAST(astSup.get());
 

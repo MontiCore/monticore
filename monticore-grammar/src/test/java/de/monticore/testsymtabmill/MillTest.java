@@ -13,18 +13,14 @@ public class MillTest {
 
   @Test
   public void testMill(){
-    TestSymTabMillLanguage language = TestSymTabMillMill.testSymTabMillLanguageBuilder().build();
-    TestSymTabMillModelLoader modelLoader = TestSymTabMillMill.testSymTabMillModelLoaderBuilder().setModelingLanguage(language).build();
     TestSymTabMillScope scope = TestSymTabMillMill.testSymTabMillScopeBuilder().build();
-    TestSymTabMillArtifactScope artifactScope = TestSymTabMillMill.testSymTabMillArtifactScopeBuilder().setPackageName("sym").build();
-    TestSymTabMillGlobalScope globalScope = TestSymTabMillMill.testSymTabMillGlobalScopeBuilder().setTestSymTabMillLanguage(language).setModelPath(new ModelPath()).build();
+    TestSymTabMillArtifactScope artifactScope = TestSymTabMillMill.testSymTabMillArtifactScopeBuilder().addImport(new ImportStatement("a.b.c",false)).setPackageName("sym").build();
+    TestSymTabMillGlobalScope globalScope = TestSymTabMillMill.testSymTabMillGlobalScopeBuilder().setModelPath(new ModelPath()).setModelFileExtension("mill").build();
     TestSymTabMillSymbolTableCreator symbolTableCreator = TestSymTabMillMill.testSymTabMillSymbolTableCreatorBuilder().addToScopeStack(scope).build();
     TestSymTabMillSymbolTableCreatorDelegator symbolTableCreatorDelegator = TestSymTabMillMill.testSymTabMillSymbolTableCreatorDelegatorBuilder().setGlobalScope(globalScope).build();
 
-    assertTrue(language.getFileExtension().equals("ts"));
-    assertTrue(modelLoader.getModelingLanguage().equals(language));
     assertFalse(scope.isShadowing());
-    assertTrue(globalScope.getTestSymTabMillLanguage().equals(language));
+    assertTrue(artifactScope.getImportList().get(0).getStatement().equals("a.b.c"));
     assertTrue(symbolTableCreator.getCurrentScope().get().equals(scope));
   }
 

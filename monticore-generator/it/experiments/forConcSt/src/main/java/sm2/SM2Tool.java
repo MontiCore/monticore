@@ -7,7 +7,10 @@ import org.antlr.v4.runtime.RecognitionException;
 import sm2._ast.ASTAutomaton;
 import sm2._cocos.SM2CoCoChecker;
 import sm2._parser.SM2Parser;
-import sm2._symboltable.*;
+import sm2._symboltable.SM2ArtifactScope;
+import sm2._symboltable.SM2GlobalScope;
+import sm2._symboltable.SM2SymbolTableCreator;
+import sm2._symboltable.StateSymbol;
 import sm2.cocos.AtLeastOneInitialState;
 import sm2.cocos.SM2CoCos;
 import sm2.cocos.StateNameStartsWithCapitalLetter;
@@ -40,15 +43,12 @@ public class SM2Tool {
     Log.info("------------------", SM2Tool.class.getName());
     String model = args[0];
     
-    // setup the language infrastructure
-    final SM2Language lang = new SM2Language();
-    
     // parse the model and create the AST representation
     final ASTAutomaton ast = parse(model);
     Log.info(model + " parsed successfully!", SM2Tool.class.getName());
     
     // setup the symbol table
-    SM2ArtifactScope modelTopScope = createSymbolTable(lang, ast);
+    SM2ArtifactScope modelTopScope = createSymbolTable(ast);
     // can be used for resolving things in the model
     Optional<StateSymbol> aSymbol = modelTopScope.resolveState("Ping");
     if (aSymbol.isPresent()) {
@@ -101,16 +101,18 @@ public class SM2Tool {
   /**
    * Create the symbol table from the parsed AST.
    *
-   * @param lang
    * @param ast
    * @return
    */
-  public static SM2ArtifactScope createSymbolTable(SM2Language lang, ASTAutomaton ast) {
+  public static SM2ArtifactScope createSymbolTable(ASTAutomaton ast) {
     
-    SM2GlobalScope globalScope = new SM2GlobalScope(new ModelPath(), lang);
-    
-    SM2SymbolTableCreatorDelegator symbolTable = lang.getSymbolTableCreator(
-         globalScope);
+    SM2GlobalScope globalScope = new SM2GlobalScope(new ModelPath());
+
+    SM2SymbolTableCreator symbolTable = SM2Mill
+        .sM2SymbolTableCreatorBuilder()
+        .addToScopeStack(globalScope)
+        .build();
+
     return symbolTable.createFromAST(ast);
   }
   

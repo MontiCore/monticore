@@ -1,5 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
+import automata.AutomataMill;
 import automata._ast.ASTAutomaton;
 import automata._ast.ASTState;
 import automata._cocos.AutomataCoCoChecker;
@@ -24,8 +25,7 @@ import static org.junit.Assert.assertTrue;
 
 public class TransitionSourceExistsTest {
   
-  // setup the language infrastructure
-  AutomataLanguage lang = new AutomataLanguage();
+  // setup the parser infrastructure
   AutomataParser parser = new AutomataParser() ;
   
   @BeforeClass
@@ -61,7 +61,7 @@ public class TransitionSourceExistsTest {
     ).get();
     
     // setup the symbol table
-    AutomataArtifactScope modelTopScope = createSymbolTable(lang, ast);
+    AutomataArtifactScope modelTopScope = createSymbolTable(ast);
 
     // can be used for resolving names in the model
     Optional<StateSymbol> aSymbol = modelTopScope.resolveState("Simple.A");
@@ -80,7 +80,7 @@ public class TransitionSourceExistsTest {
     ).get();
     
     // setup the symbol table
-    AutomataArtifactScope modelTopScope = createSymbolTable(lang, ast);
+    AutomataArtifactScope modelTopScope = createSymbolTable(ast);
 
     // setup context condition infrastructure & check
     AutomataCoCoChecker checker = new AutomataCoCoChecker();
@@ -100,7 +100,7 @@ public class TransitionSourceExistsTest {
     ).get();
     
     // setup the symbol table
-    AutomataArtifactScope modelTopScope = createSymbolTable(lang, ast);
+    AutomataArtifactScope modelTopScope = createSymbolTable(ast);
 
     // setup context condition infrastructure & check
     AutomataCoCoChecker checker = new AutomataCoCoChecker();
@@ -118,15 +118,17 @@ public class TransitionSourceExistsTest {
   /**
    * Create the symbol table from the parsed AST.
    *
-   * @param lang
    * @param ast
    * @return
    */
-  public static AutomataArtifactScope createSymbolTable(AutomataLanguage lang, ASTAutomaton ast) {
+  public static AutomataArtifactScope createSymbolTable(ASTAutomaton ast) {
+    AutomataGlobalScope globalScope = new AutomataGlobalScope(new ModelPath());
 
-    AutomataGlobalScope globalScope = new AutomataGlobalScope(new ModelPath(), lang);
+    AutomataSymbolTableCreator symbolTable = AutomataMill
+        .automataSymbolTableCreatorBuilder()
+        .addToScopeStack(globalScope)
+        .build();
 
-    AutomataSymbolTableCreatorDelegator symbolTable = lang.getSymbolTableCreator(globalScope);
     return symbolTable.createFromAST(ast);
   }
 

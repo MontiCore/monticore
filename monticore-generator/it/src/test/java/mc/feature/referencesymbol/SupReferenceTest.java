@@ -4,12 +4,16 @@ package mc.feature.referencesymbol;
 import de.monticore.io.paths.ModelPath;
 import mc.feature.referencesymbol.reference._ast.ASTTest;
 import mc.feature.referencesymbol.reference._symboltable.TestSymbol;
+import mc.feature.referencesymbol.supgrammarref.SupGrammarRefMill;
 import mc.feature.referencesymbol.supgrammarref._ast.ASTSupRand;
 import mc.feature.referencesymbol.supgrammarref._ast.ASTSupRef;
 import mc.feature.referencesymbol.supgrammarref._ast.ASTSupRefList;
 import mc.feature.referencesymbol.supgrammarref._ast.ASTSupRefOpt;
 import mc.feature.referencesymbol.supgrammarref._parser.SupGrammarRefParser;
-import mc.feature.referencesymbol.supgrammarref._symboltable.*;
+import mc.feature.referencesymbol.supgrammarref._symboltable.ISupGrammarRefScope;
+import mc.feature.referencesymbol.supgrammarref._symboltable.SupGrammarRefGlobalScope;
+import mc.feature.referencesymbol.supgrammarref._symboltable.SupGrammarRefScope;
+import mc.feature.referencesymbol.supgrammarref._symboltable.SupGrammarRefSymbolTableCreatorDelegator;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -40,9 +44,11 @@ public class SupReferenceTest {
 
 
     ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/mc/feature/referencesymbol"));
-    SupGrammarRefLanguage lang = new SupGrammarRefLanguage();
-    SupGrammarRefGlobalScope globalScope = new SupGrammarRefGlobalScope(modelPath, lang);
-    SupGrammarRefSymbolTableCreatorDelegator symbolTableCreator = lang.getSymbolTableCreator(globalScope);
+    SupGrammarRefGlobalScope globalScope = new SupGrammarRefGlobalScope(modelPath, "ref");
+    SupGrammarRefSymbolTableCreatorDelegator symbolTableCreator = SupGrammarRefMill
+        .supGrammarRefSymbolTableCreatorDelegatorBuilder()
+        .setGlobalScope(globalScope)
+        .build();
     SupGrammarRefScope artifact = symbolTableCreator.createFromAST(astsupRand);
     Optional<ISupGrammarRefScope> scopeOpt = artifact.getSubScopes().stream().findAny();
     assertTrue(scopeOpt.isPresent());

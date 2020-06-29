@@ -51,7 +51,7 @@ public class SymbolTableCreatorDelegatorDecorator extends AbstractCreator<ASTCDC
       String symbolTableCreatorDelegatorName = symbolTableService.getSymbolTableCreatorDelegatorSimpleName();
       String symbolTableCreatorName = symbolTableService.getSymbolTableCreatorSimpleName();
       String scopeInterface = symbolTableService.getScopeInterfaceFullName();
-      String globalScopeName = symbolTableService.getGlobalScopeFullName();
+      String globalScopeInterfaceName = symbolTableService.getGlobalScopeInterfaceFullName();
       String simpleName = symbolTableService.getCDName();
       String artifactScopeName = symbolTableService.getArtifactScopeFullName();
       String delegatorVisitorName = visitorService.getDelegatorVisitorFullName();
@@ -61,10 +61,10 @@ public class SymbolTableCreatorDelegatorDecorator extends AbstractCreator<ASTCDC
           .setName(symbolTableCreatorDelegatorName)
           .setModifier(PUBLIC.build())
           .setSuperclass(getMCTypeFacade().createQualifiedType(delegatorVisitorName))
-          .addCDConstructor(createConstructor(symbolTableCreatorDelegatorName, globalScopeName, symbolTableCreatorName, simpleName))
+          .addCDConstructor(createConstructor(symbolTableCreatorDelegatorName, globalScopeInterfaceName, symbolTableCreatorName, simpleName))
           .addCDAttribute(createScopeStackAttribute(dequeType))
           .addCDAttribute(createSymbolTableCreatorAttribute(symbolTableCreatorName))
-          .addCDAttribute(createGlobalScopeAttribute(globalScopeName))
+          .addCDAttribute(createGlobalScopeAttribute(globalScopeInterfaceName))
           .addCDMethod(createCreateFromASTMethod(astFullName, artifactScopeName))
           .build();
       return Optional.ofNullable(symTabCreatorDelegator);
@@ -72,7 +72,7 @@ public class SymbolTableCreatorDelegatorDecorator extends AbstractCreator<ASTCDC
     return Optional.empty();
   }
 
-  protected ASTCDConstructor createConstructor(String symTabCreatorDelegator, String globalScope,
+  protected ASTCDConstructor createConstructor(String symTabCreatorDelegator, String globalScopeInterface,
                                                String symbolTableCreator, String simpleName) {
     List<CDDefinitionSymbol> superCDsTransitive = symbolTableService.getSuperCDsTransitive();
     String symTabMillFullName = symbolTableService.getMillFullName();
@@ -82,7 +82,7 @@ public class SymbolTableCreatorDelegatorDecorator extends AbstractCreator<ASTCDC
         superSymTabCreator.put(cdDefinitionSymbol.getName(), symbolTableService.getSuperSTCForSubSTCSimpleName(cdDefinitionSymbol));
       }
     }
-    ASTCDParameter globalScopeParam = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(globalScope), "globalScope");
+    ASTCDParameter globalScopeParam = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(globalScopeInterface), "globalScope");
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), symTabCreatorDelegator, globalScopeParam);
     this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint(TEMPLATE_PATH + "ConstructorSymbolTableCreatorDelegator",
         symTabMillFullName, superSymTabCreator, symbolTableCreator, simpleName));
@@ -99,8 +99,8 @@ public class SymbolTableCreatorDelegatorDecorator extends AbstractCreator<ASTCDC
     return getCDAttributeFacade().createAttribute(PROTECTED_FINAL, symbolTableCreator, "symbolTable");
   }
 
-  protected ASTCDAttribute createGlobalScopeAttribute(String globalScope) {
-    return getCDAttributeFacade().createAttribute(PROTECTED, globalScope, "globalScope");
+  protected ASTCDAttribute createGlobalScopeAttribute(String globalScopeInterface) {
+    return getCDAttributeFacade().createAttribute(PROTECTED, globalScopeInterface, "globalScope");
   }
 
   protected ASTCDMethod createCreateFromASTMethod(String startProd, String artifactScope) {

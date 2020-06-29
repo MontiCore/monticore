@@ -39,7 +39,7 @@ public class JsonDeSers {
    * @param scope
    * @return
    */
-  @Deprecated
+  @Deprecated //will be removed soon and all names will be stored as qualified names
   public static List<ImportStatement> deserializeImports(JsonObject scope) {
     List<ImportStatement> result = new ArrayList<>();
     if (scope.hasMember(IMPORTS)) {
