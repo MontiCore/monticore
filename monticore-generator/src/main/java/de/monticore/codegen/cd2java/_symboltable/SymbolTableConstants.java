@@ -66,8 +66,6 @@ public class SymbolTableConstants {
 
   public static final String I_SYMBOL_LOADER = "de.monticore.symboltable.ISymbolLoader";
 
-  public static final String I_MODELING_LANGUAGE = "de.monticore.IModelingLanguage";
-
   public static final String I_MODEL_LOADER = "de.monticore.modelloader.IModelLoader";
 
   public static final String AST_PROVIDER = "de.monticore.modelloader.AstProvider<%s>";
@@ -92,8 +90,6 @@ public class SymbolTableConstants {
 
   public static final String DEQUE_TYPE = "Deque";
 
-  public static final String I_DE_SER_TYPE = "de.monticore.symboltable.serialization.IDeSer";
-
   public static final String MODEL_PATH_TYPE = "de.monticore.io.paths.ModelPath";
 
   /**
@@ -115,6 +111,8 @@ public class SymbolTableConstants {
   public static final String ORDERED_VAR = "ordered";
 
   public static final String MODEL_PATH_VAR = "modelPath";
+
+  public static final String FILE_EXTENSION_VAR = "modelFileExtension";
 
   public static final String MODEL_LOADER_VAR = "modelLoader";
 
