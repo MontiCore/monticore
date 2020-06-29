@@ -12,8 +12,9 @@ import java.util.List;
 
 public class TypeSymbolDeSer extends TypeSymbolDeSerTOP {
 
-  protected List<SymTypeExpression> deserializeSuperTypes(JsonObject symbolJson,
-      ITypeSymbolsScope enclosingScope) {
+  @Override
+  public List<SymTypeExpression> deserializeSuperTypes(JsonObject symbolJson,
+      IBasicTypeSymbolsScope enclosingScope) {
     return SymTypeExpressionDeSer.deserializeListMember("superTypes", symbolJson, enclosingScope);
   }
 

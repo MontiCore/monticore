@@ -6,6 +6,7 @@ import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
+import de.monticore.types.basictypesymbols._symboltable.IBasicTypeSymbolsScope;
 import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
 import de.se_rwth.commons.logging.Log;
 
@@ -66,11 +67,11 @@ public class SymTypeExpressionDeSer {
     }
   }
 
-  public static SymTypeExpression deserializeMember(String memberName, JsonObject json, ITypeSymbolsScope enclosingScope){
+  public static SymTypeExpression deserializeMember(String memberName, JsonObject json, IBasicTypeSymbolsScope enclosingScope){
     return getInstance().deserialize(json.getMember(memberName), enclosingScope);
   }
 
-  public static Optional<SymTypeExpression> deserializeOptionalMember(String memberName, JsonObject json, ITypeSymbolsScope enclosingScope){
+  public static Optional<SymTypeExpression> deserializeOptionalMember(String memberName, JsonObject json, IBasicTypeSymbolsScope enclosingScope){
     if(json.hasMember(memberName)){
       return Optional.of(getInstance().deserialize(json.getMember(memberName), enclosingScope));
     }
@@ -79,7 +80,7 @@ public class SymTypeExpressionDeSer {
     }
   }
 
-  public static List<SymTypeExpression> deserializeListMember(String memberName, JsonObject json, ITypeSymbolsScope enclosingScope){
+  public static List<SymTypeExpression> deserializeListMember(String memberName, JsonObject json, IBasicTypeSymbolsScope enclosingScope){
     List<SymTypeExpression> result = new ArrayList<>();
     if(json.hasMember(memberName)){
       for(JsonElement e : json.getArrayMember(memberName)){
@@ -123,12 +124,41 @@ public class SymTypeExpressionDeSer {
    * @param enclosingScope
    * @return
    */
-  public List<SymTypeExpression> deserializeList(JsonElement serializedMember, ITypeSymbolsScope enclosingScope) {
+  public List<SymTypeExpression> deserializeList(JsonElement serializedMember, IBasicTypeSymbolsScope enclosingScope) {
     List<SymTypeExpression> result = new ArrayList<>();
     for (JsonElement e : serializedMember.getAsJsonArray().getValues()) {
       result.add(deserialize(e, enclosingScope));
     }
     return result;
+  }
+
+  public SymTypeExpression deserialize(String serialized, IBasicTypeSymbolsScope enclosingScope) {
+    return deserialize(JsonParser.parse(serialized), enclosingScope);
+  }
+
+  public SymTypeExpression deserialize(JsonElement serialized, IBasicTypeSymbolsScope enclosingScope) {
+    // void and null are stored as strings
+    if (serialized.isJsonString()) {
+      String value = serialized.getAsJsonString().getValue();
+
+      if (value.equals(DefsTypeBasic._nullTypeString)) {
+        return SymTypeExpressionFactory.createTypeOfNull();
+      }
+      else if (value.equals(DefsTypeBasic._voidTypeString)) {
+        return SymTypeExpressionFactory.createTypeVoid();
+      }
+      else {
+        if(enclosingScope instanceof ITypeSymbolsScope){
+          return deserialize(serialized, (ITypeSymbolsScope)enclosingScope);
+        }
+        else{
+          Log.error(
+              "0x823F3 Internal error: Loading ill-structured SymTab: Unknown serialization of SymTypeExpression: "
+                  + serialized);
+        }
+      }
+    }
+    return null;
   }
 
   public SymTypeExpression deserialize(String serialized, ITypeSymbolsScope enclosingScope) {

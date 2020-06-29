@@ -13,8 +13,9 @@ import java.util.List;
 
 public class FunctionSymbolDeSer extends FunctionSymbolDeSerTOP {
 
-  protected SymTypeExpression deserializeReturnType(JsonObject symbolJson,
-      ITypeSymbolsScope enclosingScope) {
+  @Override
+  public SymTypeExpression deserializeReturnType(JsonObject symbolJson,
+      IBasicTypeSymbolsScope enclosingScope) {
     return SymTypeExpressionDeSer.deserializeMember("returnType", symbolJson, enclosingScope);
   }
 

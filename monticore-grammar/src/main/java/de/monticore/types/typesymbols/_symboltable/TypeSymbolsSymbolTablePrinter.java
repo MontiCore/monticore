@@ -16,14 +16,17 @@ public class TypeSymbolsSymbolTablePrinter extends TypeSymbolsSymbolTablePrinter
     super(printer);
   }
 
+  @Override
   public void serializeOOTypeSuperTypes(List<SymTypeExpression> superTypes) {
     SymTypeExpressionDeSer.serializeMember(printer, "superTypes", superTypes);
   }
 
+  @Override
   public void serializeFieldType(SymTypeExpression type) {
     SymTypeExpressionDeSer.serializeMember(printer, "type", type);
   }
 
+  @Override
   public void serializeMethodReturnType(SymTypeExpression returnType) {
     SymTypeExpressionDeSer.serializeMember(printer, "returnType", returnType);
   }
