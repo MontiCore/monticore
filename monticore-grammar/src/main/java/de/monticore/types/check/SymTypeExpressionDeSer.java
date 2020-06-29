@@ -3,12 +3,15 @@ package de.monticore.types.check;
 
 import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonParser;
+import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.symboltable.serialization.json.JsonElement;
+import de.monticore.symboltable.serialization.json.JsonObject;
 import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * This DeSer reailizes serialization and deserialization of SymTypeExpressions.
@@ -43,6 +46,50 @@ public class SymTypeExpressionDeSer {
     this.symTypeVariableDeSer = new SymTypeVariableDeSer();
     this.symTypeOfWildcardDeSer = new SymTypeOfWildcardDeSer();
   }
+
+
+  public static void serializeMember(JsonPrinter printer, String memberName, SymTypeExpression member){
+    printer.member(memberName,member.printAsJson());
+  }
+
+  public static void serializeMember(JsonPrinter printer, String memberName, Optional<SymTypeExpression> member){
+    if(member.isPresent()){
+      printer.member(memberName,member.get().printAsJson());
+    }
+  }
+
+  public static void serializeMember(JsonPrinter printer, String memberName, List<SymTypeExpression> member){
+    if(!member.isEmpty()){
+      printer.beginArray(memberName);
+      member.forEach(e -> printer.value(e.printAsJson()));
+      printer.endArray();
+    }
+  }
+
+  public static SymTypeExpression deserializeMember(String memberName, JsonObject json, ITypeSymbolsScope enclosingScope){
+    return getInstance().deserialize(json.getMember(memberName), enclosingScope);
+  }
+
+  public static Optional<SymTypeExpression> deserializeOptionalMember(String memberName, JsonObject json, ITypeSymbolsScope enclosingScope){
+    if(json.hasMember(memberName)){
+      return Optional.of(getInstance().deserialize(json.getMember(memberName), enclosingScope));
+    }
+    else{
+      return Optional.empty();
+    }
+  }
+
+  public static List<SymTypeExpression> deserializeListMember(String memberName, JsonObject json, ITypeSymbolsScope enclosingScope){
+    List<SymTypeExpression> result = new ArrayList<>();
+    if(json.hasMember(memberName)){
+      for(JsonElement e : json.getArrayMember(memberName)){
+        result.add(getInstance().deserialize(json.getMember(memberName), enclosingScope));
+      }
+    }
+    return result;
+  }
+
+
 
   public static SymTypeExpressionDeSer getInstance() {
     if (null == instance) {

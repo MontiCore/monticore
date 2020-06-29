@@ -20,7 +20,6 @@ public class MillTest {
     TestSymTabMillSymbolTableCreatorDelegator symbolTableCreatorDelegator = TestSymTabMillMill.testSymTabMillSymbolTableCreatorDelegatorBuilder().setGlobalScope(globalScope).build();
 
     assertFalse(scope.isShadowing());
-    assertTrue(artifactScope.getImportList().get(0).getStatement().equals("a.b.c"));
     assertTrue(symbolTableCreator.getCurrentScope().get().equals(scope));
   }
 

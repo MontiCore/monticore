@@ -15,8 +15,7 @@ public class FunctionSymbolDeSer extends FunctionSymbolDeSerTOP {
 
   protected SymTypeExpression deserializeReturnType(JsonObject symbolJson,
       ITypeSymbolsScope enclosingScope) {
-    JsonElement superTypes = symbolJson.getMember("returnType");
-    return SymTypeExpressionDeSer.getInstance().deserialize(superTypes, enclosingScope);
+    return SymTypeExpressionDeSer.deserializeMember("returnType", symbolJson, enclosingScope);
   }
 
 }
