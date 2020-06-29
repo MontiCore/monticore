@@ -35,12 +35,6 @@ component grammar AssignmentExpressions
   DecSuffixExpression implements Expression <220> =
     Expression "--";
 
-  PlusPrefixExpression implements Expression <210> =
-    "+" Expression;
-
-  MinusPrefixExpression implements Expression <210> =
-    "-" Expression;
-
   /*=================================================================*/
 
   IncPrefixExpression implements Expression <210> =

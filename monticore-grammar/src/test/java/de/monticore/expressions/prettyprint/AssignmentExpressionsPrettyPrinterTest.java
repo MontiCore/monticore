@@ -68,38 +68,6 @@ public class AssignmentExpressionsPrettyPrinterTest {
   }
 
   @Test
-  public void testMinusPrefixExpression() throws IOException {
-    Optional<ASTMinusPrefixExpression> result = parser.parse_StringMinusPrefixExpression("-a");
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
-    ASTMinusPrefixExpression ast = result.get();
-
-    String output = prettyPrinter.prettyprint(ast);
-
-    result = parser.parse_StringMinusPrefixExpression(output);
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
-
-    assertTrue(ast.deepEquals(result.get()));
-  }
-
-  @Test
-  public void testPlusPrefixExpression() throws IOException {
-    Optional<ASTPlusPrefixExpression> result = parser.parse_StringPlusPrefixExpression("+a");
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
-    ASTPlusPrefixExpression ast = result.get();
-
-    String output = prettyPrinter.prettyprint(ast);
-
-    result = parser.parse_StringPlusPrefixExpression(output);
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
-
-    assertTrue(ast.deepEquals(result.get()));
-  }
-
-  @Test
   public void testIncSuffixExpression() throws IOException {
     Optional<ASTExpression> a = parser.parse_StringExpression("a");
     assertFalse(parser.hasErrors());

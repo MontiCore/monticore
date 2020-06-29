@@ -89,8 +89,8 @@ public class DeriveSymTypeOfCombineExpressionsDelegator extends CombineExpressio
   public Optional<SymTypeExpression> calculateType(ASTExpression e){
     e.accept(realThis);
     Optional<SymTypeExpression> result = Optional.empty();
-    if (typeCheckResult.isPresentLast()) {
-      result = Optional.ofNullable(typeCheckResult.getLast());
+    if (typeCheckResult.isPresentCurrentResult()) {
+      result = Optional.ofNullable(typeCheckResult.getCurrentResult());
     }
     typeCheckResult.reset();
     return result;
@@ -140,8 +140,8 @@ public class DeriveSymTypeOfCombineExpressionsDelegator extends CombineExpressio
   public Optional<SymTypeExpression> calculateType(ASTLiteral lit) {
     lit.accept(realThis);
     Optional<SymTypeExpression> result = Optional.empty();
-    if (typeCheckResult.isPresentLast()) {
-      result = Optional.ofNullable(typeCheckResult.getLast());
+    if (typeCheckResult.isPresentCurrentResult()) {
+      result = Optional.ofNullable(typeCheckResult.getCurrentResult());
     }
     typeCheckResult.reset();
     return result;
@@ -151,8 +151,8 @@ public class DeriveSymTypeOfCombineExpressionsDelegator extends CombineExpressio
   public Optional<SymTypeExpression> calculateType(ASTSignedLiteral lit) {
     lit.accept(realThis);
     Optional<SymTypeExpression> result = Optional.empty();
-    if (typeCheckResult.isPresentLast()) {
-      result = Optional.ofNullable(typeCheckResult.getLast());
+    if (typeCheckResult.isPresentCurrentResult()) {
+      result = Optional.ofNullable(typeCheckResult.getCurrentResult());
     }
     typeCheckResult.reset();
     return result;
