@@ -42,7 +42,7 @@ public class GenerateAutomataParser {
       Grammar_WithConceptsGlobalScope gs = Grammar_WithConceptsMill
           .grammar_WithConceptsGlobalScopeBuilder()
           .setModelPath(modelPath)
-          .setModelFileExtension("mc4")
+//          .setModelFileExtension("mc4") //method not yet available
           .build();
       Grammar_WithConceptsMill
           .grammar_WithConceptsSymbolTableCreatorDelegatorBuilder()

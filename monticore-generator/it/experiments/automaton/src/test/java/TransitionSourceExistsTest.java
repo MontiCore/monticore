@@ -125,6 +125,7 @@ public class TransitionSourceExistsTest {
     AutomataGlobalScope globalScope = AutomataMill
         .automataGlobalScopeBuilder()
         .setModelPath(new ModelPath())
+        .setModelFileExtension("aut")
         .build();
 
     AutomataSymbolTableCreator symbolTable = AutomataMill
