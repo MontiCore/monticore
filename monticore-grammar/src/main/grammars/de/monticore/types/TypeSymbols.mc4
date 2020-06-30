@@ -60,22 +60,11 @@ component grammar TypeSymbols extends de.monticore.types.BasicTypeSymbols {
    */
   interface symbol Field extends Variable = Name ;
   symbolrule Field =
-    isParameter: boolean
-    isVariable: boolean
     isPrivate: boolean
     isProtected: boolean
     isPublic: boolean
     isStatic:boolean
   ;
-// TODO !: die neue fassung ist schon deutlich n�her am ideal, allerdings
-// sind die beiden Flags hier immer noch viel am Platz, denn sie
-// beschreiben nicht eine Eigenschaft des Symbols, sondern eine
-// Eigenschaft der Nutzung des Symbols von drau�en.
-// Meine Alternativorschlag steht: 2 Scopes nehmen / die k�nnte man auch schachteln
-// oder zwei separate Listen in diesem omin�sen,
-// �berladenen Function- Scope, die halt beide durchsucht werden ...
-// (wobei in externen Artefakten die zweite Liste eh immer leer bleibt)
-
 
   /*=================================================================*/
 
@@ -94,10 +83,7 @@ component grammar TypeSymbols extends de.monticore.types.BasicTypeSymbols {
     isProtected: boolean
     isPublic: boolean
     isStatic:boolean
-    isElliptic
+    isElliptic: boolean
   ;
-  // TODO: fehlt hier noch isElliptic  um die spezielle Form der Darstellung
-  // des letzten Arguments (Typ: [.] las erweiterbare Liste zu erlauben?
-  // MB: Es waurde ursprünglich erst eine Ebene später  definiert
 
 }

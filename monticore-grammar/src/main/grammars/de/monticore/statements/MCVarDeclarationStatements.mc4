@@ -42,8 +42,6 @@ VariableDeclarator
     =   DeclaratorId ("=" VariableInit)?
     ;
 
-//  TODO BR -> MB: (3.6.) Ich gehe davon aus, dass hier ein VariableSymbol genutzt wird
-// und via SymbolMill wird da ggf. dann in Wirklichkeit ein FieldSymbol erzeugt?
 DeclaratorId implements VarDecl
     =   Name (dim:"[" "]")*
     ;
@@ -59,13 +57,10 @@ ArrayInit implements VariableInit
 
 interface symbol VarDecl extends Field;
 
-//  TODO BR: 15.6.: ueber die Attribute hie rmüssen wir reden
 symbolrule VarDecl =
-    annotations: de.monticore.types.check.SymTypeExpression*
     isFinal: boolean
     isVolatile: boolean
     isTransient: boolean
-    isEllipsis: boolean
 ;
 
 }

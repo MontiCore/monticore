@@ -37,7 +37,7 @@ public class JavaLightSymbolTableCreator extends JavaLightSymbolTableCreatorTOP 
     }
     if (ast.getFormalParameters().isPresentFormalParameterListing()
             && ast.getFormalParameters().getFormalParameterListing().isPresentLastFormalParameter()) {
-      symbol.setIsEllipsisParameterMethod(true);
+      symbol.setIsElliptic(true);
     }
   }
 
@@ -50,7 +50,7 @@ public class JavaLightSymbolTableCreator extends JavaLightSymbolTableCreatorTOP 
     }
     if (ast.getFormalParameters().isPresentFormalParameterListing()
             && ast.getFormalParameters().getFormalParameterListing().isPresentLastFormalParameter()) {
-      symbol.setIsEllipsisParameterMethod(true);
+      symbol.setIsElliptic(true);
     }
   }
 
@@ -62,7 +62,7 @@ public class JavaLightSymbolTableCreator extends JavaLightSymbolTableCreatorTOP 
     }
     if (ast.getFormalParameters().isPresentFormalParameterListing()
             && ast.getFormalParameters().getFormalParameterListing().isPresentLastFormalParameter()) {
-      symbol.setIsEllipsisParameterMethod(true);
+      symbol.setIsElliptic(true);
     }
   }
 
@@ -70,14 +70,12 @@ public class JavaLightSymbolTableCreator extends JavaLightSymbolTableCreatorTOP 
   public void endVisit(ASTFormalParameter ast) {
     VarDeclSymbol symbol = ast.getDeclaratorId().getSymbol();
     symbol.setType(createTypeLoader(ast.getMCType()));
-    symbol.setIsParameter(true);
   }
 
   @Override
   public void endVisit(ASTLastFormalParameter ast) {
     VarDeclSymbol symbol = ast.getDeclaratorId().getSymbol();
     symbol.setType(createTypeLoader(ast.getMCType()));
-    symbol.setIsParameter(true);
   }
 
   protected void addModifiersToMethOrConstr(MethOrConstrSymbol javaMethodSymbol,

@@ -50,12 +50,12 @@ symbolrule MethOrConstr =
 MethodDeclaration implements MethOrConstr, ClassBodyDeclaration
     =   MCModifier* ExtTypeParameters?
                 MCReturnType Name FormalParameters (dim:"[" "]")*
-                ("throws" Throws)? ("{" MCBlockStatement* "}" | ";")
+                ("throws" Throws)? (MCJavaBlock | ";")
     ;
 
 ConstructorDeclaration implements MethOrConstr, ClassBodyDeclaration
     =   MCModifier* ExtTypeParameters? Name FormalParameters ("throws" Throws)?
-        "{" MCBlockStatement* "}"
+        MCJavaBlock
     ;
 
 ConstDeclaration extends LocalVariableDeclarationStatement implements ClassBodyDeclaration, InterfaceBodyDeclaration

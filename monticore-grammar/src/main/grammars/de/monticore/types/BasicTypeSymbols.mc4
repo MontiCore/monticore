@@ -58,8 +58,6 @@ component grammar BasicTypeSymbols extends de.monticore.MCBasics {
     type: de.monticore.types.check.SymTypeExpression
     isReadOnly: boolean
    ;
-// TODO: Wollten wir das readOnly hier noch einf�gen?
-//MB: Kein Problem
 
   /*=================================================================*/
 

@@ -356,7 +356,6 @@ public class BuiltInJavaTypeSymbolResolvingDelegate implements IOOTypeSymbolReso
   }
 
   public static MethodSymbol addFieldToMethod(MethodSymbol m, FieldSymbol f){
-    f.setIsParameter(true);
     m.getSpannedScope().add(f);
     f.setEnclosingScope(m.getSpannedScope());
     return m;
