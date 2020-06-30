@@ -17,10 +17,7 @@ public class JavaAndAutTool {
 
   public static Automata6ArtifactScope createJavaAndAutSymTab(String model, ModelPath modelPath) {
     ASTAutomaton ast = parseAut(model);
-    Automata6GlobalScope globalScope = Automata6Mill.automata6GlobalScopeBuilder()
-        .setModelPath(modelPath)
-        .setAutomata6Language(new Automata6Language()) //will be removed soon
-        .build();
+    Automata6GlobalScope globalScope = new Automata6GlobalScope(modelPath, "aut");
     globalScope.addAdaptedStimulusSymbolResolvingDelegate(new AutomataResolvingDelegate(modelPath));
 
     //initialize symbol table creators

@@ -5,7 +5,6 @@ package mc.embedding;
 import de.monticore.io.paths.ModelPath;
 import mc.GeneratorIntegrationsTest;
 import mc.embedding.composite._symboltable.CompositeGlobalScope;
-import mc.embedding.composite._symboltable.CompositeLanguage;
 import mc.embedding.composite._symboltable.ICompositeScope;
 import mc.embedding.composite._symboltable.Text2ContentAdapter;
 import mc.embedding.embedded._symboltable.TextSymbol;
@@ -21,11 +20,9 @@ public class CompositeTest extends GeneratorIntegrationsTest {
 
   @Test
   public void test() {
-    final CompositeLanguage language = new CompositeLanguage();
-
     final ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/mc/embedding"));
 
-    final CompositeGlobalScope scope = new CompositeGlobalScope(modelPath, language);
+    final CompositeGlobalScope scope = new CompositeGlobalScope(modelPath);
 
     // Symbol of the host language
     final HostSymbol hostSymbol = scope.resolveHost("ZComposite").orElse(null);

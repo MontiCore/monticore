@@ -7,7 +7,8 @@ grammar ${ast.getName()}Antlr;
 package ${genHelper.getParserPackage()};
 </#if>
 <#if genHelper.isEmbeddedJavaCode()>
-import de.monticore.antlr4.MCParser;
+import de.monticore.antlr4.*;
+import ${genHelper.getQualifiedGrammarName()?lower_case}.*;
 </#if>
 }
 @lexer::header {

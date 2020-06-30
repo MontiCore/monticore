@@ -11,12 +11,9 @@ import de.monticore.types.typesymbols._symboltable.OOTypeSymbol;
 import de.monticore.types.typesymbols._symboltable.OOTypeSymbolLoader;
 import de.se_rwth.commons.logging.LogStub;
 import mc.testcd4analysis._symboltable.TestCD4AnalysisGlobalScope;
-import mc.testcd4analysis._symboltable.TestCD4AnalysisLanguage;
-import mc.typescalculator.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 import mc.typescalculator.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import mc.typescalculator.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsArtifactScope;
 import mc.typescalculator.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsGlobalScope;
-import mc.typescalculator.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsLanguage;
 import mc.typescalculator.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsSymbolTableCreatorDelegator;
 import org.junit.Test;
 
@@ -36,16 +33,13 @@ public class CombineExpressionsWithLiteralsTest {
   @Test
   public void testCD() throws IOException {
     LogStub.init();
-    TestCD4AnalysisLanguage cd4AnalysisLanguage = new TestCD4AnalysisLanguage();
-    ModelPath modelPath = new ModelPath(Paths.get(MODEL_PATH));
     TestCD4AnalysisGlobalScope globalScope =
-            new TestCD4AnalysisGlobalScope(modelPath, cd4AnalysisLanguage);
+            new TestCD4AnalysisGlobalScope(new ModelPath(Paths.get(MODEL_PATH)));
 
 
     CD2EAdapter adapter = new CD2EAdapter(globalScope);
-    CombineExpressionsWithLiteralsLanguage language = CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsLanguageBuilder().build();
-    CombineExpressionsWithLiteralsGlobalScope globalScope1 = CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsGlobalScopeBuilder()
-        .setCombineExpressionsWithLiteralsLanguage(language).setModelPath(new ModelPath()).build();
+    CombineExpressionsWithLiteralsGlobalScope globalScope1 =
+        new CombineExpressionsWithLiteralsGlobalScope(new ModelPath());
     globalScope1.addAdaptedFieldSymbolResolvingDelegate(adapter);
     globalScope1.addAdaptedOOTypeSymbolResolvingDelegate(adapter);
     globalScope1.addAdaptedMethodSymbolResolvingDelegate(adapter);

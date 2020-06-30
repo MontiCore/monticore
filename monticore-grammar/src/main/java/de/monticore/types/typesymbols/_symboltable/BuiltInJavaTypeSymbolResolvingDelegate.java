@@ -27,13 +27,7 @@ public class BuiltInJavaTypeSymbolResolvingDelegate implements IOOTypeSymbolReso
   protected static TypeSymbolsGlobalScope gs = initScope();
 
   protected static TypeSymbolsGlobalScope initScope() {
-    gs = new TypeSymbolsGlobalScope(new ModelPath(),
-        new TypeSymbolsLanguage("Types Symbols Language", "ts") {
-          @Override public MCConcreteParser getParser() {
-            Log.error("0xA0611 Type Symbols do not have a parser!");
-            return null;
-          }
-        });
+    gs = new TypeSymbolsGlobalScope(new ModelPath(), "ts");
     //package java.lang
     TypeSymbolsArtifactScope javalang = new TypeSymbolsArtifactScope("java.lang",
         new ArrayList<>());

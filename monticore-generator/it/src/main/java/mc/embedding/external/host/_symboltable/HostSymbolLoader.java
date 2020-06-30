@@ -15,13 +15,6 @@ public class HostSymbolLoader extends HostSymbolLoaderTOP {
                           IHostScope enclosingScopeOfReference) {
     super(name, enclosingScopeOfReference);
   }
-  
-
-//  @Override
-//  public Collection<ContentSymbol> getContent() {
-//    return getReferencedSymbol().getContent();
-//  }
-
 
 }
 
