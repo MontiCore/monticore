@@ -1,12 +1,20 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("scopeFullName")}
+${tc.signature("scopeFullName", "languageName", "attrList")}
+<#assign genHelper = glex.getGlobalVar("astHelper")>
   printer.beginObject();
   printer.member(de.monticore.symboltable.serialization.JsonDeSers.KIND, "${scopeFullName}");
   printer.member(de.monticore.symboltable.serialization.JsonDeSers.NAME, node.getName());
   printer.member(de.monticore.symboltable.serialization.JsonDeSers.IS_SHADOWING_SCOPE, node.isShadowing());
-  printer.member(de.monticore.symboltable.serialization.JsonDeSers.EXPORTS_SYMBOLS, node.isExportingSymbols());
-  if (node.isPresentSpanningSymbol()) {
-    addScopeSpanningSymbol(node.getSpanningSymbol());
+
+<#list attrList as attr>
+  <#if genHelper.isOptional(attr.getMCType())>
+  if (node.isPresent${attr.getName()?cap_first}()) {
+    serialize${languageName}${attr.getName()?cap_first}(Optional.of(node.${genHelper.getPlainGetter(attr)}()));
   }
+  <#else>
+  serialize${languageName}${attr.getName()?cap_first}(node.${genHelper.getPlainGetter(attr)}());
+  </#if>
+</#list>
+
   serializeLocalSymbols(node);
   serializeAdditionalScopeAttributes(node);
