@@ -10,6 +10,7 @@ import mc.embedding.embedded._symboltable.TextSymbol;
 import mc.embedding.host._symboltable.ContentSymbol;
 import mc.embedding.host._symboltable.HostSymbol;
 import mc.embedding.host._symboltable.IHostScope;
+import mc.embedding.transitive.transcomposite.TransCompositeMill;
 import mc.embedding.transitive.transcomposite._symboltable.TransCompositeGlobalScope;
 import mc.embedding.transitive.transhost._symboltable.TransStartSymbol;
 import org.junit.Test;
@@ -24,7 +25,11 @@ public class TransCompositeTest extends GeneratorIntegrationsTest {
   public void test() {
     final ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/mc/embedding/transitive/"));
 
-    final TransCompositeGlobalScope scope = new TransCompositeGlobalScope(modelPath, "transhost");
+    final TransCompositeGlobalScope scope = TransCompositeMill
+        .transCompositeGlobalScopeBuilder()
+        .setModelPath(modelPath)
+        .setModelFileExtension("transhost")
+        .build();
 
     // Symbol of the host language
     final TransStartSymbol transHostSymbol = scope.resolveTransStart("TransComposite").orElse(null);

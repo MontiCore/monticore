@@ -40,7 +40,6 @@ public class AggregationTest {
     */
  
   //Create global scope for our language combination
-
   FooBlahGlobalScope globalScope = new FooBlahGlobalScope(new ModelPath());
  
   //Parse blah model

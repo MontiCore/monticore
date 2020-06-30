@@ -3,6 +3,7 @@
 import de.monticore.codegen.parser.ParserGenerator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsLanguage;
@@ -38,9 +39,16 @@ public class GenerateAutomataParser {
       // Initialize symbol table
       // (using imported grammars from the model path)
       ModelPath modelPath = new ModelPath(Paths.get("target/monticore-grammar-grammars.jar"));
-      Grammar_WithConceptsLanguage l = new Grammar_WithConceptsLanguage();
-      Grammar_WithConceptsGlobalScope gs = new Grammar_WithConceptsGlobalScope(modelPath, l);
-      new Grammar_WithConceptsSymbolTableCreatorDelegator(gs).createFromAST(ast);
+      Grammar_WithConceptsGlobalScope gs = Grammar_WithConceptsMill
+          .grammar_WithConceptsGlobalScopeBuilder()
+          .setModelPath(modelPath)
+          .setModelFileExtension("mc4")
+          .build();
+      Grammar_WithConceptsMill
+          .grammar_WithConceptsSymbolTableCreatorDelegatorBuilder()
+          .setGlobalScope(gs)
+          .build()
+          .createFromAST(ast);
       // Hand coded path
       IterablePath handcodedPath = IterablePath.empty();
 

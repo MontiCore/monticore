@@ -4,8 +4,9 @@ package mc.embedding.external;
 
 import de.monticore.io.paths.ModelPath;
 import mc.GeneratorIntegrationsTest;
-import mc.embedding.host._symboltable.HostGlobalScope;
-import mc.embedding.host._symboltable.HostSymbol;
+import mc.embedding.external.host.HostMill;
+import mc.embedding.external.host._symboltable.HostGlobalScope;
+import mc.embedding.external.host._symboltable.HostSymbol;
 import org.junit.Test;
 
 import java.nio.file.Paths;
@@ -19,7 +20,11 @@ public class HostTest extends GeneratorIntegrationsTest {
   public void test() {
     final ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/mc/embedding"));
 
-    final HostGlobalScope scope = new HostGlobalScope(modelPath, "host");
+    final HostGlobalScope scope = HostMill
+        .hostGlobalScopeBuilder()
+        .setModelPath(modelPath)
+        .setModelFileExtension("host")
+        .build();
 
     HostSymbol hostSymbol = scope.resolveHost("H").orElse(null);
     assertNotNull(hostSymbol);

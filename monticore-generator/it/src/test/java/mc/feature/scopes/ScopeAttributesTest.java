@@ -3,6 +3,7 @@ package mc.feature.scopes;
 
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
+import mc.feature.scopes.scopeattributes.ScopeAttributesMill;
 import mc.feature.scopes.scopeattributes._ast.ASTStartProd;
 import mc.feature.scopes.scopeattributes._parser.ScopeAttributesParser;
 import mc.feature.scopes.scopeattributes._symboltable.IScopeAttributesScope;
@@ -37,8 +38,15 @@ public class ScopeAttributesTest {
     assertTrue(astSup.isPresent());
 
     ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/mc/feature/scopes"));
-    ScopeAttributesGlobalScope globalScope = new ScopeAttributesGlobalScope(modelPath, "sc");
-    ScopeAttributesSymbolTableCreatorDelegator symbolTableCreator = new ScopeAttributesSymbolTableCreatorDelegator(globalScope);
+    ScopeAttributesGlobalScope globalScope = ScopeAttributesMill
+        .scopeAttributesGlobalScopeBuilder()
+        .setModelPath(modelPath)
+        .setModelFileExtension("sc")
+        .build();
+    ScopeAttributesSymbolTableCreatorDelegator symbolTableCreator = ScopeAttributesMill
+        .scopeAttributesSymbolTableCreatorDelegatorBuilder()
+        .setGlobalScope(globalScope)
+        .build();
     scope = symbolTableCreator.createFromAST(astSup.get());
   }
 

@@ -3,6 +3,7 @@ package mc.feature.scopes;
 
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
+import mc.feature.scopes.supautomaton.SupAutomatonMill;
 import mc.feature.scopes.supautomaton._ast.ASTSup;
 import mc.feature.scopes.supautomaton._parser.SupAutomatonParser;
 import mc.feature.scopes.supautomaton._symboltable.SupAutomatonGlobalScope;
@@ -37,8 +38,16 @@ public class ScopesTest {
     assertTrue(astSup.isPresent());
 
     ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/mc/feature/scopes"));
-    SupAutomatonGlobalScope globalScope = new SupAutomatonGlobalScope(modelPath, "aut");
-    SupAutomatonSymbolTableCreatorDelegator symbolTableCreator = new SupAutomatonSymbolTableCreatorDelegator(globalScope);
+
+    SupAutomatonGlobalScope globalScope = SupAutomatonMill
+        .supAutomatonGlobalScopeBuilder()
+        .setModelPath(modelPath)
+        .setModelFileExtension("aut")
+        .build();
+    SupAutomatonSymbolTableCreatorDelegator symbolTableCreator = SupAutomatonMill
+        .supAutomatonSymbolTableCreatorDelegatorBuilder()
+        .setGlobalScope(globalScope)
+        .build();
 
     this.astSup = astSup.get();
     this.globalScope = globalScope;
