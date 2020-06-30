@@ -43,7 +43,7 @@ public class ListInterfaceTest {
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
     assertEquals(2,ast.get().getTestList().size());
-    assertFalse(ast.get().isEmptyTests());
+    assertFalse(ast.get().isEmptyTest());
   }
 
   @Test
@@ -53,6 +53,6 @@ public class ListInterfaceTest {
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
     assertEquals(3,ast.get().getTestList().size());
-    assertFalse(ast.get().isEmptyTests());
+    assertFalse(ast.get().isEmptyTest());
   }
 }

@@ -7,7 +7,7 @@
 grammar Automata2 {
   State = "..." ;
   astrule State =
-    reachableState:State*
+    reachableStates:State*
     method public boolean isReachable(ASTState s) {
       return reachableStates.contains(s);
     };

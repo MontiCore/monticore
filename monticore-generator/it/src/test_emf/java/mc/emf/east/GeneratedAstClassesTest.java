@@ -20,7 +20,7 @@ public class GeneratedAstClassesTest extends GeneratorIntegrationsTest {
     thrown.expect(NullPointerException.class);
     // Log.errorIfNull is not generated
     // thrown.expectMessage("must not be null.");
-    b.setTransitionsList(null);
+    b.setTransitionList(null);
   }
 
 }
