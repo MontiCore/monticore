@@ -2,12 +2,10 @@
 
 package javaandaut;
 
-import automata6.Automata6Mill;
-import automata6._ast.ASTAutomaton;
-import automata6._parser.Automata6Parser;
-import automata6._symboltable.*;
-import basicjava.BasicJavaMill;
-import basicjava._symboltable.BasicJavaGlobalScope;
+import automata7.Automata7Mill;
+import automata7._ast.ASTAutomaton;
+import automata7._parser.Automata7Parser;
+import automata7._symboltable.*;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.RecognitionException;
@@ -17,18 +15,18 @@ import java.util.Optional;
 
 public class JavaAndAutTool {
 
-  public static Automata6ArtifactScope createJavaAndAutSymTab(String model, ModelPath modelPath) {
+  public static Automata7ArtifactScope createJavaAndAutSymTab(String model, ModelPath modelPath) {
     ASTAutomaton ast = parseAut(model);
-    Automata6GlobalScope globalScope = Automata6Mill
-        .automata6GlobalScopeBuilder()
-        .setModelPath(new ModelPath())
+    Automata7GlobalScope globalScope = Automata7Mill
+        .automata7GlobalScopeBuilder()
+        .setModelPath(modelPath)
         .setModelFileExtension("aut")
         .build();
     globalScope.addAdaptedStimulusSymbolResolvingDelegate(new AutomataResolvingDelegate(modelPath));
 
     //initialize symbol table creators
-    Automata6SymbolTableCreator stc = Automata6Mill
-        .automata6SymbolTableCreatorBuilder()
+    Automata7SymbolTableCreator stc = Automata7Mill
+        .automata7SymbolTableCreatorBuilder()
         .addToScopeStack(globalScope)
         .build();
 
@@ -36,7 +34,7 @@ public class JavaAndAutTool {
   }
 
   public static ASTAutomaton parseAut(String model) {
-    try { Automata6Parser parser = new Automata6Parser() ;
+    try { Automata7Parser parser = new Automata7Parser() ;
       Optional<ASTAutomaton> optResult = parser.parse(model);
 
       if (!parser.hasErrors() && optResult.isPresent()) {
