@@ -6,6 +6,8 @@ import automata6.Automata6Mill;
 import automata6._ast.ASTAutomaton;
 import automata6._parser.Automata6Parser;
 import automata6._symboltable.*;
+import basicjava.BasicJavaMill;
+import basicjava._symboltable.BasicJavaGlobalScope;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.RecognitionException;
@@ -17,7 +19,11 @@ public class JavaAndAutTool {
 
   public static Automata6ArtifactScope createJavaAndAutSymTab(String model, ModelPath modelPath) {
     ASTAutomaton ast = parseAut(model);
-    Automata6GlobalScope globalScope = new Automata6GlobalScope(modelPath, "aut");
+    Automata6GlobalScope globalScope = Automata6Mill
+        .automata6GlobalScopeBuilder()
+        .setModelPath(new ModelPath())
+        .setModelFileExtension("aut")
+        .build();
     globalScope.addAdaptedStimulusSymbolResolvingDelegate(new AutomataResolvingDelegate(modelPath));
 
     //initialize symbol table creators
