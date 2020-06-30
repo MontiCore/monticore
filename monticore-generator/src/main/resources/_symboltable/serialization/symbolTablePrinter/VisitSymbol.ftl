@@ -15,4 +15,4 @@ ${tc.signature("symbolFullName", "symbolProdName", "attrList")}
   serialize${symbolProdName}${attr.getName()?cap_first}(node.${genHelper.getPlainGetter(attr)}());
   </#if>
 </#list>
-serializeAdditional${symbolProdName}Attributes(node);
+serializeAdditional${symbolProdName}SymbolAttributes(node);
