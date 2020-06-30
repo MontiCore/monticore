@@ -25,19 +25,19 @@ public class DeriveSymTypeOfMyOwnLanguage
   @Override
   public Optional<SymTypeExpression> calculateType(ASTExpression ex) {
     ex.accept(realThis);
-    return Optional.of(typeCheckResult.getLast());
+    return Optional.of(typeCheckResult.getCurrentResult());
   }
 
   @Override
   public Optional<SymTypeExpression> calculateType(ASTLiteral lit) {
     lit.accept(realThis);
-    return Optional.of(typeCheckResult.getLast());
+    return Optional.of(typeCheckResult.getCurrentResult());
   }
 
   @Override
   public Optional<SymTypeExpression> calculateType(ASTSignedLiteral lit) {
     lit.accept(realThis);
-    return Optional.of(typeCheckResult.getLast());
+    return Optional.of(typeCheckResult.getCurrentResult());
   }
 
   @Override

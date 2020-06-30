@@ -94,7 +94,6 @@ public class ReportingReport extends AbstractMavenReport {
       "14_Transformations.txt",
       "15_ArtifactGml.gml",
       "16_ArtifactGv.gv",
-      "17_InputOutputFiles.txt",
       "18_ObjectDiagram.txt"
   });
   

@@ -30,7 +30,7 @@ project under `monticore-grammar/src/main/grammars/` in packages
 * `de.monticore.statements`
 * `de.monticore.types`
 
-For [more langauges, see here](docs/Languages.md).
+For [more langauges, see here](../../../../../../docs/Languages.md).
 
 
 Table of Contents:
@@ -343,7 +343,7 @@ These can also be used if someone is interested:
 ## Further Information
 
 * [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
-* [**List of languages**](docs/Languages.md).
+* [**List of languages**](../../../../../../docs/Languages.md).
 * [MontiCore documentation](http://www.monticore.de/)
 
 

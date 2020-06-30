@@ -51,8 +51,8 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     SymTypeExpression wholeResult = null;
 
     node.getExpression().accept(getRealThis());
-    if(typeCheckResult.isPresentLast()){
-      innerResult = typeCheckResult.getLast();
+    if(typeCheckResult.isPresentCurrentResult()){
+      innerResult = typeCheckResult.getCurrentResult();
     }else{
       logError("0xA0251",node.getExpression().get_SourcePositionStart());
     }
@@ -78,7 +78,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     }
 
     if(wholeResult!=null){
-      typeCheckResult.setLast(wholeResult);
+      typeCheckResult.setCurrentResult(wholeResult);
     }else {
       typeCheckResult.reset();
       logError("0xA0252",node.get_SourcePositionStart());
@@ -93,9 +93,9 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
 
     //cannot be a type and has to be a integer value
     node.getIndexExpression().accept(getRealThis());
-    if (typeCheckResult.isPresentLast()) {
+    if (typeCheckResult.isPresentCurrentResult()) {
       if (!typeCheckResult.isType()) {
-        indexResult = typeCheckResult.getLast();
+        indexResult = typeCheckResult.getCurrentResult();
       }else{
         typeCheckResult.reset();
         Log.error("0xA0253 the expression at source position"+node.getIndexExpression().get_SourcePositionStart()+" cannot be a type");
@@ -105,11 +105,11 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     }
 
     node.getExpression().accept(getRealThis());
-    if(typeCheckResult.isPresentLast()){
+    if(typeCheckResult.isPresentCurrentResult()){
       if(typeCheckResult.isType()){
         Log.error("0xA0255 the expression at source position "+node.getExpression().get_SourcePositionStart()+" cannot be a type");
       }
-      arrayTypeResult = typeCheckResult.getLast();
+      arrayTypeResult = typeCheckResult.getCurrentResult();
     }else{
       logError("0xA0256",node.get_SourcePositionStart());
     }
@@ -122,7 +122,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
 
     //if nothing found -> fail
     if(wholeResult!=null){
-      typeCheckResult.setLast(wholeResult);
+      typeCheckResult.setCurrentResult(wholeResult);
     }else {
       typeCheckResult.reset();
       logError("0xA0257",node.get_SourcePositionStart());
@@ -190,12 +190,12 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     SymTypeExpression innerResult;
 
     node.getExtReturnType().accept(getRealThis());
-    if(typeCheckResult.isPresentLast()){
-      innerResult = typeCheckResult.getLast();
+    if(typeCheckResult.isPresentCurrentResult()){
+      innerResult = typeCheckResult.getCurrentResult();
       wholeResult = SymTypeExpressionFactory.createGenerics("Class",getScope(node.getEnclosingScope()),innerResult);
     }
     if(wholeResult!=null){
-      typeCheckResult.setLast(wholeResult);
+      typeCheckResult.setCurrentResult(wholeResult);
     }else {
       typeCheckResult.reset();
       logError("0xA0258",node.get_SourcePositionStart());
@@ -212,9 +212,9 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     SymTypeExpression wholeResult = null;
 
     node.getExpression().accept(getRealThis());
-    if(typeCheckResult.isPresentLast()) {
+    if(typeCheckResult.isPresentCurrentResult()) {
       if (typeCheckResult.isType()){
-        beforeSuperType = typeCheckResult.getLast();
+        beforeSuperType = typeCheckResult.getCurrentResult();
       }else {
         Log.error("0xA0259 the expression at source position "+node.getExpression().get_SourcePositionStart()+" has to be a type");
       }
@@ -266,7 +266,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
       }
     }
     if(wholeResult!=null){
-      typeCheckResult.setLast(wholeResult);
+      typeCheckResult.setCurrentResult(wholeResult);
     }else {
       typeCheckResult.reset();
       logError("0xA0261",node.get_SourcePositionStart());
@@ -283,8 +283,8 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     SymTypeExpression wholeResult = null;
 
     node.getExpression().accept(getRealThis());
-    if(typeCheckResult.isPresentLast()){
-      innerResult = typeCheckResult.getLast();
+    if(typeCheckResult.isPresentCurrentResult()){
+      innerResult = typeCheckResult.getCurrentResult();
       if(typeCheckResult.isType()){
         typeCheckResult.reset();
         Log.error("0xA0262 the expression at source position "+node.getExpression().get_SourcePositionStart()+" cannot be a type");
@@ -295,8 +295,8 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
 
     //castResult is the type in the brackets -> (ArrayList) list
     node.getExtType().accept(getRealThis());
-    if(typeCheckResult.isPresentLast()){
-      castResult = typeCheckResult.getLast();
+    if(typeCheckResult.isPresentCurrentResult()){
+      castResult = typeCheckResult.getCurrentResult();
     }else{
       Log.error("0xA0265 the type at source position "+node.getExtType().get_SourcePositionStart()+" cannot be calculated");
     }
@@ -306,7 +306,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     }
 
     if(null!=wholeResult){
-      typeCheckResult.setLast(wholeResult);
+      typeCheckResult.setCurrentResult(wholeResult);
     }else{
       typeCheckResult.reset();
       logError("0xA0266",node.get_SourcePositionStart());
@@ -319,7 +319,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
 
     //calculate left type: expression that is to be checked for a specific type
     node.getExpression().accept(getRealThis());
-    if(typeCheckResult.isPresentLast()){
+    if(typeCheckResult.isPresentCurrentResult()){
       if(typeCheckResult.isType()){
         typeCheckResult.reset();
         Log.error("0xA0267 the expression at source position "+node.getExpression().get_SourcePositionStart()+" cannot be a type");
@@ -331,7 +331,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
 
     //calculate right type: type that the expression should be an instance of
     node.getExtType().accept(getRealThis());
-    if(typeCheckResult.isPresentLast()){
+    if(typeCheckResult.isPresentCurrentResult()){
       if(!typeCheckResult.isType()) {
         typeCheckResult.reset();
         Log.error("0xA0269 the expression at source position "+node.getExtType().get_SourcePositionStart()+" must be a type");
@@ -344,7 +344,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     wholeResult = SymTypeExpressionFactory.createTypeConstant("boolean");
 
     if(null!=wholeResult){
-      typeCheckResult.setLast(wholeResult);
+      typeCheckResult.setCurrentResult(wholeResult);
     }else{
       typeCheckResult.reset();
       logError("0xA0271",node.get_SourcePositionStart());
@@ -360,7 +360,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
       wholeResult = getResultOfPrimaryThisExpression(getScope(node.getEnclosingScope()), typeSymbol);
     }
     if(null!=wholeResult){
-      typeCheckResult.setLast(wholeResult);
+      typeCheckResult.setCurrentResult(wholeResult);
     }else{
       typeCheckResult.reset();
       logError("0xA0272",node.get_SourcePositionStart());
@@ -402,7 +402,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
       }
     }
     if(wholeResult!=null){
-      typeCheckResult.setLast(wholeResult);
+      typeCheckResult.setCurrentResult(wholeResult);
     }else{
       typeCheckResult.reset();
       logError("0xA0280",node.get_SourcePositionStart());
@@ -417,11 +417,11 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     boolean isType = false;
 
     node.getExpression().accept(getRealThis());
-    if(typeCheckResult.isPresentLast()){
+    if(typeCheckResult.isPresentCurrentResult()){
       if(typeCheckResult.isType()){
        isType = true;
       }
-      expressionResult = typeCheckResult.getLast();
+      expressionResult = typeCheckResult.getCurrentResult();
     }else{
       logError("0xA0281",node.getExpression().get_SourcePositionStart());
     }
@@ -448,7 +448,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     }
 
     if(wholeResult!=null){
-      typeCheckResult.setLast(wholeResult);
+      typeCheckResult.setCurrentResult(wholeResult);
     }else {
       typeCheckResult.reset();
       logError("0xA0282",node.get_SourcePositionStart());
@@ -465,8 +465,8 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     List<SymTypeExpression> typeArgsList = Lists.newArrayList();
     for(int i = 0;i<extTypeArgumentList.size();i++){
       extTypeArgumentList.get(i).accept(getRealThis());
-      if(typeCheckResult.isPresentLast()){
-        typeArgsList.add(typeCheckResult.getLast());
+      if(typeCheckResult.isPresentCurrentResult()){
+        typeArgsList.add(typeCheckResult.getCurrentResult());
       }else{
         Log.error("0xA0283 the type argument at source position "+extTypeArgumentList.get(i).get_SourcePositionStart()+" cannot be calculated");
       }
@@ -530,9 +530,9 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     List<SymTypeExpression> argList = Lists.newArrayList();
     for(int i = 0;i<args.getExpressionList().size();i++){
       args.getExpression(i).accept(getRealThis());
-      if(typeCheckResult.isPresentLast()){
+      if(typeCheckResult.isPresentCurrentResult()){
         if(!typeCheckResult.isType()){
-          argList.add(typeCheckResult.getLast());
+          argList.add(typeCheckResult.getCurrentResult());
         }
       }else{
         logError("0xA0284",args.getExpressionList().get(i).get_SourcePositionStart());
@@ -552,8 +552,8 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
         //case 1: <TypeVariable>method(Args) -> similar to GenericInvocationExpression
         //can be accessed solely or after another expression -> check if lastResult is present
         ITypeSymbolsScope testScope;
-        if(typeCheckResult.isPresentLast()){
-          testScope = typeCheckResult.getLast().getTypeInfo().getSpannedScope();
+        if(typeCheckResult.isPresentCurrentResult()){
+          testScope = typeCheckResult.getCurrentResult().getTypeInfo().getSpannedScope();
         }else{
           testScope = getScope(node.getEnclosingScope());
         }
@@ -605,7 +605,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     }
 
     if(wholeResult!=null){
-      typeCheckResult.setLast(wholeResult);
+      typeCheckResult.setCurrentResult(wholeResult);
     }else {
       typeCheckResult.reset();
       logError("0xA0285",node.get_SourcePositionStart());

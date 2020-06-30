@@ -75,6 +75,14 @@ component grammar CommonExpressions
 
   /*=================================================================*/
 
+  PlusPrefixExpression implements Expression <210> =
+    "+" Expression;
+
+  MinusPrefixExpression implements Expression <210> =
+    "-" Expression;
+
+  /*=================================================================*/
+
   BooleanNotExpression implements Expression <200> =
     "~"  Expression;
 
