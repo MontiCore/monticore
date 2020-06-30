@@ -100,6 +100,7 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
   }
 
   protected void logError(String errorCode, SourcePosition start){
+    typeCheckResult.reset();
     Log.error(errorCode+String.format(ERROR_MSG, start));
   }
 

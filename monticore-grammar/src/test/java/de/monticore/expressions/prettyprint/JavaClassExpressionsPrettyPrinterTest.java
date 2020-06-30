@@ -254,4 +254,25 @@ public class JavaClassExpressionsPrettyPrinterTest {
     // prettyprinter of language that fills the external
     assertEquals("new (a,b)", output);
   }
+
+  @Test
+  public void testCreatorExpression2() throws IOException {
+    Optional<ASTCreatorExpression> result = parser.parse_StringCreatorExpression("new double[3][]");
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
+    ASTCreatorExpression ast = result.get();
+    String output = prettyPrinter.prettyprint(ast);
+    // does not print 'double' because functionality for type printing has to be added over delegation from
+    // prettyprinter of language that fills the external
+    assertEquals("new ", output);
+
+    result = parser.parse_StringCreatorExpression("new double[][]{4,{3.2}}");
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
+    ast = result.get();
+    output = prettyPrinter.prettyprint(ast);
+    // does not print 'double' because functionality for type printing has to be added over delegation from
+    // prettyprinter of language that fills the external
+    assertEquals("new ", output);
+  }
 }

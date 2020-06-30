@@ -83,6 +83,29 @@ component grammar JavaClassExpressions
       =  ExtType Arguments
       ;
 
+  ArrayCreator implements Creator
+      =   ExtType ArrayDimensionSpecifier
+      ;
+
+  interface ArrayDimensionSpecifier ;
+
+  ArrayDimensionByInitializer implements ArrayDimensionSpecifier
+      =   (dim:"[" "]")+ ArrayInit
+      ;
+
+  ArrayDimensionByExpression implements ArrayDimensionSpecifier
+      =   ("[" Expression "]")+ (dim:"[" "]")*
+      ;
+
+  interface VariableInit;
+
+  SimpleInit implements VariableInit =
+                      Expression;
+
+  ArrayInit implements VariableInit
+       =   "{" (VariableInit || ",")* (",")? "}"
+       ;
+
   /*=================================================================*/
 
   ClassExpression implements Expression <360> =

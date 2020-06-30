@@ -4,6 +4,7 @@ package de.monticore.types.check;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import de.monticore.expressions.expressionsbasis._ast.ASTArguments;
+import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
 import de.monticore.expressions.javaclassexpressions._ast.*;
 import de.monticore.expressions.javaclassexpressions._visitor.JavaClassExpressionsVisitor;
@@ -16,6 +17,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static de.monticore.types.check.TypeCheck.compatible;
+import static de.monticore.types.check.TypeCheck.isSubtypeOf;
 
 /**
  * This Visitor can calculate a SymTypeExpression (type) for the expressions in JavaClassExpressions
@@ -669,7 +671,106 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
       }
     }
 
-    private List<SymTypeExpression> calculateCorrectArguments(ASTArguments args) {
+    @Override
+    public void traverse(ASTArrayCreator creator){
+      SymTypeExpression extTypeResult = null;
+      SymTypeExpression wholeResult = null;
+
+      creator.getExtType().accept(getRealThis());
+      if(typeCheckResult.isPresentLast()){
+        extTypeResult = typeCheckResult.getLast();
+      }else{
+        logError("0xA0314", creator.getExtType().get_SourcePositionStart());
+      }
+
+      //the definition of the Arrays are based on the assumption that ExtType is not an array
+      if(!extTypeResult.isArrayType()) {
+        if (creator.getArrayDimensionSpecifier() instanceof ASTArrayDimensionByInitializer) {
+          ASTArrayDimensionByInitializer arrayInitializer = (ASTArrayDimensionByInitializer) creator.getArrayDimensionSpecifier();
+          int dim = arrayInitializer.getDimList().size();
+          ASTArrayInit arrayInit = arrayInitializer.getArrayInit();
+          //gehe arrayInit durch, schaue ob passend zum Typen --> Klammern zählen usw.
+          if(controlArrayInitCorrectType(arrayInit, extTypeResult, dim, new int[]{0})){
+            wholeResult = SymTypeExpressionFactory.createTypeArray(extTypeResult.getTypeInfo().getName(), extTypeResult.getTypeInfo().getEnclosingScope(), dim, extTypeResult.deepClone());
+          }
+        }
+        else if (creator.getArrayDimensionSpecifier() instanceof ASTArrayDimensionByExpression) {
+          ASTArrayDimensionByExpression arrayInitializer = (ASTArrayDimensionByExpression) creator.getArrayDimensionSpecifier();
+          int dim = arrayInitializer.getDimList().size() + arrayInitializer.getExpressionList().size();
+          //teste dass alle Expressions integer-zahl sind
+          for(ASTExpression expr: arrayInitializer.getExpressionList()){
+            expr.accept(getRealThis());
+            if(typeCheckResult.isPresentLast()){
+              SymTypeExpression result = typeCheckResult.getLast();
+              if(result.isTypeConstant()){
+                if(!((SymTypeConstant) result).isIntegralType()){
+                  logError("0xA0315", expr.get_SourcePositionStart());
+                }
+              }else{
+                logError("0xA0316", expr.get_SourcePositionStart());
+              }
+            }else{
+              logError("0xA0317", expr.get_SourcePositionStart());
+            }
+          }
+          wholeResult = SymTypeExpressionFactory.createTypeArray(extTypeResult.getTypeInfo().getName(), extTypeResult.getTypeInfo().getEnclosingScope(),dim, extTypeResult.deepClone());
+        }
+      }
+
+
+      if(wholeResult!=null){
+        typeCheckResult.setLast(wholeResult);
+        typeCheckResult.setType();
+      }else{
+        logError("0xA0318", creator.get_SourcePositionStart());
+      }
+    }
+
+  protected boolean controlArrayInitCorrectType(ASTArrayInit arrayInit, SymTypeExpression extTypeResult, int dim, int[] depth) {
+    //dimension of array too high
+    if(depth[0]>=dim){
+      return false;
+    }
+    for(ASTVariableInit init: arrayInit.getVariableInitList()){
+      if(init instanceof ASTArrayInit){
+        depth[0]++;
+        //check recursively, if true do nothing, if false return false
+        if(!controlArrayInitCorrectType((ASTArrayInit) init, extTypeResult, dim, depth)){
+          return false;
+        }
+        depth[0]--;
+      }else{
+        ASTSimpleInit simpleInit = (ASTSimpleInit) init;
+        simpleInit.getExpression().accept(getRealThis());
+        if(typeCheckResult.isPresentLast()){
+          //check if expression is compatible to array type, if false return false
+          SymTypeExpression currentResult = typeCheckResult.getLast();
+          if(!compatible(extTypeResult, currentResult)){
+            //was ist, wenn z.B. Methoden Arrays returnen oder man Array-Variablen hereinreicht? Noch Fehler!! -> Teste auf SymTypeArray, Dimension, richtiger Basistyp (Argument in SymTypeArray) des Arrays, muss gleich sein, kein subtyp
+            if(currentResult.isArrayType()){
+              SymTypeArray current = (SymTypeArray) currentResult;
+              if ((current.getDim() + depth[0]) != (dim - 1) || !current.getArgument().getTypeInfo().getName().equals(extTypeResult.getTypeInfo().getName())) {
+                logError("0xA0319", simpleInit.getExpression().get_SourcePositionStart());
+                return false;
+              }
+            }else {
+              logError("0xA0320", simpleInit.getExpression().get_SourcePositionStart());
+              return false;
+            }
+          }else if(depth[0] != (dim-1)){
+            return false;
+          }
+        }else{
+          logError("0xA0321", simpleInit.getExpression().get_SourcePositionStart());
+          return false;
+        }
+      }
+    }
+    //every VariableInit in the arrayInit has the correct type and dimension, return true
+    return true;
+  }
+
+  private List<SymTypeExpression> calculateCorrectArguments(ASTArguments args) {
       List<SymTypeExpression> argList = Lists.newArrayList();
       for(int i = 0;i<args.getExpressionList().size();i++){
         args.getExpression(i).accept(getRealThis());
