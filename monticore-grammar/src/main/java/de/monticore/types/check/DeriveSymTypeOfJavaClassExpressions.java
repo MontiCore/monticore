@@ -628,7 +628,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     @Override
     public void traverse(ASTCreatorExpression expr){
       expr.getCreator().accept(getRealThis());
-      if(typeCheckResult.isPresentLast()){
+      if(typeCheckResult.isPresentCurrentResult()){
         if(!typeCheckResult.isType()){
           typeCheckResult.reset();
           logError("0xA0309",expr.getCreator().get_SourcePositionStart());
@@ -644,8 +644,8 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
       SymTypeExpression extType = null;
       SymTypeExpression wholeResult = null;
       creator.getExtType().accept(getRealThis());
-      if(typeCheckResult.isPresentLast()){
-        extType = typeCheckResult.getLast();
+      if(typeCheckResult.isPresentCurrentResult()){
+        extType = typeCheckResult.getCurrentResult();
       }else{
         typeCheckResult.reset();
         logError("0xA0311",creator.getExtType().get_SourcePositionStart());
@@ -664,7 +664,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
       }
 
       if(wholeResult != null){
-        typeCheckResult.setLast(wholeResult);
+        typeCheckResult.setCurrentResult(wholeResult);
       }else{
         typeCheckResult.reset();
         logError("0xA0312",creator.get_SourcePositionStart());
@@ -677,8 +677,8 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
       SymTypeExpression wholeResult = null;
 
       creator.getExtType().accept(getRealThis());
-      if(typeCheckResult.isPresentLast()){
-        extTypeResult = typeCheckResult.getLast();
+      if(typeCheckResult.isPresentCurrentResult()){
+        extTypeResult = typeCheckResult.getCurrentResult();
       }else{
         logError("0xA0314", creator.getExtType().get_SourcePositionStart());
       }
@@ -700,8 +700,8 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
           //teste dass alle Expressions integer-zahl sind
           for(ASTExpression expr: arrayInitializer.getExpressionList()){
             expr.accept(getRealThis());
-            if(typeCheckResult.isPresentLast()){
-              SymTypeExpression result = typeCheckResult.getLast();
+            if(typeCheckResult.isPresentCurrentResult()){
+              SymTypeExpression result = typeCheckResult.getCurrentResult();
               if(result.isTypeConstant()){
                 if(!((SymTypeConstant) result).isIntegralType()){
                   logError("0xA0315", expr.get_SourcePositionStart());
@@ -719,7 +719,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
 
 
       if(wholeResult!=null){
-        typeCheckResult.setLast(wholeResult);
+        typeCheckResult.setCurrentResult(wholeResult);
         typeCheckResult.setType();
       }else{
         logError("0xA0318", creator.get_SourcePositionStart());
@@ -742,9 +742,9 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
       }else{
         ASTSimpleInit simpleInit = (ASTSimpleInit) init;
         simpleInit.getExpression().accept(getRealThis());
-        if(typeCheckResult.isPresentLast()){
+        if(typeCheckResult.isPresentCurrentResult()){
           //check if expression is compatible to array type, if false return false
-          SymTypeExpression currentResult = typeCheckResult.getLast();
+          SymTypeExpression currentResult = typeCheckResult.getCurrentResult();
           if(!compatible(extTypeResult, currentResult)){
             //was ist, wenn z.B. Methoden Arrays returnen oder man Array-Variablen hereinreicht? Noch Fehler!! -> Teste auf SymTypeArray, Dimension, richtiger Basistyp (Argument in SymTypeArray) des Arrays, muss gleich sein, kein subtyp
             if(currentResult.isArrayType()){
@@ -774,8 +774,8 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
       List<SymTypeExpression> argList = Lists.newArrayList();
       for(int i = 0;i<args.getExpressionList().size();i++){
         args.getExpression(i).accept(getRealThis());
-        if(typeCheckResult.isPresentLast()){
-          argList.add(typeCheckResult.getLast());
+        if(typeCheckResult.isPresentCurrentResult()){
+          argList.add(typeCheckResult.getCurrentResult());
         }else{
           logError("0xA0313",args.getExpressionList().get(i).get_SourcePositionStart());
         }
