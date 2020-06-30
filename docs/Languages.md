@@ -109,7 +109,7 @@ MontiCore projects are hosted at
   (see Section *CD4Code*)
 
 
-### [Feature Diagrams](https://git.rwth-aachen.de/monticore/languages/feature-diagram) (Status: noch undefiniert)
+### [Feature Diagrams](https://git.rwth-aachen.de/monticore/languages/feature-diagram) (Beta: In Stabilization)
 * Caretaker: AB, DS
 * Language for feature models and feature configurations.
 * **Feature diagrams** are used to model (software) **product lines** and their **variants**.
@@ -123,7 +123,7 @@ MontiCore projects are hosted at
     OS -> iOS ^ Android;
     Screen -> Flexible | FullHD;
 
-    Camera => (iOS && External) || Android ;
+    Camera requires (iOS && External) || Android ;
   }
   ```
   Rules `F -> ...` have a parent feature (left-hand side) 
@@ -199,7 +199,7 @@ and
 * The MontiCore language for parsing JSON artifacts. An example:
   ```
   { "Alice": {
-      "name": "Alice Anderson",
+      "fullname": "Alice Anderson",
       "address": {
         "postal_code": 10459, 
         "street": "Beck Street",
@@ -297,15 +297,51 @@ component InteriorLight {                           // MontiArc language
 
 ### [Object Diagrams](https://git.rwth-aachen.de/monticore/languages/od) (Beta: In Stabilization)
 * Caretaker: SH
-* Language for textual object diagrams. In its current state the language is mostly used for (i) data structures in certain projects (e.g. artifact toolchain)
-   and (ii) as a report format for languages developed with MontiCore. The OD language provides the possiblility to use expressions in its attributes.
+* OD is a language for textual denotation of object diagrams. The OD language
+  has several purposes (when combined with appropriate language extensions):
+  1. specification language for object structures (as part of the [UML/P](http://mbse.se-rwth.de/))
+  1. stage and transport of data sets (e.g. the artifact analysis toolchain), and
+  1. as a report format for the MontiCore tool infrastructure. 
+* OD covers **named and anonymous objects, links, attributes, attribute values, lists**, and
+  **visibilities**. For a comfortable definition, objects may be nested. An example:
+  ```
+  objectdiagram MyFamily {
+    alice:Person {
+      age = 29;
+      cars = [
+        :BMW {
+          color = BLUE;
+        },
+        tiger:Jaguar {
+          color = RED;
+          length = 5.3; 
+        }
+      ];
+    };
+    bob:Person {
+      nicknames = ["Bob", "Bobby", "Robert"];
+      cars = [tiger];
+    };
+    link married alice <-> bob;
+  }
+  ```
+* If ODs are used as specification techniqe, e.g. for tests or unwanted 
+  situations,
+  a more expressive version of expressions can be used for values 
+  (e.g. by composing ODs with JavaExpressions). Furthermore, only 
+  interesting attributes need to be defined (underspecification) and conformity
+  to a CD4A model can be checked.
+* The ODs differ from JSON structures, e.g., in 
+  the possibility to give the object a name as it is the case for `tiger`, or `alice` 
+  enabaling the definition real graph structures.
 * Main grammars:
     * [ODBasics](https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/lang/ODBasics.mc4)
     * [OD4Report](https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/lang/OD4Report.mc4)
     * [DateLiterals](https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/lang/DateLiterals.mc4)
 * [*Detailed description*](https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/lang/ODBasics.md) 
 
-### [Sequence Diagrams](https://git.rwth-aachen.de/monticore/statechart/sd-language)  (Beta: In Stabilization) )(50% to MC6)
+
+### [Sequence Diagrams](https://git.rwth-aachen.de/monticore/statechart/sd-language)  (MontiCore stable) 
 * Caretaker: RE
 * Grammar to parse Sequence Diagrams
 * Can be used with testing generator to derive test cases
@@ -332,14 +368,14 @@ component InteriorLight {                           // MontiArc language
   SI Unit types integrate with MontiCore's type system. 
   The SI unit language remains type safe.
 * Main grammar components:
-    * [SI units](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/lang/SIUnits.mc4)
-    * [SI unit literals](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/lang/literals/SIUnitLiterals.mc4)
-    * [SI unit types for math](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/lang/types/SIUnitTypes4Math.mc4)
-    * [SI unit types for computations](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/lang/types/SIUnitTypes4Computing.mc4)
+    * [SI units](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/siunits/SIUnits.mc4)
+    * [SI unit literals](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/siunits/SIUnitLiterals.mc4)
+    * [SI unit types for math](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/siunits/SIUnitTypes4Math.mc4)
+    * [SI unit types for computations](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/siunits/SIUnitTypes4Computing.mc4)
     *           (other alternatives are possible; SI has not standardized anything here)
 * Example projects:
     * [SI Java](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/test/grammars/de/monticore/lang/testsijava/TestSIJava.mc4) 
-* [*detailed description*](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/lang/SIUnits.md)  
+* [*detailed description*](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/SIUnits.md)  
 
 
 ### [Statecharts](https://git.rwth-aachen.de/monticore/statechart/sc-language) (Beta: In Stabilization) (90% to MC6)
@@ -481,7 +517,12 @@ package 'Coffee' {                      // a SysML activity diagram
   does not provide class or interface definitions and
   also no wildcards in the type system.
 * One main usage of JavaLight is in the Grammar-language to model e.g. 
-  Java methods. 
+  Java methods. An example:
+  ```
+  public void print(String name) {
+    System.out.println("Hello " + name);
+  }
+  ```
 * [Main grammar `de.monticore.JavaLight`]((https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/JavaLight.mc4)
   and 
   [*detailed description*](https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/monticore-grammar/src/main/grammars/de/monticore/JavaLight.md).

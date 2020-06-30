@@ -3,7 +3,7 @@ package de.monticore.types.check;
 
 import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonPrinter;
-import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
+import de.monticore.types.typesymbols._symboltable.OOTypeSymbolLoader;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -114,11 +114,11 @@ public class SymTypeOfGenerics extends SymTypeExpression {
   /**
    * Constructor with all parameters that are stored:
    */
-  public SymTypeOfGenerics(TypeSymbolLoader typeSymbolLoader) {
+  public SymTypeOfGenerics(OOTypeSymbolLoader typeSymbolLoader) {
     this.typeSymbolLoader = typeSymbolLoader;
   }
 
-  public SymTypeOfGenerics(TypeSymbolLoader typeSymbolLoader, List<SymTypeExpression> arguments) {
+  public SymTypeOfGenerics(OOTypeSymbolLoader typeSymbolLoader, List<SymTypeExpression> arguments) {
     this.typeSymbolLoader = typeSymbolLoader;
     this.arguments = arguments;
   }
@@ -190,7 +190,33 @@ public class SymTypeOfGenerics extends SymTypeExpression {
    */
   @Override
   public SymTypeOfGenerics deepClone() {
-    return new SymTypeOfGenerics(new TypeSymbolLoader(typeSymbolLoader.getName(), typeSymbolLoader.getEnclosingScope()), getArgumentList());
+    return new SymTypeOfGenerics(new OOTypeSymbolLoader(typeSymbolLoader.getName(), typeSymbolLoader.getEnclosingScope()), getArgumentList());
+  }
+
+  @Override
+  public boolean deepEquals(SymTypeExpression sym){
+    if(!(sym instanceof SymTypeOfGenerics)){
+      return false;
+    }
+    SymTypeOfGenerics symGen = (SymTypeOfGenerics) sym;
+    if(this.typeSymbolLoader== null ||symGen.typeSymbolLoader==null){
+      return false;
+    }
+    if(!this.typeSymbolLoader.getEnclosingScope().equals(symGen.typeSymbolLoader.getEnclosingScope())){
+      return false;
+    }
+    if(!this.typeSymbolLoader.getName().equals(symGen.typeSymbolLoader.getName())){
+      return false;
+    }
+    if(this.sizeArguments()!=symGen.sizeArguments()){
+      return false;
+    }
+    for(int i = 0;i<this.sizeArguments();i++){
+      if(!this.getArgument(i).deepEquals(symGen.getArgument(i))){
+        return false;
+      }
+    }
+    return this.print().equals(symGen.print());
   }
 
   // --------------------------------------------------------------------------

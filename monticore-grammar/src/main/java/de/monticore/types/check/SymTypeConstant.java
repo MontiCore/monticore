@@ -3,8 +3,7 @@ package de.monticore.types.check;
 
 import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonPrinter;
-import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
-import de.se_rwth.commons.logging.Log;
+import de.monticore.types.typesymbols._symboltable.OOTypeSymbolLoader;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -13,7 +12,7 @@ import java.util.Map;
 
 public class SymTypeConstant extends SymTypeExpression {
 
-  public SymTypeConstant(TypeSymbolLoader typeSymbolLoader) {
+  public SymTypeConstant(OOTypeSymbolLoader typeSymbolLoader) {
     this.typeSymbolLoader = typeSymbolLoader;
   }
 
@@ -168,14 +167,33 @@ public class SymTypeConstant extends SymTypeExpression {
   /**
    * Am I primitive? (such as "int")
    */
-  public boolean isPrimitive() {
+  public boolean isTypeConstant() {
     return true;
   }
 
   @Override
   public SymTypeConstant deepClone() {
-    SymTypeConstant clone = new SymTypeConstant(new TypeSymbolLoader(typeSymbolLoader.getName(), typeSymbolLoader.getEnclosingScope()));
+    SymTypeConstant clone = new SymTypeConstant(new OOTypeSymbolLoader(typeSymbolLoader.getName(), typeSymbolLoader.getEnclosingScope()));
     return clone;
+  }
+
+
+  @Override
+  public boolean deepEquals(SymTypeExpression sym){
+    if(!(sym instanceof SymTypeConstant)){
+      return false;
+    }
+    SymTypeConstant symCon = (SymTypeConstant) sym;
+    if(this.typeSymbolLoader== null ||symCon.typeSymbolLoader==null){
+      return false;
+    }
+    if(!this.typeSymbolLoader.getEnclosingScope().equals(symCon.typeSymbolLoader.getEnclosingScope())){
+      return false;
+    }
+    if(!this.typeSymbolLoader.getName().equals(symCon.typeSymbolLoader.getName())){
+      return false;
+    }
+    return this.print().equals(symCon.print());
   }
 
 

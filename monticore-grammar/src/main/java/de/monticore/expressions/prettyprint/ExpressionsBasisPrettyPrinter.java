@@ -3,6 +3,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.prettyprint;
 
+import de.monticore.expressions.expressionsbasis._ast.ASTArguments;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
@@ -46,6 +47,24 @@ public class ExpressionsBasisPrettyPrinter implements ExpressionsBasisVisitor {
   public void handle(ASTLiteralExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     node.getLiteral().accept(getRealThis());
+    CommentPrettyPrinter.printPostComments(node, getPrinter());
+  }
+
+  @Override
+  public void handle(ASTArguments node) {
+    CommentPrettyPrinter.printPreComments(node, getPrinter());
+    getPrinter().print("(");
+    int count = 0;
+    if (!node.isEmptyExpressions()) {
+      for (ASTExpression ast : node.getExpressionList()) {
+        if (count > 0) {
+          getPrinter().print(",");
+        }
+        ast.accept(getRealThis());
+        count++;
+      }
+    }
+    getPrinter().print(")");
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
 

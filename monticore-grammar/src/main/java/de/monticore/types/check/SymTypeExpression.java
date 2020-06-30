@@ -2,6 +2,7 @@
 package de.monticore.types.check;
 
 import com.google.common.collect.Lists;
+import de.monticore.types.basictypesymbols._symboltable.TypeVarSymbol;
 import de.monticore.types.typesymbols.TypeSymbolsMill;
 import de.monticore.types.typesymbols._symboltable.*;
 import de.se_rwth.commons.logging.Log;
@@ -34,7 +35,7 @@ public abstract class SymTypeExpression {
    * Am I primitive? (such as "int")
    * (default: no)
    */
-  public boolean isPrimitive() {
+  public boolean isTypeConstant() {
     return false;
   }
 
@@ -52,7 +53,39 @@ public abstract class SymTypeExpression {
     return false;
   }
 
+  /**
+   * Am I an array?
+   */
+  public boolean isArrayType(){
+    return false;
+  }
+
+  /**
+   * Am I of void type?
+   */
+  public boolean isVoidType(){
+    return false;
+  }
+
+  /**
+   * Am I of null type?
+   */
+  public boolean isNullType(){
+    return false;
+  }
+
+  /**
+   * Am I an object type? (e.g. "String", "Person")
+   */
+  public boolean isObjectType(){
+    return false;
+  }
+
+
+
   public abstract SymTypeExpression deepClone();
+
+  public abstract boolean deepEquals(SymTypeExpression sym);
 
   protected List<MethodSymbol> methodList = new ArrayList<>();
 
@@ -290,17 +323,17 @@ public abstract class SymTypeExpression {
    * Furthermore, each SymTypeExpression knows this TypeSymbol (i.e. the
    * TypeSymbols are loaded (or created) upon creation of the SymType.
    */
-  protected TypeSymbolLoader typeSymbolLoader;
+  protected OOTypeSymbolLoader typeSymbolLoader;
 
-  public TypeSymbol getTypeInfo() {
+  public OOTypeSymbol getTypeInfo() {
     return typeSymbolLoader.getLoadedSymbol();
   }
 
-  public List<TypeSymbol> getInnerTypeList(String name) {
-    List<TypeSymbol> types = getTypeInfo().getSpannedScope().resolveTypeMany(name);
-    List<TypeSymbol> typeSymbols = Lists.newArrayList();
+  public List<OOTypeSymbol> getInnerTypeList(String name) {
+    List<OOTypeSymbol> types = getTypeInfo().getSpannedScope().resolveOOTypeMany(name);
+    List<OOTypeSymbol> typeSymbols = Lists.newArrayList();
 
-    for(TypeSymbol type:types){
+    for(OOTypeSymbol type:types){
       if(name!=null && name.equals(type.getName())){
         typeSymbols.add(type);
       }

@@ -40,10 +40,8 @@ public class AggregationTest {
     */
  
   //Create global scope for our language combination
-  BlahLanguage blahLang = BlahMill.blahLanguageBuilder().build();
-  FooLanguage fooLanguage = new FooLanguage("FooLangName","foo") {};
 
-  FooBlahGlobalScope globalScope = new FooBlahGlobalScope(new ModelPath(), fooLanguage);
+  FooBlahGlobalScope globalScope = new FooBlahGlobalScope(new ModelPath());
  
   //Parse blah model
   BlahParser blahParser = new BlahParser();

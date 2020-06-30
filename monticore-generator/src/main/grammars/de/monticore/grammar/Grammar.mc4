@@ -68,6 +68,10 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
            Concept
          |
            StartRule
+         |
+           SplitRule
+         |
+           KeywordRule
          )*
       "}" ;
 
@@ -77,7 +81,10 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
     startRule:StartRule max=1
     scopeRule:ScopeRule max=1 ;
  
-  symbolrule MCGrammar = isComponent:boolean;
+  symbolrule MCGrammar =
+    isComponent:boolean
+    splitRules:String*
+    noKeywords:String*;
 
 
   /**
@@ -572,7 +579,8 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
     Card?;
 
   symbolrule AdditionalAttribute =
-    type:String;
+    type:String
+    isAstAttr:boolean;
 
   // --------------------------------------------------------------------
   // Lexer
@@ -619,6 +627,12 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
 
   LexOption =
     "options" "{" iD:Name "=" value:Name ";" "}";
+
+  SplitRule =
+    "splittoken" (String || ",")+ ";";
+
+  KeywordRule =
+    "nokeyword" (String || ",")+ ";";
 
   // --------------------------------------------------------------------
   // Symbol Table

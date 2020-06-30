@@ -21,13 +21,13 @@ public class TokenConstantInvalidTest extends CocoTest {
 
   @Test
   public void testInvalid1() {
-    testInvalidGrammar("cocos.invalid.A4059.A4059a", TokenConstantInvalid.ERROR_CODE,
+    testInvalidGrammar(grammar+"a", TokenConstantInvalid.ERROR_CODE,
             String.format(TokenConstantInvalid.ERROR_MSG_FORMAT, "b-"), checker);
   }
 
   @Test
   public void testInvalid2() {
-    testInvalidGrammar("cocos.invalid.A4059.A4059b", TokenConstantInvalid.ERROR_CODE,
+    testInvalidGrammar(grammar+"b", TokenConstantInvalid.ERROR_CODE,
             String.format(TokenConstantInvalid.ERROR_MSG_FORMAT, "-"), checker);
   }
 

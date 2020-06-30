@@ -13,7 +13,7 @@ public class CDSymbolTranslation implements UnaryOperator<Link<ASTMCGrammar, AST
 
   @Override
   public Link<ASTMCGrammar, ASTCDCompilationUnit> apply(
-      Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink) {
+          Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink) {
 
     return new GrammarToCDDefinition()
         .andThen(new CDDefinitionNameTranslation())
@@ -22,6 +22,7 @@ public class CDSymbolTranslation implements UnaryOperator<Link<ASTMCGrammar, AST
         .andThen(new AttributeInSymbolRuleToCDAttribute())
         .andThen(new PackageTranslation())
         .andThen(new SymbolRuleInheritanceTranslation())
+        .andThen(new InheritedSymbolAttributesTranslation())
         .andThen(new SymbolRuleMethodTranslation())
         .andThen(new ReferenceTypeTranslation())
         .andThen(new MultiplicityTranslation())

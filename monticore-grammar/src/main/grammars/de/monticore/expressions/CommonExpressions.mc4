@@ -43,12 +43,17 @@ component grammar CommonExpressions
 
 
   /*=================================================================*/
-  /** CallExpression is a Method-Call like toString()
-  * Method Name must be a name (nothing like f()() or a[0]())
-  * left can be any expression, a Class-Name: A.f(), variable-Name a.f(),
-  * BracketExpression ("foo"+"Bar").toLowerCase() or other Method Calls:
-  * c.getA().getB()
+  /** CallExpression is a Method-Call like foo()
+  * Method name must be a name (nothing like f()() or a[0]())
+  * Expression on the left can be an expression, like:
+  * a Class-Name: A.f(), variable-Name a.f(),
+  * BracketExpression ("foo"+"Bar").toLowerCase()
+  * or other Method Calls: * c.getA().getB()
   *
+  * After parsing a normal method call, the method name is 
+  * stored as if it was parsed as:
+  *    CallExpression = Name Arguments;
+  *  i.e. the tree is then restructured (in a separate pass)
   */
   CallExpression implements Expression <240> =
     Expression Arguments;
@@ -67,6 +72,14 @@ component grammar CommonExpressions
    */
   FieldAccessExpression implements Expression <290> =
     Expression "." Name;
+
+  /*=================================================================*/
+
+  PlusPrefixExpression implements Expression <210> =
+    "+" Expression;
+
+  MinusPrefixExpression implements Expression <210> =
+    "-" Expression;
 
   /*=================================================================*/
 
@@ -130,8 +143,5 @@ component grammar CommonExpressions
 
   BracketExpression implements Expression <310>
     =  "(" Expression ")";
-
-  Arguments
-    =   "(" (Expression || ",")* ")";
 
 }

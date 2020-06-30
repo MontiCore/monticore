@@ -42,7 +42,7 @@ import de.se_rwth.commons.logging.Log;
  */
 public class InputOutputFilesReporter extends AReporter {
   
-  public static final String SIMPLE_FILE_NAME = "17_InputOutputFiles";
+  public static final String SIMPLE_FILE_NAME = "IncGenCheckMaven";
   
   final static String INDENT = Layouter.getSpaceString(40);
   
@@ -57,7 +57,7 @@ public class InputOutputFilesReporter extends AReporter {
   /**
    * Constructor for de.monticore.generating.templateengine.reporting.reporter.
    * InputOutputFilesReporter
-   * 
+   *
    * @param outputDir
    */
   public InputOutputFilesReporter(String outputDir) {

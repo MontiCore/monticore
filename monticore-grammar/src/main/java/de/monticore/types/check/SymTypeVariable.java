@@ -3,14 +3,15 @@ package de.monticore.types.check;
 
 import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonPrinter;
-import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
+import de.monticore.types.typesymbols._symboltable.OOTypeSymbolLoader;
+
 
 public class SymTypeVariable extends SymTypeExpression {
 
   /**
    * Constructor:
    */
-  public SymTypeVariable(TypeSymbolLoader typeSymbolLoader) {
+  public SymTypeVariable(OOTypeSymbolLoader typeSymbolLoader) {
     this.typeSymbolLoader = typeSymbolLoader;
   }
 
@@ -46,7 +47,7 @@ public class SymTypeVariable extends SymTypeExpression {
   /**
    * Am I primitive? (such as "int")
    */
-  public boolean isPrimitive() {
+  public boolean isTypeConstant() {
     return false;
     /**
      *     Please note that the var itself is not a primitive type, but it might
@@ -63,7 +64,25 @@ public class SymTypeVariable extends SymTypeExpression {
 
   @Override
   public SymTypeVariable deepClone() {
-    return new SymTypeVariable(new TypeSymbolLoader(typeSymbolLoader.getName(), typeSymbolLoader.getEnclosingScope()));
+    return new SymTypeVariable(new OOTypeSymbolLoader(typeSymbolLoader.getName(), typeSymbolLoader.getEnclosingScope()));
+  }
+
+  @Override
+  public boolean deepEquals(SymTypeExpression sym){
+    if(!(sym instanceof SymTypeVariable)){
+      return false;
+    }
+    SymTypeVariable symVar = (SymTypeVariable) sym;
+    if(this.typeSymbolLoader== null ||symVar.typeSymbolLoader==null){
+      return false;
+    }
+    if(!this.typeSymbolLoader.getEnclosingScope().equals(symVar.typeSymbolLoader.getEnclosingScope())){
+      return false;
+    }
+    if(!this.typeSymbolLoader.getName().equals(symVar.typeSymbolLoader.getName())){
+      return false;
+    }
+    return this.print().equals(symVar.print());
   }
 
   // --------------------------------------------------------------------------

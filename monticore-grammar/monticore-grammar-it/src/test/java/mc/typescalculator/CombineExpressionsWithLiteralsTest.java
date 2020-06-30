@@ -4,19 +4,17 @@ package mc.typescalculator;
 import com.google.common.collect.Lists;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.io.paths.ModelPath;
-import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.ImportStatement;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
-import de.monticore.types.typesymbols._symboltable.TypeSymbol;
-import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
+import de.monticore.types.typesymbols._symboltable.OOTypeSymbol;
+import de.monticore.types.typesymbols._symboltable.OOTypeSymbolLoader;
 import de.se_rwth.commons.logging.LogStub;
-import mc.testcd4analysis._symboltable.TestCD4AnalysisLanguage;
 import mc.testcd4analysis._symboltable.TestCD4AnalysisGlobalScope;
-import mc.typescalculator.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 import mc.typescalculator.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
-import mc.typescalculator.combineexpressionswithliterals._symboltable.*;
-import mc.typescalculator.combineexpressionswithliterals.prettyprint.CombineExpressionsWithLiteralsPrettyPrinter;
+import mc.typescalculator.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsArtifactScope;
+import mc.typescalculator.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsGlobalScope;
+import mc.typescalculator.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsSymbolTableCreatorDelegator;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -35,28 +33,25 @@ public class CombineExpressionsWithLiteralsTest {
   @Test
   public void testCD() throws IOException {
     LogStub.init();
-    TestCD4AnalysisLanguage cd4AnalysisLanguage = new TestCD4AnalysisLanguage();
-    ModelPath modelPath = new ModelPath(Paths.get(MODEL_PATH));
     TestCD4AnalysisGlobalScope globalScope =
-            new TestCD4AnalysisGlobalScope(modelPath, cd4AnalysisLanguage);
+            new TestCD4AnalysisGlobalScope(new ModelPath(Paths.get(MODEL_PATH)));
 
 
     CD2EAdapter adapter = new CD2EAdapter(globalScope);
-    CombineExpressionsWithLiteralsLanguage language = CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsLanguageBuilder().build();
-    CombineExpressionsWithLiteralsGlobalScope globalScope1 = CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsGlobalScopeBuilder()
-        .setCombineExpressionsWithLiteralsLanguage(language).setModelPath(new ModelPath()).build();
+    CombineExpressionsWithLiteralsGlobalScope globalScope1 =
+        new CombineExpressionsWithLiteralsGlobalScope(new ModelPath());
     globalScope1.addAdaptedFieldSymbolResolvingDelegate(adapter);
-    globalScope1.addAdaptedTypeSymbolResolvingDelegate(adapter);
+    globalScope1.addAdaptedOOTypeSymbolResolvingDelegate(adapter);
     globalScope1.addAdaptedMethodSymbolResolvingDelegate(adapter);
 
-    Optional<TypeSymbol> classD = globalScope1.resolveType("mc.typescalculator.TestCD.D");
+    Optional<OOTypeSymbol> classD = globalScope1.resolveOOType("mc.typescalculator.TestCD.D");
     assertTrue(classD.isPresent());
 
-    Optional<TypeSymbol> classB = globalScope1.resolveType("mc.typescalculator.TestCD.B");
+    Optional<OOTypeSymbol> classB = globalScope1.resolveOOType("mc.typescalculator.TestCD.B");
     assertTrue(classB.isPresent());
 
-    globalScope1.add(field("d", SymTypeExpressionFactory.createTypeObject(new TypeSymbolLoader("D",classD.get().getEnclosingScope()))));
-    globalScope1.add(field("b",SymTypeExpressionFactory.createTypeObject(new TypeSymbolLoader("B",classB.get().getEnclosingScope()))));
+    globalScope1.add(field("d", SymTypeExpressionFactory.createTypeObject(new OOTypeSymbolLoader("D",classD.get().getEnclosingScope()))));
+    globalScope1.add(field("b",SymTypeExpressionFactory.createTypeObject(new OOTypeSymbolLoader("B",classB.get().getEnclosingScope()))));
 
     CombineExpressionsWithLiteralsTypesCalculator calc = new CombineExpressionsWithLiteralsTypesCalculator();
 

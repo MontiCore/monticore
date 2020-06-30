@@ -3,7 +3,7 @@ package de.monticore.types.check;
 
 import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonPrinter;
-import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
+import de.monticore.types.typesymbols._symboltable.OOTypeSymbolLoader;
 
 /**
  * Arrays of a certain dimension (>= 1)
@@ -28,13 +28,19 @@ public class SymTypeArray extends SymTypeExpression {
    * @param argument Argument Type
    * @param typeSymbolLoader loader for the Type-Symbol that defines this type
    */
-  public SymTypeArray(TypeSymbolLoader typeSymbolLoader, int dim, SymTypeExpression argument) {
+  public SymTypeArray(OOTypeSymbolLoader typeSymbolLoader, int dim, SymTypeExpression argument) {
     this.typeSymbolLoader = typeSymbolLoader;
     this.dim = dim;
     this.argument = argument;
   }
 
   // ------------------------------------------------------------------ Functions
+
+
+  @Override
+  public boolean isArrayType() {
+    return true;
+  }
 
   public int getDim() {
     return dim;
@@ -80,8 +86,32 @@ public class SymTypeArray extends SymTypeExpression {
 
   @Override
   public SymTypeArray deepClone() {
-    return new SymTypeArray(new TypeSymbolLoader(typeSymbolLoader.getName(), typeSymbolLoader.getEnclosingScope()),
+    return new SymTypeArray(new OOTypeSymbolLoader(typeSymbolLoader.getName(), typeSymbolLoader.getEnclosingScope()),
         this.dim, this.argument.deepClone());
+  }
+
+  @Override
+  public boolean deepEquals(SymTypeExpression sym){
+    if(!(sym instanceof SymTypeArray)){
+      return false;
+    }
+    SymTypeArray symArr = (SymTypeArray) sym;
+    if(this.dim!=symArr.dim){
+      return false;
+    }
+    if(this.typeSymbolLoader== null ||symArr.typeSymbolLoader==null){
+      return false;
+    }
+    if(!this.typeSymbolLoader.getEnclosingScope().equals(symArr.typeSymbolLoader.getEnclosingScope())){
+      return false;
+    }
+    if(!this.typeSymbolLoader.getName().equals(symArr.typeSymbolLoader.getName())){
+      return false;
+    }
+    if(!this.getArgument().deepEquals(symArr.getArgument())){
+      return false;
+    }
+    return this.print().equals(symArr.print());
   }
 
   // --------------------------------------------------------------------------

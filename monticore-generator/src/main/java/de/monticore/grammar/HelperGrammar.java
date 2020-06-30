@@ -203,7 +203,7 @@ public class HelperGrammar {
     if (constName == null || constName.isEmpty()) {
       return false;
     }
-    if (!matchesJavaIdentifier(constName) && LexNamer.createGoodName(constName) == null) {
+    if (!matchesJavaIdentifier(constName) && LexNamer.createGoodName(constName).isEmpty()) {
       return false;
     }
     return true;
@@ -236,7 +236,7 @@ public class HelperGrammar {
         name = constName;
       } else {
         name = LexNamer.createGoodName(constName);
-        if (name == null) {
+        if (name.isEmpty()) {
           name = constName;
         }
       }

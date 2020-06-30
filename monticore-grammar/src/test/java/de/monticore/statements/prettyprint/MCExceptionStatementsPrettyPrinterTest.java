@@ -35,7 +35,7 @@ public class MCExceptionStatementsPrettyPrinterTest {
 
   @Test
   public void testTryStatement2() throws IOException {
-    Optional<ASTTryStatement2> result = parser.parse_StringTryStatement2(" try { private Integer foo = a } finally { public String foo = a }");
+    Optional<ASTTryStatement2> result = parser.parse_StringTryStatement2(" try { Integer foo = a;} finally { Integer foo = a; }");
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
     ASTTryStatement2 ast = result.get();
@@ -51,7 +51,7 @@ public class MCExceptionStatementsPrettyPrinterTest {
 
   @Test
   public void testTryStatement1() throws IOException {
-    Optional<ASTTryStatement1> result = parser.parse_StringTryStatement1(" try { private Integer foo = a } catch (private static a.b.c | d.e.G foo) { public String foo = a }");
+    Optional<ASTTryStatement1> result = parser.parse_StringTryStatement1(" try { Integer foo = a; } catch (private static a.b.c | d.e.G foo) {Integer foo = a; }");
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
     ASTTryStatement1 ast = result.get();
@@ -69,8 +69,8 @@ public class MCExceptionStatementsPrettyPrinterTest {
   @Test
   public void testTryStatements() throws IOException {
     Optional<ASTTryStatement3> result = parser.parse_StringTryStatement3("try ( public Integer a = foo; ) " +
-        "{ public String foo = a } " +
-        "catch (private static a.b.c | d.e.G foo) { public String foo = a }");
+        "{ public String foo = a ;} " +
+        "catch (private static a.b.c | d.e.G foo) { public String foo = a ;}");
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
     ASTTryStatement3 ast = result.get();
@@ -104,7 +104,7 @@ public class MCExceptionStatementsPrettyPrinterTest {
 
   @Test
   public void testCatchClause() throws IOException {
-    Optional<ASTCatchClause> result = parser.parse_StringCatchClause("catch (private static a.b.c | d.e.G foo) { public String foo = a }");
+    Optional<ASTCatchClause> result = parser.parse_StringCatchClause("catch (private static a.b.c | d.e.G foo) { public String foo = a; }");
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
     ASTCatchClause ast = result.get();

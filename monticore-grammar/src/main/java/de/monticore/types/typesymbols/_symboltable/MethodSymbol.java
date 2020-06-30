@@ -2,6 +2,7 @@
 package de.monticore.types.typesymbols._symboltable;
 
 import com.google.common.collect.Lists;
+import de.monticore.types.basictypesymbols._symboltable.TypeVarSymbol;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,20 +52,25 @@ public class MethodSymbol extends MethodSymbolTOP {
 
   public List<TypeVarSymbol> getTypeVariablesOfEnclosingType(){
     List<TypeVarSymbol> typeVarSymbolList = new ArrayList<>();
-    ITypeSymbolsScope scope = spannedScope;
+    ITypeSymbolsScope scope = getSpannedScope();
     while(scope.getEnclosingScope()!=null){
       scope = scope.getEnclosingScope();
-      if(scope.isPresentSpanningSymbol() && scope.getSpanningSymbol() instanceof TypeSymbol){
-        typeVarSymbolList.addAll(((TypeSymbol)(scope.getSpanningSymbol())).getTypeParameterList());
+      if(scope.isPresentSpanningSymbol() && scope.getSpanningSymbol() instanceof OOTypeSymbol){
+        typeVarSymbolList.addAll(((OOTypeSymbol)(scope.getSpanningSymbol())).getTypeParameterList());
       }
     }
     return typeVarSymbolList;
   }
 
   public List<FieldSymbol> getParameterList(){
-    return spannedScope.getLocalFieldSymbols()
+    return getSpannedScope().getLocalFieldSymbols()
         .stream()
         .filter(FieldSymbol::isIsParameter)
         .collect(Collectors.toList());
+  }
+
+  @Override
+  public void setEnclosingScope(ITypeSymbolsScope enclosingScope) {
+    this.enclosingScope = enclosingScope;
   }
 }

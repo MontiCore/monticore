@@ -21,7 +21,6 @@ public abstract class MCConcreteParser {
   /**
    * Creates a MCConcreteParser with a certain name
    *
-   * @param name
    */
   public MCConcreteParser() {
   }

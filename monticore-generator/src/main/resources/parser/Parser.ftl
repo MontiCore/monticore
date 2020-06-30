@@ -26,6 +26,14 @@ ${tc.includeArgs("parser.LexerMember", [antlrGenerator, parserHelper.getGrammarS
   ${interfaceRule}
   </#list>
 </#list>
+
+<#list genHelper.getNoKeyordsWithInherited() as noKeyword>
+  ${noKeyword}
+</#list>
+
+<#list genHelper.getSplitLexSymbolsWithInherited() as splitSymbol>
+ ${splitSymbol}
+</#list>
  
 <#list genHelper.getLexSymbolsWithInherited() as lexSymbol>
   ${genHelper.getLexSymbolName(lexSymbol)} : '${lexSymbol}';

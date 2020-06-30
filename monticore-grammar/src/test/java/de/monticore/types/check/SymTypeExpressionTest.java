@@ -68,11 +68,19 @@ public class SymTypeExpressionTest {
 
   SymTypeExpression teDeep2 = createGenerics("java.util.Map2", scope, Lists.newArrayList(teInt, teDeep1));
 
+  SymTypeExpression teUpperBound = createWildcard(true, teInt);
+
+  SymTypeExpression teLowerBound = createWildcard(false, teH);
+
+  SymTypeExpression teWildcard = createWildcard();
+
+  SymTypeExpression teMap3 = createGenerics("java.util.Map", scope, Lists.newArrayList(teUpperBound, teWildcard));
+
   @BeforeClass
   public static void setUpScope(){
     LogStub.init();
-    scope.add(new TypeSymbol("long"));
-    scope.add(new TypeSymbol("Human"));
+    scope.add(new OOTypeSymbol("long"));
+    scope.add(new OOTypeSymbol("Human"));
   }
 
   @Test
@@ -91,6 +99,10 @@ public class SymTypeExpressionTest {
     assertEquals("x.Foo<de.x.Person,double,int,Human>", teFoo.print());
     assertEquals("java.util.Set<Map<int,de.x.Person>>", teDeep1.print());
     assertEquals("java.util.Map2<int,java.util.Set<Map<int,de.x.Person>>>", teDeep2.print());
+    assertEquals("? super int", teUpperBound.print());
+    assertEquals("? extends Human", teLowerBound.print());
+    assertEquals("?",teWildcard.print());
+    assertEquals("java.util.Map<? super int,?>", teMap3.print());
   }
 
   @Test
@@ -241,6 +253,15 @@ public class SymTypeExpressionTest {
     assertEquals("int", teDeep2SetMapArgsJson.get(0).getAsJsonObject().getStringMember( "constName"));
     assertEquals("de.monticore.types.check.SymTypeOfObject", teDeep2SetMapArgsJson.get(1).getAsJsonObject().getStringMember( "kind"));
     assertEquals("de.x.Person", teDeep2SetMapArgsJson.get(1).getAsJsonObject().getStringMember( "objName"));
+
+    result = JsonParser.parse(teUpperBound.printAsJson());
+    assertTrue(result.isJsonObject());
+    JsonObject teUpperBound2Json = result.getAsJsonObject();
+    assertEquals("de.monticore.types.check.SymTypeOfWildcard",teUpperBound2Json.getStringMember("kind"));
+    assertTrue(teUpperBound2Json.getBooleanMember("isUpper"));
+    JsonObject bound = teUpperBound2Json.getObjectMember("bound");
+    assertEquals("de.monticore.types.check.SymTypeConstant",bound.getStringMember("kind"));
+    assertEquals("int",bound.getStringMember("constName"));
   }
 
   @Test
@@ -283,14 +304,14 @@ public class SymTypeExpressionTest {
 
     //SymTypeVariable
     assertTrue(teVarA.deepClone() instanceof SymTypeVariable);
-    assertFalse(teVarA.deepClone().isPrimitive());
+    assertFalse(teVarA.deepClone().isTypeConstant());
     assertTrue(teVarA.deepClone().isTypeVariable());
     assertEquals(teVarA.print(),teVarA.deepClone().print());
 
     //SymTypeConstant
     assertTrue(teInt.deepClone() instanceof SymTypeConstant);
     assertEquals(teInt.getTypeInfo(), teInt.deepClone().getTypeInfo());
-    assertTrue(teInt.deepClone().isPrimitive());
+    assertTrue(teInt.deepClone().isTypeConstant());
     assertEquals(teInt.print(),teInt.deepClone().print());
 
     //SymTypeOfObject
@@ -307,6 +328,11 @@ public class SymTypeExpressionTest {
     assertTrue(teDeep1.deepClone() instanceof SymTypeOfGenerics);
     assertTrue(teDeep1.deepClone().isGenericType());
     assertEquals(teDeep1.print(),teDeep1.deepClone().print());
+
+    //SymTypeOfWildcard
+    assertTrue(teUpperBound.deepClone() instanceof SymTypeOfWildcard);
+    assertEquals(((SymTypeOfWildcard) teUpperBound).getBound().print(), ((SymTypeOfWildcard) teUpperBound.deepClone()).getBound().print());
+    assertEquals(teUpperBound.print(), teUpperBound.deepClone().print());
   }
 
   @Test
@@ -321,15 +347,15 @@ public class SymTypeExpressionTest {
     assertEquals("int",tInt.print());
     assertTrue(tInt.isIntegralType());
 
-    SymTypeOfGenerics tA = SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader("A",scope));
+    SymTypeOfGenerics tA = SymTypeExpressionFactory.createGenerics(new OOTypeSymbolLoader("A",scope));
     assertEquals("A<>",tA.print());
     assertTrue(tA.isEmptyArguments());
 
-    SymTypeOfGenerics tB = SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader("B",scope),Lists.newArrayList(teArr1,teIntA));
+    SymTypeOfGenerics tB = SymTypeExpressionFactory.createGenerics(new OOTypeSymbolLoader("B",scope),Lists.newArrayList(teArr1,teIntA));
     assertEquals("B<Human[],java.lang.Integer>",tB.print());
     assertEquals(2,tB.sizeArguments());
 
-    SymTypeOfGenerics tC = SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader("C",scope),teDeep1,teDeep2);
+    SymTypeOfGenerics tC = SymTypeExpressionFactory.createGenerics(new OOTypeSymbolLoader("C",scope),teDeep1,teDeep2);
     assertEquals("C<java.util.Set<Map<int,de.x.Person>>,java.util.Map2<int,java.util.Set<Map<int,de.x.Person>>>>",tC.print());
     assertEquals(2,tC.sizeArguments());
 
@@ -345,7 +371,7 @@ public class SymTypeExpressionTest {
     assertEquals("F<Human,de.x.Person>",tF.print());
     assertEquals(2,tF.sizeArguments());
 
-    SymTypeArray tHuman = SymTypeExpressionFactory.createTypeArray(new TypeSymbolLoader("Human",scope),1,teH);
+    SymTypeArray tHuman = SymTypeExpressionFactory.createTypeArray(new OOTypeSymbolLoader("Human",scope),1,teH);
     assertEquals("Human[]",tHuman.print());
     assertEquals(1,tHuman.getDim());
     assertEquals("Human",tHuman.getArgument().print());
@@ -355,13 +381,13 @@ public class SymTypeExpressionTest {
     assertEquals(2,tPerson.getDim());
     assertEquals("de.x.Person",tPerson.getArgument().print());
 
-    SymTypeOfObject tG = SymTypeExpressionFactory.createTypeObject(new TypeSymbolLoader("G",scope));
+    SymTypeOfObject tG = SymTypeExpressionFactory.createTypeObject(new OOTypeSymbolLoader("G",scope));
     assertEquals("G",tG.print());
 
     SymTypeOfObject tH = SymTypeExpressionFactory.createTypeObject("H",scope);
     assertEquals("H",tH.print());
 
-    SymTypeVariable tT = SymTypeExpressionFactory.createTypeVariable(new TypeSymbolLoader("T",scope));
+    SymTypeVariable tT = SymTypeExpressionFactory.createTypeVariable(new OOTypeSymbolLoader("T",scope));
     assertEquals("T",tT.print());
 
     SymTypeVariable tS = SymTypeExpressionFactory.createTypeVariable("S",scope);
@@ -459,7 +485,7 @@ public class SymTypeExpressionTest {
 
     //streamArguments
     Stream<SymTypeExpression> stream =teFoo2.streamArguments();
-    List<SymTypeExpression> list = stream.filter(SymTypeExpression::isPrimitive)
+    List<SymTypeExpression> list = stream.filter(SymTypeExpression::isTypeConstant)
           .collect(Collectors.toList());
     assertEquals(2,list.size());
     assertEquals(teDouble,list.get(0));
@@ -467,7 +493,7 @@ public class SymTypeExpressionTest {
 
     //parallelStreamArguments
     Stream<SymTypeExpression> parStream = teFoo2.parallelStreamArguments();
-    List<SymTypeExpression> parList = parStream.filter(SymTypeExpression::isPrimitive)
+    List<SymTypeExpression> parList = parStream.filter(SymTypeExpression::isTypeConstant)
         .collect(Collectors.toList());
     assertEquals(2,parList.size());
     assertEquals(teDouble,parList.get(0));
@@ -549,13 +575,13 @@ public class SymTypeExpressionTest {
     assertTrue(teFoo2.equalsArguments(arguments));
 
     //removeIfArgument
-    teFoo2.removeIfArgument(SymTypeExpression::isPrimitive);
+    teFoo2.removeIfArgument(SymTypeExpression::isTypeConstant);
     assertEquals(2,teFoo2.sizeArguments());
   }
 
   @Test
   public void symTypeArrayTest(){
-    SymTypeArray array = SymTypeExpressionFactory.createTypeArray(new TypeSymbolLoader("int",scope),1,_intSymType);
+    SymTypeArray array = SymTypeExpressionFactory.createTypeArray(new OOTypeSymbolLoader("int",scope),1,_intSymType);
     assertEquals("int[]",array.print());
     array.setDim(2);
     assertEquals("int[][]",array.print());
@@ -573,6 +599,14 @@ public class SymTypeExpressionTest {
     assertEquals("Integer",intType.getBaseOfBoxedName());
     assertTrue(intType.isIntegralType());
     assertTrue(intType.isNumericType());
+  }
+
+  @Test
+  public void symTypeOfWildcardTest(){
+    SymTypeOfWildcard upperBoundInt = (SymTypeOfWildcard) teUpperBound;
+    assertEquals("? super int", upperBoundInt.print());
+    assertEquals("int", upperBoundInt.getBound().print());
+    assertTrue(upperBoundInt.isUpper());
   }
 
 }

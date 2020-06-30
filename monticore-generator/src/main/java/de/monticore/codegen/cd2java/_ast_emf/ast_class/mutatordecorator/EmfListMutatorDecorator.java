@@ -36,7 +36,7 @@ public class EmfListMutatorDecorator extends ListMutatorDecorator {
     String packageName = astService.getCDName() + PACKAGE_SUFFIX;
     String signature = String.format(SET_LIST, capitalizedAttributeNameWithOutS, attributeType, attribute.getName());
     ASTCDMethod getList = this.getCDMethodFacade().createMethodByDefinition(signature);
-    this.replaceTemplate(EMPTY_BODY, getList, new TemplateHookPoint("_ast_emf.ast_class.Set",
+    this.replaceTemplate(EMPTY_BODY, getList, new TemplateHookPoint("_ast_emf.ast_class.Set4EMFASTClass",
         packageName, className, attribute));
     return getList;
   }

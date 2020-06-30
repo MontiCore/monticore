@@ -57,6 +57,13 @@ public class MCVarDeclarationStatementsPrettyPrinter implements
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
 
+  @Override
+  public void handle(ASTLocalVariableDeclarationStatement a) {
+    CommentPrettyPrinter.printPreComments(a, getPrinter());
+    a.getLocalVariableDeclaration().accept(getRealThis());
+    getPrinter().println(";");
+    CommentPrettyPrinter.printPostComments(a, getPrinter());
+  }
 
   @Override
   public void handle(ASTLocalVariableDeclaration a) {

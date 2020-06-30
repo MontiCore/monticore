@@ -2,6 +2,7 @@
 package mc.typescalculator;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.literals.mccommonliterals._ast.ASTSignedLiteral;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.types.check.*;
 import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
@@ -46,7 +47,7 @@ public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpres
     setExpressionsBasisVisitor(expressionsBasisTypesCalculator);
   
     DeriveSymTypeOfLiterals deriveSymTypeOfLiterals = new DeriveSymTypeOfLiterals();
-    deriveSymTypeOfLiterals.setResult(typeCheckResult);
+    deriveSymTypeOfLiterals.setTypeCheckResult(typeCheckResult);
     setMCLiteralsBasisVisitor(deriveSymTypeOfLiterals);
     this.deriveSymTypeOfLiterals = deriveSymTypeOfLiterals;
 
@@ -60,8 +61,8 @@ public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpres
   public Optional<SymTypeExpression> calculateType(ASTExpression e){
     e.accept(realThis);
     Optional<SymTypeExpression> last = Optional.empty();
-    if (typeCheckResult.isPresentLast()) {
-      last = Optional.ofNullable(typeCheckResult.getLast());
+    if (typeCheckResult.isPresentCurrentResult()) {
+      last = Optional.ofNullable(typeCheckResult.getCurrentResult());
     }
     typeCheckResult.reset();
     return last;
@@ -71,8 +72,19 @@ public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpres
   public Optional<SymTypeExpression> calculateType(ASTLiteral lit) {
     lit.accept(realThis);
     Optional<SymTypeExpression> last = Optional.empty();
-    if (typeCheckResult.isPresentLast()) {
-      last = Optional.ofNullable(typeCheckResult.getLast());
+    if (typeCheckResult.isPresentCurrentResult()) {
+      last = Optional.ofNullable(typeCheckResult.getCurrentResult());
+    }
+    typeCheckResult.reset();
+    return last;
+  }
+
+  @Override
+  public Optional<SymTypeExpression> calculateType(ASTSignedLiteral lit) {
+    lit.accept(realThis);
+    Optional<SymTypeExpression> last = Optional.empty();
+    if (typeCheckResult.isPresentCurrentResult()) {
+      last = Optional.ofNullable(typeCheckResult.getCurrentResult());
     }
     typeCheckResult.reset();
     return last;
@@ -101,7 +113,7 @@ public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpres
     commonExpressionTypesCalculator.setTypeCheckResult(typeCheckResult);
     deriveSymTypeOfBitExpressions.setTypeCheckResult(typeCheckResult);
     expressionsBasisTypesCalculator.setTypeCheckResult(typeCheckResult);
-    deriveSymTypeOfLiterals.setResult(typeCheckResult);
-    commonLiteralsTypesCalculator.setResult(typeCheckResult);
+    deriveSymTypeOfLiterals.setTypeCheckResult(typeCheckResult);
+    commonLiteralsTypesCalculator.setTypeCheckResult(typeCheckResult);
   }
 }

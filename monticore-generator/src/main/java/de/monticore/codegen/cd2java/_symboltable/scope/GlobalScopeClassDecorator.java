@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._symboltable.scope;
 
+import com.google.common.collect.Lists;
 import de.monticore.cd.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
@@ -14,6 +15,8 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCMapType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCSetType;
 import de.se_rwth.commons.StringTransformations;
 
 import java.util.*;
@@ -66,6 +69,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
   public ASTCDClass decorate(ASTCDCompilationUnit input) {
     String globalScopeName = symbolTableService.getGlobalScopeSimpleName();
     ASTMCQualifiedType scopeType = symbolTableService.getScopeType();
+    ASTMCQualifiedType globalScopeInterface = symbolTableService.getGlobalScopeInterfaceType();
     String definitionName = input.getCDDefinition().getName();
     String modelLoaderClassName = symbolTableService.getModelLoaderClassSimpleName();
 
@@ -74,8 +78,14 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     ASTCDAttribute modelPathAttribute = createModelPathAttribute();
     List<ASTCDMethod> modelPathMethods = accessorDecorator.decorate(modelPathAttribute);
 
-    ASTCDAttribute languageAttribute = createLanguageAttribute(definitionName);
-    List<ASTCDMethod> languageMethods = accessorDecorator.decorate(languageAttribute);
+    ASTCDAttribute modelLoaderAttribute = createModelLoaderAttribute(modelLoaderClassName);
+    List<ASTCDMethod> modelLoaderMethods = accessorDecorator.decorate(modelLoaderAttribute);
+    modelLoaderMethods.addAll(mutatorDecorator.decorate(modelLoaderAttribute));
+
+    ASTCDAttribute fileExtensionAttribute = getCDAttributeFacade().createAttribute(PROTECTED,
+        getMCTypeFacade().createStringType(),  FILE_EXTENSION_VAR);
+    List<ASTCDMethod> fileExtensionMethods = accessorDecorator.decorate(fileExtensionAttribute);
+    fileExtensionMethods.addAll(mutatorDecorator.decorate(fileExtensionAttribute));
 
     Map<String, ASTCDAttribute> resolvingDelegateAttributes = createResolvingDelegateAttributes(symbolProds);
     resolvingDelegateAttributes.putAll(createResolvingDelegateSuperAttributes());
@@ -92,14 +102,18 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
         .setName(globalScopeName)
         .setModifier(PUBLIC.build())
         .setSuperclass(scopeType)
-        .addInterface(getMCTypeFacade().createQualifiedType(I_GLOBAL_SCOPE_TYPE))
-        .addCDConstructor(createConstructor(globalScopeName, definitionName))
+        .addInterface(globalScopeInterface)
+        .addCDConstructor(createConstructor(globalScopeName))
         .addCDAttribute(modelPathAttribute)
         .addAllCDMethods(modelPathMethods)
-        .addCDAttribute(languageAttribute)
-        .addAllCDMethods(languageMethods)
+        .addCDAttribute(modelLoaderAttribute)
+        .addAllCDMethods(modelLoaderMethods)
+        .addCDAttribute(fileExtensionAttribute)
+        .addAllCDMethods(fileExtensionMethods)
         .addCDAttribute(createModelName2ModelLoaderCacheAttribute(modelLoaderClassName))
         .addAllCDAttributes(resolvingDelegateAttributes.values())
+        .addCDMethod(createEnableModelLoader(globalScopeName))
+        .addCDMethod(createDisableModelLoader())
         .addCDMethod(createGetNameMethod(globalScopeName))
         .addCDMethod(createIsPresentNameMethod())
         .addCDMethod(createCacheMethod(definitionName))
@@ -118,27 +132,55 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
         .build();
   }
 
-  protected ASTCDConstructor createConstructor(String globalScopeClassName, String definitionName) {
+  protected ASTCDConstructor createConstructor(String globalScopeClassName) {
+    StringBuilder sb = new StringBuilder();
+
     ASTMCType modelPathType = getMCTypeFacade().createQualifiedType(MODEL_PATH_TYPE);
     ASTCDParameter modelPathParameter = getCDParameterFacade().createParameter(modelPathType, MODEL_PATH_VAR);
+    sb.append("this." + MODEL_PATH_VAR + " = Log.errorIfNull(" + MODEL_PATH_VAR + ");\n");
 
-    ASTMCType languageType = getMCTypeFacade().createQualifiedType(definitionName + LANGUAGE_SUFFIX);
-    ASTCDParameter languageParameter = getCDParameterFacade().createParameter(languageType, "language");
+    ASTCDParameter fileExtensionParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createStringType(), FILE_EXTENSION_VAR);
+    ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), globalScopeClassName, modelPathParameter, fileExtensionParameter);
+    sb.append("this." + FILE_EXTENSION_VAR + " = Log.errorIfNull(" + FILE_EXTENSION_VAR + ");\n");
 
-    ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), globalScopeClassName, modelPathParameter, languageParameter);
-
-    this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("this." + MODEL_PATH_VAR + " = Log.errorIfNull(" + MODEL_PATH_VAR + ");\n" +
-        "    this." + StringTransformations.uncapitalize(definitionName) + "Language = Log.errorIfNull(language);"));
+    if(!symbolTableService.hasComponentStereotype(symbolTableService.getCDSymbol().getAstNode())){
+      sb.append("this.enableModelLoader();");
+    }
+    else{
+      sb.append("this."+MODEL_LOADER_VAR+" = Optional.empty();");
+    }
+    this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint(sb.toString()));
     return constructor;
+  }
+
+  protected ASTCDMethod createEnableModelLoader(String globalScopeName) {
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), "enableModelLoader");
+      if(symbolTableService.hasComponentStereotype(symbolTableService.getCDSymbol().getAstNode())){
+        this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint(
+            "Log.error(\"0xA6102" + symbolTableService.getGeneratedErrorCode(globalScopeName)
+                + " Global scopes of component grammars do not have model loaders.\");"));
+      }
+      else{
+        this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH
+            + "EnableModelLoader", symbolTableService.getCDName(), symbolTableService.getQualifiedCDName().toLowerCase()));
+    }
+    return method;
+  }
+
+  protected ASTCDMethod createDisableModelLoader() {
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), "disableModelLoader");
+    this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint(
+        "this."+MODEL_LOADER_VAR+" = Optional.empty();"));
+    return method;
   }
 
   protected ASTCDAttribute createModelPathAttribute() {
     return getCDAttributeFacade().createAttribute(PROTECTED, MODEL_PATH_TYPE, MODEL_PATH_VAR);
   }
 
-  protected ASTCDAttribute createLanguageAttribute(String definitionName) {
-    String languageName = definitionName + LANGUAGE_SUFFIX;
-    return getCDAttributeFacade().createAttribute(PROTECTED, languageName, StringTransformations.uncapitalize(languageName));
+  protected ASTCDAttribute createModelLoaderAttribute(String modelLoaderClassName) {
+    ASTMCOptionalType optType = getMCTypeFacade().createOptionalTypeOf(modelLoaderClassName);
+    return getCDAttributeFacade().createAttribute(PROTECTED, optType, "modelLoader");
   }
 
   protected ASTCDAttribute createModelName2ModelLoaderCacheAttribute(String modelLoaderClassName) {
@@ -436,7 +478,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName,
         foundSymbolsParameter, nameParameter, accessModifierParameter, predicateParameter);
     this.replaceTemplate(EMPTY_BODY, method,
-        new TemplateHookPoint(TEMPLATE_PATH + "ResolveMany", className, fullSymbolName));
+        new TemplateHookPoint(TEMPLATE_PATH + "ResolveMany4GlobalScope", className, fullSymbolName));
     return method;
   }
 

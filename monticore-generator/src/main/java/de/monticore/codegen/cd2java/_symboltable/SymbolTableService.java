@@ -16,9 +16,7 @@ import de.se_rwth.commons.Names;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PACKAGE;
-import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
-import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.NODE_SUFFIX;
+import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.*;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.utils.Names.getSimpleName;
@@ -154,24 +152,33 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     return getGlobalScopeSimpleName(getCDSymbol());
   }
 
+
   /**
-   * language class names e.g. AutomataLanguage
+   * global scope interface names e.g. IAutomataGlobalScope
    */
 
-  public String getLanguageClassFullName(CDDefinitionSymbol cdSymbol) {
-    return getPackage(cdSymbol) + "." + getLanguageClassSimpleName(cdSymbol);
+  public String getGlobalScopeInterfaceFullName(CDDefinitionSymbol cdSymbol) {
+    return getPackage(cdSymbol) + "." + getGlobalScopeInterfaceSimpleName(cdSymbol);
   }
 
-  public String getLanguageClassFullName() {
-    return getLanguageClassFullName(getCDSymbol());
+  public String getGlobalScopeInterfaceFullName() {
+    return getGlobalScopeInterfaceFullName(getCDSymbol());
   }
 
-  public String getLanguageClassSimpleName(CDDefinitionSymbol cdSymbol) {
-    return cdSymbol.getName() + LANGUAGE_SUFFIX;
+  public String getGlobalScopeInterfaceSimpleName(CDDefinitionSymbol cdSymbol) {
+    return INTERFACE_PREFIX + cdSymbol.getName() + GLOBAL_SUFFIX + SCOPE_SUFFIX;
   }
 
-  public String getLanguageClassSimpleName() {
-    return getLanguageClassSimpleName(getCDSymbol());
+  public String getGlobalScopeInterfaceSimpleName() {
+    return getGlobalScopeInterfaceSimpleName(getCDSymbol());
+  }
+
+  public ASTMCQualifiedType getGlobalScopeInterfaceType(CDDefinitionSymbol cdSymbol) {
+    return getMCTypeFacade().createQualifiedType(getGlobalScopeInterfaceFullName(cdSymbol));
+  }
+
+  public ASTMCQualifiedType getGlobalScopeInterfaceType() {
+    return getGlobalScopeInterfaceType(getCDSymbol());
   }
 
   /**
@@ -412,7 +419,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   public String getSymbolSimpleName(ASTCDType clazz) {
     // if in grammar other symbol Name is defined e.g. 'symbol (MCType) MCQualifiedType implements MCObjectType = MCQualifiedName;'
     // this will evaluate to MCTypeSymbol
-    if (clazz.isPresentModifier()) {
+    if (clazz.isPresentModifier() && !hasSymbolStereotype(clazz.getModifier())) {
       Optional<String> symbolTypeValue = getSymbolTypeValue(clazz.getModifier());
       if (symbolTypeValue.isPresent()) {
         return Names.getSimpleName(symbolTypeValue.get());
@@ -428,7 +435,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
 
   public String getSymbolFullName(ASTCDType clazz, CDDefinitionSymbol cdDefinitionSymbol) {
     //if in grammar other symbol Name is defined e.g. 'symbol (MCType) MCQualifiedType implements MCObjectType = MCQualifiedName;'
-    if (clazz.isPresentModifier()) {
+    if (clazz.isPresentModifier() && !hasSymbolStereotype(clazz.getModifier())) {
       Optional<String> symbolTypeValue = getSymbolTypeValue(clazz.getModifier());
       if (symbolTypeValue.isPresent()) {
         return symbolTypeValue.get();
@@ -445,12 +452,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   public Optional<String> getDefiningSymbolFullName(ASTCDType clazz, CDDefinitionSymbol cdDefinitionSymbol) {
     //if in grammar other symbol Name is defined e.g. 'symbol (MCType) MCQualifiedType implements MCObjectType = MCQualifiedName;'
     if (clazz.isPresentModifier()) {
-      Optional<String> symbolTypeValue = getSymbolTypeValue(clazz.getModifier());
-      if (symbolTypeValue.isPresent()) {
-        // is a symbol, but no defining one
-        return Optional.empty();
-      } else if (hasSymbolStereotype(clazz.getModifier())) {
-        // is a defining symbol
+      if (hasSymbolStereotype(clazz.getModifier())) {
         return Optional.of(getPackage(cdDefinitionSymbol) + "." + getNameWithSymbolSuffix(clazz));
       }
     }
@@ -461,11 +463,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   public Optional<String> getDefiningSymbolSimpleName(ASTCDType clazz) {
     // does only return symbol defining parts, not parts with e.g. symbol (MCType)
     if (clazz.isPresentModifier()) {
-      Optional<String> symbolTypeValue = getSymbolTypeValue(clazz.getModifier());
-      if (symbolTypeValue.isPresent()) {
-        // is a symbol, but no defining one
-        return Optional.empty();
-      } else if (hasSymbolStereotype(clazz.getModifier())) {
+      if (hasSymbolStereotype(clazz.getModifier())) {
         // is a defining symbol
         return Optional.ofNullable(getNameWithSymbolSuffix(clazz));
       }
@@ -481,7 +479,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   /**
    * Computes a set of all symbol defining rules in a class diagram, stored as
    * their qualified names.
-   * 
+   *
    * @param cdSymbol The input symbol of a class diagram
    * @return The set of symbol names within the class diagram
    */
@@ -506,7 +504,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
 
   /**
    * Computes the MCQualifiedType of the symbol from its corresponding CD type.
-   * 
+   *
    * @param node The input ASTCDType. Either a class or interface
    * @return The qualified type of the symbol as MCQualifiedType
    */
@@ -616,9 +614,8 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
 
   public List<ASTCDType> getSymbolDefiningProds(List<? extends ASTCDType> astcdClasses) {
     return astcdClasses.stream()
-        .filter(c -> ((ASTCDType) c).isPresentModifier())
+        .filter(c -> c.isPresentModifier())
         .filter(c -> hasSymbolStereotype(c.getModifier()))
-        .filter(c -> !getSymbolTypeValue(c.getModifier()).isPresent())
         .collect(Collectors.toList());
   }
 
@@ -636,12 +633,24 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
       // classes with inherited symbol property
       if (astcdClass.isPresentModifier() && hasInheritedSymbolStereotype(astcdClass.getModifier())) {
         List<String> stereotypeValues = getStereotypeValues(astcdClass.getModifier(), MC2CDStereotypes.INHERITED_SYMBOL);
-        if (stereotypeValues.size() == 1) {
-          inheritedSymbolProds.put(astcdClass, stereotypeValues.get(0));
+        // multiple inherited symbols possible
+        for (String stereotypeValue : stereotypeValues) {
+          inheritedSymbolProds.put(astcdClass, stereotypeValue);
         }
       }
     }
     return inheritedSymbolProds;
+  }
+
+  public String getInheritedSymbol(ASTCDType astcdClass ) {
+    // classes with inherited symbol property
+    if (astcdClass.isPresentModifier() && hasInheritedSymbolStereotype(astcdClass.getModifier())) {
+      List<String> stereotypeValues = getStereotypeValues(astcdClass.getModifier(), MC2CDStereotypes.INHERITED_SYMBOL);
+      if (!stereotypeValues.isEmpty()) {
+        return stereotypeValues.get(0);
+      }
+    }
+    return "";
   }
 
   public List<ASTCDType> getNoSymbolAndScopeDefiningClasses(List<ASTCDClass> astcdClasses) {
@@ -683,7 +692,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
    * language interface. This check is supposed to be invoked when exactly one
    * interface is present. Otherwise, this method returns true as the CD is
    * assumed to have more interfaces, thus having at least one production.
-   * 
+   *
    * @param astcdDefinition The input cd which is checked for interfaces
    * @return True if the single interface matches the language interface name,
    *         false otherwise
@@ -697,14 +706,14 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     if (interfaceName.equals(getSimpleLanguageInterfaceName())) {
       return false;
     }
-    
+
     // check qualified interface name if symbol is available
     if (astcdDefinition.isPresentSymbol()) {
       CDDefinitionSymbol sym = astcdDefinition.getSymbol();
       String qualifiedName = getASTPackage(sym) + "." + AST_PREFIX + sym.getName() + NODE_SUFFIX;
       return !(interfaceName.equals(qualifiedName));
     }
-    
+
     // per default, we assume that productions are available
     return true;
   }
@@ -781,6 +790,11 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
       }
     }
     return false;
+  }
+
+  public boolean hasComponentStereotype(ASTCDDefinition astcdDefinition) {
+    return astcdDefinition.isPresentModifier() &&
+        hasComponentStereotype(astcdDefinition.getModifier());
   }
 
   public boolean hasInheritedSymbolStereotype(ASTModifier modifier) {

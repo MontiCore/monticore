@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.builtInTypes;
 
-import de.monticore.antlr4.MCConcreteParser;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.types.typesymbols.TypeSymbolsMill;
 import de.monticore.types.typesymbols._symboltable.*;
@@ -23,15 +22,10 @@ public class BuiltInJavaTypesTest {
     LogStub.init();
     gs = TypeSymbolsMill
         .typeSymbolsGlobalScopeBuilder()
-        .setTypeSymbolsLanguage(new TypeSymbolsLanguage("TypeSymbols","ts") {
-          @Override
-          public MCConcreteParser getParser() {
-            return null;
-          }
-        })
         .setModelPath(new ModelPath())
+        .setModelFileExtension("bijt")
         .build();
-    gs.addAdaptedTypeSymbolResolvingDelegate(new BuiltInJavaTypeSymbolResolvingDelegate());
+    gs.addAdaptedOOTypeSymbolResolvingDelegate(new BuiltInJavaTypeSymbolResolvingDelegate());
 
 
      //other way to get globalscope: gs = BuiltInJavaTypeSymbolResolvingDelegate.getScope();
@@ -41,14 +35,14 @@ public class BuiltInJavaTypesTest {
   @Test
   public void testBuiltInPrimitiveJavaTypes(){
     //assert that the primitive types can be resolved in the scope
-    Optional<TypeSymbol> intsymtype = gs.resolveType("int");
-    Optional<TypeSymbol> doublesymtype = gs.resolveType("double");
-    Optional<TypeSymbol> floatsymtype = gs.resolveType("float");
-    Optional<TypeSymbol> longsymtype = gs.resolveType("long");
-    Optional<TypeSymbol> charsymtype = gs.resolveType("char");
-    Optional<TypeSymbol> shortsymtype = gs.resolveType("short");
-    Optional<TypeSymbol> bytesymtype = gs.resolveType("byte");
-    Optional<TypeSymbol> booleansymtype = gs.resolveType("boolean");
+    Optional<OOTypeSymbol> intsymtype = gs.resolveOOType("int");
+    Optional<OOTypeSymbol> doublesymtype = gs.resolveOOType("double");
+    Optional<OOTypeSymbol> floatsymtype = gs.resolveOOType("float");
+    Optional<OOTypeSymbol> longsymtype = gs.resolveOOType("long");
+    Optional<OOTypeSymbol> charsymtype = gs.resolveOOType("char");
+    Optional<OOTypeSymbol> shortsymtype = gs.resolveOOType("short");
+    Optional<OOTypeSymbol> bytesymtype = gs.resolveOOType("byte");
+    Optional<OOTypeSymbol> booleansymtype = gs.resolveOOType("boolean");
 
     assertTrue(intsymtype.isPresent());
     assertTrue(doublesymtype.isPresent());
@@ -103,7 +97,7 @@ public class BuiltInJavaTypesTest {
 
   @Test
   public void testBuiltInIntWrapper(){
-    Optional<TypeSymbol> intsymtype = gs.resolveType("java.lang.Integer");
+    Optional<OOTypeSymbol> intsymtype = gs.resolveOOType("java.lang.Integer");
     assertTrue(intsymtype.isPresent());
 
     //java.lang.Integer extends java.lang.Number and has no type parameters
@@ -131,7 +125,7 @@ public class BuiltInJavaTypesTest {
 
   @Test
   public void testBuiltInDoubleWrapper(){
-    Optional<TypeSymbol> doublesymtype = gs.resolveType("java.lang.Double");
+    Optional<OOTypeSymbol> doublesymtype = gs.resolveOOType("java.lang.Double");
     assertTrue(doublesymtype.isPresent());
 
     //java.lang.Double extends java.lang.Number and has no type parameters
@@ -159,7 +153,7 @@ public class BuiltInJavaTypesTest {
 
   @Test
   public void testBuiltInFloatWrapper(){
-    Optional<TypeSymbol> floatsymtype = gs.resolveType("java.lang.Float");
+    Optional<OOTypeSymbol> floatsymtype = gs.resolveOOType("java.lang.Float");
     assertTrue(floatsymtype.isPresent());
 
     //java.lang.Float extends java.lang.Number and has no type parameters
@@ -187,7 +181,7 @@ public class BuiltInJavaTypesTest {
 
   @Test
   public void testBuiltInLongWrapper(){
-    Optional<TypeSymbol> longsymtype = gs.resolveType("java.lang.Long");
+    Optional<OOTypeSymbol> longsymtype = gs.resolveOOType("java.lang.Long");
     assertTrue(longsymtype.isPresent());
 
     //java.lang.Long extends java.lang.Number and has no type parameters
@@ -215,7 +209,7 @@ public class BuiltInJavaTypesTest {
 
   @Test
   public void testBuiltInCharWrapper(){
-    Optional<TypeSymbol> charsymtype = gs.resolveType("java.lang.Character");
+    Optional<OOTypeSymbol> charsymtype = gs.resolveOOType("java.lang.Character");
     assertTrue(charsymtype.isPresent());
 
     //java.lang.Character directly extends java.lang.Object and has no type parameters
@@ -241,7 +235,7 @@ public class BuiltInJavaTypesTest {
 
   @Test
   public void testBuiltInShortWrapper(){
-    Optional<TypeSymbol> shortsymtype = gs.resolveType("java.lang.Short");
+    Optional<OOTypeSymbol> shortsymtype = gs.resolveOOType("java.lang.Short");
     assertTrue(shortsymtype.isPresent());
 
     //java.lang.Short extends java.lang.Number and has no type parameters
@@ -269,7 +263,7 @@ public class BuiltInJavaTypesTest {
 
   @Test
   public void testBuiltInByteWrapper(){
-    Optional<TypeSymbol> bytesymtype = gs.resolveType("java.lang.Byte");
+    Optional<OOTypeSymbol> bytesymtype = gs.resolveOOType("java.lang.Byte");
     assertTrue(bytesymtype.isPresent());
 
     //java.lang.Byte extends java.lang.Number and has no type parameters
@@ -297,7 +291,7 @@ public class BuiltInJavaTypesTest {
 
   @Test
   public void testBuiltInBooleanWrapper(){
-    Optional<TypeSymbol> booleansymtype = gs.resolveType("java.lang.Boolean");
+    Optional<OOTypeSymbol> booleansymtype = gs.resolveOOType("java.lang.Boolean");
     assertTrue(booleansymtype.isPresent());
 
     //java.lang.Character directly extends java.lang.Object
@@ -328,7 +322,7 @@ public class BuiltInJavaTypesTest {
 
   @Test
   public void testBuiltInListType(){
-    Optional<TypeSymbol> listsymtype = gs.resolveType("java.util.List");
+    Optional<OOTypeSymbol> listsymtype = gs.resolveOOType("java.util.List");
 
     assertTrue(listsymtype.isPresent());
 
@@ -355,7 +349,7 @@ public class BuiltInJavaTypesTest {
 
   @Test
   public void testBuiltInSetType(){
-    Optional<TypeSymbol> setsymtype = gs.resolveType("java.util.Set");
+    Optional<OOTypeSymbol> setsymtype = gs.resolveOOType("java.util.Set");
 
     assertTrue(setsymtype.isPresent());
 
@@ -383,7 +377,7 @@ public class BuiltInJavaTypesTest {
 
   @Test
   public void testBuiltInMapType(){
-    Optional<TypeSymbol> mapsymtype = gs.resolveType("java.util.Map");
+    Optional<OOTypeSymbol> mapsymtype = gs.resolveOOType("java.util.Map");
 
     assertTrue(mapsymtype.isPresent());
 
@@ -407,7 +401,7 @@ public class BuiltInJavaTypesTest {
 
   @Test
   public void testBuiltInOptionalType(){
-    Optional<TypeSymbol> optionalsymtype = gs.resolveType("java.util.Optional");
+    Optional<OOTypeSymbol> optionalsymtype = gs.resolveOOType("java.util.Optional");
 
     assertTrue(optionalsymtype.isPresent());
 
@@ -433,7 +427,7 @@ public class BuiltInJavaTypesTest {
 
   @Test
   public void testBuiltInCollectionTypes(){
-    Optional<TypeSymbol> collectionsymtype = gs.resolveType("java.util.Collection");
+    Optional<OOTypeSymbol> collectionsymtype = gs.resolveOOType("java.util.Collection");
 
     assertTrue(collectionsymtype.isPresent());
 
@@ -463,7 +457,7 @@ public class BuiltInJavaTypesTest {
   @Test
   public void testBuiltInObjectType(){
     //test that there is an "Object" type
-    Optional<TypeSymbol> objectType = gs.resolveType("java.lang.Object");
+    Optional<OOTypeSymbol> objectType = gs.resolveOOType("java.lang.Object");
 
     assertTrue(objectType.isPresent());
 
@@ -491,7 +485,7 @@ public class BuiltInJavaTypesTest {
 
   @Test
   public void testBuiltInStringType(){
-    Optional<TypeSymbol> stringType = gs.resolveType("java.lang.String");
+    Optional<OOTypeSymbol> stringType = gs.resolveOOType("java.lang.String");
 
     assertTrue(stringType.isPresent());
 
@@ -541,8 +535,8 @@ public class BuiltInJavaTypesTest {
   @Test
   public void testBuiltInNullAndVoidType(){
     //assert that the types null and void can be resolved
-    Optional<TypeSymbol> nulltype = gs.resolveType("nullType");
-    Optional<TypeSymbol> voidtype = gs.resolveType("voidType");
+    Optional<OOTypeSymbol> nulltype = gs.resolveOOType("nullType");
+    Optional<OOTypeSymbol> voidtype = gs.resolveOOType("voidType");
 
     assertTrue(nulltype.isPresent());
     assertTrue(voidtype.isPresent());

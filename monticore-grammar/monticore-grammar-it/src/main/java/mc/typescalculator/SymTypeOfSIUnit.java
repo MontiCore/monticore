@@ -4,11 +4,11 @@ package mc.typescalculator;
 import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.types.check.SymTypeExpression;
-import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
+import de.monticore.types.typesymbols._symboltable.OOTypeSymbolLoader;
 
 public class SymTypeOfSIUnit extends SymTypeExpression {
 
-  public SymTypeOfSIUnit(TypeSymbolLoader typeSymbolLoader){
+  public SymTypeOfSIUnit(OOTypeSymbolLoader typeSymbolLoader){
     this.typeSymbolLoader = typeSymbolLoader;
   }
 
@@ -30,6 +30,24 @@ public class SymTypeOfSIUnit extends SymTypeExpression {
 
   @Override
   public SymTypeOfSIUnit deepClone() {
-    return new SymTypeOfSIUnit(new TypeSymbolLoader(typeSymbolLoader.getName(),typeSymbolLoader.getEnclosingScope()));
+    return new SymTypeOfSIUnit(new OOTypeSymbolLoader(typeSymbolLoader.getName(),typeSymbolLoader.getEnclosingScope()));
+  }
+
+  @Override
+  public boolean deepEquals(SymTypeExpression sym) {
+    if(!(sym instanceof SymTypeOfSIUnit)){
+      return false;
+    }
+    SymTypeOfSIUnit symSi = (SymTypeOfSIUnit) sym;
+    if(this.typeSymbolLoader== null ||symSi.typeSymbolLoader==null){
+      return false;
+    }
+    if(!this.typeSymbolLoader.getEnclosingScope().equals(symSi.typeSymbolLoader.getEnclosingScope())){
+      return false;
+    }
+    if(!this.typeSymbolLoader.getName().equals(symSi.typeSymbolLoader.getName())){
+      return false;
+    }
+    return this.print().equals(symSi.print());
   }
 }

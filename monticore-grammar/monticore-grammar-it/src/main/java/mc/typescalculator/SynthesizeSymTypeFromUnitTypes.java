@@ -3,7 +3,7 @@ package mc.typescalculator;
 
 import de.monticore.types.check.ISynthesize;
 import de.monticore.types.check.SynthesizeSymTypeFromMCBasicTypes;
-import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
+import de.monticore.types.typesymbols._symboltable.OOTypeSymbolLoader;
 import mc.typescalculator.unittypes._ast.ASTMinuteType;
 import mc.typescalculator.unittypes._visitor.UnitTypesVisitor;
 
@@ -27,6 +27,6 @@ public class SynthesizeSymTypeFromUnitTypes extends SynthesizeSymTypeFromMCBasic
 
   @Override
   public void endVisit(ASTMinuteType type){
-    typeCheckResult.setLast(new SymTypeOfSIUnit(new TypeSymbolLoader(type.getUnit(),getScope(type.getEnclosingScope()))));
+    typeCheckResult.setCurrentResult(new SymTypeOfSIUnit(new OOTypeSymbolLoader(type.getUnit(),getScope(type.getEnclosingScope()))));
   }
 }

@@ -53,7 +53,7 @@ public final class VisitorConstants {
 
   public static final String VISITOR_METHODS_DELEGATOR_TEMPLATE = "_visitor.delegator.VisitorMethods";
 
-  public static final String TRAVERSE_SCOPE_TEMPLATE= "_visitor.scope.Traverse";
+  public static final String TRAVERSE_SCOPE_TEMPLATE= "_visitor.scope.TraverseScope";
 
 
   private VisitorConstants() {}

@@ -326,9 +326,11 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
       if (x.isPresentKeyConstant()) {
         addToCodeSection(createKeyPredicate(x.getKeyConstant().getStringList()));
       } else if (x.isPresentTokenConstant()) {
-        addToCodeSection(createTokenPredicate(x.getTokenConstant().getString()));
+        addToCodeSection(parserHelper.getLexSymbolName(x.getTokenConstant().getString()));
       } else if (!grammarInfo.isKeyword(x.getName(), grammarEntry)) {
         addToCodeSection(parserHelper.getLexSymbolName(x.getName()));
+      } else if (grammarInfo.getKeywordRules().contains(x.getName())) {
+        addToCodeSection(parserHelper.getKeyRuleName(x.getName()));
       } else {
         addToCodeSection("'" + x.getName() + "'");
       }
@@ -502,20 +504,29 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     startCodeSection("ASTTerminal " + ast.getName());
 
     String rulename;
-    if (grammarInfo.isKeyword(ast.getName(), grammarEntry)) {
-      rulename = "'" + ast.getName() + "'";
+    if (ast.getName().isEmpty()) {
+      rulename = "";
+    } else if (grammarInfo.isKeyword(ast.getName(), grammarEntry)) {
+      if (grammarInfo.getKeywordRules().contains(ast.getName())) {
+        rulename = parserHelper.getKeyRuleName(ast.getName());
+      } else {
+        rulename = "'" + ast.getName() + "'";
+      }
     } else {
       rulename = parserHelper.getLexSymbolName(ast.getName().intern());
     }
 
     // No actions in predicates
     // Template engine cannot be used for substition in rare cases
+    boolean isAttribute = ast.isPresentUsageName();
+    boolean isList = ast.isPresentSymbol() && ast.getSymbol().isIsList();
+    if (isAttribute && isList) {
+      addToCodeSection("(");
+    }
     addToCodeSection(rulename); // + " %initaction% %actions% ) %iteration% ";
 
     if (embeddedJavaCode) {
-      boolean isAttribute = ast.isPresentUsageName();
-      boolean isList = ast.isPresentSymbol() && ast.getSymbol().isIsList();
-      // Add Actions
+       // Add Actions
       if (isAttribute) {
         if (isList) {
           addToAction(astActions.getActionForTerminalIteratedAttribute(ast));
@@ -529,6 +540,9 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
 
     addActionToCodeSection();
 
+    if (isAttribute && isList) {
+      addToCodeSection(")");
+    }
     addToCodeSection(printIteration(ast.getIteration()));
 
     endCodeSection(ast);
@@ -536,25 +550,15 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
   }
 
   private String createKeyPredicate(List<String> stringList) {
-    String rulename = "{next(";
+    String rulename = "(";
     String sep = "";
     for (String key: stringList) {
       rulename += sep;
-      sep = ", ";
-      rulename += "\"" + key + "\"";
-    }
-    rulename += ")}? Name";
-    return rulename;
-  }
+      sep = " | ";
+      rulename +=  parserHelper.getKeyRuleName(key);
 
-  private String createTokenPredicate(String str) {
-    String rulename = "";
-    String sep = " ";
-    for (char c: str.toCharArray()) {
-      rulename += "'" + c + "'";
-      rulename += sep;
-      sep = " {noSpace()}? ";
     }
+    rulename += ")";
     return rulename;
   }
 
@@ -595,11 +599,8 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
 
     startCodeSection("ASTTokenTerminal " + ast.getName());
     addToCodeSection("(");
-    String rulename = createTokenPredicate(ast.getTokenConstant().getString());
 
-    // No actions in predicates
-    // Template engine cannot be used for substition in rare cases
-    addToCodeSection(rulename); // + " %initaction% %actions% ) %iteration% ";
+    addToCodeSection(parserHelper.getLexSymbolName(ast.getTokenConstant().getString()));
 
     if (embeddedJavaCode) {
       boolean isAttribute = ast.isPresentUsageName();
@@ -1010,7 +1011,9 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
               + " */");
 
       // TODO PN, GV
-      for(String y : grammarInfo.getKeywords()) {
+      ArrayList<String> keys = Lists.newArrayList(grammarInfo.getKeywords());
+      keys.removeAll(grammarInfo.getKeywordRules());
+      for(String y : keys) {
         addToAntlrCode(" | ");
         ASTTerminal term = GrammarNodeFactory.createASTTerminal();
         ast.get_Children().add(term);

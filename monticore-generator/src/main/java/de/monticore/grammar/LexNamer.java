@@ -46,7 +46,6 @@ public class LexNamer {
       goodNames.put("<", "LT");
       goodNames.put("=", "EQUALS");
       goodNames.put("+", "PLUS");
-      goodNames.put("++", "PLUSPLUS");
       goodNames.put("-", "MINUS");
       goodNames.put("*", "STAR");
       goodNames.put("%", "PERCENT");
@@ -73,12 +72,12 @@ public class LexNamer {
    */
   
   public static String createGoodName(String x) {
-    StringBuilder ret = new StringBuilder();
-    
+
     if (x.matches("[a-zA-Z_0-9]+")) {
       return x.toUpperCase();
     }
-    
+
+    StringBuilder ret = new StringBuilder();
     for (int i = 0; i < x.length(); i++) {
       
       String substring = x.substring(i, i + 1);
@@ -86,16 +85,11 @@ public class LexNamer {
         ret.append(getGoodNames().get(substring));
       }
       else {
-        ret = null;
+        ret.setLength(0);
         break;
       }
     }
-    
-    if (ret != null) {
-      return ret.toString();
-    }
-    else
-      return null;
+    return ret.toString();
       
   }
   
@@ -112,7 +106,7 @@ public class LexNamer {
     }
     
     String goodName = createGoodName(sym);
-    if (goodName != null && !grammarSymbol.getProd(goodName).isPresent()) {
+    if (!goodName.isEmpty() && !grammarSymbol.getProd(goodName).isPresent()) {
       usedLex.put(sym, goodName);
       Log.debug("Using lexer symbol " + goodName + " for symbol '" + sym + "'", "LexNamer");
       return goodName;
@@ -126,7 +120,7 @@ public class LexNamer {
     
     if (!usedConstants.containsKey(s)) {
       String goodName = createGoodName(s);
-      if (goodName != null) {
+      if (!goodName.isEmpty()) {
         usedConstants.put(s, goodName);
       }
       else {

@@ -7,8 +7,7 @@ import de.monticore.expressions.combineexpressionswithliterals._parser.CombineEx
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsScope;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsScope;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.expressions.prettyprint.CombineExpressionsWithLiteralsPrettyPrinter;
-import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.types.basictypesymbols._symboltable.TypeVarSymbol;
 import de.monticore.types.typesymbols.TypeSymbolsMill;
 import de.monticore.types.typesymbols._symboltable.*;
 import de.se_rwth.commons.logging.Log;
@@ -62,12 +61,12 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     add2scope(scope, DefsTypeBasic._String);
 
     // some FieldSymbols (ie. Variables, Attributes)
-    TypeSymbol p = new TypeSymbol("Person");
+    OOTypeSymbol p = new OOTypeSymbol("Person");
     scope.add(p);
-    TypeSymbol s = new TypeSymbol("Student");
+    OOTypeSymbol s = new OOTypeSymbol("Student");
     scope.add(s);
     s.setSuperTypeList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Person", scope)));
-    TypeSymbol f = new TypeSymbol("FirstSemesterStudent");
+    OOTypeSymbol f = new OOTypeSymbol("FirstSemesterStudent");
     scope.add(f);
     f.setSuperTypeList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student", scope)));
     add2scope(scope, field("foo", _intSymType));
@@ -102,13 +101,13 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
 
   @Test
   public void deriveFromPrimarySuperExpression() throws IOException {
-    TypeSymbol supType = TypeSymbolsMill.typeSymbolBuilder()
+    OOTypeSymbol supType = TypeSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setName("A")
         .setEnclosingScope(scope)
         .build();
     SymTypeExpression sup = SymTypeExpressionFactory.createTypeObject("A",scope);
-    supType.setClass(true);
+    supType.setIsClass(true);
     add2scope(scope,supType);
 
     MethodSymbol get = TypeSymbolsMill.methodSymbolBuilder()
@@ -116,13 +115,13 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
         .setReturnType(_voidSymType)
         .build();
     get.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
-    TypeSymbol p = TypeSymbolsMill.typeSymbolBuilder()
+    OOTypeSymbol p = TypeSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
         .setName("AB")
         .setSuperTypeList(Lists.newArrayList(sup))
         .setEnclosingScope(scope)
         .build();
-    p.setClass(true);
+    p.setIsClass(true);
     get.getSpannedScope().setEnclosingScope(p.getSpannedScope());
     add2scope(scope,p);
 
@@ -162,7 +161,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
         .setReturnType(_voidSymType)
         .build();
     get.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
-    TypeSymbol p = TypeSymbolsMill.typeSymbolBuilder()
+    OOTypeSymbol p = TypeSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
         .setMethodList(Lists.newArrayList(get))
         .setName("AB")
@@ -226,7 +225,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     * */
 
     //build infrastructure for previous comment
-    TypeSymbol outer = TypeSymbolsMill.typeSymbolBuilder()
+    OOTypeSymbol outer = TypeSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
         .setName("Outer")
         .setEnclosingScope(scope)
@@ -238,7 +237,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
         .setReturnType(_voidSymType)
         .build();
     methodInner.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
-    TypeSymbol inner = TypeSymbolsMill.typeSymbolBuilder()
+    OOTypeSymbol inner = TypeSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
         .setName("Inner")
         .setMethodList(Lists.newArrayList(methodInner))
@@ -252,7 +251,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
         .setReturnType(_voidSymType)
         .build();
     methodInnerInner.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
-    TypeSymbol innerinner = TypeSymbolsMill.typeSymbolBuilder()
+    OOTypeSymbol innerinner = TypeSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
         .setName("InnerInner")
         .setMethodList(Lists.newArrayList(methodInnerInner))
@@ -288,7 +287,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
   @Test
   public void failDeriveFromThisExpression1() throws IOException{
     //.this in enclosing class
-    TypeSymbol fail = TypeSymbolsMill.typeSymbolBuilder()
+    OOTypeSymbol fail = TypeSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
         .setName("Fail")
         .setEnclosingScope(scope)
@@ -341,7 +340,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
 
     TypeVarSymbol t = typeVariable("T");
     add2scope(scope,t);
-    TypeSymbol list = TypeSymbolsMill.typeSymbolBuilder()
+    OOTypeSymbol list = TypeSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
         .setName("List")
         .setTypeParameterList(Lists.newArrayList(t))
@@ -397,7 +396,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
   @Test 
   public void failDeriveSymTypeOfArrayExpression() throws IOException {
     //assert that a type will throw an error -> no int[4]
-    TypeSymbol test = TypeSymbolsMill.typeSymbolBuilder()
+    OOTypeSymbol test = TypeSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
         .setName("Test")
         .setEnclosingScope(scope)
@@ -629,7 +628,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
         .build();
     test.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
     FieldSymbol field = field("field",_intSymType);
-    TypeSymbol superOuter = TypeSymbolsMill.typeSymbolBuilder()
+    OOTypeSymbol superOuter = TypeSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
         .setName("SuperOuter")
         .setFieldList(Lists.newArrayList(field))
@@ -638,12 +637,12 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
         .build();
     superOuter.getSpannedScope().setEnclosingScope(superOuter.getEnclosingScope());
     test.getSpannedScope().setEnclosingScope(superOuter.getSpannedScope());
-    superOuter.setClass(true);
+    superOuter.setIsClass(true);
     SymTypeExpression superOuterType = SymTypeExpressionFactory.createTypeObject("SuperOuter",scope);
     add2scope(scope,superOuter);
 
     //class Outer
-    TypeSymbol outer = TypeSymbolsMill.typeSymbolBuilder()
+    OOTypeSymbol outer = TypeSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
         .setName("Outer")
         .setSuperTypeList(Lists.newArrayList(superOuterType))
@@ -658,7 +657,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     methodInner.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
 
     //class Inner
-    TypeSymbol inner = TypeSymbolsMill.typeSymbolBuilder()
+    OOTypeSymbol inner = TypeSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
         .setName("Inner")
         .setMethodList(Lists.newArrayList(methodInner))
@@ -674,7 +673,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     methodInnerInner.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
 
     //class InnerInner
-    TypeSymbol innerinner = TypeSymbolsMill.typeSymbolBuilder()
+    OOTypeSymbol innerinner = TypeSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
         .setName("InnerInner")
         .setMethodList(Lists.newArrayList(methodInnerInner))
@@ -711,7 +710,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
   @Test
   public void failDeriveFromSuperExpression1() throws IOException{
     //.super in enclosing class
-    TypeSymbol fail = TypeSymbolsMill.typeSymbolBuilder()
+    OOTypeSymbol fail = TypeSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
         .setName("Fail")
         .setEnclosingScope(scope)
@@ -755,7 +754,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
         .setReturnType(_intSymType)
         .build();
     test.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
-    TypeSymbol superOuter = TypeSymbolsMill.typeSymbolBuilder()
+    OOTypeSymbol superOuter = TypeSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
         .setName("SuperOuter")
         .setMethodList(Lists.newArrayList(test))
@@ -763,23 +762,23 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
         .build();
     superOuter.getSpannedScope().setEnclosingScope(superOuter.getEnclosingScope());
     test.getSpannedScope().setEnclosingScope(superOuter.getSpannedScope());
-    superOuter.setClass(true);
+    superOuter.setIsClass(true);
     SymTypeExpression superOuterType = SymTypeExpressionFactory.createTypeObject("SuperOuter",scope);
     add2scope(scope,superOuter);
 
     //second super type
-    TypeSymbol superOuterTwo = TypeSymbolsMill.typeSymbolBuilder()
+    OOTypeSymbol superOuterTwo = TypeSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
         .setName("SuperOuterTwo")
         .setEnclosingScope(scope)
         .build();
     superOuterTwo.getSpannedScope().setEnclosingScope(superOuterTwo.getEnclosingScope());
-    superOuterTwo.setClass(true);
+    superOuterTwo.setIsClass(true);
     SymTypeExpression superOuterTwoType = SymTypeExpressionFactory.createTypeObject("SuperOuterTwo",scope);
     add2scope(scope,superOuterTwo);
 
     //class Outer
-    TypeSymbol outer = TypeSymbolsMill.typeSymbolBuilder()
+    OOTypeSymbol outer = TypeSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
         .setName("Outer")
         .setSuperTypeList(Lists.newArrayList(superOuterType, superOuterTwoType))
@@ -794,7 +793,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     methodInner.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
 
     //class Inner
-    TypeSymbol inner = TypeSymbolsMill.typeSymbolBuilder()
+    OOTypeSymbol inner = TypeSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
         .setName("Inner")
         .setMethodList(Lists.newArrayList(methodInner))
@@ -810,7 +809,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     methodInnerInner.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
 
     //class InnerInner
-    TypeSymbol innerinner = TypeSymbolsMill.typeSymbolBuilder()
+    OOTypeSymbol innerinner = TypeSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
         .setName("InnerInner")
         .setMethodList(Lists.newArrayList(methodInnerInner))
@@ -837,7 +836,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
   public void failDeriveFromSuperExpression4() throws IOException{
     //.super without a super type
     //class Outer
-    TypeSymbol outer = TypeSymbolsMill.typeSymbolBuilder()
+    OOTypeSymbol outer = TypeSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
         .setName("Outer")
         .setSuperTypeList(Lists.newArrayList())
@@ -868,7 +867,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
         .setReturnType(_intSymType)
         .build();
     test.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
-    TypeSymbol superOuter = TypeSymbolsMill.typeSymbolBuilder()
+    OOTypeSymbol superOuter = TypeSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
         .setName("SuperOuter")
         .setMethodList(Lists.newArrayList(test))
@@ -876,12 +875,12 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
         .build();
     superOuter.getSpannedScope().setEnclosingScope(superOuter.getEnclosingScope());
     test.getSpannedScope().setEnclosingScope(superOuter.getSpannedScope());
-    superOuter.setClass(true);
+    superOuter.setIsClass(true);
     SymTypeExpression superOuterType = SymTypeExpressionFactory.createTypeObject("SuperOuter",scope);
     add2scope(scope,superOuter);
 
     //class Outer
-    TypeSymbol outer = TypeSymbolsMill.typeSymbolBuilder()
+    OOTypeSymbol outer = TypeSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
         .setName("Outer")
         .setSuperTypeList(Lists.newArrayList(superOuterType))
@@ -920,13 +919,13 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
         .build();
     asuperconstr.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
     asuperconstr.getSpannedScope().add(t);
-    TypeSymbol aSuper = TypeSymbolsMill.typeSymbolBuilder()
+    OOTypeSymbol aSuper = TypeSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
         .setName("ASuper")
         .setMethodList(Lists.newArrayList(asuperconstr))
         .setEnclosingScope(scope)
         .build();
-    aSuper.setClass(true);
+    aSuper.setIsClass(true);
     aSuper.getSpannedScope().setEnclosingScope(aSuper.getEnclosingScope());
     asuperconstr.getSpannedScope().setEnclosingScope(aSuper.getSpannedScope());
     SymTypeExpression aSuperType = SymTypeExpressionFactory.createTypeObject("ASuper",scope);
@@ -965,7 +964,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     set.getSpannedScope().add(tParam);
     set.getSpannedScope().add(t);
     set.getSpannedScope().add(s);
-    TypeSymbol a = TypeSymbolsMill.typeSymbolBuilder()
+    OOTypeSymbol a = TypeSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
         .setName("A")
         .setMethodList(Lists.newArrayList(test, aconstr, get, set))
@@ -1027,18 +1026,18 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
         .setReturnType(_doubleSymType)
         .build();
     help.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
-    TypeSymbol sup = TypeSymbolsMill.typeSymbolBuilder()
+    OOTypeSymbol sup = TypeSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
         .setName("Sup")
         .setMethodList(Lists.newArrayList(help))
         .setEnclosingScope(scope)
         .build();
-    sup.setClass(true);
+    sup.setIsClass(true);
     sup.getSpannedScope().setEnclosingScope(sup.getEnclosingScope());
     help.getSpannedScope().setEnclosingScope(sup.getSpannedScope());
     add2scope(scope,sup);
     SymTypeExpression supType = SymTypeExpressionFactory.createTypeObject("Sup",scope);
-    TypeSymbol sub = TypeSymbolsMill.typeSymbolBuilder()
+    OOTypeSymbol sub = TypeSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
         .setName("Sub")
         .setSuperTypeList(Lists.newArrayList(supType))
@@ -1073,18 +1072,18 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     help.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
     help.getSpannedScope().add(typeVariable("T"));
     help.getSpannedScope().add(xParam);
-    TypeSymbol sup = TypeSymbolsMill.typeSymbolBuilder()
+    OOTypeSymbol sup = TypeSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
         .setName("Sup")
         .setMethodList(Lists.newArrayList(help))
         .setEnclosingScope(scope)
         .build();
-    sup.setClass(true);
+    sup.setIsClass(true);
     sup.getSpannedScope().setEnclosingScope(sup.getEnclosingScope());
     help.getSpannedScope().setEnclosingScope(sup.getSpannedScope());
     add2scope(scope,sup);
     SymTypeExpression supType = SymTypeExpressionFactory.createTypeObject("Sup",scope);
-    TypeSymbol sub = TypeSymbolsMill.typeSymbolBuilder()
+    OOTypeSymbol sub = TypeSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
         .setName("Sub")
         .setSuperTypeList(Lists.newArrayList(supType))
@@ -1111,17 +1110,17 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
   public void failDeriveSymTypeOfPrimaryGenericInvocationExpression3() throws IOException {
     //<TypeArg>super.field
     FieldSymbol test = field("test",_booleanSymType);
-    TypeSymbol sup = TypeSymbolsMill.typeSymbolBuilder()
+    OOTypeSymbol sup = TypeSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
         .setName("Sup")
         .setFieldList(Lists.newArrayList(test))
         .setEnclosingScope(scope)
         .build();
-    sup.setClass(true);
+    sup.setIsClass(true);
     sup.getSpannedScope().setEnclosingScope(sup.getEnclosingScope());
     add2scope(scope,sup);
     SymTypeExpression supType = SymTypeExpressionFactory.createTypeObject("Sup",scope);
-    TypeSymbol sub = TypeSymbolsMill.typeSymbolBuilder()
+    OOTypeSymbol sub = TypeSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
         .setName("Sub")
         .setSuperTypeList(Lists.newArrayList(supType))
@@ -1153,7 +1152,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
         .build();
     test.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
     test.getSpannedScope().add(t);
-    TypeSymbol a = TypeSymbolsMill.typeSymbolBuilder()
+    OOTypeSymbol a = TypeSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
         .setName("A")
         .setMethodList(Lists.newArrayList(test))
@@ -1185,7 +1184,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
         .build();
     constr.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
     constr.getSpannedScope().add(t);
-    TypeSymbol a = TypeSymbolsMill.typeSymbolBuilder()
+    OOTypeSymbol a = TypeSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
         .setName("A")
         .setMethodList(Lists.newArrayList(constr))
@@ -1223,7 +1222,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
         .build();
     constr.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
     constr.getSpannedScope().add(t);
-    TypeSymbol aSuper = TypeSymbolsMill.typeSymbolBuilder()
+    OOTypeSymbol aSuper = TypeSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
         .setName("ASuper")
         .setMethodList(Lists.newArrayList(constr))
@@ -1234,7 +1233,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     SymTypeExpression asupertype = SymTypeExpressionFactory.createTypeObject("ASuper",scope);
     constr.setReturnType(asupertype);
     add2scope(scope,aSuper);
-    TypeSymbol a = TypeSymbolsMill.typeSymbolBuilder()
+    OOTypeSymbol a = TypeSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
         .setName("A")
         .setMethodList(Lists.newArrayList())
@@ -1271,7 +1270,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
         .build();
     test.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
     test.getSpannedScope().add(t);
-    TypeSymbol a = TypeSymbolsMill.typeSymbolBuilder()
+    OOTypeSymbol a = TypeSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
         .setName("A")
         .setMethodList(Lists.newArrayList(test))
@@ -1307,7 +1306,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     test.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
     test.getSpannedScope().add(t);
     test.setIsStatic(true);
-    TypeSymbol a = TypeSymbolsMill.typeSymbolBuilder()
+    OOTypeSymbol a = TypeSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
         .setName("A")
         .setMethodList(Lists.newArrayList(test))

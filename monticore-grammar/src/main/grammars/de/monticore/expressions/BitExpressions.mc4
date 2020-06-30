@@ -46,17 +46,17 @@ component grammar BitExpressions extends de.monticore.expressions.ExpressionsBas
 
   LeftShiftExpression implements Expression <160>, ShiftExpression =
     left:Expression
-    shiftOp:"<" "<" {noSpace()}? {_aNode.setShiftOp("<<");}
+    {noSpace(2)}? shiftOp:"<" "<" {_aNode.setShiftOp("<<");}
     right:Expression;
 
   RightShiftExpression implements Expression <160>, ShiftExpression =
     left:Expression
-    shiftOp:">" ">" {noSpace()}? {_aNode.setShiftOp(">>");}
+    {noSpace(2)}? shiftOp:">" ">" {_aNode.setShiftOp(">>");}
     right:Expression;
 
   LogicalRightShiftExpression implements Expression <160>, ShiftExpression =
     left:Expression
-    shiftOp:">" ">" {noSpace()}? ">" {noSpace()}? {_aNode.setShiftOp(">>>");}
+    {noSpace(2,3)}? shiftOp:">" ">" ">" {_aNode.setShiftOp(">>>");}
     right:Expression;
 
   /*=================================================================*/

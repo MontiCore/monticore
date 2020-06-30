@@ -377,6 +377,20 @@ public final class TransformationHelper {
         stereotypeName, stereotypeValue);
   }
 
+  public static void addStereoType(ASTCDType type, String stereotypeName,
+                                   String stereotypeValue, boolean multiple) {
+    if (!type.isPresentModifier()) {
+      type.setModifier(CD4AnalysisNodeFactory.createASTModifier());
+    } else if (!multiple) {
+      if (type.getModifier().isPresentStereotype()
+              && type.getModifier().getStereotype().getValueList().stream().anyMatch(v -> v.getName().equals(stereotypeName))) {
+        return;
+      }
+    }
+    addStereotypeValue(type.getModifier(),
+            stereotypeName, stereotypeValue);
+  }
+
   public static void addStereoType(ASTCDType type, String stereotypeName) {
     if (!type.isPresentModifier()) {
       type.setModifier(CD4AnalysisNodeFactory.createASTModifier());

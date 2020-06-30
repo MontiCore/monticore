@@ -29,20 +29,20 @@ public class DeriveSymTypeOfMyOwnExpressionGrammar
     SymTypeExpression result = null;
 
     expr.getExpression().accept(getRealThis());
-    if(typeCheckResult.isPresentLast()){
-      inner = typeCheckResult.getLast();
+    if(typeCheckResult.isPresentCurrentResult()){
+      inner = typeCheckResult.getCurrentResult();
     }else{
       Log.error("0xB0001 the inner result " +
           "cannot be calculated");
     }
 
-   if(inner.isPrimitive()
+   if(inner.isTypeConstant()
        &&((SymTypeConstant)inner).isNumericType()){
       result = inner.deepClone();
     }
 
     if(result!=null){
-      typeCheckResult.setLast(result);
+      typeCheckResult.setCurrentResult(result);
     }else{
       typeCheckResult.reset();
       Log.error("0xB0003 the result" +

@@ -42,7 +42,7 @@ public class OptionalMutatorDecorator extends AbstractCreator<ASTCDAttribute, Li
     ASTMCType parameterType = getDecorationHelper().getReferenceTypeFromOptional(ast.getMCType()).getMCTypeOpt().get().deepClone();
     ASTCDParameter parameter = this.getCDParameterFacade().createParameter(parameterType, ast.getName());
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, name, parameter);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.opt.Set", ast, naiveAttributeName));
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.opt.Set4Opt", ast, naiveAttributeName));
     return method;
   }
 
