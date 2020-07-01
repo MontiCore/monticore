@@ -1599,33 +1599,6 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     c2.accept(flatExpressionScopeSetter);
     assertEquals("int[][][]", tc.typeOf(c2).print());
 
-    //Tests mit ArrayInitByInitializer
-
-      //Test mit int[][]{}
-    Optional<ASTExpression> creator3 = p.parse_StringExpression("new int[][]{}");
-    assertTrue(creator3.isPresent());
-    ASTExpression c3 = creator3.get();
-    c3.accept(flatExpressionScopeSetter);
-    assertEquals("int[][]", tc.typeOf(c3).print());
-
-    //Test mit double[][]{{4.5, 7}}
-    Optional<ASTExpression> creator4 = p.parse_StringExpression("new double[][]{{4.5,7}}");
-    assertTrue(creator4.isPresent());
-    ASTExpression c4 = creator4.get();
-    c4.accept(flatExpressionScopeSetter);
-    assertEquals("double[][]", tc.typeOf(c4).print());
-
-    //Test mit array-Variable, z.B. (double[][]{a,{4.5}}) mit int[] a
-    SymTypeExpression doublearray = SymTypeExpressionFactory.createTypeArray("double", scope, 1, SymTypeExpressionFactory.createTypeConstant("double"));
-    FieldSymbol a = TypeSymbolsMill.fieldSymbolBuilder().setName("a").setType(doublearray).build();
-    scope.add(a);
-    flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
-
-    Optional<ASTExpression> creator5 = p.parse_StringExpression("new double[][]{a,{4.5}}");
-    assertTrue(creator5.isPresent());
-    ASTExpression c5 = creator5.get();
-    c5.accept(flatExpressionScopeSetter);
-    assertEquals("double[][]", tc.typeOf(c5).print());
   }
 
   @Test
@@ -1639,48 +1612,6 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
       tc.typeOf(c1);
     }catch(RuntimeException e){
       assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0315"));
-    }
-  }
-
-  @Test
-  public void failDeriveFromCreatorExpressionArrayCreator2() throws IOException {
-    //Test mit ArrayInitByInitializer, falscher Typ in ArrayInit (z.B. new int[]{3.4})
-    Optional<ASTExpression> creator1 = p.parse_StringExpression("new int[]{3.4}");
-    assertTrue(creator1.isPresent());
-    ASTExpression c1 = creator1.get();
-    c1.accept(flatExpressionScopeSetter);
-    try{
-      tc.typeOf(c1);
-    }catch(RuntimeException e){
-      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0320"));
-    }
-  }
-
-  @Test
-  public void failDeriveFromCreatorExpressionArrayCreator3() throws IOException {
-    //Test mit ArrayInitByInitializer, zu hohe Dimension in ArrayInit (z.B. new boolean[]{{true}})
-    Optional<ASTExpression> creator1 = p.parse_StringExpression("new boolean[]{{true}}");
-    assertTrue(creator1.isPresent());
-    ASTExpression c1 = creator1.get();
-    c1.accept(flatExpressionScopeSetter);
-    try{
-      tc.typeOf(c1);
-    }catch(RuntimeException e){
-      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0318"));
-    }
-  }
-
-  @Test
-  public void failDeriveFromCreatorExpressionArrayCreator4() throws IOException {
-    //Test mit ArrayInitByInitializer, zu niedrige Dimension in ArrayInit
-    Optional<ASTExpression> creator1 = p.parse_StringExpression("new int[][]{3}");
-    assertTrue(creator1.isPresent());
-    ASTExpression c1 = creator1.get();
-    c1.accept(flatExpressionScopeSetter);
-    try{
-      System.out.println(tc.typeOf(c1).print());
-    }catch(RuntimeException e){
-      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0318"));
     }
   }
 

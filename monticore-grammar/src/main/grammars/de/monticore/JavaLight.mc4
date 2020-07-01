@@ -21,6 +21,7 @@ package de.monticore;
 
 component grammar JavaLight extends de.monticore.expressions.CommonExpressions,
                                     de.monticore.expressions.AssignmentExpressions,
+                                    de.monticore.expressions.JavaClassExpressions,
                                     de.monticore.statements.MCCommonStatements,
                                     de.monticore.types.MCBasicTypes,
                                     de.monticore.types.TypeSymbols {
@@ -116,7 +117,12 @@ ElementValueArrayInitializer implements ElementValue
     ;
 
 EnhancedForControl implements ForControl
-    =   FormalParameter ":" Expression
+    = FormalParameter ":" Expression
     ;
+
+ArrayDimensionByInitializer implements ArrayDimensionSpecifier
+    = (dim:"[" "]")+ ArrayInit
+    ;
+
 
 }

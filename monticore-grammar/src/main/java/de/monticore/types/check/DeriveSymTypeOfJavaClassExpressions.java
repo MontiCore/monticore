@@ -8,8 +8,14 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
 import de.monticore.expressions.javaclassexpressions._ast.*;
 import de.monticore.expressions.javaclassexpressions._visitor.JavaClassExpressionsVisitor;
+import de.monticore.statements.mcvardeclarationstatements._ast.ASTArrayInit;
+import de.monticore.statements.mcvardeclarationstatements._ast.ASTSimpleInit;
+import de.monticore.statements.mcvardeclarationstatements._ast.ASTVariableInit;
 import de.monticore.types.basictypesymbols._symboltable.TypeVarSymbol;
-import de.monticore.types.typesymbols._symboltable.*;
+import de.monticore.types.typesymbols._symboltable.FieldSymbol;
+import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
+import de.monticore.types.typesymbols._symboltable.MethodSymbol;
+import de.monticore.types.typesymbols._symboltable.OOTypeSymbol;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
@@ -17,7 +23,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static de.monticore.types.check.TypeCheck.compatible;
-import static de.monticore.types.check.TypeCheck.isSubtypeOf;
 
 /**
  * This Visitor can calculate a SymTypeExpression (type) for the expressions in JavaClassExpressions
@@ -685,16 +690,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
 
       //the definition of the Arrays are based on the assumption that ExtType is not an array
       if(!extTypeResult.isArrayType()) {
-        if (creator.getArrayDimensionSpecifier() instanceof ASTArrayDimensionByInitializer) {
-          ASTArrayDimensionByInitializer arrayInitializer = (ASTArrayDimensionByInitializer) creator.getArrayDimensionSpecifier();
-          int dim = arrayInitializer.getDimList().size();
-          ASTArrayInit arrayInit = arrayInitializer.getArrayInit();
-          //gehe arrayInit durch, schaue ob passend zum Typen --> Klammern zählen usw.
-          if(controlArrayInitCorrectType(arrayInit, extTypeResult, dim, new int[]{0})){
-            wholeResult = SymTypeExpressionFactory.createTypeArray(extTypeResult.getTypeInfo().getName(), extTypeResult.getTypeInfo().getEnclosingScope(), dim, extTypeResult.deepClone());
-          }
-        }
-        else if (creator.getArrayDimensionSpecifier() instanceof ASTArrayDimensionByExpression) {
+         if (creator.getArrayDimensionSpecifier() instanceof ASTArrayDimensionByExpression) {
           ASTArrayDimensionByExpression arrayInitializer = (ASTArrayDimensionByExpression) creator.getArrayDimensionSpecifier();
           int dim = arrayInitializer.getDimList().size() + arrayInitializer.getExpressionList().size();
           //teste dass alle Expressions integer-zahl sind

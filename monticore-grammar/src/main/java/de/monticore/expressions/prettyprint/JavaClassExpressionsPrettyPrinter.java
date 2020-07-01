@@ -10,14 +10,14 @@ import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 
 public class JavaClassExpressionsPrettyPrinter extends CommonExpressionsPrettyPrinter implements JavaClassExpressionsVisitor {
-  
- protected JavaClassExpressionsVisitor realThis;
-  
+
+  protected JavaClassExpressionsVisitor realThis;
+
   protected IndentPrinter printer;
-  
+
   public JavaClassExpressionsPrettyPrinter(IndentPrinter printer) {
     super(printer);
-    this.printer=printer;
+    this.printer = printer;
     realThis = this;
   }
 
@@ -35,9 +35,9 @@ public class JavaClassExpressionsPrettyPrinter extends CommonExpressionsPrettyPr
       getPrinter().print(".");
       if (!node.getExtTypeArgumentList().isEmpty()) {
         getPrinter().print("<");
-        for(int i = 0; i<node.getExtTypeArgumentList().size();i++){
+        for (int i = 0; i < node.getExtTypeArgumentList().size(); i++) {
           node.getExtTypeArgument(i).accept(getRealThis());
-          if(i!=node.getExtTypeArgumentList().size()-1){
+          if (i != node.getExtTypeArgumentList().size() - 1) {
             getPrinter().print(",");
           }
         }
@@ -47,8 +47,7 @@ public class JavaClassExpressionsPrettyPrinter extends CommonExpressionsPrettyPr
       if (node.isPresentArguments()) {
         node.getArguments().accept(getRealThis());
       }
-    }
-    else {
+    } else {
       node.getArguments().accept(getRealThis());
     }
     CommentPrettyPrinter.printPostComments(node, getPrinter());
@@ -62,7 +61,7 @@ public class JavaClassExpressionsPrettyPrinter extends CommonExpressionsPrettyPr
     node.getSuperSuffix().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
-  
+
   @Override
   public void handle(ASTClassExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
@@ -70,7 +69,7 @@ public class JavaClassExpressionsPrettyPrinter extends CommonExpressionsPrettyPr
     getPrinter().print(".class");
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
-  
+
   @Override
   public void handle(ASTTypeCastExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
@@ -80,28 +79,28 @@ public class JavaClassExpressionsPrettyPrinter extends CommonExpressionsPrettyPr
     node.getExpression().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
-  
+
   @Override
   public void handle(ASTGenericInvocationSuffix node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    if(node.isPresentSuperSuffix()) {
+    if (node.isPresentSuperSuffix()) {
       if (node.isSuper()) {
         getPrinter().print("super");
       }
       node.getSuperSuffix().accept(getRealThis());
-    }else if(node.isPresentName()) {
+    } else if (node.isPresentName()) {
       getPrinter().print(node.getName());
       node.getArguments().accept(getRealThis());
-    }else {
+    } else {
       if (node.isThis()) {
         getPrinter().print("this");
       }
       node.getArguments().accept(getRealThis());
       CommentPrettyPrinter.printPostComments(node, getPrinter());
     }
-    
+
   }
-  
+
   @Override
   public void handle(ASTGenericInvocationExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
@@ -115,9 +114,9 @@ public class JavaClassExpressionsPrettyPrinter extends CommonExpressionsPrettyPr
   public void handle(ASTPrimaryGenericInvocationExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     getPrinter().print("<");
-    for(int i = 0;i<node.getExtTypeArgumentList().size();i++){
+    for (int i = 0; i < node.getExtTypeArgumentList().size(); i++) {
       node.getExtTypeArgument(i).accept(getRealThis());
-      if(i!=node.getExtTypeArgumentList().size()-1){
+      if (i != node.getExtTypeArgumentList().size() - 1) {
         getPrinter().print(",");
       }
     }
@@ -164,9 +163,32 @@ public class JavaClassExpressionsPrettyPrinter extends CommonExpressionsPrettyPr
   }
 
   @Override
+  public void handle(ASTArrayCreator a) {
+    CommentPrettyPrinter.printPreComments(a, getPrinter());
+    a.getExtType().accept(getRealThis());
+    a.getArrayDimensionSpecifier().accept(getRealThis());
+    CommentPrettyPrinter.printPostComments(a, getPrinter());
+  }
+
+  @Override
+  public void handle(ASTArrayDimensionByExpression a) {
+    CommentPrettyPrinter.printPreComments(a, getPrinter());
+    for (ASTExpression astExpression : a.getExpressionList()) {
+      getPrinter().print("[");
+      astExpression.accept(getRealThis());
+      getPrinter().print("]");
+    }
+    for (int i = 0; i < a.getDimList().size(); i++) {
+      getPrinter().print("[]");
+    }
+    CommentPrettyPrinter.printPostComments(a, getPrinter());
+  }
+
+
+  @Override
   public void handle(ASTCreatorExpression a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
-    getPrinter().print("new ");
+    getPrinter().print(" new ");
     a.getCreator().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
@@ -174,33 +196,33 @@ public class JavaClassExpressionsPrettyPrinter extends CommonExpressionsPrettyPr
   public IndentPrinter getPrinter() {
     return this.printer;
   }
-  
+
   public String prettyprint(ASTExpression node) {
     getPrinter().clearBuffer();
     node.accept(getRealThis());
     return getPrinter().getContent();
   }
-  
+
   public String prettyprint(ASTGenericInvocationSuffix node) {
     getPrinter().clearBuffer();
     node.accept(getRealThis());
     return getPrinter().getContent();
   }
-  
+
   public String prettyprint(ASTSuperSuffix node) {
     getPrinter().clearBuffer();
     node.accept(getRealThis());
     return getPrinter().getContent();
   }
-  
+
   @Override
   public void setRealThis(JavaClassExpressionsVisitor realThis) {
     this.realThis = realThis;
   }
-  
+
   @Override
   public JavaClassExpressionsVisitor getRealThis() {
     return realThis;
   }
-  
+
 }

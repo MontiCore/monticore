@@ -215,6 +215,18 @@ public class JavaLightPrettyPrinter extends MCCommonStatementsPrettyPrinter impl
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
 
+
+  @Override
+  public void handle(ASTArrayDimensionByInitializer a) {
+    CommentPrettyPrinter.printPreComments(a, getPrinter());
+    for (int i = 0; i < a.getDimList().size(); i++) {
+      getPrinter().print("[]");
+    }
+    getPrinter().print(" ");
+    a.getArrayInit().accept(getRealThis());
+    CommentPrettyPrinter.printPostComments(a, getPrinter());
+  }
+
   @Override
   public void handle(ASTEnhancedForControl a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());

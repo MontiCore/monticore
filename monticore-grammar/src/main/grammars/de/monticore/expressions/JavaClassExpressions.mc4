@@ -89,22 +89,9 @@ component grammar JavaClassExpressions
 
   interface ArrayDimensionSpecifier ;
 
-  ArrayDimensionByInitializer implements ArrayDimensionSpecifier
-      =   (dim:"[" "]")+ ArrayInit
-      ;
-
   ArrayDimensionByExpression implements ArrayDimensionSpecifier
       =   ("[" Expression "]")+ (dim:"[" "]")*
       ;
-
-  interface VariableInit;
-
-  SimpleInit implements VariableInit =
-                      Expression;
-
-  ArrayInit implements VariableInit
-       =   "{" (VariableInit || ",")* (",")? "}"
-       ;
 
   /*=================================================================*/
 
