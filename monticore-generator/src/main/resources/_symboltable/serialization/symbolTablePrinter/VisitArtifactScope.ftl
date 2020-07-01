@@ -4,8 +4,9 @@ ${tc.signature("artifactScopeFullName", "languageName", "attrList" )}
   printer.beginObject();
   printer.member(de.monticore.symboltable.serialization.JsonDeSers.KIND, "${artifactScopeFullName}");
   printer.member(de.monticore.symboltable.serialization.JsonDeSers.NAME, node.getName());
-  printer.member(de.monticore.symboltable.serialization.JsonDeSers.PACKAGE, node.getPackageName());
-
+  if(!node.getPackageName.isEmpty()) {
+    printer.member(de.monticore.symboltable.serialization.JsonDeSers.PACKAGE, node.getPackageName());
+  }
 <#list attrList as attr>
   <#if genHelper.isOptional(attr.getMCType())>
   if (node.isPresent${attr.getName()?cap_first}()) {
@@ -15,6 +16,5 @@ ${tc.signature("artifactScopeFullName", "languageName", "attrList" )}
   serialize${languageName}${attr.getName()?cap_first}(node.${genHelper.getPlainGetter(attr)}());
   </#if>
 </#list>
-
-  serializeLocalSymbols(node);
   serializeAdditionalArtifactScopeAttributes(node);
+  serializeLocalSymbols(node);

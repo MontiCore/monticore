@@ -6,16 +6,12 @@ ${tc.signature("symTabMill", "scopeClass", "scopeBuilder", "scopeRuleAttrList")}
   if (scopeJson.hasBooleanMember(de.monticore.symboltable.serialization.JsonDeSers.IS_SHADOWING_SCOPE)) {
     isShadowingScope = scopeJson.getBooleanMember(de.monticore.symboltable.serialization.JsonDeSers.IS_SHADOWING_SCOPE);
   }
-  boolean exportsSymbols = true;
-  if (scopeJson.hasBooleanMember(de.monticore.symboltable.serialization.JsonDeSers.EXPORTS_SYMBOLS)) {
-    exportsSymbols = scopeJson.getBooleanMember(de.monticore.symboltable.serialization.JsonDeSers.EXPORTS_SYMBOLS);
-  }  
 
   ${scopeClass} scope = ${symTabMill}.${scopeBuilder?uncap_first}().setShadowing(isShadowingScope).build();
   if (scopeJson.hasStringMember(de.monticore.symboltable.serialization.JsonDeSers.NAME)) {
     scope.setName(scopeJson.getStringMember(de.monticore.symboltable.serialization.JsonDeSers.NAME));
   }
-  scope.setExportingSymbols(exportsSymbols);
+  scope.setExportingSymbols(true);
 
 <#list scopeRuleAttrList as attr>
   <#if genHelper.isOptional(attr.getMCType())>
@@ -29,6 +25,6 @@ ${tc.signature("symTabMill", "scopeClass", "scopeBuilder", "scopeRuleAttrList")}
     scope.${genHelper.getPlainSetter(attr)}(deserialize${attr.getName()?cap_first}(scopeJson));
   </#if>
 </#list>
-  addSymbols(scopeJson, scope);
   deserializeAdditionalAttributes(scope,scopeJson);
+  addSymbols(scopeJson, scope);
   return scope;

@@ -69,7 +69,8 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
         .setName(symbolTablePrinterName)
         .setModifier(PUBLIC.build())
         .addInterface(getMCTypeFacade().createQualifiedType(visitorFullName))
-        .addCDAttribute(createJsonPrinterAttribute())
+        .addCDAttribute(getCDAttributeFacade().createAttribute(PROTECTED, JSON_PRINTER, "printer"))
+        .addCDAttribute(getCDAttributeFacade().createAttribute(PROTECTED, getMCTypeFacade().createBooleanType(), "isSpannedScope"))
         .addAllCDAttributes(symbolTablePrinterDelegates)
         .addAllCDConstructors(createConstructors(symbolTablePrinterName,symbolTablePrinterDelegates))
         .addCDMethod(createGetJsonPrinterMethod())
@@ -139,12 +140,6 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
     return constructors;
   }
 
-  protected ASTCDAttribute createJsonPrinterAttribute() {
-    ASTCDAttribute printerAttribute = getCDAttributeFacade().createAttribute(PROTECTED, JSON_PRINTER, "printer");
-    this.replaceTemplate(VALUE, printerAttribute, new StringHookPoint("= new " + JSON_PRINTER + "()"));
-    return printerAttribute;
-  }
-
   protected ASTCDMethod createGetJsonPrinterMethod(){
     ASTMCType type = getMCTypeFacade().createQualifiedType(JSON_PRINTER);
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC,type,"getJsonPrinter");
@@ -187,6 +182,10 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
           + "symbolTablePrinter.VisitScope4STP", scopeName, scopeClass.getName(), scopeClass.getCDAttributeList()));
       visitorMethods.add(visitMethod);
 
+      ASTCDMethod traverseMethod = visitorService.getVisitorMethod(TRAVERSE, getMCTypeFacade().createQualifiedType(scopeName));
+      this.replaceTemplate(EMPTY_BODY, traverseMethod, new StringHookPoint("// do not traverse scopes"));
+      visitorMethods.add(traverseMethod);
+
       ASTCDMethod endVisitMethod = visitorService.getVisitorMethod(END_VISIT, getMCTypeFacade().createQualifiedType(scopeName));
       this.replaceTemplate(EMPTY_BODY, endVisitMethod, new StringHookPoint(PRINTER_END_OBJECT));
       visitorMethods.add(endVisitMethod);
@@ -198,11 +197,14 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
   protected List<ASTCDMethod> createArtifactScopeVisitorMethods(String artifactScopeName, List<ASTCDClass> scopeTypes) {
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
     for(ASTCDClass artScopeClass : scopeTypes) {
-      ASTCDMethod visitMethod = visitorService
-          .getVisitorMethod(VISIT, getMCTypeFacade().createQualifiedType(artifactScopeName));
+      ASTCDMethod visitMethod = visitorService.getVisitorMethod(VISIT, getMCTypeFacade().createQualifiedType(artifactScopeName));
       this.replaceTemplate(EMPTY_BODY, visitMethod, new TemplateHookPoint(TEMPLATE_PATH
           + "symbolTablePrinter.VisitArtifactScope", artifactScopeName, artScopeClass.getName(), artScopeClass.getCDAttributeList()));
       visitorMethods.add(visitMethod);
+
+      ASTCDMethod traverseMethod = visitorService.getVisitorMethod(TRAVERSE, getMCTypeFacade().createQualifiedType(artifactScopeName));
+      this.replaceTemplate(EMPTY_BODY, traverseMethod, new StringHookPoint("// do not traverse scopes"));
+      visitorMethods.add(traverseMethod);
 
       ASTCDMethod endVisitMethod = visitorService
           .getVisitorMethod(END_VISIT, getMCTypeFacade().createQualifiedType(artifactScopeName));
