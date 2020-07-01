@@ -17,10 +17,13 @@ public class JsonDeSers {
 
   public static final String PACKAGE = "package";
 
+  @Deprecated
   public static final String IMPORTS = "imports";
 
+  @Deprecated
   public static final String SUBSCOPES = "subScopes";
 
+  @Deprecated
   public static final String EXPORTS_SYMBOLS = "exportsSymbols";
 
   public static final String IS_SHADOWING_SCOPE = "isShadowingScope";
@@ -29,6 +32,9 @@ public class JsonDeSers {
 
   public static final String KIND = "kind";
 
+  public static final String SPANNED_SCOPE = "spannedScope";
+
+  @Deprecated
   public static final String SCOPE_SPANNING_SYMBOL = "spanningSymbol";
 
   /**
@@ -37,6 +43,7 @@ public class JsonDeSers {
    * @param scope
    * @return
    */
+  @Deprecated
   public static List<ImportStatement> deserializeImports(JsonObject scope) {
     List<ImportStatement> result = new ArrayList<>();
     if (scope.hasMember(IMPORTS)) {
@@ -54,6 +61,7 @@ public class JsonDeSers {
    * @param spanningSymbol
    * @return
    */
+  @Deprecated
   public static void serializeScopeSpanningSymbol(IScopeSpanningSymbol spanningSymbol,
       JsonPrinter printer) {
     if (null != spanningSymbol) {

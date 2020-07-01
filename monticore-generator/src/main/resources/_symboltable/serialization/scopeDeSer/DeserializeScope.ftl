@@ -30,6 +30,5 @@ ${tc.signature("symTabMill", "scopeClass", "scopeBuilder", "scopeRuleAttrList")}
   </#if>
 </#list>
   addSymbols(scopeJson, scope);
-  addAndLinkSubScopes(scopeJson, scope);
   deserializeAdditionalAttributes(scope,scopeJson);
   return scope;

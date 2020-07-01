@@ -232,15 +232,6 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
 
   }
 
-  protected boolean hasSymbolSpannedScope(ASTCDType symbolProd){
-    ASTModifier m = symbolProd.getModifier();
-    if(!symbolTableService.hasSymbolStereotype(m)){
-      return false;
-    }
-    return symbolTableService.hasScopeStereotype(m)
-        || symbolTableService.hasInheritedScopeStereotype(m);
-  }
-
   protected List<ASTCDMethod> createSymbolVisitorMethods(List<ASTCDType> symbolProds) {
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
 
@@ -255,7 +246,7 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
       ASTCDMethod endVisitMethod = visitorService.getVisitorMethod(END_VISIT, getMCTypeFacade().createQualifiedType(symbolFullName));
       this.replaceTemplate(EMPTY_BODY, endVisitMethod, new StringHookPoint(PRINTER_END_OBJECT));
       visitorMethods.add(endVisitMethod);
-      if(hasSymbolSpannedScope(symbolProd)){
+      if(symbolTableService.hasSymbolSpannedScope(symbolProd)){
         ASTCDMethod traverseMethod = visitorService.getVisitorMethod(TRAVERSE, getMCTypeFacade().createQualifiedType(symbolFullName));
         this.replaceTemplate(EMPTY_BODY, traverseMethod, new TemplateHookPoint(TEMPLATE_PATH + "symbolTablePrinter.TraverseSymbol"));
         visitorMethods.add(traverseMethod);
