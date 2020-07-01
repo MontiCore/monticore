@@ -85,7 +85,7 @@ public class BuildersG1G2Test {
                 .build();
     assertTrue(t7 == s.getA());
     assertTrue(t8 == s.getB());
-    assertEquals(5, s.sizeCs());
+    assertEquals(5, s.sizeC());
     assertTrue(t10 == s.getC(4));
     assertEquals(g2._ast.ASTS.class, s.getClass());
   }
