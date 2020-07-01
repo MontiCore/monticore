@@ -4,7 +4,7 @@ ${tc.signature("artifactScopeFullName", "languageName", "attrList" )}
   printer.beginObject();
   printer.member(de.monticore.symboltable.serialization.JsonDeSers.KIND, "${artifactScopeFullName}");
   printer.member(de.monticore.symboltable.serialization.JsonDeSers.NAME, node.getName());
-  if(!node.getPackageName.isEmpty()) {
+  if(!node.getPackageName().isEmpty()) {
     printer.member(de.monticore.symboltable.serialization.JsonDeSers.PACKAGE, node.getPackageName());
   }
 <#list attrList as attr>
