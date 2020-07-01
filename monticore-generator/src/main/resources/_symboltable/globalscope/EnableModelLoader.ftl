@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("grammarName", "grammarPackage")}
   de.monticore.modelloader.ParserBasedAstProvider astProvider =
   new de.monticore.modelloader.ParserBasedAstProvider(new ${grammarPackage}._parser.${grammarName}Parser(), "${grammarName}");
