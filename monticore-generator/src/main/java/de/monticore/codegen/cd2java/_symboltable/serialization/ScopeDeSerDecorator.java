@@ -60,12 +60,6 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
     String simpleName = symbolTableService.getCDName();
 
     List<ASTCDType> symbolDefiningProds = symbolTableService.getSymbolDefiningProds(symbolInput.getCDDefinition());
-//    Map<String, String> symbolMap = new HashMap<>();
-//    for (ASTCDType symbolDefiningProd : symbolDefiningProds) {
-//      String symbolFullName = symbolTableService.getSymbolFullName(symbolDefiningProd);
-//      String symbolSimpleName = symbolTableService.getSymbolSimpleName(symbolDefiningProd);
-//      symbolMap.put(symbolSimpleName, symbolFullName);
-//    }
     ASTCDDefinition symbolDefinition = symbolInput.getCDDefinition().deepClone();
 
     // list of all scope rule attributes
