@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("symbolBuilderFullName","symbolBuilderSimpleName", "symTabMill", "symbolName", "symbolRuleAttribute")}
+${tc.signature("symbolBuilderFullName","symbolBuilderSimpleName", "symTabMill", "symbolFullName", "symbolSimpleName","symbolRuleAttribute")}
 <#assign genHelper = glex.getGlobalVar("astHelper")>
   de.monticore.symboltable.serialization.JsonDeSers.checkCorrectDeSerForKind(getSerializedKind(), symbolJson);
   ${symbolBuilderFullName} builder = ${symTabMill}.${symbolBuilderSimpleName?uncap_first}();
@@ -15,6 +15,6 @@ ${tc.signature("symbolBuilderFullName","symbolBuilderSimpleName", "symTabMill", 
   builder.${genHelper.getPlainSetter(attr)}(deserialize${attr.getName()?cap_first}(symbolJson, enclosingScope));
   </#if>
 </#list>
-  ${symbolName} symbol = builder.build();
-  deserializeAdditionalAttributes(symbol, symbolJson,enclosingScope);
+  ${symbolFullName} symbol = builder.build();
+  deserializeAdditional${symbolSimpleName}Attributes(symbol, symbolJson, enclosingScope);
   return symbol;

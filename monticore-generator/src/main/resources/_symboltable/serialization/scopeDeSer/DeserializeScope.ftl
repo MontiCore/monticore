@@ -25,6 +25,6 @@ ${tc.signature("symTabMill", "scopeClass", "scopeBuilder", "scopeRuleAttrList")}
     scope.${genHelper.getPlainSetter(attr)}(deserialize${attr.getName()?cap_first}(scopeJson));
   </#if>
 </#list>
-  deserializeAdditionalAttributes(scope,scopeJson);
+  deserializeAdditionalScopeAttributes(scope,scopeJson);
   addSymbols(scopeJson, scope);
   return scope;

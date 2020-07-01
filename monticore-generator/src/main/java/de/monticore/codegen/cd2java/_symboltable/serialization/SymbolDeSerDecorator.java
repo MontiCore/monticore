@@ -11,6 +11,7 @@ import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
+import de.monticore.utils.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.monticore.types.typesymbols._symboltable.BuiltInJavaTypeSymbolResolvingDelegate;
 
@@ -120,7 +121,7 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
     this.replaceTemplate(EMPTY_BODY, deserializeMethod,
         new TemplateHookPoint(TEMPLATE_PATH + "DeserializeSymbol4SymbolDeSer",
             symbolBuilderFullName, symbolBuilderSimpleName, symTabMill, symbolFullName,
-            symbolRuleAttributes));
+            symbolSimpleName, symbolRuleAttributes));
     return deserializeMethod;
   }
 
@@ -149,7 +150,8 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
       ASTCDParameter jsonParam) {
     ASTCDParameter symbolParam = getCDParameterFacade()
         .createParameter(getMCTypeFacade().createQualifiedType(symbolFullName), SYMBOL_VAR);
+    String methodName = "deserializeAdditional"+ Names.getSimpleName(symbolFullName)+"Attributes";
     return getCDMethodFacade()
-        .createMethod(PROTECTED, "deserializeAdditionalAttributes", symbolParam, jsonParam, enclosingScopeParameter);
+        .createMethod(PROTECTED, methodName, symbolParam, jsonParam, enclosingScopeParameter);
   }
 }
