@@ -1367,13 +1367,11 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     //Bsp3
     FieldSymbol field1 = CombineExpressionsWithLiteralsMill.fieldSymbolBuilder()
         .setName("a")
-        .setIsParameter(true)
         .setType(_intSymType)
         .build();
 
     FieldSymbol field2 = CombineExpressionsWithLiteralsMill.fieldSymbolBuilder()
         .setName("b")
-        .setIsParameter(true)
         .setType(_doubleSymType)
         .build();
 
@@ -1489,13 +1487,11 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     bsp3constr.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
     FieldSymbol field1 = CombineExpressionsWithLiteralsMill.fieldSymbolBuilder()
         .setName("a")
-        .setIsParameter(true)
         .setType(_intSymType)
         .build();
 
     FieldSymbol field2 = CombineExpressionsWithLiteralsMill.fieldSymbolBuilder()
         .setName("b")
-        .setIsParameter(true)
         .setType(_doubleSymType)
         .build();
 
@@ -1535,13 +1531,11 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     //Bsp4
     FieldSymbol field1 = CombineExpressionsWithLiteralsMill.fieldSymbolBuilder()
         .setName("a")
-        .setIsParameter(true)
         .setType(_intSymType)
         .build();
 
     FieldSymbol field2 = CombineExpressionsWithLiteralsMill.fieldSymbolBuilder()
         .setName("b")
-        .setIsParameter(true)
         .setType(_doubleSymType)
         .build();
 
