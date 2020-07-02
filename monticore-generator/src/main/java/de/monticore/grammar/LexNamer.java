@@ -68,7 +68,7 @@ public class LexNamer {
   }
   
   /**
-   * Returns a good name for the lex symbol, or null it is not posssible
+   * Returns a good name for the lex symbol or ""
    */
   public static String createGoodName(String x) {
 
