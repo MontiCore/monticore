@@ -1326,4 +1326,293 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     assertEquals("char",tc.typeOf(g1).print());
   }
 
+  @Test
+  public void testDeriveFromCreatorExpressionAnonymousClass() throws IOException {
+    /*Test cases:
+    1) Default-Constructor, Creator-Expression without Arguments
+    2) Constructor without Arguments, Creator-Expression without Arguments
+    3) One Constructor without Arguments and one with Arguments, Creator-Expression with exactly fitting Arguments
+    4) One Constructor without Arguments and one with Arguments, Creator-Expression with subtypes of arguments
+     */
+
+    //Bsp1
+    OOTypeSymbol bsp1 = CombineExpressionsWithLiteralsMill.oOTypeSymbolBuilder()
+        .setName("Bsp1")
+        .setEnclosingScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .build();
+
+    add2scope(scope, bsp1);
+
+    //Bsp2
+    MethodSymbol bsp2constr = CombineExpressionsWithLiteralsMill.methodSymbolBuilder()
+        .setName("Bsp2")
+        .setReturnType(_intSymType)
+        .build();
+
+    bsp2constr.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
+
+    OOTypeSymbol bsp2 = CombineExpressionsWithLiteralsMill.oOTypeSymbolBuilder()
+        .setName("Bsp2")
+        .setEnclosingScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setMethodList(Lists.newArrayList(bsp2constr))
+        .build();
+
+    SymTypeExpression bsp2Sym = SymTypeExpressionFactory.createTypeObject("Bsp2",scope);
+    bsp2constr.setReturnType(bsp2Sym);
+
+    bsp2constr.setEnclosingScope(bsp2.getSpannedScope());
+    bsp2constr.getSpannedScope().setEnclosingScope(bsp2constr.getEnclosingScope());
+    add2scope(bsp2.getSpannedScope(), bsp2constr);
+    add2scope(scope, bsp2);
+
+    //Bsp3
+    FieldSymbol field1 = CombineExpressionsWithLiteralsMill.fieldSymbolBuilder()
+        .setName("a")
+        .setIsParameter(true)
+        .setType(_intSymType)
+        .build();
+
+    FieldSymbol field2 = CombineExpressionsWithLiteralsMill.fieldSymbolBuilder()
+        .setName("b")
+        .setIsParameter(true)
+        .setType(_doubleSymType)
+        .build();
+
+    //first constructor with arguments
+    MethodSymbol bsp3constr = CombineExpressionsWithLiteralsMill.methodSymbolBuilder()
+        .setName("Bsp3")
+        .setReturnType(_intSymType)
+        .build();
+
+    bsp3constr.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
+    add2scope(bsp3constr.getSpannedScope(),field1);
+    add2scope(bsp3constr.getSpannedScope(),field2);
+
+    //second constructor without arguments
+    MethodSymbol bsp3constr2 = CombineExpressionsWithLiteralsMill.methodSymbolBuilder()
+        .setName("Bsp3")
+        .setReturnType(_intSymType)
+        .build();
+    bsp3constr2.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
+
+    OOTypeSymbol bsp3 = CombineExpressionsWithLiteralsMill.oOTypeSymbolBuilder()
+        .setName("Bsp3")
+        .setEnclosingScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setMethodList(Lists.newArrayList(bsp3constr, bsp3constr2))
+        .build();
+
+    SymTypeExpression bsp3Sym = SymTypeExpressionFactory.createTypeObject("Bsp3", scope);
+    bsp3constr.setReturnType(bsp3Sym);
+    bsp3constr2.setReturnType(bsp3Sym);
+
+    bsp3constr.setEnclosingScope(bsp3.getSpannedScope());
+    bsp3constr.getSpannedScope().setEnclosingScope(bsp3constr.getEnclosingScope());
+    add2scope(bsp3.getSpannedScope(), bsp3constr);
+    add2scope(bsp3.getSpannedScope(), bsp3constr2);
+    add2scope(scope, bsp3);
+
+    flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
+
+    Optional<ASTExpression> new1 = p.parse_StringExpression("new Bsp1()");
+    Optional<ASTExpression> new2 = p.parse_StringExpression("new Bsp2()");
+    Optional<ASTExpression> new3 = p.parse_StringExpression("new Bsp3(3,5.6)");
+    Optional<ASTExpression> new4 = p.parse_StringExpression("new Bsp3('a',4)");
+
+    assertTrue(new1.isPresent());
+    assertTrue(new2.isPresent());
+    assertTrue(new3.isPresent());
+    assertTrue(new4.isPresent());
+
+    ASTExpression n1 = new1.get();
+    ASTExpression n2 = new2.get();
+    ASTExpression n3 = new3.get();
+    ASTExpression n4 = new4.get();
+
+    n1.accept(flatExpressionScopeSetter);
+    n2.accept(flatExpressionScopeSetter);
+    n3.accept(flatExpressionScopeSetter);
+    n4.accept(flatExpressionScopeSetter);
+
+    assertEquals("Bsp1",tc.typeOf(n1).print());
+    assertEquals("Bsp2",tc.typeOf(n2).print());
+    assertEquals("Bsp3",tc.typeOf(n3).print());
+    assertEquals("Bsp3",tc.typeOf(n4).print());
+  }
+
+  @Test
+  public void failDeriveFromCreatorExpressionAnonymousClass1() throws IOException {
+    //1) Error when using primitive types
+    Optional<ASTExpression> new1 = p.parse_StringExpression("new int()");
+    assertTrue(new1.isPresent());
+    ASTExpression n1 = new1.get();
+    n1.accept(flatExpressionScopeSetter);
+    try{
+      tc.typeOf(n1);
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0312"));
+    }
+  }
+
+  @Test
+  public void failDeriveFromCreatorExpressionAnonymousClass2() throws IOException {
+    //2) No constructor, Creator-Expression with Arguments
+    //Bsp2
+    OOTypeSymbol bsp2 = CombineExpressionsWithLiteralsMill.oOTypeSymbolBuilder()
+        .setName("Bsp2")
+        .setEnclosingScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .build();
+
+    add2scope(scope, bsp2);
+    flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
+
+    Optional<ASTExpression> new2 = p.parse_StringExpression("new Bsp2(3,4)");
+    assertTrue(new2.isPresent());
+    ASTExpression n2 = new2.get();
+    n2.accept(flatExpressionScopeSetter);
+    try{
+      tc.typeOf(n2);
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0312"));
+    }
+  }
+
+  @Test
+  public void failDeriveFromCreatorExpressionAnonymousClass3() throws IOException {
+    //3) Creator-Expression with wrong number of Arguments -> 0 Arguments, so that it also checks that the Default-constructor is not invoked in this case
+    //Bsp3
+    MethodSymbol bsp3constr = CombineExpressionsWithLiteralsMill.methodSymbolBuilder()
+        .setName("Bsp3")
+        .setReturnType(_intSymType)
+        .build();
+
+    bsp3constr.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
+    FieldSymbol field1 = CombineExpressionsWithLiteralsMill.fieldSymbolBuilder()
+        .setName("a")
+        .setIsParameter(true)
+        .setType(_intSymType)
+        .build();
+
+    FieldSymbol field2 = CombineExpressionsWithLiteralsMill.fieldSymbolBuilder()
+        .setName("b")
+        .setIsParameter(true)
+        .setType(_doubleSymType)
+        .build();
+
+    add2scope(bsp3constr.getSpannedScope(), field1);
+    add2scope(bsp3constr.getSpannedScope(), field2);
+
+    OOTypeSymbol bsp3 = CombineExpressionsWithLiteralsMill.oOTypeSymbolBuilder()
+        .setName("Bsp3")
+        .setEnclosingScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setMethodList(Lists.newArrayList(bsp3constr))
+        .build();
+
+    SymTypeExpression bsp3Sym = SymTypeExpressionFactory.createTypeObject("Bsp3", scope);
+    bsp3constr.setReturnType(bsp3Sym);
+
+    bsp3constr.setEnclosingScope(bsp3.getSpannedScope());
+    bsp3constr.getSpannedScope().setEnclosingScope(bsp3constr.getEnclosingScope());
+    add2scope(bsp3.getSpannedScope(), bsp3constr);
+    add2scope(scope, bsp3);
+    flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
+
+    Optional<ASTExpression> new3 = p.parse_StringExpression("new Bsp3()");
+    assertTrue(new3.isPresent());
+    ASTExpression n3 = new3.get();
+    n3.accept(flatExpressionScopeSetter);
+    try{
+      tc.typeOf(n3);
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0312"));
+    }
+  }
+
+  @Test
+  public void failDeriveFromCreatorExpressionAnonymousClass4() throws IOException {
+    //4) Creator-Expression with correct number of Arguments, but not compatible arguments
+    //Bsp4
+    FieldSymbol field1 = CombineExpressionsWithLiteralsMill.fieldSymbolBuilder()
+        .setName("a")
+        .setIsParameter(true)
+        .setType(_intSymType)
+        .build();
+
+    FieldSymbol field2 = CombineExpressionsWithLiteralsMill.fieldSymbolBuilder()
+        .setName("b")
+        .setIsParameter(true)
+        .setType(_doubleSymType)
+        .build();
+
+    MethodSymbol bsp4constr = CombineExpressionsWithLiteralsMill.methodSymbolBuilder()
+        .setName("Bsp4")
+        .setReturnType(_intSymType)
+        .build();
+
+    OOTypeSymbol bsp4 = CombineExpressionsWithLiteralsMill.oOTypeSymbolBuilder()
+        .setName("Bsp4")
+        .setEnclosingScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setMethodList(Lists.newArrayList(bsp4constr))
+        .build();
+
+    bsp4constr.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
+    add2scope(bsp4constr.getSpannedScope(),field1);
+    add2scope(bsp4constr.getSpannedScope(),field2);
+    SymTypeExpression bsp4Sym = SymTypeExpressionFactory.createTypeObject("Bsp4",scope);
+    bsp4constr.setReturnType(bsp4Sym);
+    add2scope(bsp4.getSpannedScope(), bsp4constr);
+    add2scope(scope,bsp4);
+    flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
+
+    Optional<ASTExpression> new4 = p.parse_StringExpression("new Bsp4(true,4)");
+    assertTrue(new4.isPresent());
+    ASTExpression n4 = new4.get();
+    n4.accept(flatExpressionScopeSetter);
+
+    try{
+      tc.typeOf(n4);
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0312"));
+    }
+  }
+
+  @Test
+  public void testDeriveSymTypeOfCreatorExpressionArrayCreator() throws IOException {
+    //Tests mit ArrayInitByExpression
+
+      //Test mit double[3][4] --> double[][]
+    Optional<ASTExpression> creator1 = p.parse_StringExpression("new double[3][4]");
+    assertTrue(creator1.isPresent());
+    ASTExpression c1 = creator1.get();
+    c1.accept(flatExpressionScopeSetter);
+    assertEquals("double[][]", tc.typeOf(c1).print());
+
+      //Test mit int[3][][] --> int[3][][]
+    Optional<ASTExpression> creator2 = p.parse_StringExpression("new int[3][][]");
+    assertTrue(creator2.isPresent());
+    ASTExpression c2 = creator2.get();
+    c2.accept(flatExpressionScopeSetter);
+    assertEquals("int[][][]", tc.typeOf(c2).print());
+
+  }
+
+  @Test
+  public void failDeriveFromCreatorExpressionArrayCreator1() throws IOException {
+    //Test mit ArrayInitByExpression, keine ganzzahl in Array (z.B. new String[3.4])
+    Optional<ASTExpression> creator1 = p.parse_StringExpression("new String[3.4]");
+    assertTrue(creator1.isPresent());
+    ASTExpression c1 = creator1.get();
+    c1.accept(flatExpressionScopeSetter);
+    try{
+      tc.typeOf(c1);
+    }catch(RuntimeException e){
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0315"));
+    }
+  }
+
 }

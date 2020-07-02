@@ -7,7 +7,7 @@ classdiagram Data {
         protected int i;
         protected String s;
         protected Optional<String> opt;
-        protected List<String> list;
+        <<derived_attribute_name>> protected List<String> list;
         protected de.monticore.codegen.data.ASTB b;
     }
 
