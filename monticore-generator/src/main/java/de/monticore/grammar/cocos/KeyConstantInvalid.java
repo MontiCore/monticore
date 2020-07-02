@@ -7,7 +7,7 @@ import de.se_rwth.commons.logging.Log;
 
 public class KeyConstantInvalid implements GrammarASTKeyConstantCoCo {
 
-  public static final String ERROR_CODE = "0xA4063";
+  public static final String ERROR_CODE = "0xA4091";
 
   public static final String ERROR_MSG_FORMAT =
           " The string '%s' must be compatible to 'Name'";

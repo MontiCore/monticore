@@ -9,7 +9,7 @@ import de.se_rwth.commons.logging.Log;
 
 public class SplitRuleInvalid implements GrammarASTSplitRuleCoCo {
 
-  public static final String ERROR_CODE = "0xA4062";
+  public static final String ERROR_CODE = "0xA4079";
 
   public static final String ERROR_MSG_FORMAT =
           " The string '%s' may not contain any letters or digits and must be longer than 2.";

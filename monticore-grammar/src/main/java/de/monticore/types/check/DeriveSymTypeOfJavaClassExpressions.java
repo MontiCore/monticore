@@ -636,7 +636,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
       if(typeCheckResult.isPresentCurrentResult()){
         if(!typeCheckResult.isType()){
           typeCheckResult.reset();
-          logError("0xA0309",expr.getCreator().get_SourcePositionStart());
+          logError("0xA0322",expr.getCreator().get_SourcePositionStart());
         }
       }else{
         typeCheckResult.reset();
