@@ -24,7 +24,7 @@ import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILD_M
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.ENCLOSING_SCOPE_VAR;
 
 
-public class ArtifactScopeBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
+public class ArtifactScopeClassBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
 
   protected BuilderDecorator builderDecorator;
 
@@ -34,7 +34,7 @@ public class ArtifactScopeBuilderDecorator extends AbstractCreator<ASTCDClass, A
 
   protected static final String TEMPLATE_PATH = "_symboltable.artifactscope.";
 
-  public ArtifactScopeBuilderDecorator(final GlobalExtensionManagement glex,
+  public ArtifactScopeClassBuilderDecorator(final GlobalExtensionManagement glex,
                                        final SymbolTableService symbolTableService,
                                        final BuilderDecorator builderDecorator,
                                        final AccessorDecorator accessorDecorator) {

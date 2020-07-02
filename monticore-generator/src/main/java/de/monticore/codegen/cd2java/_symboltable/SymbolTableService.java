@@ -133,6 +133,30 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   }
 
   /**
+   * artifact scope interface names e.g. IAutomataArtifactScope
+   */
+
+  public String getArtifactScopeInterfaceSimpleName(CDDefinitionSymbol cdSymbol) {
+    return INTERFACE_PREFIX + cdSymbol.getName() + ARTIFACT_PREFIX + SCOPE_SUFFIX;
+  }
+
+  public String getArtifactScopeInterfaceSimpleName() {
+    return getArtifactScopeInterfaceSimpleName(getCDSymbol());
+  }
+
+  public String getArtifactScopeInterfaceFullName(CDDefinitionSymbol cdSymbol) {
+    return getPackage(cdSymbol) + "." + getArtifactScopeInterfaceSimpleName(cdSymbol);
+  }
+
+  public String getArtifactScopeInterfaceFullName() {
+    return getArtifactScopeInterfaceFullName(getCDSymbol());
+  }
+
+  public ASTMCQualifiedType getArtifactScopeInterfaceType() {
+    return getMCTypeFacade().createQualifiedType(getArtifactScopeInterfaceFullName());
+  }
+
+  /**
    * global scope class names e.g. AutomataGlobalScope
    */
 
@@ -845,4 +869,5 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
       return "null";
     }
   }
+
 }

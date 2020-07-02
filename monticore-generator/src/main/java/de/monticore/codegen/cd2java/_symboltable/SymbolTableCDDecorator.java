@@ -54,9 +54,9 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
 
   protected final GlobalScopeClassBuilderDecorator globalScopeClassBuilderDecorator;
 
-  protected final ArtifactScopeDecorator artifactScopeDecorator;
+  protected final ArtifactScopeClassDecorator artifactScopeDecorator;
 
-  protected final ArtifactScopeBuilderDecorator artifactScopeBuilderDecorator;
+  protected final ArtifactScopeClassBuilderDecorator artifactScopeBuilderDecorator;
 
   protected final CommonSymbolInterfaceDecorator commonSymbolInterfaceDecorator;
 
@@ -87,33 +87,34 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
   protected final SymbolTablePrinterDecorator symbolTablePrinterDecorator;
 
   public SymbolTableCDDecorator(final GlobalExtensionManagement glex,
-                                final IterablePath handCodedPath,
-                                final SymbolTableService symbolTableService,
-                                final SymbolDecorator symbolDecorator,
-                                final SymbolBuilderDecorator symbolBuilderDecorator,
-                                final SymbolLoaderDecorator symbolReferenceDecorator,
-                                final SymbolLoaderBuilderDecorator symbolReferenceBuilderDecorator,
-                                final ScopeInterfaceDecorator scopeInterfaceDecorator,
-                                final ScopeClassDecorator scopeClassDecorator,
-                                final ScopeClassBuilderDecorator scopeClassBuilderDecorator,
-                                final GlobalScopeInterfaceDecorator globalScopeInterfaceDecorator,
-                                final GlobalScopeClassDecorator globalScopeClassDecorator,
-                                final GlobalScopeClassBuilderDecorator globalScopeClassBuilderDecorator,
-                                final ArtifactScopeDecorator artifactScopeDecorator,
-                                final ArtifactScopeBuilderDecorator artifactScopeBuilderDecorator,
-                                final CommonSymbolInterfaceDecorator commonSymbolInterfaceDecorator,
-                                final ModelLoaderDecorator modelLoaderDecorator,
-                                final ModelLoaderBuilderDecorator modelLoaderBuilderDecorator,
-                                final SymbolResolvingDelegateInterfaceDecorator symbolResolvingDelegateInterfaceDecorator,
-                                final SymbolTableCreatorDecorator symbolTableCreatorDecorator,
-                                final SymbolTableCreatorBuilderDecorator symbolTableCreatorBuilderDecorator,
-                                final SymbolTableCreatorDelegatorDecorator symbolTableCreatorDelegatorDecorator,
-                                final SymbolTableCreatorForSuperTypes symbolTableCreatorForSuperTypes,
-                                final SymbolTableCreatorDelegatorBuilderDecorator symbolTableCreatorDelegatorBuilderDecorator,
-                                final SymbolTableCreatorForSuperTypesBuilder symbolTableCreatorForSuperTypesBuilder,
-                                final SymbolDeSerDecorator symbolDeSerDecorator,
-                                final ScopeDeSerDecorator scopeDeSerDecorator,
-                                final SymbolTablePrinterDecorator symbolTablePrinterDecorator) {
+      final IterablePath handCodedPath,
+      final SymbolTableService symbolTableService,
+      final SymbolDecorator symbolDecorator,
+      final SymbolBuilderDecorator symbolBuilderDecorator,
+      final SymbolLoaderDecorator symbolReferenceDecorator,
+      final SymbolLoaderBuilderDecorator symbolReferenceBuilderDecorator,
+      final ScopeInterfaceDecorator scopeInterfaceDecorator,
+      final ScopeClassDecorator scopeClassDecorator,
+      final ScopeClassBuilderDecorator scopeClassBuilderDecorator,
+      final GlobalScopeInterfaceDecorator globalScopeInterfaceDecorator,
+      final GlobalScopeClassDecorator globalScopeClassDecorator,
+      final GlobalScopeClassBuilderDecorator globalScopeClassBuilderDecorator,
+      ArtifactScopeInterfaceDecorator artifactScopeInterfaceDecorator,
+      final ArtifactScopeClassDecorator artifactScopeDecorator,
+      final ArtifactScopeClassBuilderDecorator artifactScopeBuilderDecorator,
+      final CommonSymbolInterfaceDecorator commonSymbolInterfaceDecorator,
+      final ModelLoaderDecorator modelLoaderDecorator,
+      final ModelLoaderBuilderDecorator modelLoaderBuilderDecorator,
+      final SymbolResolvingDelegateInterfaceDecorator symbolResolvingDelegateInterfaceDecorator,
+      final SymbolTableCreatorDecorator symbolTableCreatorDecorator,
+      final SymbolTableCreatorBuilderDecorator symbolTableCreatorBuilderDecorator,
+      final SymbolTableCreatorDelegatorDecorator symbolTableCreatorDelegatorDecorator,
+      final SymbolTableCreatorForSuperTypes symbolTableCreatorForSuperTypes,
+      final SymbolTableCreatorDelegatorBuilderDecorator symbolTableCreatorDelegatorBuilderDecorator,
+      final SymbolTableCreatorForSuperTypesBuilder symbolTableCreatorForSuperTypesBuilder,
+      final SymbolDeSerDecorator symbolDeSerDecorator,
+      final ScopeDeSerDecorator scopeDeSerDecorator,
+      final SymbolTablePrinterDecorator symbolTablePrinterDecorator) {
     super(glex);
     this.symbolDecorator = symbolDecorator;
     this.symbolBuilderDecorator = symbolBuilderDecorator;
