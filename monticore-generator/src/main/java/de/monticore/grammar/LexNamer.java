@@ -76,7 +76,7 @@ public class LexNamer {
       return x.toUpperCase();
     }
 
-    if (x.matches("[^a-zA-Z_0-9]")) {
+    if (x.matches("[^a-zA-Z0-9]+")) {
       StringBuilder ret = new StringBuilder();
       for (int i = 0; i < x.length(); i++) {
 
