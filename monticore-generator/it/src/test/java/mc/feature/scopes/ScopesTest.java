@@ -6,7 +6,6 @@ import de.se_rwth.commons.logging.Log;
 import mc.feature.scopes.supautomaton._ast.ASTSup;
 import mc.feature.scopes.supautomaton._parser.SupAutomatonParser;
 import mc.feature.scopes.supautomaton._symboltable.SupAutomatonGlobalScope;
-import mc.feature.scopes.supautomaton._symboltable.SupAutomatonLanguage;
 import mc.feature.scopes.supautomaton._symboltable.SupAutomatonScope;
 import mc.feature.scopes.supautomaton._symboltable.SupAutomatonSymbolTableCreatorDelegator;
 import mc.feature.scopes.superautomaton._symboltable.AutomatonSymbol;
@@ -38,8 +37,7 @@ public class ScopesTest {
     assertTrue(astSup.isPresent());
 
     ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/mc/feature/scopes"));
-    SupAutomatonLanguage lang = new SupAutomatonLanguage();
-    SupAutomatonGlobalScope globalScope = new SupAutomatonGlobalScope(modelPath, lang);
+    SupAutomatonGlobalScope globalScope = new SupAutomatonGlobalScope(modelPath, "aut");
     SupAutomatonSymbolTableCreatorDelegator symbolTableCreator = new SupAutomatonSymbolTableCreatorDelegator(globalScope);
 
     this.astSup = astSup.get();

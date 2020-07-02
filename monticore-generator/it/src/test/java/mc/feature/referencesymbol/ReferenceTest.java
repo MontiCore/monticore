@@ -35,9 +35,11 @@ public class ReferenceTest {
     assertTrue(astRand.isPresent());
     //create symboltable
     ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/mc/feature/referencesymbol"));
-    ReferenceLanguage lang = new ReferenceLanguage();
-    ReferenceGlobalScope globalScope = new ReferenceGlobalScope(modelPath, lang);
-    ReferenceSymbolTableCreatorDelegator symbolTableCreator = lang.getSymbolTableCreator(globalScope);
+    ReferenceGlobalScope globalScope = new ReferenceGlobalScope(modelPath, "ref");
+    ReferenceSymbolTableCreatorDelegator symbolTableCreator = ReferenceMill
+        .referenceSymbolTableCreatorDelegatorBuilder()
+        .setGlobalScope(globalScope)
+        .build();
     ReferenceArtifactScope artifactScope = symbolTableCreator.createFromAST(astRand.get());
 
     Optional<IReferenceScope> scopeOpt = artifactScope.getSubScopes().stream().findAny();

@@ -5,7 +5,6 @@ package mc.embedding;
 import de.monticore.io.paths.ModelPath;
 import mc.GeneratorIntegrationsTest;
 import mc.embedding.host._symboltable.HostGlobalScope;
-import mc.embedding.host._symboltable.HostLanguage;
 import mc.embedding.host._symboltable.HostSymbol;
 import org.junit.Test;
 
@@ -18,11 +17,9 @@ public class HostTest extends GeneratorIntegrationsTest {
 
   @Test
   public void test() {
-    final HostLanguage language = new HostLanguage();
-
     final ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/mc/embedding"));
 
-    final HostGlobalScope scope = new HostGlobalScope(modelPath, language);
+    final HostGlobalScope scope = new HostGlobalScope(modelPath, "host");
 
     HostSymbol hostSymbol = scope.resolveHost("H").orElse(null);
     assertNotNull(hostSymbol);

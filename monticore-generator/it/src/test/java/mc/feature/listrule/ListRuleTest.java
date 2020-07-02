@@ -70,7 +70,7 @@ public class ListRuleTest extends GeneratorIntegrationsTest {
   @Test
   public void testParent6() throws IOException {
     StringReader s = new StringReader(
-        "a, P1");
+        "a, P");
     ListRuleParser p = new ListRuleParser();
     p.parseParent6(s);
 

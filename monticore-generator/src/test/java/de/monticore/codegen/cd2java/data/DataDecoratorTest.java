@@ -85,7 +85,7 @@ public class DataDecoratorTest extends DecoratorTestCase {
   @Test
   public void testListAttribute() {
     ASTCDAttribute attribute = getAttributeBy("list", dataClass);
-    assertDeepEquals(PROTECTED, attribute.getModifier());
+    assertTrue(attribute.getModifier().isProtected());
     assertListOf(String.class, attribute.getMCType());
   }
 

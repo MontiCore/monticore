@@ -9,7 +9,9 @@ import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
@@ -33,13 +35,13 @@ public class GlobalScopeClassBuilderDecorator extends AbstractCreator<ASTCDClass
 
   @Override
   public ASTCDClass decorate(ASTCDClass scopeClass) {
-    ASTCDClass decoratedScopClass = scopeClass.deepClone();
+    ASTCDClass decoratedScopeClass = scopeClass.deepClone();
     String scopeBuilderName = scopeClass.getName() + BUILDER_SUFFIX;
 
-    decoratedScopClass.getCDMethodList().clear();
+    decoratedScopeClass.getCDMethodList().clear();
 
     builderDecorator.setPrintBuildMethodTemplate(false);
-    ASTCDClass scopeBuilder = builderDecorator.decorate(decoratedScopClass);
+    ASTCDClass scopeBuilder = builderDecorator.decorate(decoratedScopeClass);
     builderDecorator.setPrintBuildMethodTemplate(true);
 
     scopeBuilder.setName(scopeBuilderName);
@@ -49,8 +51,20 @@ public class GlobalScopeClassBuilderDecorator extends AbstractCreator<ASTCDClass
         .stream()
         .filter(m -> BUILD_METHOD.equals(m.getName()))
         .findFirst();
+
+    List<String> resolvingDelegates = scopeBuilder.getCDAttributeList()
+        .stream()
+        .map(a->a.getName())
+        .filter(n->n.startsWith("adapted"))
+        .collect(Collectors.toList());
+
+    String generatedErrorCode = symbolTableService.getGeneratedErrorCode("buildGlobalScope");
+    String generatedErrorCode2 = symbolTableService.getGeneratedErrorCode("buildGlobalScope2");
+
     buildMethod.ifPresent(b -> this.replaceTemplate(EMPTY_BODY, b,
-        new TemplateHookPoint(TEMPLATE_PATH + "BuildGlobalScope", scopeClass.getName(), symbolTableService.getCDName())));
+        new TemplateHookPoint(TEMPLATE_PATH + "BuildGlobalScope",
+            scopeClass.getName(), symbolTableService.getCDName(), resolvingDelegates,
+        generatedErrorCode, generatedErrorCode2)));
 
     return scopeBuilder;
   }

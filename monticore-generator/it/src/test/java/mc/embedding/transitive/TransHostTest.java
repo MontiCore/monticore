@@ -5,7 +5,6 @@ package mc.embedding.transitive;
 import de.monticore.io.paths.ModelPath;
 import mc.GeneratorIntegrationsTest;
 import mc.embedding.transitive.transhost._symboltable.TransHostGlobalScope;
-import mc.embedding.transitive.transhost._symboltable.TransHostLanguage;
 import mc.embedding.transitive.transhost._symboltable.TransStartSymbol;
 import org.junit.Test;
 
@@ -18,11 +17,9 @@ public class TransHostTest extends GeneratorIntegrationsTest {
 
   @Test
   public void test() {
-    final TransHostLanguage language = new TransHostLanguage();
-
     final ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/mc/embedding/transitive"));
 
-    final TransHostGlobalScope scope = new TransHostGlobalScope(modelPath, language);
+    final TransHostGlobalScope scope = new TransHostGlobalScope(modelPath, "transhost");
 
     TransStartSymbol hostSymbol = scope.resolveTransStart("TH").orElse(null);
     assertNotNull(hostSymbol);

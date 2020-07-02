@@ -22,7 +22,6 @@ public class AutomatonWithSTInfo5Test extends GeneratorIntegrationsTest {
     AutomatonSymbol automatonSymbol = new AutomatonSymbol("A");
     assertTrue(automatonSymbol instanceof IScopeSpanningSymbol);
     AutomatonSymbolLoader automatonSymbolLoader;
-    AutomatonWithSTInfo5Language automatonWithSTInfo5Language;
     AutomatonWithSTInfo5ModelLoader automatonWithSTInfo5ModelLoader;
     AutomatonWithSTInfo5SymbolTableCreator automatonWithSTInfo5SymbolTableCreator;
     StateSymbol stateSymbol = new StateSymbol("A");

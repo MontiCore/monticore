@@ -56,7 +56,10 @@ public class AutomataTool {
   
   // The AST of the model to be handled (will result from parsing)
   protected ASTAutomaton ast;
-  
+
+  // The Global Scope of the symbol table
+  protected AutomataGlobalScope globalScope;
+
   // the symbol table of the model (after parsing and SymTab creation)
   AutomataArtifactScope modelTopScope;
 
@@ -136,6 +139,7 @@ public class AutomataTool {
     Log.info(modelfilename + " parsed successfully", this.getClass().getName());
 
     // setup the symbol table
+    globalScope = new AutomataGlobalScope(new ModelPath());
     modelTopScope = createSymbolTable(ast);
   
     // Part 2: CoCos
@@ -332,18 +336,11 @@ public class AutomataTool {
    * @return
    */
   public AutomataArtifactScope createSymbolTable(ASTAutomaton ast) {
-
-    // TODO AB: AutomataLanguage (die Klasse!) entfernen
-    final AutomataLanguage lang = AutomataMill.automataLanguageBuilder().build();
-
-    // TODO AB: es ist nicht sinnvoll jedes Mal einen GlobalScope zu instantiieren
-    // --> das ist noch eine zu bereinigende technical debt
-    AutomataGlobalScope globalScope = AutomataMill.automataGlobalScopeBuilder()
-        .setModelPath(new ModelPath()).setAutomataLanguage(lang).build();
-
-    // TODO AB: ersetzen durch einfaches create.
-    AutomataSymbolTableCreatorDelegator stCreator = lang.getSymbolTableCreator(globalScope);
-    return stCreator.createFromAST(ast);
+    return AutomataMill
+        .automataSymbolTableCreatorBuilder()
+        .addToScopeStack(globalScope)
+        .build()
+        .createFromAST(ast);
   }
   
   /**

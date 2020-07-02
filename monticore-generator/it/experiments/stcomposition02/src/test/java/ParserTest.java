@@ -1,8 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import javaaut._parser.JavaAutParser;
 import org.antlr.v4.runtime.RecognitionException;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import basicjava._ast.ASTCompilationUnit;
@@ -10,6 +12,11 @@ import java.io.IOException;
 import java.util.Optional;
 
 public class ParserTest {
+
+  @BeforeClass
+  public static void setUp(){
+    LogStub.init();
+  }
 
   @Test
   public void testPingPong(){

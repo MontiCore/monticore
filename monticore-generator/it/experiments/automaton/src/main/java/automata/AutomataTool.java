@@ -43,16 +43,12 @@ public class AutomataTool {
     Log.info("------------------", AutomataTool.class.getName());
     String model = args[0];
 
-    // setup the language infrastructure
-    AutomataLanguage lang = new AutomataLanguage();
-
     // parse the model and create the AST representation
     ASTAutomaton ast = parse(model);
     Log.info(model + " parsed successfully!", AutomataTool.class.getName());
 
     // setup the symbol table
-    AutomataArtifactScope modelTopScope =
-            createSymbolTable(lang, ast);
+    AutomataArtifactScope modelTopScope = createSymbolTable(ast);
 
     // can be used for resolving names in the model
     Optional<StateSymbol> aSymbol =
@@ -122,16 +118,18 @@ public class AutomataTool {
   /**
    * Create the symbol table from the parsed AST.
    *
-   * @param lang
    * @param ast
    * @return
    */
-  public static AutomataArtifactScope createSymbolTable(AutomataLanguage lang, ASTAutomaton ast) {
+  public static AutomataArtifactScope createSymbolTable(ASTAutomaton ast) {
 
-    AutomataGlobalScope globalScope = new AutomataGlobalScope(new ModelPath(), lang);
+    AutomataGlobalScope globalScope = new AutomataGlobalScope(new ModelPath());
 
-    AutomataSymbolTableCreatorDelegator symbolTable = lang.getSymbolTableCreator(
-         globalScope);
+    AutomataSymbolTableCreator symbolTable = AutomataMill
+        .automataSymbolTableCreatorBuilder()
+        .addToScopeStack(globalScope)
+        .build();
+
     return symbolTable.createFromAST(ast);
   }
 
