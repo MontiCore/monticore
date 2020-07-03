@@ -90,7 +90,14 @@ public class GlobalScopeInterfaceDecorator
   }
 
   private void adjustResolvingDelegateMethodsForInterface(List<ASTCDMethod> resolvingDelegateMethods) {
-
+    for(ASTCDMethod method : resolvingDelegateMethods){
+      if(method.getName().startsWith("set")){
+        method.getModifier().setAbstract(true);
+      }
+      else if(method.getName().startsWith("get") && method.isEmptyCDParameters()){
+        method.getModifier().setAbstract(true);
+      }
+    }
   }
 
   private List<ASTMCQualifiedType> getSuperGlobalScopeInterfaces() {
