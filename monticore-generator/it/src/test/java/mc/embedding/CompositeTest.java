@@ -4,10 +4,11 @@ package mc.embedding;
 
 import de.monticore.io.paths.ModelPath;
 import mc.GeneratorIntegrationsTest;
-import mc.embedding.composite._symboltable.CompositeGlobalScope;
 import mc.embedding.composite._symboltable.ICompositeScope;
 import mc.embedding.composite._symboltable.Text2ContentAdapter;
 import mc.embedding.embedded._symboltable.TextSymbol;
+import mc.embedding.composite.CompositeMill;
+import mc.embedding.composite._symboltable.CompositeGlobalScope;
 import mc.embedding.host._symboltable.ContentSymbol;
 import mc.embedding.host._symboltable.HostSymbol;
 import org.junit.Test;
@@ -22,8 +23,11 @@ public class CompositeTest extends GeneratorIntegrationsTest {
   public void test() {
     final ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/mc/embedding"));
 
-    final CompositeGlobalScope scope = new CompositeGlobalScope(modelPath);
-
+    final CompositeGlobalScope scope = CompositeMill
+        .compositeGlobalScopeBuilder()
+        .setModelPath(modelPath)
+        .setModelFileExtension("host")
+        .build();
     // Symbol of the host language
     final HostSymbol hostSymbol = scope.resolveHost("ZComposite").orElse(null);
     assertNotNull(hostSymbol);
