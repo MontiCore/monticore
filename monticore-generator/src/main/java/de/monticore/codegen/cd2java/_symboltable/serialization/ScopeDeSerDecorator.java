@@ -89,7 +89,6 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
         .addAllCDMethods(createLoadMethods(artifactScopeFullName))
         .addCDMethod(createLoadSymbolsIntoScopeMethod(globalScopeFullName))
         .addCDMethod(createStoreMethod(scopeDeSerName, artifactScopeFullName))
-        .addCDMethod(createSerializeMethod(scopeInterfaceName, symbolTablePrinterFullName))
         .addCDMethod(createDeserializeStringMethod(artifactScopeFullName))
         .addCDMethod(createDeserializeScopeMethod(scopeClassFullName, simpleName, symTabMillFullName, scopeJsonParam, scopeRuleAttributeList))
         .addCDMethod(createDeserializeArtifactScopeMethod(artifactScopeFullName, simpleName, symTabMillFullName, scopeJsonParam, scopeRuleAttributeList))
@@ -97,12 +96,6 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
         .addCDMethod(createAddSymbolsMethod(symbolDefiningProds))
         .addAllCDMethods(createDeserializeSymbolMethods(symbolDefiningProds))
         .addCDMethod(createSerializeMethod(scopeInterfaceName))
-        .addAllCDMethods(createDeserializeMethods(scopeInterfaceName, scopeClassFullName, artifactScopeFullName,
-            simpleName, scopeRuleAttributeList))
-        .addCDMethod(createAddSymbolsMethod(scopeInterfaceName, symbolMap))
-        .addCDMethod(createAddAndLinkSubScopesMethod(scopeClassFullName, scopeInterfaceName))
-        .addCDMethod(createAddAndLinkSpanningSymbolMethod(scopeInterfaceName, symbolDefinition))
-        .addAllCDMethods(createDeserializeSymbolMethods(scopeInterfaceName, symbolMap))
         .addAllCDMethods(createDeserializeScopeRuleAttributesMethod(scopeRuleAttributeList, scopeDeSerName))
         .build();
   }
