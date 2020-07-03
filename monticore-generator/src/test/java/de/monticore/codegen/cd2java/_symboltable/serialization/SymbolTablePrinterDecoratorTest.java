@@ -334,7 +334,7 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
   @Test
   public void testSerializeFooExtraAttributeMethod(){
     ASTCDMethod method = getMethodBy("serializeFooExtraAttribute", symbolTablePrinterClass);
-    assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
+    assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
     assertEquals(0, method.sizeExceptions());
     assertEquals(1, method.sizeCDParameters());
     ASTCDParameter parameter = method.getCDParameter(0);
@@ -346,7 +346,7 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
   @Test
   public void testSerializeFooFooMethod(){
     ASTCDMethod method = getMethodBy("serializeFooFoo", symbolTablePrinterClass);
-    assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
+    assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
     assertEquals(0, method.sizeExceptions());
     assertEquals(1, method.sizeCDParameters());
     ASTCDParameter parameter = method.getCDParameter(0);
@@ -358,7 +358,7 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
   @Test
   public void testSerializeFooBlaMethod(){
     ASTCDMethod method = getMethodBy("serializeFooBla", symbolTablePrinterClass);
-    assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
+    assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
     assertEquals(0, method.sizeExceptions());
     assertEquals(1, method.sizeCDParameters());
     ASTCDParameter parameter = method.getCDParameter(0);
@@ -370,7 +370,7 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
   @Test
   public void testSerializeAutomatonScopeExtraAttributeMethod(){
     ASTCDMethod method = getMethodBy("serializeAutomatonScopeExtraAttribute", symbolTablePrinterClass);
-    assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
+    assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
     assertEquals(0, method.sizeExceptions());
     assertEquals(1, method.sizeCDParameters());
     ASTCDParameter parameter = method.getCDParameter(0);
@@ -382,7 +382,7 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
   @Test
   public void testSerializeAutomatonScopeFooMethod(){
     ASTCDMethod method = getMethodBy("serializeAutomatonScopeFoo", symbolTablePrinterClass);
-    assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
+    assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
     assertEquals(0, method.sizeExceptions());
     assertEquals(1, method.sizeCDParameters());
     ASTCDParameter parameter = method.getCDParameter(0);
@@ -394,7 +394,7 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
   @Test
   public void testSerializeAutomatonScopeBlaMethod(){
     ASTCDMethod method = getMethodBy("serializeAutomatonScopeBla", symbolTablePrinterClass);
-    assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
+    assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
     assertEquals(0, method.sizeExceptions());
     assertEquals(1, method.sizeCDParameters());
     ASTCDParameter parameter = method.getCDParameter(0);

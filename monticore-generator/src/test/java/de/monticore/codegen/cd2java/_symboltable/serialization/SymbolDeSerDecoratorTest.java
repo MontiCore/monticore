@@ -4,10 +4,7 @@ package de.monticore.codegen.cd2java._symboltable.serialization;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
-import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
+import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.facade.CDModifier;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
@@ -50,6 +47,8 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
 
   private static final String I_AUTOMATON_SCOPE = "de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.IAutomatonSymbolCDScope";
 
+  private static final String AUTOMATON_SYMBOL_TABLE_PRINTER = "de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.AutomatonSymbolCDSymbolTablePrinter";
+
   private static final String JSON_OBJECT = "de.monticore.symboltable.serialization.json.JsonObject";
 
   @Before
@@ -88,13 +87,28 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testNoConstructor(){
-    assertTrue(symbolClassAutomaton.isEmptyCDConstructors());
+  public void testConstructorCount(){
+    assertEquals(1, symbolClassAutomaton.sizeCDConstructors());
   }
 
   @Test
-  public void testNoAttributes(){
-    assertTrue(symbolClassAutomaton.isEmptyCDAttributes());
+  public void testConstructors(){
+    ASTCDConstructor constructor = symbolClassAutomaton.getCDConstructor(0);
+    assertDeepEquals(CDModifier.PUBLIC, constructor.getModifier());
+    assertTrue(constructor.isEmptyCDParameters());
+  }
+
+  @Test
+  public void testAttributeCount(){
+    assertEquals(1, symbolClassAutomaton.sizeCDAttributes());
+  }
+
+  @Test
+  public void testAttributes(){
+    List<ASTCDAttribute> attributeList = symbolClassAutomaton.getCDAttributeList();
+    assertDeepEquals(CDModifier.PROTECTED, attributeList.get(0).getModifier());
+    assertEquals("symbolTablePrinter", attributeList.get(0).getName());
+    assertDeepEquals(AUTOMATON_SYMBOL_TABLE_PRINTER, attributeList.get(0).getMCType());
   }
 
   @Test
@@ -143,7 +157,7 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
   @Test
   public void testDeserializeAutomatonSymbolMethod(){
     ASTCDMethod method = getMethodBy("deserializeAutomatonSymbol", symbolClassAutomaton);
-    assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
+    assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
     assertEquals(0, method.sizeExceptions());
     assertEquals(2, method.sizeCDParameters());
     List<ASTCDParameter> parameterList = method.getCDParameterList();
@@ -182,13 +196,28 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testNoConstructorFoo(){
-    assertTrue(symbolClassFoo.isEmptyCDConstructors());
+  public void testConstructorCountFoo(){
+    assertEquals(1, symbolClassFoo.sizeCDConstructors());
   }
 
   @Test
-  public void testNoAttributesFoo(){
-    assertTrue(symbolClassFoo.isEmptyCDAttributes());
+  public void testConstructorsFoo(){
+    ASTCDConstructor constructor = symbolClassFoo.getCDConstructor(0);
+    assertDeepEquals(CDModifier.PUBLIC, constructor.getModifier());
+    assertTrue(constructor.isEmptyCDParameters());
+  }
+
+  @Test
+  public void testAttributeCountFoo(){
+    assertEquals(1, symbolClassFoo.sizeCDAttributes());
+  }
+
+  @Test
+  public void testAttributesFoo(){
+    List<ASTCDAttribute> attributeList = symbolClassFoo.getCDAttributeList();
+    assertDeepEquals(CDModifier.PROTECTED, attributeList.get(0).getModifier());
+    assertEquals("symbolTablePrinter", attributeList.get(0).getName());
+    assertDeepEquals(AUTOMATON_SYMBOL_TABLE_PRINTER, attributeList.get(0).getMCType());
   }
 
   @Test
@@ -237,7 +266,7 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
   @Test
   public void testDeserializeFooSymbolMethod(){
     ASTCDMethod method = getMethodBy("deserializeFooSymbol", symbolClassFoo);
-    assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
+    assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
     assertEquals(0, method.sizeExceptions());
     assertEquals(2, method.sizeCDParameters());
     List<ASTCDParameter> parameterList = method.getCDParameterList();
@@ -268,7 +297,7 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
   @Test
   public void testDeserializeExtraAttribute(){
     ASTCDMethod method = getMethodBy("deserializeExtraAttribute", symbolClassFoo);
-    assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
+    assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
     assertEquals(0, method.sizeExceptions());
     assertEquals(2, method.sizeCDParameters());
     List<ASTCDParameter> parameterList = method.getCDParameterList();
@@ -283,7 +312,7 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
   @Test
   public void testDeserializeFoo(){
     ASTCDMethod method = getMethodBy("deserializeFoo", symbolClassFoo);
-    assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
+    assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
     assertEquals(0, method.sizeExceptions());
     assertEquals(2, method.sizeCDParameters());
     List<ASTCDParameter> parameterList = method.getCDParameterList();
@@ -298,7 +327,7 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
   @Test
   public void testDeserializeBla(){
     ASTCDMethod method = getMethodBy("deserializeBla", symbolClassFoo);
-    assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
+    assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
     assertEquals(0, method.sizeExceptions());
     assertEquals(2, method.sizeCDParameters());
     List<ASTCDParameter> parameterList = method.getCDParameterList();
