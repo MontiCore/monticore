@@ -2,7 +2,7 @@
 
 package javaandaut;
 
-import automata6._symboltable.*;
+import automata7._symboltable.*;
 import basicjava.BasicJavaMill;
 import basicjava._symboltable.*;
 import de.monticore.io.paths.ModelPath;
@@ -19,7 +19,11 @@ public class AutomataResolvingDelegate implements IStimulusSymbolResolvingDelega
   BasicJavaGlobalScope javaGS;
 
   public AutomataResolvingDelegate(ModelPath mp){
-    javaGS =   new BasicJavaGlobalScope(mp, "javamodel");
+    javaGS = BasicJavaMill
+        .basicJavaGlobalScopeBuilder()
+        .setModelPath(mp)
+        .setModelFileExtension("javamodel")
+        .build();
   }
 
 

@@ -139,7 +139,11 @@ public class AutomataTool {
     Log.info(modelfilename + " parsed successfully", this.getClass().getName());
 
     // setup the symbol table
-    globalScope = new AutomataGlobalScope(new ModelPath());
+    globalScope =  AutomataMill
+        .automataGlobalScopeBuilder()
+        .setModelPath(new ModelPath())
+        .setModelFileExtension("aut")
+        .build();
     modelTopScope = createSymbolTable(ast);
   
     // Part 2: CoCos

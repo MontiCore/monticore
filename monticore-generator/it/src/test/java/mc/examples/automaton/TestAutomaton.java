@@ -30,7 +30,11 @@ public class TestAutomaton extends GeneratorIntegrationsTest {
     optAutomaton = parser.parseAutomaton("src/test/resources/examples/automaton/Testautomat.aut");
     assertFalse(parser.hasErrors());
     assertTrue(optAutomaton.isPresent());
-    AutomatonGlobalScope globalScope = new AutomatonGlobalScope(new ModelPath(), "aut");
+    AutomatonGlobalScope globalScope = AutomatonMill
+        .automatonGlobalScopeBuilder()
+        .setModelPath(new ModelPath())
+        .setModelFileExtension("aut")
+        .build();
 
     AutomatonSymbolTableCreatorDelegator symbolTable = AutomatonMill
         .automatonSymbolTableCreatorDelegatorBuilder().setGlobalScope(globalScope).build();
