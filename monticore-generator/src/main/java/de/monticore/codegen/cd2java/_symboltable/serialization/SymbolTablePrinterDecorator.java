@@ -89,10 +89,8 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
   }
 
   protected ASTCDAttribute createRealThisAttribute(String symbolTablePrinterName) {
-    ASTCDAttribute realThis = getCDAttributeFacade()
-        .createAttribute(PRIVATE, symbolTablePrinterName, "realThis");
-    this.replaceTemplate(VALUE, realThis, new StringHookPoint("= (" + symbolTablePrinterName + ") this"));
-    return realThis;
+    return getCDAttributeFacade()
+        .createAttribute(PRIVATE, visitorService.getVisitorFullName(), "realThis");
   }
 
   protected List<String> getDelegateClassNames() {
@@ -139,6 +137,7 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
       String typeName = prettyPrinter.prettyprint(delegate.getMCType());
       sb2.append("    this.").append(attributeName).append(" = new ").append(typeName).append("(").append(parameterName).append(");\n");
     }
+    sb2.append("    setRealThis(this);\n");
     this.replaceTemplate(EMPTY_BODY, constructorB, new StringHookPoint(sb2.toString()));
     constructors.add(constructorB);
 
@@ -167,7 +166,7 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
 
   protected List<ASTCDMethod> createRealThisMethods(String symbolTablePrinterName,
       List<ASTCDAttribute> delegates) {
-    ASTMCType type = getMCTypeFacade().createQualifiedType(symbolTablePrinterName);
+    ASTMCType type = getMCTypeFacade().createQualifiedType(visitorService.getVisitorFullName());
     ASTCDMethod getMethod = getCDMethodFacade().createMethod(PUBLIC, type, GET_REAL_THIS);
     this.replaceTemplate(EMPTY_BODY, getMethod, new StringHookPoint("return realThis;"));
 
