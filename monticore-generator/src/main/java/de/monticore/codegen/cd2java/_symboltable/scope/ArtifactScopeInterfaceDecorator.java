@@ -96,6 +96,11 @@ public class ArtifactScopeInterfaceDecorator extends AbstractCreator<ASTCDCompil
     methods.add(setMethod);
 
     return methods;
+  protected ASTCDAttribute createImportsAttribute() {
+    ASTModifier modifier = PRIVATE.build();
+    symbolTableService.addDeprecatedStereotype(modifier, Optional.empty());
+    return getCDAttributeFacade()
+        .createAttribute(modifier, getMCTypeFacade().createListTypeOf(IMPORT_STATEMENT), "imports");
   }
 
   protected ASTCDMethod createGetNameMethod() {

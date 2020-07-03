@@ -160,7 +160,6 @@ public class ArtifactScopeClassDecoratorTest extends DecoratorTestCase {
   @Test
   public void testImportsAttribute() {
     ASTCDAttribute astcdAttribute = getAttributeBy("imports", scopeClass);
-    assertDeepEquals(CDModifier.PRIVATE, astcdAttribute.getModifier());
     assertListOf(IMPORT_STATEMENT, astcdAttribute.getMCType());
   }
 

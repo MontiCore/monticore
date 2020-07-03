@@ -219,7 +219,7 @@ public class OCLExpressionsPrettyPrinter extends ExpressionsBasisPrettyPrinter i
   @Override
   public void handle(ASTOCLArrayQualification node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    for (ASTExpression astExpression : node.getArgumentsList()) {
+    for (ASTExpression astExpression : node.getArgumentList()) {
       getPrinter().print("[");
       astExpression.accept(getRealThis());
       getPrinter().print("]");

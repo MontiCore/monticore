@@ -35,7 +35,11 @@ public class ReferenceTest {
     assertTrue(astRand.isPresent());
     //create symboltable
     ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/mc/feature/referencesymbol"));
-    ReferenceGlobalScope globalScope = new ReferenceGlobalScope(modelPath, "ref");
+    ReferenceGlobalScope globalScope = ReferenceMill
+        .referenceGlobalScopeBuilder()
+        .setModelPath(modelPath)
+        .setModelFileExtension("ref")
+        .build();
     ReferenceSymbolTableCreatorDelegator symbolTableCreator = ReferenceMill
         .referenceSymbolTableCreatorDelegatorBuilder()
         .setGlobalScope(globalScope)

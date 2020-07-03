@@ -131,7 +131,7 @@ MontiCore projects are hosted at
   Operators are: **optional** feature `?`, **and** `&`, **or** `|`, **xor** `^`,
   and **subset cardinality** constraints, like `[1..2] of ...`.
   Further, a feature model may define cross-tree constraints using logic 
-  operators **and** `&&`, **or** `||`, **implication** `=>`, etc.
+  operators **and** `&&`, **or** `||`, **implication** `requires`, etc.
 * Main grammar [`FeatureDiagram`](https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/master/fd-lang/src/main/grammars/FeatureDiagram.mc4)
   and 
   [*detailed description*](https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/master/fd-lang/src/main/grammars/FeatureDiagram.md)
