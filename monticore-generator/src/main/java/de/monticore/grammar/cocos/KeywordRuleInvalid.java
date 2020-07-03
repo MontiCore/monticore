@@ -7,7 +7,7 @@ import de.se_rwth.commons.logging.Log;
 
 public class KeywordRuleInvalid implements GrammarASTKeywordRuleCoCo {
 
-  public static final String ERROR_CODE = "0xA4064";
+  public static final String ERROR_CODE = "0xA4093";
 
   public static final String ERROR_MSG_FORMAT =
           " The string '%s' must be compatible to 'Name'";

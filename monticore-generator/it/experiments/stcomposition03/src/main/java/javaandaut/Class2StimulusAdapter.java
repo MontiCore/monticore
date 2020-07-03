@@ -2,7 +2,7 @@
 
 package javaandaut;
 
-import automata6._symboltable.StimulusSymbol;
+import automata7._symboltable.StimulusSymbol;
 import basicjava._symboltable.ClassDeclarationSymbol;
 
 public class Class2StimulusAdapter extends StimulusSymbol {

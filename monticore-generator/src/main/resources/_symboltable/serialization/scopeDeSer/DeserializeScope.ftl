@@ -2,11 +2,7 @@
 ${tc.signature("symTabMill", "scopeClass", "scopeBuilder", "scopeRuleAttrList")}
 <#assign genHelper = glex.getGlobalVar("astHelper")>
   de.monticore.symboltable.serialization.JsonDeSers.checkCorrectDeSerForKind("${scopeClass}", scopeJson);
-  boolean isShadowingScope = false;
-  if (scopeJson.hasBooleanMember(de.monticore.symboltable.serialization.JsonDeSers.IS_SHADOWING_SCOPE)) {
-    isShadowingScope = scopeJson.getBooleanMember(de.monticore.symboltable.serialization.JsonDeSers.IS_SHADOWING_SCOPE);
-  }
-
+  boolean isShadowingScope = scopeJson.getBooleanMemberOpt(de.monticore.symboltable.serialization.JsonDeSers.IS_SHADOWING_SCOPE).orElse(false);
   ${scopeClass} scope = ${symTabMill}.${scopeBuilder?uncap_first}().setShadowing(isShadowingScope).build();
   if (scopeJson.hasStringMember(de.monticore.symboltable.serialization.JsonDeSers.NAME)) {
     scope.setName(scopeJson.getStringMember(de.monticore.symboltable.serialization.JsonDeSers.NAME));

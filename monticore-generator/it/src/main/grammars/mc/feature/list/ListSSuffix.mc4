@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package mc.feature.list;
+
+grammar ListSSuffix extends mc.common.Basics {
+
+    Foo = foos:Name foos:Name;
+
+    Bar = Name* names:Name*;
+
+    Blub = blubs:Name* blubs:Name+ blubs:Name blubs:Name?;
+
+    Bli = bli:Name bli:Name?;
+
+}
