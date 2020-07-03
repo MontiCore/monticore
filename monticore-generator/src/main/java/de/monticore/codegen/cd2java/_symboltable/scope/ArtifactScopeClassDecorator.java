@@ -105,13 +105,13 @@ public class ArtifactScopeClassDecorator extends AbstractCreator<ASTCDCompilatio
 
   protected List<ASTCDMethod> createPackageNameAttributeMethods(ASTCDAttribute attr) {
     return  methodDecorator.decorate(attr).stream()
-        .filter(m ->( m.getName() == "getPackageName" || m.getName() == "setPackageName"))
+//        .filter(m ->( m.getName().equals("getPackageName") || m.getName().equals("setPackageName")))
         .collect(Collectors.toList());
   }
 
   protected List<ASTCDMethod> createImportsAttributeMethods(ASTCDAttribute attr) {
     return  methodDecorator.decorate(attr).stream()
-        .filter(m -> (m.getName() == "getImportList" || m.getName() == "setImportList"))
+        .filter(m -> (m.getName().equals("getImportList") || m.getName().equals("setImportList")))
         .collect(Collectors.toList());
   }
 
