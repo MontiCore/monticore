@@ -6,7 +6,7 @@ if (this.realThis != realThis) {
   }
   this.realThis = (${symbolTablePrinterName}) realThis;
 <#list delegates as delegate>
-  this.${inheritedVisitor}.setRealThis(realThis);
+  this.${delegate}.setRealThis(realThis);
 </#list>
 
 }
