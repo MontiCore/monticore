@@ -62,7 +62,7 @@ public class SymTypeExpressionDeSer {
   public static void serializeMember(JsonPrinter printer, String memberName, List<SymTypeExpression> member){
     if(!member.isEmpty()){
       printer.beginArray(memberName);
-      member.forEach(e -> printer.value(e.printAsJson()));
+      member.forEach(e -> printer.valueJson(e.printAsJson()));
       printer.endArray();
     }
   }
