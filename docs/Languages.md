@@ -353,20 +353,23 @@ component InteriorLight {                           // MontiArc language
   It is based on the basis units `s, m, kg, A, K, mol, cd`, 
   provides a variety of derived units, and can be refined using prefixes such 
   as `m`(milli), `k`(kilo), etc.
-* The SI Unit project aims to deliver SI units to MontiCore-based languages. 
-  It provides a grammar for all types of SI units and prefixes.
-* Second, we provide the SI Unit literals, such as "5 km" as expression values
+* The SI Unit project aims to deliver SI units to MontiCore-based languages with expressions. 
+  It provides a grammar for all types of SI units and prefixes usable for type 
+  definition.
+* Second, it provides the SI Unit literals, such as "5 km" as expression values
   and a language for SI unit types, such as "km/h" or "km/h<long>". Some examples:
   ```
-    km/h speed = 5 m / 27 s                         // variable definition
-    speed = (3 * 4m + 17km/h * 10h) / 3.5 h         // assignment
-    °C/s<float> coolingSpeed; 
+    km/h speed = 5 m / 27 s                         // variable definition using type km/h
+    speed = (3 * 4m  +  17km/h * 10h) / 3.5h        // values with SI unit types
+    °C/s<float> coolingSpeed;                       // types (°C/s) with precision (float)
     g/mm^2<int> pressure; 
-    Map<Location,°C> temperatures;
+    Map<Location,°C> temperatures;                  // nesting of types 
   ```
   The SI unit literals integrate with MontiCore's expressions and the
   SI Unit types integrate with MontiCore's type system. 
-  The SI unit language remains type safe.
+  The SI unit language remains *fully type safe*.
+* The math version uses "km/h" as idealistic full precision real number, while the
+  computing version allows to contrain  the precision with "km/h<long>". 
 * Main grammar components:
     * [SI units](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/siunits/SIUnits.mc4)
     * [SI unit literals](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/siunits/SIUnitLiterals.mc4)
