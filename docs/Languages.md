@@ -113,7 +113,7 @@ MontiCore projects are hosted at
   (see Section *CD4Code*)
 
 
-### [Feature Diagrams](https://git.rwth-aachen.de/monticore/languages/feature-diagram) (Beta: In Stabilization)
+### [Feature Diagrams](https://git.rwth-aachen.de/monticore/languages/feature-diagram) (MontiCore stable)
 * Caretaker: AB, DS
 * Language for feature models and feature configurations.
 * **Feature diagrams** are used to model (software) **product lines** and their **variants**.
