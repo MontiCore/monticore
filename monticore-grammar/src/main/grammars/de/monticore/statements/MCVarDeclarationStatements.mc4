@@ -1,7 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.statements;
 
-/* Beta-version: This is intended to become a MontiCore stable grammar. */
+/* This is a MontiCore stable grammar.
+ * Adaptations -- if any -- are conservative. */
 
 /**
  * This grammar defines Java's mechanism for the introduction
@@ -59,7 +60,6 @@ ArrayInit implements VariableInit
 
 interface symbol VarDecl extends Field;
 
-//  TODO BR: 15.6.: ueber die Attribute hie rmüssen wir reden
 symbolrule VarDecl =
     annotations: de.monticore.types.check.SymTypeExpression*
     isFinal: boolean
