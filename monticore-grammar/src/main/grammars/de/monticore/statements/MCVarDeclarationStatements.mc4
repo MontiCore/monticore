@@ -56,6 +56,7 @@ ArrayInit implements VariableInit
      =   "{" (VariableInit || ",")* (",")? "}"
      ;
 
+// TODO: Warum Field, statt besser Variable direkt nutzen?
 interface symbol VarDecl extends Field;
 
 symbolrule VarDecl =
