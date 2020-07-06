@@ -6,7 +6,7 @@ import de.se_rwth.commons.logging.Log;
 import java.util.*;
 import de.se_rwth.commons.logging.LogStub;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 
 public class AutomataToolTest {
@@ -20,15 +20,19 @@ public class AutomataToolTest {
   
   @Before
   public void setUp() {
-    Log.getFindings().clear();
+    Log.clearFindings();
+    LogStub.clearPrints();
   }
   
   @Test
   public void executePingPong() {
     AutomataTool.main(new String[] { "src/test/resources/example/PingPong.aut", "target" });
-    LogStub.printPrints();
+    Log.printFindings();
+    // LogStub.printPrints();
     List<String> p = LogStub.getPrints();
     assertEquals(p.size(), 1);
+// XXX    assertEquals(p.get(0), 1);
+    // XXX handle Log.findings
   }
   
   @Test
