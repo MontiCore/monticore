@@ -56,10 +56,8 @@ public class JavaLightPrettyPrinter extends MCCommonStatementsPrettyPrinter impl
       getPrinter().print(" throws ");
       a.getThrows().accept(getRealThis());
     }
-    if (!a.getMCBlockStatementList().isEmpty()) {
-      getPrinter().println("{");
-      a.getMCBlockStatementList().forEach(b -> b.accept(getRealThis()));
-      getPrinter().println("}");
+    if (a.isPresentMCJavaBlock()) {
+      a.getMCJavaBlock().accept(getRealThis());
     } else {
       getPrinter().println(";");
     }
@@ -115,10 +113,7 @@ public class JavaLightPrettyPrinter extends MCCommonStatementsPrettyPrinter impl
       getPrinter().print(" throws ");
       a.getThrows().accept(getRealThis());
     }
-    getPrinter().print(" ");
-    getPrinter().println("{");
-    a.getMCBlockStatementList().forEach(b -> b.accept(getRealThis()));
-    getPrinter().println("}");
+    a.getMCJavaBlock().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
 

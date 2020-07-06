@@ -44,7 +44,11 @@ public class SupReferenceTest {
 
 
     ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/mc/feature/referencesymbol"));
-    SupGrammarRefGlobalScope globalScope = new SupGrammarRefGlobalScope(modelPath, "ref");
+    SupGrammarRefGlobalScope globalScope = SupGrammarRefMill
+        .supGrammarRefGlobalScopeBuilder()
+        .setModelPath(modelPath)
+        .setModelFileExtension("ref")
+        .build();
     SupGrammarRefSymbolTableCreatorDelegator symbolTableCreator = SupGrammarRefMill
         .supGrammarRefSymbolTableCreatorDelegatorBuilder()
         .setGlobalScope(globalScope)

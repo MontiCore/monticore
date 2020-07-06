@@ -1,9 +1,10 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("symbolBuilderFullName","symbolBuilderSimpleName", "symTabMill", "symbolName", "symbolRuleAttribute")}
+${tc.signature("symbolBuilderFullName","symbolBuilderSimpleName", "symTabMill", "symbolFullName", "symbolSimpleName","symbolRuleAttribute")}
 <#assign genHelper = glex.getGlobalVar("astHelper")>
   de.monticore.symboltable.serialization.JsonDeSers.checkCorrectDeSerForKind(getSerializedKind(), symbolJson);
   ${symbolBuilderFullName} builder = ${symTabMill}.${symbolBuilderSimpleName?uncap_first}();
-  builder.setName(symbolJson.getStringMember(de.monticore.symboltable.serialization.JsonDeSers.NAME));
+  builder.setFullName(symbolJson.getStringMember(de.monticore.symboltable.serialization.JsonDeSers.NAME));
+  builder.setName(de.monticore.utils.Names.getSimpleName(builder.getFullName()));
 <#list symbolRuleAttribute as attr>
   <#if genHelper.isOptional(attr.getMCType())>
     if (deserialize${attr.getName()?cap_first}(symbolJson, enclosingScope).isPresent()) {
@@ -15,6 +16,6 @@ ${tc.signature("symbolBuilderFullName","symbolBuilderSimpleName", "symTabMill", 
   builder.${genHelper.getPlainSetter(attr)}(deserialize${attr.getName()?cap_first}(symbolJson, enclosingScope));
   </#if>
 </#list>
-  ${symbolName} symbol = builder.build();
-  deserializeAdditionalAttributes(symbol, symbolJson,enclosingScope);
+  ${symbolFullName} symbol = builder.build();
+  deserializeAdditional${symbolSimpleName}Attributes(symbol, symbolJson, enclosingScope);
   return symbol;

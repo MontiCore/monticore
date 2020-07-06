@@ -30,11 +30,11 @@ public class TransitionSourceExistsTest {
   
   @BeforeClass
   public static void init() {
-    // replace log by a sideffect free variant
+    // replace log by a sideffect free variant (prevent output)
     LogStub.init();
   }
   
-
+ 
   @Before
   public void setUp() throws RecognitionException, IOException {
     Log.getFindings().clear();
@@ -122,7 +122,11 @@ public class TransitionSourceExistsTest {
    * @return
    */
   public static AutomataArtifactScope createSymbolTable(ASTAutomaton ast) {
-    AutomataGlobalScope globalScope = new AutomataGlobalScope(new ModelPath());
+    AutomataGlobalScope globalScope = AutomataMill
+        .automataGlobalScopeBuilder()
+        .setModelPath(new ModelPath())
+        .setModelFileExtension("aut")
+        .build();
 
     AutomataSymbolTableCreator symbolTable = AutomataMill
         .automataSymbolTableCreatorBuilder()

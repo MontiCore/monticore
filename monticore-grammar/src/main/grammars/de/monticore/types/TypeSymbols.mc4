@@ -1,7 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types;
 
-/* Beta-version: This is intended to become a MontiCore stable grammar. */
+/* This is a MontiCore stable grammar.
+ * Adaptations -- if any -- are conservative. */
 
 /**
  * This grammar is used to generate an abstract syntax only.
@@ -60,22 +61,12 @@ component grammar TypeSymbols extends de.monticore.types.BasicTypeSymbols {
    */
   interface symbol Field extends Variable = Name ;
   symbolrule Field =
-    isParameter: boolean
-    isVariable: boolean
     isPrivate: boolean
     isProtected: boolean
     isPublic: boolean
     isStatic:boolean
+    isFinal: boolean
   ;
-// TODO !: die neue fassung ist schon deutlich näher am ideal, allerdings
-// sind die beiden Flags hier immer noch viel am Platz, denn sie
-// beschreiben nicht eine Eigenschaft des Symbols, sondern eine 
-// Eigenschaft der Nutzung des Symbols von draußen.
-// Meine Alternativorschlag steht: 2 Scopes nehmen / die könnte man auch schachteln
-// oder zwei separate Listen in diesem ominösen, 
-// überladenen Function- Scope, die halt beide durchsucht werden ...
-// (wobei in externen Artefakten die zweite Liste eh immer leer bleibt)
-
 
   /*=================================================================*/
 
@@ -94,8 +85,7 @@ component grammar TypeSymbols extends de.monticore.types.BasicTypeSymbols {
     isProtected: boolean
     isPublic: boolean
     isStatic:boolean
+    isElliptic: boolean
   ;
-  // TODO: fehlt hier noch isElliptic  um die spezielle Form der Darstellung
-  // des letzten Arguments (Typ: [.] las erweiterbare Liste zu erlauben?
 
 }
