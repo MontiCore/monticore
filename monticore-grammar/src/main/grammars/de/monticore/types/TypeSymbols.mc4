@@ -65,6 +65,7 @@ component grammar TypeSymbols extends de.monticore.types.BasicTypeSymbols {
     isProtected: boolean
     isPublic: boolean
     isStatic:boolean
+    isFinal: boolean
   ;
 
   /*=================================================================*/
