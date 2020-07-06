@@ -44,9 +44,9 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
   protected VisitorService visitorService;
 
   public ScopeDeSerDecorator(final GlobalExtensionManagement glex,
-      final SymbolTableService symbolTableService, final MethodDecorator methodDecorator) {
+      final SymbolTableService symbolTableService, final MethodDecorator methodDecorator, VisitorService visitorService) {
     super(glex);
-    visitorService = new VisitorService(symbolTableService.getCDSymbol());
+    this.visitorService = visitorService;
     this.symbolTableService = symbolTableService;
     this.methodDecorator = methodDecorator;
   }
