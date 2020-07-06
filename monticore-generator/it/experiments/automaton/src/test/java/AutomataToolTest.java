@@ -7,6 +7,7 @@ import java.util.*;
 import de.se_rwth.commons.logging.LogStub;
 
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 
 public class AutomataToolTest {
@@ -30,9 +31,9 @@ public class AutomataToolTest {
     Log.printFindings();
     // LogStub.printPrints();
     List<String> p = LogStub.getPrints();
-    assertEquals(p.size(), 1);
-// XXX    assertEquals(p.get(0), 1);
-    // XXX handle Log.findings
+    assertEquals(1, p.size());
+// TODO XXX    assertEquals("XXX", p.get(0));
+    // TODO XXX handle Log.findings
   }
   
   @Test
