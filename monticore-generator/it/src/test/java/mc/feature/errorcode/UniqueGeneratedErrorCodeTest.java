@@ -28,8 +28,12 @@ public class UniqueGeneratedErrorCodeTest {
 
   @Test
   public void testOnlyUniqueGeneratedErrorCodes() {
-    final File[] files = new File(
+    File[] files = new File(
         "target/generated-sources/monticore/sourcecode/mc/examples/automaton/automaton").listFiles();
+    if (files == null) {
+      files = new File(
+              "target-emf/generated-sources/monticore/sourcecode/mc/examples/automaton/automaton").listFiles();
+    }
     assertNotNull(files);
     checkFileList(files);
   }
