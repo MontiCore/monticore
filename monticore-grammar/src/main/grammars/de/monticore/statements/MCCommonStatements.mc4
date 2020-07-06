@@ -32,7 +32,7 @@ component grammar MCCommonStatements
 /**
  * Standard Form of a block { ... }
  */
-scope MCJavaBlock implements MCStatement
+scope(shadowing non_exporting ordered) MCJavaBlock implements MCStatement
     =   "{" MCBlockStatement* "}"
     ;
 
