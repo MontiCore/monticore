@@ -2,6 +2,7 @@
 package de.monticore.aggregation;
 
 import de.monticore.aggregation.blah.Bar2DummySymbol;
+import de.monticore.aggregation.blah.BlahMill;
 import de.monticore.aggregation.blah._symboltable.BlahGlobalScope;
 import de.monticore.aggregation.blah._symboltable.DummySymbol;
 import de.monticore.aggregation.foo._symboltable.BarSymbol;
@@ -18,7 +19,11 @@ public class FooBlahGlobalScope extends FooGlobalScope {
 
   public FooBlahGlobalScope(ModelPath modelPath){
     super(modelPath, "blah");
-    iBlahGS = new BlahGlobalScope(modelPath, "blah");
+    iBlahGS = BlahMill
+        .blahGlobalScopeBuilder()
+        .setModelPath(modelPath)
+        .setModelFileExtension("blah")
+        .build();
   }
 
   BlahGlobalScope iBlahGS;

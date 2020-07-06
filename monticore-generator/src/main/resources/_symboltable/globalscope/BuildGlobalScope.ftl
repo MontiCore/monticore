@@ -7,11 +7,13 @@ ${tc.signature("scopeClassName", "simpleName", "resolvingDelegates", "generatedE
     Log.error("0xA7008${generatedErrorCode2} Cannot build a global scope without setting a model file extension!");
   }
   ${scopeClassName} globalScope = new ${scopeClassName}(modelPath, modelFileExtension);
-  if(modelLoader.isPresent()){
-    globalScope.setModelLoader(modelLoader.get());
-  }
-  else {
-    globalScope.setModelLoaderAbsent();
+  if(!globalScope.isPresentModelLoader()){
+    if(modelLoader.isPresent()){
+      globalScope.setModelLoader(modelLoader.get());
+    }
+    else {
+      globalScope.setModelLoaderAbsent();
+    }
   }
 <#list resolvingDelegates as resolvingDelegate>
   globalScope.set${resolvingDelegate?cap_first}List(${resolvingDelegate});

@@ -44,15 +44,25 @@ public class JsonPrinterTest {
   
   @Test
   public void testEmptyList() {
-    JsonPrinter printer = new JsonPrinter();
+    JsonPrinter printer = new JsonPrinter(true);
     printer.beginArray();
     printer.endArray();
     assertEquals("[]", printer.toString());
     
-    printer = new JsonPrinter();
+    printer = new JsonPrinter(true);
     printer.beginArray("emptyList");
     printer.endArray();
     assertEquals("\"emptyList\":[]", printer.toString());
+
+    printer = new JsonPrinter(false);
+    printer.beginArray();
+    printer.endArray();
+    assertEquals("", printer.toString());
+
+    printer = new JsonPrinter(false);
+    printer.beginArray("emptyList");
+    printer.endArray();
+    assertEquals("", printer.toString());
   }
   
   @Test
@@ -80,27 +90,35 @@ public class JsonPrinterTest {
   
   @Test
   public void testOptionalAndList() {
-    JsonPrinter printer = new JsonPrinter();
+    JsonPrinter printer = new JsonPrinter(true);
     printer.member("optionalAttribute", Optional.of("presentOptional"));
     assertEquals("\"optionalAttribute\":\"presentOptional\"", printer.toString());
-    
+
+    printer = new JsonPrinter(false);
+    printer.member("optionalAttribute", Optional.of("presentOptional"));
+    assertEquals("\"optionalAttribute\":\"presentOptional\"", printer.toString());
+
     printer = new JsonPrinter(true);
     printer.member("optionalAttribute", Optional.empty());
     assertEquals("\"optionalAttribute\":null", printer.toString());
-    
-    printer = new JsonPrinter();
+
+    printer = new JsonPrinter(false);
     printer.member("optionalAttribute", Optional.empty());
     assertEquals("", printer.toString());
-    
+
     printer = new JsonPrinter(true);
     printer.member("listAttribute", new ArrayList<>());
     assertEquals("\"listAttribute\":[]", printer.toString());
-    
-    printer = new JsonPrinter();
+
+    printer = new JsonPrinter(false);
     printer.member("listAttribute", new ArrayList<>());
     assertEquals("", printer.toString());
-    
-    printer = new JsonPrinter();
+
+    printer = new JsonPrinter(true);
+    printer.member("listAttribute", Lists.newArrayList("first", "second"));
+    assertEquals("\"listAttribute\":[\"first\",\"second\"]", printer.toString());
+
+    printer = new JsonPrinter(false);
     printer.member("listAttribute", Lists.newArrayList("first", "second"));
     assertEquals("\"listAttribute\":[\"first\",\"second\"]", printer.toString());
   }

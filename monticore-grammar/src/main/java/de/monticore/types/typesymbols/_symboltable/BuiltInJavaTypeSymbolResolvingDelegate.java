@@ -27,14 +27,22 @@ public class BuiltInJavaTypeSymbolResolvingDelegate implements IOOTypeSymbolReso
   protected static TypeSymbolsGlobalScope gs = initScope();
 
   protected static TypeSymbolsGlobalScope initScope() {
-    gs = new TypeSymbolsGlobalScope(new ModelPath(), "ts");
+    gs = TypeSymbolsMill
+        .typeSymbolsGlobalScopeBuilder()
+        .setModelPath(new ModelPath())
+        .setModelFileExtension("ts")
+        .build();
     //package java.lang
-    TypeSymbolsArtifactScope javalang = new TypeSymbolsArtifactScope("java.lang",
-        new ArrayList<>());
+    TypeSymbolsArtifactScope javalang = TypeSymbolsMill
+        .typeSymbolsArtifactScopeBuilder()
+        .setPackageName("java.lang")
+        .build();
     gs.addSubScope(javalang);
     //package java.util
-    TypeSymbolsArtifactScope javautil = new TypeSymbolsArtifactScope("java.util",
-        new ArrayList<>());
+    TypeSymbolsArtifactScope javautil = TypeSymbolsMill
+        .typeSymbolsArtifactScopeBuilder()
+        .setPackageName("java.util")
+        .build();
     gs.addSubScope(javautil);
 
     //some SymTypeExpressions to use for methods and fields

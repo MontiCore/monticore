@@ -4,8 +4,9 @@ package mc.embedding.external;
 
 import de.monticore.io.paths.ModelPath;
 import mc.GeneratorIntegrationsTest;
-import mc.embedding.embedded._symboltable.EmbeddedGlobalScope;
-import mc.embedding.embedded._symboltable.TextSymbol;
+import mc.embedding.external.embedded.EmbeddedMill;
+import mc.embedding.external.embedded._symboltable.EmbeddedGlobalScope;
+import mc.embedding.external.embedded._symboltable.TextSymbol;
 import org.junit.Test;
 
 import java.nio.file.Paths;
@@ -19,7 +20,11 @@ public class EmbeddedTest extends GeneratorIntegrationsTest {
   public void test() {
     final ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/mc/embedding"));
 
-    final EmbeddedGlobalScope scope = new EmbeddedGlobalScope(modelPath, "embedded");
+    final EmbeddedGlobalScope scope = EmbeddedMill
+        .embeddedGlobalScopeBuilder()
+        .setModelPath(modelPath)
+        .setModelFileExtension("embedded")
+        .build();
 
     final TextSymbol textSymbol = scope.resolveText("E").orElse(null);
     assertNotNull(textSymbol);
