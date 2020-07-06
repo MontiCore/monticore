@@ -131,10 +131,7 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
 
     ASTCDParameter param = getCDParameterFacade().createParameter(type,"realThis");
     ASTCDMethod setMethod = getCDMethodFacade().createMethod(PUBLIC, SET_REAL_THIS, param);
-    String generatedErrorCode = visitorService.getGeneratedErrorCode("STP#setRealThis");
-    this.replaceTemplate(EMPTY_BODY, setMethod, new TemplateHookPoint(
-        TEMPLATE_PATH + "symbolTablePrinter.SetRealThis4STP",
-        symbolTablePrinterName, generatedErrorCode));
+    this.replaceTemplate(EMPTY_BODY, setMethod, new StringHookPoint("this.realThis = realThis;"));
     return Lists.newArrayList(getMethod, setMethod);
   }
 
