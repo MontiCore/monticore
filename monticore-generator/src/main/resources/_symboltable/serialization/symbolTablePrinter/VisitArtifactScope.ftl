@@ -17,4 +17,3 @@ ${tc.signature("artifactScopeFullName", "languageName", "attrList" )}
   </#if>
 </#list>
   serializeAdditionalArtifactScopeAttributes(node);
-  serializeLocalSymbols(node);

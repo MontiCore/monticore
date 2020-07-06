@@ -21,4 +21,3 @@ ${tc.signature("scopeFullName", "languageName", "attrList")}
   </#if>
 </#list>
   serializeAdditionalScopeAttributes(node);
-  serializeLocalSymbols(node);

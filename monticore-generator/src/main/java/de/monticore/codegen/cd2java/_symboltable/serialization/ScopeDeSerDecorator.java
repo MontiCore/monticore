@@ -111,7 +111,8 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
   protected ASTCDConstructor createConstructor(String scopeDeSerName) {
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC, scopeDeSerName);
     Map<String, String> symbolTablePrinters = new HashMap<>();
-    visitorService.getSuperVisitors();
+    CDDefinitionSymbol lang = symbolTableService.getCDSymbol();
+    symbolTablePrinters.put(lang.getName(), symbolTableService.getSymbolTablePrinterFullName(lang));
     for (CDDefinitionSymbol superCD : symbolTableService.getSuperCDsTransitive()) {
       symbolTablePrinters.put(superCD.getName(), symbolTableService.getSymbolTablePrinterFullName(superCD));
     }
