@@ -4,7 +4,7 @@ package de.monticore.statements.prettyprint;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.statements.mclowlevelstatements._ast.ASTBreakStatement;
 import de.monticore.statements.mclowlevelstatements._ast.ASTContinueStatement;
-import de.monticore.statements.mclowlevelstatements._ast.ASTLabeledStatement;
+import de.monticore.statements.mclowlevelstatements._ast.ASTLabel;
 import de.monticore.statements.testmclowlevelstatements._parser.TestMCLowLevelStatementsParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -53,14 +53,14 @@ public class MCLowLevelStatementsPrettyPrinterTest  {
 
   @Test
   public void testLabeledStatement() throws IOException {
-    Optional<ASTLabeledStatement> result = parser.parse_StringLabeledStatement("a : break foo;");
+    Optional<ASTLabel> result = parser.parse_StringLabel("a : break foo;");
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
-    ASTLabeledStatement ast = result.get();
+    ASTLabel ast = result.get();
 
     String output = prettyPrinter.prettyprint(ast);
 
-    result = parser.parse_StringLabeledStatement(output);
+    result = parser.parse_StringLabel(output);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
 
