@@ -29,7 +29,8 @@ public class STPForLanguageCompositionTest {
   @Test
   public void testSerializeLocalSymbols(){
     //create scope with symbols of the grammar SymbolTablePrinterSub and both of its supergrammars
-    SymbolTablePrinterSubScope scope = SymbolTablePrinterSubMill.symbolTablePrinterSubScopeBuilder().build();
+    SymbolTablePrinterSubScope scope = SymbolTablePrinterSubMill
+        .symbolTablePrinterSubScopeBuilder().setName("alphabet").build();
     scope.add(SymbolTablePrinterSup1Mill.aSymbolBuilder().setName("a").build());
     scope.add(SymbolTablePrinterSup2Mill.bSymbolBuilder().setName("b").build());
     scope.add(SymbolTablePrinterSubMill.cSymbolBuilder().setName("c").build());
@@ -37,13 +38,14 @@ public class STPForLanguageCompositionTest {
 
 
     //serialize symbols and assert that the serialized String contains all the symbols
-    String serialized =  new SymbolTablePrinterSubScopeDeSer().serialize(scope);
+    SymbolTablePrinterSubScopeDeSer deSer = new SymbolTablePrinterSubScopeDeSer();
+    String serialized =  deSer.serialize(scope);
     assertTrue(serialized.contains("cSymbols"));
-    assertTrue(serialized.contains("\"name\":\"c\""));
+    assertTrue(serialized.contains("\"name\":\"alphabet.c\""));
     assertTrue(serialized.contains("bSymbols"));
-    assertTrue(serialized.contains("\"name\":\"b\""));
+    assertTrue(serialized.contains("\"name\":\"alphabet.b\""));
     assertTrue(serialized.contains("aSymbols"));
-    assertTrue(serialized.contains("\"name\":\"a\""));
+    assertTrue(serialized.contains("\"name\":\"alphabet.a\""));
   }
 
   @Test
