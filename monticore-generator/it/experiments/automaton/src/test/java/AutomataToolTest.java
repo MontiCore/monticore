@@ -32,7 +32,7 @@ public class AutomataToolTest {
     // LogStub.printPrints();
     List<String> p = LogStub.getPrints();
     assertEquals(1, p.size());
-// TODO XXX    assertEquals("XXX", p.get(0));
+    // TODO XXX    assertEquals("XXX", p.get(0));
     // TODO XXX handle Log.findings
   }
   
