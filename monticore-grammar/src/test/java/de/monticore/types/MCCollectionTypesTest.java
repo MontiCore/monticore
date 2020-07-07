@@ -77,9 +77,9 @@ public class MCCollectionTypesTest {
 
     //test specific methods
     ASTMCListType listType = (ASTMCListType) type.get();
-    assertEquals(listType.getNameList().size(), 1);
+    assertEquals(listType.getNamesList().size(), 1);
 
-    assertEquals(listType.getNameList().get(0), "List");
+    assertEquals(listType.getNamesList().get(0), "List");
 
     assertEquals(listType.getMCTypeArgumentsList().size(), 1);
 
@@ -109,9 +109,9 @@ public class MCCollectionTypesTest {
 
     //test specific methods
     ASTMCMapType mapType = (ASTMCMapType) type.get();
-    assertEquals(mapType.getNameList().size(), 1);
+    assertEquals(mapType.getNamesList().size(), 1);
 
-    assertEquals(mapType.getNameList().get(0), "Map");
+    assertEquals(mapType.getNamesList().get(0), "Map");
 
     assertEquals(mapType.getMCTypeArgumentsList().size(), 2);
 
@@ -142,9 +142,9 @@ public class MCCollectionTypesTest {
 
     //test specific methods
     ASTMCOptionalType optionalType = (ASTMCOptionalType) type.get();
-    assertEquals(optionalType.getNameList().size(), 1);
+    assertEquals(optionalType.getNamesList().size(), 1);
 
-    assertEquals(optionalType.getNameList().get(0), "Optional");
+    assertEquals(optionalType.getNamesList().get(0), "Optional");
 
     assertEquals(optionalType.getMCTypeArgumentsList().size(), 1);
 
@@ -175,9 +175,9 @@ public class MCCollectionTypesTest {
 
     //test specific methods
     ASTMCSetType setType = (ASTMCSetType) type.get();
-    assertEquals(setType.getNameList().size(), 1);
+    assertEquals(setType.getNamesList().size(), 1);
 
-    assertEquals(setType.getNameList().get(0), "Set");
+    assertEquals(setType.getNamesList().get(0), "Set");
 
     assertEquals(setType.getMCTypeArgumentsList().size(), 1);
 
