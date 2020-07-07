@@ -4,10 +4,10 @@
 -->
   /*StateBody*/
   {
-    <#list ast.stateList as s>
+    <#list ast.getStatesList() as s>
         ${tc.include("tpl.State", s)};
     </#list>
-    <#list ast.transitionList as t>
+    <#list ast.getTransitionsList() as t>
         ${tc.include("tpl.Transition", t)};
     </#list>
   }/*end*/
