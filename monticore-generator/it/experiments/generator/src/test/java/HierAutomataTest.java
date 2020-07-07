@@ -3,9 +3,12 @@
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import hierautomata._ast.ASTStateMachine;
 import hierautomata._parser.HierAutomataParser;
 import org.antlr.v4.runtime.RecognitionException;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.File;
@@ -17,13 +20,23 @@ import java.util.Optional;
  * Main class for the HierAutomaton DSL tool.
  */
 public class HierAutomataTest {
-
+  
+  @BeforeClass
+  public static void init() {
+    LogStub.init();         // replace log by a sideffect free variant
+    // LogStub.initPlusLog();  // for manual testing purpose only
+    Log.enableFailQuick(false);
+  }
+  
+  @Before
+  public void setUp() {
+    Log.clearFindings();
+    LogStub.clearPrints();
+  }
+  
   @Test
   public void toolTest() {
     
-    // use normal logging (no DEBUG, TRACE)
-    Log.init();
-
     // parse the model and create the AST representation
     ASTStateMachine ast = parse("src/test/resources/example/HierarchyPingPong.aut");
     Log.info("src/test/resources/example/HierarchyPingPong.aut" + " parsed successfully!", "HierAutomataTest");
@@ -50,7 +63,7 @@ public class HierAutomataTest {
     ge.generate("tpl/StateMachine.ftl", Paths.get("pingPong.aut"), ast);
     
     // Generation with additional parameters
-    // Fihoorst param defines depth of output hierarchy
+    // First param defines depth of output hierarchy
     // (other params are irrelevant)
     
     // neue GeneratorEngine ist notwendig, weil globale Variable gesetzt

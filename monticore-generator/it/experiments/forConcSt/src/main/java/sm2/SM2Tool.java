@@ -31,9 +31,9 @@ public class SM2Tool {
    * @param args
    */
   public static void main(String[] args) {
-
+  
     // use normal logging (no DEBUG, TRACE)
-    Log.init();
+    Log.ensureInitalization();
     
     if (args.length != 1) {
       Log.error("0xEE744 Please specify only one single path to the input model.");
@@ -73,7 +73,7 @@ public class SM2Tool {
     PrettyPrinter pp = new PrettyPrinter();
     pp.handle(ast);
     Log.info("Pretty printing the parsed sm2 into console:", "SM2Tool");
-    System.out.println(pp.getResult());
+    Log.println(pp.getResult());
   }
   
   /**
