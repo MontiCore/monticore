@@ -4,9 +4,12 @@ package mc.feature.symboltableprinter;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import mc.feature.symboltableprinter.symboltableprintersub.SymbolTablePrinterSubMill;
 import mc.feature.symboltableprinter.symboltableprintersub._symboltable.SymbolTablePrinterSubScope;
+import mc.feature.symboltableprinter.symboltableprintersub._symboltable.SymbolTablePrinterSubScopeDeSer;
 import mc.feature.symboltableprinter.symboltableprintersub._symboltable.SymbolTablePrinterSubSymbolTablePrinter;
 import mc.feature.symboltableprinter.symboltableprintersup1.SymbolTablePrinterSup1Mill;
 import mc.feature.symboltableprinter.symboltableprintersup2.SymbolTablePrinterSup2Mill;
+import mc.feature.visitor.sub._symboltable.SubScopeDeSer;
+import mc.feature.visitor.sub._visitor.SubDelegatorVisitor;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -31,10 +34,10 @@ public class STPForLanguageCompositionTest {
     scope.add(SymbolTablePrinterSup2Mill.bSymbolBuilder().setName("b").build());
     scope.add(SymbolTablePrinterSubMill.cSymbolBuilder().setName("c").build());
 
+
+
     //serialize symbols and assert that the serialized String contains all the symbols
-    symTabPrinter.serializeLocalSymbols(scope);
-    String serialized = symTabPrinter.getSerializedString();
-    System.out.println(serialized);
+    String serialized =  new SymbolTablePrinterSubScopeDeSer().serialize(scope);
     assertTrue(serialized.contains("cSymbols"));
     assertTrue(serialized.contains("\"name\":\"c\""));
     assertTrue(serialized.contains("bSymbols"));
