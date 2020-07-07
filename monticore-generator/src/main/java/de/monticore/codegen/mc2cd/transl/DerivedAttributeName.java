@@ -6,8 +6,11 @@ import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.grammar._ast.*;
+import de.monticore.grammar.grammar._symboltable.AdditionalAttributeSymbol;
 import de.monticore.utils.Link;
 
+import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.UnaryOperator;
 
@@ -56,6 +59,14 @@ public class DerivedAttributeName implements
         rootLink.getLinks(ASTKeyTerminal.class, ASTCDAttribute.class);
     for (Link<ASTKeyTerminal, ASTCDAttribute> links : attributesFromKeyTerminal) {
       if (!links.source().isPresentUsageName()) {
+        addDerivedStereotypeToAttributes(links.target());
+      }
+    }
+
+    Set<Link<ASTAdditionalAttribute, ASTCDAttribute>> attributesASTRule =
+        rootLink.getLinks(ASTAdditionalAttribute.class, ASTCDAttribute.class);
+    for (Link<ASTAdditionalAttribute, ASTCDAttribute> links : attributesASTRule) {
+      if (!links.source().isPresentName()) {
         addDerivedStereotypeToAttributes(links.target());
       }
     }
