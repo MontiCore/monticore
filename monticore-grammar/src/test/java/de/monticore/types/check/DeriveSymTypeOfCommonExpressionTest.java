@@ -1583,7 +1583,6 @@ public class DeriveSymTypeOfCommonExpressionTest {
         .setName("add")
         .build();
     add.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
-    elementField.setIsParameter(true);
     add.getSpannedScope().add(elementField);
     FieldSymbol field = field("field", _booleanSymType);
     OOTypeSymbol superclass = TypeSymbolsMill.oOTypeSymbolBuilder()

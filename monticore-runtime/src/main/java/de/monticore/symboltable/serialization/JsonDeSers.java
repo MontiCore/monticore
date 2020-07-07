@@ -17,10 +17,13 @@ public class JsonDeSers {
 
   public static final String PACKAGE = "package";
 
+  @Deprecated
   public static final String IMPORTS = "imports";
 
+  @Deprecated
   public static final String SUBSCOPES = "subScopes";
 
+  @Deprecated
   public static final String EXPORTS_SYMBOLS = "exportsSymbols";
 
   public static final String IS_SHADOWING_SCOPE = "isShadowingScope";
@@ -29,14 +32,20 @@ public class JsonDeSers {
 
   public static final String KIND = "kind";
 
+  public static final String SPANNED_SCOPE = "spannedScope";
+
+  @Deprecated
   public static final String SCOPE_SPANNING_SYMBOL = "spanningSymbol";
 
   /**
    * This method deserializes a list of import statements in the passed Json object
-   *
+   * @deprecated This method will be removed soon. Instead, symbol table creators should
+   *  * qualify names pointing to symbols of foreign models with the respective import statements
+   *  * in the model.
    * @param scope
    * @return
    */
+  @Deprecated //will be removed soon and all names will be stored as qualified names
   public static List<ImportStatement> deserializeImports(JsonObject scope) {
     List<ImportStatement> result = new ArrayList<>();
     if (scope.hasMember(IMPORTS)) {
@@ -54,6 +63,7 @@ public class JsonDeSers {
    * @param spanningSymbol
    * @return
    */
+  @Deprecated
   public static void serializeScopeSpanningSymbol(IScopeSpanningSymbol spanningSymbol,
       JsonPrinter printer) {
     if (null != spanningSymbol) {

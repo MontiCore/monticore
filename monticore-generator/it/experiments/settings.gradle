@@ -15,7 +15,7 @@ pluginManagement {
 }
 
 rootProject.name = 'experiments'
-include(':automaton_experiments')
+include(':automaton')
 include(':builderAtm')
 include(':ch17')
 include(':codeChecks')
@@ -40,7 +40,6 @@ include(':stcomposition02')
 include(':stcomposition03')
 include(':symbols')
 include(':visit_L_inherit')
-project(':automaton_experiments').projectDir = file('automaton')
 project(':S01_intro').projectDir = file('S01.intro')
 project(':visit_L_inherit').projectDir = file('visit.L.inherit')
 include 'templates'

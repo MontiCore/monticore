@@ -952,9 +952,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     aconstr.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
     aconstr.getSpannedScope().add(t);
     FieldSymbol sParam = field("s", sType);
-    sParam.setIsParameter(true);
     FieldSymbol tParam = field("t", tType);
-    tParam.setIsParameter(true);
     MethodSymbol set = TypeSymbolsMill.methodSymbolBuilder()
         .setName("set")
         .setReturnType(_StringSymType)
@@ -1064,7 +1062,6 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
   public void failDeriveSymTypeOfPrimaryGenericInvocationExpression2() throws IOException {
     //<TypeArg>super.<TypeArg>method(arg)
     FieldSymbol xParam = field("x", _intSymType);
-    xParam.setIsParameter(true);
     MethodSymbol help = TypeSymbolsMill.methodSymbolBuilder()
         .setName("help")
         .setReturnType(_doubleSymType)
@@ -1370,13 +1367,11 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     //Bsp3
     FieldSymbol field1 = CombineExpressionsWithLiteralsMill.fieldSymbolBuilder()
         .setName("a")
-        .setIsParameter(true)
         .setType(_intSymType)
         .build();
 
     FieldSymbol field2 = CombineExpressionsWithLiteralsMill.fieldSymbolBuilder()
         .setName("b")
-        .setIsParameter(true)
         .setType(_doubleSymType)
         .build();
 
@@ -1492,13 +1487,11 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     bsp3constr.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
     FieldSymbol field1 = CombineExpressionsWithLiteralsMill.fieldSymbolBuilder()
         .setName("a")
-        .setIsParameter(true)
         .setType(_intSymType)
         .build();
 
     FieldSymbol field2 = CombineExpressionsWithLiteralsMill.fieldSymbolBuilder()
         .setName("b")
-        .setIsParameter(true)
         .setType(_doubleSymType)
         .build();
 
@@ -1538,13 +1531,11 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     //Bsp4
     FieldSymbol field1 = CombineExpressionsWithLiteralsMill.fieldSymbolBuilder()
         .setName("a")
-        .setIsParameter(true)
         .setType(_intSymType)
         .build();
 
     FieldSymbol field2 = CombineExpressionsWithLiteralsMill.fieldSymbolBuilder()
         .setName("b")
-        .setIsParameter(true)
         .setType(_doubleSymType)
         .build();
 

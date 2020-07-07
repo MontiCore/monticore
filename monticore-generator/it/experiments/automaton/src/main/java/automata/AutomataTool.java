@@ -32,8 +32,8 @@ public class AutomataTool {
   public static void main(String[] args) {
 
     // use normal logging (no DEBUG, TRACE)
-    Log.init();
-
+    Log.ensureInitalization();
+    
     // Retrieve the model name
     if (args.length != 2) {
       Log.error("0xEE7400 Please specify 1. the path to the input model and 2. the path to store symbols.");
@@ -49,7 +49,7 @@ public class AutomataTool {
 
     // setup the symbol table
     AutomataArtifactScope modelTopScope = createSymbolTable(ast);
-
+    
     // can be used for resolving names in the model
     Optional<StateSymbol> aSymbol =
             modelTopScope.resolveState("Ping");
@@ -89,7 +89,8 @@ public class AutomataTool {
     PrettyPrinter pp = new PrettyPrinter();
     pp.handle(ast);
     Log.info("Pretty printing the parsed automaton into console:", AutomataTool.class.getName());
-    System.out.println(pp.getResult());
+    // print the result
+    Log.println(pp.getResult());
   }
 
   /**
@@ -123,7 +124,11 @@ public class AutomataTool {
    */
   public static AutomataArtifactScope createSymbolTable(ASTAutomaton ast) {
 
-    AutomataGlobalScope globalScope = new AutomataGlobalScope(new ModelPath());
+    AutomataGlobalScope globalScope = AutomataMill
+        .automataGlobalScopeBuilder()
+        .setModelPath(new ModelPath())
+        .setModelFileExtension("aut")
+        .build();
 
     AutomataSymbolTableCreator symbolTable = AutomataMill
         .automataSymbolTableCreatorBuilder()

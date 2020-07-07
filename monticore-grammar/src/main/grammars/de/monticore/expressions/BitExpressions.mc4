@@ -38,26 +38,26 @@ component grammar BitExpressions extends de.monticore.expressions.ExpressionsBas
 
   /*=================================================================*/
 
-  /* It is not possible to define "<<", ">>" or ">>>" directly.
-   * Parsing generic types like "List<List<String>>" otherwise have problems.
-   * We use the noSpace workaraound to ensure that no space was
-   * found between the previous two token.
-  */
+  /* Due to possible scanner clashes with "List<List<String>>" 
+     we split the tokens:
+   */
+  splittoken ">>", ">>>";
 
   LeftShiftExpression implements Expression <160>, ShiftExpression =
     left:Expression
-    {noSpace(2)}? shiftOp:"<" "<" {_aNode.setShiftOp("<<");}
+    shiftOp:"<<" {_aNode.setShiftOp("<<");}
     right:Expression;
 
   RightShiftExpression implements Expression <160>, ShiftExpression =
     left:Expression
-    {noSpace(2)}? shiftOp:">" ">" {_aNode.setShiftOp(">>");}
+    shiftOp:">>" {_aNode.setShiftOp(">>");}
     right:Expression;
 
   LogicalRightShiftExpression implements Expression <160>, ShiftExpression =
     left:Expression
-    {noSpace(2,3)}? shiftOp:">" ">" ">" {_aNode.setShiftOp(">>>");}
+    shiftOp:">>>" {_aNode.setShiftOp(">>>");}
     right:Expression;
+    
 
   /*=================================================================*/
 

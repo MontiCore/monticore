@@ -7,7 +7,7 @@ import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.prettyprint.MCBasicsPrettyPrinter;
 import de.monticore.statements.mclowlevelstatements._ast.ASTBreakStatement;
 import de.monticore.statements.mclowlevelstatements._ast.ASTContinueStatement;
-import de.monticore.statements.mclowlevelstatements._ast.ASTLabeledStatement;
+import de.monticore.statements.mclowlevelstatements._ast.ASTLabel;
 import de.monticore.statements.mclowlevelstatements._ast.ASTMCLowLevelStatementsNode;
 import de.monticore.statements.mclowlevelstatements._visitor.MCLowLevelStatementsVisitor;
 
@@ -24,9 +24,9 @@ public class MCLowLevelStatementsPrettyPrinter extends MCBasicsPrettyPrinter imp
   }
 
   @Override
-  public void handle(ASTLabeledStatement a) {
+  public void handle(ASTLabel a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
-    getPrinter().print(a.getLabel());
+    getPrinter().print(a.getName());
     getPrinter().print(" : ");
     a.getMCStatement().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(a, getPrinter());

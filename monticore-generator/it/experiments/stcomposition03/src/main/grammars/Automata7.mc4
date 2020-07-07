@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-grammar Automata6 extends de.monticore.MCBasics {
+grammar Automata7 extends de.monticore.MCBasics {
 
   symbol Automaton = "automaton" Name "{" (State | Transition)* "}" ;
 

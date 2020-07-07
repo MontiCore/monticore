@@ -677,6 +677,14 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     return symbolProds;
   }
 
+  public boolean hasSymbolSpannedScope(ASTCDType symbolProd){
+    ASTModifier m = symbolProd.getModifier();
+    if(!hasSymbolStereotype(m)){
+      return false;
+    }
+    return hasScopeStereotype(m) || hasInheritedScopeStereotype(m);
+  }
+
 
   public boolean hasProd(ASTCDDefinition astcdDefinition) {
     // is true if it has any class productions or any interface productions that are not the language interface

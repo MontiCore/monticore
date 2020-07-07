@@ -1,28 +1,23 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import automata.AutomataMill;
+import automata._ast.ASTAutomaton;
+import automata._parser.AutomataParser;
+import automata._symboltable.AutomataArtifactScope;
+import automata._symboltable.AutomataGlobalScope;
+import automata._symboltable.IAutomataScope;
+import automata._symboltable.StateSymbol;
+import de.monticore.io.paths.ModelPath;
+import de.monticore.symboltable.resolving.ResolvedSeveralEntriesForSymbolException;
+import de.se_rwth.commons.logging.Log;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
-import org.junit.Test;
-
-import automata._ast.ASTAutomaton;
-import automata._parser.AutomataParser;
-import automata._symboltable.AutomataArtifactScope;
-import automata._symboltable.AutomataGlobalScope;
-import automata._symboltable.AutomataLanguage;
-import automata.AutomataMill;
-import automata._symboltable.AutomataSymbolTableCreatorDelegator;
-import automata._symboltable.IAutomataScope;
-import automata._symboltable.StateSymbol;
-import de.monticore.io.paths.ModelPath;
-import de.monticore.symboltable.resolving.ResolvedSeveralEntriesForSymbolException;
-import de.se_rwth.commons.logging.Log;
+import static org.junit.Assert.*;
 
 public class ResolveDeepTest {
   
@@ -38,8 +33,7 @@ public class ResolveDeepTest {
     assertTrue(jsonDoc.isPresent());
     
     // build symbol table
-    final AutomataLanguage lang = AutomataMill.automataLanguageBuilder().build();
-    AutomataArtifactScope scope = createSymbolTable(lang, jsonDoc.get());
+    AutomataArtifactScope scope = createSymbolTable(jsonDoc.get());
     
     // test resolving
     // we only test the resolveDown methods as the other methods are not
@@ -83,18 +77,15 @@ public class ResolveDeepTest {
   /**
    * Creates the symbol table from the parsed AST.
    *
-   * @param lang The automata language.
    * @param ast The top AST node.
    * @return The artifact scope derived from the parsed AST
    */
-  public static AutomataArtifactScope createSymbolTable(AutomataLanguage lang, ASTAutomaton ast) {
-    
-    AutomataGlobalScope globalScope = AutomataMill.automataGlobalScopeBuilder()
-        .setModelPath(new ModelPath())
-        .setAutomataLanguage(lang)
-        .build();
-    AutomataSymbolTableCreatorDelegator symbolTable = lang.getSymbolTableCreator(globalScope);
-    return symbolTable.createFromAST(ast);
+  public static AutomataArtifactScope createSymbolTable(ASTAutomaton ast) {
+     return AutomataMill
+            .automataSymbolTableCreatorBuilder()
+            .addToScopeStack(new AutomataGlobalScope(new ModelPath(), "aut"))
+            .build()
+            .createFromAST(ast);
   }
   
 }

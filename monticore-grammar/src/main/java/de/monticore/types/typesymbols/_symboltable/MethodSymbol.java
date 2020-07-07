@@ -65,7 +65,6 @@ public class MethodSymbol extends MethodSymbolTOP {
   public List<FieldSymbol> getParameterList(){
     return getSpannedScope().getLocalFieldSymbols()
         .stream()
-        .filter(FieldSymbol::isIsParameter)
         .collect(Collectors.toList());
   }
 
