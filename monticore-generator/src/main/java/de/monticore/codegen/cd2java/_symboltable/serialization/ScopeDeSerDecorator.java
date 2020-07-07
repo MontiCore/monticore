@@ -177,7 +177,9 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
     ASTCDParameter artifactScopeParam = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(artifactScopeName), "toSerialize");
     ASTCDParameter symbolPathParam = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType("java.nio.file.Path"), "symbolPath");
     ASTCDMethod storeMethod = getCDMethodFacade().createMethod(PUBLIC, "store", artifactScopeParam, symbolPathParam);
-    this.replaceTemplate(EMPTY_BODY, storeMethod, new TemplateHookPoint("_symboltable.serialization.scopeDeSer.Store", scopeDeSerName));
+    String generatedError = symbolTableService.getGeneratedErrorCode(scopeDeSerName+"#store1");
+    String generatedError2 = symbolTableService.getGeneratedErrorCode(scopeDeSerName+"#store2");
+    this.replaceTemplate(EMPTY_BODY, storeMethod, new TemplateHookPoint("_symboltable.serialization.scopeDeSer.Store", scopeDeSerName, generatedError, generatedError2));
     return storeMethod;
   }
 
