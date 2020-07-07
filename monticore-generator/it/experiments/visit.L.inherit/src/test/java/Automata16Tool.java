@@ -32,18 +32,18 @@ public class Automata16Tool {
       Log.error("0xEE752 Please specify only one single path to the input model.");
       return;
     }
-    Log.info("Automaton16 DSL Tool", Automata16Tool.class.getName());
-    Log.info("------------------", Automata16Tool.class.getName());
+    Log.info("Automaton16 DSL Tool", "Automata16Tool");
+    Log.info("------------------", "Automata16Tool");
     String model = args[0];
     
     // parse the model and create the AST representation
     ASTAutomaton ast = parse(model);
-    Log.info(model + " parsed successfully!", Automata16Tool.class.getName());
+    Log.info(model + " parsed successfully!", "Automata16Tool");
     
     // execute a pretty printer
     Automata16PrettyPrinter pp = new Automata16PrettyPrinter();
     pp.handle(ast);
-    Log.info("Pretty printing the parsed automaton into console:", Automata16Tool.class.getName());
+    Log.info("Pretty printing the parsed automaton into console:", "Automata16Tool");
     System.out.println(pp.getResult());
   }
   

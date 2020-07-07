@@ -36,18 +36,18 @@ public class Automata5Tool {
       Log.error("0xEE745 Please specify only one single path to the input model.");
       return;
     }
-    Log.info("Automata5 DSL Tool", Automata5Tool.class.getName());
-    Log.info("------------------", Automata5Tool.class.getName());
+    Log.info("Automata5 DSL Tool", "Automata5Tool");
+    Log.info("------------------", "Automata5Tool");
     String model = args[0];
     
     // parse the model and create the AST representation
     ASTAutomaton ast = parse(model);
-    Log.info(model + " parsed successfully!", Automata5Tool.class.getName());
+    Log.info(model + " parsed successfully!", "Automata5Tool");
     
     // execute a pretty printer
     Automata5PrettyPrinter pp = new Automata5PrettyPrinter();
     pp.handle(ast);
-    Log.info("Pretty printing the parsed automaton into console:", Automata5Tool.class.getName());
+    Log.info("Pretty printing the parsed automaton into console:", "Automata5Tool");
     System.out.println(pp.getResult());
   }
   

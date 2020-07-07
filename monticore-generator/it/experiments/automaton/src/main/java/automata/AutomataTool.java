@@ -39,13 +39,13 @@ public class AutomataTool {
       Log.error("0xEE7400 Please specify 1. the path to the input model and 2. the path to store symbols.");
       return;
     }
-    Log.info("Automaton DSL Tool", AutomataTool.class.getName());
-    Log.info("------------------", AutomataTool.class.getName());
+    Log.info("Automaton DSL Tool", "AutomataTool");
+    Log.info("------------------", "AutomataTool");
     String model = args[0];
 
     // parse the model and create the AST representation
     ASTAutomaton ast = parse(model);
-    Log.info(model + " parsed successfully!", AutomataTool.class.getName());
+    Log.info(model + " parsed successfully!", "AutomataTool");
 
     // setup the symbol table
     AutomataArtifactScope modelTopScope = createSymbolTable(ast);
@@ -56,10 +56,10 @@ public class AutomataTool {
     if (aSymbol.isPresent()) {
       Log.info("Resolved state symbol \"Ping\"; FQN = "
                + aSymbol.get().toString(),
-          AutomataTool.class.getName());
+          "AutomataTool");
     } else {
       Log.info("This automaton does not contain a state called \"Ping\";",
-          AutomataTool.class.getName());
+          "AutomataTool");
     }
 
     // setup context condition infrastructure
@@ -83,12 +83,12 @@ public class AutomataTool {
     // analyze the model with a visitor
     CountStates cs = new CountStates();
     cs.handle(ast);
-    Log.info("The model contains " + cs.getCount() + " states.", AutomataTool.class.getName());
+    Log.info("The model contains " + cs.getCount() + " states.", "AutomataTool");
 
     // execute a pretty printer
     PrettyPrinter pp = new PrettyPrinter();
     pp.handle(ast);
-    Log.info("Pretty printing the parsed automaton into console:", AutomataTool.class.getName());
+    Log.info("Pretty printing the parsed automaton into console:", "AutomataTool");
     // print the result
     Log.println(pp.getResult());
   }

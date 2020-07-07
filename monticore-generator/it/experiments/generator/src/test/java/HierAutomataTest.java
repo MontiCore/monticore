@@ -26,11 +26,11 @@ public class HierAutomataTest {
 
     // parse the model and create the AST representation
     ASTStateMachine ast = parse("src/test/resources/example/HierarchyPingPong.aut");
-    Log.info("src/test/resources/example/HierarchyPingPong.aut" + " parsed successfully!", HierAutomataTest.class.getName());
+    Log.info("src/test/resources/example/HierarchyPingPong.aut" + " parsed successfully!", "HierAutomataTest");
     
     // --------------------------------------------------------
     // execute a generation process
-    Log.info("Writing the parsed automaton into File:", HierAutomataTest.class.getName());
+    Log.info("Writing the parsed automaton into File:", "HierAutomataTest");
     
     GeneratorSetup s = new GeneratorSetup();
     s.setOutputDirectory(new File("target/out1"));

@@ -16,8 +16,8 @@ public class Automata3ToolTest {
 
   @BeforeClass
   public static void init() {
-    // replace log by a sideffect free variant
-    LogStub.init();
+    LogStub.init();         // replace log by a sideffect free variant
+    // LogStub.initPlusLog();  // for manual testing purpose only
     Log.enableFailQuick(false);
   }
   
@@ -32,12 +32,21 @@ public class Automata3ToolTest {
     Automata3Tool.main(new String[] { "src/test/resources/example/PingPongInv.aut" });
     Log.printFindings();
     assertEquals(0, Log.getFindings().size());
-    // LogStub.printPrints();
+    // LogStub.printPrints();  // for manual testing purpose only
+  
     List<String> p = LogStub.getPrints();
-// XXX    assertEquals(1, p.size());
-// XXX    String res = p.get(0).replaceAll("[\r\n]", " ");
-// XXX    assertTrue(p.get(0), res.matches(".*state.*"));
-// XXX    assertTrue(p.get(0), res.matches(".*state Pung ..... true && v1 && !false && v2 ......*"));
+    assertEquals(6, p.size());
+  
+    // Check some "[INFO]" outputs
+    assertTrue(p.get(0), p.get(0).matches(".*.INFO.  Automata3Tool Automata3 DSL Tool.*\n"));
+  
+    // Check resulting pretty print:
+    String res = p.get(p.size()-1).replaceAll("[\r\n]", " ");
+    assertEquals(395, res.length());
+    assertTrue(res, res.matches(".*print by composed Automata3PrettyPrinter.*"));
+    // original:                         state NoGame /*[*/ true /*]*/ <<initial>>
+    assertTrue(res, res.matches(".*state NoGame /.../ true /.../ <<initial>>.*"));
+    assertTrue(res, res.matches(".*Pong - returnBall > Ping;.*"));
   }
   
   @Test
@@ -46,8 +55,8 @@ public class Automata3ToolTest {
     Log.printFindings();
     assertEquals(0, Log.getFindings().size());
     // LogStub.printPrints();
-// XXX    List<String> p = LogStub.getPrints();
-// XXX    assertEquals(1, p.size());
+    List<String> p = LogStub.getPrints();
+    assertEquals(6, p.size());
   }
   
 }
