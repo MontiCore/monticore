@@ -8,5 +8,5 @@ ${tc.signature("symbolList", "superScopes")}
   }
 </#list>
 <#list superScopes as scope>
-  traverse((${scope}) node);
+  getRealThis().traverse((${scope}) node);
 </#list>
