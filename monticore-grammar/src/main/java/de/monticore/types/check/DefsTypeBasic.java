@@ -83,7 +83,7 @@ public class DefsTypeBasic {
             .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
             .setName(name)
             .setFullName(name)
-            .setSuperTypeList(superTypes)
+            .setSuperTypesList(superTypes)
             .build();
   }
 
@@ -93,7 +93,7 @@ public class DefsTypeBasic {
             .setSpannedScope(spannedScope)
             .setName(name)
             .setFullName(name)
-            .setSuperTypeList(superTypes)
+            .setSuperTypesList(superTypes)
             .setTypeParameterList(typeArguments)
             .build();
   }
@@ -105,7 +105,7 @@ public class DefsTypeBasic {
           .setName(name)
           .setFullName(name)
           .setTypeParameterList(typeVariableList)
-          .setSuperTypeList(superTypeList)
+          .setSuperTypesList(superTypeList)
           .setMethodList(methodList)
           .setFieldList(fieldList)
           .build();
@@ -120,7 +120,7 @@ public class DefsTypeBasic {
         .setName(name)
         .setFullName(name)
         .setTypeParameterList(typeVariableList)
-        .setSuperTypeList(superTypeList)
+        .setSuperTypesList(superTypeList)
         .setMethodList(methodList)
         .setFieldList(fieldList)
         .build();

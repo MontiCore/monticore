@@ -37,7 +37,7 @@ public class ASTMCSetType extends ASTMCSetTypeTOP {
   // viele methoden der Topklassen überflüssig geworden
 
   public ASTMCTypeArgument getMCTypeArgument() {
-    return this.getMCTypeArgument(0);
+    return this.getMCTypeArguments(0);
   }
 
   public void setName(String name) {
@@ -157,8 +157,8 @@ public class ASTMCSetType extends ASTMCSetTypeTOP {
   }
 
   public boolean removeIfMCTypeArgument(Predicate<? super de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument> filter) {
-    if (getMCTypeArgumentList().stream().noneMatch(filter)) {
-      return getMCTypeArgumentList().removeIf(filter);
+    if (getMCTypeArgumentsList().stream().noneMatch(filter)) {
+      return getMCTypeArgumentsList().removeIf(filter);
     } else {
       Log.error("0xA6032 Not allowed to remove an element to MCTypeArgumentList of ASTMCSetType.A MCTypeArgumentList must always have one element.");
       return false;
@@ -166,7 +166,7 @@ public class ASTMCSetType extends ASTMCSetTypeTOP {
   }
 
   public void forEachMCTypeArguments(Consumer<? super de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument> action) {
-    this.getMCTypeArgumentList().forEach(action);
+    this.getMCTypeArgumentsList().forEach(action);
   }
 
   public void addMCTypeArgument(int index, de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument element) {
@@ -185,7 +185,7 @@ public class ASTMCSetType extends ASTMCSetTypeTOP {
 
   public de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument setMCTypeArgument(int index, de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument element) {
     if (index == 0) {
-      return this.getMCTypeArgumentList().set(index, element);
+      return this.getMCTypeArgumentsList().set(index, element);
     } else {
       Log.error("0xA6036 Not allowed to set an element of MCTypeArgumentList of ASTMCSetType to a other index than 0.A MCTypeArgumentList must always have one element.");
       return getMCTypeArgument();
@@ -193,11 +193,11 @@ public class ASTMCSetType extends ASTMCSetTypeTOP {
   }
 
   public void replaceAllMCTypeArguments(UnaryOperator<de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument> operator) {
-    this.getMCTypeArgumentList().replaceAll(operator);
+    this.getMCTypeArgumentsList().replaceAll(operator);
   }
 
   public void sortMCTypeArguments(Comparator<? super de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument> comparator) {
-    this.getMCTypeArgumentList().sort(comparator);
+    this.getMCTypeArgumentsList().sort(comparator);
   }
 
   public void setMCTypeArgumentList(List<de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument> mCTypeArguments) {

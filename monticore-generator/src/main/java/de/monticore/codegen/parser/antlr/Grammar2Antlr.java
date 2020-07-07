@@ -1019,7 +1019,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
         ast.get_Children().add(term);
         // term.set_Parent(ast);
         term.setName(y);
-        term.setUsageName(HelperGrammar.getUsuageName(ast));
+        term.setUsageName(HelperGrammar.getUsageName(ast));
 
         if (ast.isPresentSymbol()) {
           RuleComponentSymbol componentSymbol = ast.getSymbol();

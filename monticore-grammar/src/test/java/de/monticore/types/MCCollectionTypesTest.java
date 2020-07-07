@@ -81,9 +81,9 @@ public class MCCollectionTypesTest {
 
     assertEquals(listType.getNameList().get(0), "List");
 
-    assertEquals(listType.getMCTypeArgumentList().size(), 1);
+    assertEquals(listType.getMCTypeArgumentsList().size(), 1);
 
-    ASTMCTypeArgument argument = listType.getMCTypeArgumentList().get(0);
+    ASTMCTypeArgument argument = listType.getMCTypeArgumentsList().get(0);
     Optional<ASTMCTypeArgument> argument2 = parser.parse_StringMCTypeArgument("String");
     assertFalse(parser.hasErrors());
     assertTrue(argument2.isPresent());
@@ -113,9 +113,9 @@ public class MCCollectionTypesTest {
 
     assertEquals(mapType.getNameList().get(0), "Map");
 
-    assertEquals(mapType.getMCTypeArgumentList().size(), 2);
+    assertEquals(mapType.getMCTypeArgumentsList().size(), 2);
 
-    ASTMCTypeArgument argument = mapType.getMCTypeArgumentList().get(0);
+    ASTMCTypeArgument argument = mapType.getMCTypeArgumentsList().get(0);
     Optional<ASTMCTypeArgument> argument2 = parser.parse_StringMCTypeArgument("Integer");
     assertFalse(parser.hasErrors());
     assertTrue(argument2.isPresent());
@@ -146,9 +146,9 @@ public class MCCollectionTypesTest {
 
     assertEquals(optionalType.getNameList().get(0), "Optional");
 
-    assertEquals(optionalType.getMCTypeArgumentList().size(), 1);
+    assertEquals(optionalType.getMCTypeArgumentsList().size(), 1);
 
-    ASTMCTypeArgument argument = optionalType.getMCTypeArgumentList().get(0);
+    ASTMCTypeArgument argument = optionalType.getMCTypeArgumentsList().get(0);
     Optional<ASTMCTypeArgument> argument2 = parser.parse_StringMCTypeArgument("String");
     assertFalse(parser.hasErrors());
     assertTrue(argument2.isPresent());
@@ -179,9 +179,9 @@ public class MCCollectionTypesTest {
 
     assertEquals(setType.getNameList().get(0), "Set");
 
-    assertEquals(setType.getMCTypeArgumentList().size(), 1);
+    assertEquals(setType.getMCTypeArgumentsList().size(), 1);
 
-    ASTMCTypeArgument argument = setType.getMCTypeArgumentList().get(0);
+    ASTMCTypeArgument argument = setType.getMCTypeArgumentsList().get(0);
     Optional<ASTMCTypeArgument> argument2 = parser.parse_StringMCTypeArgument("String");
     assertFalse(parser.hasErrors());
     assertTrue(argument2.isPresent());
@@ -221,7 +221,7 @@ public class MCCollectionTypesTest {
     Optional<ASTMCGenericType> type = parser.parse_StringMCGenericType("List<int>");
     assertTrue(type.isPresent());
     assertEquals("List", type.get().printWithoutTypeArguments());
-    assertTrue(type.get().getMCTypeArgumentList().get(0) instanceof ASTMCPrimitiveTypeArgument);
+    assertTrue(type.get().getMCTypeArgumentsList().get(0) instanceof ASTMCPrimitiveTypeArgument);
 
   }
 

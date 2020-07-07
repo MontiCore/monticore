@@ -33,13 +33,13 @@ public class MCSimpleGenericTypesPrettyPrinter extends MCCollectionTypesPrettyPr
   }
 
   public void handle(ASTMCBasicGenericType node) {
-   getPrinter().print(String.join(".",node.getNameList())+"<");
-    Iterator<ASTMCTypeArgument> a = node.getMCTypeArgumentList().iterator();
+   getPrinter().print(String.join(".",node.getNamesList())+"<");
+    Iterator<ASTMCTypeArgument> a = node.getMCTypeArgumentsList().iterator();
     // printListSimpleGenericTypes(a,",");
     String seperator = ",";
     String sepTemp = "";
 
-   for(ASTMCTypeArgument t:node.getMCTypeArgumentList()) {
+   for(ASTMCTypeArgument t:node.getMCTypeArgumentsList()) {
      getPrinter().print(sepTemp);
      t.accept(getRealThis());
      sepTemp = seperator;

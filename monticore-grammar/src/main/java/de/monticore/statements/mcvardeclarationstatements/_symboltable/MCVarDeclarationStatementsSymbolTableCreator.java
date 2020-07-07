@@ -31,7 +31,7 @@ public class MCVarDeclarationStatementsSymbolTableCreator extends MCVarDeclarati
 
   public void endVisit(ASTLocalVariableDeclaration ast) {
     List<VarDeclSymbol> symbols = Lists.newArrayList();
-    for (ASTVariableDeclarator v : ast.getVariableDeclaratorList()) {
+    for (ASTVariableDeclarator v : ast.getVariableDeclaratorsList()) {
       SymTypeExpression simpleType = createTypeLoader(ast.getMCType());
       if (v.getDeclaratorId().getDimList().size() > 0) {
         if (simpleType instanceof SymTypeArray) {
@@ -45,7 +45,7 @@ public class MCVarDeclarationStatementsSymbolTableCreator extends MCVarDeclarati
       v.getDeclaratorId().getSymbol().setType(simpleType);
       symbols.add(v.getDeclaratorId().getSymbol());
     }
-    addModifiersToVariables(symbols, ast.getMCModifierList());
+    addModifiersToVariables(symbols, ast.getMCModifiersList());
   }
 
   protected void addModifiersToVariables(List<VarDeclSymbol> symbols, Iterable<? extends ASTMCModifier> modifiers) {

@@ -7,7 +7,7 @@ ${tc.signature("symTabMill", "artifactScope", "artifactScopeBuilder", "scopeRule
   List<de.monticore.symboltable.ImportStatement> imports = de.monticore.symboltable.serialization.JsonDeSers.deserializeImports(scopeJson);
   boolean exportsSymbols = scopeJson.getBooleanMember(de.monticore.symboltable.serialization.JsonDeSers.EXPORTS_SYMBOLS);
 
-  ${artifactScope} scope = ${symTabMill}.${artifactScopeBuilder?uncap_first}().setPackageName(packageName) .setImportList(imports).build();
+  ${artifactScope} scope = ${symTabMill}.${artifactScopeBuilder?uncap_first}().setPackageName(packageName) .setImportsList(imports).build();
   scope.setName(name);
   scope.setExportingSymbols(exportsSymbols);
 

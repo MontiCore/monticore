@@ -6,7 +6,7 @@ ${tc.signature("artifactScope")}
   printer.member(de.monticore.symboltable.serialization.JsonDeSers.PACKAGE, node.getPackageName());
   printer.member(de.monticore.symboltable.serialization.JsonDeSers.EXPORTS_SYMBOLS, node.isExportingSymbols());
   printer.beginArray(de.monticore.symboltable.serialization.JsonDeSers.IMPORTS);
-  node.getImportList().forEach(x -> printer.value(x.toString()));
+  node.getImportsList().forEach(x -> printer.value(x.toString()));
   printer.endArray();
   if (node.isPresentSpanningSymbol()) {
     addScopeSpanningSymbol(node.getSpanningSymbol());

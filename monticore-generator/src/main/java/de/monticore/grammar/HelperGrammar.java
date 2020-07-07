@@ -25,7 +25,7 @@ public class HelperGrammar {
    * @param a
    * @return
    */
-  public static String getUsuageName(ASTNonTerminal a) {
+  public static String getUsageName(ASTNonTerminal a) {
     String name;
     if (a.isPresentUsageName()) {
       name = a.getUsageName();
@@ -40,13 +40,11 @@ public class HelperGrammar {
   public static String getListName(ASTNonTerminal a) {
     String name;
     if (a.isPresentUsageName()) {
-      name = a.getUsageName().endsWith("s") ?
-          a.getUsageName().substring(0, a.getUsageName().length() - 1) :
-          a.getUsageName();
+      name = a.getUsageName();
     } else {
       // Use Nonterminal name as attribute name starting with lower case
-      //      // latter
-      name = a.getName();
+      // for a list (iterated) nonterminal a 's' is added for the name
+      name = a.getName() + "s";
     }
     return name + DecorationHelper.GET_SUFFIX_LIST;
   }

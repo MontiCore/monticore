@@ -59,9 +59,9 @@ public class DeriveSymTypeOfBitExpressionsTest {
     // some FieldSymbols (ie. Variables, Attributes)
     OOTypeSymbol p = new OOTypeSymbol("Person");
     OOTypeSymbol s = new OOTypeSymbol("Student");
-    s.setSuperTypeList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Person", scope)));
+    s.setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Person", scope)));
     OOTypeSymbol f = new OOTypeSymbol("FirstSemesterStudent");
-    f.setSuperTypeList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student", scope)));
+    f.setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student", scope)));
     add2scope(scope, field("foo", _intSymType));
     add2scope(scope, field("bar2", _booleanSymType));
     add2scope(scope, field("vardouble", _doubleSymType));

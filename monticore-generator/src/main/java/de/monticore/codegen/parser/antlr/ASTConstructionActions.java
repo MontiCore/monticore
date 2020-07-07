@@ -142,7 +142,7 @@ public class ASTConstructionActions {
     
     // Replace templates
     tmp = tmp.replaceAll("%u_usage%",
-        StringTransformations.capitalize(HelperGrammar.getUsuageName(a)));
+        StringTransformations.capitalize(HelperGrammar.getUsageName(a)));
     tmp = tmp.replaceAll("%tmp%", parserGenHelper.getTmpVarNameForAntlrCode(a));
     
     return tmp;
@@ -185,7 +185,7 @@ public class ASTConstructionActions {
     
     // Replace templates
     tmp = tmp.replaceAll("%u_usage%",
-        StringTransformations.capitalize(HelperGrammar.getUsuageName(a)));
+        StringTransformations.capitalize(HelperGrammar.getUsageName(a)));
     tmp = tmp.replaceAll("%tmp%", parserGenHelper.getTmpVarNameForAntlrCode(a));
     
     return tmp;

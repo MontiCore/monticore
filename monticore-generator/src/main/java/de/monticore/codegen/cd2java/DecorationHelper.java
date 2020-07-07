@@ -241,12 +241,7 @@ public class DecorationHelper extends MCBasicTypesHelper {
     }
     sb.append(StringTransformations.capitalize(getNativeAttributeName(ast.getName())));
     if (isListType(astType)) {
-      if (ast.getName().endsWith(TransformationHelper.LIST_SUFFIX)) {
-        sb.replace(sb.length() - TransformationHelper.LIST_SUFFIX.length(),
-            sb.length(), GET_SUFFIX_LIST);
-      } else {
-        sb.append(GET_SUFFIX_LIST);
-      }
+      sb.append(GET_SUFFIX_LIST);
     }
     return sb.toString();
   }
@@ -257,9 +252,6 @@ public class DecorationHelper extends MCBasicTypesHelper {
     String astType = ast.getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter());
     if (isListType(astType)) {
       if (ast.getName().endsWith(TransformationHelper.LIST_SUFFIX)) {
-        sb.replace(sb.length() - TransformationHelper.LIST_SUFFIX.length(),
-            sb.length(), GET_SUFFIX_LIST);
-      } else {
         sb.append(GET_SUFFIX_LIST);
       }
     }

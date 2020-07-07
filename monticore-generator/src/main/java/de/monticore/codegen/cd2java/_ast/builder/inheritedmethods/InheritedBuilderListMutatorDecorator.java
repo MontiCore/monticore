@@ -23,11 +23,11 @@ public class InheritedBuilderListMutatorDecorator extends BuilderListMutatorDeco
 
   @Override
   protected ASTCDMethod createSetListMethod(ASTCDAttribute ast) {
-    String signature = String.format(SET_LIST, capitalizedAttributeNameWithOutS, attributeType, ast.getName());
+    String signature = String.format(SET_LIST, capitalizedAttributeNameWithS, attributeType, ast.getName());
     ASTCDMethod method = this.getCDMethodFacade().createMethodByDefinition(signature);
     ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(builderType).build();
     method.setMCReturnType(returnType);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.builder.SetInherited", ast, "set" + capitalizedAttributeNameWithOutS + "List"));
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.builder.SetInherited", ast, "set" + capitalizedAttributeNameWithS + "List"));
     return method;
   }
 }

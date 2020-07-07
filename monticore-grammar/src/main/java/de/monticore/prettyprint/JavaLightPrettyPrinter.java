@@ -41,7 +41,7 @@ public class JavaLightPrettyPrinter extends MCCommonStatementsPrettyPrinter impl
   @Override
   public void handle(ASTMethodDeclaration a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
-    a.getMCModifierList().stream().forEach(m -> {getPrinter().print(" "); m.accept(getRealThis()); getPrinter().print(" ");});
+    a.getMCModifiersList().stream().forEach(m -> {getPrinter().print(" "); m.accept(getRealThis()); getPrinter().print(" ");});
     if (a.isPresentExtTypeParameters()) {
       a.getExtTypeParameters().accept(getRealThis());
     }
@@ -56,9 +56,9 @@ public class JavaLightPrettyPrinter extends MCCommonStatementsPrettyPrinter impl
       getPrinter().print(" throws ");
       a.getThrows().accept(getRealThis());
     }
-    if (!a.getMCBlockStatementList().isEmpty()) {
+    if (!a.getMCBlockStatementsList().isEmpty()) {
       getPrinter().println("{");
-      a.getMCBlockStatementList().forEach(b -> b.accept(getRealThis()));
+      a.getMCBlockStatementsList().forEach(b -> b.accept(getRealThis()));
       getPrinter().println("}");
     } else {
       getPrinter().println(";");
@@ -69,7 +69,7 @@ public class JavaLightPrettyPrinter extends MCCommonStatementsPrettyPrinter impl
   @Override
   public void handle(ASTInterfaceMethodDeclaration a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
-    a.getMCModifierList().stream().forEach(m -> {getPrinter().print(" "); m.accept(getRealThis()); getPrinter().print(" ");});
+    a.getMCModifiersList().stream().forEach(m -> {getPrinter().print(" "); m.accept(getRealThis()); getPrinter().print(" ");});
     if (a.isPresentExtTypeParameters()) {
       a.getExtTypeParameters().accept(getRealThis());
     }
@@ -91,11 +91,11 @@ public class JavaLightPrettyPrinter extends MCCommonStatementsPrettyPrinter impl
 
   @Override
   public void handle(ASTThrows a) {
-    for (int i = 0; i < a.getMCQualifiedNameList().size(); i++) {
+    for (int i = 0; i < a.getMCQualifiedNamesList().size(); i++) {
       if (i != 0) {
         getPrinter().print(", ");
       }
-      a.getMCQualifiedName(i).accept(getRealThis());
+      a.getMCQualifiedNames(i).accept(getRealThis());
     }
   }
 
@@ -104,7 +104,7 @@ public class JavaLightPrettyPrinter extends MCCommonStatementsPrettyPrinter impl
   public void handle(ASTConstructorDeclaration a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     getPrinter().println();
-    a.getMCModifierList().stream().forEach(m -> {getPrinter().print(" "); m.accept(getRealThis()); getPrinter().print(" ");});
+    a.getMCModifiersList().stream().forEach(m -> {getPrinter().print(" "); m.accept(getRealThis()); getPrinter().print(" ");});
     if (a.isPresentExtTypeParameters()) {
       a.getExtTypeParameters().accept(getRealThis());
     }
@@ -117,7 +117,7 @@ public class JavaLightPrettyPrinter extends MCCommonStatementsPrettyPrinter impl
     }
     getPrinter().print(" ");
     getPrinter().println("{");
-    a.getMCBlockStatementList().forEach(b -> b.accept(getRealThis()));
+    a.getMCBlockStatementsList().forEach(b -> b.accept(getRealThis()));
     getPrinter().println("}");
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
@@ -144,8 +144,8 @@ public class JavaLightPrettyPrinter extends MCCommonStatementsPrettyPrinter impl
   @Override
   public void handle(ASTFormalParameterListing a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
-    printJavaLightList(a.getFormalParameterList().iterator(), ",");
-    if (!a.getFormalParameterList().isEmpty() && a.isPresentLastFormalParameter()) {
+    printJavaLightList(a.getFormalParametersList().iterator(), ",");
+    if (!a.getFormalParametersList().isEmpty() && a.isPresentLastFormalParameter()) {
       getPrinter().print(",");
     }
     if (a.isPresentLastFormalParameter()) {
@@ -157,7 +157,7 @@ public class JavaLightPrettyPrinter extends MCCommonStatementsPrettyPrinter impl
   @Override
   public void handle(ASTFormalParameter a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
-    printSeparated(a.getJavaModifierList().iterator(), " ");
+    printSeparated(a.getJavaModifiersList().iterator(), " ");
     a.getMCType().accept(getRealThis());
     getPrinter().print(" ");
     a.getDeclaratorId().accept(getRealThis());
@@ -167,7 +167,7 @@ public class JavaLightPrettyPrinter extends MCCommonStatementsPrettyPrinter impl
   @Override
   public void handle(ASTLastFormalParameter a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
-    printSeparated(a.getJavaModifierList().iterator(), " ");
+    printSeparated(a.getJavaModifiersList().iterator(), " ");
     a.getMCType().accept(getRealThis());
     getPrinter().print(" ... ");
     a.getDeclaratorId().accept(getRealThis());
@@ -188,7 +188,7 @@ public class JavaLightPrettyPrinter extends MCCommonStatementsPrettyPrinter impl
   @Override
   public void handle(ASTAnnotationPairArguments a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
-    printJavaLightList(a.getElementValuePairList().iterator(), ", ");
+    printJavaLightList(a.getElementValuePairsList().iterator(), ", ");
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
 
@@ -205,11 +205,11 @@ public class JavaLightPrettyPrinter extends MCCommonStatementsPrettyPrinter impl
   public void handle(ASTElementValueArrayInitializer a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     getPrinter().print("{");
-    for (int i = 0; i < a.getElementValueOrExprList().size(); i++) {
+    for (int i = 0; i < a.getElementValueOrExprsList().size(); i++) {
       if (i != 0) {
         getPrinter().print(", ");
       }
-      a.getElementValueOrExpr(i).accept(getRealThis());
+      a.getElementValueOrExprs(i).accept(getRealThis());
     }
     getPrinter().print("}");
     CommentPrettyPrinter.printPostComments(a, getPrinter());
