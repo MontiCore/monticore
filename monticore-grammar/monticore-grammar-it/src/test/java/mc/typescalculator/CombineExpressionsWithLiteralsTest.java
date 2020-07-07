@@ -62,7 +62,7 @@ public class CombineExpressionsWithLiteralsTest {
 
     assertTrue(expr.isPresent());
     CombineExpressionsWithLiteralsArtifactScope art = del.createFromAST(expr.get());
-    art.setImportList(Lists.newArrayList(new ImportStatement("mc.typescalculator.TestCD.D", true)));
+    art.setImportsList(Lists.newArrayList(new ImportStatement("mc.typescalculator.TestCD.D", true)));
     Optional<SymTypeExpression> j = calc.calculateType(expr.get());
     assertTrue(j.isPresent());
     assertEquals("int", unbox(j.get().print()));
