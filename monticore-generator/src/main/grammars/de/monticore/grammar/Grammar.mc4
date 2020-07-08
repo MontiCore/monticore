@@ -374,7 +374,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
   */
   NonTerminalSeparator implements RuleComponent =
     (usageName:Name&  ":")?
-    "(" Name plusKeywords:["&"]? "||" separator:String ")" iteration:["*"|"+"];
+    "(" Name  ("@" referencedSymbol:Name)? plusKeywords:["&"]? "||" separator:String ")" iteration:["*"|"+"];
 
 
 
