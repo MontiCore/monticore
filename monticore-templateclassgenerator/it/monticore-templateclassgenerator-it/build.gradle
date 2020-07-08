@@ -3,7 +3,8 @@ import de.monticore.GroovyTask
 buildscript {
   dependencies {
     classpath 'de.se_rwth.commons:se-commons-groovy:1.7.9'
-    classpath 'de.monticore:monticore-templateclassgenerator:6.2.0-SNAPSHOT'
+    classpath ('de.monticore:monticore-templateclassgenerator:6.2.0-SNAPSHOT')
+            {exclude group:'de.monticore', module:'monticore-runtime'}
   }
 }
 

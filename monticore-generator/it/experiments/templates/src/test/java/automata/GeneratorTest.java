@@ -13,7 +13,8 @@ public class GeneratorTest {
 
   @BeforeClass
   public static void init(){
-    LogStub.init();
+    LogStub.init();         // replace log by a sideffect free variant
+    // LogStub.initPlusLog();  // for manual testing purpose only
   }
 
   @Before

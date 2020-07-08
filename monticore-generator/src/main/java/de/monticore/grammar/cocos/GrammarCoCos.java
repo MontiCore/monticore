@@ -66,7 +66,7 @@ public class GrammarCoCos {
     checker.addCoCo(new SplitRuleInvalid());
     checker.addCoCo(new KeyConstantInvalid());
     checker.addCoCo(new KeywordRuleInvalid());
-
+    checker.addCoCo(new TerminalCritical());
     // checker.addCoCo(new NoNTInheritanceCycle());
 
     return checker;

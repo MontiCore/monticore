@@ -17,7 +17,7 @@ import java.util.Optional;
  * Main class for the Automaton DSL tool.
  *
  */
-public class AutomataTool {
+public class AutomataTextTool {
 
   /**
    * Use the single argument for specifying the single input automaton file.
@@ -25,28 +25,28 @@ public class AutomataTool {
    * @param args
    */
   public static void main(String[] args) {
-
+  
     // use normal logging (no DEBUG, TRACE)
-    Log.init();
+    Log.ensureInitalization();
 
     // Retrieve the model name
     if (args.length != 1) {
       Log.error("0xEE754 Please specify only one single path to the input model.");
       return;
     }
-    Log.info("Automaton DSL Tool", AutomataTool.class.getName());
-    Log.info("------------------", AutomataTool.class.getName());
+    Log.info("Automaton DSL Tool", "AutomataTool");
+    Log.info("------------------", "AutomataTool");
     String model = args[0];
 
     // parse the model and create the AST representation
     ASTAutomaton ast = parse(model);
-    Log.info(model + " parsed successfully!", AutomataTool.class.getName());
+    Log.info(model + " parsed successfully!", "AutomataTool");
 
     // execute a pretty printer
     TextPrinter pp = new TextPrinter();
     pp.handle(ast);
-    Log.info("Printing the parsed automaton into textual form:", AutomataTool.class.getName());
-    System.out.println(pp.getResult());
+    Log.info("Printing the parsed automaton into textual form:", "AutomataTool");
+    Log.println(pp.getResult());
 
   }
 

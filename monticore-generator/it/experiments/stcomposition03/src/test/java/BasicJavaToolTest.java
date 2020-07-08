@@ -16,11 +16,12 @@ import java.nio.file.Paths;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 
-public class ToolTest {
+public class BasicJavaToolTest {
 
   @BeforeClass
   public static void setUpLogger(){
-//    LogStub.init();
+    LogStub.init();         // replace log by a sideffect free variant
+    // LogStub.initPlusLog();  // for manual testing purpose only
     Log.enableFailQuick(false);
   }
 

@@ -2,7 +2,8 @@
 
 package cocos.invalid.A4058;
 
-grammar A4058a {
+grammar A4058 {
 
-  symbol A = "Hello";
+  A = "123";
+
 }
