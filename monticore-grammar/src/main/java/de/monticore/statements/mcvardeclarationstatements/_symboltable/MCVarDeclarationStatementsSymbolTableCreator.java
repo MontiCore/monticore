@@ -13,6 +13,7 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfNull;
 import de.monticore.types.check.SynthesizeSymTypeFromMCFullGenericTypes;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.typesymbols._symboltable.FieldSymbol;
 import de.monticore.types.typesymbols._symboltable.OOTypeSymbolLoader;
 
 import java.util.Deque;
@@ -30,7 +31,7 @@ public class MCVarDeclarationStatementsSymbolTableCreator extends MCVarDeclarati
   }
 
   public void endVisit(ASTLocalVariableDeclaration ast) {
-    List<VarDeclSymbol> symbols = Lists.newArrayList();
+    List<FieldSymbol> symbols = Lists.newArrayList();
     for (ASTVariableDeclarator v : ast.getVariableDeclaratorList()) {
       SymTypeExpression simpleType = createTypeLoader(ast.getMCType());
       if (v.getDeclaratorId().getDimList().size() > 0) {
@@ -48,8 +49,8 @@ public class MCVarDeclarationStatementsSymbolTableCreator extends MCVarDeclarati
     addModifiersToVariables(symbols, ast.getMCModifierList());
   }
 
-  protected void addModifiersToVariables(List<VarDeclSymbol> symbols, Iterable<? extends ASTMCModifier> modifiers) {
-    for (VarDeclSymbol symbol : symbols) {
+  protected void addModifiersToVariables(List<FieldSymbol> symbols, Iterable<? extends ASTMCModifier> modifiers) {
+    for (FieldSymbol symbol : symbols) {
       for (ASTMCModifier modifier : modifiers) {
         if (modifier instanceof ASTJavaModifier) {
           // visibility

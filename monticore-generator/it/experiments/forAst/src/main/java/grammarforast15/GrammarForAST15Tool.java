@@ -25,19 +25,19 @@ public class GrammarForAST15Tool {
   public static void main(String[] args) {
 
     // use normal logging (no DEBUG, TRACE)
-    Log.init();
+    Log.ensureInitalization();
     
     if (args.length != 1) {
       Log.error("0xEE743 Please specify only one single path to the input model.");
       return;
     }
-    Log.info("GrammarForAST15 DSL Tool", GrammarForAST15Tool.class.getName());
-    Log.info("------------------", GrammarForAST15Tool.class.getName());
+    Log.info("GrammarForAST15 DSL Tool", "GrammarForAST15Tool");
+    Log.info("------------------", "GrammarForAST15Tool");
     String model = args[0];
     
     // parse the model and create the AST representation
     final ASTS ast = parse(model);
-    Log.info(model + " parsed successfully!", GrammarForAST15Tool.class.getName());
+    Log.info(model + " parsed successfully!", "GrammarForAST15Tool");
     
   }
   

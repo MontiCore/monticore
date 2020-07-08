@@ -1,7 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.statements;
 
-/* Beta-version: This is intended to become a MontiCore stable grammar. */
+/* This is a MontiCore stable grammar.
+ * Adaptations -- if any -- are conservative. */
 
 /**
  * This grammar defines Java's mechanism for the introduction
@@ -42,9 +43,7 @@ VariableDeclarator
     =   DeclaratorId ("=" VariableInit)?
     ;
 
-//  TODO BR -> MB: (3.6.) Ich gehe davon aus, dass hier ein VariableSymbol genutzt wird
-// und via SymbolMill wird da ggf. dann in Wirklichkeit ein FieldSymbol erzeugt?
-DeclaratorId implements VarDecl
+DeclaratorId implements Field
     =   Name (dim:"[" "]")*
     ;
 
@@ -57,16 +56,5 @@ ArrayInit implements VariableInit
      =   "{" (VariableInit || ",")* (",")? "}"
      ;
 
-interface symbol VarDecl extends Field;
-
-//  TODO BR: 15.6.: ueber die Attribute hie rmüssen wir reden
-symbolrule VarDecl =
-    annotations: de.monticore.types.check.SymTypeExpression*
-    isFinal: boolean
-    isReadOnly: boolean
-    isVolatile: boolean
-    isTransient: boolean
-    isEllipsis: boolean
-;
 
 }

@@ -30,11 +30,11 @@ public class TransitionSourceExistsTest {
   
   @BeforeClass
   public static void init() {
-    // replace log by a sideffect free variant
-    LogStub.init();
+    LogStub.init();         // replace log by a sideffect free variant
+    // LogStub.initPlusLog();  // for manual testing purpose only
   }
   
-
+ 
   @Before
   public void setUp() throws RecognitionException, IOException {
     Log.getFindings().clear();

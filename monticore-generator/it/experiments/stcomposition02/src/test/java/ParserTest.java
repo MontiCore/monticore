@@ -15,7 +15,8 @@ public class ParserTest {
 
   @BeforeClass
   public static void setUp(){
-    LogStub.init();
+    LogStub.init();         // replace log by a sideffect free variant
+    // LogStub.initPlusLog();  // for manual testing purpose only
   }
 
   @Test
