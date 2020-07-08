@@ -268,6 +268,80 @@ public class ReferenceTest {
   }
 
   @Test
+  public void testListWithNameDefinition() {
+    ASTListRefWithName astListRef = astRand.getListRefWithName(0);
+
+    assertNotNull(astListRef.getEnclosingScope());
+
+    assertFalse(astListRef.isEmptyBlaDefinition());
+    assertEquals(astListRef.sizeBlaDefinition(), 3);
+
+    assertTrue(astListRef.getBlaDefinition(0).isPresent());
+    assertTrue(astListRef.getBlaDefinition(1).isPresent());
+    assertTrue(astListRef.getBlaDefinition(2).isPresent());
+    assertEquals(astListRef.getBlaDefinition(0).get(), a.getAstNode());
+    assertEquals(astListRef.getBlaDefinition(1).get(), b.getAstNode());
+    assertEquals(astListRef.getBlaDefinition(2).get(), c.getAstNode());
+
+
+    assertTrue(astListRef.containsBlaDefinition(Optional.ofNullable(a.getAstNode())));
+    assertTrue(astListRef.containsBlaDefinition(Optional.ofNullable(b.getAstNode())));
+    assertTrue(astListRef.containsBlaDefinition(Optional.ofNullable(c.getAstNode())));
+
+
+    astListRef.setBla(0, "C");
+    assertEquals(astListRef.getBlaDefinition(0), Optional.ofNullable(c.getAstNode()));
+    assertEquals(astListRef.sizeBlaDefinition(), 3);
+
+    astListRef.addBla("A");
+    assertEquals(astListRef.sizeBlaDefinition(), 4);
+    List<Optional<ASTTest>> testList = new ArrayList<>();
+    testList.add(Optional.ofNullable(c.getAstNode()));
+    testList.add(Optional.ofNullable(b.getAstNode()));
+    testList.add(Optional.ofNullable(c.getAstNode()));
+    testList.add(Optional.ofNullable(a.getAstNode()));
+    assertEquals(astListRef.getBlaDefinitionList(), testList);
+    assertEquals(astListRef.toArrayBlaDefinition(), testList.toArray());
+  }
+
+  @Test
+  public void testListNTSDefinition() {
+    ASTListRefNonTerminalSep astListRef = astRand.getListRefNonTerminalSep(0);
+
+    assertNotNull(astListRef.getEnclosingScope());
+
+    assertFalse(astListRef.isEmptyBlaDefinition());
+    assertEquals(astListRef.sizeBlaDefinition(), 3);
+
+    assertTrue(astListRef.getBlaDefinition(0).isPresent());
+    assertTrue(astListRef.getBlaDefinition(1).isPresent());
+    assertTrue(astListRef.getBlaDefinition(2).isPresent());
+    assertEquals(astListRef.getBlaDefinition(0).get(), a.getAstNode());
+    assertEquals(astListRef.getBlaDefinition(1).get(), b.getAstNode());
+    assertEquals(astListRef.getBlaDefinition(2).get(), c.getAstNode());
+
+
+    assertTrue(astListRef.containsBlaDefinition(Optional.ofNullable(a.getAstNode())));
+    assertTrue(astListRef.containsBlaDefinition(Optional.ofNullable(b.getAstNode())));
+    assertTrue(astListRef.containsBlaDefinition(Optional.ofNullable(c.getAstNode())));
+
+
+    astListRef.setBla(0, "C");
+    assertEquals(astListRef.getBlaDefinition(0), Optional.ofNullable(c.getAstNode()));
+    assertEquals(astListRef.sizeBlaDefinition(), 3);
+
+    astListRef.addBla("A");
+    assertEquals(astListRef.sizeBlaDefinition(), 4);
+    List<Optional<ASTTest>> testList = new ArrayList<>();
+    testList.add(Optional.ofNullable(c.getAstNode()));
+    testList.add(Optional.ofNullable(b.getAstNode()));
+    testList.add(Optional.ofNullable(c.getAstNode()));
+    testList.add(Optional.ofNullable(a.getAstNode()));
+    assertEquals(astListRef.getBlaDefinitionList(), testList);
+    assertEquals(astListRef.toArrayBlaDefinition(), testList.toArray());
+  }
+  
+  @Test
   public void testListEmpty() {
     ASTListRef astListRef = astRand.getListRef(1);
     assertNotNull(astListRef.getEnclosingScope());

@@ -102,7 +102,7 @@ public class FullASTInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(62, astcdInterface.sizeCDMethods());
+    assertEquals(61, astcdInterface.sizeCDMethods());
   }
 
   /**
@@ -142,14 +142,6 @@ public class FullASTInterfaceDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertBoolean(method.getMCReturnType().getMCType());
-    assertTrue(method.isEmptyCDParameters());
-  }
-
-  @Test
-  public void testUpdateNameSymbolSurrogateListMethod() {
-    ASTCDMethod method = getMethodBy("updateFooSymbolSurrogate", astcdInterface);
-    assertDeepEquals(PROTECTED_ABSTRACT, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertTrue(method.isEmptyCDParameters());
   }
 

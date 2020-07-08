@@ -6,7 +6,7 @@ ${tc.signature("loaderAttributeName", "attributeName", "attributeType")}
             attr.setEnclosingScope(this.getEnclosingScope());
             ${loaderAttributeName}.put(name, attr);
         }
-        ${attributeType} loader = namesSymbolSurrogate.get(name);
+        ${attributeType} loader = ${loaderAttributeName}.get(name);
         if (loader == null) {
             ${attributeType} attr = new ${attributeType}(name);
             attr.setEnclosingScope(this.getEnclosingScope());
