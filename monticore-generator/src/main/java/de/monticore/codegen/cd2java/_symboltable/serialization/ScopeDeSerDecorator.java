@@ -186,8 +186,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
   protected ASTCDMethod createSerializeMethod(String scopeInterfaceName) {
     ASTCDParameter toSerializeParam = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(scopeInterfaceName), "toSerialize");
     ASTCDMethod serializeMethod = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createStringType(), "serialize", toSerializeParam);
-    this.replaceTemplate(EMPTY_BODY, serializeMethod, new StringHookPoint("  toSerialize.accept(symbolTablePrinter);\n"
-        + "  return printer.getContent();"));
+    this.replaceTemplate(EMPTY_BODY, serializeMethod, new TemplateHookPoint("_symboltable.serialization.scopeDeSer.Serialize4ScopeDeSer"));
     return serializeMethod;
   }
 
@@ -267,11 +266,10 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
           StringTransformations.capitalize(astcdAttribute.getName());
       ASTCDParameter jsonParam = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(JSON_OBJECT), "scopeJson");
       ASTCDMethod deserializeMethod = getCDMethodFacade().createMethod(PUBLIC, astcdAttribute.getMCType(), methodName, jsonParam);
-      String returnType = symbolTableService.determineReturnType(deserializeMethod.getMCReturnType().getMCType());
-
+      String generatedErrorCode = symbolTableService.getGeneratedErrorCode(methodName);
       HookPoint deserImplementation = DeSerMap.getDeserializationImplementation(astcdAttribute, methodName, "scopeJson",
           //          astcdAttribute.getEnclosingScope()); //TODO AB Replace line below with this line after release of 5.5.0-SNAPSHOT
-          BuiltInJavaTypeSymbolResolvingDelegate.getScope());
+          BuiltInJavaTypeSymbolResolvingDelegate.getScope(), generatedErrorCode);
       this.replaceTemplate(EMPTY_BODY, deserializeMethod, deserImplementation);
       methodList.add(deserializeMethod);
     }

@@ -285,8 +285,9 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
                 TEMPLATE_PATH + "PrintSimpleAttribute", attr.getName(), attr.getName()));
       }
     } else {
+      String generatedError = symbolTableService.getGeneratedErrorCode(methodName);
       this.replaceTemplate(EMPTY_BODY, serializeAttrMethod, new TemplateHookPoint(
-              TEMPLATE_PATH + "PrintComplexAttribute", attribute, methodName, operation, returnValue));
+              TEMPLATE_PATH + "PrintComplexAttribute", attribute, methodName, operation, returnValue, generatedError));
     }
     return serializeAttrMethod;
   }

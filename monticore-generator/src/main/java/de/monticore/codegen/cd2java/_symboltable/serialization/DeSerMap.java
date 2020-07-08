@@ -74,7 +74,7 @@ public class DeSerMap {
   }
 
   public static HookPoint getDeserializationImplementation(ASTCDAttribute a, String methodName,
-      String jsonName, TypeSymbolsScope enclosingScope) {
+      String jsonName, TypeSymbolsScope enclosingScope, String generatedErrorCode) {
     SymTypeExpression actualType = tc.symTypeFromAST(a.getMCType());
     Optional<HookPoint> primitiveTypeOpt = getHookPointForPrimitiveDataType(actualType, a.getName(),
         jsonName, enclosingScope);
@@ -82,8 +82,9 @@ public class DeSerMap {
       return primitiveTypeOpt.get();
     }
     //TODO implement check for language-specific DeSers here
+
     return new TemplateHookPoint(COMPLEX_TEMPLATE, actualType.print(), methodName, "deserialize",
-        "return null;");
+        "return null;", generatedErrorCode);
   }
 
   protected static Optional<HookPoint> getHookPointForPrimitiveDataType(
