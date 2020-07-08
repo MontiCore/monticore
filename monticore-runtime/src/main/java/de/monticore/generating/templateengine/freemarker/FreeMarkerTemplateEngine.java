@@ -85,13 +85,13 @@ public class FreeMarkerTemplateEngine {
           causedExceptionInfo.append("\n").append(targetException);
         }
       }
-      throw new MontiCoreFreeMarkerException("0xA0561 Unable to execute template " + template.getName() + FM_FILE_EXTENSION + " : " + e.getLocalizedMessage() + 
+      throw new MontiCoreFreeMarkerException("0xA0561 Unable to execute template " + template.getName() + " : " + e.getLocalizedMessage() + 
           System.getProperty("line.separator") + "Exception-type: " + e.getCause() + causedExceptionInfo.toString() + 
           System.getProperty("line.separator") + "Caused by " + System.getProperty("line.separator") + e.getFTLInstructionStack(),
           e.getCause());
     }
     catch (IOException e) {
-      throw new MontiCoreFreeMarkerException("0xA0563 Could not read template " + template.getName() + FM_FILE_EXTENSION + " : " + e.getLocalizedMessage() +
+      throw new MontiCoreFreeMarkerException("0xA0563 Could not read template " + template.getName() + " : " + e.getLocalizedMessage() +
               System.getProperty("line.separator") + "Exception-type: " + e.getCause())  ;
     }
     buffer.append(w.toString());
