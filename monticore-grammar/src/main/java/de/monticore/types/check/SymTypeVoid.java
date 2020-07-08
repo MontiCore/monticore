@@ -5,9 +5,9 @@ package de.monticore.types.check;
 public class SymTypeVoid extends SymTypeExpression {
   
   public SymTypeVoid() {
-//    typeSymbolLoader = new TypeSymbolLoader(DefsTypeBasic._voidTypeString,
+//    typeSymbolSurrogate = new TypeSymbolSurrogate(DefsTypeBasic._voidTypeString,
 //        BuiltInJavaTypeSymbolResolvingDelegate.getScope());
-    typeSymbolLoader = new PseudoTypeSymbolLoader(DefsTypeBasic._void);
+    typeSymbolSurrogate = new PseudoTypeSymbolSurrogate(DefsTypeBasic._void);
   }
   
   /**

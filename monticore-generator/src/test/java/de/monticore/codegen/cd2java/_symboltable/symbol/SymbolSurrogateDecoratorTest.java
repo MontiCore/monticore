@@ -11,7 +11,7 @@ import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
-import de.monticore.codegen.cd2java._symboltable.symbol.symbolloadermutator.MandatoryMutatorSymbolLoaderDecorator;
+import de.monticore.codegen.cd2java._symboltable.symbol.symbolsurrogatemutator.MandatoryMutatorSymbolSurrogateDecorator;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
@@ -27,7 +27,7 @@ import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class SymbolLoaderDecoratorTest extends DecoratorTestCase {
+public class SymbolSurrogateDecoratorTest extends DecoratorTestCase {
 
   private ASTCDClass symbolClassAutomaton;
 
@@ -58,10 +58,10 @@ public class SymbolLoaderDecoratorTest extends DecoratorTestCase {
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
 
-    SymbolLoaderDecorator decorator = new SymbolLoaderDecorator(this.glex,
+    SymbolSurrogateDecorator decorator = new SymbolSurrogateDecorator(this.glex,
         new SymbolTableService(decoratedCompilationUnit),
         new MethodDecorator(glex, new SymbolTableService(decoratedCompilationUnit)),
-        new MandatoryMutatorSymbolLoaderDecorator(glex));
+        new MandatoryMutatorSymbolSurrogateDecorator(glex));
     //creates ScopeSpanningSymbol
     ASTCDClass automatonClass = getClassBy("Automaton", decoratedCompilationUnit);
     this.symbolClassAutomaton = decorator.decorate(automatonClass);
@@ -79,17 +79,12 @@ public class SymbolLoaderDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testClassNameAutomatonSymbol() {
-    assertEquals("AutomatonSymbolLoader", symbolClassAutomaton.getName());
-  }
-
-  @Test
-  public void testSuperInterfacesCountAutomatonSymbol() {
-    assertEquals(1, symbolClassAutomaton.sizeInterfaces());
+    assertEquals("AutomatonSymbolSurrogate", symbolClassAutomaton.getName());
   }
 
   @Test
   public void testSuperInterfacesAutomatonSymbol() {
-    assertDeepEquals("de.monticore.symboltable.ISymbolLoader", symbolClassAutomaton.getInterface(0));
+    assertDeepEquals(AUTOMATON_SYMBOL, symbolClassAutomaton.getSuperclass());
   }
 
   @Test
@@ -101,42 +96,30 @@ public class SymbolLoaderDecoratorTest extends DecoratorTestCase {
   public void testConstructor() {
     ASTCDConstructor cdConstructor = symbolClassAutomaton.getCDConstructor(0);
     assertDeepEquals(PUBLIC, cdConstructor.getModifier());
-    assertEquals("AutomatonSymbolLoader", cdConstructor.getName());
+    assertEquals("AutomatonSymbolSurrogate", cdConstructor.getName());
 
-    assertEquals(2, cdConstructor.sizeCDParameters());
+    assertEquals(1, cdConstructor.sizeCDParameters());
     assertDeepEquals(String.class, cdConstructor.getCDParameter(0).getMCType());
     assertEquals("name", cdConstructor.getCDParameter(0).getName());
-
-    assertDeepEquals("de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.IAutomatonSymbolCDScope", cdConstructor.getCDParameter(1).getMCType());
-    assertEquals("enclosingScope", cdConstructor.getCDParameter(1).getName());
 
     assertTrue(cdConstructor.isEmptyExceptions());
   }
 
   @Test
   public void testAttributeCount() {
-    assertEquals(4, symbolClassAutomaton.sizeCDAttributes());
+    assertEquals(3, symbolClassAutomaton.sizeCDAttributes());
   }
 
   @Test
   public void testLoadedSymbolAttribute() {
-    ASTCDAttribute astcdAttribute = getAttributeBy("loadedSymbol", symbolClassAutomaton);
+    ASTCDAttribute astcdAttribute = getAttributeBy("delegate", symbolClassAutomaton);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertOptionalOf(AUTOMATON_SYMBOL, astcdAttribute.getMCType());
   }
 
   @Test
   public void testMethods() {
-    assertEquals(7, symbolClassAutomaton.getCDMethodList().size());
-  }
-
-  @Test
-  public void testGetLoadedymbolMethod() {
-    ASTCDMethod method = getMethodBy("getLoadedSymbol", symbolClassAutomaton);
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(AUTOMATON_SYMBOL, method.getMCReturnType().getMCType());
-
-    assertTrue(method.isEmptyCDParameters());
+    assertEquals(5, symbolClassAutomaton.getCDMethodList().size());
   }
 
   @Test
@@ -162,18 +145,9 @@ public class SymbolLoaderDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testLoadSymbolMethod() {
-    ASTCDMethod method = getMethodBy("loadSymbol", symbolClassAutomaton);
-    assertDeepEquals(PRIVATE, method.getModifier());
-    assertOptionalOf(AUTOMATON_SYMBOL, method.getMCReturnType().getMCType());
-
-    assertTrue(method.isEmptyCDParameters());
-  }
-
-  @Test
-  public void testIsSymbolLoadedMethod() {
-    ASTCDMethod method = getMethodBy("isSymbolLoaded", symbolClassAutomaton);
+    ASTCDMethod method = getMethodBy("lazyLoadDelegate", symbolClassAutomaton);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertBoolean(method.getMCReturnType().getMCType());
+    assertDeepEquals(AUTOMATON_SYMBOL, method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
   }
