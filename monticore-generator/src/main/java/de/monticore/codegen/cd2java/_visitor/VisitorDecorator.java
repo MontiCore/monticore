@@ -260,12 +260,12 @@ public class VisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
    */
   protected List<ASTCDMethod> addScopeVisitorMethods(Set<String> symbolsNameList, ASTCDDefinition astcdDefinition) {
     ASTMCType scopeClassType = symbolTableService.getScopeType();
-    ASTMCQualifiedType artifactScopeType = getMCTypeFacade().createQualifiedType(symbolTableService.getScopeInterfaceFullName());
-    ASTMCQualifiedType scopeInterfaceType = getMCTypeFacade().createQualifiedType(symbolTableService.getArtifactScopeFullName());
+    ASTMCQualifiedType artifactScopeType = symbolTableService.getArtifactScopeType();
+    ASTMCQualifiedType scopeInterfaceType = symbolTableService.getScopeInterfaceType();
 
     TemplateHookPoint traverseSymbolsBody = new TemplateHookPoint(TRAVERSE_SCOPE_TEMPLATE, symbolsNameList);
-    StringHookPoint traverseDelegationBody = new StringHookPoint(GET_REAL_THIS + "()."
-        + TRAVERSE + "((" + symbolTableService.getScopeInterfaceFullName() + ") node);");
+    StringHookPoint traverseDelegationBody = new StringHookPoint(TRAVERSE + "(("
+        + symbolTableService.getScopeInterfaceFullName() + ") node);");
 
     List<ASTCDMethod> methodList = new ArrayList<>();
     methodList.addAll(createScopeVisitorMethods(scopeClassType, traverseDelegationBody));
