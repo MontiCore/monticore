@@ -9,9 +9,9 @@ Just choose one of the following guides:
 
 -  [Command Line](#command-line)
 
--  [Eclipse](#eclipse)
+-  [Eclipse](GettingStartedEclipse.md)
 
--  [IntelliJ](#intellij)
+-  [IntelliJ](GettingStartedIntelliJ.md)
 
 
 ## Prerequisites
@@ -91,90 +91,11 @@ This will compile all generated classes located in ‹out/› and all handwritte
 ### Experiment:
 The shipped example automata DSL (all sources contained in ‹mc-workspace/src› and ‹mc-workspace/hwc›) can be used as a starting point. It can easily be altered to specify your own DSL by adjusting the grammar and the handwritten Java sources and rerunning MontiCore as described above.
 
-## Eclipse
+The Eclipse or IntelliJ version of the Getting Started can be found here:
 
-----------------------
-For getting started with MontiCore using Eclipse do the following:
+-  [Eclipse](GettingStartedEclipse.md)
 
-### Setting up Eclipse
-1.  Download and install Eclipse (or use an existing one)
-2.  Open Eclipse
-3.  Install needed Plugins
-    *  Help > Install new Software
-    *  Make sure the M2E (Maven 2 Eclipse) Plugin is installed
-    *  M2E can be found here
-    *  Install the following MontiCore M2E Extension found here:
-    *  Install MontiCore 5 (or higher) extension
-4. Make sure to confire Eclipse to use a JDK instead of an JRE
-    *  Window > Preferences > Java > Installed JREs
-
-### Importing the Example
-1.  Clone the github project or download the zip for the Automata Example 
-[here](https://github.com/MontiCore/automaton).
-2.  Select
-    *  File
-    *  Import...
-    *  Maven
-    *  Existing Maven Projects
-    *  Click next
-    *  Click on the Browse.. button and use the folder holding the pom.xml
-
-### Running MontiCore
-1.  Right click on the project
-2.  Run as > Maven install
-3.  Add ‹../target/generated-sources/monticore/sourcecode› to your build path
-    *    Right click on the folder > Build Path > Use as Source Folder
-
-MontiCore will be launched and the following steps will be executed:
-
-1.  The specified grammar will be parsed and processed by MontiCore.
-2.  Java source files for the corresponding DSL infrastructure will be generated into the default output directory ‹../target/generated-sources/monticore/sourcecode›. This infrastructure consists of:
-    1.  **/automata/_ast** containing the abstract syntax representation of the automata DSL.
-    2.  **/automata/_cocos** containing infrastructure for context conditions of the automata DSL.
-    3.  **/automata/_od** containing infrastructure for printing object diagrams of the automata DSL.
-    4.  **/automata/_parser** containing the generated parsers which are based on [ANTLR](https://www.antlr.org/).
-    5.  **/automata/_symboltable** containing infrastructure for the symbol table of the automata DSL.
-    6.  **/automata/_visitor** containing infrastructure for visitors of the automata DSL.
-    7.  **/reports/Automata** containing reports created during the processing of the automata grammar.
-3.  The output directory will also contain a log file of the executed generation process ‹monticore.YYYY-MM-DD-HHmmss.log›.
-
-## IntelliJ
-
---------------------
-For getting started with MontiCore using IntelliJ do the following:
-
-### Setting up IntelliJ IDEA
-1. Download and install IntelliJ IDEA (or use your existing installation)
-    *  Hint for Students: You get the Ultimate version of IntelliJ for free
-2. Open IntelliJ IDEA
-
-### Importing the Example
-1.  Clone the github project or download the zip for the Automata Example 
-[here](https://github.com/MontiCore/automaton).
-2.  Select
-    * File
-    * Open
-    * Select the folder holding the pom.xml
-
-### Running MontiCore
-From the Maven Projects Menu on the right select
-
-1.  Automata
-2.  Lifecycle
-3.  install (double click)
-
-MontiCore will be launched and the following steps will be executed:
-
-1.  The specified grammar will be parsed and processed by MontiCore.
-2.  Java source files for the corresponding DSL infrastructure will be generated into the default output directory ‹../target/generated-sources/monticore/sourcecode›. This infrastructure consists of:
-    1.  **/automata/_ast** containing the abstract syntax representation of the automata DSL.
-    2.  **/automata/_cocos** containing infrastructure for context conditions of the automata DSL.
-    3.  **/automata/_od** containing infrastructure for printing object diagrams of the automata DSL.
-    4.  **/automata/_parser** containing the generated parsers which are based on [ANTLR](https://www.antlr.org/).
-    5.  **/automata/_symboltable** containing infrastructure for the symbol table of the automata DSL.
-    6.  **/automata/_visitor** containing infrastructure for visitors of the automata DSL.
-    7.  **/reports/Automata** containing reports created during the processing of the automata grammar.
-3.  The output directory will also contain a log file of the executed generation process ‹monticore.YYYY-MM-DD-HHmmss.log›.
+-  [IntelliJ](GettingStartedIntelliJ.md)
 
 ## Troubleshooting
 
