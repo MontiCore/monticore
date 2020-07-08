@@ -405,6 +405,10 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     return getSymbolTablePrinterFullName(getCDSymbol());
   }
 
+  public ASTMCQualifiedType getJsonPrinterType(){
+    return getMCTypeFacade().createQualifiedType("de.monticore.symboltable.serialization.JsonPrinter");
+  }
+
 
   /**
    * symbol class names e.g. AutomatonSymbol
