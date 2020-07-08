@@ -62,14 +62,6 @@ public class DerivedAttributeName implements
         addDerivedStereotypeToAttributes(links.target());
       }
     }
-
-    Set<Link<ASTAdditionalAttribute, ASTCDAttribute>> attributesASTRule =
-        rootLink.getLinks(ASTAdditionalAttribute.class, ASTCDAttribute.class);
-    for (Link<ASTAdditionalAttribute, ASTCDAttribute> links : attributesASTRule) {
-      if (!links.source().isPresentName()) {
-        addDerivedStereotypeToAttributes(links.target());
-      }
-    }
     return rootLink;
   }
 
