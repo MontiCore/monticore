@@ -4,7 +4,7 @@ ${tc.signature("loaderAttributeName", "attributeName", "attributeType")}
         if (!${loaderAttributeName}.containsKey(name)) {
             ${loaderAttributeName}.put(name, new ${attributeType}(name, this.getEnclosingScope()));
         }
-        ${attributeType} loader = namesSymbolLoader.get(name);
+        ${attributeType} loader = ${loaderAttributeName}.get(name);
         if (loader == null) {
             ${loaderAttributeName}.put(name, new ${attributeType}(name, this.getEnclosingScope()));
         } else if (!loader.getName().equals(name)) {
