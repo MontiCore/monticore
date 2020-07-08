@@ -25,7 +25,7 @@ public class GrammarForAST15Tool {
   public static void main(String[] args) {
 
     // use normal logging (no DEBUG, TRACE)
-    Log.init();
+    Log.ensureInitalization();
     
     if (args.length != 1) {
       Log.error("0xEE743 Please specify only one single path to the input model.");

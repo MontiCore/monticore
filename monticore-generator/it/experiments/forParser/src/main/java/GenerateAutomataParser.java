@@ -22,7 +22,7 @@ public class GenerateAutomataParser {
    * Parse Automata.mc4 and create a Parser for the language
    */
   public static void main(String[] args) {
-    Log.init();
+    Log.ensureInitalization();
     if (args.length != 2) {
       Log.error("0xEE630 Please specify one single path to the input model and one single path for the generated output");
       return;
