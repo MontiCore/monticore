@@ -22,10 +22,10 @@ public class Automata3Tool {
    * @param args
    */
   public static void main(String[] args) throws IOException {
-
+  
     // use normal logging (no DEBUG, TRACE)
-    Log.init();
-
+    Log.ensureInitalization();
+    
     // Retrieve the model name
     if (args.length != 1) {
       Log.error("0xEE741 Please specify only one single path to the input model.");
@@ -36,7 +36,7 @@ public class Automata3Tool {
     String model = args[0];
     
     
-    // // Example how to use the pure Expression Visitor
+    // XXYX // Example how to use the pure Expression Visitor
     // // (this works only when Expression is not a component grammar)
     // Log.info("=== 1: ExpressionCheapVisit =============", "Automaton3Tool");
     // ExpressionParser eparse = new ExpressionParser() ;
@@ -50,13 +50,13 @@ public class Automata3Tool {
     ASTAutomaton ast = parse(model);
     Log.info(model + " parsed successfully!", "Automata3Tool");
 
-    // // Example, how to use a monolithic visitor on the model
+    // XXYX // Example, how to use a monolithic visitor on the model
     // Log.info("=== 2: Automaton3CheapVisit =============", "Automaton3Tool");
     // Automaton3CheapVisit acv1 = new Automaton3CheapVisit();
     // ast.accept(acv1);
 
 
-    // // Example, how to use a composed visitor on the model
+    // XXYX // Example, how to use a composed visitor on the model
     // Log.info("=== 3: Automaton3ComposedVisit =============", "Automaton3Tool");
     // Automaton3ComposedVisit acompov = new Automaton3ComposedVisit();
     // acompov.set_invautomaton__visitor_InvAutomatonVisitor(
@@ -82,7 +82,7 @@ public class Automata3Tool {
     ast.accept(acpp);
 
     Log.info("Pretty printing into console:", "Automata3Tool");
-    System.out.println(ppi.getContent());
+    Log.println(ppi.getContent());
 
   }
   

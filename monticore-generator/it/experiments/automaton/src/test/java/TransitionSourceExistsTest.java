@@ -30,8 +30,8 @@ public class TransitionSourceExistsTest {
   
   @BeforeClass
   public static void init() {
-    // replace log by a sideffect free variant (prevent output)
-    LogStub.init();
+    LogStub.init();         // replace log by a sideffect free variant
+    // LogStub.initPlusLog();  // for manual testing purpose only
   }
   
  

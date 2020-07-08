@@ -27,7 +27,7 @@ public class SM2SymbolTableCreator extends SM2SymbolTableCreatorTOP {
   public void visit(final ASTState stateNode) {
     final StateSymbol stateSymbol = new StateSymbol(stateNode.getName());
     
-    Log.info("StateSymbol defined for " + stateSymbol.getName(), SM2SymbolTableCreator.class.getName());
+    Log.info("StateSymbol defined for " + stateSymbol.getName(), "SM2SymbolTableCreator");
 
     addToScopeAndLinkWithNode(stateSymbol, stateNode);
   }

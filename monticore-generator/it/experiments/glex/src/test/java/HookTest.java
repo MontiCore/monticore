@@ -33,8 +33,8 @@ public class HookTest {
   
   @BeforeClass
   public static void init() throws IOException{
-    // replace log by a sideffect free variant
-    LogStub.init();
+    LogStub.init();         // replace log by a sideffect free variant
+    // LogStub.initPlusLog();  // for manual testing purpose only
     HierAutomataParser parser = new HierAutomataParser() ;
     String model = "src/test/resources/example/HierarchyPingPong.aut";
     Optional<ASTStateMachine> optStateMachine = parser.parse(model);

@@ -16,8 +16,8 @@ public class AutomataToolTest {
   
   @BeforeClass
   public static void init() {
-    // replace log by a sideffect free variant
-    LogStub.init();
+    LogStub.init();         // replace log by a sideffect free variant
+    // LogStub.initPlusLog();  // for manual testing purpose only
     Log.enableFailQuick(false);
   }
   
@@ -32,14 +32,21 @@ public class AutomataToolTest {
     AutomataTool.main(new String[] { "src/test/resources/example/PingPong.aut", "target" });
     Log.printFindings();
     assertEquals(0, Log.getFindings().size());
-    // LogStub.printPrints();
+    // LogStub.printPrints();  // for manual testing purpose only
+
     List<String> p = LogStub.getPrints();
-    assertEquals(1, p.size());
-    String res = p.get(0).replaceAll("[\r\n]", " ");
+    assertEquals(7, p.size());
+
+    // Check some "[INFO]" outputs
+    assertTrue(p.get(0), p.get(0).matches(".*.INFO.  AutomataTool Automaton DSL Tool.*\n"));
+    assertTrue(p.get(5), p.get(5).matches(".*.INFO.  AutomataTool Pretty printing the parsed automaton into console.*\n"));
+  
+    // Check resulting pretty print:
+    String res = p.get(p.size()-1).replaceAll("[\r\n]", " ");
     assertEquals(231, res.length());
-    assertTrue(p.get(0), res.matches(".*state.*"));
-    assertTrue(p.get(0), res.matches(".*state NoGame <<initial>>.*"));
-    assertTrue(p.get(0), res.matches(".*Pong - returnBall > Ping;.*"));
+    assertTrue(res, res.matches(".*state.*"));
+    assertTrue(res, res.matches(".*state NoGame <<initial>>.*"));
+    assertTrue(res, res.matches(".*Pong - returnBall > Ping;.*"));
   }
   
   @Test
@@ -49,7 +56,7 @@ public class AutomataToolTest {
     assertEquals(0, Log.getFindings().size());
     // LogStub.printPrints();
     List<String> p = LogStub.getPrints();
-    assertEquals(1, p.size());
+    assertEquals(7, p.size());
   }
   
   @Test
@@ -59,7 +66,7 @@ public class AutomataToolTest {
     assertEquals(0, Log.getFindings().size());
     // LogStub.printPrints();
     List<String> p = LogStub.getPrints();
-    assertEquals(1, p.size());
+    assertEquals(7, p.size());
   }
   
 }
