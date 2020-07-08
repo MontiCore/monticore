@@ -161,13 +161,12 @@ public class ArtifactScopeDecoratorTest extends DecoratorTestCase {
   @Test
   public void testImportsAttribute() {
     ASTCDAttribute astcdAttribute = getAttributeBy("imports", scopeClass);
-    assertDeepEquals(CDModifier.PRIVATE, astcdAttribute.getModifier());
     assertListOf(IMPORT_STATEMENT, astcdAttribute.getMCType());
   }
 
   @Test
   public void testMethodCount() {
-    assertEquals(46, scopeClass.getCDMethodList().size());
+    assertEquals(45, scopeClass.getCDMethodList().size());
   }
 
   @Test
@@ -257,18 +256,6 @@ public class ArtifactScopeDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
     assertEquals("symbolName", method.getCDParameter(0).getName());
-  }
-
-  @Test
-  public void testGetFilePathMethod() {
-    ASTCDMethod method = getMethodBy("getFilePath", scopeClass);
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(PATH, method.getMCReturnType().getMCType());
-
-    assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.AutomatonLanguage", method.getCDParameter(0).getMCType());
-    assertEquals("lang", method.getCDParameter(0).getName());
   }
 
   @Test

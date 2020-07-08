@@ -3,9 +3,13 @@ package mc.feature.scopes;
 
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
+import mc.feature.scopes.scopeattributes.ScopeAttributesMill;
 import mc.feature.scopes.scopeattributes._ast.ASTStartProd;
 import mc.feature.scopes.scopeattributes._parser.ScopeAttributesParser;
-import mc.feature.scopes.scopeattributes._symboltable.*;
+import mc.feature.scopes.scopeattributes._symboltable.IScopeAttributesScope;
+import mc.feature.scopes.scopeattributes._symboltable.ScopeAttributesGlobalScope;
+import mc.feature.scopes.scopeattributes._symboltable.ScopeAttributesScope;
+import mc.feature.scopes.scopeattributes._symboltable.ScopeAttributesSymbolTableCreatorDelegator;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -34,9 +38,15 @@ public class ScopeAttributesTest {
     assertTrue(astSup.isPresent());
 
     ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/mc/feature/scopes"));
-    ScopeAttributesLanguage lang = new ScopeAttributesLanguage();
-    ScopeAttributesGlobalScope globalScope = new ScopeAttributesGlobalScope(modelPath, lang);
-    ScopeAttributesSymbolTableCreatorDelegator symbolTableCreator = new ScopeAttributesSymbolTableCreatorDelegator(globalScope);
+    ScopeAttributesGlobalScope globalScope = ScopeAttributesMill
+        .scopeAttributesGlobalScopeBuilder()
+        .setModelPath(modelPath)
+        .setModelFileExtension("sc")
+        .build();
+    ScopeAttributesSymbolTableCreatorDelegator symbolTableCreator = ScopeAttributesMill
+        .scopeAttributesSymbolTableCreatorDelegatorBuilder()
+        .setGlobalScope(globalScope)
+        .build();
     scope = symbolTableCreator.createFromAST(astSup.get());
   }
 

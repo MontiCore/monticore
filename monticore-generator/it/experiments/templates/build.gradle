@@ -6,7 +6,7 @@ plugins {
 }
 
 dependencies {
-  implementation project(":automaton_experiments")
+  implementation project(":automaton")
 }
 
 // create an additional test set called productTest

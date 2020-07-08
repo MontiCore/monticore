@@ -26,14 +26,14 @@ component grammar Completeness {
         @attribute leftComplete  true if only left is complete (c,...)
     */
   Completeness =
-          // the following complex lexer symbol construction is to prevent clash
-          // with ident "c"
-     [complete:"(c)"]
-          // separate brackets to avoid
-          // lexer-symbol clash
-     | {noSpace(2,3)}? "(" [incomplete:"..."] ")" 
+          // separate brackets to avoid lexer-symbol clashes
+       {noSpace(2,3)}? "(" [complete:"c"] ")"       // "(c)"
+     | {noSpace(2,3)}? "(" [incomplete:"..."] ")"   // "(...)"
      | [incomplete:"(...,...)"]
-     | [complete:"(c,c)"]
+       {noSpace(2,3,4,5)}? "(" [complete:"c"] "," "c" ")" // "(c,c)"
      | [rightComplete:"(...,c)"]
      | [leftComplete:"(c,...)"];
+  
+  // to allow use of "c" e.g. as variable:
+  nokeyword "c";
 }

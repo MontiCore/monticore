@@ -217,4 +217,16 @@ public abstract class MCParser extends Parser {
     return false;
   }
 
+  /*
+   * Returns the string of the token (counting from the current token). If the token does
+   * not exist, an empty string is returned
+   */
+  public String token(int i) {
+    org.antlr.v4.runtime.Token t1 = _input.LT(i);
+    if (t1==null) {
+      return "";
+    }
+    return t1.getText();
+  }
+
 }

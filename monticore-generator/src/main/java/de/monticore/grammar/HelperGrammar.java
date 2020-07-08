@@ -40,7 +40,9 @@ public class HelperGrammar {
   public static String getListName(ASTNonTerminal a) {
     String name;
     if (a.isPresentUsageName()) {
-      name = a.getUsageName();
+      name = a.getUsageName().endsWith("s") ?
+          a.getUsageName().substring(0, a.getUsageName().length() - 1) :
+          a.getUsageName();
     } else {
       // Use Nonterminal name as attribute name starting with lower case
       //      // latter

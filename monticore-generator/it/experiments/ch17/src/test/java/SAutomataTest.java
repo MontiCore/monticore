@@ -1,5 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
-import de.se_rwth.commons.logging.Log;
+
+import de.se_rwth.commons.logging.*;
 import org.antlr.v4.runtime.RecognitionException;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -15,7 +16,8 @@ public class SAutomataTest {
 
   @BeforeClass
   public static void setup() {
-    Log.init();
+    LogStub.init();         // replace log by a sideffect free variant
+        // LogStub.initPlusLog();  // for manual testing purpose only
     Log.enableFailQuick(false);
   }
 

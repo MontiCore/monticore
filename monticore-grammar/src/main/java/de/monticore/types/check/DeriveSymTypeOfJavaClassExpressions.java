@@ -4,11 +4,18 @@ package de.monticore.types.check;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import de.monticore.expressions.expressionsbasis._ast.ASTArguments;
+import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
 import de.monticore.expressions.javaclassexpressions._ast.*;
 import de.monticore.expressions.javaclassexpressions._visitor.JavaClassExpressionsVisitor;
+import de.monticore.statements.mcvardeclarationstatements._ast.ASTArrayInit;
+import de.monticore.statements.mcvardeclarationstatements._ast.ASTSimpleInit;
+import de.monticore.statements.mcvardeclarationstatements._ast.ASTVariableInit;
 import de.monticore.types.basictypesymbols._symboltable.TypeVarSymbol;
-import de.monticore.types.typesymbols._symboltable.*;
+import de.monticore.types.typesymbols._symboltable.FieldSymbol;
+import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
+import de.monticore.types.typesymbols._symboltable.MethodSymbol;
+import de.monticore.types.typesymbols._symboltable.OOTypeSymbol;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
@@ -622,4 +629,172 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     //no typesymbol found
     return null;
   }
+
+    @Override
+    public void traverse(ASTCreatorExpression expr){
+      expr.getCreator().accept(getRealThis());
+      if(typeCheckResult.isPresentCurrentResult()){
+        if(!typeCheckResult.isType()){
+          typeCheckResult.reset();
+          logError("0xA0322",expr.getCreator().get_SourcePositionStart());
+        }
+      }else{
+        typeCheckResult.reset();
+        logError("0xA0310",expr.get_SourcePositionStart());
+      }
+    }
+
+    @Override
+    public void traverse(ASTAnonymousClass creator){
+      SymTypeExpression extType = null;
+      SymTypeExpression wholeResult = null;
+      creator.getExtType().accept(getRealThis());
+      if(typeCheckResult.isPresentCurrentResult()){
+        extType = typeCheckResult.getCurrentResult();
+      }else{
+        typeCheckResult.reset();
+        logError("0xA0311",creator.getExtType().get_SourcePositionStart());
+      }
+      if(!extType.isTypeConstant()){
+        //see if there is a constructor fitting for the arguments
+        List<MethodSymbol> constructors = extType.getMethodList(extType.getTypeInfo().getName());
+        if(!constructors.isEmpty()){
+          if(testForCorrectArguments(constructors, creator.getArguments())){
+            wholeResult = extType;
+          }
+        }else if(creator.getArguments().isEmptyExpressions()){
+          //no constructor in this class -> default constructor without arguments, only possible if arguments in creator are empty
+          wholeResult = extType;
+        }
+      }
+
+      if(wholeResult != null){
+        typeCheckResult.setCurrentResult(wholeResult);
+      }else{
+        typeCheckResult.reset();
+        logError("0xA0312",creator.get_SourcePositionStart());
+      }
+    }
+
+    @Override
+    public void traverse(ASTArrayCreator creator){
+      SymTypeExpression extTypeResult = null;
+      SymTypeExpression wholeResult = null;
+
+      creator.getExtType().accept(getRealThis());
+      if(typeCheckResult.isPresentCurrentResult()){
+        extTypeResult = typeCheckResult.getCurrentResult();
+      }else{
+        logError("0xA0314", creator.getExtType().get_SourcePositionStart());
+      }
+
+      //the definition of the Arrays are based on the assumption that ExtType is not an array
+      if(!extTypeResult.isArrayType()) {
+         if (creator.getArrayDimensionSpecifier() instanceof ASTArrayDimensionByExpression) {
+          ASTArrayDimensionByExpression arrayInitializer = (ASTArrayDimensionByExpression) creator.getArrayDimensionSpecifier();
+          int dim = arrayInitializer.getDimList().size() + arrayInitializer.getExpressionList().size();
+          //teste dass alle Expressions integer-zahl sind
+          for(ASTExpression expr: arrayInitializer.getExpressionList()){
+            expr.accept(getRealThis());
+            if(typeCheckResult.isPresentCurrentResult()){
+              SymTypeExpression result = typeCheckResult.getCurrentResult();
+              if(result.isTypeConstant()){
+                if(!((SymTypeConstant) result).isIntegralType()){
+                  logError("0xA0315", expr.get_SourcePositionStart());
+                }
+              }else{
+                logError("0xA0316", expr.get_SourcePositionStart());
+              }
+            }else{
+              logError("0xA0317", expr.get_SourcePositionStart());
+            }
+          }
+          wholeResult = SymTypeExpressionFactory.createTypeArray(extTypeResult.getTypeInfo().getName(), extTypeResult.getTypeInfo().getEnclosingScope(),dim, extTypeResult.deepClone());
+        }
+      }
+
+
+      if(wholeResult!=null){
+        typeCheckResult.setCurrentResult(wholeResult);
+        typeCheckResult.setType();
+      }else{
+        logError("0xA0318", creator.get_SourcePositionStart());
+      }
+    }
+
+  protected boolean controlArrayInitCorrectType(ASTArrayInit arrayInit, SymTypeExpression extTypeResult, int dim, int[] depth) {
+    //dimension of array too high
+    if(depth[0]>=dim){
+      return false;
+    }
+    for(ASTVariableInit init: arrayInit.getVariableInitList()){
+      if(init instanceof ASTArrayInit){
+        depth[0]++;
+        //check recursively, if true do nothing, if false return false
+        if(!controlArrayInitCorrectType((ASTArrayInit) init, extTypeResult, dim, depth)){
+          return false;
+        }
+        depth[0]--;
+      }else{
+        ASTSimpleInit simpleInit = (ASTSimpleInit) init;
+        simpleInit.getExpression().accept(getRealThis());
+        if(typeCheckResult.isPresentCurrentResult()){
+          //check if expression is compatible to array type, if false return false
+          SymTypeExpression currentResult = typeCheckResult.getCurrentResult();
+          if(!compatible(extTypeResult, currentResult)){
+            //was ist, wenn z.B. Methoden Arrays returnen oder man Array-Variablen hereinreicht? Noch Fehler!! -> Teste auf SymTypeArray, Dimension, richtiger Basistyp (Argument in SymTypeArray) des Arrays, muss gleich sein, kein subtyp
+            if(currentResult.isArrayType()){
+              SymTypeArray current = (SymTypeArray) currentResult;
+              if ((current.getDim() + depth[0]) != (dim - 1) || !current.getArgument().getTypeInfo().getName().equals(extTypeResult.getTypeInfo().getName())) {
+                logError("0xA0319", simpleInit.getExpression().get_SourcePositionStart());
+                return false;
+              }
+            }else {
+              logError("0xA0320", simpleInit.getExpression().get_SourcePositionStart());
+              return false;
+            }
+          }else if(depth[0] != (dim-1)){
+            return false;
+          }
+        }else{
+          logError("0xA0321", simpleInit.getExpression().get_SourcePositionStart());
+          return false;
+        }
+      }
+    }
+    //every VariableInit in the arrayInit has the correct type and dimension, return true
+    return true;
+  }
+
+  private List<SymTypeExpression> calculateCorrectArguments(ASTArguments args) {
+      List<SymTypeExpression> argList = Lists.newArrayList();
+      for(int i = 0;i<args.getExpressionList().size();i++){
+        args.getExpression(i).accept(getRealThis());
+        if(typeCheckResult.isPresentCurrentResult()){
+          argList.add(typeCheckResult.getCurrentResult());
+        }else{
+          logError("0xA0313",args.getExpressionList().get(i).get_SourcePositionStart());
+        }
+      }
+      return argList;
+    }
+
+    private boolean testForCorrectArguments(List<MethodSymbol> constructors, ASTArguments arguments) {
+      List<SymTypeExpression> symTypeOfArguments = calculateCorrectArguments(arguments);
+      outer: for(MethodSymbol constructor: constructors){
+        if(constructor.getParameterList().size() == symTypeOfArguments.size()){
+          //get the types of the constructor arguments
+          List<SymTypeExpression> constructorArguments = constructor.getParameterList().stream().map(FieldSymbol::getType).collect(Collectors.toList());
+          for(int i = 0;i<constructorArguments.size();i++){
+            if(!compatible(constructorArguments.get(i),symTypeOfArguments.get(i))){
+              //wrong constructor, argument is not compatible to constructor definition
+              continue outer;
+            }
+          }
+          //if this is reached, then the arguments match a constructor's arguments -> return true
+          return true;
+        }
+      }
+      return false;
+    }
 }

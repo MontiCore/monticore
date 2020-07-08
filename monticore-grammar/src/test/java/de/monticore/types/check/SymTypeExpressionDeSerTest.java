@@ -2,6 +2,11 @@
 package de.monticore.types.check;
 
 import com.google.common.collect.Lists;
+import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.symboltable.serialization.JsonParser;
+import de.monticore.symboltable.serialization.JsonPrinter;
+import de.monticore.symboltable.serialization.json.JsonElement;
+import de.monticore.symboltable.serialization.json.JsonObject;
 import de.monticore.types.typesymbols._symboltable.BuiltInJavaTypeSymbolResolvingDelegate;
 import de.monticore.types.typesymbols._symboltable.OOTypeSymbol;
 import de.monticore.types.typesymbols._symboltable.TypeSymbolsArtifactScope;
@@ -12,6 +17,8 @@ import org.junit.Test;
 
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import static de.monticore.types.check.SymTypeExpressionFactory.*;
 import static org.junit.Assert.*;
@@ -219,10 +226,8 @@ public class SymTypeExpressionDeSerTest {
     assertEquals(expectedTS.getName(),actualTS.getName());
   }
 
-
-
   @Test
-  public void testRoundtrip2() throws MalformedURLException {
+  public void testRoundtrip2() {
     performRoundtrip2(teDouble);
     performRoundtrip2(teInt);
     performRoundtrip2(teVarA);
@@ -245,7 +250,7 @@ public class SymTypeExpressionDeSerTest {
     performRoundtrip2(teMap2);
   }
 
-  protected void performRoundtrip2(SymTypeExpression expr) throws MalformedURLException {
+  protected void performRoundtrip2(SymTypeExpression expr) {
     SymTypeExpressionDeSer deser = SymTypeExpressionDeSer.getInstance();
     //first serialize the expression using the deser
     String serialized = deser.serialize(expr);
@@ -261,6 +266,53 @@ public class SymTypeExpressionDeSerTest {
       OOTypeSymbol actualTS = expr.getTypeInfo();
       assertEquals(expectedTS.getName(), actualTS.getName());
     }
+
+    // usual member
+    JsonPrinter printer = new JsonPrinter();
+    SymTypeExpressionDeSer.serializeMember(printer, "foo", expr);
+    //produce a fake JSON object from the serialized member and parse this
+    JsonObject json = JsonParser.parseJsonObject("{"+printer.getContent()+"}");
+    SymTypeExpression deserialized = SymTypeExpressionDeSer.deserializeMember("foo", json, scope);
+    assertEquals(expr.print(), deserialized.print());
+
+    // optional member that is present
+    printer = new JsonPrinter();
+    SymTypeExpressionDeSer.serializeMember(printer, "foo", Optional.ofNullable(expr));
+    json = JsonParser.parseJsonObject("{"+printer.getContent()+"}");
+    Optional<SymTypeExpression> deserializedOpt = SymTypeExpressionDeSer.deserializeOptionalMember("foo", json, scope);
+    assertTrue(deserializedOpt.isPresent());
+    assertEquals(expr.print(), deserializedOpt.get().print());
+
+    // optional member that is empty
+    printer = new JsonPrinter();
+    SymTypeExpressionDeSer.serializeMember(printer, "foo", Optional.empty());
+    json = JsonParser.parseJsonObject("{"+printer.getContent()+"}");
+    deserializedOpt = SymTypeExpressionDeSer.deserializeOptionalMember("foo", json, scope);
+    assertTrue(!deserializedOpt.isPresent());
+
+    // list member that is empty
+    printer = new JsonPrinter();
+    SymTypeExpressionDeSer.serializeMember(printer, "foo", new ArrayList<>());
+    json = JsonParser.parseJsonObject("{"+printer.getContent()+"}");
+    List<SymTypeExpression> deserializedList = SymTypeExpressionDeSer.deserializeListMember("foo", json, scope);
+    assertEquals(0, deserializedList.size());
+
+    // list member with single element
+    printer = new JsonPrinter();
+    SymTypeExpressionDeSer.serializeMember(printer, "foo", Lists.newArrayList(expr));
+    json = JsonParser.parseJsonObject("{"+printer.getContent()+"}");
+    deserializedList = SymTypeExpressionDeSer.deserializeListMember("foo", json, scope);
+    assertEquals(1, deserializedList.size());
+    assertEquals(expr.print(), deserializedList.get(0).print());
+
+    // list member with two elements
+    printer = new JsonPrinter();
+    SymTypeExpressionDeSer.serializeMember(printer, "foo", Lists.newArrayList(expr, expr));
+    json = JsonParser.parseJsonObject("{"+printer.getContent()+"}");
+    deserializedList = SymTypeExpressionDeSer.deserializeListMember("foo", json, scope);
+    assertEquals(2, deserializedList.size());
+    assertEquals(expr.print(), deserializedList.get(0).print());
+    assertEquals(expr.print(), deserializedList.get(1).print());
   }
 
   @Test

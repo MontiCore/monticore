@@ -3,7 +3,7 @@ package de.monticore;
 
 import de.monticore.cd.cd4analysis._ast.ASTCD4AnalysisNode;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.prettyprint.CDPrettyPrinterDelegator;
+import de.monticore.cd.cd4code.CD4CodePrettyPrinterDelegator;
 import de.monticore.io.FileReaderWriter;
 import de.se_rwth.commons.Names;
 
@@ -13,12 +13,12 @@ import java.nio.file.Paths;
 
 public class CDReporting {
 
-  private final CDPrettyPrinterDelegator cdPrettyPrinterDelegator;
+  private final CD4CodePrettyPrinterDelegator cdPrettyPrinterDelegator;
 
   private static final String CD_EXTENSION = ".cd";
 
   public CDReporting() {
-    this.cdPrettyPrinterDelegator = new CDPrettyPrinterDelegator();
+    this.cdPrettyPrinterDelegator = new CD4CodePrettyPrinterDelegator();
   }
 
   /**

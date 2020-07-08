@@ -5,8 +5,12 @@ import de.monticore.io.paths.ModelPath;
 
 public class TestSymTabMillGlobalScope extends TestSymTabMillGlobalScopeTOP {
 
-  public TestSymTabMillGlobalScope(ModelPath modelPath, TestSymTabMillLanguage language){
-    super(modelPath,language);
+  public TestSymTabMillGlobalScope(ModelPath modelPath){
+    super(modelPath, "tsm");
+  }
+
+  public TestSymTabMillGlobalScope(ModelPath modelPath, String modelFileExtension){
+    super(modelPath, modelFileExtension);
   }
 
   @Override public TestSymTabMillGlobalScope getRealThis() {

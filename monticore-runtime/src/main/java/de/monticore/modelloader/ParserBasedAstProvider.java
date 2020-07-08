@@ -4,6 +4,7 @@ package de.monticore.modelloader;
 
 import com.google.common.base.Charsets;
 import de.monticore.IModelingLanguage;
+import de.monticore.antlr4.MCConcreteParser;
 import de.monticore.ast.ASTNode;
 import de.monticore.io.paths.ModelCoordinate;
 import de.se_rwth.commons.logging.Log;
@@ -21,10 +22,13 @@ import java.util.Optional;
  */
 public final class ParserBasedAstProvider<T extends ASTNode> implements AstProvider<T> {
 
-  private final IModelingLanguage modelingLanguage;
+  private final MCConcreteParser parser;
 
-  public ParserBasedAstProvider(IModelingLanguage modelingLanguage) {
-    this.modelingLanguage = modelingLanguage;
+  private final String languageName;
+
+  public ParserBasedAstProvider(MCConcreteParser parser, String languageName) {
+    this.parser = parser;
+    this.languageName = languageName;
   }
 
   @Override public T getRootNode(ModelCoordinate modelCoordinate) {
@@ -38,13 +42,13 @@ public final class ParserBasedAstProvider<T extends ASTNode> implements AstProvi
       if (!"jar".equals(loc.getProtocol())){
         if(loc.getFile().charAt(2) == ':'){
           String filename = URLDecoder.decode(loc.getFile(),  "UTF-8");
-          ast = (Optional<T>) modelingLanguage.getParser().parse(filename.substring(1));
+          ast = (Optional<T>) parser.parse(filename.substring(1));
         } else {
-           ast = (Optional<T>) modelingLanguage.getParser().parse(loc.getFile());
+           ast = (Optional<T>) parser.parse(loc.getFile());
         }
       } else {
         Reader reader = new InputStreamReader(loc.openStream(), Charsets.UTF_8.name());
-        ast = (Optional<T>) modelingLanguage.getParser().parse(reader,modelCoordinate.getQualifiedBaseName());
+        ast = (Optional<T>) parser.parse(reader,modelCoordinate.getQualifiedBaseName());
       }
 
       if (ast.isPresent()) {
@@ -53,12 +57,12 @@ public final class ParserBasedAstProvider<T extends ASTNode> implements AstProvi
       }
       else {
         Log.error("0xA1025 Could not parse model '" + modelCoordinate + "' of the grammar "
-            + "language " + modelingLanguage.getName() + ". There seem to be syntactical errors.");
+            + "language " + languageName + ". There seem to be syntactical errors.");
       }
     }
     catch (IOException e) {
       Log.error("0xA1026 I/O problem while parsing model '" + modelCoordinate + "' of the grammar "
-          + "language " + modelingLanguage.getName(), e);
+          + "language " + languageName, e);
     }
 
     return ast.get();

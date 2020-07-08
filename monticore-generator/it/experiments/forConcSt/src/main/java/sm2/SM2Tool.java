@@ -7,7 +7,10 @@ import org.antlr.v4.runtime.RecognitionException;
 import sm2._ast.ASTAutomaton;
 import sm2._cocos.SM2CoCoChecker;
 import sm2._parser.SM2Parser;
-import sm2._symboltable.*;
+import sm2._symboltable.SM2ArtifactScope;
+import sm2._symboltable.SM2GlobalScope;
+import sm2._symboltable.SM2SymbolTableCreator;
+import sm2._symboltable.StateSymbol;
 import sm2.cocos.AtLeastOneInitialState;
 import sm2.cocos.SM2CoCos;
 import sm2.cocos.StateNameStartsWithCapitalLetter;
@@ -28,32 +31,29 @@ public class SM2Tool {
    * @param args
    */
   public static void main(String[] args) {
-
+  
     // use normal logging (no DEBUG, TRACE)
-    Log.init();
+    Log.ensureInitalization();
     
     if (args.length != 1) {
       Log.error("0xEE744 Please specify only one single path to the input model.");
       return;
     }
-    Log.info("SM2 DSL Tool", SM2Tool.class.getName());
-    Log.info("------------------", SM2Tool.class.getName());
+    Log.info("SM2 DSL Tool", "SM2Tool");
+    Log.info("------------------", "SM2Tool");
     String model = args[0];
-    
-    // setup the language infrastructure
-    final SM2Language lang = new SM2Language();
     
     // parse the model and create the AST representation
     final ASTAutomaton ast = parse(model);
-    Log.info(model + " parsed successfully!", SM2Tool.class.getName());
+    Log.info(model + " parsed successfully!", "SM2Tool");
     
     // setup the symbol table
-    SM2ArtifactScope modelTopScope = createSymbolTable(lang, ast);
+    SM2ArtifactScope modelTopScope = createSymbolTable(ast);
     // can be used for resolving things in the model
     Optional<StateSymbol> aSymbol = modelTopScope.resolveState("Ping");
     if (aSymbol.isPresent()) {
       Log.info("Resolved state symbol \"Ping\"; FQN = " + aSymbol.get().toString(),
-          SM2Tool.class.getName());
+          "SM2Tool");
     }
     
     // execute default context conditions
@@ -67,13 +67,13 @@ public class SM2Tool {
     // analyze the model with a visitor
     CountStates cs = new CountStates();
     cs.handle(ast);
-    Log.info("The model contains " + cs.getCount() + " states.", SM2Tool.class.getName());
+    Log.info("The model contains " + cs.getCount() + " states.", "SM2Tool");
     
     // execute a pretty printer
     PrettyPrinter pp = new PrettyPrinter();
     pp.handle(ast);
-    Log.info("Pretty printing the parsed sm2 into console:", SM2Tool.class.getName());
-    System.out.println(pp.getResult());
+    Log.info("Pretty printing the parsed sm2 into console:", "SM2Tool");
+    Log.println(pp.getResult());
   }
   
   /**
@@ -101,16 +101,22 @@ public class SM2Tool {
   /**
    * Create the symbol table from the parsed AST.
    *
-   * @param lang
    * @param ast
    * @return
    */
-  public static SM2ArtifactScope createSymbolTable(SM2Language lang, ASTAutomaton ast) {
+  public static SM2ArtifactScope createSymbolTable(ASTAutomaton ast) {
     
-    SM2GlobalScope globalScope = new SM2GlobalScope(new ModelPath(), lang);
-    
-    SM2SymbolTableCreatorDelegator symbolTable = lang.getSymbolTableCreator(
-         globalScope);
+    SM2GlobalScope globalScope = SM2Mill
+        .sM2GlobalScopeBuilder()
+        .setModelPath(new ModelPath())
+        .setModelFileExtension("aut")
+        .build();
+
+    SM2SymbolTableCreator symbolTable = SM2Mill
+        .sM2SymbolTableCreatorBuilder()
+        .addToScopeStack(globalScope)
+        .build();
+
     return symbolTable.createFromAST(ast);
   }
   

@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package mc.feature.tokenrule;
+
+grammar SplitRule extends mc.common.Basics {
+  A = ":::" Name;
+
+  B = ":::"* Name;
+
+  D = foo:":::" Name;
+
+  E = foo:":::"* Name;
+
+  F =  foo:[":::"];
+
+  splittoken ":::";
+}

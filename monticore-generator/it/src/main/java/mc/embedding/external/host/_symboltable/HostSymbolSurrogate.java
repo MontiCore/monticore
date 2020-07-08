@@ -14,13 +14,6 @@ public class HostSymbolSurrogate extends HostSymbolSurrogateTOP {
   public HostSymbolSurrogate(String name) {
     super(name);
   }
-  
-
-//  @Override
-//  public Collection<ContentSymbol> getContent() {
-//    return getReferencedSymbol().getContent();
-//  }
-
 
 }
 

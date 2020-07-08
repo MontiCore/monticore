@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.prettyprint;
 
+import de.monticore.expressions.javaclassexpressions._ast.ASTCreatorExpression;
 import de.monticore.javalight._ast.*;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTLocalVariableDeclaration;
 import de.monticore.testjavalight._parser.TestJavaLightParser;
@@ -13,8 +14,8 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class JavaLightPrettyPrinterTest {
 
@@ -292,86 +293,6 @@ public class JavaLightPrettyPrinterTest {
   }
 
   @Test
-  public void testCreatorExpression() throws IOException {
-    Optional<ASTCreatorExpression> result = parser.parse_StringCreatorExpression("new Integer(a,b)");
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
-    ASTCreatorExpression ast = result.get();
-
-    String output = prettyPrinter.prettyprint(ast);
-
-    result = parser.parse_StringCreatorExpression(output);
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
-
-    assertTrue(ast.deepEquals(result.get()));
-  }
-
-  @Test
-  public void testArrayCreator() throws IOException {
-    Optional<ASTArrayCreator> result = parser.parse_StringArrayCreator("char [a][b]");
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
-    ASTArrayCreator ast = result.get();
-
-    String output = prettyPrinter.prettyprint(ast);
-
-    result = parser.parse_StringArrayCreator(output);
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
-
-    assertTrue(ast.deepEquals(result.get()));
-  }
-
-  @Test
-  public void testArrayDimensionByInitializer() throws IOException {
-    Optional<ASTArrayDimensionByInitializer> result = parser.parse_StringArrayDimensionByInitializer("[][][] {a, b, c, d}");
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
-    ASTArrayDimensionByInitializer ast = result.get();
-
-    String output = prettyPrinter.prettyprint(ast);
-
-    result = parser.parse_StringArrayDimensionByInitializer(output);
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
-
-    assertTrue(ast.deepEquals(result.get()));
-  }
-
-  @Test
-  public void testArrayDimensionByExpression() throws IOException {
-    Optional<ASTArrayDimensionByExpression> result = parser.parse_StringArrayDimensionByExpression("[a][d] [][][]");
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
-    ASTArrayDimensionByExpression ast = result.get();
-
-    String output = prettyPrinter.prettyprint(ast);
-
-    result = parser.parse_StringArrayDimensionByExpression(output);
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
-
-    assertTrue(ast.deepEquals(result.get()));
-  }
-
-  @Test
-  public void testCreatedName() throws IOException {
-    Optional<ASTCreatedName> result = parser.parse_StringCreatedName("boolean");
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
-    ASTCreatedName ast = result.get();
-
-    String output = prettyPrinter.prettyprint(ast);
-
-    result = parser.parse_StringCreatedName(output);
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
-
-    assertTrue(ast.deepEquals(result.get()));
-  }
-
-  @Test
   public void testEnhancedForControl() throws IOException {
     Optional<ASTEnhancedForControl> result = parser.parse_StringEnhancedForControl("protected int c[] : a");
     assertFalse(parser.hasErrors());
@@ -386,4 +307,20 @@ public class JavaLightPrettyPrinterTest {
 
     assertTrue(ast.deepEquals(result.get()));
   }
+
+  @Test
+  public void testCreatorExpression2() throws IOException {
+    Optional<ASTArrayDimensionByInitializer> result = parser.parse_StringArrayDimensionByInitializer("[][]{{}}");
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
+    ASTArrayDimensionByInitializer ast = result.get();
+    String output = prettyPrinter.prettyprint(ast);
+
+    result = parser.parse_StringArrayDimensionByInitializer(output);
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
+
+    assertTrue(ast.deepEquals(result.get()));
+  }
+
 }

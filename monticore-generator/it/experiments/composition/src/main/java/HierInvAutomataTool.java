@@ -21,9 +21,9 @@ public class HierInvAutomataTool {
    * @param args
    */
   public static void main(String[] args) throws IOException {
-
+  
     // use normal logging (no DEBUG, TRACE)
-    Log.init();
+    Log.ensureInitalization();
 
     // Retrieve the model name
     if (args.length != 1) {
@@ -43,7 +43,7 @@ public class HierInvAutomataTool {
     Log.info("=== 2: HierInvAutomatonCheapVisit =============", "HierIAT");
    HierInvAutomataCheapVisit acv1 = new HierInvAutomataCheapVisit();
    ast.accept(acv1);
-   // acv1.setVerbosity();
+   // XXXYX // acv1.setVerbosity();
    // Log.info("=== 3: HierInvAutomatonCheapVisit.verbose() ===", "HierIAT");
    // ast.accept(acv1);
 

@@ -3,6 +3,9 @@
 package de.monticore.grammar.grammar._symboltable;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsArtifactScope;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
@@ -120,6 +123,34 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
       ret.put(prodSymbol.getName(), prodSymbol);
     }
 
+    return ret;
+  }
+
+  public Collection<String> getTokenRulesWithInherited() {
+    final Collection<String> ret = Sets.newHashSet();
+
+    for (int i = superGrammars.size() - 1; i >= 0; i--) {
+      final MCGrammarSymbolLoader superGrammarRef = superGrammars.get(i);
+
+      if (superGrammarRef.isSymbolLoaded()) {
+        ret.addAll(superGrammarRef.getLoadedSymbol().getTokenRulesWithInherited());
+      }
+    }
+    forEachSplitRules(t -> ret.add(t));
+    return ret;
+  }
+
+  public Collection<String> getKeywordRulesWithInherited() {
+    final Collection<String> ret = Sets.newHashSet();
+
+    for (int i = superGrammars.size() - 1; i >= 0; i--) {
+      final MCGrammarSymbolLoader superGrammarRef = superGrammars.get(i);
+
+      if (superGrammarRef.isSymbolLoaded()) {
+        ret.addAll(superGrammarRef.getLoadedSymbol().getKeywordRulesWithInherited());
+      }
+    }
+    forEachNoKeywords(t -> ret.add(t));
     return ret;
   }
 

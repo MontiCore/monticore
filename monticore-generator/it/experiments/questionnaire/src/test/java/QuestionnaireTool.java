@@ -29,19 +29,19 @@ public class QuestionnaireTool {
       Log.error("0xEE74A Please specify only one single path to the input model.");
       return;
     }
-    Log.info("Questionnaire DSL Tool", QuestionnaireTool.class.getName());
-    Log.info("------------------", QuestionnaireTool.class.getName());
+    Log.info("Questionnaire DSL Tool", "QuestionnaireTool");
+    Log.info("------------------", "QuestionnaireTool");
     String model = args[0];
     
     // parse the model and create the AST representation
     final ASTQDefinition ast = parse(model);
-    Log.info(model + " parsed successfully!", QuestionnaireTool.class.getName());
+    Log.info(model + " parsed successfully!", "QuestionnaireTool");
 
     // run the pretty printing:
     QuestionnaireVisitor qv = new QuestionnairePrettyPrinter(); 
     ast.accept(qv);
 
-    Log.info("------------------", QuestionnaireTool.class.getName());
+    Log.info("------------------", "QuestionnaireTool");
 
     // run the detailed tree pretty printing:
     qv = new QuestionnaireTreePrinter(); 

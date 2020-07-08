@@ -1,6 +1,7 @@
 package de.monticore.ast;
 
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -10,7 +11,7 @@ import static org.junit.Assert.assertFalse;
 public class CommentBuilderTest {
   @BeforeClass
   public static void before() {
-    Log.enableFailQuick(false);
+    LogStub.init();;
   }
 
   @Test

@@ -56,10 +56,8 @@ public class JavaLightPrettyPrinter extends MCCommonStatementsPrettyPrinter impl
       getPrinter().print(" throws ");
       a.getThrows().accept(getRealThis());
     }
-    if (!a.getMCBlockStatementList().isEmpty()) {
-      getPrinter().println("{");
-      a.getMCBlockStatementList().forEach(b -> b.accept(getRealThis()));
-      getPrinter().println("}");
+    if (a.isPresentMCJavaBlock()) {
+      a.getMCJavaBlock().accept(getRealThis());
     } else {
       getPrinter().println(";");
     }
@@ -115,10 +113,7 @@ public class JavaLightPrettyPrinter extends MCCommonStatementsPrettyPrinter impl
       getPrinter().print(" throws ");
       a.getThrows().accept(getRealThis());
     }
-    getPrinter().print(" ");
-    getPrinter().println("{");
-    a.getMCBlockStatementList().forEach(b -> b.accept(getRealThis()));
-    getPrinter().println("}");
+    a.getMCJavaBlock().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
 
@@ -215,13 +210,6 @@ public class JavaLightPrettyPrinter extends MCCommonStatementsPrettyPrinter impl
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
 
-  @Override
-  public void handle(ASTArrayCreator a) {
-    CommentPrettyPrinter.printPreComments(a, getPrinter());
-    a.getCreatedName().accept(getRealThis());
-    a.getArrayDimensionSpecifier().accept(getRealThis());
-    CommentPrettyPrinter.printPostComments(a, getPrinter());
-  }
 
   @Override
   public void handle(ASTArrayDimensionByInitializer a) {
@@ -231,43 +219,6 @@ public class JavaLightPrettyPrinter extends MCCommonStatementsPrettyPrinter impl
     }
     getPrinter().print(" ");
     a.getArrayInit().accept(getRealThis());
-    CommentPrettyPrinter.printPostComments(a, getPrinter());
-  }
-
-  @Override
-  public void handle(ASTArrayDimensionByExpression a) {
-    CommentPrettyPrinter.printPreComments(a, getPrinter());
-    for (ASTExpression astExpression : a.getExpressionList()) {
-      getPrinter().print("[");
-      astExpression.accept(getRealThis());
-      getPrinter().print("]");
-    }
-    for (int i = 0; i < a.getDimList().size(); i++) {
-      getPrinter().print("[]");
-    }
-    CommentPrettyPrinter.printPostComments(a, getPrinter());
-  }
-
-  @Override
-  public void handle(ASTCreatedName a) {
-    CommentPrettyPrinter.printPreComments(a, getPrinter());
-    String sep = "";
-    for (ASTMCObjectType oType : a.getMCObjectTypeList()) {
-      getPrinter().print(sep);
-      sep = ".";
-      oType.accept(getRealThis());
-    }
-    if (a.isPresentMCPrimitiveType()) {
-      a.getMCPrimitiveType().accept(getRealThis());
-    }
-    CommentPrettyPrinter.printPostComments(a, getPrinter());
-  }
-
-  @Override
-  public void handle(ASTCreatorExpression a) {
-    CommentPrettyPrinter.printPreComments(a, getPrinter());
-    getPrinter().print(" new ");
-    a.getCreator().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
 

@@ -671,14 +671,8 @@ public class DeriveSymTypeOfCommonExpressionTest {
    */
   public void init_advanced() {
     CombineExpressionsWithLiteralsGlobalScope globalScope = CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsGlobalScopeBuilder()
-        .setCombineExpressionsWithLiteralsLanguage(
-            new CombineExpressionsWithLiteralsLanguage("CombineExpressionsWithLiterals","ce") {
-              @Override
-              public CombineExpressionsWithLiteralsParser getParser() {
-              return null;
-            }
-            })
         .setModelPath(new ModelPath())
+        .setModelFileExtension("ce")
         .build();
 
     CombineExpressionsWithLiteralsArtifactScope artifactScope1 = CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsArtifactScopeBuilder()
@@ -1589,7 +1583,6 @@ public class DeriveSymTypeOfCommonExpressionTest {
         .setName("add")
         .build();
     add.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
-    elementField.setIsParameter(true);
     add.getSpannedScope().add(elementField);
     FieldSymbol field = field("field", _booleanSymType);
     OOTypeSymbol superclass = TypeSymbolsMill.oOTypeSymbolBuilder()

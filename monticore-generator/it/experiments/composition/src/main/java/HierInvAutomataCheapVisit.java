@@ -1,5 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 import automata3._ast.ASTInvariant;
+import de.se_rwth.commons.logging.Log;
 import expression._ast.ASTAnd;
 import expression._ast.ASTNot;
 import expression._ast.ASTTruth;
@@ -51,17 +52,17 @@ public class HierInvAutomataCheapVisit
   @Override
   public void visit(ASTInvariant node) {
     if(verbose)
-      System.out.println(" HA-ASTInvariant "); 
+      Log.println(" HA-ASTInvariant ");
     else
-      System.out.print("  [[ "); 
+      Log.print("  [[ "); 
   }
   
   @Override
   public void endVisit(ASTInvariant node) {
     if(verbose)
-      System.out.println("   HA-/Invariant ");
+      Log.println("   HA-/Invariant ");
     else 
-      System.out.println(" ]]");
+      Log.println(" ]]");
   }
 
   // ----------------------------------------------------------
@@ -69,60 +70,60 @@ public class HierInvAutomataCheapVisit
   @Override
   public void visit(ASTTruth node) {
     if(verbose)
-      System.out.println(" HA-ASTTruth " + node.isTt()+ "," + node.isFf()); 
+      Log.println(" HA-ASTTruth " + node.isTt()+ "," + node.isFf()); 
     else 
-      System.out.print(node.isTt() ? " true" : " false "); 
+      Log.print(node.isTt() ? " true" : " false "); 
   }
   
   @Override
   public void visit(ASTNot node) {
     if(verbose)
-      System.out.println(" HA-ASTNot ");
+      Log.println(" HA-ASTNot ");
     else 
-      System.out.print(" !"); 
+      Log.print(" !"); 
   }
   
   @Override
   public void visit(ASTVariable node) {
     if(verbose)
-      System.out.println(" HA-ASTVariable " + node.getName());
+      Log.println(" HA-ASTVariable " + node.getName());
     else 
-      System.out.print(" " + node.getName()); 
+      Log.print(" " + node.getName()); 
   }
   
   @Override
   public void visit(ASTAnd node) {
     if(verbose)
-      System.out.println(" HA-ASTAnd ");
+      Log.println(" HA-ASTAnd ");
     else 
-      System.out.print(" &&[ " ); 
+      Log.print(" &&[ " ); 
   }
   
   // ----------------------------------------------------------
   @Override
   public void endVisit(ASTTruth node) {
     if(verbose)
-      System.out.println("   HA-/Truth");
+      Log.println("   HA-/Truth");
   }
 
   @Override
   public void endVisit(ASTNot node) {
     if(verbose)
-      System.out.println("   HA-/Not ");
+      Log.println("   HA-/Not ");
   }
 
   @Override
   public void endVisit(ASTVariable node) {
     if(verbose)
-      System.out.println("   HA-/Variable ");
+      Log.println("   HA-/Variable ");
   }
 
   @Override
   public void endVisit(ASTAnd node) {
     if(verbose)
-      System.out.println("   HA-/And ");
+      Log.println("   HA-/And ");
     else 
-      System.out.print(" ] " ); 
+      Log.print(" ] " ); 
   }
   
 
@@ -130,8 +131,8 @@ public class HierInvAutomataCheapVisit
   @Override
   public void visit(ASTAutomaton node) {
     if(verbose)
-      System.out.println("HA-/* printed with " + this.getClass()+ " */");
-    System.out.println("automaton " + node.getName() + " {");
+      Log.println("HA-/* printed with " + this.getClass()+ " */");
+    Log.println("automaton " + node.getName() + " {");
   }
   
   // Because of the hierarchic decomposition, the order
@@ -140,72 +141,72 @@ public class HierInvAutomataCheapVisit
   @Override
   public void visit(hierinvautomata._ast.ASTState node) {
     if(verbose)
-      System.out.print(" HA-state " + node.getName() +" ");
+      Log.print(" HA-state " + node.getName() +" ");
     else
-      System.out.print(" state " + node.getName() +" ");
+      Log.print(" state " + node.getName() +" ");
 
     if (node.isInitial()) {
-      System.out.print(" <<initial>>");
+      Log.print(" <<initial>>");
     }
     if (node.isFinal()) {
-      System.out.print(" <<final>>");
+      Log.print(" <<final>>");
     }
-    System.out.println("");
+    Log.println("");
   }
 
   @Override
   public void visit(ASTStateBody node) {
     if(verbose)
-      System.out.println(" HA-stateBody {  ");
+      Log.println(" HA-stateBody {  ");
     else
-      System.out.println(" { ");
+      Log.println(" { ");
   }
 
   @Override
   public void visit(invautomata._ast.ASTState node) {
     // This one should not occur: Objects of that class are not
     // instatiated; subclasss has its own visit
-    System.out.print(" HA-illegal ASTState object detected: "
+    Log.print(" HA-illegal ASTState object detected: "
     						+ node.getName() +" ");
   }
 
   @Override
   public void visit(ASTTransition node) {
     if(verbose)
-      System.out.print(" HA-");
-    System.out.print(" "+ node.getFrom());
-    System.out.print(" - " + node.getInput() + " > ");
-    System.out.print(node.getTo());
-    System.out.println(";");
+      Log.print(" HA-");
+    Log.print(" "+ node.getFrom());
+    Log.print(" - " + node.getInput() + " > ");
+    Log.print(node.getTo());
+    Log.println(";");
   }
   
   // ----------------------------------------------------------
   @Override
   public void endVisit(ASTAutomaton node) {
     if(verbose)
-      System.out.println("    HA-/Automaton }");
+      Log.println("    HA-/Automaton }");
     else
-      System.out.println("}");
+      Log.println("}");
   }
 
   @Override
   public void endVisit(hierinvautomata._ast.ASTState node) {
     if(verbose)
-      System.out.println("    HA-/State ");
+      Log.println("    HA-/State ");
   }
 
   @Override
   public void endVisit(ASTStateBody node) {
     if(verbose)
-      System.out.println(" HA-/StateBody }  ");
+      Log.println(" HA-/StateBody }  ");
     else
-      System.out.println(" } ");
+      Log.println(" } ");
   }
 
   @Override
   public void endVisit(ASTTransition node) {
     if(verbose)
-      System.out.println("    HA-/Transition ");
+      Log.println("    HA-/Transition ");
   }
   
 }

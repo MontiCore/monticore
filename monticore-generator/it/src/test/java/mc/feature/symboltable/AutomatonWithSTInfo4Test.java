@@ -27,7 +27,6 @@ public class AutomatonWithSTInfo4Test extends GeneratorIntegrationsTest {
     AutomatonSymbol automatonSymbol= new AutomatonSymbol("A");
     assertTrue(automatonSymbol instanceof IScopeSpanningSymbol);
     AutomatonSymbolSurrogate automatonSymbolSurrogate;
-    AutomatonWithSTInfo4Language automatonWithSTInfo4Language;
     AutomatonWithSTInfo4ModelLoader automatonWithSTInfo4ModelLoader;
     AutomatonWithSTInfo4SymbolTableCreator automatonWithSTInfo4SymbolTableCreator;
     ASTState s = AutomatonWithSTInfo4Mill.stateBuilder().setName("S").build();
