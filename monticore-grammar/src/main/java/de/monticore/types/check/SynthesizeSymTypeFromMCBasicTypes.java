@@ -6,7 +6,6 @@ import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor;
 import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
-import de.monticore.types.typesymbols._symboltable.OOTypeSymbolLoader;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Optional;
@@ -100,7 +99,7 @@ public class SynthesizeSymTypeFromMCBasicTypes implements MCBasicTypesVisitor, I
   public void endVisit(ASTMCQualifiedType qType) {
     // Otherwise the Visitor is applied to the wrong AST (and an internal error 0x893F62 is issued
     typeCheckResult.setCurrentResult(
-        SymTypeExpressionFactory.createTypeObject(new OOTypeSymbolLoader(qType.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()), getScope(qType.getEnclosingScope()))));
+        SymTypeExpressionFactory.createTypeObject(qType.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()), getScope(qType.getEnclosingScope())));
   }
   
   public void endVisit(ASTMCReturnType rType) {

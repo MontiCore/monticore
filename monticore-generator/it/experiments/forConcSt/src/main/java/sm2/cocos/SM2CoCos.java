@@ -9,8 +9,7 @@ public class SM2CoCos {
     final SM2CoCoChecker checker = new SM2CoCoChecker();
     checker.addCoCo(new AtLeastOneInitialState());
     checker.addCoCo(new StateNameStartsWithCapitalLetter());
-    // TODO PN uncomment
-    // checker.addCoCo(new TransitionSourceExists());
+    checker.addCoCo(new TransitionSourceExists());
     
     return checker;
   }

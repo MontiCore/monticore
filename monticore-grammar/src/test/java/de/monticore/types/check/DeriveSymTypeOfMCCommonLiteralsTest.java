@@ -5,7 +5,7 @@ import de.monticore.expressions.prettyprint.CombineExpressionsWithLiteralsPretty
 import de.monticore.literals.mccommonliterals.MCCommonLiteralsMill;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.prettyprint.IndentPrinter;
-import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.*;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -23,7 +23,8 @@ public class DeriveSymTypeOfMCCommonLiteralsTest {
   
   @BeforeClass
   public static void setup() {
-    Log.init();
+    LogStub.init();         // replace log by a sideffect free variant
+    // LogStub.initPlusLog();  // for manual testing purpose only
     Log.enableFailQuick(false);
   }
   

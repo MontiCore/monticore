@@ -5,7 +5,6 @@ package de.monticore.types.check;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCArrayType;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardTypeArgument;
 import de.monticore.types.mcfullgenerictypes._visitor.MCFullGenericTypesVisitor;
-import de.monticore.types.typesymbols._symboltable.OOTypeSymbolLoader;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -61,7 +60,7 @@ public class SynthesizeSymTypeFromMCFullGenericTypes extends SynthesizeSymTypeFr
               + " Probably TypeCheck mis-configured.");
     }
     SymTypeExpression tex = SymTypeExpressionFactory.createTypeArray(
-            new OOTypeSymbolLoader(arrayType.printTypeWithoutBrackets(), getScope(arrayType.getEnclosingScope())),
+            arrayType.printTypeWithoutBrackets(), getScope(arrayType.getEnclosingScope()),
             arrayType.getDimensions(),
             typeCheckResult.getCurrentResult());
     typeCheckResult.setCurrentResult(tex);

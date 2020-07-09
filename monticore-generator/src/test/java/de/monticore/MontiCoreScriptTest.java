@@ -18,7 +18,7 @@ import de.monticore.io.paths.IterablePath;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.cli.CLIArguments;
 import de.se_rwth.commons.configuration.ConfigurationPropertiesMapContributor;
-import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.*;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -67,7 +67,8 @@ public class MontiCoreScriptTest {
 
   @BeforeClass
   public static void setup() {
-    Log.init();
+    LogStub.init();         // replace log by a sideffect free variant
+    // LogStub.initPlusLog();  // for manual testing purpose only
     Log.enableFailQuick(false);
     additionalMethods.add("deepEquals");
     additionalMethods.add("deepEqualsWithComments");

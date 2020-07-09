@@ -2,7 +2,7 @@
 package mc.feature.scopes;
 
 import de.monticore.io.paths.ModelPath;
-import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.*;
 import mc.feature.scopes.scopeattributes.ScopeAttributesMill;
 import mc.feature.scopes.scopeattributes._ast.ASTStartProd;
 import mc.feature.scopes.scopeattributes._parser.ScopeAttributesParser;
@@ -30,7 +30,8 @@ public class ScopeAttributesTest {
 
   @Before
   public void setUp() throws IOException {
-    Log.init();
+    LogStub.init();         // replace log by a sideffect free variant
+        // LogStub.initPlusLog();  // for manual testing purpose only
     Log.enableFailQuick(false);
     ScopeAttributesParser scopeAttributesParser = new ScopeAttributesParser();
     Optional<ASTStartProd> astSup = scopeAttributesParser.parse("src/test/resources/mc/feature/scopes/ScopeAttributesModel.sc");
