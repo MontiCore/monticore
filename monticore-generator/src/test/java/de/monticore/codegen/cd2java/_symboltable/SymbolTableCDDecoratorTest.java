@@ -60,8 +60,10 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
 
   @Before
   public void setUp() {
+    // LogStub.init() prevents a lot of warnings like 0xA1042 Scope "equals" has already an enclosing scope
+    // to be issued (the warnings are not checked)
     LogStub.init();         // replace log by a sideffect free variant
-        // LogStub.initPlusLog();  // for manual testing purpose only
+    // LogStub.initPlusLog();  // for manual testing purpose only
     this.glex = new GlobalExtensionManagement();
     IterablePath targetPath = Mockito.mock(IterablePath.class);
 
