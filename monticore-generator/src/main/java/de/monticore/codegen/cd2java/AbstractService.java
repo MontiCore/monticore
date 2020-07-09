@@ -150,23 +150,15 @@ public class AbstractService<T extends AbstractService> {
     return getCDSymbol().getName();
   }
 
-  public String getBasePackage(CDDefinitionSymbol cdSymbol) {
-    return cdSymbol.getPackageName();
-  }
-
-  public String getBasePackage() {
-    return getBasePackage(getCDSymbol());
-  }
-
   public String getPackage() {
     return getPackage(getCDSymbol());
   }
 
   public String getPackage(CDDefinitionSymbol cdSymbol) {
-    if (getBasePackage(cdSymbol).isEmpty()) {
+    if (cdSymbol.getPackageName().isEmpty()) {
       return String.join(".", cdSymbol.getName(), getSubPackage()).toLowerCase();
     }
-    return String.join(".", getBasePackage(cdSymbol), cdSymbol.getName(), getSubPackage()).toLowerCase();
+    return String.join(".", cdSymbol.getPackageName(), cdSymbol.getName(), getSubPackage()).toLowerCase();
   }
 
   public String getSubPackage() {
@@ -174,7 +166,7 @@ public class AbstractService<T extends AbstractService> {
   }
 
   public String getQualifiedCDName() {
-    return Names.getQualifiedName(getBasePackage(), getCDName());
+    return Names.getQualifiedName(getCDSymbol().getPackageName(), getCDName());
   }
 
   /**
@@ -380,10 +372,10 @@ public class AbstractService<T extends AbstractService> {
   }
 
   public String getASTPackage(CDDefinitionSymbol cdSymbol) {
-    if (getBasePackage(cdSymbol).isEmpty()) {
+    if (cdSymbol.getPackageName().isEmpty()) {
       return String.join(".", cdSymbol.getName(), AST_PACKAGE).toLowerCase();
     }
-    return String.join(".", getBasePackage(cdSymbol), cdSymbol.getName(), AST_PACKAGE).toLowerCase();
+    return String.join(".", cdSymbol.getPackageName(), cdSymbol.getName(), AST_PACKAGE).toLowerCase();
   }
 
   /**
@@ -423,10 +415,10 @@ public class AbstractService<T extends AbstractService> {
   }
 
   public String getMillFullName(CDDefinitionSymbol cdSymbol) {
-    if (getBasePackage(cdSymbol).isEmpty()) {
+    if (cdSymbol.getPackageName().isEmpty()) {
       return cdSymbol.getName().toLowerCase() + "." + getMillSimpleName(cdSymbol);
     }else {
-      return String.join(".", getBasePackage(cdSymbol), cdSymbol.getName()).toLowerCase() + "." + getMillSimpleName(cdSymbol);
+      return String.join(".", cdSymbol.getPackageName(), cdSymbol.getName()).toLowerCase() + "." + getMillSimpleName(cdSymbol);
     }
   }
 
