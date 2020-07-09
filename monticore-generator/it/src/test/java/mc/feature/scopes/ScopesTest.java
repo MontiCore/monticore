@@ -2,7 +2,7 @@
 package mc.feature.scopes;
 
 import de.monticore.io.paths.ModelPath;
-import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.*;
 import mc.feature.scopes.supautomaton.SupAutomatonMill;
 import mc.feature.scopes.supautomaton._ast.ASTSup;
 import mc.feature.scopes.supautomaton._parser.SupAutomatonParser;
@@ -30,7 +30,8 @@ public class ScopesTest {
 
   @Before
   public void setUp() throws IOException {
-    Log.init();
+    LogStub.init();         // replace log by a sideffect free variant
+        // LogStub.initPlusLog();  // for manual testing purpose only
     Log.enableFailQuick(false);
     SupAutomatonParser supAutomatonParser = new SupAutomatonParser();
     Optional<ASTSup> astSup = supAutomatonParser.parse("src/test/resources/mc/feature/scopes/SupAutomatonModel.aut");

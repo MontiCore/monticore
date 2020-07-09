@@ -2,7 +2,7 @@
 package mc.feature.referencesymbol;
 
 import de.monticore.io.paths.ModelPath;
-import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.*;
 import mc.feature.referencesymbol.reference.ReferenceMill;
 import mc.feature.referencesymbol.reference._ast.*;
 import mc.feature.referencesymbol.reference._parser.ReferenceParser;
@@ -27,7 +27,8 @@ public class ReferenceTest {
 
   @Before
   public void setUp() throws IOException {
-    Log.init();
+    LogStub.init();         // replace log by a sideffect free variant
+    // LogStub.initPlusLog();  // for manual testing purpose only
     Log.enableFailQuick(false);
     ReferenceParser parser = new ReferenceParser();
     Optional<ASTRand> astRand = parser.parse("src/test/resources/mc/feature/referencesymbol/ReferenceModel.ref");
