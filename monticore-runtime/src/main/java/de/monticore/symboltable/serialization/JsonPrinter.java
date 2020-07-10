@@ -215,11 +215,13 @@ public class JsonPrinter {
    * @param <T>
    */
   public <T> void array(String name, Collection<T> values, Function<T, String> printValue) {
-    beginArray(name);
-    for (T t : values) {
-      value(printValue.apply(t));
+    if(!values.isEmpty() || serializeEmptyLists){
+      beginArray(name);
+      for (T t : values) {
+        value(printValue.apply(t));
+      }
+      endArray();
     }
-    endArray();
   }
 
   /**
