@@ -73,7 +73,6 @@ while (grammarIterator.hasNext()) {
 for (astGrammar in getParsedGrammars()) {
   // make sure to use the right report manager again
   Reporting.on(Names.getQualifiedName(astGrammar.getPackageList(), astGrammar.getName()))
-  reportGrammarCd(astGrammar, report)
 
   // get already created base class diagramms
   astClassDiagram = getCDOfParsedGrammar(astGrammar)
@@ -81,6 +80,11 @@ for (astGrammar in getParsedGrammars()) {
   scopeClassDiagramm = getScopeCDOfParsedGrammar(astGrammar)
 
   astClassDiagram = addListSuffixToAttributeName(astClassDiagram)
+
+  // report the base diagrams
+  reportCD(astClassDiagram, "", report)
+  reportCD(symbolClassDiagramm, "_Symbol", report)
+  reportCD(scopeClassDiagramm, "_Scope", report)
 
   // M9 Generate ast classes, visitor and context condition
   // decorate and generate CD for the '_symboltable' package

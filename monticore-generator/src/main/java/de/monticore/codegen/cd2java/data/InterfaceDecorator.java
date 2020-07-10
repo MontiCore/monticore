@@ -49,6 +49,11 @@ public class InterfaceDecorator extends AbstractTransformer<ASTCDInterface> {
     // only then add the normal methods (e.g. for astrule methods with implementation)
     changedInput.addAllCDMethods(originalInput.getCDMethodList());
 
+    // delete all private or protected methods
+    List<ASTCDMethod> l = changedInput.streamCDMethods()
+            .filter(m -> !m.getModifier().isProtected() && !m.getModifier().isPrivate()).collect(Collectors.toList());
+    changedInput.setCDMethodList(l);
+
     changedInput.addAllInterfaces(originalInput.getInterfaceList());
     return changedInput;
   }

@@ -15,14 +15,14 @@ import de.monticore.codegen.cd2java._symboltable.serialization.ScopeDeSerDecorat
 import de.monticore.codegen.cd2java._symboltable.serialization.SymbolDeSerDecorator;
 import de.monticore.codegen.cd2java._symboltable.serialization.SymbolTablePrinterDecorator;
 import de.monticore.codegen.cd2java._symboltable.symbol.*;
-import de.monticore.codegen.cd2java._symboltable.symbol.symbolloadermutator.MandatoryMutatorSymbolLoaderDecorator;
+import de.monticore.codegen.cd2java._symboltable.symbol.symbolsurrogatemutator.MandatoryMutatorSymbolSurrogateDecorator;
 import de.monticore.codegen.cd2java._symboltable.symboltablecreator.*;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.IterablePath;
-import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -60,7 +60,10 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
 
   @Before
   public void setUp() {
-    Log.init();
+    // LogStub.init() prevents a lot of warnings like 0xA1042 Scope "equals" has already an enclosing scope
+    // to be issued (the warnings are not checked)
+    LogStub.init();         // replace log by a sideffect free variant
+    // LogStub.initPlusLog();  // for manual testing purpose only
     this.glex = new GlobalExtensionManagement();
     IterablePath targetPath = Mockito.mock(IterablePath.class);
 
@@ -92,8 +95,8 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
     GlobalScopeClassBuilderDecorator globalScopeClassBuilderDecorator = new GlobalScopeClassBuilderDecorator(glex, symbolTableService, builderDecorator);
     ArtifactScopeDecorator artifactScopeDecorator = new ArtifactScopeDecorator(glex, symbolTableService, visitorService, methodDecorator);
     ArtifactScopeBuilderDecorator artifactScopeBuilderDecorator = new ArtifactScopeBuilderDecorator(glex, symbolTableService, builderDecorator, accessorDecorator);
-    SymbolLoaderDecorator symbolReferenceDecorator = new SymbolLoaderDecorator(glex, symbolTableService, methodDecorator, new MandatoryMutatorSymbolLoaderDecorator(glex));
-    SymbolLoaderBuilderDecorator symbolReferenceBuilderDecorator = new SymbolLoaderBuilderDecorator(glex, symbolTableService, accessorDecorator);
+    SymbolSurrogateDecorator symbolReferenceDecorator = new SymbolSurrogateDecorator(glex, symbolTableService, methodDecorator, new MandatoryMutatorSymbolSurrogateDecorator(glex));
+    SymbolSurrogateBuilderDecorator symbolReferenceBuilderDecorator = new SymbolSurrogateBuilderDecorator(glex, symbolTableService, accessorDecorator);
     CommonSymbolInterfaceDecorator commonSymbolInterfaceDecorator = new CommonSymbolInterfaceDecorator(glex, symbolTableService, visitorService, methodDecorator);
     ModelLoaderDecorator modelLoaderDecorator = new ModelLoaderDecorator(glex, symbolTableService, accessorDecorator);
     ModelLoaderBuilderDecorator modelLoaderBuilderDecorator = new ModelLoaderBuilderDecorator(glex, builderDecorator);
@@ -105,7 +108,7 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
     SymbolTableCreatorDelegatorBuilderDecorator symbolTableCreatorDelegatorBuilderDecorator = new SymbolTableCreatorDelegatorBuilderDecorator(glex, builderDecorator);
     SymbolTableCreatorForSuperTypesBuilder symbolTableCreatorForSuperTypesBuilder = new SymbolTableCreatorForSuperTypesBuilder(glex, builderDecorator, symbolTableService);
     SymbolDeSerDecorator symbolDeSerDecorator = new SymbolDeSerDecorator(glex, symbolTableService);
-    ScopeDeSerDecorator scopeDeSerDecorator = new ScopeDeSerDecorator(glex, symbolTableService, methodDecorator);
+    ScopeDeSerDecorator scopeDeSerDecorator = new ScopeDeSerDecorator(glex, symbolTableService, methodDecorator, visitorService);
     SymbolTablePrinterDecorator symbolTablePrinterDecorator = new SymbolTablePrinterDecorator(glex, symbolTableService, visitorService);
 
     SymbolTableCDDecorator symbolTableCDDecorator = new SymbolTableCDDecorator(glex, targetPath, symbolTableService, symbolDecorator,
@@ -168,12 +171,12 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
     ASTCDClass fooSymbolBuilder = getClassBy("FooSymbolBuilder", symTabCD);
     ASTCDClass automatonScopeCDScope = getClassBy("AutomatonScopeCDScope", symTabCD);
     ASTCDClass automatonScopeCDScopeBuilder = getClassBy("AutomatonScopeCDScopeBuilder", symTabCD);
-    ASTCDClass automatonSymbolLoader = getClassBy("AutomatonSymbolLoader", symTabCD);
-    ASTCDClass stateSymbolLoader = getClassBy("StateSymbolLoader", symTabCD);
-    ASTCDClass fooSymbolLoader = getClassBy("FooSymbolLoader", symTabCD);
-    ASTCDClass automatonSymbolLoaderBuilder = getClassBy("AutomatonSymbolLoaderBuilder", symTabCD);
-    ASTCDClass stateSymbolLoaderBuilder = getClassBy("StateSymbolLoaderBuilder", symTabCD);
-    ASTCDClass fooSymbolLoaderBuilder = getClassBy("FooSymbolLoaderBuilder", symTabCD);
+    ASTCDClass automatonSymbolSurrogate = getClassBy("AutomatonSymbolSurrogate", symTabCD);
+    ASTCDClass stateSymbolSurrogate = getClassBy("StateSymbolSurrogate", symTabCD);
+    ASTCDClass fooSymbolSurrogate = getClassBy("FooSymbolSurrogate", symTabCD);
+    ASTCDClass automatonSymbolSurrogateBuilder = getClassBy("AutomatonSymbolSurrogateBuilder", symTabCD);
+    ASTCDClass stateSymbolSurrogateBuilder = getClassBy("StateSymbolSurrogateBuilder", symTabCD);
+    ASTCDClass fooSymbolSurrogateBuilder = getClassBy("FooSymbolSurrogateBuilder", symTabCD);
     ASTCDClass automatonGlobalScope = getClassBy("AutomatonGlobalScope", symTabCD);
     ASTCDClass automatonGlobalScopeBuilder = getClassBy("AutomatonGlobalScopeBuilder", symTabCD);
     ASTCDClass automatonArtifactScope = getClassBy("AutomatonArtifactScope", symTabCD);
@@ -244,12 +247,12 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
     ASTCDClass fooSymbolBuilder = getClassBy("FooSymbolBuilder", symTabCDWithHC);
     ASTCDClass automatonScopeCDScope = getClassBy("AutomatonScopeCDScope", symTabCDWithHC);
     ASTCDClass automatonScopeCDScopeBuilder = getClassBy("AutomatonScopeCDScopeBuilder", symTabCDWithHC);
-    ASTCDClass automatonSymbolLoader = getClassBy("AutomatonSymbolLoader", symTabCDWithHC);
-    ASTCDClass stateSymbolLoader = getClassBy("StateSymbolLoader", symTabCDWithHC);
-    ASTCDClass fooSymbolLoader = getClassBy("FooSymbolLoader", symTabCDWithHC);
-    ASTCDClass automatonSymbolLoaderBuilder = getClassBy("AutomatonSymbolLoaderBuilder", symTabCDWithHC);
-    ASTCDClass stateSymbolLoaderBuilder = getClassBy("StateSymbolLoaderBuilder", symTabCDWithHC);
-    ASTCDClass fooSymbolLoaderBuilder = getClassBy("FooSymbolLoaderBuilder", symTabCDWithHC);
+    ASTCDClass automatonSymbolSurrogate = getClassBy("AutomatonSymbolSurrogate", symTabCDWithHC);
+    ASTCDClass stateSymbolSurrogate = getClassBy("StateSymbolSurrogate", symTabCDWithHC);
+    ASTCDClass fooSymbolSurrogate = getClassBy("FooSymbolSurrogate", symTabCDWithHC);
+    ASTCDClass automatonSymbolSurrogateBuilder = getClassBy("AutomatonSymbolSurrogateBuilder", symTabCDWithHC);
+    ASTCDClass stateSymbolSurrogateBuilder = getClassBy("StateSymbolSurrogateBuilder", symTabCDWithHC);
+    ASTCDClass fooSymbolSurrogateBuilder = getClassBy("FooSymbolSurrogateBuilder", symTabCDWithHC);
     ASTCDClass automatonGlobalScope = getClassBy("AutomatonGlobalScope", symTabCDWithHC);
     ASTCDClass automatonGlobalScopeBuilder = getClassBy("AutomatonGlobalScopeBuilder", symTabCDWithHC);
     ASTCDClass automatonArtifactScope = getClassBy("AutomatonArtifactScope", symTabCDWithHC);
@@ -302,12 +305,12 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
     ASTCDClass fooSymbolBuilder = getClassBy("FooSymbolBuilder", symTabCDComponent);
     ASTCDClass automatonScopeCDScope = getClassBy("AutomatonScopeCDScope", symTabCDComponent);
     ASTCDClass automatonScopeCDScopeBuilder = getClassBy("AutomatonScopeCDScopeBuilder", symTabCDComponent);
-    ASTCDClass automatonSymbolLoader = getClassBy("AutomatonSymbolLoader", symTabCDComponent);
-    ASTCDClass stateSymbolLoader = getClassBy("StateSymbolLoader", symTabCDComponent);
-    ASTCDClass fooSymbolLoader = getClassBy("FooSymbolLoader", symTabCDComponent);
-    ASTCDClass automatonSymbolLoaderBuilder = getClassBy("AutomatonSymbolLoaderBuilder", symTabCDComponent);
-    ASTCDClass stateSymbolLoaderBuilder = getClassBy("StateSymbolLoaderBuilder", symTabCDComponent);
-    ASTCDClass fooSymbolLoaderBuilder = getClassBy("FooSymbolLoaderBuilder", symTabCDComponent);
+    ASTCDClass automatonSymbolSurrogate = getClassBy("AutomatonSymbolSurrogate", symTabCDComponent);
+    ASTCDClass stateSymbolSurrogate = getClassBy("StateSymbolSurrogate", symTabCDComponent);
+    ASTCDClass fooSymbolSurrogate = getClassBy("FooSymbolSurrogate", symTabCDComponent);
+    ASTCDClass automatonSymbolSurrogateBuilder = getClassBy("AutomatonSymbolSurrogateBuilder", symTabCDComponent);
+    ASTCDClass stateSymbolSurrogateBuilder = getClassBy("StateSymbolSurrogateBuilder", symTabCDComponent);
+    ASTCDClass fooSymbolSurrogateBuilder = getClassBy("FooSymbolSurrogateBuilder", symTabCDComponent);
   }
 
   @Test

@@ -9,7 +9,7 @@ import automata._symboltable.IAutomataScope;
 import automata._symboltable.StateSymbol;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.resolving.ResolvedSeveralEntriesForSymbolException;
-import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.*;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -23,7 +23,8 @@ public class ResolveDeepTest {
   
   @Test
   public void testDeepResolve() throws IOException {
-    Log.init();
+    LogStub.init();         // replace log by a sideffect free variant
+    // LogStub.initPlusLog();  // for manual testing purpose only
     Path model = Paths.get("src/test/resources/example/HierarchyPingPong.aut");
     AutomataParser parser = new AutomataParser();
     
