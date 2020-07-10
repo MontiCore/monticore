@@ -95,14 +95,14 @@ public class ReferenceTest {
     assertEquals(astReferenceToTest.getNameSymbol(), a);
 
     //test setter
-    astReferenceToTest = astRand.getReferenceToTest(1);
+    astReferenceToTest = astRand.getReferenceToTests(1);
     assertTrue(astReferenceToTest.isPresentNameSymbol());
     assertTrue(astReferenceToTest.isPresentNameDefinition());
     assertEquals(astReferenceToTest.getNameSymbol(), b);
     assertEquals(astReferenceToTest.getNameDefinition(), b.getAstNode());
 
     // set enclosing scope null
-    astReferenceToTest = astRand.getReferenceToTest(0);
+    astReferenceToTest = astRand.getReferenceToTests(0);
     IReferenceScope enclosingScope = astReferenceToTest.getEnclosingScope();
     astReferenceToTest.setEnclosingScope(null);
     assertFalse(astReferenceToTest.isPresentNameDefinition());
@@ -142,7 +142,7 @@ public class ReferenceTest {
     assertEquals(astOptionalRef.getNameDefinition(), astTest);
     assertEquals(astOptionalRef.getNameSymbol(), a);
 
-    astOptionalRef = astRand.getOptionalRef(1);
+    astOptionalRef = astRand.getOptionalRefs(1);
     assertFalse(astOptionalRef.isPresentNameSymbol());
     assertFalse(astOptionalRef.isPresentNameDefinition());
 
@@ -153,7 +153,7 @@ public class ReferenceTest {
     astOptionalRef.setName(name);
 
     // set enclosing scope null
-    astOptionalRef = astRand.getOptionalRef(0);
+    astOptionalRef = astRand.getOptionalRefs(0);
     IReferenceScope enclosingScope = astOptionalRef.getEnclosingScope();
     astOptionalRef.setEnclosingScope(null);
     assertFalse(astOptionalRef.isPresentNameDefinition());
@@ -270,7 +270,7 @@ public class ReferenceTest {
 
   @Test
   public void testListWithNameDefinition() {
-    ASTListRefWithName astListRef = astRand.getListRefWithName(0);
+    ASTListRefWithName astListRef = astRand.getListRefWithNames(0);
 
     assertNotNull(astListRef.getEnclosingScope());
 
@@ -307,7 +307,7 @@ public class ReferenceTest {
 
   @Test
   public void testListNTSDefinition() {
-    ASTListRefNonTerminalSep astListRef = astRand.getListRefNonTerminalSep(0);
+    ASTListRefNonTerminalSep astListRef = astRand.getListRefNonTerminalSeps(0);
 
     assertNotNull(astListRef.getEnclosingScope());
 
