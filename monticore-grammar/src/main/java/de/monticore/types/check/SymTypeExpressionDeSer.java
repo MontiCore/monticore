@@ -91,6 +91,32 @@ public class SymTypeExpressionDeSer {
     return result;
   }
 
+  public static SymTypeExpression deserializeMember(String memberName, JsonObject json,
+      ITypeSymbolsScope enclosingScope) {
+    return getInstance().deserialize(json.getMember(memberName), enclosingScope);
+  }
+
+  public static Optional<SymTypeExpression> deserializeOptionalMember(String memberName,
+      JsonObject json, ITypeSymbolsScope enclosingScope) {
+    if (json.hasMember(memberName)) {
+      return Optional.of(getInstance().deserialize(json.getMember(memberName), enclosingScope));
+    }
+    else {
+      return Optional.empty();
+    }
+  }
+
+  public static List<SymTypeExpression> deserializeListMember(String memberName, JsonObject json,
+      ITypeSymbolsScope enclosingScope) {
+    List<SymTypeExpression> result = new ArrayList<>();
+    if (json.hasMember(memberName)) {
+      for (JsonElement e : json.getArrayMember(memberName)) {
+        result.add(getInstance().deserialize(e, enclosingScope));
+      }
+    }
+    return result;
+  }
+
   public static SymTypeExpressionDeSer getInstance() {
     if (null == instance) {
       instance = new SymTypeExpressionDeSer();
