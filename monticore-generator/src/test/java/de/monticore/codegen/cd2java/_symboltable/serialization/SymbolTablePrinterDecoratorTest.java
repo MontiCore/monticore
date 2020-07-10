@@ -57,8 +57,6 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
 
   private static final String FOO_SYMBOL = "de.monticore.codegen.symboltable.automaton._symboltable.FooSymbol";
 
-  private static final String I_SCOPE_SPANNING_SYMBOL = "de.monticore.symboltable.IScopeSpanningSymbol";
-
   @Before
   public void setUp(){
     Log.init();
@@ -119,19 +117,19 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(CDModifier.PROTECTED, attribute.getModifier());
     assertDeepEquals(JSON_PRINTER, attribute.getMCType());
   }
-  
-  @Test
-  public void testLexicalsSymbolTablePrinterDelegateAttribute(){
-    ASTCDAttribute attribute = getAttributeBy("lexicalsSymbolTablePrinterDelegate", symbolTablePrinterClass);
-    assertDeepEquals(CDModifier.PROTECTED, attribute.getModifier());
-    assertDeepEquals("de.monticore.codegen.ast.lexicals._symboltable.LexicalsSymbolTablePrinter", attribute.getMCType());
-  }
 
   @Test
   public void testIsSpannedScopeAttribute(){
     ASTCDAttribute attribute = getAttributeBy("isSpannedScope", symbolTablePrinterClass);
     assertDeepEquals(CDModifier.PROTECTED, attribute.getModifier());
     assertBoolean(attribute.getMCType());
+  }
+
+  @Test
+  public void testRealThisAttribute(){
+    ASTCDAttribute attribute = getAttributeBy("realThis", symbolTablePrinterClass);
+    assertDeepEquals(CDModifier.PRIVATE, attribute.getModifier());
+    assertDeepEquals(AUTOMATON_VISITOR, attribute.getMCType());
   }
 
   @Test
@@ -167,7 +165,19 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
     assertEquals(0, method.sizeExceptions());
     assertEquals(0, method.sizeCDParameters());
     assertFalse(method.getMCReturnType().isPresentMCVoidType());
-    assertDeepEquals(symbolTablePrinterClass.getName(), method.getMCReturnType().getMCType());
+    assertDeepEquals(AUTOMATON_VISITOR, method.getMCReturnType().getMCType());
+  }
+
+  @Test
+  public void testSetRealThisMethod(){
+    ASTCDMethod method = getMethodBy("setRealThis", symbolTablePrinterClass);
+    assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
+    assertEquals(0, method.sizeExceptions());
+    assertEquals(1, method.sizeCDParameters());
+    ASTCDParameter parameter = method.getCDParameter(0);
+    assertEquals("realThis", parameter.getName());
+    assertDeepEquals(AUTOMATON_VISITOR, parameter.getMCType());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
   }
 
   @Test
@@ -178,18 +188,6 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
     assertEquals(0, method.sizeCDParameters());
     assertFalse(method.getMCReturnType().isPresentMCVoidType());
     assertDeepEquals(String.class, method.getMCReturnType().getMCType());
-  }
-
-  @Test
-  public void testSerializeLocalSymbolsMethod(){
-    ASTCDMethod method = getMethodBy("serializeLocalSymbols", symbolTablePrinterClass);
-    assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
-    assertEquals(0, method.sizeExceptions());
-    assertEquals(1, method.sizeCDParameters());
-    ASTCDParameter parameter = method.getCDParameter(0);
-    assertEquals("node", parameter.getName());
-    assertDeepEquals(I_AUTOMATON_SCOPE, parameter.getMCType());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
   }
 
   @Test
@@ -236,7 +234,7 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
       assertEquals(1, method.sizeCDParameters());
       assertEquals("node", method.getCDParameter(0).getName());
     }
-    assertDeepEquals(AUTOMATON_SCOPE, methods.get(0).getCDParameter(0).getMCType());
+    assertDeepEquals(I_AUTOMATON_SCOPE, methods.get(0).getCDParameter(0).getMCType());
     assertDeepEquals(AUTOMATON_SYMBOL, methods.get(1).getCDParameter(0).getMCType());
     assertDeepEquals(AUTOMATON_ARTIFACT_SCOPE, methods.get(2).getCDParameter(0).getMCType());
   }

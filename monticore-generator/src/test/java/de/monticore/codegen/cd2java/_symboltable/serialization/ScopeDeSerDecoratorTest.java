@@ -12,6 +12,7 @@ import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
+import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
@@ -25,6 +26,7 @@ import java.util.List;
 import static de.monticore.codegen.cd2java.DecoratorAssert.*;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodsBy;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.JSON_PRINTER;
 import static org.junit.Assert.*;
 
 public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
@@ -51,7 +53,7 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
 
   private static final String I_AUTOMATON_SCOPE = "de.monticore.codegen.symboltable.automaton._symboltable.IAutomatonScope";
 
-  private static final String AUTOMATON_SYMBOL_TABLE_PRINTER = "de.monticore.codegen.symboltable.automaton._symboltable.AutomatonSymbolTablePrinter";
+  private static final String AUTOMATON_DELEGATOR_VISITOR = "de.monticore.codegen.symboltable.automaton._visitor.AutomatonDelegatorVisitor";
 
   private static final String AUTOMATON_SYMBOL = "AutomatonSymbol";
 
@@ -74,7 +76,7 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
     originalCompilationUnit = decoratedSymbolCompilationUnit.deepClone();
     this.glex.setGlobalValue("service", new AbstractService(astcdCompilationUnit));
 
-    ScopeDeSerDecorator decorator = new ScopeDeSerDecorator(glex, new SymbolTableService(astcdCompilationUnit), new MethodDecorator(glex, new SymbolTableService(decoratedScopeCompilationUnit)));
+    ScopeDeSerDecorator decorator = new ScopeDeSerDecorator(glex, new SymbolTableService(astcdCompilationUnit), new MethodDecorator(glex, new SymbolTableService(decoratedScopeCompilationUnit)), new VisitorService(astcdCompilationUnit));
 
     this.scopeClass = decorator.decorate(decoratedScopeCompilationUnit, decoratedSymbolCompilationUnit);
   }
@@ -108,7 +110,7 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeCount(){
-    assertEquals(5, scopeClass.sizeCDAttributes());
+    assertEquals(6, scopeClass.sizeCDAttributes());
   }
 
   @Test
@@ -127,16 +129,15 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
     assertEquals("symbolFileExtension", attributeList.get(3).getName());
     assertDeepEquals(String.class, attributeList.get(3).getMCType());
     assertDeepEquals(CDModifier.PROTECTED, attributeList.get(4).getModifier());
-    assertEquals("symbolTablePrinter", attributeList.get(4).getName());
-    assertDeepEquals(AUTOMATON_SYMBOL_TABLE_PRINTER, attributeList.get(4).getMCType());
+    assertEquals("printer", attributeList.get(4).getName());
+    assertDeepEquals(JSON_PRINTER, attributeList.get(4).getMCType());
+    assertEquals("symbolTablePrinter", attributeList.get(5).getName());
+    assertDeepEquals(AUTOMATON_DELEGATOR_VISITOR, attributeList.get(5).getMCType());
   }
 
   @Test
   public void testMethodCount(){
     assertEquals(20, scopeClass.sizeCDMethods());
-    for(ASTCDMethod method: scopeClass.getCDMethodList()){
-      System.out.println(method.getName());
-    }
   }
 
   @Test
