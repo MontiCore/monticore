@@ -118,8 +118,10 @@ public class TestCD4AnalysisSymbolTableCreator extends TestCD4AnalysisSymbolTabl
     }
   }
 
-  CDTypeSymbolLoader createCDTypeSymbolFromReference(final ASTMCObjectType astmcObjectType) {
-    return new CDTypeSymbolLoader(
-        astmcObjectType.printType(new MCCollectionTypesPrettyPrinter(new IndentPrinter())), getCurrentScope().get());
+  CDTypeSymbolSurrogate createCDTypeSymbolFromReference(final ASTMCObjectType astmcObjectType) {
+    CDTypeSymbolSurrogate surrogate =  new CDTypeSymbolSurrogate(
+        astmcObjectType.printType(new MCCollectionTypesPrettyPrinter(new IndentPrinter())));
+    surrogate.setEnclosingScope(getCurrentScope().get());
+    return surrogate;
   }
 }
