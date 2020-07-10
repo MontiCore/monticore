@@ -8,7 +8,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesVisitor;
-import de.monticore.types.typesymbols._symboltable.OOTypeSymbolLoader;
+import de.monticore.types.typesymbols._symboltable.OOTypeSymbolSurrogate;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.LinkedList;
@@ -76,9 +76,10 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypes extends SynthesizeSymType
       }
       arguments.add(typeCheckResult.getCurrentResult());
     }
-
+    OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate(genericType.printWithoutTypeArguments());
+    loader.setEnclosingScope(getScope(genericType.getEnclosingScope()));
     SymTypeExpression tex = SymTypeExpressionFactory.createGenerics(
-        new OOTypeSymbolLoader(genericType.printWithoutTypeArguments(), getScope(genericType.getEnclosingScope())), arguments);
+        loader, arguments);
     typeCheckResult.setCurrentResult(tex);
   }
 
@@ -101,12 +102,16 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypes extends SynthesizeSymType
     // type could also be a boxed Primitive or an Type Variable!
     // We need the SymbolTable to distinguish this stuff
     // PS: that also applies to other Visitors.
-    typeCheckResult.setCurrentResult(SymTypeExpressionFactory.createTypeObject(new OOTypeSymbolLoader(qType.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()), getScope(qType.getEnclosingScope()))));
+    OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate(qType.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()));
+    loader.setEnclosingScope(getScope(qType.getEnclosingScope()));
+    typeCheckResult.setCurrentResult(SymTypeExpressionFactory.createTypeObject(loader));
   }
 
   @Override
   public void endVisit(ASTMCQualifiedName qName) {
-    SymTypeOfObject oType = createTypeObject(new OOTypeSymbolLoader(qName.getQName(), getScope(qName.getEnclosingScope())));
+    OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate(qName.getQName());
+    loader.setEnclosingScope(getScope(qName.getEnclosingScope()));
+    SymTypeOfObject oType = createTypeObject(loader);
     typeCheckResult.setCurrentResult(oType);
   }
 

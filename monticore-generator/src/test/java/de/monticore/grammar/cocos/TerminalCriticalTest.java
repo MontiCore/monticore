@@ -3,7 +3,7 @@
 package de.monticore.grammar.cocos;
 
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
-import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.*;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -15,7 +15,8 @@ public class TerminalCriticalTest extends CocoTest {
 
   @BeforeClass
   public static void disableFailQuick() {
-    Log.init();
+    LogStub.init();         // replace log by a sideffect free variant
+    // LogStub.initPlusLog();  // for manual testing purpose only
     Log.enableFailQuick(false);
     checker.addCoCo(new TerminalCritical());
   }

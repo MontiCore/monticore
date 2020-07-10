@@ -10,11 +10,10 @@ ${tc.signature("artifactScopeFullName", "languageName", "attrList" )}
 <#list attrList as attr>
   <#if genHelper.isOptional(attr.getMCType())>
   if (node.isPresent${attr.getName()?cap_first}()) {
-    serialize${languageName}${attr.getName()?cap_first}(Optional.of(node.${genHelper.getPlainGetter(attr)}()));
+    serialize${languageName}Scope${attr.getName()?cap_first}(Optional.of(node.${genHelper.getPlainGetter(attr)}()));
   }
   <#else>
-  serialize${languageName}${attr.getName()?cap_first}(node.${genHelper.getPlainGetter(attr)}());
+  serialize${languageName}Scope${attr.getName()?cap_first}(node.${genHelper.getPlainGetter(attr)}());
   </#if>
 </#list>
   serializeAdditionalArtifactScopeAttributes(node);
-  serializeLocalSymbols(node);

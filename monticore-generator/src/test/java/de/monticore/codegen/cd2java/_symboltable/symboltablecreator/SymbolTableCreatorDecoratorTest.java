@@ -18,7 +18,7 @@ import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -69,7 +69,8 @@ SymbolTableCreatorDecoratorTest extends DecoratorTestCase {
 
   @Before
   public void setUp() {
-    Log.init();
+    LogStub.init();         // replace log by a sideffect free variant
+    // LogStub.initPlusLog();  // for manual testing purpose only
     this.glex = new GlobalExtensionManagement();
     this.mcTypeFacade = MCTypeFacade.getInstance();
 
@@ -676,7 +677,8 @@ SymbolTableCreatorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testNoStartProd() {
-    Log.init();
+    LogStub.init();         // replace log by a sideffect free variant
+    // LogStub.initPlusLog();  // for manual testing purpose only
     GlobalExtensionManagement glex = new GlobalExtensionManagement();
 
     glex.setGlobalValue("astHelper", DecorationHelper.getInstance());

@@ -573,6 +573,10 @@ public class GrammarPrettyPrinter
     }
     getPrinter().print(" (");
     getPrinter().print(node.getName());
+    if (node.isPresentReferencedSymbol()) {
+      getPrinter().print("@");
+      getPrinter().print(node.getReferencedSymbol());
+    }
     if (node.isPlusKeywords()) {
       getPrinter().print("&");
     }

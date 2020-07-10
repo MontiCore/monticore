@@ -3,9 +3,11 @@ package de.monticore.codegen.cd2java._symboltable.serialization;
 
 import com.google.common.collect.Lists;
 import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.cd4code.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
+import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
@@ -39,9 +41,12 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
 
   protected MethodDecorator methodDecorator;
 
+  protected VisitorService visitorService;
+
   public ScopeDeSerDecorator(final GlobalExtensionManagement glex,
-      final SymbolTableService symbolTableService, final MethodDecorator methodDecorator) {
+      final SymbolTableService symbolTableService, final MethodDecorator methodDecorator, VisitorService visitorService) {
     super(glex);
+    this.visitorService = visitorService;
     this.symbolTableService = symbolTableService;
     this.methodDecorator = methodDecorator;
   }
@@ -75,8 +80,10 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
     ASTCDAttribute fileExtension = getCDAttributeFacade().createAttribute(PROTECTED,
         getMCTypeFacade().createStringType(),"symbolFileExtension");
 
+    ASTCDAttribute jsonPrinter = getCDAttributeFacade().createAttribute(PROTECTED, symbolTableService.getJsonPrinterType(),"printer");
+
     ASTCDAttribute symbolTablePrinter = getCDAttributeFacade().createAttribute(PROTECTED,
-        getMCTypeFacade().createQualifiedType(symbolTableService.getSymbolTablePrinterFullName()),"symbolTablePrinter");
+        getMCTypeFacade().createQualifiedType(visitorService.getDelegatorVisitorFullName()),"symbolTablePrinter");
 
     return CD4CodeMill.cDClassBuilder()
         .setName(scopeDeSerName)
@@ -84,6 +91,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
         .addCDConstructor(createConstructor(scopeDeSerName))
         .addAllCDAttributes(createSymbolDeSerAttributes(symbolDefinition))
         .addCDAttribute(fileExtension)
+        .addCDAttribute(jsonPrinter)
         .addCDAttribute(symbolTablePrinter)
         .addAllCDMethods(methodDecorator.decorate(fileExtension))
         .addAllCDMethods(createLoadMethods(artifactScopeFullName))
@@ -102,8 +110,16 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
 
   protected ASTCDConstructor createConstructor(String scopeDeSerName) {
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC, scopeDeSerName);
-    this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("this.symbolTablePrinter = new "
-        + symbolTableService.getSymbolTablePrinterFullName() + "();"));
+    Map<String, String> symbolTablePrinters = new HashMap<>();
+    CDDefinitionSymbol lang = symbolTableService.getCDSymbol();
+    symbolTablePrinters.put(lang.getName(), symbolTableService.getSymbolTablePrinterFullName(lang));
+    for (CDDefinitionSymbol superCD : symbolTableService.getSuperCDsTransitive()) {
+      symbolTablePrinters.put(superCD.getName(), symbolTableService.getSymbolTablePrinterFullName(superCD));
+    }
+
+    this.replaceTemplate(EMPTY_BODY, constructor,
+    new TemplateHookPoint("_symboltable.serialization.scopeDeSer.Constructor4ScopeDeSer",
+        visitorService.getDelegatorVisitorFullName(), symbolTablePrinters));
     return constructor;
   }
 
@@ -161,7 +177,9 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
     ASTCDParameter artifactScopeParam = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(artifactScopeName), "toSerialize");
     ASTCDParameter symbolPathParam = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType("java.nio.file.Path"), "symbolPath");
     ASTCDMethod storeMethod = getCDMethodFacade().createMethod(PUBLIC, "store", artifactScopeParam, symbolPathParam);
-    this.replaceTemplate(EMPTY_BODY, storeMethod, new TemplateHookPoint("_symboltable.serialization.scopeDeSer.Store", scopeDeSerName));
+    String generatedError = symbolTableService.getGeneratedErrorCode(scopeDeSerName+"#store1");
+    String generatedError2 = symbolTableService.getGeneratedErrorCode(scopeDeSerName+"#store2");
+    this.replaceTemplate(EMPTY_BODY, storeMethod, new TemplateHookPoint("_symboltable.serialization.scopeDeSer.Store", scopeDeSerName, generatedError, generatedError2));
     return storeMethod;
   }
 
@@ -169,7 +187,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
     ASTCDParameter toSerializeParam = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(scopeInterfaceName), "toSerialize");
     ASTCDMethod serializeMethod = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createStringType(), "serialize", toSerializeParam);
     this.replaceTemplate(EMPTY_BODY, serializeMethod, new StringHookPoint("  toSerialize.accept(symbolTablePrinter);\n"
-        + "  return symbolTablePrinter.getSerializedString();"));
+        + "  return printer.getContent();"));
     return serializeMethod;
   }
 
