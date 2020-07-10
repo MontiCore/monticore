@@ -1,9 +1,13 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("artifactScopeFullName", "languageName", "attrList" )}
 <#assign genHelper = glex.getGlobalVar("astHelper")>
-  printer.beginObject();
+  if(!printer.isInObject()){
+    printer.beginObject();
+  }
   printer.member(de.monticore.symboltable.serialization.JsonDeSers.KIND, "${artifactScopeFullName}");
-  printer.member(de.monticore.symboltable.serialization.JsonDeSers.NAME, node.getName());
+  if(node.isPresentName()) {
+    printer.member(de.monticore.symboltable.serialization.JsonDeSers.NAME, node.getName());
+  }
   if(!node.getPackageName().isEmpty()) {
     printer.member(de.monticore.symboltable.serialization.JsonDeSers.PACKAGE, node.getPackageName());
   }

@@ -66,7 +66,6 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
         .setModifier(PUBLIC.build())
         .addInterface(getMCTypeFacade().createQualifiedType(visitorFullName))
         .addCDAttribute(getCDAttributeFacade().createAttribute(PROTECTED, JSON_PRINTER, "printer"))
-        .addCDAttribute(getCDAttributeFacade().createAttribute(PROTECTED, getMCTypeFacade().createBooleanType(), "isSpannedScope"))
         .addCDAttribute(createRealThisAttribute(symbolTablePrinterName))
         .addAllCDConstructors(createConstructors(symbolTablePrinterName))
         .addCDMethod(createGetJsonPrinterMethod())

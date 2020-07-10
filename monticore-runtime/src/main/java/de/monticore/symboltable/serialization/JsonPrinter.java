@@ -1,11 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.symboltable.serialization;
 
-import java.util.Collection;
-import java.util.Optional;
-
 import de.monticore.prettyprint.IndentPrinter;
 import de.se_rwth.commons.logging.Log;
+
+import java.util.Collection;
+import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * Facade for the {@link IndentPrinter} that is capable of printing JSON syntax only. It hides
@@ -80,6 +81,15 @@ public class JsonPrinter {
    */
   public boolean isSerializingEmptyLists() {
     return serializeEmptyLists;
+  }
+
+  /**
+   * returns true, if the JsonPrinter is in a state in which at least
+   * one object has been opened that is not closed yet.
+   * @return
+   */
+  public boolean isInObject() {
+    return nestedObjectDepth > 0;
   }
 
   /**
@@ -193,6 +203,39 @@ public class JsonPrinter {
       unindent();
     }
     nestedArrayDepth--;
+  }
+
+  /**
+   * Prints a member with the passed name that is a collection of values as JSON array.
+   * The serialization of each value of the collection has to be passed as Function
+   *
+   * @param name
+   * @param values
+   * @param printValue
+   * @param <T>
+   */
+  public <T> void array(String name, Collection<T> values, Function<T, String> printValue) {
+    beginArray(name);
+    for (T t : values) {
+      value(printValue.apply(t));
+    }
+    endArray();
+  }
+
+  /**
+   * Prints a collection of values as JSON array. The serialization of each value of the
+   * collection has to be passed as Function
+   *
+   * @param values
+   * @param printValue
+   * @param <T>
+   */
+  public <T> void array(Collection<T> values, Function<T, String> printValue) {
+    beginArray();
+    for (T t : values) {
+      value(printValue.apply(t));
+    }
+    endArray();
   }
 
   /**
@@ -439,7 +482,7 @@ public class JsonPrinter {
     print(value);
   }
 
-  private void printBufferedBeginArray(){
+  private void printBufferedBeginArray() {
     if (indentBeforeNewLine) {
       indent();
       indentBeforeNewLine = false;
