@@ -168,31 +168,62 @@ of which has its own advantages and disadvantages:
 
 ### The import statements
 
-* Many models depend on other models, where they receive symbols they can rely on.
+* Many models depend on other models where they receive symbols they can rely on.
   To define this kind of dependencies in import statement is convenient and well 
-  known (from Java). We thus suggest to use the input statement in the spirit of Java
-* `import aName` at the first sight means, that a specific class with the qualified
+  known (from Java). We thus suggest to use the input statement in the spirit of Java.
+  * `import aName` at the first sight means, that a specific class with the qualified
   name `aName` is used. In reality, however, Java has a very convenient convention
   that class `aName` is always defined in the artifact (i.e. file) with the same name 
-  `aName.java`, and the needed symbol table is part of `aName.class`.
+  `aName.java` and the needed symbol table is part of `aName.class`. So an import 
+  stament actually locates an artifact.
 * As a consequence, we suggest:
-  * `import aModelName` refers to an artifact with name `aModelName`.
-  * This artifact provides the desired symbols, typically stored through an earlier
-    tool execution in `aModelName.sym`.
+  * `import aModelName` refers to an artifact with name `aModelName` -- regardless
+    which kind of model is defined there.
+  * The imported artifact provides the desired symbols, typically stored through 
+    an earlier tool execution in `aModelName.sym`.
   * The symbol file may have specific extensions, such as `autsym`or `cdsym`.
   * Selective import (known from Java), such as `import aName.innerClass` 
     should be possible, but currently no such show case has been made yet (beyond Java).
-* The import statement is only there to make symbols available in their simple form.
-  It it is normally 
-  not intended to explicate a single dependency, e.g. a configuraton model
-  that depends on exactly one base model.
-* It is methodically of interest to have not more than one artifact with the same
-  qualified name (although not per se forbidden). 
-  Java then also uses the first one only.
+  * The import statement is only used to make symbols available in their simple form.
+    It it is normally 
+    not intended to explicate a single dependency, e.g. a configuraton model
+    that depends on exactly one base model. Like in Java, where you import an 
+    artifact and then still explicitely extend the contained class.
+* It is methodically of interest to store maximum one artifact with the same
+  qualified name (although not per se forbidden to have more). 
+  Java then also uses the first occurring class in its classpath only.
+* In a heterogeneous language setting, it may be necessary to map symbols
+  from a soure to a target form (e.g. state symbols to Java enum constants or state 
+  pattern classes). There are three main options for that:
+  1. Store in the desired target symbol form upon creating the symbol file.
+     Has some problems: (1) increases dependencies between tools, 
+     (2) potentially several files need to be stored.
+  2. Adapt the imported symbols upon loading (recommended).
+  3. Use an explicit trasnformation tool between the two model processing tools
+     to map the initially stored symbol file to the desired format.
 
 ### Version number in language variants
 
-XXX
+* As an important rule:
+  * Do not include version numbers in the DSL explicitly.
+  The reason is that whenever you do a tooling update, all the models that have 
+  been defined before are suddenly not valid anymore and have to be adapted.
+  Java has very carefully ensured that updates in the language are extensions only 
+  and does all old Java files are still validated with new Java compilers 
+  (with the one exception of the introduction of a new keyword `assert`).
+* If your language is still very volatile against disruptive changes, 
+  it may be an option at the beginning, but should be avoided with the first real release.
+* It is a burden to manage version numbers and downward compatibility through 
+  all the versioning, especially if language components evolve with their own 
+  versioning.
+* MontiCore provives a theory of *conservative extension* to avoid
+  version controlling within the language variants.
+* And if needed: MontiCore and their tools provide extensive checks of 
+  wellformedness (i.e.
+  context conditions), on each update a fully automated consistency check 
+  of all existing models
+  should be easily establishable.
+
 
 
 ## Further Information
