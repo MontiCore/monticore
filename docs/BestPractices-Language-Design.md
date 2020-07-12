@@ -163,7 +163,7 @@ of which has its own advantages and disadvantages:
 * Defined by: AB
 
 
-## **Meaning of Recurring Language Components**
+## **Recurring Language Components**
 
 
 ### The import statements
@@ -206,18 +206,18 @@ of which has its own advantages and disadvantages:
 
 * As an important rule:
   * Do not include version numbers in the DSL explicitly.
-  The reason is that whenever you do a tooling update, all the models that have 
+* The reason is that whenever you do a tooling update, all the models that have 
   been defined before are suddenly not valid anymore and have to be adapted.
   Java has very carefully ensured that updates in the language are extensions only 
-  and does all old Java files are still validated with new Java compilers 
-  (with the one exception of the introduction of a new keyword `assert`).
+  and thus all old Java files are still validated with new Java compilers 
+  (with the one exception: new keyword `assert`).
 * If your language is still very volatile against disruptive changes, 
   it may be an option at the beginning, but should be avoided with the first real release.
 * It is a burden to manage version numbers and downward compatibility through 
   all the versioning, especially if language components evolve with their own 
   versioning.
 * MontiCore provives a theory of *conservative extension* to avoid
-  version controlling within the language variants.
+  explicit version controlling within the language.
 * And if needed: MontiCore and their tools provide extensive checks of 
   wellformedness (i.e.
   context conditions), on each update a fully automated consistency check 
