@@ -57,6 +57,7 @@ to design, but powerful in their use.
   and (c) a symbol `BlaSymbol`.
 * Reuse of the symbol `BlaSymbol` currently only works together with a reuse
   of the syntax too, i.e.
+
   ```
   grammar F { 
     Blubb extends Blaa = "blubb" Name; 
@@ -67,6 +68,7 @@ to design, but powerful in their use.
 * To allow individual reuse of symbol `BlaaSymbol` we recommend to
   restructure its definition into an interface that does not preclude
   create syntax and only a minimal constraint on the abstract syntax.:
+
   ```
   grammar E { 
     symbol interface Bla = Name; 
@@ -77,6 +79,10 @@ to design, but powerful in their use.
   }
   ```
 
+* Please note that MontiCore allows for a nonterminal to implement
+  multiple interfaces. However, only one of them may carry the `symbol` 
+  keyboard property, because the newly defined symbol then is also 
+  a subclass of the inherited symbol (in Java).
 
 ## Further Information
 
