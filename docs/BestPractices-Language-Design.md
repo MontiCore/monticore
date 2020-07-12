@@ -163,6 +163,37 @@ of which has its own advantages and disadvantages:
 * Defined by: AB
 
 
+## **Meaning of Recurring Language Components**
+
+
+### The import statements
+
+* Many models depend on other models, where they receive symbols they can rely on.
+  To define this kind of dependencies in import statement is convenient and well 
+  known (from Java). We thus suggest to use the input statement in the spirit of Java
+* `import aName` at the first sight means, that a specific class with the qualified
+  name `aName` is used. In reality, however, Java has a very convenient convention
+  that class `aName` is always defined in the artifact (i.e. file) with the same name 
+  `aName.java`, and the needed symbol table is part of `aName.class`.
+* As a consequence, we suggest:
+  * `import aModelName` refers to an artifact with name `aModelName`.
+  * This artifact provides the desired symbols, typically stored through an earlier
+    tool execution in `aModelName.sym`.
+  * The symbol file may have specific extensions, such as `autsym`or `cdsym`.
+  * Selective import (known from Java), such as `import aName.innerClass` 
+    should be possible, but currently no such show case has been made yet (beyond Java).
+* The import statement is only there to make symbols available in their simple form.
+  It it is normally 
+  not intended to explicate a single dependency, e.g. a configuraton model
+  that depends on exactly one base model.
+* It is methodically of interest to have not more than one artifact with the same
+  qualified name (although not per se forbidden). 
+  Java then also uses the first one only.
+
+### Version number in language variants
+
+XXX
+
 
 ## Further Information
 
