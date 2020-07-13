@@ -30,11 +30,11 @@ to design, but powerful in their use.
   * symbol table infrastructure for handling `S` symbols
   * symbol table infrastructure for resolving these in `E` scopes, and 
   * integration of `S` symbols with the AST of `A`.
-* However, `S` symbols not automatically instantiated. 
+* However, `S` symbols are not automatically instantiated. 
   This has to be described manually, e.g., by extending the symbol table 
   creator or via providing an adapter translating a foreign symbol into an `S` symbol.
 * This can be used, e.g., in these scenarios: 
-  * A name of a certain kind is introduced automatically the first time it is occurs 
+  * A name of a certain kind is introduced automatically the first time it occurs 
     in a model. If it occurs more than once, all other occurences of the name 
     do not introduce new symbols. (e.g. this happens with features in FDs,
     and works because features do not have a body.)
@@ -60,26 +60,26 @@ to design, but powerful in their use.
 
   ```
   grammar F { 
-    Blubb extends Blaa = "blubb" Name; 
+    Blubb extends Bla = "blubb" Name; 
   }
   ```
   would for example be illegal, because the conservative extension paradigm 
   enforces `AnotherNT` to be included in `Blubb` as well. 
-* To allow individual reuse of symbol `BlaaSymbol` we recommend to
+* To allow individual reuse of symbol `BlaSymbol` we recommend to
   restructure its definition into an interface that does not preclude
-  create syntax and only a minimal constraint on the abstract syntax.:
+  create syntax and only a minimal constraint on the abstract syntax:
 
   ```
   grammar E { 
     symbol interface Bla = Name; 
-    Bla2 extends = "bla" Name AnotherNT; 
+    Bla2 implements Bla = "bla" Name AnotherNT; 
   }
   grammar F { 
-    Blubb extends Blaa = "blubb" Name; 
+    Blubb implements Bla = "blubb" Name; 
   }
   ```
 
-* Please note that MontiCore allows for a nonterminal to implement
+* Please note that MontiCore allows that a nonterminal implements
   multiple interfaces. However, only one of them may carry the `symbol` 
   keyboard property, because the newly defined symbol then is also 
   a subclass of the inherited symbol (in Java).
