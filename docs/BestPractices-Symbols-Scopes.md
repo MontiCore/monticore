@@ -45,6 +45,44 @@ to design, but powerful in their use.
 * Defined by: AB, BR
 
 
+### Symbol Definition prepared for Reuse 
+
+  ```
+  grammar E { 
+    symbol Bla = "bla" Name AnotherNT; 
+  }
+  ```
+* has the effect that three things are defined: (a) concrete syntax, 
+  (b) abstract syntax with nonterminal `Bla`
+  and (c) a symbol `BlaSymbol`.
+* Reuse of the symbol `BlaSymbol` currently only works together with a reuse
+  of the syntax too, i.e.
+
+  ```
+  grammar F { 
+    Blubb extends Blaa = "blubb" Name; 
+  }
+  ```
+  would for example be illegal, because the conservative extension paradigm 
+  enforces `AnotherNT` to be included in `Blubb` as well. 
+* To allow individual reuse of symbol `BlaaSymbol` we recommend to
+  restructure its definition into an interface that does not preclude
+  create syntax and only a minimal constraint on the abstract syntax.:
+
+  ```
+  grammar E { 
+    symbol interface Bla = Name; 
+    Bla2 extends = "bla" Name AnotherNT; 
+  }
+  grammar F { 
+    Blubb extends Blaa = "blubb" Name; 
+  }
+  ```
+
+* Please note that MontiCore allows for a nonterminal to implement
+  multiple interfaces. However, only one of them may carry the `symbol` 
+  keyboard property, because the newly defined symbol then is also 
+  a subclass of the inherited symbol (in Java).
 
 ## Further Information
 
