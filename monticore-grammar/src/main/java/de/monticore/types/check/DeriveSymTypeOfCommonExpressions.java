@@ -467,7 +467,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
           expr.getArguments().getExpression(i).accept(getRealThis());
           //test if every single argument is correct
           if (!method.getParameterList().get(i).getType().deepEquals(typeCheckResult.getCurrentResult()) &&
-              !compatible(typeCheckResult.getCurrentResult(), method.getParameterList().get(i).getType())) {
+              !compatible(method.getParameterList().get(i).getType(), typeCheckResult.getCurrentResult())) {
             success = false;
           }
         }
