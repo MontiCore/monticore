@@ -58,7 +58,7 @@ build_branches:
     - "cd ../../../monticore-grammar/monticore-grammar-it"
     - "./gradlew build $GRADLE_OPTS --project-prop useLocalRepo=true --refresh-dependencies"
     - "cd ../../monticore-generator/it"
-    - "./gradlew build $GRADLE_OPTS --info --project-prop useLocalRepo=true --refresh-dependencies"
+    - "./gradlew build $GRADLE_OPTS --project-prop useLocalRepo=true --refresh-dependencies"
     - "./gradlew build -PbuildProfile=emf $GRADLE_OPTS --project-prop useLocalRepo=true --refresh-dependencies"
     - "cd ../../monticore-templateclassgenerator/it/monticore-templateclassgenerator-it"
     - "./gradlew build $GRADLE_OPTS --project-prop useLocalRepo=true --refresh-dependencies"
