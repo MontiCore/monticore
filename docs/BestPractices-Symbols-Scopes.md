@@ -22,7 +22,7 @@ to design, but powerful in their use.
   }
   ```
 
-* If you want to use a sepcial form of symbol that shall neither be defined 
+* If you want to use a special form of symbol that shall neither be defined 
   inside the grammar of a language, nor shall it be imported.
 * We can define symbols of kind `S` in the grammar in a grammar rule that 
   is never reached by the parser from the start production.
@@ -59,7 +59,7 @@ to design, but powerful in their use.
   of the syntax too, i.e.
 
   ```
-  grammar F { 
+  grammar F extends E { 
     Blubb extends Bla = "blubb" Name; 
   }
   ```
@@ -74,7 +74,7 @@ to design, but powerful in their use.
     symbol interface Bla = Name; 
     Bla2 implements Bla = "bla" Name AnotherNT; 
   }
-  grammar F { 
+  grammar F extends E { 
     Blubb implements Bla = "blubb" Name; 
   }
   ```
