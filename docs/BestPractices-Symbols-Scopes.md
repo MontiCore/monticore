@@ -7,8 +7,8 @@
 [MontiCore](http://www.monticore.de) provides a number of options to design 
 languages, access and modify the abstract syntax tree, and produce output files.
 
-The never MontiCore release gives powerful capabilities to define and 
-use symbols. But symbols, scopes, and symboltables are somewhat complex 
+The newest MontiCore release gives powerful capabilities to define and 
+use symbols. Symbols, scopes, and symboltables are somewhat complex 
 to design, but powerful in their use.
 
 
