@@ -218,7 +218,7 @@ public class JsonPrinter {
     if(!values.isEmpty() || serializeEmptyLists){
       beginArray(name);
       for (T t : values) {
-        value(printValue.apply(t));
+        valueJson(printValue.apply(t));
       }
       endArray();
     }
@@ -235,7 +235,7 @@ public class JsonPrinter {
   public <T> void array(Collection<T> values, Function<T, String> printValue) {
     beginArray();
     for (T t : values) {
-      value(printValue.apply(t));
+      valueJson(printValue.apply(t));
     }
     endArray();
   }
