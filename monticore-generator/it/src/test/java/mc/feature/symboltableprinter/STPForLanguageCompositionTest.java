@@ -10,16 +10,18 @@ import mc.feature.symboltableprinter.symboltableprintersup1.SymbolTablePrinterSu
 import mc.feature.symboltableprinter.symboltableprintersup2.SymbolTablePrinterSup2Mill;
 import mc.feature.visitor.sub._symboltable.SubScopeDeSer;
 import mc.feature.visitor.sub._visitor.SubDelegatorVisitor;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 import static org.junit.Assert.*;
 
+@FixMethodOrder(MethodSorters.JVM)
 public class STPForLanguageCompositionTest {
-
-  SymbolTablePrinterSubSymbolTablePrinter symTabPrinter = new SymbolTablePrinterSubSymbolTablePrinter();
 
   @Test
   public void testGetAndSetJsonPrinter(){
+    SymbolTablePrinterSubSymbolTablePrinter symTabPrinter = new SymbolTablePrinterSubSymbolTablePrinter();
     JsonPrinter printer = symTabPrinter.getJsonPrinter();
     assertNotNull(printer);
     symTabPrinter.setJsonPrinter(new JsonPrinter());
@@ -35,11 +37,10 @@ public class STPForLanguageCompositionTest {
     scope.add(SymbolTablePrinterSup2Mill.bSymbolBuilder().setName("b").build());
     scope.add(SymbolTablePrinterSubMill.cSymbolBuilder().setName("c").build());
 
-
-
     //serialize symbols and assert that the serialized String contains all the symbols
     SymbolTablePrinterSubScopeDeSer deSer = new SymbolTablePrinterSubScopeDeSer();
     String serialized =  deSer.serialize(scope);
+    System.out.println(serialized);
     assertTrue(serialized.contains("cSymbols"));
     assertTrue(serialized.contains("\"name\":\"alphabet.c\""));
     assertTrue(serialized.contains("bSymbols"));
