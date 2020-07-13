@@ -168,9 +168,9 @@ of which has its own advantages and disadvantages:
 
 ### The import statements
 
-* Many models depend on other models where they receive symbols they can rely on.
-  To define this kind of dependencies in import statement is convenient and well 
-  known (from Java). We thus suggest to use the input statement in the spirit of Java.
+* Many models depend on other models from which they receive symbols they can rely on.
+  To define this kind of dependencies using import statements is convenient and well 
+  known (e.g. from Java). We thus suggest to use the import statement in the spirit of Java.
   * `import aName` at the first sight means, that a specific class with the qualified
   name `aName` is used. In reality, however, Java has a very convenient convention
   that class `aName` is always defined in the artifact (i.e. file) with the same name 
@@ -180,21 +180,21 @@ of which has its own advantages and disadvantages:
   * `import aModelName` refers to an artifact with name `aModelName` -- regardless
     which kind of model is defined there.
   * The imported artifact provides the desired symbols, typically stored through 
-    an earlier tool execution in `aModelName.sym`.
+    an earlier tool execution in a symbol file `aModelName.sym`.
   * The symbol file may have specific extensions, such as `autsym`or `cdsym`.
   * Selective import (known from Java), such as `import aName.innerClass` 
     should be possible, but currently no such show case has been made yet (beyond Java).
   * The import statement is only used to make symbols available in their simple form.
-    It it is normally 
+    It is usually 
     not intended to explicate a single dependency, e.g. a configuraton model
     that depends on exactly one base model. Like in Java, where you import an 
     artifact and then still explicitely extend the contained class.
-* It is methodically of interest to store maximum one artifact with the same
-  qualified name (although not per se forbidden to have more). 
+* It is methodically of interest to store at most one artifact with the same
+  qualified name (although it is not per se forbidden to have more). 
   Java then also uses the first occurring class in its classpath only.
 * In a heterogeneous language setting, it may be necessary to map symbols
   from a soure to a target form (e.g. state symbols to Java enum constants or state 
-  pattern classes). There are three main options for that:
+  pattern classes). There are three main options for this task:
   1. Store in the desired target symbol form upon creating the symbol file.
      Has some problems: (1) increases dependencies between tools, 
      (2) potentially several files need to be stored.
