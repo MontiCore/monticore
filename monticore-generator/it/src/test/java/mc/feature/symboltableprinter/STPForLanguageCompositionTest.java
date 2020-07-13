@@ -40,7 +40,7 @@ public class STPForLanguageCompositionTest {
     //serialize symbols and assert that the serialized String contains all the symbols
     SymbolTablePrinterSubScopeDeSer deSer = new SymbolTablePrinterSubScopeDeSer();
     String serialized =  deSer.serialize(scope);
-    de.se_rwth.commons.logging.Log.warn("Serialized: "+serialized+".");
+    org.slf4j.LoggerFactory.getLogger("STPTest").warn("=== Serialized: "+serialized+". ===");
     assertTrue(serialized.contains("cSymbols"));
     assertTrue(serialized.contains("\"name\":\"alphabet.c\""));
     assertTrue(serialized.contains("bSymbols"));
