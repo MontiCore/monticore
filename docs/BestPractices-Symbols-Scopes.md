@@ -26,7 +26,7 @@ to design, but powerful in their use.
   inside the grammar of a language, nor shall it be imported.
 * We can define symbols of kind `S` in the grammar in a grammar rule that 
   is never reached by the parser from the start production.
-  Through this, MontiCores generates:
+  Through this, MontiCore generates:
   * symbol table infrastructure for handling `S` symbols
   * symbol table infrastructure for resolving these in `E` scopes, and 
   * integration of `S` symbols with the AST of `A`.
