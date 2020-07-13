@@ -2,22 +2,24 @@
 package mc.feature.symboltableprinter;
 
 import de.monticore.symboltable.serialization.JsonPrinter;
+import de.se_rwth.commons.logging.Log;
 import mc.feature.symboltableprinter.symboltableprintersub.SymbolTablePrinterSubMill;
 import mc.feature.symboltableprinter.symboltableprintersub._symboltable.SymbolTablePrinterSubScope;
 import mc.feature.symboltableprinter.symboltableprintersub._symboltable.SymbolTablePrinterSubScopeDeSer;
 import mc.feature.symboltableprinter.symboltableprintersub._symboltable.SymbolTablePrinterSubSymbolTablePrinter;
 import mc.feature.symboltableprinter.symboltableprintersup1.SymbolTablePrinterSup1Mill;
 import mc.feature.symboltableprinter.symboltableprintersup2.SymbolTablePrinterSup2Mill;
-import mc.feature.visitor.sub._symboltable.SubScopeDeSer;
-import mc.feature.visitor.sub._visitor.SubDelegatorVisitor;
-import org.junit.FixMethodOrder;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runners.MethodSorters;
 
 import static org.junit.Assert.*;
 
-@FixMethodOrder(MethodSorters.JVM)
 public class STPForLanguageCompositionTest {
+
+  @BeforeClass
+  public void initLog(){
+    Log.enableFailQuick(false);
+  }
 
   @Test
   public void testGetAndSetJsonPrinter(){
