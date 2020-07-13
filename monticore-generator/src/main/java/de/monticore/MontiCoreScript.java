@@ -447,6 +447,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     reportSubDir = reportSubDir.isEmpty()
             ? astCd.getCDDefinition().getName()
             : reportSubDir.concat(".").concat(astCd.getCDDefinition().getName());
+    reportSubDir = reportSubDir.toLowerCase();
 
     // Clone CD for reporting
     ASTCDCompilationUnit astCdForReporting = astCd.deepClone();
