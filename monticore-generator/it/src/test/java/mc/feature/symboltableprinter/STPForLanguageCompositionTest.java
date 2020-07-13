@@ -39,11 +39,9 @@ public class STPForLanguageCompositionTest {
     scope.add(SymbolTablePrinterSup2Mill.bSymbolBuilder().setName("b").build());
     scope.add(SymbolTablePrinterSubMill.cSymbolBuilder().setName("c").build());
 
-    System.out.println("=== Before serialization ===");
     //serialize symbols and assert that the serialized String contains all the symbols
     SymbolTablePrinterSubScopeDeSer deSer = new SymbolTablePrinterSubScopeDeSer();
     String serialized =  deSer.serialize(scope);
-    System.out.println("=== Serialized: "+serialized+". ===");
     assertTrue(serialized.contains("cSymbols"));
     assertTrue(serialized.contains("\"name\":\"alphabet.c\""));
     assertTrue(serialized.contains("bSymbols"));
