@@ -54,7 +54,7 @@ MontiCore projects are hosted at
 * CD4A covers **classes, interfaces, inheritance, attributes with types,
   visibilities**,
   and all kinds of **associations** and **composition**, including **qualified**
-  and **ordered associations**. Classes can be in different **packages**.
+  and **ordered associations**. Classes can be placed in different **packages**.
   An example:
   ```
   classdiagram MyLife { 
