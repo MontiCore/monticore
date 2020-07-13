@@ -53,7 +53,7 @@ to design, but powerful in their use.
   }
   ```
 * has the effect that three things are defined: (a) concrete syntax, 
-  (b) abstract syntax with nonterminal `Bla`
+  abstract syntax with (b) AST element `ASTBla`
   and (c) a symbol `BlaSymbol`.
 * Reuse of the symbol `BlaSymbol` currently only works together with a reuse
   of the syntax too, i.e.
