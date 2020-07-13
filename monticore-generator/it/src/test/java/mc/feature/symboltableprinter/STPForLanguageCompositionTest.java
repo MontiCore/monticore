@@ -17,7 +17,7 @@ import static org.junit.Assert.*;
 public class STPForLanguageCompositionTest {
 
   @BeforeClass
-  public void initLog(){
+  public static void initLog(){
     Log.enableFailQuick(false);
   }
 
@@ -39,6 +39,7 @@ public class STPForLanguageCompositionTest {
     scope.add(SymbolTablePrinterSup2Mill.bSymbolBuilder().setName("b").build());
     scope.add(SymbolTablePrinterSubMill.cSymbolBuilder().setName("c").build());
 
+    System.out.println("=== Before serialization ===");
     //serialize symbols and assert that the serialized String contains all the symbols
     SymbolTablePrinterSubScopeDeSer deSer = new SymbolTablePrinterSubScopeDeSer();
     String serialized =  deSer.serialize(scope);
