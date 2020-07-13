@@ -179,7 +179,7 @@ of which has its own advantages and disadvantages:
 * As a consequence, we suggest:
   * `import aModelName` refers to an artifact with name `aModelName` -- regardless
     which kind of model is defined there.
-  * All the symbols exported by the model `aModelName` are imported when using 
+  * All the symbols exported by the artifact `aModelName` are imported when using 
     the import statement `import aModelName`. 
   * The imported artifact provides the desired symbols, typically stored through 
     an earlier tool execution in a symbol file `aModelName.sym`.
