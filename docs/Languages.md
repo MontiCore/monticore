@@ -78,7 +78,7 @@ MontiCore projects are hosted at
 * CD4A focusses on the analysis phase in typical data-driven development 
   projects and is therefore mainly for data modelling.
   Consequently, it omits method signatures and complex generics.
-  CD4A primary use is therefore **data modelling**. It has various 
+  The primary use of the CD4A language is therefore **data modelling**. It has various 
   possibilities for generation of data structures, database tables as well as 
   data transport infrastructures in cloud and distributed systems.
 * [Main grammar `de.monticore.cd.CD4Analysis`](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/blob/develop/src/main/grammars/de/monticore/CD4Analysis.mc4)
