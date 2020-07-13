@@ -346,10 +346,23 @@ component InteriorLight {                           // MontiArc language
 
 
 ### [Sequence Diagrams](https://git.rwth-aachen.de/monticore/statechart/sd-language)  (MontiCore stable) 
-* Caretaker: RE
-* Grammar to parse Sequence Diagrams
-* Can be used with testing generator to derive test cases
-
+* Caretaker: OKa
+* A textual sequence diagram (SD) language.
+* The project includes grammars, a symbol table infrastructure, a PrettyPrinter, 
+  and various CoCos for typechecking.
+* The language is divided into the two grammars SDBasis and SD4Development.
+* The grammar SDBasis is a component grammar providing basic SD language features.
+* The grammar SD4Development extends the grammar SDBasis with concepts used in 
+  UML/P SDs.
+* SD4Development supports modeling objects, method calls, returns, exception 
+  throws, dynamic object instantiation, various match modifiers for objects 
+  (free, initial, visible, complete), static method calls, variable declarations
+  by using OCL, and conditions by using OCL.
+* The grammars can easily be extended by further interactions and object modifiers.
+* The following depicts a simple SD in its textual syntax. The SD 
+```
+  example
+```
 
 ### [SI Units](https://git.rwth-aachen.de/monticore/languages/siunits) (Beta: In Stabilization)
 * Caretaker: EK
