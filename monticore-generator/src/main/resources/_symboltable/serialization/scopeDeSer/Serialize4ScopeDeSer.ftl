@@ -1,4 +1,4 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-  printer = new de.monticore.symboltable.serialization.JsonPrinter();
+  printer.clearBuffer();
   toSerialize.accept(symbolTablePrinter);
   return printer.getContent();

@@ -496,6 +496,17 @@ public class JsonPrinter {
   }
 
   /**
+   * Resets everything printed so far
+   */
+  public void clearBuffer(){
+    this.printer = new IndentPrinter();
+    this.isFirstAttribute = true;
+    this.nestedArrayDepth = 0;
+    this.nestedObjectDepth = 0;
+    this.indentBeforeNewLine = false;
+  }
+
+  /**
    * Returns the current value of the Json code produced so far And performs basic checks for
    * correct nesting of composed data
    */
