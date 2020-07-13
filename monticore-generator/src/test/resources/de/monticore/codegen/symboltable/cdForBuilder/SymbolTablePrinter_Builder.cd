@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.codegen.symboltable.cdForBuilder;
+
+classdiagram SymbolTablePrinter_Builder {
+
+    class ASymbolTablePrinter {
+      protected de.monticore.symboltable.serialization.JsonPrinter printer;
+      protected boolean isSpannedScope;
+    }
+}

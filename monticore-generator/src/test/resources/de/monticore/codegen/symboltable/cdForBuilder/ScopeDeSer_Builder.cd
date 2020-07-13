@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.codegen.symboltable.cdForBuilder;
+
+classdiagram ScopeDeSer_Builder {
+
+    class AScopeDeSer {
+      ASymbolDeSer aSymbolDeSer;
+      protected String symbolFileExtension;
+      protected de.monticore.symboltable.serialization.JsonPrinter printer;
+      protected de.monticore.codegen.builder.builder._visitor.ADelegatorVisitor symbolTablePrinter;
+    }
+}
