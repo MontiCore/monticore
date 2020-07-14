@@ -54,7 +54,7 @@ MontiCore projects are hosted at
 * CD4A covers **classes, interfaces, inheritance, attributes with types,
   visibilities**,
   and all kinds of **associations** and **composition**, including **qualified**
-  and **ordered associations**. Classes can be in different **packages**.
+  and **ordered associations**. Classes can be placed in different **packages**.
   An example:
   ```
   classdiagram MyLife { 
@@ -78,7 +78,7 @@ MontiCore projects are hosted at
 * CD4A focusses on the analysis phase in typical data-driven development 
   projects and is therefore mainly for data modelling.
   Consequently, it omits method signatures and complex generics.
-  CD4A primary use is therefore **data modelling**. It has various 
+  The primary use of the CD4A language is therefore **data modelling**. It has various 
   possibilities for generation of data structures, database tables as well as 
   data transport infrastructures in cloud and distributed systems.
 * [Main grammar `de.monticore.cd.CD4Analysis`](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/blob/develop/src/main/grammars/de/monticore/CD4Analysis.mc4)
@@ -346,10 +346,23 @@ component InteriorLight {                           // MontiArc language
 
 
 ### [Sequence Diagrams](https://git.rwth-aachen.de/monticore/statechart/sd-language)  (MontiCore stable) 
-* Caretaker: RE
-* Grammar to parse Sequence Diagrams
-* Can be used with testing generator to derive test cases
-
+* Caretaker: OKa
+* A textual sequence diagram (SD) language.
+* The project includes grammars, a symbol table infrastructure, a PrettyPrinter, 
+  and various CoCos for typechecking.
+* The language is divided into the two grammars SDBasis and SD4Development.
+* The grammar SDBasis is a component grammar providing basic SD language features.
+* The grammar SD4Development extends the grammar SDBasis with concepts used in 
+  UML/P SDs.
+* SD4Development supports modeling objects, method calls, returns, exception 
+  throws, dynamic object instantiation, various match modifiers for objects 
+  (free, initial, visible, complete), static method calls, variable declarations
+  by using OCL, and conditions by using OCL.
+* The grammars can easily be extended by further interactions and object modifiers.
+* The following depicts a simple SD in its textual syntax. The SD 
+```
+  example
+```
 
 ### [SI Units](https://git.rwth-aachen.de/monticore/languages/siunits) (Beta: In Stabilization)
 * Caretaker: EK

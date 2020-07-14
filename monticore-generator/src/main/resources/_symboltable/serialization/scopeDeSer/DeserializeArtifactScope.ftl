@@ -2,10 +2,11 @@
 ${tc.signature("symTabMill", "artifactScope", "artifactScopeBuilder", "scopeRuleAttrList")}
 <#assign genHelper = glex.getGlobalVar("astHelper")>
   de.monticore.symboltable.serialization.JsonDeSers.checkCorrectDeSerForKind("${artifactScope}", scopeJson);
-  String name = scopeJson.getStringMember(de.monticore.symboltable.serialization.JsonDeSers.NAME);
   String packageName = scopeJson.getStringMemberOpt(de.monticore.symboltable.serialization.JsonDeSers.PACKAGE).orElse("");
   ${artifactScope} scope = ${symTabMill}.${artifactScopeBuilder?uncap_first}().setPackageName(packageName).build();
-  scope.setName(name);
+  if (scopeJson.hasStringMember(de.monticore.symboltable.serialization.JsonDeSers.NAME)) {
+    scope.setName(scopeJson.getStringMember(de.monticore.symboltable.serialization.JsonDeSers.NAME));
+  }
   scope.setExportingSymbols(true);
 
 <#list scopeRuleAttrList as attr>
