@@ -351,8 +351,8 @@ component InteriorLight {                           // MontiArc language
 * The project includes grammars, a symbol table infrastructure, a PrettyPrinter, 
   and various CoCos for typechecking.
 * The language is divided into the two grammars SDBasis and SD4Development.
-* The grammar SDBasis is a component grammar providing basic SD language features.
-* The grammar SD4Development extends the grammar SDBasis with concepts used in 
+* The grammar [SDBasis](https://git.rwth-aachen.de/monticore/statechart/sd-language/-/blob/dev/src/main/grammars/de/monticore/lang/SDBasis.mc4) is a component grammar providing basic SD language features.
+* The grammar [SD4Development](https://git.rwth-aachen.de/monticore/statechart/sd-language/-/blob/dev/src/main/grammars/de/monticore/lang/SD4Development.mc4) extends the grammar SDBasis with concepts used in 
   UML/P SDs.
 * SD4Development supports modeling objects, method calls, returns, exception 
   throws, dynamic object instantiation, various match modifiers for objects 
