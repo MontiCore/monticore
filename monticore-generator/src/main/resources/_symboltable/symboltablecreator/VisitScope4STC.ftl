@@ -8,6 +8,5 @@ ${tc.signature("scopeInterface", "simpleScopeName")}
       + "\", because no scope is set yet!");
   }
   ${scopeInterface} scope = create_${simpleScopeName}(node);
-  initialize_${simpleScopeName}(scope, node);
   putOnStack(scope);
   setLinkBetweenSpannedScopeAndNode(scope, node);
