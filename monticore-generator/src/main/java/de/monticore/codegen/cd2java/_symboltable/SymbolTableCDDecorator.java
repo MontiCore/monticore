@@ -58,6 +58,8 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
 
   protected final ArtifactScopeClassBuilderDecorator artifactScopeBuilderDecorator;
 
+  protected final ArtifactScopeInterfaceDecorator artifactScopeInterfaceDecorator;
+
   protected final CommonSymbolInterfaceDecorator commonSymbolInterfaceDecorator;
 
   protected final IterablePath handCodedPath;
@@ -99,7 +101,7 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
       final GlobalScopeInterfaceDecorator globalScopeInterfaceDecorator,
       final GlobalScopeClassDecorator globalScopeClassDecorator,
       final GlobalScopeClassBuilderDecorator globalScopeClassBuilderDecorator,
-      ArtifactScopeInterfaceDecorator artifactScopeInterfaceDecorator,
+      final ArtifactScopeInterfaceDecorator artifactScopeInterfaceDecorator,
       final ArtifactScopeClassDecorator artifactScopeDecorator,
       final ArtifactScopeClassBuilderDecorator artifactScopeBuilderDecorator,
       final CommonSymbolInterfaceDecorator commonSymbolInterfaceDecorator,
@@ -128,6 +130,7 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
     this.globalScopeClassBuilderDecorator = globalScopeClassBuilderDecorator;
     this.artifactScopeDecorator = artifactScopeDecorator;
     this.artifactScopeBuilderDecorator = artifactScopeBuilderDecorator;
+    this.artifactScopeInterfaceDecorator = artifactScopeInterfaceDecorator;
     this.symbolReferenceBuilderDecorator = symbolReferenceBuilderDecorator;
     this.commonSymbolInterfaceDecorator = commonSymbolInterfaceDecorator;
     this.handCodedPath = handCodedPath;
@@ -196,8 +199,10 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
           constructQualifiedName(symbolTablePackage, symbolTableService.getArtifactScopeSimpleName()));
       this.artifactScopeDecorator.setArtifactScopeTop(isArtifactScopeHandCoded);
       ASTCDClass artifactScope = createArtifactScope(astCD);
+      ASTCDInterface artifactScopeInterface = createArtifactScopeInterface(astCD);
       symTabCD.addCDClass(artifactScope);
       symTabCD.addCDClass(createArtifactBuilderScope(artifactScope));
+      symTabCD.addCDInterface(artifactScopeInterface);
 
       // scope deser
       symTabCD.addCDClass(createScopeDeSerClass(scopeCD, symbolCD));
@@ -331,6 +336,10 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
 
   protected ASTCDClass createArtifactBuilderScope(ASTCDClass artifactScopeClass) {
     return artifactScopeBuilderDecorator.decorate(artifactScopeClass);
+  }
+
+  protected ASTCDInterface createArtifactScopeInterface(ASTCDCompilationUnit compilationUnit) {
+    return artifactScopeInterfaceDecorator.decorate(compilationUnit);
   }
 
   protected ASTCDInterface createICommonSymbol(ASTCDCompilationUnit compilationUnit) {
