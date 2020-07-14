@@ -21,8 +21,8 @@ public class Builders4Test {
   
   @BeforeClass
   public static void init() {
-    // replace log by a sideffect free variant
-    LogStub.init();
+    LogStub.init();         // replace log by a sideffect free variant
+    // LogStub.initPlusLog();  // for manual testing purpose only
     Log.enableFailQuick(false);
   }
 

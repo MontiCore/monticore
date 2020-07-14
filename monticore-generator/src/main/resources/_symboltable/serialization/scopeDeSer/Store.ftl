@@ -1,12 +1,12 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("deser")}
+${tc.signature("deser", "generatedError", "generatedError2")}
   // 1. Throw errors and abort storing in case of missing required information:
   if(!toSerialize.isPresentName()){
-    Log.error("${deser} cannot store an artifact scope that has no name!");
+    Log.error("0xA7015${generatedError} ${deser} cannot store an artifact scope that has no name!");
     return;
   }
   if(null == getSymbolFileExtension()){
-    Log.error("File extension for stored symbol tables has not been set in ${deser}!");
+    Log.error("0xA7016${generatedError2} File extension for stored symbol tables has not been set in ${deser}!");
     return;
   }
 

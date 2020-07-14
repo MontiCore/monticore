@@ -32,7 +32,7 @@ public class ReferencedSymbolListAccessorDecorator extends ListAccessorDecorator
     String signature = String.format(GET_LIST, attributeType, capitalizedAttributeNameWithS);
     ASTCDMethod getList = this.getCDMethodFacade().createMethodByDefinition(signature);
     String referencedSymbolType = symbolTableService.getReferencedSymbolTypeName(ast);
-    String simpleSymbolName = symbolTableService.getSimpleNameFromSymbolName(referencedSymbolType);
+    String simpleSymbolName = symbolTableService.getSimpleNameFromSymbolName(ast.getName());
     this.replaceTemplate(EMPTY_BODY, getList, new TemplateHookPoint("_ast.ast_class.refSymbolMethods.GetSymbolList",
         ast.getName(), referencedSymbolType, simpleSymbolName));
     return getList;

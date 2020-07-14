@@ -47,14 +47,15 @@ MontiCore projects are hosted at
 -->
 
 
-### [Class Diagram For Analysis (CD4A)](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis) (Beta: In Stabilization)
-* Responsible: SVa, AGe
+### [Class Diagram For Analysis (CD4A)](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis) (MontiCore stable)
+* Responsible: SVa
 * CD4A is the textual representation to describe **UML class diagrams** 
   (it uses the [UML/P](http://mbse.se-rwth.de/) variant).
 * CD4A covers **classes, interfaces, inheritance, attributes with types,
   visibilities**,
   and all kinds of **associations** and **composition**, including **qualified**
-  and **ordered associations**. An example:
+  and **ordered associations**. Classes can be placed in different **packages**.
+  An example:
   ```
   classdiagram MyLife { 
     abstract class Person {
@@ -62,29 +63,31 @@ MontiCore projects are hosted at
       Date birthday;
       List<String> nickNames;
     }
-    <<myStereotype>> class Student extends Person {
-      StudentStatus status;
+    package com.universityLib {
+      <<myStereotype>> class Student extends Person {
+        StudentStatus status;
+      }
+      enum StudentStatus { ENROLLED, FINISHED; }
     }
-    enum StudentStatus { ENROLLED, FINISHED; }
     
     composition Person -> Address [*]  {ordered};
     association [0..2] Person (parent) <-> (child) Person [*];
-    association phonebook Person [String] -> TelefoneNumber ;
+    association phonebook Person [String] -> PhoneNumber ;
   }
   ```
 * CD4A focusses on the analysis phase in typical data-driven development 
   projects and is therefore mainly for data modelling.
   Consequently, it omits method signatures and complex generics.
-  CD4A primary use is therefore **data modelling**. It has various 
+  The primary use of the CD4A language is therefore **data modelling**. It has various 
   possibilities for generation of data structures, database tables as well as 
   data transport infrastructures in cloud and distributed systems.
-* [Main grammar `de.monticore.cd.CD4Analysis`](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/blob/develop/src/main/grammars/de/monticore/cd/CD4Analysis.mc4)
+* [Main grammar `de.monticore.cd.CD4Analysis`](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/blob/develop/src/main/grammars/de/monticore/CD4Analysis.mc4)
   and 
-  [*detailed description*](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/-/blob/develop/src/main/grammars/de/monticore/cd/cd4analysis.md)
+  [*detailed description*](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/-/blob/develop/src/main/grammars/de/monticore/cd4analysis.md)
 
 
-### [Class Diagram for Code (CD4Code)](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/-/blob/develop/src/main/grammars/de/monticore/cd/cd4analysis.mds) (Beta: In Stabilization)
-* Responsible: SVa, AGe
+### [Class Diagram for Code (CD4Code)](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis) (MontiCore stable)
+* Responsible: SVa
 * CD4Code describes **UML class diagrams**.
 * CD4Code is a conservative extension of **CD4A**, 
   which includes method signatures. An example:
@@ -94,6 +97,7 @@ MontiCore projects are hosted at
     class Person {
       protected List<Person> closestFriends(int n);
       void addFriend(Person friends...);
+      <<myStereotype>> void relocate();
     }
   }
   ```
@@ -103,13 +107,13 @@ MontiCore projects are hosted at
   For example a transformation sequence could be: 
   Statechart -> State pattern encoded in CD4Code 
   -> Decoration by monitoring methods -> Java code.
-* Main grammar [`de.monticore.cd.CD4Code`](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/blob/develop/src/main/grammars/de/monticore/cd/CD4Code.mc4)
+* Main grammar [`de.monticore.cd.CD4Code`](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/blob/develop/src/main/grammars/de/monticore/CD4Code.mc4)
   and 
-  [*detailed description*](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/-/blob/develop/src/main/grammars/de/monticore/cd/cd4analysis.md) 
+  [*detailed description*](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/-/blob/develop/src/main/grammars/de/monticore/cd4analysis.md) 
   (see Section *CD4Code*)
 
 
-### [Feature Diagrams](https://git.rwth-aachen.de/monticore/languages/feature-diagram) (Beta: In Stabilization)
+### [Feature Diagrams](https://git.rwth-aachen.de/monticore/languages/feature-diagram) (MontiCore stable)
 * Caretaker: AB, DS
 * Language for feature models and feature configurations.
 * **Feature diagrams** are used to model (software) **product lines** and their **variants**.
@@ -342,10 +346,40 @@ component InteriorLight {                           // MontiArc language
 
 
 ### [Sequence Diagrams](https://git.rwth-aachen.de/monticore/statechart/sd-language)  (MontiCore stable) 
-* Caretaker: RE
-* Grammar to parse Sequence Diagrams
-* Can be used with testing generator to derive test cases
+* Caretaker: OKa
+* A textual sequence diagram (SD) language.
+* The project includes grammars, a symbol table infrastructure, a PrettyPrinter, 
+  and various CoCos for typechecking.
+* The language is divided into the two grammars SDBasis and SD4Development.
+* The grammar [SDBasis](https://git.rwth-aachen.de/monticore/statechart/sd-language/-/blob/dev/src/main/grammars/de/monticore/lang/SDBasis.mc4) is a component grammar providing basic SD language features.
+* The grammar [SD4Development](https://git.rwth-aachen.de/monticore/statechart/sd-language/-/blob/dev/src/main/grammars/de/monticore/lang/SD4Development.mc4) extends the grammar SDBasis with concepts used in 
+  UML/P SDs.
+* SD4Development supports modeling objects, method calls, returns, exception 
+  throws, dynamic object instantiation, various match modifiers for objects 
+  (free, initial, visible, complete), static method calls, variable declarations
+  by using OCL, and conditions by using OCL.
+* The grammars can easily be extended by further interactions and object modifiers.
+* The following depicts a simple SD in its textual syntax. 
+```
+sequencediagram AuctionTest {
 
+  // Interacting objects
+  kupfer912: Auction;
+  bidPol: BiddingPolicy;
+  timePol: TimingPolicy;
+
+  // Interaction sequence
+  kupfer912 -> bidPol : validateBid(bid) { 
+    // An activity bar on bidPol's lifeline is defined by the curly brackets
+    bidPol -> kupfer912 : return BiddingPolicy.OK;
+  }
+  kupfer912 -> timePol: newCurrentClosingTime(kupfer912, bid) {
+    timePol -> kupfer912 : return t;
+  }
+  assert t.timeSec == bid.time.timeSec + extensionTime;
+}
+
+```
 
 ### [SI Units](https://git.rwth-aachen.de/monticore/languages/siunits) (Beta: In Stabilization)
 * Caretaker: EK
@@ -353,20 +387,23 @@ component InteriorLight {                           // MontiArc language
   It is based on the basis units `s, m, kg, A, K, mol, cd`, 
   provides a variety of derived units, and can be refined using prefixes such 
   as `m`(milli), `k`(kilo), etc.
-* The SI Unit project aims to deliver SI units to MontiCore-based languages. 
-  It provides a grammar for all types of SI units and prefixes.
-* Second, we provide the SI Unit literals, such as "5 km" as expression values
+* The SI Unit project aims to deliver SI units to MontiCore-based languages with expressions. 
+  It provides a grammar for all types of SI units and prefixes usable for type 
+  definition.
+* Second, it provides the SI Unit literals, such as "5 km" as expression values
   and a language for SI unit types, such as "km/h" or "km/h<long>". Some examples:
   ```
-    km/h speed = 5 m / 27 s                         // variable definition
-    speed = (3 * 4m + 17km/h * 10h) / 3.5 h         // assignment
-    °C/s<float> coolingSpeed; 
+    km/h speed = 5 m / 27 s                         // variable definition using type km/h
+    speed = (3 * 4m  +  17km/h * 10h) / 3.5h        // values with SI unit types
+    °C/s<float> coolingSpeed;                       // types (°C/s) with precision (float)
     g/mm^2<int> pressure; 
-    Map<Location,°C> temperatures;
+    Map<Location,°C> temperatures;                  // nesting of types 
   ```
   The SI unit literals integrate with MontiCore's expressions and the
   SI Unit types integrate with MontiCore's type system. 
-  The SI unit language remains type safe.
+  The SI unit language remains *fully type safe*.
+* The math version uses "km/h" as idealistic full precision real number, while the
+  computing version allows to contrain  the precision with "km/h<long>". 
 * Main grammar components:
     * [SI units](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/siunits/SIUnits.mc4)
     * [SI unit literals](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/siunits/SIUnitLiterals.mc4)

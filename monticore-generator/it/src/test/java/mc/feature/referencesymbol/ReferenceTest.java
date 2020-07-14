@@ -2,7 +2,7 @@
 package mc.feature.referencesymbol;
 
 import de.monticore.io.paths.ModelPath;
-import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.*;
 import mc.feature.referencesymbol.reference.ReferenceMill;
 import mc.feature.referencesymbol.reference._ast.*;
 import mc.feature.referencesymbol.reference._parser.ReferenceParser;
@@ -27,7 +27,8 @@ public class ReferenceTest {
 
   @Before
   public void setUp() throws IOException {
-    Log.init();
+    LogStub.init();         // replace log by a sideffect free variant
+    // LogStub.initPlusLog();  // for manual testing purpose only
     Log.enableFailQuick(false);
     ReferenceParser parser = new ReferenceParser();
     Optional<ASTRand> astRand = parser.parse("src/test/resources/mc/feature/referencesymbol/ReferenceModel.ref");
@@ -94,22 +95,20 @@ public class ReferenceTest {
     assertEquals(astReferenceToTest.getNameSymbol(), a);
 
     //test setter
-    astReferenceToTest.setName("B");
+    astReferenceToTest = astRand.getReferenceToTest(1);
     assertTrue(astReferenceToTest.isPresentNameSymbol());
     assertTrue(astReferenceToTest.isPresentNameDefinition());
     assertEquals(astReferenceToTest.getNameSymbol(), b);
     assertEquals(astReferenceToTest.getNameDefinition(), b.getAstNode());
 
-    // set name null
-    astReferenceToTest.setName(null);
-    assertFalse(astReferenceToTest.isPresentNameDefinition());
-    assertFalse(astReferenceToTest.isPresentNameSymbol());
-
     // set enclosing scope null
-    astReferenceToTest.setName("A");
+    astReferenceToTest = astRand.getReferenceToTest(0);
+    IReferenceScope enclosingScope = astReferenceToTest.getEnclosingScope();
     astReferenceToTest.setEnclosingScope(null);
     assertFalse(astReferenceToTest.isPresentNameDefinition());
     assertFalse(astReferenceToTest.isPresentNameSymbol());
+
+    astReferenceToTest.setEnclosingScope(enclosingScope);
   }
 
   @Test
@@ -143,25 +142,19 @@ public class ReferenceTest {
     assertEquals(astOptionalRef.getNameDefinition(), astTest);
     assertEquals(astOptionalRef.getNameSymbol(), a);
 
-    //test setter
-    astOptionalRef.setName("B");
-    assertTrue(astOptionalRef.isPresentNameDefinition());
-    assertTrue(astOptionalRef.isPresentNameSymbol());
-    assertEquals(astOptionalRef.getNameDefinition(), b.getAstNode());
-    assertEquals(astOptionalRef.getNameSymbol(), b);
-
-    astOptionalRef.setName("C");
-    assertTrue(astOptionalRef.isPresentNameSymbol());
-    assertTrue(astOptionalRef.isPresentNameDefinition());
-    assertEquals(astOptionalRef.getNameSymbol(), c);
-    assertEquals(astOptionalRef.getNameDefinition(), c.getAstNode());
-
-    astOptionalRef.setNameAbsent();
+    astOptionalRef = astRand.getOptionalRef(1);
     assertFalse(astOptionalRef.isPresentNameSymbol());
     assertFalse(astOptionalRef.isPresentNameDefinition());
 
+    String name = astOptionalRef.getName();
+    astOptionalRef.setNameAbsent();
+    assertFalse(astOptionalRef.isPresentNameSymbol());
+    assertFalse(astOptionalRef.isPresentNameDefinition());
+    astOptionalRef.setName(name);
+
     // set enclosing scope null
-    astOptionalRef.setName("A");
+    astOptionalRef = astRand.getOptionalRef(0);
+    IReferenceScope enclosingScope = astOptionalRef.getEnclosingScope();
     astOptionalRef.setEnclosingScope(null);
     assertFalse(astOptionalRef.isPresentNameDefinition());
     assertFalse(astOptionalRef.isPresentNameSymbol());
@@ -275,6 +268,80 @@ public class ReferenceTest {
     assertEquals(astListRef.toArrayNamesDefinition(), testList.toArray());
   }
 
+  @Test
+  public void testListWithNameDefinition() {
+    ASTListRefWithName astListRef = astRand.getListRefWithName(0);
+
+    assertNotNull(astListRef.getEnclosingScope());
+
+    assertFalse(astListRef.isEmptyBlaDefinition());
+    assertEquals(astListRef.sizeBlaDefinition(), 3);
+
+    assertTrue(astListRef.getBlaDefinition(0).isPresent());
+    assertTrue(astListRef.getBlaDefinition(1).isPresent());
+    assertTrue(astListRef.getBlaDefinition(2).isPresent());
+    assertEquals(astListRef.getBlaDefinition(0).get(), a.getAstNode());
+    assertEquals(astListRef.getBlaDefinition(1).get(), b.getAstNode());
+    assertEquals(astListRef.getBlaDefinition(2).get(), c.getAstNode());
+
+
+    assertTrue(astListRef.containsBlaDefinition(Optional.ofNullable(a.getAstNode())));
+    assertTrue(astListRef.containsBlaDefinition(Optional.ofNullable(b.getAstNode())));
+    assertTrue(astListRef.containsBlaDefinition(Optional.ofNullable(c.getAstNode())));
+
+
+    astListRef.setBla(0, "C");
+    assertEquals(astListRef.getBlaDefinition(0), Optional.ofNullable(c.getAstNode()));
+    assertEquals(astListRef.sizeBlaDefinition(), 3);
+
+    astListRef.addBla("A");
+    assertEquals(astListRef.sizeBlaDefinition(), 4);
+    List<Optional<ASTTest>> testList = new ArrayList<>();
+    testList.add(Optional.ofNullable(c.getAstNode()));
+    testList.add(Optional.ofNullable(b.getAstNode()));
+    testList.add(Optional.ofNullable(c.getAstNode()));
+    testList.add(Optional.ofNullable(a.getAstNode()));
+    assertEquals(astListRef.getBlaDefinitionList(), testList);
+    assertEquals(astListRef.toArrayBlaDefinition(), testList.toArray());
+  }
+
+  @Test
+  public void testListNTSDefinition() {
+    ASTListRefNonTerminalSep astListRef = astRand.getListRefNonTerminalSep(0);
+
+    assertNotNull(astListRef.getEnclosingScope());
+
+    assertFalse(astListRef.isEmptyBlaDefinition());
+    assertEquals(astListRef.sizeBlaDefinition(), 3);
+
+    assertTrue(astListRef.getBlaDefinition(0).isPresent());
+    assertTrue(astListRef.getBlaDefinition(1).isPresent());
+    assertTrue(astListRef.getBlaDefinition(2).isPresent());
+    assertEquals(astListRef.getBlaDefinition(0).get(), a.getAstNode());
+    assertEquals(astListRef.getBlaDefinition(1).get(), b.getAstNode());
+    assertEquals(astListRef.getBlaDefinition(2).get(), c.getAstNode());
+
+
+    assertTrue(astListRef.containsBlaDefinition(Optional.ofNullable(a.getAstNode())));
+    assertTrue(astListRef.containsBlaDefinition(Optional.ofNullable(b.getAstNode())));
+    assertTrue(astListRef.containsBlaDefinition(Optional.ofNullable(c.getAstNode())));
+
+
+    astListRef.setBla(0, "C");
+    assertEquals(astListRef.getBlaDefinition(0), Optional.ofNullable(c.getAstNode()));
+    assertEquals(astListRef.sizeBlaDefinition(), 3);
+
+    astListRef.addBla("A");
+    assertEquals(astListRef.sizeBlaDefinition(), 4);
+    List<Optional<ASTTest>> testList = new ArrayList<>();
+    testList.add(Optional.ofNullable(c.getAstNode()));
+    testList.add(Optional.ofNullable(b.getAstNode()));
+    testList.add(Optional.ofNullable(c.getAstNode()));
+    testList.add(Optional.ofNullable(a.getAstNode()));
+    assertEquals(astListRef.getBlaDefinitionList(), testList);
+    assertEquals(astListRef.toArrayBlaDefinition(), testList.toArray());
+  }
+  
   @Test
   public void testListEmpty() {
     ASTListRef astListRef = astRand.getListRef(1);

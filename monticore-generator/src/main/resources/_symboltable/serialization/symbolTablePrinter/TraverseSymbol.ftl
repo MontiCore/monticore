@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 if(node.getSpannedScope().isExportingSymbols() && node.getSpannedScope().getSymbolsSize() > 0) {
-  isSpannedScope = true;
+  printer.beginObject(de.monticore.symboltable.serialization.JsonDeSers.SPANNED_SCOPE);
   node.getSpannedScope().accept(getRealThis());
 }

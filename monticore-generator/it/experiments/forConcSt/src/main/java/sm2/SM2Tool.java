@@ -31,21 +31,21 @@ public class SM2Tool {
    * @param args
    */
   public static void main(String[] args) {
-
+  
     // use normal logging (no DEBUG, TRACE)
-    Log.init();
+    Log.ensureInitalization();
     
     if (args.length != 1) {
       Log.error("0xEE744 Please specify only one single path to the input model.");
       return;
     }
-    Log.info("SM2 DSL Tool", SM2Tool.class.getName());
-    Log.info("------------------", SM2Tool.class.getName());
+    Log.info("SM2 DSL Tool", "SM2Tool");
+    Log.info("------------------", "SM2Tool");
     String model = args[0];
     
     // parse the model and create the AST representation
     final ASTAutomaton ast = parse(model);
-    Log.info(model + " parsed successfully!", SM2Tool.class.getName());
+    Log.info(model + " parsed successfully!", "SM2Tool");
     
     // setup the symbol table
     SM2ArtifactScope modelTopScope = createSymbolTable(ast);
@@ -53,7 +53,7 @@ public class SM2Tool {
     Optional<StateSymbol> aSymbol = modelTopScope.resolveState("Ping");
     if (aSymbol.isPresent()) {
       Log.info("Resolved state symbol \"Ping\"; FQN = " + aSymbol.get().toString(),
-          SM2Tool.class.getName());
+          "SM2Tool");
     }
     
     // execute default context conditions
@@ -67,13 +67,13 @@ public class SM2Tool {
     // analyze the model with a visitor
     CountStates cs = new CountStates();
     cs.handle(ast);
-    Log.info("The model contains " + cs.getCount() + " states.", SM2Tool.class.getName());
+    Log.info("The model contains " + cs.getCount() + " states.", "SM2Tool");
     
     // execute a pretty printer
     PrettyPrinter pp = new PrettyPrinter();
     pp.handle(ast);
-    Log.info("Pretty printing the parsed sm2 into console:", SM2Tool.class.getName());
-    System.out.println(pp.getResult());
+    Log.info("Pretty printing the parsed sm2 into console:", "SM2Tool");
+    Log.println(pp.getResult());
   }
   
   /**

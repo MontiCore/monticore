@@ -12,7 +12,6 @@ import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
 import de.se_rwth.commons.StringTransformations;
 
 import java.util.ArrayList;
@@ -22,7 +21,7 @@ import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
-import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.LOADER_SUFFIX;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SURROGATE_SUFFIX;
 
 /**
  * is a transforming class for the ast generation
@@ -81,16 +80,16 @@ public class ASTReferencedSymbolDecorator<T extends ASTCDType> extends AbstractT
     //add referenced Symbol modifier that it can later be distinguished
     TransformationHelper.addStereotypeValue(modifier, MC2CDStereotypes.REFERENCED_SYMBOL_ATTRIBUTE.toString());
 
-    ASTMCQualifiedType symbolLoaderType = getMCTypeFacade().createQualifiedType(referencedSymbol + LOADER_SUFFIX);
+    ASTMCQualifiedType symbolLoaderType = getMCTypeFacade().createQualifiedType(referencedSymbol + SURROGATE_SUFFIX);
     if (getDecorationHelper().isListType(attribute.printType())) {
       //if the attribute is a list
       ASTMCType attributeType = getMCTypeFacade().createMapTypeOf(getMCTypeFacade().createStringType(), symbolLoaderType);
-      ASTCDAttribute symbolAttribute = this.getCDAttributeFacade().createAttribute(modifier, attributeType, attribute.getName() + SYMBOL + LOADER_SUFFIX);
+      ASTCDAttribute symbolAttribute = this.getCDAttributeFacade().createAttribute(modifier, attributeType, attribute.getName() + SYMBOL + SURROGATE_SUFFIX);
       replaceTemplate(VALUE, symbolAttribute, new StringHookPoint("= new HashMap<>()"));
       return symbolAttribute;
     } else {
       //if the attribute is mandatory or optional
-      return this.getCDAttributeFacade().createAttribute(modifier, symbolLoaderType, attribute.getName() + SYMBOL + LOADER_SUFFIX);
+      return this.getCDAttributeFacade().createAttribute(modifier, symbolLoaderType, attribute.getName() + SYMBOL + SURROGATE_SUFFIX);
     }
   }
 
@@ -127,7 +126,7 @@ public class ASTReferencedSymbolDecorator<T extends ASTCDType> extends AbstractT
     ASTCDMethod updateLoaderMethod = getCDMethodFacade().createMethod(PROTECTED, "update" +
         StringTransformations.capitalize(referencedAttributeName));
     replaceTemplate(EMPTY_BODY, updateLoaderMethod, new TemplateHookPoint("_ast.ast_class.refSymbolMethods.UpdateLoaderList",
-        referencedAttributeName, nameAttributeName, referencedAttributeType + LOADER_SUFFIX));
+        referencedAttributeName, nameAttributeName, referencedAttributeType + SURROGATE_SUFFIX));
     return updateLoaderMethod;
   }
 

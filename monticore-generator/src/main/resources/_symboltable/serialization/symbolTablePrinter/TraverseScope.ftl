@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("symbolList","delegateList")}
+${tc.signature("symbolList", "superScopes")}
 <#list symbolList as symbol>
   if (!node.getLocal${symbol}Symbols().isEmpty()) {
     printer.beginArray("${symbol?uncap_first}Symbols");
@@ -7,7 +7,6 @@ ${tc.signature("symbolList","delegateList")}
     printer.endArray();
   }
 </#list>
-
-<#list delegateList as delegate>
-  ${delegate}.serializeLocalSymbols(node);
+<#list superScopes as scope>
+  getRealThis().traverse((${scope}) node);
 </#list>

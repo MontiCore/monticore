@@ -13,7 +13,8 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfNull;
 import de.monticore.types.check.SynthesizeSymTypeFromMCFullGenericTypes;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.typesymbols._symboltable.OOTypeSymbolLoader;
+import de.monticore.types.typesymbols._symboltable.FieldSymbol;
+import de.monticore.types.typesymbols._symboltable.OOTypeSymbolSurrogate;
 
 import java.util.Deque;
 import java.util.List;
@@ -30,7 +31,7 @@ public class MCVarDeclarationStatementsSymbolTableCreator extends MCVarDeclarati
   }
 
   public void endVisit(ASTLocalVariableDeclaration ast) {
-    List<VarDeclSymbol> symbols = Lists.newArrayList();
+    List<FieldSymbol> symbols = Lists.newArrayList();
     for (ASTVariableDeclarator v : ast.getVariableDeclaratorList()) {
       SymTypeExpression simpleType = createTypeLoader(ast.getMCType());
       if (v.getDeclaratorId().getDimList().size() > 0) {
@@ -38,7 +39,9 @@ public class MCVarDeclarationStatementsSymbolTableCreator extends MCVarDeclarati
           SymTypeArray arraySymType = (SymTypeArray) simpleType;
           arraySymType.setDim(arraySymType.getDim() + v.getDeclaratorId().getDimList().size());
         } else {
-          simpleType = new SymTypeArray(new OOTypeSymbolLoader(v.getDeclaratorId().getName(), v.getDeclaratorId().getEnclosingScope()),
+          OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate(v.getDeclaratorId().getName());
+          loader.setEnclosingScope(v.getDeclaratorId().getEnclosingScope());
+          simpleType = new SymTypeArray(loader,
                   v.getDeclaratorId().getDimList().size(), simpleType);
         }
       }
@@ -48,8 +51,8 @@ public class MCVarDeclarationStatementsSymbolTableCreator extends MCVarDeclarati
     addModifiersToVariables(symbols, ast.getMCModifierList());
   }
 
-  protected void addModifiersToVariables(List<VarDeclSymbol> symbols, Iterable<? extends ASTMCModifier> modifiers) {
-    for (VarDeclSymbol symbol : symbols) {
+  protected void addModifiersToVariables(List<FieldSymbol> symbols, Iterable<? extends ASTMCModifier> modifiers) {
+    for (FieldSymbol symbol : symbols) {
       for (ASTMCModifier modifier : modifiers) {
         if (modifier instanceof ASTJavaModifier) {
           // visibility

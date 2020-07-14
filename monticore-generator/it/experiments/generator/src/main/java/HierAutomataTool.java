@@ -28,24 +28,24 @@ public class HierAutomataTool {
   public static void main(String[] args) {
     
     // use normal logging (no DEBUG, TRACE)
-    Log.init();
+    Log.ensureInitalization();
     
     // Retrieve the model name
     if (args.length != 1) {
       Log.error("0xEE747 Please specify only one single path to the input model.");
       return;
     }
-    Log.info("HierAutomata DSL Tool", HierAutomataTool.class.getName());
-    Log.info("------------------", HierAutomataTool.class.getName());
+    Log.info("HierAutomata DSL Tool", "HierAutomataTool");
+    Log.info("------------------", "HierAutomataTool");
     String model = args[0];
     
     // parse the model and create the AST representation
     ASTStateMachine ast = parse(model);
-    Log.info(model + " parsed successfully!", HierAutomataTool.class.getName());
+    Log.info(model + " parsed successfully!", "HierAutomataTool");
     
     // --------------------------------------------------------
     // execute a generation process
-    Log.info("Writing the parsed automaton into File:", HierAutomataTool.class.getName());
+    Log.info("Writing the parsed automaton into File:", "HierAutomataTool");
     
     GeneratorSetup s = new GeneratorSetup();
     s.setOutputDirectory(new File("gen"));

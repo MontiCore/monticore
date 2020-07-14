@@ -8,7 +8,7 @@ import de.monticore.generating.GeneratorSetup;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.templateclassgenerator.EmptyNode;
 import de.monticore.templateclassgenerator.util.GeneratorInterface;
-import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import types.Attribute;
@@ -27,7 +27,8 @@ public class UsageTest  {
 
   @BeforeClass
   public static void setup(){
-    Log.init();
+    LogStub.init();         // replace log by a sideffect free variant
+    // LogStub.initPlusLog();  // for manual testing purpose only
     Log.enableFailQuick(false);
   }
   
