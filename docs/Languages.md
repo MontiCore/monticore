@@ -359,9 +359,26 @@ component InteriorLight {                           // MontiArc language
   (free, initial, visible, complete), static method calls, variable declarations
   by using OCL, and conditions by using OCL.
 * The grammars can easily be extended by further interactions and object modifiers.
-* The following depicts a simple SD in its textual syntax. The SD 
+* The following depicts a simple SD in its textual syntax. 
 ```
-  example
+sequencediagram AuctionTest {
+
+  // Interacting objects
+  kupfer912: Auction;
+  bidPol: BiddingPolicy;
+  timePol: TimingPolicy;
+
+  // Interaction sequence
+  kupfer912 -> bidPol : validateBid(bid) { 
+    // An activity bar on bidPol's lifeline is defined by the curly brackets
+    bidPol -> kupfer912 : return BiddingPolicy.OK;
+  }
+  kupfer912 -> timePol: newCurrentClosingTime(kupfer912, bid) {
+    timePol -> kupfer912 : return t;
+  }
+  assert t.timeSec == bid.time.timeSec + extensionTime;
+}
+
 ```
 
 ### [SI Units](https://git.rwth-aachen.de/monticore/languages/siunits) (Beta: In Stabilization)
