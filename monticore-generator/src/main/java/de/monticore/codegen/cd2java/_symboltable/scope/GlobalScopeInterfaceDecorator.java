@@ -130,10 +130,10 @@ public class GlobalScopeInterfaceDecorator
 
   protected List<ASTCDMethod> createModelloaderAttributeMethods() {
     ASTCDMethod getMethod = getCDMethodFacade()
-        .createMethod(PUBLIC_ABSTRACT, getMCTypeFacade().createStringType(), "getModelLoader");
+        .createMethod(PUBLIC_ABSTRACT, symbolTableService.getModelLoaderType(), "getModelLoader");
     ASTCDMethod setMethod = getCDMethodFacade()
         .createMethod(PUBLIC_ABSTRACT,  "setModelLoader",
-            getCDParameterFacade().createParameter(getMCTypeFacade().createStringType(), "modelLoader"));
+            getCDParameterFacade().createParameter(symbolTableService.getModelLoaderType(), "modelLoader"));
     ASTCDMethod isPresentMethod = getCDMethodFacade()
         .createMethod(PUBLIC_ABSTRACT,  getMCTypeFacade().createBooleanType(), "isPresentModelLoader");
     ASTCDMethod setAbsentMethod = getCDMethodFacade()

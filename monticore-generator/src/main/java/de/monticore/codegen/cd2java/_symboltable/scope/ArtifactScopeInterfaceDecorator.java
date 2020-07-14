@@ -83,19 +83,22 @@ public class ArtifactScopeInterfaceDecorator extends AbstractCreator<ASTCDCompil
 
   protected List<ASTCDMethod> createImportsAttributeMethods() {
     ASTMCListType type = getMCTypeFacade().createListTypeOf(IMPORT_STATEMENT);
-    ASTCDAttribute attr = getCDAttributeFacade() .createAttribute(PRIVATE, type, "imports");
+    ASTCDAttribute attr = getCDAttributeFacade().createAttribute(PRIVATE, type, "imports");
     List<ASTCDMethod> methods = methodDecorator.decorate(attr).stream()
         .filter(m -> !(m.getName().equals("getImportList") || m.getName().equals("setImportList")))
         .collect(Collectors.toList());
 
-    ASTCDMethod getMethod = getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, type, "getImportList");
+    ASTCDMethod getMethod = getCDMethodFacade()
+        .createMethod(PUBLIC_ABSTRACT, type, "getImportList");
     methods.add(getMethod);
 
-    ASTCDMethod setMethod = getCDMethodFacade().createMethod(PUBLIC_ABSTRACT,  "setImportList",
-            getCDParameterFacade().createParameter(type, "imports"));
+    ASTCDMethod setMethod = getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, "setImportList",
+        getCDParameterFacade().createParameter(type, "imports"));
     methods.add(setMethod);
 
     return methods;
+  }
+
   protected ASTCDAttribute createImportsAttribute() {
     ASTModifier modifier = PRIVATE.build();
     symbolTableService.addDeprecatedStereotype(modifier, Optional.empty());

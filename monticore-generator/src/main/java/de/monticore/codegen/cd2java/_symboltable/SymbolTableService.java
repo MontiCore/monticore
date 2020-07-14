@@ -225,6 +225,14 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     return getModelLoaderClassSimpleName(getCDSymbol());
   }
 
+  public ASTMCQualifiedType getModelLoaderType(CDDefinitionSymbol cdSymbol) {
+    return getMCTypeFacade().createQualifiedType(getModelLoaderClassFullName(cdSymbol));
+  }
+
+  public ASTMCQualifiedType getModelLoaderType() {
+    return getModelLoaderType(getCDSymbol());
+  }
+
   /**
    * symbol reference class names e.g. AutomatonSymbolReference
    */
