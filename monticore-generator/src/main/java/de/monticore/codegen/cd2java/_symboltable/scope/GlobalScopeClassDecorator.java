@@ -114,6 +114,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
         //
         .addCDMethod(createGetRealThisMethod(globalScopeName))
         .addAllCDMethods(createLoadModelsForMethod(symbolClasses, definitionName))
+        .addAllCDMethods(createLoadModelsForSuperMethod(definitionName))
         .build();
   }
 
@@ -319,7 +320,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
    * reuses the often used parameters, so that they only need to be created once
    */
   protected List<ASTCDMethod> createLoadModelsForMethod(List<? extends ASTCDType> symbolProds, String definitionName) {
-    List<ASTCDMethod> resolveMethods = new ArrayList<>();
+    List<ASTCDMethod> loadMethods = new ArrayList<>();
     ASTCDParameter nameParameter = getCDParameterFacade().createParameter(String.class, NAME_VAR);
 
     for (ASTCDType symbolProd : symbolProds) {
@@ -328,10 +329,30 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
       ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, methodName, nameParameter);
       this.replaceTemplate(EMPTY_BODY, method,
           new TemplateHookPoint(TEMPLATE_PATH + "LoadModelsFor", className, definitionName));
-      resolveMethods.add(method);
+      loadMethods.add(method);
     }
 
-    return resolveMethods;
+    return loadMethods;
+  }
+
+  protected List<ASTCDMethod> createLoadModelsForSuperMethod(String definitionName) {
+    List<ASTCDMethod> loadMethods = new ArrayList<>();
+    ASTCDParameter nameParameter = getCDParameterFacade().createParameter(String.class, NAME_VAR);
+
+    for (CDDefinitionSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
+      for (CDTypeSymbol type : cdDefinitionSymbol.getTypes()) {
+        if (type.isPresentAstNode() && type.getAstNode().isPresentModifier()
+            && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifier())) {
+          String className = symbolTableService.removeASTPrefix(type.getAstNode());
+          String methodName = String.format(LOAD_MODELS_FOR, className);
+          ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, methodName, nameParameter);
+          this.replaceTemplate(EMPTY_BODY, method,
+              new TemplateHookPoint(TEMPLATE_PATH + "LoadModelsFor", className, definitionName));
+          loadMethods.add(method);
+        }
+      }
+    }
+    return loadMethods;
   }
 
   public boolean isGlobalScopeTop() {

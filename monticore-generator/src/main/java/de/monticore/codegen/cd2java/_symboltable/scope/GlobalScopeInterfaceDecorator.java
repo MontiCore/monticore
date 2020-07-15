@@ -87,7 +87,7 @@ public class GlobalScopeInterfaceDecorator
         .addInterface(symbolTableService.getScopeInterfaceType())
         .addAllCDMethods(createCalculateModelNameMethods(symbolClasses))
         .addAllCDMethods(createModelFileExtensionAttributeMethods())
-        .addAllCDMethods(createModelLoaderAttributeMethods())
+//        .addAllCDMethods(createModelLoaderAttributeMethods())
         .addCDMethod(createCacheMethod())
         .addAllCDMethods(resolvingDelegateMethods)
         .addAllCDMethods(createResolveAdaptedMethods(symbolClasses))
@@ -154,27 +154,8 @@ public class GlobalScopeInterfaceDecorator
     return Lists.newArrayList(getMethod, setMethod, isPresentMethod, setAbsentMethod);
   }
 
-  protected List<ASTCDMethod> createImportsAttributeMethods() {
-    ASTMCListType type = getMCTypeFacade().createListTypeOf(IMPORT_STATEMENT);
-    ASTCDAttribute attr = getCDAttributeFacade().createAttribute(PRIVATE, type, "imports");
-    List<ASTCDMethod> methods = methodDecorator.decorate(attr).stream()
-        .filter(m -> !(m.getName().equals("getImportList") || m.getName().equals("setImportList")))
-        .collect(Collectors.toList());
-
-    ASTCDMethod getMethod = getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, type, "getImportList");
-    methods.add(getMethod);
-
-    ASTCDMethod setMethod = getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, "setImportList",
-        getCDParameterFacade().createParameter(type, "imports"));
-    methods.add(setMethod);
-
-    return methods;
-  }
-
   protected List<ASTCDAttribute> createAllResolvingDelegateAttributes(List<ASTCDType> symbolProds) {
     List<ASTCDAttribute> attributeList = new ArrayList<>();
-    List<ASTCDType> symbols = new ArrayList<>(symbolProds);
-    symbols.addAll(symbolTableService.getSymbolDefiningSuperProds());
     for (ASTCDType symbolProd : symbolProds) {
       Optional<String> simpleName = symbolTableService.getDefiningSymbolSimpleName(symbolProd);
       if (simpleName.isPresent()) {
@@ -197,8 +178,7 @@ public class GlobalScopeInterfaceDecorator
    */
   protected ASTCDMethod createCacheMethod() {
     ASTCDParameter parameter = getCDParameterFacade().createParameter(getMCTypeFacade().createStringType(), CALCULATED_MODEL_NAME);
-    ASTCDMethod cacheMethod = getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, "cache", parameter);
-    return cacheMethod;
+    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, "cache", parameter);
   }
 
   protected List<ASTCDMethod> createCalculateModelNameMethods(List<ASTCDType> symbolProds) {

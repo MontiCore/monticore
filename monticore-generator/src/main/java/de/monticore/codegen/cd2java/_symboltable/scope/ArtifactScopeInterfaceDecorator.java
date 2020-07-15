@@ -98,13 +98,6 @@ public class ArtifactScopeInterfaceDecorator extends AbstractCreator<ASTCDCompil
     return methods;
   }
 
-  protected ASTCDAttribute createImportsAttribute() {
-    ASTModifier modifier = PRIVATE.build();
-    symbolTableService.addDeprecatedStereotype(modifier, Optional.empty());
-    return getCDAttributeFacade()
-        .createAttribute(modifier, getMCTypeFacade().createListTypeOf(IMPORT_STATEMENT), "imports");
-  }
-
   protected ASTCDMethod createGetTopLevelSymbolMethod(List<ASTCDType> symbolProds) {
     ArrayList<ASTCDType> symbolProdsWithSuper = new ArrayList<>(symbolProds);
     symbolProdsWithSuper.addAll(getSuperSymbols());
