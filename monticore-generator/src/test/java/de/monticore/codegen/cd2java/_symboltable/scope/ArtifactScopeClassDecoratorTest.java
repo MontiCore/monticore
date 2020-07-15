@@ -46,16 +46,6 @@ public class ArtifactScopeClassDecoratorTest extends DecoratorTestCase {
 
   private static final String IMPORT_STATEMENT = "de.monticore.symboltable.ImportStatement";
 
-  private static final String AUTOMATON_SYMBOL = "de.monticore.codegen.ast.automaton._symboltable.AutomatonSymbol";
-
-  private static final String QUALIFIED_NAME_SYMBOL = "de.monticore.codegen.ast.lexicals._symboltable.QualifiedNameSymbol";
-
-  private static final String ACCESS_MODIFIER = "de.monticore.symboltable.modifiers.AccessModifier";
-
-  private static final String PREDICATE = "java.util.function.Predicate<de.monticore.codegen.ast.automaton._symboltable.AutomatonSymbol>";
-
-  private static final String PREDICATE_QUALIFIED_NAME = "java.util.function.Predicate<de.monticore.codegen.ast.lexicals._symboltable.QualifiedNameSymbol>";
-
   @Before
   public void setUp() {
     LogStub.init();         // replace log by a sideffect free variant
@@ -166,7 +156,7 @@ public class ArtifactScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(6, scopeClass.getCDMethodList().size());
+    assertEquals(7, scopeClass.getCDMethodList().size());
   }
 
   @Test
@@ -223,6 +213,17 @@ public class ArtifactScopeClassDecoratorTest extends DecoratorTestCase {
     assertDeepEquals("de.monticore.codegen.ast.automaton._visitor.AutomatonVisitor", method.getCDParameter(0).getMCType());
     assertEquals("visitor", method.getCDParameter(0).getName());
   }
+
+  @Test
+  public void testGetNameOptMethod() {
+    ASTCDMethod method = getMethodBy("getName", scopeClass);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertDeepEquals(String.class, method.getMCReturnType().getMCType());
+
+    assertTrue(method.isEmptyCDParameters());
+  }
+
 
   @Test
   public void testGeneratedCode() {
