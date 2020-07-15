@@ -110,7 +110,10 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeCount(){
-    assertEquals(6, scopeClass.sizeCDAttributes());
+    assertEquals(7, scopeClass.sizeCDAttributes());
+    for(ASTCDAttribute attribute: scopeClass.getCDAttributeList()){
+      System.out.println(attribute.getName());
+    }
   }
 
   @Test
@@ -125,19 +128,24 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(CDModifier.PACKAGE_PRIVATE, attributeList.get(2).getModifier());
     assertEquals("fooSymbolDeSer", attributeList.get(2).getName());
     assertDeepEquals(FOO_SYMBOL+DESER, attributeList.get(2).getMCType());
-    assertDeepEquals(CDModifier.PROTECTED, attributeList.get(3).getModifier());
-    assertEquals("symbolFileExtension", attributeList.get(3).getName());
-    assertDeepEquals(String.class, attributeList.get(3).getMCType());
+    assertDeepEquals(CDModifier.PACKAGE_PRIVATE, attributeList.get(3).getModifier());
+    assertEquals("qualifiedNameSymbolDeSer", attributeList.get(3).getName());
+    assertDeepEquals("de.monticore.codegen.ast.lexicals._symboltable.QualifiedNameSymbolDeSer",
+        attributeList.get(3).getMCType());
     assertDeepEquals(CDModifier.PROTECTED, attributeList.get(4).getModifier());
-    assertEquals("printer", attributeList.get(4).getName());
-    assertDeepEquals(JSON_PRINTER, attributeList.get(4).getMCType());
-    assertEquals("symbolTablePrinter", attributeList.get(5).getName());
-    assertDeepEquals(AUTOMATON_DELEGATOR_VISITOR, attributeList.get(5).getMCType());
+    assertEquals("symbolFileExtension", attributeList.get(4).getName());
+    assertDeepEquals(String.class, attributeList.get(4).getMCType());
+    assertDeepEquals(CDModifier.PROTECTED, attributeList.get(5).getModifier());
+    assertEquals("printer", attributeList.get(5).getName());
+    assertDeepEquals(JSON_PRINTER, attributeList.get(5).getMCType());
+    assertDeepEquals(CDModifier.PROTECTED, attributeList.get(6).getModifier());
+    assertEquals("symbolTablePrinter", attributeList.get(6).getName());
+    assertDeepEquals(AUTOMATON_DELEGATOR_VISITOR, attributeList.get(6).getMCType());
   }
 
   @Test
   public void testMethodCount(){
-    assertEquals(20, scopeClass.sizeCDMethods());
+    assertEquals(21, scopeClass.sizeCDMethods());
   }
 
   @Test
@@ -338,6 +346,20 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
   @Test
   public void testDeserializeFooSymbol(){
     ASTCDMethod method = getMethodBy("deserializeFooSymbol", scopeClass);
+    assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
+    assertEquals(0, method.sizeExceptions());
+    assertEquals(2, method.sizeCDParameters());
+    List<ASTCDParameter> parameters = method.getCDParameterList();
+    assertEquals("symbolJson", parameters.get(0).getName());
+    assertDeepEquals(JSON_OBJECT, parameters.get(0).getMCType());
+    assertEquals("scope", parameters.get(1).getName());
+    assertDeepEquals(I_AUTOMATON_SCOPE, parameters.get(1).getMCType());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+  }
+
+  @Test
+  public void testDeserializeQualifiedNameSymbol(){
+    ASTCDMethod method = getMethodBy("deserializeQualifiedNameSymbol", scopeClass);
     assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
     assertEquals(0, method.sizeExceptions());
     assertEquals(2, method.sizeCDParameters());

@@ -108,7 +108,7 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testCountAttributes(){
-    assertEquals(3, symbolTablePrinterClass.sizeCDAttributes());
+    assertEquals(2, symbolTablePrinterClass.sizeCDAttributes());
   }
 
   @Test
@@ -116,13 +116,6 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute attribute = getAttributeBy("printer", symbolTablePrinterClass);
     assertDeepEquals(CDModifier.PROTECTED, attribute.getModifier());
     assertDeepEquals(JSON_PRINTER, attribute.getMCType());
-  }
-
-  @Test
-  public void testIsSpannedScopeAttribute(){
-    ASTCDAttribute attribute = getAttributeBy("isSpannedScope", symbolTablePrinterClass);
-    assertDeepEquals(CDModifier.PROTECTED, attribute.getModifier());
-    assertBoolean(attribute.getMCType());
   }
 
   @Test
