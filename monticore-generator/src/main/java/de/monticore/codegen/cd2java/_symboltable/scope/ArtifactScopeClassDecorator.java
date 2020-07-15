@@ -76,6 +76,8 @@ public class ArtifactScopeClassDecorator extends AbstractCreator<ASTCDCompilatio
         .addCDAttribute(importsAttribute)
         .addAllCDMethods(createImportsAttributeMethods(importsAttribute))
         .addCDMethod(createIsPresentNameMethod())
+        .addCDMethod(createGetNameMethod())
+
         .addCDMethod(createAcceptMethod(artifactScopeSimpleName))
         .build();
   }
@@ -113,6 +115,13 @@ public class ArtifactScopeClassDecorator extends AbstractCreator<ASTCDCompilatio
     return  methodDecorator.decorate(attr).stream()
         .filter(m -> (m.getName().equals("getImportList") || m.getName().equals("setImportList")))
         .collect(Collectors.toList());
+  }
+
+
+  protected ASTCDMethod createGetNameMethod() {
+    ASTCDMethod getNameMethod = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createStringType(), "getName");
+    this.replaceTemplate(EMPTY_BODY, getNameMethod, new TemplateHookPoint(TEMPLATE_PATH + "GetName"));
+    return getNameMethod;
   }
 
   /**

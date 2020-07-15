@@ -63,7 +63,6 @@ public class ArtifactScopeInterfaceDecorator extends AbstractCreator<ASTCDCompil
         .addInterface(getMCTypeFacade().createQualifiedType(I_ARTIFACT_SCOPE_TYPE))
         .addAllCDMethods(createPackageNameAttributeMethods())
         .addAllCDMethods(createImportsAttributeMethods())
-        .addCDMethod(createGetNameMethod())
         .addCDMethod(createGetTopLevelSymbolMethod(symbolProds))
         .addCDMethod(createCheckIfContinueAsSubScopeMethod())
         .addCDMethod(createGetRemainingNameForResolveDownMethod())
@@ -104,12 +103,6 @@ public class ArtifactScopeInterfaceDecorator extends AbstractCreator<ASTCDCompil
     symbolTableService.addDeprecatedStereotype(modifier, Optional.empty());
     return getCDAttributeFacade()
         .createAttribute(modifier, getMCTypeFacade().createListTypeOf(IMPORT_STATEMENT), "imports");
-  }
-
-  protected ASTCDMethod createGetNameMethod() {
-    ASTCDMethod getNameMethod = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createStringType(), "getName");
-    this.replaceTemplate(EMPTY_BODY, getNameMethod, new TemplateHookPoint(TEMPLATE_PATH + "GetName"));
-    return getNameMethod;
   }
 
   protected ASTCDMethod createGetTopLevelSymbolMethod(List<ASTCDType> symbolProds) {
