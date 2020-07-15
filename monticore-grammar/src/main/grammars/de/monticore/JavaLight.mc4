@@ -1,7 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore;
 
-/* Beta-version: This is intended to become a MontiCore stable grammar. */
+/* This is a MontiCore stable grammar.
+ * Adaptations -- if any -- are conservative. */
 
 /**
  * JavaLight is a subset of Java that MontiCore itself
@@ -123,5 +124,5 @@ ArrayDimensionByInitializer implements ArrayDimensionSpecifier
     = (dim:"[" "]")+ ArrayInit
     ;
 
-
 }
+
