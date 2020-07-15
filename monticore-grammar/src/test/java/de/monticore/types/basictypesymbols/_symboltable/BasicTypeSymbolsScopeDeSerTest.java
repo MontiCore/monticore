@@ -153,7 +153,7 @@ public class BasicTypeSymbolsScopeDeSerTest {
     assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA7224"));
 
     deser.deserialize(invalidJsonForSerializing2);
-    assertTrue(Log.getFindings().get(2).getMsg().startsWith("0xA7224"));
+    assertTrue(Log.getFindings().get(1).getMsg().startsWith("0xA7224"));
   }
 
 
