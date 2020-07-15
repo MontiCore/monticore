@@ -56,7 +56,7 @@ public class SymbolTablePrinterBuilderDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeCount(){
-    assertEquals(3, builderClass.sizeCDAttributes());
+    assertEquals(2, builderClass.sizeCDAttributes());
   }
 
   @Test
@@ -64,13 +64,6 @@ public class SymbolTablePrinterBuilderDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute attribute = getAttributeBy("realBuilder", builderClass);
     assertDeepEquals(PROTECTED, attribute.getModifier());
     assertDeepEquals(builderClass.getName(), attribute.getMCType());
-  }
-
-  @Test
-  public void testIsSpannedScopeAttribute(){
-    ASTCDAttribute attribute = getAttributeBy("isSpannedScope", builderClass);
-    assertDeepEquals(PROTECTED, attribute.getModifier());
-    assertBoolean(attribute.getMCType());
   }
 
   @Test
@@ -82,7 +75,7 @@ public class SymbolTablePrinterBuilderDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount(){
-    assertEquals(6, builderClass.sizeCDMethods());
+    assertEquals(4, builderClass.sizeCDMethods());
   }
 
   @Test
@@ -103,26 +96,6 @@ public class SymbolTablePrinterBuilderDecoratorTest extends DecoratorTestCase {
     assertEquals(0, method.sizeCDParameters());
     assertFalse(method.getMCReturnType().isPresentMCVoidType());
     assertDeepEquals(JSON_PRINTER, method.getMCReturnType().getMCType());
-  }
-
-  @Test
-  public void testSetIsSpannedScopeMethod(){
-    ASTCDMethod method = getMethodBy("setIsSpannedScope", builderClass);
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertEquals(1, method.sizeCDParameters());
-    ASTCDParameter parameter = method.getCDParameter(0);
-    assertBoolean(parameter.getMCType());
-    assertFalse(method.getMCReturnType().isPresentMCVoidType());
-    assertDeepEquals(builderClass.getName(), method.getMCReturnType().getMCType());
-  }
-
-  @Test
-  public void testIsIsSpannedScopeMethod(){
-    ASTCDMethod method = getMethodBy("isIsSpannedScope", builderClass);
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertEquals(0, method.sizeCDParameters());
-    assertFalse(method.getMCReturnType().isPresentMCVoidType());
-    assertBoolean(method.getMCReturnType().getMCType());
   }
 
   @Test

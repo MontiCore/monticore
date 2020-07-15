@@ -5,6 +5,5 @@ classdiagram SymbolTablePrinter_Builder {
 
     class ASymbolTablePrinter {
       protected de.monticore.symboltable.serialization.JsonPrinter printer;
-      protected boolean isSpannedScope;
     }
 }
