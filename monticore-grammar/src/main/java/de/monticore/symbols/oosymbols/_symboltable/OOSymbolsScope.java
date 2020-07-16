@@ -1,5 +1,7 @@
+// (c) https://github.com/MontiCore/monticore
+
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.types.typesymbols._symboltable;
+package de.monticore.symbols.oosymbols._symboltable;
 
 import de.monticore.symboltable.IScopeSpanningSymbol;
 import de.monticore.symboltable.modifiers.AccessModifier;
@@ -8,21 +10,21 @@ import de.monticore.types.check.SymTypeExpression;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class TypeSymbolsScope extends TypeSymbolsScopeTOP {
+public class OOSymbolsScope extends OOSymbolsScopeTOP {
 
-  public TypeSymbolsScope() {
+  public OOSymbolsScope() {
     super();
   }
 
-  public TypeSymbolsScope(boolean isShadowingScope) {
+  public OOSymbolsScope(boolean isShadowingScope) {
     super(isShadowingScope);
   }
 
-  public TypeSymbolsScope(ITypeSymbolsScope enclosingScope) {
+  public OOSymbolsScope(IOOSymbolsScope enclosingScope) {
     this(enclosingScope, false);
   }
 
-  public TypeSymbolsScope(ITypeSymbolsScope enclosingScope, boolean isShadowingScope) {
+  public OOSymbolsScope(IOOSymbolsScope enclosingScope, boolean isShadowingScope) {
     super(enclosingScope,isShadowingScope);
   }
 

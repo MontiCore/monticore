@@ -6,11 +6,10 @@ import de.monticore.expressions.combineexpressionswithliterals.CombineExpression
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsScope;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.types.basictypesymbols._symboltable.TypeVarSymbol;
-import de.monticore.types.typesymbols.TypeSymbolsMill;
-import de.monticore.types.typesymbols._symboltable.FieldSymbol;
-import de.monticore.types.typesymbols._symboltable.OOTypeSymbol;
-import de.monticore.types.typesymbols._symboltable.OOTypeSymbolSurrogate;
+import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
+import de.monticore.symbols.oosymbols.OOSymbolsMill;
+import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
+import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -76,16 +75,16 @@ public class DeriveSymTypeOfExpressionTest {
 
     //testing for generics
     TypeVarSymbol genArgs = typeVariable("GenArg");
-    OOTypeSymbol genSuperType = TypeSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
+    OOTypeSymbol genSuperType = OOSymbolsMill.oOTypeSymbolBuilder()
+        .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
         .setTypeParameterList(Lists.newArrayList(genArgs))
         .setEnclosingScope(scope)
         .setName("GenSuper")
         .build();
     SymTypeExpression genArg = SymTypeExpressionFactory.createTypeVariable("GenArg",scope);
     SymTypeExpression genSuper = SymTypeExpressionFactory.createGenerics("GenSuper",scope,genArg);
-    OOTypeSymbol genSubType = TypeSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
+    OOTypeSymbol genSubType = OOSymbolsMill.oOTypeSymbolBuilder()
+        .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
         .setName("GenSub").setSuperTypeList(Lists.newArrayList(genSuper))
         .setTypeParameterList(Lists.newArrayList(genArgs))
         .setEnclosingScope(scope)

@@ -6,10 +6,10 @@ import de.monticore.expressions.combineexpressionswithliterals.CombineExpression
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsScope;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.types.typesymbols.TypeSymbolsMill;
-import de.monticore.types.typesymbols._symboltable.FieldSymbol;
-import de.monticore.types.typesymbols._symboltable.OOTypeSymbol;
-import de.monticore.types.typesymbols._symboltable.OOTypeSymbolSurrogate;
+import de.monticore.symbols.oosymbols.OOSymbolsMill;
+import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
+import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
+import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolSurrogate;
 import de.se_rwth.commons.logging.*;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
@@ -111,8 +111,8 @@ public class DeriveSymTypeOfSetExpressionsTest {
     //TEST 1: double in Set<double>
     OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate("Set");
     loader.setEnclosingScope(scope);
-    OOTypeSymbol setDoubleType = TypeSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
+    OOTypeSymbol setDoubleType = OOSymbolsMill.oOTypeSymbolBuilder()
+        .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
         .setName("Set")
         .setTypeParameterList(Lists.newArrayList(typeVariable("T")))
         .setEnclosingScope(scope)
@@ -143,8 +143,8 @@ public class DeriveSymTypeOfSetExpressionsTest {
     //TEST 1: Error: double in Set<int>
     OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate("Set");
     loader.setEnclosingScope(scope);
-    OOTypeSymbol setIntType = TypeSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
+    OOTypeSymbol setIntType = OOSymbolsMill.oOTypeSymbolBuilder()
+        .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
         .setName("Set")
         .setTypeParameterList(Lists.newArrayList(typeVariable("T")))
         .setEnclosingScope(scope)
@@ -174,8 +174,8 @@ public class DeriveSymTypeOfSetExpressionsTest {
     //TEST 1: double in Set<double>
     OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate("Set");
     loader.setEnclosingScope(scope);
-    OOTypeSymbol setDoubleType = TypeSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
+    OOTypeSymbol setDoubleType = OOSymbolsMill.oOTypeSymbolBuilder()
+        .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
         .setName("Set")
         .setTypeParameterList(Lists.newArrayList(typeVariable("T")))
         .setEnclosingScope(scope)
@@ -206,8 +206,8 @@ public class DeriveSymTypeOfSetExpressionsTest {
     //TEST 1: Error: double isin Set<int>
     OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate("Set");
     loader.setEnclosingScope(scope);
-    OOTypeSymbol setIntType = TypeSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
+    OOTypeSymbol setIntType = OOSymbolsMill.oOTypeSymbolBuilder()
+        .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
         .setName("Set")
         .setTypeParameterList(Lists.newArrayList(typeVariable("T")))
         .setEnclosingScope(scope)
@@ -237,8 +237,8 @@ public class DeriveSymTypeOfSetExpressionsTest {
     //create Set<int> and Set<double>
     OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate("Set");
     loader.setEnclosingScope(scope);
-    OOTypeSymbol setinttype = TypeSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
+    OOTypeSymbol setinttype = OOSymbolsMill.oOTypeSymbolBuilder()
+        .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
         .setName("Set")
         .setTypeParameterList(Lists.newArrayList(typeVariable("T")))
         .setEnclosingScope(scope)
@@ -273,8 +273,8 @@ public class DeriveSymTypeOfSetExpressionsTest {
     //TEST 1: Error: no SetType union SetType
     OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate("Set");
     loader.setEnclosingScope(scope);
-    OOTypeSymbol setIntType = TypeSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
+    OOTypeSymbol setIntType = OOSymbolsMill.oOTypeSymbolBuilder()
+        .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
         .setName("Set")
         .setTypeParameterList(Lists.newArrayList(typeVariable("T")))
         .setEnclosingScope(scope)
@@ -303,8 +303,8 @@ public class DeriveSymTypeOfSetExpressionsTest {
     //TEST 2: Error: set<boolean> union set<int>
     OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate("Set");
     loader.setEnclosingScope(scope);
-    OOTypeSymbol setIntType = TypeSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
+    OOTypeSymbol setIntType = OOSymbolsMill.oOTypeSymbolBuilder()
+        .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
         .setName("Set")
         .setTypeParameterList(Lists.newArrayList(typeVariable("T")))
         .setEnclosingScope(scope)
@@ -337,8 +337,8 @@ public class DeriveSymTypeOfSetExpressionsTest {
     //create Set<int> and Set<double>
     OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate("Set");
     loader.setEnclosingScope(scope);
-    OOTypeSymbol setinttype = TypeSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
+    OOTypeSymbol setinttype = OOSymbolsMill.oOTypeSymbolBuilder()
+        .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
         .setName("Set")
         .setTypeParameterList(Lists.newArrayList(typeVariable("T")))
         .setEnclosingScope(scope)
@@ -373,8 +373,8 @@ public class DeriveSymTypeOfSetExpressionsTest {
     //TEST 1: Error: no SetType intersect SetType
     OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate("Set");
     loader.setEnclosingScope(scope);
-    OOTypeSymbol setIntType = TypeSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
+    OOTypeSymbol setIntType = OOSymbolsMill.oOTypeSymbolBuilder()
+        .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
         .setName("Set")
         .setTypeParameterList(Lists.newArrayList(typeVariable("T")))
         .setEnclosingScope(scope)
@@ -404,8 +404,8 @@ public class DeriveSymTypeOfSetExpressionsTest {
     //TEST 2: Error: set<boolean> intersect set<int>
     OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate("Set");
     loader.setEnclosingScope(scope);
-    OOTypeSymbol setIntType = TypeSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
+    OOTypeSymbol setIntType = OOSymbolsMill.oOTypeSymbolBuilder()
+        .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
         .setName("Set")
         .setTypeParameterList(Lists.newArrayList(typeVariable("T")))
         .setEnclosingScope(scope)

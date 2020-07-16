@@ -29,7 +29,7 @@ component grammar MCVarDeclarationStatements
           extends de.monticore.statements.MCStatementsBasis,
                   de.monticore.types.MCBasicTypes,
                   de.monticore.expressions.ExpressionsBasis,
-                  de.monticore.types.TypeSymbols {
+                  de.monticore.symbols.OOSymbols {
 
 LocalVariableDeclarationStatement implements MCBlockStatement
     = LocalVariableDeclaration ";"

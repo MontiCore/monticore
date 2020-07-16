@@ -1,8 +1,10 @@
+// (c) https://github.com/MontiCore/monticore
+
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.types.typesymbols._symboltable;
+package de.monticore.symbols.oosymbols._symboltable;
 
 import com.google.common.collect.Lists;
-import de.monticore.types.basictypesymbols._symboltable.TypeVarSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +54,7 @@ public class MethodSymbol extends MethodSymbolTOP {
 
   public List<TypeVarSymbol> getTypeVariablesOfEnclosingType(){
     List<TypeVarSymbol> typeVarSymbolList = new ArrayList<>();
-    ITypeSymbolsScope scope = getSpannedScope();
+    IOOSymbolsScope scope = getSpannedScope();
     while(scope.getEnclosingScope()!=null){
       scope = scope.getEnclosingScope();
       if(scope.isPresentSpanningSymbol() && scope.getSpanningSymbol() instanceof OOTypeSymbol){
@@ -69,7 +71,7 @@ public class MethodSymbol extends MethodSymbolTOP {
   }
 
   @Override
-  public void setEnclosingScope(ITypeSymbolsScope enclosingScope) {
+  public void setEnclosingScope(IOOSymbolsScope enclosingScope) {
     this.enclosingScope = enclosingScope;
   }
 }

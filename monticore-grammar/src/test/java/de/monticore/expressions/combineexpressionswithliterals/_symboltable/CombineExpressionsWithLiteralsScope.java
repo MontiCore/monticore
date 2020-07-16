@@ -1,10 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.combineexpressionswithliterals._symboltable;
 
+import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
+import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
+import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.symboltable.IScopeSpanningSymbol;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.types.check.SymTypeExpression;
-import de.monticore.types.typesymbols._symboltable.*;
 
 import java.util.List;
 import java.util.function.Predicate;

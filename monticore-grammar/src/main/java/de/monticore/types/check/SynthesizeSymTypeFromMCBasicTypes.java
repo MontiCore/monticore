@@ -5,7 +5,7 @@ import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor;
-import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
+import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Optional;
@@ -44,13 +44,13 @@ public class SynthesizeSymTypeFromMCBasicTypes implements MCBasicTypesVisitor, I
   
   // ---------------------------------------------------------- Storage result
 
-  public ITypeSymbolsScope getScope (IMCBasicTypesScope mcBasicTypesScope){
+  public IOOSymbolsScope getScope (IMCBasicTypesScope mcBasicTypesScope){
     // is accepted only here, decided on 07.04.2020
-    if(!(mcBasicTypesScope instanceof ITypeSymbolsScope)){
-      Log.error("0xA0308 the enclosing scope of the type does not implement the interface ITypeSymbolsScope");
+    if(!(mcBasicTypesScope instanceof IOOSymbolsScope)){
+      Log.error("0xA0308 the enclosing scope of the type does not implement the interface IOOSymbolsScope");
     }
     // is accepted only here, decided on 07.04.2020
-    return (ITypeSymbolsScope) mcBasicTypesScope;
+    return (IOOSymbolsScope) mcBasicTypesScope;
   }
 
   /**

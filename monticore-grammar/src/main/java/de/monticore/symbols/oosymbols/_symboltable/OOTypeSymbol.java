@@ -1,8 +1,10 @@
+// (c) https://github.com/MontiCore/monticore
+
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.types.typesymbols._symboltable;
+package de.monticore.symbols.oosymbols._symboltable;
 
 import com.google.common.collect.Lists;
-import de.monticore.types.basictypesymbols._symboltable.TypeVarSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.se_rwth.commons.logging.Log;
 
@@ -17,7 +19,7 @@ public class OOTypeSymbol extends OOTypeSymbolTOP {
   }
 
   @Override
-  public void setSpannedScope(ITypeSymbolsScope spannedScope) {
+  public void setSpannedScope(IOOSymbolsScope spannedScope) {
     super.setSpannedScope(spannedScope);
     this.spannedScope = spannedScope;
   }

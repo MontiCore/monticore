@@ -7,7 +7,7 @@ grammar CombineExpressionsWithLiterals extends
           de.monticore.expressions.CommonExpressions,
             de.monticore.expressions.BitExpressions,
             de.monticore.literals.MCCommonLiterals,
-             de.monticore.types.TypeSymbols {
+             de.monticore.symbols.OOSymbols {
 
     start Expression;
 

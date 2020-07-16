@@ -1,8 +1,10 @@
 // (c) https://github.com/MontiCore/monticore
 
-package de.monticore.types.typesymbols._symboltable;
+// (c) https://github.com/MontiCore/monticore
 
-import de.monticore.types.basictypesymbols._symboltable.TypeVarSymbol;
+package de.monticore.symbols.oosymbols._symboltable;
+
+import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 
 import java.util.List;
 
