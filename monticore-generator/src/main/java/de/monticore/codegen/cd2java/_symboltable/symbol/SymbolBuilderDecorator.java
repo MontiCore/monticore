@@ -9,15 +9,12 @@ import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._ast.builder.BuilderConstants;
 import de.monticore.codegen.cd2java._ast.builder.BuilderDecorator;
+import de.monticore.codegen.cd2java._ast.builder.buildermethods.BuilderMutatorMethodDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
-import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
-import de.se_rwth.commons.StringTransformations;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -68,12 +65,15 @@ public class SymbolBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDCla
         symbolBuilder.setSuperclass(getMCTypeFacade().createQualifiedType(value + BuilderConstants.BUILDER_SUFFIX));
       }
       // add delegate-Method
+      // overwrite setters since they need to return the correct Builder type
+      ASTMCType builderType = this.getMCTypeFacade().createQualifiedType(symbolBuilder.getName());
+      BuilderMutatorMethodDecorator builderMutatorMethodDecorator =  new BuilderMutatorMethodDecorator(glex, builderType);
       symbolBuilder.addAllCDMethods(
-              getMethodsForDefaultAttrs(defaultAttrs, this.getMCTypeFacade().createQualifiedType(symbolBuilder.getName())));
+              getMethodsForDefaultAttrs(defaultAttrs, builderMutatorMethodDecorator));
       // Override getScope-Methods
       boolean hasInheritedSpannedScope = symbolClass.isPresentModifier() &&
-              (symbolTableService.hasScopeStereotype(symbolClass.getModifier())
-                      || symbolTableService.hasInheritedScopeStereotype(symbolClass.getModifier()));
+          (symbolTableService.hasScopeStereotype(symbolClass.getModifier())
+              || symbolTableService.hasInheritedScopeStereotype(symbolClass.getModifier()));
       symbolBuilder.addAllCDMethods(createScopeMethods(hasInheritedSpannedScope));
     }
 
@@ -111,15 +111,6 @@ public class SymbolBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDCla
       methods.add(method);
     }
     return methods;
-
-  }
-
-  protected HookPoint createImplementation(final ASTCDMethod method) {
-    String methodName = method.getName();
-    String parameterCall = method.getCDParameterList().stream()
-            .map(ASTCDParameter::getName)
-            .collect(Collectors.joining(", "));
-    return new TemplateHookPoint(TEMPLATE_PATH + "DefaultDelegate", methodName, parameterCall);
   }
 
   protected List<ASTCDAttribute> createSymbolAttributes(ASTCDClass symbolClass) {
@@ -148,25 +139,12 @@ public class SymbolBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDCla
     return attrs;
   }
 
-  protected Collection<? extends ASTCDMethod> getMethodsForDefaultAttrs(List<ASTCDAttribute> defaultAttrs,
-                                                                        ASTMCType builderType) {
-    String ret = builderType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter());
-    List<ASTCDMethod> result = new ArrayList<>();
-    for (ASTCDAttribute defaultAttr: defaultAttrs) {
-      String type;
-      if (defaultAttr.getMCType() instanceof ASTMCGenericType) {
-        type = ((ASTMCGenericType) defaultAttr.getMCType()).
-                getMCTypeArgument(0).printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter());
-      } else {
-        type = defaultAttr.getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter());
-      }
-      String signature = "public " + ret + " set" + StringTransformations.capitalize(defaultAttr.getName()) + "(" +
-              type + " " + defaultAttr.getName() + ");";
-      ASTCDMethod method = this.getCDMethodFacade().createMethodByDefinition(signature);
-      this.replaceTemplate(EMPTY_BODY, method, createImplementation(method));
-      result.add(method);
-    }
-    return result;
+  protected List<ASTCDMethod> getMethodsForDefaultAttrs(List<ASTCDAttribute> defaultAttrs,
+                                                        BuilderMutatorMethodDecorator builderMutatorMethodDecorator) {
+    return defaultAttrs.stream()
+        .map(builderMutatorMethodDecorator::decorate)
+        .flatMap(Collection::stream)
+        .collect(Collectors.toList());
   }
 
 }
