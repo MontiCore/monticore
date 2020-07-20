@@ -189,7 +189,6 @@ public class InputOutputFilesReporter extends AReporter {
     // event reportParseInputFile must only be called once for each actual input
     // file, i.e., the things that are parsed
     String lowerCaseName = modelName.replaceAll("\\.", "/").toLowerCase();
-    System.out.println("!!!!!!!!!!!!!!!!!!!!!" + lowerCaseName);
     this.reportingHelper = new ReportCreator(outputDirectory + File.separator + lowerCaseName);
     inputFiles.clear();
     hwcFiles.clear();
