@@ -1,14 +1,17 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._cocos;
 
+import com.google.common.collect.Lists;
 import de.monticore.cd.cd4analysis.CD4AnalysisMill;
-import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd.cd4analysis._ast.ASTCDClass;
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.cd4analysis._ast.ASTCDDefinition;
+import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.IterablePath;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -39,7 +42,8 @@ public class CoCoDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCo
 
   @Override
   public ASTCDCompilationUnit decorate(ASTCDCompilationUnit input) {
-    List<String> cocoPackage = new ArrayList<>(input.getPackageList());
+    List<String> cocoPackage = Lists.newArrayList();
+    input.getPackageList().forEach(p -> cocoPackage.add(p.toLowerCase()));
     cocoPackage.addAll(Arrays.asList(input.getCDDefinition().getName().toLowerCase(), CoCoConstants.COCO_PACKAGE));
     // set attribute for special generation for CoCoChecker Top classes
     boolean checkerHandCoded = existsHandwrittenClass(handCodedPath,
