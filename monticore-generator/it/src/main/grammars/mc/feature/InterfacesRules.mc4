@@ -12,7 +12,7 @@ component grammar InterfacesRules extends mc.grammar.lexicals.ItTestLexicals {
 
    astrule AProd =
    method public String toString() {
-     java.util.List<String> tmp1 = getNameList();
+     java.util.List<String> tmp1 = getNamesList();
      java.util.Optional<String> tmp2 = Optional.empty();
      if (isPresentOptionalName()) {
        tmp2 = Optional.ofNullable(getOptionalName());

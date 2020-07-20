@@ -20,7 +20,7 @@ public class UMLStereotypePrettyPrinter implements UMLStereotypeVisitor {
   public void handle(ASTStereotype a) {
     getPrinter().print("<<");
     String sep = "";
-    for (ASTStereoValue value : a.getValueList()) {
+    for (ASTStereoValue value : a.getValuesList()) {
       getPrinter().print(sep);
       value.accept(getRealThis());
       sep = ", ";

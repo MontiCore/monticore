@@ -4,7 +4,7 @@ ${tc.signature("attributes")}
 <#list attributes as attribute>
   <#assign methName = genHelper.getNativeAttributeName(attribute.getName())?cap_first>
   <#if genHelper.isListType(attribute.printType())>
-    set${methName?remove_ending("s")}List(${attribute.getName()});
+    set${methName}List(${attribute.getName()});
   <#elseif genHelper.isOptional(attribute.getMCType())>
     if (${attribute.getName()}.isPresent()) {
       set${methName}(${attribute.getName()}.get());

@@ -2,12 +2,12 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
+import com.google.common.collect.Lists;
 import de.monticore.ast.ASTNode;
-import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDStereoValue;
+import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
+import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.grammar._ast.ASTAdditionalAttribute;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
@@ -15,6 +15,8 @@ import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.monticore.utils.Link;
 import de.se_rwth.commons.StringTransformations;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.UnaryOperator;
@@ -37,7 +39,7 @@ public class RemoveOverriddenAttributesTranslation implements
         ASTCDClass.class)) {
 
       for (Link<ASTNode, ASTCDAttribute> link : classLink.getLinks(ASTNode.class, ASTCDAttribute.class)) {
-        if (isOverridden(link.source(), classLink) && isNotInherited(link.target())) {
+        if (isOverridden(link, classLink) && isNotInherited(link.target())) {
           ASTCDAttribute target = link.target();
           classLink.target().getCDAttributeList().remove(target);
         }
@@ -46,7 +48,8 @@ public class RemoveOverriddenAttributesTranslation implements
     return rootLink;
   }
 
-  private boolean isOverridden(ASTNode source, Link<?, ASTCDClass> classLink) {
+  private boolean isOverridden(Link<ASTNode, ASTCDAttribute> link, Link<?, ASTCDClass> classLink) {
+    ASTNode source = link.source();
     Optional<String> usageName = getUsageName(classLink.source(), source);
     if (!usageName.isPresent()) {
       Optional<String> name = getName(source);
@@ -58,25 +61,57 @@ public class RemoveOverriddenAttributesTranslation implements
         classLink);
     attributesInASTLinkingToSameClass.remove(source);
 
-    boolean matchByUsageName = usageName.isPresent() && attributesInASTLinkingToSameClass.stream()
-            .filter(ASTAdditionalAttribute::isPresentName)
-        .map(ASTAdditionalAttribute::getName)
-        .anyMatch(usageName.get()::equals);
+    List<ASTAdditionalAttribute> attributes = new ArrayList<>();
+    if (usageName.isPresent()) {
+      String name = usageName.get();
+      attributes = attributesInASTLinkingToSameClass.stream()
+          .filter(ASTAdditionalAttribute::isPresentName)
+          .filter(x -> name.equals(x.getName()))
+          .collect(Collectors.toList());
+    }
 
+    boolean matchByUsageName = !attributes.isEmpty();
     boolean matchByTypeName = false;
-    if (!usageName.isPresent()) {
+    if (!matchByUsageName && !usageName.isPresent()) {
       for (ASTAdditionalAttribute attributeInAST : attributesInASTLinkingToSameClass) {
         if (!attributeInAST.isPresentName()) {
           String name = attributeInAST.getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter());
-          if(getName(source).orElse("").equals(name)){
-            matchByTypeName= true;
+          if (getName(source).orElse("").equals(name)) {
+            attributes = Lists.newArrayList(attributeInAST);
+            matchByTypeName = true;
             break;
           }
         }
       }
     }
 
+    // add derived stereotype if needed
+    if (link.target().isPresentModifier() &&
+        hasDerivedStereotype(link.target().getModifier()) &&
+        DecorationHelper.getInstance().isListType(link.target().printType())) {
+      for (Link<ASTAdditionalAttribute, ASTCDAttribute> attributeLink :
+          classLink.rootLink().getLinks(ASTAdditionalAttribute.class, ASTCDAttribute.class)) {
+        if(attributes.contains(attributeLink.source())){
+          addDerivedStereotypeToAttributes(attributeLink.target());
+        }
+      }
+    }
+
     return matchByUsageName || matchByTypeName;
+  }
+
+  private boolean hasDerivedStereotype(ASTModifier modifier) {
+    if (modifier.isPresentStereotype()) {
+      return modifier.getStereotype().getValueList()
+          .stream()
+          .anyMatch(v -> v.getName().equals(MC2CDStereotypes.DERIVED_ATTRIBUTE_NAME.toString()));
+    }
+    return false;
+  }
+
+  private void addDerivedStereotypeToAttributes(ASTCDAttribute attribute) {
+    TransformationHelper.addStereoType(attribute,
+        MC2CDStereotypes.DERIVED_ATTRIBUTE_NAME.toString(), "");
   }
 
   private Set<ASTAdditionalAttribute> attributesInASTLinkingToSameClass(Link<?, ASTCDClass> link) {

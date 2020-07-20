@@ -66,7 +66,6 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
         .setModifier(PUBLIC.build())
         .addInterface(getMCTypeFacade().createQualifiedType(visitorFullName))
         .addCDAttribute(getCDAttributeFacade().createAttribute(PROTECTED, JSON_PRINTER, "printer"))
-        .addCDAttribute(getCDAttributeFacade().createAttribute(PROTECTED, getMCTypeFacade().createBooleanType(), "isSpannedScope"))
         .addCDAttribute(createRealThisAttribute(symbolTablePrinterName))
         .addAllCDConstructors(createConstructors(symbolTablePrinterName))
         .addCDMethod(createGetJsonPrinterMethod())
@@ -285,8 +284,9 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
                 TEMPLATE_PATH + "PrintSimpleAttribute", attr.getName(), attr.getName()));
       }
     } else {
+      String generatedError = symbolTableService.getGeneratedErrorCode(methodName);
       this.replaceTemplate(EMPTY_BODY, serializeAttrMethod, new TemplateHookPoint(
-              TEMPLATE_PATH + "PrintComplexAttribute", attribute, methodName, operation, returnValue));
+              TEMPLATE_PATH + "PrintComplexAttribute", attribute, methodName, operation, returnValue, generatedError));
     }
     return serializeAttrMethod;
   }

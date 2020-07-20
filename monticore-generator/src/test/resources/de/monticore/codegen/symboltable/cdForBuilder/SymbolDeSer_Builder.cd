@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.codegen.symboltable.cdForBuilder;
+
+classdiagram SymbolDeSer_Builder {
+
+    class ASymbolDeSer {
+        protected de.monticore.codegen.builder.builder._symboltable.ASymbolTablePrinter symbolTablePrinter;
+    }
+}

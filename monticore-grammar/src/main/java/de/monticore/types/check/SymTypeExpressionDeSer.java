@@ -62,11 +62,7 @@ public class SymTypeExpressionDeSer {
 
   public static void serializeMember(JsonPrinter printer, String memberName,
       List<SymTypeExpression> member) {
-    if (!member.isEmpty()) {
-      printer.beginArray(memberName);
-      member.forEach(e -> printer.valueJson(e.printAsJson()));
-      printer.endArray();
-    }
+    printer.array(memberName, member, SymTypeExpression::printAsJson);
   }
 
   public static SymTypeExpression deserializeMember(String memberName, JsonObject json,
@@ -86,6 +82,32 @@ public class SymTypeExpressionDeSer {
 
   public static List<SymTypeExpression> deserializeListMember(String memberName, JsonObject json,
       IBasicTypeSymbolsScope enclosingScope) {
+    List<SymTypeExpression> result = new ArrayList<>();
+    if (json.hasMember(memberName)) {
+      for (JsonElement e : json.getArrayMember(memberName)) {
+        result.add(getInstance().deserialize(e, enclosingScope));
+      }
+    }
+    return result;
+  }
+
+  public static SymTypeExpression deserializeMember(String memberName, JsonObject json,
+      ITypeSymbolsScope enclosingScope) {
+    return getInstance().deserialize(json.getMember(memberName), enclosingScope);
+  }
+
+  public static Optional<SymTypeExpression> deserializeOptionalMember(String memberName,
+      JsonObject json, ITypeSymbolsScope enclosingScope) {
+    if (json.hasMember(memberName)) {
+      return Optional.of(getInstance().deserialize(json.getMember(memberName), enclosingScope));
+    }
+    else {
+      return Optional.empty();
+    }
+  }
+
+  public static List<SymTypeExpression> deserializeListMember(String memberName, JsonObject json,
+      ITypeSymbolsScope enclosingScope) {
     List<SymTypeExpression> result = new ArrayList<>();
     if (json.hasMember(memberName)) {
       for (JsonElement e : json.getArrayMember(memberName)) {

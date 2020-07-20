@@ -48,7 +48,7 @@ public class TransitionSourceExistsTest {
        "automaton Simple { state A;  state B;  A - x > A;  A - y > A; }"
     ).get();
     assertEquals("Simple", ast.getName());
-    List<ASTState> st = ast.getStateList();
+    List<ASTState> st = ast.getStatesList();
     assertEquals(2, st.size());
   }
 

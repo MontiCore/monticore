@@ -48,8 +48,10 @@ public OOTypeSymbolBuilder()  {
     symbol.setAccessModifier(this.accessModifier);
     symbol.setFullName(this.fullName);
     symbol.setPackageName(this.packageName);
-    symbol.setSuperTypeList(this.superTypes);
-    symbol.setSpannedScope(this.spannedScope);
+    symbol.setSuperTypesList(this.superTypes);
+    if(spannedScope!=null) {
+      symbol.setSpannedScope(this.spannedScope);
+    }
 
     return symbol;
 
