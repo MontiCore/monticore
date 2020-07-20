@@ -4,16 +4,19 @@
 
 package de.monticore.symbols.oosymbols._symboltable;
 
-public  class OOTypeSymbolBuilder extends OOTypeSymbolBuilderTOP {
+@Deprecated
+public class OOTypeSymbolBuilder extends OOTypeSymbolBuilderTOP {
 
-public OOTypeSymbolBuilder()  {
-   this.realBuilder = (OOTypeSymbolBuilder) this;
-}
+  public OOTypeSymbolBuilder() {
+    this.realBuilder = (OOTypeSymbolBuilder) this;
+  }
 
-@Override
-  public OOTypeSymbol build ()  {
+  @Override
+  public OOTypeSymbol build() {
     OOTypeSymbol symbol = super.build();
-    symbol.setSpannedScope(this.spannedScope);
+    if (spannedScope != null) {
+      symbol.setSpannedScope(this.spannedScope);
+    }
     return symbol;
   }
 
