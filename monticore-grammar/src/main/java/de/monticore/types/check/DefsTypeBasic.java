@@ -1,12 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
-import de.monticore.symbols.oosymbols._symboltable.*;
-import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
+import de.monticore.symbols.oosymbols._symboltable.*;
+import de.monticore.symboltable.modifiers.AccessModifier;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,9 +68,6 @@ public class DefsTypeBasic {
             .setName(name)
             .setFullName(fullName)
             .setAccessModifier(AccessModifier.ALL_INCLUSION)
-            .setTypeParameterList(new ArrayList<>())
-            .setFieldList(new ArrayList<>())
-            .setMethodList(new ArrayList<>())
             .build();
   }
 
@@ -86,26 +82,28 @@ public class DefsTypeBasic {
 
   public static OOTypeSymbol type(String name, List<SymTypeExpression> superTypes, List<TypeVarSymbol> typeArguments){
     OOSymbolsScope spannedScope = OOSymbolsMill.oOSymbolsScopeBuilder().build();
-    return OOSymbolsMill.oOTypeSymbolBuilder()
+    OOTypeSymbol ts = OOSymbolsMill.oOTypeSymbolBuilder()
             .setSpannedScope(spannedScope)
             .setName(name)
             .setFullName(name)
             .setSuperTypeList(superTypes)
-            .setTypeParameterList(typeArguments)
             .build();
+    typeArguments.forEach(a -> ts.addTypeVarSymbol(a));
+    return ts;
   }
 
   public static OOTypeSymbol type(String name, List<MethodSymbol> methodList, List<FieldSymbol> fieldList,
                                   List<SymTypeExpression> superTypeList, List<TypeVarSymbol> typeVariableList){
-    return OOSymbolsMill.oOTypeSymbolBuilder()
+    OOTypeSymbol ts = OOSymbolsMill.oOTypeSymbolBuilder()
           .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
           .setName(name)
           .setFullName(name)
-          .setTypeParameterList(typeVariableList)
           .setSuperTypeList(superTypeList)
-          .setMethodList(methodList)
-          .setFieldList(fieldList)
           .build();
+    methodList.forEach(m -> ts.addMethodSymbol(m));
+    fieldList.forEach(f -> ts.addFieldSymbol(f));
+    typeVariableList.forEach(a -> ts.addTypeVarSymbol(a));
+    return ts;
   }
 
   public static OOTypeSymbol type(String name, List<MethodSymbol> methodList, List<FieldSymbol> fieldList,
@@ -116,11 +114,11 @@ public class DefsTypeBasic {
         .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
         .setName(name)
         .setFullName(name)
-        .setTypeParameterList(typeVariableList)
         .setSuperTypeList(superTypeList)
-        .setMethodList(methodList)
-        .setFieldList(fieldList)
         .build();
+    methodList.forEach(m -> t.addMethodSymbol(m));
+    fieldList.forEach(f -> t.addFieldSymbol(f));
+    typeVariableList.forEach(a -> t.addTypeVarSymbol(a));
 
     t.getSpannedScope().setEnclosingScope(enclosingScope);
 

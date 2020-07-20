@@ -70,8 +70,4 @@ public class MethodSymbol extends MethodSymbolTOP {
         .collect(Collectors.toList());
   }
 
-  @Override
-  public void setEnclosingScope(IOOSymbolsScope enclosingScope) {
-    this.enclosingScope = enclosingScope;
-  }
 }

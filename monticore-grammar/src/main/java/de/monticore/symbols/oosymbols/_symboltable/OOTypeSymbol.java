@@ -8,7 +8,6 @@ import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,16 +17,7 @@ public class OOTypeSymbol extends OOTypeSymbolTOP {
     super(name);
   }
 
-  @Override
-  public void setSpannedScope(IOOSymbolsScope spannedScope) {
-    super.setSpannedScope(spannedScope);
-    this.spannedScope = spannedScope;
-  }
-
-  protected List<MethodSymbol> methodList=new ArrayList<>();
-
   public void setMethodList(List<MethodSymbol> methodList){
-    this.methodList = methodList;
     for(MethodSymbol method: methodList){
       getSpannedScope().add(method);
     }

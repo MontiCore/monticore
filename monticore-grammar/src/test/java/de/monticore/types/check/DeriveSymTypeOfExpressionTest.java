@@ -77,18 +77,18 @@ public class DeriveSymTypeOfExpressionTest {
     TypeVarSymbol genArgs = typeVariable("GenArg");
     OOTypeSymbol genSuperType = OOSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
-        .setTypeParameterList(Lists.newArrayList(genArgs))
         .setEnclosingScope(scope)
         .setName("GenSuper")
         .build();
+    genSuperType.addTypeVarSymbol(genArgs);
     SymTypeExpression genArg = SymTypeExpressionFactory.createTypeVariable("GenArg",scope);
     SymTypeExpression genSuper = SymTypeExpressionFactory.createGenerics("GenSuper",scope,genArg);
     OOTypeSymbol genSubType = OOSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
         .setName("GenSub").setSuperTypeList(Lists.newArrayList(genSuper))
-        .setTypeParameterList(Lists.newArrayList(genArgs))
         .setEnclosingScope(scope)
         .build();
+    genSubType.addTypeVarSymbol(genArgs);
     SymTypeExpression genSub = SymTypeExpressionFactory.createGenerics("GenSub",scope,genArg);
     FieldSymbol genSubField = field("genericSub",genSub);
     FieldSymbol genSuperField = field("genericSuper",genSuper);

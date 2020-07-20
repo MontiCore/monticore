@@ -376,12 +376,10 @@ public class BuiltInJavaSymbolResolvingDelegate implements IOOTypeSymbolResolvin
         .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
         .setName(name)
         .setFullName(name)
-        .setTypeParameterList(typeVariableList)
-        .setSuperTypeList(superTypeList)
-        .setMethodList(methodList)
-        .setFieldList(fieldList)
-        .build();
-
+        .setSuperTypeList(superTypeList).build();
+    typeVariableList.forEach(v -> t.addTypeVarSymbol(v));
+    methodList.forEach(m -> t.addMethodSymbol(m));
+    fieldList.forEach((f -> t.addFieldSymbol(f)));
     t.getSpannedScope().setEnclosingScope(enclosingScope);
 
     for(MethodSymbol method: t.getMethodList()){

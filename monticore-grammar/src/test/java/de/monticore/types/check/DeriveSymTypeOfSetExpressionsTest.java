@@ -114,9 +114,9 @@ public class DeriveSymTypeOfSetExpressionsTest {
     OOTypeSymbol setDoubleType = OOSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
         .setName("Set")
-        .setTypeParameterList(Lists.newArrayList(typeVariable("T")))
         .setEnclosingScope(scope)
         .build();
+    setDoubleType.addTypeVarSymbol(typeVariable("T"));
     add2scope(scope,setDoubleType);
     SymTypeExpression setDouble = SymTypeExpressionFactory.createGenerics(loader,_doubleSymType);
     setDouble.typeSymbolSurrogate = loader;
@@ -146,9 +146,9 @@ public class DeriveSymTypeOfSetExpressionsTest {
     OOTypeSymbol setIntType = OOSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
         .setName("Set")
-        .setTypeParameterList(Lists.newArrayList(typeVariable("T")))
         .setEnclosingScope(scope)
         .build();
+    setIntType.addTypeVarSymbol(typeVariable("T"));
     add2scope(scope,setIntType);
     SymTypeExpression setInt = SymTypeExpressionFactory.createGenerics(loader,_intSymType);
     setInt.typeSymbolSurrogate = loader;
@@ -177,9 +177,9 @@ public class DeriveSymTypeOfSetExpressionsTest {
     OOTypeSymbol setDoubleType = OOSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
         .setName("Set")
-        .setTypeParameterList(Lists.newArrayList(typeVariable("T")))
         .setEnclosingScope(scope)
         .build();
+    setDoubleType.addTypeVarSymbol(typeVariable("T"));
     add2scope(scope,setDoubleType);
     SymTypeExpression setDouble = SymTypeExpressionFactory.createGenerics(loader,_doubleSymType);
     setDouble.typeSymbolSurrogate = loader;
@@ -209,9 +209,9 @@ public class DeriveSymTypeOfSetExpressionsTest {
     OOTypeSymbol setIntType = OOSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
         .setName("Set")
-        .setTypeParameterList(Lists.newArrayList(typeVariable("T")))
         .setEnclosingScope(scope)
         .build();
+    setIntType.addTypeVarSymbol(typeVariable("T"));
     add2scope(scope,setIntType);
     SymTypeExpression setInt = SymTypeExpressionFactory.createGenerics(loader,_intSymType);
     setInt.typeSymbolSurrogate = loader;
@@ -240,9 +240,9 @@ public class DeriveSymTypeOfSetExpressionsTest {
     OOTypeSymbol setinttype = OOSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
         .setName("Set")
-        .setTypeParameterList(Lists.newArrayList(typeVariable("T")))
         .setEnclosingScope(scope)
         .build();
+    setinttype.addTypeVarSymbol(typeVariable("T"));
     add2scope(scope,setinttype);
     SymTypeExpression setint = SymTypeExpressionFactory.createGenerics(loader,_intSymType);
     setint.typeSymbolSurrogate = loader;
@@ -276,9 +276,9 @@ public class DeriveSymTypeOfSetExpressionsTest {
     OOTypeSymbol setIntType = OOSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
         .setName("Set")
-        .setTypeParameterList(Lists.newArrayList(typeVariable("T")))
         .setEnclosingScope(scope)
         .build();    add2scope(scope,setIntType);
+    setIntType.addTypeVarSymbol(typeVariable("T"));
     SymTypeExpression setInt = SymTypeExpressionFactory.createGenerics(loader,_intSymType);
     setInt.typeSymbolSurrogate = loader;
     FieldSymbol number = field("number",_doubleSymType);
@@ -306,9 +306,9 @@ public class DeriveSymTypeOfSetExpressionsTest {
     OOTypeSymbol setIntType = OOSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
         .setName("Set")
-        .setTypeParameterList(Lists.newArrayList(typeVariable("T")))
         .setEnclosingScope(scope)
         .build();
+    setIntType.addTypeVarSymbol(typeVariable("T"));
     add2scope(scope,setIntType);
     SymTypeExpression setInt = SymTypeExpressionFactory.createGenerics(loader,_intSymType);
     setInt.typeSymbolSurrogate = loader;
@@ -340,9 +340,9 @@ public class DeriveSymTypeOfSetExpressionsTest {
     OOTypeSymbol setinttype = OOSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
         .setName("Set")
-        .setTypeParameterList(Lists.newArrayList(typeVariable("T")))
         .setEnclosingScope(scope)
         .build();
+    setinttype.addTypeVarSymbol(typeVariable("T"));
     add2scope(scope,setinttype);
     SymTypeExpression setint = SymTypeExpressionFactory.createGenerics(loader,_intSymType);
     setint.typeSymbolSurrogate = loader;
@@ -376,9 +376,9 @@ public class DeriveSymTypeOfSetExpressionsTest {
     OOTypeSymbol setIntType = OOSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
         .setName("Set")
-        .setTypeParameterList(Lists.newArrayList(typeVariable("T")))
         .setEnclosingScope(scope)
         .build();
+    setIntType.addTypeVarSymbol(typeVariable("T"));
     add2scope(scope,setIntType);
     SymTypeExpression setInt = SymTypeExpressionFactory.createGenerics(loader,_intSymType);
     setInt.typeSymbolSurrogate = loader;
@@ -407,9 +407,9 @@ public class DeriveSymTypeOfSetExpressionsTest {
     OOTypeSymbol setIntType = OOSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
         .setName("Set")
-        .setTypeParameterList(Lists.newArrayList(typeVariable("T")))
         .setEnclosingScope(scope)
         .build();
+    setIntType.addTypeVarSymbol(typeVariable("T"));
     add2scope(scope,setIntType);
     SymTypeExpression setInt = SymTypeExpressionFactory.createGenerics(loader,_intSymType);
     setInt.typeSymbolSurrogate = loader;
