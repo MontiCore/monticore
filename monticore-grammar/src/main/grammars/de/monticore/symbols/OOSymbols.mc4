@@ -48,6 +48,7 @@ component grammar OOSymbols extends de.monticore.symbols.BasicSymbols {
     isProtected: boolean
     isPublic: boolean
     isStatic: boolean
+    isFinal: boolean
   ;
 
   /*=================================================================*/
@@ -84,7 +85,8 @@ component grammar OOSymbols extends de.monticore.symbols.BasicSymbols {
     isPrivate: boolean
     isProtected: boolean
     isPublic: boolean
-    isStatic:boolean
+    isStatic: boolean
+    isFinal: boolean
     isElliptic: boolean
   ;
 
