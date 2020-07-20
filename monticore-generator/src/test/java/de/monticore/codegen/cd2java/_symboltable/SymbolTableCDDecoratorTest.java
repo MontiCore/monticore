@@ -11,9 +11,7 @@ import de.monticore.codegen.cd2java._parser.ParserService;
 import de.monticore.codegen.cd2java._symboltable.modelloader.ModelLoaderBuilderDecorator;
 import de.monticore.codegen.cd2java._symboltable.modelloader.ModelLoaderDecorator;
 import de.monticore.codegen.cd2java._symboltable.scope.*;
-import de.monticore.codegen.cd2java._symboltable.serialization.ScopeDeSerDecorator;
-import de.monticore.codegen.cd2java._symboltable.serialization.SymbolDeSerDecorator;
-import de.monticore.codegen.cd2java._symboltable.serialization.SymbolTablePrinterDecorator;
+import de.monticore.codegen.cd2java._symboltable.serialization.*;
 import de.monticore.codegen.cd2java._symboltable.symbol.*;
 import de.monticore.codegen.cd2java._symboltable.symbol.symbolsurrogatemutator.MandatoryMutatorSymbolSurrogateDecorator;
 import de.monticore.codegen.cd2java._symboltable.symboltablecreator.*;
@@ -108,8 +106,11 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
     SymbolTableCreatorDelegatorBuilderDecorator symbolTableCreatorDelegatorBuilderDecorator = new SymbolTableCreatorDelegatorBuilderDecorator(glex, builderDecorator);
     SymbolTableCreatorForSuperTypesBuilder symbolTableCreatorForSuperTypesBuilder = new SymbolTableCreatorForSuperTypesBuilder(glex, builderDecorator, symbolTableService);
     SymbolDeSerDecorator symbolDeSerDecorator = new SymbolDeSerDecorator(glex, symbolTableService);
+    SymbolDeSerBuilderDecorator symbolDeSerBuilderDecorator = new SymbolDeSerBuilderDecorator(glex, builderDecorator);
     ScopeDeSerDecorator scopeDeSerDecorator = new ScopeDeSerDecorator(glex, symbolTableService, methodDecorator, visitorService);
+    ScopeDeSerBuilderDecorator scopeDeSerBuilderDecorator = new ScopeDeSerBuilderDecorator(glex, builderDecorator);
     SymbolTablePrinterDecorator symbolTablePrinterDecorator = new SymbolTablePrinterDecorator(glex, symbolTableService, visitorService);
+    SymbolTablePrinterBuilderDecorator symbolTablePrinterBuilderDecorator = new SymbolTablePrinterBuilderDecorator(glex, builderDecorator);
 
     SymbolTableCDDecorator symbolTableCDDecorator = new SymbolTableCDDecorator(glex, targetPath, symbolTableService, symbolDecorator,
         symbolBuilderDecorator, symbolReferenceDecorator, symbolReferenceBuilderDecorator,
@@ -119,7 +120,8 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
         commonSymbolInterfaceDecorator, modelLoaderDecorator, modelLoaderBuilderDecorator,
         symbolResolvingDelegateInterfaceDecorator, symbolTableCreatorDecorator, symbolTableCreatorBuilderDecorator,
         symbolTableCreatorDelegatorDecorator, symbolTableCreatorForSuperTypes, symbolTableCreatorDelegatorBuilderDecorator,
-        symbolTableCreatorForSuperTypesBuilder, symbolDeSerDecorator, scopeDeSerDecorator, symbolTablePrinterDecorator);
+        symbolTableCreatorForSuperTypesBuilder, symbolDeSerDecorator, scopeDeSerDecorator, symbolTablePrinterDecorator, scopeDeSerBuilderDecorator,
+        symbolDeSerBuilderDecorator, symbolTablePrinterBuilderDecorator);
 
     // cd with no handcoded classes
     this.symTabCD = symbolTableCDDecorator.decorate(decoratedASTCompilationUnit, decoratedSymbolCompilationUnit, decoratedScopeCompilationUnit);
@@ -138,7 +140,8 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
         symbolResolvingDelegateInterfaceDecorator, symbolTableCreatorDecorator, symbolTableCreatorBuilderDecorator,
         symbolTableCreatorDelegatorDecorator, symbolTableCreatorForSuperTypes, symbolTableCreatorDelegatorBuilderDecorator,
         symbolTableCreatorForSuperTypesBuilder,
-        symbolDeSerDecorator, scopeDeSerDecorator, symbolTablePrinterDecorator);
+        symbolDeSerDecorator, scopeDeSerDecorator, symbolTablePrinterDecorator, scopeDeSerBuilderDecorator, symbolDeSerBuilderDecorator,
+        symbolTablePrinterBuilderDecorator);
     Mockito.doReturn(false).when(mockService).hasStartProd(Mockito.any(ASTCDDefinition.class));
     Mockito.doReturn(true).when(mockService).hasComponentStereotype(Mockito.any(ASTModifier.class));
     this.symTabCDComponent = mockDecorator.decorate(decoratedASTCompilationUnit, decoratedSymbolCompilationUnit, decoratedScopeCompilationUnit);
@@ -158,7 +161,7 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testClassCount() {
-    assertEquals(29, symTabCD.getCDDefinition().getCDClassList().size());
+    assertEquals(34, symTabCD.getCDDefinition().getCDClassList().size());
   }
 
   @Test
@@ -187,6 +190,16 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
     ASTCDClass automatonSymbolTableCreatorBuilder = getClassBy("AutomatonSymbolTableCreatorBuilder", symTabCD);
     ASTCDClass automatonSymbolTableCreatorDelegator = getClassBy("AutomatonSymbolTableCreatorDelegator", symTabCD);
     ASTCDClass automatonSymbolTableCreatorDelegatorBuilder = getClassBy("AutomatonSymbolTableCreatorDelegatorBuilder", symTabCD);
+    ASTCDClass automatonScopeDeSer = getClassBy("AutomatonScopeDeSer", symTabCD);
+    ASTCDClass automatonSymbolDeSer = getClassBy("AutomatonSymbolDeSer", symTabCD);
+    ASTCDClass stateSymbolDeSer = getClassBy("StateSymbolDeSer", symTabCD);
+    ASTCDClass fooSymbolDeSer = getClassBy("FooSymbolDeSer", symTabCD);
+    ASTCDClass automatonSymbolTablePrinter = getClassBy("AutomatonSymbolTablePrinter", symTabCD);
+    ASTCDClass automatonScopeDeSerBuilder = getClassBy("AutomatonScopeDeSerBuilder", symTabCD);
+    ASTCDClass automatonSymbolDeSerBuilder = getClassBy("AutomatonSymbolDeSerBuilder", symTabCD);
+    ASTCDClass stateSymbolDeSerBuilder = getClassBy("StateSymbolDeSerBuilder", symTabCD);
+    ASTCDClass fooSymbolDeSerBuilder = getClassBy("FooSymbolDeSerBuilder", symTabCD);
+    ASTCDClass automatonSymbolTablePrinterBuilder = getClassBy("AutomatonSymbolTablePrinterBuilder", symTabCD);
   }
 
   @Test
@@ -234,7 +247,7 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testClassCountWithHC() {
-    assertEquals(29, symTabCDWithHC.getCDDefinition().getCDClassList().size());
+    assertEquals(34, symTabCDWithHC.getCDDefinition().getCDClassList().size());
   }
 
   @Test
@@ -292,7 +305,7 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testClassCountComponent() {
-    assertEquals(18, symTabCDComponent.getCDDefinition().getCDClassList().size());
+    assertEquals(22, symTabCDComponent.getCDDefinition().getCDClassList().size());
   }
 
   @Test
