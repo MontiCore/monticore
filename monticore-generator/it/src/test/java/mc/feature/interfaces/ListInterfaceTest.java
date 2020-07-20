@@ -20,9 +20,9 @@ public class ListInterfaceTest {
     Optional<ASTTokenPlus> ast = parser.parse_StringTokenPlus("+ Name, name");
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
-    assertEquals(2,ast.get().getNameList().size());
+    assertEquals(2,ast.get().getNamesList().size());
     assertFalse(ast.get().isEmptyNames());
-    assertEquals(0,ast.get().indexOfName("Name"));
+    assertEquals(0,ast.get().indexOfNames("Name"));
   }
 
   @Test
@@ -31,9 +31,9 @@ public class ListInterfaceTest {
     Optional<ASTTokenStar> ast = parser.parse_StringTokenStar("something * Name name");
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
-    assertEquals(2,ast.get().getNameList().size());
+    assertEquals(2,ast.get().getNamesList().size());
     assertFalse(ast.get().isEmptyNames());
-    assertEquals(0,ast.get().indexOfName("Name"));
+    assertEquals(0,ast.get().indexOfNames("Name"));
   }
 
   @Test

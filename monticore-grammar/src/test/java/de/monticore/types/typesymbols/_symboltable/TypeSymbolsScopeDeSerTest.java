@@ -23,7 +23,7 @@ public class TypeSymbolsScopeDeSerTest {
     LogStub.init();
     Log.enableFailQuick(false);
     //initialize scope, add some TypeSymbols, TypeVarSymbols, VariableSymbols and FunctionSymbols
-    scope = TypeSymbolsMill.typeSymbolsArtifactScopeBuilder().setPackageName("").setImportList(Lists.newArrayList()).build();
+    scope = TypeSymbolsMill.typeSymbolsArtifactScopeBuilder().setPackageName("").setImportsList(Lists.newArrayList()).build();
     scope.setName("Test");
 
     TypeSymbolsScope typeSpannedScope = TypeSymbolsMill.typeSymbolsScopeBuilder().build();
@@ -44,7 +44,7 @@ public class TypeSymbolsScopeDeSerTest {
         .setName("SubType")
         .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
         .setEnclosingScope(scope)
-        .setSuperTypeList(Lists.newArrayList(symType1))
+        .setSuperTypesList(Lists.newArrayList(symType1))
         .build();
 
     subtype.setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build());
@@ -99,10 +99,10 @@ public class TypeSymbolsScopeDeSerTest {
     Optional<OOTypeSymbol> deserializedSubType = deserialized.resolveOOType("SubType");
     assertTrue(subtype.isPresent());
     assertTrue(deserializedSubType.isPresent());
-    assertEquals(1, subtype.get().getSuperTypeList().size());
-    assertEquals(1, deserializedSubType.get().getSuperTypeList().size());
-    assertEquals("Type", subtype.get().getSuperTypeList().get(0).print());
-    assertEquals("Type", deserializedSubType.get().getSuperTypeList().get(0).print());
+    assertEquals(1, subtype.get().getSuperTypesList().size());
+    assertEquals(1, deserializedSubType.get().getSuperTypesList().size());
+    assertEquals("Type", subtype.get().getSuperTypesList().get(0).print());
+    assertEquals("Type", deserializedSubType.get().getSuperTypesList().get(0).print());
 
     ITypeSymbolsScope typeSpanned = type.get().getSpannedScope();
     ITypeSymbolsScope deserializedTypeSpanned = deserializedType.get().getSpannedScope();

@@ -378,7 +378,7 @@ public class BuiltInJavaTypeSymbolResolvingDelegate implements IOOTypeSymbolReso
         .setName(name)
         .setFullName(name)
         .setTypeParameterList(typeVariableList)
-        .setSuperTypeList(superTypeList)
+        .setSuperTypesList(superTypeList)
         .setMethodList(methodList)
         .setFieldList(fieldList)
         .build();

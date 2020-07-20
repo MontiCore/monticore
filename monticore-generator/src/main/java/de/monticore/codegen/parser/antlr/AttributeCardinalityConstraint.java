@@ -107,7 +107,7 @@ public class AttributeCardinalityConstraint {
   public String addActionForNonTerminal(ASTNonTerminal ast) {
     StringBuilder ret = new StringBuilder();
     
-    String usageName = HelperGrammar.getUsuageName(ast);
+    String usageName = HelperGrammar.getUsageName(ast);
     
     Optional<ProdSymbol> rule = MCGrammarSymbolTableHelper.getEnclosingRule(ast);
     if (!rule.isPresent()) {

@@ -25,7 +25,7 @@ public class BasicTypeSymbolsScopeDeSerTest {
     LogStub.init();
     Log.enableFailQuick(false);
     //initialize scope, add some TypeSymbols, TypeVarSymbols, VariableSymbols and FunctionSymbols
-    scope = BasicTypeSymbolsMill.basicTypeSymbolsArtifactScopeBuilder().setPackageName("").setImportList(Lists.newArrayList()).build();
+    scope = BasicTypeSymbolsMill.basicTypeSymbolsArtifactScopeBuilder().setPackageName("").setImportsList(Lists.newArrayList()).build();
     scope.setName("Test");
 
     BasicTypeSymbolsScope typeSpannedScope = BasicTypeSymbolsMill.basicTypeSymbolsScopeBuilder().build();
@@ -47,7 +47,7 @@ public class BasicTypeSymbolsScopeDeSerTest {
         .setName("SubType")
         .setSpannedScope(BasicTypeSymbolsMill.basicTypeSymbolsScopeBuilder().build())
         .setEnclosingScope(scope)
-        .setSuperTypeList(Lists.newArrayList(symType1))
+        .setSuperTypesList(Lists.newArrayList(symType1))
         .build();
 
     subtype.setSpannedScope(BasicTypeSymbolsMill.basicTypeSymbolsScopeBuilder().build());
@@ -114,10 +114,10 @@ public class BasicTypeSymbolsScopeDeSerTest {
     Optional<TypeSymbol> deserializedSubType = deserialized.resolveType("SubType");
     assertTrue(subtype.isPresent());
     assertTrue(deserializedSubType.isPresent());
-    assertEquals(1, subtype.get().getSuperTypeList().size());
-    assertEquals(1, deserializedSubType.get().getSuperTypeList().size());
-    assertEquals("Type", subtype.get().getSuperTypeList().get(0).print());
-    assertEquals("Type", deserializedSubType.get().getSuperTypeList().get(0).print());
+    assertEquals(1, subtype.get().getSuperTypesList().size());
+    assertEquals(1, deserializedSubType.get().getSuperTypesList().size());
+    assertEquals("Type", subtype.get().getSuperTypesList().get(0).print());
+    assertEquals("Type", deserializedSubType.get().getSuperTypesList().get(0).print());
 
     IBasicTypeSymbolsScope typeSpanned = type.get().getSpannedScope();
     IBasicTypeSymbolsScope deserTypeSpanned = deserializedType.get().getSpannedScope();

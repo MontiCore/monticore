@@ -37,7 +37,7 @@ public class MCBasicTypesPrettyPrinter implements MCBasicTypesVisitor {
    */
   @Override
   public void handle(ASTMCQualifiedName a) {
-    getPrinter().print(Names.getQualifiedName(a.getPartList()));
+    getPrinter().print(Names.getQualifiedName(a.getPartsList()));
   }
 
 

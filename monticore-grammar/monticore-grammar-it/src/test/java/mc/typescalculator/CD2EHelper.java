@@ -53,7 +53,7 @@ public class CD2EHelper {
       if (cdTypeSymbol.isPresentSuperClass()) {
         superClass = Optional.of(createSymTypeExpressionFormCDTypeSymbolReference(cdTypeSymbol.getSuperClass()));
       }
-      List<SymTypeExpression> superInterfaces = cdTypeSymbol.getCdInterfaceList().stream()
+      List<SymTypeExpression> superInterfaces = cdTypeSymbol.getCdInterfacesList().stream()
           .map(this::createSymTypeExpressionFormCDTypeSymbolReference)
           .collect(Collectors.toList());
 
@@ -78,7 +78,7 @@ public class CD2EHelper {
         typeSymbol.getSpannedScope().add(method);
       }
       methodSymbols.forEach(f -> typeSymbol.getSpannedScope().add(f));
-      superClass.ifPresent(typeSymbol::addSuperType);
+      superClass.ifPresent(typeSymbol::addSuperTypes);
       return typeSymbol;
     }
 
