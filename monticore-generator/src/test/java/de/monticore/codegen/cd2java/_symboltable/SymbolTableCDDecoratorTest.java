@@ -60,8 +60,9 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
   public void setUp() {
     // LogStub.init() prevents a lot of warnings like 0xA1042 Scope "equals" has already an enclosing scope
     // to be issued (the warnings are not checked)
-    LogStub.init();         // replace log by a sideffect free variant
-    // LogStub.initPlusLog();  // for manual testing purpose only
+//    LogStub.init();         // replace log by a sideffect free variant
+//     LogStub.initPlusLog();  // for manual testing purpose only
+    Log.enableFailQuick(false);
     this.glex = new GlobalExtensionManagement();
     IterablePath targetPath = Mockito.mock(IterablePath.class);
 
@@ -161,7 +162,7 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testClassCount() {
-    assertEquals(34, symTabCD.getCDDefinition().getCDClassList().size());
+    assertEquals(40, symTabCD.getCDDefinition().getCDClassList().size());
   }
 
   @Test
@@ -247,7 +248,7 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testClassCountWithHC() {
-    assertEquals(34, symTabCDWithHC.getCDDefinition().getCDClassList().size());
+    assertEquals(40, symTabCDWithHC.getCDDefinition().getCDClassList().size());
   }
 
   @Test
@@ -305,7 +306,7 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testClassCountComponent() {
-    assertEquals(22, symTabCDComponent.getCDDefinition().getCDClassList().size());
+    assertEquals(28, symTabCDComponent.getCDDefinition().getCDClassList().size());
   }
 
   @Test

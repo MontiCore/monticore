@@ -4,6 +4,7 @@ package de.monticore.symboltable.serialization.json;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Consumer;
 
 import de.monticore.symboltable.serialization.JsonPrinter;
 
@@ -32,6 +33,10 @@ public class JsonArray implements JsonElement {
   @Override
   public JsonArray getAsJsonArray() {
     return this;
+  }
+
+  public void forEach(Consumer<? super JsonElement> action){
+    values.forEach(action);
   }
 
   /**

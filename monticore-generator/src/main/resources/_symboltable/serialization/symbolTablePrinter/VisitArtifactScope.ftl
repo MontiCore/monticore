@@ -1,10 +1,7 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("artifactScopeFullName", "languageName", "attrList" )}
 <#assign genHelper = glex.getGlobalVar("astHelper")>
-  if(!printer.isInObject()){
-    printer.beginObject();
-  }
-  printer.member(de.monticore.symboltable.serialization.JsonDeSers.KIND, "${artifactScopeFullName}");
+  printer.beginObject();
   if(node.isPresentName()) {
     printer.member(de.monticore.symboltable.serialization.JsonDeSers.NAME, node.getName());
   }
@@ -21,3 +18,4 @@ ${tc.signature("artifactScopeFullName", "languageName", "attrList" )}
   </#if>
 </#list>
   serializeAdditionalArtifactScopeAttributes(node);
+  printer.beginArray(de.monticore.symboltable.serialization.JsonDeSers.SYMBOLS);

@@ -32,10 +32,10 @@ public class JsonDeSers {
 
   public static final String KIND = "kind";
 
-  public static final String SPANNED_SCOPE = "spannedScope";
 
-  @Deprecated
-  public static final String SCOPE_SPANNING_SYMBOL = "spanningSymbol";
+  public static final String SYMBOLS = "symbols";
+
+  public static final String SPANNED_SCOPE = "spannedScope";
 
   /**
    * This method deserializes a list of import statements in the passed Json object
@@ -55,23 +55,6 @@ public class JsonDeSers {
       }
     }
     return result;
-  }
-
-  /**
-   * Serializes a scope spanning symbol in a form as used for the attribute "spanning symbol".
-   *
-   * @param spanningSymbol
-   * @return
-   */
-  @Deprecated
-  public static void serializeScopeSpanningSymbol(IScopeSpanningSymbol spanningSymbol,
-      JsonPrinter printer) {
-    if (null != spanningSymbol) {
-      printer.beginObject(SCOPE_SPANNING_SYMBOL);
-      printer.member(KIND, spanningSymbol.getClass().getName());
-      printer.member(NAME, spanningSymbol.getName());
-      printer.endObject();
-    }
   }
 
   /**

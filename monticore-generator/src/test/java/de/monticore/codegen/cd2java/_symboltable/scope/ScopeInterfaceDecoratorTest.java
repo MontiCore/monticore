@@ -104,7 +104,7 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(137, scopeInterface.getCDMethodList().size());
+    assertEquals(165, scopeInterface.getCDMethodList().size());
   }
 
   @Test
@@ -538,7 +538,7 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
   public void testAddMethod() {
     List<ASTCDMethod> method = getMethodsBy("add", 1, scopeInterface);
 
-    assertEquals(3, method.size());
+    assertEquals(4, method.size());
 
     ASTCDMethod automatonMethod = method.get(0);
     assertDeepEquals(PUBLIC_ABSTRACT, automatonMethod.getModifier());
@@ -552,7 +552,7 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
   public void testRemoveMethod() {
     List<ASTCDMethod> method = getMethodsBy("remove", 1, scopeInterface);
 
-    assertEquals(3, method.size());
+    assertEquals(4, method.size());
 
     ASTCDMethod automatonMethod = method.get(0);
     assertDeepEquals(PUBLIC_ABSTRACT, automatonMethod.getModifier());

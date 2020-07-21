@@ -7,7 +7,13 @@ package de.monticore.symboltable.serialization.json;
  * classes instead of the default ones.
  */
 public class JsonElementFactory {
-  
+
+  protected static final JsonNull NULL = new JsonNull();
+
+  protected static final JsonBoolean TRUE = new JsonBoolean(true);
+
+  protected static final JsonBoolean FALSE = new JsonBoolean(false);
+
   public JsonElementFactory() {
   }
   
@@ -22,11 +28,11 @@ public class JsonElementFactory {
   }
   
   protected JsonBoolean doCreateJsonBoolean(boolean value) {
-    return new JsonBoolean(value);
+    return value?TRUE:FALSE;
   }
   
   protected JsonNull doCreateJsonNull() {
-    return new JsonNull();
+    return NULL;
   }
   
   protected JsonNumber doCreateJsonNumber(String value) {

@@ -44,6 +44,8 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
 
   protected static final String PRINTER_END_OBJECT = "printer.endObject();";
 
+  protected static final String PRINTER_END_ARRAY = "printer.endArray();";
+
   public SymbolTablePrinterDecorator(final GlobalExtensionManagement glex,
                                      final SymbolTableService symbolTableService,
                                      final VisitorService visitorService) {
@@ -163,7 +165,7 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
       visitorMethods.add(traverseMethod);
 
       ASTCDMethod endVisitMethod = visitorService.getVisitorMethod(END_VISIT, getMCTypeFacade().createQualifiedType(scopeClassName));
-      this.replaceTemplate(EMPTY_BODY, endVisitMethod, new StringHookPoint(PRINTER_END_OBJECT));
+      this.replaceTemplate(EMPTY_BODY, endVisitMethod, new StringHookPoint(PRINTER_END_ARRAY+"\n"+PRINTER_END_OBJECT));
       visitorMethods.add(endVisitMethod);
     }
     return visitorMethods;
@@ -184,7 +186,7 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
 
       ASTCDMethod endVisitMethod = visitorService
           .getVisitorMethod(END_VISIT, getMCTypeFacade().createQualifiedType(artifactScopeName));
-      this.replaceTemplate(EMPTY_BODY, endVisitMethod, new StringHookPoint(PRINTER_END_OBJECT));
+      this.replaceTemplate(EMPTY_BODY, endVisitMethod, new StringHookPoint(PRINTER_END_ARRAY+"\n"+PRINTER_END_OBJECT));
       visitorMethods.add(endVisitMethod);
     }
     return visitorMethods;
@@ -195,10 +197,10 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
 
     for (ASTCDType symbolProd : symbolProds) {
       String symbolFullName = symbolTableService.getSymbolFullName(symbolProd);
-
+      List<String> kinds = getKindIncludingSuperKinds(symbolProd);
       ASTCDMethod visitMethod = visitorService.getVisitorMethod(VISIT, getMCTypeFacade().createQualifiedType(symbolFullName));
       this.replaceTemplate(EMPTY_BODY, visitMethod,
-          new TemplateHookPoint(TEMPLATE_PATH + "symbolTablePrinter.VisitSymbol", symbolFullName, symbolProd.getName(), symbolProd.getCDAttributeList()));
+          new TemplateHookPoint(TEMPLATE_PATH + "symbolTablePrinter.VisitSymbol", kinds, symbolProd.getName(), symbolProd.getCDAttributeList()));
       visitorMethods.add(visitMethod);
 
       ASTCDMethod endVisitMethod = visitorService.getVisitorMethod(END_VISIT, getMCTypeFacade().createQualifiedType(symbolFullName));
@@ -211,6 +213,22 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
       }
     }
     return visitorMethods;
+  }
+
+  protected List<String> getKindIncludingSuperKinds(ASTCDType symbolProd){
+    List<String> allSymbols = symbolTableService.getSymbolDefiningSuperProds()
+        .stream()
+        .map(a -> a.getSymbol().getFullName())
+        .collect(Collectors.toList());
+
+    List<String> superKinds =  symbolTableService
+        .getAllSuperClassesTransitive(symbolProd.getSymbol())
+        .stream()
+        .filter(s -> allSymbols.contains(s.getFullName()))
+        .map(s -> symbolTableService.getSymbolFullName(s.getAstNode()))
+        .collect(Collectors.toList());
+        superKinds.add(symbolTableService.getSymbolFullName(symbolProd));
+        return superKinds;
   }
 
   protected List<ASTCDMethod> createScopeRuleMethods(List<ASTCDClass> scopeProds,
