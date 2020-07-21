@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._visitor;
 
+import com.google.common.collect.Lists;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDDefinition;
@@ -12,7 +13,6 @@ import de.monticore.codegen.cd2java._visitor.builder.DelegatorVisitorBuilderDeco
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.IterablePath;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -58,7 +58,8 @@ public class CDVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, AS
 
   @Override
   public ASTCDCompilationUnit decorate(ASTCDCompilationUnit input) {
-    List<String> visitorPackage = new ArrayList<>(input.getPackageList());
+    List<String> visitorPackage = Lists.newArrayList();
+    input.getPackageList().forEach(p -> visitorPackage.add(p.toLowerCase()));
     visitorPackage.addAll(Arrays.asList(input.getCDDefinition().getName().toLowerCase(), VISITOR_PACKAGE));
 
     setIfExistsHandwrittenFile(visitorPackage);

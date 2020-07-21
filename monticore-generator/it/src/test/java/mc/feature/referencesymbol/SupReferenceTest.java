@@ -82,7 +82,7 @@ public class SupReferenceTest {
     Optional<ASTSupRand> astRand = parser.parse("src/test/resources/mc/feature/referencesymbol/SupReferenceModel.ref");
     assertFalse(parser.hasErrors());
     assertTrue(astRand.isPresent());
-    ASTSupRef supRef = astRand.get().getSupRef(0);
+    ASTSupRef supRef = astRand.get().getSupRefs(0);
 
     assertFalse(supRef.isPresentNameDefinition());
     assertFalse(supRef.isPresentNameSymbol());
@@ -97,7 +97,7 @@ public class SupReferenceTest {
     Optional<ASTSupRand> astRand = parser.parse("src/test/resources/mc/feature/referencesymbol/SupReferenceModel.ref");
     assertFalse(parser.hasErrors());
     assertTrue(astRand.isPresent());
-    ASTSupRefOpt supRefOpt = astRand.get().getSupRefOpt(0);
+    ASTSupRefOpt supRefOpt = astRand.get().getSupRefOpts(0);
 
     assertFalse(supRefOpt.isPresentNameDefinition());
     assertFalse(supRefOpt.isPresentNameSymbol());
@@ -112,22 +112,22 @@ public class SupReferenceTest {
     Optional<ASTSupRand> astRand = parser.parse("src/test/resources/mc/feature/referencesymbol/SupReferenceModel.ref");
     assertFalse(parser.hasErrors());
     assertTrue(astRand.isPresent());
-    ASTSupRefList supRefList = astRand.get().getSupRefList(0);
+    ASTSupRefList supRefList = astRand.get().getSupRefLists(0);
 
     assertTrue(supRefList.getNamesDefinitionList().isEmpty());
     assertTrue(supRefList.getNamesSymbolList().isEmpty());
-    assertFalse(supRefList.getNameList().isEmpty());
+    assertFalse(supRefList.getNamesList().isEmpty());
     assertEquals(supRefList.sizeNames(), 3);
     assertEquals(supRefList.sizeNamesDefinition(), 0);
     assertEquals(supRefList.sizeNamesSymbol(), 0);
-    assertEquals("A", supRefList.getName(0));
-    supRefList.setName(0, "B");
-    assertEquals("B", supRefList.getName(0));
+    assertEquals("A", supRefList.getNames(0));
+    supRefList.setNames(0, "B");
+    assertEquals("B", supRefList.getNames(0));
   }
 
   @Test
   public void testSupRef() {
-    ASTSupRef supRef = this.astsupRand.getSupRef(1);
+    ASTSupRef supRef = this.astsupRand.getSupRefs(1);
     assertTrue(supRef.isPresentNameDefinition());
     assertTrue(supRef.isPresentNameSymbol());
     assertEquals(supRef.getName(), "B");
@@ -139,7 +139,7 @@ public class SupReferenceTest {
 
   @Test
   public void testSupRefSet() {
-    ASTSupRef supRef = this.astsupRand.getSupRef(1);
+    ASTSupRef supRef = this.astsupRand.getSupRefs(1);
 
     //setName
     supRef.setName("C");
@@ -154,7 +154,7 @@ public class SupReferenceTest {
 
   @Test
   public void testSupRefOpt() {
-    ASTSupRefOpt supRefOpt = this.astsupRand.getSupRefOpt(0);
+    ASTSupRefOpt supRefOpt = this.astsupRand.getSupRefOpts(0);
     assertTrue(supRefOpt.isPresentNameDefinition());
     assertTrue(supRefOpt.isPresentNameSymbol());
     assertTrue(supRefOpt.isPresentName());
@@ -167,7 +167,7 @@ public class SupReferenceTest {
 
   @Test
   public void testSupRefOptSet() {
-    ASTSupRefOpt supRefOpt = this.astsupRand.getSupRefOpt(0);
+    ASTSupRefOpt supRefOpt = this.astsupRand.getSupRefOpts(0);
     //setName
     supRefOpt.setName("C");
     assertTrue(supRefOpt.isPresentNameDefinition());
@@ -182,7 +182,7 @@ public class SupReferenceTest {
 
   @Test
   public void testSupRefOptSetAbsent() {
-    ASTSupRefOpt supRefOpt = this.astsupRand.getSupRefOpt(0);
+    ASTSupRefOpt supRefOpt = this.astsupRand.getSupRefOpts(0);
 
     //setNameAbsent
     supRefOpt.setNameAbsent();
@@ -193,16 +193,16 @@ public class SupReferenceTest {
 
   @Test
   public void testSupRefList() {
-    ASTSupRefList supRefList = astsupRand.getSupRefList(2);
+    ASTSupRefList supRefList = astsupRand.getSupRefLists(2);
     assertFalse(supRefList.getNamesDefinitionList().isEmpty());
     assertFalse(supRefList.getNamesSymbolList().isEmpty());
-    assertFalse(supRefList.getNameList().isEmpty());
+    assertFalse(supRefList.getNamesList().isEmpty());
 
     assertEquals(supRefList.sizeNames(), 4);
     assertEquals(supRefList.sizeNamesDefinition(), 4);
     assertEquals(supRefList.sizeNamesSymbol(), 4);
 
-    assertEquals("A", supRefList.getName(0));
+    assertEquals("A", supRefList.getNames(0));
 
     assertTrue(supRefList.getNamesSymbol(0).isPresent());
     assertEquals(a, supRefList.getNamesSymbol(0).get());
@@ -210,7 +210,7 @@ public class SupReferenceTest {
     assertTrue(supRefList.getNamesDefinition(0).isPresent());
     assertEquals(a.getAstNode(), supRefList.getNamesDefinition(0).get());
 
-    assertTrue(supRefList.containsName("B"));
+    assertTrue(supRefList.containsNames("B"));
     assertTrue(supRefList.containsNamesDefinition(Optional.ofNullable(b.getAstNode())));
     assertTrue(supRefList.containsNamesSymbol(Optional.ofNullable(b)));
 
@@ -221,25 +221,25 @@ public class SupReferenceTest {
 
   @Test
   public void testSupRefListSetEmpty() {
-    ASTSupRefList supRefList = astsupRand.getSupRefList(0);
+    ASTSupRefList supRefList = astsupRand.getSupRefLists(0);
     //setEmptyList
-    supRefList.setNameList(new ArrayList<>());
+    supRefList.setNamesList(new ArrayList<>());
     assertTrue(supRefList.getNamesDefinitionList().isEmpty());
     assertTrue(supRefList.getNamesSymbolList().isEmpty());
-    assertTrue(supRefList.getNameList().isEmpty());
+    assertTrue(supRefList.getNamesList().isEmpty());
   }
 
   @Test
   public void testSupRefListAdd() {
-    ASTSupRefList supRefList = astsupRand.getSupRefList(1);
+    ASTSupRefList supRefList = astsupRand.getSupRefLists(1);
 
     //add "D"
-    supRefList.addName("D");
+    supRefList.addNames("D");
     assertFalse(supRefList.getNamesDefinitionList().isEmpty());
     assertFalse(supRefList.getNamesSymbolList().isEmpty());
-    assertFalse(supRefList.getNameList().isEmpty());
+    assertFalse(supRefList.getNamesList().isEmpty());
 
-    assertEquals("D", supRefList.getName(0));
+    assertEquals("D", supRefList.getNames(0));
 
     assertTrue(supRefList.getNamesSymbol(0).isPresent());
     assertEquals(d, supRefList.getNamesSymbol(0).get());
@@ -251,19 +251,19 @@ public class SupReferenceTest {
 
   @Test
   public void testSupRefListSet() {
-    ASTSupRefList supRefList = astsupRand.getSupRefList(1);
+    ASTSupRefList supRefList = astsupRand.getSupRefLists(1);
     List<String> list = new ArrayList<>();
     list.add("B");
     list.add("A");
     //setNameList(list)
-    supRefList.setNameList(list);
+    supRefList.setNamesList(list);
 
     assertEquals(supRefList.sizeNames(), 2);
     assertEquals(supRefList.sizeNamesDefinition(), 2);
     assertEquals(supRefList.sizeNamesSymbol(), 2);
 
 
-    assertEquals("B", supRefList.getName(0));
+    assertEquals("B", supRefList.getNames(0));
 
     assertTrue(supRefList.getNamesSymbol(0).isPresent());
     assertEquals(b, supRefList.getNamesSymbol(0).get());
@@ -271,27 +271,27 @@ public class SupReferenceTest {
     assertTrue(supRefList.getNamesDefinition(0).isPresent());
     assertEquals(b.getAstNode(), supRefList.getNamesDefinition(0).get());
 
-    assertTrue(supRefList.containsName("A"));
+    assertTrue(supRefList.containsNames("A"));
     assertTrue(supRefList.containsNamesDefinition(Optional.ofNullable(a.getAstNode())));
     assertTrue(supRefList.containsNamesSymbol(Optional.ofNullable(a)));
   }
 
   @Test
   public void testSupRefListRemove() {
-    ASTSupRefList supRefList = astsupRand.getSupRefList(2);
+    ASTSupRefList supRefList = astsupRand.getSupRefLists(2);
     assertEquals(supRefList.sizeNames(), 4);
     assertEquals(supRefList.sizeNamesDefinition(), 4);
     assertEquals(supRefList.sizeNamesSymbol(), 4);
 
     //remove "B"
-    supRefList.removeName("B");
+    supRefList.removeNames("B");
 
     assertEquals(supRefList.sizeNames(), 3);
     assertEquals(supRefList.sizeNamesDefinition(), 3);
     assertEquals(supRefList.sizeNamesSymbol(), 3);
 
 
-    assertEquals("C", supRefList.getName(1));
+    assertEquals("C", supRefList.getNames(1));
 
     assertTrue(supRefList.getNamesSymbol(1).isPresent());
     assertEquals(c, supRefList.getNamesSymbol(1).get());
@@ -303,7 +303,7 @@ public class SupReferenceTest {
     list.add("A");
     list.add("C");
     list.add("D");
-    assertEquals(supRefList.getNameList(), list);
+    assertEquals(supRefList.getNamesList(), list);
 
     List<Optional<TestSymbol>> symbolList = new ArrayList<>();
     symbolList.add(Optional.ofNullable(a));

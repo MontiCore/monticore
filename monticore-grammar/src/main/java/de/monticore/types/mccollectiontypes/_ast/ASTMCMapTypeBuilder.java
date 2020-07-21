@@ -12,7 +12,7 @@ public class ASTMCMapTypeBuilder extends ASTMCMapTypeBuilderTOP {
 
     value = new ASTMCMapType();
     if (this.mCTypeArguments.size() == 2) {
-      value.setMCTypeArgumentList(this.mCTypeArguments);
+      value.setMCTypeArgumentsList(this.mCTypeArguments);
     } else if (this.key != null && this.value != null) {
       value.setKey(this.key);
       value.setValue(this.value);

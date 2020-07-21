@@ -56,42 +56,42 @@ public class BuiltInJavaTypesTest {
     //assert that the primitives have no fields, methods, type variables and super types
     assertTrue(intsymtype.get().getMethodList().isEmpty());
     assertTrue(intsymtype.get().getFieldList().isEmpty());
-    assertTrue(intsymtype.get().getSuperTypeList().isEmpty());
+    assertTrue(intsymtype.get().getSuperTypesList().isEmpty());
     assertTrue(intsymtype.get().getTypeParameterList().isEmpty());
 
     assertTrue(doublesymtype.get().getMethodList().isEmpty());
     assertTrue(doublesymtype.get().getFieldList().isEmpty());
-    assertTrue(doublesymtype.get().getSuperTypeList().isEmpty());
+    assertTrue(doublesymtype.get().getSuperTypesList().isEmpty());
     assertTrue(doublesymtype.get().getTypeParameterList().isEmpty());
 
     assertTrue(floatsymtype.get().getMethodList().isEmpty());
     assertTrue(floatsymtype.get().getFieldList().isEmpty());
-    assertTrue(floatsymtype.get().getSuperTypeList().isEmpty());
+    assertTrue(floatsymtype.get().getSuperTypesList().isEmpty());
     assertTrue(floatsymtype.get().getTypeParameterList().isEmpty());
 
     assertTrue(longsymtype.get().getMethodList().isEmpty());
     assertTrue(longsymtype.get().getFieldList().isEmpty());
-    assertTrue(longsymtype.get().getSuperTypeList().isEmpty());
+    assertTrue(longsymtype.get().getSuperTypesList().isEmpty());
     assertTrue(longsymtype.get().getTypeParameterList().isEmpty());
 
     assertTrue(charsymtype.get().getMethodList().isEmpty());
     assertTrue(charsymtype.get().getFieldList().isEmpty());
-    assertTrue(charsymtype.get().getSuperTypeList().isEmpty());
+    assertTrue(charsymtype.get().getSuperTypesList().isEmpty());
     assertTrue(charsymtype.get().getTypeParameterList().isEmpty());
 
     assertTrue(shortsymtype.get().getMethodList().isEmpty());
     assertTrue(shortsymtype.get().getFieldList().isEmpty());
-    assertTrue(shortsymtype.get().getSuperTypeList().isEmpty());
+    assertTrue(shortsymtype.get().getSuperTypesList().isEmpty());
     assertTrue(shortsymtype.get().getTypeParameterList().isEmpty());
 
     assertTrue(bytesymtype.get().getMethodList().isEmpty());
     assertTrue(bytesymtype.get().getFieldList().isEmpty());
-    assertTrue(bytesymtype.get().getSuperTypeList().isEmpty());
+    assertTrue(bytesymtype.get().getSuperTypesList().isEmpty());
     assertTrue(bytesymtype.get().getTypeParameterList().isEmpty());
 
     assertTrue(booleansymtype.get().getMethodList().isEmpty());
     assertTrue(booleansymtype.get().getFieldList().isEmpty());
-    assertTrue(booleansymtype.get().getSuperTypeList().isEmpty());
+    assertTrue(booleansymtype.get().getSuperTypesList().isEmpty());
     assertTrue(booleansymtype.get().getTypeParameterList().isEmpty());
   }
 
@@ -101,8 +101,8 @@ public class BuiltInJavaTypesTest {
     assertTrue(intsymtype.isPresent());
 
     //java.lang.Integer extends java.lang.Number and has no type parameters
-    assertEquals(1,intsymtype.get().getSuperTypeList().size());
-    assertEquals("Number",intsymtype.get().getSuperTypeList().get(0).print());
+    assertEquals(1,intsymtype.get().getSuperTypesList().size());
+    assertEquals("Number",intsymtype.get().getSuperTypesList().get(0).print());
     assertTrue(intsymtype.get().getTypeParameterList().isEmpty());
 
     //test some methods
@@ -129,8 +129,8 @@ public class BuiltInJavaTypesTest {
     assertTrue(doublesymtype.isPresent());
 
     //java.lang.Double extends java.lang.Number and has no type parameters
-    assertEquals(1,doublesymtype.get().getSuperTypeList().size());
-    assertEquals("Number",doublesymtype.get().getSuperTypeList().get(0).print());
+    assertEquals(1,doublesymtype.get().getSuperTypesList().size());
+    assertEquals("Number",doublesymtype.get().getSuperTypesList().get(0).print());
     assertTrue(doublesymtype.get().getTypeParameterList().isEmpty());
 
     //test some methods
@@ -157,8 +157,8 @@ public class BuiltInJavaTypesTest {
     assertTrue(floatsymtype.isPresent());
 
     //java.lang.Float extends java.lang.Number and has no type parameters
-    assertEquals(1,floatsymtype.get().getSuperTypeList().size());
-    assertEquals("Number",floatsymtype.get().getSuperTypeList().get(0).print());
+    assertEquals(1,floatsymtype.get().getSuperTypesList().size());
+    assertEquals("Number",floatsymtype.get().getSuperTypesList().get(0).print());
     assertTrue(floatsymtype.get().getTypeParameterList().isEmpty());
 
     //test some methods
@@ -185,8 +185,8 @@ public class BuiltInJavaTypesTest {
     assertTrue(longsymtype.isPresent());
 
     //java.lang.Long extends java.lang.Number and has no type parameters
-    assertEquals(1,longsymtype.get().getSuperTypeList().size());
-    assertEquals("Number",longsymtype.get().getSuperTypeList().get(0).print());
+    assertEquals(1,longsymtype.get().getSuperTypesList().size());
+    assertEquals("Number",longsymtype.get().getSuperTypesList().get(0).print());
     assertTrue(longsymtype.get().getTypeParameterList().isEmpty());
 
     //test some methods
@@ -213,8 +213,8 @@ public class BuiltInJavaTypesTest {
     assertTrue(charsymtype.isPresent());
 
     //java.lang.Character directly extends java.lang.Object and has no type parameters
-    assertEquals(1,charsymtype.get().getSuperTypeList().size());
-    assertEquals("Object",charsymtype.get().getSuperTypeList().get(0).print());
+    assertEquals(1,charsymtype.get().getSuperTypesList().size());
+    assertEquals("Object",charsymtype.get().getSuperTypesList().get(0).print());
     assertTrue(charsymtype.get().getTypeParameterList().isEmpty());
 
     //test some methods
@@ -239,8 +239,8 @@ public class BuiltInJavaTypesTest {
     assertTrue(shortsymtype.isPresent());
 
     //java.lang.Short extends java.lang.Number and has no type parameters
-    assertEquals(1,shortsymtype.get().getSuperTypeList().size());
-    assertEquals("Number",shortsymtype.get().getSuperTypeList().get(0).print());
+    assertEquals(1,shortsymtype.get().getSuperTypesList().size());
+    assertEquals("Number",shortsymtype.get().getSuperTypesList().get(0).print());
     assertTrue(shortsymtype.get().getTypeParameterList().isEmpty());
 
     //test some methods
@@ -267,8 +267,8 @@ public class BuiltInJavaTypesTest {
     assertTrue(bytesymtype.isPresent());
 
     //java.lang.Byte extends java.lang.Number and has no type parameters
-    assertEquals(1,bytesymtype.get().getSuperTypeList().size());
-    assertEquals("Number",bytesymtype.get().getSuperTypeList().get(0).print());
+    assertEquals(1,bytesymtype.get().getSuperTypesList().size());
+    assertEquals("Number",bytesymtype.get().getSuperTypesList().get(0).print());
     assertTrue(bytesymtype.get().getTypeParameterList().isEmpty());
 
     //test some methods
@@ -295,8 +295,8 @@ public class BuiltInJavaTypesTest {
     assertTrue(booleansymtype.isPresent());
 
     //java.lang.Character directly extends java.lang.Object
-    assertEquals(1,booleansymtype.get().getSuperTypeList().size());
-    assertEquals("Object",booleansymtype.get().getSuperTypeList().get(0).print());
+    assertEquals(1,booleansymtype.get().getSuperTypesList().size());
+    assertEquals("Object",booleansymtype.get().getSuperTypesList().get(0).print());
     assertTrue(booleansymtype.get().getTypeParameterList().isEmpty());
 
     //test some methods
@@ -327,8 +327,8 @@ public class BuiltInJavaTypesTest {
     assertTrue(listsymtype.isPresent());
 
     //List extends Collection
-    assertEquals(1,listsymtype.get().getSuperTypeList().size());
-    assertEquals("Collection<E>",listsymtype.get().getSuperTypeList().get(0).print());
+    assertEquals(1,listsymtype.get().getSuperTypesList().size());
+    assertEquals("Collection<E>",listsymtype.get().getSuperTypesList().get(0).print());
     assertEquals("E",listsymtype.get().getTypeParameterList().get(0).getName());
 
     //test some methods
@@ -354,8 +354,8 @@ public class BuiltInJavaTypesTest {
     assertTrue(setsymtype.isPresent());
 
     //Set extends Collection
-    assertEquals(1,setsymtype.get().getSuperTypeList().size());
-    assertEquals("Collection<E>",setsymtype.get().getSuperType((0)).print());
+    assertEquals(1,setsymtype.get().getSuperTypesList().size());
+    assertEquals("Collection<E>",setsymtype.get().getSuperTypes((0)).print());
     assertEquals("E",setsymtype.get().getTypeParameterList().get(0).getName());
 
     //test some methods
@@ -381,8 +381,8 @@ public class BuiltInJavaTypesTest {
 
     assertTrue(mapsymtype.isPresent());
 
-    assertEquals(1,mapsymtype.get().getSuperTypeList().size());
-    assertEquals("Object",mapsymtype.get().getSuperType((0)).print());
+    assertEquals(1,mapsymtype.get().getSuperTypesList().size());
+    assertEquals("Object",mapsymtype.get().getSuperTypes((0)).print());
     assertEquals("K",mapsymtype.get().getTypeParameterList().get(0).getName());
     assertEquals("V",mapsymtype.get().getTypeParameterList().get(1).getName());
 
@@ -405,8 +405,8 @@ public class BuiltInJavaTypesTest {
 
     assertTrue(optionalsymtype.isPresent());
 
-    assertEquals(1,optionalsymtype.get().getSuperTypeList().size());
-    assertEquals("Object",optionalsymtype.get().getSuperType((0)).print());
+    assertEquals(1,optionalsymtype.get().getSuperTypesList().size());
+    assertEquals("Object",optionalsymtype.get().getSuperTypes((0)).print());
     assertEquals("T",optionalsymtype.get().getTypeParameterList().get(0).getName());
 
     //test some methods
@@ -438,8 +438,8 @@ public class BuiltInJavaTypesTest {
     Optional<MethodSymbol> clear = collectionSpannedScope.resolveMethod("clear");
 
     //collection is a generic type
-    assertEquals(1,collectionsymtype.get().getSuperTypeList().size());
-    assertEquals("Object",collectionsymtype.get().getSuperType((0)).print());
+    assertEquals(1,collectionsymtype.get().getSuperTypesList().size());
+    assertEquals("Object",collectionsymtype.get().getSuperTypes((0)).print());
     assertEquals("E",collectionsymtype.get().getTypeParameterList().get(0).getName());
 
     assertTrue(size.isPresent());
@@ -490,7 +490,7 @@ public class BuiltInJavaTypesTest {
     assertTrue(stringType.isPresent());
 
     //super type is Object
-    assertEquals("Object",stringType.get().getSuperTypeList().get(0).print());
+    assertEquals("Object",stringType.get().getSuperTypesList().get(0).print());
 
     IOOSymbolsScope stringSpannedScope = stringType.get().getSpannedScope();
 

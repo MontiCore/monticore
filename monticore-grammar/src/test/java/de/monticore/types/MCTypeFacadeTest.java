@@ -93,11 +93,11 @@ public class MCTypeFacadeTest {
   public void testCreateOptionalTypeOfClass() {
     ASTMCOptionalType type = mcTypeFacade.createOptionalTypeOf(String.class);
     assertEquals(1, type.sizeNames());
-    assertEquals("Optional", type.getName(0));
+    assertEquals("Optional", type.getNames(0));
     assertEquals(1, type.sizeMCTypeArguments());
     assertTrue(type.getMCTypeArgument().getMCTypeOpt().isPresent());
     assertTrue(type.getMCTypeArgument().getMCTypeOpt().get() instanceof ASTMCQualifiedType);
-    assertEquals(Lists.newArrayList("String"), ((ASTMCQualifiedType) type.getMCTypeArgument(0).getMCTypeOpt().get()).getNameList());
+    assertEquals(Lists.newArrayList("String"), ((ASTMCQualifiedType) type.getMCTypeArguments(0).getMCTypeOpt().get()).getNameList());
   }
 
 
@@ -105,44 +105,44 @@ public class MCTypeFacadeTest {
   public void testCreateOptionalTypeOfName() {
     ASTMCOptionalType type = mcTypeFacade.createOptionalTypeOf("a.b.c.Foo");
     assertEquals(1, type.sizeNames());
-    assertEquals("Optional", type.getName(0));
+    assertEquals("Optional", type.getNames(0));
     assertEquals(1, type.sizeMCTypeArguments());
     assertTrue(type.getMCTypeArgument().getMCTypeOpt().isPresent());
     assertTrue(type.getMCTypeArgument().getMCTypeOpt().get() instanceof ASTMCQualifiedType);
-    assertEquals(Lists.newArrayList("a", "b", "c", "Foo"), ((ASTMCQualifiedType) type.getMCTypeArgument(0).getMCTypeOpt().get()).getNameList());
+    assertEquals(Lists.newArrayList("a", "b", "c", "Foo"), ((ASTMCQualifiedType) type.getMCTypeArguments(0).getMCTypeOpt().get()).getNameList());
   }
 
   @Test
   public void testCreateOptionalTypeOfType() {
     ASTMCOptionalType type = mcTypeFacade.createOptionalTypeOf(mcTypeFacade.createQualifiedType("a.b.c.Foo"));
     assertEquals(1, type.sizeNames());
-    assertEquals("Optional", type.getName(0));
+    assertEquals("Optional", type.getNames(0));
     assertEquals(1, type.sizeMCTypeArguments());
     assertTrue(type.getMCTypeArgument().getMCTypeOpt().isPresent());
     assertTrue(type.getMCTypeArgument().getMCTypeOpt().get() instanceof ASTMCQualifiedType);
-    assertEquals(Lists.newArrayList("a", "b", "c", "Foo"), ((ASTMCQualifiedType) type.getMCTypeArgument(0).getMCTypeOpt().get()).getNameList());
+    assertEquals(Lists.newArrayList("a", "b", "c", "Foo"), ((ASTMCQualifiedType) type.getMCTypeArguments(0).getMCTypeOpt().get()).getNameList());
   }
 
   @Test
   public void testCreateOptionalTypeOfTypeArgument() {
     ASTMCOptionalType type = mcTypeFacade.createOptionalTypeOf(mcTypeFacade.createBasicTypeArgumentOf("a.b.c.Foo"));
     assertEquals(1, type.sizeNames());
-    assertEquals("Optional", type.getName(0));
+    assertEquals("Optional", type.getNames(0));
     assertEquals(1, type.sizeMCTypeArguments());
     assertTrue(type.getMCTypeArgument().getMCTypeOpt().isPresent());
     assertTrue(type.getMCTypeArgument().getMCTypeOpt().get() instanceof ASTMCQualifiedType);
-    assertEquals(Lists.newArrayList("a", "b", "c", "Foo"), ((ASTMCQualifiedType) type.getMCTypeArgument(0).getMCTypeOpt().get()).getNameList());
+    assertEquals(Lists.newArrayList("a", "b", "c", "Foo"), ((ASTMCQualifiedType) type.getMCTypeArguments(0).getMCTypeOpt().get()).getNameList());
   }
 
   @Test
   public void testCreateListTypeOfClass() {
     ASTMCListType type = mcTypeFacade.createListTypeOf(String.class);
     assertEquals(1, type.sizeNames());
-    assertEquals("List", type.getName(0));
+    assertEquals("List", type.getNames(0));
     assertEquals(1, type.sizeMCTypeArguments());
     assertTrue(type.getMCTypeArgument().getMCTypeOpt().isPresent());
     assertTrue(type.getMCTypeArgument().getMCTypeOpt().get() instanceof ASTMCQualifiedType);
-    assertEquals(Lists.newArrayList("String"), ((ASTMCQualifiedType) type.getMCTypeArgument(0).getMCTypeOpt().get()).getNameList());
+    assertEquals(Lists.newArrayList("String"), ((ASTMCQualifiedType) type.getMCTypeArguments(0).getMCTypeOpt().get()).getNameList());
   }
 
 
@@ -150,44 +150,44 @@ public class MCTypeFacadeTest {
   public void testCreateListTypeOfName() {
     ASTMCListType type = mcTypeFacade.createListTypeOf("a.b.c.Foo");
     assertEquals(1, type.sizeNames());
-    assertEquals("List", type.getName(0));
+    assertEquals("List", type.getNames(0));
     assertEquals(1, type.sizeMCTypeArguments());
     assertTrue(type.getMCTypeArgument().getMCTypeOpt().isPresent());
     assertTrue(type.getMCTypeArgument().getMCTypeOpt().get() instanceof ASTMCQualifiedType);
-    assertEquals(Lists.newArrayList("a", "b", "c", "Foo"), ((ASTMCQualifiedType) type.getMCTypeArgument(0).getMCTypeOpt().get()).getNameList());
+    assertEquals(Lists.newArrayList("a", "b", "c", "Foo"), ((ASTMCQualifiedType) type.getMCTypeArguments(0).getMCTypeOpt().get()).getNameList());
   }
 
   @Test
   public void testCreateListTypeOfType() {
     ASTMCListType type = mcTypeFacade.createListTypeOf(mcTypeFacade.createQualifiedType("a.b.c.Foo"));
     assertEquals(1, type.sizeNames());
-    assertEquals("List", type.getName(0));
+    assertEquals("List", type.getNames(0));
     assertEquals(1, type.sizeMCTypeArguments());
     assertTrue(type.getMCTypeArgument().getMCTypeOpt().isPresent());
     assertTrue(type.getMCTypeArgument().getMCTypeOpt().get() instanceof ASTMCQualifiedType);
-    assertEquals(Lists.newArrayList("a", "b", "c", "Foo"), ((ASTMCQualifiedType) type.getMCTypeArgument(0).getMCTypeOpt().get()).getNameList());
+    assertEquals(Lists.newArrayList("a", "b", "c", "Foo"), ((ASTMCQualifiedType) type.getMCTypeArguments(0).getMCTypeOpt().get()).getNameList());
   }
 
   @Test
   public void testCreateListTypeOfTypeArgument() {
     ASTMCListType type = mcTypeFacade.createListTypeOf(mcTypeFacade.createBasicTypeArgumentOf("a.b.c.Foo"));
     assertEquals(1, type.sizeNames());
-    assertEquals("List", type.getName(0));
+    assertEquals("List", type.getNames(0));
     assertEquals(1, type.sizeMCTypeArguments());
     assertTrue(type.getMCTypeArgument().getMCTypeOpt().isPresent());
     assertTrue(type.getMCTypeArgument().getMCTypeOpt().get() instanceof ASTMCQualifiedType);
-    assertEquals(Lists.newArrayList("a", "b", "c", "Foo"), ((ASTMCQualifiedType) type.getMCTypeArgument(0).getMCTypeOpt().get()).getNameList());
+    assertEquals(Lists.newArrayList("a", "b", "c", "Foo"), ((ASTMCQualifiedType) type.getMCTypeArguments(0).getMCTypeOpt().get()).getNameList());
   }
 
   @Test
   public void testCreateSetTypeOfClass() {
     ASTMCSetType type = mcTypeFacade.createSetTypeOf(String.class);
     assertEquals(1, type.sizeNames());
-    assertEquals("Set", type.getName(0));
+    assertEquals("Set", type.getNames(0));
     assertEquals(1, type.sizeMCTypeArguments());
     assertTrue(type.getMCTypeArgument().getMCTypeOpt().isPresent());
     assertTrue(type.getMCTypeArgument().getMCTypeOpt().get() instanceof ASTMCQualifiedType);
-    assertEquals(Lists.newArrayList("String"), ((ASTMCQualifiedType) type.getMCTypeArgument(0).getMCTypeOpt().get()).getNameList());
+    assertEquals(Lists.newArrayList("String"), ((ASTMCQualifiedType) type.getMCTypeArguments(0).getMCTypeOpt().get()).getNameList());
   }
 
 
@@ -195,44 +195,44 @@ public class MCTypeFacadeTest {
   public void testCreateSetTypeOfName() {
     ASTMCSetType type = mcTypeFacade.createSetTypeOf("a.b.c.Foo");
     assertEquals(1, type.sizeNames());
-    assertEquals("Set", type.getName(0));
+    assertEquals("Set", type.getNames(0));
     assertEquals(1, type.sizeMCTypeArguments());
     assertTrue(type.getMCTypeArgument().getMCTypeOpt().isPresent());
     assertTrue(type.getMCTypeArgument().getMCTypeOpt().get() instanceof ASTMCQualifiedType);
-    assertEquals(Lists.newArrayList("a", "b", "c", "Foo"), ((ASTMCQualifiedType) type.getMCTypeArgument(0).getMCTypeOpt().get()).getNameList());
+    assertEquals(Lists.newArrayList("a", "b", "c", "Foo"), ((ASTMCQualifiedType) type.getMCTypeArguments(0).getMCTypeOpt().get()).getNameList());
   }
 
   @Test
   public void testCreateSetTypeOfType() {
     ASTMCSetType type = mcTypeFacade.createSetTypeOf(mcTypeFacade.createQualifiedType("a.b.c.Foo"));
     assertEquals(1, type.sizeNames());
-    assertEquals("Set", type.getName(0));
+    assertEquals("Set", type.getNames(0));
     assertEquals(1, type.sizeMCTypeArguments());
     assertTrue(type.getMCTypeArgument().getMCTypeOpt().isPresent());
     assertTrue(type.getMCTypeArgument().getMCTypeOpt().get() instanceof ASTMCQualifiedType);
-    assertEquals(Lists.newArrayList("a", "b", "c", "Foo"), ((ASTMCQualifiedType) type.getMCTypeArgument(0).getMCTypeOpt().get()).getNameList());
+    assertEquals(Lists.newArrayList("a", "b", "c", "Foo"), ((ASTMCQualifiedType) type.getMCTypeArguments(0).getMCTypeOpt().get()).getNameList());
   }
 
   @Test
   public void testCreateSetTypeOfTypeArgument() {
     ASTMCSetType type = mcTypeFacade.createSetTypeOf(mcTypeFacade.createBasicTypeArgumentOf("a.b.c.Foo"));
     assertEquals(1, type.sizeNames());
-    assertEquals("Set", type.getName(0));
+    assertEquals("Set", type.getNames(0));
     assertEquals(1, type.sizeMCTypeArguments());
     assertTrue(type.getMCTypeArgument().getMCTypeOpt().isPresent());
     assertTrue(type.getMCTypeArgument().getMCTypeOpt().get() instanceof ASTMCQualifiedType);
-    assertEquals(Lists.newArrayList("a", "b", "c", "Foo"), ((ASTMCQualifiedType) type.getMCTypeArgument(0).getMCTypeOpt().get()).getNameList());
+    assertEquals(Lists.newArrayList("a", "b", "c", "Foo"), ((ASTMCQualifiedType) type.getMCTypeArguments(0).getMCTypeOpt().get()).getNameList());
   }
 
   @Test
   public void testCreateCollectionTypeOfClass() {
     ASTMCGenericType type = mcTypeFacade.createCollectionTypeOf(String.class);
     assertEquals(1, type.sizeNames());
-    assertEquals("Collection", type.getName(0));
+    assertEquals("Collection", type.getNames(0));
     assertEquals(1, type.sizeMCTypeArguments());
-    assertTrue(type.getMCTypeArgument(0).getMCTypeOpt().isPresent());
-    assertTrue(type.getMCTypeArgument(0).getMCTypeOpt().get() instanceof ASTMCQualifiedType);
-    assertEquals(Lists.newArrayList("String"), ((ASTMCQualifiedType) type.getMCTypeArgument(0).getMCTypeOpt().get()).getNameList());
+    assertTrue(type.getMCTypeArguments(0).getMCTypeOpt().isPresent());
+    assertTrue(type.getMCTypeArguments(0).getMCTypeOpt().get() instanceof ASTMCQualifiedType);
+    assertEquals(Lists.newArrayList("String"), ((ASTMCQualifiedType) type.getMCTypeArguments(0).getMCTypeOpt().get()).getNameList());
   }
 
 
@@ -240,29 +240,29 @@ public class MCTypeFacadeTest {
   public void testCreateCollectionTypeOfName() {
     ASTMCGenericType type = mcTypeFacade.createCollectionTypeOf("a.b.c.Foo");
     assertEquals(1, type.sizeNames());
-    assertEquals("Collection", type.getName(0));
+    assertEquals("Collection", type.getNames(0));
     assertEquals(1, type.sizeMCTypeArguments());
-    assertTrue(type.getMCTypeArgument(0).getMCTypeOpt().isPresent());
-    assertTrue(type.getMCTypeArgument(0).getMCTypeOpt().get() instanceof ASTMCQualifiedType);
-    assertEquals(Lists.newArrayList("a", "b", "c", "Foo"), ((ASTMCQualifiedType) type.getMCTypeArgument(0).getMCTypeOpt().get()).getNameList());
+    assertTrue(type.getMCTypeArguments(0).getMCTypeOpt().isPresent());
+    assertTrue(type.getMCTypeArguments(0).getMCTypeOpt().get() instanceof ASTMCQualifiedType);
+    assertEquals(Lists.newArrayList("a", "b", "c", "Foo"), ((ASTMCQualifiedType) type.getMCTypeArguments(0).getMCTypeOpt().get()).getNameList());
   }
 
   @Test
   public void testCreateCollectionTypeOfType() {
     ASTMCGenericType type = mcTypeFacade.createCollectionTypeOf(mcTypeFacade.createQualifiedType("a.b.c.Foo"));
     assertEquals(1, type.sizeNames());
-    assertEquals("Collection", type.getName(0));
+    assertEquals("Collection", type.getNames(0));
     assertEquals(1, type.sizeMCTypeArguments());
-    assertTrue(type.getMCTypeArgument(0).getMCTypeOpt().isPresent());
-    assertTrue(type.getMCTypeArgument(0).getMCTypeOpt().get() instanceof ASTMCQualifiedType);
-    assertEquals(Lists.newArrayList("a", "b", "c", "Foo"), ((ASTMCQualifiedType) type.getMCTypeArgument(0).getMCTypeOpt().get()).getNameList());
+    assertTrue(type.getMCTypeArguments(0).getMCTypeOpt().isPresent());
+    assertTrue(type.getMCTypeArguments(0).getMCTypeOpt().get() instanceof ASTMCQualifiedType);
+    assertEquals(Lists.newArrayList("a", "b", "c", "Foo"), ((ASTMCQualifiedType) type.getMCTypeArguments(0).getMCTypeOpt().get()).getNameList());
   }
 
   @Test
   public void testCreateMapTypeOfClass() {
     ASTMCMapType type = mcTypeFacade.createMapTypeOf(String.class, Integer.class);
     assertEquals(1, type.sizeNames());
-    assertEquals("Map", type.getName(0));
+    assertEquals("Map", type.getNames(0));
     assertEquals(2, type.sizeMCTypeArguments());
     assertTrue(type.getKey().getMCTypeOpt().isPresent());
     assertTrue(type.getKey().getMCTypeOpt().get() instanceof ASTMCQualifiedType);
@@ -278,7 +278,7 @@ public class MCTypeFacadeTest {
   public void testCreateMapTypeOfName() {
     ASTMCMapType type = mcTypeFacade.createMapTypeOf("a.b.c.Foo", "d.e.f.Bla");
     assertEquals(1, type.sizeNames());
-    assertEquals("Map", type.getName(0));
+    assertEquals("Map", type.getNames(0));
     assertEquals(2, type.sizeMCTypeArguments());
     assertTrue(type.getKey().getMCTypeOpt().isPresent());
     assertTrue(type.getKey().getMCTypeOpt().get() instanceof ASTMCQualifiedType);
@@ -293,7 +293,7 @@ public class MCTypeFacadeTest {
   public void testCreateMapTypeOfType() {
     ASTMCMapType type = mcTypeFacade.createMapTypeOf(mcTypeFacade.createQualifiedType("a.b.c.Foo"), mcTypeFacade.createQualifiedType("d.e.f.Bla"));
     assertEquals(1, type.sizeNames());
-    assertEquals("Map", type.getName(0));
+    assertEquals("Map", type.getNames(0));
     assertEquals(2, type.sizeMCTypeArguments());
     assertTrue(type.getKey().getMCTypeOpt().isPresent());
     assertTrue(type.getKey().getMCTypeOpt().get() instanceof ASTMCQualifiedType);
@@ -308,7 +308,7 @@ public class MCTypeFacadeTest {
   public void testCreateMapTypeOfTypeArgument() {
     ASTMCMapType type = mcTypeFacade.createMapTypeOf(mcTypeFacade.createBasicTypeArgumentOf("a.b.c.Foo"), mcTypeFacade.createBasicTypeArgumentOf("d.e.f.Bla"));
     assertEquals(1, type.sizeNames());
-    assertEquals("Map", type.getName(0));
+    assertEquals("Map", type.getNames(0));
     assertEquals(2, type.sizeMCTypeArguments());
     assertTrue(type.getKey().getMCTypeOpt().isPresent());
     assertTrue(type.getKey().getMCTypeOpt().get() instanceof ASTMCQualifiedType);
@@ -328,15 +328,15 @@ public class MCTypeFacadeTest {
     ASTMCBasicGenericType type = mcTypeFacade.createBasicGenericTypeOf(
         Lists.newArrayList("my", "special", "GenericType"), Lists.newArrayList(basicTypeArgumentOfFoo, basicTypeArgumentOfBla));
     assertEquals(3, type.sizeNames());
-    assertEquals(Lists.newArrayList("my","special","GenericType"), type.getNameList());
+    assertEquals(Lists.newArrayList("my","special","GenericType"), type.getNamesList());
     assertEquals(2, type.sizeMCTypeArguments());
-    assertTrue(type.getMCTypeArgument(0).getMCTypeOpt().isPresent());
-    assertTrue(type.getMCTypeArgument(0).getMCTypeOpt().get() instanceof ASTMCQualifiedType);
-    assertEquals(Lists.newArrayList("a", "b", "c", "Foo"), ((ASTMCQualifiedType) type.getMCTypeArgument(0).getMCTypeOpt().get()).getNameList());
+    assertTrue(type.getMCTypeArguments(0).getMCTypeOpt().isPresent());
+    assertTrue(type.getMCTypeArguments(0).getMCTypeOpt().get() instanceof ASTMCQualifiedType);
+    assertEquals(Lists.newArrayList("a", "b", "c", "Foo"), ((ASTMCQualifiedType) type.getMCTypeArguments(0).getMCTypeOpt().get()).getNameList());
 
-    assertTrue(type.getMCTypeArgument(1).getMCTypeOpt().isPresent());
-    assertTrue(type.getMCTypeArgument(1).getMCTypeOpt().get() instanceof ASTMCQualifiedType);
-    assertEquals(Lists.newArrayList("d", "e", "f", "Bla"), ((ASTMCQualifiedType) type.getMCTypeArgument(1).getMCTypeOpt().get()).getNameList());
+    assertTrue(type.getMCTypeArguments(1).getMCTypeOpt().isPresent());
+    assertTrue(type.getMCTypeArguments(1).getMCTypeOpt().get() instanceof ASTMCQualifiedType);
+    assertEquals(Lists.newArrayList("d", "e", "f", "Bla"), ((ASTMCQualifiedType) type.getMCTypeArguments(1).getMCTypeOpt().get()).getNameList());
   }
 
 
@@ -348,15 +348,15 @@ public class MCTypeFacadeTest {
     ASTMCBasicGenericType type = mcTypeFacade.createBasicGenericTypeOf(
         "my.special.GenericType", Lists.newArrayList(basicTypeArgumentOfFoo, basicTypeArgumentOfBla));
     assertEquals(3, type.sizeNames());
-    assertEquals(Lists.newArrayList("my","special","GenericType"), type.getNameList());
+    assertEquals(Lists.newArrayList("my","special","GenericType"), type.getNamesList());
     assertEquals(2, type.sizeMCTypeArguments());
-    assertTrue(type.getMCTypeArgument(0).getMCTypeOpt().isPresent());
-    assertTrue(type.getMCTypeArgument(0).getMCTypeOpt().get() instanceof ASTMCQualifiedType);
-    assertEquals(Lists.newArrayList("a", "b", "c", "Foo"), ((ASTMCQualifiedType) type.getMCTypeArgument(0).getMCTypeOpt().get()).getNameList());
+    assertTrue(type.getMCTypeArguments(0).getMCTypeOpt().isPresent());
+    assertTrue(type.getMCTypeArguments(0).getMCTypeOpt().get() instanceof ASTMCQualifiedType);
+    assertEquals(Lists.newArrayList("a", "b", "c", "Foo"), ((ASTMCQualifiedType) type.getMCTypeArguments(0).getMCTypeOpt().get()).getNameList());
 
-    assertTrue(type.getMCTypeArgument(1).getMCTypeOpt().isPresent());
-    assertTrue(type.getMCTypeArgument(1).getMCTypeOpt().get() instanceof ASTMCQualifiedType);
-    assertEquals(Lists.newArrayList("d", "e", "f", "Bla"), ((ASTMCQualifiedType) type.getMCTypeArgument(1).getMCTypeOpt().get()).getNameList());
+    assertTrue(type.getMCTypeArguments(1).getMCTypeOpt().isPresent());
+    assertTrue(type.getMCTypeArguments(1).getMCTypeOpt().get() instanceof ASTMCQualifiedType);
+    assertEquals(Lists.newArrayList("d", "e", "f", "Bla"), ((ASTMCQualifiedType) type.getMCTypeArguments(1).getMCTypeOpt().get()).getNameList());
   }
 
   @Test
@@ -367,15 +367,15 @@ public class MCTypeFacadeTest {
     ASTMCBasicGenericType type = mcTypeFacade.createBasicGenericTypeOf(
         "my.special.GenericType", basicTypeArgumentOfFoo, basicTypeArgumentOfBla);
     assertEquals(3, type.sizeNames());
-    assertEquals(Lists.newArrayList("my","special","GenericType"), type.getNameList());
+    assertEquals(Lists.newArrayList("my","special","GenericType"), type.getNamesList());
     assertEquals(2, type.sizeMCTypeArguments());
-    assertTrue(type.getMCTypeArgument(0).getMCTypeOpt().isPresent());
-    assertTrue(type.getMCTypeArgument(0).getMCTypeOpt().get() instanceof ASTMCQualifiedType);
-    assertEquals(Lists.newArrayList("a", "b", "c", "Foo"), ((ASTMCQualifiedType) type.getMCTypeArgument(0).getMCTypeOpt().get()).getNameList());
+    assertTrue(type.getMCTypeArguments(0).getMCTypeOpt().isPresent());
+    assertTrue(type.getMCTypeArguments(0).getMCTypeOpt().get() instanceof ASTMCQualifiedType);
+    assertEquals(Lists.newArrayList("a", "b", "c", "Foo"), ((ASTMCQualifiedType) type.getMCTypeArguments(0).getMCTypeOpt().get()).getNameList());
 
-    assertTrue(type.getMCTypeArgument(1).getMCTypeOpt().isPresent());
-    assertTrue(type.getMCTypeArgument(1).getMCTypeOpt().get() instanceof ASTMCQualifiedType);
-    assertEquals(Lists.newArrayList("d", "e", "f", "Bla"), ((ASTMCQualifiedType) type.getMCTypeArgument(1).getMCTypeOpt().get()).getNameList());
+    assertTrue(type.getMCTypeArguments(1).getMCTypeOpt().isPresent());
+    assertTrue(type.getMCTypeArguments(1).getMCTypeOpt().get() instanceof ASTMCQualifiedType);
+    assertEquals(Lists.newArrayList("d", "e", "f", "Bla"), ((ASTMCQualifiedType) type.getMCTypeArguments(1).getMCTypeOpt().get()).getNameList());
   }
 
   @Test
@@ -383,15 +383,15 @@ public class MCTypeFacadeTest {
     ASTMCBasicGenericType type = mcTypeFacade.createBasicGenericTypeOf(
         "my.special.GenericType", "a.b.c.Foo", "d.e.f.Bla");
     assertEquals(3, type.sizeNames());
-    assertEquals(Lists.newArrayList("my","special","GenericType"), type.getNameList());
+    assertEquals(Lists.newArrayList("my","special","GenericType"), type.getNamesList());
     assertEquals(2, type.sizeMCTypeArguments());
-    assertTrue(type.getMCTypeArgument(0).getMCTypeOpt().isPresent());
-    assertTrue(type.getMCTypeArgument(0).getMCTypeOpt().get() instanceof ASTMCQualifiedType);
-    assertEquals(Lists.newArrayList("a", "b", "c", "Foo"), ((ASTMCQualifiedType) type.getMCTypeArgument(0).getMCTypeOpt().get()).getNameList());
+    assertTrue(type.getMCTypeArguments(0).getMCTypeOpt().isPresent());
+    assertTrue(type.getMCTypeArguments(0).getMCTypeOpt().get() instanceof ASTMCQualifiedType);
+    assertEquals(Lists.newArrayList("a", "b", "c", "Foo"), ((ASTMCQualifiedType) type.getMCTypeArguments(0).getMCTypeOpt().get()).getNameList());
 
-    assertTrue(type.getMCTypeArgument(1).getMCTypeOpt().isPresent());
-    assertTrue(type.getMCTypeArgument(1).getMCTypeOpt().get() instanceof ASTMCQualifiedType);
-    assertEquals(Lists.newArrayList("d", "e", "f", "Bla"), ((ASTMCQualifiedType) type.getMCTypeArgument(1).getMCTypeOpt().get()).getNameList());
+    assertTrue(type.getMCTypeArguments(1).getMCTypeOpt().isPresent());
+    assertTrue(type.getMCTypeArguments(1).getMCTypeOpt().get() instanceof ASTMCQualifiedType);
+    assertEquals(Lists.newArrayList("d", "e", "f", "Bla"), ((ASTMCQualifiedType) type.getMCTypeArguments(1).getMCTypeOpt().get()).getNameList());
   }
 
   @Test

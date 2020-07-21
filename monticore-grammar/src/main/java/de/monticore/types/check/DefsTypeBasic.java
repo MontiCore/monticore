@@ -76,7 +76,7 @@ public class DefsTypeBasic {
             .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
             .setName(name)
             .setFullName(name)
-            .setSuperTypeList(superTypes)
+            .setSuperTypesList(superTypes)
             .build();
   }
 
@@ -86,7 +86,7 @@ public class DefsTypeBasic {
             .setSpannedScope(spannedScope)
             .setName(name)
             .setFullName(name)
-            .setSuperTypeList(superTypes)
+            .setSuperTypesList(superTypes)
             .build();
     typeArguments.forEach(a -> ts.addTypeVarSymbol(a));
     return ts;
@@ -98,7 +98,7 @@ public class DefsTypeBasic {
           .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
           .setName(name)
           .setFullName(name)
-          .setSuperTypeList(superTypeList)
+          .setSuperTypesList(superTypeList)
           .build();
     methodList.forEach(m -> ts.addMethodSymbol(m));
     fieldList.forEach(f -> ts.addFieldSymbol(f));
@@ -114,7 +114,7 @@ public class DefsTypeBasic {
         .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
         .setName(name)
         .setFullName(name)
-        .setSuperTypeList(superTypeList)
+        .setSuperTypesList(superTypeList)
         .build();
     methodList.forEach(m -> t.addMethodSymbol(m));
     fieldList.forEach(f -> t.addFieldSymbol(f));

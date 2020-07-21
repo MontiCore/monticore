@@ -71,9 +71,9 @@ public class AlwaysTheSameASTTest {
 
     assertEquals(basicGenericAst.get().printWithoutTypeArguments().split("\\.")[0], "List");
 
-    assertEquals(basicGenericAst.get().getMCTypeArgumentList().size(), 1);
+    assertEquals(basicGenericAst.get().getMCTypeArgumentsList().size(), 1);
 
-    ASTMCTypeArgument argument = basicGenericAst.get().getMCTypeArgumentList().get(0);
+    ASTMCTypeArgument argument = basicGenericAst.get().getMCTypeArgumentsList().get(0);
     Optional<ASTMCTypeArgument> argument2 = mcCollectionTypesTestParser.parse_StringMCTypeArgument("String");
     assertFalse(mcCollectionTypesTestParser.hasErrors());
     assertTrue(argument2.isPresent());
@@ -168,9 +168,9 @@ public class AlwaysTheSameASTTest {
 
     assertEquals(basicGenericAst.get().printWithoutTypeArguments().split("\\.")[0], "Map");
 
-    assertEquals(basicGenericAst.get().getMCTypeArgumentList().size(), 2);
+    assertEquals(basicGenericAst.get().getMCTypeArgumentsList().size(), 2);
 
-    ASTMCTypeArgument argument = basicGenericAst.get().getMCTypeArgumentList().get(0);
+    ASTMCTypeArgument argument = basicGenericAst.get().getMCTypeArgumentsList().get(0);
     Optional<ASTMCTypeArgument> argument2 = mcCollectionTypesTestParser.parse_StringMCTypeArgument("Integer");
     assertFalse(mcCollectionTypesTestParser.hasErrors());
     assertTrue(argument2.isPresent());
@@ -257,9 +257,9 @@ public class AlwaysTheSameASTTest {
 
     assertEquals(basicGenericAst.get().printWithoutTypeArguments().split("\\.")[0], "Optional");
 
-    assertEquals(basicGenericAst.get().getMCTypeArgumentList().size(), 1);
+    assertEquals(basicGenericAst.get().getMCTypeArgumentsList().size(), 1);
 
-    ASTMCTypeArgument argument = basicGenericAst.get().getMCTypeArgumentList().get(0);
+    ASTMCTypeArgument argument = basicGenericAst.get().getMCTypeArgumentsList().get(0);
     Optional<ASTMCTypeArgument> argument2 = mcCollectionTypesTestParser.parse_StringMCTypeArgument("String");
     assertFalse(mcCollectionTypesTestParser.hasErrors());
     assertTrue(argument2.isPresent());
@@ -348,9 +348,9 @@ public class AlwaysTheSameASTTest {
 
     assertEquals(basicGenericAst.get().printWithoutTypeArguments().split("\\.")[0], "Set");
 
-    assertEquals(basicGenericAst.get().getMCTypeArgumentList().size(), 1);
+    assertEquals(basicGenericAst.get().getMCTypeArgumentsList().size(), 1);
 
-    ASTMCTypeArgument argument = basicGenericAst.get().getMCTypeArgumentList().get(0);
+    ASTMCTypeArgument argument = basicGenericAst.get().getMCTypeArgumentsList().get(0);
     Optional<ASTMCTypeArgument> argument2 = mcCollectionTypesTestParser.parse_StringMCTypeArgument("String");
     assertFalse(mcCollectionTypesTestParser.hasErrors());
     assertTrue(argument2.isPresent());

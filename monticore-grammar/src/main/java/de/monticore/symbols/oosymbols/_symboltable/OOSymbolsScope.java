@@ -44,7 +44,7 @@ public class OOSymbolsScope extends OOSymbolsScopeTOP {
       //if the methodsymbol is in the spanned scope of a typesymbol then look for method in super types too
       if(spanningSymbol instanceof OOTypeSymbol){
         OOTypeSymbol typeSymbol = ((OOTypeSymbol) spanningSymbol);
-        for(SymTypeExpression t : typeSymbol.getSuperTypeList()){
+        for(SymTypeExpression t : typeSymbol.getSuperTypesList()){
           set.addAll(t.getMethodList(name));
         }
       }
@@ -67,7 +67,7 @@ public class OOSymbolsScope extends OOSymbolsScopeTOP {
       //if the fieldsymbol is in the spanned scope of a typesymbol then look for method in super types too
       if(spanningSymbol instanceof OOTypeSymbol){
         OOTypeSymbol typeSymbol = (OOTypeSymbol) spanningSymbol;
-        for(SymTypeExpression superType : typeSymbol.getSuperTypeList()){
+        for(SymTypeExpression superType : typeSymbol.getSuperTypesList()){
           result.addAll(superType.getFieldList(name));
         }
       }
