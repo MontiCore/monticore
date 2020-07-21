@@ -3,9 +3,9 @@
 package de.monticore;
 
 grammar TestMCLiteralsV3 extends
-	MCNumbers,
-	MCHexNumbers,
-	StringLiterals
+  MCNumbers,
+  MCHexNumbers,
+  StringLiterals
 {
 
  NumberList = "["  (Number | ",")* "]" ;

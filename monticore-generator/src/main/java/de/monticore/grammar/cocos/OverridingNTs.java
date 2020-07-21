@@ -25,7 +25,7 @@ public class OverridingNTs implements GrammarASTMCGrammarCoCo {
   
   public static final String ERROR_CODE = "0xA4009";
   
-  public static final String ERROR_MSG_FORMAT = " The production for the nonterminal %s must not be overridden\n" +
+  public static final String ERROR_MSG_FORMAT = " The production for the nonterminal %s must not be overridden " +
           "by a production for an %s nonterminal.";
   
   @Override

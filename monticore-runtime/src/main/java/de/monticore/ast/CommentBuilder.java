@@ -9,7 +9,7 @@ import de.se_rwth.commons.logging.Log;
  */
 public class CommentBuilder {
   
-  protected String text = "";
+  protected String text = null;
   
   protected SourcePosition start = SourcePosition.getDefaultSourcePosition();
   
@@ -23,13 +23,13 @@ public class CommentBuilder {
       return res;
     }
     else {
-      Log.error("0xA7222x717 text of type String must not be null");
+      Log.error("0xA4322 text of type String must not be null");
       throw new IllegalStateException();
     }
   }
   
   public boolean isValid() {
-    return this.text == null;
+    return this.text != null;
   }
   
   public SourcePosition get_SourcePositionEnd() {

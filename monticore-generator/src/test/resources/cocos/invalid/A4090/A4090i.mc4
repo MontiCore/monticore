@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package cocos.invalid.A4090;
+
+grammar A4090i {
+
+  A = "a";
+  C = "c";
+  B = who:A who:C who:A;
+
+}

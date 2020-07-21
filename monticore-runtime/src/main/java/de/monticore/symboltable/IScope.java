@@ -49,10 +49,13 @@ public interface IScope {
    */
   boolean isExportingSymbols();
 
+  boolean isOrdered();
 
   void setExportingSymbols(boolean b);
 
   void setShadowing(boolean b);
+
+  void setOrdered(boolean b);
 
   /**
    * @param node the corresponding ast node

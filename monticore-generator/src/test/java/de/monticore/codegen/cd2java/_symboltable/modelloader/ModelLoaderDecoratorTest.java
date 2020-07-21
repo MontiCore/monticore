@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._symboltable.modelloader;
 
 import com.github.javaparser.JavaParser;
@@ -7,24 +8,23 @@ import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
+import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.types.MCTypeFacade;
-import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.*;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Optional;
 
+import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
-import static de.monticore.cd.facade.CDModifier.*;
 import static org.junit.Assert.*;
 
 public class ModelLoaderDecoratorTest extends DecoratorTestCase {
@@ -43,18 +43,19 @@ public class ModelLoaderDecoratorTest extends DecoratorTestCase {
 
   @Before
   public void setUp() {
-    Log.init();
+    LogStub.init();         // replace log by a sideffect free variant
+        // LogStub.initPlusLog();  // for manual testing purpose only
     this.glex = new GlobalExtensionManagement();
     this.MCTypeFacade = MCTypeFacade.getInstance();
 
-    this.glex.setGlobalValue("astHelper", new DecorationHelper());
+    this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
 
     this.decorator = new ModelLoaderDecorator(this.glex,
-        new SymbolTableService(decoratedCompilationUnit), new AccessorDecorator(glex));
+        new SymbolTableService(decoratedCompilationUnit), new AccessorDecorator(glex, new SymbolTableService(decoratedCompilationUnit)));
 
     Optional<ASTCDClass> astcdClass = decorator.decorate(decoratedCompilationUnit);
     assertTrue(astcdClass.isPresent());
@@ -87,7 +88,7 @@ public class ModelLoaderDecoratorTest extends DecoratorTestCase {
   @Test
   public void testSuperInterfaces() {
     assertDeepEquals("de.monticore.modelloader.IModelLoader<de.monticore.codegen.ast.automaton._ast.ASTAutomaton" +
-        ",de.monticore.codegen.ast.automaton._symboltable.IAutomatonGlobalScope>", modelLoaderClass.getInterface(0));
+        ",de.monticore.codegen.ast.automaton._symboltable.AutomatonGlobalScope>", modelLoaderClass.getInterface(0));
   }
 
   @Test
@@ -106,21 +107,34 @@ public class ModelLoaderDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, cdConstructor.getModifier());
     assertEquals("AutomatonModelLoader", cdConstructor.getName());
 
-    assertEquals(1, cdConstructor.sizeCDParameters());
-    assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.AutomatonLanguage", cdConstructor.getCDParameter(0).getMCType());
-    assertEquals("language", cdConstructor.getCDParameter(0).getName());
+    assertEquals(4, cdConstructor.sizeCDParameters());
+    assertDeepEquals("de.monticore.modelloader.AstProvider<de.monticore.codegen.ast.automaton._ast.ASTAutomaton>", cdConstructor.getCDParameter(0).getMCType());
+    assertEquals("astProvider", cdConstructor.getCDParameter(0).getName());
+    assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.AutomatonSymbolTableCreatorDelegator", cdConstructor.getCDParameter(1).getMCType());
+    assertEquals("symbolTableCreator", cdConstructor.getCDParameter(1).getName());
+    assertDeepEquals("String", cdConstructor.getCDParameter(2).getMCType());
+    assertEquals("modelFileExtension", cdConstructor.getCDParameter(2).getName());
+    assertDeepEquals("String", cdConstructor.getCDParameter(3).getMCType());
+    assertEquals("symbolFileExtension", cdConstructor.getCDParameter(3).getName());
   }
 
   @Test
   public void testAttributeSize() {
-    assertEquals(2, modelLoaderClass.sizeCDAttributes());
+    assertEquals(4, modelLoaderClass.sizeCDAttributes());
   }
 
   @Test
-  public void testModelingLanguageAttribute() {
-    ASTCDAttribute astcdAttribute = getAttributeBy("modelingLanguage", modelLoaderClass);
-    assertDeepEquals(PROTECTED_FINAL, astcdAttribute.getModifier());
-    assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.AutomatonLanguage", astcdAttribute.getMCType());
+  public void testSymbolTableCreatorAttribute() {
+    ASTCDAttribute astcdAttribute = getAttributeBy("symbolTableCreator", modelLoaderClass);
+    assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
+    assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.AutomatonSymbolTableCreatorDelegator", astcdAttribute.getMCType());
+  }
+
+  @Test
+  public void testModelFileExtensionAttribute() {
+    ASTCDAttribute astcdAttribute = getAttributeBy("modelFileExtension", modelLoaderClass);
+    assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
+    assertDeepEquals("String", astcdAttribute.getMCType());
   }
 
   @Test
@@ -132,17 +146,7 @@ public class ModelLoaderDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(8, modelLoaderClass.getCDMethodList().size());
-  }
-
-  @Test
-  public void testGetModelingLanguageMethod() {
-    ASTCDMethod method = getMethodBy("getModelingLanguage", modelLoaderClass);
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.AutomatonLanguage", method.getMCReturnType().getMCType());
-
-    assertTrue(method.isEmptyCDParameters());
+    assertEquals(7, modelLoaderClass.getCDMethodList().size());
   }
 
   @Test
@@ -159,7 +163,7 @@ public class ModelLoaderDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(String.class, method.getCDParameter(1).getMCType());
     assertEquals("modelName", method.getCDParameter(1).getName());
 
-    assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.IAutomatonGlobalScope", method.getCDParameter(2).getMCType());
+    assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.AutomatonGlobalScope", method.getCDParameter(2).getMCType());
     assertEquals("enclosingScope", method.getCDParameter(2).getName());
   }
 
@@ -179,7 +183,7 @@ public class ModelLoaderDecoratorTest extends DecoratorTestCase {
     assertDeepEquals("de.monticore.io.paths.ModelPath", method.getCDParameter(1).getMCType());
     assertEquals("modelPath", method.getCDParameter(1).getName());
 
-    assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.IAutomatonGlobalScope", method.getCDParameter(2).getMCType());
+    assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.AutomatonGlobalScope", method.getCDParameter(2).getMCType());
     assertEquals("enclosingScope", method.getCDParameter(2).getName());
   }
 

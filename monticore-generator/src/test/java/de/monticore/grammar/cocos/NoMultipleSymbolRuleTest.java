@@ -9,7 +9,7 @@ import org.junit.Test;
 
 public class NoMultipleSymbolRuleTest extends CocoTest{
 
-  private final String MESSAGE = " A symbolRule must not exist twice for a single Nonterminal. Violation by A";
+  private final String MESSAGE = " A symbolRule must not exist twice for a single nonterminal. Violation by A";
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
   private final String grammar = "cocos.invalid.A4151.A4151";
 

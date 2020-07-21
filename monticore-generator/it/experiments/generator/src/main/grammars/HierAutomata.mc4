@@ -1,0 +1,16 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+grammar HierAutomata extends de.monticore.MCBasics {
+
+  StateMachine =
+    "automaton" Name StateBody ;
+
+  State = "state" Name
+    (("<<" ["initial"] ">>" ) | ("<<" ["final"] ">>" ))*
+    ( ";" | StateBody );
+
+    StateBody =  "{" (State | Transition)* "}" ;
+
+  Transition =
+    from:Name "-" input:Name ">" to:Name ";" ;
+}

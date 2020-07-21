@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("scopeInterface", "artifactScope", "globalScope")}
+${tc.signature("scopeInterface")}
   if (enclosingScope == null) {
     // There should not be a symbol that is not defined in any scope. This case should only
     // occur while the symbol is built (by the symbol table creator). So, here the full name
@@ -10,10 +10,10 @@ ${tc.signature("scopeInterface", "artifactScope", "globalScope")}
   final Deque<String> nameParts = new ArrayDeque<>();
     nameParts.addFirst(name);
 
-    ${scopeInterface} optCurrentScope = enclosingScope;
+    IScope optCurrentScope = enclosingScope;
 
   while (optCurrentScope != null) {
-  final ${scopeInterface} currentScope = optCurrentScope;
+  final IScope currentScope = optCurrentScope;
       if (currentScope.isPresentSpanningSymbol()) {
         // If one of the enclosing scope(s) is spanned by a symbol, the full name
         // of that symbol is the missing prefix, and hence, the calculation
@@ -23,8 +23,8 @@ ${tc.signature("scopeInterface", "artifactScope", "globalScope")}
         break;
       }
 
-      if (!(currentScope instanceof ${globalScope})) {
-        if (currentScope instanceof ${artifactScope}) {
+      if (!(currentScope instanceof IGlobalScope)) {
+        if (currentScope instanceof IArtifactScope) {
           // We have reached the artifact scope. Get the package name from the
           // symbol itself, since it might be set manually.
           if (!getPackageName().isEmpty()) {

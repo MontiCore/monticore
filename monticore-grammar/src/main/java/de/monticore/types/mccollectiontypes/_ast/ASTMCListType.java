@@ -22,23 +22,20 @@ public class ASTMCListType extends ASTMCListTypeTOP {
 
   public ASTMCListType(List<ASTMCTypeArgument> typeArgumentList) {
     if (typeArgumentList.size() == 1) {
-      setMCTypeArgumentList(typeArgumentList);
+      setMCTypeArgumentsList(typeArgumentList);
     } else {
       Log.error("0xA6012 Not allowed to set a TypeArgumentList greater than 1 in ASTMCListType. Has to be exactly one.");
     }
     names = Lists.newArrayList("List");
   }
 
-  public void setName(String name) {
-    // Name is fixed to "List"
-  }
-
   public ASTMCTypeArgument getMCTypeArgument() {
-    return this.getMCTypeArgument(0);
+    return this.getMCTypeArguments(0);
   }
 
 
-  public List<String> getNameList() {
+  @Override
+  public List<String> getNamesList() {
     // copy of name List, so that the list cannot be changed
     return Lists.newArrayList(this.names);
   }
@@ -47,71 +44,86 @@ public class ASTMCListType extends ASTMCListTypeTOP {
    * overwrite setter for nameList, because only the value "List" is allowed
    */
 
-  public void setNameList(List<String> names) {
+  @Override
+  public void setNamesList(List<String> names) {
     // Name is fixed to "List"
   }
 
+  @Override
   public void clearNames() {
     // Name is fixed to "List"
   }
 
-  public boolean addName(String element) {
+  @Override
+  public boolean addNames(String element) {
     // Name is fixed to "List"
     return false;
   }
 
+  @Override
   public boolean addAllNames(Collection<? extends String> collection) {
     // Name is fixed to "List"
     return false;
   }
 
-  public boolean removeName(Object element) {
+  @Override
+  public boolean removeNames(Object element) {
     // Name is fixed to "List"
     return false;
   }
 
-  public boolean removeAllNames(Collection<?> collection) {
+  @Override
+ public boolean removeAllNames(Collection<?> collection) {
     // Name is fixed to "List"
     return false;
   }
 
+  @Override
   public boolean retainAllNames(Collection<?> collection) {
     // Name is fixed to "List"
     return false;
   }
 
-  public boolean removeIfName(Predicate<? super String> filter) {
+  @Override
+  public boolean removeIfNames(Predicate<? super String> filter) {
     // Name is fixed to "List"
     return false;
   }
 
+  @Override
   public void forEachNames(Consumer<? super String> action) {
     // Name is fixed to "List"
   }
 
-  public void addName(int index, String element) {
+  @Override
+  public void addNames(int index, String element) {
     // Name is fixed to "List"
   }
 
+  @Override
   public boolean addAllNames(int index, Collection<? extends String> collection) {
     // Name is fixed to "List"
     return false;
   }
 
-  public String removeName(int index) {
+  @Override
+  public String removeNames(int index) {
     // Name is fixed to "List"
     return "";
   }
 
-  public String setName(int index, String element) {
+  @Override
+  public String setNames(int index, String element) {
     // Name is fixed to "List"
     return "";
   }
 
+  @Override
   public void replaceAllNames(UnaryOperator<String> operator) {
     // Name is fixed to "List"
   }
 
+  @Override
   public void sortNames(Comparator<? super String> comparator) {
     // Name is fixed to "List"
   }
@@ -119,31 +131,37 @@ public class ASTMCListType extends ASTMCListTypeTOP {
    * overwrite setter for mcTypeArgument, because only one element is allowed
    */
 
+  @Override
   public void clearMCTypeArguments() {
     Log.error("0xA6000 Not allowed to clear MCTypeArgumentList of ASTMCListType.A MCTypeArgumentList must always have one element.");
   }
 
 
-  public boolean addMCTypeArgument(de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument element) {
+  @Override
+  public boolean addMCTypeArguments(de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument element) {
     Log.error("0xA6001 Not allowed to add an element to MCTypeArgumentList of ASTMCListType. A MCTypeArgumentList must always have one element.");
     return false;
   }
 
+  @Override
   public boolean addAllMCTypeArguments(Collection<? extends de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument> collection) {
     Log.error("0xA6002 Not allowed to addAll elements to MCTypeArgumentList of ASTMCListType.A MCTypeArgumentList must always have one element.");
     return false;
   }
 
-  public boolean removeMCTypeArgument(Object element) {
+  @Override
+  public boolean removeMCTypeArguments(Object element) {
     Log.error("0xA6003 Not allowed to remove an element to MCTypeArgumentList of ASTMCListType.A MCTypeArgumentList must always have one element.");
     return false;
   }
 
+  @Override
   public boolean removeAllMCTypeArguments(Collection<?> collection) {
     Log.error("0xA6004 Not allowed to removeAll elements to MCTypeArgumentList of ASTMCListType.A MCTypeArgumentList must always have one element.");
     return false;
   }
 
+  @Override
   public boolean retainAllMCTypeArguments(Collection<?> collection) {
     if (collection.contains(getMCTypeArgument())) {
       return true;
@@ -153,51 +171,60 @@ public class ASTMCListType extends ASTMCListTypeTOP {
     }
   }
 
-  public boolean removeIfMCTypeArgument(Predicate<? super de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument> filter) {
-    if (getMCTypeArgumentList().stream().noneMatch(filter)) {
-      return getMCTypeArgumentList().removeIf(filter);
+  @Override
+  public boolean removeIfMCTypeArguments(Predicate<? super de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument> filter) {
+    if (getMCTypeArgumentsList().stream().noneMatch(filter)) {
+      return getMCTypeArgumentsList().removeIf(filter);
     } else {
       Log.error("0xA6006 Not allowed to remove an element to MCTypeArgumentList of ASTMCListType.A MCTypeArgumentList must always have one element.");
       return false;
     }
   }
 
+  @Override
   public void forEachMCTypeArguments(Consumer<? super de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument> action) {
-    this.getMCTypeArgumentList().forEach(action);
+    this.getMCTypeArgumentsList().forEach(action);
   }
 
-  public void addMCTypeArgument(int index, de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument element) {
+  @Override
+  public void addMCTypeArguments(int index, de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument element) {
     Log.error("0xA6007 Not allowed to add an element to MCTypeArgumentList of ASTMCListType.A MCTypeArgumentList must always have one element.");
   }
 
+  @Override
   public boolean addAllMCTypeArguments(int index, Collection<? extends de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument> collection) {
     Log.error("0xA608 Not allowed to addAll elements to MCTypeArgumentList of ASTMCListType.A MCTypeArgumentList must always have one element.");
     return false;
   }
 
-  public de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument removeMCTypeArgument(int index) {
+  @Override
+  public de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument removeMCTypeArguments(int index) {
     Log.error("0xA6009 Not allowed to remove an element to MCTypeArgumentList of ASTMCListType.A MCTypeArgumentList must always have one element.");
     return getMCTypeArgument();
   }
 
-  public de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument setMCTypeArgument(int index, de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument element) {
+  @Override
+  public de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument setMCTypeArguments(int index, de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument element) {
     if (index == 0) {
-      return this.getMCTypeArgumentList().set(index, element);
+      return this.getMCTypeArgumentsList().set(index, element);
     } else {
       Log.error("0xA6010 Not allowed to set an element of MCTypeArgumentList of ASTMCListType to a other index than 0.A MCTypeArgumentList must always have one element.");
       return getMCTypeArgument();
     }
   }
 
+  @Override
   public void replaceAllMCTypeArguments(UnaryOperator<de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument> operator) {
-    this.getMCTypeArgumentList().replaceAll(operator);
+    this.getMCTypeArgumentsList().replaceAll(operator);
   }
 
+  @Override
   public void sortMCTypeArguments(Comparator<? super de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument> comparator) {
-    this.getMCTypeArgumentList().sort(comparator);
+    this.getMCTypeArgumentsList().sort(comparator);
   }
 
-  public void setMCTypeArgumentList(List<de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument> mCTypeArguments) {
+  @Override
+  public void setMCTypeArgumentsList(List<de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument> mCTypeArguments) {
     if (mCTypeArguments.size() == 1) {
       this.mCTypeArguments = mCTypeArguments;
     } else {

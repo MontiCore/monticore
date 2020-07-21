@@ -1,7 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
+
 pluginManagement {
   repositories {
-    mavenLocal()
+    if(("true").equals(getProperty('useLocalRepo'))){
+      mavenLocal()
+    }
     maven {
       credentials.username mavenUser
       credentials.password mavenPassword
@@ -12,7 +15,7 @@ pluginManagement {
 }
 
 rootProject.name = 'experiments'
-include(':automaton_experiments')
+include(':automaton')
 include(':builderAtm')
 include(':ch17')
 include(':codeChecks')
@@ -20,6 +23,7 @@ include(':composition')
 include(':extensionvariants')
 include(':forAst')
 include(':forConcSt')
+include(':forEmfAst')
 include(':forParser')
 include(':forVisitors')
 include(':generator')
@@ -30,8 +34,12 @@ include(':S01_intro')
 include(':scannerless')
 include(':spaceOnOff-negative')
 include(':spacesOffWithPositionCheck')
-include(':symbols')
+include(':stcomposition01')
+include(':stcomposition02')
+include(':stcomposition03')
 include(':visit_L_inherit')
-project(':automaton_experiments').projectDir = file('automaton')
 project(':S01_intro').projectDir = file('S01.intro')
 project(':visit_L_inherit').projectDir = file('visit.L.inherit')
+include 'templates'
+include 'textoutput'
+

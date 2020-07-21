@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+description = 'Experiments: symbol table composition 02: Embedding, where host and embedded languages define symbols'
+
+fileTree(grammarDir).matching { include '**/*.mc4'}.each {
+  def g = it
+  task  "generate${it.getName().substring(0,it.getName().lastIndexOf('.'))}" (type: MCTask) {
+    grammar = file g
+    outputDir = file outDir
+    def grammarIncludingPackage = file(grammarDir).toURI().relativize(g.toURI()).toString()
+    def uptoDate = incCheck(grammarIncludingPackage)
+    outputs.upToDateWhen { uptoDate }
+  }
+}
+
+generateJavaAut.dependsOn generateAutomata5, generateBasicJava

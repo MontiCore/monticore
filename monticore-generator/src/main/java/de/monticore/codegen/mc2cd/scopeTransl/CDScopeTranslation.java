@@ -1,11 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.mc2cd.scopeTransl;
 
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.symbolTransl.CDDefinitionNameTranslation;
-import de.monticore.codegen.mc2cd.transl.MultiplicityTranslation;
-import de.monticore.codegen.mc2cd.transl.PackageTranslation;
-import de.monticore.codegen.mc2cd.transl.ReferenceTypeTranslation;
-import de.monticore.codegen.mc2cd.transl.SymbolAndScopeTranslation;
+import de.monticore.codegen.mc2cd.transl.*;
 import de.monticore.codegen.mc2cd.transl.creation.GrammarToCDDefinition;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.utils.Link;
@@ -29,6 +27,7 @@ public class CDScopeTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTC
         .andThen(new ReferenceTypeTranslation())
         .andThen(new MultiplicityTranslation())
         .andThen(new SymbolAndScopeTranslation())
+        .andThen(new DerivedAttributeName())
         .apply(rootLink);
   }
 }

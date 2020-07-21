@@ -11,9 +11,9 @@ public class JsonNumber implements JsonElement {
   protected String value;
   
   /**
-   * Constructor for automata._symboltable.serialization.json.JsonNumber
+   * Constructor for de.monticore._symboltable.serialization.json.JsonNumber
    * 
-   * @param number
+   * @param value
    */
   public JsonNumber(String value) {
     super();
@@ -21,7 +21,7 @@ public class JsonNumber implements JsonElement {
   }
   
   /**
-   * @see automata._symboltable.serialization.json.JsonElement#isJsonNumber()
+   * @see de.monticore.symboltable.serialization.json.JsonElement#isJsonNumber()
    */
   @Override
   public boolean isJsonNumber() {
@@ -29,7 +29,7 @@ public class JsonNumber implements JsonElement {
   }
   
   /**
-   * @see automata._symboltable.serialization.json.JsonElement#getAsJsonNumber()
+   * @see de.monticore.symboltable.serialization.json.JsonElement#getAsJsonNumber()
    */
   @Override
   public JsonNumber getAsJsonNumber() {
@@ -44,7 +44,7 @@ public class JsonNumber implements JsonElement {
   }
   
   /**
-   * @param number the number to set
+   * @param value the number to set
    */
   public void setNumber(float value) {
     this.value = value + "";
@@ -58,7 +58,7 @@ public class JsonNumber implements JsonElement {
   }
   
   /**
-   * @param number the number to set
+   * @param value the number to set
    */
   public void setNumber(double value) {
     this.value = value + "";
@@ -72,7 +72,7 @@ public class JsonNumber implements JsonElement {
   }
   
   /**
-   * @param number the number to set
+   * @param value the number to set
    */
   public void setNumber(int value) {
     this.value = value + "";
@@ -86,7 +86,7 @@ public class JsonNumber implements JsonElement {
   }
   
   /**
-   * @param number the number to set
+   * @param value the number to set
    */
   public void setNumber(long value) {
     this.value = value + "";

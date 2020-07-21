@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package mc.feature.tokenrule;
+
+grammar TokenRule extends mc.common.Basics {
+  A = token("::") Name;
+
+  B = token(":::") Name;
+
+  C = x:token("::") Name;
+
+  D =  token("::");
+
+  G =  y:[token("::")];
+}

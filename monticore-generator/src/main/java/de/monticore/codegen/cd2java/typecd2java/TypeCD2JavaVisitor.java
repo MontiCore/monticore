@@ -6,6 +6,8 @@ import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
 import de.monticore.cd.cd4analysis._symboltable.ICD4AnalysisScope;
 import de.monticore.cd.cd4analysis._visitor.CD4AnalysisVisitor;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
+import de.monticore.symboltable.IScope;
+import de.monticore.symboltable.ISymbol;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 
 import java.util.ArrayList;
@@ -46,4 +48,22 @@ public class TypeCD2JavaVisitor implements CD4AnalysisVisitor {
       node.getMCQualifiedName().setPartList(new ArrayList<>(Arrays.asList(node.getNameList().get(0).split(PACKAGE_SEPARATOR))));
     }
   }
+
+  // TODO Lösche diese Methoden, wenn ein neues CD4A benutzt wird.
+  @Override
+  public void endVisit(ISymbol node) {
+  }
+
+  @Override
+  public void endVisit(IScope node) {
+  }
+
+  @Override
+  public void visit(ISymbol node) {
+  }
+
+  @Override
+  public void visit(IScope node) {
+  }
+
 }

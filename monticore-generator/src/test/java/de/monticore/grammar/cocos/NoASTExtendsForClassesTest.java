@@ -9,7 +9,7 @@ import org.junit.Test;
 
 public class NoASTExtendsForClassesTest extends CocoTest{
 
-  private final String MESSAGE = " It is not allowed to extend the rule A with the external class Observer.";
+  private final String MESSAGE = " It is forbidden to extend the rule A with the external class Observer.";
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
   private final String grammar = "cocos.invalid.A4097.A4097";
 

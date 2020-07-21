@@ -1,6 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._symboltable.scope;
 
 import com.google.common.collect.Lists;
+import de.monticore.cd.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.codegen.cd2java.AbstractDecorator;
@@ -24,12 +26,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.ACCEPT_METHOD;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISITOR_PREFIX;
 import static de.monticore.codegen.cd2java.data.ListSuffixDecorator.LIST_SUFFIX_S;
-import static de.monticore.cd.facade.CDModifier.*;
 
 /**
  * creates a Scope interface from a grammar
@@ -84,13 +86,13 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
     // get scope rule attributes and methods
     List<ASTCDAttribute> scopeRuleAttributes = scopeInput.deepClone().getCDDefinition().getCDClassList()
         .stream()
-        .map(ASTCDClassTOP::getCDAttributeList)
+        .map(ASTCDClass::getCDAttributeList)
         .flatMap(List::stream)
         .collect(Collectors.toList());
 
     List<ASTCDMethod> scopeRuleMethodList = scopeInput.deepClone().getCDDefinition().getCDClassList()
         .stream()
-        .map(ASTCDClassTOP::getCDMethodList)
+        .map(ASTCDClass::getCDMethodList)
         .flatMap(List::stream)
         .collect(Collectors.toList());
     scopeRuleMethodList.forEach(m -> m.getModifier().setAbstract(true));
@@ -102,8 +104,8 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
         .collect(Collectors.toList());
     scopeRuleAttributeMethods.forEach(m -> m.getModifier().setAbstract(true));
 
-    List<CDDefinitionSymbol> superCDsTransitive = symbolTableService.getSuperCDsTransitive();
-    List<ASTMCQualifiedType> superScopeInterfaces = superCDsTransitive
+    List<CDDefinitionSymbol> superCDsDirect = symbolTableService.getSuperCDsDirect();
+    List<ASTMCQualifiedType> superScopeInterfaces = superCDsDirect
         .stream()
         .map(symbolTableService::getScopeInterfaceType)
         .collect(Collectors.toList());
@@ -113,7 +115,7 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
 
     List<ASTMCObjectType> scopeRuleInterfaces = scopeInput.deepClone().getCDDefinition().getCDClassList()
         .stream()
-        .map(ASTCDClassTOP::getInterfaceList)
+        .map(ASTCDClass::getInterfaceList)
         .flatMap(List::stream)
         .collect(Collectors.toList());
 
@@ -429,7 +431,7 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName,
         foundSymbolsParameter, nameParameter, accessModifierParameter, predicateParameter);
     this.replaceTemplate(EMPTY_BODY, method,
-        new TemplateHookPoint(TEMPLATE_PATH + "ResolveMany", className, fullSymbolName));
+        new TemplateHookPoint(TEMPLATE_PATH + "ResolveMany4IScope", className, fullSymbolName));
     return method;
   }
 
@@ -470,7 +472,7 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName,
         foundSymbolsParameter, nameParameter, accessModifierParameter, predicateParameter);
     this.replaceTemplate(EMPTY_BODY, method,
-        new TemplateHookPoint(TEMPLATE_PATH + "ContinueWithEnclosingScope", className));
+        new TemplateHookPoint(TEMPLATE_PATH + "ContinueWithEnclosingScope4IScope", className));
     return method;
   }
 
@@ -511,12 +513,16 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
 
     ASTCDParameter subScopeParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(scopeInterface), "subScope");
     ASTCDMethod addSubScope = getCDMethodFacade().createMethod(PUBLIC, "addSubScope", subScopeParameter);
+    String generatedErrorCode = symbolTableService.getGeneratedErrorCode(scopeInterface + addSubScope.getName());
     this.replaceTemplate(EMPTY_BODY, addSubScope,
-        new StringHookPoint("Log.error(\"0xA7013x558 The method \\\"addSubScope\\\" of interface \\\"" + scopeInterface + "\\\" is not implemented.\");"));
+        new StringHookPoint("Log.error(\"0xA7014" + generatedErrorCode + " The method \\\"addSubScope\\\" of " +
+            "interface \\\"" + scopeInterface + "\\\" is not implemented.\");"));
 
     ASTCDMethod removeSubScope = getCDMethodFacade().createMethod(PUBLIC, "removeSubScope", subScopeParameter);
+    generatedErrorCode = symbolTableService.getGeneratedErrorCode(scopeInterface + removeSubScope.getName());
     this.replaceTemplate(EMPTY_BODY, removeSubScope,
-        new StringHookPoint("Log.error(\"0xA7013x558 The method \\\"removeSubScope\\\" of interface \\\"" + scopeInterface + "\\\" is not implemented.\");"));
+        new StringHookPoint("Log.error(\"0xA7013" + generatedErrorCode + " The method \\\"removeSubScope\\\"" +
+            " of interface \\\"" + scopeInterface + "\\\" is not implemented.\");"));
 
     return new ArrayList<>(Arrays.asList(getSubScopes, addSubScope, removeSubScope));
   }
@@ -532,8 +538,8 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
   }
 
   protected ASTCDMethod createAcceptMethod() {
-    String ownScopeVisitor = visitorService.getScopeVisitorFullName();
-    ASTCDParameter parameter = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(ownScopeVisitor), VISITOR_PREFIX);
+    String visitor = visitorService.getVisitorFullName();
+    ASTCDParameter parameter = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(visitor), VISITOR_PREFIX);
     return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, ACCEPT_METHOD, parameter);
   }
 

@@ -1,20 +1,42 @@
 /* (c) https://github.com/MontiCore/monticore */
-
 package de.monticore.statements;
 
-component grammar MCLowLevelStatements extends de.monticore.statements.MCStatementsBasis,
-                                               de.monticore.MCBasics {
+/* Beta-version: This is intended to become a MontiCore stable grammar. */
+
+/**
+ * This grammar defines three low-level statements that Java provides.
+ * It contains the break and continue statements and the possibility 
+ * to label a statement.
+ *
+ * This grammar is part of a hierarchy of statements, namely
+ * * statements/MCStatementsBasis.mc4
+ * * -- statements/MCAssertStatements.mc4
+ * * -- statements/MCVarDeclarationStatements.mc4
+ * * -- -- statements/MCCommonStatements.mc4
+ * * -- -- -- statements/MCExceptionStatements.mc4
+ * * -- -- -- statements/MCSynchronizedStatements.mc4
+ * * -- statements/MCLowLevelStatements.mc4
+ * * -- statements/MCReturnStatements.mc4
+ *
+ * and the composition of all statement grammars to full Java:
+ * * -- -- statements/MCFullJavaStatements.mc4
+ *
+*/
+
+component grammar MCLowLevelStatements 
+          extends de.monticore.statements.MCStatementsBasis,
+                  de.monticore.MCBasics {
 
 BreakStatement implements MCStatement
-    =   "break" label:Name? ";"
+    =   "break" label:Name@Label? ";"
     ;
 
 ContinueStatement implements MCStatement
-    =   "continue" label:Name? ";"
+    =   "continue" label:Name@Label? ";"
     ;
 
-LabeledStatement implements MCStatement
-    =   label:Name ":" MCStatement
+symbol Label implements MCStatement
+    =   Name ":" MCStatement
     ;
 
 }

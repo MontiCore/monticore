@@ -14,7 +14,7 @@ Wordtt implements SatzElement =
    (text:WORD | text:WS | text:"=" | text:"*" | text:"-" | text:":" | text:";" | text:"[" | text:"]" | text:"#");
 
 astrule Wordtt =
-	text:WORD
+	text:String
 ;
 
 interface WikiZeilenElement;

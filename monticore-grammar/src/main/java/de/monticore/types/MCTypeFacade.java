@@ -2,11 +2,12 @@
 package de.monticore.types;
 
 import com.google.common.collect.Lists;
+import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mccollectiontypes._ast.*;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCArrayType;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardTypeArgument;
-import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
+import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 
 import java.util.ArrayList;
@@ -42,7 +43,7 @@ public class MCTypeFacade {
   }
 
   public ASTMCQualifiedType createQualifiedType(final String name) {
-    ASTMCQualifiedName qualName = MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(Arrays.asList(name.split(PACKAGE_SEPARATOR))).build();
+    ASTMCQualifiedName qualName = MCBasicTypesMill.mCQualifiedNameBuilder().setPartsList(Arrays.asList(name.split(PACKAGE_SEPARATOR))).build();
     return MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(qualName).build();
   }
 
@@ -80,7 +81,7 @@ public class MCTypeFacade {
 
   public ASTMCOptionalType createOptionalTypeOf(final String name) {
     return MCFullGenericTypesMill.mCOptionalTypeBuilder()
-        .addMCTypeArgument(createBasicTypeArgumentOf(name))
+        .addMCTypeArguments(createBasicTypeArgumentOf(name))
         .build();
   }
 
@@ -105,7 +106,7 @@ public class MCTypeFacade {
 
   public ASTMCListType createListTypeOf(final String name) {
     return MCFullGenericTypesMill.mCListTypeBuilder()
-        .addMCTypeArgument(createBasicTypeArgumentOf(name))
+        .addMCTypeArguments(createBasicTypeArgumentOf(name))
         .build();
   }
 
@@ -130,7 +131,7 @@ public class MCTypeFacade {
 
   public ASTMCSetType createSetTypeOf(final String name) {
     return MCFullGenericTypesMill.mCSetTypeBuilder()
-        .addMCTypeArgument(createBasicTypeArgumentOf(name))
+        .addMCTypeArguments(createBasicTypeArgumentOf(name))
         .build();
   }
 
@@ -155,8 +156,8 @@ public class MCTypeFacade {
 
   public ASTMCGenericType createCollectionTypeOf(final String name) {
     return MCFullGenericTypesMill.mCBasicGenericTypeBuilder()
-        .setNameList(Lists.newArrayList("Collection"))
-        .setMCTypeArgumentList(Lists.newArrayList(createBasicTypeArgumentOf(name)))
+        .setNamesList(Lists.newArrayList("Collection"))
+        .setMCTypeArgumentsList(Lists.newArrayList(createBasicTypeArgumentOf(name)))
         .build();
   }
 
@@ -198,8 +199,8 @@ public class MCTypeFacade {
    */
   public ASTMCBasicGenericType createBasicGenericTypeOf(final List<String> nameList, List<ASTMCTypeArgument> typeArguments) {
     return MCFullGenericTypesMill.mCBasicGenericTypeBuilder()
-        .setNameList(nameList)
-        .setMCTypeArgumentList(typeArguments)
+        .setNamesList(nameList)
+        .setMCTypeArgumentsList(typeArguments)
         .build();
   }
 

@@ -18,6 +18,10 @@ grammar Subgrammar extends mc.feature.inherited.Supergrammar {
   
   O = X*;
   
-    N = X?;
+  N = X?;
+
+  C2 extends C = foo:(X || ",")+ "bar";
+
+  H = X (X | ",")+ "fee";
  
 }

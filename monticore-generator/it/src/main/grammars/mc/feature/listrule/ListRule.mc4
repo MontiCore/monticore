@@ -21,6 +21,6 @@ grammar ListRule extends mc.common.Basics {
   Son4 = "P4" Name;
 
   // Check with plusKeywords
-  Parent6 = sons:(Name& || ",")+;
+  Parent6 = sons:(Name || ",")+;
 
 }

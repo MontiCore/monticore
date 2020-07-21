@@ -87,6 +87,26 @@ public class ProdAndExtendedProdUseSameAttrNameForDiffNTsTest extends CocoTest {
   }
 
   @Test
+  public void testInvalid_h() {
+    //  Super1 = c:D;
+    //  Sub extends Super = c:A;
+    String message = " The production Sub extending the production Super must not use the\n" +
+        "name c for the nonterminal A as Super already uses this name for the nonterminal Name.";
+    testInvalidGrammar(grammar + "_h", ProdAndExtendedProdUseSameAttrNameForDiffNTs.ERROR_CODE, message,
+        checker);
+  }
+
+  @Test
+  public void testInvalid_i() {
+    //  Super1 = c:D;
+    //  Sub extends Super = c:A;
+    String message = " The production Sub extending the production Super must not use the\n" +
+        "name c for the nonterminal A as Super already uses this name for the nonterminal D.";
+    testInvalidGrammar(grammar + "_i", ProdAndExtendedProdUseSameAttrNameForDiffNTs.ERROR_CODE, message,
+        checker, 4);
+  }
+
+  @Test
   public void testCorrect() {
     testValidGrammar("cocos.valid.Attributes", checker);
   }

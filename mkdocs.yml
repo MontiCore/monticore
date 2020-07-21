@@ -1,0 +1,37 @@
+site_name: MontiCore
+theme:
+  name: 'material'
+  favicon: 'img/favicon.ico'
+  icon:
+    logo: 'fontawesome/solid/desktop'
+
+repo_url: https://github.com/MontiCore/monticore/
+edit_uri: ""
+
+extra_css:
+  - 'stylesheets/extra.css'
+
+copyright: '(c) https://github.com/MontiCore/monticore'
+
+nav:
+  - Home: 'README.md'
+  - 'Getting Started':
+      - 'General': 'docs/GettingStarted.md'
+      - 'Eclipse': 'docs/GettingStartedEclipse.md'
+      - 'IntelliJ': 'docs/GettingStartedIntelliJ.md'
+  - 'Best Practices': 'docs/BestPractices.md'
+  - Grammars:
+      - 'General': 'monticore-grammar/src/main/grammars/de/monticore/Grammars.md'
+      - 'Expressions': 'monticore-grammar/src/main/grammars/de/monticore/expressions/Expressions.md'
+      - 'Literals': 'monticore-grammar/src/main/grammars/de/monticore/literals/Literals.md'
+      - 'Types': 'monticore-grammar/src/main/java/de/monticore/types/check/Types.md'
+  - Languages: 'docs/DevelopedLanguages.md'
+  - Publications: 'docs/Publications.md'
+  - 'More Information':
+      - Changelog: '00.org/Explanations/CHANGELOG.md'
+      - License: '00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md'
+      - 'FAQ': '00.org/Explanations/FAQ.md'
+  - Impressum: 'docs/further_docs/Impressum.md'
+
+
+

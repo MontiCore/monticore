@@ -1,29 +1,31 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._symboltable.scope;
 
+import com.google.common.collect.Lists;
+import de.monticore.cd.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
-import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbolTOP;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCMapType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCSetType;
 import de.se_rwth.commons.StringTransformations;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
-import static de.monticore.cd.facade.CDModifier.*;
 
 /**
  * creates a globalScope class from a grammar
@@ -42,6 +44,17 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
 
   protected static final String TEMPLATE_PATH = "_symboltable.globalscope.";
 
+  protected static final String ERROR_CODE = "0xA6100";
+
+  /**
+   * flag added to define if the GlobalScope interface was overwritten with the TOP mechanism
+   * if top mechanism was used, must use setter to set flag true, before the decoration
+   * is needed for different getRealThis method implementations
+   */
+  protected boolean isGlobalScopeTop = false;
+
+  protected static final String LOAD_MODELS_FOR = "loadModelsFor%s";
+
   public GlobalScopeClassDecorator(final GlobalExtensionManagement glex,
                                    final SymbolTableService symbolTableService,
                                    final MethodDecorator methodDecorator) {
@@ -56,7 +69,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
   public ASTCDClass decorate(ASTCDCompilationUnit input) {
     String globalScopeName = symbolTableService.getGlobalScopeSimpleName();
     ASTMCQualifiedType scopeType = symbolTableService.getScopeType();
-    ASTMCQualifiedType globalScopeInterfaceType = getMCTypeFacade().createQualifiedType(symbolTableService.getGlobalScopeInterfaceFullName());
+    ASTMCQualifiedType globalScopeInterface = symbolTableService.getGlobalScopeInterfaceType();
     String definitionName = input.getCDDefinition().getName();
     String modelLoaderClassName = symbolTableService.getModelLoaderClassSimpleName();
 
@@ -65,11 +78,19 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     ASTCDAttribute modelPathAttribute = createModelPathAttribute();
     List<ASTCDMethod> modelPathMethods = accessorDecorator.decorate(modelPathAttribute);
 
-    ASTCDAttribute languageAttribute = createLanguageAttribute(definitionName);
-    List<ASTCDMethod> languageMethods = accessorDecorator.decorate(languageAttribute);
+    ASTCDAttribute modelLoaderAttribute = createModelLoaderAttribute(modelLoaderClassName);
+    List<ASTCDMethod> modelLoaderMethods = accessorDecorator.decorate(modelLoaderAttribute);
+    modelLoaderMethods.addAll(mutatorDecorator.decorate(modelLoaderAttribute));
+
+    ASTCDAttribute fileExtensionAttribute = getCDAttributeFacade().createAttribute(PROTECTED,
+        getMCTypeFacade().createStringType(),  FILE_EXTENSION_VAR);
+    List<ASTCDMethod> fileExtensionMethods = accessorDecorator.decorate(fileExtensionAttribute);
+    fileExtensionMethods.addAll(mutatorDecorator.decorate(fileExtensionAttribute));
 
     Map<String, ASTCDAttribute> resolvingDelegateAttributes = createResolvingDelegateAttributes(symbolProds);
     resolvingDelegateAttributes.putAll(createResolvingDelegateSuperAttributes());
+
+    List<ASTCDType> symbolClasses = symbolTableService.getSymbolDefiningProds(input.getCDDefinition());
 
     List<ASTCDMethod> resolvingDelegateMethods = resolvingDelegateAttributes.values()
         .stream()
@@ -81,15 +102,19 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
         .setName(globalScopeName)
         .setModifier(PUBLIC.build())
         .setSuperclass(scopeType)
-        .addInterface(globalScopeInterfaceType)
-        .addCDConstructor(createConstructor(globalScopeName, definitionName))
+        .addInterface(globalScopeInterface)
+        .addCDConstructor(createConstructor(globalScopeName))
         .addCDAttribute(modelPathAttribute)
         .addAllCDMethods(modelPathMethods)
-        .addCDAttribute(languageAttribute)
-        .addAllCDMethods(languageMethods)
+        .addCDAttribute(modelLoaderAttribute)
+        .addAllCDMethods(modelLoaderMethods)
+        .addCDAttribute(fileExtensionAttribute)
+        .addAllCDMethods(fileExtensionMethods)
         .addCDAttribute(createModelName2ModelLoaderCacheAttribute(modelLoaderClassName))
         .addAllCDAttributes(resolvingDelegateAttributes.values())
-        .addCDMethod(createGetNameMethod())
+        .addCDMethod(createEnableModelLoader(globalScopeName))
+        .addCDMethod(createDisableModelLoader())
+        .addCDMethod(createGetNameMethod(globalScopeName))
         .addCDMethod(createIsPresentNameMethod())
         .addCDMethod(createCacheMethod(definitionName))
         .addCDMethod(createContinueWithModelLoaderMethod(modelLoaderClassName))
@@ -99,30 +124,63 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
         .addAllCDMethods(createEnclosingScopeMethods(globalScopeName))
         .addAllCDMethods(createResolveAdaptedSuperMethods())
         .addAllCDMethods(createResolveAdaptedMethods(symbolProds))
+        //
+        .addCDMethod(creatCheckIfContinueAsSubScopeMethod())
+        .addCDMethod(createGetRealThisMethod(globalScopeName))
+        .addAllCDMethods(createResolveMethods(symbolClasses, definitionName))
+        .addAllCDMethods(createSuperProdResolveMethods(definitionName))
         .build();
   }
 
-  protected ASTCDConstructor createConstructor(String globalScopeClassName, String definitionName) {
+  protected ASTCDConstructor createConstructor(String globalScopeClassName) {
+    StringBuilder sb = new StringBuilder();
+
     ASTMCType modelPathType = getMCTypeFacade().createQualifiedType(MODEL_PATH_TYPE);
     ASTCDParameter modelPathParameter = getCDParameterFacade().createParameter(modelPathType, MODEL_PATH_VAR);
+    sb.append("this." + MODEL_PATH_VAR + " = Log.errorIfNull(" + MODEL_PATH_VAR + ");\n");
 
-    ASTMCType languageType = getMCTypeFacade().createQualifiedType(definitionName + LANGUAGE_SUFFIX);
-    ASTCDParameter languageParameter = getCDParameterFacade().createParameter(languageType, "language");
+    ASTCDParameter fileExtensionParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createStringType(), FILE_EXTENSION_VAR);
+    ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), globalScopeClassName, modelPathParameter, fileExtensionParameter);
+    sb.append("this." + FILE_EXTENSION_VAR + " = Log.errorIfNull(" + FILE_EXTENSION_VAR + ");\n");
 
-    ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), globalScopeClassName, modelPathParameter, languageParameter);
-
-    this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("this." + MODEL_PATH_VAR + " = Log.errorIfNull(" + MODEL_PATH_VAR + ");\n" +
-        "    this." + StringTransformations.uncapitalize(definitionName) + "Language = Log.errorIfNull(language);"));
+    if(!symbolTableService.hasComponentStereotype(symbolTableService.getCDSymbol().getAstNode())){
+      sb.append("this.enableModelLoader();");
+    }
+    else{
+      sb.append("this."+MODEL_LOADER_VAR+" = Optional.empty();");
+    }
+    this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint(sb.toString()));
     return constructor;
+  }
+
+  protected ASTCDMethod createEnableModelLoader(String globalScopeName) {
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), "enableModelLoader");
+      if(symbolTableService.hasComponentStereotype(symbolTableService.getCDSymbol().getAstNode())){
+        this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint(
+            "Log.error(\"0xA6102" + symbolTableService.getGeneratedErrorCode(globalScopeName)
+                + " Global scopes of component grammars do not have model loaders.\");"));
+      }
+      else{
+        this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH
+            + "EnableModelLoader", symbolTableService.getCDName(), symbolTableService.getQualifiedCDName().toLowerCase()));
+    }
+    return method;
+  }
+
+  protected ASTCDMethod createDisableModelLoader() {
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), "disableModelLoader");
+    this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint(
+        "this."+MODEL_LOADER_VAR+" = Optional.empty();"));
+    return method;
   }
 
   protected ASTCDAttribute createModelPathAttribute() {
     return getCDAttributeFacade().createAttribute(PROTECTED, MODEL_PATH_TYPE, MODEL_PATH_VAR);
   }
 
-  protected ASTCDAttribute createLanguageAttribute(String definitionName) {
-    String languageName = definitionName + LANGUAGE_SUFFIX;
-    return getCDAttributeFacade().createAttribute(PROTECTED, languageName, StringTransformations.uncapitalize(languageName));
+  protected ASTCDAttribute createModelLoaderAttribute(String modelLoaderClassName) {
+    ASTMCOptionalType optType = getMCTypeFacade().createOptionalTypeOf(modelLoaderClassName);
+    return getCDAttributeFacade().createAttribute(PROTECTED, optType, "modelLoader");
   }
 
   protected ASTCDAttribute createModelName2ModelLoaderCacheAttribute(String modelLoaderClassName) {
@@ -146,8 +204,8 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     Map<String, ASTCDAttribute> symbolAttributes = new HashMap<>();
     for (CDDefinitionSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
       for (CDTypeSymbol type : cdDefinitionSymbol.getTypes()) {
-        if (type.isPresentAstNode() && type.getAstNode().getModifierOpt().isPresent()
-            && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifierOpt().get())) {
+        if (type.isPresentAstNode() && type.getAstNode().isPresentModifier()
+            && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifier())) {
           Optional<ASTCDAttribute> symbolAttribute = createResolvingDelegateAttribute(type.getAstNode(), cdDefinitionSymbol);
           symbolAttribute.ifPresent(attr -> symbolAttributes.put(attr.getName(), attr));
         }
@@ -170,20 +228,20 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     return Optional.empty();
   }
 
-  protected ASTCDMethod createGetNameMethod() {
+  protected ASTCDMethod createGetNameMethod(String globalScopeName) {
     ASTCDMethod getNameMethod = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createStringType(), "getName");
-    String generatedErrorCode = DecorationHelper.getGeneratedErrorCode(getNameMethod);
+    String generatedErrorCode = symbolTableService.getGeneratedErrorCode(globalScopeName);
     this.replaceTemplate(EMPTY_BODY, getNameMethod, new StringHookPoint(
-        "Log.error(\"0xA6101" + generatedErrorCode 
-        + " Global scopes do not have names.\");\n" 
-        + "    return null;"));
+        "Log.error(\"0xA6101" + generatedErrorCode
+            + " Global scopes do not have names.\");\n"
+            + "    return null;"));
     return getNameMethod;
   }
-  
+
   /**
    * Creates the isPresent method for global scopes. As these do not have names,
    * the method return false.
-   * 
+   *
    * @return false
    */
   protected ASTCDMethod createIsPresentNameMethod() {
@@ -225,11 +283,11 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     List<ASTCDAttribute> symbolAlreadyResolvedAttributes = new ArrayList<>();
     for (CDDefinitionSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
       // only types that define a symbol
-      List<ASTCDType> symbolProds = cdDefinitionSymbol.getTypes().stream().filter(t -> t.getAstNodeOpt().isPresent())
-          .filter(t -> t.getAstNode().getModifierOpt().isPresent())
-          .filter(t -> symbolTableService.hasSymbolStereotype(t.getAstNode().getModifierOpt().get()))
-          .map(CDTypeSymbolTOP::getAstNodeOpt)
-          .map(Optional::get)
+      List<ASTCDType> symbolProds = cdDefinitionSymbol.getTypes().stream().filter(t -> t.isPresentAstNode())
+          .filter(t -> t.getAstNode().isPresentModifier())
+          .filter(t -> symbolTableService.hasSymbolStereotype(t.getAstNode().getModifier()))
+          .filter(CDTypeSymbol::isPresentAstNode)
+          .map(CDTypeSymbol::getAstNode)
           .collect(Collectors.toList());
       symbolAlreadyResolvedAttributes.addAll(createSymbolAlreadyResolvedAttributes(symbolProds));
     }
@@ -265,25 +323,25 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
   protected List<ASTCDMethod> createEnclosingScopeMethods(String globalScopeName) {
     // create attribute just for method generation purposes
     ASTCDAttribute enclosingScopeAttribute = this.getCDAttributeFacade()
-            .createAttribute(PROTECTED,
-        symbolTableService.getScopeInterfaceType(), ENCLOSING_SCOPE_VAR);
-    symbolTableService.addAttributeDefaultValues(enclosingScopeAttribute, glex);
+        .createAttribute(PROTECTED,
+            symbolTableService.getScopeInterfaceType(), ENCLOSING_SCOPE_VAR);
+    getDecorationHelper().addAttributeDefaultValues(enclosingScopeAttribute, glex);
 
     methodDecorator.disableTemplates();
     List<ASTCDMethod> enclosingScopeMethods = methodDecorator.decorate(enclosingScopeAttribute);
     methodDecorator.enableTemplates();
     for (ASTCDMethod enclosingScopeMethod : enclosingScopeMethods) {
-      String generatedErrorCode = DecorationHelper.getGeneratedErrorCode(enclosingScopeMethod);
+      String generatedErrorCode = symbolTableService.getGeneratedErrorCode(globalScopeName + enclosingScopeAttribute.printType());
       // add return null if method has return type
       if (enclosingScopeMethod.getMCReturnType().isPresentMCType()) {
         this.replaceTemplate(EMPTY_BODY, enclosingScopeMethod, new StringHookPoint(
-            "Log.error(\"0xA6100" + generatedErrorCode + " GlobalScope " + globalScopeName +
+            "Log.error(\"" + ERROR_CODE + generatedErrorCode + " GlobalScope " + globalScopeName +
                 " has no EnclosingScope, so you cannot call method" + enclosingScopeMethod.getName() + ".\");\n" +
                 "    return null;"));
       } else {
         // no return if method is void type
         this.replaceTemplate(EMPTY_BODY, enclosingScopeMethod, new StringHookPoint(
-            "Log.error(\"0xA6100" + generatedErrorCode + " GlobalScope " + globalScopeName +
+            "Log.error(\"" + ERROR_CODE + generatedErrorCode + " GlobalScope " + globalScopeName +
                 " has no EnclosingScope, so you cannot call method" + enclosingScopeMethod.getName() + ".\");"));
       }
     }
@@ -330,8 +388,8 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     List<ASTCDMethod> methodList = new ArrayList<>();
     for (CDDefinitionSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
       for (CDTypeSymbol type : cdDefinitionSymbol.getTypes()) {
-        if (type.isPresentAstNode() && type.getAstNode().getModifierOpt().isPresent()
-            && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifierOpt().get())) {
+        if (type.isPresentAstNode() && type.getAstNode().isPresentModifier()
+            && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifier())) {
           methodList.add(createResolveAdaptedMethod(type.getAstNode(), cdDefinitionSymbol, foundSymbolsParameter, nameParameter,
               accessModifierParameter));
         }
@@ -339,4 +397,106 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     }
     return methodList;
   }
+
+  ///////////////////////////////////////////////////////////////////////////////////////////////
+
+  protected ASTCDMethod creatCheckIfContinueAsSubScopeMethod() {
+    ASTCDParameter modelNameParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createStringType(), "symbolName");
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createBooleanType(), "checkIfContinueAsSubScope", modelNameParameter);
+    this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return false;"));
+    return method;
+  }
+
+  protected ASTCDMethod createGetRealThisMethod(String globalScopeName) {
+    ASTMCType globalScopeInterfaceType = getMCTypeFacade().createQualifiedType(globalScopeName);
+    ASTCDMethod getRealThis = getCDMethodFacade().createMethod(PUBLIC, globalScopeInterfaceType, "getRealThis");
+    if (isGlobalScopeTop()) {
+      getRealThis.getModifier().setAbstract(true);
+    } else {
+      this.replaceTemplate(EMPTY_BODY, getRealThis, new StringHookPoint("return this;"));
+    }
+    return getRealThis;
+  }
+
+  /**
+   * creates all resolve methods
+   * reuses the often used parameters, so that they only need to be created once
+   */
+  protected List<ASTCDMethod> createResolveMethods(List<? extends ASTCDType> symbolProds, String definitionName) {
+    List<ASTCDMethod> resolveMethods = new ArrayList<>();
+    ASTCDParameter nameParameter = getCDParameterFacade().createParameter(String.class, NAME_VAR);
+    ASTCDParameter accessModifierParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(ACCESS_MODIFIER), MODIFIER_VAR);
+    ASTCDParameter foundSymbolsParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createBooleanType(), FOUND_SYMBOLS_VAR);
+
+    for (ASTCDType symbolProd : symbolProds) {
+      resolveMethods.addAll(createResolveMethods(symbolProd, nameParameter, foundSymbolsParameter, accessModifierParameter,
+          symbolTableService.getCDSymbol(), definitionName));
+    }
+
+    return resolveMethods;
+  }
+
+  protected List<ASTCDMethod> createResolveMethods(ASTCDType symbolProd, ASTCDParameter nameParameter, ASTCDParameter foundSymbolsParameter,
+      ASTCDParameter accessModifierParameter, CDDefinitionSymbol cdDefinitionSymbol, String definitionName) {
+    List<ASTCDMethod> resolveMethods = new ArrayList<>();
+    String className = symbolTableService.removeASTPrefix(symbolProd);
+    String symbolFullTypeName = symbolTableService.getSymbolFullName(symbolProd, cdDefinitionSymbol);
+    ASTMCType listSymbol = getMCTypeFacade().createListTypeOf(symbolFullTypeName);
+
+    ASTCDParameter predicateParameter = getCDParameterFacade().createParameter(
+        getMCTypeFacade().createBasicGenericTypeOf(PREDICATE, symbolFullTypeName), PREDICATE_VAR);
+
+    resolveMethods.add(createResolveManyMethod(className, symbolFullTypeName, listSymbol, foundSymbolsParameter,
+        nameParameter, accessModifierParameter, predicateParameter));
+
+    resolveMethods.add(createLoadModelsForMethod(className, definitionName, nameParameter));
+    return resolveMethods;
+  }
+
+  protected List<ASTCDMethod> createSuperProdResolveMethods(String definitionName) {
+    List<ASTCDMethod> resolveMethods = new ArrayList<>();
+    ASTCDParameter nameParameter = getCDParameterFacade().createParameter(String.class, NAME_VAR);
+    ASTCDParameter accessModifierParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(ACCESS_MODIFIER), MODIFIER_VAR);
+    ASTCDParameter foundSymbolsParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createBooleanType(), FOUND_SYMBOLS_VAR);
+
+    for (CDDefinitionSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
+      for (CDTypeSymbol type : cdDefinitionSymbol.getTypes()) {
+        if (type.isPresentAstNode() && type.getAstNode().isPresentModifier()
+            && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifier())) {
+          resolveMethods.addAll(createResolveMethods(type.getAstNode(), nameParameter, foundSymbolsParameter,
+              accessModifierParameter, cdDefinitionSymbol, definitionName));
+        }
+      }
+    }
+    return resolveMethods;
+  }
+
+  protected ASTCDMethod createResolveManyMethod(String className, String fullSymbolName, ASTMCType returnType,
+      ASTCDParameter foundSymbolsParameter, ASTCDParameter nameParameter,
+      ASTCDParameter accessModifierParameter, ASTCDParameter predicateParameter) {
+    String methodName = String.format(RESOLVE_MANY, className);
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName,
+        foundSymbolsParameter, nameParameter, accessModifierParameter, predicateParameter);
+    this.replaceTemplate(EMPTY_BODY, method,
+        new TemplateHookPoint(TEMPLATE_PATH + "ResolveMany4GlobalScope", className, fullSymbolName));
+    return method;
+  }
+
+  protected ASTCDMethod createLoadModelsForMethod(String className, String definitionName,
+      ASTCDParameter nameParameter) {
+    String methodName = String.format(LOAD_MODELS_FOR, className);
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, methodName, nameParameter);
+    this.replaceTemplate(EMPTY_BODY, method,
+        new TemplateHookPoint(TEMPLATE_PATH + "LoadModelsFor", className, definitionName));
+    return method;
+  }
+
+  public boolean isGlobalScopeTop() {
+    return isGlobalScopeTop;
+  }
+
+  public void setGlobalScopeTop(boolean globalScopeTop) {
+    isGlobalScopeTop = globalScopeTop;
+  }
+
 }

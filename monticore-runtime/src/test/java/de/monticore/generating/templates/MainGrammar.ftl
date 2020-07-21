@@ -1,2 +1,2 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.write("Grammar", "path.of." + ast.getName(), ast)}
+${tc.write("GrammarTest", "path.of." + ast.getName(), ast)}

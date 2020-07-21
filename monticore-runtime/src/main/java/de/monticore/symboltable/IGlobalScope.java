@@ -1,5 +1,5 @@
+/* (c) https://github.com/MontiCore/monticore */
 /*
- * Copyright (c)  RWTH Aachen. All rights reserved.
  *
  * http://www.se-rwth.de/
  */

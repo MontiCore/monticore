@@ -1,9 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-description = 'Experiments: symbols'
-
-task generate (type: MCTask) {
-  grammar = file "$projectDir/$grammarDir/Automaton.mc4"
-  outputDir = file outDir
-  def uptoDate = incCheck("Automaton.mc4")
-  outputs.upToDateWhen { uptoDate }
-}

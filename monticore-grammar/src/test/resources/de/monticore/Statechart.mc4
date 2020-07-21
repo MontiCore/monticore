@@ -16,10 +16,10 @@ grammar Statechart {
     ( ("{ options{}" (EntryAction:EntryAction)? (ExitAction:ExitAction)? (States:State | Transitions:Transition)* "}") | ";") ;
  
   Transition = From:Name "->" To:Name 
-    				(":" (Event:Name ( "(" (Arguments:(Argument || ",")+) ")" )? )?
-  					 ("[" Guard: Expression "]")?
-  					 ("/" Action: BlockStatement)? ";" 
-  				| ";");
+            (":" (Event:Name ( "(" (Arguments:(Argument || ",")+) ")" )? )?
+             ("[" Guard: Expression "]")?
+             ("/" Action: BlockStatement)? ";"
+          | ";");
     
   Argument= ParamType:Name ParamName:Name;
  

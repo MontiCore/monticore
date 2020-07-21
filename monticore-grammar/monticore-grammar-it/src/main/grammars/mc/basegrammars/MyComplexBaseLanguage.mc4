@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.basegrammars;
+
+grammar MyComplexBaseLanguage extends
+        mc.basegrammars.MyBasicLanguage,
+        de.monticore.expressions.JavaClassExpressions,
+        de.monticore.expressions.AssignmentExpressions,
+        de.monticore.types.MCFullGenericTypes,
+        de.monticore.statements.MCFullJavaStatements,
+        de.monticore.literals.MCJavaLiterals {
+
+    ExtType = MCType;
+    ExtReturnType = MCReturnType;
+    ExtTypeArgument = MCTypeArgument;
+}

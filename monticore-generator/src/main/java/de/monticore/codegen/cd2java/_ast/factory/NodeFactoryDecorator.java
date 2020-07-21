@@ -2,6 +2,7 @@
 package de.monticore.codegen.cd2java._ast.factory;
 
 import com.google.common.collect.Lists;
+import de.monticore.cd.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.codegen.cd2java.AbstractCreator;
@@ -12,12 +13,11 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
+import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PACKAGE;
 import static de.monticore.codegen.cd2java._ast.factory.NodeFactoryConstants.*;
-import static de.monticore.cd.facade.CDModifier.*;
 
 /**
  * creates the nodeFactory class for a grammar
@@ -121,10 +121,9 @@ public class NodeFactoryDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     List<ASTCDMethod> delegateMethodList = new ArrayList<>();
     //get super symbols
     for (CDDefinitionSymbol superSymbol : nodeFactoryService.getSuperCDsTransitive()) {
-      Optional<ASTCDDefinition> astNode = superSymbol.getAstNodeOpt();
-      if (astNode.isPresent()) {
+      if (superSymbol.isPresentAstNode()) {
         //get super cdDefinition
-        ASTCDDefinition superDefinition = astNode.get();
+        ASTCDDefinition superDefinition = superSymbol.getAstNode();
 
         TypeCD2JavaVisitor visitor = new TypeCD2JavaVisitor(superSymbol.getEnclosingScope());
         CD4AnalysisMill.cDCompilationUnitBuilder().setCDDefinition(superDefinition).build().accept(visitor);

@@ -4,7 +4,7 @@ package de.monticore.codegen.mc2cd.manipul;
 
 import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.codegen.GeneratorHelper;
+import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.utils.ASTNodes;
 
 import java.util.function.UnaryOperator;
@@ -21,8 +21,8 @@ public class JavaAndCdConformNameManipulation implements UnaryOperator<ASTCDComp
     
     for (ASTCDAttribute cdAttribute : ASTNodes.getSuccessors(cdCompilationUnit,
         ASTCDAttribute.class)) {
-      
-      cdAttribute.setName(GeneratorHelper.getJavaAndCdConformName(cdAttribute.getName()));
+
+      cdAttribute.setName(TransformationHelper.getJavaAndCdConformName(cdAttribute.getName()));
     }
     
     return cdCompilationUnit;

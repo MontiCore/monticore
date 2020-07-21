@@ -14,7 +14,7 @@ import de.se_rwth.commons.logging.Log;
 import mc.feature.hwc.statechartdsl._ast.ASTState;
 import mc.feature.hwc.statechartdsl._ast.ASTStatechart;
 import mc.feature.hwc.statechartdsl._ast.ASTTransition;
-import mc.feature.hwc.statechartdsl._ast.StatechartDSLMill;
+import mc.feature.hwc.statechartdsl.StatechartDSLMill;
 
 public class BuildersTest {
   

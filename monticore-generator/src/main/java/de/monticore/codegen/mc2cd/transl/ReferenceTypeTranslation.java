@@ -8,13 +8,13 @@ import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.HelperGrammar;
+import de.monticore.grammar.grammar.GrammarMill;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
+import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.monticore.utils.Link;
-import de.se_rwth.commons.Names;
 
 import java.util.Optional;
 import java.util.function.UnaryOperator;
@@ -31,24 +31,30 @@ public class ReferenceTypeTranslation implements
   @Override
   public Link<ASTMCGrammar, ASTCDCompilationUnit> apply(Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink) {
 
-    for (Link<ASTNonTerminal, ASTCDAttribute> link : rootLink.getLinks(ASTNonTerminal.class,
-        ASTCDAttribute.class)) {
+    for (Link<ASTNonTerminal, ASTCDAttribute> link : rootLink.getLinks(ASTNonTerminal.class, ASTCDAttribute.class)) {
       link.target().setMCType(determineTypeToSet(link.source().getName(), rootLink.source()));
       addStereotypeForASTTypes(link.source(), link.target(), rootLink.source());
     }
 
-    for (Link<ASTTerminal, ASTCDAttribute> link : rootLink.getLinks(ASTTerminal.class,
-        ASTCDAttribute.class)) {
+    for (Link<ASTTerminal, ASTCDAttribute> link : rootLink.getLinks(ASTTerminal.class, ASTCDAttribute.class)) {
       link.target().setMCType(createType("String"));
     }
 
-    for (Link<ASTKeyTerminal, ASTCDAttribute> link : rootLink.getLinks(ASTKeyTerminal.class,
-            ASTCDAttribute.class)) {
+    for (Link<ASTKeyTerminal, ASTCDAttribute> link : rootLink.getLinks(ASTKeyTerminal.class, ASTCDAttribute.class)) {
       link.target().setMCType(createType("String"));
     }
 
-    for (Link<ASTAdditionalAttribute, ASTCDAttribute> link : rootLink.getLinks(ASTAdditionalAttribute.class,
-        ASTCDAttribute.class)) {
+    for (Link<ASTTokenTerminal, ASTCDAttribute> link : rootLink.getLinks(ASTTokenTerminal.class, ASTCDAttribute.class)) {
+      link.target().setMCType(createType("String"));
+    }
+
+    for (Link<ASTConstantGroup, ASTCDAttribute> link : rootLink.getLinks(ASTConstantGroup.class, ASTCDAttribute.class)) {
+      boolean iterated = MCGrammarSymbolTableHelper.isConstGroupIterated(link.source().getSymbol());
+      int constantType = iterated ? ASTConstantsMCBasicTypes.INT : ASTConstantsMCBasicTypes.BOOLEAN;
+      link.target().setMCType(GrammarMill.mCPrimitiveTypeBuilder().setPrimitive(constantType).build());
+    }
+
+    for (Link<ASTAdditionalAttribute, ASTCDAttribute> link : rootLink.getLinks(ASTAdditionalAttribute.class, ASTCDAttribute.class)) {
       ASTMCType type = determineTypeToSetForAttributeInAST(link.source().getMCType(), rootLink.source());
       link.target().setMCType(type);
       addStereotypeForASTTypes(type, link.target(), rootLink.source());
@@ -157,11 +163,19 @@ public class ReferenceTypeTranslation implements
       if (mcProdSymbol.isPresent() && isASTType(mcProdSymbol.get())) {
         TransformationHelper.addStereoType(attribute, MC2CDStereotypes.AST_TYPE.toString(), "");
       }
+    } else if (TransformationHelper.isCollectionType(attribute)) {
+      simpleName = TransformationHelper.getSimpleTypeFromCollection(attribute);
+      if (simpleName.startsWith("AST")) {
+        simpleName = simpleName.replaceFirst("AST", "");
+      }
+      mcProdSymbol = MCGrammarSymbolTableHelper.resolveRule(astmcGrammar, simpleName);
+      if (mcProdSymbol.isPresent() && isASTType(mcProdSymbol.get())) {
+        TransformationHelper.addStereoType(attribute, MC2CDStereotypes.AST_TYPE.toString(), "");
+      }
     }
   }
 
   private boolean isASTType(ProdSymbol mcProdSymbol) {
     return !mcProdSymbol.isIsLexerProd() && !mcProdSymbol.isIsEnum();
   }
-
 }

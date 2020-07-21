@@ -27,7 +27,7 @@ grammar SpaceOnOff {
         leftExpression:Expression  
         WSOff ( shiftOp2:"<" "<" 
         |   shiftOp3:">" ">" ">" 
-        |   shiftOp4:">" ">"	
+        |   shiftOp4:">" ">"
         ) WSOn 
         rightExpression:Expression ;
 
@@ -82,7 +82,7 @@ grammar SpaceOnOff {
   WS1 = WhiteSpace+ ;
 
   token WhiteSpace = (' ' | '\t' | '\r' | '\n' ) 
-  	:{ if(isSpaceOn()) {_channel = HIDDEN; } };
+        :{ if(isSpaceOn()) {_channel = HIDDEN; } };
 
   // an empty token like WSOff = WS*  would not work
   // It would also not work to declare WSOff a nonterminal, because
@@ -90,10 +90,10 @@ grammar SpaceOnOff {
   // the nonterminal WSOff would shut of spaces
 
   token WSOff = ":!"
-  	:{ spaceOnFlag = false; };
+        :{ spaceOnFlag = false; };
 
   token WSOn = "!:" 
-  	:{ spaceOnFlag = true; };
+        :{ spaceOnFlag = true; };
 
   concept antlr {
     lexerjava {

@@ -4,6 +4,7 @@ package mc.feature.symboltable;
 
 import de.monticore.symboltable.IScopeSpanningSymbol;
 import mc.GeneratorIntegrationsTest;
+import mc.feature.symboltable.automatonwithstinfo3.AutomatonWithSTInfo3Mill;
 import mc.feature.symboltable.automatonwithstinfo3._symboltable.*;
 import org.junit.Test;
 
@@ -19,8 +20,7 @@ public class AutomatonWithSTInfo3Test extends GeneratorIntegrationsTest {
   public void test() {
     AutomatonSymbol automatonSymbol = new AutomatonSymbol("A");
     assertFalse(automatonSymbol instanceof IScopeSpanningSymbol);
-    AutomatonSymbolLoader automatonSymbolLoader;
-    AutomatonWithSTInfo3Language automatonWithSTInfo3Language;
+    AutomatonSymbolSurrogate automatonSymbolSurrogate;
     AutomatonWithSTInfo3ModelLoader automatonWithSTInfo3ModelLoader;
     AutomatonWithSTInfo3SymbolTableCreator automatonWithSTInfo3SymbolTableCreator;
     AutomatonWithSTInfo3SymbolTableCreatorDelegator automatonWithSTInfo3SymbolTableCreatorDelegator;
@@ -28,13 +28,12 @@ public class AutomatonWithSTInfo3Test extends GeneratorIntegrationsTest {
     AutomatonWithSTInfo3GlobalScope automatonWithSTInfo3GlobalScope;
     AutomatonWithSTInfo3Scope automatonWithSTInfo3Scope;
     AutomatonWithSTInfo3ScopeBuilder automatonWithSTInfo3ScopeBuilder;
-    AutomatonWithSTInfo3SymTabMill automatonWithSTInfo3SymTabMill;
-    IAutomatonWithSTInfo3GlobalScope iAutomatonWithSTInfo3GlobalScope;
+    AutomatonWithSTInfo3Mill automatonWithSTInfo3SymTabMill;
     IAutomatonWithSTInfo3Scope iAutomatonWithSTInfo3Scope;
     ICommonAutomatonWithSTInfo3Symbol iCommonAutomatonWithSTInfo3Symbol;
     StateSymbol stateSymbol = new StateSymbol("S");
     assertFalse(stateSymbol instanceof IScopeSpanningSymbol);
-    StateSymbolLoader stateSymbolLoader;
+    StateSymbolSurrogate stateSymbolSurrogate;
   }
 
 }

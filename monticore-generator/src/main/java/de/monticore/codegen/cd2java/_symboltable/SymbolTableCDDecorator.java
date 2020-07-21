@@ -1,14 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._symboltable;
 
+import com.google.common.collect.Lists;
+import de.monticore.cd.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java.CoreTemplates;
-import de.monticore.codegen.cd2java._symboltable.language.LanguageBuilderDecorator;
-import de.monticore.codegen.cd2java._symboltable.language.LanguageDecorator;
 import de.monticore.codegen.cd2java._symboltable.modelloader.ModelLoaderBuilderDecorator;
 import de.monticore.codegen.cd2java._symboltable.modelloader.ModelLoaderDecorator;
 import de.monticore.codegen.cd2java._symboltable.scope.*;
-import de.monticore.codegen.cd2java._symboltable.symbTabMill.SymTabMillDecorator;
+import de.monticore.codegen.cd2java._symboltable.serialization.*;
 import de.monticore.codegen.cd2java._symboltable.symbol.*;
 import de.monticore.codegen.cd2java._symboltable.symboltablecreator.*;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -34,9 +35,9 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
 
   protected final SymbolBuilderDecorator symbolBuilderDecorator;
 
-  protected final SymbolLoaderDecorator symbolReferenceDecorator;
+  protected final SymbolSurrogateDecorator symbolReferenceDecorator;
 
-  protected final SymbolLoaderBuilderDecorator symbolReferenceBuilderDecorator;
+  protected final SymbolSurrogateBuilderDecorator symbolReferenceBuilderDecorator;
 
   protected final SymbolTableService symbolTableService;
 
@@ -46,9 +47,9 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
 
   protected final ScopeInterfaceDecorator scopeInterfaceDecorator;
 
-  protected final GlobalScopeInterfaceDecorator globalScopeInterfaceDecorator;
-
   protected final GlobalScopeClassDecorator globalScopeClassDecorator;
+
+  protected final GlobalScopeInterfaceDecorator globalScopeInterfaceDecorator;
 
   protected final GlobalScopeClassBuilderDecorator globalScopeClassBuilderDecorator;
 
@@ -57,10 +58,6 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
   protected final ArtifactScopeBuilderDecorator artifactScopeBuilderDecorator;
 
   protected final CommonSymbolInterfaceDecorator commonSymbolInterfaceDecorator;
-
-  protected final LanguageDecorator languageDecorator;
-
-  protected final LanguageBuilderDecorator languageBuilderDecorator;
 
   protected final IterablePath handCodedPath;
 
@@ -80,26 +77,36 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
 
   protected final SymbolTableCreatorDelegatorBuilderDecorator symbolTableCreatorDelegatorBuilderDecorator;
 
-  protected final SymTabMillDecorator symTabMillDecorator;
+  protected final SymbolTableCreatorForSuperTypesBuilder symbolTableCreatorForSuperTypesBuilder;
+
+  protected final SymbolDeSerDecorator symbolDeSerDecorator;
+
+  protected final SymbolDeSerBuilderDecorator symbolDeSerBuilderDecorator;
+
+  protected final ScopeDeSerDecorator scopeDeSerDecorator;
+
+  protected final ScopeDeSerBuilderDecorator scopeDeSerBuilderDecorator;
+
+  protected final SymbolTablePrinterDecorator symbolTablePrinterDecorator;
+
+  protected final SymbolTablePrinterBuilderDecorator symbolTablePrinterBuilderDecorator;
 
   public SymbolTableCDDecorator(final GlobalExtensionManagement glex,
                                 final IterablePath handCodedPath,
                                 final SymbolTableService symbolTableService,
                                 final SymbolDecorator symbolDecorator,
                                 final SymbolBuilderDecorator symbolBuilderDecorator,
-                                final SymbolLoaderDecorator symbolReferenceDecorator,
-                                final SymbolLoaderBuilderDecorator symbolReferenceBuilderDecorator,
+                                final SymbolSurrogateDecorator symbolReferenceDecorator,
+                                final SymbolSurrogateBuilderDecorator symbolReferenceBuilderDecorator,
+                                final ScopeInterfaceDecorator scopeInterfaceDecorator,
                                 final ScopeClassDecorator scopeClassDecorator,
                                 final ScopeClassBuilderDecorator scopeClassBuilderDecorator,
-                                final ScopeInterfaceDecorator scopeInterfaceDecorator,
                                 final GlobalScopeInterfaceDecorator globalScopeInterfaceDecorator,
                                 final GlobalScopeClassDecorator globalScopeClassDecorator,
                                 final GlobalScopeClassBuilderDecorator globalScopeClassBuilderDecorator,
                                 final ArtifactScopeDecorator artifactScopeDecorator,
                                 final ArtifactScopeBuilderDecorator artifactScopeBuilderDecorator,
                                 final CommonSymbolInterfaceDecorator commonSymbolInterfaceDecorator,
-                                final LanguageDecorator languageDecorator,
-                                final LanguageBuilderDecorator languageBuilderDecorator,
                                 final ModelLoaderDecorator modelLoaderDecorator,
                                 final ModelLoaderBuilderDecorator modelLoaderBuilderDecorator,
                                 final SymbolResolvingDelegateInterfaceDecorator symbolResolvingDelegateInterfaceDecorator,
@@ -108,15 +115,21 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
                                 final SymbolTableCreatorDelegatorDecorator symbolTableCreatorDelegatorDecorator,
                                 final SymbolTableCreatorForSuperTypes symbolTableCreatorForSuperTypes,
                                 final SymbolTableCreatorDelegatorBuilderDecorator symbolTableCreatorDelegatorBuilderDecorator,
-                                final SymTabMillDecorator symTabMillDecorator) {
+                                final SymbolTableCreatorForSuperTypesBuilder symbolTableCreatorForSuperTypesBuilder,
+                                final SymbolDeSerDecorator symbolDeSerDecorator,
+                                final ScopeDeSerDecorator scopeDeSerDecorator,
+                                final SymbolTablePrinterDecorator symbolTablePrinterDecorator,
+                                final ScopeDeSerBuilderDecorator scopeDeSerBuilderDecorator,
+                                final SymbolDeSerBuilderDecorator symbolDeSerBuilderDecorator,
+                                final SymbolTablePrinterBuilderDecorator symbolTablePrinterBuilderDecorator) {
     super(glex);
     this.symbolDecorator = symbolDecorator;
     this.symbolBuilderDecorator = symbolBuilderDecorator;
     this.symbolReferenceDecorator = symbolReferenceDecorator;
     this.symbolTableService = symbolTableService;
+    this.scopeInterfaceDecorator = scopeInterfaceDecorator;
     this.scopeClassDecorator = scopeClassDecorator;
     this.scopeClassBuilderDecorator = scopeClassBuilderDecorator;
-    this.scopeInterfaceDecorator = scopeInterfaceDecorator;
     this.globalScopeInterfaceDecorator = globalScopeInterfaceDecorator;
     this.globalScopeClassDecorator = globalScopeClassDecorator;
     this.globalScopeClassBuilderDecorator = globalScopeClassBuilderDecorator;
@@ -124,9 +137,7 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
     this.artifactScopeBuilderDecorator = artifactScopeBuilderDecorator;
     this.symbolReferenceBuilderDecorator = symbolReferenceBuilderDecorator;
     this.commonSymbolInterfaceDecorator = commonSymbolInterfaceDecorator;
-    this.languageDecorator = languageDecorator;
     this.handCodedPath = handCodedPath;
-    this.languageBuilderDecorator = languageBuilderDecorator;
     this.modelLoaderDecorator = modelLoaderDecorator;
     this.modelLoaderBuilderDecorator = modelLoaderBuilderDecorator;
     this.symbolResolvingDelegateInterfaceDecorator = symbolResolvingDelegateInterfaceDecorator;
@@ -135,11 +146,18 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
     this.symbolTableCreatorDelegatorDecorator = symbolTableCreatorDelegatorDecorator;
     this.symbolTableCreatorForSuperTypes = symbolTableCreatorForSuperTypes;
     this.symbolTableCreatorDelegatorBuilderDecorator = symbolTableCreatorDelegatorBuilderDecorator;
-    this.symTabMillDecorator = symTabMillDecorator;
+    this.symbolTableCreatorForSuperTypesBuilder = symbolTableCreatorForSuperTypesBuilder;
+    this.symbolDeSerDecorator = symbolDeSerDecorator;
+    this.scopeDeSerDecorator = scopeDeSerDecorator;
+    this.symbolTablePrinterDecorator = symbolTablePrinterDecorator;
+    this.scopeDeSerBuilderDecorator = scopeDeSerBuilderDecorator;
+    this.symbolDeSerBuilderDecorator = symbolDeSerBuilderDecorator;
+    this.symbolTablePrinterBuilderDecorator = symbolTablePrinterBuilderDecorator;
   }
 
   public ASTCDCompilationUnit decorate(ASTCDCompilationUnit astCD, ASTCDCompilationUnit symbolCD, ASTCDCompilationUnit scopeCD) {
-    List<String> symbolTablePackage = new ArrayList<>(astCD.getPackageList());
+    List<String> symbolTablePackage = Lists.newArrayList();
+    astCD.getPackageList().forEach(p -> symbolTablePackage.add(p.toLowerCase()));
     symbolTablePackage.addAll(Arrays.asList(astCD.getCDDefinition().getName().toLowerCase(), SYMBOL_TABLE_PACKAGE));
     boolean isComponent = astCD.getCDDefinition().isPresentModifier() && symbolTableService.hasComponentStereotype(astCD.getCDDefinition().getModifier());
     List<ASTCDType> symbolProds = symbolTableService.getSymbolDefiningProds(astCD.getCDDefinition());
@@ -150,29 +168,45 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
     // create scope classes
     ASTCDClass scopeClass = createScopeClass(scopeCD, symbolCD, symbolTablePackage);
 
+    //create symbolDeSer classes
+    List<ASTCDClass> symbolDeSerList = createSymbolDeSerClasses(symbolCD.getCDDefinition().getCDClassList());
+
+    //create symbolTablePrinter class
+    ASTCDClass symbolTablePrinterClass = createSymbolTablePrinterClass(scopeCD, symbolCD);
+
     ASTCDDefinition symTabCD = CD4AnalysisMill.cDDefinitionBuilder()
         .setName(astCD.getCDDefinition().getName())
         .addAllCDClasss(decoratedSymbolClasses)
-        .addAllCDClasss(createSymbolBuilderClasses(decoratedSymbolClasses))
+        .addAllCDClasss(createSymbolBuilderClasses(symbolCD.getCDDefinition().getCDClassList()))
         .addCDClass(scopeClass)
         .addCDClass(createScopeClassBuilder(scopeClass))
         .addCDInterface(createScopeInterface(scopeCD, symbolCD))
         .addAllCDClasss(createSymbolReferenceClasses(symbolCD.getCDDefinition().getCDClassList()))
         .addAllCDClasss(createSymbolReferenceBuilderClasses(symbolCD.getCDDefinition().getCDClassList()))
+        .addAllCDClasss(symbolDeSerList)
+        .addAllCDClasss(createSymbolDeSerBuilderClasses(symbolDeSerList))
+        .addCDClass(symbolTablePrinterClass)
+        .addCDClass(createSymbolTablePrinterBuilderClass(symbolTablePrinterClass))
         .addCDInterface(createICommonSymbol(astCD))
         .addAllCDInterfaces(createSymbolResolvingDelegateInterfaces(symbolProds))
         .build();
 
-    // add symTabMill
-    boolean isLanguageHandCoded = existsHandwrittenClass(handCodedPath,
-        constructQualifiedName(symbolTablePackage, symbolTableService.getLanguageClassSimpleName()));
-    symTabMillDecorator.setLanguageTop(isLanguageHandCoded);
-    symTabCD.addCDClass(createSymTabMill(astCD));
-
-    if (symbolTableService.hasStartProd(astCD.getCDDefinition())) {
-      // global scope
+    //if the grammar is not a component grammar
+//    if (!symbolTableService.hasComponentStereotype(astCD.getCDDefinition())) {
+//    }
+    if (symbolTableService.hasStartProd(astCD.getCDDefinition())
+        || !symbolTableService.getSymbolDefiningSuperProds().isEmpty()) {
       symTabCD.addCDInterface(createGlobalScopeInterface(astCD, symbolTablePackage));
-      ASTCDClass globalScopeClass = createGlobalScopeClass(astCD);
+    }
+    if (symbolTableService.hasStartProd(astCD.getCDDefinition())) {
+      // symboltable creator delegator
+      Optional<ASTCDClass> symbolTableCreatorDelegator = createSymbolTableCreatorDelegator(astCD);
+      if (symbolTableCreatorDelegator.isPresent()) {
+        symTabCD.addCDClass(symbolTableCreatorDelegator.get());
+        symTabCD.addCDClass(createSymbolTableCreatorDelegatorBuilder(symbolTableCreatorDelegator.get()));
+      }
+      // global scope
+      ASTCDClass globalScopeClass = createGlobalScopeClass(astCD, symbolTablePackage);
       symTabCD.addCDClass(globalScopeClass);
       symTabCD.addCDClass(createGlobalScopeClassBuilder(globalScopeClass));
 
@@ -184,23 +218,16 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
       symTabCD.addCDClass(artifactScope);
       symTabCD.addCDClass(createArtifactBuilderScope(artifactScope));
 
-      // language
-      // needs to know if it is overwritten to generate method differently
-      // set boolean if language is TOPed or not
-      this.languageDecorator.setLanguageTop(isLanguageHandCoded);
-      ASTCDClass languageClass = createLanguage(astCD);
-      symTabCD.addCDClass(languageClass);
-      if (!isComponent && isLanguageHandCoded) {
-        symTabCD.addCDClass(createLanguageBuilder(languageClass));
-      }
+      // scope deser
+      ASTCDClass scopeDeSer = createScopeDeSerClass(scopeCD, symbolCD);
+      symTabCD.addCDClass(scopeDeSer);
+      symTabCD.addCDClass(createScopeDeSerBuilderClass(scopeDeSer));
 
       // model loader
       Optional<ASTCDClass> modelLoader = createModelLoader(astCD);
       if (modelLoader.isPresent()) {
         symTabCD.addCDClass(modelLoader.get());
-        if (!isComponent) {
           symTabCD.addCDClass(createModelLoaderBuilder(modelLoader.get()));
-        }
       }
 
       // symbol table creator
@@ -210,36 +237,41 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
         symTabCD.addCDClass(createSymbolTableCreatorBuilder(astCD));
       }
 
-      // symboltable creator delegator
-      Optional<ASTCDClass> symbolTableCreatorDelegator = createSymbolTableCreatorDelegator(astCD);
-      if (symbolTableCreatorDelegator.isPresent()) {
-        symTabCD.addCDClass(symbolTableCreatorDelegator.get());
-        symTabCD.addCDClass(createSymbolTableCreatorDelegatorBuilder(symbolTableCreatorDelegator.get()));
-      }
-
       // SuperSTCForSub
-      symTabCD.addAllCDClasss(createSymbolTableCreatorForSuperTypes(astCD));
+      List<ASTCDClass> symbolTableCreatorForSuperTypes = createSymbolTableCreatorForSuperTypes(astCD);
+      symTabCD.addAllCDClasss(symbolTableCreatorForSuperTypes);
+      symTabCD.addAllCDClasss(createSymbolTableCreatorForSuperTypesBuilder(symbolTableCreatorForSuperTypes));
     }
 
-    for (ASTCDClass cdClass : symTabCD.getCDClassList()) {
-      this.replaceTemplate(PACKAGE, cdClass, createPackageHookPoint(symbolTablePackage));
-      this.replaceTemplate(ANNOTATIONS, cdClass, createAnnotationsHookPoint(cdClass.getModifierOpt()));
-    }
-
-    for (ASTCDInterface cdInterface : symTabCD.getCDInterfaceList()) {
-      this.replaceTemplate(CoreTemplates.PACKAGE, cdInterface, createPackageHookPoint(symbolTablePackage));
-      this.replaceTemplate(ANNOTATIONS, cdInterface, createAnnotationsHookPoint(cdInterface.getModifierOpt()));
-    }
-
-    for (ASTCDEnum cdEnum : symTabCD.getCDEnumList()) {
-      this.replaceTemplate(CoreTemplates.PACKAGE, cdEnum, createPackageHookPoint(symbolTablePackage));
-      this.replaceTemplate(ANNOTATIONS, cdEnum, createAnnotationsHookPoint(cdEnum.getModifierOpt()));
-    }
+    addPackageAndAnnotation(symTabCD, symbolTablePackage);
 
     return CD4AnalysisMill.cDCompilationUnitBuilder()
         .setPackageList(symbolTablePackage)
         .setCDDefinition(symTabCD)
         .build();
+  }
+
+  protected void addPackageAndAnnotation(ASTCDDefinition symTabCD, List<String> symbolTablePackage) {
+    for (ASTCDClass cdClass : symTabCD.getCDClassList()) {
+      this.replaceTemplate(PACKAGE, cdClass, createPackageHookPoint(symbolTablePackage));
+      if (cdClass.isPresentModifier()) {
+        this.replaceTemplate(ANNOTATIONS, cdClass, createAnnotationsHookPoint(cdClass.getModifier()));
+      }
+    }
+
+    for (ASTCDInterface cdInterface : symTabCD.getCDInterfaceList()) {
+      this.replaceTemplate(CoreTemplates.PACKAGE, cdInterface, createPackageHookPoint(symbolTablePackage));
+      if (cdInterface.isPresentModifier()) {
+        this.replaceTemplate(ANNOTATIONS, cdInterface, createAnnotationsHookPoint(cdInterface.getModifier()));
+      }
+    }
+
+    for (ASTCDEnum cdEnum : symTabCD.getCDEnumList()) {
+      this.replaceTemplate(CoreTemplates.PACKAGE, cdEnum, createPackageHookPoint(symbolTablePackage));
+      if (cdEnum.isPresentModifier()) {
+        this.replaceTemplate(ANNOTATIONS, cdEnum, createAnnotationsHookPoint(cdEnum.getModifier()));
+      }
+    }
   }
 
   protected List<ASTCDClass> createSymbolClasses(List<ASTCDClass> symbolClases, List<String> symbolTablePackage) {
@@ -296,15 +328,18 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
     return scopeInterfaceDecorator.decorate(scopeCD, symbolCD);
   }
 
-  protected ASTCDInterface createGlobalScopeInterface(ASTCDCompilationUnit compilationUnit, List<String> symbolTablePackage) {
+  protected ASTCDClass createGlobalScopeClass(ASTCDCompilationUnit compilationUnit, List<String> symbolTablePackage) {
     boolean isGlobalScopeTop = existsHandwrittenClass(handCodedPath,
-        constructQualifiedName(symbolTablePackage, symbolTableService.getGlobalScopeInterfaceSimpleName()));
-    globalScopeInterfaceDecorator.setGlobalScopeTop(isGlobalScopeTop);
-    return globalScopeInterfaceDecorator.decorate(compilationUnit);
+        constructQualifiedName(symbolTablePackage, symbolTableService.getGlobalScopeSimpleName()));
+    globalScopeClassDecorator.setGlobalScopeTop(isGlobalScopeTop);
+    return globalScopeClassDecorator.decorate(compilationUnit);
   }
 
-  protected ASTCDClass createGlobalScopeClass(ASTCDCompilationUnit compilationUnit) {
-    return globalScopeClassDecorator.decorate(compilationUnit);
+  protected ASTCDInterface createGlobalScopeInterface(ASTCDCompilationUnit compilationUnit, List<String> symbolTablePackage) {
+    boolean isGlobalScopeInterfaceTop = existsHandwrittenClass(handCodedPath,
+        constructQualifiedName(symbolTablePackage, symbolTableService.getGlobalScopeInterfaceSimpleName()));
+    globalScopeInterfaceDecorator.setGlobalScopeInterfaceTop(isGlobalScopeInterfaceTop);
+    return globalScopeInterfaceDecorator.decorate(compilationUnit);
   }
 
   protected ASTCDClass createGlobalScopeClassBuilder(ASTCDClass globalScopeClass) {
@@ -321,14 +356,6 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
 
   protected ASTCDInterface createICommonSymbol(ASTCDCompilationUnit compilationUnit) {
     return commonSymbolInterfaceDecorator.decorate(compilationUnit);
-  }
-
-  protected ASTCDClass createLanguage(ASTCDCompilationUnit compilationUnit) {
-    return languageDecorator.decorate(compilationUnit);
-  }
-
-  protected ASTCDClass createLanguageBuilder(ASTCDClass astcdClass) {
-    return languageBuilderDecorator.decorate(astcdClass);
   }
 
   protected Optional<ASTCDClass> createModelLoader(ASTCDCompilationUnit compilationUnit) {
@@ -355,11 +382,42 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
     return symbolTableCreatorForSuperTypes.decorate(compilationUnit);
   }
 
+  protected List<ASTCDClass> createSymbolTableCreatorForSuperTypesBuilder(List<ASTCDClass> superSTClasses) {
+    return symbolTableCreatorForSuperTypesBuilder.decorate(superSTClasses);
+  }
+
   protected ASTCDClass createSymbolTableCreatorDelegatorBuilder(ASTCDClass sTCDelegatorClass) {
     return symbolTableCreatorDelegatorBuilderDecorator.decorate(sTCDelegatorClass);
   }
 
-  protected ASTCDClass createSymTabMill(ASTCDCompilationUnit compilationUnit) {
-    return symTabMillDecorator.decorate(compilationUnit);
+  protected List<ASTCDClass> createSymbolDeSerClasses(List<ASTCDClass> symbolClassList) {
+    return symbolClassList
+        .stream()
+        .map(symbolDeSerDecorator::decorate)
+        .collect(Collectors.toList());
   }
+
+  protected List<ASTCDClass> createSymbolDeSerBuilderClasses(List<ASTCDClass> symbolDeSerClassList){
+    return symbolDeSerClassList
+        .stream()
+        .map(symbolDeSerBuilderDecorator::decorate)
+        .collect(Collectors.toList());
+  }
+
+  protected ASTCDClass createScopeDeSerClass(ASTCDCompilationUnit scopeCD, ASTCDCompilationUnit symbolCd) {
+    return scopeDeSerDecorator.decorate(scopeCD, symbolCd);
+  }
+
+  protected  ASTCDClass createScopeDeSerBuilderClass(ASTCDClass scopeClass){
+    return scopeDeSerBuilderDecorator.decorate(scopeClass);
+  }
+
+  protected ASTCDClass createSymbolTablePrinterClass(ASTCDCompilationUnit scopeCD, ASTCDCompilationUnit symbolCd) {
+    return symbolTablePrinterDecorator.decorate(scopeCD, symbolCd);
+  }
+
+  protected ASTCDClass createSymbolTablePrinterBuilderClass(ASTCDClass symbolTablePrinterClass){
+    return symbolTablePrinterBuilderDecorator.decorate(symbolTablePrinterClass);
+  }
+
 }

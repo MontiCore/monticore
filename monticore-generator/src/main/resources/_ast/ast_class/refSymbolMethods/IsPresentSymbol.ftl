@@ -1,14 +1,12 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("attributeName", "referencedProdName", "isOptional")}
-<#if isOptional>
-     if(!${attributeName}.isPresent() && ${attributeName?remove_ending("Symbol")}.isPresent() && getEnclosingScope() != null){
-        getEnclosingScope().resolve${referencedProdName}(${attributeName?remove_ending("Symbol")}.get());
-        return true;
-<#else>
-     if(!${attributeName}.isPresent() && ${attributeName?remove_ending("Symbol")} != null && getEnclosingScope() != null){
-        getEnclosingScope().resolve${referencedProdName}(${attributeName?remove_ending("Symbol")});
-        return true;
-</#if>
+${tc.signature("attributeName")}
+     update${attributeName?cap_first}Surrogate();
+     if (${attributeName}Surrogate.getName() != null && ${attributeName}Surrogate.getEnclosingScope() != null) {
+        try{
+            return ${attributeName}Surrogate.lazyLoadDelegate() != null;
+        }catch(Exception e){
+            return false;
+        }
      }
      return false;
      

@@ -4,7 +4,6 @@ package de.monticore.codegen.cd2java.data;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.AbstractTransformer;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -53,7 +52,7 @@ public class DataDecorator extends AbstractTransformer<ASTCDClass> {
     //remove inherited attributes, because these are already defined in superclass
     List<ASTCDAttribute> ownAttributes = originalClass.deepClone().getCDAttributeList()
         .stream()
-        .filter(a -> !service.isInherited(a))
+        .filter(a -> !service.isInheritedAttribute(a))
         .collect(Collectors.toList());
 
     changedClass.addAllCDMethods(getAllDataMethods(originalClass, originalClass.getCDAttributeList()));
@@ -71,10 +70,10 @@ public class DataDecorator extends AbstractTransformer<ASTCDClass> {
   }
 
   protected void addAttributeDefaultValues(ASTCDAttribute attribute) {
-    if (DecorationHelper.isListType(attribute.printType())) {
+    if (getDecorationHelper().isListType(attribute.printType())) {
       this.replaceTemplate(VALUE, attribute, new StringHookPoint("= new java.util.ArrayList<>()"));
 
-    } else if (DecorationHelper.isOptionalType(attribute.printType())) {
+    } else if (getDecorationHelper().isOptional(attribute.printType())) {
       this.replaceTemplate(VALUE, attribute, new StringHookPoint("= Optional.empty()"));
     }
   }

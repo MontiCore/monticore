@@ -21,7 +21,7 @@ public class SymbolProdOverwrittenBySymbol implements GrammarASTMCGrammarCoCo {
 
   public static final String ERROR_CODE = "0xA0274";
 
-  public static final String ERROR_MSG_FORMAT = " The Prod %s from grammar %s is a symbol and overwritten by the prod %s of grammar %s that also defines a symbol." +
+  public static final String ERROR_MSG_FORMAT = "Production %s from grammar %s is a symbol and overwritten by the prod %s of grammar %s that also defines a symbol." +
       "Remove the second symbol definition, because the symbol property is inherited anyway.";
 
   @Override
@@ -36,12 +36,10 @@ public class SymbolProdOverwrittenBySymbol implements GrammarASTMCGrammarCoCo {
         if (!prod.isIsEnum()) {
           // finds a prod with the same name in the super grammar if one is present
           Optional<ProdSymbol> superProd = superGrammar.getProd(prod.getName());
-          if (superProd.isPresent()) {
+          if (superProd.isPresent() && superProd.get().isIsSymbolDefinition() && prod.isIsSymbolDefinition()) {
             // log error if both prod define a symbol themselves
-            if (superProd.get().isIsSymbolDefinition() && prod.isIsSymbolDefinition()) {
               Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, superProd.get().getName(), superGrammar.getName(),
                   prod.getName(), grammarSymbol.getName()));
-            }
           }
         }
       }

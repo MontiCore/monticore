@@ -13,7 +13,7 @@ public class JsonString implements JsonElement {
   }
   
   /**
-   * @see automata._symboltable.serialization.json.JsonElement#isJsonString()
+   * @see de.monticore.symboltable.serialization.json.JsonElement#isJsonString()
    */
   @Override
   public boolean isJsonString() {
@@ -21,7 +21,7 @@ public class JsonString implements JsonElement {
   }
   
   /**
-   * @see automata._symboltable.serialization.json.JsonElement#getAsJsonString()
+   * @see de.monticore.symboltable.serialization.json.JsonElement#getAsJsonString()
    */
   @Override
   public JsonString getAsJsonString() {

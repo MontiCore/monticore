@@ -2,19 +2,17 @@
 
 package de.monticore.types.check;
 
-import de.monticore.mcbasics._ast.MCBasicsMill;
+import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolSurrogate;
+import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
-import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
-import de.monticore.types.mccollectiontypes._ast.*;
+import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesVisitor;
-import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeObject;
 
@@ -24,14 +22,15 @@ import static de.monticore.types.check.SymTypeExpressionFactory.createTypeObject
  * types/MCSimpleGenericTypes.mc4
  */
 public class SynthesizeSymTypeFromMCSimpleGenericTypes extends SynthesizeSymTypeFromMCCollectionTypes
-    implements MCSimpleGenericTypesVisitor {
-
-  public SynthesizeSymTypeFromMCSimpleGenericTypes() {
-  }
+    implements MCSimpleGenericTypesVisitor, ISynthesize {
 
   /**
    * Using the visitor functionality to calculate the SymType Expression
    */
+
+  public SynthesizeSymTypeFromMCSimpleGenericTypes(){
+    super();
+  }
 
   // ----------------------------------------------------------  realThis start
   // setRealThis, getRealThis are necessary to make the visitor compositional
@@ -66,22 +65,22 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypes extends SynthesizeSymType
   public void traverse(ASTMCBasicGenericType genericType) {
 
     List<SymTypeExpression> arguments = new LinkedList<SymTypeExpression>();
-    for (ASTMCTypeArgument arg : genericType.getMCTypeArgumentList()) {
+    for (ASTMCTypeArgument arg : genericType.getMCTypeArgumentsList()) {
       if (null != arg) {
         arg.accept(getRealThis());
       }
 
-      if (!result.isPresent()) {
+      if (!typeCheckResult.isPresentCurrentResult()) {
         Log.error("0xE9CDA Internal Error: SymType argument missing for generic type. "
             + " Probably TypeCheck mis-configured.");
       }
-      arguments.add(result.get());
+      arguments.add(typeCheckResult.getCurrentResult());
     }
-
+    OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate(genericType.printWithoutTypeArguments());
+    loader.setEnclosingScope(getScope(genericType.getEnclosingScope()));
     SymTypeExpression tex = SymTypeExpressionFactory.createGenerics(
-        new TypeSymbolLoader(genericType.printWithoutTypeArguments(), genericType.getEnclosingScope()), arguments);
-    result = Optional.of(tex);
-
+        loader, arguments);
+    typeCheckResult.setCurrentResult(tex);
   }
 
   /**
@@ -103,13 +102,17 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypes extends SynthesizeSymType
     // type could also be a boxed Primitive or an Type Variable!
     // We need the SymbolTable to distinguish this stuff
     // PS: that also applies to other Visitors.
-    result = Optional.of(SymTypeExpressionFactory.createTypeObject(new TypeSymbolLoader(qType.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()), qType.getEnclosingScope())));
+    OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate(qType.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()));
+    loader.setEnclosingScope(getScope(qType.getEnclosingScope()));
+    typeCheckResult.setCurrentResult(SymTypeExpressionFactory.createTypeObject(loader));
   }
 
   @Override
   public void endVisit(ASTMCQualifiedName qName) {
-    SymTypeOfObject oType = createTypeObject(new TypeSymbolLoader(qName.getQName(), qName.getEnclosingScope()));
-    result = Optional.of(oType);
+    OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate(qName.getQName());
+    loader.setEnclosingScope(getScope(qName.getEnclosingScope()));
+    SymTypeOfObject oType = createTypeObject(loader);
+    typeCheckResult.setCurrentResult(oType);
   }
 
 }

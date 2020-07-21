@@ -3,8 +3,11 @@
 package de.monticore.grammar;
 
 import com.google.common.collect.Lists;
-import de.monticore.codegen.GeneratorHelper;
+import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.grammar.grammar._ast.*;
+import de.monticore.grammar.grammar._symboltable.AdditionalAttributeSymbol;
+import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
+import de.monticore.grammar.grammar._symboltable.RuleComponentSymbolTOP;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
 import de.se_rwth.commons.JavaNamesHelper;
 import de.se_rwth.commons.Names;
@@ -12,6 +15,9 @@ import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
+import java.util.Optional;
+
+import static de.monticore.grammar.Multiplicity.*;
 
 /**
  * Some helper methods for GrammarDSL
@@ -25,7 +31,7 @@ public class HelperGrammar {
    * @param a
    * @return
    */
-  public static String getUsuageName(ASTNonTerminal a) {
+  public static String getUsageName(ASTNonTerminal a) {
     String name;
     if (a.isPresentUsageName()) {
       name = a.getUsageName();
@@ -37,16 +43,41 @@ public class HelperGrammar {
     return name;
   }
 
-  public static String getListName(ASTNonTerminal a) {
+  public static String getListName(ASTNonTerminal a, ASTMCGrammar grammar) {
     String name;
     if (a.isPresentUsageName()) {
       name = a.getUsageName();
+    } else if (getsListCardinalityFromAstRule(a, grammar)) {
+      name = a.getName();
     } else {
       // Use Nonterminal name as attribute name starting with lower case
-      //      // latter
-      name = a.getName();
+      // for a list (iterated) nonterminal a 's' is added for the name
+      name = a.getName() + "s";
     }
-    return name + GeneratorHelper.GET_SUFFIX_LIST;
+    return name + DecorationHelper.GET_SUFFIX_LIST;
+  }
+
+  /**
+   * checks if a NonTerminal gets its list cardinality only because of a astrule
+   * this means that the NonTerminal itself has not a List cardinality
+   * but there exists a AdditionalAttribute with the same name that has a list cardinality
+   * And it also does not have a usageName
+   * e.g.  A =  Name;
+   *       astrule A =
+   *           name:String*;
+   * because then the name of the list methods are without the 's'
+   * @param nonTerminal the checked nonterminal
+   * @param grammar the grammar which surrounds the nonterminal
+   * @return
+   */
+  protected static boolean getsListCardinalityFromAstRule(ASTNonTerminal nonTerminal, ASTMCGrammar grammar) {
+    boolean hasUsageName = nonTerminal.isPresentUsageName();
+    boolean isActualList = multiplicityOfASTNode(grammar, nonTerminal) == LIST;
+    Optional<AdditionalAttributeSymbol> attributeSymbol = nonTerminal.getEnclosingScope()
+        .resolveAdditionalAttributeDown(StringTransformations.uncapitalize(nonTerminal.getName()));
+    boolean hasListASTRule = attributeSymbol.isPresent() && attributeSymbol.get().isPresentAstNode() &&
+        multiplicityOfAttributeInAST(attributeSymbol.get().getAstNode()) == LIST;
+    return !hasUsageName && !isActualList && hasListASTRule;
   }
 
   /**
@@ -160,7 +191,7 @@ public class HelperGrammar {
           || "float".equals(variable) || "double".equals(variable)
           || "long".equals(variable) || "byte".equals(variable) || "short".equals(variable)) {
         return variable;
-      } else if (variable.equals("card")) {
+      } else if ("card".equals(variable)) {
         return "int";
       } else {
         Log.warn(
@@ -194,14 +225,14 @@ public class HelperGrammar {
   }
 
   public static boolean hasValidName(ASTConstant astConstant) {
-    if (astConstant.isPresentHumanName()) {
+    if (astConstant.isPresentUsageName()) {
       return true;
     }
     String constName = astConstant.getName();
     if (constName == null || constName.isEmpty()) {
       return false;
     }
-    if (!matchesJavaIdentifier(constName) && LexNamer.createGoodName(constName) == null) {
+    if (!matchesJavaIdentifier(constName) && LexNamer.createGoodName(constName).isEmpty()) {
       return false;
     }
     return true;
@@ -226,15 +257,15 @@ public class HelperGrammar {
   public static String getAttributeNameForConstant(ASTConstant astConstant) {
     String name;
 
-    if (astConstant.isPresentHumanName()) {
-      name = astConstant.getHumanName();
+    if (astConstant.isPresentUsageName()) {
+      name = astConstant.getUsageName();
     } else {
       String constName = astConstant.getName();
       if (matchesJavaIdentifier(constName)) {
         name = constName;
       } else {
         name = LexNamer.createGoodName(constName);
-        if (name == null) {
+        if (name.isEmpty()) {
           name = constName;
         }
       }

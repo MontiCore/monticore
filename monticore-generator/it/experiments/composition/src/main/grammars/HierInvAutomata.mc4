@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+grammar HierInvAutomata extends Automata3 {
+
+  // keep the old axiom
+  start Automaton; 
+
+  // redefine a nonterminal
+  State =  "state" Name
+    Invariant
+    ( "<<" ["initial"] ">>" | "<<" ["final"] ">>" )*
+    ( ";" | StateBody );
+
+  StateBody =  "{" (State | Transition)* "}" ;
+
+}

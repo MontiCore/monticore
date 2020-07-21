@@ -3,7 +3,7 @@ package de.monticore.expressions;
 
 
 grammar TestAssignmentExpressions
-	  extends de.monticore.expressions.AssignmentExpressions, de.monticore.literals.MCCommonLiterals {
+    extends de.monticore.expressions.AssignmentExpressions, de.monticore.literals.MCCommonLiterals {
 
-	    start Expression;
+      start Expression;
 }

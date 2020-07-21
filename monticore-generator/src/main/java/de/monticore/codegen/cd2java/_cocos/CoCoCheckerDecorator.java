@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._cocos;
 
+import de.monticore.cd.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
@@ -12,16 +13,17 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
+import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 
 import java.util.List;
 
+import static de.monticore.cd.facade.CDModifier.PRIVATE;
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java._cocos.CoCoConstants.*;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.REAL_THIS;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISIT;
-import static de.monticore.cd.facade.CDModifier.*;
 
 /**
  * creates the CoCoChecker class for a grammar
@@ -33,6 +35,8 @@ public class CoCoCheckerDecorator extends AbstractCreator<ASTCDCompilationUnit, 
   protected final CoCoService cocoService;
 
   protected final VisitorService visitorService;
+
+  protected boolean isHandCoded;
 
   public CoCoCheckerDecorator(final GlobalExtensionManagement glex, final MethodDecorator methodDecorator,
                               final CoCoService cocoService,
@@ -70,8 +74,8 @@ public class CoCoCheckerDecorator extends AbstractCreator<ASTCDCompilationUnit, 
 
       // local time checker for own or super CDDefinition
       ASTMCType ownCheckerType = cocoService.getCheckerType();
-      String checkerName =ownCheckerType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter())
-              .replaceAll("\\.", "_");
+      String checkerName = ownCheckerType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter())
+          .replaceAll("\\.", "_");
       boolean isCurrentDiagram = cdSymbol.getFullName().equals(currentCDSymbol.getFullName());
 
       cocoChecker.addCDAttribute(createCheckerAttribute(ownCheckerType, checkerName, isCurrentDiagram));
@@ -93,7 +97,7 @@ public class CoCoCheckerDecorator extends AbstractCreator<ASTCDCompilationUnit, 
         ASTMCType cocoType = cocoService.getCoCoType(cdTypeSymbol.getAstNode());
         ASTMCType astType = astService.getASTType(cdTypeSymbol.getAstNode());
         String cocoCollectionName = astType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter())
-                .replaceAll("\\.", "_") + COCOS;
+            .replaceAll("\\.", "_") + COCOS;
 
         // only create CoCoCollectionAttribute for the currentDiagram (so super CDDefinitionSymbol)
         if (isCurrentDiagram) {
@@ -102,7 +106,7 @@ public class CoCoCheckerDecorator extends AbstractCreator<ASTCDCompilationUnit, 
 
         // always use global checker type here, also for super grammar addCoCo methods
         ASTCDMethod addCoCo = createAddCoCoMethod(cocoType, cocoCheckerType);
-        this.replaceTemplate(EMPTY_BODY, addCoCo, createAddCoCoImpl(isCurrentDiagram, cocoCollectionName, checkerName));
+        this.replaceTemplate(EMPTY_BODY, addCoCo, createAddCoCoImpl(isCurrentDiagram, cocoCollectionName, checkerName, cocoCheckerName));
 
         ASTCDMethod visit = createVisitMethod(astType);
         this.replaceTemplate(EMPTY_BODY, visit, createVisitImpl(isCurrentDiagram, cocoType, cocoCollectionName, checkerName));
@@ -120,7 +124,7 @@ public class CoCoCheckerDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     ASTCDAttribute checker = getCDAttributeFacade().createAttribute(PRIVATE, checkerListType, checkerName);
     // special list initialization for super coco checker attributes
     HookPoint hp = !isCurrentDiagram ? new StringHookPoint("= new ArrayList<>(Arrays.asList(new "
-            + checkerType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()) + "()))")
+        + checkerType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()) + "()))")
         : new StringHookPoint("= new ArrayList<>()");
     this.replaceTemplate(VALUE, checker, hp);
     return checker;
@@ -145,14 +149,19 @@ public class CoCoCheckerDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     return getCDMethodFacade().createMethod(PUBLIC, checkerType, ADD_COCO, parameter);
   }
 
-  protected HookPoint createAddCoCoImpl(boolean isCurrentDiagram, String cocoCollectionName, String checkerName) {
+  protected HookPoint createAddCoCoImpl(boolean isCurrentDiagram, String cocoCollectionName, String checkerName,
+                                        String cocoCheckerName) {
     String impl;
     if (isCurrentDiagram) {
       impl = cocoCollectionName + ".add(" + COCO_SIMPLE_NAME + ");\n";
     } else {
       impl = checkerName + ".stream().findFirst().get()." + ADD_COCO + "(" + COCO_SIMPLE_NAME + ");\n";
     }
-    return new StringHookPoint(impl + "return this;");
+    if (!isHandCoded()) {
+      return new StringHookPoint(impl + "return this;");
+    } else {
+      return new StringHookPoint(impl + "return (" + cocoCheckerName + ") this;");
+    }
   }
 
   protected ASTCDMethod createVisitMethod(ASTMCType astType) {
@@ -176,5 +185,13 @@ public class CoCoCheckerDecorator extends AbstractCreator<ASTCDCompilationUnit, 
   protected ASTCDMethod createCheckAllMethod(ASTMCType astType) {
     ASTCDParameter parameter = getCDParameterFacade().createParameter(astType, NODE_SIMPLE_NAME);
     return getCDMethodFacade().createMethod(PUBLIC, CHECK_ALL, parameter);
+  }
+
+  public boolean isHandCoded() {
+    return isHandCoded;
+  }
+
+  public void setHandCoded(boolean handCoded) {
+    isHandCoded = handCoded;
   }
 }

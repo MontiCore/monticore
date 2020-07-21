@@ -27,7 +27,6 @@ import org.apache.maven.reporting.MavenReportException;
  * for the default set of MontiCore reports. These are then collected per processed grammar (based
  * on the parent directory structure) and then aggregated in this report.
  *
- * @since 4.1.7
  */
 @Mojo(name = "reporting-report", defaultPhase = LifecyclePhase.SITE)
 @Execute(phase = LifecyclePhase.GENERATE_SOURCES)
@@ -95,7 +94,6 @@ public class ReportingReport extends AbstractMavenReport {
       "14_Transformations.txt",
       "15_ArtifactGml.gml",
       "16_ArtifactGv.gv",
-      "17_InputOutputFiles.txt",
       "18_ObjectDiagram.txt"
   });
   

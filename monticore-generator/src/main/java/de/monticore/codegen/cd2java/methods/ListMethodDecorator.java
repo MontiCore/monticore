@@ -5,12 +5,11 @@ import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
 import de.monticore.codegen.cd2java.AbstractCreator;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
+import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -22,8 +21,6 @@ public abstract class ListMethodDecorator extends AbstractCreator<ASTCDAttribute
 
   protected String capitalizedAttributeNameWithS;
 
-  protected String capitalizedAttributeNameWithOutS;
-
   protected String attributeType;
 
   public ListMethodDecorator(final GlobalExtensionManagement glex) {
@@ -33,9 +30,6 @@ public abstract class ListMethodDecorator extends AbstractCreator<ASTCDAttribute
   @Override
   public List<ASTCDMethod> decorate(final ASTCDAttribute ast) {
     this.capitalizedAttributeNameWithS = getCapitalizedAttributeNameWithS(ast);
-    this.capitalizedAttributeNameWithOutS = (capitalizedAttributeNameWithS.endsWith("s"))
-        ? capitalizedAttributeNameWithS.substring(0, capitalizedAttributeNameWithS.length() - 1) :
-        capitalizedAttributeNameWithS;
     this.attributeType = getAttributeType(ast);
 
     List<ASTCDMethod> methods = getMethodSignatures().stream()
@@ -55,8 +49,8 @@ public abstract class ListMethodDecorator extends AbstractCreator<ASTCDAttribute
   }
 
   private HookPoint createListImplementation(final ASTCDMethod method) {
-    String attributeName = StringUtils.uncapitalize(capitalizedAttributeNameWithOutS);
-    int attributeIndex = method.getName().lastIndexOf(capitalizedAttributeNameWithOutS);
+    String attributeName = StringUtils.uncapitalize(capitalizedAttributeNameWithS);
+    int attributeIndex = method.getName().lastIndexOf(capitalizedAttributeNameWithS);
     String methodName = method.getName().substring(0, attributeIndex);
     String parameterCall = method.getCDParameterList().stream()
         .map(ASTCDParameter::getName)
@@ -67,8 +61,7 @@ public abstract class ListMethodDecorator extends AbstractCreator<ASTCDAttribute
   }
 
   public String getCapitalizedAttributeNameWithS(ASTCDAttribute attribute) {
-    //todo find better util than the DecorationHelper
-    return StringUtils.capitalize(DecorationHelper.getNativeAttributeName(attribute.getName()));
+    return StringUtils.capitalize(getDecorationHelper().getNativeAttributeName(attribute.getName()));
   }
 
   public String getAttributeType(ASTCDAttribute attribute) {

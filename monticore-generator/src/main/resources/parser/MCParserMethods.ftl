@@ -2,6 +2,7 @@
 ${tc.signature("ruleSymbol")}
 <#assign genHelper = glex.getGlobalVar("parserHelper")>
 <#assign parseRuleName = genHelper.getParseRuleName(ruleSymbol)>
+<#assign parseRuleNameJavaCompatible = genHelper.getParseRuleNameJavaCompatible(ruleSymbol)>
 <#assign astClassName = genHelper.getASTClassName(ruleSymbol)>
 <#assign grammar = genHelper.getGrammarSymbol()>
 <#assign parserName = grammar.getName()?cap_first>
@@ -15,7 +16,7 @@ ${tc.signature("ruleSymbol")}
   public Optional<${astClassName}> parse${parseRuleName?cap_first}(String filename) throws IOException {   
     ${parserName}AntlrParser parser = create(filename);    
 	${astClassName} ast;
-    ast = parser.${parseRuleName}_eof().ret;
+ast = parser.${parseRuleNameJavaCompatible}_eof().ret;
     if (parser.hasErrors()) {
       setError(true);
       return Optional.<${astClassName}> empty();
@@ -32,7 +33,7 @@ ${tc.signature("ruleSymbol")}
   public  Optional<${astClassName}> parse${parseRuleName?cap_first}(Reader reader) throws IOException {
  	${parserName}AntlrParser parser = create(reader);
 	${astClassName} ast;
-    ast = parser.${parseRuleName}_eof().ret;
+ast = parser.${parseRuleNameJavaCompatible}_eof().ret;
     if (parser.hasErrors()) {
       setError(true);
       return Optional.<${astClassName}> empty();

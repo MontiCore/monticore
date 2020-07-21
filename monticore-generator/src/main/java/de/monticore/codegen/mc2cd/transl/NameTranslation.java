@@ -3,8 +3,9 @@
 package de.monticore.codegen.mc2cd.transl;
 
 import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.*;
-import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
+import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.monticore.utils.Link;
 import de.se_rwth.commons.StringTransformations;
 
@@ -60,31 +61,31 @@ public class NameTranslation implements
         for (Link<ASTNonTerminal, ASTCDAttribute> link : rootLink.getLinks(ASTNonTerminal.class,
                 ASTCDAttribute.class)) {
             Optional<String> usageName = getUsageName(rootLink.source(), link.source());
-            String nameToUse = usageName.isPresent() ? usageName.get() : link.source().getName();
+            String nameToUse = usageName.isPresent() ? usageName.get() : StringTransformations.uncapitalize(link.source().getName());
             link.target().setName(nameToUse);
         }
 
-        for (Link<ASTTerminal, ASTCDAttribute> link : rootLink.getLinks(ASTTerminal.class,
+        for (Link<ASTITerminal, ASTCDAttribute> link : rootLink.getLinks(ASTITerminal.class,
                 ASTCDAttribute.class)) {
             Optional<String> usageName = getUsageName(rootLink.source(), link.source());
             String nameToUse = usageName.isPresent() ? usageName.get() : link.source().getName();
             link.target().setName(nameToUse);
         }
 
-        for (Link<ASTKeyTerminal, ASTCDAttribute> link : rootLink.getLinks(ASTKeyTerminal.class,
-                ASTCDAttribute.class)) {
+        for (Link<ASTConstantGroup, ASTCDAttribute> link : rootLink.getLinks(ASTConstantGroup.class,
+            ASTCDAttribute.class)) {
             Optional<String> usageName = getUsageName(rootLink.source(), link.source());
-            String nameToUse = usageName.isPresent() ? usageName.get() : link.source().getName();
+            String nameToUse = usageName.isPresent() ? usageName.get() :
+                MCGrammarSymbolTableHelper.getConstantName(link.source().getSymbol());
             link.target().setName(nameToUse);
         }
 
         for (Link<ASTAdditionalAttribute, ASTCDAttribute> link : rootLink.getLinks(ASTAdditionalAttribute.class,
-                ASTCDAttribute.class)) {
-            String name = link.source().getNameOpt().orElse(null);
+            ASTCDAttribute.class)) {
             String alternativeName = StringTransformations.uncapitalize(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(link.source().getMCType()));
-            String nameToUse = name != null ? name : alternativeName;
-            link.target().setName(nameToUse);
-            link.source().setName(nameToUse);
+            String name = link.source().isPresentName() ? link.source().getName() : alternativeName;
+            link.target().setName(name);
+            link.source().setName(name);
         }
 
         for (Link<ASTConstant, ASTCDAttribute> link : rootLink.getLinks(ASTConstant.class,

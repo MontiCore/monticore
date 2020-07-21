@@ -38,7 +38,7 @@ public class Execution {
    */
   public Execution(Executable executable, File outputDirectory, Log log) {
     if (executable == null) {
-      throw new IllegalArgumentException("0xA4084 Executable must not be null!");
+      throw new IllegalArgumentException("0xA4116 Executable must not be null!");
     }
     if (outputDirectory == null) {
       throw new IllegalArgumentException("0xA4085 Output directory must not be null!");

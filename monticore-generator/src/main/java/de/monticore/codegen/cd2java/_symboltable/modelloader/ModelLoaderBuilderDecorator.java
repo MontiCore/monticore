@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._symboltable.modelloader;
 
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
@@ -42,7 +43,7 @@ public class ModelLoaderBuilderDecorator extends AbstractCreator<ASTCDClass, AST
         .filter(m -> BUILD_METHOD.equals(m.getName()))
         .findFirst();
     buildMethod.ifPresent(b -> this.replaceTemplate(EMPTY_BODY, b,
-        new TemplateHookPoint(TEMPLATE_PATH + "Build", modelLoaderClass.getName())));
+        new TemplateHookPoint(TEMPLATE_PATH + "BuildModelLoader", modelLoaderClass.getName())));
 
     return modelLoaderBuilder;
   }

@@ -117,7 +117,7 @@ public class MCCommonUnitTest {
   @Test
   public void testStereotype() throws IOException {
     ASTStereotype ast = parser.parse_StringStereotype( "<< a1 >>" ).get();
-    List<ASTStereoValue> svl = ast.getValueList();
+    List<ASTStereoValue> svl = ast.getValuesList();
     assertEquals(1, svl.size());
     assertEquals(true, ast.contains("a1"));
     assertEquals(false, ast.contains("bla"));
@@ -131,7 +131,7 @@ public class MCCommonUnitTest {
   public void testStereotype2() throws IOException {
     ASTStereotype ast = parser.parse_StringStereotype(
     	"<< bla, a1=\"wert1\" >>" ).get();
-    List<ASTStereoValue> svl = ast.getValueList();
+    List<ASTStereoValue> svl = ast.getValuesList();
     assertEquals(2, svl.size());
     assertEquals(true, ast.contains("a1"));
     assertEquals(false, ast.contains("a1",""));

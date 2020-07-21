@@ -13,7 +13,7 @@ package de.monticore.expressions;
  * grammars mentioned below. These expression definitions can savely be
  * composed if desired.
  *
- * This grammar is part of a hierarchy of types, namely
+ * This grammar is part of a hierarchy of expressions, namely
  * * expressions/ExpressionsBasis.mc4
  * * --  expressions/CommonExpressions.mc4
  * * --  --  expressions/JavaClassExpressions.mc4
@@ -25,37 +25,30 @@ package de.monticore.expressions;
 */
 
 component grammar AssignmentExpressions
-	  extends de.monticore.expressions.ExpressionsBasis {
+    extends de.monticore.expressions.ExpressionsBasis {
 
   /*=================================================================*/
 
   IncSuffixExpression implements Expression <220> =
-	Expression "++";
-        
-  DecSuffixExpression implements Expression <220> =
-	Expression "--";
-        
-  PlusPrefixExpression implements Expression <210> =
-	"+" Expression;
+    Expression "++";
 
-  MinusPrefixExpression implements Expression <210> =
-	"-" Expression;
+  DecSuffixExpression implements Expression <220> =
+    Expression "--";
 
   /*=================================================================*/
 
   IncPrefixExpression implements Expression <210> =
-	"++" Expression;
+    "++" Expression;
 
   DecPrefixExpression implements Expression <210> =
-	"--" Expression;
-	
-  /*=================================================================*/
-
-  interface AssignmentExpression = left:Expression operator:"" right:Expression;
+    "--" Expression;
 
   /*=================================================================*/
 
-  RegularAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
-	left:Expression operator:["="|"+="|"-="|"*="|"/="|"&="|"|="|"^="|">>="|">>>="|"<<="|"%="]  right:Expression;
+  AssignmentExpression implements Expression <60> = <rightassoc>
+    left:Expression
+    operator: [ "=" | "+=" | "-=" | "*=" | "/=" | "&=" | "|="
+              | "^=" | ">>=" | ">>>=" | "<<=" | "%=" ]
+    right:Expression;
 
 }

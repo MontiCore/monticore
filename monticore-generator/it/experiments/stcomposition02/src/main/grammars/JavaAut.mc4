@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+/** This is a very much simplified Java excerpt that 
+    exhibits some of typical Java symbols and scopes.
+    It is used for demonstration only.
+*/
+
+grammar JavaAut extends BasicJava, Automata5 {
+  start CompilationUnit; //from BasicJava
+
+  // embedding rule
+  AutomatonMethodBody extends JavaBlock = Automaton;
+
+}
+

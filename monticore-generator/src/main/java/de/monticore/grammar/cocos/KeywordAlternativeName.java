@@ -15,7 +15,7 @@ public class KeywordAlternativeName implements GrammarASTConstantGroupCoCo {
   
   public static final String ERROR_CODE = "0xA4019";
   
-  public static final String ERROR_MSG_FORMAT = " The production %s must not use an alternative of keywords without naming it.";
+  public static final String ERROR_MSG_FORMAT = " The production %s must not use a ConstantGroup with more than one element without naming it.";
   
   @Override
   public void check(ASTConstantGroup a) {

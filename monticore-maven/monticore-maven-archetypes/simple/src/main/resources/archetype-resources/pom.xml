@@ -15,17 +15,17 @@
 
     <!-- .. Libraries ..................................................... -->
     <antlr.version>4.7.1</antlr.version>
-    <guava.version>18.0</guava.version>
+    <guava.version>25.1-jre</guava.version>
     <jsr305.version>3.0.0</jsr305.version>
     <junit.version>4.12</junit.version>
     <logback.version>1.1.2</logback.version>
     <mc.grammars.assembly.version>0.0.8</mc.grammars.assembly.version>
-    <monticore.version>6.0.0</monticore.version>
+    <monticore.version>6.2.0</monticore.version>
 
     <!-- .. Plugins ....................................................... -->
     <assembly.plugin>2.5.4</assembly.plugin>
     <compiler.plugin>3.3</compiler.plugin>
-    <monticore.plugin>6.0.0</monticore.plugin>
+    <monticore.plugin>6.2.0</monticore.plugin>
 
     <!-- Classifiers -->
     <grammars.classifier>grammars</grammars.classifier>

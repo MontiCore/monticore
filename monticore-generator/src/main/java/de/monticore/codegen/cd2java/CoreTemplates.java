@@ -36,7 +36,8 @@ public final class CoreTemplates {
 
   public static final String ANNOTATIONS = "core.Annotations";
 
-  private CoreTemplates() {}
+  private CoreTemplates() {
+  }
 
   public static HookPoint createPackageHookPoint(final String... packageName) {
     return createPackageHookPoint(Arrays.asList(packageName));
@@ -46,17 +47,17 @@ public final class CoreTemplates {
     return new StringHookPoint("package " + String.join(".", packageName) + ";");
   }
 
-  public static HookPoint createAnnotationsHookPoint(final Optional<ASTModifier> modifier) {
+  public static HookPoint createAnnotationsHookPoint(final ASTModifier modifier) {
     String anno = "";
-    if (modifier.isPresent() && modifier.get().isPresentStereotype()) {
-      ASTCDStereotype stereo = modifier.get().getStereotype();
+    if (modifier.isPresentStereotype()) {
+      ASTCDStereotype stereo = modifier.getStereotype();
       for (ASTCDStereoValue stereoValue : stereo.getValueList()) {
         if (MC2CDStereotypes.DEPRECATED.toString().equals(stereoValue.getName())) {
           if (stereoValue.isPresentValue()) {
             // Append tag for java api
             anno = "/**\n * @deprecated " + stereoValue.getValue() + "\n **/\n";
           }
-          anno += MC2CDStereotypes.DEPRECATED.toString();
+          anno += "@Deprecated";
         }
       }
     }

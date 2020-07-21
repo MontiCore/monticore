@@ -1,10 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
-import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymTabMill;
-import de.monticore.literals.mccommonliterals._ast.MCCommonLiteralsMill;
+import de.monticore.expressions.prettyprint.CombineExpressionsWithLiteralsPrettyPrinter;
+import de.monticore.literals.mccommonliterals.MCCommonLiteralsMill;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
-import de.se_rwth.commons.logging.Log;
+import de.monticore.prettyprint.IndentPrinter;
+import de.se_rwth.commons.logging.*;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -22,12 +23,13 @@ public class DeriveSymTypeOfMCCommonLiteralsTest {
   
   @BeforeClass
   public static void setup() {
-    Log.init();
+    LogStub.init();         // replace log by a sideffect free variant
+    // LogStub.initPlusLog();  // for manual testing purpose only
     Log.enableFailQuick(false);
   }
   
   // This is the core Visitor under Test (but rather empty)
-  DeriveSymTypeOfCombineExpressions derLit = new DeriveSymTypeOfCombineExpressions(ExpressionsBasisSymTabMill.expressionsBasisScopeBuilder().build());
+  DeriveSymTypeOfCombineExpressionsDelegator derLit = new DeriveSymTypeOfCombineExpressionsDelegator();
   
   // other arguments not used (and therefore deliberately null)
   
@@ -70,14 +72,14 @@ public class DeriveSymTypeOfMCCommonLiteralsTest {
 
   @Test
   public void deriveTFromLiteral1BasicLong() throws IOException {
-    ASTLiteral lit = MCCommonLiteralsMill.basicLongLiteralBuilder().setDigits("17").setName("L").build();
+    ASTLiteral lit = MCCommonLiteralsMill.basicLongLiteralBuilder().setDigits("17").build();
     assertEquals("long", tc.typeOf(lit).print());
   }
 
 
   @Test
   public void deriveTFromLiteral1BasicFloat() throws IOException {
-    ASTLiteral lit = MCCommonLiteralsMill.basicFloatLiteralBuilder().setPre("10").setPost("03").setName("f").build();
+    ASTLiteral lit = MCCommonLiteralsMill.basicFloatLiteralBuilder().setPre("10").setPost("03").build();
     assertEquals("float", tc.typeOf(lit).print());
   }
 

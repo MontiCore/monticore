@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+/* Used in the Reference Manual 
+   Chapter 5, demonstrating AST results
+*/
+
+grammar Automata {
+  Automaton = "automaton" Name
+    "{" ( State | Transition )* "}" ;
+  State = "state" Name
+    ("<<" ["initial"] ">>" | "<<" ["final"] ">>" )* ";" ;
+  Transition = from:Name "-" input:Name ">" to:Name ";" ;
+  astrule State =
+    reachableStates:State*;
+
+  Name = "...";
+}
+

@@ -67,7 +67,7 @@ public class Executable {
    */
   void setPathToExecutable(File pathToExecutable) {
     if (pathToExecutable == null) {
-      throw new IllegalArgumentException("0xA4082 Path to executable must not be null!");
+      throw new IllegalArgumentException("0xA4114 Path to executable must not be null!");
     }
     this.pathToExecutable = pathToExecutable;
   }
@@ -79,7 +79,7 @@ public class Executable {
    */
   void setArguments(List<String> arguments) {
     if (arguments == null) {
-      throw new IllegalArgumentException("0xA4083 Arguments must not be null!");
+      throw new IllegalArgumentException("0xA4115 Arguments must not be null!");
     }
     this.arguments = arguments;
   }

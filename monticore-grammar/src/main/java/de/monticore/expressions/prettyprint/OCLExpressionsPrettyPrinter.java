@@ -71,7 +71,7 @@ public class OCLExpressionsPrettyPrinter extends ExpressionsBasisPrettyPrinter i
   public void handle(ASTForallExpr node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     getPrinter().print("forall ");
-    node.getInExprList().forEach(e -> e.accept(getRealThis()));
+    node.getInExprsList().forEach(e -> e.accept(getRealThis()));
 
     getPrinter().print(":");
     node.getExpression().accept(getRealThis());
@@ -82,7 +82,7 @@ public class OCLExpressionsPrettyPrinter extends ExpressionsBasisPrettyPrinter i
   public void handle(ASTExistsExpr node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     getPrinter().print("exists ");
-    node.getInExprList().forEach(e -> e.accept(getRealThis()));
+    node.getInExprsList().forEach(e -> e.accept(getRealThis()));
 
     getPrinter().print(":");
     node.getExpression().accept(getRealThis());
@@ -101,7 +101,7 @@ public class OCLExpressionsPrettyPrinter extends ExpressionsBasisPrettyPrinter i
   public void handle(ASTLetinExpr node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     getPrinter().print("let ");
-    for (ASTEDeclarationExt ast : node.getEDeclarationList()) {
+    for (ASTEDeclarationExt ast : node.getEDeclarationsList()) {
       ast.accept(getRealThis());
       getPrinter().print("; ");
     }
@@ -231,11 +231,11 @@ public class OCLExpressionsPrettyPrinter extends ExpressionsBasisPrettyPrinter i
   public void handle(ASTOCLArgumentQualification node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     getPrinter().print("(");
-    for (int i = 0; i < node.getExpressionList().size(); i++) {
+    for (int i = 0; i < node.getExpressionsList().size(); i++) {
       if (i != 0) {
         getPrinter().print(", ");
       }
-      node.getExpression(i).accept(getRealThis());
+      node.getExpressions(i).accept(getRealThis());
     }
     getPrinter().print(")");
     CommentPrettyPrinter.printPostComments(node, getPrinter());
@@ -258,7 +258,7 @@ public class OCLExpressionsPrettyPrinter extends ExpressionsBasisPrettyPrinter i
   @Override
   public void handle(ASTOCLQualifiedPrimary node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    String qualifiedName = String.join(".", node.getNameList());
+    String qualifiedName = String.join(".", node.getNamesList());
     getPrinter().print(qualifiedName + " ");
     if (node.isPresentPostfix()) {
       node.getPostfix().accept(getRealThis());
@@ -275,11 +275,11 @@ public class OCLExpressionsPrettyPrinter extends ExpressionsBasisPrettyPrinter i
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     node.getExpression().accept(getRealThis());
     getPrinter().print(" | ");
-    for (int i = 0; i < node.getOCLComprehensionItemList().size(); i++) {
+    for (int i = 0; i < node.getOCLComprehensionItemsList().size(); i++) {
       if (i != 0) {
         getPrinter().print(", ");
       }
-      node.getOCLComprehensionItem(i).accept(getRealThis());
+      node.getOCLComprehensionItems(i).accept(getRealThis());
     }
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
@@ -300,7 +300,7 @@ public class OCLExpressionsPrettyPrinter extends ExpressionsBasisPrettyPrinter i
   @Override
   public void handle(ASTOCLComprehensionEnumerationStyle node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getOCLCollectionItemList().forEach(i -> i.accept(getRealThis()));
+    node.getOCLCollectionItemsList().forEach(i -> i.accept(getRealThis()));
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
 
@@ -308,15 +308,15 @@ public class OCLExpressionsPrettyPrinter extends ExpressionsBasisPrettyPrinter i
   public void handle(ASTOCLCollectionItem node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     if(node.sizeExpressions() == 2){
-      node.getExpression(0).accept(getRealThis());
+      node.getExpressions(0).accept(getRealThis());
       getPrinter().print(" .. ");
-      node.getExpression(1).accept(getRealThis());
+      node.getExpressions(1).accept(getRealThis());
     }else {
-      for (int i = 0; i < node.getExpressionList().size(); i++) {
+      for (int i = 0; i < node.getExpressionsList().size(); i++) {
         if (i != 0) {
           getPrinter().print(", ");
         }
-        node.getExpression(i).accept(getRealThis());
+        node.getExpressions(i).accept(getRealThis());
       }
     }
     CommentPrettyPrinter.printPostComments(node, getPrinter());

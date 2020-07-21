@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package mc.testcd4analysis._symboltable;
 
 import de.monticore.prettyprint.IndentPrinter;
@@ -42,8 +43,8 @@ public class TestCD4AnalysisSymbolTableCreator extends TestCD4AnalysisSymbolTabl
       typeName = astAttribute.getMCType().printType(new MCCollectionTypesPrettyPrinter(new IndentPrinter()));
     }
 
-    final CDTypeSymbolLoader typeReference = new CDTypeSymbolLoader(typeName, getCurrentScope()
-        .get());
+    final CDTypeSymbolSurrogate typeReference = new CDTypeSymbolSurrogate(typeName);
+    typeReference.setEnclosingScope(getCurrentScope().get());
     fieldSymbol.setType(typeReference);
 
     if (astAttribute.isPresentModifier()) {
@@ -67,16 +68,17 @@ public class TestCD4AnalysisSymbolTableCreator extends TestCD4AnalysisSymbolTabl
   @Override
   public void initialize_CDMethod(CDMethOrConstrSymbol methodSymbol, ASTCDMethod astMethod) {
     setReturnTypeOfMethod(methodSymbol, astMethod);
-    if (!astMethod.getCDParameterList().isEmpty()) {
-      if (astMethod.getCDParameter(astMethod.getCDParameterList().size() - 1).isEllipsis()) {
+    if (!astMethod.getCDParametersList().isEmpty()) {
+      if (astMethod.getCDParameters(astMethod.getCDParametersList().size() - 1).isEllipsis()) {
         methodSymbol.setIsEllipsis(true);
       }
     }
   }
 
   public void setReturnTypeOfMethod(final CDMethOrConstrSymbol methodSymbol, ASTCDMethod astMethod) {
-    final CDTypeSymbolLoader returnSymbol = new CDTypeSymbolLoader(
-        ( astMethod.getMCReturnType().printType(new MCCollectionTypesPrettyPrinter(new IndentPrinter()))), getCurrentScope().get());
+    final CDTypeSymbolSurrogate returnSymbol = new CDTypeSymbolSurrogate(
+        ( astMethod.getMCReturnType().printType(new MCCollectionTypesPrettyPrinter(new IndentPrinter()))));
+    returnSymbol.setEnclosingScope(getCurrentScope().get());
     methodSymbol.setReturnType(returnSymbol);
   }
 
@@ -98,7 +100,7 @@ public class TestCD4AnalysisSymbolTableCreator extends TestCD4AnalysisSymbolTabl
 
     if (ast.isPresentSuperclass()) {
       ASTMCObjectType superC = ast.getSuperclass();
-      final CDTypeSymbolLoader superClassSymbol = createCDTypeSymbolFromReference(superC);
+      final CDTypeSymbolSurrogate superClassSymbol = createCDTypeSymbolFromReference(superC);
       symbol.setSuperClass(superClassSymbol);
     }
 
@@ -109,15 +111,17 @@ public class TestCD4AnalysisSymbolTableCreator extends TestCD4AnalysisSymbolTabl
   public void addInterfacesToType(final CDTypeSymbol typeSymbol, final List<ASTMCObjectType> astInterfaces) {
     if (astInterfaces != null) {
       for (final ASTMCObjectType superInterface : astInterfaces) {
-        final CDTypeSymbolLoader superInterfaceSymbol = createCDTypeSymbolFromReference(superInterface);
-        typeSymbol.getCdInterfaceList().add(superInterfaceSymbol);
+        final CDTypeSymbolSurrogate superInterfaceSymbol = createCDTypeSymbolFromReference(superInterface);
+        typeSymbol.getCdInterfacesList().add(superInterfaceSymbol);
       }
 
     }
   }
 
-  CDTypeSymbolLoader createCDTypeSymbolFromReference(final ASTMCObjectType astmcObjectType) {
-    return new CDTypeSymbolLoader(
-        astmcObjectType.printType(new MCCollectionTypesPrettyPrinter(new IndentPrinter())), getCurrentScope().get());
+  CDTypeSymbolSurrogate createCDTypeSymbolFromReference(final ASTMCObjectType astmcObjectType) {
+    CDTypeSymbolSurrogate surrogate =  new CDTypeSymbolSurrogate(
+        astmcObjectType.printType(new MCCollectionTypesPrettyPrinter(new IndentPrinter())));
+    surrogate.setEnclosingScope(getCurrentScope().get());
+    return surrogate;
   }
 }

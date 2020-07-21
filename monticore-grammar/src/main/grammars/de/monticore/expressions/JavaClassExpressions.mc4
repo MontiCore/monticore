@@ -3,28 +3,28 @@ package de.monticore.expressions;
 
 /* This is a MontiCore stable grammar.
  * Adaptations -- if any -- are conservative. */
- 
+
 /**
- * This grammar defines Java specific class expressions like super, 
+ * This grammar defines Java specific class expressions like super,
  * this, type cast, etc.
- * 
+ *
  * This grammar should only be included, when a mapping to Java is
- * intended and the full power of Java should be available in the 
+ * intended and the full power of Java should be available in the
  * modelling language.
- *  
- * There are also other kinds of expressions defined in the 
- * grammars mentioned below. These expression definitions can savely be 
+ *
+ * There are also other kinds of expressions defined in the
+ * grammars mentioned below. These expression definitions can savely be
  * composed if desired.
- * 
+ *
  * The grammar has several extension points for types to be filled when used.
- * 
- * This grammar is part of a hierarchy of types, namely 
+ *
+ * This grammar is part of a hierarchy of expressions, namely
  * * expressions/ExpressionsBasis.mc4
- * * --  expressions/CommonExpressions.mc4      
+ * * --  expressions/CommonExpressions.mc4
  * * --  --  expressions/JavaClassExpressions.mc4
  * * --  --  expressions/SetExpressions.mc4
- * * --  expressions/AssignmentExpressions.mc4  
- * * --  expressions/BitExpressions.mc4         
+ * * --  expressions/AssignmentExpressions.mc4
+ * * --  expressions/BitExpressions.mc4
  * * --  expressions/OCLExpressions.mc4
  *
 */
@@ -49,54 +49,73 @@ component grammar JavaClassExpressions
   external ExtReturnType;
 
   // Type arguments
-  external ExtTypeArguments;
+  external ExtTypeArgument;
 
   /*=================================================================*/
 
-  PrimaryThisExpression implements Expression <320>
-	= "this";
+  PrimaryThisExpression implements Expression <320> =
+    "this";
 
   ThisExpression implements Expression <280> =
-	Expression "." "this";
+    Expression "." "this";
 
   ArrayExpression implements Expression <250> =
-	Expression "[" indexExpression:Expression "]";
+    Expression "[" indexExpression:Expression "]";
 
   SuperExpression implements Expression <270> =
-	Expression "." "super" SuperSuffix;
-	
+    Expression "." "super" SuperSuffix;
+
   GenericInvocationExpression implements Expression <260> =
-	Expression "." PrimaryGenericInvocationExpression;
-	
+    Expression "." PrimaryGenericInvocationExpression;
+
   TypeCastExpression implements Expression <230> =
-	"(" ExtType ")" Expression;
-        
-  PrimarySuperExpression implements Expression <330>
-	= "super";
-	
+    "(" ExtType ")" Expression;
+
+  PrimarySuperExpression implements Expression <330> =
+    "super";
+
+  CreatorExpression implements Expression <235> =
+    "new" Creator;
+
+  interface Creator ;
+
+  AnonymousClass implements Creator
+      =  ExtType Arguments
+      ;
+
+  ArrayCreator implements Creator
+      =   ExtType ArrayDimensionSpecifier
+      ;
+
+  interface ArrayDimensionSpecifier ;
+
+  ArrayDimensionByExpression implements ArrayDimensionSpecifier
+      =   ("[" Expression "]")+ (dim:"[" "]")*
+      ;
+
   /*=================================================================*/
 
-  ClassExpression implements Expression <360>
-    = ExtReturnType "." "class";
-   
-  PrimaryGenericInvocationExpression implements Expression <370>
-    = ExtTypeArguments GenericInvocationSuffix;
+  ClassExpression implements Expression <360> =
+    ExtReturnType "." "class";
+
+  PrimaryGenericInvocationExpression implements Expression <370> =
+    "<"(ExtTypeArgument||",")+">" GenericInvocationSuffix;
 
   GenericInvocationSuffix
     =   ["super"] SuperSuffix
     |   ["this"] Arguments
     |   Name Arguments
     ;
-    
+
   SuperSuffix
     =   Arguments
-    |   "." ExtTypeArguments? Name Arguments?
+    |   "." ("<"(ExtTypeArgument||",")+">")? Name Arguments?
     ;
-    
+
   /*=================================================================*/
 
-  InstanceofExpression implements Expression <140>
-	= Expression "instanceof" ExtType;
+  InstanceofExpression implements Expression <140> =
+    Expression "instanceof" ExtType;
 
 
 }

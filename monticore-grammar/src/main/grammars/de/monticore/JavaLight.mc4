@@ -1,29 +1,34 @@
 /* (c) https://github.com/MontiCore/monticore */
-
 package de.monticore;
+
+/* This is a MontiCore stable grammar.
+ * Adaptations -- if any -- are conservative. */
+
+/**
+ * JavaLight is a subset of Java that MontiCore itself
+ * uses as intermediate language for the code generation process.
+ * JavaLight doesn't provide all forms of classes (e.g. inner classes)
+ * and reduces the type system to normal generic types.
+ *
+ * However, that is suffiecient for representation of all generated
+ * pieces of code that MontiCore wants to make.
+ *
+ * JavaLight can be used for other generator tools as well,
+ * especially as core template are reusable and new templates
+ * for specific method bodies can be added using MontiCore's
+ * Hook-Mechanisms.
+ *
+*/
 
 component grammar JavaLight extends de.monticore.expressions.CommonExpressions,
                                     de.monticore.expressions.AssignmentExpressions,
+                                    de.monticore.expressions.JavaClassExpressions,
                                     de.monticore.statements.MCCommonStatements,
-                                    de.monticore.types.MCBasicTypes {
+                                    de.monticore.types.MCBasicTypes,
+                                    de.monticore.symbols.OOSymbols {
 
 external ExtTypeParameters;
 
-// Type declarations
-interface TypeDeclaration extends ClassMemberDeclaration,
-        InterfaceMemberDeclaration, AnnotationTypeElementDeclaration;
-
-ExtendedBlockStatement extends BlockStatement
-    = LocalVariableDeclaration
-    | MCStatement
-    | TypeDeclaration
-    ;
-
-
-EmptyDeclaration implements TypeDeclaration
-    =   ";"
-    ;
-    
 interface ClassBodyDeclaration ;
 
 interface InterfaceBodyDeclaration ;
@@ -32,44 +37,36 @@ ClassBlock implements ClassBodyDeclaration
     = (["static"])? MCJavaBlock
     ;
 
-interface ClassMemberDeclaration extends ClassBodyDeclaration ;
+interface scope symbol MethOrConstr extends Method = Name;
 
-MethodDeclaration implements ClassMemberDeclaration
-    =   MethodSignature (methodBody:MCJavaBlock | ";")
-    ;
+symbolrule MethOrConstr =
+    exceptions: de.monticore.types.check.SymTypeExpression*
+    annotations: de.monticore.types.check.SymTypeExpression*
+    isAbstract: boolean
+    isSynchronized: boolean
+    isNative:boolean
+    isStrictfp: boolean
+;
 
-ConstructorDeclaration implements ClassMemberDeclaration
-    =   MCModifier* ExtTypeParameters? Name FormalParameters ("throws" Throws)?
-        constructorBody:MCJavaBlock
-    ;
-
-FieldDeclaration implements ClassMemberDeclaration
-    =   MCModifier* MCType (VariableDeclarator || ",")+ ";"
-    ;
-
-interface InterfaceMemberDeclaration extends InterfaceBodyDeclaration ;
-
-ConstDeclaration implements InterfaceMemberDeclaration
-    =   MCModifier* MCType (ConstantDeclarator || ",")+ ";"
-    ;
-
-ConstantDeclarator
-    =   Name (dim:"[" "]")* "=" VariableInititializerOrExpression
-    ;
-
-InterfaceMethodDeclaration implements InterfaceMemberDeclaration
-    =   MethodSignature ";"
-    ;
-
-/* We use rule this even for void methods which cannot have [] after parameters.
-   This simplifies grammar and we can consider void to be a type, which
-   renders the [] matching as a context-sensitive issue or a semantic check
-   for invalid return type after parsing.
- */
-MethodSignature
+MethodDeclaration implements MethOrConstr, ClassBodyDeclaration
     =   MCModifier* ExtTypeParameters?
-        MCReturnType Name FormalParameters (dim:"[" "]")*
-        ("throws" Throws)?
+                MCReturnType Name FormalParameters (dim:"[" "]")*
+                ("throws" Throws)? (MCJavaBlock | ";")
+    ;
+
+ConstructorDeclaration implements MethOrConstr, ClassBodyDeclaration
+    =   MCModifier* ExtTypeParameters? Name FormalParameters ("throws" Throws)?
+        MCJavaBlock
+    ;
+
+ConstDeclaration extends LocalVariableDeclarationStatement implements ClassBodyDeclaration, InterfaceBodyDeclaration
+    =   LocalVariableDeclaration ";"
+    ;
+
+InterfaceMethodDeclaration implements MethOrConstr, InterfaceBodyDeclaration
+    =   MCModifier* ExtTypeParameters?
+                MCReturnType Name FormalParameters (dim:"[" "]")*
+                ("throws" Throws)? ";"
     ;
 
 Throws
@@ -86,11 +83,11 @@ FormalParameterListing
     ;
 
 FormalParameter
-    =   PrimitiveModifier* MCType DeclaratorId
+    =   JavaModifier* MCType DeclaratorId
     ;
 
 LastFormalParameter
-    =   PrimitiveModifier* MCType "..." DeclaratorId
+    =   JavaModifier*  MCType "..." DeclaratorId
     ;
 
 // ANNOTATIONS
@@ -112,66 +109,19 @@ ElementValuePair
 interface ElementValue;
 
 ElementValueOrExpr implements AnnotationArguments
-	= ElementValue | Expression;
+    = ElementValue | Expression;
 
 ElementValueArrayInitializer implements ElementValue
     =   "{" (ElementValueOrExpr || ",")* (",")? "}"
     ;
 
-AnnotationTypeDeclaration implements TypeDeclaration
-    =   MCModifier* "@" "interface" Name AnnotationTypeBody
-    ;
-
-AnnotationTypeBody
-    =   "{" (AnnotationTypeElementDeclaration)* "}"
-    ;
-
-interface AnnotationTypeElementDeclaration ;
-
-AnnotationMethod implements AnnotationTypeElementDeclaration
-    =   MCModifier* MCType Name "(" ")" DefaultValue? ";"
-    ;
-
-AnnotationConstant implements AnnotationTypeElementDeclaration
-    =   MCModifier* MCType (VariableDeclarator || ",")+ ";"
-    ;
-
-DefaultValue
-    =   "default" ElementValueOrExpr
-    ;
-
-CreatorExpression implements Expression <235> =
-	"new" Creator;
-
-interface Creator ;
-
-// TODO Reicht das so? Siehe ursprüngliche Definition
-// =   TypeArguments? CreatedName ClassCreatorRest
-AnonymousClass implements Creator
-    =  CreatedName Arguments
-    ;
-
-ArrayCreator implements Creator
-    =   CreatedName ArrayDimensionSpecifier
-    ;
-
-interface ArrayDimensionSpecifier ;
-    
-ArrayDimensionByInitializer implements ArrayDimensionSpecifier
-    =   (dim:"[" "]")+ ArrayInitializer
-    ;
-    
-ArrayDimensionByExpression implements ArrayDimensionSpecifier
-    =   ("[" Expression "]")+ (dim:"[" "]")*
-    ;
-    
-CreatedName
-    =   (MCObjectType || ".")+
-    |   MCPrimitiveType
-    ;
-
 EnhancedForControl implements ForControl
-    =   FormalParameter ":" Expression
+    = FormalParameter ":" Expression
+    ;
+
+ArrayDimensionByInitializer implements ArrayDimensionSpecifier
+    = (dim:"[" "]")+ ArrayInit
     ;
 
 }
+

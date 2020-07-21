@@ -13,7 +13,7 @@ public class ASTFullDecorator extends CompositeDecorator<ASTCDClass> {
 
   public ASTFullDecorator(final DataDecorator dataDecorator,
                           final ASTDecorator astDecorator,
-                          final ASTReferenceDecorator astReferencedSymbolDecorator) {
+                          final ASTReferenceDecorator<ASTCDClass> astReferencedSymbolDecorator) {
     super(dataDecorator, astDecorator, astReferencedSymbolDecorator);
   }
 }

@@ -46,25 +46,10 @@ public class ASTTest {
   public void testGet_ChildNodes2() {
     ASTParent p = DeleteTestNodeFactory.createASTParent();
     ASTChild s = DeleteTestNodeFactory.createASTChild();
-    p.addChild(s);
+    p.addChilds(s);
     p.setSon(s);
-    assertEquals(1, p.getChildList().size());
-    assertTrue(p.containsChild(s));
-  }
-  
-  @Test
-  public void testFileNameInSourcePosition() {
-    String grammarToTest = "src/test/resources/mc/grammar/SimpleGrammarWithConcept.mc4";
-    
-    Path model = Paths.get(new File(
-        grammarToTest).getAbsolutePath());
-    
-    MontiCoreScript mc = new MontiCoreScript();
-    Optional<ASTMCGrammar> ast = mc.parseGrammar(model);
-    assertTrue(ast.isPresent());
-    ASTMCGrammar clonedAst = ast.get().deepClone();
-    assertTrue(clonedAst.get_SourcePositionStart().getFileName().isPresent());
-    assertEquals("SimpleGrammarWithConcept.mc4", FilenameUtils.getName(clonedAst.get_SourcePositionStart().getFileName().get()));
+    assertEquals(1, p.getChildsList().size());
+    assertTrue(p.containsChilds(s));
   }
   
 }

@@ -17,6 +17,10 @@ public class CoCoService extends AbstractService<CoCoService> {
     super(cdSymbol);
   }
 
+  /**
+   * overwrite methods of AbstractService to add the correct '_coco' package for CoCo generation
+   */
+
   @Override
   public String getSubPackage() {
     return CoCoConstants.COCO_PACKAGE;

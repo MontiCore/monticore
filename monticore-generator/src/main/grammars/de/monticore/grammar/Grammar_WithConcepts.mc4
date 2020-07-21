@@ -15,7 +15,7 @@ grammar Grammar_WithConcepts extends de.monticore.grammar.Grammar,
   
   MCConcept = ConceptAntlr;
   
-  Action = BlockStatement*;
+  Action = MCBlockStatement*;
   
   ExpressionPredicate = Expression;
     
@@ -25,7 +25,7 @@ grammar Grammar_WithConcepts extends de.monticore.grammar.Grammar,
 
   ExtReturnType = MCReturnType;
 
-  ExtTypeArguments = "<" (MCTypeArgument || ",")+ ">"*;
+  ExtTypeArgument = "<" (MCTypeArgument || ",")+ ">"*;
 
   // Empty TypeParameters
   ExtTypeParameters = ;

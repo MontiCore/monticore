@@ -199,11 +199,10 @@ grammar CD4Analysis extends mc.grammar.types.ItTestTypes {
     (["abstract"]
       | ["final"]
       | ["static"]
-      | Private:["private"] | [Private:"-"]  // TODO: Vereinfachung (Bug)
-      | Protected:["protected"] | [Protected:"#"]
-      | Public:["public"] | [Public:"+"]
-      | Derived:["derived"] | [Derived:"/"] )*;
-    
+      | ["private"] | [private:"-"]
+      | ["protected"] | [protected:"#"]
+      | ["public"] | [public:"+"]
+      | ["derived"] | [derived:"/"] )*;
 
   /** ASTCardinality represents a Cardinality in a Classdiagram
     @attribute many          True if "*" is set as Cardinality

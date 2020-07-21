@@ -184,7 +184,7 @@ public class MCLiteralsDecoder {
     if (s.contains("_")) {
       
       if (s.indexOf("_") == 0) {
-        Log.error("0xA4081 Do not put underscores at the beginning of the Number " + s);
+        Log.error("0xA4112 Do not put underscores at the beginning of the Number " + s);
       }
       
       if (s.contains("e")
@@ -204,7 +204,7 @@ public class MCLiteralsDecoder {
       
       if (s.startsWith("0x") || s.startsWith("0X") || s.startsWith("0b") || s.startsWith("0B")) {
         if (s.indexOf("_") == 2) {
-          Log.error("0xA4081 Do not put underscores at the beginning of the Number " + s);
+          Log.error("0xA4113 Do not put underscores at the beginning of the Number " + s);
         }
       }
       if (s.endsWith("_")) {

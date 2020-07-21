@@ -5,7 +5,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCArrayType;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCMultipleGenericType;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardTypeArgument;
-import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
+import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.monticore.types.mcfullgenerictypestest._parser.MCFullGenericTypesTestParser;
 import de.monticore.types.prettyprint.MCFullGenericTypesPrettyPrinter;
 import de.se_rwth.commons.logging.Log;

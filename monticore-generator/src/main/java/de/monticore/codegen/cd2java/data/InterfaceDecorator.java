@@ -30,9 +30,9 @@ public class InterfaceDecorator extends AbstractTransformer<ASTCDInterface> {
   @Override
   public ASTCDInterface decorate(final ASTCDInterface originalInput, ASTCDInterface changedInput) {
     //add abstract methods like deepClone, deepEquals etc.
-    List<ASTCDMethod> dataMethods = dataDecoratorUtil.decorate(originalInput);
+    List<ASTCDMethod> dataMethods = dataDecoratorUtil.decorate(changedInput);
     dataMethods.forEach(m -> m.getModifier().setAbstract(true));
-    originalInput.addAllCDMethods(dataMethods);
+    changedInput.addAllCDMethods(dataMethods);
 
     //add abstract methods for attributes of the interface
     List<ASTCDMethod> attributeMethods = originalInput.getCDAttributeList().stream()
@@ -41,9 +41,20 @@ public class InterfaceDecorator extends AbstractTransformer<ASTCDInterface> {
         .collect(Collectors.toList());
     List<ASTCDMethod> methodListWithoutDuplicates = service.getMethodListWithoutDuplicates(originalInput.getCDMethodList(), attributeMethods);
     methodListWithoutDuplicates.forEach(m -> m.getModifier().setAbstract(true));
-    originalInput.addAllCDMethods(methodListWithoutDuplicates);
+    changedInput.addAllCDMethods(methodListWithoutDuplicates);
 
-    originalInput.getCDAttributeList().clear();
-    return originalInput;
+    changedInput.getCDAttributeList().clear();
+    // make other methods abstract (for referenced symbol methods)
+    changedInput.getCDMethodList().forEach(x->x.getModifier().setAbstract(true));
+    // only then add the normal methods (e.g. for astrule methods with implementation)
+    changedInput.addAllCDMethods(originalInput.getCDMethodList());
+
+    // delete all private or protected methods
+    List<ASTCDMethod> l = changedInput.streamCDMethods()
+            .filter(m -> !m.getModifier().isProtected() && !m.getModifier().isPrivate()).collect(Collectors.toList());
+    changedInput.setCDMethodList(l);
+
+    changedInput.addAllInterfaces(originalInput.getInterfaceList());
+    return changedInput;
   }
 }

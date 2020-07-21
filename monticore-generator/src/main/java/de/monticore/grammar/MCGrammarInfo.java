@@ -6,8 +6,8 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
+import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.parser.ParserGeneratorHelper;
 import de.monticore.grammar.concepts.antlr.antlr._ast.ASTAntlrLexerAction;
 import de.monticore.grammar.concepts.antlr.antlr._ast.ASTAntlrParserAction;
@@ -61,7 +61,11 @@ public class MCGrammarInfo {
    * Internal: LexNamer for naming lexer symbols in the antlr source code
    */
   private LexNamer lexNamer = new LexNamer();
-  
+
+  private Map<String, String> splitRules = Maps.newHashMap();
+
+  private List<String> keywordRules = Lists.newArrayList();
+
   /**
    * The symbol of the processed grammar
    */
@@ -71,11 +75,29 @@ public class MCGrammarInfo {
     this.grammarSymbol = grammarSymbol;
     buildLexPatterns();
     findAllKeywords();
+    grammarSymbol.getTokenRulesWithInherited().forEach(t -> addSplitRule(t));
+    keywordRules = Lists.newArrayList(keywordRules);
     addSubRules();
     addHWAntlrCode();
     addLeftRecursiveRules();
   }
-  
+
+  private void addSplitRule(String s) {
+    String name = "";
+    for (char c:s.toCharArray()) {
+      name += getLexNamer().getConstantName(String.valueOf(c));
+    }
+    splitRules.put(s, name.toLowerCase());
+  }
+
+  public Map<String, String> getSplitRules() {
+    return splitRules;
+  }
+
+  public List<String> getKeywordRules() {
+    return keywordRules;
+  }
+
   // ------------- Handling of the antlr concept -----------------------------
   
   /**
@@ -140,7 +162,7 @@ public class MCGrammarInfo {
   
 
   private Collection<String> addLeftRecursiveRuleForProd(ASTClassProd ast) {
-    List<ASTProd> superProds = GeneratorHelper.getAllSuperProds(ast);
+    List<ASTProd> superProds = TransformationHelper.getAllSuperProds(ast);
     Collection<String> names = new ArrayList<>();
     superProds.forEach(s -> names.add(s.getName()));
     DirectLeftRecursionDetector detector = new DirectLeftRecursionDetector();
@@ -241,7 +263,7 @@ public class MCGrammarInfo {
     boolean found = false;
     
     // Check with options
-    if (mustBeKeyword(name, grammar)) {
+    if (mustBeKeyword(name)) {
       matches = true;
       found = true;
     }
@@ -296,21 +318,23 @@ public class MCGrammarInfo {
   private void findAllKeywords() {
     for (ProdSymbol ruleSymbol : grammarSymbol.getProdsWithInherited().values()) {
       if (ruleSymbol.isParserProd()) {
-        Optional<ASTProd> astProd = ruleSymbol.getAstNodeOpt();
-        if (astProd.isPresent() && astProd.get() instanceof ASTClassProd) {
+        if (ruleSymbol.isPresentAstNode() && ruleSymbol.getAstNode() instanceof ASTClassProd) {
+          ASTProd astProd = ruleSymbol.getAstNode();
           Optional<MCGrammarSymbol> refGrammarSymbol = MCGrammarSymbolTableHelper
-              .getMCGrammarSymbol(astProd.get().getEnclosingScope());
+              .getMCGrammarSymbol(astProd.getEnclosingScope());
           boolean isRefGrammarSymbol = refGrammarSymbol.isPresent();
-          for (ASTTerminal keyword : ASTNodes.getSuccessors(astProd.get(), ASTTerminal.class)) {
+          for (ASTTerminal keyword : ASTNodes.getSuccessors(astProd, ASTTerminal.class)) {
             if (isKeyword(keyword.getName(), grammarSymbol)
                 || (isRefGrammarSymbol && isKeyword(keyword.getName(), refGrammarSymbol.get()))) {
               keywords.add(keyword.getName());
             }
           }
-          for (ASTConstant keyword : ASTNodes.getSuccessors(astProd.get(), ASTConstant.class)) {
-            if (isKeyword(keyword.getName(), grammarSymbol)
-                || (isRefGrammarSymbol && isKeyword(keyword.getName(), refGrammarSymbol.get()))) {
-              keywords.add(keyword.getName());
+          for (ASTConstant keyword : ASTNodes.getSuccessors(astProd, ASTConstant.class)) {
+            if (!keyword.isPresentKeyConstant()) {
+              if (isKeyword(keyword.getName(), grammarSymbol)
+                      || (isRefGrammarSymbol && isKeyword(keyword.getName(), refGrammarSymbol.get()))) {
+                keywords.add(keyword.getName());
+              }
             }
           }
         }
@@ -332,11 +356,11 @@ public class MCGrammarInfo {
     }
     
     for (ProdSymbol rule : grammar.getProdsWithInherited().values()) {
-      if (rule.isIsLexerProd()) {
-        if (!MCGrammarSymbolTableHelper.isFragment(rule.getAstNodeOpt())) {
+      if (rule.isPresentAstNode() && rule.isIsLexerProd()) {
+        if (!MCGrammarSymbolTableHelper.isFragment(rule.getAstNode())) {
           Optional<Pattern> lexPattern = MCGrammarSymbolTableHelper.calculateLexPattern(
               grammar,
-              rule.getAstNodeOpt());
+                  (ASTLexProd) rule.getAstNode());
           
           if (lexPattern.isPresent()) {
             patterns.add(lexPattern.get());
@@ -346,7 +370,7 @@ public class MCGrammarInfo {
     }
   }
   
-  private boolean mustBeKeyword(String rule, MCGrammarSymbol grammar) {
+  private boolean mustBeKeyword(String rule) {
     return keywords.contains(rule);
   }
   

@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.templateclassgenerator.it;
 
-import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -20,7 +20,8 @@ public class CorrectnessTest  {
 
   @BeforeClass
   public static void setup() {
-    Log.init();
+    LogStub.init();         // replace log by a sideffect free variant
+    // LogStub.initPlusLog();  // for manual testing purpose only
     Log.enableFailQuick(false);
   }
   
@@ -30,7 +31,7 @@ public class CorrectnessTest  {
    */
   @Test
   public void testEmptyTemplate() {
-    assertTrue(Paths.get(outputDirectory+"/_templates/templates/a/EmptyTemplate.java").toFile().exists());
+    assertTrue(Paths.get(outputDirectory+"/_templates/templates/a/EmptyTemplateA.java").toFile().exists());
     
     boolean hasCorrectGenerate = false;
     boolean hasCorrectToString = false;
@@ -60,7 +61,7 @@ public class CorrectnessTest  {
    */
   @Test
   public void testTemplateWithoutResult() {
-    assertTrue(Paths.get(outputDirectory+"/_templates/templates/a/TemplateWithoutResult.java").toFile().exists());
+    assertTrue(Paths.get(outputDirectory+"/_templates/templates/a/TemplateWithoutResultA.java").toFile().exists());
 
     boolean hasCorrectGenerate = false;
     boolean hasCorrectToString = false;
@@ -88,7 +89,7 @@ public class CorrectnessTest  {
    */
   @Test
   public void testTemplateWithoutSignature() {
-    assertTrue(Paths.get(outputDirectory+"/_templates/templates/a/TemplateWithoutSignature.java").toFile().exists());
+    assertTrue(Paths.get(outputDirectory+"/_templates/templates/a/TemplateWithoutSignatureA.java").toFile().exists());
 
     boolean hasCorrectGenerate = false;
     boolean hasCorrectToString = false;
@@ -117,7 +118,7 @@ public class CorrectnessTest  {
    */
   @Test
   public void testTemplateWithResult() {
-    assertTrue(Paths.get(outputDirectory+"/_templates/templates/a/TemplateWithResult.java").toFile().exists());
+    assertTrue(Paths.get(outputDirectory+"/_templates/templates/a/TemplateWithResultA.java").toFile().exists());
 
     boolean hasCorrectGenerate = false;
     boolean hasCorrectToString = false;

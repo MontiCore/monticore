@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._symboltable.scope;
 
 import com.github.javaparser.JavaParser;
@@ -7,16 +8,15 @@ import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
+import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.types.MCTypeFacade;
-import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -36,7 +36,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
 
   private GlobalExtensionManagement glex;
 
-  private de.monticore.types.MCTypeFacade MCTypeFacade;
+  private de.monticore.types.MCTypeFacade mcTypeFacade;
 
   private ASTCDCompilationUnit decoratedSymbolCompilationUnit;
 
@@ -71,11 +71,13 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Before
   public void setUp() {
-    Log.init();
-    this.MCTypeFacade = MCTypeFacade.getInstance();
+    LogStub.init();         // replace log by a sideffect free variant
+        // LogStub.initPlusLog();  // for manual testing purpose only
+    Log.enableFailQuick(false);
+    this.mcTypeFacade = mcTypeFacade.getInstance();
     this.glex = new GlobalExtensionManagement();
 
-    this.glex.setGlobalValue("astHelper", new DecorationHelper());
+    this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
     ASTCDCompilationUnit astcdCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "Automaton");
     decoratedSymbolCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "AutomatonSymbolCD");
@@ -85,7 +87,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
 
     ScopeClassDecorator decorator = new ScopeClassDecorator(this.glex, new SymbolTableService(astcdCompilationUnit),
         new VisitorService(decoratedSymbolCompilationUnit),
-        new MethodDecorator(glex));
+        new MethodDecorator(glex, new SymbolTableService(decoratedScopeCompilationUnit)));
 
     //creates normal Symbol
     this.scopeClass = decorator.decorate(decoratedScopeCompilationUnit, decoratedSymbolCompilationUnit);
@@ -177,7 +179,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeCount() {
-    assertEquals(18, scopeClass.sizeCDAttributes());
+    assertEquals(19, scopeClass.sizeCDAttributes());
   }
 
   @Test
@@ -273,6 +275,13 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
+  public void testOrderedAttribute() {
+    ASTCDAttribute astcdAttribute = getAttributeBy("ordered", scopeClass);
+    assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
+    assertBoolean(astcdAttribute.getMCType());
+  }
+
+  @Test
   public void testNameAttribute() {
     ASTCDAttribute astcdAttribute = getAttributeBy("name", scopeClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
@@ -303,7 +312,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(89, scopeClass.getCDMethodList().size());
+    assertEquals(91, scopeClass.getCDMethodList().size());
   }
 
   @Test
@@ -316,7 +325,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, automatonRemove.getModifier());
     assertTrue(automatonRemove.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, automatonRemove.sizeCDParameters());
-    assertDeepEquals(MCTypeFacade.createQualifiedType(AUTOMATON_SYMBOL),
+    assertDeepEquals(mcTypeFacade.createQualifiedType(AUTOMATON_SYMBOL),
         automatonRemove.getCDParameter(0).getMCType());
     assertEquals("symbol", automatonRemove.getCDParameter(0).getName());
 
@@ -324,7 +333,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, stateRemove.getModifier());
     assertTrue(stateRemove.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, stateRemove.sizeCDParameters());
-    assertDeepEquals(MCTypeFacade.createQualifiedType(STATE_SYMBOL),
+    assertDeepEquals(mcTypeFacade.createQualifiedType(STATE_SYMBOL),
         stateRemove.getCDParameter(0).getMCType());
     assertEquals("symbol", stateRemove.getCDParameter(0).getName());
 
@@ -332,7 +341,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, qualifiedNameRemove.getModifier());
     assertTrue(qualifiedNameRemove.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, qualifiedNameRemove.sizeCDParameters());
-    assertDeepEquals(MCTypeFacade.createQualifiedType(QUALIFIED_NAME_SYMBOL),
+    assertDeepEquals(mcTypeFacade.createQualifiedType(QUALIFIED_NAME_SYMBOL),
         qualifiedNameRemove.getCDParameter(0).getMCType());
     assertEquals("symbol", qualifiedNameRemove.getCDParameter(0).getName());
 
@@ -340,7 +349,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, fooRemove.getModifier());
     assertTrue(fooRemove.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, fooRemove.sizeCDParameters());
-    assertDeepEquals(MCTypeFacade.createQualifiedType(FOO_SYMBOL),
+    assertDeepEquals(mcTypeFacade.createQualifiedType(FOO_SYMBOL),
         fooRemove.getCDParameter(0).getMCType());
     assertEquals("symbol", fooRemove.getCDParameter(0).getName());
   }
@@ -355,7 +364,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, automatonRemove.getModifier());
     assertTrue(automatonRemove.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, automatonRemove.sizeCDParameters());
-    assertDeepEquals(MCTypeFacade.createQualifiedType(AUTOMATON_SYMBOL),
+    assertDeepEquals(mcTypeFacade.createQualifiedType(AUTOMATON_SYMBOL),
         automatonRemove.getCDParameter(0).getMCType());
     assertEquals("symbol", automatonRemove.getCDParameter(0).getName());
 
@@ -363,7 +372,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, stateRemove.getModifier());
     assertTrue(stateRemove.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, stateRemove.sizeCDParameters());
-    assertDeepEquals(MCTypeFacade.createQualifiedType(STATE_SYMBOL),
+    assertDeepEquals(mcTypeFacade.createQualifiedType(STATE_SYMBOL),
         stateRemove.getCDParameter(0).getMCType());
     assertEquals("symbol", stateRemove.getCDParameter(0).getName());
 
@@ -371,7 +380,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, qualifiedNameRemove.getModifier());
     assertTrue(qualifiedNameRemove.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, qualifiedNameRemove.sizeCDParameters());
-    assertDeepEquals(MCTypeFacade.createQualifiedType(QUALIFIED_NAME_SYMBOL),
+    assertDeepEquals(mcTypeFacade.createQualifiedType(QUALIFIED_NAME_SYMBOL),
         qualifiedNameRemove.getCDParameter(0).getMCType());
     assertEquals("symbol", qualifiedNameRemove.getCDParameter(0).getName());
 
@@ -379,7 +388,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, fooRemove.getModifier());
     assertTrue(fooRemove.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, fooRemove.sizeCDParameters());
-    assertDeepEquals(MCTypeFacade.createQualifiedType(FOO_SYMBOL),
+    assertDeepEquals(mcTypeFacade.createQualifiedType(FOO_SYMBOL),
         fooRemove.getCDParameter(0).getMCType());
     assertEquals("symbol", fooRemove.getCDParameter(0).getName());
   }
@@ -511,7 +520,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertEquals(2, methodList.size());
     Optional<ASTCDMethod> method = methodList.stream()
         .filter(m -> m.sizeCDParameters() == 1)
-        .filter(m -> m.getCDParameter(0).getMCType().deepEquals(MCTypeFacade.createQualifiedType(I_AUTOMATON_SCOPE)))
+        .filter(m -> m.getCDParameter(0).getMCType().deepEquals(mcTypeFacade.createQualifiedType(I_AUTOMATON_SCOPE)))
         .findFirst();
     assertTrue(method.isPresent());
 
@@ -528,7 +537,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertEquals(2, methodList.size());
     Optional<ASTCDMethod> method = methodList.stream()
         .filter(m -> m.sizeCDParameters() == 1)
-        .filter(m -> m.getCDParameter(0).getMCType().deepEquals(MCTypeFacade.createQualifiedType(I_AUTOMATON_SCOPE)))
+        .filter(m -> m.getCDParameter(0).getMCType().deepEquals(mcTypeFacade.createQualifiedType(I_AUTOMATON_SCOPE)))
         .findFirst();
     assertTrue(method.isPresent());
 
@@ -568,7 +577,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertEquals(2, methodList.size());
     Optional<ASTCDMethod> method = methodList.stream()
         .filter(m -> m.sizeCDParameters() == 1)
-        .filter(m -> m.getCDParameter(0).getMCType().deepEquals(MCTypeFacade.createQualifiedType(I_LEXICAS_SCOPE)))
+        .filter(m -> m.getCDParameter(0).getMCType().deepEquals(mcTypeFacade.createQualifiedType(I_LEXICAS_SCOPE)))
         .findFirst();
     assertTrue(method.isPresent());
 
@@ -585,7 +594,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertEquals(2, methodList.size());
     Optional<ASTCDMethod> method = methodList.stream()
         .filter(m -> m.sizeCDParameters() == 1)
-        .filter(m -> m.getCDParameter(0).getMCType().deepEquals(MCTypeFacade.createQualifiedType(I_LEXICAS_SCOPE)))
+        .filter(m -> m.getCDParameter(0).getMCType().deepEquals(mcTypeFacade.createQualifiedType(I_LEXICAS_SCOPE)))
         .findFirst();
     assertTrue(method.isPresent());
 
@@ -603,7 +612,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertEquals(2, methodList.size());
     Optional<ASTCDMethod> method = methodList.stream()
         .filter(m -> m.sizeCDParameters() == 1)
-        .filter(m -> m.getCDParameter(0).getMCType().deepEquals(MCTypeFacade.createQualifiedType(I_AUTOMATON_SCOPE)))
+        .filter(m -> m.getCDParameter(0).getMCType().deepEquals(mcTypeFacade.createQualifiedType(I_AUTOMATON_SCOPE)))
         .findFirst();
     assertTrue(method.isPresent());
 
@@ -621,7 +630,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertEquals(2, methodList.size());
     Optional<ASTCDMethod> method = methodList.stream()
         .filter(m -> m.sizeCDParameters() == 1)
-        .filter(m -> m.getCDParameter(0).getMCType().deepEquals(MCTypeFacade.createQualifiedType(I_LEXICAS_SCOPE)))
+        .filter(m -> m.getCDParameter(0).getMCType().deepEquals(mcTypeFacade.createQualifiedType(I_LEXICAS_SCOPE)))
         .findFirst();
     assertTrue(method.isPresent());
 

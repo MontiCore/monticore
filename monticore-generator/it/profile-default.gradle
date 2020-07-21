@@ -10,7 +10,7 @@ fileTree(dir: grammarDir, include: '**/*.mc4').each {
   task "generate${taskname}"(type: MCTask) {
     grammar = file g
     outputDir = file outDir
-    script file('it.groovy')
+    script = 'it.groovy'
     def grammarIncludingPackage = file(grammarDir).toURI().relativize(g.toURI()).toString()
     def uptoDate = incCheck(grammarIncludingPackage)
     outputs.upToDateWhen { uptoDate }
@@ -22,5 +22,5 @@ task generatePython(type:MCTask){
   outputDir = file outDir+"/python"
   handcodedPath file("$projectDir/src/main/java")
   modelPath file("$projectDir/$grammarDir")
-  script file('it-python.groovy')
+  script = 'it-python.groovy'
 }

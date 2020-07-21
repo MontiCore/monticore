@@ -18,7 +18,7 @@ public class ASTMCQualifiedName extends ASTMCQualifiedNameTOP {
 
   public String getQName() {
     return Names.constructQualifiedName(
-            this.getPartList());
+            this.getPartsList());
   }
 
   public String toString(){

@@ -15,10 +15,10 @@ public class TestGrammarPrinter extends de.monticore.grammar.HelperGrammar {
     
     StringBuilder b = new StringBuilder();
     
-    b.append(Names.getQualifiedName(genericType.getNameList()));
+    b.append(Names.getQualifiedName(genericType.getNamesList()));
     
     boolean first = true;
-    for (ASTGenericType t : genericType.getGenericTypeList()) {
+    for (ASTGenericType t : genericType.getGenericTypesList()) {
       if (first) {
         b.append("<");
         first = false;

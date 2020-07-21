@@ -1,15 +1,23 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("artifactScope")}
-  printer.beginObject();
-  printer.member(de.monticore.symboltable.serialization.JsonConstants.KIND, "${artifactScope}");
-  printer.member(de.monticore.symboltable.serialization.JsonConstants.NAME, node.getName());
-  printer.member(de.monticore.symboltable.serialization.JsonConstants.PACKAGE, node.getPackageName());
-  printer.member(de.monticore.symboltable.serialization.JsonConstants.EXPORTS_SYMBOLS, node.isExportingSymbols());
-  printer.beginArray(de.monticore.symboltable.serialization.JsonConstants.IMPORTS);
-  node.getImportList().forEach(x -> printer.value(x.toString()));
-  printer.endArray();
-  if (node.isPresentSpanningSymbol()) {
-    addScopeSpanningSymbol(node.getSpanningSymbol());
+${tc.signature("artifactScopeFullName", "languageName", "attrList" )}
+<#assign genHelper = glex.getGlobalVar("astHelper")>
+  if(!printer.isInObject()){
+    printer.beginObject();
   }
-  serializeLocalSymbols(node);
-  serializeAdditionalScopeAttributes(node);
+  printer.member(de.monticore.symboltable.serialization.JsonDeSers.KIND, "${artifactScopeFullName}");
+  if(node.isPresentName()) {
+    printer.member(de.monticore.symboltable.serialization.JsonDeSers.NAME, node.getName());
+  }
+  if(!node.getPackageName().isEmpty()) {
+    printer.member(de.monticore.symboltable.serialization.JsonDeSers.PACKAGE, node.getPackageName());
+  }
+<#list attrList as attr>
+  <#if genHelper.isOptional(attr.getMCType())>
+  if (node.isPresent${attr.getName()?cap_first}()) {
+    serialize${languageName}Scope${attr.getName()?cap_first}(Optional.of(node.${genHelper.getPlainGetter(attr)}()));
+  }
+  <#else>
+  serialize${languageName}Scope${attr.getName()?cap_first}(node.${genHelper.getPlainGetter(attr)}());
+  </#if>
+</#list>
+  serializeAdditionalArtifactScopeAttributes(node);

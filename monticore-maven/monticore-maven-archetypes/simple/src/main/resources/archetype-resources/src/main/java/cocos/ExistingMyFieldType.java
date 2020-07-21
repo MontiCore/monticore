@@ -8,8 +8,8 @@ import java.util.Optional;
 
 import ${package}.mydsl._ast.ASTMyField;
 import ${package}.mydsl._cocos.MyDSLASTMyFieldCoCo;
-import ${package}.symboltable.MyElementSymbol;
-import de.monticore.symboltable.Scope;
+import ${package}.mydsl._symboltable.IMyDSLScope;
+import ${package}.mydsl._symboltable.MyElementSymbol;
 import de.se_rwth.commons.logging.Log;
 
 public class ExistingMyFieldType implements MyDSLASTMyFieldCoCo {
@@ -21,11 +21,9 @@ public class ExistingMyFieldType implements MyDSLASTMyFieldCoCo {
   
   @Override
   public void check(ASTMyField field) {
-    checkArgument(field.getEnclosingScope().isPresent());
-    
-    Scope enclosingScope = field.getEnclosingScope().get();
-    Optional<MyElementSymbol> typeElement = enclosingScope.resolve(field.getType(), MyElementSymbol.KIND);
-    
+    IMyDSLScope enclosingScope = field.getEnclosingScope();
+    Optional<MyElementSymbol> typeElement = enclosingScope.resolveMyElement(field.getType());
+
     if (!typeElement.isPresent()) {
       // Issue error...
       Log.error(String.format(ERROR_MSG_FORMAT, field.getType(), field.getName()),

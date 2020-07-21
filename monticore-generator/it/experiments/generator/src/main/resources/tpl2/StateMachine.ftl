@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 <#--
-   Template, belongs to StateMachine @ grammar HierAutomaton
+   Template, belongs to StateMachine @ grammar HierAutomata
 -->
 // Hierarchical automaton: Describing a Statemachine
 ${tc.signature("dp")}

@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.basegrammars;
+
+grammar MySimpleBaseLanguage extends
+        mc.basegrammars.MyBasicLanguage,
+        de.monticore.expressions.CommonExpressions,
+        de.monticore.types.MCCollectionTypes,
+        de.monticore.statements.MCCommonStatements,
+        de.monticore.literals.MCCommonLiterals {
+}

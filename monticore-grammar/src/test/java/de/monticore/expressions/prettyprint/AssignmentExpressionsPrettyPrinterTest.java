@@ -1,5 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.prettyprint;
 
+import de.monticore.expressions.assignmentexpressions.AssignmentExpressionsMill;
 import de.monticore.expressions.assignmentexpressions._ast.*;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.testassignmentexpressions._parser.TestAssignmentExpressionsParser;
@@ -66,38 +68,6 @@ public class AssignmentExpressionsPrettyPrinterTest {
   }
 
   @Test
-  public void testMinusPrefixExpression() throws IOException {
-    Optional<ASTMinusPrefixExpression> result = parser.parse_StringMinusPrefixExpression("-a");
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
-    ASTMinusPrefixExpression ast = result.get();
-
-    String output = prettyPrinter.prettyprint(ast);
-
-    result = parser.parse_StringMinusPrefixExpression(output);
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
-
-    assertTrue(ast.deepEquals(result.get()));
-  }
-
-  @Test
-  public void testPlusPrefixExpression() throws IOException {
-    Optional<ASTPlusPrefixExpression> result = parser.parse_StringPlusPrefixExpression("+a");
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
-    ASTPlusPrefixExpression ast = result.get();
-
-    String output = prettyPrinter.prettyprint(ast);
-
-    result = parser.parse_StringPlusPrefixExpression(output);
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
-
-    assertTrue(ast.deepEquals(result.get()));
-  }
-
-  @Test
   public void testIncSuffixExpression() throws IOException {
     Optional<ASTExpression> a = parser.parse_StringExpression("a");
     assertFalse(parser.hasErrors());
@@ -132,7 +102,7 @@ public class AssignmentExpressionsPrettyPrinterTest {
     assertFalse(parser.hasErrors());
     assertTrue(a.isPresent());
     assertTrue(b.isPresent());
-    ASTRegularAssignmentExpression result = AssignmentExpressionsMill.regularAssignmentExpressionBuilder()
+    ASTAssignmentExpression result = AssignmentExpressionsMill.assignmentExpressionBuilder()
         .setLeft(a.get())
         .setRight(b.get())
         .setOperator(EQUALS)
@@ -150,7 +120,7 @@ public class AssignmentExpressionsPrettyPrinterTest {
     assertFalse(parser.hasErrors());
     assertTrue(a.isPresent());
     assertTrue(b.isPresent());
-    ASTRegularAssignmentExpression result = AssignmentExpressionsMill.regularAssignmentExpressionBuilder()
+    ASTAssignmentExpression result = AssignmentExpressionsMill.assignmentExpressionBuilder()
         .setLeft(a.get())
         .setRight(b.get())
         .setOperator(PLUSEQUALS)
@@ -168,7 +138,7 @@ public class AssignmentExpressionsPrettyPrinterTest {
     assertFalse(parser.hasErrors());
     assertTrue(a.isPresent());
     assertTrue(b.isPresent());
-    ASTRegularAssignmentExpression result = AssignmentExpressionsMill.regularAssignmentExpressionBuilder()
+    ASTAssignmentExpression result = AssignmentExpressionsMill.assignmentExpressionBuilder()
         .setLeft(a.get())
         .setRight(b.get())
         .setOperator(MINUSEQUALS)
@@ -186,7 +156,7 @@ public class AssignmentExpressionsPrettyPrinterTest {
     assertFalse(parser.hasErrors());
     assertTrue(a.isPresent());
     assertTrue(b.isPresent());
-    ASTRegularAssignmentExpression result = AssignmentExpressionsMill.regularAssignmentExpressionBuilder()
+    ASTAssignmentExpression result = AssignmentExpressionsMill.assignmentExpressionBuilder()
         .setLeft(a.get())
         .setRight(b.get())
         .setOperator(PERCENTEQUALS)
@@ -204,7 +174,7 @@ public class AssignmentExpressionsPrettyPrinterTest {
     assertFalse(parser.hasErrors());
     assertTrue(a.isPresent());
     assertTrue(b.isPresent());
-    ASTRegularAssignmentExpression result = AssignmentExpressionsMill.regularAssignmentExpressionBuilder()
+    ASTAssignmentExpression result = AssignmentExpressionsMill.assignmentExpressionBuilder()
         .setLeft(a.get())
         .setRight(b.get())
         .setOperator(ANDEQUALS)
@@ -222,7 +192,7 @@ public class AssignmentExpressionsPrettyPrinterTest {
     assertFalse(parser.hasErrors());
     assertTrue(a.isPresent());
     assertTrue(b.isPresent());
-    ASTRegularAssignmentExpression result = AssignmentExpressionsMill.regularAssignmentExpressionBuilder()
+    ASTAssignmentExpression result = AssignmentExpressionsMill.assignmentExpressionBuilder()
         .setLeft(a.get())
         .setRight(b.get())
         .setOperator(ROOFEQUALS)
@@ -240,7 +210,7 @@ public class AssignmentExpressionsPrettyPrinterTest {
     assertFalse(parser.hasErrors());
     assertTrue(a.isPresent());
     assertTrue(b.isPresent());
-    ASTRegularAssignmentExpression result = AssignmentExpressionsMill.regularAssignmentExpressionBuilder()
+    ASTAssignmentExpression result = AssignmentExpressionsMill.assignmentExpressionBuilder()
         .setLeft(a.get())
         .setRight(b.get())
         .setOperator(SLASHEQUALS)
@@ -258,7 +228,7 @@ public class AssignmentExpressionsPrettyPrinterTest {
     assertFalse(parser.hasErrors());
     assertTrue(a.isPresent());
     assertTrue(b.isPresent());
-    ASTRegularAssignmentExpression result = AssignmentExpressionsMill.regularAssignmentExpressionBuilder()
+    ASTAssignmentExpression result = AssignmentExpressionsMill.assignmentExpressionBuilder()
         .setLeft(a.get())
         .setRight(b.get())
         .setOperator(STAREQUALS)
@@ -276,7 +246,7 @@ public class AssignmentExpressionsPrettyPrinterTest {
     assertFalse(parser.hasErrors());
     assertTrue(a.isPresent());
     assertTrue(b.isPresent());
-    ASTRegularAssignmentExpression result = AssignmentExpressionsMill.regularAssignmentExpressionBuilder()
+    ASTAssignmentExpression result = AssignmentExpressionsMill.assignmentExpressionBuilder()
         .setLeft(a.get())
         .setRight(b.get())
         .setOperator(PIPEEQUALS)
@@ -294,7 +264,7 @@ public class AssignmentExpressionsPrettyPrinterTest {
     assertFalse(parser.hasErrors());
     assertTrue(a.isPresent());
     assertTrue(b.isPresent());
-    ASTRegularAssignmentExpression result = AssignmentExpressionsMill.regularAssignmentExpressionBuilder()
+    ASTAssignmentExpression result = AssignmentExpressionsMill.assignmentExpressionBuilder()
         .setLeft(a.get())
         .setRight(b.get())
         .setOperator(LTLTEQUALS)
@@ -312,7 +282,7 @@ public class AssignmentExpressionsPrettyPrinterTest {
     assertFalse(parser.hasErrors());
     assertTrue(a.isPresent());
     assertTrue(b.isPresent());
-    ASTRegularAssignmentExpression result = AssignmentExpressionsMill.regularAssignmentExpressionBuilder()
+    ASTAssignmentExpression result = AssignmentExpressionsMill.assignmentExpressionBuilder()
         .setLeft(a.get())
         .setRight(b.get())
         .setOperator(GTGTEQUALS)
@@ -330,7 +300,7 @@ public class AssignmentExpressionsPrettyPrinterTest {
     assertFalse(parser.hasErrors());
     assertTrue(a.isPresent());
     assertTrue(b.isPresent());
-    ASTRegularAssignmentExpression result = AssignmentExpressionsMill.regularAssignmentExpressionBuilder()
+    ASTAssignmentExpression result = AssignmentExpressionsMill.assignmentExpressionBuilder()
         .setLeft(a.get())
         .setRight(b.get())
         .setOperator(GTGTGTEQUALS)

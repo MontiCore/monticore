@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.mc2cd.transl;
 
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
@@ -20,7 +21,7 @@ public class ComponetTranslationTest {
     componentCD = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/AbstractProd.mc4")).get();
     nonComponentCD = TestHelper.parseAndTransform(Paths
-        .get("src/test/resources/mc2cdtransformation/AstRule.mc4")).get();
+        .get("src/test/resources/mc2cdtransformation/AstRuleInheritance.mc4")).get();
   }
 
   @Test

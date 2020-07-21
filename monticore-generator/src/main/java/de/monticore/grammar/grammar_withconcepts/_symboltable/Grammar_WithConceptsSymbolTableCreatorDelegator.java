@@ -3,7 +3,7 @@ package de.monticore.grammar.grammar_withconcepts._symboltable;
 
 public class Grammar_WithConceptsSymbolTableCreatorDelegator extends Grammar_WithConceptsSymbolTableCreatorDelegatorTOP {
   public Grammar_WithConceptsSymbolTableCreatorDelegator(
-      IGrammar_WithConceptsGlobalScope globalScope) {
+      Grammar_WithConceptsGlobalScope globalScope) {
     super(globalScope);
   }
   

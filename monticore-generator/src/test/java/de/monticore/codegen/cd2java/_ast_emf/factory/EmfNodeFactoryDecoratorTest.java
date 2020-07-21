@@ -10,20 +10,20 @@ import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.CoreTemplates;
+import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.factory.NodeFactoryService;
 import de.monticore.codegen.cd2java._ast_emf.EmfService;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import org.junit.Before;
 import org.junit.Test;
 
+import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
-import static de.monticore.cd.facade.CDModifier.*;
 import static org.junit.Assert.*;
 
 public class EmfNodeFactoryDecoratorTest extends DecoratorTestCase {
@@ -37,7 +37,7 @@ public class EmfNodeFactoryDecoratorTest extends DecoratorTestCase {
     ASTCDCompilationUnit compilationUnit = this.parse("de", "monticore", "codegen", "_ast_emf", "Automata");
 
     this.glex.setGlobalValue("service", new EmfService(compilationUnit));
-    this.glex.setGlobalValue("astHelper", new DecorationHelper());
+    this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
 
     EmfNodeFactoryDecorator decorator = new EmfNodeFactoryDecorator(this.glex, new NodeFactoryService(compilationUnit));

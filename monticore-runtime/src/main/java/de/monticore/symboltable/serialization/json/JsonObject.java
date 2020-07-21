@@ -1,14 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.symboltable.serialization.json;
 
-import java.util.*;
-import java.util.Map.Entry;
-
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.se_rwth.commons.logging.Log;
 
+import java.util.*;
+
 /**
- * Json Objects contain members in form of key-value pairs. The key is a (unique) String, and the
+ * Json Objects contain members in form of name-value pairs. The name is a (unique) String, and the
  * value any JsonElement.
  */
 public class JsonObject implements JsonElement {
@@ -72,12 +71,12 @@ public class JsonObject implements JsonElement {
   }
 
   /**
-   * @param key
+   * @param name
    * @return
    * @see java.util.Map#containsKey(java.lang.Object)
    */
-  public boolean hasMember(String key) {
-    return this.members.containsKey(key);
+  public boolean hasMember(String name) {
+    return this.members.containsKey(name);
   }
 
   /**
@@ -89,7 +88,7 @@ public class JsonObject implements JsonElement {
     if (this.members.containsKey(name)) {
       return this.members.get(name);
     }
-    Log.error("0xA0570 Member \"" + name + "\" is not contained in Jsob object " + this);
+    Log.error("0xA0570 Member \"" + name + "\" is not contained in Json object " + this);
     return null;
   }
 
@@ -101,8 +100,10 @@ public class JsonObject implements JsonElement {
    */
   public JsonElement putMember(String name, JsonElement value) {
     if (null == value) {
-      Log.error("0xA0571 Cannot add the member  \"" + "\" to the current Json object \"" + this
-          + "\", because its value is null!");
+      Log.error(
+          "0xA0571 Cannot add the member \"" + name + "\" to the current Json object \"" + this
+              + "\", because its value is null!");
+      return null;
     }
     return this.members.put(name, value);
   }
@@ -132,10 +133,10 @@ public class JsonObject implements JsonElement {
     JsonPrinter printer = new JsonPrinter();
     printer.beginObject();
     for (String s : members.keySet()) {
-      if(members.get(s).isJsonString()){
+      if (members.get(s).isJsonString()) {
         printer.member(s, members.get(s).toString());
       }
-      else{
+      else {
         printer.memberJson(s, members.get(s).toString());
       }
     }
@@ -148,14 +149,14 @@ public class JsonObject implements JsonElement {
   /**
    * Checks whether there exists a member with the corresponding name and checks
    * whether it is of type String.
-   * 
+   *
    * @param name The name of the possible JSON element
    * @return true if the correctly typed member available, false otherwise
    */
   public boolean hasStringMember(String name) {
     return hasMember(name) && getMember(name).isJsonString();
   }
-  
+
   /**
    * This method returns the value of a String member of this object, if it exists, Otherwise, raises an error and returns null.
    *
@@ -166,16 +167,28 @@ public class JsonObject implements JsonElement {
     if (hasStringMember(name)) {
       return getMember(name).getAsJsonString().getValue();
     }
-    else {
-      Log.error("0xA0572 \"" + name + "\" is not a Json String member of \"" + this + "\"!");
-      return null;
+    Log.error("0xA0572 \"" + name + "\" is not a Json String member of \"" + this + "\"!");
+    return null;
+  }
+
+  /**
+   * This method returns an Optional of a String member of this object, if it exists, Otherwise,
+   * returns an empty optional.
+   *
+   * @param name
+   * @return
+   */
+  public Optional<String> getStringMemberOpt(String name) {
+    if (hasStringMember(name)) {
+      return Optional.ofNullable(getMember(name).getAsJsonString().getValue());
     }
+    return Optional.empty();
   }
 
   /**
    * Checks whether there exists a member with the corresponding name and checks
    * whether it is of type JSON-Array.
-   * 
+   *
    * @param name The name of the possible JSON element
    * @return true if the correctly typed member available, false otherwise
    */
@@ -184,7 +197,7 @@ public class JsonObject implements JsonElement {
   }
 
   /**
-   * This method returns the value of a Array member of this object, if it exists, Otherwise, raises an error and returns null.
+   * This method returns the value of an Array member of this object, if it exists, Otherwise, raises an error and returns null.
    *
    * @param name
    * @return
@@ -193,23 +206,35 @@ public class JsonObject implements JsonElement {
     if (hasArrayMember(name)) {
       return getMember(name).getAsJsonArray().getValues();
     }
-    else {
-      Log.error("0xA0573 \"" + name + "\" is not a Json Array member of \"" + this + "\"!");
-      return null;
+    Log.error("0xA0573 \"" + name + "\" is not a Json Array member of \"" + this + "\"!");
+    return null;
+  }
+
+  /**
+   * This method returns an Optional of an Array member of this object, if it exists, Otherwise,
+   * returns an empty optional.
+   *
+   * @param name
+   * @return
+   */
+  public Optional<List<JsonElement>> getArrayMemberOpt(String name) {
+    if (hasArrayMember(name)) {
+      return Optional.ofNullable(getMember(name).getAsJsonArray().getValues());
     }
+    return Optional.empty();
   }
 
   /**
    * Checks whether there exists a member with the corresponding name and checks
    * whether it is of type JSON-Boolean.
-   * 
+   *
    * @param name The name of the possible JSON element
    * @return true if the correctly typed member available, false otherwise
    */
   public boolean hasBooleanMember(String name) {
     return hasMember(name) && getMember(name).isJsonBoolean();
   }
-  
+
   /**
    * This method returns the value of a Boolean member of this object, if it exists, Otherwise, raises an error and returns null.
    *
@@ -220,25 +245,37 @@ public class JsonObject implements JsonElement {
     if (hasBooleanMember(name)) {
       return getMember(name).getAsJsonBoolean().getValue();
     }
-    else {
-      Log.error("0xA0574 \"" + name + "\" is not a Json Boolean member of \"" + this + "\"!");
-      return false;
+    Log.error("0xA0574 \"" + name + "\" is not a Json Boolean member of \"" + this + "\"!");
+    return false;
+  }
+
+  /**
+   * This method returns an Optional of a Boolean member of this object, if it exists, Otherwise,
+   * returns an empty optional.
+   *
+   * @param name
+   * @return
+   */
+  public Optional<Boolean> getBooleanMemberOpt(String name) {
+    if (hasBooleanMember(name)) {
+      return Optional.ofNullable(getMember(name).getAsJsonBoolean().getValue());
     }
+    return Optional.empty();
   }
 
   /**
    * Checks whether there exists a member with the corresponding name and checks
    * whether it is of type JSON-Object.
-   * 
+   *
    * @param name The name of the possible JSON element
    * @return true if the correctly typed member available, false otherwise
    */
   public boolean hasObjectMember(String name) {
     return hasMember(name) && getMember(name).isJsonObject();
   }
-  
+
   /**
-   * This method returns the value of a Object member of this object, if it exists, Otherwise, raises an error and returns null.
+   * This method returns the value of an Object member of this object, if it exists, Otherwise, raises an error and returns null.
    *
    * @param name
    * @return
@@ -247,25 +284,37 @@ public class JsonObject implements JsonElement {
     if (hasObjectMember(name)) {
       return getMember(name).getAsJsonObject();
     }
-    else {
-      Log.error("0xA0575 \"" + name + "\" is not a Json Object member of \"" + this + "\"!");
-      return null;
+    Log.error("0xA0575 \"" + name + "\" is not a Json Object member of \"" + this + "\"!");
+    return null;
+  }
+
+  /**
+   * This method returns an Optional of an Object member of this object, if it exists, Otherwise,
+   * returns an empty optional.
+   *
+   * @param name
+   * @return
+   */
+  public Optional<JsonObject> getObjectMemberOpt(String name) {
+    if (hasObjectMember(name)) {
+      return Optional.ofNullable(getMember(name).getAsJsonObject());
     }
+    return Optional.empty();
   }
 
   /**
    * Checks whether there exists a member with the corresponding name and checks
    * whether it is of type JSON-Integer.
-   * 
+   *
    * @param name The name of the possible JSON element
    * @return true if the correctly typed member available, false otherwise
    */
   public boolean hasIntegerMember(String name) {
     return hasMember(name) && getMember(name).isJsonNumber();
   }
-  
+
   /**
-   * This method returns the value of a Integer member of this object, if it exists, Otherwise, raises an error and returns null.
+   * This method returns the value of an Integer member of this object, if it exists, Otherwise, raises an error and returns null.
    *
    * @param name
    * @return
@@ -274,10 +323,22 @@ public class JsonObject implements JsonElement {
     if (hasIntegerMember(name)) {
       return getMember(name).getAsJsonNumber().getNumberAsInt();
     }
-    else {
-      Log.error("0xA0576 \"" + name + "\" is not a Json Integer member of \"" + this + "\"!");
-      return -1;
+    Log.error("0xA0576 \"" + name + "\" is not a Json Integer member of \"" + this + "\"!");
+    return -1;
+  }
+
+  /**
+   * This method returns an Optional of an Integer member of this object, if it exists, Otherwise,
+   * returns an empty optional.
+   *
+   * @param name
+   * @return
+   */
+  public Optional<Integer> getIntegerMemberOpt(String name) {
+    if (hasIntegerMember(name)) {
+      return Optional.ofNullable(getMember(name).getAsJsonNumber().getNumberAsInt());
     }
+    return Optional.empty();
   }
 
 }

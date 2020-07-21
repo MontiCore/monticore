@@ -14,7 +14,7 @@ import static java.lang.String.format;
 
 public class OverridingNTsTest extends CocoTest {
 
-  private final String MESSAGE = " The production for the nonterminal QualifiedName must not be overridden\n" +
+  private final String MESSAGE = " The production for the nonterminal QualifiedName must not be overridden " +
           "by a production for an %s nonterminal.";
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
   private final String grammar = "cocos.invalid.A4009.A4009";

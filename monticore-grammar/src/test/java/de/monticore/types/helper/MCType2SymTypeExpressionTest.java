@@ -9,6 +9,9 @@ import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCSetType;
 import de.monticore.types.mccollectiontypestest._parser.MCCollectionTypesTestParser;
 import de.monticore.types.mcfullgenerictypestest._parser.MCFullGenericTypesTestParser;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -20,6 +23,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class MCType2SymTypeExpressionTest {
+
+
+  @BeforeClass
+  public static void setup() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
 
   List<String> primitiveTypes = Arrays
       .asList("boolean", "byte", "char", "short", "int", "long", "float", "double");
@@ -195,7 +205,8 @@ public class MCType2SymTypeExpressionTest {
     for (String primitive : primitiveTypes) {
       Optional<ASTMCSetType> type = new MCCollectionTypesTestParser().parse_StringMCSetType("Set<" + primitive + ">");
       assertTrue(type.isPresent());
-      SymTypeExpression setSymTypeExpression = mcType2TypeExpression(type.get());
+      SymTypeExpression setSymTypeExpression =
+              mcType2TypeExpression(type.get());
       assertTrue(setSymTypeExpression instanceof SymTypeOfGenerics);
       assertEquals("Set", ((SymTypeOfGenerics) setSymTypeExpression).getTypeConstructorFullName());
       SymTypeExpression listTypeArgument = ((SymTypeOfGenerics) setSymTypeExpression).getArgumentList().get(0);

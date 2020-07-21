@@ -3,6 +3,9 @@ package de.monticore.codegen.cd2java._symboltable;
 
 public class SymbolTableConstants {
 
+  private SymbolTableConstants() {
+  }
+
   /**
    * packages
    */
@@ -39,7 +42,7 @@ public class SymbolTableConstants {
 
   public static final String LANGUAGE_SUFFIX = "Language";
 
-  public static final String LOADER_SUFFIX = "Loader";
+  public static final String SURROGATE_SUFFIX = "Surrogate";
 
   public static final String DE_SER_SUFFIX = "DeSer";
 
@@ -60,10 +63,6 @@ public class SymbolTableConstants {
   public static final String I_GLOBAL_SCOPE_TYPE = "de.monticore.symboltable.IGlobalScope";
 
   public static final String IMPORT_STATEMENT = "de.monticore.symboltable.ImportStatement";
-
-  public static final String I_SYMBOL_LOADER = "de.monticore.symboltable.ISymbolLoader";
-
-  public static final String I_MODELING_LANGUAGE = "de.monticore.IModelingLanguage";
 
   public static final String I_MODEL_LOADER = "de.monticore.modelloader.IModelLoader";
 
@@ -89,8 +88,6 @@ public class SymbolTableConstants {
 
   public static final String DEQUE_TYPE = "Deque";
 
-  public static final String I_DE_SER_TYPE = "de.monticore.symboltable.serialization.IDeSer";
-
   public static final String MODEL_PATH_TYPE = "de.monticore.io.paths.ModelPath";
 
   /**
@@ -99,7 +96,7 @@ public class SymbolTableConstants {
 
   public static final String ENCLOSING_SCOPE_VAR = "enclosingScope";
 
-  public static final String SPANNED_SCOPE_VAR = "spanned%sScope";
+  public static final String SPANNED_SCOPE_VAR = "spannedScope";
 
   public static final String PACKAGE_NAME_VAR = "packageName";
 
@@ -109,7 +106,11 @@ public class SymbolTableConstants {
 
   public static final String SHADOWING_VAR = "shadowing";
 
+  public static final String ORDERED_VAR = "ordered";
+
   public static final String MODEL_PATH_VAR = "modelPath";
+
+  public static final String FILE_EXTENSION_VAR = "modelFileExtension";
 
   public static final String MODEL_LOADER_VAR = "modelLoader";
 

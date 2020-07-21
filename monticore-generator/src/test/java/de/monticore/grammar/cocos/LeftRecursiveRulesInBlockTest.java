@@ -9,7 +9,7 @@ import org.junit.Test;
 
 public class LeftRecursiveRulesInBlockTest extends CocoTest {
 
-  private final String MESSAGE = " The left recursive rule A is not allowed in blocks, because it doesn't work in Antlr. ";
+  private final String MESSAGE =  " The left recursive rule A is not allowed in blocks, because it is not supported in Antlr. ";
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
   private final String grammar = "cocos.invalid.A4056.A4056";
 

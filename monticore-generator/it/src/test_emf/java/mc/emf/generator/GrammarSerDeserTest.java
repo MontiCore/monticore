@@ -22,7 +22,7 @@ public class GrammarSerDeserTest {
   public void testSerializeDesirializeASTMCGrammarInstance() {
     try {
 
-      String path1 = "mc/emf/generator/Automaton.mc4";
+      String path1 = "mc/emf/generator/Automata.mc4";
       Optional<ASTMCGrammar> automatonGrammar = new ItTestGrammar_WithConceptsParser()
           .parse("src/test/resources/" + path1);
       assertTrue(automatonGrammar.isPresent());

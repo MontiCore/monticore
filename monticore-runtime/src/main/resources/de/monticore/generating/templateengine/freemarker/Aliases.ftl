@@ -81,13 +81,18 @@
 	<#return glex.bindHookPoint(name, hp)>
 </#function>
 
-<#function defineHookPoint name ast>
-	<#return glex.defineHookPoint(tc, name, ast)>
+<#function defineHookPoint name ast="">
+	<#if ast?has_content>
+		<#return glex.defineHookPoint(tc, name, ast)>
+	<#else>
+		<#return glex.defineHookPoint(tc, name)>
+	</#if>
 </#function>
 
-<#function defineHookPoint name>
-	<#return glex.defineHookPoint(tc, name)>
+<#function defineHookPointWithDefault name default>
+	<#return glex.defineHookPointWithDefault(tc, name, default)>
 </#function>
+
 
 <#function existsHookPoint name>
 	<#return glex.existsHookPoint(name)>

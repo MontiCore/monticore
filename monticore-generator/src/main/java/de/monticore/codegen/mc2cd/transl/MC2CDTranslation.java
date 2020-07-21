@@ -39,6 +39,7 @@ public class MC2CDTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCDC
 
     return new CDASTCreator()
         .andThen(new InheritedAttributesTranslation())
+        .andThen(new DerivedAttributeName())
         .andThen(new PackageTranslation())
         .andThen(new StarImportSuperGrammarTranslation())
         .andThen(new NameTranslation())
@@ -47,13 +48,11 @@ public class MC2CDTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCDC
         .andThen(new ASTRuleInheritanceTranslation())
         .andThen(new MethodTranslation(glex))
         .andThen(new OverridingClassProdTranslation())
-        .andThen(new RemoveOverriddenAttributesTranslation())
         .andThen(new AbstractProdModifierTranslation())
         .andThen(new ReferenceTypeTranslation())
         .andThen(new EnumTranslation())
         .andThen(new ExternalImplementationTranslation())
         .andThen(new ConstantTypeTranslation())
-        .andThen(new CreateConstantAttributeTranslation())
         .andThen(new MultiplicityTranslation())
         .andThen(new ConstantsTranslation(lexNamer))
         .andThen(new DeprecatedTranslation())
@@ -61,6 +60,7 @@ public class MC2CDTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCDC
         .andThen(new SymbolAndScopeTranslation())
         .andThen(new ComponentTranslation())
         .andThen(new StartProdTranslation())
+        .andThen(new RemoveOverriddenAttributesTranslation())
         .apply(rootLink);
   }
 }

@@ -1,28 +1,39 @@
 /* (c) https://github.com/MontiCore/monticore */
+
+import com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocation;
 plugins {
   id 'groovy'
   id 'java-gradle-plugin'
   id 'maven-publish'
+  id 'com.github.johnrengelman.shadow' version '6.0.0'
 //  id 'cz.malohlava.visteg' version '1.0.5'  // produces a task graph visualization
 }
-version = "6.0.0"
+version = "6.2.0"
 group = "de.monticore"
 
 repositories {
+  if(("true").equals(getProperty('useLocalRepo'))){
+    mavenLocal()
+  }
   maven {
     credentials.username mavenUser
     credentials.password mavenPassword
     url repo
   }
-  mavenLocal()
 }
 
 dependencies {
-  compile gradleApi()
-  compile localGroovy()
-  compile group: 'de.monticore', name: 'monticore-cli', version: "$version"
-  compile group: 'de.monticore', name: 'monticore-generator', version: "$version"
+  shadow localGroovy()
+  shadow gradleApi()
+  implementation group: 'de.monticore', name: 'monticore-cli', version: "$version"
+  implementation group: 'de.monticore', name: 'monticore-generator', version: "$version"
 }
+
+shadowJar{
+  classifier = ''
+}
+
+jar.enabled(false)
 
 gradlePlugin.plugins {
   monticore {
@@ -40,8 +51,8 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 publishing {
   // configure what artifacts to publish
   publications {
-    pluginMaven(MavenPublication){
-      artifact sourcesJar
+    shadow(MavenPublication) { publication ->
+      project.shadow.component(publication)
     }
   }
   repositories.maven {

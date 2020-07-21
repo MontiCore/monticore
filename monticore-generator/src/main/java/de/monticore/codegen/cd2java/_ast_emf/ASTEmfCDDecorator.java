@@ -11,8 +11,6 @@ import de.monticore.codegen.cd2java._ast.ast_interface.ASTLanguageInterfaceDecor
 import de.monticore.codegen.cd2java._ast.ast_interface.FullASTInterfaceDecorator;
 import de.monticore.codegen.cd2java._ast.builder.ASTBuilderDecorator;
 import de.monticore.codegen.cd2java._ast.constants.ASTConstantsDecorator;
-import de.monticore.codegen.cd2java._ast.mill.MillDecorator;
-import de.monticore.codegen.cd2java._ast.mill.MillForSuperDecorator;
 import de.monticore.codegen.cd2java._ast_emf.ast_class.ASTFullEmfDecorator;
 import de.monticore.codegen.cd2java._ast_emf.emf_package.PackageImplDecorator;
 import de.monticore.codegen.cd2java._ast_emf.emf_package.PackageInterfaceDecorator;
@@ -40,8 +38,6 @@ public class ASTEmfCDDecorator extends ASTCDDecorator {
                            final ASTLanguageInterfaceDecorator astLanguageInterfaceDecorator,
                            final ASTBuilderDecorator astBuilderDecorator,
                            final EmfNodeFactoryDecorator nodeFactoryDecorator,
-                           final MillDecorator millDecorator,
-                           final MillForSuperDecorator millForSuperDecorator,
                            final ASTConstantsDecorator astConstantsDecorator,
                            final EmfEnumDecorator enumDecorator,
                            final FullASTInterfaceDecorator astInterfaceDecorator,
@@ -52,8 +48,6 @@ public class ASTEmfCDDecorator extends ASTCDDecorator {
         astLanguageInterfaceDecorator,
         astBuilderDecorator,
         nodeFactoryDecorator,
-        millDecorator,
-        millForSuperDecorator,
         astConstantsDecorator,
         enumDecorator,
         astInterfaceDecorator);

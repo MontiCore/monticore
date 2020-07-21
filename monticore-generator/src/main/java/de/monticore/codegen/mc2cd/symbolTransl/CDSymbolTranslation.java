@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.mc2cd.symbolTransl;
 
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
@@ -12,7 +13,7 @@ public class CDSymbolTranslation implements UnaryOperator<Link<ASTMCGrammar, AST
 
   @Override
   public Link<ASTMCGrammar, ASTCDCompilationUnit> apply(
-      Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink) {
+          Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink) {
 
     return new GrammarToCDDefinition()
         .andThen(new CDDefinitionNameTranslation())
@@ -21,12 +22,15 @@ public class CDSymbolTranslation implements UnaryOperator<Link<ASTMCGrammar, AST
         .andThen(new AttributeInSymbolRuleToCDAttribute())
         .andThen(new PackageTranslation())
         .andThen(new SymbolRuleInheritanceTranslation())
+        .andThen(new InheritedSymbolAttributesTranslation())
         .andThen(new SymbolRuleMethodTranslation())
         .andThen(new ReferenceTypeTranslation())
         .andThen(new MultiplicityTranslation())
         .andThen(new SymbolAndScopeTranslationForSymbolCD())
         .andThen(new ComponentTranslation())
         .andThen(new StartProdTranslation())
+        .andThen(new SymbolDeprecatedTranslation())
+        .andThen(new DerivedAttributeName())
         .apply(rootLink);
   }
 }

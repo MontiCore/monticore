@@ -1,0 +1,24 @@
+/* (c) https://github.com/MontiCore/monticore */
+// The ping pong game
+automaton PingPong {
+  state NoGame <<initial>>;
+  state InGame <<final>> {
+    state Ping ;
+    state Pong ;
+
+    Ping - returnBall > Pong;
+    Pong - returnBall > Ping;
+  }
+
+  state very {
+    state deep {
+      state substate {
+        state Ping ;
+      }
+    }
+    state test;
+  }
+  
+  NoGame - startGame > Ping;
+  InGame - stopGame > NoGame;
+}

@@ -18,24 +18,19 @@ component grammar MCBasics {
       for symbols.
   */
   token Name =
-        ( 'a'..'z' | 'A'..'Z' | '_' | '$' )( 'a'..'z' | 'A'..'Z' | '_' | '0'..'9' | '$' )*;
+    ( 'a'..'z' | 'A'..'Z' | '_' | '$' )
+    ( 'a'..'z' | 'A'..'Z' | '_' | '0'..'9' | '$' )*;
   
   /*=================================================================*/
 
   fragment token NEWLINE =
-    ('\r' '\n' |
-    '\r' |
-    '\n' ):
-  ;
+    ('\r' '\n' | '\r' | '\n' ): ;
 
   /** White Spaces.
       They are not added to the parsing token list, but omitted right away.
   */
   token WS =
-    (' ' | 
-    '\t' |
-    '\r' |
-    '\n' ) :{_channel = HIDDEN;};
+    (' ' | '\t' | '\r' | '\n' ) : ->skip;
     
   /*=================================================================*/
 
@@ -43,9 +38,7 @@ component grammar MCBasics {
       Comments are ignored by the parser.
   */
   token SL_COMMENT =
-    "//" (~('\n' |
-      '\r' )
-    )* : ->skip
+    "//" (~('\n' | '\r' ))* : ->skip
     {storeComment();};
 
   /** A multi line comment in Java style.
@@ -53,13 +46,7 @@ component grammar MCBasics {
       Comments are ignored by the parser.
   */
   token ML_COMMENT =
-    "/*" ({_input.LA(2) != '/'}?'*' |
-     NEWLINE |
-      ~('*' |
-      '\n' |
-      '\r' )
-    )*
-    "*/" : -> skip
+    "/*" .*? "*/"  : -> skip
     {storeComment();};
 
 }

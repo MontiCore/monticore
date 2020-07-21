@@ -1,20 +1,23 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
-import de.monticore.symboltable.serialization.IDeSer;
+import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
+import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
+import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonParser;
-import de.monticore.symboltable.serialization.JsonUtil;
+import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.symboltable.serialization.json.JsonElement;
-import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
-import de.monticore.types.typesymbols._symboltable.TypeSymbol;
+import de.monticore.symboltable.serialization.json.JsonObject;
 import de.se_rwth.commons.logging.Log;
 
-import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * This DeSer reailizes serialization and deserialization of SymTypeExpressions.
  */
-public class SymTypeExpressionDeSer implements IDeSer<SymTypeExpression, ITypeSymbolsScope> {
+public class SymTypeExpressionDeSer {
 
   /**
    * The singleton that DeSerializes all SymTypeExpressions.
@@ -33,6 +36,8 @@ public class SymTypeExpressionDeSer implements IDeSer<SymTypeExpression, ITypeSy
 
   protected SymTypeVariableDeSer symTypeVariableDeSer;
 
+  protected SymTypeOfWildcardDeSer symTypeOfWildcardDeSer;
+
   protected SymTypeExpressionDeSer() {
     //this is a singleton, do not use constructor
     this.symTypeArrayDeSer = new SymTypeArrayDeSer();
@@ -40,6 +45,76 @@ public class SymTypeExpressionDeSer implements IDeSer<SymTypeExpression, ITypeSy
     this.symTypeOfGenericsDeSer = new SymTypeOfGenericsDeSer();
     this.symTypeOfObjectDeSer = new SymTypeOfObjectDeSer();
     this.symTypeVariableDeSer = new SymTypeVariableDeSer();
+    this.symTypeOfWildcardDeSer = new SymTypeOfWildcardDeSer();
+  }
+
+  public static void serializeMember(JsonPrinter printer, String memberName,
+      SymTypeExpression member) {
+    printer.memberJson(memberName, member.printAsJson());
+  }
+
+  public static void serializeMember(JsonPrinter printer, String memberName,
+      Optional<SymTypeExpression> member) {
+    if (member.isPresent()) {
+      printer.memberJson(memberName, member.get().printAsJson());
+    }
+  }
+
+  public static void serializeMember(JsonPrinter printer, String memberName,
+      List<SymTypeExpression> member) {
+    printer.array(memberName, member, SymTypeExpression::printAsJson);
+  }
+
+  public static SymTypeExpression deserializeMember(String memberName, JsonObject json,
+      IBasicSymbolsScope enclosingScope) {
+    return getInstance().deserialize(json.getMember(memberName), enclosingScope);
+  }
+
+  public static Optional<SymTypeExpression> deserializeOptionalMember(String memberName,
+      JsonObject json, IBasicSymbolsScope enclosingScope) {
+    if (json.hasMember(memberName)) {
+      return Optional.of(getInstance().deserialize(json.getMember(memberName), enclosingScope));
+    }
+    else {
+      return Optional.empty();
+    }
+  }
+
+  public static List<SymTypeExpression> deserializeListMember(String memberName, JsonObject json,
+      IBasicSymbolsScope enclosingScope) {
+    List<SymTypeExpression> result = new ArrayList<>();
+    if (json.hasMember(memberName)) {
+      for (JsonElement e : json.getArrayMember(memberName)) {
+        result.add(getInstance().deserialize(e, enclosingScope));
+      }
+    }
+    return result;
+  }
+
+  public static SymTypeExpression deserializeMember(String memberName, JsonObject json,
+      IOOSymbolsScope enclosingScope) {
+    return getInstance().deserialize(json.getMember(memberName), enclosingScope);
+  }
+
+  public static Optional<SymTypeExpression> deserializeOptionalMember(String memberName,
+      JsonObject json, IOOSymbolsScope enclosingScope) {
+    if (json.hasMember(memberName)) {
+      return Optional.of(getInstance().deserialize(json.getMember(memberName), enclosingScope));
+    }
+    else {
+      return Optional.empty();
+    }
+  }
+
+  public static List<SymTypeExpression> deserializeListMember(String memberName, JsonObject json,
+      IOOSymbolsScope enclosingScope) {
+    List<SymTypeExpression> result = new ArrayList<>();
+    if (json.hasMember(memberName)) {
+      for (JsonElement e : json.getArrayMember(memberName)) {
+        result.add(getInstance().deserialize(e, enclosingScope));
+      }
+    }
+    return result;
   }
 
   public static SymTypeExpressionDeSer getInstance() {
@@ -63,44 +138,57 @@ public class SymTypeExpressionDeSer implements IDeSer<SymTypeExpression, ITypeSy
     }
   }
 
-  public  void store(SymTypeExpression expr, String symbolPath)  {
-    TypeSymbol symbol = expr.getTypeInfo();
-    store(expr, Paths.get(symbolPath, symbol.getPackageName(), symbol.getName()+".symtype"));
-  }
-
-  /**
-   * @see de.monticore.symboltable.serialization.IDeSer#getSerializedKind()
-   */
-  @Override
-  public String getSerializedKind() {
-    // Care: this String is never to occur, because all subclasses override this function
-    return "de.monticore.types.check.SymTypeExpression";
-  }
-
-  /**
-   * @see de.monticore.symboltable.serialization.IDeSer#serialize(java.lang.Object)
-   */
-  @Override
   public String serialize(SymTypeExpression toSerialize) {
     return toSerialize.printAsJson();
   }
 
   /**
+   * This method is a shortcut, as there are many symbolrules indicating that a symbol has a
+   * a List of SymTypeExpressions as member.
    *
-   * @param serialized
+   * @param serializedMember
+   * @param enclosingScope
    * @return
    */
-  @Override
-  public SymTypeExpression deserialize(String serialized, ITypeSymbolsScope enclosingScope) {
+  public List<SymTypeExpression> deserializeList(JsonElement serializedMember,
+      IBasicSymbolsScope enclosingScope) {
+    List<SymTypeExpression> result = new ArrayList<>();
+    for (JsonElement e : serializedMember.getAsJsonArray().getValues()) {
+      result.add(deserialize(e, enclosingScope));
+    }
+    return result;
+  }
+
+  public SymTypeExpression deserialize(String serialized, IBasicSymbolsScope enclosingScope) {
     return deserialize(JsonParser.parse(serialized), enclosingScope);
   }
 
-  /**
-   *
-   * @param serialized
-   * @return
-   */
-  public SymTypeExpression deserialize(JsonElement serialized, ITypeSymbolsScope enclosingScope) {
+  public SymTypeExpression deserialize(JsonElement serialized,
+      IBasicSymbolsScope enclosingScope) {
+    // void and null are stored as strings
+    if (serialized.isJsonString()) {
+      String value = serialized.getAsJsonString().getValue();
+      if (value.equals(DefsTypeBasic._nullTypeString)) {
+        return SymTypeExpressionFactory.createTypeOfNull();
+      }
+      else if (value.equals(DefsTypeBasic._voidTypeString)) {
+        return SymTypeExpressionFactory.createTypeVoid();
+      }
+    }
+    else if (enclosingScope instanceof IOOSymbolsScope) {
+      return deserialize(serialized, (IOOSymbolsScope) enclosingScope);
+    }
+    Log.error(
+        "0x823F3 Internal error: Loading ill-structured SymTab: Unknown serialization of SymTypeExpression: "
+            + serialized);
+    return null;
+  }
+
+  public SymTypeExpression deserialize(String serialized, IOOSymbolsScope enclosingScope) {
+    return deserialize(JsonParser.parse(serialized), enclosingScope);
+  }
+
+  public SymTypeExpression deserialize(JsonElement serialized, IOOSymbolsScope enclosingScope) {
 
     // void and null are stored as strings
     if (serialized.isJsonString()) {
@@ -121,20 +209,23 @@ public class SymTypeExpressionDeSer implements IDeSer<SymTypeExpression, ITypeSy
     }
 
     // all other serialized SymTypeExrpressions are json objects with a kind
-    if (JsonUtil.isCorrectDeSerForKind(symTypeArrayDeSer, serialized)) {
+    if (JsonDeSers.isCorrectDeSerForKind(symTypeArrayDeSer.SERIALIZED_KIND, serialized)) {
       return symTypeArrayDeSer.deserialize(serialized, enclosingScope);
     }
-    else if (JsonUtil.isCorrectDeSerForKind(symTypeConstantDeSer, serialized)) {
-      return symTypeConstantDeSer.deserialize(serialized, enclosingScope);
+    else if (JsonDeSers.isCorrectDeSerForKind(symTypeConstantDeSer.SERIALIZED_KIND, serialized)) {
+      return symTypeConstantDeSer.deserialize(serialized);
     }
-    else if (JsonUtil.isCorrectDeSerForKind(symTypeOfGenericsDeSer, serialized)) {
+    else if (JsonDeSers.isCorrectDeSerForKind(symTypeOfGenericsDeSer.SERIALIZED_KIND, serialized)) {
       return symTypeOfGenericsDeSer.deserialize(serialized, enclosingScope);
     }
-    else if (JsonUtil.isCorrectDeSerForKind(symTypeOfObjectDeSer, serialized)) {
+    else if (JsonDeSers.isCorrectDeSerForKind(symTypeOfObjectDeSer.SERIALIZED_KIND, serialized)) {
       return symTypeOfObjectDeSer.deserialize(serialized, enclosingScope);
     }
-    else if (JsonUtil.isCorrectDeSerForKind(symTypeVariableDeSer, serialized)) {
+    else if (JsonDeSers.isCorrectDeSerForKind(symTypeVariableDeSer.SERIALIZED_KIND, serialized)) {
       return symTypeVariableDeSer.deserialize(serialized, enclosingScope);
+    }
+    else if (JsonDeSers.isCorrectDeSerForKind(symTypeOfWildcardDeSer.SERIALIZED_KIND, serialized)) {
+      return symTypeOfWildcardDeSer.deserialize(serialized, enclosingScope);
     }
     else {
       Log.error(

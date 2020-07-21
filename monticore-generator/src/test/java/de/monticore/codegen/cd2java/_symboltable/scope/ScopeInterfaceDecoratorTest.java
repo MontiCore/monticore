@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._symboltable.scope;
 
 import com.github.javaparser.JavaParser;
@@ -9,16 +10,15 @@ import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
+import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.types.MCTypeFacade;
-import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -56,11 +56,12 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Before
   public void setUp() {
-    Log.init();
+    LogStub.init();         // replace log by a sideffect free variant
+        // LogStub.initPlusLog();  // for manual testing purpose only
     this.MCTypeFacade = MCTypeFacade.getInstance();
     this.glex = new GlobalExtensionManagement();
 
-    this.glex.setGlobalValue("astHelper", new DecorationHelper());
+    this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
     ASTCDCompilationUnit astcdCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "Automaton");
     ASTCDCompilationUnit symbolCd = this.parse("de", "monticore", "codegen", "symboltable", "AutomatonSymbolCD");
@@ -69,7 +70,7 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
     this.glex.setGlobalValue("service", new AbstractService(astcdCompilationUnit));
 
     ScopeInterfaceDecorator decorator = new ScopeInterfaceDecorator(this.glex, new SymbolTableService(astcdCompilationUnit),
-        new VisitorService(astcdCompilationUnit), new MethodDecorator(glex));
+        new VisitorService(astcdCompilationUnit), new MethodDecorator(glex, new SymbolTableService(astcdCompilationUnit)));
 
     //creates normal Symbol
     this.scopeInterface = decorator.decorate(decoratedScopeCompilationUnit, symbolCd);
@@ -620,7 +621,7 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals("de.monticore.codegen.symboltable.automaton._visitor.AutomatonScopeVisitor", method.getCDParameter(0).getMCType());
+    assertDeepEquals("de.monticore.codegen.symboltable.automaton._visitor.AutomatonVisitor", method.getCDParameter(0).getMCType());
     assertEquals("visitor", method.getCDParameter(0).getName());
   }
 

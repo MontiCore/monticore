@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._symboltable.symbol;
 
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
@@ -6,12 +7,12 @@ import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
+import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.MCTypeFacade;
-import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -43,11 +44,12 @@ public class SymbolResolvingDelegateInterfaceDecoratorTest extends DecoratorTest
 
   @Before
   public void setUp() {
-    Log.init();
+    LogStub.init();         // replace log by a sideffect free variant
+        // LogStub.initPlusLog();  // for manual testing purpose only
     this.mcTypeFacade = MCTypeFacade.getInstance();
     this.glex = new GlobalExtensionManagement();
 
-    this.glex.setGlobalValue("astHelper", new DecorationHelper());
+    this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
     originalCompilationUnit = decoratedCompilationUnit.deepClone();

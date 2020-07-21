@@ -78,7 +78,6 @@ while (grammarIterator.hasNext()) {
 for (astGrammar in getParsedGrammars()) {
   // make sure to use the right report manager again
   Reporting.on(Names.getQualifiedName(astGrammar.getPackageList(), astGrammar.getName()))
-  reportGrammarCd(astGrammar, cdScope, mcScope, report)
 
   astClassDiagram = getCDOfParsedGrammar(astGrammar)
 
@@ -88,12 +87,13 @@ for (astGrammar in getParsedGrammars()) {
 
   astClassDiagram = addListSuffixToAttributeName(astClassDiagram)
 
+  // report the base diagrams
+  reportCD(astClassDiagram, "", report)
+  reportCD(symbolClassDiagramm, "_Symbol", report)
+  reportCD(scopeClassDiagramm, "_Scope", report)
+
   decoratedSymbolTableCd = decorateForSymbolTablePackage(glex, cdScope, astClassDiagram, symbolClassDiagramm, scopeClassDiagramm, handcodedPath)
   generateFromCD(glex, astClassDiagram, decoratedSymbolTableCd, out, handcodedPath)
-
-  decoratedSerializationCd = decorateForSerializationPackage(glex, cdScope, astClassDiagram, symbolClassDiagramm, scopeClassDiagramm, handcodedPath)
-  generateFromCD(glex, astClassDiagram, decoratedSerializationCd, out, handcodedPath)
-
 
   // M9 Generate ast classes, visitor and context condition
   decoratedVisitorCD = decorateForVisitorPackage(glex, cdScope, astClassDiagram, handcodedPath)
@@ -102,11 +102,17 @@ for (astGrammar in getParsedGrammars()) {
   decoratedCoCoCD = decorateForCoCoPackage(glex, cdScope, astClassDiagram, handcodedPath)
   generateFromCD(glex, astClassDiagram, decoratedCoCoCD, out, handcodedPath)
 
-  generateODs(glex, cdScope, mcScope, astClassDiagram, astGrammar, out)
+  // decorate and generate CD for the '_od' package
+  decoratedODCD = decorateForODPackage(glex, cdScope, astClassDiagram, handcodedPath)
+  generateFromCD(glex, astClassDiagram, decoratedODCD, out, handcodedPath)
 
   // M7: decorate Class Diagram AST
   decoratedASTClassDiagramm = decorateForASTPackage(glex, cdScope, astClassDiagram, handcodedPath)
   generateFromCD(glex, astClassDiagram, decoratedASTClassDiagramm, out, handcodedPath)
+
+  // decorate and generate CD for the mills
+  decoratedMillCD = decorateMill(glex, cdScope, astClassDiagram, decoratedASTClassDiagramm,decoratedVisitorCD, decoratedSymbolTableCd, handcodedPath)
+  generateFromCD(glex, astClassDiagram, decoratedMillCD, out, handcodedPath)
 
   Log.info("Grammar " + astGrammar.getName() + " processed successfully!", LOG_ID)
 

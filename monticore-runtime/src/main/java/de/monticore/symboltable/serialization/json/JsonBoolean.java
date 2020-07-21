@@ -11,7 +11,7 @@ public class JsonBoolean implements JsonElement {
   protected boolean value;
   
   /**
-   * Constructor for automata._symboltable.serialization.json.JsonBoolean
+   * Constructor for de.monticore._symboltable.serialization.json.JsonBoolean
    * 
    * @param value
    */
@@ -20,7 +20,7 @@ public class JsonBoolean implements JsonElement {
   }
   
   /**
-   * @see automata._symboltable.serialization.json.JsonElement#isJsonBoolean()
+   * @see de.monticore.symboltable.serialization.json.JsonElement#isJsonBoolean()
    */
   @Override
   public boolean isJsonBoolean() {
@@ -28,7 +28,7 @@ public class JsonBoolean implements JsonElement {
   }
   
   /**
-   * @see automata._symboltable.serialization.json.JsonElement#getAsJsonBoolean()
+   * @see de.monticore.symboltable.serialization.json.JsonElement#getAsJsonBoolean()
    */
   @Override
   public JsonBoolean getAsJsonBoolean() {

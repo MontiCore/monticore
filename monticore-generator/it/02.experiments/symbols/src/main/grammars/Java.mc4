@@ -1,0 +1,91 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+/** This is a very much simplified Java excerpt that 
+    exhibits some of typical Java symbols and scopes.
+    It is used for demonstration only.
+*/
+
+component grammar Java extends de.monticore.MCBasics {
+
+CompilationUnit =  TypeDeclaration* EOF ;
+
+// Type declarations
+interface TypeDeclaration;
+
+// Usage of a type
+interface Type;
+
+//Type used in return statements
+interface ReturnType;
+
+symbol ClassDeclaration 
+    =   "class" Name 
+        ("extends" superClass:Type)?
+        ("implements" implementedInterfaces:(Type || ",")+)?
+        ClassBody
+    ;
+
+symbol InterfaceDeclaration 
+    =   "interface" Name 
+        ("extends" extendedInterfaces:(Type || ",")+)?
+        ClassBody
+    ;
+
+// Interface-Symbols are special forms of class-Symbols
+symbolrule InterfaceDeclaration extends ASTClassDeclaration;
+
+scope ClassBody
+    =   "{" (Method|Field)* "}"
+    ;
+
+symbol Method 
+    =   ReturnType Name FormalParameters 
+        (JavaBlock | ";")
+    ;
+
+symbol ConstructorDeclaration 
+    =   Name FormalParameters 
+    ;
+
+symbol Field 
+    =   Type Name (dim:"[" "]")* ("=" Expression)? ";"
+    ;
+
+symbol VariableDeclarator
+    =   Name (dim:"[" "]")* ("=" Expression)?
+    ;
+
+FormalParameters
+    =   "(" (FormalParameter || ",")* ")"
+    ;
+
+symbol FormalParameter
+    =   Type Name (dim:"[" "]")*
+    ;
+
+// STATEMENTS / BLOCKS
+
+interface Statement ;
+
+LocalVariableDeclarationStatement implements Statement
+    =    Type (VariableDeclarator || ",")+ ";"
+    ;
+
+scope JavaBlock implements Statement
+    =   "{" Statement* "}"
+    ;
+
+ExpressionStatement implements Statement
+    =   Expression ";"
+    ;
+
+// EXPRESSIONS
+
+Expression
+    =   
+    |   Expression "." Name@VariableDeclarator
+    |   "(" Expression ")"
+    |   Name@VariableDeclarator
+    ;
+
+}

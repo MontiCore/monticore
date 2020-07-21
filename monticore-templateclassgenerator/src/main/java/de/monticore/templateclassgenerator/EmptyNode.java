@@ -3,6 +3,7 @@ package de.monticore.templateclassgenerator;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.ast.Comment;
+import de.monticore.symboltable.IScope;
 import de.se_rwth.commons.SourcePosition;
 
 import java.util.*;
@@ -42,11 +43,7 @@ public class EmptyNode implements ASTNode {
     return null;
   }
   
-  @Override
-  public Optional<SourcePosition> get_SourcePositionEndOpt() {
-    return Optional.empty();
-  }
-  
+
   /**
    * @see de.monticore.ast.ASTNode#set_SourcePositionEnd(de.se_rwth.commons.SourcePosition)
    */
@@ -54,10 +51,7 @@ public class EmptyNode implements ASTNode {
   public void set_SourcePositionEnd(SourcePosition end) {
   }
   
-  @Override
-  public void set_SourcePositionEndOpt(Optional<SourcePosition> end) {
-  }
-  
+
   @Override
   public void set_SourcePositionEndAbsent() {
   }
@@ -75,22 +69,14 @@ public class EmptyNode implements ASTNode {
     return null;
   }
   
-  @Override
-  public Optional<SourcePosition> get_SourcePositionStartOpt() {
-    return Optional.empty();
-  }
-  
+
   /**
    * @see de.monticore.ast.ASTNode#set_SourcePositionStart(de.se_rwth.commons.SourcePosition)
    */
   @Override
   public void set_SourcePositionStart(SourcePosition start) {
   }
-  
-  @Override
-  public void set_SourcePositionStartOpt(Optional<SourcePosition> start) {
-  }
-  
+
   @Override
   public void set_SourcePositionStartAbsent() {
   }
@@ -99,7 +85,12 @@ public class EmptyNode implements ASTNode {
   public boolean isPresent_SourcePositionStart() {
     return false;
   }
-  
+
+  @Override
+  public IScope getEnclosingScope() {
+    return null;
+  }
+
   /**
    * @see de.monticore.ast.ASTNode#equalAttributes(java.lang.Object)
    */

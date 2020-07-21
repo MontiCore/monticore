@@ -14,8 +14,6 @@ import org.junit.Test;
 
 public class FileReaderWriterTest {
   
-  FileReaderWriter fileHandler = new FileReaderWriter();
-  
   Path testPath = Paths.get("target/test/FileHandlertest.txt");
   
   String testContent = "Hello World";
@@ -35,8 +33,9 @@ public class FileReaderWriterTest {
    */
   @Test
   public void testFileHandler() {
-    fileHandler.storeInFile(testPath, testContent);
-    assertEquals(testContent, fileHandler.readFromFile(testPath));
+    FileReaderWriter.init();
+    FileReaderWriter.storeInFile(testPath, testContent);
+    assertEquals(testContent, FileReaderWriter.readFromFile(testPath));
   }
   
 }

@@ -9,7 +9,7 @@ ${tc.include("core.Imports")}
 import de.monticore.ast.ASTCNode;
 
 ${tc.include("core.Annotations")}
-${cdPrinter.printSimpleModifier(cdClass.getModifierOpt())} class ${cdClass.getName()} <#rt><#lt>
+<#if cdClass.isPresentModifier()>${cdPrinter.printSimpleModifier(cdClass.getModifier())} </#if> class ${cdClass.getName()} <#rt><#lt>
 <#if cdClass.isPresentSuperclass()>extends ${cdPrinter.printType(cdClass.getSuperclass())} </#if> <#rt><#lt>
 <#if !cdClass.isEmptyInterfaces()>implements ${cdClass.printInterfaces()} </#if>{
 

@@ -1,0 +1,16 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package mc2cdtransformation;
+
+grammar SuperInheritedAttributesGrammar extends mc2cdtransformation.Supergrammar, mc.grammars.lexicals.TestLexicals{
+
+  A = X y:"y" abc:["a" | "b" | "c"] ["foo"] bar:key("bar") Name;
+  
+  B extends A;
+
+  C extends A = X y:"y" abc:["a" | "b" | "c"] ["foo"] bar:key("bar") Name name2:Name;
+
+  F extends A = name2:Name;
+
+  E = X y:"y" abc:["a" | "b" | "c"] ["foo"] bar:key("bar") Name;
+}

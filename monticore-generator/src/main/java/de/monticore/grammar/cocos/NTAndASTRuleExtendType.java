@@ -6,7 +6,7 @@ import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
-import de.monticore.types.mcfullgenerictypes._ast.MCFullGenericTypesMill;
+import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Optional;
@@ -29,10 +29,9 @@ public class NTAndASTRuleExtendType implements GrammarASTMCGrammarCoCo {
         Optional<ProdSymbol> ruleSymbol = grammarSymbol.getProdWithInherited(rule.getType());
         if (ruleSymbol.isPresent()) {
           if (ruleSymbol.get().isClass()) {
-            Optional<ASTProd> prod = ruleSymbol.get().getAstNodeOpt();
-            if (prod.isPresent()
-                    && (!((ASTClassProd) prod.get()).getASTSuperClassList().isEmpty()
-                    || !((ASTClassProd) prod.get()).getSuperRuleList().isEmpty())) {
+            if (ruleSymbol.get().isPresentAstNode()
+                    && (!((ASTClassProd) ruleSymbol.get().getAstNode()).getASTSuperClassList().isEmpty()
+                    || !((ASTClassProd) ruleSymbol.get().getAstNode()).getSuperRuleList().isEmpty())) {
               Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, rule.getType(),
                       MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(rule.getASTSuperClassList().get(0))),
                       rule.get_SourcePositionStart());

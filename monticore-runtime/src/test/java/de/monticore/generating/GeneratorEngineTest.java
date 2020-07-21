@@ -8,6 +8,8 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.nio.file.Paths;
 
+import de.monticore.io.FileReaderWriter;
+import org.junit.AfterClass;
 import org.junit.Test;
 
 import de.monticore.ast.ASTNodeMock;
@@ -46,6 +48,11 @@ public class GeneratorEngineTest {
     assertTrue(fileHandler.getStoredFilesAndContents().containsKey(Paths.get
         (new File("target1/a/GenerateInFile.test").getAbsolutePath())));
 
+  }
+
+  @AfterClass
+  public static void resetFileReaderWriter() {
+    FileReaderWriter.init();
   }
 
   @Test

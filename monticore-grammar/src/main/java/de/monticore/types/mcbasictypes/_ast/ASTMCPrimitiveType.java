@@ -3,6 +3,8 @@
 package de.monticore.types.mcbasictypes._ast;
 
 
+import de.monticore.types.mcbasictypes.MCBasicTypesMill;
+
 public  class ASTMCPrimitiveType extends ASTMCPrimitiveTypeTOP {
 
   public ASTMCPrimitiveType() {

@@ -139,6 +139,13 @@ public class GrammarPrettyPrinter
     if (a.isPresentUsageName()) {
       print("" + a.getUsageName() + ":");
     }
+    a.getKeyConstant().accept(getRealThis());
+    outputIteration(a.getIteration());
+    CommentPrettyPrinter.printPostComments(a, getPrinter());
+  }
+
+  @Override
+  public void handle(ASTKeyConstant a) {
     print(" key(");
     String sep = "";
     for (String name: a.getStringList()) {
@@ -147,7 +154,37 @@ public class GrammarPrettyPrinter
       sep = " | ";
     }
     print(")");
+  }
+
+  @Override
+  public void handle(ASTTokenTerminal a) {
+    CommentPrettyPrinter.printPreComments(a, getPrinter());
+    if (a.isPresentUsageName()) {
+      print("" + a.getUsageName() + ":");
+    }
+    a.getTokenConstant().accept(getRealThis());
     outputIteration(a.getIteration());
+    CommentPrettyPrinter.printPostComments(a, getPrinter());
+  }
+
+  @Override
+  public void handle(ASTTokenConstant a) {
+    print(" token(");
+    print(a.getString());
+    print(")");
+  }
+
+  @Override
+  public void handle(ASTSplitRule a) {
+    CommentPrettyPrinter.printPreComments(a, getPrinter());
+    print("split_token ");
+    String sep = "";
+    for (String s: a.getStringList()) {
+      print(sep);
+      sep = ", ";
+      print(s);
+    }
+    println (";");
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
 
@@ -226,12 +263,16 @@ public class GrammarPrettyPrinter
   @Override
   public void handle(ASTConstant a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
-    if (a.isPresentHumanName()) {
-      print(a.getHumanName() + ":");
+    if (a.isPresentUsageName()) {
+      print(a.getUsageName() + ":");
     }
-
-    print(QUOTE + a.getName() + QUOTE);
-
+    if (a.isPresentKeyConstant()) {
+      a.getKeyConstant().accept(getRealThis());
+    }else if (a.isPresentTokenConstant()) {
+      a.getTokenConstant().accept(getRealThis());
+    } else {
+      print(QUOTE + a.getName() + QUOTE);
+    }
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
 
@@ -532,6 +573,10 @@ public class GrammarPrettyPrinter
     }
     getPrinter().print(" (");
     getPrinter().print(node.getName());
+    if (node.isPresentReferencedSymbol()) {
+      getPrinter().print("@");
+      getPrinter().print(node.getReferencedSymbol());
+    }
     if (node.isPlusKeywords()) {
       getPrinter().print("&");
     }
@@ -782,7 +827,7 @@ public class GrammarPrettyPrinter
     }
     println(" {");
     getPrinter().indent();
-    if (a.getGrammarOptionOpt().isPresent()) {
+    if (a.isPresentGrammarOption()) {
       a.getGrammarOption().accept(getRealThis());
     }
     printList(a.getLexProdList().iterator(), "");
@@ -793,11 +838,11 @@ public class GrammarPrettyPrinter
     printList(a.getAbstractProdList().iterator(), "");
     printList(a.getASTRuleList().iterator(), "");
     printList(a.getConceptList().iterator(), "");
-    if (a.getStartRuleOpt().isPresent()) {
+    if (a.isPresentStartRule()) {
       a.getStartRule().accept(getRealThis());
     }
     printList(a.getSymbolRuleList().iterator(), "");
-    if (a.getScopeRuleOpt().isPresent()) {
+    if (a.isPresentScopeRule()) {
       a.getScopeRule().accept(getRealThis());
     }
 
@@ -1018,25 +1063,22 @@ public class GrammarPrettyPrinter
   public void handle(ASTSymbolDefinition node) {
     if (node.isGenSymbol()) {
       getPrinter().print(" symbol ");
-      if (node.isPresentSymbolName()) {
-        getPrinter().print(node.getSymbolName() + " ");
-      }
     }
     if (node.isGenScope()) {
       getPrinter().print(" scope ");
-      if (node.isOrdered() || node.isNo_shadowing() || node.isExporting()) {
+      if (node.isOrdered() || node.isShadowing() || node.isNon_exporting()) {
         getPrinter().print("(");
         if (node.isOrdered()) {
           getPrinter().print(" ordered ");
         }
-        if (node.isNo_shadowing()) {
-          getPrinter().print(" no_shadowing ");
+        if (node.isShadowing()) {
+          getPrinter().print(" shadowing ");
         }
-        if (node.isExporting()) {
-          getPrinter().print(" exporting ");
+        if (node.isNon_exporting()) {
+          getPrinter().print(" non_exporting ");
         }
         getPrinter().print(")");
-     }
+      }
     }
   }
 

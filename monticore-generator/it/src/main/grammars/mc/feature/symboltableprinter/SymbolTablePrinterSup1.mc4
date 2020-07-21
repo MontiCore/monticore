@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.feature.symboltableprinter;
+
+grammar SymbolTablePrinterSup1 extends mc.common.Basics {
+
+    symbol A = "foo" Name;
+}    
+    

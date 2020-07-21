@@ -1,0 +1,93 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.symbols;
+
+/* This is a MontiCore stable grammar.
+ * Adaptations -- if any -- are conservative. */
+
+/**
+ * This grammar is used to generate an abstract syntax only.
+ * These AST-classes are then used to store typing information
+ * in the SymbolTable.
+ *
+ * The grammar introduces the symbols for
+ * OOTypes, Methods, and Fields 
+ * which are specializations of the alredy defined 
+ * Types (of all kinds), Functions, and Variables.
+ * The latter (and TypeVariables) are already defined in BasicTypeSymbols.
+ *
+ * here we mainly add the possibilities to store static, private, etc. flags
+ * and extend the signature of methods for elliptic extensibility.
+ *
+ * These symbols can be used elsewhere, when actual implementations
+ * of these symbols become available.
+ *
+*/
+
+component grammar OOSymbols extends de.monticore.symbols.BasicSymbols {
+
+  /*=================================================================*/
+
+  /**
+   * A type (in an OO sense) has a name,
+   * methods, fields, supertypes.
+   *
+   * It may also contain potentially fields and OO methods.
+   * These are represented as Symbols in the body of the type 
+   * and thus made available through the associated scope object.
+   *
+   * The new symbol OOTypeSymbol mainly adds OO specific properties.
+   *
+   */
+  interface scope symbol OOType extends Type = Name;
+  symbolrule OOType =
+    isClass: boolean
+    isInterface: boolean
+    isEnum: boolean
+    isAbstract: boolean
+    isPrivate: boolean
+    isProtected: boolean
+    isPublic: boolean
+    isStatic: boolean
+    isFinal: boolean
+  ;
+
+  /*=================================================================*/
+
+  /**
+   * A Field (local variable, method parameter, Java attribute) has a type
+   * and a visibility. It may also be used in isolation (static).
+   *
+   * The new symbol FieldSymbol inherits from VariableSymbol
+   * and mainly adds OO specific properties.
+   */
+  interface symbol Field extends Variable = Name ;
+  symbolrule Field =
+    isPrivate: boolean
+    isProtected: boolean
+    isPublic: boolean
+    isStatic:boolean
+    isFinal: boolean
+  ;
+
+  /*=================================================================*/
+
+  /**
+   * A Method has a return type, and a list of parameters, which
+   * are stored as field symbols.
+   *
+   * The new symbol MethodSymbol inherits from FunctionSymbol and 
+   * mainly adds OO specific properties.
+   */
+  interface symbol Method extends Function = Name;
+  symbolrule Method =
+    isConstructor: boolean
+    isMethod: boolean
+    isPrivate: boolean
+    isProtected: boolean
+    isPublic: boolean
+    isStatic: boolean
+    isFinal: boolean
+    isElliptic: boolean
+  ;
+
+}

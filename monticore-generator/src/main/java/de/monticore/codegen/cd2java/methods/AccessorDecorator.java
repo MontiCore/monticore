@@ -4,6 +4,7 @@ package de.monticore.codegen.cd2java.methods;
 import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.codegen.cd2java.AbstractCreator;
+import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.methods.accessor.ListAccessorDecorator;
 import de.monticore.codegen.cd2java.methods.accessor.MandatoryAccessorDecorator;
 import de.monticore.codegen.cd2java.methods.accessor.OptionalAccessorDecorator;
@@ -13,8 +14,8 @@ import java.util.List;
 
 public class AccessorDecorator extends SpecificMethodDecorator {
 
-  public AccessorDecorator(final GlobalExtensionManagement glex) {
-    super(glex, new MandatoryAccessorDecorator(glex), new OptionalAccessorDecorator(glex), new ListAccessorDecorator(glex));
+  public AccessorDecorator(final GlobalExtensionManagement glex, AbstractService service) {
+    super(glex, new MandatoryAccessorDecorator(glex), new OptionalAccessorDecorator(glex,service), new ListAccessorDecorator(glex));
   }
 
   public AccessorDecorator(final GlobalExtensionManagement glex,

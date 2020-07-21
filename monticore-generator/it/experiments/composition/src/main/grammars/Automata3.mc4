@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+grammar Automata3 extends InvAutomata, Expression {
+  
+  start Automaton;
+
+  // LogicExpr is defined in grammar Expression and now
+  // bound to the external NT
+  Invariant = LogicExpr;
+
+  NewNT = "...";
+}

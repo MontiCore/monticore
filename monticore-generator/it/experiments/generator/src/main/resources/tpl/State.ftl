@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 <#--
-   Template, belongs to State @ grammar HierAutomaton
+   Template, belongs to State @ grammar HierAutomata
 -->
     state ${ast.name} 
     <#if ast.isInitial()> <<initial>> </#if>

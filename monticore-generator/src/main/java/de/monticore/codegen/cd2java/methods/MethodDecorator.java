@@ -4,6 +4,7 @@ package de.monticore.codegen.cd2java.methods;
 import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.codegen.cd2java.AbstractCreator;
+import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 
 import java.util.ArrayList;
@@ -15,8 +16,8 @@ public class MethodDecorator extends AbstractCreator<ASTCDAttribute, List<ASTCDM
 
   private final AbstractCreator<ASTCDAttribute, List<ASTCDMethod>> mutatorDecorator;
 
-  public MethodDecorator(final GlobalExtensionManagement glex) {
-    this(glex, new AccessorDecorator(glex), new MutatorDecorator(glex));
+  public MethodDecorator(final GlobalExtensionManagement glex, final AbstractService service) {
+    this(glex, new AccessorDecorator(glex, service), new MutatorDecorator(glex));
   }
 
   public MethodDecorator(final GlobalExtensionManagement glex,

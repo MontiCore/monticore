@@ -28,12 +28,9 @@ token COMMENT =
 	 	 
 Test = 
   a:NUMBER | b:BOOLEAN | c:CHAR | d:NUMBERFLOAT | e:CARD | f:COMMENT;
-	
-// TODO SO 	 
-/* 
+
 enum ENUM =
-	"public" | public:"+";	 	
-*/
+	"public" | public:"+";
 
 // Check Nonterminals with cardinality
 token NUMBERFLOAT2 =

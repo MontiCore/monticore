@@ -3,7 +3,7 @@ package de.monticore.types.printer;
 
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCCustomTypeArgument;
-import de.monticore.types.mcsimplegenerictypes._ast.MCSimpleGenericTypesMill;
+import de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMill;
 import de.monticore.types.mcsimplegenerictypestest._parser.MCSimpleGenericTypesTestParser;
 import de.monticore.types.prettyprint.MCSimpleGenericTypesPrettyPrinter;
 import org.junit.Test;

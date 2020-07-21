@@ -43,12 +43,11 @@ public class MontiCoreTemplateLoader extends URLTemplateLoader {
   @Override
   protected URL getURL(String templateName) {
     Log.debug("Requested template " + templateName, MontiCoreTemplateLoader.class.getName());
-    FileReaderWriter ioWrapper = new FileReaderWriter();
-    
+
     // Since the input is almost always dot separated, this method just goes ahead and converts it
     // without checking, only in the rare case that this procedure is unsuccessful are
     // alternatives considered
-    Optional<URL> result = ioWrapper.getResource(classLoader,
+    Optional<URL> result = FileReaderWriter.getResource(classLoader,
         templateName.replace('.', '/').concat(FreeMarkerTemplateEngine.FM_FILE_EXTENSION));
     if (result.isPresent()) {
       return result.get();
@@ -60,11 +59,11 @@ public class MontiCoreTemplateLoader extends URLTemplateLoader {
     if (templateName.endsWith(FreeMarkerTemplateEngine.FM_FILE_EXTENSION)) {
       String newName = templateName.substring(0,
           templateName.length() - FreeMarkerTemplateEngine.FM_FILE_EXTENSION.length());
-      result = ioWrapper.getResource(classLoader,
+      result = FileReaderWriter.getResource(classLoader,
           newName.replace('.', '/').concat(FreeMarkerTemplateEngine.FM_FILE_EXTENSION));
     }
     else {
-      result = ioWrapper.getResource(classLoader, templateName);
+      result = FileReaderWriter.getResource(classLoader, templateName);
     }
     return result.orElse(null);
   }

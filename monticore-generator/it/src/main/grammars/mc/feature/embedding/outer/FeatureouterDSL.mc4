@@ -14,6 +14,6 @@ component grammar FeatureouterDSL extends mc.common.Basics {
 	
 	Outer4= a:Outer3 (b:Outer3)*;
 	
-	external Ext; // TODO: /mc.ast.ASTNode;
+	external Ext;
 	
 }

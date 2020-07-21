@@ -9,6 +9,7 @@ import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
 import de.se_rwth.commons.logging.Log;
 
+import java.util.List;
 import java.util.Optional;
 
 public class ConservativeExtensionCheck implements GrammarASTMCGrammarCoCo {
@@ -17,12 +18,12 @@ public class ConservativeExtensionCheck implements GrammarASTMCGrammarCoCo {
 
   public static final String ERROR_CODE = "0xA2007";
 
-  public static final String ERROR_MSG_FORMAT = " The production %s does not extend the Rule %s conservative at component %s. This can lead to problems in the AST.";
+  public static final String ERROR_MSG_FORMAT = " The production %s does not extend the Rule %s in a conservative manner at component %s. This can lead to problems in the AST.";
 
   @Override
   public void check(ASTMCGrammar node) {
-    Optional<MCGrammarSymbol> g = node.getSymbolOpt();
-    for (ProdSymbol nt : g.get().getProds()) {
+    MCGrammarSymbol g = node.getSymbol();
+    for (ProdSymbol nt : g.getProds()) {
       //check when you extend a class not conservative directly (Subclass extends Superclass = ...)
       if (nt.isClass() && !nt.getSuperProds().isEmpty()
               && !MCGrammarSymbolTableHelper.getAllSuperProds(nt).isEmpty()) {
@@ -31,8 +32,8 @@ public class ConservativeExtensionCheck implements GrammarASTMCGrammarCoCo {
         }
       }
       //checks when you define a Prod with the same Name as a Prod in a Supergrammar
-      if(!g.get().getSuperGrammarSymbols().isEmpty()){
-        for(MCGrammarSymbol superg : g.get().getSuperGrammarSymbols()){
+      if(!g.getSuperGrammarSymbols().isEmpty()){
+        for(MCGrammarSymbol superg : g.getSuperGrammarSymbols()){
           for(ProdSymbol superNt : superg.getProds()){
             if(nt.getName().equals(superNt.getName())){
               compareComponents(nt, superNt);
@@ -45,15 +46,15 @@ public class ConservativeExtensionCheck implements GrammarASTMCGrammarCoCo {
 
   private void compareComponents(ProdSymbol p, ProdSymbol superp) {
     for (RuleComponentSymbol comp : superp.getProdComponents()) {
-      Optional<RuleComponentSymbol> prodComponent = p.getProdComponent(comp.getName());
-      if (!prodComponent.isPresent()) {
+      List<RuleComponentSymbol> prodComponents = p.getSpannedScope().resolveRuleComponentDownMany(comp.getName());
+      if (prodComponents.isEmpty()) {
         Log.warn(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName(), superp.getName(), comp.getName(),
             p.getSourcePosition()));
-      }else if (prodComponent.get().isIsTerminal() != comp.isIsTerminal() ||
-          prodComponent.get().isIsNonterminal() != comp.isIsNonterminal() ||
-          prodComponent.get().isIsList() != comp.isIsList() ||
-          prodComponent.get().isIsOptional() != comp.isIsOptional() ||
-          !prodComponent.get().getUsageName().equals(comp.getUsageName())) {
+      }else if (prodComponents.get(0).isIsTerminal() != comp.isIsTerminal() ||
+          prodComponents.get(0).isIsNonterminal() != comp.isIsNonterminal() ||
+          prodComponents.get(0).isIsList() != comp.isIsList() ||
+          prodComponents.get(0).isIsOptional() != comp.isIsOptional() ||
+          !prodComponents.get(0).getName().equals(comp.getName())) {
         Log.warn(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName(), superp.getName(), comp.getName(),
             p.getSourcePosition()));
       }

@@ -1,0 +1,23 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.feature.scopes;
+
+
+grammar ScopeAttributes extends mc.common.Basics {
+
+  StartProd = (A | B | C | D | E | F)*;
+
+  // simple scopes
+  scope (shadowing) A = "a" Name;
+
+  scope (non_exporting) B = "b" Name;
+
+  scope (ordered) C = "c" Name;
+
+  // scope spanning symbols
+  symbol scope (shadowing) D = "d" Name;
+
+  symbol scope (non_exporting) E = "e" Name;
+
+  symbol scope (ordered) F = "f" Name;
+
+}

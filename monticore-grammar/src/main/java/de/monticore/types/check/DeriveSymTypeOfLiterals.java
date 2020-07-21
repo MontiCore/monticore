@@ -2,10 +2,10 @@
 package de.monticore.types.check;
 
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
+import de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisScope;
 import de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisVisitor;
+import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
 import de.se_rwth.commons.logging.Log;
-
-import java.util.Optional;
 
 /**
  * Visitor for Derivation of SymType from Literals
@@ -14,6 +14,15 @@ import java.util.Optional;
  *    literals/MCLiteralsBasis.mc4
  */
 public class DeriveSymTypeOfLiterals implements MCLiteralsBasisVisitor {
+
+  public IOOSymbolsScope getScope (IMCLiteralsBasisScope mcLiteralsBasisScope){
+    // is accepted only here, decided on 07.04.2020
+    if(!(mcLiteralsBasisScope instanceof IOOSymbolsScope)){
+      Log.error("0xA0309 the enclosing scope of the literal does not implement the interface IOOSymbolsScope");
+    }
+    // is accepted only here, decided on 07.04.2020
+    return (IOOSymbolsScope) mcLiteralsBasisScope;
+  }
   
   // ----------------------------------------------------------  realThis start
   // setRealThis, getRealThis are necessary to make the visitor compositional
@@ -38,14 +47,14 @@ public class DeriveSymTypeOfLiterals implements MCLiteralsBasisVisitor {
    * Storage in the Visitor: result of the last endVisit.
    * This attribute is synthesized upward.
    */
-  protected LastResult result;
+  protected TypeCheckResult result;
   
-  public LastResult getResult() {
+  public TypeCheckResult getTypeCheckResult() {
     return result;
   }
   
   public void init() {
-    result = new LastResult();
+    result = new TypeCheckResult();
   }
 
   
@@ -62,7 +71,7 @@ public class DeriveSymTypeOfLiterals implements MCLiteralsBasisVisitor {
             + " Probably TypeCheck mis-configured.");
   }
 
-  public void setResult(LastResult result) {
+  public void setTypeCheckResult(TypeCheckResult result) {
     this.result = result;
   }
 }

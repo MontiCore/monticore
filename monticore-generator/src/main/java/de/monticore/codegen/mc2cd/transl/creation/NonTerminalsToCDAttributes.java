@@ -11,45 +11,38 @@ import java.util.function.UnaryOperator;
 
 /**
  * Creates the ASTCDAttributes corresponding to NonTerminals
- * 
  */
 public class NonTerminalsToCDAttributes implements
     UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {
-  
+
   @Override
   public Link<ASTMCGrammar, ASTCDCompilationUnit> apply(
       Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink) {
-    
+
     for (Link<ASTClassProd, ASTCDClass> link : rootLink.getLinks(ASTClassProd.class,
         ASTCDClass.class)) {
-      for (ASTNonTerminal nonTerminal : ASTNodes.getSuccessors(link.source(),
-          ASTNonTerminal.class)) {
-        ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
-        link.target().getCDAttributeList().add(cdAttribute);
-        new Link<>(nonTerminal, cdAttribute, link);
-      }
+      createAttributeFromNonTerminal(link);
     }
-    
+
     for (Link<ASTInterfaceProd, ASTCDInterface> link : rootLink.getLinks(ASTInterfaceProd.class,
         ASTCDInterface.class)) {
-      for (ASTNonTerminal nonTerminal : ASTNodes.getSuccessors(link.source(),
-          ASTNonTerminal.class)) {
-        ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
-        link.target().getCDAttributeList().add(cdAttribute);
-        new Link<>(nonTerminal, cdAttribute, link);
-      }
+      createAttributeFromNonTerminal(link);
     }
-    
+
     for (Link<ASTAbstractProd, ASTCDClass> link : rootLink.getLinks(ASTAbstractProd.class,
         ASTCDClass.class)) {
-      for (ASTNonTerminal nonTerminal : ASTNodes.getSuccessors(link.source(),
-          ASTNonTerminal.class)) {
-        ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
-        link.target().getCDAttributeList().add(cdAttribute);
-        new Link<>(nonTerminal, cdAttribute, link);
-      }
+      createAttributeFromNonTerminal(link);
     }
-    
+
     return rootLink;
+  }
+
+  private void createAttributeFromNonTerminal(Link<? extends ASTProd, ? extends ASTCDType> link) {
+    for (ASTNonTerminal nonTerminal : ASTNodes.getSuccessors(link.source(),
+        ASTNonTerminal.class)) {
+      ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
+      link.target().getCDAttributeList().add(cdAttribute);
+      new Link<>(nonTerminal, cdAttribute, link);
+    }
   }
 }

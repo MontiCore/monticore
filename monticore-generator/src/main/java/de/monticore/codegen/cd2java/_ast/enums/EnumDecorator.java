@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast.enums;
 
+import de.monticore.cd.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
@@ -37,6 +38,9 @@ public class EnumDecorator extends AbstractCreator<ASTCDEnum, ASTCDEnum> {
 
   @Override
   public ASTCDEnum decorate(final ASTCDEnum input) {
+    ASTModifier modifier = input.isPresentModifier() ?
+        astService.createModifierPublicModifier(input.getModifier()):
+        PUBLIC.build();
     String enumName = input.getName();
     String constantClassName = astService.getASTConstantClassFullName();
     ASTCDAttribute intValueAttribute = getIntValueAttribute();
@@ -49,6 +53,7 @@ public class EnumDecorator extends AbstractCreator<ASTCDEnum, ASTCDEnum> {
     }
     return CD4AnalysisMill.cDEnumBuilder()
         .setName(enumName)
+        .setModifier(modifier)
         .addAllCDEnumConstants(constants)
         .addCDConstructor(getLiteralsConstructor(enumName))
         .addCDAttribute(intValueAttribute)

@@ -6,10 +6,10 @@ component grammar Expression extends de.monticore.MCBasics {
   interface LogicExpr;
 
   Truth    implements LogicExpr <150> =
-  		tt:["true"] | ff:["false"] ;
+                  tt:["true"] | ff:["false"] ;
   
   And      implements LogicExpr <120> =
-  		left:LogicExpr "&&" right:LogicExpr ;
+                  left:LogicExpr "&&" right:LogicExpr ;
 
   Not      implements LogicExpr <130> = "!" LogicExpr ;
 

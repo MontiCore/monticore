@@ -83,7 +83,6 @@ public final class ParseTrees {
   /** Find smallest subtree of t enclosing range start..stop
    *  inclusively using postorder traversal.  Recursive depth-first-search.
    *
-   *  @since 4.5.1
    */
   public static ParserRuleContext getRootOfSubtreeEnclosingRegion(ParseTree t,
                                   int start, // inclusive

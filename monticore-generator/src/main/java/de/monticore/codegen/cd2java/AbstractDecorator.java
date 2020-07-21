@@ -10,12 +10,12 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.types.MCTypeFacade;
 
-public abstract class AbstractDecorator{
+public abstract class AbstractDecorator {
 
   /**
-  Do not use for creation of new Decorators
-  Decide if your new Decorator is a Creator or a Transformer, to overwrite the correct decorate method
-  Only a class to sum up general Decorator functionality
+   * Do not use for creation of new Decorators
+   * Decide if your new Decorator is a Creator or a Transformer, to overwrite the correct decorate method
+   * Only a class to sum up general Decorator functionality
    **/
 
   protected final GlobalExtensionManagement glex;
@@ -32,6 +32,8 @@ public abstract class AbstractDecorator{
 
   private final CDParameterFacade cdParameterFacade;
 
+  private final DecorationHelper decorationHelper;
+
   public AbstractDecorator() {
     this(null);
   }
@@ -42,7 +44,8 @@ public abstract class AbstractDecorator{
         CDAttributeFacade.getInstance(),
         CDConstructorFacade.getInstance(),
         CDMethodFacade.getInstance(),
-        CDParameterFacade.getInstance()
+        CDParameterFacade.getInstance(),
+        DecorationHelper.getInstance()
     );
   }
 
@@ -51,7 +54,8 @@ public abstract class AbstractDecorator{
                            final CDAttributeFacade cdAttributeFacade,
                            final CDConstructorFacade cdConstructorFacade,
                            final CDMethodFacade cdMethodFacade,
-                           final CDParameterFacade cdParameterFacade) {
+                           final CDParameterFacade cdParameterFacade,
+                           final DecorationHelper decorationHelper) {
     this.glex = glex;
     this.templatesEnabled = true;
     this.mcTypeFacade = mcTypeFacade;
@@ -59,6 +63,7 @@ public abstract class AbstractDecorator{
     this.cdConstructorFacade = cdConstructorFacade;
     this.cdMethodFacade = cdMethodFacade;
     this.cdParameterFacade = cdParameterFacade;
+    this.decorationHelper = decorationHelper;
   }
 
   public void enableTemplates() {
@@ -97,5 +102,9 @@ public abstract class AbstractDecorator{
 
   protected CDParameterFacade getCDParameterFacade() {
     return this.cdParameterFacade;
+  }
+
+  public DecorationHelper getDecorationHelper() {
+    return decorationHelper;
   }
 }

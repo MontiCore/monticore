@@ -38,10 +38,7 @@ grammar ScopesExample extends mc.grammar.lexicals.ItTestLexicals {
 
 	//actions are not used at the moment cause classgenwithingrammar cannot generate attributes of any type :(
 	Assignement =  varname:Name "=" (value:STRING
-										| var:Name // hier muss man sich merken, dass der Typ aufgelöst werden muss
-										            // oder besser: Type sollte nicht String sein sondern ein TypeUsage
-										            //TODO für Holger: es wäre toll, wenn ClassGenwithinGrammar beliegibe Attributtypen generieren/verstehen kann...
-										            //TODO für Steven: Ksann sie jetzt ...
+										| var:Name
 										| bool:"false" {_aNode.setType("Boolean");}
 										| bool:"true" {_aNode.setType("Boolean");}
 										| int:INT {_aNode.setType("Int");}

@@ -6,13 +6,15 @@ import de.monticore.completeness._ast.ASTCompletenessNode;
 import de.monticore.completeness._visitor.CompletenessVisitor;
 
 public class CompletenessPrettyPrinter implements CompletenessVisitor {
-  
+
+  private CompletenessVisitor realThis = this;
+
   private IndentPrinter printer;
-  
+
   public CompletenessPrettyPrinter(IndentPrinter printer) {
     this.printer = printer;
   }
-  
+
   @Override
   public void handle(ASTCompleteness node) {
     if (node.isComplete()) {
@@ -28,15 +30,25 @@ public class CompletenessPrettyPrinter implements CompletenessVisitor {
       getPrinter().print("(...,c)");
     }
   }
-  
+
   public IndentPrinter getPrinter() {
     return this.printer;
   }
-  
+
   public String prettyprint(ASTCompletenessNode node) {
     getPrinter().clearBuffer();
     node.accept(getRealThis());
     return getPrinter().getContent();
   }
-  
+
+  @Override
+  public void setRealThis(CompletenessVisitor realThis) {
+    this.realThis = realThis;
+  }
+
+  @Override
+  public CompletenessVisitor getRealThis() {
+    return realThis;
+  }
+
 }

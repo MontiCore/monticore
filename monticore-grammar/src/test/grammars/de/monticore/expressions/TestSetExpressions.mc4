@@ -5,6 +5,6 @@ package de.monticore.expressions;
 grammar TestSetExpressions
           extends de.monticore.expressions.SetExpressions, de.monticore.literals.MCCommonLiterals {
 
-	    start Expression;
+      start Expression;
 
 }

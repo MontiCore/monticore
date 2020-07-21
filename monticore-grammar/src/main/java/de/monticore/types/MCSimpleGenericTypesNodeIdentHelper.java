@@ -5,7 +5,7 @@ import de.monticore.generating.templateengine.reporting.commons.Layouter;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCCustomTypeArgument;
-import de.monticore.types.mcsimplegenerictypes._ast.MCSimpleGenericTypesMill;
+import de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMill;
 
 /**
  * NodeIdentHelper for MCSimpleGenericTypes, mainly used for Reporting

@@ -88,11 +88,7 @@ public class InvolvedFilesReporter extends AReporter {
   private void writeFooter() {
     writeLine(EOF);
   }
-  
-  /**
-   * @see mc.codegen.reporting.commons.IReportEventHandler#reportFileCreation(java.lang.String,
-   * java.lang.String, java.lang.String, de.monticore.ast.ASTNode)
-   */
+
   @Override
   public void reportFileCreation(String fileName) {
     if (!outputFiles.contains(fileName)) {
@@ -100,19 +96,13 @@ public class InvolvedFilesReporter extends AReporter {
     }
   }
   
-  /**
-   * @see mc.codegen.reporting.commons.IReportEventHandler#reportFileCreation(java.lang.String,
-   * java.lang.String, java.lang.String, de.monticore.ast.ASTNode)
-   */
+
   @Override
   public void reportFileExistenceChecking(List<Path> parentPath, Path file) {
     parentPath.forEach(p -> checkedFiles
         .add(p != null ? p.toString() + PARENT_FILE_SEPARATOR + file.toString() : file.toString()));
   }
   
-  /**
-   * @see de.monticore.generating.templateengine.reporting.commons.DefaultReportEventHandler#reportOpenInputFile(java.nio.file.Path)
-   */
   @Override
   public void reportOpenInputFile(Optional<Path> parentPath, Path file) {
     if (qualifiedInputFile.isPresent() && qualifiedInputFile.get().compareTo(file) == 0) {
@@ -133,9 +123,6 @@ public class InvolvedFilesReporter extends AReporter {
     }
   }
   
-  /**
-   * @see de.monticore.generating.templateengine.reporting.commons.DefaultReportEventHandler#reportOpenInputFile(java.nio.file.Path)
-   */
   @Override
   public void reportOpenInputFile(String fileName) {
     fileName = format(fileName);
@@ -150,14 +137,14 @@ public class InvolvedFilesReporter extends AReporter {
    */
   @Override
   public void reportParseInputFile(Path inputFilePath, String modelName) {
-    this.reportingHelper = new ReportCreator(outputDirectory + File.separator + modelName);
+    this.reportingHelper = new ReportCreator(outputDirectory + File.separator + modelName.toLowerCase());
     inputFiles.clear();
     outputFiles.clear();
     checkedFiles.clear();
     modelToArtifactMap.clear();
     inputFile = Optional.of(inputFilePath.toString());
     
-    qualifiedInputFile = Optional.of(Paths.get(modelName.replaceAll("\\.", "/") + "."
+    qualifiedInputFile = Optional.of(Paths.get(modelName.replaceAll("\\.", "/").toLowerCase() + "."
         + Files.getFileExtension(inputFilePath.getFileName().toString())));
     
     Path parent = inputFilePath.subpath(0,

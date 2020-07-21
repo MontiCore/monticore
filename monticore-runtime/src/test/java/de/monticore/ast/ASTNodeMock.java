@@ -12,6 +12,7 @@ import java.util.stream.Stream;
 import com.google.common.collect.Lists;
 import de.monticore.ast.ASTNode;
 import de.monticore.ast.Comment;
+import de.monticore.symboltable.IScope;
 import de.se_rwth.commons.SourcePosition;
 
 import java.util.Collection;
@@ -84,6 +85,10 @@ public class ASTNodeMock implements ASTNode {
   @Override
   public boolean isPresent_SourcePositionStart() {
     return false;
+  }
+
+  @Override public IScope getEnclosingScope() {
+    return null;
   }
 
   /**

@@ -1,9 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
-import de.monticore.symboltable.serialization.JsonConstants;
+import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolSurrogate;
+import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonPrinter;
-import de.monticore.types.typesymbols._symboltable.TypeSymbol;
-import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
 
 /**
  * Arrays of a certain dimension (>= 1)
@@ -26,15 +26,21 @@ public class SymTypeArray extends SymTypeExpression {
    *
    * @param dim      dimension
    * @param argument Argument Type
-   * @param typeInfo Type-Symbol that defines this type
+   * @param typeSymbolSurrogate loader for the Type-Symbol that defines this type
    */
-  public SymTypeArray(TypeSymbolLoader typeSymbolLoader, int dim, SymTypeExpression argument) {
-    this.typeSymbolLoader = typeSymbolLoader;
+  public SymTypeArray(OOTypeSymbolSurrogate typeSymbolSurrogate, int dim, SymTypeExpression argument) {
+    this.typeSymbolSurrogate = typeSymbolSurrogate;
     this.dim = dim;
     this.argument = argument;
   }
 
   // ------------------------------------------------------------------ Functions
+
+
+  @Override
+  public boolean isArrayType() {
+    return true;
+  }
 
   public int getDim() {
     return dim;
@@ -71,7 +77,7 @@ public class SymTypeArray extends SymTypeExpression {
     JsonPrinter jp = new JsonPrinter();
     jp.beginObject();
     // Care: the following String needs to be adapted if the package was renamed
-    jp.member(JsonConstants.KIND, "de.monticore.types.check.SymTypeArray");
+    jp.member(JsonDeSers.KIND, "de.monticore.types.check.SymTypeArray");
     jp.memberJson("argument", argument.printAsJson());
     jp.member("dim", dim);
     jp.endObject();
@@ -80,8 +86,34 @@ public class SymTypeArray extends SymTypeExpression {
 
   @Override
   public SymTypeArray deepClone() {
-    return new SymTypeArray(new TypeSymbolLoader(typeSymbolLoader.getName(), typeSymbolLoader.getEnclosingScope()),
+    OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate(typeSymbolSurrogate.getName());
+    loader.setEnclosingScope(typeSymbolSurrogate.getEnclosingScope());
+    return new SymTypeArray(loader,
         this.dim, this.argument.deepClone());
+  }
+
+  @Override
+  public boolean deepEquals(SymTypeExpression sym){
+    if(!(sym instanceof SymTypeArray)){
+      return false;
+    }
+    SymTypeArray symArr = (SymTypeArray) sym;
+    if(this.dim!=symArr.dim){
+      return false;
+    }
+    if(this.typeSymbolSurrogate== null ||symArr.typeSymbolSurrogate==null){
+      return false;
+    }
+    if(!this.typeSymbolSurrogate.getEnclosingScope().equals(symArr.typeSymbolSurrogate.getEnclosingScope())){
+      return false;
+    }
+    if(!this.typeSymbolSurrogate.getName().equals(symArr.typeSymbolSurrogate.getName())){
+      return false;
+    }
+    if(!this.getArgument().deepEquals(symArr.getArgument())){
+      return false;
+    }
+    return this.print().equals(symArr.print());
   }
 
   // --------------------------------------------------------------------------

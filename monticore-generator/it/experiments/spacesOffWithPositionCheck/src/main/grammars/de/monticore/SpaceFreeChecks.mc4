@@ -91,13 +91,13 @@ grammar SpaceFreeChecks extends de.monticore.MCBasics {
       // checks that there is no space between the last two token
       // this function is used after the two tokens that are combined
       public boolean noSpace() {
-	org.antlr.v4.runtime.Token t1 = _input.LT(-1);
-	org.antlr.v4.runtime.Token t2 = _input.LT(-2);
-	// token are on same line
-	// and columns differ exactly length of earlier token (t2)
+        org.antlr.v4.runtime.Token t1 = _input.LT(-1);
+        org.antlr.v4.runtime.Token t2 = _input.LT(-2);
+        // token are on same line
+        // and columns differ exactly length of earlier token (t2)
         return ((t1.getLine()==t2.getLine()) &&
                 (t1.getCharPositionInLine()==
-		       t2.getCharPositionInLine()+t2.getText().length()));
+                       t2.getCharPositionInLine()+t2.getText().length()));
       }
     }
   }

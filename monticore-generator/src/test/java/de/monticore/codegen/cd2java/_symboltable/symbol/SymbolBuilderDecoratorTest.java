@@ -9,24 +9,24 @@ import de.monticore.cd.facade.CDModifier;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
+import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.builder.BuilderDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
-import de.monticore.types.MCTypeFacade;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.types.MCTypeFacade;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
+import static de.monticore.cd.facade.CDModifier.PROTECTED;
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertBoolean;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
-import static de.monticore.cd.facade.CDModifier.PROTECTED;
-import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static org.junit.Assert.*;
 
 public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
@@ -37,11 +37,11 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
 
   private MCTypeFacade mcTypeFacade;
 
-  private static final String ENCLOSING_SCOPE_TYPE = "de.monticore.codegen.builder.builder._symboltable.IBuilderScope";
+  private static final String ENCLOSING_SCOPE_TYPE = "de.monticore.codegen.symboltable.cdforbuilder.symbol_builder._symboltable.ISymbol_BuilderScope";
 
-  private static final String A_NODE_TYPE_OPT = "Optional<de.monticore.codegen.builder.builder._ast.ASTA>";
+  private static final String A_NODE_TYPE_OPT = "Optional<de.monticore.codegen.symboltable.cdforbuilder.symbol_builder._ast.ASTA>";
 
-  private static final String A_NODE_TYPE = "de.monticore.codegen.builder.builder._ast.ASTA";
+  private static final String A_NODE_TYPE = "de.monticore.codegen.symboltable.cdforbuilder.symbol_builder._ast.ASTA";
 
   private static final String ACCESS_MODIFIER_TYPE = "de.monticore.symboltable.modifiers.AccessModifier";
 
@@ -52,15 +52,16 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
     this.mcTypeFacade = MCTypeFacade.getInstance();
 
     ASTCDCompilationUnit ast = parse("de", "monticore", "codegen", "symboltable","cdForBuilder", "Symbol_Builder");
-    ASTCDClass cdClass = getClassBy("ASymbol", ast);
+    ASTCDClass cdClass = getClassBy("A", ast);
     this.glex.setGlobalValue("service", new AbstractService(ast));
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
-    this.glex.setGlobalValue("astHelper", new DecorationHelper());
+    this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
 
 
-    AccessorDecorator methodDecorator = new AccessorDecorator(glex);
+    AccessorDecorator methodDecorator = new AccessorDecorator(glex, new SymbolTableService(ast));
     BuilderDecorator builderDecorator = new BuilderDecorator(glex, methodDecorator, new SymbolTableService(ast));
-    SymbolBuilderDecorator astNodeBuilderDecorator = new SymbolBuilderDecorator(glex, builderDecorator);
+    SymbolBuilderDecorator astNodeBuilderDecorator = new SymbolBuilderDecorator(glex, new SymbolTableService(ast),
+            builderDecorator);
     this.builderClass = astNodeBuilderDecorator.decorate(cdClass);
   }
 
@@ -87,7 +88,7 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
   @Test
   public void testDefaultConstructor() {
     ASTCDConstructor cdConstructor = builderClass.getCDConstructor(0);
-    assertDeepEquals(PROTECTED, cdConstructor.getModifier());
+    assertDeepEquals(PUBLIC, cdConstructor.getModifier());
     assertEquals("ASymbolBuilder", cdConstructor.getName());
     assertTrue(cdConstructor.isEmptyCDParameters());
     assertTrue(cdConstructor.isEmptyExceptions());

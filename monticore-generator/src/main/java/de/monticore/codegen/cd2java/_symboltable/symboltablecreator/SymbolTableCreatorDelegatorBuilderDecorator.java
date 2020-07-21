@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._symboltable.symboltablecreator;
 
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
@@ -41,7 +42,7 @@ public class SymbolTableCreatorDelegatorBuilderDecorator extends AbstractCreator
         .filter(m -> BUILD_METHOD.equals(m.getName()))
         .findFirst();
     buildMethod.ifPresent(b -> this.replaceTemplate(EMPTY_BODY, b,
-        new TemplateHookPoint(TEMPLATE_PATH + "Build", input.getName())));
+        new TemplateHookPoint(TEMPLATE_PATH + "BuildSymbolTableCreatorDelegator", input.getName())));
 
     return sTCDelegatorBuilder;
   }

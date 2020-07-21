@@ -1,0 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.typescalculator;
+
+grammar MyOwnLanguage extends
+         de.monticore.expressions.CommonExpressions,
+         de.monticore.literals.MCCommonLiterals,
+         mc.typescalculator.MyOwnExpressionGrammar,
+         de.monticore.types.MCCollectionTypes,
+         mc.typescalculator.UnitTypes,
+         de.monticore.symbols.OOSymbols{
+
+    start Expression;
+}

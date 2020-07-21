@@ -12,15 +12,14 @@ import java.util.*;
 
 public class ASTB extends ASTBTOP
 {
-//   protected  ASTB () 
-   //{
-   	//ASTBTOP.super()
-   //}
-//
+   protected  ASTB ()
+   {
+     super();
+   }
 
 @Override
 public void update(Observable o, Object arg) {
-  // TODO Auto-generated method stub
+  // Auto-generated method stub can be overridden
   
 } 
   

@@ -21,10 +21,10 @@ public class GrammarDiffsTest {
   public void testAstGrammarDiffs() {
     try {
       Optional<ASTMCGrammar> grammar1 = new ItTestGrammar_WithConceptsParser()
-          .parse("src/test/resources/mc/emf/generator/Automaton.mc4");
+          .parse("src/test/resources/mc/emf/generator/Automata.mc4");
 
       Optional<ASTMCGrammar> grammar2 = new ItTestGrammar_WithConceptsParser()
-          .parse("src/test/resources/mc/emf/generator/Automaton2.mc4");
+          .parse("src/test/resources/mc/emf/generator/Automata2.mc4");
 
       if (grammar1.isPresent() && grammar2.isPresent()) {
 

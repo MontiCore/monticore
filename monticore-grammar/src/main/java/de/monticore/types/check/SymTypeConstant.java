@@ -1,12 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
-import de.monticore.symboltable.serialization.JsonConstants;
+import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolSurrogate;
+import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonPrinter;
-import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
-import de.monticore.types.typesymbols._symboltable.TypeSymbol;
-import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
-import de.se_rwth.commons.logging.Log;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -15,30 +12,25 @@ import java.util.Map;
 
 public class SymTypeConstant extends SymTypeExpression {
 
-  public SymTypeConstant(TypeSymbolLoader typeSymbolLoader) {
-    this.typeSymbolLoader = typeSymbolLoader;
+  public SymTypeConstant(OOTypeSymbolSurrogate typeSymbolSurrogate) {
+    this.typeSymbolSurrogate = typeSymbolSurrogate;
   }
 
   public String getConstName() {
-    return typeSymbolLoader.getName();
+    return typeSymbolSurrogate.getName();
   }
 
   public String getBoxedConstName() {
-    return box(typeSymbolLoader.getName());
+    return box(typeSymbolSurrogate.getName());
   }
 
   public String getBaseOfBoxedName() {
-    String[] parts = box(typeSymbolLoader.getName()).split("\\.");
+    String[] parts = box(typeSymbolSurrogate.getName()).split("\\.");
     return parts[parts.length - 1];
   }
 
-  public void setConstName(String constName) {
-    String c = unbox(constName);
-    if (primitiveTypes.contains(constName)) {
-      this.typeSymbolLoader.setName(constName);
-    } else {
-      Log.error("0xD34B2 Only primitive types allowed (" + primitiveTypes.toString() + "), but was:" + constName);
-    }
+  public void setConstName(String constName){
+    typeSymbolSurrogate.setName(constName);
   }
 
   /**
@@ -56,7 +48,7 @@ public class SymTypeConstant extends SymTypeExpression {
     JsonPrinter jp = new JsonPrinter();
     jp.beginObject();
     // Care: the following String needs to be adapted if the package was renamed
-    jp.member(JsonConstants.KIND, "de.monticore.types.check.SymTypeConstant");
+    jp.member(JsonDeSers.KIND, "de.monticore.types.check.SymTypeConstant");
     jp.member("constName", getConstName());
     jp.endObject();
     return jp.getContent();
@@ -104,7 +96,6 @@ public class SymTypeConstant extends SymTypeExpression {
     unboxMap.put("Long", "long");
     unboxMap.put("Float", "float");
     unboxMap.put("Double", "double");
-    unboxMap.put("String", "String");
 
     boxMap = new HashMap<String, String>();
     boxMap.put("boolean", "java.lang.Boolean");
@@ -176,14 +167,35 @@ public class SymTypeConstant extends SymTypeExpression {
   /**
    * Am I primitive? (such as "int")
    */
-  public boolean isPrimitive() {
+  public boolean isTypeConstant() {
     return true;
   }
 
   @Override
   public SymTypeConstant deepClone() {
-    SymTypeConstant clone = new SymTypeConstant(new TypeSymbolLoader(typeSymbolLoader.getName(), typeSymbolLoader.getEnclosingScope()));
+    OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate(typeSymbolSurrogate.getName());
+    loader.setEnclosingScope(typeSymbolSurrogate.getEnclosingScope());
+    SymTypeConstant clone = new SymTypeConstant(loader);
     return clone;
+  }
+
+
+  @Override
+  public boolean deepEquals(SymTypeExpression sym){
+    if(!(sym instanceof SymTypeConstant)){
+      return false;
+    }
+    SymTypeConstant symCon = (SymTypeConstant) sym;
+    if(this.typeSymbolSurrogate== null ||symCon.typeSymbolSurrogate==null){
+      return false;
+    }
+    if(!this.typeSymbolSurrogate.getEnclosingScope().equals(symCon.typeSymbolSurrogate.getEnclosingScope())){
+      return false;
+    }
+    if(!this.typeSymbolSurrogate.getName().equals(symCon.typeSymbolSurrogate.getName())){
+      return false;
+    }
+    return this.print().equals(symCon.print());
   }
 
 

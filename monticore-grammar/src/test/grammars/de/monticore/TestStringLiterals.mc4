@@ -4,7 +4,7 @@ package de.monticore;
 
 grammar TestStringLiterals extends StringLiterals {
 
-	CharLiteralList = "["  (CharLiteral | ",")* "]" ;
-	StringLiteralList = "["  (StringLiteral | ",")* "]" ;
+  CharLiteralList = "["  (CharLiteral | ",")* "]" ;
+  StringLiteralList = "["  (StringLiteral | ",")* "]" ;
 
 }

@@ -8,12 +8,15 @@ import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
+import de.monticore.codegen.cd2java._visitor.builder.DelegatorVisitorBuilderDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.io.paths.IterablePath;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import java.util.Arrays;
 import java.util.List;
@@ -40,25 +43,22 @@ public class CDVisitorDecoratorTest extends DecoratorTestCase {
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
 
-    this.glex.setGlobalValue("service", new VisitorService(decoratedCompilationUnit));
+    IterablePath targetPath = Mockito.mock(IterablePath.class);
+    VisitorService visitorService = new VisitorService(decoratedCompilationUnit);
+    SymbolTableService symbolTableService = new SymbolTableService(decoratedCompilationUnit);
+    this.glex.setGlobalValue("service", visitorService);
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
 
-    ASTVisitorDecorator astVisitorDecorator = new ASTVisitorDecorator(this.glex,
-        new VisitorService(decoratedCompilationUnit));
-    SymbolVisitorDecorator symbolVisitorDecorator = new SymbolVisitorDecorator(this.glex,
-        new VisitorService(decoratedCompilationUnit), new SymbolTableService(decoratedCompilationUnit));
-    ScopeVisitorDecorator scopeVisitorDecorator = new ScopeVisitorDecorator(this.glex,
-        new VisitorService(decoratedCompilationUnit), new SymbolTableService(decoratedCompilationUnit));
-    DelegatorVisitorDecorator delegatorVisitorDecorator = new DelegatorVisitorDecorator(this.glex,
-        new VisitorService(decoratedCompilationUnit));
-    ParentAwareVisitorDecorator parentAwareVisitorDecorator = new ParentAwareVisitorDecorator(this.glex,
-        new VisitorService(decoratedCompilationUnit));
-    InheritanceVisitorDecorator inheritanceVisitorDecorator = new InheritanceVisitorDecorator(this.glex,
-        new VisitorService(decoratedCompilationUnit));
+    VisitorDecorator astVisitorDecorator = new VisitorDecorator(this.glex, visitorService, symbolTableService);
+    DelegatorVisitorDecorator delegatorVisitorDecorator = new DelegatorVisitorDecorator(this.glex, visitorService, symbolTableService);
+    ParentAwareVisitorDecorator parentAwareVisitorDecorator = new ParentAwareVisitorDecorator(this.glex, visitorService);
+    InheritanceVisitorDecorator inheritanceVisitorDecorator = new InheritanceVisitorDecorator(this.glex, visitorService, symbolTableService);
+    DelegatorVisitorBuilderDecorator delegatorVisitorBuilderDecorator = new DelegatorVisitorBuilderDecorator(this.glex, visitorService, symbolTableService);
 
-    CDVisitorDecorator decorator = new CDVisitorDecorator(this.glex,
-        astVisitorDecorator, symbolVisitorDecorator, scopeVisitorDecorator,
-        delegatorVisitorDecorator, inheritanceVisitorDecorator, parentAwareVisitorDecorator);
+
+    CDVisitorDecorator decorator = new CDVisitorDecorator(this.glex, targetPath, visitorService,
+        astVisitorDecorator, delegatorVisitorDecorator, inheritanceVisitorDecorator, 
+        parentAwareVisitorDecorator, delegatorVisitorBuilderDecorator);
 
     this.visitorCompilationUnit = decorator.decorate(decoratedCompilationUnit);
   }
@@ -70,12 +70,12 @@ public class CDVisitorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testClassCount() {
-    assertEquals(2, visitorCompilationUnit.getCDDefinition().getCDClassList().size());
+    assertEquals(3, visitorCompilationUnit.getCDDefinition().getCDClassList().size());
   }
 
   @Test
   public void testInterfaceCount() {
-    assertEquals(4, visitorCompilationUnit.getCDDefinition().getCDInterfaceList().size());
+    assertEquals(2, visitorCompilationUnit.getCDDefinition().getCDInterfaceList().size());
   }
 
   @Test

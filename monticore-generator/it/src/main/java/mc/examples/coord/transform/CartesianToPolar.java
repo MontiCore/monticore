@@ -4,7 +4,7 @@ package mc.examples.coord.transform;
 
 import mc.examples.cartesian.coordcartesian._ast.ASTCoordinateFile;
 import mc.examples.cartesian.coordcartesian._visitor.CoordcartesianVisitor;
-import mc.examples.polar.coordpolar._ast.CoordpolarMill;
+import mc.examples.polar.coordpolar.CoordpolarMill;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -55,7 +55,7 @@ public class CartesianToPolar implements CoordcartesianVisitor {
     
     // angle = atan2(y,x)
     double angle = Math.atan2(a.getY(), a.getX());
-    result.getCoordinateList().add(CoordpolarMill.coordinateBuilder().setD(d).setPhi(angle).build());
+    result.getCoordinatesList().add(CoordpolarMill.coordinateBuilder().setD(d).setPhi(angle).build());
   }
   
   public void transform(ASTCoordinateFile ast) {

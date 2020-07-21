@@ -2,14 +2,12 @@
 
 package de.monticore.grammar.cocos;
 
-import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class NoTokenDefined implements GrammarASTMCGrammarCoCo {
@@ -26,10 +24,10 @@ public class NoTokenDefined implements GrammarASTMCGrammarCoCo {
 
   @Override
   public void check(ASTMCGrammar node) {
-    Optional<MCGrammarSymbol> symbol = node.getSymbolOpt();
-    if (symbol.isPresent() && !symbol.get().isIsComponent()) {
-      List<ASTMCGrammar> superGrammars = symbol.get().getAllSuperGrammars().stream()
-          .filter(x -> x.getAstNodeOpt().isPresent())
+    if (node.isPresentSymbol() && !node.getSymbol().isIsComponent()) {
+      MCGrammarSymbol symbol = node.getSymbol();
+      List<ASTMCGrammar> superGrammars = symbol.getAllSuperGrammars().stream()
+          .filter(x -> x.isPresentAstNode())
           .map(x -> (ASTMCGrammar) x.getAstNode())
           .collect(Collectors.toList());
       //check for own and super grammars tokens

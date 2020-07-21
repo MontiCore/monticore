@@ -42,7 +42,7 @@ import de.se_rwth.commons.logging.Log;
  */
 public class InputOutputFilesReporter extends AReporter {
   
-  public static final String SIMPLE_FILE_NAME = "17_InputOutputFiles";
+  public static final String SIMPLE_FILE_NAME = "IncGenCheckMaven";
   
   final static String INDENT = Layouter.getSpaceString(40);
   
@@ -57,7 +57,7 @@ public class InputOutputFilesReporter extends AReporter {
   /**
    * Constructor for de.monticore.generating.templateengine.reporting.reporter.
    * InputOutputFilesReporter
-   * 
+   *
    * @param outputDir
    */
   public InputOutputFilesReporter(String outputDir) {
@@ -188,7 +188,8 @@ public class InputOutputFilesReporter extends AReporter {
     // this entirely resets the gathered information, hence the corresponding
     // event reportParseInputFile must only be called once for each actual input
     // file, i.e., the things that are parsed
-    this.reportingHelper = new ReportCreator(outputDirectory + File.separator + modelName.replaceAll("\\.", "/"));
+    String lowerCaseName = modelName.replaceAll("\\.", "/").toLowerCase();
+    this.reportingHelper = new ReportCreator(outputDirectory + File.separator + lowerCaseName);
     inputFiles.clear();
     hwcFiles.clear();
     outputFiles.clear();
@@ -196,7 +197,7 @@ public class InputOutputFilesReporter extends AReporter {
     filesThatMatterButAreNotThereInTime.clear();
     inputFile = inputFilePath.toString();
 
-    qualifiedInputFile = Paths.get(modelName.replaceAll("\\.", "/") + "."
+    qualifiedInputFile = Paths.get(lowerCaseName + "."
         + Files.getFileExtension(inputFilePath.getFileName().toString()));
     
     Path parent = inputFilePath.subpath(0,

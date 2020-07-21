@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.statements.prettyprint;
 
 import de.monticore.expressions.prettyprint.ExpressionsBasisPrettyPrinter;
@@ -20,6 +21,7 @@ public class MCExceptionStatementsPrettyPrinterDelegator extends MCExceptionStat
     setMCBasicTypesVisitor(new MCBasicTypesPrettyPrinter(printer));
     setMCCommonStatementsVisitor(new MCCommonStatementsPrettyPrinter(printer));
     setMCBasicsVisitor(new MCBasicsPrettyPrinter(printer));
+    setMCVarDeclarationStatementsVisitor(new MCVarDeclarationStatementsPrettyPrinter(printer));
     setMCExceptionStatementsVisitor(new MCExceptionStatementsPrettyPrinter(printer));
   }
 

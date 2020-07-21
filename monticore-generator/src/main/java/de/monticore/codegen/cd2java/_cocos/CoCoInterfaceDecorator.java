@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._cocos;
 
+import de.monticore.cd.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
@@ -44,8 +45,11 @@ public class CoCoInterfaceDecorator extends AbstractCreator<ASTCDDefinition, Lis
   }
 
   protected ASTCDInterface createCoCoInterface(ASTCDType type) {
+    ASTModifier modifier = type.isPresentModifier() ?
+        cocoService.createModifierPublicModifier(type.getModifier()):
+        PUBLIC.build();
     return CD4AnalysisMill.cDInterfaceBuilder()
-        .setModifier(PUBLIC.build())
+        .setModifier(modifier)
         .setName(this.cocoService.getCoCoSimpleTypeName(type))
         .addCDMethod(createCheckMethod(type))
         .build();
