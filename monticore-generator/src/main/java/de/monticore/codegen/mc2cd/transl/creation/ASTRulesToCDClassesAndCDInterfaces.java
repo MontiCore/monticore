@@ -93,7 +93,7 @@ public class ASTRulesToCDClassesAndCDInterfaces implements
         
         Link<ASTMCGrammar, ASTCDDefinition> parentLink = Iterables.getOnlyElement(rootLink
             .getLinks(ASTMCGrammar.class, ASTCDDefinition.class));
-        parentLink.target().getCDClassList().add(cdClass);
+        parentLink.target().getCDClasssList().add(cdClass);
         new Link<>(astRule, cdClass, parentLink);
       }
     }

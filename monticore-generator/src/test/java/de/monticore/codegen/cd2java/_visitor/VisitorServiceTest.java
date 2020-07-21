@@ -32,7 +32,7 @@ public class VisitorServiceTest extends DecoratorTestCase {
   public void setup() {
     this.mcTypeFacade = MCTypeFacade.getInstance();
     astcdCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
-    astAutomaton = astcdCompilationUnit.getCDDefinition().getCDClass(0);
+    astAutomaton = astcdCompilationUnit.getCDDefinition().getCDClasss(0);
 
     astService = new VisitorService(astcdCompilationUnit);
   }
@@ -122,8 +122,8 @@ public class VisitorServiceTest extends DecoratorTestCase {
     assertTrue(visitMethod.getMCReturnType().isPresentMCVoidType());
 
     assertEquals(1, visitMethod.sizeCDParameters());
-    assertEquals("node", visitMethod.getCDParameter(0).getName());
-    assertDeepEquals("_ast.ASTFoo", visitMethod.getCDParameter(0).getMCType());
+    assertEquals("node", visitMethod.getCDParameters(0).getName());
+    assertDeepEquals("_ast.ASTFoo", visitMethod.getCDParameters(0).getMCType());
   }
 
   @Test

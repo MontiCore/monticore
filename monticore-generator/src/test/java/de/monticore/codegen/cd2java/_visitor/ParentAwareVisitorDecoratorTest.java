@@ -88,7 +88,7 @@ public class ParentAwareVisitorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testInterfaceCount() {
-    assertEquals(1, visitorClass.sizeInterfaces());
+    assertEquals(1, visitorClass.sizeInterface());
   }
 
   @Test
@@ -137,9 +137,9 @@ public class ParentAwareVisitorDecoratorTest extends DecoratorTestCase {
   public void testTraverseASTAutomaton() {
     List<ASTCDMethod> methodList = getMethodsBy("traverse", 1, visitorClass);
     ASTMCType astType = this.mcTypeFacade.createQualifiedType(AST_AUTOMATON);
-    assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
-    assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
-    ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
+    assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameters(0).getMCType())));
+    assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameters(0).getMCType())).count());
+    ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameters(0).getMCType())).findFirst().get();
 
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
@@ -149,9 +149,9 @@ public class ParentAwareVisitorDecoratorTest extends DecoratorTestCase {
   public void testTraverseASTTransition() {
     List<ASTCDMethod> methodList = getMethodsBy("traverse", 1, visitorClass);
     ASTMCType astType = this.mcTypeFacade.createQualifiedType(AST_TRANSITION);
-    assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
-    assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
-    ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
+    assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameters(0).getMCType())));
+    assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameters(0).getMCType())).count());
+    ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameters(0).getMCType())).findFirst().get();
 
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
@@ -161,9 +161,9 @@ public class ParentAwareVisitorDecoratorTest extends DecoratorTestCase {
   public void testTraverseASTState() {
     List<ASTCDMethod> methodList = getMethodsBy("traverse", 1, visitorClass);
     ASTMCType astType = this.mcTypeFacade.createQualifiedType(AST_STATE);
-    assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
-    assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
-    ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
+    assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameters(0).getMCType())));
+    assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameters(0).getMCType())).count());
+    ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameters(0).getMCType())).findFirst().get();
 
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
@@ -176,7 +176,7 @@ public class ParentAwareVisitorDecoratorTest extends DecoratorTestCase {
   public void testTraverseASTAbstractClass() {
     List<ASTCDMethod> methodList = getMethodsBy("traverse", 1, visitorClass);
     ASTMCType astType = this.mcTypeFacade.createQualifiedType(AST_ABSTRACT_CLASS);
-    assertTrue(methodList.stream().noneMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
+    assertTrue(methodList.stream().noneMatch(m -> astType.deepEquals(m.getCDParameters(0).getMCType())));
   }
 
   @Test

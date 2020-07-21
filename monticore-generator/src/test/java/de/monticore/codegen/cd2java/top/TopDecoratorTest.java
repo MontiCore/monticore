@@ -39,23 +39,23 @@ public class TopDecoratorTest extends DecoratorTestCase {
     Mockito.when(targetPath.getResolvedPath(Mockito.any(Path.class))).thenReturn(Optional.of(Mockito.mock(Path.class)));
     ASTCDDefinition ast = this.topDecorator.decorate(this.topCD).getCDDefinition();
 
-    assertEquals(1, ast.getCDClassList().size());
-    ASTCDClass cdClass = ast.getCDClassList().get(0);
+    assertEquals(1, ast.getCDClasssList().size());
+    ASTCDClass cdClass = ast.getCDClasssList().get(0);
     assertEquals("CTOP", cdClass.getName());
     assertDeepEquals(PUBLIC_ABSTRACT, cdClass.getModifier());
 
-    assertEquals(1, cdClass.getCDConstructorList().size());
-    ASTCDConstructor constructor = cdClass.getCDConstructorList().get(0);
+    assertEquals(1, cdClass.getCDConstructorsList().size());
+    ASTCDConstructor constructor = cdClass.getCDConstructorsList().get(0);
     assertEquals("CTOP", constructor.getName());
     assertDeepEquals(PROTECTED, constructor.getModifier());
 
-    assertEquals(1, ast.getCDInterfaceList().size());
-    ASTCDInterface cdInterface = ast.getCDInterfaceList().get(0);
+    assertEquals(1, ast.getCDInterfacesList().size());
+    ASTCDInterface cdInterface = ast.getCDInterfacesList().get(0);
     assertEquals("ITOP", cdInterface.getName());
     assertDeepEquals(PUBLIC, cdInterface.getModifier());
 
-    assertEquals(1, ast.getCDEnumList().size());
-    ASTCDEnum cdEnum = ast.getCDEnumList().get(0);
+    assertEquals(1, ast.getCDEnumsList().size());
+    ASTCDEnum cdEnum = ast.getCDEnumsList().get(0);
     assertEquals("ETOP", cdEnum.getName());
     assertDeepEquals(PUBLIC, cdEnum.getModifier());
   }
@@ -65,23 +65,23 @@ public class TopDecoratorTest extends DecoratorTestCase {
     Mockito.when(targetPath.exists(Mockito.any(Path.class))).thenReturn(false);
     ASTCDDefinition ast = this.topDecorator.decorate(this.topCD).getCDDefinition();
 
-    assertEquals(1, ast.getCDClassList().size());
-    ASTCDClass cdClass = ast.getCDClassList().get(0);
+    assertEquals(1, ast.getCDClasssList().size());
+    ASTCDClass cdClass = ast.getCDClasssList().get(0);
     assertEquals("C", cdClass.getName());
     assertDeepEquals(PUBLIC, cdClass.getModifier());
 
-    assertEquals(1, cdClass.getCDConstructorList().size());
-    ASTCDConstructor constructor = cdClass.getCDConstructorList().get(0);
+    assertEquals(1, cdClass.getCDConstructorsList().size());
+    ASTCDConstructor constructor = cdClass.getCDConstructorsList().get(0);
     assertEquals("C", constructor.getName());
     assertDeepEquals(PROTECTED, constructor.getModifier());
 
-    assertEquals(1, ast.getCDInterfaceList().size());
-    ASTCDInterface cdInterface = ast.getCDInterfaceList().get(0);
+    assertEquals(1, ast.getCDInterfacesList().size());
+    ASTCDInterface cdInterface = ast.getCDInterfacesList().get(0);
     assertEquals("I", cdInterface.getName());
     assertDeepEquals(PUBLIC, cdInterface.getModifier());
 
-    assertEquals(1, ast.getCDEnumList().size());
-    ASTCDEnum cdEnum = ast.getCDEnumList().get(0);
+    assertEquals(1, ast.getCDEnumsList().size());
+    ASTCDEnum cdEnum = ast.getCDEnumsList().get(0);
     assertEquals("E", cdEnum.getName());
     assertDeepEquals(PUBLIC, cdEnum.getModifier());
   }

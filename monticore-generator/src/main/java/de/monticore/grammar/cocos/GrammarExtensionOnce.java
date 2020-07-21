@@ -21,8 +21,8 @@ public class GrammarExtensionOnce implements GrammarASTMCGrammarCoCo {
   public void check(ASTMCGrammar gr) {
     for (int i = 0; i < gr.getSupergrammarList().size() - 1; i++) {
       for (int j = i + 1; j < gr.getSupergrammarList().size(); j++) {
-        if (Names.getQualifiedName(gr.getSupergrammar(i).getNameList()).equals(
-            Names.getQualifiedName(gr.getSupergrammar(j).getNameList()))) {
+        if (Names.getQualifiedName(gr.getSupergrammar(i).getNamesList()).equals(
+            Names.getQualifiedName(gr.getSupergrammar(j).getNamesList()))) {
           Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, gr.getName()),
               gr.get_SourcePositionStart());
         }

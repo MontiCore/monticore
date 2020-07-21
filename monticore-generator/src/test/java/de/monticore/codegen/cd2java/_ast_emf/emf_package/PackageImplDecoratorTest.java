@@ -54,7 +54,7 @@ public class PackageImplDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterface() {
-    assertEquals(1, packageClass.sizeInterfaces());
+    assertEquals(1, packageClass.sizeInterface());
     assertDeepEquals("AutomataPackage", packageClass.getInterface(0));
   }
 
@@ -67,19 +67,19 @@ public class PackageImplDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeSize() {
-    assertEquals(11, packageClass.getCDAttributeList().size());
+    assertEquals(11, packageClass.getCDAttributesList().size());
   }
 
   @Test
   public void testMethodSize() {
-    assertFalse(packageClass.getCDMethodList().isEmpty());
-    assertEquals(26, packageClass.getCDMethodList().size());
+    assertFalse(packageClass.getCDMethodsList().isEmpty());
+    assertEquals(26, packageClass.getCDMethodsList().size());
   }
 
   @Test
   public void testConstructor() {
     assertEquals(1, packageClass.sizeCDConstructors());
-    ASTCDConstructor cdConstructor = packageClass.getCDConstructor(0);
+    ASTCDConstructor cdConstructor = packageClass.getCDConstructors(0);
     assertEquals("AutomataPackageImpl", cdConstructor.getName());
     assertDeepEquals(PRIVATE, cdConstructor.getModifier());
     assertTrue(cdConstructor.isEmptyCDParameters());
@@ -264,7 +264,7 @@ public class PackageImplDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testNoInheritedAttributeMethodsMethod() {
-    assertTrue(packageClass.getCDMethodList()
+    assertTrue(packageClass.getCDMethodsList()
         .stream()
         .noneMatch(m->m.getName().equals("getASTAutName_Input")));
   }

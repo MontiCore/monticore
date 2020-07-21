@@ -42,29 +42,29 @@ public class DataDecorator extends AbstractTransformer<ASTCDClass> {
   @Override
   public ASTCDClass decorate(final ASTCDClass originalClass, ASTCDClass changedClass) {
     this.clazzName = originalClass.deepClone().getName();
-    changedClass.addCDConstructor(createDefaultConstructor(originalClass));
+    changedClass.addCDConstructors(createDefaultConstructor(originalClass));
     if (originalClass.isPresentSuperclass()) {
       changedClass.setSuperclass(originalClass.getSuperclass());
     }
-    changedClass.addAllInterfaces(originalClass.getInterfaceList());
-    changedClass.addAllCDMethods(originalClass.getCDMethodList());
+    changedClass.addAllInterface(originalClass.getInterfaceList());
+    changedClass.addAllCDMethods(originalClass.getCDMethodsList());
 
     //remove inherited attributes, because these are already defined in superclass
-    List<ASTCDAttribute> ownAttributes = originalClass.deepClone().getCDAttributeList()
+    List<ASTCDAttribute> ownAttributes = originalClass.deepClone().getCDAttributesList()
         .stream()
         .filter(a -> !service.isInheritedAttribute(a))
         .collect(Collectors.toList());
 
-    changedClass.addAllCDMethods(getAllDataMethods(originalClass, originalClass.getCDAttributeList()));
+    changedClass.addAllCDMethods(getAllDataMethods(originalClass, originalClass.getCDAttributesList()));
     // no Inherited attributes only, because inherited once are cloned through super.deepClone()
-    changedClass.addCDMethod(createDeepCloneWithParam(originalClass, ownAttributes));
+    changedClass.addCDMethods(createDeepCloneWithParam(originalClass, ownAttributes));
 
-    changedClass.setCDAttributeList(ownAttributes);
-    changedClass.getCDAttributeList().forEach(this::addAttributeDefaultValues);
+    changedClass.setCDAttributesList(ownAttributes);
+    changedClass.getCDAttributesList().forEach(this::addAttributeDefaultValues);
 
     //remove methods that are already defined by ast rules
-    changedClass.addAllCDMethods(service.getMethodListWithoutDuplicates(originalClass.getCDMethodList(), createGetter(ownAttributes)));
-    changedClass.addAllCDMethods(service.getMethodListWithoutDuplicates(originalClass.getCDMethodList(), createSetter(ownAttributes)));
+    changedClass.addAllCDMethods(service.getMethodListWithoutDuplicates(originalClass.getCDMethodsList(), createGetter(ownAttributes)));
+    changedClass.addAllCDMethods(service.getMethodListWithoutDuplicates(originalClass.getCDMethodsList(), createSetter(ownAttributes)));
 
     return changedClass;
   }

@@ -51,8 +51,8 @@ public class AddAttributesOfExtendedInterfacesManipulation implements
     for (ASTMCObjectType interf : cdClass.getInterfaceList()) {
       String interfaceName = typeToString(interf);
       if (cDInterfaces.containsKey(interfaceName)) {
-        for (ASTCDAttribute interfaceAttribute :cDInterfaces.get(interfaceName).getCDAttributeList()){
-          if(cdClass.getCDAttributeList()
+        for (ASTCDAttribute interfaceAttribute :cDInterfaces.get(interfaceName).getCDAttributesList()){
+          if(cdClass.getCDAttributesList()
                   .stream()
                   .noneMatch(x->x.getName().equals(interfaceAttribute.getName()))){
             attributes.add(interfaceAttribute);
@@ -61,7 +61,7 @@ public class AddAttributesOfExtendedInterfacesManipulation implements
       }
     }
     for (ASTCDAttribute attr : attributes) {
-      cdClass.getCDAttributeList().add(attr.deepClone());
+      cdClass.getCDAttributesList().add(attr.deepClone());
     }
   }
 
