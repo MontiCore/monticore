@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.types;
+package de.monticore.symbols;
 
 /* This is a MontiCore stable grammar.
  * Adaptations -- if any -- are conservative. */
@@ -23,7 +23,7 @@ package de.monticore.types;
  *
 */
 
-component grammar TypeSymbols extends de.monticore.types.BasicTypeSymbols {
+component grammar OOSymbols extends de.monticore.symbols.BasicSymbols {
 
   /*=================================================================*/
 
@@ -48,6 +48,7 @@ component grammar TypeSymbols extends de.monticore.types.BasicTypeSymbols {
     isProtected: boolean
     isPublic: boolean
     isStatic: boolean
+    isFinal: boolean
   ;
 
   /*=================================================================*/
@@ -84,7 +85,8 @@ component grammar TypeSymbols extends de.monticore.types.BasicTypeSymbols {
     isPrivate: boolean
     isProtected: boolean
     isPublic: boolean
-    isStatic:boolean
+    isStatic: boolean
+    isFinal: boolean
     isElliptic: boolean
   ;
 

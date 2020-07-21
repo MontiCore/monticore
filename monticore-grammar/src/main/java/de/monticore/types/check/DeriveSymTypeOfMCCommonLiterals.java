@@ -3,7 +3,7 @@ package de.monticore.types.check;
 
 import de.monticore.literals.mccommonliterals._ast.*;
 import de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor;
-import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
+import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
 
 /**
  * Visitor for Derivation of SymType from Literals

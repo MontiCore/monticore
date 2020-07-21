@@ -4,7 +4,7 @@ package de.monticore.types.check;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisScope;
 import de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisVisitor;
-import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
+import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -15,13 +15,13 @@ import de.se_rwth.commons.logging.Log;
  */
 public class DeriveSymTypeOfLiterals implements MCLiteralsBasisVisitor {
 
-  public ITypeSymbolsScope getScope (IMCLiteralsBasisScope mcLiteralsBasisScope){
+  public IOOSymbolsScope getScope (IMCLiteralsBasisScope mcLiteralsBasisScope){
     // is accepted only here, decided on 07.04.2020
-    if(!(mcLiteralsBasisScope instanceof ITypeSymbolsScope)){
-      Log.error("0xA0309 the enclosing scope of the literal does not implement the interface ITypeSymbolsScope");
+    if(!(mcLiteralsBasisScope instanceof IOOSymbolsScope)){
+      Log.error("0xA0309 the enclosing scope of the literal does not implement the interface IOOSymbolsScope");
     }
     // is accepted only here, decided on 07.04.2020
-    return (ITypeSymbolsScope) mcLiteralsBasisScope;
+    return (IOOSymbolsScope) mcLiteralsBasisScope;
   }
   
   // ----------------------------------------------------------  realThis start

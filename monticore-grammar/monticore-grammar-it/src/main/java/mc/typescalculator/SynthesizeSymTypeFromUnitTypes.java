@@ -1,11 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.typescalculator;
 
+import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolSurrogate;
 import de.monticore.types.check.ISynthesize;
 import de.monticore.types.check.SynthesizeSymTypeFromMCBasicTypes;
 import mc.typescalculator.unittypes._ast.ASTMinuteType;
 import mc.typescalculator.unittypes._visitor.UnitTypesVisitor;
-import de.monticore.types.typesymbols._symboltable.OOTypeSymbolSurrogate;
 
 public class SynthesizeSymTypeFromUnitTypes extends SynthesizeSymTypeFromMCBasicTypes implements UnitTypesVisitor, ISynthesize {
 

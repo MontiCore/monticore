@@ -11,11 +11,11 @@ import de.monticore.expressions.javaclassexpressions._visitor.JavaClassExpressio
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTArrayInit;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTSimpleInit;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTVariableInit;
-import de.monticore.types.basictypesymbols._symboltable.TypeVarSymbol;
-import de.monticore.types.typesymbols._symboltable.FieldSymbol;
-import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
-import de.monticore.types.typesymbols._symboltable.MethodSymbol;
-import de.monticore.types.typesymbols._symboltable.OOTypeSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
+import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
+import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
+import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
+import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
@@ -67,7 +67,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     int count = 0;
     if(typeCheckResult.isType()) {
       if(getScope(node.getEnclosingScope()).getEnclosingScope()!=null){
-        ITypeSymbolsScope testScope = getScope(node.getEnclosingScope());
+        IOOSymbolsScope testScope = getScope(node.getEnclosingScope());
         while (testScope!=null) {
           if(testScope.isPresentSpanningSymbol()&&testScope.getSpanningSymbol() instanceof OOTypeSymbol) {
             count++;
@@ -229,7 +229,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
 
     int count = 0;
     boolean isOuterType = false;
-    ITypeSymbolsScope testScope = getScope(node.getEnclosingScope());
+    IOOSymbolsScope testScope = getScope(node.getEnclosingScope());
     while (testScope!=null) {
       if(testScope.isPresentSpanningSymbol()&&testScope.getSpanningSymbol() instanceof OOTypeSymbol) {
         count++;
@@ -372,7 +372,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     }
   }
 
-  private SymTypeExpression getResultOfPrimaryThisExpression(ITypeSymbolsScope scope, OOTypeSymbol typeSymbol) {
+  private SymTypeExpression getResultOfPrimaryThisExpression(IOOSymbolsScope scope, OOTypeSymbol typeSymbol) {
     SymTypeExpression wholeResult;
     if(typeSymbol.getTypeParameterList().isEmpty()){
       //if the return type is a primitive
@@ -556,7 +556,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
       if(node.getGenericInvocationSuffix().isPresentName()){
         //case 1: <TypeVariable>method(Args) -> similar to GenericInvocationExpression
         //can be accessed solely or after another expression -> check if lastResult is present
-        ITypeSymbolsScope testScope;
+        IOOSymbolsScope testScope;
         if(typeCheckResult.isPresentCurrentResult()){
           testScope = typeCheckResult.getCurrentResult().getTypeInfo().getSpannedScope();
         }else{
@@ -617,7 +617,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     }
   }
 
-  private OOTypeSymbol searchForTypeSymbolSpanningEnclosingScope(ITypeSymbolsScope scope) {
+  private OOTypeSymbol searchForTypeSymbolSpanningEnclosingScope(IOOSymbolsScope scope) {
     //search for the nearest type symbol in the enclosing scopes -> for this and super to get the
     //current object
     while(scope!=null){

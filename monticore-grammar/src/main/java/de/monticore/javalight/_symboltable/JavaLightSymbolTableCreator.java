@@ -11,8 +11,8 @@ import de.monticore.types.check.SynthesizeSymTypeFromMCFullGenericTypes;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.typesymbols._symboltable.FieldSymbol;
-import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
+import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
+import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
 
 import java.util.Deque;
 
@@ -151,7 +151,7 @@ public class JavaLightSymbolTableCreator extends JavaLightSymbolTableCreatorTOP 
       // Start visitor and set enclosingScope
       ast.accept(getRealThis());
       // TODO Bessere Lösung
-      return SymTypeExpressionFactory.createTypeObject("void", (ITypeSymbolsScope) ast.getEnclosingScope());
+      return SymTypeExpressionFactory.createTypeObject("void", (IOOSymbolsScope) ast.getEnclosingScope());
     }
 
   }

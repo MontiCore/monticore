@@ -1,11 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
 import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
-import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -20,11 +20,11 @@ public class SymTypeOfGenericsDeSer {
     return toSerialize.printAsJson();
   }
 
-  public SymTypeOfGenerics deserialize(String serialized, ITypeSymbolsScope enclosingScope) {
+  public SymTypeOfGenerics deserialize(String serialized, IOOSymbolsScope enclosingScope) {
     return deserialize(JsonParser.parse(serialized), enclosingScope);
   }
 
-  public SymTypeOfGenerics deserialize(JsonElement serialized, ITypeSymbolsScope enclosingScope) {
+  public SymTypeOfGenerics deserialize(JsonElement serialized, IOOSymbolsScope enclosingScope) {
     if (JsonDeSers.isCorrectDeSerForKind(SERIALIZED_KIND, serialized)) {
       JsonObject o = serialized.getAsJsonObject();  //if it has a kind, it is an object
 

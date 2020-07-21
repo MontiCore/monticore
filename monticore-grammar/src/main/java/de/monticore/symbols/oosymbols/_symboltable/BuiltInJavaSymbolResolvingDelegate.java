@@ -1,18 +1,17 @@
+// (c) https://github.com/MontiCore/monticore
+
 /* (c) https://github.com/MontiCore/monticore */
 
-package de.monticore.types.typesymbols._symboltable;
+package de.monticore.symbols.oosymbols._symboltable;
 
 import com.google.common.collect.Lists;
-import de.monticore.antlr4.MCConcreteParser;
 import de.monticore.io.paths.ModelPath;
+import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
+import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symboltable.modifiers.AccessModifier;
-import de.monticore.types.basictypesymbols._symboltable.TypeVarSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
-import de.monticore.types.typesymbols.TypeSymbolsMill;
-import de.se_rwth.commons.logging.Log;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -22,25 +21,25 @@ import static de.monticore.types.check.DefsTypeBasic.*;
  * This resolving delegate can be integrated into any global scopes to find built in Java types such as,
  * e.g., "boolean" or commonly used Java types such as "java.lang.Boolean".
  */
-public class BuiltInJavaTypeSymbolResolvingDelegate implements IOOTypeSymbolResolvingDelegate {
+public class BuiltInJavaSymbolResolvingDelegate implements IOOTypeSymbolResolvingDelegate {
 
-  protected static TypeSymbolsGlobalScope gs = initScope();
+  protected static OOSymbolsGlobalScope gs = initScope();
 
-  protected static TypeSymbolsGlobalScope initScope() {
-    gs = TypeSymbolsMill
-        .typeSymbolsGlobalScopeBuilder()
+  protected static OOSymbolsGlobalScope initScope() {
+    gs = OOSymbolsMill
+        .oOSymbolsGlobalScopeBuilder()
         .setModelPath(new ModelPath())
         .setModelFileExtension("ts")
         .build();
     //package java.lang
-    TypeSymbolsArtifactScope javalang = TypeSymbolsMill
-        .typeSymbolsArtifactScopeBuilder()
+    OOSymbolsArtifactScope javalang = OOSymbolsMill
+        .oOSymbolsArtifactScopeBuilder()
         .setPackageName("java.lang")
         .build();
     gs.addSubScope(javalang);
     //package java.util
-    TypeSymbolsArtifactScope javautil = TypeSymbolsMill
-        .typeSymbolsArtifactScopeBuilder()
+    OOSymbolsArtifactScope javautil = OOSymbolsMill
+        .oOSymbolsArtifactScopeBuilder()
         .setPackageName("java.util")
         .build();
     gs.addSubScope(javautil);
@@ -355,34 +354,32 @@ public class BuiltInJavaTypeSymbolResolvingDelegate implements IOOTypeSymbolReso
     return gs.resolveOOTypeMany(foundSymbols, symbolName, modifier, predicate);
   }
 
-  public static TypeSymbolsScope getScope(){
+  public static OOSymbolsScope getScope(){
     return gs;
   }
 
   public static MethodSymbol methodSymbol(String name, SymTypeExpression returnType){
-    MethodSymbol m = TypeSymbolsMill.methodSymbolBuilder()
-        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
+    MethodSymbol m = OOSymbolsMill.methodSymbolBuilder()
+        .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
         .setName(name)
         .setFullName(name)  // can later be adapted, when fullname of Type is known
         .setAccessModifier(AccessModifier.ALL_INCLUSION)
         .setReturnType(returnType)
         .build();
-    m.setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build());
+    m.setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build());
     return m;
   }
 
-  public static OOTypeSymbol typeSymbol(String name, List<MethodSymbol> methodList, List<FieldSymbol> fieldList, List<SymTypeExpression> superTypeList, List<TypeVarSymbol> typeVariableList, ITypeSymbolsScope enclosingScope){
-    OOTypeSymbol t = TypeSymbolsMill.oOTypeSymbolBuilder()
+  public static OOTypeSymbol typeSymbol(String name, List<MethodSymbol> methodList, List<FieldSymbol> fieldList, List<SymTypeExpression> superTypeList, List<TypeVarSymbol> typeVariableList, IOOSymbolsScope enclosingScope){
+    OOTypeSymbol t = OOSymbolsMill.oOTypeSymbolBuilder()
         .setEnclosingScope(enclosingScope)
-        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
+        .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
         .setName(name)
         .setFullName(name)
-        .setTypeParameterList(typeVariableList)
-        .setSuperTypesList(superTypeList)
-        .setMethodList(methodList)
-        .setFieldList(fieldList)
-        .build();
-
+        .setSuperTypesList(superTypeList).build();
+    typeVariableList.forEach(v -> t.addTypeVarSymbol(v));
+    methodList.forEach(m -> t.addMethodSymbol(m));
+    fieldList.forEach((f -> t.addFieldSymbol(f)));
     t.getSpannedScope().setEnclosingScope(enclosingScope);
 
     for(MethodSymbol method: t.getMethodList()){

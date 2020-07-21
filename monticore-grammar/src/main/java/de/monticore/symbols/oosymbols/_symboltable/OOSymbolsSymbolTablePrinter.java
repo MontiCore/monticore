@@ -1,5 +1,7 @@
+// (c) https://github.com/MontiCore/monticore
+
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.types.typesymbols._symboltable;
+package de.monticore.symbols.oosymbols._symboltable;
 
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.types.check.SymTypeExpression;
@@ -7,12 +9,12 @@ import de.monticore.types.check.SymTypeExpressionDeSer;
 
 import java.util.List;
 
-public class TypeSymbolsSymbolTablePrinter extends TypeSymbolsSymbolTablePrinterTOP {
+public class OOSymbolsSymbolTablePrinter extends OOSymbolsSymbolTablePrinterTOP {
 
-  public TypeSymbolsSymbolTablePrinter() {
+  public OOSymbolsSymbolTablePrinter() {
   }
 
-  public TypeSymbolsSymbolTablePrinter(JsonPrinter printer) {
+  public OOSymbolsSymbolTablePrinter(JsonPrinter printer) {
     super(printer);
   }
 

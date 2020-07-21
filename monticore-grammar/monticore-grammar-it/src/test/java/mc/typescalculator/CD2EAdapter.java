@@ -2,8 +2,8 @@
 package mc.typescalculator;
 
 import com.google.common.collect.Lists;
+import de.monticore.symbols.oosymbols._symboltable.*;
 import de.monticore.symboltable.modifiers.AccessModifier;
-import de.monticore.types.typesymbols._symboltable.*;
 import mc.testcd4analysis._symboltable.CDFieldSymbol;
 import mc.testcd4analysis._symboltable.CDMethOrConstrSymbol;
 import mc.testcd4analysis._symboltable.CDTypeSymbol;
