@@ -85,7 +85,7 @@ public class DeriveSymTypeOfExpressionTest {
     SymTypeExpression genSuper = SymTypeExpressionFactory.createGenerics("GenSuper",scope,genArg);
     OOTypeSymbol genSubType = OOSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
-        .setName("GenSub").setSuperTypeList(Lists.newArrayList(genSuper))
+        .setName("GenSub").setSuperTypesList(Lists.newArrayList(genSuper))
         .setEnclosingScope(scope)
         .build();
     genSubType.addTypeVarSymbol(genArgs);
