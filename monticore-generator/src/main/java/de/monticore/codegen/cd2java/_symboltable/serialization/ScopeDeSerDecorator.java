@@ -108,7 +108,8 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
         .addCDMethod(createDeserializeScopeMethod(scopeClassFullName, simpleName, symTabMillFullName, scopeJsonParam, scopeRuleAttributeList))
         .addCDMethod(createDeserializeArtifactScopeMethod(artifactScopeFullName, simpleName, symTabMillFullName, scopeJsonParam, scopeRuleAttributeList))
         .addAllCDMethods(createDeserializeAdditionalAttributesMethods(scopeInterfaceName, scopeJsonParam))
-        .addCDMethod(createAddSymbolsMethod(symbolDefiningProds))
+        .addCDMethod(createAddSymbolsMethod())
+        .addCDMethod(createAddSymbolMethod(symbolDefiningProds))
         .addAllCDMethods(createDeserializeSymbolMethods(symbolDefiningProds))
         .addCDMethod(createSerializeMethod(scopeInterfaceName))
         .addAllCDMethods(
@@ -303,9 +304,26 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
     return Lists.newArrayList(scopeMethod, artifactScopeMethod);
   }
 
-  protected ASTCDMethod createAddSymbolsMethod(Map<ASTCDType, ASTCDDefinition> symbolDefiningProds) {
+  protected ASTCDMethod createAddSymbolsMethod() {
     ASTCDParameter jsonParam = getCDParameterFacade()
         .createParameter(getMCTypeFacade().createQualifiedType(JSON_OBJECT), SCOPE_JSON_VAR);
+    ASTCDParameter scopeParam = getCDParameterFacade()
+        .createParameter(symbolTableService.getScopeInterfaceType(), SCOPE_VAR);
+    String errorCode = symbolTableService.getGeneratedErrorCode("ScopeDeSerDecorator#createAddSymbolsMethod");
+
+    ASTCDMethod deserializeMethod = getCDMethodFacade()
+        .createMethod(PROTECTED, "addSymbols", jsonParam, scopeParam);
+    this.replaceTemplate(EMPTY_BODY, deserializeMethod,
+        new TemplateHookPoint(TEMPLATE_PATH + "AddSymbols", errorCode));
+    return deserializeMethod;
+  }
+
+  protected ASTCDMethod createAddSymbolMethod(Map<ASTCDType, ASTCDDefinition> symbolDefiningProds) {
+
+    ASTCDParameter kindParam = getCDParameterFacade()
+        .createParameter(getMCTypeFacade().createStringType(), "kind");
+    ASTCDParameter symbolParam = getCDParameterFacade()
+        .createParameter(getMCTypeFacade().createQualifiedType(JSON_OBJECT), "symbol");
     ASTCDParameter scopeParam = getCDParameterFacade()
         .createParameter(symbolTableService.getScopeInterfaceType(), SCOPE_VAR);
 
@@ -317,9 +335,14 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
       symbolMap.put(symbolSimpleName, symbolFullName);
     }
     ASTCDMethod deserializeMethod = getCDMethodFacade()
-        .createMethod(PROTECTED, "addSymbols", jsonParam, scopeParam);
-    this.replaceTemplate(EMPTY_BODY, deserializeMethod,
-        new TemplateHookPoint(TEMPLATE_PATH + "AddSymbols", symbolMap));
+        .createMethod(PROTECTED, getMCTypeFacade().createBooleanType(), "addSymbol", kindParam, symbolParam, scopeParam);
+    if(!symbolMap.isEmpty()){
+      this.replaceTemplate(EMPTY_BODY, deserializeMethod,
+          new TemplateHookPoint(TEMPLATE_PATH + "AddSymbol", symbolMap));
+    }
+    else{
+      this.replaceTemplate(EMPTY_BODY, deserializeMethod, new StringHookPoint("return false;");
+    }
     return deserializeMethod;
   }
 

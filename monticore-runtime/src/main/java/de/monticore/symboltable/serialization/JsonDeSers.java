@@ -1,14 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.symboltable.serialization;
 
-import de.monticore.symboltable.IScopeSpanningSymbol;
-import de.monticore.symboltable.ImportStatement;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Collection of (static) methods and constants that support using DeSers in combination with Json.
@@ -32,30 +30,9 @@ public class JsonDeSers {
 
   public static final String KIND = "kind";
 
-
   public static final String SYMBOLS = "symbols";
 
   public static final String SPANNED_SCOPE = "spannedScope";
-
-  /**
-   * This method deserializes a list of import statements in the passed Json object
-   * @deprecated This method will be removed soon. Instead, symbol table creators should
-   *  * qualify names pointing to symbols of foreign models with the respective import statements
-   *  * in the model.
-   * @param scope
-   * @return
-   */
-  @Deprecated //will be removed soon and all names will be stored as qualified names
-  public static List<ImportStatement> deserializeImports(JsonObject scope) {
-    List<ImportStatement> result = new ArrayList<>();
-    if (scope.hasMember(IMPORTS)) {
-      for (JsonElement e : scope.getArrayMember(IMPORTS)) {
-        String i = e.getAsJsonString().getValue();
-        result.add(new ImportStatement(i, i.endsWith("*")));
-      }
-    }
-    return result;
-  }
 
   /**
    * This method checks, if a passed JsonElement is a Json object of a certain passed kind.
@@ -66,8 +43,7 @@ public class JsonDeSers {
    * @param serializedElement
    * @return
    */
-  public static boolean isCorrectDeSerForKind(String deSerSymbolKind,
-      JsonElement serializedElement) {
+  public static boolean isCorrectDeSerForKind(String deSerSymbolKind, JsonElement serializedElement) {
     if (!serializedElement.isJsonObject()) {
       return false;
     }
@@ -75,7 +51,10 @@ public class JsonDeSers {
     if (!o.hasMember(KIND)) {
       return false;
     }
-    return deSerSymbolKind.equals(o.getStringMember(KIND));
+    List<String> kinds = o.getArrayMember(KIND).stream()
+        .map(m -> m.getAsJsonString().getValue())
+        .collect(Collectors.toList());
+    return kinds.contains(deSerSymbolKind);
   }
 
   /**
@@ -100,9 +79,12 @@ public class JsonDeSers {
           + "' does not have a member describing the kind.");
       return; //return here to avoid consecutive errors in this method
     }
-    if (!deSerKind.equals(o.getStringMember(KIND))) {
+    List<String> kinds = o.getArrayMember(KIND).stream()
+        .map(m -> m.getAsJsonString().getValue())
+        .collect(Collectors.toList());
+    if (!kinds.contains(deSerKind)) {
       Log.error("0xA7225 DeSer for kind '" + deSerKind + "' cannot deserialize Json objects"
-          + " of kind '" + o.getStringMember(KIND) + "'");
+          + " of kind '" + o.getArrayMember(KIND).toString() + "'");
     }
   }
 

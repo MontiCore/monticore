@@ -145,7 +145,7 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount(){
-    assertEquals(21, scopeClass.sizeCDMethods());
+    assertEquals(22, scopeClass.sizeCDMethods());
   }
 
   @Test

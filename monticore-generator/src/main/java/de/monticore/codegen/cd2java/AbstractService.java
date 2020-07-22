@@ -103,20 +103,9 @@ public class AbstractService<T extends AbstractService> {
   public List<String> getAllSuperClassesTransitive(ASTCDClass astcdClass) {
     return getAllSuperClassesTransitive(astcdClass.getSymbol())
         .stream()
-        .map(s -> s.getFullName())
+        .map(s -> createASTFullName(s.getFullName()))
         .collect(Collectors.toList());
   }
-
-//  public List<String> getAllSuperClassesTransitive(CDTypeSymbol cdTypeSymbol) {
-//    List<String> superSymbolList = new ArrayList<>();
-//    if (cdTypeSymbol.isPresentSuperClass()) {
-//      String fullName = cdTypeSymbol.getSuperClass().getLoadedSymbol().getFullName();
-//      superSymbolList.add(createASTFullName(fullName));
-//      CDTypeSymbol superSymbol = resolveCDType(fullName);
-//      superSymbolList.addAll(getAllSuperClassesTransitive(superSymbol));
-//    }
-//    return superSymbolList;
-//  }
 
   public List<CDTypeSymbol> getAllSuperClassesTransitive(CDTypeSymbol cdTypeSymbol) {
     List<CDTypeSymbol> superSymbolList = new ArrayList<>();
