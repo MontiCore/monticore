@@ -151,7 +151,6 @@ public class ScopeClassDecorator extends AbstractDecorator {
         .addAllCDMethods(symbolMethods)
         .addAllCDAttributes(symbolAlreadyResolvedAttributes)
         .addAllCDMethods(symbolAlreadyResolvedMethods)
-        .addCDMethod(createSymbolsSizeMethod(symbolAttributes.keySet()))
         .addCDAttribute(enclosingScopeAttribute)
         .addAllCDMethods(enclosingScopeMethods)
         .addCDAttribute(spanningSymbolAttribute)
@@ -238,17 +237,6 @@ public class ScopeClassDecorator extends AbstractDecorator {
     }
 
     return acceptMethods;
-  }
-
-  protected ASTCDMethod createSymbolsSizeMethod(Collection<String> symbolAttributeNames) {
-    ASTCDMethod getSymbolSize = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createIntType(), "getSymbolsSize");
-    // if there are no symbols, the symbol size is always zero
-    if (symbolAttributeNames.isEmpty()) {
-      this.replaceTemplate(EMPTY_BODY, getSymbolSize, new StringHookPoint("return 0;"));
-    } else {
-      this.replaceTemplate(EMPTY_BODY, getSymbolSize, new TemplateHookPoint(TEMPLATE_PATH + "GetSymbolSize", symbolAttributeNames));
-    }
-    return getSymbolSize;
   }
 
   protected Map<String, ASTCDAttribute> getSuperSymbolAttributes() {
