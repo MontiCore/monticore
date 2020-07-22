@@ -139,13 +139,13 @@ public class OOSymbolsScopeDeSerTest {
 
     OOSymbolsScopeDeSer deser = new OOSymbolsScopeDeSer();
     deser.deserialize(invalidJsonForSerializing);
-    assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0573"));
+    assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA1235"));
 
     deser.deserialize(invalidJsonForSerializing2);
-    assertTrue(Log.getFindings().get(1).getMsg().startsWith("0xA0573"));
+    assertTrue(Log.getFindings().get(1).getMsg().startsWith("0xA1234"));
 
     deser.deserialize(invalidJsonForSerializing3);
-    assertTrue(Log.getFindings().get(2).getMsg().startsWith("0xA0573"));
+    assertTrue(Log.getFindings().get(2).getMsg().startsWith("0xA1234"));
   }
 
 }
