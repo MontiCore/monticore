@@ -44,6 +44,5 @@ public class TypePersistenceTest {
     IVariableScope blahSymbolTable = varSymbolTableCreator.createFromAST(varModel.get());
 ASTMCType a;
     assertTrue(varModel.isPresent());
-    System.out.println(varModel);
   }
 }

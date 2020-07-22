@@ -309,12 +309,13 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
         .createParameter(getMCTypeFacade().createQualifiedType(JSON_OBJECT), SCOPE_JSON_VAR);
     ASTCDParameter scopeParam = getCDParameterFacade()
         .createParameter(symbolTableService.getScopeInterfaceType(), SCOPE_VAR);
-    String errorCode = symbolTableService.getGeneratedErrorCode("ScopeDeSerDecorator#createAddSymbolsMethod");
+    String errorCode = symbolTableService.getGeneratedErrorCode(scopeParam+"#createAddSymbolsMethod");
+    String errorCode2 = symbolTableService.getGeneratedErrorCode(scopeParam+"#createAddSymbolsMethod2");
 
     ASTCDMethod deserializeMethod = getCDMethodFacade()
         .createMethod(PROTECTED, "addSymbols", jsonParam, scopeParam);
     this.replaceTemplate(EMPTY_BODY, deserializeMethod,
-        new TemplateHookPoint(TEMPLATE_PATH + "AddSymbols", errorCode));
+        new TemplateHookPoint(TEMPLATE_PATH + "AddSymbols", errorCode, errorCode2));
     return deserializeMethod;
   }
 
@@ -341,7 +342,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
           new TemplateHookPoint(TEMPLATE_PATH + "AddSymbol", symbolMap));
     }
     else{
-      this.replaceTemplate(EMPTY_BODY, deserializeMethod, new StringHookPoint("return false;");
+      this.replaceTemplate(EMPTY_BODY, deserializeMethod, new StringHookPoint("return false;"));
     }
     return deserializeMethod;
   }
