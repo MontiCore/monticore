@@ -259,17 +259,15 @@ public class VisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
    * @return Created visitor methods to visit a (artifact) scope
    */
   protected List<ASTCDMethod> addScopeVisitorMethods(Set<String> symbolsNameList, ASTCDDefinition astcdDefinition) {
-    ASTMCType scopeClassType = symbolTableService.getScopeType();
-    ASTMCQualifiedType artifactScopeType = symbolTableService.getArtifactScopeType();
-    ASTMCQualifiedType scopeInterfaceType = symbolTableService.getScopeInterfaceType();
+    ASTMCQualifiedType scopeType = symbolTableService.getScopeInterfaceType();
+    ASTMCQualifiedType artifactScopeType = symbolTableService.getArtifactScopeInterfaceType();
 
     TemplateHookPoint traverseSymbolsBody = new TemplateHookPoint(TRAVERSE_SCOPE_TEMPLATE, symbolsNameList);
     StringHookPoint traverseDelegationBody = new StringHookPoint(TRAVERSE + "(("
         + symbolTableService.getScopeInterfaceFullName() + ") node);");
 
     List<ASTCDMethod> methodList = new ArrayList<>();
-    methodList.addAll(createScopeVisitorMethods(scopeClassType, traverseDelegationBody));
-    methodList.addAll(createScopeVisitorMethods(scopeInterfaceType, traverseSymbolsBody));
+    methodList.addAll(createScopeVisitorMethods(scopeType, traverseSymbolsBody));
     // only create artifact scope methods if grammar contains productions or
     // refers to a starting production of a super grammar
     if (symbolTableService.hasProd(astcdDefinition) || symbolTableService.hasStartProd()) {

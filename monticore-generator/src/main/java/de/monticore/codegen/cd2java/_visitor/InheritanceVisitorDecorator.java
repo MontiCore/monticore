@@ -119,7 +119,7 @@ public class InheritanceVisitorDecorator extends AbstractCreator<ASTCDCompilatio
     superScopesTransitive.add(I_SCOPE);
     
     // handle language scope
-    ASTCDMethod handleScopeMethod = visitorService.getVisitorMethod(HANDLE, symbolTableService.getScopeType());
+    ASTCDMethod handleScopeMethod = visitorService.getVisitorMethod(HANDLE, symbolTableService.getScopeInterfaceType());
     handleMethods.add(handleScopeMethod);
     replaceTemplate(EMPTY_BODY, handleScopeMethod,
         new TemplateHookPoint(HANDLE_SYMTAB_INHERITANCE_TEMPLATE,
@@ -130,7 +130,7 @@ public class InheritanceVisitorDecorator extends AbstractCreator<ASTCDCompilatio
       List<String> superScopesTransitiveForAS = new ArrayList<String>();
       superScopesTransitiveForAS.add(symbolTableService.getScopeInterfaceFullName());
       superScopesTransitiveForAS.addAll(superScopesTransitive);
-      ASTCDMethod handleArtifactScopeMethod = visitorService.getVisitorMethod(HANDLE, symbolTableService.getArtifactScopeType());
+      ASTCDMethod handleArtifactScopeMethod = visitorService.getVisitorMethod(HANDLE, symbolTableService.getArtifactScopeInterfaceType());
       handleMethods.add(handleArtifactScopeMethod);
       replaceTemplate(EMPTY_BODY, handleArtifactScopeMethod, 
           new TemplateHookPoint(HANDLE_SYMTAB_INHERITANCE_TEMPLATE, 
