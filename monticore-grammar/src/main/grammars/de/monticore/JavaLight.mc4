@@ -25,7 +25,7 @@ component grammar JavaLight extends de.monticore.expressions.CommonExpressions,
                                     de.monticore.expressions.JavaClassExpressions,
                                     de.monticore.statements.MCCommonStatements,
                                     de.monticore.types.MCBasicTypes,
-                                    de.monticore.types.TypeSymbols {
+                                    de.monticore.symbols.OOSymbols {
 
 external ExtTypeParameters;
 
@@ -42,7 +42,6 @@ interface scope symbol MethOrConstr extends Method = Name;
 symbolrule MethOrConstr =
     exceptions: de.monticore.types.check.SymTypeExpression*
     annotations: de.monticore.types.check.SymTypeExpression*
-    isFinal: boolean
     isAbstract: boolean
     isSynchronized: boolean
     isNative:boolean

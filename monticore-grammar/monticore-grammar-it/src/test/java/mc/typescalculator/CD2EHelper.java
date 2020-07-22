@@ -2,14 +2,14 @@
 package mc.typescalculator;
 
 import com.google.common.collect.Lists;
+import de.monticore.symbols.oosymbols.OOSymbolsMill;
+import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
+import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
+import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
+import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfGenerics;
-import de.monticore.types.typesymbols.TypeSymbolsMill;
-import de.monticore.types.typesymbols._symboltable.FieldSymbol;
-import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
-import de.monticore.types.typesymbols._symboltable.MethodSymbol;
-import de.monticore.types.typesymbols._symboltable.OOTypeSymbol;
 import mc.testcd4analysis._symboltable.CDFieldSymbol;
 import mc.testcd4analysis._symboltable.CDMethOrConstrSymbol;
 import mc.testcd4analysis._symboltable.CDTypeSymbol;
@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 public class CD2EHelper {
 
-  private ITypeSymbolsScope iTypeSymbolsScope;
+  private IOOSymbolsScope iOOSymbolsScope;
 
   private Map<String, SymTypeExpression> symTypeExpressionMap = new HashMap<>();
 
@@ -34,7 +34,7 @@ public class CD2EHelper {
   private Map<String, MethodSymbol> methodSymbolMap = new HashMap<>();
 
   public CD2EHelper() {
-    this.iTypeSymbolsScope = TypeSymbolsMill.typeSymbolsScopeBuilder().build();
+    this.iOOSymbolsScope = OOSymbolsMill.oOSymbolsScopeBuilder().build();
   }
 
   public OOTypeSymbol createOOTypeSymbolFormCDTypeSymbol(CDTypeSymbol cdTypeSymbol) {
@@ -42,9 +42,9 @@ public class CD2EHelper {
       return typeSymbolMap.get(cdTypeSymbol.getName());
     } else {
       // add to map
-      OOTypeSymbol typeSymbol = TypeSymbolsMill.oOTypeSymbolBuilder()
+      OOTypeSymbol typeSymbol = OOSymbolsMill.oOTypeSymbolBuilder()
           .setName(cdTypeSymbol.getName())
-          .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
+          .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
           .build();
       typeSymbolMap.put(cdTypeSymbol.getName(), typeSymbol);
 
@@ -89,7 +89,7 @@ public class CD2EHelper {
       return fieldSymbolMap.get(cdFieldSymbol.getName());
     } else {
       // add to map
-      FieldSymbol fieldSymbol = TypeSymbolsMill.fieldSymbolBuilder()
+      FieldSymbol fieldSymbol = OOSymbolsMill.fieldSymbolBuilder()
           .setName(cdFieldSymbol.getName())
           .build();
       fieldSymbolMap.put(cdFieldSymbol.getName(), fieldSymbol);
@@ -107,7 +107,7 @@ public class CD2EHelper {
       return methodSymbolMap.get(cdMethOrConstrSymbol.getName());
     } else {
       // add to map
-      MethodSymbol methodSymbol = TypeSymbolsMill.methodSymbolBuilder()
+      MethodSymbol methodSymbol = OOSymbolsMill.methodSymbolBuilder()
           .setName(cdMethOrConstrSymbol.getName())
           .build();
       methodSymbolMap.put(cdMethOrConstrSymbol.getName(), methodSymbol);
@@ -132,16 +132,16 @@ public class CD2EHelper {
       SymTypeExpression symTypeExpression;
       try{
         OOTypeSymbol type = createOOTypeSymbolFormCDTypeSymbol(symbolLoader.lazyLoadDelegate());
-        iTypeSymbolsScope.add(type);
-        symTypeExpression = SymTypeExpressionFactory.createTypeExpression(type.getName(), iTypeSymbolsScope);
+        iOOSymbolsScope.add(type);
+        symTypeExpression = SymTypeExpressionFactory.createTypeExpression(type.getName(), iOOSymbolsScope);
       }catch(Exception e){
         String typeName = symbolLoader.getName();
-        OOTypeSymbol typeSymbol = TypeSymbolsMill.oOTypeSymbolBuilder()
+        OOTypeSymbol typeSymbol = OOSymbolsMill.oOTypeSymbolBuilder()
             .setName(typeName)
-            .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
+            .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
             .build();
-        iTypeSymbolsScope.add(typeSymbol);
-        symTypeExpression = SymTypeExpressionFactory.createTypeExpression(typeSymbol.getName(), iTypeSymbolsScope);
+        iOOSymbolsScope.add(typeSymbol);
+        symTypeExpression = SymTypeExpressionFactory.createTypeExpression(typeSymbol.getName(), iOOSymbolsScope);
       }
       symTypeExpressionMap.put(symbolLoader.getName(), symTypeExpression);
       return symTypeExpression;
@@ -150,11 +150,11 @@ public class CD2EHelper {
 
   public SymTypeOfGenerics createSymTypeListFormCDTypeSymbolReference(CDTypeSymbolSurrogate cdTypeSymbolReference) {
     SymTypeExpression symTypeExpression = createSymTypeExpressionFormCDTypeSymbolReference(cdTypeSymbolReference);
-    return SymTypeExpressionFactory.createGenerics("List", iTypeSymbolsScope, Lists.newArrayList(symTypeExpression));
+    return SymTypeExpressionFactory.createGenerics("List", iOOSymbolsScope, Lists.newArrayList(symTypeExpression));
   }
 
   public SymTypeOfGenerics createSymTypeOptionalFormCDTypeSymbolReference(CDTypeSymbolSurrogate cdTypeSymbolReference) {
     SymTypeExpression symTypeExpression = createSymTypeExpressionFormCDTypeSymbolReference(cdTypeSymbolReference);
-    return SymTypeExpressionFactory.createGenerics("Optional", iTypeSymbolsScope, Lists.newArrayList(symTypeExpression));
+    return SymTypeExpressionFactory.createGenerics("Optional", iOOSymbolsScope, Lists.newArrayList(symTypeExpression));
   }
 }

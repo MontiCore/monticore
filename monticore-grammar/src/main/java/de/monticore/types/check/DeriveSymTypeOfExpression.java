@@ -5,9 +5,9 @@ import de.monticore.expressions.expressionsbasis._ast.*;
 import de.monticore.expressions.expressionsbasis._symboltable.*;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisitor;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
-import de.monticore.types.typesymbols._symboltable.FieldSymbol;
-import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
-import de.monticore.types.typesymbols._symboltable.OOTypeSymbol;
+import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
+import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
+import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
 
@@ -23,13 +23,13 @@ import static de.monticore.types.check.TypeCheck.*;
  */
 public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
 
-  public ITypeSymbolsScope getScope (IExpressionsBasisScope expressionsBasisScope){
+  public IOOSymbolsScope getScope (IExpressionsBasisScope expressionsBasisScope){
     // is accepted only here, decided on 07.04.2020
-    if(!(expressionsBasisScope instanceof ITypeSymbolsScope)){
-      Log.error("0xA0307 the enclosing scope of the expression does not implement the interface ITypeSymbolsScope");
+    if(!(expressionsBasisScope instanceof IOOSymbolsScope)){
+      Log.error("0xA0307 the enclosing scope of the expression does not implement the interface IOOSymbolsScope");
     }
     // is accepted only here, decided on 07.04.2020
-    return (ITypeSymbolsScope) expressionsBasisScope;
+    return (IOOSymbolsScope) expressionsBasisScope;
   }
 
   protected TypeCheckResult typeCheckResult;

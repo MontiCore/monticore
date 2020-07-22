@@ -1,7 +1,9 @@
 // (c) https://github.com/MontiCore/monticore
 
+// (c) https://github.com/MontiCore/monticore
+
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.types.basictypesymbols._symboltable;
+package de.monticore.symbols.basicsymbols._symboltable;
 
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.types.check.SymTypeExpression;
@@ -9,12 +11,12 @@ import de.monticore.types.check.SymTypeExpressionDeSer;
 
 import java.util.List;
 
-public class BasicTypeSymbolsSymbolTablePrinter extends BasicTypeSymbolsSymbolTablePrinterTOP {
+public class BasicSymbolsSymbolTablePrinter extends BasicSymbolsSymbolTablePrinterTOP {
 
-  public BasicTypeSymbolsSymbolTablePrinter() {
+  public BasicSymbolsSymbolTablePrinter() {
   }
 
-  public BasicTypeSymbolsSymbolTablePrinter(JsonPrinter printer) {
+  public BasicSymbolsSymbolTablePrinter(JsonPrinter printer) {
     super(printer);
   }
 

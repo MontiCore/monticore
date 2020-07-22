@@ -1,21 +1,17 @@
 // (c) https://github.com/MontiCore/monticore
 
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.types.basictypesymbols._symboltable;
+package de.monticore.symbols.oosymbols._symboltable;
 
-import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionDeSer;
-import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
 
-import java.util.List;
-
-public class FunctionSymbolDeSer extends FunctionSymbolDeSerTOP {
+public class MethodSymbolDeSer extends MethodSymbolDeSerTOP {
 
   @Override
   public SymTypeExpression deserializeReturnType(JsonObject symbolJson,
-      IBasicTypeSymbolsScope enclosingScope) {
+      IOOSymbolsScope enclosingScope) {
     return SymTypeExpressionDeSer.deserializeMember("returnType", symbolJson, enclosingScope);
   }
 
