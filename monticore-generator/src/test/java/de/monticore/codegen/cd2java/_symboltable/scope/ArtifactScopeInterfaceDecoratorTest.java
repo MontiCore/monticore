@@ -122,7 +122,7 @@ public class ArtifactScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testGetImportListMethod() {
-    ASTCDMethod method = getMethodBy("getImportList", scopeInterface);
+    ASTCDMethod method = getMethodBy("getImportsList", scopeInterface);
 
     assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
     assertDeepEquals(MCTypeFacade.createListTypeOf(IMPORT_STATEMENT), method.getMCReturnType().getMCType());
@@ -133,7 +133,7 @@ public class ArtifactScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSetImportsListMethod() {
-    ASTCDMethod method = getMethodBy("setImportList", scopeInterface);
+    ASTCDMethod method = getMethodBy("setImportsList", scopeInterface);
 
     assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
