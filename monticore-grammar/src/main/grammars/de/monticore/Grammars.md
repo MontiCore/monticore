@@ -99,7 +99,7 @@ support the full Java type system including wildcards Blubb<? extends A>
 types, then use a simpler version from above. Type checking ist tricky.
 
 
-### [BasicTypeSymbols.mc4](types/BasicTypeSymbols.mc4) (Beta: In Stabilization)
+### [BasicSymbols.mc4](symbols/BasicSymbols.mc4) (Beta: In Stabilization)
 * This grammar defines symbols for *Types* (of all kinds), *Functions*, 
   *Variables* and *TypeVariables*.
 * The defined symbols are of general form and can be used in functional, OO
@@ -109,7 +109,7 @@ types, then use a simpler version from above. Type checking ist tricky.
   infrastructure for symbols. 
 
 
-### [TypeSymbols.mc4](types/TypeSymbols.mc4) (Beta: In Stabilization)
+### [OOSymbols.mc4](symbols/OOSymbols.mc4) (Beta: In Stabilization)
 * This grammar defines symbols for *objectoriented Types*, *Methods*, and
   *Fields* by mainly extending the symbols defined in `BasicTypeSymbols`.
 * The newly defined symbols extend the general ones by typical 

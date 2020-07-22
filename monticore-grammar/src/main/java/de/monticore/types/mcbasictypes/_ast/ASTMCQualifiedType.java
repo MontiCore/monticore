@@ -9,6 +9,6 @@ public class ASTMCQualifiedType extends ASTMCQualifiedTypeTOP {
   }
 
   public List<String> getNameList() {
-    return this.getMCQualifiedName().getPartList();
+    return this.getMCQualifiedName().getPartsList();
   }
 }

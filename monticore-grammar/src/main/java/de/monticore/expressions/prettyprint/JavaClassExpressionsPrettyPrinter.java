@@ -33,11 +33,11 @@ public class JavaClassExpressionsPrettyPrinter extends CommonExpressionsPrettyPr
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     if (node.isPresentName()) {
       getPrinter().print(".");
-      if (!node.getExtTypeArgumentList().isEmpty()) {
+      if (!node.getExtTypeArgumentsList().isEmpty()) {
         getPrinter().print("<");
-        for (int i = 0; i < node.getExtTypeArgumentList().size(); i++) {
-          node.getExtTypeArgument(i).accept(getRealThis());
-          if (i != node.getExtTypeArgumentList().size() - 1) {
+        for (int i = 0; i < node.getExtTypeArgumentsList().size(); i++) {
+          node.getExtTypeArguments(i).accept(getRealThis());
+          if (i != node.getExtTypeArgumentsList().size() - 1) {
             getPrinter().print(",");
           }
         }
@@ -114,9 +114,9 @@ public class JavaClassExpressionsPrettyPrinter extends CommonExpressionsPrettyPr
   public void handle(ASTPrimaryGenericInvocationExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     getPrinter().print("<");
-    for (int i = 0; i < node.getExtTypeArgumentList().size(); i++) {
-      node.getExtTypeArgument(i).accept(getRealThis());
-      if (i != node.getExtTypeArgumentList().size() - 1) {
+    for (int i = 0; i < node.getExtTypeArgumentsList().size(); i++) {
+      node.getExtTypeArguments(i).accept(getRealThis());
+      if (i != node.getExtTypeArgumentsList().size() - 1) {
         getPrinter().print(",");
       }
     }
@@ -173,7 +173,7 @@ public class JavaClassExpressionsPrettyPrinter extends CommonExpressionsPrettyPr
   @Override
   public void handle(ASTArrayDimensionByExpression a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
-    for (ASTExpression astExpression : a.getExpressionList()) {
+    for (ASTExpression astExpression : a.getExpressionsList()) {
       getPrinter().print("[");
       astExpression.accept(getRealThis());
       getPrinter().print("]");

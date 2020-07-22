@@ -13,8 +13,8 @@ public class ASTAutomaton extends ASTAutomatonTOP implements  ASTAutomataNode
                          List<ASTTransition> transitions)  
   {
     setName(name);
-    setStateList(states);
-    setTransitionList(transitions);
+    setStatesList(states);
+    setTransitionsList(transitions);
   }
   
 }

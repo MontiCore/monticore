@@ -2,13 +2,13 @@
 
 package de.monticore.types.check;
 
+import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolSurrogate;
 import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesVisitor;
-import de.monticore.types.typesymbols._symboltable.OOTypeSymbolSurrogate;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.LinkedList;
@@ -65,7 +65,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypes extends SynthesizeSymType
   public void traverse(ASTMCBasicGenericType genericType) {
 
     List<SymTypeExpression> arguments = new LinkedList<SymTypeExpression>();
-    for (ASTMCTypeArgument arg : genericType.getMCTypeArgumentList()) {
+    for (ASTMCTypeArgument arg : genericType.getMCTypeArgumentsList()) {
       if (null != arg) {
         arg.accept(getRealThis());
       }

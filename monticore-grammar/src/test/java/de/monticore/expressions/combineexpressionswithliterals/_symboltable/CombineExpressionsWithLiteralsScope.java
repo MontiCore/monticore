@@ -1,10 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.combineexpressionswithliterals._symboltable;
 
+import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
+import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
+import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.symboltable.IScopeSpanningSymbol;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.types.check.SymTypeExpression;
-import de.monticore.types.typesymbols._symboltable.*;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -43,7 +45,7 @@ public class CombineExpressionsWithLiteralsScope extends CombineExpressionsWithL
       //if the methodsymbol is in the spanned scope of a typesymbol then look for method in super types too
       if(spanningSymbol instanceof OOTypeSymbol){
         OOTypeSymbol typeSymbol = ((OOTypeSymbol) spanningSymbol);
-        for(SymTypeExpression t : typeSymbol.getSuperTypeList()){
+        for(SymTypeExpression t : typeSymbol.getSuperTypesList()){
           set.addAll(t.getMethodList(name));
         }
       }
@@ -66,7 +68,7 @@ public class CombineExpressionsWithLiteralsScope extends CombineExpressionsWithL
       //if the fieldsymbol is in the spanned scope of a typesymbol then look for method in super types too
       if(spanningSymbol instanceof OOTypeSymbol){
         OOTypeSymbol typeSymbol = (OOTypeSymbol) spanningSymbol;
-        for(SymTypeExpression superType : typeSymbol.getSuperTypeList()){
+        for(SymTypeExpression superType : typeSymbol.getSuperTypesList()){
           result.addAll(superType.getFieldList(name));
         }
       }

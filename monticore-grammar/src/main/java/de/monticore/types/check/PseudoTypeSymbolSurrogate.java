@@ -2,8 +2,8 @@
 
 package de.monticore.types.check;
 
-import de.monticore.types.typesymbols._symboltable.OOTypeSymbol;
-import de.monticore.types.typesymbols._symboltable.OOTypeSymbolSurrogate;
+import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
+import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolSurrogate;
 
 /**
  * This class does not load actual symbols from a scope via a TypSymbolLoader. Instead, it always

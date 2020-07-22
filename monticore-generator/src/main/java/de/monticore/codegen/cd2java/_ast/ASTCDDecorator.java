@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast;
 
+import com.google.common.collect.Lists;
 import de.monticore.cd.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.cd2java.AbstractCreator;
@@ -64,7 +65,8 @@ public class ASTCDDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDC
 
   @Override
   public ASTCDCompilationUnit decorate(final ASTCDCompilationUnit ast) {
-    List<String> astPackage = new ArrayList<>(ast.getPackageList());
+    List<String> astPackage = Lists.newArrayList();
+    ast.getPackageList().forEach(p -> astPackage.add(p.toLowerCase()));
     astPackage.addAll(Arrays.asList(ast.getCDDefinition().getName().toLowerCase(), ASTConstants.AST_PACKAGE));
 
     ASTCDDefinition astCD = CD4AnalysisMill.cDDefinitionBuilder()

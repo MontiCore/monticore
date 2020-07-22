@@ -78,9 +78,10 @@ MontiCore projects are hosted at
 * CD4A focusses on the analysis phase in typical data-driven development 
   projects and is therefore mainly for data modelling.
   Consequently, it omits method signatures and complex generics.
-  The primary use of the CD4A language is therefore **data modelling**. It has various 
-  possibilities for generation of data structures, database tables as well as 
-  data transport infrastructures in cloud and distributed systems.
+  The primary use of the CD4A language is therefore **data modelling**. The
+  CD4A language opens various possibilities for the development of data
+  structures, database tables as well as data transport infrastructures in
+  cloud and distributed systems.
 * [Main grammar `de.monticore.cd.CD4Analysis`](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/blob/develop/src/main/grammars/de/monticore/CD4Analysis.mc4)
   and 
   [*detailed description*](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/-/blob/develop/src/main/grammars/de/monticore/cd4analysis.md)
@@ -105,7 +106,12 @@ MontiCore projects are hosted at
   map any kind of source models to a class/attribute/method/association based
   intermediate structure, before it is printed e.g. as Java code. 
   For example a transformation sequence could be: 
-  Statechart -> State pattern encoded in CD4Code 
+  * [MontiCoreCLI](https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/monticore-generator/src/main/java/de/monticore/codegen/cd2java/_symboltable/SymbolTableCDDecorator.java): 
+    Grammar -> 
+    [Grammar AST encoded in CD4Code](https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/monticore-generator/src/main/java/de/monticore/MontiCoreScript.java#L411) ->
+    [Decoration for custom behavior](https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/monticore-generator/src/main/java/de/monticore/codegen/cd2java/_symboltable/SymbolTableCDDecorator.java) -> 
+    [Java code](https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/monticore-generator/src/main/java/de/monticore/codegen/cd2java/_symboltable/SymbolTableCDDecorator.java)
+  * Statechart -> State pattern encoded in CD4Code 
   -> Decoration by monitoring methods -> Java code.
 * Main grammar [`de.monticore.cd.CD4Code`](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/blob/develop/src/main/grammars/de/monticore/CD4Code.mc4)
   and 
@@ -354,31 +360,25 @@ component InteriorLight {                           // MontiArc language
 * The grammar [SDBasis](https://git.rwth-aachen.de/monticore/statechart/sd-language/-/blob/dev/src/main/grammars/de/monticore/lang/SDBasis.mc4) is a component grammar providing basic SD language features.
 * The grammar [SD4Development](https://git.rwth-aachen.de/monticore/statechart/sd-language/-/blob/dev/src/main/grammars/de/monticore/lang/SD4Development.mc4) extends the grammar SDBasis with concepts used in 
   UML/P SDs.
-* SD4Development supports modeling objects, method calls, returns, exception 
-  throws, dynamic object instantiation, various match modifiers for objects 
-  (free, initial, visible, complete), static method calls, variable declarations
-  by using OCL, and conditions by using OCL.
+* SD4Development supports modeling *objects*, *method calls*, *returns*, exception 
+  throws, *dynamic object instantiation*, various *match modifiers* for objects 
+  (free, initial, visible, complete), *life lines* with *activation regions*,
+  static method calls, intermediate 
+  variable declarations by using OCL, and conditions by using OCL.
 * The grammars can easily be extended by further interactions and object modifiers.
 * The following depicts a simple SD in its textual syntax. 
 ```
 sequencediagram AuctionTest {
-
-  // Interacting objects
-  kupfer912: Auction;
+  kupfer912: Auction;         // Interacting objects
   bidPol: BiddingPolicy;
   timePol: TimingPolicy;
-
-  // Interaction sequence
-  kupfer912 -> bidPol : validateBid(bid) { 
-    // An activity bar on bidPol's lifeline is defined by the curly brackets
-    bidPol -> kupfer912 : return BiddingPolicy.OK;
-  }
-  kupfer912 -> timePol: newCurrentClosingTime(kupfer912, bid) {
-    timePol -> kupfer912 : return t;
-  }
+                              // Interaction sequence
+  kupfer912 -> bidPol  : validateBid(bid)
+  bidPol -> kupfer912  : return BiddingPolicy.OK;
+  kupfer912 -> timePol : newCurrentClosingTime(kupfer912, bid) 
+  timePol -> kupfer912 : return t;
   assert t.timeSec == bid.time.timeSec + extensionTime;
 }
-
 ```
 
 ### [SI Units](https://git.rwth-aachen.de/monticore/languages/siunits) (Beta: In Stabilization)

@@ -2,20 +2,17 @@
 package de.monticore.types.check;
 
 import com.google.common.collect.Lists;
-import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.symbols.oosymbols._symboltable.BuiltInJavaSymbolResolvingDelegate;
+import de.monticore.symbols.oosymbols._symboltable.OOSymbolsArtifactScope;
+import de.monticore.symbols.oosymbols._symboltable.OOSymbolsScope;
+import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.JsonPrinter;
-import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
-import de.monticore.types.typesymbols._symboltable.BuiltInJavaTypeSymbolResolvingDelegate;
-import de.monticore.types.typesymbols._symboltable.OOTypeSymbol;
-import de.monticore.types.typesymbols._symboltable.TypeSymbolsArtifactScope;
-import de.monticore.types.typesymbols._symboltable.TypeSymbolsScope;
 import de.se_rwth.commons.logging.Log;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +21,7 @@ import static de.monticore.types.check.SymTypeExpressionFactory.*;
 import static org.junit.Assert.*;
 
 public class SymTypeExpressionDeSerTest {
-  private static TypeSymbolsScope scope = BuiltInJavaTypeSymbolResolvingDelegate.getScope();
+  private static OOSymbolsScope scope = BuiltInJavaSymbolResolvingDelegate.getScope();
 
   // setup of objects (unchanged during tests)
   // these should be the same as those of SymTypeExpressionText
@@ -80,16 +77,16 @@ public class SymTypeExpressionDeSerTest {
     scope.add(new OOTypeSymbol("Human"));
     scope.add(new OOTypeSymbol("Map"));
 
-    TypeSymbolsArtifactScope javaUtilAS = new TypeSymbolsArtifactScope("java.util",
+    OOSymbolsArtifactScope javaUtilAS = new OOSymbolsArtifactScope("java.util",
         new ArrayList<>());
     javaUtilAS.add(new OOTypeSymbol("Map2"));
     scope.addSubScope(javaUtilAS);
 
-    TypeSymbolsArtifactScope deXAS = new TypeSymbolsArtifactScope("de.x", new ArrayList<>());
+    OOSymbolsArtifactScope deXAS = new OOSymbolsArtifactScope("de.x", new ArrayList<>());
     deXAS.add(new OOTypeSymbol("Person"));
     scope.addSubScope(deXAS);
 
-    TypeSymbolsArtifactScope xAS = new TypeSymbolsArtifactScope("x", new ArrayList<>());
+    OOSymbolsArtifactScope xAS = new OOSymbolsArtifactScope("x", new ArrayList<>());
     xAS.add(new OOTypeSymbol("Foo"));
     scope.addSubScope(xAS);
   }

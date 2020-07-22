@@ -69,7 +69,7 @@ public class TextPrinter implements AutomataVisitor {
   
     // handling state list
     phase = 1;
-    node.getStateList().stream().forEach(s -> s.accept(getRealThis()));
+    node.getStatesList().stream().forEach(s -> s.accept(getRealThis()));
   
     // handle nesting: traversing states a second time
     phase = 2;
@@ -77,22 +77,22 @@ public class TextPrinter implements AutomataVisitor {
       println("The state space is hierarchically nested.");
     }
     statehierarchy = new Stack<>();
-    node.getStateList().stream().forEach(s -> s.accept(getRealThis()));
+    node.getStatesList().stream().forEach(s -> s.accept(getRealThis()));
   
     /// could be separately listed: initial and final
     phase = 3;
   
     // handle the transitions (cross all hierarchy)
     phase = 5;
-    node.getTransitionList().stream().forEach(t -> t.accept(getRealThis()));
+    node.getTransitionsList().stream().forEach(t -> t.accept(getRealThis()));
   }
   
   @Override
   public void traverse(ASTState node) {
     if(phase <= 4) {
-      node.getStateList().stream().forEach(s -> s.accept(getRealThis()));
+      node.getStatesList().stream().forEach(s -> s.accept(getRealThis()));
     } else if(phase >= 5) {
-      node.getTransitionList().stream().forEach(t -> t.accept(getRealThis()));
+      node.getTransitionsList().stream().forEach(t -> t.accept(getRealThis()));
     }
   }
 

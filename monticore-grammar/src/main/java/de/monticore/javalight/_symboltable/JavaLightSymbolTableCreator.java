@@ -11,8 +11,8 @@ import de.monticore.types.check.SynthesizeSymTypeFromMCFullGenericTypes;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.typesymbols._symboltable.FieldSymbol;
-import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
+import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
+import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
 
 import java.util.Deque;
 
@@ -30,7 +30,7 @@ public class JavaLightSymbolTableCreator extends JavaLightSymbolTableCreatorTOP 
 
   @Override
   protected void initialize_MethodDeclaration(MethOrConstrSymbol symbol, ASTMethodDeclaration ast) {
-    addModifiersToMethOrConstr(symbol, ast.getMCModifierList());
+    addModifiersToMethOrConstr(symbol, ast.getMCModifiersList());
     symbol.setReturnType(createTypeLoader(ast.getMCReturnType()));
     if (ast.isPresentThrows()) {
       addThrowsToMethod(symbol, ast.getThrows());
@@ -43,7 +43,7 @@ public class JavaLightSymbolTableCreator extends JavaLightSymbolTableCreatorTOP 
 
   @Override
   protected void initialize_InterfaceMethodDeclaration(MethOrConstrSymbol symbol, ASTInterfaceMethodDeclaration ast) {
-    addModifiersToMethOrConstr(symbol, ast.getMCModifierList());
+    addModifiersToMethOrConstr(symbol, ast.getMCModifiersList());
     symbol.setReturnType(createTypeLoader(ast.getMCReturnType()));
     if (ast.isPresentThrows()) {
       addThrowsToMethod(symbol, ast.getThrows());
@@ -56,7 +56,7 @@ public class JavaLightSymbolTableCreator extends JavaLightSymbolTableCreatorTOP 
 
   @Override
   protected void initialize_ConstructorDeclaration(MethOrConstrSymbol symbol, ASTConstructorDeclaration ast) {
-    addModifiersToMethOrConstr(symbol, ast.getMCModifierList());
+    addModifiersToMethOrConstr(symbol, ast.getMCModifiersList());
     if (ast.isPresentThrows()) {
       addThrowsToMethod(symbol, ast.getThrows());
     }
@@ -117,14 +117,14 @@ public class JavaLightSymbolTableCreator extends JavaLightSymbolTableCreatorTOP 
         }
       } else if (modifier instanceof ASTAnnotation) {
         ASTAnnotation astAnnotation = (ASTAnnotation) modifier;
-        javaMethodSymbol.addAnnotation(createTypeLoader(astAnnotation.getAnnotationName()));
+        javaMethodSymbol.addAnnotations(createTypeLoader(astAnnotation.getAnnotationName()));
       }
     }
   }
 
   protected void addThrowsToMethod(MethOrConstrSymbol javaMethodSymbol, ASTThrows throws1) {
-    for (ASTMCQualifiedName astQualifiedName : throws1.getMCQualifiedNameList()) {
-      javaMethodSymbol.addException(createTypeLoader(astQualifiedName));
+    for (ASTMCQualifiedName astQualifiedName : throws1.getMCQualifiedNamesList()) {
+      javaMethodSymbol.addExceptions(createTypeLoader(astQualifiedName));
     }
   }
 
@@ -151,7 +151,7 @@ public class JavaLightSymbolTableCreator extends JavaLightSymbolTableCreatorTOP 
       // Start visitor and set enclosingScope
       ast.accept(getRealThis());
       // TODO Bessere Lösung
-      return SymTypeExpressionFactory.createTypeObject("void", (ITypeSymbolsScope) ast.getEnclosingScope());
+      return SymTypeExpressionFactory.createTypeObject("void", (IOOSymbolsScope) ast.getEnclosingScope());
     }
 
   }

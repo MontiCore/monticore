@@ -8,13 +8,13 @@ import de.monticore.statements.mccommonstatements._ast.ASTJavaModifier;
 import de.monticore.statements.mcstatementsbasis._ast.ASTMCModifier;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTLocalVariableDeclaration;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTVariableDeclarator;
+import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolSurrogate;
 import de.monticore.types.check.SymTypeArray;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfNull;
 import de.monticore.types.check.SynthesizeSymTypeFromMCFullGenericTypes;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.typesymbols._symboltable.FieldSymbol;
-import de.monticore.types.typesymbols._symboltable.OOTypeSymbolSurrogate;
+import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 
 import java.util.Deque;
 import java.util.List;
@@ -32,7 +32,7 @@ public class MCVarDeclarationStatementsSymbolTableCreator extends MCVarDeclarati
 
   public void endVisit(ASTLocalVariableDeclaration ast) {
     List<FieldSymbol> symbols = Lists.newArrayList();
-    for (ASTVariableDeclarator v : ast.getVariableDeclaratorList()) {
+    for (ASTVariableDeclarator v : ast.getVariableDeclaratorsList()) {
       SymTypeExpression simpleType = createTypeLoader(ast.getMCType());
       if (v.getDeclaratorId().getDimList().size() > 0) {
         if (simpleType instanceof SymTypeArray) {
@@ -48,7 +48,7 @@ public class MCVarDeclarationStatementsSymbolTableCreator extends MCVarDeclarati
       v.getDeclaratorId().getSymbol().setType(simpleType);
       symbols.add(v.getDeclaratorId().getSymbol());
     }
-    addModifiersToVariables(symbols, ast.getMCModifierList());
+    addModifiersToVariables(symbols, ast.getMCModifiersList());
   }
 
   protected void addModifiersToVariables(List<FieldSymbol> symbols, Iterable<? extends ASTMCModifier> modifiers) {
