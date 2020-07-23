@@ -17,7 +17,7 @@ public class ConstantTest {
   public ConstantTest() {
     ASTCDCompilationUnit cdCompilationUnit = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/ConstantsGrammar.mc4")).get();
-    astA = TestHelper.getCDClass(cdCompilationUnit, "ASTA").get();
-    astB = TestHelper.getCDClass(cdCompilationUnit, "ASTB").get();
+    astA = TestHelper.getCDClasss(cdCompilationUnit, "ASTA").get();
+    astB = TestHelper.getCDClasss(cdCompilationUnit, "ASTB").get();
   }
 }

@@ -23,9 +23,11 @@ grammar ExtendNTs {
 
   J astextends K;
 
+  K;
+
   abstract L astextends K;
 
-  M astimplements ASTI;
+  M astimplements I;
 
 }
 

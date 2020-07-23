@@ -73,29 +73,29 @@ public class ASTCDDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDC
         .setName(ast.getCDDefinition().getName())
         .addAllCDClasss(createASTClasses(ast))
         .addAllCDClasss(createASTBuilderClasses(ast))
-        .addCDClass(createNodeFactoryClass(ast))
-        .addCDClass(createASTConstantsClass(ast))
+        .addCDClasss(createNodeFactoryClass(ast))
+        .addCDClasss(createASTConstantsClass(ast))
         .addAllCDInterfaces(createASTInterfaces(ast))
-        .addCDInterface(createLanguageInterface(ast))
+        .addCDInterfaces(createLanguageInterface(ast))
         .addAllCDEnums(createEnums(ast))
         .build();
 
     // change the package and add deprecated annotations to all classes, interfaces, enums
-    for (ASTCDClass cdClass : astCD.getCDClassList()) {
+    for (ASTCDClass cdClass : astCD.getCDClasssList()) {
       this.replaceTemplate(PACKAGE, cdClass, createPackageHookPoint(astPackage));
       if (cdClass.isPresentModifier()) {
         this.replaceTemplate(ANNOTATIONS, cdClass, createAnnotationsHookPoint(cdClass.getModifier()));
       }
     }
 
-    for (ASTCDInterface cdInterface : astCD.getCDInterfaceList()) {
+    for (ASTCDInterface cdInterface : astCD.getCDInterfacesList()) {
       this.replaceTemplate(CoreTemplates.PACKAGE, cdInterface, createPackageHookPoint(astPackage));
       if (cdInterface.isPresentModifier()) {
         this.replaceTemplate(ANNOTATIONS, cdInterface, createAnnotationsHookPoint(cdInterface.getModifier()));
       }
     }
 
-    for (ASTCDEnum cdEnum : astCD.getCDEnumList()) {
+    for (ASTCDEnum cdEnum : astCD.getCDEnumsList()) {
       this.replaceTemplate(CoreTemplates.PACKAGE, cdEnum, createPackageHookPoint(astPackage));
       if (cdEnum.isPresentModifier()) {
         this.replaceTemplate(ANNOTATIONS, cdEnum, createAnnotationsHookPoint(cdEnum.getModifier()));
@@ -110,7 +110,7 @@ public class ASTCDDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDC
 
   protected List<ASTCDClass> createASTClasses(final ASTCDCompilationUnit ast) {
     List<ASTCDClass> astcdClassList = new ArrayList<>();
-    for (ASTCDClass astcdClass : ast.getCDDefinition().getCDClassList()) {
+    for (ASTCDClass astcdClass : ast.getCDDefinition().getCDClasssList()) {
       ASTCDClass changedClass = CD4AnalysisMill.cDClassBuilder()
           .setName(astcdClass.getName())
           .setModifier(astcdClass.getModifier().deepClone())
@@ -127,7 +127,7 @@ public class ASTCDDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDC
   }
 
   protected List<ASTCDClass> createASTBuilderClasses(final ASTCDCompilationUnit ast) {
-    return ast.getCDDefinition().getCDClassList().stream()
+    return ast.getCDDefinition().getCDClasssList().stream()
         .map(astBuilderDecorator::decorate)
         .collect(Collectors.toList());
   }
@@ -142,7 +142,7 @@ public class ASTCDDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDC
 
   protected List<ASTCDInterface> createASTInterfaces(final ASTCDCompilationUnit ast) {
     List<ASTCDInterface> astcdInterfaceList = new ArrayList<>();
-    for (ASTCDInterface astcdInterface : ast.getCDDefinition().getCDInterfaceList()) {
+    for (ASTCDInterface astcdInterface : ast.getCDDefinition().getCDInterfacesList()) {
       // do not create normal ast interface for language interface, is seperately created by ASTLanguageInterfaceDecorator
       if (!astcdInterface.getName().equals(AST_PREFIX + ast.getCDDefinition().getName() + NODE_SUFFIX)) {
         ASTCDInterface changedInterface = CD4AnalysisMill.cDInterfaceBuilder().setName(astcdInterface.getName())
@@ -156,7 +156,7 @@ public class ASTCDDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDC
   }
 
   protected List<ASTCDEnum> createEnums(final ASTCDCompilationUnit ast) {
-    return ast.getCDDefinition().getCDEnumList().stream()
+    return ast.getCDDefinition().getCDEnumsList().stream()
         .map(enumDecorator::decorate)
         .collect(Collectors.toList());
   }

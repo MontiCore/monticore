@@ -75,7 +75,7 @@ public class ScopeClassBuilderDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testNoSuperInterfaces() {
-    assertTrue( scopeBuilderClass.isEmptyInterfaces());
+    assertTrue( scopeBuilderClass.isEmptyInterface());
   }
 
   @Test
@@ -90,18 +90,18 @@ public class ScopeClassBuilderDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testDefaultConstructor() {
-    ASTCDConstructor cdConstructor = scopeBuilderClass.getCDConstructor(0);
+    ASTCDConstructor cdConstructor = scopeBuilderClass.getCDConstructors(0);
     assertDeepEquals(PUBLIC, cdConstructor.getModifier());
     assertEquals("AScopeBuilder", cdConstructor.getName());
 
     assertTrue(cdConstructor.isEmptyCDParameters());
 
-    assertTrue(cdConstructor.isEmptyExceptions());
+    assertTrue(cdConstructor.isEmptyException());
   }
 
   @Test
   public void testAttributes() {
-    assertEquals(8, scopeBuilderClass.getCDAttributeList().size());
+    assertEquals(8, scopeBuilderClass.getCDAttributesList().size());
   }
 
   @Test
@@ -156,7 +156,7 @@ public class ScopeClassBuilderDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethods() {
-    assertEquals(54, scopeBuilderClass.getCDMethodList().size());
+    assertEquals(54, scopeBuilderClass.getCDMethodsList().size());
   }
 
   @Test

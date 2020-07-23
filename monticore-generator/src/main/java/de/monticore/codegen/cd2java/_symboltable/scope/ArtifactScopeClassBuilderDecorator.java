@@ -49,17 +49,17 @@ public class ArtifactScopeClassBuilderDecorator extends AbstractCreator<ASTCDCla
     ASTCDClass decoratedScopeClass = scopeClass.deepClone();
     String scopeBuilderName = scopeClass.getName() + BUILDER_SUFFIX;
 
-    decoratedScopeClass.getCDMethodList().clear();
+    decoratedScopeClass.getCDMethodsList().clear();
 
     builderDecorator.setPrintBuildMethodTemplate(false);
     ASTCDClass scopeBuilder = builderDecorator.decorate(decoratedScopeClass);
     builderDecorator.setPrintBuildMethodTemplate(true);
 
-    scopeBuilder.getCDAttributeList().forEach(a -> a.setModifier(PROTECTED.build()));
+    scopeBuilder.getCDAttributesList().forEach(a -> a.setModifier(PROTECTED.build()));
     scopeBuilder.setName(scopeBuilderName);
 
     // new build method template
-    Optional<ASTCDMethod> buildMethod = scopeBuilder.getCDMethodList()
+    Optional<ASTCDMethod> buildMethod = scopeBuilder.getCDMethodsList()
         .stream()
         .filter(m -> BUILD_METHOD.equals(m.getName()))
         .findFirst();
@@ -73,7 +73,7 @@ public class ArtifactScopeClassBuilderDecorator extends AbstractCreator<ASTCDCla
     List<ASTCDMethod> enclosingScopeMethods = builderMutatorMethodDecorator.decorate(enclosingScopeAttribute);
     enclosingScopeMethods.addAll(accessorDecorator.decorate(enclosingScopeAttribute));
 
-    scopeBuilder.addCDAttribute(enclosingScopeAttribute);
+    scopeBuilder.addCDAttributes(enclosingScopeAttribute);
     scopeBuilder.addAllCDMethods(enclosingScopeMethods);
 
     return scopeBuilder;

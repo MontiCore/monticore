@@ -22,7 +22,7 @@ public class ReferencedNTNotDefined implements GrammarASTMCGrammarCoCo {
   @Override
   public void check(ASTMCGrammar a) {
     MCGrammarSymbol grammarSymbol = a.getSymbol();
-    for (ASTClassProd p : a.getClassProdList()) {
+    for (ASTClassProd p : a.getClassProdsList()) {
       if (!p.getSuperRuleList().isEmpty() && p.isPresentSymbol()) {
         for (ASTRuleReference sr : p.getSuperRuleList()) {
           if (!grammarSymbol.getProdWithInherited(sr.getName()).isPresent()) {
@@ -42,7 +42,7 @@ public class ReferencedNTNotDefined implements GrammarASTMCGrammarCoCo {
         }
       }
     }
-    for (ASTAbstractProd p : a.getAbstractProdList()) {
+    for (ASTAbstractProd p : a.getAbstractProdsList()) {
       if (!p.getSuperRuleList().isEmpty() && p.isPresentSymbol()) {
         for (ASTRuleReference sr : p.getSuperRuleList()) {
           if (!grammarSymbol.getProdWithInherited(sr.getName()).isPresent()) {
@@ -62,7 +62,7 @@ public class ReferencedNTNotDefined implements GrammarASTMCGrammarCoCo {
         }
       }
     }
-    for (ASTInterfaceProd p : a.getInterfaceProdList()) {
+    for (ASTInterfaceProd p : a.getInterfaceProdsList()) {
       if (!p.getSuperInterfaceRuleList().isEmpty() && p.isPresentSymbol()) {
         for (ASTRuleReference sr : p.getSuperInterfaceRuleList()) {
           if (!grammarSymbol.getProdWithInherited(sr.getName()).isPresent()) {

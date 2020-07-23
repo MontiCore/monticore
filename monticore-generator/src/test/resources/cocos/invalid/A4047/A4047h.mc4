@@ -2,7 +2,7 @@
 
 package cocos.invalid.A4047;
 
-grammar A4047h extends de.monticore.MCBasics {
+grammar A4047h {
   Foo = "abc";
   E = Foo*;
 }

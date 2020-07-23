@@ -230,7 +230,7 @@ public final class TransformationHelper {
     for (RuleComponentSymbol component : grammarSymbol.getProds().stream()
         .flatMap(p -> p.getProdComponents().stream()).collect(Collectors.toSet())) {
       if (component.isIsConstantGroup()) {
-        for (String subComponent : component.getSubProdList()) {
+        for (String subComponent : component.getSubProdsList()) {
           constants.add(subComponent);
         }
       }
@@ -238,7 +238,7 @@ public final class TransformationHelper {
     for (ProdSymbol type : grammarSymbol.getProds()) {
       if (type.isIsEnum() && type.isPresentAstNode()
           && type.getAstNode() instanceof ASTEnumProd) {
-        for (ASTConstant enumValue : ((ASTEnumProd) type.getAstNode()).getConstantList()) {
+        for (ASTConstant enumValue : ((ASTEnumProd) type.getAstNode()).getConstantsList()) {
           String humanName = enumValue.isPresentUsageName()
               ? enumValue.getUsageName()
               : enumValue.getName();

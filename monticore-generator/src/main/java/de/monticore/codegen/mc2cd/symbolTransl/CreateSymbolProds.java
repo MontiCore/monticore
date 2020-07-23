@@ -17,10 +17,10 @@ public class CreateSymbolProds implements UnaryOperator<Link<ASTMCGrammar, ASTCD
   public Link<ASTMCGrammar, ASTCDCompilationUnit> apply(Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink) {
     for (Link<ASTMCGrammar, ASTCDDefinition> link : rootLink.getLinks(ASTMCGrammar.class,
         ASTCDDefinition.class)) {
-      link.source().getClassProdList().forEach(c -> createCDClass(c, link));
-      link.source().getAbstractProdList().forEach(c -> createCDClass(c, link));
-      link.source().getInterfaceProdList().forEach(c -> createCDClass(c, link));
-      link.source().getExternalProdList().forEach(c -> createCDClass(c, link));
+      link.source().getClassProdsList().forEach(c -> createCDClass(c, link));
+      link.source().getAbstractProdsList().forEach(c -> createCDClass(c, link));
+      link.source().getInterfaceProdsList().forEach(c -> createCDClass(c, link));
+      link.source().getExternalProdsList().forEach(c -> createCDClass(c, link));
     }
     return rootLink;
   }
@@ -30,13 +30,13 @@ public class CreateSymbolProds implements UnaryOperator<Link<ASTMCGrammar, ASTCD
       ASTCDClass cdClass = CD4AnalysisNodeFactory.createASTCDClass();
       cdClass.setModifier(CD4AnalysisNodeFactory.createASTModifier());
       cdClass.setName(astProd.getName());
-      link.target().getCDClassList().add(cdClass);
+      link.target().getCDClasssList().add(cdClass);
       new Link<>(astProd, cdClass, link);
     }
   }
 
   private boolean isSymbolDefinition(ASTProd grammarProd) {
-    for (ASTSymbolDefinition symbolDefinition : grammarProd.getSymbolDefinitionList()) {
+    for (ASTSymbolDefinition symbolDefinition : grammarProd.getSymbolDefinitionsList()) {
       if (symbolDefinition.isGenSymbol()) {
         return true;
       }

@@ -23,7 +23,7 @@ public class StarImportSuperGrammarTest {
   
   @Test
   public void testStarImport() {
-    ASTMCImportStatement importStatement = cdCompilationUnit.getMCImportStatementList().get(0);
+    ASTMCImportStatement importStatement = cdCompilationUnit.getMCImportStatementsList().get(0);
     assertTrue(importStatement.isStar());
     assertEquals("mc2cdtransformation.Supergrammar", importStatement.getQName());
   }

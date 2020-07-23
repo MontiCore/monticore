@@ -4,8 +4,8 @@ package de.monticore.grammar.symboltable;
 import de.monticore.MontiCoreScript;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._symboltable.IGrammarScope;
+import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
-import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsLanguage;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsSymbolTableCreatorDelegator;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.modifiers.AccessModifier;
@@ -29,13 +29,13 @@ public class IGrammarScopeTest {
             "src/test/resources/CombiningGrammar.mc4").getAbsolutePath()));
 
     assertTrue(ast.isPresent());
-    Grammar_WithConceptsLanguage language = new Grammar_WithConceptsLanguage();
-    Grammar_WithConceptsGlobalScope grammar_withConceptsGlobalScope = new Grammar_WithConceptsGlobalScope(modelPath, language);
+    Grammar_WithConceptsGlobalScope grammar_withConceptsGlobalScope = new Grammar_WithConceptsGlobalScope(modelPath, "mc4");
 
-    Grammar_WithConceptsSymbolTableCreatorDelegator stCreator = language.getSymbolTableCreator(grammar_withConceptsGlobalScope);
+    Grammar_WithConceptsSymbolTableCreatorDelegator stCreator = Grammar_WithConceptsMill.grammar_WithConceptsSymbolTableCreatorDelegatorBuilder()
+            .setGlobalScope(grammar_withConceptsGlobalScope).build();
     stCreator.createFromAST(ast.get());
 
-    IGrammarScope innerScope = ast.get().getClassProd(0).getEnclosingScope();
+    IGrammarScope innerScope = ast.get().getClassProds(0).getEnclosingScope();
 
     assertTrue(innerScope.resolveProd("NewProd").isPresent());
 
@@ -66,13 +66,13 @@ public class IGrammarScopeTest {
             "src/test/resources/CombiningGrammar.mc4").getAbsolutePath()));
 
     assertTrue(ast.isPresent());
-    Grammar_WithConceptsLanguage language = new Grammar_WithConceptsLanguage();
-    Grammar_WithConceptsGlobalScope grammar_withConceptsGlobalScope = new Grammar_WithConceptsGlobalScope(modelPath, language);
+    Grammar_WithConceptsGlobalScope grammar_withConceptsGlobalScope = new Grammar_WithConceptsGlobalScope(modelPath, "mc4");
 
-    Grammar_WithConceptsSymbolTableCreatorDelegator stCreator = language.getSymbolTableCreator(grammar_withConceptsGlobalScope);
+    Grammar_WithConceptsSymbolTableCreatorDelegator stCreator = Grammar_WithConceptsMill.grammar_WithConceptsSymbolTableCreatorDelegatorBuilder()
+            .setGlobalScope(grammar_withConceptsGlobalScope).build();
     stCreator.createFromAST(ast.get());
 
-    IGrammarScope innerScope = ast.get().getClassProd(0).getEnclosingScope();
+    IGrammarScope innerScope = ast.get().getClassProds(0).getEnclosingScope();
 
     assertTrue(innerScope.resolveInSuperGrammars("Automaton", AccessModifier.ALL_INCLUSION).isPresent());
     assertTrue(innerScope.resolveInSuperGrammars("Transition", AccessModifier.ALL_INCLUSION).isPresent());
@@ -97,11 +97,11 @@ public class IGrammarScopeTest {
             "src/test/resources/de/monticore/inherited/subsub/Subsubgrammar.mc4").getAbsolutePath()));
     assertTrue(ast.isPresent());
 
-    Grammar_WithConceptsLanguage language = new Grammar_WithConceptsLanguage();
-    Grammar_WithConceptsGlobalScope grammar_withConceptsGlobalScope = new Grammar_WithConceptsGlobalScope(modelPath, language);
-    Grammar_WithConceptsSymbolTableCreatorDelegator stCreator = language.getSymbolTableCreator(grammar_withConceptsGlobalScope);
+    Grammar_WithConceptsGlobalScope grammar_withConceptsGlobalScope = new Grammar_WithConceptsGlobalScope(modelPath, "mc4");
+    Grammar_WithConceptsSymbolTableCreatorDelegator stCreator = Grammar_WithConceptsMill.grammar_WithConceptsSymbolTableCreatorDelegatorBuilder()
+            .setGlobalScope(grammar_withConceptsGlobalScope).build();
     stCreator.createFromAST(ast.get());
-    IGrammarScope innerScope = ast.get().getClassProd(0).getEnclosingScope();
+    IGrammarScope innerScope = ast.get().getClassProds(0).getEnclosingScope();
 
     assertTrue(innerScope.resolveProd("N").isPresent());
     assertTrue(innerScope.resolveProd("S").isPresent());
@@ -141,11 +141,11 @@ public class IGrammarScopeTest {
             "src/test/resources/de/monticore/inherited/subsub/Subsubgrammar.mc4").getAbsolutePath()));
     assertTrue(ast.isPresent());
 
-    Grammar_WithConceptsLanguage language = new Grammar_WithConceptsLanguage();
-    Grammar_WithConceptsGlobalScope grammar_withConceptsGlobalScope = new Grammar_WithConceptsGlobalScope(modelPath, language);
-    Grammar_WithConceptsSymbolTableCreatorDelegator stCreator = language.getSymbolTableCreator(grammar_withConceptsGlobalScope);
+    Grammar_WithConceptsGlobalScope grammar_withConceptsGlobalScope = new Grammar_WithConceptsGlobalScope(modelPath, "mc4");
+    Grammar_WithConceptsSymbolTableCreatorDelegator stCreator = Grammar_WithConceptsMill.grammar_WithConceptsSymbolTableCreatorDelegatorBuilder()
+            .setGlobalScope(grammar_withConceptsGlobalScope).build();
     stCreator.createFromAST(ast.get());
-    IGrammarScope innerScope = ast.get().getClassProd(0).getEnclosingScope();
+    IGrammarScope innerScope = ast.get().getClassProds(0).getEnclosingScope();
 
     assertTrue(innerScope.resolveInSuperGrammars("N", AccessModifier.ALL_INCLUSION).isPresent());
 

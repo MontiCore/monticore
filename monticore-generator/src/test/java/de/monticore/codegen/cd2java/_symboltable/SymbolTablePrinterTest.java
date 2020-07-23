@@ -72,9 +72,9 @@ public class SymbolTablePrinterTest extends DecoratorTestCase {
   public void testTraverseAutomatonSymbolMethod() {
     List<ASTCDMethod> methodList = getMethodsBy("traverse", 1, symTabPrinterClass);
     ASTMCType astType = this.mcTypeFacade.createQualifiedType(AUTOMATON_SYMBOL);
-    assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
-    assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
-    ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
+    assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameters(0).getMCType())));
+    assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameters(0).getMCType())).count());
+    ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameters(0).getMCType())).findFirst().get();
 
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());

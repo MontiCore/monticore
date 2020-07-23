@@ -34,7 +34,7 @@ public class ScopeClassBuilderDecorator extends AbstractCreator<ASTCDClass, ASTC
     ASTCDClass decoratedScopeClass = scopeClass.deepClone();
     String scopeBuilderName = scopeClass.getName() + BUILDER_SUFFIX;
 
-    decoratedScopeClass.getCDMethodList().clear();
+    decoratedScopeClass.getCDMethodsList().clear();
 
     builderDecorator.setPrintBuildMethodTemplate(false);
     ASTCDClass scopeBuilder = builderDecorator.decorate(decoratedScopeClass);
@@ -43,7 +43,7 @@ public class ScopeClassBuilderDecorator extends AbstractCreator<ASTCDClass, ASTC
     scopeBuilder.setName(scopeBuilderName);
 
     // new build method template
-    Optional<ASTCDMethod> buildMethod = scopeBuilder.getCDMethodList()
+    Optional<ASTCDMethod> buildMethod = scopeBuilder.getCDMethodsList()
         .stream()
         .filter(m -> BUILD_METHOD.equals(m.getName()))
         .findFirst();
@@ -51,7 +51,7 @@ public class ScopeClassBuilderDecorator extends AbstractCreator<ASTCDClass, ASTC
         new TemplateHookPoint(TEMPLATE_PATH + "BuildScope", scopeClass.getName())));
 
     // add '= true' template to exportingSymbols attribute
-    Optional<ASTCDAttribute> exportingSymbolsAttribute = scopeBuilder.getCDAttributeList()
+    Optional<ASTCDAttribute> exportingSymbolsAttribute = scopeBuilder.getCDAttributesList()
         .stream()
         .filter(a -> "exportingSymbols".equals(a.getName()))
         .findFirst();

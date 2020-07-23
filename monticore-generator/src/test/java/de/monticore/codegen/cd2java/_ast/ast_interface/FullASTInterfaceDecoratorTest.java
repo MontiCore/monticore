@@ -80,7 +80,7 @@ public class FullASTInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterfacesCount() {
-    assertEquals(2, astcdInterface.sizeInterfaces());
+    assertEquals(2, astcdInterface.sizeInterface());
   }
 
   @Test
@@ -157,7 +157,7 @@ public class FullASTInterfaceDecoratorTest extends DecoratorTestCase {
     assertFalse(method.isEmptyCDParameters());
     assertEquals(1, method.sizeCDParameters());
 
-    ASTCDParameter parameter = method.getCDParameter(0);
+    ASTCDParameter parameter = method.getCDParameters(0);
     assertDeepEquals("de.monticore.codegen.data.datainterface._visitor.DataInterfaceVisitor", parameter.getMCType());
     assertEquals("visitor", parameter.getName());
   }
@@ -202,7 +202,7 @@ public class FullASTInterfaceDecoratorTest extends DecoratorTestCase {
 
     assertEquals(1, method.sizeCDParameters());
 
-    ASTCDParameter parameter = method.getCDParameter(0);
+    ASTCDParameter parameter = method.getCDParameters(0);
     assertDeepEquals("de.monticore.codegen.data.datainterface._symboltable.IDataInterfaceScope",
         parameter.getMCType());
     assertEquals("enclosingScope", parameter.getName());
@@ -233,7 +233,7 @@ public class FullASTInterfaceDecoratorTest extends DecoratorTestCase {
     assertFalse(method.isEmptyCDParameters());
     assertEquals(1, method.sizeCDParameters());
 
-    ASTCDParameter parameter = method.getCDParameter(0);
+    ASTCDParameter parameter = method.getCDParameters(0);
     assertDeepEquals(Object.class, parameter.getMCType());
     assertEquals("o", parameter.getName());
   }
@@ -248,11 +248,11 @@ public class FullASTInterfaceDecoratorTest extends DecoratorTestCase {
     assertFalse(method.isEmptyCDParameters());
     assertEquals(2, method.sizeCDParameters());
 
-    ASTCDParameter parameter = method.getCDParameter(0);
+    ASTCDParameter parameter = method.getCDParameters(0);
     assertDeepEquals(Object.class, parameter.getMCType());
     assertEquals("o", parameter.getName());
 
-    parameter = method.getCDParameter(1);
+    parameter = method.getCDParameters(1);
     assertBoolean(parameter.getMCType());
     assertEquals("forceSameOrder", parameter.getName());
   }
@@ -267,7 +267,7 @@ public class FullASTInterfaceDecoratorTest extends DecoratorTestCase {
     assertFalse(method.isEmptyCDParameters());
     assertEquals(1, method.sizeCDParameters());
 
-    ASTCDParameter parameter = method.getCDParameter(0);
+    ASTCDParameter parameter = method.getCDParameters(0);
     assertDeepEquals(Object.class, parameter.getMCType());
     assertEquals("o", parameter.getName());
   }
@@ -282,11 +282,11 @@ public class FullASTInterfaceDecoratorTest extends DecoratorTestCase {
     assertFalse(method.isEmptyCDParameters());
     assertEquals(2, method.sizeCDParameters());
 
-    ASTCDParameter parameter = method.getCDParameter(0);
+    ASTCDParameter parameter = method.getCDParameters(0);
     assertDeepEquals(Object.class, parameter.getMCType());
     assertEquals("o", parameter.getName());
 
-    parameter = method.getCDParameter(1);
+    parameter = method.getCDParameters(1);
     assertBoolean(parameter.getMCType());
     assertEquals("forceSameOrder", parameter.getName());
   }
@@ -301,7 +301,7 @@ public class FullASTInterfaceDecoratorTest extends DecoratorTestCase {
     assertFalse(method.isEmptyCDParameters());
     assertEquals(1, method.sizeCDParameters());
 
-    ASTCDParameter parameter = method.getCDParameter(0);
+    ASTCDParameter parameter = method.getCDParameters(0);
     assertDeepEquals(Object.class, parameter.getMCType());
     assertEquals("o", parameter.getName());
   }
@@ -316,7 +316,7 @@ public class FullASTInterfaceDecoratorTest extends DecoratorTestCase {
     assertFalse(method.isEmptyCDParameters());
     assertEquals(1, method.sizeCDParameters());
 
-    ASTCDParameter parameter = method.getCDParameter(0);
+    ASTCDParameter parameter = method.getCDParameters(0);
     assertDeepEquals(Object.class, parameter.getMCType());
     assertEquals("o", parameter.getName());
   }

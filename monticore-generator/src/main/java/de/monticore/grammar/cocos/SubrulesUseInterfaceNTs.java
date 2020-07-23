@@ -7,7 +7,7 @@ import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
-import de.monticore.grammar.grammar._symboltable.ProdSymbolLoader;
+import de.monticore.grammar.grammar._symboltable.ProdSymbolSurrogate;
 import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
 import de.se_rwth.commons.logging.Log;
 
@@ -93,8 +93,8 @@ public class SubrulesUseInterfaceNTs implements GrammarASTMCGrammarCoCo {
                   (prodComponent.isIsConstant() && interfaceComponent.isIsConstant())) {
             found = true;
           } else if (prodComponent.isIsNonterminal() && interfaceComponent.isIsNonterminal()) {
-            Optional<ProdSymbolLoader> prodComponentRefOpt = prodComponent.getReferencedProd();
-            Optional<ProdSymbolLoader> interfaceComponentRefOpt = interfaceComponent.getReferencedProd();
+            Optional<ProdSymbolSurrogate> prodComponentRefOpt = prodComponent.getReferencedProd();
+            Optional<ProdSymbolSurrogate> interfaceComponentRefOpt = interfaceComponent.getReferencedProd();
             if (prodComponentRefOpt.isPresent() && interfaceComponentRefOpt.isPresent()) {
               found = prodComponentRefOpt.get().getName().equals(interfaceComponentRefOpt.get().getName());
             }

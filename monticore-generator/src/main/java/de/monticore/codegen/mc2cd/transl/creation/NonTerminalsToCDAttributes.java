@@ -41,7 +41,7 @@ public class NonTerminalsToCDAttributes implements
     for (ASTNonTerminal nonTerminal : ASTNodes.getSuccessors(link.source(),
         ASTNonTerminal.class)) {
       ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
-      link.target().getCDAttributeList().add(cdAttribute);
+      link.target().getCDAttributesList().add(cdAttribute);
       new Link<>(nonTerminal, cdAttribute, link);
     }
   }

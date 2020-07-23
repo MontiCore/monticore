@@ -91,13 +91,13 @@ public class DelegatorVisitorBuilderDecorator extends AbstractCreator<ASTCDClass
     return CD4CodeMill.cDClassBuilder()
         .setName(builderClassName)
         .setModifier(PUBLIC.build())
-        .addCDConstructor(constructor)
-        .addCDAttribute(realThisAttribute)
+        .addCDConstructors(constructor)
+        .addCDAttributes(realThisAttribute)
         .addAllCDAttributes(builderAttributes)
         .addAllCDMethods(accessorMethods)
         .addAllCDMethods(mutatorMethods)
-        .addCDMethod(buildMethod)
-        .addCDMethod(isValidMethod)
+        .addCDMethods(buildMethod)
+        .addCDMethods(isValidMethod)
         .build();
   }
 

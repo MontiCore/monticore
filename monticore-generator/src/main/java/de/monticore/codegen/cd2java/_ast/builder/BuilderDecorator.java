@@ -63,7 +63,7 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
     }
 
     ASTCDAttribute realThisAttribute = this.getCDAttributeFacade().createAttribute(PROTECTED, builderType, REAL_BUILDER);
-    List<ASTCDAttribute> builderAttributes = domainClass.getCDAttributeList().stream()
+    List<ASTCDAttribute> builderAttributes = domainClass.getCDAttributesList().stream()
         .map(ASTCDAttribute::deepClone)
         .filter(a -> !a.getModifier().isFinal())
         .filter(a -> !service.isInheritedAttribute(a))
@@ -76,7 +76,7 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
         .collect(Collectors.toList());
 
     // additionally add only setter methods with correct builder return type for inherited attributes
-    List<ASTCDAttribute> inheritedAttributes = domainClass.getCDAttributeList().stream()
+    List<ASTCDAttribute> inheritedAttributes = domainClass.getCDAttributesList().stream()
         .map(ASTCDAttribute::deepClone)
         .filter(a -> !a.getModifier().isFinal())
         .filter(service::isInheritedAttribute)
@@ -116,11 +116,11 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
     return CD4AnalysisMill.cDClassBuilder()
         .setModifier(modifier)
         .setName(builderClassName)
-        .addCDAttribute(realThisAttribute)
+        .addCDAttributes(realThisAttribute)
         .addAllCDAttributes(builderAttributes)
-        .addCDConstructor(constructor)
-        .addCDMethod(buildMethod)
-        .addCDMethod(isValidMethod)
+        .addCDConstructors(constructor)
+        .addCDMethods(buildMethod)
+        .addCDMethods(isValidMethod)
         .addAllCDMethods(accessorMethods)
         .addAllCDMethods(mutatorMethods)
         .addAllCDMethods(inheritedMutatorMethods)

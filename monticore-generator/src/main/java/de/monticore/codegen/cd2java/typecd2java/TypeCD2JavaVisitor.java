@@ -42,10 +42,10 @@ public class TypeCD2JavaVisitor implements CD4AnalysisVisitor {
       l.remove(node.getNameList().size()-1);
       l.add( ASTConstants.AST_PACKAGE);
       l.add(simpleName(node));
-      node.getMCQualifiedName().setPartList(l);
+      node.getMCQualifiedName().setPartsList(l);
     }
     if(node.getNameList().size() <= 1){
-      node.getMCQualifiedName().setPartList(new ArrayList<>(Arrays.asList(node.getNameList().get(0).split(PACKAGE_SEPARATOR))));
+      node.getMCQualifiedName().setPartsList(new ArrayList<>(Arrays.asList(node.getNameList().get(0).split(PACKAGE_SEPARATOR))));
     }
   }
 

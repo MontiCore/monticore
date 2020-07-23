@@ -34,19 +34,19 @@ public class OverridingNTs implements GrammarASTMCGrammarCoCo {
     List<MCGrammarSymbol> grammarSymbols =  grammarSymbol.getSuperGrammarSymbols();
 
     for(MCGrammarSymbol s: grammarSymbols) {
-      for (ASTEnumProd p : a.getEnumProdList()) {
+      for (ASTEnumProd p : a.getEnumProdsList()) {
           doCheck(s.getProd(p.getName()), "enum");
       }
-      for (ASTExternalProd p : a.getExternalProdList()) {
+      for (ASTExternalProd p : a.getExternalProdsList()) {
           doCheck(s.getProd(p.getName()), "external");
       }
-      for (ASTInterfaceProd p : a.getInterfaceProdList()) {
+      for (ASTInterfaceProd p : a.getInterfaceProdsList()) {
           doCheck(s.getProd(p.getName()), "interface");
       }
-      for (ASTLexProd p : a.getLexProdList()) {
+      for (ASTLexProd p : a.getLexProdsList()) {
           doCheck(s.getProd(p.getName()), "lexical");
       }
-      for (ASTAbstractProd p : a.getAbstractProdList()) {
+      for (ASTAbstractProd p : a.getAbstractProdsList()) {
         doCheck(s.getProd(p.getName()), "abstract");
       }
     }

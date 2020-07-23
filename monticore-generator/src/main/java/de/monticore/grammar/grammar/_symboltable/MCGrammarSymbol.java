@@ -21,7 +21,7 @@ import static java.util.stream.Collectors.toList;
 
 public class MCGrammarSymbol extends MCGrammarSymbolTOP {
 
-  private final List<MCGrammarSymbolLoader> superGrammars = new ArrayList<>();
+  private final List<MCGrammarSymbolSurrogate> superGrammars = new ArrayList<>();
 
   // the start production of the grammar
   private ProdSymbol startProd;
@@ -44,13 +44,13 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
     return ofNullable(startProd);
   }
 
-  public List<MCGrammarSymbolLoader> getSuperGrammars() {
+  public List<MCGrammarSymbolSurrogate> getSuperGrammars() {
     return copyOf(superGrammars);
   }
 
   public List<MCGrammarSymbol> getSuperGrammarSymbols() {
-    return copyOf(superGrammars.stream().filter(g -> g.isSymbolLoaded())
-            .map(g -> g.getLoadedSymbol())
+    return copyOf(superGrammars.stream()
+            .map(g -> g.lazyLoadDelegate())
             .collect(toList()));
   }
 
@@ -64,7 +64,7 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
     return copyOf(supGrammars);
   }
 
-  public void addSuperGrammar(MCGrammarSymbolLoader superGrammarRef) {
+  public void addSuperGrammar(MCGrammarSymbolSurrogate superGrammarRef) {
     this.superGrammars.add(errorIfNull(superGrammarRef));
   }
 
@@ -88,10 +88,10 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
 
   public Optional<ProdSymbol> getProdWithInherited(String ruleName) {
     Optional<ProdSymbol> mcProd = getProd(ruleName);
-    Iterator<MCGrammarSymbolLoader> itSuperGrammars = superGrammars.iterator();
+    Iterator<MCGrammarSymbolSurrogate> itSuperGrammars = superGrammars.iterator();
 
     while (!mcProd.isPresent() && itSuperGrammars.hasNext()) {
-      mcProd = itSuperGrammars.next().getLoadedSymbol().getProdWithInherited(ruleName);
+      mcProd = itSuperGrammars.next().lazyLoadDelegate().getProdWithInherited(ruleName);
     }
 
     return mcProd;
@@ -99,10 +99,10 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
 
   public Optional<ProdSymbol> getInheritedProd(String ruleName) {
     Optional<ProdSymbol> mcProd = empty();
-    Iterator<MCGrammarSymbolLoader> itSuperGrammars = superGrammars.iterator();
+    Iterator<MCGrammarSymbolSurrogate> itSuperGrammars = superGrammars.iterator();
 
     while (!mcProd.isPresent() && itSuperGrammars.hasNext()) {
-      mcProd = itSuperGrammars.next().getLoadedSymbol().getProdWithInherited(ruleName);
+      mcProd = itSuperGrammars.next().lazyLoadDelegate().getProdWithInherited(ruleName);
     }
 
     return mcProd;
@@ -112,11 +112,9 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
     final Map<String, ProdSymbol> ret = new LinkedHashMap<>();
 
     for (int i = superGrammars.size() - 1; i >= 0; i--) {
-      final MCGrammarSymbolLoader superGrammarRef = superGrammars.get(i);
+      final MCGrammarSymbolSurrogate superGrammarRef = superGrammars.get(i);
 
-      if (superGrammarRef.isSymbolLoaded()) {
-        ret.putAll(superGrammarRef.getLoadedSymbol().getProdsWithInherited());
-      }
+      ret.putAll(superGrammarRef.lazyLoadDelegate().getProdsWithInherited());
     }
 
     for (final ProdSymbol prodSymbol : getProds()) {
@@ -130,11 +128,9 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
     final Collection<String> ret = Sets.newHashSet();
 
     for (int i = superGrammars.size() - 1; i >= 0; i--) {
-      final MCGrammarSymbolLoader superGrammarRef = superGrammars.get(i);
+      final MCGrammarSymbolSurrogate superGrammarRef = superGrammars.get(i);
 
-      if (superGrammarRef.isSymbolLoaded()) {
-        ret.addAll(superGrammarRef.getLoadedSymbol().getTokenRulesWithInherited());
-      }
+      ret.addAll(superGrammarRef.lazyLoadDelegate().getTokenRulesWithInherited());
     }
     forEachSplitRules(t -> ret.add(t));
     return ret;
@@ -144,11 +140,9 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
     final Collection<String> ret = Sets.newHashSet();
 
     for (int i = superGrammars.size() - 1; i >= 0; i--) {
-      final MCGrammarSymbolLoader superGrammarRef = superGrammars.get(i);
+      final MCGrammarSymbolSurrogate superGrammarRef = superGrammars.get(i);
 
-      if (superGrammarRef.isSymbolLoaded()) {
-        ret.addAll(superGrammarRef.getLoadedSymbol().getKeywordRulesWithInherited());
-      }
+      ret.addAll(superGrammarRef.lazyLoadDelegate().getKeywordRulesWithInherited());
     }
     forEachNoKeywords(t -> ret.add(t));
     return ret;

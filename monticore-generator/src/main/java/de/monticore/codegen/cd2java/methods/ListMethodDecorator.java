@@ -52,7 +52,7 @@ public abstract class ListMethodDecorator extends AbstractCreator<ASTCDAttribute
     String attributeName = StringUtils.uncapitalize(capitalizedAttributeNameWithS);
     int attributeIndex = method.getName().lastIndexOf(capitalizedAttributeNameWithS);
     String methodName = method.getName().substring(0, attributeIndex);
-    String parameterCall = method.getCDParameterList().stream()
+    String parameterCall = method.getCDParametersList().stream()
         .map(ASTCDParameter::getName)
         .collect(Collectors.joining(", "));
     String returnType = method.printReturnType();

@@ -2,7 +2,7 @@
 
 package cocos.invalid.A4090;
 
-grammar A4090g extends mc.grammars.types.TestLiterals{
+grammar A4090g extends mc.grammars.literals.TestLiterals{
 
   A = "a";
   B = who:Num_Int who:A;

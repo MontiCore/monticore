@@ -14,8 +14,8 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.symbols.oosymbols._symboltable.BuiltInJavaSymbolResolvingDelegate;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
-import de.monticore.types.typesymbols._symboltable.BuiltInJavaTypeSymbolResolvingDelegate;
 import de.monticore.utils.Names;
 import de.se_rwth.commons.StringTransformations;
 
@@ -74,9 +74,9 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
 
     // list of all scope rule attributes
     List<ASTCDAttribute> scopeRuleAttributeList = scopeInput.deepClone().getCDDefinition()
-        .getCDClassList()
+        .getCDClasssList()
         .stream()
-        .map(ASTCDClass::getCDAttributeList)
+        .map(ASTCDClass::getCDAttributesList)
         .flatMap(List::stream)
         .collect(Collectors.toList());
     scopeRuleAttributeList
@@ -95,22 +95,22 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
     return CD4CodeMill.cDClassBuilder()
         .setName(scopeDeSerName)
         .setModifier(PUBLIC.build())
-        .addCDConstructor(createConstructor(scopeDeSerName))
+        .addCDConstructors(createConstructor(scopeDeSerName))
         .addAllCDAttributes(createSymbolDeSerAttributes(symbolDefinition))
-        .addCDAttribute(fileExtension)
-        .addCDAttribute(jsonPrinter)
-        .addCDAttribute(symbolTablePrinter)
+        .addCDAttributes(fileExtension)
+        .addCDAttributes(jsonPrinter)
+        .addCDAttributes(symbolTablePrinter)
         .addAllCDMethods(methodDecorator.decorate(fileExtension))
         .addAllCDMethods(createLoadMethods(artifactScopeFullName))
-        .addCDMethod(createLoadSymbolsIntoScopeMethod(globalScopeFullName))
-        .addCDMethod(createStoreMethod(scopeDeSerName, artifactScopeFullName))
-        .addCDMethod(createDeserializeStringMethod(artifactScopeFullName))
-        .addCDMethod(createDeserializeScopeMethod(scopeClassFullName, simpleName, symTabMillFullName, scopeJsonParam, scopeRuleAttributeList))
-        .addCDMethod(createDeserializeArtifactScopeMethod(artifactScopeFullName, simpleName, symTabMillFullName, scopeJsonParam, scopeRuleAttributeList))
+        .addCDMethods(createLoadSymbolsIntoScopeMethod(globalScopeFullName))
+        .addCDMethods(createStoreMethod(scopeDeSerName, artifactScopeFullName))
+        .addCDMethods(createDeserializeStringMethod(artifactScopeFullName))
+        .addCDMethods(createDeserializeScopeMethod(scopeClassFullName, simpleName, symTabMillFullName, scopeJsonParam, scopeRuleAttributeList))
+        .addCDMethods(createDeserializeArtifactScopeMethod(artifactScopeFullName, simpleName, symTabMillFullName, scopeJsonParam, scopeRuleAttributeList))
         .addAllCDMethods(createDeserializeAdditionalAttributesMethods(scopeInterfaceName, scopeJsonParam))
-        .addCDMethod(createAddSymbolsMethod(symbolDefiningProds))
+        .addCDMethods(createAddSymbolsMethod(symbolDefiningProds))
         .addAllCDMethods(createDeserializeSymbolMethods(symbolDefiningProds))
-        .addCDMethod(createSerializeMethod(scopeInterfaceName))
+        .addCDMethods(createSerializeMethod(scopeInterfaceName))
         .addAllCDMethods(
             createDeserializeScopeRuleAttributesMethod(scopeRuleAttributeList, scopeDeSerName))
         .build();
@@ -364,7 +364,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
       HookPoint deserImplementation = DeSerMap
           .getDeserializationImplementation(astcdAttribute, methodName, "scopeJson",
               //          astcdAttribute.getEnclosingScope()); //TODO AB Replace line below with this line after release of 5.5.0-SNAPSHOT
-              BuiltInJavaTypeSymbolResolvingDelegate.getScope(), generatedErrorCode);
+              BuiltInJavaSymbolResolvingDelegate.getScope(), generatedErrorCode);
       this.replaceTemplate(EMPTY_BODY, deserializeMethod, deserImplementation);
       methodList.add(deserializeMethod);
     }

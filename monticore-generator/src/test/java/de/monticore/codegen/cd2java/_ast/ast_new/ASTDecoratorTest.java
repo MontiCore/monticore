@@ -87,24 +87,24 @@ public class ASTDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testBaseInterface() {
-    assertEquals(1, astClass.sizeInterfaces());
+    assertEquals(1, astClass.sizeInterface());
     assertEquals("de.monticore.codegen.ast.ast._ast.ASTASTNode", astClass.printInterfaces());
   }
 
   @Test
   public void testAttributeSize() {
-    assertEquals(3, astClass.getCDAttributeList().size());
+    assertEquals(3, astClass.getCDAttributesList().size());
   }
 
   @Test
   public void testEmptyConstructors() {
-    assertEquals(0, astClass.getCDConstructorList().size());
+    assertEquals(0, astClass.getCDConstructorsList().size());
   }
 
   @Test
   public void testMethods() {
-    assertFalse(astClass.getCDMethodList().isEmpty());
-    assertEquals(14, astClass.getCDMethodList().size());
+    assertFalse(astClass.getCDMethodsList().isEmpty());
+    assertEquals(14, astClass.getCDMethodsList().size());
   }
 
   /**
@@ -127,7 +127,7 @@ public class ASTDecoratorTest extends DecoratorTestCase {
     List<ASTCDMethod> methods = getMethodsBy("accept", 1, astClass);
     ASTMCType visitorType = this.mcTypeFacade.createQualifiedType("de.monticore.codegen.ast.ast._visitor.ASTVisitor");
 
-    methods = methods.stream().filter(m -> visitorType.deepEquals(m.getCDParameter(0).getMCType())).collect(Collectors.toList());
+    methods = methods.stream().filter(m -> visitorType.deepEquals(m.getCDParameters(0).getMCType())).collect(Collectors.toList());
     assertEquals(1, methods.size());
 
     ASTCDMethod method = methods.get(0);
@@ -137,7 +137,7 @@ public class ASTDecoratorTest extends DecoratorTestCase {
     assertFalse(method.isEmptyCDParameters());
     assertEquals(1, method.sizeCDParameters());
 
-    ASTCDParameter parameter = method.getCDParameter(0);
+    ASTCDParameter parameter = method.getCDParameters(0);
 
     assertDeepEquals(visitorType, parameter.getMCType());
     assertEquals("visitor", parameter.getName());
@@ -148,7 +148,7 @@ public class ASTDecoratorTest extends DecoratorTestCase {
     List<ASTCDMethod> methods = getMethodsBy("accept", 1, astClass);
     ASTMCType visitorType = this.mcTypeFacade.createQualifiedType("de.monticore.codegen.ast.supercd._visitor.SuperCDVisitor");
 
-    methods = methods.stream().filter(m -> visitorType.deepEquals(m.getCDParameter(0).getMCType())).collect(Collectors.toList());
+    methods = methods.stream().filter(m -> visitorType.deepEquals(m.getCDParameters(0).getMCType())).collect(Collectors.toList());
     assertEquals(1, methods.size());
 
     ASTCDMethod method = methods.get(0);
@@ -158,7 +158,7 @@ public class ASTDecoratorTest extends DecoratorTestCase {
     assertFalse(method.isEmptyCDParameters());
     assertEquals(1, method.sizeCDParameters());
 
-    ASTCDParameter parameter = method.getCDParameter(0);
+    ASTCDParameter parameter = method.getCDParameters(0);
     assertDeepEquals(visitorType, parameter.getMCType());
     assertEquals("visitor", parameter.getName());
   }
@@ -213,8 +213,8 @@ public class ASTDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, method.sizeCDParameters());
-    assertEquals("spannedScope", method.getCDParameter(0).getName());
-    assertDeepEquals(AST_SCOPE, method.getCDParameter(0).getMCType());
+    assertEquals("spannedScope", method.getCDParameters(0).getName());
+    assertDeepEquals(AST_SCOPE, method.getCDParameters(0).getMCType());
   }
 
   @Test
@@ -241,8 +241,8 @@ public class ASTDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, method.sizeCDParameters());
-    assertEquals("symbol", method.getCDParameter(0).getName());
-    assertDeepEquals(AST_SYMBOL, method.getCDParameter(0).getMCType());
+    assertEquals("symbol", method.getCDParameters(0).getName());
+    assertDeepEquals(AST_SYMBOL, method.getCDParameters(0).getMCType());
   }
 
   @Test

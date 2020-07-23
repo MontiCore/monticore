@@ -21,7 +21,7 @@ ${tc.signature("cdClass", "classFullName")}
   String spannedScopeName = de.se_rwth.commons.StringTransformations.uncapitalize(reporting.getScopeNameFormatted(node.getSpannedScope()));
   pp.println("spanningScope = " + spannedScopeName + ";");
 </#if>
-<#list cdClass.getCDAttributeList() as attr>
+<#list cdClass.getCDAttributesList() as attr>
     <#assign attrGetter = genHelper.getPlainGetter(attr)>
     <#if genHelper.isOptionalAstNode(attr)>
   if (node.isPresent${genHelper.getNativeAttributeName(attr.getName())?cap_first}()) {
