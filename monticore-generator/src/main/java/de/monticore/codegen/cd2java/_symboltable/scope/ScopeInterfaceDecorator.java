@@ -117,7 +117,7 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
         .flatMap(List::stream)
         .collect(Collectors.toList());
 
-    Set<String> symbolAttributes = createSymbolAttributesNames(symbolInput.getCDDefinition().getCDClassList(), symbolTableService.getCDSymbol());
+    Set<String> symbolAttributes = createSymbolAttributesNames(symbolInput.getCDDefinition().getCDClasssList(), symbolTableService.getCDSymbol());
     symbolAttributes.addAll(getSuperSymbolAttributesNames());
 
     return CD4AnalysisMill.cDInterfaceBuilder()

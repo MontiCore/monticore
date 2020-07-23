@@ -218,8 +218,7 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
       boolean isArtifactScopeHandCoded = existsHandwrittenClass(handCodedPath,
           constructQualifiedName(symbolTablePackage, symbolTableService.getArtifactScopeSimpleName()));
       this.artifactScopeDecorator.setArtifactScopeTop(isArtifactScopeHandCoded);
-      ASTCDClass artifactScope = c
-      reateArtifactScope(astCD);
+      ASTCDClass artifactScope = createArtifactScope(astCD);
       ASTCDInterface artifactScopeInterface = createArtifactScopeInterface(astCD);
       symTabCD.addCDClasss(artifactScope);
       symTabCD.addCDClasss(createArtifactBuilderScope(artifactScope));

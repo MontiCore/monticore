@@ -71,14 +71,13 @@ public class ArtifactScopeClassDecorator extends AbstractCreator<ASTCDCompilatio
         .setSuperclass(getMCTypeFacade().createQualifiedType(scopeClassFullName))
         .addInterface(symbolTableService.getArtifactScopeInterfaceType())
         .addAllCDConstructors(createConstructors(artifactScopeSimpleName))
-        .addCDAttribute(packageNameAttribute)
+        .addCDAttributes(packageNameAttribute)
         .addAllCDMethods(createPackageNameAttributeMethods(packageNameAttribute))
-        .addCDAttribute(importsAttribute)
+        .addCDAttributes(importsAttribute)
         .addAllCDMethods(createImportsAttributeMethods(importsAttribute))
-        .addCDMethod(createIsPresentNameMethod())
-        .addCDMethod(createGetNameMethod())
-
-        .addCDMethod(createAcceptMethod(artifactScopeSimpleName))
+        .addCDMethods(createIsPresentNameMethod())
+        .addCDMethods(createGetNameMethod())
+        .addCDMethods(createAcceptMethod(artifactScopeSimpleName))
         .build();
   }
 

@@ -140,8 +140,8 @@ public class GlobalScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(I_AUTOMATON_SCOPE, method.getCDParameter(0).getMCType());
-    assertEquals("enclosingScope", method.getCDParameter(0).getName());
+    assertDeepEquals(I_AUTOMATON_SCOPE, method.getCDParameters(0).getMCType());
+    assertEquals("enclosingScope", method.getCDParameters(0).getName());
   }
 
   @Test
@@ -151,14 +151,14 @@ public class GlobalScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, method.getModifier());
     assertListOf(AUTOMATON_SYMBOL, method.getMCReturnType().getMCType());
     assertEquals(4, method.sizeCDParameters());
-    assertBoolean(method.getCDParameter(0).getMCType());
-    assertEquals("foundSymbols", method.getCDParameter(0).getName());
-    assertDeepEquals(String.class, method.getCDParameter(1).getMCType());
-    assertEquals("name", method.getCDParameter(1).getName());
-    assertDeepEquals(ACCESS_MODIFIER, method.getCDParameter(2).getMCType());
-    assertEquals("modifier", method.getCDParameter(2).getName());
-    assertDeepEquals(PREDICATE_AUTOMATON, method.getCDParameter(3).getMCType());
-    assertEquals("predicate", method.getCDParameter(3).getName());
+    assertBoolean(method.getCDParameters(0).getMCType());
+    assertEquals("foundSymbols", method.getCDParameters(0).getName());
+    assertDeepEquals(String.class, method.getCDParameters(1).getMCType());
+    assertEquals("name", method.getCDParameters(1).getName());
+    assertDeepEquals(ACCESS_MODIFIER, method.getCDParameters(2).getMCType());
+    assertEquals("modifier", method.getCDParameters(2).getName());
+    assertDeepEquals(PREDICATE_AUTOMATON, method.getCDParameters(3).getMCType());
+    assertEquals("predicate", method.getCDParameters(3).getName());
   }
 
   @Test
@@ -168,14 +168,14 @@ public class GlobalScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, method.getModifier());
     assertListOf(QUALIFIED_NAME_SYMBOL, method.getMCReturnType().getMCType());
     assertEquals(4, method.sizeCDParameters());
-    assertBoolean(method.getCDParameter(0).getMCType());
-    assertEquals("foundSymbols", method.getCDParameter(0).getName());
-    assertDeepEquals(String.class, method.getCDParameter(1).getMCType());
-    assertEquals("name", method.getCDParameter(1).getName());
-    assertDeepEquals(ACCESS_MODIFIER, method.getCDParameter(2).getMCType());
-    assertEquals("modifier", method.getCDParameter(2).getName());
-    assertDeepEquals(PREDICATE_QUALIFIED_NAME, method.getCDParameter(3).getMCType());
-    assertEquals("predicate", method.getCDParameter(3).getName());
+    assertBoolean(method.getCDParameters(0).getMCType());
+    assertEquals("foundSymbols", method.getCDParameters(0).getName());
+    assertDeepEquals(String.class, method.getCDParameters(1).getMCType());
+    assertEquals("name", method.getCDParameters(1).getName());
+    assertDeepEquals(ACCESS_MODIFIER, method.getCDParameters(2).getMCType());
+    assertEquals("modifier", method.getCDParameters(2).getName());
+    assertDeepEquals(PREDICATE_QUALIFIED_NAME, method.getCDParameters(3).getMCType());
+    assertEquals("predicate", method.getCDParameters(3).getName());
   }
 
 
@@ -194,8 +194,8 @@ public class GlobalScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(
         "de.monticore.codegen.ast.automaton._symboltable.IAutomatonSymbolResolvingDelegate",
-        method.getCDParameter(0).getMCType());
-    assertEquals("element", method.getCDParameter(0).getName());
+        method.getCDParameters(0).getMCType());
+    assertEquals("element", method.getCDParameters(0).getName());
   }
 
 
@@ -207,14 +207,14 @@ public class GlobalScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(mcTypeFacade.createListTypeOf(AUTOMATON_SYMBOL),
         method.getMCReturnType().getMCType());
     assertEquals(4, method.sizeCDParameters());
-    assertBoolean(method.getCDParameter(0).getMCType());
-    assertEquals("foundSymbols", method.getCDParameter(0).getName());
-    assertDeepEquals(String.class, method.getCDParameter(1).getMCType());
-    assertEquals("name", method.getCDParameter(1).getName());
-    assertDeepEquals(ACCESS_MODIFIER, method.getCDParameter(2).getMCType());
-    assertEquals("modifier", method.getCDParameter(2).getName());
-    assertDeepEquals(PREDICATE_AUTOMATON, method.getCDParameter(3).getMCType());
-    assertEquals("predicate", method.getCDParameter(3).getName());
+    assertBoolean(method.getCDParameters(0).getMCType());
+    assertEquals("foundSymbols", method.getCDParameters(0).getName());
+    assertDeepEquals(String.class, method.getCDParameters(1).getMCType());
+    assertEquals("name", method.getCDParameters(1).getName());
+    assertDeepEquals(ACCESS_MODIFIER, method.getCDParameters(2).getMCType());
+    assertEquals("modifier", method.getCDParameters(2).getName());
+    assertDeepEquals(PREDICATE_AUTOMATON, method.getCDParameters(3).getMCType());
+    assertEquals("predicate", method.getCDParameters(3).getName());
   }
 
   @Test
@@ -225,14 +225,14 @@ public class GlobalScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(mcTypeFacade.createListTypeOf(AUTOMATON_SYMBOL),
         method.getMCReturnType().getMCType());
     assertEquals(4, method.sizeCDParameters());
-    assertBoolean(method.getCDParameter(0).getMCType());
-    assertEquals("foundSymbols", method.getCDParameter(0).getName());
-    assertDeepEquals(String.class, method.getCDParameter(1).getMCType());
-    assertEquals("name", method.getCDParameter(1).getName());
-    assertDeepEquals(ACCESS_MODIFIER, method.getCDParameter(2).getMCType());
-    assertEquals("modifier", method.getCDParameter(2).getName());
-    assertDeepEquals(PREDICATE_AUTOMATON, method.getCDParameter(3).getMCType());
-    assertEquals("predicate", method.getCDParameter(3).getName());
+    assertBoolean(method.getCDParameters(0).getMCType());
+    assertEquals("foundSymbols", method.getCDParameters(0).getName());
+    assertDeepEquals(String.class, method.getCDParameters(1).getMCType());
+    assertEquals("name", method.getCDParameters(1).getName());
+    assertDeepEquals(ACCESS_MODIFIER, method.getCDParameters(2).getMCType());
+    assertEquals("modifier", method.getCDParameters(2).getName());
+    assertDeepEquals(PREDICATE_AUTOMATON, method.getCDParameters(3).getMCType());
+    assertEquals("predicate", method.getCDParameters(3).getName());
   }
 
   @Test
@@ -243,14 +243,14 @@ public class GlobalScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(mcTypeFacade.createListTypeOf(QUALIFIED_NAME_SYMBOL),
         method.getMCReturnType().getMCType());
     assertEquals(4, method.sizeCDParameters());
-    assertBoolean(method.getCDParameter(0).getMCType());
-    assertEquals("foundSymbols", method.getCDParameter(0).getName());
-    assertDeepEquals(String.class, method.getCDParameter(1).getMCType());
-    assertEquals("name", method.getCDParameter(1).getName());
-    assertDeepEquals(ACCESS_MODIFIER, method.getCDParameter(2).getMCType());
-    assertEquals("modifier", method.getCDParameter(2).getName());
-    assertDeepEquals(PREDICATE_QUALIFIED_NAME, method.getCDParameter(3).getMCType());
-    assertEquals("predicate", method.getCDParameter(3).getName());
+    assertBoolean(method.getCDParameters(0).getMCType());
+    assertEquals("foundSymbols", method.getCDParameters(0).getName());
+    assertDeepEquals(String.class, method.getCDParameters(1).getMCType());
+    assertEquals("name", method.getCDParameters(1).getName());
+    assertDeepEquals(ACCESS_MODIFIER, method.getCDParameters(2).getMCType());
+    assertEquals("modifier", method.getCDParameters(2).getName());
+    assertDeepEquals(PREDICATE_QUALIFIED_NAME, method.getCDParameters(3).getMCType());
+    assertEquals("predicate", method.getCDParameters(3).getName());
   }
   @Test
   public void testMethodCount() {
