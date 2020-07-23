@@ -42,10 +42,10 @@ public class ParentAwareVisitorDecorator extends AbstractCreator<ASTCDCompilatio
         .setName(visitorService.getParentAwareVisitorSimpleName())
         .setModifier(PUBLIC_ABSTRACT.build())
         .addInterface(visitorService.getVisitorType())
-        .addCDAttribute(getParentAttribute(languageInterfaceName))
-        .addCDMethod(getParentMethod(languageInterfaceName))
-        .addCDMethod(getParentsMethod(languageInterfaceName))
-        .addAllCDMethods(getTraversMethod(compilationUnit.getCDDefinition().getCDClassList()))
+        .addCDAttributes(getParentAttribute(languageInterfaceName))
+        .addCDMethods(getParentMethod(languageInterfaceName))
+        .addCDMethods(getParentsMethod(languageInterfaceName))
+        .addAllCDMethods(getTraversMethod(compilationUnit.getCDDefinition().getCDClasssList()))
         .build();
   }
 

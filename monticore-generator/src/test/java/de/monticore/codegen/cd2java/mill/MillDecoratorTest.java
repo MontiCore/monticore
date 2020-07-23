@@ -234,7 +234,7 @@ public class MillDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeModifier() {
-    for (ASTCDAttribute astcdAttribute : millClass.getCDAttributeList()) {
+    for (ASTCDAttribute astcdAttribute : millClass.getCDAttributesList()) {
       assertTrue(astcdAttribute.isPresentModifier());
       assertTrue(PROTECTED_STATIC.build().deepEquals(astcdAttribute.getModifier()));
     }
@@ -243,8 +243,8 @@ public class MillDecoratorTest extends DecoratorTestCase {
   @Test
   public void testConstructor() {
     assertEquals(1, millClass.sizeCDConstructors());
-    assertTrue(PROTECTED.build().deepEquals(millClass.getCDConstructor(0).getModifier()));
-    assertEquals("AutomatonMill", millClass.getCDConstructor(0).getName());
+    assertTrue(PROTECTED.build().deepEquals(millClass.getCDConstructors(0).getModifier()));
+    assertEquals("AutomatonMill", millClass.getCDConstructors(0).getName());
   }
 
   @Test
@@ -268,8 +268,8 @@ public class MillDecoratorTest extends DecoratorTestCase {
     assertEquals("initMe", initMe.getName());
     //test Parameters
     assertEquals(1, initMe.sizeCDParameters());
-    assertDeepEquals("AutomatonMill", initMe.getCDParameter(0).getMCType());
-    assertEquals("a", initMe.getCDParameter(0).getName());
+    assertDeepEquals("AutomatonMill", initMe.getCDParameters(0).getMCType());
+    assertEquals("a", initMe.getCDParameters(0).getName());
     //test ReturnType
     assertTrue(initMe.getMCReturnType().isPresentMCVoidType());
     //test Modifier

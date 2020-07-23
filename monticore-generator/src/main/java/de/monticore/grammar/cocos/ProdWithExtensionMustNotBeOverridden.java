@@ -6,7 +6,7 @@ import de.monticore.grammar.grammar._ast.ASTProd;
 import de.monticore.grammar.grammar._cocos.GrammarASTProdCoCo;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
-import de.monticore.grammar.grammar._symboltable.ProdSymbolLoader;
+import de.monticore.grammar.grammar._symboltable.ProdSymbolSurrogate;
 
 import java.util.Map.Entry;
 import java.util.Optional;
@@ -44,7 +44,7 @@ public class ProdWithExtensionMustNotBeOverridden implements GrammarASTProdCoCo 
     for (Entry<String, ProdSymbol> entry : grammarSymbol.get().getProdsWithInherited()
             .entrySet()) {
       ProdSymbol rs = entry.getValue();
-      for (ProdSymbolLoader typeSymbol : rs.getSuperProds()) {
+      for (ProdSymbolSurrogate typeSymbol : rs.getSuperProds()) {
         if (a.getName().equals(typeSymbol.getName())) {
           extensionFound = true;
           break entryLoop;

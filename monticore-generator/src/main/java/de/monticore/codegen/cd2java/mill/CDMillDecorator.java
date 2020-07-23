@@ -40,11 +40,11 @@ public class CDMillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>,
 
     ASTCDDefinition astCD = CD4AnalysisMill.cDDefinitionBuilder()
         .setName(mainCD.getCDDefinition().getName())
-        .addCDClass(millClass)
+        .addCDClasss(millClass)
         .addAllCDClasss(millForSuperClasses)
         .build();
 
-    for (ASTCDClass cdClass : astCD.getCDClassList()) {
+    for (ASTCDClass cdClass : astCD.getCDClasssList()) {
       this.replaceTemplate(PACKAGE, cdClass, createPackageHookPoint(topLevelPackage));
       if (cdClass.isPresentModifier()) {
         this.replaceTemplate(ANNOTATIONS, cdClass, createAnnotationsHookPoint(cdClass.getModifier()));

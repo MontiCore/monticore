@@ -47,13 +47,13 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
   @Override
   public void visit(ASTSplitRule ast) {
     super.visit(ast);
-    grammarSymbol.addAllSplitRules(ast.getStringList());
+    grammarSymbol.addAllSplitRules(ast.getStringsList());
   }
 
   @Override
   public void visit(ASTKeywordRule ast) {
     super.visit(ast);
-    grammarSymbol.addAllNoKeywords(ast.getStringList());
+    grammarSymbol.addAllNoKeywords(ast.getStringsList());
   }
 
   @Override
@@ -68,13 +68,12 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
 
   @Override
   public void endVisit(ASTMCGrammar astGrammar) {
-
-    setComponentsCardinality();
-
-    computeStartParserProd(astGrammar);
-
     // remove grammar scope
     removeCurrentScope();
+    removeCurrentScope();
+    setComponentsCardinality(astGrammar);
+
+    computeStartParserProd(astGrammar);
 
   }
 
@@ -82,7 +81,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
   public void initialize_InterfaceProd(ProdSymbol prodSymbol, ASTInterfaceProd ast) {
     prodSymbol.setIsInterface(true);
 
-    setSymbolDefinition(prodSymbol, ast.getSymbolDefinitionList());
+    setSymbolDefinition(prodSymbol, ast.getSymbolDefinitionsList());
 
     setSuperProdsAndTypes(prodSymbol, emptyList(),
         emptyList(), ast.getSuperInterfaceRuleList(), ast.getASTSuperInterfaceList());
@@ -95,7 +94,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
 
   @Override
   public void initialize_ClassProd(ProdSymbol prodSymbol, ASTClassProd ast) {
-    setSymbolDefinition(prodSymbol, ast.getSymbolDefinitionList());
+    setSymbolDefinition(prodSymbol, ast.getSymbolDefinitionsList());
 
     setSuperProdsAndTypes(prodSymbol, ast.getSuperRuleList(),
         ast.getASTSuperClassList(), ast.getSuperInterfaceRuleList(), ast.getASTSuperInterfaceList());
@@ -106,7 +105,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
   public void initialize_AbstractProd(ProdSymbol prodSymbol, ASTAbstractProd ast) {
     prodSymbol.setIsAbstract(true);
 
-    setSymbolDefinition(prodSymbol, ast.getSymbolDefinitionList());
+    setSymbolDefinition(prodSymbol, ast.getSymbolDefinitionsList());
 
     setSuperProdsAndTypes(prodSymbol, ast.getSuperRuleList(),
         ast.getASTSuperClassList(), ast.getSuperInterfaceRuleList(), ast.getASTSuperInterfaceList());
@@ -117,7 +116,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
   public void initialize_ExternalProd(ProdSymbol prodSymbol, ASTExternalProd ast) {
     prodSymbol.setIsExternal(true);
 
-    setSymbolDefinition(prodSymbol, ast.getSymbolDefinitionList());
+    setSymbolDefinition(prodSymbol, ast.getSymbolDefinitionsList());
   }
 
   @Override
@@ -160,7 +159,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
   public void visit(ASTKeyTerminal node) {
     // only create a symbol for ASTKeyTerminals that have a usage name
     // only with usage name is shown in AST
-    grammarSymbol.noKeywords.addAll(node.getKeyConstant().getStringList());
+    grammarSymbol.noKeywords.addAll(node.getKeyConstant().getStringsList());
     if(node.isPresentUsageName()){
       super.visit(node);
     } else {
@@ -210,7 +209,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
   @Override
   public void visit(ASTKeyConstant node) {
     super.visit(node);
-    grammarSymbol.noKeywords.addAll(node.getStringList());
+    grammarSymbol.noKeywords.addAll(node.getStringsList());
   }
 
   @Override
@@ -241,7 +240,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
   public void visit(ASTASTRule ast) {
     final Optional<ProdSymbol> prodSymbol = grammarSymbol.getProdWithInherited(ast.getType());
     if (prodSymbol.isPresent()) {
-      ast.getAdditionalAttributeList().forEach(a -> addAttributeInAST(prodSymbol.get(), a, true));
+      ast.getAdditionalAttributesList().forEach(a -> addAttributeInAST(prodSymbol.get(), a, true));
     } else {
       error(
           "0xA4076 There must not exist an AST rule for the nonterminal " + ast.getType()
@@ -255,7 +254,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
   public void visit(ASTSymbolRule ast) {
     final Optional<ProdSymbol> prodSymbol = grammarSymbol.getProdWithInherited(ast.getType());
     if (prodSymbol.isPresent()) {
-      ast.getAdditionalAttributeList().forEach(a -> addAttributeInAST(prodSymbol.get(), a, false));
+      ast.getAdditionalAttributesList().forEach(a -> addAttributeInAST(prodSymbol.get(), a, false));
     } else {
       error(
               "0xA4077 There must not exist an AST rule for the nonterminal " + ast.getType()
@@ -316,13 +315,13 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
   @Override
   protected void initialize_ConstantGroup(RuleComponentSymbol symbol, ASTConstantGroup ast) {
     symbol.setIsConstantGroup(true);
-    for (ASTConstant c : ast.getConstantList()) {
+    for (ASTConstant c : ast.getConstantsList()) {
       if (c.isPresentUsageName()) {
-        symbol.addSubProd(c.getUsageName());
+        symbol.addSubProds(c.getUsageName());
       } else if (c.isPresentKeyConstant()) {
-        symbol.addSubProd(c.getKeyConstant().getString(0));
+        symbol.addSubProds(c.getKeyConstant().getStrings(0));
       } else {
-        symbol.addSubProd(c.getName());
+        symbol.addSubProds(c.getName());
       }
     }
   }
@@ -357,10 +356,11 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
 
   private void addSuperGrammars(ASTMCGrammar astGrammar, MCGrammarSymbol grammarSymbol) {
     for (ASTGrammarReference ref : astGrammar.getSupergrammarList()) {
-      final String superGrammarName = getQualifiedName(ref.getNameList());
+      final String superGrammarName = getQualifiedName(ref.getNamesList());
 
-      final MCGrammarSymbolLoader superGrammar = new MCGrammarSymbolLoader(
-          superGrammarName, getCurrentScope().orElse(null));
+      final MCGrammarSymbolSurrogate superGrammar = new MCGrammarSymbolSurrogate(
+          superGrammarName);
+      superGrammar.setEnclosingScope(getCurrentScope().orElse(null));
 
       grammarSymbol.addSuperGrammar(superGrammar);
     }
@@ -373,29 +373,29 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
 
     // A extends B
     for (ASTRuleReference astSuperProd : superProds) {
-      ProdSymbolLoader superProd = new ProdSymbolLoader(astSuperProd.getTypeName(),
-          enclosingScope);
+      ProdSymbolSurrogate superProd = new ProdSymbolSurrogate(astSuperProd.getTypeName());
+      superProd.setEnclosingScope(enclosingScope);
       prodSymbol.addSuperProd(superProd);
     }
 
     // A astextends B
     for (ASTMCType astSuperClass : astSuperClasses) {
-      ProdSymbolLoader superClass = new ProdSymbolLoader(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(astSuperClass),
-          enclosingScope);
+      ProdSymbolSurrogate superClass = new ProdSymbolSurrogate(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(astSuperClass));
+      superClass.setEnclosingScope(enclosingScope);
       prodSymbol.addAstSuperClass(superClass);
     }
 
     // A implements B
     for (ASTRuleReference astInterface : superInterfaceProds) {
-      ProdSymbolLoader superProd = new ProdSymbolLoader(astInterface.getTypeName(),
-          enclosingScope);
+      ProdSymbolSurrogate superProd = new ProdSymbolSurrogate(astInterface.getTypeName());
+      superProd.setEnclosingScope(enclosingScope);
       prodSymbol.addSuperInterfaceProd(superProd);
     }
 
     // A astimplements B
     for (ASTMCType astInterface : astSuperInterfaces) {
-      ProdSymbolLoader superClass = new ProdSymbolLoader(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(astInterface),
-          enclosingScope);
+      ProdSymbolSurrogate superClass = new ProdSymbolSurrogate(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(astInterface));
+      superClass.setEnclosingScope(enclosingScope);
       prodSymbol.addAstSuperInterface(superClass);
     }
   }
@@ -403,8 +403,8 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
   /**
    * Set cardinality of all grammar's nonterminals
    */
-  private void setComponentsCardinality() {
-    for (ProdSymbol prodSymbol : grammarSymbol.getProdsWithInherited().values()) {
+  private void setComponentsCardinality(ASTMCGrammar astGrammar) {
+    for (ProdSymbol prodSymbol : astGrammar.getSymbol().getProdsWithInherited().values()) {
       Collection<AdditionalAttributeSymbol> astAttributes = prodSymbol.getSpannedScope().getLocalAdditionalAttributeSymbols();
       LinkedListMultimap<String, RuleComponentSymbol> map = prodSymbol.getSpannedScope().getRuleComponentSymbols();
       for (String compName : prodSymbol.getSpannedScope().getRuleComponentSymbols().keySet()) {
@@ -447,34 +447,34 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
   private void computeStartParserProd(ASTMCGrammar astGrammar) {
     if (astGrammar.isPresentStartRule()) {
       String name = astGrammar.getStartRule().getName();
-      Optional<ProdSymbol> prod = grammarSymbol.getProdWithInherited(name);
+      Optional<ProdSymbol> prod = astGrammar.getSymbol().getProdWithInherited(name);
       if (!prod.isPresent()) {
         error("0xA0243 Rule " + name + " couldn't be found!");
       } else {
         prod.get().setIsStartProd(true);
-        grammarSymbol.setStartProd(prod.get());
+        astGrammar.getSymbol().setStartProd(prod.get());
       }
     } else {
       final Set<ASTProd> firstProductions = newLinkedHashSet();
       // The start rule for parsing is the first occurring Interface-, Abstract-
       // or Class-Production in this grammar
-      if (astGrammar.getClassProdList().size() != 0) {
-        firstProductions.add(astGrammar.getClassProdList().get(0));
+      if (astGrammar.getClassProdsList().size() != 0) {
+        firstProductions.add(astGrammar.getClassProdsList().get(0));
       }
-      if (astGrammar.getInterfaceProdList().size() != 0) {
-        firstProductions.add(astGrammar.getInterfaceProdList().get(0));
+      if (astGrammar.getInterfaceProdsList().size() != 0) {
+        firstProductions.add(astGrammar.getInterfaceProdsList().get(0));
       }
-      if (astGrammar.getAbstractProdList().size() != 0) {
-        firstProductions.add(astGrammar.getAbstractProdList().get(0));
+      if (astGrammar.getAbstractProdsList().size() != 0) {
+        firstProductions.add(astGrammar.getAbstractProdsList().get(0));
       }
-      setStartProd(firstProductions);
+      setStartProd(astGrammar, firstProductions);
     }
   }
 
   /**
    * Set start parser production
    */
-  private void setStartProd(Set<ASTProd> firstProductions) {
+  private void setStartProd(ASTMCGrammar astGrammar, Set<ASTProd> firstProductions) {
     // Set start parser rule
     ASTProd firstProduction = null;
     for (ASTProd prod : firstProductions) {
@@ -486,13 +486,13 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
     }
 
     if (firstProduction != null) {
-      Optional<ProdSymbol> prod = grammarSymbol.getProdWithInherited(firstProduction.getName());
+      Optional<ProdSymbol> prod = astGrammar.getSymbol().getProdWithInherited(firstProduction.getName());
       if (!prod.isPresent()) {
         error("0xA2174 Prod " + firstProduction.getName() + " couldn't be found! Pos: "
             + firstProduction.get_SourcePositionStart());
       } else {
         prod.get().setIsStartProd(true);
-        grammarSymbol.setStartProd(prod.get());
+        astGrammar.getSymbol().setStartProd(prod.get());
       }
     }
   }

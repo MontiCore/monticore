@@ -38,12 +38,12 @@ public class InheritanceTest {
     ASTCDCompilationUnit cdCompilationUnit = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/InheritanceGrammar.mc4")).get();
 
-    astA = TestHelper.getCDClass(cdCompilationUnit, "ASTA").get();
-    astB = TestHelper.getCDClass(cdCompilationUnit, "ASTB").get();
-    astC = TestHelper.getCDClass(cdCompilationUnit, "ASTC").get();
-    astD = TestHelper.getCDClass(cdCompilationUnit, "ASTD").get();
-    astE = TestHelper.getCDClass(cdCompilationUnit, "ASTE").get();
-    astF = TestHelper.getCDClass(cdCompilationUnit, "ASTF").get();
+    astA = TestHelper.getCDClasss(cdCompilationUnit, "ASTA").get();
+    astB = TestHelper.getCDClasss(cdCompilationUnit, "ASTB").get();
+    astC = TestHelper.getCDClasss(cdCompilationUnit, "ASTC").get();
+    astD = TestHelper.getCDClasss(cdCompilationUnit, "ASTD").get();
+    astE = TestHelper.getCDClasss(cdCompilationUnit, "ASTE").get();
+    astF = TestHelper.getCDClasss(cdCompilationUnit, "ASTF").get();
 
   }
   

@@ -67,7 +67,7 @@ public class GlobalScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterfacesCount() {
-    assertEquals(2, scopeInterface.sizeInterfaces());
+    assertEquals(2, scopeInterface.sizeInterface());
   }
 
   @Test
@@ -83,8 +83,8 @@ public class GlobalScopeInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = getMethodBy("calculateModelNamesForAutomaton", scopeInterface);
     assertDeepEquals("Set<String>", method.getMCReturnType().getMCType());
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
-    assertEquals("name", method.getCDParameter(0).getName());
+    assertDeepEquals(String.class, method.getCDParameters(0).getMCType());
+    assertEquals("name", method.getCDParameters(0).getName());
   }
 
   @Test
@@ -92,8 +92,8 @@ public class GlobalScopeInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = getMethodBy("calculateModelNamesForState", scopeInterface);
     assertDeepEquals("Set<String>", method.getMCReturnType().getMCType());
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
-    assertEquals("name", method.getCDParameter(0).getName());
+    assertDeepEquals(String.class, method.getCDParameters(0).getMCType());
+    assertEquals("name", method.getCDParameters(0).getName());
   }
 
 
@@ -105,13 +105,13 @@ public class GlobalScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
 
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
-    assertEquals("calculatedModelName", method.getCDParameter(0).getName());
+    assertDeepEquals(String.class, method.getCDParameters(0).getMCType());
+    assertEquals("calculatedModelName", method.getCDParameters(0).getName());
   }
 
   @Test
   public void testMethodCount() {
-    assertEquals(3, scopeInterface.getCDMethodList().size());
+    assertEquals(3, scopeInterface.getCDMethodsList().size());
   }
 
 }

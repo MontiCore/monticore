@@ -61,11 +61,11 @@ public class SymbolTableCreatorDelegatorDecorator extends AbstractCreator<ASTCDC
           .setName(symbolTableCreatorDelegatorName)
           .setModifier(PUBLIC.build())
           .setSuperclass(getMCTypeFacade().createQualifiedType(delegatorVisitorName))
-          .addCDConstructor(createConstructor(symbolTableCreatorDelegatorName, globalScopeInterfaceName, symbolTableCreatorName, simpleName))
-          .addCDAttribute(createScopeStackAttribute(dequeType))
-          .addCDAttribute(createSymbolTableCreatorAttribute(symbolTableCreatorName))
-          .addCDAttribute(createGlobalScopeAttribute(globalScopeInterfaceName))
-          .addCDMethod(createCreateFromASTMethod(astFullName, artifactScopeName))
+          .addCDConstructors(createConstructor(symbolTableCreatorDelegatorName, globalScopeInterfaceName, symbolTableCreatorName, simpleName))
+          .addCDAttributes(createScopeStackAttribute(dequeType))
+          .addCDAttributes(createSymbolTableCreatorAttribute(symbolTableCreatorName))
+          .addCDAttributes(createGlobalScopeAttribute(globalScopeInterfaceName))
+          .addCDMethods(createCreateFromASTMethod(astFullName, artifactScopeName))
           .build();
       return Optional.ofNullable(symTabCreatorDelegator);
     }

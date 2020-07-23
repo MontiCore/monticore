@@ -19,12 +19,12 @@ public class RemoveRedundantReferencesManipulationTest {
         TransformationHelper.createType("ASTReference"), "name",
         TransformationHelper.createType("java.util.List", "ASTReference"));
     
-    assertEquals(2, cdClass.getCDAttributeList().size());
+    assertEquals(2, cdClass.getCDAttributesList().size());
     
     new RemoveRedundantAttributesManipulation()
-        .removeRedundantAttributes(cdClass.getCDAttributeList());
+        .removeRedundantAttributes(cdClass.getCDAttributesList());
     
-    assertEquals(1, cdClass.getCDAttributeList().size());
+    assertEquals(1, cdClass.getCDAttributesList().size());
   }
   
   private ASTCDClass setupCDClass(String firstReferenceName, ASTMCType firstReferenceType,
@@ -39,8 +39,8 @@ public class RemoveRedundantReferencesManipulationTest {
     listAttribute.setName(secondReferenceName);
     listAttribute.setMCType(secondReferenceType);
     
-    cdClass.getCDAttributeList().add(singleAttribute);
-    cdClass.getCDAttributeList().add(listAttribute);
+    cdClass.getCDAttributesList().add(singleAttribute);
+    cdClass.getCDAttributesList().add(listAttribute);
     
     return cdClass;
   }

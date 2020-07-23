@@ -52,14 +52,14 @@ public class NodeFactoryWithInheritanceTest extends DecoratorTestCase {
   @Test
   public void testAttributeName() {
     assertEquals(3, factoryClass.sizeCDAttributes());
-    assertEquals("factory", factoryClass.getCDAttribute(0).getName());
-    assertEquals("factoryASTBlub", factoryClass.getCDAttribute(1).getName());
-    assertEquals("factoryASTBli", factoryClass.getCDAttribute(2).getName());
+    assertEquals("factory", factoryClass.getCDAttributes(0).getName());
+    assertEquals("factoryASTBlub", factoryClass.getCDAttributes(1).getName());
+    assertEquals("factoryASTBli", factoryClass.getCDAttributes(2).getName());
   }
 
   @Test
   public void testAttributeModifier() {
-    for (ASTCDAttribute astcdAttribute : factoryClass.getCDAttributeList()) {
+    for (ASTCDAttribute astcdAttribute : factoryClass.getCDAttributesList()) {
       assertTrue(astcdAttribute.isPresentModifier());
       assertTrue(PROTECTED_STATIC.build().deepEquals(astcdAttribute.getModifier()));
     }
@@ -72,12 +72,12 @@ public class NodeFactoryWithInheritanceTest extends DecoratorTestCase {
         .setModifier(PROTECTED.build())
         .setName("CGrammarNodeFactory")
         .build();
-    assertDeepEquals(astcdConstructor, factoryClass.getCDConstructor(0));
+    assertDeepEquals(astcdConstructor, factoryClass.getCDConstructors(0));
   }
 
   @Test
   public void testMethodGetFactory() {
-    ASTCDMethod method = factoryClass.getCDMethod(0);
+    ASTCDMethod method = factoryClass.getCDMethods(0);
     //test name
     assertEquals("getFactory", method.getName());
     //test modifier
@@ -91,7 +91,7 @@ public class NodeFactoryWithInheritanceTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCreateDelegateASTC() {
-    ASTCDMethod method = factoryClass.getCDMethod(5);
+    ASTCDMethod method = factoryClass.getCDMethods(5);
     //test name
     assertEquals("createASTB", method.getName());
     //test modifier
@@ -105,7 +105,7 @@ public class NodeFactoryWithInheritanceTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCreateDelegateASTFoo() {
-    ASTCDMethod method = factoryClass.getCDMethod(6);
+    ASTCDMethod method = factoryClass.getCDMethods(6);
     //test name
     assertEquals("createASTFoo", method.getName());
     //test modifier
@@ -119,7 +119,7 @@ public class NodeFactoryWithInheritanceTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCreateDelegateASTBar() {
-    ASTCDMethod method = factoryClass.getCDMethod(7);
+    ASTCDMethod method = factoryClass.getCDMethods(7);
     //test name
     assertEquals("createASTBar", method.getName());
     //test modifier

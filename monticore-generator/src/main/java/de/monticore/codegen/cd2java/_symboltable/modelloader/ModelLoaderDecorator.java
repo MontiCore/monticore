@@ -58,11 +58,11 @@ public class ModelLoaderDecorator extends AbstractCreator<ASTCDCompilationUnit, 
           .setName(modelLoaderClassName)
           .setModifier(PUBLIC.build())
           .addInterface(iModelLoader)
-          .addCDConstructor(createConstructor(modelLoaderClassName, stcName, astFullName))
-          .addCDAttribute(createAStProviderAttribute(astFullName))
-          .addCDAttribute(createSymbolTableCreatorAttribute(stcName))
-          .addCDAttribute(createStringAttribute("modelFileExtension"))
-          .addCDAttribute(createStringAttribute("symbolFileExtension"))
+          .addCDConstructors(createConstructor(modelLoaderClassName, stcName, astFullName))
+          .addCDAttributes(createAStProviderAttribute(astFullName))
+          .addCDAttributes(createSymbolTableCreatorAttribute(stcName))
+          .addCDAttributes(createStringAttribute("modelFileExtension"))
+          .addCDAttributes(createStringAttribute("symbolFileExtension"))
           .addAllCDMethods(createModelLoaderMethod(astFullName, globalScopeName, modelLoaderClassName))
           .build();
       return Optional.ofNullable(modelLoaderClass);

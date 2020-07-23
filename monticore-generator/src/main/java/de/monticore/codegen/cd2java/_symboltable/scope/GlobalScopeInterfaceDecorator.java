@@ -64,10 +64,10 @@ public class GlobalScopeInterfaceDecorator
     return CD4AnalysisMill.cDInterfaceBuilder()
         .setName(globalScopeInterfaceName)
         .setModifier(PUBLIC.build())
-        .addAllInterfaces(getSuperGlobalScopeInterfaces())
+        .addAllInterface(getSuperGlobalScopeInterfaces())
         .addInterface(symbolTableService.getScopeInterfaceType())
         .addAllCDMethods(createCalculateModelNameMethods(symbolClasses))
-        .addCDMethod(createCacheMethod())
+        .addCDMethods(createCacheMethod())
         .build();
   }
 

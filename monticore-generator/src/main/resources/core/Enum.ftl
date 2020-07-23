@@ -4,22 +4,22 @@ ${tc.signature("cdEnum")}
 ${tc.include("core.Package")}
 
 ${tc.include("core.Annotations")}
-public enum ${cdEnum.getName()}<#if !cdEnum.isEmptyInterfaces()> implements ${cdEnum.printInterfaces()}</#if> {
+public enum ${cdEnum.getName()}<#if !cdEnum.isEmptyInterface()> implements ${cdEnum.printInterfaces()}</#if> {
 
-<#list cdEnum.getCDEnumConstantList() as constants>
+<#list cdEnum.getCDEnumConstantsList() as constants>
   ${tc.include("core.EmptyConstants", constants)}<#if !constants?is_last>,</#if>
 </#list>
 ;
 
-<#list cdEnum.getCDAttributeList() as attribute>
+<#list cdEnum.getCDAttributesList() as attribute>
   ${tc.include("core.Attribute", attribute)}
 </#list>
 
-<#list cdEnum.getCDConstructorList() as constructor>
+<#list cdEnum.getCDConstructorsList() as constructor>
   ${tc.include("core.Constructor", constructor)}
 </#list>
 
-<#list cdEnum.getCDMethodList() as method>
+<#list cdEnum.getCDMethodsList() as method>
   ${tc.include("core.Method", method)}
 </#list>
 }

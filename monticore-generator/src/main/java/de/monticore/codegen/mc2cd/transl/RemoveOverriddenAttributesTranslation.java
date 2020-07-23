@@ -41,7 +41,7 @@ public class RemoveOverriddenAttributesTranslation implements
       for (Link<ASTNode, ASTCDAttribute> link : classLink.getLinks(ASTNode.class, ASTCDAttribute.class)) {
         if (isOverridden(link, classLink) && isNotInherited(link.target())) {
           ASTCDAttribute target = link.target();
-          classLink.target().getCDAttributeList().remove(target);
+          classLink.target().getCDAttributesList().remove(target);
         }
       }
     }
