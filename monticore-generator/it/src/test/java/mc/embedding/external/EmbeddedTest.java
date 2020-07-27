@@ -6,6 +6,7 @@ import de.monticore.io.paths.ModelPath;
 import mc.GeneratorIntegrationsTest;
 import mc.embedding.external.embedded.EmbeddedMill;
 import mc.embedding.external.embedded._symboltable.EmbeddedGlobalScope;
+import mc.embedding.external.embedded._symboltable.IEmbeddedGlobalScope;
 import mc.embedding.external.embedded._symboltable.TextSymbol;
 import org.junit.Test;
 
@@ -20,7 +21,7 @@ public class EmbeddedTest extends GeneratorIntegrationsTest {
   public void test() {
     final ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/mc/embedding"));
 
-    final EmbeddedGlobalScope scope = EmbeddedMill
+    final IEmbeddedGlobalScope scope = EmbeddedMill
         .embeddedGlobalScopeBuilder()
         .setModelPath(modelPath)
         .setModelFileExtension("embedded")

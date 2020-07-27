@@ -7,6 +7,7 @@ import mc.GeneratorIntegrationsTest;
 import mc.embedding.host.HostMill;
 import mc.embedding.host._symboltable.HostGlobalScope;
 import mc.embedding.host._symboltable.HostSymbol;
+import mc.embedding.host._symboltable.IHostGlobalScope;
 import org.junit.Test;
 
 import java.nio.file.Paths;
@@ -20,7 +21,7 @@ public class HostTest extends GeneratorIntegrationsTest {
   public void test() {
     final ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/mc/embedding"));
 
-    final HostGlobalScope scope = HostMill
+    final IHostGlobalScope scope = HostMill
         .hostGlobalScopeBuilder()
         .setModelPath(modelPath)
         .setModelFileExtension("host")
