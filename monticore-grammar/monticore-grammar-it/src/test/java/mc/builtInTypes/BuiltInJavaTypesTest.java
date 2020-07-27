@@ -15,7 +15,7 @@ import static org.junit.Assert.*;
 
 public class BuiltInJavaTypesTest {
 
-  private static OOSymbolsGlobalScope gs;
+  private static IOOSymbolsGlobalScope gs;
 
   @BeforeClass
   public static void setup(){

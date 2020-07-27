@@ -61,7 +61,7 @@ public class TransitionSourceExistsTest {
     ).get();
     
     // setup the symbol table
-    AutomataArtifactScope modelTopScope = createSymbolTable(ast);
+    IAutomataArtifactScope modelTopScope = createSymbolTable(ast);
 
     // can be used for resolving names in the model
     Optional<StateSymbol> aSymbol = modelTopScope.resolveState("Simple.A");
@@ -80,7 +80,7 @@ public class TransitionSourceExistsTest {
     ).get();
     
     // setup the symbol table
-    AutomataArtifactScope modelTopScope = createSymbolTable(ast);
+    IAutomataArtifactScope modelTopScope = createSymbolTable(ast);
 
     // setup context condition infrastructure & check
     AutomataCoCoChecker checker = new AutomataCoCoChecker();
@@ -100,7 +100,7 @@ public class TransitionSourceExistsTest {
     ).get();
     
     // setup the symbol table
-    AutomataArtifactScope modelTopScope = createSymbolTable(ast);
+    IAutomataArtifactScope modelTopScope = createSymbolTable(ast);
 
     // setup context condition infrastructure & check
     AutomataCoCoChecker checker = new AutomataCoCoChecker();
@@ -121,8 +121,8 @@ public class TransitionSourceExistsTest {
    * @param ast
    * @return
    */
-  public static AutomataArtifactScope createSymbolTable(ASTAutomaton ast) {
-    AutomataGlobalScope globalScope = AutomataMill
+  public static IAutomataArtifactScope createSymbolTable(ASTAutomaton ast) {
+    IAutomataGlobalScope globalScope = AutomataMill
         .automataGlobalScopeBuilder()
         .setModelPath(new ModelPath())
         .setModelFileExtension("aut")
