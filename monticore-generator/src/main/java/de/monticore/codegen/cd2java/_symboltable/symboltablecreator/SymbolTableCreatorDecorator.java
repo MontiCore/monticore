@@ -139,7 +139,7 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
 
   protected ASTCDMethod createCreateFromASTMethod(String astStartProd, String symbolTableCreator, String symTabMillFullName) {
     String artifactScope = symbolTableService.getArtifactScopeSimpleName();
-    String artifactScopeFullName = symbolTableService.getArtifactScopeFullName();
+    String artifactScopeFullName = symbolTableService.getArtifactScopeInterfaceFullName();
     ASTCDParameter rootNodeParam = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(astStartProd), "rootNode");
     ASTCDMethod createFromAST = getCDMethodFacade().createMethod(PUBLIC,
         getMCTypeFacade().createQualifiedType(artifactScopeFullName), "createFromAST", rootNodeParam);

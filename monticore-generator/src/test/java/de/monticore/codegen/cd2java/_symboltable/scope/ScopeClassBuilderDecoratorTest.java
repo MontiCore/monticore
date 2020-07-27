@@ -55,7 +55,7 @@ public class ScopeClassBuilderDecoratorTest extends DecoratorTestCase {
     BuilderDecorator builderDecorator = new BuilderDecorator(glex, new AccessorDecorator(glex,
         new SymbolTableService(decoratedCompilationUnit)), new SymbolTableService(decoratedCompilationUnit));
 
-    ScopeClassBuilderDecorator decorator = new ScopeClassBuilderDecorator(this.glex, builderDecorator);
+    ScopeClassBuilderDecorator decorator = new ScopeClassBuilderDecorator(this.glex, new SymbolTableService(decoratedCompilationUnit),builderDecorator);
 
     //creates normal Symbol
     this.scopeBuilderClass = decorator.decorate(cdClass);
@@ -163,7 +163,7 @@ public class ScopeClassBuilderDecoratorTest extends DecoratorTestCase {
   public void testBuildMethod() {
     ASTCDMethod method = getMethodBy("build", scopeBuilderClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(MCTypeFacade.createQualifiedType("AScope"), method.getMCReturnType().getMCType());
+    assertDeepEquals(MCTypeFacade.createQualifiedType("IAScope"), method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
   }

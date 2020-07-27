@@ -168,7 +168,7 @@ public class GlobalScopeClassBuilderDecoratorTest extends DecoratorTestCase {
   public void testBuildMethod() {
     ASTCDMethod method = getMethodBy("build", scopeClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals("AGlobalScope", method.getMCReturnType().getMCType());
+    assertDeepEquals("IAGlobalScope", method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
   }

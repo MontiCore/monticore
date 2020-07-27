@@ -195,7 +195,7 @@ public class ArtifactScopeBuilderDecoratorTest extends DecoratorTestCase {
   public void testBuildMethod() {
     ASTCDMethod method = getMethodBy("build", scopeClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals("AArtifactScope", method.getMCReturnType().getMCType());
+    assertDeepEquals("IAArtifactScope", method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
   }

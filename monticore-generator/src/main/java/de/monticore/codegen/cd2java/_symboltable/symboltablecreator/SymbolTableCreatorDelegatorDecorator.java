@@ -53,7 +53,7 @@ public class SymbolTableCreatorDelegatorDecorator extends AbstractCreator<ASTCDC
       String scopeInterface = symbolTableService.getScopeInterfaceFullName();
       String globalScopeInterfaceName = symbolTableService.getGlobalScopeInterfaceFullName();
       String simpleName = symbolTableService.getCDName();
-      String artifactScopeName = symbolTableService.getArtifactScopeFullName();
+      String artifactScopeName = symbolTableService.getArtifactScopeInterfaceFullName();
       String delegatorVisitorName = visitorService.getDelegatorVisitorFullName();
       ASTMCBasicGenericType dequeType = getMCTypeFacade().createBasicGenericTypeOf(DEQUE_TYPE, scopeInterface);
 

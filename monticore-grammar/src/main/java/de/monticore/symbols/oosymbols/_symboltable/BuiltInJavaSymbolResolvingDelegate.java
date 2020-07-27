@@ -23,22 +23,22 @@ import static de.monticore.types.check.DefsTypeBasic.*;
  */
 public class BuiltInJavaSymbolResolvingDelegate implements IOOTypeSymbolResolvingDelegate {
 
-  protected static OOSymbolsGlobalScope gs = initScope();
+  protected static IOOSymbolsGlobalScope gs = initScope();
 
-  protected static OOSymbolsGlobalScope initScope() {
+  protected static IOOSymbolsGlobalScope initScope() {
     gs = OOSymbolsMill
         .oOSymbolsGlobalScopeBuilder()
         .setModelPath(new ModelPath())
         .setModelFileExtension("ts")
         .build();
     //package java.lang
-    OOSymbolsArtifactScope javalang = OOSymbolsMill
+    IOOSymbolsArtifactScope javalang = OOSymbolsMill
         .oOSymbolsArtifactScopeBuilder()
         .setPackageName("java.lang")
         .build();
     gs.addSubScope(javalang);
     //package java.util
-    OOSymbolsArtifactScope javautil = OOSymbolsMill
+    IOOSymbolsArtifactScope javautil = OOSymbolsMill
         .oOSymbolsArtifactScopeBuilder()
         .setPackageName("java.util")
         .build();
@@ -354,7 +354,7 @@ public class BuiltInJavaSymbolResolvingDelegate implements IOOTypeSymbolResolvin
     return gs.resolveOOTypeMany(foundSymbols, symbolName, modifier, predicate);
   }
 
-  public static OOSymbolsScope getScope(){
+  public static IOOSymbolsScope getScope(){
     return gs;
   }
 

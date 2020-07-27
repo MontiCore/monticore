@@ -12,6 +12,7 @@ import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 
 import java.util.List;
 import java.util.Optional;
@@ -63,8 +64,13 @@ public class ArtifactScopeClassBuilderDecorator extends AbstractCreator<ASTCDCla
         .stream()
         .filter(m -> BUILD_METHOD.equals(m.getName()))
         .findFirst();
-    buildMethod.ifPresent(b -> this.replaceTemplate(EMPTY_BODY, b,
-        new TemplateHookPoint(TEMPLATE_PATH + "BuildArtifactScope", scopeClass.getName())));
+    if (buildMethod.isPresent()) {
+      this.replaceTemplate(EMPTY_BODY, buildMethod.get(),
+          new TemplateHookPoint(TEMPLATE_PATH + "BuildArtifactScope", scopeClass.getName()));
+      buildMethod.get().setMCReturnType(MCBasicTypesMill.mCReturnTypeBuilder()
+          .setMCType(getMCTypeFacade().createQualifiedType("I"+ buildMethod.get().printReturnType()))
+          .build());
+    }
 
     BuilderMutatorMethodDecorator builderMutatorMethodDecorator = new BuilderMutatorMethodDecorator(glex,
         getMCTypeFacade().createQualifiedType(scopeBuilderName));
