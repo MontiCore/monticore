@@ -6,8 +6,6 @@ import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
-import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsLanguage;
-import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsSymbolTableCreatorDelegator;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
