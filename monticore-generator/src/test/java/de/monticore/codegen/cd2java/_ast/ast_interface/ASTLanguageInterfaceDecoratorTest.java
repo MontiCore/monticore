@@ -79,9 +79,9 @@ public class ASTLanguageInterfaceDecoratorTest extends DecoratorTestCase {
     );
 
     assertEquals(1, method.sizeCDParameters());
-    assertEquals("visitor", method.getCDParameter(0).getName());
+    assertEquals("visitor", method.getCDParameters(0).getName());
     ASTMCType visitorType = this.MCTypeFacade.createQualifiedType("de.monticore.codegen.ast.automaton._visitor.AutomatonVisitor");
-    assertDeepEquals(visitorType, method.getCDParameter(0).getMCType());
+    assertDeepEquals(visitorType, method.getCDParameters(0).getMCType());
   }
 
   @Test

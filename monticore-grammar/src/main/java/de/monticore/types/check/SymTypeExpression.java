@@ -2,9 +2,9 @@
 package de.monticore.types.check;
 
 import com.google.common.collect.Lists;
-import de.monticore.types.basictypesymbols._symboltable.TypeVarSymbol;
-import de.monticore.types.typesymbols.TypeSymbolsMill;
-import de.monticore.types.typesymbols._symboltable.*;
+import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
+import de.monticore.symbols.oosymbols.OOSymbolsMill;
+import de.monticore.symbols.oosymbols._symboltable.*;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -136,7 +136,7 @@ public abstract class SymTypeExpression {
         fieldSymbols.add(parameter.deepClone());
       }
       MethodSymbol copiedMethodSymbol = method.deepClone();
-      TypeSymbolsScope scope = TypeSymbolsMill.typeSymbolsScopeBuilder().build();
+      OOSymbolsScope scope = OOSymbolsMill.oOSymbolsScopeBuilder().build();
       for(FieldSymbol parameter: fieldSymbols){
         scope.add(parameter);
       }

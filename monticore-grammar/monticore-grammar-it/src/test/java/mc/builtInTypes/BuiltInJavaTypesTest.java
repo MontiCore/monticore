@@ -2,8 +2,8 @@
 package mc.builtInTypes;
 
 import de.monticore.io.paths.ModelPath;
-import de.monticore.types.typesymbols.TypeSymbolsMill;
-import de.monticore.types.typesymbols._symboltable.*;
+import de.monticore.symbols.oosymbols.OOSymbolsMill;
+import de.monticore.symbols.oosymbols._symboltable.*;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -15,17 +15,17 @@ import static org.junit.Assert.*;
 
 public class BuiltInJavaTypesTest {
 
-  private static TypeSymbolsGlobalScope gs;
+  private static OOSymbolsGlobalScope gs;
 
   @BeforeClass
   public static void setup(){
     LogStub.init();
-    gs = TypeSymbolsMill
-        .typeSymbolsGlobalScopeBuilder()
+    gs = OOSymbolsMill
+        .oOSymbolsGlobalScopeBuilder()
         .setModelPath(new ModelPath())
         .setModelFileExtension("bijt")
         .build();
-    gs.addAdaptedOOTypeSymbolResolvingDelegate(new BuiltInJavaTypeSymbolResolvingDelegate());
+    gs.addAdaptedOOTypeSymbolResolvingDelegate(new BuiltInJavaSymbolResolvingDelegate());
 
 
      //other way to get globalscope: gs = BuiltInJavaTypeSymbolResolvingDelegate.getScope();
@@ -56,42 +56,42 @@ public class BuiltInJavaTypesTest {
     //assert that the primitives have no fields, methods, type variables and super types
     assertTrue(intsymtype.get().getMethodList().isEmpty());
     assertTrue(intsymtype.get().getFieldList().isEmpty());
-    assertTrue(intsymtype.get().getSuperTypeList().isEmpty());
+    assertTrue(intsymtype.get().getSuperTypesList().isEmpty());
     assertTrue(intsymtype.get().getTypeParameterList().isEmpty());
 
     assertTrue(doublesymtype.get().getMethodList().isEmpty());
     assertTrue(doublesymtype.get().getFieldList().isEmpty());
-    assertTrue(doublesymtype.get().getSuperTypeList().isEmpty());
+    assertTrue(doublesymtype.get().getSuperTypesList().isEmpty());
     assertTrue(doublesymtype.get().getTypeParameterList().isEmpty());
 
     assertTrue(floatsymtype.get().getMethodList().isEmpty());
     assertTrue(floatsymtype.get().getFieldList().isEmpty());
-    assertTrue(floatsymtype.get().getSuperTypeList().isEmpty());
+    assertTrue(floatsymtype.get().getSuperTypesList().isEmpty());
     assertTrue(floatsymtype.get().getTypeParameterList().isEmpty());
 
     assertTrue(longsymtype.get().getMethodList().isEmpty());
     assertTrue(longsymtype.get().getFieldList().isEmpty());
-    assertTrue(longsymtype.get().getSuperTypeList().isEmpty());
+    assertTrue(longsymtype.get().getSuperTypesList().isEmpty());
     assertTrue(longsymtype.get().getTypeParameterList().isEmpty());
 
     assertTrue(charsymtype.get().getMethodList().isEmpty());
     assertTrue(charsymtype.get().getFieldList().isEmpty());
-    assertTrue(charsymtype.get().getSuperTypeList().isEmpty());
+    assertTrue(charsymtype.get().getSuperTypesList().isEmpty());
     assertTrue(charsymtype.get().getTypeParameterList().isEmpty());
 
     assertTrue(shortsymtype.get().getMethodList().isEmpty());
     assertTrue(shortsymtype.get().getFieldList().isEmpty());
-    assertTrue(shortsymtype.get().getSuperTypeList().isEmpty());
+    assertTrue(shortsymtype.get().getSuperTypesList().isEmpty());
     assertTrue(shortsymtype.get().getTypeParameterList().isEmpty());
 
     assertTrue(bytesymtype.get().getMethodList().isEmpty());
     assertTrue(bytesymtype.get().getFieldList().isEmpty());
-    assertTrue(bytesymtype.get().getSuperTypeList().isEmpty());
+    assertTrue(bytesymtype.get().getSuperTypesList().isEmpty());
     assertTrue(bytesymtype.get().getTypeParameterList().isEmpty());
 
     assertTrue(booleansymtype.get().getMethodList().isEmpty());
     assertTrue(booleansymtype.get().getFieldList().isEmpty());
-    assertTrue(booleansymtype.get().getSuperTypeList().isEmpty());
+    assertTrue(booleansymtype.get().getSuperTypesList().isEmpty());
     assertTrue(booleansymtype.get().getTypeParameterList().isEmpty());
   }
 
@@ -101,13 +101,13 @@ public class BuiltInJavaTypesTest {
     assertTrue(intsymtype.isPresent());
 
     //java.lang.Integer extends java.lang.Number and has no type parameters
-    assertEquals(1,intsymtype.get().getSuperTypeList().size());
-    assertEquals("Number",intsymtype.get().getSuperTypeList().get(0).print());
+    assertEquals(1,intsymtype.get().getSuperTypesList().size());
+    assertEquals("Number",intsymtype.get().getSuperTypesList().get(0).print());
     assertTrue(intsymtype.get().getTypeParameterList().isEmpty());
 
     //test some methods
     assertFalse(intsymtype.get().getMethodList().isEmpty());
-    ITypeSymbolsScope intspannedscope = intsymtype.get().getSpannedScope();
+    IOOSymbolsScope intspannedscope = intsymtype.get().getSpannedScope();
     Optional<MethodSymbol> parseInt = intspannedscope.resolveMethod("parseInt");
     Optional<MethodSymbol> sum = intspannedscope.resolveMethod("sum");
 
@@ -115,7 +115,7 @@ public class BuiltInJavaTypesTest {
     assertTrue(sum.isPresent());
 
     //test one method and its parameters specifically
-    ITypeSymbolsScope parseIntSpannedScope = parseInt.get().getSpannedScope();
+    IOOSymbolsScope parseIntSpannedScope = parseInt.get().getSpannedScope();
     Optional<FieldSymbol> s = parseIntSpannedScope.resolveField("s");
 
     assertTrue(s.isPresent());
@@ -129,13 +129,13 @@ public class BuiltInJavaTypesTest {
     assertTrue(doublesymtype.isPresent());
 
     //java.lang.Double extends java.lang.Number and has no type parameters
-    assertEquals(1,doublesymtype.get().getSuperTypeList().size());
-    assertEquals("Number",doublesymtype.get().getSuperTypeList().get(0).print());
+    assertEquals(1,doublesymtype.get().getSuperTypesList().size());
+    assertEquals("Number",doublesymtype.get().getSuperTypesList().get(0).print());
     assertTrue(doublesymtype.get().getTypeParameterList().isEmpty());
 
     //test some methods
     assertFalse(doublesymtype.get().getMethodList().isEmpty());
-    ITypeSymbolsScope doubleSpannedScope = doublesymtype.get().getSpannedScope();
+    IOOSymbolsScope doubleSpannedScope = doublesymtype.get().getSpannedScope();
     Optional<MethodSymbol> parseDouble = doubleSpannedScope.resolveMethod("parseDouble");
     Optional<MethodSymbol> sum = doubleSpannedScope.resolveMethod("sum");
 
@@ -143,7 +143,7 @@ public class BuiltInJavaTypesTest {
     assertTrue(sum.isPresent());
 
     //test one method and its parameters specifically
-    ITypeSymbolsScope parseDoubleSpannedScope = parseDouble.get().getSpannedScope();
+    IOOSymbolsScope parseDoubleSpannedScope = parseDouble.get().getSpannedScope();
     Optional<FieldSymbol> s = parseDoubleSpannedScope.resolveField("s");
 
     assertTrue(s.isPresent());
@@ -157,13 +157,13 @@ public class BuiltInJavaTypesTest {
     assertTrue(floatsymtype.isPresent());
 
     //java.lang.Float extends java.lang.Number and has no type parameters
-    assertEquals(1,floatsymtype.get().getSuperTypeList().size());
-    assertEquals("Number",floatsymtype.get().getSuperTypeList().get(0).print());
+    assertEquals(1,floatsymtype.get().getSuperTypesList().size());
+    assertEquals("Number",floatsymtype.get().getSuperTypesList().get(0).print());
     assertTrue(floatsymtype.get().getTypeParameterList().isEmpty());
 
     //test some methods
     assertFalse(floatsymtype.get().getMethodList().isEmpty());
-    ITypeSymbolsScope floatspannedscope = floatsymtype.get().getSpannedScope();
+    IOOSymbolsScope floatspannedscope = floatsymtype.get().getSpannedScope();
     Optional<MethodSymbol> parseFloat = floatspannedscope.resolveMethod("parseFloat");
     Optional<MethodSymbol> sum = floatspannedscope.resolveMethod("sum");
 
@@ -171,7 +171,7 @@ public class BuiltInJavaTypesTest {
     assertTrue(sum.isPresent());
 
     //test one method and its parameters specifically
-    ITypeSymbolsScope parseFloatSpannedScope = parseFloat.get().getSpannedScope();
+    IOOSymbolsScope parseFloatSpannedScope = parseFloat.get().getSpannedScope();
     Optional<FieldSymbol> s = parseFloatSpannedScope.resolveField("s");
 
     assertTrue(s.isPresent());
@@ -185,13 +185,13 @@ public class BuiltInJavaTypesTest {
     assertTrue(longsymtype.isPresent());
 
     //java.lang.Long extends java.lang.Number and has no type parameters
-    assertEquals(1,longsymtype.get().getSuperTypeList().size());
-    assertEquals("Number",longsymtype.get().getSuperTypeList().get(0).print());
+    assertEquals(1,longsymtype.get().getSuperTypesList().size());
+    assertEquals("Number",longsymtype.get().getSuperTypesList().get(0).print());
     assertTrue(longsymtype.get().getTypeParameterList().isEmpty());
 
     //test some methods
     assertFalse(longsymtype.get().getMethodList().isEmpty());
-    ITypeSymbolsScope longspannedscope = longsymtype.get().getSpannedScope();
+    IOOSymbolsScope longspannedscope = longsymtype.get().getSpannedScope();
     Optional<MethodSymbol> parseLong = longspannedscope.resolveMethod("parseLong");
     Optional<MethodSymbol> sum = longspannedscope.resolveMethod("sum");
 
@@ -199,7 +199,7 @@ public class BuiltInJavaTypesTest {
     assertTrue(sum.isPresent());
 
     //test one method and its parameters specifically
-    ITypeSymbolsScope parseLongSpannedScope = parseLong.get().getSpannedScope();
+    IOOSymbolsScope parseLongSpannedScope = parseLong.get().getSpannedScope();
     Optional<FieldSymbol> s = parseLongSpannedScope.resolveField("s");
 
     assertTrue(s.isPresent());
@@ -213,20 +213,20 @@ public class BuiltInJavaTypesTest {
     assertTrue(charsymtype.isPresent());
 
     //java.lang.Character directly extends java.lang.Object and has no type parameters
-    assertEquals(1,charsymtype.get().getSuperTypeList().size());
-    assertEquals("Object",charsymtype.get().getSuperTypeList().get(0).print());
+    assertEquals(1,charsymtype.get().getSuperTypesList().size());
+    assertEquals("Object",charsymtype.get().getSuperTypesList().get(0).print());
     assertTrue(charsymtype.get().getTypeParameterList().isEmpty());
 
     //test some methods
     assertFalse(charsymtype.get().getMethodList().isEmpty());
-    ITypeSymbolsScope charspannedscope = charsymtype.get().getSpannedScope();
+    IOOSymbolsScope charspannedscope = charsymtype.get().getSpannedScope();
     Optional<MethodSymbol> valueOf = charspannedscope.resolveMethod("valueOf");
     Optional<MethodSymbol> isTitleCase = charspannedscope.resolveMethod("isTitleCase");
 
     assertTrue(valueOf.isPresent());
     assertTrue(isTitleCase.isPresent());
 
-    ITypeSymbolsScope valueOfSpannedScope = valueOf.get().getSpannedScope();
+    IOOSymbolsScope valueOfSpannedScope = valueOf.get().getSpannedScope();
     Optional<FieldSymbol> c = valueOfSpannedScope.resolveField("c");
     assertTrue(c.isPresent());
     assertEquals("char",c.get().getType().print());
@@ -239,13 +239,13 @@ public class BuiltInJavaTypesTest {
     assertTrue(shortsymtype.isPresent());
 
     //java.lang.Short extends java.lang.Number and has no type parameters
-    assertEquals(1,shortsymtype.get().getSuperTypeList().size());
-    assertEquals("Number",shortsymtype.get().getSuperTypeList().get(0).print());
+    assertEquals(1,shortsymtype.get().getSuperTypesList().size());
+    assertEquals("Number",shortsymtype.get().getSuperTypesList().get(0).print());
     assertTrue(shortsymtype.get().getTypeParameterList().isEmpty());
 
     //test some methods
     assertFalse(shortsymtype.get().getMethodList().isEmpty());
-    ITypeSymbolsScope shortspannedscope = shortsymtype.get().getSpannedScope();
+    IOOSymbolsScope shortspannedscope = shortsymtype.get().getSpannedScope();
     Optional<MethodSymbol> parseShort = shortspannedscope.resolveMethod("parseShort");
     Optional<MethodSymbol> valueOf = shortspannedscope.resolveMethod("valueOf");
 
@@ -253,7 +253,7 @@ public class BuiltInJavaTypesTest {
     assertTrue(valueOf.isPresent());
 
     //test one method and its parameters specifically
-    ITypeSymbolsScope parseShortSpannedScope = parseShort.get().getSpannedScope();
+    IOOSymbolsScope parseShortSpannedScope = parseShort.get().getSpannedScope();
     Optional<FieldSymbol> s = parseShortSpannedScope.resolveField("s");
 
     assertTrue(s.isPresent());
@@ -267,13 +267,13 @@ public class BuiltInJavaTypesTest {
     assertTrue(bytesymtype.isPresent());
 
     //java.lang.Byte extends java.lang.Number and has no type parameters
-    assertEquals(1,bytesymtype.get().getSuperTypeList().size());
-    assertEquals("Number",bytesymtype.get().getSuperTypeList().get(0).print());
+    assertEquals(1,bytesymtype.get().getSuperTypesList().size());
+    assertEquals("Number",bytesymtype.get().getSuperTypesList().get(0).print());
     assertTrue(bytesymtype.get().getTypeParameterList().isEmpty());
 
     //test some methods
     assertFalse(bytesymtype.get().getMethodList().isEmpty());
-    ITypeSymbolsScope bytespannedscope = bytesymtype.get().getSpannedScope();
+    IOOSymbolsScope bytespannedscope = bytesymtype.get().getSpannedScope();
     Optional<MethodSymbol> parseByte = bytespannedscope.resolveMethod("parseByte");
     Optional<MethodSymbol> valueOf = bytespannedscope.resolveMethod("valueOf");
 
@@ -281,7 +281,7 @@ public class BuiltInJavaTypesTest {
     assertTrue(valueOf.isPresent());
 
     //test one method and its parameters specifically
-    ITypeSymbolsScope parseByteSpannedScope = parseByte.get().getSpannedScope();
+    IOOSymbolsScope parseByteSpannedScope = parseByte.get().getSpannedScope();
     Optional<FieldSymbol> s = parseByteSpannedScope.resolveField("s");
 
     assertTrue(s.isPresent());
@@ -295,13 +295,13 @@ public class BuiltInJavaTypesTest {
     assertTrue(booleansymtype.isPresent());
 
     //java.lang.Character directly extends java.lang.Object
-    assertEquals(1,booleansymtype.get().getSuperTypeList().size());
-    assertEquals("Object",booleansymtype.get().getSuperTypeList().get(0).print());
+    assertEquals(1,booleansymtype.get().getSuperTypesList().size());
+    assertEquals("Object",booleansymtype.get().getSuperTypesList().get(0).print());
     assertTrue(booleansymtype.get().getTypeParameterList().isEmpty());
 
     //test some methods
     assertFalse(booleansymtype.get().getMethodList().isEmpty());
-    ITypeSymbolsScope booleanspannedscope = booleansymtype.get().getSpannedScope();
+    IOOSymbolsScope booleanspannedscope = booleansymtype.get().getSpannedScope();
     Optional<MethodSymbol> booleanValue = booleanspannedscope.resolveMethod("booleanValue");
     Optional<MethodSymbol> compare = booleanspannedscope.resolveMethod("compare");
 
@@ -309,7 +309,7 @@ public class BuiltInJavaTypesTest {
     assertTrue(compare.isPresent());
 
     //test one method and its parameters specifically
-    ITypeSymbolsScope compareSpannedScope = compare.get().getSpannedScope();
+    IOOSymbolsScope compareSpannedScope = compare.get().getSpannedScope();
     Optional<FieldSymbol> x = compareSpannedScope.resolveField("x");
     Optional<FieldSymbol> y = compareSpannedScope.resolveField("y");
 
@@ -327,12 +327,12 @@ public class BuiltInJavaTypesTest {
     assertTrue(listsymtype.isPresent());
 
     //List extends Collection
-    assertEquals(1,listsymtype.get().getSuperTypeList().size());
-    assertEquals("Collection<E>",listsymtype.get().getSuperTypeList().get(0).print());
+    assertEquals(1,listsymtype.get().getSuperTypesList().size());
+    assertEquals("Collection<E>",listsymtype.get().getSuperTypesList().get(0).print());
     assertEquals("E",listsymtype.get().getTypeParameterList().get(0).getName());
 
     //test some methods
-    ITypeSymbolsScope listspannedscope = listsymtype.get().getSpannedScope();
+    IOOSymbolsScope listspannedscope = listsymtype.get().getSpannedScope();
     Optional<MethodSymbol> get = listspannedscope.resolveMethod("get");
     Optional<MethodSymbol> indexOf = listspannedscope.resolveMethod("indexOf");
 
@@ -340,7 +340,7 @@ public class BuiltInJavaTypesTest {
     assertTrue(indexOf.isPresent());
 
     //test one method and its parameters and return type
-    ITypeSymbolsScope getSpannedScope = get.get().getSpannedScope();
+    IOOSymbolsScope getSpannedScope = get.get().getSpannedScope();
     Optional<FieldSymbol> index = getSpannedScope.resolveField("index");
     assertTrue(index.isPresent());
     assertEquals("int",index.get().getType().print());
@@ -354,12 +354,12 @@ public class BuiltInJavaTypesTest {
     assertTrue(setsymtype.isPresent());
 
     //Set extends Collection
-    assertEquals(1,setsymtype.get().getSuperTypeList().size());
-    assertEquals("Collection<E>",setsymtype.get().getSuperType((0)).print());
+    assertEquals(1,setsymtype.get().getSuperTypesList().size());
+    assertEquals("Collection<E>",setsymtype.get().getSuperTypes((0)).print());
     assertEquals("E",setsymtype.get().getTypeParameterList().get(0).getName());
 
     //test some methods
-    ITypeSymbolsScope setSpannedScope = setsymtype.get().getSpannedScope();
+    IOOSymbolsScope setSpannedScope = setsymtype.get().getSpannedScope();
     //add is a method of the set type and a method of its super type collection
     List<MethodSymbol> addMethods = setSpannedScope.resolveMethodMany("add");
     //hashCode is a method of the set type and a method of its transitive super type object
@@ -381,13 +381,13 @@ public class BuiltInJavaTypesTest {
 
     assertTrue(mapsymtype.isPresent());
 
-    assertEquals(1,mapsymtype.get().getSuperTypeList().size());
-    assertEquals("Object",mapsymtype.get().getSuperType((0)).print());
+    assertEquals(1,mapsymtype.get().getSuperTypesList().size());
+    assertEquals("Object",mapsymtype.get().getSuperTypes((0)).print());
     assertEquals("K",mapsymtype.get().getTypeParameterList().get(0).getName());
     assertEquals("V",mapsymtype.get().getTypeParameterList().get(1).getName());
 
     //test some methods
-    ITypeSymbolsScope mapSpannedScope = mapsymtype.get().getSpannedScope();
+    IOOSymbolsScope mapSpannedScope = mapsymtype.get().getSpannedScope();
     Optional<MethodSymbol> keySet = mapSpannedScope.resolveMethod("keySet");
     Optional<MethodSymbol> values = mapSpannedScope.resolveMethod("values");
 
@@ -405,12 +405,12 @@ public class BuiltInJavaTypesTest {
 
     assertTrue(optionalsymtype.isPresent());
 
-    assertEquals(1,optionalsymtype.get().getSuperTypeList().size());
-    assertEquals("Object",optionalsymtype.get().getSuperType((0)).print());
+    assertEquals(1,optionalsymtype.get().getSuperTypesList().size());
+    assertEquals("Object",optionalsymtype.get().getSuperTypes((0)).print());
     assertEquals("T",optionalsymtype.get().getTypeParameterList().get(0).getName());
 
     //test some methods
-    ITypeSymbolsScope optionalSpannedScope = optionalsymtype.get().getSpannedScope();
+    IOOSymbolsScope optionalSpannedScope = optionalsymtype.get().getSpannedScope();
     Optional<MethodSymbol> isPresent = optionalSpannedScope.resolveMethod("isPresent");
     Optional<MethodSymbol> ofNullable = optionalSpannedScope.resolveMethod("ofNullable");
 
@@ -418,7 +418,7 @@ public class BuiltInJavaTypesTest {
     assertTrue(ofNullable.isPresent());
 
     //test one method and its parameters and return type
-    ITypeSymbolsScope ofNullableSpannedScope = ofNullable.get().getSpannedScope();
+    IOOSymbolsScope ofNullableSpannedScope = ofNullable.get().getSpannedScope();
     Optional<FieldSymbol> t = ofNullableSpannedScope.resolveField("t");
     assertTrue(t.isPresent());
     assertEquals("T",t.get().getType().print());
@@ -432,14 +432,14 @@ public class BuiltInJavaTypesTest {
     assertTrue(collectionsymtype.isPresent());
 
     //test some methods
-    ITypeSymbolsScope collectionSpannedScope = collectionsymtype.get().getSpannedScope();
+    IOOSymbolsScope collectionSpannedScope = collectionsymtype.get().getSpannedScope();
     Optional<MethodSymbol> size = collectionSpannedScope.resolveMethod("size");
     Optional<MethodSymbol> addAll = collectionSpannedScope.resolveMethod("addAll");
     Optional<MethodSymbol> clear = collectionSpannedScope.resolveMethod("clear");
 
     //collection is a generic type
-    assertEquals(1,collectionsymtype.get().getSuperTypeList().size());
-    assertEquals("Object",collectionsymtype.get().getSuperType((0)).print());
+    assertEquals(1,collectionsymtype.get().getSuperTypesList().size());
+    assertEquals("Object",collectionsymtype.get().getSuperTypes((0)).print());
     assertEquals("E",collectionsymtype.get().getTypeParameterList().get(0).getName());
 
     assertTrue(size.isPresent());
@@ -447,7 +447,7 @@ public class BuiltInJavaTypesTest {
     assertTrue(clear.isPresent());
 
     //test the generic parameter of the method addAll
-    ITypeSymbolsScope addAllSpannedScope = addAll.get().getSpannedScope();
+    IOOSymbolsScope addAllSpannedScope = addAll.get().getSpannedScope();
     Optional<FieldSymbol> c = addAllSpannedScope.resolveField("c");
     assertTrue(c.isPresent());
 
@@ -463,7 +463,7 @@ public class BuiltInJavaTypesTest {
 
     assertFalse(objectType.get().getMethodList().isEmpty());
 
-    ITypeSymbolsScope objectSpannedScope = objectType.get().getSpannedScope();
+    IOOSymbolsScope objectSpannedScope = objectType.get().getSpannedScope();
 
     assertNotNull(objectSpannedScope);
 
@@ -490,9 +490,9 @@ public class BuiltInJavaTypesTest {
     assertTrue(stringType.isPresent());
 
     //super type is Object
-    assertEquals("Object",stringType.get().getSuperTypeList().get(0).print());
+    assertEquals("Object",stringType.get().getSuperTypesList().get(0).print());
 
-    ITypeSymbolsScope stringSpannedScope = stringType.get().getSpannedScope();
+    IOOSymbolsScope stringSpannedScope = stringType.get().getSpannedScope();
 
     //test if some methods are present, some are methods from object
     List<MethodSymbol> equalsMethods = stringSpannedScope.resolveMethodMany("equals");

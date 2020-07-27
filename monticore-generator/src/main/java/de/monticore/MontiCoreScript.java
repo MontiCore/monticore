@@ -4,6 +4,7 @@ package de.monticore;
 
 import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
+import de.monticore.cd.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
@@ -79,10 +80,10 @@ import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.grammar.cocos.GrammarCoCos;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
+import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsArtifactScope;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
-import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsLanguage;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsSymbolTableCreatorDelegator;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.io.paths.ModelPath;
@@ -123,8 +124,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
   /* The logger name for logging from within a Groovy script. */
   static final String LOG_ID = "MAIN";
-
-  private final CD4AnalysisLanguage cd4AnalysisLanguage = new CD4AnalysisLanguage();
 
   /**
    * Executes the default MontiCore Groovy script (parses grammars, generates
@@ -319,9 +318,9 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     if (grammarSymbol.isPresent()) {
       result = grammarSymbol.get().getAstNode();
     } else {
-      Grammar_WithConceptsLanguage language = new Grammar_WithConceptsLanguage();
-
-      Grammar_WithConceptsSymbolTableCreatorDelegator stCreator = language.getSymbolTableCreator(globalScope);
+      Grammar_WithConceptsSymbolTableCreatorDelegator stCreator = Grammar_WithConceptsMill.grammar_WithConceptsSymbolTableCreatorDelegatorBuilder()
+              .setGlobalScope(globalScope)
+              .build();
       stCreator.createFromAST(result);
       globalScope.cache(qualifiedGrammarName);
     }
@@ -359,7 +358,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
       result = (ASTCDCompilationUnit) cdSymbol.get().getEnclosingScope().getAstNode();
       Log.debug("Used present symbol table for " + cdSymbol.get().getFullName(), LOG_ID);
     } else {
-      CD4AnalysisSymbolTableCreatorDelegator stCreator = cd4AnalysisLanguage.getSymbolTableCreator(globalScope);
+      CD4AnalysisSymbolTableCreatorDelegator stCreator = CD4AnalysisMill.cD4AnalysisSymbolTableCreatorDelegatorBuilder()
+              .setGlobalScope(globalScope).build();
       stCreator.createFromAST(result);
       globalScope.cache(qualifiedCDName);
     }
@@ -445,11 +445,12 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     reportSubDir = reportSubDir.isEmpty()
             ? astCd.getCDDefinition().getName()
             : reportSubDir.concat(".").concat(astCd.getCDDefinition().getName());
+    reportSubDir = reportSubDir.toLowerCase();
 
     // Clone CD for reporting
     ASTCDCompilationUnit astCdForReporting = astCd.deepClone();
     // No star imports in reporting CDs
-    astCdForReporting.getMCImportStatementList().forEach(s -> s.setStar(false));
+    astCdForReporting.getMCImportStatementsList().forEach(s -> s.setStar(false));
     String newName = astCd.getCDDefinition().getName() + appendName;
     astCdForReporting.getCDDefinition().setName(newName);
     new CDReporting().prettyPrintAstCd(astCdForReporting, outputDirectory, reportSubDir);
@@ -840,11 +841,11 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   }
 
   public CD4AnalysisGlobalScope createCD4AGlobalScope(ModelPath modelPath) {
-    return new CD4AnalysisGlobalScope(modelPath, new CD4AnalysisLanguage());
+    return new CD4AnalysisGlobalScope(modelPath, "cd");
   }
 
   public Grammar_WithConceptsGlobalScope createMCGlobalScope(ModelPath modelPath) {
-    return new Grammar_WithConceptsGlobalScope(modelPath, new Grammar_WithConceptsLanguage());
+    return new Grammar_WithConceptsGlobalScope(modelPath, "mc4");
   }
 
   /**

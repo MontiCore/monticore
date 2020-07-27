@@ -46,10 +46,10 @@ public class MCFullGenericTypesPrettyPrinter extends MCSimpleGenericTypesPrettyP
   @Override
   public void handle(ASTMCInnerType innerType) {
     getPrinter().print(innerType.getName());
-    if(!innerType.getMCTypeArgumentList().isEmpty()) {
+    if(!innerType.getMCTypeArgumentsList().isEmpty()) {
       getPrinter().print("<");
       String komma = "";
-      for (ASTMCTypeArgument arg : innerType.getMCTypeArgumentList()) {
+      for (ASTMCTypeArgument arg : innerType.getMCTypeArgumentsList()) {
         getPrinter().print(komma);
         arg.accept(getRealThis());
         komma = ",";
@@ -64,7 +64,7 @@ public class MCFullGenericTypesPrettyPrinter extends MCSimpleGenericTypesPrettyP
     // prints first part a.b.C.E<F>
     node.getMCBasicGenericType().accept(getRealThis());
 
-    for(ASTMCInnerType innerType : node.getMCInnerTypeList()) {
+    for(ASTMCInnerType innerType : node.getMCInnerTypesList()) {
       getPrinter().print(".");
       innerType.accept(getRealThis());
     }

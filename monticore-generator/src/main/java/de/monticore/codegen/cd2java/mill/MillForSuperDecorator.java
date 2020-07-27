@@ -4,7 +4,10 @@ package de.monticore.codegen.cd2java.mill;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import de.monticore.cd.cd4analysis.CD4AnalysisMill;
-import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd.cd4analysis._ast.ASTCDClass;
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.cd4analysis._ast.ASTCDDefinition;
+import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
 import de.monticore.codegen.cd2java.AbstractCreator;
@@ -39,7 +42,7 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
   public List<ASTCDClass> decorate(final ASTCDCompilationUnit compilationUnit) {
     astcdDefinition = compilationUnit.getCDDefinition().deepClone();
     //filter out all classes that are abstract and remove AST prefix
-    astcdDefinition.setCDClassList(astcdDefinition.getCDClassList()
+    astcdDefinition.setCDClasssList(astcdDefinition.getCDClasssList()
         .stream()
         .filter(ASTCDClass::isPresentModifier)
         .filter(x -> !x.getModifier().isAbstract())
@@ -47,12 +50,12 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
 
     Collection<CDDefinitionSymbol> superSymbolList = service.getSuperCDsTransitive();
     List<ASTCDClass> superMills = new ArrayList<ASTCDClass>();
-    List<ASTCDClass> astcdClassList = Lists.newArrayList(astcdDefinition.getCDClassList());
+    List<ASTCDClass> astcdClassList = Lists.newArrayList(astcdDefinition.getCDClasssList());
 
     for (CDDefinitionSymbol superSymbol : superSymbolList) {
       String millClassName = superSymbol.getName() + MillConstants.MILL_FOR + astcdDefinition.getName();
       List<ASTCDMethod> builderMethodsList = addBuilderMethodsForSuper(astcdClassList, superSymbol);
-      String basePackage = service.getBasePackage(superSymbol).isEmpty() ? "" : service.getBasePackage(superSymbol) + ".";
+      String basePackage = superSymbol.getPackageName().isEmpty() ? "" : superSymbol.getPackageName().toLowerCase() + ".";
 
       ASTMCQualifiedType superclass = this.getMCTypeFacade().createQualifiedType(
           basePackage + superSymbol.getName().toLowerCase() + "." + superSymbol.getName() + MillConstants.MILL_SUFFIX);

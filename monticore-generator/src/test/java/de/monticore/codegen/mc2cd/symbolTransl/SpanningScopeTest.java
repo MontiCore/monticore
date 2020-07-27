@@ -47,7 +47,7 @@ public class SpanningScopeTest {
   @Test
   public void testScopeSpanningSymbol() {
     ASTCDClass symbolClassSymbol = getClassBy("ScopeSpanning", compilationUnit);
-    assertTrue(symbolClassSymbol.isEmptyInterfaces());
+    assertTrue(symbolClassSymbol.isEmptyInterface());
     assertTrue(symbolClassSymbol.isEmptyCDMethods());
     assertTrue(symbolClassSymbol.isEmptyCDConstructors());
     assertFalse(symbolClassSymbol.isPresentSuperclass());
@@ -56,8 +56,8 @@ public class SpanningScopeTest {
     assertTrue(symbolClassSymbol.isPresentModifier());
 
     assertTrue(symbolClassSymbol.getModifier().isPresentStereotype());
-    assertFalse(symbolClassSymbol.getModifier().getStereotype().isEmptyValues());
-    assertEquals(2, symbolClassSymbol.getModifier().getStereotype().sizeValues());
+    assertFalse(symbolClassSymbol.getModifier().getStereotype().isEmptyValue());
+    assertEquals(2, symbolClassSymbol.getModifier().getStereotype().sizeValue());
     ASTCDStereoValue symbolStereotype = symbolClassSymbol.getModifier().getStereotype().getValue(0);
     assertEquals("symbol", symbolStereotype.getName());
     ASTCDStereoValue scopeStereotype = symbolClassSymbol.getModifier().getStereotype().getValue(1);
@@ -67,7 +67,7 @@ public class SpanningScopeTest {
   @Test
   public void testOnlySymbol() {
     ASTCDClass symbolClassSymbol = getClassBy("OnlySymbol", compilationUnit);
-    assertTrue(symbolClassSymbol.isEmptyInterfaces());
+    assertTrue(symbolClassSymbol.isEmptyInterface());
     assertTrue(symbolClassSymbol.isEmptyCDMethods());
     assertTrue(symbolClassSymbol.isEmptyCDConstructors());
     assertFalse(symbolClassSymbol.isPresentSuperclass());
@@ -76,8 +76,8 @@ public class SpanningScopeTest {
     assertTrue(symbolClassSymbol.isPresentModifier());
 
     assertTrue(symbolClassSymbol.getModifier().isPresentStereotype());
-    assertFalse(symbolClassSymbol.getModifier().getStereotype().isEmptyValues());
-    assertEquals(2, symbolClassSymbol.getModifier().getStereotype().sizeValues());
+    assertFalse(symbolClassSymbol.getModifier().getStereotype().isEmptyValue());
+    assertEquals(2, symbolClassSymbol.getModifier().getStereotype().sizeValue());
     ASTCDStereoValue symbolStereotype = symbolClassSymbol.getModifier().getStereotype().getValue(0);
     assertEquals("symbol", symbolStereotype.getName());
     ASTCDStereoValue startProdStereotype = symbolClassSymbol.getModifier().getStereotype().getValue(1);

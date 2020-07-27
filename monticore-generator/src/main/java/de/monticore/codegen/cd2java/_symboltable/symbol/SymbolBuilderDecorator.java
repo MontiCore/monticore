@@ -5,7 +5,6 @@ import com.google.common.collect.Lists;
 import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
-import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._ast.builder.BuilderConstants;
 import de.monticore.codegen.cd2java._ast.builder.BuilderDecorator;
@@ -16,7 +15,10 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
@@ -46,7 +48,7 @@ public class SymbolBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDCla
   public ASTCDClass decorate(final ASTCDClass symbolClass) {
     ASTCDClass decoratedSymbolClass = symbolClass.deepClone();
     decoratedSymbolClass.setName(symbolTableService.getNameWithSymbolSuffix(symbolClass));
-    decoratedSymbolClass.getCDMethodList().clear();
+    decoratedSymbolClass.getCDMethodsList().clear();
     boolean isInherited = symbolTableService.hasInheritedSymbolStereotype(symbolClass.getModifier());
     List<ASTCDAttribute> defaultAttrs = createSymbolAttributes(symbolClass);
     if (!isInherited) {
@@ -77,11 +79,11 @@ public class SymbolBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDCla
       symbolBuilder.addAllCDMethods(createScopeMethods(hasInheritedSpannedScope));
     }
 
-    List<ASTCDAttribute> buildAttributes = Lists.newArrayList(symbolClass.getCDAttributeList());
+    List<ASTCDAttribute> buildAttributes = Lists.newArrayList(symbolClass.getCDAttributesList());
     // builder has all attributes but not the spannedScope attribute from the symbol Class
     defaultAttrs.stream().filter(a -> !SPANNED_SCOPE_VAR.equals(a.getName())).forEach(a -> buildAttributes.add(a));
     // new build method template
-    Optional<ASTCDMethod> buildMethod = symbolBuilder.getCDMethodList()
+    Optional<ASTCDMethod> buildMethod = symbolBuilder.getCDMethodsList()
         .stream()
         .filter(m -> BUILD_METHOD.equals(m.getName()))
         .findFirst();

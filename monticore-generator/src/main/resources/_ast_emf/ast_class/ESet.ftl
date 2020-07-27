@@ -3,7 +3,7 @@ ${tc.signature("attributeList", "packageName", "className")}
   <#assign genHelper = glex.getGlobalVar("astHelper")>
     switch (featureID) {
     <#list attributeList as attribute>
-      <#assign setter = astHelper.getPlainSetter(attribute)>
+      <#assign setter = genHelper.getPlainSetter(attribute)>
       case ${packageName}.${className}_${attribute.getName()?cap_first}:
       <#if genHelper.isOptional(attribute.getMCType())>
         ${setter}(((${attribute.printType()})newValue).get());

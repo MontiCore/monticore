@@ -2,10 +2,12 @@
 package de.monticore.types.check;
 
 import com.google.common.collect.Lists;
+import de.monticore.symbols.oosymbols._symboltable.BuiltInJavaSymbolResolvingDelegate;
+import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
+import de.monticore.symbols.oosymbols._symboltable.OOSymbolsScope;
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
-import de.monticore.types.typesymbols._symboltable.*;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -22,7 +24,7 @@ import static org.junit.Assert.*;
 
 public class SymTypeExpressionTest {
 
-  private static TypeSymbolsScope scope = BuiltInJavaTypeSymbolResolvingDelegate.getScope();
+  private static OOSymbolsScope scope = BuiltInJavaSymbolResolvingDelegate.getScope();
 
   // setup of objects (unchanged during tests)
   SymTypeExpression teDouble = createTypeConstant("double");

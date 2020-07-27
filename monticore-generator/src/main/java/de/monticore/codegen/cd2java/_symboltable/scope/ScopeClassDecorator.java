@@ -81,16 +81,16 @@ public class ScopeClassDecorator extends AbstractDecorator {
     ASTMCQualifiedType scopeInterfaceType = symbolTableService.getScopeInterfaceType();
 
     // attributes and methods from scope rule
-    List<ASTCDAttribute> scopeRuleAttributeList = scopeInput.deepClone().getCDDefinition().getCDClassList()
+    List<ASTCDAttribute> scopeRuleAttributeList = scopeInput.deepClone().getCDDefinition().getCDClasssList()
         .stream()
-        .map(ASTCDClass::getCDAttributeList)
+        .map(ASTCDClass::getCDAttributesList)
         .flatMap(List::stream)
         .collect(Collectors.toList());
     scopeRuleAttributeList.forEach(a -> getDecorationHelper().addAttributeDefaultValues(a, this.glex));
 
-    List<ASTCDMethod> scopeRuleMethodList = scopeInput.deepClone().getCDDefinition().getCDClassList()
+    List<ASTCDMethod> scopeRuleMethodList = scopeInput.deepClone().getCDDefinition().getCDClasssList()
         .stream()
-        .map(ASTCDClass::getCDMethodList)
+        .map(ASTCDClass::getCDMethodsList)
         .flatMap(List::stream)
         .collect(Collectors.toList());
 
@@ -100,7 +100,7 @@ public class ScopeClassDecorator extends AbstractDecorator {
         .flatMap(List::stream)
         .collect(Collectors.toList());
 
-    Map<String, ASTCDAttribute> symbolAttributes = createSymbolAttributes(symbolInput.getCDDefinition().getCDClassList(), symbolTableService.getCDSymbol());
+    Map<String, ASTCDAttribute> symbolAttributes = createSymbolAttributes(symbolInput.getCDDefinition().getCDClasssList(), symbolTableService.getCDSymbol());
     symbolAttributes.putAll(getSuperSymbolAttributes());
 
     List<ASTCDMethod> symbolMethods = createSymbolMethods(symbolAttributes.values());
@@ -133,7 +133,7 @@ public class ScopeClassDecorator extends AbstractDecorator {
     ASTCDAttribute astNodeAttribute = createASTNodeAttribute();
     List<ASTCDMethod> astNodeMethods = methodDecorator.decorate(astNodeAttribute);
 
-    Optional<ASTMCObjectType> scopeRuleSuperClass = scopeInput.deepClone().getCDDefinition().getCDClassList()
+    Optional<ASTMCObjectType> scopeRuleSuperClass = scopeInput.deepClone().getCDDefinition().getCDClasssList()
         .stream()
         .filter(ASTCDClass::isPresentSuperclass)
         .map(ASTCDClass::getSuperclass)
@@ -151,22 +151,22 @@ public class ScopeClassDecorator extends AbstractDecorator {
         .addAllCDMethods(symbolMethods)
         .addAllCDAttributes(symbolAlreadyResolvedAttributes)
         .addAllCDMethods(symbolAlreadyResolvedMethods)
-        .addCDMethod(createSymbolsSizeMethod(symbolAttributes.keySet()))
-        .addCDAttribute(enclosingScopeAttribute)
+        .addCDMethods(createSymbolsSizeMethod(symbolAttributes.keySet()))
+        .addCDAttributes(enclosingScopeAttribute)
         .addAllCDMethods(enclosingScopeMethods)
-        .addCDAttribute(spanningSymbolAttribute)
+        .addCDAttributes(spanningSymbolAttribute)
         .addAllCDMethods(spanningSymbolMethods)
-        .addCDAttribute(shadowingAttribute)
+        .addCDAttributes(shadowingAttribute)
         .addAllCDMethods(shadowingMethods)
-        .addCDAttribute(exportSymbolsAttribute)
+        .addCDAttributes(exportSymbolsAttribute)
         .addAllCDMethods(exportSymbolsMethods)
-        .addCDAttribute(orderedAttribute)
+        .addCDAttributes(orderedAttribute)
         .addAllCDMethods(orderedMethods)
-        .addCDAttribute(nameAttribute)
+        .addCDAttributes(nameAttribute)
         .addAllCDMethods(nameMethods)
-        .addCDAttribute(astNodeAttribute)
+        .addCDAttributes(astNodeAttribute)
         .addAllCDMethods(astNodeMethods)
-        .addCDAttribute(createSubScopesAttribute(scopeInterfaceType))
+        .addCDAttributes(createSubScopesAttribute(scopeInterfaceType))
         .addAllCDMethods(createSubScopeMethods(scopeInterfaceType))
         .addAllCDMethods(createAcceptMethods(scopeClassName))
         .addAllCDMethods(createSuperScopeMethods(symbolTableService.getScopeInterfaceFullName()));
@@ -307,7 +307,7 @@ public class ScopeClassDecorator extends AbstractDecorator {
     List<ASTCDMethod> symbolMethodList = new ArrayList<>();
     for (ASTCDAttribute attribute : astcdAttributes) {
       if (attribute.getMCType() instanceof ASTMCBasicGenericType && ((ASTMCBasicGenericType) attribute.getMCType()).sizeMCTypeArguments() == 2) {
-        Optional<ASTMCType> mcTypeArgument = ((ASTMCBasicGenericType) attribute.getMCType()).getMCTypeArgument(1).getMCTypeOpt();
+        Optional<ASTMCType> mcTypeArgument = ((ASTMCBasicGenericType) attribute.getMCType()).getMCTypeArguments(1).getMCTypeOpt();
         if (mcTypeArgument.isPresent()) {
           symbolMethodList.add(createAddSymbolMethod(mcTypeArgument.get(), attribute.getName()));
           symbolMethodList.add(createRemoveSymbolMethod(mcTypeArgument.get(), attribute.getName()));

@@ -4,11 +4,11 @@ package mc.typescalculator;
 import com.google.common.collect.Lists;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.io.paths.ModelPath;
+import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
+import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolSurrogate;
 import de.monticore.symboltable.ImportStatement;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
-import de.monticore.types.typesymbols._symboltable.OOTypeSymbol;
-import de.monticore.types.typesymbols._symboltable.OOTypeSymbolSurrogate;
 import de.se_rwth.commons.logging.LogStub;
 import mc.testcd4analysis._symboltable.TestCD4AnalysisGlobalScope;
 import mc.typescalculator.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
@@ -68,7 +68,7 @@ public class CombineExpressionsWithLiteralsTest {
 
     assertTrue(expr.isPresent());
     CombineExpressionsWithLiteralsArtifactScope art = del.createFromAST(expr.get());
-    art.setImportList(Lists.newArrayList(new ImportStatement("mc.typescalculator.TestCD.D", true)));
+    art.setImportsList(Lists.newArrayList(new ImportStatement("mc.typescalculator.TestCD.D", true)));
     Optional<SymTypeExpression> j = calc.calculateType(expr.get());
     assertTrue(j.isPresent());
     assertEquals("int", unbox(j.get().print()));

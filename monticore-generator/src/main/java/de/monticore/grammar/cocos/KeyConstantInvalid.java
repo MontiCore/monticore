@@ -14,7 +14,7 @@ public class KeyConstantInvalid implements GrammarASTKeyConstantCoCo {
 
   @Override
   public void check(ASTKeyConstant a) {
-    for (String s :a.getStringList()) {
+    for (String s :a.getStringsList()) {
       if (!s.matches("[a-zA-Z_$][a-zA-Z0-9_$]*")) {
         Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, s), a.get_SourcePositionStart());
       }

@@ -10,10 +10,9 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
+import de.monticore.symbols.oosymbols._symboltable.BuiltInJavaSymbolResolvingDelegate;
 import de.monticore.utils.Names;
 import de.se_rwth.commons.StringTransformations;
-import de.monticore.types.typesymbols._symboltable.BuiltInJavaTypeSymbolResolvingDelegate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,16 +56,16 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
     return CD4CodeMill.cDClassBuilder()
         .setName(symbolDeSerName)
         .setModifier(PUBLIC.build())
-        .addCDConstructor(createConstructor(symbolDeSerName))
-        .addCDAttribute(symbolTablePrinter)
-        .addCDMethod(createGetSerializedKindMethod(symbolFullName))
-        .addCDMethod(createSerializeMethod(symbolFullName))
+        .addCDConstructors(createConstructor(symbolDeSerName))
+        .addCDAttributes(symbolTablePrinter)
+        .addCDMethods(createGetSerializedKindMethod(symbolFullName))
+        .addCDMethods(createSerializeMethod(symbolFullName))
         .addAllCDMethods(
             createDeserializeMethods(symbolFullName, symbolSimpleName, symbolBuilderFullName,
                 symbolBuilderSimpleName, symTabMillFullName,
-                symbolClass.deepClone().getCDAttributeList()))
+                symbolClass.deepClone().getCDAttributesList()))
         .addAllCDMethods(createDeserializeSymbolRuleAttributesMethod(
-            symbolClass.deepClone().getCDAttributeList(), symbolDeSerName))
+            symbolClass.deepClone().getCDAttributesList(), symbolDeSerName))
         .build();
   }
 
@@ -150,7 +149,7 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
       String generatedErrorCode = symbolTableService.getGeneratedErrorCode(methodName);
       HookPoint deserImplementation = DeSerMap.getDeserializationImplementation(astcdAttribute, methodName, "symbolJson",
 //          astcdAttribute.getEnclosingScope()); //TODO AB Replace line below with this line after release of 5.5.0-SNAPSHOT
-          BuiltInJavaTypeSymbolResolvingDelegate.getScope(), generatedErrorCode);
+          BuiltInJavaSymbolResolvingDelegate.getScope(), generatedErrorCode);
         this.replaceTemplate(EMPTY_BODY, deserializeMethod, deserImplementation);
       methodList.add(deserializeMethod);
     }

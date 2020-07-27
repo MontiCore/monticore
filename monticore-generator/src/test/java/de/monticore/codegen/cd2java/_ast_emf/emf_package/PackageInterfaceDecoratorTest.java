@@ -50,20 +50,20 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterface() {
-    assertEquals(1, packageInterface.sizeInterfaces());
+    assertEquals(1, packageInterface.sizeInterface());
     assertDeepEquals("de.monticore.emf._ast.ASTEPackage", packageInterface.getInterface(0));
   }
 
 
   @Test
   public void testAttributeSize() {
-    assertEquals(28, packageInterface.getCDAttributeList().size());
+    assertEquals(28, packageInterface.getCDAttributesList().size());
   }
 
   @Test
   public void testMethodSize() {
-    assertFalse(packageInterface.getCDMethodList().isEmpty());
-    assertEquals(21, packageInterface.getCDMethodList().size());
+    assertFalse(packageInterface.getCDMethodsList().isEmpty());
+    assertEquals(21, packageInterface.getCDMethodsList().size());
   }
 
   @Test
@@ -333,7 +333,7 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testNoInheritedAttributeMethod() {
-    assertTrue(packageInterface.getCDMethodList()
+    assertTrue(packageInterface.getCDMethodsList()
         .stream()
         .noneMatch(m -> m.getName().equals("getASTAutName_Input")));
   }

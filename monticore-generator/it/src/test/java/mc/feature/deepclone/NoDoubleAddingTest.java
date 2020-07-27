@@ -22,8 +22,8 @@ public class NoDoubleAddingTest {
     ASTSupProd clonedProd = astSupProd.get().deepClone();
 
     assertEquals(3, clonedProd.sizeNames());
-    assertEquals("Name1", clonedProd.getName(0));
-    assertEquals("Name2", clonedProd.getName(1));
-    assertEquals("Name3", clonedProd.getName(2));
+    assertEquals("Name1", clonedProd.getNames(0));
+    assertEquals("Name2", clonedProd.getNames(1));
+    assertEquals("Name3", clonedProd.getNames(2));
   }
 }

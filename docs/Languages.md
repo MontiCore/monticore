@@ -148,7 +148,7 @@ MontiCore projects are hosted at
 
 
 ### [GUI DSL](https://git.rwth-aachen.de/macoco/gui-dsl) (Alpha: Intention to become stable)
-* Caretaker: LN
+* Caretaker: LN, AGe
 * Language for textual definition of Graphical User Interfaces of Web
 Applications
 * GUI DSL covers GUI elements and relevant configuration, which include
@@ -158,9 +158,19 @@ data sources**.
 the language represent graphical views or their parts, omitting smaller details
 of style definition and simplifying connection between graphical elements and
 data sources.
-* Examples: [**MaCoCo**](https://git.rwth-aachen.de/macoco/implementation),
+* Currently new version of the `GUIDSL` is being developed:
+  * [Basis grammar `GUIBasis`](https://git.rwth-aachen.de/macoco/gui-dsl/-/blob/dev/src/main/grammars/de/monticore/guidsl/GUIBasis.mc4)
+includes constructs for general visualization component definitions, control
+statements and components for layout description.
+  * [Example models](https://git.rwth-aachen.de/macoco/gui-dsl/-/tree/dev/src/test/resources/pages/room)
+can be found in the same repository.
+  * [Main grammar `GUIDSL`](https://git.rwth-aachen.de/macoco/gui-dsl/-/blob/dev/src/main/grammars/de/monticore/guidsl/GUIDSL.mc4)
+includes basic concepts and more specific implementation of component
+configuration .
+* In projects legacy version is currently used:
+  * Examples: [**MaCoCo**](https://git.rwth-aachen.de/macoco/implementation),
 [**Ford**](https://git.rwth-aachen.de/ford/implementation/frontend/montigem)
-* [Main grammar `GUIDSL`](https://git.rwth-aachen.de/macoco/gui-dsl/-/blob/master/src/main/grammars/GUIDSL.mc4)
+  * [Main grammar `GUIDSL`](https://git.rwth-aachen.de/macoco/gui-dsl/-/blob/master/src/main/grammars/GUIDSL.mc4)
 includes definitions of MontiGem visualisation components, which are based on
 abstract concepts, described in
 [core grammar `GUIDSLCore`](https://git.rwth-aachen.de/macoco/gui-dsl/-/blob/master/src/main/grammars/GUIDSLCore.mc4).
@@ -360,31 +370,25 @@ component InteriorLight {                           // MontiArc language
 * The grammar [SDBasis](https://git.rwth-aachen.de/monticore/statechart/sd-language/-/blob/dev/src/main/grammars/de/monticore/lang/SDBasis.mc4) is a component grammar providing basic SD language features.
 * The grammar [SD4Development](https://git.rwth-aachen.de/monticore/statechart/sd-language/-/blob/dev/src/main/grammars/de/monticore/lang/SD4Development.mc4) extends the grammar SDBasis with concepts used in 
   UML/P SDs.
-* SD4Development supports modeling objects, method calls, returns, exception 
-  throws, dynamic object instantiation, various match modifiers for objects 
-  (free, initial, visible, complete), static method calls, variable declarations
-  by using OCL, and conditions by using OCL.
+* SD4Development supports modeling *objects*, *method calls*, *returns*, exception 
+  throws, *dynamic object instantiation*, various *match modifiers* for objects 
+  (free, initial, visible, complete), *life lines* with *activation regions*,
+  static method calls, intermediate 
+  variable declarations by using OCL, and conditions by using OCL.
 * The grammars can easily be extended by further interactions and object modifiers.
 * The following depicts a simple SD in its textual syntax. 
 ```
 sequencediagram AuctionTest {
-
-  // Interacting objects
-  kupfer912: Auction;
+  kupfer912: Auction;         // Interacting objects
   bidPol: BiddingPolicy;
   timePol: TimingPolicy;
-
-  // Interaction sequence
-  kupfer912 -> bidPol : validateBid(bid) { 
-    // An activity bar on bidPol's lifeline is defined by the curly brackets
-    bidPol -> kupfer912 : return BiddingPolicy.OK;
-  }
-  kupfer912 -> timePol: newCurrentClosingTime(kupfer912, bid) {
-    timePol -> kupfer912 : return t;
-  }
+                              // Interaction sequence
+  kupfer912 -> bidPol  : validateBid(bid)
+  bidPol -> kupfer912  : return BiddingPolicy.OK;
+  kupfer912 -> timePol : newCurrentClosingTime(kupfer912, bid) 
+  timePol -> kupfer912 : return t;
   assert t.timeSec == bid.time.timeSec + extensionTime;
 }
-
 ```
 
 ### [SI Units](https://git.rwth-aachen.de/monticore/languages/siunits) (Beta: In Stabilization)

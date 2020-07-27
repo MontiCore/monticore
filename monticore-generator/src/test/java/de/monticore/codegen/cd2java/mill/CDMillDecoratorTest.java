@@ -197,7 +197,7 @@ public class CDMillDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testPackageName() {
-    assertEquals(5, millCD.sizePackages());
+    assertEquals(5, millCD.sizePackage());
     assertEquals("de", millCD.getPackage(0));
     assertEquals("monticore", millCD.getPackage(1));
     assertEquals("codegen", millCD.getPackage(2));

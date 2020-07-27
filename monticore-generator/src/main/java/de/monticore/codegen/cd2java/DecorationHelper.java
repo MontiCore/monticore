@@ -7,7 +7,7 @@ import com.google.common.base.Preconditions;
 import de.monticore.ast.ASTNode;
 import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbolLoader;
+import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbolSurrogate;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -125,8 +125,8 @@ public class DecorationHelper extends MCBasicTypesHelper {
   public String getNativeTypeName(ASTMCType astType) {
     // check if type is Generic type like 'List<automaton._ast.ASTState>' -> returns automaton._ast.ASTState
     // if not generic returns simple Type like 'int'
-    if (astType instanceof ASTMCGenericType && ((ASTMCGenericType) astType).getMCTypeArgumentList().size() == 1) {
-      return ((ASTMCGenericType) astType).getMCTypeArgumentList().get(0).getMCTypeOpt().get()
+    if (astType instanceof ASTMCGenericType && ((ASTMCGenericType) astType).getMCTypeArgumentsList().size() == 1) {
+      return ((ASTMCGenericType) astType).getMCTypeArgumentsList().get(0).getMCTypeOpt().get()
           .printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter());
     }
     return astType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter());
@@ -179,14 +179,14 @@ public class DecorationHelper extends MCBasicTypesHelper {
   // TODO Alternative für folgende Methoden finden
   public ASTMCTypeArgument getReferenceTypeFromOptional(ASTMCType type) {
     Preconditions.checkArgument(isOptional(type));
-    return ((ASTMCGenericType) type).getMCTypeArgumentList().get(0);
+    return ((ASTMCGenericType) type).getMCTypeArgumentsList().get(0);
   }
 
   /**
    * methods only used in templates
    */
   public boolean hasOnlyAstAttributes(ASTCDClass type) {
-    for (ASTCDAttribute attr : type.getCDAttributeList()) {
+    for (ASTCDAttribute attr : type.getCDAttributesList()) {
       if (!isAstNode(attr)) {
         return false;
       }
@@ -198,9 +198,9 @@ public class DecorationHelper extends MCBasicTypesHelper {
     if (!attr.isPresentSymbol()) {
       return false;
     }
-    CDTypeSymbolLoader attrType = attr.getSymbol().getType();
+    CDTypeSymbolSurrogate attrType = attr.getSymbol().getType();
 
-    List<CDTypeSymbolLoader> typeArgs = attrType.getActualTypeArguments();
+    List<CDTypeSymbolSurrogate> typeArgs = attrType.getActualTypeArguments();
     if (typeArgs.size() > 1) {
       return false;
     }
@@ -218,12 +218,12 @@ public class DecorationHelper extends MCBasicTypesHelper {
     }
 
     if (typeArgs.isEmpty()) {
-      return attrType.isSymbolLoaded() && attrType.getLoadedSymbol().isIsEnum();
+      return attrType.isIsEnum();
     }
 
-    CDTypeSymbolLoader typeArgument = typeArgs
+    CDTypeSymbolSurrogate typeArgument = typeArgs
         .get(0);
-    return typeArgument.isSymbolLoaded() && typeArgument.getLoadedSymbol().isIsEnum();
+    return typeArgument.isIsEnum();
   }
 
   /**
@@ -241,12 +241,7 @@ public class DecorationHelper extends MCBasicTypesHelper {
     }
     sb.append(StringTransformations.capitalize(getNativeAttributeName(ast.getName())));
     if (isListType(astType)) {
-      if (ast.getName().endsWith(TransformationHelper.LIST_SUFFIX)) {
-        sb.replace(sb.length() - TransformationHelper.LIST_SUFFIX.length(),
-            sb.length(), GET_SUFFIX_LIST);
-      } else {
-        sb.append(GET_SUFFIX_LIST);
-      }
+      sb.append(GET_SUFFIX_LIST);
     }
     return sb.toString();
   }
@@ -256,12 +251,7 @@ public class DecorationHelper extends MCBasicTypesHelper {
         StringTransformations.capitalize(getNativeAttributeName(ast.getName())));
     String astType = ast.getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter());
     if (isListType(astType)) {
-      if (ast.getName().endsWith(TransformationHelper.LIST_SUFFIX)) {
-        sb.replace(sb.length() - TransformationHelper.LIST_SUFFIX.length(),
-            sb.length(), GET_SUFFIX_LIST);
-      } else {
-        sb.append(GET_SUFFIX_LIST);
-      }
+      sb.append(GET_SUFFIX_LIST);
     }
     return sb.toString();
   }

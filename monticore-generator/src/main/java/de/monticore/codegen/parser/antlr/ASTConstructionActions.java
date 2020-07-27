@@ -79,11 +79,11 @@ public class ASTConstructionActions {
           StringTransformations.capitalize(constgroup.getUsageName()));
     }
     else {
-      if (constgroup.getConstantList().size() == 1) {
+      if (constgroup.getConstantsList().size() == 1) {
         // both == null and #constants == 1 -> use constant string as name
         tmp = "_aNode.set%cname%(true);";
         tmp = tmp.replaceAll("%cname%", StringTransformations.capitalize(HelperGrammar
-            .getAttributeNameForConstant(constgroup.getConstantList().get(0))));
+            .getAttributeNameForConstant(constgroup.getConstantsList().get(0))));
       }
       else {
         // both == null and #constants > 1 -> user wants to ignore token in AST
@@ -142,7 +142,7 @@ public class ASTConstructionActions {
     
     // Replace templates
     tmp = tmp.replaceAll("%u_usage%",
-        StringTransformations.capitalize(HelperGrammar.getUsuageName(a)));
+        StringTransformations.capitalize(HelperGrammar.getUsageName(a)));
     tmp = tmp.replaceAll("%tmp%", parserGenHelper.getTmpVarNameForAntlrCode(a));
     
     return tmp;
@@ -157,7 +157,7 @@ public class ASTConstructionActions {
 
     // Replace templates
     tmp = tmp.replaceAll("%u_usage%",
-        StringTransformations.capitalize(HelperGrammar.getListName(a)));
+        StringTransformations.capitalize(HelperGrammar.getListName(a, symbolTable.getAstNode())));
     tmp = tmp.replaceAll("%tmp%", tmpname);
 
     return tmp;
@@ -173,7 +173,7 @@ public class ASTConstructionActions {
     
     // Replace templates
     tmp = tmp.replaceAll("%u_usage%",
-        StringTransformations.capitalize(HelperGrammar.getListName(a)));
+        StringTransformations.capitalize(HelperGrammar.getListName(a,symbolTable.getAstNode())));
     tmp = tmp.replaceAll("%tmp%", parserGenHelper.getTmpVarNameForAntlrCode(a));
     
     return tmp;
@@ -185,7 +185,7 @@ public class ASTConstructionActions {
     
     // Replace templates
     tmp = tmp.replaceAll("%u_usage%",
-        StringTransformations.capitalize(HelperGrammar.getUsuageName(a)));
+        StringTransformations.capitalize(HelperGrammar.getUsageName(a)));
     tmp = tmp.replaceAll("%tmp%", parserGenHelper.getTmpVarNameForAntlrCode(a));
     
     return tmp;

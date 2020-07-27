@@ -51,16 +51,16 @@ public class PackageInterfaceDecorator extends AbstractCreator<ASTCDCompilationU
         .setName(interfaceName)
         .setModifier(PUBLIC.build())
         .addInterface(getMCTypeFacade().createQualifiedType(ASTE_PACKAGE))
-        .addCDAttribute(createENameAttribute(definitionName))
-        .addCDAttribute(createENSURIAttribute(definitionName))
-        .addCDAttribute(createENSPrefixAttribute(definitionName))
-        .addCDAttribute(createEInstanceAttribute(interfaceName))
-        .addCDAttribute(createConstantsAttribute(definitionName))
+        .addCDAttributes(createENameAttribute(definitionName))
+        .addCDAttributes(createENSURIAttribute(definitionName))
+        .addCDAttributes(createENSPrefixAttribute(definitionName))
+        .addCDAttributes(createEInstanceAttribute(interfaceName))
+        .addCDAttributes(createConstantsAttribute(definitionName))
         .addAllCDAttributes(prodAttributes)
         .addAllCDAttributes(eDataTypeAttributes)
         .addAllCDAttributes(createNonTerminalAttributes(astcdDefinition))
-        .addCDMethod(createNodeFactoryMethod(definitionName))
-        .addCDMethod(createEEnumMethod(definitionName))
+        .addCDMethods(createNodeFactoryMethod(definitionName))
+        .addCDMethods(createEEnumMethod(definitionName))
         .addAllCDMethods(eDataTypeMethods)
         .addAllCDMethods(createEClassMethods(astcdDefinition))
         .addAllCDMethods(createEAttributeMethods(astcdDefinition))
@@ -110,16 +110,16 @@ public class PackageInterfaceDecorator extends AbstractCreator<ASTCDCompilationU
     // e.g. int ASTAutomaton = 1; int ASTState = 2;
     List<ASTCDAttribute> attributeList = new ArrayList<>();
     int i;
-    for (i = 0; i < astcdDefinition.getCDClassList().size(); i++) {
+    for (i = 0; i < astcdDefinition.getCDClasssList().size(); i++) {
       ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PACKAGE_PRIVATE, getMCTypeFacade().createIntType(),
-          astcdDefinition.getCDClassList().get(i).getName());
+          astcdDefinition.getCDClasssList().get(i).getName());
       this.replaceTemplate(VALUE, attribute, new StringHookPoint("= " + (i + 1)));
       attributeList.add(attribute);
     }
 
-    for (int j = 0; j < astcdDefinition.getCDInterfaceList().size(); j++) {
+    for (int j = 0; j < astcdDefinition.getCDInterfacesList().size(); j++) {
       ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PACKAGE_PRIVATE, getMCTypeFacade().createIntType(),
-          astcdDefinition.getCDInterfaceList().get(j).getName());
+          astcdDefinition.getCDInterfacesList().get(j).getName());
       this.replaceTemplate(VALUE, attribute, new StringHookPoint("= " + (j + i + 1)));
       attributeList.add(attribute);
     }
@@ -131,19 +131,19 @@ public class PackageInterfaceDecorator extends AbstractCreator<ASTCDCompilationU
     List<ASTCDAttribute> attributeList = new ArrayList<>();
 
 
-    for (ASTCDClass astcdClass : astcdDefinition.getCDClassList()) {
-      for (int i = 0; i < astcdClass.getCDAttributeList().size(); i++) {
+    for (ASTCDClass astcdClass : astcdDefinition.getCDClasssList()) {
+      for (int i = 0; i < astcdClass.getCDAttributesList().size(); i++) {
         ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PACKAGE_PRIVATE, getMCTypeFacade().createIntType(),
-            astcdClass.getName() + "_" + StringTransformations.capitalize(astcdClass.getCDAttribute(i).getName()));
+            astcdClass.getName() + "_" + StringTransformations.capitalize(astcdClass.getCDAttributes(i).getName()));
         this.replaceTemplate(VALUE, attribute, new StringHookPoint("= " + i));
         attributeList.add(attribute);
       }
     }
 
-    for (ASTCDInterface astcdInterface : astcdDefinition.getCDInterfaceList()) {
-      for (int j = 0; j < astcdInterface.getCDAttributeList().size(); j++) {
+    for (ASTCDInterface astcdInterface : astcdDefinition.getCDInterfacesList()) {
+      for (int j = 0; j < astcdInterface.getCDAttributesList().size(); j++) {
         ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PACKAGE_PRIVATE, getMCTypeFacade().createIntType(),
-            astcdInterface.getName() + "_" + StringTransformations.capitalize(astcdInterface.getCDAttribute(j).getName()));
+            astcdInterface.getName() + "_" + StringTransformations.capitalize(astcdInterface.getCDAttributes(j).getName()));
         this.replaceTemplate(VALUE, attribute, new StringHookPoint("= " + (j)));
         attributeList.add(attribute);
       }
@@ -184,13 +184,13 @@ public class PackageInterfaceDecorator extends AbstractCreator<ASTCDCompilationU
   protected List<ASTCDMethod> createEClassMethods(ASTCDDefinition astcdDefinition) {
     // e.g. EClass getAutomaton(); EClass getState();
     List<ASTCDMethod> methodList = new ArrayList<>();
-    for (ASTCDClass astcdClass : astcdDefinition.getCDClassList()) {
+    for (ASTCDClass astcdClass : astcdDefinition.getCDClasssList()) {
       String methodName = String.format(GET, astcdClass.getName());
       ASTMCQualifiedType eClassType = getMCTypeFacade().createQualifiedType(E_CLASS_TYPE);
       methodList.add(getCDMethodFacade().createMethod(PACKAGE_PRIVATE_ABSTRACT, eClassType, methodName));
     }
 
-    for (ASTCDInterface astcdInterface : astcdDefinition.getCDInterfaceList()) {
+    for (ASTCDInterface astcdInterface : astcdDefinition.getCDInterfacesList()) {
       if (!emfService.isASTNodeInterface(astcdInterface, astcdDefinition)) {
         String methodName = String.format(GET, astcdInterface.getName());
         ASTMCQualifiedType eClassType = getMCTypeFacade().createQualifiedType(E_CLASS_TYPE);
@@ -204,26 +204,26 @@ public class PackageInterfaceDecorator extends AbstractCreator<ASTCDCompilationU
     List<ASTCDMethod> methodList = new ArrayList<>();
 
     //remove attributes that are inherited
-    List<ASTCDClass> noInheritedAttributesClasses = astcdDefinition.getCDClassList()
+    List<ASTCDClass> noInheritedAttributesClasses = astcdDefinition.getCDClasssList()
         .stream()
         .map(emfService::removeInheritedAttributes)
         .collect(Collectors.toList());
     // e.g. EAttribute getASTAutomaton_Name() ; EReference getASTAutomaton_States() ;
     for (ASTCDClass astcdClass : noInheritedAttributesClasses) {
-      for (ASTCDAttribute astcdAttribute : astcdClass.getCDAttributeList()) {
+      for (ASTCDAttribute astcdAttribute : astcdClass.getCDAttributesList()) {
         String methodName = String.format(GET, astcdClass.getName() + "_" + StringTransformations.capitalize(astcdAttribute.getName()));
         methodList.add(getCDMethodFacade().createMethod(PACKAGE_PRIVATE_ABSTRACT, emfService.getEmfAttributeType(astcdAttribute), methodName));
       }
     }
 
     //remove attributes that are inherited
-    List<ASTCDInterface> noInheritedAttributesInterfaces = astcdDefinition.getCDInterfaceList()
+    List<ASTCDInterface> noInheritedAttributesInterfaces = astcdDefinition.getCDInterfacesList()
         .stream()
         .map(emfService::removeInheritedAttributes)
         .collect(Collectors.toList());
     // e.g. EAttribute getASTAutomaton_Name() ; EReference getASTAutomaton_States() ;
     for (ASTCDInterface astcdInterface : noInheritedAttributesInterfaces) {
-      for (ASTCDAttribute astcdAttribute : astcdInterface.getCDAttributeList()) {
+      for (ASTCDAttribute astcdAttribute : astcdInterface.getCDAttributesList()) {
         String methodName = String.format(GET, astcdInterface.getName() + "_" + StringTransformations.capitalize(astcdAttribute.getName()));
         methodList.add(getCDMethodFacade().createMethod(PACKAGE_PRIVATE_ABSTRACT, emfService.getEmfAttributeType(astcdAttribute), methodName));
       }

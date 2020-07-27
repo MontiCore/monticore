@@ -4,7 +4,6 @@ package de.monticore;
 
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
-import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsLanguage;
 import de.monticore.io.paths.ModelPath;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -25,8 +24,7 @@ public class MCGrammarLanguageFamilySymbolTableTest {
 
   @Test
   public void testSymbolTableOfGrammarStatechartDSL() {
-    final Grammar_WithConceptsLanguage family = new Grammar_WithConceptsLanguage();
-    final Grammar_WithConceptsGlobalScope globalScope = new Grammar_WithConceptsGlobalScope(new ModelPath(get("src/test/resources")), family);
+    final Grammar_WithConceptsGlobalScope globalScope = new Grammar_WithConceptsGlobalScope(new ModelPath(get("src/test/resources")), "mc4");
 
     final Optional<MCGrammarSymbol> oldGrammar =
             globalScope.resolveMCGrammar("de.monticore.statechart.Statechart");

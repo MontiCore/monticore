@@ -20,10 +20,10 @@ public class InterfaceProdsToCDInterfaces implements
       Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink) {
     for (Link<ASTMCGrammar, ASTCDDefinition> link : rootLink.getLinks(ASTMCGrammar.class,
         ASTCDDefinition.class)) {
-      for (ASTInterfaceProd interfaceProd : link.source().getInterfaceProdList()) {
+      for (ASTInterfaceProd interfaceProd : link.source().getInterfaceProdsList()) {
         ASTCDInterface cdInterface = CD4AnalysisNodeFactory.createASTCDInterface();
         cdInterface.setModifier(CD4AnalysisNodeFactory.createASTModifier());
-        link.target().getCDInterfaceList().add(cdInterface);
+        link.target().getCDInterfacesList().add(cdInterface);
         new Link<>(interfaceProd, cdInterface, link);
       }
     }

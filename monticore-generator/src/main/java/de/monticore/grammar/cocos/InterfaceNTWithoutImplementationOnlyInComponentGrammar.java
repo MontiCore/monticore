@@ -7,8 +7,7 @@ import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
-import de.monticore.grammar.grammar._symboltable.ProdSymbolLoader;
-import de.se_rwth.commons.StringTransformations;
+import de.monticore.grammar.grammar._symboltable.ProdSymbolSurrogate;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -58,11 +57,11 @@ public class InterfaceNTWithoutImplementationOnlyInComponentGrammar implements G
       if(!interfaceProds.isEmpty()) {
         List<ProdSymbol> temp = new ArrayList<>(interfaceProds);
         for(ProdSymbol interfaceProdSymbol : interfaceProds){
-          for(ProdSymbolLoader interfaceProdExtended : interfaceProdSymbol.getSuperInterfaceProds()){
+          for(ProdSymbolSurrogate interfaceProdExtended : interfaceProdSymbol.getSuperInterfaceProds()){
             for(int i = interfaceProds.size()-1;i>=0;--i){
               ProdSymbol interfaceProd = interfaceProds.get(i);
-              if(interfaceProdExtended.getLoadedSymbol().getName().equals(interfaceProd.getName())){
-                temp.remove(interfaceProdExtended.getLoadedSymbol());
+              if(interfaceProdExtended.getName().equals(interfaceProd.getName())){
+                temp.remove(interfaceProdExtended.lazyLoadDelegate());
               }
             }
           }
@@ -72,7 +71,7 @@ public class InterfaceNTWithoutImplementationOnlyInComponentGrammar implements G
         
       if(!interfaceProds.isEmpty()){
         for (ProdSymbol prodSymbol : prods) {
-          for (ProdSymbolLoader interfaceProdImplemented : prodSymbol.getSuperInterfaceProds()) {
+          for (ProdSymbolSurrogate interfaceProdImplemented : prodSymbol.getSuperInterfaceProds()) {
             for (int i = interfaceProds.size() - 1; i >= 0; --i) {
               ProdSymbol interfaceProd = interfaceProds.get(i);
               if (interfaceProdImplemented.getName().equals(interfaceProd.getName())) {

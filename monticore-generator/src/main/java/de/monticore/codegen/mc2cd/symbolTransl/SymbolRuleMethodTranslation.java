@@ -24,8 +24,8 @@ public class SymbolRuleMethodTranslation implements UnaryOperator<Link<ASTMCGram
       Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink) {
     for (Link<ASTSymbolRule, ASTCDClass> link : rootLink.getLinks(ASTSymbolRule.class,
         ASTCDClass.class)) {
-      for (ASTGrammarMethod method : link.source().getGrammarMethodList()) {
-        link.target().getCDMethodList().add(translateASTMethodToASTCDMethod(method));
+      for (ASTGrammarMethod method : link.source().getGrammarMethodsList()) {
+        link.target().getCDMethodsList().add(translateASTMethodToASTCDMethod(method));
       }
     }
     return rootLink;
@@ -37,9 +37,9 @@ public class SymbolRuleMethodTranslation implements UnaryOperator<Link<ASTMCGram
     cdMethod.setName(method.getName());
     String dotSeparatedName = MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(method.getMCReturnType());
     cdMethod.setMCReturnType(TransformationHelper.createReturnType(dotSeparatedName));
-    for (ASTMethodParameter param : method.getMethodParameterList()) {
+    for (ASTMethodParameter param : method.getMethodParametersList()) {
       String typeName = MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(param.getType());
-      cdMethod.getCDParameterList().add(TransformationHelper.createParameter(typeName, param.getName()));
+      cdMethod.getCDParametersList().add(TransformationHelper.createParameter(typeName, param.getName()));
     }
     return cdMethod;
   }
@@ -56,7 +56,7 @@ public class SymbolRuleMethodTranslation implements UnaryOperator<Link<ASTMCGram
     ASTCDMethod cdMethod = createSimpleCDMethod(method);
     if (method.getBody() instanceof ASTAction) {
       StringBuilder code = new StringBuilder();
-      for (ASTMCBlockStatement action : ((ASTAction) method.getBody()).getMCBlockStatementList()) {
+      for (ASTMCBlockStatement action : ((ASTAction) method.getBody()).getMCBlockStatementsList()) {
         code.append(new Grammar_WithConceptsPrettyPrinter(new IndentPrinter()).prettyprint(action));
       }
       addMethodBodyStereotype(cdMethod.getModifier(), code);

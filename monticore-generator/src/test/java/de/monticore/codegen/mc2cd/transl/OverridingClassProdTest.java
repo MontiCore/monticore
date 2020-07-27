@@ -21,7 +21,7 @@ public class OverridingClassProdTest {
   public OverridingClassProdTest() {
     ASTCDCompilationUnit cdCompilationUnit = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/OverridingClassProdGrammar.mc4")).get();
-    astX = TestHelper.getCDClass(cdCompilationUnit, "ASTX").get();
+    astX = TestHelper.getCDClasss(cdCompilationUnit, "ASTX").get();
   }
   
   /**

@@ -78,7 +78,7 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
             PUBLIC.build();
 
     // uses symbol rule methods and attributes
-    List<ASTCDAttribute> symbolRuleAttributes = symbolInput.deepClone().getCDAttributeList()
+    List<ASTCDAttribute> symbolRuleAttributes = symbolInput.deepClone().getCDAttributesList()
             .stream().filter(attr -> !symbolTableService.isInheritedAttribute(attr)).collect(Collectors.toList());
     symbolRuleAttributes.forEach(a -> getDecorationHelper().addAttributeDefaultValues(a, this.glex));
     List<ASTCDMethod> symbolRuleAttributeMethods = symbolRuleAttributes
@@ -86,7 +86,7 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
             .map(methodDecorator::decorate)
             .flatMap(List::stream)
             .collect(Collectors.toList());
-    List<ASTCDMethod> symbolRuleMethods = symbolInput.deepClone().getCDMethodList();
+    List<ASTCDMethod> symbolRuleMethods = symbolInput.deepClone().getCDMethodsList();
 
     List<ASTCDAttribute> symbolAttributes = Lists.newArrayList();
     List<ASTCDMethod> symbolMethods = Lists.newArrayList();
@@ -121,8 +121,8 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
             .setName(symbolName)
             .setModifier(modifier)
             .addInterface(getMCTypeFacade().createQualifiedType(symbolTableService.getCommonSymbolInterfaceFullName()))
-            .addAllInterfaces(symbolInput.getInterfaceList())
-            .addCDConstructor(constructor)
+            .addAllInterface(symbolInput.getInterfaceList())
+            .addCDConstructors(constructor)
             .addAllCDAttributes(symbolAttributes)
             .addAllCDAttributes(symbolNameAttributes)
             .addAllCDAttributes(symbolRuleAttributes)
@@ -130,9 +130,9 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
             .addAllCDMethods(symbolRuleMethods)
             .addAllCDMethods(symbolMethods)
             .addAllCDMethods(symbolNameMethods)
-            .addCDMethod(createAcceptMethod(symbolName))
-            .addCDMethod(createDeterminePackageName(scopeInterface))
-            .addCDMethod(createDetermineFullName(scopeInterface))
+            .addCDMethods(createAcceptMethod(symbolName))
+            .addCDMethods(createDeterminePackageName(scopeInterface))
+            .addCDMethods(createDetermineFullName(scopeInterface))
             .build();
 
     // add only for scope spanning symbols
@@ -140,7 +140,7 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
             (symbolTableService.hasScopeStereotype(symbolInput.getModifier()) || symbolTableService.hasInheritedScopeStereotype(symbolInput.getModifier()))) {
       ASTCDAttribute spannedScopeAttribute = createSpannedScopeAttribute();
       if (!symbolTableService.hasInheritedScopeStereotype(symbolInput.getModifier())) {
-        symbolClass.addCDAttribute(spannedScopeAttribute);
+        symbolClass.addCDAttributes(spannedScopeAttribute);
       }
       symbolClass.addAllCDMethods(createSpannedScopeMethods(scopeInterface));
       symbolClass.addInterface(getMCTypeFacade().createQualifiedType(I_SCOPE_SPANNING_SYMBOL));

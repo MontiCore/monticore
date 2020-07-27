@@ -18,17 +18,17 @@ public class ListSuffixDecorator extends AbstractTransformer<ASTCDCompilationUni
 
   @Override
   public ASTCDCompilationUnit decorate(final ASTCDCompilationUnit originalInput, ASTCDCompilationUnit changedInput) {
-    for (ASTCDInterface astcdInterface : changedInput.getCDDefinition().getCDInterfaceList()) {
-      addSToListAttributes(astcdInterface.getCDAttributeList());
-      astcdInterface.setCDAttributeList(getAttributesUniqueAgain(astcdInterface.getCDAttributeList()));
+    for (ASTCDInterface astcdInterface : changedInput.getCDDefinition().getCDInterfacesList()) {
+      addSToListAttributes(astcdInterface.getCDAttributesList());
+      astcdInterface.setCDAttributesList(getAttributesUniqueAgain(astcdInterface.getCDAttributesList()));
     }
-    for (ASTCDClass astcdClass : changedInput.getCDDefinition().getCDClassList()) {
-      addSToListAttributes(astcdClass.getCDAttributeList());
-      astcdClass.setCDAttributeList(getAttributesUniqueAgain(astcdClass.getCDAttributeList()));
+    for (ASTCDClass astcdClass : changedInput.getCDDefinition().getCDClasssList()) {
+      addSToListAttributes(astcdClass.getCDAttributesList());
+      astcdClass.setCDAttributesList(getAttributesUniqueAgain(astcdClass.getCDAttributesList()));
     }
-    for (ASTCDEnum astcdEnum : changedInput.getCDDefinition().getCDEnumList()) {
-      addSToListAttributes(astcdEnum.getCDAttributeList());
-      astcdEnum.setCDAttributeList(getAttributesUniqueAgain(astcdEnum.getCDAttributeList()));
+    for (ASTCDEnum astcdEnum : changedInput.getCDDefinition().getCDEnumsList()) {
+      addSToListAttributes(astcdEnum.getCDAttributesList());
+      astcdEnum.setCDAttributeList(getAttributesUniqueAgain(astcdEnum.getCDAttributesList()));
     }
     return originalInput;
   }
@@ -64,7 +64,7 @@ public class ListSuffixDecorator extends AbstractTransformer<ASTCDCompilationUni
 
   protected boolean hasDerivedAttributeName(ASTCDAttribute astcdAttribute) {
     return astcdAttribute.isPresentModifier() && astcdAttribute.getModifier().isPresentStereotype()
-        && astcdAttribute.getModifier().getStereotype().sizeValues() > 0 &&
+        && astcdAttribute.getModifier().getStereotype().sizeValue() > 0 &&
         astcdAttribute.getModifier().getStereotype().getValueList()
             .stream()
             .anyMatch(v -> v.getName().equals(MC2CDStereotypes.DERIVED_ATTRIBUTE_NAME.toString()));

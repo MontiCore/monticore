@@ -2,7 +2,6 @@
 package mc.typescalculator;
 
 import de.monticore.types.check.*;
-import de.monticore.types.typesymbols._symboltable.TypeSymbolsScope;
 import mc.typescalculator.myownlanguage._visitor.MyOwnLanguageDelegatorVisitor;
 
 import java.util.Optional;

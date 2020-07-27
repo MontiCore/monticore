@@ -12,14 +12,14 @@ import de.monticore.grammar.MCGrammarInfo;
 import de.monticore.grammar.PredicatePair;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar._symboltable.MCGrammarSymbolLoader;
+import de.monticore.grammar.grammar._symboltable.MCGrammarSymbolSurrogate;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTAction;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTExpressionPredicate;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTGrammar_WithConceptsNode;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTJavaCode;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
-import de.monticore.javalight._ast.ASTClassMemberDeclaration;
+import de.monticore.javalight._ast.ASTClassBodyDeclaration;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.statements.mcstatementsbasis._ast.ASTMCBlockStatement;
 import de.se_rwth.commons.JavaNamesHelper;
@@ -385,20 +385,20 @@ public class ParserGeneratorHelper {
 
   public Optional<ASTAlt> getAlternativeForFollowOption(String prodName) {
     return astGrammar.isPresentGrammarOption()
-            ? astGrammar.getGrammarOption().getFollowOptionList().stream()
+            ? astGrammar.getGrammarOption().getFollowOptionsList().stream()
             .filter(f -> f.getProdName().equals(prodName)).map(ASTFollowOption::getAlt).findFirst()
             : Optional.empty();
   }
 
   public List<ASTAlt> getAlternatives(ASTClassProd ast) {
-    if (!ast.getAltList().isEmpty()) {
-      return ast.getAltList();
+    if (!ast.getAltsList().isEmpty()) {
+      return ast.getAltsList();
     }
-    for (MCGrammarSymbolLoader g : grammarSymbol.getSuperGrammars()) {
-      final Optional<ProdSymbol> ruleByName = g.getLoadedSymbol().getProdWithInherited(ast.getName());
+    for (MCGrammarSymbolSurrogate g : grammarSymbol.getSuperGrammars()) {
+      final Optional<ProdSymbol> ruleByName = g.lazyLoadDelegate().getProdWithInherited(ast.getName());
       if (ruleByName.isPresent() && ruleByName.get().isClass()) {
         if (ruleByName.get().isPresentAstNode() && ruleByName.get().getAstNode() instanceof ASTClassProd) {
-          return ((ASTClassProd)ruleByName.get().getAstNode()).getAltList();
+          return ((ASTClassProd)ruleByName.get().getAstNode()).getAltsList();
         }
       }
     }
@@ -429,14 +429,14 @@ public class ParserGeneratorHelper {
 
     if (node instanceof ASTAction) {
       StringBuilder buffer = new StringBuilder();
-      for (ASTMCBlockStatement action : ((ASTAction) node).getMCBlockStatementList()) {
+      for (ASTMCBlockStatement action : ((ASTAction) node).getMCBlockStatementsList()) {
         buffer.append(getPrettyPrinter().prettyprint(action));
       }
       return buffer.toString();
     }
     if (node instanceof ASTJavaCode) {
       StringBuilder buffer = new StringBuilder();
-      for (ASTClassMemberDeclaration action : ((ASTJavaCode) node).getClassMemberDeclarationList()) {
+      for (ASTClassBodyDeclaration action : ((ASTJavaCode) node).getClassBodyDeclarationsList()) {
         buffer.append(getPrettyPrinter().prettyprint(action));
 
       }

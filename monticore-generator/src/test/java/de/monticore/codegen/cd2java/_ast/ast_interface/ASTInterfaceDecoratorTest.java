@@ -79,7 +79,7 @@ public class ASTInterfaceDecoratorTest extends DecoratorTestCase {
     assertFalse(method.isEmptyCDParameters());
     assertEquals(1, method.sizeCDParameters());
 
-    ASTCDParameter parameter = method.getCDParameter(0);
+    ASTCDParameter parameter = method.getCDParameters(0);
     assertDeepEquals("de.monticore.codegen.data.datainterface._visitor.DataInterfaceVisitor", parameter.getMCType());
     assertEquals("visitor", parameter.getName());
   }
@@ -124,7 +124,7 @@ public class ASTInterfaceDecoratorTest extends DecoratorTestCase {
 
     assertEquals(1, method.sizeCDParameters());
 
-    ASTCDParameter parameter = method.getCDParameter(0);
+    ASTCDParameter parameter = method.getCDParameters(0);
     assertDeepEquals("de.monticore.codegen.data.datainterface._symboltable.IDataInterfaceScope",
         parameter.getMCType());
     assertEquals("enclosingScope", parameter.getName());
@@ -143,7 +143,7 @@ public class ASTInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterfacesCount() {
-    assertEquals(2, dataInterface.sizeInterfaces());
+    assertEquals(2, dataInterface.sizeInterface());
   }
 
   @Test

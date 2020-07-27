@@ -42,7 +42,7 @@ public class AttributeInScopeRuleToCDAttribute implements
     ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
     cdAttribute.setName(attributeInAST.getName());
     cdAttribute.setModifier(PROTECTED.build());
-    link.target().getCDAttributeList().add(cdAttribute);
+    link.target().getCDAttributesList().add(cdAttribute);
     new Link<>(attributeInAST, cdAttribute, link);
   }
 }

@@ -11,11 +11,11 @@ import de.monticore.expressions.javaclassexpressions._visitor.JavaClassExpressio
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTArrayInit;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTSimpleInit;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTVariableInit;
-import de.monticore.types.basictypesymbols._symboltable.TypeVarSymbol;
-import de.monticore.types.typesymbols._symboltable.FieldSymbol;
-import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
-import de.monticore.types.typesymbols._symboltable.MethodSymbol;
-import de.monticore.types.typesymbols._symboltable.OOTypeSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
+import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
+import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
+import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
+import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
@@ -67,7 +67,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     int count = 0;
     if(typeCheckResult.isType()) {
       if(getScope(node.getEnclosingScope()).getEnclosingScope()!=null){
-        ITypeSymbolsScope testScope = getScope(node.getEnclosingScope());
+        IOOSymbolsScope testScope = getScope(node.getEnclosingScope());
         while (testScope!=null) {
           if(testScope.isPresentSpanningSymbol()&&testScope.getSpanningSymbol() instanceof OOTypeSymbol) {
             count++;
@@ -229,7 +229,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
 
     int count = 0;
     boolean isOuterType = false;
-    ITypeSymbolsScope testScope = getScope(node.getEnclosingScope());
+    IOOSymbolsScope testScope = getScope(node.getEnclosingScope());
     while (testScope!=null) {
       if(testScope.isPresentSpanningSymbol()&&testScope.getSpanningSymbol() instanceof OOTypeSymbol) {
         count++;
@@ -250,7 +250,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
           ASTSuperSuffix superSuffix = node.getSuperSuffix();
           if (superSuffix.isPresentArguments()) {
             //case 1 -> Expression.super.<TypeArgument>Method(Args)
-            List<SymTypeExpression> typeArgsList = calculateTypeArguments(superSuffix.getExtTypeArgumentList());
+            List<SymTypeExpression> typeArgsList = calculateTypeArguments(superSuffix.getExtTypeArgumentsList());
             List<MethodSymbol> methods = superClass.getMethodList(superSuffix.getName());
             if (!methods.isEmpty() && null != superSuffix.getArguments()) {
               //check if the methods fit and return the right returntype
@@ -372,7 +372,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     }
   }
 
-  private SymTypeExpression getResultOfPrimaryThisExpression(ITypeSymbolsScope scope, OOTypeSymbol typeSymbol) {
+  private SymTypeExpression getResultOfPrimaryThisExpression(IOOSymbolsScope scope, OOTypeSymbol typeSymbol) {
     SymTypeExpression wholeResult;
     if(typeSymbol.getTypeParameterList().isEmpty()){
       //if the return type is a primitive
@@ -435,7 +435,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     //because the other cases of the GenericInvocationSuffix can only be calculated if the expression
     //is a PrimaryGenericInvocationExpression
 
-    List<SymTypeExpression> typeArgsList = calculateTypeArguments(node.getPrimaryGenericInvocationExpression().getExtTypeArgumentList());
+    List<SymTypeExpression> typeArgsList = calculateTypeArguments(node.getPrimaryGenericInvocationExpression().getExtTypeArgumentsList());
 
 
     //search in the scope of the type that before the "." for a method that has the right name
@@ -482,7 +482,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
   private SymTypeExpression checkMethodsAndReplaceTypeVariables(List<MethodSymbol> methods, ASTArguments args, List<SymTypeExpression> typeArgsList) {
     outer:for(int i = 0;i<methods.size();i++){
       MethodSymbol method = methods.get(i);
-      if(method.getParameterList().size()!=args.getExpressionList().size()){
+      if(method.getParameterList().size()!=args.getExpressionsList().size()){
         //wrong method
         continue;
       }
@@ -533,14 +533,14 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
 
   private List<SymTypeExpression> calculateArguments(ASTArguments args) {
     List<SymTypeExpression> argList = Lists.newArrayList();
-    for(int i = 0;i<args.getExpressionList().size();i++){
-      args.getExpression(i).accept(getRealThis());
+    for(int i = 0;i<args.getExpressionsList().size();i++){
+      args.getExpressions(i).accept(getRealThis());
       if(typeCheckResult.isPresentCurrentResult()){
         if(!typeCheckResult.isType()){
           argList.add(typeCheckResult.getCurrentResult());
         }
       }else{
-        logError("0xA0284",args.getExpressionList().get(i).get_SourcePositionStart());
+        logError("0xA0284",args.getExpressionsList().get(i).get_SourcePositionStart());
       }
     }
     return argList;
@@ -556,7 +556,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
       if(node.getGenericInvocationSuffix().isPresentName()){
         //case 1: <TypeVariable>method(Args) -> similar to GenericInvocationExpression
         //can be accessed solely or after another expression -> check if lastResult is present
-        ITypeSymbolsScope testScope;
+        IOOSymbolsScope testScope;
         if(typeCheckResult.isPresentCurrentResult()){
           testScope = typeCheckResult.getCurrentResult().getTypeInfo().getSpannedScope();
         }else{
@@ -567,7 +567,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
         if(!methods.isEmpty() && node.getGenericInvocationSuffix().isPresentArguments()){
           //check if the methods fit and return the right returntype
           ASTArguments args = node.getGenericInvocationSuffix().getArguments();
-          List<SymTypeExpression> typeArgsList = calculateTypeArguments(node.getExtTypeArgumentList());
+          List<SymTypeExpression> typeArgsList = calculateTypeArguments(node.getExtTypeArgumentsList());
           if(!typeArgsList.isEmpty()){
             typeCheckResult.unsetType();
           }
@@ -584,7 +584,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
           if (!methods.isEmpty() && null != node.getGenericInvocationSuffix().getArguments()) {
             //check if the constructors fit and return the right returntype
             ASTArguments args = node.getGenericInvocationSuffix().getArguments();
-            List<SymTypeExpression> typeArgsList = calculateTypeArguments(node.getExtTypeArgumentList());
+            List<SymTypeExpression> typeArgsList = calculateTypeArguments(node.getExtTypeArgumentsList());
             wholeResult = checkMethodsAndReplaceTypeVariables(methods, args, typeArgsList);
           }
         }
@@ -602,7 +602,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
           if(!methods.isEmpty() && superSuffix.isPresentArguments()){
             //check if the constructors fit and return the right returntype
             ASTArguments args = superSuffix.getArguments();
-            List<SymTypeExpression> typeArgsList = calculateTypeArguments(node.getExtTypeArgumentList());
+            List<SymTypeExpression> typeArgsList = calculateTypeArguments(node.getExtTypeArgumentsList());
             wholeResult = checkMethodsAndReplaceTypeVariables(methods,args,typeArgsList);
           }
         }
@@ -617,7 +617,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     }
   }
 
-  private OOTypeSymbol searchForTypeSymbolSpanningEnclosingScope(ITypeSymbolsScope scope) {
+  private OOTypeSymbol searchForTypeSymbolSpanningEnclosingScope(IOOSymbolsScope scope) {
     //search for the nearest type symbol in the enclosing scopes -> for this and super to get the
     //current object
     while(scope!=null){
@@ -692,9 +692,9 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
       if(!extTypeResult.isArrayType()) {
          if (creator.getArrayDimensionSpecifier() instanceof ASTArrayDimensionByExpression) {
           ASTArrayDimensionByExpression arrayInitializer = (ASTArrayDimensionByExpression) creator.getArrayDimensionSpecifier();
-          int dim = arrayInitializer.getDimList().size() + arrayInitializer.getExpressionList().size();
+          int dim = arrayInitializer.getDimList().size() + arrayInitializer.getExpressionsList().size();
           //teste dass alle Expressions integer-zahl sind
-          for(ASTExpression expr: arrayInitializer.getExpressionList()){
+          for(ASTExpression expr: arrayInitializer.getExpressionsList()){
             expr.accept(getRealThis());
             if(typeCheckResult.isPresentCurrentResult()){
               SymTypeExpression result = typeCheckResult.getCurrentResult();
@@ -727,7 +727,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     if(depth[0]>=dim){
       return false;
     }
-    for(ASTVariableInit init: arrayInit.getVariableInitList()){
+    for(ASTVariableInit init: arrayInit.getVariableInitsList()){
       if(init instanceof ASTArrayInit){
         depth[0]++;
         //check recursively, if true do nothing, if false return false
@@ -768,12 +768,12 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
 
   private List<SymTypeExpression> calculateCorrectArguments(ASTArguments args) {
       List<SymTypeExpression> argList = Lists.newArrayList();
-      for(int i = 0;i<args.getExpressionList().size();i++){
-        args.getExpression(i).accept(getRealThis());
+      for(int i = 0;i<args.getExpressionsList().size();i++){
+        args.getExpressions(i).accept(getRealThis());
         if(typeCheckResult.isPresentCurrentResult()){
           argList.add(typeCheckResult.getCurrentResult());
         }else{
-          logError("0xA0313",args.getExpressionList().get(i).get_SourcePositionStart());
+          logError("0xA0313",args.getExpressionsList().get(i).get_SourcePositionStart());
         }
       }
       return argList;
