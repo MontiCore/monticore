@@ -185,7 +185,7 @@ SymbolTableCreatorDecoratorTest extends DecoratorTestCase {
   public void testCreateFromASTMethod() {
     ASTCDMethod method = getMethodBy("createFromAST", symTabCreatorClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals("de.monticore.codegen.symboltable.automaton._symboltable.AutomatonArtifactScope", method.getMCReturnType().getMCType());
+    assertDeepEquals("de.monticore.codegen.symboltable.automaton._symboltable.IAutomatonArtifactScope", method.getMCReturnType().getMCType());
 
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(AST_AUTOMATON, method.getCDParameters(0).getMCType());
