@@ -504,6 +504,7 @@ public class JsonPrinter {
     this.nestedArrayDepth = 0;
     this.nestedObjectDepth = 0;
     this.indentBeforeNewLine = false;
+    this.isInEmptyArray = false;
   }
 
   /**
