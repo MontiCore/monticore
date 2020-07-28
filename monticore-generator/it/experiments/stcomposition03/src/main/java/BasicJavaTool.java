@@ -15,7 +15,7 @@ public class BasicJavaTool {
 
   public static IBasicJavaArtifactScope createJavaSymTab(String model, ModelPath modelPath) {
     ASTCompilationUnit ast = parse(model);
-    BasicJavaGlobalScope globalScope = (BasicJavaGlobalScope) BasicJavaMill
+    IBasicJavaGlobalScope globalScope = BasicJavaMill
         .basicJavaGlobalScopeBuilder()
         .setModelPath(modelPath)
         .setModelFileExtension("javamodel")
