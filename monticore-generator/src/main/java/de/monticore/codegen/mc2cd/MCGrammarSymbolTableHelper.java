@@ -307,14 +307,14 @@ public class MCGrammarSymbolTableHelper {
    * @return
    */
   public static List<ProdSymbol> getSuperProds(ProdSymbol prod) {
-    List<ProdSymbol> superTypes = prod.getSuperProds().stream()
+    List<ProdSymbol> superTypes = prod.getSuperProds().stream().filter(s -> s.isSymbolPresent())
         .map(s -> s.lazyLoadDelegate()).collect(Collectors.toList());
-    superTypes.addAll(prod.getSuperInterfaceProds().stream()
+    superTypes.addAll(prod.getSuperInterfaceProds().stream().filter(s -> s.isSymbolPresent())
         .map(s -> s.lazyLoadDelegate()).collect(Collectors.toList()));
 
-    superTypes.addAll(prod.getAstSuperClasses().stream()
+    superTypes.addAll(prod.getAstSuperClasses().stream().filter(s -> s.isSymbolPresent())
         .map(s -> s.lazyLoadDelegate()).collect(Collectors.toList()));
-    superTypes.addAll(prod.getAstSuperInterfaces().stream()
+    superTypes.addAll(prod.getAstSuperInterfaces().stream().filter(s -> s.isSymbolPresent())
         .map(s -> s.lazyLoadDelegate()).collect(Collectors.toList()));
 
     return ImmutableList.copyOf(superTypes);
