@@ -6,10 +6,7 @@ import de.se_rwth.commons.logging.*;
 import mc.feature.scopes.scopeattributes.ScopeAttributesMill;
 import mc.feature.scopes.scopeattributes._ast.ASTStartProd;
 import mc.feature.scopes.scopeattributes._parser.ScopeAttributesParser;
-import mc.feature.scopes.scopeattributes._symboltable.IScopeAttributesScope;
-import mc.feature.scopes.scopeattributes._symboltable.ScopeAttributesGlobalScope;
-import mc.feature.scopes.scopeattributes._symboltable.ScopeAttributesScope;
-import mc.feature.scopes.scopeattributes._symboltable.ScopeAttributesSymbolTableCreatorDelegator;
+import mc.feature.scopes.scopeattributes._symboltable.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -26,7 +23,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class ScopeAttributesTest {
 
-  private ScopeAttributesScope scope;
+  private IScopeAttributesArtifactScope scope;
 
   @Before
   public void setUp() throws IOException {
@@ -39,7 +36,7 @@ public class ScopeAttributesTest {
     assertTrue(astSup.isPresent());
 
     ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/mc/feature/scopes"));
-    ScopeAttributesGlobalScope globalScope = ScopeAttributesMill
+    IScopeAttributesGlobalScope globalScope = ScopeAttributesMill
         .scopeAttributesGlobalScopeBuilder()
         .setModelPath(modelPath)
         .setModelFileExtension("sc")
@@ -107,7 +104,7 @@ public class ScopeAttributesTest {
 
 
   private IScopeAttributesScope getSubScopeByName(String name) {
-    Optional<IScopeAttributesScope> subScope = scope.getSubScopes()
+    Optional<? extends IScopeAttributesScope> subScope = scope.getSubScopes()
         .stream()
         .filter(x -> x.getName().equals(name))
         .findFirst();

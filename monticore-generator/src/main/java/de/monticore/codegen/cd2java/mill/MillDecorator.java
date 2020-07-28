@@ -56,10 +56,10 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
     ASTCDClass millClass = CD4AnalysisMill.cDClassBuilder()
         .setModifier(PUBLIC.build())
         .setName(millClassName)
-        .addCDAttribute(millAttribute)
-        .addCDConstructor(constructor)
-        .addCDMethod(getMillMethod)
-        .addCDMethod(initMethod)
+        .addCDAttributes(millAttribute)
+        .addCDConstructors(constructor)
+        .addCDMethods(getMillMethod)
+        .addCDMethods(initMethod)
         .build();
 
     // list of all classes needed for the reset and initMe method
@@ -67,7 +67,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
 
     for (ASTCDCompilationUnit cd : cdList) {
       // filter out all classes that are abstract and only builder classes
-      List<ASTCDClass> classList = cd.getCDDefinition().deepClone().getCDClassList()
+      List<ASTCDClass> classList = cd.getCDDefinition().deepClone().getCDClasssList()
           .stream()
           .filter(ASTCDClass::isPresentModifier)
           .filter(x -> !x.getModifier().isAbstract())
@@ -76,7 +76,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
 
 
       // filter out all classes that are abstract and end with the TOP suffix
-      List<ASTCDClass> topClassList = cd.getCDDefinition().deepClone().getCDClassList()
+      List<ASTCDClass> topClassList = cd.getCDDefinition().deepClone().getCDClasssList()
           .stream()
           .filter(ASTCDClass::isPresentModifier)
           .filter(x -> x.getModifier().isAbstract())
@@ -113,10 +113,10 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
     millClass.addAllCDMethods(superMethodsList);
 
     ASTCDMethod initMeMethod = addInitMeMethod(millType, allClasses);
-    millClass.addCDMethod(initMeMethod);
+    millClass.addCDMethods(initMeMethod);
 
     ASTCDMethod resetMethod = addResetMethod(allClasses, superSymbolList);
-    millClass.addCDMethod(resetMethod);
+    millClass.addCDMethods(resetMethod);
 
     return millClass;
   }

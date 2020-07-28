@@ -7,8 +7,6 @@ import de.monticore.ast.ASTNode;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
-import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsLanguage;
-import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsModelLoader;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.langeditor.modelstates.ModelState;
 
@@ -16,14 +14,11 @@ import java.nio.file.Path;
 import java.util.Optional;
 
 final class SymbolTableMaintainer {
-  
-  private final Grammar_WithConceptsLanguage grammarLanguage = new Grammar_WithConceptsLanguage();
-  
+
   private final Grammar_WithConceptsGlobalScope globalScope;
   
   SymbolTableMaintainer(ModelStatesInProject astMapper, ImmutableList<Path> modelPath) {
-    Grammar_WithConceptsModelLoader modelLoader = grammarLanguage.getModelLoader();
-    this.globalScope = new Grammar_WithConceptsGlobalScope(new ModelPath(modelPath), grammarLanguage);
+    this.globalScope = new Grammar_WithConceptsGlobalScope(new ModelPath(modelPath), "mc4");
   }
   
   void acceptModelState(ModelState modelState) {

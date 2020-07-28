@@ -10,9 +10,7 @@ import mc.feature.symboltable.notopscope._symboltable.*;
 import mc.feature.symboltable.subnotopscope.SubNoTopScopeMill;
 import mc.feature.symboltable.subnotopscope._ast.ASTSubFoo;
 import mc.feature.symboltable.subnotopscope._parser.SubNoTopScopeParser;
-import mc.feature.symboltable.subnotopscope._symboltable.SubNoTopScopeArtifactScope;
-import mc.feature.symboltable.subnotopscope._symboltable.SubNoTopScopeGlobalScope;
-import mc.feature.symboltable.subnotopscope._symboltable.SubNoTopScopeSymbolTableCreatorDelegator;
+import mc.feature.symboltable.subnotopscope._symboltable.*;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -40,7 +38,7 @@ public class NoTopScopeTest {
 
     // create symboltable
     ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/mc/feature/symboltable"));
-    NoTopScopeGlobalScope globalScope = NoTopScopeMill
+    INoTopScopeGlobalScope globalScope = NoTopScopeMill
         .noTopScopeGlobalScopeBuilder()
         .setModelPath(modelPath)
         .setModelFileExtension("st")
@@ -50,7 +48,7 @@ public class NoTopScopeTest {
         .setGlobalScope(globalScope)
         .build();
 
-    NoTopScopeArtifactScope scope = symbolTableCreator.createFromAST(astSup.get());
+    INoTopScopeArtifactScope scope = symbolTableCreator.createFromAST(astSup.get());
 
     // only one symbol
     Optional<ISymbol> topLevelSymbol = scope.getTopLevelSymbol();
@@ -74,7 +72,7 @@ public class NoTopScopeTest {
 
     // create symboltable
     ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/mc/feature/symboltable"));
-    SubNoTopScopeGlobalScope globalScope = SubNoTopScopeMill
+    ISubNoTopScopeGlobalScope globalScope = SubNoTopScopeMill
         .subNoTopScopeGlobalScopeBuilder()
         .setModelPath(modelPath)
         .setModelFileExtension("st")
@@ -83,7 +81,7 @@ public class NoTopScopeTest {
         .subNoTopScopeSymbolTableCreatorDelegatorBuilder()
         .setGlobalScope(globalScope)
         .build();
-    SubNoTopScopeArtifactScope scope = symbolTableCreator.createFromAST(astSup.get());
+    ISubNoTopScopeArtifactScope scope = symbolTableCreator.createFromAST(astSup.get());
 
     // only one symbol
     Optional<ISymbol> topLevelSymbol = scope.getTopLevelSymbol();

@@ -5,7 +5,6 @@ import automata._ast.*;
 import automata._symboltable.*;
 import automata._parser.AutomataParser;
 import automata._symboltable.AutomataScopeDeSer;
-import com.google.common.collect.Lists;
 import de.monticore.generating.*;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.reporting.Reporting;
@@ -17,7 +16,6 @@ import org.antlr.v4.runtime.RecognitionException;
 import java.io.*;
 import java.nio.file.*;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Main class for the Automaton DSL tool.
@@ -58,10 +56,10 @@ public class AutomataTool {
   protected ASTAutomaton ast;
 
   // The Global Scope of the symbol table
-  protected AutomataGlobalScope globalScope;
+  protected IAutomataGlobalScope globalScope;
 
   // the symbol table of the model (after parsing and SymTab creation)
-  AutomataArtifactScope modelTopScope;
+  IAutomataArtifactScope modelTopScope;
 
   // The generator engine used (reentrant, so only one instance needed)
   protected GeneratorEngine generatorEngine;
@@ -339,7 +337,7 @@ public class AutomataTool {
    * @param ast the model
    * @return
    */
-  public AutomataArtifactScope createSymbolTable(ASTAutomaton ast) {
+  public IAutomataArtifactScope createSymbolTable(ASTAutomaton ast) {
     return AutomataMill
         .automataSymbolTableCreatorBuilder()
         .addToScopeStack(globalScope)

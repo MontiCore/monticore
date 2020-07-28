@@ -22,7 +22,7 @@ public class KeywordInvalidName implements GrammarASTConstantGroupCoCo {
   @Override
   public void check(ASTConstantGroup a) {
     if (!a.isPresentUsageName()) {
-      for (ASTConstant c : a.getConstantList()) {
+      for (ASTConstant c : a.getConstantsList()) {
         if (!HelperGrammar.hasValidName(c)) {
           Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT,
               a.getEnclosingScope().getSpanningSymbol()

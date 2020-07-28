@@ -32,16 +32,16 @@ public class NoNestedGenericsInAdditionalAttributes implements GrammarASTMCGramm
   public void check(ASTMCGrammar node) {
     String grammarName = node.getName();
     // astrule
-    for (ASTASTRule astastRule : node.getASTRuleList()) {
-      findMultipleGenericAttributes(astastRule.getAdditionalAttributeList(), "Ast", grammarName, astastRule.getType());
+    for (ASTASTRule astastRule : node.getASTRulesList()) {
+      findMultipleGenericAttributes(astastRule.getAdditionalAttributesList(), "Ast", grammarName, astastRule.getType());
     }
     // symbolrule
-    for (ASTSymbolRule astSymbolRule : node.getSymbolRuleList()) {
-      findMultipleGenericAttributes(astSymbolRule.getAdditionalAttributeList(), "Symbol", grammarName, astSymbolRule.getType());
+    for (ASTSymbolRule astSymbolRule : node.getSymbolRulesList()) {
+      findMultipleGenericAttributes(astSymbolRule.getAdditionalAttributesList(), "Symbol", grammarName, astSymbolRule.getType());
     }
     // scoperule
     if (node.isPresentScopeRule()) {
-      findMultipleGenericAttributes(node.getScopeRule().getAdditionalAttributeList(), "Scope", grammarName, grammarName + "Scope");
+      findMultipleGenericAttributes(node.getScopeRule().getAdditionalAttributesList(), "Scope", grammarName, grammarName + "Scope");
     }
   }
 
@@ -71,7 +71,7 @@ public class NoNestedGenericsInAdditionalAttributes implements GrammarASTMCGramm
    * for e.g. A<B<C>>
    */
   private boolean hasNestedGeneric(ASTMCType mcType){
-    return((ASTMCGenericType) mcType).getMCTypeArgumentList()
+    return((ASTMCGenericType) mcType).getMCTypeArgumentsList()
         .stream()
         .filter(ta -> ta.getMCTypeOpt().isPresent())
         .anyMatch(ta -> ta.getMCTypeOpt().get() instanceof ASTMCGenericType);

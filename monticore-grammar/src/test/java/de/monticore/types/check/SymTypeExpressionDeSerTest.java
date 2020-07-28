@@ -2,10 +2,7 @@
 package de.monticore.types.check;
 
 import com.google.common.collect.Lists;
-import de.monticore.symbols.oosymbols._symboltable.BuiltInJavaSymbolResolvingDelegate;
-import de.monticore.symbols.oosymbols._symboltable.OOSymbolsArtifactScope;
-import de.monticore.symbols.oosymbols._symboltable.OOSymbolsScope;
-import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
+import de.monticore.symbols.oosymbols._symboltable.*;
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.symboltable.serialization.json.JsonObject;
@@ -21,7 +18,7 @@ import static de.monticore.types.check.SymTypeExpressionFactory.*;
 import static org.junit.Assert.*;
 
 public class SymTypeExpressionDeSerTest {
-  private static OOSymbolsScope scope = BuiltInJavaSymbolResolvingDelegate.getScope();
+  private static IOOSymbolsScope scope = BuiltInJavaSymbolResolvingDelegate.getScope();
 
   // setup of objects (unchanged during tests)
   // these should be the same as those of SymTypeExpressionText

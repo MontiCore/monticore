@@ -4,7 +4,7 @@ package de.monticore.grammar.cocos;
 
 import de.monticore.grammar.grammar._ast.ASTProd;
 import de.monticore.grammar.grammar._cocos.GrammarASTProdCoCo;
-import de.monticore.grammar.grammar._symboltable.ProdSymbolLoader;
+import de.monticore.grammar.grammar._symboltable.ProdSymbolSurrogate;
 import de.se_rwth.commons.logging.Log;
 
 public class ProdExtendsNotExistingProd implements GrammarASTProdCoCo {
@@ -15,14 +15,14 @@ public class ProdExtendsNotExistingProd implements GrammarASTProdCoCo {
 
   @Override
   public void check(ASTProd node) {
-    for(ProdSymbolLoader loader: node.getSymbol().getSuperProds()){
-      if(!loader.loadSymbol().isPresent()){
+    for(ProdSymbolSurrogate loader: node.getSymbol().getSuperProds()){
+      if(!node.getEnclosingScope().resolveProd(loader.getName()).isPresent()){
         logError(node.getName(), loader.getName());
       }
     }
 
-    for(ProdSymbolLoader loader: node.getSymbol().getSuperInterfaceProds()){
-      if(!loader.loadSymbol().isPresent()){
+    for(ProdSymbolSurrogate loader: node.getSymbol().getSuperInterfaceProds()){
+      if(!node.getEnclosingScope().resolveProd(loader.getName()).isPresent()){
         logError(node.getName(), loader.getName());
       }
     }

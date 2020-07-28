@@ -279,7 +279,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     addToCodeSection("\n: ");
 
     String sep = "";
-    for (ASTConstant c : ast.getConstantList()) {
+    for (ASTConstant c : ast.getConstantsList()) {
       addToCodeSection(sep);
       if (grammarInfo.isKeyword(c.getName(), grammarEntry)) {
         addToCodeSection("\n'" + c.getName() + "'");
@@ -321,10 +321,10 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
 
     // One entry leads to boolean isMethods
     if (!iterated) {
-      ASTConstant x = ast.getConstantList().get(0);
+      ASTConstant x = ast.getConstantsList().get(0);
       addToCodeSection("(");
       if (x.isPresentKeyConstant()) {
-        addToCodeSection(createKeyPredicate(x.getKeyConstant().getStringList()));
+        addToCodeSection(createKeyPredicate(x.getKeyConstant().getStringsList()));
       } else if (x.isPresentTokenConstant()) {
         addToCodeSection(parserHelper.getLexSymbolName(x.getTokenConstant().getString()));
       } else if (!grammarInfo.isKeyword(x.getName(), grammarEntry)) {
@@ -347,13 +347,13 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     else {
       addToCodeSection("(");
       String del = "";
-      for (Iterator<ASTConstant> iter = ast.getConstantList().iterator(); iter
+      for (Iterator<ASTConstant> iter = ast.getConstantsList().iterator(); iter
           .hasNext(); ) {
         addToCodeSection(del);
         ASTConstant x = iter.next();
 
         if (x.isPresentKeyConstant()) {
-          addToCodeSection(createKeyPredicate(x.getKeyConstant().getStringList()));
+          addToCodeSection(createKeyPredicate(x.getKeyConstant().getStringsList()));
         } else if (!grammarInfo.isKeyword(x.getName(), grammarEntry)) {
           addToCodeSection(parserHelper.getLexSymbolName(x.getName()));
         } else {
@@ -476,7 +476,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     // Print options
     if (a.isPresentOption()) {
       addToCodeSection("\n  options {");
-      for (ASTOptionValue x : a.getOption().getOptionValueList()) {
+      for (ASTOptionValue x : a.getOption().getOptionValuesList()) {
         addToCodeSection("\n  " + x.getKey() + "=" + x.getValue() + ";");
       }
       addToCodeSection("\n }");
@@ -567,7 +567,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
 
     startCodeSection("ASTKeyTerminal " + ast.getName());
     addToCodeSection("(");
-    String rulename = createKeyPredicate(ast.getKeyConstant().getStringList());
+    String rulename = createKeyPredicate(ast.getKeyConstant().getStringsList());
 
     // No actions in predicates
     // Template engine cannot be used for substition in rare cases
@@ -892,8 +892,8 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
           addActionToCodeSection();
         }
       } else {
-        if (left && entry.getAlternative() instanceof ASTClassProd && ((ASTClassProd) entry.getAlternative()).getAltList().size() == 1) {
-          ASTAlt alt = ((ASTClassProd) entry.getAlternative()).getAltList().get(0);
+        if (left && entry.getAlternative() instanceof ASTClassProd && ((ASTClassProd) entry.getAlternative()).getAltsList().size() == 1) {
+          ASTAlt alt = ((ASTClassProd) entry.getAlternative()).getAltsList().get(0);
           String className = entry.getPredicatePair().getClassname();
           if (embeddedJavaCode) {
             // Generate code for left recursive alternatives
@@ -949,7 +949,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
       if (grammarInfo.isProdLeftRecursive(superSymbol.getName())) {
         isLeft = true;
         if (superSymbol.isClass()) {
-          List<ASTAlt> localAlts = ((ASTClassProd) astNode).getAltList();
+          List<ASTAlt> localAlts = ((ASTClassProd) astNode).getAltsList();
           for (ASTAlt alt : localAlts) {
             alts.add(new NodePair(alt, interf));
           }

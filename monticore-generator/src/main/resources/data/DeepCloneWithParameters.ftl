@@ -43,8 +43,6 @@ ${tc.signature("attributeList")}
       for ( int i = 0; i < this.get${methName}List().size() ; i++ ) {
       result.add${methName}(get${methName}(i));
       }
-    <#elseif genHelper.isString(typeName) || genHelper.isAttributeOfTypeEnum(attribute)>
-      result.set${methName}(get${methName}());
     <#else>
       result.set${methName}(get${methName}());
     </#if>

@@ -20,7 +20,7 @@ import static org.junit.Assert.*;
 
 public class BasicSymbolsScopeDeSerTest {
 
-  private BasicSymbolsScope scope;
+  private IBasicSymbolsArtifactScope scope;
 
   @Before
   public void setUp(){
@@ -31,7 +31,7 @@ public class BasicSymbolsScopeDeSerTest {
     scope = BasicSymbolsMill.basicSymbolsArtifactScopeBuilder().setPackageName("").setImportsList(Lists.newArrayList()).build();
     scope.setName("Test");
 
-    BasicSymbolsScope typeSpannedScope = BasicSymbolsMill.basicSymbolsScopeBuilder().build();
+    IBasicSymbolsScope typeSpannedScope = BasicSymbolsMill.basicSymbolsScopeBuilder().build();
 
     //put type into main scope
     TypeSymbol type = BasicSymbolsMill.typeSymbolBuilder()
@@ -97,12 +97,12 @@ public class BasicSymbolsScopeDeSerTest {
     performRoundTripSerialization(scope);
   }
 
-  public void performRoundTripSerialization(BasicSymbolsScope scope){
+  public void performRoundTripSerialization(IBasicSymbolsScope scope){
     BasicSymbolsScopeDeSer deser = new BasicSymbolsScopeDeSer();
     //first serialize the scope using the deser
     String serialized = deser.serialize(scope);
     // then deserialize it
-    BasicSymbolsScope deserialized = deser.deserialize(serialized);
+    IBasicSymbolsArtifactScope deserialized = deser.deserialize(serialized);
     assertNotNull(deserialized);
     // and assert that the deserialized scope equals the one before
     //check that both can resolve the type "Type"

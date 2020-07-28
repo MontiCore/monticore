@@ -33,11 +33,11 @@ public class CoCoInterfaceDecorator extends AbstractCreator<ASTCDDefinition, Lis
   public List<ASTCDInterface> decorate(ASTCDDefinition definition) {
     List<ASTCDInterface> cocoInterfaces = new ArrayList<>();
 
-    cocoInterfaces.addAll(definition.getCDClassList().stream()
+    cocoInterfaces.addAll(definition.getCDClasssList().stream()
         .map(this::createCoCoInterface)
         .collect(Collectors.toList()));
 
-    cocoInterfaces.addAll(definition.getCDInterfaceList().stream()
+    cocoInterfaces.addAll(definition.getCDInterfacesList().stream()
         .map(this::createCoCoInterface)
         .collect(Collectors.toList()));
 
@@ -51,7 +51,7 @@ public class CoCoInterfaceDecorator extends AbstractCreator<ASTCDDefinition, Lis
     return CD4AnalysisMill.cDInterfaceBuilder()
         .setModifier(modifier)
         .setName(this.cocoService.getCoCoSimpleTypeName(type))
-        .addCDMethod(createCheckMethod(type))
+        .addCDMethods(createCheckMethod(type))
         .build();
   }
 

@@ -66,7 +66,7 @@ public class MillForSuperDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testNoInterfaces() {
-    assertEquals(0, millClass.sizeInterfaces());
+    assertEquals(0, millClass.sizeInterface());
   }
 
   @Test

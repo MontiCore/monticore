@@ -50,7 +50,7 @@ public class SymbolSurrogateBuilderDecorator extends AbstractCreator<ASTCDType, 
         symbolTableService.createModifierPublicModifier(input.getModifier()):
         PUBLIC.build();
 
-    List<ASTCDAttribute> builderAttributes = input.getCDAttributeList().stream()
+    List<ASTCDAttribute> builderAttributes = input.getCDAttributesList().stream()
         .map(ASTCDAttribute::deepClone)
         .filter(a -> !a.getModifier().isFinal())
         .collect(Collectors.toList());
@@ -84,18 +84,18 @@ public class SymbolSurrogateBuilderDecorator extends AbstractCreator<ASTCDType, 
     return CD4AnalysisMill.cDClassBuilder()
         .setName(symbolSurrogateBuilderName)
         .setModifier(modifier)
-        .addCDConstructor(createDefaultConstructor(symbolSurrogateBuilderName))
-        .addCDAttribute(createRealThisAttribute(symbolSurrogateBuilderName))
+        .addCDConstructors(createDefaultConstructor(symbolSurrogateBuilderName))
+        .addCDAttributes(createRealThisAttribute(symbolSurrogateBuilderName))
         .addAllCDAttributes(builderAttributes)
-        .addCDAttribute(nameAttribute)
-        .addCDAttribute(enclosingScopeAttribute)
+        .addCDAttributes(nameAttribute)
+        .addCDAttributes(enclosingScopeAttribute)
         .addAllCDMethods(accessorMethods)
         .addAllCDMethods(mutatorMethods)
         .addAllCDMethods(nameMutatorMethods)
         .addAllCDMethods(nameAccessorMethods)
         .addAllCDMethods(enclosingScopeAccessorMethods)
         .addAllCDMethods(enclosingScopeMutatorMethods)
-        .addCDMethod(createBuildMethod(symbolSurrogateName, builderAttributes))
+        .addCDMethods(createBuildMethod(symbolSurrogateName, builderAttributes))
         .build();
   }
 

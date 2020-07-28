@@ -16,7 +16,7 @@ import java.util.function.Predicate;
 
 public class AutomataResolvingDelegate implements IStimulusSymbolResolvingDelegate {
 
-  BasicJavaGlobalScope javaGS;
+  IBasicJavaGlobalScope javaGS;
 
   public AutomataResolvingDelegate(ModelPath mp){
     javaGS = BasicJavaMill

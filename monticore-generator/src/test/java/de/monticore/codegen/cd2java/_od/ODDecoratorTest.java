@@ -120,7 +120,7 @@ public class ODDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testInterfaceCount() {
-    assertEquals(1, odClass.sizeInterfaces());
+    assertEquals(1, odClass.sizeInterface());
   }
 
   @Test
@@ -186,9 +186,9 @@ public class ODDecoratorTest extends DecoratorTestCase {
   public void testHandleASTAutomaton() {
     List<ASTCDMethod> methodList = getMethodsBy("handle", 1, odClass);
     ASTMCType astType = this.mcTypeFacade.createQualifiedType(AST_AUTOMATON);
-    assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
-    assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
-    ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
+    assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameters(0).getMCType())));
+    assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameters(0).getMCType())).count());
+    ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameters(0).getMCType())).findFirst().get();
 
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
@@ -198,9 +198,9 @@ public class ODDecoratorTest extends DecoratorTestCase {
   public void testHandleASTState() {
     List<ASTCDMethod> methodList = getMethodsBy("handle", 1, odClass);
     ASTMCType astType = this.mcTypeFacade.createQualifiedType(AST_STATE);
-    assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
-    assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
-    ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
+    assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameters(0).getMCType())));
+    assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameters(0).getMCType())).count());
+    ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameters(0).getMCType())).findFirst().get();
 
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
@@ -210,9 +210,9 @@ public class ODDecoratorTest extends DecoratorTestCase {
   public void testHandleASTTransition() {
     List<ASTCDMethod> methodList = getMethodsBy("handle", 1, odClass);
     ASTMCType astType = this.mcTypeFacade.createQualifiedType(AST_TRANSITION);
-    assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
-    assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
-    ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
+    assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameters(0).getMCType())));
+    assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameters(0).getMCType())).count());
+    ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameters(0).getMCType())).findFirst().get();
 
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
@@ -223,9 +223,9 @@ public class ODDecoratorTest extends DecoratorTestCase {
   public void testHandleASTScope() {
     List<ASTCDMethod> methodList = getMethodsBy("handle", 1, odClass);
     ASTMCType astType = this.mcTypeFacade.createQualifiedType(AST_SCOPE);
-    assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
-    assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
-    ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
+    assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameters(0).getMCType())));
+    assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameters(0).getMCType())).count());
+    ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameters(0).getMCType())).findFirst().get();
 
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
@@ -235,9 +235,9 @@ public class ODDecoratorTest extends DecoratorTestCase {
   public void testHandleASTASTInheritedSymbolClass() {
     List<ASTCDMethod> methodList = getMethodsBy("handle", 1, odClass);
     ASTMCType astType = this.mcTypeFacade.createQualifiedType(AST_INHERITED_SYMBOL_CLASS);
-    assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
-    assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
-    ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
+    assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameters(0).getMCType())));
+    assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameters(0).getMCType())).count());
+    ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameters(0).getMCType())).findFirst().get();
 
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
@@ -251,10 +251,10 @@ public class ODDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
 
     assertEquals(2, method.sizeCDParameters());
-    assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
-    assertEquals("name", method.getCDParameter(0).getName());
-    assertDeepEquals(String.class, method.getCDParameter(1).getMCType());
-    assertEquals("value", method.getCDParameter(1).getName());
+    assertDeepEquals(String.class, method.getCDParameters(0).getMCType());
+    assertEquals("name", method.getCDParameters(0).getName());
+    assertDeepEquals(String.class, method.getCDParameters(1).getMCType());
+    assertEquals("value", method.getCDParameters(1).getName());
   }
 
   @Test
@@ -264,10 +264,10 @@ public class ODDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
 
     assertEquals(2, method.sizeCDParameters());
-    assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
-    assertEquals("objName", method.getCDParameter(0).getName());
-    assertDeepEquals(String.class, method.getCDParameter(1).getMCType());
-    assertEquals("objType", method.getCDParameter(1).getName());
+    assertDeepEquals(String.class, method.getCDParameters(0).getMCType());
+    assertEquals("objName", method.getCDParameters(0).getName());
+    assertDeepEquals(String.class, method.getCDParameters(1).getMCType());
+    assertEquals("objType", method.getCDParameters(1).getName());
   }
 
   @Test
@@ -278,10 +278,10 @@ public class ODDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(String.class, method.getMCReturnType().getMCType());
 
     assertEquals(2, method.sizeCDParameters());
-    assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
-    assertEquals("modelName", method.getCDParameter(0).getName());
-    assertDeepEquals(AST_AUTOMATON_Node, method.getCDParameter(1).getMCType());
-    assertEquals("node", method.getCDParameter(1).getName());
+    assertDeepEquals(String.class, method.getCDParameters(0).getMCType());
+    assertEquals("modelName", method.getCDParameters(0).getName());
+    assertDeepEquals(AST_AUTOMATON_Node, method.getCDParameters(1).getMCType());
+    assertEquals("node", method.getCDParameters(1).getName());
   }
 
   @Test
@@ -299,8 +299,8 @@ public class ODDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(VISITOR_FULL_NAME, method.getCDParameter(0).getMCType());
-    assertEquals("realThis", method.getCDParameter(0).getName());
+    assertDeepEquals(VISITOR_FULL_NAME, method.getCDParameters(0).getMCType());
+    assertEquals("realThis", method.getCDParameters(0).getName());
   }
 
   @Test
@@ -327,8 +327,8 @@ public class ODDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, method.sizeCDParameters());
-    assertBoolean(method.getCDParameter(0).getMCType());
-    assertEquals("printEmptyList", method.getCDParameter(0).getName());
+    assertBoolean(method.getCDParameters(0).getMCType());
+    assertEquals("printEmptyList", method.getCDParameters(0).getName());
   }
 
   @Test
@@ -337,8 +337,8 @@ public class ODDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, method.sizeCDParameters());
-    assertBoolean(method.getCDParameter(0).getMCType());
-    assertEquals("printEmptyOptional", method.getCDParameter(0).getName());
+    assertBoolean(method.getCDParameters(0).getMCType());
+    assertEquals("printEmptyOptional", method.getCDParameters(0).getName());
   }
 
 }

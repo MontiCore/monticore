@@ -25,11 +25,10 @@ import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.DecoratorAssert.*;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
-import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.PATH;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class ArtifactScopeDecoratorTest extends DecoratorTestCase {
+public class ArtifactScopeClassDecoratorTest extends DecoratorTestCase {
 
   private ASTCDClass scopeClass;
 
@@ -47,16 +46,6 @@ public class ArtifactScopeDecoratorTest extends DecoratorTestCase {
 
   private static final String IMPORT_STATEMENT = "de.monticore.symboltable.ImportStatement";
 
-  private static final String AUTOMATON_SYMBOL = "de.monticore.codegen.ast.automaton._symboltable.AutomatonSymbol";
-
-  private static final String QUALIFIED_NAME_SYMBOL = "de.monticore.codegen.ast.lexicals._symboltable.QualifiedNameSymbol";
-
-  private static final String ACCESS_MODIFIER = "de.monticore.symboltable.modifiers.AccessModifier";
-
-  private static final String PREDICATE = "java.util.function.Predicate<de.monticore.codegen.ast.automaton._symboltable.AutomatonSymbol>";
-
-  private static final String PREDICATE_QUALIFIED_NAME = "java.util.function.Predicate<de.monticore.codegen.ast.lexicals._symboltable.QualifiedNameSymbol>";
-
   @Before
   public void setUp() {
     LogStub.init();         // replace log by a sideffect free variant
@@ -70,7 +59,7 @@ public class ArtifactScopeDecoratorTest extends DecoratorTestCase {
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
 
-    ArtifactScopeDecorator decorator = new ArtifactScopeDecorator(this.glex,
+    ArtifactScopeClassDecorator decorator = new ArtifactScopeClassDecorator(this.glex,
         new SymbolTableService(decoratedCompilationUnit),new VisitorService(decoratedCompilationUnit),
         new MethodDecorator(glex, new SymbolTableService(decoratedCompilationUnit)));
 
@@ -90,7 +79,7 @@ public class ArtifactScopeDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterfacesCount() {
-    assertEquals(1, scopeClass.sizeInterfaces());
+    assertEquals(1, scopeClass.sizeInterface());
   }
 
   @Test
@@ -110,40 +99,40 @@ public class ArtifactScopeDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testConstructor() {
-    ASTCDConstructor cdConstructor = scopeClass.getCDConstructor(0);
+    ASTCDConstructor cdConstructor = scopeClass.getCDConstructors(0);
     assertDeepEquals(PUBLIC, cdConstructor.getModifier());
     assertEquals("AutomatonArtifactScope", cdConstructor.getName());
 
     assertEquals(2, cdConstructor.sizeCDParameters());
-    assertDeepEquals(String.class, cdConstructor.getCDParameter(0).getMCType());
-    assertEquals("packageName", cdConstructor.getCDParameter(0).getName());
+    assertDeepEquals(String.class, cdConstructor.getCDParameters(0).getMCType());
+    assertEquals("packageName", cdConstructor.getCDParameters(0).getName());
 
-    assertDeepEquals("List<de.monticore.symboltable.ImportStatement>", cdConstructor.getCDParameter(1).getMCType());
-    assertEquals("imports", cdConstructor.getCDParameter(1).getName());
+    assertDeepEquals("List<de.monticore.symboltable.ImportStatement>", cdConstructor.getCDParameters(1).getMCType());
+    assertEquals("imports", cdConstructor.getCDParameters(1).getName());
 
-    assertTrue(cdConstructor.isEmptyExceptions());
+    assertTrue(cdConstructor.isEmptyException());
   }
 
 
   @Test
   public void testConstructorWithEnclosingScope() {
-    ASTCDConstructor cdConstructor = scopeClass.getCDConstructor(1);
+    ASTCDConstructor cdConstructor = scopeClass.getCDConstructors(1);
     assertDeepEquals(PUBLIC, cdConstructor.getModifier());
     assertEquals("AutomatonArtifactScope", cdConstructor.getName());
 
     assertEquals(3, cdConstructor.sizeCDParameters());
 
-    assertDeepEquals("Optional<" + I_AUTOMATON_SCOPE + ">", cdConstructor.getCDParameter(0).getMCType());
-    assertEquals("enclosingScope", cdConstructor.getCDParameter(0).getName());
+    assertDeepEquals("Optional<" + I_AUTOMATON_SCOPE + ">", cdConstructor.getCDParameters(0).getMCType());
+    assertEquals("enclosingScope", cdConstructor.getCDParameters(0).getName());
 
-    assertDeepEquals(String.class, cdConstructor.getCDParameter(1).getMCType());
-    assertEquals("packageName", cdConstructor.getCDParameter(1).getName());
+    assertDeepEquals(String.class, cdConstructor.getCDParameters(1).getMCType());
+    assertEquals("packageName", cdConstructor.getCDParameters(1).getName());
 
-    assertDeepEquals("List<de.monticore.symboltable.ImportStatement>", cdConstructor.getCDParameter(2).getMCType());
-    assertEquals("imports", cdConstructor.getCDParameter(2).getName());
+    assertDeepEquals("List<de.monticore.symboltable.ImportStatement>", cdConstructor.getCDParameters(2).getMCType());
+    assertEquals("imports", cdConstructor.getCDParameters(2).getName());
 
 
-    assertTrue(cdConstructor.isEmptyExceptions());
+    assertTrue(cdConstructor.isEmptyException());
   }
 
 
@@ -167,7 +156,7 @@ public class ArtifactScopeDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(45, scopeClass.getCDMethodList().size());
+    assertEquals(7, scopeClass.getCDMethodsList().size());
   }
 
   @Test
@@ -188,8 +177,8 @@ public class ArtifactScopeDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
 
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
-    assertEquals("packageName", method.getCDParameter(0).getName());
+    assertDeepEquals(String.class, method.getCDParameters(0).getMCType());
+    assertEquals("packageName", method.getCDParameters(0).getName());
   }
 
   @Test
@@ -202,7 +191,6 @@ public class ArtifactScopeDecoratorTest extends DecoratorTestCase {
     assertTrue(method.isEmptyCDParameters());
   }
 
-
   @Test
   public void testSetImportsListMethod() {
     ASTCDMethod method = getMethodBy("setImportsList", scopeClass);
@@ -211,8 +199,19 @@ public class ArtifactScopeDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
 
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(MCTypeFacade.createListTypeOf(IMPORT_STATEMENT), method.getCDParameter(0).getMCType());
-    assertEquals("imports", method.getCDParameter(0).getName());
+    assertDeepEquals(MCTypeFacade.createListTypeOf(IMPORT_STATEMENT), method.getCDParameters(0).getMCType());
+    assertEquals("imports", method.getCDParameters(0).getName());
+  }
+
+  @Test
+  public void testAcceptMethod() {
+    ASTCDMethod method = getMethodBy("accept", scopeClass);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    assertEquals(1, method.sizeCDParameters());
+    assertDeepEquals("de.monticore.codegen.ast.automaton._visitor.AutomatonVisitor", method.getCDParameters(0).getMCType());
+    assertEquals("visitor", method.getCDParameters(0).getName());
   }
 
   @Test
@@ -225,84 +224,6 @@ public class ArtifactScopeDecoratorTest extends DecoratorTestCase {
     assertTrue(method.isEmptyCDParameters());
   }
 
-  @Test
-  public void testGetTopLevelSymbolMethod() {
-    ASTCDMethod method = getMethodBy("getTopLevelSymbol", scopeClass);
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertOptionalOf("de.monticore.symboltable.ISymbol", method.getMCReturnType().getMCType());
-
-    assertTrue(method.isEmptyCDParameters());
-  }
-
-  @Test
-  public void testCheckIfContinueAsSubScopeMethod() {
-    ASTCDMethod method = getMethodBy("checkIfContinueAsSubScope", scopeClass);
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertBoolean(method.getMCReturnType().getMCType());
-
-    assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
-    assertEquals("symbolName", method.getCDParameter(0).getName());
-  }
-
-  @Test
-  public void testGetRemainingNameForResolveDownMethod() {
-    ASTCDMethod method = getMethodBy("getRemainingNameForResolveDown", scopeClass);
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(String.class, method.getMCReturnType().getMCType());
-
-    assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
-    assertEquals("symbolName", method.getCDParameter(0).getName());
-  }
-
-  @Test
-  public void testContinueWithEnclosingScopeMethod() {
-    ASTCDMethod method = getMethodBy("continueAutomatonWithEnclosingScope", scopeClass);
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(MCTypeFacade.createListTypeOf(AUTOMATON_SYMBOL), method.getMCReturnType().getMCType());
-    assertEquals(4, method.sizeCDParameters());
-    assertBoolean(method.getCDParameter(0).getMCType());
-    assertEquals("foundSymbols", method.getCDParameter(0).getName());
-    assertDeepEquals(String.class, method.getCDParameter(1).getMCType());
-    assertEquals("name", method.getCDParameter(1).getName());
-    assertDeepEquals(ACCESS_MODIFIER, method.getCDParameter(2).getMCType());
-    assertEquals("modifier", method.getCDParameter(2).getName());
-    assertDeepEquals(PREDICATE, method.getCDParameter(3).getMCType());
-    assertEquals("predicate", method.getCDParameter(3).getName());
-  }
-
-  @Test
-  public void testContinueWithEnclosingScopeSuperSymbolMethod() {
-    ASTCDMethod method = getMethodBy("continueQualifiedNameWithEnclosingScope", scopeClass);
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(MCTypeFacade.createListTypeOf(QUALIFIED_NAME_SYMBOL), method.getMCReturnType().getMCType());
-    assertEquals(4, method.sizeCDParameters());
-    assertBoolean(method.getCDParameter(0).getMCType());
-    assertEquals("foundSymbols", method.getCDParameter(0).getName());
-    assertDeepEquals(String.class, method.getCDParameter(1).getMCType());
-    assertEquals("name", method.getCDParameter(1).getName());
-    assertDeepEquals(ACCESS_MODIFIER, method.getCDParameter(2).getMCType());
-    assertEquals("modifier", method.getCDParameter(2).getName());
-    assertDeepEquals(PREDICATE_QUALIFIED_NAME, method.getCDParameter(3).getMCType());
-    assertEquals("predicate", method.getCDParameter(3).getName());
-  }
-
-  @Test
-  public void testAcceptMethod() {
-    ASTCDMethod method = getMethodBy("accept", scopeClass);
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-    assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals("de.monticore.codegen.ast.automaton._visitor.AutomatonVisitor", method.getCDParameter(0).getMCType());
-    assertEquals("visitor", method.getCDParameter(0).getName());
-  }
 
   @Test
   public void testGeneratedCode() {

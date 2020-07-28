@@ -72,7 +72,7 @@ public class GrammarTransformer {
    * transitions:Transition)*
    */
   public static void uncapitalizeMultivaluedAttributes(ASTMCGrammar grammar) {
-    grammar.getASTRuleList().forEach(c -> transformAttributesInAST(c));
+    grammar.getASTRulesList().forEach(c -> transformAttributesInAST(c));
   }
 
   private static void transformAttributesInAST(ASTASTRule astRule) {

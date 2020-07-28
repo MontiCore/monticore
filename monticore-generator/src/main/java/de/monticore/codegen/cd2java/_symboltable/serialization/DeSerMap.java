@@ -7,14 +7,14 @@ import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.symbols.oosymbols._symboltable.BuiltInJavaSymbolResolvingDelegate;
+import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
+import de.monticore.symbols.oosymbols._symboltable.OOSymbolsScope;
+import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolSurrogate;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SynthesizeSymTypeFromMCSimpleGenericTypes;
 import de.monticore.types.check.TypeCheck;
-import de.monticore.types.typesymbols._symboltable.BuiltInJavaTypeSymbolResolvingDelegate;
-import de.monticore.types.typesymbols._symboltable.ITypeSymbolsScope;
-import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
-import de.monticore.types.typesymbols._symboltable.TypeSymbolsScope;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,12 +33,12 @@ public class DeSerMap {
 
   protected static final String COMPLEX_TEMPLATE = "_symboltable.serialization.PrintComplexAttribute";
 
-  protected static TypeCheck tc = new TypeCheck(new SynthesizeSymTypeFromMCSimpleGenericTypes(null),
+  protected static TypeCheck tc = new TypeCheck(new SynthesizeSymTypeFromMCSimpleGenericTypes(),
       null);
 
   protected static final Map<SymTypeExpression, String> primitiveDataTypes = new HashMap<>();
 
-  protected static ITypeSymbolsScope gs = BuiltInJavaTypeSymbolResolvingDelegate.getScope();
+  protected static IOOSymbolsScope gs = BuiltInJavaSymbolResolvingDelegate.getScope();
 
   static {
     primitiveDataTypes.put(createTypeConstant("boolean"), "getBooleanMember(\"%s\")");
@@ -61,7 +61,9 @@ public class DeSerMap {
   }
 
   protected static SymTypeExpression createObjectType(String name) {
-    return SymTypeExpressionFactory.createTypeObject(new TypeSymbolLoader(name, gs));
+    OOTypeSymbolSurrogate t = new OOTypeSymbolSurrogate(name);
+    t.setEnclosingScope(gs);
+    return SymTypeExpressionFactory.createTypeObject(t);
   }
 
   protected static String getNumberMember(String type) {
@@ -69,7 +71,7 @@ public class DeSerMap {
   }
 
   public static HookPoint getDeserializationImplementation(ASTCDAttribute a, String methodName,
-      String jsonName, TypeSymbolsScope enclosingScope, String generatedErrorCode) {
+                                                           String jsonName, OOSymbolsScope enclosingScope, String generatedErrorCode) {
     SymTypeExpression actualType = tc.symTypeFromAST(a.getMCType());
     Optional<HookPoint> primitiveTypeOpt = getHookPointForPrimitiveDataType(actualType, a.getName(),
         jsonName, enclosingScope);
@@ -84,7 +86,7 @@ public class DeSerMap {
 
   protected static Optional<HookPoint> getHookPointForPrimitiveDataType(
       SymTypeExpression actualType,
-      String varName, String jsonName, TypeSymbolsScope enclosingScope) {
+      String varName, String jsonName, OOSymbolsScope enclosingScope) {
     for (SymTypeExpression e : primitiveDataTypes.keySet()) {
       if (isTypeOf(e, actualType, enclosingScope)) {
         String s =
@@ -105,7 +107,7 @@ public class DeSerMap {
   }
 
   protected static boolean isTypeOf(SymTypeExpression expectedType, SymTypeExpression actualType,
-      TypeSymbolsScope enclosingScope) {
+      OOSymbolsScope enclosingScope) {
     //    if (TypeCheck.compatible(expectedType, actualType)) {
     if (expectedType.print().equals(actualType.print())) {
       return true;
@@ -115,10 +117,11 @@ public class DeSerMap {
 
   protected static boolean isListTypeOf(SymTypeExpression expectedType,
       SymTypeExpression actualType,
-      TypeSymbolsScope enclosingScope) {
+      OOSymbolsScope enclosingScope) {
+    OOTypeSymbolSurrogate t = new OOTypeSymbolSurrogate("java.util.List");
+    t.setEnclosingScope(enclosingScope);
     SymTypeExpression list = SymTypeExpressionFactory
-        .createGenerics(new TypeSymbolLoader("java.util.List", enclosingScope),
-            Lists.newArrayList(expectedType));
+        .createGenerics(t, Lists.newArrayList(expectedType));
     //    if (TypeCheck.compatible(list1, actualType) || TypeCheck.compatible(list2, actualType)) {
     if (list.print().equals(actualType.print())) {
       return true;
@@ -127,10 +130,11 @@ public class DeSerMap {
   }
 
   protected static boolean isOptionalTypeOf(SymTypeExpression expectedType,
-      SymTypeExpression actualType, TypeSymbolsScope enclosingScope) {
+      SymTypeExpression actualType, OOSymbolsScope enclosingScope) {
+    OOTypeSymbolSurrogate t = new OOTypeSymbolSurrogate("java.util.Optional");
+    t.setEnclosingScope(enclosingScope);
     SymTypeExpression optional = SymTypeExpressionFactory
-        .createGenerics(new TypeSymbolLoader("java.util.Optional", enclosingScope),
-            Lists.newArrayList(expectedType));
+        .createGenerics(t, Lists.newArrayList(expectedType));
     //    if (TypeCheck.compatible(optional, actualType)) {
     if (optional.print().equals(actualType.print())) {
       return true;

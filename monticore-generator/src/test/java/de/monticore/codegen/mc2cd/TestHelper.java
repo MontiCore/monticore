@@ -10,8 +10,9 @@ import de.monticore.codegen.mc2cd.scopeTransl.MC2CDScopeTranslation;
 import de.monticore.codegen.mc2cd.symbolTransl.MC2CDSymbolTranslation;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
-import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsLanguage;
+import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsSymbolTableCreatorDelegator;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
@@ -36,9 +37,9 @@ public class TestHelper {
     if (!grammar.isPresent()) {
       return Optional.empty();
     }
-    MontiCoreScript mc = new MontiCoreScript();
     Grammar_WithConceptsGlobalScope symbolTable = createGlobalScope(new ModelPath(Paths.get("src/test/resources")));
-    mc.createSymbolsFromAST(symbolTable, grammar.get());
+    Grammar_WithConceptsSymbolTableCreatorDelegator stc = Grammar_WithConceptsMill.grammar_WithConceptsSymbolTableCreatorDelegatorBuilder().setGlobalScope(symbolTable).build();
+    stc.createFromAST(grammar.get());
     ASTCDCompilationUnit cdCompilationUnit = new MC2CDSymbolTranslation().apply(grammar.get());
     return Optional.of(cdCompilationUnit);
   }
@@ -70,18 +71,17 @@ public class TestHelper {
   
   public static Grammar_WithConceptsGlobalScope createGlobalScope(ModelPath modelPath) {
 
-    Grammar_WithConceptsLanguage mcLanguage = new Grammar_WithConceptsLanguage();
-    return new Grammar_WithConceptsGlobalScope(modelPath, mcLanguage);
+    return new Grammar_WithConceptsGlobalScope(modelPath, "mc4");
   }
 
-  public static Optional<ASTCDClass> getCDClass(ASTCDCompilationUnit cdCompilationUnit, String cdClassName) {
-    return cdCompilationUnit.getCDDefinition().getCDClassList().stream()
+  public static Optional<ASTCDClass> getCDClasss(ASTCDCompilationUnit cdCompilationUnit, String cdClassName) {
+    return cdCompilationUnit.getCDDefinition().getCDClasssList().stream()
         .filter(cdClass -> cdClass.getName().equals(cdClassName))
         .findAny();
   }
 
-  public static Optional<ASTCDInterface> getCDInterface(ASTCDCompilationUnit cdCompilationUnit, String cdInterfaceName) {
-    return cdCompilationUnit.getCDDefinition().getCDInterfaceList().stream()
+  public static Optional<ASTCDInterface> getCDInterfaces(ASTCDCompilationUnit cdCompilationUnit, String cdInterfaceName) {
+    return cdCompilationUnit.getCDDefinition().getCDInterfacesList().stream()
         .filter(cdClass -> cdClass.getName().equals(cdInterfaceName))
         .findAny();
   }
@@ -94,10 +94,10 @@ public class TestHelper {
       return false;
     }
     ASTMCGenericType type = (ASTMCGenericType) typeRef;
-    if (type.getMCTypeArgumentList().size() != 1) {
+    if (type.getMCTypeArgumentsList().size() != 1) {
       return false;
     }
-    if (!type.getMCTypeArgumentList().get(0).getMCTypeOpt().get()
+    if (!type.getMCTypeArgumentsList().get(0).getMCTypeOpt().get()
             .printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()).equals(typeArg)) {
       return false;
     }
