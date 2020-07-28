@@ -312,7 +312,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(91, scopeClass.getCDMethodsList().size());
+    assertEquals(90, scopeClass.getCDMethodsList().size());
   }
 
   @Test
@@ -394,15 +394,6 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
   }
 
 
-  @Test
-  public void testGetSymbolsSizeMethod() {
-    ASTCDMethod method = getMethodBy("getSymbolsSize", scopeClass);
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertInt(method.getMCReturnType().getMCType());
-
-    assertTrue(method.isEmptyCDParameters());
-  }
 
   @Test
   public void testGetAutomatonSymbolsMethod() {

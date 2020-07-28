@@ -12,6 +12,7 @@ import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +25,7 @@ import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILD_M
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.ENCLOSING_SCOPE_VAR;
 
 
-public class ArtifactScopeBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
+public class ArtifactScopeClassBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
 
   protected BuilderDecorator builderDecorator;
 
@@ -34,7 +35,7 @@ public class ArtifactScopeBuilderDecorator extends AbstractCreator<ASTCDClass, A
 
   protected static final String TEMPLATE_PATH = "_symboltable.artifactscope.";
 
-  public ArtifactScopeBuilderDecorator(final GlobalExtensionManagement glex,
+  public ArtifactScopeClassBuilderDecorator(final GlobalExtensionManagement glex,
                                        final SymbolTableService symbolTableService,
                                        final BuilderDecorator builderDecorator,
                                        final AccessorDecorator accessorDecorator) {
@@ -63,8 +64,13 @@ public class ArtifactScopeBuilderDecorator extends AbstractCreator<ASTCDClass, A
         .stream()
         .filter(m -> BUILD_METHOD.equals(m.getName()))
         .findFirst();
-    buildMethod.ifPresent(b -> this.replaceTemplate(EMPTY_BODY, b,
-        new TemplateHookPoint(TEMPLATE_PATH + "BuildArtifactScope", scopeClass.getName())));
+    if (buildMethod.isPresent()) {
+      this.replaceTemplate(EMPTY_BODY, buildMethod.get(),
+          new TemplateHookPoint(TEMPLATE_PATH + "BuildArtifactScope", scopeClass.getName()));
+      buildMethod.get().setMCReturnType(MCBasicTypesMill.mCReturnTypeBuilder()
+          .setMCType(getMCTypeFacade().createQualifiedType("I"+ buildMethod.get().printReturnType()))
+          .build());
+    }
 
     BuilderMutatorMethodDecorator builderMutatorMethodDecorator = new BuilderMutatorMethodDecorator(glex,
         getMCTypeFacade().createQualifiedType(scopeBuilderName));

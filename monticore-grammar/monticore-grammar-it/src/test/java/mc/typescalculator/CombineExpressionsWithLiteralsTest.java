@@ -15,6 +15,7 @@ import mc.typescalculator.combineexpressionswithliterals._parser.CombineExpressi
 import mc.typescalculator.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsArtifactScope;
 import mc.typescalculator.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsGlobalScope;
 import mc.typescalculator.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsSymbolTableCreatorDelegator;
+import mc.typescalculator.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsArtifactScope;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -67,7 +68,7 @@ public class CombineExpressionsWithLiteralsTest {
     CombineExpressionsWithLiteralsSymbolTableCreatorDelegator del = new CombineExpressionsWithLiteralsSymbolTableCreatorDelegator(globalScope1);
 
     assertTrue(expr.isPresent());
-    CombineExpressionsWithLiteralsArtifactScope art = del.createFromAST(expr.get());
+    ICombineExpressionsWithLiteralsArtifactScope art = del.createFromAST(expr.get());
     art.setImportsList(Lists.newArrayList(new ImportStatement("mc.typescalculator.TestCD.D", true)));
     Optional<SymTypeExpression> j = calc.calculateType(expr.get());
     assertTrue(j.isPresent());

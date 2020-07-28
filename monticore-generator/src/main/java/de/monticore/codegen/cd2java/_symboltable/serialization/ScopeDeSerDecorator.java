@@ -45,8 +45,8 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
   protected VisitorService visitorService;
 
   public ScopeDeSerDecorator(final GlobalExtensionManagement glex,
-      final SymbolTableService symbolTableService, final MethodDecorator methodDecorator,
-      VisitorService visitorService) {
+                             final SymbolTableService symbolTableService, final MethodDecorator methodDecorator,
+                             VisitorService visitorService) {
     super(glex);
     this.visitorService = visitorService;
     this.symbolTableService = symbolTableService;
@@ -61,8 +61,9 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
     String scopeDeSerName = symbolTableService.getScopeDeSerSimpleName();
     String scopeInterfaceName = symbolTableService.getScopeInterfaceFullName();
     String artifactScopeFullName = symbolTableService.getArtifactScopeFullName();
-    String globalScopeFullName = symbolTableService.getGlobalScopeFullName();
-    String scopeClassFullName = symbolTableService.getScopeClassFullName();
+    String artifactScopeInterfaceFullName = symbolTableService.getArtifactScopeInterfaceFullName();
+    String globalScopeFullName = symbolTableService.getGlobalScopeInterfaceFullName();
+    String scopeClassFullName = symbolTableService.getScopeInterfaceFullName();
     String simpleName = symbolTableService.getCDName();
     String symTabMillFullName = symbolTableService.getMillFullName();
     ASTCDParameter scopeJsonParam = getCDParameterFacade()
@@ -101,13 +102,13 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
         .addCDAttributes(jsonPrinter)
         .addCDAttributes(symbolTablePrinter)
         .addAllCDMethods(methodDecorator.decorate(fileExtension))
-        .addAllCDMethods(createLoadMethods(artifactScopeFullName))
+        .addAllCDMethods(createLoadMethods(artifactScopeInterfaceFullName))
         .addCDMethods(createLoadSymbolsIntoScopeMethod(globalScopeFullName))
-        .addCDMethods(createStoreMethod(scopeDeSerName, artifactScopeFullName))
-        .addCDMethods(createDeserializeStringMethod(artifactScopeFullName))
+        .addCDMethods(createStoreMethod(scopeDeSerName, artifactScopeInterfaceFullName))
+        .addCDMethods(createDeserializeStringMethod(artifactScopeFullName, artifactScopeInterfaceFullName))
         .addCDMethods(createDeserializeScopeMethod(scopeClassFullName, simpleName, symTabMillFullName, scopeJsonParam, scopeRuleAttributeList))
-        .addCDMethods(createDeserializeArtifactScopeMethod(artifactScopeFullName, simpleName, symTabMillFullName, scopeJsonParam, scopeRuleAttributeList))
-        .addAllCDMethods(createDeserializeAdditionalAttributesMethods(scopeInterfaceName, scopeJsonParam))
+        .addCDMethods(createDeserializeArtifactScopeMethod(artifactScopeInterfaceFullName, simpleName, symTabMillFullName, scopeJsonParam, scopeRuleAttributeList))
+        .addAllCDMethods(createDeserializeAdditionalAttributesMethods(scopeJsonParam))
         .addCDMethods(createAddSymbolsMethod(symbolDefiningProds))
         .addAllCDMethods(createDeserializeSymbolMethods(symbolDefiningProds))
         .addCDMethods(createSerializeMethod(scopeInterfaceName))
@@ -116,10 +117,10 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
         .build();
   }
 
-  protected Map<ASTCDType, ASTCDDefinition> createSymbolMap( ASTCDDefinition symbolInput) {
+  protected Map<ASTCDType, ASTCDDefinition> createSymbolMap(ASTCDDefinition symbolInput) {
     Map<ASTCDType, ASTCDDefinition> result = new HashMap<>();
     //add local symbols
-    symbolTableService.getSymbolDefiningProds(symbolInput).forEach(s -> result.put(s,symbolInput));
+    symbolTableService.getSymbolDefiningProds(symbolInput).forEach(s -> result.put(s, symbolInput));
 
     //add symbols from super grammars
     for (CDDefinitionSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
@@ -164,7 +165,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
             && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifier())) {
           String pckge = symbolTableService.getSerializationPackage(cdDefinitionSymbol);
           String deser = symbolTableService.getSymbolDeSerSimpleName(type.getAstNode());
-          symbolDeSerNames.add(Names.getQualifiedName(pckge,deser));
+          symbolDeSerNames.add(Names.getQualifiedName(pckge, deser));
         }
       }
     }
@@ -217,7 +218,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
   }
 
   protected ASTCDMethod createLoadMethod(ASTCDParameter parameter, String parameterInvocation,
-      ASTMCQualifiedType returnType) {
+                                         ASTMCQualifiedType returnType) {
     ASTCDMethod loadMethod = getCDMethodFacade()
         .createMethod(PUBLIC, returnType, "load", parameter);
     this.replaceTemplate(EMPTY_BODY, loadMethod,
@@ -250,11 +251,11 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
     return serializeMethod;
   }
 
-  protected ASTCDMethod createDeserializeStringMethod(String artifactScopeName) {
+  protected ASTCDMethod createDeserializeStringMethod(String artifactScopeName, String artifactScopeInterfaceName) {
     ASTCDParameter stringParam = getCDParameterFacade()
         .createParameter(getMCTypeFacade().createStringType(), "serialized");
     ASTCDMethod deserializeMethod = getCDMethodFacade()
-        .createMethod(PUBLIC, getMCTypeFacade().createQualifiedType(artifactScopeName), DESERIALIZE,
+        .createMethod(PUBLIC, getMCTypeFacade().createQualifiedType(artifactScopeInterfaceName), DESERIALIZE,
             stringParam);
     this.replaceTemplate(EMPTY_BODY, deserializeMethod,
         new TemplateHookPoint("_symboltable.serialization.scopeDeSer.DeserializeString4ScopeDeSer",
@@ -263,8 +264,8 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
   }
 
   protected ASTCDMethod createDeserializeScopeMethod(String scopeClassName, String simpleName,
-      String symTabMill,
-      ASTCDParameter jsonParam, List<ASTCDAttribute> scopeRuleAttributes) {
+                                                     String symTabMill,
+                                                     ASTCDParameter jsonParam, List<ASTCDAttribute> scopeRuleAttributes) {
     ASTCDMethod deserializeMethod = getCDMethodFacade()
         .createMethod(PROTECTED, getMCTypeFacade().createQualifiedType(scopeClassName),
             DESERIALIZE + simpleName + SCOPE_SUFFIX, jsonParam);
@@ -276,8 +277,8 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
   }
 
   protected ASTCDMethod createDeserializeArtifactScopeMethod(String artifactScopeName,
-      String simpleName, String symTabMill,
-      ASTCDParameter jsonParam, List<ASTCDAttribute> scopeRuleAttributes) {
+                                                             String simpleName, String symTabMill,
+                                                             ASTCDParameter jsonParam, List<ASTCDAttribute> scopeRuleAttributes) {
     ASTCDMethod deserializeMethod = getCDMethodFacade()
         .createMethod(PROTECTED, getMCTypeFacade().createQualifiedType(artifactScopeName),
             DESERIALIZE + simpleName + ARTIFACT_PREFIX + SCOPE_SUFFIX, jsonParam);
@@ -288,15 +289,14 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
     return deserializeMethod;
   }
 
-  protected List<ASTCDMethod> createDeserializeAdditionalAttributesMethods(
-      String scopeInterfaceName, ASTCDParameter jsonParam) {
+  protected List<ASTCDMethod> createDeserializeAdditionalAttributesMethods(ASTCDParameter jsonParam) {
     ASTCDParameter scopeParam = getCDParameterFacade()
         .createParameter(symbolTableService.getScopeInterfaceType(), SCOPE_VAR);
     ASTCDMethod scopeMethod = getCDMethodFacade()
         .createMethod(PROTECTED, "deserializeAdditionalScopeAttributes", scopeParam, jsonParam);
 
     ASTCDParameter artifactScopeParam = getCDParameterFacade()
-        .createParameter(symbolTableService.getArtifactScopeType(), SCOPE_VAR);
+        .createParameter(symbolTableService.getArtifactScopeInterfaceType(), SCOPE_VAR);
     ASTCDMethod artifactScopeMethod = getCDMethodFacade()
         .createMethod(PROTECTED, "deserializeAdditionalArtifactScopeAttributes", artifactScopeParam,
             jsonParam);
@@ -330,7 +330,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
         .createParameter(getMCTypeFacade().createQualifiedType(JSON_OBJECT), SYMBOL_JSON_VAR);
     ASTCDParameter scopeParam = getCDParameterFacade()
         .createParameter(symbolTableService.getScopeInterfaceType(), SCOPE_VAR);
-    String scopeFullName = symbolTableService.getScopeClassFullName();
+    String scopeFullName = symbolTableService.getScopeInterfaceFullName();
     String scopeSimpleName = symbolTableService.getScopeClassSimpleName();
     String symTabMill = symbolTableService.getMillFullName();
 

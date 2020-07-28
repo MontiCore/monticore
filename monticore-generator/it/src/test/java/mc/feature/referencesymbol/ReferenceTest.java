@@ -36,7 +36,7 @@ public class ReferenceTest {
     assertTrue(astRand.isPresent());
     //create symboltable
     ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/mc/feature/referencesymbol"));
-    ReferenceGlobalScope globalScope = ReferenceMill
+    IReferenceGlobalScope globalScope = ReferenceMill
         .referenceGlobalScopeBuilder()
         .setModelPath(modelPath)
         .setModelFileExtension("ref")
@@ -45,9 +45,9 @@ public class ReferenceTest {
         .referenceSymbolTableCreatorDelegatorBuilder()
         .setGlobalScope(globalScope)
         .build();
-    ReferenceArtifactScope artifactScope = symbolTableCreator.createFromAST(astRand.get());
+    IReferenceArtifactScope artifactScope = symbolTableCreator.createFromAST(astRand.get());
 
-    Optional<IReferenceScope> scopeOpt = artifactScope.getSubScopes().stream().findAny();
+    Optional<? extends IReferenceScope> scopeOpt = artifactScope.getSubScopes().stream().findAny();
     assertTrue(scopeOpt.isPresent());
     IReferenceScope innerScope = scopeOpt.get();
 

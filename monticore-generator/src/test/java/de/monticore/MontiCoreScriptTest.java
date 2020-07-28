@@ -355,10 +355,11 @@ public class MontiCoreScriptTest {
     assertEquals("StatechartSymbolTableCreatorBuilder", symbolPackageCD.getCDDefinition().getCDClasss(index++).getName());
 
     index = 0;
-    assertEquals(3, symbolPackageCD.getCDDefinition().sizeCDInterfaces());
+    assertEquals(4, symbolPackageCD.getCDDefinition().sizeCDInterfaces());
     assertEquals("IStatechartScope", symbolPackageCD.getCDDefinition().getCDInterfaces(index++).getName());
     assertEquals("ICommonStatechartSymbol", symbolPackageCD.getCDDefinition().getCDInterfaces(index++).getName());
     assertEquals("IStatechartGlobalScope", symbolPackageCD.getCDDefinition().getCDInterfaces(index++).getName());
+    assertEquals("IStatechartArtifactScope", symbolPackageCD.getCDDefinition().getCDInterfaces(index++).getName());
   }
 
   @Test

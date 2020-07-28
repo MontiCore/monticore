@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import automata7._symboltable.Automata7ArtifactScope;
+import automata7._symboltable.IAutomata7ArtifactScope;
 import automata7._symboltable.StimulusSymbol;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
@@ -28,7 +29,7 @@ public class BasicJavaToolTest {
   @Test
   public void testPingPong(){
     ModelPath mp = new ModelPath(Paths.get("src/test/resources/example"));
-    Automata7ArtifactScope symTab = JavaAndAutTool
+    IAutomata7ArtifactScope symTab = JavaAndAutTool
         .createJavaAndAutSymTab("src/test/resources/example/PingPong.aut", mp);
     Optional<StimulusSymbol> hit = symTab.resolveStimulus("Hit");
     assertTrue(hit.isPresent());

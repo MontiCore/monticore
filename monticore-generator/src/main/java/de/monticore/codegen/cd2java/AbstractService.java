@@ -219,6 +219,13 @@ public class AbstractService<T extends AbstractService> {
     return hasStereotype(modifier, MC2CDStereotypes.SYMBOL);
   }
 
+  public boolean hasSymbolStereotype(ASTCDType type) {
+    if(type.isPresentModifier()){
+      return hasStereotype(type.getModifier(), MC2CDStereotypes.SYMBOL);
+    }
+    return false;
+  }
+
   public boolean isMethodBodyPresent(ASTCDMethod method) {
     return hasStereotype(method.getModifier(), MC2CDStereotypes.METHOD_BODY);
   }

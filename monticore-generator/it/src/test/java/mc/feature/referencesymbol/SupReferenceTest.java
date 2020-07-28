@@ -10,10 +10,7 @@ import mc.feature.referencesymbol.supgrammarref._ast.ASTSupRef;
 import mc.feature.referencesymbol.supgrammarref._ast.ASTSupRefList;
 import mc.feature.referencesymbol.supgrammarref._ast.ASTSupRefOpt;
 import mc.feature.referencesymbol.supgrammarref._parser.SupGrammarRefParser;
-import mc.feature.referencesymbol.supgrammarref._symboltable.ISupGrammarRefScope;
-import mc.feature.referencesymbol.supgrammarref._symboltable.SupGrammarRefGlobalScope;
-import mc.feature.referencesymbol.supgrammarref._symboltable.SupGrammarRefScope;
-import mc.feature.referencesymbol.supgrammarref._symboltable.SupGrammarRefSymbolTableCreatorDelegator;
+import mc.feature.referencesymbol.supgrammarref._symboltable.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -44,7 +41,7 @@ public class SupReferenceTest {
 
 
     ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/mc/feature/referencesymbol"));
-    SupGrammarRefGlobalScope globalScope = SupGrammarRefMill
+    ISupGrammarRefGlobalScope globalScope = SupGrammarRefMill
         .supGrammarRefGlobalScopeBuilder()
         .setModelPath(modelPath)
         .setModelFileExtension("ref")
@@ -53,8 +50,8 @@ public class SupReferenceTest {
         .supGrammarRefSymbolTableCreatorDelegatorBuilder()
         .setGlobalScope(globalScope)
         .build();
-    SupGrammarRefScope artifact = symbolTableCreator.createFromAST(astsupRand);
-    Optional<ISupGrammarRefScope> scopeOpt = artifact.getSubScopes().stream().findAny();
+    ISupGrammarRefArtifactScope artifact = symbolTableCreator.createFromAST(astsupRand);
+    Optional<? extends ISupGrammarRefScope> scopeOpt = artifact.getSubScopes().stream().findAny();
     assertTrue(scopeOpt.isPresent());
     ISupGrammarRefScope innerScope = scopeOpt.get();
 
