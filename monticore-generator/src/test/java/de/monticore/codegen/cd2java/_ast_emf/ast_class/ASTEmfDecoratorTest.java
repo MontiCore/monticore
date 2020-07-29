@@ -74,7 +74,7 @@ public class ASTEmfDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterface() {
-    assertEquals(1, emfClass.sizeInterfaces());
+    assertEquals(1, emfClass.sizeInterface());
     assertDeepEquals("de.monticore.codegen._ast_emf.automata._ast.ASTAutomataNode", emfClass.getInterface(0));
   }
 
@@ -86,7 +86,7 @@ public class ASTEmfDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeSize() {
-    assertEquals(3, emfClass.getCDAttributeList().size());
+    assertEquals(3, emfClass.getCDAttributesList().size());
 
 
   }
@@ -100,8 +100,8 @@ public class ASTEmfDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodSize() {
-    assertFalse(emfClass.getCDMethodList().isEmpty());
-    assertEquals(21, emfClass.getCDMethodList().size());
+    assertFalse(emfClass.getCDMethodsList().isEmpty());
+    assertEquals(21, emfClass.getCDMethodsList().size());
   }
 
   @Test
@@ -111,12 +111,12 @@ public class ASTEmfDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(Object.class, method.getMCReturnType().getMCType());
 
     assertEquals(3, method.sizeCDParameters());
-    assertEquals("featureID", method.getCDParameter(0).getName());
-    assertInt(method.getCDParameter(0).getMCType());
-    assertEquals("resolve", method.getCDParameter(1).getName());
-    assertBoolean(method.getCDParameter(1).getMCType());
-    assertEquals("coreType", method.getCDParameter(2).getName());
-    assertBoolean(method.getCDParameter(2).getMCType());
+    assertEquals("featureID", method.getCDParameters(0).getName());
+    assertInt(method.getCDParameters(0).getMCType());
+    assertEquals("resolve", method.getCDParameters(1).getName());
+    assertBoolean(method.getCDParameters(1).getMCType());
+    assertEquals("coreType", method.getCDParameters(2).getName());
+    assertBoolean(method.getCDParameters(2).getMCType());
   }
 
   @Test
@@ -126,10 +126,10 @@ public class ASTEmfDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
 
     assertEquals(2, method.sizeCDParameters());
-    assertEquals("featureID", method.getCDParameter(0).getName());
-    assertInt(method.getCDParameter(0).getMCType());
-    assertEquals("newValue", method.getCDParameter(1).getName());
-    assertDeepEquals(Object.class, method.getCDParameter(1).getMCType());
+    assertEquals("featureID", method.getCDParameters(0).getName());
+    assertInt(method.getCDParameters(0).getMCType());
+    assertEquals("newValue", method.getCDParameters(1).getName());
+    assertDeepEquals(Object.class, method.getCDParameters(1).getMCType());
   }
 
   @Test
@@ -139,8 +139,8 @@ public class ASTEmfDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
 
     assertEquals(1, method.sizeCDParameters());
-    assertEquals("featureID", method.getCDParameter(0).getName());
-    assertInt(method.getCDParameter(0).getMCType());
+    assertEquals("featureID", method.getCDParameters(0).getName());
+    assertInt(method.getCDParameters(0).getMCType());
   }
 
 
@@ -151,11 +151,11 @@ public class ASTEmfDecoratorTest extends DecoratorTestCase {
     assertInt(method.getMCReturnType().getMCType());
 
     assertEquals(2, method.sizeCDParameters());
-    assertEquals("featureID", method.getCDParameter(0).getName());
-    assertInt(method.getCDParameter(0).getMCType());
-    assertEquals("baseClass", method.getCDParameter(1).getName());
+    assertEquals("featureID", method.getCDParameters(0).getName());
+    assertInt(method.getCDParameters(0).getMCType());
+    assertEquals("baseClass", method.getCDParameters(1).getName());
     assertDeepEquals("Class<?>",
-        method.getCDParameter(1).getMCType());
+        method.getCDParameters(1).getMCType());
   }
 
   @Test
@@ -165,11 +165,11 @@ public class ASTEmfDecoratorTest extends DecoratorTestCase {
     assertInt(method.getMCReturnType().getMCType());
 
     assertEquals(2, method.sizeCDParameters());
-    assertEquals("featureID", method.getCDParameter(0).getName());
-    assertInt(method.getCDParameter(0).getMCType());
-    assertEquals("baseClass", method.getCDParameter(1).getName());
+    assertEquals("featureID", method.getCDParameters(0).getName());
+    assertInt(method.getCDParameters(0).getMCType());
+    assertEquals("baseClass", method.getCDParameters(1).getName());
     assertDeepEquals("Class<?>",
-        method.getCDParameter(1).getMCType());
+        method.getCDParameters(1).getMCType());
   }
 
   @Test

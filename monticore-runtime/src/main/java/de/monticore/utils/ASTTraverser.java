@@ -31,6 +31,7 @@ import de.se_rwth.commons.TreeUtil;
  * traversal.</li>
  * 
  */
+@Deprecated
 public final class ASTTraverser {
   
   /**
@@ -94,6 +95,7 @@ public final class ASTTraverser {
    * @param rootNode the root ASTNode where traversal should begin. This doesn't necessarily have to
    * be the true root of the AST.
    */
+  @Deprecated
   public void traverse(ASTNode rootNode) {
     checkState(!visitors.keySet().isEmpty(),
         "The ASTTraverser began a traversal without any visitors.");

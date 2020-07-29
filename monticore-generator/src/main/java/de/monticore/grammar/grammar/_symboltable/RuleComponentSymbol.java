@@ -16,9 +16,11 @@ import java.util.Optional;
    * defining prod for the nonterminal <code>... = s:A</code> is the production
    * <code>A = ...</code>.
    */
-  public Optional<ProdSymbolLoader> getReferencedProd() {
+  public Optional<ProdSymbolSurrogate> getReferencedProd() {
     if (isPresentReferencedType()) {
-      return Optional.of(new ProdSymbolLoader(getReferencedType(), getEnclosingScope()));
+      ProdSymbolSurrogate s = new ProdSymbolSurrogate(getReferencedType());
+      s.setEnclosingScope(getEnclosingScope());
+      return Optional.of(s);
     }
     return Optional.empty();
   }

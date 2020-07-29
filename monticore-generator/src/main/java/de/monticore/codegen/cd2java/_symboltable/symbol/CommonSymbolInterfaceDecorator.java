@@ -47,7 +47,7 @@ public class CommonSymbolInterfaceDecorator extends AbstractCreator<ASTCDCompila
         .setName(commonSymbolInterfaceName)
         .setModifier(PUBLIC.build())
         .addInterface(getMCTypeFacade().createQualifiedType(I_SYMBOL))
-        .addCDMethod(createAcceptMethod())
+        .addCDMethods(createAcceptMethod())
         .addAllCDMethods(createEnclosingScopeMethods(scopeInterfaceName))
         .build();
   }

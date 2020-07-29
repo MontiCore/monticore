@@ -40,7 +40,7 @@ public class AutomataSymbolsTest {
   public void testSymbol1() throws IOException {
     ASTAutomaton ast = parser.parse( "src/test/resources/example/HierarchyPingPong.aut" ).get();
     assertEquals("PingPong", ast.getName());
-    assertEquals(2, ast.getTransitionList().size());
+    assertEquals(2, ast.getTransitionsList().size());
   }
   
   @Test

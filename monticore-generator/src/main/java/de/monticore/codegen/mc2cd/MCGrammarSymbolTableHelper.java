@@ -253,8 +253,8 @@ public class MCGrammarSymbolTableHelper {
     }
     // derive attribute name from constant entry (but only if we have
     // one entry!)
-    else if (ast.getConstantList().size() == 1) {
-      return HelperGrammar.getAttributeNameForConstant(ast.getConstantList().get(0));
+    else if (ast.getConstantsList().size() == 1) {
+      return HelperGrammar.getAttributeNameForConstant(ast.getConstantsList().get(0));
     }
 
     Log.error("0xA2345 The name of the constant group could't be ascertained",
@@ -307,15 +307,15 @@ public class MCGrammarSymbolTableHelper {
    * @return
    */
   public static List<ProdSymbol> getSuperProds(ProdSymbol prod) {
-    List<ProdSymbol> superTypes = prod.getSuperProds().stream().filter(s -> s.isSymbolLoaded())
-        .map(s -> s.getLoadedSymbol()).collect(Collectors.toList());
-    superTypes.addAll(prod.getSuperInterfaceProds().stream().filter(s -> s.isSymbolLoaded())
-        .map(s -> s.getLoadedSymbol()).collect(Collectors.toList()));
+    List<ProdSymbol> superTypes = prod.getSuperProds().stream().filter(s -> s.isSymbolPresent())
+        .map(s -> s.lazyLoadDelegate()).collect(Collectors.toList());
+    superTypes.addAll(prod.getSuperInterfaceProds().stream().filter(s -> s.isSymbolPresent())
+        .map(s -> s.lazyLoadDelegate()).collect(Collectors.toList()));
 
-    superTypes.addAll(prod.getAstSuperClasses().stream().filter(s -> s.isSymbolLoaded())
-        .map(s -> s.getLoadedSymbol()).collect(Collectors.toList()));
-    superTypes.addAll(prod.getAstSuperInterfaces().stream().filter(s -> s.isSymbolLoaded())
-        .map(s -> s.getLoadedSymbol()).collect(Collectors.toList()));
+    superTypes.addAll(prod.getAstSuperClasses().stream().filter(s -> s.isSymbolPresent())
+        .map(s -> s.lazyLoadDelegate()).collect(Collectors.toList()));
+    superTypes.addAll(prod.getAstSuperInterfaces().stream().filter(s -> s.isSymbolPresent())
+        .map(s -> s.lazyLoadDelegate()).collect(Collectors.toList()));
 
     return ImmutableList.copyOf(superTypes);
   }
@@ -428,9 +428,9 @@ public class MCGrammarSymbolTableHelper {
    * @param ref2
    * @return
    */
-  public static boolean isSubType(ProdSymbolLoader ref1, ProdSymbolLoader ref2) {
-    ProdSymbol type1 = ref1.getLoadedSymbol();
-    ProdSymbol type2 = ref2.getLoadedSymbol();
+  public static boolean isSubType(ProdSymbolSurrogate ref1, ProdSymbolSurrogate ref2) {
+    ProdSymbol type1 = ref1.lazyLoadDelegate();
+    ProdSymbol type2 = ref2.lazyLoadDelegate();
     return areSameTypes(type1, type2) || isSubtype(type1, type2) || isSubtype(type2, type1);
   }
 
@@ -442,7 +442,7 @@ public class MCGrammarSymbolTableHelper {
     Preconditions.checkArgument(prodComponent.isIsConstantGroup());
     Collection<String> set = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
     for (RuleComponentSymbol comp: prodComponent.getEnclosingScope().resolveRuleComponentDownMany(prodComponent.getName())) {
-      comp.getSubProdList().stream().forEach((p -> set.add(p)));
+      comp.getSubProdsList().stream().forEach((p -> set.add(p)));
     }
     return set.size() > 1;
   }

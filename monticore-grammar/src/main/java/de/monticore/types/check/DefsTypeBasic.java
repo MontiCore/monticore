@@ -81,7 +81,7 @@ public class DefsTypeBasic {
   }
 
   public static OOTypeSymbol type(String name, List<SymTypeExpression> superTypes, List<TypeVarSymbol> typeArguments){
-    OOSymbolsScope spannedScope = OOSymbolsMill.oOSymbolsScopeBuilder().build();
+    IOOSymbolsScope spannedScope = OOSymbolsMill.oOSymbolsScopeBuilder().build();
     OOTypeSymbol ts = OOSymbolsMill.oOTypeSymbolBuilder()
             .setSpannedScope(spannedScope)
             .setName(name)
@@ -319,7 +319,7 @@ public class DefsTypeBasic {
 
   public static void link_String() {
     MethodSymbol m; FieldSymbol f;
-    OOSymbolsScope scope = OOSymbolsMill.oOSymbolsScopeBuilder().build();
+    IOOSymbolsScope scope = OOSymbolsMill.oOSymbolsScopeBuilder().build();
     
     // hashCode()
     add(_String, method("hashCode", _intSymType));

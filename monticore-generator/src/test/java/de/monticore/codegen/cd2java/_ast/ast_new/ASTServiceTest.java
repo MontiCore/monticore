@@ -30,7 +30,7 @@ public class ASTServiceTest extends DecoratorTestCase {
   @Before
   public void setup() {
     astcdCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
-    astAutomaton = astcdCompilationUnit.getCDDefinition().getCDClass(0);
+    astAutomaton = astcdCompilationUnit.getCDDefinition().getCDClasss(0);
 
     astService = new ASTService(astcdCompilationUnit);
   }
@@ -104,11 +104,11 @@ public class ASTServiceTest extends DecoratorTestCase {
     // test if has a name
     assertFalse(astService.isSymbolWithoutName(astAutomaton));
     // remove name attribute
-    List<ASTCDAttribute> attributeList = astAutomaton.deepClone().getCDAttributeList().stream()
+    List<ASTCDAttribute> attributeList = astAutomaton.deepClone().getCDAttributesList().stream()
         .filter(a -> !"name".equals(a.getName()))
         .collect(Collectors.toList());
     ASTCDClass astAutomatonWithoutName = astAutomaton.deepClone();
-    astAutomatonWithoutName.setCDAttributeList(attributeList);
+    astAutomatonWithoutName.setCDAttributesList(attributeList);
     assertTrue(astService.isSymbolWithoutName(astAutomatonWithoutName));
   }
 

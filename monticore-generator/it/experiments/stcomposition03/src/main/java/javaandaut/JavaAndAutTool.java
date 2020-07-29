@@ -15,9 +15,9 @@ import java.util.Optional;
 
 public class JavaAndAutTool {
 
-  public static Automata7ArtifactScope createJavaAndAutSymTab(String model, ModelPath modelPath) {
+  public static IAutomata7ArtifactScope createJavaAndAutSymTab(String model, ModelPath modelPath) {
     ASTAutomaton ast = parseAut(model);
-    Automata7GlobalScope globalScope = Automata7Mill
+    IAutomata7GlobalScope globalScope = Automata7Mill
         .automata7GlobalScopeBuilder()
         .setModelPath(modelPath)
         .setModelFileExtension("aut")

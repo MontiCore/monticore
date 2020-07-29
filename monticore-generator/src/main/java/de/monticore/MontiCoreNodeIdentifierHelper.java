@@ -57,11 +57,11 @@ public class MontiCoreNodeIdentifierHelper extends MCSimpleGenericTypesNodeIdent
   }
   
   public String getIdent(ASTMCBasicGenericType ast) {
-    return format(Names.getQualifiedName(ast.getNameList()), nodeName(ast));
+    return format(Names.getQualifiedName(ast.getNamesList()), nodeName(ast));
   }
   
   public String getIdent(ASTGrammarReference ast) {
-    return format(Names.getSimpleName(ast.getNameList()), nodeName(ast));
+    return format(Names.getSimpleName(ast.getNamesList()), nodeName(ast));
   }
   
   public String getIdent(ASTITerminal ast) {

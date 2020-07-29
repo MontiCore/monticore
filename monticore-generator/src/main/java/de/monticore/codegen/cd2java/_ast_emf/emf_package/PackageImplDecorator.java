@@ -67,46 +67,46 @@ public class PackageImplDecorator extends AbstractCreator<ASTCDCompilationUnit, 
         .setModifier(PUBLIC.build())
         .setSuperclass(getMCTypeFacade().createQualifiedType(E_PACKAGE_IMPL))
         .addInterface(getMCTypeFacade().createQualifiedType(packageName))
-        .addCDAttribute(constantsEEnumAttribute)
+        .addCDAttributes(constantsEEnumAttribute)
         .addAllCDAttributes(eAttributes)
-        .addCDAttribute(createISCreatedAttribute())
-        .addCDAttribute(createIsInitializedAttribute())
-        .addCDAttribute(createIsInitedAttribute())
-        .addCDConstructor(createConstructor(packageImplName, definitionName))
-        .addCDMethod(createInitMethod(packageName))
+        .addCDAttributes(createISCreatedAttribute())
+        .addCDAttributes(createIsInitializedAttribute())
+        .addCDAttributes(createIsInitedAttribute())
+        .addCDConstructors(createConstructor(packageImplName, definitionName))
+        .addCDMethods(createInitMethod(packageName))
         .addAllCDMethods(eClassMethods)
         .addAllCDMethods(constantsEEnumMethod)
-        .addCDMethod(createGetNodeFactoryMethod(definitionName))
-        .addCDMethod(createGetPackageMethod(definitionName))
-        .addCDMethod(createASTESuperPackagesMethod())
+        .addCDMethods(createGetNodeFactoryMethod(definitionName))
+        .addCDMethods(createGetPackageMethod(definitionName))
+        .addCDMethods(createASTESuperPackagesMethod())
         .addAllCDMethods(createGetEAttributeMethods(definition))
-        .addCDMethod(createCreatePackageContentsMethod(definitionName, definition))
-        .addCDMethod(createInitializePackageContentsMethod(compilationUnit.getCDDefinition()))
+        .addCDMethods(createCreatePackageContentsMethod(definitionName, definition))
+        .addCDMethods(createInitializePackageContentsMethod(compilationUnit.getCDDefinition()))
         .build();
   }
 
   protected ASTCDDefinition prepareCDForEmfPackageDecoration(ASTCDDefinition astcdDefinition) {
     ASTCDDefinition copiedDefinition = astcdDefinition.deepClone();
     //remove inherited attributes
-    List<ASTCDClass> preparedClasses = copiedDefinition.getCDClassList()
+    List<ASTCDClass> preparedClasses = copiedDefinition.getCDClasssList()
         .stream()
         .map(emfService::removeInheritedAttributes)
         .collect(Collectors.toList());
-    copiedDefinition.setCDClassList(preparedClasses);
+    copiedDefinition.setCDClasssList(preparedClasses);
 
     //remove ast node Interface e.g. ASTAutomataNode
-    List<ASTCDInterface> astcdInterfaces = copiedDefinition.getCDInterfaceList()
+    List<ASTCDInterface> astcdInterfaces = copiedDefinition.getCDInterfacesList()
         .stream()
         .filter(x -> !emfService.isASTNodeInterface(x, copiedDefinition))
         .collect(Collectors.toList());
-    copiedDefinition.setCDInterfaceList(astcdInterfaces);
+    copiedDefinition.setCDInterfacesList(astcdInterfaces);
 
     //remove inherited attributes
     astcdInterfaces = astcdInterfaces
         .stream()
         .map(emfService::removeInheritedAttributes)
         .collect(Collectors.toList());
-    copiedDefinition.setCDInterfaceList(astcdInterfaces);
+    copiedDefinition.setCDInterfacesList(astcdInterfaces);
 
     return copiedDefinition;
   }
@@ -114,10 +114,10 @@ public class PackageImplDecorator extends AbstractCreator<ASTCDCompilationUnit, 
   protected List<ASTCDAttribute> getEClassAttributes(ASTCDDefinition astcdDefinition) {
     //e.g.  private EClass automaton;
     List<ASTCDAttribute> attributeList = new ArrayList<>();
-    for (ASTCDClass astcdClass : astcdDefinition.getCDClassList()) {
+    for (ASTCDClass astcdClass : astcdDefinition.getCDClasssList()) {
       attributeList.add(getCDAttributeFacade().createAttribute(PRIVATE, E_CLASS_TYPE, StringTransformations.uncapitalize(astcdClass.getName())));
     }
-    for (ASTCDInterface astcdInterface : astcdDefinition.getCDInterfaceList()) {
+    for (ASTCDInterface astcdInterface : astcdDefinition.getCDInterfacesList()) {
       attributeList.add(getCDAttributeFacade().createAttribute(PRIVATE, E_CLASS_TYPE, StringTransformations.uncapitalize(astcdInterface.getName())));
     }
     return attributeList;
@@ -188,15 +188,15 @@ public class PackageImplDecorator extends AbstractCreator<ASTCDCompilationUnit, 
 
   protected List<ASTCDMethod> createGetEAttributeMethods(ASTCDDefinition astcdDefinition) {
     List<ASTCDMethod> methodList = new ArrayList<>();
-    for (ASTCDClass astcdClass : astcdDefinition.getCDClassList()) {
-      for (int i = 0; i < astcdClass.getCDAttributeList().size(); i++) {
-        methodList.add(createGetEAttributeMethod(astcdClass.getCDAttribute(i), i, astcdClass.getName()));
+    for (ASTCDClass astcdClass : astcdDefinition.getCDClasssList()) {
+      for (int i = 0; i < astcdClass.getCDAttributesList().size(); i++) {
+        methodList.add(createGetEAttributeMethod(astcdClass.getCDAttributes(i), i, astcdClass.getName()));
       }
     }
 
-    for (ASTCDInterface astcdInterface : astcdDefinition.getCDInterfaceList()) {
-      for (int i = 0; i < astcdInterface.getCDAttributeList().size(); i++) {
-        methodList.add(createGetEAttributeMethod(astcdInterface.getCDAttribute(i), i, astcdInterface.getName()));
+    for (ASTCDInterface astcdInterface : astcdDefinition.getCDInterfacesList()) {
+      for (int i = 0; i < astcdInterface.getCDAttributesList().size(); i++) {
+        methodList.add(createGetEAttributeMethod(astcdInterface.getCDAttributes(i), i, astcdInterface.getName()));
       }
     }
     return methodList;
@@ -223,7 +223,7 @@ public class PackageImplDecorator extends AbstractCreator<ASTCDCompilationUnit, 
   protected ASTCDMethod createInitializePackageContentsMethod(ASTCDDefinition astcdDefinition) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, "initializePackageContents");
     //find literalsEnum in CD
-    Optional<ASTCDEnum> literalsEnum = astcdDefinition.getCDEnumList()
+    Optional<ASTCDEnum> literalsEnum = astcdDefinition.getCDEnumsList()
         .stream()
         .filter(x -> emfService.isLiteralsEnum(x, astcdDefinition.getName()))
         .findFirst();

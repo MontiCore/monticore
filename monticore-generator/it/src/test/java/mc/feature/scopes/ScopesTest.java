@@ -6,6 +6,7 @@ import de.se_rwth.commons.logging.*;
 import mc.feature.scopes.supautomaton.SupAutomatonMill;
 import mc.feature.scopes.supautomaton._ast.ASTSup;
 import mc.feature.scopes.supautomaton._parser.SupAutomatonParser;
+import mc.feature.scopes.supautomaton._symboltable.ISupAutomatonGlobalScope;
 import mc.feature.scopes.supautomaton._symboltable.SupAutomatonGlobalScope;
 import mc.feature.scopes.supautomaton._symboltable.SupAutomatonScope;
 import mc.feature.scopes.supautomaton._symboltable.SupAutomatonSymbolTableCreatorDelegator;
@@ -25,7 +26,7 @@ public class ScopesTest {
 
   private ASTSup astSup;
   private SupAutomatonSymbolTableCreatorDelegator symbolTableCreator;
-  private SupAutomatonGlobalScope globalScope;
+  private ISupAutomatonGlobalScope globalScope;
 
 
   @Before
@@ -40,7 +41,7 @@ public class ScopesTest {
 
     ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/mc/feature/scopes"));
 
-    SupAutomatonGlobalScope globalScope = SupAutomatonMill
+    ISupAutomatonGlobalScope globalScope = SupAutomatonMill
         .supAutomatonGlobalScopeBuilder()
         .setModelPath(modelPath)
         .setModelFileExtension("aut")

@@ -3,6 +3,7 @@ package de.monticore.types.check;
 
 import com.google.common.collect.Lists;
 import de.monticore.symbols.oosymbols._symboltable.BuiltInJavaSymbolResolvingDelegate;
+import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOSymbolsScope;
 import de.monticore.symboltable.serialization.JsonParser;
@@ -24,7 +25,7 @@ import static org.junit.Assert.*;
 
 public class SymTypeExpressionTest {
 
-  private static OOSymbolsScope scope = BuiltInJavaSymbolResolvingDelegate.getScope();
+  private static IOOSymbolsScope scope = BuiltInJavaSymbolResolvingDelegate.getScope();
 
   // setup of objects (unchanged during tests)
   SymTypeExpression teDouble = createTypeConstant("double");

@@ -59,7 +59,7 @@ public class EmfNodeFactoryDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeSize() {
-    assertEquals(6, emfClass.getCDAttributeList().size());
+    assertEquals(6, emfClass.getCDAttributesList().size());
   }
 
 
@@ -100,8 +100,8 @@ public class EmfNodeFactoryDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodSize() {
-    assertFalse(emfClass.getCDMethodList().isEmpty());
-    assertEquals(15, emfClass.getCDMethodList().size());
+    assertFalse(emfClass.getCDMethodsList().isEmpty());
+    assertEquals(15, emfClass.getCDMethodsList().size());
   }
 
   @Test
@@ -119,8 +119,8 @@ public class EmfNodeFactoryDecoratorTest extends DecoratorTestCase {
     assertDeepEquals("org.eclipse.emf.ecore.EObject", method.getMCReturnType().getMCType());
 
     assertEquals(1, method.sizeCDParameters());
-    assertEquals("eClass", method.getCDParameter(0).getName());
-    assertDeepEquals("org.eclipse.emf.ecore.EClass", method.getCDParameter(0).getMCType());
+    assertEquals("eClass", method.getCDParameters(0).getName());
+    assertDeepEquals("org.eclipse.emf.ecore.EClass", method.getCDParameters(0).getMCType());
   }
 
   @Test

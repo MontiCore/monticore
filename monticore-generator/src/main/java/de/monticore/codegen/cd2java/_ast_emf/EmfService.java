@@ -97,10 +97,10 @@ public class EmfService extends AbstractService<EmfService> {
    */
   public Set<String> getEDataTypes(ASTCDDefinition astcdDefinition) {
     Set<String> eDataTypeMap = new HashSet<>();
-    for (ASTCDClass astcdClass : astcdDefinition.getCDClassList()) {
+    for (ASTCDClass astcdClass : astcdDefinition.getCDClasssList()) {
       eDataTypeMap.addAll(getEDataTypes(astcdClass));
     }
-    for (ASTCDInterface astcdInterface : astcdDefinition.getCDInterfaceList()) {
+    for (ASTCDInterface astcdInterface : astcdDefinition.getCDInterfacesList()) {
       eDataTypeMap.addAll(getEDataTypes(astcdInterface));
     }
     return eDataTypeMap;
@@ -108,7 +108,7 @@ public class EmfService extends AbstractService<EmfService> {
 
   public Set<String> getEDataTypes(ASTCDType astcdType) {
     Set<String> eDataTypeMap = new HashSet<>();
-    for (ASTCDAttribute astcdAttribute : astcdType.getCDAttributeList()) {
+    for (ASTCDAttribute astcdAttribute : astcdType.getCDAttributesList()) {
       if (isEDataType(astcdAttribute) && !isInheritedAttribute(astcdAttribute)) {
         eDataTypeMap.add(getDecorationHelper().getNativeTypeName(astcdAttribute.getMCType()));
       }
@@ -136,16 +136,16 @@ public class EmfService extends AbstractService<EmfService> {
   public ASTCDClass removeInheritedAttributes(ASTCDClass astCDClass) {
     ASTCDClass copiedAstClass = astCDClass.deepClone();
     //remove inherited attributes
-    List<ASTCDAttribute> astcdAttributes = removeInheritedAttributes(copiedAstClass.getCDAttributeList());
-    copiedAstClass.setCDAttributeList(astcdAttributes);
+    List<ASTCDAttribute> astcdAttributes = removeInheritedAttributes(copiedAstClass.getCDAttributesList());
+    copiedAstClass.setCDAttributesList(astcdAttributes);
     return copiedAstClass;
   }
 
   public ASTCDInterface removeInheritedAttributes(ASTCDInterface astCDInterface) {
     ASTCDInterface copiedInterface = astCDInterface.deepClone();
     //remove inherited attributes
-    List<ASTCDAttribute> astcdAttributes = removeInheritedAttributes(copiedInterface.getCDAttributeList());
-    copiedInterface.setCDAttributeList(astcdAttributes);
+    List<ASTCDAttribute> astcdAttributes = removeInheritedAttributes(copiedInterface.getCDAttributesList());
+    copiedInterface.setCDAttributesList(astcdAttributes);
     return copiedInterface;
   }
 
@@ -158,7 +158,7 @@ public class EmfService extends AbstractService<EmfService> {
 
   public String getGrammarFromClass(ASTCDDefinition astcdDefinition, ASTCDAttribute astcdAttribute) {
     String simpleNativeAttributeType = getDecorationHelper().getSimpleNativeType(astcdAttribute.getMCType());
-    if (astcdDefinition.getCDClassList().stream().anyMatch(x -> x.getName().equals(simpleNativeAttributeType))) {
+    if (astcdDefinition.getCDClasssList().stream().anyMatch(x -> x.getName().equals(simpleNativeAttributeType))) {
       return "this";
     } else {
       List<CDDefinitionSymbol> superCDs = getSuperCDsTransitive(resolveCD(astcdDefinition.getName()));

@@ -7,7 +7,7 @@ import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
-import de.monticore.grammar.grammar._symboltable.ProdSymbolLoader;
+import de.monticore.grammar.grammar._symboltable.ProdSymbolSurrogate;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 
@@ -57,11 +57,11 @@ public class AbstractNTWithoutExtensionOnlyInComponentGrammar implements Grammar
       if(!abstractProds.isEmpty()) {
         List<ProdSymbol> temp = new ArrayList<>(abstractProds);
         for(ProdSymbol abstractProdSymbol : abstractProds){
-          for(ProdSymbolLoader absractProdExtended : abstractProdSymbol.getSuperProds()){
+          for(ProdSymbolSurrogate absractProdExtended : abstractProdSymbol.getSuperProds()){
             for(int i = abstractProds.size()-1;i>=0;--i){
               ProdSymbol abstractProd = abstractProds.get(i);
-              if(absractProdExtended.getLoadedSymbol().getName().equals(abstractProd.getName())){
-                temp.remove(absractProdExtended.getLoadedSymbol());
+              if(absractProdExtended.lazyLoadDelegate().getName().equals(abstractProd.getName())){
+                temp.remove(absractProdExtended.lazyLoadDelegate());
               }
             }
           }
@@ -71,7 +71,7 @@ public class AbstractNTWithoutExtensionOnlyInComponentGrammar implements Grammar
 
       if(!abstractProds.isEmpty()){
         for (ProdSymbol prodSymbol : prods) {
-          for (ProdSymbolLoader abstractProdImplemented : prodSymbol.getSuperProds()) {
+          for (ProdSymbolSurrogate abstractProdImplemented : prodSymbol.getSuperProds()) {
             for (int i = abstractProds.size() - 1; i >= 0; --i) {
               ProdSymbol interfaceProd = abstractProds.get(i);
               if (abstractProdImplemented.getName().equals(interfaceProd.getName())) {

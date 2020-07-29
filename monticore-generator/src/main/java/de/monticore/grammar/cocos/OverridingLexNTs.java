@@ -30,7 +30,7 @@ public class OverridingLexNTs implements GrammarASTMCGrammarCoCo {
     List<MCGrammarSymbol> grammarSymbols = grammarSymbol.getSuperGrammarSymbols();
     
     for (MCGrammarSymbol s : grammarSymbols) {
-      for (ASTLexProd p : a.getLexProdList()) {
+      for (ASTLexProd p : a.getLexProdsList()) {
         doCheck(s.getProdWithInherited(p.getName()), p);
       }
     }
