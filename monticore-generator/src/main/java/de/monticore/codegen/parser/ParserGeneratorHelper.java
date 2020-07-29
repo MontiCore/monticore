@@ -395,10 +395,10 @@ public class ParserGeneratorHelper {
       return ast.getAltsList();
     }
     for (MCGrammarSymbolSurrogate g : grammarSymbol.getSuperGrammars()) {
-      final ProdSymbol ruleByName = ast.getSymbol();
-      if (ruleByName.isClass()) {
-        if (ruleByName.isPresentAstNode() && ruleByName.getAstNode() instanceof ASTClassProd) {
-          return ((ASTClassProd)ruleByName.getAstNode()).getAltsList();
+      final Optional<ProdSymbol> ruleByName = g.lazyLoadDelegate().getProdWithInherited(ast.getName());
+      if (ruleByName.isPresent() && ruleByName.get().isClass()) {
+        if (ruleByName.get().isPresentAstNode() && ruleByName.get().getAstNode() instanceof ASTClassProd) {
+          return ((ASTClassProd)ruleByName.get().getAstNode()).getAltsList();
         }
       }
     }
