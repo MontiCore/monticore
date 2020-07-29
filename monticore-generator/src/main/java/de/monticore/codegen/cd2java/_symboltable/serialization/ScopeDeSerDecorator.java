@@ -109,8 +109,8 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
         .addCDMethods(createDeserializeScopeMethod(scopeClassFullName, simpleName, symTabMillFullName, scopeJsonParam, scopeRuleAttributeList))
         .addCDMethods(createDeserializeArtifactScopeMethod(artifactScopeInterfaceFullName, simpleName, symTabMillFullName, scopeJsonParam, scopeRuleAttributeList))
         .addAllCDMethods(createDeserializeAdditionalAttributesMethods(scopeJsonParam))
-        .addCDMethods(createAddSymbolsMethod(symbolDefiningProds))
-        .addCDMethod(createAddSymbolMethod(symbolDefiningProds))
+        .addCDMethods(createAddSymbolsMethod())
+        .addCDMethods(createAddSymbolMethod(symbolDefiningProds))
         .addAllCDMethods(createDeserializeSymbolMethods(symbolDefiningProds))
         .addCDMethods(createSerializeMethod(scopeInterfaceName))
         .addAllCDMethods(

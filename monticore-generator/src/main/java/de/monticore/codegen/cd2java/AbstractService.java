@@ -111,7 +111,7 @@ public class AbstractService<T extends AbstractService> {
   public List<CDTypeSymbol> getAllSuperClassesTransitive(CDTypeSymbol cdTypeSymbol) {
     List<CDTypeSymbol> superSymbolList = new ArrayList<>();
     if (cdTypeSymbol.isPresentSuperClass()) {
-      CDTypeSymbol superSymbol = cdTypeSymbol.getSuperClass().getLoadedSymbol();
+      CDTypeSymbol superSymbol = cdTypeSymbol.getSuperClass().lazyLoadDelegate();
       superSymbolList.add(superSymbol);
       superSymbolList.addAll(getAllSuperClassesTransitive(superSymbol));
     }
