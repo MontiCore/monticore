@@ -9,6 +9,7 @@ grammar Overriding extends mc.grammars.types.TestTypes {
   QualifiedName;
 
   // Override mc.literals.Literals
+      @Override
       interface Literal extends Expression;
 
       Expression;

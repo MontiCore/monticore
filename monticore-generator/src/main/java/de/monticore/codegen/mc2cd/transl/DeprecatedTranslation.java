@@ -9,7 +9,9 @@ import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.utils.Link;
 
+import java.util.List;
 import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
 
 /**
  * Checks if the source rules were extending other rules and sets the super
@@ -51,26 +53,22 @@ public class DeprecatedTranslation implements
   }
 
   protected void translateProd(ASTProd prod, ASTCDType cdType,
-                             ASTMCGrammar astGrammar) {
-    if (prod.isPresentDeprecatedAnnotation() || astGrammar.isPresentDeprecatedAnnotation()) {
-      ASTDeprecatedAnnotation annotation;
-      if (prod.isPresentDeprecatedAnnotation()) {
-        annotation = prod.getDeprecatedAnnotation();
-      } else {
-        annotation = astGrammar.getDeprecatedAnnotation();
+                               ASTMCGrammar astGrammar) {
+    List<ASTGrammarAnnotation> annos = prod.getGrammarAnnotationsList().stream().filter(a -> a instanceof ASTDeprecatedAnnotation).collect(Collectors.toList());
+    ASTDeprecatedAnnotation annotation;
+    if (annos.isEmpty()) {
+      if (!astGrammar.isPresentDeprecatedAnnotation()) {
+        return;
       }
-      ASTModifier mod;
-      if (cdType.isPresentModifier()) {
-        mod = cdType.getModifier();
-      } else {
-        mod = CD4AnalysisMill.modifierBuilder().build();
-      }
-      if (annotation.isPresentMessage()) {
-        TransformationHelper.addStereoType(cdType, MC2CDStereotypes.DEPRECATED.toString(),
-            annotation.getMessage());
-      } else {
-        TransformationHelper.addStereoType(cdType, MC2CDStereotypes.DEPRECATED.toString());
-      }
+      annotation = astGrammar.getDeprecatedAnnotation();
+    } else {
+      annotation = (ASTDeprecatedAnnotation) annos.get(0);
+    }
+    if (annotation.isPresentMessage()) {
+      TransformationHelper.addStereoType(cdType, MC2CDStereotypes.DEPRECATED.toString(),
+              annotation.getMessage());
+    } else {
+      TransformationHelper.addStereoType(cdType, MC2CDStereotypes.DEPRECATED.toString());
     }
   }
 
