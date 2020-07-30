@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static de.monticore.symboltable.modifiers.AccessModifier.ALL_INCLUSION;
 import static de.se_rwth.commons.Names.getSimpleName;
@@ -67,14 +68,12 @@ public interface IGrammarScope extends IGrammarScopeTOP {
     Optional<MCGrammarSymbol> spanningSymbol = MCGrammarSymbolTableHelper.getMCGrammarSymbol(this);
     if (spanningSymbol.isPresent()) {
       MCGrammarSymbol grammarSymbol = spanningSymbol.get();
-      for (MCGrammarSymbolLoader superGrammarRef : grammarSymbol.getSuperGrammars()) {
-        if ((superGrammarRef.isSymbolLoaded())) {
-          final MCGrammarSymbol superGrammar = superGrammarRef.getLoadedSymbol();
-          resolvedSymbol = resolveInSuperGrammar(name, superGrammar);
-          // Stop as soon as symbol is found in a super grammar.
-          if (resolvedSymbol.isPresent()) {
-            break;
-          }
+      for (MCGrammarSymbolSurrogate superGrammarRef : grammarSymbol.getSuperGrammars()) {
+        final MCGrammarSymbol superGrammar = superGrammarRef.lazyLoadDelegate();
+        resolvedSymbol = resolveInSuperGrammar(name, superGrammar);
+        // Stop as soon as symbol is found in a super grammar.
+        if (resolvedSymbol.isPresent()) {
+          break;
         }
       }
     }
@@ -85,18 +84,17 @@ public interface IGrammarScope extends IGrammarScopeTOP {
     return superGrammar.getSpannedScope().resolveProdImported(name, ALL_INCLUSION);
   }
 
-  default boolean isQualified(MCGrammarSymbolLoader grammarRef) {
+  default boolean isQualified(MCGrammarSymbolSurrogate grammarRef) {
     if (grammarRef.getName().contains(".")) {
       return true;
     }
-    if (grammarRef.isSymbolLoaded()) {
-      MCGrammarSymbol grammarSymbol = grammarRef.getLoadedSymbol();
-      if (!grammarSymbol.getFullName().contains(".")) {
-        // The complete name has no package name, therefore the grammarRefName
-        // without "." is qualified
-        return true;
-      }
+    MCGrammarSymbol grammarSymbol = grammarRef.lazyLoadDelegate();
+    if (!grammarSymbol.getFullName().contains(".")) {
+      // The complete name has no package name, therefore the grammarRefName
+      // without "." is qualified
+      return true;
     }
+
     return false;
   }
 
@@ -105,6 +103,14 @@ public interface IGrammarScope extends IGrammarScopeTOP {
       return true;
     }
     return false;
+  }
+
+  default List<AdditionalAttributeSymbol> getAstAttributeList () {
+    return getLocalAdditionalAttributeSymbols().stream().filter(a -> a.isAstAttr).collect(Collectors.toList());
+  }
+
+  default List<AdditionalAttributeSymbol> getSymbolAttributeList () {
+    return getLocalAdditionalAttributeSymbols().stream().filter(a -> !a.isAstAttr).collect(Collectors.toList());
   }
 
 }

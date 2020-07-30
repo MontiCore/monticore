@@ -50,14 +50,14 @@ public class SymbolTableCreatorForSuperTypesBuilder extends AbstractCreator<List
     for (ASTCDClass input : inputList) {
       ASTCDClass superST = input.deepClone();
       ASTMCBasicGenericType dequeType = getMCTypeFacade().createBasicGenericTypeOf(DEQUE_TYPE, symbolTableService.getScopeInterfaceFullName());
-      superST.addCDAttribute(createScopeStackAttribute(dequeType));
+      superST.addCDAttributes(createScopeStackAttribute(dequeType));
 
-      superST.getCDMethodList().clear();
+      superST.getCDMethodsList().clear();
 
       ASTCDClass superSTBuilder = builderDecorator.decorate(superST);
 
       // search for build method
-      Optional<ASTCDMethod> buildMethod = superSTBuilder.getCDMethodList()
+      Optional<ASTCDMethod> buildMethod = superSTBuilder.getCDMethodsList()
           .stream()
           .filter(m -> BUILD_METHOD.equals(m.getName()))
           .findFirst();

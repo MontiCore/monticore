@@ -16,7 +16,7 @@ import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -46,7 +46,8 @@ public class ArtifactScopeBuilderDecoratorTest extends DecoratorTestCase {
 
   @Before
   public void setUp() {
-    Log.init();
+    LogStub.init();         // replace log by a sideffect free variant
+        // LogStub.initPlusLog();  // for manual testing purpose only
     this.glex = new GlobalExtensionManagement();
     this.MCTypeFacade = MCTypeFacade.getInstance();
 
@@ -55,13 +56,14 @@ public class ArtifactScopeBuilderDecoratorTest extends DecoratorTestCase {
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable","cdForBuilder", "ArtifactScope_Builder");
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
-    Log.init();
+    LogStub.init();         // replace log by a sideffect free variant
+    // LogStub.initPlusLog();  // for manual testing purpose only
     ASTCDClass cdClass = getClassBy("AArtifactScope", decoratedCompilationUnit);
 
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
     BuilderDecorator builderDecorator = new BuilderDecorator(glex, new AccessorDecorator(glex, new SymbolTableService(decoratedCompilationUnit)), new SymbolTableService(decoratedCompilationUnit));
-    ArtifactScopeBuilderDecorator decorator = new ArtifactScopeBuilderDecorator(this.glex,
+    ArtifactScopeClassBuilderDecorator decorator = new ArtifactScopeClassBuilderDecorator(this.glex,
         new SymbolTableService(decoratedCompilationUnit), builderDecorator, new AccessorDecorator(glex, new SymbolTableService(decoratedCompilationUnit)));
 
     //creates normal Symbol
@@ -80,7 +82,7 @@ public class ArtifactScopeBuilderDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterfacesCount() {
-    assertTrue(scopeClass.isEmptyInterfaces());
+    assertTrue(scopeClass.isEmptyInterface());
   }
 
   @Test
@@ -96,18 +98,18 @@ public class ArtifactScopeBuilderDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testDefaultConstructor() {
-    ASTCDConstructor cdConstructor = scopeClass.getCDConstructor(0);
+    ASTCDConstructor cdConstructor = scopeClass.getCDConstructors(0);
     assertDeepEquals(PUBLIC, cdConstructor.getModifier());
     assertEquals("AArtifactScopeBuilder", cdConstructor.getName());
 
     assertTrue(cdConstructor.isEmptyCDParameters());
 
-    assertTrue(cdConstructor.isEmptyExceptions());
+    assertTrue(cdConstructor.isEmptyException());
   }
 
   @Test
   public void testAttributes() {
-    assertEquals(5, scopeClass.getCDAttributeList().size());
+    assertEquals(5, scopeClass.getCDAttributesList().size());
   }
 
   @Test
@@ -140,7 +142,7 @@ public class ArtifactScopeBuilderDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(44, scopeClass.getCDMethodList().size());
+    assertEquals(44, scopeClass.getCDMethodsList().size());
   }
 
 
@@ -162,13 +164,13 @@ public class ArtifactScopeBuilderDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(ARTIFACT_SCOPE_BUILDER, method.getMCReturnType().getMCType());
 
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
-    assertEquals("packageName", method.getCDParameter(0).getName());
+    assertDeepEquals(String.class, method.getCDParameters(0).getMCType());
+    assertEquals("packageName", method.getCDParameters(0).getName());
   }
 
   @Test
   public void testGetImportListMethod() {
-    ASTCDMethod method = getMethodBy("getImportList", scopeClass);
+    ASTCDMethod method = getMethodBy("getImportsList", scopeClass);
 
     assertDeepEquals(PUBLIC, method.getModifier());
     assertDeepEquals(MCTypeFacade.createListTypeOf(IMPORT_STATEMENT), method.getMCReturnType().getMCType());
@@ -179,21 +181,21 @@ public class ArtifactScopeBuilderDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSetImportsListMethod() {
-    ASTCDMethod method = getMethodBy("setImportList", scopeClass);
+    ASTCDMethod method = getMethodBy("setImportsList", scopeClass);
 
     assertDeepEquals(PUBLIC, method.getModifier());
     assertDeepEquals(ARTIFACT_SCOPE_BUILDER, method.getMCReturnType().getMCType());
 
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(MCTypeFacade.createListTypeOf(IMPORT_STATEMENT), method.getCDParameter(0).getMCType());
-    assertEquals("imports", method.getCDParameter(0).getName());
+    assertDeepEquals(MCTypeFacade.createListTypeOf(IMPORT_STATEMENT), method.getCDParameters(0).getMCType());
+    assertEquals("imports", method.getCDParameters(0).getName());
   }
 
   @Test
   public void testBuildMethod() {
     ASTCDMethod method = getMethodBy("build", scopeClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals("AArtifactScope", method.getMCReturnType().getMCType());
+    assertDeepEquals("IAArtifactScope", method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
   }

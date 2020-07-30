@@ -51,7 +51,7 @@ public class ConstantGroupsToCDAttributes implements UnaryOperator<Link<ASTMCGra
       if (prodComponent.isIsConstantGroup() && prodComponent.isPresentAstNode()
           && prodComponent.getAstNode() instanceof ASTConstantGroup) {
         ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
-        link.target().getCDAttributeList().add(cdAttribute);
+        link.target().getCDAttributesList().add(cdAttribute);
         ASTConstantGroup astConstantGroup = (ASTConstantGroup) prodComponent.getAstNode();
         new Link<>(astConstantGroup, cdAttribute, link);
       }

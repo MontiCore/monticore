@@ -7,7 +7,7 @@ grammar MyOwnLanguage extends
          mc.typescalculator.MyOwnExpressionGrammar,
          de.monticore.types.MCCollectionTypes,
          mc.typescalculator.UnitTypes,
-         de.monticore.types.TypeSymbols{
+         de.monticore.symbols.OOSymbols{
 
     start Expression;
 }

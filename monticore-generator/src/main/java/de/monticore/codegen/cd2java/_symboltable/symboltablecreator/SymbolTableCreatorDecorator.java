@@ -13,8 +13,8 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardTypeArgument;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
+import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardTypeArgument;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
@@ -65,9 +65,9 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
       ASTMCBasicGenericType dequeWildcardType = getMCTypeFacade().createBasicGenericTypeOf(DEQUE_TYPE, wildCardTypeArgument);
 
       String simpleName = symbolTableService.removeASTPrefix(Names.getSimpleName(startProd.get()));
-      List<ASTCDType> symbolDefiningClasses = symbolTableService.getSymbolDefiningProds(input.getCDDefinition().getCDClassList());
-      Map<ASTCDClass, String> inheritedSymbolPropertyClasses = symbolTableService.getInheritedSymbolPropertyClasses(input.getCDDefinition().getCDClassList());
-      List<ASTCDType> noSymbolDefiningClasses = symbolTableService.getNoSymbolAndScopeDefiningClasses(input.getCDDefinition().getCDClassList());
+      List<ASTCDType> symbolDefiningClasses = symbolTableService.getSymbolDefiningProds(input.getCDDefinition().getCDClasssList());
+      Map<ASTCDClass, String> inheritedSymbolPropertyClasses = symbolTableService.getInheritedSymbolPropertyClasses(input.getCDDefinition().getCDClasssList());
+      List<ASTCDType> noSymbolDefiningClasses = symbolTableService.getNoSymbolAndScopeDefiningClasses(input.getCDDefinition().getCDClasssList());
       List<ASTCDType> symbolDefiningProds = symbolTableService.getSymbolDefiningProds(input.getCDDefinition());
       List<ASTCDType> onlyScopeProds = symbolTableService.getOnlyScopeClasses(input.getCDDefinition());
 
@@ -81,18 +81,18 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
           .setName(symbolTableCreator)
           .setModifier(PUBLIC.build())
           .addInterface(getMCTypeFacade().createQualifiedType(visitorName))
-          .addCDConstructor(createSimpleConstructor(symbolTableCreator, scopeInterface))
-          .addCDConstructor(createDequeConstructor(symbolTableCreator, dequeWildcardType, dequeType))
-          .addCDAttribute(createScopeStackAttribute(dequeType))
-          .addCDAttribute(realThisAttribute)
+          .addCDConstructors(createSimpleConstructor(symbolTableCreator, scopeInterface))
+          .addCDConstructors(createDequeConstructor(symbolTableCreator, dequeWildcardType, dequeType))
+          .addCDAttributes(createScopeStackAttribute(dequeType))
+          .addCDAttributes(realThisAttribute)
           .addAllCDMethods(realThisMethods)
-          .addCDAttribute(firstCreatedScopeAttribute)
+          .addCDAttributes(firstCreatedScopeAttribute)
           .addAllCDMethods(firstCreatedScopeMethod)
-          .addCDMethod(createCreateFromASTMethod(astFullName, symbolTableCreator, symTabMillFullName))
-          .addCDMethod(createPutOnStackMethod(scopeInterface))
+          .addCDMethods(createCreateFromASTMethod(astFullName, symbolTableCreator, symTabMillFullName))
+          .addCDMethods(createPutOnStackMethod(scopeInterface))
           .addAllCDMethods(createCurrentScopeMethods(scopeInterface))
-          .addCDMethod(createSetScopeStackMethod(dequeType, simpleName))
-          .addCDMethod(createCreateScopeMethod(scopeInterface, input.getCDDefinition().getName()))
+          .addCDMethods(createSetScopeStackMethod(dequeType, simpleName))
+          .addCDMethods(createCreateScopeMethod(scopeInterface, input.getCDDefinition().getName()))
           .addAllCDMethods(createSymbolClassMethods(symbolDefiningClasses, scopeInterface))
           .addAllCDMethods(createSymbolClassMethods(inheritedSymbolPropertyClasses, scopeInterface))
           .addAllCDMethods(createVisitForNoSymbolMethods(noSymbolDefiningClasses))
@@ -139,7 +139,7 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
 
   protected ASTCDMethod createCreateFromASTMethod(String astStartProd, String symbolTableCreator, String symTabMillFullName) {
     String artifactScope = symbolTableService.getArtifactScopeSimpleName();
-    String artifactScopeFullName = symbolTableService.getArtifactScopeFullName();
+    String artifactScopeFullName = symbolTableService.getArtifactScopeInterfaceFullName();
     ASTCDParameter rootNodeParam = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(astStartProd), "rootNode");
     ASTCDMethod createFromAST = getCDMethodFacade().createMethod(PUBLIC,
         getMCTypeFacade().createQualifiedType(artifactScopeFullName), "createFromAST", rootNodeParam);
@@ -200,6 +200,7 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
   protected List<ASTCDMethod> createSymbolClassMethods(Map<ASTCDClass, String> symbolClassMap, String scopeInterface) {
     List<ASTCDMethod> methodList = new ArrayList<>();
     for (ASTCDType symbolClass : symbolClassMap.keySet()) {
+      if (!symbolTableService.hasSymbolStereotype(symbolClass.getModifier()))
       methodList.addAll(createSymbolClassMethods(symbolClass, symbolClassMap.get(symbolClass), scopeInterface));
     }
     return methodList;
@@ -244,7 +245,7 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
   protected ASTCDMethod createSymbolVisitMethod(String astFullName, String symbolFullName, String simpleName) {
     ASTCDMethod visitMethod = visitorService.getVisitorMethod(VISIT, getMCTypeFacade().createQualifiedType(astFullName));
     this.replaceTemplate(EMPTY_BODY, visitMethod, new TemplateHookPoint(
-        TEMPLATE_PATH + "Visit", symbolFullName, simpleName));
+        TEMPLATE_PATH + "Visit4STC", symbolFullName, simpleName));
     return visitMethod;
   }
 
@@ -330,7 +331,7 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
   protected ASTCDMethod createScopeVisitMethod(String astFullName, String scopeInterface, String simpleName) {
     ASTCDMethod visitMethod = visitorService.getVisitorMethod(VISIT, getMCTypeFacade().createQualifiedType(astFullName));
     this.replaceTemplate(EMPTY_BODY, visitMethod, new TemplateHookPoint(
-        TEMPLATE_PATH + "VisitScope", scopeInterface, simpleName));
+        TEMPLATE_PATH + "VisitScope4STC", scopeInterface, simpleName));
     return visitMethod;
   }
 
@@ -354,7 +355,7 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
 
   protected ASTCDMethod createScopeInitialize_Method(String simpleName, ASTCDType scopeClass,
                                                      ASTCDParameter astParam, ASTCDParameter scopeParam) {
-    boolean hasNameAttribute = scopeClass.getCDAttributeList().stream().anyMatch(a -> a.getName().equals(NAME_VAR));
+    boolean hasNameAttribute = scopeClass.getCDAttributesList().stream().anyMatch(a -> a.getName().equals(NAME_VAR));
     ASTCDMethod initializeMethod = getCDMethodFacade().createMethod(PROTECTED, "initialize_" + simpleName, scopeParam, astParam);
     if (hasNameAttribute) {
       this.replaceTemplate(EMPTY_BODY, initializeMethod, new StringHookPoint(SCOPE_VAR + ".setName(ast.getName());"));
@@ -388,7 +389,12 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
       String symbolFullName = symbolTableService.getSymbolFullName(astcdClass);
       ASTCDParameter symbolParam = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(symbolFullName), SYMBOL_VAR);
       ASTCDMethod addToScopeMethod = getCDMethodFacade().createMethod(PUBLIC, "addToScope", symbolParam);
-      this.replaceTemplate(EMPTY_BODY, addToScopeMethod, new TemplateHookPoint(TEMPLATE_PATH + "AddToScope"));
+      Optional<String> superType = Optional.empty();
+      if (symbolTableService.hasInheritedSymbolStereotype(astcdClass.getModifier())) {
+        superType = Optional.of(symbolTableService.getInheritedSymbol(astcdClass));
+      }
+      this.replaceTemplate(EMPTY_BODY, addToScopeMethod, new TemplateHookPoint(TEMPLATE_PATH + "AddToScope",
+              superType));
       methodList.add(addToScopeMethod);
     }
     return methodList;
@@ -403,7 +409,13 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
           String symbolFullName = symbolTableService.getSymbolFullName(type.getAstNode(), cdDefinitionSymbol);
           ASTCDParameter symbolParam = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(symbolFullName), SYMBOL_VAR);
           ASTCDMethod addToScopeMethod = getCDMethodFacade().createMethod(PUBLIC, "addToScope", symbolParam);
-          this.replaceTemplate(EMPTY_BODY, addToScopeMethod, new TemplateHookPoint(TEMPLATE_PATH + "AddToScope"));
+          Optional<String> superType = Optional.empty();
+          if (symbolTableService.hasInheritedSymbolStereotype(type.getAstNode().getModifier())) {
+            superType = Optional.of(symbolTableService.getInheritedSymbol(type.getAstNode()));
+          }
+
+          this.replaceTemplate(EMPTY_BODY, addToScopeMethod,
+                  new TemplateHookPoint(TEMPLATE_PATH + "AddToScope", superType));
           methodList.add(addToScopeMethod);
         }
       }

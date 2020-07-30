@@ -26,12 +26,12 @@ public static final String ERROR_CODE = "0xA2026";
     List<String> prodnames = new ArrayList<>();
     List<String> prodnamesIgnoreCase = new ArrayList<>();
     List<ASTProd> prods = new ArrayList<>();
-    prods.addAll(a.getAbstractProdList());
-    prods.addAll(a.getClassProdList());
-    prods.addAll(a.getEnumProdList());
-    prods.addAll(a.getInterfaceProdList());
-    prods.addAll(a.getLexProdList());
-    prods.addAll(a.getExternalProdList());
+    prods.addAll(a.getAbstractProdsList());
+    prods.addAll(a.getClassProdsList());
+    prods.addAll(a.getEnumProdsList());
+    prods.addAll(a.getInterfaceProdsList());
+    prods.addAll(a.getLexProdsList());
+    prods.addAll(a.getExternalProdsList());
 
     for(ASTProd p: prods){
       if(!prodnames.contains(p.getName()) && prodnamesIgnoreCase.contains(p.getName().toLowerCase())){

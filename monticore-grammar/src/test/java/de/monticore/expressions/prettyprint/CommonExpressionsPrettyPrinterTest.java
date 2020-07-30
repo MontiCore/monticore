@@ -3,6 +3,7 @@ package de.monticore.expressions.prettyprint;
 
 import de.monticore.expressions.commonexpressions.CommonExpressionsMill;
 import de.monticore.expressions.commonexpressions._ast.*;
+import de.monticore.expressions.expressionsbasis._ast.ASTArguments;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.testcommonexpressions._parser.TestCommonExpressionsParser;
 import de.monticore.prettyprint.IndentPrinter;
@@ -34,6 +35,37 @@ public class CommonExpressionsPrettyPrinterTest {
     prettyPrinter.getPrinter().clearBuffer();
   }
 
+  @Test
+  public void testMinusPrefixExpression() throws IOException {
+    Optional<ASTMinusPrefixExpression> result = parser.parse_StringMinusPrefixExpression("-a");
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
+    ASTMinusPrefixExpression ast = result.get();
+
+    String output = prettyPrinter.prettyprint(ast);
+
+    result = parser.parse_StringMinusPrefixExpression(output);
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
+
+    assertTrue(ast.deepEquals(result.get()));
+  }
+
+  @Test
+  public void testPlusPrefixExpression() throws IOException {
+    Optional<ASTPlusPrefixExpression> result = parser.parse_StringPlusPrefixExpression("+a");
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
+    ASTPlusPrefixExpression ast = result.get();
+
+    String output = prettyPrinter.prettyprint(ast);
+
+    result = parser.parse_StringPlusPrefixExpression(output);
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
+
+    assertTrue(ast.deepEquals(result.get()));
+  }
   @Test
   public void testBooleanNotExpression() throws IOException {
     Optional<ASTBooleanNotExpression> result = parser.parse_StringBooleanNotExpression("~a");

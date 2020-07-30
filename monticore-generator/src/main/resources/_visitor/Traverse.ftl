@@ -7,7 +7,7 @@
 ${tc.signature("cdClass", "isScopeSpanning")}
 <#assign genHelper = glex.getGlobalVar("astHelper")>
 
-<#list cdClass.getCDAttributeList() as attr>
+<#list cdClass.getCDAttributesList() as attr>
   <#assign attrName = genHelper.getNativeAttributeName(attr.getName())>
   <#if genHelper.isSimpleAstNode(attr) || genHelper.isOptionalAstNode(attr) >
     <#assign attrGetter = "get"+ attrName?cap_first>
@@ -21,7 +21,7 @@ ${tc.signature("cdClass", "isScopeSpanning")}
       }
     </#if>
   <#elseif genHelper.isListAstNode(attr)>
-    <#assign attrGetter = "get"+ attrName?remove_ending("s")?cap_first + "List">
+    <#assign attrGetter = "get"+ attrName?cap_first + "List">
     <#assign astChildTypeName = genHelper.getNativeTypeName(attr.getMCType())>
     {
       Iterator<${astChildTypeName}> iter_${attrName} = node.${attrGetter}().iterator();

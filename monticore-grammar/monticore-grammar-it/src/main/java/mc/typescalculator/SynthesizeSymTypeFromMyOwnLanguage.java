@@ -2,7 +2,6 @@
 package mc.typescalculator;
 
 import de.monticore.types.check.*;
-import de.monticore.types.typesymbols._symboltable.TypeSymbolsScope;
 import mc.typescalculator.myownlanguage._visitor.MyOwnLanguageDelegatorVisitor;
 
 import java.util.Optional;
@@ -36,7 +35,7 @@ public class SynthesizeSymTypeFromMyOwnLanguage extends MyOwnLanguageDelegatorVi
 
   @Override
   public Optional<SymTypeExpression> getResult() {
-    return Optional.ofNullable(result.getLast());
+    return Optional.ofNullable(result.getCurrentResult());
   }
 
   @Override

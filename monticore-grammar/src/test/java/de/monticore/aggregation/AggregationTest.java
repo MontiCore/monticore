@@ -40,10 +40,7 @@ public class AggregationTest {
     */
  
   //Create global scope for our language combination
-  BlahLanguage blahLang = BlahMill.blahLanguageBuilder().build();
-  FooLanguage fooLanguage = new FooLanguage("FooLangName","foo") {};
-
-  FooBlahGlobalScope globalScope = new FooBlahGlobalScope(new ModelPath(), fooLanguage);
+  FooBlahGlobalScope globalScope = new FooBlahGlobalScope(new ModelPath());
  
   //Parse blah model
   BlahParser blahParser = new BlahParser();
@@ -60,7 +57,7 @@ public class AggregationTest {
   
   // create symbol table for "blah"
   BlahSymbolTableCreator blahSymbolTableCreator = BlahMill.blahSymbolTableCreatorBuilder().addToScopeStack(globalScope.getIBlahGS()).build();
-  BlahScope blahSymbolTable = blahSymbolTableCreator.createFromAST(blahModel.get());
+  IBlahArtifactScope blahSymbolTable = blahSymbolTableCreator.createFromAST(blahModel.get());
   
   // check dummy symbol is present in local scope
   Optional<DummySymbol> blubSymbol1 = blahSymbolTable.resolveDummy("blubScope1.blubSymbol1");
@@ -90,7 +87,7 @@ public class AggregationTest {
  
   // create symbol table for "foo"
   FooSymbolTableCreatorDelegator fooSymbolTableCreator = FooMill.fooSymbolTableCreatorDelegatorBuilder().setGlobalScope(globalScope).build();
-  FooScope fooScope = fooSymbolTableCreator.createFromAST(fooModel.get());
+  IFooArtifactScope fooScope = fooSymbolTableCreator.createFromAST(fooModel.get());
   
   // check symbol is resolvable
   Optional<BarSymbol> k = fooScope.resolveBar("name");

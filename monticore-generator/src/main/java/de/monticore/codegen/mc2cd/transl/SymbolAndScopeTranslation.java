@@ -27,7 +27,7 @@ public class SymbolAndScopeTranslation implements
       final ASTClassProd astClassProd = link.source();
       final ASTCDClass astcdClass = link.target();
       addSymbolStereotypes(astClassProd, astcdClass);
-      addScopeStereotypes(astClassProd.getSymbolDefinitionList(), astcdClass);
+      addScopeStereotypes(astClassProd.getSymbolDefinitionsList(), astcdClass);
       addSymbolInheritedProperty(astClassProd, astcdClass);
     }
 
@@ -35,7 +35,7 @@ public class SymbolAndScopeTranslation implements
       final ASTAbstractProd astClassProd = link.source();
       final ASTCDClass astcdClass = link.target();
       addSymbolStereotypes(astClassProd, astcdClass);
-      addScopeStereotypes(astClassProd.getSymbolDefinitionList(), astcdClass);
+      addScopeStereotypes(astClassProd.getSymbolDefinitionsList(), astcdClass);
       addSymbolInheritedProperty(astClassProd, astcdClass);
     }
 
@@ -43,14 +43,14 @@ public class SymbolAndScopeTranslation implements
       final ASTInterfaceProd astInterfaceProd = link.source();
       final ASTCDInterface astcdInterface = link.target();
       addSymbolStereotypes(astInterfaceProd, astcdInterface);
-      addScopeStereotypes(astInterfaceProd.getSymbolDefinitionList(), astcdInterface);
+      addScopeStereotypes(astInterfaceProd.getSymbolDefinitionsList(), astcdInterface);
       addSymbolInheritedProperty(astInterfaceProd, astcdInterface);
     }
     return links;
   }
 
   protected void addSymbolStereotypes(ASTProd grammarProd, ASTCDType cdType) {
-    for (ASTSymbolDefinition symbolDefinition : grammarProd.getSymbolDefinitionList()) {
+    for (ASTSymbolDefinition symbolDefinition : grammarProd.getSymbolDefinitionsList()) {
       if (symbolDefinition.isGenSymbol()) {
           TransformationHelper.addStereoType(cdType,
               MC2CDStereotypes.SYMBOL.toString());
@@ -87,7 +87,7 @@ public class SymbolAndScopeTranslation implements
     final Optional<MCGrammarSymbol> grammarSymbol = MCGrammarSymbolTableHelper
         .getMCGrammarSymbol(astInterfaceProd.getEnclosingScope());
     if (grammarSymbol.isPresent() &&
-        astcdClass.isPresentModifier() && !hasStereotype(MC2CDStereotypes.SYMBOL, astcdClass.getModifier())) {
+        astcdClass.isPresentModifier()) {
       addInheritedScopeAndSymbolPropertyFromSuperProd(astInterfaceProd.getSuperInterfaceRuleList(), grammarSymbol.get(), astcdClass);
       addInheritedScopeAndSymbolPropertyThroughOverwriting(grammarSymbol.get(), astcdClass);
     }
@@ -100,7 +100,7 @@ public class SymbolAndScopeTranslation implements
     final Optional<MCGrammarSymbol> grammarSymbol = MCGrammarSymbolTableHelper
         .getMCGrammarSymbol(astClassProd.getEnclosingScope());
     if (grammarSymbol.isPresent() &&
-        astcdClass.isPresentModifier() && !hasStereotype(MC2CDStereotypes.SYMBOL, astcdClass.getModifier())) {
+        astcdClass.isPresentModifier()) {
       addInheritedScopeAndSymbolPropertyFromSuperProd(astClassProd.getSuperRuleList(), grammarSymbol.get(), astcdClass);
       addInheritedScopeAndSymbolPropertyFromSuperProd(astClassProd.getSuperInterfaceRuleList(), grammarSymbol.get(), astcdClass);
       addInheritedScopeAndSymbolPropertyThroughOverwriting(grammarSymbol.get(), astcdClass);
@@ -111,7 +111,7 @@ public class SymbolAndScopeTranslation implements
     final Optional<MCGrammarSymbol> grammarSymbol = MCGrammarSymbolTableHelper
         .getMCGrammarSymbol(astClassProd.getEnclosingScope());
     if (grammarSymbol.isPresent() &&
-        astcdClass.isPresentModifier() && !hasStereotype(MC2CDStereotypes.SYMBOL, astcdClass.getModifier())) {
+        astcdClass.isPresentModifier()) {
       addInheritedScopeAndSymbolPropertyFromSuperProd(astClassProd.getSuperRuleList(), grammarSymbol.get(), astcdClass);
       addInheritedScopeAndSymbolPropertyFromSuperProd(astClassProd.getSuperInterfaceRuleList(), grammarSymbol.get(), astcdClass);
       addInheritedScopeAndSymbolPropertyThroughOverwriting(grammarSymbol.get(), astcdClass);
@@ -140,7 +140,7 @@ public class SymbolAndScopeTranslation implements
       if (prodSymbol.isPresent()) {
         if (prodSymbol.get().isIsSymbolDefinition()) {
           TransformationHelper.addStereoType(astcdClass,
-              MC2CDStereotypes.INHERITED_SYMBOL.toString(), getSymbolName(prodSymbol.get()));
+              MC2CDStereotypes.INHERITED_SYMBOL.toString(), getSymbolName(prodSymbol.get()), false);
         }
         if (prodSymbol.get().isIsScopeSpanning()) {
           TransformationHelper.addStereoType(astcdClass,
@@ -169,7 +169,7 @@ public class SymbolAndScopeTranslation implements
       if (superProd.isPresent()) {
         if (superProd.get().isIsSymbolDefinition()) {
           TransformationHelper.addStereoType(prod,
-              MC2CDStereotypes.INHERITED_SYMBOL.toString(), getSymbolName(superProd.get()));
+              MC2CDStereotypes.INHERITED_SYMBOL.toString(), getSymbolName(superProd.get()), false);
         }
         if (superProd.get().isIsScopeSpanning()) {
           TransformationHelper.addStereoType(prod,

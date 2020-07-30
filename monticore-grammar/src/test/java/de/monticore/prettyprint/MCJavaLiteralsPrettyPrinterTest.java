@@ -2,13 +2,11 @@
 package de.monticore.prettyprint;
 
 import de.monticore.MCJavaLiteralsPrettyPrinter;
-import de.monticore.javalight._ast.ASTEmptyDeclaration;
 import de.monticore.literals.mcjavaliterals._ast.ASTDoubleLiteral;
 import de.monticore.literals.mcjavaliterals._ast.ASTFloatLiteral;
 import de.monticore.literals.mcjavaliterals._ast.ASTIntLiteral;
 import de.monticore.literals.mcjavaliterals._ast.ASTLongLiteral;
 import de.monticore.literals.testmcjavaliterals._parser.TestMCJavaLiteralsParser;
-import de.monticore.testjavalight._parser.TestJavaLightParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;

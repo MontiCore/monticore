@@ -14,7 +14,7 @@ public class AtLeastOneInitialAndFinalState implements AutomataASTAutomatonCoCo 
     boolean initialState = false;
     boolean finalState = false;
     
-    for (ASTState state : automaton.getStateList()) {
+    for (ASTState state : automaton.getStatesList()) {
       if (state.isInitial()) {
         initialState = true;
       }

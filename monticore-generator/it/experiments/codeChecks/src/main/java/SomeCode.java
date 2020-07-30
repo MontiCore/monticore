@@ -15,7 +15,7 @@ public class SomeCode {
   public static void main(String[] args) {
 
     // use normal logging (no DEBUG, TRACE)
-    Log.init();
+    Log.ensureInitalization();
 
     // do nothing
   }

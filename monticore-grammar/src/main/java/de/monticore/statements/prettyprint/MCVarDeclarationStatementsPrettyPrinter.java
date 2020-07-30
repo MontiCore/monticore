@@ -48,7 +48,7 @@ public class MCVarDeclarationStatementsPrettyPrinter implements
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     getPrinter().print("{");
     String sep = "";
-    for (ASTVariableInit v: a.getVariableInitList()) {
+    for (ASTVariableInit v: a.getVariableInitsList()) {
       getPrinter().print(sep);
       sep = ", ";
       v.accept(getRealThis());
@@ -57,16 +57,23 @@ public class MCVarDeclarationStatementsPrettyPrinter implements
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
 
+  @Override
+  public void handle(ASTLocalVariableDeclarationStatement a) {
+    CommentPrettyPrinter.printPreComments(a, getPrinter());
+    a.getLocalVariableDeclaration().accept(getRealThis());
+    getPrinter().println(";");
+    CommentPrettyPrinter.printPostComments(a, getPrinter());
+  }
 
   @Override
   public void handle(ASTLocalVariableDeclaration a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
-    a.getMCModifierList().stream().forEach(m -> {getPrinter().print(" "); m.accept(getRealThis()); getPrinter().print(" ");});
+    a.getMCModifiersList().stream().forEach(m -> {getPrinter().print(" "); m.accept(getRealThis()); getPrinter().print(" ");});
     getPrinter().print(" ");
     a.getMCType().accept(getRealThis());
     getPrinter().print(" ");
     String sep = "";
-    for (ASTVariableDeclarator v: a.getVariableDeclaratorList()) {
+    for (ASTVariableDeclarator v: a.getVariableDeclaratorsList()) {
       getPrinter().print(sep);
       sep = ", ";
       v.accept(getRealThis());

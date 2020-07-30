@@ -56,7 +56,7 @@ public class SymbolRulesToCDClassAndCDInterface implements UnaryOperator<Link<AS
 
         Link<ASTMCGrammar, ASTCDDefinition> parentLink = Iterables.getOnlyElement(rootLink
             .getLinks(ASTMCGrammar.class, ASTCDDefinition.class));
-        parentLink.target().getCDClassList().add(cdClass);
+        parentLink.target().getCDClasssList().add(cdClass);
         new Link<>(symbolRule, cdClass, parentLink);
       }
     }

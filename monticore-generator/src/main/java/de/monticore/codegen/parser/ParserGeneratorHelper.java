@@ -12,14 +12,14 @@ import de.monticore.grammar.MCGrammarInfo;
 import de.monticore.grammar.PredicatePair;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar._symboltable.MCGrammarSymbolLoader;
+import de.monticore.grammar.grammar._symboltable.MCGrammarSymbolSurrogate;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTAction;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTExpressionPredicate;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTGrammar_WithConceptsNode;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTJavaCode;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
-import de.monticore.javalight._ast.ASTClassMemberDeclaration;
+import de.monticore.javalight._ast.ASTClassBodyDeclaration;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.statements.mcstatementsbasis._ast.ASTMCBlockStatement;
 import de.se_rwth.commons.JavaNamesHelper;
@@ -42,6 +42,8 @@ public class ParserGeneratorHelper {
   public static final String MONTICOREANYTHING = "MONTICOREANYTHING";
 
   public static final String RIGHTASSOC = "<assoc=right>";
+
+  private static final String NOKEYWORD = "nokeyword_";
 
   private static Grammar_WithConceptsPrettyPrinter prettyPrinter;
 
@@ -150,7 +152,18 @@ public class ParserGeneratorHelper {
    */
   public String getLexSymbolName(String constName) {
     Log.errorIfNull(constName);
-    return grammarInfo.getLexNamer().getLexName(grammarSymbol, constName);
+    if (grammarInfo.getSplitRules().containsKey(constName)) {
+      return grammarInfo.getSplitRules().get(constName);
+    } else {
+      return grammarInfo.getLexNamer().getLexName(grammarSymbol, constName);
+    }
+  }
+
+  /**
+   * @return the name for a rule replacing a keyword
+   */
+  public String getKeyRuleName(String key) {
+    return NOKEYWORD + key + Integer.toUnsignedString(key.hashCode());
   }
 
   /**
@@ -161,6 +174,50 @@ public class ParserGeneratorHelper {
    */
   public Set<String> getLexSymbolsWithInherited() {
     return grammarInfo.getLexNamer().getLexnames();
+  }
+
+  /**
+   * Get all splitted LexSymbols
+   *
+   * @return list of rules for all splitted LexSymbols
+   */
+  public List<String> getSplitLexSymbolsWithInherited() {
+    List<String> retList = Lists.newArrayList();
+    for (Entry<String, String> e: grammarInfo.getSplitRules().entrySet()) {
+      StringBuilder sb = new StringBuilder();
+      sb.append(e.getValue());
+      sb.append(" : ");
+      // Split the token
+      String sep = "";
+      sb.append("{noSpace(");
+      for (int i = 2; i <= e.getKey().length(); i++) {
+        sb.append(sep);
+        sep = ", ";
+        sb.append(i);
+      }
+      sb.append(")}? ");
+      for (char c : e.getKey().toCharArray()) {
+        sb.append(grammarInfo.getLexNamer().getLexName(grammarSymbol, String.valueOf(c)));
+        sb.append(" ");
+      }
+      sb.append(";");
+      retList.add(sb.toString());
+    }
+    return retList;
+  }
+
+  /**
+   * Get all keyords replaced by name
+   *
+   * @return list of keywords
+   */
+  public List<String> getNoKeyordsWithInherited() {
+    List<String> retList = Lists.newArrayList();
+    for (String s: grammarSymbol.getKeywordRulesWithInherited()) {
+      String r = getKeyRuleName(s) + " : {next(\"" + s + "\")}? Name;";
+      retList.add(r);
+    }
+    return retList;
   }
 
   /**
@@ -269,8 +326,8 @@ public class ParserGeneratorHelper {
 
   public String getConstantNameForConstant(ASTConstant x) {
     String name;
-    if (x.isPresentHumanName()) {
-      name = x.getHumanName();
+    if (x.isPresentUsageName()) {
+      name = x.getUsageName();
     }
     else {
       name = grammarInfo.getLexNamer().getConstantName(x.getName());
@@ -328,20 +385,20 @@ public class ParserGeneratorHelper {
 
   public Optional<ASTAlt> getAlternativeForFollowOption(String prodName) {
     return astGrammar.isPresentGrammarOption()
-            ? astGrammar.getGrammarOption().getFollowOptionList().stream()
+            ? astGrammar.getGrammarOption().getFollowOptionsList().stream()
             .filter(f -> f.getProdName().equals(prodName)).map(ASTFollowOption::getAlt).findFirst()
             : Optional.empty();
   }
 
   public List<ASTAlt> getAlternatives(ASTClassProd ast) {
-    if (!ast.getAltList().isEmpty()) {
-      return ast.getAltList();
+    if (!ast.getAltsList().isEmpty()) {
+      return ast.getAltsList();
     }
-    for (MCGrammarSymbolLoader g : grammarSymbol.getSuperGrammars()) {
-      final Optional<ProdSymbol> ruleByName = g.getLoadedSymbol().getProdWithInherited(ast.getName());
+    for (MCGrammarSymbolSurrogate g : grammarSymbol.getSuperGrammars()) {
+      final Optional<ProdSymbol> ruleByName = g.lazyLoadDelegate().getProdWithInherited(ast.getName());
       if (ruleByName.isPresent() && ruleByName.get().isClass()) {
         if (ruleByName.get().isPresentAstNode() && ruleByName.get().getAstNode() instanceof ASTClassProd) {
-          return ((ASTClassProd)ruleByName.get().getAstNode()).getAltList();
+          return ((ASTClassProd)ruleByName.get().getAstNode()).getAltsList();
         }
       }
     }
@@ -372,14 +429,14 @@ public class ParserGeneratorHelper {
 
     if (node instanceof ASTAction) {
       StringBuilder buffer = new StringBuilder();
-      for (ASTMCBlockStatement action : ((ASTAction) node).getMCBlockStatementList()) {
+      for (ASTMCBlockStatement action : ((ASTAction) node).getMCBlockStatementsList()) {
         buffer.append(getPrettyPrinter().prettyprint(action));
       }
       return buffer.toString();
     }
     if (node instanceof ASTJavaCode) {
       StringBuilder buffer = new StringBuilder();
-      for (ASTClassMemberDeclaration action : ((ASTJavaCode) node).getClassMemberDeclarationList()) {
+      for (ASTClassBodyDeclaration action : ((ASTJavaCode) node).getClassBodyDeclarationsList()) {
         buffer.append(getPrettyPrinter().prettyprint(action));
 
       }

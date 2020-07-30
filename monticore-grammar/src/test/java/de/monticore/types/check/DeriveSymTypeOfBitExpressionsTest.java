@@ -6,9 +6,7 @@ import de.monticore.expressions.combineexpressionswithliterals.CombineExpression
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsScope;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.expressions.prettyprint.CombineExpressionsWithLiteralsPrettyPrinter;
-import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.types.typesymbols._symboltable.TypeSymbol;
+import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
@@ -59,11 +57,11 @@ public class DeriveSymTypeOfBitExpressionsTest {
     add2scope(scope, DefsTypeBasic._String);
 
     // some FieldSymbols (ie. Variables, Attributes)
-    TypeSymbol p = new TypeSymbol("Person");
-    TypeSymbol s = new TypeSymbol("Student");
-    s.setSuperTypeList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Person", scope)));
-    TypeSymbol f = new TypeSymbol("FirstSemesterStudent");
-    f.setSuperTypeList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student", scope)));
+    OOTypeSymbol p = new OOTypeSymbol("Person");
+    OOTypeSymbol s = new OOTypeSymbol("Student");
+    s.setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Person", scope)));
+    OOTypeSymbol f = new OOTypeSymbol("FirstSemesterStudent");
+    f.setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student", scope)));
     add2scope(scope, field("foo", _intSymType));
     add2scope(scope, field("bar2", _booleanSymType));
     add2scope(scope, field("vardouble", _doubleSymType));

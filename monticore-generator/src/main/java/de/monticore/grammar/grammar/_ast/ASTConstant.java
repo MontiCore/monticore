@@ -6,7 +6,10 @@ public class ASTConstant extends ASTConstantTOP {
   @Override
   public String getName() {
     if (isPresentKeyConstant()) {
-      return getKeyConstant().getString(0);
+      return getKeyConstant().getStrings(0);
+    }
+    if (isPresentTokenConstant()) {
+      return getTokenConstant().getString();
     }
     return getString();
   }

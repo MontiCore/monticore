@@ -116,11 +116,8 @@ public final class TransformationHelper {
       if (ancestor instanceof ASTNonTerminalSeparator) {
         return Optional.of(((ASTNonTerminalSeparator) ancestor).getUsageName());
       }
-      if (ancestor instanceof ASTTerminal && ((ASTTerminal) ancestor).isPresentUsageName()) {
-        return Optional.of(((ASTTerminal) ancestor).getUsageName());
-      }
-      if (ancestor instanceof ASTKeyTerminal && ((ASTKeyTerminal) ancestor).isPresentUsageName()) {
-        return Optional.of(((ASTKeyTerminal) ancestor).getUsageName());
+      if (ancestor instanceof ASTITerminal && ((ASTITerminal) ancestor).isPresentUsageName()) {
+        return Optional.of(((ASTITerminal) ancestor).getUsageName());
       }
       if (ancestor instanceof ASTAdditionalAttribute && ((ASTAdditionalAttribute) ancestor).isPresentName()) {
         return Optional.of(((ASTAdditionalAttribute) ancestor).getName());
@@ -233,7 +230,7 @@ public final class TransformationHelper {
     for (RuleComponentSymbol component : grammarSymbol.getProds().stream()
         .flatMap(p -> p.getProdComponents().stream()).collect(Collectors.toSet())) {
       if (component.isIsConstantGroup()) {
-        for (String subComponent : component.getSubProdList()) {
+        for (String subComponent : component.getSubProdsList()) {
           constants.add(subComponent);
         }
       }
@@ -241,9 +238,9 @@ public final class TransformationHelper {
     for (ProdSymbol type : grammarSymbol.getProds()) {
       if (type.isIsEnum() && type.isPresentAstNode()
           && type.getAstNode() instanceof ASTEnumProd) {
-        for (ASTConstant enumValue : ((ASTEnumProd) type.getAstNode()).getConstantList()) {
-          String humanName = enumValue.isPresentHumanName()
-              ? enumValue.getHumanName()
+        for (ASTConstant enumValue : ((ASTEnumProd) type.getAstNode()).getConstantsList()) {
+          String humanName = enumValue.isPresentUsageName()
+              ? enumValue.getUsageName()
               : enumValue.getName();
           constants.add(humanName);
         }
@@ -378,6 +375,20 @@ public final class TransformationHelper {
     }
     addStereotypeValue(type.getModifier(),
         stereotypeName, stereotypeValue);
+  }
+
+  public static void addStereoType(ASTCDType type, String stereotypeName,
+                                   String stereotypeValue, boolean multiple) {
+    if (!type.isPresentModifier()) {
+      type.setModifier(CD4AnalysisNodeFactory.createASTModifier());
+    } else if (!multiple) {
+      if (type.getModifier().isPresentStereotype()
+              && type.getModifier().getStereotype().getValueList().stream().anyMatch(v -> v.getName().equals(stereotypeName))) {
+        return;
+      }
+    }
+    addStereotypeValue(type.getModifier(),
+            stereotypeName, stereotypeValue);
   }
 
   public static void addStereoType(ASTCDType type, String stereotypeName) {

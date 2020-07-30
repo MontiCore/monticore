@@ -1,9 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolSurrogate;
 import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonPrinter;
-import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
 
 /**
  * An objectType is a full qualified class name.
@@ -13,19 +13,19 @@ import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
 public class SymTypeOfObject extends SymTypeExpression {
 
   /**
-   * Constructor: with a TypeSymbolLoader that contains the name and enclosingScope
+   * Constructor: with a TypeSymbolSurrogate that contains the name and enclosingScope
    */
-  public SymTypeOfObject(TypeSymbolLoader typeSymbolLoader)
+  public SymTypeOfObject(OOTypeSymbolSurrogate typeSymbolSurrogate)
   {
-    this.typeSymbolLoader = typeSymbolLoader;
+    this.typeSymbolSurrogate = typeSymbolSurrogate;
   }
 
   public String getObjName() {
-    return typeSymbolLoader.getName();
+    return typeSymbolSurrogate.getName();
   }
   
   public void setObjName(String objname) {
-    this.typeSymbolLoader.setName(objname);
+    this.typeSymbolSurrogate.setName(objname);
   }
   
   /**
@@ -51,7 +51,9 @@ public class SymTypeOfObject extends SymTypeExpression {
 
   @Override
   public SymTypeOfObject deepClone() {
-    return  new SymTypeOfObject(new TypeSymbolLoader(typeSymbolLoader.getName(), typeSymbolLoader.getEnclosingScope()));
+    OOTypeSymbolSurrogate ooTypeSymbolSurrogate = new OOTypeSymbolSurrogate(typeSymbolSurrogate.getName());
+    ooTypeSymbolSurrogate.setEnclosingScope(typeSymbolSurrogate.getEnclosingScope());
+    return  new SymTypeOfObject(ooTypeSymbolSurrogate);
   }
 
   /**
@@ -68,6 +70,30 @@ public class SymTypeOfObject extends SymTypeExpression {
     String[] parts = getObjName().split("\\.");
     return parts[parts.length - 1];
   }
-  
+
+  @Override
+  public boolean isObjectType() {
+    return true;
+  }
+
+
+  @Override
+  public boolean deepEquals(SymTypeExpression sym){
+    if(!(sym instanceof SymTypeOfObject)){
+      return false;
+    }
+    SymTypeOfObject symCon = (SymTypeOfObject) sym;
+    if(this.typeSymbolSurrogate== null ||symCon.typeSymbolSurrogate==null){
+      return false;
+    }
+    if(!this.typeSymbolSurrogate.getEnclosingScope().equals(symCon.typeSymbolSurrogate.getEnclosingScope())){
+      return false;
+    }
+    if(!this.typeSymbolSurrogate.getName().equals(symCon.typeSymbolSurrogate.getName())){
+      return false;
+    }
+    return this.print().equals(symCon.print());
+  }
+
   // --------------------------------------------------------------------------
 }

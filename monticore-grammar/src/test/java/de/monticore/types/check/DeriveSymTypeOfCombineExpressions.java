@@ -37,7 +37,7 @@ public class DeriveSymTypeOfCombineExpressions extends DeriveSymTypeOfExpression
       wholeResult=result.get();
     }
     if(wholeResult!=null){
-      typeCheckResult.setLast(wholeResult);
+      typeCheckResult.setCurrentResult(wholeResult);
       typeCheckResult.setType();
     }else{
       typeCheckResult.reset();
@@ -56,7 +56,7 @@ public class DeriveSymTypeOfCombineExpressions extends DeriveSymTypeOfExpression
       }
     }
     if(wholeResult!=null){
-      typeCheckResult.setLast(wholeResult);
+      typeCheckResult.setCurrentResult(wholeResult);
       typeCheckResult.setType();
     }else{
       typeCheckResult.reset();
@@ -73,7 +73,7 @@ public class DeriveSymTypeOfCombineExpressions extends DeriveSymTypeOfExpression
       }
     }
     if(wholeResult!=null){
-      typeCheckResult.setLast(wholeResult);
+      typeCheckResult.setCurrentResult(wholeResult);
       typeCheckResult.setType();
     }else{
       typeCheckResult.reset();

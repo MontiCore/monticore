@@ -33,7 +33,7 @@ public class ASTReferencedSymbolDecoratorListTest extends DecoratorTestCase {
 
   private ASTCDClass originalClass;
 
-  private static final String NAME_SYMBOL_MAP = "Map<String,de.monticore.codegen.ast.referencedsymbol._symboltable.FooSymbolLoader>";
+  private static final String NAME_SYMBOL_MAP = "Map<String,de.monticore.codegen.ast.referencedsymbol._symboltable.FooSymbolSurrogate>";
 
   @Before
   public void setup() {
@@ -69,7 +69,7 @@ public class ASTReferencedSymbolDecoratorListTest extends DecoratorTestCase {
     assertTrue(nameAttribute.getModifier().isProtected());
     assertTrue(nameAttribute.getModifier().isPresentStereotype());
     ASTCDStereotype stereotype = nameAttribute.getModifier().getStereotype();
-    assertEquals(1, stereotype.sizeValues());
+    assertEquals(1, stereotype.sizeValue());
     assertEquals("referencedSymbol", stereotype.getValue(0).getName());
     assertTrue(stereotype.getValue(0).isPresentValue());
     assertEquals("de.monticore.codegen.ast.referencedsymbol._symboltable.FooSymbol", stereotype.getValue(0).getValue());
@@ -78,19 +78,19 @@ public class ASTReferencedSymbolDecoratorListTest extends DecoratorTestCase {
 
   @Test
   public void testSymbolAttribute() {
-    ASTCDAttribute symbolAttribute = getAttributeBy("nameSymbolLoader", astClass);
+    ASTCDAttribute symbolAttribute = getAttributeBy("nameSymbolSurrogate", astClass);
     assertTrue(symbolAttribute.getModifier().isProtected());
     assertDeepEquals(NAME_SYMBOL_MAP, symbolAttribute.getMCType());
   }
 
   @Test
   public void testMethods() {
-    assertEquals(39, astClass.getCDMethodList().size());
+    assertEquals(39, astClass.getCDMethodsList().size());
   }
 
   @Test
-  public void testUpdateNameSymbolLoaderListMethod() {
-    ASTCDMethod method = getMethodBy("updateNameSymbolLoader", astClass);
+  public void testUpdateNameSymbolSurrogateListMethod() {
+    ASTCDMethod method = getMethodBy("updateNameSymbolSurrogate", astClass);
     assertDeepEquals(PROTECTED, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertTrue(method.isEmptyCDParameters());

@@ -6,9 +6,7 @@ import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.CD4AnalysisNodeFactory;
-import de.monticore.grammar.grammar._ast.ASTClassProd;
-import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.grammar._ast.ASTTerminal;
+import de.monticore.grammar.grammar._ast.*;
 import de.monticore.utils.ASTNodes;
 import de.monticore.utils.Link;
 
@@ -27,7 +25,23 @@ public class TerminalsToCDAttributes implements
           ASTTerminal.class)) {
         if (terminal.isPresentUsageName()) {
           ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
-          link.target().getCDAttributeList().add(cdAttribute);
+          link.target().getCDAttributesList().add(cdAttribute);
+          new Link<>(terminal, cdAttribute, link);
+        }
+      }
+      for (ASTKeyTerminal terminal : ASTNodes.getSuccessors(link.source(),
+              ASTKeyTerminal.class)) {
+        if (terminal.isPresentUsageName()) {
+          ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
+          link.target().getCDAttributesList().add(cdAttribute);
+          new Link<>(terminal, cdAttribute, link);
+        }
+      }
+      for (ASTTokenTerminal terminal : ASTNodes.getSuccessors(link.source(),
+              ASTTokenTerminal.class)) {
+        if (terminal.isPresentUsageName()) {
+          ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
+          link.target().getCDAttributesList().add(cdAttribute);
           new Link<>(terminal, cdAttribute, link);
         }
       }

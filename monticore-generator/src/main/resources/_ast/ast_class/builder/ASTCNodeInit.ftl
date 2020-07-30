@@ -2,10 +2,10 @@
 ${tc.signature("domainClass")}
 <#assign genHelper = glex.getGlobalVar("astHelper")>
     value = new ${domainClass.getName()}();
-<#list domainClass.getCDAttributeList() as attribute>
+<#list domainClass.getCDAttributesList() as attribute>
   <#assign methName = genHelper.getNativeAttributeName(attribute.getName())?cap_first>
   <#if genHelper.isListType(attribute.printType())>
-    value.set${methName?remove_ending("s")}List(this.${attribute.getName()});
+    value.set${methName}List(this.${attribute.getName()});
   <#elseif genHelper.isOptional(attribute.getMCType())>
     if (this.${attribute.getName()}.isPresent()) {
       value.set${methName}(this.${attribute.getName()}.get());

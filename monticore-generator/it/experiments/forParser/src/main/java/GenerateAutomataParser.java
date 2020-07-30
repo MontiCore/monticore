@@ -3,10 +3,9 @@
 import de.monticore.codegen.parser.ParserGenerator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
-import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsLanguage;
-import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsSymbolTableCreatorDelegator;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
@@ -21,7 +20,9 @@ public class GenerateAutomataParser {
    * Parse Automata.mc4 and create a Parser for the language
    */
   public static void main(String[] args) {
-    Log.init();
+
+    Log.ensureInitalization();
+
     if (args.length != 2) {
       Log.error("0xEE630 Please specify one single path to the input model and one single path for the generated output");
       return;
@@ -38,9 +39,15 @@ public class GenerateAutomataParser {
       // Initialize symbol table
       // (using imported grammars from the model path)
       ModelPath modelPath = new ModelPath(Paths.get("target/monticore-grammar-grammars.jar"));
-      Grammar_WithConceptsLanguage l = new Grammar_WithConceptsLanguage();
-      Grammar_WithConceptsGlobalScope gs = new Grammar_WithConceptsGlobalScope(modelPath, l);
-      new Grammar_WithConceptsSymbolTableCreatorDelegator(gs).createFromAST(ast);
+      Grammar_WithConceptsGlobalScope gs = Grammar_WithConceptsMill
+          .grammar_WithConceptsGlobalScopeBuilder()
+          .setModelPath(modelPath)
+          .build();
+      Grammar_WithConceptsMill
+          .grammar_WithConceptsSymbolTableCreatorDelegatorBuilder()
+          .setGlobalScope(gs)
+          .build()
+          .createFromAST(ast);
       // Hand coded path
       IterablePath handcodedPath = IterablePath.empty();
 

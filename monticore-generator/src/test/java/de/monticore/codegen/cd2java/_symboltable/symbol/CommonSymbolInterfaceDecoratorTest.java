@@ -19,7 +19,7 @@ import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.MCTypeFacade;
-import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -47,7 +47,8 @@ public class CommonSymbolInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Before
   public void setUp() {
-    Log.init();
+    LogStub.init();         // replace log by a sideffect free variant
+        // LogStub.initPlusLog();  // for manual testing purpose only
     this.mcTypeFacade = MCTypeFacade.getInstance();
     this.glex = new GlobalExtensionManagement();
 
@@ -78,7 +79,7 @@ public class CommonSymbolInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterfacesCountAutomatonSymbol() {
-    assertEquals(1, commonSymbolInterface.sizeInterfaces());
+    assertEquals(1, commonSymbolInterface.sizeInterface());
   }
 
   @Test
@@ -88,7 +89,7 @@ public class CommonSymbolInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethods() {
-    assertEquals(3, commonSymbolInterface.getCDMethodList().size());
+    assertEquals(3, commonSymbolInterface.getCDMethodsList().size());
   }
 
   @Test
@@ -99,8 +100,8 @@ public class CommonSymbolInterfaceDecoratorTest extends DecoratorTestCase {
 
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(mcTypeFacade.createQualifiedType(AUTOMATON_VISITOR),
-        method.getCDParameter(0).getMCType());
-    assertEquals("visitor", method.getCDParameter(0).getName());
+        method.getCDParameters(0).getMCType());
+    assertEquals("visitor", method.getCDParameters(0).getName());
   }
 
   @Test
@@ -119,8 +120,8 @@ public class CommonSymbolInterfaceDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
 
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(I_AUTOMATON_SCOPE, method.getCDParameter(0).getMCType());
-    assertEquals("enclosingScope", method.getCDParameter(0).getName());
+    assertDeepEquals(I_AUTOMATON_SCOPE, method.getCDParameters(0).getMCType());
+    assertEquals("enclosingScope", method.getCDParameters(0).getName());
   }
 
   @Test

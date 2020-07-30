@@ -56,10 +56,10 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
     ASTCDClass millClass = CD4AnalysisMill.cDClassBuilder()
         .setModifier(PUBLIC.build())
         .setName(millClassName)
-        .addCDAttribute(millAttribute)
-        .addCDConstructor(constructor)
-        .addCDMethod(getMillMethod)
-        .addCDMethod(initMethod)
+        .addCDAttributes(millAttribute)
+        .addCDConstructors(constructor)
+        .addCDMethods(getMillMethod)
+        .addCDMethods(initMethod)
         .build();
 
     // list of all classes needed for the reset and initMe method
@@ -67,7 +67,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
 
     for (ASTCDCompilationUnit cd : cdList) {
       // filter out all classes that are abstract and only builder classes
-      List<ASTCDClass> classList = cd.getCDDefinition().deepClone().getCDClassList()
+      List<ASTCDClass> classList = cd.getCDDefinition().deepClone().getCDClasssList()
           .stream()
           .filter(ASTCDClass::isPresentModifier)
           .filter(x -> !x.getModifier().isAbstract())
@@ -76,7 +76,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
 
 
       // filter out all classes that are abstract and end with the TOP suffix
-      List<ASTCDClass> topClassList = cd.getCDDefinition().deepClone().getCDClassList()
+      List<ASTCDClass> topClassList = cd.getCDDefinition().deepClone().getCDClasssList()
           .stream()
           .filter(ASTCDClass::isPresentModifier)
           .filter(x -> x.getModifier().isAbstract())
@@ -113,10 +113,10 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
     millClass.addAllCDMethods(superMethodsList);
 
     ASTCDMethod initMeMethod = addInitMeMethod(millType, allClasses);
-    millClass.addCDMethod(initMeMethod);
+    millClass.addCDMethods(initMeMethod);
 
     ASTCDMethod resetMethod = addResetMethod(allClasses, superSymbolList);
-    millClass.addCDMethod(resetMethod);
+    millClass.addCDMethods(resetMethod);
 
     return millClass;
   }
@@ -214,13 +214,13 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
     this.replaceTemplate(EMPTY_BODY, builderMethod, new StringHookPoint("return " + millFullName + "." + symbolBuilderSimpleName + "();"));
     superMethods.add(builderMethod);
 
-    // create corresponding builder for SymbolLoader
-    String symbolLoaderBuilderFullName = service.getSymbolLoaderBuilderFullName(type.getAstNode(), superSymbol);
-    String symbolLoaderBuilderSimpleName = StringTransformations.uncapitalize(service.getSymbolLoaderBuilderSimpleName(type.getAstNode()));
+    // create corresponding builder for symbolSurrogate
+    String symbolSurrogateBuilderFullName = service.getSymbolSurrogateBuilderFullName(type.getAstNode(), superSymbol);
+    String symbolSurrogateBuilderSimpleName = StringTransformations.uncapitalize(service.getSymbolSurrogateBuilderSimpleName(type.getAstNode()));
     ASTCDMethod builderLoaderMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC,
-        getMCTypeFacade().createQualifiedType(symbolLoaderBuilderFullName), symbolLoaderBuilderSimpleName);
+        getMCTypeFacade().createQualifiedType(symbolSurrogateBuilderFullName), symbolSurrogateBuilderSimpleName);
 
-    this.replaceTemplate(EMPTY_BODY, builderLoaderMethod, new StringHookPoint("return " + millFullName + "." + symbolLoaderBuilderSimpleName + "();"));
+    this.replaceTemplate(EMPTY_BODY, builderLoaderMethod, new StringHookPoint("return " + millFullName + "." + symbolSurrogateBuilderSimpleName + "();"));
     superMethods.add(builderLoaderMethod);
     return superMethods;
   }

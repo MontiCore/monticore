@@ -1,0 +1,27 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package mc.feature.keyrule;
+
+grammar NoKeywordRule extends mc.common.Basics {
+   A = ("bla1" |  "bla2") Name;
+
+   B = bla:"bla1" Name;
+
+   C = "b" b:"c";
+
+   D =  "b" b:Name;
+
+   E =  b:"b" b:Name;
+
+   F =  "b";
+
+   G =  b:"b";
+
+   H =  "b" {next("c")}? b:Name;
+
+   I =  b:"b" {next("c")}? b:Name;
+
+   J = b:["blaj"];
+
+   nokeyword "bla1", "bla2", "b", "c", "blaj";
+}

@@ -4,10 +4,12 @@ import basicjava._ast.ASTCompilationUnit;
 import basicjava._symboltable.MethodSymbol;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import javaaut.JavaAutMill;
 import javaaut._parser.JavaAutParser;
 import javaaut._symboltable.*;
 import org.antlr.v4.runtime.RecognitionException;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -18,9 +20,15 @@ import static junit.framework.TestCase.assertTrue;
 
 public class SymTabTest {
 
+  @BeforeClass
+  public static void setUp(){
+    LogStub.init();         // replace log by a sideffect free variant
+    // LogStub.initPlusLog();  // for manual testing purpose only
+  }
+
   @Test
   public void testPingPong() {
-    JavaAutArtifactScope as = createSymTab("src/test/resources/example/PingPong.javaaut");
+    IJavaAutArtifactScope as = createSymTab("src/test/resources/example/PingPong.javaaut");
     Optional<MethodSymbol> symbol = as
         .resolveMethod("PingPong.simulate.Game"); //in example model, this is an automaton
     assertTrue(symbol.isPresent());
@@ -34,11 +42,11 @@ public class SymTabTest {
    * @param model - file to parse
    * @return
    */
-  public static JavaAutArtifactScope createSymTab(String model) {
+  public static IJavaAutArtifactScope createSymTab(String model) {
     ASTCompilationUnit ast = parse(model);
-    JavaAutGlobalScope globalScope = JavaAutMill.javaAutGlobalScopeBuilder()
+    IJavaAutGlobalScope globalScope = JavaAutMill.javaAutGlobalScopeBuilder()
         .setModelPath(new ModelPath())
-        .setJavaAutLanguage(new JavaAutLanguage()) //will be removed soon
+        .setModelFileExtension("javaaut")
         .build();
 
     //initialize symbol table creators

@@ -40,7 +40,7 @@ component grammar MCBasicTypes extends de.monticore.MCBasics {
       @attribute parts A List of ASTStringList concludes all name parts
   */
   MCQualifiedName =
-      part:(Name || ".")+;
+      parts:(Name || ".")+;
 
   /*=================================================================*/
 

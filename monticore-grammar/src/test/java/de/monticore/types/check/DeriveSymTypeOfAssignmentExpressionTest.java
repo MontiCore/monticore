@@ -6,10 +6,8 @@ import de.monticore.expressions.combineexpressionswithliterals.CombineExpression
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsScope;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.expressions.prettyprint.CombineExpressionsWithLiteralsPrettyPrinter;
-import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.types.typesymbols._symboltable.TypeSymbol;
-import de.se_rwth.commons.logging.Log;
+import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
+import de.se_rwth.commons.logging.*;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -33,7 +31,8 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
 
   @BeforeClass
   public static void setup() {
-    Log.init();
+    LogStub.init();         // replace log by a sideffect free variant
+    // LogStub.initPlusLog();  // for manual testing purpose only
     Log.enableFailQuick(false);
   }
 
@@ -60,14 +59,14 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     add2scope(scope, DefsTypeBasic._String);
 
     // some FieldSymbols (ie. Variables, Attributes)
-    TypeSymbol p = new TypeSymbol("Person");
+    OOTypeSymbol p = new OOTypeSymbol("Person");
     scope.add(p);
-    TypeSymbol s = new TypeSymbol("Student");
+    OOTypeSymbol s = new OOTypeSymbol("Student");
     scope.add(s);
-    s.setSuperTypeList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Person", scope)));
-    TypeSymbol f = new TypeSymbol("FirstSemesterStudent");
+    s.setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Person", scope)));
+    OOTypeSymbol f = new OOTypeSymbol("FirstSemesterStudent");
     scope.add(f);
-    f.setSuperTypeList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student", scope)));
+    f.setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student", scope)));
     add2scope(scope, field("foo", _intSymType));
     add2scope(scope, field("bar2", _booleanSymType));
     add2scope(scope, field("vardouble", _doubleSymType));

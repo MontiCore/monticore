@@ -16,7 +16,7 @@ import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -38,7 +38,8 @@ public class ModelLoaderBuilderDecoratorTest extends DecoratorTestCase {
 
   @Before
   public void setUp() {
-    Log.init();
+    LogStub.init();         // replace log by a sideffect free variant
+        // LogStub.initPlusLog();  // for manual testing purpose only
     this.glex = new GlobalExtensionManagement();
 
     this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
@@ -67,7 +68,7 @@ public class ModelLoaderBuilderDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterfacesCount() {
-    assertTrue(builderClass.isEmptyInterfaces());
+    assertTrue(builderClass.isEmptyInterface());
   }
 
   @Test
@@ -82,13 +83,13 @@ public class ModelLoaderBuilderDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testDefaultConstructor() {
-    ASTCDConstructor cdConstructor = builderClass.getCDConstructor(0);
+    ASTCDConstructor cdConstructor = builderClass.getCDConstructors(0);
     assertDeepEquals(PUBLIC, cdConstructor.getModifier());
     assertEquals("AModelLoaderBuilder", cdConstructor.getName());
 
     assertTrue(cdConstructor.isEmptyCDParameters());
 
-    assertTrue(cdConstructor.isEmptyExceptions());
+    assertTrue(cdConstructor.isEmptyException());
   }
 
   @Test
@@ -113,7 +114,7 @@ public class ModelLoaderBuilderDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(4, builderClass.getCDMethodList().size());
+    assertEquals(4, builderClass.getCDMethodsList().size());
   }
 
   @Test
@@ -134,8 +135,8 @@ public class ModelLoaderBuilderDecoratorTest extends DecoratorTestCase {
     assertDeepEquals("AModelLoaderBuilder", method.getMCReturnType().getMCType());
 
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals("ALanguage", method.getCDParameter(0).getMCType());
-    assertEquals("modelingLanguage", method.getCDParameter(0).getName());
+    assertDeepEquals("ALanguage", method.getCDParameters(0).getMCType());
+    assertEquals("modelingLanguage", method.getCDParameters(0).getName());
   }
 
   @Test

@@ -44,6 +44,10 @@ public class ReferenceTypeTranslation implements
       link.target().setMCType(createType("String"));
     }
 
+    for (Link<ASTTokenTerminal, ASTCDAttribute> link : rootLink.getLinks(ASTTokenTerminal.class, ASTCDAttribute.class)) {
+      link.target().setMCType(createType("String"));
+    }
+
     for (Link<ASTConstantGroup, ASTCDAttribute> link : rootLink.getLinks(ASTConstantGroup.class, ASTCDAttribute.class)) {
       boolean iterated = MCGrammarSymbolTableHelper.isConstGroupIterated(link.source().getSymbol());
       int constantType = iterated ? ASTConstantsMCBasicTypes.INT : ASTConstantsMCBasicTypes.BOOLEAN;

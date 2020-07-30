@@ -36,23 +36,23 @@ public class BuilderListMutatorDecorator extends ListMutatorDecorator {
     for (ASTCDMethod m : methods) {
       ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(builderType).build();
       m.setMCReturnType(returnType);
-      int attributeIndex = m.getName().lastIndexOf(capitalizedAttributeNameWithOutS);
+      int attributeIndex = m.getName().lastIndexOf(capitalizedAttributeNameWithS);
       String methodName = m.getName().substring(0, attributeIndex);
-      String parameterCall = m.getCDParameterList().stream()
+      String parameterCall = m.getCDParametersList().stream()
           .map(ASTCDParameter::getName)
           .collect(Collectors.joining(", "));
-      this.replaceTemplate(EMPTY_BODY, m, new TemplateHookPoint("_ast.builder.MethodDelegate", capitalizedAttributeNameWithOutS, methodName, parameterCall));
+      this.replaceTemplate(EMPTY_BODY, m, new TemplateHookPoint("_ast.builder.MethodDelegate4ASTBuilder", capitalizedAttributeNameWithS, methodName, parameterCall));
     }
     return methods;
   }
 
   @Override
   protected ASTCDMethod createSetListMethod(ASTCDAttribute ast) {
-    String signature = String.format(SET_LIST, capitalizedAttributeNameWithOutS, attributeType, ast.getName());
+    String signature = String.format(SET_LIST, capitalizedAttributeNameWithS, attributeType, ast.getName());
     ASTCDMethod method = this.getCDMethodFacade().createMethodByDefinition(signature);
     ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(builderType).build();
     method.setMCReturnType(returnType);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.builder.Set", ast));
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.builder.Set4ASTBuilder", ast));
     return method;
   }
 }

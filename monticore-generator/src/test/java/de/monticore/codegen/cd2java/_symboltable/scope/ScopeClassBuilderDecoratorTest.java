@@ -11,7 +11,7 @@ import de.monticore.codegen.cd2java._ast.builder.BuilderDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -40,7 +40,8 @@ public class ScopeClassBuilderDecoratorTest extends DecoratorTestCase {
 
   @Before
   public void setUp() {
-    Log.init();
+    LogStub.init();         // replace log by a sideffect free variant
+        // LogStub.initPlusLog();  // for manual testing purpose only
     this.MCTypeFacade = MCTypeFacade.getInstance();
     this.glex = new GlobalExtensionManagement();
 
@@ -54,7 +55,7 @@ public class ScopeClassBuilderDecoratorTest extends DecoratorTestCase {
     BuilderDecorator builderDecorator = new BuilderDecorator(glex, new AccessorDecorator(glex,
         new SymbolTableService(decoratedCompilationUnit)), new SymbolTableService(decoratedCompilationUnit));
 
-    ScopeClassBuilderDecorator decorator = new ScopeClassBuilderDecorator(this.glex, builderDecorator);
+    ScopeClassBuilderDecorator decorator = new ScopeClassBuilderDecorator(this.glex, new SymbolTableService(decoratedCompilationUnit),builderDecorator);
 
     //creates normal Symbol
     this.scopeBuilderClass = decorator.decorate(cdClass);
@@ -74,7 +75,7 @@ public class ScopeClassBuilderDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testNoSuperInterfaces() {
-    assertTrue( scopeBuilderClass.isEmptyInterfaces());
+    assertTrue( scopeBuilderClass.isEmptyInterface());
   }
 
   @Test
@@ -89,18 +90,18 @@ public class ScopeClassBuilderDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testDefaultConstructor() {
-    ASTCDConstructor cdConstructor = scopeBuilderClass.getCDConstructor(0);
+    ASTCDConstructor cdConstructor = scopeBuilderClass.getCDConstructors(0);
     assertDeepEquals(PUBLIC, cdConstructor.getModifier());
     assertEquals("AScopeBuilder", cdConstructor.getName());
 
     assertTrue(cdConstructor.isEmptyCDParameters());
 
-    assertTrue(cdConstructor.isEmptyExceptions());
+    assertTrue(cdConstructor.isEmptyException());
   }
 
   @Test
   public void testAttributes() {
-    assertEquals(8, scopeBuilderClass.getCDAttributeList().size());
+    assertEquals(8, scopeBuilderClass.getCDAttributesList().size());
   }
 
   @Test
@@ -155,14 +156,14 @@ public class ScopeClassBuilderDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethods() {
-    assertEquals(54, scopeBuilderClass.getCDMethodList().size());
+    assertEquals(54, scopeBuilderClass.getCDMethodsList().size());
   }
 
   @Test
   public void testBuildMethod() {
     ASTCDMethod method = getMethodBy("build", scopeBuilderClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(MCTypeFacade.createQualifiedType("AScope"), method.getMCReturnType().getMCType());
+    assertDeepEquals(MCTypeFacade.createQualifiedType("IAScope"), method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
   }

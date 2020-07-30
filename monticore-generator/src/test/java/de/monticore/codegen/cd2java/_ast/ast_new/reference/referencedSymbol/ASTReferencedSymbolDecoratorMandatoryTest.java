@@ -37,7 +37,7 @@ public class ASTReferencedSymbolDecoratorMandatoryTest extends DecoratorTestCase
 
   private MCTypeFacade mcTypeFacade = MCTypeFacade.getInstance();
 
-  private static final String NAME_SYMBOL_LOADER = "de.monticore.codegen.ast.referencedsymbol._symboltable.FooSymbolLoader";
+  private static final String NAME_SYMBOL_LOADER = "de.monticore.codegen.ast.referencedsymbol._symboltable.FooSymbolSurrogate";
 
   private static final String NAME_SYMBOL = "de.monticore.codegen.ast.referencedsymbol._symboltable.FooSymbol";
 
@@ -75,7 +75,7 @@ public class ASTReferencedSymbolDecoratorMandatoryTest extends DecoratorTestCase
     assertTrue( nameAttribute.getModifier().isProtected());
     assertTrue(nameAttribute.getModifier().isPresentStereotype());
     ASTCDStereotype stereotype = nameAttribute.getModifier().getStereotype();
-    assertEquals(1, stereotype.sizeValues());
+    assertEquals(1, stereotype.sizeValue());
     assertEquals("referencedSymbol", stereotype.getValue(0).getName());
     assertTrue(stereotype.getValue(0).isPresentValue());
     assertEquals("de.monticore.codegen.ast.referencedsymbol._symboltable.FooSymbol", stereotype.getValue(0).getValue());
@@ -84,19 +84,19 @@ public class ASTReferencedSymbolDecoratorMandatoryTest extends DecoratorTestCase
 
   @Test
   public void testSymbolAttribute() {
-    ASTCDAttribute symbolAttribute = getAttributeBy("nameSymbolLoader", astClass);
+    ASTCDAttribute symbolAttribute = getAttributeBy("nameSymbolSurrogate", astClass);
     assertTrue(symbolAttribute.getModifier().isProtected());
     assertDeepEquals(NAME_SYMBOL_LOADER, symbolAttribute.getMCType());
   }
 
   @Test
   public void testMethods() {
-    assertEquals(5, astClass.getCDMethodList().size());
+    assertEquals(5, astClass.getCDMethodsList().size());
   }
 
   @Test
-  public void testUpdateNameSymbolLoaderMethod() {
-    ASTCDMethod method = getMethodBy("updateNameSymbolLoader", astClass);
+  public void testUpdateNameSymbolSurrogateMethod() {
+    ASTCDMethod method = getMethodBy("updateNameSymbolSurrogate", astClass);
     assertDeepEquals(PROTECTED, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertTrue(method.isEmptyCDParameters());

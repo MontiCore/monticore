@@ -33,7 +33,7 @@ public class InheritedBuilderOptionalMutatorDecorator extends BuilderOptionalMut
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, name, parameter);
     ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(builderType).build();
     method.setMCReturnType(returnType);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.builder.opt.SetInherited", attribute, name));
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.builder.SetInherited", attribute, name));
     return method;
   }
 

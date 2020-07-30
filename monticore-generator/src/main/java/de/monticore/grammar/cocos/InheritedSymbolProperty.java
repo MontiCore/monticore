@@ -8,6 +8,7 @@ import de.monticore.grammar.grammar._cocos.GrammarASTProdCoCo;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.se_rwth.commons.logging.Log;
 
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -23,12 +24,14 @@ public class InheritedSymbolProperty implements GrammarASTProdCoCo {
   public void check(ASTProd a) {
     ProdSymbol s = a.getSymbol();
     Set<ProdSymbol> superProds = MCGrammarSymbolTableHelper.getAllSuperProds(s);
-    boolean found = s.isIsSymbolDefinition();
+    Optional<ProdSymbol> found = Optional.empty();
     for (ProdSymbol prod : superProds) {
-      if (found && prod.isIsSymbolDefinition()) {
-        Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, a.getName()), a.get_SourcePositionStart());
+      if (found.isPresent() && prod.isIsSymbolDefinition()) {
+        if (!MCGrammarSymbolTableHelper.getAllSuperProds(found.get()).contains(prod)) {
+          Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, a.getName()), a.get_SourcePositionStart());
+        }
       } else if (prod.isIsSymbolDefinition()) {
-        found = true;
+        found = Optional.of(prod);
       }
     }
   }

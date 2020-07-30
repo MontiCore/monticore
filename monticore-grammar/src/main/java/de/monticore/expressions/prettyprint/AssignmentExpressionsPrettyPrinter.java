@@ -37,22 +37,6 @@ public class AssignmentExpressionsPrettyPrinter extends ExpressionsBasisPrettyPr
   }
   
   @Override
-  public void handle(ASTPlusPrefixExpression node) {
-    CommentPrettyPrinter.printPreComments(node, getPrinter());
-    getPrinter().print("+");
-    node.getExpression().accept(getRealThis());
-    CommentPrettyPrinter.printPostComments(node, getPrinter());
-  }
-  
-  @Override
-  public void handle(ASTMinusPrefixExpression node) {
-    CommentPrettyPrinter.printPreComments(node, getPrinter());
-    getPrinter().print("-");
-    node.getExpression().accept(getRealThis());
-    CommentPrettyPrinter.printPostComments(node, getPrinter());
-  }
-  
-  @Override
   public void handle(ASTIncPrefixExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     getPrinter().print("++");

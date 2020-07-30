@@ -45,7 +45,7 @@ public class EnumDecorator extends AbstractCreator<ASTCDEnum, ASTCDEnum> {
     String constantClassName = astService.getASTConstantClassFullName();
     ASTCDAttribute intValueAttribute = getIntValueAttribute();
     List<ASTCDMethod> intValueMethod = accessorDecorator.decorate(intValueAttribute);
-    List<ASTCDEnumConstant> constants = input.getCDEnumConstantList().stream()
+    List<ASTCDEnumConstant> constants = input.getCDEnumConstantsList().stream()
         .map(ASTCDEnumConstant::deepClone)
         .collect(Collectors.toList());
     for (ASTCDEnumConstant constant : constants) {
@@ -55,7 +55,7 @@ public class EnumDecorator extends AbstractCreator<ASTCDEnum, ASTCDEnum> {
         .setName(enumName)
         .setModifier(modifier)
         .addAllCDEnumConstants(constants)
-        .addCDConstructor(getLiteralsConstructor(enumName))
+        .addCDConstructors(getLiteralsConstructor(enumName))
         .addCDAttribute(intValueAttribute)
         .addAllCDMethods(intValueMethod)
         .build();

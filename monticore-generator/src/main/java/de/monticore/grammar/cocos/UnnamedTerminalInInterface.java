@@ -29,6 +29,8 @@ public class UnnamedTerminalInInterface implements GrammarASTInterfaceProdCoCo {
           Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, interfaceName, "Terminal", astRuleComponent.getName()));
         } else if (astRuleComponent instanceof ASTKeyTerminal && !((ASTKeyTerminal) astRuleComponent).isPresentUsageName()) {
           Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, interfaceName, "KeyTerminal", astRuleComponent.getName()));
+        } else if (astRuleComponent instanceof ASTTokenTerminal && !((ASTTokenTerminal) astRuleComponent).isPresentUsageName()) {
+          Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, interfaceName, "KeyTerminal", astRuleComponent.getName()));
         } else if (astRuleComponent instanceof ASTBlock) {
           checkUnnamedTerminal(interfaceName, ((ASTBlock) astRuleComponent).getAltList());
         }

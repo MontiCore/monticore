@@ -2,11 +2,12 @@
 package mc.feature.scopes;
 
 import de.monticore.io.paths.ModelPath;
-import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.*;
+import mc.feature.scopes.supautomaton.SupAutomatonMill;
 import mc.feature.scopes.supautomaton._ast.ASTSup;
 import mc.feature.scopes.supautomaton._parser.SupAutomatonParser;
+import mc.feature.scopes.supautomaton._symboltable.ISupAutomatonGlobalScope;
 import mc.feature.scopes.supautomaton._symboltable.SupAutomatonGlobalScope;
-import mc.feature.scopes.supautomaton._symboltable.SupAutomatonLanguage;
 import mc.feature.scopes.supautomaton._symboltable.SupAutomatonScope;
 import mc.feature.scopes.supautomaton._symboltable.SupAutomatonSymbolTableCreatorDelegator;
 import mc.feature.scopes.superautomaton._symboltable.AutomatonSymbol;
@@ -25,12 +26,13 @@ public class ScopesTest {
 
   private ASTSup astSup;
   private SupAutomatonSymbolTableCreatorDelegator symbolTableCreator;
-  private SupAutomatonGlobalScope globalScope;
+  private ISupAutomatonGlobalScope globalScope;
 
 
   @Before
   public void setUp() throws IOException {
-    Log.init();
+    LogStub.init();         // replace log by a sideffect free variant
+        // LogStub.initPlusLog();  // for manual testing purpose only
     Log.enableFailQuick(false);
     SupAutomatonParser supAutomatonParser = new SupAutomatonParser();
     Optional<ASTSup> astSup = supAutomatonParser.parse("src/test/resources/mc/feature/scopes/SupAutomatonModel.aut");
@@ -38,9 +40,16 @@ public class ScopesTest {
     assertTrue(astSup.isPresent());
 
     ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/mc/feature/scopes"));
-    SupAutomatonLanguage lang = new SupAutomatonLanguage();
-    SupAutomatonGlobalScope globalScope = new SupAutomatonGlobalScope(modelPath, lang);
-    SupAutomatonSymbolTableCreatorDelegator symbolTableCreator = new SupAutomatonSymbolTableCreatorDelegator(globalScope);
+
+    ISupAutomatonGlobalScope globalScope = SupAutomatonMill
+        .supAutomatonGlobalScopeBuilder()
+        .setModelPath(modelPath)
+        .setModelFileExtension("aut")
+        .build();
+    SupAutomatonSymbolTableCreatorDelegator symbolTableCreator = SupAutomatonMill
+        .supAutomatonSymbolTableCreatorDelegatorBuilder()
+        .setGlobalScope(globalScope)
+        .build();
 
     this.astSup = astSup.get();
     this.globalScope = globalScope;

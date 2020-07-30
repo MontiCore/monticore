@@ -2,7 +2,8 @@
 package mc.feature.scopes;
 
 import de.monticore.io.paths.ModelPath;
-import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.*;
+import mc.feature.scopes.scopeattributes.ScopeAttributesMill;
 import mc.feature.scopes.scopeattributes._ast.ASTStartProd;
 import mc.feature.scopes.scopeattributes._parser.ScopeAttributesParser;
 import mc.feature.scopes.scopeattributes._symboltable.*;
@@ -22,11 +23,12 @@ import static org.junit.Assert.assertTrue;
  */
 public class ScopeAttributesTest {
 
-  private ScopeAttributesScope scope;
+  private IScopeAttributesArtifactScope scope;
 
   @Before
   public void setUp() throws IOException {
-    Log.init();
+    LogStub.init();         // replace log by a sideffect free variant
+        // LogStub.initPlusLog();  // for manual testing purpose only
     Log.enableFailQuick(false);
     ScopeAttributesParser scopeAttributesParser = new ScopeAttributesParser();
     Optional<ASTStartProd> astSup = scopeAttributesParser.parse("src/test/resources/mc/feature/scopes/ScopeAttributesModel.sc");
@@ -34,9 +36,15 @@ public class ScopeAttributesTest {
     assertTrue(astSup.isPresent());
 
     ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/mc/feature/scopes"));
-    ScopeAttributesLanguage lang = new ScopeAttributesLanguage();
-    ScopeAttributesGlobalScope globalScope = new ScopeAttributesGlobalScope(modelPath, lang);
-    ScopeAttributesSymbolTableCreatorDelegator symbolTableCreator = new ScopeAttributesSymbolTableCreatorDelegator(globalScope);
+    IScopeAttributesGlobalScope globalScope = ScopeAttributesMill
+        .scopeAttributesGlobalScopeBuilder()
+        .setModelPath(modelPath)
+        .setModelFileExtension("sc")
+        .build();
+    ScopeAttributesSymbolTableCreatorDelegator symbolTableCreator = ScopeAttributesMill
+        .scopeAttributesSymbolTableCreatorDelegatorBuilder()
+        .setGlobalScope(globalScope)
+        .build();
     scope = symbolTableCreator.createFromAST(astSup.get());
   }
 
@@ -96,7 +104,7 @@ public class ScopeAttributesTest {
 
 
   private IScopeAttributesScope getSubScopeByName(String name) {
-    Optional<IScopeAttributesScope> subScope = scope.getSubScopes()
+    Optional<? extends IScopeAttributesScope> subScope = scope.getSubScopes()
         .stream()
         .filter(x -> x.getName().equals(name))
         .findFirst();

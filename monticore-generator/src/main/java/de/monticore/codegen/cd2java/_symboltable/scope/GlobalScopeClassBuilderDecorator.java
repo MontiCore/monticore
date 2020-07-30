@@ -8,8 +8,11 @@ import de.monticore.codegen.cd2java._ast.builder.BuilderDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
@@ -33,24 +36,41 @@ public class GlobalScopeClassBuilderDecorator extends AbstractCreator<ASTCDClass
 
   @Override
   public ASTCDClass decorate(ASTCDClass scopeClass) {
-    ASTCDClass decoratedScopClass = scopeClass.deepClone();
+    ASTCDClass decoratedScopeClass = scopeClass.deepClone();
     String scopeBuilderName = scopeClass.getName() + BUILDER_SUFFIX;
 
-    decoratedScopClass.getCDMethodList().clear();
+    decoratedScopeClass.getCDMethodsList().clear();
 
     builderDecorator.setPrintBuildMethodTemplate(false);
-    ASTCDClass scopeBuilder = builderDecorator.decorate(decoratedScopClass);
+    ASTCDClass scopeBuilder = builderDecorator.decorate(decoratedScopeClass);
     builderDecorator.setPrintBuildMethodTemplate(true);
 
     scopeBuilder.setName(scopeBuilderName);
 
     // new build method template
-    Optional<ASTCDMethod> buildMethod = scopeBuilder.getCDMethodList()
+    Optional<ASTCDMethod> buildMethod = scopeBuilder.getCDMethodsList()
         .stream()
         .filter(m -> BUILD_METHOD.equals(m.getName()))
         .findFirst();
-    buildMethod.ifPresent(b -> this.replaceTemplate(EMPTY_BODY, b,
-        new TemplateHookPoint(TEMPLATE_PATH + "BuildGlobalScope", scopeClass.getName(), symbolTableService.getCDName())));
+
+    List<String> resolvingDelegates = scopeBuilder.getCDAttributesList()
+        .stream()
+        .map(a->a.getName())
+        .filter(n->n.startsWith("adapted"))
+        .collect(Collectors.toList());
+
+    String generatedErrorCode = symbolTableService.getGeneratedErrorCode("buildGlobalScope");
+    String generatedErrorCode2 = symbolTableService.getGeneratedErrorCode("buildGlobalScope2");
+
+    if (buildMethod.isPresent()) {
+      this.replaceTemplate(EMPTY_BODY, buildMethod.get(),
+          new TemplateHookPoint(TEMPLATE_PATH + "BuildGlobalScope",
+              scopeClass.getName(), symbolTableService.getCDName(), resolvingDelegates,
+              generatedErrorCode, generatedErrorCode2));
+      buildMethod.get().setMCReturnType(MCBasicTypesMill.mCReturnTypeBuilder()
+          .setMCType(getMCTypeFacade().createQualifiedType("I"+ buildMethod.get().printReturnType()))
+          .build());
+    }
 
     return scopeBuilder;
   }

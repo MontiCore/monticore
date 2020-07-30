@@ -34,6 +34,7 @@ import de.monticore.cd.cd4code.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.prettyprint.IndentPrinter;
@@ -69,12 +70,12 @@ public class VisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
 
     ASTCDInterface visitorInterface = CD4CodeMill.cDInterfaceBuilder()
         .setName(this.visitorService.getVisitorSimpleName())
-        .addAllInterfaces(this.visitorService.getSuperVisitors())
+        .addAllInterface(this.visitorService.getSuperVisitors())
         .setModifier(PUBLIC.build())
-        .addCDMethod(addGetRealThisMethods(visitorType))
-        .addCDMethod(addSetRealThisMethods(visitorType))
-        .addCDMethod(addEndVisitASTNodeMethods(astNodeType))
-        .addCDMethod(addVisitASTNodeMethods(astNodeType))
+        .addCDMethods(addGetRealThisMethods(visitorType))
+        .addCDMethods(addSetRealThisMethods(visitorType))
+        .addCDMethods(addEndVisitASTNodeMethods(astNodeType))
+        .addCDMethods(addVisitASTNodeMethods(astNodeType))
         .addAllCDMethods(addISymbolVisitorMethods())
         .addAllCDMethods(addSymbolVisitorMethods(symbolNames))
         .addAllCDMethods(addIScopeVisitorMethods())
@@ -82,23 +83,23 @@ public class VisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
         .build();
 
     // add visitor methods, but no double signatures
-    List<ASTCDMethod> classMethods = addClassVisitorMethods(compilationUnit.getCDDefinition().getCDClassList());
+    List<ASTCDMethod> classMethods = addClassVisitorMethods(compilationUnit.getCDDefinition().getCDClasssList());
     for (ASTCDMethod classMethod : classMethods) {
-      if (!visitorService.isMethodAlreadyDefined(classMethod, visitorInterface.getCDMethodList())) {
-        visitorInterface.addCDMethod(classMethod);
+      if (!visitorService.isMethodAlreadyDefined(classMethod, visitorInterface.getCDMethodsList())) {
+        visitorInterface.addCDMethods(classMethod);
       }
     }
-    List<ASTCDMethod> interfaceMethods = addInterfaceVisitorMethods(compilationUnit.getCDDefinition().getCDInterfaceList());
+    List<ASTCDMethod> interfaceMethods = addInterfaceVisitorMethods(compilationUnit.getCDDefinition().getCDInterfacesList());
     for (ASTCDMethod interfaceMethod : interfaceMethods) {
-      if (!visitorService.isMethodAlreadyDefined(interfaceMethod, visitorInterface.getCDMethodList())) {
-        visitorInterface.addCDMethod(interfaceMethod);
+      if (!visitorService.isMethodAlreadyDefined(interfaceMethod, visitorInterface.getCDMethodsList())) {
+        visitorInterface.addCDMethods(interfaceMethod);
       }
     }
-    List<ASTCDMethod> enumMethods = addEnumVisitorMethods(compilationUnit.getCDDefinition().getCDEnumList(),
+    List<ASTCDMethod> enumMethods = addEnumVisitorMethods(compilationUnit.getCDDefinition().getCDEnumsList(),
         compilationUnit.getCDDefinition().getName());
     for (ASTCDMethod enumMethod : enumMethods) {
-      if (!visitorService.isMethodAlreadyDefined(enumMethod, visitorInterface.getCDMethodList())) {
-        visitorInterface.addCDMethod(enumMethod);
+      if (!visitorService.isMethodAlreadyDefined(enumMethod, visitorInterface.getCDMethodsList())) {
+        visitorInterface.addCDMethods(enumMethod);
       }
     }
 
@@ -249,7 +250,7 @@ public class VisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
   }
   
   /**
-   * Adds visit, endVisit, handle, and traverse methods for scope and artifact
+   * Adds visit, endVisit, handle, and traverse methods for scope, scope interface, and artifact
    * scope of a given class diagram definition by delegating the respective
    * names to createScopeVisitorMethods().
    * 
@@ -258,15 +259,21 @@ public class VisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
    * @return Created visitor methods to visit a (artifact) scope
    */
   protected List<ASTCDMethod> addScopeVisitorMethods(Set<String> symbolsNameList, ASTCDDefinition astcdDefinition) {
-    ASTMCType scopeType = symbolTableService.getScopeType();
-    ASTMCQualifiedType artifactScopeType = getMCTypeFacade().createQualifiedType(symbolTableService.getArtifactScopeFullName());
-    
+    ASTMCType scopeClassType = symbolTableService.getScopeType();
+    ASTMCQualifiedType artifactScopeType = symbolTableService.getArtifactScopeType();
+    ASTMCQualifiedType scopeInterfaceType = symbolTableService.getScopeInterfaceType();
+
+    TemplateHookPoint traverseSymbolsBody = new TemplateHookPoint(TRAVERSE_SCOPE_TEMPLATE, symbolsNameList);
+    StringHookPoint traverseDelegationBody = new StringHookPoint(TRAVERSE + "(("
+        + symbolTableService.getScopeInterfaceFullName() + ") node);");
+
     List<ASTCDMethod> methodList = new ArrayList<>();
-    methodList.addAll(createScopeVisitorMethods(symbolsNameList, scopeType));
+    methodList.addAll(createScopeVisitorMethods(scopeClassType, traverseDelegationBody));
+    methodList.addAll(createScopeVisitorMethods(scopeInterfaceType, traverseSymbolsBody));
     // only create artifact scope methods if grammar contains productions or
     // refers to a starting production of a super grammar
     if (symbolTableService.hasProd(astcdDefinition) || symbolTableService.hasStartProd()) {
-      methodList.addAll(createScopeVisitorMethods(symbolsNameList, artifactScopeType));
+      methodList.addAll(createScopeVisitorMethods(artifactScopeType, traverseDelegationBody));
     }
     return methodList;
   }
@@ -274,11 +281,11 @@ public class VisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
   /**
    * Creates visit, endVisit, handle, and traverse methods for a given scope.
    * 
-   * @param symbolsNameList The symbols to traverse
    * @param scopeName The scope name
+   * @param traverseBody body of the traverse method, provided in form of hookpoint
    * @return A List of created methods to visit a scope
    */
-  protected List<ASTCDMethod> createScopeVisitorMethods(Set<String> symbolsNameList, ASTMCType scopeName) {
+  protected List<ASTCDMethod> createScopeVisitorMethods(ASTMCType scopeName, HookPoint traverseBody) {
     List<ASTCDMethod> methodList = new ArrayList<>();
     methodList.add(visitorService.getVisitorMethod(VISIT, scopeName));
     methodList.add(visitorService.getVisitorMethod(END_VISIT, scopeName));
@@ -287,8 +294,7 @@ public class VisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
     methodList.add(handleMethod);
     ASTCDMethod traverseMethod = visitorService.getVisitorMethod(TRAVERSE, scopeName);
     methodList.add(traverseMethod);
-    this.replaceTemplate(EMPTY_BODY, traverseMethod,
-        new TemplateHookPoint(TRAVERSE_SCOPE_TEMPLATE, symbolsNameList));
+    this.replaceTemplate(EMPTY_BODY, traverseMethod, traverseBody);
     return methodList;
   }
   

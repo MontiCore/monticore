@@ -7,14 +7,14 @@ ${tc.include("core.Imports")}
 
 ${tc.include("core.Annotations")}
 ${cdInterface.printModifier()} interface ${cdInterface.getName()} <#rt><#lt>
-<#if !cdInterface.isEmptyInterfaces()>extends ${cdInterface.printInterfaces()} </#if>{
+<#if !cdInterface.isEmptyInterface()>extends ${cdInterface.printInterfaces()} </#if>{
 
 
-<#list cdInterface.getCDAttributeList() as attribute>
+<#list cdInterface.getCDAttributesList() as attribute>
     ${tc.include("core.Attribute", attribute)}
 </#list>
 
-<#list cdInterface.getCDMethodList() as method>
+<#list cdInterface.getCDMethodsList() as method>
   <#if !method.getModifier().isAbstract()>default </#if>${tc.include("core.Method", method)}
 </#list>
 }

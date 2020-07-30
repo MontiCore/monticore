@@ -12,7 +12,7 @@ import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.MCTypeFacade;
-import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -44,7 +44,8 @@ public class SymbolResolvingDelegateInterfaceDecoratorTest extends DecoratorTest
 
   @Before
   public void setUp() {
-    Log.init();
+    LogStub.init();         // replace log by a sideffect free variant
+        // LogStub.initPlusLog();  // for manual testing purpose only
     this.mcTypeFacade = MCTypeFacade.getInstance();
     this.glex = new GlobalExtensionManagement();
 
@@ -76,7 +77,7 @@ public class SymbolResolvingDelegateInterfaceDecoratorTest extends DecoratorTest
 
   @Test
   public void testNoSuperInterfacesl() {
-    assertTrue( symbolClassAutomaton.isEmptyInterfaces());
+    assertTrue( symbolClassAutomaton.isEmptyInterface());
   }
 
   @Test
@@ -86,7 +87,7 @@ public class SymbolResolvingDelegateInterfaceDecoratorTest extends DecoratorTest
 
   @Test
   public void testMethods() {
-    assertEquals(1, symbolClassAutomaton.getCDMethodList().size());
+    assertEquals(1, symbolClassAutomaton.getCDMethodsList().size());
   }
 
   @Test
@@ -96,13 +97,13 @@ public class SymbolResolvingDelegateInterfaceDecoratorTest extends DecoratorTest
     assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
     assertDeepEquals(mcTypeFacade.createListTypeOf(AUTOMATON_SYMBOL), method.getMCReturnType().getMCType());
     assertEquals(4, method.sizeCDParameters());
-    assertBoolean(method.getCDParameter(0).getMCType());
-    assertEquals("foundSymbols", method.getCDParameter(0).getName());
-    assertDeepEquals(String.class, method.getCDParameter(1).getMCType());
-    assertEquals("name", method.getCDParameter(1).getName());
-    assertDeepEquals(ACCESS_MODIFIER, method.getCDParameter(2).getMCType());
-    assertEquals("modifier", method.getCDParameter(2).getName());
-    assertDeepEquals(PREDICATE, method.getCDParameter(3).getMCType());
-    assertEquals("predicate", method.getCDParameter(3).getName());
+    assertBoolean(method.getCDParameters(0).getMCType());
+    assertEquals("foundSymbols", method.getCDParameters(0).getName());
+    assertDeepEquals(String.class, method.getCDParameters(1).getMCType());
+    assertEquals("name", method.getCDParameters(1).getName());
+    assertDeepEquals(ACCESS_MODIFIER, method.getCDParameters(2).getMCType());
+    assertEquals("modifier", method.getCDParameters(2).getName());
+    assertDeepEquals(PREDICATE, method.getCDParameters(3).getMCType());
+    assertEquals("predicate", method.getCDParameters(3).getName());
   }
 }

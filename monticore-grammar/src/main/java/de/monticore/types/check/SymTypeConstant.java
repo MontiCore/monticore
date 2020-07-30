@@ -1,10 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolSurrogate;
 import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonPrinter;
-import de.monticore.types.typesymbols._symboltable.TypeSymbolLoader;
-import de.se_rwth.commons.logging.Log;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -13,25 +12,25 @@ import java.util.Map;
 
 public class SymTypeConstant extends SymTypeExpression {
 
-  public SymTypeConstant(TypeSymbolLoader typeSymbolLoader) {
-    this.typeSymbolLoader = typeSymbolLoader;
+  public SymTypeConstant(OOTypeSymbolSurrogate typeSymbolSurrogate) {
+    this.typeSymbolSurrogate = typeSymbolSurrogate;
   }
 
   public String getConstName() {
-    return typeSymbolLoader.getName();
+    return typeSymbolSurrogate.getName();
   }
 
   public String getBoxedConstName() {
-    return box(typeSymbolLoader.getName());
+    return box(typeSymbolSurrogate.getName());
   }
 
   public String getBaseOfBoxedName() {
-    String[] parts = box(typeSymbolLoader.getName()).split("\\.");
+    String[] parts = box(typeSymbolSurrogate.getName()).split("\\.");
     return parts[parts.length - 1];
   }
 
   public void setConstName(String constName){
-    typeSymbolLoader.setName(constName);
+    typeSymbolSurrogate.setName(constName);
   }
 
   /**
@@ -168,14 +167,35 @@ public class SymTypeConstant extends SymTypeExpression {
   /**
    * Am I primitive? (such as "int")
    */
-  public boolean isPrimitive() {
+  public boolean isTypeConstant() {
     return true;
   }
 
   @Override
   public SymTypeConstant deepClone() {
-    SymTypeConstant clone = new SymTypeConstant(new TypeSymbolLoader(typeSymbolLoader.getName(), typeSymbolLoader.getEnclosingScope()));
+    OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate(typeSymbolSurrogate.getName());
+    loader.setEnclosingScope(typeSymbolSurrogate.getEnclosingScope());
+    SymTypeConstant clone = new SymTypeConstant(loader);
     return clone;
+  }
+
+
+  @Override
+  public boolean deepEquals(SymTypeExpression sym){
+    if(!(sym instanceof SymTypeConstant)){
+      return false;
+    }
+    SymTypeConstant symCon = (SymTypeConstant) sym;
+    if(this.typeSymbolSurrogate== null ||symCon.typeSymbolSurrogate==null){
+      return false;
+    }
+    if(!this.typeSymbolSurrogate.getEnclosingScope().equals(symCon.typeSymbolSurrogate.getEnclosingScope())){
+      return false;
+    }
+    if(!this.typeSymbolSurrogate.getName().equals(symCon.typeSymbolSurrogate.getName())){
+      return false;
+    }
+    return this.print().equals(symCon.print());
   }
 
 

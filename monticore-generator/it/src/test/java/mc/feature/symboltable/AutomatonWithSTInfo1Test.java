@@ -19,15 +19,14 @@ public class AutomatonWithSTInfo1Test extends GeneratorIntegrationsTest {
     AutomatonWithSTInfo1Scope automatonScope;
     AutomatonSymbol automatonSymbol = new AutomatonSymbol("A");
 //    Collection<StateSymbol> stateSymbols = automatonSymbol.getStates();
-    AutomatonSymbolLoader automatonSymbolLoader;
-    AutomatonWithSTInfo1Language automatonWithSTInfo1Language;
+    AutomatonSymbolSurrogate automatonSymbolSurrogate;
     AutomatonWithSTInfo1ModelLoader automatonWithSTInfo1ModelLoader;
     AutomatonWithSTInfo1SymbolTableCreator automatonWithSTInfo1SymbolTableCreator;
     StateSymbol stateSymbol = new StateSymbol("S");
     assertTrue(stateSymbol instanceof StateSymbol);
 //    Collection<StateSymbol> stateSymbols2 = stateSymbol.getStates();
 
-    StateSymbolLoader stateSymbolReference;
+    StateSymbolSurrogate stateSymbolReference;
   }
 
 }

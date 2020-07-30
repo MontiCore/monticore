@@ -54,18 +54,18 @@ public class ODDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClas
         .setName(odName)
         .setModifier(PUBLIC.build())
         .addInterface(getMCTypeFacade().createQualifiedType(visitorFullName))
-        .addCDConstructor(createConstructor(odName))
-        .addCDAttribute(createRealThisAttribute(visitorFullName))
-        .addCDAttribute(createIndentPrinterAttribute())
-        .addCDAttribute(createReportingRepositoryAttribute())
-        .addCDAttribute(printEmptyOptionalAttribute)
-        .addCDAttribute(printEmptyListAttribute)
+        .addCDConstructors(createConstructor(odName))
+        .addCDAttributes(createRealThisAttribute(visitorFullName))
+        .addCDAttributes(createIndentPrinterAttribute())
+        .addCDAttributes(createReportingRepositoryAttribute())
+        .addCDAttributes(printEmptyOptionalAttribute)
+        .addCDAttributes(printEmptyListAttribute)
         .addAllCDMethods(createHandleMethods(input.getCDDefinition()))
-        .addCDMethod(createPrintAttributeMethod())
-        .addCDMethod(createPrintObjectMethod())
-        .addCDMethod(createPrintObjectDiagramMethod())
-        .addCDMethod(createGetRealThisMethod(visitorFullName))
-        .addCDMethod(createSetRealThisMethod(visitorFullName))
+        .addCDMethods(createPrintAttributeMethod())
+        .addCDMethods(createPrintObjectMethod())
+        .addCDMethods(createPrintObjectDiagramMethod())
+        .addCDMethods(createGetRealThisMethod(visitorFullName))
+        .addCDMethods(createSetRealThisMethod(visitorFullName))
         .addAllCDMethods(printEmptyOptionalMethods)
         .addAllCDMethods(printEmptyListMethods)
         .build();
@@ -112,7 +112,7 @@ public class ODDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClas
 
   protected List<ASTCDMethod> createHandleMethods(ASTCDDefinition astcdDefinition) {
     List<ASTCDMethod> handleMethodList = new ArrayList<>();
-    for (ASTCDClass astcdClass : astcdDefinition.getCDClassList()) {
+    for (ASTCDClass astcdClass : astcdDefinition.getCDClasssList()) {
       String astFullName = odService.getASTPackage() + "." + astcdClass.getName();
       ASTCDMethod handleMethod = visitorService.getVisitorMethod(HANDLE, getMCTypeFacade().createQualifiedType(astFullName));
       replaceTemplate(EMPTY_BODY, handleMethod, new TemplateHookPoint("_od.HandleOD", astcdClass, astFullName));

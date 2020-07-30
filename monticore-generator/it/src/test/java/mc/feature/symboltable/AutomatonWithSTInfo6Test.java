@@ -24,16 +24,15 @@ public class AutomatonWithSTInfo6Test extends GeneratorIntegrationsTest {
     AutomatonWithSTInfo6Scope automatonScope;
     AutomatonSymbol automatonSymbol = new AutomatonSymbol("A");
     assertTrue(automatonSymbol instanceof IScopeSpanningSymbol);
-    AutomatonSymbolLoader automatonSymbolLoader;
-    AutomatonWithSTInfo6Language automatonwithstinfo6Language;
+    AutomatonSymbolSurrogate automatonSymbolSurrogate;
     AutomatonWithSTInfo6ModelLoader automatonwithstinfo6ModelLoader;
     AutomatonWithSTInfo6SymbolTableCreator automatonwithstinfo6SymbolTableCreator;
     StateSymbol stateSymbol = new StateSymbol("A");
     assertFalse(stateSymbol instanceof IScopeSpanningSymbol);
-    StateSymbolLoader stateSymbolLoader;
+    StateSymbolSurrogate stateSymbolSurrogate;
     TransitionSymbol transitionSymbol = new TransitionSymbol("T");
     assertFalse(transitionSymbol instanceof IScopeSpanningSymbol);
-    TransitionSymbolLoader transitionSymbolLoader;
+    TransitionSymbolSurrogate transitionSymbolSurrogate;
 
 //    Collection<StateSymbol> stateSymbols = automatonSymbol.getStates();
 //    Collection<TransitionSymbol> transitionSymbols = automatonSymbol.getTransitions();

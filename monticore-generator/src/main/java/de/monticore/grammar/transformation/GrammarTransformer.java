@@ -72,7 +72,7 @@ public class GrammarTransformer {
    * transitions:Transition)*
    */
   public static void uncapitalizeMultivaluedAttributes(ASTMCGrammar grammar) {
-    grammar.getASTRuleList().forEach(c -> transformAttributesInAST(c));
+    grammar.getASTRulesList().forEach(c -> transformAttributesInAST(c));
   }
 
   private static void transformAttributesInAST(ASTASTRule astRule) {
@@ -101,12 +101,14 @@ public class GrammarTransformer {
     if (nonTerminalSep.isPresentUsageName()) {
       name = nonTerminalSep.getUsageName() + ":";
     }
+    String referencedSymbol = nonTerminalSep.isPresentReferencedSymbol()?"@"+nonTerminalSep.getReferencedSymbol():"";
     String plusKeywords = (nonTerminalSep.isPlusKeywords()) ? "&" : "";
     String iteration = (nonTerminalSep.getIteration() == ASTConstantsGrammar.STAR) ? "?" : "";
 
-    String extendedList = "(%usageName% %nonTerminal% %plusKeywords% (\"%terminal%\" %usageName% %nonTerminal% %plusKeywords%)*)%iterator%";
+    String extendedList = "(%usageName% %nonTerminal% %refSymbol% %plusKeywords% (\"%terminal%\" %usageName% %nonTerminal% %refSymbol% %plusKeywords%)*)%iterator%";
     extendedList = extendedList.replaceAll("%usageName%", name);
     extendedList = extendedList.replaceAll("%nonTerminal%", nonTerminalSep.getName());
+    extendedList = extendedList.replaceAll("%refSymbol%", referencedSymbol);
     extendedList = extendedList.replaceAll("%plusKeywords%", plusKeywords);
     extendedList = extendedList.replaceAll("%terminal%", nonTerminalSep.getSeparator());
     extendedList = extendedList.replaceAll("%iterator%", iteration);

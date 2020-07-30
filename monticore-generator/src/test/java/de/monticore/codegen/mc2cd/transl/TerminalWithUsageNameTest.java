@@ -22,7 +22,7 @@ public class TerminalWithUsageNameTest {
   public TerminalWithUsageNameTest() {
     ASTCDCompilationUnit cdCompilationUnit = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/TerminalWithUsageNameGrammar.mc4")).get();
-    astA = TestHelper.getCDClass(cdCompilationUnit, "ASTA").get();
+    astA = TestHelper.getCDClasss(cdCompilationUnit, "ASTA").get();
   }
   
   /**

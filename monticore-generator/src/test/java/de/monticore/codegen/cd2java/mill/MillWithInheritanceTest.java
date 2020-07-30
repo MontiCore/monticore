@@ -23,17 +23,7 @@ import de.monticore.codegen.cd2java._ast.constants.ASTConstantsDecorator;
 import de.monticore.codegen.cd2java._ast.enums.EnumDecorator;
 import de.monticore.codegen.cd2java._ast.factory.NodeFactoryDecorator;
 import de.monticore.codegen.cd2java._ast.factory.NodeFactoryService;
-import de.monticore.codegen.cd2java._parser.ParserService;
-import de.monticore.codegen.cd2java._symboltable.SymbolTableCDDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
-import de.monticore.codegen.cd2java._symboltable.language.LanguageBuilderDecorator;
-import de.monticore.codegen.cd2java._symboltable.language.LanguageDecorator;
-import de.monticore.codegen.cd2java._symboltable.modelloader.ModelLoaderBuilderDecorator;
-import de.monticore.codegen.cd2java._symboltable.modelloader.ModelLoaderDecorator;
-import de.monticore.codegen.cd2java._symboltable.scope.*;
-import de.monticore.codegen.cd2java._symboltable.symbol.*;
-import de.monticore.codegen.cd2java._symboltable.symbol.symbolloadermutator.MandatoryMutatorSymbolLoaderDecorator;
-import de.monticore.codegen.cd2java._symboltable.symboltablecreator.*;
 import de.monticore.codegen.cd2java._visitor.*;
 import de.monticore.codegen.cd2java._visitor.builder.DelegatorVisitorBuilderDecorator;
 import de.monticore.codegen.cd2java.data.DataDecorator;
@@ -139,14 +129,14 @@ public class MillWithInheritanceTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeName() {
-    assertEquals("mill", millClass.getCDAttribute(0).getName());
-    assertEquals("millASTBlubBuilder", millClass.getCDAttribute(1).getName());
-    assertEquals("millASTBliBuilder", millClass.getCDAttribute(2).getName());
+    assertEquals("mill", millClass.getCDAttributes(0).getName());
+    assertEquals("millASTBlubBuilder", millClass.getCDAttributes(1).getName());
+    assertEquals("millASTBliBuilder", millClass.getCDAttributes(2).getName());
   }
 
   @Test
   public void testAttributeModifier() {
-    for (ASTCDAttribute astcdAttribute : millClass.getCDAttributeList()) {
+    for (ASTCDAttribute astcdAttribute : millClass.getCDAttributesList()) {
       assertTrue(astcdAttribute.isPresentModifier());
       assertTrue(PROTECTED_STATIC.build().deepEquals(astcdAttribute.getModifier()));
     }
@@ -155,8 +145,8 @@ public class MillWithInheritanceTest extends DecoratorTestCase {
   @Test
   public void testConstructor() {
     assertEquals(1, millClass.sizeCDConstructors());
-    assertTrue(PROTECTED.build().deepEquals(millClass.getCDConstructor(0).getModifier()));
-    assertEquals("CGrammarMill", millClass.getCDConstructor(0).getName());
+    assertTrue(PROTECTED.build().deepEquals(millClass.getCDConstructors(0).getModifier()));
+    assertEquals("CGrammarMill", millClass.getCDConstructors(0).getName());
   }
 
   @Test
@@ -180,8 +170,8 @@ public class MillWithInheritanceTest extends DecoratorTestCase {
     assertEquals("initMe", initMe.getName());
     //test Parameters
     assertEquals(1, initMe.sizeCDParameters());
-    assertDeepEquals("CGrammarMill", initMe.getCDParameter(0).getMCType());
-    assertEquals("a", initMe.getCDParameter(0).getName());
+    assertDeepEquals("CGrammarMill", initMe.getCDParameters(0).getMCType());
+    assertEquals("a", initMe.getCDParameters(0).getName());
     //test ReturnType
     assertTrue(initMe.getMCReturnType().isPresentMCVoidType());
     //test Modifier

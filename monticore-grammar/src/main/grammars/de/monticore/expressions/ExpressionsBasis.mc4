@@ -56,4 +56,11 @@ component grammar ExpressionsBasis extends de.monticore.MCBasics,
   LiteralExpression implements Expression <340>
     = Literal;
 
+  /**
+   * A list of expressions
+   */
+  Arguments
+    =   "(" (Expression || ",")* ")";
+
+
 }

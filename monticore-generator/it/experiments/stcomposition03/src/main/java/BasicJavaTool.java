@@ -13,13 +13,13 @@ import java.util.Optional;
 
 public class BasicJavaTool {
 
-  public static BasicJavaArtifactScope createJavaSymTab(String model, ModelPath modelPath) {
+  public static IBasicJavaArtifactScope createJavaSymTab(String model, ModelPath modelPath) {
     ASTCompilationUnit ast = parse(model);
-    BasicJavaGlobalScope globalScope = BasicJavaMill.basicJavaGlobalScopeBuilder()
+    IBasicJavaGlobalScope globalScope = BasicJavaMill
+        .basicJavaGlobalScopeBuilder()
         .setModelPath(modelPath)
-        .setBasicJavaLanguage(new BasicJavaLanguage()) //will be removed soon
+        .setModelFileExtension("javamodel")
         .build();
-
     //initialize symbol table creators
     BasicJavaSymbolTableCreator stc = BasicJavaMill
         .basicJavaSymbolTableCreatorBuilder()

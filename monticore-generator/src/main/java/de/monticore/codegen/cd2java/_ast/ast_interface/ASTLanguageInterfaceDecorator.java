@@ -33,7 +33,7 @@ public class ASTLanguageInterfaceDecorator extends AbstractCreator<ASTCDCompilat
         .setModifier(PUBLIC.build())
         .setName(astService.getASTBaseInterfaceSimpleName())
         .addInterface(getMCTypeFacade().createQualifiedType(ASTNode.class))
-        .addCDMethod(getAcceptMethod())
+        .addCDMethods(getAcceptMethod())
         .build();
   }
 

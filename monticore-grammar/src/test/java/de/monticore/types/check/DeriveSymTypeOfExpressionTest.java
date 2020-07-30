@@ -6,10 +6,10 @@ import de.monticore.expressions.combineexpressionswithliterals.CombineExpression
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsScope;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.expressions.prettyprint.CombineExpressionsWithLiteralsPrettyPrinter;
-import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.types.typesymbols.TypeSymbolsMill;
-import de.monticore.types.typesymbols._symboltable.*;
+import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
+import de.monticore.symbols.oosymbols.OOSymbolsMill;
+import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
+import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -57,14 +57,14 @@ public class DeriveSymTypeOfExpressionTest {
     add2scope(scope, DefsTypeBasic._String);
 
     // some FieldSymbols (ie. Variables, Attributes)
-    TypeSymbol p = new TypeSymbol("Person");
+    OOTypeSymbol p = new OOTypeSymbol("Person");
     add2scope(scope,p);
-    TypeSymbol s = new TypeSymbol("Student");
+    OOTypeSymbol s = new OOTypeSymbol("Student");
     add2scope(scope,s);
-    s.setSuperTypeList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Person", scope)));
-    TypeSymbol f = new TypeSymbol("FirstSemesterStudent");
+    s.setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Person", scope)));
+    OOTypeSymbol f = new OOTypeSymbol("FirstSemesterStudent");
     add2scope(scope,f);
-    f.setSuperTypeList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student", scope)));
+    f.setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student", scope)));
     add2scope(scope, field("foo", _intSymType));
     add2scope(scope, field("bar2", _booleanSymType));
     add2scope(scope, field("person1",SymTypeExpressionFactory.createTypeObject("Person",scope)));
@@ -75,21 +75,21 @@ public class DeriveSymTypeOfExpressionTest {
 
     //testing for generics
     TypeVarSymbol genArgs = typeVariable("GenArg");
-    TypeSymbol genSuperType = TypeSymbolsMill.typeSymbolBuilder()
-        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
-        .setTypeParameterList(Lists.newArrayList(genArgs))
+    OOTypeSymbol genSuperType = OOSymbolsMill.oOTypeSymbolBuilder()
+        .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
         .setEnclosingScope(scope)
         .setName("GenSuper")
         .build();
-    SymTypeExpression genArg = SymTypeExpressionFactory.createTypeVariable(new TypeSymbolLoader("GenArg",scope));
-    SymTypeExpression genSuper = SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader("GenSuper",scope),genArg);
-    TypeSymbol genSubType = TypeSymbolsMill.typeSymbolBuilder()
-        .setSpannedScope(TypeSymbolsMill.typeSymbolsScopeBuilder().build())
-        .setName("GenSub").setSuperTypeList(Lists.newArrayList(genSuper))
-        .setTypeParameterList(Lists.newArrayList(genArgs))
+    genSuperType.addTypeVarSymbol(genArgs);
+    SymTypeExpression genArg = SymTypeExpressionFactory.createTypeVariable("GenArg",scope);
+    SymTypeExpression genSuper = SymTypeExpressionFactory.createGenerics("GenSuper",scope,genArg);
+    OOTypeSymbol genSubType = OOSymbolsMill.oOTypeSymbolBuilder()
+        .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
+        .setName("GenSub").setSuperTypesList(Lists.newArrayList(genSuper))
         .setEnclosingScope(scope)
         .build();
-    SymTypeExpression genSub = SymTypeExpressionFactory.createGenerics(new TypeSymbolLoader("GenSub",scope),genArg);
+    genSubType.addTypeVarSymbol(genArgs);
+    SymTypeExpression genSub = SymTypeExpressionFactory.createGenerics("GenSub",scope,genArg);
     FieldSymbol genSubField = field("genericSub",genSub);
     FieldSymbol genSuperField = field("genericSuper",genSuper);
     add2scope(scope,genSuperType);

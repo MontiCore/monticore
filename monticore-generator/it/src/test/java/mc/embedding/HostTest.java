@@ -4,9 +4,10 @@ package mc.embedding;
 
 import de.monticore.io.paths.ModelPath;
 import mc.GeneratorIntegrationsTest;
+import mc.embedding.host.HostMill;
 import mc.embedding.host._symboltable.HostGlobalScope;
-import mc.embedding.host._symboltable.HostLanguage;
 import mc.embedding.host._symboltable.HostSymbol;
+import mc.embedding.host._symboltable.IHostGlobalScope;
 import org.junit.Test;
 
 import java.nio.file.Paths;
@@ -18,11 +19,13 @@ public class HostTest extends GeneratorIntegrationsTest {
 
   @Test
   public void test() {
-    final HostLanguage language = new HostLanguage();
-
     final ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/mc/embedding"));
 
-    final HostGlobalScope scope = new HostGlobalScope(modelPath, language);
+    final IHostGlobalScope scope = HostMill
+        .hostGlobalScopeBuilder()
+        .setModelPath(modelPath)
+        .setModelFileExtension("host")
+        .build();
 
     HostSymbol hostSymbol = scope.resolveHost("H").orElse(null);
     assertNotNull(hostSymbol);

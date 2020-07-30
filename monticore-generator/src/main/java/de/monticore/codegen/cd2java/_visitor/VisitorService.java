@@ -160,9 +160,9 @@ public class VisitorService extends AbstractService<VisitorService> {
     ASTCDCompilationUnit compilationUnit = input.deepClone();
     //set classname to correct Name with path
     String astPath = getASTPackage();
-    compilationUnit.getCDDefinition().getCDClassList().forEach(c -> c.setName(astPath + "." + c.getName()));
-    compilationUnit.getCDDefinition().getCDInterfaceList().forEach(i -> i.setName(astPath + "." + i.getName()));
-    compilationUnit.getCDDefinition().getCDEnumList().forEach(e -> e.setName(astPath + "." + e.getName()));
+    compilationUnit.getCDDefinition().getCDClasssList().forEach(c -> c.setName(astPath + "." + c.getName()));
+    compilationUnit.getCDDefinition().getCDInterfacesList().forEach(i -> i.setName(astPath + "." + i.getName()));
+    compilationUnit.getCDDefinition().getCDEnumsList().forEach(e -> e.setName(astPath + "." + e.getName()));
     return compilationUnit;
   }
 
@@ -175,9 +175,9 @@ public class VisitorService extends AbstractService<VisitorService> {
     ASTCDDefinition astcdDefinition = input.getAstNode().deepClone();
     //set classname to correct Name with path
     String astPath = getASTPackage(input);
-    astcdDefinition.getCDClassList().forEach(c -> c.setName(astPath + "." + c.getName()));
-    astcdDefinition.getCDInterfaceList().forEach(i -> i.setName(astPath + "." + i.getName()));
-    astcdDefinition.getCDEnumList().forEach(e -> e.setName(astPath + "." + e.getName()));
+    astcdDefinition.getCDClasssList().forEach(c -> c.setName(astPath + "." + c.getName()));
+    astcdDefinition.getCDInterfacesList().forEach(i -> i.setName(astPath + "." + i.getName()));
+    astcdDefinition.getCDEnumsList().forEach(e -> e.setName(astPath + "." + e.getName()));
     return astcdDefinition;
   }
 
@@ -198,5 +198,15 @@ public class VisitorService extends AbstractService<VisitorService> {
         .stream()
         .map(this::getVisitorType)
         .collect(Collectors.toList());
+  }
+
+  public List<ASTMCQualifiedType> getSuperSymbolVisitors() {
+    //only direct super cds, not transitive
+    List<CDDefinitionSymbol> superCDs = getSuperCDsDirect();
+    return superCDs
+            .stream()
+            .map(this::getVisitorFullName)
+            .map(getMCTypeFacade()::createQualifiedType)
+            .collect(Collectors.toList());
   }
 }

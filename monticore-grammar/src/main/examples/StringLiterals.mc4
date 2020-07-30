@@ -35,7 +35,7 @@ component grammar StringLiterals extends de.monticore.MCBasics {
 
   /** ASTStringLiteral represents any valid character sequence parenthesized
         with '"'.
-        @attribute source String-representation (including '"').
+        @attribute source String-representation (excluding '"').
         @attribute content decoded String-representation (no '"' and escapes
                    are decoded).
     */

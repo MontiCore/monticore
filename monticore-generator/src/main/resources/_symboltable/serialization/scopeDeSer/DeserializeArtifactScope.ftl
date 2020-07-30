@@ -2,14 +2,12 @@
 ${tc.signature("symTabMill", "artifactScope", "artifactScopeBuilder", "scopeRuleAttrList")}
 <#assign genHelper = glex.getGlobalVar("astHelper")>
   de.monticore.symboltable.serialization.JsonDeSers.checkCorrectDeSerForKind("${artifactScope}", scopeJson);
-  String name = scopeJson.getStringMember(de.monticore.symboltable.serialization.JsonDeSers.NAME);
-  String packageName = scopeJson.getStringMember(de.monticore.symboltable.serialization.JsonDeSers.PACKAGE);
-  List<de.monticore.symboltable.ImportStatement> imports = de.monticore.symboltable.serialization.JsonDeSers.deserializeImports(scopeJson);
-  boolean exportsSymbols = scopeJson.getBooleanMember(de.monticore.symboltable.serialization.JsonDeSers.EXPORTS_SYMBOLS);
-
-  ${artifactScope} scope = ${symTabMill}.${artifactScopeBuilder?uncap_first}().setPackageName(packageName) .setImportList(imports).build();
-  scope.setName(name);
-  scope.setExportingSymbols(exportsSymbols);
+  String packageName = scopeJson.getStringMemberOpt(de.monticore.symboltable.serialization.JsonDeSers.PACKAGE).orElse("");
+  ${artifactScope} scope = ${symTabMill}.${artifactScopeBuilder?uncap_first}().setPackageName(packageName).build();
+  if (scopeJson.hasStringMember(de.monticore.symboltable.serialization.JsonDeSers.NAME)) {
+    scope.setName(scopeJson.getStringMember(de.monticore.symboltable.serialization.JsonDeSers.NAME));
+  }
+  scope.setExportingSymbols(true);
 
 <#list scopeRuleAttrList as attr>
   <#if genHelper.isOptional(attr.getMCType())>
@@ -23,7 +21,6 @@ ${tc.signature("symTabMill", "artifactScope", "artifactScopeBuilder", "scopeRule
   scope.${genHelper.getPlainSetter(attr)}(deserialize${attr.getName()?cap_first}(scopeJson));
   </#if>
 </#list>
+  deserializeAdditionalArtifactScopeAttributes(scope,scopeJson);
   addSymbols(scopeJson, scope);
-  addAndLinkSubScopes(scopeJson, scope);
-  deserializeAdditionalAttributes(scope,scopeJson);
   return scope;

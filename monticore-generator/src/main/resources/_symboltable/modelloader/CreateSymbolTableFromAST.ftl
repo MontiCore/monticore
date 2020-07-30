@@ -1,12 +1,10 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature( "symbolTableDelegator", "modelLoader", "scopeInterface", "artifactScope",
+${tc.signature( "symbolTableDelegator", "modelLoader", "language", "scopeInterface", "artifactScope",
                 "generatedErrorCode", "generatedErrorCode2")}
-  final ${symbolTableDelegator} symbolTableCreator =
-        getModelingLanguage().getSymbolTableCreator(enclosingScope);
 
   if (symbolTableCreator != null) {
     Log.debug("Start creation of symbol table for model \"" + modelName + "\".",
-    ${modelLoader}.class.getSimpleName());
+    "${modelLoader}");
     final ${scopeInterface} scope = symbolTableCreator.createFromAST(ast);
 
     if (!(scope instanceof ${artifactScope})) {
@@ -14,9 +12,8 @@ ${tc.signature( "symbolTableDelegator", "modelLoader", "scopeInterface", "artifa
                 + " is scope \"" + (scope.isPresentName() ? scope.getName() : "") + "\"");
     }
 
-    Log.debug("Created symbol table for model \"" + modelName + "\".", ${modelLoader}.class.getSimpleName());
+    Log.debug("Created symbol table for model \"" + modelName + "\".", "${modelLoader}");
   }
   else {
-    Log.warn("0xA7002${generatedErrorCode2} No symbol created, because '" + getModelingLanguage().getName()
-              + "' does not define a symbol table creator.");
+    Log.warn("0xA7002${generatedErrorCode2} No symbol created, because '${language}' does not define a symbol table creator.");
   }

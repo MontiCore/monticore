@@ -36,7 +36,7 @@ public class EmfMandatoryMutatorDecorator extends MandatoryMutatorDecorator {
     String packageName = astService.getCDName() + PACKAGE_SUFFIX;
     String methodName = String.format(SET, StringTransformations.capitalize(getDecorationHelper().getNativeAttributeName(attribute.getName())));
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, methodName, this.getCDParameterFacade().createParameters(attribute));
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast_emf.ast_class.Set",
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast_emf.ast_class.Set4EMFASTClass",
         packageName, className, attribute));
     return method;
   }

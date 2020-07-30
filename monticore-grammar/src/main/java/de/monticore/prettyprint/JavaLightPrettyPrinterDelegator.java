@@ -1,13 +1,18 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.prettyprint;
 
+import de.monticore.expressions.assignmentexpressions._ast.ASTAssignmentExpressionsNode;
+import de.monticore.expressions.commonexpressions._ast.ASTCommonExpressionsNode;
 import de.monticore.expressions.prettyprint.AssignmentExpressionsPrettyPrinter;
 import de.monticore.expressions.prettyprint.CommonExpressionsPrettyPrinter;
 import de.monticore.expressions.prettyprint.ExpressionsBasisPrettyPrinter;
 import de.monticore.javalight._ast.ASTJavaLightNode;
 import de.monticore.javalight._visitor.JavaLightDelegatorVisitor;
+import de.monticore.statements.mccommonstatements._ast.ASTMCCommonStatementsNode;
+import de.monticore.statements.mcvardeclarationstatements._ast.ASTMCVarDeclarationStatementsNode;
 import de.monticore.statements.prettyprint.MCCommonStatementsPrettyPrinter;
 import de.monticore.statements.prettyprint.MCVarDeclarationStatementsPrettyPrinter;
+import de.monticore.types.mcbasictypes._ast.ASTMCBasicTypesNode;
 import de.monticore.types.prettyprint.MCBasicTypesPrettyPrinter;
 
 public class JavaLightPrettyPrinterDelegator extends JavaLightDelegatorVisitor {
@@ -28,7 +33,7 @@ public class JavaLightPrettyPrinterDelegator extends JavaLightDelegatorVisitor {
     setJavaLightVisitor(new JavaLightPrettyPrinter(printer));
   }
 
-  protected IndentPrinter getPrinter() {
+  public IndentPrinter getPrinter() {
     return this.printer;
   }
 

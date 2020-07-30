@@ -39,8 +39,8 @@ component grammar MCCollectionTypes
   */
   interface MCGenericType extends MCObjectType;
   astrule MCGenericType =
-     mCTypeArgument:de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument*
-     name:String*
+     mCTypeArguments:de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument*
+     names:String*
   ;
 
   /*=================================================================*/
@@ -50,35 +50,35 @@ component grammar MCCollectionTypes
   */
 
   MCListType implements MCGenericType <200> =
-       {next("List")}? Name "<" mCTypeArgument:MCTypeArgument ">";
+       {next("List")}? names:Name "<" mCTypeArguments:MCTypeArgument ">";
   astrule MCListType =
-    mCTypeArgument:de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument*
-    name:String*
+    mCTypeArguments:de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument*
+    names:String*
   ;
 
 
   MCOptionalType implements MCGenericType <200> =
-       {next("Optional")}? Name "<" mCTypeArgument:MCTypeArgument ">";
+       {next("Optional")}? names:Name "<" mCTypeArguments:MCTypeArgument ">";
   astrule MCOptionalType =
-      mCTypeArgument:de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument*
-      name:String*
+      mCTypeArguments:de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument*
+      names:String*
     ;
 
 
   MCMapType implements MCGenericType <200> =
-      {next("Map")}? Name
+      {next("Map")}? names:Name
        "<" key:MCTypeArgument "," value:MCTypeArgument ">";
   astrule MCMapType =
-      mCTypeArgument:de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument*
-      name:String*
+      mCTypeArguments:de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument*
+      names:String*
     ;
 
 
   MCSetType implements MCGenericType <200> =
-       {next("Set")}? Name "<" mCTypeArgument:MCTypeArgument ">";
+       {next("Set")}? names:Name "<" mCTypeArguments:MCTypeArgument ">";
   astrule MCSetType =
-      mCTypeArgument:de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument*
-      name:String*
+      mCTypeArguments:de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument*
+      names:String*
     ;
   /*=================================================================*/
 

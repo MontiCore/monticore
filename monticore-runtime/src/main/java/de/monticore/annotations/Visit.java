@@ -14,6 +14,7 @@ import java.lang.annotation.Target;
  * ASTNode itself). It may be inherited and declared private, as well as any other visibility.
  *
  */
+@Deprecated
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Visit {

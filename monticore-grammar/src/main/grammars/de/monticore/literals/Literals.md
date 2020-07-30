@@ -17,6 +17,7 @@ and can be included into a concrete language as desired.
 ## Grammar MCCommonLiterals.mc4
 
 This Grammar includes rules to parse:
+
 * 'null' - NullLiteral
 * 'true' & 'false' - BooleanLiteral
 * 'a', ... , 'Z' - CharLiteral
@@ -31,6 +32,7 @@ This Grammar includes rules to parse:
 ## Grammar MCJavaLiterals.mc4
 
 This Grammar extends MCCommonLiterals.mc4 and includes rules to parse:
+
 * '123','0734', '1001001', '0x1a'  - IntLiteral
 * '2L', '0734l', '1001001L', '0x1al' - LongLiteral
 * '1.23F', '1.23E4f' - FloatLiteral

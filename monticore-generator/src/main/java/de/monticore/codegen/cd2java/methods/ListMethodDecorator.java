@@ -21,8 +21,6 @@ public abstract class ListMethodDecorator extends AbstractCreator<ASTCDAttribute
 
   protected String capitalizedAttributeNameWithS;
 
-  protected String capitalizedAttributeNameWithOutS;
-
   protected String attributeType;
 
   public ListMethodDecorator(final GlobalExtensionManagement glex) {
@@ -32,9 +30,6 @@ public abstract class ListMethodDecorator extends AbstractCreator<ASTCDAttribute
   @Override
   public List<ASTCDMethod> decorate(final ASTCDAttribute ast) {
     this.capitalizedAttributeNameWithS = getCapitalizedAttributeNameWithS(ast);
-    this.capitalizedAttributeNameWithOutS = (capitalizedAttributeNameWithS.endsWith("s"))
-        ? capitalizedAttributeNameWithS.substring(0, capitalizedAttributeNameWithS.length() - 1) :
-        capitalizedAttributeNameWithS;
     this.attributeType = getAttributeType(ast);
 
     List<ASTCDMethod> methods = getMethodSignatures().stream()
@@ -54,10 +49,10 @@ public abstract class ListMethodDecorator extends AbstractCreator<ASTCDAttribute
   }
 
   private HookPoint createListImplementation(final ASTCDMethod method) {
-    String attributeName = StringUtils.uncapitalize(capitalizedAttributeNameWithOutS);
-    int attributeIndex = method.getName().lastIndexOf(capitalizedAttributeNameWithOutS);
+    String attributeName = StringUtils.uncapitalize(capitalizedAttributeNameWithS);
+    int attributeIndex = method.getName().lastIndexOf(capitalizedAttributeNameWithS);
     String methodName = method.getName().substring(0, attributeIndex);
-    String parameterCall = method.getCDParameterList().stream()
+    String parameterCall = method.getCDParametersList().stream()
         .map(ASTCDParameter::getName)
         .collect(Collectors.joining(", "));
     String returnType = method.printReturnType();

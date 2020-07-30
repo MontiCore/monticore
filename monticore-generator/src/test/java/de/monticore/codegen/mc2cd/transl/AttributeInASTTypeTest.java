@@ -20,12 +20,12 @@ public class AttributeInASTTypeTest {
   public AttributeInASTTypeTest() {
     ASTCDCompilationUnit cdCompilationUnit = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/AttributeInASTTypeGrammar.mc4")).get();
-    astA = TestHelper.getCDClass(cdCompilationUnit, "ASTA").get();
+    astA = TestHelper.getCDClasss(cdCompilationUnit, "ASTA").get();
   }
 
   @Test
   public void testType() {
-    astA.getCDAttributeList().stream()
+    astA.getCDAttributesList().stream()
         .map(ASTCDAttribute::getMCType)
         .map(Object::getClass)
         .forEach(type -> assertEquals(ASTMCPrimitiveType.class, type));

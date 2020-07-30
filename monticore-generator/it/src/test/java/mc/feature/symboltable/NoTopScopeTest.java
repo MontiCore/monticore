@@ -3,15 +3,14 @@ package mc.feature.symboltable;
 
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.ISymbol;
+import mc.feature.symboltable.notopscope.NoTopScopeMill;
 import mc.feature.symboltable.notopscope._ast.ASTFoo;
 import mc.feature.symboltable.notopscope._parser.NoTopScopeParser;
 import mc.feature.symboltable.notopscope._symboltable.*;
+import mc.feature.symboltable.subnotopscope.SubNoTopScopeMill;
 import mc.feature.symboltable.subnotopscope._ast.ASTSubFoo;
 import mc.feature.symboltable.subnotopscope._parser.SubNoTopScopeParser;
-import mc.feature.symboltable.subnotopscope._symboltable.SubNoTopScopeArtifactScope;
-import mc.feature.symboltable.subnotopscope._symboltable.SubNoTopScopeGlobalScope;
-import mc.feature.symboltable.subnotopscope._symboltable.SubNoTopScopeLanguage;
-import mc.feature.symboltable.subnotopscope._symboltable.SubNoTopScopeSymbolTableCreatorDelegator;
+import mc.feature.symboltable.subnotopscope._symboltable.*;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -39,10 +38,17 @@ public class NoTopScopeTest {
 
     // create symboltable
     ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/mc/feature/symboltable"));
-    NoTopScopeLanguage lang = new NoTopScopeLanguage();
-    NoTopScopeGlobalScope globalScope = new NoTopScopeGlobalScope(modelPath, lang);
-    NoTopScopeSymbolTableCreatorDelegator symbolTableCreator = new NoTopScopeSymbolTableCreatorDelegator(globalScope);
-    NoTopScopeArtifactScope scope = symbolTableCreator.createFromAST(astSup.get());
+    INoTopScopeGlobalScope globalScope = NoTopScopeMill
+        .noTopScopeGlobalScopeBuilder()
+        .setModelPath(modelPath)
+        .setModelFileExtension("st")
+        .build();
+    NoTopScopeSymbolTableCreatorDelegator symbolTableCreator = NoTopScopeMill
+        .noTopScopeSymbolTableCreatorDelegatorBuilder()
+        .setGlobalScope(globalScope)
+        .build();
+
+    INoTopScopeArtifactScope scope = symbolTableCreator.createFromAST(astSup.get());
 
     // only one symbol
     Optional<ISymbol> topLevelSymbol = scope.getTopLevelSymbol();
@@ -66,10 +72,16 @@ public class NoTopScopeTest {
 
     // create symboltable
     ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/mc/feature/symboltable"));
-    SubNoTopScopeLanguage lang = new SubNoTopScopeLanguage();
-    SubNoTopScopeGlobalScope globalScope = new SubNoTopScopeGlobalScope(modelPath, lang);
-    SubNoTopScopeSymbolTableCreatorDelegator symbolTableCreator = new SubNoTopScopeSymbolTableCreatorDelegator(globalScope);
-    SubNoTopScopeArtifactScope scope = symbolTableCreator.createFromAST(astSup.get());
+    ISubNoTopScopeGlobalScope globalScope = SubNoTopScopeMill
+        .subNoTopScopeGlobalScopeBuilder()
+        .setModelPath(modelPath)
+        .setModelFileExtension("st")
+        .build();
+    SubNoTopScopeSymbolTableCreatorDelegator symbolTableCreator = SubNoTopScopeMill
+        .subNoTopScopeSymbolTableCreatorDelegatorBuilder()
+        .setGlobalScope(globalScope)
+        .build();
+    ISubNoTopScopeArtifactScope scope = symbolTableCreator.createFromAST(astSup.get());
 
     // only one symbol
     Optional<ISymbol> topLevelSymbol = scope.getTopLevelSymbol();
@@ -77,7 +89,7 @@ public class NoTopScopeTest {
     assertEquals("A", topLevelSymbol.get().getName());
 
     // two symbols (add symbol from super grammar)
-    FooSymbol eSymbol = new FooSymbol("E");
+    FooSymbol eSymbol = NoTopScopeMill.fooSymbolBuilder().setName("E").build();
     scope.add(eSymbol);
     topLevelSymbol = scope.getTopLevelSymbol();
     assertFalse(topLevelSymbol.isPresent());

@@ -9,9 +9,10 @@ import java.io.IOException;
 import java.util.Optional;
 
 import de.monticore.io.paths.ModelPath;
+import mc.examples.automaton.automaton.AutomatonMill;
 import mc.examples.automaton.automaton._symboltable.AutomatonGlobalScope;
-import mc.examples.automaton.automaton._symboltable.AutomatonLanguage;
 import mc.examples.automaton.automaton._symboltable.AutomatonSymbolTableCreatorDelegator;
+import mc.examples.automaton.automaton._symboltable.IAutomatonGlobalScope;
 import org.junit.Test;
 
 import de.monticore.generating.templateengine.reporting.commons.ASTNodeIdentHelper;
@@ -30,10 +31,14 @@ public class TestAutomaton extends GeneratorIntegrationsTest {
     optAutomaton = parser.parseAutomaton("src/test/resources/examples/automaton/Testautomat.aut");
     assertFalse(parser.hasErrors());
     assertTrue(optAutomaton.isPresent());
-    AutomatonLanguage lang = new AutomatonLanguage();
-    AutomatonGlobalScope globalScope = new AutomatonGlobalScope(new ModelPath(), lang);
+    IAutomatonGlobalScope globalScope = AutomatonMill
+        .automatonGlobalScopeBuilder()
+        .setModelPath(new ModelPath())
+        .setModelFileExtension("aut")
+        .build();
 
-    AutomatonSymbolTableCreatorDelegator symbolTable = lang.getSymbolTableCreator(globalScope);
+    AutomatonSymbolTableCreatorDelegator symbolTable = AutomatonMill
+        .automatonSymbolTableCreatorDelegatorBuilder().setGlobalScope(globalScope).build();
     symbolTable.createFromAST(optAutomaton.get());
     return optAutomaton.get();
   }

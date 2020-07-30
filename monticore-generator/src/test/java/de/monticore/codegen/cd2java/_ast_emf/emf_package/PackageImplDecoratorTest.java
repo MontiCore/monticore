@@ -15,7 +15,7 @@ import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.MCTypeFacade;
-import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -34,7 +34,8 @@ public class PackageImplDecoratorTest extends DecoratorTestCase {
 
   @Before
   public void setup() {
-    Log.init();
+    LogStub.init();         // replace log by a sideffect free variant
+        // LogStub.initPlusLog();  // for manual testing purpose only
     Log.enableFailQuick(false);
     ASTCDCompilationUnit ast = this.parse("de", "monticore", "codegen", "_ast_emf", "Automata");
 
@@ -53,7 +54,7 @@ public class PackageImplDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterface() {
-    assertEquals(1, packageClass.sizeInterfaces());
+    assertEquals(1, packageClass.sizeInterface());
     assertDeepEquals("AutomataPackage", packageClass.getInterface(0));
   }
 
@@ -66,19 +67,19 @@ public class PackageImplDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeSize() {
-    assertEquals(11, packageClass.getCDAttributeList().size());
+    assertEquals(11, packageClass.getCDAttributesList().size());
   }
 
   @Test
   public void testMethodSize() {
-    assertFalse(packageClass.getCDMethodList().isEmpty());
-    assertEquals(26, packageClass.getCDMethodList().size());
+    assertFalse(packageClass.getCDMethodsList().isEmpty());
+    assertEquals(26, packageClass.getCDMethodsList().size());
   }
 
   @Test
   public void testConstructor() {
     assertEquals(1, packageClass.sizeCDConstructors());
-    ASTCDConstructor cdConstructor = packageClass.getCDConstructor(0);
+    ASTCDConstructor cdConstructor = packageClass.getCDConstructors(0);
     assertEquals("AutomataPackageImpl", cdConstructor.getName());
     assertDeepEquals(PRIVATE, cdConstructor.getModifier());
     assertTrue(cdConstructor.isEmptyCDParameters());
@@ -263,7 +264,7 @@ public class PackageImplDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testNoInheritedAttributeMethodsMethod() {
-    assertTrue(packageClass.getCDMethodList()
+    assertTrue(packageClass.getCDMethodsList()
         .stream()
         .noneMatch(m->m.getName().equals("getASTAutName_Input")));
   }

@@ -16,7 +16,7 @@ import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -44,7 +44,8 @@ public class SymbolTableCreatorDelegatorBuilderDecoratorTest extends DecoratorTe
 
   @Before
   public void setUp() {
-    Log.init();
+    LogStub.init();         // replace log by a sideffect free variant
+    // LogStub.initPlusLog();  // for manual testing purpose only
     this.glex = new GlobalExtensionManagement();
 
     this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
@@ -72,7 +73,7 @@ public class SymbolTableCreatorDelegatorBuilderDecoratorTest extends DecoratorTe
 
   @Test
   public void testNoSuperInterfaces() {
-    assertTrue( builderClass.isEmptyInterfaces());
+    assertTrue( builderClass.isEmptyInterface());
   }
 
   @Test
@@ -87,13 +88,13 @@ public class SymbolTableCreatorDelegatorBuilderDecoratorTest extends DecoratorTe
 
   @Test
   public void testConstructor() {
-    ASTCDConstructor cdConstructor = builderClass.getCDConstructor(0);
+    ASTCDConstructor cdConstructor = builderClass.getCDConstructors(0);
     assertDeepEquals(PUBLIC, cdConstructor.getModifier());
     assertEquals("ASymbolTableCreatorDelegatorBuilder", cdConstructor.getName());
 
     assertTrue(cdConstructor.isEmptyCDParameters());
 
-    assertTrue(cdConstructor.isEmptyExceptions());
+    assertTrue(cdConstructor.isEmptyException());
   }
   @Test
   public void testAttributeSize() {
@@ -123,7 +124,7 @@ public class SymbolTableCreatorDelegatorBuilderDecoratorTest extends DecoratorTe
 
   @Test
   public void testMethods() {
-    assertEquals(6, builderClass.getCDMethodList().size());
+    assertEquals(6, builderClass.getCDMethodsList().size());
   }
 
   @Test
@@ -135,8 +136,8 @@ public class SymbolTableCreatorDelegatorBuilderDecoratorTest extends DecoratorTe
     assertDeepEquals(BUILDER_NAME, method.getMCReturnType().getMCType());
 
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(DEQUE_TYPE, method.getCDParameter(0).getMCType());
-    assertEquals("scopeStack", method.getCDParameter(0).getName());
+    assertDeepEquals(DEQUE_TYPE, method.getCDParameters(0).getMCType());
+    assertEquals("scopeStack", method.getCDParameters(0).getName());
   }
 
   @Test
@@ -159,8 +160,8 @@ public class SymbolTableCreatorDelegatorBuilderDecoratorTest extends DecoratorTe
     assertDeepEquals(BUILDER_NAME, method.getMCReturnType().getMCType());
 
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(I_A_GLOBAL_SCOPE, method.getCDParameter(0).getMCType());
-    assertEquals("globalScope", method.getCDParameter(0).getName());
+    assertDeepEquals(I_A_GLOBAL_SCOPE, method.getCDParameters(0).getMCType());
+    assertEquals("globalScope", method.getCDParameters(0).getName());
   }
 
   @Test

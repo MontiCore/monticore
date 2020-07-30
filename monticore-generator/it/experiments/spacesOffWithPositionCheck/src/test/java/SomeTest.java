@@ -32,8 +32,8 @@ public class SomeTest {
   
   @BeforeClass
   public static void init() {
-    // replace log by a sideffect free variant
-    LogStub.init();
+    LogStub.init();         // replace log by a sideffect free variant
+    // LogStub.initPlusLog();  // for manual testing purpose only
     Log.enableFailQuick(false);
   }
   
@@ -60,7 +60,7 @@ public class SomeTest {
     ASTType ast = parser.parse_StringType( " List < Theo > " ).get();
     assertEquals("List", ast.getName());
     ASTTypeArguments ta = ast.getTypeArguments();
-    assertEquals("Theo", ta.getTypeList().get(0).getName());
+    assertEquals("Theo", ta.getTypesList().get(0).getName());
   }
   
   // --------------------------------------------------------------------
@@ -69,7 +69,7 @@ public class SomeTest {
     ASTType ast = parser.parse_StringType( "List<Theo>" ).get();
     assertEquals("List", ast.getName());
     ASTTypeArguments ta = ast.getTypeArguments();
-    assertEquals("Theo", ta.getTypeList().get(0).getName());
+    assertEquals("Theo", ta.getTypesList().get(0).getName());
   }
   
   // --------------------------------------------------------------------
@@ -78,9 +78,9 @@ public class SomeTest {
     ASTType ast = parser.parse_StringType( "List<Set<Theo>>" ).get();
     assertEquals("List", ast.getName());
     ASTTypeArguments ta = ast.getTypeArguments();
-    assertEquals("Set", ta.getTypeList().get(0).getName());
-    ASTTypeArguments ta2 = ta.getTypeList().get(0).getTypeArguments();
-    assertEquals("Theo", ta2.getTypeList().get(0).getName());
+    assertEquals("Set", ta.getTypesList().get(0).getName());
+    ASTTypeArguments ta2 = ta.getTypesList().get(0).getTypeArguments();
+    assertEquals("Theo", ta2.getTypesList().get(0).getName());
   }
   
   // --------------------------------------------------------------------
@@ -203,24 +203,24 @@ public class SomeTest {
   @Test
   public void testB() throws IOException {
     ASTB ast = parser.parse_StringB( "Otto \n Karo  " ).get();
-    assertEquals("Otto", ast.getNameList().get(0));
-    assertEquals("Karo", ast.getNameList().get(1));
+    assertEquals("Otto", ast.getNamesList().get(0));
+    assertEquals("Karo", ast.getNamesList().get(1));
   }
 
   // --------------------------------------------------------------------
   @Test
   public void testC() throws IOException {
     ASTC ast = parser.parse_StringC( "    Otto.Karo" ).get();
-    assertEquals("Otto", ast.getNameList().get(0));
-    assertEquals("Karo", ast.getNameList().get(1));
+    assertEquals("Otto", ast.getNamesList().get(0));
+    assertEquals("Karo", ast.getNamesList().get(1));
   }
 
   // --------------------------------------------------------------------
   @Test
   public void testC1() throws IOException {
     ASTC ast = parser.parse_StringC( "    O.Karo" ).get();
-    assertEquals("O", ast.getNameList().get(0));
-    assertEquals("Karo", ast.getNameList().get(1));
+    assertEquals("O", ast.getNamesList().get(0));
+    assertEquals("Karo", ast.getNamesList().get(1));
   }
 
   // --------------------------------------------------------------------

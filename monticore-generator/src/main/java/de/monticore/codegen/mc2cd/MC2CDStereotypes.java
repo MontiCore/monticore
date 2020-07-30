@@ -71,7 +71,11 @@ public enum MC2CDStereotypes {
   /**
    * To mark class as scope
    */
-  ORDERED("ordered");
+  ORDERED("ordered"),
+  /**
+   * To mark class as scope
+   */
+  DERIVED_ATTRIBUTE_NAME("derived_attribute_name");
 
   private final String stereotype;
 
