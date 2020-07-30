@@ -146,10 +146,10 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
   interface GrammarAnnotation;
 
   DeprecatedAnnotation implements GrammarAnnotation =
-    "@Deprecated" ( "(" message:String ")" )?;
+    {noSpace(2) && cmpToken(2, "Deprecated")}? "@" key("Deprecated") ( "(" message:String ")" )?;
 
   OverrideAnnotation implements GrammarAnnotation =
-    "@Override";
+    {noSpace(2) && cmpToken(2, "Override")}? "@" key("Override");
 
   // --------------------------------------------------------------------
   // Productions
