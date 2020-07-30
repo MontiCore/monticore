@@ -94,12 +94,10 @@ public final class ModelPath {
       Set<URL> duplicateURLs = resolvedURLS.stream()
               .filter(i -> Collections.frequency(resolvedURLSfinal, i) >1)
               .collect(Collectors.toSet());
-      if(1 < duplicateURLs.size()) {
-        duplicateURLs.forEach(duplicateURL ->{
-          Log.warn("0xA1293 Multiple duplicate matching entries where located in the modelpath for the model "
-            + fixedPath + "\n" + duplicateURL.toString());
-        });
-      }
+      duplicateURLs.forEach(duplicateURL ->{
+        Log.warn("0xA1293 Multiple duplicate matching entries where located in the modelpath for the model "
+                + fixedPath + "\n" + duplicateURL.toString());
+      });
     }
 
     resolvedURLS = resolvedURLS.stream().distinct().collect(Collectors.toList());
