@@ -127,7 +127,7 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount(){
-    assertEquals(30, symbolTablePrinterClass.sizeCDMethods());
+    assertEquals(28, symbolTablePrinterClass.sizeCDMethods());
   }
 
   @Test
@@ -220,16 +220,14 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
   @Test
   public void testTraverseMethods(){
     List<ASTCDMethod> methods = getMethodsBy("traverse", symbolTablePrinterClass);
-    assertEquals(3, methods.size());
+    assertEquals(1, methods.size());
     for(ASTCDMethod method: methods){
       assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
       assertTrue(method.getMCReturnType().isPresentMCVoidType());
       assertEquals(1, method.sizeCDParameters());
       assertEquals("node", method.getCDParameters(0).getName());
     }
-    assertDeepEquals(I_AUTOMATON_SCOPE, methods.get(0).getCDParameters(0).getMCType());
-    assertDeepEquals(AUTOMATON_SYMBOL, methods.get(1).getCDParameters(0).getMCType());
-    assertDeepEquals(AUTOMATON_ARTIFACT_SCOPE, methods.get(2).getCDParameters(0).getMCType());
+    assertDeepEquals(AUTOMATON_SYMBOL, methods.get(0).getCDParameters(0).getMCType());
   }
 
   @Test

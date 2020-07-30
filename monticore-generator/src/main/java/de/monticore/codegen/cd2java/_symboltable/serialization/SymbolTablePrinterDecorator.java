@@ -160,12 +160,6 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
           + "symbolTablePrinter.VisitScope4STP", scopeInterfaceName, scopeClass.getName(), scopeClass.getCDAttributesList()));
       visitorMethods.add(visitMethod);
 
-      ASTCDMethod traverseMethod = visitorService.getVisitorMethod(TRAVERSE, getMCTypeFacade().createQualifiedType(scopeInterfaceName));
-
-      this.replaceTemplate(EMPTY_BODY, traverseMethod, new TemplateHookPoint(TEMPLATE_PATH
-          + "symbolTablePrinter.TraverseScope", simpleSymbolNames, superScopeInterfaces));
-      visitorMethods.add(traverseMethod);
-
       ASTCDMethod endVisitMethod = visitorService.getVisitorMethod(END_VISIT, getMCTypeFacade().createQualifiedType(scopeClassName));
       this.replaceTemplate(EMPTY_BODY, endVisitMethod, new StringHookPoint(PRINTER_END_ARRAY+"\n"+PRINTER_END_OBJECT));
       visitorMethods.add(endVisitMethod);
@@ -176,16 +170,11 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
   protected List<ASTCDMethod> createArtifactScopeVisitorMethods(String artifactScopeName, String artifactScopeInterfaceName,
                                                                 List<ASTCDClass> scopeTypes) {
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
-    String scopeFullName = symbolTableService.getScopeInterfaceFullName();
     for (ASTCDClass artScopeClass : scopeTypes) {
       ASTCDMethod visitMethod = visitorService.getVisitorMethod(VISIT, getMCTypeFacade().createQualifiedType(artifactScopeName));
       this.replaceTemplate(EMPTY_BODY, visitMethod, new TemplateHookPoint(TEMPLATE_PATH
           + "symbolTablePrinter.VisitArtifactScope", artifactScopeInterfaceName, artScopeClass.getName(), artScopeClass.getCDAttributesList()));
       visitorMethods.add(visitMethod);
-
-      ASTCDMethod traverseMethod = visitorService.getVisitorMethod(TRAVERSE, getMCTypeFacade().createQualifiedType(artifactScopeName));
-      this.replaceTemplate(EMPTY_BODY, traverseMethod, new StringHookPoint("traverse((" + scopeFullName + ") node);"));
-      visitorMethods.add(traverseMethod);
 
       ASTCDMethod endVisitMethod = visitorService
           .getVisitorMethod(END_VISIT, getMCTypeFacade().createQualifiedType(artifactScopeName));
