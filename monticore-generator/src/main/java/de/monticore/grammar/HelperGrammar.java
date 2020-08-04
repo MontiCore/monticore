@@ -52,7 +52,7 @@ public class HelperGrammar {
     } else {
       // Use Nonterminal name as attribute name starting with lower case
       // for a list (iterated) nonterminal a 's' is added for the name
-      name = a.getName() + "s";
+      name = a.getName();
     }
     return name + DecorationHelper.GET_SUFFIX_LIST;
   }

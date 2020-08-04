@@ -10,7 +10,7 @@ public class ASTMCMultipleGenericType extends ASTMCMultipleGenericTypeTOP {
   public String printWithoutTypeArguments() {
     // from a.B<C>D.E.<F>.G ist will return a.B.D.E.G
     String firstGenericType = getMCBasicGenericType().printWithoutTypeArguments();
-    String innerTypes = getMCInnerTypesList()
+    String innerTypes = getMCInnerTypeList()
         .stream()
         .map(ASTMCInnerType::getName)
         .reduce((a, b) -> a + "." + b).get();
