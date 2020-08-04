@@ -1,8 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types;
 
-/* This is a MontiCore stable grammar.
- * Adaptations -- if any -- are conservative. */
+/* Beta-version: This is intended to become a MontiCore stable grammar. */
 
 /**
  * This grammar defines four generics: List<>, Map<,>, Set<>
@@ -25,6 +24,7 @@ package de.monticore.types;
  * also defining generics or arrays.
  *
 */
+
 
 component grammar MCCollectionTypes
      extends de.monticore.types.MCBasicTypes {
