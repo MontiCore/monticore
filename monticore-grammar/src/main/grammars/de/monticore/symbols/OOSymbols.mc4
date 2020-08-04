@@ -6,21 +6,28 @@ package de.monticore.symbols;
  * Adaptations -- if any -- are conservative. */
 
 /**
- * This grammar is used to generate an abstract syntax only.
+ * The grammar introduces reusable symbols for
+ *      OOTypes, 
+ *      Methods, and 
+ *      Fields 
+ * which are specializations of the alredy defined 
+ * symbols from BasicSymbols.mc4
+ *
+ * This grammar is used to generate an abstract syntax 
+ * (and especially symboltable infrastructure) only.
  * These AST-classes are then used to store typing information
  * in the SymbolTable.
  *
- * The grammar introduces the symbols for
- * OOTypes, Methods, and Fields 
- * which are specializations of the alredy defined 
- * Types (of all kinds), Functions, and Variables.
- * The latter (and TypeVariables) are already defined in BasicTypeSymbols.
- *
- * here we mainly add the possibilities to store static, private, etc. flags
+ * Here we mainly add the possibilities to store static, private, etc. flags
  * and extend the signature of methods for elliptic extensibility.
+ * These extesnions are rather common in OO (and especially Java-like)
+ * languages.
  *
  * These symbols can be used elsewhere, when actual implementations
  * of these symbols become available.
+ *
+ * A symboltable can export these symbols, while they are imported 
+ * (and thus used) as their more abstract counterparts from BasicSymbols.
  *
 */
 
@@ -40,6 +47,7 @@ component grammar OOSymbols extends de.monticore.symbols.BasicSymbols {
    *
    */
   interface scope symbol OOType extends Type = Name;
+  
   symbolrule OOType =
     isClass: boolean
     isInterface: boolean
@@ -62,6 +70,7 @@ component grammar OOSymbols extends de.monticore.symbols.BasicSymbols {
    * and mainly adds OO specific properties.
    */
   interface symbol Field extends Variable = Name ;
+  
   symbolrule Field =
     isPrivate: boolean
     isProtected: boolean
@@ -80,6 +89,7 @@ component grammar OOSymbols extends de.monticore.symbols.BasicSymbols {
    * mainly adds OO specific properties.
    */
   interface symbol Method extends Function = Name;
+  
   symbolrule Method =
     isConstructor: boolean
     isMethod: boolean

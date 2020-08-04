@@ -1,6 +1,6 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 
-<!-- Alpha-version: This is intended to become a MontiCore stable explanation. -->
+<!-- This is a MontiCore stable explanation. -->
 
 # MontiCore Core Grammars - an Overview
 
@@ -92,14 +92,14 @@ although they don't cover type restrictions on the arguments, like in
 Java. 
 
 
-### [MCFullGenericTypes.mc4](types/MCFullGenericTypes.mc4) (Beta: In Stabilization)
+### [MCFullGenericTypes.mc4](types/MCFullGenericTypes.mc4) (stable)
 * This grammar completes the type definitions to 
 support the full Java type system including wildcards Blubb<? extends A>
 * A general advice: When you are not sure that you need this kind of
 types, then use a simpler version from above. Type checking ist tricky.
 
 
-### [BasicSymbols.mc4](symbols/BasicSymbols.mc4) (Beta: In Stabilization)
+### [BasicSymbols.mc4](symbols/BasicSymbols.mc4) (stable)
 * This grammar defines symbols for *Types* (of all kinds), *Functions*, 
   *Variables* and *TypeVariables*.
 * The defined symbols are of general form and can be used in functional, OO
@@ -109,7 +109,7 @@ types, then use a simpler version from above. Type checking ist tricky.
   infrastructure for symbols. 
 
 
-### [OOSymbols.mc4](symbols/OOSymbols.mc4) (Beta: In Stabilization)
+### [OOSymbols.mc4](symbols/OOSymbols.mc4) (stable)
 * This grammar defines symbols for *objectoriented Types*, *Methods*, and
   *Fields* by mainly extending the symbols defined in `BasicTypeSymbols`.
 * The newly defined symbols extend the general ones by typical 
@@ -216,7 +216,7 @@ various forms of literals.
   of appropriate type and a retrieve function `getSource()` for a text representation
   of the literal.
 
-### [MCJavaLiterals.mc4](literals/MCJavaLiterals.mc4) (Beta: In Stabilization)
+### [MCJavaLiterals.mc4](literals/MCJavaLiterals.mc4) (stable)
 * This grammar defines Java compliant literals and builds on MCCommonLiterals.
 * The scope of this grammar is to
   ease the reuse of literals structures in Java-like sublanguages.
@@ -253,7 +253,7 @@ is inspired by Java (actually subset of Java). Some example statements:
 * This grammar defines the core interface for statements.
 * A hierarchy of conservative extensions to this grammar is provided below.
 
-### [MCCommonStatements.mc4](statements/MCCommonStatements.mc4) (Beta: In Stabilization)
+### [MCCommonStatements.mc4](statements/MCCommonStatements.mc4) (stable)
 * This grammar defines typical statements, such as method calls
   (which are actually expressions),
   assignment of variables, if, for, while, switch statements, and blocks.
@@ -271,7 +271,7 @@ is inspired by Java (actually subset of Java). Some example statements:
 ### [MCSynchronizedStatements.mc4](statements/MCSynchronizedStatements.mc4) (stable)
 * This grammar defines the Java-like synchronized statement.
 
-### [MCLowLevelStatements.mc4](statements/MCLowLevelStatements.mc4) (Beta: In Stabilization)
+### [MCLowLevelStatements.mc4](statements/MCLowLevelStatements.mc4) (stable)
 * This grammar defines three low-level statements that Java provides.
 * It contains the break and continue statements and the possibility to label a statement.
 
