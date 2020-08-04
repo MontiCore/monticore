@@ -264,7 +264,7 @@ is inspired by Java (actually subset of Java). Some example statements:
 * This grammar defines exactly the assert statement as known from Java.
 * It can be used independently of other Java statements.
 
-### [MCExceptionStatements.mc4](statements/MCExceptionStatements.mc4) (Beta: In Stabilization)
+### [MCExceptionStatements.mc4](statements/MCExceptionStatements.mc4) (stable)
 * This grammar defines the exception statements.
 * This includes Java try with catch and finally, as well as throw.
 
