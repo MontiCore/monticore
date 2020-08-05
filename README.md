@@ -179,7 +179,7 @@ by executing the following configuration:
 
 * [Build MontiCore](docs/BuildMontiCore.md) - How to Build MontiCore
 
-* [Getting Started](docs/GettingStarted.md) - How to Build MontiCore
+* [Getting Started](docs/GettingStarted.md) - How to start using MontiCore
 
 * [Changelog](00.org/Explanations/CHANGELOG.md) - Release Notes
 
