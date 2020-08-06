@@ -9,7 +9,7 @@ package de.monticore;
  * Java-like comments and Names.
  * It should be useful in many languages.
  *
-*/
+ */
 
 component grammar MCBasics {
 

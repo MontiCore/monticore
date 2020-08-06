@@ -4,6 +4,8 @@ package de.monticore.literals;
 /* This is a MontiCore stable grammar.
  * Adaptations -- if any -- are conservative. */
 
+import de.monticore.literals.*;
+
 /**
  * This grammar defines Java compliant literals.
  * The scope of this grammar is to
@@ -12,8 +14,9 @@ package de.monticore.literals;
  * The grammar contains literals from Java, e.g., Boolean, Char, String, ....
 */
 
-component grammar MCCommonLiterals extends de.monticore.MCBasics,
-                 de.monticore.literals.MCLiteralsBasis {
+component grammar MCCommonLiterals 
+          extends de.monticore.MCBasics,
+                  MCLiteralsBasis {
 
 
   /*========================================================================*/

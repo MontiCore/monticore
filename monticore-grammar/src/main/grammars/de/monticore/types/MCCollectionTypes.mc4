@@ -3,6 +3,8 @@ package de.monticore.types;
 
 /* Beta-version: This is intended to become a MontiCore stable grammar. */
 
+import de.monticore.types.*;
+
 /**
  * This grammar defines four generics: List<>, Map<,>, Set<>
  * and Optional<> on top of basic types.
@@ -27,7 +29,7 @@ package de.monticore.types;
 
 
 component grammar MCCollectionTypes
-     extends de.monticore.types.MCBasicTypes {
+          extends MCBasicTypes {
 
 
   /*=================================================================*/

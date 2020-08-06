@@ -4,6 +4,8 @@ package de.monticore.symbols;
 /* This is a MontiCore stable grammar.
  * Adaptations -- if any -- are conservative. */
 
+import de.monticore.*;
+
 /**
  * The grammar introduces reusable symbols for
  *      Types (of all kinds), 
