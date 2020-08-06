@@ -1,4 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
+package de.monticore.statements;
 
 /* This is a MontiCore stable grammar.
  * Adaptations -- if any -- are conservative. */
@@ -25,8 +26,6 @@ import de.monticore.statements.*;
  * * -- -- statements/MCFullJavaStatements.mc4
  *
 */
-
-package de.monticore.statements;
 
 component grammar MCFullJavaStatements extends 
     MCAssertStatements,
