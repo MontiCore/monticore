@@ -345,5 +345,6 @@ These can also be used if someone is interested:
 * [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
 * [**List of languages**](../../../../../../docs/Languages.md).
 * [MontiCore documentation](http://www.monticore.de/)
+* [Publications about MBSE](https://www.se-rwth.de/publications/)
 
 
