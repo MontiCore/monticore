@@ -34,6 +34,19 @@ component grammar BasicSymbols extends de.monticore.MCBasics {
   /*=================================================================*/
 
   /**
+   * A diagram has a name and carries a varying set of symbols .
+   * 
+   * It may also contain potentially variables (record elements, fields, 
+   * attributes, etc.) or associated functions (the OO methods).
+   * These are represented as Symbols in the body of the type 
+   * and thus made available through the associated scope object.
+   */
+  interface scope symbol Diagram = Name;
+  
+
+  /*=================================================================*/
+
+  /**
    * A type has a name and possible supertypes.
    * 
    * It may also contain potentially variables (record elements, fields, 
