@@ -37,6 +37,11 @@ of the reference manual.
 Further Information
 
 * [MontiCore project](../README.md) - MontiCore
-* see also [**MontiCore Reference Manual**](http://www.monticore.de/)
+* [MontiCore documentation](http://www.monticore.de/)
+
+* [**List of languages**](https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/docs/Languages.md)
+* [**MontiCore Core Grammar Library**](https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
+* [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
+
 
 

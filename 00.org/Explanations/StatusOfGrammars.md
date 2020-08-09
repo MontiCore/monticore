@@ -65,9 +65,14 @@ A comment of the following form within the grammar defines this status:
 
 ## Further Information
 
-* see also [**MontiCore Reference Manual**](http://www.monticore.de/)
+* [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
+* [MontiCore documentation](http://www.monticore.de/)
 
-* [MontiCore project](../../README.md) - MontiCore
+* [Overview Best Practices](BestPractices.md)
+* [**MontiCore Core Grammar Library**](https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
+* [**List of languages**](https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/docs/Languages.md).
+* [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
+
 
 
 
