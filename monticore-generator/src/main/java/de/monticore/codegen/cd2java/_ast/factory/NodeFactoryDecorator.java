@@ -13,6 +13,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
@@ -61,10 +62,13 @@ public class NodeFactoryDecorator extends AbstractCreator<ASTCDCompilationUnit, 
 
     //add factory delegate Methods form Super Classes
     List<ASTCDMethod> delegateMethodList = addFactoryDelegateMethods(astcdClassList);
-
-
+  
+    // mark as deprecated (to be deleted, because Builders exist)
+    ASTModifier modifier = PUBLIC.build();
+    nodeFactoryService.addDeprecatedStereotype(modifier, Optional.empty());
+            
     return CD4AnalysisMill.cDClassBuilder()
-        .setModifier(PUBLIC.build())
+        .setModifier(modifier)
         .setName(factoryClassName)
         .addCDAttributes(factoryAttribute)
         .addAllCDAttributes(factoryAttributeList)

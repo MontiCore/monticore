@@ -61,3 +61,13 @@ inner generics types of arbitrary classes with
 arbitrary arguments including wild card types. When using this language component,
 types such as `Person<?>`, `Map<Person<String>, ? extends Person>` or `a.b.C<D>.E.F<G>.H` are expressible.
 
+## Further Information
+
+* [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
+* [MontiCore documentation](http://www.monticore.de/)
+
+* [**List of languages**](https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/docs/Languages.md)
+* [**MontiCore Core Grammar Library**](https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
+* [Best Practices](BestPractices.md)
+* [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
+

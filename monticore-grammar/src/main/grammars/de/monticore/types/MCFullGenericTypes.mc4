@@ -4,6 +4,8 @@ package de.monticore.types;
 /* This is a MontiCore stable grammar.
  * Adaptations -- if any -- are conservative. */
 
+import de.monticore.types.*;
+
 /**
  * This grammar completes the type definitions to 
  * support the full Java type system including wildcards Blubb<? extends A>
@@ -21,7 +23,7 @@ package de.monticore.types;
 */
 
 component grammar MCFullGenericTypes
-       extends de.monticore.types.MCSimpleGenericTypes {
+          extends MCSimpleGenericTypes {
 
   /*=================================================================*/
 

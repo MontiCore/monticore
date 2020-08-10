@@ -4,6 +4,8 @@ package de.monticore.symbols;
 /* This is a MontiCore stable grammar.
  * Adaptations -- if any -- are conservative. */
 
+import de.monticore.*;
+
 /**
  * The grammar introduces reusable symbols for
  *      Types (of all kinds), 
@@ -28,6 +30,19 @@ package de.monticore.symbols;
  */
 
 component grammar BasicSymbols extends de.monticore.MCBasics {
+
+  /*=================================================================*/
+
+  /**
+   * A diagram has a name and carries a varying set of symbols .
+   * 
+   * It may also contain potentially variables (record elements, fields, 
+   * attributes, etc.) or associated functions (the OO methods).
+   * These are represented as Symbols in the body of the type 
+   * and thus made available through the associated scope object.
+   */
+  interface scope symbol Diagram = Name;
+  
 
   /*=================================================================*/
 

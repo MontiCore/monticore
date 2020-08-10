@@ -3,6 +3,8 @@ package de.monticore.expressions;
 
 /* Beta-version: This is intended to become a MontiCore stable grammar. */
 
+import de.monticore.expressions.*;
+
 /**
  * This grammar defines set expressions like union, intersection etc.
  * these operations are typical for a logic with set operations, like
@@ -24,7 +26,7 @@ package de.monticore.expressions;
 */
 
 component grammar SetExpressions
-          extends de.monticore.expressions.ExpressionsBasis {
+          extends ExpressionsBasis {
 
   /*=================================================================*/
 

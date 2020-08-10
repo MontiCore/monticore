@@ -143,9 +143,10 @@ development. See language definition and usage method in
    These complete languages are usually composed of a number of language
    components.
 
-* see also [**our literature list**](https://www.se-rwth.de/publications/) 
+* [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
 
-* see also [**our topic list**](https://www.se-rwth.de/topics/) 
+* [**MontiCore topic list**](https://www.se-rwth.de/topics/) 
 
 * [MontiCore project](../README.md) - MontiCore
+
 
