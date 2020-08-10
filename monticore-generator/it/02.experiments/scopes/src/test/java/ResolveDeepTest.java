@@ -3,13 +3,13 @@
 import automata.AutomataMill;
 import automata._ast.ASTAutomaton;
 import automata._parser.AutomataParser;
-import automata._symboltable.AutomataArtifactScope;
 import automata._symboltable.AutomataGlobalScope;
+import automata._symboltable.IAutomataArtifactScope;
 import automata._symboltable.IAutomataScope;
 import automata._symboltable.StateSymbol;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.resolving.ResolvedSeveralEntriesForSymbolException;
-import de.se_rwth.commons.logging.*;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -34,7 +34,7 @@ public class ResolveDeepTest {
     assertTrue(jsonDoc.isPresent());
     
     // build symbol table
-    AutomataArtifactScope scope = createSymbolTable(jsonDoc.get());
+    IAutomataArtifactScope scope = createSymbolTable(jsonDoc.get());
     
     // test resolving
     // we only test the resolveDown methods as the other methods are not
@@ -81,7 +81,7 @@ public class ResolveDeepTest {
    * @param ast The top AST node.
    * @return The artifact scope derived from the parsed AST
    */
-  public static AutomataArtifactScope createSymbolTable(ASTAutomaton ast) {
+  public static IAutomataArtifactScope createSymbolTable(ASTAutomaton ast) {
      return AutomataMill
             .automataSymbolTableCreatorBuilder()
             .addToScopeStack(new AutomataGlobalScope(new ModelPath(), "aut"))
