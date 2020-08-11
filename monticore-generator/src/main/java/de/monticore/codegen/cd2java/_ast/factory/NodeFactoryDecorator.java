@@ -66,7 +66,7 @@ public class NodeFactoryDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     // mark as deprecated (to be deleted, because Builders exist)
     ASTModifier modifier = PUBLIC.build();
     nodeFactoryService.addDeprecatedStereotype(modifier, Optional.empty());
-            
+    
     return CD4AnalysisMill.cDClassBuilder()
         .setModifier(modifier)
         .setName(factoryClassName)
