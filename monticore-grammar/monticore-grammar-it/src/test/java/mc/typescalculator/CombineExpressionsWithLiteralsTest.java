@@ -4,6 +4,8 @@ package mc.typescalculator;
 import com.google.common.collect.Lists;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.io.paths.ModelPath;
+import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
+import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolSurrogate;
 import de.monticore.symboltable.ImportStatement;
@@ -60,8 +62,14 @@ public class CombineExpressionsWithLiteralsTest {
     OOTypeSymbolSurrogate bSurrogate = new OOTypeSymbolSurrogate("B");
     bSurrogate.setEnclosingScope(classB.get().getEnclosingScope());
 
-    globalScope1.add(field("d", SymTypeExpressionFactory.createTypeObject(dSurrogate)));
-    globalScope1.add(field("b",SymTypeExpressionFactory.createTypeObject(bSurrogate)));
+
+    FieldSymbol d = field("d", SymTypeExpressionFactory.createTypeObject(dSurrogate));
+    globalScope1.add(d);
+    globalScope1.add((VariableSymbol) d);
+
+    FieldSymbol b = field("b",SymTypeExpressionFactory.createTypeObject(bSurrogate));
+    globalScope1.add(b);
+    globalScope1.add((VariableSymbol) b);
 
     CombineExpressionsWithLiteralsTypesCalculator calc = new CombineExpressionsWithLiteralsTypesCalculator();
 
@@ -103,9 +111,9 @@ public class CombineExpressionsWithLiteralsTest {
     assertTrue(exprB.isPresent());
     del.createFromAST(exprB.get());
 
-    ASTExpression b = exprB.get();
+    ASTExpression eb = exprB.get();
 
-    Optional<SymTypeExpression> k = calc.calculateType(b);
+    Optional<SymTypeExpression> k = calc.calculateType(eb);
     assertTrue(k.isPresent());
     assertEquals("C",k.get().print());
   }

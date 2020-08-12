@@ -6,12 +6,16 @@ package de.monticore.symbols.oosymbols._symboltable;
 
 import com.google.common.collect.Lists;
 import de.monticore.io.paths.ModelPath;
+import de.monticore.symbols.basicsymbols._symboltable.ITypeSymbolResolvingDelegate;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 
+import javax.lang.model.element.VariableElement;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -21,7 +25,7 @@ import static de.monticore.types.check.DefsTypeBasic.*;
  * This resolving delegate can be integrated into any global scopes to find built in Java types such as,
  * e.g., "boolean" or commonly used Java types such as "java.lang.Boolean".
  */
-public class BuiltInJavaSymbolResolvingDelegate implements IOOTypeSymbolResolvingDelegate {
+public class BuiltInJavaSymbolResolvingDelegate implements IOOTypeSymbolResolvingDelegate, ITypeSymbolResolvingDelegate {
 
   protected static IOOSymbolsGlobalScope gs = initScope();
 
@@ -282,6 +286,7 @@ public class BuiltInJavaSymbolResolvingDelegate implements IOOTypeSymbolResolvin
     OOTypeSymbol collection = typeSymbol("Collection",Lists.newArrayList(isEmpty.deepClone(),containsList,size,add,remove,containsAll,addAll,removeAll,retainAll,clear,equals.deepClone(),hashCode.deepClone()),Lists.newArrayList(),Lists.newArrayList(objectSymType),Lists.newArrayList(typeVariable("E")),javautil);
     eVarSymbolCollectionLoader.setEnclosingScope(collection.getSpannedScope());
     javautil.add(collection);
+    javautil.add((TypeSymbol) collection);
 
     //List
     SymTypeExpression eListSymType = SymTypeExpressionFactory.createTypeVariable(eVarSymbolListLoader);
@@ -300,6 +305,7 @@ public class BuiltInJavaSymbolResolvingDelegate implements IOOTypeSymbolResolvin
     OOTypeSymbol list = typeSymbol("List",Lists.newArrayList(size.deepClone(),isEmpty.deepClone(),containsList.deepClone(),clear.deepClone(),remove.deepClone(),addList,containsAllList,addAllList,removeAllList,retainAllList,get,setList,removeList2,indexOfList,addList2),Lists.newArrayList(),Lists.newArrayList(collectionSymTypeForList),Lists.newArrayList(typeVariable("E")),javautil);
     eVarSymbolListLoader.setEnclosingScope(list.getSpannedScope());
     javautil.add(list);
+    javautil.add((TypeSymbol) list);
 
     //Optional
     SymTypeExpression tOptionalSymType = SymTypeExpressionFactory.createTypeVariable(tVarSymbolOptionalLoader);
@@ -312,6 +318,7 @@ public class BuiltInJavaSymbolResolvingDelegate implements IOOTypeSymbolResolvin
     OOTypeSymbol optional = typeSymbol("Optional",Lists.newArrayList(equals.deepClone(),hashCode.deepClone(),toString.deepClone(),empty,of,ofNullable,getOptional,isPresent),Lists.newArrayList(),Lists.newArrayList(objectSymType),Lists.newArrayList(typeVariable("T")),javautil);
     tVarSymbolOptionalLoader.setEnclosingScope(optional.getSpannedScope());
     javautil.add(optional);
+    javautil.add((TypeSymbol) optional);
 
     //Map
     SymTypeExpression kMapSymType = SymTypeExpressionFactory.createTypeVariable(kVarSymbolMapLoader);
@@ -329,6 +336,7 @@ public class BuiltInJavaSymbolResolvingDelegate implements IOOTypeSymbolResolvin
     kVarSymbolMapLoader.setEnclosingScope(map.getSpannedScope());
     vVarSymbolMapLoader.setEnclosingScope(map.getSpannedScope());
     javautil.add(map);
+    javautil.add((TypeSymbol) map);
 
     //Set
     SymTypeExpression eSetSymType = SymTypeExpressionFactory.createTypeVariable(eVarSymbolSetLoader);
@@ -341,6 +349,7 @@ public class BuiltInJavaSymbolResolvingDelegate implements IOOTypeSymbolResolvin
     OOTypeSymbol set = typeSymbol("Set",Lists.newArrayList(size.deepClone(),isEmpty.deepClone(),containsList.deepClone(),addSet,addAllSet,retainAllSet,removeAllSet,equals.deepClone(),hashCode.deepClone()),Lists.newArrayList(),Lists.newArrayList(collectionForSet),Lists.newArrayList(typeVariable("E")),javautil);
     eVarSymbolSetLoader.setEnclosingScope(set.getSpannedScope());
     javautil.add(set);
+    javautil.add((TypeSymbol) set);
 
     //TODO complete me with other built in types
 
@@ -352,6 +361,11 @@ public class BuiltInJavaSymbolResolvingDelegate implements IOOTypeSymbolResolvin
   @Override public List<OOTypeSymbol> resolveAdaptedOOTypeSymbol(boolean foundSymbols,
                                                                  String symbolName, AccessModifier modifier, Predicate<OOTypeSymbol> predicate) {
     return gs.resolveOOTypeMany(foundSymbols, symbolName, modifier, predicate);
+  }
+
+  @Override public List<TypeSymbol> resolveAdaptedTypeSymbol(boolean foundSymbols,
+                                                                 String symbolName, AccessModifier modifier, Predicate<TypeSymbol> predicate) {
+    return gs.resolveTypeMany(foundSymbols, symbolName, modifier, predicate);
   }
 
   public static IOOSymbolsScope getScope(){
@@ -390,6 +404,7 @@ public class BuiltInJavaSymbolResolvingDelegate implements IOOTypeSymbolResolvin
 
   public static MethodSymbol addFieldToMethod(MethodSymbol m, FieldSymbol f){
     m.getSpannedScope().add(f);
+    m.getSpannedScope().add((VariableSymbol) f);
     f.setEnclosingScope(m.getSpannedScope());
     return m;
   }

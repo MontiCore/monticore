@@ -28,7 +28,7 @@ public class BuiltInJavaTypesTest {
         .setModelFileExtension("bijt")
         .build();
     gs.addAdaptedOOTypeSymbolResolvingDelegate(new BuiltInJavaSymbolResolvingDelegate());
-
+    gs.addAdaptedTypeSymbolResolvingDelegate(new BuiltInJavaSymbolResolvingDelegate());
 
      //other way to get globalscope: gs = BuiltInJavaTypeSymbolResolvingDelegate.getScope();
 
