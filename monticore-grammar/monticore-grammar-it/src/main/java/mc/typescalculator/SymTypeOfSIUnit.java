@@ -1,20 +1,21 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.typescalculator;
 
-import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolSurrogate;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
 import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.types.check.SymTypeExpression;
 
 public class SymTypeOfSIUnit extends SymTypeExpression {
 
-  public SymTypeOfSIUnit(OOTypeSymbolSurrogate typeSymbolSurrogate){
-    this.typeSymbolSurrogate = typeSymbolSurrogate;
+  public SymTypeOfSIUnit(TypeSymbol typeSymbolSurrogate){
+    this.typeSymbol = typeSymbolSurrogate;
   }
 
   @Override
   public String print() {
-    return typeSymbolSurrogate.getName();
+    return typeSymbol.getName();
   }
 
   @Override
@@ -30,8 +31,8 @@ public class SymTypeOfSIUnit extends SymTypeExpression {
 
   @Override
   public SymTypeOfSIUnit deepClone() {
-    OOTypeSymbolSurrogate surrogate = new OOTypeSymbolSurrogate(typeSymbolSurrogate.getName());
-    surrogate.setEnclosingScope(typeSymbolSurrogate.getEnclosingScope());
+    TypeSymbolSurrogate surrogate = new TypeSymbolSurrogate(typeSymbol.getName());
+    surrogate.setEnclosingScope(typeSymbol.getEnclosingScope());
     return new SymTypeOfSIUnit(surrogate);
   }
 
@@ -41,13 +42,13 @@ public class SymTypeOfSIUnit extends SymTypeExpression {
       return false;
     }
     SymTypeOfSIUnit symSi = (SymTypeOfSIUnit) sym;
-    if(this.typeSymbolSurrogate== null ||symSi.typeSymbolSurrogate==null){
+    if(this.typeSymbol== null ||symSi.typeSymbol==null){
       return false;
     }
-    if(!this.typeSymbolSurrogate.getEnclosingScope().equals(symSi.typeSymbolSurrogate.getEnclosingScope())){
+    if(!this.typeSymbol.getEnclosingScope().equals(symSi.typeSymbol.getEnclosingScope())){
       return false;
     }
-    if(!this.typeSymbolSurrogate.getName().equals(symSi.typeSymbolSurrogate.getName())){
+    if(!this.typeSymbol.getName().equals(symSi.typeSymbol.getName())){
       return false;
     }
     return this.print().equals(symSi.print());
