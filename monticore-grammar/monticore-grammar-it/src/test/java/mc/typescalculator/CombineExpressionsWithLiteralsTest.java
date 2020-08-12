@@ -44,6 +44,9 @@ public class CombineExpressionsWithLiteralsTest {
     globalScope1.addAdaptedFieldSymbolResolvingDelegate(adapter);
     globalScope1.addAdaptedOOTypeSymbolResolvingDelegate(adapter);
     globalScope1.addAdaptedMethodSymbolResolvingDelegate(adapter);
+    globalScope1.addAdaptedFunctionSymbolResolvingDelegate(adapter);
+    globalScope1.addAdaptedVariableSymbolResolvingDelegate(adapter);
+    globalScope1.addAdaptedTypeSymbolResolvingDelegate(adapter);
 
     Optional<OOTypeSymbol> classD = globalScope1.resolveOOType("mc.typescalculator.TestCD.D");
     assertTrue(classD.isPresent());
