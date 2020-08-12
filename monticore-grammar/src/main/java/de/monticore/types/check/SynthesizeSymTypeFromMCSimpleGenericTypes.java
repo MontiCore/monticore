@@ -102,9 +102,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypes extends SynthesizeSymType
     // type could also be a boxed Primitive or an Type Variable!
     // We need the SymbolTable to distinguish this stuff
     // PS: that also applies to other Visitors.
-    OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate(qType.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()));
-    loader.setEnclosingScope(getScope(qType.getEnclosingScope()));
-    typeCheckResult.setCurrentResult(SymTypeExpressionFactory.createTypeObject(loader));
+    typeCheckResult.setCurrentResult(SymTypeExpressionFactory.createTypeObject(qType.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()), getScope(qType.getEnclosingScope())));
   }
 
   @Override

@@ -9,7 +9,9 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
+import de.monticore.symbols.oosymbols._symboltable.OOSymbolsScope;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
+import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolSurrogate;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -85,11 +87,12 @@ public class DeriveSymTypeOfExpressionTest {
     SymTypeExpression genSuper = SymTypeExpressionFactory.createGenerics("GenSuper",scope,genArg);
     OOTypeSymbol genSubType = OOSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
-        .setName("GenSub").setSuperTypesList(Lists.newArrayList(genSuper))
+        .setName("GenSub")
+        .setSuperTypesList(Lists.newArrayList(genSuper))
         .setEnclosingScope(scope)
         .build();
     genSubType.addTypeVarSymbol(genArgs);
-    SymTypeExpression genSub = SymTypeExpressionFactory.createGenerics("GenSub",scope,genArg);
+    SymTypeExpression genSub = SymTypeExpressionFactory.createGenerics("GenSub", scope, genArg);
     FieldSymbol genSubField = field("genericSub",genSub);
     FieldSymbol genSuperField = field("genericSuper",genSuper);
     add2scope(scope,genSuperType);

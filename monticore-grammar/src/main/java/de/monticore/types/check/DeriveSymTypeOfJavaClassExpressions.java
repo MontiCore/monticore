@@ -11,7 +11,7 @@ import de.monticore.expressions.javaclassexpressions._visitor.JavaClassExpressio
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTArrayInit;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTSimpleInit;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTVariableInit;
-import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.*;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
@@ -67,7 +67,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     int count = 0;
     if(typeCheckResult.isType()) {
       if(getScope(node.getEnclosingScope()).getEnclosingScope()!=null){
-        IOOSymbolsScope testScope = getScope(node.getEnclosingScope());
+        IBasicSymbolsScope testScope = getScope(node.getEnclosingScope());
         while (testScope!=null) {
           if(testScope.isPresentSpanningSymbol()&&testScope.getSpanningSymbol() instanceof OOTypeSymbol) {
             count++;
@@ -138,7 +138,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     SymTypeExpression wholeResult;
     if(arrayResult.getDim()>1){
       //case 1: A[][] bar -> bar[3] returns the type A[] -> decrease the dimension of the array by 1
-      wholeResult = SymTypeExpressionFactory.createTypeArray(arrayTypeResult.typeSymbolSurrogate.getName(),getScope(scope),arrayResult.getDim()-1,indexResult);
+      wholeResult = SymTypeExpressionFactory.createTypeArray(arrayTypeResult.typeSymbol.getName(),getScope(scope),arrayResult.getDim()-1,indexResult);
     }else {
       //case 2: A[] bar -> bar[3] returns the type A
       //determine whether the result has to be a constant, generic or object
@@ -229,11 +229,11 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
 
     int count = 0;
     boolean isOuterType = false;
-    IOOSymbolsScope testScope = getScope(node.getEnclosingScope());
+    IBasicSymbolsScope testScope = getScope(node.getEnclosingScope());
     while (testScope!=null) {
-      if(testScope.isPresentSpanningSymbol()&&testScope.getSpanningSymbol() instanceof OOTypeSymbol) {
+      if(testScope.isPresentSpanningSymbol()&&testScope.getSpanningSymbol() instanceof TypeSymbol) {
         count++;
-        OOTypeSymbol sym = (OOTypeSymbol) testScope.getSpanningSymbol();
+        TypeSymbol sym = (TypeSymbol) testScope.getSpanningSymbol();
         if (sym.getName().equals(beforeSuperType.getTypeInfo().getName())&&count>1) {
           isOuterType = true;
           break;
@@ -251,7 +251,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
           if (superSuffix.isPresentArguments()) {
             //case 1 -> Expression.super.<TypeArgument>Method(Args)
             List<SymTypeExpression> typeArgsList = calculateTypeArguments(superSuffix.getExtTypeArgumentsList());
-            List<MethodSymbol> methods = superClass.getMethodList(superSuffix.getName());
+            List<FunctionSymbol> methods = superClass.getMethodList(superSuffix.getName());
             if (!methods.isEmpty() && null != superSuffix.getArguments()) {
               //check if the methods fit and return the right returntype
               ASTArguments args = superSuffix.getArguments();
@@ -260,7 +260,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
           }
           else {
             //case 2 -> Expression.super.Field
-            List<FieldSymbol> fields = superClass.getFieldList(superSuffix.getName());
+            List<VariableSymbol> fields = superClass.getFieldList(superSuffix.getName());
             if (fields.size()==1) {
               wholeResult = fields.get(0).getType();
             }else{
@@ -360,7 +360,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
   public void traverse(ASTPrimaryThisExpression node) {
     //search for the nearest TypeSymbol and return its Type
     SymTypeExpression wholeResult = null;
-    OOTypeSymbol typeSymbol=searchForTypeSymbolSpanningEnclosingScope(getScope(node.getEnclosingScope()));
+    TypeSymbol typeSymbol=searchForTypeSymbolSpanningEnclosingScope(getScope(node.getEnclosingScope()));
     if(typeSymbol!=null) {
       wholeResult = getResultOfPrimaryThisExpression(getScope(node.getEnclosingScope()), typeSymbol);
     }
@@ -372,7 +372,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     }
   }
 
-  private SymTypeExpression getResultOfPrimaryThisExpression(IOOSymbolsScope scope, OOTypeSymbol typeSymbol) {
+  private SymTypeExpression getResultOfPrimaryThisExpression(IBasicSymbolsScope scope, TypeSymbol typeSymbol) {
     SymTypeExpression wholeResult;
     if(typeSymbol.getTypeParameterList().isEmpty()){
       //if the return type is a primitive
@@ -397,7 +397,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
   public void traverse(ASTPrimarySuperExpression node) {
     SymTypeExpression wholeResult=null;
 
-    OOTypeSymbol typeSymbol = searchForTypeSymbolSpanningEnclosingScope(getScope(node.getEnclosingScope()));
+    TypeSymbol typeSymbol = searchForTypeSymbolSpanningEnclosingScope(getScope(node.getEnclosingScope()));
     if(typeSymbol!=null) {
       if (typeSymbol.getSuperClassesOnly().size() == 1) {
         wholeResult = typeSymbol.getSuperClassesOnly().get(0);
@@ -440,10 +440,10 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
 
     //search in the scope of the type that before the "." for a method that has the right name
     if(node.getPrimaryGenericInvocationExpression().getGenericInvocationSuffix().isPresentName()) {
-      List<MethodSymbol> methods = expressionResult.getMethodList(node.getPrimaryGenericInvocationExpression().getGenericInvocationSuffix().getName(),isType);
+      List<FunctionSymbol> methods = expressionResult.getMethodList(node.getPrimaryGenericInvocationExpression().getGenericInvocationSuffix().getName(),isType);
       //if the last result is a type then the method has to be static to be accessible
       if(isType){
-        methods = filterStaticMethods(methods);
+        methods = filterStaticMethodSymbols(methods);
       }
       if (!methods.isEmpty() && null != node.getPrimaryGenericInvocationExpression().getGenericInvocationSuffix().getArguments()) {
         //check if the methods fit and return the right returntype
@@ -458,10 +458,6 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
       typeCheckResult.reset();
       logError("0xA0282",node.get_SourcePositionStart());
     }
-  }
-
-  private List<MethodSymbol> filterStaticMethods(List<MethodSymbol> methods) {
-    return methods.stream().filter(MethodSymbol::isIsStatic).collect(Collectors.toList());
   }
 
 
@@ -479,9 +475,9 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     return typeArgsList;
   }
 
-  private SymTypeExpression checkMethodsAndReplaceTypeVariables(List<MethodSymbol> methods, ASTArguments args, List<SymTypeExpression> typeArgsList) {
+  private SymTypeExpression checkMethodsAndReplaceTypeVariables(List<FunctionSymbol> methods, ASTArguments args, List<SymTypeExpression> typeArgsList) {
     outer:for(int i = 0;i<methods.size();i++){
-      MethodSymbol method = methods.get(i);
+      FunctionSymbol method = methods.get(i);
       if(method.getParameterList().size()!=args.getExpressionsList().size()){
         //wrong method
         continue;
@@ -504,7 +500,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
       }
 
       for(int j = 0;j<method.getParameterList().size();j++){
-        FieldSymbol param = method.getParameterList().get(j);
+        VariableSymbol param = method.getParameterList().get(j);
         if(param.getType().isTypeVariable()){
           if(!transformMap.containsKey(param.getType().print())){
             //there is a typevariable that cannot be resolved to the correct type -> wrong method
@@ -556,14 +552,14 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
       if(node.getGenericInvocationSuffix().isPresentName()){
         //case 1: <TypeVariable>method(Args) -> similar to GenericInvocationExpression
         //can be accessed solely or after another expression -> check if lastResult is present
-        IOOSymbolsScope testScope;
+        IBasicSymbolsScope testScope;
         if(typeCheckResult.isPresentCurrentResult()){
           testScope = typeCheckResult.getCurrentResult().getTypeInfo().getSpannedScope();
         }else{
           testScope = getScope(node.getEnclosingScope());
         }
         //resolve for fitting methods
-        List<MethodSymbol> methods = testScope.resolveMethodMany(node.getGenericInvocationSuffix().getName());
+        List<FunctionSymbol> methods = testScope.resolveFunctionMany(node.getGenericInvocationSuffix().getName());
         if(!methods.isEmpty() && node.getGenericInvocationSuffix().isPresentArguments()){
           //check if the methods fit and return the right returntype
           ASTArguments args = node.getGenericInvocationSuffix().getArguments();
@@ -577,10 +573,10 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
         //case 2: <TypeVariable>this(Args) -> similar to PrimaryThisExpression, use method checkMethodsAndReplaceTypeVariables
         //can only be accessed solely -> there cannot be a lastresult
         //search for the nearest enclosingscope spanned by a typesymbol
-        OOTypeSymbol typeSymbol = searchForTypeSymbolSpanningEnclosingScope(getScope(node.getEnclosingScope()));
+        TypeSymbol typeSymbol = searchForTypeSymbolSpanningEnclosingScope(getScope(node.getEnclosingScope()));
         if(typeSymbol!=null) {
           //get the constructors of the typesymbol
-          List<MethodSymbol> methods = typeSymbol.getSpannedScope().resolveMethodMany(typeSymbol.getName());
+          List<FunctionSymbol> methods = typeSymbol.getSpannedScope().resolveFunctionMany(typeSymbol.getName());
           if (!methods.isEmpty() && null != node.getGenericInvocationSuffix().getArguments()) {
             //check if the constructors fit and return the right returntype
             ASTArguments args = node.getGenericInvocationSuffix().getArguments();
@@ -594,11 +590,11 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
       if(!superSuffix.isPresentName()){
         //case 3: <TypeVariable>super(Args) -> find the constructor of the super class, use method checkMethodsAndReplaceTypeVariables
         //search for the nearest enclosingscope spanned by a typesymbol
-        OOTypeSymbol subType = searchForTypeSymbolSpanningEnclosingScope(getScope(node.getEnclosingScope()));
+        TypeSymbol subType = searchForTypeSymbolSpanningEnclosingScope(getScope(node.getEnclosingScope()));
         //get the superclass of this typesymbol and search for its fitting constructor
         if(subType!=null&&subType.getSuperClassesOnly().size()==1){
           SymTypeExpression superClass = subType.getSuperClassesOnly().get(0);
-          List<MethodSymbol> methods = superClass.getMethodList(superClass.getTypeInfo().getName());
+          List<FunctionSymbol> methods = superClass.getMethodList(superClass.getTypeInfo().getName());
           if(!methods.isEmpty() && superSuffix.isPresentArguments()){
             //check if the constructors fit and return the right returntype
             ASTArguments args = superSuffix.getArguments();
@@ -617,7 +613,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
     }
   }
 
-  private OOTypeSymbol searchForTypeSymbolSpanningEnclosingScope(IOOSymbolsScope scope) {
+  private TypeSymbol searchForTypeSymbolSpanningEnclosingScope(IBasicSymbolsScope scope) {
     //search for the nearest type symbol in the enclosing scopes -> for this and super to get the
     //current object
     while(scope!=null){
@@ -657,7 +653,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
       }
       if(!extType.isTypeConstant()){
         //see if there is a constructor fitting for the arguments
-        List<MethodSymbol> constructors = extType.getMethodList(extType.getTypeInfo().getName());
+        List<FunctionSymbol> constructors = extType.getMethodList(extType.getTypeInfo().getName());
         if(!constructors.isEmpty()){
           if(testForCorrectArguments(constructors, creator.getArguments())){
             wholeResult = extType;
@@ -779,12 +775,12 @@ public class DeriveSymTypeOfJavaClassExpressions extends DeriveSymTypeOfCommonEx
       return argList;
     }
 
-    private boolean testForCorrectArguments(List<MethodSymbol> constructors, ASTArguments arguments) {
+    private boolean testForCorrectArguments(List<FunctionSymbol> constructors, ASTArguments arguments) {
       List<SymTypeExpression> symTypeOfArguments = calculateCorrectArguments(arguments);
-      outer: for(MethodSymbol constructor: constructors){
+      outer: for(FunctionSymbol constructor: constructors){
         if(constructor.getParameterList().size() == symTypeOfArguments.size()){
           //get the types of the constructor arguments
-          List<SymTypeExpression> constructorArguments = constructor.getParameterList().stream().map(FieldSymbol::getType).collect(Collectors.toList());
+          List<SymTypeExpression> constructorArguments = constructor.getParameterList().stream().map(VariableSymbol::getType).collect(Collectors.toList());
           for(int i = 0;i<constructorArguments.size();i++){
             if(!compatible(constructorArguments.get(i),symTypeOfArguments.get(i))){
               //wrong constructor, argument is not compatible to constructor definition

@@ -7,7 +7,7 @@ public class SymTypeVoid extends SymTypeExpression {
   public SymTypeVoid() {
 //    typeSymbolSurrogate = new TypeSymbolSurrogate(DefsTypeBasic._voidTypeString,
 //        BuiltInJavaTypeSymbolResolvingDelegate.getScope());
-    typeSymbolSurrogate = new PseudoTypeSymbolSurrogate(DefsTypeBasic._void);
+    typeSymbol = new PseudoTypeSymbolSurrogate(DefsTypeBasic._void);
   }
   
   /**

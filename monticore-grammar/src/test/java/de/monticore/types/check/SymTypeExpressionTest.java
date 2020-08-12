@@ -297,12 +297,12 @@ public class SymTypeExpressionTest {
   public void deepCloneTest(){
     //SymTypeVoid
     assertTrue(teVoid.deepClone() instanceof SymTypeVoid);
-    assertEquals(teVoid.getTypeInfo(),teVoid.deepClone().getTypeInfo());
+    assertEquals(teVoid.getTypeInfo().getName(),teVoid.deepClone().getTypeInfo().getName());
     assertEquals(teVoid.print(),teVoid.deepClone().print());
 
     //SymTypeOfNull
     assertTrue(teNull.deepClone() instanceof SymTypeOfNull);
-    assertEquals(teNull.getTypeInfo(),teNull.deepClone().getTypeInfo());
+    assertEquals(teNull.getTypeInfo().getName(),teNull.deepClone().getTypeInfo().getName());
     assertEquals(teNull.print(),teNull.deepClone().print());
 
     //SymTypeVariable
@@ -313,7 +313,7 @@ public class SymTypeExpressionTest {
 
     //SymTypeConstant
     assertTrue(teInt.deepClone() instanceof SymTypeConstant);
-    assertEquals(teInt.getTypeInfo(), teInt.deepClone().getTypeInfo());
+    assertEquals(teInt.getTypeInfo().getName(), teInt.deepClone().getTypeInfo().getName());
     assertTrue(teInt.deepClone().isTypeConstant());
     assertEquals(teInt.print(),teInt.deepClone().print());
 

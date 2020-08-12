@@ -1,11 +1,7 @@
-// (c) https://github.com/MontiCore/monticore
-
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.symbols.oosymbols._symboltable;
+package de.monticore.symbols.basicsymbols._symboltable;
 
-import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
-import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
-import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
+import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
 import de.monticore.symboltable.IScopeSpanningSymbol;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.types.check.SymTypeExpression;
@@ -13,21 +9,21 @@ import de.monticore.types.check.SymTypeExpression;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class OOSymbolsScope extends OOSymbolsScopeTOP {
+public class BasicSymbolsScope extends BasicSymbolsScopeTOP {
 
-  public OOSymbolsScope() {
+  public BasicSymbolsScope() {
     super();
   }
 
-  public OOSymbolsScope(boolean isShadowingScope) {
+  public BasicSymbolsScope(boolean isShadowingScope) {
     super(isShadowingScope);
   }
 
-  public OOSymbolsScope(IOOSymbolsScope enclosingScope) {
+  public BasicSymbolsScope(IOOSymbolsScope enclosingScope) {
     this(enclosingScope, false);
   }
 
-  public OOSymbolsScope(IOOSymbolsScope enclosingScope, boolean isShadowingScope) {
+  public BasicSymbolsScope(IOOSymbolsScope enclosingScope, boolean isShadowingScope) {
     super(enclosingScope,isShadowingScope);
   }
 

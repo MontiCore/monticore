@@ -51,13 +51,14 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
     protected Optional<SymTypeExpression> calculateIsInExpression(ASTIsInExpression node) {
         SymTypeExpression elemResult = acceptThisAndReturnSymTypeExpressionOrLogError(node.getElem(), "0xA0286");
         SymTypeExpression setResult = acceptThisAndReturnSymTypeExpressionOrLogError(node.getSet(), "0xA0287");
-        ;
+
         Optional<SymTypeExpression> wholeResult = Optional.empty();
 
         boolean correct = false;
         for (String s : collections) {
             if (setResult.isGenericType() && setResult.getTypeInfo().getName().equals(s)) {
                 correct = true;
+                break;
             }
         }
         if (correct) {
