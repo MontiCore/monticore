@@ -5,6 +5,8 @@ package de.monticore.symbols;
 /* This is a MontiCore stable grammar.
  * Adaptations -- if any -- are conservative. */
 
+import de.monticore.symbols.*;
+
 /**
  * The grammar introduces reusable symbols for
  *      OOTypes, 
@@ -31,7 +33,7 @@ package de.monticore.symbols;
  *
 */
 
-component grammar OOSymbols extends de.monticore.symbols.BasicSymbols {
+component grammar OOSymbols extends BasicSymbols {
 
   /*=================================================================*/
 
