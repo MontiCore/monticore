@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 pluginManagement {
     repositories {
-      mavenLocal()
       if(("true").equals(getProperty('useLocalRepo'))){
         mavenLocal()
       }
