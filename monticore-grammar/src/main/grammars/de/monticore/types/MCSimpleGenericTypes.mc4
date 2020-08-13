@@ -41,7 +41,7 @@ component grammar MCSimpleGenericTypes
   */
 
   MCBasicGenericType implements MCGenericType <20> =
-       names:(Name || ".")+ "<" mCTypeArguments:(MCTypeArgument || ",")* ">";
+       (Name || ".")+ "<" (MCTypeArgument || ",")* ">";
 
   
   /*=================================================================*/
