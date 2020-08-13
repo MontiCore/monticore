@@ -37,7 +37,7 @@ An example of a complete yet relatively small CLI example can be found in the
 [JSON project](https://git.rwth-aachen.de/monticore/languages/json).
 
 Some explanation to the arguments:
-* the CLI is meant for handling one individual model (`-i`) and store the
+* The CLI is meant for handling one individual model (`-i`) and store the
   results appropriately in files. 
 * Typical results are 
   * (1) generated files (`-o`) that are used in the next step of 
