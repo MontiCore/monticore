@@ -69,6 +69,7 @@ public class GrammarCoCos {
     checker.addCoCo(new TerminalCritical());
     checker.addCoCo(new PackageNameLowerCase());
     checker.addCoCo(new NoOverridingNTHasAnnotation());
+    checker.addCoCo(new ProdWithDoubleAnnos());
     // checker.addCoCo(new NoNTInheritanceCycle());
 
     return checker;

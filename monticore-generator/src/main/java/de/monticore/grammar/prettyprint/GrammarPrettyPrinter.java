@@ -307,8 +307,8 @@ public class GrammarPrettyPrinter
     if (a.isRightAssoc()) {
       getPrinter().print(" <rightassoc> ");
     }
-    if (a.isPresentDeprecatedAnnotation()) {
-      a.getDeprecatedAnnotation().accept(getRealThis());
+    if (a.isPresentGrammarAnnotation()) {
+      a.getGrammarAnnotation().accept(getRealThis());
     }
     printList(a.getComponentList().iterator(), " ");
     CommentPrettyPrinter.printPostComments(a, getPrinter());
@@ -813,8 +813,8 @@ public class GrammarPrettyPrinter
   public void handle(ASTMCGrammar a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
 
-    if (a.isPresentDeprecatedAnnotation()) {
-      a.getDeprecatedAnnotation().accept(getRealThis());
+    if (a.isPresentGrammarAnnotation()) {
+      a.getGrammarAnnotation().accept(getRealThis());
     }
 
     if (!a.getPackageList().isEmpty()) {
@@ -1095,19 +1095,20 @@ public class GrammarPrettyPrinter
     }
   }
 
-  public void handle(ASTDeprecatedAnnotation node) {
-    getPrinter().print("@Deprecated");
-    if (node.isPresentMessage()) {
-      getPrinter().print(("(\""));
-      getPrinter().print(node.getMessage());
-      getPrinter().print("\")");
+  public void handle(ASTGrammarAnnotation node) {
+    if (node.isOverride()) {
+      getPrinter().println("@Override");
+    } else if (node.isDeprecated()) {
+      getPrinter().print("@Deprecated");
+      if (node.isPresentMessage()) {
+        getPrinter().print(("(\""));
+        getPrinter().print(node.getMessage());
+        getPrinter().print("\")");
+      }
+      getPrinter().println();
     }
-    getPrinter().println();
   }
 
-  public void handle(ASTOverrideAnnotation node) {
-    getPrinter().println("@Override");
-  }
 
   /**
    * @see de.monticore.grammar.grammar._visitor.GrammarVisitor#handle(de.monticore.grammar.grammar._ast.ASTStartRule)

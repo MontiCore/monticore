@@ -41,7 +41,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
     ("package" package:(Name& || ".")+ ";")?
     (importStatement:MCImportStatement)*
 
-    DeprecatedAnnotation? ["component"]? key("grammar") Name
+    GrammarAnnotation? ["component"]? key("grammar") Name
       ("extends" supergrammar:(GrammarReference || ",")+ )?
       "{"
          (
@@ -143,13 +143,8 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
   StartRule =
     "start" Name ";";
 
-  interface GrammarAnnotation;
-
-  DeprecatedAnnotation implements GrammarAnnotation =
-    {noSpace(2) && cmpToken(2, "Deprecated")}? "@" key("Deprecated") ( "(" message:String ")" )?;
-
-  OverrideAnnotation implements GrammarAnnotation =
-    {noSpace(2) && cmpToken(2, "Override")}? "@" key("Override");
+  GrammarAnnotation =
+   {noSpace(2)}? "@" ([key("Deprecated")] ( "(" message:String ")" )?  | [key("Override")]);
 
   // --------------------------------------------------------------------
   // Productions
@@ -346,7 +341,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
     @attribute Components List of the rule components of this alternative
   */
   Alt =
-    [rightAssoc:"<rightassoc>"]? DeprecatedAnnotation? component:RuleComponent* ;
+    [rightAssoc:"<rightassoc>"]? GrammarAnnotation? component:RuleComponent* ;
 
 
   /**

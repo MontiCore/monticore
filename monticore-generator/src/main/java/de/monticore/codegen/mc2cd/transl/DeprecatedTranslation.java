@@ -10,6 +10,7 @@ import de.monticore.grammar.grammar._ast.*;
 import de.monticore.utils.Link;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
@@ -54,19 +55,19 @@ public class DeprecatedTranslation implements
 
   protected void translateProd(ASTProd prod, ASTCDType cdType,
                                ASTMCGrammar astGrammar) {
-    List<ASTGrammarAnnotation> annos = prod.getGrammarAnnotationsList().stream().filter(a -> a instanceof ASTDeprecatedAnnotation).collect(Collectors.toList());
-    ASTDeprecatedAnnotation annotation;
+    List<ASTGrammarAnnotation> annos = prod.getGrammarAnnotationsList().stream().filter(a -> a.isDeprecated()).collect(Collectors.toList());
+    String message;
     if (annos.isEmpty()) {
-      if (!astGrammar.isPresentDeprecatedAnnotation()) {
+      if (!astGrammar.isPresentGrammarAnnotation() || !astGrammar.getGrammarAnnotation().isDeprecated()) {
         return;
       }
-      annotation = astGrammar.getDeprecatedAnnotation();
+      message = astGrammar.getGrammarAnnotation().isPresentMessage()?astGrammar.getGrammarAnnotation().getMessage():"";
     } else {
-      annotation = (ASTDeprecatedAnnotation) annos.get(0);
+      message = annos.get(0).isPresentMessage()?astGrammar.getGrammarAnnotation().getMessage():"";
     }
-    if (annotation.isPresentMessage()) {
+    if (!message.isEmpty()) {
       TransformationHelper.addStereoType(cdType, MC2CDStereotypes.DEPRECATED.toString(),
-              annotation.getMessage());
+              message);
     } else {
       TransformationHelper.addStereoType(cdType, MC2CDStereotypes.DEPRECATED.toString());
     }
