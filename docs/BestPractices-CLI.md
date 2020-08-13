@@ -18,9 +18,9 @@ However, we suggest some default arguments for standardized access.
 
 ```
 -h,--help                    Prints this help dialog
--i,--input <file>            Reads the source file (mandatory) and parses the
+-i,--input <file>            Reads the (mandatory) source file resp. the
                              contents of the model
--path <file>                 Sets the artifact path for imported symbols
+-path <dirlist>              Sets the artifact path for imported symbols
 -pp,--prettyprint <file>     Prints the AST to stdout or the specified output 
                              file (optional)
 -s, -symboltable <file>      Serializes and prints the symbol table to stdout 
@@ -28,6 +28,7 @@ However, we suggest some default arguments for standardized access.
 -r,--report <dir>            Prints reports of the parsed artifact to the
                              specified directory (optional). Available reports
                              are language-specific
+-o,--output <dir>            Path of generated files (optional)
 -so,--syntaxobjects <file>   Prints an object diagram of the AST to stdout or
                              the specified file (optional)
 ```
@@ -35,7 +36,42 @@ However, we suggest some default arguments for standardized access.
 An example of a complete yet relatively small CLI example can be found in the 
 [JSON project](https://git.rwth-aachen.de/monticore/languages/json).
 
-## Automatically Generating a CLI-JAR
+Some explanation to the arguments:
+* the CLI is meant for handling one individual model (`-i`) and store the
+  results appropriately in files. 
+* Typical results are 
+  * (1) generated files (`-o`) that are used in the next step of 
+    the build process (e.g. for compilation).
+  * (2) the symboltable (`-s`) that is then used by other CLI's to import symbols
+  * (3) reports (`-r`) and internal information (`-so`), like the AST of the 
+    parsed model usable for developers to understand what happened
+  * (4) and potentially also internal information on used input and generated 
+    output files
+    that allows the calling build script to understand whether a redo is 
+    needed (as part of a
+    larger incremental and efficient development process).
+* Directories in `-path` are separated via `:` like in Java. 
+  Example: `-path a/b:x/y`.
+* Directories in the above options `-path`, `-o` describe the root
+  structure that is further refined  by packages (like in Java). 
+  That means with `-path a/b:x/y`
+  the actual symboltable for a Statechart `de.mine.Door` is found in 
+  `a/b/de/mine/Door.scsym` or `x/y/de/mine/Door.scsym` (in that order)
+
+## Usage of the CLI-JAR
+
+A note to the CLI usage: 
+CLIs do not organize the correct order of their calls. If embedded in a larger
+build process, an appropriate gradle (preferred) or make is useful for 
+incremental efficiency.
+
+This organisation is outside the CLI, because for efficiency the 
+(grade or make) buildscript itself must be able to decide, whether a redo
+is needed. If the CLI was called to decide that, too much time was already wasted.
+
+## Automatically Generating the CLI-JAR
+
+Note to the CLI development:
 To automatically derive an executable JAR from the Gradle build process for the 
 corresponding CLI, the following template can be used.
 
