@@ -29,6 +29,8 @@ of the reference manual.
 
 * [**Designing Symbols, Scopes and SymbolTables**](BestPractices-Symbols-Scopes.md) 
 
+* [**Designing Command Line Interfaces**](BestPractices-CLI.md) 
+
 * **Generating Code with Templates**
 
   (no practice defined here yet) 
