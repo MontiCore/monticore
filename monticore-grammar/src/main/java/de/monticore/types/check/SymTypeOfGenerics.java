@@ -115,12 +115,12 @@ public class SymTypeOfGenerics extends SymTypeExpression {
   /**
    * Constructor with all parameters that are stored:
    */
-  public SymTypeOfGenerics(TypeSymbol typeSymbolSurrogate) {
-    this.typeSymbol = typeSymbolSurrogate;
+  public SymTypeOfGenerics(TypeSymbol typeSymbol) {
+    this.typeSymbol = typeSymbol;
   }
 
-  public SymTypeOfGenerics(TypeSymbol typeSymbolSurrogate, List<SymTypeExpression> arguments) {
-    this.typeSymbol = typeSymbolSurrogate;
+  public SymTypeOfGenerics(TypeSymbol typeSymbol, List<SymTypeExpression> arguments) {
+    this.typeSymbol = typeSymbol;
     this.arguments = arguments;
   }
 

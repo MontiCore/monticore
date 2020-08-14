@@ -16,9 +16,9 @@ public class SymTypeOfObject extends SymTypeExpression {
   /**
    * Constructor: with a TypeSymbolSurrogate that contains the name and enclosingScope
    */
-  public SymTypeOfObject(TypeSymbol typeSymbolSurrogate)
+  public SymTypeOfObject(TypeSymbol typeSymbol)
   {
-    this.typeSymbol = typeSymbolSurrogate;
+    this.typeSymbol = typeSymbol;
   }
 
   public String getObjName() {

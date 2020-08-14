@@ -14,7 +14,7 @@ public class SymTypeOfNull extends SymTypeExpression {
    *       int i = null;          illegal
    */
   public SymTypeOfNull() {
-//    typeSymbolSurrogate = new TypeSymbolSurrogate(DefsTypeBasic._nullTypeString,
+//    typeSymbol = new TypeSymbolSurrogate(DefsTypeBasic._nullTypeString,
 //        BuiltInJavaTypeSymbolResolvingDelegate.getScope());
     typeSymbol = new PseudoTypeSymbolSurrogate(DefsTypeBasic._null);
   }

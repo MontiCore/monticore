@@ -27,10 +27,10 @@ public class SymTypeArray extends SymTypeExpression {
    *
    * @param dim      dimension
    * @param argument Argument Type
-   * @param typeSymbolSurrogate loader for the Type-Symbol that defines this type
+   * @param typeSymbol loader for the Type-Symbol that defines this type
    */
-  public SymTypeArray(TypeSymbol typeSymbolSurrogate, int dim, SymTypeExpression argument) {
-    this.typeSymbol = typeSymbolSurrogate;
+  public SymTypeArray(TypeSymbol typeSymbol, int dim, SymTypeExpression argument) {
+    this.typeSymbol = typeSymbol;
     this.dim = dim;
     this.argument = argument;
   }

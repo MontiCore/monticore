@@ -12,8 +12,8 @@ public class SymTypeVariable extends SymTypeExpression {
   /**
    * Constructor:
    */
-  public SymTypeVariable(TypeSymbol typeSymbolSurrogate) {
-    this.typeSymbol = typeSymbolSurrogate;
+  public SymTypeVariable(TypeSymbol typeSymbol) {
+    this.typeSymbol = typeSymbol;
   }
 
   public String getVarName() {

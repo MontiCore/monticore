@@ -13,8 +13,8 @@ import java.util.Map;
 
 public class SymTypeConstant extends SymTypeExpression {
 
-  public SymTypeConstant(TypeSymbol typeSymbolSurrogate) {
-    this.typeSymbol = typeSymbolSurrogate;
+  public SymTypeConstant(TypeSymbol typeSymbol) {
+    this.typeSymbol = typeSymbol;
   }
 
   public String getConstName() {

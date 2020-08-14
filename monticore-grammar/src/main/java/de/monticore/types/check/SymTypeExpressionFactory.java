@@ -32,8 +32,8 @@ public class SymTypeExpressionFactory {
     return new SymTypeVariable(loader);
   }
 
-  public static SymTypeVariable createTypeVariable(TypeSymbol typeSymbolSurrogate) {
-    return new SymTypeVariable(typeSymbolSurrogate);
+  public static SymTypeVariable createTypeVariable(TypeSymbol typeSymbol) {
+    return new SymTypeVariable(typeSymbol);
   }
 
   /**
@@ -51,8 +51,8 @@ public class SymTypeExpressionFactory {
   /**
    * for ObjectTypes, as e.g. "Person"
    */
-  public static SymTypeOfObject createTypeObject(TypeSymbol typeSymbolSurrogate) {
-    return new SymTypeOfObject(typeSymbolSurrogate);
+  public static SymTypeOfObject createTypeObject(TypeSymbol typeSymbol) {
+    return new SymTypeOfObject(typeSymbol);
   }
 
   /**
@@ -83,14 +83,14 @@ public class SymTypeExpressionFactory {
   /**
    * creates an array-Type Expression
    *
-   * @param typeSymbolSurrogate
+   * @param typeSymbol
    * @param dim              the dimension of the array
    * @param argument         the argument type (of the elements)
    * @return
    */
-  public static SymTypeArray createTypeArray(TypeSymbol typeSymbolSurrogate, int dim,
+  public static SymTypeArray createTypeArray(TypeSymbol typeSymbol, int dim,
       SymTypeExpression argument) {
-    return new SymTypeArray(typeSymbolSurrogate, dim, argument);
+    return new SymTypeArray(typeSymbol, dim, argument);
   }
 
   public static SymTypeArray createTypeArray(String name, IBasicSymbolsScope typeSymbolsScope,
@@ -131,18 +131,18 @@ public class SymTypeExpressionFactory {
    *
    * @return
    */
-  public static SymTypeOfGenerics createGenerics(TypeSymbol typeSymbolSurrogate) {
-    return new SymTypeOfGenerics(typeSymbolSurrogate);
+  public static SymTypeOfGenerics createGenerics(TypeSymbol typeSymbol) {
+    return new SymTypeOfGenerics(typeSymbol);
   }
 
-  public static SymTypeOfGenerics createGenerics(TypeSymbol typeSymbolSurrogate,
+  public static SymTypeOfGenerics createGenerics(TypeSymbol typeSymbol,
       List<SymTypeExpression> arguments) {
-    return new SymTypeOfGenerics(typeSymbolSurrogate, arguments);
+    return new SymTypeOfGenerics(typeSymbol, arguments);
   }
 
-  public static SymTypeOfGenerics createGenerics(TypeSymbol typeSymbolSurrogate,
+  public static SymTypeOfGenerics createGenerics(TypeSymbol typeSymbol,
       SymTypeExpression... arguments) {
-    return new SymTypeOfGenerics(typeSymbolSurrogate, Arrays.asList(arguments));
+    return new SymTypeOfGenerics(typeSymbol, Arrays.asList(arguments));
   }
 
   /**
