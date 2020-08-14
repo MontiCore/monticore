@@ -87,9 +87,9 @@ public class SymTypeArray extends SymTypeExpression {
 
   @Override
   public SymTypeArray deepClone() {
-    TypeSymbolSurrogate loader = new TypeSymbolSurrogate(typeSymbol.getName());
-    loader.setEnclosingScope(typeSymbol.getEnclosingScope());
-    return new SymTypeArray(loader,
+    TypeSymbol typeSymbol = new TypeSymbolSurrogate(this.typeSymbol.getName());
+    typeSymbol.setEnclosingScope(this.typeSymbol.getEnclosingScope());
+    return new SymTypeArray(typeSymbol,
         this.dim, this.argument.deepClone());
   }
 

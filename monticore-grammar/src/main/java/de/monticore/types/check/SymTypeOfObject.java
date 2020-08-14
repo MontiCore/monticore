@@ -52,9 +52,9 @@ public class SymTypeOfObject extends SymTypeExpression {
 
   @Override
   public SymTypeOfObject deepClone() {
-    TypeSymbolSurrogate ooTypeSymbolSurrogate = new TypeSymbolSurrogate(typeSymbol.getName());
-    ooTypeSymbolSurrogate.setEnclosingScope(typeSymbol.getEnclosingScope());
-    return  new SymTypeOfObject(ooTypeSymbolSurrogate);
+    TypeSymbol typeSymbol = new TypeSymbolSurrogate(this.typeSymbol.getName());
+    typeSymbol.setEnclosingScope(this.typeSymbol.getEnclosingScope());
+    return  new SymTypeOfObject(typeSymbol);
   }
 
   /**

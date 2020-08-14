@@ -9,8 +9,8 @@ import de.monticore.types.check.SymTypeExpression;
 
 public class SymTypeOfSIUnit extends SymTypeExpression {
 
-  public SymTypeOfSIUnit(TypeSymbol typeSymbolSurrogate){
-    this.typeSymbol = typeSymbolSurrogate;
+  public SymTypeOfSIUnit(TypeSymbol typeSymbol){
+    this.typeSymbol = typeSymbol;
   }
 
   @Override
@@ -31,9 +31,9 @@ public class SymTypeOfSIUnit extends SymTypeExpression {
 
   @Override
   public SymTypeOfSIUnit deepClone() {
-    TypeSymbolSurrogate surrogate = new TypeSymbolSurrogate(typeSymbol.getName());
-    surrogate.setEnclosingScope(typeSymbol.getEnclosingScope());
-    return new SymTypeOfSIUnit(surrogate);
+    TypeSymbolSurrogate symbol = new TypeSymbolSurrogate(typeSymbol.getName());
+    symbol.setEnclosingScope(typeSymbol.getEnclosingScope());
+    return new SymTypeOfSIUnit(symbol);
   }
 
   @Override

@@ -191,9 +191,9 @@ public class SymTypeOfGenerics extends SymTypeExpression {
    */
   @Override
   public SymTypeOfGenerics deepClone() {
-    TypeSymbolSurrogate loader = new TypeSymbolSurrogate(typeSymbol.getName());
-    loader.setEnclosingScope(typeSymbol.getEnclosingScope());
-    return new SymTypeOfGenerics(loader, getArgumentList());
+    TypeSymbol typeSymbol = new TypeSymbolSurrogate(this.typeSymbol.getName());
+    typeSymbol.setEnclosingScope(this.typeSymbol.getEnclosingScope());
+    return new SymTypeOfGenerics(typeSymbol, getArgumentList());
   }
 
   @Override
