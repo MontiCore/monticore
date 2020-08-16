@@ -17,4 +17,5 @@ pluginManagement {
 rootProject.name = '02.experiments'
 include(':scopes')
 include(':symbols')
+include(':mcgrammarlang')
 
