@@ -5,11 +5,11 @@ automaton PingPong {
   state Ping;
   state Pong <<final>>;
 
-  NoGame - startGame > Ping;
+  42 NoGame - startGame > Ping;
 
-  Ping - stopGame > NoGame;
-  Pong - stopGame > NoGame;
+  42 Ping - stopGame > NoGame;
+  41 Pong - stopGame > NoGame;
 
-  Ping - returnBall > Pong;
-  Pong - returnBall > Ping;
+  41 Ping - returnBall > Pong;
+  42 Pong - returnBall > Ping;
 }

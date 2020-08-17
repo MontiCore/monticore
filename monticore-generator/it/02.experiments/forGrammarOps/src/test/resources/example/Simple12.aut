@@ -2,10 +2,10 @@
 automaton Simple {
 
   state A   <<initial>>;
-    A - x > B;
-    A - y > A;
+    42 A - x > B;
+    41 A - y > A;
 
   state B   <<final>>;
-    B - x > A;
-    B - y > A;
+    42 B - x > A;
+    42 B - y > A;
 }

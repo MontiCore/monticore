@@ -20,7 +20,7 @@ import java.util.Optional;
  *
  */
 public class AutomataTool {
-
+  
   /**
    * Use the single argument for specifying the single input automaton file.
    *

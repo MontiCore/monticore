@@ -18,7 +18,7 @@ symbol scope Automaton =
     @attribute transitions List of transitions
 */
 symbol State =
-  "state" Name
+  key("state") Name
   
   (("<<" ["initial"] ">>" ) | ("<<" ["final"] ">>" ))*
   
@@ -31,6 +31,16 @@ symbol State =
     @attribute to Name of the state to which the transitions goes
 */ 
 Transition =
+  {next("42") || next("41")}? Digits
   from:Name "-" input:Name ">" to:Name ";" ;
-  
+
+/**
+ * Natural numbers (here used as priority)
+ */
+  token Digits
+    = Digit+;
+
+  fragment token Digit
+    = '0'..'9';
+
 }
