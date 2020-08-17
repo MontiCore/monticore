@@ -33,8 +33,7 @@ import de.monticore.*;
 */
 
 component grammar ExpressionsBasis 
-          extends MCBasics,
-                  MCLiteralsBasis {
+          extends MCBasics, MCLiteralsBasis {
 
   /*=================================================================*/
 
