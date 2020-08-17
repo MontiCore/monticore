@@ -4,14 +4,16 @@ package mc.feature.tokenrule;
 
 grammar SplitRule extends mc.common.Basics {
   A = ":::" Name;
-
-  B = ":::"* Name;
-
-  D = foo:":::" Name;
-
-  E = foo:":::"* Name;
-
+  B = ":::"* Digits;
+  D = foo:":::" | bar:"---";
+  E = foo:":::"* ;
   F =  foo:[":::"];
 
-  splittoken ":::";
+  XA = ":::" Name;
+  XB = ":::"* Name;
+  XD = foo:":::" Name;
+  XE = foo:":::"* Name;
+  XF =  foo:[":::"];
+
+  splittoken ":::", "---";
 }

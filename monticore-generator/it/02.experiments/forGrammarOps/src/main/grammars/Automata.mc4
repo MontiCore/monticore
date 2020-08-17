@@ -2,37 +2,25 @@
 
 grammar Automata extends de.monticore.MCBasics {
 
-/** A ASTAutomaton represents a finite automaton
-    @attribute name Name of the automaton
-    @attribute states List of states
-    @attribute transitions List of transitions
-*/
 symbol scope Automaton =
   "automaton" Name "{" (State | Transition)* "}" ;
 
-/** A ASTState represents a state of a finite automaton
-    @attribute name Name of state
-    @attribute initial True if state is initial state
-    @attribute final True if state is a final state
-    @attribute states List of sub states
-    @attribute transitions List of transitions
-*/
+// testing "key"
 symbol State =
   key("state") Name
-  
   (("<<" ["initial"] ">>" ) | ("<<" ["final"] ">>" ))*
-  
   ( ("{" (State | Transition)* "}") | ";") ;
 
-
-/** A ASTTransition represents a transition
-    @attribute from Name of the state from which the transitions starts
-    @attribute input Activation signal for this transition
-    @attribute to Name of the state to which the transitions goes
-*/ 
+// testing next and cmpToken
 Transition =
-  {next("42") || next("41")}? Digits
+  {next("42") || cmpToken(1,"41")}? Digits
   from:Name "-" input:Name ">" to:Name ";" ;
+
+// testing splittoken:
+splittoken "<<";
+
+// testing nokeyword:
+nokeyword "initial";
 
 /**
  * Natural numbers (here used as priority)
