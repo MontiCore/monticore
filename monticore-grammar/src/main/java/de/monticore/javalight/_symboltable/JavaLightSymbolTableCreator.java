@@ -130,16 +130,14 @@ public class JavaLightSymbolTableCreator extends JavaLightSymbolTableCreatorTOP 
 
   private SymTypeExpression createTypeLoader(ASTMCQualifiedName ast) {
     SynthesizeSymTypeFromMCFullGenericTypes syn = new SynthesizeSymTypeFromMCFullGenericTypes();
-    // Start visitor and set enclosingScope
-    ast.accept(getRealThis());
+    // Start visitor
     ast.accept(syn);
     return syn.getResult().orElse(new SymTypeOfNull());
   }
 
   private SymTypeExpression createTypeLoader(ASTMCType ast) {
     SynthesizeSymTypeFromMCFullGenericTypes syn = new SynthesizeSymTypeFromMCFullGenericTypes();
-    // Start visitor and set enclosingScope
-    ast.accept(getRealThis());
+    // Start visitor
     ast.accept(syn);
     return syn.getResult().orElse(new SymTypeOfNull());
   }
@@ -148,8 +146,6 @@ public class JavaLightSymbolTableCreator extends JavaLightSymbolTableCreatorTOP 
     if (ast.isPresentMCType()) {
       return createTypeLoader(ast.getMCType());
     } else {
-      // Start visitor and set enclosingScope
-      ast.accept(getRealThis());
       // TODO Bessere Lösung
       return SymTypeExpressionFactory.createTypeObject("void", (IOOSymbolsScope) ast.getEnclosingScope());
     }

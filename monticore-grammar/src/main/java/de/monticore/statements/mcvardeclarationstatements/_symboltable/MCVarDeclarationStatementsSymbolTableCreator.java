@@ -83,8 +83,7 @@ public class MCVarDeclarationStatementsSymbolTableCreator extends MCVarDeclarati
 
   private SymTypeExpression createTypeLoader(ASTMCType ast) {
     SynthesizeSymTypeFromMCFullGenericTypes syn = new SynthesizeSymTypeFromMCFullGenericTypes();
-    // Start visitor and set enclosingScope
-    ast.accept(getRealThis());
+    // Start visitor
     ast.accept(syn);
     return syn.getResult().orElse(new SymTypeOfNull());
   }
