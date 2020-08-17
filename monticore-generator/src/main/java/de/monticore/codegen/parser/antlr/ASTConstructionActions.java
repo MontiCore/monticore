@@ -96,12 +96,12 @@ public class ASTConstructionActions {
   public String getActionForRuleBeforeRuleBody(ASTClassProd a) {
     StringBuilder b = new StringBuilder();
     String type = MCGrammarSymbolTableHelper
-        .getQualifiedName(symbolTable.getProdWithInherited(a.getName()).get());
+        .getQualifiedName(a.getSymbol());
     Optional<MCGrammarSymbol> grammar = MCGrammarSymbolTableHelper
         .getMCGrammarSymbol(a.getEnclosingScope());
     String name = grammar.isPresent()
         ? grammar.get().getName()
-        : symbolTable.getProdWithInherited(a.getName()).get().getName();
+        : a.getSymbol().getName();
     
         // Setup return value
         b.append(
