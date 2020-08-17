@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-description = 'Experiments: mcgrammarlang'
+description = 'Experiments: automata'
 
 fileTree(grammarDir).matching { include '**/*.mc4'}.each {
   def g = it
@@ -11,3 +11,4 @@ fileTree(grammarDir).matching { include '**/*.mc4'}.each {
     outputs.upToDateWhen { uptoDate }
   }
 }
+
