@@ -4,7 +4,7 @@ package mc.feature.tokenrule;
 
 grammar SplitRule extends mc.common.Basics {
   A = ":::" Name;
-  B = ":::"* Digits;
+  B = ":::"* Name;
   D = foo:":::" | bar:"---";
   E = foo:":::"* ;
   F =  foo:[":::"];
