@@ -293,7 +293,7 @@ component InteriorLight {                           // MontiArc language
 
 
 ### [OCL/P](https://git.rwth-aachen.de/monticore/languages/OCL) (Alpha: Intention to become stable)
-* Caretaker: SVa
+* Caretaker: CKi, supported by SVa, SH, OKa
 * OCL/P is the textual representation of the UML OCL standard, adapted 
   with Java-like syntax.
   It's main goal is the usage in combination with other languages like 
