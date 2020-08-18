@@ -30,19 +30,23 @@ subprojects {
     implementation group:'de.se_rwth.commons', name:'se-commons-utilities', version:"1.7.10-SNAPSHOT"
     implementation group:'de.se_rwth.commons', name:'se-commons-groovy', version:"1.7.10-SNAPSHOT"
     implementation group:'de.monticore', name:'monticore-grammar', version:grammar_version
+    testImplementation group:'ch.qos.logback', name: 'logback-classic', version: '1.1.2'
     testImplementation group:'junit', name:'junit', version:junit_version
     grammar group:'de.monticore', name:'monticore-grammar', version:grammar_version, classifier:"grammars"
     grammar group:'de.monticore', name:'monticore-runtime', version:grammar_version
   }
   
   test {
+    useJUnit()
     testLogging {
       // controls whether test output is shown
       showStandardStreams= ("false").equals(getProperty('showTestOutput'))? false : true
       showExceptions true
       showCauses true
       showStackTraces true
-      events TestLogEvent.FAILED
+      events TestLogEvent.FAILED,
+              TestLogEvent.PASSED,
+              TestLogEvent.SKIPPED,
               TestLogEvent.STANDARD_OUT
       exceptionFormat TestExceptionFormat.FULL
       info {
@@ -50,6 +54,14 @@ subprojects {
                 TestLogEvent.PASSED,
                 TestLogEvent.SKIPPED,
                 TestLogEvent.STANDARD_OUT
+      }
+    }
+    afterSuite { desc, result ->
+      if (!desc.parent) { // will match the outermost suite
+        def output = "Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} passed, ${result.failedTestCount} failed, ${result.skippedTestCount} skipped)"
+        def startItem = '|  ', endItem = '  |'
+        def repeatLength = startItem.length() + output.length() + endItem.length()
+        println('\n' + ('-' * repeatLength) + '\n' + startItem + output + endItem + '\n' + ('-' * repeatLength))
       }
     }
     reports {
