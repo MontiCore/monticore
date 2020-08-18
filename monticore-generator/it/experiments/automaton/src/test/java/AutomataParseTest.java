@@ -8,6 +8,10 @@ import java.util.Optional;
 import automata._ast.ASTAutomaton;
 import automata._ast.ASTState;
 import automata._parser.AutomataParser;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -15,9 +19,22 @@ import org.junit.Test;
  */
 public class AutomataParseTest {
   
+  @BeforeClass
+  public static void init() {
+    Log.init();         // replace log by a sideffect free variant
+    // LogStub.initPlusLog();  // for manual testing purpose only
+    Log.enableFailQuick(false);
+  }
+  
+  @Before
+  public void setUp() {
+    Log.clearFindings();
+    LogStub.clearPrints();
+  }
+  
   /**
-   * @throws IOException 
-   * 
+   * @throws IOException
+   *
    */
   @Test
   public void testParseMethods() throws IOException {
