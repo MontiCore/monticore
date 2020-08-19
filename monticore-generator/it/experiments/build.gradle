@@ -44,10 +44,6 @@ subprojects {
       showExceptions true
       showCauses true
       showStackTraces true
-      events TestLogEvent.FAILED,
-              TestLogEvent.PASSED,
-              TestLogEvent.SKIPPED,
-              TestLogEvent.STANDARD_OUT
       exceptionFormat TestExceptionFormat.FULL
       info {
         events TestLogEvent.FAILED,
@@ -56,12 +52,14 @@ subprojects {
                 TestLogEvent.STANDARD_OUT
       }
     }
+    afterTest { desc, result ->
+      logger.quiet "${desc.className} > ${desc.name} ${result.resultType}"
+    }
     afterSuite { desc, result ->
       if (!desc.parent) { // will match the outermost suite
         def output = "Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} passed, ${result.failedTestCount} failed, ${result.skippedTestCount} skipped)"
         def startItem = '|  ', endItem = '  |'
-        def repeatLength = startItem.length() + output.length() + endItem.length()
-        println('\n' + ('-' * repeatLength) + '\n' + startItem + output + endItem + '\n' + ('-' * repeatLength))
+        logger.quiet startItem + output + endItem
       }
     }
     reports {
@@ -69,6 +67,7 @@ subprojects {
       html.enabled = false
     }
   }
+
 
   repositories {
     if(("true").equals(getProperty('useLocalRepo'))){
