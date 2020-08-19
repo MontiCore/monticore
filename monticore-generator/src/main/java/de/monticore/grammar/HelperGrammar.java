@@ -76,7 +76,7 @@ public class HelperGrammar {
     Optional<AdditionalAttributeSymbol> attributeSymbol = nonTerminal.getEnclosingScope()
         .resolveAdditionalAttributeDown(StringTransformations.uncapitalize(nonTerminal.getName()));
     boolean hasListASTRule = attributeSymbol.isPresent() && attributeSymbol.get().isPresentAstNode() &&
-        multiplicityOfAttributeInAST(attributeSymbol.get().getAstNode()) == LIST;
+        determineMultiplicity(grammar, attributeSymbol.get().getAstNode()) == LIST;
     return !hasUsageName && !isActualList && hasListASTRule;
   }
 

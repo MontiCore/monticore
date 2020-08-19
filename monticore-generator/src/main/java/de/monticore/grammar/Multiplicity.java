@@ -4,8 +4,6 @@ package de.monticore.grammar;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.grammar.grammar._ast.*;
-import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.symboltable.IScopeSpanningSymbol;
 import de.monticore.utils.ASTNodes;
 
 import java.util.ArrayList;
@@ -41,14 +39,7 @@ public enum Multiplicity {
    */
   LIST;
 
-  public static Multiplicity determineMultiplicity(ASTNode rootNode, ASTNode astNode) {
-    if (astNode instanceof ASTAdditionalAttribute) {
-      return multiplicityOfAttributeInAST((ASTAdditionalAttribute) astNode);
-    }
-    return multiplicityOfASTNodeWithInheritance(rootNode, astNode);
-  }
-
-  public static Multiplicity multiplicityOfAttributeInAST(ASTAdditionalAttribute attributeInAST) {
+  public static Multiplicity determineMultiplicity(ASTMCGrammar rootNode, ASTAdditionalAttribute attributeInAST) {
     if (!attributeInAST.isPresentCard()) {
       return STANDARD;
     }
@@ -75,11 +66,11 @@ public enum Multiplicity {
   /**
    * Performs the multiplicity calculation for inherited attributes.
    *
-   * @param rootNode The grammar symbol of the ast node.
+   * @param grammar The grammar symbol of the ast node.
    * @param astNode The ast node.
    * @return The multiplicity of the ast in the defining grammar.
    */
-  private static Multiplicity multiplicityOfASTNodeWithInheritance(ASTNode rootNode, ASTNode astNode) {
+  public static Multiplicity determineMultiplicity(ASTMCGrammar grammar, ASTRuleComponent astNode) {
     // multiplicity by inheritance is only relevant for nonterminals and can
     // cause errors otherwise; cast rootNode to ASTMCGrammar for further use
     // switch to default behavior without inheritance otherwise
@@ -87,29 +78,17 @@ public enum Multiplicity {
       // constant groups are always standard iteration
       return STANDARD;
     }
-    if (!(rootNode instanceof ASTMCGrammar) || !(astNode instanceof ASTNonTerminal)) {
-      return multiplicityOfASTNode(rootNode, astNode);
-    }
-    ASTMCGrammar grammar = (ASTMCGrammar) rootNode;
+    return multiplicityOfASTNode(grammar, astNode);
 
-    // check if own grammar is the defining grammar
-    IScopeSpanningSymbol definingGrammarSymbol = ((ASTNonTerminal) astNode).getEnclosingScope().getEnclosingScope().getSpanningSymbol();
+  }
 
-    String definingGrammarName = definingGrammarSymbol.getName();
-    String definingGrammarFullName = definingGrammarSymbol.getFullName();
-    if (grammar.getName().equals(definingGrammarName)) {
-      return multiplicityOfASTNode(rootNode, astNode);
-    }
-
-    // resolve defining grammar or switch to default behavior without inheritance
-    Optional<MCGrammarSymbol> grammarSymbol = ((ASTMCGrammar) rootNode).getEnclosingScope().resolveMCGrammar(definingGrammarFullName);
-    if (!grammarSymbol.isPresent() || !grammarSymbol.get().isPresentAstNode()) {
-      return multiplicityOfASTNode(rootNode, astNode);
-    }
-    ASTNode definingGrammar = grammarSymbol.get().getAstNode();
-
-    // perform multiplicity computation with defining grammar
-    return multiplicityOfASTNode(definingGrammar, astNode);
+  public static Multiplicity determineMultiplicity(ASTMCGrammar grammar, ASTNode astNode) {
+     if (astNode instanceof ASTRuleComponent) {
+       return determineMultiplicity(grammar, (ASTRuleComponent) astNode);
+     } else if (astNode instanceof ASTAdditionalAttribute) {
+       return determineMultiplicity(grammar, (ASTAdditionalAttribute) astNode);
+     }
+return null;
   }
 
   public static Multiplicity multiplicityOfASTNode(ASTNode rootNode, ASTNode astNode) {

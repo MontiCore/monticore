@@ -345,7 +345,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
     super.visit(action);
   }
 
-  private void setComponentMultiplicity(RuleComponentSymbol prod, ASTNode ast) {
+  private void setComponentMultiplicity(RuleComponentSymbol prod, ASTRuleComponent ast) {
     Multiplicity multiplicity = determineMultiplicity(astGrammar, ast);
     if (multiplicity == LIST) {
       prod.setIsList(true);
@@ -412,8 +412,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
                 .filter(a -> a.getName().equals(compName)).findAny();
         Multiplicity multiplicity = STANDARD;
         if (attribute.isPresent()) {
-          multiplicity = multiplicityOfAttributeInAST(
-                  attribute.get().getAstNode());
+          multiplicity = determineMultiplicity(astGrammar, attribute.get().getAstNode());
         } else {
           for (RuleComponentSymbol component : prodSymbol.getSpannedScope().getRuleComponentSymbols().get(compName)) {
             if (component.isIsNonterminal()) {
