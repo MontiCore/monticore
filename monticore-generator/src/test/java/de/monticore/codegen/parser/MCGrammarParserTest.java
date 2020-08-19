@@ -28,7 +28,8 @@ public class MCGrammarParserTest {
   public void testParse() throws IOException {
     String model = "src/test/resources/de/monticore/statechart/Statechart.mc4";
 
-    Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
+    Grammar_WithConceptsParser parser =
+                      new Grammar_WithConceptsParser();
     Optional<ASTMCGrammar> result = parser.parse(model);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
