@@ -404,7 +404,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
    * Set cardinality of all grammar's nonterminals
    */
   private void setComponentsCardinality(ASTMCGrammar astGrammar) {
-    for (ProdSymbol prodSymbol : astGrammar.getSymbol().getProdsWithInherited().values()) {
+    for (ProdSymbol prodSymbol : astGrammar.getSymbol().getProds()) {
       Collection<AdditionalAttributeSymbol> astAttributes = prodSymbol.getSpannedScope().getLocalAdditionalAttributeSymbols();
       LinkedListMultimap<String, RuleComponentSymbol> map = prodSymbol.getSpannedScope().getRuleComponentSymbols();
       for (String compName : prodSymbol.getSpannedScope().getRuleComponentSymbols().keySet()) {
