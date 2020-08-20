@@ -52,9 +52,13 @@ public class InheritedAttributesTranslation implements
   private void handleInheritedRuleComponents(Link<ASTClassProd, ASTCDClass> link, ASTProd astProd,
                                              List<? extends ASTRuleComponent> ruleComponents) {
     for (ASTRuleComponent ruleComponent : ruleComponents) {
-      ASTCDAttribute cdAttribute = createCDAttribute(link.source(), astProd);
-      link.target().getCDAttributesList().add(cdAttribute);
-      new Link<>(ruleComponent, cdAttribute, link);
+      if ((ruleComponent instanceof ASTNonTerminal)
+       ||(ruleComponent instanceof ASTConstantGroup)
+       || ((ruleComponent instanceof ASTITerminal) && ((ASTITerminal) ruleComponent).isPresentUsageName())) {
+        ASTCDAttribute cdAttribute = createCDAttribute(link.source(), astProd);
+        link.target().getCDAttributesList().add(cdAttribute);
+        new Link<>(ruleComponent, cdAttribute, link);
+      }
     }
   }
 
