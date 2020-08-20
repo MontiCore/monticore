@@ -44,7 +44,7 @@ public <#if existsHWCExtension>abstract </#if>
   }
 
   <#-- Place the list of states here -->
-  ${tc.include("StatechartStateAttributes.ftl", ast.getStatesList())}
+  ${tc.include("StatechartStateAttributes.ftl", ast.getStateList())}
 
   /** 
    * This is the pointer to the current state 

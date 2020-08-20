@@ -30,10 +30,10 @@ public class SemPredWithInterfaceParserTest extends GeneratorIntegrationsTest {
     }
     assertTrue(ast.isPresent());
     ASTISequence seq = ast.get();
-    assertEquals(2, seq.getIsList().size());
+    assertEquals(2, seq.getIList().size());
     
-    assertTrue(seq.getIsList().get(0).isFirst());
-    assertFalse(seq.getIsList().get(1).isFirst());
+    assertTrue(seq.getIList().get(0).isFirst());
+    assertFalse(seq.getIList().get(1).isFirst());
   }
   
 }

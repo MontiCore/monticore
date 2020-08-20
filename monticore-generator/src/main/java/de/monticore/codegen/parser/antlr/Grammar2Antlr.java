@@ -1022,11 +1022,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
           RuleComponentSymbol componentSymbol = ast.getSymbol();
           Optional<ProdSymbol> rule = MCGrammarSymbolTableHelper
               .getEnclosingRule(componentSymbol);
-          if (componentSymbol.isIsList() && !ast.isPresentUsageName()) {
-            term.setUsageName(HelperGrammar.getUsageName(ast) + "s");
-          } else {
-            term.setUsageName(HelperGrammar.getUsageName(ast));
-          }
+          term.setUsageName(HelperGrammar.getUsageName(ast));
 
           if (rule.isPresent()) {
             addActionForKeyword(term, rule.get(), componentSymbol.isIsList());

@@ -43,41 +43,16 @@ public class HelperGrammar {
     return name;
   }
 
-  public static String getListName(ASTNonTerminal a, ASTMCGrammar grammar) {
+  public static String getListName(ASTNonTerminal a) {
     String name;
     if (a.isPresentUsageName()) {
       name = a.getUsageName();
-    } else if (getsListCardinalityFromAstRule(a, grammar)) {
-      name = a.getName();
     } else {
       // Use Nonterminal name as attribute name starting with lower case
       // for a list (iterated) nonterminal a 's' is added for the name
-      name = a.getName() + "s";
+      name = a.getName();
     }
     return name + DecorationHelper.GET_SUFFIX_LIST;
-  }
-
-  /**
-   * checks if a NonTerminal gets its list cardinality only because of a astrule
-   * this means that the NonTerminal itself has not a List cardinality
-   * but there exists a AdditionalAttribute with the same name that has a list cardinality
-   * And it also does not have a usageName
-   * e.g.  A =  Name;
-   *       astrule A =
-   *           name:String*;
-   * because then the name of the list methods are without the 's'
-   * @param nonTerminal the checked nonterminal
-   * @param grammar the grammar which surrounds the nonterminal
-   * @return
-   */
-  protected static boolean getsListCardinalityFromAstRule(ASTNonTerminal nonTerminal, ASTMCGrammar grammar) {
-    boolean hasUsageName = nonTerminal.isPresentUsageName();
-    boolean isActualList = multiplicityOfASTNode(grammar, nonTerminal) == LIST;
-    Optional<AdditionalAttributeSymbol> attributeSymbol = nonTerminal.getEnclosingScope()
-        .resolveAdditionalAttributeDown(StringTransformations.uncapitalize(nonTerminal.getName()));
-    boolean hasListASTRule = attributeSymbol.isPresent() && attributeSymbol.get().isPresentAstNode() &&
-        multiplicityOfAttributeInAST(attributeSymbol.get().getAstNode()) == LIST;
-    return !hasUsageName && !isActualList && hasListASTRule;
   }
 
   /**

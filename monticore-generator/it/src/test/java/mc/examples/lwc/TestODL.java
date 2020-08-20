@@ -34,59 +34,59 @@ public class TestODL extends GeneratorIntegrationsTest {
     assertNotNull(instances);
     
     assertEquals(instances.getName(), "MyWorld");
-    assertEquals(instances.getObjectsList().size(), 2);
+    assertEquals(instances.getObjectList().size(), 2);
     
-    assertEquals(instances.getObjectsList().get(0).getName(), "person");
-    assertTrue(instances.getObjectsList().get(0).getType().deepEquals(
+    assertEquals(instances.getObjectList().get(0).getName(), "person");
+    assertTrue(instances.getObjectList().get(0).getType().deepEquals(
         ODLMill.qualifiedNameBuilder().setNamesList(Lists.newArrayList("Person")).build()));
     
-    assertEquals(instances.getObjectsList().get(0).getAssignmentsList().size(), 4);
-    assertEquals(instances.getObjectsList().get(0).getAssignmentsList().get(0).getName(), "birthday");
+    assertEquals(instances.getObjectList().get(0).getAssignmentList().size(), 4);
+    assertEquals(instances.getObjectList().get(0).getAssignmentList().get(0).getName(), "birthday");
     assertTrue(instances
-        .getObjectsList()
+        .getObjectList()
         .get(0)
-        .getAssignmentsList()
+        .getAssignmentList()
         .get(0)
         .getValue()
         .deepEquals(
             ODLMill.dateValueBuilder()
                 .setDate(ODLMill.dateBuilder().setDay("01").setMonth("01").setYear("1999").build()).build()));
     
-    assertEquals(instances.getObjectsList().get(0).getAssignmentsList().get(1).getName(), "name");
+    assertEquals(instances.getObjectList().get(0).getAssignmentList().get(1).getName(), "name");
     assertTrue(instances
-        .getObjectsList()
+        .getObjectList()
         .get(0)
-        .getAssignmentsList()
+        .getAssignmentList()
         .get(1)
         .getValue()
         .deepEquals(
             ODLMill.stringValueBuilder()
                 .setSTRING("alice").build()));
     
-    assertEquals(instances.getObjectsList().get(0).getAssignmentsList().get(2).getName(), "id");
+    assertEquals(instances.getObjectList().get(0).getAssignmentList().get(2).getName(), "id");
     assertTrue(instances
-        .getObjectsList()
+        .getObjectList()
         .get(0)
-        .getAssignmentsList()
+        .getAssignmentList()
         .get(2)
         .getValue()
         .deepEquals(
             ODLMill.intValueBuilder()
                 .setINT("1").build()));
     
-    assertEquals(instances.getObjectsList().get(0).getAssignmentsList().get(3).getName(), "car");
+    assertEquals(instances.getObjectList().get(0).getAssignmentList().get(3).getName(), "car");
     assertTrue(instances
-        .getObjectsList()
+        .getObjectList()
         .get(0)
-        .getAssignmentsList()
+        .getAssignmentList()
         .get(3)
         .getValue()
         .deepEquals(
             ODLMill.referenceValueBuilder()
                 .setName("car").build()));
     
-    assertEquals(instances.getObjectsList().get(1).getName(), "car");
-    assertTrue(instances.getObjectsList().get(1).getType().deepEquals(
+    assertEquals(instances.getObjectList().get(1).getName(), "car");
+    assertTrue(instances.getObjectList().get(1).getType().deepEquals(
         ODLMill.qualifiedNameBuilder().setNamesList(Lists.newArrayList("lwc", "edl", "Car")).build()));
   }
   
