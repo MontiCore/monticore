@@ -595,12 +595,16 @@ public final class TransformationHelper {
 
     @Override
     public void visit(ASTTerminal node) {
-      ruleComponentList.add(node);
+      if (node.isPresentUsageName()) {
+        ruleComponentList.add(node);
+      }
     }
 
     @Override
     public void visit(ASTKeyTerminal node) {
-      ruleComponentList.add(node);
+      if (node.isPresentUsageName()) {
+        ruleComponentList.add(node);
+      }
     }
 
     @Override
