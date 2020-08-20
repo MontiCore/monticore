@@ -11,9 +11,7 @@ public class ASTMCMapTypeBuilder extends ASTMCMapTypeBuilderTOP {
     ASTMCMapType value;
 
     value = new ASTMCMapType();
-    if (this.mCTypeArguments.size() == 2) {
-      value.setMCTypeArgumentsList(this.mCTypeArguments);
-    } else if (this.key != null && this.value != null) {
+    if (this.key != null && this.value != null) {
       value.setKey(this.key);
       value.setValue(this.value);
     }
@@ -35,6 +33,6 @@ public class ASTMCMapTypeBuilder extends ASTMCMapTypeBuilderTOP {
 
   @Override
   public boolean isValid() {
-    return !(key == null && value == null && (mCTypeArguments == null || mCTypeArguments.size() != 2));
+    return !(key == null && value == null);
   }
 }

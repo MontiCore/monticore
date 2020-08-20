@@ -1,4 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("attributeName", "methodName", "paramCall")}
-    this.get${attributeName?cap_first}List().${methodName}(${paramCall});
+${tc.signature("attribute", "methodName", "paramCall")}
+<#assign genHelper = glex.getGlobalVar("astHelper")>
+    this.${genHelper.getPlainGetter(attribute)}().${methodName}(${paramCall});
     return this.realBuilder;

@@ -25,7 +25,7 @@ public class MCExceptionStatementsPrettyPrinter extends MCCommonStatementsPretty
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     getPrinter().println("try ");
     a.getCore().accept(getRealThis());
-    printExceptionStatementsList(a.getCatchClausesList().iterator(), "");
+    printExceptionStatementsList(a.getCatchClauseList().iterator(), "");
     getPrinter().println();
     if (a.isPresentFinally()) {
       getPrinter().print(" finally ");
@@ -40,7 +40,7 @@ public class MCExceptionStatementsPrettyPrinter extends MCCommonStatementsPretty
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     getPrinter().println("try ");
     a.getCore().accept(getRealThis());
-    printExceptionStatementsList(a.getCatchClausesList().iterator(), "");
+    printExceptionStatementsList(a.getCatchClauseList().iterator(), "");
     getPrinter().println();
     getPrinter().print(" finally ");
     a.getFinally().accept(getRealThis());
@@ -53,14 +53,14 @@ public class MCExceptionStatementsPrettyPrinter extends MCCommonStatementsPretty
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     getPrinter().println("try (");
     String sep = "";
-    for (ASTTryLocalVariableDeclaration l: a.getTryLocalVariableDeclarationsList()) {
+    for (ASTTryLocalVariableDeclaration l: a.getTryLocalVariableDeclarationList()) {
       getPrinter().print(sep);
       sep = "; ";
       l.accept(getRealThis());
     }
     getPrinter().print(")");
     a.getCore().accept(getRealThis());
-    printExceptionStatementsList(a.getCatchClausesList().iterator(), "");
+    printExceptionStatementsList(a.getCatchClauseList().iterator(), "");
     getPrinter().println();
     if (a.isPresentFinally()) {
       getPrinter().print(" finally ");
@@ -73,7 +73,7 @@ public class MCExceptionStatementsPrettyPrinter extends MCCommonStatementsPretty
   @Override
   public void handle(ASTTryLocalVariableDeclaration a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
-    a.getJavaModifiersList().stream().forEach(m -> {m.accept(getRealThis()); getPrinter().print(" ");});
+    a.getJavaModifierList().stream().forEach(m -> {m.accept(getRealThis()); getPrinter().print(" ");});
     a.getMCType().accept(getRealThis());
     getPrinter().print(" ");
     a.getDeclaratorId().accept(getRealThis());
@@ -96,7 +96,7 @@ public class MCExceptionStatementsPrettyPrinter extends MCCommonStatementsPretty
   public void handle(ASTCatchClause a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     getPrinter().print("catch (");
-    a.getJavaModifiersList().stream().forEach(m -> {m.accept(getRealThis()); getPrinter().print(" ");});
+    a.getJavaModifierList().stream().forEach(m -> {m.accept(getRealThis()); getPrinter().print(" ");});
     a.getCatchTypeList().accept(getRealThis());
     getPrinter().print(" ");
     getPrinter().print(a.getName());
@@ -109,7 +109,7 @@ public class MCExceptionStatementsPrettyPrinter extends MCCommonStatementsPretty
   public void handle(ASTCatchTypeList a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     String sep = "";
-    for (ASTMCQualifiedName q: a.getMCQualifiedNamesList()) {
+    for (ASTMCQualifiedName q: a.getMCQualifiedNameList()) {
       getPrinter().print(sep);
       q.accept(getRealThis());
       sep = "|";
