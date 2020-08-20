@@ -3,8 +3,8 @@
 package de.monticore.grammar;
 
 import de.monticore.ast.ASTNode;
+import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.grammar._ast.*;
-import de.monticore.utils.ASTNodes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,8 +16,6 @@ import java.util.stream.Stream;
 import static com.google.common.collect.Lists.newArrayList;
 import static de.monticore.codegen.mc2cd.TransformationHelper.getName;
 import static de.monticore.codegen.mc2cd.TransformationHelper.getUsageName;
-import static de.monticore.utils.ASTNodes.getIntermediates;
-import static de.monticore.utils.ASTNodes.getSuccessors;
 import static java.util.Collections.max;
 
 /**
@@ -100,7 +98,7 @@ return null;
   }
 
   public static Multiplicity multiplicityByAlternative(ASTNode rootNode, ASTNode astNode) {
-    List<ASTNode> intermediates = getIntermediates(rootNode, astNode);
+    List<ASTNode> intermediates = new MultiplicityVisitor().getComponents(rootNode, astNode);
     boolean containedInAlternative = false;
     for (ASTNode intermediate : intermediates) {
       if (intermediate instanceof ASTClassProd) {
@@ -136,22 +134,22 @@ return null;
 
   private static Stream<ASTNode> getAllNodesInRelatedRuleComponents(ASTNode rootNode,
                                                                     ASTNode astNode) {
-    Set<ASTRuleComponent> ancestorRuleComponents = getIntermediates(rootNode, astNode).stream()
+    Set<ASTRuleComponent> ancestorRuleComponents = new MultiplicityVisitor().getComponents(rootNode, astNode).stream()
         .filter(ASTRuleComponent.class::isInstance)
         .map(ASTRuleComponent.class::cast)
         .collect(Collectors.toSet());
 
-    return getIntermediates(rootNode, astNode).stream()
+    return new MultiplicityVisitor().getComponents(rootNode, astNode).stream()
         .filter(ASTAlt.class::isInstance)
         .map(ASTAlt.class::cast)
         .flatMap(alt -> alt.getComponentList().stream())
         .filter(ruleComponent -> !ancestorRuleComponents.contains(ruleComponent))
-        .flatMap(ruleComponent -> getSuccessors(ruleComponent, ASTNode.class).stream());
+        .flatMap(ruleComponent -> TransformationHelper.getAllComponents(ruleComponent).stream());
   }
 
   public static Multiplicity multiplicityByIteration(ASTNode rootNode, ASTNode astNode) {
     Multiplicity multiplicity = STANDARD;
-    for (ASTNode intermediate : ASTNodes.getIntermediates(rootNode, astNode)) {
+    for (ASTNode intermediate : new MultiplicityVisitor().getComponents(rootNode, astNode)) {
       int iteration = getIterationInt(intermediate);
 
       if (iteration == ASTConstantsGrammar.PLUS || iteration == ASTConstantsGrammar.STAR) {

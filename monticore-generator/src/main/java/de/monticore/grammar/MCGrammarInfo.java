@@ -9,13 +9,13 @@ import com.google.common.collect.Sets;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.parser.ParserGeneratorHelper;
-import de.monticore.grammar.concepts.antlr.antlr._ast.ASTAntlrLexerAction;
-import de.monticore.grammar.concepts.antlr.antlr._ast.ASTAntlrParserAction;
+import de.monticore.grammar.concepts.antlr.antlr._ast.ASTConceptAntlr;
 import de.monticore.grammar.concepts.antlr.antlr._ast.ASTJavaCodeExt;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
-import de.monticore.utils.ASTNodes;
+import de.monticore.grammar.grammar_withconcepts._ast.ASTMCConcept;
+import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVisitor;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
@@ -222,10 +222,13 @@ public class MCGrammarInfo {
     for (MCGrammarSymbol grammar : grammarsToHandle) {
       if (grammar.isPresentAstNode()) {
         // Add additional java code for lexer and parser
-        ASTNodes.getSuccessors(grammar.getAstNode(), ASTAntlrParserAction.class).forEach(
-            a -> addAdditionalParserJavaCode(a.getText()));
-        ASTNodes.getSuccessors(grammar.getAstNode(), ASTAntlrLexerAction.class).forEach(
-            a -> addAdditionalLexerJavaCode(a.getText()));
+        for (ASTConcept concept : grammar.getAstNode().getConceptsList()) {
+          if (concept.getConcept() instanceof ASTMCConcept) {
+            ASTConceptAntlr conceptAntlr = ((ASTMCConcept) concept.getConcept()).getConceptAntlr();
+            conceptAntlr.getAntlrParserActionsList().forEach(a -> addAdditionalParserJavaCode(a.getText()));
+            conceptAntlr.getAntlrLexerActionsList().forEach(a -> addAdditionalLexerJavaCode(a.getText()));
+          }
+        }
       }
     }
   }
@@ -322,21 +325,7 @@ public class MCGrammarInfo {
           ASTProd astProd = ruleSymbol.getAstNode();
           Optional<MCGrammarSymbol> refGrammarSymbol = MCGrammarSymbolTableHelper
               .getMCGrammarSymbol(astProd.getEnclosingScope());
-          boolean isRefGrammarSymbol = refGrammarSymbol.isPresent();
-          for (ASTTerminal keyword : ASTNodes.getSuccessors(astProd, ASTTerminal.class)) {
-            if (isKeyword(keyword.getName(), grammarSymbol)
-                || (isRefGrammarSymbol && isKeyword(keyword.getName(), refGrammarSymbol.get()))) {
-              keywords.add(keyword.getName());
-            }
-          }
-          for (ASTConstant keyword : ASTNodes.getSuccessors(astProd, ASTConstant.class)) {
-            if (!keyword.isPresentKeyConstant()) {
-              if (isKeyword(keyword.getName(), grammarSymbol)
-                      || (isRefGrammarSymbol && isKeyword(keyword.getName(), refGrammarSymbol.get()))) {
-                keywords.add(keyword.getName());
-              }
-            }
-          }
+          astProd.accept(new TerminalVisitor(refGrammarSymbol));
         }
       }
     }
@@ -372,6 +361,43 @@ public class MCGrammarInfo {
   
   private boolean mustBeKeyword(String rule) {
     return keywords.contains(rule);
+  }
+
+  private class TerminalVisitor implements Grammar_WithConceptsVisitor {
+
+    TerminalVisitor(Optional<MCGrammarSymbol> refGrammarSymbol) {
+      this.refGrammarSymbol = refGrammarSymbol;
+    }
+
+    Optional<MCGrammarSymbol> refGrammarSymbol;
+
+    Grammar_WithConceptsVisitor realThis = this;
+
+    @Override
+    public Grammar_WithConceptsVisitor getRealThis() {
+      return realThis;
+    }
+
+    @Override
+    public void setRealThis(Grammar_WithConceptsVisitor realThis) {
+      this.realThis = realThis;
+    }
+
+    @Override
+    public void visit(ASTTerminal keyword) {
+      if (isKeyword(keyword.getName(), grammarSymbol)
+              || (refGrammarSymbol.isPresent() && isKeyword(keyword.getName(), refGrammarSymbol.get()))) {
+        keywords.add(keyword.getName());
+      }
+    }
+
+    @Override
+    public void visit(ASTConstant keyword) {
+      if (isKeyword(keyword.getName(), grammarSymbol)
+              || (refGrammarSymbol.isPresent() && isKeyword(keyword.getName(), refGrammarSymbol.get()))) {
+        keywords.add(keyword.getName());
+      }
+    }
   }
   
 }

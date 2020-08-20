@@ -11,19 +11,20 @@ import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisGlobalScope;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.prettyprint.CDPrettyPrinter;
 import de.monticore.generating.templateengine.reporting.Reporting;
+import de.monticore.grammar.MultiplicityVisitor;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
+import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVisitor;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
-import de.monticore.types.mcfullgenerictypes._ast.ASTMCArrayType;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
-import de.monticore.utils.ASTNodes;
+import de.monticore.types.mcfullgenerictypes._ast.ASTMCArrayType;
 import de.se_rwth.commons.JavaNamesHelper;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
@@ -104,8 +105,7 @@ public final class TransformationHelper {
 
   public static Optional<String> getUsageName(ASTNode root,
                                               ASTNode successor) {
-    List<ASTNode> intermediates = ASTNodes
-        .getIntermediates(root, successor);
+    List<ASTNode> intermediates = new MultiplicityVisitor().getComponents(root, successor);
     for (ASTNode ancestor : Lists.reverse(intermediates)) {
       if (ancestor instanceof ASTConstantGroup && ((ASTConstantGroup) ancestor).isPresentUsageName()) {
         return Optional.of(((ASTConstantGroup) ancestor).getUsageName());
@@ -562,4 +562,56 @@ public final class TransformationHelper {
     }
     return superRuleNodes;
   }
+
+  public static List<ASTRuleComponent> getAllComponents(ASTGrammarNode node) {
+    return new CollectRuleComponents().getRuleComponents(node);
+  }
+
+  private static class CollectRuleComponents implements Grammar_WithConceptsVisitor {
+    Grammar_WithConceptsVisitor realThis = this;
+
+    @Override
+    public Grammar_WithConceptsVisitor getRealThis() {
+      return realThis;
+    }
+
+    @Override
+    public void setRealThis(Grammar_WithConceptsVisitor realThis) {
+      this.realThis = realThis;
+    }
+
+    public List<ASTRuleComponent> ruleComponentList = Lists.newArrayList();
+
+    public List<ASTRuleComponent> getRuleComponents(ASTGrammarNode node) {
+      ruleComponentList.clear();
+      node.accept(getRealThis());
+      return ruleComponentList;
+    }
+
+    @Override
+    public void visit(ASTNonTerminal node) {
+      ruleComponentList.add(node);
+    }
+
+    @Override
+    public void visit(ASTTerminal node) {
+      ruleComponentList.add(node);
+    }
+
+    @Override
+    public void visit(ASTKeyTerminal node) {
+      ruleComponentList.add(node);
+    }
+
+    @Override
+    public void visit(ASTTokenTerminal node) {
+      ruleComponentList.add(node);
+    }
+
+    @Override
+    public void visit(ASTConstantGroup node) {
+      ruleComponentList.add(node);
+    }
+  }
+
 }
