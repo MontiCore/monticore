@@ -27,7 +27,7 @@ public class OverridingNTHasNoAnnotation implements GrammarASTMCGrammarCoCo {
     for (ProdSymbol p : gSymbol.getProds()) {
       if (!hasOverrideAnno(p.getAstNode().getGrammarAnnotationsList()) && gSymbol.getInheritedProd(p.getName()).isPresent()) {
         String fullName = gSymbol.getInheritedProd(p.getName()).get().getFullName();
-        Log.warn(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName(), fullName),
+        Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName(), fullName),
                 a.get_SourcePositionStart());
       }
     }
