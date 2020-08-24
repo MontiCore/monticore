@@ -56,10 +56,10 @@ public class CombineExpressionsWithLiteralsTest {
     Optional<OOTypeSymbol> classB = globalScope1.resolveOOType("mc.typescalculator.TestCD.B");
     assertTrue(classB.isPresent());
 
-    TypeSymbol dSurrogate = new OOTypeSymbolSurrogate("D");
+    OOTypeSymbol dSurrogate = new OOTypeSymbolSurrogate("D");
     dSurrogate.setEnclosingScope(classD.get().getEnclosingScope());
 
-    TypeSymbol bSurrogate = new OOTypeSymbolSurrogate("B");
+    OOTypeSymbol bSurrogate = new OOTypeSymbolSurrogate("B");
     bSurrogate.setEnclosingScope(classB.get().getEnclosingScope());
 
 
