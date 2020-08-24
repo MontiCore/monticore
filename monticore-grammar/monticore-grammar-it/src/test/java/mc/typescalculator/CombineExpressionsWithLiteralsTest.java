@@ -4,6 +4,7 @@ package mc.typescalculator;
 import com.google.common.collect.Lists;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.io.paths.ModelPath;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
@@ -14,7 +15,6 @@ import de.monticore.types.check.SymTypeExpressionFactory;
 import de.se_rwth.commons.logging.LogStub;
 import mc.testcd4analysis._symboltable.TestCD4AnalysisGlobalScope;
 import mc.typescalculator.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
-import mc.typescalculator.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsArtifactScope;
 import mc.typescalculator.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsGlobalScope;
 import mc.typescalculator.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsSymbolTableCreatorDelegator;
 import mc.typescalculator.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsArtifactScope;
@@ -56,10 +56,10 @@ public class CombineExpressionsWithLiteralsTest {
     Optional<OOTypeSymbol> classB = globalScope1.resolveOOType("mc.typescalculator.TestCD.B");
     assertTrue(classB.isPresent());
 
-    OOTypeSymbolSurrogate dSurrogate = new OOTypeSymbolSurrogate("D");
+    TypeSymbol dSurrogate = new OOTypeSymbolSurrogate("D");
     dSurrogate.setEnclosingScope(classD.get().getEnclosingScope());
 
-    OOTypeSymbolSurrogate bSurrogate = new OOTypeSymbolSurrogate("B");
+    TypeSymbol bSurrogate = new OOTypeSymbolSurrogate("B");
     bSurrogate.setEnclosingScope(classB.get().getEnclosingScope());
 
 

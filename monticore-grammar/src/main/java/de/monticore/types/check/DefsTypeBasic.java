@@ -314,7 +314,7 @@ public class DefsTypeBasic {
   
   public static void set_String() {
     _String = type("String");
-    OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate("String");
+    TypeSymbol loader = new OOTypeSymbolSurrogate("String");
     loader.setEnclosingScope(createScopeWithString());
     _StringSymType = new SymTypeOfObject(loader);
   }
@@ -435,7 +435,7 @@ public class DefsTypeBasic {
     OOSymbolsScope typeSymbolsScope = new OOSymbolsScope();
     _int = type("int");
     typeSymbolsScope.add(_int);
-    OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate("int");
+    TypeSymbol loader = new OOTypeSymbolSurrogate("int");
     loader.setEnclosingScope(typeSymbolsScope);
     _intSymType = new SymTypeConstant(loader);
     typeConstants.put("int", _intSymType);

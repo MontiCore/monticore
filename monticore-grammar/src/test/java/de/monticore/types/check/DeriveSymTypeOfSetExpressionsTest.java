@@ -6,6 +6,7 @@ import de.monticore.expressions.combineexpressionswithliterals.CombineExpression
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsScope;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
@@ -109,7 +110,7 @@ public class DeriveSymTypeOfSetExpressionsTest {
   @Test
   public void testSetInExpression() throws IOException{
     //TEST 1: double in Set<double>
-    OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate("Set");
+    TypeSymbol loader = new OOTypeSymbolSurrogate("Set");
     loader.setEnclosingScope(scope);
     OOTypeSymbol setDoubleType = OOSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
@@ -141,7 +142,7 @@ public class DeriveSymTypeOfSetExpressionsTest {
   @Test
   public void testInvalidSetInExpression() throws IOException{
     //TEST 1: Error: double in Set<int>
-    OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate("Set");
+    TypeSymbol loader = new OOTypeSymbolSurrogate("Set");
     loader.setEnclosingScope(scope);
     OOTypeSymbol setIntType = OOSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
@@ -172,7 +173,7 @@ public class DeriveSymTypeOfSetExpressionsTest {
   @Test
   public void testIsInExpression() throws IOException{
     //TEST 1: double in Set<double>
-    OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate("Set");
+    TypeSymbol loader = new OOTypeSymbolSurrogate("Set");
     loader.setEnclosingScope(scope);
     OOTypeSymbol setDoubleType = OOSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
@@ -204,7 +205,7 @@ public class DeriveSymTypeOfSetExpressionsTest {
   @Test
   public void testInvalidIsInExpression() throws IOException{
     //TEST 1: Error: double isin Set<int>
-    OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate("Set");
+    TypeSymbol loader = new OOTypeSymbolSurrogate("Set");
     loader.setEnclosingScope(scope);
     OOTypeSymbol setIntType = OOSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
@@ -235,7 +236,7 @@ public class DeriveSymTypeOfSetExpressionsTest {
   @Test
   public void testUnionExpressionInfix() throws IOException{
     //create Set<int> and Set<double>
-    OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate("Set");
+    TypeSymbol loader = new OOTypeSymbolSurrogate("Set");
     loader.setEnclosingScope(scope);
     OOTypeSymbol setinttype = OOSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
@@ -271,7 +272,7 @@ public class DeriveSymTypeOfSetExpressionsTest {
   @Test
   public void testInvalidUnionInfixExpression() throws IOException{
     //TEST 1: Error: no SetType union SetType
-    OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate("Set");
+    TypeSymbol loader = new OOTypeSymbolSurrogate("Set");
     loader.setEnclosingScope(scope);
     OOTypeSymbol setIntType = OOSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
@@ -301,7 +302,7 @@ public class DeriveSymTypeOfSetExpressionsTest {
   @Test
   public void testInvalidUnionInfixExpression2() throws IOException{
     //TEST 2: Error: set<boolean> union set<int>
-    OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate("Set");
+    TypeSymbol loader = new OOTypeSymbolSurrogate("Set");
     loader.setEnclosingScope(scope);
     OOTypeSymbol setIntType = OOSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
@@ -335,7 +336,7 @@ public class DeriveSymTypeOfSetExpressionsTest {
   @Test
   public void testIntersectionExpressionInfix() throws IOException{
     //create Set<int> and Set<double>
-    OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate("Set");
+    TypeSymbol loader = new OOTypeSymbolSurrogate("Set");
     loader.setEnclosingScope(scope);
     OOTypeSymbol setinttype = OOSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
@@ -371,7 +372,7 @@ public class DeriveSymTypeOfSetExpressionsTest {
   @Test
   public void testInvalidIntersectionInfixExpression() throws IOException{
     //TEST 1: Error: no SetType intersect SetType
-    OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate("Set");
+    TypeSymbol loader = new OOTypeSymbolSurrogate("Set");
     loader.setEnclosingScope(scope);
     OOTypeSymbol setIntType = OOSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
@@ -402,7 +403,7 @@ public class DeriveSymTypeOfSetExpressionsTest {
   @Test
   public void testInvalidIntersectionInfixExpression2() throws IOException{
     //TEST 2: Error: set<boolean> intersect set<int>
-    OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate("Set");
+    TypeSymbol loader = new OOTypeSymbolSurrogate("Set");
     loader.setEnclosingScope(scope);
     OOTypeSymbol setIntType = OOSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())

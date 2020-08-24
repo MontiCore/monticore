@@ -8,6 +8,8 @@ import de.monticore.expressions.setexpressions._ast.ASTIsInExpression;
 import de.monticore.expressions.setexpressions._ast.ASTSetInExpression;
 import de.monticore.expressions.setexpressions._ast.ASTUnionExpressionInfix;
 import de.monticore.expressions.setexpressions._visitor.SetExpressionsVisitor;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolSurrogate;
 
 import java.util.List;
@@ -134,11 +136,11 @@ public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression imp
       String right = rightGeneric.getTypeInfo().getName();
       if(collections.contains(left) && unbox(left).equals(unbox(right))) {
         if (compatible(leftGeneric.getArgument(0), rightGeneric.getArgument(0))) {
-            OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate(left);
+            TypeSymbol loader = new TypeSymbolSurrogate(left);
             loader.setEnclosingScope(getScope(expr.getEnclosingScope()));
             wholeResult = Optional.of(SymTypeExpressionFactory.createGenerics(loader,leftGeneric.getArgument(0).deepClone()));
         } else if(compatible(rightGeneric.getArgument(0), leftGeneric.getArgument(0))) {
-            OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate(right);
+            TypeSymbol loader = new TypeSymbolSurrogate(right);
             loader.setEnclosingScope(getScope(expr.getEnclosingScope()));
             wholeResult = Optional.of(SymTypeExpressionFactory.createGenerics(loader,rightGeneric.getArgument(0).deepClone()));
         }

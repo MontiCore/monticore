@@ -2,6 +2,7 @@
 
 package de.monticore.types.check;
 
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolSurrogate;
 import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
@@ -76,7 +77,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypes extends SynthesizeSymType
       }
       arguments.add(typeCheckResult.getCurrentResult());
     }
-    OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate(genericType.printWithoutTypeArguments());
+    TypeSymbol loader = new OOTypeSymbolSurrogate(genericType.printWithoutTypeArguments());
     loader.setEnclosingScope(getScope(genericType.getEnclosingScope()));
     SymTypeExpression tex = SymTypeExpressionFactory.createGenerics(
         loader, arguments);
@@ -107,7 +108,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypes extends SynthesizeSymType
 
   @Override
   public void endVisit(ASTMCQualifiedName qName) {
-    OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate(qName.getQName());
+    TypeSymbol loader = new OOTypeSymbolSurrogate(qName.getQName());
     loader.setEnclosingScope(getScope(qName.getEnclosingScope()));
     SymTypeOfObject oType = createTypeObject(loader);
     typeCheckResult.setCurrentResult(oType);
