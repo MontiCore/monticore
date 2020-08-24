@@ -467,10 +467,10 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     List<FunctionSymbol> fittingMethods = new ArrayList<>();
     for (FunctionSymbol method : methodlist) {
       //for every method found check if the arguments are correct
-      if (expr.getArguments().getExpressionsList().size() == method.getParameterList().size()) {
+      if (expr.getArguments().getExpressionList().size() == method.getParameterList().size()) {
         boolean success = true;
         for (int i = 0; i < method.getParameterList().size(); i++) {
-          expr.getArguments().getExpressions(i).accept(getRealThis());
+          expr.getArguments().getExpression(i).accept(getRealThis());
           //test if every single argument is correct
           if (!method.getParameterList().get(i).getType().deepEquals(typeCheckResult.getCurrentResult()) &&
               !compatible(method.getParameterList().get(i).getType(), typeCheckResult.getCurrentResult())) {

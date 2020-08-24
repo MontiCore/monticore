@@ -34,7 +34,7 @@ public class DeepCloneNotEqualTest {
         assertFalse(parser.hasErrors());
         assertTrue(ast.isPresent());
         ASTCloneNameList astClone = ast.get().deepClone();
-        astClone.setNames(1, "NewName");
+        astClone.setName(1, "NewName");
         assertFalse(ast.get().deepEquals(astClone));
     }
 
@@ -71,7 +71,7 @@ public class DeepCloneNotEqualTest {
         assertFalse(parser.hasErrors());
         assertTrue(ast.isPresent());
         ASTCloneAST astClone = ast.get().deepClone();
-        astClone.getCloneNameList().setNames(1, "NewName");
+        astClone.getCloneNameList().setName(1, "NewName");
         assertFalse(ast.get().deepEquals(astClone));
     }
 
@@ -83,7 +83,7 @@ public class DeepCloneNotEqualTest {
         assertFalse(parser.hasErrors());
         assertTrue(ast.isPresent());
         ASTCloneASTList astClone = ast.get().deepClone();
-        astClone.getCloneASTs(1).getCloneNameList().setNames(1, "NewName");
+        astClone.getCloneAST(1).getCloneNameList().setName(1, "NewName");
         assertFalse(ast.get().deepEquals(astClone));
     }
 
@@ -136,7 +136,7 @@ public class DeepCloneNotEqualTest {
         assertTrue(ast.isPresent());
         ASTCloneStringList astClone = ast.get().deepClone();
         ASTStringLiteral string = parser.parse_StringCloneString("\"NewString\"").get().getStringLiteral();
-        astClone.getStringLiteralsList().set(1, string);
+        astClone.getStringLiteralList().set(1, string);
         assertFalse(ast.get().deepEquals(astClone));
     }
 
@@ -187,7 +187,7 @@ public class DeepCloneNotEqualTest {
         assertTrue(ast.isPresent());
         ASTCloneIntList astClone = ast.get().deepClone();
         ASTIntLiteral i= parser.parse_StringCloneInt("4567").get().getIntLiteral();
-        astClone.setIntLiterals(1, i);
+        astClone.setIntLiteral(1, i);
         assertFalse(ast.get().deepEquals(astClone));
     }
 
@@ -236,7 +236,7 @@ public class DeepCloneNotEqualTest {
         assertFalse(parser.hasErrors());
         assertTrue(ast.isPresent());
         ASTCloneStringList2 astClone = ast.get().deepClone();
-        astClone.setStrings(1,"NewString");
+        astClone.setString(1,"NewString");
         assertFalse(ast.get().deepEquals(astClone));
     }
 
@@ -284,7 +284,7 @@ public class DeepCloneNotEqualTest {
         assertFalse(parser.hasErrors());
         assertTrue(ast.isPresent());
         ASTCloneIntList2 astClone = ast.get().deepClone();
-        astClone.setNum_Ints(1, "2345");
+        astClone.setNum_Int(1, "2345");
         assertFalse(ast.get().deepEquals(astClone));
     }
 

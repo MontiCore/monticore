@@ -8,6 +8,7 @@ package ${genHelper.getParserPackage()};
 </#if>
 <#if genHelper.isEmbeddedJavaCode()>
 import de.monticore.antlr4.*;
+import de.monticore.parser.*;
 import ${genHelper.getQualifiedGrammarName()?lower_case}.*;
 </#if>
 }

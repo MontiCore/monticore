@@ -12,7 +12,7 @@ public class AtLeastOneInitialState implements SM2ASTAutomatonCoCo {
   public void check(ASTAutomaton automaton) {
     boolean initialState = false;
     
-    for (ASTState state : automaton.getStatesList()) {
+    for (ASTState state : automaton.getStateList()) {
       if (state.isInitial()) {
         initialState = true;
       }

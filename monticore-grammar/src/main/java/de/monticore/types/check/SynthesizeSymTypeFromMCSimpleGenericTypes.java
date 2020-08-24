@@ -65,7 +65,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypes extends SynthesizeSymType
   public void traverse(ASTMCBasicGenericType genericType) {
 
     List<SymTypeExpression> arguments = new LinkedList<SymTypeExpression>();
-    for (ASTMCTypeArgument arg : genericType.getMCTypeArgumentsList()) {
+    for (ASTMCTypeArgument arg : genericType.getMCTypeArgumentList()) {
       if (null != arg) {
         arg.accept(getRealThis());
       }
