@@ -31,7 +31,7 @@ public class SymTypeOfSIUnit extends SymTypeExpression {
 
   @Override
   public SymTypeOfSIUnit deepClone() {
-    TypeSymbolSurrogate symbol = new TypeSymbolSurrogate(typeSymbol.getName());
+    TypeSymbol symbol = new TypeSymbolSurrogate(typeSymbol.getName());
     symbol.setEnclosingScope(typeSymbol.getEnclosingScope());
     return new SymTypeOfSIUnit(symbol);
   }
