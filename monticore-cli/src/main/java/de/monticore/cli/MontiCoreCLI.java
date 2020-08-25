@@ -37,7 +37,7 @@ import de.se_rwth.commons.logging.Slf4jLog;
  * Command line interface for MontiCore.
  *
  */
-public final class MontiCoreCLI {
+public class MontiCoreCLI {
   
   public static final String LOGBACK_USER_CONFIG = "user.logging.xml";
   
@@ -53,6 +53,15 @@ public final class MontiCoreCLI {
    * @param args the CLI arguments
    */
   public static void main(String[] args) {
+    Log.initWARN();
+    new MontiCoreCLI().run(args);
+  }
+  
+  /**
+   * Run: executes the CLI arguments and commands
+   * @param args command line arguments (e.g. --help)
+   */
+  public void run(String[] args) {
     if (args.length == 0) {
       // the only required input are the grammar file(s)/directories
       printHelp();
@@ -249,7 +258,8 @@ public final class MontiCoreCLI {
     }
   }
   
-  private MontiCoreCLI() {
+  public void MontiCoreCLI() {
+    // deliberately do nothing
   }
   
   protected static void printHelp() {
@@ -263,7 +273,7 @@ public final class MontiCoreCLI {
     System.out.println("-s, -script <script>         Optional script to control the generation workflow");
     System.out.println("-g, -grammars <path>         Instead of individual grammars: handle all grammars found");
     System.out.println("-fp, -templatePath <paths>   Optional list of directories to look for handwritten templates to integrate");
-    System.out.println("-f, -force                    Secifies whether the code generation should be enforced, i.e. disable incremental code generation (default is false)");
+    System.out.println("-f, -force                   Secifies whether the code generation should be enforced, i.e. disable incremental code generation (default is false)");
     System.out.println("-d, -dev                     Specifies whether developer level logging should be used (default is false)");
     System.out.println("-cl, -customLog <file>       Optional logging configuration file to customize the logger");
   }

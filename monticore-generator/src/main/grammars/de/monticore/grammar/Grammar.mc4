@@ -508,6 +508,21 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
   Concept=
     "concept" Name& concept:MCConcept;
 
+  // --------------------------------------------------------------------
+  // Control rules
+
+  /**
+    Allows splitting of token, such as ">>" to single character token
+  */
+  SplitRule =
+    "splittoken" (String || ",")+ ";";
+
+  /**
+    Makes keywords local 
+  */
+  KeywordRule =
+    "nokeyword" (String || ",")+ ";";
+
 
   // ----------------------------------------------------------------------
   // AST
@@ -628,11 +643,6 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
   LexOption =
     "options" "{" iD:Name "=" value:Name ";" "}";
 
-  SplitRule =
-    "splittoken" (String || ",")+ ";";
-
-  KeywordRule =
-    "nokeyword" (String || ",")+ ";";
 
   // --------------------------------------------------------------------
   // Symbol Table

@@ -31,10 +31,10 @@ public class CommentsTest extends GeneratorIntegrationsTest {
     assertTrue(optAst.isPresent());
     ASTStart ast = optAst.get();
     assertEquals(false, p.hasErrors());
-    assertEquals(1, ast.getAsList().size());
-    assertEquals(1, ast.getBsList().size());
-    assertEquals(1, ((ASTNode) ast.getAsList().get(0)).get_PreCommentList().size());
-    assertEquals(1, ((ASTNode) ast.getAsList().get(0)).get_PostCommentList().size());
-    assertEquals(0, ((ASTNode) ast.getBsList().get(0)).get_PreCommentList().size());
+    assertEquals(1, ast.getAList().size());
+    assertEquals(1, ast.getBList().size());
+    assertEquals(1, ((ASTNode) ast.getAList().get(0)).get_PreCommentList().size());
+    assertEquals(1, ((ASTNode) ast.getAList().get(0)).get_PostCommentList().size());
+    assertEquals(0, ((ASTNode) ast.getBList().get(0)).get_PreCommentList().size());
   }
 }

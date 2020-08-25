@@ -241,7 +241,12 @@ public class DecorationHelper extends MCBasicTypesHelper {
     }
     sb.append(StringTransformations.capitalize(getNativeAttributeName(ast.getName())));
     if (isListType(astType)) {
-      sb.append(GET_SUFFIX_LIST);
+      if (hasDerivedAttributeName(ast) && ast.getName().endsWith(TransformationHelper.LIST_SUFFIX)) {
+        sb.replace(sb.length() - TransformationHelper.LIST_SUFFIX.length(),
+            sb.length(), GET_SUFFIX_LIST);
+      } else {
+        sb.append(GET_SUFFIX_LIST);
+      }
     }
     return sb.toString();
   }
@@ -251,9 +256,21 @@ public class DecorationHelper extends MCBasicTypesHelper {
         StringTransformations.capitalize(getNativeAttributeName(ast.getName())));
     String astType = ast.getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter());
     if (isListType(astType)) {
-      sb.append(GET_SUFFIX_LIST);
-    }
+      if (hasDerivedAttributeName(ast) && ast.getName().endsWith(TransformationHelper.LIST_SUFFIX)) {
+        sb.replace(sb.length() - TransformationHelper.LIST_SUFFIX.length(),
+            sb.length(), GET_SUFFIX_LIST);
+      } else {
+        sb.append(GET_SUFFIX_LIST);
+      }    }
     return sb.toString();
+  }
+
+  protected boolean hasDerivedAttributeName(ASTCDAttribute astcdAttribute) {
+    return astcdAttribute.isPresentModifier() && astcdAttribute.getModifier().isPresentStereotype()
+        && astcdAttribute.getModifier().getStereotype().sizeValue() > 0 &&
+        astcdAttribute.getModifier().getStereotype().getValueList()
+            .stream()
+            .anyMatch(v -> v.getName().equals(MC2CDStereotypes.DERIVED_ATTRIBUTE_NAME.toString()));
   }
 
   /**

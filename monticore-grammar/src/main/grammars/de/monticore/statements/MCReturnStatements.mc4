@@ -4,6 +4,9 @@ package de.monticore.statements;
 /* This is a MontiCore stable grammar.
  * Adaptations -- if any -- are conservative. */
 
+import de.monticore.statements.*;
+import de.monticore.expressions.*;
+
 /**
  * This grammar defines Java's return statement.
  *
@@ -23,8 +26,8 @@ package de.monticore.statements;
 */
 
 component grammar MCReturnStatements 
-          extends de.monticore.statements.MCStatementsBasis,
-                  de.monticore.expressions.ExpressionsBasis  {
+          extends MCStatementsBasis,
+                  ExpressionsBasis  {
 
 ReturnStatement implements MCStatement
     =   "return" Expression? ";"

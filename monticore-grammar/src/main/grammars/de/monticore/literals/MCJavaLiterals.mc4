@@ -1,7 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.literals;
 
-/* Beta-version: This is intended to become a MontiCore stable grammar. */
+/* This is a MontiCore stable grammar.
+ * Adaptations -- if any -- are conservative. */
+
+import de.monticore.literals.*;
 
 /**
  *
@@ -15,7 +18,7 @@ package de.monticore.literals;
  *
 */
 
-component grammar MCJavaLiterals extends de.monticore.literals.MCCommonLiterals {
+component grammar MCJavaLiterals extends MCCommonLiterals {
 
 
 

@@ -23,6 +23,7 @@ import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.NAM
 /**
  * creates a SymbolLoader class from a grammar
  */
+@Deprecated
 public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
 
   protected SymbolTableService symbolTableService;

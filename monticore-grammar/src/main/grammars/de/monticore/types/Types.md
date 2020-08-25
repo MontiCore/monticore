@@ -1,15 +1,18 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 
-<!-- Alpha-version: This is intended to become a MontiCore stable explanation. -->
+<!-- This is a MontiCore stable explanation. -->
 
 # MontiCore - Types
-
 
 Type systems are available in a variety of (programming) languages and 
 facilitate programming because typing errors can already be detected at compile 
 time. To express type usages a language component 
 hierarchy for modeling types was developed for MontiCore-based languages. It 
-consists of four language components [`MCBasicTypes`](MCBasicTypes.mc4), [`MCCollectionTypes`](MCCollectionTypes.mc4), [`MCSimpleGenericTypes`](MCSimpleGenericTypes.mc4), and [`MCFullGenericTypes`](MCFullGenericTypes.mc4).
+consists of four language components
+[`MCBasicTypes`](MCBasicTypes.mc4), 
+[`MCCollectionTypes`](MCCollectionTypes.mc4), 
+[`MCSimpleGenericTypes`](MCSimpleGenericTypes.mc4), and 
+[`MCFullGenericTypes`](MCFullGenericTypes.mc4).
  
 ## MCBasicTypes
 
@@ -50,9 +53,21 @@ which is not expressible using the language component
 not expressible. 
 
 ## MCFullGenericTypes
+
 The language component [`MCFullGenericTypes`](MCFullGenericTypes.mc4) 
 extends the language 
 component `MCSimpleGenericTypes` and extends the expressible types with 
 inner generics types of arbitrary classes with 
 arbitrary arguments including wild card types. When using this language component,
 types such as `Person<?>`, `Map<Person<String>, ? extends Person>` or `a.b.C<D>.E.F<G>.H` are expressible.
+
+## Further Information
+
+* [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
+* [MontiCore documentation](http://www.monticore.de/)
+
+* [**List of languages**](https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/docs/Languages.md)
+* [**MontiCore Core Grammar Library**](https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
+* [Best Practices](BestPractices.md)
+* [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
+

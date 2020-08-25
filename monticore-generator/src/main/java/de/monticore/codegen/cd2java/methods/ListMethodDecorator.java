@@ -5,6 +5,7 @@ import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
 import de.monticore.codegen.cd2java.AbstractCreator;
+import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
@@ -21,6 +22,8 @@ public abstract class ListMethodDecorator extends AbstractCreator<ASTCDAttribute
 
   protected String capitalizedAttributeNameWithS;
 
+  protected String capitalizedAttributeNameWithOutS;
+
   protected String attributeType;
 
   public ListMethodDecorator(final GlobalExtensionManagement glex) {
@@ -30,6 +33,13 @@ public abstract class ListMethodDecorator extends AbstractCreator<ASTCDAttribute
   @Override
   public List<ASTCDMethod> decorate(final ASTCDAttribute ast) {
     this.capitalizedAttributeNameWithS = getCapitalizedAttributeNameWithS(ast);
+    // if the attributeName is set by itself then the s is not removed
+    // this means capitalizedAttributeNameWithS == capitalizedAttributeNameWithOutS
+    this.capitalizedAttributeNameWithOutS = capitalizedAttributeNameWithS;
+    // but if the attributeName is derived then the s is removed
+    if(capitalizedAttributeNameWithS.endsWith("s") && hasDerivedAttributeName(ast)) {
+      this.capitalizedAttributeNameWithOutS = capitalizedAttributeNameWithS.substring(0, capitalizedAttributeNameWithS.length() - 1);
+    }
     this.attributeType = getAttributeType(ast);
 
     List<ASTCDMethod> methods = getMethodSignatures().stream()
@@ -38,6 +48,14 @@ public abstract class ListMethodDecorator extends AbstractCreator<ASTCDAttribute
 
     methods.forEach(m -> this.replaceTemplate(EMPTY_BODY, m, createListImplementation(m)));
     return methods;
+  }
+
+  protected boolean hasDerivedAttributeName(ASTCDAttribute astcdAttribute) {
+    return astcdAttribute.isPresentModifier() && astcdAttribute.getModifier().isPresentStereotype()
+        && astcdAttribute.getModifier().getStereotype().sizeValue() > 0 &&
+        astcdAttribute.getModifier().getStereotype().getValueList()
+            .stream()
+            .anyMatch(v -> v.getName().equals(MC2CDStereotypes.DERIVED_ATTRIBUTE_NAME.toString()));
   }
 
   protected abstract List<String> getMethodSignatures();
@@ -49,8 +67,8 @@ public abstract class ListMethodDecorator extends AbstractCreator<ASTCDAttribute
   }
 
   private HookPoint createListImplementation(final ASTCDMethod method) {
-    String attributeName = StringUtils.uncapitalize(capitalizedAttributeNameWithS);
-    int attributeIndex = method.getName().lastIndexOf(capitalizedAttributeNameWithS);
+    String attributeName = StringUtils.uncapitalize(capitalizedAttributeNameWithOutS);
+    int attributeIndex = method.getName().lastIndexOf(capitalizedAttributeNameWithOutS);
     String methodName = method.getName().substring(0, attributeIndex);
     String parameterCall = method.getCDParametersList().stream()
         .map(ASTCDParameter::getName)

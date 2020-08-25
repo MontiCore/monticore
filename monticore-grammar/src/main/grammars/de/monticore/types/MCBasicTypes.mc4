@@ -4,6 +4,8 @@ package de.monticore.types;
 /* This is a MontiCore stable grammar.
  * Adaptations -- if any -- are conservative. */
 
+import de.monticore.*;
+
 /**
  * This grammar defines basic types.
  *

@@ -4,6 +4,8 @@ package de.monticore.statements;
 /* This is a MontiCore stable grammar.
  * Adaptations -- if any -- are conservative. */
 
+import de.monticore.statements.*;
+
 /**
  * This grammar defines the Java-like synchronized statement.
  * The statement is extracted into its own grammar because in
@@ -26,7 +28,7 @@ package de.monticore.statements;
 */
 
 component grammar MCSynchronizedStatements 
-          extends de.monticore.statements.MCCommonStatements {
+          extends MCCommonStatements {
 
 SynchronizedStatement implements MCStatement
     =   "synchronized" "(" Expression ")" MCJavaBlock

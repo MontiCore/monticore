@@ -1,7 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types;
 
-/* Beta-version: This is intended to become a MontiCore stable grammar. */
+/* This is a MontiCore stable grammar.
+ * Adaptations -- if any -- are conservative. */
+
+import de.monticore.types.*;
 
 /**
  * This grammar completes the type definitions to 
@@ -20,7 +23,7 @@ package de.monticore.types;
 */
 
 component grammar MCFullGenericTypes
-       extends de.monticore.types.MCSimpleGenericTypes {
+          extends MCSimpleGenericTypes {
 
   /*=================================================================*/
 

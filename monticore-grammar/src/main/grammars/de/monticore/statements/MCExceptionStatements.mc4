@@ -4,6 +4,8 @@ package de.monticore.statements;
 /* This is a MontiCore stable grammar.
  * Adaptations -- if any -- are conservative. */
 
+import de.monticore.statements.*;
+
 /**
  * This grammar defines the exception statements.
  * This includes Java try with catch and finally, as well as throw.
@@ -24,7 +26,7 @@ package de.monticore.statements;
 */
 
 component grammar MCExceptionStatements 
-          extends de.monticore.statements.MCCommonStatements {
+          extends MCCommonStatements {
 
 // Three different variants of the TryStatement differ in the
 // optionality of their elements.

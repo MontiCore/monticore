@@ -486,14 +486,9 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
     }
 
     if (firstProduction != null) {
-      Optional<ProdSymbol> prod = astGrammar.getSymbol().getProdWithInherited(firstProduction.getName());
-      if (!prod.isPresent()) {
-        error("0xA2174 Prod " + firstProduction.getName() + " couldn't be found! Pos: "
-            + firstProduction.get_SourcePositionStart());
-      } else {
-        prod.get().setIsStartProd(true);
-        astGrammar.getSymbol().setStartProd(prod.get());
-      }
+      ProdSymbol prod = firstProduction.getSymbol();
+      prod.setIsStartProd(true);
+      astGrammar.getSymbol().setStartProd(prod);
     }
   }
 

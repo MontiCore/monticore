@@ -71,6 +71,8 @@ public class GrammarCoCos {
     checker.addCoCo(new NoOverridingNTHasAnnotation());
     checker.addCoCo(new OverridingNTHasNoAnnotation());
     checker.addCoCo(new ProdWithDoubleAnnos());
+    checker.addCoCo(new ExternalNTNoASTRule());
+    checker.addCoCo(new DerivedAndManualListName());
     // checker.addCoCo(new NoNTInheritanceCycle());
 
     return checker;

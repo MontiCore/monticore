@@ -171,7 +171,7 @@ public class AutomataTool {
     generateAbstractState();
   
     // generate the class for each state
-    for(ASTState state : ast.getStatesList()) {
+    for(ASTState state : ast.getStateList()) {
       generateState(state);
     }
   
@@ -205,7 +205,7 @@ public class AutomataTool {
 
     // we assume there is at least one state (--> CoCo)
     // if there are more: one will arbitrarily be choosen (may be the last one)  (---> CoCo?)
-    ASTState initialState = ast.getStatesList().stream().filter(ASTState::isInitial).findAny().get();
+    ASTState initialState = ast.getStateList().stream().filter(ASTState::isInitial).findAny().get();
     
     // handle TOP extension
     boolean isHW = existsHandwrittenClass(handcodedPath,className);
@@ -292,13 +292,13 @@ public class AutomataTool {
     // For demonstration we use the direct approach
   
     // initialize delta: transition map of maps, and state name2node
-    for(ASTState s: ast.getStatesList()) {
+    for(ASTState s: ast.getStateList()) {
       stateMap.put(s.getName(),s);
       deltaMap.put(s,new HashMap<>());
     }
     
     // Add the transitions to the table
-    for(ASTTransition t: ast.getTransitionsList()) {
+    for(ASTTransition t: ast.getTransitionList()) {
       String input = t.getInput();
       stimuli.add(input);
       ASTState from = stateMap.get(t.getFrom());

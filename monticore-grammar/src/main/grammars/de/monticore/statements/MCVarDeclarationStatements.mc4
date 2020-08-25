@@ -4,6 +4,11 @@ package de.monticore.statements;
 /* This is a MontiCore stable grammar.
  * Adaptations -- if any -- are conservative. */
 
+import de.monticore.statements.*;
+import de.monticore.expressions.*;
+import de.monticore.symbols.*;
+import de.monticore.types.*;
+
 /**
  * This grammar defines Java's mechanism for the introduction
  * of local variables with a type, an array dim and
@@ -26,10 +31,10 @@ package de.monticore.statements;
 */
 
 component grammar MCVarDeclarationStatements
-          extends de.monticore.statements.MCStatementsBasis,
-                  de.monticore.types.MCBasicTypes,
-                  de.monticore.expressions.ExpressionsBasis,
-                  de.monticore.symbols.OOSymbols {
+          extends MCStatementsBasis,
+                  MCBasicTypes,
+                  ExpressionsBasis,
+                  OOSymbols {
 
 LocalVariableDeclarationStatement implements MCBlockStatement
     = LocalVariableDeclaration ";"
