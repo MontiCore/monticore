@@ -80,7 +80,7 @@ public class GlobalScopeInterfaceDecorator
         continue;
       }
       if (symbolTableService.hasStartProd(superGrammar.getAstNode())
-          ||!symbolTableService.getSymbolDefiningSuperProds().isEmpty() ) {
+          ||!symbolTableService.getSymbolDefiningSuperProds(superGrammar).isEmpty() ) {
         result.add(symbolTableService.getGlobalScopeInterfaceType(superGrammar));
       }
     }
