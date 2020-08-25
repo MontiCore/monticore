@@ -27,7 +27,7 @@ public class NoOverridingNTHasAnnotation implements GrammarASTClassProdCoCo {
               .getMCGrammarSymbol(a.getEnclosingScope());
 
       if (!grammarSymbol.get().getInheritedProd(a.getName()).isPresent()) {
-        Log.warn(String.format(ERROR_CODE + ERROR_MSG_FORMAT, a.getName()),
+        Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, a.getName()),
                 a.get_SourcePositionStart());
       }
     }
