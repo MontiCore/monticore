@@ -4,6 +4,7 @@ package de.monticore.inherited.subsub;
 
 grammar Subsubgrammar extends de.monticore.inherited.sub.Subgrammar {
 
+  @Override
   N = X? D;
   
 //  P extends X = D;

@@ -771,8 +771,8 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     if (alt.isRightAssoc()) {
       addToAntlrCode(ParserGeneratorHelper.RIGHTASSOC);
     }
-    if (alt.isPresentDeprecatedAnnotation()) {
-      String t = alt.getDeprecatedAnnotation().isPresentMessage() ? alt.getDeprecatedAnnotation().getMessage() : "";
+    if (alt.isPresentGrammarAnnotation() && alt.getGrammarAnnotation().isDeprecated()) {
+      String t = alt.getGrammarAnnotation().isPresentMessage() ? alt.getGrammarAnnotation().getMessage() : "";
       String message = "Deprecated syntax: " + t;
       addToAction("de.se_rwth.commons.logging.Log.warn(\"" + message + "\");");
     }
