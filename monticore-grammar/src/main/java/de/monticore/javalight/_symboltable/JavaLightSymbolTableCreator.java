@@ -30,7 +30,7 @@ public class JavaLightSymbolTableCreator extends JavaLightSymbolTableCreatorTOP 
 
   @Override
   protected void initialize_MethodDeclaration(MethOrConstrSymbol symbol, ASTMethodDeclaration ast) {
-    addModifiersToMethOrConstr(symbol, ast.getMCModifiersList());
+    addModifiersToMethOrConstr(symbol, ast.getMCModifierList());
     symbol.setReturnType(createTypeLoader(ast.getMCReturnType()));
     if (ast.isPresentThrows()) {
       addThrowsToMethod(symbol, ast.getThrows());
@@ -43,7 +43,7 @@ public class JavaLightSymbolTableCreator extends JavaLightSymbolTableCreatorTOP 
 
   @Override
   protected void initialize_InterfaceMethodDeclaration(MethOrConstrSymbol symbol, ASTInterfaceMethodDeclaration ast) {
-    addModifiersToMethOrConstr(symbol, ast.getMCModifiersList());
+    addModifiersToMethOrConstr(symbol, ast.getMCModifierList());
     symbol.setReturnType(createTypeLoader(ast.getMCReturnType()));
     if (ast.isPresentThrows()) {
       addThrowsToMethod(symbol, ast.getThrows());
@@ -56,7 +56,7 @@ public class JavaLightSymbolTableCreator extends JavaLightSymbolTableCreatorTOP 
 
   @Override
   protected void initialize_ConstructorDeclaration(MethOrConstrSymbol symbol, ASTConstructorDeclaration ast) {
-    addModifiersToMethOrConstr(symbol, ast.getMCModifiersList());
+    addModifiersToMethOrConstr(symbol, ast.getMCModifierList());
     if (ast.isPresentThrows()) {
       addThrowsToMethod(symbol, ast.getThrows());
     }
@@ -123,23 +123,21 @@ public class JavaLightSymbolTableCreator extends JavaLightSymbolTableCreatorTOP 
   }
 
   protected void addThrowsToMethod(MethOrConstrSymbol javaMethodSymbol, ASTThrows throws1) {
-    for (ASTMCQualifiedName astQualifiedName : throws1.getMCQualifiedNamesList()) {
+    for (ASTMCQualifiedName astQualifiedName : throws1.getMCQualifiedNameList()) {
       javaMethodSymbol.addExceptions(createTypeLoader(astQualifiedName));
     }
   }
 
   private SymTypeExpression createTypeLoader(ASTMCQualifiedName ast) {
     SynthesizeSymTypeFromMCFullGenericTypes syn = new SynthesizeSymTypeFromMCFullGenericTypes();
-    // Start visitor and set enclosingScope
-    ast.accept(getRealThis());
+    // Start visitor
     ast.accept(syn);
     return syn.getResult().orElse(new SymTypeOfNull());
   }
 
   private SymTypeExpression createTypeLoader(ASTMCType ast) {
     SynthesizeSymTypeFromMCFullGenericTypes syn = new SynthesizeSymTypeFromMCFullGenericTypes();
-    // Start visitor and set enclosingScope
-    ast.accept(getRealThis());
+    // Start visitor
     ast.accept(syn);
     return syn.getResult().orElse(new SymTypeOfNull());
   }
@@ -148,8 +146,6 @@ public class JavaLightSymbolTableCreator extends JavaLightSymbolTableCreatorTOP 
     if (ast.isPresentMCType()) {
       return createTypeLoader(ast.getMCType());
     } else {
-      // Start visitor and set enclosingScope
-      ast.accept(getRealThis());
       // TODO Bessere Lösung
       return SymTypeExpressionFactory.createTypeObject("void", (IOOSymbolsScope) ast.getEnclosingScope());
     }

@@ -28,17 +28,16 @@ public class AttributeCardinalityConstraint {
     this.parserGenHelper = parserGenHelper;
     this.symbolTable = parserGenHelper.getGrammarSymbol();
   }
-  
+
   public String addActionForRuleBeforeRuleBody(ASTClassProd ast) {
     StringBuilder ret = new StringBuilder();
-    Optional<ProdSymbol> prodSymbol = symbolTable.getProdWithInherited(ast.getName());
-    if (prodSymbol.isPresent()) {
-      for (AdditionalAttributeSymbol att : prodSymbol.get().getSpannedScope().getLocalAdditionalAttributeSymbols()) {
-        String usageName = att.getName();
-        if (MCGrammarSymbolTableHelper.getMax(att).isPresent()
-            || MCGrammarSymbolTableHelper.getMin(att).isPresent()) {
-          ret.append("\n" + "int " + getCounterName(usageName) + "=0;");
-        }
+    ProdSymbol prodSymbol = ast.getSymbol();
+
+    for (AdditionalAttributeSymbol att : prodSymbol.getSpannedScope().getLocalAdditionalAttributeSymbols()) {
+      String usageName = att.getName();
+      if (MCGrammarSymbolTableHelper.getMax(att).isPresent()
+              || MCGrammarSymbolTableHelper.getMin(att).isPresent()) {
+        ret.append("\n" + "int " + getCounterName(usageName) + "=0;");
       }
     }
     return ret.toString();
@@ -46,11 +45,8 @@ public class AttributeCardinalityConstraint {
   
   public String addActionForRuleAfterRuleBody(ASTClassProd ast) {
     StringBuilder ret = new StringBuilder();
-    Optional<ProdSymbol> prodSymbol = symbolTable.getProdWithInherited(ast.getName());
-    if (!prodSymbol.isPresent()) {
-      return ret.toString();
-    }
-    for (AdditionalAttributeSymbol att : prodSymbol.get().getSpannedScope().getLocalAdditionalAttributeSymbols()) {
+    ProdSymbol prodSymbol = ast.getSymbol();
+    for (AdditionalAttributeSymbol att : prodSymbol.getSpannedScope().getLocalAdditionalAttributeSymbols()) {
       
       String usageName = att.getName();
       Optional<Integer> min = MCGrammarSymbolTableHelper.getMin(att);

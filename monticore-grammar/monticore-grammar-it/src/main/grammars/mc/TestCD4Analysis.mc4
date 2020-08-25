@@ -2,7 +2,7 @@
 
 package mc;
 
-grammar TestCD4Analysis extends de.monticore.types.MCSimpleGenericTypes, de.monticore.literals.MCCommonLiterals {
+grammar TestCD4Analysis extends de.monticore.types.MCSimpleGenericTypes, de.monticore.literals.MCCommonLiterals, de.monticore.symbols.OOSymbols {
 
   CDCompilationUnit =
     ("package" package:(Name& || ".")+ ";")?

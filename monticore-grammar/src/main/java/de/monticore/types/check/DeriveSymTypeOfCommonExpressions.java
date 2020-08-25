@@ -6,7 +6,11 @@ import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisi
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.prettyprint.CommonExpressionsPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
+import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.se_rwth.commons.logging.Log;
@@ -342,10 +346,10 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
       //store the type of the inner expression in a variable
       innerResult = typeCheckResult.getCurrentResult();
       //look for this type in our scope
-      OOTypeSymbol innerResultType = innerResult.getTypeInfo();
+      TypeSymbol innerResultType = innerResult.getTypeInfo();
       //search for a method, field or type in the scope of the type of the inner expression
-      List<FieldSymbol> fieldSymbols = innerResult.getFieldList(expr.getName(), typeCheckResult.isType());
-      Optional<OOTypeSymbol> typeSymbolOpt = innerResultType.getSpannedScope().resolveOOType(expr.getName());
+      List<VariableSymbol> fieldSymbols = innerResult.getFieldList(expr.getName(), typeCheckResult.isType());
+      Optional<TypeSymbol> typeSymbolOpt = innerResultType.getSpannedScope().resolveType(expr.getName());
       if (!fieldSymbols.isEmpty()) {
         //cannot be a method, test variable first
         //durch AST-Umbau kann ASTFieldAccessExpression keine Methode sein
@@ -358,18 +362,20 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
           logError("0xA0237", expr.get_SourcePositionStart());
         }
         if(!fieldSymbols.isEmpty()) {
-          FieldSymbol var = fieldSymbols.get(0);
+          VariableSymbol var = fieldSymbols.get(0);
           SymTypeExpression type = var.getType();
           typeCheckResult.setField();
           typeCheckResult.setCurrentResult(type);
         }
       } else if (typeSymbolOpt.isPresent()) {
         //no variable found, test type
-        OOTypeSymbol typeSymbol = typeSymbolOpt.get();
+        TypeSymbol typeSymbol = typeSymbolOpt.get();
         boolean match = true;
         //if the last result is a type and the type is not static then it is not accessible
-        if(typeCheckResult.isType()&&!typeSymbol.isIsStatic()){
-          match = false;
+        if(typeCheckResult.isType()){
+          if(!(typeSymbol instanceof OOTypeSymbol) || !(((OOTypeSymbol) typeSymbol).isIsStatic())) {
+            match = false;
+          }
         }
         if(match){
           SymTypeExpression wholeResult = SymTypeExpressionFactory.createTypeExpression(typeSymbol.getName(), typeSymbol.getEnclosingScope());
@@ -386,9 +392,9 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     } else {
       //inner type has no result --> try to resolve a type
       String toResolve = printer.prettyprint(expr);
-      Optional<OOTypeSymbol> typeSymbolOpt = getScope(expr.getEnclosingScope()).resolveOOType(toResolve);
+      Optional<TypeSymbol> typeSymbolOpt = getScope(expr.getEnclosingScope()).resolveType(toResolve);
       if (typeSymbolOpt.isPresent()) {
-        OOTypeSymbol typeSymbol = typeSymbolOpt.get();
+        TypeSymbol typeSymbol = typeSymbolOpt.get();
         SymTypeExpression type = SymTypeExpressionFactory.createTypeExpression(typeSymbol.getName(), typeSymbol.getEnclosingScope());
         typeCheckResult.setType();
         typeCheckResult.setCurrentResult(type);
@@ -400,8 +406,8 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     }
   }
 
-  private List<FieldSymbol> filterStaticFieldSymbols(List<FieldSymbol> fieldSymbols) {
-    return fieldSymbols.stream().filter(FieldSymbol::isIsStatic).collect(Collectors.toList());
+  private List<VariableSymbol> filterStaticFieldSymbols(List<VariableSymbol> fieldSymbols) {
+    return fieldSymbols.stream().filter(f -> f instanceof FieldSymbol).filter(f -> ((FieldSymbol) f).isIsStatic()).collect(Collectors.toList());
   }
 
   /**
@@ -416,9 +422,9 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     if (typeCheckResult.isPresentCurrentResult()) {
       innerResult = typeCheckResult.getCurrentResult();
       //resolve methods with name of the inner expression
-      List<MethodSymbol> methodlist = innerResult.getMethodList(expr.getName(), typeCheckResult.isType());
+      List<FunctionSymbol> methodlist = innerResult.getMethodList(expr.getName(), typeCheckResult.isType());
       //count how many methods can be found with the correct arguments and return type
-      List<MethodSymbol> fittingMethods = getFittingMethods(methodlist,expr);
+      List<FunctionSymbol> fittingMethods = getFittingMethods(methodlist,expr);
       //if the last result is static then filter for static methods
       if(typeCheckResult.isType()){
         fittingMethods = filterStaticMethodSymbols(fittingMethods);
@@ -427,7 +433,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
       if (!fittingMethods.isEmpty()) {
         if (fittingMethods.size() > 1) {
           SymTypeExpression returnType = fittingMethods.get(0).getReturnType();
-          for (MethodSymbol method : fittingMethods) {
+          for (FunctionSymbol method : fittingMethods) {
             if (!returnType.deepEquals(method.getReturnType())) {
               logError("0xA0238", expr.get_SourcePositionStart());
             }
@@ -441,10 +447,10 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
         logError("0xA0239", expr.get_SourcePositionStart());
       }
     } else {
-      Collection<MethodSymbol> methodcollection = getScope(expr.getEnclosingScope()).resolveMethodMany(expr.getName());
-      List<MethodSymbol> methodlist = new ArrayList<>(methodcollection);
+      Collection<FunctionSymbol> methodcollection = getScope(expr.getEnclosingScope()).resolveFunctionMany(expr.getName());
+      List<FunctionSymbol> methodlist = new ArrayList<>(methodcollection);
       //count how many methods can be found with the correct arguments and return type
-      List<MethodSymbol> fittingMethods = getFittingMethods(methodlist,expr);
+      List<FunctionSymbol> fittingMethods = getFittingMethods(methodlist,expr);
       //there can only be one method with the correct arguments and return type
       if (fittingMethods.size() == 1) {
         Optional<SymTypeExpression> wholeResult = Optional.of(fittingMethods.get(0).getReturnType());
@@ -457,14 +463,14 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     }
   }
 
-  private List<MethodSymbol> getFittingMethods(List<MethodSymbol> methodlist, ASTCallExpression expr){
-    List<MethodSymbol> fittingMethods = new ArrayList<>();
-    for (MethodSymbol method : methodlist) {
+  private List<FunctionSymbol> getFittingMethods(List<FunctionSymbol> methodlist, ASTCallExpression expr){
+    List<FunctionSymbol> fittingMethods = new ArrayList<>();
+    for (FunctionSymbol method : methodlist) {
       //for every method found check if the arguments are correct
-      if (expr.getArguments().getExpressionsList().size() == method.getParameterList().size()) {
+      if (expr.getArguments().getExpressionList().size() == method.getParameterList().size()) {
         boolean success = true;
         for (int i = 0; i < method.getParameterList().size(); i++) {
-          expr.getArguments().getExpressions(i).accept(getRealThis());
+          expr.getArguments().getExpression(i).accept(getRealThis());
           //test if every single argument is correct
           if (!method.getParameterList().get(i).getType().deepEquals(typeCheckResult.getCurrentResult()) &&
               !compatible(method.getParameterList().get(i).getType(), typeCheckResult.getCurrentResult())) {
@@ -480,8 +486,8 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
     return fittingMethods;
   }
 
-  private List<MethodSymbol> filterStaticMethodSymbols(List<MethodSymbol> fittingMethods) {
-      return fittingMethods.stream().filter(MethodSymbol::isIsStatic).collect(Collectors.toList());
+  protected List<FunctionSymbol> filterStaticMethodSymbols(List<FunctionSymbol> fittingMethods) {
+      return fittingMethods.stream().filter(m -> m instanceof MethodSymbol).filter(m -> ((MethodSymbol) m).isIsStatic()).collect(Collectors.toList());
   }
 
   /**

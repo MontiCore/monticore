@@ -77,9 +77,9 @@ public class ASTInstanceSerialDeserialTest extends GeneratorIntegrationsTest {
       ASTState state1 = FlatAutomatonNodeFactory.createASTState();
       ASTState state2 = FlatAutomatonNodeFactory.createASTState();
       aut.setName("aut1");
-      aut.getTransitionsList().add(trans);
-      aut.getStatesList().add(state1);
-      aut.getStatesList().add(state2);
+      aut.getTransitionList().add(trans);
+      aut.getStateList().add(state1);
+      aut.getStateList().add(state2);
       state1.setName("state1");
       state2.setName("state2");
       
@@ -99,7 +99,7 @@ public class ASTInstanceSerialDeserialTest extends GeneratorIntegrationsTest {
       
       assertTrue(EcoreUtil.equals(aut, serializedAut));
       assertTrue(aut.deepEquals(serializedAut));
-      assertTrue(serializedAut.getStatesList().get(0).isInitial());
+      assertTrue(serializedAut.getStateList().get(0).isInitial());
     }
     catch (IOException e) {
       fail("Should not reach this, but: " + e);

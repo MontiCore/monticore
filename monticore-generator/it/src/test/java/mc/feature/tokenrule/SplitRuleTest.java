@@ -26,7 +26,7 @@ public class SplitRuleTest extends GeneratorIntegrationsTest {
     assertTrue(parser.hasErrors());
     parser.parse_StringB("::: ::: Foo");
     assertFalse(parser.hasErrors());
-    Optional<ASTD> ast = parser.parse_StringD("::: Foo");
+    Optional<ASTD> ast = parser.parse_StringD(":::");
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
     assertEquals(":::", ast.get().getFoo());

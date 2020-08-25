@@ -68,8 +68,8 @@ public class TestCD4AnalysisSymbolTableCreator extends TestCD4AnalysisSymbolTabl
   @Override
   public void initialize_CDMethod(CDMethOrConstrSymbol methodSymbol, ASTCDMethod astMethod) {
     setReturnTypeOfMethod(methodSymbol, astMethod);
-    if (!astMethod.getCDParametersList().isEmpty()) {
-      if (astMethod.getCDParameters(astMethod.getCDParametersList().size() - 1).isEllipsis()) {
+    if (!astMethod.getCDParameterList().isEmpty()) {
+      if (astMethod.getCDParameter(astMethod.getCDParameterList().size() - 1).isEllipsis()) {
         methodSymbol.setIsEllipsis(true);
       }
     }

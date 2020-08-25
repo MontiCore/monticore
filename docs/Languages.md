@@ -293,7 +293,7 @@ component InteriorLight {                           // MontiArc language
 
 
 ### [OCL/P](https://git.rwth-aachen.de/monticore/languages/OCL) (Alpha: Intention to become stable)
-* Caretaker: SVa
+* Caretaker: CKi, supported by SVa, SH, OKa
 * OCL/P is the textual representation of the UML OCL standard, adapted 
   with Java-like syntax.
   It's main goal is the usage in combination with other languages like 
@@ -425,12 +425,12 @@ sequencediagram AuctionTest {
 * [*detailed description*](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/SIUnits.md)  
 
 
-### [Statecharts](https://git.rwth-aachen.de/monticore/statechart/sc-language) (Beta: In Stabilization) (90% to MC6)
-* Caretaker: RE supported by KH  
-* Language to parse Statecharts
+### [Statecharts](https://git.rwth-aachen.de/monticore/statechart/sc-language) (MontiCore stable)
+* Caretaker: KH  
+* A set language variants for Statecharts (UML-like or also embedded SysML-like)
 * creates transformation language within SC and sc<->cd4a
 * [*Detailed description*](https://git.rwth-aachen.de/monticore/statechart/sc-language/-/blob/develop/scgrammar/src/main/grammars/de/monticore/umlsc/Statechart.md) 
-* A compact teaser for the Statechart language:
+* A compact teaser for the (one variant of the) Statechart language:
     ```
     statechart Door {
       state Opened
@@ -438,9 +438,9 @@ sequencediagram AuctionTest {
       state Locked
     
       Opened -> Closed close() /
-      Closed -> Opened open() / {ringTheDoorBell();}
-      Closed -> Locked timeOut() / { lockDoor(); } [doorIsLocked]
-      Locked -> Closed [isAuthorized] unlock() /
+      Closed -> Opened open(1) / {ringTheDoorBell();}
+      Closed -> Locked timeOut(n) / { lockDoor(); } [doorIsLocked]
+      Locked -> Closed [isAuthorized() && doorIsLocked] unlock() /
     }
     ```
   This example models the different states of a door: `Opened`, `Closed`, and `Locked`.
@@ -451,6 +451,8 @@ sequencediagram AuctionTest {
   `timeout()` event that triggers the `lockDoor()` action.
   Consequently, the post-condition `doorIsLocked` holds. In case the door is locked,
   it can be unlocked by using `unlock()` if the pre-condition `isAuthorized` is fulfilled.
+* *State invariants* and *transition preconditions* are defined using `Expressions`
+  and *entry/exit/transition actions* are defined using `Statements`.
 
 ### [SysML_2](https://git.rwth-aachen.de/monticore/languages/sysml2/sysml2official) (Alpha: Intention to become stable)
 * Caretaker: NJ
@@ -588,6 +590,11 @@ package 'Coffee' {                      // a SysML activity diagram
 
 * [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
 * [MontiCore documentation](http://www.monticore.de/)
+* [**List of languages**](https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/docs/Languages.md)
+* [**MontiCore Core Grammar Library**](https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
+* [Overview Best Practices](BestPractices.md)
+* [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
+
 * [Licence definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
 
 

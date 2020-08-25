@@ -4,6 +4,8 @@ package de.monticore;
 /* This is a MontiCore stable grammar.
  * Adaptations -- if any -- are conservative. */
 
+import de.monticore.literals.*;
+
 /**
  * Grammar for common elements of the UML/P-Language-Family
  * 
@@ -19,7 +21,7 @@ package de.monticore;
  * Methods contains(name), getValue(name) assist Stereotype retrieval.
  *
  */
-component grammar UMLStereotype extends de.monticore.literals.MCCommonLiterals {
+component grammar UMLStereotype extends MCCommonLiterals {
 
     /*========================================================================*/
     /*======================= AST extension ================================*/

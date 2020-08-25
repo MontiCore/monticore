@@ -28,17 +28,17 @@ public class GenerateAutomataParser {
       return;
     }
 
-    String filename = args[0];
 
     try {
       // Create the AST
-      ASTMCGrammar ast;
-      ast = new Grammar_WithConceptsParser()
+      String filename = args[0];
+      ASTMCGrammar ast = new Grammar_WithConceptsParser()
               .parseMCGrammar(filename).get();
 
       // Initialize symbol table
       // (using imported grammars from the model path)
-      ModelPath modelPath = new ModelPath(Paths.get("target/monticore-grammar-grammars.jar"));
+      ModelPath modelPath = new ModelPath(Paths.get(
+          "target/monticore-grammar-grammars.jar"));
       Grammar_WithConceptsGlobalScope gs = Grammar_WithConceptsMill
           .grammar_WithConceptsGlobalScopeBuilder()
           .setModelPath(modelPath)
@@ -55,7 +55,9 @@ public class GenerateAutomataParser {
       File outputDir = new File(args[1]);
 
       // Generate the parser
-      ParserGenerator.generateFullParser(new GlobalExtensionManagement(), ast, gs, handcodedPath, outputDir);
+      GlobalExtensionManagement glex =  new GlobalExtensionManagement();
+      ParserGenerator.generateFullParser(
+          glex, ast, gs, handcodedPath, outputDir);
     }
     catch (IOException e) {
       // If something happens ... handling necessary

@@ -67,3 +67,13 @@ corresponding generated class.
 [`PingPongTest`](src/extendedTest/java/PingPongTest.java) using some 
 unit tests.  
 
+## Further Information
+
+* [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
+* [MontiCore documentation](http://www.monticore.de/)
+
+* [Overview Best Practices](BestPractices.md)
+* [**List of languages**](https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/docs/Languages.md)
+* [**MontiCore Core Grammar Library**](https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
+* [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
+

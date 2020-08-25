@@ -96,12 +96,12 @@ public class ASTConstructionActions {
   public String getActionForRuleBeforeRuleBody(ASTClassProd a) {
     StringBuilder b = new StringBuilder();
     String type = MCGrammarSymbolTableHelper
-        .getQualifiedName(symbolTable.getProdWithInherited(a.getName()).get());
+        .getQualifiedName(a.getSymbol());
     Optional<MCGrammarSymbol> grammar = MCGrammarSymbolTableHelper
         .getMCGrammarSymbol(a.getEnclosingScope());
     String name = grammar.isPresent()
         ? grammar.get().getName()
-        : symbolTable.getProdWithInherited(a.getName()).get().getName();
+        : a.getSymbol().getName();
     
         // Setup return value
         b.append(
@@ -157,7 +157,7 @@ public class ASTConstructionActions {
 
     // Replace templates
     tmp = tmp.replaceAll("%u_usage%",
-        StringTransformations.capitalize(HelperGrammar.getListName(a, symbolTable.getAstNode())));
+        StringTransformations.capitalize(HelperGrammar.getListName(a)));
     tmp = tmp.replaceAll("%tmp%", tmpname);
 
     return tmp;
@@ -173,7 +173,7 @@ public class ASTConstructionActions {
     
     // Replace templates
     tmp = tmp.replaceAll("%u_usage%",
-        StringTransformations.capitalize(HelperGrammar.getListName(a,symbolTable.getAstNode())));
+        StringTransformations.capitalize(HelperGrammar.getListName(a)));
     tmp = tmp.replaceAll("%tmp%", parserGenHelper.getTmpVarNameForAntlrCode(a));
     
     return tmp;

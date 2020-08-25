@@ -4,6 +4,9 @@ package mc.typescalculator;
 import com.google.common.collect.Lists;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.io.paths.ModelPath;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
+import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolSurrogate;
 import de.monticore.symboltable.ImportStatement;
@@ -12,7 +15,6 @@ import de.monticore.types.check.SymTypeExpressionFactory;
 import de.se_rwth.commons.logging.LogStub;
 import mc.testcd4analysis._symboltable.TestCD4AnalysisGlobalScope;
 import mc.typescalculator.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
-import mc.typescalculator.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsArtifactScope;
 import mc.typescalculator.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsGlobalScope;
 import mc.typescalculator.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsSymbolTableCreatorDelegator;
 import mc.typescalculator.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsArtifactScope;
@@ -44,6 +46,9 @@ public class CombineExpressionsWithLiteralsTest {
     globalScope1.addAdaptedFieldSymbolResolvingDelegate(adapter);
     globalScope1.addAdaptedOOTypeSymbolResolvingDelegate(adapter);
     globalScope1.addAdaptedMethodSymbolResolvingDelegate(adapter);
+    globalScope1.addAdaptedFunctionSymbolResolvingDelegate(adapter);
+    globalScope1.addAdaptedVariableSymbolResolvingDelegate(adapter);
+    globalScope1.addAdaptedTypeSymbolResolvingDelegate(adapter);
 
     Optional<OOTypeSymbol> classD = globalScope1.resolveOOType("mc.typescalculator.TestCD.D");
     assertTrue(classD.isPresent());
@@ -51,14 +56,20 @@ public class CombineExpressionsWithLiteralsTest {
     Optional<OOTypeSymbol> classB = globalScope1.resolveOOType("mc.typescalculator.TestCD.B");
     assertTrue(classB.isPresent());
 
-    OOTypeSymbolSurrogate dSurrogate = new OOTypeSymbolSurrogate("D");
+    OOTypeSymbol dSurrogate = new OOTypeSymbolSurrogate("D");
     dSurrogate.setEnclosingScope(classD.get().getEnclosingScope());
 
-    OOTypeSymbolSurrogate bSurrogate = new OOTypeSymbolSurrogate("B");
+    OOTypeSymbol bSurrogate = new OOTypeSymbolSurrogate("B");
     bSurrogate.setEnclosingScope(classB.get().getEnclosingScope());
 
-    globalScope1.add(field("d", SymTypeExpressionFactory.createTypeObject(dSurrogate)));
-    globalScope1.add(field("b",SymTypeExpressionFactory.createTypeObject(bSurrogate)));
+
+    FieldSymbol d = field("d", SymTypeExpressionFactory.createTypeObject(dSurrogate));
+    globalScope1.add(d);
+    globalScope1.add((VariableSymbol) d);
+
+    FieldSymbol b = field("b",SymTypeExpressionFactory.createTypeObject(bSurrogate));
+    globalScope1.add(b);
+    globalScope1.add((VariableSymbol) b);
 
     CombineExpressionsWithLiteralsTypesCalculator calc = new CombineExpressionsWithLiteralsTypesCalculator();
 
@@ -100,9 +111,9 @@ public class CombineExpressionsWithLiteralsTest {
     assertTrue(exprB.isPresent());
     del.createFromAST(exprB.get());
 
-    ASTExpression b = exprB.get();
+    ASTExpression eb = exprB.get();
 
-    Optional<SymTypeExpression> k = calc.calculateType(b);
+    Optional<SymTypeExpression> k = calc.calculateType(eb);
     assertTrue(k.isPresent());
     assertEquals("C",k.get().print());
   }

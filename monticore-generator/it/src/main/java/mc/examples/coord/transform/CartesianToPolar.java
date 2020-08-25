@@ -55,7 +55,7 @@ public class CartesianToPolar implements CoordcartesianVisitor {
     
     // angle = atan2(y,x)
     double angle = Math.atan2(a.getY(), a.getX());
-    result.getCoordinatesList().add(CoordpolarMill.coordinateBuilder().setD(d).setPhi(angle).build());
+    result.getCoordinateList().add(CoordpolarMill.coordinateBuilder().setD(d).setPhi(angle).build());
   }
   
   public void transform(ASTCoordinateFile ast) {

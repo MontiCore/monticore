@@ -1,6 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions;
 
+/* Alpha-version: This is intended to become a MontiCore stable grammar. */
+
+import de.monticore.expressions.*;
+
 /**
  * This grammar defines a expressions typical to UMLs OCL
  *
@@ -21,7 +25,7 @@ package de.monticore.expressions;
 */
 
 component grammar OCLExpressions
-          extends de.monticore.expressions.ExpressionsBasis {
+          extends ExpressionsBasis {
 
     external EDeclaration;
     external ExtType;
