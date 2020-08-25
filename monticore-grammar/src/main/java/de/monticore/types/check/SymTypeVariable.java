@@ -1,7 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
-import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolSurrogate;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
 import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonPrinter;
 
@@ -11,16 +12,16 @@ public class SymTypeVariable extends SymTypeExpression {
   /**
    * Constructor:
    */
-  public SymTypeVariable(OOTypeSymbolSurrogate typeSymbolSurrogate) {
-    this.typeSymbolSurrogate = typeSymbolSurrogate;
+  public SymTypeVariable(TypeSymbol typeSymbol) {
+    this.typeSymbol = typeSymbol;
   }
 
   public String getVarName() {
-    return typeSymbolSurrogate.getName();
+    return typeSymbol.getName();
   }
 
   public void setVarName(String name) {
-    typeSymbolSurrogate.setName(name);
+    typeSymbol.setName(name);
   }
 
   /**
@@ -64,9 +65,9 @@ public class SymTypeVariable extends SymTypeExpression {
 
   @Override
   public SymTypeVariable deepClone() {
-    OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate(typeSymbolSurrogate.getName());
-    loader.setEnclosingScope(typeSymbolSurrogate.getEnclosingScope());
-    return new SymTypeVariable(loader);
+    TypeSymbol typeSymbol = new TypeSymbolSurrogate(this.typeSymbol.getName());
+    typeSymbol.setEnclosingScope(this.typeSymbol.getEnclosingScope());
+    return new SymTypeVariable(typeSymbol);
   }
 
   @Override
@@ -75,13 +76,13 @@ public class SymTypeVariable extends SymTypeExpression {
       return false;
     }
     SymTypeVariable symVar = (SymTypeVariable) sym;
-    if(this.typeSymbolSurrogate== null ||symVar.typeSymbolSurrogate==null){
+    if(this.typeSymbol == null ||symVar.typeSymbol ==null){
       return false;
     }
-    if(!this.typeSymbolSurrogate.getEnclosingScope().equals(symVar.typeSymbolSurrogate.getEnclosingScope())){
+    if(!this.typeSymbol.getEnclosingScope().equals(symVar.typeSymbol.getEnclosingScope())){
       return false;
     }
-    if(!this.typeSymbolSurrogate.getName().equals(symVar.typeSymbolSurrogate.getName())){
+    if(!this.typeSymbol.getName().equals(symVar.typeSymbol.getName())){
       return false;
     }
     return this.print().equals(symVar.print());
