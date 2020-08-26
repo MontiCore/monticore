@@ -104,9 +104,7 @@ public final class TransformationHelper {
   }
 
   public static Optional<String> getUsageName(ASTNode root,
-                                              ASTNode successor) {
-    List<ASTNode> intermediates = new MultiplicityVisitor().getComponents(root, successor);
-    for (ASTNode ancestor : Lists.reverse(intermediates)) {
+                                              ASTNode ancestor) {
       if (ancestor instanceof ASTConstantGroup && ((ASTConstantGroup) ancestor).isPresentUsageName()) {
         return Optional.of(((ASTConstantGroup) ancestor).getUsageName());
       }
@@ -122,7 +120,7 @@ public final class TransformationHelper {
       if (ancestor instanceof ASTAdditionalAttribute && ((ASTAdditionalAttribute) ancestor).isPresentName()) {
         return Optional.of(((ASTAdditionalAttribute) ancestor).getName());
       }
-    }
+
     return Optional.empty();
   }
 
