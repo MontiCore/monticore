@@ -16,13 +16,13 @@ import java.util.Map;
  * map maps the name of a symbol-defining type to the name of a (transitive) supertype that also
  * defines a symbol.
  * Example:
- *   symbol A extends B;
- *   B extends C;
- *   symbol C extends D;
- *   symbol D;
+ * symbol A extends B;
+ * B extends C;
+ * symbol C extends D;
+ * symbol D;
  * Produces the following map: {"A"->"C", "C"->"D"}
  */
-public class SymbolKindHierarchyVisitor implements CD4AnalysisVisitor {
+public class SymbolKindHierarchyCollector implements CD4AnalysisVisitor {
 
   protected String currentType = null;
 
@@ -30,8 +30,9 @@ public class SymbolKindHierarchyVisitor implements CD4AnalysisVisitor {
 
   public static Map<String, String> calculateKindHierarchy(List<ASTCDType> symbolProds) {
     // iterate over all locally defined symbol classes
-    SymbolKindHierarchyVisitor visitor = new SymbolKindHierarchyVisitor();
+    SymbolKindHierarchyCollector visitor = new SymbolKindHierarchyCollector();
     symbolProds.forEach(s -> s.getSymbol().accept(visitor));
+    System.out.println(":::: calculate");
     return visitor.getKindHierarchy();
   }
 
@@ -40,8 +41,10 @@ public class SymbolKindHierarchyVisitor implements CD4AnalysisVisitor {
   }
 
   @Override public void visit(CDTypeSymbol symbol) {
+    System.out.println(":::: visit " + symbol.getName() + " with " + currentType);
     if (hasSymbolStereotype(symbol)) {
       if (null != currentType) {
+        System.out.println(":::: add " + symbol.getName() + " with " + currentType);
         kindHierarchy.put(currentType, symbol.getName());
       }
       currentType = symbol.getName();
@@ -49,10 +52,10 @@ public class SymbolKindHierarchyVisitor implements CD4AnalysisVisitor {
   }
 
   @Override public void traverse(CDTypeSymbol symbol) {
-//    if (hasSymbolStereotype(symbol)) {
-      for (CDTypeSymbol superType : symbol.getSuperTypes()) {
-        superType.accept(this);
-//      }
+    System.out.println(":::: traverse "+symbol.getName());
+    for (CDTypeSymbol superType : symbol.getSuperTypes()) {
+      System.out.println(":::: traversing "+symbol.getName() +" with " + superType.getName());
+      superType.accept(this);
     }
     currentType = null;
   }

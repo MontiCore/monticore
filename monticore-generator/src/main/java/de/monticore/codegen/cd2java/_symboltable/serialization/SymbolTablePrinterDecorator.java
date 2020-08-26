@@ -3,7 +3,6 @@ package de.monticore.codegen.cd2java._symboltable.serialization;
 
 import com.google.common.collect.Lists;
 import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.cd4code.CD4CodeMill;
 import de.monticore.cd.facade.CDMethodFacade;
 import de.monticore.cd.facade.CDParameterFacade;
@@ -15,9 +14,7 @@ import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.prettyprint.MCBasicTypesPrettyPrinter;
 import de.monticore.types.prettyprint.MCFullGenericTypesPrettyPrinter;
 import de.monticore.utils.Names;
 import de.se_rwth.commons.StringTransformations;
@@ -27,7 +24,6 @@ import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
-import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
 
@@ -140,7 +136,7 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
 
   protected ASTCDMethod createPrintKindHierarchyMethod(List<ASTCDType> symbolProds) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, "printKindHierarchy");
-    Map<String, String> kindHierarchy = SymbolKindHierarchyVisitor.calculateKindHierarchy(symbolProds);
+    Map<String, String> kindHierarchy = SymbolKindHierarchyCollector.calculateKindHierarchy(symbolProds);
     HookPoint hp = new TemplateHookPoint(TEMPLATE_PATH + "symbolTablePrinter.PrintKindHierarchy",
         kindHierarchy);
     this.replaceTemplate(EMPTY_BODY, method, hp);
@@ -200,10 +196,10 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
 
     for (ASTCDType symbolProd : symbolProds) {
       String symbolFullName = symbolTableService.getSymbolFullName(symbolProd);
-      List<String> kinds = getKindIncludingSuperKinds(symbolProd);
+      String kind = symbolTableService.getSymbolFullName(symbolProd);
       ASTCDMethod visitMethod = visitorService.getVisitorMethod(VISIT, getMCTypeFacade().createQualifiedType(symbolFullName));
       this.replaceTemplate(EMPTY_BODY, visitMethod,
-          new TemplateHookPoint(TEMPLATE_PATH + "symbolTablePrinter.VisitSymbol", kinds, symbolProd.getName(), symbolProd.getCDAttributesList()));
+          new TemplateHookPoint(TEMPLATE_PATH + "symbolTablePrinter.VisitSymbol", kind, symbolProd.getName(), symbolProd.getCDAttributesList()));
       visitorMethods.add(visitMethod);
 
       ASTCDMethod endVisitMethod = visitorService.getVisitorMethod(END_VISIT, getMCTypeFacade().createQualifiedType(symbolFullName));
@@ -216,22 +212,6 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
       }
     }
     return visitorMethods;
-  }
-
-  protected List<String> getKindIncludingSuperKinds(ASTCDType symbolProd){
-    List<String> allSymbols = symbolTableService.getSymbolDefiningSuperProds()
-        .stream()
-        .map(a -> a.getSymbol().getFullName())
-        .collect(Collectors.toList());
-
-    List<String> superKinds =  symbolTableService
-        .getAllSuperClassesTransitive(symbolProd.getSymbol())
-        .stream()
-        .filter(s -> allSymbols.contains(s.getFullName()))
-        .map(s -> symbolTableService.getSymbolFullName(s.getAstNode()))
-        .collect(Collectors.toList());
-        superKinds.add(symbolTableService.getSymbolFullName(symbolProd));
-        return superKinds;
   }
 
   protected List<ASTCDMethod> createScopeRuleMethods(List<ASTCDClass> scopeProds, String scopeClassFullName,
