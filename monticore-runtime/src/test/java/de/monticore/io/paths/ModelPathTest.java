@@ -67,4 +67,12 @@ public class ModelPathTest {
     assertTrue(entriesIterator.next().endsWith(parentPathOne));
     assertTrue(entriesIterator.next().endsWith(parentPathTwo));
   }
+
+  @Test
+  public void testDoublePath() {
+    final ModelPath p = new ModelPath(parentPathOne, parentPathOne);
+    p.resolveModel(unambiguousModel);
+    assertEquals(1, Log.getFindings().size());
+    assertTrue(Log.getFindings().get(0).isWarning());
+  }
 }

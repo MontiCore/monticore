@@ -2,6 +2,6 @@
 ${tc.signature("symbolAttributeNameList")}
     return
 <#list symbolAttributeNameList as attrName>
-  ${attrName}.size() <#if !attrName?is_last> + </#if>
+    get${attrName?cap_first}().size() <#if !attrName?is_last> + </#if>
 </#list>
   ;

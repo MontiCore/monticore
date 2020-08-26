@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+automaton Simple {
+
+  state A   <<initial>>;
+    42 A - x > B;
+    41 A - y > A;
+
+  state B   <<final>>;
+    42 B - x > A;
+    42 B - y > A;
+}

@@ -29,9 +29,9 @@ public class EGeterSeterTest extends GeneratorIntegrationsTest {
     
     transition = FlatAutomatonNodeFactory.createASTTransition();
     
-    aut.getStatesList().add(state1);
-    aut.getStatesList().add(state2);
-    aut.getTransitionsList().add(transition);
+    aut.getStateList().add(state1);
+    aut.getStateList().add(state2);
+    aut.getTransitionList().add(transition);
     
     state1.setName("state1");
     state2.setName("state2");
@@ -43,7 +43,7 @@ public class EGeterSeterTest extends GeneratorIntegrationsTest {
   @Test
   public void testEGet() {
     String expectedName = "aut1";
-    List<ASTState> expectedState = aut.getStatesList();
+    List<ASTState> expectedState = aut.getStateList();
     
     // Get name of automaton with reflective methods
     String nameFromID = (String) aut.eGet(
@@ -76,7 +76,7 @@ public class EGeterSeterTest extends GeneratorIntegrationsTest {
   @Test
   public void testEUnSet() {
     aut.eUnset(FlatAutomatonPackage.ASTAutomaton_States);
-    assertTrue(aut.getStatesList().isEmpty());
+    assertTrue(aut.getStateList().isEmpty());
     
     assign.eUnset(ExpressionPackage.ASTAssignment_Value);
     assertFalse(assign.isPresentValue());

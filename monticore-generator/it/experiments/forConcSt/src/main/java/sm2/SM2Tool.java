@@ -7,10 +7,7 @@ import org.antlr.v4.runtime.RecognitionException;
 import sm2._ast.ASTAutomaton;
 import sm2._cocos.SM2CoCoChecker;
 import sm2._parser.SM2Parser;
-import sm2._symboltable.SM2ArtifactScope;
-import sm2._symboltable.SM2GlobalScope;
-import sm2._symboltable.SM2SymbolTableCreator;
-import sm2._symboltable.StateSymbol;
+import sm2._symboltable.*;
 import sm2.cocos.AtLeastOneInitialState;
 import sm2.cocos.SM2CoCos;
 import sm2.cocos.StateNameStartsWithCapitalLetter;
@@ -48,7 +45,7 @@ public class SM2Tool {
     Log.info(model + " parsed successfully!", "SM2Tool");
     
     // setup the symbol table
-    SM2ArtifactScope modelTopScope = createSymbolTable(ast);
+    ISM2ArtifactScope modelTopScope = createSymbolTable(ast);
     // can be used for resolving things in the model
     Optional<StateSymbol> aSymbol = modelTopScope.resolveState("Ping");
     if (aSymbol.isPresent()) {
@@ -104,9 +101,9 @@ public class SM2Tool {
    * @param ast
    * @return
    */
-  public static SM2ArtifactScope createSymbolTable(ASTAutomaton ast) {
+  public static ISM2ArtifactScope createSymbolTable(ASTAutomaton ast) {
     
-    SM2GlobalScope globalScope = SM2Mill
+    ISM2GlobalScope globalScope = SM2Mill
         .sM2GlobalScopeBuilder()
         .setModelPath(new ModelPath())
         .setModelFileExtension("aut")

@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope;
@@ -44,13 +45,13 @@ public class SynthesizeSymTypeFromMCBasicTypes implements MCBasicTypesVisitor, I
   
   // ---------------------------------------------------------- Storage result
 
-  public IOOSymbolsScope getScope (IMCBasicTypesScope mcBasicTypesScope){
+  public IBasicSymbolsScope getScope (IMCBasicTypesScope mcBasicTypesScope){
     // is accepted only here, decided on 07.04.2020
-    if(!(mcBasicTypesScope instanceof IOOSymbolsScope)){
-      Log.error("0xA0308 the enclosing scope of the type does not implement the interface IOOSymbolsScope");
+    if(!(mcBasicTypesScope instanceof IBasicSymbolsScope)){
+      Log.error("0xA0308 the enclosing scope of the type does not implement the interface IBasicSymbolsScope");
     }
     // is accepted only here, decided on 07.04.2020
-    return (IOOSymbolsScope) mcBasicTypesScope;
+    return (IBasicSymbolsScope) mcBasicTypesScope;
   }
 
   /**

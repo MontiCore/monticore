@@ -30,14 +30,14 @@ public class SymbolTableCreatorDelegatorBuilderDecorator extends AbstractCreator
   public ASTCDClass decorate(ASTCDClass input) {
     ASTCDClass decoratedSTCDelegator = input.deepClone();
 
-    decoratedSTCDelegator.getCDMethodList().clear();
+    decoratedSTCDelegator.getCDMethodsList().clear();
 
     builderDecorator.setPrintBuildMethodTemplate(false);
     ASTCDClass sTCDelegatorBuilder = builderDecorator.decorate(decoratedSTCDelegator);
     builderDecorator.setPrintBuildMethodTemplate(true);
 
     // new build method template
-    Optional<ASTCDMethod> buildMethod = sTCDelegatorBuilder.getCDMethodList()
+    Optional<ASTCDMethod> buildMethod = sTCDelegatorBuilder.getCDMethodsList()
         .stream()
         .filter(m -> BUILD_METHOD.equals(m.getName()))
         .findFirst();

@@ -4,7 +4,9 @@
 package de.monticore.symbols.oosymbols._symboltable;
 
 import com.google.common.collect.Lists;
+import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.se_rwth.commons.logging.Log;
 
@@ -20,19 +22,8 @@ public class OOTypeSymbol extends OOTypeSymbolTOP {
   public void setMethodList(List<MethodSymbol> methodList){
     for(MethodSymbol method: methodList){
       getSpannedScope().add(method);
+      getSpannedScope().add((FunctionSymbol) method);
     }
-  }
-
-  public List<SymTypeExpression> getSuperClassesOnly(){
-    return superTypes.stream()
-        .filter(type -> type.getTypeInfo().isClass)
-        .collect(Collectors.toList());
-  }
-
-  public List<SymTypeExpression> getInterfaceList(){
-    return superTypes.stream()
-            .filter(type -> type.getTypeInfo().isInterface)
-            .collect(Collectors.toList());
   }
 
   /**
@@ -83,10 +74,12 @@ public class OOTypeSymbol extends OOTypeSymbolTOP {
 
   public void addFieldSymbol(FieldSymbol f) {
     getSpannedScope().add(f);
+    getSpannedScope().add((VariableSymbol) f);
   }
 
   public void addMethodSymbol(MethodSymbol m) {
     getSpannedScope().add(m);
+    getSpannedScope().add((FunctionSymbol) m);
   }
 
   public boolean isPresentSuperClass() {

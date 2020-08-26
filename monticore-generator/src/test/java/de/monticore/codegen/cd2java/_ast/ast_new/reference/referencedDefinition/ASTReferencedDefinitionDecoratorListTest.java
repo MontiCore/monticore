@@ -63,7 +63,7 @@ public class ASTReferencedDefinitionDecoratorListTest extends DecoratorTestCase 
 
   @Test
   public void testMethods() {
-    assertEquals(19, astClass.getCDMethodList().size());
+    assertEquals(19, astClass.getCDMethodsList().size());
   }
 
   @Test

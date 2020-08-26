@@ -48,24 +48,24 @@ public class CDSymbolTranslationTest {
   public void testClassSymbol() {
     ASTCDClass symbolClassSymbol = getClassBy("SymbolClass", compilationUnit);
     assertEquals(1, symbolClassSymbol.sizeCDAttributes());
-    assertEquals(1, symbolClassSymbol.sizeInterfaces());
+    assertEquals(1, symbolClassSymbol.sizeInterface());
     assertEquals(1, symbolClassSymbol.sizeCDMethods());
     assertTrue(symbolClassSymbol.isEmptyCDConstructors());
     assertTrue(symbolClassSymbol.isPresentSuperclass());
 
-    ASTCDAttribute cdAttribute = symbolClassSymbol.getCDAttribute(0);
+    ASTCDAttribute cdAttribute = symbolClassSymbol.getCDAttributes(0);
     assertEquals("extraString", cdAttribute.getName());
     assertDeepEquals(String.class, cdAttribute.getMCType());
     assertTrue(cdAttribute.isPresentModifier());
     assertDeepEquals(CDModifier.PROTECTED, cdAttribute.getModifier());
 
-    ASTCDMethod cdMethod = symbolClassSymbol.getCDMethod(0);
+    ASTCDMethod cdMethod = symbolClassSymbol.getCDMethods(0);
     assertEquals("toString", cdMethod.getName());
     assertTrue(cdMethod.getMCReturnType().isPresentMCType());
     assertDeepEquals(String.class, cdMethod.getMCReturnType().getMCType());
     assertTrue(cdMethod.getModifier().isPublic());
     assertTrue(cdMethod.getModifier().isPresentStereotype());
-    assertEquals(1, cdMethod.getModifier().getStereotype().sizeValues());
+    assertEquals(1, cdMethod.getModifier().getStereotype().sizeValue());
     assertEquals("methodBody", cdMethod.getModifier().getStereotype().getValue(0).getName());
 
     ASTMCObjectType cdInterface = symbolClassSymbol.getInterface(0);
@@ -79,12 +79,12 @@ public class CDSymbolTranslationTest {
   public void testAbstractClassSymbol() {
     ASTCDClass symbolClassSymbol = getClassBy("SymbolAbstractClass", compilationUnit);
     assertEquals(1, symbolClassSymbol.sizeCDAttributes());
-    assertTrue(symbolClassSymbol.isEmptyInterfaces());
+    assertTrue(symbolClassSymbol.isEmptyInterface());
     assertTrue(symbolClassSymbol.isEmptyCDMethods());
     assertTrue(symbolClassSymbol.isEmptyCDConstructors());
     assertFalse(symbolClassSymbol.isPresentSuperclass());
 
-    ASTCDAttribute cdAttribute = symbolClassSymbol.getCDAttribute(0);
+    ASTCDAttribute cdAttribute = symbolClassSymbol.getCDAttributes(0);
     assertEquals("extraString", cdAttribute.getName());
     assertDeepEquals(String.class, cdAttribute.getMCType());
     assertTrue(cdAttribute.isPresentModifier());
@@ -101,10 +101,10 @@ public class CDSymbolTranslationTest {
   public void testInterfaceSymbol() {
     ASTCDClass symbolClassSymbol = getClassBy("SymbolInterface", compilationUnit);
     assertEquals(1, symbolClassSymbol.sizeCDAttributes());
-    assertTrue(symbolClassSymbol.isEmptyInterfaces());
+    assertTrue(symbolClassSymbol.isEmptyInterface());
     assertTrue(symbolClassSymbol.isEmptyCDMethods());
 
-    ASTCDAttribute cdAttribute = symbolClassSymbol.getCDAttribute(0);
+    ASTCDAttribute cdAttribute = symbolClassSymbol.getCDAttributes(0);
     assertEquals("extraString", cdAttribute.getName());
     assertDeepEquals(String.class, cdAttribute.getMCType());
     assertTrue(cdAttribute.isPresentModifier());
@@ -115,10 +115,10 @@ public class CDSymbolTranslationTest {
   public void testExternalSymbol() {
     ASTCDClass symbolClassSymbol = getClassBy("SymbolExternal", compilationUnit);
     assertEquals(1, symbolClassSymbol.sizeCDAttributes());
-    assertTrue(symbolClassSymbol.isEmptyInterfaces());
+    assertTrue(symbolClassSymbol.isEmptyInterface());
     assertTrue(symbolClassSymbol.isEmptyCDMethods());
 
-    ASTCDAttribute cdAttribute = symbolClassSymbol.getCDAttribute(0);
+    ASTCDAttribute cdAttribute = symbolClassSymbol.getCDAttributes(0);
     assertEquals("extraString", cdAttribute.getName());
     assertDeepEquals(String.class, cdAttribute.getMCType());
     assertTrue(cdAttribute.isPresentModifier());

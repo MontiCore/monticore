@@ -37,11 +37,11 @@ public class SymbolTablePrinterBuilderDecorator extends AbstractCreator<ASTCDCla
     ASTCDClass stpBuilder = builderDecorator.decorate(decoratedSTPClass);
     builderDecorator.setPrintBuildMethodTemplate(true);
 
-    stpBuilder.getCDAttributeList().forEach(a -> a.setModifier(PROTECTED.build()));
+    stpBuilder.getCDAttributesList().forEach(a -> a.setModifier(PROTECTED.build()));
     stpBuilder.setName(symbolTablePrinterBuilderName);
 
     // new build method template
-    Optional<ASTCDMethod> buildMethod = stpBuilder.getCDMethodList()
+    Optional<ASTCDMethod> buildMethod = stpBuilder.getCDMethodsList()
         .stream()
         .filter(m -> BUILD_METHOD.equals(m.getName()))
         .findFirst();

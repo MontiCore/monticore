@@ -28,15 +28,16 @@ public class MCGrammarParserTest {
   public void testParse() throws IOException {
     String model = "src/test/resources/de/monticore/statechart/Statechart.mc4";
 
-    Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
+    Grammar_WithConceptsParser parser =
+                      new Grammar_WithConceptsParser();
     Optional<ASTMCGrammar> result = parser.parse(model);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
     ASTMCGrammar grammar = result.get();
     assertEquals("Statechart", grammar.getName());
-    assertEquals(7, grammar.getClassProdList().size());
-    assertEquals(3, grammar.getExternalProdList().size());
-    assertEquals(1, grammar.getInterfaceProdList().size());
+    assertEquals(7, grammar.getClassProdsList().size());
+    assertEquals(3, grammar.getExternalProdsList().size());
+    assertEquals(1, grammar.getInterfaceProdsList().size());
     GrammarTransformer.transform(grammar);
   }
 
@@ -163,14 +164,14 @@ public class MCGrammarParserTest {
     assertTrue(result.isPresent());
 
     ASTMCGrammar grammar = result.get();
-    assertEquals(3, grammar.getClassProdList().size());
+    assertEquals(3, grammar.getClassProdsList().size());
 
-    ASTClassProd transition = grammar.getClassProdList().get(2);
-    ASTNonTerminal fromState = (ASTNonTerminal) transition.getAltList().get(0).getComponentList().get(0);
+    ASTClassProd transition = grammar.getClassProdsList().get(2);
+    ASTNonTerminal fromState = (ASTNonTerminal) transition.getAltsList().get(0).getComponentList().get(0);
     assertTrue(fromState.isPresentReferencedSymbol());
     assertEquals("State", fromState.getReferencedSymbol());
 
-    ASTNonTerminal toState = (ASTNonTerminal) transition.getAltList().get(0).getComponentList().get(0);
+    ASTNonTerminal toState = (ASTNonTerminal) transition.getAltsList().get(0).getComponentList().get(0);
     assertTrue(toState.isPresentReferencedSymbol());
     assertEquals("State", toState.getReferencedSymbol());
   }

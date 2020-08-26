@@ -19,7 +19,7 @@ import static org.junit.Assert.assertTrue;
 
 public class OOSymbolsScopeDeSerTest {
 
-  private OOSymbolsScope scope;
+  private IOOSymbolsArtifactScope scope;
 
   @Before
   public void setUp(){
@@ -29,7 +29,7 @@ public class OOSymbolsScopeDeSerTest {
     scope = OOSymbolsMill.oOSymbolsArtifactScopeBuilder().setPackageName("").setImportsList(Lists.newArrayList()).build();
     scope.setName("Test");
 
-    OOSymbolsScope typeSpannedScope = OOSymbolsMill.oOSymbolsScopeBuilder().build();
+    IOOSymbolsScope typeSpannedScope = OOSymbolsMill.oOSymbolsScopeBuilder().build();
 
     //put type into main scope
     OOTypeSymbol type = OOSymbolsMill.oOTypeSymbolBuilder()
@@ -83,12 +83,12 @@ public class OOSymbolsScopeDeSerTest {
   }
 
 
-  public void performRoundTripSerialization(OOSymbolsScope scope){
+  public void performRoundTripSerialization(IOOSymbolsScope scope){
     OOSymbolsScopeDeSer deser = new OOSymbolsScopeDeSer();
     //first serialize the scope using the deser
     String serialized = deser.serialize(scope);
     // then deserialize it
-    OOSymbolsScope deserialized = deser.deserialize(serialized);
+    IOOSymbolsArtifactScope deserialized = deser.deserialize(serialized);
     assertNotNull(deserialized);
     // and assert that the deserialized scope equals the one before
 

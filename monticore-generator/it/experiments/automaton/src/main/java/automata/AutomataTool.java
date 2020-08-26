@@ -48,7 +48,7 @@ public class AutomataTool {
     Log.info(model + " parsed successfully!", "AutomataTool");
 
     // setup the symbol table
-    AutomataArtifactScope modelTopScope = createSymbolTable(ast);
+    IAutomataArtifactScope modelTopScope = createSymbolTable(ast);
     
     // can be used for resolving names in the model
     Optional<StateSymbol> aSymbol =
@@ -122,9 +122,9 @@ public class AutomataTool {
    * @param ast
    * @return
    */
-  public static AutomataArtifactScope createSymbolTable(ASTAutomaton ast) {
+  public static IAutomataArtifactScope createSymbolTable(ASTAutomaton ast) {
 
-    AutomataGlobalScope globalScope = AutomataMill
+    IAutomataGlobalScope globalScope = AutomataMill
         .automataGlobalScopeBuilder()
         .setModelPath(new ModelPath())
         .setModelFileExtension("aut")

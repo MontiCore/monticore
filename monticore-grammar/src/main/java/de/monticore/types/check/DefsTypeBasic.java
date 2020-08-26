@@ -1,7 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.*;
 import de.monticore.symboltable.modifiers.AccessModifier;
@@ -81,7 +84,7 @@ public class DefsTypeBasic {
   }
 
   public static OOTypeSymbol type(String name, List<SymTypeExpression> superTypes, List<TypeVarSymbol> typeArguments){
-    OOSymbolsScope spannedScope = OOSymbolsMill.oOSymbolsScopeBuilder().build();
+    IOOSymbolsScope spannedScope = OOSymbolsMill.oOSymbolsScopeBuilder().build();
     OOTypeSymbol ts = OOSymbolsMill.oOTypeSymbolBuilder()
             .setSpannedScope(spannedScope)
             .setName(name)
@@ -164,6 +167,7 @@ public class DefsTypeBasic {
   
   public static MethodSymbol add(MethodSymbol m, FieldSymbol f) {
     m.getSpannedScope().add(f);
+    m.getSpannedScope().add((VariableSymbol) f);
     return m;
   }
 
@@ -183,6 +187,7 @@ public class DefsTypeBasic {
   public static void add2scope(IOOSymbolsScope p, OOTypeSymbol s) {
     s.setEnclosingScope(p);
     p.add(s);
+    p.add((TypeSymbol) s);
   }
   
   /** add a Filed (e.g. a Variable) to a Scope (bidirectional)
@@ -190,6 +195,7 @@ public class DefsTypeBasic {
   public static void add2scope(IOOSymbolsScope p, FieldSymbol s) {
     s.setEnclosingScope(p);
     p.add(s);
+    p.add((VariableSymbol) s);
   }
 
   /** add a Method to a Scope (bidirectional)
@@ -197,6 +203,8 @@ public class DefsTypeBasic {
   public static void add2scope(IOOSymbolsScope p, MethodSymbol s){
     s.setEnclosingScope(p);
     p.add(s);
+    p.add((FunctionSymbol) s);
+
   }
 
   /**
@@ -306,49 +314,49 @@ public class DefsTypeBasic {
   
   public static void set_String() {
     _String = type("String");
-    OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate("String");
+    OOTypeSymbol loader = new OOTypeSymbolSurrogate("String");
     loader.setEnclosingScope(createScopeWithString());
     _StringSymType = new SymTypeOfObject(loader);
   }
 
   public static IOOSymbolsScope createScopeWithString() {
     OOSymbolsScope typeSymbolsScope = new OOSymbolsScope();
-    typeSymbolsScope.add(_String);
+    add2scope(typeSymbolsScope, _String);
     return typeSymbolsScope;
   }
 
   public static void link_String() {
     MethodSymbol m; FieldSymbol f;
-    OOSymbolsScope scope = OOSymbolsMill.oOSymbolsScopeBuilder().build();
+    IOOSymbolsScope scope = OOSymbolsMill.oOSymbolsScopeBuilder().build();
     
     // hashCode()
     add(_String, method("hashCode", _intSymType));
-    scope.add(method("hashCode",_intSymType));
+    add2scope(scope, method("hashCode", _intSymType));
 
     // equals(Object)
     m = method("equals", _booleanSymType);
     m.setFullName("java.lang.Object.equals");
     add(m, field("o", _ObjectSymType));
     add(_String, m);
-    scope.add(m);
+    add2scope(scope, m);
   
     // indexOf(String str, int fromIndex)
     m = method("indexOf", _intSymType);
     add(m, field("str", _StringSymType));
     add(m, field("fromIndex", _intSymType));
     add(_String, m);
-    scope.add(m);
+    add2scope(scope,m);
 
     // toString()
     m = method("toString",_StringSymType);
     add(_String, m);
-    scope.add(m);
+    add2scope(scope,m);
 
     // charAt(int index)
     m = method("charAt",_charSymType);
     add(m,field("index",_intSymType));
     add(_String, m);
-    scope.add(m);
+    add2scope(scope,m);
     
     // TODO RE: this function is very incomplete (wegen der fehlenden Signatur); ersetzen oder komplettieren
     _String.setSpannedScope(scope);
@@ -427,7 +435,7 @@ public class DefsTypeBasic {
     OOSymbolsScope typeSymbolsScope = new OOSymbolsScope();
     _int = type("int");
     typeSymbolsScope.add(_int);
-    OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate("int");
+    OOTypeSymbol loader = new OOTypeSymbolSurrogate("int");
     loader.setEnclosingScope(typeSymbolsScope);
     _intSymType = new SymTypeConstant(loader);
     typeConstants.put("int", _intSymType);

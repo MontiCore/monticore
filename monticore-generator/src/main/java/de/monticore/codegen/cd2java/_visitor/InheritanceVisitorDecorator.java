@@ -55,7 +55,7 @@ public class InheritanceVisitorDecorator extends AbstractCreator<ASTCDCompilatio
         .setName(visitorService.getInheritanceVisitorSimpleName())
         .setModifier(PUBLIC.build())
         .addInterface(visitorService.getVisitorType())
-        .addAllInterfaces(visitorService.getSuperInheritanceVisitors())
+        .addAllInterface(visitorService.getSuperInheritanceVisitors())
         .addAllCDMethods(getASTHandleMethods(compilationUnit.getCDDefinition(), visitorSimpleTypeName, languageInterfaceName))
         .addAllCDMethods(getScopeHandleMethods(cdDefinition, visitorSimpleTypeName))
         .addAllCDMethods(getSymbolHandleMethods(cdDefinition, visitorSimpleTypeName))
@@ -64,12 +64,12 @@ public class InheritanceVisitorDecorator extends AbstractCreator<ASTCDCompilatio
 
   protected List<ASTCDMethod> getASTHandleMethods(ASTCDDefinition astcdDefinition, String visitorSimpleTypeName, String languageInterfaceName) {
     List<ASTCDMethod> handleMethods = new ArrayList<>();
-    handleMethods.addAll(astcdDefinition.getCDClassList()
+    handleMethods.addAll(astcdDefinition.getCDClasssList()
         .stream()
         .map(c -> getASTHandleMethod(c, languageInterfaceName, visitorSimpleTypeName))
         .collect(Collectors.toList()));
 
-    handleMethods.addAll(astcdDefinition.getCDInterfaceList()
+    handleMethods.addAll(astcdDefinition.getCDInterfacesList()
         .stream()
         .map(c -> getHandleASTMethod(c, languageInterfaceName, visitorSimpleTypeName))
         .collect(Collectors.toList()));
@@ -119,7 +119,7 @@ public class InheritanceVisitorDecorator extends AbstractCreator<ASTCDCompilatio
     superScopesTransitive.add(I_SCOPE);
     
     // handle language scope
-    ASTCDMethod handleScopeMethod = visitorService.getVisitorMethod(HANDLE, symbolTableService.getScopeType());
+    ASTCDMethod handleScopeMethod = visitorService.getVisitorMethod(HANDLE, symbolTableService.getScopeInterfaceType());
     handleMethods.add(handleScopeMethod);
     replaceTemplate(EMPTY_BODY, handleScopeMethod,
         new TemplateHookPoint(HANDLE_SYMTAB_INHERITANCE_TEMPLATE,
@@ -130,7 +130,7 @@ public class InheritanceVisitorDecorator extends AbstractCreator<ASTCDCompilatio
       List<String> superScopesTransitiveForAS = new ArrayList<String>();
       superScopesTransitiveForAS.add(symbolTableService.getScopeInterfaceFullName());
       superScopesTransitiveForAS.addAll(superScopesTransitive);
-      ASTCDMethod handleArtifactScopeMethod = visitorService.getVisitorMethod(HANDLE, symbolTableService.getArtifactScopeType());
+      ASTCDMethod handleArtifactScopeMethod = visitorService.getVisitorMethod(HANDLE, symbolTableService.getArtifactScopeInterfaceType());
       handleMethods.add(handleArtifactScopeMethod);
       replaceTemplate(EMPTY_BODY, handleArtifactScopeMethod, 
           new TemplateHookPoint(HANDLE_SYMTAB_INHERITANCE_TEMPLATE, 

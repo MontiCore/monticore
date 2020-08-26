@@ -1,0 +1,19 @@
+/* (c) https://github.com/MontiCore/monticore */
+/* Used in the Reference Manual 
+   Chapter 4, demonstrating new MC grammar language concepts
+*/
+
+grammar Automata {
+  Automaton = "automaton" Name
+    "{" ( State | Transition )* "}" ;
+  State = key("state") Name
+    ("<<" ["initial"] ">>" | "<<" ["final"] ">>" )* ";" ;
+  Transition = from:Name "-" input:Name ">" to:Name ";" ;
+  astrule State =
+    reachableStates:State*;
+
+  Name = "...";
+
+  nokeyword "automaton", "initial", "final";
+}
+

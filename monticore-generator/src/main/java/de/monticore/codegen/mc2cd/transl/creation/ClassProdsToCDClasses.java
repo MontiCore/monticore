@@ -27,10 +27,10 @@ public class ClassProdsToCDClasses implements
   }
   
   private void createClassProdToCDClassLinks(Link<ASTMCGrammar, ASTCDDefinition> link) {
-    for (ASTClassProd classProd : link.source().getClassProdList()) {
+    for (ASTClassProd classProd : link.source().getClassProdsList()) {
       ASTCDClass cdClass = CD4AnalysisNodeFactory.createASTCDClass();
       cdClass.setModifier(CD4AnalysisNodeFactory.createASTModifier());
-      link.target().getCDClassList().add(cdClass);
+      link.target().getCDClasssList().add(cdClass);
       new Link<>(classProd, cdClass, link);
     }
   }

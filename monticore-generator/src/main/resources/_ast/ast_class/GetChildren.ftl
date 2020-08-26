@@ -2,7 +2,7 @@
 ${tc.signature("cdClass")}
   <#assign genHelper = glex.getGlobalVar("astHelper")>
     java.util.LinkedList<de.monticore.ast.ASTNode> result = new java.util.LinkedList<de.monticore.ast.ASTNode>();
-    <#list cdClass.getCDAttributeList() as attr>
+    <#list cdClass.getCDAttributesList() as attr>
       <#assign attrGetter = genHelper.getPlainGetter(attr)>
       <#if genHelper.isSimpleAstNode(attr)>
         if ( ${attrGetter}() != null ) {

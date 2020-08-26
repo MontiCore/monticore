@@ -27,7 +27,7 @@ public class SymbolAndScopeTranslation implements
       final ASTClassProd astClassProd = link.source();
       final ASTCDClass astcdClass = link.target();
       addSymbolStereotypes(astClassProd, astcdClass);
-      addScopeStereotypes(astClassProd.getSymbolDefinitionList(), astcdClass);
+      addScopeStereotypes(astClassProd.getSymbolDefinitionsList(), astcdClass);
       addSymbolInheritedProperty(astClassProd, astcdClass);
     }
 
@@ -35,7 +35,7 @@ public class SymbolAndScopeTranslation implements
       final ASTAbstractProd astClassProd = link.source();
       final ASTCDClass astcdClass = link.target();
       addSymbolStereotypes(astClassProd, astcdClass);
-      addScopeStereotypes(astClassProd.getSymbolDefinitionList(), astcdClass);
+      addScopeStereotypes(astClassProd.getSymbolDefinitionsList(), astcdClass);
       addSymbolInheritedProperty(astClassProd, astcdClass);
     }
 
@@ -43,14 +43,14 @@ public class SymbolAndScopeTranslation implements
       final ASTInterfaceProd astInterfaceProd = link.source();
       final ASTCDInterface astcdInterface = link.target();
       addSymbolStereotypes(astInterfaceProd, astcdInterface);
-      addScopeStereotypes(astInterfaceProd.getSymbolDefinitionList(), astcdInterface);
+      addScopeStereotypes(astInterfaceProd.getSymbolDefinitionsList(), astcdInterface);
       addSymbolInheritedProperty(astInterfaceProd, astcdInterface);
     }
     return links;
   }
 
   protected void addSymbolStereotypes(ASTProd grammarProd, ASTCDType cdType) {
-    for (ASTSymbolDefinition symbolDefinition : grammarProd.getSymbolDefinitionList()) {
+    for (ASTSymbolDefinition symbolDefinition : grammarProd.getSymbolDefinitionsList()) {
       if (symbolDefinition.isGenSymbol()) {
           TransformationHelper.addStereoType(cdType,
               MC2CDStereotypes.SYMBOL.toString());

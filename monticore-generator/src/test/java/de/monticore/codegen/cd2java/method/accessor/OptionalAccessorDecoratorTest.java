@@ -55,7 +55,7 @@ public class OptionalAccessorDecoratorTest extends DecoratorTestCase {
   @Test
   public void testGetMethod() {
     ASTCDMethod method = getMethodBy("getA", this.methods);
-    assertTrue(method.getCDParameterList().isEmpty());
+    assertTrue(method.getCDParametersList().isEmpty());
     Assert.assertTrue(method.getMCReturnType().isPresentMCType());
     assertDeepEquals(String.class, method.getMCReturnType().getMCType());
     assertDeepEquals(PUBLIC, method.getModifier());
@@ -67,6 +67,6 @@ public class OptionalAccessorDecoratorTest extends DecoratorTestCase {
     Assert.assertTrue(method.getMCReturnType().isPresentMCType());
     assertBoolean(method.getMCReturnType().getMCType());
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertTrue(method.getCDParameterList().isEmpty());
+    assertTrue(method.getCDParametersList().isEmpty());
   }
 }

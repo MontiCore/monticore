@@ -23,6 +23,7 @@ import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.NAM
 /**
  * creates a SymbolLoader class from a grammar
  */
+@Deprecated
 public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
 
   protected SymbolTableService symbolTableService;
@@ -54,12 +55,12 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
             PUBLIC.build();
 
     // symbol rule methods and attributes
-    List<ASTCDMethod> symbolRuleAttributeMethods = symbolInput.deepClone().getCDAttributeList()
+    List<ASTCDMethod> symbolRuleAttributeMethods = symbolInput.deepClone().getCDAttributesList()
         .stream()
         .map(methodDecorator.getMutatorDecorator()::decorate)
         .flatMap(List::stream)
         .collect(Collectors.toList());
-    symbolRuleAttributeMethods.addAll(symbolInput.deepClone().getCDAttributeList()
+    symbolRuleAttributeMethods.addAll(symbolInput.deepClone().getCDAttributesList()
         .stream()
         .map(methodDecorator.getAccessorDecorator()::decorate)
         .flatMap(List::stream)
@@ -72,7 +73,7 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
         .filter(m -> !m.getName().equals("getEnclosingScope"))
         .collect(Collectors.toList());
     List<ASTCDMethod> delegateSymbolRuleAttributeMethods = createOverriddenMethodDelegates(delegateMethods);
-    List<ASTCDMethod> symbolRuleMethods = symbolInput.deepClone().getCDMethodList();
+    List<ASTCDMethod> symbolRuleMethods = symbolInput.deepClone().getCDMethodsList();
     List<ASTCDMethod> delegateSymbolRuleMethods = createOverriddenMethodDelegates(symbolRuleMethods);
 
     ASTCDAttribute delegateAttribute = createDelegateAttribute(symbolFullName);
@@ -90,16 +91,16 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
             .setModifier(modifier)
             .setSuperclass(getMCTypeFacade()
             .createQualifiedType(symbolTableService.getSymbolFullName(symbolInput)))
-            .addCDConstructor(createConstructor(symbolSurrogateSimpleName))
-            .addCDAttribute(nameAttribute)
+            .addCDConstructors(createConstructor(symbolSurrogateSimpleName))
+            .addCDAttributes(nameAttribute)
             .addAllCDMethods(nameMethods)
             .addAllCDMethods(delegateSymbolRuleAttributeMethods)
             .addAllCDMethods(delegateSymbolRuleMethods);
     return builder
-            .addCDAttribute(delegateAttribute)
-            .addCDAttribute(enclosingScopeAttribute)
+            .addCDAttributes(delegateAttribute)
+            .addCDAttributes(enclosingScopeAttribute)
             .addAllCDMethods(enclosingScopeMethods)
-            .addCDMethod(createLazyLoadDelegateMethod(symbolSurrogateSimpleName, symbolFullName, simpleName))
+            .addCDMethods(createLazyLoadDelegateMethod(symbolSurrogateSimpleName, symbolFullName, simpleName))
             .build();
   }
 
@@ -140,14 +141,14 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
   protected List<ASTCDMethod> createOverriddenMethodDelegates(List<ASTCDMethod> inheritedMethods){
     List<ASTCDMethod> overriddenDelegates = new ArrayList<>();
     for(ASTCDMethod inherited: inheritedMethods){
-      ASTCDMethod method = getCDMethodFacade().createMethod(inherited.getModifier(), inherited.getMCReturnType(), inherited.getName(), inherited.getCDParameterList());
+      ASTCDMethod method = getCDMethodFacade().createMethod(inherited.getModifier(), inherited.getMCReturnType(), inherited.getName(), inherited.getCDParametersList());
       StringBuilder message = new StringBuilder();
       if(!method.printReturnType().equals("void")){
         message.append("return ");
       }
       message.append("lazyLoadDelegate().").append(method.getName()).append("(");
       int count = 0;
-      for (ASTCDParameter parameter: method.getCDParameterList()){
+      for (ASTCDParameter parameter: method.getCDParametersList()){
         count++;
         message.append(parameter.getName()).append(",");
       }

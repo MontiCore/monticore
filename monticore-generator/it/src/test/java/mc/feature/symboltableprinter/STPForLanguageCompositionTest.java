@@ -4,6 +4,7 @@ package mc.feature.symboltableprinter;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.se_rwth.commons.logging.Log;
 import mc.feature.symboltableprinter.symboltableprintersub.SymbolTablePrinterSubMill;
+import mc.feature.symboltableprinter.symboltableprintersub._symboltable.ISymbolTablePrinterSubScope;
 import mc.feature.symboltableprinter.symboltableprintersub._symboltable.SymbolTablePrinterSubScope;
 import mc.feature.symboltableprinter.symboltableprintersub._symboltable.SymbolTablePrinterSubScopeDeSer;
 import mc.feature.symboltableprinter.symboltableprintersub._symboltable.SymbolTablePrinterSubSymbolTablePrinter;
@@ -33,7 +34,7 @@ public class STPForLanguageCompositionTest {
   @Test
   public void testSerializeLocalSymbols(){
     //create scope with symbols of the grammar SymbolTablePrinterSub and both of its supergrammars
-    SymbolTablePrinterSubScope scope = SymbolTablePrinterSubMill
+    ISymbolTablePrinterSubScope scope = SymbolTablePrinterSubMill
         .symbolTablePrinterSubScopeBuilder().setName("alphabet").build();
     scope.add(SymbolTablePrinterSup1Mill.aSymbolBuilder().setName("a").build());
     scope.add(SymbolTablePrinterSup2Mill.bSymbolBuilder().setName("b").build());

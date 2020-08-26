@@ -5,6 +5,9 @@ import de.monticore.expressions.expressionsbasis._ast.*;
 import de.monticore.expressions.expressionsbasis._symboltable.*;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisitor;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
+import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
@@ -23,13 +26,13 @@ import static de.monticore.types.check.TypeCheck.*;
  */
 public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
 
-  public IOOSymbolsScope getScope (IExpressionsBasisScope expressionsBasisScope){
+  public IBasicSymbolsScope getScope (IExpressionsBasisScope expressionsBasisScope){
     // is accepted only here, decided on 07.04.2020
-    if(!(expressionsBasisScope instanceof IOOSymbolsScope)){
-      Log.error("0xA0307 the enclosing scope of the expression does not implement the interface IOOSymbolsScope");
+    if(!(expressionsBasisScope instanceof IBasicSymbolsScope)){
+      Log.error("0xA0307 the enclosing scope of the expression does not implement the interface IBasicSymbolsScope");
     }
     // is accepted only here, decided on 07.04.2020
-    return (IOOSymbolsScope) expressionsBasisScope;
+    return (IBasicSymbolsScope) expressionsBasisScope;
   }
 
   protected TypeCheckResult typeCheckResult;
@@ -77,18 +80,18 @@ public class DeriveSymTypeOfExpression implements ExpressionsBasisVisitor {
   }
 
   protected Optional<SymTypeExpression> calculateNameExpression(ASTNameExpression expr){
-    Optional<FieldSymbol> optVar = getScope(expr.getEnclosingScope()).resolveField(expr.getName());
-    Optional<OOTypeSymbol> optType = getScope(expr.getEnclosingScope()).resolveOOType(expr.getName());
+    Optional<VariableSymbol> optVar = getScope(expr.getEnclosingScope()).resolveVariable(expr.getName());
+    Optional<TypeSymbol> optType = getScope(expr.getEnclosingScope()).resolveType(expr.getName());
     if (optVar.isPresent()) {
       //no method here, test variable first
       // durch AST-Umbau kann ASTNameExpression keine Methode sein
-      FieldSymbol var = optVar.get();
+      VariableSymbol var = optVar.get();
       SymTypeExpression res = var.getType().deepClone();
       typeCheckResult.setField();
       return Optional.of(res);
     } else if (optType.isPresent()) {
       //no variable found, test if name is type
-      OOTypeSymbol type = optType.get();
+      TypeSymbol type = optType.get();
       SymTypeExpression res = createTypeExpression(type.getName(), type.getEnclosingScope());
       typeCheckResult.setType();
       return Optional.of(res);

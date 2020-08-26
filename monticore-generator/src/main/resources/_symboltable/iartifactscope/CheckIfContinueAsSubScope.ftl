@@ -3,11 +3,11 @@
     final String symbolQualifier = de.se_rwth.commons.Names.getQualifier(symbolName);
 
     final List<String> symbolQualifierParts = de.se_rwth.commons.Splitters.DOT.splitToList(symbolQualifier);
-    final List<String> packageParts = de.se_rwth.commons.Splitters.DOT.splitToList(packageName);
+    final List<String> packageParts = de.se_rwth.commons.Splitters.DOT.splitToList(getPackageName());
 
     boolean symbolNameStartsWithPackage = true;
 
-    if (packageName.isEmpty()) {
+    if (getPackageName().isEmpty()) {
       // symbol qualifier always contains default package (i.e., empty string)
       symbolNameStartsWithPackage = true;
     } else if (symbolQualifierParts.size() >= packageParts.size()) {

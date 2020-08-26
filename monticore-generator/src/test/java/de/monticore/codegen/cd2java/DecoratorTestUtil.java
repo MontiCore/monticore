@@ -16,7 +16,7 @@ public final class DecoratorTestUtil {
   private DecoratorTestUtil() {}
 
   public static ASTCDClass getClassBy(String name, ASTCDCompilationUnit ast) {
-    List<ASTCDClass> filtered = ast.getCDDefinition().getCDClassList().stream()
+    List<ASTCDClass> filtered = ast.getCDDefinition().getCDClasssList().stream()
         .filter(c -> name.equals(c.getName()))
         .collect(Collectors.toList());
     assertEquals(String.format("Expected to find 1 class, but found '%s'", filtered.size()), 1, filtered.size());
@@ -24,7 +24,7 @@ public final class DecoratorTestUtil {
   }
 
   public static ASTCDInterface getInterfaceBy(String name, ASTCDCompilationUnit ast) {
-    List<ASTCDInterface> filtered = ast.getCDDefinition().getCDInterfaceList().stream()
+    List<ASTCDInterface> filtered = ast.getCDDefinition().getCDInterfacesList().stream()
         .filter(c -> name.equals(c.getName()))
         .collect(Collectors.toList());
     assertEquals(String.format("Expected to find 1 interface, but found '%s'", filtered.size()), 1, filtered.size());
@@ -32,7 +32,7 @@ public final class DecoratorTestUtil {
   }
 
   public static ASTCDEnum getEnumBy(String name, ASTCDCompilationUnit ast) {
-    List<ASTCDEnum> filtered = ast.getCDDefinition().getCDEnumList().stream()
+    List<ASTCDEnum> filtered = ast.getCDDefinition().getCDEnumsList().stream()
         .filter(c -> name.equals(c.getName()))
         .collect(Collectors.toList());
     assertEquals(String.format("Expected to find 1 enum, but found '%s'", filtered.size()), 1, filtered.size());
@@ -40,31 +40,31 @@ public final class DecoratorTestUtil {
   }
 
   public static List<ASTCDMethod> getMethodsBy(String name, ASTCDClass clazz) {
-    return getMethodsBy(name, clazz.getCDMethodList());
+    return getMethodsBy(name, clazz.getCDMethodsList());
   }
 
   public static List<ASTCDMethod> getMethodsBy(String name, int parameterSize, ASTCDClass clazz) {
-    return getMethodsBy(name, parameterSize, clazz.getCDMethodList());
+    return getMethodsBy(name, parameterSize, clazz.getCDMethodsList());
   }
 
   public static ASTCDMethod getMethodBy(String name, ASTCDClass clazz) {
-    return getMethodBy(name, clazz.getCDMethodList());
+    return getMethodBy(name, clazz.getCDMethodsList());
   }
 
   public static ASTCDMethod getMethodBy(String name, int parameterSize, ASTCDClass clazz) {
-    return getMethodBy(name, parameterSize, clazz.getCDMethodList());
+    return getMethodBy(name, parameterSize, clazz.getCDMethodsList());
   }
 
   public static List<ASTCDMethod> getMethodsBy(String name, int parameterSize, ASTCDInterface clazz) {
-    return getMethodsBy(name, parameterSize, clazz.getCDMethodList());
+    return getMethodsBy(name, parameterSize, clazz.getCDMethodsList());
   }
 
   public static ASTCDMethod getMethodBy(String name, ASTCDInterface clazz) {
-    return getMethodBy(name, clazz.getCDMethodList());
+    return getMethodBy(name, clazz.getCDMethodsList());
   }
 
   public static ASTCDMethod getMethodBy(String name, int parameterSize, ASTCDInterface clazz) {
-    return getMethodBy(name, parameterSize, clazz.getCDMethodList());
+    return getMethodBy(name, parameterSize, clazz.getCDMethodsList());
   }
 
   public static List<ASTCDMethod> getMethodsBy(String name, List<ASTCDMethod> methods) {
@@ -75,7 +75,7 @@ public final class DecoratorTestUtil {
   public static List<ASTCDMethod> getMethodsBy(String name, int parameterSize, List<ASTCDMethod> methods) {
     return filterMethods(methods, Arrays.asList(
         m -> name.equals(m.getName()),
-        m -> parameterSize == m.getCDParameterList().size()));
+        m -> parameterSize == m.getCDParametersList().size()));
   }
 
   public static ASTCDMethod getMethodBy(String name, List<ASTCDMethod> methods) {
@@ -86,7 +86,7 @@ public final class DecoratorTestUtil {
   public static ASTCDMethod getMethodBy(String name, int parameterSize, List<ASTCDMethod> methods) {
     return filterMethodsOrFail(methods, Arrays.asList(
         m -> name.equals(m.getName()),
-        m -> parameterSize == m.getCDParameterList().size()));
+        m -> parameterSize == m.getCDParametersList().size()));
   }
 
   private static ASTCDMethod filterMethodsOrFail(List<ASTCDMethod> methods, List<Predicate<ASTCDMethod>> predicates) {
@@ -104,7 +104,7 @@ public final class DecoratorTestUtil {
   }
 
   public static ASTCDAttribute getAttributeBy(String name, ASTCDClass clazz) {
-    List<ASTCDAttribute> filtered = clazz.getCDAttributeList().stream()
+    List<ASTCDAttribute> filtered = clazz.getCDAttributesList().stream()
         .filter(attribute -> name.equals(attribute.getName()))
         .collect(Collectors.toList());
     assertEquals(String.format("Expected find 1 attribute, but found '%s'", filtered.size()), 1, filtered.size());
@@ -113,7 +113,7 @@ public final class DecoratorTestUtil {
 
 
   public static ASTCDAttribute getAttributeBy(String name, ASTCDInterface clazz) {
-    List<ASTCDAttribute> filtered = clazz.getCDAttributeList().stream()
+    List<ASTCDAttribute> filtered = clazz.getCDAttributesList().stream()
         .filter(attribute -> name.equals(attribute.getName()))
         .collect(Collectors.toList());
     assertEquals(String.format("Expected find 1 attribute, but found '%s'", filtered.size()), 1, filtered.size());

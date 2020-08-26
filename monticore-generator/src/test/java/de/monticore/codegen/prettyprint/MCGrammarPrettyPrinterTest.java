@@ -124,5 +124,28 @@ public class MCGrammarPrettyPrinterTest {
     assertTrue(grammar.deepEquals(result.get()));
   }
 
+  @Test
+  // test annotations
+  public void testAnnotations() throws IOException {
+    String model = "src/test/resources/de/monticore/Annotations.mc4";
+
+    // Parsing input
+    Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
+    Optional<ASTMCGrammar> result = parser.parseMCGrammar(model);
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
+    ASTMCGrammar grammar = result.get();
+
+    // Prettyprinting input
+    Grammar_WithConceptsPrettyPrinter prettyPrinter = new Grammar_WithConceptsPrettyPrinter(new IndentPrinter());
+    String output = prettyPrinter.prettyprint(grammar);
+
+    // Parsing printed input
+    result = parser.parseMCGrammar(new StringReader(output));
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
+
+    assertTrue(grammar.deepEquals(result.get()));
+  }
 
 }

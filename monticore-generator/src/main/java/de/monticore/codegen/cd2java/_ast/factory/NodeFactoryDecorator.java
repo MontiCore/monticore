@@ -13,6 +13,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
@@ -42,7 +43,7 @@ public class NodeFactoryDecorator extends AbstractCreator<ASTCDCompilationUnit, 
 
     ASTCDMethod getFactoryMethod = addGetFactoryMethod(factoryType, factoryClassName);
 
-    List<ASTCDClass> astcdClassList = Lists.newArrayList(astcdDefinition.getCDClassList());
+    List<ASTCDClass> astcdClassList = Lists.newArrayList(astcdDefinition.getCDClasssList());
 
     List<ASTCDMethod> createMethodList = new ArrayList<>();
 
@@ -61,15 +62,18 @@ public class NodeFactoryDecorator extends AbstractCreator<ASTCDCompilationUnit, 
 
     //add factory delegate Methods form Super Classes
     List<ASTCDMethod> delegateMethodList = addFactoryDelegateMethods(astcdClassList);
-
-
+  
+    // mark as deprecated (to be deleted, because Builders exist)
+    ASTModifier modifier = PUBLIC.build();
+    nodeFactoryService.addDeprecatedStereotype(modifier, Optional.empty());
+    
     return CD4AnalysisMill.cDClassBuilder()
-        .setModifier(PUBLIC.build())
+        .setModifier(modifier)
         .setName(factoryClassName)
-        .addCDAttribute(factoryAttribute)
+        .addCDAttributes(factoryAttribute)
         .addAllCDAttributes(factoryAttributeList)
-        .addCDConstructor(constructor)
-        .addCDMethod(getFactoryMethod)
+        .addCDConstructors(constructor)
+        .addCDMethods(getFactoryMethod)
         .addAllCDMethods(createMethodList)
         .addAllCDMethods(delegateMethodList)
         .build();
@@ -126,9 +130,10 @@ public class NodeFactoryDecorator extends AbstractCreator<ASTCDCompilationUnit, 
         ASTCDDefinition superDefinition = superSymbol.getAstNode();
 
         TypeCD2JavaVisitor visitor = new TypeCD2JavaVisitor(superSymbol.getEnclosingScope());
-        CD4AnalysisMill.cDCompilationUnitBuilder().setCDDefinition(superDefinition).build().accept(visitor);
+        ASTCDCompilationUnit a = CD4AnalysisMill.cDCompilationUnitBuilder().setCDDefinition(superDefinition).build();
+        a.accept(visitor);
 
-        for (ASTCDClass superClass : superDefinition.getCDClassList()) {
+        for (ASTCDClass superClass : superDefinition.getCDClasssList()) {
           if (canAddDelegateMethod(superClass, classList, delegateMethodList)) {
             String packageName = superSymbol.getFullName().toLowerCase() + "." + AST_PACKAGE + ".";
             ASTMCType superAstType = this.getMCTypeFacade().createQualifiedType(packageName + superClass.getName());

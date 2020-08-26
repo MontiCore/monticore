@@ -1,7 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
+package de.monticore.statements;
 
 /* This is a MontiCore stable grammar.
  * Adaptations -- if any -- are conservative. */
+
+import de.monticore.statements.*;
 
 /**
  * This grammar defines the all Java statements.
@@ -24,13 +27,11 @@
  *
 */
 
-package de.monticore.statements;
-
 component grammar MCFullJavaStatements extends 
-    de.monticore.statements.MCAssertStatements,
-    de.monticore.statements.MCExceptionStatements,
-    de.monticore.statements.MCLowLevelStatements,
-    de.monticore.statements.MCReturnStatements,
-    de.monticore.statements.MCSynchronizedStatements {
+    MCAssertStatements,
+    MCExceptionStatements,
+    MCLowLevelStatements,
+    MCReturnStatements,
+    MCSynchronizedStatements {
 
 }

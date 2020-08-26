@@ -53,7 +53,7 @@ public class ASTInterfaceDecorator extends AbstractTransformer<ASTCDInterface> {
 
   @Override
   public ASTCDInterface decorate(final ASTCDInterface originalInput, ASTCDInterface changedInput) {
-    changedInput.addCDMethod(getAcceptMethod());
+    changedInput.addCDMethods(getAcceptMethod());
     changedInput.addInterface(getMCTypeFacade().createQualifiedType(AST_INTERFACE));
     changedInput.addInterface(astService.getASTBaseInterface());
     changedInput.clearCDAttributes();
@@ -69,7 +69,7 @@ public class ASTInterfaceDecorator extends AbstractTransformer<ASTCDInterface> {
     // if a ast has a symbol definition without a name, the getName has to be implemented manually
     // add getName method that is abstract
     if (astService.isSymbolWithoutName(originalInput)) {
-      changedInput.addCDMethod(astService.createGetNameMethod());
+      changedInput.addCDMethods(astService.createGetNameMethod());
     }
     return changedInput;
   }

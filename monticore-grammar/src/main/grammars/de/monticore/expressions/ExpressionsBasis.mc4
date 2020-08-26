@@ -4,6 +4,10 @@ package de.monticore.expressions;
 /* This is a MontiCore stable grammar.
  * Adaptations -- if any -- are conservative. */
 
+import de.monticore.literals.*;
+import de.monticore.types.*;
+import de.monticore.*;
+
 /**
  * This grammar defines core interfaces for expressions and the
  * kinds of symbols necessary.
@@ -28,8 +32,8 @@ package de.monticore.expressions;
  *
 */
 
-component grammar ExpressionsBasis extends de.monticore.MCBasics,
-                                   de.monticore.literals.MCLiteralsBasis {
+component grammar ExpressionsBasis 
+          extends MCBasics, MCLiteralsBasis {
 
   /*=================================================================*/
 

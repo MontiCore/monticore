@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package cocos.invalid.A4098;
+
+grammar A4098Super {
+
+  Foo;
+
+}

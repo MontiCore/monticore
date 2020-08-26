@@ -82,7 +82,7 @@ public class ModelLoaderDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterfacesCount() {
-    assertEquals(1, modelLoaderClass.sizeInterfaces());
+    assertEquals(1, modelLoaderClass.sizeInterface());
   }
 
   @Test
@@ -103,19 +103,19 @@ public class ModelLoaderDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testConstructor() {
-    ASTCDConstructor cdConstructor = modelLoaderClass.getCDConstructor(0);
+    ASTCDConstructor cdConstructor = modelLoaderClass.getCDConstructors(0);
     assertDeepEquals(PUBLIC, cdConstructor.getModifier());
     assertEquals("AutomatonModelLoader", cdConstructor.getName());
 
     assertEquals(4, cdConstructor.sizeCDParameters());
-    assertDeepEquals("de.monticore.modelloader.AstProvider<de.monticore.codegen.ast.automaton._ast.ASTAutomaton>", cdConstructor.getCDParameter(0).getMCType());
-    assertEquals("astProvider", cdConstructor.getCDParameter(0).getName());
-    assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.AutomatonSymbolTableCreatorDelegator", cdConstructor.getCDParameter(1).getMCType());
-    assertEquals("symbolTableCreator", cdConstructor.getCDParameter(1).getName());
-    assertDeepEquals("String", cdConstructor.getCDParameter(2).getMCType());
-    assertEquals("modelFileExtension", cdConstructor.getCDParameter(2).getName());
-    assertDeepEquals("String", cdConstructor.getCDParameter(3).getMCType());
-    assertEquals("symbolFileExtension", cdConstructor.getCDParameter(3).getName());
+    assertDeepEquals("de.monticore.modelloader.AstProvider<de.monticore.codegen.ast.automaton._ast.ASTAutomaton>", cdConstructor.getCDParameters(0).getMCType());
+    assertEquals("astProvider", cdConstructor.getCDParameters(0).getName());
+    assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.AutomatonSymbolTableCreatorDelegator", cdConstructor.getCDParameters(1).getMCType());
+    assertEquals("symbolTableCreator", cdConstructor.getCDParameters(1).getName());
+    assertDeepEquals("String", cdConstructor.getCDParameters(2).getMCType());
+    assertEquals("modelFileExtension", cdConstructor.getCDParameters(2).getName());
+    assertDeepEquals("String", cdConstructor.getCDParameters(3).getMCType());
+    assertEquals("symbolFileExtension", cdConstructor.getCDParameters(3).getName());
   }
 
   @Test
@@ -146,7 +146,7 @@ public class ModelLoaderDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(7, modelLoaderClass.getCDMethodList().size());
+    assertEquals(7, modelLoaderClass.getCDMethodsList().size());
   }
 
   @Test
@@ -157,14 +157,14 @@ public class ModelLoaderDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
 
     assertEquals(3, method.sizeCDParameters());
-    assertDeepEquals("de.monticore.codegen.ast.automaton._ast.ASTAutomaton", method.getCDParameter(0).getMCType());
-    assertEquals("ast", method.getCDParameter(0).getName());
+    assertDeepEquals("de.monticore.codegen.ast.automaton._ast.ASTAutomaton", method.getCDParameters(0).getMCType());
+    assertEquals("ast", method.getCDParameters(0).getName());
 
-    assertDeepEquals(String.class, method.getCDParameter(1).getMCType());
-    assertEquals("modelName", method.getCDParameter(1).getName());
+    assertDeepEquals(String.class, method.getCDParameters(1).getMCType());
+    assertEquals("modelName", method.getCDParameters(1).getName());
 
-    assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.AutomatonGlobalScope", method.getCDParameter(2).getMCType());
-    assertEquals("enclosingScope", method.getCDParameter(2).getName());
+    assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.AutomatonGlobalScope", method.getCDParameters(2).getMCType());
+    assertEquals("enclosingScope", method.getCDParameters(2).getName());
   }
 
 
@@ -177,14 +177,14 @@ public class ModelLoaderDecoratorTest extends DecoratorTestCase {
         method.getMCReturnType().getMCType());
 
     assertEquals(3, method.sizeCDParameters());
-    assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
-    assertEquals("qualifiedModelName", method.getCDParameter(0).getName());
+    assertDeepEquals(String.class, method.getCDParameters(0).getMCType());
+    assertEquals("qualifiedModelName", method.getCDParameters(0).getName());
 
-    assertDeepEquals("de.monticore.io.paths.ModelPath", method.getCDParameter(1).getMCType());
-    assertEquals("modelPath", method.getCDParameter(1).getName());
+    assertDeepEquals("de.monticore.io.paths.ModelPath", method.getCDParameters(1).getMCType());
+    assertEquals("modelPath", method.getCDParameters(1).getName());
 
-    assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.AutomatonGlobalScope", method.getCDParameter(2).getMCType());
-    assertEquals("enclosingScope", method.getCDParameter(2).getName());
+    assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.AutomatonGlobalScope", method.getCDParameters(2).getMCType());
+    assertEquals("enclosingScope", method.getCDParameters(2).getName());
   }
 
   @Test
@@ -196,11 +196,11 @@ public class ModelLoaderDecoratorTest extends DecoratorTestCase {
         method.getMCReturnType().getMCType());
 
     assertEquals(2, method.sizeCDParameters());
-    assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
-    assertEquals("qualifiedModelName", method.getCDParameter(0).getName());
+    assertDeepEquals(String.class, method.getCDParameters(0).getMCType());
+    assertEquals("qualifiedModelName", method.getCDParameters(0).getName());
 
-    assertDeepEquals("de.monticore.io.paths.ModelPath", method.getCDParameter(1).getMCType());
-    assertEquals("modelPath", method.getCDParameter(1).getName());
+    assertDeepEquals("de.monticore.io.paths.ModelPath", method.getCDParameters(1).getMCType());
+    assertEquals("modelPath", method.getCDParameters(1).getName());
   }
 
   @Test
@@ -212,11 +212,11 @@ public class ModelLoaderDecoratorTest extends DecoratorTestCase {
         method.getMCReturnType().getMCType());
 
     assertEquals(2, method.sizeCDParameters());
-    assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
-    assertEquals("qualifiedModelName", method.getCDParameter(0).getName());
+    assertDeepEquals(String.class, method.getCDParameters(0).getMCType());
+    assertEquals("qualifiedModelName", method.getCDParameters(0).getName());
 
-    assertDeepEquals("de.monticore.io.paths.ModelPath", method.getCDParameter(1).getMCType());
-    assertEquals("modelPath", method.getCDParameter(1).getName());
+    assertDeepEquals("de.monticore.io.paths.ModelPath", method.getCDParameters(1).getMCType());
+    assertEquals("modelPath", method.getCDParameters(1).getName());
   }
 
   @Test
@@ -227,11 +227,11 @@ public class ModelLoaderDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
 
     assertEquals(2, method.sizeCDParameters());
-    assertDeepEquals("List<?>", method.getCDParameter(0).getMCType());
-    assertEquals("asts", method.getCDParameter(0).getName());
+    assertDeepEquals("List<?>", method.getCDParameters(0).getMCType());
+    assertEquals("asts", method.getCDParameters(0).getName());
 
-    assertDeepEquals(String.class, method.getCDParameter(1).getMCType());
-    assertEquals("modelName", method.getCDParameter(1).getName());
+    assertDeepEquals(String.class, method.getCDParameters(1).getMCType());
+    assertEquals("modelName", method.getCDParameters(1).getName());
   }
 
   @Test

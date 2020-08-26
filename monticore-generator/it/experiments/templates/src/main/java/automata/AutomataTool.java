@@ -5,7 +5,6 @@ import automata._ast.*;
 import automata._symboltable.*;
 import automata._parser.AutomataParser;
 import automata._symboltable.AutomataScopeDeSer;
-import com.google.common.collect.Lists;
 import de.monticore.generating.*;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.reporting.Reporting;
@@ -17,7 +16,6 @@ import org.antlr.v4.runtime.RecognitionException;
 import java.io.*;
 import java.nio.file.*;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Main class for the Automaton DSL tool.
@@ -58,10 +56,10 @@ public class AutomataTool {
   protected ASTAutomaton ast;
 
   // The Global Scope of the symbol table
-  protected AutomataGlobalScope globalScope;
+  protected IAutomataGlobalScope globalScope;
 
   // the symbol table of the model (after parsing and SymTab creation)
-  AutomataArtifactScope modelTopScope;
+  IAutomataArtifactScope modelTopScope;
 
   // The generator engine used (reentrant, so only one instance needed)
   protected GeneratorEngine generatorEngine;
@@ -173,7 +171,7 @@ public class AutomataTool {
     generateAbstractState();
   
     // generate the class for each state
-    for(ASTState state : ast.getStatesList()) {
+    for(ASTState state : ast.getStateList()) {
       generateState(state);
     }
   
@@ -207,7 +205,7 @@ public class AutomataTool {
 
     // we assume there is at least one state (--> CoCo)
     // if there are more: one will arbitrarily be choosen (may be the last one)  (---> CoCo?)
-    ASTState initialState = ast.getStatesList().stream().filter(ASTState::isInitial).findAny().get();
+    ASTState initialState = ast.getStateList().stream().filter(ASTState::isInitial).findAny().get();
     
     // handle TOP extension
     boolean isHW = existsHandwrittenClass(handcodedPath,className);
@@ -294,13 +292,13 @@ public class AutomataTool {
     // For demonstration we use the direct approach
   
     // initialize delta: transition map of maps, and state name2node
-    for(ASTState s: ast.getStatesList()) {
+    for(ASTState s: ast.getStateList()) {
       stateMap.put(s.getName(),s);
       deltaMap.put(s,new HashMap<>());
     }
     
     // Add the transitions to the table
-    for(ASTTransition t: ast.getTransitionsList()) {
+    for(ASTTransition t: ast.getTransitionList()) {
       String input = t.getInput();
       stimuli.add(input);
       ASTState from = stateMap.get(t.getFrom());
@@ -339,7 +337,7 @@ public class AutomataTool {
    * @param ast the model
    * @return
    */
-  public AutomataArtifactScope createSymbolTable(ASTAutomaton ast) {
+  public IAutomataArtifactScope createSymbolTable(ASTAutomaton ast) {
     return AutomataMill
         .automataSymbolTableCreatorBuilder()
         .addToScopeStack(globalScope)

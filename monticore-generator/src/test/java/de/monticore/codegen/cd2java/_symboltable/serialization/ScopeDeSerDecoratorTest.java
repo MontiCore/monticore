@@ -45,11 +45,11 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
 
   private static final String JSON_OBJECT = "de.monticore.symboltable.serialization.json.JsonObject";
 
-  private static final String AUTOMATON_SCOPE = "de.monticore.codegen.symboltable.automaton._symboltable.AutomatonScope";
+  private static final String AUTOMATON_SCOPE = "de.monticore.codegen.symboltable.automaton._symboltable.IAutomatonScope";
 
-  private static final String AUTOMATON_ARTIFACT_SCOPE = "de.monticore.codegen.symboltable.automaton._symboltable.AutomatonArtifactScope";
+  private static final String AUTOMATON_ARTIFACT_SCOPE = "de.monticore.codegen.symboltable.automaton._symboltable.IAutomatonArtifactScope";
 
-  private static final String AUTOMATON_GLOBAL_SCOPE = "de.monticore.codegen.symboltable.automaton._symboltable.AutomatonGlobalScope";
+  private static final String AUTOMATON_GLOBAL_SCOPE = "de.monticore.codegen.symboltable.automaton._symboltable.IAutomatonGlobalScope";
 
   private static final String I_AUTOMATON_SCOPE = "de.monticore.codegen.symboltable.automaton._symboltable.IAutomatonScope";
 
@@ -93,7 +93,7 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testNoSuperInterfaces(){
-    assertTrue(scopeClass.isEmptyInterfaces());
+    assertTrue(scopeClass.isEmptyInterface());
   }
 
   @Test
@@ -103,7 +103,7 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testConstructors(){
-    ASTCDConstructor constructor = scopeClass.getCDConstructor(0);
+    ASTCDConstructor constructor = scopeClass.getCDConstructors(0);
     assertDeepEquals(CDModifier.PUBLIC, constructor.getModifier());
     assertTrue(constructor.isEmptyCDParameters());
   }
@@ -111,14 +111,14 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
   @Test
   public void testAttributeCount(){
     assertEquals(7, scopeClass.sizeCDAttributes());
-    for(ASTCDAttribute attribute: scopeClass.getCDAttributeList()){
+    for(ASTCDAttribute attribute: scopeClass.getCDAttributesList()){
       System.out.println(attribute.getName());
     }
   }
 
   @Test
   public void testAttributes(){
-    List<ASTCDAttribute> attributeList = scopeClass.getCDAttributeList();
+    List<ASTCDAttribute> attributeList = scopeClass.getCDAttributesList();
     assertDeepEquals(CDModifier.PACKAGE_PRIVATE, attributeList.get(0).getModifier());
     assertEquals("automatonSymbolDeSer", attributeList.get(0).getName());
     assertDeepEquals(AUTOMATON_SYMBOL+DESER, attributeList.get(0).getMCType());
@@ -152,7 +152,7 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
   public void testGetSymbolExtensionMethod(){
     ASTCDMethod method = getMethodBy("getSymbolFileExtension", scopeClass);
     assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
-    assertEquals(0, method.sizeExceptions());
+    assertEquals(0, method.sizeException());
     assertEquals(0, method.sizeCDParameters());
     assertFalse(method.getMCReturnType().isPresentMCVoidType());
     assertDeepEquals(String.class, method.getMCReturnType().getMCType());
@@ -162,9 +162,9 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
   public void testSetSymbolFileExtensionMethod(){
     ASTCDMethod method = getMethodBy("setSymbolFileExtension", scopeClass);
     assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
-    assertEquals(0, method.sizeExceptions());
+    assertEquals(0, method.sizeException());
     assertEquals(1, method.sizeCDParameters());
-    ASTCDParameter parameter = method.getCDParameter(0);
+    ASTCDParameter parameter = method.getCDParameters(0);
     assertEquals("symbolFileExtension", parameter.getName());
     assertDeepEquals(String.class, parameter.getMCType());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
@@ -180,23 +180,23 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
       assertEquals(1, method.sizeCDParameters());
     }
 
-    assertEquals("url", methods.get(0).getCDParameter(0).getName());
-    assertDeepEquals("java.net.URL", methods.get(0).getCDParameter(0).getMCType());
+    assertEquals("url", methods.get(0).getCDParameters(0).getName());
+    assertDeepEquals("java.net.URL", methods.get(0).getCDParameters(0).getMCType());
 
-    assertEquals("reader", methods.get(1).getCDParameter(0).getName());
-    assertDeepEquals("java.io.Reader", methods.get(1).getCDParameter(0).getMCType());
+    assertEquals("reader", methods.get(1).getCDParameters(0).getName());
+    assertDeepEquals("java.io.Reader", methods.get(1).getCDParameters(0).getMCType());
 
-    assertEquals("model", methods.get(2).getCDParameter(0).getName());
-    assertDeepEquals(String.class, methods.get(2).getCDParameter(0).getMCType());
+    assertEquals("model", methods.get(2).getCDParameters(0).getName());
+    assertDeepEquals(String.class, methods.get(2).getCDParameters(0).getMCType());
   }
 
   @Test
   public void testLoadSymbolsIntoScopeMethod(){
     ASTCDMethod method = getMethodBy("loadSymbolsIntoScope", scopeClass);
     assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
-    assertEquals(0, method.sizeExceptions());
+    assertEquals(0, method.sizeException());
     assertEquals(3, method.sizeCDParameters());
-    List<ASTCDParameter> parameters = method.getCDParameterList();
+    List<ASTCDParameter> parameters = method.getCDParametersList();
     assertEquals("qualifiedModelName", parameters.get(0).getName());
     assertDeepEquals(String.class, parameters.get(0).getMCType());
     assertEquals("enclosingScope", parameters.get(1).getName());
@@ -210,9 +210,9 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
   public void testStoreMethod(){
     ASTCDMethod method = getMethodBy("store", scopeClass);
     assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
-    assertEquals(0, method.sizeExceptions());
+    assertEquals(0, method.sizeException());
     assertEquals(2, method.sizeCDParameters());
-    List<ASTCDParameter> parameters = method.getCDParameterList();
+    List<ASTCDParameter> parameters = method.getCDParametersList();
     assertEquals("toSerialize", parameters.get(0).getName());
     assertDeepEquals(AUTOMATON_ARTIFACT_SCOPE, parameters.get(0).getMCType());
     assertEquals("symbolPath", parameters.get(1).getName());
@@ -224,9 +224,9 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
   public void testSerializeMethod(){
     ASTCDMethod method = getMethodBy("serialize", scopeClass);
     assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
-    assertEquals(0, method.sizeExceptions());
+    assertEquals(0, method.sizeException());
     assertEquals(1, method.sizeCDParameters());
-    ASTCDParameter parameter = method.getCDParameter(0);
+    ASTCDParameter parameter = method.getCDParameters(0);
     assertEquals("toSerialize", parameter.getName());
     assertDeepEquals(I_AUTOMATON_SCOPE, parameter.getMCType());
     assertFalse(method.getMCReturnType().isPresentMCVoidType());
@@ -237,9 +237,9 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
   public void testDeserializeMethod(){
     ASTCDMethod method = getMethodBy("deserialize", scopeClass);
     assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
-    assertEquals(0, method.sizeExceptions());
+    assertEquals(0, method.sizeException());
     assertEquals(1, method.sizeCDParameters());
-    ASTCDParameter parameter = method.getCDParameter(0);
+    ASTCDParameter parameter = method.getCDParameters(0);
     assertEquals("serialized", parameter.getName());
     assertDeepEquals(String.class, parameter.getMCType());
     assertFalse(method.getMCReturnType().isPresentMCVoidType());
@@ -250,9 +250,9 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
   public void testDeserializeAutomatonScopeMethod(){
     ASTCDMethod method = getMethodBy("deserializeAutomatonScope", scopeClass);
     assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
-    assertEquals(0, method.sizeExceptions());
+    assertEquals(0, method.sizeException());
     assertEquals(1, method.sizeCDParameters());
-    ASTCDParameter parameter = method.getCDParameter(0);
+    ASTCDParameter parameter = method.getCDParameters(0);
     assertEquals("scopeJson", parameter.getName());
     assertDeepEquals(JSON_OBJECT, parameter.getMCType());
     assertFalse(method.getMCReturnType().isPresentMCVoidType());
@@ -263,9 +263,9 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
   public void testDeserializeAutomatonArtifactScopeMethod(){
     ASTCDMethod method = getMethodBy("deserializeAutomatonArtifactScope", scopeClass);
     assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
-    assertEquals(0, method.sizeExceptions());
+    assertEquals(0, method.sizeException());
     assertEquals(1, method.sizeCDParameters());
-    ASTCDParameter parameter = method.getCDParameter(0);
+    ASTCDParameter parameter = method.getCDParameters(0);
     assertEquals("scopeJson", parameter.getName());
     assertDeepEquals(JSON_OBJECT, parameter.getMCType());
     assertFalse(method.getMCReturnType().isPresentMCVoidType());
@@ -276,9 +276,9 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
   public void testDeserializeAdditionalScopeAttributesMethod(){
     ASTCDMethod method = getMethodBy("deserializeAdditionalScopeAttributes", scopeClass);
     assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
-    assertEquals(0, method.sizeExceptions());
+    assertEquals(0, method.sizeException());
     assertEquals(2, method.sizeCDParameters());
-    List<ASTCDParameter> parameters = method.getCDParameterList();
+    List<ASTCDParameter> parameters = method.getCDParametersList();
     assertEquals("scope", parameters.get(0).getName());
     assertDeepEquals(I_AUTOMATON_SCOPE, parameters.get(0).getMCType());
     assertEquals("scopeJson", parameters.get(1).getName());
@@ -290,9 +290,9 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
   public void testDeserializeAdditionalArtifactScopeAttributesMethod(){
     ASTCDMethod method = getMethodBy("deserializeAdditionalArtifactScopeAttributes", scopeClass);
     assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
-    assertEquals(0, method.sizeExceptions());
+    assertEquals(0, method.sizeException());
     assertEquals(2, method.sizeCDParameters());
-    List<ASTCDParameter> parameters = method.getCDParameterList();
+    List<ASTCDParameter> parameters = method.getCDParametersList();
     assertEquals("scope", parameters.get(0).getName());
     assertDeepEquals(AUTOMATON_ARTIFACT_SCOPE, parameters.get(0).getMCType());
     assertEquals("scopeJson", parameters.get(1).getName());
@@ -304,9 +304,9 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
   public void testAddSymbolsMethod(){
     ASTCDMethod method = getMethodBy("addSymbols", scopeClass);
     assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
-    assertEquals(0, method.sizeExceptions());
+    assertEquals(0, method.sizeException());
     assertEquals(2, method.sizeCDParameters());
-    List<ASTCDParameter> parameters = method.getCDParameterList();
+    List<ASTCDParameter> parameters = method.getCDParametersList();
     assertEquals("scopeJson", parameters.get(0).getName());
     assertDeepEquals(JSON_OBJECT, parameters.get(0).getMCType());
     assertEquals("scope", parameters.get(1).getName());
@@ -319,9 +319,9 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
   public void testDeserializeAutomatonSymbol(){
     ASTCDMethod method = getMethodBy("deserializeAutomatonSymbol", scopeClass);
     assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
-    assertEquals(0, method.sizeExceptions());
+    assertEquals(0, method.sizeException());
     assertEquals(2, method.sizeCDParameters());
-    List<ASTCDParameter> parameters = method.getCDParameterList();
+    List<ASTCDParameter> parameters = method.getCDParametersList();
     assertEquals("symbolJson", parameters.get(0).getName());
     assertDeepEquals(JSON_OBJECT, parameters.get(0).getMCType());
     assertEquals("scope", parameters.get(1).getName());
@@ -333,9 +333,9 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
   public void testDeserializeStateSymbol(){
     ASTCDMethod method = getMethodBy("deserializeStateSymbol", scopeClass);
     assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
-    assertEquals(0, method.sizeExceptions());
+    assertEquals(0, method.sizeException());
     assertEquals(2, method.sizeCDParameters());
-    List<ASTCDParameter> parameters = method.getCDParameterList();
+    List<ASTCDParameter> parameters = method.getCDParametersList();
     assertEquals("symbolJson", parameters.get(0).getName());
     assertDeepEquals(JSON_OBJECT, parameters.get(0).getMCType());
     assertEquals("scope", parameters.get(1).getName());
@@ -347,9 +347,9 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
   public void testDeserializeFooSymbol(){
     ASTCDMethod method = getMethodBy("deserializeFooSymbol", scopeClass);
     assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
-    assertEquals(0, method.sizeExceptions());
+    assertEquals(0, method.sizeException());
     assertEquals(2, method.sizeCDParameters());
-    List<ASTCDParameter> parameters = method.getCDParameterList();
+    List<ASTCDParameter> parameters = method.getCDParametersList();
     assertEquals("symbolJson", parameters.get(0).getName());
     assertDeepEquals(JSON_OBJECT, parameters.get(0).getMCType());
     assertEquals("scope", parameters.get(1).getName());
@@ -361,9 +361,9 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
   public void testDeserializeQualifiedNameSymbol(){
     ASTCDMethod method = getMethodBy("deserializeQualifiedNameSymbol", scopeClass);
     assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
-    assertEquals(0, method.sizeExceptions());
+    assertEquals(0, method.sizeException());
     assertEquals(2, method.sizeCDParameters());
-    List<ASTCDParameter> parameters = method.getCDParameterList();
+    List<ASTCDParameter> parameters = method.getCDParametersList();
     assertEquals("symbolJson", parameters.get(0).getName());
     assertDeepEquals(JSON_OBJECT, parameters.get(0).getMCType());
     assertEquals("scope", parameters.get(1).getName());
@@ -375,9 +375,9 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
   public void testDeserializeExtraAttributeMethod(){
     ASTCDMethod method = getMethodBy("deserializeExtraAttribute", scopeClass);
     assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
-    assertEquals(0, method.sizeExceptions());
+    assertEquals(0, method.sizeException());
     assertEquals(1, method.sizeCDParameters());
-    List<ASTCDParameter> parameters = method.getCDParameterList();
+    List<ASTCDParameter> parameters = method.getCDParametersList();
     assertEquals("scopeJson", parameters.get(0).getName());
     assertDeepEquals(JSON_OBJECT, parameters.get(0).getMCType());
     assertFalse(method.getMCReturnType().isPresentMCVoidType());
@@ -388,9 +388,9 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
   public void testDeserializeFooMethod(){
     ASTCDMethod method = getMethodBy("deserializeFoo", scopeClass);
     assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
-    assertEquals(0, method.sizeExceptions());
+    assertEquals(0, method.sizeException());
     assertEquals(1, method.sizeCDParameters());
-    List<ASTCDParameter> parameters = method.getCDParameterList();
+    List<ASTCDParameter> parameters = method.getCDParametersList();
     assertEquals("scopeJson", parameters.get(0).getName());
     assertDeepEquals(JSON_OBJECT, parameters.get(0).getMCType());
     assertFalse(method.getMCReturnType().isPresentMCVoidType());
@@ -401,9 +401,9 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
   public void testDeserializeBlaMethod(){
     ASTCDMethod method = getMethodBy("deserializeBla", scopeClass);
     assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
-    assertEquals(0, method.sizeExceptions());
+    assertEquals(0, method.sizeException());
     assertEquals(1, method.sizeCDParameters());
-    List<ASTCDParameter> parameters = method.getCDParameterList();
+    List<ASTCDParameter> parameters = method.getCDParametersList();
     assertEquals("scopeJson", parameters.get(0).getName());
     assertDeepEquals(JSON_OBJECT, parameters.get(0).getMCType());
     assertFalse(method.getMCReturnType().isPresentMCVoidType());
