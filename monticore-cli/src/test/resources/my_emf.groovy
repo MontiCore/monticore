@@ -70,7 +70,7 @@ for (astGrammar in getParsedGrammars()) {
   Reporting.on(Names.getQualifiedName(astGrammar.getPackageList(), astGrammar.getName()))
 
   astClassDiagram = getCDOfParsedGrammar(astGrammar)
-  reportCD(astClassDiagram, "", report)
+  reportCD(astClassDiagram, report)
 
   // M9 Generate ast classes, visitor and context condition
   decoratedVisitorCD = decorateForVisitorPackage(glex, cdScope, astClassDiagram, handcodedPath)

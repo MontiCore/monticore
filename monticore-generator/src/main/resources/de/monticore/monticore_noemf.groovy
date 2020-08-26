@@ -82,9 +82,7 @@ for (astGrammar in getParsedGrammars()) {
   astClassDiagram = addListSuffixToAttributeName(astClassDiagram)
 
   // report the base diagrams
-  reportCD(astClassDiagram, "", report)
-  reportCD(symbolClassDiagramm, "_Symbol", report)
-  reportCD(scopeClassDiagramm, "_Scope", report)
+  reportCD(astClassDiagram, symbolClassDiagramm, scopeClassDiagramm, report)
 
   // M9 Generate ast classes, visitor and context condition
   // decorate and generate CD for the '_symboltable' package
