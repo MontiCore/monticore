@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.symboltable.serialization;
 
+import com.google.common.collect.Lists;
 import de.monticore.symboltable.serialization.json.JsonArray;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
@@ -9,6 +10,7 @@ import de.se_rwth.commons.logging.Log;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -65,6 +67,10 @@ public class JsonDeSers {
     return kindHierarchy;
   }
 
+  public static void printKindHierarchyEntry(JsonPrinter printer, String kind, String superKind){
+    printer.array(Lists.newArrayList(kind, superKind), Function.identity());
+  }
+
   public static String getParentKind(String kind, Map<String, String> kindHierarchy) {
     if (null != kind && kindHierarchy.containsKey(kind)) {
       return kindHierarchy.get(kind);
@@ -90,10 +96,7 @@ public class JsonDeSers {
     if (!o.hasMember(KIND)) {
       return false;
     }
-    List<String> kinds = o.getArrayMember(KIND).stream()
-        .map(m -> m.getAsJsonString().getValue())
-        .collect(Collectors.toList());
-    return kinds.contains(deSerSymbolKind);
+    return deSerSymbolKind.equals(o.getStringMember(KIND));
   }
 
   /**
@@ -118,12 +121,9 @@ public class JsonDeSers {
           + "' does not have a member describing the kind.");
       return; //return here to avoid consecutive errors in this method
     }
-    List<String> kinds = o.getArrayMember(KIND).stream()
-        .map(m -> m.getAsJsonString().getValue())
-        .collect(Collectors.toList());
-    if (!kinds.contains(deSerKind)) {
+    if (!deSerKind.equals(o.getStringMember(KIND))) {
       Log.error("0xA7225 DeSer for kind '" + deSerKind + "' cannot deserialize Json objects"
-          + " of kind '" + o.getArrayMember(KIND).toString() + "'");
+          + " of kind '" + o.getStringMember(KIND) + "'");
     }
   }
 

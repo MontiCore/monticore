@@ -202,6 +202,10 @@ public class JsonPrinter {
       isFirstAttribute = false; // This is to handle empty lists
       unindent();
     }
+    else if(!serializeEmptyLists){
+      //restore ifFirstAttribute
+      isFirstAttribute = !arrayBeginBuffer.startsWith(",");
+    }
     nestedArrayDepth--;
   }
 

@@ -136,7 +136,9 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
 
   protected ASTCDMethod createPrintKindHierarchyMethod(List<ASTCDType> symbolProds) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, "printKindHierarchy");
-    Map<String, String> kindHierarchy = SymbolKindHierarchyCollector.calculateKindHierarchy(symbolProds);
+    List<ASTCDType> symbolProdsIncludingInherited = new ArrayList<>(symbolProds);
+    symbolProdsIncludingInherited.addAll(symbolTableService.getSymbolDefiningSuperProds());
+    Map<String, String> kindHierarchy = SymbolKindHierarchyCollector.calculateKindHierarchy(symbolProdsIncludingInherited, symbolTableService);
     HookPoint hp = new TemplateHookPoint(TEMPLATE_PATH + "symbolTablePrinter.PrintKindHierarchy",
         kindHierarchy);
     this.replaceTemplate(EMPTY_BODY, method, hp);
