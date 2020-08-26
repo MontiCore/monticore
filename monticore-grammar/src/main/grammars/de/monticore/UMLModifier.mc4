@@ -4,6 +4,8 @@ package de.monticore;
 /* This is a MontiCore stable grammar.
  * Adaptations -- if any -- are conservative. */
 
+import de.monticore.*;
+
 /**
  * Grammar for common elements of the UML/P-Language-Family
  *
@@ -16,7 +18,7 @@ package de.monticore;
  * "threadsafe" are missing.)
 */
 
-component grammar UMLModifier extends de.monticore.UMLStereotype {
+component grammar UMLModifier extends UMLStereotype {
 
     /** ASTModifier represents a Modifier for Classes, Interfaces, Methods,
         Constructors and Attributes in the UML/P

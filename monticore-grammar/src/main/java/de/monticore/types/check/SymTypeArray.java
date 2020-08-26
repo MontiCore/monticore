@@ -1,7 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
-import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolSurrogate;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
 import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonPrinter;
 
@@ -26,10 +27,10 @@ public class SymTypeArray extends SymTypeExpression {
    *
    * @param dim      dimension
    * @param argument Argument Type
-   * @param typeSymbolSurrogate loader for the Type-Symbol that defines this type
+   * @param typeSymbol loader for the Type-Symbol that defines this type
    */
-  public SymTypeArray(OOTypeSymbolSurrogate typeSymbolSurrogate, int dim, SymTypeExpression argument) {
-    this.typeSymbolSurrogate = typeSymbolSurrogate;
+  public SymTypeArray(TypeSymbol typeSymbol, int dim, SymTypeExpression argument) {
+    this.typeSymbol = typeSymbol;
     this.dim = dim;
     this.argument = argument;
   }
@@ -86,9 +87,9 @@ public class SymTypeArray extends SymTypeExpression {
 
   @Override
   public SymTypeArray deepClone() {
-    OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate(typeSymbolSurrogate.getName());
-    loader.setEnclosingScope(typeSymbolSurrogate.getEnclosingScope());
-    return new SymTypeArray(loader,
+    TypeSymbol typeSymbol = new TypeSymbolSurrogate(this.typeSymbol.getName());
+    typeSymbol.setEnclosingScope(this.typeSymbol.getEnclosingScope());
+    return new SymTypeArray(typeSymbol,
         this.dim, this.argument.deepClone());
   }
 
@@ -101,13 +102,13 @@ public class SymTypeArray extends SymTypeExpression {
     if(this.dim!=symArr.dim){
       return false;
     }
-    if(this.typeSymbolSurrogate== null ||symArr.typeSymbolSurrogate==null){
+    if(this.typeSymbol == null ||symArr.typeSymbol ==null){
       return false;
     }
-    if(!this.typeSymbolSurrogate.getEnclosingScope().equals(symArr.typeSymbolSurrogate.getEnclosingScope())){
+    if(!this.typeSymbol.getEnclosingScope().equals(symArr.typeSymbol.getEnclosingScope())){
       return false;
     }
-    if(!this.typeSymbolSurrogate.getName().equals(symArr.typeSymbolSurrogate.getName())){
+    if(!this.typeSymbol.getName().equals(symArr.typeSymbol.getName())){
       return false;
     }
     if(!this.getArgument().deepEquals(symArr.getArgument())){

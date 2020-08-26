@@ -7,6 +7,7 @@ import de.monticore.expressions.combineexpressionswithliterals._parser.CombineEx
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.*;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.io.paths.ModelPath;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
@@ -355,7 +356,6 @@ public class DeriveSymTypeOfCommonExpressionTest {
         createTypeObject("FirstSemesterStudent", scope)));
     add2scope(scope, method("isInt", _booleanSymType));
     add2scope(scope, add(method("isInt", _booleanSymType), field("maxLength", _intSymType)));
-
     tc = new TypeCheck(null, derLit);
     flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
   }
@@ -1592,7 +1592,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
         .setName("add")
         .build();
     add.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
-    add.getSpannedScope().add(elementField);
+    add2scope(add.getSpannedScope(), elementField);
     FieldSymbol field = field("field", _booleanSymType);
     OOTypeSymbol superclass = OOSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
@@ -1691,7 +1691,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
         .setEnclosingScope(a.getSpannedScope())
         .build();
     aD.setIsStatic(true);
-    a.getSpannedScope().add(aD);
+    add2scope(a.getSpannedScope(), aD);
 
     add2scope(scope,a);
 
@@ -1710,7 +1710,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
         .setName("D")
         .setEnclosingScope(b.getSpannedScope())
         .build();
-    b.getSpannedScope().add(bD);
+    add2scope(b.getSpannedScope(), bD);
 
     add2scope(scope,b);
     //A has static method test, static field field, static type D

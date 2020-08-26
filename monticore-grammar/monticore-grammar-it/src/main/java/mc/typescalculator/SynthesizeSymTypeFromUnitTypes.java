@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.typescalculator;
 
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolSurrogate;
 import de.monticore.types.check.ISynthesize;
 import de.monticore.types.check.SynthesizeSymTypeFromMCBasicTypes;
@@ -27,7 +28,7 @@ public class SynthesizeSymTypeFromUnitTypes extends SynthesizeSymTypeFromMCBasic
 
   @Override
   public void endVisit(ASTMinuteType type){
-    OOTypeSymbolSurrogate surrogate = new OOTypeSymbolSurrogate(type.getUnit());
+    TypeSymbolSurrogate surrogate = new TypeSymbolSurrogate(type.getUnit());
     surrogate.setEnclosingScope(getScope(type.getEnclosingScope()));
     typeCheckResult.setCurrentResult(new SymTypeOfSIUnit(surrogate));
   }

@@ -56,7 +56,7 @@ public class ExpressionsBasisPrettyPrinter implements ExpressionsBasisVisitor {
     getPrinter().print("(");
     int count = 0;
     if (!node.isEmptyExpressions()) {
-      for (ASTExpression ast : node.getExpressionsList()) {
+      for (ASTExpression ast : node.getExpressionList()) {
         if (count > 0) {
           getPrinter().print(",");
         }

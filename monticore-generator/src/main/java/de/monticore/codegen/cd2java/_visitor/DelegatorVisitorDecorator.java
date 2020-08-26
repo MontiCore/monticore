@@ -263,12 +263,10 @@ public class DelegatorVisitorDecorator extends AbstractCreator<ASTCDCompilationU
   protected List<ASTCDMethod> createVisitorDelegatorScopeMethods(ASTCDDefinition astcdDefinition, String simpleVisitorName) {
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
     CDDefinitionSymbol cdSymbol = astcdDefinition.getSymbol();
-    ASTMCQualifiedType scopeClassType = getMCTypeFacade().createQualifiedType(symbolTableService.getScopeClassFullName(cdSymbol));
-    ASTMCQualifiedType scopeInterfaceType = getMCTypeFacade().createQualifiedType(symbolTableService.getScopeInterfaceFullName(cdSymbol));
-    ASTMCQualifiedType artifactScopeType = getMCTypeFacade().createQualifiedType(symbolTableService.getArtifactScopeFullName(cdSymbol));
+    ASTMCQualifiedType scopeType = getMCTypeFacade().createQualifiedType(symbolTableService.getScopeInterfaceFullName(cdSymbol));
+    ASTMCQualifiedType artifactScopeType = getMCTypeFacade().createQualifiedType(symbolTableService.getArtifactScopeInterfaceFullName(cdSymbol));
     
-    visitorMethods.addAll(createVisitorDelegatorScopeMethod(scopeClassType, simpleVisitorName));
-    visitorMethods.addAll(createVisitorDelegatorScopeMethod(scopeInterfaceType, simpleVisitorName));
+    visitorMethods.addAll(createVisitorDelegatorScopeMethod(scopeType, simpleVisitorName));
 
     // only create artifact scope methods if grammar contains productions or
     // refers to a starting production of a super grammar

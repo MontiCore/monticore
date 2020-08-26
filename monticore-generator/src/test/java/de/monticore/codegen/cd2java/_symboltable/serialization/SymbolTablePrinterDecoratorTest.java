@@ -47,9 +47,7 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
 
   private static final String I_AUTOMATON_SCOPE = "de.monticore.codegen.symboltable.automaton._symboltable.IAutomatonScope";
 
-  private static final String AUTOMATON_SCOPE = "de.monticore.codegen.symboltable.automaton._symboltable.AutomatonScope";
-
-  private static final String AUTOMATON_ARTIFACT_SCOPE = "de.monticore.codegen.symboltable.automaton._symboltable.AutomatonArtifactScope";
+  private static final String I_AUTOMATON_ARTIFACT_SCOPE = "de.monticore.codegen.symboltable.automaton._symboltable.IAutomatonArtifactScope";
 
   private static final String AUTOMATON_SYMBOL = "de.monticore.codegen.symboltable.automaton._symboltable.AutomatonSymbol";
 
@@ -202,11 +200,11 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
       assertEquals(1, method.sizeCDParameters());
       assertEquals("node", method.getCDParameters(0).getName());
     }
-    assertDeepEquals(AUTOMATON_SCOPE, methods.get(0).getCDParameters(0).getMCType());
+    assertDeepEquals(I_AUTOMATON_SCOPE, methods.get(0).getCDParameters(0).getMCType());
     assertDeepEquals(AUTOMATON_SYMBOL, methods.get(1).getCDParameters(0).getMCType());
     assertDeepEquals(STATE_SYMBOL, methods.get(2).getCDParameters(0).getMCType());
     assertDeepEquals(FOO_SYMBOL, methods.get(3).getCDParameters(0).getMCType());
-    assertDeepEquals(AUTOMATON_ARTIFACT_SCOPE, methods.get(4).getCDParameters(0).getMCType());
+    assertDeepEquals(I_AUTOMATON_ARTIFACT_SCOPE, methods.get(4).getCDParameters(0).getMCType());
   }
 
   @Test
@@ -219,11 +217,11 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
       assertEquals(1, method.sizeCDParameters());
       assertEquals("node", method.getCDParameters(0).getName());
     }
-    assertDeepEquals(AUTOMATON_SCOPE, methods.get(0).getCDParameters(0).getMCType());
+    assertDeepEquals(I_AUTOMATON_SCOPE, methods.get(0).getCDParameters(0).getMCType());
     assertDeepEquals(AUTOMATON_SYMBOL, methods.get(1).getCDParameters(0).getMCType());
     assertDeepEquals(STATE_SYMBOL, methods.get(2).getCDParameters(0).getMCType());
     assertDeepEquals(FOO_SYMBOL, methods.get(3).getCDParameters(0).getMCType());
-    assertDeepEquals(AUTOMATON_ARTIFACT_SCOPE, methods.get(4).getCDParameters(0).getMCType());
+    assertDeepEquals(I_AUTOMATON_ARTIFACT_SCOPE, methods.get(4).getCDParameters(0).getMCType());
   }
 
   @Test
@@ -247,7 +245,7 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.sizeCDParameters());
     ASTCDParameter parameter = method.getCDParameters(0);
     assertEquals("node", parameter.getName());
-    assertDeepEquals(AUTOMATON_SCOPE, parameter.getMCType());
+    assertDeepEquals(I_AUTOMATON_SCOPE, parameter.getMCType());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
   }
 
@@ -259,7 +257,7 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.sizeCDParameters());
     ASTCDParameter parameter = method.getCDParameters(0);
     assertEquals("node", parameter.getName());
-    assertDeepEquals(AUTOMATON_ARTIFACT_SCOPE, parameter.getMCType());
+    assertDeepEquals(I_AUTOMATON_ARTIFACT_SCOPE, parameter.getMCType());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
   }
 

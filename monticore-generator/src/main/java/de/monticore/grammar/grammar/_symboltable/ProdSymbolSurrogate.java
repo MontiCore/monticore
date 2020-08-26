@@ -5,6 +5,7 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.Optional;
 
+@Deprecated
 public   class ProdSymbolSurrogate extends ProdSymbolSurrogateTOP  {
 
   public ProdSymbolSurrogate(String name) {

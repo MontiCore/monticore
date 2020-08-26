@@ -1,7 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.statements;
 
-/* Beta-version: This is intended to become a MontiCore stable grammar. */
+/* This is a MontiCore stable grammar.
+ * Adaptations -- if any -- are conservative. */
+
+import de.monticore.statements.*;
+import de.monticore.*;
 
 /**
  * This grammar defines three low-level statements that Java provides.
@@ -24,7 +28,7 @@ package de.monticore.statements;
 */
 
 component grammar MCLowLevelStatements 
-          extends de.monticore.statements.MCStatementsBasis,
+          extends MCStatementsBasis,
                   de.monticore.MCBasics {
 
 BreakStatement implements MCStatement

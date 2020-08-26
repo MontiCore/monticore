@@ -3,6 +3,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.symbols.oosymbols._symboltable;
 
+import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symboltable.IScopeSpanningSymbol;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.types.check.SymTypeExpression;
@@ -35,15 +38,15 @@ public class OOSymbolsScope extends OOSymbolsScopeTOP {
    * it is used by the method getMethodList in SymTypeExpression
    */
   @Override
-  public List<MethodSymbol> resolveMethodLocallyMany(boolean foundSymbols, String name, AccessModifier modifier,
-                                                     Predicate<MethodSymbol> predicate) {
+  public List<FunctionSymbol> resolveFunctionLocallyMany(boolean foundSymbols, String name, AccessModifier modifier,
+                                                         Predicate<FunctionSymbol> predicate) {
     //resolve methods by using overridden method
-    List<MethodSymbol> set = super.resolveMethodLocallyMany(foundSymbols,name,modifier,predicate);
+    List<FunctionSymbol> set = super.resolveFunctionLocallyMany(foundSymbols,name,modifier,predicate);
     if(this.isPresentSpanningSymbol()){
       IScopeSpanningSymbol spanningSymbol = getSpanningSymbol();
       //if the methodsymbol is in the spanned scope of a typesymbol then look for method in super types too
-      if(spanningSymbol instanceof OOTypeSymbol){
-        OOTypeSymbol typeSymbol = ((OOTypeSymbol) spanningSymbol);
+      if(spanningSymbol instanceof TypeSymbol){
+        TypeSymbol typeSymbol = ((TypeSymbol) spanningSymbol);
         for(SymTypeExpression t : typeSymbol.getSuperTypesList()){
           set.addAll(t.getMethodList(name));
         }
@@ -59,14 +62,14 @@ public class OOSymbolsScope extends OOSymbolsScopeTOP {
    * it is used by the method getFieldList in SymTypeExpression
    */
   @Override
-  public List<FieldSymbol> resolveFieldLocallyMany(boolean foundSymbols,String name,AccessModifier modifier,Predicate predicate){
+  public List<VariableSymbol> resolveVariableLocallyMany(boolean foundSymbols, String name, AccessModifier modifier, Predicate predicate){
     //resolve methods by using overridden method
-    List<FieldSymbol> result = super.resolveFieldLocallyMany(foundSymbols,name,modifier,predicate);
+    List<VariableSymbol> result = super.resolveVariableLocallyMany(foundSymbols,name,modifier,predicate);
     if(this.isPresentSpanningSymbol()){
       IScopeSpanningSymbol spanningSymbol = getSpanningSymbol();
       //if the fieldsymbol is in the spanned scope of a typesymbol then look for method in super types too
-      if(spanningSymbol instanceof OOTypeSymbol){
-        OOTypeSymbol typeSymbol = (OOTypeSymbol) spanningSymbol;
+      if(spanningSymbol instanceof TypeSymbol){
+        TypeSymbol typeSymbol = (TypeSymbol) spanningSymbol;
         for(SymTypeExpression superType : typeSymbol.getSuperTypesList()){
           result.addAll(superType.getFieldList(name));
         }
@@ -76,8 +79,8 @@ public class OOSymbolsScope extends OOSymbolsScopeTOP {
   }
 
   @Override
-  public List<OOTypeSymbol> resolveOOTypeLocallyMany(boolean foundSymbols, String name, AccessModifier modifier, Predicate predicate){
-    List<OOTypeSymbol> result = super.resolveOOTypeLocallyMany(foundSymbols,name,modifier,predicate);
+  public List<TypeSymbol> resolveTypeLocallyMany(boolean foundSymbols, String name, AccessModifier modifier, Predicate predicate){
+    List<TypeSymbol> result = super.resolveTypeLocallyMany(foundSymbols,name,modifier,predicate);
     //    TODO ND: uncomment when adding inner types
     //    if(this.isPresentSpanningSymbol()){
     //      IScopeSpanningSymbol spanningSymbol = getSpanningSymbol();

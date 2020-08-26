@@ -37,11 +37,12 @@ ${tc.signature("attributeList")}
     }
     </#if>
   <#else>
+     <#assign getter =genHelper.getPlainGetter(attribute)>
     <#if genHelper.isListAstNode(attribute)>
-      get${methName}List().forEach(s -> result.${attributeName}.add(s.deepClone()));
+      ${getter}().forEach(s -> result.${attributeName}.add(s.deepClone()));
     <#elseif genHelper.isListType(typeName)>
-      for ( int i = 0; i < this.get${methName}List().size() ; i++ ) {
-      result.add${methName}(get${methName}(i));
+      for ( int i = 0; i < this.${getter}().size() ; i++ ) {
+        result.add${getter?remove_ending("List")?remove_beginning("get")}(${getter?remove_ending("List")}(i));
       }
     <#else>
       result.set${methName}(get${methName}());

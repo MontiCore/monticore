@@ -11,9 +11,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 public class AutomataSymbolsTest {
   
@@ -40,7 +40,7 @@ public class AutomataSymbolsTest {
   public void testSymbol1() throws IOException {
     ASTAutomaton ast = parser.parse( "src/test/resources/example/HierarchyPingPong.aut" ).get();
     assertEquals("PingPong", ast.getName());
-    assertEquals(2, ast.getTransitionsList().size());
+    assertEquals(2, ast.getTransitionList().size());
   }
   
   @Test

@@ -77,12 +77,11 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
         .addAllCDMethods(createScopeVisitorMethods(scopeClassFullName, scopeInterfaceFullName, scopeCD, symbolDefiningProds))
         .addAllCDMethods(createSymbolVisitorMethods(symbolDefiningProds))
         .addAllCDMethods(createSymbolRuleMethods(symbolTypes))
-        .addAllCDMethods(createScopeRuleMethods(scopeTypes, scopeClassFullName, artifactScopeFullName, symbolTableService.hasStartProd()))
+        .addAllCDMethods(createScopeRuleMethods(scopeTypes, scopeClassFullName, scopeInterfaceFullName, artifactScopeInterfaceFullName, symbolTableService.hasStartProd()))
         .addAllCDMethods(createRealThisMethods(symbolTablePrinterName))
         .build();
     if (symbolTableService.hasStartProd()) {
-      symbolTablePrinterClass.addAllCDMethods(createArtifactScopeVisitorMethods(artifactScopeFullName,
-          artifactScopeInterfaceFullName, scopeTypes));
+      symbolTablePrinterClass.addAllCDMethods(createArtifactScopeVisitorMethods(artifactScopeFullName, artifactScopeInterfaceFullName, scopeTypes));
       symbolTablePrinterClass.addCDMethods(createPrintKindHierarchyMethod(symbolDefiningProds));
     }
     return symbolTablePrinterClass;
@@ -168,29 +167,28 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
         .collect(Collectors.toList());
 
     for (ASTCDClass scopeClass : scopeCD.getCDDefinition().getCDClasssList()) {
-      ASTCDMethod visitMethod = visitorService.getVisitorMethod(VISIT, getMCTypeFacade().createQualifiedType(scopeClassName));
+      ASTCDMethod visitMethod = visitorService.getVisitorMethod(VISIT, getMCTypeFacade().createQualifiedType(scopeInterfaceName));
       this.replaceTemplate(EMPTY_BODY, visitMethod, new TemplateHookPoint(TEMPLATE_PATH
           + "symbolTablePrinter.VisitScope4STP", scopeInterfaceName, scopeClass.getName(), scopeClass.getCDAttributesList()));
       visitorMethods.add(visitMethod);
 
-      ASTCDMethod endVisitMethod = visitorService.getVisitorMethod(END_VISIT, getMCTypeFacade().createQualifiedType(scopeClassName));
+      ASTCDMethod endVisitMethod = visitorService.getVisitorMethod(END_VISIT, getMCTypeFacade().createQualifiedType(scopeInterfaceName));
       this.replaceTemplate(EMPTY_BODY, endVisitMethod, new StringHookPoint(PRINTER_END_ARRAY+"\n"+PRINTER_END_OBJECT));
       visitorMethods.add(endVisitMethod);
     }
     return visitorMethods;
   }
 
-  protected List<ASTCDMethod> createArtifactScopeVisitorMethods(String artifactScopeName, String artifactScopeInterfaceName,
-                                                                List<ASTCDClass> scopeTypes) {
+  protected List<ASTCDMethod> createArtifactScopeVisitorMethods(String artifactScopeClassName, String artifactScopeInterfaceName, List<ASTCDClass> scopeTypes) {
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
     for (ASTCDClass artScopeClass : scopeTypes) {
-      ASTCDMethod visitMethod = visitorService.getVisitorMethod(VISIT, getMCTypeFacade().createQualifiedType(artifactScopeName));
+      ASTCDMethod visitMethod = visitorService.getVisitorMethod(VISIT, getMCTypeFacade().createQualifiedType(artifactScopeInterfaceName));
       this.replaceTemplate(EMPTY_BODY, visitMethod, new TemplateHookPoint(TEMPLATE_PATH
           + "symbolTablePrinter.VisitArtifactScope", artifactScopeInterfaceName, artScopeClass.getName(), artScopeClass.getCDAttributesList()));
       visitorMethods.add(visitMethod);
 
       ASTCDMethod endVisitMethod = visitorService
-          .getVisitorMethod(END_VISIT, getMCTypeFacade().createQualifiedType(artifactScopeName));
+          .getVisitorMethod(END_VISIT, getMCTypeFacade().createQualifiedType(artifactScopeInterfaceName));
       this.replaceTemplate(EMPTY_BODY, endVisitMethod, new StringHookPoint(PRINTER_END_ARRAY+"\n"+PRINTER_END_OBJECT));
       visitorMethods.add(endVisitMethod);
     }
@@ -236,16 +234,16 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
         return superKinds;
   }
 
-  protected List<ASTCDMethod> createScopeRuleMethods(List<ASTCDClass> scopeProds,
-                                                     String scopeClassFullName, String artifactScopeClassFullName, boolean hasArtifactScope) {
+  protected List<ASTCDMethod> createScopeRuleMethods(List<ASTCDClass> scopeProds, String scopeClassFullName,
+      String scopeInterfaceFullName, String artifactScopeInterfaceFullName, boolean hasArtifactScope) {
     List<ASTCDMethod> methodsCreated = new ArrayList<>();
 
-    ASTCDParameter scopeParam = CDParameterFacade.getInstance().createParameter(getMCTypeFacade().createQualifiedType(scopeClassFullName), "node");
+    ASTCDParameter scopeParam = CDParameterFacade.getInstance().createParameter(getMCTypeFacade().createQualifiedType(scopeInterfaceFullName), "node");
     ASTCDMethod serAddScopeAttrMethod = CDMethodFacade.getInstance().createMethod(PROTECTED, "serializeAdditionalScopeAttributes", scopeParam);
     methodsCreated.add(serAddScopeAttrMethod);
 
     if (hasArtifactScope) {
-      ASTCDParameter artScopeParam = CDParameterFacade.getInstance().createParameter(getMCTypeFacade().createQualifiedType(artifactScopeClassFullName), "node");
+      ASTCDParameter artScopeParam = CDParameterFacade.getInstance().createParameter(getMCTypeFacade().createQualifiedType(artifactScopeInterfaceFullName), "node");
       ASTCDMethod serAddArtifactScopeAttrMethod = CDMethodFacade.getInstance().createMethod(PROTECTED, "serializeAdditionalArtifactScopeAttributes", artScopeParam);
       methodsCreated.add(serAddArtifactScopeAttrMethod);
     }

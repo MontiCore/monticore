@@ -146,10 +146,9 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
 
     // Create eof and dummy rules
     String ruleName = HelperGrammar.getRuleNameForAntlr(ast);
-    Optional<ProdSymbol> ruleByName = grammarEntry
-        .getProdWithInherited(ast.getName());
+    ProdSymbol ruleByName = ast.getSymbol();
     String classnameFromRulenameorInterfacename = MCGrammarSymbolTableHelper
-        .getQualifiedName(ruleByName.get());
+        .getQualifiedName(ruleByName);
 
     // Head of Rule
     // Pattern:
@@ -182,7 +181,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
 
     if (embeddedJavaCode) {
       addToCodeSection(" returns [", classnameFromRulenameorInterfacename, " ret = ",
-          MCGrammarSymbolTableHelper.getDefaultValue(ruleByName.get()), "]\n", options);
+          MCGrammarSymbolTableHelper.getDefaultValue(ruleByName), "]\n", options);
 
       // Add actions
       if (ast.isPresentAction() && ast.getAction() instanceof ASTAction) {
@@ -268,13 +267,12 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
 
     // Create eof and dummy rules
     String ruleName = HelperGrammar.getRuleNameForAntlr(ast.getName());
-    Optional<ProdSymbol> ruleByName = grammarEntry.getProdWithInherited(ast
-        .getName());
+    ProdSymbol ruleByName = ast.getSymbol();
 
     // Head of Rule
     addToCodeSection(ruleName + " returns ["
-        + MCGrammarSymbolTableHelper.getQualifiedName(ruleByName.get()) + " ret = "
-        + MCGrammarSymbolTableHelper.getDefaultValue(ruleByName.get()) + "] ");
+        + MCGrammarSymbolTableHelper.getQualifiedName(ruleByName) + " ret = "
+        + MCGrammarSymbolTableHelper.getDefaultValue(ruleByName) + "] ");
 
     addToCodeSection("\n: ");
 
@@ -289,7 +287,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
 
       if (embeddedJavaCode) {
         String temp1 = "";
-        temp1 += "$ret = " + MCGrammarSymbolTableHelper.getQualifiedName(ruleByName.get())
+        temp1 += "$ret = " + MCGrammarSymbolTableHelper.getQualifiedName(ruleByName)
             + "."
             + parserHelper.getConstantNameForConstant(c) + ";";
 
@@ -773,8 +771,8 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     if (alt.isRightAssoc()) {
       addToAntlrCode(ParserGeneratorHelper.RIGHTASSOC);
     }
-    if (alt.isPresentDeprecatedAnnotation()) {
-      String t = alt.getDeprecatedAnnotation().isPresentMessage() ? alt.getDeprecatedAnnotation().getMessage() : "";
+    if (alt.isPresentGrammarAnnotation() && alt.getGrammarAnnotation().isDeprecated()) {
+      String t = alt.getGrammarAnnotation().isPresentMessage() ? alt.getGrammarAnnotation().getMessage() : "";
       String message = "Deprecated syntax: " + t;
       addToAction("de.se_rwth.commons.logging.Log.warn(\"" + message + "\");");
     }
@@ -1024,11 +1022,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
           RuleComponentSymbol componentSymbol = ast.getSymbol();
           Optional<ProdSymbol> rule = MCGrammarSymbolTableHelper
               .getEnclosingRule(componentSymbol);
-          if (componentSymbol.isIsList() && !ast.isPresentUsageName()) {
-            term.setUsageName(HelperGrammar.getUsageName(ast) + "s");
-          } else {
-            term.setUsageName(HelperGrammar.getUsageName(ast));
-          }
+          term.setUsageName(HelperGrammar.getUsageName(ast));
 
           if (rule.isPresent()) {
             addActionForKeyword(term, rule.get(), componentSymbol.isIsList());

@@ -25,6 +25,7 @@ import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.REAL_BU
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.ENCLOSING_SCOPE_VAR;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.NAME_VAR;
 
+@Deprecated
 public class SymbolSurrogateBuilderDecorator extends AbstractCreator<ASTCDType, ASTCDClass> {
 
   protected final SymbolTableService symbolTableService;

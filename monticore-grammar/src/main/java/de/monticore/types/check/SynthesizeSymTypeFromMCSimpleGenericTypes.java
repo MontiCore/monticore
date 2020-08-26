@@ -2,6 +2,7 @@
 
 package de.monticore.types.check;
 
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolSurrogate;
 import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
@@ -65,7 +66,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypes extends SynthesizeSymType
   public void traverse(ASTMCBasicGenericType genericType) {
 
     List<SymTypeExpression> arguments = new LinkedList<SymTypeExpression>();
-    for (ASTMCTypeArgument arg : genericType.getMCTypeArgumentsList()) {
+    for (ASTMCTypeArgument arg : genericType.getMCTypeArgumentList()) {
       if (null != arg) {
         arg.accept(getRealThis());
       }
@@ -76,7 +77,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypes extends SynthesizeSymType
       }
       arguments.add(typeCheckResult.getCurrentResult());
     }
-    OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate(genericType.printWithoutTypeArguments());
+    TypeSymbol loader = new OOTypeSymbolSurrogate(genericType.printWithoutTypeArguments());
     loader.setEnclosingScope(getScope(genericType.getEnclosingScope()));
     SymTypeExpression tex = SymTypeExpressionFactory.createGenerics(
         loader, arguments);
@@ -102,14 +103,12 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypes extends SynthesizeSymType
     // type could also be a boxed Primitive or an Type Variable!
     // We need the SymbolTable to distinguish this stuff
     // PS: that also applies to other Visitors.
-    OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate(qType.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()));
-    loader.setEnclosingScope(getScope(qType.getEnclosingScope()));
-    typeCheckResult.setCurrentResult(SymTypeExpressionFactory.createTypeObject(loader));
+    typeCheckResult.setCurrentResult(SymTypeExpressionFactory.createTypeObject(qType.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()), getScope(qType.getEnclosingScope())));
   }
 
   @Override
   public void endVisit(ASTMCQualifiedName qName) {
-    OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate(qName.getQName());
+    TypeSymbol loader = new OOTypeSymbolSurrogate(qName.getQName());
     loader.setEnclosingScope(getScope(qName.getEnclosingScope()));
     SymTypeOfObject oType = createTypeObject(loader);
     typeCheckResult.setCurrentResult(oType);

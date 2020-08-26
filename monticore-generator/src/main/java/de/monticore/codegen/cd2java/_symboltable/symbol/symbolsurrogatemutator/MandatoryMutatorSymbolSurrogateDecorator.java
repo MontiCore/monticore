@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 
+@Deprecated
 public class MandatoryMutatorSymbolSurrogateDecorator extends MandatoryMutatorDecorator {
 
   public MandatoryMutatorSymbolSurrogateDecorator(GlobalExtensionManagement glex) {

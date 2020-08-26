@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
+import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.TokenStream;
@@ -129,11 +130,12 @@ public abstract class MCParser extends Parser {
   }
   
   public boolean noSpace() {
-    org.antlr.v4.runtime.Token t1 = _input.LT(-1);
-    org.antlr.v4.runtime.Token t2 = _input.LT(-2);
-    if ((t1 == null) || (t2==null)) {
+    if (!checkToken(-1) || (!checkToken(-2))) {
       return false;
     }
+
+    org.antlr.v4.runtime.Token t1 = _input.LT(-1);
+    org.antlr.v4.runtime.Token t2 = _input.LT(-2);
     // token are on same line
     // and columns differ exactly length of earlier token (t2)
     return ((t1.getLine() == t2.getLine()) &&
@@ -142,11 +144,11 @@ public abstract class MCParser extends Parser {
 
   public boolean noSpace(Integer... is) {
     for (Integer i: is) {
-      org.antlr.v4.runtime.Token t1 = _input.LT(i);
-      org.antlr.v4.runtime.Token t2 = _input.LT(i - 1);
-      if ((t1 == null) || (t2==null)) {
+      if (!checkToken(i) || (!checkToken(i-1))) {
         return false;
       }
+      org.antlr.v4.runtime.Token t1 = _input.LT(i);
+      org.antlr.v4.runtime.Token t2 = _input.LT(i - 1);
       // token are on same line
       // and columns differ exactly length of earlier token (t2)
       if (((t1.getLine() != t2.getLine()) ||
@@ -162,10 +164,10 @@ public abstract class MCParser extends Parser {
    * Compare the string of token (counting from the current token) with the given strings
    */
   public boolean cmpToken(int i, String... str) {
-    org.antlr.v4.runtime.Token t1 = _input.LT(i);
-    if (t1==null) {
+    if (!checkToken(i)) {
       return false;
     }
+    org.antlr.v4.runtime.Token t1 = _input.LT(i);
     for (String s: str) {
       if (t1.getText().equals(s)) {
         return true;
@@ -178,10 +180,10 @@ public abstract class MCParser extends Parser {
    * Returns if the string of the token (counting from the current token) matches the given string
    */
   public boolean cmpTokenRegEx(int i, String regEx) {
-    org.antlr.v4.runtime.Token t1 = _input.LT(i);
-    if (t1==null) {
+    if (!checkToken(i)) {
       return false;
     }
+    org.antlr.v4.runtime.Token t1 = _input.LT(i);
     return t1.getText().matches(regEx);
   }
 
@@ -189,10 +191,10 @@ public abstract class MCParser extends Parser {
    * Compare the string of the actual token with the given strings
    */
   public boolean is(String... str) {
-    org.antlr.v4.runtime.Token t1 = _input.LT(-1);
-    if (t1==null) {
+    if (!checkToken(-1)) {
       return false;
     }
+    org.antlr.v4.runtime.Token t1 = _input.LT(-1);
     for (int i = 0; i < str.length; i++) {
       if (t1.getText().equals(str[i])) {
         return true;
@@ -205,10 +207,10 @@ public abstract class MCParser extends Parser {
    * Compare the string of the next token with the given strings
    */
   public boolean next(String... str) {
-    org.antlr.v4.runtime.Token t1 = _input.LT(1);
-    if (t1==null) {
+    if (!checkToken(1)) {
       return false;
     }
+    org.antlr.v4.runtime.Token t1 = _input.LT(1);
     for (int i = 0; i < str.length; i++) {
       if (t1.getText().equals(str[i])) {
         return true;
@@ -222,11 +224,22 @@ public abstract class MCParser extends Parser {
    * not exist, an empty string is returned
    */
   public String token(int i) {
+    if (!checkToken(i)) {
+      return "";
+    }
     org.antlr.v4.runtime.Token t1 = _input.LT(i);
     if (t1==null) {
       return "";
     }
     return t1.getText();
+  }
+
+  protected boolean checkToken(int i) {
+    if (_input.LT(i) == null) {
+      Log.warn("0xA0610 The token at position + " + i + " is not defined!");
+      return false;
+    }
+    return true;
   }
 
 }
