@@ -58,7 +58,6 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
 
   @Before
   public void setUp() {
-    // LogStub.init() prevents a lot of warnings like 0xA1042 Scope "equals" has already an enclosing scope
     // to be issued (the warnings are not checked)
     LogStub.init();         // replace log by a sideffect free variant
 //     LogStub.initPlusLog();  // for manual testing purpose only
@@ -79,7 +78,6 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
 
     SymbolTableService symbolTableService = new SymbolTableService(decoratedASTCompilationUnit);
     VisitorService visitorService = new VisitorService(decoratedASTCompilationUnit);
-    ParserService parserService = new ParserService(decoratedASTCompilationUnit);
     MethodDecorator methodDecorator = new MethodDecorator(glex, symbolTableService);
     AccessorDecorator accessorDecorator = new AccessorDecorator(glex, symbolTableService);
 

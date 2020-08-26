@@ -473,7 +473,7 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     assertEquals(2, symbolClassFoo.sizeInterface());
     assertDeepEquals("de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.ICommonAutomatonSymbolCDSymbol",
         symbolClassFoo.getInterface(0));
-    assertDeepEquals("ASTLexicalsNode", symbolClassFoo.getInterface(1));
+    assertDeepEquals("de.monticore.codegen.ast.Lexicals.ASTLexicalsNode", symbolClassFoo.getInterface(1));
 
   }
 

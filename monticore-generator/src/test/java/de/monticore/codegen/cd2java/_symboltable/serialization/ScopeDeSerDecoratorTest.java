@@ -111,9 +111,6 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
   @Test
   public void testAttributeCount(){
     assertEquals(7, scopeClass.sizeCDAttributes());
-    for(ASTCDAttribute attribute: scopeClass.getCDAttributesList()){
-      System.out.println(attribute.getName());
-    }
   }
 
   @Test

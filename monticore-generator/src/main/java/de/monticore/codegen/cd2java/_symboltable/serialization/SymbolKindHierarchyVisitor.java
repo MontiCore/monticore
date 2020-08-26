@@ -2,12 +2,10 @@
 
 package de.monticore.codegen.cd2java._symboltable.serialization;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
 import de.monticore.cd.cd4analysis._ast.ASTCDType;
+import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
 import de.monticore.cd.cd4analysis._visitor.CD4AnalysisVisitor;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
-import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 
 import java.util.HashMap;
 import java.util.List;
@@ -26,16 +24,14 @@ import java.util.Map;
  */
 public class SymbolKindHierarchyVisitor implements CD4AnalysisVisitor {
 
-  protected String currentType = "";
+  protected String currentType = null;
 
   private Map<String, String> kindHierarchy = new HashMap<>();
 
-  public static Map<String,String> calculateKindHierarchy(List<ASTCDType> symbolProds) {
+  public static Map<String, String> calculateKindHierarchy(List<ASTCDType> symbolProds) {
     // iterate over all locally defined symbol classes
     SymbolKindHierarchyVisitor visitor = new SymbolKindHierarchyVisitor();
-    for (ASTCDType symbolProd : symbolProds) {
-      symbolProd.accept(visitor.getRealThis());
-    }
+    symbolProds.forEach(s -> s.getSymbol().accept(visitor));
     return visitor.getKindHierarchy();
   }
 
@@ -43,45 +39,25 @@ public class SymbolKindHierarchyVisitor implements CD4AnalysisVisitor {
     return kindHierarchy;
   }
 
-  @Override public void visit(ASTCDClass node) {
-    if (hasSymbolStereotype(node)) {
-      kindHierarchy.put(currentType, node.getName());
-    }
-  }
-
-  @Override public void visit(ASTCDInterface node) {
-    if (hasSymbolStereotype(node)) {
-      kindHierarchy.put(currentType, node.getName());
-    }
-  }
-
-  @Override public void traverse(ASTCDClass node) {
-    if (hasSymbolStereotype(node)) {
-      currentType = node.getName();
-      if (node.isPresentSuperclass()) {
-        node.getSuperclass().accept(getRealThis());
+  @Override public void visit(CDTypeSymbol symbol) {
+    if (hasSymbolStereotype(symbol)) {
+      if (null != currentType) {
+        kindHierarchy.put(currentType, symbol.getName());
       }
-      for (ASTMCObjectType intf : node.getInterfaceList()) {
-        intf.accept(getRealThis());
-      }
+      currentType = symbol.getName();
     }
   }
 
-  @Override public void traverse(ASTCDInterface node) {
-    if (hasSymbolStereotype(node)) {
-      currentType = node.getName();
-      for (ASTMCObjectType intf : node.getInterfaceList()) {
-        intf.accept(getRealThis());
-      }
+  @Override public void traverse(CDTypeSymbol symbol) {
+//    if (hasSymbolStereotype(symbol)) {
+      for (CDTypeSymbol superType : symbol.getSuperTypes()) {
+        superType.accept(this);
+//      }
     }
+    currentType = null;
   }
 
-  protected boolean hasSymbolStereotype(ASTCDType type) {
-    if (type.getModifier().isPresentStereotype()) {
-      return type.getModifier().getStereotype().getValueList().stream()
-          .anyMatch(v -> v.getName().equals(
-              MC2CDStereotypes.SYMBOL));
-    }
-    return false;
+  protected boolean hasSymbolStereotype(CDTypeSymbol symbol) {
+    return symbol.getStereotype(MC2CDStereotypes.SYMBOL.toString()).isPresent();
   }
 }

@@ -1,8 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.symboltable;
 
-import de.monticore.codegen.ast.Lexicals.*;
-
 classdiagram AutomatonSymbolCD {
 
     <<scope, symbol, startProd>> public class Automaton{
@@ -14,7 +12,7 @@ classdiagram AutomatonSymbolCD {
     public class NotASymbol {
     }
 
-    <<symbol>> public class Foo extends NotASymbol implements ASTLexicalsNode {
+    <<symbol>> public class Foo extends NotASymbol implements de.monticore.codegen.ast.Lexicals.ASTLexicalsNode {
       protected boolean extraAttribute;
       protected List<String> foo;
       protected Optional<Integer> bla;
