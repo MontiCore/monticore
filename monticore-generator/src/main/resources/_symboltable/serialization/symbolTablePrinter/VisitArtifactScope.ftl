@@ -8,6 +8,7 @@ ${tc.signature("artifactScopeFullName", "languageName", "attrList" )}
   if(!node.getPackageName().isEmpty()) {
     printer.member(de.monticore.symboltable.serialization.JsonDeSers.PACKAGE, node.getPackageName());
   }
+  printKindHierarchy();
 <#list attrList as attr>
   <#if genHelper.isOptional(attr.getMCType())>
   if (node.isPresent${attr.getName()?cap_first}()) {

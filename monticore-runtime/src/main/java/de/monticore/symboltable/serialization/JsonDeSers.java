@@ -1,11 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.symboltable.serialization;
 
+import de.monticore.symboltable.serialization.json.JsonArray;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.se_rwth.commons.logging.Log;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -30,9 +33,44 @@ public class JsonDeSers {
 
   public static final String KIND = "kind";
 
+  public static final String KIND_HIERARCHY = "kindHierarchy";
+
   public static final String SYMBOLS = "symbols";
 
   public static final String SPANNED_SCOPE = "spannedScope";
+
+  /**
+   * This method deserializes a stored map with kind hierarchies from the passed serialized scope.
+   *
+   * @param scopeJson
+   * @return
+   */
+  public static Map<String, String> deserializeKindHierarchy(JsonObject scopeJson) {
+    Map<String, String> kindHierarchy = new HashMap<>();
+    if (scopeJson.hasArrayMember(KIND_HIERARCHY)) {
+      for (JsonElement e : scopeJson.getArrayMember(KIND_HIERARCHY)) {
+        JsonArray entry = e.getAsJsonArray();
+        if (2 == entry.size()) {
+          String kind = entry.get(0).getAsJsonString().getValue();
+          String superKind = entry.get(1).getAsJsonString().getValue();
+          kindHierarchy.put(kind, superKind);
+        }
+        else {
+          Log.error(
+              "0xA7434 An entry in the kind hierarchy map has to consist of a kind and a superkind. '"
+                  + entry + "' does not conform to this!");
+        }
+      }
+    }
+    return kindHierarchy;
+  }
+
+  public static String getParentKind(String kind, Map<String, String> kindHierarchy) {
+    if (null != kind && kindHierarchy.containsKey(kind)) {
+      return kindHierarchy.get(kind);
+    }
+    return null;
+  }
 
   /**
    * This method checks, if a passed JsonElement is a Json object of a certain passed kind.
@@ -43,7 +81,8 @@ public class JsonDeSers {
    * @param serializedElement
    * @return
    */
-  public static boolean isCorrectDeSerForKind(String deSerSymbolKind, JsonElement serializedElement) {
+  public static boolean isCorrectDeSerForKind(String deSerSymbolKind,
+      JsonElement serializedElement) {
     if (!serializedElement.isJsonObject()) {
       return false;
     }

@@ -11,6 +11,7 @@ import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.prettyprint.IndentPrinter;
@@ -21,8 +22,7 @@ import de.monticore.types.prettyprint.MCFullGenericTypesPrettyPrinter;
 import de.monticore.utils.Names;
 import de.se_rwth.commons.StringTransformations;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.*;
@@ -83,6 +83,7 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
     if (symbolTableService.hasStartProd()) {
       symbolTablePrinterClass.addAllCDMethods(createArtifactScopeVisitorMethods(artifactScopeFullName,
           artifactScopeInterfaceFullName, scopeTypes));
+      symbolTablePrinterClass.addCDMethods(createPrintKindHierarchyMethod(symbolDefiningProds));
     }
     return symbolTablePrinterClass;
   }
@@ -137,6 +138,18 @@ public class SymbolTablePrinterDecorator extends AbstractDecorator {
     this.replaceTemplate(EMPTY_BODY, setMethod, new StringHookPoint("this.realThis = realThis;"));
     return Lists.newArrayList(getMethod, setMethod);
   }
+
+  protected ASTCDMethod createPrintKindHierarchyMethod(List<ASTCDType> symbolProds) {
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, "printKindHierarchy");
+    Map<String, String> kindHierarchy = SymbolKindHierarchyVisitor.calculateKindHierarchy(symbolProds);
+    HookPoint hp = new TemplateHookPoint(TEMPLATE_PATH + "symbolTablePrinter.PrintKindHierarchy",
+        kindHierarchy);
+    this.replaceTemplate(EMPTY_BODY, method, hp);
+    return method;
+  }
+
+
+
 
   protected ASTCDMethod createGetSerializedStringMethod() {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createStringType(), "getSerializedString");

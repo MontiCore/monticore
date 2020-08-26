@@ -127,7 +127,7 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount(){
-    assertEquals(28, symbolTablePrinterClass.sizeCDMethods());
+    assertEquals(29, symbolTablePrinterClass.sizeCDMethods());
   }
 
   @Test
@@ -138,6 +138,15 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
     assertEquals(0, method.sizeCDParameters());
     assertFalse(method.getMCReturnType().isPresentMCVoidType());
     assertDeepEquals(JSON_PRINTER, method.getMCReturnType().getMCType());
+  }
+
+  @Test
+  public void testPrintKindHierarchyMethod(){
+    ASTCDMethod method = getMethodBy("printKindHierarchy", symbolTablePrinterClass);
+    assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
+    assertEquals(0, method.sizeException());
+    assertEquals(0, method.sizeCDParameters());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
   }
 
   @Test
