@@ -438,7 +438,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param astCd           - the top node of the Cd4Analysis AST
    * @param outputDirectory - output directory
    */
-  public void reportCD(ASTCDCompilationUnit astCd, String appendName, File outputDirectory) {
+  public void reportCD(ASTCDCompilationUnit astCd, ASTCDCompilationUnit symbolCd, ASTCDCompilationUnit scopeCd,
+                       File outputDirectory) {
     // we also store the class diagram fully qualified such that we can later on
     // resolve it properly for the generation of sub languages
     String reportSubDir = Joiners.DOT.join(astCd.getPackageList());
@@ -451,12 +452,45 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     ASTCDCompilationUnit astCdForReporting = astCd.deepClone();
     // No star imports in reporting CDs
     astCdForReporting.getMCImportStatementsList().forEach(s -> s.setStar(false));
-    String newName = astCd.getCDDefinition().getName() + appendName;
-    astCdForReporting.getCDDefinition().setName(newName);
+
+    // Add symbol classes
+    for (ASTCDClass cl :symbolCd.getCDDefinition().getCDClasssList()) {
+      ASTCDClass newCl = cl.deepClone();
+      newCl.setName(newCl.getName()+"Symbol");
+      astCdForReporting.getCDDefinition().addCDClasss(newCl);
+    }
+
+    // Add scope classes
+    for (ASTCDClass cl :scopeCd.getCDDefinition().getCDClasssList()) {
+      ASTCDClass newCl = cl.deepClone();
+      newCl.setName(newCl.getName()+"Scope");
+      astCdForReporting.getCDDefinition().addCDClasss(newCl);
+    }
     new CDReporting().prettyPrintAstCd(astCdForReporting, outputDirectory, reportSubDir);
   }
 
+  /**
+   * Prints Cd4Analysis AST to the CD-file (*.cd) in the reporting directory
+   *
+   * @param astCd           - the top node of the Cd4Analysis AST
+   * @param outputDirectory - output directory
+   */
+  public void reportCD(ASTCDCompilationUnit astCd, File outputDirectory) {
+    // we also store the class diagram fully qualified such that we can later on
+    // resolve it properly for the generation of sub languages
+    String reportSubDir = Joiners.DOT.join(astCd.getPackageList());
+    reportSubDir = reportSubDir.isEmpty()
+            ? astCd.getCDDefinition().getName()
+            : reportSubDir.concat(".").concat(astCd.getCDDefinition().getName());
+    reportSubDir = reportSubDir.toLowerCase();
 
+    // Clone CD for reporting
+    ASTCDCompilationUnit astCdForReporting = astCd.deepClone();
+    // No star imports in reporting CDs
+    astCdForReporting.getMCImportStatementsList().forEach(s -> s.setStar(false));
+
+    new CDReporting().prettyPrintAstCd(astCdForReporting, outputDirectory, reportSubDir);
+  }
   public ASTCDCompilationUnit decorateForSymbolTablePackage(GlobalExtensionManagement glex, ICD4AnalysisScope cdScope,
                                                             ASTCDCompilationUnit astClassDiagram, ASTCDCompilationUnit symbolClassDiagramm,
                                                             ASTCDCompilationUnit scopeClassDiagramm, IterablePath handCodedPath) {

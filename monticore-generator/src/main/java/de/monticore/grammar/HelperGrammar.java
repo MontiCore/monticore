@@ -41,16 +41,14 @@ public class HelperGrammar {
     return name;
   }
 
-  public static String getListName(ASTNonTerminal a, ASTMCGrammar grammar) {
+  public static String getListName(ASTNonTerminal a) {
     String name;
     if (a.isPresentUsageName()) {
       name = a.getUsageName();
-    } else if (getsListCardinalityFromAstRule(a, grammar)) {
-      name = a.getName();
     } else {
       // Use Nonterminal name as attribute name starting with lower case
       // for a list (iterated) nonterminal a 's' is added for the name
-      name = a.getName() + "s";
+      name = a.getName();
     }
     return name + DecorationHelper.GET_SUFFIX_LIST;
   }

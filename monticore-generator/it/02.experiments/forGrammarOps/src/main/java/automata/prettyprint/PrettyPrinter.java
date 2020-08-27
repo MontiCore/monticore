@@ -20,7 +20,7 @@ public class PrettyPrinter implements AutomataVisitor {
   
   /**
    * Prints the automaton
-   * 
+   *
    * @param automaton
    */
   public void print(ASTAutomaton automaton) {
@@ -29,7 +29,7 @@ public class PrettyPrinter implements AutomataVisitor {
   
   /**
    * Gets the printed result.
-   * 
+   *
    * @return the result of the pretty print.
    */
   public String getResult() {
@@ -51,8 +51,8 @@ public class PrettyPrinter implements AutomataVisitor {
   @Override
   public void traverse(ASTAutomaton node) {
     // guarantee ordering: states before transitions
-    node.getStatesList().stream().forEach(s -> s.accept(getRealThis()));
-    node.getTransitionsList().stream().forEach(t -> t.accept(getRealThis()));
+    node.getStateList().stream().forEach(s -> s.accept(getRealThis()));
+    node.getTransitionList().stream().forEach(t -> t.accept(getRealThis()));
   }
   
   @Override

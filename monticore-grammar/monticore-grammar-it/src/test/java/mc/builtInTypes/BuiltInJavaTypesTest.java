@@ -2,6 +2,8 @@
 package mc.builtInTypes;
 
 import de.monticore.io.paths.ModelPath;
+import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.*;
 import de.se_rwth.commons.logging.LogStub;
@@ -26,7 +28,7 @@ public class BuiltInJavaTypesTest {
         .setModelFileExtension("bijt")
         .build();
     gs.addAdaptedOOTypeSymbolResolvingDelegate(new BuiltInJavaSymbolResolvingDelegate());
-
+    gs.addAdaptedTypeSymbolResolvingDelegate(new BuiltInJavaSymbolResolvingDelegate());
 
      //other way to get globalscope: gs = BuiltInJavaTypeSymbolResolvingDelegate.getScope();
 
@@ -361,15 +363,15 @@ public class BuiltInJavaTypesTest {
     //test some methods
     IOOSymbolsScope setSpannedScope = setsymtype.get().getSpannedScope();
     //add is a method of the set type and a method of its super type collection
-    List<MethodSymbol> addMethods = setSpannedScope.resolveMethodMany("add");
+    List<FunctionSymbol> addMethods = setSpannedScope.resolveFunctionMany("add");
     //hashCode is a method of the set type and a method of its transitive super type object
-    List<MethodSymbol> hashCodeMethods = setSpannedScope.resolveMethodMany("hashCode");
+    List<FunctionSymbol> hashCodeMethods = setSpannedScope.resolveFunctionMany("hashCode");
 
     assertEquals(2, addMethods.size());
     assertEquals(2, hashCodeMethods.size());
 
     //test for one method
-    for(MethodSymbol hashCode: hashCodeMethods) {
+    for(FunctionSymbol hashCode: hashCodeMethods) {
       assertEquals("int", hashCode.getReturnType().print());
       assertTrue(hashCode.getParameterList().isEmpty());
     }
@@ -495,23 +497,23 @@ public class BuiltInJavaTypesTest {
     IOOSymbolsScope stringSpannedScope = stringType.get().getSpannedScope();
 
     //test if some methods are present, some are methods from object
-    List<MethodSymbol> equalsMethods = stringSpannedScope.resolveMethodMany("equals");
-    List<MethodSymbol> hashCodeMethods = stringSpannedScope.resolveMethodMany("hashCode");
-    Optional<MethodSymbol> length = stringSpannedScope.resolveMethod("length");
-    Optional<MethodSymbol> isEmpty = stringSpannedScope.resolveMethod("isEmpty");
-    Optional<MethodSymbol> charAt = stringSpannedScope.resolveMethod("charAt");
-    Optional<MethodSymbol> compareTo = stringSpannedScope.resolveMethod("compareTo");
-    Optional<MethodSymbol> startsWith = stringSpannedScope.resolveMethod("startsWith");
-    Optional<MethodSymbol> endsWith = stringSpannedScope.resolveMethod("endsWith");
-    Optional<MethodSymbol> indexOf = stringSpannedScope.resolveMethod("indexOf");
-    Optional<MethodSymbol> substring = stringSpannedScope.resolveMethod("substring");
-    Optional<MethodSymbol> concat = stringSpannedScope.resolveMethod("concat");
-    Optional<MethodSymbol> replace = stringSpannedScope.resolveMethod("replace");
-    Optional<MethodSymbol> contains = stringSpannedScope.resolveMethod("contains");
-    Optional<MethodSymbol> toLowerCase = stringSpannedScope.resolveMethod("toLowerCase");
-    Optional<MethodSymbol> toUpperCase = stringSpannedScope.resolveMethod("toUpperCase");
-    Optional<MethodSymbol> valueOf = stringSpannedScope.resolveMethod("valueOf");
-    Optional<MethodSymbol> matches = stringSpannedScope.resolveMethod("matches");
+    List<FunctionSymbol> equalsMethods = stringSpannedScope.resolveFunctionMany("equals");
+    List<FunctionSymbol> hashCodeMethods = stringSpannedScope.resolveFunctionMany("hashCode");
+    Optional<FunctionSymbol> length = stringSpannedScope.resolveFunction("length");
+    Optional<FunctionSymbol> isEmpty = stringSpannedScope.resolveFunction("isEmpty");
+    Optional<FunctionSymbol> charAt = stringSpannedScope.resolveFunction("charAt");
+    Optional<FunctionSymbol> compareTo = stringSpannedScope.resolveFunction("compareTo");
+    Optional<FunctionSymbol> startsWith = stringSpannedScope.resolveFunction("startsWith");
+    Optional<FunctionSymbol> endsWith = stringSpannedScope.resolveFunction("endsWith");
+    Optional<FunctionSymbol> indexOf = stringSpannedScope.resolveFunction("indexOf");
+    Optional<FunctionSymbol> substring = stringSpannedScope.resolveFunction("substring");
+    Optional<FunctionSymbol> concat = stringSpannedScope.resolveFunction("concat");
+    Optional<FunctionSymbol> replace = stringSpannedScope.resolveFunction("replace");
+    Optional<FunctionSymbol> contains = stringSpannedScope.resolveFunction("contains");
+    Optional<FunctionSymbol> toLowerCase = stringSpannedScope.resolveFunction("toLowerCase");
+    Optional<FunctionSymbol> toUpperCase = stringSpannedScope.resolveFunction("toUpperCase");
+    Optional<FunctionSymbol> valueOf = stringSpannedScope.resolveFunction("valueOf");
+    Optional<FunctionSymbol> matches = stringSpannedScope.resolveFunction("matches");
 
     assertEquals(2, equalsMethods.size());
     assertEquals(2, hashCodeMethods.size());

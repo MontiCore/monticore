@@ -41,7 +41,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
     ("package" package:(Name& || ".")+ ";")?
     (importStatement:MCImportStatement)*
 
-    DeprecatedAnnotation? ["component"]? key("grammar") Name
+    GrammarAnnotation? ["component"]? key("grammar") Name
       ("extends" supergrammar:(GrammarReference || ",")+ )?
       "{"
          (
@@ -143,8 +143,8 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
   StartRule =
     "start" Name ";";
 
-  DeprecatedAnnotation =
-    "@Deprecated" ( "(" message:String ")" )?;
+  GrammarAnnotation =
+   {noSpace(2)}? "@" ([key("Deprecated")] ( "(" message:String ")" )?  | [key("Override")]);
 
   // --------------------------------------------------------------------
   // Productions
@@ -152,7 +152,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
   /**
     Productions form the syntactical structure of the grammar
   */
-  interface symbol scope Prod = DeprecatedAnnotation? Name;
+  interface symbol scope Prod = GrammarAnnotation* Name;
   
   symbolrule Prod = 
     isStartProd:boolean 
@@ -190,7 +190,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
     @attribute Block Block used if other than standard mapping shall be used
   */
   LexProd implements Prod =
-    DeprecatedAnnotation? (["fragment"] | ["comment"])*
+    GrammarAnnotation* (["fragment"] | ["comment"])*
     "token" Name
     (
       (
@@ -213,7 +213,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
     @attribute constant List of all constants
   */
   EnumProd implements Prod =
-    DeprecatedAnnotation? "enum" Name "=" (Constant || "|")+ ";";
+    GrammarAnnotation* "enum" Name "=" (Constant || "|")+ ";";
 
 
   /**
@@ -223,7 +223,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
     @attribute MCType External type used for this hole rule
   */
   ExternalProd implements Prod =
-    DeprecatedAnnotation? "external" SymbolDefinition* Name MCType? ";";
+    GrammarAnnotation* "external" SymbolDefinition* Name MCType? ";";
 
 
   /**
@@ -236,7 +236,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
     @attribute aSTSuperInterface Super interfaces abstract syntax only
   */
   InterfaceProd implements ParserProd =
-    DeprecatedAnnotation? "interface" SymbolDefinition* Name
+    GrammarAnnotation* "interface" SymbolDefinition* Name
     (
       "extends" superInterfaceRule:(RuleReference || "," )+
     |
@@ -255,7 +255,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
     @attribute aSTSuperInterface Super interfaces  (abstract syntax only)
   */
   AbstractProd implements Prod =
-    DeprecatedAnnotation? "abstract" SymbolDefinition* Name
+    GrammarAnnotation* "abstract" SymbolDefinition* Name
     (
       "extends" superRule:(RuleReference || ",")+
     |
@@ -280,7 +280,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
     @attribute alts List of alternatives representing the body of the rule
   */
   ClassProd implements ParserProd =
-    DeprecatedAnnotation? SymbolDefinition* Name
+    GrammarAnnotation* SymbolDefinition* Name
     (
        "extends" superRule:(RuleReference || ",")+
     |
@@ -341,7 +341,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
     @attribute Components List of the rule components of this alternative
   */
   Alt =
-    [rightAssoc:"<rightassoc>"]? DeprecatedAnnotation? component:RuleComponent* ;
+    [rightAssoc:"<rightassoc>"]? GrammarAnnotation? component:RuleComponent* ;
 
 
   /**

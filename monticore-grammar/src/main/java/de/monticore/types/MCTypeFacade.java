@@ -81,7 +81,7 @@ public class MCTypeFacade {
 
   public ASTMCOptionalType createOptionalTypeOf(final String name) {
     return MCFullGenericTypesMill.mCOptionalTypeBuilder()
-        .addMCTypeArguments(createBasicTypeArgumentOf(name))
+        .setMCTypeArgument(createBasicTypeArgumentOf(name))
         .build();
   }
 
@@ -106,7 +106,7 @@ public class MCTypeFacade {
 
   public ASTMCListType createListTypeOf(final String name) {
     return MCFullGenericTypesMill.mCListTypeBuilder()
-        .addMCTypeArguments(createBasicTypeArgumentOf(name))
+        .setMCTypeArgument(createBasicTypeArgumentOf(name))
         .build();
   }
 
@@ -131,7 +131,7 @@ public class MCTypeFacade {
 
   public ASTMCSetType createSetTypeOf(final String name) {
     return MCFullGenericTypesMill.mCSetTypeBuilder()
-        .addMCTypeArguments(createBasicTypeArgumentOf(name))
+        .setMCTypeArgument(createBasicTypeArgumentOf(name))
         .build();
   }
 

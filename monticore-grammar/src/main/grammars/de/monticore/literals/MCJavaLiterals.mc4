@@ -100,9 +100,11 @@ component grammar MCJavaLiterals extends MCCommonLiterals {
    fragment token DecimalNumeral
      = '0' | NonZeroDigit (Digits? | Underscores Digits);
 
+   @Override
    fragment token Digits
      = Digit (DigitOrUnderscore* Digit)?;
 
+   @Override
    fragment token Digit
      = '0' | NonZeroDigit;
 
@@ -121,6 +123,7 @@ component grammar MCJavaLiterals extends MCCommonLiterals {
    fragment token HexDigits
      = HexDigit (HexDigitOrUnderscore* HexDigit)?;
 
+   @Override
    fragment token HexDigit
      = '0'..'9'  | 'a'..'f'  | 'A'..'F' ;
 
@@ -133,6 +136,7 @@ component grammar MCJavaLiterals extends MCCommonLiterals {
    fragment token OctalDigits
      = OctalDigit (OctalDigitOrUnderscore* OctalDigit)?;
 
+   @Override
    fragment token OctalDigit
      = '0'..'7' ;
 

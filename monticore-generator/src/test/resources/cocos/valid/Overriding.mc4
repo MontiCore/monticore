@@ -4,11 +4,14 @@ package cocos.valid;
 
 grammar Overriding extends mc.grammars.types.TestTypes {
 
+  @Override
   abstract ArrayType;
 
+  @Override
   QualifiedName;
 
   // Override mc.literals.Literals
+      @Override
       interface Literal extends Expression;
 
       Expression;

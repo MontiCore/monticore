@@ -76,7 +76,8 @@ public class MCGrammarInfo {
     buildLexPatterns();
     findAllKeywords();
     grammarSymbol.getTokenRulesWithInherited().forEach(t -> addSplitRule(t));
-    keywordRules = Lists.newArrayList(keywordRules);
+    grammarSymbol.getKeywordRulesWithInherited().forEach(k -> keywordRules.add(k));
+
     addSubRules();
     addHWAntlrCode();
     addLeftRecursiveRules();

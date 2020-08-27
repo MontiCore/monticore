@@ -2,6 +2,9 @@
 package mc.typescalculator;
 
 import com.google.common.collect.Lists;
+import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
@@ -72,12 +75,16 @@ public class CD2EHelper {
       typeSymbol.addAllSuperTypes(superInterfaces);
       for (FieldSymbol field : fieldSymbols) {
         typeSymbol.getSpannedScope().add(field);
+        typeSymbol.getSpannedScope().add((VariableSymbol) field);
       }
       fieldSymbols.forEach(f -> typeSymbol.getSpannedScope().add(f));
+      fieldSymbols.forEach(f -> typeSymbol.getSpannedScope().add((VariableSymbol) f));
       for (MethodSymbol method : methodSymbols) {
         typeSymbol.getSpannedScope().add(method);
+        typeSymbol.getSpannedScope().add((FunctionSymbol) method);
       }
       methodSymbols.forEach(f -> typeSymbol.getSpannedScope().add(f));
+      methodSymbols.forEach(f -> typeSymbol.getSpannedScope().add((FunctionSymbol) f));
       superClass.ifPresent(typeSymbol::addSuperTypes);
       return typeSymbol;
     }
@@ -119,6 +126,7 @@ public class CD2EHelper {
           .collect(Collectors.toList());
       methodSymbol.setIsStatic(cdMethOrConstrSymbol.isIsStatic());
       parameters.forEach(symbol -> methodSymbol.getSpannedScope().add(symbol));
+      parameters.forEach(symbol -> methodSymbol.getSpannedScope().add((VariableSymbol) symbol));
 
       methodSymbol.setReturnType(returnType);
       return methodSymbol;
@@ -133,6 +141,7 @@ public class CD2EHelper {
       try{
         OOTypeSymbol type = createOOTypeSymbolFormCDTypeSymbol(symbolLoader.lazyLoadDelegate());
         iOOSymbolsScope.add(type);
+        iOOSymbolsScope.add((TypeSymbol) type);
         symTypeExpression = SymTypeExpressionFactory.createTypeExpression(type.getName(), iOOSymbolsScope);
       }catch(Exception e){
         String typeName = symbolLoader.getName();
@@ -141,6 +150,7 @@ public class CD2EHelper {
             .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
             .build();
         iOOSymbolsScope.add(typeSymbol);
+        iOOSymbolsScope.add((TypeSymbol) typeSymbol);
         symTypeExpression = SymTypeExpressionFactory.createTypeExpression(typeSymbol.getName(), iOOSymbolsScope);
       }
       symTypeExpressionMap.put(symbolLoader.getName(), symTypeExpression);

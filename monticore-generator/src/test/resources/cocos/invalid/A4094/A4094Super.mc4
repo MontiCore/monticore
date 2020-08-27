@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package cocos.invalid.A4094;
+
+grammar A4094Super {
+
+  Bla;
+
+}

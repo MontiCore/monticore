@@ -21,7 +21,7 @@ ${tc.signature("cdClass", "isScopeSpanning")}
       }
     </#if>
   <#elseif genHelper.isListAstNode(attr)>
-    <#assign attrGetter = "get"+ attrName?cap_first + "List">
+    <#assign attrGetter = genHelper.getPlainGetter(attr)>
     <#assign astChildTypeName = genHelper.getNativeTypeName(attr.getMCType())>
     {
       Iterator<${astChildTypeName}> iter_${attrName} = node.${attrGetter}().iterator();
