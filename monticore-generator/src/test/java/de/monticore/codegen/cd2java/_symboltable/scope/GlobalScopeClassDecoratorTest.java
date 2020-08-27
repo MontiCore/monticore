@@ -126,7 +126,7 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeSize() {
-    assertEquals(7, scopeClass.sizeCDAttributes());
+    assertEquals(8, scopeClass.sizeCDAttributes());
   }
 
   @Test
@@ -175,10 +175,17 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testModelName2ModelLoaderCacheAttribute() {
-    ASTCDAttribute astcdAttribute = getAttributeBy("modelName2ModelLoaderCache", scopeClass);
-    assertDeepEquals(PROTECTED_FINAL, astcdAttribute.getModifier());
-    assertDeepEquals("Map<String,Set<AutomatonModelLoader>>", astcdAttribute.getMCType());
+  public void testCacheAttribute(){
+    ASTCDAttribute astcdAttribute = getAttributeBy("cache", scopeClass);
+    assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
+    assertDeepEquals("Set<String>", astcdAttribute.getMCType());
+  }
+
+  @Test
+  public void testScopeDeSerAttribute(){
+    ASTCDAttribute astcdAttribute = getAttributeBy("scopeDeSer", scopeClass);
+    assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
+    assertDeepEquals("AutomatonScopeDeSer", astcdAttribute.getMCType());
   }
 
   @Test
@@ -213,7 +220,7 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(27, scopeClass.getCDMethodsList().size());
+    assertEquals(30, scopeClass.getCDMethodsList().size());
   }
 
   @Test
@@ -268,29 +275,15 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testCacheMethod() {
-    ASTCDMethod method = getMethodBy("cache", scopeClass);
+  public void testAddLoadedFileMethod() {
+    ASTCDMethod method = getMethodBy("addLoadedFile", scopeClass);
 
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
 
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(String.class, method.getCDParameters(0).getMCType());
-    assertEquals("calculatedModelName", method.getCDParameters(0).getName());
-  }
-
-  @Test
-  public void testContinueWithModelLoaderMethod() {
-    ASTCDMethod method = getMethodBy("continueWithModelLoader", scopeClass);
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertBoolean(method.getMCReturnType().getMCType());
-
-    assertEquals(2, method.sizeCDParameters());
-    assertDeepEquals(String.class, method.getCDParameters(0).getMCType());
-    assertEquals("calculatedModelName", method.getCDParameters(0).getName());
-    assertDeepEquals("AutomatonModelLoader", method.getCDParameters(1).getMCType());
-    assertEquals("modelLoader", method.getCDParameters(1).getName());
+    assertEquals("name", method.getCDParameters(0).getName());
   }
 
   @Test

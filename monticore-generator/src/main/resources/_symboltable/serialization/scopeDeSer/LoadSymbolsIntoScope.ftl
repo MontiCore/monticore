@@ -12,4 +12,6 @@
   if (modelCoordinate.hasLocation()) {
     java.net.URL url = modelCoordinate.getLocation();
     enclosingScope.addSubScope(load(url));
+    return true;
   }
+  return false;

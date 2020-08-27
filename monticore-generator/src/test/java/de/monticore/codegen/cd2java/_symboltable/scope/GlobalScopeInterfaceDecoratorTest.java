@@ -113,15 +113,15 @@ public class GlobalScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
 
   @Test
-  public void testCacheMethod() {
-    ASTCDMethod method = getMethodBy("cache", scopeInterface);
+  public void testAddLoadedFileMethod() {
+    ASTCDMethod method = getMethodBy("addLoadedFile", scopeInterface);
 
     assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
 
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(String.class, method.getCDParameters(0).getMCType());
-    assertEquals("calculatedModelName", method.getCDParameters(0).getName());
+    assertEquals("name", method.getCDParameters(0).getName());
   }
 
   @Test
@@ -252,9 +252,10 @@ public class GlobalScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PREDICATE_QUALIFIED_NAME, method.getCDParameters(3).getMCType());
     assertEquals("predicate", method.getCDParameters(3).getName());
   }
+
   @Test
   public void testMethodCount() {
-    assertEquals(87, scopeInterface.getCDMethodsList().size());
+    assertEquals(90, scopeInterface.getCDMethodsList().size());
   }
 
 }

@@ -68,6 +68,16 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     ASTMCQualifiedType globalScopeInterface = symbolTableService.getGlobalScopeInterfaceType();
     String definitionName = input.getCDDefinition().getName();
     String modelLoaderClassName = symbolTableService.getModelLoaderClassSimpleName();
+    String scopeDeSerName = symbolTableService.getScopeDeSerSimpleName();
+
+    ASTCDAttribute cacheAttribute = createCacheAttribute();
+    this.replaceTemplate(VALUE, cacheAttribute, new StringHookPoint("= new java.util.HashSet<>()"));
+
+
+    ASTCDAttribute scopeDeSerAttribute = createScopeDeSerAttribute(scopeDeSerName);
+    List<ASTCDMethod> scopeDeSerMethods = accessorDecorator.decorate(scopeDeSerAttribute);
+    scopeDeSerMethods.addAll(mutatorDecorator.decorate(scopeDeSerAttribute));
+
 
     List<ASTCDType> symbolProds = symbolTableService.getSymbolDefiningProds(input.getCDDefinition());
 
@@ -87,6 +97,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     resolvingDelegateAttributes.putAll(createResolvingDelegateSuperAttributes());
 
     List<ASTCDType> symbolClasses = symbolTableService.getSymbolDefiningProds(input.getCDDefinition());
+    symbolClasses.addAll(symbolTableService.getSymbolDefiningSuperProds());
 
     List<ASTCDMethod> resolvingDelegateMethods = createResolvingDelegateMethods(resolvingDelegateAttributes.values());
 
@@ -95,30 +106,32 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
         .setModifier(PUBLIC.build())
         .setSuperclass(scopeType)
         .addInterface(globalScopeInterface)
-        .addCDConstructors(createConstructor(globalScopeName))
+        .addCDConstructors(createConstructor(globalScopeName, scopeDeSerName))
         .addCDAttributes(modelPathAttribute)
         .addAllCDMethods(modelPathMethods)
         .addCDAttributes(modelLoaderAttribute)
         .addAllCDMethods(modelLoaderMethods)
         .addCDAttributes(fileExtensionAttribute)
         .addAllCDMethods(fileExtensionMethods)
-        .addCDAttributes(createModelName2ModelLoaderCacheAttribute(modelLoaderClassName))
+        .addCDAttributes(scopeDeSerAttribute)
+        .addAllCDMethods(scopeDeSerMethods)
+        .addCDAttributes(cacheAttribute)
+        .addCDMethods(createAddLoadedFileMethod())
+        .addCDMethods(createClearLoadedFilesMethod())
+        .addCDMethods(createIsFileLoadedMethod())
         .addAllCDAttributes(resolvingDelegateAttributes.values())
         .addCDMethods(createEnableModelLoader(globalScopeName))
         .addCDMethods(createDisableModelLoader())
-        .addCDMethods(createCacheMethod(definitionName))
-        .addCDMethods(createContinueWithModelLoaderMethod(modelLoaderClassName))
         .addAllCDMethods(resolvingDelegateMethods)
         .addAllCDMethods(createAlreadyResolvedMethods(symbolProds))
         .addAllCDMethods(createAlreadyResolvedSuperMethods())
+        .addAllCDMethods(createLoadModelsForMethod(symbolClasses, definitionName))
         //
         .addCDMethods(createGetRealThisMethod(globalScopeName))
-        .addAllCDMethods(createLoadModelsForMethod(symbolClasses, definitionName))
-        .addAllCDMethods(createLoadModelsForSuperMethod(definitionName))
         .build();
   }
 
-  protected ASTCDConstructor createConstructor(String globalScopeClassName) {
+  protected ASTCDConstructor createConstructor(String globalScopeClassName, String deSerClassName) {
     StringBuilder sb = new StringBuilder();
 
     ASTMCType modelPathType = getMCTypeFacade().createQualifiedType(MODEL_PATH_TYPE);
@@ -126,14 +139,20 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     sb.append("this." + MODEL_PATH_VAR + " = Log.errorIfNull(" + MODEL_PATH_VAR + ");\n");
 
     ASTCDParameter fileExtensionParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createStringType(), FILE_EXTENSION_VAR);
+    ASTMCType deSerClass = getMCTypeFacade().createQualifiedType(deSerClassName);
+    ASTCDParameter scopeDeSerParameter = getCDParameterFacade().createParameter(deSerClass, "scopeDeSer");
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), globalScopeClassName, modelPathParameter, fileExtensionParameter);
     sb.append("this." + FILE_EXTENSION_VAR + " = Log.errorIfNull(" + FILE_EXTENSION_VAR + ");\n");
 
     if (!symbolTableService.hasComponentStereotype(symbolTableService.getCDSymbol().getAstNode())) {
-      sb.append("this.enableModelLoader();");
+      sb.append("this.enableModelLoader();\n");
     } else {
-      sb.append("this." + MODEL_LOADER_VAR + " = Optional.empty();");
+      sb.append("this." + MODEL_LOADER_VAR + " = Optional.empty();\n");
     }
+
+    sb.append("this.scopeDeSer = new "+ deSerClassName + "();\n");
+    sb.append("this.scopeDeSer.setSymbolFileExtension("+FILE_EXTENSION_VAR+"+\"sym\");");
+
     this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint(sb.toString()));
     return constructor;
   }
@@ -162,16 +181,17 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     return getCDAttributeFacade().createAttribute(PROTECTED, MODEL_PATH_TYPE, MODEL_PATH_VAR);
   }
 
+  protected ASTCDAttribute createScopeDeSerAttribute(String scopeDeSerName){
+    return getCDAttributeFacade().createAttribute(PROTECTED, getMCTypeFacade().createQualifiedType(scopeDeSerName), "scopeDeSer");
+  }
+
+  protected ASTCDAttribute createCacheAttribute(){
+    return getCDAttributeFacade().createAttribute(PROTECTED, getMCTypeFacade().createSetTypeOf(getMCTypeFacade().createStringType()), "cache");
+  }
+
   protected ASTCDAttribute createModelLoaderAttribute(String modelLoaderClassName) {
     ASTMCOptionalType optType = getMCTypeFacade().createOptionalTypeOf(modelLoaderClassName);
     return getCDAttributeFacade().createAttribute(PROTECTED, optType, "modelLoader");
-  }
-
-  protected ASTCDAttribute createModelName2ModelLoaderCacheAttribute(String modelLoaderClassName) {
-    ASTMCMapType mapType = getMCTypeFacade().createMapTypeOf("String", "Set<" + modelLoaderClassName + ">");
-    ASTCDAttribute modelName2ModelLoaderCache = getCDAttributeFacade().createAttribute(PROTECTED_FINAL, mapType, "modelName2ModelLoaderCache");
-    this.replaceTemplate(VALUE, modelName2ModelLoaderCache, new StringHookPoint(" = new HashMap<>()"));
-    return modelName2ModelLoaderCache;
   }
 
 
@@ -211,7 +231,22 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     return Optional.empty();
   }
 
-  protected List<ASTCDMethod> createResolvingDelegateMethods(Collection<ASTCDAttribute> resolvingDelegateAttributes) {
+  protected List<ASTCDMethod> createLoadModelsForMethod(List<? extends ASTCDType> symbolProds, String definitionName) {
+    List<ASTCDMethod> loadMethods = new ArrayList<>();
+    ASTCDParameter nameParameter = getCDParameterFacade().createParameter(String.class, NAME_VAR);
+
+    for (ASTCDType symbolProd : symbolProds) {
+      String className = symbolTableService.removeASTPrefix(symbolProd);
+      String methodName = String.format(LOAD_MODELS_FOR, className);
+      ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, methodName, nameParameter);
+      this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "LoadModelsFor", className, definitionName));
+      loadMethods.add(method);
+    }
+
+    return loadMethods;
+  }
+
+    protected List<ASTCDMethod> createResolvingDelegateMethods(Collection<ASTCDAttribute> resolvingDelegateAttributes) {
     List<ASTCDMethod> resolvingDelegateMethods = new ArrayList<>();
     for (ASTCDAttribute attribute : resolvingDelegateAttributes) {
       String capAttributeName = StringTransformations.capitalize(attribute.getName());
@@ -230,25 +265,6 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
       resolvingDelegateMethods.add(setter);
     }
     return resolvingDelegateMethods;
-  }
-
-  protected ASTCDMethod createCacheMethod(String definitionName) {
-    ASTCDParameter parameter = getCDParameterFacade().createParameter(getMCTypeFacade().createStringType(), CALCULATED_MODEL_NAME);
-    ASTCDMethod cacheMethod = getCDMethodFacade().createMethod(PUBLIC, "cache", parameter);
-    this.replaceTemplate(EMPTY_BODY, cacheMethod, new TemplateHookPoint(TEMPLATE_PATH + "CacheMethod", definitionName));
-    return cacheMethod;
-  }
-
-  protected ASTCDMethod createContinueWithModelLoaderMethod(String modelLoaderClassName) {
-    ASTCDParameter modelNameParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createStringType(), CALCULATED_MODEL_NAME);
-    ASTMCQualifiedType modelLoaderType = getMCTypeFacade().createQualifiedType(modelLoaderClassName);
-    ASTCDParameter modelLoaderParameter = getCDParameterFacade().createParameter(modelLoaderType, MODEL_LOADER_VAR);
-
-    ASTCDMethod continueWithModelLoaderMethod = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createBooleanType(), "continueWithModelLoader", modelNameParameter, modelLoaderParameter);
-    this.replaceTemplate(EMPTY_BODY, continueWithModelLoaderMethod,
-        new StringHookPoint("    return !modelName2ModelLoaderCache.containsKey(" + CALCULATED_MODEL_NAME + ")\n" +
-            "      || !modelName2ModelLoaderCache.get(" + CALCULATED_MODEL_NAME + ").contains(" + MODEL_LOADER_VAR + ");"));
-    return continueWithModelLoaderMethod;
   }
 
   protected List<ASTCDMethod> createAlreadyResolvedMethods(List<? extends ASTCDType> cdTypeList) {
@@ -315,44 +331,24 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     return getRealThis;
   }
 
-  /**
-   * creates all resolve methods
-   * reuses the often used parameters, so that they only need to be created once
-   */
-  protected List<ASTCDMethod> createLoadModelsForMethod(List<? extends ASTCDType> symbolProds, String definitionName) {
-    List<ASTCDMethod> loadMethods = new ArrayList<>();
-    ASTCDParameter nameParameter = getCDParameterFacade().createParameter(String.class, NAME_VAR);
-
-    for (ASTCDType symbolProd : symbolProds) {
-      String className = symbolTableService.removeASTPrefix(symbolProd);
-      String methodName = String.format(LOAD_MODELS_FOR, className);
-      ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, methodName, nameParameter);
-      this.replaceTemplate(EMPTY_BODY, method,
-          new TemplateHookPoint(TEMPLATE_PATH + "LoadModelsFor", className, definitionName));
-      loadMethods.add(method);
-    }
-
-    return loadMethods;
+  protected ASTCDMethod createAddLoadedFileMethod() {
+    ASTCDParameter parameter = getCDParameterFacade().createParameter(getMCTypeFacade().createStringType(), NAME_VAR);
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, "addLoadedFile", parameter);
+    this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint("cache.add(name);"));
+    return method;
   }
 
-  protected List<ASTCDMethod> createLoadModelsForSuperMethod(String definitionName) {
-    List<ASTCDMethod> loadMethods = new ArrayList<>();
-    ASTCDParameter nameParameter = getCDParameterFacade().createParameter(String.class, NAME_VAR);
+  protected ASTCDMethod createClearLoadedFilesMethod(){
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, "clearLoadedFiles");
+    this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint("cache.clear();"));
+    return method;
+  }
 
-    for (CDDefinitionSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
-      for (CDTypeSymbol type : cdDefinitionSymbol.getTypes()) {
-        if (type.isPresentAstNode() && type.getAstNode().isPresentModifier()
-            && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifier())) {
-          String className = symbolTableService.removeASTPrefix(type.getAstNode());
-          String methodName = String.format(LOAD_MODELS_FOR, className);
-          ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, methodName, nameParameter);
-          this.replaceTemplate(EMPTY_BODY, method,
-              new TemplateHookPoint(TEMPLATE_PATH + "LoadModelsFor", className, definitionName));
-          loadMethods.add(method);
-        }
-      }
-    }
-    return loadMethods;
+  protected ASTCDMethod createIsFileLoadedMethod(){
+    ASTCDParameter parameter = getCDParameterFacade().createParameter(getMCTypeFacade().createStringType(), NAME_VAR);
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createBooleanType(), "isFileLoaded", parameter);
+    this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return cache.contains(name);"));
+    return method;
   }
 
   public boolean isGlobalScopeTop() {

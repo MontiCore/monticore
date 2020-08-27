@@ -6,10 +6,9 @@ import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.IGlobalScope;
 import de.monticore.symboltable.IScope;
 
+import java.util.List;
+
 public interface IModelLoader<T extends ASTNode, S extends IScope> {
 
-  @Deprecated
-  public void createSymbolTableFromAST (T ast, String modelName, S enclosingScope);
-
-  public boolean loadSymbolsIntoScope(String qualifiedModelName, ModelPath modelPath, S enclosingScope);
+  List<T> loadModelsIntoScope(String qualifiedModelname, ModelPath modelPath, S enclosingScope);
 }

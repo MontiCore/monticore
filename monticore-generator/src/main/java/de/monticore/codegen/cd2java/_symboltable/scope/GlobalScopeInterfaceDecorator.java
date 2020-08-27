@@ -66,6 +66,7 @@ public class GlobalScopeInterfaceDecorator
   public ASTCDInterface decorate(ASTCDCompilationUnit input) {
     String globalScopeInterfaceName = symbolTableService.getGlobalScopeInterfaceSimpleName();
 
+    String modelLoaderName = symbolTableService.getModelLoaderClassSimpleName();
     List<ASTCDType> symbolClasses = symbolTableService
         .getSymbolDefiningProds(input.getCDDefinition());
 
@@ -78,7 +79,7 @@ public class GlobalScopeInterfaceDecorator
 
     String definitionName = input.getCDDefinition().getName();
     String globalScopeName = symbolTableService.getGlobalScopeSimpleName();
-
+    String scopeDeSerName = symbolTableService.getScopeDeSerSimpleName();
 
     return CD4AnalysisMill.cDInterfaceBuilder()
         .setName(globalScopeInterfaceName)
@@ -87,8 +88,6 @@ public class GlobalScopeInterfaceDecorator
         .addInterface(symbolTableService.getScopeInterfaceType())
         .addAllCDMethods(createCalculateModelNameMethods(symbolClasses))
         .addAllCDMethods(createModelFileExtensionAttributeMethods())
-//        .addAllCDMethods(createModelLoaderAttributeMethods())
-        .addCDMethods(createCacheMethod())
         .addAllCDMethods(resolvingDelegateMethods)
         .addAllCDMethods(createResolveAdaptedMethods(symbolClasses))
         .addAllCDMethods(createResolveAdaptedSuperMethods())
@@ -98,6 +97,10 @@ public class GlobalScopeInterfaceDecorator
         .addCDMethods(createGetNameMethod(globalScopeName))
         .addCDMethods(createIsPresentNameMethod())
         .addCDMethods(creatCheckIfContinueAsSubScopeMethod())
+        .addCDMethods(createGetRealThisMethod(globalScopeInterfaceName))
+        .addCDMethods(createAddLoadedFileMethod())
+        .addCDMethods(createClearLoadedFilesMethod())
+        .addCDMethods(createIsFileLoadedMethod())
         .build();
   }
 
@@ -176,9 +179,29 @@ public class GlobalScopeInterfaceDecorator
    *
    * @return
    */
-  protected ASTCDMethod createCacheMethod() {
-    ASTCDParameter parameter = getCDParameterFacade().createParameter(getMCTypeFacade().createStringType(), CALCULATED_MODEL_NAME);
-    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, "cache", parameter);
+  protected ASTCDMethod createAddLoadedFileMethod() {
+    ASTCDParameter parameter = getCDParameterFacade().createParameter(getMCTypeFacade().createStringType(), NAME_VAR);
+    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, "addLoadedFile", parameter);
+  }
+
+  protected ASTCDMethod createClearLoadedFilesMethod(){
+    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, "clearLoadedFiles");
+  }
+
+  protected ASTCDMethod createIsFileLoadedMethod(){
+    ASTCDParameter parameter = getCDParameterFacade().createParameter(getMCTypeFacade().createStringType(), NAME_VAR);
+    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, getMCTypeFacade().createBooleanType(), "isFileLoaded", parameter);
+  }
+
+  protected List<ASTCDMethod> createGetAndSetScopeDeSerMethods(String scopeDeSerName){
+    List<ASTCDMethod> methodList = Lists.newArrayList();
+    ASTMCType deSerType = getMCTypeFacade().createQualifiedType(scopeDeSerName);
+    //get
+    methodList.add(getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, deSerType, "getScopeDeSer"));
+    //set
+    ASTCDParameter parameter = getCDParameterFacade().createParameter(deSerType, "scopeDeSer");
+    methodList.add(getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, "setScopeDeSer", parameter));
+    return methodList;
   }
 
   protected List<ASTCDMethod> createCalculateModelNameMethods(List<ASTCDType> symbolProds) {
@@ -281,7 +304,7 @@ public class GlobalScopeInterfaceDecorator
 
     resolveMethods.add(createResolveManyMethod(className, symbolFullTypeName, listSymbol, foundSymbolsParameter,
         nameParameter, accessModifierParameter, predicateParameter));
-    resolveMethods.add(createLoadModelsForMethod(className, nameParameter));
+    resolveMethods.add(createLoadModelsForMethod(className, nameParameter, definitionName));
 
     return resolveMethods;
   }
@@ -316,11 +339,24 @@ public class GlobalScopeInterfaceDecorator
   }
 
   protected ASTCDMethod createLoadModelsForMethod(String className,
-                                                  ASTCDParameter nameParameter) {
+                                                  ASTCDParameter nameParameter, String definitionName) {
     String methodName = String.format(LOAD_MODELS_FOR, className);
-    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, methodName, nameParameter);;
-    return method;
+    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, methodName, nameParameter);
   }
+
+  protected List<ASTCDMethod> createModelLoaderMethods(String modelLoaderName){
+    List<ASTCDMethod> methods = new ArrayList<>();
+    //getModelLoader
+    methods.add(getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, getMCTypeFacade().createQualifiedType(modelLoaderName), "getModelLoader"));
+    //isPresentModelLoader
+    methods.add(getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, getMCTypeFacade().createBooleanType(), "isPresentModelLoader"));
+    return methods;
+  }
+
+  protected ASTCDMethod createGetRealThisMethod(String realThis){
+    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, getMCTypeFacade().createQualifiedType(realThis), "getRealThis");
+  }
+
 
   /**
    * enclosing scope methods
