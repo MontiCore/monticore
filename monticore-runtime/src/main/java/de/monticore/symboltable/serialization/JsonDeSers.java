@@ -68,7 +68,7 @@ public class JsonDeSers {
   }
 
   public static void printKindHierarchyEntry(JsonPrinter printer, String kind, String superKind){
-    printer.array(Lists.newArrayList(kind, superKind), Function.identity());
+    printer.array(Lists.newArrayList(kind, superKind), s -> "\""+s+"\"");
   }
 
   public static String getParentKind(String kind, Map<String, String> kindHierarchy) {

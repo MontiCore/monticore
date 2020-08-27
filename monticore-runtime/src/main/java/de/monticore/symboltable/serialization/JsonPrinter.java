@@ -139,6 +139,7 @@ public class JsonPrinter {
    * Prints the beginning of a collection in Json notation as member or the current object.
    */
   public void beginArray(String kind) {
+    printBufferedBeginArray();
     StringBuilder sb = new StringBuilder();
     if (!isFirstAttribute) {
       sb.append(",");
@@ -170,6 +171,7 @@ public class JsonPrinter {
    * present, it prints the collection as attribute of the given kind.
    */
   public void beginArray() {
+    printBufferedBeginArray();
     StringBuilder sb = new StringBuilder();
     if (!isFirstAttribute) {
       sb.append(",");
