@@ -132,28 +132,14 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
   }
 
   protected ASTCDConstructor createConstructor(String globalScopeClassName, String deSerClassName) {
-    StringBuilder sb = new StringBuilder();
-
     ASTMCType modelPathType = getMCTypeFacade().createQualifiedType(MODEL_PATH_TYPE);
     ASTCDParameter modelPathParameter = getCDParameterFacade().createParameter(modelPathType, MODEL_PATH_VAR);
-    sb.append("this." + MODEL_PATH_VAR + " = Log.errorIfNull(" + MODEL_PATH_VAR + ");\n");
 
     ASTCDParameter fileExtensionParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createStringType(), FILE_EXTENSION_VAR);
-    ASTMCType deSerClass = getMCTypeFacade().createQualifiedType(deSerClassName);
-    ASTCDParameter scopeDeSerParameter = getCDParameterFacade().createParameter(deSerClass, "scopeDeSer");
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), globalScopeClassName, modelPathParameter, fileExtensionParameter);
-    sb.append("this." + FILE_EXTENSION_VAR + " = Log.errorIfNull(" + FILE_EXTENSION_VAR + ");\n");
-
-    if (!symbolTableService.hasComponentStereotype(symbolTableService.getCDSymbol().getAstNode())) {
-      sb.append("this.enableModelLoader();\n");
-    } else {
-      sb.append("this." + MODEL_LOADER_VAR + " = Optional.empty();\n");
-    }
-
-    sb.append("this.scopeDeSer = new "+ deSerClassName + "();\n");
-    sb.append("this.scopeDeSer.setSymbolFileExtension("+FILE_EXTENSION_VAR+"+\"sym\");");
-
-    this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint(sb.toString()));
+    String millFullName = symbolTableService.getMillFullName();
+    this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint(TEMPLATE_PATH + "ConstructorGlobalScope", symbolTableService.hasComponentStereotype(symbolTableService.getCDSymbol().getAstNode()),
+        millFullName, symbolTableService.getCDName()));
     return constructor;
   }
 
