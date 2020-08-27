@@ -2,17 +2,13 @@
 
 package de.monticore.grammar;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-
-import de.monticore.ast.ASTNode;
+import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.grammar._ast.ASTAlt;
-import de.monticore.grammar.grammar._ast.ASTConstant;
 import de.monticore.grammar.grammar._ast.ASTNonTerminal;
-import de.monticore.grammar.grammar._ast.ASTTerminal;
-import de.monticore.utils.ASTNodes;
+import de.monticore.grammar.grammar._ast.ASTRuleComponent;
+
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Checks if a MC production is a left directly left recursive: e.g. of the form A -> A.*
@@ -23,9 +19,8 @@ public class DirectLeftRecursionDetector {
   public boolean isAlternativeLeftRecursive(final ASTAlt productionAlternative,
       final ASTNonTerminal actualNonTerminal) {
     final String classProductionName = actualNonTerminal.getName();
-    Collection<Class<? extends ASTNode>> types = new HashSet<>(
-        Arrays.asList(ASTNonTerminal.class, ASTTerminal.class, ASTConstant.class));
-    final List<ASTNode> nodes = ASTNodes.getSuccessors(productionAlternative, types);
+
+    final List<ASTRuleComponent> nodes = TransformationHelper.getAllComponents(productionAlternative);
     
     if (nodes.isEmpty()) {
       return false;
@@ -44,9 +39,7 @@ public class DirectLeftRecursionDetector {
   
   public boolean isAlternativeLeftRecursive(final ASTAlt productionAlternative,
       final String classProductionName) {
-    Collection<Class<? extends ASTNode>> types = new HashSet<>(
-        Arrays.asList(ASTNonTerminal.class, ASTTerminal.class, ASTConstant.class));
-    final List<ASTNode> nodes = ASTNodes.getSuccessors(productionAlternative, types);
+    final List<ASTRuleComponent> nodes = TransformationHelper.getAllComponents(productionAlternative);
     
     if (nodes.isEmpty()) {
       return false;
@@ -64,9 +57,7 @@ public class DirectLeftRecursionDetector {
   
   public boolean isAlternativeLeftRecursive(final ASTAlt productionAlternative,
       final Collection<String> names) {
-    Collection<Class<? extends ASTNode>> types = new HashSet<>(
-        Arrays.asList(ASTNonTerminal.class, ASTTerminal.class, ASTConstant.class));
-    final List<ASTNode> nodes = ASTNodes.getSuccessors(productionAlternative, types);
+    final List<ASTRuleComponent> nodes = TransformationHelper.getAllComponents(productionAlternative);
     
     if (nodes.isEmpty()) {
       return false;

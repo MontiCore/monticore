@@ -13,7 +13,6 @@ import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.AdditionalAttributeSymbol;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
-import de.monticore.utils.ASTNodes;
 import de.monticore.utils.Link;
 
 import java.util.*;
@@ -23,17 +22,15 @@ import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 public class InheritedAttributesTranslation implements
-    UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {
+        UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {
 
   @Override
   public Link<ASTMCGrammar, ASTCDCompilationUnit> apply(
-      Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink) {
+          Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink) {
     for (Link<ASTClassProd, ASTCDClass> link : rootLink.getLinks(ASTClassProd.class,
-        ASTCDClass.class)) {
+            ASTCDClass.class)) {
       //inherited
-      handleInheritedNonTerminals(link);
-      handleInheritedConstantGroup(link);
-      handleInheritedTerminals(link);
+      handleInheritedRuleComponents(link);
       handleInheritedAttributeInASTs(link);
       //overwritten
       Optional<ASTProd> overwrittenProdIfNoNewRightSide = getOverwrittenProdIfNoNewRightSide(link.source());
@@ -45,56 +42,23 @@ public class InheritedAttributesTranslation implements
   /**
    * handleInherited method for each RuleComponent type
    */
-  private void handleInheritedNonTerminals(Link<ASTClassProd, ASTCDClass> link) {
-    for (Entry<ASTProd, List<ASTNonTerminal>> entry : getInheritedNonTerminal(link.source())
-        .entrySet()) {
-      handleInheritedRuleComponents(link, entry.getKey(), entry.getValue());
-    }
-  }
-
-  private void handleInheritedConstantGroup(Link<ASTClassProd, ASTCDClass> link) {
-    for (Entry<ASTProd, List<ASTConstantGroup>> entry : getInheritedConstantGroup(link.source())
-        .entrySet()) {
-      handleInheritedRuleComponents(link, entry.getKey(), entry.getValue());
-    }
-  }
-
-  private void handleInheritedTerminals(Link<ASTClassProd, ASTCDClass> link) {
-    for (Entry<ASTProd, List<ASTTerminal>> entry : getInheritedTerminal(link.source())
-        .entrySet()) {
-      // only attributes for terminals with a usage name
-      List<ASTTerminal> terminalWithUsageName = entry.getValue()
-          .stream()
-          .filter(ASTTerminal::isPresentUsageName)
-          .collect(Collectors.toList());
-      handleInheritedRuleComponents(link, entry.getKey(), terminalWithUsageName);
-    }
-    for (Entry<ASTProd, List<ASTKeyTerminal>> entry : getInheritedKeyTerminal(link.source())
+  private void handleInheritedRuleComponents(Link<ASTClassProd, ASTCDClass> link) {
+    for (Entry<ASTProd, List<ASTRuleComponent>> entry : getInheritedRuleComponents(link.source())
             .entrySet()) {
-      // only attributes for terminals with a usage name
-      List<ASTKeyTerminal> terminalWithUsageName = entry.getValue()
-              .stream()
-              .filter(ASTKeyTerminal::isPresentUsageName)
-              .collect(Collectors.toList());
-      handleInheritedRuleComponents(link, entry.getKey(), terminalWithUsageName);
-    }
-    for (Entry<ASTProd, List<ASTTokenTerminal>> entry : getInheritedTokenTerminal(link.source())
-            .entrySet()) {
-      // only attributes for terminals with a usage name
-      List<ASTTokenTerminal> terminalWithUsageName = entry.getValue()
-              .stream()
-              .filter(ASTTokenTerminal::isPresentUsageName)
-              .collect(Collectors.toList());
-      handleInheritedRuleComponents(link, entry.getKey(), terminalWithUsageName);
+      handleInheritedRuleComponents(link, entry.getKey(), entry.getValue());
     }
   }
 
   private void handleInheritedRuleComponents(Link<ASTClassProd, ASTCDClass> link, ASTProd astProd,
                                              List<? extends ASTRuleComponent> ruleComponents) {
     for (ASTRuleComponent ruleComponent : ruleComponents) {
-      ASTCDAttribute cdAttribute = createCDAttribute(link.source(), astProd);
-      link.target().getCDAttributesList().add(cdAttribute);
-      new Link<>(ruleComponent, cdAttribute, link);
+      if ((ruleComponent instanceof ASTNonTerminal)
+       ||(ruleComponent instanceof ASTConstantGroup)
+       || ((ruleComponent instanceof ASTITerminal) && ((ASTITerminal) ruleComponent).isPresentUsageName())) {
+        ASTCDAttribute cdAttribute = createCDAttribute(link.source(), astProd);
+        link.target().getCDAttributesList().add(cdAttribute);
+        new Link<>(ruleComponent, cdAttribute, link);
+      }
     }
   }
 
@@ -103,7 +67,7 @@ public class InheritedAttributesTranslation implements
    */
   private void handleInheritedAttributeInASTs(Link<ASTClassProd, ASTCDClass> link) {
     for (Entry<ASTProd, Collection<AdditionalAttributeSymbol>> entry : getInheritedAttributeInASTs(
-        link.source()).entrySet()) {
+            link.source()).entrySet()) {
       for (AdditionalAttributeSymbol attributeInAST : entry.getValue()) {
         ASTCDAttribute cdAttribute = createCDAttribute(link.source(), entry.getKey());
         link.target().getCDAttributesList().add(cdAttribute);
@@ -117,51 +81,23 @@ public class InheritedAttributesTranslation implements
   /**
    * Methods to get special RuleComponent Types for a Prod
    */
-
-  private Map<ASTProd, List<ASTNonTerminal>> getInheritedNonTerminal(ASTProd sourceNode) {
-    return TransformationHelper.getAllSuperProds(sourceNode).stream()
-        .distinct()
-        .collect(Collectors.toMap(Function.identity(),
-            astProd -> ASTNodes.getSuccessors(astProd, ASTNonTerminal.class)));
-  }
-
-  private Map<ASTProd, List<ASTConstantGroup>> getInheritedConstantGroup(ASTProd sourceNode) {
-    return TransformationHelper.getAllSuperProds(sourceNode).stream()
-        .distinct()
-        .collect(Collectors.toMap(Function.identity(),
-            astProd -> ASTNodes.getSuccessors(astProd, ASTConstantGroup.class)));
-  }
-
-  private Map<ASTProd, List<ASTTerminal>> getInheritedTerminal(ASTProd sourceNode) {
-    return TransformationHelper.getAllSuperProds(sourceNode).stream()
-        .distinct()
-        .collect(Collectors.toMap(Function.identity(),
-            astProd -> ASTNodes.getSuccessors(astProd, ASTTerminal.class)));
-  }
-
-  private Map<ASTProd, List<ASTKeyTerminal>> getInheritedKeyTerminal(ASTProd sourceNode) {
-    return TransformationHelper.getAllSuperProds(sourceNode).stream()
-        .distinct()
-        .collect(Collectors.toMap(Function.identity(),
-            astProd -> ASTNodes.getSuccessors(astProd, ASTKeyTerminal.class)));
-  }
-
-  private Map<ASTProd, List<ASTTokenTerminal>> getInheritedTokenTerminal(ASTProd sourceNode) {
+  private Map<ASTProd, List<ASTRuleComponent>> getInheritedRuleComponents(ASTProd sourceNode) {
     return TransformationHelper.getAllSuperProds(sourceNode).stream()
             .distinct()
             .collect(Collectors.toMap(Function.identity(),
-                    astProd -> ASTNodes.getSuccessors(astProd, ASTTokenTerminal.class)));
+                    astProd -> TransformationHelper.getAllComponents(astProd)));
   }
+
 
   /**
    * all attributes from a astrule for a Prod
    */
   protected Map<ASTProd, Collection<AdditionalAttributeSymbol>> getInheritedAttributeInASTs(
-      ASTProd astNode) {
+          ASTProd astNode) {
     return TransformationHelper.getAllSuperProds(astNode).stream()
-        .distinct()
-        .collect(Collectors.toMap(Function.identity(), prod -> prod.isPresentSymbol() ?
-            prod.getSymbol().getSpannedScope().getAstAttributeList() : Collections.emptyList()));
+            .distinct()
+            .collect(Collectors.toMap(Function.identity(), prod -> prod.isPresentSymbol() ?
+                    prod.getSymbol().getSpannedScope().getAstAttributeList() : Collections.emptyList()));
   }
 
   /**
@@ -169,16 +105,16 @@ public class InheritedAttributesTranslation implements
    */
   protected ASTCDAttribute createCDAttribute(ASTProd inheritingNode, ASTProd definingNode) {
     List<ASTInterfaceProd> interfacesWithoutImplementation = getAllInterfacesWithoutImplementation(
-        inheritingNode);
+            inheritingNode);
 
     String superGrammarName = MCGrammarSymbolTableHelper.getMCGrammarSymbol(definingNode.getEnclosingScope())
-        .map(MCGrammarSymbol::getFullName)
-        .orElse("");
+            .map(MCGrammarSymbol::getFullName)
+            .orElse("");
 
     ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
     if (!interfacesWithoutImplementation.contains(definingNode)) {
       TransformationHelper.addStereoType(
-          cdAttribute, MC2CDStereotypes.INHERITED.toString(), superGrammarName);
+              cdAttribute, MC2CDStereotypes.INHERITED.toString(), superGrammarName);
     }
     return cdAttribute;
   }
@@ -187,18 +123,11 @@ public class InheritedAttributesTranslation implements
    * handleOverwritten method for each RuleComponent type
    */
   private void handleOverwrittenRuleComponents(Link<ASTClassProd, ASTCDClass> link, ASTProd superProd) {
-    handleInheritedRuleComponents(link, superProd, ASTNodes.getSuccessors(superProd, ASTNonTerminal.class));
-    handleInheritedRuleComponents(link, superProd, ASTNodes.getSuccessors(superProd, ASTConstantGroup.class));
-    List<ASTTerminal> overwrittenTerminals = ASTNodes.getSuccessors(superProd, ASTTerminal.class)
-        .stream()
-        .filter(ASTTerminal::isPresentUsageName)
-        .collect(Collectors.toList());
-    handleInheritedRuleComponents(link, superProd, overwrittenTerminals);
-    List<ASTTerminal> overwrittenKeyTerminals = ASTNodes.getSuccessors(superProd, ASTTerminal.class)
-        .stream()
-        .filter(ASTTerminal::isPresentUsageName)
-        .collect(Collectors.toList());
-    handleInheritedRuleComponents(link, superProd, overwrittenKeyTerminals);
+    List<ASTRuleComponent> overwrittenComponents = TransformationHelper.getAllComponents(superProd)
+            .stream()
+            .filter(c -> !(c instanceof ASTTerminal) || ((ASTTerminal) c).isPresentUsageName())
+            .collect(Collectors.toList());
+    handleInheritedRuleComponents(link, superProd, overwrittenComponents);
   }
 
   /**
@@ -210,12 +139,12 @@ public class InheritedAttributesTranslation implements
    */
   private Optional<ASTProd> getOverwrittenProdIfNoNewRightSide(ASTClassProd astProd) {
     Optional<ProdSymbol> ruleSymbol = MCGrammarSymbolTableHelper
-        .resolveRuleInSupersOnly(
-            astProd,
-            astProd.getName());
+            .resolveRuleInSupersOnly(
+                    astProd,
+                    astProd.getName());
     if (ruleSymbol.isPresent() && !ruleSymbol.get().isIsExternal()
-        && ruleSymbol.get().isPresentAstNode()
-        && ASTNodes.getSuccessors(astProd, ASTRuleComponent.class).isEmpty()) {
+            && ruleSymbol.get().isPresentAstNode()
+            && TransformationHelper.getAllComponents(astProd).isEmpty()) {
       return Optional.of(ruleSymbol.get().getAstNode());
     }
     return Optional.empty();
@@ -228,9 +157,9 @@ public class InheritedAttributesTranslation implements
    */
   protected List<ASTInterfaceProd> getAllInterfacesWithoutImplementation(ASTProd astNode) {
     List<ASTInterfaceProd> directInterfaces = TransformationHelper.getDirectSuperProds(astNode).stream()
-        .filter(ASTInterfaceProd.class::isInstance)
-        .map(ASTInterfaceProd.class::cast)
-        .collect(Collectors.toList());
+            .filter(ASTInterfaceProd.class::isInstance)
+            .map(ASTInterfaceProd.class::cast)
+            .collect(Collectors.toList());
     List<ASTInterfaceProd> allSuperRules = new ArrayList<>();
     for (ASTInterfaceProd superInterface : directInterfaces) {
       allSuperRules.addAll(getAllInterfacesWithoutImplementation(superInterface));

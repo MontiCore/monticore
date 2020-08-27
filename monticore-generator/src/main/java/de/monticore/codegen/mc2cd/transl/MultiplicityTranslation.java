@@ -8,6 +8,7 @@ import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.grammar.Multiplicity;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.grammar.grammar._ast.ASTRuleComponent;
 import de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
@@ -58,13 +59,13 @@ public class MultiplicityTranslation implements
    * Groups all the links with identical targets and maps them to their maximum Multiplicities
    */
   private Map<ASTCDAttribute, Multiplicity> mapCDAttributesToMaxMultiplicities(
-      Set<Link<ASTNode, ASTCDAttribute>> cdAttributeLinks) {
+          Set<Link<ASTNode, ASTCDAttribute>> cdAttributeLinks) {
     Map<ASTCDAttribute, List<Link<ASTNode, ASTCDAttribute>>> cdAttributesToLinks =
         cdAttributeLinks.stream().collect(Collectors.groupingBy(Link::target));
 
     return Maps.transformValues(cdAttributesToLinks,
         linkList -> linkList.stream()
-            .map(link -> determineMultiplicity(link.rootLink().source(), link.source()))
+            .map(link -> determineMultiplicity(link.source()))
             .reduce(BinaryOperator.maxBy(Multiplicity::compareTo))
             .get());
   }

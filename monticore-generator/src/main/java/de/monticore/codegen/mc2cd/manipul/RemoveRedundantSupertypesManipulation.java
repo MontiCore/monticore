@@ -8,7 +8,6 @@ import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
-import de.monticore.utils.ASTNodes;
 
 import java.util.List;
 import java.util.function.UnaryOperator;
@@ -18,13 +17,12 @@ public class RemoveRedundantSupertypesManipulation implements UnaryOperator<ASTC
   
   @Override
   public ASTCDCompilationUnit apply(ASTCDCompilationUnit cdCompilationUnit) {
-    for (ASTCDClass cdClass : ASTNodes.getSuccessors(cdCompilationUnit, ASTCDClass.class)) {
+    for (ASTCDClass cdClass : cdCompilationUnit.getCDDefinition().getCDClasssList()) {
       // TODO SO <- GV: don't need it any more?
       // removeRedundantSuperTypes(cdClass.getSuperclass());
       removeRedundantSuperTypes(cdClass.getInterfaceList());
     }
-    for (ASTCDInterface cdInterface : ASTNodes.getSuccessors(cdCompilationUnit,
-        ASTCDInterface.class)) {
+    for (ASTCDInterface cdInterface : cdCompilationUnit.getCDDefinition().getCDInterfacesList()){
       removeRedundantSuperTypes(cdInterface.getInterfaceList());
     }
     return cdCompilationUnit;

@@ -6,8 +6,6 @@ import com.google.common.collect.Lists;
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.AdditionalAttributeSymbol;
-import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
-import de.monticore.grammar.grammar._symboltable.RuleComponentSymbolTOP;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
 import de.se_rwth.commons.JavaNamesHelper;
 import de.se_rwth.commons.Names;
@@ -53,6 +51,29 @@ public class HelperGrammar {
       name = a.getName();
     }
     return name + DecorationHelper.GET_SUFFIX_LIST;
+  }
+
+  /**
+   * checks if a NonTerminal gets its list cardinality only because of a astrule
+   * this means that the NonTerminal itself has not a List cardinality
+   * but there exists a AdditionalAttribute with the same name that has a list cardinality
+   * And it also does not have a usageName
+   * e.g.  A =  Name;
+   *       astrule A =
+   *           name:String*;
+   * because then the name of the list methods are without the 's'
+   * @param nonTerminal the checked nonterminal
+   * @param grammar the grammar which surrounds the nonterminal
+   * @return
+   */
+  protected static boolean getsListCardinalityFromAstRule(ASTNonTerminal nonTerminal, ASTMCGrammar grammar) {
+    boolean hasUsageName = nonTerminal.isPresentUsageName();
+    boolean isActualList = determineMultiplicity(grammar, nonTerminal) == LIST;
+    Optional<AdditionalAttributeSymbol> attributeSymbol = nonTerminal.getEnclosingScope()
+        .resolveAdditionalAttributeDown(StringTransformations.uncapitalize(nonTerminal.getName()));
+    boolean hasListASTRule = attributeSymbol.isPresent() && attributeSymbol.get().isPresentAstNode() &&
+        determineMultiplicity(attributeSymbol.get().getAstNode()) == LIST;
+    return !hasUsageName && !isActualList && hasListASTRule;
   }
 
   /**

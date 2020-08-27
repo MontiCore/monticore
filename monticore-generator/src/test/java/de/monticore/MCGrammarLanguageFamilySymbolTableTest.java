@@ -36,7 +36,7 @@ public class MCGrammarLanguageFamilySymbolTableTest {
     assertTrue(newGrammar.isPresent());
 
     // 2 = Statechart grammar symbol and TestLexicals grammar symbol (super grammar of Statechart)
-    assertEquals(2, globalScope.getSubScopes().size());
+    assertEquals(1, globalScope.getSubScopes().size());
   }
 
 

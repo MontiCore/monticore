@@ -345,7 +345,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
     super.visit(action);
   }
 
-  private void setComponentMultiplicity(RuleComponentSymbol prod, ASTNode ast) {
+  private void setComponentMultiplicity(RuleComponentSymbol prod, ASTRuleComponent ast) {
     Multiplicity multiplicity = determineMultiplicity(astGrammar, ast);
     if (multiplicity == LIST) {
       prod.setIsList(true);
@@ -404,7 +404,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
    * Set cardinality of all grammar's nonterminals
    */
   private void setComponentsCardinality(ASTMCGrammar astGrammar) {
-    for (ProdSymbol prodSymbol : astGrammar.getSymbol().getProdsWithInherited().values()) {
+    for (ProdSymbol prodSymbol : astGrammar.getSymbol().getProds()) {
       Collection<AdditionalAttributeSymbol> astAttributes = prodSymbol.getSpannedScope().getLocalAdditionalAttributeSymbols();
       LinkedListMultimap<String, RuleComponentSymbol> map = prodSymbol.getSpannedScope().getRuleComponentSymbols();
       for (String compName : prodSymbol.getSpannedScope().getRuleComponentSymbols().keySet()) {
@@ -412,12 +412,11 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
                 .filter(a -> a.getName().equals(compName)).findAny();
         Multiplicity multiplicity = STANDARD;
         if (attribute.isPresent()) {
-          multiplicity = multiplicityOfAttributeInAST(
-                  attribute.get().getAstNode());
+          multiplicity = determineMultiplicity(attribute.get().getAstNode());
         } else {
           for (RuleComponentSymbol component : prodSymbol.getSpannedScope().getRuleComponentSymbols().get(compName)) {
             if (component.isIsNonterminal()) {
-              Multiplicity mult = determineMultiplicity(astGrammar, component.getAstNode());
+              Multiplicity mult = determineMultiplicity(component.getAstNode());
               multiplicity = max(Lists.newArrayList(mult, multiplicity));
             }
           }
