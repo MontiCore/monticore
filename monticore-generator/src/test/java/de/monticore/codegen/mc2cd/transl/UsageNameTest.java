@@ -7,7 +7,6 @@ import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
-import de.monticore.utils.ASTNodes;
 import org.junit.Test;
 
 import java.nio.file.Paths;
@@ -29,15 +28,13 @@ public class UsageNameTest {
   
   @Test
   public void testNonTerminal() {
-    ASTCDAttribute cdAttribute = Iterables.getOnlyElement(ASTNodes.getSuccessors(astA,
-        ASTCDAttribute.class));
+    ASTCDAttribute cdAttribute = Iterables.getOnlyElement(astA.getCDAttributesList());
     assertEquals("nonTerminalUsageName", cdAttribute.getName());
   }
   
   @Test
   public void testConstant() {
-    ASTCDAttribute cdAttribute = Iterables.getOnlyElement(ASTNodes.getSuccessors(astB,
-        ASTCDAttribute.class));
+    ASTCDAttribute cdAttribute = Iterables.getOnlyElement(astB.getCDAttributesList());
     assertEquals("constantUsageName", cdAttribute.getName());
   }
 }

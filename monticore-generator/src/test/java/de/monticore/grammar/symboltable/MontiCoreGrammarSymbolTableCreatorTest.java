@@ -6,7 +6,7 @@ import de.monticore.GrammarGlobalScopeTestFactory;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.*;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
-import de.se_rwth.commons.logging.LogStub;
+import de.se_rwth.commons.logging.Log;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -20,8 +20,8 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
   
   @BeforeClass
   public static void disableFailQuick() {
-    LogStub.init();
-    LogStub.enableFailQuick(false);
+    Log.init();
+    Log.enableFailQuick(false);
   }
   
   @Test

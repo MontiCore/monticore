@@ -7,46 +7,63 @@ import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.CD4AnalysisNodeFactory;
 import de.monticore.grammar.grammar._ast.*;
-import de.monticore.utils.ASTNodes;
+import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVisitor;
 import de.monticore.utils.Link;
 
 import java.util.function.UnaryOperator;
 
 public class TerminalsToCDAttributes implements
-    UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {
-  
+        UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>>, Grammar_WithConceptsVisitor {
+
+  Grammar_WithConceptsVisitor realThis = this;
+
+  @Override
+  public Grammar_WithConceptsVisitor getRealThis() {
+    return realThis;
+  }
+
+  @Override
+  public void setRealThis(Grammar_WithConceptsVisitor realThis) {
+    this.realThis = realThis;
+  }
+
+  Link<ASTClassProd, ASTCDClass> link;
+
   @Override
   public Link<ASTMCGrammar, ASTCDCompilationUnit> apply(
-      Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink) {
-    
+          Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink) {
     for (Link<ASTClassProd, ASTCDClass> link : rootLink.getLinks(ASTClassProd.class,
-        ASTCDClass.class)) {
-      for (ASTTerminal terminal : ASTNodes.getSuccessors(link.source(),
-          ASTTerminal.class)) {
-        if (terminal.isPresentUsageName()) {
-          ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
-          link.target().getCDAttributesList().add(cdAttribute);
-          new Link<>(terminal, cdAttribute, link);
-        }
-      }
-      for (ASTKeyTerminal terminal : ASTNodes.getSuccessors(link.source(),
-              ASTKeyTerminal.class)) {
-        if (terminal.isPresentUsageName()) {
-          ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
-          link.target().getCDAttributesList().add(cdAttribute);
-          new Link<>(terminal, cdAttribute, link);
-        }
-      }
-      for (ASTTokenTerminal terminal : ASTNodes.getSuccessors(link.source(),
-              ASTTokenTerminal.class)) {
-        if (terminal.isPresentUsageName()) {
-          ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
-          link.target().getCDAttributesList().add(cdAttribute);
-          new Link<>(terminal, cdAttribute, link);
-        }
-      }
+            ASTCDClass.class)) {
+      this.link = link;
+      link.source().accept(getRealThis());
     }
     return rootLink;
   }
-  
+
+  @Override
+  public void visit(ASTTerminal terminal) {
+    if (terminal.isPresentUsageName()) {
+      ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
+      link.target().getCDAttributesList().add(cdAttribute);
+      new Link<>(terminal, cdAttribute, link);
+    }
+  }
+
+  @Override
+  public void visit(ASTKeyTerminal terminal) {
+    if (terminal.isPresentUsageName()) {
+      ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
+      link.target().getCDAttributesList().add(cdAttribute);
+      new Link<>(terminal, cdAttribute, link);
+    }
+  }
+
+  @Override
+  public void visit(ASTTokenTerminal terminal) {
+    if (terminal.isPresentUsageName()) {
+      ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
+      link.target().getCDAttributesList().add(cdAttribute);
+      new Link<>(terminal, cdAttribute, link);
+    }
+  }
 }

@@ -4,7 +4,6 @@ package de.monticore.grammar.transformation;
 
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
-import de.monticore.utils.ASTNodes;
 import de.monticore.utils.ASTTraverser;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
@@ -76,14 +75,12 @@ public class GrammarTransformer {
   }
 
   private static void transformAttributesInAST(ASTASTRule astRule) {
-    ASTNodes
-        .getSuccessors(astRule, ASTAdditionalAttribute.class)
-        .forEach(
+    astRule.getAdditionalAttributesList().forEach(
             attributeInAST -> {
               if (!attributeInAST.isPresentName()) {
                 String simpleName = simpleName(attributeInAST.getMCType());
                 String typeName = simpleName.startsWith(AST_PREFIX) ?
-                    simpleName.replaceFirst(AST_PREFIX, "") : simpleName;
+                        simpleName.replaceFirst(AST_PREFIX, "") : simpleName;
                 attributeInAST.setName(StringTransformations.uncapitalize(typeName));
                 Log.debug("Change the name of ast-rule " + astRule.getType()
                                 + " list-attribute: " + attributeInAST.getMCType(),
@@ -101,7 +98,7 @@ public class GrammarTransformer {
     if (nonTerminalSep.isPresentUsageName()) {
       name = nonTerminalSep.getUsageName() + ":";
     }
-    String referencedSymbol = nonTerminalSep.isPresentReferencedSymbol()?"@"+nonTerminalSep.getReferencedSymbol():"";
+    String referencedSymbol = nonTerminalSep.isPresentReferencedSymbol() ? "@" + nonTerminalSep.getReferencedSymbol() : "";
     String plusKeywords = (nonTerminalSep.isPlusKeywords()) ? "&" : "";
     String iteration = (nonTerminalSep.getIteration() == ASTConstantsGrammar.STAR) ? "?" : "";
 
