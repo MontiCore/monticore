@@ -2,8 +2,8 @@
 
 package de.monticore;
 
-grammar TestCompleteness extends de.monticore.Completeness {
+grammar TestCompleteness extends de.monticore.Completeness, de.monticore.MCBasics {
 
-  CompletenessList = "["  (Completeness | ",")* "]" ;
+  CompletenessList  = "["  (Completeness | ",")* "]" ;
 
 }

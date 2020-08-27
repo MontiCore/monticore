@@ -18,13 +18,13 @@ public class NoKeywordRuleTest extends GeneratorIntegrationsTest {
   @Test
   public void test() throws IOException {
     NoKeywordRuleParser parser = new NoKeywordRuleParser();
-    parser.parse_StringA("bla1 Foo");
+    parser.parse_StringA("bla1 bla1");
     assertFalse(parser.hasErrors());
-    parser.parse_StringA("bla2 Foo");
+    parser.parse_StringA("bla2 bla1");
     assertFalse(parser.hasErrors());
-    parser.parse_StringA("bla3 Foo");
+    parser.parse_StringA("bla3 bla1");
     assertTrue(parser.hasErrors());
-    Optional<ASTB> ast = parser.parse_StringB("bla1 Foo");
+    Optional<ASTB> ast = parser.parse_StringB("bla1 bla1");
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
     assertEquals("bla1", ast.get().getBla());
