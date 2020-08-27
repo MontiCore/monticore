@@ -44,7 +44,7 @@ public class MultiplicityTranslation implements
       Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink) {
 
     Map<ASTCDAttribute, Multiplicity> cdAttributesToMaxMultiplicities =
-        mapCDAttributesToMaxMultiplicities(rootLink.source(), rootLink.getLinks(ASTNode.class, ASTCDAttribute.class));
+        mapCDAttributesToMaxMultiplicities(rootLink.getLinks(ASTNode.class, ASTCDAttribute.class));
 
     for (Map.Entry<ASTCDAttribute, Multiplicity> entry : cdAttributesToMaxMultiplicities.entrySet()) {
       ASTCDAttribute cdAttribute = entry.getKey();
@@ -59,13 +59,13 @@ public class MultiplicityTranslation implements
    * Groups all the links with identical targets and maps them to their maximum Multiplicities
    */
   private Map<ASTCDAttribute, Multiplicity> mapCDAttributesToMaxMultiplicities(
-      ASTMCGrammar grammar, Set<Link<ASTNode, ASTCDAttribute>> cdAttributeLinks) {
+          Set<Link<ASTNode, ASTCDAttribute>> cdAttributeLinks) {
     Map<ASTCDAttribute, List<Link<ASTNode, ASTCDAttribute>>> cdAttributesToLinks =
         cdAttributeLinks.stream().collect(Collectors.groupingBy(Link::target));
 
     return Maps.transformValues(cdAttributesToLinks,
         linkList -> linkList.stream()
-            .map(link -> determineMultiplicity(grammar, link.source()))
+            .map(link -> determineMultiplicity(link.source()))
             .reduce(BinaryOperator.maxBy(Multiplicity::compareTo))
             .get());
   }

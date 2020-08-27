@@ -412,11 +412,11 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
                 .filter(a -> a.getName().equals(compName)).findAny();
         Multiplicity multiplicity = STANDARD;
         if (attribute.isPresent()) {
-          multiplicity = determineMultiplicity(astGrammar, attribute.get().getAstNode());
+          multiplicity = determineMultiplicity(attribute.get().getAstNode());
         } else {
           for (RuleComponentSymbol component : prodSymbol.getSpannedScope().getRuleComponentSymbols().get(compName)) {
             if (component.isIsNonterminal()) {
-              Multiplicity mult = determineMultiplicity(astGrammar, component.getAstNode());
+              Multiplicity mult = determineMultiplicity(component.getAstNode());
               multiplicity = max(Lists.newArrayList(mult, multiplicity));
             }
           }

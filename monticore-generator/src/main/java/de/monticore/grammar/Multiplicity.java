@@ -5,6 +5,9 @@ package de.monticore.grammar;
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.grammar._ast.*;
+import de.monticore.grammar.grammar._symboltable.IGrammarScope;
+import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
+import de.monticore.symboltable.IGlobalScope;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +40,7 @@ public enum Multiplicity {
    */
   LIST;
 
-  public static Multiplicity determineMultiplicity(ASTMCGrammar rootNode, ASTAdditionalAttribute attributeInAST) {
+  public static Multiplicity determineMultiplicity(ASTAdditionalAttribute attributeInAST) {
     if (!attributeInAST.isPresentCard()) {
       return STANDARD;
     }
@@ -64,11 +67,10 @@ public enum Multiplicity {
   /**
    * Performs the multiplicity calculation for inherited attributes.
    *
-   * @param grammar The grammar symbol of the ast node.
    * @param astNode The ast node.
    * @return The multiplicity of the ast in the defining grammar.
    */
-  public static Multiplicity determineMultiplicity(ASTMCGrammar grammar, ASTRuleComponent astNode) {
+  public static Multiplicity determineMultiplicity(ASTRuleComponent astNode) {
     // multiplicity by inheritance is only relevant for nonterminals and can
     // cause errors otherwise; cast rootNode to ASTMCGrammar for further use
     // switch to default behavior without inheritance otherwise
@@ -76,20 +78,27 @@ public enum Multiplicity {
       // constant groups are always standard iteration
       return STANDARD;
     }
-    return multiplicityOfASTNode(grammar, astNode);
+    IGrammarScope scope = astNode.getEnclosingScope();
+    while (!(scope instanceof IGlobalScope) ) {
+      if (scope.isPresentSpanningSymbol() && scope.getSpanningSymbol() instanceof MCGrammarSymbol) {
+        return  determineMultiplicity(((MCGrammarSymbol) scope.getSpanningSymbol()).getAstNode(), astNode);
+      }
+      scope = scope.getEnclosingScope();
+    }
+    return Multiplicity.STANDARD;
 
   }
 
-  public static Multiplicity determineMultiplicity(ASTMCGrammar grammar, ASTNode astNode) {
-     if (astNode instanceof ASTRuleComponent) {
-       return determineMultiplicity(grammar, (ASTRuleComponent) astNode);
-     } else if (astNode instanceof ASTAdditionalAttribute) {
-       return determineMultiplicity(grammar, (ASTAdditionalAttribute) astNode);
-     }
-return null;
+  public static Multiplicity determineMultiplicity(ASTNode astNode) {
+    if (astNode instanceof ASTRuleComponent) {
+      return determineMultiplicity((ASTRuleComponent) astNode);
+    } else if (astNode instanceof ASTAdditionalAttribute) {
+      return determineMultiplicity((ASTAdditionalAttribute) astNode);
+    }
+    return null;
   }
 
-  public static Multiplicity multiplicityOfASTNode(ASTNode rootNode, ASTNode astNode) {
+  public static Multiplicity determineMultiplicity(ASTMCGrammar rootNode, ASTRuleComponent astNode) {
     Multiplicity byAlternative = multiplicityByAlternative(rootNode, astNode);
     Multiplicity byDuplicates = multiplicityByDuplicates(rootNode, astNode);
     Multiplicity byIteration = multiplicityByIteration(rootNode, astNode);
@@ -97,7 +106,7 @@ return null;
     return max(newArrayList);
   }
 
-  public static Multiplicity multiplicityByAlternative(ASTNode rootNode, ASTNode astNode) {
+  private static Multiplicity multiplicityByAlternative(ASTMCGrammar rootNode, ASTRuleComponent astNode) {
     List<ASTNode> intermediates = new MultiplicityVisitor().getComponents(rootNode, astNode);
     boolean containedInAlternative = false;
     for (ASTNode intermediate : intermediates) {
@@ -110,7 +119,7 @@ return null;
     return containedInAlternative ? OPTIONAL : STANDARD;
   }
 
-  public static Multiplicity multiplicityByDuplicates(ASTNode rootNode, ASTNode astNode) {
+  private static Multiplicity multiplicityByDuplicates(ASTMCGrammar rootNode, ASTRuleComponent astNode) {
     boolean hasDuplicate = getAllNodesInRelatedRuleComponents(rootNode, astNode)
         .anyMatch(sibling -> areDuplicates(rootNode, astNode, sibling));
     if (hasDuplicate) {
@@ -120,7 +129,7 @@ return null;
     }
   }
 
-  private static boolean areDuplicates(ASTNode rootNode, ASTNode firstNode, ASTNode secondNode) {
+  private static boolean areDuplicates(ASTMCGrammar rootNode, ASTRuleComponent firstNode, ASTRuleComponent secondNode) {
     Optional<String> firstName = getName(firstNode);
     Optional<String> firstUsageName = getUsageName(rootNode, firstNode);
     Optional<String> secondName = getName(secondNode);
@@ -132,8 +141,8 @@ return null;
     return (bothUsageNamesAbsent && namesMatch) || (!bothUsageNamesAbsent && usageNamesMatch);
   }
 
-  private static Stream<ASTNode> getAllNodesInRelatedRuleComponents(ASTNode rootNode,
-                                                                    ASTNode astNode) {
+  private static Stream<ASTRuleComponent> getAllNodesInRelatedRuleComponents(ASTMCGrammar rootNode,
+                                                                    ASTRuleComponent astNode) {
     Set<ASTRuleComponent> ancestorRuleComponents = new MultiplicityVisitor().getComponents(rootNode, astNode).stream()
         .filter(ASTRuleComponent.class::isInstance)
         .map(ASTRuleComponent.class::cast)
@@ -147,7 +156,7 @@ return null;
         .flatMap(ruleComponent -> TransformationHelper.getAllComponents(ruleComponent).stream());
   }
 
-  public static Multiplicity multiplicityByIteration(ASTNode rootNode, ASTNode astNode) {
+  public static Multiplicity multiplicityByIteration(ASTMCGrammar rootNode, ASTRuleComponent astNode) {
     Multiplicity multiplicity = STANDARD;
     for (ASTNode intermediate : new MultiplicityVisitor().getComponents(rootNode, astNode)) {
       int iteration = getIterationInt(intermediate);
