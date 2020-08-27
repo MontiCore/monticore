@@ -644,6 +644,19 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     return symbolProds;
   }
 
+  public List<ASTCDType> getSymbolDefiningSuperProds(CDDefinitionSymbol symbol) {
+    List<ASTCDType> symbolProds = new ArrayList<>();
+    for (CDDefinitionSymbol cdDefinitionSymbol : getSuperCDsTransitive(symbol)) {
+      for (CDTypeSymbol type : cdDefinitionSymbol.getTypes()) {
+        if (type.isPresentAstNode() && type.getAstNode().isPresentModifier()
+            && hasSymbolStereotype(type.getAstNode().getModifier())) {
+          symbolProds.add(type.getAstNode());
+        }
+      }
+    }
+    return symbolProds;
+  }
+
   public List<ASTCDType> getSymbolDefiningProds(List<? extends ASTCDType> astcdClasses) {
     return astcdClasses.stream()
         .filter(c -> c.isPresentModifier())
