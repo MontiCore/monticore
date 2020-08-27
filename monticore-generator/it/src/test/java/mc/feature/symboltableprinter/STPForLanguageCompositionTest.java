@@ -43,11 +43,9 @@ public class STPForLanguageCompositionTest {
     //serialize symbols and assert that the serialized String contains all the symbols
     SymbolTablePrinterSubScopeDeSer deSer = new SymbolTablePrinterSubScopeDeSer();
     String serialized =  deSer.serialize(scope);
-    assertTrue(serialized.contains("cSymbols"));
+    assertTrue(serialized.contains("symbols"));
     assertTrue(serialized.contains("\"name\":\"alphabet.c\""));
-    assertTrue(serialized.contains("bSymbols"));
     assertTrue(serialized.contains("\"name\":\"alphabet.b\""));
-    assertTrue(serialized.contains("aSymbols"));
     assertTrue(serialized.contains("\"name\":\"alphabet.a\""));
   }
 
