@@ -9,6 +9,9 @@
 	<#return tc.include(templ)>
 </#function>
 
+<#function include2 templ ast>
+        <#return tc.include(templ,ast)>
+</#function>
 
 <#function includeArgs templ param...>
 	<#return tc.includeArgs(templ, param)>
@@ -48,7 +51,7 @@
 	<#return glex.defineGlobalVar(name, value)>
 </#function>
 
-<#function defineGlobalVar name>
+<#function defineGlobalVar1 name>
 	<#return glex.defineGlobalVar(name)>
 </#function>
 
