@@ -51,10 +51,6 @@
 	<#return glex.defineGlobalVar(name, value)>
 </#function>
 
-<#function defineGlobalVar1 name>
-	<#return glex.defineGlobalVar(name)>
-</#function>
-
 <#function defineGlobalVars name...>
 	<#return glex.defineGlobalVars(name)>
 </#function>
