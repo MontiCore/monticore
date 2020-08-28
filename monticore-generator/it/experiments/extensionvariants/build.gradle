@@ -3,7 +3,6 @@ description = 'Experiments: extensionvariants'
 
 sourceSets {
   main.java {
-    exclude 'eproblemoptinheritance/**'
     exclude 'eproblemstarinheritance/**'
   }
 }
