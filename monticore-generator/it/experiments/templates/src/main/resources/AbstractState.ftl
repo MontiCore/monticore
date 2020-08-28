@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("stimuli",
-               "className")}
+${signature("stimuli",
+            "className")}
 
 <#-- plus: String "modelName" is globally defined -->
 
@@ -20,6 +20,7 @@ public abstract class ${className} {
   void handle${stimulusName?cap_first}(${modelName} sc) {
     // here comes handling of incompleteness: 
     // we only ignore
+
   }
 </#list>
 }
