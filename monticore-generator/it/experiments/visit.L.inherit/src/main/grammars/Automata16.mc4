@@ -3,6 +3,7 @@ grammar Automata16 extends Automata15 {
 
   start Automaton;
 
+  @Override
   Transition =
     from:Name "-" input:Name ("/" output:Name)? ">" to:Name ";";
 

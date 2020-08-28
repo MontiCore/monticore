@@ -4,12 +4,14 @@ grammar BX2 extends A {
   // M changed; Q changed; M? reused in Q
 
   // Orig:  M = Decimal; 
+  @Override
   M = Integer;
 
   // direct inheritance doesn't work. We have to rename the attribute
   // it is therefore CS-conservative, but not AST-conservative
   // (but would not be necessary here at all)
   // Orig:  Q = "optional" M?;
+  @Override
   Q = "optional" mm:M?;
 
 }

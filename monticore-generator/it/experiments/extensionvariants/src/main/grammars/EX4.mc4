@@ -2,11 +2,13 @@
 grammar EX4 extends D {
 
   // Orig:  S = "text" a:S* b:S? c:S;
+  @Override
   S = "bla";
 
   // we redefine S, and then T: works
 
   // Orig: T = "text" a:S* b:S? c:S;
+  @Override
   T = "text" b:S*;
 
 }

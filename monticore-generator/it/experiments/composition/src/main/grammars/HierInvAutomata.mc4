@@ -5,6 +5,7 @@ grammar HierInvAutomata extends Automata3 {
   start Automaton; 
 
   // redefine a nonterminal
+  @Override
   State =  "state" Name
     Invariant
     ( "<<" ["initial"] ">>" | "<<" ["final"] ">>" )*
