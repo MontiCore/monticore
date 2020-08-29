@@ -92,6 +92,10 @@
 	<#return glex.defineHookPointWithDefault(tc, name, default)>
 </#function>
 
+<#function defineHookPointWithDefault3 name ast default>
+	<#return glex.defineHookPointWithDefault(tc, name, ast, default)>
+</#function>
+
 
 <#function existsHookPoint name>
 	<#return glex.existsHookPoint(name)>
