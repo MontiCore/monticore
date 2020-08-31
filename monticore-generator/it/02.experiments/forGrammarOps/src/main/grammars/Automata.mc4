@@ -2,33 +2,33 @@
 
 grammar Automata extends de.monticore.MCBasics {
 
-symbol scope Automaton =
-  "automaton" Name "{" (State | Transition)* "}" ;
+  symbol scope Automaton =
+    "automaton" Name "{" (State | Transition)* "}" ;
 
-// testing "key"
-symbol State =
-  key("state") Name
-  (("<<" ["initial"] ">>" ) | ("<<" ["final"] ">>" ))*
-  ( ("{" (State | Transition)* "}") | ";") ;
+  // testing "key"
+  symbol State =
+    key("state") Name
+    (("<<" ["initial"] ">>" ) | ("<<" ["final"] ">>" ))*
+    ( ("{" (State | Transition)* "}") | ";") ;
+  
+  // testing next and cmpToken
+  Transition =
+    {next("42") || cmpToken(1,"41")}? Digits
+    from:Name "-" input:Name ">" to:Name ";" ;
+  
+  // testing splittoken:
+  splittoken "<<";
+  
+  // testing nokeyword:
+  nokeyword "initial";
 
-// testing next and cmpToken
-Transition =
-  {next("42") || cmpToken(1,"41")}? Digits
-  from:Name "-" input:Name ">" to:Name ";" ;
-
-// testing splittoken:
-splittoken "<<";
-
-// testing nokeyword:
-nokeyword "initial";
-
-/**
- * Natural numbers (here used as priority)
- */
-  token Digits
-    = Digit+;
-
-  fragment token Digit
-    = '0'..'9';
+  /**
+   * Natural numbers (here used as priority)
+   */
+    token Digits
+      = Digit+;
+  
+    fragment token Digit
+      = '0'..'9';
 
 }

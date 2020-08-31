@@ -62,7 +62,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
     String scopeInterfaceName = symbolTableService.getScopeInterfaceFullName();
     String artifactScopeFullName = symbolTableService.getArtifactScopeFullName();
     String artifactScopeInterfaceFullName = symbolTableService.getArtifactScopeInterfaceFullName();
-    String globalScopeFullName = symbolTableService.getGlobalScopeInterfaceFullName();
+    String globalScopeInterfaceFullName = symbolTableService.getGlobalScopeInterfaceFullName();
     String scopeClassFullName = symbolTableService.getScopeInterfaceFullName();
     String simpleName = symbolTableService.getCDName();
     String symTabMillFullName = symbolTableService.getMillFullName();
@@ -103,7 +103,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
         .addCDAttributes(symbolTablePrinter)
         .addAllCDMethods(methodDecorator.decorate(fileExtension))
         .addAllCDMethods(createLoadMethods(artifactScopeInterfaceFullName))
-        .addCDMethods(createLoadSymbolsIntoScopeMethod(globalScopeFullName))
+        .addCDMethods(createLoadSymbolsIntoScopeMethod(globalScopeInterfaceFullName))
         .addCDMethods(createStoreMethod(scopeDeSerName, artifactScopeInterfaceFullName))
         .addCDMethods(createDeserializeStringMethod(artifactScopeFullName, artifactScopeInterfaceFullName))
         .addCDMethods(createDeserializeScopeMethod(scopeClassFullName, simpleName, symTabMillFullName, scopeJsonParam, scopeRuleAttributeList))
@@ -184,16 +184,16 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
     return symbolDeSerAttributes;
   }
 
-  protected ASTCDMethod createLoadSymbolsIntoScopeMethod(String globalScopeName) {
+  protected ASTCDMethod createLoadSymbolsIntoScopeMethod(String globalScopeInterfaceName) {
     ASTCDParameter qualNameParam = getCDParameterFacade()
         .createParameter(getMCTypeFacade().createStringType(), "qualifiedModelName");
-    ASTCDParameter globalScopeParam = getCDParameterFacade()
-        .createParameter(getMCTypeFacade().createQualifiedType(globalScopeName), "enclosingScope");
+    ASTCDParameter globalScopeInterfaceParam = getCDParameterFacade()
+        .createParameter(getMCTypeFacade().createQualifiedType(globalScopeInterfaceName), "enclosingScope");
     ASTCDParameter mpParam = getCDParameterFacade()
         .createParameter(getMCTypeFacade().createQualifiedType("de.monticore.io.paths.ModelPath"),
             "modelPath");
     ASTCDMethod method = getCDMethodFacade()
-        .createMethod(PUBLIC, "loadSymbolsIntoScope", qualNameParam, globalScopeParam, mpParam);
+        .createMethod(PUBLIC,  getMCTypeFacade().createBooleanType(), "loadSymbolsIntoScope", qualNameParam, globalScopeInterfaceParam, mpParam);
     this.replaceTemplate(EMPTY_BODY, method,
         new TemplateHookPoint("_symboltable.serialization.scopeDeSer.LoadSymbolsIntoScope"));
     return method;

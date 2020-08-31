@@ -4,15 +4,19 @@ grammar B10 extends A {
   // M is adapted and reused, but its cardinality adapted
 
   // Orig:  M = Decimal; 
+  @Override
   M = "sic" Integer New* N P Q "end";
 
   // Orig:  N = "one" M;
+  @Override
   N = "ein" M* "ende";
 
   // Orig:  P = "some" M*;
+  @Override
   P = "einige" M "ende";
 
   // Orig:  Q = "optional" M?;
+  @Override
   Q = "opti" M*;
 
   New = Integer;

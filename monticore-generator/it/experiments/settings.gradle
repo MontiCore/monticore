@@ -41,5 +41,6 @@ include(':visit_L_inherit')
 project(':S01_intro').projectDir = file('S01.intro')
 project(':visit_L_inherit').projectDir = file('visit.L.inherit')
 include 'templates'
+include 'hooks'
 include 'textoutput'
 

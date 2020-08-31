@@ -13,14 +13,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+import java.util.List;
+
 public interface IModelLoader<T extends ASTNode, S extends IScope> {
 
-  List<T> loadModelsIntoScope(String qualifiedModelName, ModelPath modelPath, S enclosingScope);
-
-  default ModelCoordinate resolveFile (String qualifiedModelName, String modelFileExtension, ModelPath modelPath)  {
-    String fileName = Names.getSimpleName(qualifiedModelName) + "." + modelFileExtension;
-    Path qualifiedPath = Paths.get(Names.getPathFromQualifiedName(qualifiedModelName)).resolve(fileName);
-    ModelCoordinate qualifiedModel = ModelCoordinates.createQualifiedCoordinate(qualifiedPath);
-    return modelPath.resolveModel(qualifiedModel);
-  }
+  List<T> loadModelsIntoScope(String qualifiedModelname, ModelPath modelPath, S enclosingScope);
 }

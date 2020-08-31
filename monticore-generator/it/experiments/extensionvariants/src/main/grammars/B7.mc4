@@ -5,6 +5,7 @@ grammar B7 extends A {
   // this works.
 
   // Orig:  R = "several" M "," N* "," P? "," (Q|R) ".";
+  @Override
   R = "several" R* ".";
   
   New = "...";

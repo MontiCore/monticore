@@ -4,12 +4,15 @@ grammar B3 extends A {
   // M is unchanged
 
   // Orig:  N = "one" M;
+  @Override
   N = "ein" M "ende";
 
   // Orig:  P = "some" M*;
+  @Override
   P = "einige" M* "ende";
 
   // Orig:  Q = "optional" M?;
+  @Override
   Q = "opti" M?;
 
   New = Integer;

@@ -88,7 +88,7 @@ public class ModelLoaderDecoratorTest extends DecoratorTestCase {
   @Test
   public void testSuperInterfaces() {
     assertDeepEquals("de.monticore.modelloader.IModelLoader<de.monticore.codegen.ast.automaton._ast.ASTAutomaton" +
-        ",de.monticore.codegen.ast.automaton._symboltable.AutomatonGlobalScope>", modelLoaderClass.getInterface(0));
+        ",de.monticore.codegen.ast.automaton._symboltable.IAutomatonGlobalScope>", modelLoaderClass.getInterface(0));
   }
 
   @Test
@@ -107,20 +107,18 @@ public class ModelLoaderDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, cdConstructor.getModifier());
     assertEquals("AutomatonModelLoader", cdConstructor.getName());
 
-    assertEquals(4, cdConstructor.sizeCDParameters());
+    assertEquals(3, cdConstructor.sizeCDParameters());
     assertDeepEquals("de.monticore.modelloader.AstProvider<de.monticore.codegen.ast.automaton._ast.ASTAutomaton>", cdConstructor.getCDParameters(0).getMCType());
     assertEquals("astProvider", cdConstructor.getCDParameters(0).getName());
     assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.AutomatonSymbolTableCreatorDelegator", cdConstructor.getCDParameters(1).getMCType());
     assertEquals("symbolTableCreator", cdConstructor.getCDParameters(1).getName());
     assertDeepEquals("String", cdConstructor.getCDParameters(2).getMCType());
     assertEquals("modelFileExtension", cdConstructor.getCDParameters(2).getName());
-    assertDeepEquals("String", cdConstructor.getCDParameters(3).getMCType());
-    assertEquals("symbolFileExtension", cdConstructor.getCDParameters(3).getName());
   }
 
   @Test
   public void testAttributeSize() {
-    assertEquals(4, modelLoaderClass.sizeCDAttributes());
+    assertEquals(3, modelLoaderClass.sizeCDAttributes());
   }
 
   @Test
@@ -146,7 +144,7 @@ public class ModelLoaderDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(7, modelLoaderClass.getCDMethodsList().size());
+    assertEquals(5, modelLoaderClass.getCDMethodsList().size());
   }
 
   @Test
@@ -163,7 +161,7 @@ public class ModelLoaderDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(String.class, method.getCDParameters(1).getMCType());
     assertEquals("modelName", method.getCDParameters(1).getName());
 
-    assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.AutomatonGlobalScope", method.getCDParameters(2).getMCType());
+    assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.IAutomatonGlobalScope", method.getCDParameters(2).getMCType());
     assertEquals("enclosingScope", method.getCDParameters(2).getName());
   }
 
@@ -183,7 +181,7 @@ public class ModelLoaderDecoratorTest extends DecoratorTestCase {
     assertDeepEquals("de.monticore.io.paths.ModelPath", method.getCDParameters(1).getMCType());
     assertEquals("modelPath", method.getCDParameters(1).getName());
 
-    assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.AutomatonGlobalScope", method.getCDParameters(2).getMCType());
+    assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.IAutomatonGlobalScope", method.getCDParameters(2).getMCType());
     assertEquals("enclosingScope", method.getCDParameters(2).getName());
   }
 
@@ -192,22 +190,6 @@ public class ModelLoaderDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = getMethodBy("resolve", modelLoaderClass);
 
     assertDeepEquals(PRIVATE, method.getModifier());
-    assertDeepEquals("de.monticore.io.paths.ModelCoordinate",
-        method.getMCReturnType().getMCType());
-
-    assertEquals(2, method.sizeCDParameters());
-    assertDeepEquals(String.class, method.getCDParameters(0).getMCType());
-    assertEquals("qualifiedModelName", method.getCDParameters(0).getName());
-
-    assertDeepEquals("de.monticore.io.paths.ModelPath", method.getCDParameters(1).getMCType());
-    assertEquals("modelPath", method.getCDParameters(1).getName());
-  }
-
-  @Test
-  public void testResolveSymbolMethod() {
-    ASTCDMethod method = getMethodBy("resolveSymbol", modelLoaderClass);
-
-    assertDeepEquals(PROTECTED, method.getModifier());
     assertDeepEquals("de.monticore.io.paths.ModelCoordinate",
         method.getMCReturnType().getMCType());
 

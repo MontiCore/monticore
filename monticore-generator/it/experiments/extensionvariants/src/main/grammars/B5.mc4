@@ -4,15 +4,19 @@ grammar B5 extends A {
   // M is changed, but only used in new productions
 
   // Orig:  M = Decimal; 
+  @Override
   M = Integer;
 
   // Orig:  N = "one" M;
+  @Override
   N = "ein" New "ende";
 
   // Orig:  P = "some" M*;
+  @Override
   P = "einige" New* "ende";
 
   // Orig:  Q = "optional" M?;
+  @Override
   Q = "opti" New?;
 
   New = "here_M_can_be_used" M ":" M* ":" M?;

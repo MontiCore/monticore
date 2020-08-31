@@ -3,6 +3,7 @@ grammar IAutomata extends IAutomataComp {
   start Automaton;
 
   // use this production as Invariant in Automata
+  @Override
   Invariant = LogicExpr | ["-"] ;
 
   interface LogicExpr;
