@@ -209,30 +209,38 @@ public class SymTypeExpressionDeSer {
     }
 
     // all other serialized SymTypeExrpressions are json objects with a kind
-    if (JsonDeSers.isCorrectDeSerForKind(symTypeArrayDeSer.SERIALIZED_KIND, serialized)) {
-      return symTypeArrayDeSer.deserialize(serialized, enclosingScope);
+    if (serialized.isJsonObject()) {
+      JsonObject o = serialized.getAsJsonObject();
+      if (isCorrectDeSerForKind(symTypeArrayDeSer.SERIALIZED_KIND, o)) {
+        return symTypeArrayDeSer.deserialize(o, enclosingScope);
+      }
+      else if (isCorrectDeSerForKind(symTypeConstantDeSer.SERIALIZED_KIND, o)) {
+        return symTypeConstantDeSer.deserialize(o);
+      }
+      else if (isCorrectDeSerForKind(symTypeOfGenericsDeSer.SERIALIZED_KIND, o)) {
+        return symTypeOfGenericsDeSer.deserialize(o, enclosingScope);
+      }
+      else if (isCorrectDeSerForKind(symTypeOfObjectDeSer.SERIALIZED_KIND, o)) {
+        return symTypeOfObjectDeSer.deserialize(o, enclosingScope);
+      }
+      else if (isCorrectDeSerForKind(symTypeVariableDeSer.SERIALIZED_KIND, o)) {
+        return symTypeVariableDeSer.deserialize(o, enclosingScope);
+      }
+      else if (isCorrectDeSerForKind(symTypeOfWildcardDeSer.SERIALIZED_KIND, o)) {
+        return symTypeOfWildcardDeSer.deserialize(o, enclosingScope);
+      }
     }
-    else if (JsonDeSers.isCorrectDeSerForKind(symTypeConstantDeSer.SERIALIZED_KIND, serialized)) {
-      return symTypeConstantDeSer.deserialize(serialized);
+    Log.error(
+        "0x823FE Internal error: Loading ill-structured SymTab: Unknown serialization of SymTypeExpression: "
+            + serialized);
+    return null;
+  }
+
+  protected boolean isCorrectDeSerForKind(String deSerSymbolKind, JsonObject serializedElement) {
+    if (!serializedElement.hasMember(JsonDeSers.KIND)) {
+      return false;
     }
-    else if (JsonDeSers.isCorrectDeSerForKind(symTypeOfGenericsDeSer.SERIALIZED_KIND, serialized)) {
-      return symTypeOfGenericsDeSer.deserialize(serialized, enclosingScope);
-    }
-    else if (JsonDeSers.isCorrectDeSerForKind(symTypeOfObjectDeSer.SERIALIZED_KIND, serialized)) {
-      return symTypeOfObjectDeSer.deserialize(serialized, enclosingScope);
-    }
-    else if (JsonDeSers.isCorrectDeSerForKind(symTypeVariableDeSer.SERIALIZED_KIND, serialized)) {
-      return symTypeVariableDeSer.deserialize(serialized, enclosingScope);
-    }
-    else if (JsonDeSers.isCorrectDeSerForKind(symTypeOfWildcardDeSer.SERIALIZED_KIND, serialized)) {
-      return symTypeOfWildcardDeSer.deserialize(serialized, enclosingScope);
-    }
-    else {
-      Log.error(
-          "0x823FE Internal error: Loading ill-structured SymTab: Unknown serialization of SymTypeExpression: "
-              + serialized);
-      return null;
-    }
+    return serializedElement.getStringMember(JsonDeSers.KIND).equals(deSerSymbolKind);
   }
 
 }

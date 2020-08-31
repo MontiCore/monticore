@@ -139,6 +139,7 @@ public class JsonPrinter {
    * Prints the beginning of a collection in Json notation as member or the current object.
    */
   public void beginArray(String kind) {
+    printBufferedBeginArray();
     StringBuilder sb = new StringBuilder();
     if (!isFirstAttribute) {
       sb.append(",");
@@ -170,6 +171,7 @@ public class JsonPrinter {
    * present, it prints the collection as attribute of the given kind.
    */
   public void beginArray() {
+    printBufferedBeginArray();
     StringBuilder sb = new StringBuilder();
     if (!isFirstAttribute) {
       sb.append(",");
@@ -201,6 +203,10 @@ public class JsonPrinter {
       print("]");
       isFirstAttribute = false; // This is to handle empty lists
       unindent();
+    }
+    else if(!serializeEmptyLists){
+      //restore ifFirstAttribute
+      isFirstAttribute = !arrayBeginBuffer.startsWith(",");
     }
     nestedArrayDepth--;
   }
@@ -338,7 +344,8 @@ public class JsonPrinter {
   /**
    * Prints a Json member with the given kind as key and the given String value, which is a basic
    * data type in Json. NOTE: if the parameter value is a serialized String, use the
-   * value(JsonPrinter) method instead! Otherwise escaped symbols are double escaped!
+   * member(String kind, JsonPrinter value) method or the  memberJson(String kind, String value)
+   * method instead! Otherwise escaped symbols are double escaped!
    *
    * @param kind  The key of the Json attribute
    * @param value The boolean value of the Json attribute
@@ -347,6 +354,13 @@ public class JsonPrinter {
     internalMember(kind, "\"" + escapeSpecialChars(value) + "\"");
   }
 
+  /**
+   *    Prints a Json member with the given kind as key and the given String value that is encoded
+   *    in JSON. NOTE: if the parameter value is NOT a serialized String, use the
+   *    member(String kind, String value) method instead! Otherwise escaped symbols are not escaped!
+   * @param kind
+   * @param value
+   */
   public void memberJson(String kind, String value) {
     internalMember(kind, value);
   }

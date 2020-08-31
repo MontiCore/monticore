@@ -58,10 +58,10 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
 
   @Before
   public void setUp() {
-    // LogStub.init() prevents a lot of warnings like 0xA1042 Scope "equals" has already an enclosing scope
     // to be issued (the warnings are not checked)
     LogStub.init();         // replace log by a sideffect free variant
-    // LogStub.initPlusLog();  // for manual testing purpose only
+//     LogStub.initPlusLog();  // for manual testing purpose only
+//    Log.enableFailQuick(false);
     this.glex = new GlobalExtensionManagement();
     IterablePath targetPath = Mockito.mock(IterablePath.class);
 
@@ -78,7 +78,6 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
 
     SymbolTableService symbolTableService = new SymbolTableService(decoratedASTCompilationUnit);
     VisitorService visitorService = new VisitorService(decoratedASTCompilationUnit);
-    ParserService parserService = new ParserService(decoratedASTCompilationUnit);
     MethodDecorator methodDecorator = new MethodDecorator(glex, symbolTableService);
     AccessorDecorator accessorDecorator = new AccessorDecorator(glex, symbolTableService);
 
@@ -162,7 +161,7 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testClassCount() {
-    assertEquals(34, symTabCD.getCDDefinition().getCDClasssList().size());
+    assertEquals(40, symTabCD.getCDDefinition().getCDClasssList().size());
   }
 
   @Test
@@ -249,7 +248,7 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testClassCountWithHC() {
-    assertEquals(34, symTabCDWithHC.getCDDefinition().getCDClasssList().size());
+    assertEquals(40, symTabCDWithHC.getCDDefinition().getCDClasssList().size());
   }
 
   @Test
@@ -308,7 +307,7 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testClassCountComponent() {
-    assertEquals(22, symTabCDComponent.getCDDefinition().getCDClasssList().size());
+    assertEquals(28, symTabCDComponent.getCDDefinition().getCDClasssList().size());
   }
 
   @Test

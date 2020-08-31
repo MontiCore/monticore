@@ -1,11 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
-import de.monticore.symboltable.serialization.JsonDeSers;
+import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
-import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
 import de.se_rwth.commons.logging.Log;
 
 public class SymTypeOfWildcardDeSer {
@@ -18,18 +17,17 @@ public class SymTypeOfWildcardDeSer {
   }
 
   public SymTypeOfWildcard deserialize(String serialized, IOOSymbolsScope enclosingScope) {
-    return deserialize(JsonParser.parse(serialized), enclosingScope);
+    return deserialize(JsonParser.parseJsonObject(serialized), enclosingScope);
   }
 
-  public SymTypeOfWildcard deserialize(JsonElement serialized, IOOSymbolsScope enclosingScope) {
-    if (JsonDeSers.isCorrectDeSerForKind(SERIALIZED_KIND, serialized)) {
-      JsonObject o = serialized.getAsJsonObject();  //if it has a kind, it is an object
-      boolean isUpper = o.getBooleanMember("isUpper");
-      JsonElement boundString = o.getMember("bound");
-      if(boundString!=null){
+  public SymTypeOfWildcard deserialize(JsonObject serialized, IOOSymbolsScope enclosingScope) {
+    if (serialized.hasBooleanMember("isUpper")) {
+      boolean isUpper = serialized.getBooleanMember("isUpper");
+      JsonElement boundString = serialized.getMember("bound");
+      if (boundString != null) {
         SymTypeExpression bound = SymTypeExpressionDeSer.getInstance()
             .deserialize(boundString, enclosingScope);
-        return SymTypeExpressionFactory.createWildcard(isUpper,bound);
+        return SymTypeExpressionFactory.createWildcard(isUpper, bound);
       }
       return SymTypeExpressionFactory.createWildcard();
     }

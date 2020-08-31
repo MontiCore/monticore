@@ -139,6 +139,15 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
+  public void testPrintKindHierarchyMethod(){
+    ASTCDMethod method = getMethodBy("printKindHierarchy", symbolTablePrinterClass);
+    assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
+    assertEquals(0, method.sizeException());
+    assertEquals(0, method.sizeCDParameters());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+  }
+
+  @Test
   public void testSetJsonPrinterMethod(){
     ASTCDMethod method = getMethodBy("setJsonPrinter", symbolTablePrinterClass);
     assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
@@ -218,16 +227,14 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
   @Test
   public void testTraverseMethods(){
     List<ASTCDMethod> methods = getMethodsBy("traverse", symbolTablePrinterClass);
-    assertEquals(3, methods.size());
+    assertEquals(1, methods.size());
     for(ASTCDMethod method: methods){
       assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
       assertTrue(method.getMCReturnType().isPresentMCVoidType());
       assertEquals(1, method.sizeCDParameters());
       assertEquals("node", method.getCDParameters(0).getName());
     }
-    assertDeepEquals(I_AUTOMATON_SCOPE, methods.get(0).getCDParameters(0).getMCType());
-    assertDeepEquals(AUTOMATON_SYMBOL, methods.get(1).getCDParameters(0).getMCType());
-    assertDeepEquals(I_AUTOMATON_ARTIFACT_SCOPE, methods.get(2).getCDParameters(0).getMCType());
+    assertDeepEquals(AUTOMATON_SYMBOL, methods.get(0).getCDParameters(0).getMCType());
   }
 
   @Test

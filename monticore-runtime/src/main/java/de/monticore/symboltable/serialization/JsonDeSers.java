@@ -1,14 +1,17 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.symboltable.serialization;
 
-import de.monticore.symboltable.IScopeSpanningSymbol;
-import de.monticore.symboltable.ImportStatement;
+import com.google.common.collect.Lists;
+import de.monticore.symboltable.serialization.json.JsonArray;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Collection of (static) methods and constants that support using DeSers in combination with Json.
@@ -32,46 +35,47 @@ public class JsonDeSers {
 
   public static final String KIND = "kind";
 
+  public static final String KIND_HIERARCHY = "kindHierarchy";
+
+  public static final String SYMBOLS = "symbols";
+
   public static final String SPANNED_SCOPE = "spannedScope";
 
-  @Deprecated
-  public static final String SCOPE_SPANNING_SYMBOL = "spanningSymbol";
-
   /**
-   * This method deserializes a list of import statements in the passed Json object
-   * @deprecated This method will be removed soon. Instead, symbol table creators should
-   *  * qualify names pointing to symbols of foreign models with the respective import statements
-   *  * in the model.
-   * @param scope
+   * This method deserializes a stored map with kind hierarchies from the passed serialized scope.
+   *
+   * @param scopeJson
    * @return
    */
-  @Deprecated //will be removed soon and all names will be stored as qualified names
-  public static List<ImportStatement> deserializeImports(JsonObject scope) {
-    List<ImportStatement> result = new ArrayList<>();
-    if (scope.hasMember(IMPORTS)) {
-      for (JsonElement e : scope.getArrayMember(IMPORTS)) {
-        String i = e.getAsJsonString().getValue();
-        result.add(new ImportStatement(i, i.endsWith("*")));
+  public static Map<String, String> deserializeKindHierarchy(JsonObject scopeJson) {
+    Map<String, String> kindHierarchy = new HashMap<>();
+    if (scopeJson.hasArrayMember(KIND_HIERARCHY)) {
+      for (JsonElement e : scopeJson.getArrayMember(KIND_HIERARCHY)) {
+        JsonArray entry = e.getAsJsonArray();
+        if (2 == entry.size()) {
+          String kind = entry.get(0).getAsJsonString().getValue();
+          String superKind = entry.get(1).getAsJsonString().getValue();
+          kindHierarchy.put(kind, superKind);
+        }
+        else {
+          Log.error(
+              "0xA7434 An entry in the kind hierarchy map has to consist of a kind and a superkind. '"
+                  + entry + "' does not conform to this!");
+        }
       }
     }
-    return result;
+    return kindHierarchy;
   }
 
-  /**
-   * Serializes a scope spanning symbol in a form as used for the attribute "spanning symbol".
-   *
-   * @param spanningSymbol
-   * @return
-   */
-  @Deprecated
-  public static void serializeScopeSpanningSymbol(IScopeSpanningSymbol spanningSymbol,
-      JsonPrinter printer) {
-    if (null != spanningSymbol) {
-      printer.beginObject(SCOPE_SPANNING_SYMBOL);
-      printer.member(KIND, spanningSymbol.getClass().getName());
-      printer.member(NAME, spanningSymbol.getName());
-      printer.endObject();
+  public static void printKindHierarchyEntry(JsonPrinter printer, String kind, String superKind){
+    printer.array(Lists.newArrayList(kind, superKind), s -> "\""+s+"\"");
+  }
+
+  public static String getParentKind(String kind, Map<String, String> kindHierarchy) {
+    if (null != kind && kindHierarchy.containsKey(kind)) {
+      return kindHierarchy.get(kind);
     }
+    return null;
   }
 
   /**
