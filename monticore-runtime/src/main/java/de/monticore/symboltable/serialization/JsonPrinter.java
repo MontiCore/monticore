@@ -205,8 +205,9 @@ public class JsonPrinter {
       unindent();
     }
     else if(!serializeEmptyLists){
-      //restore ifFirstAttribute
+      //restore isFirstAttribute
       isFirstAttribute = !arrayBeginBuffer.startsWith(",");
+      arrayBeginBuffer = "";
     }
     nestedArrayDepth--;
   }
