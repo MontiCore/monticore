@@ -203,7 +203,8 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(AUTOMATON_GLOBAL_SCOPE, parameters.get(1).getMCType());
     assertEquals("modelPath", parameters.get(2).getName());
     assertDeepEquals("de.monticore.io.paths.ModelPath", parameters.get(2).getMCType());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    assertFalse(method.getMCReturnType().isPresentMCVoidType());
+    assertBoolean(method.getMCReturnType().getMCType());
   }
 
   @Test

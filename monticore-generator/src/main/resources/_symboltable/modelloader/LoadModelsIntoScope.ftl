@@ -1,11 +1,8 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature( "gloabalScopeInterface", "astStartProd")}
-  if (!loadSymbolsIntoScope(qualifiedModelName, modelPath, enclosingScope)) {
-    final List<${astStartProd}> asts = loadModels(qualifiedModelName, modelPath);
-    for (${astStartProd} ast : asts) {
-      createSymbolTableFromAST(ast, qualifiedModelName, enclosingScope);
-    }
-    showWarningIfParsedModels(asts, qualifiedModelName);
-    return asts;
+${tc.signature("astStartProd")}
+  final List<${astStartProd}> asts = loadModels(qualifiedModelName, modelPath);
+  for (${astStartProd} ast : asts) {
+    createSymbolTableFromAST(ast, qualifiedModelName, enclosingScope);
   }
-  return new ArrayList<>();
+  showWarningIfParsedModels(asts, qualifiedModelName);
+  return asts;

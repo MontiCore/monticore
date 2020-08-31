@@ -3,9 +3,9 @@ ${tc.signature("artifactScope")}
   ${artifactScope} as =  symbolTable.createFromAST(rootNode);
   if (as.isPresentName()){
     if (!as.getPackageName().isEmpty()){
-      globalScope.cache(as.getPackageName() + "." + as.getName());
+      globalScope.addLoadedFile(as.getPackageName() + "." + as.getName());
     } else {
-      globalScope.cache(as.getName());
+      globalScope.addLoadedFile(as.getName());
     }
   }
   return as;
