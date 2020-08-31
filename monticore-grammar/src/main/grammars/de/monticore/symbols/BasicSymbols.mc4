@@ -41,7 +41,7 @@ component grammar BasicSymbols extends de.monticore.MCBasics {
    * These are represented as Symbols in the body of the type 
    * and thus made available through the associated scope object.
    */
-  interface symbol Diagram = Name;
+  interface scope symbol Diagram = Name;
   
 
   /*=================================================================*/
