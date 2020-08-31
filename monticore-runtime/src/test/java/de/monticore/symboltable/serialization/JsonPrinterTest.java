@@ -26,6 +26,23 @@ public class JsonPrinterTest {
   public void disableIndentation() {
     JsonPrinter.disableIndentation();
   }
+
+  @Test
+  public void testOmitEmptyArray(){
+    JsonPrinter printer = new JsonPrinter();
+    printer.beginObject();
+    printer.member("name", "anArtifactScopeName");
+    printer.beginArray("kindHierarchy");
+    printer.endArray();
+    printer.beginArray("symbols");
+    printer.value("foo");
+    printer.endArray();
+    printer.endObject();
+
+    String serialized  = printer.getContent();
+    assertTrue(null != JsonParser.parseJsonObject(serialized));
+    assertTrue(!serialized.contains("kindHierarchy"));
+  }
   
   @Test
   public void testEscapeSequences() {
