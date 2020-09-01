@@ -310,7 +310,8 @@ component InteriorLight {                           // MontiArc language
   and a second generator for OCL in combination with 
   [*Embedded MontiArc*](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/OCL_EMA2Java).
 * Main grammar 
-  [`ocl.monticoreocl.OCL`](https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/master/src/main/grammars/ocl/monticoreocl/OCL.mc4)
+  [`ocl.monticore.ocl.OCL`](https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/develop/src/main/grammars/de/monticore/ocl/OCL.mc4), 
+  [Expressions](https://git.rwth-aachen.de/monticore/languages/OCL/-/tree/develop/src/main/grammars/de/monticore/ocl/expressions),
   and 
   [*detailed description*](https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/master/src/main/grammars/ocl/monticoreocl/OCL.md)
 
