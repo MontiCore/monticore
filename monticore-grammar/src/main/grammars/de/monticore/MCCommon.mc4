@@ -17,5 +17,5 @@ component grammar MCCommon
           extends Cardinality,
                   Completeness,
                   UMLModifier,
-                  UMLStereotype                           {
+                  UMLStereotype  {
 }

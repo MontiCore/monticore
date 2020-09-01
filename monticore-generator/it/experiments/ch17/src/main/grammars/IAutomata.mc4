@@ -1,4 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
+import de.monticore;
 grammar IAutomata extends IAutomataComp {
   start Automaton;
 

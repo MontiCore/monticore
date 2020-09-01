@@ -24,6 +24,28 @@ import de.monticore.literals.*;
 component grammar UMLStereotype extends MCCommonLiterals {
 
     /*========================================================================*/
+    /*============================== GRAMMAR =================================*/
+    /*========================================================================*/
+
+    /** ASTStereotype represents Stereotypes in the UML/P
+        @attribute values List of Values of this Stereotype
+    */
+    Stereotype =
+         "<<"  values:(StereoValue || ",")+ ">>" ;
+
+    // Due to possible scanner clashes with "List<List<String>>"
+    // we split the token:
+    splittoken ">>";
+    
+    /** ASTStereoValue represents a Value of a Stereotype in the UML/P
+        @attribute name  Name of the Stereotype-Value
+        @attribute text Content of the Stereotype (String including '"';
+                          use getValue() for decoded String)
+    */
+    StereoValue =
+        Name& ("=" text:StringLiteral)?;
+
+    /*========================================================================*/
     /*======================= AST extension ================================*/
     /*========================================================================*/
 
@@ -68,27 +90,4 @@ component grammar UMLStereotype extends MCCommonLiterals {
           }
           return content;
         };
-
-    /*========================================================================*/
-    /*============================== GRAMMAR =================================*/
-    /*========================================================================*/
-
-    /** ASTStereotype represents Stereotypes in the UML/P
-        @attribute values List of Values of this Stereotype
-    */
-    Stereotype =
-         "<<"  values:(StereoValue || ",")+ ">>" ;
-
-    // Due to possible scanner clashes with "List<List<String>>"
-    // we split the token:
-    splittoken ">>";
-    
-    /** ASTStereoValue represents a Value of a Stereotype in the UML/P
-        @attribute name  Name of the Stereotype-Value
-        @attribute text Content of the Stereotype (String including '"';
-                          use getValue() for decoded String)
-    */
-    StereoValue =
-        Name& ("=" text:StringLiteral)?;
-
 }

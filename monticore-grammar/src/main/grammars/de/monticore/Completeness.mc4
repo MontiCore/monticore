@@ -30,7 +30,7 @@ component grammar Completeness {
        {noSpace(2,3)}? "(" [complete:"c"] ")"       // "(c)"
      | {noSpace(2,3)}? "(" [incomplete:"..."] ")"   // "(...)"
      | [incomplete:"(...,...)"]
-       {noSpace(2,3,4,5)}? "(" [complete:"c"] "," "c" ")" // "(c,c)"
+     | {noSpace(2,3,4,5)}? "(" [complete:"c"] "," "c" ")" // "(c,c)"
      | [rightComplete:"(...,c)"]
      | [leftComplete:"(c,...)"];
   

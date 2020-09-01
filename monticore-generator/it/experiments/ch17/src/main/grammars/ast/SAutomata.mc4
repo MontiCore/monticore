@@ -1,7 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package ast;
+import de.monticore.*;
 
-grammar SAutomata extends de.monticore.MCBasics {
+grammar SAutomata extends MCBasics {
   Automaton  = Name (State | Transition)* ;
   State      = Name (["initial"] | ["final"])* ;
   Transition = from:Name input:Name to:Name ;

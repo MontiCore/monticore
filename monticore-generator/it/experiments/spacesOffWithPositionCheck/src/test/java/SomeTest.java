@@ -10,16 +10,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import de.monticore.spacefreechecks._ast.ASTA;
-import de.monticore.spacefreechecks._ast.ASTAddExpression;
-import de.monticore.spacefreechecks._ast.ASTB;
-import de.monticore.spacefreechecks._ast.ASTC;
-import de.monticore.spacefreechecks._ast.ASTComparisonExpression;
-import de.monticore.spacefreechecks._ast.ASTExpression;
-import de.monticore.spacefreechecks._ast.ASTShiftExpression;
-import de.monticore.spacefreechecks._ast.ASTType;
-import de.monticore.spacefreechecks._ast.ASTTypeArguments;
-import de.monticore.spacefreechecks._ast.ASTTypeAsExpression;
+import de.monticore.spacefreechecks._ast.*;
 import de.monticore.spacefreechecks._parser.SpaceFreeChecksParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -227,6 +218,29 @@ public class SomeTest {
   @Test
   public void testC2() throws IOException {
     Optional<ASTC> ast = parser.parse_StringC( "    O. Karo" );
+    assertFalse(ast.isPresent());
+  }
+
+  // --------------------------------------------------------------------
+  @Test
+  public void testD() throws IOException {
+    ASTD ast = parser.parse_StringD( "    Otto.Karo" ).get();
+    assertEquals("Otto", ast.getNameList().get(0));
+    assertEquals("Karo", ast.getNameList().get(1));
+  }
+
+  // --------------------------------------------------------------------
+  @Test
+  public void testD1() throws IOException {
+    ASTD ast = parser.parse_StringD( "    O.Karo" ).get();
+    assertEquals("O", ast.getNameList().get(0));
+    assertEquals("Karo", ast.getNameList().get(1));
+  }
+
+  // --------------------------------------------------------------------
+  @Test
+  public void testD2() throws IOException {
+    Optional<ASTD> ast = parser.parse_StringD( "    O. Karo" );
     assertFalse(ast.isPresent());
   }
 

@@ -1,5 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
-grammar SAutomata extends de.monticore.MCBasics {
+import de.monticore.*;
+grammar SAutomata extends MCBasics {
 
  symbol scope Automaton =
    "automaton" Name "{" (State | Transition)* "}" ;
