@@ -23,8 +23,9 @@ public class CheckScannerlessTest {
   
   @BeforeClass
   public static void init() {
-    LogStub.init();         // replace log by a sideffect free variant
-    // LogStub.initPlusLog();  // for manual testing purpose only
+    // replace log by a side effect free variant
+    LogStub.init();        
+    // LogStub.initPlusLog();  // for manual testing purposes
     Log.enableFailQuick(false);
   }
   
