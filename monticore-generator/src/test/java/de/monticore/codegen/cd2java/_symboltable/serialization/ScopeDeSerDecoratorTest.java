@@ -110,7 +110,7 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeCount(){
-    assertEquals(7, scopeClass.sizeCDAttributes());
+    assertEquals(6, scopeClass.sizeCDAttributes());
   }
 
   @Test
@@ -130,41 +130,16 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
     assertDeepEquals("de.monticore.codegen.ast.lexicals._symboltable.QualifiedNameSymbolDeSer",
         attributeList.get(3).getMCType());
     assertDeepEquals(CDModifier.PROTECTED, attributeList.get(4).getModifier());
-    assertEquals("symbolFileExtension", attributeList.get(4).getName());
-    assertDeepEquals(String.class, attributeList.get(4).getMCType());
+    assertEquals("printer", attributeList.get(4).getName());
+    assertDeepEquals(JSON_PRINTER, attributeList.get(4).getMCType());
     assertDeepEquals(CDModifier.PROTECTED, attributeList.get(5).getModifier());
-    assertEquals("printer", attributeList.get(5).getName());
-    assertDeepEquals(JSON_PRINTER, attributeList.get(5).getMCType());
-    assertDeepEquals(CDModifier.PROTECTED, attributeList.get(6).getModifier());
-    assertEquals("symbolTablePrinter", attributeList.get(6).getName());
-    assertDeepEquals(AUTOMATON_DELEGATOR_VISITOR, attributeList.get(6).getMCType());
+    assertEquals("symbolTablePrinter", attributeList.get(5).getName());
+    assertDeepEquals(AUTOMATON_DELEGATOR_VISITOR, attributeList.get(5).getMCType());
   }
 
   @Test
   public void testMethodCount(){
-    assertEquals(22, scopeClass.sizeCDMethods());
-  }
-
-  @Test
-  public void testGetSymbolExtensionMethod(){
-    ASTCDMethod method = getMethodBy("getSymbolFileExtension", scopeClass);
-    assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
-    assertEquals(0, method.sizeException());
-    assertEquals(0, method.sizeCDParameters());
-    assertFalse(method.getMCReturnType().isPresentMCVoidType());
-    assertDeepEquals(String.class, method.getMCReturnType().getMCType());
-  }
-
-  @Test
-  public void testSetSymbolFileExtensionMethod(){
-    ASTCDMethod method = getMethodBy("setSymbolFileExtension", scopeClass);
-    assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
-    assertEquals(0, method.sizeException());
-    assertEquals(1, method.sizeCDParameters());
-    ASTCDParameter parameter = method.getCDParameters(0);
-    assertEquals("symbolFileExtension", parameter.getName());
-    assertDeepEquals(String.class, parameter.getMCType());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    assertEquals(20, scopeClass.sizeCDMethods());
   }
 
   @Test
@@ -188,34 +163,30 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testLoadSymbolsIntoScopeMethod(){
-    ASTCDMethod method = getMethodBy("loadSymbolsIntoScope", scopeClass);
-    assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
-    assertEquals(0, method.sizeException());
-    assertEquals(3, method.sizeCDParameters());
-    List<ASTCDParameter> parameters = method.getCDParametersList();
-    assertEquals("qualifiedModelName", parameters.get(0).getName());
-    assertDeepEquals(String.class, parameters.get(0).getMCType());
-    assertEquals("enclosingScope", parameters.get(1).getName());
-    assertDeepEquals(AUTOMATON_GLOBAL_SCOPE, parameters.get(1).getMCType());
-    assertEquals("modelPath", parameters.get(2).getName());
-    assertDeepEquals("de.monticore.io.paths.ModelPath", parameters.get(2).getMCType());
-    assertFalse(method.getMCReturnType().isPresentMCVoidType());
-    assertBoolean(method.getMCReturnType().getMCType());
-  }
+  public void testStoreMethods(){
+    List<ASTCDMethod> methods = getMethodsBy("store", scopeClass);
 
-  @Test
-  public void testStoreMethod(){
-    ASTCDMethod method = getMethodBy("store", scopeClass);
-    assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
-    assertEquals(0, method.sizeException());
-    assertEquals(2, method.sizeCDParameters());
-    List<ASTCDParameter> parameters = method.getCDParametersList();
-    assertEquals("toSerialize", parameters.get(0).getName());
-    assertDeepEquals(AUTOMATON_ARTIFACT_SCOPE, parameters.get(0).getMCType());
-    assertEquals("symbolPath", parameters.get(1).getName());
-    assertDeepEquals("java.nio.file.Path", parameters.get(1).getMCType());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    ASTCDMethod store1 = methods.get(0);
+    assertDeepEquals(CDModifier.PUBLIC, store1.getModifier());
+    assertEquals(2, store1.sizeCDParameters());
+    assertEquals("scope", store1.getCDParameters(0).getName());
+    assertDeepEquals(AUTOMATON_ARTIFACT_SCOPE, store1.getCDParameters(0).getMCType());
+    assertEquals("fileName", store1.getCDParameters(1).getName());
+    assertDeepEquals(String.class, store1.getCDParameters(1).getMCType());
+    assertFalse(store1.getMCReturnType().isPresentMCVoidType());
+    assertDeepEquals(String.class, store1.getMCReturnType().getMCType());
+
+    ASTCDMethod store2 = methods.get(1);
+    assertDeepEquals(CDModifier.PUBLIC, store2.getModifier());
+    assertEquals(3, store2.sizeCDParameters());
+    assertEquals("scope", store2.getCDParameters(0).getName());
+    assertDeepEquals(AUTOMATON_ARTIFACT_SCOPE, store2.getCDParameters(0).getMCType());
+    assertEquals("symbolPath", store2.getCDParameters(1).getName());
+    assertDeepEquals("java.nio.file.Path", store2.getCDParameters(1).getMCType());
+    assertEquals("symbolFileExtension", store2.getCDParameters(2).getName());
+    assertDeepEquals(String.class, store2.getCDParameters(2).getMCType());
+    assertFalse(store2.getMCReturnType().isPresentMCVoidType());
+    assertDeepEquals(String.class, store2.getMCReturnType().getMCType());
   }
 
   @Test

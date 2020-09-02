@@ -25,8 +25,7 @@ import java.util.List;
 import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java.DecoratorAssert.*;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
@@ -126,7 +125,7 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeSize() {
-    assertEquals(8, scopeClass.sizeCDAttributes());
+    assertEquals(9, scopeClass.sizeCDAttributes());
   }
 
   @Test
@@ -151,8 +150,15 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testLoadModelsForMethod() {
-    ASTCDMethod method = getMethodBy("loadModelsForAutomaton", scopeClass);
+  public void testSymbolFileExtensionAttribute() {
+    ASTCDAttribute astcdAttribute = getAttributeBy("symbolFileExtension", scopeClass);
+    assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
+    assertDeepEquals("String", astcdAttribute.getMCType());
+  }
+
+  @Test
+  public void testLoadMethod() {
+    ASTCDMethod method = getMethodBy("loadAutomaton", scopeClass);
 
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
@@ -164,8 +170,8 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
 
   @Test
-  public void testLoadModelsForSuperProdMethod() {
-    ASTCDMethod method = getMethodBy("loadModelsForQualifiedName", scopeClass);
+  public void testLoadSuperProdMethod() {
+    ASTCDMethod method = getMethodBy("loadQualifiedName", scopeClass);
 
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
@@ -220,7 +226,7 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(30, scopeClass.getCDMethodsList().size());
+    assertEquals(33, scopeClass.getCDMethodsList().size());
   }
 
   @Test
@@ -351,6 +357,40 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.sizeCDParameters());
     assertBoolean(method.getCDParameters(0).getMCType());
     assertEquals("stateSymbolsAlreadyResolved", method.getCDParameters(0).getName());
+  }
+
+  @Test
+  public void testGetSymbolFileExtensionMethod(){
+    ASTCDMethod method = getMethodBy("getSymbolFileExtension", scopeClass);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertFalse(method.getMCReturnType().isPresentMCVoidType());
+    assertDeepEquals(String.class, method.getMCReturnType().getMCType());
+    assertTrue(method.isEmptyCDParameters());
+  }
+
+  @Test
+  public void testSetSymbolFileExtensionMethod(){
+    ASTCDMethod method = getMethodBy("setSymbolFileExtension", scopeClass);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    assertEquals(1, method.sizeCDParameters());
+    assertDeepEquals(String.class, method.getCDParameters(0).getMCType());
+    assertEquals("symbolFileExtension", method.getCDParameters(0).getName());
+  }
+
+  @Test
+  public void testLoadFileForModelNameMethod(){
+    ASTCDMethod method = getMethodBy("loadFileForModelName", scopeClass);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    assertEquals(2, method.sizeCDParameters());
+    assertDeepEquals(String.class, method.getCDParameters(0).getMCType());
+    assertEquals("modelName", method.getCDParameters(0).getName());
+    assertDeepEquals(String.class, method.getCDParameters(1).getMCType());
+    assertEquals("symbolName", method.getCDParameters(1).getName());
   }
 
   @Test

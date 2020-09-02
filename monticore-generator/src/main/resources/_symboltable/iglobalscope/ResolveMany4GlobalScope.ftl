@@ -8,7 +8,7 @@ ${tc.signature("simpleName", "symbolFullName")}
   }
 
   // Symbol not found: try to load corresponding model and build its symbol table
-  loadModelsFor${simpleName}(name);
+  load${simpleName}(name);
 
   // Maybe the symbol now exists in this scope (or its sub scopes). So, resolve down, again.
   resolvedSymbol = resolve${simpleName}DownMany(false, name, modifier, predicate);
