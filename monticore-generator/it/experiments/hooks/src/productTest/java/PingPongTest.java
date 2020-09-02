@@ -13,7 +13,7 @@ public class PingPongTest {
     PingPong pingpong = new PingPong();
     
     // assert we are in the initial state
-    assertTrue(pingpong.currentState instanceof NoGameState);
+    assertTrue(pingpong.currentState instanceof PingState);
   
     // trigger startGame
     pingpong.startGame();
