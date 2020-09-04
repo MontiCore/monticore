@@ -1,10 +1,12 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("definitionName")}
-  if(!isFileLoaded(modelName)) {
+  de.monticore.io.paths.ModelCoordinate modelCoordinate = getModelCoordinate(modelName, getSymbolFileExtension());
+  String filePath = modelCoordinate.getQualifiedPath().toString();
+  if(!isFileLoaded(filePath)) {
     boolean success = false;
 
     //1.Load symbol table into enclosing global scope if a file has been found
-    de.monticore.io.paths.ModelCoordinate modelCoordinate = getModelCoordinate(modelName, getSymbolFileExtension(), getModelPath());
+    getModelPath().resolveModel(modelCoordinate);
     if (modelCoordinate.hasLocation()) {
       java.net.URL url = modelCoordinate.getLocation();
       this.addSubScope(scopeDeSer.load(url));
@@ -14,7 +16,7 @@ ${tc.signature("definitionName")}
     if(!success && isPresentModelLoader()){
       getModelLoader().loadModelsIntoScope(modelName, getModelPath(), getRealThis());
     }
-    addLoadedFile(modelName);
+    addLoadedFile(filePath);
   } else {
     Log.debug("Already tried to load model for '" + symbolName + "'. If model exists, continue with cached version.",
       "${definitionName}GlobalScope");
