@@ -9,6 +9,7 @@ import de.se_rwth.commons.logging.Log;
 import java.util.Arrays;
 import java.util.List;
 
+import static de.monticore.types.check.DefsTypeBasic.type;
 import static de.monticore.types.check.DefsTypeBasic.typeConstants;
 
 /**
@@ -98,6 +99,26 @@ public class SymTypeExpressionFactory {
     TypeSymbol typeSymbol = new TypeSymbolSurrogate(name);
     typeSymbol.setEnclosingScope(typeSymbolsScope);
     return new SymTypeArray(typeSymbol, dim, argument);
+  }
+
+  public static SymTypeExpression createTypeExpresion(TypeSymbol typeSymbol){
+    SymTypeExpression o;
+    if(typeConstants.containsKey(typeSymbol.getName())){
+      o = createTypeConstant(typeSymbol.getName());
+    }
+    else if ("void".equals(typeSymbol.getName())) {
+      o = createTypeVoid();
+    }
+    else if ("null".equals(typeSymbol.getName())) {
+      o = createTypeOfNull();
+    }
+    else if (typeSymbol.getSpannedScope().getLocalTypeVarSymbols().isEmpty()){
+      o = createTypeObject(typeSymbol);
+    }
+    else {
+      o = createGenerics(typeSymbol);
+    }
+    return o;
   }
 
   /**
