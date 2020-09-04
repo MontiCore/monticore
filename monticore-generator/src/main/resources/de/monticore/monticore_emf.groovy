@@ -108,6 +108,10 @@ for (astGrammar in getParsedGrammars()) {
   decoratedMillCD = decorateMill(glex, cdScope,astClassDiagram, decoratedASTClassDiagramm,decoratedVisitorCD, decoratedSymbolTableCd, handcodedPath)
   generateFromCD(glex, astClassDiagram, decoratedMillCD, out, handcodedPath)
 
+  // decorate and generate CD for the '_auxiliary' package
+  decoratedAuxiliaryCD = decorateAuxiliary(glex, cdScope, astClassDiagram, decoratedASTClassDiagramm, handcodedPath)
+  generateFromCD(glex, astClassDiagram, decoratedAuxiliaryCD, out, handcodedPath)
+
   Log.info("Grammar " + astGrammar.getName() + " processed successfully!", LOG_ID)
 
   // M10: flush reporting

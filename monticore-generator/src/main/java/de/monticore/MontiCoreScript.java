@@ -26,6 +26,7 @@ import de.monticore.codegen.cd2java._ast.enums.EnumDecorator;
 import de.monticore.codegen.cd2java._ast.factory.NodeFactoryDecorator;
 import de.monticore.codegen.cd2java._ast.factory.NodeFactoryService;
 import de.monticore.codegen.cd2java._symboltable.serialization.*;
+import de.monticore.codegen.cd2java.mill.CDAuxiliaryDecorator;
 import de.monticore.codegen.cd2java.mill.CDMillDecorator;
 import de.monticore.codegen.cd2java.mill.MillDecorator;
 import de.monticore.codegen.cd2java.mill.MillForSuperDecorator;
@@ -647,6 +648,26 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
     TopDecorator topDecorator = new TopDecorator(handCodedPath);
     return topDecorator.decorate(millCD);
+  }
+
+  public ASTCDCompilationUnit decorateAuxiliary(GlobalExtensionManagement glex, ICD4AnalysisGlobalScope cdScope,
+                                                ASTCDCompilationUnit cd, ASTCDCompilationUnit astCD,
+                                                IterablePath handCodedPath){
+    ASTCDCompilationUnit preparedCD = prepareCD(cdScope, cd);
+    return generateAuxiliary(cd, astCD, glex, handCodedPath);
+  }
+
+  private ASTCDCompilationUnit generateAuxiliary(ASTCDCompilationUnit cd, ASTCDCompilationUnit astCD,
+                                                 GlobalExtensionManagement glex, IterablePath handCodedPath){
+    SymbolTableService symbolTableService = new SymbolTableService(cd);
+    MillForSuperDecorator millForSuperDecorator = new MillForSuperDecorator(glex, symbolTableService);
+    CDAuxiliaryDecorator cdAuxiliaryDecorator = new CDAuxiliaryDecorator(glex, millForSuperDecorator);
+
+    ASTCDCompilationUnit auxiliaryCD = cdAuxiliaryDecorator.decorate(astCD);
+
+    TopDecorator topDecorator = new TopDecorator(handCodedPath);
+    return topDecorator.decorate(auxiliaryCD);
+
   }
 
   public ASTCDCompilationUnit addListSuffixToAttributeName(ASTCDCompilationUnit originalCD) {
