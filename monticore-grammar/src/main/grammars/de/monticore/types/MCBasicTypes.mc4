@@ -53,6 +53,8 @@ component grammar MCBasicTypes extends de.monticore.MCBasics {
   MCImportStatement =
       "import" MCQualifiedName ("." Star:["*"])? ";" ;
 
+  MCPackageDeclaration = "package" MCQualifiedName& ";";
+
   /*=================================================================*/
   /*= Primitives ====================================================*/
 

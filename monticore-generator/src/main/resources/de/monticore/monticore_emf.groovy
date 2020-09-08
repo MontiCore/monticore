@@ -28,7 +28,8 @@ Reporting.init(out.getAbsolutePath(), report.getAbsolutePath(), reportManagerFac
 // ############################################################
 
 // ############################################################
-// the first pass processes all input grammars up to transformation to CD and storage of the resulting CD to disk
+// the first pass processes all input grammars
+// transforms them to a CD and stores the resulting CD to disk
 while (grammarIterator.hasNext()) {
   input = grammarIterator.next()
   if (force || !IncrementalChecker.isUpToDate(input, modelPath, templatePath, handcodedPath )) {
@@ -53,14 +54,13 @@ while (grammarIterator.hasNext()) {
       runGrammarCoCos(astGrammar, mcScope)
 
       // M5: transform grammar AST into Class Diagram AST
+      //     and create symbol and scope class diagramm
       astClassDiagramWithST = deriveCD(astGrammar, glex, cdScope)
+      deriveSymbolCD(astGrammar, symbolCdScope)
+      deriveScopeCD(astGrammar, scopeCdScope)
 
       // M6: generate parser and wrapper
       generateParser(glex, astGrammar, mcScope, handcodedPath, out)
-
-      deriveSymbolCD(astGrammar, symbolCdScope)
-
-      deriveScopeCD(astGrammar, scopeCdScope)
     }
   }
 }
@@ -75,10 +75,9 @@ for (astGrammar in getParsedGrammars()) {
   // make sure to use the right report manager again
   Reporting.on(Names.getQualifiedName(astGrammar.getPackageList(), astGrammar.getName()))
 
+  // get already created base class diagramms
   astClassDiagram = getCDOfParsedGrammar(astGrammar)
-
   symbolClassDiagramm = getSymbolCDOfParsedGrammar(astGrammar)
-
   scopeClassDiagramm = getScopeCDOfParsedGrammar(astGrammar)
 
   astClassDiagram = addListSuffixToAttributeName(astClassDiagram)
@@ -86,13 +85,17 @@ for (astGrammar in getParsedGrammars()) {
   // report the base diagrams
   reportCD(astClassDiagram, symbolClassDiagramm, scopeClassDiagramm, report)
 
-  decoratedSymbolTableCd = decorateForSymbolTablePackage(glex, cdScope, astClassDiagram, symbolClassDiagramm, scopeClassDiagramm, handcodedPath)
-  generateFromCD(glex, astClassDiagram, decoratedSymbolTableCd, out, handcodedPath)
-  
   // M9 Generate ast classes, visitor and context condition
+  // decorate and generate CD for the '_symboltable' package
+  decoratedSymbolTableCd = decorateForSymbolTablePackage(glex, cdScope, astClassDiagram,
+           symbolClassDiagramm, scopeClassDiagramm, handcodedPath)
+  generateFromCD(glex, astClassDiagram, decoratedSymbolTableCd, out, handcodedPath)
+
+  // decorate and generate CD for the '_visitor' package
   decoratedVisitorCD = decorateForVisitorPackage(glex, cdScope, astClassDiagram, handcodedPath)
   generateEmfFromCD(glex, astClassDiagram, decoratedVisitorCD, out, handcodedPath)
 
+  // decorate and generate CD for the '_coco' package
   decoratedCoCoCD = decorateForCoCoPackage(glex, cdScope, astClassDiagram, handcodedPath)
   generateFromCD(glex, astClassDiagram, decoratedCoCoCD, out, handcodedPath)
 
@@ -100,12 +103,13 @@ for (astGrammar in getParsedGrammars()) {
   decoratedODCD = decorateForODPackage(glex, cdScope, astClassDiagram, handcodedPath)
   generateFromCD(glex, astClassDiagram, decoratedODCD, out, handcodedPath)
 
-  // M7: decorate Class Diagram AST
+  // decorate and generate CD for the '_ast' package
   decoratedASTClassDiagramm = decorateEmfForASTPackage(glex, cdScope, astClassDiagram, handcodedPath)
   generateEmfFromCD(glex, astClassDiagram, decoratedASTClassDiagramm, out, handcodedPath)
 
   // decorate and generate CD for the mills
-  decoratedMillCD = decorateMill(glex, cdScope,astClassDiagram, decoratedASTClassDiagramm,decoratedVisitorCD, decoratedSymbolTableCd, handcodedPath)
+  decoratedMillCD = decorateMill(glex, cdScope, astClassDiagram, decoratedASTClassDiagramm,
+            decoratedVisitorCD, decoratedSymbolTableCd, handcodedPath)
   generateFromCD(glex, astClassDiagram, decoratedMillCD, out, handcodedPath)
 
   // decorate and generate CD for the '_auxiliary' package
