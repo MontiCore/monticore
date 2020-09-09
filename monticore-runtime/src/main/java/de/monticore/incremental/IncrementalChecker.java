@@ -44,6 +44,7 @@ import de.se_rwth.commons.logging.Log;
  * realization of incremental model processing.
  *
  */
+@Deprecated // MontiCore assumes that incremental generation management is done outside (before calling MontiCore)
 public class IncrementalChecker {
 
   /**

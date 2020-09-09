@@ -46,14 +46,18 @@ component grammar MCBasicTypes extends de.monticore.MCBasics {
 
   /*=================================================================*/
 
+  /** ASTMCPackageDeclaration represents a package declaration usable
+      for diagrams
+      E.g.: package A.b;
+  */
+  MCPackageDeclaration = "package" MCQualifiedName& ";";
+
   /** ASTMCImportStatement represents the import list for diagrams
       E.g.: import A.b;
       E.g.: import A.*;
   */
   MCImportStatement =
       "import" MCQualifiedName ("." Star:["*"])? ";" ;
-
-  MCPackageDeclaration = "package" MCQualifiedName& ";";
 
   /*=================================================================*/
   /*= Primitives ====================================================*/
