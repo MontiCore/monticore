@@ -318,15 +318,24 @@ several smaller grammars are also available:
  * This includes Cardinality, Completeness, UMLModifier, and UMLStereotype.
 
 
-### [JavaLight.mc4](JavaLight.mc4) (Beta: In Stabilization)
+### [JavaLight.mc4](JavaLight.mc4) (stable)
 * JavaLight is a subset of Java that MontiCore itself
   uses as intermediate language for the code generation process.
 * JavaLight doesn't provide all forms of classes (e.g. inner classes)
   and reduces the type system to normal generic types.  
-  However, that is suffiecient for representation of all generated
+  However, that is sufficient for representation of all generated
   pieces of code that MontiCore wants to make.
+* Included are: the full Java expressions (without anonymous classes),
+  the relevant Java statements, declaration of methods, constructors,
+  constants, interface methods, and annotations.
+* JavaLight composes from CommonExpressions,
+                                    AssignmentExpressions,
+                                    JavaClassExpressions,
+                                    MCCommonStatements,
+                                    MCBasicTypes, and
+                                    OOSymbols.
 * JavaLight can be used for other generator tools as well,
-  especially as core template are reusable and new templates
+  especially as its core templates are reusable and new templates
   for specific method bodies can be added using MontiCore's
   Hook-Mechanisms.
 
