@@ -139,7 +139,7 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount(){
-    assertEquals(20, scopeClass.sizeCDMethods());
+    assertEquals(19, scopeClass.sizeCDMethods());
   }
 
   @Test
@@ -163,30 +163,17 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testStoreMethods(){
-    List<ASTCDMethod> methods = getMethodsBy("store", scopeClass);
+  public void testStoreMethod(){
+    ASTCDMethod method = getMethodBy("store", scopeClass);
 
-    ASTCDMethod store1 = methods.get(0);
-    assertDeepEquals(CDModifier.PUBLIC, store1.getModifier());
-    assertEquals(2, store1.sizeCDParameters());
-    assertEquals("scope", store1.getCDParameters(0).getName());
-    assertDeepEquals(AUTOMATON_ARTIFACT_SCOPE, store1.getCDParameters(0).getMCType());
-    assertEquals("fileName", store1.getCDParameters(1).getName());
-    assertDeepEquals(String.class, store1.getCDParameters(1).getMCType());
-    assertFalse(store1.getMCReturnType().isPresentMCVoidType());
-    assertDeepEquals(String.class, store1.getMCReturnType().getMCType());
-
-    ASTCDMethod store2 = methods.get(1);
-    assertDeepEquals(CDModifier.PUBLIC, store2.getModifier());
-    assertEquals(3, store2.sizeCDParameters());
-    assertEquals("scope", store2.getCDParameters(0).getName());
-    assertDeepEquals(AUTOMATON_ARTIFACT_SCOPE, store2.getCDParameters(0).getMCType());
-    assertEquals("symbolPath", store2.getCDParameters(1).getName());
-    assertDeepEquals("java.nio.file.Path", store2.getCDParameters(1).getMCType());
-    assertEquals("symbolFileExtension", store2.getCDParameters(2).getName());
-    assertDeepEquals(String.class, store2.getCDParameters(2).getMCType());
-    assertFalse(store2.getMCReturnType().isPresentMCVoidType());
-    assertDeepEquals(String.class, store2.getMCReturnType().getMCType());
+    assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
+    assertEquals(2, method.sizeCDParameters());
+    assertEquals("scope", method.getCDParameters(0).getName());
+    assertDeepEquals(AUTOMATON_ARTIFACT_SCOPE, method.getCDParameters(0).getMCType());
+    assertEquals("fileName", method.getCDParameters(1).getName());
+    assertDeepEquals(String.class, method.getCDParameters(1).getMCType());
+    assertFalse(method.getMCReturnType().isPresentMCVoidType());
+    assertDeepEquals(String.class, method.getMCReturnType().getMCType());
   }
 
   @Test

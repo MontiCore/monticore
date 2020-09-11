@@ -98,7 +98,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
         .addCDAttributes(jsonPrinter)
         .addCDAttributes(symbolTablePrinter)
         .addAllCDMethods(createLoadMethods(artifactScopeInterfaceFullName))
-        .addAllCDMethods(createStoreMethods(scopeDeSerName, artifactScopeInterfaceFullName))
+        .addCDMethods(createStoreMethod(artifactScopeInterfaceFullName))
         .addCDMethods(createDeserializeStringMethod(artifactScopeFullName, artifactScopeInterfaceFullName))
         .addCDMethods(createDeserializeScopeMethod(scopeClassFullName, simpleName, symTabMillFullName, scopeJsonParam, scopeRuleAttributeList))
         .addCDMethods(createDeserializeArtifactScopeMethod(artifactScopeInterfaceFullName, simpleName, symTabMillFullName, scopeJsonParam, scopeRuleAttributeList))
@@ -206,29 +206,14 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
     return loadMethod;
   }
 
-  protected List<ASTCDMethod> createStoreMethods(String scopeDeSerName, String artifactScopeName) {
-    List<ASTCDMethod> methods = Lists.newArrayList();
+  protected ASTCDMethod createStoreMethod(String artifactScopeName) {
     ASTCDParameter artifactScopeParam = getCDParameterFacade()
         .createParameter(getMCTypeFacade().createQualifiedType(artifactScopeName), "scope");
     ASTCDParameter fileNameParam = getCDParameterFacade()
         .createParameter(getMCTypeFacade().createStringType(), "fileName");
-    ASTCDMethod storeForCLI = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createStringType(), "store", artifactScopeParam, fileNameParam);
-    this.replaceTemplate(EMPTY_BODY, storeForCLI, new TemplateHookPoint("_symboltable.serialization.scopeDeSer.StoreForCLI"));
-    methods.add(storeForCLI);
-
-
-    ASTCDParameter symbolPathParam = getCDParameterFacade()
-        .createParameter(getMCTypeFacade().createQualifiedType("java.nio.file.Path"), "symbolPath");
-    ASTCDParameter symbolFileExtensionParam = getCDParameterFacade()
-        .createParameter(getMCTypeFacade().createStringType(), "symbolFileExtension");
-    ASTCDMethod storeMethod = getCDMethodFacade()
-        .createMethod(PUBLIC, getMCTypeFacade().createStringType(), "store", artifactScopeParam, symbolPathParam, symbolFileExtensionParam);
-    String generatedError = symbolTableService.getGeneratedErrorCode(scopeDeSerName + "#store1");
-    this.replaceTemplate(EMPTY_BODY, storeMethod,
-        new TemplateHookPoint("_symboltable.serialization.scopeDeSer.Store", scopeDeSerName,
-            generatedError));
-    methods.add(storeMethod);
-    return methods;
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createStringType(), "store", artifactScopeParam, fileNameParam);
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_symboltable.serialization.scopeDeSer.Store"));
+    return method;
   }
 
   protected ASTCDMethod createSerializeMethod(String scopeInterfaceName) {

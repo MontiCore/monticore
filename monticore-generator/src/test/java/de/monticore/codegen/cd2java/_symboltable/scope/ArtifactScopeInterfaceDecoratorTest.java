@@ -26,8 +26,7 @@ import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
 import static de.monticore.codegen.cd2java.DecoratorAssert.*;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class ArtifactScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
@@ -95,7 +94,7 @@ public class ArtifactScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(42, scopeInterface.getCDMethodsList().size());
+    assertEquals(43, scopeInterface.getCDMethodsList().size());
   }
 
   @Test
@@ -209,6 +208,15 @@ public class ArtifactScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertEquals("modifier", method.getCDParameters(2).getName());
     assertDeepEquals(PREDICATE_QUALIFIED_NAME, method.getCDParameters(3).getMCType());
     assertEquals("predicate", method.getCDParameters(3).getName());
+  }
+
+  @Test
+  public void testGetFullNameMethod(){
+    ASTCDMethod method = getMethodBy("getFullName", scopeInterface);
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.isEmptyCDParameters());
+    assertFalse(method.getMCReturnType().isPresentMCVoidType());
+    assertDeepEquals(String.class, method.getMCReturnType().getMCType());
   }
 
   @Test
