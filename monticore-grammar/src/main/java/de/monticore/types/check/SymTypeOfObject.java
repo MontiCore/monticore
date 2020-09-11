@@ -45,7 +45,7 @@ public class SymTypeOfObject extends SymTypeExpression {
     jp.beginObject();
     // Care: the following String needs to be adapted if the package was renamed
     jp.member(JsonDeSers.KIND, "de.monticore.types.check.SymTypeOfObject");
-    jp.member("objName", getObjName());
+    jp.member("objName", getFullName());
     jp.endObject();
     return jp.getContent();
   }
@@ -61,7 +61,7 @@ public class SymTypeOfObject extends SymTypeExpression {
    * getFullName: get the Qualified Name including Package
    */
   public String getFullName() {
-    return getObjName();
+    return typeSymbol.getFullName();
   }
   
   /**
