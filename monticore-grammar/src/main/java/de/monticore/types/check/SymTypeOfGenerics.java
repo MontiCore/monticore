@@ -125,7 +125,7 @@ public class SymTypeOfGenerics extends SymTypeExpression {
   }
 
   public String getTypeConstructorFullName() {
-    return typeSymbol.getName();
+    return typeSymbol.getFullName();
   }
   
   /**
