@@ -16,6 +16,7 @@ pluginManagement {
 
 rootProject.name = 'experiments'
 include(':automaton')
+include(':makeuse')
 include(':builderAtm')
 include(':ch17')
 include(':codeChecks')

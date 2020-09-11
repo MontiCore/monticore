@@ -21,6 +21,9 @@
 # Some of those are used in the TOP mechanism
 tooljava1=$(shell find src/main/java/automata/ -name "*.java" -type f)
 
+TODO: complete this makefile
+SEE also RefMan chapter 16: dort wird ein Teil davon erbracht
+
 #############################################
 # ab hier das unbearbeitete Original:
 # (aus dem svn projekt:
