@@ -99,6 +99,14 @@ support the full Java type system including wildcards Blubb<? extends A>
 types, then use a simpler version from above. Type checking ist tricky.
 
 
+
+## Symbols: List of Grammars in package `de.monticore.symbols`
+
+These two grammars do not provide syntax themselves, but 
+characterize important forms of symbols, that will be used
+in the type and the expression grammars to define shared 
+kinds of symbols. 
+
 ### [BasicSymbols.mc4](symbols/BasicSymbols.mc4) (stable)
 * This grammar defines symbols for *Types* (of all kinds), *Functions*, 
   *Variables* and *TypeVariables*.
@@ -107,7 +115,6 @@ types, then use a simpler version from above. Type checking ist tricky.
   embody OO specifics.
 * Remark: This grammar is not intended to define concrete or abstract syntax, but the
   infrastructure for symbols. 
-
 
 ### [OOSymbols.mc4](symbols/OOSymbols.mc4) (stable)
 * This grammar defines symbols for *objectoriented Types*, *Methods*, and
