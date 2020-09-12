@@ -28,6 +28,7 @@ project under `monticore-grammar/src/main/grammars/` in packages
 * `de.monticore.expressions`
 * `de.monticore.literals`
 * `de.monticore.statements`
+* `de.monticore.symbols`
 * `de.monticore.types`
 
 For [more langauges, see here](../../../../../../docs/Languages.md).
