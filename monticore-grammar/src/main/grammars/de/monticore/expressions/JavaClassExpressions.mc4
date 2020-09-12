@@ -70,6 +70,7 @@ component grammar JavaClassExpressions
   GenericInvocationExpression implements Expression <260> =
     Expression "." PrimaryGenericInvocationExpression;
 
+  // casting expression uses a type
   TypeCastExpression implements Expression <230> =
     "(" ExtType ")" Expression;
 
@@ -82,12 +83,10 @@ component grammar JavaClassExpressions
   interface Creator ;
 
   AnonymousClass implements Creator
-      =  ExtType Arguments
-      ;
+      =  ExtType Arguments;
 
   ArrayCreator implements Creator
-      =   ExtType ArrayDimensionSpecifier
-      ;
+      =   ExtType ArrayDimensionSpecifier;
 
   interface ArrayDimensionSpecifier ;
 
@@ -97,9 +96,11 @@ component grammar JavaClassExpressions
 
   /*=================================================================*/
 
+  // access of class object uses a type
   ClassExpression implements Expression <360> =
     ExtReturnType "." "class";
 
+  // generic invocation may specify type arguments
   PrimaryGenericInvocationExpression implements Expression <370> =
     "<"(ExtTypeArgument||",")+">" GenericInvocationSuffix;
 
@@ -116,6 +117,7 @@ component grammar JavaClassExpressions
 
   /*=================================================================*/
 
+  // instance of needs a type as argument
   InstanceofExpression implements Expression <140> =
     Expression "instanceof" ExtType;
 
