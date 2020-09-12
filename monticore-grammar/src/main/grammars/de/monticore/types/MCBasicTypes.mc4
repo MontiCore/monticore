@@ -16,11 +16,10 @@ import de.monticore.*;
  * classes (also sometimes called "reference types").
  *
  * This grammar is part of a hierarchy of types, namely
- * * types/MCBasicTypes.mc4
- * * types/MCCollectionTypes.mc4
- * * types/MCSimpleGenericTypes.mc4
- * * types/MCFullGenericTypes.mc4
- * also defining generics or arrays.
+ * * types.MCBasicTypes.mc4       
+ *   * types/MCCollectionTypes.mc4  
+ *     * types/MCSimpleGenericTypes.mc4
+ *       * types/MCFullGenericTypes.mc4    
  *
 */
 
