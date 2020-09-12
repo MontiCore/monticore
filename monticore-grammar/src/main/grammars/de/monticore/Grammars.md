@@ -187,7 +187,7 @@ modelling language.
 
 
 ### [SetExpressions.mc4](expressions/SetExpressions.mc4) (Beta: In Stabilization)
-* This grammar defines set expressions like {..|..}, set union, intersection etc.
+* This grammar defines set expressions like set union, intersection etc.
 these operations are typical for a logic with set operations, like 
 UML's OCL.
 
