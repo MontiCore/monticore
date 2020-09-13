@@ -50,15 +50,15 @@ TryStatement3 implements MCStatement
         ("finally" finally:MCJavaBlock)? ;
 
 TryLocalVariableDeclaration
-    =   JavaModifier* MCType DeclaratorId "=" Expression ;
+    = JavaModifier* MCType DeclaratorId "=" Expression ;
 
 CatchClause
-    =   "catch" "(" JavaModifier* CatchTypeList Name ")" MCJavaBlock ;
+    = "catch" "(" JavaModifier* CatchTypeList Name ")" MCJavaBlock ;
 
 CatchTypeList
-    =   (MCQualifiedName || "|")+ ;
+    = (MCQualifiedName || "|")+ ;
 
 ThrowStatement implements MCStatement
-    =   "throw" Expression ";" ;
+    = "throw" Expression ";" ;
 
 }

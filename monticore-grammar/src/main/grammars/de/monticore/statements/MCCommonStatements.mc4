@@ -35,16 +35,18 @@ component grammar MCCommonStatements
 /**
  * Standard Form of a block { ... }
  */
-scope(shadowing non_exporting ordered) MCJavaBlock implements MCStatement
-    =   "{" MCBlockStatement* "}" ;
-
+scope(shadowing non_exporting ordered) MCJavaBlock
+                                    implements MCStatement
+    = "{" MCBlockStatement* "}" ;
+    
 /**
  * All the Java Modifier
  */
 JavaModifier implements MCModifier =
-        Modifier:["private" | "public" | "protected" | "static" | "transient"
-        | "final" | "abstract" | "native" | "threadsafe" | "synchronized"
-        | "const" | "volatile" | "strictfp"] ;
+      Modifier:["private" | "public" | "protected" | "static"
+          | "transient" | "final" | "abstract" | "native"
+          | "threadsafe" | "synchronized" | "const" | "volatile"
+          | "strictfp"] ;
 
 IfStatement implements MCStatement
     =   "if" "(" condition:Expression ")"
@@ -54,34 +56,34 @@ IfStatement implements MCStatement
    // generated Java code doesn't allow "else" as Name 
 
 scope ForStatement implements MCStatement
-    =   "for" "(" ForControl ")" MCStatement ;
+    = "for" "(" ForControl ")" MCStatement ;
 
 interface ForControl ;
 
 CommonForControl implements ForControl
-    =   ForInit? ";" condition:Expression? ";" (Expression || ",")* ;
+    = ForInit? ";" condition:Expression? ";" (Expression || ",")* ;
 
 ForInit
     = ForInitByExpressions | LocalVariableDeclaration ;
 
 ForInitByExpressions
-    =   (Expression || ",")+ ;
+    = (Expression || ",")+ ;
 
 WhileStatement implements MCStatement
-    =   "while" "(" condition:Expression ")" MCStatement ;
+    = "while" "(" condition:Expression ")" MCStatement ;
 
 DoWhileStatement implements MCStatement
-    =   "do" MCStatement "while" "(" condition:Expression ")" ";" ;
+    = "do" MCStatement "while" "(" condition:Expression ")" ";" ;
 
 SwitchStatement implements MCStatement
-    =   "switch" "(" Expression ")"
+    = "switch" "(" Expression ")"
            "{" SwitchBlockStatementGroup* SwitchLabel* "}" ;
 
 EmptyStatement implements MCStatement
-    =   ";" ;
+    = ";" ;
 
 ExpressionStatement implements MCStatement
-    =   Expression ";" ;
+    = Expression ";" ;
 
 // Matches cases then statements, both of which are mandatory.
 // To handle empty cases at the end, SwitchLabel* is explicitely added
