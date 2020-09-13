@@ -54,7 +54,7 @@ component grammar MCCollectionTypes
        key("Optional") "<" MCTypeArgument ">";
 
   MCMapType implements MCGenericType <200> =
-      key("Map") "<" key:MCTypeArgument "," value:MCTypeArgument ">";
+       key("Map") "<" key:MCTypeArgument "," value:MCTypeArgument ">";
 
   MCSetType implements MCGenericType <200> =
        key("Set") "<" MCTypeArgument ">";
