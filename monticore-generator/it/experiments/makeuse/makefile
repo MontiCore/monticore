@@ -12,15 +12,14 @@
 #############################################################
 # Configuration (files and used commands):
 
-# Handcoded part used for the TOP mechanism
-HWC=$(wildcard src/**/*java)
-# All sources for the tool (may be more, but includes than HWC)
-HWC=$(SRC) 
+# Paths to handcoded part used for the TOP mechanism
+HWC=src/main/java
 
-# commands: MontiCore call, Java compilation and execution
-MC=java -jar monticore-all.jar
-JAVAC=javac -cp monticore-all.jar
-JAVA=java
+# All sources for the tool (includes HWC)
+SRC=$(wildcard src/**/*java)
+
+# jar for all commands: MontiCore call, Java compilation and execution
+MCJAR=monticore-all.jar
 
 # model to be processed
 MODEL=src/main/grammars/Automata.mc4
@@ -29,14 +28,16 @@ MODEL=src/main/grammars/Automata.mc4
 # Rules:
 
 # initial rule depending on all sub-activities 
-all: monticore-all.jar \
+all: $(MCJAR) \
      target/mc1
 	@echo "** Done with all."
 
-target/mc1:  $(MODEL) 
+target/mc1: $(MODEL) $(MCJAR) 
 	@echo "** Generation of tool code from" $(MODEL)
-	$(MC) $(MODEL) \
-		-hcp $(HWC) \
+	java -jar $(MCJAR) \
+		$(MODEL) \
+		-mp $(MCJAR) \
+		-hcp src/main/java \
 		-out target
 	@echo "** Generation done."
 
@@ -44,7 +45,7 @@ target/mc1:  $(MODEL)
 # Auxiliary
 
 # get the MontiCore lwb + rte
-monticore-all.jar:
+$(MCJAR):
 	cp ~/monticore/./monticore-cli/target/monticore-cli-*-with-dependencies.jar $@
 
 target:
@@ -52,7 +53,7 @@ target:
 
 clean:
 	rm -rf target
-	rm -rf monticore-all.jar
+	rm -rf $(MCJAR)
 
 .PHONY: clean 
 
