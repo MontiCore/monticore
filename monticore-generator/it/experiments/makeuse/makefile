@@ -28,7 +28,7 @@ MODEL=src/main/grammars/Automata.mc4
 # Rules:
 
 # initial rule depending on all sub-activities 
-all: target/mc2
+all: target/classes
 	@echo "[INFO]. Done with all."
 
 target/automata: $(MODEL) $(MCJAR) 
@@ -38,11 +38,10 @@ target/automata: $(MODEL) $(MCJAR)
 		-mp $(MCJAR) \
 		-hcp src/main/java \
 		-out target
-	@touch $@
 
 SRCFILES=$(wildcard src/main/java/**/*.java)
 
-target/mc2: target/automata $(SRC)
+target/classes: target/automata $(SRC)
 	@echo "[INFO]. Compile tool"
 	# NUR vorübergehend aus der Not heraus:
 	mkdir -p target/de/monticore/parser
@@ -54,6 +53,11 @@ target/mc2: target/automata $(SRC)
 	      -sourcepath ".$(SEP)target/$(SEP)src/main/java/" \
 	      src/main/java/automata/AutomataTool.java
 
+# next steps:
+# build jar
+# compile ToolTest
+# execute ToolTest
+# generate something with the tool 
 
 
 
