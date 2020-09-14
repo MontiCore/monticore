@@ -35,11 +35,11 @@ public class AutomataToolTest {
     // LogStub.printPrints();  // for manual testing purpose only
 
     List<String> p = LogStub.getPrints();
-    assertEquals(7, p.size());
+    assertEquals(6, p.size());
 
     // Check some "[INFO]" outputs
     assertTrue(p.get(0), p.get(0).matches(".*.INFO.  AutomataTool Automata DSL Tool.*\n"));
-    assertTrue(p.get(5), p.get(5).matches(".*.INFO.  AutomataTool Pretty printing automaton into console.*\n"));
+    assertTrue(p.get(4), p.get(4).matches(".*.INFO.  AutomataTool Pretty printing automaton into console.*\n"));
   
     // Check resulting pretty print:
     String res = p.get(p.size()-1).replaceAll("[\r\n]", " ");
@@ -51,22 +51,22 @@ public class AutomataToolTest {
   
   @Test
   public void executeSimple12() {
-    AutomataTool.main(new String[] { "src/test/resources/example/Simple12.aut", "target/Simple12.autsym" });
+    AutomataTool.main(new String[] { "src/test/resources/example/Simple12.aut", "Simple12.autsym" });
     Log.printFindings();
     assertEquals(0, Log.getFindings().size());
     // LogStub.printPrints();
     List<String> p = LogStub.getPrints();
-    assertEquals(7, p.size());
+    assertEquals(6, p.size());
   }
   
   @Test
   public void executeHierarchyPingPong() {
-    AutomataTool.main(new String[] { "src/test/resources/example/HierarchyPingPong.aut", "target/HierarchyPingPong.autsym" });
+    AutomataTool.main(new String[] { "src/test/resources/example/HierarchyPingPong.aut", "target/very/very/very/deep/HierarchyPingPong.autsym" });
     Log.printFindings();
     assertEquals(0, Log.getFindings().size());
     // LogStub.printPrints();
     List<String> p = LogStub.getPrints();
-    assertEquals(7, p.size());
+    assertEquals(6, p.size());
   }
   
 }
