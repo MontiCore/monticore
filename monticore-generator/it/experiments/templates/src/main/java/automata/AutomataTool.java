@@ -150,7 +150,7 @@ public class AutomataTool {
     // Part 3: Store Symboltable
     // store artifact scope and its symbols
     AutomataScopeDeSer deser = new AutomataScopeDeSer();
-    deser.store(modelTopScope, SYMBOL_LOCATION, "autsym");
+    deser.store(modelTopScope, SYMBOL_LOCATION+"/"+modelfilename+"sym");
     Log.info(modelfilename + " symboltable stored successfully", this.getClass().getName());
     
     // Part 4: Transformation and Data Calculation
