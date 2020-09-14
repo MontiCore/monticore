@@ -50,6 +50,7 @@ target/mc2: target/automata $(SRC)
 		target/de/monticore/parser/
 	# Ende der Not 
 	javac -cp $(MCJAR) \
+	      -d target/classes/
 	      -sourcepath ".$(SEP)target/$(SEP)src/main/java/" \
 	      src/main/java/automata/AutomataTool.java
 
