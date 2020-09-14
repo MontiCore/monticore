@@ -47,9 +47,12 @@ target/classes: target/automata $(SRC)
 	mkdir -p target/de/monticore/parser
 	cp ~/monticore/./monticore-runtime/src/main/java/de/monticore/parser/Placeholder.java \
 		target/de/monticore/parser/
+	mkdir -p target/de/monticore/symboltable/serialization/
+	cp ~/monticore/./monticore-runtime/src/main/java/de/monticore/symboltable/serialization/JsonDeSers.java \
+		target/de/monticore/symboltable/serialization
 	# Ende der Not 
 	javac -cp $(MCJAR) \
-	      -d target/classes/
+	      -d target/classes/ \
 	      -sourcepath ".$(SEP)target/$(SEP)src/main/java/" \
 	      src/main/java/automata/AutomataTool.java
 
