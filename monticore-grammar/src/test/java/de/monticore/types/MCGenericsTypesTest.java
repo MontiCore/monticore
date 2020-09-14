@@ -123,7 +123,6 @@ public class MCGenericsTypesTest {
     String[] typesToTest = new String[]{
             "Type"
             , "Type<Arg>"
-            , "package.Type"
             , "packageName.OuterClass.Type<Arg>"
             , "java.util.Foo<A>.Set<C>.some.Collection"
             , "a.b.Type<Arg>.C"

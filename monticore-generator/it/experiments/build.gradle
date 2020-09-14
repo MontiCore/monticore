@@ -36,7 +36,7 @@ subprojects {
     grammar group:'de.monticore', name:'monticore-runtime', version:grammar_version
   }
   
-  test {
+  tasks.withType(Test) {
     useJUnit()
     testLogging {
       // controls whether test output is shown
@@ -53,13 +53,13 @@ subprojects {
       }
     }
     afterTest { desc, result ->
-      logger.quiet "${desc.className} > ${desc.name} ${result.resultType}"
+      logger.lifecycle "${desc.className} > ${desc.name} ${result.resultType}"
     }
     afterSuite { desc, result ->
       if (!desc.parent) { // will match the outermost suite
         def output = "Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} passed, ${result.failedTestCount} failed, ${result.skippedTestCount} skipped)"
         def startItem = '|  ', endItem = '  |'
-        logger.quiet startItem + output + endItem
+        logger.lifecycle startItem + output + endItem
       }
     }
     reports {

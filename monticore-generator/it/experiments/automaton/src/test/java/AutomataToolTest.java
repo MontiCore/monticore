@@ -38,8 +38,8 @@ public class AutomataToolTest {
     assertEquals(7, p.size());
 
     // Check some "[INFO]" outputs
-    assertTrue(p.get(0), p.get(0).matches(".*.INFO.  AutomataTool Automaton DSL Tool.*\n"));
-    assertTrue(p.get(5), p.get(5).matches(".*.INFO.  AutomataTool Pretty printing the parsed automaton into console.*\n"));
+    assertTrue(p.get(0), p.get(0).matches(".*.INFO.  AutomataTool Automata DSL Tool.*\n"));
+    assertTrue(p.get(5), p.get(5).matches(".*.INFO.  AutomataTool Pretty printing automaton into console.*\n"));
   
     // Check resulting pretty print:
     String res = p.get(p.size()-1).replaceAll("[\r\n]", " ");

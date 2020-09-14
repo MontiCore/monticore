@@ -55,20 +55,23 @@ symbolrule MethOrConstr =
 
 MethodDeclaration implements MethOrConstr, ClassBodyDeclaration
     =   MCModifier* ExtTypeParameters?
-                MCReturnType Name FormalParameters (dim:"[" "]")*
-                ("throws" Throws)? (MCJavaBlock | ";")
+               MCReturnType Name FormalParameters (dim:"[" "]")*
+               ("throws" Throws)? (MCJavaBlock | ";")
     ;
 
 ConstructorDeclaration implements MethOrConstr, ClassBodyDeclaration
-    =   MCModifier* ExtTypeParameters? Name FormalParameters ("throws" Throws)?
-        MCJavaBlock
+    =   MCModifier* ExtTypeParameters? Name FormalParameters
+                ("throws" Throws)? MCJavaBlock
     ;
 
-ConstDeclaration extends LocalVariableDeclarationStatement implements ClassBodyDeclaration, InterfaceBodyDeclaration
+ConstDeclaration extends LocalVariableDeclarationStatement
+                implements ClassBodyDeclaration, 
+		            InterfaceBodyDeclaration
     =   LocalVariableDeclaration ";"
     ;
 
-InterfaceMethodDeclaration implements MethOrConstr, InterfaceBodyDeclaration
+InterfaceMethodDeclaration implements MethOrConstr,
+                                      InterfaceBodyDeclaration
     =   MCModifier* ExtTypeParameters?
                 MCReturnType Name FormalParameters (dim:"[" "]")*
                 ("throws" Throws)? ";"
@@ -98,7 +101,8 @@ LastFormalParameter
 // ANNOTATIONS
 
 Annotation implements MCModifier,  ElementValue
-    =   "@" annotationName:MCQualifiedName ( "(" AnnotationArguments? ")" )?
+    =   "@" annotationName:MCQualifiedName
+            ( "(" AnnotationArguments? ")" )?
     ;
 
 interface AnnotationArguments ;

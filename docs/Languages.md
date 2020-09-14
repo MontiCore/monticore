@@ -316,7 +316,7 @@ component InteriorLight {                           // MontiArc language
   [*detailed description*](https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/master/src/main/grammars/ocl/monticoreocl/OCL.md)
 
 
-### [Object Diagrams](https://git.rwth-aachen.de/monticore/languages/od) (Beta: In Stabilization)
+### [Object Diagrams](https://git.rwth-aachen.de/monticore/languages/od) (MontiCore Stable)
 * Caretaker: SH
 * OD is a language for textual denotation of object diagrams. The OD language
   has several purposes (when combined with appropriate language extensions):
@@ -392,7 +392,7 @@ sequencediagram AuctionTest {
 }
 ```
 
-### [SI Units](https://git.rwth-aachen.de/monticore/languages/siunits) (Beta: In Stabilization)
+### [SI Units](https://git.rwth-aachen.de/monticore/languages/siunits) (MontiCore Stable)
 * Caretaker: EK
 * The international system of units (SI units) is a physical unit system widely used in the entire world. 
   It is based on the basis units `s, m, kg, A, K, mol, cd`, 
@@ -557,7 +557,7 @@ package 'Coffee' {                      // a SysML activity diagram
   [*detailed description*](https://git.rwth-aachen.de/monticore/languages/xml/-/blob/master/src/main/grammars/de/monticore/lang/xml.md)
 
 
-### [JavaLight](https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/JavaLight.mc4) (Beta: In Stabilization)
+### [JavaLight](https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/JavaLight.mc4) (MontiCore Stable)
 * Caretaker: MB
 * This is a reduced version of the **Java language**.
   JavaLight is meant to be used to integrate simplified Java-like parts 

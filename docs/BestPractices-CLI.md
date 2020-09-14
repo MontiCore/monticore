@@ -23,7 +23,7 @@ However, we suggest some default arguments for standardized access.
 -path <dirlist>              Sets the artifact path for imported symbols
 -pp,--prettyprint <file>     Prints the AST to stdout or the specified output 
                              file (optional)
--s, -symboltable <file>      Serializes and prints the symbol table to stdout 
+-s, --symboltable <file>      Serializes and prints the symbol table to stdout 
                              or the specified output file (optional) 
 -r,--report <dir>            Prints reports of the parsed artifact to the
                              specified directory (optional). Available reports
@@ -31,6 +31,12 @@ However, we suggest some default arguments for standardized access.
 -o,--output <dir>            Path of generated files (optional)
 -so,--syntaxobjects <file>   Prints an object diagram of the AST to stdout or
                              the specified file (optional)
+-sc, --script <file>         Advanced configuration 2: through a groovy script 
+                             that allows to adapt and extend the tool workflow (optional) 
+                             (only some tools provide groovy scripting)
+-ct, --configtemplate        Advanced configuration 1: through a Freemarker template
+                             that allows to adapth the generation process (optional)
+                             (only some tools provide a template configuration call)
 ```
 
 An example of a complete yet relatively small CLI example can be found in the 
@@ -57,6 +63,16 @@ Some explanation to the arguments:
   That means with `-path a/b:x/y`
   the actual symboltable for a Statechart `de.mine.Door` is found in 
   `a/b/de/mine/Door.scsym` or `x/y/de/mine/Door.scsym` (in that order)
+* Groovy-scripting (`-sc`, `--script`): A Groovy Script is meant to describe the tool internal 
+  workflow. It controls parsing, symbol construction, reporting, code generation etc.
+  This kind of scripting should only become necessary, when various alternative
+  configurations are possible. Thus not very tool provides Groovy scripting.
+* Template-scripting (`-ct`, `--configtemplate`): 
+  It is possible to add a custom template script right before
+  the full generation process starts. This template is useful to customize the 
+  generation process e.g. by defining hook points and thus injection more templates
+  or switching verbosity on/off.
+
 
 ## Usage of the CLI-JAR
 
@@ -65,9 +81,12 @@ CLIs do not organize the correct order of their calls. If embedded in a larger
 build process, an appropriate gradle (preferred) or make is useful for 
 incremental efficiency.
 
-This organisation is outside the CLI, because for efficiency the 
+This organisation is above the CLI, because for efficiency the 
 (grade or make) buildscript itself must be able to decide, whether a redo
 is needed. If the CLI was called to decide that, too much time was already wasted.
+
+For a build script to decide whether or not to call the CLI, a CLI call should
+(and actually MontiCore does) provide among others a list of files it used for input. 
 
 ## Automatically Generating the CLI-JAR
 

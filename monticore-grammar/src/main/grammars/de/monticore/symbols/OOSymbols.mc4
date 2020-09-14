@@ -22,10 +22,10 @@ import de.monticore.symbols.*;
  *
  * Here we mainly add the possibilities to store static, private, etc. flags
  * and extend the signature of methods for elliptic extensibility.
- * These extesnions are rather common in OO (and especially Java-like)
+ * These extensions are rather common in OO (and especially Java-like)
  * languages.
  *
- * These symbols can be used elsewhere, when actual implementations
+ * These symbols can be used elsewhere when actual implementations
  * of these symbols become available.
  *
  * A symboltable can export these symbols, while they are imported 
@@ -48,7 +48,7 @@ component grammar OOSymbols extends BasicSymbols {
    * The new symbol OOTypeSymbol mainly adds OO specific properties.
    *
    */
-  interface scope symbol OOType extends Type = Name;
+  interface scope symbol OOType extends Type = Name ;
   
   symbolrule OOType =
     isClass: boolean
@@ -59,8 +59,7 @@ component grammar OOSymbols extends BasicSymbols {
     isProtected: boolean
     isPublic: boolean
     isStatic: boolean
-    isFinal: boolean
-  ;
+    isFinal: boolean ;
 
   /*=================================================================*/
 
@@ -78,8 +77,7 @@ component grammar OOSymbols extends BasicSymbols {
     isProtected: boolean
     isPublic: boolean
     isStatic:boolean
-    isFinal: boolean
-  ;
+    isFinal: boolean ;
 
   /*=================================================================*/
 
@@ -90,7 +88,7 @@ component grammar OOSymbols extends BasicSymbols {
    * The new symbol MethodSymbol inherits from FunctionSymbol and 
    * mainly adds OO specific properties.
    */
-  interface symbol Method extends Function = Name;
+  interface symbol Method extends Function = Name ;
   
   symbolrule Method =
     isConstructor: boolean
@@ -100,7 +98,6 @@ component grammar OOSymbols extends BasicSymbols {
     isPublic: boolean
     isStatic: boolean
     isFinal: boolean
-    isElliptic: boolean
-  ;
+    isElliptic: boolean ;
 
 }
