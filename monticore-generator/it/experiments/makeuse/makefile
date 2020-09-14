@@ -28,18 +28,33 @@ MODEL=src/main/grammars/Automata.mc4
 # Rules:
 
 # initial rule depending on all sub-activities 
-all: $(MCJAR) \
-     target/mc1
-	@echo "** Done with all."
+all: target/mc2
+	@echo "[INFO]. Done with all."
 
-target/mc1: $(MODEL) $(MCJAR) 
-	@echo "** Generation of tool code from" $(MODEL)
+target/automata: $(MODEL) $(MCJAR) 
+	@echo "[INFO]. Generation of tool code from" $(MODEL)
 	java -jar $(MCJAR) \
 		$(MODEL) \
 		-mp $(MCJAR) \
 		-hcp src/main/java \
 		-out target
-	@echo "** Generation done."
+	@touch $@
+
+SRCFILES=$(wildcard src/main/java/**/*.java)
+
+target/mc2: target/automata $(SRC)
+	@echo "[INFO]. Compile tool"
+	# NUR vorübergehend aus der Not heraus:
+	mkdir -p target/de/monticore/parser
+	cp ~/monticore/./monticore-runtime/src/main/java/de/monticore/parser/Placeholder.java \
+		target/de/monticore/parser/
+	# Ende der Not 
+	javac -cp $(MCJAR) \
+	      -sourcepath ".$(SEP)target/$(SEP)src/main/java/" \
+	      src/main/java/automata/AutomataTool.java
+
+
+
 
 #############################################################
 # Auxiliary
@@ -56,4 +71,11 @@ clean:
 	rm -rf $(MCJAR)
 
 .PHONY: clean 
+
+# Handle windows and unix separators
+ifeq ($(OS),Windows_NT)
+        SEP =;
+else
+        SEP =:
+endif
 
