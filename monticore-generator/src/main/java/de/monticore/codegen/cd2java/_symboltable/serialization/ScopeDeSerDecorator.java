@@ -114,7 +114,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
         .addAllCDMethods(createDeserializeSymbolMethods(symbolDefiningProds))
         .addCDMethods(createSerializeMethod(scopeInterfaceName))
         .addAllCDMethods(
-            createDeserializeScopeRuleAttributesMethod(scopeRuleAttributeList, scopeDeSerName))
+            createDeserializeScopeRuleAttributesMethod(scopeRuleAttributeList))
         .build();
   }
 
@@ -132,7 +132,8 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
         }
       }
     }
-    return result;
+    return result.entrySet().stream().sorted()
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2, HashMap::new));
   }
 
   protected ASTCDConstructor createConstructor(String scopeDeSerName) {
@@ -375,7 +376,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
   }
 
   protected List<ASTCDMethod> createDeserializeScopeRuleAttributesMethod(
-      List<ASTCDAttribute> attributeList, String deSerName) {
+      List<ASTCDAttribute> attributeList) {
     List<ASTCDMethod> methodList = new ArrayList<>();
     for (ASTCDAttribute astcdAttribute : attributeList) {
       String methodName = DESERIALIZE +
@@ -387,7 +388,6 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
       String generatedErrorCode = symbolTableService.getGeneratedErrorCode(methodName);
       HookPoint deserImplementation = DeSerMap
           .getDeserializationImplementation(astcdAttribute, methodName, "scopeJson",
-              //          astcdAttribute.getEnclosingScope()); //TODO AB Replace line below with this line after release of 5.5.0-SNAPSHOT
               BuiltInJavaSymbolResolvingDelegate.getScope(), generatedErrorCode);
       this.replaceTemplate(EMPTY_BODY, deserializeMethod, deserImplementation);
       methodList.add(deserializeMethod);
