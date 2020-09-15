@@ -50,9 +50,6 @@ target/classes: target/automata $(SRC)
 	mkdir -p target/de/monticore/symboltable/serialization/
 	cp ~/monticore/./monticore-runtime/src/main/java/de/monticore/symboltable/serialization/JsonDeSers.java \
 		target/de/monticore/symboltable/serialization
-	mkdir -p de/monticore/modelloader/
-	cp ~/monticore/./monticore-runtime/src/main/java/de/monticore/modelloader/IModelLoader.java \
-		de/monticore/modelloader/
 	# Ende der Not 
 	javac -cp $(MCJAR) \
 	      -d target/classes/ \
@@ -80,6 +77,8 @@ target:
 clean:
 	rm -rf target
 	rm -rf $(MCJAR)
+	# NUR vorübergehend aus der Not heraus:
+	rm -rf de
 
 .PHONY: clean 
 
