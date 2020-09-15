@@ -56,30 +56,24 @@ target/classes: target/automata $(SRC)
 	      -sourcepath ".$(SEP)target/$(SEP)src/main/java/" \
 	      src/main/java/automata/AutomataTool.java
 
-# Activity 3: build the tool jar
-target/toolautomata.jar: target/classes
-	@echo "[INFO]. Create tool jar"
-	@jar --create \
-	     --file $@ \
-	     --main-class=src.main.java.automata.AutomataTool \
-	     $(wildcard target/classes/automata/**/*.class)
+#KLAPPT NICHT# # Activity 3: build the tool jar
+#KLAPPT NICHT# target/toolautomata.jar: target/classes
+#KLAPPT NICHT# 	@echo "[INFO]. Create tool jar"
+#KLAPPT NICHT# 	@jar --create \
+#KLAPPT NICHT# 	     --file $@ \
+#KLAPPT NICHT# 	     --main-class=src.main.java.automata.AutomataTool \
+#KLAPPT NICHT# 	     $(wildcard target/classes/automata/**/*.class)
 
 # Activity 4: compile the tests
 # (which was on purpose not integrated in tool compilation)
-target/testclasses: target/toolautomata.jar $(SRC)
+target/testclasses: target/classes $(SRC)
 	@echo "[INFO]. Compile tests"
-	javac -cp "$(MCJAR)$(SEP)hamcrest-core-1.3.jar$(SEP)junit-4.13.jar$(SEP)target/toolautomata.jar" \
+	javac -cp ".$(SEP)$(MCJAR)$(SEP)hamcrest-core-1.3.jar$(SEP)junit-4.13.jar$(SEP)target/classes" \
 	      -d target/testclasses/ \
 	      -sourcepath ".$(SEP)target/$(SEP)src/test/java/" \
-	      src/test/java/AutomataParseTest.java \
-	      src/test/java/AutomataToolTest.java
-
-x:
-	@echo $(wildcard src/test/java/**/Test.java)
+	      $(wildcard src/test/java/*Test.java)
 
 # next steps:
-# build jar
-# compile ToolTest
 # execute ToolTest
 # generate something with the tool 
 
