@@ -103,6 +103,18 @@
       <!-- create grammar jar with noemf -->
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+        <execution>
+          <id>fatjar</id>
+          <phase>package</phase>
+          <goals><goal>single</goal></goals>
+          <configuration>
+            <descriptorRefs>
+              <descriptorRef>jar-with-dependencies</descriptorRef>
+            </descriptorRefs>
+          </configuration>
+        </execution>
+      </executions>
       </plugin>
 
       <plugin>
