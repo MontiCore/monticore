@@ -114,13 +114,14 @@ For an example of the Delegator-Visitor see [here](../../../../../../test/java/d
 If you want to create a Derive-Class for your expression/literal grammar, you have to
 extend the Derive-Class of the supergrammar and implement the standard visitor of 
 your language. There you can override the traverse methods for your expressions/literals
-so that it calculates the type of the expression/literal (see implementation in one of the
+so that it calculates the SymTypeExpression of the expression/literal (see implementation in one of the
 above-mentioned classes). You can add your visitor to the DelegatorVisitor later on.
-For an example of the visitor for one language see [here](DeriveSymTypeOfCommonExpressions.java).
+For an example of the Derive-Class for one language see [here](DeriveSymTypeOfCommonExpressions.java).
+For an example of the Synthesize-Class for one language see [here](SynthesizeSymTypeFromMCCollectionTypes.java)
 <br/><br/>
 Writing a CoCo to check the correctness of your type/expression/literal should be easy now that you
 have the TypeCheck facade to use. Just use the correct Derive-Class and/or the correct
-Synthesize-Class as parameters and check if the type of your expression or type is 
+Synthesize-Class as parameters and check if the SymTypeExpression of your expression or type is 
 correctly calculated. <br/><br/>
 Example for a CoCo:
 ```java
