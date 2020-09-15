@@ -28,7 +28,7 @@ MODEL=src/main/grammars/Automata.mc4
 # Rules:
 
 # initial rule depending on all sub-activities 
-all: target/f.testclasses
+all: target/f.tests
 	@echo "[INFO]. Done with all."
 
 # Activity 1: run MontiCore generator
@@ -81,13 +81,17 @@ target/f.testclasses: target/f.classes $(SRC)
 	@touch $@
 
 # Activity 5: execute all tests
-tests: target/f.testclasses 
+target/f.tests: target/f.testclasses 
 	@echo "[INFO]. Run tests"
-	java  -cp "target/classes;.;$(MCJAR);hamcrest-core-1.3.jar;junit-4.13.jar" \
+	@java  -cp "target/testclasses;target/classes;.;$(MCJAR);hamcrest-core-1.3.jar;junit-4.13.jar" \
 	      org.junit.runner.JUnitCore \
-	      $(wildcard src/test/java/*Test.java)
+	      AutomataParseTest \
+	      TransitionSourceExistsTest \
+	      AutomataToolTest
 	@touch $@
 
+x:
+	@echo $(patsubst %.class,%,$(wildcard target/testclasses/*Test.class))
 
 # 
 # next steps:
