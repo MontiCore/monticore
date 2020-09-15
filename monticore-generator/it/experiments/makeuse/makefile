@@ -28,8 +28,11 @@ MODEL=src/main/grammars/Automata.mc4
 # Rules:
 
 # initial rule depending on all sub-activities 
-all: target/f.tests
+all: target/f.executes target/f.tests
 	@echo "[INFO]. Done with all."
+
+#############################################################
+# Generate and compile:
 
 # Activity 1: run MontiCore generator
 target/f.automata: $(MODEL) $(MCJAR) 
@@ -69,24 +72,50 @@ target/f.classes: target/f.automata $(SRC)
 #KLAPPT NICHT# 	     --main-class=src.main.java.automata.AutomataTool \
 #KLAPPT NICHT# 	     $(wildcard target/classes/automata/**/*.class)
 #KLAPPT NICHT# 	--> das entstehende JAR ist wohl nicht geeignet?
+#KLAPPT NICHT# 	--> es sollte nachfolgend zum Einsatz kommen (testen und processing)
+
+#############################################################
+# Testing
 
 # Activity 4: compile the tests
 # (which was on purpose not integrated in tool compilation)
 target/f.testclasses: target/f.classes $(SRC)
 	@echo "[INFO]. Compile tests"
-	javac -cp "target/classes;.;$(MCJAR);hamcrest-core-1.3.jar;junit-4.13.jar" \
+	javac -cp "target/classes;.;$(MCJAR);junit-4.13.jar" \
 	      -d target/testclasses/ \
 	      -sourcepath ".;target/;src/test/java/" \
 	      $(wildcard src/test/java/*Test.java)
 	@touch $@
 
 # Activity 5: execute all tests
-target/f.tests: target/f.testclasses makefile
+target/f.tests: target/f.testclasses 
 	@echo "[INFO]. Run tests"
 	@java  -cp "target/testclasses;target/classes;.;$(MCJAR);hamcrest-core-1.3.jar;junit-4.13.jar" \
-	      org.junit.runner.JUnitCore \
-	      $(patsubst target/testclasses/%.class,%,$(wildcard target/testclasses/*Test.class))
+	       org.junit.runner.JUnitCore \
+	       $(patsubst target/testclasses/%.class,%,$(wildcard target/testclasses/*Test.class))
 	@touch $@
+
+#############################################################
+# Usage Activities: processing Models:
+# Each is handling one automaton:
+
+target/f.executes: target/PingPong.result target/HierarchyPingPong.result target/Simple12.result
+
+target/PingPong.result: src/test/resources/example/PingPong.aut target/f.classes
+	@echo "[INFO]. Handling" $<
+	java -cp "target/classes;.;$(MCJAR)" \
+	     automata.AutomataTool $< target/symtab/
+
+target/HierarchyPingPong.result: src/test/resources/example/HierarchyPingPong.aut target/f.classes
+	@echo "[INFO]. Handling" $<
+	java -cp "target/classes;.;$(MCJAR)" \
+	     automata.AutomataTool $< target/symtab/
+
+target/Simple12.result: src/test/resources/example/Simple12.aut target/f.classes
+	@echo "[INFO]. Handling" $<
+	java -cp "target/classes;.;$(MCJAR)" \
+	     automata.AutomataTool $< target/symtab/
+
 
 
 # 
