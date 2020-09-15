@@ -81,21 +81,16 @@ target/f.testclasses: target/f.classes $(SRC)
 	@touch $@
 
 # Activity 5: execute all tests
-target/f.tests: target/f.testclasses 
+target/f.tests: target/f.testclasses makefile
 	@echo "[INFO]. Run tests"
 	@java  -cp "target/testclasses;target/classes;.;$(MCJAR);hamcrest-core-1.3.jar;junit-4.13.jar" \
 	      org.junit.runner.JUnitCore \
-	      AutomataParseTest \
-	      TransitionSourceExistsTest \
-	      AutomataToolTest
+	      $(patsubst target/testclasses/%.class,%,$(wildcard target/testclasses/*Test.class))
 	@touch $@
 
-x:
-	@echo $(patsubst %.class,%,$(wildcard target/testclasses/*Test.class))
 
 # 
 # next steps:
-# execute ToolTest
 # generate something with the tool 
 
 
