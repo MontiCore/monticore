@@ -28,20 +28,21 @@ MODEL=src/main/grammars/Automata.mc4
 # Rules:
 
 # initial rule depending on all sub-activities 
-all: target/testclasses
+all: target/f.testclasses
 	@echo "[INFO]. Done with all."
 
 # Activity 1: run MontiCore generator
-target/automata: $(MODEL) $(MCJAR) 
+target/f.automata: $(MODEL) $(MCJAR) 
 	@echo "[INFO]. Generation of tool code from" $(MODEL)
 	java -jar $(MCJAR) \
 		$(MODEL) \
 		-mp $(MCJAR) \
 		-hcp src/main/java \
 		-out target
+	@touch $@
 
 # Activity 2: compile the tool
-target/classes: target/automata $(SRC)
+target/f.classes: target/f.automata $(SRC)
 	@echo "[INFO]. Compile tool"
 	# NUR vorübergehend aus der Not heraus:
 	mkdir -p target/de/monticore/parser
@@ -50,11 +51,15 @@ target/classes: target/automata $(SRC)
 	mkdir -p target/de/monticore/symboltable/serialization/
 	cp ~/monticore/./monticore-runtime/src/main/java/de/monticore/symboltable/serialization/JsonDeSers.java \
 		target/de/monticore/symboltable/serialization
+	mkdir -p de/monticore/modelloader/
+	cp ~/monticore/./monticore-runtime/src/main/java/de/monticore/modelloader/IModelLoader.java \
+		de/monticore/modelloader/
 	# Ende der Not 
 	javac -cp $(MCJAR) \
 	      -d target/classes/ \
-	      -sourcepath ".$(SEP)target/$(SEP)src/main/java/" \
+	      -sourcepath ".;target/;src/main/java/" \
 	      src/main/java/automata/AutomataTool.java
+	@touch $@
 
 #KLAPPT NICHT# # Activity 3: build the tool jar
 #KLAPPT NICHT# target/toolautomata.jar: target/classes
@@ -63,16 +68,28 @@ target/classes: target/automata $(SRC)
 #KLAPPT NICHT# 	     --file $@ \
 #KLAPPT NICHT# 	     --main-class=src.main.java.automata.AutomataTool \
 #KLAPPT NICHT# 	     $(wildcard target/classes/automata/**/*.class)
+#KLAPPT NICHT# 	--> das entstehende JAR ist wohl nicht geeignet?
 
 # Activity 4: compile the tests
 # (which was on purpose not integrated in tool compilation)
-target/testclasses: target/classes $(SRC)
+target/f.testclasses: target/f.classes $(SRC)
 	@echo "[INFO]. Compile tests"
-	javac -cp ".$(SEP)$(MCJAR)$(SEP)hamcrest-core-1.3.jar$(SEP)junit-4.13.jar$(SEP)target/classes" \
+	javac -cp "target/classes;.;$(MCJAR);hamcrest-core-1.3.jar;junit-4.13.jar" \
 	      -d target/testclasses/ \
-	      -sourcepath ".$(SEP)target/$(SEP)src/test/java/" \
+	      -sourcepath ".;target/;src/test/java/" \
 	      $(wildcard src/test/java/*Test.java)
+	@touch $@
 
+# Activity 5: execute all tests
+tests: target/f.testclasses 
+	@echo "[INFO]. Run tests"
+	java  -cp "target/classes;.;$(MCJAR);hamcrest-core-1.3.jar;junit-4.13.jar" \
+	      org.junit.runner.JUnitCore \
+	      $(wildcard src/test/java/*Test.java)
+	@touch $@
+
+
+# 
 # next steps:
 # execute ToolTest
 # generate something with the tool 
@@ -99,11 +116,4 @@ clean:
 	rm hamcrest-core-1.3.jar junit-4.13.jar
 
 .PHONY: clean 
-
-# Handle windows and unix separators
-ifeq ($(OS),Windows_NT)
-        SEP =;
-else
-        SEP =:
-endif
 
