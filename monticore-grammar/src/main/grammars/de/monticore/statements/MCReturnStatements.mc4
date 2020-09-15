@@ -30,7 +30,6 @@ component grammar MCReturnStatements
                   ExpressionsBasis  {
 
 ReturnStatement implements MCStatement
-    =   "return" Expression? ";"
-    ;
+    =   "return" Expression? ";" ;
 
 }

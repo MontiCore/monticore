@@ -169,6 +169,7 @@ component grammar MCCommonLiterals
   fragment token StringCharacter
     = ~ ('"' | '\\') | EscapeSequence;
 
+
   // §3.10.6 Escape Sequences for Character and String Literals
   fragment token EscapeSequence
     = '\\' ('b' | 't' | 'n' | 'f' | 'r' | '"' | '\'' | '\\') 

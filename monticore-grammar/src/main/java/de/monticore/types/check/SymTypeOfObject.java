@@ -22,7 +22,7 @@ public class SymTypeOfObject extends SymTypeExpression {
   }
 
   public String getObjName() {
-    return typeSymbol.getName();
+    return typeSymbol.getFullName();
   }
   
   public void setObjName(String objname) {
@@ -55,13 +55,6 @@ public class SymTypeOfObject extends SymTypeExpression {
     TypeSymbol typeSymbol = new TypeSymbolSurrogate(this.typeSymbol.getName());
     typeSymbol.setEnclosingScope(this.typeSymbol.getEnclosingScope());
     return  new SymTypeOfObject(typeSymbol);
-  }
-
-  /**
-   * getFullName: get the Qualified Name including Package
-   */
-  public String getFullName() {
-    return getObjName();
   }
   
   /**

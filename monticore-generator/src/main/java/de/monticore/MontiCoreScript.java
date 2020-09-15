@@ -220,6 +220,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     return result;
   }
 
+  // TODO: würde hier nicht eine einfach Liste der Argument
+  // oder auch eine etwas aufbereitete Map<String,String> reichen:  "-out" -> "..."
   protected MontiCoreConfiguration __configuration;
 
   protected Map<ASTMCGrammar, ASTCDCompilationUnit> firstPassGrammars = new LinkedHashMap<>();

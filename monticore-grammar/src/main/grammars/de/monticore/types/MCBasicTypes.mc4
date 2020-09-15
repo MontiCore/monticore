@@ -16,11 +16,10 @@ import de.monticore.*;
  * classes (also sometimes called "reference types").
  *
  * This grammar is part of a hierarchy of types, namely
- * * types/MCBasicTypes.mc4
- * * types/MCCollectionTypes.mc4
- * * types/MCSimpleGenericTypes.mc4
- * * types/MCFullGenericTypes.mc4
- * also defining generics or arrays.
+ * * types.MCBasicTypes.mc4       
+ *   * types/MCCollectionTypes.mc4  
+ *     * types/MCSimpleGenericTypes.mc4
+ *       * types/MCFullGenericTypes.mc4    
  *
 */
 
@@ -46,14 +45,18 @@ component grammar MCBasicTypes extends de.monticore.MCBasics {
 
   /*=================================================================*/
 
+  /** ASTMCPackageDeclaration represents a package declaration usable
+      for diagrams
+      E.g.: package A.b;
+  */
+  MCPackageDeclaration = "package" MCQualifiedName& ";";
+
   /** ASTMCImportStatement represents the import list for diagrams
       E.g.: import A.b;
       E.g.: import A.*;
   */
   MCImportStatement =
       "import" MCQualifiedName ("." Star:["*"])? ";" ;
-
-  MCPackageDeclaration = "package" MCQualifiedName& ";";
 
   /*=================================================================*/
   /*= Primitives ====================================================*/
