@@ -28,9 +28,10 @@ MODEL=src/main/grammars/Automata.mc4
 # Rules:
 
 # initial rule depending on all sub-activities 
-all: target/classes
+all: target/testclasses
 	@echo "[INFO]. Done with all."
 
+# Activity 1: run MontiCore generator
 target/automata: $(MODEL) $(MCJAR) 
 	@echo "[INFO]. Generation of tool code from" $(MODEL)
 	java -jar $(MCJAR) \
@@ -39,8 +40,7 @@ target/automata: $(MODEL) $(MCJAR)
 		-hcp src/main/java \
 		-out target
 
-SRCFILES=$(wildcard src/main/java/**/*.java)
-
+# Activity 2: compile the tool
 target/classes: target/automata $(SRC)
 	@echo "[INFO]. Compile tool"
 	# NUR vorübergehend aus der Not heraus:
@@ -56,6 +56,27 @@ target/classes: target/automata $(SRC)
 	      -sourcepath ".$(SEP)target/$(SEP)src/main/java/" \
 	      src/main/java/automata/AutomataTool.java
 
+# Activity 3: build the tool jar
+target/toolautomata.jar: target/classes
+	@echo "[INFO]. Create tool jar"
+	@jar --create \
+	     --file $@ \
+	     --main-class=src.main.java.automata.AutomataTool \
+	     $(wildcard target/classes/automata/**/*.class)
+
+# Activity 4: compile the tests
+# (which was on purpose not integrated in tool compilation)
+target/testclasses: target/toolautomata.jar $(SRC)
+	@echo "[INFO]. Compile tests"
+	javac -cp "$(MCJAR)$(SEP)hamcrest-core-1.3.jar$(SEP)junit-4.13.jar$(SEP)target/toolautomata.jar" \
+	      -d target/testclasses/ \
+	      -sourcepath ".$(SEP)target/$(SEP)src/test/java/" \
+	      src/test/java/AutomataParseTest.java \
+	      src/test/java/AutomataToolTest.java
+
+x:
+	@echo $(wildcard src/test/java/**/Test.java)
+
 # next steps:
 # build jar
 # compile ToolTest
@@ -68,7 +89,9 @@ target/classes: target/automata $(SRC)
 # Auxiliary
 
 # get the MontiCore lwb + rte
-$(MCJAR):
+$(MCJAR): 
+	cp ~/.m2/repository/./junit/junit/4.13/junit-4.13.jar .
+	cp ~/.m2/repository/./org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar .
 	cp ~/monticore/./monticore-cli/target/monticore-cli-*-with-dependencies.jar $@
 
 target:
@@ -79,6 +102,7 @@ clean:
 	rm -rf $(MCJAR)
 	# NUR vorübergehend aus der Not heraus:
 	rm -rf de
+	rm hamcrest-core-1.3.jar junit-4.13.jar
 
 .PHONY: clean 
 
