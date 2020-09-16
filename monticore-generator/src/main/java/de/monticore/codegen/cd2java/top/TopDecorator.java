@@ -28,15 +28,15 @@ public class TopDecorator extends AbstractCreator<ASTCDCompilationUnit,ASTCDComp
   @Override
   public ASTCDCompilationUnit decorate(final ASTCDCompilationUnit originalCD) {
     ASTCDCompilationUnit topCD = originalCD;
-    topCD.getCDDefinition().getCDClasssList().stream()
+    topCD.getCDDefinition().getCDClassList().stream()
         .filter(cdClass -> existsHandwrittenClass(hwPath, constructQualifiedName(topCD.getPackageList(), cdClass.getName())))
         .forEach(this::applyTopMechanism);
 
-    topCD.getCDDefinition().getCDInterfacesList().stream()
+    topCD.getCDDefinition().getCDInterfaceList().stream()
         .filter(cdInterface -> existsHandwrittenClass(hwPath, constructQualifiedName(topCD.getPackageList(), cdInterface.getName())))
         .forEach(this::applyTopMechanism);
 
-    topCD.getCDDefinition().getCDEnumsList().stream()
+    topCD.getCDDefinition().getCDEnumList().stream()
         .filter(cdEnum -> existsHandwrittenClass(hwPath, constructQualifiedName(topCD.getPackageList(), cdEnum.getName())))
         .forEach(this::applyTopMechanism);
 
@@ -47,7 +47,7 @@ public class TopDecorator extends AbstractCreator<ASTCDCompilationUnit,ASTCDComp
     makeAbstract(cdClass);
     cdClass.setName(cdClass.getName() + TOP_SUFFIX);
 
-    cdClass.getCDConstructorsList().forEach(constructor ->
+    cdClass.getCDConstructorList().forEach(constructor ->
         constructor.setName(constructor.getName() + TOP_SUFFIX));
   }
 

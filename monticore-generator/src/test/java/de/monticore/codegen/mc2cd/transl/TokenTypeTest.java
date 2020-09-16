@@ -29,11 +29,11 @@ public class TokenTypeTest {
   public TokenTypeTest() {
     Optional<ASTCDCompilationUnit> cdCompilationUnit = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/LexerFormat.mc4"));
-    astTest = TestHelper.getCDClasss(cdCompilationUnit.get(), "ASTTest").get();
+    astTest = TestHelper.getCDClass(cdCompilationUnit.get(), "ASTTest").get();
   }
 
   private Optional<ASTCDAttribute> getCDAttributeByName(String name) {
-    return astTest.getCDAttributesList().stream()
+    return astTest.getCDAttributeList().stream()
         .filter(cdAttribute -> name.equals(cdAttribute.getName()))
         .findAny();
   }

@@ -19,18 +19,18 @@ public class AttributeInASTsToCDAttributes implements
 
     for (Link<ASTASTRule, ASTCDClass> link : rootLink.getLinks(ASTASTRule.class,
             ASTCDClass.class)) {
-      for (ASTAdditionalAttribute attributeInAST : link.source().getAdditionalAttributesList()) {
+      for (ASTAdditionalAttribute attributeInAST : link.source().getAdditionalAttributeList()) {
         ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
-        link.target().getCDAttributesList().add(cdAttribute);
+        link.target().getCDAttributeList().add(cdAttribute);
         new Link<>(attributeInAST, cdAttribute, link);
       }
     }
 
     for (Link<ASTASTRule, ASTCDInterface> link : rootLink.getLinks(ASTASTRule.class,
             ASTCDInterface.class)) {
-      for (ASTAdditionalAttribute attributeInAST :link.source().getAdditionalAttributesList()) {
+      for (ASTAdditionalAttribute attributeInAST :link.source().getAdditionalAttributeList()) {
         ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
-        link.target().getCDAttributesList().add(cdAttribute);
+        link.target().getCDAttributeList().add(cdAttribute);
         new Link<>(attributeInAST, cdAttribute, link);
       }
     }

@@ -70,12 +70,12 @@ public class CDVisitorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testClassCount() {
-    assertEquals(3, visitorCompilationUnit.getCDDefinition().getCDClasssList().size());
+    assertEquals(3, visitorCompilationUnit.getCDDefinition().getCDClassList().size());
   }
 
   @Test
   public void testInterfaceCount() {
-    assertEquals(2, visitorCompilationUnit.getCDDefinition().getCDInterfacesList().size());
+    assertEquals(2, visitorCompilationUnit.getCDDefinition().getCDInterfaceList().size());
   }
 
   @Test
@@ -101,10 +101,10 @@ public class CDVisitorDecoratorTest extends DecoratorTestCase {
     GeneratorSetup generatorSetup = new GeneratorSetup();
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
-    for (ASTCDClass clazz : decoratedCompilationUnit.getCDDefinition().getCDClasssList()) {
+    for (ASTCDClass clazz : decoratedCompilationUnit.getCDDefinition().getCDClassList()) {
       StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, clazz, clazz);
     }
-    for (ASTCDInterface astcdInterface : decoratedCompilationUnit.getCDDefinition().getCDInterfacesList()) {
+    for (ASTCDInterface astcdInterface : decoratedCompilationUnit.getCDDefinition().getCDInterfaceList()) {
       StringBuilder sb = generatorEngine.generate(CoreTemplates.INTERFACE, astcdInterface, astcdInterface);
     }
   }

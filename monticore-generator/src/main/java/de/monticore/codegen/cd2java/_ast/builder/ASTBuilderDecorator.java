@@ -46,7 +46,7 @@ public class ASTBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass>
       builderClass.addAllCDMethods(createBuilderMethodForASTCNodeMethods(builderType));
     }
 
-    Optional<ASTCDMethod> buildMethod = builderClass.getCDMethodsList().stream().filter(m -> BUILD_METHOD.equals(m.getName())).findFirst();
+    Optional<ASTCDMethod> buildMethod = builderClass.getCDMethodList().stream().filter(m -> BUILD_METHOD.equals(m.getName())).findFirst();
     buildMethod.ifPresent(b ->
         this.replaceTemplate(BUILD_INIT_TEMPLATE, b, new TemplateHookPoint(AST_BUILDER_INIT_TEMPLATE, domainClass)));
 
@@ -85,7 +85,7 @@ public class ASTBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass>
 
   protected HookPoint createImplementation(final ASTCDMethod method) {
     String methodName = method.getName();
-    String parameterCall = method.getCDParametersList().stream()
+    String parameterCall = method.getCDParameterList().stream()
         .map(ASTCDParameter::getName)
         .collect(Collectors.joining(", "));
     return new TemplateHookPoint("_ast.ast_class.builder.ASTCNodeMethodDelegate", methodName, parameterCall);

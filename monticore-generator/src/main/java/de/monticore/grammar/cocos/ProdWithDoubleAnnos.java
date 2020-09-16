@@ -19,7 +19,7 @@ public class ProdWithDoubleAnnos implements GrammarASTProdCoCo {
   public void check(ASTProd node) {
     boolean isOverriden = false;
     boolean isDeprecated = false;
-    for (ASTGrammarAnnotation anno: node.getGrammarAnnotationsList()) {
+    for (ASTGrammarAnnotation anno: node.getGrammarAnnotationList()) {
       if (isDeprecated && anno.isDeprecated()) {
         error(format(ERROR_CODE + ERROR_MSG_FORMAT, node.getName(), "@Deprecated"),  node.get_SourcePositionStart());
       }

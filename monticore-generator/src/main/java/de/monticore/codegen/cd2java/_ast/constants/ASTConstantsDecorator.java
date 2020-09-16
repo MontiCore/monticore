@@ -50,19 +50,19 @@ public class ASTConstantsDecorator extends AbstractCreator<ASTCDCompilationUnit,
     String grammarName = input.getCDDefinition().getName();
     String className = AST_CONSTANTS + grammarName;
     // searches if a Literals Enum is already defined in the input
-    Optional<ASTCDEnum> literalsEnum = input.getCDDefinition().getCDEnumsList().stream()
+    Optional<ASTCDEnum> literalsEnum = input.getCDDefinition().getCDEnumList().stream()
         .filter(astcdEnum -> astcdEnum.getName().equals(grammarName + LITERALS_SUFFIX))
         .findFirst();
     List<ASTCDEnumConstant> enumConstants = new ArrayList<>();
     if (literalsEnum.isPresent()) {
       // if Literals enum is already present use their enumConstants
-      enumConstants = literalsEnum.get().getCDEnumConstantsList().stream()
+      enumConstants = literalsEnum.get().getCDEnumConstantList().stream()
           .map(ASTCDEnumConstant::deepClone)
           .collect(Collectors.toList());
     } else {
       // otherwise search for enum constants in all enum definitions
-      for (ASTCDEnum astcdEnum : input.getCDDefinition().getCDEnumsList()) {
-        enumConstants.addAll(astcdEnum.getCDEnumConstantsList().stream()
+      for (ASTCDEnum astcdEnum : input.getCDDefinition().getCDEnumList()) {
+        enumConstants.addAll(astcdEnum.getCDEnumConstantList().stream()
             .map(ASTCDEnumConstant::deepClone)
             .collect(Collectors.toList()));
       }
@@ -71,12 +71,12 @@ public class ASTConstantsDecorator extends AbstractCreator<ASTCDCompilationUnit,
     return CD4AnalysisMill.cDClassBuilder()
         .setModifier(PUBLIC.build())
         .setName(className)
-        .addCDAttributes(getLanguageAttribute(grammarName))
-        .addCDAttributes(getDefaultAttribute())
+        .addCDAttribute(getLanguageAttribute(grammarName))
+        .addCDAttribute(getDefaultAttribute())
         .addAllCDAttributes(getConstantAttribute(enumConstants))
-        .addCDAttributes(getSuperGrammarsAttribute(superSymbolList))
-        .addCDConstructors(getDefaultConstructor(className))
-        .addCDMethods(getGetAllLanguagesMethod(superSymbolList))
+        .addCDAttribute(getSuperGrammarsAttribute(superSymbolList))
+        .addCDConstructor(getDefaultConstructor(className))
+        .addCDMethod(getGetAllLanguagesMethod(superSymbolList))
         .build();
   }
 

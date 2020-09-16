@@ -43,15 +43,15 @@ public class MethodTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCD
 
     for (Link<ASTASTRule, ASTCDClass> link : rootLink.getLinks(ASTASTRule.class,
         ASTCDClass.class)) {
-      for (ASTGrammarMethod method : link.source().getGrammarMethodsList()) {
-        link.target().getCDMethodsList().add(translateASTMethodToASTCDMethod(method));
+      for (ASTGrammarMethod method : link.source().getGrammarMethodList()) {
+        link.target().getCDMethodList().add(translateASTMethodToASTCDMethod(method));
       }
     }
 
     for (Link<ASTASTRule, ASTCDInterface> link : rootLink.getLinks(ASTASTRule.class,
         ASTCDInterface.class)) {
-      for (ASTGrammarMethod method : link.source().getGrammarMethodsList()) {
-        link.target().getCDMethodsList().add(translateASTMethodToASTCDMethodInterface(method));
+      for (ASTGrammarMethod method : link.source().getGrammarMethodList()) {
+        link.target().getCDMethodList().add(translateASTMethodToASTCDMethodInterface(method));
       }
     }
 
@@ -64,9 +64,9 @@ public class MethodTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCD
     cdMethod.setName(method.getName());
     String dotSeparatedName = MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(method.getMCReturnType());
     cdMethod.setMCReturnType(TransformationHelper.createReturnType(dotSeparatedName));
-    for (ASTMethodParameter param : method.getMethodParametersList()) {
+    for (ASTMethodParameter param : method.getMethodParameterList()) {
       String typeName = MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(param.getType());
-      cdMethod.getCDParametersList().add(TransformationHelper.createParameter(typeName, param.getName()));
+      cdMethod.getCDParameterList().add(TransformationHelper.createParameter(typeName, param.getName()));
     }
     return cdMethod;
   }
@@ -83,7 +83,7 @@ public class MethodTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCD
     ASTCDMethod cdMethod = createSimpleCDMethod(method);
     if (method.getBody() instanceof ASTAction) {
       StringBuilder code = new StringBuilder();
-      for (ASTMCBlockStatement action : ((ASTAction) method.getBody()).getMCBlockStatementsList()) {
+      for (ASTMCBlockStatement action : ((ASTAction) method.getBody()).getMCBlockStatementList()) {
         code.append(new Grammar_WithConceptsPrettyPrinter(new IndentPrinter()).prettyprint(action));
       }
       if (!code.toString().isEmpty()) {
@@ -99,7 +99,7 @@ public class MethodTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCD
     ASTCDMethod cdMethod = createSimpleCDMethod(method);
     if (method.getBody() instanceof ASTAction) {
       StringBuilder code = new StringBuilder();
-      for (ASTMCBlockStatement action : ((ASTAction) method.getBody()).getMCBlockStatementsList()) {
+      for (ASTMCBlockStatement action : ((ASTAction) method.getBody()).getMCBlockStatementList()) {
         code.append(new Grammar_WithConceptsPrettyPrinter(new IndentPrinter()).prettyprint(action));
       }
       addMethodBodyStereotype(cdMethod.getModifier(), code);

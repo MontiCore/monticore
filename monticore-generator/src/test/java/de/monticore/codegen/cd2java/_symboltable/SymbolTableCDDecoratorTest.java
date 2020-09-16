@@ -161,7 +161,7 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testClassCount() {
-    assertEquals(40, symTabCD.getCDDefinition().getCDClasssList().size());
+    assertEquals(40, symTabCD.getCDDefinition().getCDClassList().size());
   }
 
   @Test
@@ -204,7 +204,7 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testInterfaceCount() {
-    assertEquals(7, symTabCD.getCDDefinition().getCDInterfacesList().size());
+    assertEquals(7, symTabCD.getCDDefinition().getCDInterfaceList().size());
   }
 
   @Test
@@ -237,7 +237,7 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testImports() {
-    assertEquals(0, symTabCD.getMCImportStatementsList().size());
+    assertEquals(0, symTabCD.getMCImportStatementList().size());
   }
 
 
@@ -248,7 +248,7 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testClassCountWithHC() {
-    assertEquals(40, symTabCDWithHC.getCDDefinition().getCDClasssList().size());
+    assertEquals(40, symTabCDWithHC.getCDDefinition().getCDClassList().size());
   }
 
   @Test
@@ -281,7 +281,7 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testInterfaceCountWithHC() {
-    assertEquals(7, symTabCDWithHC.getCDDefinition().getCDInterfacesList().size());
+    assertEquals(7, symTabCDWithHC.getCDDefinition().getCDInterfaceList().size());
   }
 
   @Test
@@ -307,7 +307,7 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testClassCountComponent() {
-    assertEquals(28, symTabCDComponent.getCDDefinition().getCDClasssList().size());
+    assertEquals(28, symTabCDComponent.getCDDefinition().getCDClassList().size());
   }
 
   @Test
@@ -330,7 +330,7 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testInterfaceCountComponent() {
-    assertEquals(6, symTabCDComponent.getCDDefinition().getCDInterfacesList().size());
+    assertEquals(6, symTabCDComponent.getCDDefinition().getCDInterfaceList().size());
   }
 
   @Test

@@ -50,10 +50,10 @@ public class ASTEmfDecorator extends ASTDecorator {
   public ASTCDClass decorate(final ASTCDClass originalClass, ASTCDClass changedClass) {
     changedClass.addInterface(this.astService.getASTBaseInterface());
     // have to use the changed one here because this one will get the TOP prefix
-    changedClass.addCDMethods(createAcceptMethod(changedClass));
+    changedClass.addCDMethod(createAcceptMethod(changedClass));
     changedClass.addAllCDMethods(createAcceptSuperMethods(originalClass));
-    changedClass.addCDMethods(getConstructMethod(originalClass));
-    changedClass.addCDMethods(createGetChildrenMethod(originalClass));
+    changedClass.addCDMethod(getConstructMethod(originalClass));
+    changedClass.addCDMethod(createGetChildrenMethod(originalClass));
     changedClass.addAllCDMethods(createEMethods(originalClass));
 
     if (!originalClass.isPresentSuperclass()) {
@@ -71,7 +71,7 @@ public class ASTEmfDecorator extends ASTDecorator {
 
   public List<ASTCDMethod> createEMethods(ASTCDClass astcdClass) {
     // with inherited attributes
-    List<ASTCDAttribute> copiedAttributeList = astcdClass.deepClone().getCDAttributesList();
+    List<ASTCDAttribute> copiedAttributeList = astcdClass.deepClone().getCDAttributeList();
 
     String packageName = astService.getCDName() + PACKAGE_SUFFIX;
     String className = astcdClass.getName();
@@ -84,7 +84,7 @@ public class ASTEmfDecorator extends ASTDecorator {
     methodList.add(createEDerivedStructuralFeatureIDMethod());
     methodList.add(creatEStaticClassMethod(packageName, className));
 
-    if (astcdClass.getCDMethodsList().stream().noneMatch(x -> "toString".equals(x.getName()))) {
+    if (astcdClass.getCDMethodList().stream().noneMatch(x -> "toString".equals(x.getName()))) {
       methodList.add(createEToStringMethod(copiedAttributeList));
     }
     return methodList;

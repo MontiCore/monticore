@@ -42,7 +42,7 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
   public List<ASTCDClass> decorate(final ASTCDCompilationUnit compilationUnit) {
     astcdDefinition = compilationUnit.getCDDefinition().deepClone();
     //filter out all classes that are abstract and remove AST prefix
-    astcdDefinition.setCDClasssList(astcdDefinition.getCDClasssList()
+    astcdDefinition.setCDClassList(astcdDefinition.getCDClassList()
         .stream()
         .filter(ASTCDClass::isPresentModifier)
         .filter(x -> !x.getModifier().isAbstract())
@@ -50,7 +50,7 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
 
     Collection<CDDefinitionSymbol> superSymbolList = service.getSuperCDsTransitive();
     List<ASTCDClass> superMills = new ArrayList<ASTCDClass>();
-    List<ASTCDClass> astcdClassList = Lists.newArrayList(astcdDefinition.getCDClasssList());
+    List<ASTCDClass> astcdClassList = Lists.newArrayList(astcdDefinition.getCDClassList());
 
     for (CDDefinitionSymbol superSymbol : superSymbolList) {
       String millClassName = superSymbol.getName() + MillConstants.MILL_FOR + astcdDefinition.getName();
