@@ -13,7 +13,6 @@ ${tc.signature("grammarName", "grammarPackage")}
   .setAstProvider(astProvider)
   .setSymbolTableCreator(stc)
   .setModelFileExtension(getModelFileExtension())
-  .setSymbolFileExtension(getModelFileExtension()+"sym")
   .build();
 
   this.modelLoader = Optional.ofNullable(ml);

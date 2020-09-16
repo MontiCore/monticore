@@ -1,7 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
-import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolSurrogate;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
 import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonPrinter;
 
@@ -12,25 +13,25 @@ import java.util.Map;
 
 public class SymTypeConstant extends SymTypeExpression {
 
-  public SymTypeConstant(OOTypeSymbolSurrogate typeSymbolSurrogate) {
-    this.typeSymbolSurrogate = typeSymbolSurrogate;
+  public SymTypeConstant(TypeSymbol typeSymbol) {
+    this.typeSymbol = typeSymbol;
   }
 
   public String getConstName() {
-    return typeSymbolSurrogate.getName();
+    return typeSymbol.getName();
   }
 
   public String getBoxedConstName() {
-    return box(typeSymbolSurrogate.getName());
+    return box(typeSymbol.getName());
   }
 
   public String getBaseOfBoxedName() {
-    String[] parts = box(typeSymbolSurrogate.getName()).split("\\.");
+    String[] parts = box(typeSymbol.getName()).split("\\.");
     return parts[parts.length - 1];
   }
 
   public void setConstName(String constName){
-    typeSymbolSurrogate.setName(constName);
+    typeSymbol.setName(constName);
   }
 
   /**
@@ -173,9 +174,9 @@ public class SymTypeConstant extends SymTypeExpression {
 
   @Override
   public SymTypeConstant deepClone() {
-    OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate(typeSymbolSurrogate.getName());
-    loader.setEnclosingScope(typeSymbolSurrogate.getEnclosingScope());
-    SymTypeConstant clone = new SymTypeConstant(loader);
+    TypeSymbol typeSymbol = new TypeSymbolSurrogate(this.typeSymbol.getName());
+    typeSymbol.setEnclosingScope(this.typeSymbol.getEnclosingScope());
+    SymTypeConstant clone = new SymTypeConstant(typeSymbol);
     return clone;
   }
 
@@ -186,13 +187,13 @@ public class SymTypeConstant extends SymTypeExpression {
       return false;
     }
     SymTypeConstant symCon = (SymTypeConstant) sym;
-    if(this.typeSymbolSurrogate== null ||symCon.typeSymbolSurrogate==null){
+    if(this.typeSymbol == null ||symCon.typeSymbol ==null){
       return false;
     }
-    if(!this.typeSymbolSurrogate.getEnclosingScope().equals(symCon.typeSymbolSurrogate.getEnclosingScope())){
-      return false;
-    }
-    if(!this.typeSymbolSurrogate.getName().equals(symCon.typeSymbolSurrogate.getName())){
+//    if(!this.typeSymbol.getEnclosingScope().equals(symCon.typeSymbol.getEnclosingScope())){
+//      return false;
+//    }
+    if(!this.typeSymbol.getName().equals(symCon.typeSymbol.getName())){
       return false;
     }
     return this.print().equals(symCon.print());

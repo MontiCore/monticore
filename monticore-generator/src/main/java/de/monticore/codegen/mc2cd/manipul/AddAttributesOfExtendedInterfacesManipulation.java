@@ -9,8 +9,6 @@ import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
-import de.monticore.utils.ASTNodes;
-import de.se_rwth.commons.Joiners;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,8 +23,7 @@ public class AddAttributesOfExtendedInterfacesManipulation implements
   private Map<String, ASTCDInterface> cDInterfaces = Maps.newHashMap();
   
   private void initInterfaceMap(ASTCDCompilationUnit cdCompilationUnit) {
-    for (ASTCDInterface cdInterface : ASTNodes.getSuccessors(cdCompilationUnit,
-        ASTCDInterface.class)) {
+    for (ASTCDInterface cdInterface : cdCompilationUnit.getCDDefinition().getCDInterfacesList()) {
       cDInterfaces.put(
           TransformationHelper.getPackageName(cdCompilationUnit) + cdInterface.getName(),
           cdInterface);
@@ -38,7 +35,7 @@ public class AddAttributesOfExtendedInterfacesManipulation implements
     
     initInterfaceMap(cdCompilationUnit);
     
-    for (ASTCDClass cdClass : ASTNodes.getSuccessors(cdCompilationUnit, ASTCDClass.class)) {
+    for (ASTCDClass cdClass : cdCompilationUnit.getCDDefinition().getCDClasssList()) {
       addAttributesOfExtendedInterfaces(cdClass);
     }
     
@@ -51,8 +48,8 @@ public class AddAttributesOfExtendedInterfacesManipulation implements
     for (ASTMCObjectType interf : cdClass.getInterfaceList()) {
       String interfaceName = typeToString(interf);
       if (cDInterfaces.containsKey(interfaceName)) {
-        for (ASTCDAttribute interfaceAttribute :cDInterfaces.get(interfaceName).getCDAttributeList()){
-          if(cdClass.getCDAttributeList()
+        for (ASTCDAttribute interfaceAttribute :cDInterfaces.get(interfaceName).getCDAttributesList()){
+          if(cdClass.getCDAttributesList()
                   .stream()
                   .noneMatch(x->x.getName().equals(interfaceAttribute.getName()))){
             attributes.add(interfaceAttribute);
@@ -61,7 +58,7 @@ public class AddAttributesOfExtendedInterfacesManipulation implements
       }
     }
     for (ASTCDAttribute attr : attributes) {
-      cdClass.getCDAttributeList().add(attr.deepClone());
+      cdClass.getCDAttributesList().add(attr.deepClone());
     }
   }
 

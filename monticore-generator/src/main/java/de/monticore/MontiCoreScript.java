@@ -4,6 +4,7 @@ package de.monticore;
 
 import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
+import de.monticore.cd.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
@@ -79,10 +80,10 @@ import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.grammar.cocos.GrammarCoCos;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
+import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsArtifactScope;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
-import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsLanguage;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsSymbolTableCreatorDelegator;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.io.paths.ModelPath;
@@ -123,8 +124,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
   /* The logger name for logging from within a Groovy script. */
   static final String LOG_ID = "MAIN";
-
-  private final CD4AnalysisLanguage cd4AnalysisLanguage = new CD4AnalysisLanguage();
 
   /**
    * Executes the default MontiCore Groovy script (parses grammars, generates
@@ -220,6 +219,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     return result;
   }
 
+  // TODO: würde hier nicht eine einfach Liste der Argument
+  // oder auch eine etwas aufbereitete Map<String,String> reichen:  "-out" -> "..."
   protected MontiCoreConfiguration __configuration;
 
   protected Map<ASTMCGrammar, ASTCDCompilationUnit> firstPassGrammars = new LinkedHashMap<>();
@@ -319,9 +320,9 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     if (grammarSymbol.isPresent()) {
       result = grammarSymbol.get().getAstNode();
     } else {
-      Grammar_WithConceptsLanguage language = new Grammar_WithConceptsLanguage();
-
-      Grammar_WithConceptsSymbolTableCreatorDelegator stCreator = language.getSymbolTableCreator(globalScope);
+      Grammar_WithConceptsSymbolTableCreatorDelegator stCreator = Grammar_WithConceptsMill.grammar_WithConceptsSymbolTableCreatorDelegatorBuilder()
+              .setGlobalScope(globalScope)
+              .build();
       stCreator.createFromAST(result);
       globalScope.cache(qualifiedGrammarName);
     }
@@ -359,7 +360,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
       result = (ASTCDCompilationUnit) cdSymbol.get().getEnclosingScope().getAstNode();
       Log.debug("Used present symbol table for " + cdSymbol.get().getFullName(), LOG_ID);
     } else {
-      CD4AnalysisSymbolTableCreatorDelegator stCreator = cd4AnalysisLanguage.getSymbolTableCreator(globalScope);
+      CD4AnalysisSymbolTableCreatorDelegator stCreator = CD4AnalysisMill.cD4AnalysisSymbolTableCreatorDelegatorBuilder()
+              .setGlobalScope(globalScope).build();
       stCreator.createFromAST(result);
       globalScope.cache(qualifiedCDName);
     }
@@ -438,7 +440,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param astCd           - the top node of the Cd4Analysis AST
    * @param outputDirectory - output directory
    */
-  public void reportCD(ASTCDCompilationUnit astCd, String appendName, File outputDirectory) {
+  public void reportCD(ASTCDCompilationUnit astCd, ASTCDCompilationUnit symbolCd, ASTCDCompilationUnit scopeCd,
+                       File outputDirectory) {
     // we also store the class diagram fully qualified such that we can later on
     // resolve it properly for the generation of sub languages
     String reportSubDir = Joiners.DOT.join(astCd.getPackageList());
@@ -450,13 +453,46 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     // Clone CD for reporting
     ASTCDCompilationUnit astCdForReporting = astCd.deepClone();
     // No star imports in reporting CDs
-    astCdForReporting.getMCImportStatementList().forEach(s -> s.setStar(false));
-    String newName = astCd.getCDDefinition().getName() + appendName;
-    astCdForReporting.getCDDefinition().setName(newName);
+    astCdForReporting.getMCImportStatementsList().forEach(s -> s.setStar(false));
+
+    // Add symbol classes
+    for (ASTCDClass cl :symbolCd.getCDDefinition().getCDClasssList()) {
+      ASTCDClass newCl = cl.deepClone();
+      newCl.setName(newCl.getName()+"Symbol");
+      astCdForReporting.getCDDefinition().addCDClasss(newCl);
+    }
+
+    // Add scope classes
+    for (ASTCDClass cl :scopeCd.getCDDefinition().getCDClasssList()) {
+      ASTCDClass newCl = cl.deepClone();
+      newCl.setName(newCl.getName()+"Scope");
+      astCdForReporting.getCDDefinition().addCDClasss(newCl);
+    }
     new CDReporting().prettyPrintAstCd(astCdForReporting, outputDirectory, reportSubDir);
   }
 
+  /**
+   * Prints Cd4Analysis AST to the CD-file (*.cd) in the reporting directory
+   *
+   * @param astCd           - the top node of the Cd4Analysis AST
+   * @param outputDirectory - output directory
+   */
+  public void reportCD(ASTCDCompilationUnit astCd, File outputDirectory) {
+    // we also store the class diagram fully qualified such that we can later on
+    // resolve it properly for the generation of sub languages
+    String reportSubDir = Joiners.DOT.join(astCd.getPackageList());
+    reportSubDir = reportSubDir.isEmpty()
+            ? astCd.getCDDefinition().getName()
+            : reportSubDir.concat(".").concat(astCd.getCDDefinition().getName());
+    reportSubDir = reportSubDir.toLowerCase();
 
+    // Clone CD for reporting
+    ASTCDCompilationUnit astCdForReporting = astCd.deepClone();
+    // No star imports in reporting CDs
+    astCdForReporting.getMCImportStatementsList().forEach(s -> s.setStar(false));
+
+    new CDReporting().prettyPrintAstCd(astCdForReporting, outputDirectory, reportSubDir);
+  }
   public ASTCDCompilationUnit decorateForSymbolTablePackage(GlobalExtensionManagement glex, ICD4AnalysisScope cdScope,
                                                             ASTCDCompilationUnit astClassDiagram, ASTCDCompilationUnit symbolClassDiagramm,
                                                             ASTCDCompilationUnit scopeClassDiagramm, IterablePath handCodedPath) {
@@ -470,7 +506,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
                                                        IterablePath handCodedPath) {
     SymbolTableService symbolTableService = new SymbolTableService(cd);
     VisitorService visitorService = new VisitorService(cd);
-    ParserService parserService = new ParserService(cd);
     MethodDecorator methodDecorator = new MethodDecorator(glex, symbolTableService);
     AccessorDecorator accessorDecorator = new AccessorDecorator(glex, symbolTableService);
 
@@ -479,12 +514,13 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     SymbolBuilderDecorator symbolBuilderDecorator = new SymbolBuilderDecorator(glex, symbolTableService, builderDecorator);
     ScopeInterfaceDecorator scopeInterfaceDecorator = new ScopeInterfaceDecorator(glex, symbolTableService, visitorService, methodDecorator);
     ScopeClassDecorator scopeClassDecorator = new ScopeClassDecorator(glex, symbolTableService, visitorService, methodDecorator);
-    ScopeClassBuilderDecorator scopeClassBuilderDecorator = new ScopeClassBuilderDecorator(glex, builderDecorator);
+    ScopeClassBuilderDecorator scopeClassBuilderDecorator = new ScopeClassBuilderDecorator(glex, symbolTableService, builderDecorator);
     GlobalScopeInterfaceDecorator globalScopeInterfaceDecorator = new GlobalScopeInterfaceDecorator(glex, symbolTableService, methodDecorator);
     GlobalScopeClassDecorator globalScopeClassDecorator = new GlobalScopeClassDecorator(glex, symbolTableService, methodDecorator);
     GlobalScopeClassBuilderDecorator globalScopeClassBuilderDecorator = new GlobalScopeClassBuilderDecorator(glex, symbolTableService, builderDecorator);
-    ArtifactScopeDecorator artifactScopeDecorator = new ArtifactScopeDecorator(glex, symbolTableService, visitorService, methodDecorator);
-    ArtifactScopeBuilderDecorator artifactScopeBuilderDecorator = new ArtifactScopeBuilderDecorator(glex, symbolTableService, builderDecorator, accessorDecorator);
+    ArtifactScopeInterfaceDecorator artifactScopeInterfaceDecorator = new ArtifactScopeInterfaceDecorator(glex, symbolTableService, visitorService, methodDecorator);
+    ArtifactScopeClassDecorator artifactScopeDecorator = new ArtifactScopeClassDecorator(glex, symbolTableService, visitorService, methodDecorator);
+    ArtifactScopeClassBuilderDecorator artifactScopeBuilderDecorator = new ArtifactScopeClassBuilderDecorator(glex, symbolTableService, builderDecorator, accessorDecorator);
     SymbolSurrogateDecorator symbolReferenceDecorator = new SymbolSurrogateDecorator(glex, symbolTableService, methodDecorator, new MandatoryMutatorSymbolSurrogateDecorator(glex));
     SymbolSurrogateBuilderDecorator symbolReferenceBuilderDecorator = new SymbolSurrogateBuilderDecorator(glex, symbolTableService, accessorDecorator);
     CommonSymbolInterfaceDecorator commonSymbolInterfaceDecorator = new CommonSymbolInterfaceDecorator(glex, symbolTableService, visitorService, methodDecorator);
@@ -508,7 +544,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
             symbolBuilderDecorator, symbolReferenceDecorator, symbolReferenceBuilderDecorator,
             scopeInterfaceDecorator, scopeClassDecorator, scopeClassBuilderDecorator,
             globalScopeInterfaceDecorator, globalScopeClassDecorator, globalScopeClassBuilderDecorator,
-            artifactScopeDecorator, artifactScopeBuilderDecorator,
+        artifactScopeInterfaceDecorator, artifactScopeDecorator, artifactScopeBuilderDecorator,
             commonSymbolInterfaceDecorator, modelLoaderDecorator, modelLoaderBuilderDecorator,
             symbolResolvingDelegateInterfaceDecorator, symbolTableCreatorDecorator, symbolTableCreatorBuilderDecorator,
             symbolTableCreatorDelegatorDecorator, symbolTableCreatorForSuperTypes, symbolTableCreatorDelegatorBuilderDecorator,
@@ -841,11 +877,11 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   }
 
   public CD4AnalysisGlobalScope createCD4AGlobalScope(ModelPath modelPath) {
-    return new CD4AnalysisGlobalScope(modelPath, new CD4AnalysisLanguage());
+    return new CD4AnalysisGlobalScope(modelPath, "cd");
   }
 
   public Grammar_WithConceptsGlobalScope createMCGlobalScope(ModelPath modelPath) {
-    return new Grammar_WithConceptsGlobalScope(modelPath, new Grammar_WithConceptsLanguage());
+    return new Grammar_WithConceptsGlobalScope(modelPath, "mc4");
   }
 
   /**

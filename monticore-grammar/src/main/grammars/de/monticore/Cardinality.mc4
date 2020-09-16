@@ -4,6 +4,9 @@ package de.monticore;
 /* This is a MontiCore stable grammar.
  * Adaptations -- if any -- are conservative. */
 
+import de.monticore.literals.*;
+import de.monticore.*;
+
 /**
  * Grammar to describe Cardinalities
  *
@@ -12,7 +15,7 @@ package de.monticore;
  */
 component grammar Cardinality
           extends de.monticore.MCBasics,
-                  de.monticore.literals.MCCommonLiterals
+                  MCCommonLiterals
 {
 
   /** ASTCardinality represents a Cardinality in the UML/P

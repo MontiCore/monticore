@@ -6,8 +6,6 @@ import com.google.common.collect.Lists;
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.AdditionalAttributeSymbol;
-import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
-import de.monticore.grammar.grammar._symboltable.RuleComponentSymbolTOP;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
 import de.se_rwth.commons.JavaNamesHelper;
 import de.se_rwth.commons.Names;
@@ -43,16 +41,14 @@ public class HelperGrammar {
     return name;
   }
 
-  public static String getListName(ASTNonTerminal a, ASTMCGrammar grammar) {
+  public static String getListName(ASTNonTerminal a) {
     String name;
     if (a.isPresentUsageName()) {
       name = a.getUsageName();
-    } else if (getsListCardinalityFromAstRule(a, grammar)) {
-      name = a.getName();
     } else {
       // Use Nonterminal name as attribute name starting with lower case
       // for a list (iterated) nonterminal a 's' is added for the name
-      name = a.getName() + "s";
+      name = a.getName();
     }
     return name + DecorationHelper.GET_SUFFIX_LIST;
   }
@@ -72,11 +68,11 @@ public class HelperGrammar {
    */
   protected static boolean getsListCardinalityFromAstRule(ASTNonTerminal nonTerminal, ASTMCGrammar grammar) {
     boolean hasUsageName = nonTerminal.isPresentUsageName();
-    boolean isActualList = multiplicityOfASTNode(grammar, nonTerminal) == LIST;
+    boolean isActualList = determineMultiplicity(grammar, nonTerminal) == LIST;
     Optional<AdditionalAttributeSymbol> attributeSymbol = nonTerminal.getEnclosingScope()
         .resolveAdditionalAttributeDown(StringTransformations.uncapitalize(nonTerminal.getName()));
     boolean hasListASTRule = attributeSymbol.isPresent() && attributeSymbol.get().isPresentAstNode() &&
-        multiplicityOfAttributeInAST(attributeSymbol.get().getAstNode()) == LIST;
+        determineMultiplicity(attributeSymbol.get().getAstNode()) == LIST;
     return !hasUsageName && !isActualList && hasListASTRule;
   }
 

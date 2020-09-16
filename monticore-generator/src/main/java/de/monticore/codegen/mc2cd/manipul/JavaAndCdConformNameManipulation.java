@@ -4,27 +4,38 @@ package de.monticore.codegen.mc2cd.manipul;
 
 import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.cd4analysis._visitor.CD4AnalysisVisitor;
 import de.monticore.codegen.mc2cd.TransformationHelper;
-import de.monticore.utils.ASTNodes;
 
 import java.util.function.UnaryOperator;
 
 /**
  * Ensures that attributes are spelled with lower case in order to comply with the standard Java
  * convention.
- * 
+ *
  */
-public class JavaAndCdConformNameManipulation implements UnaryOperator<ASTCDCompilationUnit> {
-  
+public class JavaAndCdConformNameManipulation implements UnaryOperator<ASTCDCompilationUnit>, CD4AnalysisVisitor {
+
+  CD4AnalysisVisitor realThis = this;
+
+  @Override
+  public CD4AnalysisVisitor getRealThis() {
+    return realThis;
+  }
+
+  @Override
+  public void setRealThis(CD4AnalysisVisitor realThis) {
+    this.realThis = realThis;
+  }
+
   @Override
   public ASTCDCompilationUnit apply(ASTCDCompilationUnit cdCompilationUnit) {
-    
-    for (ASTCDAttribute cdAttribute : ASTNodes.getSuccessors(cdCompilationUnit,
-        ASTCDAttribute.class)) {
-
-      cdAttribute.setName(TransformationHelper.getJavaAndCdConformName(cdAttribute.getName()));
-    }
-    
+    cdCompilationUnit.accept(getRealThis());
     return cdCompilationUnit;
+  }
+
+  @Override
+  public void visit(ASTCDAttribute node) {
+    node.setName(TransformationHelper.getJavaAndCdConformName(node.getName()));
   }
 }

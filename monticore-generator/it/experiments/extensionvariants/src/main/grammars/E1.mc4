@@ -2,9 +2,11 @@
 grammar E1 extends D {
 
   // Orig:  S = "text" a:S* b:S? c:S;
+  @Override
   S = "bla";
 
   // Orig: T = "text" a:S* b:S? c:S;
+  @Override
   T = "text" c:S;
 
 }

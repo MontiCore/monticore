@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package cocos.invalid.A4094;
+
+grammar A4094 extends cocos.invalid.A4094.A4094Super{
+
+  @Override
+  Foo = "foo";
+
+}

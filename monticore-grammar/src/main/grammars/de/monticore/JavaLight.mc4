@@ -4,6 +4,11 @@ package de.monticore;
 /* This is a MontiCore stable grammar.
  * Adaptations -- if any -- are conservative. */
 
+import de.monticore.statements.*;
+import de.monticore.expressions.*;
+import de.monticore.symbols.*;
+import de.monticore.types.*;
+
 /**
  * JavaLight is a subset of Java that MontiCore itself
  * uses as intermediate language for the code generation process.
@@ -20,12 +25,12 @@ package de.monticore;
  *
 */
 
-component grammar JavaLight extends de.monticore.expressions.CommonExpressions,
-                                    de.monticore.expressions.AssignmentExpressions,
-                                    de.monticore.expressions.JavaClassExpressions,
-                                    de.monticore.statements.MCCommonStatements,
-                                    de.monticore.types.MCBasicTypes,
-                                    de.monticore.symbols.OOSymbols {
+component grammar JavaLight extends CommonExpressions,
+                                    AssignmentExpressions,
+                                    JavaClassExpressions,
+                                    MCCommonStatements,
+                                    MCBasicTypes,
+                                    OOSymbols {
 
 external ExtTypeParameters;
 
@@ -50,20 +55,23 @@ symbolrule MethOrConstr =
 
 MethodDeclaration implements MethOrConstr, ClassBodyDeclaration
     =   MCModifier* ExtTypeParameters?
-                MCReturnType Name FormalParameters (dim:"[" "]")*
-                ("throws" Throws)? (MCJavaBlock | ";")
+               MCReturnType Name FormalParameters (dim:"[" "]")*
+               ("throws" Throws)? (MCJavaBlock | ";")
     ;
 
 ConstructorDeclaration implements MethOrConstr, ClassBodyDeclaration
-    =   MCModifier* ExtTypeParameters? Name FormalParameters ("throws" Throws)?
-        MCJavaBlock
+    =   MCModifier* ExtTypeParameters? Name FormalParameters
+                ("throws" Throws)? MCJavaBlock
     ;
 
-ConstDeclaration extends LocalVariableDeclarationStatement implements ClassBodyDeclaration, InterfaceBodyDeclaration
+ConstDeclaration extends LocalVariableDeclarationStatement
+                implements ClassBodyDeclaration, 
+		            InterfaceBodyDeclaration
     =   LocalVariableDeclaration ";"
     ;
 
-InterfaceMethodDeclaration implements MethOrConstr, InterfaceBodyDeclaration
+InterfaceMethodDeclaration implements MethOrConstr,
+                                      InterfaceBodyDeclaration
     =   MCModifier* ExtTypeParameters?
                 MCReturnType Name FormalParameters (dim:"[" "]")*
                 ("throws" Throws)? ";"
@@ -93,7 +101,8 @@ LastFormalParameter
 // ANNOTATIONS
 
 Annotation implements MCModifier,  ElementValue
-    =   "@" annotationName:MCQualifiedName ( "(" AnnotationArguments? ")" )?
+    =   "@" annotationName:MCQualifiedName
+            ( "(" AnnotationArguments? ")" )?
     ;
 
 interface AnnotationArguments ;

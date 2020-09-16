@@ -3,6 +3,7 @@ package de.monticore.types.check;
 
 import com.google.common.collect.Lists;
 import de.monticore.symbols.oosymbols._symboltable.BuiltInJavaSymbolResolvingDelegate;
+import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOSymbolsScope;
 import de.monticore.symboltable.serialization.JsonParser;
@@ -24,7 +25,7 @@ import static org.junit.Assert.*;
 
 public class SymTypeExpressionTest {
 
-  private static OOSymbolsScope scope = BuiltInJavaSymbolResolvingDelegate.getScope();
+  private static IOOSymbolsScope scope = BuiltInJavaSymbolResolvingDelegate.getScope();
 
   // setup of objects (unchanged during tests)
   SymTypeExpression teDouble = createTypeConstant("double");
@@ -296,12 +297,12 @@ public class SymTypeExpressionTest {
   public void deepCloneTest(){
     //SymTypeVoid
     assertTrue(teVoid.deepClone() instanceof SymTypeVoid);
-    assertEquals(teVoid.getTypeInfo(),teVoid.deepClone().getTypeInfo());
+    assertEquals(teVoid.getTypeInfo().getName(),teVoid.deepClone().getTypeInfo().getName());
     assertEquals(teVoid.print(),teVoid.deepClone().print());
 
     //SymTypeOfNull
     assertTrue(teNull.deepClone() instanceof SymTypeOfNull);
-    assertEquals(teNull.getTypeInfo(),teNull.deepClone().getTypeInfo());
+    assertEquals(teNull.getTypeInfo().getName(),teNull.deepClone().getTypeInfo().getName());
     assertEquals(teNull.print(),teNull.deepClone().print());
 
     //SymTypeVariable
@@ -312,7 +313,7 @@ public class SymTypeExpressionTest {
 
     //SymTypeConstant
     assertTrue(teInt.deepClone() instanceof SymTypeConstant);
-    assertEquals(teInt.getTypeInfo(), teInt.deepClone().getTypeInfo());
+    assertEquals(teInt.getTypeInfo().getName(), teInt.deepClone().getTypeInfo().getName());
     assertTrue(teInt.deepClone().isTypeConstant());
     assertEquals(teInt.print(),teInt.deepClone().print());
 

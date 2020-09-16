@@ -61,7 +61,7 @@ public class SymbolDeSerBuilderDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterfacesEmpty() {
-    assertTrue(builderClass.isEmptyInterfaces());
+    assertTrue(builderClass.isEmptyInterface());
   }
 
   @Test
@@ -76,11 +76,11 @@ public class SymbolDeSerBuilderDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testDefaultConstructor() {
-    ASTCDConstructor cdConstructor = builderClass.getCDConstructor(0);
+    ASTCDConstructor cdConstructor = builderClass.getCDConstructors(0);
     assertDeepEquals(PUBLIC, cdConstructor.getModifier());
     assertEquals("ASymbolDeSerBuilder", cdConstructor.getName());
     assertTrue(cdConstructor.isEmptyCDParameters());
-    assertTrue(cdConstructor.isEmptyExceptions());
+    assertTrue(cdConstructor.isEmptyException());
   }
 
   @Test
@@ -121,7 +121,7 @@ public class SymbolDeSerBuilderDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = getMethodBy("setSymbolTablePrinter", builderClass);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertEquals(1, method.sizeCDParameters());
-    ASTCDParameter parameter = method.getCDParameter(0);
+    ASTCDParameter parameter = method.getCDParameters(0);
     assertDeepEquals(A_Symbol_TABLE_PRINTER, parameter.getMCType());
     assertFalse(method.getMCReturnType().isPresentMCVoidType());
     assertDeepEquals(builderClass.getName(), method.getMCReturnType().getMCType());

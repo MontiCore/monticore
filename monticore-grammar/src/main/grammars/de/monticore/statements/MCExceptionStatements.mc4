@@ -4,6 +4,8 @@ package de.monticore.statements;
 /* This is a MontiCore stable grammar.
  * Adaptations -- if any -- are conservative. */
 
+import de.monticore.statements.*;
+
 /**
  * This grammar defines the exception statements.
  * This includes Java try with catch and finally, as well as throw.
@@ -24,7 +26,7 @@ package de.monticore.statements;
 */
 
 component grammar MCExceptionStatements 
-          extends de.monticore.statements.MCCommonStatements {
+          extends MCCommonStatements {
 
 // Three different variants of the TryStatement differ in the
 // optionality of their elements.
@@ -33,37 +35,30 @@ TryStatement1 implements MCStatement
     =   "try"
          core:MCJavaBlock
          CatchClause+
-         ("finally" finally:MCJavaBlock)?
-    ;
+         ("finally" finally:MCJavaBlock)? ;
 
 TryStatement2 implements MCStatement
     =   "try"
         core:MCJavaBlock
         CatchClause*
-        ("finally" finally:MCJavaBlock)
-    ;
+        ("finally" finally:MCJavaBlock) ;
 
 TryStatement3 implements MCStatement
     =   "try" "(" (TryLocalVariableDeclaration || ";")+ ";"? ")"
         core:MCJavaBlock
         CatchClause*
-        ("finally" finally:MCJavaBlock)?
-    ;
+        ("finally" finally:MCJavaBlock)? ;
 
 TryLocalVariableDeclaration
-    =   JavaModifier* MCType DeclaratorId "=" Expression
-    ;
+    = JavaModifier* MCType DeclaratorId "=" Expression ;
 
 CatchClause
-    =   "catch" "(" JavaModifier* CatchTypeList Name ")" MCJavaBlock
-    ;
+    = "catch" "(" JavaModifier* CatchTypeList Name ")" MCJavaBlock ;
 
 CatchTypeList
-    =   (MCQualifiedName || "|")+
-    ;
+    = (MCQualifiedName || "|")+ ;
 
 ThrowStatement implements MCStatement
-    =   "throw" Expression ";"
-    ;
+    = "throw" Expression ";" ;
 
 }

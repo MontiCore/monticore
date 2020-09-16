@@ -9,6 +9,9 @@
 	<#return tc.include(templ)>
 </#function>
 
+<#function include2 templ ast>
+        <#return tc.include(templ,ast)>
+</#function>
 
 <#function includeArgs templ param...>
 	<#return tc.includeArgs(templ, param)>
@@ -46,10 +49,6 @@
 
 <#function defineGlobalVar name value>
 	<#return glex.defineGlobalVar(name, value)>
-</#function>
-
-<#function defineGlobalVar name>
-	<#return glex.defineGlobalVar(name)>
 </#function>
 
 <#function defineGlobalVars name...>
@@ -91,6 +90,10 @@
 
 <#function defineHookPointWithDefault name default>
 	<#return glex.defineHookPointWithDefault(tc, name, default)>
+</#function>
+
+<#function defineHookPointWithDefault3 name ast default>
+	<#return glex.defineHookPointWithDefault(tc, name, ast, default)>
 </#function>
 
 

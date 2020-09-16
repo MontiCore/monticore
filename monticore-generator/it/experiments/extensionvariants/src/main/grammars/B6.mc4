@@ -4,6 +4,7 @@ grammar B6 extends A {
   // R is adapted and multiplicities changed
 
   // Orig:  R = "several" M "," N* "," P? "," (Q|R) ".";
+  @Override
   R = "several" M "," N "," P* "," Q* ".";
   
   New = "...";

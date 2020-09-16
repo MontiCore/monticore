@@ -4,6 +4,9 @@ package de.monticore.statements;
 /* This is a MontiCore stable grammar.
  * Adaptations -- if any -- are conservative. */
 
+import de.monticore.statements.*;
+import de.monticore.expressions.*;
+
 /**
  * This grammar defines the assert statement as known from Java
  *   assert Constraint : Message ;
@@ -26,11 +29,10 @@ package de.monticore.statements;
 */
 
 component grammar MCAssertStatements 
-          extends de.monticore.statements.MCStatementsBasis,
-                  de.monticore.expressions.ExpressionsBasis  {
+          extends MCStatementsBasis,
+                  ExpressionsBasis  {
 
 AssertStatement implements MCStatement
-    =   "assert" assertion:Expression (":" message:Expression)? ";"
-    ;
+    = "assert" assertion:Expression (":" message:Expression)? ";" ;
 
 }

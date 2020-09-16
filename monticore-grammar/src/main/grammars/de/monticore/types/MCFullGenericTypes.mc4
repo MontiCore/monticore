@@ -1,7 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types;
 
-/* Beta-version: This is intended to become a MontiCore stable grammar. */
+/* This is a MontiCore stable grammar.
+ * Adaptations -- if any -- are conservative. */
+
+import de.monticore.types.*;
 
 /**
  * This grammar completes the type definitions to 
@@ -13,14 +16,14 @@ package de.monticore.types;
  * 
  * This grammar is part of a hierarchy of types, namely 
  * * types.MCBasicTypes.mc4       
- * * types/MCCollectionTypes.mc4  
- * * types/MCSimpleGenericTypes.mc4
- * * types/MCFullGenericTypes.mc4    
+ *   * types/MCCollectionTypes.mc4  
+ *     * types/MCSimpleGenericTypes.mc4
+ *       * types/MCFullGenericTypes.mc4    
  *
 */
 
 component grammar MCFullGenericTypes
-       extends de.monticore.types.MCSimpleGenericTypes {
+          extends MCSimpleGenericTypes {
 
   /*=================================================================*/
 
@@ -46,6 +49,8 @@ component grammar MCFullGenericTypes
        MCBasicGenericType  // complex Outer Type qualification
         "."  (MCInnerType || ".")+  ;
 
+  // At this point it is not unique whether a type name is used or defined: 
+  // this left open to the embedding nonterminal
   MCInnerType = Name ("<" (MCTypeArgument || ",")+ ">")?;
 
 

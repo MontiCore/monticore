@@ -29,7 +29,7 @@ public class SomeCode {
   public void processModels() {
     // disable fail quick
     Log.enableFailQuick(false);
-    // iterate and process many models
+    // iterate and process some models, but completely
     // ...
   
     // re-enable fail quick

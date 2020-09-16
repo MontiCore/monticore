@@ -10,16 +10,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import de.monticore.spacefreechecks._ast.ASTA;
-import de.monticore.spacefreechecks._ast.ASTAddExpression;
-import de.monticore.spacefreechecks._ast.ASTB;
-import de.monticore.spacefreechecks._ast.ASTC;
-import de.monticore.spacefreechecks._ast.ASTComparisonExpression;
-import de.monticore.spacefreechecks._ast.ASTExpression;
-import de.monticore.spacefreechecks._ast.ASTShiftExpression;
-import de.monticore.spacefreechecks._ast.ASTType;
-import de.monticore.spacefreechecks._ast.ASTTypeArguments;
-import de.monticore.spacefreechecks._ast.ASTTypeAsExpression;
+import de.monticore.spacefreechecks._ast.*;
 import de.monticore.spacefreechecks._parser.SpaceFreeChecksParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -60,7 +51,7 @@ public class SomeTest {
     ASTType ast = parser.parse_StringType( " List < Theo > " ).get();
     assertEquals("List", ast.getName());
     ASTTypeArguments ta = ast.getTypeArguments();
-    assertEquals("Theo", ta.getTypesList().get(0).getName());
+    assertEquals("Theo", ta.getTypeList().get(0).getName());
   }
   
   // --------------------------------------------------------------------
@@ -69,7 +60,7 @@ public class SomeTest {
     ASTType ast = parser.parse_StringType( "List<Theo>" ).get();
     assertEquals("List", ast.getName());
     ASTTypeArguments ta = ast.getTypeArguments();
-    assertEquals("Theo", ta.getTypesList().get(0).getName());
+    assertEquals("Theo", ta.getTypeList().get(0).getName());
   }
   
   // --------------------------------------------------------------------
@@ -78,9 +69,9 @@ public class SomeTest {
     ASTType ast = parser.parse_StringType( "List<Set<Theo>>" ).get();
     assertEquals("List", ast.getName());
     ASTTypeArguments ta = ast.getTypeArguments();
-    assertEquals("Set", ta.getTypesList().get(0).getName());
-    ASTTypeArguments ta2 = ta.getTypesList().get(0).getTypeArguments();
-    assertEquals("Theo", ta2.getTypesList().get(0).getName());
+    assertEquals("Set", ta.getTypeList().get(0).getName());
+    ASTTypeArguments ta2 = ta.getTypeList().get(0).getTypeArguments();
+    assertEquals("Theo", ta2.getTypeList().get(0).getName());
   }
   
   // --------------------------------------------------------------------
@@ -203,30 +194,53 @@ public class SomeTest {
   @Test
   public void testB() throws IOException {
     ASTB ast = parser.parse_StringB( "Otto \n Karo  " ).get();
-    assertEquals("Otto", ast.getNamesList().get(0));
-    assertEquals("Karo", ast.getNamesList().get(1));
+    assertEquals("Otto", ast.getNameList().get(0));
+    assertEquals("Karo", ast.getNameList().get(1));
   }
 
   // --------------------------------------------------------------------
   @Test
   public void testC() throws IOException {
     ASTC ast = parser.parse_StringC( "    Otto.Karo" ).get();
-    assertEquals("Otto", ast.getNamesList().get(0));
-    assertEquals("Karo", ast.getNamesList().get(1));
+    assertEquals("Otto", ast.getNameList().get(0));
+    assertEquals("Karo", ast.getNameList().get(1));
   }
 
   // --------------------------------------------------------------------
   @Test
   public void testC1() throws IOException {
     ASTC ast = parser.parse_StringC( "    O.Karo" ).get();
-    assertEquals("O", ast.getNamesList().get(0));
-    assertEquals("Karo", ast.getNamesList().get(1));
+    assertEquals("O", ast.getNameList().get(0));
+    assertEquals("Karo", ast.getNameList().get(1));
   }
 
   // --------------------------------------------------------------------
   @Test
   public void testC2() throws IOException {
     Optional<ASTC> ast = parser.parse_StringC( "    O. Karo" );
+    assertFalse(ast.isPresent());
+  }
+
+  // --------------------------------------------------------------------
+  @Test
+  public void testD() throws IOException {
+    ASTD ast = parser.parse_StringD( "    Otto.Karo" ).get();
+    assertEquals("Otto", ast.getNameList().get(0));
+    assertEquals("Karo", ast.getNameList().get(1));
+  }
+
+  // --------------------------------------------------------------------
+  @Test
+  public void testD1() throws IOException {
+    ASTD ast = parser.parse_StringD( "    O.Karo" ).get();
+    assertEquals("O", ast.getNameList().get(0));
+    assertEquals("Karo", ast.getNameList().get(1));
+  }
+
+  // --------------------------------------------------------------------
+  @Test
+  public void testD2() throws IOException {
+    Optional<ASTD> ast = parser.parse_StringD( "    O. Karo" );
     assertFalse(ast.isPresent());
   }
 

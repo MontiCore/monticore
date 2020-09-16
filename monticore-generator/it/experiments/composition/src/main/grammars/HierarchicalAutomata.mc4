@@ -5,6 +5,7 @@ grammar HierarchicalAutomata extends Automata1 {
   start Automaton; 
 
   // redefine a nonterminal
+  @Override
   State =  "state" Name
     ( "<<" ["initial"] ">>" | "<<" ["final"] ">>" )*
     ( ";" | "{" (State | Transition)* "}" );

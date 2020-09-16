@@ -91,7 +91,7 @@ public class SymbolTableCreatorDelegatorDecoratorTest extends DecoratorTestCase 
 
   @Test
   public void testNoSuperInterfaces() {
-    assertTrue(symTabCreator.isEmptyInterfaces());
+    assertTrue(symTabCreator.isEmptyInterface());
   }
 
   @Test
@@ -107,16 +107,16 @@ public class SymbolTableCreatorDelegatorDecoratorTest extends DecoratorTestCase 
 
   @Test
   public void testConstructor() {
-    ASTCDConstructor cdConstructor = symTabCreator.getCDConstructor(0);
+    ASTCDConstructor cdConstructor = symTabCreator.getCDConstructors(0);
     assertDeepEquals(PUBLIC, cdConstructor.getModifier());
     assertEquals("AutomatonSymbolTableCreatorDelegator", cdConstructor.getName());
 
     assertEquals(1, cdConstructor.sizeCDParameters());
-    assertDeepEquals(AUTOMATON_GLOBAL_SCOPE, cdConstructor.getCDParameter(0).getMCType());
-    assertEquals("globalScope", cdConstructor.getCDParameter(0).getName());
+    assertDeepEquals(AUTOMATON_GLOBAL_SCOPE, cdConstructor.getCDParameters(0).getMCType());
+    assertEquals("globalScope", cdConstructor.getCDParameters(0).getName());
 
 
-    assertTrue(cdConstructor.isEmptyExceptions());
+    assertTrue(cdConstructor.isEmptyException());
   }
 
   @Test
@@ -147,18 +147,18 @@ public class SymbolTableCreatorDelegatorDecoratorTest extends DecoratorTestCase 
 
   @Test
   public void testMethods() {
-    assertEquals(1, symTabCreator.getCDMethodList().size());
+    assertEquals(1, symTabCreator.getCDMethodsList().size());
   }
 
   @Test
   public void testCreateFromASTMethod() {
     ASTCDMethod method = getMethodBy("createFromAST", symTabCreator);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals("de.monticore.codegen.symboltable.automaton._symboltable.AutomatonArtifactScope", method.getMCReturnType().getMCType());
+    assertDeepEquals("de.monticore.codegen.symboltable.automaton._symboltable.IAutomatonArtifactScope", method.getMCReturnType().getMCType());
 
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(AST_AUTOMATON, method.getCDParameter(0).getMCType());
-    assertEquals("rootNode", method.getCDParameter(0).getName());
+    assertDeepEquals(AST_AUTOMATON, method.getCDParameters(0).getMCType());
+    assertEquals("rootNode", method.getCDParameters(0).getName());
   }
 
   @Test

@@ -5,7 +5,7 @@ import com.google.common.collect.Lists;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
-import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbolLoader;
+import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbolSurrogate;
 import de.monticore.codegen.cd2java.exception.DecorateException;
 import de.monticore.codegen.cd2java.exception.DecoratorErrorCode;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
@@ -25,6 +25,7 @@ import static de.monticore.codegen.cd2java.mill.MillConstants.MILL_SUFFIX;
 public class AbstractService<T extends AbstractService> {
 
   private final CDDefinitionSymbol cdSymbol;
+
 
   private final MCTypeFacade mcTypeFacade;
 
@@ -101,15 +102,17 @@ public class AbstractService<T extends AbstractService> {
    * methods for super CDTypes (CDClass and CDInterface)
    */
   public List<String> getAllSuperClassesTransitive(ASTCDClass astcdClass) {
-    return getAllSuperClassesTransitive(astcdClass.getSymbol());
+    return getAllSuperClassesTransitive(astcdClass.getSymbol())
+        .stream()
+        .map(s -> createASTFullName(s.getFullName()))
+        .collect(Collectors.toList());
   }
 
-  public List<String> getAllSuperClassesTransitive(CDTypeSymbol cdTypeSymbol) {
-    List<String> superSymbolList = new ArrayList<>();
+  public List<CDTypeSymbol> getAllSuperClassesTransitive(CDTypeSymbol cdTypeSymbol) {
+    List<CDTypeSymbol> superSymbolList = new ArrayList<>();
     if (cdTypeSymbol.isPresentSuperClass()) {
-      String fullName = cdTypeSymbol.getSuperClass().getLoadedSymbol().getFullName();
-      superSymbolList.add(createASTFullName(fullName));
-      CDTypeSymbol superSymbol = resolveCDType(fullName);
+      CDTypeSymbol superSymbol = cdTypeSymbol.getSuperClass().lazyLoadDelegate();
+      superSymbolList.add(superSymbol);
       superSymbolList.addAll(getAllSuperClassesTransitive(superSymbol));
     }
     return superSymbolList;
@@ -121,8 +124,8 @@ public class AbstractService<T extends AbstractService> {
 
   public List<String> getAllSuperInterfacesTransitive(CDTypeSymbol cdTypeSymbol) {
     List<String> superSymbolList = new ArrayList<>();
-    for (CDTypeSymbolLoader cdInterface : cdTypeSymbol.getCdInterfaceList()) {
-      String fullName = cdInterface.getLoadedSymbol().getFullName();
+    for (CDTypeSymbolSurrogate cdInterface : cdTypeSymbol.getCdInterfacesList()) {
+      String fullName = cdInterface.getFullName();
       superSymbolList.add(createASTFullName(fullName));
       CDTypeSymbol superSymbol = resolveCDType(fullName);
       superSymbolList.addAll(getAllSuperInterfacesTransitive(superSymbol));
@@ -216,6 +219,13 @@ public class AbstractService<T extends AbstractService> {
 
   public boolean hasSymbolStereotype(ASTModifier modifier) {
     return hasStereotype(modifier, MC2CDStereotypes.SYMBOL);
+  }
+
+  public boolean hasSymbolStereotype(ASTCDType type) {
+    if(type.isPresentModifier()){
+      return hasStereotype(type.getModifier(), MC2CDStereotypes.SYMBOL);
+    }
+    return false;
   }
 
   public boolean isMethodBodyPresent(ASTCDMethod method) {
@@ -331,9 +341,9 @@ public class AbstractService<T extends AbstractService> {
     if (!method1.getName().equals(method2.getName()) || method1.sizeCDParameters() != method2.sizeCDParameters()) {
       return false;
     }
-    for (int i = 0; i < method1.getCDParameterList().size(); i++) {
-      if (!method1.getCDParameter(i).getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter())
-          .equals(method2.getCDParameter(i).getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()))) {
+    for (int i = 0; i < method1.getCDParametersList().size(); i++) {
+      if (!method1.getCDParameters(i).getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter())
+          .equals(method2.getCDParameters(i).getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()))) {
         return false;
       }
     }

@@ -12,5 +12,6 @@ ${tc.signature("symbolSimpleName","symbolFullName", "spansScope", "scopeSimpleNa
     spannedScope = ${symTabMill}.${scopeSimpleName?uncap_first}Builder().build();
   }
   symbol.setSpannedScope(spannedScope);
+  spannedScope.setName(symbol.getName());
   scope.addSubScope(spannedScope);
 </#if>

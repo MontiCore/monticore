@@ -49,6 +49,7 @@ grammar MinimalExample extends de.monticore.MCBasics {
 
 // ----------------------- listing/WhiteSpaces.x
 
+  @Override
   token WS =
     (' '
     | '\t'

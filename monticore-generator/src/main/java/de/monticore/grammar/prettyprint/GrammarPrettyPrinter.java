@@ -70,9 +70,10 @@ public class GrammarPrettyPrinter
   public void handle(ASTExternalProd a) {
 
     CommentPrettyPrinter.printPreComments(a, getPrinter());
+    printList(a.getGrammarAnnotationsList().iterator(), "");
     print("external ");
 
-    printList(a.getSymbolDefinitionList().iterator(), " ");
+    printList(a.getSymbolDefinitionsList().iterator(), " ");
     getPrinter().print(a.getName());
 
     if (a.isPresentMCType()) {
@@ -90,7 +91,7 @@ public class GrammarPrettyPrinter
     println("options {");
     getPrinter().indent();
 
-    printList(a.getFollowOptionList().iterator(), "");
+    printList(a.getFollowOptionsList().iterator(), "");
 
     getPrinter().unindent();
     print("}");
@@ -148,7 +149,7 @@ public class GrammarPrettyPrinter
   public void handle(ASTKeyConstant a) {
     print(" key(");
     String sep = "";
-    for (String name: a.getStringList()) {
+    for (String name: a.getStringsList()) {
       print(sep);
       print("\"" + name + "\"");
       sep = " | ";
@@ -179,7 +180,7 @@ public class GrammarPrettyPrinter
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     print("split_token ");
     String sep = "";
-    for (String s: a.getStringList()) {
+    for (String s: a.getStringsList()) {
       print(sep);
       sep = ", ";
       print(s);
@@ -208,7 +209,7 @@ public class GrammarPrettyPrinter
     if (a.isPresentOption()) {
       print("options {");
 
-      for (ASTOptionValue x : a.getOption().getOptionValueList()) {
+      for (ASTOptionValue x : a.getOption().getOptionValuesList()) {
         print(x.getKey() + "=" + x.getValue() + ";");
       }
 
@@ -289,7 +290,7 @@ public class GrammarPrettyPrinter
       print(":");
     }
     print("[");
-    printList(a.getConstantList().iterator(), " | ");
+    printList(a.getConstantsList().iterator(), " | ");
     print("]");
     outputIteration(a.getIteration());
     CommentPrettyPrinter.printPostComments(a, getPrinter());
@@ -306,6 +307,9 @@ public class GrammarPrettyPrinter
     if (a.isRightAssoc()) {
       getPrinter().print(" <rightassoc> ");
     }
+    if (a.isPresentGrammarAnnotation()) {
+      a.getGrammarAnnotation().accept(getRealThis());
+    }
     printList(a.getComponentList().iterator(), " ");
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
@@ -314,9 +318,10 @@ public class GrammarPrettyPrinter
   public void handle(ASTInterfaceProd a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
 
+    printList(a.getGrammarAnnotationsList().iterator(), "");
     print("interface ");
 
-    printList(a.getSymbolDefinitionList().iterator(), " ");
+    printList(a.getSymbolDefinitionsList().iterator(), " ");
 
     print(a.getName());
 
@@ -357,12 +362,13 @@ public class GrammarPrettyPrinter
   @Override
   public void handle(ASTEnumProd a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
+    printList(a.getGrammarAnnotationsList().iterator(), "");
     print("enum ");
     print(a.getName());
 
     getPrinter().print(" = ");
     String sep = "";
-    for (ASTConstant ref : a.getConstantList()) {
+    for (ASTConstant ref : a.getConstantsList()) {
       print(sep);
       ref.accept(getRealThis());
       sep = " | ";
@@ -403,12 +409,12 @@ public class GrammarPrettyPrinter
       }
     }
 
-    if (!a.getGrammarMethodList().isEmpty() || !a.getAdditionalAttributeList().isEmpty()) {
+    if (!a.getGrammarMethodsList().isEmpty() || !a.getAdditionalAttributesList().isEmpty()) {
 
       println(" = ");
       getPrinter().indent();
-      printList(a.getAdditionalAttributeList().iterator(), "");
-      printList(a.getGrammarMethodList().iterator(), "");
+      printList(a.getAdditionalAttributesList().iterator(), "");
+      printList(a.getGrammarMethodsList().iterator(), "");
     }
 
     getPrinter().print(";");
@@ -445,12 +451,12 @@ public class GrammarPrettyPrinter
       }
     }
 
-    if (!a.getGrammarMethodList().isEmpty() || !a.getAdditionalAttributeList().isEmpty()) {
+    if (!a.getGrammarMethodsList().isEmpty() || !a.getAdditionalAttributesList().isEmpty()) {
 
       println(" = ");
       getPrinter().indent();
-      printList(a.getAdditionalAttributeList().iterator(), "");
-      printList(a.getGrammarMethodList().iterator(), "");
+      printList(a.getAdditionalAttributesList().iterator(), "");
+      printList(a.getGrammarMethodsList().iterator(), "");
     }
 
     getPrinter().print(";");
@@ -486,12 +492,12 @@ public class GrammarPrettyPrinter
       }
     }
 
-    if (!a.getGrammarMethodList().isEmpty() || !a.getAdditionalAttributeList().isEmpty()) {
+    if (!a.getGrammarMethodsList().isEmpty() || !a.getAdditionalAttributesList().isEmpty()) {
 
       println(" = ");
       getPrinter().indent();
-      printList(a.getAdditionalAttributeList().iterator(), "");
-      printList(a.getGrammarMethodList().iterator(), "");
+      printList(a.getAdditionalAttributesList().iterator(), "");
+      printList(a.getGrammarMethodsList().iterator(), "");
     }
 
     getPrinter().print(";");
@@ -528,7 +534,7 @@ public class GrammarPrettyPrinter
     print(" " + a.getName() + "(");
 
     String comma = "";
-    for (ASTMethodParameter x : a.getMethodParameterList()) {
+    for (ASTMethodParameter x : a.getMethodParametersList()) {
       getPrinter().print(comma);
       x.getType().accept(getRealThis());
       getPrinter().print(" " + x.getName());
@@ -624,8 +630,8 @@ public class GrammarPrettyPrinter
   public void handle(ASTClassProd a) {
 
     CommentPrettyPrinter.printPreComments(a, getPrinter());
-
-    printList(a.getSymbolDefinitionList().iterator(), " ");
+    printList(a.getGrammarAnnotationsList().iterator(), "");
+    printList(a.getSymbolDefinitionsList().iterator(), " ");
     getPrinter().print(a.getName());
 
     if (!a.getSuperRuleList().isEmpty()) {
@@ -657,11 +663,11 @@ public class GrammarPrettyPrinter
       print("}");
     }
 
-    if (!a.getAltList().isEmpty()) {
+    if (!a.getAltsList().isEmpty()) {
       println(" =");
 
       getPrinter().indent();
-      printList(a.getAltList().iterator(), " | ");
+      printList(a.getAltsList().iterator(), " | ");
     }
     println(";");
 
@@ -677,6 +683,8 @@ public class GrammarPrettyPrinter
    */
   @Override
   public void handle(ASTLexProd a) {
+
+    printList(a.getGrammarAnnotationsList().iterator(), "");
 
     if (a.isFragment()) {
       print("fragment ");
@@ -805,6 +813,10 @@ public class GrammarPrettyPrinter
   public void handle(ASTMCGrammar a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
 
+    if (a.isPresentGrammarAnnotation()) {
+      a.getGrammarAnnotation().accept(getRealThis());
+    }
+
     if (!a.getPackageList().isEmpty()) {
       print("package ");
       print(Names.getQualifiedName(a.getPackageList()));
@@ -821,7 +833,7 @@ public class GrammarPrettyPrinter
       print(" extends ");
       String comma = "";
       for (ASTGrammarReference sgrammar : a.getSupergrammarList()) {
-        print(comma + Names.getQualifiedName(sgrammar.getNameList()));
+        print(comma + Names.getQualifiedName(sgrammar.getNamesList()));
         comma = ", ";
       }
     }
@@ -830,18 +842,18 @@ public class GrammarPrettyPrinter
     if (a.isPresentGrammarOption()) {
       a.getGrammarOption().accept(getRealThis());
     }
-    printList(a.getLexProdList().iterator(), "");
-    printList(a.getClassProdList().iterator(), "");
-    printList(a.getExternalProdList().iterator(), "");
-    printList(a.getEnumProdList().iterator(), "");
-    printList(a.getInterfaceProdList().iterator(), "");
-    printList(a.getAbstractProdList().iterator(), "");
-    printList(a.getASTRuleList().iterator(), "");
-    printList(a.getConceptList().iterator(), "");
+    printList(a.getLexProdsList().iterator(), "");
+    printList(a.getClassProdsList().iterator(), "");
+    printList(a.getExternalProdsList().iterator(), "");
+    printList(a.getEnumProdsList().iterator(), "");
+    printList(a.getInterfaceProdsList().iterator(), "");
+    printList(a.getAbstractProdsList().iterator(), "");
+    printList(a.getASTRulesList().iterator(), "");
+    printList(a.getConceptsList().iterator(), "");
     if (a.isPresentStartRule()) {
       a.getStartRule().accept(getRealThis());
     }
-    printList(a.getSymbolRuleList().iterator(), "");
+    printList(a.getSymbolRulesList().iterator(), "");
     if (a.isPresentScopeRule()) {
       a.getScopeRule().accept(getRealThis());
     }
@@ -1009,8 +1021,9 @@ public class GrammarPrettyPrinter
   public void handle(ASTAbstractProd a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
 
+    printList(a.getGrammarAnnotationsList().iterator(), "");
     getPrinter().print("abstract ");
-    printList(a.getSymbolDefinitionList().iterator(), " ");
+    printList(a.getSymbolDefinitionsList().iterator(), " ");
     getPrinter().print(a.getName() + " ");
     if (!a.getSuperRuleList().isEmpty()) {
       getPrinter().print("extends ");
@@ -1081,6 +1094,21 @@ public class GrammarPrettyPrinter
       }
     }
   }
+
+  public void handle(ASTGrammarAnnotation node) {
+    if (node.isOverride()) {
+      getPrinter().println("@Override");
+    } else if (node.isDeprecated()) {
+      getPrinter().print("@Deprecated");
+      if (node.isPresentMessage()) {
+        getPrinter().print(("(\""));
+        getPrinter().print(node.getMessage());
+        getPrinter().print("\")");
+      }
+      getPrinter().println();
+    }
+  }
+
 
   /**
    * @see de.monticore.grammar.grammar._visitor.GrammarVisitor#handle(de.monticore.grammar.grammar._ast.ASTStartRule)

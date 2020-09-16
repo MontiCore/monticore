@@ -88,9 +88,7 @@ for (astGrammar in getParsedGrammars()) {
   astClassDiagram = addListSuffixToAttributeName(astClassDiagram)
 
   // report the base diagrams
-  reportCD(astClassDiagram, "", report)
-  reportCD(symbolClassDiagramm, "_Symbol", report)
-  reportCD(scopeClassDiagramm, "_Scope", report)
+  reportCD(astClassDiagram, symbolClassDiagramm, scopeClassDiagramm, report)
 
   decoratedSymbolTableCd = decorateForSymbolTablePackage(glex, cdScope, astClassDiagram, symbolClassDiagramm, scopeClassDiagramm, handcodedPath)
   generateFromCD(glex, astClassDiagram, decoratedSymbolTableCd, out, handcodedPath)

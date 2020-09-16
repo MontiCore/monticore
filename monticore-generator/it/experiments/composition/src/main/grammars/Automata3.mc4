@@ -5,6 +5,7 @@ grammar Automata3 extends InvAutomata, Expression {
 
   // LogicExpr is defined in grammar Expression and now
   // bound to the external NT
+  @Override
   Invariant = LogicExpr;
 
   NewNT = "...";

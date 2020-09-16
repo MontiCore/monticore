@@ -2,9 +2,11 @@
 grammar EProblemOptInheritance extends D {
 
   // Orig:  S = "text" a:S* b:S? c:S;
+  @Override
   S = "bla";
 
   // Orig: T = "text" a:S* b:S? c:S;
+  @Override
   T = "text" b:S? c:S;
 
 /*
@@ -14,6 +16,6 @@ grammar EProblemOptInheritance extends D {
   while also overriding S itself
   leads to a signature conflict for  getOptB()
 
-  See RefMan for avoiding this issue.
+  See Reference Manual for avoiding this issue.
 */
 }

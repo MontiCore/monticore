@@ -7,7 +7,6 @@ import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDDefinition;
 import de.monticore.cd.cd4analysis._ast.CD4AnalysisNodeFactory;
 import de.monticore.grammar.grammar._ast.*;
-import de.monticore.utils.ASTNodes;
 import de.monticore.utils.Link;
 
 import java.util.LinkedHashSet;
@@ -38,7 +37,7 @@ public class SymbolRulesToCDClassAndCDInterface implements UnaryOperator<Link<AS
 
   private void addASTRuleLink(Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink, Link<? extends ASTProd, ASTCDClass> link,
                               Set<ASTSymbolRule> matchedASTRules) {
-    ASTNodes.getSuccessors(rootLink.source(), ASTSymbolRule.class).stream()
+    rootLink.source().getSymbolRulesList().stream()
         .filter(astRule -> astRule.getType().equals(link.source().getName()))
         .forEach(matchedASTRule -> {
           matchedASTRules.add(matchedASTRule);
@@ -49,14 +48,14 @@ public class SymbolRulesToCDClassAndCDInterface implements UnaryOperator<Link<AS
   private void createLinksForUnmatchedASTRules(Set<ASTSymbolRule> matchedASTRules,
                                                Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink) {
 
-    for (ASTSymbolRule symbolRule : ASTNodes.getSuccessors(rootLink.source(), ASTSymbolRule.class)) {
+    for (ASTSymbolRule symbolRule : rootLink.source().getSymbolRulesList()) {
       if (!matchedASTRules.contains(symbolRule)) {
         ASTCDClass cdClass = CD4AnalysisNodeFactory.createASTCDClass();
         cdClass.setModifier(CD4AnalysisNodeFactory.createASTModifier());
 
         Link<ASTMCGrammar, ASTCDDefinition> parentLink = Iterables.getOnlyElement(rootLink
             .getLinks(ASTMCGrammar.class, ASTCDDefinition.class));
-        parentLink.target().getCDClassList().add(cdClass);
+        parentLink.target().getCDClasssList().add(cdClass);
         new Link<>(symbolRule, cdClass, parentLink);
       }
     }

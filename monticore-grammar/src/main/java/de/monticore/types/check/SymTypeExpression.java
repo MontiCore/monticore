@@ -2,15 +2,15 @@
 package de.monticore.types.check;
 
 import com.google.common.collect.Lists;
+import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.*;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -87,16 +87,16 @@ public abstract class SymTypeExpression {
 
   public abstract boolean deepEquals(SymTypeExpression sym);
 
-  protected List<MethodSymbol> methodList = new ArrayList<>();
+  protected List<FunctionSymbol> functionList = new ArrayList<>();
 
   /**
    * returns the list of methods the SymTypeExpression can access and filters these for a method with specific name
    * the last calculated type in the type check was no type
    */
-  public List<MethodSymbol> getMethodList(String methodname){
-    methodList.clear();
+  public List<FunctionSymbol> getMethodList(String methodname){
+    functionList.clear();
     //get methods from the typesymbol
-    List<MethodSymbol> methods = getCorrectMethods(methodname,false);
+    List<FunctionSymbol> methods = getCorrectMethods(methodname,false);
     return transformMethodList(methodname,methods);
   }
 
@@ -109,45 +109,52 @@ public abstract class SymTypeExpression {
    * @param outerIsType true if last result of type check was type, false if it was an instance
    * @return the correct methods for the specific case
    */
-  protected List<MethodSymbol> getCorrectMethods(String methodName, boolean outerIsType){
-    List<MethodSymbol> methods = getTypeInfo().getSpannedScope().resolveMethodMany(methodName);
+  protected List<FunctionSymbol> getCorrectMethods(String methodName, boolean outerIsType){
+    List<FunctionSymbol> functions = getTypeInfo().getSpannedScope().resolveFunctionMany(methodName).stream().filter(f -> !(f instanceof MethodSymbol)).collect(Collectors.toList());
+    List<FunctionSymbol> methods = Lists.newArrayList();
+    if(getTypeInfo().getSpannedScope() instanceof IOOSymbolsScope) {
+      methods.addAll(((IOOSymbolsScope)getTypeInfo().getSpannedScope()).resolveFunctionMany(methodName).stream().filter(f -> f instanceof MethodSymbol).collect(Collectors.toList()));
+    }
     if(outerIsType){
-      List<MethodSymbol> methodsWithoutStatic = methods.stream().filter(m -> !m.isIsStatic()).collect(Collectors.toList());
-      List<MethodSymbol> localStaticMethods = getTypeInfo().getSpannedScope().getLocalMethodSymbols()
-          .stream().filter(MethodSymbol::isIsStatic).collect(Collectors.toList());
-      methodsWithoutStatic.addAll(localStaticMethods);
+      List<FunctionSymbol> methodsWithoutStatic = methods.stream().filter(Objects::nonNull).map(m -> (MethodSymbol) m).filter(m -> !m.isIsStatic()).collect(Collectors.toList());
+      methodsWithoutStatic.addAll(functions);
+      if(getTypeInfo().getSpannedScope() instanceof IOOSymbolsScope) {
+        List<MethodSymbol> localStaticMethods = ((IOOSymbolsScope) getTypeInfo().getSpannedScope()).getLocalMethodSymbols().stream().filter(MethodSymbol::isIsStatic).collect(Collectors.toList());
+        methodsWithoutStatic.addAll(localStaticMethods);
+      }
       return methodsWithoutStatic;
     }else{
-      return methods;
+      functions.addAll(methods);
+      return functions;
     }
   }
 
   /**
    * transforms the methods by replacing their type variables with the actual type arguments
    * @param methodName name of the method we search for
-   * @param methods methods that need to be transformed
+   * @param functions methods that need to be transformed
    * @return transformed methods
    */
-  protected List<MethodSymbol> transformMethodList(String methodName, List<MethodSymbol> methods){
-    List<MethodSymbol> matchingMethods = new ArrayList<>();
-    for(MethodSymbol method: methods){
-      List<FieldSymbol> fieldSymbols = new ArrayList<>();
-      for(FieldSymbol parameter: method.getParameterList()){
+  protected List<FunctionSymbol> transformMethodList(String methodName, List<FunctionSymbol> functions){
+    List<FunctionSymbol> matchingMethods = new ArrayList<>();
+    for(FunctionSymbol method: functions){
+      List<VariableSymbol> fieldSymbols = new ArrayList<>();
+      for(VariableSymbol parameter: method.getParameterList()){
         fieldSymbols.add(parameter.deepClone());
       }
-      MethodSymbol copiedMethodSymbol = method.deepClone();
-      OOSymbolsScope scope = OOSymbolsMill.oOSymbolsScopeBuilder().build();
-      for(FieldSymbol parameter: fieldSymbols){
+      FunctionSymbol copiedMethodSymbol = method.deepClone();
+      IOOSymbolsScope scope = OOSymbolsMill.oOSymbolsScopeBuilder().build();
+      for(VariableSymbol parameter: fieldSymbols){
         scope.add(parameter);
       }
       for(TypeVarSymbol typeVar: method.getTypeVariableList()){
         scope.add(typeVar);
       }
       copiedMethodSymbol.setSpannedScope(scope);
-      this.methodList.add(copiedMethodSymbol);
+      this.functionList.add(copiedMethodSymbol);
     }
     //filter methods
-    for(MethodSymbol method:methodList){
+    for(FunctionSymbol method: functionList){
       if(method.getName().equals(methodName)){
         matchingMethods.add(method.deepClone());
       }
@@ -166,7 +173,7 @@ public abstract class SymTypeExpression {
       }
       //every method in methodList: replace typevariables in parameters or return type with its
       // actual symtypeexpression
-      for(MethodSymbol method: matchingMethods) {
+      for(FunctionSymbol method: matchingMethods) {
         //return type
         for (TypeVarSymbol typeVariableArgument : typeVariableArguments) {
           if (method.getReturnType().print().equals(typeVariableArgument.getName())&&method.getReturnType().isTypeVariable()) {
@@ -174,7 +181,7 @@ public abstract class SymTypeExpression {
           }
         }
         //type parameters
-        for (FieldSymbol parameter : method.getParameterList()) {
+        for (VariableSymbol parameter : method.getParameterList()) {
           SymTypeExpression parameterType = parameter.getType();
           for (TypeVarSymbol typeVariableArgument : typeVariableArguments) {
             if (parameterType.print().equals(typeVariableArgument.getName())&& parameterType.isTypeVariable()) {
@@ -214,18 +221,18 @@ public abstract class SymTypeExpression {
    * @param outerIsType true if the last result was a type, false if it was an instance
    * @return the correct methods for the specific case
    */
-  public List<MethodSymbol> getMethodList(String methodName, boolean outerIsType){
-    methodList.clear();
-    List<MethodSymbol> methods = getCorrectMethods(methodName,outerIsType);
+  public List<FunctionSymbol> getMethodList(String methodName, boolean outerIsType){
+    functionList.clear();
+    List<FunctionSymbol> methods = getCorrectMethods(methodName,outerIsType);
     return transformMethodList(methodName,methods);
   }
 
   /**
    * returns the list of fields the SymTypeExpression can access and filters these for a field with specific name
    */
-  public List<FieldSymbol> getFieldList(String fieldName){
+  public List<VariableSymbol> getFieldList(String fieldName){
     //get methods from the typesymbol
-    List<FieldSymbol> fields = getCorrectFields(fieldName,false);
+    List<VariableSymbol> fields = getCorrectFields(fieldName,false);
     return transformFieldList(fieldName,fields);
   }
 
@@ -235,8 +242,8 @@ public abstract class SymTypeExpression {
    * @param outerIsType true if the last result was a type, false if it was an instance
    * @return the correct fields for the specific case
    */
-  public List<FieldSymbol> getFieldList(String fieldName, boolean outerIsType){
-    List<FieldSymbol> fields = getCorrectFields(fieldName,outerIsType);
+  public List<VariableSymbol> getFieldList(String fieldName, boolean outerIsType){
+    List<VariableSymbol> fields = getCorrectFields(fieldName,outerIsType);
     return transformFieldList(fieldName,fields);
   }
 
@@ -249,16 +256,23 @@ public abstract class SymTypeExpression {
    * @param outerIsType true if last result of type check was type, false if it was an instance
    * @return the correct fields for the specific case
    */
-  protected List<FieldSymbol> getCorrectFields(String fieldName, boolean outerIsType){
-    List<FieldSymbol> fields = getTypeInfo().getSpannedScope().resolveFieldMany(fieldName);
+  protected List<VariableSymbol> getCorrectFields(String fieldName, boolean outerIsType){
+    List<VariableSymbol> variables = getTypeInfo().getSpannedScope().resolveVariableMany(fieldName).stream().filter(v -> !(v instanceof FieldSymbol)).collect(Collectors.toList());
+    List<VariableSymbol> fields = Lists.newArrayList();
+    if(getTypeInfo().getSpannedScope() instanceof IOOSymbolsScope) {
+      fields.addAll((getTypeInfo().getSpannedScope()).resolveVariableMany(fieldName).stream().filter(v -> v instanceof FieldSymbol).collect(Collectors.toList()));
+    }
     if(outerIsType){
-      List<FieldSymbol> fieldsWithoutStatic = fields.stream().filter(f->!f.isIsStatic()).collect(Collectors.toList());
-      List<FieldSymbol> localStaticFields = getTypeInfo().getSpannedScope().getLocalFieldSymbols()
-          .stream().filter(FieldSymbol::isIsStatic).collect(Collectors.toList());
-      fieldsWithoutStatic.addAll(localStaticFields);
+      List<VariableSymbol> fieldsWithoutStatic = fields.stream().map(f -> (FieldSymbol) f).filter(f->!f.isIsStatic()).collect(Collectors.toList());
+      fieldsWithoutStatic.addAll(variables);
+      if(getTypeInfo().getSpannedScope() instanceof IOOSymbolsScope) {
+        List<FieldSymbol> localStaticFields = ((IOOSymbolsScope) getTypeInfo().getSpannedScope()).getLocalFieldSymbols().stream().filter(FieldSymbol::isIsStatic).collect(Collectors.toList());
+        fieldsWithoutStatic.addAll(localStaticFields);
+      }
       return fieldsWithoutStatic;
     }else{
-      return fields;
+      variables.addAll(fields);
+      return variables;
     }
   }
 
@@ -268,10 +282,10 @@ public abstract class SymTypeExpression {
    * @param fields fields that need to be transformed
    * @return transformed fields
    */
-  protected List<FieldSymbol> transformFieldList(String fieldName, List<FieldSymbol> fields){
-    List<FieldSymbol> fieldList = new ArrayList<>();
+  protected List<VariableSymbol> transformFieldList(String fieldName, List<VariableSymbol> fields){
+    List<VariableSymbol> fieldList = new ArrayList<>();
     //filter fields
-    for(FieldSymbol field: fields){
+    for(VariableSymbol field: fields){
       if(field.getName().equals(fieldName)){
         fieldList.add(field.deepClone());
       }
@@ -291,7 +305,7 @@ public abstract class SymTypeExpression {
         map.put(typeVariableArguments.get(i),arguments.get(i));
       }
       //every field in fieldList: replace typevariables in type with its actual symtypeexpression
-      for(FieldSymbol field: fieldList){
+      for(VariableSymbol field: fieldList){
         for(TypeVarSymbol typeVariableArgument:typeVariableArguments) {
           if (field.getType().print().equals(typeVariableArgument.getName())&&field.getType().isTypeVariable()) {
             field.setType(map.get(typeVariableArgument));
@@ -323,17 +337,17 @@ public abstract class SymTypeExpression {
    * Furthermore, each SymTypeExpression knows this TypeSymbol (i.e. the
    * TypeSymbols are loaded (or created) upon creation of the SymType.
    */
-  protected OOTypeSymbolSurrogate typeSymbolSurrogate;
+  protected TypeSymbol typeSymbol;
 
-  public OOTypeSymbol getTypeInfo() {
-    return typeSymbolSurrogate.lazyLoadDelegate();
+  public TypeSymbol getTypeInfo() {
+    return typeSymbol;
   }
 
-  public List<OOTypeSymbol> getInnerTypeList(String name) {
-    List<OOTypeSymbol> types = getTypeInfo().getSpannedScope().resolveOOTypeMany(name);
-    List<OOTypeSymbol> typeSymbols = Lists.newArrayList();
+  public List<TypeSymbol> getInnerTypeList(String name) {
+    List<TypeSymbol> types = getTypeInfo().getSpannedScope().resolveTypeMany(name);
+    List<TypeSymbol> typeSymbols = Lists.newArrayList();
 
-    for(OOTypeSymbol type:types){
+    for(TypeSymbol type:types){
       if(name!=null && name.equals(type.getName())){
         typeSymbols.add(type);
       }

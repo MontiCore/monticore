@@ -60,12 +60,12 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
 
     // some FieldSymbols (ie. Variables, Attributes)
     OOTypeSymbol p = new OOTypeSymbol("Person");
-    scope.add(p);
+    add2scope(scope,p);
     OOTypeSymbol s = new OOTypeSymbol("Student");
-    scope.add(s);
+    add2scope(scope,s);
     s.setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Person", scope)));
     OOTypeSymbol f = new OOTypeSymbol("FirstSemesterStudent");
-    scope.add(f);
+    add2scope(scope,f);
     f.setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student", scope)));
     add2scope(scope, field("foo", _intSymType));
     add2scope(scope, field("bar2", _booleanSymType));

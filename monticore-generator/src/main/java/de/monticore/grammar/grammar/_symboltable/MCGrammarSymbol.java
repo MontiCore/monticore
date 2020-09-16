@@ -3,9 +3,8 @@
 package de.monticore.grammar.grammar._symboltable;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsArtifactScope;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
@@ -15,13 +14,12 @@ import java.util.*;
 
 import static com.google.common.collect.ImmutableList.copyOf;
 import static de.se_rwth.commons.logging.Log.errorIfNull;
-import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 
 public class MCGrammarSymbol extends MCGrammarSymbolTOP {
 
-  private final List<MCGrammarSymbolLoader> superGrammars = new ArrayList<>();
+  private final List<MCGrammarSymbolSurrogate> superGrammars = new ArrayList<>();
 
   // the start production of the grammar
   private ProdSymbol startProd;
@@ -44,13 +42,13 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
     return ofNullable(startProd);
   }
 
-  public List<MCGrammarSymbolLoader> getSuperGrammars() {
+  public List<MCGrammarSymbolSurrogate> getSuperGrammars() {
     return copyOf(superGrammars);
   }
 
   public List<MCGrammarSymbol> getSuperGrammarSymbols() {
-    return copyOf(superGrammars.stream().filter(g -> g.isSymbolLoaded())
-            .map(g -> g.getLoadedSymbol())
+    return copyOf(superGrammars.stream()
+            .map(g -> g.lazyLoadDelegate())
             .collect(toList()));
   }
 
@@ -64,7 +62,7 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
     return copyOf(supGrammars);
   }
 
-  public void addSuperGrammar(MCGrammarSymbolLoader superGrammarRef) {
+  public void addSuperGrammar(MCGrammarSymbolSurrogate superGrammarRef) {
     this.superGrammars.add(errorIfNull(superGrammarRef));
   }
 
@@ -86,36 +84,56 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
     return this.getSpannedScope().resolveProdLocally(prodName);
   }
 
+  // return local prod or prod from supergrammars
   public Optional<ProdSymbol> getProdWithInherited(String ruleName) {
     Optional<ProdSymbol> mcProd = getProd(ruleName);
-    Iterator<MCGrammarSymbolLoader> itSuperGrammars = superGrammars.iterator();
-
-    while (!mcProd.isPresent() && itSuperGrammars.hasNext()) {
-      mcProd = itSuperGrammars.next().getLoadedSymbol().getProdWithInherited(ruleName);
+    if (mcProd.isPresent()) {
+      return mcProd;
     }
-
-    return mcProd;
+    return getInheritedProd(ruleName);
   }
 
+  // return only prod from supergrammars
   public Optional<ProdSymbol> getInheritedProd(String ruleName) {
-    Optional<ProdSymbol> mcProd = empty();
-    Iterator<MCGrammarSymbolLoader> itSuperGrammars = superGrammars.iterator();
+    final Map<String, ProdSymbol> map = new LinkedHashMap<>();
 
-    while (!mcProd.isPresent() && itSuperGrammars.hasNext()) {
-      mcProd = itSuperGrammars.next().getLoadedSymbol().getProdWithInherited(ruleName);
+    for (int i = superGrammars.size() - 1; i >= 0; i--) {
+      final MCGrammarSymbolSurrogate superGrammarRef = superGrammars.get(i);
+
+      for (ProdSymbol prod:superGrammarRef.lazyLoadDelegate().getProdsWithInherited().values()) {
+        if (map.containsKey(prod.getName())) {
+          ProdSymbol superProd = map.get(prod.getName());
+          if (MCGrammarSymbolTableHelper.getAllSuperProds(prod).contains(superProd)) {
+            map.put(prod.getName(), prod);
+          }
+        } else {
+          map.put(prod.getName(), prod);
+        }
+      }
     }
 
-    return mcProd;
+    if (map.containsKey(ruleName)) {
+      return Optional.of(map.get(ruleName));
+    }
+    return Optional.empty();
   }
 
+  // return local prods and prods from supergrammars
   public Map<String, ProdSymbol> getProdsWithInherited() {
     final Map<String, ProdSymbol> ret = new LinkedHashMap<>();
 
     for (int i = superGrammars.size() - 1; i >= 0; i--) {
-      final MCGrammarSymbolLoader superGrammarRef = superGrammars.get(i);
+      final MCGrammarSymbolSurrogate superGrammarRef = superGrammars.get(i);
 
-      if (superGrammarRef.isSymbolLoaded()) {
-        ret.putAll(superGrammarRef.getLoadedSymbol().getProdsWithInherited());
+      for (ProdSymbol prod:superGrammarRef.lazyLoadDelegate().getProdsWithInherited().values()) {
+        if (ret.containsKey(prod.getName())) {
+          ProdSymbol superProd = ret.get(prod.getName());
+          if (MCGrammarSymbolTableHelper.getAllSuperProds(prod).contains(superProd)) {
+            ret.put(prod.getName(), prod);
+          }
+        } else {
+          ret.put(prod.getName(), prod);
+        }
       }
     }
 
@@ -130,11 +148,9 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
     final Collection<String> ret = Sets.newHashSet();
 
     for (int i = superGrammars.size() - 1; i >= 0; i--) {
-      final MCGrammarSymbolLoader superGrammarRef = superGrammars.get(i);
+      final MCGrammarSymbolSurrogate superGrammarRef = superGrammars.get(i);
 
-      if (superGrammarRef.isSymbolLoaded()) {
-        ret.addAll(superGrammarRef.getLoadedSymbol().getTokenRulesWithInherited());
-      }
+      ret.addAll(superGrammarRef.lazyLoadDelegate().getTokenRulesWithInherited());
     }
     forEachSplitRules(t -> ret.add(t));
     return ret;
@@ -144,11 +160,9 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
     final Collection<String> ret = Sets.newHashSet();
 
     for (int i = superGrammars.size() - 1; i >= 0; i--) {
-      final MCGrammarSymbolLoader superGrammarRef = superGrammars.get(i);
+      final MCGrammarSymbolSurrogate superGrammarRef = superGrammars.get(i);
 
-      if (superGrammarRef.isSymbolLoaded()) {
-        ret.addAll(superGrammarRef.getLoadedSymbol().getKeywordRulesWithInherited());
-      }
+      ret.addAll(superGrammarRef.lazyLoadDelegate().getKeywordRulesWithInherited());
     }
     forEachNoKeywords(t -> ret.add(t));
     return ret;

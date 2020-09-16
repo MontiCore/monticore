@@ -23,7 +23,7 @@ import static org.junit.Assert.*;
 public class TemplateAliasingTest {
 
   private static final File TARGET_DIR = new File("target");
-  private static final int NUMBER_ALIASES = 19;
+  private static final int NUMBER_ALIASES = 21;
   public static final String ALIASES_PACKAGE = "de.monticore.generating.templateengine.templates.aliases.";
 
 

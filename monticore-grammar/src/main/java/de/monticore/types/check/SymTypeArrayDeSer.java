@@ -2,7 +2,6 @@
 package de.monticore.types.check;
 
 import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
-import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
@@ -18,14 +17,13 @@ public class SymTypeArrayDeSer {
   }
 
   public SymTypeArray deserialize(String serialized, IOOSymbolsScope enclosingScope) {
-    return deserialize(JsonParser.parse(serialized), enclosingScope);
+    return deserialize(JsonParser.parseJsonObject(serialized), enclosingScope);
   }
 
-  public SymTypeArray deserialize(JsonElement serialized, IOOSymbolsScope enclosingScope) {
-    if (JsonDeSers.isCorrectDeSerForKind(SERIALIZED_KIND, serialized)) {
-      JsonObject o = serialized.getAsJsonObject();  //if it has a kind, it is an object
-      int dim = o.getIntegerMember("dim");
-      JsonElement argumentJson = o.getMember("argument");
+  public SymTypeArray deserialize(JsonObject serialized, IOOSymbolsScope enclosingScope) {
+    if (serialized.hasIntegerMember("dim") && serialized.hasMember("argument")) {
+      int dim = serialized.getIntegerMember("dim");
+      JsonElement argumentJson = serialized.getMember("argument");
       SymTypeExpression argument = SymTypeExpressionDeSer.getInstance()
           .deserialize(argumentJson, enclosingScope);
       return SymTypeExpressionFactory.createTypeArray(argument.print(),

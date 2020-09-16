@@ -8,7 +8,6 @@ import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
-import de.monticore.utils.ASTNodes;
 import org.junit.Test;
 
 import java.nio.file.Paths;
@@ -22,7 +21,7 @@ public class TerminalWithUsageNameTest {
   public TerminalWithUsageNameTest() {
     ASTCDCompilationUnit cdCompilationUnit = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/TerminalWithUsageNameGrammar.mc4")).get();
-    astA = TestHelper.getCDClass(cdCompilationUnit, "ASTA").get();
+    astA = TestHelper.getCDClasss(cdCompilationUnit, "ASTA").get();
   }
   
   /**
@@ -31,8 +30,7 @@ public class TerminalWithUsageNameTest {
    */
   @Test
   public void testTerminalUsageName() {
-    ASTCDAttribute cdAttribute = Iterables.getOnlyElement(ASTNodes.getSuccessors(astA,
-        ASTCDAttribute.class));
+    ASTCDAttribute cdAttribute = Iterables.getOnlyElement(astA.getCDAttributesList());
     
     assertEquals("testname", cdAttribute.getName());
     assertEquals("String", TransformationHelper.typeToString(cdAttribute.getMCType()));

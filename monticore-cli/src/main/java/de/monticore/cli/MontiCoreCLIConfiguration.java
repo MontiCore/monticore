@@ -13,11 +13,14 @@ import de.se_rwth.commons.cli.CLIArguments;
 import de.se_rwth.commons.configuration.Configuration;
 import de.se_rwth.commons.configuration.ConfigurationPropertiesMapContributor;
 
+// TODO: Deprecate the class and Simplify the use of Parameters (which is a fixed set)
+
 public final class MontiCoreCLIConfiguration implements Configuration {
   
   public enum Options {
     
-    DEV("dev"), DEV_SHORT("d"), CUSTOMLOG("customLog"), CUSTOMLOG_SHORT("cl"), SCRIPT("script"),
+    DEV("dev"), DEV_SHORT("d"), CUSTOMLOG("customLog"),
+    CUSTOMLOG_SHORT("cl"), SCRIPT("script"),
     SCRIPT_SHORT("s"), HELP("help"), HELP_SHORT("h");
     
     String name;

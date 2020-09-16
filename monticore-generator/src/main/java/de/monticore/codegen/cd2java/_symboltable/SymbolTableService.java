@@ -5,7 +5,7 @@ import de.monticore.cd.CD4AnalysisHelper;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
-import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbolLoader;
+import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbolSurrogate;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
@@ -133,6 +133,30 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   }
 
   /**
+   * artifact scope interface names e.g. IAutomataArtifactScope
+   */
+
+  public String getArtifactScopeInterfaceSimpleName(CDDefinitionSymbol cdSymbol) {
+    return INTERFACE_PREFIX + cdSymbol.getName() + ARTIFACT_PREFIX + SCOPE_SUFFIX;
+  }
+
+  public String getArtifactScopeInterfaceSimpleName() {
+    return getArtifactScopeInterfaceSimpleName(getCDSymbol());
+  }
+
+  public String getArtifactScopeInterfaceFullName(CDDefinitionSymbol cdSymbol) {
+    return getPackage(cdSymbol) + "." + getArtifactScopeInterfaceSimpleName(cdSymbol);
+  }
+
+  public String getArtifactScopeInterfaceFullName() {
+    return getArtifactScopeInterfaceFullName(getCDSymbol());
+  }
+
+  public ASTMCQualifiedType getArtifactScopeInterfaceType() {
+    return getMCTypeFacade().createQualifiedType(getArtifactScopeInterfaceFullName());
+  }
+
+  /**
    * global scope class names e.g. AutomataGlobalScope
    */
 
@@ -199,6 +223,14 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
 
   public String getModelLoaderClassSimpleName() {
     return getModelLoaderClassSimpleName(getCDSymbol());
+  }
+
+  public ASTMCQualifiedType getModelLoaderType(CDDefinitionSymbol cdSymbol) {
+    return getMCTypeFacade().createQualifiedType(getModelLoaderClassFullName(cdSymbol));
+  }
+
+  public ASTMCQualifiedType getModelLoaderType() {
+    return getModelLoaderType(getCDSymbol());
   }
 
   /**
@@ -492,13 +524,13 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     // get AST for symbol
     ASTCDDefinition astcdDefinition = cdSymbol.getAstNode();
     // add symbol definitions from interfaces
-    for (ASTCDInterface astcdInterface : astcdDefinition.getCDInterfaceList()) {
+    for (ASTCDInterface astcdInterface : astcdDefinition.getCDInterfacesList()) {
       if (astcdInterface.isPresentModifier() && hasSymbolStereotype(astcdInterface.getModifier())) {
         symbolNames.add(getSymbolFullName(astcdInterface, cdSymbol));
       }
     }
     // add symbol definitions from nonterminals
-    for (ASTCDClass astcdClass : astcdDefinition.getCDClassList()) {
+    for (ASTCDClass astcdClass : astcdDefinition.getCDClasssList()) {
       if (astcdClass.isPresentModifier() && hasSymbolStereotype(astcdClass.getModifier())) {
         symbolNames.add(getSymbolFullName(astcdClass, cdSymbol));
       }
@@ -564,12 +596,10 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     if (!type.isPresentSymbol()) {
       return Optional.empty();
     }
-    for (CDTypeSymbolLoader superType : type.getSymbol().getCdInterfaceList()) {
-      if (superType.isSymbolLoaded() && superType.getLoadedSymbol().isPresentAstNode()) {
-        Optional<ASTCDType> result = getTypeWithSymbolInfo(superType.getLoadedSymbol().getAstNode());
-        if (result.isPresent()) {
-          return result;
-        }
+    for (CDTypeSymbolSurrogate superType : type.getSymbol().getCdInterfacesList()) {
+      Optional<ASTCDType> result = getTypeWithSymbolInfo(superType.lazyLoadDelegate().getAstNode());
+      if (result.isPresent()) {
+        return result;
       }
     }
     return Optional.empty();
@@ -582,12 +612,10 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     if (!type.isPresentSymbol()) {
       return Optional.empty();
     }
-    for (CDTypeSymbolLoader superType : type.getSymbol().getCdInterfaceList()) {
-      if (superType.isSymbolLoaded() && superType.getLoadedSymbol().isPresentAstNode()) {
-        Optional<ASTCDType> result = getTypeWithScopeInfo(superType.getLoadedSymbol().getAstNode());
-        if (result.isPresent()) {
-          return result;
-        }
+    for (CDTypeSymbolSurrogate superType : type.getSymbol().getCdInterfacesList()) {
+      Optional<ASTCDType> result = getTypeWithScopeInfo(superType.getAstNode());
+      if (result.isPresent()) {
+        return result;
       }
     }
     return Optional.empty();
@@ -598,14 +626,27 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
    */
 
   public List<ASTCDType> getSymbolDefiningProds(ASTCDDefinition astcdDefinition) {
-    List<ASTCDType> symbolProds = getSymbolDefiningProds(astcdDefinition.getCDClassList());
-    symbolProds.addAll(getSymbolDefiningProds(astcdDefinition.getCDInterfaceList()));
+    List<ASTCDType> symbolProds = getSymbolDefiningProds(astcdDefinition.getCDClasssList());
+    symbolProds.addAll(getSymbolDefiningProds(astcdDefinition.getCDInterfacesList()));
     return symbolProds;
   }
 
   public List<ASTCDType> getSymbolDefiningSuperProds() {
     List<ASTCDType> symbolProds = new ArrayList<>();
     for (CDDefinitionSymbol cdDefinitionSymbol : getSuperCDsTransitive()) {
+      for (CDTypeSymbol type : cdDefinitionSymbol.getTypes()) {
+        if (type.isPresentAstNode() && type.getAstNode().isPresentModifier()
+            && hasSymbolStereotype(type.getAstNode().getModifier())) {
+          symbolProds.add(type.getAstNode());
+        }
+      }
+    }
+    return symbolProds;
+  }
+
+  public List<ASTCDType> getSymbolDefiningSuperProds(CDDefinitionSymbol symbol) {
+    List<ASTCDType> symbolProds = new ArrayList<>();
+    for (CDDefinitionSymbol cdDefinitionSymbol : getSuperCDsTransitive(symbol)) {
       for (CDTypeSymbol type : cdDefinitionSymbol.getTypes()) {
         if (type.isPresentAstNode() && type.getAstNode().isPresentModifier()
             && hasSymbolStereotype(type.getAstNode().getModifier())) {
@@ -667,14 +708,14 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   }
 
   public List<ASTCDType> getOnlyScopeClasses(ASTCDDefinition astcdDefinition) {
-    List<ASTCDType> symbolProds = astcdDefinition.getCDClassList().stream()
+    List<ASTCDType> symbolProds = astcdDefinition.getCDClasssList().stream()
         .filter(ASTCDClass::isPresentModifier)
         .filter(c -> hasScopeStereotype(c.getModifier()))
         .filter(c -> !hasSymbolStereotype(c.getModifier()))
         .filter(c -> !hasInheritedSymbolStereotype(c.getModifier()))
         .collect(Collectors.toList());
 
-    symbolProds.addAll(astcdDefinition.getCDInterfaceList().stream()
+    symbolProds.addAll(astcdDefinition.getCDInterfacesList().stream()
         .filter(ASTCDInterface::isPresentModifier)
         .filter(c -> hasScopeStereotype(c.getModifier()))
         .collect(Collectors.toList()));
@@ -713,7 +754,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     if (astcdDefinition.sizeCDInterfaces() != 1) {
       return true;
     }
-    String interfaceName = astcdDefinition.getCDInterface(0).getName();
+    String interfaceName = astcdDefinition.getCDInterfaces(0).getName();
     // check unqualified interface name
     if (interfaceName.equals(getSimpleLanguageInterfaceName())) {
       return false;
@@ -755,12 +796,12 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     if (astcdDefinition.isPresentModifier() && hasStartProdStereotype(astcdDefinition.getModifier())) {
       return getStartProdValue(astcdDefinition.getModifier());
     }
-    for (ASTCDClass prod : astcdDefinition.getCDClassList()) {
+    for (ASTCDClass prod : astcdDefinition.getCDClasssList()) {
       if (hasStereotype(prod.getModifier(), MC2CDStereotypes.START_PROD)) {
         return Optional.of(getCDSymbol().getPackageName() + "." + getCDName() + "." + prod.getName());
       }
     }
-    for (ASTCDInterface prod : astcdDefinition.getCDInterfaceList()) {
+    for (ASTCDInterface prod : astcdDefinition.getCDInterfacesList()) {
       if (hasStereotype(prod.getModifier(), MC2CDStereotypes.START_PROD)) {
         return Optional.of(getCDSymbol().getPackageName() + "." + getCDName() + "." + prod.getName());
       }
@@ -791,12 +832,12 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     if (astcdDefinition.isPresentModifier() && hasStartProdStereotype(astcdDefinition.getModifier())) {
       return true;
     }
-    for (ASTCDClass prod : astcdDefinition.getCDClassList()) {
+    for (ASTCDClass prod : astcdDefinition.getCDClasssList()) {
       if (hasStereotype(prod.getModifier(), MC2CDStereotypes.START_PROD)) {
         return true;
       }
     }
-    for (ASTCDInterface prod : astcdDefinition.getCDInterfaceList()) {
+    for (ASTCDInterface prod : astcdDefinition.getCDInterfacesList()) {
       if (hasStereotype(prod.getModifier(), MC2CDStereotypes.START_PROD)) {
         return true;
       }
@@ -857,4 +898,5 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
       return "null";
     }
   }
+
 }

@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
-
 package de.monticore;
+
+import de.monticore.*;
 
 /*
  * with this grammar, we examine how to define a scannerless pasrer
@@ -16,7 +17,7 @@ package de.monticore;
  *
  */
 
-grammar SpaceFreeChecks extends de.monticore.MCBasics {
+grammar SpaceFreeChecks extends MCBasics {
  
   /* ***********************************************************
    * Expressions with ">" and ">>" +
@@ -26,16 +27,16 @@ grammar SpaceFreeChecks extends de.monticore.MCBasics {
 
   ShiftExpression implements Expression <160> =
         leftExpression:Expression
-        (   shiftOp2:"<" "<" {noSpace()}?
-        |   shiftOp3:">" ">" {noSpace()}? ">" {noSpace()}?
-        |   shiftOp4:">" ">" {noSpace()}?
+        (   {noSpace(2)}? shiftOp2:"<" "<" 
+        |   {noSpace(2,3)}? shiftOp3:">" ">" ">" 
+        |   {noSpace(2)}? shiftOp4:">" ">" 
         )
         rightExpression:Expression;
 
   ComparisonExpression implements Expression <150> =
         leftExpression:Expression
-        (   comparison1:"<" "=" {noSpace()}?
-        |   comparison2:">" "=" {noSpace()}?
+        (   {noSpace(2)}? comparison1:"<" "=" 
+        |   {noSpace(2)}? comparison2:">" "=" 
         |   comparison3:">"
         |   comparison4:"<"
         )
@@ -76,30 +77,13 @@ grammar SpaceFreeChecks extends de.monticore.MCBasics {
   // noSpace can also be used between complex nonterminals 
   // (e.g. qualified names)
   C = Name "." NoWSLast2 Name NoWSLast2 ;
+  D = NoWSNext3 Name "." Name ;
 
   /* ***********************************************************
    * This Nonterminal encapsulates the semantic refutation
    * and can be used instead
    */
   NoWSLast2 = {noSpace()}? ;
-
-  /* ***********************************************************
-   * Some helping functions
-   */
-  concept antlr {
-    parserjava {
-      // checks that there is no space between the last two token
-      // this function is used after the two tokens that are combined
-      public boolean noSpace() {
-        org.antlr.v4.runtime.Token t1 = _input.LT(-1);
-        org.antlr.v4.runtime.Token t2 = _input.LT(-2);
-        // token are on same line
-        // and columns differ exactly length of earlier token (t2)
-        return ((t1.getLine()==t2.getLine()) &&
-                (t1.getCharPositionInLine()==
-                       t2.getCharPositionInLine()+t2.getText().length()));
-      }
-    }
-  }
+  NoWSNext3 = {noSpace(2,3)}? ;
 
 }

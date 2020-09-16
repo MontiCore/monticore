@@ -10,6 +10,7 @@ import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolSurrogate;
  * returns (the same instance of a ) pseudo symbol. This can be used to provide TypSymbols for built
  * in types such as "null" and "void".
  */
+@Deprecated
 public class PseudoTypeSymbolSurrogate extends OOTypeSymbolSurrogate {
 
   protected OOTypeSymbol pseudoSymbol;

@@ -1,6 +1,6 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 
-<!-- Alpha-version: This is intended to become a MontiCore stable explanation. -->
+<!-- This is a MontiCore stable explanation. -->
 
 # MontiCore Core Grammars - an Overview
 
@@ -28,6 +28,7 @@ project under `monticore-grammar/src/main/grammars/` in packages
 * `de.monticore.expressions`
 * `de.monticore.literals`
 * `de.monticore.statements`
+* `de.monticore.symbols`
 * `de.monticore.types`
 
 For [more langauges, see here](../../../../../../docs/Languages.md).
@@ -92,14 +93,22 @@ although they don't cover type restrictions on the arguments, like in
 Java. 
 
 
-### [MCFullGenericTypes.mc4](types/MCFullGenericTypes.mc4) (Beta: In Stabilization)
+### [MCFullGenericTypes.mc4](types/MCFullGenericTypes.mc4) (stable)
 * This grammar completes the type definitions to 
 support the full Java type system including wildcards Blubb<? extends A>
 * A general advice: When you are not sure that you need this kind of
 types, then use a simpler version from above. Type checking ist tricky.
 
 
-### [BasicSymbols.mc4](symbols/BasicSymbols.mc4) (Beta: In Stabilization)
+
+## Symbols: List of Grammars in package `de.monticore.symbols`
+
+These two grammars do not provide syntax themselves, but 
+characterize important forms of symbols, that will be used
+in the type and the expression grammars to define shared 
+kinds of symbols. 
+
+### [BasicSymbols.mc4](symbols/BasicSymbols.mc4) (stable)
 * This grammar defines symbols for *Types* (of all kinds), *Functions*, 
   *Variables* and *TypeVariables*.
 * The defined symbols are of general form and can be used in functional, OO
@@ -108,8 +117,7 @@ types, then use a simpler version from above. Type checking ist tricky.
 * Remark: This grammar is not intended to define concrete or abstract syntax, but the
   infrastructure for symbols. 
 
-
-### [OOSymbols.mc4](symbols/OOSymbols.mc4) (Beta: In Stabilization)
+### [OOSymbols.mc4](symbols/OOSymbols.mc4) (stable)
 * This grammar defines symbols for *objectoriented Types*, *Methods*, and
   *Fields* by mainly extending the symbols defined in `BasicTypeSymbols`.
 * The newly defined symbols extend the general ones by typical 
@@ -179,7 +187,7 @@ modelling language.
 
 
 ### [SetExpressions.mc4](expressions/SetExpressions.mc4) (Beta: In Stabilization)
-* This grammar defines set expressions like {..|..}, set union, intersection etc.
+* This grammar defines set expressions like set union, intersection etc.
 these operations are typical for a logic with set operations, like 
 UML's OCL.
 
@@ -216,7 +224,7 @@ various forms of literals.
   of appropriate type and a retrieve function `getSource()` for a text representation
   of the literal.
 
-### [MCJavaLiterals.mc4](literals/MCJavaLiterals.mc4) (Beta: In Stabilization)
+### [MCJavaLiterals.mc4](literals/MCJavaLiterals.mc4) (stable)
 * This grammar defines Java compliant literals and builds on MCCommonLiterals.
 * The scope of this grammar is to
   ease the reuse of literals structures in Java-like sublanguages.
@@ -253,7 +261,7 @@ is inspired by Java (actually subset of Java). Some example statements:
 * This grammar defines the core interface for statements.
 * A hierarchy of conservative extensions to this grammar is provided below.
 
-### [MCCommonStatements.mc4](statements/MCCommonStatements.mc4) (Beta: In Stabilization)
+### [MCCommonStatements.mc4](statements/MCCommonStatements.mc4) (stable)
 * This grammar defines typical statements, such as method calls
   (which are actually expressions),
   assignment of variables, if, for, while, switch statements, and blocks.
@@ -264,14 +272,14 @@ is inspired by Java (actually subset of Java). Some example statements:
 * This grammar defines exactly the assert statement as known from Java.
 * It can be used independently of other Java statements.
 
-### [MCExceptionStatements.mc4](statements/MCExceptionStatements.mc4) (Beta: In Stabilization)
+### [MCExceptionStatements.mc4](statements/MCExceptionStatements.mc4) (stable)
 * This grammar defines the exception statements.
 * This includes Java try with catch and finally, as well as throw.
 
 ### [MCSynchronizedStatements.mc4](statements/MCSynchronizedStatements.mc4) (stable)
 * This grammar defines the Java-like synchronized statement.
 
-### [MCLowLevelStatements.mc4](statements/MCLowLevelStatements.mc4) (Beta: In Stabilization)
+### [MCLowLevelStatements.mc4](statements/MCLowLevelStatements.mc4) (stable)
 * This grammar defines three low-level statements that Java provides.
 * It contains the break and continue statements and the possibility to label a statement.
 
@@ -318,15 +326,24 @@ several smaller grammars are also available:
  * This includes Cardinality, Completeness, UMLModifier, and UMLStereotype.
 
 
-### [JavaLight.mc4](JavaLight.mc4) (Beta: In Stabilization)
+### [JavaLight.mc4](JavaLight.mc4) (stable)
 * JavaLight is a subset of Java that MontiCore itself
   uses as intermediate language for the code generation process.
 * JavaLight doesn't provide all forms of classes (e.g. inner classes)
   and reduces the type system to normal generic types.  
-  However, that is suffiecient for representation of all generated
+  However, that is sufficient for representation of all generated
   pieces of code that MontiCore wants to make.
+* Included are: the full Java expressions (without anonymous classes),
+  the relevant Java statements, declaration of methods, constructors,
+  constants, interface methods, and annotations.
+* JavaLight composes from CommonExpressions,
+                                    AssignmentExpressions,
+                                    JavaClassExpressions,
+                                    MCCommonStatements,
+                                    MCBasicTypes, and
+                                    OOSymbols.
 * JavaLight can be used for other generator tools as well,
-  especially as core template are reusable and new templates
+  especially as its core templates are reusable and new templates
   for specific method bodies can be added using MontiCore's
   Hook-Mechanisms.
 
@@ -343,7 +360,12 @@ These can also be used if someone is interested:
 ## Further Information
 
 * [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
-* [**List of languages**](../../../../../../docs/Languages.md).
 * [MontiCore documentation](http://www.monticore.de/)
+
+* [**List of languages**](https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/docs/Languages.md)
+* [**MontiCore Core Grammar Library**](https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
+* [Best Practices](BestPractices.md)
+* [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
+
 
 

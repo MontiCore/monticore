@@ -16,6 +16,7 @@ pluginManagement {
 
 rootProject.name = 'experiments'
 include(':automaton')
+include(':makeuse')
 include(':builderAtm')
 include(':ch17')
 include(':codeChecks')
@@ -41,5 +42,6 @@ include(':visit_L_inherit')
 project(':S01_intro').projectDir = file('S01.intro')
 project(':visit_L_inherit').projectDir = file('visit.L.inherit')
 include 'templates'
+include 'hooks'
 include 'textoutput'
 

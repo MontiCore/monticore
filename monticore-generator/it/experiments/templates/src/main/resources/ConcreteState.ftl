@@ -4,6 +4,8 @@ ${tc.signature("outgoing",
                "existsHWCExtension")}
 <#-- plus: String "modelName" is globally defined -->
 
+  ${defineHookPoint("<Import>*ConcreteState")}
+
 /**
  * This generated class implements one state
  * and contains the method implementations for in that state
@@ -21,8 +23,10 @@ public <#if existsHWCExtension>abstract </#if>
   @Override
   public void handle${stimulusName?cap_first}(${modelName} sc) {
       sc.setState(${modelName}.${transitionAST.getTo()?uncap_first});
+      ${defineHookPoint("<JavaBlock>?ConcreteState:handle")}
   }
 </#list>
 
+  ${defineHookPoint("<Field>*ConcreteState")}
 }
 

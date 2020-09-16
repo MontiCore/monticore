@@ -4,6 +4,8 @@ package de.monticore.expressions;
 /* This is a MontiCore stable grammar.
  * Adaptations -- if any -- are conservative. */
 
+import de.monticore.expressions.*;
+
 /**
  * This grammar defines all Java expressions that have side effects,
  * such as assignment expressions like =, +=, etc. and suffix and prefix
@@ -17,15 +19,15 @@ package de.monticore.expressions;
  * * expressions/ExpressionsBasis.mc4
  * * --  expressions/CommonExpressions.mc4
  * * --  --  expressions/JavaClassExpressions.mc4
- * * --  --  expressions/SetExpressions.mc4
  * * --  expressions/AssignmentExpressions.mc4
  * * --  expressions/BitExpressions.mc4
  * * --  expressions/OCLExpressions.mc4
+ * * --  expressions/SetExpressions.mc4
  *
 */
 
 component grammar AssignmentExpressions
-    extends de.monticore.expressions.ExpressionsBasis {
+    extends ExpressionsBasis {
 
   /*=================================================================*/
 

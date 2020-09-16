@@ -4,6 +4,7 @@ package mc.feature.symboltableprinter;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.se_rwth.commons.logging.Log;
 import mc.feature.symboltableprinter.symboltableprintersub.SymbolTablePrinterSubMill;
+import mc.feature.symboltableprinter.symboltableprintersub._symboltable.ISymbolTablePrinterSubScope;
 import mc.feature.symboltableprinter.symboltableprintersub._symboltable.SymbolTablePrinterSubScope;
 import mc.feature.symboltableprinter.symboltableprintersub._symboltable.SymbolTablePrinterSubScopeDeSer;
 import mc.feature.symboltableprinter.symboltableprintersub._symboltable.SymbolTablePrinterSubSymbolTablePrinter;
@@ -33,7 +34,7 @@ public class STPForLanguageCompositionTest {
   @Test
   public void testSerializeLocalSymbols(){
     //create scope with symbols of the grammar SymbolTablePrinterSub and both of its supergrammars
-    SymbolTablePrinterSubScope scope = SymbolTablePrinterSubMill
+    ISymbolTablePrinterSubScope scope = SymbolTablePrinterSubMill
         .symbolTablePrinterSubScopeBuilder().setName("alphabet").build();
     scope.add(SymbolTablePrinterSup1Mill.aSymbolBuilder().setName("a").build());
     scope.add(SymbolTablePrinterSup2Mill.bSymbolBuilder().setName("b").build());
@@ -42,12 +43,10 @@ public class STPForLanguageCompositionTest {
     //serialize symbols and assert that the serialized String contains all the symbols
     SymbolTablePrinterSubScopeDeSer deSer = new SymbolTablePrinterSubScopeDeSer();
     String serialized =  deSer.serialize(scope);
-    assertTrue(serialized.contains("cSymbols"));
-    assertTrue(serialized.contains("\"name\":\"alphabet.c\""));
-    assertTrue(serialized.contains("bSymbols"));
-    assertTrue(serialized.contains("\"name\":\"alphabet.b\""));
-    assertTrue(serialized.contains("aSymbols"));
-    assertTrue(serialized.contains("\"name\":\"alphabet.a\""));
+    assertTrue(serialized.contains("symbols"));
+    assertTrue(serialized.contains("\"name\":\"a\""));
+    assertTrue(serialized.contains("\"name\":\"b\""));
+    assertTrue(serialized.contains("\"name\":\"c\""));
   }
 
   @Test

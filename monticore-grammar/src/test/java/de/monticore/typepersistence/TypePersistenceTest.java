@@ -5,6 +5,7 @@ import de.monticore.io.paths.ModelPath;
 import de.monticore.typepersistence.variable.VariableMill;
 import de.monticore.typepersistence.variable._ast.ASTVar;
 import de.monticore.typepersistence.variable._parser.VariableParser;
+import de.monticore.typepersistence.variable._symboltable.IVariableGlobalScope;
 import de.monticore.typepersistence.variable._symboltable.IVariableScope;
 import de.monticore.typepersistence.variable._symboltable.VariableGlobalScope;
 import de.monticore.typepersistence.variable._symboltable.VariableSymbolTableCreator;
@@ -31,7 +32,7 @@ public class TypePersistenceTest {
     */
 
     //Create global scope for our language combination
-    VariableGlobalScope globalScope = VariableMill
+    IVariableGlobalScope globalScope = VariableMill
         .variableGlobalScopeBuilder()
         .setModelPath(new ModelPath())
         .setModelFileExtension("tp")
@@ -44,6 +45,5 @@ public class TypePersistenceTest {
     IVariableScope blahSymbolTable = varSymbolTableCreator.createFromAST(varModel.get());
 ASTMCType a;
     assertTrue(varModel.isPresent());
-    System.out.println(varModel);
   }
 }

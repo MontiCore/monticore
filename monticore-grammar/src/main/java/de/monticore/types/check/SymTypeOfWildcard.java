@@ -46,8 +46,8 @@ public class SymTypeOfWildcard extends SymTypeExpression {
   @Override
   public SymTypeOfWildcard deepClone() {
     SymTypeOfWildcard clone = new SymTypeOfWildcard(this.isUpper, this.bound);
-    clone.typeSymbolSurrogate = this.typeSymbolSurrogate;
-    clone.methodList = this.methodList;
+    clone.typeSymbol = this.typeSymbol;
+    clone.functionList = this.functionList;
     return clone;
   }
 

@@ -1,7 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions;
 
-/* Alpha-version: This is intended to become a MontiCore stable grammar. */
+/* Beta-version: This is intended to become a MontiCore stable grammar. */
+
+import de.monticore.expressions.*;
 
 /**
  * This grammar defines set expressions like union, intersection etc.
@@ -16,17 +18,20 @@ package de.monticore.expressions;
  * * expressions/ExpressionsBasis.mc4
  * * --  expressions/CommonExpressions.mc4
  * * --  --  expressions/JavaClassExpressions.mc4
- * * --  --  expressions/SetExpressions.mc4
  * * --  expressions/AssignmentExpressions.mc4
  * * --  expressions/BitExpressions.mc4
  * * --  expressions/OCLExpressions.mc4
+ * * --  expressions/SetExpressions.mc4
  *
 */
 
 component grammar SetExpressions
-          extends de.monticore.expressions.ExpressionsBasis {
+          extends ExpressionsBasis {
 
   /*=================================================================*/
+
+// TODO: Unterschied IsInExpression und SetInExpression unklar:
+// erklären oder Umbauen
 
   IsInExpression implements Expression <190> =
       elem:Expression
@@ -37,6 +42,9 @@ component grammar SetExpressions
       elem:Expression
       operator:"in"
       set:Expression;
+
+// TODO: Prioritäten konfligieren mit denen aus Common Expressions: anpassen auf
+// sinnvollere Werte
 
   /*=================================================================*/
 
@@ -50,8 +58,12 @@ component grammar SetExpressions
       operator:"intersect"
       right:Expression;
 
+  // We do not introduce a special operator for the 
+  // difference, because the binary "-" operator can here be used as well
+
   /*=================================================================*/
 
+  // sets of sets united (i.e. flattened) and intersected
   UnionExpressionPrefix implements Expression <170> =
       "union"  set:Expression;
 

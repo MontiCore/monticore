@@ -8,15 +8,15 @@ public class ReferenceSymbolSameAttribute implements GrammarASTMCGrammarCoCo {
 
   @Override
   public void check(ASTMCGrammar node) {
-    for (ASTClassProd classProd : node.getClassProdList()) {
+    for (ASTClassProd classProd : node.getClassProdsList()) {
       ReferenceSymbolSameAttributeVisitor visitor = new ReferenceSymbolSameAttributeVisitor();
       classProd.accept(visitor);
     }
-    for (ASTAbstractProd abstractProd : node.getAbstractProdList()) {
+    for (ASTAbstractProd abstractProd : node.getAbstractProdsList()) {
       ReferenceSymbolSameAttributeVisitor visitor = new ReferenceSymbolSameAttributeVisitor();
       abstractProd.accept(visitor);
     }
-    for (ASTInterfaceProd interfaceProd : node.getInterfaceProdList()) {
+    for (ASTInterfaceProd interfaceProd : node.getInterfaceProdsList()) {
       ReferenceSymbolSameAttributeVisitor visitor = new ReferenceSymbolSameAttributeVisitor();
       interfaceProd.accept(visitor);
     }

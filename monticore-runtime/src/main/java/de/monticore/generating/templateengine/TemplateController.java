@@ -64,7 +64,7 @@ public class TemplateController {
   private String templatename;
 
    /**
-   * According to FreemArker, templates don't have a "signature"
+   * According to FreeMarker, templates don't have a "signature"
    * We can mimic such a signature through method calls:
    * The signature(...) method defines a list of variables.
    * And the include call allows a list of arguments that are bound to

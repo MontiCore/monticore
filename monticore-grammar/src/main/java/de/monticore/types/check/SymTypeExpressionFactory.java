@@ -1,13 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
-import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
-import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolSurrogate;
+import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Arrays;
 import java.util.List;
 
+import static de.monticore.types.check.DefsTypeBasic.type;
 import static de.monticore.types.check.DefsTypeBasic.typeConstants;
 
 /**
@@ -25,14 +27,14 @@ public class SymTypeExpressionFactory {
   /**
    * createTypeVariable vor Variables
    */
-  public static SymTypeVariable createTypeVariable(String name, IOOSymbolsScope typeSymbol) {
-    OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate(name);
-    loader.setEnclosingScope(typeSymbol);
-    return new SymTypeVariable(loader);
+  public static SymTypeVariable createTypeVariable(String name, IBasicSymbolsScope scope) {
+    TypeSymbol typeSymbol = new TypeSymbolSurrogate(name);
+    typeSymbol.setEnclosingScope(scope);
+    return new SymTypeVariable(typeSymbol);
   }
 
-  public static SymTypeVariable createTypeVariable(OOTypeSymbolSurrogate typeSymbolSurrogate) {
-    return new SymTypeVariable(typeSymbolSurrogate);
+  public static SymTypeVariable createTypeVariable(TypeSymbol typeSymbol) {
+    return new SymTypeVariable(typeSymbol);
   }
 
   /**
@@ -50,17 +52,17 @@ public class SymTypeExpressionFactory {
   /**
    * for ObjectTypes, as e.g. "Person"
    */
-  public static SymTypeOfObject createTypeObject(OOTypeSymbolSurrogate typeSymbolSurrogate) {
-    return new SymTypeOfObject(typeSymbolSurrogate);
+  public static SymTypeOfObject createTypeObject(TypeSymbol typeSymbol) {
+    return new SymTypeOfObject(typeSymbol);
   }
 
   /**
    * for ObjectTypes, as e.g. "Person"
    */
-  public static SymTypeOfObject createTypeObject(String name, IOOSymbolsScope enclosingScope) {
-    OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate(name);
-    loader.setEnclosingScope(enclosingScope);
-    return new SymTypeOfObject(loader);
+  public static SymTypeOfObject createTypeObject(String name, IBasicSymbolsScope enclosingScope) {
+    TypeSymbol typeSymbol = new TypeSymbolSurrogate(name);
+    typeSymbol.setEnclosingScope(enclosingScope);
+    return new SymTypeOfObject(typeSymbol);
   }
 
   /**
@@ -82,21 +84,41 @@ public class SymTypeExpressionFactory {
   /**
    * creates an array-Type Expression
    *
-   * @param typeSymbolSurrogate
+   * @param typeSymbol
    * @param dim              the dimension of the array
    * @param argument         the argument type (of the elements)
    * @return
    */
-  public static SymTypeArray createTypeArray(OOTypeSymbolSurrogate typeSymbolSurrogate, int dim,
+  public static SymTypeArray createTypeArray(TypeSymbol typeSymbol, int dim,
       SymTypeExpression argument) {
-    return new SymTypeArray(typeSymbolSurrogate, dim, argument);
+    return new SymTypeArray(typeSymbol, dim, argument);
   }
 
-  public static SymTypeArray createTypeArray(String name, IOOSymbolsScope typeSymbolsScope,
+  public static SymTypeArray createTypeArray(String name, IBasicSymbolsScope typeSymbolsScope,
       int dim, SymTypeExpression argument) {
-    OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate(name);
-    loader.setEnclosingScope(typeSymbolsScope);
-    return new SymTypeArray(loader, dim, argument);
+    TypeSymbol typeSymbol = new TypeSymbolSurrogate(name);
+    typeSymbol.setEnclosingScope(typeSymbolsScope);
+    return new SymTypeArray(typeSymbol, dim, argument);
+  }
+
+  public static SymTypeExpression createTypeExpression(TypeSymbol typeSymbol){
+    SymTypeExpression o;
+    if(typeConstants.containsKey(typeSymbol.getName())){
+      o = createTypeConstant(typeSymbol.getName());
+    }
+    else if ("void".equals(typeSymbol.getName())) {
+      o = createTypeVoid();
+    }
+    else if ("null".equals(typeSymbol.getName())) {
+      o = createTypeOfNull();
+    }
+    else if (typeSymbol.getTypeParameterList().isEmpty()) {
+      o = createTypeObject(typeSymbol);
+    }
+    else {
+      o = createGenerics(typeSymbol);
+    }
+    return o;
   }
 
   /**
@@ -105,10 +127,10 @@ public class SymTypeExpressionFactory {
    * Primitives don't need a type symbol, object types need both.
    *
    * @param name
-   * @param type
+   * @param scope
    * @return
    */
-  public static SymTypeExpression createTypeExpression(String name, IOOSymbolsScope type) {
+  public static SymTypeExpression createTypeExpression(String name, IBasicSymbolsScope scope) {
     SymTypeExpression o;
     if (typeConstants.containsKey(name)) {
       o = createTypeConstant(name);
@@ -120,7 +142,7 @@ public class SymTypeExpressionFactory {
       o = createTypeOfNull();
     }
     else {
-      o = createTypeObject(name, type);
+      o = createTypeObject(name, scope);
     }
     return o;
   }
@@ -130,41 +152,41 @@ public class SymTypeExpressionFactory {
    *
    * @return
    */
-  public static SymTypeOfGenerics createGenerics(OOTypeSymbolSurrogate typeSymbolSurrogate) {
-    return new SymTypeOfGenerics(typeSymbolSurrogate);
+  public static SymTypeOfGenerics createGenerics(TypeSymbol typeSymbol) {
+    return new SymTypeOfGenerics(typeSymbol);
   }
 
-  public static SymTypeOfGenerics createGenerics(OOTypeSymbolSurrogate typeSymbolSurrogate,
+  public static SymTypeOfGenerics createGenerics(TypeSymbol typeSymbol,
       List<SymTypeExpression> arguments) {
-    return new SymTypeOfGenerics(typeSymbolSurrogate, arguments);
+    return new SymTypeOfGenerics(typeSymbol, arguments);
   }
 
-  public static SymTypeOfGenerics createGenerics(OOTypeSymbolSurrogate typeSymbolSurrogate,
+  public static SymTypeOfGenerics createGenerics(TypeSymbol typeSymbol,
       SymTypeExpression... arguments) {
-    return new SymTypeOfGenerics(typeSymbolSurrogate, Arrays.asList(arguments));
+    return new SymTypeOfGenerics(typeSymbol, Arrays.asList(arguments));
   }
 
   /**
    * createGenerics: is created using the enclosing Scope to ask for the appropriate symbol.
    */
-  public static SymTypeOfGenerics createGenerics(String name, IOOSymbolsScope enclosingScope) {
-    OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate(name);
-    loader.setEnclosingScope(enclosingScope);
-    return new SymTypeOfGenerics(loader);
+  public static SymTypeOfGenerics createGenerics(String name, IBasicSymbolsScope enclosingScope) {
+    TypeSymbol typeSymbol = new TypeSymbolSurrogate(name);
+    typeSymbol.setEnclosingScope(enclosingScope);
+    return new SymTypeOfGenerics(typeSymbol);
   }
 
-  public static SymTypeOfGenerics createGenerics(String name, IOOSymbolsScope enclosingScope,
+  public static SymTypeOfGenerics createGenerics(String name, IBasicSymbolsScope enclosingScope,
       List<SymTypeExpression> arguments) {
-    OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate(name);
-    loader.setEnclosingScope(enclosingScope);
-    return new SymTypeOfGenerics(loader, arguments);
+    TypeSymbol typeSymbol = new TypeSymbolSurrogate(name);
+    typeSymbol.setEnclosingScope(enclosingScope);
+    return new SymTypeOfGenerics(typeSymbol, arguments);
   }
 
-  public static SymTypeOfGenerics createGenerics(String name, IOOSymbolsScope enclosingScope,
+  public static SymTypeOfGenerics createGenerics(String name, IBasicSymbolsScope enclosingScope,
       SymTypeExpression... arguments) {
-    OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate(name);
-    loader.setEnclosingScope(enclosingScope);
-    return new SymTypeOfGenerics(loader,
+    TypeSymbol typeSymbol = new TypeSymbolSurrogate(name);
+    typeSymbol.setEnclosingScope(enclosingScope);
+    return new SymTypeOfGenerics(typeSymbol,
         Arrays.asList(arguments));
   }
 

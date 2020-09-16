@@ -4,6 +4,7 @@ grammar HAutomata extends SAutomata {
   start Automaton;
 
   // redefine a nonterminal
+  @Override
   State =  "state" Name
     ( "<<" ["initial"] ">>" | "<<" ["final"] ">>" )*
     ( ";" | "{" (State | Transition)* "}" );
