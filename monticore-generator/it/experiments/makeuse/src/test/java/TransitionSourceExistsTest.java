@@ -63,9 +63,10 @@ public class TransitionSourceExistsTest {
     
     // setup the symbol table
     IAutomataArtifactScope modelTopScope = createSymbolTable(ast);
+    modelTopScope.setName("Simple");
 
     // can be used for resolving names in the model
-    Optional<StateSymbol> aSymbol = modelTopScope.resolveState("Simple.A");
+    Optional<StateSymbol> aSymbol = modelTopScope.resolveState("Simple.Simple.A");
     assertTrue(aSymbol.isPresent());
     assertEquals("A", aSymbol.get().getName());
     ASTNode n = aSymbol.get().getAstNode();

@@ -51,8 +51,8 @@ public class ReferenceTest {
     assertTrue(scopeOpt.isPresent());
     IReferenceScope innerScope = scopeOpt.get();
 
-    Optional<TestSymbol> a = globalScope.resolveTest("ReferenceTest.A");
-    Optional<TestSymbol> b = artifactScope.resolveTest("ReferenceTest.B");
+    Optional<TestSymbol> a = globalScope.resolveTest("ReferenceTest.ReferenceTest.A");
+    Optional<TestSymbol> b = artifactScope.resolveTest("ReferenceTest.ReferenceTest.B");
     Optional<TestSymbol> c = innerScope.resolveTest("C");
 
     assertTrue(a.isPresent());

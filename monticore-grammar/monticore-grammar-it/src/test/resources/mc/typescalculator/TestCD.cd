@@ -16,7 +16,7 @@ classdiagram TestCD{
     static G f;
   }
 
-  class D implements mc.typescalculator.TestCD.C{
+  class D implements mc.typescalculator.TestCD.TestCD.C{
     Integer s;
     static G f;
     static B y;

@@ -30,7 +30,7 @@ public class SymTabTest {
   public void testPingPong() {
     IJavaAutArtifactScope as = createSymTab("src/test/resources/example/PingPong.javaaut");
     Optional<MethodSymbol> symbol = as
-        .resolveMethod("PingPong.simulate.Game"); //in example model, this is an automaton
+        .resolveMethod("PingPong.PingPong.simulate.Game"); //in example model, this is an automaton
     assertTrue(symbol.isPresent());
     assertEquals("Game", symbol.get().getName());
     assertTrue(symbol.get() instanceof Automaton2MethodAdapter); //assure that an adapter was found

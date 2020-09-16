@@ -38,6 +38,7 @@ public class CombineExpressionsWithLiteralsTest {
     LogStub.init();
     TestCD4AnalysisGlobalScope globalScope =
             new TestCD4AnalysisGlobalScope(new ModelPath(Paths.get(MODEL_PATH)));
+    globalScope.setSymbolFileExtension("cdsym");
 
 
     CD2EAdapter adapter = new CD2EAdapter(globalScope);
@@ -50,10 +51,10 @@ public class CombineExpressionsWithLiteralsTest {
     globalScope1.addAdaptedVariableSymbolResolvingDelegate(adapter);
     globalScope1.addAdaptedTypeSymbolResolvingDelegate(adapter);
 
-    Optional<OOTypeSymbol> classD = globalScope1.resolveOOType("mc.typescalculator.TestCD.D");
+    Optional<OOTypeSymbol> classD = globalScope1.resolveOOType("mc.typescalculator.TestCD.TestCD.D");
     assertTrue(classD.isPresent());
 
-    Optional<OOTypeSymbol> classB = globalScope1.resolveOOType("mc.typescalculator.TestCD.B");
+    Optional<OOTypeSymbol> classB = globalScope1.resolveOOType("mc.typescalculator.TestCD.TestCD.B");
     assertTrue(classB.isPresent());
 
     OOTypeSymbol dSurrogate = new OOTypeSymbolSurrogate("D");
@@ -85,15 +86,7 @@ public class CombineExpressionsWithLiteralsTest {
     assertTrue(j.isPresent());
     assertEquals("int", unbox(j.get().print()));
 
-    Optional<ASTExpression> expr2 = p.parse_StringExpression("s+=s");
-    assertTrue(expr2.isPresent());
-    del.createFromAST(expr2.get());
-
-    Optional<SymTypeExpression> j2 = calc.calculateType(expr2.get());
-    assertTrue(j2.isPresent());
-    assertEquals("int",j2.get().print());
-
-    Optional<ASTExpression> exprC = p.parse_StringExpression("d.f = mc.typescalculator.TestCD.C.f");
+    Optional<ASTExpression> exprC = p.parse_StringExpression("d.f = mc.typescalculator.TestCD.TestCD.C.f");
     assertTrue(exprC.isPresent());
     del.createFromAST(exprC.get());
     j = calc.calculateType(exprC.get());
@@ -107,7 +100,7 @@ public class CombineExpressionsWithLiteralsTest {
     assertTrue(j3.isPresent());
     assertEquals("double",j3.get().print());
 
-    Optional<ASTExpression> exprB = p.parse_StringExpression("b.x = mc.typescalculator.TestCD.B.z");
+    Optional<ASTExpression> exprB = p.parse_StringExpression("b.x = mc.typescalculator.TestCD.TestCD.B.z");
     assertTrue(exprB.isPresent());
     del.createFromAST(exprB.get());
 
