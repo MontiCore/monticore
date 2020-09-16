@@ -51,7 +51,7 @@ public class AutomataToolTest {
   
   @Test
   public void executeSimple12() {
-    AutomataTool.main(new String[] { "src/test/resources/example/Simple12.aut", "Simple12.autsym" });
+    AutomataTool.main(new String[] { "src/test/resources/example/Simple12.aut", "target/Simple12.autsym" });
     Log.printFindings();
     assertEquals(0, Log.getFindings().size());
     // LogStub.printPrints();
