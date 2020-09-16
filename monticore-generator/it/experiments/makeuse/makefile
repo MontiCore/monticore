@@ -10,114 +10,115 @@
 #
 
 #############################################################
-# Configuration (files and used commands):
-
-# Paths to handcoded part used for the TOP mechanism
-HWC=src/main/java
-
-# All sources for the tool (includes HWC)
-SRC=$(wildcard src/**/*java)
-
-# jar for the MontiCore call
-MCJAR=monticore-all.jar
-
-
-# jar for Java compilation: runtime and grammars built using the snapshot generator
-MCRT=monticore-rt.jar
-
-# jar for grammars
-MCG=monticore-g.jar
-
-# model to be processed
-MODEL=src/main/grammars/Automata.mc4
+# The makefile handles two levels of generation and processing 
+# Level
+#   M2: MontiCore LWB generates Automata tool-code
+#        & compiles & jars
+#   M1: The resulting Automata tool is executed 
+#   	on real automata
 
 #############################################################
-# Rules:
+# M2 Configuration (files and used commands):
 
-# initial rule depending on all sub-activities
+# M2-model to be processed (the grammar)
+MODEL=src/main/grammars/Automata.mc4
+
+# M2-Paths to handcoded part used for the TOP mechanism
+HWC=src/main/java
+
+# M2-input: All handwritten sources for the tool
+# this is needed on M2 level to apply the TOP mechanism
+SRC=$(wildcard src/**/*java)
+
+# jar for the MontiCore call (M2), runtime (M1+M2), and grammars (M2)
+MCJAR=monticore-all.jar
+MCRTE=monticore-rt.jar
+MCGRAMMARS=monticore-g.jar
+
+#############################################################
+# M2 Rules:
+
+# initial rule depending on all relevant sub-activities
 all: target/f.executes target/f.tests
 	@echo "[INFO]. Done with all."
 
 #############################################################
 # Generate and compile:
 
-# Activity 1: run MontiCore generator
-target/f.automata: $(MODEL) $(MCJAR) ${MCG}
+# Activity 1 (M2): run MontiCore generator
+target/f.automata: $(MODEL) $(MCJAR) $(MCGRAMMARS)
 	@echo "[INFO]. Generation of tool code from" $(MODEL)
 	java -jar $(MCJAR) \
 		$(MODEL) \
-		-mp $(MCG) \
+		-mp $(MCGRAMMARS) \
 		-hcp src/main/java \
 		-out target
 	@touch $@
 
-# Activity 2: compile the tool
-target/f.classes: target/f.automata $(SRC) $(MCRT)
+# Activity 2 (M2): compile the tool
+target/f.classes: target/f.automata $(SRC) $(MCRTE)
 	@echo "[INFO]. Compile tool"
 	@mkdir -p target/classes/
-	javac -cp $(MCRT) \
+	javac -cp $(MCRTE) \
 	      -d target/classes/ \
 	      -sourcepath ".;target/;src/main/java/" \
 	      src/main/java/automata/AutomataTool.java
 	@touch $@
 
-# Activity 3: build the tool jar
+# Activity 3 (M2): build the tool jar
 target/toolautomata.jar: target/f.classes
 	@echo "[INFO]. Create tool jar"
 	jar cfe target/toolautomata.jar automata.AutomataTool -C target/classes .
 # TODO toolautomatar.jar needs to be a fat jar?
-#KLAPPT NICHT# 	--> das entstehende JAR ist wohl nicht geeignet?
-#KLAPPT NICHT# 	--> es sollte nachfolgend zum Einsatz kommen (testen und processing)
+# BR: Könnte möglich sein, @KH: bitte erstellen; oder so erstellen, dass es gemeinsam mit 
+# dem MCRTE einsetzbar ist.
+# (und nicht mehr die   direkt angegeben werden müssen)
 
 #############################################################
 # Testing
 
-# Activity 4: compile the tests
+# Activity 4 (M2): compile the tests
 # (which was on purpose not integrated in tool compilation)
 target/f.testclasses: target/toolautomata.jar $(SRC)
 	@echo "[INFO]. Compile tests"
 	@mkdir -p target/testclasses/
-	javac -cp "target/toolautomata.jar;.;$(MCRT);junit-4.13.jar" \
+	javac -cp "target/toolautomata.jar;.;$(MCRTE);junit-4.13.jar" \
 	      -d target/testclasses/ \
 	      -sourcepath ".;target/;src/test/java/" \
 	      $(wildcard src/test/java/*Test.java)
 	@touch $@
 
-# Activity 5: execute all tests
+# Activity 5 (M1): execute all tests
 target/f.tests: target/f.testclasses
 	@echo "[INFO]. Run tests"
-	@java  -cp "target/testclasses;target/toolautomata.jar;.;$(MCRT);hamcrest-core-1.3.jar;junit-4.13.jar" \
+	@java  -cp "target/testclasses;target/toolautomata.jar;.;$(MCRTE);hamcrest-core-1.3.jar;junit-4.13.jar" \
 	       org.junit.runner.JUnitCore \
 	       $(patsubst target/testclasses/%.class,%,$(wildcard target/testclasses/*Test.class))
 	@touch $@
 
 #############################################################
-# Usage Activities: processing Models:
-# Each is handling one automaton:
+# Usage Activities (M1): processing Models:
+# Each is handling one automaton: (producing one file)
+#
+# Because in these executions there is no additional (optional) input
+# needed, we do not need to use an IncGenCheck here.
 
 target/f.executes: target/PingPong.result target/HierarchyPingPong.result target/Simple12.result
 
 target/PingPong.result: src/test/resources/example/PingPong.aut target/f.classes
 	@echo "[INFO]. Handling" $<
 	java -cp "target/classes;.;$(MCJAR)" \
-	     automata.AutomataTool $< target/symtab/
+	     automata.AutomataTool $< target/symtab/ > $@
 
 target/HierarchyPingPong.result: src/test/resources/example/HierarchyPingPong.aut target/f.classes
 	@echo "[INFO]. Handling" $<
 	java -cp "target/classes;.;$(MCJAR)" \
-	     automata.AutomataTool $< target/symtab/
+	     automata.AutomataTool $< target/symtab/ > $@
 
 target/Simple12.result: src/test/resources/example/Simple12.aut target/f.classes
 	@echo "[INFO]. Handling" $<
 	java -cp "target/classes;.;$(MCJAR)" \
-	     automata.AutomataTool $< target/symtab/
-
-
-
-#
-# next steps:
-# generate something with the tool
-
+	     automata.AutomataTool $< target/symtab/ > $@
 
 
 #############################################################
@@ -129,12 +130,17 @@ $(MCJAR):
 	cp ~/.m2/repository/./org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar .
 	cp ~/monticore/./monticore-cli/target/monticore-cli-*-with-dependencies.jar $@
 
+# XXX BR: junit, etc. direkt nutzen
+
 # get the MontiCore rte
-$(MCRT):
-	cp ~/monticore/./monticore-grammar/target/monticore-grammar-*-with-dependencies.jar $@
+$(MCRTE):
+	# TODO: altre kruecke ersetzen 
+	cp ~/monticore/./monticore-cli/target/monticore-cli-*-with-dependencies.jar $@
+	#TODO: bei mir nicht existent
+	#	cp ~/monticore/./monticore-grammar/target/monticore-grammar-*-with-dependencies.jar $@
 
 # get the MontiCore grammars
-$(MCG):
+$(MCGRAMMARS):
 	cp ~/monticore/./monticore-grammar/target/monticore-grammar-*-grammars.jar $@
 
 target:
@@ -142,10 +148,8 @@ target:
 
 clean:
 	rm -rf target
-	rm -rf $(MCJAR)
-	# NUR vorübergehend aus der Not heraus:
-	rm -rf de
-	rm hamcrest-core-1.3.jar junit-4.13.jar
+	rm hamcrest-core-1.3.jar junit-4.13.jar 
+	rm -rf $(MCGRAMMARS) $(MCRTE) $(MCJAR)
 
 .PHONY: clean
 
