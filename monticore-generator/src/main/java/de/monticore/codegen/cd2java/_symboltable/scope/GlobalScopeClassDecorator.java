@@ -130,7 +130,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
         .addAllCDMethods(createAlreadyResolvedMethods(symbolProds))
         .addAllCDMethods(createAlreadyResolvedSuperMethods())
         .addAllCDMethods(createLoadMethods(symbolClasses))
-        .addCDMethods(createLoadFileForModelNameMethod(definitionName))
+        .addCDMethod(createLoadFileForModelNameMethod(definitionName))
         //
         .addCDMethod(createGetRealThisMethod(globalScopeName))
         .build();

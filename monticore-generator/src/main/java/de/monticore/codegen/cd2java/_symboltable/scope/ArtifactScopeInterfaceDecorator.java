@@ -68,7 +68,7 @@ public class ArtifactScopeInterfaceDecorator extends AbstractCreator<ASTCDCompil
         .addCDMethod(createGetRemainingNameForResolveDownMethod())
         .addAllCDMethods(createContinueWithEnclosingScopeMethods(symbolProds, symbolTableService.getCDSymbol()))
         .addAllCDMethods(createSuperContinueWithEnclosingScopeMethods())
-        .addCDMethods(createGetFullNameMethod())
+        .addCDMethod(createGetFullNameMethod())
         .build();
   }
 

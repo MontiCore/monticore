@@ -159,8 +159,8 @@ public class GlobalScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(String.class, method.getCDParameters(0).getMCType());
-    assertEquals("symbolFileExtension", method.getCDParameters(0).getName());
+    assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
+    assertEquals("symbolFileExtension", method.getCDParameter(0).getName());
   }
 
   @Test
