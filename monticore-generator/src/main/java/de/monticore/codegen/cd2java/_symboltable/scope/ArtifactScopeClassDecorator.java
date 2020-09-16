@@ -3,8 +3,6 @@ package de.monticore.codegen.cd2java._symboltable.scope;
 
 import de.monticore.cd.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
-import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
@@ -12,13 +10,12 @@ import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static de.monticore.cd.facade.CDModifier.PRIVATE;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
@@ -61,6 +58,7 @@ public class ArtifactScopeClassDecorator extends AbstractCreator<ASTCDCompilatio
   public ASTCDClass decorate(ASTCDCompilationUnit input) {
     String artifactScopeSimpleName = symbolTableService.getArtifactScopeSimpleName();
     String scopeClassFullName = symbolTableService.getScopeClassFullName();
+    String globalScopeClassSimpleName = symbolTableService.getGlobalScopeSimpleName();
 
     ASTCDAttribute packageNameAttribute = createPackageNameAttribute();
     ASTCDAttribute importsAttribute = createImportsAttribute();
@@ -78,6 +76,7 @@ public class ArtifactScopeClassDecorator extends AbstractCreator<ASTCDCompilatio
         .addCDMethods(createIsPresentNameMethod())
         .addCDMethods(createGetNameMethod())
         .addCDMethods(createAcceptMethod(artifactScopeSimpleName))
+        .addCDMethods(createSetEnclosingScopeMethod(scopeClassFullName, artifactScopeSimpleName, globalScopeClassSimpleName))
         .build();
   }
 
@@ -144,6 +143,15 @@ public class ArtifactScopeClassDecorator extends AbstractCreator<ASTCDCompilatio
           "_symboltable.AcceptTop", artifactScopeName, errorCode));
     }
     return acceptMethod;
+  }
+
+  protected ASTCDMethod createSetEnclosingScopeMethod(String scopeClassSimpleName, String artifactScopeClassName, String globalScopeClassName){
+    ASTMCType scopeInterfaceType = getMCTypeFacade().createQualifiedType(scopeClassSimpleName);
+    ASTCDParameter enclosingScopeParameter = getCDParameterFacade().createParameter(scopeInterfaceType, "enclosingScope");
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, "setEnclosingScope", enclosingScopeParameter);
+    String generatedErrorCode = symbolTableService.getGeneratedErrorCode(artifactScopeClassName);
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH+"SetEnclosingScope", generatedErrorCode, globalScopeClassName));
+    return method;
   }
 
   public boolean isArtifactScopeTop() {
