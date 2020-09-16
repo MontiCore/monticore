@@ -9,8 +9,8 @@ import java.util.List;
 
 public class Grammar_WithConceptsModelLoader extends Grammar_WithConceptsModelLoaderTOP {
 
-  public Grammar_WithConceptsModelLoader(AstProvider<ASTMCGrammar> astProvider, Grammar_WithConceptsSymbolTableCreatorDelegator symbolTableCreator, String modelFileExtension, String symbolFileExtension) {
-    super(astProvider, symbolTableCreator, modelFileExtension, symbolFileExtension);
+  public Grammar_WithConceptsModelLoader(AstProvider<ASTMCGrammar> astProvider, Grammar_WithConceptsSymbolTableCreatorDelegator symbolTableCreator, String modelFileExtension) {
+    super(astProvider, symbolTableCreator, modelFileExtension);
   }
 
   @Override

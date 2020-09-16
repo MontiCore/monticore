@@ -43,14 +43,14 @@ public class ASTReferencedDefinitionDecorator<T extends ASTCDType> extends Abstr
   @Override
   public T decorate(final T originalInput, T changedInput) {
     List<ASTCDMethod> methodList = new ArrayList<>();
-    for (ASTCDAttribute astcdAttribute : originalInput.getCDAttributesList()) {
+    for (ASTCDAttribute astcdAttribute : originalInput.getCDAttributeList()) {
       if (symbolTableService.isReferencedSymbol(astcdAttribute)) {
         String referencedSymbolType = symbolTableService.getReferencedSymbolTypeName(astcdAttribute);
         //create referenced symbol attribute and methods
         methodList.addAll(getRefDefinitionMethods(astcdAttribute, referencedSymbolType));
       }
     }
-    changedInput.getCDMethodsList().addAll(methodList);
+    changedInput.getCDMethodList().addAll(methodList);
     return changedInput;
   }
 

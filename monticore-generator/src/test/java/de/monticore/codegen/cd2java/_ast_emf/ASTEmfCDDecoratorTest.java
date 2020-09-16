@@ -128,7 +128,7 @@ public class ASTEmfCDDecoratorTest extends DecoratorTestCase {
     GeneratorSetup generatorSetup = new GeneratorSetup();
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
-    for (ASTCDClass clazz : decoratedCompilationUnit.getCDDefinition().getCDClasssList()) {
+    for (ASTCDClass clazz : decoratedCompilationUnit.getCDDefinition().getCDClassList()) {
       StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, clazz, clazz);
       // test parsing
       ParserConfiguration configuration = new ParserConfiguration();

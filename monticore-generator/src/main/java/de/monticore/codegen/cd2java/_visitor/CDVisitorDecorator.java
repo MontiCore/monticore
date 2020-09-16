@@ -68,18 +68,18 @@ public class CDVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, AS
 
     ASTCDDefinition astCD = CD4CodeMill.cDDefinitionBuilder()
         .setName(input.getCDDefinition().getName())
-        .addCDInterfaces(astVisitorDecorator.decorate(input))
-        .addCDClasss(delegatorVisitor)
-        .addCDInterfaces(inheritanceVisitorDecorator.decorate(input))
-        .addCDClasss(parentAwareVisitorDecorator.decorate(input))
-        .addCDClasss(delegatorVisitorBuilderDecorator.decorate(delegatorVisitor))
+        .addCDInterface(astVisitorDecorator.decorate(input))
+        .addCDClass(delegatorVisitor)
+        .addCDInterface(inheritanceVisitorDecorator.decorate(input))
+        .addCDClass(parentAwareVisitorDecorator.decorate(input))
+        .addCDClass(delegatorVisitorBuilderDecorator.decorate(delegatorVisitor))
         .build();
 
-    for (ASTCDClass cdClass : astCD.getCDClasssList()) {
+    for (ASTCDClass cdClass : astCD.getCDClassList()) {
       this.replaceTemplate(PACKAGE, cdClass, createPackageHookPoint(visitorPackage));
     }
 
-    for (ASTCDInterface cdInterface : astCD.getCDInterfacesList()) {
+    for (ASTCDInterface cdInterface : astCD.getCDInterfaceList()) {
       this.replaceTemplate(CoreTemplates.PACKAGE, cdInterface, createPackageHookPoint(visitorPackage));
     }
 

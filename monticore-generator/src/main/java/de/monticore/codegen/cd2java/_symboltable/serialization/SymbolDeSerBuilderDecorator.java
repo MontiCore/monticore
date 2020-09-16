@@ -37,11 +37,11 @@ public class SymbolDeSerBuilderDecorator extends AbstractCreator<ASTCDClass, AST
     ASTCDClass symbolDeSerBuilder = builderDecorator.decorate(decoratedSymbolClass);
     builderDecorator.setPrintBuildMethodTemplate(true);
 
-    symbolDeSerBuilder.getCDAttributesList().forEach(a -> a.setModifier(PROTECTED.build()));
+    symbolDeSerBuilder.getCDAttributeList().forEach(a -> a.setModifier(PROTECTED.build()));
     symbolDeSerBuilder.setName(symbolDeSerBuilderName);
 
     // new build method template
-    Optional<ASTCDMethod> buildMethod = symbolDeSerBuilder.getCDMethodsList()
+    Optional<ASTCDMethod> buildMethod = symbolDeSerBuilder.getCDMethodList()
         .stream()
         .filter(m -> BUILD_METHOD.equals(m.getName()))
         .findFirst();

@@ -98,7 +98,7 @@ public class ArtifactScopeBuilderDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testDefaultConstructor() {
-    ASTCDConstructor cdConstructor = scopeClass.getCDConstructors(0);
+    ASTCDConstructor cdConstructor = scopeClass.getCDConstructor(0);
     assertDeepEquals(PUBLIC, cdConstructor.getModifier());
     assertEquals("AArtifactScopeBuilder", cdConstructor.getName());
 
@@ -109,7 +109,7 @@ public class ArtifactScopeBuilderDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributes() {
-    assertEquals(5, scopeClass.getCDAttributesList().size());
+    assertEquals(5, scopeClass.getCDAttributeList().size());
   }
 
   @Test
@@ -142,7 +142,7 @@ public class ArtifactScopeBuilderDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(44, scopeClass.getCDMethodsList().size());
+    assertEquals(44, scopeClass.getCDMethodList().size());
   }
 
 
@@ -164,8 +164,8 @@ public class ArtifactScopeBuilderDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(ARTIFACT_SCOPE_BUILDER, method.getMCReturnType().getMCType());
 
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(String.class, method.getCDParameters(0).getMCType());
-    assertEquals("packageName", method.getCDParameters(0).getName());
+    assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
+    assertEquals("packageName", method.getCDParameter(0).getName());
   }
 
   @Test
@@ -187,8 +187,8 @@ public class ArtifactScopeBuilderDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(ARTIFACT_SCOPE_BUILDER, method.getMCReturnType().getMCType());
 
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(MCTypeFacade.createListTypeOf(IMPORT_STATEMENT), method.getCDParameters(0).getMCType());
-    assertEquals("imports", method.getCDParameters(0).getName());
+    assertDeepEquals(MCTypeFacade.createListTypeOf(IMPORT_STATEMENT), method.getCDParameter(0).getMCType());
+    assertEquals("imports", method.getCDParameter(0).getName());
   }
 
   @Test

@@ -111,7 +111,7 @@ public enum Multiplicity {
     boolean containedInAlternative = false;
     for (ASTNode intermediate : intermediates) {
       if (intermediate instanceof ASTClassProd) {
-        containedInAlternative |= ((ASTClassProd) intermediate).getAltsList().size() > 1;
+        containedInAlternative |= ((ASTClassProd) intermediate).getAltList().size() > 1;
       } else if (intermediate instanceof ASTBlock) {
         containedInAlternative |= ((ASTBlock) intermediate).getAltList().size() > 1;
       }

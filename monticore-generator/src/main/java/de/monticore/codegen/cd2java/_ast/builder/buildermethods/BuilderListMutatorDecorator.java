@@ -43,7 +43,7 @@ public class BuilderListMutatorDecorator extends ListMutatorDecorator {
         attributeIndex = m.getName().lastIndexOf(capitalizedAttributeNameWithOutS);
       }
       String methodName = m.getName().substring(0, attributeIndex);
-      String parameterCall = m.getCDParametersList().stream()
+      String parameterCall = m.getCDParameterList().stream()
           .map(ASTCDParameter::getName)
           .collect(Collectors.joining(", "));
       this.replaceTemplate(EMPTY_BODY, m, new TemplateHookPoint("_ast.builder.MethodDelegate4ASTBuilder",

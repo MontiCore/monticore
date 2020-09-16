@@ -16,7 +16,7 @@ public class SplitRuleInvalid implements GrammarASTSplitRuleCoCo {
 
   @Override
   public void check(ASTSplitRule a) {
-    for (String s:a.getStringsList()) {
+    for (String s:a.getStringList()) {
       if (s.length() < 2 || s.matches(".*[a-zA-Z0-9].*")) {
         Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, s), a.get_SourcePositionStart());
       }

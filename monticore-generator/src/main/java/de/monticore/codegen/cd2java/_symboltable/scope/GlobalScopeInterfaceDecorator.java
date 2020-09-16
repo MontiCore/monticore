@@ -94,13 +94,13 @@ public class GlobalScopeInterfaceDecorator
         .addAllCDMethods(createResolveMethods(symbolClasses, definitionName))
         .addAllCDMethods(createSuperProdResolveMethods(definitionName))
         .addAllCDMethods(createEnclosingScopeMethods(globalScopeName))
-        .addCDMethods(createGetNameMethod(globalScopeName))
-        .addCDMethods(createIsPresentNameMethod())
-        .addCDMethods(creatCheckIfContinueAsSubScopeMethod())
-        .addCDMethods(createGetRealThisMethod(globalScopeInterfaceName))
-        .addCDMethods(createAddLoadedFileMethod())
-        .addCDMethods(createClearLoadedFilesMethod())
-        .addCDMethods(createIsFileLoadedMethod())
+        .addCDMethod(createGetNameMethod(globalScopeName))
+        .addCDMethod(createIsPresentNameMethod())
+        .addCDMethod(creatCheckIfContinueAsSubScopeMethod())
+        .addCDMethod(createGetRealThisMethod(globalScopeInterfaceName))
+        .addCDMethod(createAddLoadedFileMethod())
+        .addCDMethod(createClearLoadedFilesMethod())
+        .addCDMethod(createIsFileLoadedMethod())
         .build();
   }
 

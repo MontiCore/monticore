@@ -30,7 +30,7 @@ public class EmfNodeFactoryDecorator extends NodeFactoryDecorator {
     ASTMCType factoryType = this.getMCTypeFacade().createQualifiedType(factoryClassName);
 
     //remove abstract classes
-    List<ASTCDClass> astcdClassList = astcdDefinition.deepClone().getCDClasssList()
+    List<ASTCDClass> astcdClassList = astcdDefinition.deepClone().getCDClassList()
         .stream()
         .filter(ASTCDClass::isPresentModifier)
         .filter(x -> !x.getModifier().isAbstract())
@@ -69,12 +69,12 @@ public class EmfNodeFactoryDecorator extends NodeFactoryDecorator {
         .setModifier(PUBLIC.build())
         .setName(factoryClassName)
         .setSuperclass(getMCTypeFacade().createQualifiedType(E_FACTORY_IMPL))
-        .addCDAttributes(factoryAttribute)
+        .addCDAttribute(factoryAttribute)
         .addAllCDAttributes(factoryAttributeList)
-        .addCDConstructors(constructor)
-        .addCDMethods(getFactoryMethod)
-        .addCDMethods(emfCreateMethod)
-        .addCDMethods(getPackageMethod)
+        .addCDConstructor(constructor)
+        .addCDMethod(getFactoryMethod)
+        .addCDMethod(emfCreateMethod)
+        .addCDMethod(getPackageMethod)
         .addAllCDMethods(createMethodList)
         .addAllCDMethods(delegateMethodList)
         .build();
