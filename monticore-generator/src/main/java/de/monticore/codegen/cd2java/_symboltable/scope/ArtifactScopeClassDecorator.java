@@ -58,7 +58,6 @@ public class ArtifactScopeClassDecorator extends AbstractCreator<ASTCDCompilatio
   public ASTCDClass decorate(ASTCDCompilationUnit input) {
     String artifactScopeSimpleName = symbolTableService.getArtifactScopeSimpleName();
     String scopeClassFullName = symbolTableService.getScopeClassFullName();
-    String globalScopeClassSimpleName = symbolTableService.getGlobalScopeSimpleName();
 
     ASTCDAttribute packageNameAttribute = createPackageNameAttribute();
     ASTCDAttribute importsAttribute = createImportsAttribute();
@@ -69,14 +68,14 @@ public class ArtifactScopeClassDecorator extends AbstractCreator<ASTCDCompilatio
         .setSuperclass(getMCTypeFacade().createQualifiedType(scopeClassFullName))
         .addInterface(symbolTableService.getArtifactScopeInterfaceType())
         .addAllCDConstructors(createConstructors(artifactScopeSimpleName))
-        .addCDAttributes(packageNameAttribute)
+        .addCDAttribute(packageNameAttribute)
         .addAllCDMethods(createPackageNameAttributeMethods(packageNameAttribute))
-        .addCDAttributes(importsAttribute)
+        .addCDAttribute(importsAttribute)
         .addAllCDMethods(createImportsAttributeMethods(importsAttribute))
-        .addCDMethods(createIsPresentNameMethod())
-        .addCDMethods(createGetNameMethod())
-        .addCDMethods(createAcceptMethod(artifactScopeSimpleName))
-        .addCDMethods(createSetEnclosingScopeMethod(scopeClassFullName, artifactScopeSimpleName, globalScopeClassSimpleName))
+        .addCDMethod(createIsPresentNameMethod())
+        .addCDMethod(createGetNameMethod())
+        .addCDMethod(createAcceptMethod(artifactScopeSimpleName))
+        .addCDMethod(createSetEnclosingScopeMethod(scopeClassFullName, artifactScopeSimpleName, globalScopeClassSimpleName))
         .build();
   }
 

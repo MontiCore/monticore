@@ -14,7 +14,7 @@ public class KeywordRuleInvalid implements GrammarASTKeywordRuleCoCo {
 
   @Override
   public void check(ASTKeywordRule a) {
-    for (String s :a.getStringsList()) {
+    for (String s :a.getStringList()) {
       if (!s.matches("[a-zA-Z_$][a-zA-Z0-9_$]*")) {
         Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, s), a.get_SourcePositionStart());
       }

@@ -1,13 +1,13 @@
 # (c) https://github.com/MontiCore/monticore
 
 #
-# This makefile shows how to embedd a MontiCore 
-# code generation and a tool execution in a 
+# This makefile shows how to embedd a MontiCore
+# code generation and a tool execution in a
 # makefile using make for efficient incremental generation
 #
 # Incremental == makefile itself checks whether to regenerate
 # and therefore uses MontiCore's IncGenCheck.sh
-# 
+#
 
 #############################################################
 # Configuration (files and used commands):
@@ -18,8 +18,15 @@ HWC=src/main/java
 # All sources for the tool (includes HWC)
 SRC=$(wildcard src/**/*java)
 
-# jar for all commands: MontiCore call, Java compilation and execution
+# jar for the MontiCore call
 MCJAR=monticore-all.jar
+
+
+# jar for Java compilation: runtime and grammars built using the snapshot generator
+MCRT=monticore-rt.jar
+
+# jar for grammars
+MCG=monticore-g.jar
 
 # model to be processed
 MODEL=src/main/grammars/Automata.mc4
@@ -27,7 +34,7 @@ MODEL=src/main/grammars/Automata.mc4
 #############################################################
 # Rules:
 
-# initial rule depending on all sub-activities 
+# initial rule depending on all sub-activities
 all: target/f.executes target/f.tests
 	@echo "[INFO]. Done with all."
 
@@ -35,42 +42,30 @@ all: target/f.executes target/f.tests
 # Generate and compile:
 
 # Activity 1: run MontiCore generator
-target/f.automata: $(MODEL) $(MCJAR) 
+target/f.automata: $(MODEL) $(MCJAR) ${MCG}
 	@echo "[INFO]. Generation of tool code from" $(MODEL)
 	java -jar $(MCJAR) \
 		$(MODEL) \
-		-mp $(MCJAR) \
+		-mp $(MCG) \
 		-hcp src/main/java \
 		-out target
 	@touch $@
 
 # Activity 2: compile the tool
-target/f.classes: target/f.automata $(SRC)
+target/f.classes: target/f.automata $(SRC) $(MCRT)
 	@echo "[INFO]. Compile tool"
-	# NUR vorübergehend aus der Not heraus:
-	mkdir -p target/de/monticore/parser
-	cp ~/monticore/./monticore-runtime/src/main/java/de/monticore/parser/Placeholder.java \
-		target/de/monticore/parser/
-	mkdir -p target/de/monticore/symboltable/serialization/
-	cp ~/monticore/./monticore-runtime/src/main/java/de/monticore/symboltable/serialization/JsonDeSers.java \
-		target/de/monticore/symboltable/serialization
-	mkdir -p de/monticore/modelloader/
-	cp ~/monticore/./monticore-runtime/src/main/java/de/monticore/modelloader/IModelLoader.java \
-		de/monticore/modelloader/
-	# Ende der Not 
-	javac -cp $(MCJAR) \
+	@mkdir -p target/classes/
+	javac -cp $(MCRT) \
 	      -d target/classes/ \
 	      -sourcepath ".;target/;src/main/java/" \
 	      src/main/java/automata/AutomataTool.java
 	@touch $@
 
-#KLAPPT NICHT# # Activity 3: build the tool jar
-#KLAPPT NICHT# target/toolautomata.jar: target/classes
-#KLAPPT NICHT# 	@echo "[INFO]. Create tool jar"
-#KLAPPT NICHT# 	@jar --create \
-#KLAPPT NICHT# 	     --file $@ \
-#KLAPPT NICHT# 	     --main-class=src.main.java.automata.AutomataTool \
-#KLAPPT NICHT# 	     $(wildcard target/classes/automata/**/*.class)
+# Activity 3: build the tool jar
+target/toolautomata.jar: target/f.classes
+	@echo "[INFO]. Create tool jar"
+	jar cfe target/toolautomata.jar automata.AutomataTool -C target/classes .
+# TODO toolautomatar.jar needs to be a fat jar?
 #KLAPPT NICHT# 	--> das entstehende JAR ist wohl nicht geeignet?
 #KLAPPT NICHT# 	--> es sollte nachfolgend zum Einsatz kommen (testen und processing)
 
@@ -79,18 +74,19 @@ target/f.classes: target/f.automata $(SRC)
 
 # Activity 4: compile the tests
 # (which was on purpose not integrated in tool compilation)
-target/f.testclasses: target/f.classes $(SRC)
+target/f.testclasses: target/toolautomata.jar $(SRC)
 	@echo "[INFO]. Compile tests"
-	javac -cp "target/classes;.;$(MCJAR);junit-4.13.jar" \
+	@mkdir -p target/testclasses/
+	javac -cp "target/toolautomata.jar;.;$(MCRT);junit-4.13.jar" \
 	      -d target/testclasses/ \
 	      -sourcepath ".;target/;src/test/java/" \
 	      $(wildcard src/test/java/*Test.java)
 	@touch $@
 
 # Activity 5: execute all tests
-target/f.tests: target/f.testclasses 
+target/f.tests: target/f.testclasses
 	@echo "[INFO]. Run tests"
-	@java  -cp "target/testclasses;target/classes;.;$(MCJAR);hamcrest-core-1.3.jar;junit-4.13.jar" \
+	@java  -cp "target/testclasses;target/toolautomata.jar;.;$(MCRT);hamcrest-core-1.3.jar;junit-4.13.jar" \
 	       org.junit.runner.JUnitCore \
 	       $(patsubst target/testclasses/%.class,%,$(wildcard target/testclasses/*Test.class))
 	@touch $@
@@ -118,20 +114,28 @@ target/Simple12.result: src/test/resources/example/Simple12.aut target/f.classes
 
 
 
-# 
+#
 # next steps:
-# generate something with the tool 
+# generate something with the tool
 
 
 
 #############################################################
 # Auxiliary
 
-# get the MontiCore lwb + rte
-$(MCJAR): 
+# get the MontiCore lwb + test rte
+$(MCJAR):
 	cp ~/.m2/repository/./junit/junit/4.13/junit-4.13.jar .
 	cp ~/.m2/repository/./org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar .
 	cp ~/monticore/./monticore-cli/target/monticore-cli-*-with-dependencies.jar $@
+
+# get the MontiCore rte
+$(MCRT):
+	cp ~/monticore/./monticore-grammar/target/monticore-grammar-*-with-dependencies.jar $@
+
+# get the MontiCore grammars
+$(MCG):
+	cp ~/monticore/./monticore-grammar/target/monticore-grammar-*-grammars.jar $@
 
 target:
 	mkdir -p target
@@ -143,5 +147,5 @@ clean:
 	rm -rf de
 	rm hamcrest-core-1.3.jar junit-4.13.jar
 
-.PHONY: clean 
+.PHONY: clean
 

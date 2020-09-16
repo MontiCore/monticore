@@ -44,8 +44,8 @@ public class DataEmfDecorator extends DataDecorator {
   }
 
   protected String calculateListType(ASTCDAttribute attribute, String grammarName, String classname) {
-    if (attribute.getMCType() instanceof ASTMCBasicGenericType && ((ASTMCBasicGenericType) attribute.getMCType()).getMCTypeArgumentsList().size() == 1) {
-      String simpleAttributeType = ((ASTMCBasicGenericType) attribute.getMCType()).getMCTypeArgumentsList().get(0).getMCTypeOpt().get()
+    if (attribute.getMCType() instanceof ASTMCBasicGenericType && ((ASTMCBasicGenericType) attribute.getMCType()).getMCTypeArgumentList().size() == 1) {
+      String simpleAttributeType = ((ASTMCBasicGenericType) attribute.getMCType()).getMCTypeArgumentList().get(0).getMCTypeOpt().get()
               .printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter());
       String listType;
       if (getDecorationHelper().isListAstNode(attribute)) {

@@ -94,7 +94,7 @@ public class ArtifactScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(40, scopeInterface.getCDMethodsList().size());
+    assertEquals(40, scopeInterface.getCDMethodList().size());
   }
 
   @Test
@@ -115,8 +115,8 @@ public class ArtifactScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
 
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(String.class, method.getCDParameters(0).getMCType());
-    assertEquals("packageName", method.getCDParameters(0).getName());
+    assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
+    assertEquals("packageName", method.getCDParameter(0).getName());
   }
 
   @Test
@@ -138,8 +138,8 @@ public class ArtifactScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
 
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(MCTypeFacade.createListTypeOf(IMPORT_STATEMENT), method.getCDParameters(0).getMCType());
-    assertEquals("imports", method.getCDParameters(0).getName());
+    assertDeepEquals(MCTypeFacade.createListTypeOf(IMPORT_STATEMENT), method.getCDParameter(0).getMCType());
+    assertEquals("imports", method.getCDParameter(0).getName());
   }
 
   @Test
@@ -160,8 +160,8 @@ public class ArtifactScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertBoolean(method.getMCReturnType().getMCType());
 
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(String.class, method.getCDParameters(0).getMCType());
-    assertEquals("symbolName", method.getCDParameters(0).getName());
+    assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
+    assertEquals("symbolName", method.getCDParameter(0).getName());
   }
 
   @Test
@@ -172,8 +172,8 @@ public class ArtifactScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(String.class, method.getMCReturnType().getMCType());
 
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(String.class, method.getCDParameters(0).getMCType());
-    assertEquals("symbolName", method.getCDParameters(0).getName());
+    assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
+    assertEquals("symbolName", method.getCDParameter(0).getName());
   }
 
   @Test

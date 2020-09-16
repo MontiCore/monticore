@@ -15,9 +15,11 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCSetType;
-import net.sourceforge.plantuml.Log;
+import de.se_rwth.commons.logging.Log;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.*;
@@ -94,13 +96,13 @@ public class GlobalScopeInterfaceDecorator
         .addAllCDMethods(createResolveMethods(symbolClasses, definitionName))
         .addAllCDMethods(createSuperProdResolveMethods(definitionName))
         .addAllCDMethods(createEnclosingScopeMethods(globalScopeName))
-        .addCDMethods(createGetNameMethod(globalScopeName))
-        .addCDMethods(createIsPresentNameMethod())
-        .addCDMethods(creatCheckIfContinueAsSubScopeMethod())
-        .addCDMethods(createGetRealThisMethod(globalScopeInterfaceName))
-        .addCDMethods(createAddLoadedFileMethod())
-        .addCDMethods(createClearLoadedFilesMethod())
-        .addCDMethods(createIsFileLoadedMethod())
+        .addCDMethod(createGetNameMethod(globalScopeName))
+        .addCDMethod(createIsPresentNameMethod())
+        .addCDMethod(creatCheckIfContinueAsSubScopeMethod())
+        .addCDMethod(createGetRealThisMethod(globalScopeInterfaceName))
+        .addCDMethod(createAddLoadedFileMethod())
+        .addCDMethod(createClearLoadedFilesMethod())
+        .addCDMethod(createIsFileLoadedMethod())
         .build();
   }
 

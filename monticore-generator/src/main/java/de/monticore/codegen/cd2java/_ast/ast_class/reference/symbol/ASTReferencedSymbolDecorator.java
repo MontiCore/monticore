@@ -50,7 +50,7 @@ public class ASTReferencedSymbolDecorator<T extends ASTCDType> extends AbstractT
   public T decorate(final T originalClass, T changedClass) {
     List<ASTCDAttribute> attributeList = new ArrayList<>();
     List<ASTCDMethod> methodList = new ArrayList<>();
-    for (ASTCDAttribute astcdAttribute : originalClass.getCDAttributesList()) {
+    for (ASTCDAttribute astcdAttribute : originalClass.getCDAttributeList()) {
       if (symbolTableService.isReferencedSymbol(astcdAttribute)) {
         String referencedSymbolType = symbolTableService.getReferencedSymbolTypeName(astcdAttribute);
         //create referenced symbol attribute and methods
@@ -66,8 +66,8 @@ public class ASTReferencedSymbolDecorator<T extends ASTCDType> extends AbstractT
         }
       }
     }
-    changedClass.getCDMethodsList().addAll(methodList);
-    changedClass.getCDAttributesList().addAll(attributeList);
+    changedClass.getCDMethodList().addAll(methodList);
+    changedClass.getCDAttributeList().addAll(attributeList);
     return changedClass;
   }
 

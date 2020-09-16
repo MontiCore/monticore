@@ -253,8 +253,8 @@ public class MCGrammarSymbolTableHelper {
     }
     // derive attribute name from constant entry (but only if we have
     // one entry!)
-    else if (ast.getConstantsList().size() == 1) {
-      return HelperGrammar.getAttributeNameForConstant(ast.getConstantsList().get(0));
+    else if (ast.getConstantList().size() == 1) {
+      return HelperGrammar.getAttributeNameForConstant(ast.getConstantList().get(0));
     }
 
     Log.error("0xA2345 The name of the constant group could't be ascertained",

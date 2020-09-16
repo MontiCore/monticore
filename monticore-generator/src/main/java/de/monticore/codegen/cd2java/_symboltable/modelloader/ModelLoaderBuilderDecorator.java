@@ -31,14 +31,14 @@ public class ModelLoaderBuilderDecorator extends AbstractCreator<ASTCDClass, AST
   public ASTCDClass decorate(ASTCDClass modelLoaderClass) {
     ASTCDClass decoratedModelLoaderClass = modelLoaderClass.deepClone();
 
-    decoratedModelLoaderClass.getCDMethodsList().clear();
-    decoratedModelLoaderClass.getCDAttributesList().forEach(a -> a.getModifier().setFinal(false));
+    decoratedModelLoaderClass.getCDMethodList().clear();
+    decoratedModelLoaderClass.getCDAttributeList().forEach(a -> a.getModifier().setFinal(false));
     builderDecorator.setPrintBuildMethodTemplate(false);
     ASTCDClass modelLoaderBuilder = builderDecorator.decorate(decoratedModelLoaderClass);
     builderDecorator.setPrintBuildMethodTemplate(true);
 
     // new build method template
-    Optional<ASTCDMethod> buildMethod = modelLoaderBuilder.getCDMethodsList()
+    Optional<ASTCDMethod> buildMethod = modelLoaderBuilder.getCDMethodList()
         .stream()
         .filter(m -> BUILD_METHOD.equals(m.getName()))
         .findFirst();

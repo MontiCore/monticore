@@ -25,7 +25,7 @@ public class MultipleASTRules implements GrammarASTMCGrammarCoCo {
   @Override
   public void check(ASTMCGrammar a) {
     List<String> nts = new ArrayList<>();
-    for(ASTASTRule rule : a.getASTRulesList()){
+    for(ASTASTRule rule : a.getASTRuleList()){
       if (!nts.contains(rule.getType())) {
         nts.add(rule.getType());
       } else {
