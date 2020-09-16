@@ -29,9 +29,9 @@ public class InterfaceProdTest {
   public InterfaceProdTest() {
     ASTCDCompilationUnit cdCompilationUnit = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/InterfaceProd.mc4")).get();
-    astA = TestHelper.getCDInterfaces(cdCompilationUnit, "ASTA").get();
-    astB = TestHelper.getCDInterfaces(cdCompilationUnit, "ASTB").get();
-    astC = TestHelper.getCDInterfaces(cdCompilationUnit, "ASTC").get();
+    astA = TestHelper.getCDInterface(cdCompilationUnit, "ASTA").get();
+    astB = TestHelper.getCDInterface(cdCompilationUnit, "ASTB").get();
+    astC = TestHelper.getCDInterface(cdCompilationUnit, "ASTC").get();
   }
   
   /**

@@ -31,17 +31,17 @@ public class ScopeDeSerBuilderDecorator extends AbstractCreator<ASTCDClass, ASTC
     ASTCDClass decoratedScopeClass = scopeClass.deepClone();
     String scopeDeSerBuilderName = scopeClass.getName() + BUILDER_SUFFIX;
 
-    decoratedScopeClass.getCDMethodsList().clear();
+    decoratedScopeClass.getCDMethodList().clear();
 
     builderDecorator.setPrintBuildMethodTemplate(false);
     ASTCDClass scopeBuilder = builderDecorator.decorate(decoratedScopeClass);
     builderDecorator.setPrintBuildMethodTemplate(true);
 
-    scopeBuilder.getCDAttributesList().forEach(a -> a.setModifier(PROTECTED.build()));
+    scopeBuilder.getCDAttributeList().forEach(a -> a.setModifier(PROTECTED.build()));
     scopeBuilder.setName(scopeDeSerBuilderName);
 
     // new build method template
-    Optional<ASTCDMethod> buildMethod = scopeBuilder.getCDMethodsList()
+    Optional<ASTCDMethod> buildMethod = scopeBuilder.getCDMethodList()
         .stream()
         .filter(m -> BUILD_METHOD.equals(m.getName()))
         .findFirst();

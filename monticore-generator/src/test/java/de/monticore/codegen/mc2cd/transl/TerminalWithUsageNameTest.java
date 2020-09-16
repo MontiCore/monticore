@@ -21,7 +21,7 @@ public class TerminalWithUsageNameTest {
   public TerminalWithUsageNameTest() {
     ASTCDCompilationUnit cdCompilationUnit = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/TerminalWithUsageNameGrammar.mc4")).get();
-    astA = TestHelper.getCDClasss(cdCompilationUnit, "ASTA").get();
+    astA = TestHelper.getCDClass(cdCompilationUnit, "ASTA").get();
   }
   
   /**
@@ -30,7 +30,7 @@ public class TerminalWithUsageNameTest {
    */
   @Test
   public void testTerminalUsageName() {
-    ASTCDAttribute cdAttribute = Iterables.getOnlyElement(astA.getCDAttributesList());
+    ASTCDAttribute cdAttribute = Iterables.getOnlyElement(astA.getCDAttributeList());
     
     assertEquals("testname", cdAttribute.getName());
     assertEquals("String", TransformationHelper.typeToString(cdAttribute.getMCType()));

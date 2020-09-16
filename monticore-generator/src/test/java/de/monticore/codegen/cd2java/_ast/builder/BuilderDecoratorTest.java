@@ -68,16 +68,16 @@ public class BuilderDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testConstructor() {
-    List<ASTCDConstructor> constructors = builderClass.getCDConstructorsList();
+    List<ASTCDConstructor> constructors = builderClass.getCDConstructorList();
     assertEquals(1, constructors.size());
     ASTCDConstructor constructor = constructors.get(0);
     assertDeepEquals(PUBLIC, constructor.getModifier());
-    assertTrue(constructor.getCDParametersList().isEmpty());
+    assertTrue(constructor.getCDParameterList().isEmpty());
   }
 
   @Test
   public void testAttributes() {
-    assertEquals(5, builderClass.getCDAttributesList().size());
+    assertEquals(5, builderClass.getCDAttributeList().size());
 
     ASTCDAttribute attribute = getAttributeBy("i", builderClass);
     assertDeepEquals(PROTECTED, attribute.getModifier());
@@ -106,7 +106,7 @@ public class BuilderDecoratorTest extends DecoratorTestCase {
     assertTrue(build.getMCReturnType().isPresentMCType());
     assertDeepEquals(originalClass.getName(), build.getMCReturnType().getMCType());
     assertDeepEquals(PUBLIC, build.getModifier());
-    assertTrue(build.getCDParametersList().isEmpty());
+    assertTrue(build.getCDParameterList().isEmpty());
   }
 
   @Test
@@ -115,7 +115,7 @@ public class BuilderDecoratorTest extends DecoratorTestCase {
     assertTrue(isValid.getMCReturnType().isPresentMCType());
     assertBoolean(isValid.getMCReturnType().getMCType());
     assertDeepEquals(PUBLIC, isValid.getModifier());
-    assertTrue(isValid.getCDParametersList().isEmpty());
+    assertTrue(isValid.getCDParameterList().isEmpty());
   }
 
   @Test
@@ -132,8 +132,8 @@ public class BuilderDecoratorTest extends DecoratorTestCase {
     assertTrue(setF.getMCReturnType().isPresentMCType());
     assertEquals(builderClass.getName(), setF.getMCReturnType().printType(new MCSimpleGenericTypesPrettyPrinter(new IndentPrinter())));
     assertDeepEquals(PUBLIC, setF.getModifier());
-    assertEquals(1, setF.getCDParametersList().size());
+    assertEquals(1, setF.getCDParameterList().size());
 
-    assertTrue(builderClass.getCDMethodsList().stream().noneMatch(m -> m.getName().equals("getF")));
+    assertTrue(builderClass.getCDMethodList().stream().noneMatch(m -> m.getName().equals("getF")));
   }
 }

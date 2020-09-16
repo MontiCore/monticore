@@ -24,9 +24,9 @@ public class CDGenerator {
     ASTCDDefinition definition = compilationUnit.getCDDefinition();
     String packageAsPath = String.join(File.separator, compilationUnit.getPackageList()).toLowerCase();
 
-    this.generateCDClasses(packageAsPath, definition.getCDClasssList());
-    this.generateCDInterfaces(packageAsPath, definition.getCDInterfacesList());
-    this.generateCDEnums(packageAsPath, definition.getCDEnumsList());
+    this.generateCDClasses(packageAsPath, definition.getCDClassList());
+    this.generateCDInterfaces(packageAsPath, definition.getCDInterfaceList());
+    this.generateCDEnums(packageAsPath, definition.getCDEnumList());
   }
 
   protected Path getAsPath(String packageAsPath, String name) {

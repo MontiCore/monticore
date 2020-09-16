@@ -28,13 +28,13 @@ public class AttributeInASTOverridingTest {
   public AttributeInASTOverridingTest() {
     ASTCDCompilationUnit cdCompilationUnit = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/AttributeInASTOverridingGrammar.mc4")).get();
-    astA = TestHelper.getCDClasss(cdCompilationUnit, "ASTA").get();
-    astB = TestHelper.getCDClasss(cdCompilationUnit, "ASTB").get();
+    astA = TestHelper.getCDClass(cdCompilationUnit, "ASTA").get();
+    astB = TestHelper.getCDClass(cdCompilationUnit, "ASTB").get();
   }
 
   @Test
   public void testAttributeOverridden() {
-    List<ASTCDAttribute> attributes = astA.getCDAttributesList();
+    List<ASTCDAttribute> attributes = astA.getCDAttributeList();
     assertEquals(1, attributes.size());
     assertEquals("mc2cdtransformation.AttributeInASTOverridingGrammar.ASTY",
         TransformationHelper.typeToString(attributes.get(0).getMCType()));
@@ -42,7 +42,7 @@ public class AttributeInASTOverridingTest {
   
   @Test
   public void testAttributeNotOverridden() {
-    List<ASTCDAttribute> attributes = astB.getCDAttributesList();
+    List<ASTCDAttribute> attributes = astB.getCDAttributeList();
     assertEquals(2, attributes.size());
   }
 }

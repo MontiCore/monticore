@@ -32,7 +32,7 @@ public class StarImportSuperGrammarTranslation implements
         ASTMCImportStatement importStatement = MCBasicTypesMill.mCImportStatementBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartsList(names).build())
             .setStar(true).build();
         ;
-        rootLink.target().getMCImportStatementsList().add(importStatement);
+        rootLink.target().getMCImportStatementList().add(importStatement);
       }
     }  
     return rootLink;
