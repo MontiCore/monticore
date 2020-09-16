@@ -4,7 +4,6 @@ package de.monticore.statements;
 /* This is a MontiCore stable grammar.
  * Adaptations -- if any -- are conservative. */
 
-import de.monticore.statements.*;
 
 /**
  * This grammar defines typical statements, such as
