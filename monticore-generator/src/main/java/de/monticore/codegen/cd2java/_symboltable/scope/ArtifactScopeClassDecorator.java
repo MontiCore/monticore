@@ -58,6 +58,7 @@ public class ArtifactScopeClassDecorator extends AbstractCreator<ASTCDCompilatio
   public ASTCDClass decorate(ASTCDCompilationUnit input) {
     String artifactScopeSimpleName = symbolTableService.getArtifactScopeSimpleName();
     String scopeClassFullName = symbolTableService.getScopeClassFullName();
+    String globalScopeClassSimpleName = symbolTableService.getGlobalScopeSimpleName();
 
     ASTCDAttribute packageNameAttribute = createPackageNameAttribute();
     ASTCDAttribute importsAttribute = createImportsAttribute();
