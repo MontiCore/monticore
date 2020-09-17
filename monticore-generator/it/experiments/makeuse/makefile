@@ -183,7 +183,8 @@ $(GenSrc)-classes.f: $(GenSrc).f $(SRC) $(MCRTE)
 # Activity 3 (M2): build the tool jar
 $(Tool): $(GenSrc)-classes.f
 	@echo "[MINFO]. 3: Create tool jar:" $<
-	jar cfe $(Tool) $(GramName).$(GramNameCap)Tool -C $(GenSrc)-classes .
+	jar cfe $(Tool) $(GramName).$(GramNameCap)Tool \
+	    -C $(GenSrc)-classes .
 
 #############################################################
 # Testing (M2 and M1)
