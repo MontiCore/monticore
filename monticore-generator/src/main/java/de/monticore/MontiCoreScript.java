@@ -219,6 +219,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     return result;
   }
 
+  // TODO: würde hier nicht eine einfach Liste der Argument
+  // oder auch eine etwas aufbereitete Map<String,String> reichen:  "-out" -> "..."
   protected MontiCoreConfiguration __configuration;
 
   protected Map<ASTMCGrammar, ASTCDCompilationUnit> firstPassGrammars = new LinkedHashMap<>();
@@ -322,7 +324,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
               .setGlobalScope(globalScope)
               .build();
       stCreator.createFromAST(result);
-      globalScope.cache(qualifiedGrammarName);
+      globalScope.addLoadedFile(qualifiedGrammarName);
     }
 
     MCGrammarSymbol symbol = result.getSymbol();
@@ -361,7 +363,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
       CD4AnalysisSymbolTableCreatorDelegator stCreator = CD4AnalysisMill.cD4AnalysisSymbolTableCreatorDelegatorBuilder()
               .setGlobalScope(globalScope).build();
       stCreator.createFromAST(result);
-      globalScope.cache(qualifiedCDName);
+      globalScope.addLoadedFile(qualifiedCDName);
     }
 
     return result;
@@ -451,20 +453,20 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     // Clone CD for reporting
     ASTCDCompilationUnit astCdForReporting = astCd.deepClone();
     // No star imports in reporting CDs
-    astCdForReporting.getMCImportStatementsList().forEach(s -> s.setStar(false));
+    astCdForReporting.getMCImportStatementList().forEach(s -> s.setStar(false));
 
     // Add symbol classes
-    for (ASTCDClass cl :symbolCd.getCDDefinition().getCDClasssList()) {
+    for (ASTCDClass cl :symbolCd.getCDDefinition().getCDClassList()) {
       ASTCDClass newCl = cl.deepClone();
       newCl.setName(newCl.getName()+"Symbol");
-      astCdForReporting.getCDDefinition().addCDClasss(newCl);
+      astCdForReporting.getCDDefinition().addCDClass(newCl);
     }
 
     // Add scope classes
-    for (ASTCDClass cl :scopeCd.getCDDefinition().getCDClasssList()) {
+    for (ASTCDClass cl :scopeCd.getCDDefinition().getCDClassList()) {
       ASTCDClass newCl = cl.deepClone();
       newCl.setName(newCl.getName()+"Scope");
-      astCdForReporting.getCDDefinition().addCDClasss(newCl);
+      astCdForReporting.getCDDefinition().addCDClass(newCl);
     }
     new CDReporting().prettyPrintAstCd(astCdForReporting, outputDirectory, reportSubDir);
   }
@@ -487,7 +489,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     // Clone CD for reporting
     ASTCDCompilationUnit astCdForReporting = astCd.deepClone();
     // No star imports in reporting CDs
-    astCdForReporting.getMCImportStatementsList().forEach(s -> s.setStar(false));
+    astCdForReporting.getMCImportStatementList().forEach(s -> s.setStar(false));
 
     new CDReporting().prettyPrintAstCd(astCdForReporting, outputDirectory, reportSubDir);
   }

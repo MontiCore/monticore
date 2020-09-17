@@ -17,7 +17,7 @@ public class SymTypeVariable extends SymTypeExpression {
   }
 
   public String getVarName() {
-    return typeSymbol.getName();
+    return typeSymbol.getFullName();
   }
 
   public void setVarName(String name) {

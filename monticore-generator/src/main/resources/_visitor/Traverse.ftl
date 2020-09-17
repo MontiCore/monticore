@@ -7,7 +7,7 @@
 ${tc.signature("cdClass", "isScopeSpanning")}
 <#assign genHelper = glex.getGlobalVar("astHelper")>
 
-<#list cdClass.getCDAttributesList() as attr>
+<#list cdClass.getCDAttributeList() as attr>
   <#assign attrName = genHelper.getNativeAttributeName(attr.getName())>
   <#if genHelper.isSimpleAstNode(attr) || genHelper.isOptionalAstNode(attr) >
     <#assign attrGetter = "get"+ attrName?cap_first>

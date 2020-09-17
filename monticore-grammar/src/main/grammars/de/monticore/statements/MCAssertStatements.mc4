@@ -33,7 +33,6 @@ component grammar MCAssertStatements
                   ExpressionsBasis  {
 
 AssertStatement implements MCStatement
-    =   "assert" assertion:Expression (":" message:Expression)? ";"
-    ;
+    = "assert" assertion:Expression (":" message:Expression)? ";" ;
 
 }

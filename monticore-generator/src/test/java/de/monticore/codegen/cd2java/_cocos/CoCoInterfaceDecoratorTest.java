@@ -51,13 +51,13 @@ public class CoCoInterfaceDecoratorTest extends DecoratorTestCase {
   public void testCoCosNodeInterface() {
     ASTCDInterface cdInterface = interfaces.get(1);
     assertEquals("CoCosASTCoCosNodeCoCo", cdInterface.getName());
-    assertEquals(1, cdInterface.getCDMethodsList().size());
-    ASTCDMethod method = cdInterface.getCDMethods(0);
+    assertEquals(1, cdInterface.getCDMethodList().size());
+    ASTCDMethod method = cdInterface.getCDMethod(0);
     assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals("check", method.getName());
-    assertEquals(1, method.getCDParametersList().size());
-    ASTCDParameter parameter = method.getCDParameters(0);
+    assertEquals(1, method.getCDParameterList().size());
+    ASTCDParameter parameter = method.getCDParameter(0);
     assertDeepEquals("de.monticore.codegen.cocos.cocos._ast.ASTCoCosNode", parameter.getMCType());
     assertEquals("node", parameter.getName());
   }
@@ -66,13 +66,13 @@ public class CoCoInterfaceDecoratorTest extends DecoratorTestCase {
   public void testAInterface() {
     ASTCDInterface cdInterface = interfaces.get(0);
     assertEquals("CoCosASTACoCo", cdInterface.getName());
-    assertEquals(1, cdInterface.getCDMethodsList().size());
-    ASTCDMethod method = cdInterface.getCDMethods(0);
+    assertEquals(1, cdInterface.getCDMethodList().size());
+    ASTCDMethod method = cdInterface.getCDMethod(0);
     assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals("check", method.getName());
-    assertEquals(1, method.getCDParametersList().size());
-    ASTCDParameter parameter = method.getCDParameters(0);
+    assertEquals(1, method.getCDParameterList().size());
+    ASTCDParameter parameter = method.getCDParameter(0);
     assertDeepEquals("de.monticore.codegen.cocos.cocos._ast.ASTA", parameter.getMCType());
     assertEquals("node", parameter.getName());
   }
@@ -81,13 +81,13 @@ public class CoCoInterfaceDecoratorTest extends DecoratorTestCase {
   public void testIInterface() {
     ASTCDInterface cdInterface = interfaces.get(2);
     assertEquals("CoCosASTICoCo", cdInterface.getName());
-    assertEquals(1, cdInterface.getCDMethodsList().size());
-    ASTCDMethod method = cdInterface.getCDMethods(0);
+    assertEquals(1, cdInterface.getCDMethodList().size());
+    ASTCDMethod method = cdInterface.getCDMethod(0);
     assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals("check", method.getName());
-    assertEquals(1, method.getCDParametersList().size());
-    ASTCDParameter parameter = method.getCDParameters(0);
+    assertEquals(1, method.getCDParameterList().size());
+    ASTCDParameter parameter = method.getCDParameter(0);
     assertDeepEquals("de.monticore.codegen.cocos.cocos._ast.ASTI", parameter.getMCType());
     assertEquals("node", parameter.getName());
   }

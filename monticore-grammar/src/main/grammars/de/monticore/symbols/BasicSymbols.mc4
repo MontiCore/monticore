@@ -41,7 +41,7 @@ component grammar BasicSymbols extends de.monticore.MCBasics {
    * These are represented as Symbols in the body of the type 
    * and thus made available through the associated scope object.
    */
-  interface scope symbol Diagram = Name;
+  interface symbol Diagram = Name;
   
 
   /*=================================================================*/
@@ -54,11 +54,10 @@ component grammar BasicSymbols extends de.monticore.MCBasics {
    * These are represented as Symbols in the body of the type 
    * and thus made available through the associated scope object.
    */
-  interface scope symbol Type = Name;
+  interface scope symbol Type = Name ;
   
   symbolrule Type =
-    superTypes: de.monticore.types.check.SymTypeExpression*
-  ;
+    superTypes: de.monticore.types.check.SymTypeExpression* ;
 
   /*=================================================================*/
 
@@ -67,7 +66,7 @@ component grammar BasicSymbols extends de.monticore.MCBasics {
    * e.g. Map<int,T> has a type variable T
    * TypeVars are instantiated with concrete types upon use.
    */
-  interface symbol TypeVar extends Type = Name;
+  interface symbol TypeVar extends Type = Name ;
 
   /*=================================================================*/
 
@@ -78,8 +77,7 @@ component grammar BasicSymbols extends de.monticore.MCBasics {
   
   symbolrule Variable =
     type: de.monticore.types.check.SymTypeExpression
-    isReadOnly: boolean
-   ;
+    isReadOnly: boolean ;
 
   /*=================================================================*/
 
@@ -88,10 +86,9 @@ component grammar BasicSymbols extends de.monticore.MCBasics {
    * A signature consists of a return type, and a list of parameters.
    * The parameters are stored as variable symbols (in an associated scope).
    */
-  interface scope symbol Function = Name;
+  interface scope symbol Function = Name ;
   
   symbolrule Function =
-    returnType: de.monticore.types.check.SymTypeExpression
-  ;
+    returnType: de.monticore.types.check.SymTypeExpression ;
 
 }

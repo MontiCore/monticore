@@ -51,6 +51,6 @@ interface MCBlockStatement;
 
 interface MCStatement extends MCBlockStatement;
 
-interface MCModifier ;
+interface MCModifier;
 
 }

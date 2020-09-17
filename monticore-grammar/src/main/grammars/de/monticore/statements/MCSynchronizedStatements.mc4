@@ -31,7 +31,6 @@ component grammar MCSynchronizedStatements
           extends MCCommonStatements {
 
 SynchronizedStatement implements MCStatement
-    =   "synchronized" "(" Expression ")" MCJavaBlock
-    ;
+    =   "synchronized" "(" Expression ")" MCJavaBlock ;
 
 }

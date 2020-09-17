@@ -56,7 +56,7 @@ public class InheritedAttributesTranslation implements
        ||(ruleComponent instanceof ASTConstantGroup)
        || ((ruleComponent instanceof ASTITerminal) && ((ASTITerminal) ruleComponent).isPresentUsageName())) {
         ASTCDAttribute cdAttribute = createCDAttribute(link.source(), astProd);
-        link.target().getCDAttributesList().add(cdAttribute);
+        link.target().getCDAttributeList().add(cdAttribute);
         new Link<>(ruleComponent, cdAttribute, link);
       }
     }
@@ -70,7 +70,7 @@ public class InheritedAttributesTranslation implements
             link.source()).entrySet()) {
       for (AdditionalAttributeSymbol attributeInAST : entry.getValue()) {
         ASTCDAttribute cdAttribute = createCDAttribute(link.source(), entry.getKey());
-        link.target().getCDAttributesList().add(cdAttribute);
+        link.target().getCDAttributeList().add(cdAttribute);
         if (attributeInAST.isPresentAstNode()) {
           new Link<>(attributeInAST.getAstNode(), cdAttribute, link);
         }

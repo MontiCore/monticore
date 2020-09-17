@@ -75,18 +75,18 @@ public class ASTFullDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeSize() {
-    assertEquals(3, astClass.getCDAttributesList().size());
+    assertEquals(3, astClass.getCDAttributeList().size());
   }
 
   @Test
   public void testConstructorSize() {
-    assertEquals(1, astClass.getCDConstructorsList().size());
+    assertEquals(1, astClass.getCDConstructorList().size());
   }
 
   @Test
   public void testMethodSize() {
-    assertFalse(astClass.getCDMethodsList().isEmpty());
-    assertEquals(22, astClass.getCDMethodsList().size());
+    assertFalse(astClass.getCDMethodList().isEmpty());
+    assertEquals(22, astClass.getCDMethodList().size());
   }
 
 }

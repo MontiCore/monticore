@@ -78,7 +78,7 @@ public class ScopeDeSerBuilderDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testDefaultConstructor() {
-    ASTCDConstructor cdConstructor = builderClass.getCDConstructors(0);
+    ASTCDConstructor cdConstructor = builderClass.getCDConstructor(0);
     assertDeepEquals(PUBLIC, cdConstructor.getModifier());
     assertEquals("AScopeDeSerBuilder", cdConstructor.getName());
     assertTrue(cdConstructor.isEmptyCDParameters());
@@ -135,7 +135,7 @@ public class ScopeDeSerBuilderDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = getMethodBy("setPrinter", builderClass);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertEquals(1, method.sizeCDParameters());
-    ASTCDParameter parameter = method.getCDParameters(0);
+    ASTCDParameter parameter = method.getCDParameter(0);
     assertDeepEquals(JSON_PRINTER, parameter.getMCType());
     assertFalse(method.getMCReturnType().isPresentMCVoidType());
     assertDeepEquals(builderClass.getName(), method.getMCReturnType().getMCType());
@@ -155,7 +155,7 @@ public class ScopeDeSerBuilderDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = getMethodBy("setSymbolTablePrinter", builderClass);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertEquals(1, method.sizeCDParameters());
-    ASTCDParameter parameter = method.getCDParameters(0);
+    ASTCDParameter parameter = method.getCDParameter(0);
     assertDeepEquals(A_DELEGATOR_VISITOR, parameter.getMCType());
     assertFalse(method.getMCReturnType().isPresentMCVoidType());
     assertDeepEquals(builderClass.getName(), method.getMCReturnType().getMCType());
@@ -175,7 +175,7 @@ public class ScopeDeSerBuilderDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = getMethodBy("setASymbolDeSer", builderClass);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertEquals(1, method.sizeCDParameters());
-    ASTCDParameter parameter = method.getCDParameters(0);
+    ASTCDParameter parameter = method.getCDParameter(0);
     assertDeepEquals("ASymbolDeSer", parameter.getMCType());
     assertFalse(method.getMCReturnType().isPresentMCVoidType());
     assertDeepEquals(builderClass.getName(), method.getMCReturnType().getMCType());
@@ -195,7 +195,7 @@ public class ScopeDeSerBuilderDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = getMethodBy("setSymbolFileExtension", builderClass);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertEquals(1, method.sizeCDParameters());
-    ASTCDParameter parameter = method.getCDParameters(0);
+    ASTCDParameter parameter = method.getCDParameter(0);
     assertDeepEquals(String.class, parameter.getMCType());
     assertFalse(method.getMCReturnType().isPresentMCVoidType());
     assertDeepEquals(builderClass.getName(), method.getMCReturnType().getMCType());

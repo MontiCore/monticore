@@ -72,10 +72,10 @@ public class VisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
         .setName(this.visitorService.getVisitorSimpleName())
         .addAllInterface(this.visitorService.getSuperVisitors())
         .setModifier(PUBLIC.build())
-        .addCDMethods(addGetRealThisMethods(visitorType))
-        .addCDMethods(addSetRealThisMethods(visitorType))
-        .addCDMethods(addEndVisitASTNodeMethods(astNodeType))
-        .addCDMethods(addVisitASTNodeMethods(astNodeType))
+        .addCDMethod(addGetRealThisMethods(visitorType))
+        .addCDMethod(addSetRealThisMethods(visitorType))
+        .addCDMethod(addEndVisitASTNodeMethods(astNodeType))
+        .addCDMethod(addVisitASTNodeMethods(astNodeType))
         .addAllCDMethods(addISymbolVisitorMethods())
         .addAllCDMethods(addSymbolVisitorMethods(symbolNames))
         .addAllCDMethods(addIScopeVisitorMethods())
@@ -83,23 +83,23 @@ public class VisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
         .build();
 
     // add visitor methods, but no double signatures
-    List<ASTCDMethod> classMethods = addClassVisitorMethods(compilationUnit.getCDDefinition().getCDClasssList());
+    List<ASTCDMethod> classMethods = addClassVisitorMethods(compilationUnit.getCDDefinition().getCDClassList());
     for (ASTCDMethod classMethod : classMethods) {
-      if (!visitorService.isMethodAlreadyDefined(classMethod, visitorInterface.getCDMethodsList())) {
-        visitorInterface.addCDMethods(classMethod);
+      if (!visitorService.isMethodAlreadyDefined(classMethod, visitorInterface.getCDMethodList())) {
+        visitorInterface.addCDMethod(classMethod);
       }
     }
-    List<ASTCDMethod> interfaceMethods = addInterfaceVisitorMethods(compilationUnit.getCDDefinition().getCDInterfacesList());
+    List<ASTCDMethod> interfaceMethods = addInterfaceVisitorMethods(compilationUnit.getCDDefinition().getCDInterfaceList());
     for (ASTCDMethod interfaceMethod : interfaceMethods) {
-      if (!visitorService.isMethodAlreadyDefined(interfaceMethod, visitorInterface.getCDMethodsList())) {
-        visitorInterface.addCDMethods(interfaceMethod);
+      if (!visitorService.isMethodAlreadyDefined(interfaceMethod, visitorInterface.getCDMethodList())) {
+        visitorInterface.addCDMethod(interfaceMethod);
       }
     }
-    List<ASTCDMethod> enumMethods = addEnumVisitorMethods(compilationUnit.getCDDefinition().getCDEnumsList(),
+    List<ASTCDMethod> enumMethods = addEnumVisitorMethods(compilationUnit.getCDDefinition().getCDEnumList(),
         compilationUnit.getCDDefinition().getName());
     for (ASTCDMethod enumMethod : enumMethods) {
-      if (!visitorService.isMethodAlreadyDefined(enumMethod, visitorInterface.getCDMethodsList())) {
-        visitorInterface.addCDMethods(enumMethod);
+      if (!visitorService.isMethodAlreadyDefined(enumMethod, visitorInterface.getCDMethodList())) {
+        visitorInterface.addCDMethod(enumMethod);
       }
     }
 

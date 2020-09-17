@@ -110,16 +110,16 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
   @Test
   public void testConstructors() {
     // this(modelPath, modelFileExtension)
-    ASTCDConstructor cdConstructor = scopeClass.getCDConstructors(0);
+    ASTCDConstructor cdConstructor = scopeClass.getCDConstructor(0);
     assertDeepEquals(PUBLIC, cdConstructor.getModifier());
     assertEquals("AutomatonGlobalScope", cdConstructor.getName());
 
     assertEquals(2, cdConstructor.sizeCDParameters());
-    assertDeepEquals(MODEL_PATH, cdConstructor.getCDParameters(0).getMCType());
-    assertEquals("modelPath", cdConstructor.getCDParameters(0).getName());
+    assertDeepEquals(MODEL_PATH, cdConstructor.getCDParameter(0).getMCType());
+    assertEquals("modelPath", cdConstructor.getCDParameter(0).getName());
 
-    assertDeepEquals("String", cdConstructor.getCDParameters(1).getMCType());
-    assertEquals("modelFileExtension", cdConstructor.getCDParameters(1).getName());
+    assertDeepEquals("String", cdConstructor.getCDParameter(1).getMCType());
+    assertEquals("modelFileExtension", cdConstructor.getCDParameter(1).getName());
 
     assertTrue(cdConstructor.isEmptyException());
   }
@@ -157,8 +157,8 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(String.class, method.getCDParameters(0).getMCType());
-    assertEquals("name", method.getCDParameters(0).getName());
+    assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
+    assertEquals("name", method.getCDParameter(0).getName());
   }
 
 
@@ -170,8 +170,8 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(String.class, method.getCDParameters(0).getMCType());
-    assertEquals("name", method.getCDParameters(0).getName());
+    assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
+    assertEquals("name", method.getCDParameter(0).getName());
   }
 
   @Test
@@ -220,7 +220,7 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(30, scopeClass.getCDMethodsList().size());
+    assertEquals(30, scopeClass.getCDMethodList().size());
   }
 
   @Test
@@ -251,8 +251,8 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
 
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals("AutomatonModelLoader", method.getCDParameters(0).getMCType());
-    assertEquals("modelLoader", method.getCDParameters(0).getName());
+    assertDeepEquals("AutomatonModelLoader", method.getCDParameter(0).getMCType());
+    assertEquals("modelLoader", method.getCDParameter(0).getName());
   }
 
   @Test
@@ -282,8 +282,8 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
 
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(String.class, method.getCDParameters(0).getMCType());
-    assertEquals("name", method.getCDParameters(0).getName());
+    assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
+    assertEquals("name", method.getCDParameter(0).getName());
   }
 
   @Test
@@ -296,8 +296,8 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(
         "List<de.monticore.codegen.ast.automaton._symboltable.IAutomatonSymbolResolvingDelegate>",
-        method.getCDParameters(0).getMCType());
-    assertEquals("adaptedAutomatonSymbolResolvingDelegate", method.getCDParameters(0).getName());
+        method.getCDParameter(0).getMCType());
+    assertEquals("adaptedAutomatonSymbolResolvingDelegate", method.getCDParameter(0).getName());
   }
 
   @Test
@@ -338,8 +338,8 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, method.sizeCDParameters());
-    assertBoolean(method.getCDParameters(0).getMCType());
-    assertEquals("automatonSymbolsAlreadyResolved", method.getCDParameters(0).getName());
+    assertBoolean(method.getCDParameter(0).getMCType());
+    assertEquals("automatonSymbolsAlreadyResolved", method.getCDParameter(0).getName());
   }
 
   @Test
@@ -349,8 +349,8 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, method.sizeCDParameters());
-    assertBoolean(method.getCDParameters(0).getMCType());
-    assertEquals("stateSymbolsAlreadyResolved", method.getCDParameters(0).getName());
+    assertBoolean(method.getCDParameter(0).getMCType());
+    assertEquals("stateSymbolsAlreadyResolved", method.getCDParameter(0).getName());
   }
 
   @Test

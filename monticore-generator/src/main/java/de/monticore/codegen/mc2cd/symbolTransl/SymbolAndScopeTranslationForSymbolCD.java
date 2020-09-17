@@ -19,7 +19,7 @@ public class SymbolAndScopeTranslationForSymbolCD extends SymbolAndScopeTranslat
       final ASTClassProd astClassProd = link.source();
       final ASTCDClass astcdClass = link.target();
       addSymbolStereotypes(astClassProd, astcdClass);
-      addScopeStereotypes(astClassProd.getSymbolDefinitionsList(), astcdClass);
+      addScopeStereotypes(astClassProd.getSymbolDefinitionList(), astcdClass);
       addSymbolInheritedProperty(astClassProd, astcdClass);
     }
 
@@ -27,7 +27,7 @@ public class SymbolAndScopeTranslationForSymbolCD extends SymbolAndScopeTranslat
       final ASTAbstractProd astClassProd = link.source();
       final ASTCDClass astcdClass = link.target();
       addSymbolStereotypes(astClassProd, astcdClass);
-      addScopeStereotypes(astClassProd.getSymbolDefinitionsList(), astcdClass);
+      addScopeStereotypes(astClassProd.getSymbolDefinitionList(), astcdClass);
       addSymbolInheritedProperty(astClassProd, astcdClass);
     }
 
@@ -36,7 +36,7 @@ public class SymbolAndScopeTranslationForSymbolCD extends SymbolAndScopeTranslat
       final ASTInterfaceProd astInterfaceProd = link.source();
       final ASTCDClass astcdClass = link.target();
       addSymbolStereotypes(astInterfaceProd, astcdClass);
-      addScopeStereotypes(astInterfaceProd.getSymbolDefinitionsList(), astcdClass);
+      addScopeStereotypes(astInterfaceProd.getSymbolDefinitionList(), astcdClass);
       addSymbolInheritedProperty(astInterfaceProd, astcdClass);
     }
     return links;

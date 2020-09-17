@@ -49,12 +49,12 @@ public class AstRuleInheritanceTest {
     ASTCDCompilationUnit cdCompilationUnit = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/AstRuleInheritance.mc4")).get();
 
-    Optional<ASTCDClass> astaOpt = TestHelper.getCDClasss(cdCompilationUnit, "ASTA");
-    Optional<ASTCDInterface> astbOpt = TestHelper.getCDInterfaces(cdCompilationUnit, "ASTB");
-    Optional<ASTCDClass> astcOpt = TestHelper.getCDClasss(cdCompilationUnit, "ASTC");
-    Optional<ASTCDClass> astdOpt = TestHelper.getCDClasss(cdCompilationUnit, "ASTD");
-    Optional<ASTCDInterface> asteOpt = TestHelper.getCDInterfaces(cdCompilationUnit, "ASTE");
-    Optional<ASTCDClass> astfOpt = TestHelper.getCDClasss(cdCompilationUnit, "ASTF");
+    Optional<ASTCDClass> astaOpt = TestHelper.getCDClass(cdCompilationUnit, "ASTA");
+    Optional<ASTCDInterface> astbOpt = TestHelper.getCDInterface(cdCompilationUnit, "ASTB");
+    Optional<ASTCDClass> astcOpt = TestHelper.getCDClass(cdCompilationUnit, "ASTC");
+    Optional<ASTCDClass> astdOpt = TestHelper.getCDClass(cdCompilationUnit, "ASTD");
+    Optional<ASTCDInterface> asteOpt = TestHelper.getCDInterface(cdCompilationUnit, "ASTE");
+    Optional<ASTCDClass> astfOpt = TestHelper.getCDClass(cdCompilationUnit, "ASTF");
 
     assertTrue(astaOpt.isPresent());
     assertTrue(astbOpt.isPresent());
