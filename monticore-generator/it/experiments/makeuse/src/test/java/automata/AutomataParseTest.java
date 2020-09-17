@@ -1,4 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
+package automata;
+
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;

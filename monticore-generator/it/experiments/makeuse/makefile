@@ -20,8 +20,8 @@
   #   M1: The resulting Automata tool is tested
   #       and executed on real automata
   #
-  # Using many default configurations, it is mainly the grammar name
-  # that needs to be configured here
+  # Using many default configurations, it is mainly the
+  # grammar name that needs to be configured here
   # and of course the individual tool calls:
   # This means there are two parts to be configured,
   # while the rest is generic.
@@ -29,7 +29,7 @@
   #
 
 #############################################################
-# M2 Configuration (files and used commands):
+# Configuration (files and used commands):
 
 # Individual Configuration:       <<-- adapt here
  
@@ -55,7 +55,8 @@ ToolClass=$(GramName).$(GramNameCap)Tool
 
 # M2+M1-input: All handwritten sources (from M1) for the tool
   # this is needed on M2 level to apply the TOP mechanism
-SRC=$(wildcard src/**/*java)
+SRC=$(wildcard src/main/**/$(GramName)/*java)
+TESTSRC=$(wildcard src/test/**/$(GramName)/*java)
 
 # foreign jars for testing
 JUNIT=target/junit-4.13.jar
@@ -81,23 +82,29 @@ all: testsAndExecution
   # needed, we do not need to use an IncGenCheck for these tool executions.
 
 # <<-- adapt here
-$(GenSrc)-executes.f: target/PingPong.result target/HierarchyPingPong.result target/Simple12.result
+$(GenSrc)-executes.f: target/PingPong.result \
+                      target/HierarchyPingPong.result \
+		      target/Simple12.result
 	@echo "[MINFO]. 6c: Showing some results for:" $<
 	@cat target/Simple12.result
 	@echo "[MINFO]. 6c: End of results."
 	@touch $@
 
-target/PingPong.result: src/test/resources/example/PingPong.aut $(Tool) $(MCRTE) 
+target/PingPong.result: src/test/resources/example/PingPong.aut \
+                        $(Tool) $(MCRTE) 
 	@echo "[MINFO]. 6a: Handling" $<
 	java -cp "$(Tool);$(MCRTE)" \
 	     $(ToolClass) $< target/symtab/ > $@
 
-target/HierarchyPingPong.result: src/test/resources/example/HierarchyPingPong.aut $(Tool) $(MCRTE) 
+target/HierarchyPingPong.result: \
+                        src/test/resources/example/HierarchyPingPong.aut \
+                        $(Tool) $(MCRTE) 
 	@echo "[MINFO]. 6b: Handling" $<
 	java -cp "$(Tool);$(MCRTE)" \
 	     $(ToolClass) $< target/symtab/ > $@
 
-target/Simple12.result: src/test/resources/example/Simple12.aut $(Tool) $(MCRTE) 
+target/Simple12.result: src/test/resources/example/Simple12.aut \
+                        $(Tool) $(MCRTE) 
 	@echo "[MINFO]. 6c: Handling" $<
 	java -cp "$(Tool);$(MCRTE)" \
 	     $(ToolClass) $< target/symtab/ > $@
@@ -181,6 +188,9 @@ $(Tool): $(GenSrc)-classes.f
 #############################################################
 # Testing (M2 and M1)
 
+TESTSRC=$(wildcard src/test/**/$(GramName)/*java)
+TESTCLASSES=$(patsubst $(GenSrc)-testclasses/$(GramName)/%.class,$(GramName).%,$(wildcard $(GenSrc)-testclasses/$(GramName)/*Test.class))
+
 # Activity 4 (M2): compile the tests
 # (which was on purpose not integrated in tool compilation)
 $(GenSrc)-testclasses.f: $(Tool) $(SRC) $(MCRTE) $(JUNIT)
@@ -189,7 +199,7 @@ $(GenSrc)-testclasses.f: $(Tool) $(SRC) $(MCRTE) $(JUNIT)
 	javac -cp "$(Tool);$(MCRTE);$(JUNIT)" \
 	      -d $(GenSrc)-testclasses/ \
 	      -sourcepath "target/;src/test/java/" \
-	      $(wildcard src/test/java/*Test.java)
+	      $(TESTSRC)
 	@touch $@
 
 # Activity 5 (M1): execute the tests
@@ -197,7 +207,7 @@ $(GenSrc)-tests.f: $(GenSrc)-testclasses.f $(JUNIT) $(HAMCREST)
 	@echo "[MINFO]. 5: Run tests in" $(GenSrc)-testclasses
 	@java  -cp "$(GenSrc)-testclasses;$(Tool);$(MCRTE);$(JUNIT);$(HAMCREST)" \
 	       org.junit.runner.JUnitCore \
-	       $(patsubst $(GenSrc)-testclasses/%.class,%,$(wildcard $(GenSrc)-testclasses/*Test.class))
+	       $(TESTCLASSES)
 	@touch $@
 
 #############################################################
