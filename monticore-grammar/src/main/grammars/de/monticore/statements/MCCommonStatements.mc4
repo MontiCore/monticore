@@ -102,4 +102,7 @@ EnumConstantSwitchLabel implements SwitchLabel
 DefaultSwitchLabel implements SwitchLabel
     =   "default" ":" ;
 
+BreakStatement implements MCStatement
+    =   "break" ";" ;
+
 }

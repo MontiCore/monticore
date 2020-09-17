@@ -193,6 +193,12 @@ public class MCCommonStatementsPrettyPrinter implements
     getPrinter().println("default:");
   }
 
+  @Override
+  public void handle(ASTBreakStatement a) {
+    CommentPrettyPrinter.printPreComments(a, getPrinter());
+    getPrinter().println("break;");
+    CommentPrettyPrinter.printPostComments(a, getPrinter());
+  }
 
   protected void printSeparated(Iterator<? extends ASTMCCommonStatementsNode> iter, String separator) {
     // print by iterate through all items
