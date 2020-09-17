@@ -29,7 +29,7 @@ public class JavaLightSymbolTableCreator extends JavaLightSymbolTableCreatorTOP 
   }
 
   @Override
-  protected void initialize_MethodDeclaration(MethOrConstrSymbol symbol, ASTMethodDeclaration ast) {
+  protected void initialize_MethodDeclaration(JavaMethodSymbol symbol, ASTMethodDeclaration ast) {
     addModifiersToMethOrConstr(symbol, ast.getMCModifierList());
     symbol.setReturnType(createTypeLoader(ast.getMCReturnType()));
     if (ast.isPresentThrows()) {
@@ -42,7 +42,7 @@ public class JavaLightSymbolTableCreator extends JavaLightSymbolTableCreatorTOP 
   }
 
   @Override
-  protected void initialize_InterfaceMethodDeclaration(MethOrConstrSymbol symbol, ASTInterfaceMethodDeclaration ast) {
+  protected void initialize_InterfaceMethodDeclaration(JavaMethodSymbol symbol, ASTInterfaceMethodDeclaration ast) {
     addModifiersToMethOrConstr(symbol, ast.getMCModifierList());
     symbol.setReturnType(createTypeLoader(ast.getMCReturnType()));
     if (ast.isPresentThrows()) {
@@ -55,7 +55,7 @@ public class JavaLightSymbolTableCreator extends JavaLightSymbolTableCreatorTOP 
   }
 
   @Override
-  protected void initialize_ConstructorDeclaration(MethOrConstrSymbol symbol, ASTConstructorDeclaration ast) {
+  protected void initialize_ConstructorDeclaration(JavaMethodSymbol symbol, ASTConstructorDeclaration ast) {
     addModifiersToMethOrConstr(symbol, ast.getMCModifierList());
     if (ast.isPresentThrows()) {
       addThrowsToMethod(symbol, ast.getThrows());
@@ -78,7 +78,7 @@ public class JavaLightSymbolTableCreator extends JavaLightSymbolTableCreatorTOP 
     symbol.setType(createTypeLoader(ast.getMCType()));
   }
 
-  protected void addModifiersToMethOrConstr(MethOrConstrSymbol javaMethodSymbol,
+  protected void addModifiersToMethOrConstr(JavaMethodSymbol javaMethodSymbol,
                                             Iterable<? extends ASTMCModifier> astModifierList) {
     for (ASTMCModifier modifier : astModifierList) {
       if (modifier instanceof ASTJavaModifier) {
@@ -122,7 +122,7 @@ public class JavaLightSymbolTableCreator extends JavaLightSymbolTableCreatorTOP 
     }
   }
 
-  protected void addThrowsToMethod(MethOrConstrSymbol javaMethodSymbol, ASTThrows throws1) {
+  protected void addThrowsToMethod(JavaMethodSymbol javaMethodSymbol, ASTThrows throws1) {
     for (ASTMCQualifiedName astQualifiedName : throws1.getMCQualifiedNameList()) {
       javaMethodSymbol.addExceptions(createTypeLoader(astQualifiedName));
     }
