@@ -8,7 +8,7 @@
 #EXPL# Incremental == makefile itself checks whether to regenerate
 #EXPL# and therefore uses MontiCore's IncGenCheck.sh
 #EXPL#
-#EXPL# It is somewhat lengthy, becaus eit explains a lot
+#EXPL# It is somewhat lengthy, because it explains a lot
 #
 
 #EXPL##############################################    Explanations
@@ -35,14 +35,16 @@ SRC=$(wildcard src/**/*java)
 #############################################################
 # Start of generic part:
 
-# path for the generated sources
-# is derived from the grammar name
-GenSrc=target/$(shell echo \
-    $(patsubst src/main/grammars/%.mc4,%,$(GRAMMAR)) \
-    | tr '[:upper:]' '[:lower:]')
+# a few things are derived from the grammar name
+GramNameCap=$(patsubst src/main/grammars/%.mc4,%,$(GRAMMAR))
+GramName=$(shell echo $(GramNameCap) | tr '[:upper:]' '[:lower:]')
 
-# name of resulting tool:
-Tool=target/$(patsubst src/main/grammars/%.mc4,%,$(GRAMMAR))Tool.jar
+# path for the generated sources
+GenSrc=target/$(GramName)
+
+# name of resulting tool and its main class:
+Tool=target/$(GramNameCap)Tool.jar
+ToolClass=$(GramName).$(GramNameCap)Tool
 
 
 #############################################################
@@ -112,13 +114,13 @@ $(GenSrc)-classes.f: $(GenSrc).f $(SRC) $(MCRTE)
 	javac -cp $(MCRTE) \
 	      -d $(GenSrc)-classes/ \
 	      -sourcepath ".;target/;src/main/java/" \
-	      src/main/java/automata/AutomataTool.java
+	      src/main/java/$(GramName)/$(GramNameCap)Tool.java
 	@touch $@
 
 # Activity 3 (M2): build the tool jar
 $(Tool): $(GenSrc)-classes.f
 	@echo "[MINFO]. 3: Create tool jar"
-	jar cfe $(Tool) automata.AutomataTool -C $(GenSrc)-classes .
+	jar cfe $(Tool) $(GramName).$(GramNameCap)Tool -C $(GenSrc)-classes .
 
 #############################################################
 # Testing (M2 and M1)
@@ -154,18 +156,18 @@ $(GenSrc)-executes.f: target/PingPong.result target/HierarchyPingPong.result tar
 target/PingPong.result: src/test/resources/example/PingPong.aut $(Tool)
 	@echo "[MINFO]. 6a: Handling" $<
 	java -cp "$(Tool);.;$(MCRTE)" \
-	     automata.AutomataTool $< target/symtab/ > $@
+	     $(ToolClass) $< target/symtab/ > $@
 # TODO: (im Java) obige Ausgabe ist falsch, sie sagt "does not contain a state called "Ping"  --> SymTab fehler
 
 target/HierarchyPingPong.result: src/test/resources/example/HierarchyPingPong.aut $(Tool)
 	@echo "[MINFO]. 6b: Handling" $<
 	java -cp "$(Tool);.;$(MCRTE)" \
-	     automata.AutomataTool $< target/symtab/ > $@
+	     $(ToolClass) $< target/symtab/ > $@
 
 target/Simple12.result: src/test/resources/example/Simple12.aut $(Tool)
 	@echo "[MINFO]. 6c: Handling" $<
 	java -cp "$(Tool);.;$(MCRTE)" \
-	     automata.AutomataTool $< target/symtab/ > $@
+	     $(ToolClass) $< target/symtab/ > $@
 	@echo "[MINFO]. 6c: Showing some results:"
 	@cat $@
 	@echo "[MINFO]. 6c: End of results."
