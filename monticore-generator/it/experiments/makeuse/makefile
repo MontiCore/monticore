@@ -41,25 +41,25 @@ GRAMMAR=src/main/grammars/Automata.mc4
   # needed, we do not need to use an IncGenCheck for these tool executions.
 
 $(GenSrc)-executes.f: target/PingPong.result target/HierarchyPingPong.result target/Simple12.result
-        @echo "[MINFO]. 6c: Showing some results for:" $<
-        @cat $@
-        @echo "[MINFO]. 6c: End of results."
-        @touch $@
+	@echo "[MINFO]. 6c: Showing some results for:" $<
+	@cat $@
+	@echo "[MINFO]. 6c: End of results."
+	@touch $@
 
-target/PingPong.result: src/test/resources/example/PingPong.aut $(Tool)
-        @echo "[MINFO]. 6a: Handling" $<
-        java -cp "$(Tool);$(MCRTE)" \
-             $(ToolClass) $< target/symtab/ > $@
+target/PingPong.result: src/test/resources/example/PingPong.aut $(Tool) $(MCRTE) target
+	@echo "[MINFO]. 6a: Handling" $<
+	java -cp "$(Tool);$(MCRTE)" \
+	     $(ToolClass) $< target/symtab/ > $@
 
-target/HierarchyPingPong.result: src/test/resources/example/HierarchyPingPong.aut $(Tool)
-        @echo "[MINFO]. 6b: Handling" $<
-        java -cp "$(Tool);$(MCRTE)" \
-             $(ToolClass) $< target/symtab/ > $@
+target/HierarchyPingPong.result: src/test/resources/example/HierarchyPingPong.aut $(Tool) $(MCRTE) target
+	@echo "[MINFO]. 6b: Handling" $<
+	java -cp "$(Tool);$(MCRTE)" \
+	     $(ToolClass) $< target/symtab/ > $@
 
-target/Simple12.result: src/test/resources/example/Simple12.aut $(Tool)
-        @echo "[MINFO]. 6c: Handling" $<
-        java -cp "$(Tool);$(MCRTE)" \
-             $(ToolClass) $< target/symtab/ > $@
+target/Simple12.result: src/test/resources/example/Simple12.aut $(Tool) $(MCRTE) target
+	@echo "[MINFO]. 6c: Handling" $<
+	java -cp "$(Tool);$(MCRTE)" \
+	     $(ToolClass) $< target/symtab/ > $@
 
 
 
@@ -118,7 +118,7 @@ $(GenSrc).incGenStamp.f: target force
 	@[ -e $(GenSrc)/IncGenCheck.sh ] && sh $(GenSrc)/IncGenCheck.sh $@ || true
 
 # Activity 1 (M2): run MontiCore generator
-$(GenSrc).f: $(GRAMMAR) $(MCJAR) $(MCGRAMMARS) $(GenSrc).incGenStamp.f
+$(GenSrc).f: $(GRAMMAR) $(MCJAR) target $(MCGRAMMARS) $(GenSrc).incGenStamp.f
 	@echo "[MINFO]. 1: Generation of tool code from" $(GRAMMAR)
 	java -jar $(MCJAR) \
 		$(GRAMMAR) \
@@ -143,7 +143,7 @@ $(GenSrc).f: $(GRAMMAR) $(MCJAR) $(MCGRAMMARS) $(GenSrc).incGenStamp.f
   #
 
 # Activity 2 (M2): compile the tool
-$(GenSrc)-classes.f: $(GenSrc).f $(SRC) $(MCRTE)
+$(GenSrc)-classes.f: $(GenSrc).f $(SRC) target $(MCRTE)
 	@echo "[MINFO]. 2: Compile tooli:" $(GenSrc)-classes
 	@mkdir -p $(GenSrc)-classes/
 	javac -cp $(MCRTE) \
@@ -162,7 +162,7 @@ $(Tool): $(GenSrc)-classes.f
 
 # Activity 4 (M2): compile the tests
 # (which was on purpose not integrated in tool compilation)
-$(GenSrc)-testclasses.f: $(Tool) $(SRC)
+$(GenSrc)-testclasses.f: $(Tool) $(SRC) target $(MCRTE)
 	@echo "[MINFO]. 4: Compile tests:" $(GenSrc)-testclasses
 	@mkdir -p $(GenSrc)-testclasses/
 	javac -cp "$(Tool);$(MCRTE);$(JUNIT)" \
