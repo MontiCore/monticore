@@ -1,39 +1,74 @@
 # (c) https://github.com/MontiCore/monticore
 
-#EXPL#
-#EXPL# This makefile demonstrates how to embedd a MontiCore
-#EXPL# code generation and a tool execution in a
-#EXPL# makefile using make for efficient incremental generation
-#EXPL#
-#EXPL# Incremental == makefile itself checks whether to regenerate
-#EXPL# and therefore uses MontiCore's IncGenCheck.sh
-#EXPL#
-#EXPL# It is somewhat lengthy, because it explains a lot
 #
+# This makefile demonstrates how to embedd a MontiCore
+# code generation and a tool execution in a
+# makefile using make for efficient incremental generation
+#
+  # Efficient == only do what is needed; but fully automatic
+  # Incremental == makefile itself checks whether to regenerate
+  # and therefore uses MontiCore's IncGenCheck.sh
+  #
+  # It is somewhat lengthy, because it explains a lot
+  #
 
-#EXPL##############################################    Explanations
-#EXPL# The makefile handles two levels of generation and processing 
-#EXPL# Level
-#EXPL#   M2: MontiCore LWB generates Automata tool-code
-#EXPL#        & compiles & jars
-#EXPL#   M1: The resulting Automata tool is executed 
-#EXPL#   	on real automata
+  ##############################################    Explanations
+  # The makefile handles two levels of generation and processing 
+  # Level
+  #   M2: MontiCore LWB generates Automata tool-code
+  #        & compiles & jars it
+  #   M1: The resulting Automata tool is tested
+  #       and executed on real automata
+  #
+  # Using many default configurations, it is mainly the grammar name
+  # that needs to be configured here
+  # and of course the individual tool calls:
+  # (then a generic part comes that can be adapted if needed)
+  #
 
 #############################################################
 # M2 Configuration (files and used commands):
+# Configuration A: the individual part
 
 # M2-model to be processed (the grammar)
-#EXPL# This is to be adapted manually
-#EXPL# Then most of the follwing rules are generic (usable as is)
-#EXPL# Until at the end the tool is applied
 GRAMMAR=src/main/grammars/Automata.mc4
 
-# M2+M1-input: All handwritten sources (from M1) for the tool
-#EXPL# this is needed on M2 level to apply the TOP mechanism
-SRC=$(wildcard src/**/*java)
+#############################################################
+# Usage Activities (M1): processing Models:
+# Each is handling one automaton (producing one file)
+  #
+  # Because in these executions there is no additional (optional) input
+  # needed, we do not need to use an IncGenCheck for these tool executions.
+
+$(GenSrc)-executes.f: target/PingPong.result target/HierarchyPingPong.result target/Simple12.result
+        @echo "[MINFO]. 6c: Showing some results for:" $<
+        @cat $@
+        @echo "[MINFO]. 6c: End of results."
+        @touch $@
+
+target/PingPong.result: src/test/resources/example/PingPong.aut $(Tool)
+        @echo "[MINFO]. 6a: Handling" $<
+        java -cp "$(Tool);$(MCRTE)" \
+             $(ToolClass) $< target/symtab/ > $@
+
+target/HierarchyPingPong.result: src/test/resources/example/HierarchyPingPong.aut $(Tool)
+        @echo "[MINFO]. 6b: Handling" $<
+        java -cp "$(Tool);$(MCRTE)" \
+             $(ToolClass) $< target/symtab/ > $@
+
+target/Simple12.result: src/test/resources/example/Simple12.aut $(Tool)
+        @echo "[MINFO]. 6c: Handling" $<
+        java -cp "$(Tool);$(MCRTE)" \
+             $(ToolClass) $< target/symtab/ > $@
+
+
 
 #############################################################
-# Start of generic part:
+#############################################################
+# Start of generic part (which needs normally not be touched)
+
+#############################################################
+# Configuration B: the generic part
 
 # a few things are derived from the grammar name
 GramNameCap=$(patsubst src/main/grammars/%.mc4,%,$(GRAMMAR))
@@ -46,39 +81,39 @@ GenSrc=target/$(GramName)
 Tool=target/$(GramNameCap)Tool.jar
 ToolClass=$(GramName).$(GramNameCap)Tool
 
+# M2+M1-input: All handwritten sources (from M1) for the tool
+  # this is needed on M2 level to apply the TOP mechanism
+SRC=$(wildcard src/**/*java)
 
 #############################################################
-# initial rule depending on all relevant sub-activities
+# initial rule describing all relevant sub-activities
 
 all: $(GenSrc)-tests.f  $(GenSrc)-executes.f 
 	@echo "[MINFO]. Done with" $@"."
 
-#EXPL##############################################    Explanations
-#EXPL# make normally uses real files as target of a rule,
-#EXPL# sometimes dummy targets, such as "automata.f" help to 
-#EXPL# (1) act as surrogate, if actually many files are created
-#EXPL# (2) are used to ensure that the action is atomic
-#EXPL#     (e.g. it may happen that the directory "automata" is created,
-#EXPL#     but only half oth the files: the flag "automata.f" is
-#EXPL#     touched only if the creation was complete and successful)
-#EXPL# or could also be used for (3) organize the order or execution
+  ##############################################    Explanations
+  # make normally uses real files as target of a rule,
+  # sometimes dummy targets, such as "automata.f" help to 
+  # to ensure that the action is atomic
+  # (e.g. it may happen that the directory "automata" is created,
+  # but only half of the files: the flag "automata.f" is
+  # touched only if the creation was complete and successful)
 
 #############################################################
 # Generate and compile (M2):
 
-#EXPL##############################################    Explanations
-#EXPL# The MontiCore generator has some explicitely known inputs, such as
-#EXPL# the $(GRAMMAR), but the TOP mechanism adds additional implicit inputs.
-#EXPL# The IncGenCheck.sh is generated by MontiCore and knows these
-#EXPL# dependencies. It is included as follows:
-#EXPL# goal incGenStamp.f must always be executed newly (because of
-#EXPL# the force); this executes IncGenCheck.sh, which updates the
-#EXPL# timestamp of incGenStamp.f if needed, which triggers a 
-#EXPL# regeneration of $(GenSrc).f
-
+  ##############################################    Explanations
+  # The MontiCore generator has some explicitely known inputs, such as
+  # the $(GRAMMAR), but the TOP mechanism adds additional implicit inputs.
+  # The IncGenCheck.sh is generated by MontiCore and knows these
+  # dependencies. It is included as follows:
+  # goal incGenStamp.f must always be executed newly (because of
+  # the force); this executes IncGenCheck.sh, which updates the
+  # timestamp of incGenStamp.f if needed, which triggers a 
+  # regeneration of $(GenSrc).f
 
 $(GenSrc).incGenStamp.f: target force
-	@echo "[MINFO]. 1: Check if generation is needed"
+	@echo "[MINFO]. 1: Check if generation for \"" $(GramName)"\" is needed"
 	@[ -e $@ ] || touch $@
 	@[ -e $(GenSrc)/IncGenCheck.sh ] && sh $(GenSrc)/IncGenCheck.sh $@ || true
 
@@ -92,91 +127,62 @@ $(GenSrc).f: $(GRAMMAR) $(MCJAR) $(MCGRAMMARS) $(GenSrc).incGenStamp.f
 		-out target
 	@touch $@
 
-#EXPL##############################################    Explanations
-#EXPL# This can be tested, e.g.
-#EXPL# make
-#EXPL# find . -name "ASTStateTOP*"
-#EXPL#     -> finds 2 files
-#EXPL# mv ./src/main/java/automata/_ast/ASTState.java xtemporary
-#EXPL# make
-#EXPL# find . -name "ASTStateTOP*"
-#EXPL#     -> empty
-#EXPL# mv xtemporary ./src/main/java/automata/_ast/ASTState.java
-#EXPL# make
-#EXPL# find . -name "ASTStateTOP*"
-#EXPL#     -> finds again 2 files
-#EXPL#
+  ##############################################    Explanations
+  # This can be tested, e.g.
+  # make
+  # find . -name "ASTStateTOP*"
+  #     -> finds 2 files
+  # mv ./src/main/java/automata/_ast/ASTState.java xtemporary
+  # make
+  # find . -name "ASTStateTOP*"
+  #     -> empty
+  # mv xtemporary ./src/main/java/automata/_ast/ASTState.java
+  # make
+  # find . -name "ASTStateTOP*"
+  #     -> finds again 2 files
+  #
 
 # Activity 2 (M2): compile the tool
 $(GenSrc)-classes.f: $(GenSrc).f $(SRC) $(MCRTE)
-	@echo "[MINFO]. 2: Compile tool"
+	@echo "[MINFO]. 2: Compile tooli:" $(GenSrc)-classes
 	@mkdir -p $(GenSrc)-classes/
 	javac -cp $(MCRTE) \
 	      -d $(GenSrc)-classes/ \
-	      -sourcepath ".;target/;src/main/java/" \
+	      -sourcepath "target/;src/main/java/" \
 	      src/main/java/$(GramName)/$(GramNameCap)Tool.java
 	@touch $@
 
 # Activity 3 (M2): build the tool jar
 $(Tool): $(GenSrc)-classes.f
-	@echo "[MINFO]. 3: Create tool jar"
+	@echo "[MINFO]. 3: Create tool jar:" $(Tool)
 	jar cfe $(Tool) $(GramName).$(GramNameCap)Tool -C $(GenSrc)-classes .
 
 #############################################################
 # Testing (M2 and M1)
 
 # Activity 4 (M2): compile the tests
-#EXPL# (which was on purpose not integrated in tool compilation)
+# (which was on purpose not integrated in tool compilation)
 $(GenSrc)-testclasses.f: $(Tool) $(SRC)
-	@echo "[MINFO]. 4: Compile tests"
+	@echo "[MINFO]. 4: Compile tests:" $(GenSrc)-testclasses
 	@mkdir -p $(GenSrc)-testclasses/
-	javac -cp "$(Tool);.;$(MCRTE);$(JUNIT)" \
+	javac -cp "$(Tool);$(MCRTE);$(JUNIT)" \
 	      -d $(GenSrc)-testclasses/ \
-	      -sourcepath ".;target/;src/test/java/" \
+	      -sourcepath "target/;src/test/java/" \
 	      $(wildcard src/test/java/*Test.java)
 	@touch $@
 
 # Activity 5 (M1): execute the tests
 $(GenSrc)-tests.f: $(GenSrc)-testclasses.f
-	@echo "[MINFO]. 5: Run tests"
-	@java  -cp "$(GenSrc)-testclasses;$(Tool);.;$(MCRTE);$(JUNIT);$(HAMCREST)" \
+	@echo "[MINFO]. 5: Run tests in:" $(GenSrc)-testclasses
+	@java  -cp "$(GenSrc)-testclasses;$(Tool);$(MCRTE);$(JUNIT);$(HAMCREST)" \
 	       org.junit.runner.JUnitCore \
 	       $(patsubst $(GenSrc)-testclasses/%.class,%,$(wildcard $(GenSrc)-testclasses/*Test.class))
 	@touch $@
 
 #############################################################
-# Usage Activities (M1): processing Models:
-# Each is handling one automaton (producing one file)
-#
-#EXPL# Because in these executions there is no additional (optional) input
-#EXPL# needed, we do not need to use an IncGenCheck here.
-
-$(GenSrc)-executes.f: target/PingPong.result target/HierarchyPingPong.result target/Simple12.result
-
-target/PingPong.result: src/test/resources/example/PingPong.aut $(Tool)
-	@echo "[MINFO]. 6a: Handling" $<
-	java -cp "$(Tool);.;$(MCRTE)" \
-	     $(ToolClass) $< target/symtab/ > $@
-# TODO: (im Java) obige Ausgabe ist falsch, sie sagt "does not contain a state called "Ping"  --> SymTab fehler
-
-target/HierarchyPingPong.result: src/test/resources/example/HierarchyPingPong.aut $(Tool)
-	@echo "[MINFO]. 6b: Handling" $<
-	java -cp "$(Tool);.;$(MCRTE)" \
-	     $(ToolClass) $< target/symtab/ > $@
-
-target/Simple12.result: src/test/resources/example/Simple12.aut $(Tool)
-	@echo "[MINFO]. 6c: Handling" $<
-	java -cp "$(Tool);.;$(MCRTE)" \
-	     $(ToolClass) $< target/symtab/ > $@
-	@echo "[MINFO]. 6c: Showing some results:"
-	@cat $@
-	@echo "[MINFO]. 6c: End of results."
-
-
-#############################################################
 # Auxiliary
 
-# The following simplified versiion does not manage updates
+# The following simplified version does not manage updates
 # of foreign libaries
 
 # foreign jars for testing
@@ -189,7 +195,7 @@ MCRTE=target/monticore-rt.jar
 MCGRAMMARS=target/monticore-g.jar
 
 # Initialize target directory
-# (and a simplified version of downloading all needed libraries at once
+# (and a simplified downloading of all needed libraries at once
 # and doesn't check for new snapshots):
 # the MontiCore LWB; MontiCore RTE; MontiCore base grammars
 # and two testing libraries
