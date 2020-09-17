@@ -23,52 +23,24 @@
   # Using many default configurations, it is mainly the grammar name
   # that needs to be configured here
   # and of course the individual tool calls:
-  # (then a generic part comes that can be adapted if needed)
+  # This means there are two parts to be configured,
+  # while the rest is generic.
+  # 
   #
 
 #############################################################
 # M2 Configuration (files and used commands):
-# Configuration A: the individual part
 
+# Individual Configuration:       <<-- adapt here
+ 
 # M2-model to be processed (the grammar)
 GRAMMAR=src/main/grammars/Automata.mc4
 
-#############################################################
-# Usage Activities (M1): processing Models:
-# Each is handling one automaton (producing one file)
-  #
-  # Because in these executions there is no additional (optional) input
-  # needed, we do not need to use an IncGenCheck for these tool executions.
-
-$(GenSrc)-executes.f: target/PingPong.result target/HierarchyPingPong.result target/Simple12.result
-	@echo "[MINFO]. 6c: Showing some results for:" $<
-	@cat $@
-	@echo "[MINFO]. 6c: End of results."
-	@touch $@
-
-target/PingPong.result: src/test/resources/example/PingPong.aut $(Tool) $(MCRTE) target
-	@echo "[MINFO]. 6a: Handling" $<
-	java -cp "$(Tool);$(MCRTE)" \
-	     $(ToolClass) $< target/symtab/ > $@
-
-target/HierarchyPingPong.result: src/test/resources/example/HierarchyPingPong.aut $(Tool) $(MCRTE) target
-	@echo "[MINFO]. 6b: Handling" $<
-	java -cp "$(Tool);$(MCRTE)" \
-	     $(ToolClass) $< target/symtab/ > $@
-
-target/Simple12.result: src/test/resources/example/Simple12.aut $(Tool) $(MCRTE) target
-	@echo "[MINFO]. 6c: Handling" $<
-	java -cp "$(Tool);$(MCRTE)" \
-	     $(ToolClass) $< target/symtab/ > $@
-
-
-
-#############################################################
-#############################################################
-# Start of generic part (which needs normally not be touched)
+# -->> end of adapting part 1 (of 2)
 
 #############################################################
 # Configuration B: the generic part
+# (which needs normally not be touched)
 
 # a few things are derived from the grammar name
 GramNameCap=$(patsubst src/main/grammars/%.mc4,%,$(GRAMMAR))
@@ -85,15 +57,64 @@ ToolClass=$(GramName).$(GramNameCap)Tool
   # this is needed on M2 level to apply the TOP mechanism
 SRC=$(wildcard src/**/*java)
 
+# foreign jars for testing
+JUNIT=target/junit-4.13.jar
+HAMCREST=target/hamcrest-core-1.3.jar
+
+# jars for the MontiCore call (M2), runtime (M1+M2), and grammars (M2)
+MCJAR=target/monticore-all.jar
+MCRTE=target/monticore-rt.jar
+MCGRAMMARS=target/monticore-g.jar
+
+# initialization flag
+InitTarget=target/init.f
+
+# starting rule
+all: testsAndExecution
+
+
 #############################################################
+# Usage Activities (M1): processing Models:
+# Each is handling one automaton (producing one file)
+  #
+  # Because in these executions there is no additional (optional) input
+  # needed, we do not need to use an IncGenCheck for these tool executions.
+
+# <<-- adapt here
+$(GenSrc)-executes.f: target/PingPong.result target/HierarchyPingPong.result target/Simple12.result
+	@echo "[MINFO]. 6c: Showing some results for:" $<
+	@cat target/Simple12.result
+	@echo "[MINFO]. 6c: End of results."
+	@touch $@
+
+target/PingPong.result: src/test/resources/example/PingPong.aut $(Tool) $(MCRTE) 
+	@echo "[MINFO]. 6a: Handling" $<
+	java -cp "$(Tool);$(MCRTE)" \
+	     $(ToolClass) $< target/symtab/ > $@
+
+target/HierarchyPingPong.result: src/test/resources/example/HierarchyPingPong.aut $(Tool) $(MCRTE) 
+	@echo "[MINFO]. 6b: Handling" $<
+	java -cp "$(Tool);$(MCRTE)" \
+	     $(ToolClass) $< target/symtab/ > $@
+
+target/Simple12.result: src/test/resources/example/Simple12.aut $(Tool) $(MCRTE) 
+	@echo "[MINFO]. 6c: Handling" $<
+	java -cp "$(Tool);$(MCRTE)" \
+	     $(ToolClass) $< target/symtab/ > $@
+
+# -->> end of adapting part 2 (of 2)
+
+#############################################################
+# Start of generic rule part B (which needs normally not be touched)
+
 # initial rule describing all relevant sub-activities
 
-all: $(GenSrc)-tests.f  $(GenSrc)-executes.f 
+testsAndExecution: $(GenSrc)-tests.f  $(GenSrc)-executes.f 
 	@echo "[MINFO]. Done with" $@"."
 
   ##############################################    Explanations
-  # make normally uses real files as target of a rule,
-  # sometimes dummy targets, such as "automata.f" help to 
+  # make normally uses real files as goal of a rule,
+  # sometimes dummy goals, such as "automata.f" help to 
   # to ensure that the action is atomic
   # (e.g. it may happen that the directory "automata" is created,
   # but only half of the files: the flag "automata.f" is
@@ -112,13 +133,13 @@ all: $(GenSrc)-tests.f  $(GenSrc)-executes.f
   # timestamp of incGenStamp.f if needed, which triggers a 
   # regeneration of $(GenSrc).f
 
-$(GenSrc).incGenStamp.f: target force
-	@echo "[MINFO]. 1: Check if generation for \"" $(GramName)"\" is needed"
+$(GenSrc).incGenStamp.f: $(InitTarget) force
+	@echo "[MINFO]. 1: Check if generation for \"" $(GramName)"\" is needed?"
 	@[ -e $@ ] || touch $@
 	@[ -e $(GenSrc)/IncGenCheck.sh ] && sh $(GenSrc)/IncGenCheck.sh $@ || true
 
 # Activity 1 (M2): run MontiCore generator
-$(GenSrc).f: $(GRAMMAR) $(MCJAR) target $(MCGRAMMARS) $(GenSrc).incGenStamp.f
+$(GenSrc).f: $(GRAMMAR) $(MCJAR) $(MCGRAMMARS) $(GenSrc).incGenStamp.f
 	@echo "[MINFO]. 1: Generation of tool code from" $(GRAMMAR)
 	java -jar $(MCJAR) \
 		$(GRAMMAR) \
@@ -143,8 +164,8 @@ $(GenSrc).f: $(GRAMMAR) $(MCJAR) target $(MCGRAMMARS) $(GenSrc).incGenStamp.f
   #
 
 # Activity 2 (M2): compile the tool
-$(GenSrc)-classes.f: $(GenSrc).f $(SRC) target $(MCRTE)
-	@echo "[MINFO]. 2: Compile tooli:" $(GenSrc)-classes
+$(GenSrc)-classes.f: $(GenSrc).f $(SRC) $(MCRTE)
+	@echo "[MINFO]. 2: Compile tool:" $(GenSrc)-classes
 	@mkdir -p $(GenSrc)-classes/
 	javac -cp $(MCRTE) \
 	      -d $(GenSrc)-classes/ \
@@ -154,7 +175,7 @@ $(GenSrc)-classes.f: $(GenSrc).f $(SRC) target $(MCRTE)
 
 # Activity 3 (M2): build the tool jar
 $(Tool): $(GenSrc)-classes.f
-	@echo "[MINFO]. 3: Create tool jar:" $(Tool)
+	@echo "[MINFO]. 3: Create tool jar:" $<
 	jar cfe $(Tool) $(GramName).$(GramNameCap)Tool -C $(GenSrc)-classes .
 
 #############################################################
@@ -162,8 +183,8 @@ $(Tool): $(GenSrc)-classes.f
 
 # Activity 4 (M2): compile the tests
 # (which was on purpose not integrated in tool compilation)
-$(GenSrc)-testclasses.f: $(Tool) $(SRC) target $(MCRTE)
-	@echo "[MINFO]. 4: Compile tests:" $(GenSrc)-testclasses
+$(GenSrc)-testclasses.f: $(Tool) $(SRC) $(MCRTE) $(JUNIT)
+	@echo "[MINFO]. 4: Compile tests in" $(GenSrc)-testclasses
 	@mkdir -p $(GenSrc)-testclasses/
 	javac -cp "$(Tool);$(MCRTE);$(JUNIT)" \
 	      -d $(GenSrc)-testclasses/ \
@@ -172,8 +193,8 @@ $(GenSrc)-testclasses.f: $(Tool) $(SRC) target $(MCRTE)
 	@touch $@
 
 # Activity 5 (M1): execute the tests
-$(GenSrc)-tests.f: $(GenSrc)-testclasses.f
-	@echo "[MINFO]. 5: Run tests in:" $(GenSrc)-testclasses
+$(GenSrc)-tests.f: $(GenSrc)-testclasses.f $(JUNIT) $(HAMCREST)
+	@echo "[MINFO]. 5: Run tests in" $(GenSrc)-testclasses
 	@java  -cp "$(GenSrc)-testclasses;$(Tool);$(MCRTE);$(JUNIT);$(HAMCREST)" \
 	       org.junit.runner.JUnitCore \
 	       $(patsubst $(GenSrc)-testclasses/%.class,%,$(wildcard $(GenSrc)-testclasses/*Test.class))
@@ -185,29 +206,29 @@ $(GenSrc)-tests.f: $(GenSrc)-testclasses.f
 # The following simplified version does not manage updates
 # of foreign libaries
 
-# foreign jars for testing
-JUNIT=target/junit-4.13.jar
-HAMCREST=target/hamcrest-core-1.3.jar
-
-# jars for the MontiCore call (M2), runtime (M1+M2), and grammars (M2)
-MCJAR=target/monticore-all.jar
-MCRTE=target/monticore-rt.jar
-MCGRAMMARS=target/monticore-g.jar
-
 # Initialize target directory
-# (and a simplified downloading of all needed libraries at once
-# and doesn't check for new snapshots):
-# the MontiCore LWB; MontiCore RTE; MontiCore base grammars
-# and two testing libraries
-target:
+$(InitTarget):
 	mkdir -p target
+	@touch $@
+
+# position the MontiCore LWB; MontiCore RTE; MontiCore base grammars
+$(MCJAR): $(InitTarget)
 	cp ~/monticore/./monticore-cli/target/monticore-cli-*-with-dependencies.jar $(MCJAR)
+
+$(MCGRAMMARS): $(InitTarget)
 	cp ~/monticore/./monticore-grammar/target/monticore-grammar-*-grammars.jar $(MCGRAMMARS)
 	# TODO KH: diese kruecke ersetzen 
 	#: bei mir nicht existent
 	#	cp ~/monticore/./monticore-grammar/target/monticore-grammar-*-with-dependencies.jar $@
+
+$(MCRTE): $(InitTarget)
 	cp ~/monticore/./monticore-cli/target/monticore-cli-*-with-dependencies.jar $(MCRTE)
+
+# get the testing libraries
+$(JUNIT): $(InitTarget)
 	cp ~/.m2/repository/./junit/junit/4.13/junit-4.13.jar $(JUNIT)
+
+$(HAMCREST): $(InitTarget)
 	cp ~/.m2/repository/./org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar $(HAMCREST)
 
 clean:
