@@ -63,9 +63,9 @@ public class ArtifactScopeInterfaceDecorator extends AbstractCreator<ASTCDCompil
         .addInterface(getMCTypeFacade().createQualifiedType(I_ARTIFACT_SCOPE_TYPE))
         .addAllCDMethods(createPackageNameAttributeMethods())
         .addAllCDMethods(createImportsAttributeMethods())
-        .addCDMethods(createGetTopLevelSymbolMethod(symbolProds))
-        .addCDMethods(createCheckIfContinueAsSubScopeMethod())
-        .addCDMethods(createGetRemainingNameForResolveDownMethod())
+        .addCDMethod(createGetTopLevelSymbolMethod(symbolProds))
+        .addCDMethod(createCheckIfContinueAsSubScopeMethod())
+        .addCDMethod(createGetRemainingNameForResolveDownMethod())
         .addAllCDMethods(createContinueWithEnclosingScopeMethods(symbolProds, symbolTableService.getCDSymbol()))
         .addAllCDMethods(createSuperContinueWithEnclosingScopeMethods())
         .build();

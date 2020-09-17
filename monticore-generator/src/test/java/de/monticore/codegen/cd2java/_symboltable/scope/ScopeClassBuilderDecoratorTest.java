@@ -90,7 +90,7 @@ public class ScopeClassBuilderDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testDefaultConstructor() {
-    ASTCDConstructor cdConstructor = scopeBuilderClass.getCDConstructors(0);
+    ASTCDConstructor cdConstructor = scopeBuilderClass.getCDConstructor(0);
     assertDeepEquals(PUBLIC, cdConstructor.getModifier());
     assertEquals("AScopeBuilder", cdConstructor.getName());
 
@@ -101,7 +101,7 @@ public class ScopeClassBuilderDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributes() {
-    assertEquals(8, scopeBuilderClass.getCDAttributesList().size());
+    assertEquals(8, scopeBuilderClass.getCDAttributeList().size());
   }
 
   @Test
@@ -156,7 +156,7 @@ public class ScopeClassBuilderDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethods() {
-    assertEquals(54, scopeBuilderClass.getCDMethodsList().size());
+    assertEquals(54, scopeBuilderClass.getCDMethodList().size());
   }
 
   @Test

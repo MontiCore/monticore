@@ -79,11 +79,11 @@ public class ASTConstructionActions {
           StringTransformations.capitalize(constgroup.getUsageName()));
     }
     else {
-      if (constgroup.getConstantsList().size() == 1) {
+      if (constgroup.getConstantList().size() == 1) {
         // both == null and #constants == 1 -> use constant string as name
         tmp = "_aNode.set%cname%(true);";
         tmp = tmp.replaceAll("%cname%", StringTransformations.capitalize(HelperGrammar
-            .getAttributeNameForConstant(constgroup.getConstantsList().get(0))));
+            .getAttributeNameForConstant(constgroup.getConstantList().get(0))));
       }
       else {
         // both == null and #constants > 1 -> user wants to ignore token in AST

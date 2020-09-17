@@ -61,15 +61,15 @@ public class NodeFactoryDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeName() {
-    assertEquals("factory", factoryClass.getCDAttributes(0).getName());
-    assertEquals("factoryASTAutomaton", factoryClass.getCDAttributes(1).getName());
-    assertEquals("factoryASTState", factoryClass.getCDAttributes(2).getName());
-    assertEquals("factoryASTTransition", factoryClass.getCDAttributes(3).getName());
+    assertEquals("factory", factoryClass.getCDAttribute(0).getName());
+    assertEquals("factoryASTAutomaton", factoryClass.getCDAttribute(1).getName());
+    assertEquals("factoryASTState", factoryClass.getCDAttribute(2).getName());
+    assertEquals("factoryASTTransition", factoryClass.getCDAttribute(3).getName());
   }
 
   @Test
   public void testAttributeModifier() {
-    for (ASTCDAttribute astcdAttribute : factoryClass.getCDAttributesList()) {
+    for (ASTCDAttribute astcdAttribute : factoryClass.getCDAttributeList()) {
       assertTrue(astcdAttribute.isPresentModifier());
       assertTrue(PROTECTED_STATIC.build().deepEquals(astcdAttribute.getModifier()));
     }
@@ -82,12 +82,12 @@ public class NodeFactoryDecoratorTest extends DecoratorTestCase {
         .setModifier(PROTECTED.build())
         .setName("AutomatonNodeFactory")
         .build();
-    assertDeepEquals(astcdConstructor, factoryClass.getCDConstructors(0));
+    assertDeepEquals(astcdConstructor, factoryClass.getCDConstructor(0));
   }
 
   @Test
   public void testMethodGetFactory() {
-    ASTCDMethod method = factoryClass.getCDMethods(0);
+    ASTCDMethod method = factoryClass.getCDMethod(0);
     //test name
     assertEquals("getFactory", method.getName());
     //test modifier
@@ -101,7 +101,7 @@ public class NodeFactoryDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCreateASTAutomatonWithoutParameter() {
-    ASTCDMethod method = factoryClass.getCDMethods(1);
+    ASTCDMethod method = factoryClass.getCDMethod(1);
     //test name
     assertEquals("createASTAutomaton", method.getName());
     //test modifier
@@ -115,7 +115,7 @@ public class NodeFactoryDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodDoCreateASTAutomatonWithoutParameter() {
-    ASTCDMethod method = factoryClass.getCDMethods(2);
+    ASTCDMethod method = factoryClass.getCDMethod(2);
     //test name
     assertEquals("doCreateASTAutomaton", method.getName());
     //test modifier

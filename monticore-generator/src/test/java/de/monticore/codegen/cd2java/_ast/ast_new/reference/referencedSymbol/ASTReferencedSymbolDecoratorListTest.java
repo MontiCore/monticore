@@ -85,7 +85,7 @@ public class ASTReferencedSymbolDecoratorListTest extends DecoratorTestCase {
 
   @Test
   public void testMethods() {
-    assertEquals(39, astClass.getCDMethodsList().size());
+    assertEquals(39, astClass.getCDMethodList().size());
   }
 
   @Test

@@ -14,7 +14,6 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.symbols.oosymbols._symboltable.BuiltInJavaSymbolResolvingDelegate;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.utils.Names;
 import de.se_rwth.commons.StringTransformations;
@@ -75,9 +74,9 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
 
     // list of all scope rule attributes
     List<ASTCDAttribute> scopeRuleAttributeList = scopeInput.deepClone().getCDDefinition()
-        .getCDClasssList()
+        .getCDClassList()
         .stream()
-        .map(ASTCDClass::getCDAttributesList)
+        .map(ASTCDClass::getCDAttributeList)
         .flatMap(List::stream)
         .collect(Collectors.toList());
     scopeRuleAttributeList
@@ -96,23 +95,23 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
     return CD4CodeMill.cDClassBuilder()
         .setName(scopeDeSerName)
         .setModifier(PUBLIC.build())
-        .addCDConstructors(createConstructor(scopeDeSerName))
+        .addCDConstructor(createConstructor(scopeDeSerName))
         .addAllCDAttributes(createSymbolDeSerAttributes(symbolDefinition))
-        .addCDAttributes(fileExtension)
-        .addCDAttributes(jsonPrinter)
-        .addCDAttributes(symbolTablePrinter)
+        .addCDAttribute(fileExtension)
+        .addCDAttribute(jsonPrinter)
+        .addCDAttribute(symbolTablePrinter)
         .addAllCDMethods(methodDecorator.decorate(fileExtension))
         .addAllCDMethods(createLoadMethods(artifactScopeInterfaceFullName))
-        .addCDMethods(createLoadSymbolsIntoScopeMethod(globalScopeInterfaceFullName))
-        .addCDMethods(createStoreMethod(scopeDeSerName, artifactScopeInterfaceFullName))
-        .addCDMethods(createDeserializeStringMethod(artifactScopeFullName, artifactScopeInterfaceFullName))
-        .addCDMethods(createDeserializeScopeMethod(scopeClassFullName, simpleName, symTabMillFullName, scopeJsonParam, scopeRuleAttributeList))
-        .addCDMethods(createDeserializeArtifactScopeMethod(artifactScopeInterfaceFullName, simpleName, symTabMillFullName, scopeJsonParam, scopeRuleAttributeList))
+        .addCDMethod(createLoadSymbolsIntoScopeMethod(globalScopeInterfaceFullName))
+        .addCDMethod(createStoreMethod(scopeDeSerName, artifactScopeInterfaceFullName))
+        .addCDMethod(createDeserializeStringMethod(artifactScopeFullName, artifactScopeInterfaceFullName))
+        .addCDMethod(createDeserializeScopeMethod(scopeClassFullName, simpleName, symTabMillFullName, scopeJsonParam, scopeRuleAttributeList))
+        .addCDMethod(createDeserializeArtifactScopeMethod(artifactScopeInterfaceFullName, simpleName, symTabMillFullName, scopeJsonParam, scopeRuleAttributeList))
         .addAllCDMethods(createDeserializeAdditionalAttributesMethods(scopeJsonParam))
-        .addCDMethods(createAddSymbolsMethod())
-        .addCDMethods(createAddSymbolMethod(symbolDefiningProds))
+        .addCDMethod(createAddSymbolsMethod())
+        .addCDMethod(createAddSymbolMethod(symbolDefiningProds))
         .addAllCDMethods(createDeserializeSymbolMethods(symbolDefiningProds))
-        .addCDMethods(createSerializeMethod(scopeInterfaceName))
+        .addCDMethod(createSerializeMethod(scopeInterfaceName))
         .addAllCDMethods(
             createDeserializeScopeRuleAttributesMethod(scopeRuleAttributeList, scopeDeSerName))
         .build();
@@ -387,8 +386,8 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
       String generatedErrorCode = symbolTableService.getGeneratedErrorCode(methodName);
       HookPoint deserImplementation = DeSerMap
           .getDeserializationImplementation(astcdAttribute, methodName, "scopeJson",
-              //          astcdAttribute.getEnclosingScope()); //TODO AB Replace line below with this line after release of 5.5.0-SNAPSHOT
-              BuiltInJavaSymbolResolvingDelegate.getScope(), generatedErrorCode);
+                  // TODO Find correct scope!
+                  null, generatedErrorCode);
       this.replaceTemplate(EMPTY_BODY, deserializeMethod, deserImplementation);
       methodList.add(deserializeMethod);
     }

@@ -48,7 +48,7 @@ public class SymbolBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDCla
   public ASTCDClass decorate(final ASTCDClass symbolClass) {
     ASTCDClass decoratedSymbolClass = symbolClass.deepClone();
     decoratedSymbolClass.setName(symbolTableService.getNameWithSymbolSuffix(symbolClass));
-    decoratedSymbolClass.getCDMethodsList().clear();
+    decoratedSymbolClass.getCDMethodList().clear();
     boolean isInherited = symbolTableService.hasInheritedSymbolStereotype(symbolClass.getModifier());
     List<ASTCDAttribute> defaultAttrs = createSymbolAttributes(symbolClass);
     if (!isInherited) {
@@ -79,11 +79,11 @@ public class SymbolBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDCla
       symbolBuilder.addAllCDMethods(createScopeMethods(hasInheritedSpannedScope));
     }
 
-    List<ASTCDAttribute> buildAttributes = Lists.newArrayList(symbolClass.getCDAttributesList());
+    List<ASTCDAttribute> buildAttributes = Lists.newArrayList(symbolClass.getCDAttributeList());
     // builder has all attributes but not the spannedScope attribute from the symbol Class
     defaultAttrs.stream().filter(a -> !SPANNED_SCOPE_VAR.equals(a.getName())).forEach(a -> buildAttributes.add(a));
     // new build method template
-    Optional<ASTCDMethod> buildMethod = symbolBuilder.getCDMethodsList()
+    Optional<ASTCDMethod> buildMethod = symbolBuilder.getCDMethodList()
         .stream()
         .filter(m -> BUILD_METHOD.equals(m.getName()))
         .findFirst();

@@ -19,7 +19,7 @@ public class KeywordAlternativeName implements GrammarASTConstantGroupCoCo {
   
   @Override
   public void check(ASTConstantGroup a) {
-    if (!a.isPresentUsageName()&& a.getConstantsList().size() >1) {
+    if (!a.isPresentUsageName()&& a.getConstantList().size() >1) {
           String rulename = MCGrammarSymbolTableHelper.getEnclosingRule(a).get().getName();
           Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, rulename),
                   a.get_SourcePositionStart());

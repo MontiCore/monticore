@@ -25,9 +25,9 @@ public class EmfEnumDecorator extends EnumDecorator {
     ASTCDEnum astcdEnum = super.decorate(input);
     //add emf interface
     astcdEnum.addInterface(getMCTypeFacade().createQualifiedType(ENUMERATOR));
-    astcdEnum.addCDMethods(createGetNameMethod());
-    astcdEnum.addCDMethods(createGetLiteralMethod());
-    astcdEnum.addCDMethods(createGetValueMethod());
+    astcdEnum.addCDMethod(createGetNameMethod());
+    astcdEnum.addCDMethod(createGetLiteralMethod());
+    astcdEnum.addCDMethod(createGetValueMethod());
     return astcdEnum;
   }
 

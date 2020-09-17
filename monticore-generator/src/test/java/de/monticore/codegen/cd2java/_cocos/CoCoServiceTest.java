@@ -24,7 +24,7 @@ public class CoCoServiceTest extends DecoratorTestCase {
   @Before
   public void setup() {
     astcdCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
-    astAutomaton = astcdCompilationUnit.getCDDefinition().getCDClasss(0);
+    astAutomaton = astcdCompilationUnit.getCDDefinition().getCDClass(0);
 
     cocoService = new CoCoService(astcdCompilationUnit);
   }

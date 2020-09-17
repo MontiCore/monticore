@@ -4,11 +4,11 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 plugins {
    id "de.set.ecj" version "1.4.1" // Eclipse compiler as it's much faster than javac
-  id "monticore" version "6.3.0-SNAPSHOT" // MontiCore Plugin
+  id "monticore" version "6.4.0-SNAPSHOT" // MontiCore Plugin
 }
 allprojects {
   group = 'de.monticore'
-  version = '6.3.0-SNAPSHOT'
+  version = '6.4.0-SNAPSHOT'
 }
 
 subprojects {
@@ -19,8 +19,8 @@ subprojects {
   buildDir = file("$projectDir/target")
   
   ext.grammarDir = 'src/main/grammars'
-  ext.grammar_version = '6.3.0-SNAPSHOT'
-  ext.mc_version = '6.3.0-SNAPSHOT'
+  ext.grammar_version = '6.4.0-SNAPSHOT'
+  ext.mc_version = '6.4.0-SNAPSHOT'
   ext.junit_version = '4.12'
   ext.outDir = "$buildDir/generated-sources/monticore/sourcecode"
   
@@ -36,7 +36,7 @@ subprojects {
     grammar group:'de.monticore', name:'monticore-runtime', version:grammar_version
   }
   
-  test {
+  tasks.withType(Test) {
     useJUnit()
     testLogging {
       // controls whether test output is shown
@@ -53,13 +53,13 @@ subprojects {
       }
     }
     afterTest { desc, result ->
-      logger.quiet "${desc.className} > ${desc.name} ${result.resultType}"
+      logger.lifecycle "${desc.className} > ${desc.name} ${result.resultType}"
     }
     afterSuite { desc, result ->
       if (!desc.parent) { // will match the outermost suite
         def output = "Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} passed, ${result.failedTestCount} failed, ${result.skippedTestCount} skipped)"
         def startItem = '|  ', endItem = '  |'
-        logger.quiet startItem + output + endItem
+        logger.lifecycle startItem + output + endItem
       }
     }
     reports {
