@@ -23,7 +23,7 @@ public class KeyRuleWithoutName implements GrammarASTMCGrammarCoCo {
   public void check(ASTMCGrammar gr) {
     MCGrammarSymbol grSymbol = gr.getSymbol();
     if (!gr.isComponent() && !grSymbol.getProdWithInherited("Name").isPresent()) {
-      if (gr.getKeywordRulesList().size()!=0 || new FindKeyConstant().getResult(gr)) {
+      if (gr.getKeywordRuleList().size()!=0 || new FindKeyConstant().getResult(gr)) {
         Log.error(ERROR_CODE + ERROR_MSG_FORMAT, gr.get_SourcePositionStart());
       }
     }
