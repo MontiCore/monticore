@@ -77,13 +77,13 @@ all: $(GenSrc)-tests.f  $(GenSrc)-executes.f
 #EXPL# regeneration of $(GenSrc).f
 
 
-target/incGenStamp.f: target force
+$(GenSrc).incGenStamp.f: target force
 	@echo "[MINFO]. 1: Check if generation is needed"
 	@[ -e $@ ] || touch $@
 	@[ -e $(GenSrc)/IncGenCheck.sh ] && sh $(GenSrc)/IncGenCheck.sh $@ || true
 
 # Activity 1 (M2): run MontiCore generator
-$(GenSrc).f: $(GRAMMAR) $(MCJAR) $(MCGRAMMARS) target/incGenStamp.f
+$(GenSrc).f: $(GRAMMAR) $(MCJAR) $(MCGRAMMARS) $(GenSrc).incGenStamp.f
 	@echo "[MINFO]. 1: Generation of tool code from" $(GRAMMAR)
 	java -jar $(MCJAR) \
 		$(GRAMMAR) \
