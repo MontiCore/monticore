@@ -27,8 +27,7 @@ import de.monticore.types.*;
 
 component grammar JavaLight extends AssignmentExpressions,
                                     JavaClassExpressions,
-                                    MCCommonStatements,
-                                    MCBasicTypes {
+                                    MCCommonStatements {
 
 external ExtTypeParameters;
 
