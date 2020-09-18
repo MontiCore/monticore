@@ -13,7 +13,7 @@
   #
 
   ##############################################    Explanations
-  # The makefile handles two levels of generation and processing 
+  # The makefile handles two levels of generation and processing
   # Level
   #   M2: MontiCore LWB generates Automata tool-code
   #        & compiles & jars it
@@ -25,14 +25,14 @@
   # and of course the individual tool calls:
   # This means there are two parts to be configured,
   # while the rest is generic.
-  # 
+  #
   #
 
 #############################################################
 # Configuration (files and used commands):
 
 # Individual Configuration:       <<-- adapt here
- 
+
 # M2-model to be processed (the grammar)
 GRAMMAR=src/main/grammars/Automata.mc4
 
@@ -91,20 +91,20 @@ $(GenSrc)-executes.f: target/PingPong.result \
 	@touch $@
 
 target/PingPong.result: src/test/resources/example/PingPong.aut \
-                        $(Tool) $(MCRTE) 
+                        $(Tool) $(MCRTE)
 	@echo "[MINFO]. 6a: Handling" $<
 	java -cp "$(Tool);$(MCRTE)" \
 	     $(ToolClass) $< target/symtab/ > $@
 
 target/HierarchyPingPong.result: \
                         src/test/resources/example/HierarchyPingPong.aut \
-                        $(Tool) $(MCRTE) 
+                        $(Tool) $(MCRTE)
 	@echo "[MINFO]. 6b: Handling" $<
 	java -cp "$(Tool);$(MCRTE)" \
 	     $(ToolClass) $< target/symtab/ > $@
 
 target/Simple12.result: src/test/resources/example/Simple12.aut \
-                        $(Tool) $(MCRTE) 
+                        $(Tool) $(MCRTE)
 	@echo "[MINFO]. 6c: Handling" $<
 	java -cp "$(Tool);$(MCRTE)" \
 	     $(ToolClass) $< target/symtab/ > $@
@@ -116,12 +116,12 @@ target/Simple12.result: src/test/resources/example/Simple12.aut \
 
 # initial rule describing all relevant sub-activities
 
-testsAndExecution: $(GenSrc)-tests.f  $(GenSrc)-executes.f 
+testsAndExecution: $(GenSrc)-tests.f  $(GenSrc)-executes.f
 	@echo "[MINFO]. Done with" $@"."
 
   ##############################################    Explanations
   # make normally uses real files as goal of a rule,
-  # sometimes dummy goals, such as "automata.f" help to 
+  # sometimes dummy goals, such as "automata.f" help to
   # to ensure that the action is atomic
   # (e.g. it may happen that the directory "automata" is created,
   # but only half of the files: the flag "automata.f" is
@@ -137,7 +137,7 @@ testsAndExecution: $(GenSrc)-tests.f  $(GenSrc)-executes.f
   # dependencies. It is included as follows:
   # goal incGenStamp.f must always be executed newly (because of
   # the force); this executes IncGenCheck.sh, which updates the
-  # timestamp of incGenStamp.f if needed, which triggers a 
+  # timestamp of incGenStamp.f if needed, which triggers a
   # regeneration of $(GenSrc).f
 
 $(GenSrc).incGenStamp.f: $(InitTarget) force
@@ -228,12 +228,14 @@ $(MCJAR): $(InitTarget)
 
 $(MCGRAMMARS): $(InitTarget)
 	cp ~/monticore/./monticore-grammar/target/monticore-grammar-*-grammars.jar $(MCGRAMMARS)
-	# TODO KH: diese kruecke ersetzen 
-	#: bei mir nicht existent
-	#	cp ~/monticore/./monticore-grammar/target/monticore-grammar-*-with-dependencies.jar $@
 
 $(MCRTE): $(InitTarget)
 	cp ~/monticore/./monticore-cli/target/monticore-cli-*-with-dependencies.jar $(MCRTE)
+	# Hint: the cli jar can only be used as runtime in case of releases or snapshots where runtime and grammars
+	# have no breaking changes compared to the last release due to the snapshot not being bootstrapped yet
+	# when using the snapshot use the following instead
+	#cp ~/monticore/./monticore-grammar/target/monticore-grammar-*-with-dependencies.jar $(MCRTE)
+
 
 # get the testing libraries
 $(JUNIT): $(InitTarget)
