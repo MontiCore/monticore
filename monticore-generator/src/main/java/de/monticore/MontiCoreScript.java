@@ -455,7 +455,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     ASTCDCompilationUnit astCdForReporting = astCd.deepClone();
 
     // Change Name
-    astCdForReporting.getCDDefinition().setName("Decorated_" + astCdForReporting.getCDDefinition().getName());
+    astCdForReporting.getCDDefinition().setName("DataStructure_" + astCdForReporting.getCDDefinition().getName());
 
     // No star imports in reporting CDs
     astCdForReporting.getMCImportStatementList().forEach(s -> s.setStar(false));
@@ -484,6 +484,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     // Remove methods and constructors
     astCdForReporting.getCDDefinition().forEachCDClasss(c -> {c.clearCDMethods(); c.clearCDConstructors();});
     astCdForReporting.getCDDefinition().forEachCDInterfaces(c -> c.clearCDMethods());
+    astCdForReporting.getCDDefinition().forEachCDEnums(c -> {c.clearCDMethods(); c.clearCDConstructors();});
 
     new CDReporting().prettyPrintAstCd(astCdForReporting, outputDirectory, reportSubDir);
   }
