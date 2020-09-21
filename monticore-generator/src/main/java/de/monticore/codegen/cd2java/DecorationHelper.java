@@ -125,8 +125,8 @@ public class DecorationHelper extends MCBasicTypesHelper {
   public String getNativeTypeName(ASTMCType astType) {
     // check if type is Generic type like 'List<automaton._ast.ASTState>' -> returns automaton._ast.ASTState
     // if not generic returns simple Type like 'int'
-    if (astType instanceof ASTMCGenericType && ((ASTMCGenericType) astType).getMCTypeArgumentsList().size() == 1) {
-      return ((ASTMCGenericType) astType).getMCTypeArgumentsList().get(0).getMCTypeOpt().get()
+    if (astType instanceof ASTMCGenericType && ((ASTMCGenericType) astType).getMCTypeArgumentList().size() == 1) {
+      return ((ASTMCGenericType) astType).getMCTypeArgumentList().get(0).getMCTypeOpt().get()
           .printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter());
     }
     return astType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter());
@@ -179,14 +179,14 @@ public class DecorationHelper extends MCBasicTypesHelper {
   // TODO Alternative für folgende Methoden finden
   public ASTMCTypeArgument getReferenceTypeFromOptional(ASTMCType type) {
     Preconditions.checkArgument(isOptional(type));
-    return ((ASTMCGenericType) type).getMCTypeArgumentsList().get(0);
+    return ((ASTMCGenericType) type).getMCTypeArgumentList().get(0);
   }
 
   /**
    * methods only used in templates
    */
   public boolean hasOnlyAstAttributes(ASTCDClass type) {
-    for (ASTCDAttribute attr : type.getCDAttributesList()) {
+    for (ASTCDAttribute attr : type.getCDAttributeList()) {
       if (!isAstNode(attr)) {
         return false;
       }

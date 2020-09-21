@@ -114,7 +114,7 @@ public class MCGrammarInfo {
       HashMap<String, List<ASTRuleReference>> ruleMap = Maps.newLinkedHashMap();
       // Collect superclasses and superinterfaces for classes
       for (ASTClassProd classProd : ((ASTMCGrammar) grammar.getAstNode())
-          .getClassProdsList()) {
+          .getClassProdList()) {
         List<ASTRuleReference> ruleRefs = Lists.newArrayList();
         ruleRefs.addAll(classProd.getSuperRuleList());
         ruleRefs.addAll(classProd.getSuperInterfaceRuleList());
@@ -123,7 +123,7 @@ public class MCGrammarInfo {
       
       // Collect superclasses and superinterfaces for abstract classes
       for (ASTAbstractProd classProd : ((ASTMCGrammar) grammar.getAstNode())
-          .getAbstractProdsList()) {
+          .getAbstractProdList()) {
         List<ASTRuleReference> ruleRefs = Lists.newArrayList();
         ruleRefs.addAll(classProd.getSuperRuleList());
         ruleRefs.addAll(classProd.getSuperInterfaceRuleList());
@@ -132,7 +132,7 @@ public class MCGrammarInfo {
       
       // Collect superinterfaces for interfaces
       for (ASTInterfaceProd classProd : ((ASTMCGrammar) grammar.getAstNode())
-          .getInterfaceProdsList()) {
+          .getInterfaceProdList()) {
         List<ASTRuleReference> ruleRefs = Lists.newArrayList();
         ruleRefs.addAll(classProd.getSuperInterfaceRuleList());
         ruleMap.put(classProd.getName(), ruleRefs);
@@ -167,7 +167,7 @@ public class MCGrammarInfo {
     Collection<String> names = new ArrayList<>();
     superProds.forEach(s -> names.add(s.getName()));
     DirectLeftRecursionDetector detector = new DirectLeftRecursionDetector();
-    for (ASTAlt alt : ast.getAltsList()) {
+    for (ASTAlt alt : ast.getAltList()) {
       if (detector.isAlternativeLeftRecursive(alt, names)) {
         names.add(ast.getName());
         return names;
@@ -181,7 +181,7 @@ public class MCGrammarInfo {
         .newLinkedHashSet(Arrays.asList(grammarSymbol));
     grammarsToHandle.addAll(MCGrammarSymbolTableHelper.getAllSuperGrammars(grammarSymbol));
     for (MCGrammarSymbol grammar : grammarsToHandle) {
-      for (ASTClassProd classProd : ((ASTMCGrammar) grammar.getAstNode()).getClassProdsList()) {
+      for (ASTClassProd classProd : ((ASTMCGrammar) grammar.getAstNode()).getClassProdList()) {
         leftRecursiveRules.addAll(addLeftRecursiveRuleForProd(classProd));
       }
     }
@@ -223,11 +223,11 @@ public class MCGrammarInfo {
     for (MCGrammarSymbol grammar : grammarsToHandle) {
       if (grammar.isPresentAstNode()) {
         // Add additional java code for lexer and parser
-        for (ASTConcept concept : grammar.getAstNode().getConceptsList()) {
+        for (ASTConcept concept : grammar.getAstNode().getConceptList()) {
           if (concept.getConcept() instanceof ASTMCConcept) {
             ASTConceptAntlr conceptAntlr = ((ASTMCConcept) concept.getConcept()).getConceptAntlr();
-            conceptAntlr.getAntlrParserActionsList().forEach(a -> addAdditionalParserJavaCode(a.getText()));
-            conceptAntlr.getAntlrLexerActionsList().forEach(a -> addAdditionalLexerJavaCode(a.getText()));
+            conceptAntlr.getAntlrParserActionList().forEach(a -> addAdditionalParserJavaCode(a.getText()));
+            conceptAntlr.getAntlrLexerActionList().forEach(a -> addAdditionalLexerJavaCode(a.getText()));
           }
         }
       }

@@ -73,6 +73,7 @@ public class GrammarCoCos {
     checker.addCoCo(new ProdWithDoubleAnnos());
     checker.addCoCo(new ExternalNTNoASTRule());
     checker.addCoCo(new DerivedAndManualListName());
+    checker.addCoCo(new KeyRuleWithoutName());
     // checker.addCoCo(new NoNTInheritanceCycle());
 
     return checker;

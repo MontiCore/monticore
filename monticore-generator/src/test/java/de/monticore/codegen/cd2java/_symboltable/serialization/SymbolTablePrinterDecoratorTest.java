@@ -96,12 +96,12 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testConstructors(){
-    List<ASTCDConstructor> constructors = symbolTablePrinterClass.getCDConstructorsList();
+    List<ASTCDConstructor> constructors = symbolTablePrinterClass.getCDConstructorList();
     assertDeepEquals(CDModifier.PUBLIC, constructors.get(0).getModifier());
     assertTrue(constructors.get(0).isEmptyCDParameters());
     assertDeepEquals(CDModifier.PUBLIC, constructors.get(1).getModifier());
     assertEquals(1, constructors.get(1).sizeCDParameters());
-    assertDeepEquals(JSON_PRINTER, constructors.get(1).getCDParameters(0).getMCType());
+    assertDeepEquals(JSON_PRINTER, constructors.get(1).getCDParameter(0).getMCType());
   }
 
   @Test
@@ -153,8 +153,8 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
     assertEquals(0, method.sizeException());
     assertEquals(1, method.sizeCDParameters());
-    assertEquals("printer", method.getCDParameters(0).getName());
-    assertDeepEquals(JSON_PRINTER, method.getCDParameters(0).getMCType());
+    assertEquals("printer", method.getCDParameter(0).getName());
+    assertDeepEquals(JSON_PRINTER, method.getCDParameter(0).getMCType());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
   }
 
@@ -174,7 +174,7 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
     assertEquals(0, method.sizeException());
     assertEquals(1, method.sizeCDParameters());
-    ASTCDParameter parameter = method.getCDParameters(0);
+    ASTCDParameter parameter = method.getCDParameter(0);
     assertEquals("realThis", parameter.getName());
     assertDeepEquals(AUTOMATON_VISITOR, parameter.getMCType());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
@@ -198,13 +198,13 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
       assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
       assertTrue(method.getMCReturnType().isPresentMCVoidType());
       assertEquals(1, method.sizeCDParameters());
-      assertEquals("node", method.getCDParameters(0).getName());
+      assertEquals("node", method.getCDParameter(0).getName());
     }
-    assertDeepEquals(I_AUTOMATON_SCOPE, methods.get(0).getCDParameters(0).getMCType());
-    assertDeepEquals(AUTOMATON_SYMBOL, methods.get(1).getCDParameters(0).getMCType());
-    assertDeepEquals(STATE_SYMBOL, methods.get(2).getCDParameters(0).getMCType());
-    assertDeepEquals(FOO_SYMBOL, methods.get(3).getCDParameters(0).getMCType());
-    assertDeepEquals(I_AUTOMATON_ARTIFACT_SCOPE, methods.get(4).getCDParameters(0).getMCType());
+    assertDeepEquals(I_AUTOMATON_SCOPE, methods.get(0).getCDParameter(0).getMCType());
+    assertDeepEquals(AUTOMATON_SYMBOL, methods.get(1).getCDParameter(0).getMCType());
+    assertDeepEquals(STATE_SYMBOL, methods.get(2).getCDParameter(0).getMCType());
+    assertDeepEquals(FOO_SYMBOL, methods.get(3).getCDParameter(0).getMCType());
+    assertDeepEquals(I_AUTOMATON_ARTIFACT_SCOPE, methods.get(4).getCDParameter(0).getMCType());
   }
 
   @Test
@@ -215,13 +215,13 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
       assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
       assertTrue(method.getMCReturnType().isPresentMCVoidType());
       assertEquals(1, method.sizeCDParameters());
-      assertEquals("node", method.getCDParameters(0).getName());
+      assertEquals("node", method.getCDParameter(0).getName());
     }
-    assertDeepEquals(I_AUTOMATON_SCOPE, methods.get(0).getCDParameters(0).getMCType());
-    assertDeepEquals(AUTOMATON_SYMBOL, methods.get(1).getCDParameters(0).getMCType());
-    assertDeepEquals(STATE_SYMBOL, methods.get(2).getCDParameters(0).getMCType());
-    assertDeepEquals(FOO_SYMBOL, methods.get(3).getCDParameters(0).getMCType());
-    assertDeepEquals(I_AUTOMATON_ARTIFACT_SCOPE, methods.get(4).getCDParameters(0).getMCType());
+    assertDeepEquals(I_AUTOMATON_SCOPE, methods.get(0).getCDParameter(0).getMCType());
+    assertDeepEquals(AUTOMATON_SYMBOL, methods.get(1).getCDParameter(0).getMCType());
+    assertDeepEquals(STATE_SYMBOL, methods.get(2).getCDParameter(0).getMCType());
+    assertDeepEquals(FOO_SYMBOL, methods.get(3).getCDParameter(0).getMCType());
+    assertDeepEquals(I_AUTOMATON_ARTIFACT_SCOPE, methods.get(4).getCDParameter(0).getMCType());
   }
 
   @Test
@@ -232,9 +232,9 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
       assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
       assertTrue(method.getMCReturnType().isPresentMCVoidType());
       assertEquals(1, method.sizeCDParameters());
-      assertEquals("node", method.getCDParameters(0).getName());
+      assertEquals("node", method.getCDParameter(0).getName());
     }
-    assertDeepEquals(AUTOMATON_SYMBOL, methods.get(0).getCDParameters(0).getMCType());
+    assertDeepEquals(AUTOMATON_SYMBOL, methods.get(0).getCDParameter(0).getMCType());
   }
 
   @Test
@@ -243,7 +243,7 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
     assertEquals(0, method.sizeException());
     assertEquals(1, method.sizeCDParameters());
-    ASTCDParameter parameter = method.getCDParameters(0);
+    ASTCDParameter parameter = method.getCDParameter(0);
     assertEquals("node", parameter.getName());
     assertDeepEquals(I_AUTOMATON_SCOPE, parameter.getMCType());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
@@ -255,7 +255,7 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
     assertEquals(0, method.sizeException());
     assertEquals(1, method.sizeCDParameters());
-    ASTCDParameter parameter = method.getCDParameters(0);
+    ASTCDParameter parameter = method.getCDParameter(0);
     assertEquals("node", parameter.getName());
     assertDeepEquals(I_AUTOMATON_ARTIFACT_SCOPE, parameter.getMCType());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
@@ -267,7 +267,7 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
     assertEquals(0, method.sizeException());
     assertEquals(1, method.sizeCDParameters());
-    ASTCDParameter parameter = method.getCDParameters(0);
+    ASTCDParameter parameter = method.getCDParameter(0);
     assertEquals("extraAttribute", parameter.getName());
     assertBoolean(parameter.getMCType());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
@@ -279,7 +279,7 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
     assertEquals(0, method.sizeException());
     assertEquals(1, method.sizeCDParameters());
-    ASTCDParameter parameter = method.getCDParameters(0);
+    ASTCDParameter parameter = method.getCDParameter(0);
     assertEquals("foo", parameter.getName());
     assertListOf(String.class, parameter.getMCType());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
@@ -291,7 +291,7 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
     assertEquals(0, method.sizeException());
     assertEquals(1, method.sizeCDParameters());
-    ASTCDParameter parameter = method.getCDParameters(0);
+    ASTCDParameter parameter = method.getCDParameter(0);
     assertEquals("bla", parameter.getName());
     assertOptionalOf(Integer.class, parameter.getMCType());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
@@ -303,7 +303,7 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
     assertEquals(0, method.sizeException());
     assertEquals(1, method.sizeCDParameters());
-    ASTCDParameter parameter = method.getCDParameters(0);
+    ASTCDParameter parameter = method.getCDParameter(0);
     assertEquals("extraAttribute", parameter.getName());
     assertBoolean(parameter.getMCType());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
@@ -315,7 +315,7 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
     assertEquals(0, method.sizeException());
     assertEquals(1, method.sizeCDParameters());
-    ASTCDParameter parameter = method.getCDParameters(0);
+    ASTCDParameter parameter = method.getCDParameter(0);
     assertEquals("foo", parameter.getName());
     assertListOf(String.class, parameter.getMCType());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
@@ -327,7 +327,7 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
     assertEquals(0, method.sizeException());
     assertEquals(1, method.sizeCDParameters());
-    ASTCDParameter parameter = method.getCDParameters(0);
+    ASTCDParameter parameter = method.getCDParameter(0);
     assertEquals("bla", parameter.getName());
     assertOptionalOf(Integer.class, parameter.getMCType());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
@@ -339,7 +339,7 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
     assertEquals(0, method.sizeException());
     assertEquals(1, method.sizeCDParameters());
-    ASTCDParameter parameter = method.getCDParameters(0);
+    ASTCDParameter parameter = method.getCDParameter(0);
     assertEquals("node", parameter.getName());
     assertDeepEquals(AUTOMATON_SYMBOL, parameter.getMCType());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
@@ -351,7 +351,7 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
     assertEquals(0, method.sizeException());
     assertEquals(1, method.sizeCDParameters());
-    ASTCDParameter parameter = method.getCDParameters(0);
+    ASTCDParameter parameter = method.getCDParameter(0);
     assertEquals("node", parameter.getName());
     assertDeepEquals(STATE_SYMBOL, parameter.getMCType());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
@@ -363,7 +363,7 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
     assertEquals(0, method.sizeException());
     assertEquals(1, method.sizeCDParameters());
-    ASTCDParameter parameter = method.getCDParameters(0);
+    ASTCDParameter parameter = method.getCDParameter(0);
     assertEquals("node", parameter.getName());
     assertDeepEquals(FOO_SYMBOL, parameter.getMCType());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());

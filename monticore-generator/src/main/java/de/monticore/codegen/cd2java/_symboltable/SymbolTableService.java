@@ -524,13 +524,13 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     // get AST for symbol
     ASTCDDefinition astcdDefinition = cdSymbol.getAstNode();
     // add symbol definitions from interfaces
-    for (ASTCDInterface astcdInterface : astcdDefinition.getCDInterfacesList()) {
+    for (ASTCDInterface astcdInterface : astcdDefinition.getCDInterfaceList()) {
       if (astcdInterface.isPresentModifier() && hasSymbolStereotype(astcdInterface.getModifier())) {
         symbolNames.add(getSymbolFullName(astcdInterface, cdSymbol));
       }
     }
     // add symbol definitions from nonterminals
-    for (ASTCDClass astcdClass : astcdDefinition.getCDClasssList()) {
+    for (ASTCDClass astcdClass : astcdDefinition.getCDClassList()) {
       if (astcdClass.isPresentModifier() && hasSymbolStereotype(astcdClass.getModifier())) {
         symbolNames.add(getSymbolFullName(astcdClass, cdSymbol));
       }
@@ -626,8 +626,8 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
    */
 
   public List<ASTCDType> getSymbolDefiningProds(ASTCDDefinition astcdDefinition) {
-    List<ASTCDType> symbolProds = getSymbolDefiningProds(astcdDefinition.getCDClasssList());
-    symbolProds.addAll(getSymbolDefiningProds(astcdDefinition.getCDInterfacesList()));
+    List<ASTCDType> symbolProds = getSymbolDefiningProds(astcdDefinition.getCDClassList());
+    symbolProds.addAll(getSymbolDefiningProds(astcdDefinition.getCDInterfaceList()));
     return symbolProds;
   }
 
@@ -708,14 +708,14 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   }
 
   public List<ASTCDType> getOnlyScopeClasses(ASTCDDefinition astcdDefinition) {
-    List<ASTCDType> symbolProds = astcdDefinition.getCDClasssList().stream()
+    List<ASTCDType> symbolProds = astcdDefinition.getCDClassList().stream()
         .filter(ASTCDClass::isPresentModifier)
         .filter(c -> hasScopeStereotype(c.getModifier()))
         .filter(c -> !hasSymbolStereotype(c.getModifier()))
         .filter(c -> !hasInheritedSymbolStereotype(c.getModifier()))
         .collect(Collectors.toList());
 
-    symbolProds.addAll(astcdDefinition.getCDInterfacesList().stream()
+    symbolProds.addAll(astcdDefinition.getCDInterfaceList().stream()
         .filter(ASTCDInterface::isPresentModifier)
         .filter(c -> hasScopeStereotype(c.getModifier()))
         .collect(Collectors.toList()));
@@ -754,7 +754,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     if (astcdDefinition.sizeCDInterfaces() != 1) {
       return true;
     }
-    String interfaceName = astcdDefinition.getCDInterfaces(0).getName();
+    String interfaceName = astcdDefinition.getCDInterface(0).getName();
     // check unqualified interface name
     if (interfaceName.equals(getSimpleLanguageInterfaceName())) {
       return false;
@@ -796,12 +796,12 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     if (astcdDefinition.isPresentModifier() && hasStartProdStereotype(astcdDefinition.getModifier())) {
       return getStartProdValue(astcdDefinition.getModifier());
     }
-    for (ASTCDClass prod : astcdDefinition.getCDClasssList()) {
+    for (ASTCDClass prod : astcdDefinition.getCDClassList()) {
       if (hasStereotype(prod.getModifier(), MC2CDStereotypes.START_PROD)) {
         return Optional.of(getCDSymbol().getPackageName() + "." + getCDName() + "." + prod.getName());
       }
     }
-    for (ASTCDInterface prod : astcdDefinition.getCDInterfacesList()) {
+    for (ASTCDInterface prod : astcdDefinition.getCDInterfaceList()) {
       if (hasStereotype(prod.getModifier(), MC2CDStereotypes.START_PROD)) {
         return Optional.of(getCDSymbol().getPackageName() + "." + getCDName() + "." + prod.getName());
       }
@@ -832,12 +832,12 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     if (astcdDefinition.isPresentModifier() && hasStartProdStereotype(astcdDefinition.getModifier())) {
       return true;
     }
-    for (ASTCDClass prod : astcdDefinition.getCDClasssList()) {
+    for (ASTCDClass prod : astcdDefinition.getCDClassList()) {
       if (hasStereotype(prod.getModifier(), MC2CDStereotypes.START_PROD)) {
         return true;
       }
     }
-    for (ASTCDInterface prod : astcdDefinition.getCDInterfacesList()) {
+    for (ASTCDInterface prod : astcdDefinition.getCDInterfaceList()) {
       if (hasStereotype(prod.getModifier(), MC2CDStereotypes.START_PROD)) {
         return true;
       }

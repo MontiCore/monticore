@@ -55,7 +55,7 @@ public class DeprecatedTranslation implements
 
   protected void translateProd(ASTProd prod, ASTCDType cdType,
                                ASTMCGrammar astGrammar) {
-    List<ASTGrammarAnnotation> annos = prod.getGrammarAnnotationsList().stream().filter(a -> a.isDeprecated()).collect(Collectors.toList());
+    List<ASTGrammarAnnotation> annos = prod.getGrammarAnnotationList().stream().filter(a -> a.isDeprecated()).collect(Collectors.toList());
     String message;
     if (annos.isEmpty()) {
       if (!astGrammar.isPresentGrammarAnnotation() || !astGrammar.getGrammarAnnotation().isDeprecated()) {

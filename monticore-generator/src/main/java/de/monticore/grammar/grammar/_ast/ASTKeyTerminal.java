@@ -8,6 +8,6 @@ public  class ASTKeyTerminal extends ASTKeyTerminalTOP {
   }
 
   public String getName() {
-    return getKeyConstant().getStrings(0);
+    return getKeyConstant().getString(0);
   }
 }

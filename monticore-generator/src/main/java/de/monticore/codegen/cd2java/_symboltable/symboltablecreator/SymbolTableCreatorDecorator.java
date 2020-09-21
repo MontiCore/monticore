@@ -65,9 +65,9 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
       ASTMCBasicGenericType dequeWildcardType = getMCTypeFacade().createBasicGenericTypeOf(DEQUE_TYPE, wildCardTypeArgument);
 
       String simpleName = symbolTableService.removeASTPrefix(Names.getSimpleName(startProd.get()));
-      List<ASTCDType> symbolDefiningClasses = symbolTableService.getSymbolDefiningProds(input.getCDDefinition().getCDClasssList());
-      Map<ASTCDClass, String> inheritedSymbolPropertyClasses = symbolTableService.getInheritedSymbolPropertyClasses(input.getCDDefinition().getCDClasssList());
-      List<ASTCDType> noSymbolDefiningClasses = symbolTableService.getNoSymbolAndScopeDefiningClasses(input.getCDDefinition().getCDClasssList());
+      List<ASTCDType> symbolDefiningClasses = symbolTableService.getSymbolDefiningProds(input.getCDDefinition().getCDClassList());
+      Map<ASTCDClass, String> inheritedSymbolPropertyClasses = symbolTableService.getInheritedSymbolPropertyClasses(input.getCDDefinition().getCDClassList());
+      List<ASTCDType> noSymbolDefiningClasses = symbolTableService.getNoSymbolAndScopeDefiningClasses(input.getCDDefinition().getCDClassList());
       List<ASTCDType> symbolDefiningProds = symbolTableService.getSymbolDefiningProds(input.getCDDefinition());
       List<ASTCDType> onlyScopeProds = symbolTableService.getOnlyScopeClasses(input.getCDDefinition());
 
@@ -81,18 +81,18 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
           .setName(symbolTableCreator)
           .setModifier(PUBLIC.build())
           .addInterface(getMCTypeFacade().createQualifiedType(visitorName))
-          .addCDConstructors(createSimpleConstructor(symbolTableCreator, scopeInterface))
-          .addCDConstructors(createDequeConstructor(symbolTableCreator, dequeWildcardType, dequeType))
-          .addCDAttributes(createScopeStackAttribute(dequeType))
-          .addCDAttributes(realThisAttribute)
+          .addCDConstructor(createSimpleConstructor(symbolTableCreator, scopeInterface))
+          .addCDConstructor(createDequeConstructor(symbolTableCreator, dequeWildcardType, dequeType))
+          .addCDAttribute(createScopeStackAttribute(dequeType))
+          .addCDAttribute(realThisAttribute)
           .addAllCDMethods(realThisMethods)
-          .addCDAttributes(firstCreatedScopeAttribute)
+          .addCDAttribute(firstCreatedScopeAttribute)
           .addAllCDMethods(firstCreatedScopeMethod)
-          .addCDMethods(createCreateFromASTMethod(astFullName, symbolTableCreator, symTabMillFullName))
-          .addCDMethods(createPutOnStackMethod(scopeInterface))
+          .addCDMethod(createCreateFromASTMethod(astFullName, symbolTableCreator, symTabMillFullName))
+          .addCDMethod(createPutOnStackMethod(scopeInterface))
           .addAllCDMethods(createCurrentScopeMethods(scopeInterface))
-          .addCDMethods(createSetScopeStackMethod(dequeType, simpleName))
-          .addCDMethods(createCreateScopeMethod(scopeInterface, input.getCDDefinition().getName()))
+          .addCDMethod(createSetScopeStackMethod(dequeType, simpleName))
+          .addCDMethod(createCreateScopeMethod(scopeInterface, input.getCDDefinition().getName()))
           .addAllCDMethods(createSymbolClassMethods(symbolDefiningClasses, scopeInterface))
           .addAllCDMethods(createSymbolClassMethods(inheritedSymbolPropertyClasses, scopeInterface))
           .addAllCDMethods(createVisitForNoSymbolMethods(noSymbolDefiningClasses))
@@ -355,7 +355,7 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
 
   protected ASTCDMethod createScopeInitialize_Method(String simpleName, ASTCDType scopeClass,
                                                      ASTCDParameter astParam, ASTCDParameter scopeParam) {
-    boolean hasNameAttribute = scopeClass.getCDAttributesList().stream().anyMatch(a -> a.getName().equals(NAME_VAR));
+    boolean hasNameAttribute = scopeClass.getCDAttributeList().stream().anyMatch(a -> a.getName().equals(NAME_VAR));
     ASTCDMethod initializeMethod = getCDMethodFacade().createMethod(PROTECTED, "initialize_" + simpleName, scopeParam, astParam);
     if (hasNameAttribute) {
       this.replaceTemplate(EMPTY_BODY, initializeMethod, new StringHookPoint(SCOPE_VAR + ".setName(ast.getName());"));

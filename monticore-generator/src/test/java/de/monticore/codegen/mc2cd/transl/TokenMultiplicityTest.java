@@ -22,12 +22,12 @@ public class TokenMultiplicityTest {
   public TokenMultiplicityTest() {
     Optional<ASTCDCompilationUnit> cdCompilationUnit = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/LexerFormat.mc4"));
-    testListClass = TestHelper.getCDClasss(cdCompilationUnit.get(), "ASTTestList").get();
+    testListClass = TestHelper.getCDClass(cdCompilationUnit.get(), "ASTTestList").get();
   }
 
   @Test
   public void testTokenStar() {
-    List<ASTCDAttribute> attributes = testListClass.getCDAttributesList();
+    List<ASTCDAttribute> attributes = testListClass.getCDAttributeList();
     String name = typeToString(attributes.get(0).getMCType());
     assertEquals("java.util.List", name);
   }

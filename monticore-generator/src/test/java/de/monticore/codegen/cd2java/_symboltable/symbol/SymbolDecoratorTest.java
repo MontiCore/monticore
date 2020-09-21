@@ -123,13 +123,13 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testDefaultConstructor() {
-    ASTCDConstructor cdConstructor = symbolClassAutomaton.getCDConstructors(0);
+    ASTCDConstructor cdConstructor = symbolClassAutomaton.getCDConstructor(0);
     assertDeepEquals(PUBLIC, cdConstructor.getModifier());
     assertEquals("AutomatonSymbol", cdConstructor.getName());
 
     assertEquals(1, cdConstructor.sizeCDParameters());
-    assertDeepEquals(String.class, cdConstructor.getCDParameters(0).getMCType());
-    assertEquals("name", cdConstructor.getCDParameters(0).getName());
+    assertDeepEquals(String.class, cdConstructor.getCDParameter(0).getMCType());
+    assertEquals("name", cdConstructor.getCDParameter(0).getName());
 
     assertTrue(cdConstructor.isEmptyException());
   }
@@ -206,7 +206,7 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethods() {
-    assertEquals(19, symbolClassAutomaton.getCDMethodsList().size());
+    assertEquals(19, symbolClassAutomaton.getCDMethodList().size());
   }
 
   @Test
@@ -217,8 +217,8 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
 
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(mcTypeFacade.createQualifiedType(AUTOMATON_VISITOR),
-        method.getCDParameters(0).getMCType());
-    assertEquals("visitor", method.getCDParameters(0).getName());
+        method.getCDParameter(0).getMCType());
+    assertEquals("visitor", method.getCDParameter(0).getName());
   }
 
   @Test
@@ -323,8 +323,8 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
 
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(String.class, method.getCDParameters(0).getMCType());
-    assertEquals("name", method.getCDParameters(0).getName());
+    assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
+    assertEquals("name", method.getCDParameter(0).getName());
   }
 
   @Test
@@ -334,8 +334,8 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
 
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(String.class, method.getCDParameters(0).getMCType());
-    assertEquals("fullName", method.getCDParameters(0).getName());
+    assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
+    assertEquals("fullName", method.getCDParameter(0).getName());
   }
 
   @Test
@@ -345,8 +345,8 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
 
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(String.class, method.getCDParameters(0).getMCType());
-    assertEquals("packageName", method.getCDParameters(0).getName());
+    assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
+    assertEquals("packageName", method.getCDParameter(0).getName());
   }
 
   @Test
@@ -357,8 +357,8 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
 
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(mcTypeFacade.createQualifiedType(ENCLOSING_SCOPE_TYPE),
-        method.getCDParameters(0).getMCType());
-    assertEquals("enclosingScope", method.getCDParameters(0).getName());
+        method.getCDParameter(0).getMCType());
+    assertEquals("enclosingScope", method.getCDParameter(0).getName());
   }
 
   @Test
@@ -369,8 +369,8 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
 
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(mcTypeFacade.createQualifiedType(A_NODE_TYPE),
-        method.getCDParameters(0).getMCType());
-    assertEquals("astNode", method.getCDParameters(0).getName());
+        method.getCDParameter(0).getMCType());
+    assertEquals("astNode", method.getCDParameter(0).getName());
   }
 
   @Test
@@ -390,8 +390,8 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
 
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(mcTypeFacade.createQualifiedType(ACCESS_MODIFIER_TYPE),
-        method.getCDParameters(0).getMCType());
-    assertEquals("accessModifier", method.getCDParameters(0).getName());
+        method.getCDParameter(0).getMCType());
+    assertEquals("accessModifier", method.getCDParameter(0).getName());
   }
 
   @Test
@@ -402,8 +402,8 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
 
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(mcTypeFacade.createQualifiedType(I_AUTOMATON_SCOPE),
-        method.getCDParameters(0).getMCType());
-    assertEquals("scope", method.getCDParameters(0).getName());
+        method.getCDParameter(0).getMCType());
+    assertEquals("scope", method.getCDParameter(0).getName());
   }
 
   @Test
@@ -448,7 +448,7 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodsStateSymbol() {
-    assertEquals(17, symbolClassState.getCDMethodsList().size());
+    assertEquals(17, symbolClassState.getCDMethodList().size());
   }
 
   @Test(expected = AssertionError.class)
@@ -494,8 +494,8 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, method.sizeCDParameters());
-    assertBoolean(method.getCDParameters(0).getMCType());
-    assertEquals("extraAttribute", method.getCDParameters(0).getName());
+    assertBoolean(method.getCDParameter(0).getMCType());
+    assertEquals("extraAttribute", method.getCDParameter(0).getName());
   }
 
   @Test
@@ -515,8 +515,8 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, method.sizeCDParameters());
-    assertListOf(String.class, method.getCDParameters(0).getMCType());
-    assertEquals("foo", method.getCDParameters(0).getName());
+    assertListOf(String.class, method.getCDParameter(0).getMCType());
+    assertEquals("foo", method.getCDParameter(0).getName());
   }
 
   @Test

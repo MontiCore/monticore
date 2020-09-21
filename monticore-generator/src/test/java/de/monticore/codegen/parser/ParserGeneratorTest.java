@@ -215,7 +215,7 @@ public class ParserGeneratorTest {
       Grammar_WithConceptsSymbolTableCreatorDelegator stCreator = Grammar_WithConceptsMill.grammar_WithConceptsSymbolTableCreatorDelegatorBuilder()
               .setGlobalScope(globalScope).build();
       stCreator.createFromAST(result);
-      globalScope.cache(qualifiedGrammarName);
+      globalScope.addLoadedFile(qualifiedGrammarName);
     }
 
     MCGrammarSymbol symbol = result.getSymbol();

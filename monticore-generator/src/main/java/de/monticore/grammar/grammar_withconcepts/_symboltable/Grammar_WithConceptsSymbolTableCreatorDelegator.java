@@ -10,9 +10,9 @@ public class Grammar_WithConceptsSymbolTableCreatorDelegator extends Grammar_Wit
   public Grammar_WithConceptsArtifactScope createFromAST(de.monticore.grammar.grammar._ast.ASTMCGrammar rootNode) {
     Grammar_WithConceptsArtifactScope as =  symbolTable.createFromAST(rootNode);
     if (!as.getPackageName().isEmpty()){
-      globalScope.cache(as.getPackageName() + "." + as.getName());
+      globalScope.addLoadedFile(as.getPackageName() + "." + as.getName());
     } else {
-      globalScope.cache(as.getName());
+      globalScope.addLoadedFile(as.getName());
     }
     return as;
   }

@@ -39,7 +39,7 @@ public class GlobalScopeClassBuilderDecorator extends AbstractCreator<ASTCDClass
     ASTCDClass decoratedScopeClass = scopeClass.deepClone();
     String scopeBuilderName = scopeClass.getName() + BUILDER_SUFFIX;
 
-    decoratedScopeClass.getCDMethodsList().clear();
+    decoratedScopeClass.getCDMethodList().clear();
 
     builderDecorator.setPrintBuildMethodTemplate(false);
     ASTCDClass scopeBuilder = builderDecorator.decorate(decoratedScopeClass);
@@ -48,12 +48,12 @@ public class GlobalScopeClassBuilderDecorator extends AbstractCreator<ASTCDClass
     scopeBuilder.setName(scopeBuilderName);
 
     // new build method template
-    Optional<ASTCDMethod> buildMethod = scopeBuilder.getCDMethodsList()
+    Optional<ASTCDMethod> buildMethod = scopeBuilder.getCDMethodList()
         .stream()
         .filter(m -> BUILD_METHOD.equals(m.getName()))
         .findFirst();
 
-    List<String> resolvingDelegates = scopeBuilder.getCDAttributesList()
+    List<String> resolvingDelegates = scopeBuilder.getCDAttributeList()
         .stream()
         .map(a->a.getName())
         .filter(n->n.startsWith("adapted"))

@@ -236,7 +236,7 @@ public final class TransformationHelper {
     for (ProdSymbol type : grammarSymbol.getProds()) {
       if (type.isIsEnum() && type.isPresentAstNode()
           && type.getAstNode() instanceof ASTEnumProd) {
-        for (ASTConstant enumValue : ((ASTEnumProd) type.getAstNode()).getConstantsList()) {
+        for (ASTConstant enumValue : ((ASTEnumProd) type.getAstNode()).getConstantList()) {
           String humanName = enumValue.isPresentUsageName()
               ? enumValue.getUsageName()
               : enumValue.getName();
