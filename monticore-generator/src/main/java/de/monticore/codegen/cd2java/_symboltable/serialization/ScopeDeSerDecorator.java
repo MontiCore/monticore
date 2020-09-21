@@ -2,6 +2,7 @@
 package de.monticore.codegen.cd2java._symboltable.serialization;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Ordering;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
@@ -18,10 +19,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.utils.Names;
 import de.se_rwth.commons.StringTransformations;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.*;
@@ -29,6 +27,7 @@ import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
+import static java.util.Map.Entry.comparingByKey;
 
 /**
  * creates a ScopeDeSer class from a grammar
@@ -113,7 +112,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
         .addAllCDMethods(createDeserializeSymbolMethods(symbolDefiningProds))
         .addCDMethod(createSerializeMethod(scopeInterfaceName))
         .addAllCDMethods(
-            createDeserializeScopeRuleAttributesMethod(scopeRuleAttributeList, scopeDeSerName))
+            createDeserializeScopeRuleAttributesMethod(scopeRuleAttributeList))
         .build();
   }
 
@@ -131,7 +130,9 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
         }
       }
     }
-    return result;
+    //sort the map based on the alphabetical order of keys, to always generated the same order of methods
+    return result.entrySet().stream().sorted(Ordering.natural().onResultOf(a -> a.getKey().getName()))
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2, HashMap::new));
   }
 
   protected ASTCDConstructor createConstructor(String scopeDeSerName) {
@@ -374,7 +375,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
   }
 
   protected List<ASTCDMethod> createDeserializeScopeRuleAttributesMethod(
-      List<ASTCDAttribute> attributeList, String deSerName) {
+      List<ASTCDAttribute> attributeList) {
     List<ASTCDMethod> methodList = new ArrayList<>();
     for (ASTCDAttribute astcdAttribute : attributeList) {
       String methodName = DESERIALIZE +
