@@ -55,7 +55,8 @@ IfStatement implements MCStatement
    // we use "elseStatement", because the
    // generated Java code doesn't allow "else" as Name 
 
-scope ForStatement implements MCStatement
+
+scope (non_exporting ordered) ForStatement implements MCStatement
     = "for" "(" ForControl ")" MCStatement ;
 
 interface ForControl ;
@@ -101,5 +102,8 @@ EnumConstantSwitchLabel implements SwitchLabel
 
 DefaultSwitchLabel implements SwitchLabel
     =   "default" ":" ;
+
+BreakStatement implements MCStatement
+    =   "break" ";" ;
 
 }

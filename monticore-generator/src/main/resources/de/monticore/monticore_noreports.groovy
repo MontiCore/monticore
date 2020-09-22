@@ -87,8 +87,8 @@ for (astGrammar in getParsedGrammars()) {
 
   astClassDiagram = addListSuffixToAttributeName(astClassDiagram)
 
-  // report the base diagrams
-  reportCD(astClassDiagram, symbolClassDiagramm, scopeClassDiagramm, report)
+  // report the base diagram
+  reportCD(astClassDiagram, report)
 
   decoratedSymbolTableCd = decorateForSymbolTablePackage(glex, cdScope, astClassDiagram, symbolClassDiagramm, scopeClassDiagramm, handcodedPath)
   generateFromCD(glex, astClassDiagram, decoratedSymbolTableCd, out, handcodedPath)
@@ -111,6 +111,9 @@ for (astGrammar in getParsedGrammars()) {
   // decorate and generate CD for the mills
   decoratedMillCD = decorateMill(glex, cdScope, astClassDiagram, decoratedASTClassDiagramm,decoratedVisitorCD, decoratedSymbolTableCd, handcodedPath)
   generateFromCD(glex, astClassDiagram, decoratedMillCD, out, handcodedPath)
+
+  // report the decorated diagrams
+  reportCD(astClassDiagram, decoratedASTClassDiagramm, decoratedSymbolTableCd, scopeClassDiagramm, report)
 
   Log.info("Grammar " + astGrammar.getName() + " processed successfully!", LOG_ID)
 
