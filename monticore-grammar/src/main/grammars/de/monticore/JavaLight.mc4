@@ -31,13 +31,12 @@ component grammar JavaLight extends AssignmentExpressions,
 
 external ExtTypeParameters;
 
-interface ClassBodyDeclaration ;
+interface ClassBodyDeclaration;
 
-interface InterfaceBodyDeclaration ;
+interface InterfaceBodyDeclaration;
 
 ClassBlock implements ClassBodyDeclaration
-    = (["static"])? MCJavaBlock
-    ;
+    = (["static"])? MCJavaBlock;
 
 interface scope symbol JavaMethod extends Method = Name;
 
@@ -47,70 +46,57 @@ symbolrule JavaMethod =
     isAbstract: boolean
     isSynchronized: boolean
     isNative:boolean
-    isStrictfp: boolean
-;
+    isStrictfp: boolean;
 
 MethodDeclaration implements JavaMethod, ClassBodyDeclaration
     =   MCModifier* ExtTypeParameters?
                MCReturnType Name FormalParameters (dim:"[" "]")*
-               ("throws" Throws)? (MCJavaBlock | ";")
-    ;
+               ("throws" Throws)? (MCJavaBlock | ";");
 
 ConstructorDeclaration implements JavaMethod, ClassBodyDeclaration
     =   MCModifier* ExtTypeParameters? Name FormalParameters
-                ("throws" Throws)? MCJavaBlock
-    ;
+                ("throws" Throws)? MCJavaBlock;
 
 ConstDeclaration extends LocalVariableDeclarationStatement
                 implements ClassBodyDeclaration, 
 		            InterfaceBodyDeclaration
-    =   LocalVariableDeclaration ";"
-    ;
+    =   LocalVariableDeclaration ";";
 
 InterfaceMethodDeclaration implements JavaMethod,
                                       InterfaceBodyDeclaration
     =   MCModifier* ExtTypeParameters?
                 MCReturnType Name FormalParameters (dim:"[" "]")*
-                ("throws" Throws)? ";"
-    ;
+                ("throws" Throws)? ";";
 
 Throws
-    =   (MCQualifiedName || ",")+
-    ;
+    =   (MCQualifiedName || ",")+;
 
 FormalParameters
-    =   "(" FormalParameterListing? ")"
-    ;
+    =   "(" FormalParameterListing? ")";
 
 FormalParameterListing
     =   (FormalParameter || ",")+ ("," LastFormalParameter)?
-    |   LastFormalParameter
-    ;
+    |   LastFormalParameter;
 
 FormalParameter
-    =   JavaModifier* MCType DeclaratorId
-    ;
+    =   JavaModifier* MCType DeclaratorId;
 
 LastFormalParameter
-    =   JavaModifier*  MCType "..." DeclaratorId
-    ;
+    =   JavaModifier*  MCType "..." DeclaratorId;
 
 // ANNOTATIONS
 
 Annotation implements MCModifier,  ElementValue
     =   "@" annotationName:MCQualifiedName
-            ( "(" AnnotationArguments? ")" )?
-    ;
+            ( "(" AnnotationArguments? ")" )?;
 
 interface AnnotationArguments ;
 
 AnnotationPairArguments implements AnnotationArguments
-   =   (ElementValuePair || ",")+
-   ;
+   =   (ElementValuePair || ",")+;
 
 ElementValuePair
-    =   Name "=" ElementValueOrExpr
-    ;
+    =   Name "=" ElementValueOrExpr;
 
 interface ElementValue;
 
@@ -118,16 +104,13 @@ ElementValueOrExpr implements AnnotationArguments
     = ElementValue | Expression;
 
 ElementValueArrayInitializer implements ElementValue
-    =   "{" (ElementValueOrExpr || ",")* (",")? "}"
-    ;
+    =   "{" (ElementValueOrExpr || ",")* (",")? "}";
 
 EnhancedForControl implements ForControl
-    = FormalParameter ":" Expression
-    ;
+    = FormalParameter ":" Expression;
 
 ArrayDimensionByInitializer implements ArrayDimensionSpecifier
-    = (dim:"[" "]")+ ArrayInit
-    ;
+    = (dim:"[" "]")+ ArrayInit;
 
 }
 
