@@ -54,6 +54,12 @@ MethodDeclaration implements JavaMethod,
                MCReturnType Name FormalParameters (dim:"[" "]")*
                ("throws" Throws)? (MCJavaBlock | ";");
 
+InterfaceMethodDeclaration implements JavaMethod,
+                                      InterfaceBodyDeclaration
+    =   MCModifier* ExtTypeParameters?
+                MCReturnType Name FormalParameters (dim:"[" "]")*
+                ("throws" Throws)? ";";
+
 ConstructorDeclaration implements JavaMethod, ClassBodyDeclaration
     =   MCModifier* ExtTypeParameters? Name FormalParameters
                 ("throws" Throws)? MCJavaBlock;
@@ -63,27 +69,21 @@ ConstDeclaration extends LocalVariableDeclarationStatement
 		            InterfaceBodyDeclaration
     =   LocalVariableDeclaration ";";
 
-InterfaceMethodDeclaration implements JavaMethod,
-                                      InterfaceBodyDeclaration
-    =   MCModifier* ExtTypeParameters?
-                MCReturnType Name FormalParameters (dim:"[" "]")*
-                ("throws" Throws)? ";";
-
 Throws
     =   (MCQualifiedName || ",")+;
-
-FormalParameters
-    =   "(" FormalParameterListing? ")";
-
-FormalParameterListing
-    =   (FormalParameter || ",")+ ("," LastFormalParameter)?
-    |   LastFormalParameter;
 
 FormalParameter
     =   JavaModifier* MCType DeclaratorId;
 
 LastFormalParameter
     =   JavaModifier*  MCType "..." DeclaratorId;
+
+FormalParameterListing
+    =   (FormalParameter || ",")+ ("," LastFormalParameter)?
+    |   LastFormalParameter;
+
+FormalParameters
+    =   "(" FormalParameterListing? ")";
 
 // ANNOTATIONS
 
@@ -96,13 +96,13 @@ interface AnnotationArguments ;
 AnnotationPairArguments implements AnnotationArguments
    =   (ElementValuePair || ",")+;
 
-ElementValuePair
-    =   Name "=" ElementValueOrExpr;
-
 interface ElementValue;
 
 ElementValueOrExpr implements AnnotationArguments
     = ElementValue | Expression;
+
+ElementValuePair
+    =   Name "=" ElementValueOrExpr;
 
 ElementValueArrayInitializer implements ElementValue
     =   "{" (ElementValueOrExpr || ",")* (",")? "}";
