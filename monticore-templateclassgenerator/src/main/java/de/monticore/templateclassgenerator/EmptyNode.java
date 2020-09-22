@@ -143,6 +143,7 @@ public class EmptyNode implements ASTNode {
    * @see de.monticore.ast.ASTNode#get_Children()
    */
   @Override
+  @Deprecated
   public Collection<ASTNode> get_Children() {
     return null;
   }
