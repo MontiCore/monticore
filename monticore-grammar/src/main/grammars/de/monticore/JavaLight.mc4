@@ -48,7 +48,8 @@ symbolrule JavaMethod =
     isNative:boolean
     isStrictfp: boolean;
 
-MethodDeclaration implements JavaMethod, ClassBodyDeclaration
+MethodDeclaration implements JavaMethod, 
+                             ClassBodyDeclaration
     =   MCModifier* ExtTypeParameters?
                MCReturnType Name FormalParameters (dim:"[" "]")*
                ("throws" Throws)? (MCJavaBlock | ";");
