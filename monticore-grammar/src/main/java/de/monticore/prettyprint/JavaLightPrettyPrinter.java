@@ -33,7 +33,9 @@ public class JavaLightPrettyPrinter extends MCCommonStatementsPrettyPrinter impl
     if (a.isStatic()) {
       getPrinter().print("static ");
     }
-    a.getMCJavaBlock().accept(getRealThis());
+    getPrinter().println("{");
+    a.forEachMCBlockStatements(b -> b.accept(getRealThis()));
+    getPrinter().println("}");
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
 
