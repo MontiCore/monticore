@@ -18,8 +18,7 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static de.monticore.cd.facade.CDModifier.PUBLIC;
-import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
+import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java.DecoratorAssert.*;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodsBy;
@@ -145,6 +144,26 @@ public class GlobalScopeInterfaceDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
+  public void testGetSymbolFileExtensionMethod() {
+    ASTCDMethod method = getMethodBy("getSymbolFileExtension", scopeInterface);
+
+    assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
+    assertDeepEquals(String.class, method.getMCReturnType().getMCType());
+    assertTrue(method.isEmptyCDParameters());
+  }
+
+  @Test
+  public void testSetSymbolFileExtensionMethod() {
+    ASTCDMethod method = getMethodBy("setSymbolFileExtension", scopeInterface);
+
+    assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    assertEquals(1, method.sizeCDParameters());
+    assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
+    assertEquals("symbolFileExtension", method.getCDParameter(0).getName());
+  }
+
+  @Test
   public void testResolveAdaptedAutomatonMethod() {
     ASTCDMethod method = getMethodBy("resolveAdaptedAutomaton", scopeInterface);
 
@@ -255,7 +274,7 @@ public class GlobalScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(90, scopeInterface.getCDMethodList().size());
+    assertEquals(92, scopeInterface.getCDMethodList().size());
   }
 
 }

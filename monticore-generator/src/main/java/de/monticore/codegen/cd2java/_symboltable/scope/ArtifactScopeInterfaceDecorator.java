@@ -68,6 +68,7 @@ public class ArtifactScopeInterfaceDecorator extends AbstractCreator<ASTCDCompil
         .addCDMethod(createGetRemainingNameForResolveDownMethod())
         .addAllCDMethods(createContinueWithEnclosingScopeMethods(symbolProds, symbolTableService.getCDSymbol()))
         .addAllCDMethods(createSuperContinueWithEnclosingScopeMethods())
+        .addCDMethod(createGetFullNameMethod())
         .build();
   }
 
@@ -149,6 +150,12 @@ public class ArtifactScopeInterfaceDecorator extends AbstractCreator<ASTCDCompil
       }
     }
     return methodList;
+  }
+
+  protected ASTCDMethod createGetFullNameMethod(){
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createStringType(), "getFullName");
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "GetFullName"));
+    return method;
   }
 
   protected List<ASTCDMethod> createSuperContinueWithEnclosingScopeMethods() {

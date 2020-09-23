@@ -70,6 +70,7 @@ subprojects {
 
 
   repositories {
+    mavenLocal()
     if(("true").equals(getProperty('useLocalRepo'))){
       mavenLocal()
     }
