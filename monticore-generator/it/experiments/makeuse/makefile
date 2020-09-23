@@ -59,7 +59,7 @@ SRC=$(wildcard src/main/**/$(GramName)/*java)
 TESTSRC=$(wildcard src/test/**/$(GramName)/*java)
 
 # foreign jars for testing
-JUNIT=target/junit-4.13.jar
+JUNIT=target/junit-4.12.jar
 HAMCREST=target/hamcrest-core-1.3.jar
 
 # jars for the MontiCore call (M2), runtime (M1+M2), and grammars (M2)
@@ -239,7 +239,7 @@ $(MCRTE): $(InitTarget)
 
 # get the testing libraries
 $(JUNIT): $(InitTarget)
-	cp ~/.m2/repository/./junit/junit/4.13/junit-4.13.jar $(JUNIT)
+	cp ~/.m2/repository/./junit/junit/4.12/junit-4.12.jar $(JUNIT)
 
 $(HAMCREST): $(InitTarget)
 	cp ~/.m2/repository/./org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar $(HAMCREST)
