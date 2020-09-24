@@ -38,7 +38,7 @@ public class CDAuxiliaryDecorator extends AbstractCreator<ASTCDCompilationUnit, 
         .addAllCDClasss(millForSuperClasses)
         .build();
 
-    for (ASTCDClass cdClass : astCD.getCDClasssList()) {
+    for (ASTCDClass cdClass : astCD.getCDClassList()) {
       this.replaceTemplate(PACKAGE, cdClass, createPackageHookPoint(packageName));
       if (cdClass.isPresentModifier()) {
         this.replaceTemplate(ANNOTATIONS, cdClass, createAnnotationsHookPoint(cdClass.getModifier()));
