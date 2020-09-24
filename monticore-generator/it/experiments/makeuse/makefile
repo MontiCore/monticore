@@ -230,11 +230,9 @@ $(MCGRAMMARS): $(InitTarget)
 	cp ~/monticore/./monticore-grammar/target/monticore-grammar-*-grammars.jar $(MCGRAMMARS)
 
 $(MCRTE): $(InitTarget)
-	cp ~/monticore/./monticore-cli/target/monticore-cli-*-with-dependencies.jar $(MCRTE)
-	# Hint: the cli jar can only be used as runtime in case of releases or snapshots where runtime and grammars
+	cp ~/monticore/./monticore-grammar/target/monticore-grammar-*-with-dependencies.jar $(MCRTE)
+	# Explanation: the cli jar can only be used as runtime in case of releases or snapshots where runtime and grammars
 	# have no breaking changes compared to the last release due to the snapshot not being bootstrapped yet
-	# when using the snapshot use the following instead
-	#cp ~/monticore/./monticore-grammar/target/monticore-grammar-*-with-dependencies.jar $(MCRTE)
 
 
 # get the testing libraries
