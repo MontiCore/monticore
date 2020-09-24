@@ -94,20 +94,32 @@ target/PingPong.result: src/test/resources/example/PingPong.aut \
                         $(Tool) $(MCRTE)
 	@echo "[MINFO]. 6a: Handling" $<
 	java -cp "$(Tool);$(MCRTE)" \
-	     $(ToolClass) $< target/symtab/ > $@
+	     $(ToolClass) `dirname $<` `basename $<` target/symtab/ > $@
+	# Bevore Butting war das:
+	# java -cp "$(Tool);$(MCRTE)" \
+	#      $(ToolClass) $< target/symtab/ > $@
+	# TODO AB: Umbau zurück nehmen
 
 target/HierarchyPingPong.result: \
                         src/test/resources/example/HierarchyPingPong.aut \
                         $(Tool) $(MCRTE)
 	@echo "[MINFO]. 6b: Handling" $<
 	java -cp "$(Tool);$(MCRTE)" \
-	     $(ToolClass) $< target/symtab/ > $@
+	     $(ToolClass) `dirname $<` `basename $<` target/symtab/ > $@
+	# Bevore Butting war das:
+	# java -cp "$(Tool);$(MCRTE)" \
+	#      $(ToolClass) $< target/symtab/ > $@
+	# TODO AB: Umbau zurück nehmen
 
 target/Simple12.result: src/test/resources/example/Simple12.aut \
                         $(Tool) $(MCRTE)
 	@echo "[MINFO]. 6c: Handling" $<
 	java -cp "$(Tool);$(MCRTE)" \
-	     $(ToolClass) $< target/symtab/ > $@
+	     $(ToolClass) `dirname $<` `basename $<` target/symtab/ > $@
+	# Bevore Butting war das:
+	# java -cp "$(Tool);$(MCRTE)" \
+	#      $(ToolClass) $< target/symtab/ > $@
+	# TODO AB: Umbau zurück nehmen
 
 # -->> end of adapting part 2 (of 2)
 
@@ -231,9 +243,6 @@ $(MCGRAMMARS): $(InitTarget)
 
 $(MCRTE): $(InitTarget)
 	cp ~/monticore/./monticore-grammar/target/monticore-grammar-*-with-dependencies.jar $(MCRTE)
-	# Explanation: the cli jar can only be used as runtime in case of releases or snapshots where runtime and grammars
-	# have no breaking changes compared to the last release due to the snapshot not being bootstrapped yet
-
 
 # get the testing libraries
 $(JUNIT): $(InitTarget)
