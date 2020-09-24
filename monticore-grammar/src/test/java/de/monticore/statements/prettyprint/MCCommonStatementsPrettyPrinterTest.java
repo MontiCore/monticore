@@ -342,4 +342,20 @@ public class MCCommonStatementsPrettyPrinterTest {
 
     assertTrue(ast.deepEquals(result.get()));
   }
+
+  @Test
+  public void testBreakStatement() throws IOException {
+    Optional<ASTBreakStatement> result = parser.parse_StringBreakStatement("break ;");
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
+    ASTBreakStatement ast = result.get();
+
+    String output = prettyPrinter.prettyprint(ast);
+
+    result = parser.parse_StringBreakStatement(output);
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
+
+    assertTrue(ast.deepEquals(result.get()));
+  }
 }

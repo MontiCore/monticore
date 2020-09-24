@@ -385,20 +385,20 @@ public class ParserGeneratorHelper {
 
   public Optional<ASTAlt> getAlternativeForFollowOption(String prodName) {
     return astGrammar.isPresentGrammarOption()
-            ? astGrammar.getGrammarOption().getFollowOptionsList().stream()
+            ? astGrammar.getGrammarOption().getFollowOptionList().stream()
             .filter(f -> f.getProdName().equals(prodName)).map(ASTFollowOption::getAlt).findFirst()
             : Optional.empty();
   }
 
   public List<ASTAlt> getAlternatives(ASTClassProd ast) {
-    if (!ast.getAltsList().isEmpty()) {
-      return ast.getAltsList();
+    if (!ast.getAltList().isEmpty()) {
+      return ast.getAltList();
     }
     for (MCGrammarSymbolSurrogate g : grammarSymbol.getSuperGrammars()) {
       final Optional<ProdSymbol> ruleByName = g.lazyLoadDelegate().getProdWithInherited(ast.getName());
       if (ruleByName.isPresent() && ruleByName.get().isClass()) {
         if (ruleByName.get().isPresentAstNode() && ruleByName.get().getAstNode() instanceof ASTClassProd) {
-          return ((ASTClassProd)ruleByName.get().getAstNode()).getAltsList();
+          return ((ASTClassProd)ruleByName.get().getAstNode()).getAltList();
         }
       }
     }
@@ -429,14 +429,14 @@ public class ParserGeneratorHelper {
 
     if (node instanceof ASTAction) {
       StringBuilder buffer = new StringBuilder();
-      for (ASTMCBlockStatement action : ((ASTAction) node).getMCBlockStatementsList()) {
+      for (ASTMCBlockStatement action : ((ASTAction) node).getMCBlockStatementList()) {
         buffer.append(getPrettyPrinter().prettyprint(action));
       }
       return buffer.toString();
     }
     if (node instanceof ASTJavaCode) {
       StringBuilder buffer = new StringBuilder();
-      for (ASTClassBodyDeclaration action : ((ASTJavaCode) node).getClassBodyDeclarationsList()) {
+      for (ASTClassBodyDeclaration action : ((ASTJavaCode) node).getClassBodyDeclarationList()) {
         buffer.append(getPrettyPrinter().prettyprint(action));
 
       }

@@ -55,12 +55,12 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
             PUBLIC.build();
 
     // symbol rule methods and attributes
-    List<ASTCDMethod> symbolRuleAttributeMethods = symbolInput.deepClone().getCDAttributesList()
+    List<ASTCDMethod> symbolRuleAttributeMethods = symbolInput.deepClone().getCDAttributeList()
         .stream()
         .map(methodDecorator.getMutatorDecorator()::decorate)
         .flatMap(List::stream)
         .collect(Collectors.toList());
-    symbolRuleAttributeMethods.addAll(symbolInput.deepClone().getCDAttributesList()
+    symbolRuleAttributeMethods.addAll(symbolInput.deepClone().getCDAttributeList()
         .stream()
         .map(methodDecorator.getAccessorDecorator()::decorate)
         .flatMap(List::stream)
@@ -73,7 +73,7 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
         .filter(m -> !m.getName().equals("getEnclosingScope"))
         .collect(Collectors.toList());
     List<ASTCDMethod> delegateSymbolRuleAttributeMethods = createOverriddenMethodDelegates(delegateMethods);
-    List<ASTCDMethod> symbolRuleMethods = symbolInput.deepClone().getCDMethodsList();
+    List<ASTCDMethod> symbolRuleMethods = symbolInput.deepClone().getCDMethodList();
     List<ASTCDMethod> delegateSymbolRuleMethods = createOverriddenMethodDelegates(symbolRuleMethods);
 
     ASTCDAttribute delegateAttribute = createDelegateAttribute(symbolFullName);
@@ -91,16 +91,16 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
             .setModifier(modifier)
             .setSuperclass(getMCTypeFacade()
             .createQualifiedType(symbolTableService.getSymbolFullName(symbolInput)))
-            .addCDConstructors(createConstructor(symbolSurrogateSimpleName))
-            .addCDAttributes(nameAttribute)
+            .addCDConstructor(createConstructor(symbolSurrogateSimpleName))
+            .addCDAttribute(nameAttribute)
             .addAllCDMethods(nameMethods)
             .addAllCDMethods(delegateSymbolRuleAttributeMethods)
             .addAllCDMethods(delegateSymbolRuleMethods);
     return builder
-            .addCDAttributes(delegateAttribute)
-            .addCDAttributes(enclosingScopeAttribute)
+            .addCDAttribute(delegateAttribute)
+            .addCDAttribute(enclosingScopeAttribute)
             .addAllCDMethods(enclosingScopeMethods)
-            .addCDMethods(createLazyLoadDelegateMethod(symbolSurrogateSimpleName, symbolFullName, simpleName))
+            .addCDMethod(createLazyLoadDelegateMethod(symbolSurrogateSimpleName, symbolFullName, simpleName))
             .build();
   }
 
@@ -141,14 +141,14 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
   protected List<ASTCDMethod> createOverriddenMethodDelegates(List<ASTCDMethod> inheritedMethods){
     List<ASTCDMethod> overriddenDelegates = new ArrayList<>();
     for(ASTCDMethod inherited: inheritedMethods){
-      ASTCDMethod method = getCDMethodFacade().createMethod(inherited.getModifier(), inherited.getMCReturnType(), inherited.getName(), inherited.getCDParametersList());
+      ASTCDMethod method = getCDMethodFacade().createMethod(inherited.getModifier(), inherited.getMCReturnType(), inherited.getName(), inherited.getCDParameterList());
       StringBuilder message = new StringBuilder();
       if(!method.printReturnType().equals("void")){
         message.append("return ");
       }
       message.append("lazyLoadDelegate().").append(method.getName()).append("(");
       int count = 0;
-      for (ASTCDParameter parameter: method.getCDParametersList()){
+      for (ASTCDParameter parameter: method.getCDParameterList()){
         count++;
         message.append(parameter.getName()).append(",");
       }

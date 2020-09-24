@@ -13,15 +13,15 @@ ${tc.include("core.Annotations")}
 <#if cdClass.isPresentSuperclass()>extends ${cdPrinter.printType(cdClass.getSuperclass())} </#if> <#rt><#lt>
 <#if !cdClass.isEmptyInterface()>implements ${cdClass.printInterfaces()} </#if>{
 
-<#list cdClass.getCDAttributesList() as attribute>
+<#list cdClass.getCDAttributeList() as attribute>
     ${tc.include("core.Attribute", attribute)}
 </#list>
 
-<#list cdClass.getCDConstructorsList() as constructor>
+<#list cdClass.getCDConstructorList() as constructor>
     ${tc.include("core.Constructor", constructor)}
 </#list>
 
-<#list cdClass.getCDMethodsList() as method>
+<#list cdClass.getCDMethodList() as method>
     ${tc.include("core.Method", method)}
 </#list>
 }

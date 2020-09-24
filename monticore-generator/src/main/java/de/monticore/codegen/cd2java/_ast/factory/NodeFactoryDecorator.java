@@ -43,7 +43,7 @@ public class NodeFactoryDecorator extends AbstractCreator<ASTCDCompilationUnit, 
 
     ASTCDMethod getFactoryMethod = addGetFactoryMethod(factoryType, factoryClassName);
 
-    List<ASTCDClass> astcdClassList = Lists.newArrayList(astcdDefinition.getCDClasssList());
+    List<ASTCDClass> astcdClassList = Lists.newArrayList(astcdDefinition.getCDClassList());
 
     List<ASTCDMethod> createMethodList = new ArrayList<>();
 
@@ -70,10 +70,10 @@ public class NodeFactoryDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     return CD4AnalysisMill.cDClassBuilder()
         .setModifier(modifier)
         .setName(factoryClassName)
-        .addCDAttributes(factoryAttribute)
+        .addCDAttribute(factoryAttribute)
         .addAllCDAttributes(factoryAttributeList)
-        .addCDConstructors(constructor)
-        .addCDMethods(getFactoryMethod)
+        .addCDConstructor(constructor)
+        .addCDMethod(getFactoryMethod)
         .addAllCDMethods(createMethodList)
         .addAllCDMethods(delegateMethodList)
         .build();
@@ -133,7 +133,7 @@ public class NodeFactoryDecorator extends AbstractCreator<ASTCDCompilationUnit, 
         ASTCDCompilationUnit a = CD4AnalysisMill.cDCompilationUnitBuilder().setCDDefinition(superDefinition).build();
         a.accept(visitor);
 
-        for (ASTCDClass superClass : superDefinition.getCDClasssList()) {
+        for (ASTCDClass superClass : superDefinition.getCDClassList()) {
           if (canAddDelegateMethod(superClass, classList, delegateMethodList)) {
             String packageName = superSymbol.getFullName().toLowerCase() + "." + AST_PACKAGE + ".";
             ASTMCType superAstType = this.getMCTypeFacade().createQualifiedType(packageName + superClass.getName());

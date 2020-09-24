@@ -45,13 +45,13 @@ public class SymbolTableCreatorBuilderDecorator extends AbstractCreator<ASTCDCom
     return CD4AnalysisMill.cDClassBuilder()
         .setName(symbolTableCreatorBuilder)
         .setModifier(PUBLIC.build())
-        .addCDConstructors(createConstructor(symbolTableCreatorBuilder))
-        .addCDMethods(createBuildMethod(symbolTableCreator))
-        .addCDAttributes(scopeStackAttribute)
-        .addCDMethods(createSetScopeStackMethod(dequeType, builderType))
-        .addCDMethods(createAddToScopeStackMethod(scopeInterface, builderType))
-        .addCDMethods(createRemoveFromScopeStackMethod(scopeInterface, builderType))
-        .addCDMethods(createGetScopeStackMethod(dequeType))
+        .addCDConstructor(createConstructor(symbolTableCreatorBuilder))
+        .addCDMethod(createBuildMethod(symbolTableCreator))
+        .addCDAttribute(scopeStackAttribute)
+        .addCDMethod(createSetScopeStackMethod(dequeType, builderType))
+        .addCDMethod(createAddToScopeStackMethod(scopeInterface, builderType))
+        .addCDMethod(createRemoveFromScopeStackMethod(scopeInterface, builderType))
+        .addCDMethod(createGetScopeStackMethod(dequeType))
         .build();
   }
 

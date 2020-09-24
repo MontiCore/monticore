@@ -23,7 +23,7 @@ public class AddAttributesOfExtendedInterfacesManipulation implements
   private Map<String, ASTCDInterface> cDInterfaces = Maps.newHashMap();
   
   private void initInterfaceMap(ASTCDCompilationUnit cdCompilationUnit) {
-    for (ASTCDInterface cdInterface : cdCompilationUnit.getCDDefinition().getCDInterfacesList()) {
+    for (ASTCDInterface cdInterface : cdCompilationUnit.getCDDefinition().getCDInterfaceList()) {
       cDInterfaces.put(
           TransformationHelper.getPackageName(cdCompilationUnit) + cdInterface.getName(),
           cdInterface);
@@ -35,7 +35,7 @@ public class AddAttributesOfExtendedInterfacesManipulation implements
     
     initInterfaceMap(cdCompilationUnit);
     
-    for (ASTCDClass cdClass : cdCompilationUnit.getCDDefinition().getCDClasssList()) {
+    for (ASTCDClass cdClass : cdCompilationUnit.getCDDefinition().getCDClassList()) {
       addAttributesOfExtendedInterfaces(cdClass);
     }
     
@@ -48,8 +48,8 @@ public class AddAttributesOfExtendedInterfacesManipulation implements
     for (ASTMCObjectType interf : cdClass.getInterfaceList()) {
       String interfaceName = typeToString(interf);
       if (cDInterfaces.containsKey(interfaceName)) {
-        for (ASTCDAttribute interfaceAttribute :cDInterfaces.get(interfaceName).getCDAttributesList()){
-          if(cdClass.getCDAttributesList()
+        for (ASTCDAttribute interfaceAttribute :cDInterfaces.get(interfaceName).getCDAttributeList()){
+          if(cdClass.getCDAttributeList()
                   .stream()
                   .noneMatch(x->x.getName().equals(interfaceAttribute.getName()))){
             attributes.add(interfaceAttribute);
@@ -58,7 +58,7 @@ public class AddAttributesOfExtendedInterfacesManipulation implements
       }
     }
     for (ASTCDAttribute attr : attributes) {
-      cdClass.getCDAttributesList().add(attr.deepClone());
+      cdClass.getCDAttributeList().add(attr.deepClone());
     }
   }
 

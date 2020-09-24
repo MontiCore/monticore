@@ -90,8 +90,11 @@ while (grammarIterator.hasNext()) {
       scopeClassDiagramm = deriveScopeCD(astGrammar, scopeCdScope)
       // TODO: eigentlich sollte das nur ein ASTCD sein  das Symbols und Scopes beinhaltet?
 
-      // M5.3 report the class diagram
-      reportCD(astClassDiagram, symbolClassDiagramm, scopeClassDiagramm, report)
+      // M5.3 report the basic class diagram for AST
+      reportCD(astClassDiagram, report)
+
+      // M5.4 report the full AST incl. Symbols diagrams
+      reportCD(astClassDiagram, decoratedASTClassDiagramm, decoratedSymbolTableCd, scopeClassDiagramm, report)
 
       // M6: generate parser and wrapper
       generateParser(glex, astGrammar, mcScope, handcodedPath, out)

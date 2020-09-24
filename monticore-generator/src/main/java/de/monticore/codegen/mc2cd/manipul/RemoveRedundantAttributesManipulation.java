@@ -30,11 +30,11 @@ final class RemoveRedundantAttributesManipulation implements UnaryOperator<ASTCD
 
   @Override
   public ASTCDCompilationUnit apply(ASTCDCompilationUnit cdCompilationUnit) {
-    for (ASTCDClass cdClass : cdCompilationUnit.getCDDefinition().getCDClasssList()) {
-      removeRedundantAttributes(cdClass.getCDAttributesList());
+    for (ASTCDClass cdClass : cdCompilationUnit.getCDDefinition().getCDClassList()) {
+      removeRedundantAttributes(cdClass.getCDAttributeList());
     }
-    for (ASTCDInterface cdClass : cdCompilationUnit.getCDDefinition().getCDInterfacesList()) {
-      removeRedundantAttributes(cdClass.getCDAttributesList());
+    for (ASTCDInterface cdClass : cdCompilationUnit.getCDDefinition().getCDInterfaceList()) {
+      removeRedundantAttributes(cdClass.getCDAttributeList());
     }
     return cdCompilationUnit;
   }
@@ -96,7 +96,7 @@ final class RemoveRedundantAttributesManipulation implements UnaryOperator<ASTCD
   private static Optional<String> getFirstTypeArgument(ASTCDAttribute cdAttribute) {
     // the 'List' in 'List<String>'
     if (cdAttribute.getMCType() instanceof ASTMCGenericType) {
-      List<ASTMCTypeArgument> argList = ((ASTMCGenericType) cdAttribute.getMCType()).getMCTypeArgumentsList();
+      List<ASTMCTypeArgument> argList = ((ASTMCGenericType) cdAttribute.getMCType()).getMCTypeArgumentList();
       if (!argList.isEmpty()) {
         String simpleTypeName = argList.get(0).getMCTypeOpt().get().printType(new MCFullGenericTypesPrettyPrinter(new IndentPrinter()));
         return Optional.of(simpleTypeName);

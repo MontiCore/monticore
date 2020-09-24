@@ -57,13 +57,13 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeSize() {
-    assertEquals(28, packageInterface.getCDAttributesList().size());
+    assertEquals(28, packageInterface.getCDAttributeList().size());
   }
 
   @Test
   public void testMethodSize() {
-    assertFalse(packageInterface.getCDMethodsList().isEmpty());
-    assertEquals(21, packageInterface.getCDMethodsList().size());
+    assertFalse(packageInterface.getCDMethodList().isEmpty());
+    assertEquals(21, packageInterface.getCDMethodList().size());
   }
 
   @Test
@@ -333,7 +333,7 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testNoInheritedAttributeMethod() {
-    assertTrue(packageInterface.getCDMethodsList()
+    assertTrue(packageInterface.getCDMethodList()
         .stream()
         .noneMatch(m -> m.getName().equals("getASTAutName_Input")));
   }

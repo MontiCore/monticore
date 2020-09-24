@@ -80,7 +80,12 @@ public class HierAutomataTest {
     s.setOutputDirectory(new File("target/out2"));
     ge = new GeneratorEngine(s);
     ge.generate("tpl2/StateMachine.ftl", Paths.get("4pingPong.aut"), ast, 1);
-    
+
+    s = new GeneratorSetup();
+    s.setOutputDirectory(new File("target/out3"));
+    ge = new GeneratorEngine(s);
+    ge.generate("tpl3/StateMachine.ftl", Paths.get("pingPong.aut"), ast);
+
   }
   
   /**

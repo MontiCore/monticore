@@ -77,12 +77,12 @@ public class LiteralsEnumDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testLiteralsConstructor() {
-    ASTCDConstructor constructor = cdEnum.getCDConstructors(0);
+    ASTCDConstructor constructor = cdEnum.getCDConstructor(0);
     assertDeepEquals(CDModifier.PRIVATE, constructor.getModifier());
     assertEquals("AutomatonLiterals", constructor.getName());
     assertEquals(1, constructor.sizeCDParameters());
-    assertInt(constructor.getCDParameters(0).getMCType());
-    assertEquals("intValue", constructor.getCDParameters(0).getName());
+    assertInt(constructor.getCDParameter(0).getMCType());
+    assertEquals("intValue", constructor.getCDParameter(0).getName());
   }
 
   @Test
@@ -92,7 +92,7 @@ public class LiteralsEnumDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testIntValueMethod() {
-    ASTCDMethod method = cdEnum.getCDMethods(0);
+    ASTCDMethod method = cdEnum.getCDMethod(0);
     assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
     assertEquals("getIntValue", method.getName());
     assertTrue((method.getMCReturnType().isPresentMCType()));

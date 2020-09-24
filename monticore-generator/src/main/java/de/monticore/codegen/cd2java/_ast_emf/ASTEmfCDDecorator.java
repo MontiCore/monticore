@@ -62,8 +62,8 @@ public class ASTEmfCDDecorator extends ASTCDDecorator {
     List<String> astPackage = new ArrayList<>(ast.getPackageList());
     astPackage.addAll(Arrays.asList(ast.getCDDefinition().getName().toLowerCase(), ASTConstants.AST_PACKAGE));
 
-    compilationUnit.getCDDefinition().addCDInterfaces(createPackageInterface(ast, astPackage));
-    compilationUnit.getCDDefinition().addCDClasss(createPackageImpl(ast, astPackage));
+    compilationUnit.getCDDefinition().addCDInterface(createPackageInterface(ast, astPackage));
+    compilationUnit.getCDDefinition().addCDClass(createPackageImpl(ast, astPackage));
     return compilationUnit;
   }
 

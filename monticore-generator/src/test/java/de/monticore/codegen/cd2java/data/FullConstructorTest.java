@@ -67,7 +67,7 @@ public class FullConstructorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributesCountSubB() {
-    assertEquals(1, subBClass.getCDAttributesList().size());
+    assertEquals(1, subBClass.getCDAttributeList().size());
   }
 
   @Test
@@ -81,13 +81,13 @@ public class FullConstructorTest extends DecoratorTestCase {
   @Test
   public void testNoInheritedAttributeSubB() {
     //test that inherited attributes are not contained in new class
-    assertTrue(subBClass.getCDAttributesList().stream().noneMatch(a -> a.getName().equals("i")));
-    assertTrue(subBClass.getCDAttributesList().stream().noneMatch(a -> a.getName().equals("s")));
+    assertTrue(subBClass.getCDAttributeList().stream().noneMatch(a -> a.getName().equals("i")));
+    assertTrue(subBClass.getCDAttributeList().stream().noneMatch(a -> a.getName().equals("s")));
   }
 
   @Test
   public void testAttributesCountSubA() {
-    assertEquals(1, subAClass.getCDAttributesList().size());
+    assertEquals(1, subAClass.getCDAttributeList().size());
   }
 
   @Test
@@ -100,9 +100,9 @@ public class FullConstructorTest extends DecoratorTestCase {
   @Test
   public void testNoInheritedAttributeSubA() {
     //test that inherited attributes are not contained in new class
-    assertTrue(subAClass.getCDAttributesList().stream().noneMatch(a -> a.getName().equals("i")));
-    assertTrue(subAClass.getCDAttributesList().stream().noneMatch(a -> a.getName().equals("s")));
-    assertTrue(subAClass.getCDAttributesList().stream().noneMatch(a -> a.getName().equals("b")));
+    assertTrue(subAClass.getCDAttributeList().stream().noneMatch(a -> a.getName().equals("i")));
+    assertTrue(subAClass.getCDAttributeList().stream().noneMatch(a -> a.getName().equals("s")));
+    assertTrue(subAClass.getCDAttributeList().stream().noneMatch(a -> a.getName().equals("b")));
   }
 
   @Test

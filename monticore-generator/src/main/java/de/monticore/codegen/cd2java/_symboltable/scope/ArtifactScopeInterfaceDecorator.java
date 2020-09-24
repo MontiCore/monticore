@@ -63,11 +63,12 @@ public class ArtifactScopeInterfaceDecorator extends AbstractCreator<ASTCDCompil
         .addInterface(getMCTypeFacade().createQualifiedType(I_ARTIFACT_SCOPE_TYPE))
         .addAllCDMethods(createPackageNameAttributeMethods())
         .addAllCDMethods(createImportsAttributeMethods())
-        .addCDMethods(createGetTopLevelSymbolMethod(symbolProds))
-        .addCDMethods(createCheckIfContinueAsSubScopeMethod())
-        .addCDMethods(createGetRemainingNameForResolveDownMethod())
+        .addCDMethod(createGetTopLevelSymbolMethod(symbolProds))
+        .addCDMethod(createCheckIfContinueAsSubScopeMethod())
+        .addCDMethod(createGetRemainingNameForResolveDownMethod())
         .addAllCDMethods(createContinueWithEnclosingScopeMethods(symbolProds, symbolTableService.getCDSymbol()))
         .addAllCDMethods(createSuperContinueWithEnclosingScopeMethods())
+        .addCDMethod(createGetFullNameMethod())
         .build();
   }
 
@@ -149,6 +150,12 @@ public class ArtifactScopeInterfaceDecorator extends AbstractCreator<ASTCDCompil
       }
     }
     return methodList;
+  }
+
+  protected ASTCDMethod createGetFullNameMethod(){
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createStringType(), "getFullName");
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "GetFullName"));
+    return method;
   }
 
   protected List<ASTCDMethod> createSuperContinueWithEnclosingScopeMethods() {

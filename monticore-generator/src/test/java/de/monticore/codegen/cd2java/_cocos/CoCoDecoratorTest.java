@@ -70,7 +70,7 @@ public class CoCoDecoratorTest extends DecoratorTestCase {
     GeneratorSetup generatorSetup = new GeneratorSetup();
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
-    for (ASTCDClass clazz : ast.getCDDefinition().getCDClasssList()) {
+    for (ASTCDClass clazz : ast.getCDDefinition().getCDClassList()) {
       StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, clazz, clazz);
       // test parsing
       ParserConfiguration configuration = new ParserConfiguration();
@@ -78,7 +78,7 @@ public class CoCoDecoratorTest extends DecoratorTestCase {
       ParseResult parseResult = parser.parse(sb.toString());
       assertTrue(parseResult.isSuccessful());
     }
-    for (ASTCDInterface astcdInterface : ast.getCDDefinition().getCDInterfacesList()) {
+    for (ASTCDInterface astcdInterface : ast.getCDDefinition().getCDInterfaceList()) {
       StringBuilder sb = generatorEngine.generate(CoreTemplates.INTERFACE, astcdInterface, astcdInterface);
       // test parsing
       ParserConfiguration configuration = new ParserConfiguration();

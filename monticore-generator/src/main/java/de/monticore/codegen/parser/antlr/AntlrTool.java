@@ -111,7 +111,8 @@ public class AntlrTool extends Tool {
     
     // Create message
     ST messageST = message.getMessageTemplate(false);
-    String output = "0xA0129 " + messageST.render();
+    String output = "0xA0129 " + messageST.render() +
+            "\n(issued from Antlr subsystem, please see in the ANTLR manual, what went wrong)";
     
     // Print message
     if (isError) {

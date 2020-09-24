@@ -10,7 +10,7 @@ ${tc.signature("astcdClass", "simpleClassName")}
     } else {
       return false;
     }
-       <#list astcdClass.getCDAttributesList()  as attribute>
+       <#list astcdClass.getCDAttributeList()  as attribute>
          <#assign attributeName = attribute.getName()>
          <#if !genHelper.isSimpleAstNode(attribute) && !genHelper.isOptionalAstNode(attribute) && !genHelper.isListAstNode(attribute)>
 	// comparing ${attributeName} 

@@ -37,7 +37,7 @@ public class ASTRulesToCDClassesAndCDInterfaces implements
     for (Link<ASTClassProd, ASTCDClass> link : rootLink.getLinks(ASTClassProd.class,
             ASTCDClass.class)) {
 
-      rootLink.source().getASTRulesList().stream()
+      rootLink.source().getASTRuleList().stream()
               .filter(astRule -> astRule.getType().equals(link.source().getName()))
               .forEach(matchedASTRule -> {
                 matchedASTRules.add(matchedASTRule);
@@ -49,7 +49,7 @@ public class ASTRulesToCDClassesAndCDInterfaces implements
     for (Link<ASTAbstractProd, ASTCDClass> link : rootLink.getLinks(ASTAbstractProd.class,
             ASTCDClass.class)) {
 
-      rootLink.source().getASTRulesList().stream()
+      rootLink.source().getASTRuleList().stream()
               .filter(astRule -> astRule.getType().equals(link.source().getName()))
               .forEach(matchedASTRule -> {
                 matchedASTRules.add(matchedASTRule);
@@ -61,7 +61,7 @@ public class ASTRulesToCDClassesAndCDInterfaces implements
     for (Link<ASTInterfaceProd, ASTCDInterface> link : rootLink.getLinks(ASTInterfaceProd.class,
             ASTCDInterface.class)) {
 
-      rootLink.source().getASTRulesList().stream()
+      rootLink.source().getASTRuleList().stream()
               .filter(astRule -> astRule.getType().equals(link.source().getName()))
               .forEach(matchedASTRule -> {
                 matchedASTRules.add(matchedASTRule);
@@ -72,7 +72,7 @@ public class ASTRulesToCDClassesAndCDInterfaces implements
     for (Link<ASTExternalProd, ASTCDInterface> link : rootLink.getLinks(ASTExternalProd.class,
             ASTCDInterface.class)) {
 
-      rootLink.source().getASTRulesList().stream()
+      rootLink.source().getASTRuleList().stream()
               .filter(astRule -> astRule.getType().equals(link.source().getName()))
               .forEach(matchedASTRule -> {
                 matchedASTRules.add(matchedASTRule);
@@ -85,14 +85,14 @@ public class ASTRulesToCDClassesAndCDInterfaces implements
   private void createLinksForUnmatchedASTRules(Set<ASTASTRule> matchedASTRules,
                                                Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink) {
 
-    for (ASTASTRule astRule : rootLink.source().getASTRulesList()) {
+    for (ASTASTRule astRule : rootLink.source().getASTRuleList()) {
       if (!matchedASTRules.contains(astRule)) {
         ASTCDClass cdClass = CD4AnalysisNodeFactory.createASTCDClass();
         cdClass.setModifier(CD4AnalysisNodeFactory.createASTModifier());
 
         Link<ASTMCGrammar, ASTCDDefinition> parentLink = Iterables.getOnlyElement(rootLink
                 .getLinks(ASTMCGrammar.class, ASTCDDefinition.class));
-        parentLink.target().getCDClasssList().add(cdClass);
+        parentLink.target().getCDClassList().add(cdClass);
         new Link<>(astRule, cdClass, parentLink);
       }
     }

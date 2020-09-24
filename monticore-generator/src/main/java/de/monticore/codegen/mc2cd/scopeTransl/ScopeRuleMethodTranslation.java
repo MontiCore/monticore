@@ -25,8 +25,8 @@ public class ScopeRuleMethodTranslation implements UnaryOperator<Link<ASTMCGramm
 
     for (Link<ASTScopeRule, ASTCDClass> link : rootLink.getLinks(ASTScopeRule.class,
         ASTCDClass.class)) {
-      for (ASTGrammarMethod method : link.source().getGrammarMethodsList()) {
-        link.target().getCDMethodsList().add(translateASTMethodToASTCDMethod(method));
+      for (ASTGrammarMethod method : link.source().getGrammarMethodList()) {
+        link.target().getCDMethodList().add(translateASTMethodToASTCDMethod(method));
       }
     }
 
@@ -39,9 +39,9 @@ public class ScopeRuleMethodTranslation implements UnaryOperator<Link<ASTMCGramm
     cdMethod.setName(method.getName());
     String dotSeparatedName = MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(method.getMCReturnType());
     cdMethod.setMCReturnType(TransformationHelper.createReturnType(dotSeparatedName));
-    for (ASTMethodParameter param : method.getMethodParametersList()) {
+    for (ASTMethodParameter param : method.getMethodParameterList()) {
       String typeName = MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(param.getType());
-      cdMethod.getCDParametersList().add(TransformationHelper.createParameter(typeName, param.getName()));
+      cdMethod.getCDParameterList().add(TransformationHelper.createParameter(typeName, param.getName()));
     }
     return cdMethod;
   }
@@ -58,7 +58,7 @@ public class ScopeRuleMethodTranslation implements UnaryOperator<Link<ASTMCGramm
     ASTCDMethod cdMethod = createSimpleCDMethod(method);
     if (method.getBody() instanceof ASTAction) {
       StringBuilder code = new StringBuilder();
-      for (ASTMCBlockStatement action : ((ASTAction) method.getBody()).getMCBlockStatementsList()) {
+      for (ASTMCBlockStatement action : ((ASTAction) method.getBody()).getMCBlockStatementList()) {
         code.append(new Grammar_WithConceptsPrettyPrinter(new IndentPrinter()).prettyprint(action));
       }
       addMethodBodyStereotype(cdMethod.getModifier(), code);
