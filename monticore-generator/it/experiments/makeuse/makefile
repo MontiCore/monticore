@@ -94,32 +94,20 @@ target/PingPong.result: src/test/resources/example/PingPong.aut \
                         $(Tool) $(MCRTE)
 	@echo "[MINFO]. 6a: Handling" $<
 	java -cp "$(Tool);$(MCRTE)" \
-	     $(ToolClass) `dirname $<` `basename $<` target/symtab/ > $@
-	# Bevore Butting war das:
-	# java -cp "$(Tool);$(MCRTE)" \
-	#      $(ToolClass) $< target/symtab/ > $@
-	# TODO AB: Umbau zurück nehmen
+	     $(ToolClass) $< target/symtab/ > $@
 
 target/HierarchyPingPong.result: \
                         src/test/resources/example/HierarchyPingPong.aut \
                         $(Tool) $(MCRTE)
 	@echo "[MINFO]. 6b: Handling" $<
 	java -cp "$(Tool);$(MCRTE)" \
-	     $(ToolClass) `dirname $<` `basename $<` target/symtab/ > $@
-	# Bevore Butting war das:
-	# java -cp "$(Tool);$(MCRTE)" \
-	#      $(ToolClass) $< target/symtab/ > $@
-	# TODO AB: Umbau zurück nehmen
+	     $(ToolClass) $< target/symtab/ > $@
 
 target/Simple12.result: src/test/resources/example/Simple12.aut \
                         $(Tool) $(MCRTE)
 	@echo "[MINFO]. 6c: Handling" $<
 	java -cp "$(Tool);$(MCRTE)" \
-	     $(ToolClass) `dirname $<` `basename $<` target/symtab/ > $@
-	# Bevore Butting war das:
-	# java -cp "$(Tool);$(MCRTE)" \
-	#      $(ToolClass) $< target/symtab/ > $@
-	# TODO AB: Umbau zurück nehmen
+	     $(ToolClass) $< target/symtab/ > $@
 
 # -->> end of adapting part 2 (of 2)
 
