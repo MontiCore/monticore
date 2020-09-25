@@ -94,20 +94,20 @@ target/PingPong.result: src/test/resources/example/PingPong.aut \
                         $(Tool) $(MCRTE)
 	@echo "[MINFO]. 6a: Handling" $<
 	java -cp "$(Tool);$(MCRTE)" \
-	     $(ToolClass) $< $(patsubst $@,%.result,%.autsym) > $@
+	     $(ToolClass) $< $(patsubst $@,%.result,%.sym) > $@
 
 target/HierarchyPingPong.result: \
                         src/test/resources/example/HierarchyPingPong.aut \
                         $(Tool) $(MCRTE)
 	@echo "[MINFO]. 6b: Handling" $<
 	java -cp "$(Tool);$(MCRTE)" \
-	     $(ToolClass) $< $(patsubst $@,%.result,%.autsym) > $@
+	     $(ToolClass) $< $(patsubst $@,%.result,%.sym) > $@
 
 target/Simple12.result: src/test/resources/example/Simple12.aut \
                         $(Tool) $(MCRTE)
 	@echo "[MINFO]. 6c: Handling" $<
 	java -cp "$(Tool);$(MCRTE)" \
-	     $(ToolClass) $< $(patsubst $@,%.result,%.autsym) > $@
+	     $(ToolClass) $< $(patsubst $@,%.result,%.sym) > $@
 
 # -->> end of adapting part 2 (of 2)
 
