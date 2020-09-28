@@ -34,12 +34,15 @@ component grammar MCCommonStatements
 
 /**
  * Standard Form of a block { ... }
+ * it allows to define local variables that are not exported
+ * and can only be used after defined (typical within code bodies).
  */
 scope(non_exporting ordered) MCJavaBlock implements MCStatement
     = "{" MCBlockStatement* "}" ;
 
 /**
  * Shadowing (and exporting) block { ... }
+ * allows to shadow external variables (usable for method bodies)
  */
 scope(shadowing) MCShadowingJavaBlock implements MCStatement
     =  "{" MCBlockStatement* "}" ;
