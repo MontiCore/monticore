@@ -61,6 +61,16 @@ public class MCCommonStatementsPrettyPrinter implements
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
 
+  @Override
+  public void handle(ASTMCShadowingJavaBlock a) {
+    CommentPrettyPrinter.printPreComments(a, getPrinter());
+    getPrinter().println("{");
+    getPrinter().indent();
+    a.getMCBlockStatementList().stream().forEach(m -> m.accept(getRealThis()));
+    getPrinter().unindent();
+    getPrinter().println("}");
+    CommentPrettyPrinter.printPostComments(a, getPrinter());
+  }
 
   @Override
   public void handle(ASTIfStatement a) {
