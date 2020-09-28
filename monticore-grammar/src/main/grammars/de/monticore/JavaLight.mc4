@@ -10,7 +10,7 @@ import de.monticore.symbols.*;
 import de.monticore.types.*;
 
 /**
- * The JavaLight language denes a subset of the Java 
+ * The JavaLight language defines a subset of the Java 
  * programming language. The language introduces Java 
  * method declarations, constructor declarations, 
  * interface method declarations, attributes, and 
