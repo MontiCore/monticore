@@ -59,7 +59,7 @@ SRC=$(wildcard src/main/**/$(GramName)/*java)
 TESTSRC=$(wildcard src/test/**/$(GramName)/*java)
 
 # foreign jars for testing
-JUNIT=target/junit-4.13.jar
+JUNIT=target/junit-4.12.jar
 HAMCREST=target/hamcrest-core-1.3.jar
 
 # jars for the MontiCore call (M2), runtime (M1+M2), and grammars (M2)
@@ -94,20 +94,20 @@ target/PingPong.result: src/test/resources/example/PingPong.aut \
                         $(Tool) $(MCRTE)
 	@echo "[MINFO]. 6a: Handling" $<
 	java -cp "$(Tool);$(MCRTE)" \
-	     $(ToolClass) $< target/symtab/ > $@
+	     $(ToolClass) $< $(patsubst $@,%.result,%.sym) > $@
 
 target/HierarchyPingPong.result: \
                         src/test/resources/example/HierarchyPingPong.aut \
                         $(Tool) $(MCRTE)
 	@echo "[MINFO]. 6b: Handling" $<
 	java -cp "$(Tool);$(MCRTE)" \
-	     $(ToolClass) $< target/symtab/ > $@
+	     $(ToolClass) $< $(patsubst $@,%.result,%.sym) > $@
 
 target/Simple12.result: src/test/resources/example/Simple12.aut \
                         $(Tool) $(MCRTE)
 	@echo "[MINFO]. 6c: Handling" $<
 	java -cp "$(Tool);$(MCRTE)" \
-	     $(ToolClass) $< target/symtab/ > $@
+	     $(ToolClass) $< $(patsubst $@,%.result,%.sym) > $@
 
 # -->> end of adapting part 2 (of 2)
 
@@ -230,16 +230,11 @@ $(MCGRAMMARS): $(InitTarget)
 	cp ~/monticore/./monticore-grammar/target/monticore-grammar-*-grammars.jar $(MCGRAMMARS)
 
 $(MCRTE): $(InitTarget)
-	cp ~/monticore/./monticore-cli/target/monticore-cli-*-with-dependencies.jar $(MCRTE)
-	# Hint: the cli jar can only be used as runtime in case of releases or snapshots where runtime and grammars
-	# have no breaking changes compared to the last release due to the snapshot not being bootstrapped yet
-	# when using the snapshot use the following instead
-	#cp ~/monticore/./monticore-grammar/target/monticore-grammar-*-with-dependencies.jar $(MCRTE)
-
+	cp ~/monticore/./monticore-grammar/target/monticore-grammar-*-with-dependencies.jar $(MCRTE)
 
 # get the testing libraries
 $(JUNIT): $(InitTarget)
-	cp ~/.m2/repository/./junit/junit/4.13/junit-4.13.jar $(JUNIT)
+	cp ~/.m2/repository/./junit/junit/4.12/junit-4.12.jar $(JUNIT)
 
 $(HAMCREST): $(InitTarget)
 	cp ~/.m2/repository/./org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar $(HAMCREST)
