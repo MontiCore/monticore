@@ -37,6 +37,13 @@ component grammar MCCommonStatements
  */
 scope(non_exporting ordered) MCJavaBlock implements MCStatement
     = "{" MCBlockStatement* "}" ;
+
+/**
+ * Shadowing (and exporting) block { ... }
+ */
+scope(shadowing) MCShadowingJavaBlock implements MCStatement
+    =  "{" MCBlockStatement* "}" ;
+
     
 /**
  * All the Java Modifier

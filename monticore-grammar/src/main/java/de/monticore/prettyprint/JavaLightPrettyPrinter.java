@@ -2,11 +2,9 @@
 
 package de.monticore.prettyprint;
 
-import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.javalight._ast.*;
 import de.monticore.javalight._visitor.JavaLightVisitor;
 import de.monticore.statements.prettyprint.MCCommonStatementsPrettyPrinter;
-import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 
 import java.util.Iterator;
 
@@ -33,9 +31,7 @@ public class JavaLightPrettyPrinter extends MCCommonStatementsPrettyPrinter impl
     if (a.isStatic()) {
       getPrinter().print("static ");
     }
-    getPrinter().println("{");
-    a.forEachMCBlockStatements(b -> b.accept(getRealThis()));
-    getPrinter().println("}");
+    a.getMCShadowingJavaBlock().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
 
