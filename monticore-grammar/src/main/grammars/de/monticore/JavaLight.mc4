@@ -36,7 +36,7 @@ interface InterfaceBodyDeclaration;
 ClassBlock implements ClassBodyDeclaration
     = (["static"])? MCShadowingJavaBlock;
 
-interface scope (shadowing non_exporting) symbol JavaMethod extends Method = Name;
+interface scope (shadowing non_exporting ordered) symbol JavaMethod extends Method = Name;
 
 symbolrule JavaMethod =
     exceptions: de.monticore.types.check.SymTypeExpression*

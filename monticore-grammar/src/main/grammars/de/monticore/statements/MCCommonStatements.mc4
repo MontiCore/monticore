@@ -42,9 +42,9 @@ scope(non_exporting ordered) MCJavaBlock implements MCStatement
 
 /**
  * Shadowing (and exporting) block { ... }
- * allows to shadow external variables (usable for method bodies)
+ * allows to shadow external variables (usable for class bodies)
  */
-scope(shadowing) MCShadowingJavaBlock implements MCStatement
+scope(shadowing ordered) MCShadowingJavaBlock implements MCStatement
     =  "{" MCBlockStatement* "}" ;
 
     
