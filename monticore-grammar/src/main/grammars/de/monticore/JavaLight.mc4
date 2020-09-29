@@ -36,6 +36,13 @@ interface InterfaceBodyDeclaration;
 ClassBlock implements ClassBodyDeclaration
     = (["static"])? MCShadowingJavaBlock;
 
+/**
+ * Shadowing (and exporting) block { ... }
+ * allows to shadow external variables (usable for class bodies)
+ */
+scope(shadowing ordered) MCShadowingJavaBlock
+    =  "{" MCBlockStatement* "}" ;
+
 interface scope (shadowing non_exporting ordered) symbol JavaMethod extends Method = Name;
 
 symbolrule JavaMethod =
