@@ -92,15 +92,11 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
             .setSuperclass(getMCTypeFacade()
             .createQualifiedType(symbolTableService.getSymbolFullName(symbolInput)))
             .addCDConstructor(createConstructor(symbolSurrogateSimpleName))
-            .addCDAttribute(nameAttribute)
-            .addAllCDMethods(nameMethods)
             .addAllCDMethods(delegateSymbolRuleAttributeMethods)
             .addAllCDMethods(delegateSymbolRuleMethods);
     return builder
             .addCDAttribute(delegateAttribute)
-            .addCDAttribute(enclosingScopeAttribute)
-            .addAllCDMethods(enclosingScopeMethods)
-            .addCDMethod(createLazyLoadDelegateMethod(symbolSurrogateSimpleName, symbolFullName, simpleName))
+            .addCDMethod(createLazyLoadDelegateMethod(symbolSurrogateSimpleName, symbolFullName, simpleName, scopeInterfaceType))
             .build();
   }
 
@@ -131,10 +127,12 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
     return attribute;
   }
 
-  protected ASTCDMethod createLazyLoadDelegateMethod(String symbolSurrogateName, String symbolName, String simpleName) {
+  protected ASTCDMethod createLazyLoadDelegateMethod(String symbolSurrogateName, String symbolName, String simpleName, String scopeName) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createQualifiedType(symbolName), "lazyLoadDelegate");
+    String generatedError1 = symbolTableService.getGeneratedErrorCode("lazyLoadDelegate1");
+    String generatedError2 = symbolTableService.getGeneratedErrorCode("lazyLoadDelegate2");
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "LazyLoadDelegate", symbolSurrogateName,
-            symbolName, simpleName));
+            symbolName, simpleName, scopeName, generatedError1, generatedError2));
     return method;
   }
 

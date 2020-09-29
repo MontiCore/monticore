@@ -108,7 +108,7 @@ public class SymbolSurrogateDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeCount() {
-    assertEquals(3, symbolClassAutomaton.sizeCDAttributes());
+    assertEquals(1, symbolClassAutomaton.sizeCDAttributes());
   }
 
   @Test
@@ -120,29 +120,9 @@ public class SymbolSurrogateDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethods() {
-    assertEquals(5, symbolClassAutomaton.getCDMethodList().size());
+    assertEquals(1, symbolClassAutomaton.getCDMethodList().size());
   }
 
-  @Test
-  public void testGetNameMethod() {
-    ASTCDMethod method = getMethodBy("getName", symbolClassAutomaton);
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(String.class, method.getMCReturnType().getMCType());
-
-    assertTrue(method.isEmptyCDParameters());
-  }
-
-  @Test
-  public void testSetNameMethod() {
-    ASTCDMethod method = getMethodBy("setName", symbolClassAutomaton);
-    assertDeepEquals(PUBLIC, method.getModifier());
-
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-
-    assertEquals(1, method.sizeCDParameters());
-    assertEquals("name", method.getCDParameter(0).getName());
-    assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
-  }
 
   @Test
   public void testLoadSymbolMethod() {
@@ -151,28 +131,6 @@ public class SymbolSurrogateDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(AUTOMATON_SYMBOL, method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
-  }
-
-  @Test
-  public void testGetEnclosingScopeNameMethod() {
-    ASTCDMethod method = getMethodBy("getEnclosingScope", symbolClassAutomaton);
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(mcTypeFacade.createQualifiedType(I_AUTOMATON_SCOPE)
-        , method.getMCReturnType().getMCType());
-
-    assertTrue(method.isEmptyCDParameters());
-  }
-
-  @Test
-  public void testSetEnclosingScopeNameMethod() {
-    ASTCDMethod method = getMethodBy("setEnclosingScope", symbolClassAutomaton);
-    assertDeepEquals(PUBLIC, method.getModifier());
-
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-
-    assertEquals(1, method.sizeCDParameters());
-    assertEquals("enclosingScope", method.getCDParameter(0).getName());
-    assertDeepEquals(I_AUTOMATON_SCOPE, method.getCDParameter(0).getMCType());
   }
 
   @Test
