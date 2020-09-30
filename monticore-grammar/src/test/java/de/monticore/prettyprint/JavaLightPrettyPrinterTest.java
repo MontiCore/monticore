@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.prettyprint;
 
-import de.monticore.expressions.javaclassexpressions._ast.ASTCreatorExpression;
 import de.monticore.javalight._ast.*;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTLocalVariableDeclaration;
 import de.monticore.testjavalight._parser.TestJavaLightParser;
@@ -14,8 +13,8 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class JavaLightPrettyPrinterTest {
 
@@ -34,21 +33,6 @@ public class JavaLightPrettyPrinterTest {
     prettyPrinter.getPrinter().clearBuffer();
   }
 
-  @Test
-  public void testClassBlock() throws IOException {
-    Optional<ASTClassBlock> result = parser.parse_StringClassBlock("static { private Integer foo = a;}");
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
-    ASTClassBlock ast = result.get();
-
-    String output = prettyPrinter.prettyprint(ast);
-
-    result = parser.parse_StringClassBlock(output);
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
-
-    assertTrue(ast.deepEquals(result.get()));
-  }
 
   @Test
   public void testMethodDeclaration() throws IOException {

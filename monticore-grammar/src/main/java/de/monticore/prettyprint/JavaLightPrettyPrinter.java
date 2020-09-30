@@ -26,27 +26,6 @@ public class JavaLightPrettyPrinter extends MCCommonStatementsPrettyPrinter impl
   }
 
   @Override
-  public void handle(ASTClassBlock a) {
-    CommentPrettyPrinter.printPreComments(a, getPrinter());
-    if (a.isStatic()) {
-      getPrinter().print("static ");
-    }
-    a.getMCShadowingJavaBlock().accept(getRealThis());
-    CommentPrettyPrinter.printPostComments(a, getPrinter());
-  }
-
-  @Override
-  public void handle(ASTMCShadowingJavaBlock a) {
-    CommentPrettyPrinter.printPreComments(a, getPrinter());
-    getPrinter().println("{");
-    getPrinter().indent();
-    a.getMCBlockStatementList().stream().forEach(m -> m.accept(getRealThis()));
-    getPrinter().unindent();
-    getPrinter().println("}");
-    CommentPrettyPrinter.printPostComments(a, getPrinter());
-  }
-
-  @Override
   public void handle(ASTMethodDeclaration a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     a.getMCModifierList().stream().forEach(m -> {getPrinter().print(" "); m.accept(getRealThis()); getPrinter().print(" ");});
