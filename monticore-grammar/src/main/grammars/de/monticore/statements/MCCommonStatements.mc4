@@ -71,6 +71,12 @@ ForInit
 ForInitByExpressions
     = (Expression || ",")+ ;
 
+EnhancedForControl implements ForControl
+    = FormalParameter ":" Expression;
+
+FormalParameter
+    =   JavaModifier* MCType DeclaratorId;
+
 WhileStatement implements MCStatement
     = "while" "(" condition:Expression ")" MCStatement ;
 

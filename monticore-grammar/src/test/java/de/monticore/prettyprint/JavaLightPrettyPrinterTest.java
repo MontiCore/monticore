@@ -164,22 +164,6 @@ public class JavaLightPrettyPrinterTest {
   }
 
   @Test
-  public void testFormalParameter() throws IOException {
-    Optional<ASTFormalParameter> result = parser.parse_StringFormalParameter("public float f");
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
-    ASTFormalParameter ast = result.get();
-
-    String output = prettyPrinter.prettyprint(ast);
-
-    result = parser.parse_StringFormalParameter(output);
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
-
-    assertTrue(ast.deepEquals(result.get()));
-  }
-
-  @Test
   public void testLastFormalParameter() throws IOException {
     Optional<ASTLastFormalParameter> result = parser.parse_StringLastFormalParameter("private String ... a");
     assertFalse(parser.hasErrors());
@@ -270,22 +254,6 @@ public class JavaLightPrettyPrinterTest {
     String output = prettyPrinter.prettyprint(ast);
 
     result = parser.parse_StringElementValuePair(output);
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
-
-    assertTrue(ast.deepEquals(result.get()));
-  }
-
-  @Test
-  public void testEnhancedForControl() throws IOException {
-    Optional<ASTEnhancedForControl> result = parser.parse_StringEnhancedForControl("protected int c[] : a");
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
-    ASTEnhancedForControl ast = result.get();
-
-    String output = prettyPrinter.prettyprint(ast);
-
-    result = parser.parse_StringEnhancedForControl(output);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
 

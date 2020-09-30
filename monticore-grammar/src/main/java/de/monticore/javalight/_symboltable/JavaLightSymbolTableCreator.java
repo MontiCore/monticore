@@ -67,12 +67,6 @@ public class JavaLightSymbolTableCreator extends JavaLightSymbolTableCreatorTOP 
   }
 
   @Override
-  public void endVisit(ASTFormalParameter ast) {
-    FieldSymbol symbol = ast.getDeclaratorId().getSymbol();
-    symbol.setType(createTypeLoader(ast.getMCType()));
-  }
-
-  @Override
   public void endVisit(ASTLastFormalParameter ast) {
     FieldSymbol symbol = ast.getDeclaratorId().getSymbol();
     symbol.setType(createTypeLoader(ast.getMCType()));
