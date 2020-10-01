@@ -51,8 +51,8 @@ public class SymbolTableCreatorForSuperTypes extends AbstractCreator<ASTCDCompil
             .setName(superSTCForSubSTCName)
             .setModifier(PUBLIC.build())
             .setSuperclass(getMCTypeFacade().createQualifiedType(superSTC))
-            .addCDConstructors(createConstructor(superSTCForSubSTCName, dequeWildcardType))
-            .addCDMethods(createCreateScopeMethod(ownScopeInterface, symbolTableService.getCDName()))
+            .addCDConstructor(createConstructor(superSTCForSubSTCName, dequeWildcardType))
+            .addCDMethod(createCreateScopeMethod(ownScopeInterface, symbolTableService.getCDName()))
             .build();
         superForSubSTC.add(superSTCForSubClass);
       }

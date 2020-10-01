@@ -22,7 +22,7 @@ public class NoOverridingNTHasAnnotation implements GrammarASTClassProdCoCo {
 
   @Override
   public void check(ASTClassProd a) {
-    if (a.getGrammarAnnotationsList().stream().anyMatch(s -> s.isOverride())) {
+    if (a.getGrammarAnnotationList().stream().anyMatch(s -> s.isOverride())) {
       Optional<MCGrammarSymbol> grammarSymbol = MCGrammarSymbolTableHelper
               .getMCGrammarSymbol(a.getEnclosingScope());
 

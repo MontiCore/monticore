@@ -18,17 +18,17 @@ public class ListSuffixDecorator extends AbstractTransformer<ASTCDCompilationUni
 
   @Override
   public ASTCDCompilationUnit decorate(final ASTCDCompilationUnit originalInput, ASTCDCompilationUnit changedInput) {
-    for (ASTCDInterface astcdInterface : changedInput.getCDDefinition().getCDInterfacesList()) {
-      addSToListAttributes(astcdInterface.getCDAttributesList());
-      astcdInterface.setCDAttributesList(getAttributesUniqueAgain(astcdInterface.getCDAttributesList()));
+    for (ASTCDInterface astcdInterface : changedInput.getCDDefinition().getCDInterfaceList()) {
+      addSToListAttributes(astcdInterface.getCDAttributeList());
+      astcdInterface.setCDAttributeList(getAttributesUniqueAgain(astcdInterface.getCDAttributeList()));
     }
-    for (ASTCDClass astcdClass : changedInput.getCDDefinition().getCDClasssList()) {
-      addSToListAttributes(astcdClass.getCDAttributesList());
-      astcdClass.setCDAttributesList(getAttributesUniqueAgain(astcdClass.getCDAttributesList()));
+    for (ASTCDClass astcdClass : changedInput.getCDDefinition().getCDClassList()) {
+      addSToListAttributes(astcdClass.getCDAttributeList());
+      astcdClass.setCDAttributeList(getAttributesUniqueAgain(astcdClass.getCDAttributeList()));
     }
-    for (ASTCDEnum astcdEnum : changedInput.getCDDefinition().getCDEnumsList()) {
-      addSToListAttributes(astcdEnum.getCDAttributesList());
-      astcdEnum.setCDAttributeList(getAttributesUniqueAgain(astcdEnum.getCDAttributesList()));
+    for (ASTCDEnum astcdEnum : changedInput.getCDDefinition().getCDEnumList()) {
+      addSToListAttributes(astcdEnum.getCDAttributeList());
+      astcdEnum.setCDAttributeList(getAttributesUniqueAgain(astcdEnum.getCDAttributeList()));
     }
     return originalInput;
   }

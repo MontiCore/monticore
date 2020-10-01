@@ -23,11 +23,11 @@ public class AttributeInSymbolRuleToCDAttribute implements
 
     for (Link<ASTSymbolRule, ASTCDClass> link : rootLink.getLinks(ASTSymbolRule.class,
             ASTCDClass.class)) {
-      for (ASTAdditionalAttribute attributeInAST : link.source().getAdditionalAttributesList()) {
+      for (ASTAdditionalAttribute attributeInAST : link.source().getAdditionalAttributeList()) {
         ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
         cdAttribute.setName(attributeInAST.getName());
         cdAttribute.setModifier(PROTECTED.build());
-        link.target().getCDAttributesList().add(cdAttribute);
+        link.target().getCDAttributeList().add(cdAttribute);
         new Link<>(attributeInAST, cdAttribute, link);
       }
     }

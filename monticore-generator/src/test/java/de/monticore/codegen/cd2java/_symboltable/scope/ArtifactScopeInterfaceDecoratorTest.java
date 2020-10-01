@@ -26,8 +26,7 @@ import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
 import static de.monticore.codegen.cd2java.DecoratorAssert.*;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class ArtifactScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
@@ -95,7 +94,7 @@ public class ArtifactScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(42, scopeInterface.getCDMethodsList().size());
+    assertEquals(43, scopeInterface.getCDMethodList().size());
   }
 
   @Test
@@ -116,8 +115,8 @@ public class ArtifactScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
 
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(String.class, method.getCDParameters(0).getMCType());
-    assertEquals("packageName", method.getCDParameters(0).getName());
+    assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
+    assertEquals("packageName", method.getCDParameter(0).getName());
   }
 
   @Test
@@ -139,8 +138,8 @@ public class ArtifactScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
 
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(MCTypeFacade.createListTypeOf(IMPORT_STATEMENT), method.getCDParameters(0).getMCType());
-    assertEquals("imports", method.getCDParameters(0).getName());
+    assertDeepEquals(MCTypeFacade.createListTypeOf(IMPORT_STATEMENT), method.getCDParameter(0).getMCType());
+    assertEquals("imports", method.getCDParameter(0).getName());
   }
 
   @Test
@@ -161,8 +160,8 @@ public class ArtifactScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertBoolean(method.getMCReturnType().getMCType());
 
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(String.class, method.getCDParameters(0).getMCType());
-    assertEquals("symbolName", method.getCDParameters(0).getName());
+    assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
+    assertEquals("symbolName", method.getCDParameter(0).getName());
   }
 
   @Test
@@ -173,8 +172,8 @@ public class ArtifactScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(String.class, method.getMCReturnType().getMCType());
 
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(String.class, method.getCDParameters(0).getMCType());
-    assertEquals("symbolName", method.getCDParameters(0).getName());
+    assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
+    assertEquals("symbolName", method.getCDParameter(0).getName());
   }
 
   @Test
@@ -184,14 +183,14 @@ public class ArtifactScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, method.getModifier());
     assertDeepEquals(MCTypeFacade.createListTypeOf(AUTOMATON_SYMBOL), method.getMCReturnType().getMCType());
     assertEquals(4, method.sizeCDParameters());
-    assertBoolean(method.getCDParameters(0).getMCType());
-    assertEquals("foundSymbols", method.getCDParameters(0).getName());
-    assertDeepEquals(String.class, method.getCDParameters(1).getMCType());
-    assertEquals("name", method.getCDParameters(1).getName());
-    assertDeepEquals(ACCESS_MODIFIER, method.getCDParameters(2).getMCType());
-    assertEquals("modifier", method.getCDParameters(2).getName());
-    assertDeepEquals(PREDICATE, method.getCDParameters(3).getMCType());
-    assertEquals("predicate", method.getCDParameters(3).getName());
+    assertBoolean(method.getCDParameter(0).getMCType());
+    assertEquals("foundSymbols", method.getCDParameter(0).getName());
+    assertDeepEquals(String.class, method.getCDParameter(1).getMCType());
+    assertEquals("name", method.getCDParameter(1).getName());
+    assertDeepEquals(ACCESS_MODIFIER, method.getCDParameter(2).getMCType());
+    assertEquals("modifier", method.getCDParameter(2).getName());
+    assertDeepEquals(PREDICATE, method.getCDParameter(3).getMCType());
+    assertEquals("predicate", method.getCDParameter(3).getName());
   }
 
   @Test
@@ -201,14 +200,23 @@ public class ArtifactScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, method.getModifier());
     assertDeepEquals(MCTypeFacade.createListTypeOf(QUALIFIED_NAME_SYMBOL), method.getMCReturnType().getMCType());
     assertEquals(4, method.sizeCDParameters());
-    assertBoolean(method.getCDParameters(0).getMCType());
-    assertEquals("foundSymbols", method.getCDParameters(0).getName());
-    assertDeepEquals(String.class, method.getCDParameters(1).getMCType());
-    assertEquals("name", method.getCDParameters(1).getName());
-    assertDeepEquals(ACCESS_MODIFIER, method.getCDParameters(2).getMCType());
-    assertEquals("modifier", method.getCDParameters(2).getName());
-    assertDeepEquals(PREDICATE_QUALIFIED_NAME, method.getCDParameters(3).getMCType());
-    assertEquals("predicate", method.getCDParameters(3).getName());
+    assertBoolean(method.getCDParameter(0).getMCType());
+    assertEquals("foundSymbols", method.getCDParameter(0).getName());
+    assertDeepEquals(String.class, method.getCDParameter(1).getMCType());
+    assertEquals("name", method.getCDParameter(1).getName());
+    assertDeepEquals(ACCESS_MODIFIER, method.getCDParameter(2).getMCType());
+    assertEquals("modifier", method.getCDParameter(2).getName());
+    assertDeepEquals(PREDICATE_QUALIFIED_NAME, method.getCDParameter(3).getMCType());
+    assertEquals("predicate", method.getCDParameter(3).getName());
+  }
+
+  @Test
+  public void testGetFullNameMethod(){
+    ASTCDMethod method = getMethodBy("getFullName", scopeInterface);
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.isEmptyCDParameters());
+    assertFalse(method.getMCReturnType().isPresentMCVoidType());
+    assertDeepEquals(String.class, method.getMCReturnType().getMCType());
   }
 
   @Test

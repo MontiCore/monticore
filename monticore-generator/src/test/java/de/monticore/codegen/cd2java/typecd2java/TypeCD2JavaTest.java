@@ -51,24 +51,24 @@ public class TypeCD2JavaTest {
 
   @Test
   public void testTypeJavaConformList() {
-    assertTrue(cdCompilationUnit.getCDDefinition().getCDClasss(0).getCDAttributes(1).getMCType() instanceof ASTMCGenericType);
-    ASTMCGenericType simpleReferenceType = (ASTMCGenericType) cdCompilationUnit.getCDDefinition().getCDClasss(0).getCDAttributes(1).getMCType();
-    assertFalse(simpleReferenceType.getNamesList().isEmpty());
-    assertEquals(3, simpleReferenceType.getNamesList().size());
-    assertEquals("java", simpleReferenceType.getNamesList().get(0));
-    assertEquals("util", simpleReferenceType.getNamesList().get(1));
-    assertEquals("List", simpleReferenceType.getNamesList().get(2));
+    assertTrue(cdCompilationUnit.getCDDefinition().getCDClass(0).getCDAttribute(1).getMCType() instanceof ASTMCGenericType);
+    ASTMCGenericType simpleReferenceType = (ASTMCGenericType) cdCompilationUnit.getCDDefinition().getCDClass(0).getCDAttribute(1).getMCType();
+    assertFalse(simpleReferenceType.getNameList().isEmpty());
+    assertEquals(3, simpleReferenceType.getNameList().size());
+    assertEquals("java", simpleReferenceType.getNameList().get(0));
+    assertEquals("util", simpleReferenceType.getNameList().get(1));
+    assertEquals("List", simpleReferenceType.getNameList().get(2));
   }
 
   @Test
   public void testTypeJavaConformASTPackage() {
     //test that for AST classes the package is now java conform
-    assertTrue(cdCompilationUnit.getCDDefinition().getCDClasss(0).getCDAttributes(1).getMCType() instanceof ASTMCGenericType);
-    ASTMCGenericType listType = (ASTMCGenericType) cdCompilationUnit.getCDDefinition().getCDClasss(0).getCDAttributes(1).getMCType();
-    assertEquals(1, listType.getMCTypeArgumentsList().size());
-    assertTrue(listType.getMCTypeArgumentsList().get(0).getMCTypeOpt().isPresent());
-    assertTrue(listType.getMCTypeArgumentsList().get(0).getMCTypeOpt().get() instanceof ASTMCQualifiedType);
-    ASTMCQualifiedType typeArgument = (ASTMCQualifiedType) listType.getMCTypeArgumentsList().get(0).getMCTypeOpt().get();
+    assertTrue(cdCompilationUnit.getCDDefinition().getCDClass(0).getCDAttribute(1).getMCType() instanceof ASTMCGenericType);
+    ASTMCGenericType listType = (ASTMCGenericType) cdCompilationUnit.getCDDefinition().getCDClass(0).getCDAttribute(1).getMCType();
+    assertEquals(1, listType.getMCTypeArgumentList().size());
+    assertTrue(listType.getMCTypeArgumentList().get(0).getMCTypeOpt().isPresent());
+    assertTrue(listType.getMCTypeArgumentList().get(0).getMCTypeOpt().get() instanceof ASTMCQualifiedType);
+    ASTMCQualifiedType typeArgument = (ASTMCQualifiedType) listType.getMCTypeArgumentList().get(0).getMCTypeOpt().get();
     assertEquals(3, typeArgument.getNameList().size());
     assertEquals("automaton", typeArgument.getNameList().get(0));
     assertEquals("_ast", typeArgument.getNameList().get(1));
@@ -78,8 +78,8 @@ public class TypeCD2JavaTest {
   @Test
   public void testStringType() {
     //test that types like String are not changed
-    assertTrue(cdCompilationUnit.getCDDefinition().getCDClasss(0).getCDAttributes(0).getMCType() instanceof ASTMCQualifiedType);
-    ASTMCQualifiedType simpleReferenceType = (ASTMCQualifiedType) cdCompilationUnit.getCDDefinition().getCDClasss(0).getCDAttributes(0).getMCType();
+    assertTrue(cdCompilationUnit.getCDDefinition().getCDClass(0).getCDAttribute(0).getMCType() instanceof ASTMCQualifiedType);
+    ASTMCQualifiedType simpleReferenceType = (ASTMCQualifiedType) cdCompilationUnit.getCDDefinition().getCDClass(0).getCDAttribute(0).getMCType();
     assertFalse(simpleReferenceType.getNameList().isEmpty());
     assertEquals(1, simpleReferenceType.getNameList().size());
     assertEquals("String", simpleReferenceType.getNameList().get(0));

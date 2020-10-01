@@ -5,7 +5,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
-import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
+import de.monticore.grammar.grammar_withconcepts._symboltable.IGrammar_WithConceptsGlobalScope;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
@@ -39,7 +39,7 @@ public class GenerateAutomataParser {
       // (using imported grammars from the model path)
       ModelPath modelPath = new ModelPath(Paths.get(
           "target/monticore-grammar-grammars.jar"));
-      Grammar_WithConceptsGlobalScope gs = Grammar_WithConceptsMill
+      IGrammar_WithConceptsGlobalScope gs = Grammar_WithConceptsMill
           .grammar_WithConceptsGlobalScopeBuilder()
           .setModelPath(modelPath)
           .build();

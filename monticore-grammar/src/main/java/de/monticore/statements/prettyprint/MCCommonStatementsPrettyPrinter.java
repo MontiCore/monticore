@@ -61,7 +61,6 @@ public class MCCommonStatementsPrettyPrinter implements
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
 
-
   @Override
   public void handle(ASTIfStatement a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
@@ -107,7 +106,6 @@ public class MCCommonStatementsPrettyPrinter implements
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
 
-
   @Override
   public void handle(ASTCommonForControl a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
@@ -131,6 +129,14 @@ public class MCCommonStatementsPrettyPrinter implements
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
 
+  @Override
+  public void handle(ASTEnhancedForControl a) {
+    CommentPrettyPrinter.printPreComments(a, getPrinter());
+    a.getFormalParameter().accept(getRealThis());
+    getPrinter().print(": ");
+    a.getExpression().accept(getRealThis());
+    CommentPrettyPrinter.printPostComments(a, getPrinter());
+  }
 
   @Override
   public void handle(ASTJavaModifier a) {
@@ -139,6 +145,15 @@ public class MCCommonStatementsPrettyPrinter implements
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
 
+  @Override
+  public void handle(ASTFormalParameter a) {
+    CommentPrettyPrinter.printPreComments(a, getPrinter());
+    printSeparated(a.getJavaModifierList().iterator(), " ");
+    a.getMCType().accept(getRealThis());
+    getPrinter().print(" ");
+    a.getDeclaratorId().accept(getRealThis());
+    CommentPrettyPrinter.printPostComments(a, getPrinter());
+  }
 
  @Override
   public void handle(ASTEmptyStatement a) {
@@ -193,6 +208,12 @@ public class MCCommonStatementsPrettyPrinter implements
     getPrinter().println("default:");
   }
 
+  @Override
+  public void handle(ASTBreakStatement a) {
+    CommentPrettyPrinter.printPreComments(a, getPrinter());
+    getPrinter().println("break;");
+    CommentPrettyPrinter.printPostComments(a, getPrinter());
+  }
 
   protected void printSeparated(Iterator<? extends ASTMCCommonStatementsNode> iter, String separator) {
     // print by iterate through all items

@@ -95,13 +95,13 @@ public class SymbolSurrogateDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testConstructor() {
-    ASTCDConstructor cdConstructor = symbolClassAutomaton.getCDConstructors(0);
+    ASTCDConstructor cdConstructor = symbolClassAutomaton.getCDConstructor(0);
     assertDeepEquals(PUBLIC, cdConstructor.getModifier());
     assertEquals("AutomatonSymbolSurrogate", cdConstructor.getName());
 
     assertEquals(1, cdConstructor.sizeCDParameters());
-    assertDeepEquals(String.class, cdConstructor.getCDParameters(0).getMCType());
-    assertEquals("name", cdConstructor.getCDParameters(0).getName());
+    assertDeepEquals(String.class, cdConstructor.getCDParameter(0).getMCType());
+    assertEquals("name", cdConstructor.getCDParameter(0).getName());
 
     assertTrue(cdConstructor.isEmptyException());
   }
@@ -120,7 +120,7 @@ public class SymbolSurrogateDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethods() {
-    assertEquals(5, symbolClassAutomaton.getCDMethodsList().size());
+    assertEquals(5, symbolClassAutomaton.getCDMethodList().size());
   }
 
   @Test
@@ -140,8 +140,8 @@ public class SymbolSurrogateDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
 
     assertEquals(1, method.sizeCDParameters());
-    assertEquals("name", method.getCDParameters(0).getName());
-    assertDeepEquals(String.class, method.getCDParameters(0).getMCType());
+    assertEquals("name", method.getCDParameter(0).getName());
+    assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
   }
 
   @Test
@@ -171,8 +171,8 @@ public class SymbolSurrogateDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
 
     assertEquals(1, method.sizeCDParameters());
-    assertEquals("enclosingScope", method.getCDParameters(0).getName());
-    assertDeepEquals(I_AUTOMATON_SCOPE, method.getCDParameters(0).getMCType());
+    assertEquals("enclosingScope", method.getCDParameter(0).getName());
+    assertDeepEquals(I_AUTOMATON_SCOPE, method.getCDParameter(0).getMCType());
   }
 
   @Test
