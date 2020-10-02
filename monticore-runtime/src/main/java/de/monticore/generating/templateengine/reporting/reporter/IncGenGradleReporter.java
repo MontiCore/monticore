@@ -45,7 +45,7 @@ public class IncGenGradleReporter extends AReporter {
 
   @Override
   public void reportHWCExistenceCheck(IterablePath parentDirs, Path fileName,
-      Optional<Path> result) {
+                                      Optional<Path> result) {
     if (result.isPresent()) {
       String usedHWCFile = toUnixPath(result.get().toString());
       usedHWCFiles.add(usedHWCFile);
@@ -141,22 +141,22 @@ public class IncGenGradleReporter extends AReporter {
       String checkSum;
       if (node != null) {
         checkSum = IncrementalChecker.getChecksum(inputFile);
-        writeLine("mc4:"+ inputFile + " "+checkSum);
       } else {
-        writeLine("mc4:"+ inputFile + " " + GEN_ERROR);
+        checkSum = GEN_ERROR;
       }
+      writeLine("mc4:"+ inputFile.replaceAll("\\\\","/" ) + " "+checkSum);
       for (String s : grammarFiles) {
         if (!s.contains(".jar")) {
           File inputFile = new File(s);
           if (inputFile.exists()) {
             checkSum = IncrementalChecker.getChecksum(inputFile.toString());
-            writeLine("mc4:" + s + " " + checkSum);
           } else {
-            writeLine("mc4:" + s + " " + MISSING);
+            checkSum = MISSING;
           }
+          writeLine("mc4:" + s.replaceAll("\\\\", "/") + " " + checkSum);
         } else {
           checkSum = IncrementalChecker.getChecksum(s);
-          writeLine("mc4:" + s + " " + checkSum);
+          writeLine("mc4:" + s.replaceAll("\\\\", "/") + " " + checkSum);
         }
       }
     }

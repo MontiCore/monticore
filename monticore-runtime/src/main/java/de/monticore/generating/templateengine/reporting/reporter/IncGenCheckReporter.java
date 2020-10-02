@@ -44,7 +44,7 @@ public class IncGenCheckReporter extends AReporter {
 
   @Override
   public void reportHWCExistenceCheck(IterablePath parentDirs, Path fileName,
-      Optional<Path> result) {
+                                      Optional<Path> result) {
     if (result.isPresent()) {
       String usedHWCFile = toUnixPath(result.get().toString());
       usedHWCFiles.add(usedHWCFile);
@@ -123,7 +123,7 @@ public class IncGenCheckReporter extends AReporter {
 
   @Override
   public void flush(ASTNode node) {
-      openFile();
+    openFile();
     //create check: grammar changed?
     for (Path lateOne : filesThatMatterButAreNotThereInTime) {
       if (modelToArtifactMap.keySet().contains(lateOne)) {
@@ -141,9 +141,10 @@ public class IncGenCheckReporter extends AReporter {
       if (node != null) {
         checkSum = IncrementalChecker.getChecksum(inputFile);
         //test if file was removed
-        writeLine("[ -e " + inputFile + " ] || (touch $1; echo " + inputFile + " removed!; exit 0;)");
+        String file = inputFile.replaceAll("\\\\", "/");
+        writeLine("[ -e " + file + " ] || (touch $1; echo " + file + " removed!; exit 0;)");
         //test if file was changed by comparing its hash to its previous hash
-        writeLine("[md5sum -c <<<\"" +checkSum +" *" + inputFile + "\"] || (touch $1; echo " + inputFile + " changed!; exit 0;)");
+        writeLine("md5sum -c <<<\"" +checkSum +" *" + file + "\" || (touch $1; echo " + file + " changed!; exit 0;)");
       }
       for (String s : grammarFiles) {
         String digest;
@@ -158,9 +159,10 @@ public class IncGenCheckReporter extends AReporter {
           digest = IncrementalChecker.getChecksum(s);
         }
         //test if file was removed
-        writeLine("[ -e " + s + " ] || (touch $1; echo " + s + " removed!; exit 0;)");
+        String file = s.replaceAll("\\\\", "/");
+        writeLine("[ -e " + file + " ] || (touch $1; echo " + file + " removed!; exit 0;)");
         //test if file was changed by comparing its hash to its previous hash
-        writeLine("[md5sum -c <<<\"" +digest +" *" + s + "\"] || (touch $1; echo " + s + " changed!; exit 0;)");
+        writeLine("md5sum -c <<<\"" +digest +" *" + file + "\" || (touch $1; echo " + file + " changed!; exit 0;)");
       }
     }
     // create check: used file deleted?
@@ -169,7 +171,7 @@ public class IncGenCheckReporter extends AReporter {
     }
     // create check: relevant file added?
     for (String p : notExistentHWCFiles) {
-        writeLine("[ -e " + p + " ] && (touch $1; echo " + p + " added!; exit 0;)");
+      writeLine("[ -e " + p + " ] && (touch $1; echo " + p + " added!; exit 0;)");
     }
 
     super.flush(node);
