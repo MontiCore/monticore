@@ -41,7 +41,7 @@ public interface ISymbol {
 
   /**
    * @return Returns the enclosing scope of this symbol. Symbol classes implementing the
-   * {@link ISymbol} interface override this method and refine the return type to the scope
+   * {@link ISymbol} interface override this method and refine the return type to the scASTope
    * classes of the language.
    */
   IScope getEnclosingScope();

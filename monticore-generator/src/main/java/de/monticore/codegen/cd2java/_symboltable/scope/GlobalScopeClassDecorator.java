@@ -66,7 +66,6 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     ASTMCQualifiedType scopeType = symbolTableService.getScopeType();
     ASTMCQualifiedType globalScopeInterface = symbolTableService.getGlobalScopeInterfaceType();
     String definitionName = input.getCDDefinition().getName();
-    String modelLoaderClassName = symbolTableService.getModelLoaderClassSimpleName();
     String scopeDeSerName = symbolTableService.getScopeDeSerSimpleName();
 
     ASTCDAttribute cacheAttribute = createCacheAttribute();
@@ -85,10 +84,6 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
 
     ASTCDAttribute modelPathAttribute = createModelPathAttribute();
     List<ASTCDMethod> modelPathMethods = accessorDecorator.decorate(modelPathAttribute);
-
-    ASTCDAttribute modelLoaderAttribute = createModelLoaderAttribute(modelLoaderClassName);
-    List<ASTCDMethod> modelLoaderMethods = accessorDecorator.decorate(modelLoaderAttribute);
-    modelLoaderMethods.addAll(mutatorDecorator.decorate(modelLoaderAttribute));
 
     ASTCDAttribute fileExtensionAttribute = getCDAttributeFacade().createAttribute(PROTECTED,
         getMCTypeFacade().createStringType(), FILE_EXTENSION_VAR);
@@ -111,8 +106,6 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
         .addCDConstructor(createConstructor(globalScopeName, scopeDeSerName))
         .addCDAttribute(modelPathAttribute)
         .addAllCDMethods(modelPathMethods)
-        .addCDAttribute(modelLoaderAttribute)
-        .addAllCDMethods(modelLoaderMethods)
         .addCDAttribute(fileExtensionAttribute)
         .addAllCDMethods(fileExtensionMethods)
         .addCDAttribute(symbolFileExtensionAttribute)
@@ -241,7 +234,8 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     ASTCDParameter modelNameParam = getCDParameterFacade().createParameter(String.class, "modelName");
     ASTCDParameter symbolNameParam = getCDParameterFacade().createParameter(String.class, "symbolName");
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, "loadFileForModelName", modelNameParam, symbolNameParam);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "LoadFileForModelName", definitionName));
+    String errorCode = symbolTableService.getGeneratedErrorCode(definitionName);
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "LoadFileForModelName", definitionName, errorCode));
     return method;
   }
 

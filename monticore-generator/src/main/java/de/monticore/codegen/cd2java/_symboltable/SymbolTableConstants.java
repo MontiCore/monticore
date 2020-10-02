@@ -12,8 +12,6 @@ public class SymbolTableConstants {
 
   public static final String SYMBOL_TABLE_PACKAGE = "_symboltable";
 
-  public static final String SERIALIZATION_PACKAGE = "serialization";
-
   /**
    * suffixes, prefixes
    */
@@ -40,15 +38,11 @@ public class SymbolTableConstants {
 
   public static final String STC_FOR = "%sSTCFor%s";
 
-  public static final String LANGUAGE_SUFFIX = "Language";
-
   public static final String SURROGATE_SUFFIX = "Surrogate";
 
   public static final String DE_SER_SUFFIX = "DeSer";
 
   public static final String SYMBOL_TABLE_PRINTER_SUFFIX = "SymbolTablePrinter";
-
-  public static final String MODEL_LOADER_SUFFIX = "ModelLoader";
 
   /**
    * runtime classes
@@ -63,12 +57,6 @@ public class SymbolTableConstants {
   public static final String I_GLOBAL_SCOPE_TYPE = "de.monticore.symboltable.IGlobalScope";
 
   public static final String IMPORT_STATEMENT = "de.monticore.symboltable.ImportStatement";
-
-  public static final String I_MODEL_LOADER = "de.monticore.modelloader.IModelLoader";
-
-  public static final String AST_PROVIDER = "de.monticore.modelloader.AstProvider<%s>";
-
-  public static final String MODEL_COORDINATE = "de.monticore.io.paths.ModelCoordinate";
 
   public static final String PATH = "java.nio.file.Path";
 
@@ -149,8 +137,6 @@ public class SymbolTableConstants {
   public static final String RESOLVE_ADAPTED = "resolveAdapted%s";
 
   public static final String CONTINUE_WITH_ENCLOSING_SCOPE = "continue%sWithEnclosingScope";
-
-  public static final String CALCULATED_MODEL_NAME = "calculatedModelName";
 
   public static final String DESERIALIZE = "deserialize";
 
