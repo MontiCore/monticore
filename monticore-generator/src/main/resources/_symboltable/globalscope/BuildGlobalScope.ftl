@@ -1,11 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("scopeClassName", "simpleName", "resolvingDelegates", "generatedErrorCode", "generatedErrorCode2")}
-  if(null == modelPath ){
-    Log.error("0xA7007${generatedErrorCode} Cannot build a global scope without setting the model path!");
-  }
-  if(null == modelFileExtension){
-    Log.error("0xA7008${generatedErrorCode2} Cannot build a global scope without setting a model file extension!");
-  }
+${tc.signature("scopeClassName", "simpleName", "resolvingDelegates")}
   ${scopeClassName} globalScope = new ${scopeClassName}(modelPath, modelFileExtension);
   if(!globalScope.isPresentModelLoader()){
     if(modelLoader.isPresent()){

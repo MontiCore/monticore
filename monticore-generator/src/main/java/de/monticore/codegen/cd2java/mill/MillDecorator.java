@@ -1,10 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java.mill;
 
+import com.google.common.collect.Lists;
 import de.monticore.cd.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
+import de.monticore.cd.facade.CDAttributeFacade;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -17,6 +19,7 @@ import de.se_rwth.commons.StringTransformations;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.*;
@@ -108,6 +111,14 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
       millClass.addAllCDMethods(builderMethodsList);
     }
 
+    if(service.hasStartProd()){
+      String globalScopeAttributeName = StringTransformations.uncapitalize(service.getGlobalScopeSimpleName());
+      ASTCDAttribute globalScopeAttribute = getCDAttributeFacade().createAttribute(PROTECTED, service.getGlobalScopeInterfaceType(),globalScopeAttributeName);
+      List<ASTCDMethod> globalScopeMethods = getGlobalScopeMethods(globalScopeAttribute);
+      millClass.addCDAttribute(globalScopeAttribute);
+      millClass.addAllCDMethods(globalScopeMethods);
+    }
+
     // add builder methods for each class
     List<ASTCDMethod> superMethodsList = addSuperBuilderMethods(superSymbolList, allClasses);
     millClass.addAllCDMethods(superMethodsList);
@@ -166,12 +177,20 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
           : StringTransformations.uncapitalize(astName);
 
       // add public static Method for Builder
-      ASTCDMethod builderMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC, builderType, methodName);
+      ASTModifier modifier = PUBLIC_STATIC.build();
+      if(methodName.contains("GlobalScopeBuilder")){
+        service.addDeprecatedStereotype(modifier, Optional.empty());
+      }
+      ASTCDMethod builderMethod = this.getCDMethodFacade().createMethod(modifier, builderType, methodName);
       builderMethodsList.add(builderMethod);
       this.replaceTemplate(EMPTY_BODY, builderMethod, new TemplateHookPoint("mill.BuilderMethod", astName, methodName));
 
       // add protected Method for Builder
-      ASTCDMethod protectedMethod = this.getCDMethodFacade().createMethod(PROTECTED, builderType, "_" + methodName);
+      ASTModifier protectedModifier = PROTECTED.build();
+      if(methodName.contains("GlobalScopeBuilder")){
+        service.addDeprecatedStereotype(protectedModifier, Optional.empty());
+      }
+      ASTCDMethod protectedMethod = this.getCDMethodFacade().createMethod(protectedModifier, builderType, "_" + methodName);
       builderMethodsList.add(protectedMethod);
       this.replaceTemplate(EMPTY_BODY, protectedMethod, new TemplateHookPoint("mill.ProtectedBuilderMethod", builderType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter())));
     }
@@ -200,6 +219,24 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
       }
     }
     return superMethods;
+  }
+
+  protected List<ASTCDMethod> getGlobalScopeMethods(ASTCDAttribute globalScopeAttribute){
+    List<ASTCDMethod> globalScopeMethods = Lists.newArrayList();
+
+    String attributeName = globalScopeAttribute.getName();
+    String staticMethodName = "get"+StringTransformations.capitalize(attributeName);
+    String protectedMethodName = "_"+staticMethodName;
+
+    ASTCDMethod staticMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC, globalScopeAttribute.getMCType(), staticMethodName);
+    this.replaceTemplate(EMPTY_BODY, staticMethod, new TemplateHookPoint("mill.BuilderMethod", StringTransformations.capitalize(attributeName)+BUILDER_SUFFIX, staticMethodName));
+    globalScopeMethods.add(staticMethod);
+
+    ASTCDMethod protectedMethod = getCDMethodFacade().createMethod(PROTECTED, globalScopeAttribute.getMCType(), protectedMethodName);
+    this.replaceTemplate(EMPTY_BODY, protectedMethod, new TemplateHookPoint("mill.ProtectedGlobalScopeMethod", attributeName));
+    globalScopeMethods.add(protectedMethod);
+
+    return globalScopeMethods;
   }
 
   protected List<ASTCDMethod> getSuperSymbolMethods(CDDefinitionSymbol superSymbol, CDTypeSymbol type) {
