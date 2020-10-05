@@ -152,6 +152,8 @@ public class IncGenCheckReporter extends AReporter {
           File inputFile = new File(s);
           if (inputFile.exists()) {
             digest = IncrementalChecker.getChecksum(inputFile.toString());
+          } else {
+            digest = MISSING;
           }
         } else {
           digest = MISSING;
