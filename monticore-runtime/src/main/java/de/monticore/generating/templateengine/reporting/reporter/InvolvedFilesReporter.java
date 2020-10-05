@@ -5,13 +5,10 @@ package de.monticore.generating.templateengine.reporting.reporter;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.google.common.io.Files;
 
 import de.monticore.ast.ASTNode;
@@ -19,6 +16,7 @@ import de.monticore.generating.templateengine.reporting.commons.AReporter;
 import de.monticore.generating.templateengine.reporting.commons.Layouter;
 import de.monticore.generating.templateengine.reporting.commons.ReportCreator;
 import de.monticore.generating.templateengine.reporting.commons.ReportingConstants;
+import de.monticore.io.paths.IterablePath;
 
 /**
  * It reports the name of all input and output files as well as the name of
@@ -37,7 +35,7 @@ public class InvolvedFilesReporter extends AReporter {
   
   private List<String> outputFiles = Lists.newArrayList();
   
-  private List<String> checkedFiles = Lists.newArrayList();
+  private Set<String> checkedFiles = Sets.newHashSet();
   
   private Map<Path, Path> modelToArtifactMap = new HashMap<>();
   
@@ -77,10 +75,10 @@ public class InvolvedFilesReporter extends AReporter {
     writeLine(OUTPUT_FILE_HEADING);
   }
   
-  public static final String EXISTS_FILE_HEADING = "\n================================= Check existence of files ============";
+  public static final String HWC_FILE_HEADING = "\n================================= Handwritten files ============";
   
-  protected void writeExistsFileHeading() {
-    writeLine(EXISTS_FILE_HEADING);
+  protected void writeHWCFileHeading() {
+    writeLine(HWC_FILE_HEADING);
   }
   
   public static final String EOF = "\n================================= EOF =================================";
@@ -95,14 +93,12 @@ public class InvolvedFilesReporter extends AReporter {
       outputFiles.add(fileName);
     }
   }
-  
 
   @Override
-  public void reportFileExistenceChecking(List<Path> parentPath, Path file) {
-    parentPath.forEach(p -> checkedFiles
-        .add(p != null ? p.toString() + PARENT_FILE_SEPARATOR + file.toString() : file.toString()));
+  public void reportUseHandwrittenCodeFile(Path parentDir, Path fileName) {
+    checkedFiles.add(parentDir.toString());
   }
-  
+
   @Override
   public void reportOpenInputFile(Optional<Path> parentPath, Path file) {
     if (qualifiedInputFile.isPresent() && qualifiedInputFile.get().compareTo(file) == 0) {
@@ -181,7 +177,7 @@ public class InvolvedFilesReporter extends AReporter {
     writeOutputFileHeading();
     outputFiles.forEach(f -> writeLine(f));
     
-    writeExistsFileHeading();
+    writeHWCFileHeading();
     checkedFiles.forEach(f -> writeLine(f));
   }
   

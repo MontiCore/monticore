@@ -1,5 +1,4 @@
 /* (c) https://github.com/MontiCore/monticore */
-import de.monticore.MCTask
 
 plugins {
   id "de.set.ecj" version "1.4.1" // Eclipse compiler as it's much faster than javac
