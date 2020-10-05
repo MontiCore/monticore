@@ -42,6 +42,7 @@ import org.mockito.Mockito;
 
 import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -137,8 +138,8 @@ public class MillWithInheritanceTest extends DecoratorTestCase {
   @Test
   public void testAttributeModifier() {
     for (ASTCDAttribute astcdAttribute : millClass.getCDAttributeList()) {
-      assertTrue(astcdAttribute.isPresentModifier());
-      assertTrue(PROTECTED_STATIC.build().deepEquals(astcdAttribute.getModifier()));
+        assertTrue(astcdAttribute.isPresentModifier());
+        assertTrue(PROTECTED_STATIC.build().deepEquals(astcdAttribute.getModifier()));
     }
   }
 
