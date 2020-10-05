@@ -39,10 +39,24 @@ import de.se_rwth.commons.logging.Slf4jLog;
  */
 public class MontiCoreCLI {
   
+  /**
+   *   Dedicated XML file that configures the logging for users
+   *   (i.e. users of the MontiCore tool) --> standard
+   */
   public static final String LOGBACK_USER_CONFIG = "user.logging.xml";
   
+  /**
+   *   Dedicated XML file that configures the logging for
+   *   MontiCore developers
+   *   (i.e. developers of the MontiCore tool) --> selectable via -dev
+   *   This logging config prints many internal messages
+   */
   public static final String LOGBACK_DEVELOPER_CONFIG = "developer.logging.xml";
   
+  /**
+   *  We store the requested output directory as a system variable such that we
+   *  can inject it into the logback configuration
+   */
   static final String MC_OUT = "MC_OUT";
   
   static final String LOGBACK_CONFIGURATIONFILE = "logback.configurationFile";
@@ -61,6 +75,7 @@ public class MontiCoreCLI {
    * Run: executes the CLI arguments and commands
    * @param args command line arguments (e.g. --help)
    */
+  // TODO: simplify?!
   public void run(String[] args) {
     if (args.length == 0) {
       // the only required input are the grammar file(s)/directories
@@ -174,6 +189,7 @@ public class MontiCoreCLI {
    *
    * @param configuration the MontiCore CLI configuration
    */
+  // TODO: simplify?
   static void initLogging(MontiCoreCLIConfiguration configuration) {
     
     // pick detailed developer logging if specified
@@ -271,9 +287,16 @@ public class MontiCoreCLI {
     System.out.println("-mp, -modelpath <paths>      Optional list of directories or files to include for reference resolution");
     System.out.println("-hcp, -handcodedpath <paths> Optional list of directories to look for handwritten code to integrate");
     System.out.println("-s, -script <script>         Optional script to control the generation workflow");
-    System.out.println("-g, -grammars <path>         Instead of individual grammars: handle all grammars found");
+    // TODO: -g kann man auch ganz entfernen
+    // The following option is deprecated and should not be of use
+    // it doesn't work for related grammars, because they have a specific order
+    // and it breaks incremental efficient use of MontiCore
+    //    System.out.println("-g, -grammars <path>         Instead of individual grammars: handle all grammars found");
     System.out.println("-fp, -templatePath <paths>   Optional list of directories to look for handwritten templates to integrate");
-    System.out.println("-f, -force                   Secifies whether the code generation should be enforced, i.e. disable incremental code generation (default is false)");
+    // TODO: -f kann man auch ganz entfernen
+    // The following option is deprecated and should not be of use
+    // When MC is called then it ALWAYS regenerates. There is no check internally
+    //     System.out.println("-f, -force                   Secifies whether the code generation should be enforced, i.e. disable incremental code generation (default is false)");
     System.out.println("-d, -dev                     Specifies whether developer level logging should be used (default is false)");
     System.out.println("-cl, -customLog <file>       Optional logging configuration file to customize the logger");
   }

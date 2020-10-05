@@ -101,7 +101,7 @@ public class SymTypeExpressionFactory {
     return new SymTypeArray(typeSymbol, dim, argument);
   }
 
-  public static SymTypeExpression createTypeExpresion(TypeSymbol typeSymbol){
+  public static SymTypeExpression createTypeExpression(TypeSymbol typeSymbol){
     SymTypeExpression o;
     if(typeConstants.containsKey(typeSymbol.getName())){
       o = createTypeConstant(typeSymbol.getName());
@@ -112,7 +112,7 @@ public class SymTypeExpressionFactory {
     else if ("null".equals(typeSymbol.getName())) {
       o = createTypeOfNull();
     }
-    else if (typeSymbol.getSpannedScope().getLocalTypeVarSymbols().isEmpty()){
+    else if (typeSymbol.getTypeParameterList().isEmpty()) {
       o = createTypeObject(typeSymbol);
     }
     else {

@@ -31,9 +31,9 @@ public class AttributeInASTMultiplicityTest {
   public AttributeInASTMultiplicityTest() {
     ASTCDCompilationUnit cdCompilationUnit = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/AttributeInASTMultiplicityGrammar.mc4")).get();
-    astA = TestHelper.getCDClasss(cdCompilationUnit, "ASTA").get();
-    astB = TestHelper.getCDClasss(cdCompilationUnit, "ASTB").get();
-    astC = TestHelper.getCDClasss(cdCompilationUnit, "ASTC").get();
+    astA = TestHelper.getCDClass(cdCompilationUnit, "ASTA").get();
+    astB = TestHelper.getCDClass(cdCompilationUnit, "ASTB").get();
+    astC = TestHelper.getCDClass(cdCompilationUnit, "ASTC").get();
   }
   
   /**
@@ -42,7 +42,7 @@ public class AttributeInASTMultiplicityTest {
    */
   @Test
   public void testStarMultiplicity() {
-    List<ASTCDAttribute> attributes = astA.getCDAttributesList();
+    List<ASTCDAttribute> attributes = astA.getCDAttributeList();
     assertTrue(TestHelper.isListOfType(attributes.get(0).getMCType(),
         "mc2cdtransformation.AttributeInASTMultiplicityGrammar.ASTX"));
     /*
@@ -63,14 +63,14 @@ public class AttributeInASTMultiplicityTest {
    */
   @Test
   public void testOptionalCardinality() {
-    List<ASTCDAttribute> attributes = astB.getCDAttributesList();
+    List<ASTCDAttribute> attributes = astB.getCDAttributeList();
     String name = typeToString(attributes.get(0).getMCType());
     assertEquals("Optional", name);
   }
   
   @Test
   public void testOneCardinality() {
-    List<ASTCDAttribute> attributes = astC.getCDAttributesList();
+    List<ASTCDAttribute> attributes = astC.getCDAttributeList();
     String name = typeToString(attributes.get(0).getMCType());
     assertEquals("mc2cdtransformation.AttributeInASTMultiplicityGrammar.ASTZ", name);
   }

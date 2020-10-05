@@ -13,16 +13,16 @@ isCreated = true;
 // Create classes and their features
 constants${grammarName} = createEEnum(Constants${grammarName});
 
-<#list definition.getCDClasssList() as astClass>
+<#list definition.getCDClassList() as astClass>
     ${astClass.getName()?uncap_first} = createEClass(${astClass.getName()});
 </#list>
 
-<#list definition.getCDInterfacesList() as astInterface>
+<#list definition.getCDInterfaceList() as astInterface>
     ${astInterface.getName()?uncap_first} = createEClass(${astInterface.getName()});
 </#list>
 
-<#list definition.getCDClasssList()  as astClass>
-    <#list astClass.getCDAttributesList() as attribute>
+<#list definition.getCDClassList()  as astClass>
+    <#list astClass.getCDAttributeList() as attribute>
         <#if genHelper.isAstNode(attribute) || genHelper.isOptionalAstNode(attribute)
             || genHelper.isListAstNode(attribute)>
           createEReference(${astClass.getName()?uncap_first}, ${astClass.getName()}_${attribute.getName()?cap_first});
@@ -32,8 +32,8 @@ constants${grammarName} = createEEnum(Constants${grammarName});
     </#list>
 </#list>
 
-<#list definition.getCDInterfacesList()  as astInterface>
-    <#list astInterface.getCDAttributesList() as attribute>
+<#list definition.getCDInterfaceList()  as astInterface>
+    <#list astInterface.getCDAttributeList() as attribute>
       <#if genHelper.isAstNode(attribute) || genHelper.isOptionalAstNode(attribute)
       || genHelper.isListAstNode(attribute)>
         createEReference(${astInterface.getName()?uncap_first}, ${astInterface.getName()}_${attribute.getName()?cap_first});

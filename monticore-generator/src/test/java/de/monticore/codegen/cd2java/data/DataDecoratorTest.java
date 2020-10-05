@@ -104,7 +104,7 @@ public class DataDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testDefaultConstructor() {
-    ASTCDConstructor defaultConstructor = dataClass.getCDConstructors(0);
+    ASTCDConstructor defaultConstructor = dataClass.getCDConstructor(0);
     assertDeepEquals(PROTECTED, defaultConstructor.getModifier());
     assertTrue(defaultConstructor.isEmptyCDParameters());
   }
@@ -125,7 +125,7 @@ public class DataDecoratorTest extends DecoratorTestCase {
     assertFalse(method.isEmptyCDParameters());
     assertEquals(1, method.sizeCDParameters());
 
-    ASTCDParameter parameter = method.getCDParameters(0);
+    ASTCDParameter parameter = method.getCDParameter(0);
     assertDeepEquals(Object.class, parameter.getMCType());
     assertEquals("o", parameter.getName());
   }
@@ -140,11 +140,11 @@ public class DataDecoratorTest extends DecoratorTestCase {
     assertFalse(method.isEmptyCDParameters());
     assertEquals(2, method.sizeCDParameters());
 
-    ASTCDParameter parameter = method.getCDParameters(0);
+    ASTCDParameter parameter = method.getCDParameter(0);
     assertDeepEquals(Object.class, parameter.getMCType());
     assertEquals("o", parameter.getName());
 
-    parameter = method.getCDParameters(1);
+    parameter = method.getCDParameter(1);
     assertBoolean(parameter.getMCType());
     assertEquals("forceSameOrder", parameter.getName());
   }
@@ -159,7 +159,7 @@ public class DataDecoratorTest extends DecoratorTestCase {
     assertFalse(method.isEmptyCDParameters());
     assertEquals(1, method.sizeCDParameters());
 
-    ASTCDParameter parameter = method.getCDParameters(0);
+    ASTCDParameter parameter = method.getCDParameter(0);
     assertDeepEquals(Object.class, parameter.getMCType());
     assertEquals("o", parameter.getName());
   }
@@ -174,11 +174,11 @@ public class DataDecoratorTest extends DecoratorTestCase {
     assertFalse(method.isEmptyCDParameters());
     assertEquals(2, method.sizeCDParameters());
 
-    ASTCDParameter parameter = method.getCDParameters(0);
+    ASTCDParameter parameter = method.getCDParameter(0);
     assertDeepEquals(Object.class, parameter.getMCType());
     assertEquals("o", parameter.getName());
 
-    parameter = method.getCDParameters(1);
+    parameter = method.getCDParameter(1);
     assertBoolean(parameter.getMCType());
     assertEquals("forceSameOrder", parameter.getName());
   }
@@ -193,7 +193,7 @@ public class DataDecoratorTest extends DecoratorTestCase {
     assertFalse(method.isEmptyCDParameters());
     assertEquals(1, method.sizeCDParameters());
 
-    ASTCDParameter parameter = method.getCDParameters(0);
+    ASTCDParameter parameter = method.getCDParameter(0);
     assertDeepEquals(Object.class, parameter.getMCType());
     assertEquals("o", parameter.getName());
   }
@@ -208,7 +208,7 @@ public class DataDecoratorTest extends DecoratorTestCase {
     assertFalse(method.isEmptyCDParameters());
     assertEquals(1, method.sizeCDParameters());
 
-    ASTCDParameter parameter = method.getCDParameters(0);
+    ASTCDParameter parameter = method.getCDParameter(0);
     assertDeepEquals(Object.class, parameter.getMCType());
     assertEquals("o", parameter.getName());
   }
@@ -232,7 +232,7 @@ public class DataDecoratorTest extends DecoratorTestCase {
     assertFalse(method.isEmptyCDParameters());
     assertEquals(1, method.sizeCDParameters());
 
-    ASTCDParameter parameter = method.getCDParameters(0);
+    ASTCDParameter parameter = method.getCDParameter(0);
     assertDeepEquals(dataClass.getName(), parameter.getMCType());
     assertEquals("result", parameter.getName());
   }

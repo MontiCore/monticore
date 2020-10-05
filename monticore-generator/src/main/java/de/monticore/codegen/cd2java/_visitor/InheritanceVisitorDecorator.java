@@ -64,12 +64,12 @@ public class InheritanceVisitorDecorator extends AbstractCreator<ASTCDCompilatio
 
   protected List<ASTCDMethod> getASTHandleMethods(ASTCDDefinition astcdDefinition, String visitorSimpleTypeName, String languageInterfaceName) {
     List<ASTCDMethod> handleMethods = new ArrayList<>();
-    handleMethods.addAll(astcdDefinition.getCDClasssList()
+    handleMethods.addAll(astcdDefinition.getCDClassList()
         .stream()
         .map(c -> getASTHandleMethod(c, languageInterfaceName, visitorSimpleTypeName))
         .collect(Collectors.toList()));
 
-    handleMethods.addAll(astcdDefinition.getCDInterfacesList()
+    handleMethods.addAll(astcdDefinition.getCDInterfaceList()
         .stream()
         .map(c -> getHandleASTMethod(c, languageInterfaceName, visitorSimpleTypeName))
         .collect(Collectors.toList()));

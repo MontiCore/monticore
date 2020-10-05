@@ -37,20 +37,16 @@ component grammar MCVarDeclarationStatements
                   OOSymbols {
 
 LocalVariableDeclarationStatement implements MCBlockStatement
-    = LocalVariableDeclaration ";"
-    ;
+    = LocalVariableDeclaration ";" ;
 
 LocalVariableDeclaration
-    =   MCModifier* MCType (VariableDeclarator || ",")+
-    ;
+    =   MCModifier* MCType (VariableDeclarator || ",")+ ;
 
 VariableDeclarator
-    =   DeclaratorId ("=" VariableInit)?
-    ;
+    =   DeclaratorId ("=" VariableInit)? ;
 
 DeclaratorId implements Field
-    =   Name (dim:"[" "]")*
-    ;
+    =   Name (dim:"[" "]")* ;
 
 interface VariableInit;
 
@@ -58,8 +54,6 @@ SimpleInit implements VariableInit =
                     Expression;
 
 ArrayInit implements VariableInit
-     =   "{" (VariableInit || ",")* (",")? "}"
-     ;
-
+     =   "{" (VariableInit || ",")* (",")? "}" ;
 
 }

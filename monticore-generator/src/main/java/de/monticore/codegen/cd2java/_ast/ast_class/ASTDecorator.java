@@ -70,10 +70,10 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
   public ASTCDClass decorate(final ASTCDClass originalClass, ASTCDClass changedClass) {
     changedClass.addInterface(this.astService.getASTBaseInterface());
     // have to use the changed one here because this one will get the TOP prefix
-    changedClass.addCDMethods(createAcceptMethod(changedClass));
+    changedClass.addCDMethod(createAcceptMethod(changedClass));
     changedClass.addAllCDMethods(createAcceptSuperMethods(originalClass));
-    changedClass.addCDMethods(getConstructMethod(originalClass));
-    changedClass.addCDMethods(createGetChildrenMethod(originalClass));
+    changedClass.addCDMethod(getConstructMethod(originalClass));
+    changedClass.addCDMethod(createGetChildrenMethod(originalClass));
     if (!originalClass.isPresentSuperclass()) {
       changedClass.setSuperclass(this.getMCTypeFacade().createQualifiedType(ASTCNode.class));
     }
@@ -88,7 +88,7 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
     // class and getName method are getting abstract
     if (astService.isSymbolWithoutName(originalClass)) {
       changedClass.getModifier().setAbstract(true);
-      changedClass.addCDMethods(astService.createGetNameMethod());
+      changedClass.addCDMethod(astService.createGetNameMethod());
     }
     return changedClass;
   }
@@ -99,7 +99,7 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
   protected void addSymbolTableMethods(List<ASTCDAttribute> astcdAttributes, ASTCDClass clazz) {
     for (ASTCDAttribute attribute : astcdAttributes) {
       if (!astService.hasStereotype(attribute.getModifier(), MC2CDStereotypes.INHERITED)) {
-        clazz.addCDAttributes(attribute);
+        clazz.addCDAttribute(attribute);
         clazz.addAllCDMethods(methodDecorator.decorate(attribute));
       } else {
         String scopeInterfaceType = symbolTableService.getScopeInterfaceFullName();
@@ -109,10 +109,10 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
         String errorCode = astService.getGeneratedErrorCode(clazz.getName());
         methods.stream().filter(m -> m.getName().equals("setEnclosingScope")).forEach(m ->
             this.replaceTemplate(EMPTY_BODY, m, new TemplateHookPoint("_ast.ast_class.symboltable.InheritedSetEnclosingScope", errorCode,
-                MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(m.getCDParameters(0).getMCType()), scopeInterfaceType)));
+                MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(m.getCDParameter(0).getMCType()), scopeInterfaceType)));
         methods.stream().filter(m -> m.getName().equals("setSpannedScope")).forEach(m ->
                 this.replaceTemplate(EMPTY_BODY, m, new TemplateHookPoint("_ast.ast_class.symboltable.InheritedSetSpannedScope", errorCode,
-                        MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(m.getCDParameters(0).getMCType()), scopeInterfaceType)));
+                        MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(m.getCDParameter(0).getMCType()), scopeInterfaceType)));
         methodDecorator.enableTemplates();
         clazz.addAllCDMethods(methods);
       }

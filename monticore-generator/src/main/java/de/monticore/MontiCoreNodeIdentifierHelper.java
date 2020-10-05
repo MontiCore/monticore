@@ -3,6 +3,8 @@
 package de.monticore;
 
 import de.monticore.ast.ASTNode;
+import de.monticore.cd.cd4analysis._ast.ASTCD4AnalysisNode;
+import de.monticore.cd.reporting.CD4ANodeIdentHelper;
 import de.monticore.generating.templateengine.reporting.commons.Layouter;
 import de.monticore.grammar.LexNamer;
 import de.monticore.grammar.grammar._ast.*;
@@ -57,11 +59,11 @@ public class MontiCoreNodeIdentifierHelper extends MCSimpleGenericTypesNodeIdent
   }
   
   public String getIdent(ASTMCBasicGenericType ast) {
-    return format(Names.getQualifiedName(ast.getNamesList()), nodeName(ast));
+    return format(Names.getQualifiedName(ast.getNameList()), nodeName(ast));
   }
   
   public String getIdent(ASTGrammarReference ast) {
-    return format(Names.getSimpleName(ast.getNamesList()), nodeName(ast));
+    return format(Names.getSimpleName(ast.getNameList()), nodeName(ast));
   }
   
   public String getIdent(ASTITerminal ast) {
@@ -173,6 +175,8 @@ public class MontiCoreNodeIdentifierHelper extends MCSimpleGenericTypesNodeIdent
     }
     else if (ast instanceof ASTRuleReference) {
       return getIdent((ASTRuleReference) ast);
+    } else if (ast instanceof ASTCD4AnalysisNode) {
+      return (new CD4ANodeIdentHelper()).getIdent(ast);
     }
     return format(nodeName(ast));
   }

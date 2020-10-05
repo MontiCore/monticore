@@ -220,6 +220,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     return result;
   }
 
+  // TODO: würde hier nicht eine einfach Liste der Argument
+  // oder auch eine etwas aufbereitete Map<String,String> reichen:  "-out" -> "..."
   protected MontiCoreConfiguration __configuration;
 
   protected Map<ASTMCGrammar, ASTCDCompilationUnit> firstPassGrammars = new LinkedHashMap<>();
@@ -323,7 +325,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
               .setGlobalScope(globalScope)
               .build();
       stCreator.createFromAST(result);
-      globalScope.cache(qualifiedGrammarName);
+      globalScope.addLoadedFile(qualifiedGrammarName);
     }
 
     MCGrammarSymbol symbol = result.getSymbol();
@@ -362,7 +364,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
       CD4AnalysisSymbolTableCreatorDelegator stCreator = CD4AnalysisMill.cD4AnalysisSymbolTableCreatorDelegatorBuilder()
               .setGlobalScope(globalScope).build();
       stCreator.createFromAST(result);
-      globalScope.cache(qualifiedCDName);
+      globalScope.addLoadedFile(qualifiedCDName);
     }
 
     return result;
@@ -439,34 +441,52 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param astCd           - the top node of the Cd4Analysis AST
    * @param outputDirectory - output directory
    */
-  public void reportCD(ASTCDCompilationUnit astCd, ASTCDCompilationUnit symbolCd, ASTCDCompilationUnit scopeCd,
+  public void reportCD(ASTCDCompilationUnit origCd, ASTCDCompilationUnit astCd,
+                       ASTCDCompilationUnit symbolCd, ASTCDCompilationUnit scopeCd,
                        File outputDirectory) {
     // we also store the class diagram fully qualified such that we can later on
     // resolve it properly for the generation of sub languages
-    String reportSubDir = Joiners.DOT.join(astCd.getPackageList());
+    String reportSubDir = Joiners.DOT.join(origCd.getPackageList());
     reportSubDir = reportSubDir.isEmpty()
-            ? astCd.getCDDefinition().getName()
-            : reportSubDir.concat(".").concat(astCd.getCDDefinition().getName());
+            ? origCd.getCDDefinition().getName()
+            : reportSubDir.concat(".").concat(origCd.getCDDefinition().getName());
     reportSubDir = reportSubDir.toLowerCase();
 
     // Clone CD for reporting
     ASTCDCompilationUnit astCdForReporting = astCd.deepClone();
+
+    // Change Name
+    astCdForReporting.getCDDefinition().setName("DataStructure_" + astCdForReporting.getCDDefinition().getName());
+
     // No star imports in reporting CDs
-    astCdForReporting.getMCImportStatementsList().forEach(s -> s.setStar(false));
+    astCdForReporting.getMCImportStatementList().forEach(s -> s.setStar(false));
+
+    // Remove Builder
+    List<ASTCDClass> builderClasses = Lists.newArrayList();
+    astCdForReporting.getCDDefinition().forEachCDClasss(c -> {if (c.getName().endsWith("Builder")) builderClasses.add(c);});
+    builderClasses.forEach(c -> astCdForReporting.getCDDefinition().removeCDClass(c));
 
     // Add symbol classes
-    for (ASTCDClass cl :symbolCd.getCDDefinition().getCDClasssList()) {
-      ASTCDClass newCl = cl.deepClone();
-      newCl.setName(newCl.getName()+"Symbol");
-      astCdForReporting.getCDDefinition().addCDClasss(newCl);
+    for (ASTCDClass cl :symbolCd.getCDDefinition().getCDClassList()) {
+      if (!cl.getName().endsWith("Builder")) {
+        ASTCDClass newCl = cl.deepClone();
+        astCdForReporting.getCDDefinition().addCDClass(newCl);
+      }
     }
 
     // Add scope classes
-    for (ASTCDClass cl :scopeCd.getCDDefinition().getCDClasssList()) {
-      ASTCDClass newCl = cl.deepClone();
-      newCl.setName(newCl.getName()+"Scope");
-      astCdForReporting.getCDDefinition().addCDClasss(newCl);
+    for (ASTCDClass cl :scopeCd.getCDDefinition().getCDClassList()) {
+      if (!cl.getName().endsWith("Builder")) {
+        ASTCDClass newCl = cl.deepClone();
+        astCdForReporting.getCDDefinition().addCDClass(newCl);
+      }
     }
+
+    // Remove methods and constructors
+    astCdForReporting.getCDDefinition().forEachCDClasss(c -> {c.clearCDMethods(); c.clearCDConstructors();});
+    astCdForReporting.getCDDefinition().forEachCDInterfaces(c -> c.clearCDMethods());
+    astCdForReporting.getCDDefinition().forEachCDEnums(c -> {c.clearCDMethods(); c.clearCDConstructors();});
+
     new CDReporting().prettyPrintAstCd(astCdForReporting, outputDirectory, reportSubDir);
   }
 
@@ -488,10 +508,11 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     // Clone CD for reporting
     ASTCDCompilationUnit astCdForReporting = astCd.deepClone();
     // No star imports in reporting CDs
-    astCdForReporting.getMCImportStatementsList().forEach(s -> s.setStar(false));
+    astCdForReporting.getMCImportStatementList().forEach(s -> s.setStar(false));
 
     new CDReporting().prettyPrintAstCd(astCdForReporting, outputDirectory, reportSubDir);
   }
+
   public ASTCDCompilationUnit decorateForSymbolTablePackage(GlobalExtensionManagement glex, ICD4AnalysisScope cdScope,
                                                             ASTCDCompilationUnit astClassDiagram, ASTCDCompilationUnit symbolClassDiagramm,
                                                             ASTCDCompilationUnit scopeClassDiagramm, IterablePath handCodedPath) {

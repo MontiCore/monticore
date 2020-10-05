@@ -28,6 +28,7 @@ project under `monticore-grammar/src/main/grammars/` in packages
 * `de.monticore.expressions`
 * `de.monticore.literals`
 * `de.monticore.statements`
+* `de.monticore.symbols`
 * `de.monticore.types`
 
 For [more langauges, see here](../../../../../../docs/Languages.md).
@@ -50,6 +51,7 @@ It should be useful in many languages.
 
 These grammars generally deal with type definitions and build on each 
 other. Some snipets for type definitions:
+
   ```
   MCBasicTypes      boolean  byte  short  int
                     long  char  float  double
@@ -99,6 +101,14 @@ support the full Java type system including wildcards Blubb<? extends A>
 types, then use a simpler version from above. Type checking ist tricky.
 
 
+
+## Symbols: List of Grammars in package `de.monticore.symbols`
+
+These two grammars do not provide syntax themselves, but 
+characterize important forms of symbols, that will be used
+in the type and the expression grammars to define shared 
+kinds of symbols. 
+
 ### [BasicSymbols.mc4](symbols/BasicSymbols.mc4) (stable)
 * This grammar defines symbols for *Types* (of all kinds), *Functions*, 
   *Variables* and *TypeVariables*.
@@ -107,7 +117,6 @@ types, then use a simpler version from above. Type checking ist tricky.
   embody OO specifics.
 * Remark: This grammar is not intended to define concrete or abstract syntax, but the
   infrastructure for symbols. 
-
 
 ### [OOSymbols.mc4](symbols/OOSymbols.mc4) (stable)
 * This grammar defines symbols for *objectoriented Types*, *Methods*, and
@@ -130,6 +139,7 @@ infrastructure.
 This modularity of expressions and associated types greatly eases 
 the reuse of type structures in languages similar to Java.
 Some snipets for operators definrd in expressions:
+
   ```
   CommonExp:     /  %  +  -  <=  >=  ==  >  <  !=  ~.  !.  .?.:.
   PLogicExp:     &&  ||  ~. 
@@ -179,7 +189,7 @@ modelling language.
 
 
 ### [SetExpressions.mc4](expressions/SetExpressions.mc4) (Beta: In Stabilization)
-* This grammar defines set expressions like {..|..}, set union, intersection etc.
+* This grammar defines set expressions like set union, intersection etc.
 these operations are typical for a logic with set operations, like 
 UML's OCL.
 
@@ -195,6 +205,7 @@ UML's OCL.
 
 Literals are the basic elements of expressions, such as numbers, strings, 
 truth values. Some snipets:
+
   ```
   MCCommonLit       3  -3  2.17  -4  true  false  'c'  '\03AE' 
                     3L  2.17d  2.17f  0xAF  "string" "str\b\n\\"  
@@ -237,6 +248,7 @@ The following hierarchy of statement definitions should allow
 the developers to choose needed forms of statements and extend it 
 by their own additional needs. The provided list of statements
 is inspired by Java (actually subset of Java). Some example statements:
+
   ```
   int i;   int j = 2;                     Person p[] = { foo(3+7), p2, ...}
   if (.) then . else .                    for ( i = .; .; .) {.}
@@ -318,15 +330,24 @@ several smaller grammars are also available:
  * This includes Cardinality, Completeness, UMLModifier, and UMLStereotype.
 
 
-### [JavaLight.mc4](JavaLight.mc4) (Beta: In Stabilization)
+### [JavaLight.mc4](JavaLight.mc4) (stable)
 * JavaLight is a subset of Java that MontiCore itself
   uses as intermediate language for the code generation process.
 * JavaLight doesn't provide all forms of classes (e.g. inner classes)
   and reduces the type system to normal generic types.  
-  However, that is suffiecient for representation of all generated
+  However, that is sufficient for representation of all generated
   pieces of code that MontiCore wants to make.
+* Included are: the full Java expressions (without anonymous classes),
+  the relevant Java statements, declaration of methods, constructors,
+  constants, interface methods, and annotations.
+* JavaLight composes from CommonExpressions,
+                                    AssignmentExpressions,
+                                    JavaClassExpressions,
+                                    MCCommonStatements,
+                                    MCBasicTypes, and
+                                    OOSymbols.
 * JavaLight can be used for other generator tools as well,
-  especially as core template are reusable and new templates
+  especially as its core templates are reusable and new templates
   for specific method bodies can be added using MontiCore's
   Hook-Mechanisms.
 

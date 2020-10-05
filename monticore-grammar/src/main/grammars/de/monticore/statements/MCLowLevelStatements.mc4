@@ -31,16 +31,13 @@ component grammar MCLowLevelStatements
           extends MCStatementsBasis,
                   de.monticore.MCBasics {
 
-BreakStatement implements MCStatement
-    =   "break" label:Name@Label? ";"
-    ;
+LabelledBreakStatement implements MCStatement
+    =   "break" label:Name@Label? ";" ;
 
 ContinueStatement implements MCStatement
-    =   "continue" label:Name@Label? ";"
-    ;
+    =   "continue" label:Name@Label? ";" ;
 
 symbol Label implements MCStatement
-    =   Name ":" MCStatement
-    ;
-
+    =   Name ":" MCStatement ;
+    
 }

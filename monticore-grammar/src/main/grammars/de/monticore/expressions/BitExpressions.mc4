@@ -19,10 +19,10 @@ import de.monticore.expressions.*;
  * * expressions/ExpressionsBasis.mc4
  * * --  expressions/CommonExpressions.mc4
  * * --  --  expressions/JavaClassExpressions.mc4
- * * --  --  expressions/SetExpressions.mc4
  * * --  expressions/AssignmentExpressions.mc4
  * * --  expressions/BitExpressions.mc4
  * * --  expressions/OCLExpressions.mc4
+ * * --  expressions/SetExpressions.mc4
  *
 */
 
@@ -47,17 +47,17 @@ component grammar BitExpressions extends ExpressionsBasis {
 
   LeftShiftExpression implements Expression <160>, ShiftExpression =
     left:Expression
-    shiftOp:"<<" {_aNode.setShiftOp("<<");}
+    shiftOp:"<<"
     right:Expression;
 
   RightShiftExpression implements Expression <160>, ShiftExpression =
     left:Expression
-    shiftOp:">>" {_aNode.setShiftOp(">>");}
+    shiftOp:">>"
     right:Expression;
 
   LogicalRightShiftExpression implements Expression <160>, ShiftExpression =
     left:Expression
-    shiftOp:">>>" {_aNode.setShiftOp(">>>");}
+    shiftOp:">>>"
     right:Expression;
     
 

@@ -19,28 +19,46 @@ import java.nio.file.Paths;
 import java.util.Optional;
 
 /**
- * Main class for the Automaton DSL tool.
+ * Main class for the Automata DSL tool.
  *
  */
 public class AutomataTool {
 
   /**
-   * Use the single argument for specifying the single input automaton file.
+   * Main method of the Tool
+   *
+   * Arguments expected:
+   * * input automaton file.
+   * * the path to store the symbol table
    *
    * @param args
    */
   public static void main(String[] args) {
+    // delegate main to instantiatable method for better integration,
+    // reuse, etc.
+    new AutomataTool().run(args);
+  }
+
+  /**
+   * Run implements the main method of the Automata tool workflow:
+   *
+   * Arguments expected:
+   * * input automaton file.
+   * * the path to store the symbol table
+   *
+   * @param args
+   */
+  public void run(String[] args) {
 
     // use normal logging (no DEBUG, TRACE)
     Log.ensureInitalization();
     
     // Retrieve the model name
     if (args.length != 2) {
-      Log.error("0xEE7400 Please specify 1. the path to the input model and 2. the path to store symbols.");
+      Log.error("0xEE7400 Arguments are: (1) input model and (2) symbol store.");
       return;
     }
-    Log.info("Automaton DSL Tool", "AutomataTool");
-    Log.info("------------------", "AutomataTool");
+    Log.info("Automata DSL Tool", "AutomataTool");
     String model = args[0];
 
     // parse the model and create the AST representation
@@ -73,22 +91,21 @@ public class AutomataTool {
     // check the CoCos
     checker.checkAll(ast);
 
-    // Now we know the model is well-formed
+    // Now we know the model is well-formed and start backend
 
     // store artifact scope and its symbols
     AutomataScopeDeSer deser = new AutomataScopeDeSer();
-    deser.setSymbolFileExtension("autsym");
-    deser.store(modelTopScope, Paths.get(args[1]));
+    deser.store(modelTopScope, args[1]);
 
     // analyze the model with a visitor
     CountStates cs = new CountStates();
     cs.handle(ast);
-    Log.info("The model contains " + cs.getCount() + " states.", "AutomataTool");
+    Log.info("Automaton has " + cs.getCount() + " states.", "AutomataTool");
 
     // execute a pretty printer
     PrettyPrinter pp = new PrettyPrinter();
     pp.handle(ast);
-    Log.info("Pretty printing the parsed automaton into console:", "AutomataTool");
+    Log.info("Pretty printing automaton into console:", "AutomataTool");
     // print the result
     Log.println(pp.getResult());
   }

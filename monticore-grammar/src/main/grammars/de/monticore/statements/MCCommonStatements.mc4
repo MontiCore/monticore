@@ -34,86 +34,83 @@ component grammar MCCommonStatements
 
 /**
  * Standard Form of a block { ... }
+ * it allows to define local variables that are not exported
+ * and can only be used after defined (typical within code bodies).
  */
-scope(shadowing non_exporting ordered) MCJavaBlock implements MCStatement
-    =   "{" MCBlockStatement* "}"
-    ;
-
+scope(non_exporting ordered) MCJavaBlock implements MCStatement
+    = "{" MCBlockStatement* "}" ;
+    
 /**
  * All the Java Modifier
  */
 JavaModifier implements MCModifier =
-        Modifier:["private" | "public" | "protected" | "static" | "transient"
-        | "final" | "abstract" | "native" | "threadsafe" | "synchronized"
-        | "const" | "volatile" | "strictfp"]
-        ;
+      Modifier:["private" | "public" | "protected" | "static"
+          | "transient" | "final" | "abstract" | "native"
+          | "threadsafe" | "synchronized" | "const" | "volatile"
+          | "strictfp"] ;
 
 IfStatement implements MCStatement
     =   "if" "(" condition:Expression ")"
                     thenStatement:MCStatement
-            ("else" elseStatement:MCStatement)?
+            ("else" elseStatement:MCStatement)? ;
    // we use "elseStatement", because the
    // generated Java code doesn't allow "else" as Name 
-    ;
 
-scope ForStatement implements MCStatement
-    =   "for" "(" ForControl ")" MCStatement
-    ;
+
+scope (non_exporting ordered) ForStatement implements MCStatement
+    = "for" "(" ForControl ")" MCStatement ;
 
 interface ForControl ;
 
 CommonForControl implements ForControl
-    =   ForInit? ";" condition:Expression? ";" (Expression || ",")*
-    ;
+    = ForInit? ";" condition:Expression? ";" (Expression || ",")* ;
 
 ForInit
-    = ForInitByExpressions | LocalVariableDeclaration
-    ;
+    = ForInitByExpressions | LocalVariableDeclaration ;
 
 ForInitByExpressions
-    =   (Expression || ",")+
-    ;
+    = (Expression || ",")+ ;
+
+EnhancedForControl implements ForControl
+    = FormalParameter ":" Expression;
+
+FormalParameter
+    =   JavaModifier* MCType DeclaratorId;
 
 WhileStatement implements MCStatement
-    =   "while" "(" condition:Expression ")" MCStatement
-    ;
+    = "while" "(" condition:Expression ")" MCStatement ;
 
 DoWhileStatement implements MCStatement
-    =   "do" MCStatement "while" "(" condition:Expression ")" ";"
-    ;
+    = "do" MCStatement "while" "(" condition:Expression ")" ";" ;
 
 SwitchStatement implements MCStatement
-    =   "switch" "(" Expression ")"
-           "{" SwitchBlockStatementGroup* SwitchLabel* "}"
-    ;
+    = "switch" "(" Expression ")"
+           "{" SwitchBlockStatementGroup* SwitchLabel* "}" ;
 
 EmptyStatement implements MCStatement
-    =   ";"
-    ;
+    = ";" ;
 
 ExpressionStatement implements MCStatement
-    =   Expression ";"
-    ;
+    = Expression ";" ;
 
 // Matches cases then statements, both of which are mandatory.
 // To handle empty cases at the end, SwitchLabel* is explicitely added
 // in  the statement body
 SwitchBlockStatementGroup
-    =   SwitchLabel+ MCBlockStatement+
-    ;
+    =   SwitchLabel+ MCBlockStatement+ ;
 
 interface SwitchLabel ;
 
 ConstantExpressionSwitchLabel implements SwitchLabel
-    =   "case" constant:Expression ":"
-    ;
+    =   "case" constant:Expression ":" ;
 
 EnumConstantSwitchLabel implements SwitchLabel
-    =   "case" enumConstant:Name ":"
-    ;
+    =   "case" enumConstant:Name ":" ;
 
 DefaultSwitchLabel implements SwitchLabel
-    =   "default" ":"
-    ;
+    =   "default" ":" ;
+
+BreakStatement implements MCStatement
+    =   "break" ";" ;
 
 }

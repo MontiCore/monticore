@@ -35,7 +35,7 @@ public class IGrammarScopeTest {
             .setGlobalScope(grammar_withConceptsGlobalScope).build();
     stCreator.createFromAST(ast.get());
 
-    IGrammarScope innerScope = ast.get().getClassProds(0).getEnclosingScope();
+    IGrammarScope innerScope = ast.get().getClassProd(0).getEnclosingScope();
 
     assertTrue(innerScope.resolveProd("NewProd").isPresent());
 
@@ -72,7 +72,7 @@ public class IGrammarScopeTest {
             .setGlobalScope(grammar_withConceptsGlobalScope).build();
     stCreator.createFromAST(ast.get());
 
-    IGrammarScope innerScope = ast.get().getClassProds(0).getEnclosingScope();
+    IGrammarScope innerScope = ast.get().getClassProd(0).getEnclosingScope();
 
     assertTrue(innerScope.resolveInSuperGrammars("Automaton", AccessModifier.ALL_INCLUSION).isPresent());
     assertTrue(innerScope.resolveInSuperGrammars("Transition", AccessModifier.ALL_INCLUSION).isPresent());
@@ -101,7 +101,7 @@ public class IGrammarScopeTest {
     Grammar_WithConceptsSymbolTableCreatorDelegator stCreator = Grammar_WithConceptsMill.grammar_WithConceptsSymbolTableCreatorDelegatorBuilder()
             .setGlobalScope(grammar_withConceptsGlobalScope).build();
     stCreator.createFromAST(ast.get());
-    IGrammarScope innerScope = ast.get().getClassProds(0).getEnclosingScope();
+    IGrammarScope innerScope = ast.get().getClassProd(0).getEnclosingScope();
 
     assertTrue(innerScope.resolveProd("N").isPresent());
     assertTrue(innerScope.resolveProd("S").isPresent());
@@ -145,7 +145,7 @@ public class IGrammarScopeTest {
     Grammar_WithConceptsSymbolTableCreatorDelegator stCreator = Grammar_WithConceptsMill.grammar_WithConceptsSymbolTableCreatorDelegatorBuilder()
             .setGlobalScope(grammar_withConceptsGlobalScope).build();
     stCreator.createFromAST(ast.get());
-    IGrammarScope innerScope = ast.get().getClassProds(0).getEnclosingScope();
+    IGrammarScope innerScope = ast.get().getClassProd(0).getEnclosingScope();
 
     assertTrue(innerScope.resolveInSuperGrammars("N", AccessModifier.ALL_INCLUSION).isPresent());
 

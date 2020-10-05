@@ -21,7 +21,7 @@ public class ExternalImplementationTest {
   public ExternalImplementationTest() {
     ASTCDCompilationUnit cdCompilationUnit = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/ExternalImplementationGrammar.mc4")).get();
-    astZ = TestHelper.getCDClasss(cdCompilationUnit, "ASTZ").get();
+    astZ = TestHelper.getCDClass(cdCompilationUnit, "ASTZ").get();
   }
 
   @Test
