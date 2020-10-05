@@ -582,7 +582,7 @@ public class MontiCoreScriptTest {
     assertEquals("_auxiliary", auxiliaryCD.getPackage(4));
     assertEquals("Statechart", auxiliaryCD.getCDDefinition().getName());
     assertEquals(1, auxiliaryCD.getCDDefinition().sizeCDClasss());
-    assertEquals("TestLexicalsMillForStatechart", auxiliaryCD.getCDDefinition().getCDClasss(0).getName());
+    assertEquals("TestLexicalsMillForStatechart", auxiliaryCD.getCDDefinition().getCDClass(0).getName());
     assertTrue(auxiliaryCD.getCDDefinition().isEmptyCDInterfaces());
     assertTrue(auxiliaryCD.getCDDefinition().isEmptyCDEnums());
   }
