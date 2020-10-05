@@ -146,6 +146,7 @@ public class IncGenGradleReporter extends AReporter {
       }
       writeLine("mc4:"+ inputFile.replaceAll("\\\\","/" ) + " "+checkSum);
       for (String s : grammarFiles) {
+        //only local files are important
         if (!s.contains(".jar")) {
           File inputFile = new File(s);
           if (inputFile.exists()) {
@@ -153,9 +154,6 @@ public class IncGenGradleReporter extends AReporter {
           } else {
             checkSum = MISSING;
           }
-          writeLine("mc4:" + s.replaceAll("\\\\", "/") + " " + checkSum);
-        } else {
-          checkSum = IncrementalChecker.getChecksum(s);
           writeLine("mc4:" + s.replaceAll("\\\\", "/") + " " + checkSum);
         }
       }

@@ -156,7 +156,8 @@ public class IncGenCheckReporter extends AReporter {
             digest = MISSING;
           }
         } else {
-          digest = MISSING;
+          //only the local files are important
+          continue;
         }
         //test if file was removed
         String file = s.replaceAll("\\\\", "/");
