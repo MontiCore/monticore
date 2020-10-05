@@ -2,6 +2,7 @@
 ${tc.signature("artifactScopeFullName", "languageName", "attrList" )}
 <#assign genHelper = glex.getGlobalVar("astHelper")>
   printer.beginObject();
+  printer.member("generated-using","www.MontiCore.de technology");
   if(node.isPresentName()) {
     printer.member(de.monticore.symboltable.serialization.JsonDeSers.NAME, node.getName());
   }

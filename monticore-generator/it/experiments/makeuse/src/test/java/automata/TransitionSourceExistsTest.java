@@ -1,4 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
+package automata;
 
 import automata.AutomataMill;
 import automata._ast.ASTAutomaton;
