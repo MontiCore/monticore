@@ -6,7 +6,6 @@ import de.monticore.cd.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
-import de.monticore.cd.facade.CDAttributeFacade;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -47,6 +46,8 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
     String millClassName = service.getMillSimpleName();
     ASTMCType millType = this.getMCTypeFacade().createQualifiedType(millClassName);
 
+    String fullDefinitionName = service.getCDSymbol().getFullName();
+
     List<CDDefinitionSymbol> superSymbolList = service.getSuperCDsTransitive();
 
     ASTCDConstructor constructor = this.getCDConstructorFacade().createConstructor(PROTECTED, millClassName);
@@ -54,7 +55,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
     ASTCDAttribute millAttribute = this.getCDAttributeFacade().createAttribute(PROTECTED_STATIC, millType, MILL_INFIX);
     // add all standard methods
     ASTCDMethod getMillMethod = addGetMillMethods(millType);
-    ASTCDMethod initMethod = addInitMethod(millType, superSymbolList);
+    ASTCDMethod initMethod = addInitMethod(millType, superSymbolList, fullDefinitionName);
 
     ASTCDClass millClass = CD4AnalysisMill.cDClassBuilder()
         .setModifier(PUBLIC.build())
@@ -153,9 +154,9 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
     return initMeMethod;
   }
 
-  protected ASTCDMethod addInitMethod(ASTMCType millType, List<CDDefinitionSymbol> superSymbolList) {
+  protected ASTCDMethod addInitMethod(ASTMCType millType, List<CDDefinitionSymbol> superSymbolList, String fullDefinitionName) {
     ASTCDMethod initMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC, INIT);
-    this.replaceTemplate(EMPTY_BODY, initMethod, new TemplateHookPoint("mill.InitMethod", millType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()), superSymbolList));
+    this.replaceTemplate(EMPTY_BODY, initMethod, new TemplateHookPoint("mill.InitMethod", millType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()), superSymbolList, fullDefinitionName+"."+AUXILIARY_PACKAGE));
     return initMethod;
   }
 
