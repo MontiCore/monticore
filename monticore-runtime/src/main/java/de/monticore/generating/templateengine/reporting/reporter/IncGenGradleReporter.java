@@ -18,108 +18,13 @@ import java.util.*;
 import static de.monticore.generating.templateengine.reporting.reporter.InputOutputFilesReporter.GEN_ERROR;
 import static de.monticore.generating.templateengine.reporting.reporter.InputOutputFilesReporter.MISSING;
 
-public class IncGenGradleReporter extends AReporter {
+public class IncGenGradleReporter extends IncGenReporter {
 
   final static String SIMPLE_FILE_NAME = "IncGenGradleCheck";
-
-  List<String> grammarFiles = Lists.newArrayList();
-
-  Set<String> usedHWCFiles = new OrderedHashSet<>();
-
-  Set<String> notExistentHWCFiles = new OrderedHashSet<>();
-
-  private Set<Path> filesThatMatterButAreNotThereInTime = new LinkedHashSet<>();
-
-  private static Map<Path, Path> modelToArtifactMap = new HashMap<>();
-
-  private String inputFile;
-
-  Path qualifiedInputFile;
-
-  String outputDir;
 
   public IncGenGradleReporter(String outputDir, String modelName) {
     super(outputDir + File.separator + modelName.replaceAll("\\.", "/"), SIMPLE_FILE_NAME, "txt");
     this.outputDir = outputDir;
-  }
-
-  @Override
-  public void reportHWCExistenceCheck(IterablePath parentDirs, Path fileName,
-                                      Optional<Path> result) {
-    if (result.isPresent()) {
-      String usedHWCFile = toUnixPath(result.get().toString());
-      usedHWCFiles.add(usedHWCFile);
-    }
-    else {
-      for (Path p : parentDirs.getPaths()) {
-        String notExistentHWCFile = toUnixPath(p.resolve(fileName).toString());
-        notExistentHWCFiles.add(notExistentHWCFile);
-      }
-    }
-  }
-
-  private String toUnixPath(String file) {
-    return file.replaceAll("\\\\", "/");
-  }
-
-  private String toAbsoluteUnixPath(String relativePath) {
-    Path filePath = Paths.get(relativePath);
-    String file = filePath.toAbsolutePath().toString();
-    file = file.replaceAll("\\\\", "/");
-    return file;
-  }
-
-  @Override
-  public void reportParseInputFile(Path inputFilePath, String modelName){
-    // IMPORTANT
-    // this entirely resets the gathered information, hence the corresponding
-    // event reportParseInputFile must only be called once for each actual input
-    // file, i.e., the things that are parsed
-    String lowerCaseName = modelName.replaceAll("\\.", "/").toLowerCase();
-    this.reportingHelper = new ReportCreator(outputDir + File.separator + lowerCaseName);
-    notExistentHWCFiles.clear();
-    usedHWCFiles.clear();
-    grammarFiles.clear();
-    filesThatMatterButAreNotThereInTime.clear();
-    inputFile = inputFilePath.toString();
-
-    qualifiedInputFile = Paths.get(lowerCaseName + "."
-        + Files.getFileExtension(inputFilePath.getFileName().toString()));
-
-    Path parent = inputFilePath.subpath(0,
-        inputFilePath.getNameCount() - qualifiedInputFile.getNameCount());
-    parent = inputFilePath.getRoot().resolve(parent);
-
-    modelToArtifactMap.put(qualifiedInputFile, parent);
-  }
-
-  @Override
-  public void reportOpenInputFile(Optional<Path> parentPath, Path file){
-    if(file.compareTo(qualifiedInputFile) == 0){
-      return;
-    }
-    String toAdd = "";
-    if(parentPath.isPresent()){
-      toAdd = Paths.get(parentPath.get().toString(), file.toString()).toString();
-      modelToArtifactMap.put(file, parentPath.get());
-    }
-    else {
-      if (modelToArtifactMap.keySet().contains(file)) {
-        toAdd = Paths.get(modelToArtifactMap.get(file).toString(),
-            file.toString()).toString();
-      }
-      else {
-        filesThatMatterButAreNotThereInTime.add(file);
-      }
-    }
-    if (!toAdd.isEmpty() && !grammarFiles.contains(toAdd)) {
-      grammarFiles.add(toAdd);
-    }
-  }
-
-  @Override
-  protected void writeHeader() {
-    // No header
   }
 
   @Override
