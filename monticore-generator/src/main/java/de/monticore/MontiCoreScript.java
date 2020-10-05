@@ -677,7 +677,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     return generateAuxiliary(cd, astCD, glex, handCodedPath);
   }
 
-  private ASTCDCompilationUnit generateAuxiliary(ASTCDCompilationUnit cd, ASTCDCompilationUnit astCD,
+  protected ASTCDCompilationUnit generateAuxiliary(ASTCDCompilationUnit cd, ASTCDCompilationUnit astCD,
                                                  GlobalExtensionManagement glex, IterablePath handCodedPath){
     SymbolTableService symbolTableService = new SymbolTableService(cd);
     MillForSuperDecorator millForSuperDecorator = new MillForSuperDecorator(glex, symbolTableService);
