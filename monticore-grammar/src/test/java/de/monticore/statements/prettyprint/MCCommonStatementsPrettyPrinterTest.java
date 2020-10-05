@@ -184,6 +184,38 @@ public class MCCommonStatementsPrettyPrinterTest {
   }
 
   @Test
+  public void testEnhancedForControl() throws IOException {
+    Optional<ASTEnhancedForControl> result = parser.parse_StringEnhancedForControl("protected int c[] : a");
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
+    ASTEnhancedForControl ast = result.get();
+
+    String output = prettyPrinter.prettyprint(ast);
+
+    result = parser.parse_StringEnhancedForControl(output);
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
+
+    assertTrue(ast.deepEquals(result.get()));
+  }
+
+  @Test
+  public void testFormalParameter() throws IOException {
+    Optional<ASTFormalParameter> result = parser.parse_StringFormalParameter("public float f");
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
+    ASTFormalParameter ast = result.get();
+
+    String output = prettyPrinter.prettyprint(ast);
+
+    result = parser.parse_StringFormalParameter(output);
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
+
+    assertTrue(ast.deepEquals(result.get()));
+  }
+
+  @Test
   public void testForInitByExpressions() throws IOException {
     Optional<ASTForInitByExpressions> result = parser.parse_StringForInitByExpressions("i, b, c");
     assertFalse(parser.hasErrors());

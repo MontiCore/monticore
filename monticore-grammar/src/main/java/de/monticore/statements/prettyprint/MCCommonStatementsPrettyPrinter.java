@@ -106,7 +106,6 @@ public class MCCommonStatementsPrettyPrinter implements
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
 
-
   @Override
   public void handle(ASTCommonForControl a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
@@ -130,6 +129,14 @@ public class MCCommonStatementsPrettyPrinter implements
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
 
+  @Override
+  public void handle(ASTEnhancedForControl a) {
+    CommentPrettyPrinter.printPreComments(a, getPrinter());
+    a.getFormalParameter().accept(getRealThis());
+    getPrinter().print(": ");
+    a.getExpression().accept(getRealThis());
+    CommentPrettyPrinter.printPostComments(a, getPrinter());
+  }
 
   @Override
   public void handle(ASTJavaModifier a) {
@@ -138,6 +145,15 @@ public class MCCommonStatementsPrettyPrinter implements
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
 
+  @Override
+  public void handle(ASTFormalParameter a) {
+    CommentPrettyPrinter.printPreComments(a, getPrinter());
+    printSeparated(a.getJavaModifierList().iterator(), " ");
+    a.getMCType().accept(getRealThis());
+    getPrinter().print(" ");
+    a.getDeclaratorId().accept(getRealThis());
+    CommentPrettyPrinter.printPostComments(a, getPrinter());
+  }
 
  @Override
   public void handle(ASTEmptyStatement a) {

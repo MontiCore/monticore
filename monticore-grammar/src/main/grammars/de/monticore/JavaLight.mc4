@@ -67,9 +67,6 @@ ConstDeclaration extends LocalVariableDeclarationStatement
 Throws
     =   (MCQualifiedName || ",")+;
 
-FormalParameter
-    =   JavaModifier* MCType DeclaratorId;
-
 LastFormalParameter
     =   JavaModifier*  MCType "..." DeclaratorId;
 
@@ -101,9 +98,6 @@ ElementValuePair
 
 ElementValueArrayInitializer implements ElementValue
     =   "{" (ElementValueOrExpr || ",")* (",")? "}";
-
-EnhancedForControl implements ForControl
-    = FormalParameter ":" Expression;
 
 ArrayDimensionByInitializer implements ArrayDimensionSpecifier
     = (dim:"[" "]")+ ArrayInit;
