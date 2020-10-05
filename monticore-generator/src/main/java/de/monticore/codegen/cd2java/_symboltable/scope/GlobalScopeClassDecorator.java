@@ -108,7 +108,8 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
         .setModifier(PUBLIC.build())
         .setSuperclass(scopeType)
         .addInterface(globalScopeInterface)
-        .addCDConstructor(createConstructor(globalScopeName, scopeDeSerName))
+        .addCDConstructor(createConstructor(globalScopeName))
+        .addCDConstructor(createZeroArgsConstructor(globalScopeName))
         .addCDAttribute(modelPathAttribute)
         .addAllCDMethods(modelPathMethods)
         .addCDAttribute(modelLoaderAttribute)
@@ -136,7 +137,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
         .build();
   }
 
-  protected ASTCDConstructor createConstructor(String globalScopeClassName, String deSerClassName) {
+  protected ASTCDConstructor createConstructor(String globalScopeClassName) {
     ASTMCType modelPathType = getMCTypeFacade().createQualifiedType(MODEL_PATH_TYPE);
     ASTCDParameter modelPathParameter = getCDParameterFacade().createParameter(modelPathType, MODEL_PATH_VAR);
 
@@ -145,6 +146,15 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     String millFullName = symbolTableService.getMillFullName();
     this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint(TEMPLATE_PATH + "ConstructorGlobalScope", symbolTableService.hasComponentStereotype(symbolTableService.getCDSymbol().getAstNode()),
         millFullName, symbolTableService.getCDName()));
+    return constructor;
+  }
+
+  protected ASTCDConstructor createZeroArgsConstructor(String className){
+    ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), className);
+    String millFullName = symbolTableService.getMillFullName();
+    boolean isComponent = symbolTableService.hasComponentStereotype(symbolTableService.getCDSymbol().getAstNode());
+    String grammarName = symbolTableService.getCDName();
+    this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint(TEMPLATE_PATH + "ZeroArgsConstructorGlobalScope", isComponent, millFullName, grammarName));
     return constructor;
   }
 
