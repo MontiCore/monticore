@@ -152,11 +152,9 @@ public class IncGenCheckReporter extends AReporter {
           File inputFile = new File(s);
           if (inputFile.exists()) {
             digest = IncrementalChecker.getChecksum(inputFile.toString());
-          } else {
-            digest = MISSING;
           }
         } else {
-          digest = IncrementalChecker.getChecksum(s);
+          digest = MISSING;
         }
         //test if file was removed
         String file = s.replaceAll("\\\\", "/");
