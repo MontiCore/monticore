@@ -602,6 +602,27 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     TopDecorator topDecorator = new TopDecorator(handCodedPath);
     return topDecorator.decorate(visitorCompilationUnit);
   }
+  
+  public ASTCDCompilationUnit decorateTraverserForVisitorPackage(GlobalExtensionManagement glex, 
+      ICD4AnalysisScope cdScope, ASTCDCompilationUnit astClassDiagram, IterablePath handCodedPath) {
+    ASTCDCompilationUnit preparedCD = prepareCD(cdScope, astClassDiagram);
+    return decorateWithTraverser(preparedCD, glex, handCodedPath);
+  }
+  
+  private ASTCDCompilationUnit decorateWithTraverser(ASTCDCompilationUnit cd, GlobalExtensionManagement glex, 
+      IterablePath handCodedPath) {
+    SymbolTableService symbolTableService = new SymbolTableService(cd);
+    VisitorService visitorService = new VisitorService(cd);
+    
+    TraverserInterfaceDecorator traverserDecorator = new TraverserInterfaceDecorator(glex, visitorService, symbolTableService);
+    
+    CDTraverserDecorator decorator = new CDTraverserDecorator(glex, handCodedPath, visitorService, traverserDecorator);
+    
+    ASTCDCompilationUnit visitorCompilationUnit = decorator.decorate(cd);
+    
+    TopDecorator topDecorator = new TopDecorator(handCodedPath);
+    return topDecorator.decorate(visitorCompilationUnit);
+  }
 
   public ASTCDCompilationUnit decorateForCoCoPackage(GlobalExtensionManagement glex, ICD4AnalysisScope cdScope,
                                                      ASTCDCompilationUnit astClassDiagram, IterablePath handCodedPath) {
