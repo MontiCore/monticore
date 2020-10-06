@@ -4,7 +4,6 @@ package de.monticore.statements.prettyprint;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.statements.mccommonstatements._ast.*;
 import de.monticore.statements.mcstatementsbasis._ast.ASTMCBlockStatement;
-import de.monticore.statements.mcvardeclarationstatements._ast.ASTArrayInit;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTDeclaratorId;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTLocalVariableDeclaration;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTVariableDeclarator;
@@ -113,22 +112,6 @@ public class MCCommonStatementsPrettyPrinterTest {
     String output = prettyPrinter.prettyprint(ast);
 
     result = parser.parse_StringDeclaratorId(output);
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
-
-    assertTrue(ast.deepEquals(result.get()));
-  }
-
-  @Test
-  public void testArrayInitializer() throws IOException {
-    Optional<ASTArrayInit> result = parser.parse_StringArrayInit("{a, b, foo}");
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
-    ASTArrayInit ast = result.get();
-
-    String output = prettyPrinter.prettyprint(ast);
-
-    result = parser.parse_StringArrayInit(output);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
 
