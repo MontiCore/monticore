@@ -104,7 +104,7 @@ public class MCCommonStatementsPrettyPrinterTest {
 
   @Test
   public void testDeclaratorId() throws IOException {
-    Optional<ASTDeclaratorId> result = parser.parse_StringDeclaratorId("a [][][]");
+    Optional<ASTDeclaratorId> result = parser.parse_StringDeclaratorId("a");
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
     ASTDeclaratorId ast = result.get();
@@ -168,7 +168,7 @@ public class MCCommonStatementsPrettyPrinterTest {
 
   @Test
   public void testEnhancedForControl() throws IOException {
-    Optional<ASTEnhancedForControl> result = parser.parse_StringEnhancedForControl("protected int c[] : a");
+    Optional<ASTEnhancedForControl> result = parser.parse_StringEnhancedForControl("protected List l : a");
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
     ASTEnhancedForControl ast = result.get();

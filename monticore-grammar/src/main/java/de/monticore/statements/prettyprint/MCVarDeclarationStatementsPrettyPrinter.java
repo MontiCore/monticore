@@ -28,7 +28,7 @@ public class MCVarDeclarationStatementsPrettyPrinter implements
   @Override
   public void handle(ASTVariableDeclarator a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
-    a.getDeclaratorId().accept(getRealThis());
+    a.getDeclarator().accept(getRealThis());
     if (a.isPresentVariableInit()) {
       getPrinter().print(" = ");
       a.getVariableInit().accept(getRealThis());
@@ -40,9 +40,6 @@ public class MCVarDeclarationStatementsPrettyPrinter implements
   public void handle(ASTDeclaratorId a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     getPrinter().print(a.getName());
-    for (int i = 0; i < a.getDimList().size(); i++) {
-      getPrinter().print("[]");
-    }
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
 

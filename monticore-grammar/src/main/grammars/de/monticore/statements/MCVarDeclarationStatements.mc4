@@ -43,10 +43,13 @@ LocalVariableDeclaration
     =   MCModifier* MCType (VariableDeclarator || ",")+ ;
 
 VariableDeclarator
-    =   DeclaratorId ("=" VariableInit)? ;
+    =   Declarator ("=" VariableInit)? ;
 
-DeclaratorId implements Field
-    =   Name (dim:"[" "]")* ;
+interface Declarator extends Field
+    =   Name;
+
+DeclaratorId implements Declarator
+    =   Name;
 
 interface VariableInit;
 

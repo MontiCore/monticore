@@ -100,6 +100,9 @@ ElementValuePair
 ElementValueArrayInitializer implements ElementValue
     =   "{" (ElementValueOrExpr || ",")* (",")? "}";
 
+ArrayDeclaratorId implements Declarator
+    =   Name (dim:"[" "]")+ ;
+
 ArrayDimensionByInitializer implements ArrayDimensionSpecifier
     = (dim:"[" "]")+ ArrayInit;
 
