@@ -53,10 +53,12 @@ public class ModelLoaderDecorator extends AbstractCreator<ASTCDCompilationUnit, 
       ASTMCGenericType iModelLoader = getMCTypeFacade().createBasicGenericTypeOf(
           I_MODEL_LOADER, astFullName, globalScopeInterfaceName);
 
+      ASTModifier modifier = PUBLIC.build();
+      symbolTableService.addDeprecatedStereotype(modifier, Optional.of("Will be moved"));
 
       ASTCDClass modelLoaderClass = CD4AnalysisMill.cDClassBuilder()
           .setName(modelLoaderClassName)
-          .setModifier(PUBLIC.build())
+          .setModifier(modifier)
           .addInterface(iModelLoader)
           .addCDConstructor(createConstructor(modelLoaderClassName, stcName, astFullName))
           .addCDAttribute(createAStProviderAttribute(astFullName))
