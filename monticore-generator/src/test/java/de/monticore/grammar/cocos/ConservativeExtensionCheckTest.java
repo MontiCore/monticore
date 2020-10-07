@@ -20,43 +20,43 @@ public class ConservativeExtensionCheckTest extends CocoTest  {
   @Test
   public void testInvalid1() {
     testInvalidGrammar(grammar +"1", ConservativeExtensionCheck.ERROR_CODE,
-        String.format(ConservativeExtensionCheck.ERROR_MSG_FORMAT, "A", "M", "name"), checker);
+        String.format(ConservativeExtensionCheck.ERROR_MSG_FORMAT, "A", "cocos.invalid.A2007.A2007Super.M", "name"), checker);
   }
 
   @Test
   public void testInvalid2() {
     testInvalidGrammar(grammar +"2", ConservativeExtensionCheck.ERROR_CODE,
-        String.format(ConservativeExtensionCheck.ERROR_MSG_FORMAT, "M", "M", "name"), checker);
+        String.format(ConservativeExtensionCheck.ERROR_MSG_FORMAT, "M", "cocos.invalid.A2007.A2007Super.M", "name"), checker);
   }
 
   @Test
   public void testInvalid3() {
     testInvalidGrammar(grammar +"3", ConservativeExtensionCheck.ERROR_CODE,
-        String.format(ConservativeExtensionCheck.ERROR_MSG_FORMAT, "A", "M", "name"), checker);
+        String.format(ConservativeExtensionCheck.ERROR_MSG_FORMAT, "A", "cocos.invalid.A2007.A2007Super.M", "name"), checker);
   }
 
   @Test
   public void testInvalid4() {
     testInvalidGrammar(grammar +"4", ConservativeExtensionCheck.ERROR_CODE,
-        String.format(ConservativeExtensionCheck.ERROR_MSG_FORMAT, "M", "M", "name"), checker);
+        String.format(ConservativeExtensionCheck.ERROR_MSG_FORMAT, "M", "cocos.invalid.A2007.A2007Super.M", "name"), checker);
   }
 
   @Test
   public void testInvalid5() {
     testInvalidGrammar(grammar +"5", ConservativeExtensionCheck.ERROR_CODE,
-        String.format(ConservativeExtensionCheck.ERROR_MSG_FORMAT, "N", "N", "m"), checker);
+        String.format(ConservativeExtensionCheck.ERROR_MSG_FORMAT, "N", "cocos.invalid.A2007.A2007Super.N", "m"), checker);
   }
 
   @Test
   public void testInvalid6() {
     testInvalidGrammar(grammar +"6", ConservativeExtensionCheck.ERROR_CODE,
-        String.format(ConservativeExtensionCheck.ERROR_MSG_FORMAT, "A", "M", "name"), checker);
+        String.format(ConservativeExtensionCheck.ERROR_MSG_FORMAT, "A", "cocos.invalid.A2007.A2007Super.M", "name"), checker);
   }
 
   @Test
   public void testInvalid7() {
     testInvalidGrammar(grammar +"7", ConservativeExtensionCheck.ERROR_CODE,
-        String.format(ConservativeExtensionCheck.ERROR_MSG_FORMAT, "M", "M", "name"), checker);
+        String.format(ConservativeExtensionCheck.ERROR_MSG_FORMAT, "M", "cocos.invalid.A2007.A2007Super.M", "name"), checker);
   }
 
   @Test
