@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.prettyprint;
 
+import de.monticore.expressions.assignmentexpressions._ast.ASTIncPrefixExpression;
 import de.monticore.expressions.bitexpressions.BitExpressionsMill;
 import de.monticore.expressions.bitexpressions._ast.*;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
@@ -36,109 +37,108 @@ public class BitExpressionsPrettyPrinterTest {
 
   @Test
   public void testLeftShiftExpression() throws IOException {
-    Optional<ASTExpression> a = parser.parse_StringExpression("a");
-    Optional<ASTExpression> b = parser.parse_StringExpression("b");
+    Optional<ASTExpression> result = parser.parse_StringExpression("a<<b");
     assertFalse(parser.hasErrors());
-    assertTrue(a.isPresent());
-    assertTrue(b.isPresent());
-    ASTLeftShiftExpression result = BitExpressionsMill.leftShiftExpressionBuilder()
-        .setLeft(a.get())
-        .setShiftOp("<<")
-        .setRight(b.get())
-        .build();
+    assertTrue(result.isPresent());
+    assertTrue(result.isPresent());
 
-    String output = prettyPrinter.prettyprint(result);
+    ASTExpression ast = result.get();
 
-    assertEquals("a<<b", output);
+    String output = prettyPrinter.prettyprint(ast);
+
+    result = parser.parse_StringExpression(output);
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
+
+    assertTrue(ast.deepEquals(result.get()));
   }
 
   @Test
   public void testRightShiftExpression() throws IOException {
-    Optional<ASTExpression> a = parser.parse_StringExpression("a");
-    Optional<ASTExpression> b = parser.parse_StringExpression("b");
+    Optional<ASTExpression> result = parser.parse_StringExpression("a>>b");
     assertFalse(parser.hasErrors());
-    assertTrue(a.isPresent());
-    assertTrue(b.isPresent());
-    ASTRightShiftExpression result = BitExpressionsMill.rightShiftExpressionBuilder()
-        .setLeft(a.get())
-        .setShiftOp(">>")
-        .setRight(b.get())
-        .build();
+    assertTrue(result.isPresent());
+    assertTrue(result.isPresent());
 
-    String output = prettyPrinter.prettyprint(result);
+    ASTExpression ast = result.get();
 
-    assertEquals("a>>b", output);
+    String output = prettyPrinter.prettyprint(ast);
+
+    result = parser.parse_StringExpression(output);
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
+
+    assertTrue(ast.deepEquals(result.get()));
   }
 
   @Test
   public void testLogicalRightShiftExpression() throws IOException {
-    Optional<ASTExpression> a = parser.parse_StringExpression("a");
-    Optional<ASTExpression> b = parser.parse_StringExpression("b");
+    Optional<ASTExpression> result = parser.parse_StringExpression("a>>>b");
     assertFalse(parser.hasErrors());
-    assertTrue(a.isPresent());
-    assertTrue(b.isPresent());
-    ASTLogicalRightShiftExpression result = BitExpressionsMill.logicalRightShiftExpressionBuilder()
-        .setLeft(a.get())
-        .setShiftOp(">>>")
-        .setRight(b.get())
-        .build();
+    assertTrue(result.isPresent());
+    assertTrue(result.isPresent());
 
-    String output = prettyPrinter.prettyprint(result);
+    ASTExpression ast = result.get();
 
-    assertEquals("a>>>b", output);
+    String output = prettyPrinter.prettyprint(ast);
+
+    result = parser.parse_StringExpression(output);
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
+
+    assertTrue(ast.deepEquals(result.get()));
   }
 
   @Test
   public void testBinaryOrOpExpression() throws IOException {
-    Optional<ASTExpression> a = parser.parse_StringExpression("a");
-    Optional<ASTExpression> b = parser.parse_StringExpression("b");
+    Optional<ASTExpression> result = parser.parse_StringExpression("a|b");
     assertFalse(parser.hasErrors());
-    assertTrue(a.isPresent());
-    assertTrue(b.isPresent());
-    ASTBinaryOrOpExpression result = BitExpressionsMill.binaryOrOpExpressionBuilder()
-        .setLeft(a.get())
-        .setRight(b.get())
-        .setOperator("|")
-        .build();
+    assertTrue(result.isPresent());
+    assertTrue(result.isPresent());
 
-    String output = prettyPrinter.prettyprint(result);
+    ASTExpression ast = result.get();
 
-    assertEquals("a|b", output);
+    String output = prettyPrinter.prettyprint(ast);
+
+    result = parser.parse_StringExpression(output);
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
+
+    assertTrue(ast.deepEquals(result.get()));
   }
 
   @Test
   public void testBinaryXorExpression() throws IOException {
-    Optional<ASTExpression> a = parser.parse_StringExpression("a");
-    Optional<ASTExpression> b = parser.parse_StringExpression("b");
+    Optional<ASTExpression> result = parser.parse_StringExpression("a^b");
     assertFalse(parser.hasErrors());
-    assertTrue(a.isPresent());
-    assertTrue(b.isPresent());
-    ASTBinaryXorExpression result = BitExpressionsMill.binaryXorExpressionBuilder()
-        .setLeft(a.get())
-        .setRight(b.get())
-        .setOperator("^")
-        .build();
+    assertTrue(result.isPresent());
+    assertTrue(result.isPresent());
 
-    String output = prettyPrinter.prettyprint(result);
+    ASTExpression ast = result.get();
 
-    assertEquals("a^b", output);
-  }
+    String output = prettyPrinter.prettyprint(ast);
+
+    result = parser.parse_StringExpression(output);
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
+
+    assertTrue(ast.deepEquals(result.get()));  }
 
   @Test
   public void testBinaryAndExpression() throws IOException {
-    Optional<ASTExpression> a = parser.parse_StringExpression("a");
-    Optional<ASTExpression> b = parser.parse_StringExpression("b");
+    Optional<ASTExpression> result = parser.parse_StringExpression("a&b");
     assertFalse(parser.hasErrors());
-    assertTrue(a.isPresent());
-    assertTrue(b.isPresent());
-    ASTBinaryAndExpression result = BitExpressionsMill.binaryAndExpressionBuilder()
-        .setLeft(a.get())
-        .setOperator("&")
-        .setRight(b.get())
-        .build();
+    assertTrue(result.isPresent());
+    assertTrue(result.isPresent());
 
-    String output = prettyPrinter.prettyprint(result);
+    ASTExpression ast = result.get();
 
-    assertEquals("a&b", output);
+    String output = prettyPrinter.prettyprint(ast);
+
+    result = parser.parse_StringExpression(output);
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
+
+    assertTrue(ast.deepEquals(result.get()));
   }
 }

@@ -26,9 +26,9 @@ subprojects {
   
   dependencies {
     implementation group:'de.monticore', name:'monticore-runtime', version:grammar_version
-    implementation group:'de.se_rwth.commons', name:'se-commons-logging', version:"1.7.10-SNAPSHOT"
-    implementation group:'de.se_rwth.commons', name:'se-commons-utilities', version:"1.7.10-SNAPSHOT"
-    implementation group:'de.se_rwth.commons', name:'se-commons-groovy', version:"1.7.10-SNAPSHOT"
+    implementation group:'de.se_rwth.commons', name:'se-commons-logging', version:"1.7.11-SNAPSHOT"
+    implementation group:'de.se_rwth.commons', name:'se-commons-utilities', version:"1.7.11-SNAPSHOT"
+    implementation group:'de.se_rwth.commons', name:'se-commons-groovy', version:"1.7.11-SNAPSHOT"
     implementation group:'de.monticore', name:'monticore-grammar', version:grammar_version
     testImplementation group:'ch.qos.logback', name: 'logback-classic', version: '1.1.2'
     testImplementation group:'junit', name:'junit', version:junit_version
