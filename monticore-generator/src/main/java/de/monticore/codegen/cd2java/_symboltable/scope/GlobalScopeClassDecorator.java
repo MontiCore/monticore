@@ -118,8 +118,6 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
         .addCDMethod(createClearLoadedFilesMethod())
         .addCDMethod(createIsFileLoadedMethod())
         .addAllCDAttributes(resolvingDelegateAttributes.values())
-        .addCDMethod(createEnableModelLoader(globalScopeName))
-        .addCDMethod(createDisableModelLoader())
         .addAllCDMethods(resolvingDelegateMethods)
         .addAllCDMethods(createAlreadyResolvedMethods(symbolProds))
         .addAllCDMethods(createAlreadyResolvedSuperMethods())
@@ -149,26 +147,6 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     String grammarName = symbolTableService.getCDName();
     this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint(TEMPLATE_PATH + "ZeroArgsConstructorGlobalScope", isComponent, millFullName, grammarName));
     return constructor;
-  }
-
-  protected ASTCDMethod createEnableModelLoader(String globalScopeName) {
-    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), "enableModelLoader");
-    if (symbolTableService.hasComponentStereotype(symbolTableService.getCDSymbol().getAstNode())) {
-      this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint(
-          "Log.error(\"0xA6102" + symbolTableService.getGeneratedErrorCode(globalScopeName)
-              + " Global scopes of component grammars do not have model loaders.\");"));
-    } else {
-      this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH
-          + "EnableModelLoader", symbolTableService.getCDName(), symbolTableService.getQualifiedCDName().toLowerCase()));
-    }
-    return method;
-  }
-
-  protected ASTCDMethod createDisableModelLoader() {
-    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), "disableModelLoader");
-    this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint(
-        "this."+MODEL_LOADER_VAR+" = Optional.empty();"));
-    return method;
   }
 
   protected ASTCDAttribute createModelPathAttribute() {

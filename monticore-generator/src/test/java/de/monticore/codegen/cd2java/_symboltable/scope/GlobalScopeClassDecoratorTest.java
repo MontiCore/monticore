@@ -133,7 +133,7 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeSize() {
-    assertEquals(9, scopeClass.sizeCDAttributes());
+    assertEquals(8, scopeClass.sizeCDAttributes());
   }
 
   @Test
@@ -141,13 +141,6 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute astcdAttribute = getAttributeBy("modelPath", scopeClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertDeepEquals(MODEL_PATH, astcdAttribute.getMCType());
-  }
-
-  @Test
-  public void testModelLoaderAttribute() {
-    ASTCDAttribute astcdAttribute = getAttributeBy("modelLoader", scopeClass);
-    assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
-    assertDeepEquals("Optional<AutomatonModelLoader>", astcdAttribute.getMCType());
   }
 
   @Test
@@ -234,7 +227,7 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(33, scopeClass.getCDMethodList().size());
+    assertEquals(27, scopeClass.getCDMethodList().size());
   }
 
   @Test
@@ -243,47 +236,6 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
     assertDeepEquals(PUBLIC, method.getModifier());
     assertDeepEquals(MODEL_PATH, method.getMCReturnType().getMCType());
-
-    assertTrue(method.isEmptyCDParameters());
-  }
-
-  @Test
-  public void testGetModelLoaderMethod() {
-    ASTCDMethod method = getMethodBy("getModelLoader", scopeClass);
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals("AutomatonModelLoader", method.getMCReturnType().getMCType());
-
-    assertTrue(method.isEmptyCDParameters());
-  }
-
-  @Test
-  public void testSetModelLoaderMethod() {
-    ASTCDMethod method = getMethodBy("setModelLoader", scopeClass);
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-
-    assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals("AutomatonModelLoader", method.getCDParameter(0).getMCType());
-    assertEquals("modelLoader", method.getCDParameter(0).getName());
-  }
-
-  @Test
-  public void testSetModelLoaderAbsentMethod() {
-    ASTCDMethod method = getMethodBy("setModelLoaderAbsent", scopeClass);
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-    assertTrue(method.isEmptyCDParameters());
-  }
-
-  @Test
-  public void testIsPresentModelLoaderMethod() {
-    ASTCDMethod method = getMethodBy("isPresentModelLoader", scopeClass);
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals("boolean", method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
   }
