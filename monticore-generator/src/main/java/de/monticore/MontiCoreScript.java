@@ -603,12 +603,30 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     return topDecorator.decorate(visitorCompilationUnit);
   }
   
+  /**
+   * Decorates for the visitor package. Adds corresponding traverser and
+   * visitors.
+   * 
+   * @param glex The global extension management
+   * @param cdScope The scope of the cd
+   * @param astClassDiagram The input class diagram, which is decorated
+   * @param handCodedPath The path for entities of the TOP mechanism
+   * @return A compilation unit with the decorated class diagram
+   */
   public ASTCDCompilationUnit decorateTraverserForVisitorPackage(GlobalExtensionManagement glex, 
       ICD4AnalysisScope cdScope, ASTCDCompilationUnit astClassDiagram, IterablePath handCodedPath) {
     ASTCDCompilationUnit preparedCD = prepareCD(cdScope, astClassDiagram);
     return decorateWithTraverser(preparedCD, glex, handCodedPath);
   }
   
+  /**
+   * Decorates traverser and visitors.
+   * 
+   * @param cd The input class diagram, which is decorated
+   * @param glex The global extension management
+   * @param handCodedPath The path for entities of the TOP mechanism
+   * @return A compilation unit with the decorated class diagram
+   */
   private ASTCDCompilationUnit decorateWithTraverser(ASTCDCompilationUnit cd, GlobalExtensionManagement glex, 
       IterablePath handCodedPath) {
     SymbolTableService symbolTableService = new SymbolTableService(cd);

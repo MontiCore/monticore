@@ -1,7 +1,17 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._visitor;
 
+import static de.monticore.codegen.cd2java.CoreTemplates.PACKAGE;
+import static de.monticore.codegen.cd2java.CoreTemplates.createPackageHookPoint;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISITOR_PACKAGE;
+import static de.monticore.codegen.mc2cd.TransformationHelper.existsHandwrittenClass;
+import static de.monticore.utils.Names.constructQualifiedName;
+
+import java.util.Arrays;
+import java.util.List;
+
 import com.google.common.collect.Lists;
+
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDDefinition;
@@ -9,29 +19,15 @@ import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
 import de.monticore.cd.cd4code.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.CoreTemplates;
-import de.monticore.codegen.cd2java._visitor.builder.DelegatorVisitorBuilderDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.IterablePath;
-
-import java.util.Arrays;
-import java.util.List;
-
-import static de.monticore.codegen.cd2java.CoreTemplates.PACKAGE;
-import static de.monticore.codegen.cd2java.CoreTemplates.createPackageHookPoint;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISITOR_PACKAGE;
-import static de.monticore.codegen.mc2cd.TransformationHelper.existsHandwrittenClass;
-import static de.monticore.utils.Names.constructQualifiedName;
 
 public class CDTraverserDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCompilationUnit> {
 
   protected final TraverserInterfaceDecorator iTraverserDecorator;
-  
   protected final TraverserDecorator traverserDecorator;
-  
   protected final Visitor2Decorator visitor2Decorator;
-
   protected final IterablePath handCodedPath;
-
   protected final VisitorService visitorService;
 
   public CDTraverserDecorator(final GlobalExtensionManagement glex,
@@ -54,18 +50,13 @@ public class CDTraverserDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     input.getPackageList().forEach(p -> visitorPackage.add(p.toLowerCase()));
     visitorPackage.addAll(Arrays.asList(input.getCDDefinition().getName().toLowerCase(), VISITOR_PACKAGE));
 
+    // check for TOP classes
     setIfExistsHandwrittenFile(visitorPackage);
 
+    // decorate cd
     ASTCDInterface traverserInterface = iTraverserDecorator.decorate(input);
-    
     ASTCDClass traverserClass = traverserDecorator.decorate(input);
-    
     ASTCDInterface visitor2Interface = visitor2Decorator.decorate(input);
-    
-
-    // add decorators here and collect classes / interfaces
-    
-    
     
     // build cd
     ASTCDDefinition astCD = CD4CodeMill.cDDefinitionBuilder()
@@ -89,6 +80,11 @@ public class CDTraverserDecorator extends AbstractCreator<ASTCDCompilationUnit, 
         .build();
   }
 
+  /**
+   * Informs the traverser interface generator of potential TOP classes.
+   * 
+   * @param visitorPackage The package under observation
+   */
   protected void setIfExistsHandwrittenFile(List<String> visitorPackage) {
     boolean isVisitorHandCoded = existsHandwrittenClass(handCodedPath,
         constructQualifiedName(visitorPackage, visitorService.getTraverserInterfaceSimpleName()));

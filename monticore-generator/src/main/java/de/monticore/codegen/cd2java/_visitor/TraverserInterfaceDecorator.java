@@ -12,12 +12,10 @@ import static de.monticore.codegen.cd2java._visitor.VisitorConstants.HANDLE;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.HANDLE_TEMPLATE;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.REAL_THIS;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.SET_REAL_THIS;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.SET_VISITOR_DELEGATOR_TEMPLATE;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.TRAVERSE;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.TRAVERSE_SCOPE_TEMPLATE;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.TRAVERSE_TEMPLATE;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISIT;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISITOR_METHODS_DELEGATOR_TEMPLATE;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISITOR_METHODS_TRAVERSER_DELEGATING_TEMPLATE;
 
 import java.util.ArrayList;
@@ -84,7 +82,6 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
         .collect(Collectors.toList());
     visitorFullNameList.add(visitorService.getVisitor2FullName());
     
-    
     // create list of cdDefinitions from superclass and own class
     List<ASTCDDefinition> definitionList = new ArrayList<>();
     definitionList.add(compilationUnit.getCDDefinition());
@@ -98,9 +95,6 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
         .map(visitorService::getVisitorSimpleName)
         .collect(Collectors.toList()));
     
-    ASTMCType astNodeType = getMCTypeFacade().createQualifiedType(AST_INTERFACE);
-    Set<String> symbolNames = symbolTableService.retrieveSymbolNamesFromCD(visitorService.getCDSymbol());
-
     ASTCDInterface visitorInterface = CD4CodeMill.cDInterfaceBuilder()
         .setName(traverserSimpleName)
         .addAllInterface(this.visitorService.getSuperTraverserInterfaces())
@@ -108,44 +102,19 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
         .addCDMethod(addGetRealThisMethods(traverserType))
         .addCDMethod(addSetRealThisMethods(traverserType))
         .addAllCDMethods(addVisitor2Methods(definitionList))
-//        .addAllCDMethods(addTraverserMethods(compilationUnit.getCDDefinition()))
-        .addAllCDMethods(createTraverserDelegatingMethods(definitionList, compilationUnit.getCDDefinition()))
+        .addAllCDMethods(createTraverserDelegatingMethods(compilationUnit.getCDDefinition()))
         .addAllCDMethods(addDefaultVisitorMethods(visitorSimpleNameList))
         .build();
     
-
-    // add visitor methods, but no double signatures
-//    List<ASTCDMethod> classMethods = addClassVisitorMethods(compilationUnit.getCDDefinition().getCDClassList());
-//    for (ASTCDMethod classMethod : classMethods) {
-//      if (!visitorService.isMethodAlreadyDefined(classMethod, visitorInterface.getCDMethodList())) {
-//        visitorInterface.addCDMethod(classMethod);
-//      }
-//    }
-//    List<ASTCDMethod> interfaceMethods = addInterfaceVisitorMethods(compilationUnit.getCDDefinition().getCDInterfaceList());
-//    for (ASTCDMethod interfaceMethod : interfaceMethods) {
-//      if (!visitorService.isMethodAlreadyDefined(interfaceMethod, visitorInterface.getCDMethodList())) {
-//        visitorInterface.addCDMethod(interfaceMethod);
-//      }
-//    }
-//    List<ASTCDMethod> enumMethods = addEnumVisitorMethods(compilationUnit.getCDDefinition().getCDEnumList(),
-//        compilationUnit.getCDDefinition().getName());
-//    for (ASTCDMethod enumMethod : enumMethods) {
-//      if (!visitorService.isMethodAlreadyDefined(enumMethod, visitorInterface.getCDMethodList())) {
-//        visitorInterface.addCDMethod(enumMethod);
-//      }
-//    }
-
     return visitorInterface;
   }
 
-  protected ASTCDMethod addVisitASTNodeMethods(ASTMCType astNodeType) {
-    return visitorService.getVisitorMethod(VisitorConstants.VISIT, astNodeType);
-  }
-
-  protected ASTCDMethod addEndVisitASTNodeMethods(ASTMCType astNodeType) {
-    return visitorService.getVisitorMethod(VisitorConstants.END_VISIT, astNodeType);
-  }
-
+  /**
+   * Adds the getRealThis method with respect to the TOP mechanism.
+   * 
+   * @param visitorType The return type of the method
+   * @return The decorated getRealThis method
+   */
   protected ASTCDMethod addGetRealThisMethods(ASTMCType visitorType) {
     String hookPoint;
     if (!isTop()) {
@@ -158,6 +127,12 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
     return getRealThisMethod;
   }
 
+  /**
+   * Adds the setRealThis method.
+   * 
+   * @param visitorType The input parameter type
+   * @return The decorated setRealThis method
+   */
   protected ASTCDMethod addSetRealThisMethods(ASTMCType visitorType) {
     ASTCDParameter visitorParameter = getCDParameterFacade().createParameter(visitorType, REAL_THIS);
     ASTCDMethod setRealThis = this.getCDMethodFacade().createMethod(PUBLIC, SET_REAL_THIS, visitorParameter);
@@ -169,77 +144,26 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
     return setRealThis;
   }
 
-  protected List<ASTCDMethod> createClassMethods(List<ASTCDDefinition> definitionList) {
-    List<ASTCDMethod> visitorMethods = new ArrayList<>();
-    definitionList.forEach(d -> addClassVisitorMethods(d.getCDClassList()));
-    definitionList.forEach(d -> addEnumVisitorMethods(d.getCDEnumList(), d.getName()));
-    definitionList.forEach(d -> addInterfaceVisitorMethods(d.getCDInterfaceList()));
-    return visitorMethods;
-  }
-  
-  protected List<ASTCDMethod> addTraverserMethods(ASTCDDefinition cdDefinition) {
-    List<ASTCDMethod> visitorMethods = new ArrayList<>();
-    visitorMethods.addAll(addClassVisitorMethods(cdDefinition.getCDClassList()));
-    visitorMethods.addAll(addEnumVisitorMethods(cdDefinition.getCDEnumList(), cdDefinition.getName()));
-    visitorMethods.addAll(addInterfaceVisitorMethods(cdDefinition.getCDInterfaceList()));
-    return visitorMethods;
-  }
-  
-  protected List<ASTCDMethod> addClassVisitorMethods(List<ASTCDClass> astcdClassList) {
-    List<ASTCDMethod> visitorMethods = new ArrayList<>();
-    for (ASTCDClass astcdClass : astcdClassList) {
-      boolean doTraverse = !(astcdClass.isPresentModifier() && astcdClass.getModifier().isAbstract());
-      ASTMCType classType = getMCTypeFacade().createQualifiedType(astcdClass.getName());
-//      visitorMethods.add(addVisitMethod(classType));
-//      visitorMethods.add(addEndVisitMethod(classType));
-      visitorMethods.add(addHandleMethod(classType, doTraverse));
-      if (doTraverse){
-        visitorMethods.add(addTraversMethod(classType, astcdClass));
-      }
-    }
-    return visitorMethods;
-  }
-
-  protected List<ASTCDMethod> addEnumVisitorMethods(List<ASTCDEnum> astcdEnumList, String definitionName) {
-    // no traverse method and not for literals Enum
-    List<ASTCDMethod> visitorMethods = new ArrayList<>();
-    for (ASTCDEnum astcdEnum : astcdEnumList) {
-      if (!visitorService.isLiteralsEnum(astcdEnum, definitionName)) {
-        ASTMCType enumType = getMCTypeFacade().createQualifiedType(astcdEnum.getName());
-//        visitorMethods.add(addVisitMethod(enumType));
-//        visitorMethods.add(addEndVisitMethod(enumType));
-        visitorMethods.add(addHandleMethod(enumType, false));
-      }
-    }
-    return visitorMethods;
-  }
-
-  protected List<ASTCDMethod> addInterfaceVisitorMethods(List<ASTCDInterface> astcdInterfaceList) {
-    // no traverse method
-    List<ASTCDMethod> visitorMethods = new ArrayList<>();
-    for (ASTCDInterface astcdInterface : astcdInterfaceList) {
-      ASTMCType interfaceType = getMCTypeFacade().createQualifiedType(astcdInterface.getName());
-//      visitorMethods.add(addVisitMethod(interfaceType));
-//      visitorMethods.add(addEndVisitMethod(interfaceType));
-      visitorMethods.add(addHandleMethod(interfaceType, false));
-    }
-    return visitorMethods;
-  }
-
-  protected ASTCDMethod addVisitMethod(ASTMCType astType) {
-    return visitorService.getVisitorMethod(VISIT, astType);
-  }
-
-  protected ASTCDMethod addEndVisitMethod(ASTMCType astType) {
-    return visitorService.getVisitorMethod(END_VISIT, astType);
-  }
-
+  /**
+   * Adds the non-delegating handle method.
+   * 
+   * @param astType Type of the handled node
+   * @param traverse Flag if the node should be traversed
+   * @return The decorated handle method
+   */
   protected ASTCDMethod addHandleMethod(ASTMCType astType, boolean traverse) {
     ASTCDMethod handleMethod = visitorService.getVisitorMethod(HANDLE, astType);
     this.replaceTemplate(EMPTY_BODY, handleMethod, new TemplateHookPoint(HANDLE_TEMPLATE, traverse));
     return handleMethod;
   }
 
+  /**
+   * Adds the non-delegating traverse method.
+   * 
+   * @param astType Type of the handled node
+   * @param astcdClass The class, which attributes are traversed
+   * @return The decorated traverse method
+   */
   protected ASTCDMethod addTraversMethod(ASTMCType astType, ASTCDClass astcdClass) {
     ASTCDMethod traverseMethod = visitorService.getVisitorMethod(TRAVERSE, astType);
     boolean isScopeSpanningSymbol = symbolTableService.hasScopeStereotype(astcdClass.getModifier()) ||
@@ -248,18 +172,19 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
     return traverseMethod;
   }
   
+  /**
+   * Adds the getter and setter methods for the attached visitors.
+   * 
+   * @param definitionList List of class diagrams to retrieve available visitors
+   * @return The decorated getter and setter methods
+   */
   protected List<ASTCDMethod> addVisitor2Methods(List<ASTCDDefinition> definitionList) {
     // add setter and getter for created attribute in 'getVisitorAttributes'
     List<ASTCDMethod> methodList = new ArrayList<>();
     for (ASTCDDefinition cd : definitionList) {
-      
-      String fullName = cd.getName();
-      
-//      String simpleName = Names.getSimpleName(fullName);
       String simpleName = Names.getSimpleName(visitorService.getVisitorSimpleName(cd.getSymbol()));
       //add setter for visitor attribute
       //e.g. public void setAutomataVisitor(automata._visitor.AutomataVisitor AutomataVisitor)
-//      ASTMCQualifiedType visitorType = getMCTypeFacade().createQualifiedType(fullName);
       ASTMCQualifiedType visitorType = getMCTypeFacade().createQualifiedType(visitorService.getVisitor2FullName(cd.getSymbol()));
       ASTCDParameter visitorParameter = getCDParameterFacade().createParameter(visitorType, StringTransformations.uncapitalize(simpleName));
       ASTCDMethod setVisitorMethod = getCDMethodFacade().createMethod(PUBLIC, "set" + simpleName, visitorParameter);
@@ -275,56 +200,36 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
     return methodList;
   }
   
-  protected List<ASTCDMethod> createTraverserMethods(List<ASTCDDefinition> definitionList) {
+  /**
+   * Controls the creation of all visitor related methods, such as visit,
+   * endVisit, handle, and traverse for all visitable entities.
+   * 
+   * @param cdDefinition The input class diagram from which all visitable
+   *          entities are derived
+   * @return The decorated visitor methods
+   */
+  protected List<ASTCDMethod> createTraverserDelegatingMethods(ASTCDDefinition cdDefinition) {
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
-    for (ASTCDDefinition astcdDefinition : definitionList) {
-      String simpleVisitorName = visitorService.getVisitorSimpleName(astcdDefinition.getSymbol());
-      visitorMethods.addAll(createVisitorDelegatorClassMethods(astcdDefinition.getCDClassList(), simpleVisitorName));
-      visitorMethods.addAll(createVisitorDelegatorInterfaceMethods(astcdDefinition.getCDInterfaceList(), simpleVisitorName));
-      visitorMethods.addAll(createVisitorDelegatorSymbolMethods(astcdDefinition, simpleVisitorName));
-      visitorMethods.addAll(createVisitorDelegatorScopeMethods(astcdDefinition, simpleVisitorName));
-    }
-    return visitorMethods;
-  }
-  
-//  protected List<ASTCDMethod> createClassMethods(List<ASTCDDefinition> definitionList) {
-//    List<ASTCDMethod> visitorMethods = new ArrayList<>();
-//    for (ASTCDDefinition astcdDefinition : definitionList) {
-//      for (ASTCDClass astcdClass : astcdDefinition.getCDClassList()) {
-//        boolean doTraverse = !(astcdClass.isPresentModifier() && astcdClass.getModifier().isAbstract());
-//        ASTMCType classType = getMCTypeFacade().createQualifiedType(astcdClass.getName());
-////        visitorMethods.add(addVisitMethod(classType));
-////        visitorMethods.add(addEndVisitMethod(classType));
-//        visitorMethods.add(addHandleMethod(classType, doTraverse));
-//        if (doTraverse) {
-//          visitorMethods.add(addTraversMethod(classType, astcdClass));
-//        }
-//      }
-//    }
-//    return visitorMethods;
-//  }
-  
-  protected List<ASTCDMethod> createTraverserDelegatingMethods(List<ASTCDDefinition> definitionList, ASTCDDefinition cdDefinition) {
-    List<ASTCDMethod> visitorMethods = new ArrayList<>();
-//    for (ASTCDDefinition astcdDefinition : definitionList) {
-//      String simpleVisitorName = visitorService.getVisitorSimpleName(astcdDefinition.getSymbol());
-//      visitorMethods.addAll(createVisitorDelegatorClassMethods(astcdDefinition.getCDClassList(), simpleVisitorName));
-//      visitorMethods.addAll(createVisitorDelegatorInterfaceMethods(astcdDefinition.getCDInterfaceList(), simpleVisitorName));
-//      visitorMethods.addAll(createVisitorDelegatorEnumMethods(astcdDefinition.getCDEnumList(), simpleVisitorName, astcdDefinition.getName()));
-//      visitorMethods.addAll(createVisitorDelegatorSymbolMethods(astcdDefinition, simpleVisitorName));
-//    }
-    // add scope visitor methods only once as it is language-specific
     String simpleVisitorName = visitorService.getVisitorSimpleName(cdDefinition.getSymbol());
     
+    // add methods for classes, interfaces, enumerations, symbols, and scopes
     visitorMethods.addAll(createVisitorDelegatorClassMethods(cdDefinition.getCDClassList(), simpleVisitorName));
     visitorMethods.addAll(createVisitorDelegatorInterfaceMethods(cdDefinition.getCDInterfaceList(), simpleVisitorName));
     visitorMethods.addAll(createVisitorDelegatorEnumMethods(cdDefinition.getCDEnumList(), simpleVisitorName, cdDefinition.getName()));
     visitorMethods.addAll(createVisitorDelegatorSymbolMethods(cdDefinition, simpleVisitorName));
-    
     visitorMethods.addAll(createVisitorDelegatorScopeMethods(cdDefinition, simpleVisitorName));
+    
     return visitorMethods;
   }
 
+  /**
+   * Creates visit, endVisit, handle, and traverse methods for a list of
+   * classes.
+   * 
+   * @param astcdClassList The input list of classes
+   * @param simpleVisitorName The name of the visited entity
+   * @return The decorated visitor methods
+   */
   protected List<ASTCDMethod> createVisitorDelegatorClassMethods(List<ASTCDClass> astcdClassList, String simpleVisitorName) {
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
     for (ASTCDClass astcdClass : astcdClassList) {
@@ -332,25 +237,40 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
     }
     return visitorMethods;
   }
-
+  
+  /**
+   * Creates visit, endVisit, handle, and traverse methods for a given class.
+   * 
+   * @param astcdClass The input class
+   * @param simpleVisitorName The name of the visited entity
+   * @return The decorated visitor methods
+   */
   protected List<ASTCDMethod> createVisitorDelegatorClassMethod(ASTCDClass astcdClass, String simpleVisitorName) {
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
     boolean doTraverse = !(astcdClass.isPresentModifier() && astcdClass.getModifier().isAbstract());
     ASTMCType classType = getMCTypeFacade().createQualifiedType(astcdClass.getName());
+    
+    // delegating visitor methods
     visitorMethods.add(addDelegatingMethod(classType, simpleVisitorName, VISIT));
     visitorMethods.add(addDelegatingMethod(classType, simpleVisitorName, END_VISIT));
-//    visitorMethods.add(addDelegatingMethod(classType, simpleVisitorName, HANDLE));
-//    if(astcdClass.isPresentModifier() && !astcdClass.getModifier().isAbstract()){
-//      visitorMethods.add(addDelegatingMethod(classType, simpleVisitorName, TRAVERSE));
-//    }
+    
+    // non-delegating traverser methods
     visitorMethods.add(addHandleMethod(classType, doTraverse));
-    if (doTraverse){
+    if (doTraverse) {
       visitorMethods.add(addTraversMethod(classType, astcdClass));
     }
     
     return visitorMethods;
   }
 
+  /**
+   * Creates visit, endVisit, handle, and traverse methods for a list of
+   * interfaces.
+   * 
+   * @param astcdInterfaceList The input list of interfaces
+   * @param simpleVisitorName The name of the visited entity
+   * @return The decorated visitor methods
+   */
   protected List<ASTCDMethod> createVisitorDelegatorInterfaceMethods(List<ASTCDInterface> astcdInterfaceList, String simpleVisitorName) {
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
     for (ASTCDInterface astcdInterface : astcdInterfaceList) {
@@ -359,16 +279,36 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
     return visitorMethods;
   }
 
+  /**
+   * Creates visit, endVisit, handle, and traverse methods for a given
+   * interface.
+   * 
+   * @param astcdClass The input interface
+   * @param simpleVisitorName The name of the visited entity
+   * @return The decorated visitor methods
+   */
   protected List<ASTCDMethod> createVisitorDelegatorInterfaceMethod(ASTCDInterface astcdInterface, String simpleVisitorName) {
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
     ASTMCType interfaceType = getMCTypeFacade().createQualifiedType(astcdInterface.getName());
+    
+    // delegating visitor methods
     visitorMethods.add(addDelegatingMethod(interfaceType, simpleVisitorName, VISIT));
     visitorMethods.add(addDelegatingMethod(interfaceType, simpleVisitorName, END_VISIT));
-//    visitorMethods.add(addDelegatingMethod(interfaceType, simpleVisitorName, HANDLE));
+    
+    // non-delegating traverser methods
     visitorMethods.add(addHandleMethod(interfaceType, false));
+    
     return visitorMethods;
   }
   
+  /**
+   * Creates visit, endVisit, handle, and traverse methods for a list of
+   * enumerations.
+   * 
+   * @param astcdInterfaceList The input list of enumerations
+   * @param simpleVisitorName The name of the visited entity
+   * @return The decorated visitor methods
+   */
   protected List<ASTCDMethod> createVisitorDelegatorEnumMethods(List<ASTCDEnum> astcdEnumList, String simpleVisitorName,  String definitionName) {
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
     for (ASTCDEnum astcdEnum : astcdEnumList) {
@@ -379,12 +319,25 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
     return visitorMethods;
   }
 
+  /**
+   * Creates visit, endVisit, handle, and traverse methods for a given
+   * enumeration.
+   * 
+   * @param astcdClass The input enumeration
+   * @param simpleVisitorName The name of the visited entity
+   * @return The decorated visitor methods
+   */
   protected List<ASTCDMethod> createVisitorDelegatorEnumMethod(ASTCDEnum astcdEnum, String simpleVisitorName) {
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
     ASTMCType enumType = getMCTypeFacade().createQualifiedType(astcdEnum.getName());
+    
+    // delegating visitor methods
     visitorMethods.add(addDelegatingMethod(enumType, simpleVisitorName, VISIT));
     visitorMethods.add(addDelegatingMethod(enumType, simpleVisitorName, END_VISIT));
+    
+    // non-delegating traverser methods
     visitorMethods.add(addHandleMethod(enumType, false));
+    
     return visitorMethods;
   }
 
@@ -417,17 +370,20 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
   protected List<ASTCDMethod> createVisitorDelegatorSymbolMethod(String symbolName, String simpleVisitorName) {
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
     ASTMCQualifiedType symbolType = getMCTypeFacade().createQualifiedType(symbolName);
+    
+    // delegating visitor methods
     visitorMethods.add(addDelegatingMethod(symbolType, simpleVisitorName, VISIT));
     visitorMethods.add(addDelegatingMethod(symbolType, simpleVisitorName, END_VISIT));
-//    visitorMethods.add(addDelegatingMethod(symbolType, simpleVisitorName, HANDLE));
-//    visitorMethods.add(addDelegatingMethod(symbolType, simpleVisitorName, TRAVERSE));
+    
+    // non-delegating traverser methods
     ASTCDMethod handleMethod = visitorService.getVisitorMethod(HANDLE, symbolType);
     this.replaceTemplate(EMPTY_BODY, handleMethod, new TemplateHookPoint(HANDLE_TEMPLATE, true));
     visitorMethods.add(handleMethod);
     visitorMethods.add(visitorService.getVisitorMethod(TRAVERSE, symbolType));
+    
     return visitorMethods;
   }
-
+  
   /**
    * Iterates over all defined scopes and creates corresponding visit, endVisit,
    * handle, and traverse methods.
@@ -463,22 +419,18 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
    * 
    * @param scopeType The qualified type of the input scope
    * @param simpleVisitorName The name of the delegated visitor
-   * @param traverseBody body of the traverse method, provided in form of hookpoint
+   * @param traverseBody body of the traverse method, provided in form of
+   *          hookpoint
    * @return The corresponding visitor methods for the given scope
    */
   protected List<ASTCDMethod> createVisitorDelegatorScopeMethod(ASTMCType scopeType, String simpleVisitorName, HookPoint traverseBody) {
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
-//    visitorMethods.add(addDelegatingMethod(scopeType, simpleVisitorName, VISIT));
-//    visitorMethods.add(addDelegatingMethod(scopeType, simpleVisitorName, END_VISIT));
-////    visitorMethods.add(addDelegatingMethod(scopeType, simpleVisitorName, HANDLE));
-////    visitorMethods.add(addDelegatingMethod(scopeType, simpleVisitorName, TRAVERSE));
-//    
-//    ASTCDMethod handleMethod = visitorService.getVisitorMethod(HANDLE, scopeType);
-//    this.replaceTemplate(EMPTY_BODY, handleMethod, new TemplateHookPoint(HANDLE_TEMPLATE, true));
-//    visitorMethods.add(handleMethod);
     
+    // delegating visitor methods
     visitorMethods.add(addDelegatingMethod(scopeType, simpleVisitorName, VISIT));
     visitorMethods.add(addDelegatingMethod(scopeType, simpleVisitorName, END_VISIT));
+    
+    // non-delegating traverser methods
     ASTCDMethod handleMethod = visitorService.getVisitorMethod(HANDLE, scopeType);
     this.replaceTemplate(EMPTY_BODY, handleMethod, new TemplateHookPoint(HANDLE_TEMPLATE, true));
     visitorMethods.add(handleMethod);
@@ -489,10 +441,30 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
     return visitorMethods;
   }
 
+  /**
+   * Creates a visitor method (e.g., visit and endVisit) that delegates to the
+   * corresponding attached sub-visitor for the actual computation. Works for
+   * all types of visitor methods as long as available in the target visitor.
+   * 
+   * @param astType The qualified type of the input entity
+   * @param simpleVisitorName The name of the visitor
+   * @param methodName The name of the method to create
+   * @return The decorated method
+   */
   protected ASTCDMethod addDelegatingMethod(ASTMCType astType, String simpleVisitorName, String methodName) {
     return addDelegatingMethod(astType, new ArrayList<>(Arrays.asList(simpleVisitorName)), methodName);
   }
   
+  /**
+   * Creates a visitor method (e.g., visit and endVisit) that delegates to the
+   * corresponding attached sub-visitor for the actual computation. Works for
+   * all types of visitor methods as long as available in the target visitor.
+   * 
+   * @param astType The qualified type of the input entity
+   * @param simpleVisitorName A list of names for the visitors to generate
+   * @param methodName The name of the method to create
+   * @return The decorated method
+   */
   protected ASTCDMethod addDelegatingMethod(ASTMCType astType, List<String> simpleVisitorName, String methodName) {
     ASTCDMethod visitorMethod = visitorService.getVisitorMethod(methodName, astType);
     this.replaceTemplate(EMPTY_BODY, visitorMethod, new TemplateHookPoint(
@@ -531,102 +503,6 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
   }
   
   /**
-   * Adds visit, endVisit, handle, and traverse methods for the general but
-   * language specific symbol interface.
-   * 
-   * @return The corresponding visitor methods for the symbol interface
-   */
-  protected List<ASTCDMethod> addISymbolVisitorMethods() {
-    List<ASTCDMethod> methodList = new ArrayList<>();
-    ASTMCQualifiedType iScopeType = getMCTypeFacade().createQualifiedType(I_SYMBOL);
-    methodList.add(visitorService.getVisitorMethod(VISIT, iScopeType));
-    methodList.add(visitorService.getVisitorMethod(END_VISIT, iScopeType));
-    return methodList;
-  }
-  
-  /**
-   * Adds visit, endVisit, handle, and traverse methods for a set of symbols.
-   * 
-   * @param symbolNames The input set of symbol names
-   * @return Created visitor methods to visit the symbols
-   */
-  protected List<ASTCDMethod> addSymbolVisitorMethods(Set<String> symbolNames) {
-    List<ASTCDMethod> visitorMethodList = new ArrayList<>();
-    for (String symbolName : symbolNames) {
-      ASTMCQualifiedType symbolType = getMCTypeFacade().createQualifiedType(symbolName);
-      visitorMethodList.add(visitorService.getVisitorMethod(VISIT, symbolType));
-      visitorMethodList.add(visitorService.getVisitorMethod(END_VISIT, symbolType));
-      // add template for handle method
-      ASTCDMethod handleMethod = visitorService.getVisitorMethod(HANDLE, symbolType);
-      this.replaceTemplate(EMPTY_BODY, handleMethod, new TemplateHookPoint(HANDLE_TEMPLATE, true));
-      visitorMethodList.add(handleMethod);
-      visitorMethodList.add(visitorService.getVisitorMethod(TRAVERSE, symbolType));
-    }
-    return visitorMethodList;
-  }
-  
-  /**
-   * Adds visit, endVisit, handle, and traverse methods for the general but
-   * language specific scope interface.
-   * 
-   * @return The corresponding visitor methods for the scope interface
-   */
-  protected List<ASTCDMethod> addIScopeVisitorMethods() {
-    List<ASTCDMethod> methodList = new ArrayList<>();
-    ASTMCQualifiedType iScopeType = getMCTypeFacade().createQualifiedType(I_SCOPE);
-    methodList.add(visitorService.getVisitorMethod(VISIT, iScopeType));
-    methodList.add(visitorService.getVisitorMethod(END_VISIT, iScopeType));
-    return methodList;
-  }
-  
-  /**
-   * Adds visit, endVisit, handle, and traverse methods for scope, scope interface, and artifact
-   * scope of a given class diagram definition by delegating the respective
-   * names to createScopeVisitorMethods().
-   * 
-   * @param symbolsNameList The symbols to traverse
-   * @param astcdDefinition The input class diagram
-   * @return Created visitor methods to visit a (artifact) scope
-   */
-  protected List<ASTCDMethod> addScopeVisitorMethods(Set<String> symbolsNameList, ASTCDDefinition astcdDefinition) {
-    ASTMCQualifiedType scopeType = symbolTableService.getScopeInterfaceType();
-    ASTMCQualifiedType artifactScopeType = symbolTableService.getArtifactScopeInterfaceType();
-
-    TemplateHookPoint traverseSymbolsBody = new TemplateHookPoint(TRAVERSE_SCOPE_TEMPLATE, symbolsNameList);
-    StringHookPoint traverseDelegationBody = new StringHookPoint(TRAVERSE + "(("
-        + symbolTableService.getScopeInterfaceFullName() + ") node);");
-
-    List<ASTCDMethod> methodList = new ArrayList<>();
-    methodList.addAll(createScopeVisitorMethods(scopeType, traverseSymbolsBody));
-    // only create artifact scope methods if grammar contains productions or
-    // refers to a starting production of a super grammar
-    if (symbolTableService.hasProd(astcdDefinition) || symbolTableService.hasStartProd()) {
-      methodList.addAll(createScopeVisitorMethods(artifactScopeType, traverseDelegationBody));
-    }
-    return methodList;
-  }
-  
-  /**
-   * Creates visit, endVisit, handle, and traverse methods for a given scope.
-   * 
-   * @param scopeName The scope name
-   * @param traverseBody body of the traverse method, provided in form of hookpoint
-   * @return A List of created methods to visit a scope
-   */
-  protected List<ASTCDMethod> createScopeVisitorMethods(ASTMCType scopeName, HookPoint traverseBody) {
-    List<ASTCDMethod> methodList = new ArrayList<>();
-    methodList.add(visitorService.getVisitorMethod(VISIT, scopeName));
-    methodList.add(visitorService.getVisitorMethod(END_VISIT, scopeName));
-    ASTCDMethod handleMethod = visitorService.getVisitorMethod(HANDLE, scopeName);
-    this.replaceTemplate(EMPTY_BODY, handleMethod, new TemplateHookPoint(HANDLE_TEMPLATE, true));
-    methodList.add(handleMethod);
-    ASTCDMethod traverseMethod = visitorService.getVisitorMethod(TRAVERSE, scopeName);
-    methodList.add(traverseMethod);
-    this.replaceTemplate(EMPTY_BODY, traverseMethod, traverseBody);
-    return methodList;
-  }
-  
-  /**
    * Returns a set of qualified symbol names. Considers the complete inheritance
    * hierarchy and thus, contains local symbols as well as inherited symbols.
    * 
@@ -648,7 +524,7 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
   public boolean isTop() {
     return isTop;
   }
-
+  
   public void setTop(boolean top) {
     isTop = top;
   }

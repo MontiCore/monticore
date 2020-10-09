@@ -2,19 +2,10 @@
 package de.monticore.codegen.cd2java._visitor;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
-import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_INTERFACE;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SCOPE;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SYMBOL;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.END_VISIT;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.GET_REAL_THIS;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.HANDLE;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.HANDLE_TEMPLATE;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.REAL_THIS;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.SET_REAL_THIS;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.TRAVERSE;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.TRAVERSE_SCOPE_TEMPLATE;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.TRAVERSE_TEMPLATE;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISIT;
 
 import java.util.ArrayList;
@@ -28,19 +19,13 @@ import de.monticore.cd.cd4analysis._ast.ASTCDDefinition;
 import de.monticore.cd.cd4analysis._ast.ASTCDEnum;
 import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
-import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.cd4code.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.generating.templateengine.HookPoint;
-import de.monticore.generating.templateengine.StringHookPoint;
-import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.prettyprint.MCSimpleGenericTypesPrettyPrinter;
 
 /**
  * creates a Visitor interface from a grammar
@@ -64,15 +49,12 @@ public class Visitor2Decorator extends AbstractCreator<ASTCDCompilationUnit, AST
   @Override
   public ASTCDInterface decorate(ASTCDCompilationUnit ast) {
     ASTCDCompilationUnit compilationUnit = visitorService.calculateCDTypeNamesWithASTPackage(ast);
-    ASTMCType visitorType = this.visitorService.getVisitorType();
     ASTMCType astNodeType = getMCTypeFacade().createQualifiedType(AST_INTERFACE);
     Set<String> symbolNames = symbolTableService.retrieveSymbolNamesFromCD(visitorService.getCDSymbol());
 
     ASTCDInterface visitorInterface = CD4CodeMill.cDInterfaceBuilder()
         .setName(this.visitorService.getVisitor2SimpleName())
         .setModifier(PUBLIC.build())
-//        .addCDMethod(addGetRealThisMethods(visitorType))
-//        .addCDMethod(addSetRealThisMethods(visitorType))
         .addCDMethod(addEndVisitASTNodeMethods(astNodeType))
         .addCDMethod(addVisitASTNodeMethods(astNodeType))
         .addAllCDMethods(addASTNodeVisitorMethods(compilationUnit.getCDDefinition()))
@@ -82,34 +64,25 @@ public class Visitor2Decorator extends AbstractCreator<ASTCDCompilationUnit, AST
         .addAllCDMethods(addScopeVisitorMethods(getSymbolsTransitive(), ast.getCDDefinition()))
         .build();
 
-    // add visitor methods, but no double signatures
-//    List<ASTCDMethod> classMethods = addClassVisitorMethods(compilationUnit.getCDDefinition().getCDClassList());
-//    for (ASTCDMethod classMethod : classMethods) {
-//      if (!visitorService.isMethodAlreadyDefined(classMethod, visitorInterface.getCDMethodList())) {
-//        visitorInterface.addCDMethod(classMethod);
-//      }
-//    }
-//    List<ASTCDMethod> interfaceMethods = addInterfaceVisitorMethods(compilationUnit.getCDDefinition().getCDInterfaceList());
-//    for (ASTCDMethod interfaceMethod : interfaceMethods) {
-//      if (!visitorService.isMethodAlreadyDefined(interfaceMethod, visitorInterface.getCDMethodList())) {
-//        visitorInterface.addCDMethod(interfaceMethod);
-//      }
-//    }
-//    List<ASTCDMethod> enumMethods = addEnumVisitorMethods(compilationUnit.getCDDefinition().getCDEnumList(),
-//        compilationUnit.getCDDefinition().getName());
-//    for (ASTCDMethod enumMethod : enumMethods) {
-//      if (!visitorService.isMethodAlreadyDefined(enumMethod, visitorInterface.getCDMethodList())) {
-//        visitorInterface.addCDMethod(enumMethod);
-//      }
-//    }
-
     return visitorInterface;
   }
 
+  /**
+   * Adds the visit method for the default AST node interface.
+   * 
+   * @param astNodeType The type of the interface
+   * @return The decorated visit method
+   */
   protected ASTCDMethod addVisitASTNodeMethods(ASTMCType astNodeType) {
     return visitorService.getVisitorMethod(VisitorConstants.VISIT, astNodeType);
   }
 
+  /**
+   * Adds the endVisit method for the default AST node interface.
+   * 
+   * @param astNodeType The type of the interface
+   * @return The decorated endVisit method
+   */
   protected ASTCDMethod addEndVisitASTNodeMethods(ASTMCType astNodeType) {
     return visitorService.getVisitorMethod(VisitorConstants.END_VISIT, astNodeType);
   }
@@ -128,29 +101,12 @@ public class Visitor2Decorator extends AbstractCreator<ASTCDCompilationUnit, AST
     return visitorMethods;
   }
 
-  protected ASTCDMethod addGetRealThisMethods(ASTMCType visitorType) {
-    String hookPoint;
-    if (!isTop()) {
-      hookPoint = "return this;";
-    } else {
-      hookPoint = "return (" + visitorService.getVisitorSimpleName() + ")this;";
-    }
-    ASTCDMethod getRealThisMethod = this.getCDMethodFacade().createMethod(PUBLIC, visitorType, GET_REAL_THIS);
-    this.replaceTemplate(EMPTY_BODY, getRealThisMethod, new StringHookPoint(hookPoint));
-    return getRealThisMethod;
-  }
-
-  protected ASTCDMethod addSetRealThisMethods(ASTMCType visitorType) {
-    ASTCDParameter visitorParameter = getCDParameterFacade().createParameter(visitorType, REAL_THIS);
-    ASTCDMethod setRealThis = this.getCDMethodFacade().createMethod(PUBLIC, SET_REAL_THIS, visitorParameter);
-    String generatedErrorCode = visitorService.getGeneratedErrorCode(visitorType.printType(
-        new MCSimpleGenericTypesPrettyPrinter(new IndentPrinter())) + SET_REAL_THIS);
-    this.replaceTemplate(EMPTY_BODY, setRealThis, new StringHookPoint(
-        "    throw new UnsupportedOperationException(\"0xA7011"+generatedErrorCode+" The setter for realThis is " +
-            "not implemented. You might want to implement a wrapper class to allow setting/getting realThis.\");\n"));
-    return setRealThis;
-  }
-
+  /**
+   * Creates visit and endVisit methods for a list of classes.
+   * 
+   * @param astcdClassList The input list of classes
+   * @return The decorated visitor methods
+   */
   protected List<ASTCDMethod> addClassVisitorMethods(List<ASTCDClass> astcdClassList) {
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
     for (ASTCDClass astcdClass : astcdClassList) {
@@ -160,7 +116,30 @@ public class Visitor2Decorator extends AbstractCreator<ASTCDCompilationUnit, AST
     }
     return visitorMethods;
   }
-
+  
+  /**
+   * Creates visit and endVisit methods for a list of interfaces.
+   * 
+   * @param astcdInterfaceList The input list of interfaces
+   * @return The decorated visitor methods
+   */
+  protected List<ASTCDMethod> addInterfaceVisitorMethods(List<ASTCDInterface> astcdInterfaceList) {
+    List<ASTCDMethod> visitorMethods = new ArrayList<>();
+    for (ASTCDInterface astcdInterface : astcdInterfaceList) {
+      ASTMCType interfaceType = getMCTypeFacade().createQualifiedType(astcdInterface.getName());
+      visitorMethods.add(addVisitMethod(interfaceType));
+      visitorMethods.add(addEndVisitMethod(interfaceType));
+    }
+    return visitorMethods;
+  }
+  
+  /**
+   * Creates visit and endVisit methods for a list of enumerations.
+   * 
+   * @param astcdEnumList The input list of enumerations
+   * @param definitionName Name of the base enumeration of each language
+   * @return The decorated visitor methods
+   */
   protected List<ASTCDMethod> addEnumVisitorMethods(List<ASTCDEnum> astcdEnumList, String definitionName) {
     // not for literals Enum
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
@@ -174,38 +153,27 @@ public class Visitor2Decorator extends AbstractCreator<ASTCDCompilationUnit, AST
     return visitorMethods;
   }
 
-  protected List<ASTCDMethod> addInterfaceVisitorMethods(List<ASTCDInterface> astcdInterfaceList) {
-    List<ASTCDMethod> visitorMethods = new ArrayList<>();
-    for (ASTCDInterface astcdInterface : astcdInterfaceList) {
-      ASTMCType interfaceType = getMCTypeFacade().createQualifiedType(astcdInterface.getName());
-      visitorMethods.add(addVisitMethod(interfaceType));
-      visitorMethods.add(addEndVisitMethod(interfaceType));
-    }
-    return visitorMethods;
-  }
 
+  /**
+   * Adds the visit method for a given AST type.
+   * 
+   * @param astType The input AST type
+   * @return The decorated visit method
+   */
   protected ASTCDMethod addVisitMethod(ASTMCType astType) {
     return visitorService.getVisitorMethod(VISIT, astType);
   }
-
+  
+  /**
+   * Adds the endVisit method for a given AST type.
+   * 
+   * @param astType The input AST type
+   * @return The decorated endVisit method
+   */
   protected ASTCDMethod addEndVisitMethod(ASTMCType astType) {
     return visitorService.getVisitorMethod(END_VISIT, astType);
   }
 
-  protected ASTCDMethod addHandleMethod(ASTMCType astType, boolean traverse) {
-    ASTCDMethod handleMethod = visitorService.getVisitorMethod(HANDLE, astType);
-    this.replaceTemplate(EMPTY_BODY, handleMethod, new TemplateHookPoint(HANDLE_TEMPLATE, traverse));
-    return handleMethod;
-  }
-
-  protected ASTCDMethod addTraversMethod(ASTMCType astType, ASTCDClass astcdClass) {
-    ASTCDMethod traverseMethod = visitorService.getVisitorMethod(TRAVERSE, astType);
-    boolean isScopeSpanningSymbol = symbolTableService.hasScopeStereotype(astcdClass.getModifier()) ||
-        symbolTableService.hasInheritedScopeStereotype(astcdClass.getModifier());
-    this.replaceTemplate(EMPTY_BODY, traverseMethod, new TemplateHookPoint(TRAVERSE_TEMPLATE, astcdClass, isScopeSpanningSymbol));
-    return traverseMethod;
-  }
-  
   /**
    * Adds visit, endVisit, handle, and traverse methods for the general but
    * language specific symbol interface.
@@ -303,13 +271,5 @@ public class Visitor2Decorator extends AbstractCreator<ASTCDCompilationUnit, AST
       superSymbolNames.addAll(symbolTableService.retrieveSymbolNamesFromCD(cdSymbol));
     }
     return superSymbolNames;
-  }
-  
-  public boolean isTop() {
-    return isTop;
-  }
-
-  public void setTop(boolean top) {
-    isTop = top;
   }
 }
