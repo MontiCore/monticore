@@ -103,7 +103,7 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testConstructorCount() {
-    assertEquals(1, scopeClass.sizeCDConstructors());
+    assertEquals(2, scopeClass.sizeCDConstructors());
   }
 
   @Test
@@ -119,6 +119,14 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
     assertDeepEquals("String", cdConstructor.getCDParameter(1).getMCType());
     assertEquals("modelFileExtension", cdConstructor.getCDParameter(1).getName());
+
+    assertTrue(cdConstructor.isEmptyException());
+
+    ASTCDConstructor zeroArgsConstructor = scopeClass.getCDConstructor(1);
+    assertDeepEquals(PUBLIC, zeroArgsConstructor.getModifier());
+    assertEquals("AutomatonGlobalScope", zeroArgsConstructor.getName());
+
+    assertEquals(0, zeroArgsConstructor.sizeCDParameters());
 
     assertTrue(cdConstructor.isEmptyException());
   }

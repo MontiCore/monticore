@@ -59,14 +59,10 @@ public class GlobalScopeClassBuilderDecorator extends AbstractCreator<ASTCDClass
         .filter(n->n.startsWith("adapted"))
         .collect(Collectors.toList());
 
-    String generatedErrorCode = symbolTableService.getGeneratedErrorCode("buildGlobalScope");
-    String generatedErrorCode2 = symbolTableService.getGeneratedErrorCode("buildGlobalScope2");
-
     if (buildMethod.isPresent()) {
       this.replaceTemplate(EMPTY_BODY, buildMethod.get(),
           new TemplateHookPoint(TEMPLATE_PATH + "BuildGlobalScope",
-              scopeClass.getName(), symbolTableService.getCDName(), resolvingDelegates,
-              generatedErrorCode, generatedErrorCode2));
+              scopeClass.getName(), symbolTableService.getCDName(), resolvingDelegates));
       buildMethod.get().setMCReturnType(MCBasicTypesMill.mCReturnTypeBuilder()
           .setMCType(getMCTypeFacade().createQualifiedType("I"+ buildMethod.get().printReturnType()))
           .build());
