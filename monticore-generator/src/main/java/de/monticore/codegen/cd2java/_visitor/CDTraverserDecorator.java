@@ -91,7 +91,7 @@ public class CDTraverserDecorator extends AbstractCreator<ASTCDCompilationUnit, 
 
   protected void setIfExistsHandwrittenFile(List<String> visitorPackage) {
     boolean isVisitorHandCoded = existsHandwrittenClass(handCodedPath,
-        constructQualifiedName(visitorPackage, visitorService.getVisitorSimpleName()));
+        constructQualifiedName(visitorPackage, visitorService.getTraverserInterfaceSimpleName()));
     iTraverserDecorator.setTop(isVisitorHandCoded);
   }
 }

@@ -151,7 +151,7 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
     if (!isTop()) {
       hookPoint = "return this;";
     } else {
-      hookPoint = "return (" + visitorService.getVisitorSimpleName() + ")this;";
+      hookPoint = "return (" + visitorService.getTraverserInterfaceSimpleName() + ")this;";
     }
     ASTCDMethod getRealThisMethod = this.getCDMethodFacade().createMethod(PUBLIC, visitorType, GET_REAL_THIS);
     this.replaceTemplate(EMPTY_BODY, getRealThisMethod, new StringHookPoint(hookPoint));
