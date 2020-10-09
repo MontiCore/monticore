@@ -614,9 +614,11 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     SymbolTableService symbolTableService = new SymbolTableService(cd);
     VisitorService visitorService = new VisitorService(cd);
     
-    TraverserInterfaceDecorator traverserDecorator = new TraverserInterfaceDecorator(glex, visitorService, symbolTableService);
+    TraverserInterfaceDecorator iTraverserDecorator = new TraverserInterfaceDecorator(glex, visitorService, symbolTableService);
+    TraverserDecorator traverserDecorator = new TraverserDecorator(glex, visitorService, symbolTableService);
+    Visitor2Decorator visitor2Decorator = new Visitor2Decorator(glex, visitorService, symbolTableService);
     
-    CDTraverserDecorator decorator = new CDTraverserDecorator(glex, handCodedPath, visitorService, traverserDecorator);
+    CDTraverserDecorator decorator = new CDTraverserDecorator(glex, handCodedPath, visitorService, iTraverserDecorator, traverserDecorator, visitor2Decorator);
     
     ASTCDCompilationUnit visitorCompilationUnit = decorator.decorate(cd);
     

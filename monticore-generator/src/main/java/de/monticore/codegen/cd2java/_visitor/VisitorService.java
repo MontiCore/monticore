@@ -188,23 +188,31 @@ public class VisitorService extends AbstractService<VisitorService> {
   }
   
   /**
-   * handler name e.g. AutomataHandler
+   * visitor2 name e.g. AutomataVisitor2
    */
   
-  public String getHandlerSimpleName() {
-    return getHandlerSimpleName(getCDSymbol());
+  public String getVisitor2SimpleName() {
+    return getVisitor2SimpleName(getCDSymbol());
   }
   
-  public String getHandlerSimpleName(CDDefinitionSymbol cdDefinitionSymbol) {
-    return "I" + cdDefinitionSymbol.getName() + HANDLER_SUFFIX;
+  public String getVisitor2SimpleName(CDDefinitionSymbol cdDefinitionSymbol) {
+    return cdDefinitionSymbol.getName() + VISITOR2_SUFFIX;
   }
   
-  public String getHandlerFullName() {
-    return getHandlerFullName(getCDSymbol());
+  public String getVisitor2FullName() {
+    return getVisitor2FullName(getCDSymbol());
   }
   
-  public String getHandlerFullName(CDDefinitionSymbol cdDefinitionSymbol) {
-    return getPackage(cdDefinitionSymbol) + "." + getHandlerSimpleName(cdDefinitionSymbol);
+  public String getVisitor2FullName(CDDefinitionSymbol cdDefinitionSymbol) {
+    return getPackage(cdDefinitionSymbol) + "." + getVisitor2SimpleName(cdDefinitionSymbol);
+  }
+  
+  public ASTMCQualifiedType getVisitor2Type(CDDefinitionSymbol cdSymbol) {
+    return getMCTypeFacade().createQualifiedType(getVisitor2FullName(cdSymbol));
+  }
+
+  public ASTMCQualifiedType getVisitor2Type() {
+    return getVisitor2Type(getCDSymbol());
   }
 
   /**
@@ -214,6 +222,12 @@ public class VisitorService extends AbstractService<VisitorService> {
   public List<ASTMCQualifiedType> getAllVisitorTypesInHierarchy() {
     return getServicesOfSuperCDs().stream()
         .map(VisitorService::getVisitorType)
+        .collect(Collectors.toList());
+  }
+  
+  public List<ASTMCQualifiedType> getAllTraverserInterfacesTypesInHierarchy() {
+    return getServicesOfSuperCDs().stream()
+        .map(VisitorService::getTraverserInterfaceType)
         .collect(Collectors.toList());
   }
 

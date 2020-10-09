@@ -24,7 +24,11 @@ import static de.monticore.utils.Names.constructQualifiedName;
 
 public class CDTraverserDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCompilationUnit> {
 
-  protected final TraverserInterfaceDecorator traverserDecorator;
+  protected final TraverserInterfaceDecorator iTraverserDecorator;
+  
+  protected final TraverserDecorator traverserDecorator;
+  
+  protected final Visitor2Decorator visitor2Decorator;
 
   protected final IterablePath handCodedPath;
 
@@ -33,11 +37,15 @@ public class CDTraverserDecorator extends AbstractCreator<ASTCDCompilationUnit, 
   public CDTraverserDecorator(final GlobalExtensionManagement glex,
                             final IterablePath handCodedPath,
                             final VisitorService visitorService,
-                            final TraverserInterfaceDecorator traverserDecorator) {
+                            final TraverserInterfaceDecorator iTraverserDecorator,
+                            final TraverserDecorator traverserDecorator,
+                            final Visitor2Decorator visitor2Decorator) {
     super(glex);
     this.handCodedPath = handCodedPath;
     this.visitorService = visitorService;
+    this.iTraverserDecorator = iTraverserDecorator;
     this.traverserDecorator = traverserDecorator;
+    this.visitor2Decorator = visitor2Decorator;
   }
 
   @Override
@@ -48,7 +56,12 @@ public class CDTraverserDecorator extends AbstractCreator<ASTCDCompilationUnit, 
 
     setIfExistsHandwrittenFile(visitorPackage);
 
-    ASTCDInterface traverserInterface = traverserDecorator.decorate(input);
+    ASTCDInterface traverserInterface = iTraverserDecorator.decorate(input);
+    
+    ASTCDClass traverserClass = traverserDecorator.decorate(input);
+    
+    ASTCDInterface visitor2Interface = visitor2Decorator.decorate(input);
+    
 
     // add decorators here and collect classes / interfaces
     
@@ -58,6 +71,8 @@ public class CDTraverserDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     ASTCDDefinition astCD = CD4CodeMill.cDDefinitionBuilder()
         .setName(input.getCDDefinition().getName())
         .addCDInterface(traverserInterface)
+        .addCDClass(traverserClass)
+        .addCDInterface(visitor2Interface)
         .build();
 
     for (ASTCDClass cdClass : astCD.getCDClassList()) {
@@ -77,6 +92,6 @@ public class CDTraverserDecorator extends AbstractCreator<ASTCDCompilationUnit, 
   protected void setIfExistsHandwrittenFile(List<String> visitorPackage) {
     boolean isVisitorHandCoded = existsHandwrittenClass(handCodedPath,
         constructQualifiedName(visitorPackage, visitorService.getVisitorSimpleName()));
-    traverserDecorator.setTop(isVisitorHandCoded);
+    iTraverserDecorator.setTop(isVisitorHandCoded);
   }
 }
