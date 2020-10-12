@@ -7,7 +7,7 @@
 
   <groupId>de.monticore</groupId>
   <artifactId>monticore</artifactId>
-  <version>6.4.0-SNAPSHOT</version>
+  <version>6.5.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <!-- == PROJECT MODULES ================================================= -->
@@ -31,7 +31,7 @@
     <!-- .. Libraries ..................................................... -->
 
     <cd4analysis.version>1.7.0.2</cd4analysis.version>
-    <last.mc.release>6.3.0</last.mc.release>
+    <last.mc.release>6.4.0</last.mc.release>
 
     <se-commons.version>1.7.10</se-commons.version>
     <antlr.version>4.7.1</antlr.version>
