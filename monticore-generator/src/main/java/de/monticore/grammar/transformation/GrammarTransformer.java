@@ -71,11 +71,11 @@ public class GrammarTransformer {
    * transitions:Transition)*
    */
   public static void uncapitalizeMultivaluedAttributes(ASTMCGrammar grammar) {
-    grammar.getASTRulesList().forEach(c -> transformAttributesInAST(c));
+    grammar.getASTRuleList().forEach(c -> transformAttributesInAST(c));
   }
 
   private static void transformAttributesInAST(ASTASTRule astRule) {
-    astRule.getAdditionalAttributesList().forEach(
+    astRule.getAdditionalAttributeList().forEach(
             attributeInAST -> {
               if (!attributeInAST.isPresentName()) {
                 String simpleName = simpleName(attributeInAST.getMCType());

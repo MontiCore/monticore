@@ -6,6 +6,7 @@ import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDEnum;
 import de.monticore.cd.cd4analysis._ast.ASTCDEnumConstant;
 import de.monticore.cd.cd4analysis._ast.CD4AnalysisNodeFactory;
+import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.LexNamer;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
@@ -36,10 +37,11 @@ public class ConstantsTranslation implements
   @Override
   public Link<ASTMCGrammar, ASTCDCompilationUnit> apply(
       Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink) {
-    
+
     ASTCDEnum constantsEnum = CD4AnalysisNodeFactory.createASTCDEnum();
+    TransformationHelper.addStereoType(constantsEnum, MC2CDStereotypes.DEPRECATED.toString());
     constantsEnum.setName(rootLink.source().getName() + CONSTANTS_ENUM);
-    rootLink.target().getCDDefinition().getCDEnumsList().add(constantsEnum);
+    rootLink.target().getCDDefinition().getCDEnumList().add(constantsEnum);
     Set<String> grammarConstants = TransformationHelper
         .getAllGrammarConstants(rootLink.source()).stream().map(c -> lexNamer.getConstantName(c))
         .collect(Collectors.toSet());
@@ -48,7 +50,7 @@ public class ConstantsTranslation implements
     for (String grammarConstant : sortedConstants) {
       ASTCDEnumConstant constant = CD4AnalysisNodeFactory.createASTCDEnumConstant();
       constant.setName(grammarConstant);
-      constantsEnum.getCDEnumConstantsList().add(constant);
+      constantsEnum.getCDEnumConstantList().add(constant);
     }
     
     return rootLink;

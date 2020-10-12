@@ -17,6 +17,8 @@ public class MillConstants {
 
   public static final String MILL_FOR = "MillFor";
 
+  public static final String AUXILIARY_PACKAGE = "_auxiliary";
+
   private MillConstants() {
   }
 }

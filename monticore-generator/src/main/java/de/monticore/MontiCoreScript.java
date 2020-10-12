@@ -26,6 +26,7 @@ import de.monticore.codegen.cd2java._ast.enums.EnumDecorator;
 import de.monticore.codegen.cd2java._ast.factory.NodeFactoryDecorator;
 import de.monticore.codegen.cd2java._ast.factory.NodeFactoryService;
 import de.monticore.codegen.cd2java._symboltable.serialization.*;
+import de.monticore.codegen.cd2java.mill.CDAuxiliaryDecorator;
 import de.monticore.codegen.cd2java.mill.CDMillDecorator;
 import de.monticore.codegen.cd2java.mill.MillDecorator;
 import de.monticore.codegen.cd2java.mill.MillForSuperDecorator;
@@ -324,7 +325,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
               .setGlobalScope(globalScope)
               .build();
       stCreator.createFromAST(result);
-      globalScope.cache(qualifiedGrammarName);
+      globalScope.addLoadedFile(qualifiedGrammarName);
     }
 
     MCGrammarSymbol symbol = result.getSymbol();
@@ -363,7 +364,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
       CD4AnalysisSymbolTableCreatorDelegator stCreator = CD4AnalysisMill.cD4AnalysisSymbolTableCreatorDelegatorBuilder()
               .setGlobalScope(globalScope).build();
       stCreator.createFromAST(result);
-      globalScope.cache(qualifiedCDName);
+      globalScope.addLoadedFile(qualifiedCDName);
     }
 
     return result;
@@ -440,34 +441,52 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param astCd           - the top node of the Cd4Analysis AST
    * @param outputDirectory - output directory
    */
-  public void reportCD(ASTCDCompilationUnit astCd, ASTCDCompilationUnit symbolCd, ASTCDCompilationUnit scopeCd,
+  public void reportCD(ASTCDCompilationUnit origCd, ASTCDCompilationUnit astCd,
+                       ASTCDCompilationUnit symbolCd, ASTCDCompilationUnit scopeCd,
                        File outputDirectory) {
     // we also store the class diagram fully qualified such that we can later on
     // resolve it properly for the generation of sub languages
-    String reportSubDir = Joiners.DOT.join(astCd.getPackageList());
+    String reportSubDir = Joiners.DOT.join(origCd.getPackageList());
     reportSubDir = reportSubDir.isEmpty()
-            ? astCd.getCDDefinition().getName()
-            : reportSubDir.concat(".").concat(astCd.getCDDefinition().getName());
+            ? origCd.getCDDefinition().getName()
+            : reportSubDir.concat(".").concat(origCd.getCDDefinition().getName());
     reportSubDir = reportSubDir.toLowerCase();
 
     // Clone CD for reporting
     ASTCDCompilationUnit astCdForReporting = astCd.deepClone();
+
+    // Change Name
+    astCdForReporting.getCDDefinition().setName("DataStructure_" + astCdForReporting.getCDDefinition().getName());
+
     // No star imports in reporting CDs
-    astCdForReporting.getMCImportStatementsList().forEach(s -> s.setStar(false));
+    astCdForReporting.getMCImportStatementList().forEach(s -> s.setStar(false));
+
+    // Remove Builder
+    List<ASTCDClass> builderClasses = Lists.newArrayList();
+    astCdForReporting.getCDDefinition().forEachCDClasss(c -> {if (c.getName().endsWith("Builder")) builderClasses.add(c);});
+    builderClasses.forEach(c -> astCdForReporting.getCDDefinition().removeCDClass(c));
 
     // Add symbol classes
-    for (ASTCDClass cl :symbolCd.getCDDefinition().getCDClasssList()) {
-      ASTCDClass newCl = cl.deepClone();
-      newCl.setName(newCl.getName()+"Symbol");
-      astCdForReporting.getCDDefinition().addCDClasss(newCl);
+    for (ASTCDClass cl :symbolCd.getCDDefinition().getCDClassList()) {
+      if (!cl.getName().endsWith("Builder")) {
+        ASTCDClass newCl = cl.deepClone();
+        astCdForReporting.getCDDefinition().addCDClass(newCl);
+      }
     }
 
     // Add scope classes
-    for (ASTCDClass cl :scopeCd.getCDDefinition().getCDClasssList()) {
-      ASTCDClass newCl = cl.deepClone();
-      newCl.setName(newCl.getName()+"Scope");
-      astCdForReporting.getCDDefinition().addCDClasss(newCl);
+    for (ASTCDClass cl :scopeCd.getCDDefinition().getCDClassList()) {
+      if (!cl.getName().endsWith("Builder")) {
+        ASTCDClass newCl = cl.deepClone();
+        astCdForReporting.getCDDefinition().addCDClass(newCl);
+      }
     }
+
+    // Remove methods and constructors
+    astCdForReporting.getCDDefinition().forEachCDClasss(c -> {c.clearCDMethods(); c.clearCDConstructors();});
+    astCdForReporting.getCDDefinition().forEachCDInterfaces(c -> c.clearCDMethods());
+    astCdForReporting.getCDDefinition().forEachCDEnums(c -> {c.clearCDMethods(); c.clearCDConstructors();});
+
     new CDReporting().prettyPrintAstCd(astCdForReporting, outputDirectory, reportSubDir);
   }
 
@@ -489,10 +508,11 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     // Clone CD for reporting
     ASTCDCompilationUnit astCdForReporting = astCd.deepClone();
     // No star imports in reporting CDs
-    astCdForReporting.getMCImportStatementsList().forEach(s -> s.setStar(false));
+    astCdForReporting.getMCImportStatementList().forEach(s -> s.setStar(false));
 
     new CDReporting().prettyPrintAstCd(astCdForReporting, outputDirectory, reportSubDir);
   }
+
   public ASTCDCompilationUnit decorateForSymbolTablePackage(GlobalExtensionManagement glex, ICD4AnalysisScope cdScope,
                                                             ASTCDCompilationUnit astClassDiagram, ASTCDCompilationUnit symbolClassDiagramm,
                                                             ASTCDCompilationUnit scopeClassDiagramm, IterablePath handCodedPath) {
@@ -640,15 +660,34 @@ public class MontiCoreScript extends Script implements GroovyRunner {
                                             ASTCDCompilationUnit symbolCD, GlobalExtensionManagement glex,
                                             IterablePath handCodedPath) {
     SymbolTableService symbolTableService = new SymbolTableService(cd);
-    MillForSuperDecorator millForSuperDecorator = new MillForSuperDecorator(glex, symbolTableService);
     MillDecorator millDecorator = new MillDecorator(glex, symbolTableService);
-    CDMillDecorator cdMillDecorator = new CDMillDecorator(glex, millDecorator, millForSuperDecorator);
+    CDMillDecorator cdMillDecorator = new CDMillDecorator(glex, millDecorator);
 
     ASTCDCompilationUnit millCD = cdMillDecorator.decorate(Lists.newArrayList(astCD, visitorCD, symbolCD));
 
 
     TopDecorator topDecorator = new TopDecorator(handCodedPath);
     return topDecorator.decorate(millCD);
+  }
+
+  public ASTCDCompilationUnit decorateAuxiliary(GlobalExtensionManagement glex, ICD4AnalysisGlobalScope cdScope,
+                                                ASTCDCompilationUnit cd, ASTCDCompilationUnit astCD,
+                                                IterablePath handCodedPath){
+    ASTCDCompilationUnit preparedCD = prepareCD(cdScope, cd);
+    return generateAuxiliary(cd, astCD, glex, handCodedPath);
+  }
+
+  protected ASTCDCompilationUnit generateAuxiliary(ASTCDCompilationUnit cd, ASTCDCompilationUnit astCD,
+                                                 GlobalExtensionManagement glex, IterablePath handCodedPath){
+    SymbolTableService symbolTableService = new SymbolTableService(cd);
+    MillForSuperDecorator millForSuperDecorator = new MillForSuperDecorator(glex, symbolTableService);
+    CDAuxiliaryDecorator cdAuxiliaryDecorator = new CDAuxiliaryDecorator(glex, millForSuperDecorator);
+
+    ASTCDCompilationUnit auxiliaryCD = cdAuxiliaryDecorator.decorate(astCD);
+
+    TopDecorator topDecorator = new TopDecorator(handCodedPath);
+    return topDecorator.decorate(auxiliaryCD);
+
   }
 
   public ASTCDCompilationUnit addListSuffixToAttributeName(ASTCDCompilationUnit originalCD) {

@@ -18,9 +18,9 @@ public class NoMultipleSymbolRule implements GrammarASTMCGrammarCoCo {
 
   @Override
   public void check(ASTMCGrammar g) {
-    for (ASTSymbolRule rule : g.getSymbolRulesList()) {
+    for (ASTSymbolRule rule : g.getSymbolRuleList()) {
       int count = 0;
-      for (ASTSymbolRule r2 : g.getSymbolRulesList()) {
+      for (ASTSymbolRule r2 : g.getSymbolRuleList()) {
         if (rule.getType().equals(r2.getType())) {
           count++;
         }

@@ -4,6 +4,7 @@ package de.monticore.statements;
 /* This is a MontiCore stable grammar.
  * Adaptations -- if any -- are conservative. */
 
+import de.monticore.statements.*;
 
 /**
  * This grammar defines typical statements, such as
@@ -33,9 +34,10 @@ component grammar MCCommonStatements
 
 /**
  * Standard Form of a block { ... }
+ * it allows to define local variables that are not exported
+ * and can only be used after defined (typical within code bodies).
  */
-scope(shadowing non_exporting ordered) MCJavaBlock
-                                    implements MCStatement
+scope(non_exporting ordered) MCJavaBlock implements MCStatement
     = "{" MCBlockStatement* "}" ;
     
 /**
@@ -54,7 +56,8 @@ IfStatement implements MCStatement
    // we use "elseStatement", because the
    // generated Java code doesn't allow "else" as Name 
 
-scope ForStatement implements MCStatement
+
+scope (non_exporting ordered) ForStatement implements MCStatement
     = "for" "(" ForControl ")" MCStatement ;
 
 interface ForControl ;
@@ -67,6 +70,12 @@ ForInit
 
 ForInitByExpressions
     = (Expression || ",")+ ;
+
+EnhancedForControl implements ForControl
+    = FormalParameter ":" Expression;
+
+FormalParameter
+    =   JavaModifier* MCType DeclaratorId;
 
 WhileStatement implements MCStatement
     = "while" "(" condition:Expression ")" MCStatement ;
@@ -100,5 +109,8 @@ EnumConstantSwitchLabel implements SwitchLabel
 
 DefaultSwitchLabel implements SwitchLabel
     =   "default" ":" ;
+
+BreakStatement implements MCStatement
+    =   "break" ";" ;
 
 }

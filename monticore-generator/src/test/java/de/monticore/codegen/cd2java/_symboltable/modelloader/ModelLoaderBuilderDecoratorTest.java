@@ -83,7 +83,7 @@ public class ModelLoaderBuilderDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testDefaultConstructor() {
-    ASTCDConstructor cdConstructor = builderClass.getCDConstructors(0);
+    ASTCDConstructor cdConstructor = builderClass.getCDConstructor(0);
     assertDeepEquals(PUBLIC, cdConstructor.getModifier());
     assertEquals("AModelLoaderBuilder", cdConstructor.getName());
 
@@ -114,7 +114,7 @@ public class ModelLoaderBuilderDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(4, builderClass.getCDMethodsList().size());
+    assertEquals(4, builderClass.getCDMethodList().size());
   }
 
   @Test
@@ -135,8 +135,8 @@ public class ModelLoaderBuilderDecoratorTest extends DecoratorTestCase {
     assertDeepEquals("AModelLoaderBuilder", method.getMCReturnType().getMCType());
 
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals("ALanguage", method.getCDParameters(0).getMCType());
-    assertEquals("modelingLanguage", method.getCDParameters(0).getName());
+    assertDeepEquals("ALanguage", method.getCDParameter(0).getMCType());
+    assertEquals("modelingLanguage", method.getCDParameter(0).getName());
   }
 
   @Test

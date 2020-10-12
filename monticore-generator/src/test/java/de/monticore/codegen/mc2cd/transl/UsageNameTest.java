@@ -22,19 +22,19 @@ public class UsageNameTest {
   public UsageNameTest() {
     ASTCDCompilationUnit cdCompilationUnit = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/UsageNameGrammar.mc4")).get();
-    astA = TestHelper.getCDClasss(cdCompilationUnit, "ASTA").get();
-    astB = TestHelper.getCDClasss(cdCompilationUnit, "ASTB").get();
+    astA = TestHelper.getCDClass(cdCompilationUnit, "ASTA").get();
+    astB = TestHelper.getCDClass(cdCompilationUnit, "ASTB").get();
   }
   
   @Test
   public void testNonTerminal() {
-    ASTCDAttribute cdAttribute = Iterables.getOnlyElement(astA.getCDAttributesList());
+    ASTCDAttribute cdAttribute = Iterables.getOnlyElement(astA.getCDAttributeList());
     assertEquals("nonTerminalUsageName", cdAttribute.getName());
   }
   
   @Test
   public void testConstant() {
-    ASTCDAttribute cdAttribute = Iterables.getOnlyElement(astB.getCDAttributesList());
+    ASTCDAttribute cdAttribute = Iterables.getOnlyElement(astB.getCDAttributeList());
     assertEquals("constantUsageName", cdAttribute.getName());
   }
 }

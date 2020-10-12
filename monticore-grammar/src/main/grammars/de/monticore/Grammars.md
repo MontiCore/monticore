@@ -51,6 +51,7 @@ It should be useful in many languages.
 
 These grammars generally deal with type definitions and build on each 
 other. Some snipets for type definitions:
+
   ```
   MCBasicTypes      boolean  byte  short  int
                     long  char  float  double
@@ -138,6 +139,7 @@ infrastructure.
 This modularity of expressions and associated types greatly eases 
 the reuse of type structures in languages similar to Java.
 Some snipets for operators definrd in expressions:
+
   ```
   CommonExp:     /  %  +  -  <=  >=  ==  >  <  !=  ~.  !.  .?.:.
   PLogicExp:     &&  ||  ~. 
@@ -203,6 +205,7 @@ UML's OCL.
 
 Literals are the basic elements of expressions, such as numbers, strings, 
 truth values. Some snipets:
+
   ```
   MCCommonLit       3  -3  2.17  -4  true  false  'c'  '\03AE' 
                     3L  2.17d  2.17f  0xAF  "string" "str\b\n\\"  
@@ -245,6 +248,7 @@ The following hierarchy of statement definitions should allow
 the developers to choose needed forms of statements and extend it 
 by their own additional needs. The provided list of statements
 is inspired by Java (actually subset of Java). Some example statements:
+
   ```
   int i;   int j = 2;                     Person p[] = { foo(3+7), p2, ...}
   if (.) then . else .                    for ( i = .; .; .) {.}

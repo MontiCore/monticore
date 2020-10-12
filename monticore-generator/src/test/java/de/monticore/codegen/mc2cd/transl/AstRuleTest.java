@@ -35,21 +35,21 @@ public final class AstRuleTest {
   public AstRuleTest() {
     ASTCDCompilationUnit cdCompilationUnit = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/AstRule.mc4")).get();
-    astC = TestHelper.getCDClasss(cdCompilationUnit, "ASTC").get();
-    impl = TestHelper.getCDClasss(cdCompilationUnit, "ASTImpl").get();
+    astC = TestHelper.getCDClass(cdCompilationUnit, "ASTC").get();
+    impl = TestHelper.getCDClass(cdCompilationUnit, "ASTImpl").get();
   }
 
   @Test
   public void testAstRuleAddedAttribute() {
     assertEquals(1, astC.sizeCDAttributes());
-    assertEquals("dimensions", astC.getCDAttributes(0).getName());
-    assertInt(astC.getCDAttributes(0).getMCType());
+    assertEquals("dimensions", astC.getCDAttribute(0).getName());
+    assertInt(astC.getCDAttribute(0).getMCType());
   }
 
   @Test
   public void testAstRuleDoubleInheritance() {
     // attributes from super interfaces are inherited
-    assertEquals(2, impl.getCDAttributesList().size());
+    assertEquals(2, impl.getCDAttributeList().size());
 
     ASTCDAttribute varName = getAttributeBy("varName", impl);
     assertDeepEquals("varType", varName.getMCType());

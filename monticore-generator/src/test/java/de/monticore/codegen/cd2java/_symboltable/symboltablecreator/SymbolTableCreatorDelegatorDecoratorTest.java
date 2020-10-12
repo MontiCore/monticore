@@ -107,13 +107,13 @@ public class SymbolTableCreatorDelegatorDecoratorTest extends DecoratorTestCase 
 
   @Test
   public void testConstructor() {
-    ASTCDConstructor cdConstructor = symTabCreator.getCDConstructors(0);
+    ASTCDConstructor cdConstructor = symTabCreator.getCDConstructor(0);
     assertDeepEquals(PUBLIC, cdConstructor.getModifier());
     assertEquals("AutomatonSymbolTableCreatorDelegator", cdConstructor.getName());
 
     assertEquals(1, cdConstructor.sizeCDParameters());
-    assertDeepEquals(AUTOMATON_GLOBAL_SCOPE, cdConstructor.getCDParameters(0).getMCType());
-    assertEquals("globalScope", cdConstructor.getCDParameters(0).getName());
+    assertDeepEquals(AUTOMATON_GLOBAL_SCOPE, cdConstructor.getCDParameter(0).getMCType());
+    assertEquals("globalScope", cdConstructor.getCDParameter(0).getName());
 
 
     assertTrue(cdConstructor.isEmptyException());
@@ -147,7 +147,7 @@ public class SymbolTableCreatorDelegatorDecoratorTest extends DecoratorTestCase 
 
   @Test
   public void testMethods() {
-    assertEquals(1, symTabCreator.getCDMethodsList().size());
+    assertEquals(1, symTabCreator.getCDMethodList().size());
   }
 
   @Test
@@ -157,8 +157,8 @@ public class SymbolTableCreatorDelegatorDecoratorTest extends DecoratorTestCase 
     assertDeepEquals("de.monticore.codegen.symboltable.automaton._symboltable.IAutomatonArtifactScope", method.getMCReturnType().getMCType());
 
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(AST_AUTOMATON, method.getCDParameters(0).getMCType());
-    assertEquals("rootNode", method.getCDParameters(0).getName());
+    assertDeepEquals(AST_AUTOMATON, method.getCDParameter(0).getMCType());
+    assertEquals("rootNode", method.getCDParameter(0).getName());
   }
 
   @Test

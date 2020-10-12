@@ -20,10 +20,10 @@ public class AbstractProdsToCDClasses implements
       Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink) {
     for (Link<ASTMCGrammar, ASTCDDefinition> link : rootLink.getLinks(ASTMCGrammar.class,
         ASTCDDefinition.class)) {
-      for (ASTAbstractProd abstractProd : link.source().getAbstractProdsList()) {
+      for (ASTAbstractProd abstractProd : link.source().getAbstractProdList()) {
         ASTCDClass cdClass = CD4AnalysisNodeFactory.createASTCDClass();
         cdClass.setModifier(CD4AnalysisNodeFactory.createASTModifier());
-        link.target().getCDClasssList().add(cdClass);
+        link.target().getCDClassList().add(cdClass);
         new Link<>(abstractProd, cdClass, link);
       }
     }

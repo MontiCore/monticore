@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
  * for example:
  * A = names:Name* Name*;
  * is not allowed because both definition are merged into the same attribute but create different method names
- * form names:Name* e.g. the method name getNamesList() is created
+ * form names:Name* e.g. the method name getNameList() is created
  * but from Name* e.g. the method name getNameList() is created
  * <p>
  * this does not fit together and is therefore forbidden

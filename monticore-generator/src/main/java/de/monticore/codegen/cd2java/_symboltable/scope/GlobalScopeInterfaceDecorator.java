@@ -14,17 +14,18 @@ import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCSetType;
-import net.sourceforge.plantuml.Log;
+import de.se_rwth.commons.logging.Log;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
-import static de.monticore.codegen.cd2java._symboltable.scope.GlobalScopeClassDecorator.LOAD_MODELS_FOR;
+import static de.monticore.codegen.cd2java._symboltable.scope.GlobalScopeClassDecorator.LOAD;
 
 /**
  * creates a globalScope class from a grammar
@@ -88,19 +89,20 @@ public class GlobalScopeInterfaceDecorator
         .addInterface(symbolTableService.getScopeInterfaceType())
         .addAllCDMethods(createCalculateModelNameMethods(symbolClasses))
         .addAllCDMethods(createModelFileExtensionAttributeMethods())
+        .addAllCDMethods(createSymbolFileExtensionMethods())
         .addAllCDMethods(resolvingDelegateMethods)
         .addAllCDMethods(createResolveAdaptedMethods(symbolClasses))
         .addAllCDMethods(createResolveAdaptedSuperMethods())
         .addAllCDMethods(createResolveMethods(symbolClasses, definitionName))
         .addAllCDMethods(createSuperProdResolveMethods(definitionName))
         .addAllCDMethods(createEnclosingScopeMethods(globalScopeName))
-        .addCDMethods(createGetNameMethod(globalScopeName))
-        .addCDMethods(createIsPresentNameMethod())
-        .addCDMethods(creatCheckIfContinueAsSubScopeMethod())
-        .addCDMethods(createGetRealThisMethod(globalScopeInterfaceName))
-        .addCDMethods(createAddLoadedFileMethod())
-        .addCDMethods(createClearLoadedFilesMethod())
-        .addCDMethods(createIsFileLoadedMethod())
+        .addCDMethod(createGetNameMethod(globalScopeName))
+        .addCDMethod(createIsPresentNameMethod())
+        .addCDMethod(creatCheckIfContinueAsSubScopeMethod())
+        .addCDMethod(createGetRealThisMethod(globalScopeInterfaceName))
+        .addCDMethod(createAddLoadedFileMethod())
+        .addCDMethod(createClearLoadedFilesMethod())
+        .addCDMethod(createIsFileLoadedMethod())
         .build();
   }
 
@@ -340,7 +342,7 @@ public class GlobalScopeInterfaceDecorator
 
   protected ASTCDMethod createLoadModelsForMethod(String className,
                                                   ASTCDParameter nameParameter, String definitionName) {
-    String methodName = String.format(LOAD_MODELS_FOR, className);
+    String methodName = String.format(LOAD, className);
     return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, methodName, nameParameter);
   }
 
@@ -424,6 +426,16 @@ public class GlobalScopeInterfaceDecorator
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createBooleanType(), "checkIfContinueAsSubScope", modelNameParameter);
     this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return false;"));
     return method;
+  }
+
+  protected List<ASTCDMethod> createSymbolFileExtensionMethods(){
+    List<ASTCDMethod> methods = Lists.newArrayList();
+    //set
+    ASTCDParameter symbolFileExtensionParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createStringType(), "symbolFileExtension");
+    methods.add(getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, "setSymbolFileExtension", symbolFileExtensionParameter));
+    //get
+    methods.add(getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, getMCTypeFacade().createStringType(), "getSymbolFileExtension"));
+    return methods;
   }
 
   public boolean isGlobalScopeInterfaceTop() {

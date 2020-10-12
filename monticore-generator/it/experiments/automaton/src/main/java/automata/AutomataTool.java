@@ -95,9 +95,7 @@ public class AutomataTool {
 
     // store artifact scope and its symbols
     AutomataScopeDeSer deser = new AutomataScopeDeSer();
-    deser.setSymbolFileExtension("autsym");
-    deser.store(modelTopScope, Paths.get(args[1]));
-    Log.info("Symbol table stored in " + args[1] +".", "AutomataTool");
+    deser.store(modelTopScope, args[1]);
 
     // analyze the model with a visitor
     CountStates cs = new CountStates();

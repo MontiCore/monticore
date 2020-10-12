@@ -20,14 +20,14 @@ public class AttributeInScopeRuleToCDAttribute implements
 
     for (Link<ASTScopeRule, ASTCDClass> link : rootLink.getLinks(ASTScopeRule.class,
             ASTCDClass.class)) {
-      for (ASTAdditionalAttribute attributeInAST : link.source().getAdditionalAttributesList()) {
+      for (ASTAdditionalAttribute attributeInAST : link.source().getAdditionalAttributeList()) {
         createAttributeLink(attributeInAST, link);
       }
     }
 
     for (Link<ASTScopeRule, ASTCDInterface> link : rootLink.getLinks(ASTScopeRule.class,
             ASTCDInterface.class)) {
-      for (ASTAdditionalAttribute attributeInAST : link.source().getAdditionalAttributesList()) {
+      for (ASTAdditionalAttribute attributeInAST : link.source().getAdditionalAttributeList()) {
         createAttributeLink(attributeInAST, link);
       }
     }
@@ -39,7 +39,7 @@ public class AttributeInScopeRuleToCDAttribute implements
     ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
     cdAttribute.setName(attributeInAST.getName());
     cdAttribute.setModifier(PROTECTED.build());
-    link.target().getCDAttributesList().add(cdAttribute);
+    link.target().getCDAttributeList().add(cdAttribute);
     new Link<>(attributeInAST, cdAttribute, link);
   }
 }

@@ -119,7 +119,7 @@ public class Grammar_WithConceptsPrettyPrinter implements Grammar_WithConceptsVi
   @Override
   public void handle(ASTAction node) {
     CommentPrettyPrinter.printPreComments(node, printer);
-    node.getMCBlockStatementsList().stream().forEach(a -> a.accept(getRealThis()));
+    node.getMCBlockStatementList().stream().forEach(a -> a.accept(getRealThis()));
     CommentPrettyPrinter.printPostComments(node, printer);
   }
 
@@ -128,7 +128,7 @@ public class Grammar_WithConceptsPrettyPrinter implements Grammar_WithConceptsVi
     CommentPrettyPrinter.printPreComments(node, printer);
     printer.print("<");
     String sep = "";
-    for (ASTMCTypeArgument t :node.getMCTypeArgumentsList()) {
+    for (ASTMCTypeArgument t :node.getMCTypeArgumentList()) {
       printer.print(sep);
       t.accept(getRealThis());
       sep = ", ";

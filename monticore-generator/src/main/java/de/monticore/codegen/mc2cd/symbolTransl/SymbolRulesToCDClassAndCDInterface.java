@@ -37,7 +37,7 @@ public class SymbolRulesToCDClassAndCDInterface implements UnaryOperator<Link<AS
 
   private void addASTRuleLink(Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink, Link<? extends ASTProd, ASTCDClass> link,
                               Set<ASTSymbolRule> matchedASTRules) {
-    rootLink.source().getSymbolRulesList().stream()
+    rootLink.source().getSymbolRuleList().stream()
         .filter(astRule -> astRule.getType().equals(link.source().getName()))
         .forEach(matchedASTRule -> {
           matchedASTRules.add(matchedASTRule);
@@ -48,14 +48,14 @@ public class SymbolRulesToCDClassAndCDInterface implements UnaryOperator<Link<AS
   private void createLinksForUnmatchedASTRules(Set<ASTSymbolRule> matchedASTRules,
                                                Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink) {
 
-    for (ASTSymbolRule symbolRule : rootLink.source().getSymbolRulesList()) {
+    for (ASTSymbolRule symbolRule : rootLink.source().getSymbolRuleList()) {
       if (!matchedASTRules.contains(symbolRule)) {
         ASTCDClass cdClass = CD4AnalysisNodeFactory.createASTCDClass();
         cdClass.setModifier(CD4AnalysisNodeFactory.createASTModifier());
 
         Link<ASTMCGrammar, ASTCDDefinition> parentLink = Iterables.getOnlyElement(rootLink
             .getLinks(ASTMCGrammar.class, ASTCDDefinition.class));
-        parentLink.target().getCDClasssList().add(cdClass);
+        parentLink.target().getCDClassList().add(cdClass);
         new Link<>(symbolRule, cdClass, parentLink);
       }
     }

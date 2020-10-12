@@ -22,7 +22,7 @@ public class GrammarInheritanceCycle implements GrammarASTMCGrammarCoCo {
   @Override
   public void check(ASTMCGrammar a) {
     for(ASTGrammarReference ref : a.getSupergrammarList()) {
-      if (Names.getQualifiedName(ref.getNamesList()).equals(
+      if (Names.getQualifiedName(ref.getNameList()).equals(
           Names.getQualifiedName(a.getPackageList()) +"."+ a.getName())) {
         Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, a.getName()),
             a.get_SourcePositionStart());

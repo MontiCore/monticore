@@ -2,11 +2,9 @@
 
 package de.monticore.prettyprint;
 
-import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.javalight._ast.*;
 import de.monticore.javalight._visitor.JavaLightVisitor;
 import de.monticore.statements.prettyprint.MCCommonStatementsPrettyPrinter;
-import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 
 import java.util.Iterator;
 
@@ -26,17 +24,6 @@ public class JavaLightPrettyPrinter extends MCCommonStatementsPrettyPrinter impl
   protected void printNode(String s) {
     getPrinter().print(s);
   }
-
-  @Override
-  public void handle(ASTClassBlock a) {
-    CommentPrettyPrinter.printPreComments(a, getPrinter());
-    if (a.isStatic()) {
-      getPrinter().print("static ");
-    }
-    a.getMCJavaBlock().accept(getRealThis());
-    CommentPrettyPrinter.printPostComments(a, getPrinter());
-  }
-
 
   @Override
   public void handle(ASTMethodDeclaration a) {
@@ -139,23 +126,13 @@ public class JavaLightPrettyPrinter extends MCCommonStatementsPrettyPrinter impl
   @Override
   public void handle(ASTFormalParameterListing a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
-    printJavaLightList(a.getFormalParameterList().iterator(), ",");
+    printSeparated(a.getFormalParameterList().iterator(), ",");
     if (!a.getFormalParameterList().isEmpty() && a.isPresentLastFormalParameter()) {
       getPrinter().print(",");
     }
     if (a.isPresentLastFormalParameter()) {
       a.getLastFormalParameter().accept(getRealThis());
     }
-    CommentPrettyPrinter.printPostComments(a, getPrinter());
-  }
-
-  @Override
-  public void handle(ASTFormalParameter a) {
-    CommentPrettyPrinter.printPreComments(a, getPrinter());
-    printSeparated(a.getJavaModifierList().iterator(), " ");
-    a.getMCType().accept(getRealThis());
-    getPrinter().print(" ");
-    a.getDeclaratorId().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
 
@@ -219,15 +196,6 @@ public class JavaLightPrettyPrinter extends MCCommonStatementsPrettyPrinter impl
     }
     getPrinter().print(" ");
     a.getArrayInit().accept(getRealThis());
-    CommentPrettyPrinter.printPostComments(a, getPrinter());
-  }
-
-  @Override
-  public void handle(ASTEnhancedForControl a) {
-    CommentPrettyPrinter.printPreComments(a, getPrinter());
-    a.getFormalParameter().accept(getRealThis());
-    getPrinter().print(": ");
-    a.getExpression().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
 

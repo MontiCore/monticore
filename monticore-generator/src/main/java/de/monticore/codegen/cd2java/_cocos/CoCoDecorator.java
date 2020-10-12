@@ -52,19 +52,19 @@ public class CoCoDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCo
 
     ASTCDDefinition cocoCD = CD4AnalysisMill.cDDefinitionBuilder()
         .setName(input.getCDDefinition().getName())
-        .addCDClasss(cocoCheckerDecorator.decorate(input))
+        .addCDClass(cocoCheckerDecorator.decorate(input))
         .addAllCDInterfaces(cocoInterfaceDecorator.decorate(input.getCDDefinition()))
         .build();
 
     // change the package to _coco
-    for (ASTCDClass ast : cocoCD.getCDClasssList()) {
+    for (ASTCDClass ast : cocoCD.getCDClassList()) {
       this.replaceTemplate(CoreTemplates.PACKAGE, ast, createPackageHookPoint(cocoPackage));
       if (ast.isPresentModifier()) {
         this.replaceTemplate(ANNOTATIONS, ast, createAnnotationsHookPoint(ast.getModifier()));
       }
     }
 
-    for (ASTCDInterface ast : cocoCD.getCDInterfacesList()) {
+    for (ASTCDInterface ast : cocoCD.getCDInterfaceList()) {
       this.replaceTemplate(CoreTemplates.PACKAGE, ast, createPackageHookPoint(cocoPackage));
       if (ast.isPresentModifier()) {
         this.replaceTemplate(ANNOTATIONS, ast, createAnnotationsHookPoint(ast.getModifier()));

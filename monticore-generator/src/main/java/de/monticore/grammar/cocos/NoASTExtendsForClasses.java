@@ -45,7 +45,7 @@ public class NoASTExtendsForClasses implements GrammarASTMCGrammarCoCo {
       }
     }
     
-    for (ASTASTRule rule : a.getASTRulesList()) {
+    for (ASTASTRule rule : a.getASTRuleList()) {
       if (allProds.containsKey(rule.getType())) {
         ProdSymbol prod = allProds.get(rule.getType());
         if (prod.isClass()) {
