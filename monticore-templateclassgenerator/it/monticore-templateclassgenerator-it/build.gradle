@@ -14,7 +14,7 @@ plugins {
 }
 
 ext.mc_version = '6.5.0-SNAPSHOT'
-ext.junit_version = '4.12'
+ext.junit_version = '4.13.1'
 ext.commons_version = '1.7.9'
 ext.javaDSL_version = '4.3.17'
 
