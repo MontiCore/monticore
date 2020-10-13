@@ -1,8 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._symboltable.symbol;
 
+import afu.org.checkerframework.checker.igj.qual.I;
+import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
 import de.monticore.cd.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
+import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._symboltable.symbol.symbolsurrogatemutator.MandatoryMutatorSymbolSurrogateDecorator;
@@ -10,6 +15,9 @@ import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
+import de.monticore.types.prettyprint.MCFullGenericTypesPrettyPrinter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,7 +91,7 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
     nameMethods.addAll(symbolSurrogateMethodDecorator.decorate(nameAttribute));
 
     ASTCDAttribute enclosingScopeAttribute = createEnclosingScopeAttribute(scopeInterfaceType);
-    List<ASTCDMethod> enclosingScopeMethods = symbolSurrogateMethodDecorator.decorate(enclosingScopeAttribute);
+    List<ASTCDMethod> enclosingScopeMethods = Lists.newArrayList(createSetEnclosingScopeMethod(enclosingScopeAttribute, symbolTableService.getScopeInterfaceSimpleName()));
     enclosingScopeMethods.add(createGetEnclosingScopeMethod(enclosingScopeAttribute));
 
     ASTCDClassBuilder builder = CD4AnalysisMill.cDClassBuilder()
@@ -92,12 +100,21 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
             .setSuperclass(getMCTypeFacade()
             .createQualifiedType(symbolTableService.getSymbolFullName(symbolInput)))
             .addCDConstructor(createConstructor(symbolSurrogateSimpleName))
+            .addAllCDMethods(nameMethods)
             .addAllCDMethods(delegateSymbolRuleAttributeMethods)
             .addAllCDMethods(delegateSymbolRuleMethods);
     return builder
             .addCDAttribute(delegateAttribute)
+            .addAllCDMethods(enclosingScopeMethods)
             .addCDMethod(createLazyLoadDelegateMethod(symbolSurrogateSimpleName, symbolFullName, simpleName, scopeInterfaceType))
             .build();
+  }
+
+  protected ASTCDMethod createSetEnclosingScopeMethod(ASTCDAttribute enclosingScopeAttribute, String scopeName) {
+    ASTCDParameter param = getCDParameterFacade().createParameter(enclosingScopeAttribute.getMCType(), "enclosingScope");
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, "setEnclosingScope", param);
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "SetEnclosingScope4SymbolSurrogate", enclosingScopeAttribute, scopeName));
+    return method;
   }
 
   protected ASTCDConstructor createConstructor(String symbolSurrogateClass) {
@@ -117,7 +134,7 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
 
   protected ASTCDMethod createGetEnclosingScopeMethod(ASTCDAttribute enclosingScopeAttribute){
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, enclosingScopeAttribute.getMCType(), "getEnclosingScope");
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "GetEnclosingScopeSymbolSurrogate"));
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "GetEnclosingScopeSymbolSurrogate", symbolTableService.getScopeInterfaceSimpleName()));
     return method;
   }
 
