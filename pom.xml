@@ -46,7 +46,7 @@
     <jgrapht.version>0.9.1</jgrapht.version>
     <jline.version>2.12</jline.version>
     <jsr305.version>3.0.0</jsr305.version>
-    <junit.version>4.12</junit.version>
+    <junit.version>4.13.1</junit.version>
     <logback.version>1.1.2</logback.version>
     <maven-artifact.version>3.2.3</maven-artifact.version>
     <maven-core.version>3.2.3</maven-core.version>
