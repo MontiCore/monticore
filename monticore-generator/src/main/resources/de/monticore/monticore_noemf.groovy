@@ -112,6 +112,10 @@ for (astGrammar in getParsedGrammars()) {
             decoratedVisitorCD, decoratedSymbolTableCd, handcodedPath)
   generateFromCD(glex, astClassDiagram, decoratedMillCD, out, handcodedPath)
 
+  //decorate and generate CD for the '_auxiliary' package
+  decoratedAuxiliaryCD = decorateAuxiliary(glex, cdScope, astClassDiagram, decoratedASTClassDiagramm, handcodedPath)
+  generateFromCD(glex, astClassDiagram, decoratedAuxiliaryCD, out, handcodedPath)
+
   // report the full AST incl. Symbols diagrams
   reportCD(astClassDiagram, decoratedASTClassDiagramm, decoratedSymbolTableCd, scopeClassDiagramm, report)
 
