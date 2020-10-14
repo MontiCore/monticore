@@ -119,8 +119,12 @@ public class GlobalScopeInterfaceDecorator
   }
 
   private List<ASTMCQualifiedType> getSuperGlobalScopeInterfaces() {
+    return getSuperGlobalScopeInterfaces(symbolTableService.getCDSymbol());
+  }
+
+  protected List<ASTMCQualifiedType> getSuperGlobalScopeInterfaces(CDDefinitionSymbol symbol){
     List<ASTMCQualifiedType> result = new ArrayList<>();
-    for (CDDefinitionSymbol superGrammar : symbolTableService.getSuperCDsDirect()) {
+    for (CDDefinitionSymbol superGrammar : symbolTableService.getSuperCDsDirect(symbol)) {
       if (!superGrammar.isPresentAstNode()) {
         Log.error("0xA4323 Unable to load AST of '" + superGrammar.getFullName()
             + "' that is supergrammar of '" + symbolTableService.getCDName() + "'.");
@@ -129,6 +133,8 @@ public class GlobalScopeInterfaceDecorator
       if (symbolTableService.hasStartProd(superGrammar.getAstNode())
           ||!symbolTableService.getSymbolDefiningSuperProds(superGrammar).isEmpty() ) {
         result.add(symbolTableService.getGlobalScopeInterfaceType(superGrammar));
+      }else{
+        result.addAll(getSuperGlobalScopeInterfaces(superGrammar));
       }
     }
     if (result.isEmpty()) {

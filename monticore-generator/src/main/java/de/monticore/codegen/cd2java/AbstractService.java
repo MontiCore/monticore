@@ -450,12 +450,12 @@ public class AbstractService<T extends AbstractService> {
     if (astcdDefinition.isPresentModifier() && hasStartProdStereotype(astcdDefinition.getModifier())) {
       return getStartProdValue(astcdDefinition.getModifier());
     }
-    for (ASTCDClass prod : astcdDefinition.getCDClasssList()) {
+    for (ASTCDClass prod : astcdDefinition.getCDClassList()) {
       if (hasStereotype(prod.getModifier(), MC2CDStereotypes.START_PROD)) {
         return Optional.of(getCDSymbol().getPackageName() + "." + getCDName() + "." + prod.getName());
       }
     }
-    for (ASTCDInterface prod : astcdDefinition.getCDInterfacesList()) {
+    for (ASTCDInterface prod : astcdDefinition.getCDInterfaceList()) {
       if (hasStereotype(prod.getModifier(), MC2CDStereotypes.START_PROD)) {
         return Optional.of(getCDSymbol().getPackageName() + "." + getCDName() + "." + prod.getName());
       }
@@ -486,12 +486,12 @@ public class AbstractService<T extends AbstractService> {
     if (astcdDefinition.isPresentModifier() && hasStartProdStereotype(astcdDefinition.getModifier())) {
       return true;
     }
-    for (ASTCDClass prod : astcdDefinition.getCDClasssList()) {
+    for (ASTCDClass prod : astcdDefinition.getCDClassList()) {
       if (hasStereotype(prod.getModifier(), MC2CDStereotypes.START_PROD)) {
         return true;
       }
     }
-    for (ASTCDInterface prod : astcdDefinition.getCDInterfacesList()) {
+    for (ASTCDInterface prod : astcdDefinition.getCDInterfaceList()) {
       if (hasStereotype(prod.getModifier(), MC2CDStereotypes.START_PROD)) {
         return true;
       }

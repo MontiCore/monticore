@@ -152,8 +152,12 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     return getArtifactScopeInterfaceFullName(getCDSymbol());
   }
 
+  public ASTMCQualifiedType getArtifactScopeInterfaceType(CDDefinitionSymbol cdSymbol) {
+    return getMCTypeFacade().createQualifiedType(getArtifactScopeInterfaceFullName(cdSymbol));
+  }
+
   public ASTMCQualifiedType getArtifactScopeInterfaceType() {
-    return getMCTypeFacade().createQualifiedType(getArtifactScopeInterfaceFullName());
+    return getArtifactScopeInterfaceType(getCDSymbol());
   }
 
   /**
