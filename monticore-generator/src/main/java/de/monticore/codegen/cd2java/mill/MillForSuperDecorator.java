@@ -15,7 +15,6 @@ import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.StringTransformations;
@@ -62,7 +61,7 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
       ASTMCQualifiedType superclass = this.getMCTypeFacade().createQualifiedType(
           basePackage + superSymbol.getName().toLowerCase() + "." + superSymbol.getName() + MillConstants.MILL_SUFFIX);
 
-      List<ASTCDMethod> correctScopeMethods = createScopeBuilder(basePackage + superSymbol.getName(), service.hasStartProd(superSymbol.getAstNode()), service.getCDSymbol().getPackageName(), service.getCDName());
+      List<ASTCDMethod> correctScopeMethods = createScopeMethods(basePackage + superSymbol.getName(), service.hasStartProd(superSymbol.getAstNode()), service.getCDSymbol().getPackageName()+ ".", service.getCDName());
 
       superMills.add(CD4AnalysisMill.cDClassBuilder()
           .setModifier(PUBLIC.build())
@@ -147,33 +146,34 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
     firstClasses.addAll(l.values());
   }
 
-  public List<ASTCDMethod> createScopeBuilder(String fullSuperSymbolName, boolean superSymbolHasStartProd, String packageName, String grammarName){
+  public List<ASTCDMethod> createScopeMethods(String fullSuperSymbolName, boolean superSymbolHasStartProd, String packageName, String grammarName){
     List<ASTCDMethod> methods = Lists.newArrayList();
     //if the super symbol does not have a start prod the mill of the super grammar (the superclass of this class) does not have methods for the artifactscope and globalscope
     String[] nameParts = fullSuperSymbolName.split("\\.");
     String superSymbolSimpleName = nameParts[nameParts.length-1];
-    if(superSymbolHasStartProd){
+    if(superSymbolHasStartProd && service.hasStartProd()){
       //additionally create scope builder for artifact and global scope
-      String artifactScopeBuilderName = packageName + "." + grammarName.toLowerCase() + "." + SYMBOL_TABLE_PACKAGE + "." + grammarName + ARTIFACT_PREFIX + SCOPE_SUFFIX + BUILDER_SUFFIX;
-      String artifactScopeMethodName = "_"+StringTransformations.uncapitalize(superSymbolSimpleName) + ARTIFACT_PREFIX + SCOPE_SUFFIX + BUILDER_SUFFIX;
-      ASTCDMethod artifactScopeBuilderMethod = getCDMethodFacade().createMethod(PROTECTED, getMCTypeFacade().createQualifiedType(artifactScopeBuilderName), artifactScopeMethodName);
-      this.replaceTemplate(EMPTY_BODY, artifactScopeBuilderMethod, new TemplateHookPoint("mill.ProtectedBuilderMethod", artifactScopeBuilderName));
-      methods.add(artifactScopeBuilderMethod);
-
-      String globalScopeBuilderName = packageName + "." + grammarName.toLowerCase() + "." + SYMBOL_TABLE_PACKAGE + "." + grammarName + GLOBAL_SUFFIX + SCOPE_SUFFIX + BUILDER_SUFFIX;
-      String globalScopeMethodName = "_"+StringTransformations.uncapitalize(superSymbolSimpleName) + GLOBAL_SUFFIX + SCOPE_SUFFIX + BUILDER_SUFFIX;
-      ASTCDMethod globalScopeBuilderMethod = getCDMethodFacade().createMethod(PROTECTED, getMCTypeFacade().createQualifiedType(globalScopeBuilderName), globalScopeMethodName);
-      this.replaceTemplate(EMPTY_BODY, globalScopeBuilderMethod, new TemplateHookPoint("mill.ProtectedBuilderMethod", globalScopeBuilderName));
-      methods.add(globalScopeBuilderMethod);
+      methods.add(getScopeMethods(packageName, grammarName, superSymbolSimpleName, ARTIFACT_PREFIX));
+      methods.add(getScopeMethods(packageName, grammarName, superSymbolSimpleName, GLOBAL_SUFFIX));
     }
     //create scope builder for normal scope
-    String scopeBuilderName = packageName + "." + grammarName.toLowerCase() + "." + SYMBOL_TABLE_PACKAGE + "." + grammarName + SCOPE_SUFFIX+ BUILDER_SUFFIX;
-    String scopeMethodName = "_" + StringTransformations.uncapitalize(superSymbolSimpleName) + SCOPE_SUFFIX + BUILDER_SUFFIX;
-    ASTCDMethod scopeBuilderMethod = getCDMethodFacade().createMethod(PROTECTED, getMCTypeFacade().createQualifiedType(scopeBuilderName), scopeMethodName);
-    this.replaceTemplate(EMPTY_BODY, scopeBuilderMethod, new TemplateHookPoint("mill.ProtectedBuilderMethod", scopeBuilderName));
-    methods.add(scopeBuilderMethod);
-
+    methods.add(getScopeMethods(packageName, grammarName, superSymbolSimpleName, ""));
     return methods;
+  }
+
+  protected ASTCDMethod getScopeMethods(String packageName, String grammarName, String superSymbolSimpleName, String prefix) {
+    if(packageName.equals(".")){
+      packageName = "";
+    }
+    String grammarMillName = service.getMillFullName();
+    String scopeClassName = grammarName + prefix + SCOPE_SUFFIX;;
+    String scopeInterfaceName = "I" + scopeClassName;
+    String returnType = packageName + grammarName.toLowerCase() + "." + SYMBOL_TABLE_PACKAGE + "." + scopeInterfaceName;
+    String methodName = "_"+ StringTransformations.uncapitalize(superSymbolSimpleName) + prefix + SCOPE_SUFFIX;
+    String scopeName = StringTransformations.uncapitalize(grammarName + prefix + SCOPE_SUFFIX);
+    ASTCDMethod scopeMethod = getCDMethodFacade().createMethod(PROTECTED, getMCTypeFacade().createQualifiedType(returnType), methodName);
+    this.replaceTemplate(EMPTY_BODY, scopeMethod, new TemplateHookPoint("mill.ProtectedScopeMethodForSuper", grammarMillName, scopeName));
+    return scopeMethod;
   }
 
 }
