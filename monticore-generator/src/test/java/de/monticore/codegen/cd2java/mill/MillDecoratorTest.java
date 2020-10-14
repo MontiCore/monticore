@@ -6,6 +6,7 @@ import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
 import com.google.common.collect.Lists;
 import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd.cd4analysis._cocos.CD4AnalysisASTCD4AnalysisNodeCoCo;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecorationHelper;
@@ -39,6 +40,7 @@ import de.monticore.codegen.cd2java.data.DataDecoratorUtil;
 import de.monticore.codegen.cd2java.data.InterfaceDecorator;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
+import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -204,7 +206,7 @@ public class MillDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeSize() {
-    assertEquals(27, millClass.sizeCDAttributes());
+    assertEquals(28, millClass.sizeCDAttributes());
   }
 
   @Test
@@ -231,21 +233,25 @@ public class MillDecoratorTest extends DecoratorTestCase {
     getAttributeBy("millAutomatonModelLoaderBuilder", millClass);
     getAttributeBy("millAutomatonSymbolTableCreatorBuilder", millClass);
     getAttributeBy("millAutomatonSymbolTableCreatorDelegatorBuilder", millClass);
+    getAttributeBy("automatonGlobalScope", millClass);
   }
 
   @Test
   public void testAttributeModifier() {
-    for (ASTCDAttribute astcdAttribute : millClass.getCDAttributesList()) {
-      assertTrue(astcdAttribute.isPresentModifier());
-      assertTrue(PROTECTED_STATIC.build().deepEquals(astcdAttribute.getModifier()));
+    for (ASTCDAttribute astcdAttribute : millClass.getCDAttributeList()) {
+      if(!astcdAttribute.getName().equals("automatonGlobalScope")) {
+        assertTrue(astcdAttribute.isPresentModifier());
+        assertTrue(PROTECTED_STATIC.build().deepEquals(astcdAttribute.getModifier()));
+      }
     }
+    assertDeepEquals(PROTECTED, getAttributeBy("automatonGlobalScope", millClass).getModifier());
   }
 
   @Test
   public void testConstructor() {
     assertEquals(1, millClass.sizeCDConstructors());
-    assertTrue(PROTECTED.build().deepEquals(millClass.getCDConstructors(0).getModifier()));
-    assertEquals("AutomatonMill", millClass.getCDConstructors(0).getName());
+    assertTrue(PROTECTED.build().deepEquals(millClass.getCDConstructor(0).getModifier()));
+    assertEquals("AutomatonMill", millClass.getCDConstructor(0).getName());
   }
 
   @Test
@@ -269,8 +275,8 @@ public class MillDecoratorTest extends DecoratorTestCase {
     assertEquals("initMe", initMe.getName());
     //test Parameters
     assertEquals(1, initMe.sizeCDParameters());
-    assertDeepEquals("AutomatonMill", initMe.getCDParameters(0).getMCType());
-    assertEquals("a", initMe.getCDParameters(0).getName());
+    assertDeepEquals("AutomatonMill", initMe.getCDParameter(0).getMCType());
+    assertEquals("a", initMe.getCDParameter(0).getName());
     //test ReturnType
     assertTrue(initMe.getMCReturnType().isPresentMCVoidType());
     //test Modifier
@@ -647,7 +653,13 @@ public class MillDecoratorTest extends DecoratorTestCase {
     assertDeepEquals("de.monticore.codegen.symboltable.automaton._symboltable.AutomatonGlobalScopeBuilder",
         fooBarBuilder.getMCReturnType().getMCType());
     //test Modifier
-    assertTrue(PUBLIC_STATIC.build().deepEquals(fooBarBuilder.getModifier()));
+    ASTModifier modifier = PUBLIC_STATIC.build();
+    modifier.setStereotype(CD4AnalysisNodeFactory
+        .createASTCDStereotype());
+    ASTCDStereoValue stereoValue = CD4AnalysisNodeFactory.createASTCDStereoValue();
+    stereoValue.setName(MC2CDStereotypes.DEPRECATED.toString());
+    modifier.getStereotype().getValueList().add(stereoValue);
+    assertTrue(modifier.deepEquals(fooBarBuilder.getModifier()));
   }
 
   @Test
@@ -662,7 +674,13 @@ public class MillDecoratorTest extends DecoratorTestCase {
     assertDeepEquals("de.monticore.codegen.symboltable.automaton._symboltable.AutomatonGlobalScopeBuilder",
         fooBarBuilder.getMCReturnType().getMCType());
     //test Modifier
-    assertTrue(PROTECTED.build().deepEquals(fooBarBuilder.getModifier()));
+    ASTModifier modifier = PROTECTED.build();
+    modifier.setStereotype(CD4AnalysisNodeFactory
+        .createASTCDStereotype());
+    ASTCDStereoValue stereoValue = CD4AnalysisNodeFactory.createASTCDStereoValue();
+    stereoValue.setName(MC2CDStereotypes.DEPRECATED.toString());
+    modifier.getStereotype().getValueList().add(stereoValue);
+    assertTrue(modifier.deepEquals(fooBarBuilder.getModifier()));
   }
 
 

@@ -47,17 +47,17 @@ component grammar BitExpressions extends ExpressionsBasis {
 
   LeftShiftExpression implements Expression <160>, ShiftExpression =
     left:Expression
-    shiftOp:"<<" {_aNode.setShiftOp("<<");}
+    shiftOp:"<<"
     right:Expression;
 
   RightShiftExpression implements Expression <160>, ShiftExpression =
     left:Expression
-    shiftOp:">>" {_aNode.setShiftOp(">>");}
+    shiftOp:">>"
     right:Expression;
 
   LogicalRightShiftExpression implements Expression <160>, ShiftExpression =
     left:Expression
-    shiftOp:">>>" {_aNode.setShiftOp(">>>");}
+    shiftOp:">>>"
     right:Expression;
     
 

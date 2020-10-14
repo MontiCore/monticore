@@ -53,13 +53,13 @@ public class CDSymbolTranslationTest {
     assertTrue(symbolClassSymbol.isEmptyCDConstructors());
     assertTrue(symbolClassSymbol.isPresentSuperclass());
 
-    ASTCDAttribute cdAttribute = symbolClassSymbol.getCDAttributes(0);
+    ASTCDAttribute cdAttribute = symbolClassSymbol.getCDAttribute(0);
     assertEquals("extraString", cdAttribute.getName());
     assertDeepEquals(String.class, cdAttribute.getMCType());
     assertTrue(cdAttribute.isPresentModifier());
     assertDeepEquals(CDModifier.PROTECTED, cdAttribute.getModifier());
 
-    ASTCDMethod cdMethod = symbolClassSymbol.getCDMethods(0);
+    ASTCDMethod cdMethod = symbolClassSymbol.getCDMethod(0);
     assertEquals("toString", cdMethod.getName());
     assertTrue(cdMethod.getMCReturnType().isPresentMCType());
     assertDeepEquals(String.class, cdMethod.getMCReturnType().getMCType());
@@ -84,7 +84,7 @@ public class CDSymbolTranslationTest {
     assertTrue(symbolClassSymbol.isEmptyCDConstructors());
     assertFalse(symbolClassSymbol.isPresentSuperclass());
 
-    ASTCDAttribute cdAttribute = symbolClassSymbol.getCDAttributes(0);
+    ASTCDAttribute cdAttribute = symbolClassSymbol.getCDAttribute(0);
     assertEquals("extraString", cdAttribute.getName());
     assertDeepEquals(String.class, cdAttribute.getMCType());
     assertTrue(cdAttribute.isPresentModifier());
@@ -104,7 +104,7 @@ public class CDSymbolTranslationTest {
     assertTrue(symbolClassSymbol.isEmptyInterface());
     assertTrue(symbolClassSymbol.isEmptyCDMethods());
 
-    ASTCDAttribute cdAttribute = symbolClassSymbol.getCDAttributes(0);
+    ASTCDAttribute cdAttribute = symbolClassSymbol.getCDAttribute(0);
     assertEquals("extraString", cdAttribute.getName());
     assertDeepEquals(String.class, cdAttribute.getMCType());
     assertTrue(cdAttribute.isPresentModifier());
@@ -118,7 +118,7 @@ public class CDSymbolTranslationTest {
     assertTrue(symbolClassSymbol.isEmptyInterface());
     assertTrue(symbolClassSymbol.isEmptyCDMethods());
 
-    ASTCDAttribute cdAttribute = symbolClassSymbol.getCDAttributes(0);
+    ASTCDAttribute cdAttribute = symbolClassSymbol.getCDAttribute(0);
     assertEquals("extraString", cdAttribute.getName());
     assertDeepEquals(String.class, cdAttribute.getMCType());
     assertTrue(cdAttribute.isPresentModifier());

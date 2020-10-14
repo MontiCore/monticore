@@ -9,5 +9,4 @@ ${tc.signature("component", "millFullName", "grammarName")}
 </#if>
   this.scopeDeSer = ${millFullName}
     .${grammarName?uncap_first}ScopeDeSerBuilder()
-    .setSymbolFileExtension(modelFileExtension + "sym")
     .build();

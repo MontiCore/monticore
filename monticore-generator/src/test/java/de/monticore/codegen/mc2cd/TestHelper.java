@@ -74,14 +74,14 @@ public class TestHelper {
     return new Grammar_WithConceptsGlobalScope(modelPath, "mc4");
   }
 
-  public static Optional<ASTCDClass> getCDClasss(ASTCDCompilationUnit cdCompilationUnit, String cdClassName) {
-    return cdCompilationUnit.getCDDefinition().getCDClasssList().stream()
+  public static Optional<ASTCDClass> getCDClass(ASTCDCompilationUnit cdCompilationUnit, String cdClassName) {
+    return cdCompilationUnit.getCDDefinition().getCDClassList().stream()
         .filter(cdClass -> cdClass.getName().equals(cdClassName))
         .findAny();
   }
 
-  public static Optional<ASTCDInterface> getCDInterfaces(ASTCDCompilationUnit cdCompilationUnit, String cdInterfaceName) {
-    return cdCompilationUnit.getCDDefinition().getCDInterfacesList().stream()
+  public static Optional<ASTCDInterface> getCDInterface(ASTCDCompilationUnit cdCompilationUnit, String cdInterfaceName) {
+    return cdCompilationUnit.getCDDefinition().getCDInterfaceList().stream()
         .filter(cdClass -> cdClass.getName().equals(cdInterfaceName))
         .findAny();
   }
@@ -94,10 +94,10 @@ public class TestHelper {
       return false;
     }
     ASTMCGenericType type = (ASTMCGenericType) typeRef;
-    if (type.getMCTypeArgumentsList().size() != 1) {
+    if (type.getMCTypeArgumentList().size() != 1) {
       return false;
     }
-    if (!type.getMCTypeArgumentsList().get(0).getMCTypeOpt().get()
+    if (!type.getMCTypeArgumentList().get(0).getMCTypeOpt().get()
             .printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()).equals(typeArg)) {
       return false;
     }

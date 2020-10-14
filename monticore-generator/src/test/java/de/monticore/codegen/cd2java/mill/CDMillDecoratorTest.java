@@ -80,10 +80,9 @@ public class CDMillDecoratorTest extends DecoratorTestCase {
     this.glex.setGlobalValue("service", new VisitorService(decoratedCompilationUnit));
 
     SymbolTableService symbolTableService = new SymbolTableService(decoratedCompilationUnit);
-    MillForSuperDecorator forSuperDecorator = new MillForSuperDecorator(this.glex, new ASTService(decoratedCompilationUnit));
     MillDecorator millDecorator = new MillDecorator(this.glex, symbolTableService);
 
-    CDMillDecorator cdMillDecorator = new CDMillDecorator(this.glex, millDecorator, forSuperDecorator);
+    CDMillDecorator cdMillDecorator = new CDMillDecorator(this.glex, millDecorator);
     this.millCD = cdMillDecorator.decorate(Lists.newArrayList(getASTCD(), getVisitorCD(), getSymbolCD()));
   }
 
@@ -212,16 +211,11 @@ public class CDMillDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testClassSize() {
-    assertEquals(2, millCD.getCDDefinition().sizeCDClasss());
+    assertEquals(1, millCD.getCDDefinition().sizeCDClasss());
   }
 
   @Test
   public void testMillClass() {
     ASTCDClass automatonMill = getClassBy("AutomatonMill", millCD);
-  }
-
-  @Test
-  public void testMillForSuperClass() {
-    ASTCDClass automatonMill = getClassBy("LexicalsMillForAutomaton", millCD);
   }
 }

@@ -12,7 +12,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.grammar.MCGrammarInfo;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
+import de.monticore.grammar.grammar_withconcepts._symboltable.IGrammar_WithConceptsGlobalScope;
 import de.monticore.io.paths.IterablePath;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
@@ -41,7 +41,7 @@ public class ParserGenerator {
   public static void generateFullParser(
           GlobalExtensionManagement glex,
           ASTMCGrammar astGrammar,
-          Grammar_WithConceptsGlobalScope symbolTable,
+          IGrammar_WithConceptsGlobalScope symbolTable,
           IterablePath handcodedPath,
           File targetDir)
   {
@@ -61,7 +61,7 @@ public class ParserGenerator {
   public static void generateParser(
           GlobalExtensionManagement glex,
           ASTMCGrammar astGrammar,
-          Grammar_WithConceptsGlobalScope symbolTable,
+          IGrammar_WithConceptsGlobalScope symbolTable,
           IterablePath handcodedPath,
           File targetDir) {
     generateParser(glex, astGrammar, symbolTable, handcodedPath, targetDir, true, Languages.JAVA);
@@ -80,7 +80,7 @@ public class ParserGenerator {
   public static void generateParser(
           GlobalExtensionManagement glex,
           ASTMCGrammar astGrammar,
-          Grammar_WithConceptsGlobalScope symbolTable,
+          IGrammar_WithConceptsGlobalScope symbolTable,
           IterablePath handcodedPath,
           File targetDir,
           boolean embeddedJavaCode,
@@ -137,7 +137,7 @@ public class ParserGenerator {
   public static void generateParserWrapper(
           GlobalExtensionManagement glex,
           ASTMCGrammar astGrammar,
-          Grammar_WithConceptsGlobalScope symbolTable,
+          IGrammar_WithConceptsGlobalScope symbolTable,
           IterablePath handcodedPath,
           File targetDir) {
     if (astGrammar.isComponent()) {

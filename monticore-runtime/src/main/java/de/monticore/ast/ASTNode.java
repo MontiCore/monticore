@@ -31,6 +31,7 @@ public interface ASTNode {
    *
    * @return Clone of current ASTNode with a parent which is equal to null
    */
+  @Deprecated
   default public ASTNode deepClone(ASTNode result) {
     Log.errorIfNull(result,
         "0xA4040 The argument ASTNode of the 'deepClone' method must not be null.");

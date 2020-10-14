@@ -82,9 +82,9 @@ public class DelegatorVisitorDecorator extends AbstractCreator<ASTCDCompilationU
         .setName(delegatorVisitorSimpleName)
         .setModifier(PUBLIC.build())
         .addInterface(getMCTypeFacade().createQualifiedType(visitorService.getInheritanceVisitorSimpleName()))
-        .addCDAttributes(getRealThisAttribute(delegatorVisitorSimpleName))
-        .addCDMethods(addGetRealThisMethod(delegatorVisitorSimpleName))
-        .addCDMethods(addSetRealThisMethods(visitorType, delegatorVisitorSimpleName, simpleVisitorName))
+        .addCDAttribute(getRealThisAttribute(delegatorVisitorSimpleName))
+        .addCDMethod(addGetRealThisMethod(delegatorVisitorSimpleName))
+        .addCDMethod(addSetRealThisMethods(visitorType, delegatorVisitorSimpleName, simpleVisitorName))
         .addAllCDAttributes(getVisitorAttributes(visitorFullNameList))
         .addAllCDMethods(addVisitorMethods(visitorFullNameList))
         .addAllCDMethods(createVisitorDelegatorMethods(definitionList))
@@ -170,8 +170,8 @@ public class DelegatorVisitorDecorator extends AbstractCreator<ASTCDCompilationU
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
     for (ASTCDDefinition astcdDefinition : definitionList) {
       String simpleVisitorName = visitorService.getVisitorSimpleName(astcdDefinition.getSymbol());
-      visitorMethods.addAll(createVisitorDelegatorClassMethods(astcdDefinition.getCDClasssList(), simpleVisitorName));
-      visitorMethods.addAll(createVisitorDelegatorInterfaceMethods(astcdDefinition.getCDInterfacesList(), simpleVisitorName));
+      visitorMethods.addAll(createVisitorDelegatorClassMethods(astcdDefinition.getCDClassList(), simpleVisitorName));
+      visitorMethods.addAll(createVisitorDelegatorInterfaceMethods(astcdDefinition.getCDInterfaceList(), simpleVisitorName));
       visitorMethods.addAll(createVisitorDelegatorSymbolMethods(astcdDefinition, simpleVisitorName));
       visitorMethods.addAll(createVisitorDelegatorScopeMethods(astcdDefinition, simpleVisitorName));
     }

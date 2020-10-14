@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public interface ASTProd extends ASTProdTOP {
   
-  default java.util.List<ASTSymbolDefinition> getSymbolDefinitionsList()  {
+  default java.util.List<ASTSymbolDefinition> getSymbolDefinitionList()  {
     return new ArrayList<ASTSymbolDefinition>();
  } 
     

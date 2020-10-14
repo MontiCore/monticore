@@ -88,7 +88,7 @@ public class SymbolTableCreatorDelegatorBuilderDecoratorTest extends DecoratorTe
 
   @Test
   public void testConstructor() {
-    ASTCDConstructor cdConstructor = builderClass.getCDConstructors(0);
+    ASTCDConstructor cdConstructor = builderClass.getCDConstructor(0);
     assertDeepEquals(PUBLIC, cdConstructor.getModifier());
     assertEquals("ASymbolTableCreatorDelegatorBuilder", cdConstructor.getName());
 
@@ -124,7 +124,7 @@ public class SymbolTableCreatorDelegatorBuilderDecoratorTest extends DecoratorTe
 
   @Test
   public void testMethods() {
-    assertEquals(6, builderClass.getCDMethodsList().size());
+    assertEquals(6, builderClass.getCDMethodList().size());
   }
 
   @Test
@@ -136,8 +136,8 @@ public class SymbolTableCreatorDelegatorBuilderDecoratorTest extends DecoratorTe
     assertDeepEquals(BUILDER_NAME, method.getMCReturnType().getMCType());
 
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(DEQUE_TYPE, method.getCDParameters(0).getMCType());
-    assertEquals("scopeStack", method.getCDParameters(0).getName());
+    assertDeepEquals(DEQUE_TYPE, method.getCDParameter(0).getMCType());
+    assertEquals("scopeStack", method.getCDParameter(0).getName());
   }
 
   @Test
@@ -160,8 +160,8 @@ public class SymbolTableCreatorDelegatorBuilderDecoratorTest extends DecoratorTe
     assertDeepEquals(BUILDER_NAME, method.getMCReturnType().getMCType());
 
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(I_A_GLOBAL_SCOPE, method.getCDParameters(0).getMCType());
-    assertEquals("globalScope", method.getCDParameters(0).getName());
+    assertDeepEquals(I_A_GLOBAL_SCOPE, method.getCDParameter(0).getMCType());
+    assertEquals("globalScope", method.getCDParameter(0).getName());
   }
 
   @Test

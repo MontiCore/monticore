@@ -89,8 +89,11 @@ public class MontiCoreCLI {
       fixedArgs.add(0, "-" + MontiCoreConfiguration.Options.GRAMMARS_SHORT.toString());
       args = fixedArgs.toArray(new String[fixedArgs.size()]);
     }
-    
-    CLIArguments arguments = CLIArguments.forArguments(args);
+
+    // Switch off the incremental generation
+    ArrayList<String> argsWithForce = Lists.newArrayList(args);
+    argsWithForce.add("-force");
+    CLIArguments arguments = CLIArguments.forArguments(argsWithForce.toArray(new String[argsWithForce.size()]));
     MontiCoreCLIConfiguration configuration = MontiCoreCLIConfiguration.fromArguments(arguments);
     
     if (arguments.asMap().containsKey(MontiCoreCLIConfiguration.Options.HELP.toString()) ||

@@ -42,6 +42,7 @@ import org.mockito.Mockito;
 
 import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -129,24 +130,24 @@ public class MillWithInheritanceTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeName() {
-    assertEquals("mill", millClass.getCDAttributes(0).getName());
-    assertEquals("millASTBlubBuilder", millClass.getCDAttributes(1).getName());
-    assertEquals("millASTBliBuilder", millClass.getCDAttributes(2).getName());
+    assertEquals("mill", millClass.getCDAttribute(0).getName());
+    assertEquals("millASTBlubBuilder", millClass.getCDAttribute(1).getName());
+    assertEquals("millASTBliBuilder", millClass.getCDAttribute(2).getName());
   }
 
   @Test
   public void testAttributeModifier() {
-    for (ASTCDAttribute astcdAttribute : millClass.getCDAttributesList()) {
-      assertTrue(astcdAttribute.isPresentModifier());
-      assertTrue(PROTECTED_STATIC.build().deepEquals(astcdAttribute.getModifier()));
+    for (ASTCDAttribute astcdAttribute : millClass.getCDAttributeList()) {
+        assertTrue(astcdAttribute.isPresentModifier());
+        assertTrue(PROTECTED_STATIC.build().deepEquals(astcdAttribute.getModifier()));
     }
   }
 
   @Test
   public void testConstructor() {
     assertEquals(1, millClass.sizeCDConstructors());
-    assertTrue(PROTECTED.build().deepEquals(millClass.getCDConstructors(0).getModifier()));
-    assertEquals("CGrammarMill", millClass.getCDConstructors(0).getName());
+    assertTrue(PROTECTED.build().deepEquals(millClass.getCDConstructor(0).getModifier()));
+    assertEquals("CGrammarMill", millClass.getCDConstructor(0).getName());
   }
 
   @Test
@@ -170,8 +171,8 @@ public class MillWithInheritanceTest extends DecoratorTestCase {
     assertEquals("initMe", initMe.getName());
     //test Parameters
     assertEquals(1, initMe.sizeCDParameters());
-    assertDeepEquals("CGrammarMill", initMe.getCDParameters(0).getMCType());
-    assertEquals("a", initMe.getCDParameters(0).getName());
+    assertDeepEquals("CGrammarMill", initMe.getCDParameter(0).getMCType());
+    assertEquals("a", initMe.getCDParameter(0).getName());
     //test ReturnType
     assertTrue(initMe.getMCReturnType().isPresentMCVoidType());
     //test Modifier

@@ -16,15 +16,12 @@ import static de.monticore.codegen.cd2java.CoreTemplates.*;
  */
 public class CDMillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, ASTCDCompilationUnit> {
 
-  protected final MillForSuperDecorator millForSuperDecorator;
   protected final MillDecorator millDecorator;
 
   public CDMillDecorator(final GlobalExtensionManagement glex,
-                         final MillDecorator millDecorator,
-                         final MillForSuperDecorator millForSuperDecorator) {
+                         final MillDecorator millDecorator) {
     super(glex);
     this.millDecorator = millDecorator;
-    this.millForSuperDecorator = millForSuperDecorator;
   }
 
   public ASTCDCompilationUnit decorate(final List<ASTCDCompilationUnit> cdList) {
@@ -32,7 +29,6 @@ public class CDMillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>,
 
     // decorate for mill classes
     ASTCDClass millClass = millDecorator.decorate(cdList);
-    List<ASTCDClass> millForSuperClasses = millForSuperDecorator.decorate(mainCD);
 
     // create package at the top level of the grammar package -> remove _ast package
     List<String> topLevelPackage = new ArrayList<>(mainCD.getPackageList());
@@ -40,11 +36,10 @@ public class CDMillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>,
 
     ASTCDDefinition astCD = CD4AnalysisMill.cDDefinitionBuilder()
         .setName(mainCD.getCDDefinition().getName())
-        .addCDClasss(millClass)
-        .addAllCDClasss(millForSuperClasses)
+        .addCDClass(millClass)
         .build();
 
-    for (ASTCDClass cdClass : astCD.getCDClasssList()) {
+    for (ASTCDClass cdClass : astCD.getCDClassList()) {
       this.replaceTemplate(PACKAGE, cdClass, createPackageHookPoint(topLevelPackage));
       if (cdClass.isPresentModifier()) {
         this.replaceTemplate(ANNOTATIONS, cdClass, createAnnotationsHookPoint(cdClass.getModifier()));
