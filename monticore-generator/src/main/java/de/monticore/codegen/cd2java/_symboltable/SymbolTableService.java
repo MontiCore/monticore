@@ -785,66 +785,6 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     }
   }
 
-  public Optional<String> getStartProd() {
-    if(this.getCDSymbol().isPresentAstNode()){
-      return getStartProd(this.getCDSymbol().getAstNode());
-    }
-    else return Optional.empty();
-  }
-
-  public Optional<String> getStartProd(ASTCDDefinition astcdDefinition) {
-    if (astcdDefinition.isPresentModifier() && hasStartProdStereotype(astcdDefinition.getModifier())) {
-      return getStartProdValue(astcdDefinition.getModifier());
-    }
-    for (ASTCDClass prod : astcdDefinition.getCDClasssList()) {
-      if (hasStereotype(prod.getModifier(), MC2CDStereotypes.START_PROD)) {
-        return Optional.of(getCDSymbol().getPackageName() + "." + getCDName() + "." + prod.getName());
-      }
-    }
-    for (ASTCDInterface prod : astcdDefinition.getCDInterfacesList()) {
-      if (hasStereotype(prod.getModifier(), MC2CDStereotypes.START_PROD)) {
-        return Optional.of(getCDSymbol().getPackageName() + "." + getCDName() + "." + prod.getName());
-      }
-    }
-    return Optional.empty();
-  }
-
-  public Optional<String> getStartProdASTFullName(ASTCDDefinition astcdDefinition) {
-    Optional<String> startProd = getStartProd(astcdDefinition);
-    if (startProd.isPresent()) {
-      String simpleName = Names.getSimpleName(startProd.get());
-      simpleName = simpleName.startsWith(AST_PREFIX) ? simpleName : AST_PREFIX + simpleName;
-      String startProdAstName = getQualifier(startProd.get()).toLowerCase() + "." + AST_PACKAGE + "." + simpleName;
-      return Optional.of(startProdAstName);
-    }
-    return Optional.empty();
-  }
-
-  /**
-   * methods which determine if a special stereotype is present
-   */
-
-  public boolean hasStartProd() {
-    return getStartProd().isPresent();
-  }
-
-  public boolean hasStartProd(ASTCDDefinition astcdDefinition) {
-    if (astcdDefinition.isPresentModifier() && hasStartProdStereotype(astcdDefinition.getModifier())) {
-      return true;
-    }
-    for (ASTCDClass prod : astcdDefinition.getCDClasssList()) {
-      if (hasStereotype(prod.getModifier(), MC2CDStereotypes.START_PROD)) {
-        return true;
-      }
-    }
-    for (ASTCDInterface prod : astcdDefinition.getCDInterfacesList()) {
-      if (hasStereotype(prod.getModifier(), MC2CDStereotypes.START_PROD)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
   public boolean hasComponentStereotype(ASTCDDefinition astcdDefinition) {
     return astcdDefinition.isPresentModifier() &&
         hasComponentStereotype(astcdDefinition.getModifier());
@@ -862,10 +802,6 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     return hasStereotype(modifier, MC2CDStereotypes.COMPONENT);
   }
 
-  public boolean hasStartProdStereotype(ASTModifier modifier) {
-    return hasStereotype(modifier, MC2CDStereotypes.START_PROD);
-  }
-
   public boolean hasShadowingStereotype(ASTModifier modifier) {
     return hasStereotype(modifier, MC2CDStereotypes.SHADOWING);
   }
@@ -876,14 +812,6 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
 
   public boolean hasOrderedStereotype(ASTModifier modifier) {
     return hasStereotype(modifier, MC2CDStereotypes.ORDERED);
-  }
-
-  public Optional<String> getStartProdValue(ASTModifier modifier) {
-    List<String> stereotypeValues = getStereotypeValues(modifier, MC2CDStereotypes.START_PROD);
-    if (!stereotypeValues.isEmpty()) {
-      return Optional.ofNullable(stereotypeValues.get(0));
-    }
-    return Optional.empty();
   }
 
   public String determineReturnType(ASTMCType type) {

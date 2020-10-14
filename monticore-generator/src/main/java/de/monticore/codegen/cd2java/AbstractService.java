@@ -21,6 +21,7 @@ import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.*;
 import static de.monticore.codegen.cd2java._ast.constants.ASTConstantsDecorator.LITERALS_SUFFIX;
 import static de.monticore.codegen.cd2java.mill.MillConstants.MILL_SUFFIX;
+import static de.se_rwth.commons.Names.getQualifier;
 
 public class AbstractService<T extends AbstractService> {
 
@@ -434,6 +435,78 @@ public class AbstractService<T extends AbstractService> {
 
   public String getMillFullName() {
     return getMillFullName(getCDSymbol());
+  }
+
+  public Optional<String> getStartProd() {
+    if(this.getCDSymbol().isPresentAstNode()){
+      return getStartProd(this.getCDSymbol().getAstNode());
+    }
+    else return Optional.empty();
+  }
+
+  public Optional<String> getStartProd(ASTCDDefinition astcdDefinition) {
+    if (astcdDefinition.isPresentModifier() && hasStartProdStereotype(astcdDefinition.getModifier())) {
+      return getStartProdValue(astcdDefinition.getModifier());
+    }
+    for (ASTCDClass prod : astcdDefinition.getCDClasssList()) {
+      if (hasStereotype(prod.getModifier(), MC2CDStereotypes.START_PROD)) {
+        return Optional.of(getCDSymbol().getPackageName() + "." + getCDName() + "." + prod.getName());
+      }
+    }
+    for (ASTCDInterface prod : astcdDefinition.getCDInterfacesList()) {
+      if (hasStereotype(prod.getModifier(), MC2CDStereotypes.START_PROD)) {
+        return Optional.of(getCDSymbol().getPackageName() + "." + getCDName() + "." + prod.getName());
+      }
+    }
+    return Optional.empty();
+  }
+
+  public Optional<String> getStartProdASTFullName(ASTCDDefinition astcdDefinition) {
+    Optional<String> startProd = getStartProd(astcdDefinition);
+    if (startProd.isPresent()) {
+      String simpleName = Names.getSimpleName(startProd.get());
+      simpleName = simpleName.startsWith(AST_PREFIX) ? simpleName : AST_PREFIX + simpleName;
+      String startProdAstName = getQualifier(startProd.get()).toLowerCase() + "." + AST_PACKAGE + "." + simpleName;
+      return Optional.of(startProdAstName);
+    }
+    return Optional.empty();
+  }
+
+  /**
+   * methods which determine if a special stereotype is present
+   */
+
+  public boolean hasStartProd() {
+    return getStartProd().isPresent();
+  }
+
+  public boolean hasStartProd(ASTCDDefinition astcdDefinition) {
+    if (astcdDefinition.isPresentModifier() && hasStartProdStereotype(astcdDefinition.getModifier())) {
+      return true;
+    }
+    for (ASTCDClass prod : astcdDefinition.getCDClasssList()) {
+      if (hasStereotype(prod.getModifier(), MC2CDStereotypes.START_PROD)) {
+        return true;
+      }
+    }
+    for (ASTCDInterface prod : astcdDefinition.getCDInterfacesList()) {
+      if (hasStereotype(prod.getModifier(), MC2CDStereotypes.START_PROD)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public boolean hasStartProdStereotype(ASTModifier modifier) {
+    return hasStereotype(modifier, MC2CDStereotypes.START_PROD);
+  }
+
+  public Optional<String> getStartProdValue(ASTModifier modifier) {
+    List<String> stereotypeValues = getStereotypeValues(modifier, MC2CDStereotypes.START_PROD);
+    if (!stereotypeValues.isEmpty()) {
+      return Optional.ofNullable(stereotypeValues.get(0));
+    }
+    return Optional.empty();
   }
 
 }
