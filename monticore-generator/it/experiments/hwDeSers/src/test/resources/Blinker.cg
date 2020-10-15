@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+graph Blinker {
+  initial vertex Off (black);
+  vertex BlinkBlue (0, 0, 204);
+
+  Off -> BlinkBlue;
+  BlinkBlue -> Off;
+}
+
