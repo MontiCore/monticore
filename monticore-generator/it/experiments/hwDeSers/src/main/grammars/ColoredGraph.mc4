@@ -1,0 +1,21 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+grammar ColoredGraph extends de.monticore.literals.MCCommonLiterals {
+
+  symbol scope Graph = "graph" Name "{" ( Vertex | Edge )* "}" ;
+
+  symbol Vertex = ["initial"]? "vertex" Name "(" Color ")" ";" ;
+
+  interface Color;
+
+  RGBColor implements Color = NatLiteral "," NatLiteral "," NatLiteral ;
+
+  NameColor implements Color  = Name;
+
+  Edge = s:Name@Vertex "-" ">"  t:Name@Vertex ";" ;
+
+  symbolrule Vertex = color:java.awt.Color initial:boolean;
+
+  scoperule = numberOfColors:int;
+
+}
