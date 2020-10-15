@@ -158,7 +158,7 @@ public class ArtifactScopeInterfaceDecorator extends AbstractCreator<ASTCDCompil
     ASTCDParameter parameterFoundSymbols = getCDParameterFacade().createParameter(getMCTypeFacade().createBooleanType(), FOUND_SYMBOLS_VAR);
     ASTCDParameter parameterName = getCDParameterFacade().createParameter(getMCTypeFacade().createStringType(), NAME_VAR);
     ASTCDParameter parameterModifier = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(ACCESS_MODIFIER), MODIFIER_VAR);
-    String globalScope = symbolTableService.getGlobalScopeFullName();
+    String globalScope = symbolTableService.getGlobalScopeInterfaceFullName();
 
     for (ASTCDType type : symbolProds) {
       Optional<String> definingSymbolFullName = symbolTableService.getDefiningSymbolFullName(type, definitionSymbol);
