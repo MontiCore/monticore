@@ -25,14 +25,24 @@ public class HooksTool extends TemplatesTool {
    */
   protected void initGlex() {
   super.initGlex();
+
+    // This replaces standardtemplate StatechartStateAttributes.ftl
+    // by our local MyStateAttributes.ftl
     glex.replaceTemplate("StatechartStateAttributes.ftl", 
             new TemplateHookPoint(        "MyStateAttributes.ftl"));
+
+    // This adds the decorator template MyStateGetter.ftl 
+    // after standardtemplate StatechartStateAttributes.ftl
+    // (even if it is also replaced)
     glex.setAfterTemplate("StatechartStateAttributes.ftl",
                 new TemplateHookPoint("MyStateGetter.ftl"));
+
+    // This fills (binds) explicitly defined hook points
+    // using a fixed string 
     glex.bindStringHookPoint(
         "<JavaBlock>?ConcreteState:handle", "count++;");
     glex.bindStringHookPoint("<Field>*ConcreteState", "int count;");
-    glex.bindStringHookPoint("<Field>*ConcreteState", "int count;");
+
   }
   
 }
