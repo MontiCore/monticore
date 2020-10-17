@@ -1,6 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore
 
+import com.google.common.hash.Hashing
+import com.google.common.io.Files
 import de.monticore.cli.MontiCoreCLI
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
@@ -270,6 +272,25 @@ public class MCTask extends DefaultTask {
         logger.info('Removed files:\n' + removed)
         return false
       }
+      // check whether local super grammars have changed
+      def grammarsUpToDate = true
+      inout.eachLine {
+        line -> if(line.startsWith('mc4:')){
+          def (grammarString,checksum) = line.toString().substring(4).tokenize( ' ' )
+          def grammarFile = new File(grammarString)
+          if(!grammarFile.exists()) { // deleted grammar -> generate
+            logger.info("Regenerating Code for "+ grammar + " : Grammar " + grammarString +  " does so longer exist.")
+            grammarsUpToDate = false
+            return
+          } else if(!Files.asByteSource(grammarFile).hash(Hashing.md5()).toString().equals(checksum.trim())){ 
+            // changed grammar -> generate
+            logger.info("Regenerating Code for "+ grammar + " : Grammar " + grammarString + " has changed")
+            grammarsUpToDate =  false
+            return
+          }
+        }
+      }
+      if(!grammarsUpToDate) {return false}
     } else { // no report -> generate
       logger.info("No previous generation report $inout found")
       return false

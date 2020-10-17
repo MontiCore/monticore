@@ -53,8 +53,8 @@ public class DeSerMap {
     primitiveDataTypes.put(createTypeConstant("float"), getNumberMember("Float"));
     primitiveDataTypes.put(createObjectType("java.lang.Float"), getNumberMember("Float"));
 
-    primitiveDataTypes.put(createTypeConstant("int"), getNumberMember("Long"));
-    primitiveDataTypes.put(createObjectType("java.lang.Integer"), getNumberMember("Long"));
+    primitiveDataTypes.put(createTypeConstant("int"), getNumberMember("Int"));
+    primitiveDataTypes.put(createObjectType("java.lang.Integer"), getNumberMember("Int"));
 
     primitiveDataTypes.put(createTypeConstant("long"), getNumberMember("Long"));
     primitiveDataTypes.put(createObjectType("java.lang.Long"), getNumberMember("Long"));
