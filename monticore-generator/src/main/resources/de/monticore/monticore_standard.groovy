@@ -3,29 +3,28 @@
 package de.monticore
 
 /*
- * This configuration file 
- * contains the standard workflow of MontiCore:
- * it mainly processes a grammar (and imported sub-grammars)
- * and produces a variety of outputs, such as 
+ * This configuration file contains the standard workflow of MontiCore:
+ * It mainly processes a grammar (and imported sub-grammars) and produces
+ * a variety of outputs, such as 
  * * a parser
  * * AST classes
- * * vistors
+ * * visitors
  * * symbol and scope management, etc.
  *
- * The workflow is organized in ten steps (M1 - M10)
+ * The workflow is organized in ten steps (M1 - M10).
  * For a detailed description see the MontiCore reference manual
  * at https:/www.monticore.de/
  */
 
 // ############################################################
 // M1  basic setup and initialization:
-// initialize logging; reporting; create global scope
+// Initialize logging; reporting; create global scope
 
 // M1.1 Logging
 TODO: initialize Logging here (1 Zeiler) der Art:
-useLogbackConfiguration(argmap.get("-cl"));
+useLogbackConfiguration(argmap.get("-cl")); 
 
-// M1.2 Initial Hello on Debug level
+// M1.2 Initial information on debug level
 Log.debug("--------------------------------", LOG_ID)
 Log.debug("MontiCore", LOG_ID)
 Log.debug(" - eating your models since 2005", LOG_ID)
@@ -37,30 +36,23 @@ Log.debug("Report dir          : " + argmap.get("-r"), LOG_ID)
 Log.debug("Handcoded argument  : " + argmap.get("-hpxx"), LOG_ID)
 Log.debug("Handcoded files     : " + ..., LOG_ID)
 
+// M1.3 Build Global Scope 
+mcScope = createMCGlobalScope(modelPath)	
 
-// M1.3 initialize incremental generation support
-IncrementalChecker.initialize(out, report)    -- Noch notwendig? Falscher Name der Klasse?
-InputOutputFilesReporter.resetModelToArtifactMap()
-
-// M1.4 Build Global Scope
-mcScope = createMCGlobalScope(modelPath)		// Es kann nur einen GlobalScope geben?
-// TODELETE:cdScope = createCD4AGlobalScope(modelPath)		// Wieso hier soviele??
-// TODELETE:symbolCdScope = createCD4AGlobalScope(modelPath)
-// TODELETE:scopeCdScope = createCD4AGlobalScope(modelPath)
-
-// M1.5 Initialize Reporting (output)
+// M1.4 Initialize Reporting (output)
 Reporting.init(out.getAbsolutePath(), report.getAbsolutePath(), reportManagerFactory)
 
 
 // ############################################################
 // Loop over the list of grammars provided as arguments
-// (these grammars are usually independent or buil on each other in the
+// (these grammars are usually independent or build on each other in the
 //  correct order.)
 // Dependency management is not in the scope of MontiCore itself.
 
 // ############################################################
 // the first pass processes all input grammars
 // transforms them to an integrated CD 
+resultMap = [:]
 while (grammarIterator.hasNext()) {
     input = grammarIterator.next()
 
@@ -83,112 +75,92 @@ while (grammarIterator.hasNext()) {
       runGrammarCoCos(astGrammar, mcScope)
 
       // M5.1: transform grammar AST into Class Diagram AST
-      astClassDiagramWithST = deriveCD(astGrammar, glex, cdScope)
+      astClassDiagramWithST = deriveCD(astGrammar, glex, mcScope)
 
       // M5.2: create symbol and scope class diagramm for the CD
-      symbolClassDiagramm = deriveSymbolCD(astGrammar, symbolCdScope)
-      scopeClassDiagramm = deriveScopeCD(astGrammar, scopeCdScope)
-      // TODO: eigentlich sollte das nur ein ASTCD sein  das Symbols und Scopes beinhaltet?
+      symbolClassDiagramm = deriveSymbolCD(astGrammar, mcScope)
+      scopeClassDiagramm = deriveScopeCD(astGrammar, mcScope)
 
       // M5.3 report the basic class diagram for AST
-      reportCD(astClassDiagram, report)
-
+      reportCD(astClassDiagramWithST, report)
+      
       // M5.4 report the full AST incl. Symbols diagrams
-      reportCD(astClassDiagram, decoratedASTClassDiagramm, decoratedSymbolTableCd, scopeClassDiagramm, report)
+      astClassDiagramWithST = addListSuffixToAttributeName(astClassDiagramWithST)
+      reportCD(astClassDiagramWithST, decoratedASTClassDiagramm, decoratedSymbolTableCd, scopeClassDiagramm, report)
 
       // M6: generate parser and wrapper
       generateParser(glex, astGrammar, mcScope, handcodedPath, out)
 
-      // 
-      TODO: Store astGrammar, und zugehoeriges astClassDiagramWithST
-      in einer hier(!) verwalteten Liste resultList für den zweiten Pass
+      resultMap.put(astGrammar, [astClassDiagramWithST, symbolClassDiagramm, scopeClassDiagramm])
     }
   }
 
-  // M5.1: Say I am succesfully finished with pass 1
+  // M6.1: Say I am succesfully finished with pass 1
   Log.info("Grammar " + astGrammar.getName() + " processed in pass 1.", LOG_ID)
 }
 // end of first pass
 // ############################################################
 
-
 // ############################################################
 // the second pass
 // do the rest which requires already created CDs of possibly
 // local super grammars etc.
-for (astGrammar in resultList) {
-  // make sure to use the right report manager again
-  // TODO: Wie wärs einen ganz neuen Reportmanager aufzumachen, wenn die alten eh verloren sind ...
-  Reporting.on(Names.getQualifiedName(astGrammar.getPackageList(), astGrammar.getName()))
+for (entry in resultMap) {
+  
+  // get base grammar
+  astGrammar = entry.key
+
+  // adjust reporting to current grammar
+  Reporting.on(astGrammar.getName())
 
   // get already created base class diagramms
-  // TODO: hm, vereinfachen, da ja hier Verfügbar.
-  // Und wieso sind das DREI CDs. Das müsste eines sein. Ein einziges!
-  // und jetzt kommts: Eines für die Sammlung aller Grammatiken
-  // (wenn man sie schon gemeinsam bearbeitet, kann das ja auch alles integriert sein)
-  // Ich wäre aber auch mit einer Integration in ein CD pro grammatik zufrieden
-  astClassDiagram = getCDOfParsedGrammar(astGrammar)
-  symbolClassDiagramm = getSymbolCDOfParsedGrammar(astGrammar)
-  scopeClassDiagramm = getScopeCDOfParsedGrammar(astGrammar)
+  astClassDiagram = entry.value.get(0) 
+  symbolClassDiagramm = entry.value.get(1) 
+  scopeClassDiagramm = entry.value.get(2)
 
-  // unklar??? Evtl. schon bei M5.3 durchführen???
-  astClassDiagram = addListSuffixToAttributeName(astClassDiagram)
-
-  // M7 fehlt irgendwie
-
-  // Ok, M8 scheint integriert worden zu sein: kann also entfallen
-
-  // Fehlt hier: glex erzeugen
 
   // ############################################################
-  // M9 Generate ast classes, visitor and context condition
-  // M9.1: decorate and generate CD for the '_symboltable' package
+  // M7: Decorate class diagrams
+  decoratedSymbolTableCd = decorateForSymbolTablePackage(glex, mcScope, astClassDiagram,
+      symbolClassDiagramm, scopeClassDiagramm, handcodedPath)
+  decoratedVisitorCD = decorateForVisitorPackage(glex, mcScope, astClassDiagram, handcodedPath)
+  decoratedCoCoCD = decorateForCoCoPackage(glex, mcScope, astClassDiagram, handcodedPath)
+  decoratedODCD = decorateForODPackage(glex, mcScope, astClassDiagram, handcodedPath)
+  decoratedASTClassDiagramm = decorateForASTPackage(glex, mcScope, astClassDiagram, handcodedPath)
+  decoratedMillCD = decorateMill(glex, mcScope, astClassDiagram, decoratedASTClassDiagramm,
+      decoratedVisitorCD, decoratedSymbolTableCd, handcodedPath)
 
-  // new M9.1: Decorate und generate auseinanderziehen:
-  // Zuerst alles(!) dekorieren, ggf. hier nur einen einzigen Aufruf starten
 
-  // new M9.2: dann kommt der (optionale) Aufruf des alr Argument angegebenen templates 
-  // der kann ja alle Hookpoints setzen
+  // ############################################################
+  // M8: Generate symbol management infrastructure, ast classes, visitor 
+  // and context condition
 
-  // new M9.3-xxx: die einzelnen generierungen anstoßen
-
-  Macht das so Sinn?
-
-  decoratedSymbolTableCd = decorateForSymbolTablePackage(glex, cdScope, astClassDiagram,
-           symbolClassDiagramm, scopeClassDiagramm, handcodedPath)
+  // M8.1: generate CD for the '_symboltable' package
   generateFromCD(glex, astClassDiagram, decoratedSymbolTableCd, out, handcodedPath)
 
-  // M9.2: decorate and generate CD for the '_visitor' package
-  decoratedVisitorCD = decorateForVisitorPackage(glex, cdScope, astClassDiagram, handcodedPath)
+  // M8.2: generate CD for the '_visitor' package
   generateFromCD(glex, astClassDiagram, decoratedVisitorCD, out, handcodedPath)
 
-  // M9.3: decorate and generate CD for the '_coco' package
-  decoratedCoCoCD = decorateForCoCoPackage(glex, cdScope, astClassDiagram, handcodedPath)
+  // M8.3: generate CD for the '_coco' package
   generateFromCD(glex, astClassDiagram, decoratedCoCoCD, out, handcodedPath)
 
-  // M9.4: decorate and generate CD for the '_od' package
-  decoratedODCD = decorateForODPackage(glex, cdScope, astClassDiagram, handcodedPath)
+  // M8.4: generate CD for the '_od' package
   generateFromCD(glex, astClassDiagram, decoratedODCD, out, handcodedPath)
 
-  // M9.5: decorate and generate CD for the '_ast' package
-  decoratedASTClassDiagramm = decorateForASTPackage(glex, cdScope, astClassDiagram, handcodedPath)
+  // M8.5: generate CD for the '_ast' package
   generateFromCD(glex, astClassDiagram, decoratedASTClassDiagramm, out, handcodedPath)
 
-  // M9.6: decorate and generate CD for the mills
-  decoratedMillCD = decorateMill(glex, cdScope, astClassDiagram, decoratedASTClassDiagramm,
-            decoratedVisitorCD, decoratedSymbolTableCd, handcodedPath)
+  // M8.6: generate CD for the mills
   generateFromCD(glex, astClassDiagram, decoratedMillCD, out, handcodedPath)
 
 
-
-
   // ############################################################
-  // M10 Write Reports to files
+  // M9: Write Reports to files
 
-  // M10.1: Say I am succesfully finished
+  // M9.1: Say I am succesfully finished
   Log.info("Grammar " + astGrammar.getName() + " processed successfully.", LOG_ID)
 
-  // M10.2: flush reporting
+  // M9.2: flush reporting
   Reporting.reportModelEnd(astGrammar.getName(), "")
   Reporting.flush(astGrammar)
 

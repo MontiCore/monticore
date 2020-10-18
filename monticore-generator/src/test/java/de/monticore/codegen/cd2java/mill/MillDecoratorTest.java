@@ -222,7 +222,7 @@ public class MillDecoratorTest extends DecoratorTestCase {
     getAttributeBy("millAutomatonSymbolBuilder", millClass);
     getAttributeBy("millStateSymbolBuilder", millClass);
     getAttributeBy("millFooSymbolBuilder", millClass);
-    getAttributeBy("millAutomatonScopeCDScopeBuilder", millClass);
+    getAttributeBy("millAutomatonScopeBuilder", millClass);
     getAttributeBy("millAutomatonSymbolSurrogateBuilder", millClass);
     getAttributeBy("millStateSymbolSurrogateBuilder", millClass);
     getAttributeBy("millFooSymbolSurrogateBuilder", millClass);
@@ -606,14 +606,14 @@ public class MillDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAutomataScopeMethod() {
-    ASTCDMethod fooBarBuilder = getMethodBy("automatonScopeCDScopeBuilder", millClass);
+    ASTCDMethod fooBarBuilder = getMethodBy("automatonScopeBuilder", millClass);
     //test Method Name
-    assertEquals("automatonScopeCDScopeBuilder", fooBarBuilder.getName());
+    assertEquals("automatonScopeBuilder", fooBarBuilder.getName());
     //test Parameters
     assertTrue(fooBarBuilder.isEmptyCDParameters());
     //test ReturnType
     assertTrue(fooBarBuilder.getMCReturnType().isPresentMCType());
-    assertDeepEquals("de.monticore.codegen.symboltable.automaton._symboltable.AutomatonScopeCDScopeBuilder",
+    assertDeepEquals("de.monticore.codegen.symboltable.automaton._symboltable.AutomatonScopeBuilder",
         fooBarBuilder.getMCReturnType().getMCType());
     //test Modifier
     assertTrue(PUBLIC_STATIC.build().deepEquals(fooBarBuilder.getModifier()));
@@ -621,14 +621,14 @@ public class MillDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAutomatonScopeBuilderMethod() {
-    ASTCDMethod fooBarBuilder = getMethodBy("_automatonScopeCDScopeBuilder", millClass);
+    ASTCDMethod fooBarBuilder = getMethodBy("_automatonScopeBuilder", millClass);
     //test Method Name
-    assertEquals("_automatonScopeCDScopeBuilder", fooBarBuilder.getName());
+    assertEquals("_automatonScopeBuilder", fooBarBuilder.getName());
     //test Parameters
     assertTrue(fooBarBuilder.isEmptyCDParameters());
     //test ReturnType
     assertTrue(fooBarBuilder.getMCReturnType().isPresentMCType());
-    assertDeepEquals("de.monticore.codegen.symboltable.automaton._symboltable.AutomatonScopeCDScopeBuilder",
+    assertDeepEquals("de.monticore.codegen.symboltable.automaton._symboltable.AutomatonScopeBuilder",
         fooBarBuilder.getMCReturnType().getMCType());
     //test Modifier
     assertTrue(PROTECTED.build().deepEquals(fooBarBuilder.getModifier()));

@@ -353,6 +353,13 @@
         <artifactId>cd4analysis</artifactId>
         <version>${cd4analysis.version}</version>
       </dependency>
+      
+      <dependency>
+        <groupId>de.monticore.lang</groupId>
+        <artifactId>cd4analysis</artifactId>
+        <version>${cd4analysis.version}</version>
+        <classifier>${grammars.classifier}</classifier>
+      </dependency>
 
       <!-- .. Test Libraries ............................................... -->
 

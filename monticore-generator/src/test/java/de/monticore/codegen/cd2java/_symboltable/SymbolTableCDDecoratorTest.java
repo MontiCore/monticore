@@ -172,8 +172,8 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
     ASTCDClass automatonSymbolBuilder = getClassBy("AutomatonSymbolBuilder", symTabCD);
     ASTCDClass stateSymbolBuilder = getClassBy("StateSymbolBuilder", symTabCD);
     ASTCDClass fooSymbolBuilder = getClassBy("FooSymbolBuilder", symTabCD);
-    ASTCDClass automatonScopeCDScope = getClassBy("AutomatonScopeCDScope", symTabCD);
-    ASTCDClass automatonScopeCDScopeBuilder = getClassBy("AutomatonScopeCDScopeBuilder", symTabCD);
+    ASTCDClass automatonScope = getClassBy("AutomatonScope", symTabCD);
+    ASTCDClass automatonScopeBuilder = getClassBy("AutomatonScopeBuilder", symTabCD);
     ASTCDClass automatonSymbolSurrogate = getClassBy("AutomatonSymbolSurrogate", symTabCD);
     ASTCDClass stateSymbolSurrogate = getClassBy("StateSymbolSurrogate", symTabCD);
     ASTCDClass fooSymbolSurrogate = getClassBy("FooSymbolSurrogate", symTabCD);
@@ -259,8 +259,8 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
     ASTCDClass automatonSymbolBuilder = getClassBy("AutomatonSymbolBuilder", symTabCDWithHC);
     ASTCDClass stateSymbolBuilder = getClassBy("StateSymbolBuilder", symTabCDWithHC);
     ASTCDClass fooSymbolBuilder = getClassBy("FooSymbolBuilder", symTabCDWithHC);
-    ASTCDClass automatonScopeCDScope = getClassBy("AutomatonScopeCDScope", symTabCDWithHC);
-    ASTCDClass automatonScopeCDScopeBuilder = getClassBy("AutomatonScopeCDScopeBuilder", symTabCDWithHC);
+    ASTCDClass automatonScope = getClassBy("AutomatonScope", symTabCDWithHC);
+    ASTCDClass automatonScopeBuilder = getClassBy("AutomatonScopeBuilder", symTabCDWithHC);
     ASTCDClass automatonSymbolSurrogate = getClassBy("AutomatonSymbolSurrogate", symTabCDWithHC);
     ASTCDClass stateSymbolSurrogate = getClassBy("StateSymbolSurrogate", symTabCDWithHC);
     ASTCDClass fooSymbolSurrogate = getClassBy("FooSymbolSurrogate", symTabCDWithHC);
@@ -318,8 +318,8 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
     ASTCDClass automatonSymbolBuilder = getClassBy("AutomatonSymbolBuilder", symTabCDComponent);
     ASTCDClass stateSymbolBuilder = getClassBy("StateSymbolBuilder", symTabCDComponent);
     ASTCDClass fooSymbolBuilder = getClassBy("FooSymbolBuilder", symTabCDComponent);
-    ASTCDClass automatonScopeCDScope = getClassBy("AutomatonScopeCDScope", symTabCDComponent);
-    ASTCDClass automatonScopeCDScopeBuilder = getClassBy("AutomatonScopeCDScopeBuilder", symTabCDComponent);
+    ASTCDClass automatonScope = getClassBy("AutomatonScope", symTabCDComponent);
+    ASTCDClass automatonScopeBuilder = getClassBy("AutomatonScopeBuilder", symTabCDComponent);
     ASTCDClass automatonSymbolSurrogate = getClassBy("AutomatonSymbolSurrogate", symTabCDComponent);
     ASTCDClass stateSymbolSurrogate = getClassBy("StateSymbolSurrogate", symTabCDComponent);
     ASTCDClass fooSymbolSurrogate = getClassBy("FooSymbolSurrogate", symTabCDComponent);

@@ -77,7 +77,7 @@ public class ScopeClassDecorator extends AbstractDecorator {
    * @param symbolInput for Symbol Classes and Interfaces
    */
   public ASTCDClass decorate(ASTCDCompilationUnit scopeInput, ASTCDCompilationUnit symbolInput) {
-    String scopeClassName = scopeInput.getCDDefinition().getName() + SCOPE_SUFFIX;
+    String scopeClassName = symbolTableService.getCDName() + SCOPE_SUFFIX;
     ASTMCQualifiedType scopeInterfaceType = symbolTableService.getScopeInterfaceType();
 
     // attributes and methods from scope rule

@@ -113,7 +113,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
   protected Map<ASTCDType, ASTCDDefinition> createSymbolMap(ASTCDDefinition symbolInput) {
     Map<ASTCDType, ASTCDDefinition> result = new HashMap<>();
     //add local symbols
-    symbolTableService.getSymbolDefiningProds(symbolInput).forEach(s -> result.put(s, symbolInput));
+    symbolTableService.getSymbolDefiningProds(symbolInput).forEach(s -> result.put(s, symbolTableService.getCDSymbol().getAstNode()));
 
     //add symbols from super grammars
     for (CDDefinitionSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
