@@ -6,7 +6,7 @@ plugins {
   id 'maven-publish'
 //  id 'cz.malohlava.visteg' version '1.0.5'  // produces a task graph visualization
 }
-version = "6.4.0-SNAPSHOT"
+version = "6.5.0-SNAPSHOT"
 group = "de.monticore"
 
 repositories {
@@ -29,7 +29,7 @@ dependencies {
   implementation (group: 'de.monticore', name: 'monticore-generator', version: "$version"){
     exclude group: 'de.monticore', module: 'monticore-grammar'
   }
-  implementation (group: 'de.monticore', name: 'monticore-grammar', version: "6.3.0"){
+  implementation (group: 'de.monticore', name: 'monticore-grammar', version: "6.4.0"){
     force = true
   }
 }

@@ -18,7 +18,7 @@ public class ConservativeExtensionCheck implements GrammarASTMCGrammarCoCo {
 
   public static final String ERROR_CODE = "0xA2007";
 
-  public static final String ERROR_MSG_FORMAT = " The production %s does not extend the Rule %s in a conservative manner at component %s. This can lead to problems in the AST.";
+  public static final String ERROR_MSG_FORMAT = " Production %s does not extend %s in a conservative manner in component %s. This can lead to problems in the AST.";
 
   @Override
   public void check(ASTMCGrammar node) {
@@ -48,15 +48,15 @@ public class ConservativeExtensionCheck implements GrammarASTMCGrammarCoCo {
     for (RuleComponentSymbol comp : superp.getProdComponents()) {
       List<RuleComponentSymbol> prodComponents = p.getSpannedScope().resolveRuleComponentDownMany(comp.getName());
       if (prodComponents.isEmpty()) {
-        Log.warn(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName(), superp.getName(), comp.getName(),
-            p.getSourcePosition()));
+        Log.warn(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName(), superp.getFullName(), comp.getName()),
+            p.getSourcePosition());
       }else if (prodComponents.get(0).isIsTerminal() != comp.isIsTerminal() ||
           prodComponents.get(0).isIsNonterminal() != comp.isIsNonterminal() ||
           prodComponents.get(0).isIsList() != comp.isIsList() ||
           prodComponents.get(0).isIsOptional() != comp.isIsOptional() ||
           !prodComponents.get(0).getName().equals(comp.getName())) {
-        Log.warn(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName(), superp.getName(), comp.getName(),
-            p.getSourcePosition()));
+        Log.warn(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName(), superp.getFullName(), comp.getName()),
+            p.getSourcePosition());
       }
     }
   }
