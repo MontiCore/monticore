@@ -39,16 +39,6 @@ public class ColoredGraphSymbolTableCreator extends ColoredGraphSymbolTableCreat
    * Section: visitors
    ****************************************************/
 
-    // TODO AB: Erklaeren: 
-  /**
-   * At the end of ASTVertex: the Symbol can be created
-   */
-  @Override public void endVisit(ASTVertex node) {
-    VertexSymbol symbol = node.getSymbol();
-    symbol.setColor(currentColor);
-    symbol.setInitial(node.isInitial());
-  }
-
   /**
    * ASTRGBColor creates an awt.Color object
    * from grammar production:
@@ -90,6 +80,16 @@ public class ColoredGraphSymbolTableCreator extends ColoredGraphSymbolTableCreat
     }
     currentColor = c;       // stored for the endVisit(ASTVertex)
     allColors.add(c);
+  }
+
+  /**
+   * At the end of ASTVertex: the Symbol can be created
+   * (currentColor was set by the visit's earlier)
+   */
+  @Override public void endVisit(ASTVertex node) {
+    VertexSymbol symbol = node.getSymbol();
+    symbol.setColor(currentColor);
+    symbol.setInitial(node.isInitial());
   }
 
   /****************************************************

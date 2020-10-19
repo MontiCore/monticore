@@ -14,8 +14,18 @@ grammar ColoredGraph extends de.monticore.literals.MCCommonLiterals {
 
   Edge = s:Name@Vertex "-" ">"  t:Name@Vertex ";" ;
 
+  // Each Vertex has a Color (stored as object java.awt.Color) 
+  // and knows whether it is initial.
+  //
+  // The Color attribute needs to be handled manually 
+  // when creating Vertex symbols as well as when
+  // loading and storing them in the handwritten VertexSymbolDeSer
+  // (while the "initial" attribute is handled automatically)
   symbolrule Vertex = color:java.awt.Color initial:boolean;
 
+  // For demonstration reasons we decide to add the number of used
+  // colors in the Graph scope
+  // (which is also handled automatically)
   scoperule = numberOfColors:int;
 
 }

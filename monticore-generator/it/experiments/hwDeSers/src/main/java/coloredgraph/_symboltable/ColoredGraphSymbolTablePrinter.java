@@ -17,6 +17,7 @@ public class ColoredGraphSymbolTablePrinter extends ColoredGraphSymbolTablePrint
 
   // TODO AB: Erklaeren, wzu diese hwc dient 
   // (und warum sie gebraucht wird, zB wegen der symbolrule ...
+  // --> und die gehört dann noch in den DeSer (bei gelegenheit)
   @Override public void serializeVertexColor(Color color) {
     JsonPrinter p = getJsonPrinter();
     p.beginArray("color");
