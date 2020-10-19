@@ -15,6 +15,8 @@ public class ColoredGraphSymbolTablePrinter extends ColoredGraphSymbolTablePrint
     super(printer);
   }
 
+  // TODO AB: Erklaeren, wzu diese hwc dient 
+  // (und warum sie gebraucht wird, zB wegen der symbolrule ...
   @Override public void serializeVertexColor(Color color) {
     JsonPrinter p = getJsonPrinter();
     p.beginArray("color");
@@ -24,3 +26,4 @@ public class ColoredGraphSymbolTablePrinter extends ColoredGraphSymbolTablePrint
     p.endArray();
   }
 }
+
