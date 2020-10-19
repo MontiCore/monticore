@@ -11,6 +11,9 @@ import de.monticore.codegen.cd2java._symboltable.modelloader.ModelLoaderDecorato
 import de.monticore.codegen.cd2java._symboltable.scope.*;
 import de.monticore.codegen.cd2java._symboltable.serialization.*;
 import de.monticore.codegen.cd2java._symboltable.symbol.*;
+import de.monticore.codegen.cd2java._symboltable.symbol.scopeskeletoncreator.ScopeSkeletonCreatorBuilderDecorator;
+import de.monticore.codegen.cd2java._symboltable.symbol.scopeskeletoncreator.ScopeSkeletonCreatorDecorator;
+import de.monticore.codegen.cd2java._symboltable.symbol.scopeskeletoncreator.ScopeSkeletonCreatorDelegatorDecorator;
 import de.monticore.codegen.cd2java._symboltable.symboltablecreator.*;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.IterablePath;
@@ -93,6 +96,12 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
 
   protected final SymbolTablePrinterBuilderDecorator symbolTablePrinterBuilderDecorator;
 
+  protected final ScopeSkeletonCreatorDecorator scopeSkeletonCreatorDecorator;
+
+  protected final ScopeSkeletonCreatorDelegatorDecorator scopeSkeletonCreatorDelegatorDecorator;
+
+  protected final ScopeSkeletonCreatorBuilderDecorator scopeSkeletonCreatorBuilderDecorator;
+
   public SymbolTableCDDecorator(final GlobalExtensionManagement glex,
                                 final IterablePath handCodedPath,
                                 final SymbolTableService symbolTableService,
@@ -124,7 +133,10 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
                                 final SymbolTablePrinterDecorator symbolTablePrinterDecorator,
                                 final ScopeDeSerBuilderDecorator scopeDeSerBuilderDecorator,
                                 final SymbolDeSerBuilderDecorator symbolDeSerBuilderDecorator,
-                                final SymbolTablePrinterBuilderDecorator symbolTablePrinterBuilderDecorator) {
+                                final SymbolTablePrinterBuilderDecorator symbolTablePrinterBuilderDecorator,
+                                final ScopeSkeletonCreatorDecorator scopeSkeletonCreatorDecorator,
+                                final ScopeSkeletonCreatorDelegatorDecorator scopeSkeletonCreatorDelegatorDecorator,
+                                final ScopeSkeletonCreatorBuilderDecorator scopeSkeletonCreatorBuilderDecorator) {
     super(glex);
     this.symbolDecorator = symbolDecorator;
     this.symbolBuilderDecorator = symbolBuilderDecorator;
@@ -157,6 +169,9 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
     this.scopeDeSerBuilderDecorator = scopeDeSerBuilderDecorator;
     this.symbolDeSerBuilderDecorator = symbolDeSerBuilderDecorator;
     this.symbolTablePrinterBuilderDecorator = symbolTablePrinterBuilderDecorator;
+    this.scopeSkeletonCreatorDecorator = scopeSkeletonCreatorDecorator;
+    this.scopeSkeletonCreatorDelegatorDecorator = scopeSkeletonCreatorDelegatorDecorator;
+    this.scopeSkeletonCreatorBuilderDecorator = scopeSkeletonCreatorBuilderDecorator;
   }
 
   public ASTCDCompilationUnit decorate(ASTCDCompilationUnit astCD, ASTCDCompilationUnit symbolCD, ASTCDCompilationUnit scopeCD) {
@@ -211,6 +226,9 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
         symTabCD.addCDClass(symbolTableCreatorDelegator.get());
         symTabCD.addCDClass(createSymbolTableCreatorDelegatorBuilder(symbolTableCreatorDelegator.get()));
       }
+
+      Optional<ASTCDClass> scopeSkeletonCreatorDelegator = createScopeSkeletonCreatorDelegator(astCD);
+      scopeSkeletonCreatorDelegator.ifPresent(symTabCD::addCDClass);
       // global scope
       ASTCDClass globalScopeClass = createGlobalScopeClass(astCD, symbolTablePackage);
       symTabCD.addCDClass(globalScopeClass);
@@ -241,6 +259,12 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
       if (symbolTableCreator.isPresent()) {
         symTabCD.addCDClass(symbolTableCreator.get());
         symTabCD.addCDClass(createSymbolTableCreatorBuilder(astCD));
+      }
+
+      Optional<ASTCDClass> scopeSkeletonCreator = createScopeSkeletonCreator(astCD);
+      if(scopeSkeletonCreator.isPresent()){
+        symTabCD.addCDClass(scopeSkeletonCreator.get());
+        symTabCD.addCDClass(createScopeSkeletonCreatorBuilder(astCD));
       }
 
       // SuperSTCForSub
@@ -428,6 +452,18 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
 
   protected ASTCDClass createSymbolTablePrinterBuilderClass(ASTCDClass symbolTablePrinterClass) {
     return symbolTablePrinterBuilderDecorator.decorate(symbolTablePrinterClass);
+  }
+
+  protected Optional<ASTCDClass> createScopeSkeletonCreatorDelegator(ASTCDCompilationUnit astCD){
+    return scopeSkeletonCreatorDelegatorDecorator.decorate(astCD);
+  }
+
+  protected Optional<ASTCDClass> createScopeSkeletonCreator(ASTCDCompilationUnit astCD){
+    return scopeSkeletonCreatorDecorator.decorate(astCD);
+  }
+
+  protected ASTCDClass createScopeSkeletonCreatorBuilder(ASTCDCompilationUnit astCD){
+    return scopeSkeletonCreatorBuilderDecorator.decorate(astCD);
   }
 
 }
