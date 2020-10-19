@@ -26,6 +26,8 @@ public class SymbolTableConstants {
 
   public static final String SYMBOL_TABLE_CREATOR_SUFFIX = "SymbolTableCreator";
 
+  public static final String SCOPE_SKELETON_CREATOR_SUFFIX = "ScopeSkeletonCreator";
+
   public static final String SYM_TAB_MILL_SUFFIX = "SymTabMill";
 
   public static final String ARTIFACT_PREFIX = "Artifact";
