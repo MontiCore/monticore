@@ -5,6 +5,7 @@ import automata._ast.*;
 import automata._symboltable.*;
 import automata._parser.AutomataParser;
 import automata._symboltable.AutomataScopeDeSer;
+import com.google.common.collect.Lists;
 import de.monticore.generating.*;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.reporting.Reporting;
@@ -20,10 +21,10 @@ import java.util.*;
 /**
  * Main class for the Automaton DSL tool.
  */
-public class AutomataTool {
+public class TemplatesTool {
 
   /** Configurational values:
-   */ 
+   */
   public static final Path SYMBOL_LOCATION = Paths.get("target");
   public static final String TOP_NAME_EXTENSION = "TOP";
 
@@ -50,7 +51,10 @@ public class AutomataTool {
   static protected IterablePath handcodedPath;
 
   // output directory: args[2]
-  static File outputDir;
+  static protected File outputDir;
+  
+  // output directory: args[2]
+  static protected Optional<File> templatePath = Optional.empty();
   
   // The AST of the model to be handled (will result from parsing)
   protected ASTAutomaton ast;
@@ -63,6 +67,9 @@ public class AutomataTool {
 
   // The generator engine used (reentrant, so only one instance needed)
   protected GeneratorEngine generatorEngine;
+  
+  // The global extension management used
+  protected GlobalExtensionManagement glex;
   
   // Two dimensional map: SourceState x Stimulus -> Transition
   Map<ASTState, Map<String,ASTTransition>> deltaMap = new HashMap<>();
@@ -84,7 +91,7 @@ public class AutomataTool {
    *     3. output directory
    */
   public static void main(String[] args) {
-    new AutomataTool(args);
+    new TemplatesTool(args);
   }
 
   /**
@@ -92,12 +99,14 @@ public class AutomataTool {
    * It extracts the relevant three arguments from the command line argumemnts
    * and calls the tool execution workflow
    */
-  public AutomataTool(String[] args) {
-    if (args.length != 3) {
-      Log.error("0xEE631 Please specify 3 arguments: \n"
+  public TemplatesTool(String[] args) {
+    if (args.length < 3) {
+      Log.error("0xEE631 Please specify at least 3 arguments: \n"
           + "1. automata modelfile,\n"
           + "2. handcodedPath,\n"
-          + "3. output directory.");
+          + "3. output directory.\n"
+          + "4. (optional) templatePath"
+          );
       return;
     }
     // get the model from args
@@ -109,6 +118,11 @@ public class AutomataTool {
     // get output directory from arg[2]
     outputDir = new File(args[2]);
     
+    // if present get templatePath
+    if(args.length == 4) {
+      templatePath = Optional.of(new File(args[3]));
+    }
+    
     executeWorkflow();
   }
   
@@ -116,7 +130,7 @@ public class AutomataTool {
    * Second entry method of the AutomataTool:
    * it stores the input parameters and calls the execution workflow
    */
-  public AutomataTool(String modelfilename, IterablePath handcodedPath, File outputDir) {
+  public TemplatesTool(String modelfilename, IterablePath handcodedPath, File outputDir) {
     this.modelfilename = modelfilename;
     this.handcodedPath = handcodedPath;
     this.outputDir = outputDir;
@@ -150,7 +164,7 @@ public class AutomataTool {
     // Part 3: Store Symboltable
     // store artifact scope and its symbols
     AutomataScopeDeSer deser = new AutomataScopeDeSer();
-    deser.store(modelTopScope, SYMBOL_LOCATION+"/"+modelfilename+"sym");
+    deser.store(modelTopScope, SYMBOL_LOCATION+"/"+ Paths.get(modelfilename).getFileName() + "sym");
     Log.info(modelfilename + " symboltable stored successfully", this.getClass().getName());
     
     // Part 4: Transformation and Data Calculation
@@ -185,15 +199,23 @@ public class AutomataTool {
    * Initializes the generator engine
    */
   protected void initGeneratorEngine() {
+    initGlex();
     GeneratorSetup s = new GeneratorSetup();
-    GlobalExtensionManagement glex = new GlobalExtensionManagement();
-
-    // The modelName is used veryeher and does not change during generation
-    glex.setGlobalValue("modelName", ast.getName());
-    
+  
     s.setGlex(glex);
     s.setOutputDirectory(outputDir);
+    templatePath.ifPresent(e -> s.setAdditionalTemplatePaths(Lists.newArrayList(e)));
     generatorEngine = new GeneratorEngine(s);
+  }
+  
+  /**
+   * Initializes the global extension management
+   */
+  protected void initGlex() {
+    glex = new GlobalExtensionManagement();
+    
+    // The modelName is used veryeher and does not change during generation
+    glex.setGlobalValue("modelName", ast.getName());
   }
   
   /**

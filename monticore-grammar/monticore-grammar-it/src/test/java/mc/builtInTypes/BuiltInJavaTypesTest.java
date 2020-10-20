@@ -104,7 +104,7 @@ public class BuiltInJavaTypesTest {
 
     //java.lang.Integer extends java.lang.Number and has no type parameters
     assertEquals(1,intsymtype.get().getSuperTypesList().size());
-    assertEquals("Number",intsymtype.get().getSuperTypesList().get(0).print());
+    assertEquals("java.lang.Number",intsymtype.get().getSuperTypesList().get(0).print());
     assertTrue(intsymtype.get().getTypeParameterList().isEmpty());
 
     //test some methods
@@ -121,7 +121,7 @@ public class BuiltInJavaTypesTest {
     Optional<FieldSymbol> s = parseIntSpannedScope.resolveField("s");
 
     assertTrue(s.isPresent());
-    assertEquals("String",s.get().getType().print());
+    assertEquals("java.lang.String",s.get().getType().print());
     assertEquals("int",parseInt.get().getReturnType().print());
   }
 
@@ -132,7 +132,7 @@ public class BuiltInJavaTypesTest {
 
     //java.lang.Double extends java.lang.Number and has no type parameters
     assertEquals(1,doublesymtype.get().getSuperTypesList().size());
-    assertEquals("Number",doublesymtype.get().getSuperTypesList().get(0).print());
+    assertEquals("java.lang.Number",doublesymtype.get().getSuperTypesList().get(0).print());
     assertTrue(doublesymtype.get().getTypeParameterList().isEmpty());
 
     //test some methods
@@ -149,7 +149,7 @@ public class BuiltInJavaTypesTest {
     Optional<FieldSymbol> s = parseDoubleSpannedScope.resolveField("s");
 
     assertTrue(s.isPresent());
-    assertEquals("String",s.get().getType().print());
+    assertEquals("java.lang.String",s.get().getType().print());
     assertEquals("double",parseDouble.get().getReturnType().print());
   }
 
@@ -160,7 +160,7 @@ public class BuiltInJavaTypesTest {
 
     //java.lang.Float extends java.lang.Number and has no type parameters
     assertEquals(1,floatsymtype.get().getSuperTypesList().size());
-    assertEquals("Number",floatsymtype.get().getSuperTypesList().get(0).print());
+    assertEquals("java.lang.Number",floatsymtype.get().getSuperTypesList().get(0).print());
     assertTrue(floatsymtype.get().getTypeParameterList().isEmpty());
 
     //test some methods
@@ -177,7 +177,7 @@ public class BuiltInJavaTypesTest {
     Optional<FieldSymbol> s = parseFloatSpannedScope.resolveField("s");
 
     assertTrue(s.isPresent());
-    assertEquals("String",s.get().getType().print());
+    assertEquals("java.lang.String",s.get().getType().print());
     assertEquals("float",parseFloat.get().getReturnType().print());
   }
 
@@ -188,7 +188,7 @@ public class BuiltInJavaTypesTest {
 
     //java.lang.Long extends java.lang.Number and has no type parameters
     assertEquals(1,longsymtype.get().getSuperTypesList().size());
-    assertEquals("Number",longsymtype.get().getSuperTypesList().get(0).print());
+    assertEquals("java.lang.Number",longsymtype.get().getSuperTypesList().get(0).print());
     assertTrue(longsymtype.get().getTypeParameterList().isEmpty());
 
     //test some methods
@@ -205,7 +205,7 @@ public class BuiltInJavaTypesTest {
     Optional<FieldSymbol> s = parseLongSpannedScope.resolveField("s");
 
     assertTrue(s.isPresent());
-    assertEquals("String",s.get().getType().print());
+    assertEquals("java.lang.String",s.get().getType().print());
     assertEquals("long",parseLong.get().getReturnType().print());
   }
 
@@ -216,7 +216,7 @@ public class BuiltInJavaTypesTest {
 
     //java.lang.Character directly extends java.lang.Object and has no type parameters
     assertEquals(1,charsymtype.get().getSuperTypesList().size());
-    assertEquals("Object",charsymtype.get().getSuperTypesList().get(0).print());
+    assertEquals("java.lang.Object",charsymtype.get().getSuperTypesList().get(0).print());
     assertTrue(charsymtype.get().getTypeParameterList().isEmpty());
 
     //test some methods
@@ -232,7 +232,7 @@ public class BuiltInJavaTypesTest {
     Optional<FieldSymbol> c = valueOfSpannedScope.resolveField("c");
     assertTrue(c.isPresent());
     assertEquals("char",c.get().getType().print());
-    assertEquals("Character",valueOf.get().getReturnType().print());
+    assertEquals("java.lang.Character",valueOf.get().getReturnType().print());
   }
 
   @Test
@@ -242,7 +242,7 @@ public class BuiltInJavaTypesTest {
 
     //java.lang.Short extends java.lang.Number and has no type parameters
     assertEquals(1,shortsymtype.get().getSuperTypesList().size());
-    assertEquals("Number",shortsymtype.get().getSuperTypesList().get(0).print());
+    assertEquals("java.lang.Number",shortsymtype.get().getSuperTypesList().get(0).print());
     assertTrue(shortsymtype.get().getTypeParameterList().isEmpty());
 
     //test some methods
@@ -259,7 +259,7 @@ public class BuiltInJavaTypesTest {
     Optional<FieldSymbol> s = parseShortSpannedScope.resolveField("s");
 
     assertTrue(s.isPresent());
-    assertEquals("String",s.get().getType().print());
+    assertEquals("java.lang.String",s.get().getType().print());
     assertEquals("short",parseShort.get().getReturnType().print());
   }
 
@@ -270,7 +270,7 @@ public class BuiltInJavaTypesTest {
 
     //java.lang.Byte extends java.lang.Number and has no type parameters
     assertEquals(1,bytesymtype.get().getSuperTypesList().size());
-    assertEquals("Number",bytesymtype.get().getSuperTypesList().get(0).print());
+    assertEquals("java.lang.Number",bytesymtype.get().getSuperTypesList().get(0).print());
     assertTrue(bytesymtype.get().getTypeParameterList().isEmpty());
 
     //test some methods
@@ -287,7 +287,7 @@ public class BuiltInJavaTypesTest {
     Optional<FieldSymbol> s = parseByteSpannedScope.resolveField("s");
 
     assertTrue(s.isPresent());
-    assertEquals("String",s.get().getType().print());
+    assertEquals("java.lang.String",s.get().getType().print());
     assertEquals("byte",parseByte.get().getReturnType().print());
   }
 
@@ -298,7 +298,7 @@ public class BuiltInJavaTypesTest {
 
     //java.lang.Character directly extends java.lang.Object
     assertEquals(1,booleansymtype.get().getSuperTypesList().size());
-    assertEquals("Object",booleansymtype.get().getSuperTypesList().get(0).print());
+    assertEquals("java.lang.Object",booleansymtype.get().getSuperTypesList().get(0).print());
     assertTrue(booleansymtype.get().getTypeParameterList().isEmpty());
 
     //test some methods
@@ -330,7 +330,7 @@ public class BuiltInJavaTypesTest {
 
     //List extends Collection
     assertEquals(1,listsymtype.get().getSuperTypesList().size());
-    assertEquals("Collection<E>",listsymtype.get().getSuperTypesList().get(0).print());
+    assertEquals("java.util.Collection<Set.E>",listsymtype.get().getSuperTypesList().get(0).print());
     assertEquals("E",listsymtype.get().getTypeParameterList().get(0).getName());
 
     //test some methods
@@ -346,7 +346,7 @@ public class BuiltInJavaTypesTest {
     Optional<FieldSymbol> index = getSpannedScope.resolveField("index");
     assertTrue(index.isPresent());
     assertEquals("int",index.get().getType().print());
-    assertEquals("E",get.get().getReturnType().print());
+    assertEquals("Set.E",get.get().getReturnType().print());
   }
 
   @Test
@@ -357,7 +357,7 @@ public class BuiltInJavaTypesTest {
 
     //Set extends Collection
     assertEquals(1,setsymtype.get().getSuperTypesList().size());
-    assertEquals("Collection<E>",setsymtype.get().getSuperTypes((0)).print());
+    assertEquals("java.util.Collection<Set.E>",setsymtype.get().getSuperTypes((0)).print());
     assertEquals("E",setsymtype.get().getTypeParameterList().get(0).getName());
 
     //test some methods
@@ -384,7 +384,7 @@ public class BuiltInJavaTypesTest {
     assertTrue(mapsymtype.isPresent());
 
     assertEquals(1,mapsymtype.get().getSuperTypesList().size());
-    assertEquals("Object",mapsymtype.get().getSuperTypes((0)).print());
+    assertEquals("java.lang.Object",mapsymtype.get().getSuperTypes((0)).print());
     assertEquals("K",mapsymtype.get().getTypeParameterList().get(0).getName());
     assertEquals("V",mapsymtype.get().getTypeParameterList().get(1).getName());
 
@@ -397,8 +397,8 @@ public class BuiltInJavaTypesTest {
     assertTrue(values.isPresent());
 
     //test for both methods parameters and return type
-    assertEquals("Collection<V>",values.get().getReturnType().print());
-    assertEquals("Set<K>",keySet.get().getReturnType().print());
+    assertEquals("java.util.Collection<Map.V>",values.get().getReturnType().print());
+    assertEquals("java.util.Set<Map.K>",keySet.get().getReturnType().print());
   }
 
   @Test
@@ -408,7 +408,7 @@ public class BuiltInJavaTypesTest {
     assertTrue(optionalsymtype.isPresent());
 
     assertEquals(1,optionalsymtype.get().getSuperTypesList().size());
-    assertEquals("Object",optionalsymtype.get().getSuperTypes((0)).print());
+    assertEquals("java.lang.Object",optionalsymtype.get().getSuperTypes((0)).print());
     assertEquals("T",optionalsymtype.get().getTypeParameterList().get(0).getName());
 
     //test some methods
@@ -423,8 +423,8 @@ public class BuiltInJavaTypesTest {
     IOOSymbolsScope ofNullableSpannedScope = ofNullable.get().getSpannedScope();
     Optional<FieldSymbol> t = ofNullableSpannedScope.resolveField("t");
     assertTrue(t.isPresent());
-    assertEquals("T",t.get().getType().print());
-    assertEquals("Optional<T>",ofNullable.get().getReturnType().print());
+    assertEquals("Optional.T",t.get().getType().print());
+    assertEquals("java.util.Optional<Optional.T>",ofNullable.get().getReturnType().print());
   }
 
   @Test
@@ -441,7 +441,7 @@ public class BuiltInJavaTypesTest {
 
     //collection is a generic type
     assertEquals(1,collectionsymtype.get().getSuperTypesList().size());
-    assertEquals("Object",collectionsymtype.get().getSuperTypes((0)).print());
+    assertEquals("java.lang.Object",collectionsymtype.get().getSuperTypes((0)).print());
     assertEquals("E",collectionsymtype.get().getTypeParameterList().get(0).getName());
 
     assertTrue(size.isPresent());
@@ -453,7 +453,7 @@ public class BuiltInJavaTypesTest {
     Optional<FieldSymbol> c = addAllSpannedScope.resolveField("c");
     assertTrue(c.isPresent());
 
-    assertEquals("Collection<E>",c.get().getType().print());
+    assertEquals("java.util.Collection<Set.E>",c.get().getType().print());
   }
 
   @Test
@@ -482,7 +482,7 @@ public class BuiltInJavaTypesTest {
     Optional<FieldSymbol> obj = equals.get().getSpannedScope().resolveField("obj");
 
     assertTrue(obj.isPresent());
-    assertEquals("Object", obj.get().getType().print());
+    assertEquals("java.lang.Object", obj.get().getType().print());
   }
 
   @Test
@@ -492,7 +492,7 @@ public class BuiltInJavaTypesTest {
     assertTrue(stringType.isPresent());
 
     //super type is Object
-    assertEquals("Object",stringType.get().getSuperTypesList().get(0).print());
+    assertEquals("java.lang.Object",stringType.get().getSuperTypesList().get(0).print());
 
     IOOSymbolsScope stringSpannedScope = stringType.get().getSpannedScope();
 
