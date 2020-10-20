@@ -147,7 +147,7 @@ MontiCore projects are hosted at
   [*detailed description*](https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/master/fd-lang/src/main/grammars/FeatureDiagram.md)
 
 
-### [GUI DSL](https://git.rwth-aachen.de/macoco/gui-dsl) (Alpha: Intention to become stable)
+### [GUI DSL](https://git.rwth-aachen.de/monticore/languages/gui-dsl) (Alpha: Intention to become stable)
 * Caretaker: LN, AGe
 * Language for textual definition of Graphical User Interfaces of Web
 Applications
