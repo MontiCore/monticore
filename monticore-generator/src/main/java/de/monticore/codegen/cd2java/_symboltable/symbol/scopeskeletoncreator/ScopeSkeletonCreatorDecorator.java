@@ -289,9 +289,10 @@ public class ScopeSkeletonCreatorDecorator extends AbstractCreator<ASTCDCompilat
 
   protected ASTCDMethod createSymbolSetLinkBetweenSymbolAndNodeMethod(ASTCDParameter astParam, ASTCDParameter symbolParam,
                                                                       boolean isScopeSpanningSymbol) {
+    String artifactScopeInterface = symbolTableService.getArtifactScopeInterfaceSimpleName();
     ASTCDMethod setLinkBetweenSymbolAndNode = getCDMethodFacade().createMethod(PUBLIC, "setLinkBetweenSymbolAndNode", symbolParam, astParam);
     this.replaceTemplate(EMPTY_BODY, setLinkBetweenSymbolAndNode, new TemplateHookPoint(
-        TEMPLATE_PATH + "SetLinkBetweenSymbolAndNode", isScopeSpanningSymbol));
+        TEMPLATE_PATH + "SetLinkBetweenSymbolAndNode", isScopeSpanningSymbol, artifactScopeInterface));
     return setLinkBetweenSymbolAndNode;
   }
 
