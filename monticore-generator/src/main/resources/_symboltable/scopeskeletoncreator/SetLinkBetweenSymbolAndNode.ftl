@@ -9,5 +9,5 @@ ${tc.signature("isScopeSpanningSymbol")}
 
 <#if isScopeSpanningSymbol>
   // ast -> spannedScope
-  ast.setSpannedScope(symbol.getSpannedScope());
+  setLinkBetweenSpannedScopeAndNode(symbol.getSpannedScope(), ast);
 </#if>

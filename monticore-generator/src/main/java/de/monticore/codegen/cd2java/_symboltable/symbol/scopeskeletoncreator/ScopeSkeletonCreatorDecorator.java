@@ -199,8 +199,9 @@ public class ScopeSkeletonCreatorDecorator extends AbstractCreator<ASTCDCompilat
   protected List<ASTCDMethod> createSymbolClassMethods(Map<ASTCDClass, String> symbolClassMap, String scopeInterface) {
     List<ASTCDMethod> methodList = new ArrayList<>();
     for (ASTCDType symbolClass : symbolClassMap.keySet()) {
-      if (!symbolTableService.hasSymbolStereotype(symbolClass.getModifier()))
+      if (!symbolTableService.hasSymbolStereotype(symbolClass.getModifier())) {
         methodList.addAll(createSymbolClassMethods(symbolClass, symbolClassMap.get(symbolClass), scopeInterface));
+      }
     }
     return methodList;
   }
@@ -209,7 +210,6 @@ public class ScopeSkeletonCreatorDecorator extends AbstractCreator<ASTCDCompilat
     List<ASTCDMethod> methodList = new ArrayList<>();
     String astFullName = symbolTableService.getASTPackage() + "." + symbolClass.getName();
     String simpleName = symbolTableService.removeASTPrefix(symbolClass);
-
     // visit method
     methodList.add(createSymbolVisitMethod(astFullName, symbolFullName, simpleName));
 
@@ -330,17 +330,6 @@ public class ScopeSkeletonCreatorDecorator extends AbstractCreator<ASTCDCompilat
     this.replaceTemplate(EMPTY_BODY, endVisitMethod, new TemplateHookPoint(
         TEMPLATE_PATH + "EndVisitScope4SSC", simpleName));
     return endVisitMethod;
-  }
-
-  protected ASTCDMethod createSymbolMethod(String simpleName, ASTCDParameter astParam, String millName){
-    //return-Typ: SymbolBuilder
-    //Parameter: zugehörige ASTNode
-    //gib Builder des Symbols per Mill zurück, nachdem der Name gesetzt wurde -> .setName(ast.getName());
-    ASTCDMethod createSymbolMethod = getCDMethodFacade().createMethod(PROTECTED, getMCTypeFacade().createQualifiedType(simpleName+SYMBOL_SUFFIX + BUILDER_SUFFIX),
-        "create_" + simpleName, astParam);
-    String methodInMill = StringTransformations.uncapitalize(simpleName) + SYMBOL_SUFFIX + BUILDER_SUFFIX + "()";
-    this.replaceTemplate(EMPTY_BODY, createSymbolMethod, new StringHookPoint("return " + millName + "." + methodInMill + ";"));
-    return createSymbolMethod;
   }
 
   protected ASTCDMethod createScopeCreate_Method(String scopeInterface, String simpleName, ASTCDParameter astParam,
