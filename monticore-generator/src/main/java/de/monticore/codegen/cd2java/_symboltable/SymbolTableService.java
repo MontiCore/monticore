@@ -345,6 +345,26 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   }
 
   /**
+   * PhasedSymbolTableCreatorDelegator Names, e.g. AutomatonPhasedSymbolTableCreatorDelegator
+   */
+
+  public String getPhasedSymbolTableCreatorDelegatorSimpleName(CDDefinitionSymbol cdSymbol) {
+    return cdSymbol.getName() + PHASED_SUFFIX + SYMBOL_TABLE_CREATOR_SUFFIX + DELEGATOR_SUFFIX;
+  }
+
+  public String getPhasedSymbolTableCreatorDelegatorSimpleName() {
+    return getPhasedSymbolTableCreatorDelegatorSimpleName(getCDSymbol());
+  }
+
+  public String getPhasedSymbolTableCreatorDelegatorFullName(CDDefinitionSymbol cdSymbol) {
+    return getPackage(cdSymbol) + "." + getPhasedSymbolTableCreatorDelegatorSimpleName(cdSymbol);
+  }
+
+  public String getPhasedSymbolTableCreatorDelegatorFullName() {
+    return getPhasedSymbolTableCreatorDelegatorFullName(getCDSymbol());
+  }
+
+  /**
    * ScopeSkeletonCreatorDelegator Names e.g. AutomatonScopeSkeletonCreatorDelegator
    */
 

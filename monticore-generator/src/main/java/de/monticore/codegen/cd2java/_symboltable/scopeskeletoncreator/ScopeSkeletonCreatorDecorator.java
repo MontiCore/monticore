@@ -1,4 +1,4 @@
-package de.monticore.codegen.cd2java._symboltable.symbol.scopeskeletoncreator;
+package de.monticore.codegen.cd2java._symboltable.scopeskeletoncreator;
 
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
@@ -289,10 +289,10 @@ public class ScopeSkeletonCreatorDecorator extends AbstractCreator<ASTCDCompilat
 
   protected ASTCDMethod createSymbolSetLinkBetweenSymbolAndNodeMethod(ASTCDParameter astParam, ASTCDParameter symbolParam,
                                                                       boolean isScopeSpanningSymbol) {
-    String artifactScopeInterface = symbolTableService.getArtifactScopeInterfaceSimpleName();
+    String scopeInterface = symbolTableService.getScopeInterfaceSimpleName();
     ASTCDMethod setLinkBetweenSymbolAndNode = getCDMethodFacade().createMethod(PUBLIC, "setLinkBetweenSymbolAndNode", symbolParam, astParam);
     this.replaceTemplate(EMPTY_BODY, setLinkBetweenSymbolAndNode, new TemplateHookPoint(
-        TEMPLATE_PATH + "SetLinkBetweenSymbolAndNode", isScopeSpanningSymbol, artifactScopeInterface));
+        TEMPLATE_PATH + "SetLinkBetweenSymbolAndNode", isScopeSpanningSymbol, scopeInterface));
     return setLinkBetweenSymbolAndNode;
   }
 

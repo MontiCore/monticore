@@ -24,6 +24,8 @@ public class SymbolTableConstants {
 
   public static final String INTERFACE_PREFIX = "I";
 
+  public static final String PHASED_SUFFIX = "Phased";
+
   public static final String SYMBOL_TABLE_CREATOR_SUFFIX = "SymbolTableCreator";
 
   public static final String SCOPE_SKELETON_CREATOR_SUFFIX = "ScopeSkeletonCreator";

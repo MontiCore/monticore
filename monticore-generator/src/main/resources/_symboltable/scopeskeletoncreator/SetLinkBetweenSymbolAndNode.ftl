@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("isScopeSpanningSymbol", "artifactScope")}
+${tc.signature("isScopeSpanningSymbol", "scope")}
   // symbol -> ast
   symbol.setAstNode(ast);
 
@@ -9,5 +9,5 @@ ${tc.signature("isScopeSpanningSymbol", "artifactScope")}
 
 <#if isScopeSpanningSymbol>
   // ast -> spannedScope
-  setLinkBetweenSpannedScopeAndNode((${artifactScope}) symbol.getSpannedScope(), ast);
+  setLinkBetweenSpannedScopeAndNode((${scope}) symbol.getSpannedScope(), ast);
 </#if>
