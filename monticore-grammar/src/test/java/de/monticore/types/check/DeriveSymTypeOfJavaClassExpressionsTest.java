@@ -50,7 +50,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
             .setEnclosingScope(null)       // No enclosing Scope: Search ending here
             .setExportingSymbols(true)
             .setAstNode(null)
-            .setName("Phantasy2").build();     // hopefully unused
+            .build();     // hopefully unused
     // we add a variety of TypeSymbols to the same scope (which in reality doesn't happen)
     add2scope(scope, DefsTypeBasic._int);
     add2scope(scope, DefsTypeBasic._char);
