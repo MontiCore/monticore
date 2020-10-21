@@ -1,9 +1,11 @@
-/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.javalight._symboltable;
 
 import de.monticore.javalight._ast.*;
+import de.monticore.javalight._visitor.JavaLightVisitor;
 import de.monticore.statements.mccommonstatements._ast.ASTJavaModifier;
 import de.monticore.statements.mcstatementsbasis._ast.ASTMCModifier;
+import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
+import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfNull;
@@ -11,66 +13,72 @@ import de.monticore.types.check.SynthesizeSymTypeFromMCFullGenericTypes;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
-import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
-
-import java.util.Deque;
 
 import static de.monticore.statements.mccommonstatements._ast.ASTConstantsMCCommonStatements.*;
 
-@Deprecated
-public class JavaLightSymbolTableCreator extends JavaLightSymbolTableCreatorTOP {
+public class JavaLightSTCompleteTypes implements JavaLightVisitor {
 
-  public JavaLightSymbolTableCreator(IJavaLightScope enclosingScope) {
-    super(enclosingScope);
-  }
+  private JavaLightVisitor realThis;
 
-  public JavaLightSymbolTableCreator(Deque<? extends IJavaLightScope> scopeStack) {
-    super(scopeStack);
+  public JavaLightSTCompleteTypes(){
+    this.realThis = this;
   }
 
   @Override
-  protected void initialize_MethodDeclaration(JavaMethodSymbol symbol, ASTMethodDeclaration ast) {
-    addModifiersToMethOrConstr(symbol, ast.getMCModifierList());
-    symbol.setReturnType(createTypeLoader(ast.getMCReturnType()));
-    if (ast.isPresentThrows()) {
-      addThrowsToMethod(symbol, ast.getThrows());
-    }
-    if (ast.getFormalParameters().isPresentFormalParameterListing()
-            && ast.getFormalParameters().getFormalParameterListing().isPresentLastFormalParameter()) {
-      symbol.setIsElliptic(true);
-    }
+  public JavaLightVisitor getRealThis() {
+    return realThis;
   }
 
   @Override
-  protected void initialize_InterfaceMethodDeclaration(JavaMethodSymbol symbol, ASTInterfaceMethodDeclaration ast) {
-    addModifiersToMethOrConstr(symbol, ast.getMCModifierList());
-    symbol.setReturnType(createTypeLoader(ast.getMCReturnType()));
-    if (ast.isPresentThrows()) {
-      addThrowsToMethod(symbol, ast.getThrows());
-    }
-    if (ast.getFormalParameters().isPresentFormalParameterListing()
-            && ast.getFormalParameters().getFormalParameterListing().isPresentLastFormalParameter()) {
-      symbol.setIsElliptic(true);
-    }
-  }
-
-  @Override
-  protected void initialize_ConstructorDeclaration(JavaMethodSymbol symbol, ASTConstructorDeclaration ast) {
-    addModifiersToMethOrConstr(symbol, ast.getMCModifierList());
-    if (ast.isPresentThrows()) {
-      addThrowsToMethod(symbol, ast.getThrows());
-    }
-    if (ast.getFormalParameters().isPresentFormalParameterListing()
-            && ast.getFormalParameters().getFormalParameterListing().isPresentLastFormalParameter()) {
-      symbol.setIsElliptic(true);
-    }
+  public void setRealThis(JavaLightVisitor realThis) {
+    this.realThis = realThis;
   }
 
   @Override
   public void endVisit(ASTLastFormalParameter ast) {
     FieldSymbol symbol = ast.getDeclaratorId().getSymbol();
     symbol.setType(createTypeLoader(ast.getMCType()));
+  }
+
+  @Override
+  public void endVisit(ASTMethodDeclaration ast){
+    JavaMethodSymbol symbol = ast.getSymbol();
+    addModifiersToMethOrConstr(symbol, ast.getMCModifierList());
+    symbol.setReturnType(createTypeLoader(ast.getMCReturnType()));
+    if (ast.isPresentThrows()) {
+      addThrowsToMethod(symbol, ast.getThrows());
+    }
+    if (ast.getFormalParameters().isPresentFormalParameterListing()
+        && ast.getFormalParameters().getFormalParameterListing().isPresentLastFormalParameter()) {
+      symbol.setIsElliptic(true);
+    }
+  }
+
+  @Override
+  public void endVisit(ASTInterfaceMethodDeclaration ast){
+    JavaMethodSymbol symbol = ast.getSymbol();
+    addModifiersToMethOrConstr(symbol, ast.getMCModifierList());
+    symbol.setReturnType(createTypeLoader(ast.getMCReturnType()));
+    if (ast.isPresentThrows()) {
+      addThrowsToMethod(symbol, ast.getThrows());
+    }
+    if (ast.getFormalParameters().isPresentFormalParameterListing()
+        && ast.getFormalParameters().getFormalParameterListing().isPresentLastFormalParameter()) {
+      symbol.setIsElliptic(true);
+    }
+  }
+
+  @Override
+  public void endVisit(ASTConstructorDeclaration ast){
+    JavaMethodSymbol symbol = ast.getSymbol();
+    addModifiersToMethOrConstr(symbol, ast.getMCModifierList());
+    if (ast.isPresentThrows()) {
+      addThrowsToMethod(symbol, ast.getThrows());
+    }
+    if (ast.getFormalParameters().isPresentFormalParameterListing()
+        && ast.getFormalParameters().getFormalParameterListing().isPresentLastFormalParameter()) {
+      symbol.setIsElliptic(true);
+    }
   }
 
   protected void addModifiersToMethOrConstr(JavaMethodSymbol javaMethodSymbol,
@@ -146,5 +154,4 @@ public class JavaLightSymbolTableCreator extends JavaLightSymbolTableCreatorTOP 
     }
 
   }
-
 }

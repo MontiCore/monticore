@@ -1,4 +1,3 @@
-/* (c) https://github.com/MontiCore/monticore */
 package mc.testcd4analysis._symboltable;
 
 import de.monticore.prettyprint.IndentPrinter;
@@ -7,33 +6,35 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCArrayType;
 import de.monticore.types.prettyprint.MCCollectionTypesPrettyPrinter;
-import de.se_rwth.commons.Names;
 import mc.testcd4analysis._ast.*;
+import mc.testcd4analysis._visitor.TestCD4AnalysisVisitor;
 
-import java.util.*;
+import java.util.Deque;
+import java.util.List;
 
-@Deprecated
-public class TestCD4AnalysisSymbolTableCreator extends TestCD4AnalysisSymbolTableCreatorTOP {
+public class TestCD4AnalysisSTCompleteTypes implements TestCD4AnalysisVisitor {
 
-  public TestCD4AnalysisSymbolTableCreator(ITestCD4AnalysisScope enclosingScope) {
-    super(enclosingScope);
-  }
+  private TestCD4AnalysisVisitor realThis;
+  protected Deque<? extends ITestCD4AnalysisScope> scopeStack;
 
-  public TestCD4AnalysisSymbolTableCreator(Deque<? extends ITestCD4AnalysisScope> scopeStack) {
-    super(scopeStack);
+  @Override
+  public TestCD4AnalysisVisitor getRealThis() {
+    return realThis;
   }
 
   @Override
-  public TestCD4AnalysisArtifactScope createFromAST(ASTCDCompilationUnit rootNode) {
-    TestCD4AnalysisArtifactScope artifactScope = new TestCD4AnalysisArtifactScope(Optional.empty(),
-        Names.getQualifiedName(rootNode.getPackageList()), new ArrayList<>());
-    putOnStack(artifactScope);
-    rootNode.accept(getRealThis());
-    return artifactScope;
+  public void setRealThis(TestCD4AnalysisVisitor realThis) {
+    this.realThis = realThis;
+  }
+
+  public TestCD4AnalysisSTCompleteTypes(Deque<? extends ITestCD4AnalysisScope> scopeStack){
+    this.realThis = this;
+    this.scopeStack = scopeStack;
   }
 
   @Override
-  public void initialize_CDAttribute(CDFieldSymbol fieldSymbol, ASTCDAttribute astAttribute) {
+  public void endVisit(ASTCDAttribute astAttribute){
+    CDFieldSymbol fieldSymbol = astAttribute.getSymbol();
     ASTMCType astType = astAttribute.getMCType();
     final String typeName;
     if (astType instanceof ASTMCGenericType) {
@@ -45,7 +46,7 @@ public class TestCD4AnalysisSymbolTableCreator extends TestCD4AnalysisSymbolTabl
     }
 
     final CDTypeSymbolSurrogate typeReference = new CDTypeSymbolSurrogate(typeName);
-    typeReference.setEnclosingScope(getCurrentScope().get());
+    typeReference.setEnclosingScope(scopeStack.peekLast());
     fieldSymbol.setType(typeReference);
 
     if (astAttribute.isPresentModifier()) {
@@ -67,7 +68,8 @@ public class TestCD4AnalysisSymbolTableCreator extends TestCD4AnalysisSymbolTabl
   }
 
   @Override
-  public void initialize_CDMethod(CDMethOrConstrSymbol methodSymbol, ASTCDMethod astMethod) {
+  public void endVisit(ASTCDMethod astMethod){
+    CDMethOrConstrSymbol methodSymbol = astMethod.getSymbol();
     setReturnTypeOfMethod(methodSymbol, astMethod);
     if (!astMethod.getCDParameterList().isEmpty()) {
       if (astMethod.getCDParameter(astMethod.getCDParameterList().size() - 1).isEllipsis()) {
@@ -79,12 +81,13 @@ public class TestCD4AnalysisSymbolTableCreator extends TestCD4AnalysisSymbolTabl
   public void setReturnTypeOfMethod(final CDMethOrConstrSymbol methodSymbol, ASTCDMethod astMethod) {
     final CDTypeSymbolSurrogate returnSymbol = new CDTypeSymbolSurrogate(
         ( astMethod.getMCReturnType().printType(new MCCollectionTypesPrettyPrinter(new IndentPrinter()))));
-    returnSymbol.setEnclosingScope(getCurrentScope().get());
+    returnSymbol.setEnclosingScope(scopeStack.peekLast());
     methodSymbol.setReturnType(returnSymbol);
   }
 
   @Override
-  public void initialize_CDInterface(CDTypeSymbol interfaceSymbol, ASTCDInterface astInterface) {
+  public void endVisit(ASTCDInterface astInterface){
+    CDTypeSymbol interfaceSymbol = astInterface.getSymbol();
     interfaceSymbol.setIsInterface(true);
     // Interfaces are always abstract
     interfaceSymbol.setIsAbstract(true);
@@ -94,20 +97,6 @@ public class TestCD4AnalysisSymbolTableCreator extends TestCD4AnalysisSymbolTabl
     // Interfaces are always abstract
     interfaceSymbol.setIsAbstract(true);
   }
-
-  @Override
-  public void initialize_CDClass(CDTypeSymbol symbol, ASTCDClass ast) {
-    symbol.setIsClass(true);
-
-    if (ast.isPresentSuperclass()) {
-      ASTMCObjectType superC = ast.getSuperclass();
-      final CDTypeSymbolSurrogate superClassSymbol = createCDTypeSymbolFromReference(superC);
-      symbol.setSuperClass(superClassSymbol);
-    }
-
-    addInterfacesToType(symbol, ast.getInterfaceList());
-  }
-
 
   public void addInterfacesToType(final CDTypeSymbol typeSymbol, final List<ASTMCObjectType> astInterfaces) {
     if (astInterfaces != null) {
@@ -122,7 +111,22 @@ public class TestCD4AnalysisSymbolTableCreator extends TestCD4AnalysisSymbolTabl
   CDTypeSymbolSurrogate createCDTypeSymbolFromReference(final ASTMCObjectType astmcObjectType) {
     CDTypeSymbolSurrogate surrogate =  new CDTypeSymbolSurrogate(
         astmcObjectType.printType(new MCCollectionTypesPrettyPrinter(new IndentPrinter())));
-    surrogate.setEnclosingScope(getCurrentScope().get());
+    surrogate.setEnclosingScope(scopeStack.peekLast());
     return surrogate;
   }
+
+  @Override
+  public void endVisit(ASTCDClass astClass){
+    CDTypeSymbol symbol = astClass.getSymbol();
+    symbol.setIsClass(true);
+
+    if (astClass.isPresentSuperclass()) {
+      ASTMCObjectType superC = astClass.getSuperclass();
+      final CDTypeSymbolSurrogate superClassSymbol = createCDTypeSymbolFromReference(superC);
+      symbol.setSuperClass(superClassSymbol);
+    }
+
+    addInterfacesToType(symbol, astClass.getInterfaceList());
+  }
+
 }

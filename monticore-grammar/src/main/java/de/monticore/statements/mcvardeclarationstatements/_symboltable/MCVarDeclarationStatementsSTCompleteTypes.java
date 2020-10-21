@@ -1,6 +1,3 @@
-// (c) https://github.com/MontiCore/monticore
-
-/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.statements.mcvardeclarationstatements._symboltable;
 
 import com.google.common.collect.Lists;
@@ -8,29 +5,38 @@ import de.monticore.statements.mccommonstatements._ast.ASTJavaModifier;
 import de.monticore.statements.mcstatementsbasis._ast.ASTMCModifier;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTLocalVariableDeclaration;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTVariableDeclarator;
+import de.monticore.statements.mcvardeclarationstatements._visitor.MCVarDeclarationStatementsVisitor;
+import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolSurrogate;
 import de.monticore.types.check.SymTypeArray;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfNull;
 import de.monticore.types.check.SynthesizeSymTypeFromMCFullGenericTypes;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 
-import java.util.Deque;
 import java.util.List;
 
 import static de.monticore.statements.mccommonstatements._ast.ASTConstantsMCCommonStatements.*;
 
-@Deprecated
-public class MCVarDeclarationStatementsSymbolTableCreator extends MCVarDeclarationStatementsSymbolTableCreatorTOP {
-  public MCVarDeclarationStatementsSymbolTableCreator(IMCVarDeclarationStatementsScope enclosingScope) {
-    super(enclosingScope);
+public class MCVarDeclarationStatementsSTCompleteTypes implements MCVarDeclarationStatementsVisitor {
+
+  private MCVarDeclarationStatementsVisitor realThis;
+
+  public MCVarDeclarationStatementsSTCompleteTypes(){
+    this.realThis = this;
   }
 
-  public MCVarDeclarationStatementsSymbolTableCreator(Deque<? extends IMCVarDeclarationStatementsScope> scopeStack) {
-    super(scopeStack);
+  @Override
+  public MCVarDeclarationStatementsVisitor getRealThis() {
+    return realThis;
   }
 
+  @Override
+  public void setRealThis(MCVarDeclarationStatementsVisitor realThis) {
+    this.realThis = realThis;
+  }
+
+  @Override
   public void endVisit(ASTLocalVariableDeclaration ast) {
     List<FieldSymbol> symbols = Lists.newArrayList();
     for (ASTVariableDeclarator v : ast.getVariableDeclaratorList()) {
@@ -43,7 +49,7 @@ public class MCVarDeclarationStatementsSymbolTableCreator extends MCVarDeclarati
           OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate(v.getDeclaratorId().getName());
           loader.setEnclosingScope(v.getDeclaratorId().getEnclosingScope());
           simpleType = new SymTypeArray(loader,
-                  v.getDeclaratorId().getDimList().size(), simpleType);
+              v.getDeclaratorId().getDimList().size(), simpleType);
         }
       }
       v.getDeclaratorId().getSymbol().setType(simpleType);
@@ -88,5 +94,6 @@ public class MCVarDeclarationStatementsSymbolTableCreator extends MCVarDeclarati
     ast.accept(syn);
     return syn.getResult().orElse(new SymTypeOfNull());
   }
+
 
 }
