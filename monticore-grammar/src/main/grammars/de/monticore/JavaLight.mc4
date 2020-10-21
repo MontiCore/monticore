@@ -101,6 +101,8 @@ ElementValuePair
 ElementValueArrayInitializer implements ElementValue
     =   "{" (ElementValueOrExpr || ",")* (",")? "}";
 
+// ARRAYS
+
 ArrayDeclaratorId implements Declarator
     =   Name (dim:"[" "]")+ ;
 
