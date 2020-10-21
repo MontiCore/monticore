@@ -4,6 +4,8 @@ package de.monticore.codegen.cd2java.mill;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDConstructor;
+import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
+import de.monticore.cd.facade.CDModifier;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.DecorationHelper;
@@ -17,6 +19,7 @@ import org.junit.Test;
 import java.util.List;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -78,6 +81,15 @@ public class MillForSuperDecoratorTest extends DecoratorTestCase {
   @Test
   public void testMethodSize() {
     assertEquals(1, millClass.sizeCDMethods());
+  }
+
+  @Test
+  public void testScopeMethod(){
+    ASTCDMethod method = getMethodBy("_lexicalsScope", millClass);
+    assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.IAutomatonScope", method.getMCReturnType().getMCType());
+    assertTrue(method.isEmptyCDParameters());
   }
 
 }
