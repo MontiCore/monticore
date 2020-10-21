@@ -12,6 +12,7 @@ import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.AbstractService;
+import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.cd.facade.CDModifier.PUBLIC_STATIC;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
@@ -33,10 +35,12 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
   protected ASTCDDefinition astcdDefinition;
 
   protected final AbstractService<?> service;
+  protected final VisitorService visitorService;
 
-  public MillForSuperDecorator(final GlobalExtensionManagement glex, final AbstractService<?> service) {
+  public MillForSuperDecorator(final GlobalExtensionManagement glex, final AbstractService<?> service, VisitorService visitorService) {
     super(glex);
     this.service = service;
+    this.visitorService = visitorService;
   }
 
   public List<ASTCDClass> decorate(final ASTCDCompilationUnit compilationUnit) {
@@ -65,6 +69,7 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
           .setName(millClassName)
           .setSuperclass(superclass)
           .addAllCDMethods(builderMethodsList)
+          .addCDMethod(getSuperTraverserMethod(superSymbol))
           .build());
     }
 
@@ -142,4 +147,39 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
     firstClasses.addAll(l.values());
   }
 
+  /**
+   * Creates the protected internal traverser method for the given cd symbol.
+   * 
+   * @param cdSymbol The symbol of the given class diagram
+   * @return The list of all internal traverser accessor methods
+   */
+  protected ASTCDMethod getSuperTraverserMethod(CDDefinitionSymbol cdSymbol) {
+      String traverserName = visitorService.getTraverserSimpleName(cdSymbol);
+      String traverserType = visitorService.getTraverserFullName();
+      String traverserInterfaceType = visitorService.getTraverserInterfaceFullName(cdSymbol);
+      return getAttributeMethod(traverserName, traverserType, traverserInterfaceType);
+  }
+  
+  /**
+   * Creates protected internal method for a given attribute. The attribute is
+   * specified by its simple name, its qualified type, and the qualified return
+   * type of the methods. The return type of the method may by equals to the
+   * attribute type or a corresponding super type.
+   * 
+   * @param attributeName The name of the attribute
+   * @param attributeType The qualified type of the attribute
+   * @param methodType The return type of the methods
+   * @return The internal method for the attribute
+   */
+  protected ASTCDMethod getAttributeMethod(String attributeName, String attributeType, String methodType) {
+    // method names and return type
+    String protectedMethodName = "_" + StringTransformations.uncapitalize(attributeName);
+    ASTMCType returnType = getMCTypeFacade().createQualifiedType(methodType);
+    
+    // protected internal method
+    ASTCDMethod protectedMethod = getCDMethodFacade().createMethod(PROTECTED, returnType, protectedMethodName);
+    this.replaceTemplate(EMPTY_BODY, protectedMethod, new StringHookPoint("return new " + attributeType + "();"));
+    
+    return protectedMethod;
+  }
 }
