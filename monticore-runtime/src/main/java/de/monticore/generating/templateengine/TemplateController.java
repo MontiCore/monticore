@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.google.common.collect.ImmutableList;
 import de.monticore.io.FileReaderWriter;
 import org.apache.commons.io.FilenameUtils;
 
@@ -74,9 +75,12 @@ public class TemplateController {
 
   private SimpleHash data = SimpleHashFactory.getInstance().createSimpleHash();
 
+  private static List<TemplateController> activeControllers = Lists.newArrayList();
+
   public TemplateController(GeneratorSetup setup, String templatename) {
     this.config = setup;
     this.templatename = templatename;
+    activeControllers.add(this);
   }
 
   /**
@@ -535,6 +539,7 @@ public class TemplateController {
 
       // Run template with data to create output
       config.getFreeMarkerTemplateEngine().run(ret, d, template);
+      activeControllers.remove(tc);
     }
     else {
       // no template
@@ -589,6 +594,10 @@ public class TemplateController {
           + "\"", e);
     }
     return null;
+  }
+
+  protected void setValueToData(String name, Object value) {
+    data.put(name, value);
   }
 
   /**
@@ -722,6 +731,14 @@ public class TemplateController {
    */
   public void error(String msg) {
     Log.error(msg);
+  }
+
+  public static List<TemplateController> getActiveControllers() {
+    return ImmutableList.copyOf(activeControllers);
+  }
+
+  public static void clearActiveControllers() {
+    activeControllers.clear();
   }
 
 }

@@ -9,14 +9,6 @@
       <#if 2<=statedepth>
         ${glex.changeGlobalVar("statedepth", statedepth+1)}
         ${tc.include("tpl2.StateBody", ast.stateBody)}
-<#-- XXX TODO BUG MB:
-das statement sollte notwendig sein (ist ja eine globale Variable):
-          	${glex.changeGlobalVar("statedepth", statedepth-1)}
-Die Variable hat sich aber lokal nicht verändert und
-deshalb ist nachfolgende Zeile notwendig 
-(obwohl sie zunächst sinnlos erscheinen mag)
-        ${glex.changeGlobalVar("statedepth", statedepth)}
-(am besten sichtbar, wenn man out/3pingPong.aut verfolgt)
--->
+        ${glex.changeGlobalVar("statedepth", statedepth-1)}
       </#if>
     </#if>
