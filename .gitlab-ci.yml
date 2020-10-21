@@ -172,7 +172,7 @@ trigger-siunits:
   stage: test1
   trigger:
     project: monticore/languages/siunits
-    branch: master
+    branch: dev
   only:
     - dev
 
