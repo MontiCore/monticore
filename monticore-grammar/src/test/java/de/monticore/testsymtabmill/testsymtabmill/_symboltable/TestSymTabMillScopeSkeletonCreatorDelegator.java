@@ -6,4 +6,8 @@ public class TestSymTabMillScopeSkeletonCreatorDelegator extends TestSymTabMillS
     super(globalScope);
   }
 
+  public TestSymTabMillScopeSkeletonCreatorDelegator(){
+    super();
+  }
+
 }

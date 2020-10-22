@@ -17,6 +17,10 @@ public class TestCD4AnalysisScopeSkeletonCreator extends TestCD4AnalysisScopeSke
     super(scopeStack);
   }
 
+  public TestCD4AnalysisScopeSkeletonCreator(){
+    super();
+  }
+
   @Override
   public TestCD4AnalysisArtifactScope createFromAST(ASTCDCompilationUnit rootNode) {
     TestCD4AnalysisArtifactScope artifactScope = new TestCD4AnalysisArtifactScope(Optional.empty(),

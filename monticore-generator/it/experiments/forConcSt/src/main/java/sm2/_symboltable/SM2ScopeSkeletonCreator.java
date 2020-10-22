@@ -16,6 +16,10 @@ public class SM2ScopeSkeletonCreator extends SM2ScopeSkeletonCreatorTOP {
     super(scopeStack);
   }
 
+  public SM2ScopeSkeletonCreator(){
+    super();
+  }
+
   @Override
   public void visit(final ASTAutomaton automatonNode) {
     final AutomatonSymbol automaton = new AutomatonSymbol(automatonNode.getName());

@@ -7,4 +7,8 @@ public class TestSymTabMillScopeSkeletonCreator extends TestSymTabMillScopeSkele
   public TestSymTabMillScopeSkeletonCreator(Deque<? extends ITestSymTabMillScope> scopeStack){
     super(scopeStack);
   }
+
+  public TestSymTabMillScopeSkeletonCreator(){
+    super();
+  }
 }
