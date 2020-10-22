@@ -95,6 +95,47 @@ released: 16.09.2020
 ##  MontiCore 6.2.0
 released: 21.07.2020
 
+### Additions
+* added `isFinal` to `OOType` in `OOSymbols`
+* extended the mill such that builder for DeSer related classes are provided by the mill
+* added support for symbol usages in `NonterminalSeperator`
+    * example: `Bar = (bla:Name@Foo || "," )+;`
+* added reports for the symbol table structure of the processed grammar
+* added `isReadOnly` to `Variable` in `BasicSymbols`
+* added `isElliptic` to `Method` in `TypeSymbols`
+* added a context condition to warn if keywords consist of numbers only 
+    * these numbers will be tokenized as keywords instead of numbers
+* added `splittoken` to express that the listed tokens should be split and not handled as a single token
+    * example: `splittoken ":::";` results in three token `:`
+* added `nokeyword` to express that the listed keywords should not be handled as tokens
+   * example: `nokeyword "automaton", "state";` means that `automaton` and `state` should not be handled as keywords
+* introduced symbol inheritance
+
+### Changes
+
+* renamed `de.monticore.type.TypeSymbols` to `de.monticore.symbols.OOSymbols`
+* renamed `de.monticore.type.BasicTypeSymbols` `to de.monticore.symbols.BasicSymbols`
+* reworked appended `s` for list attributes
+* renamed SymbolLoader to SymbolSurrogate
+  * Surrogates are now subclasses of their corresponding symbols
+* `MCJavaBlock` in `MCCommonStatements` now spans a shadowing, non-exporting, ordered scope
+* `MethodDeclaration` and `ConstructorDeclaration` in `JavaLight` use `MCJavaBlock` instead of `MCBlockStatement`
+* `Label` in `MCLowLevelStatement` now is a symbol
+* `VarDecl` in `MCVarDeclarationStatements` no longer exists
+    * `DeclaratorId` now produces `FieldSymbol`s
+* removed `isParameter` and `isVariable` from `Field` in `TypeSymbols`
+* the language class is no longer generated
+* moved creator expressions to `JavaClassExpression` 
+* moved `PlusExpression` and `MinusExpression` from `AssignmentExpressions` to `CommonExpressions`
+
+
+### Fixes
+Fixed an issue where super and subtype comparison was wrong in type check
+Fixed handling of capital letters in grammar package
+  * using capital letters now produces a warning
+* Fixed an issue were `setAbsent` methods in the generated SymbolBuilder where not properly overridden
+* Fixed that non-shadowing scopes where not handled as intended
+
 ##  MontiCore 6.1.0
 released: 07.05.2020
 
