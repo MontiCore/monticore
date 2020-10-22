@@ -78,6 +78,7 @@ FormalParameterListing
 FormalParameters
     =   "(" FormalParameterListing? ")";
 
+
 // ANNOTATIONS
 
 Annotation implements MCModifier,  ElementValue
@@ -100,8 +101,16 @@ ElementValuePair
 ElementValueArrayInitializer implements ElementValue
     =   "{" (ElementValueOrExpr || ",")* (",")? "}";
 
+// ARRAYS
+
+ArrayDeclaratorId implements Declarator
+    =   Name (dim:"[" "]")+ ;
+
 ArrayDimensionByInitializer implements ArrayDimensionSpecifier
     = (dim:"[" "]")+ ArrayInit;
+
+ArrayInit implements VariableInit
+     =   "{" (VariableInit || ",")* (",")? "}" ;
 
 }
 

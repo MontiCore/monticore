@@ -524,6 +524,7 @@ public class TemplateController {
         d.putAll(config.getGlex().getGlobalData().toMap());
       }
       catch (TemplateModelException e) {
+        
         String usage = this.templatename != null ? " (" + this.templatename + ")" : "";
         Log.error("0xA0128 Globally defined data could not be passed to the called template "
             + usage + ". ## This is an internal"

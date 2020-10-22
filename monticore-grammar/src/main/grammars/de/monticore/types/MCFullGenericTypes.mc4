@@ -23,7 +23,7 @@ import de.monticore.types.*;
 */
 
 component grammar MCFullGenericTypes
-          extends MCSimpleGenericTypes {
+          extends MCSimpleGenericTypes, MCArrayTypes {
 
   /*=================================================================*/
 
@@ -53,15 +53,4 @@ component grammar MCFullGenericTypes
   // this left open to the embedding nonterminal
   MCInnerType = Name ("<" (MCTypeArgument || ",")+ ">")?;
 
-
-  /*=================================================================*/
-
-  /** ASTArrayType introduce array for arbitrary types
-  */
-  MCArrayType implements MCType =
-       MCType ("[" "]" {_aNode.setDimensions(_aNode.getDimensions()+1);} )+;
-
-  // counter dimensions counts the array depth
-  astrule MCArrayType =
-    dimensions:int;
 }

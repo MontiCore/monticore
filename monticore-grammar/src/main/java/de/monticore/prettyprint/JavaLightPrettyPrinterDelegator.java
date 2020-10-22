@@ -3,9 +3,11 @@ package de.monticore.prettyprint;
 
 import de.monticore.expressions.assignmentexpressions._ast.ASTAssignmentExpressionsNode;
 import de.monticore.expressions.commonexpressions._ast.ASTCommonExpressionsNode;
+import de.monticore.expressions.javaclassexpressions._visitor.JavaClassExpressionsVisitor;
 import de.monticore.expressions.prettyprint.AssignmentExpressionsPrettyPrinter;
 import de.monticore.expressions.prettyprint.CommonExpressionsPrettyPrinter;
 import de.monticore.expressions.prettyprint.ExpressionsBasisPrettyPrinter;
+import de.monticore.expressions.prettyprint.JavaClassExpressionsPrettyPrinter;
 import de.monticore.javalight._ast.ASTJavaLightNode;
 import de.monticore.javalight._visitor.JavaLightDelegatorVisitor;
 import de.monticore.statements.mccommonstatements._ast.ASTMCCommonStatementsNode;
@@ -31,6 +33,7 @@ public class JavaLightPrettyPrinterDelegator extends JavaLightDelegatorVisitor {
     setCommonExpressionsVisitor(new CommonExpressionsPrettyPrinter(printer));
     setMCVarDeclarationStatementsVisitor(new MCVarDeclarationStatementsPrettyPrinter(printer));
     setJavaLightVisitor(new JavaLightPrettyPrinter(printer));
+    setJavaClassExpressionsVisitor(new JavaClassExpressionsPrettyPrinter(printer));
   }
 
   public IndentPrinter getPrinter() {
