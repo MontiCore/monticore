@@ -69,9 +69,10 @@ public class MillWithInheritanceTest extends DecoratorTestCase {
     glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
 
     SymbolTableService symbolTableService = new SymbolTableService(decoratedCompilationUnit);
+    VisitorService visitorService = new VisitorService(decoratedCompilationUnit);
 
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
-    MillDecorator decorator = new MillDecorator(this.glex, symbolTableService);
+    MillDecorator decorator = new MillDecorator(this.glex, symbolTableService, visitorService);
     this.millClass = decorator.decorate(Lists.newArrayList(getASTCD(), getVisitorCD()));
   }
 

@@ -85,8 +85,9 @@ public class MillDecoratorTest extends DecoratorTestCase {
     this.glex.setGlobalValue("service", new VisitorService(decoratedCompilationUnit));
 
     SymbolTableService symbolTableService = new SymbolTableService(decoratedCompilationUnit);
+    VisitorService visitorService = new VisitorService(decoratedCompilationUnit);
 
-    MillDecorator decorator = new MillDecorator(this.glex, symbolTableService);
+    MillDecorator decorator = new MillDecorator(this.glex, symbolTableService, visitorService);
     this.millClass = decorator.decorate(Lists.newArrayList(getASTCD(), getVisitorCD(), getSymbolCD()));
   }
 
@@ -205,7 +206,7 @@ public class MillDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeSize() {
-    assertEquals(28, millClass.sizeCDAttributes());
+    assertEquals(29, millClass.sizeCDAttributes());
   }
 
   @Test
