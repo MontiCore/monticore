@@ -1,6 +1,79 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 # Release Notes
 
+##  MontiCore 6.5.0-SNAPSHOT
+to be released 
+
+### Additions
+* added an experiment showcasing serialization and deserialization
+* IncCheck provided by the MontiCore Gradle Plugin now considers local super grammar changes to trigger new generation
+
+### Changes
+* renamed `IXResolvingDelegate` to `IXResolver`
+* outsourced Type expressions for arrays to a separate grammar
+  * was `FullGenericTypes`, is now `MCArrayTypes`
+* moved array initialization to `JavaLight` (was `MCVarDeclarationStatements`)
+* In a composed language, mills of super languages now provide scope instances (scope, global scope and artifact scope) for the composed language
+* non-existing template paths now result in an error instead of a warning
+
+
+### Fixes
+
+* Fixed that global variable changes in child templates were not changed in parents
+* Fixed handling of optional names of symbols in symbol table creator 
+* Fixed an issue where surrogates hide symbol attributes
+
+
+##  MontiCore 6.4.0
+released: 12.10.2020
+
+### Additions
+* extended the generated incCheck files to contain information about local super grammars
+    * the sh-file is now able to trigger generation if local super grammars are changed
+    * the incCheck method provided by the plugin will support this behavior as well
+    * will only be available in the next release
+* extended the mill to manage the global scope instance centrally 
+* added comfort methods for creating modifiers to the `ModifierBuilder`
+    * `ModifierBuilder().PUBLIC()` short for `ModifierBuilder().setPublic(true)`
+* added `MCShadowingJavaBlock` to `MCCommonStatements`
+    * standard `MCJavaBlock` is no longer shadowing
+* added a class diagram to the reports that represents the generated data structure for the given grammar
+ (ast, symbol table visitors, etc.)
+* added simple `BreakStatement` to `MCCommonStatements`
+* added an `include2` alias for the template controller method for including templates in conjunction with templates arguments
+
+
+### Changes
+* CLI does no longer check whether a generation is needed (this should be handled by the build tool)
+* rephrased messages for non-conservative extension (added super grammar name)
+* added a context condition to prevent list of names in nonterminal production marked as symbols
+  * might be supported in a future version of MontiCore
+* moved XForYMills to a subpackage to reduce noise (subpackage: _auxiliary)
+* deprecated the generated enum für constants 
+    * will be removed without replacement in a future release
+* moved `EnhancedForControl` production from `JavaLight` to `MCCommonStatements` as it is commonly used 
+* standard `MCJavaBlock` is no longer shadowing
+* renamed `BreakStatement` in `MCLowLevelStatements` to `LabelledBreakStatement`
+* `ForStatement` now spans a non-exporting, ordered scope 
+* shortened generated error codes to have 5 digits only
+* renamed `MethOrConstr` to `JavaMethod` in `JavaLight`
+* MontiCore Gradle plugin is no longer shipped as a fat jar
+
+### Fixes
+
+* Fixed error code calculation for generated error messages to no longer be random
+* Fixed the report for involved files to contain handwritten files that were considered 
+    * will only be available in the next release
+* Fixed an issue where reports did not contain meaningful names for elements such as class diagram classes or interfaces
+
+##  MontiCore 6.3.0
+released: 16.09.2020
+
+##  MontiCore 6.2.0
+released: 21.07.2020
+
+##  MontiCore 6.1.0
+released: 07.05.2020
 
 ##  MontiCore 6.0.0
 - Uses CD4Analysis 1.5.0
