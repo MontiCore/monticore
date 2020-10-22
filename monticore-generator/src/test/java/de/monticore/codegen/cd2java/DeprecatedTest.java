@@ -51,7 +51,7 @@ public class DeprecatedTest extends DecoratorTestCase {
   private SymbolBuilderDecorator symbolBuilderDecorator;
   private SymbolSurrogateDecorator symbolSurrogateDecorator;
   private SymbolSurrogateBuilderDecorator symbolSurrogateBuilderDecorator;
-  private SymbolResolvingDelegateInterfaceDecorator symbolResolvingDelegateInterfaceDecorator;
+  private SymbolResolverInterfaceDecorator symbolResolverInterfaceDecorator;
   private EnumDecorator enumDecorator;
   private ASTInterfaceDecorator astInterfaceDecorator;
 
@@ -97,7 +97,7 @@ public class DeprecatedTest extends DecoratorTestCase {
     symbolSurrogateBuilderDecorator = new SymbolSurrogateBuilderDecorator(this.glex, symbolTableService,
         new AccessorDecorator(glex, symbolTableService));
 
-    symbolResolvingDelegateInterfaceDecorator = new SymbolResolvingDelegateInterfaceDecorator(this.glex, symbolTableService);
+    symbolResolverInterfaceDecorator = new SymbolResolverInterfaceDecorator(this.glex, symbolTableService);
 
     astInterfaceDecorator = new ASTInterfaceDecorator(glex, astService, visitorService, astSymbolDecorator, astScopeDecorator, methodDecorator);
 
@@ -198,15 +198,15 @@ public class DeprecatedTest extends DecoratorTestCase {
 
 
   @Test
-  public void testASymbolResolvingDelegateInterfaceDeprecated() {
-    ASTCDInterface resolvingDelegateA = symbolResolvingDelegateInterfaceDecorator.decorate(clazzA);
-    assertTrue(resolvingDelegateA.isPresentModifier());
-    assertTrue(resolvingDelegateA.getModifier().isPresentStereotype());
+  public void testASymbolResolverInterfaceDeprecated() {
+    ASTCDInterface resolverA = symbolResolverInterfaceDecorator.decorate(clazzA);
+    assertTrue(resolverA.isPresentModifier());
+    assertTrue(resolverA.getModifier().isPresentStereotype());
 
-    assertEquals(1, resolvingDelegateA.getModifier().getStereotype().sizeValue());
-    assertEquals("deprecated", resolvingDelegateA.getModifier().getStereotype().getValue(0).getName());
-    assertTrue(resolvingDelegateA.getModifier().getStereotype().getValue(0).isPresentValue());
-    assertEquals("CommentA", resolvingDelegateA.getModifier().getStereotype().getValue(0).getValue());
+    assertEquals(1, resolverA.getModifier().getStereotype().sizeValue());
+    assertEquals("deprecated", resolverA.getModifier().getStereotype().getValue(0).getName());
+    assertTrue(resolverA.getModifier().getStereotype().getValue(0).isPresentValue());
+    assertEquals("CommentA", resolverA.getModifier().getStereotype().getValue(0).getValue());
   }
 
   @Test
@@ -252,15 +252,15 @@ public class DeprecatedTest extends DecoratorTestCase {
 
 
   @Test
-  public void testISymbolResolvingDelegateInterfaceDeprecated() {
-    ASTCDInterface resolvingDelegateA = symbolResolvingDelegateInterfaceDecorator.decorate(interfaceI);
-    assertTrue(resolvingDelegateA.isPresentModifier());
-    assertTrue(resolvingDelegateA.getModifier().isPresentStereotype());
+  public void testISymbolResolverInterfaceDeprecated() {
+    ASTCDInterface resolverA = symbolResolverInterfaceDecorator.decorate(interfaceI);
+    assertTrue(resolverA.isPresentModifier());
+    assertTrue(resolverA.getModifier().isPresentStereotype());
 
-    assertEquals(1, resolvingDelegateA.getModifier().getStereotype().sizeValue());
-    assertEquals("deprecated", resolvingDelegateA.getModifier().getStereotype().getValue(0).getName());
-    assertTrue(resolvingDelegateA.getModifier().getStereotype().getValue(0).isPresentValue());
-    assertEquals("CommentI", resolvingDelegateA.getModifier().getStereotype().getValue(0).getValue());
+    assertEquals(1, resolverA.getModifier().getStereotype().sizeValue());
+    assertEquals("deprecated", resolverA.getModifier().getStereotype().getValue(0).getName());
+    assertTrue(resolverA.getModifier().getStereotype().getValue(0).isPresentValue());
+    assertEquals("CommentI", resolverA.getModifier().getStereotype().getValue(0).getValue());
   }
 
   @Test

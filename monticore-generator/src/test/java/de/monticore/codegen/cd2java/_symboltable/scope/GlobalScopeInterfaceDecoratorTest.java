@@ -199,8 +199,8 @@ public class GlobalScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
 
   @Test
-  public void testAddAdaptedAutomatonSymbolResolvingDelegateMethod() {
-    List<ASTCDMethod> methods = getMethodsBy("addAdaptedAutomatonSymbolResolvingDelegate", 1,
+  public void testAddAdaptedAutomatonSymbolResolverMethod() {
+    List<ASTCDMethod> methods = getMethodsBy("addAdaptedAutomatonSymbolResolver", 1,
         scopeInterface);
 
     assertEquals(1, methods.size());
@@ -212,7 +212,7 @@ public class GlobalScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(
-        "de.monticore.codegen.ast.automaton._symboltable.IAutomatonSymbolResolvingDelegate",
+        "de.monticore.codegen.ast.automaton._symboltable.IAutomatonSymbolResolver",
         method.getCDParameter(0).getMCType());
     assertEquals("element", method.getCDParameter(0).getName());
   }

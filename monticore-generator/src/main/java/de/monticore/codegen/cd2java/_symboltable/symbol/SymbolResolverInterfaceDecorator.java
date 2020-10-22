@@ -12,13 +12,13 @@ import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.cd.facade.CDModifier.*;
 
 /**
- * creates a SymbolResolvingDelegate interface from a grammar
+ * creates a SymbolResolver interface from a grammar
  */
-public class SymbolResolvingDelegateInterfaceDecorator extends AbstractCreator<ASTCDType, ASTCDInterface> {
+public class SymbolResolverInterfaceDecorator extends AbstractCreator<ASTCDType, ASTCDInterface> {
 
   protected final SymbolTableService symbolTableService;
 
-  public SymbolResolvingDelegateInterfaceDecorator(final GlobalExtensionManagement glex,
+  public SymbolResolverInterfaceDecorator(final GlobalExtensionManagement glex,
                                                    final SymbolTableService symbolTableService) {
     super(glex);
     this.symbolTableService = symbolTableService;
@@ -26,7 +26,7 @@ public class SymbolResolvingDelegateInterfaceDecorator extends AbstractCreator<A
 
   @Override
   public ASTCDInterface decorate(ASTCDType input) {
-    String symbolResolvingDelegateInterface = symbolTableService.getSymbolResolvingDelegateInterfaceSimpleName(input);
+    String symbolResolverInterface = symbolTableService.getSymbolResolverInterfaceSimpleName(input);
     String symbolFullName = symbolTableService.getSymbolFullName(input);
     String symbolSimpleName = symbolTableService.getSymbolSimpleName(input);
     ASTModifier modifier = input.isPresentModifier() ?
@@ -34,7 +34,7 @@ public class SymbolResolvingDelegateInterfaceDecorator extends AbstractCreator<A
         PUBLIC.build();
 
     return CD4AnalysisMill.cDInterfaceBuilder()
-        .setName(symbolResolvingDelegateInterface)
+        .setName(symbolResolverInterface)
         .setModifier(modifier)
         .addCDMethod(createResolveAdaptedStateSymbol(symbolFullName, symbolSimpleName))
         .build();
