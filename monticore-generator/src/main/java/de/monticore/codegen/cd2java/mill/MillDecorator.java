@@ -12,6 +12,7 @@ import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
@@ -132,7 +133,10 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
       List<ASTCDMethod> globalScopeMethods = getGlobalScopeMethods(globalScopeAttribute);
       millClass.addCDAttribute(globalScopeAttribute);
       millClass.addAllCDMethods(globalScopeMethods);
+
+      millClass.addAllCDMethods(getArtifactScopeMethods());
     }
+    millClass.addAllCDMethods(getScopeMethods());
 
     // add builder methods for each class
     List<ASTCDMethod> superMethodsList = addSuperBuilderMethods(superSymbolList, allClasses);
@@ -240,7 +244,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
     List<ASTCDMethod> globalScopeMethods = Lists.newArrayList();
 
     String attributeName = globalScopeAttribute.getName();
-    String staticMethodName = "get"+StringTransformations.capitalize(attributeName);
+    String staticMethodName = StringTransformations.uncapitalize(symbolTableService.getGlobalScopeSimpleName());
     String protectedMethodName = "_"+staticMethodName;
 
     ASTCDMethod staticMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC, globalScopeAttribute.getMCType(), staticMethodName);
@@ -252,6 +256,36 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
     globalScopeMethods.add(protectedMethod);
 
     return globalScopeMethods;
+  }
+
+  protected List<ASTCDMethod> getArtifactScopeMethods(){
+    String artifactScopeName = symbolTableService.getArtifactScopeSimpleName();
+    ASTMCType returnType = symbolTableService.getArtifactScopeInterfaceType();
+    ASTMCType scopeType = symbolTableService.getArtifactScopeType();
+    return getStaticAndProtectedScopeMethods(artifactScopeName, returnType, scopeType);
+  }
+
+  protected List<ASTCDMethod> getScopeMethods(){
+    String scopeName = symbolTableService.getScopeClassSimpleName();
+    ASTMCType returnType = symbolTableService.getScopeInterfaceType();
+    ASTMCType scopeType = symbolTableService.getScopeType();
+    return getStaticAndProtectedScopeMethods(scopeName, returnType, scopeType);
+  }
+
+  protected List<ASTCDMethod> getStaticAndProtectedScopeMethods(String scopeName, ASTMCType returnType, ASTMCType scopeType) {
+    List<ASTCDMethod> scopeMethods = Lists.newArrayList();
+    String staticMethodName = StringTransformations.uncapitalize(scopeName);
+    String protectedMethodName = "_" + staticMethodName;
+
+    ASTCDMethod staticMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC, returnType, staticMethodName);
+    this.replaceTemplate(EMPTY_BODY, staticMethod, new TemplateHookPoint("mill.BuilderMethod", scopeName + BUILDER_SUFFIX, staticMethodName));
+    scopeMethods.add(staticMethod);
+
+    ASTCDMethod protectedMethod = getCDMethodFacade().createMethod(PROTECTED, returnType, protectedMethodName);
+    this.replaceTemplate(EMPTY_BODY, protectedMethod, new TemplateHookPoint("mill.ProtectedBuilderMethod", scopeType.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter())));
+    scopeMethods.add(protectedMethod);
+
+    return scopeMethods;
   }
 
   protected List<ASTCDMethod> getSuperSymbolMethods(CDDefinitionSymbol superSymbol, CDTypeSymbol type) {

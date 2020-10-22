@@ -95,7 +95,7 @@ public class ArtifactScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testConstructorCount() {
-    assertEquals(2, scopeClass.sizeCDConstructors());
+    assertEquals(3, scopeClass.sizeCDConstructors());
   }
 
   @Test
@@ -136,6 +136,14 @@ public class ArtifactScopeClassDecoratorTest extends DecoratorTestCase {
     assertTrue(cdConstructor.isEmptyException());
   }
 
+  @Test
+  public void testZeroArgsConstructor(){
+    ASTCDConstructor cdConstructor = scopeClass.getCDConstructor(2);
+    assertDeepEquals(PUBLIC, cdConstructor.getModifier());
+    assertEquals("AutomatonArtifactScope", cdConstructor.getName());
+    assertTrue(cdConstructor.isEmptyCDParameters());
+    assertTrue(cdConstructor.isEmptyException());
+  }
 
   @Test
   public void testAttributeSize() {

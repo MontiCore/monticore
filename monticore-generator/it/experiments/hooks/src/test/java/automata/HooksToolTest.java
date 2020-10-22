@@ -3,13 +3,14 @@ package automata;
 
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
+import hooks.HooksTool;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class GeneratorTest {
+public class HooksToolTest {
 
   @BeforeClass
   public static void init(){
@@ -30,13 +31,31 @@ public class GeneratorTest {
    */
   @Test
   public void testPingPong(){
-    AutomataTool.main(new String[] { "../templates/src/test/resources/example/PingPong.aut", "src/product/java", "target/statepattern" });
+    HooksTool.main(new String[] { 
+         "../templates/src/test/resources/example/PingPong.aut", 
+        "src/product/java", 
+        "target/statepattern", 
+        "src/main/resources"});
     assertEquals(0, Log.getErrorCount());
   }
 
   @Test
   public void testSimple12(){
-    AutomataTool.main(new String[] { "../templates/src/test/resources/example/Simple12.aut","src/product/java", "target/statepattern" });
+    HooksTool.main(new String[] { 
+        "../templates/src/test/resources/example/Simple12.aut",
+        "src/product/java", 
+        "target/statepattern",
+        "src/main/resources"});
+    assertEquals(0, Log.getErrorCount());
+  }
+  
+  @Test
+  public void testPingPong2(){
+    TemplatesTool.main(new String[] { 
+        "../templates/src/test/resources/example/PingPong.aut", 
+        "src/product/java", 
+        "target/statepattern2", 
+        "src/main/templates"});
     assertEquals(0, Log.getErrorCount());
   }
 

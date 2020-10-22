@@ -201,6 +201,8 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
     if (symbolTableService.hasStartProd(astCD.getCDDefinition())
         || !symbolTableService.getSymbolDefiningSuperProds().isEmpty()) {
       symTabCD.addCDInterface(createGlobalScopeInterface(astCD, symbolTablePackage));
+      symTabCD.addCDInterface(createArtifactScopeInterface(astCD));
+
     }
     if (symbolTableService.hasStartProd(astCD.getCDDefinition())) {
       // symboltable creator delegator
@@ -219,10 +221,8 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
           constructQualifiedName(symbolTablePackage, symbolTableService.getArtifactScopeSimpleName()));
       this.artifactScopeDecorator.setArtifactScopeTop(isArtifactScopeHandCoded);
       ASTCDClass artifactScope = createArtifactScope(astCD);
-      ASTCDInterface artifactScopeInterface = createArtifactScopeInterface(astCD);
       symTabCD.addCDClass(artifactScope);
       symTabCD.addCDClass(createArtifactBuilderScope(artifactScope));
-      symTabCD.addCDInterface(artifactScopeInterface);
 
       // scope deser
       ASTCDClass scopeDeSer = createScopeDeSerClass(scopeCD, symbolCD);

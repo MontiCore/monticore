@@ -13,7 +13,7 @@ public class TemplateControllerMock extends TemplateController {
   
   /**
    * Constructor for mc.codegen.ExtendedTemplateControllerForTesting
-   * @param tcConfig
+   * @param setup
    * @param templatename
    */
   protected TemplateControllerMock(GeneratorSetup setup, String templatename) {
@@ -26,6 +26,6 @@ public class TemplateControllerMock extends TemplateController {
   public TemplateControllerMock getSubController() {
     return null;
   }
-  
+
   
 }
