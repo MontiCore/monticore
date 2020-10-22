@@ -8,6 +8,13 @@ import de.monticore.symboltable.serialization.json.JsonObject;
 import java.awt.*;
 import java.util.List;
 
+  // TODO AB: Erklaeren, wzu diese hwc dient 
+  // (und warum sie gebraucht wird, zB wegen der symbolrule ...
+  
+  // TODO AB:
+  // Und was mir auch nicht klar ist: Hier wird deserialisiert, aber wieso nicht auch serialisiert?
+  // das gehört doch zusammen?
+  
 public class VertexSymbolDeSer extends VertexSymbolDeSerTOP {
 
   @Override public Color deserializeColor(JsonObject symbolJson,
