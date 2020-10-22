@@ -44,4 +44,5 @@ project(':visit_L_inherit').projectDir = file('visit.L.inherit')
 include 'templates'
 include 'hooks'
 include 'textoutput'
+include 'hwDeSers'
 

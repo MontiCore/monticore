@@ -6,7 +6,6 @@ import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
 import com.google.common.collect.Lists;
 import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.cd.cd4analysis._cocos.CD4AnalysisASTCD4AnalysisNodeCoCo;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecorationHelper;

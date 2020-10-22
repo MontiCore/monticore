@@ -136,20 +136,6 @@ public class PrintTypeAstExtensionTests {
   }
 
   @Test
-  public void printTypeMethodTullGenericTypeArrayTest() {
-    MCFullGenericTypesTestParser parser= new MCFullGenericTypesTestParser();
-    String simpleReference = "de.monticore.types.prettyprint[]";
-    try {
-      Optional<? extends ASTMCType> type = parser.parse_StringMCType(simpleReference);
-      assertEquals(simpleReference.trim(),type.get().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()).trim());
-
-
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  }
-
-  @Test
   public void printTypeMethodTSimpleGenericsArrayTest() {
     MCFullGenericTypesTestParser parser= new MCFullGenericTypesTestParser();
     String[] types = {"Person<Konto>","java.util.List<socnet.Person<Konto>,List<boolean>>"};

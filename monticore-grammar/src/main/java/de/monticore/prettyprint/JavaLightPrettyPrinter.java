@@ -4,6 +4,8 @@ package de.monticore.prettyprint;
 
 import de.monticore.javalight._ast.*;
 import de.monticore.javalight._visitor.JavaLightVisitor;
+import de.monticore.statements.mcvardeclarationstatements._ast.ASTDeclaratorId;
+import de.monticore.statements.mcvardeclarationstatements._ast.ASTVariableInit;
 import de.monticore.statements.prettyprint.MCCommonStatementsPrettyPrinter;
 
 import java.util.Iterator;
@@ -174,6 +176,16 @@ public class JavaLightPrettyPrinter extends MCCommonStatementsPrettyPrinter impl
   }
 
   @Override
+  public void handle(ASTArrayDeclaratorId a) {
+    CommentPrettyPrinter.printPreComments(a, getPrinter());
+    getPrinter().print(a.getName());
+    for (int i = 0; i < a.getDimList().size(); i++) {
+      getPrinter().print("[]");
+    }
+    CommentPrettyPrinter.printPostComments(a, getPrinter());
+  }
+
+  @Override
   public void handle(ASTElementValueArrayInitializer a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     getPrinter().print("{");
@@ -187,7 +199,6 @@ public class JavaLightPrettyPrinter extends MCCommonStatementsPrettyPrinter impl
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
 
-
   @Override
   public void handle(ASTArrayDimensionByInitializer a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
@@ -196,6 +207,20 @@ public class JavaLightPrettyPrinter extends MCCommonStatementsPrettyPrinter impl
     }
     getPrinter().print(" ");
     a.getArrayInit().accept(getRealThis());
+    CommentPrettyPrinter.printPostComments(a, getPrinter());
+  }
+
+  @Override
+  public void handle(ASTArrayInit a) {
+    CommentPrettyPrinter.printPreComments(a, getPrinter());
+    getPrinter().print("{");
+    String sep = "";
+    for (ASTVariableInit v: a.getVariableInitList()) {
+      getPrinter().print(sep);
+      sep = ", ";
+      v.accept(getRealThis());
+    }
+    getPrinter().print("}");
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
 

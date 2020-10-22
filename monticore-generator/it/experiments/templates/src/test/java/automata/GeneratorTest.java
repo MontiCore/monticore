@@ -27,23 +27,24 @@ public class GeneratorTest {
    */
   @Test
   public void testPingPong(){
-    AutomataTool.main(new String[] { "src/test/resources/example/PingPong.aut", "src/product/java", "target/statepattern" });
+    TemplatesTool.main(new String[] { "src/test/resources/example/PingPong.aut", "src/product/java", "target/statepattern" });
     assertEquals(0, Log.getErrorCount());
   }
 
   @Test
   public void testSimple12(){
-    AutomataTool.main(new String[] { "src/test/resources/example/Simple12.aut","src/product/java", "target/statepattern" });
+    TemplatesTool.main(new String[] { "src/test/resources/example/Simple12.aut","src/product/java", "target/statepattern" });
     assertEquals(0, Log.getErrorCount());
   }
 
   @Test
   public void testWrongArguments(){
-    AutomataTool.main(new String[] {  });
+    TemplatesTool.main(new String[] {  });
     assertEquals(1, Log.getErrorCount());
-    assertEquals("0xEE631 Please specify 3 arguments: \n"
+    assertEquals("0xEE631 Please specify at least 3 arguments: \n"
         + "1. automata modelfile,\n"
         + "2. handcodedPath,\n"
-        + "3. output directory.", Log.getFindings().get(0).buildMsg());
+        + "3. output directory.\n"
+        + "4. (optional) templatePath", Log.getFindings().get(0).buildMsg());
   }
 }

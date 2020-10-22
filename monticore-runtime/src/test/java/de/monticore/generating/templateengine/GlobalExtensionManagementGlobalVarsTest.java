@@ -65,7 +65,7 @@ public class GlobalExtensionManagementGlobalVarsTest {
     assertEquals("abc", output.toString().replaceAll("\\s+", ""));
   }
   
-  @Ignore
+
   @Test
   public void testVariables4() {
     GeneratorSetup s = new GeneratorSetup();
@@ -76,7 +76,7 @@ public class GlobalExtensionManagementGlobalVarsTest {
     // override same variable
     String res = ge.generate(TEMPLATE_PACKAGE + "TestVariables4", ast).toString();
 
-    assertEquals("\n\nA:16\nB:38\nC:555\n", res);
+    assertEquals("A:16B:38C:555", res.replaceAll("\\r\\n|\\r|\\n", ""));
   }
 
 }

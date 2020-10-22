@@ -323,7 +323,6 @@ public class DeriveSymTypeOfCommonExpressionTest {
         .setEnclosingScope(null)
         .setExportingSymbols(true)
         .setAstNode(null)
-        .setName("Phantasy2")
         .build();
 
     OOTypeSymbol person = OOSymbolsMill.oOTypeSymbolBuilder()
@@ -702,7 +701,6 @@ public class DeriveSymTypeOfCommonExpressionTest {
         .setEnclosingScope(artifactScope1)
         .setExportingSymbols(true)
         .setAstNode(null)
-        .setName("Phantasy2")
         .build();
     // No enclosing Scope: Search ending here
     ICombineExpressionsWithLiteralsScope scope2 = CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder()
@@ -820,7 +818,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     String s = "types.Test";
     ASTExpression astex = p.parse_StringExpression(s).get();
     astex.accept(flatExpressionScopeSetter);
-    assertEquals("Test", tc.typeOf(astex).print());
+    assertEquals("types.Test", tc.typeOf(astex).print());
 
     //test for variable of a type with one package
     s = "types.Test.variable";
@@ -832,7 +830,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     s = "types2.types3.types2.Test";
     astex = p.parse_StringExpression(s).get();
     astex.accept(flatExpressionScopeSetter);
-    assertEquals("Test", tc.typeOf(astex).print());
+    assertEquals("types3.types3.types2.Test", tc.typeOf(astex).print());
 
     //test for variable of type with more than one package
     s = "types2.types3.types2.Test.variable";
@@ -921,7 +919,6 @@ public class DeriveSymTypeOfCommonExpressionTest {
         .setEnclosingScope(null)
         .setExportingSymbols(true)
         .setAstNode(null)
-        .setName("Phantasy2")
         .build();
 
     //inheritance example
@@ -1009,7 +1006,6 @@ public class DeriveSymTypeOfCommonExpressionTest {
         .setEnclosingScope(null)
         .setExportingSymbols(true)
         .setAstNode(null)
-        .setName("Phantasy2")
         .build();
   }
 
@@ -1737,7 +1733,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     assertTrue(sType.isPresent());
     ASTExpression type = sType.get();
     type.accept(flatExpressionScopeSetter);
-    assertEquals("D",tc.typeOf(type).print());
+    assertEquals("A.D",tc.typeOf(type).print());
   }
 
   @Test

@@ -120,6 +120,86 @@ trigger-cd4a:
   only:
     - dev
 
+trigger-sd:
+  stage: test1
+  trigger:
+    project: monticore/statechart/sd-language
+    branch: dev
+  only:
+    - dev
+
+trigger-fd:
+  stage: test1
+  trigger:
+    project: monticore/languages/feature-diagram
+    branch: develop
+  only:
+    - dev
+
+trigger-guidsl:
+  stage: test1
+  trigger:
+    project: monticore/languages/gui-dsl
+    branch: master
+  only:
+    - dev
+
+trigger-json:
+  stage: test1
+  trigger:
+    project: monticore/languages/json
+    branch: develop
+  only:
+    - dev
+
+trigger-ma:
+  stage: test1
+  trigger:
+    project: monticore/montiarc/core
+    branch: develop
+  only:
+    - dev
+
+trigger-ocl:
+  stage: test1
+  trigger:
+    project: monticore/languages/OCL
+    branch: develop
+  only:
+    - dev
+
+trigger-siunits:
+  stage: test1
+  trigger:
+    project: monticore/languages/siunits
+    branch: dev
+  only:
+    - dev
+
+trigger-sc:
+  stage: test1
+  trigger:
+    project: monticore/statechart/sc-language
+    branch: dev
+  only:
+    - dev
+
+trigger-xml:
+  stage: test1
+  trigger:
+    project: monticore/languages/xml
+    branch: develop
+  only:
+    - dev
+
+trigger-od:
+  stage: test1
+  trigger:
+    project: monticore/languages/od
+    branch: master
+  only:
+    - dev
+
 pages:
   stage: report
   dependencies: []
