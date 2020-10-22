@@ -15,6 +15,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.ArrayDeque;
 import java.util.Optional;
 
 import static junit.framework.TestCase.assertTrue;
@@ -56,7 +57,7 @@ public class AggregationTest {
   );
   
   // create symbol table for "blah"
-  BlahSymbolTableCreator blahSymbolTableCreator = BlahMill.blahSymbolTableCreator();
+  BlahSymbolTableCreator blahSymbolTableCreator = new BlahSymbolTableCreator(globalScope.getIBlahGS());
   IBlahArtifactScope blahSymbolTable = blahSymbolTableCreator.createFromAST(blahModel.get());
   
   // check dummy symbol is present in local scope

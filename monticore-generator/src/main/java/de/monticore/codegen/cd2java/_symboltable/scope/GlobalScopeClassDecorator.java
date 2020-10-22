@@ -160,12 +160,6 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     return getCDAttributeFacade().createAttribute(PROTECTED, getMCTypeFacade().createSetTypeOf(getMCTypeFacade().createStringType()), "cache");
   }
 
-  protected ASTCDAttribute createModelLoaderAttribute(String modelLoaderClassName) {
-    ASTMCOptionalType optType = getMCTypeFacade().createOptionalTypeOf(modelLoaderClassName);
-    return getCDAttributeFacade().createAttribute(PROTECTED, optType, "modelLoader");
-  }
-
-
   protected Map<String, ASTCDAttribute> createResolvingDelegateAttributes(List<? extends ASTCDType> symbolProds) {
     Map<String, ASTCDAttribute> attributeList = new HashMap<>();
     for (ASTCDType symbolProd : symbolProds) {
@@ -221,8 +215,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     ASTCDParameter modelNameParam = getCDParameterFacade().createParameter(String.class, "modelName");
     ASTCDParameter symbolNameParam = getCDParameterFacade().createParameter(String.class, "symbolName");
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, "loadFileForModelName", modelNameParam, symbolNameParam);
-    String errorCode = symbolTableService.getGeneratedErrorCode(definitionName);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "LoadFileForModelName", definitionName, errorCode));
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "LoadFileForModelName", definitionName));
     return method;
   }
 

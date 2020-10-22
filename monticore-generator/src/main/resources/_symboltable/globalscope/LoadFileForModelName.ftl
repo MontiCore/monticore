@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("definitionName", "genErrorCode")}
+${tc.signature("definitionName")}
   de.monticore.io.paths.ModelCoordinate modelCoordinate =
      de.monticore.io.paths.ModelCoordinates.createQualifiedCoordinate(modelName, getSymbolFileExtension());
   String filePath = modelCoordinate.getQualifiedPath().toString();
@@ -10,8 +10,6 @@ ${tc.signature("definitionName", "genErrorCode")}
     if (modelCoordinate.hasLocation()) {
       java.net.URL url = modelCoordinate.getLocation();
       this.addSubScope(scopeDeSer.load(url));
-    } else {
-      Log.error("0xA6105${genErrorCode} Cannot find location of file '" + filePath + "'!");
     }
     addLoadedFile(filePath);
   } else {
