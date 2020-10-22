@@ -192,6 +192,14 @@ trigger-xml:
   only:
     - dev
 
+trigger-od:
+  stage: test1
+  trigger:
+    project: monticore/languages/od
+    branch: master
+  only:
+    - dev
+
 pages:
   stage: report
   dependencies: []
