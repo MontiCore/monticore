@@ -601,6 +601,47 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     TopDecorator topDecorator = new TopDecorator(handCodedPath);
     return topDecorator.decorate(visitorCompilationUnit);
   }
+  
+  /**
+   * Decorates for the visitor package. Adds corresponding traverser and
+   * visitors.
+   * 
+   * @param glex The global extension management
+   * @param cdScope The scope of the cd
+   * @param astClassDiagram The input class diagram, which is decorated
+   * @param handCodedPath The path for entities of the TOP mechanism
+   * @return A compilation unit with the decorated class diagram
+   */
+  public ASTCDCompilationUnit decorateTraverserForVisitorPackage(GlobalExtensionManagement glex, 
+      ICD4AnalysisScope cdScope, ASTCDCompilationUnit astClassDiagram, IterablePath handCodedPath) {
+    ASTCDCompilationUnit preparedCD = prepareCD(cdScope, astClassDiagram);
+    return decorateWithTraverser(preparedCD, glex, handCodedPath);
+  }
+  
+  /**
+   * Decorates traverser and visitors.
+   * 
+   * @param cd The input class diagram, which is decorated
+   * @param glex The global extension management
+   * @param handCodedPath The path for entities of the TOP mechanism
+   * @return A compilation unit with the decorated class diagram
+   */
+  private ASTCDCompilationUnit decorateWithTraverser(ASTCDCompilationUnit cd, GlobalExtensionManagement glex, 
+      IterablePath handCodedPath) {
+    SymbolTableService symbolTableService = new SymbolTableService(cd);
+    VisitorService visitorService = new VisitorService(cd);
+    
+    TraverserInterfaceDecorator iTraverserDecorator = new TraverserInterfaceDecorator(glex, visitorService, symbolTableService);
+    TraverserDecorator traverserDecorator = new TraverserDecorator(glex, visitorService, symbolTableService);
+    Visitor2Decorator visitor2Decorator = new Visitor2Decorator(glex, visitorService, symbolTableService);
+    
+    CDTraverserDecorator decorator = new CDTraverserDecorator(glex, handCodedPath, visitorService, iTraverserDecorator, traverserDecorator, visitor2Decorator);
+    
+    ASTCDCompilationUnit visitorCompilationUnit = decorator.decorate(cd);
+    
+    TopDecorator topDecorator = new TopDecorator(handCodedPath);
+    return topDecorator.decorate(visitorCompilationUnit);
+  }
 
   public ASTCDCompilationUnit decorateForCoCoPackage(GlobalExtensionManagement glex, ICD4AnalysisScope cdScope,
                                                      ASTCDCompilationUnit astClassDiagram, IterablePath handCodedPath) {
@@ -659,7 +700,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
                                             ASTCDCompilationUnit symbolCD, GlobalExtensionManagement glex,
                                             IterablePath handCodedPath) {
     SymbolTableService symbolTableService = new SymbolTableService(cd);
-    MillDecorator millDecorator = new MillDecorator(glex, symbolTableService);
+    VisitorService visitorService = new VisitorService(cd);
+    MillDecorator millDecorator = new MillDecorator(glex, symbolTableService, visitorService);
     CDMillDecorator cdMillDecorator = new CDMillDecorator(glex, millDecorator);
 
     ASTCDCompilationUnit millCD = cdMillDecorator.decorate(Lists.newArrayList(astCD, visitorCD, symbolCD));
@@ -679,7 +721,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   protected ASTCDCompilationUnit generateAuxiliary(ASTCDCompilationUnit cd, ASTCDCompilationUnit astCD,
                                                  GlobalExtensionManagement glex, IterablePath handCodedPath){
     SymbolTableService symbolTableService = new SymbolTableService(cd);
-    MillForSuperDecorator millForSuperDecorator = new MillForSuperDecorator(glex, symbolTableService);
+    VisitorService visitorService = new VisitorService(cd);
+    MillForSuperDecorator millForSuperDecorator = new MillForSuperDecorator(glex, symbolTableService, visitorService);
     CDAuxiliaryDecorator cdAuxiliaryDecorator = new CDAuxiliaryDecorator(glex, millForSuperDecorator);
 
     ASTCDCompilationUnit auxiliaryCD = cdAuxiliaryDecorator.decorate(astCD);

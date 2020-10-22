@@ -72,6 +72,8 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
     // have to use the changed one here because this one will get the TOP prefix
     changedClass.addCDMethod(createAcceptMethod(changedClass));
     changedClass.addAllCDMethods(createAcceptSuperMethods(originalClass));
+    changedClass.addCDMethod(createAcceptTraverserMethod(changedClass));
+    changedClass.addAllCDMethods(createAcceptTraverserSuperMethods(originalClass));
     changedClass.addCDMethod(getConstructMethod(originalClass));
     changedClass.addCDMethod(createGetChildrenMethod(originalClass));
     if (!originalClass.isPresentSuperclass()) {
@@ -125,6 +127,13 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
     this.replaceTemplate(EMPTY_BODY, acceptMethod, new TemplateHookPoint("_ast.ast_class.Accept", astClass));
     return acceptMethod;
   }
+  
+  protected ASTCDMethod createAcceptTraverserMethod(ASTCDClass astClass) {
+    ASTCDParameter visitorParameter = this.getCDParameterFacade().createParameter(this.visitorService.getTraverserInterfaceType(), VISITOR_PREFIX);
+    ASTCDMethod acceptMethod = this.getCDMethodFacade().createMethod(PUBLIC, ASTConstants.ACCEPT_METHOD, visitorParameter);
+    this.replaceTemplate(EMPTY_BODY, acceptMethod, new TemplateHookPoint("_ast.ast_class.Accept", astClass));
+    return acceptMethod;
+  }
 
   protected ASTCDMethod createGetChildrenMethod(ASTCDClass astClass) {
     ASTMCType astNodeType = getMCTypeFacade().createCollectionTypeOf(ASTConstants.AST_INTERFACE);
@@ -144,6 +153,23 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
               superVisitorType.printType(new MCFullGenericTypesPrettyPrinter(new IndentPrinter())));
       this.replaceTemplate(EMPTY_BODY, superAccept, new TemplateHookPoint("_ast.ast_class.AcceptSuper",
           this.visitorService.getVisitorFullName(), errorCode, astClass.getName(),
+              MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(superVisitorType)));
+      result.add(superAccept);
+    }
+    return result;
+  }
+  
+  protected List<ASTCDMethod> createAcceptTraverserSuperMethods(ASTCDClass astClass) {
+    List<ASTCDMethod> result = new ArrayList<>();
+    //accept methods for super visitors
+    for (ASTMCType superVisitorType : this.visitorService.getAllTraverserInterfacesTypesInHierarchy()) {
+      ASTCDParameter superVisitorParameter = this.getCDParameterFacade().createParameter(superVisitorType, VISITOR_PREFIX);
+
+      ASTCDMethod superAccept = this.getCDMethodFacade().createMethod(PUBLIC, ASTConstants.ACCEPT_METHOD, superVisitorParameter);
+      String errorCode = astService.getGeneratedErrorCode(astClass.getName()+
+              superVisitorType.printType(new MCFullGenericTypesPrettyPrinter(new IndentPrinter())));
+      this.replaceTemplate(EMPTY_BODY, superAccept, new TemplateHookPoint("_ast.ast_class.AcceptSuper",
+          this.visitorService.getTraverserInterfaceFullName(), errorCode, astClass.getName(),
               MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(superVisitorType)));
       result.add(superAccept);
     }

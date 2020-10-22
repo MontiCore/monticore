@@ -11,6 +11,7 @@ import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
+import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
@@ -44,8 +45,9 @@ public class MillForSuperDecoratorTest extends DecoratorTestCase {
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
+    VisitorService visitorService = new VisitorService(decoratedCompilationUnit);
 
-    MillForSuperDecorator decorator = new MillForSuperDecorator(this.glex, new ASTService(decoratedCompilationUnit));
+    MillForSuperDecorator decorator = new MillForSuperDecorator(this.glex, new ASTService(decoratedCompilationUnit), visitorService);
     List<ASTCDClass> millClassList = decorator.decorate(decoratedCompilationUnit);
 
     assertEquals(1, millClassList.size());
@@ -80,7 +82,7 @@ public class MillForSuperDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodSize() {
-    assertEquals(1, millClass.sizeCDMethods());
+    assertEquals(2, millClass.sizeCDMethods());
   }
 
   @Test
