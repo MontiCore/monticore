@@ -9,9 +9,11 @@ import de.monticore.io.FileReaderWriterMock;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import de.se_rwth.commons.logging.Slf4jLog;
 import freemarker.core.Macro;
-import org.junit.*;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.io.File;
 import java.util.Arrays;
@@ -27,7 +29,7 @@ public class TemplateAliasingTest {
   public static final String ALIASES_PACKAGE = "de.monticore.generating.templateengine.templates.aliases.";
 
 
-  private TemplateControllerMock tc;
+  private TemplateController tc;
   
   private GeneratorSetup config;
 
@@ -47,9 +49,9 @@ public class TemplateAliasingTest {
     config.setOutputDirectory(TARGET_DIR);
     config.setTracing(false);
     
-    tc = new TemplateControllerMock(config, "");
+    tc = new TemplateController(config, "");
 
-    Slf4jLog.getFindings().clear();
+    LogStub.getPrints().clear();
   }
 
   @AfterClass
@@ -64,53 +66,20 @@ public class TemplateAliasingTest {
     assertEquals("Plain is included.", templateOutput.toString());
   }
 
-  @Ignore
-  @Test
-  public void testIncludeArgsAndSignatureAlias() {
-    assertTrue(config.getAliases().isEmpty());
-    StringBuilder templateOutput =
-        tc.include(ALIASES_PACKAGE + "IncludeArgsAndSignatureAlias");
-    TemplateController tcChild = tc.getSubController().getSubController();
-    assertNotNull(tcChild);
-    
-    assertEquals(3, tcChild.getArguments().size());
-    assertEquals("name", tcChild.getArguments().get(0));
-    assertEquals("age", tcChild.getArguments().get(1));
-    assertEquals("city", tcChild.getArguments().get(2));
-    
-    assertEquals(3, tcChild.getArguments().size());
-    assertEquals("Charly", tcChild.getArguments().get(0));
-    assertEquals("30", tcChild.getArguments().get(1));
-    assertEquals("Aachen", tcChild.getArguments().get(2));
-    
-    assertEquals("Name is Charly, age is 30, city is Aachen", templateOutput.toString());
-    
-    assertAliases(tcChild, config.getAliases().size()
-    );
-  }
-
   @Test
   public void testLogAliases() {
     assertTrue(config.getAliases().isEmpty());
     tc.include(ALIASES_PACKAGE + "LogAliases");
     assertAliases(tc, NUMBER_ALIASES);
 
-    /* TODO GV, RH: is deprecated?
     Collection<String> expectedLogs = Arrays.asList(
-        "Trace Message",
-        "Debug Message",
         "Info Message",
         "Warn Message",
         "Error Message"
         );
-*/
-    Collection<String> expectedLogs = Arrays.asList(
-        "Warn Message",
-        "Error Message"
-        );
 
-    assertEquals(2, Slf4jLog.getFindings().size());
-    assertErrors(expectedLogs, Slf4jLog.getFindings());
+    assertEquals(3, LogStub.getPrints().size());
+    assertErrors(expectedLogs, LogStub.getPrints());
   }
 
   
@@ -122,10 +91,10 @@ public class TemplateAliasingTest {
    * @param actualErrors
    */
   private static void assertErrors(Collection<String> expectedErrors,
-      Collection<Finding> actualErrors) {
+      Collection<String> actualErrors) {
     String actualErrorsJoined = "\nactual Errors: \n\t" + Joiner.on("\n\t").join(actualErrors);
     for (String expectedError : expectedErrors) {
-      boolean found = actualErrors.stream().filter(s -> s.getMsg().equals(expectedError)).count() >= 1;
+      boolean found = actualErrors.stream().filter(s -> s.contains(expectedError)).count() >= 1;
       assertTrue("The following expected error was not found: " + expectedError
           + actualErrorsJoined, found);
     }
