@@ -196,6 +196,7 @@ public class GeneratorSetup {
    * Construtor
    */
   public GeneratorSetup() {
+    TemplateController.clearActiveControllers();
   }
 
   /*******************************************************/
@@ -323,7 +324,7 @@ public class GeneratorSetup {
   public void addAlias(Macro alias) {
     this.aliases.add(alias);
   }
-  
+
   /**
    * This is the Method that creates TemplateControllers
    * (it is used afresh for each template that is called)
