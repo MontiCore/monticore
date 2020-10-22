@@ -22,7 +22,7 @@ public class JavaAndAutTool {
         .setModelPath(modelPath)
         .setModelFileExtension("aut")
         .build();
-    globalScope.addAdaptedStimulusSymbolResolvingDelegate(new AutomataResolvingDelegate(modelPath));
+    globalScope.addAdaptedStimulusSymbolResolver(new AutomataResolver(modelPath));
 
     //initialize symbol table creators
     Automata7SymbolTableCreator stc = Automata7Mill

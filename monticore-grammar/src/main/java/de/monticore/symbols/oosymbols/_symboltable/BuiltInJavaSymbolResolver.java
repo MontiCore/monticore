@@ -6,7 +6,7 @@ package de.monticore.symbols.oosymbols._symboltable;
 
 import com.google.common.collect.Lists;
 import de.monticore.io.paths.ModelPath;
-import de.monticore.symbols.basicsymbols._symboltable.ITypeSymbolResolvingDelegate;
+import de.monticore.symbols.basicsymbols._symboltable.ITypeSymbolResolver;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
@@ -25,7 +25,8 @@ import static de.monticore.types.check.DefsTypeBasic.*;
  * This resolving delegate can be integrated into any global scopes to find built in Java types such as,
  * e.g., "boolean" or commonly used Java types such as "java.lang.Boolean".
  */
-public class BuiltInJavaSymbolResolvingDelegate implements IOOTypeSymbolResolvingDelegate, ITypeSymbolResolvingDelegate {
+public class BuiltInJavaSymbolResolver
+    implements IOOTypeSymbolResolver, ITypeSymbolResolver {
 
   protected static IOOSymbolsGlobalScope gs = initScope();
 

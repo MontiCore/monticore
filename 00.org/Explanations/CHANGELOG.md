@@ -1,6 +1,143 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 # Release Notes
 
+##  MontiCore 6.5.0-SNAPSHOT
+to be released 
+
+### Additions
+* added an experiment `hwDeSers` showcasing serialization and deserialization
+* added an experiment `hooks` showcasing hook point usage
+* IncCheck provided by the MontiCore Gradle Plugin now considers local super grammar changes to trigger new generation
+
+### Changes
+* renamed `IXResolvingDelegate` to `IXResolver`
+* outsourced Type expressions for arrays to a separate grammar
+  * was `FullGenericTypes`, is now `MCArrayTypes`
+* moved array initialization to `JavaLight` (was `MCVarDeclarationStatements`)
+* In a composed language, mills of super languages now provide scope instances (scope, global scope and artifact scope) for the composed language
+* non-existing template paths now result in an error instead of a warning
+
+
+### Fixes
+
+* Fixed that global variable changes in child templates were not changed in parents
+* Fixed handling of optional names of symbols in symbol table creator 
+* Fixed an issue where surrogates hide symbol attributes
+
+
+##  MontiCore 6.4.0
+released: 12.10.2020
+
+### Additions
+* extended the generated incCheck files to contain information about local super grammars
+    * the sh-file is now able to trigger generation if local super grammars are changed
+    * the incCheck method provided by the plugin will support this behavior as well
+    * will only be available in the next release
+* extended the mill to manage the global scope instance centrally 
+* added comfort methods for creating modifiers to the `ModifierBuilder`
+    * `ModifierBuilder().PUBLIC()` short for `ModifierBuilder().setPublic(true)`
+* added `MCShadowingJavaBlock` to `MCCommonStatements`
+    * standard `MCJavaBlock` is no longer shadowing
+* added a class diagram to the reports that represents the generated data structure for the given grammar
+ (ast, symbol table visitors, etc.)
+* added simple `BreakStatement` to `MCCommonStatements`
+* added an `include2` alias for the template controller method for including templates in conjunction with templates arguments
+
+
+### Changes
+* CLI does no longer check whether a generation is needed (this should be handled by the build tool)
+* rephrased messages for non-conservative extension (added super grammar name)
+* added a context condition to prevent list of names in nonterminal production marked as symbols
+  * might be supported in a future version of MontiCore
+* moved XForYMills to a subpackage to reduce noise (subpackage: _auxiliary)
+* deprecated the generated enum für constants 
+    * will be removed without replacement in a future release
+* moved `EnhancedForControl` production from `JavaLight` to `MCCommonStatements` as it is commonly used 
+* standard `MCJavaBlock` is no longer shadowing
+* renamed `BreakStatement` in `MCLowLevelStatements` to `LabelledBreakStatement`
+* `ForStatement` now spans a non-exporting, ordered scope 
+* shortened generated error codes to have 5 digits only
+* renamed `MethOrConstr` to `JavaMethod` in `JavaLight`
+* MontiCore Gradle plugin is no longer shipped as a fat jar
+
+### Fixes
+
+* Fixed error code calculation for generated error messages to no longer be random
+* Fixed the report for involved files to contain handwritten files that were considered 
+    * will only be available in the next release
+* Fixed an issue where reports did not contain meaningful names for elements such as class diagram classes or interfaces
+
+##  MontiCore 6.3.0
+released: 16.09.2020
+
+### Additions
+* added `@Override` annotation for nonterminal production to state that this production overrides a super grammars' production
+  * overriding without annotation leads to a warning
+  * using the annotation for a production that does not override an existing nonterminal results in an error
+* added a context condition to ensure that external production do not have ast rules 
+* added `DiagramSymbol` in `BasicSymbols`
+* introduced generated interfaces for `GlobalScope` and `ArtifactScope`
+
+### Changes
+* serialization of symtype expression now serializes full name of symtype instead of simple name
+* class `ASTNodes` is now deprecated and its usages in the generator are removed
+* visitors no longer provide visit methods for concrete scope classes but their interfaces instead
+* `SymTypeExpression` no longer use surrogates but `TypeSymbol`s instead
+* reverted changes to appended `s` for list attributes made in previous release
+* moved initialization of symbols to the `endVisit` method of the `SymbolTableCreator`
+
+
+### Fixes
+* Fixed missing sourcecode position for overriding warning
+* Fixed an issue where the inheritance hierarchy was no considered correctly when overriding a nonterminal
+
+
+##  MontiCore 6.2.0
+released: 21.07.2020
+
+### Additions
+* added `isFinal` to `OOType` in `OOSymbols`
+* extended the mill such that builder for DeSer related classes are provided by the mill
+* added support for symbol usages in `NonterminalSeperator`
+    * example: `Bar = (bla:Name@Foo || "," )+;`
+* added reports for the symbol table structure of the processed grammar
+* added `isReadOnly` to `Variable` in `BasicSymbols`
+* added `isElliptic` to `Method` in `TypeSymbols`
+* added a context condition to warn if keywords consist of numbers only 
+    * these numbers will be tokenized as keywords instead of numbers
+* added `splittoken` to express that the listed tokens should be split and not handled as a single token
+    * example: `splittoken ":::";` results in three token `:`
+* added `nokeyword` to express that the listed keywords should not be handled as tokens
+   * example: `nokeyword "automaton", "state";` means that `automaton` and `state` should not be handled as keywords
+* introduced symbol inheritance
+
+### Changes
+
+* renamed `de.monticore.type.TypeSymbols` to `de.monticore.symbols.OOSymbols`
+* renamed `de.monticore.type.BasicTypeSymbols` `to de.monticore.symbols.BasicSymbols`
+* reworked appended `s` for list attributes
+* renamed SymbolLoader to SymbolSurrogate
+  * Surrogates are now subclasses of their corresponding symbols
+* `MCJavaBlock` in `MCCommonStatements` now spans a shadowing, non-exporting, ordered scope
+* `MethodDeclaration` and `ConstructorDeclaration` in `JavaLight` use `MCJavaBlock` instead of `MCBlockStatement`
+* `Label` in `MCLowLevelStatement` now is a symbol
+* `VarDecl` in `MCVarDeclarationStatements` no longer exists
+    * `DeclaratorId` now produces `FieldSymbol`s
+* removed `isParameter` and `isVariable` from `Field` in `TypeSymbols`
+* the language class is no longer generated
+* moved creator expressions to `JavaClassExpression` 
+* moved `PlusExpression` and `MinusExpression` from `AssignmentExpressions` to `CommonExpressions`
+
+
+### Fixes
+Fixed an issue where super and subtype comparison was wrong in type check
+Fixed handling of capital letters in grammar package
+  * using capital letters now produces a warning
+* Fixed an issue were `setAbsent` methods in the generated SymbolBuilder where not properly overridden
+* Fixed that non-shadowing scopes where not handled as intended
+
+##  MontiCore 6.1.0
+released: 07.05.2020
 
 ##  MontiCore 6.0.0
 - Uses CD4Analysis 1.5.0

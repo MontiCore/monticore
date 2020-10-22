@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+
+grammar SubTrees extends Trees {
+
+  start Root;
+  
+  Branch implements TreeNode = "branch" "{" TreeNode* "}" ;
+  
+}

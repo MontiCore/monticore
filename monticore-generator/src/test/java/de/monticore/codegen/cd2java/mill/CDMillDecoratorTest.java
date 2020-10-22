@@ -78,7 +78,8 @@ public class CDMillDecoratorTest extends DecoratorTestCase {
     this.glex.setGlobalValue("service", new VisitorService(decoratedCompilationUnit));
 
     SymbolTableService symbolTableService = new SymbolTableService(decoratedCompilationUnit);
-    MillDecorator millDecorator = new MillDecorator(this.glex, symbolTableService);
+    VisitorService visitorService = new VisitorService(decoratedCompilationUnit);
+    MillDecorator millDecorator = new MillDecorator(this.glex, symbolTableService, visitorService);
 
     CDMillDecorator cdMillDecorator = new CDMillDecorator(this.glex, millDecorator);
     this.millCD = cdMillDecorator.decorate(Lists.newArrayList(getASTCD(), getVisitorCD(), getSymbolCD()));
@@ -136,7 +137,7 @@ public class CDMillDecoratorTest extends DecoratorTestCase {
     SymbolSurrogateDecorator symbolReferenceDecorator = new SymbolSurrogateDecorator(glex, symbolTableService, methodDecorator, new MandatoryMutatorSymbolSurrogateDecorator(glex));
     SymbolSurrogateBuilderDecorator symbolReferenceBuilderDecorator = new SymbolSurrogateBuilderDecorator(glex, symbolTableService, accessorDecorator);
     CommonSymbolInterfaceDecorator commonSymbolInterfaceDecorator = new CommonSymbolInterfaceDecorator(glex, symbolTableService, visitorService, methodDecorator);
-    SymbolResolvingDelegateInterfaceDecorator symbolResolvingDelegateInterfaceDecorator = new SymbolResolvingDelegateInterfaceDecorator(glex, symbolTableService);
+    SymbolResolverInterfaceDecorator symbolResolverInterfaceDecorator = new SymbolResolverInterfaceDecorator(glex, symbolTableService);
     SymbolTableCreatorDecorator symbolTableCreatorDecorator = new SymbolTableCreatorDecorator(glex, symbolTableService, visitorService, methodDecorator);
     SymbolTableCreatorDelegatorDecorator symbolTableCreatorDelegatorDecorator = new SymbolTableCreatorDelegatorDecorator(glex, symbolTableService, visitorService);
     SymbolTableCreatorForSuperTypes symbolTableCreatorForSuperTypes = new SymbolTableCreatorForSuperTypes(glex, symbolTableService);
@@ -151,8 +152,7 @@ public class CDMillDecoratorTest extends DecoratorTestCase {
         scopeInterfaceDecorator, scopeClassDecorator, scopeClassBuilderDecorator,
         globalScopeInterfaceDecorator, globalScopeClassDecorator, globalScopeClassBuilderDecorator,
         artifactScopeInterfaceDecorator, artifactScopeDecorator, artifactScopeBuilderDecorator,
-        commonSymbolInterfaceDecorator,
-        symbolResolvingDelegateInterfaceDecorator, symbolTableCreatorDecorator,
+        commonSymbolInterfaceDecorator,  symbolResolverInterfaceDecorator, symbolTableCreatorDecorator,
         symbolTableCreatorDelegatorDecorator, symbolTableCreatorForSuperTypes,
         symbolDeSerDecorator, scopeDeSerDecorator, symbolTablePrinterDecorator);
 

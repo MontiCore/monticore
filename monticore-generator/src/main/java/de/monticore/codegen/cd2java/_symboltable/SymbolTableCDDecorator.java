@@ -65,7 +65,7 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
 
   protected final IterablePath handCodedPath;
 
-  protected final SymbolResolvingDelegateInterfaceDecorator symbolResolvingDelegateInterfaceDecorator;
+  protected final SymbolResolverInterfaceDecorator symbolResolverInterfaceDecorator;
 
   protected final SymbolTableCreatorDecorator symbolTableCreatorDecorator;
 
@@ -96,7 +96,7 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
                                 final ArtifactScopeClassDecorator artifactScopeDecorator,
                                 final ArtifactScopeClassBuilderDecorator artifactScopeBuilderDecorator,
                                 final CommonSymbolInterfaceDecorator commonSymbolInterfaceDecorator,
-                                final SymbolResolvingDelegateInterfaceDecorator symbolResolvingDelegateInterfaceDecorator,
+                                final SymbolResolverInterfaceDecorator symbolResolverInterfaceDecorator,
                                 final SymbolTableCreatorDecorator symbolTableCreatorDecorator,
                                 final SymbolTableCreatorDelegatorDecorator symbolTableCreatorDelegatorDecorator,
                                 final SymbolTableCreatorForSuperTypes symbolTableCreatorForSuperTypes,
@@ -120,7 +120,7 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
     this.symbolReferenceBuilderDecorator = symbolReferenceBuilderDecorator;
     this.commonSymbolInterfaceDecorator = commonSymbolInterfaceDecorator;
     this.handCodedPath = handCodedPath;
-    this.symbolResolvingDelegateInterfaceDecorator = symbolResolvingDelegateInterfaceDecorator;
+    this.symbolResolverInterfaceDecorator = symbolResolverInterfaceDecorator;
     this.symbolTableCreatorDecorator = symbolTableCreatorDecorator;
     this.symbolTableCreatorDelegatorDecorator = symbolTableCreatorDelegatorDecorator;
     this.symbolTableCreatorForSuperTypes = symbolTableCreatorForSuperTypes;
@@ -160,7 +160,7 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
         .addAllCDClasss(symbolDeSerList)
         .addCDClass(symbolTablePrinterClass)
         .addCDInterface(createICommonSymbol(astCD))
-        .addAllCDInterfaces(createSymbolResolvingDelegateInterfaces(symbolProds))
+        .addAllCDInterfaces(createSymbolResolverInterfaces(symbolProds))
         .build();
 
     //if the grammar is not a component grammar
@@ -269,10 +269,10 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
         .collect(Collectors.toList());
   }
 
-  protected List<ASTCDInterface> createSymbolResolvingDelegateInterfaces(List<? extends ASTCDType> astcdTypeList) {
+  protected List<ASTCDInterface> createSymbolResolverInterfaces(List<? extends ASTCDType> astcdTypeList) {
     return astcdTypeList
         .stream()
-        .map(symbolResolvingDelegateInterfaceDecorator::decorate)
+        .map(symbolResolverInterfaceDecorator::decorate)
         .collect(Collectors.toList());
   }
 

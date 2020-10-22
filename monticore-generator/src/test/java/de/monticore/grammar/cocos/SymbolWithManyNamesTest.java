@@ -14,7 +14,7 @@ public class SymbolWithManyNamesTest extends CocoTest {
 
   @BeforeClass
   public static void disableFailQuick() {
-    Log.init();
+    LogStub.init();
     Log.enableFailQuick(false);
     checker.addCoCo(new SymbolWithManyNames());
   }

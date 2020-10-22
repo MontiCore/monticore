@@ -63,7 +63,8 @@ public class CDAuxiliaryDecoratorTest extends DecoratorTestCase {
     this.glex.setGlobalValue("service", new VisitorService(decoratedCompilationUnit));
 
     SymbolTableService symbolTableService = new SymbolTableService(decoratedCompilationUnit);
-    MillForSuperDecorator millForSuperDecorator = new MillForSuperDecorator(glex, symbolTableService);
+    VisitorService visitorService = new VisitorService(decoratedCompilationUnit);
+    MillForSuperDecorator millForSuperDecorator = new MillForSuperDecorator(glex, symbolTableService, visitorService);
 
     CDAuxiliaryDecorator cdAuxiliaryDecorator = new CDAuxiliaryDecorator(glex, millForSuperDecorator);
     this.auxiliaryCD = cdAuxiliaryDecorator.decorate(getASTCD());

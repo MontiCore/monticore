@@ -241,19 +241,19 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   }
 
   /**
-   * resolving delegate symbol interface e.g. IAutomatonSymbolResolvingDelegate
+   * resolving delegate symbol interface e.g. IAutomatonSymbolResolver
    */
 
-  public String getSymbolResolvingDelegateInterfaceSimpleName(ASTCDType astcdType) {
-    return INTERFACE_PREFIX + getSymbolSimpleName(astcdType) + RESOLVING_DELEGATE_SUFFIX;
+  public String getSymbolResolverInterfaceSimpleName(ASTCDType astcdType) {
+    return INTERFACE_PREFIX + getSymbolSimpleName(astcdType) + RESOLVER_SUFFIX;
   }
 
-  public String getSymbolResolvingDelegateInterfaceFullName(ASTCDType astcdType) {
-    return getSymbolResolvingDelegateInterfaceFullName(astcdType, getCDSymbol());
+  public String getSymbolResolverInterfaceFullName(ASTCDType astcdType) {
+    return getSymbolResolverInterfaceFullName(astcdType, getCDSymbol());
   }
 
-  public String getSymbolResolvingDelegateInterfaceFullName(ASTCDType astcdType, CDDefinitionSymbol cdDefinitionSymbol) {
-    return getPackage(cdDefinitionSymbol) + "." + getSymbolResolvingDelegateInterfaceSimpleName(astcdType);
+  public String getSymbolResolverInterfaceFullName(ASTCDType astcdType, CDDefinitionSymbol cdDefinitionSymbol) {
+    return getPackage(cdDefinitionSymbol) + "." + getSymbolResolverInterfaceSimpleName(astcdType);
   }
 
   /**

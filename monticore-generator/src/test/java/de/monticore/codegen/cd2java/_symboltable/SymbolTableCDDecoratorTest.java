@@ -93,7 +93,7 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
     SymbolSurrogateDecorator symbolReferenceDecorator = new SymbolSurrogateDecorator(glex, symbolTableService, methodDecorator, new MandatoryMutatorSymbolSurrogateDecorator(glex));
     SymbolSurrogateBuilderDecorator symbolReferenceBuilderDecorator = new SymbolSurrogateBuilderDecorator(glex, symbolTableService, accessorDecorator);
     CommonSymbolInterfaceDecorator commonSymbolInterfaceDecorator = new CommonSymbolInterfaceDecorator(glex, symbolTableService, visitorService, methodDecorator);
-    SymbolResolvingDelegateInterfaceDecorator symbolResolvingDelegateInterfaceDecorator = new SymbolResolvingDelegateInterfaceDecorator(glex, symbolTableService);
+    SymbolResolverInterfaceDecorator symbolResolverInterfaceDecorator = new SymbolResolverInterfaceDecorator(glex, symbolTableService);
     SymbolTableCreatorDecorator symbolTableCreatorDecorator = new SymbolTableCreatorDecorator(glex, symbolTableService, visitorService, methodDecorator);
     SymbolTableCreatorDelegatorDecorator symbolTableCreatorDelegatorDecorator = new SymbolTableCreatorDelegatorDecorator(glex, symbolTableService, visitorService);
     SymbolTableCreatorForSuperTypes symbolTableCreatorForSuperTypes = new SymbolTableCreatorForSuperTypes(glex, symbolTableService);
@@ -107,7 +107,7 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
         globalScopeInterfaceDecorator, globalScopeClassDecorator, globalScopeClassBuilderDecorator,
         artifactScopeInterfaceDecorator, artifactScopeDecorator, artifactScopeBuilderDecorator,
         commonSymbolInterfaceDecorator,
-        symbolResolvingDelegateInterfaceDecorator, symbolTableCreatorDecorator,
+        symbolResolverInterfaceDecorator, symbolTableCreatorDecorator,
         symbolTableCreatorDelegatorDecorator, symbolTableCreatorForSuperTypes,
          symbolDeSerDecorator, scopeDeSerDecorator, symbolTablePrinterDecorator);
 
@@ -125,7 +125,7 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
         globalScopeInterfaceDecorator, globalScopeClassDecorator, globalScopeClassBuilderDecorator,
         artifactScopeInterfaceDecorator, artifactScopeDecorator, artifactScopeBuilderDecorator,
         commonSymbolInterfaceDecorator,
-        symbolResolvingDelegateInterfaceDecorator, symbolTableCreatorDecorator,
+        symbolResolverInterfaceDecorator, symbolTableCreatorDecorator,
         symbolTableCreatorDelegatorDecorator, symbolTableCreatorForSuperTypes,
         symbolDeSerDecorator, scopeDeSerDecorator, symbolTablePrinterDecorator);
     Mockito.doReturn(false).when(mockService).hasStartProd(Mockito.any(ASTCDDefinition.class));
@@ -190,9 +190,9 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
     ASTCDInterface iAutomatonGlobalScope = getInterfaceBy("IAutomatonGlobalScope", symTabCD);
     ASTCDInterface iAutomatonArtifactScope = getInterfaceBy("IAutomatonArtifactScope", symTabCD);
     ASTCDInterface iCommonAutomatonSymbol = getInterfaceBy("ICommonAutomatonSymbol", symTabCD);
-    ASTCDInterface iAutomatonSymbolResolvingDelegate = getInterfaceBy("IAutomatonSymbolResolvingDelegate", symTabCD);
-    ASTCDInterface iStateSymbolResolvingDelegate = getInterfaceBy("IStateSymbolResolvingDelegate", symTabCD);
-    ASTCDInterface symbolInterfaceSymbol = getInterfaceBy("ISymbolInterfaceSymbolResolvingDelegate", symTabCD);
+    ASTCDInterface iAutomatonSymbolResolver = getInterfaceBy("IAutomatonSymbolResolver", symTabCD);
+    ASTCDInterface iStateSymbolResolver = getInterfaceBy("IStateSymbolResolver", symTabCD);
+    ASTCDInterface symbolInterfaceSymbol = getInterfaceBy("ISymbolInterfaceSymbolResolver", symTabCD);
   }
 
   @Test
@@ -263,9 +263,9 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
     ASTCDInterface iAutomatonGlobalScope = getInterfaceBy("IAutomatonGlobalScope", symTabCDWithHC);
     ASTCDInterface iAutomatonArtifactScope = getInterfaceBy("IAutomatonArtifactScope", symTabCDWithHC);
     ASTCDInterface iCommonAutomatonSymbol = getInterfaceBy("ICommonAutomatonSymbol", symTabCDWithHC);
-    ASTCDInterface iAutomatonSymbolResolvingDelegate = getInterfaceBy("IAutomatonSymbolResolvingDelegate", symTabCDWithHC);
-    ASTCDInterface iStateSymbolResolvingDelegate = getInterfaceBy("IStateSymbolResolvingDelegate", symTabCDWithHC);
-    ASTCDInterface symbolInterfaceSymbol = getInterfaceBy("ISymbolInterfaceSymbolResolvingDelegate", symTabCDComponent);
+    ASTCDInterface iAutomatonSymbolResolver = getInterfaceBy("IAutomatonSymbolResolver", symTabCDWithHC);
+    ASTCDInterface iStateSymbolResolver = getInterfaceBy("IStateSymbolResolver", symTabCDWithHC);
+    ASTCDInterface symbolInterfaceSymbol = getInterfaceBy("ISymbolInterfaceSymbolResolver", symTabCDComponent);
   }
 
   @Test
@@ -312,9 +312,9 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
     ASTCDInterface iAutomatonGlobalScope = getInterfaceBy("IAutomatonGlobalScope", symTabCDComponent);
     ASTCDInterface iAutomatonArtifactScope = getInterfaceBy("IAutomatonArtifactScope", symTabCDComponent);
     ASTCDInterface iCommonAutomatonSymbol = getInterfaceBy("ICommonAutomatonSymbol", symTabCDComponent);
-    ASTCDInterface iAutomatonSymbolResolvingDelegate = getInterfaceBy("IAutomatonSymbolResolvingDelegate", symTabCDComponent);
-    ASTCDInterface iStateSymbolResolvingDelegate = getInterfaceBy("IStateSymbolResolvingDelegate", symTabCDComponent);
-    ASTCDInterface symbolInterfaceSymbol = getInterfaceBy("ISymbolInterfaceSymbolResolvingDelegate", symTabCDComponent);
+    ASTCDInterface iAutomatonSymbolResolver = getInterfaceBy("IAutomatonSymbolResolver", symTabCDComponent);
+    ASTCDInterface iStateSymbolResolver = getInterfaceBy("IStateSymbolResolver", symTabCDComponent);
+    ASTCDInterface symbolInterfaceSymbol = getInterfaceBy("ISymbolInterfaceSymbolResolver", symTabCDComponent);
   }
 
   @Test

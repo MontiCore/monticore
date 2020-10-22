@@ -32,7 +32,7 @@ public class SymbolTableConstants {
 
   public static final String COMMON_PREFIX = "Common";
 
-  public static final String RESOLVING_DELEGATE_SUFFIX = "ResolvingDelegate";
+  public static final String RESOLVER_SUFFIX = "Resolver";
 
   public static final String DELEGATOR_SUFFIX = "Delegator";
 

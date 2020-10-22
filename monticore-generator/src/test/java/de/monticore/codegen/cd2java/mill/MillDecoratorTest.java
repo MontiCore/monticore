@@ -83,8 +83,9 @@ public class MillDecoratorTest extends DecoratorTestCase {
     this.glex.setGlobalValue("service", new VisitorService(decoratedCompilationUnit));
 
     SymbolTableService symbolTableService = new SymbolTableService(decoratedCompilationUnit);
+    VisitorService visitorService = new VisitorService(decoratedCompilationUnit);
 
-    MillDecorator decorator = new MillDecorator(this.glex, symbolTableService);
+    MillDecorator decorator = new MillDecorator(this.glex, symbolTableService, visitorService);
     this.millClass = decorator.decorate(Lists.newArrayList(getASTCD(), getVisitorCD(), getSymbolCD()));
   }
 
@@ -156,7 +157,7 @@ public class MillDecoratorTest extends DecoratorTestCase {
     SymbolSurrogateDecorator symbolReferenceDecorator = new SymbolSurrogateDecorator(glex, symbolTableService, methodDecorator, new MandatoryMutatorSymbolSurrogateDecorator(glex));
     SymbolSurrogateBuilderDecorator symbolReferenceBuilderDecorator = new SymbolSurrogateBuilderDecorator(glex, symbolTableService, accessorDecorator);
     CommonSymbolInterfaceDecorator commonSymbolInterfaceDecorator = new CommonSymbolInterfaceDecorator(glex, symbolTableService, visitorService, methodDecorator);
-    SymbolResolvingDelegateInterfaceDecorator symbolResolvingDelegateInterfaceDecorator = new SymbolResolvingDelegateInterfaceDecorator(glex, symbolTableService);
+    SymbolResolverInterfaceDecorator symbolResolverInterfaceDecorator = new SymbolResolverInterfaceDecorator(glex, symbolTableService);
     SymbolTableCreatorDecorator symbolTableCreatorDecorator = new SymbolTableCreatorDecorator(glex, symbolTableService, visitorService, methodDecorator);
     SymbolTableCreatorDelegatorDecorator symbolTableCreatorDelegatorDecorator = new SymbolTableCreatorDelegatorDecorator(glex, symbolTableService, visitorService);
     SymbolTableCreatorForSuperTypes symbolTableCreatorForSuperTypes = new SymbolTableCreatorForSuperTypes(glex, symbolTableService);
@@ -172,7 +173,7 @@ public class MillDecoratorTest extends DecoratorTestCase {
         globalScopeInterfaceDecorator, globalScopeClassDecorator, globalScopeClassBuilderDecorator,
         artifactScopeInterfaceDecorator, artifactScopeDecorator, artifactScopeBuilderDecorator,
         commonSymbolInterfaceDecorator,
-        symbolResolvingDelegateInterfaceDecorator, symbolTableCreatorDecorator,
+        symbolResolverInterfaceDecorator, symbolTableCreatorDecorator,
         symbolTableCreatorDelegatorDecorator, symbolTableCreatorForSuperTypes,
         symbolDeSerDecorator, scopeDeSerDecorator, symbolTablePrinterDecorator);
 
@@ -193,7 +194,7 @@ public class MillDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeSize() {
-    assertEquals(27, millClass.sizeCDAttributes());
+    assertEquals(28, millClass.sizeCDAttributes());
   }
 
   @Test

@@ -24,7 +24,7 @@ import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class SymbolResolvingDelegateInterfaceDecoratorTest extends DecoratorTestCase {
+public class SymbolResolverInterfaceDecoratorTest extends DecoratorTestCase {
 
   private ASTCDInterface symbolClassAutomaton;
 
@@ -56,7 +56,7 @@ public class SymbolResolvingDelegateInterfaceDecoratorTest extends DecoratorTest
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
 
 
-    SymbolResolvingDelegateInterfaceDecorator decorator = new SymbolResolvingDelegateInterfaceDecorator(this.glex, new SymbolTableService(decoratedCompilationUnit));
+    SymbolResolverInterfaceDecorator decorator = new SymbolResolverInterfaceDecorator(this.glex, new SymbolTableService(decoratedCompilationUnit));
     //creates ScopeSpanningSymbol
     ASTCDClass automatonClass = getClassBy("ASTAutomaton", decoratedCompilationUnit);
     this.symbolClassAutomaton = decorator.decorate(automatonClass);
@@ -72,7 +72,7 @@ public class SymbolResolvingDelegateInterfaceDecoratorTest extends DecoratorTest
 
   @Test
   public void testClassNameAutomatonSymbol() {
-    assertEquals("IAutomatonSymbolResolvingDelegate", symbolClassAutomaton.getName());
+    assertEquals("IAutomatonSymbolResolver", symbolClassAutomaton.getName());
   }
 
   @Test
