@@ -30,8 +30,8 @@ public class PhasedSymbolTableCreatorDelegatorDecorator extends AbstractCreator<
 
   @Override
   public Optional<ASTCDClass> decorate(ASTCDCompilationUnit input) {
-    if(symbolTableService.hasStartProd()) {
-      Optional<String> startProd = symbolTableService.getStartProdASTFullName(input.getCDDefinition());
+    Optional<String> startProd = symbolTableService.getStartProdASTFullName(input.getCDDefinition());
+    if(startProd.isPresent()){
       String startProdFullName = startProd.get();
       String phasedSTName = symbolTableService.getPhasedSymbolTableCreatorDelegatorSimpleName();
       String globalScopeInterface = symbolTableService.getGlobalScopeInterfaceSimpleName();
@@ -45,6 +45,7 @@ public class PhasedSymbolTableCreatorDelegatorDecorator extends AbstractCreator<
 
       return Optional.of(CD4AnalysisMill.cDClassBuilder()
           .setName(phasedSTName)
+          .setModifier(PUBLIC.build())
           .addCDAttribute(globalScopeAttribute)
           .addCDAttribute(scopeSkeletonCreatorDelegatorAttribute)
           .addCDAttribute(priorityListAttribute)
