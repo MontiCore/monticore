@@ -13,7 +13,16 @@ import java.util.Deque;
 
 public   class MCCommonStatementsSymbolTableCreator extends MCCommonStatementsSymbolTableCreatorTOP {
 
-  public MCCommonStatementsSymbolTableCreator(Deque<? extends IMCCommonStatementsScope> scopeStack) {
+  public MCCommonStatementsSymbolTableCreator() {
+  }
+
+  public MCCommonStatementsSymbolTableCreator(
+      IMCCommonStatementsScope enclosingScope) {
+    super(enclosingScope);
+  }
+
+  public MCCommonStatementsSymbolTableCreator(
+      Deque<? extends IMCCommonStatementsScope> scopeStack) {
     super(scopeStack);
   }
 

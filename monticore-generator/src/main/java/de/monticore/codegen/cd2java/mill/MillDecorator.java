@@ -27,6 +27,7 @@ import static de.monticore.codegen.cd2java.CoreTemplates.*;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PACKAGE;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.codegen.cd2java.mill.MillConstants.*;
 import static de.monticore.codegen.cd2java.top.TopDecorator.TOP_SUFFIX;
 
@@ -76,7 +77,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
           .stream()
           .filter(ASTCDClass::isPresentModifier)
           .filter(x -> !x.getModifier().isAbstract())
-          .filter(x -> x.getName().endsWith(BUILDER_SUFFIX))
+          .filter(cdClass -> checkIncludeInMill(cdClass))
           .collect(Collectors.toList());
 
 
@@ -92,7 +93,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
       // check if builder classes
       topClassList = topClassList
           .stream()
-          .filter(x -> x.getName().endsWith(BUILDER_SUFFIX))
+          .filter(cdClass -> checkIncludeInMill(cdClass))
           .collect(Collectors.toList());
       // add to classes which need a builder method
       classList.addAll(topClassList);
@@ -137,6 +138,15 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
     return millClass;
   }
 
+  protected boolean checkIncludeInMill(ASTCDClass cdClass){
+    String name = cdClass.getName();
+    return name.endsWith(BUILDER_SUFFIX)
+        || name.endsWith(SYMBOL_TABLE_CREATOR_SUFFIX)
+        || name.endsWith(SYMBOL_TABLE_CREATOR_SUFFIX + DELEGATOR_SUFFIX)
+        || name.endsWith(DE_SER_SUFFIX)
+        || name.endsWith(SYMBOL_TABLE_PRINTER_SUFFIX);
+  }
+
   protected List<String> getAttributeNameList(List<ASTCDClass> astcdClasses) {
     List<String> attributeNames = new ArrayList<>();
     for (ASTCDClass astcdClass : astcdClasses) {
@@ -169,6 +179,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
     this.replaceTemplate(EMPTY_BODY, resetMethod, new TemplateHookPoint("mill.ResetMethod", getAttributeNameList(astcdClassList), superSymbolList));
     return resetMethod;
   }
+
 
   protected List<ASTCDMethod> addBuilderMethods(List<ASTCDClass> astcdClassList, ASTCDCompilationUnit cd) {
     List<ASTCDMethod> builderMethodsList = new ArrayList<>();

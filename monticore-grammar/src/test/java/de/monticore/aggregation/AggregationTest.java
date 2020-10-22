@@ -56,7 +56,7 @@ public class AggregationTest {
   );
   
   // create symbol table for "blah"
-  BlahSymbolTableCreator blahSymbolTableCreator = BlahMill.blahSymbolTableCreatorBuilder().addToScopeStack(globalScope.getIBlahGS()).build();
+  BlahSymbolTableCreator blahSymbolTableCreator = BlahMill.blahSymbolTableCreator();
   IBlahArtifactScope blahSymbolTable = blahSymbolTableCreator.createFromAST(blahModel.get());
   
   // check dummy symbol is present in local scope
@@ -86,7 +86,7 @@ public class AggregationTest {
   assertTrue(fooModel.isPresent());
  
   // create symbol table for "foo"
-  FooSymbolTableCreatorDelegator fooSymbolTableCreator = FooMill.fooSymbolTableCreatorDelegatorBuilder().setGlobalScope(globalScope).build();
+  FooSymbolTableCreatorDelegator fooSymbolTableCreator = FooMill.fooSymbolTableCreatorDelegator();
   IFooArtifactScope fooScope = fooSymbolTableCreator.createFromAST(fooModel.get());
   
   // check symbol is resolvable

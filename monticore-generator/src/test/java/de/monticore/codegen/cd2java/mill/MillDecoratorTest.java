@@ -193,7 +193,7 @@ public class MillDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeSize() {
-    assertEquals(28, millClass.sizeCDAttributes());
+    assertEquals(27, millClass.sizeCDAttributes());
   }
 
   @Test
@@ -217,9 +217,17 @@ public class MillDecoratorTest extends DecoratorTestCase {
     getAttributeBy("millFooSymbolSurrogateBuilder", millClass);
     getAttributeBy("millAutomatonGlobalScopeBuilder", millClass);
     getAttributeBy("millAutomatonArtifactScopeBuilder", millClass);
+
+    getAttributeBy("automatonGlobalScope", millClass);
     getAttributeBy("millAutomatonSymbolTableCreator", millClass);
     getAttributeBy("millAutomatonSymbolTableCreatorDelegator", millClass);
-    getAttributeBy("automatonGlobalScope", millClass);
+
+    getAttributeBy("millAutomatonSymbolTablePrinter", millClass);
+    getAttributeBy("millAutomatonScopeDeSer", millClass);
+    getAttributeBy("millAutomatonSymbolDeSer", millClass);
+    getAttributeBy("millStateSymbolDeSer", millClass);
+    getAttributeBy("millFooSymbolDeSer", millClass);
+
   }
 
   @Test

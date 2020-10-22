@@ -135,7 +135,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     ASTCDParameter fileExtensionParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createStringType(), FILE_EXTENSION_VAR);
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), globalScopeClassName, modelPathParameter, fileExtensionParameter);
     String millFullName = symbolTableService.getMillFullName();
-    this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint(TEMPLATE_PATH + "ConstructorGlobalScope", symbolTableService.hasComponentStereotype(symbolTableService.getCDSymbol().getAstNode()),
+    this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint(TEMPLATE_PATH + "ConstructorGlobalScope",
         millFullName, symbolTableService.getCDName()));
     return constructor;
   }
@@ -143,9 +143,8 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
   protected ASTCDConstructor createZeroArgsConstructor(String className){
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), className);
     String millFullName = symbolTableService.getMillFullName();
-    boolean isComponent = symbolTableService.hasComponentStereotype(symbolTableService.getCDSymbol().getAstNode());
     String grammarName = symbolTableService.getCDName();
-    this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint(TEMPLATE_PATH + "ZeroArgsConstructorGlobalScope", isComponent, millFullName, grammarName));
+    this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint(TEMPLATE_PATH + "ZeroArgsConstructorGlobalScope", millFullName, grammarName));
     return constructor;
   }
 
