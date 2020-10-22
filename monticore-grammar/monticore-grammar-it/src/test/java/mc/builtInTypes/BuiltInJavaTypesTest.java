@@ -3,7 +3,6 @@ package mc.builtInTypes;
 
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
-import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.*;
 import de.se_rwth.commons.logging.LogStub;

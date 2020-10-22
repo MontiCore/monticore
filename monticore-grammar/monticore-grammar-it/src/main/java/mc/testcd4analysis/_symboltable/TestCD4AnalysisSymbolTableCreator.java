@@ -5,12 +5,14 @@ import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
-import de.monticore.types.mcfullgenerictypes._ast.ASTMCArrayType;
 import de.monticore.types.prettyprint.MCCollectionTypesPrettyPrinter;
 import de.se_rwth.commons.Names;
 import mc.testcd4analysis._ast.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.List;
+import java.util.Optional;
 
 public class TestCD4AnalysisSymbolTableCreator extends TestCD4AnalysisSymbolTableCreatorTOP {
 
@@ -37,8 +39,6 @@ public class TestCD4AnalysisSymbolTableCreator extends TestCD4AnalysisSymbolTabl
     final String typeName;
     if (astType instanceof ASTMCGenericType) {
       typeName = ((ASTMCGenericType) astType).printWithoutTypeArguments();
-    } else if (astType instanceof ASTMCArrayType) {
-      typeName = ((ASTMCArrayType) astType).printTypeWithoutBrackets();
     } else {
       typeName = astAttribute.getMCType().printType(new MCCollectionTypesPrettyPrinter(new IndentPrinter()));
     }
