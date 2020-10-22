@@ -40,7 +40,7 @@ public class ColoredGraphTool {
 
     // instantiate symbol table:
     final IColoredGraphGlobalScope gs = ColoredGraphMill
-        .getColoredGraphGlobalScope();
+        .coloredGraphGlobalScope();
     final ColoredGraphSymbolTableCreatorDelegator stc = ColoredGraphMill
         .coloredGraphSymbolTableCreatorDelegatorBuilder()
         .setGlobalScope(gs)

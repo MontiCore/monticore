@@ -93,7 +93,11 @@ public class ArtifactScopeClassDecorator extends AbstractCreator<ASTCDCompilatio
     ASTCDConstructor constructorWithEnclosingScope = getCDConstructorFacade().createConstructor(PUBLIC.build(),
         artifactScopeName, enclosingScopeParam, packageNameParam, importsParam);
     this.replaceTemplate(EMPTY_BODY, constructorWithEnclosingScope, new TemplateHookPoint(TEMPLATE_PATH + "ConstructorArtifactScope"));
-    return new ArrayList<>(Arrays.asList(constructor, constructorWithEnclosingScope));
+
+
+    ASTCDConstructor zeroArgsConstructor = getCDConstructorFacade().createConstructor(PUBLIC, artifactScopeName);
+    this.replaceTemplate(EMPTY_BODY, zeroArgsConstructor, new StringHookPoint("this(\"\", new java.util.ArrayList<>());"));
+    return new ArrayList<>(Arrays.asList(constructor, constructorWithEnclosingScope, zeroArgsConstructor));
   }
 
   protected ASTCDAttribute createPackageNameAttribute() {
