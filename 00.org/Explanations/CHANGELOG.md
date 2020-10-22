@@ -70,6 +70,28 @@ released: 12.10.2020
 ##  MontiCore 6.3.0
 released: 16.09.2020
 
+### Additions
+* added `@Override` annotation for nonterminal production to state that this production overrides a super grammars' production
+  * overriding without annotation leads to a warning
+  * using the annotation for a production that does not override an existing nonterminal results in an error
+* added a context condition to ensure that external production do not have ast rules 
+* added `DiagramSymbol` in `BasicSymbols`
+* introduced generated interfaces for `GlobalScope` and `ArtifactScope`
+
+### Changes
+* serialization of symtype expression now serializes full name of symtype instead of simple name
+* class `ASTNodes` is now deprecated and its usages in the generator are removed
+* visitors no longer provide visit methods for concrete scope classes but their interfaces instead
+* `SymTypeExpression` no longer use surrogates but `TypeSymbol`s instead
+* reverted changes to appended `s` for list attributes made in previous release
+* moved initialization of symbols to the `endVisit` method of the `SymbolTableCreator`
+
+
+### Fixes
+* Fixed missing sourcecode position for overriding warning
+* Fixed an issue where the inheritance hierarchy was no considered correctly when overriding a nonterminal
+
+
 ##  MontiCore 6.2.0
 released: 21.07.2020
 
