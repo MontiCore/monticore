@@ -6,6 +6,7 @@ import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
 import de.monticore.cd.cd4code.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractCreator;
+import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
@@ -20,6 +21,7 @@ import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
@@ -210,12 +212,13 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
     List<ASTCDMethod> methodList = new ArrayList<>();
     String astFullName = symbolTableService.getASTPackage() + "." + symbolClass.getName();
     String simpleName = symbolTableService.removeASTPrefix(symbolClass);
-
+    Optional<ASTCDAttribute> attr = symbolClass.getCDAttributeList().stream().filter(a -> NAME_VAR.equals(a.getName())).findFirst();
+    boolean hasOptionalName = attr.isPresent()?DecorationHelper.getInstance().isOptional(attr.get().getMCType()):false;
     // visit method
-    methodList.add(createSymbolVisitMethod(astFullName, symbolFullName, simpleName));
+    methodList.add(createSymbolVisitMethod(astFullName, symbolFullName, simpleName, hasOptionalName));
 
     // endVisit method
-    methodList.add(createSymbolEndVisitMethod(astFullName, symbolClass, simpleName));
+    methodList.add(createSymbolEndVisitMethod(astFullName, symbolClass, simpleName, hasOptionalName));
 
     ASTCDParameter astParam = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(astFullName), "ast");
     // create_$ symbol method
@@ -242,18 +245,22 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
   }
 
 
-  protected ASTCDMethod createSymbolVisitMethod(String astFullName, String symbolFullName, String simpleName) {
+  protected ASTCDMethod createSymbolVisitMethod(String astFullName, String symbolFullName, String simpleName,
+                                                boolean hasOptionalName) {
     ASTCDMethod visitMethod = visitorService.getVisitorMethod(VISIT, getMCTypeFacade().createQualifiedType(astFullName));
     this.replaceTemplate(EMPTY_BODY, visitMethod, new TemplateHookPoint(
-        TEMPLATE_PATH + "Visit4STC", symbolFullName, simpleName));
+        TEMPLATE_PATH + "Visit4STC", symbolFullName, simpleName, hasOptionalName));
     return visitMethod;
   }
 
-  protected ASTCDMethod createSymbolEndVisitMethod(String astFullName, ASTCDType symbolClass, String simpleName) {
+  protected ASTCDMethod createSymbolEndVisitMethod(String astFullName, ASTCDType symbolClass, String simpleName,
+                                                   boolean hasOptionalName) {
     ASTCDMethod endVisitMethod = visitorService.getVisitorMethod(END_VISIT, getMCTypeFacade().createQualifiedType(astFullName));
     boolean removeScope = (symbolClass.isPresentModifier() && (symbolTableService.hasScopeStereotype(symbolClass.getModifier())
         || symbolTableService.hasInheritedScopeStereotype(symbolClass.getModifier())));
-    this.replaceTemplate(EMPTY_BODY, endVisitMethod, new TemplateHookPoint(TEMPLATE_PATH + "EndVisitSymbol",  simpleName, removeScope));
+
+    this.replaceTemplate(EMPTY_BODY, endVisitMethod, new TemplateHookPoint(TEMPLATE_PATH + "EndVisitSymbol",
+            simpleName, removeScope, hasOptionalName));
     return endVisitMethod;
   }
 
