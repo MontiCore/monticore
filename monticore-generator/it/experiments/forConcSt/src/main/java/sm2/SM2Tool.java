@@ -110,9 +110,9 @@ public class SM2Tool {
         .build();
 
     SM2ScopeSkeletonCreator symbolTable = SM2Mill
-        .sM2ScopeSkeletonCreatorBuilder()
-        .addToScopeStack(globalScope)
-        .build();
+        .sM2ScopeSkeletonCreator();
+
+    symbolTable.addToScopeStack(globalScope);
 
     return symbolTable.createFromAST(ast);
   }

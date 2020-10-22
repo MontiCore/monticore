@@ -7,4 +7,9 @@ public class MCVarDeclarationStatementsPhasedSymbolTableCreatorDelegator extends
     this.priorityList.add(new MCVarDeclarationStatementsSTCompleteTypes());
   }
 
+  public MCVarDeclarationStatementsPhasedSymbolTableCreatorDelegator(){
+    super();
+    this.priorityList.add(new MCVarDeclarationStatementsSTCompleteTypes());
+  }
+
 }

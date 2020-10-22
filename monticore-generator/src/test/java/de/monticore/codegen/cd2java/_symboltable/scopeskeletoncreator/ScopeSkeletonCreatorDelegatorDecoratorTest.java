@@ -119,7 +119,7 @@ public class ScopeSkeletonCreatorDelegatorDecoratorTest extends DecoratorTestCas
 
   @Test
   public void testConstructorCount() {
-    assertEquals(1, scopeSkeletonCreator.sizeCDConstructors());
+    assertEquals(2, scopeSkeletonCreator.sizeCDConstructors());
   }
 
   @Test
@@ -134,6 +134,15 @@ public class ScopeSkeletonCreatorDelegatorDecoratorTest extends DecoratorTestCas
 
 
     assertTrue(cdConstructor.isEmptyException());
+  }
+
+  @Test
+  public void testZeroArgsConstructor(){
+    ASTCDConstructor constructor = scopeSkeletonCreator.getCDConstructor(1);
+    assertDeepEquals(PUBLIC, constructor.getModifier());
+    assertEquals("AutomatonScopeSkeletonCreatorDelegator", constructor.getName());
+    assertTrue(constructor.isEmptyCDParameters());
+    assertTrue(constructor.isEmptyException());
   }
 
   @Test

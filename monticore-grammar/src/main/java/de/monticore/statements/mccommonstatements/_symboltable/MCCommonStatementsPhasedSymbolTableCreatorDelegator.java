@@ -7,4 +7,9 @@ public class MCCommonStatementsPhasedSymbolTableCreatorDelegator extends MCCommo
     this.priorityList.add(new MCCommonStatementsSTCompleteTypes());
   }
 
+  public MCCommonStatementsPhasedSymbolTableCreatorDelegator(){
+    super();
+    this.priorityList.add(new MCCommonStatementsSTCompleteTypes());
+  }
+
 }

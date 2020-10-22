@@ -23,6 +23,7 @@ import org.junit.Test;
 
 import java.util.Optional;
 
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
@@ -105,7 +106,7 @@ public class PhasedSymbolTableCreatorDelegatorDecoratorTest extends DecoratorTes
 
   @Test
   public void testConstructorCount() {
-    assertEquals(1, phasedSTCClass.sizeCDConstructors());
+    assertEquals(2, phasedSTCClass.sizeCDConstructors());
   }
 
   @Test
@@ -116,6 +117,15 @@ public class PhasedSymbolTableCreatorDelegatorDecoratorTest extends DecoratorTes
     assertEquals(1, constructor.sizeCDParameters());
     assertDeepEquals(AUTOMATON_GLOBAL_SCOPE, constructor.getCDParameter(0).getMCType());
     assertEquals("globalScope", constructor.getCDParameter(0).getName());
+  }
+
+  @Test
+  public void testZeroArgsConstructor(){
+    ASTCDConstructor constructor = phasedSTCClass.getCDConstructor(1);
+    assertDeepEquals(PUBLIC, constructor.getModifier());
+    assertEquals(phasedSTCClass.getName(), constructor.getName());
+    assertTrue(constructor.isEmptyCDParameters());
+    assertTrue(constructor.isEmptyException());
   }
 
   @Test

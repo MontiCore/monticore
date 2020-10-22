@@ -6,4 +6,9 @@ public class JavaLightPhasedSymbolTableCreatorDelegator extends JavaLightPhasedS
     super(globalScope);
     this.priorityList.add(new JavaLightSTCompleteTypesDelegator());
   }
+
+  public JavaLightPhasedSymbolTableCreatorDelegator(){
+    super();
+    this.priorityList.add(new JavaLightSTCompleteTypesDelegator());
+  }
 }

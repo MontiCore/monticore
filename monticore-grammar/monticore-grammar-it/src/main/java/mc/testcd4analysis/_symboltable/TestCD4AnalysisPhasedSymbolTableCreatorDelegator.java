@@ -12,4 +12,11 @@ public class TestCD4AnalysisPhasedSymbolTableCreatorDelegator extends TestCD4Ana
     this.priorityList.add(new TestCD4AnalysisSTCompleteTypes(scopeStack));
   }
 
+  public TestCD4AnalysisPhasedSymbolTableCreatorDelegator(){
+    super();
+    Deque<ITestCD4AnalysisScope> scopeStack = new ArrayDeque<>();
+    scopeStack.push(globalScope);
+    this.priorityList.add(new TestCD4AnalysisSTCompleteTypes(scopeStack));
+  }
+
 }

@@ -6,7 +6,9 @@ import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.se_rwth.commons.StringTransformations;
 
 import java.util.Optional;
 
@@ -50,6 +52,7 @@ public class PhasedSymbolTableCreatorDelegatorDecorator extends AbstractCreator<
           .addCDAttribute(scopeSkeletonCreatorDelegatorAttribute)
           .addCDAttribute(priorityListAttribute)
           .addCDConstructor(createConstructor(phasedSTName, globalScopeInterface, scopeSkeletonCreatorDelegator))
+          .addCDConstructor(createZeroArgsConstructor(phasedSTName))
           .addCDMethod(createCreateFromASTMethod(startProdFullName, artifactScopeInterface))
           .build());
     }
@@ -60,6 +63,15 @@ public class PhasedSymbolTableCreatorDelegatorDecorator extends AbstractCreator<
     ASTCDParameter globalScopeParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(globalScopeInterface), "globalScope");
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), className, globalScopeParameter);
     this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint(TEMPLATE_PATH + "ConstructorPhasedSTCDelegator", scopeSkeletonCreatorDelegator));
+    return constructor;
+  }
+
+  protected ASTCDConstructor createZeroArgsConstructor(String className){
+    String millFullName = symbolTableService.getMillFullName();
+    String simpleName = symbolTableService.getCDName();
+    ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), className);
+    this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("this("+millFullName + "."+
+        StringTransformations.uncapitalize(simpleName)+"GlobalScope());"));
     return constructor;
   }
 

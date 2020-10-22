@@ -336,7 +336,7 @@ public class MontiCoreScriptTest {
     assertEquals("Statechart", symbolPackageCD.getCDDefinition().getName());
 
     int index = 0;
-    assertEquals(20, symbolPackageCD.getCDDefinition().sizeCDClasss());
+    assertEquals(19, symbolPackageCD.getCDDefinition().sizeCDClasss());
     assertEquals("StatechartScope", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
     assertEquals("StatechartScopeBuilder", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
     assertEquals("StatechartSymbolTablePrinter", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
@@ -355,7 +355,6 @@ public class MontiCoreScriptTest {
     assertEquals("StatechartSymbolTableCreator", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
     assertEquals("StatechartSymbolTableCreatorBuilder", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
     assertEquals("StatechartScopeSkeletonCreator", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
-    assertEquals("StatechartScopeSkeletonCreatorBuilder", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
     assertEquals("StatechartPhasedSymbolTableCreatorDelegator", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
 
     index = 0;

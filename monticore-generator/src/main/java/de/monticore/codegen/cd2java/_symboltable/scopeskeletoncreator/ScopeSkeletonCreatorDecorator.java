@@ -82,6 +82,7 @@ public class ScopeSkeletonCreatorDecorator extends AbstractCreator<ASTCDCompilat
           .addInterface(getMCTypeFacade().createQualifiedType(visitorName))
           .addCDConstructor(createSimpleConstructor(scopeSkeletonCreator, scopeInterface))
           .addCDConstructor(createDequeConstructor(scopeSkeletonCreator, dequeWildcardType, dequeType))
+          .addCDConstructor(createZeroArgsConstructor(scopeSkeletonCreator))
           .addCDAttribute(createScopeStackAttribute(dequeType))
           .addCDAttribute(realThisAttribute)
           .addAllCDMethods(realThisMethods)
@@ -98,6 +99,7 @@ public class ScopeSkeletonCreatorDecorator extends AbstractCreator<ASTCDCompilat
           .addAllCDMethods(createAddToScopeMethods(symbolDefiningProds))
           .addAllCDMethods(createAddToScopeMethodsForSuperSymbols())
           .addAllCDMethods(createScopeClassMethods(onlyScopeProds, scopeInterface))
+          .addCDMethod(createAddToScopeStackMethod())
           .build();
       return Optional.ofNullable(symTabCreator);
     }
@@ -117,6 +119,12 @@ public class ScopeSkeletonCreatorDecorator extends AbstractCreator<ASTCDCompilat
     this.replaceTemplate(EMPTY_BODY, constructor, new
         StringHookPoint("this." + SCOPE_STACK_VAR + " = Log.errorIfNull(("
         + dequeType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()) + ")" + SCOPE_STACK_VAR + ");"));
+    return constructor;
+  }
+
+  protected ASTCDConstructor createZeroArgsConstructor(String symTabCreator){
+    ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), symTabCreator);
+    this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("this(new ArrayDeque<>());"));
     return constructor;
   }
 
@@ -171,7 +179,7 @@ public class ScopeSkeletonCreatorDecorator extends AbstractCreator<ASTCDCompilat
 
   protected ASTCDMethod createSetScopeStackMethod(ASTMCType dequeType, String simpleName) {
     ASTCDParameter dequeParam = getCDParameterFacade().createParameter(dequeType, SCOPE_STACK_VAR);
-    ASTCDMethod createFromAST = getCDMethodFacade().createMethod(PROTECTED,
+    ASTCDMethod createFromAST = getCDMethodFacade().createMethod(PUBLIC,
         "set" + StringTransformations.capitalize(simpleName) + "ScopeStack", dequeParam);
     this.replaceTemplate(EMPTY_BODY, createFromAST, new StringHookPoint(
         "this." + SCOPE_STACK_VAR + " = " + SCOPE_STACK_VAR + ";"));
@@ -403,5 +411,12 @@ public class ScopeSkeletonCreatorDecorator extends AbstractCreator<ASTCDCompilat
       }
     }
     return methodList;
+  }
+
+  protected ASTCDMethod createAddToScopeStackMethod(){
+    ASTCDParameter scopeParam = getCDParameterFacade().createParameter(symbolTableService.getScopeInterfaceType(), "scope");
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, "addToScopeStack", scopeParam);
+    this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint("scopeStack.addLast(scope);"));
+    return method;
   }
 }

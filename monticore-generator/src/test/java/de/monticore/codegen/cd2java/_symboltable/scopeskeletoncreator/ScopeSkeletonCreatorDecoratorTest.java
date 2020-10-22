@@ -117,7 +117,7 @@ public class ScopeSkeletonCreatorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testConstructorCount() {
-    assertEquals(2, scopeSkeletonCreatorClass.sizeCDConstructors());
+    assertEquals(3, scopeSkeletonCreatorClass.sizeCDConstructors());
   }
 
   @Test
@@ -149,6 +149,15 @@ public class ScopeSkeletonCreatorDecoratorTest extends DecoratorTestCase {
     assertTrue(cdConstructor.isEmptyException());
   }
 
+  @Test
+  public void testZeroArgsConstructor(){
+    ASTCDConstructor constructor = scopeSkeletonCreatorClass.getCDConstructor(2);
+    assertDeepEquals(PUBLIC, constructor.getModifier());
+    assertEquals("AutomatonScopeSkeletonCreator", constructor.getName());
+    assertTrue(constructor.isEmptyCDParameters());
+    assertTrue(constructor.isEmptyException());
+  }
+
 
   @Test
   public void testAttributeSize() {
@@ -178,7 +187,7 @@ public class ScopeSkeletonCreatorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethods() {
-    assertEquals(34, scopeSkeletonCreatorClass.getCDMethodList().size());
+    assertEquals(35, scopeSkeletonCreatorClass.getCDMethodList().size());
   }
 
   @Test
@@ -236,7 +245,7 @@ public class ScopeSkeletonCreatorDecoratorTest extends DecoratorTestCase {
   @Test
   public void testSetAutomatonScopeStack() {
     ASTCDMethod method = getMethodBy("setAutomatonScopeStack", scopeSkeletonCreatorClass);
-    assertDeepEquals(PROTECTED, method.getModifier());
+    assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
 
     assertEquals(1, method.sizeCDParameters());
@@ -600,6 +609,16 @@ public class ScopeSkeletonCreatorDecoratorTest extends DecoratorTestCase {
 
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
+  }
+
+  @Test
+  public void testAddToScopeStackMethod(){
+    ASTCDMethod method = getMethodBy("addToScopeStack", scopeSkeletonCreatorClass);
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertEquals(1, method.sizeCDParameters());
+    assertEquals("scope", method.getCDParameter(0).getName());
+    assertDeepEquals(I_AUTOMATON_SCOPE, method.getCDParameter(0).getMCType());
   }
 
   @Test

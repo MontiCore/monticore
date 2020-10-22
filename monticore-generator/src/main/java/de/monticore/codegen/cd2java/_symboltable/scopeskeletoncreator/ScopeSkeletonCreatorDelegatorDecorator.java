@@ -1,5 +1,6 @@
 package de.monticore.codegen.cd2java._symboltable.scopeskeletoncreator;
 
+import com.google.common.collect.Lists;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.cd4code.CD4CodeMill;
@@ -11,6 +12,8 @@ import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
+import de.se_rwth.commons.Names;
+import de.se_rwth.commons.StringTransformations;
 
 import java.util.HashMap;
 import java.util.List;
@@ -48,16 +51,17 @@ public class ScopeSkeletonCreatorDelegatorDecorator extends AbstractCreator<ASTC
       String scopeSkeletonCreatorName = symbolTableService.getScopeSkeletonCreatorSimpleName();
       String scopeInterface = symbolTableService.getScopeInterfaceFullName();
       String globalScopeInterfaceName = symbolTableService.getGlobalScopeInterfaceFullName();
-      String simpleName = symbolTableService.getCDName();
+      String simpleName = symbolTableService.removeASTPrefix(Names.getSimpleName(astFullName));
       String artifactScopeName = symbolTableService.getArtifactScopeInterfaceFullName();
       String delegatorVisitorName = visitorService.getDelegatorVisitorFullName();
       ASTMCBasicGenericType dequeType = getMCTypeFacade().createBasicGenericTypeOf(DEQUE_TYPE, scopeInterface);
+      String cdName = symbolTableService.getCDName();
 
       ASTCDClass scopeSkeletonCreatorDelegator = CD4CodeMill.cDClassBuilder()
           .setName(scopeSkeletonCreatorDelegatorName)
           .setModifier(PUBLIC.build())
           .setSuperclass(getMCTypeFacade().createQualifiedType(delegatorVisitorName))
-          .addCDConstructor(createConstructor(scopeSkeletonCreatorDelegatorName, globalScopeInterfaceName, scopeSkeletonCreatorName, simpleName))
+          .addAllCDConstructors(createConstructors(scopeSkeletonCreatorDelegatorName, globalScopeInterfaceName, scopeSkeletonCreatorName, simpleName, cdName))
           .addCDAttribute(createScopeStackAttribute(dequeType))
           .addCDAttribute(createScopeSkeletonCreatorAttributes(scopeSkeletonCreatorName))
           .addCDAttribute(createGlobalScopeAttribute(globalScopeInterfaceName))
@@ -68,14 +72,21 @@ public class ScopeSkeletonCreatorDelegatorDecorator extends AbstractCreator<ASTC
     return Optional.empty();
   }
 
-  protected ASTCDConstructor createConstructor(String scopeSkeletonCreatorDelegator, String globalScopeInterface,
-                                               String scopeSkeletonCreator, String simpleName) {
+  protected List<ASTCDConstructor> createConstructors(String scopeSkeletonCreatorDelegator, String globalScopeInterface,
+                                               String scopeSkeletonCreator, String simpleName, String cdName) {
+    List<ASTCDConstructor> constructors = Lists.newArrayList();
     String symTabMillFullName = symbolTableService.getMillFullName();
     ASTCDParameter globalScopeParam = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(globalScopeInterface), "globalScope");
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), scopeSkeletonCreatorDelegator, globalScopeParam);
     this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint(TEMPLATE_PATH + "ConstructorScopeSkeletonCreatorDelegator",
-        symTabMillFullName, scopeSkeletonCreator, simpleName));
-    return constructor;
+        symTabMillFullName, scopeSkeletonCreator, simpleName, cdName));
+    constructors.add(constructor);
+
+    ASTCDConstructor zeroArgsConstructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), scopeSkeletonCreatorDelegator);
+    this.replaceTemplate(EMPTY_BODY, zeroArgsConstructor, new StringHookPoint("this("+symTabMillFullName + "."+
+        StringTransformations.uncapitalize(cdName)+"GlobalScope());"));
+    constructors.add(zeroArgsConstructor);
+    return constructors;
   }
 
   protected ASTCDAttribute createScopeStackAttribute(ASTMCType dequeType) {
