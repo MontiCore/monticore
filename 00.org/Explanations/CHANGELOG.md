@@ -5,7 +5,8 @@
 to be released 
 
 ### Additions
-* added an experiment showcasing serialization and deserialization
+* added an experiment `hwDeSers` showcasing serialization and deserialization
+* added an experiment `hooks` showcasing hook point usage
 * IncCheck provided by the MontiCore Gradle Plugin now considers local super grammar changes to trigger new generation
 
 ### Changes
