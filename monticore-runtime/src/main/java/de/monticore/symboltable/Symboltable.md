@@ -17,6 +17,25 @@
 * Indicate that a nonterminal uses the name of a symbol
 
 ## Runtime Environment for Symbol Table Infrastructure
+### Symbol Table Infrastructure Interfaces
+#### IScope
+#### IArtifactScope
+#### IGlobalScope
+#### ISymbol
+#### ISymbolPredicate
+#### IScopeSpanningSymbol
+#### IScope
+
+### Resolving
+
+### Modifiers
+
+
+### JSON Infrastructure for Symbol Table Serialization
+#### JsonPrinter class
+#### JsonParser class
+#### Json parsing infrastructure
+#### Json model
 
 ## Generated Symbol Table Infrastructure
 MontiCore generates large parts of the symbol table infrastructure that is strongly typed for each
@@ -32,6 +51,7 @@ language.
 For scopes, artifact scopes, and global scopes, MontiCore separated classes and interfaces. The 
 interfaces follow the (multiple) inheritance of the grammars and realized most behavior in form 
 of default method implementations. The classes implement the interface and manage access to attributes.
+
 #### Scope Interface
 For each language, MontiCore generates a scope interface. The scope interface prescribes all public 
 methods of the scope class and realized some methods as default implementations. The hierarchy of 
@@ -46,6 +66,11 @@ The scope class is generated for each MontiCore language. It implements the scop
 language and realizes scope attributes as well as method implementations that realize direct access 
 to scope attributes.
 
+#### Scope Builder Class
+MontiCore generated builder classes for each scope class. The instances of the builders are available through the language's mill. With the builder, the attributes of the scope class can be initialized and a new instance of the scope can be created. 
+
+We highly recommend instantiating scope classes only through the builder obtained via the mill. All other forms of instantiations will prohibit reconfiguration through sublanguages.
+
 #### ArtifactScope Interface
 The artifact scope interface is generated once for each MontiCore language. It extends the scope
 interface of the language and the artifact scope interface of the MontiCore runtime.
@@ -57,6 +82,11 @@ of the scope interface with a special behavior and adds new methods.
 MontiCore generates a single artifact scope class for each language that extends the scope class of 
 the language and implements the artifact scope interface of the language. 
 
+#### ArtifactScope Builder Class
+MontiCore generated builder classes for each artifact scope class. The instances of the builders are available through the language's mill. With the builder, the attributes of the artifact scope class can be initialized and a new instance of the artifact scope can be created. 
+
+We highly recommend instantiating artifact scope classes only through the builder obtained via the mill. All other forms of instantiations will prohibit reconfiguration through sublanguages.
+
 #### GlobalScope Interface
 Similar to artifact scope interfaces, global scope interfaces extends the scope interface of the language.
 Additionally, they implement the global scope interfaces of their parent languages or the 
@@ -66,6 +96,11 @@ Additionally, they implement the global scope interfaces of their parent languag
 The global scope class is generated for each MontiCore language and realizes the concrete global
 scope of a language. It extends the scope class and implements the global scope iterface of the 
 language.
+
+#### GlobalScope Builder Class
+MontiCore generated builder classes for each global scope class. The instances of the builders are available through the language's mill. With the builder, the attributes of the global scope class can be initialized and a new instance of the global scope can be created. 
+
+We highly recommend instantiating global scope classes only through the builder obtained via the mill. All other forms of instantiations will prohibit reconfiguration through sublanguages.
 
 #### SymbolTableCreator Interface
 TODO: SymbolTableCreator Interface is about to be changed
@@ -111,6 +146,12 @@ the class `StateSymbol` realizes the kind StateSymbol and objects of this class 
 A symbol kind can inherit from at most one other symbol kind. This is reflected in the symbol classes
 by extending the class of the super kind. 
 
+#### Symbol Builder Class
+MontiCore generated builder classes for each symbol. The instances of the builders are available through
+the language's mill. With the builder, the attributes of the symbol class can be initialized and a new instance of the symbol can be created. 
+
+We highly recommend instantiating symbol classes only through the builder obtained via the mill. All other forms of instantiations will prohibit reconfiguration through sublanguages, e.g., in case the symbol production is overridden in the grammar.
+
 #### Symbol DeSer
 The symbol DeSer classes are generated for each symbol and realize serialization and deserialization
 of symbols of a certain kind. The serialization is visitor-based and, thus, delegated to the symbol
@@ -119,13 +160,25 @@ as such, are reused for all languages that inherit from the current language. As
 deserialization of individual symbols is rarely triggered manually, no load and store methods exist
 in symbol DeSer classes.
 
-#### ResolvingDelegates
-MontiCore generates a resolving delegate interface for each symbol kind of a language. Resolving delegates
+#### Symbol Surrogate Class 
+Symbol surrogate classes extend the generated symbol classes and realize lazy loading of symbls of this kind. Surrogates have a delegate of the symbol class that is empty during initialization of the surrogate., where only the enclosing scope and the name are set. They further define a method for resolving the symbol
+with the on demand.
+Symbol surrogates must only be if both of the following two conditions are met:
+1. If on type level, a symbol has an attribute of another symbol, the attribute *may* be initialized with the surrogate as the symbol's subtype.
+2. If on instance level, the symbol definition of the 
+Surrogates must never be used to simplify instantiation of local symbols, i.e., of symbols that are contained in a single model for which the symbol table currently is build. In this case, it is always possible to split symbol table creation into multiple phases: In the first phase, all symbol definitions 
+instantiate symbol class objects, for which the symbol attributes are not instantiated yet. In a later phase, the symbol attributes are filled with values.
+
+#### Symbol Surrogate Builder
+MontiCore generated builder classes for each symbol surrogate. The instances of the builders are available through the language's mill. With the builder, the attributes of the symbol surrogate class can be initialized and a new instance of the symbol surrogate can be created. 
+
+#### Resolvers
+MontiCore generates a resolver interface for each symbol kind of a language. Resolvers
 have a method for resolving adapted symbol kinds. Language engineers can develop concrete resolving delegates
-that implement a resolving delegate interface. Such classes can be added to the global scope of a language
+that implement a resolver interface. Such classes can be added to the global scope of a language
 to integrate resolving for adapted symbols into the resolution process. 
-For example, an automata language defines the generated resolving delegate interface `IStateSymbolResolvingDelegate`.
-This interface can be used by language engineers to implement a `CDClass2StateResolvingDelegate` class 
+For example, an automata language defines the generated resolver interface `IStateSymbolResolver`.
+This interface can be used by language engineers to implement a `CDClass2StateResolver` class 
 implementing the interface that resolves, for example, for symbols of a CD class whenever
 resolving for state symbols is invoked. The result of this is typically an adapter symbol, which
 adapts the foreign symbol (e.g., CDClassSymbol) to the expected symbol (e.g., StateSymbol).
