@@ -8,6 +8,7 @@ to be released
 * added an experiment `hwDeSers` showcasing serialization and deserialization
 * added an experiment `hooks` showcasing hook point usage
 * IncCheck provided by the MontiCore Gradle Plugin now considers local super grammar changes to trigger new generation
+* Added new Traverser generation to replace the visitor infrastructure in a future release
 
 ### Changes
 * renamed `IXResolvingDelegate` to `IXResolver`
