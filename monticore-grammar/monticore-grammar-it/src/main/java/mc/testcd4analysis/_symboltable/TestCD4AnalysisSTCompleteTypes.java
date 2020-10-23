@@ -4,7 +4,6 @@ import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
-import de.monticore.types.mcfullgenerictypes._ast.ASTMCArrayType;
 import de.monticore.types.prettyprint.MCCollectionTypesPrettyPrinter;
 import mc.testcd4analysis._ast.*;
 import mc.testcd4analysis._visitor.TestCD4AnalysisVisitor;
