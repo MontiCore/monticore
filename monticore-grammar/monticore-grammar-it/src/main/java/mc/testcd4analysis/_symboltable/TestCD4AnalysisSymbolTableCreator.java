@@ -16,6 +16,10 @@ import java.util.Optional;
 
 public class TestCD4AnalysisSymbolTableCreator extends TestCD4AnalysisSymbolTableCreatorTOP {
 
+  public TestCD4AnalysisSymbolTableCreator() {
+    super();
+  }
+
   public TestCD4AnalysisSymbolTableCreator(ITestCD4AnalysisScope enclosingScope) {
     super(enclosingScope);
   }

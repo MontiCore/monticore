@@ -71,11 +71,6 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     ASTCDAttribute cacheAttribute = createCacheAttribute();
     this.replaceTemplate(VALUE, cacheAttribute, new StringHookPoint("= new java.util.HashSet<>()"));
 
-    ASTCDAttribute symbolFileExtensionAttribute = getCDAttributeFacade().createAttribute(PROTECTED,
-        getMCTypeFacade().createStringType(), "symbolFileExtension");
-    List<ASTCDMethod> symbolFileExtensionMethods = accessorDecorator.decorate(symbolFileExtensionAttribute);
-    symbolFileExtensionMethods.addAll(mutatorDecorator.decorate(symbolFileExtensionAttribute));
-
     ASTCDAttribute scopeDeSerAttribute = createScopeDeSerAttribute(scopeDeSerName);
     List<ASTCDMethod> scopeDeSerMethods = accessorDecorator.decorate(scopeDeSerAttribute);
     scopeDeSerMethods.addAll(mutatorDecorator.decorate(scopeDeSerAttribute));
@@ -109,8 +104,6 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
         .addAllCDMethods(modelPathMethods)
         .addCDAttribute(fileExtensionAttribute)
         .addAllCDMethods(fileExtensionMethods)
-        .addCDAttribute(symbolFileExtensionAttribute)
-        .addAllCDMethods(symbolFileExtensionMethods)
         .addCDAttribute(scopeDeSerAttribute)
         .addAllCDMethods(scopeDeSerMethods)
         .addCDAttribute(cacheAttribute)

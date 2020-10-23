@@ -1,7 +1,8 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("definitionName")}
+  String symbolFileExtension = getModelFileExtension() + "sym";
   de.monticore.io.paths.ModelCoordinate modelCoordinate =
-     de.monticore.io.paths.ModelCoordinates.createQualifiedCoordinate(modelName, getSymbolFileExtension());
+     de.monticore.io.paths.ModelCoordinates.createQualifiedCoordinate(modelName, symbolFileExtension);
   String filePath = modelCoordinate.getQualifiedPath().toString();
   if(!isFileLoaded(filePath)) {
 
