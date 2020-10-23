@@ -24,18 +24,23 @@ public class BasicJavaGlobalScope extends BasicJavaGlobalScopeTOP {
   public BasicJavaGlobalScope() {
   }
 
+  @Override public BasicJavaGlobalScope getRealThis() {
+    return this;
+  }
+
   public  void loadFileForModelName (String modelName, String symbolName)  {
+    // 1. call super implementation to start with employing the DeSer
     super.loadFileForModelName(modelName, symbolName);
+
+    // 2. calculate potential location of model file and try to find it in model path
     ModelCoordinate model = ModelCoordinates.createQualifiedCoordinate(modelName, getModelFileExtension());
     model = getModelPath().resolveModel(model);
+
+    // 3. if the file was found, parse the model and create its symtab
     if(model.hasLocation()){
       ASTCompilationUnit ast = parse(model);
       BasicJavaMill.basicJavaSymbolTableCreator().createFromAST(ast);
     }
-  }
-
-  @Override public BasicJavaGlobalScope getRealThis() {
-    return this;
   }
 
   private ASTCompilationUnit parse(ModelCoordinate model){
