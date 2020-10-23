@@ -76,10 +76,17 @@ public class ScopeSkeletonCreatorDelegatorDecorator extends AbstractCreator<ASTC
                                                String scopeSkeletonCreator, String simpleName, String cdName) {
     List<ASTCDConstructor> constructors = Lists.newArrayList();
     String symTabMillFullName = symbolTableService.getMillFullName();
+    List<CDDefinitionSymbol> superCDsTransitive = symbolTableService.getSuperCDsTransitive();
+    Map<String, String> superSymTabCreator = new HashMap<>();
+    for (CDDefinitionSymbol cdDefinitionSymbol : superCDsTransitive) {
+      if (cdDefinitionSymbol.isPresentAstNode() && symbolTableService.hasStartProd(cdDefinitionSymbol.getAstNode())) {
+        superSymTabCreator.put(cdDefinitionSymbol.getName(), symbolTableService.getScopeSkeletonCreatorFullName(cdDefinitionSymbol));
+      }
+    }
     ASTCDParameter globalScopeParam = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(globalScopeInterface), "globalScope");
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), scopeSkeletonCreatorDelegator, globalScopeParam);
     this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint(TEMPLATE_PATH + "ConstructorScopeSkeletonCreatorDelegator",
-        symTabMillFullName, scopeSkeletonCreator, simpleName, cdName));
+        symTabMillFullName, scopeSkeletonCreator, simpleName, cdName, superSymTabCreator));
     constructors.add(constructor);
 
     ASTCDConstructor zeroArgsConstructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), scopeSkeletonCreatorDelegator);
