@@ -2,7 +2,9 @@
 package mc.feature.referencesymbol;
 
 import de.monticore.io.paths.ModelPath;
+import mc.feature.referencesymbol.reference.ReferenceMill;
 import mc.feature.referencesymbol.reference._ast.ASTTest;
+import mc.feature.referencesymbol.reference._symboltable.IReferenceGlobalScope;
 import mc.feature.referencesymbol.reference._symboltable.TestSymbol;
 import mc.feature.referencesymbol.supgrammarref.SupGrammarRefMill;
 import mc.feature.referencesymbol.supgrammarref._ast.ASTSupRand;
@@ -39,17 +41,12 @@ public class SupReferenceTest {
     //create symboltable
     this.astsupRand = astRand.get();
 
+    ISupGrammarRefGlobalScope globalScope = SupGrammarRefMill.supGrammarRefGlobalScope();
+    globalScope.setModelFileExtension("ref");
+    globalScope.getModelPath().addEntry(Paths.get("src/test/resources/mc/feature/referencesymbol"));
 
-    ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/mc/feature/referencesymbol"));
-    ISupGrammarRefGlobalScope globalScope = SupGrammarRefMill
-        .supGrammarRefGlobalScopeBuilder()
-        .setModelPath(modelPath)
-        .setModelFileExtension("ref")
-        .build();
     SupGrammarRefSymbolTableCreatorDelegator symbolTableCreator = SupGrammarRefMill
-        .supGrammarRefSymbolTableCreatorDelegatorBuilder()
-        .setGlobalScope(globalScope)
-        .build();
+        .supGrammarRefSymbolTableCreatorDelegator();
     ISupGrammarRefArtifactScope artifact = symbolTableCreator.createFromAST(astsupRand);
     Optional<? extends ISupGrammarRefScope> scopeOpt = artifact.getSubScopes().stream().findAny();
     assertTrue(scopeOpt.isPresent());

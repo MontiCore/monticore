@@ -35,17 +35,12 @@ public class ReferenceTest {
     assertFalse(parser.hasErrors());
     assertTrue(astRand.isPresent());
     //create symboltable
-    ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/mc/feature/referencesymbol"));
-    IReferenceGlobalScope globalScope = ReferenceMill
-        .referenceGlobalScopeBuilder()
-        .setModelPath(modelPath)
-        .setModelFileExtension("ref")
-        .build();
-    ReferenceSymbolTableCreatorDelegator symbolTableCreator = ReferenceMill
-        .referenceSymbolTableCreatorDelegatorBuilder()
-        .setGlobalScope(globalScope)
-        .build();
-    IReferenceArtifactScope artifactScope = symbolTableCreator.createFromAST(astRand.get());
+    IReferenceGlobalScope globalScope = ReferenceMill.referenceGlobalScope();
+    globalScope.setModelFileExtension("ref");
+    globalScope.getModelPath().addEntry(Paths.get("src/test/resources/mc/feature/referencesymbol"));
+
+    IReferenceArtifactScope artifactScope = ReferenceMill
+        .referenceSymbolTableCreatorDelegator().createFromAST(astRand.get());
 
     Optional<? extends IReferenceScope> scopeOpt = artifactScope.getSubScopes().stream().findAny();
     assertTrue(scopeOpt.isPresent());
