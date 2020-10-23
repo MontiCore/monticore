@@ -4,13 +4,13 @@ package de.monticore.statements;
 /* This is a MontiCore stable grammar.
  * Adaptations -- if any -- are conservative. */
 
-import de.monticore.statements.*;
+import de.monticore.statements.MCVarDeclarationStatements;
 
 /**
- * This grammar defines the all Java statements.
- * This is neither a generalized approximation nor a restricted overapproximation, 
- * but exact.
- * Because all nonterminals are inherited the grammar is basically empty.
+ * This grammar defines Java's mechanism for the introduction
+ * of local variables with a type, an array dim and
+ * including the possibility to initialize the
+ * variable, e.g. private int a[] = { ... }
  *
  * This grammar is part of a hierarchy of statements, namely
  * * statements/MCStatementsBasis.mc4
@@ -27,12 +27,12 @@ import de.monticore.statements.*;
  *
 */
 
-component grammar MCFullJavaStatements extends 
-    MCAssertStatements,
-    MCExceptionStatements,
-    MCLowLevelStatements,
-    MCReturnStatements,
-    MCSynchronizedStatements,
-    MCArrayStatements {
+component grammar MCArrayStatements extends MCVarDeclarationStatements {
+
+ArrayDeclaratorId implements Declarator
+    =   Name (dim:"[" "]")+ ;
+
+ArrayInit implements VariableInit
+     =   "{" (VariableInit || ",")* (",")? "}" ;
 
 }
