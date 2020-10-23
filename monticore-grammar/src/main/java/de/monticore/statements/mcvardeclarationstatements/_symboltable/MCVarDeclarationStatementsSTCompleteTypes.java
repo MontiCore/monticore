@@ -36,24 +36,12 @@ public class MCVarDeclarationStatementsSTCompleteTypes implements MCVarDeclarati
     this.realThis = realThis;
   }
 
-  @Override
   public void endVisit(ASTLocalVariableDeclaration ast) {
     List<FieldSymbol> symbols = Lists.newArrayList();
     for (ASTVariableDeclarator v : ast.getVariableDeclaratorList()) {
       SymTypeExpression simpleType = createTypeLoader(ast.getMCType());
-      if (v.getDeclaratorId().getDimList().size() > 0) {
-        if (simpleType instanceof SymTypeArray) {
-          SymTypeArray arraySymType = (SymTypeArray) simpleType;
-          arraySymType.setDim(arraySymType.getDim() + v.getDeclaratorId().getDimList().size());
-        } else {
-          OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate(v.getDeclaratorId().getName());
-          loader.setEnclosingScope(v.getDeclaratorId().getEnclosingScope());
-          simpleType = new SymTypeArray(loader,
-              v.getDeclaratorId().getDimList().size(), simpleType);
-        }
-      }
-      v.getDeclaratorId().getSymbol().setType(simpleType);
-      symbols.add(v.getDeclaratorId().getSymbol());
+      v.getDeclarator().getSymbol().setType(simpleType);
+      symbols.add(v.getDeclarator().getSymbol());
     }
     addModifiersToVariables(symbols, ast.getMCModifierList());
   }

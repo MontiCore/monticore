@@ -39,8 +39,6 @@ public class TestCD4AnalysisSTCompleteTypes implements TestCD4AnalysisVisitor {
     final String typeName;
     if (astType instanceof ASTMCGenericType) {
       typeName = ((ASTMCGenericType) astType).printWithoutTypeArguments();
-    } else if (astType instanceof ASTMCArrayType) {
-      typeName = ((ASTMCArrayType) astType).printTypeWithoutBrackets();
     } else {
       typeName = astAttribute.getMCType().printType(new MCCollectionTypesPrettyPrinter(new IndentPrinter()));
     }
