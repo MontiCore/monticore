@@ -135,6 +135,85 @@ public class VisitorService extends AbstractService<VisitorService> {
     return getPackage(cdDefinitionSymbol) + "." + getDelegatorVisitorSimpleName(cdDefinitionSymbol);
   }
 
+  /**
+   * traverser (+ interface) name e.g. AutomataTraverser
+   */
+  
+  public String getTraverserSimpleName() {
+    return getTraverserSimpleName(getCDSymbol());
+  }
+  
+  public String getTraverserSimpleName(CDDefinitionSymbol cdDefinitionSymbol) {
+    return cdDefinitionSymbol.getName() + TRAVERSER_SUFFIX;
+  }
+  
+  public String getTraverserFullName() {
+    return getTraverserFullName(getCDSymbol());
+  }
+  
+  public String getTraverserFullName(CDDefinitionSymbol cdDefinitionSymbol) {
+    return getPackage(cdDefinitionSymbol) + "." + getTraverserSimpleName(cdDefinitionSymbol);
+  }
+  
+  public ASTMCQualifiedType getTraverserType(CDDefinitionSymbol cdSymbol) {
+    return getMCTypeFacade().createQualifiedType(getTraverserFullName(cdSymbol));
+  }
+
+  public ASTMCQualifiedType getTraverserType() {
+    return getTraverserType(getCDSymbol());
+  }
+  
+  public String getTraverserInterfaceSimpleName() {
+    return getTraverserInterfaceSimpleName(getCDSymbol());
+  }
+  
+  public String getTraverserInterfaceSimpleName(CDDefinitionSymbol cdDefinitionSymbol) {
+    return "I" + getTraverserSimpleName(cdDefinitionSymbol);
+  }
+  
+  public String getTraverserInterfaceFullName() {
+    return getTraverserInterfaceFullName(getCDSymbol());
+  }
+  
+  public String getTraverserInterfaceFullName(CDDefinitionSymbol cdDefinitionSymbol) {
+    return getPackage(cdDefinitionSymbol) + "." + getTraverserInterfaceSimpleName(cdDefinitionSymbol);
+  }
+  
+  public ASTMCQualifiedType getTraverserInterfaceType(CDDefinitionSymbol cdSymbol) {
+    return getMCTypeFacade().createQualifiedType(getTraverserInterfaceFullName(cdSymbol));
+  }
+
+  public ASTMCQualifiedType getTraverserInterfaceType() {
+    return getTraverserInterfaceType(getCDSymbol());
+  }
+  
+  /**
+   * visitor2 name e.g. AutomataVisitor2
+   */
+  
+  public String getVisitor2SimpleName() {
+    return getVisitor2SimpleName(getCDSymbol());
+  }
+  
+  public String getVisitor2SimpleName(CDDefinitionSymbol cdDefinitionSymbol) {
+    return cdDefinitionSymbol.getName() + VISITOR2_SUFFIX;
+  }
+  
+  public String getVisitor2FullName() {
+    return getVisitor2FullName(getCDSymbol());
+  }
+  
+  public String getVisitor2FullName(CDDefinitionSymbol cdDefinitionSymbol) {
+    return getPackage(cdDefinitionSymbol) + "." + getVisitor2SimpleName(cdDefinitionSymbol);
+  }
+  
+  public ASTMCQualifiedType getVisitor2Type(CDDefinitionSymbol cdSymbol) {
+    return getMCTypeFacade().createQualifiedType(getVisitor2FullName(cdSymbol));
+  }
+
+  public ASTMCQualifiedType getVisitor2Type() {
+    return getVisitor2Type(getCDSymbol());
+  }
 
   /**
    * other helpful methods
@@ -143,6 +222,12 @@ public class VisitorService extends AbstractService<VisitorService> {
   public List<ASTMCQualifiedType> getAllVisitorTypesInHierarchy() {
     return getServicesOfSuperCDs().stream()
         .map(VisitorService::getVisitorType)
+        .collect(Collectors.toList());
+  }
+  
+  public List<ASTMCQualifiedType> getAllTraverserInterfacesTypesInHierarchy() {
+    return getServicesOfSuperCDs().stream()
+        .map(VisitorService::getTraverserInterfaceType)
         .collect(Collectors.toList());
   }
 
@@ -197,6 +282,21 @@ public class VisitorService extends AbstractService<VisitorService> {
     return superCDs
         .stream()
         .map(this::getVisitorType)
+        .collect(Collectors.toList());
+  }
+  
+  /**
+   * Retrieves the super traverser interfaces with respect to the type
+   * hierarchy.
+   * 
+   * @return The super traverser interfaces as list of qualified names.
+   */
+  public List<ASTMCQualifiedType> getSuperTraverserInterfaces() {
+    // only direct super cds, not transitive
+    List<CDDefinitionSymbol> superCDs = getSuperCDsDirect();
+    return superCDs
+        .stream()
+        .map(this::getTraverserInterfaceType)
         .collect(Collectors.toList());
   }
 

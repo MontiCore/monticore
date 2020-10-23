@@ -2,19 +2,11 @@
 
 package de.monticore.generating.templateengine;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
 import com.google.common.base.Strings;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
-
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.freemarker.SimpleHashFactory;
 import de.monticore.generating.templateengine.reporting.Reporting;
@@ -22,6 +14,9 @@ import de.se_rwth.commons.logging.Log;
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.SimpleHash;
 import freemarker.template.TemplateModelException;
+
+import java.io.IOException;
+import java.util.*;
 
 /**
  * Class for managing hook points, features and (global) variables in templates.
@@ -75,6 +70,19 @@ public class GlobalExtensionManagement {
     Log.errorIfNull(data);
 
     this.globalData = data;
+    try {
+      Map<Object, Object> map = data.toMap();
+      for (TemplateController tc: TemplateController.getActiveControllers()) {
+        for (Map.Entry<Object, Object> entry: map.entrySet()) {
+          if (entry.getKey() instanceof String) {
+            tc.setValueToData((String) entry.getKey(), entry.getValue());
+          }
+        }
+      }
+    } catch (TemplateModelException e) {
+      Log.error("0xA1062 Internal Error on global values");
+    }
+
   }
 
   /**
@@ -142,6 +150,7 @@ public class GlobalExtensionManagement {
       Log.error("0xA0124 Global Value '" + name + "' has not been defined.");
     } else {
       setGlobalValue(name, value);
+      TemplateController.getActiveControllers().forEach(t -> t.setValueToData(name, value));
     }
   }
 
@@ -217,7 +226,7 @@ public class GlobalExtensionManagement {
    * Returns the value of the given variable.
    *
    * @param name of the variable
-   * @param default replaces if the variable is not present
+   * @param defaultObject replaces if the variable is not present
    * @return the value or the default
    */
   @SuppressWarnings("deprecation")

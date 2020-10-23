@@ -3,7 +3,6 @@ package mc.builtInTypes;
 
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
-import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.*;
 import de.se_rwth.commons.logging.LogStub;
@@ -27,8 +26,8 @@ public class BuiltInJavaTypesTest {
         .setModelPath(new ModelPath())
         .setModelFileExtension("bijt")
         .build();
-    gs.addAdaptedOOTypeSymbolResolvingDelegate(new BuiltInJavaSymbolResolvingDelegate());
-    gs.addAdaptedTypeSymbolResolvingDelegate(new BuiltInJavaSymbolResolvingDelegate());
+    gs.addAdaptedOOTypeSymbolResolver(new BuiltInJavaSymbolResolver());
+    gs.addAdaptedTypeSymbolResolver(new BuiltInJavaSymbolResolver());
 
      //other way to get globalscope: gs = BuiltInJavaTypeSymbolResolvingDelegate.getScope();
 

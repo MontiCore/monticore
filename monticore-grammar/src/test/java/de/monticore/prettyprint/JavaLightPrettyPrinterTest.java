@@ -229,6 +229,22 @@ public class JavaLightPrettyPrinterTest {
   }
 
   @Test
+  public void testArrayInitializer() throws IOException {
+    Optional<ASTArrayInit> result = parser.parse_StringArrayInit("{a, b, foo}");
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
+    ASTArrayInit ast = result.get();
+
+    String output = prettyPrinter.prettyprint(ast);
+
+    result = parser.parse_StringArrayInit(output);
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
+
+    assertTrue(ast.deepEquals(result.get()));
+  }
+
+  @Test
   public void testElementValueArrayInitializer() throws IOException {
     Optional<ASTElementValueArrayInitializer> result = parser.parse_StringElementValueArrayInitializer("{c, d}");
     assertFalse(parser.hasErrors());

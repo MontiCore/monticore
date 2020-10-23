@@ -1,0 +1,12 @@
+root {
+  leaf;
+  leaf;
+  leaf;
+  branch {
+    leaf;
+    leaf;
+    branch {
+      leaf;
+    }
+  }
+}

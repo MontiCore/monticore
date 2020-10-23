@@ -14,11 +14,11 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 
-public class AutomataResolvingDelegate implements IStimulusSymbolResolvingDelegate {
+public class AutomataResolver implements IStimulusSymbolResolver {
 
   IBasicJavaGlobalScope javaGS;
 
-  public AutomataResolvingDelegate(ModelPath mp){
+  public AutomataResolver(ModelPath mp){
     javaGS = BasicJavaMill
         .basicJavaGlobalScopeBuilder()
         .setModelPath(mp)

@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-public class CD2EAdapter implements IOOTypeSymbolResolvingDelegate, IMethodSymbolResolvingDelegate, IFieldSymbolResolvingDelegate, IFunctionSymbolResolvingDelegate, IVariableSymbolResolvingDelegate, ITypeSymbolResolvingDelegate {
+public class CD2EAdapter implements IOOTypeSymbolResolver, IMethodSymbolResolver, IFieldSymbolResolver, IFunctionSymbolResolver, IVariableSymbolResolver, ITypeSymbolResolver {
 
   private TestCD4AnalysisGlobalScope cd4ascope;
 
