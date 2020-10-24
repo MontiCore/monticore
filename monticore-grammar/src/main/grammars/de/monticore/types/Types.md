@@ -64,8 +64,8 @@ types such as `Person<?>`, `Map<Person<String>, ? extends Person>` or `a.b.C<D>.
 
 ## MCArrayTypes
 
-Fianlly, arrays are orthogonal to all the generic considerations.
-They can be combined with any of the above variants.
+Arrays are orthogonal to the generic extensions. Thus
+they can be combined with any of the above variants.
 Language component [`MCArrayTypes`](MCArrayTypes.mc4) provides 
 possibilities to add arrays, such as `Person[]` or `int[][]`.
 
