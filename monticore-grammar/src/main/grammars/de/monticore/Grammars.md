@@ -102,13 +102,12 @@ support the full Java type system including wildcards Blubb<? extends A>
 types, then use a simpler version from above. Type checking ist tricky.
 
 
-## MCArrayTypes
+### [MCArrayTypes.mc4](types/MCArrayTypes.mc4) (stable)
 
 Arrays are orthogonal to the generic extensions and
 thus be combined with any of the above variants.
-Language component [`MCArrayTypes`](MCArrayTypes.mc4) provides
+Language component MCArrayTypes provides
 possibilities to add arrays, such as `Person[]` or `int[][]`.
-
 
 
 ## Symbols: List of Grammars in package `de.monticore.symbols`
