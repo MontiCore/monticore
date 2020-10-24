@@ -417,7 +417,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
   public ASTCDCompilationUnit deriveSymbolCD(ASTMCGrammar astGrammar,
                                              CD4AnalysisGlobalScope cdScope) {
-    Optional<ASTCDCompilationUnit> ast = TransformationHelper.getCDforGrammar(cdScope, astGrammar);
+    Optional<ASTCDCompilationUnit> ast = TransformationHelper.getCDforGrammar(cdScope, astGrammar, "Symbols");
     ASTCDCompilationUnit astCD = ast.orElse(transformAndCreateSymbolTableForSymbolCD(astGrammar, cdScope));
     createCDSymbolsForSuperGrammarsForSymbolCD(astGrammar, cdScope);
     storeSymbolCDForGrammar(astGrammar, astCD);
@@ -426,7 +426,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
   public ASTCDCompilationUnit deriveScopeCD(ASTMCGrammar astGrammar,
                                             CD4AnalysisGlobalScope cdScope) {
-    Optional<ASTCDCompilationUnit> ast = TransformationHelper.getCDforGrammar(cdScope, astGrammar);
+    Optional<ASTCDCompilationUnit> ast = TransformationHelper.getCDforGrammar(cdScope, astGrammar, "Scope");
     ASTCDCompilationUnit astCD = ast.orElse(transformAndCreateSymbolTableForScopeCD(astGrammar, cdScope));
     createCDSymbolsForSuperGrammarsForScopeCD(astGrammar, cdScope);
     storeScopeCDForGrammar(astGrammar, astCD);

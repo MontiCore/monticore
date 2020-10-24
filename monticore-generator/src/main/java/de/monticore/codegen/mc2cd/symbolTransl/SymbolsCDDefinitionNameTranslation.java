@@ -8,12 +8,12 @@ import de.monticore.utils.Link;
 
 import java.util.function.UnaryOperator;
 
-public class CDDefinitionNameTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {
+public class SymbolsCDDefinitionNameTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {
   @Override
   public Link<ASTMCGrammar, ASTCDCompilationUnit> apply(Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink) {
     for (Link<ASTMCGrammar, ASTCDDefinition> link : rootLink.getLinks(ASTMCGrammar.class,
         ASTCDDefinition.class)) {
-      link.target().setName(link.source().getName());
+      link.target().setName(link.source().getName() + "Symbols");
     }
     return rootLink;
 

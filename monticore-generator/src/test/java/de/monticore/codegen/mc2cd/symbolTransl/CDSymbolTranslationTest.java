@@ -29,7 +29,7 @@ public class CDSymbolTranslationTest {
 
   @Test
   public void testDefinitionName() {
-    assertEquals("SymbolRule", compilationUnit.getCDDefinition().getName());
+    assertEquals("SymbolRuleSymbols", compilationUnit.getCDDefinition().getName());
   }
 
   @Test

@@ -275,14 +275,28 @@ public final class TransformationHelper {
   }
 
   /**
-   * Get the corresponding CD for MC grammar if exists
-   *
-   * @param ast
-   * @return
+   * Get the corresponding CD for MC grammar if exists.
+   * 
+   * @param globalScope The global scope in which the CD is resolved
+   * @param ast The input grammar, providing the qualified name
+   * @return The CD if resolved from global scope, Optional.empty() otherwise
+   */
+  public static Optional<ASTCDCompilationUnit> getCDforGrammar(CD4AnalysisGlobalScope globalScope, 
+                                                               ASTMCGrammar ast) {
+    return getCDforGrammar(globalScope, ast, "");
+  }
+  
+  /**
+   * Get the corresponding CD for MC grammar if exists.
+   * 
+   * @param globalScope The global scope in which the CD is resolved
+   * @param ast The input grammar, providing the qualified name
+   * @param nameSuffix A suffix to distinguish between different CDs
+   * @return The CD if resolved from global scope, Optional.empty() otherwise
    */
   public static Optional<ASTCDCompilationUnit> getCDforGrammar(CD4AnalysisGlobalScope globalScope,
-                                                               ASTMCGrammar ast) {
-    final String qualifiedCDName = Names.getQualifiedName(ast.getPackageList(), ast.getName());
+                                                               ASTMCGrammar ast, String nameSuffix) {
+    final String qualifiedCDName = Names.getQualifiedName(ast.getPackageList(), ast.getName() + nameSuffix);
 
     Optional<CDDefinitionSymbol> cdSymbol = globalScope.resolveCDDefinitionDown(
         qualifiedCDName);

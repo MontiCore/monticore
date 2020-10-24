@@ -251,7 +251,7 @@ public class MontiCoreScriptTest {
     // check directly created scope
     assertNotNull(cdCompilationUnit);
     assertNotNull(cdCompilationUnit.getCDDefinition());
-    assertEquals("Statechart", cdCompilationUnit.getCDDefinition().getName());
+    assertEquals("StatechartSymbols", cdCompilationUnit.getCDDefinition().getName());
     // no symbol defined
     assertEquals(0, cdCompilationUnit.getCDDefinition().sizeCDClasss());
 
@@ -259,7 +259,7 @@ public class MontiCoreScriptTest {
     ASTCDCompilationUnit symbolCDOfParsedGrammar = mc.getSymbolCDOfParsedGrammar(grammar);
     assertNotNull(symbolCDOfParsedGrammar);
     assertNotNull(symbolCDOfParsedGrammar.getCDDefinition());
-    assertEquals("Statechart", symbolCDOfParsedGrammar.getCDDefinition().getName());
+    assertEquals("StatechartSymbols", symbolCDOfParsedGrammar.getCDDefinition().getName());
     // no symbol defined
     assertEquals(0, symbolCDOfParsedGrammar.getCDDefinition().sizeCDClasss());
   }
@@ -274,7 +274,7 @@ public class MontiCoreScriptTest {
     // test normal created scope cd
     assertNotNull(cdCompilationUnit);
     assertNotNull(cdCompilationUnit.getCDDefinition());
-    assertEquals("Statechart", cdCompilationUnit.getCDDefinition().getName());
+    assertEquals("StatechartScope", cdCompilationUnit.getCDDefinition().getName());
     assertEquals(1, cdCompilationUnit.getCDDefinition().sizeCDClasss());
     assertEquals("Statechart", cdCompilationUnit.getCDDefinition().getCDClass(0).getName());
 
@@ -282,7 +282,7 @@ public class MontiCoreScriptTest {
     ASTCDCompilationUnit scopeCDOfParsedGrammar = mc.getScopeCDOfParsedGrammar(grammar);
     assertNotNull(scopeCDOfParsedGrammar);
     assertNotNull(scopeCDOfParsedGrammar.getCDDefinition());
-    assertEquals("Statechart", scopeCDOfParsedGrammar.getCDDefinition().getName());
+    assertEquals("StatechartScope", scopeCDOfParsedGrammar.getCDDefinition().getName());
     assertEquals(1, scopeCDOfParsedGrammar.getCDDefinition().sizeCDClasss());
     assertEquals("Statechart", scopeCDOfParsedGrammar.getCDDefinition().getCDClass(0).getName());
   }
