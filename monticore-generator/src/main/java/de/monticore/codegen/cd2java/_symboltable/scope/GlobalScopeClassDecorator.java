@@ -37,7 +37,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
 
   protected final AbstractCreator<ASTCDAttribute, List<ASTCDMethod>> mutatorDecorator;
 
-  protected static final String ADAPTED_RESOLVING_DELEGATE = "adapted%sResolvingDelegate";
+  protected static final String ADAPTED_RESOLVING_DELEGATE = "adapted%sResolver";
 
   protected static final String TEMPLATE_PATH = "_symboltable.globalscope.";
 
@@ -95,20 +95,21 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     List<ASTCDMethod> fileExtensionMethods = accessorDecorator.decorate(fileExtensionAttribute);
     fileExtensionMethods.addAll(mutatorDecorator.decorate(fileExtensionAttribute));
 
-    Map<String, ASTCDAttribute> resolvingDelegateAttributes = createResolvingDelegateAttributes(symbolProds);
-    resolvingDelegateAttributes.putAll(createResolvingDelegateSuperAttributes());
+    Map<String, ASTCDAttribute> resolverAttributes = createResolverAttributes(symbolProds);
+    resolverAttributes.putAll(createResolverSuperAttributes());
 
     List<ASTCDType> symbolClasses = symbolTableService.getSymbolDefiningProds(input.getCDDefinition());
     symbolClasses.addAll(symbolTableService.getSymbolDefiningSuperProds());
 
-    List<ASTCDMethod> resolvingDelegateMethods = createResolvingDelegateMethods(resolvingDelegateAttributes.values());
+    List<ASTCDMethod> resolverMethods = createResolverMethods(resolverAttributes.values());
 
     return CD4AnalysisMill.cDClassBuilder()
         .setName(globalScopeName)
         .setModifier(PUBLIC.build())
         .setSuperclass(scopeType)
         .addInterface(globalScopeInterface)
-        .addCDConstructor(createConstructor(globalScopeName, scopeDeSerName))
+        .addCDConstructor(createConstructor(globalScopeName))
+        .addCDConstructor(createZeroArgsConstructor(globalScopeName))
         .addCDAttribute(modelPathAttribute)
         .addAllCDMethods(modelPathMethods)
         .addCDAttribute(modelLoaderAttribute)
@@ -123,10 +124,10 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
         .addCDMethod(createAddLoadedFileMethod())
         .addCDMethod(createClearLoadedFilesMethod())
         .addCDMethod(createIsFileLoadedMethod())
-        .addAllCDAttributes(resolvingDelegateAttributes.values())
+        .addAllCDAttributes(resolverAttributes.values())
         .addCDMethod(createEnableModelLoader(globalScopeName))
         .addCDMethod(createDisableModelLoader())
-        .addAllCDMethods(resolvingDelegateMethods)
+        .addAllCDMethods(resolverMethods)
         .addAllCDMethods(createAlreadyResolvedMethods(symbolProds))
         .addAllCDMethods(createAlreadyResolvedSuperMethods())
         .addAllCDMethods(createLoadMethods(symbolClasses))
@@ -136,7 +137,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
         .build();
   }
 
-  protected ASTCDConstructor createConstructor(String globalScopeClassName, String deSerClassName) {
+  protected ASTCDConstructor createConstructor(String globalScopeClassName) {
     ASTMCType modelPathType = getMCTypeFacade().createQualifiedType(MODEL_PATH_TYPE);
     ASTCDParameter modelPathParameter = getCDParameterFacade().createParameter(modelPathType, MODEL_PATH_VAR);
 
@@ -145,6 +146,15 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     String millFullName = symbolTableService.getMillFullName();
     this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint(TEMPLATE_PATH + "ConstructorGlobalScope", symbolTableService.hasComponentStereotype(symbolTableService.getCDSymbol().getAstNode()),
         millFullName, symbolTableService.getCDName()));
+    return constructor;
+  }
+
+  protected ASTCDConstructor createZeroArgsConstructor(String className){
+    ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), className);
+    String millFullName = symbolTableService.getMillFullName();
+    boolean isComponent = symbolTableService.hasComponentStereotype(symbolTableService.getCDSymbol().getAstNode());
+    String grammarName = symbolTableService.getCDName();
+    this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint(TEMPLATE_PATH + "ZeroArgsConstructorGlobalScope", isComponent, millFullName, grammarName));
     return constructor;
   }
 
@@ -186,21 +196,21 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
   }
 
 
-  protected Map<String, ASTCDAttribute> createResolvingDelegateAttributes(List<? extends ASTCDType> symbolProds) {
+  protected Map<String, ASTCDAttribute> createResolverAttributes(List<? extends ASTCDType> symbolProds) {
     Map<String, ASTCDAttribute> attributeList = new HashMap<>();
     for (ASTCDType symbolProd : symbolProds) {
-      Optional<ASTCDAttribute> symbolAttribute = createResolvingDelegateAttribute(symbolProd, symbolTableService.getCDSymbol());
+      Optional<ASTCDAttribute> symbolAttribute = createResolverAttribute(symbolProd, symbolTableService.getCDSymbol());
       symbolAttribute.ifPresent(attr -> attributeList.put(attr.getName(), attr));
     }
     return attributeList;
   }
 
-  protected Map<String, ASTCDAttribute> createResolvingDelegateSuperAttributes() {
+  protected Map<String, ASTCDAttribute> createResolverSuperAttributes() {
     Map<String, ASTCDAttribute> symbolAttributes = new HashMap<>();
     for (CDDefinitionSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
       for (CDTypeSymbol type : cdDefinitionSymbol.getTypes()) {
         if (type.isPresentAstNode() && symbolTableService.hasSymbolStereotype(type.getAstNode())) {
-          Optional<ASTCDAttribute> symbolAttribute = createResolvingDelegateAttribute(type.getAstNode(), cdDefinitionSymbol);
+          Optional<ASTCDAttribute> symbolAttribute = createResolverAttribute(type.getAstNode(), cdDefinitionSymbol);
           symbolAttribute.ifPresent(attr -> symbolAttributes.put(attr.getName(), attr));
         }
       }
@@ -208,15 +218,15 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     return symbolAttributes;
   }
 
-  protected Optional<ASTCDAttribute> createResolvingDelegateAttribute(ASTCDType prod, CDDefinitionSymbol cdSymbol) {
+  protected Optional<ASTCDAttribute> createResolverAttribute(ASTCDType prod, CDDefinitionSymbol cdSymbol) {
     Optional<String> simpleName = symbolTableService.getDefiningSymbolSimpleName(prod);
     if (simpleName.isPresent()) {
       String attrName = String.format(ADAPTED_RESOLVING_DELEGATE, simpleName.get());
-      String symbolResolvingDelegateInterfaceTypeName = symbolTableService.getSymbolResolvingDelegateInterfaceFullName(prod, cdSymbol);
-      ASTMCType listType = getMCTypeFacade().createListTypeOf(symbolResolvingDelegateInterfaceTypeName);
+      String symbolResolverInterfaceTypeName = symbolTableService.getSymbolResolverInterfaceFullName(prod, cdSymbol);
+      ASTMCType listType = getMCTypeFacade().createListTypeOf(symbolResolverInterfaceTypeName);
 
       ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PROTECTED, listType, attrName);
-      this.replaceTemplate(VALUE, attribute, new StringHookPoint(" = new ArrayList<" + symbolResolvingDelegateInterfaceTypeName + ">()"));
+      this.replaceTemplate(VALUE, attribute, new StringHookPoint(" = new ArrayList<" + symbolResolverInterfaceTypeName + ">()"));
       return Optional.ofNullable(attribute);
     }
     return Optional.empty();
@@ -245,25 +255,25 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     return method;
   }
 
-    protected List<ASTCDMethod> createResolvingDelegateMethods(Collection<ASTCDAttribute> resolvingDelegateAttributes) {
-    List<ASTCDMethod> resolvingDelegateMethods = new ArrayList<>();
-    for (ASTCDAttribute attribute : resolvingDelegateAttributes) {
+    protected List<ASTCDMethod> createResolverMethods(Collection<ASTCDAttribute> resolverAttributes) {
+    List<ASTCDMethod> resolverMethods = new ArrayList<>();
+    for (ASTCDAttribute attribute : resolverAttributes) {
       String capAttributeName = StringTransformations.capitalize(attribute.getName());
       // add simple getter e.g. getXList()
       ASTCDMethod getter = getCDMethodFacade().createMethod(PUBLIC, attribute.getMCType(),
           "get" + capAttributeName + "List");
       replaceTemplate(EMPTY_BODY, getter, new StringHookPoint(
           "return this." + attribute.getName() + ";"));
-      resolvingDelegateMethods.add(getter);
+      resolverMethods.add(getter);
       // add simple setter e.g. setXList()
       ASTCDParameter parameter = getCDParameterFacade().createParameter(attribute.getMCType(), attribute.getName());
       ASTCDMethod setter = getCDMethodFacade().createMethod(PUBLIC,
           "set" + capAttributeName + "List", parameter);
       replaceTemplate(EMPTY_BODY, setter, new StringHookPoint(
           "this." + attribute.getName() +" = " + attribute.getName() + ";"));
-      resolvingDelegateMethods.add(setter);
+      resolverMethods.add(setter);
     }
-    return resolvingDelegateMethods;
+    return resolverMethods;
   }
 
   protected List<ASTCDMethod> createAlreadyResolvedMethods(List<? extends ASTCDType> cdTypeList) {

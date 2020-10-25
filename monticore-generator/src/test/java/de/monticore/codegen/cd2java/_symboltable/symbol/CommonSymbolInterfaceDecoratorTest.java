@@ -26,6 +26,7 @@ import org.junit.Test;
 import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodsBy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -89,12 +90,12 @@ public class CommonSymbolInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethods() {
-    assertEquals(3, commonSymbolInterface.getCDMethodList().size());
+    assertEquals(4, commonSymbolInterface.getCDMethodList().size());
   }
 
   @Test
   public void testAcceptMethod() {
-    ASTCDMethod method = getMethodBy("accept", commonSymbolInterface);
+    ASTCDMethod method = getMethodsBy("accept", commonSymbolInterface.getCDMethodList()).get(0);
     assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
 

@@ -4,7 +4,6 @@ package de.monticore.statements.prettyprint;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.statements.mccommonstatements._ast.*;
 import de.monticore.statements.mcstatementsbasis._ast.ASTMCBlockStatement;
-import de.monticore.statements.mcvardeclarationstatements._ast.ASTArrayInit;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTDeclaratorId;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTLocalVariableDeclaration;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTVariableDeclarator;
@@ -105,7 +104,7 @@ public class MCCommonStatementsPrettyPrinterTest {
 
   @Test
   public void testDeclaratorId() throws IOException {
-    Optional<ASTDeclaratorId> result = parser.parse_StringDeclaratorId("a [][][]");
+    Optional<ASTDeclaratorId> result = parser.parse_StringDeclaratorId("a");
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
     ASTDeclaratorId ast = result.get();
@@ -113,22 +112,6 @@ public class MCCommonStatementsPrettyPrinterTest {
     String output = prettyPrinter.prettyprint(ast);
 
     result = parser.parse_StringDeclaratorId(output);
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
-
-    assertTrue(ast.deepEquals(result.get()));
-  }
-
-  @Test
-  public void testArrayInitializer() throws IOException {
-    Optional<ASTArrayInit> result = parser.parse_StringArrayInit("{a, b, foo}");
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
-    ASTArrayInit ast = result.get();
-
-    String output = prettyPrinter.prettyprint(ast);
-
-    result = parser.parse_StringArrayInit(output);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
 
@@ -177,6 +160,38 @@ public class MCCommonStatementsPrettyPrinterTest {
     String output = prettyPrinter.prettyprint(ast);
 
     result = parser.parse_StringCommonForControl(output);
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
+
+    assertTrue(ast.deepEquals(result.get()));
+  }
+
+  @Test
+  public void testEnhancedForControl() throws IOException {
+    Optional<ASTEnhancedForControl> result = parser.parse_StringEnhancedForControl("protected List l : a");
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
+    ASTEnhancedForControl ast = result.get();
+
+    String output = prettyPrinter.prettyprint(ast);
+
+    result = parser.parse_StringEnhancedForControl(output);
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
+
+    assertTrue(ast.deepEquals(result.get()));
+  }
+
+  @Test
+  public void testFormalParameter() throws IOException {
+    Optional<ASTFormalParameter> result = parser.parse_StringFormalParameter("public float f");
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
+    ASTFormalParameter ast = result.get();
+
+    String output = prettyPrinter.prettyprint(ast);
+
+    result = parser.parse_StringFormalParameter(output);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
 

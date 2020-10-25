@@ -554,11 +554,37 @@ public class MontiCoreScriptTest {
     assertEquals("statechart", millCd.getPackage(2));
     assertEquals("statechart", millCd.getPackage(3));
     assertEquals("Statechart", millCd.getCDDefinition().getName());
-    assertEquals(2, millCd.getCDDefinition().sizeCDClasss());
+    assertEquals(1, millCd.getCDDefinition().sizeCDClasss());
     assertEquals("StatechartMill", millCd.getCDDefinition().getCDClass(0).getName());
-    assertEquals("TestLexicalsMillForStatechart", millCd.getCDDefinition().getCDClass(1).getName());
     assertTrue(millCd.getCDDefinition().isEmptyCDInterfaces());
     assertTrue(millCd.getCDDefinition().isEmptyCDEnums());
+  }
+
+  @Test
+  public void testDecorateForAuxiliaryPackage(){
+    MontiCoreScript mc = new MontiCoreScript();
+    GlobalExtensionManagement glex = new GlobalExtensionManagement();
+    Grammar_WithConceptsGlobalScope symbolTable = TestHelper.createGlobalScope(modelPath);
+    mc.createSymbolsFromAST(symbolTable, grammar);
+    CD4AnalysisGlobalScope cd4AGlobalScope = mc.createCD4AGlobalScope(modelPath);
+
+    ASTCDCompilationUnit cd = mc.deriveCD(grammar, glex, cd4AGlobalScope);
+    IterablePath handcodedPath = IterablePath.from(new File("src/test/resources"), "java");
+
+    ASTCDCompilationUnit auxiliaryCD = mc.decorateAuxiliary(glex, cd4AGlobalScope, cd, getASTCD(cd), handcodedPath);
+
+    assertNotNull(auxiliaryCD);
+    assertNotNull(auxiliaryCD.getCDDefinition());
+    assertEquals("de", auxiliaryCD.getPackage(0));
+    assertEquals("monticore", auxiliaryCD.getPackage(1));
+    assertEquals("statechart", auxiliaryCD.getPackage(2));
+    assertEquals("statechart", auxiliaryCD.getPackage(3));
+    assertEquals("_auxiliary", auxiliaryCD.getPackage(4));
+    assertEquals("Statechart", auxiliaryCD.getCDDefinition().getName());
+    assertEquals(1, auxiliaryCD.getCDDefinition().sizeCDClasss());
+    assertEquals("TestLexicalsMillForStatechart", auxiliaryCD.getCDDefinition().getCDClass(0).getName());
+    assertTrue(auxiliaryCD.getCDDefinition().isEmptyCDInterfaces());
+    assertTrue(auxiliaryCD.getCDDefinition().isEmptyCDEnums());
   }
 
   protected ASTCDCompilationUnit getVisitorCD(ASTCDCompilationUnit decoratedCompilationUnit) {

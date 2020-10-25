@@ -54,14 +54,12 @@ public class AutomataTool {
     Log.ensureInitalization();
     
     // Retrieve the model name
-    if (args.length != 3) {
-      Log.error("0xEE7400 Arguments are: (1) model path, (2) input model and (3) symbol store base path.");
+    if (args.length != 2) {
+      Log.error("0xEE7400 Arguments are: (1) input model and (2) symbol store.");
       return;
     }
     Log.info("Automata DSL Tool", "AutomataTool");
-    String modelPath = args[0];
-    String modelFile = args[1];
-    String model = modelPath+"/"+modelFile;
+    String model = args[0];
 
     // parse the model and create the AST representation
     ASTAutomaton ast = parse(model);
@@ -97,10 +95,8 @@ public class AutomataTool {
 
     // store artifact scope and its symbols
     AutomataScopeDeSer deser = new AutomataScopeDeSer();
-    String symbolStorePath = args[2];
-    String filename = symbolStorePath+"/"+modelFile+"sym";
-    deser.store(modelTopScope, filename);
-    Log.info("Symbol table stored in " + filename +".", "AutomataTool");
+    deser.store(modelTopScope, args[1]);
+    Log.info("Symbol table stored in " + args[1] +".", "AutomataTool");
 
     // analyze the model with a visitor
     CountStates cs = new CountStates();

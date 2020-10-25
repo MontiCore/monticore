@@ -3,11 +3,15 @@ package de.monticore.codegen.cd2java.mill;
 
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.cd4analysis._ast.ASTCDConstructor;
+import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
+import de.monticore.cd.facade.CDModifier;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
+import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
@@ -16,6 +20,7 @@ import org.junit.Test;
 import java.util.List;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -40,8 +45,9 @@ public class MillForSuperDecoratorTest extends DecoratorTestCase {
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
+    VisitorService visitorService = new VisitorService(decoratedCompilationUnit);
 
-    MillForSuperDecorator decorator = new MillForSuperDecorator(this.glex, new ASTService(decoratedCompilationUnit));
+    MillForSuperDecorator decorator = new MillForSuperDecorator(this.glex, new ASTService(decoratedCompilationUnit), visitorService);
     List<ASTCDClass> millClassList = decorator.decorate(decoratedCompilationUnit);
 
     assertEquals(1, millClassList.size());
@@ -76,7 +82,16 @@ public class MillForSuperDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodSize() {
-    assertEquals(0, millClass.sizeCDAttributes());
+    assertEquals(2, millClass.sizeCDMethods());
+  }
+
+  @Test
+  public void testScopeMethod(){
+    ASTCDMethod method = getMethodBy("_lexicalsScope", millClass);
+    assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.IAutomatonScope", method.getMCReturnType().getMCType());
+    assertTrue(method.isEmptyCDParameters());
   }
 
 }

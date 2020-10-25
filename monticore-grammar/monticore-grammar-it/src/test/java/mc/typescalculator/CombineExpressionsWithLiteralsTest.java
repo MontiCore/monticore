@@ -43,12 +43,12 @@ public class CombineExpressionsWithLiteralsTest {
     CD2EAdapter adapter = new CD2EAdapter(globalScope);
     CombineExpressionsWithLiteralsGlobalScope globalScope1 =
         new CombineExpressionsWithLiteralsGlobalScope(new ModelPath());
-    globalScope1.addAdaptedFieldSymbolResolvingDelegate(adapter);
-    globalScope1.addAdaptedOOTypeSymbolResolvingDelegate(adapter);
-    globalScope1.addAdaptedMethodSymbolResolvingDelegate(adapter);
-    globalScope1.addAdaptedFunctionSymbolResolvingDelegate(adapter);
-    globalScope1.addAdaptedVariableSymbolResolvingDelegate(adapter);
-    globalScope1.addAdaptedTypeSymbolResolvingDelegate(adapter);
+    globalScope1.addAdaptedFieldSymbolResolver(adapter);
+    globalScope1.addAdaptedOOTypeSymbolResolver(adapter);
+    globalScope1.addAdaptedMethodSymbolResolver(adapter);
+    globalScope1.addAdaptedFunctionSymbolResolver(adapter);
+    globalScope1.addAdaptedVariableSymbolResolver(adapter);
+    globalScope1.addAdaptedTypeSymbolResolver(adapter);
 
     Optional<OOTypeSymbol> classD = globalScope1.resolveOOType("mc.typescalculator.TestCD.D");
     assertTrue(classD.isPresent());

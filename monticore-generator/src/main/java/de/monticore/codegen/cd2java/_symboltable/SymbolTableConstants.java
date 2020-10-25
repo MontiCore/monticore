@@ -12,8 +12,6 @@ public class SymbolTableConstants {
 
   public static final String SYMBOL_TABLE_PACKAGE = "_symboltable";
 
-  public static final String SERIALIZATION_PACKAGE = "serialization";
-
   /**
    * suffixes, prefixes
    */
@@ -34,13 +32,11 @@ public class SymbolTableConstants {
 
   public static final String COMMON_PREFIX = "Common";
 
-  public static final String RESOLVING_DELEGATE_SUFFIX = "ResolvingDelegate";
+  public static final String RESOLVER_SUFFIX = "Resolver";
 
   public static final String DELEGATOR_SUFFIX = "Delegator";
 
   public static final String STC_FOR = "%sSTCFor%s";
-
-  public static final String LANGUAGE_SUFFIX = "Language";
 
   public static final String SURROGATE_SUFFIX = "Surrogate";
 

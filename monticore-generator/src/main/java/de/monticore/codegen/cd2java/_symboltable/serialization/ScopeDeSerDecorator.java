@@ -27,7 +27,6 @@ import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
-import static java.util.Map.Entry.comparingByKey;
 
 /**
  * creates a ScopeDeSer class from a grammar
@@ -126,7 +125,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
     }
     //sort the map based on the alphabetical order of keys, to always generated the same order of methods
     return result.entrySet().stream().sorted(Ordering.natural().onResultOf(a -> a.getKey().getName()))
-        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2, HashMap::new));
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2, LinkedHashMap::new));
   }
 
   protected ASTCDConstructor createConstructor(String scopeDeSerName) {

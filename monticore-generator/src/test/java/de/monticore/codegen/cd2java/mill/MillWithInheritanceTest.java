@@ -42,6 +42,7 @@ import org.mockito.Mockito;
 
 import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -68,9 +69,10 @@ public class MillWithInheritanceTest extends DecoratorTestCase {
     glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
 
     SymbolTableService symbolTableService = new SymbolTableService(decoratedCompilationUnit);
+    VisitorService visitorService = new VisitorService(decoratedCompilationUnit);
 
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
-    MillDecorator decorator = new MillDecorator(this.glex, symbolTableService);
+    MillDecorator decorator = new MillDecorator(this.glex, symbolTableService, visitorService);
     this.millClass = decorator.decorate(Lists.newArrayList(getASTCD(), getVisitorCD()));
   }
 
@@ -137,8 +139,8 @@ public class MillWithInheritanceTest extends DecoratorTestCase {
   @Test
   public void testAttributeModifier() {
     for (ASTCDAttribute astcdAttribute : millClass.getCDAttributeList()) {
-      assertTrue(astcdAttribute.isPresentModifier());
-      assertTrue(PROTECTED_STATIC.build().deepEquals(astcdAttribute.getModifier()));
+        assertTrue(astcdAttribute.isPresentModifier());
+        assertTrue(PROTECTED_STATIC.build().deepEquals(astcdAttribute.getModifier()));
     }
   }
 

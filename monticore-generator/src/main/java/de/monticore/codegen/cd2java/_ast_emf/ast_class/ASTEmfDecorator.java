@@ -52,6 +52,8 @@ public class ASTEmfDecorator extends ASTDecorator {
     // have to use the changed one here because this one will get the TOP prefix
     changedClass.addCDMethod(createAcceptMethod(changedClass));
     changedClass.addAllCDMethods(createAcceptSuperMethods(originalClass));
+    changedClass.addCDMethod(createAcceptTraverserMethod(changedClass));
+    changedClass.addAllCDMethods(createAcceptTraverserSuperMethods(changedClass));
     changedClass.addCDMethod(getConstructMethod(originalClass));
     changedClass.addCDMethod(createGetChildrenMethod(originalClass));
     changedClass.addAllCDMethods(createEMethods(originalClass));

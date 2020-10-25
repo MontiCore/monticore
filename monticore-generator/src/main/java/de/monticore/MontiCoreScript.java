@@ -26,6 +26,7 @@ import de.monticore.codegen.cd2java._ast.enums.EnumDecorator;
 import de.monticore.codegen.cd2java._ast.factory.NodeFactoryDecorator;
 import de.monticore.codegen.cd2java._ast.factory.NodeFactoryService;
 import de.monticore.codegen.cd2java._symboltable.serialization.*;
+import de.monticore.codegen.cd2java.mill.CDAuxiliaryDecorator;
 import de.monticore.codegen.cd2java.mill.CDMillDecorator;
 import de.monticore.codegen.cd2java.mill.MillDecorator;
 import de.monticore.codegen.cd2java.mill.MillForSuperDecorator;
@@ -47,7 +48,6 @@ import de.monticore.codegen.cd2java._cocos.CoCoService;
 import de.monticore.codegen.cd2java._od.ODCDDecorator;
 import de.monticore.codegen.cd2java._od.ODDecorator;
 import de.monticore.codegen.cd2java._od.ODService;
-import de.monticore.codegen.cd2java._parser.ParserService;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableCDDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._symboltable.modelloader.ModelLoaderBuilderDecorator;
@@ -576,7 +576,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     CommonSymbolInterfaceDecorator commonSymbolInterfaceDecorator = new CommonSymbolInterfaceDecorator(glex, symbolTableService, visitorService, methodDecorator);
     ModelLoaderDecorator modelLoaderDecorator = new ModelLoaderDecorator(glex, symbolTableService, accessorDecorator);
     ModelLoaderBuilderDecorator modelLoaderBuilderDecorator = new ModelLoaderBuilderDecorator(glex, builderDecorator);
-    SymbolResolvingDelegateInterfaceDecorator symbolResolvingDelegateInterfaceDecorator = new SymbolResolvingDelegateInterfaceDecorator(glex, symbolTableService);
+    SymbolResolverInterfaceDecorator symbolResolverInterfaceDecorator = new SymbolResolverInterfaceDecorator(glex, symbolTableService);
     SymbolTableCreatorDecorator symbolTableCreatorDecorator = new SymbolTableCreatorDecorator(glex, symbolTableService, visitorService, methodDecorator);
     SymbolTableCreatorBuilderDecorator symbolTableCreatorBuilderDecorator = new SymbolTableCreatorBuilderDecorator(glex, symbolTableService);
     SymbolTableCreatorDelegatorDecorator symbolTableCreatorDelegatorDecorator = new SymbolTableCreatorDelegatorDecorator(glex, symbolTableService, visitorService);
@@ -596,7 +596,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
             globalScopeInterfaceDecorator, globalScopeClassDecorator, globalScopeClassBuilderDecorator,
         artifactScopeInterfaceDecorator, artifactScopeDecorator, artifactScopeBuilderDecorator,
             commonSymbolInterfaceDecorator, modelLoaderDecorator, modelLoaderBuilderDecorator,
-            symbolResolvingDelegateInterfaceDecorator, symbolTableCreatorDecorator, symbolTableCreatorBuilderDecorator,
+            symbolResolverInterfaceDecorator, symbolTableCreatorDecorator, symbolTableCreatorBuilderDecorator,
             symbolTableCreatorDelegatorDecorator, symbolTableCreatorForSuperTypes, symbolTableCreatorDelegatorBuilderDecorator,
             symbolTableCreatorForSuperTypesBuilder, symbolDeSerDecorator, scopeDeSerDecorator, symbolTablePrinterDecorator, scopeDeSerBuilderDecorator,
             symbolDeSerBuilderDecorator, symbolTablePrinterBuilderDecorator);
@@ -629,6 +629,47 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
     ASTCDCompilationUnit visitorCompilationUnit = decorator.decorate(cd);
 
+    TopDecorator topDecorator = new TopDecorator(handCodedPath);
+    return topDecorator.decorate(visitorCompilationUnit);
+  }
+  
+  /**
+   * Decorates for the visitor package. Adds corresponding traverser and
+   * visitors.
+   * 
+   * @param glex The global extension management
+   * @param cdScope The scope of the cd
+   * @param astClassDiagram The input class diagram, which is decorated
+   * @param handCodedPath The path for entities of the TOP mechanism
+   * @return A compilation unit with the decorated class diagram
+   */
+  public ASTCDCompilationUnit decorateTraverserForVisitorPackage(GlobalExtensionManagement glex, 
+      ICD4AnalysisScope cdScope, ASTCDCompilationUnit astClassDiagram, IterablePath handCodedPath) {
+    ASTCDCompilationUnit preparedCD = prepareCD(cdScope, astClassDiagram);
+    return decorateWithTraverser(preparedCD, glex, handCodedPath);
+  }
+  
+  /**
+   * Decorates traverser and visitors.
+   * 
+   * @param cd The input class diagram, which is decorated
+   * @param glex The global extension management
+   * @param handCodedPath The path for entities of the TOP mechanism
+   * @return A compilation unit with the decorated class diagram
+   */
+  private ASTCDCompilationUnit decorateWithTraverser(ASTCDCompilationUnit cd, GlobalExtensionManagement glex, 
+      IterablePath handCodedPath) {
+    SymbolTableService symbolTableService = new SymbolTableService(cd);
+    VisitorService visitorService = new VisitorService(cd);
+    
+    TraverserInterfaceDecorator iTraverserDecorator = new TraverserInterfaceDecorator(glex, visitorService, symbolTableService);
+    TraverserDecorator traverserDecorator = new TraverserDecorator(glex, visitorService, symbolTableService);
+    Visitor2Decorator visitor2Decorator = new Visitor2Decorator(glex, visitorService, symbolTableService);
+    
+    CDTraverserDecorator decorator = new CDTraverserDecorator(glex, handCodedPath, visitorService, iTraverserDecorator, traverserDecorator, visitor2Decorator);
+    
+    ASTCDCompilationUnit visitorCompilationUnit = decorator.decorate(cd);
+    
     TopDecorator topDecorator = new TopDecorator(handCodedPath);
     return topDecorator.decorate(visitorCompilationUnit);
   }
@@ -690,15 +731,36 @@ public class MontiCoreScript extends Script implements GroovyRunner {
                                             ASTCDCompilationUnit symbolCD, GlobalExtensionManagement glex,
                                             IterablePath handCodedPath) {
     SymbolTableService symbolTableService = new SymbolTableService(cd);
-    MillForSuperDecorator millForSuperDecorator = new MillForSuperDecorator(glex, symbolTableService);
-    MillDecorator millDecorator = new MillDecorator(glex, symbolTableService);
-    CDMillDecorator cdMillDecorator = new CDMillDecorator(glex, millDecorator, millForSuperDecorator);
+    VisitorService visitorService = new VisitorService(cd);
+    MillDecorator millDecorator = new MillDecorator(glex, symbolTableService, visitorService);
+    CDMillDecorator cdMillDecorator = new CDMillDecorator(glex, millDecorator);
 
     ASTCDCompilationUnit millCD = cdMillDecorator.decorate(Lists.newArrayList(astCD, visitorCD, symbolCD));
 
 
     TopDecorator topDecorator = new TopDecorator(handCodedPath);
     return topDecorator.decorate(millCD);
+  }
+
+  public ASTCDCompilationUnit decorateAuxiliary(GlobalExtensionManagement glex, ICD4AnalysisGlobalScope cdScope,
+                                                ASTCDCompilationUnit cd, ASTCDCompilationUnit astCD,
+                                                IterablePath handCodedPath){
+    ASTCDCompilationUnit preparedCD = prepareCD(cdScope, cd);
+    return generateAuxiliary(cd, astCD, glex, handCodedPath);
+  }
+
+  protected ASTCDCompilationUnit generateAuxiliary(ASTCDCompilationUnit cd, ASTCDCompilationUnit astCD,
+                                                 GlobalExtensionManagement glex, IterablePath handCodedPath){
+    SymbolTableService symbolTableService = new SymbolTableService(cd);
+    VisitorService visitorService = new VisitorService(cd);
+    MillForSuperDecorator millForSuperDecorator = new MillForSuperDecorator(glex, symbolTableService, visitorService);
+    CDAuxiliaryDecorator cdAuxiliaryDecorator = new CDAuxiliaryDecorator(glex, millForSuperDecorator);
+
+    ASTCDCompilationUnit auxiliaryCD = cdAuxiliaryDecorator.decorate(astCD);
+
+    TopDecorator topDecorator = new TopDecorator(handCodedPath);
+    return topDecorator.decorate(auxiliaryCD);
+
   }
 
   public ASTCDCompilationUnit addListSuffixToAttributeName(ASTCDCompilationUnit originalCD) {

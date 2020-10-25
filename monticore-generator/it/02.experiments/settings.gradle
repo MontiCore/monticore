@@ -19,4 +19,4 @@ include(':scopes')
 include(':symbols')
 include(':mcgrammarlang')
 include(':forGrammarOps')
-
+include(':traverser')

@@ -2,15 +2,14 @@
 
 package de.monticore.types.check;
 
-import de.monticore.types.mcfullgenerictypes._ast.ASTMCArrayType;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardTypeArgument;
 import de.monticore.types.mcfullgenerictypes._visitor.MCFullGenericTypesVisitor;
 import de.se_rwth.commons.logging.Log;
 
 /**
- * Visitor for Derivation of SymType from MCSimpleGenericTypes
+ * Visitor for Derivation of SymType from MCFullGenericTypes
  * i.e. for
- * types/MCSimpleGenericTypes.mc4
+ * types/MCFullGenericTypes.mc4
  */
 public class SynthesizeSymTypeFromMCFullGenericTypes extends SynthesizeSymTypeFromMCSimpleGenericTypes
     implements MCFullGenericTypesVisitor, ISynthesize {
@@ -52,19 +51,6 @@ public class SynthesizeSymTypeFromMCFullGenericTypes extends SynthesizeSymTypeFr
    * We use mainly endVisit, because the result is synthesized along the
    * tree, when walking upwards
    */
-
-  public void traverse(ASTMCArrayType arrayType) {
-    arrayType.getMCType().accept(getRealThis());
-    if (!typeCheckResult.isPresentCurrentResult()) {
-      Log.error("0xE9CDA Internal Error: SymType argument missing for generic type. "
-              + " Probably TypeCheck mis-configured.");
-    }
-    SymTypeExpression tex = SymTypeExpressionFactory.createTypeArray(
-            arrayType.printTypeWithoutBrackets(), getScope(arrayType.getEnclosingScope()),
-            arrayType.getDimensions(),
-            typeCheckResult.getCurrentResult());
-    typeCheckResult.setCurrentResult(tex);
-  }
 
   public void traverse(ASTMCWildcardTypeArgument wildcardType) {
     SymTypeOfWildcard tex;

@@ -13,8 +13,10 @@ import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
+import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -59,8 +61,8 @@ public class ArtifactScopeInterfaceDecorator extends AbstractCreator<ASTCDCompil
     return CD4AnalysisMill.cDInterfaceBuilder()
         .setName(artifactScopeInterfaceSimpleName)
         .setModifier(PUBLIC.build())
+        .addAllInterface(getSuperArtifactScopeInterfaces())
         .addInterface(symbolTableService.getScopeInterfaceType())
-        .addInterface(getMCTypeFacade().createQualifiedType(I_ARTIFACT_SCOPE_TYPE))
         .addAllCDMethods(createPackageNameAttributeMethods())
         .addAllCDMethods(createImportsAttributeMethods())
         .addCDMethod(createGetTopLevelSymbolMethod(symbolProds))
@@ -70,6 +72,31 @@ public class ArtifactScopeInterfaceDecorator extends AbstractCreator<ASTCDCompil
         .addAllCDMethods(createSuperContinueWithEnclosingScopeMethods())
         .addCDMethod(createGetFullNameMethod())
         .build();
+  }
+
+  protected List<ASTMCQualifiedType> getSuperArtifactScopeInterfaces(){
+    return getSuperArtifactScopeInterfaces(symbolTableService.getCDSymbol());
+  }
+
+  protected List<ASTMCQualifiedType> getSuperArtifactScopeInterfaces(CDDefinitionSymbol symbol){
+    List<ASTMCQualifiedType> result = new ArrayList<>();
+    for (CDDefinitionSymbol superGrammar : symbolTableService.getSuperCDsDirect(symbol)) {
+      if (!superGrammar.isPresentAstNode()) {
+        Log.error("0xA4323 Unable to load AST of '" + superGrammar.getFullName()
+            + "' that is supergrammar of '" + symbolTableService.getCDName() + "'.");
+        continue;
+      }
+      if (symbolTableService.hasStartProd(superGrammar.getAstNode())
+          ||!symbolTableService.getSymbolDefiningSuperProds(superGrammar).isEmpty() ) {
+        result.add(symbolTableService.getArtifactScopeInterfaceType(superGrammar));
+      }else{
+        result.addAll(getSuperArtifactScopeInterfaces(superGrammar));
+      }
+    }
+    if (result.isEmpty()) {
+      result.add(getMCTypeFacade().createQualifiedType(I_ARTIFACT_SCOPE_TYPE));
+    }
+    return result;
   }
 
   protected List<ASTCDMethod> createPackageNameAttributeMethods() {
@@ -131,7 +158,7 @@ public class ArtifactScopeInterfaceDecorator extends AbstractCreator<ASTCDCompil
     ASTCDParameter parameterFoundSymbols = getCDParameterFacade().createParameter(getMCTypeFacade().createBooleanType(), FOUND_SYMBOLS_VAR);
     ASTCDParameter parameterName = getCDParameterFacade().createParameter(getMCTypeFacade().createStringType(), NAME_VAR);
     ASTCDParameter parameterModifier = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(ACCESS_MODIFIER), MODIFIER_VAR);
-    String globalScope = symbolTableService.getGlobalScopeFullName();
+    String globalScope = symbolTableService.getGlobalScopeInterfaceFullName();
 
     for (ASTCDType type : symbolProds) {
       Optional<String> definingSymbolFullName = symbolTableService.getDefiningSymbolFullName(type, definitionSymbol);
