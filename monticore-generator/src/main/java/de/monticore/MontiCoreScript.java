@@ -433,6 +433,18 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     return astCD;
   }
 
+  /**
+   * Prints Cd4Analysis AST to the CD-file (*.cd) in the reporting directory.
+   * 
+   * @param astCd The input CD of the AST
+   * @param symbolCd The input CD for existing symbols
+   * @param scopeCd The input CD for scopes of the language
+   * @param outputDirectory The output directory to print to
+   */
+  public void reportCD(ASTCDCompilationUnit astCd, ASTCDCompilationUnit symbolCd, 
+      ASTCDCompilationUnit scopeCd, File outputDirectory) {
+    reportCD(astCd, astCd, symbolCd, scopeCd, outputDirectory);
+  }
 
   /**
    * Prints Cd4Analysis AST to the CD-file (*.cd) in the reporting directory
