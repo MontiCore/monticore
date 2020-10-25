@@ -534,12 +534,14 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     decoratedCDs.add(decoratedSymbolTableCd);
     ASTCDCompilationUnit decoratedVisitorCD = decorateForVisitorPackage(glex, cdScope, astClassDiagram, handCodedPath);
     decoratedCDs.add(decoratedVisitorCD);
+    decoratedCDs.add(decorateTraverserForVisitorPackage(glex, cdScope, astClassDiagram, handCodedPath));
     decoratedCDs.add(decorateForCoCoPackage(glex, cdScope, astClassDiagram, handCodedPath));
     decoratedCDs.add(decorateForODPackage(glex, cdScope, astClassDiagram, handCodedPath));
     ASTCDCompilationUnit decoratedASTClassDiagramm = decorateForASTPackage(glex, cdScope, astClassDiagram, handCodedPath);
     decoratedCDs.add(decoratedASTClassDiagramm);
     decoratedCDs.add(decorateMill(glex, cdScope, astClassDiagram, decoratedASTClassDiagramm, decoratedVisitorCD, 
         decoratedSymbolTableCd, handCodedPath));
+    decoratedCDs.add(decorateAuxiliary(glex, cdScope, astClassDiagram, decoratedASTClassDiagramm, handCodedPath));
     return decoratedCDs;
   }
 
@@ -742,7 +744,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     return topDecorator.decorate(millCD);
   }
 
-  public ASTCDCompilationUnit decorateAuxiliary(GlobalExtensionManagement glex, ICD4AnalysisGlobalScope cdScope,
+  public ASTCDCompilationUnit decorateAuxiliary(GlobalExtensionManagement glex, ICD4AnalysisScope cdScope,
                                                 ASTCDCompilationUnit cd, ASTCDCompilationUnit astCD,
                                                 IterablePath handCodedPath){
     ASTCDCompilationUnit preparedCD = prepareCD(cdScope, cd);
