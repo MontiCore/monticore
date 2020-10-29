@@ -22,6 +22,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Optional;
 
 import static de.monticore.types.check.DefsTypeBasic.field;
@@ -62,12 +63,11 @@ public class CombineExpressionsWithLiteralsTest {
     OOTypeSymbol bSurrogate = new OOTypeSymbolSurrogate("B");
     bSurrogate.setEnclosingScope(classB.get().getEnclosingScope());
 
-
     FieldSymbol d = field("d", SymTypeExpressionFactory.createTypeObject(dSurrogate));
     globalScope1.add(d);
     globalScope1.add((VariableSymbol) d);
 
-    FieldSymbol b = field("b",SymTypeExpressionFactory.createTypeObject(bSurrogate));
+    FieldSymbol b = field("b", SymTypeExpressionFactory.createTypeObject(bSurrogate));
     globalScope1.add(b);
     globalScope1.add((VariableSymbol) b);
 

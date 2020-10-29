@@ -22,7 +22,7 @@ public class JsonLexer {
   //currently peeked token, or null is not token has been peeked
   protected JsonToken peeked;
 
-  protected NumberParser numbers;
+  protected NumberLexer numbers;
 
   /**
    * The lexer tokenizes the passed input String.
@@ -32,7 +32,7 @@ public class JsonLexer {
   public JsonLexer(String input) {
     json = input;
     peeked = null;
-    numbers = new NumberParser();
+    numbers = new NumberLexer();
   }
 
   /**

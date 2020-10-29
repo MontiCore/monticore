@@ -5,6 +5,7 @@ import basicjava._ast.ASTCompilationUnit;
 import basicjava._parser.BasicJavaParser;
 import basicjava._symboltable.*;
 import de.monticore.io.paths.ModelPath;
+import de.monticore.umlstereotype.UMLStereotypeMill;
 import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.RecognitionException;
 

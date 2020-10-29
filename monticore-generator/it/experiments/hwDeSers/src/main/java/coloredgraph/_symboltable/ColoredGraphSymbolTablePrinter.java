@@ -14,7 +14,7 @@ import java.awt.*;
 public class ColoredGraphSymbolTablePrinter extends ColoredGraphSymbolTablePrinterTOP {
 
   public ColoredGraphSymbolTablePrinter() {
-  }
+   }
 
   public ColoredGraphSymbolTablePrinter(JsonPrinter printer) {
     super(printer);
