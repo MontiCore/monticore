@@ -2,7 +2,7 @@
 <#--
    Template, belongs to State @ grammar HierAutomata
 
-   It demonstrates to use a global Variable to count
+   It demonstrates how to use a global Variable to count
 -->
     state ${ast.name}   // arguments are:  ${statedepth}
     <#if ast.isInitial()> <<initial>> </#if>

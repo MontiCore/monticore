@@ -112,7 +112,7 @@ trigger-automata:
   only:
     - dev
 
-trigger-cd4a:
+trigger-cd4a-dev:
   stage: test1
   trigger:
     project: monticore/cd4analysis/cd4analysis
@@ -120,7 +120,7 @@ trigger-cd4a:
   only:
     - dev
 
-trigger-sd:
+trigger-sd-dev:
   stage: test1
   trigger:
     project: monticore/statechart/sd-language
@@ -128,7 +128,7 @@ trigger-sd:
   only:
     - dev
 
-trigger-fd:
+trigger-fd-dev:
   stage: test1
   trigger:
     project: monticore/languages/feature-diagram
@@ -136,7 +136,7 @@ trigger-fd:
   only:
     - dev
 
-trigger-guidsl:
+trigger-guidsl-dev:
   stage: test1
   trigger:
     project: monticore/languages/gui-dsl
@@ -144,7 +144,7 @@ trigger-guidsl:
   only:
     - dev
 
-trigger-json:
+trigger-json-dev:
   stage: test1
   trigger:
     project: monticore/languages/json
@@ -152,7 +152,7 @@ trigger-json:
   only:
     - dev
 
-trigger-ma:
+trigger-ma-dev:
   stage: test1
   trigger:
     project: monticore/montiarc/core
@@ -160,7 +160,7 @@ trigger-ma:
   only:
     - dev
 
-trigger-ocl:
+trigger-ocl-dev:
   stage: test1
   trigger:
     project: monticore/languages/OCL
@@ -168,7 +168,7 @@ trigger-ocl:
   only:
     - dev
 
-trigger-siunits:
+trigger-siunits-dev:
   stage: test1
   trigger:
     project: monticore/languages/siunits
@@ -176,7 +176,7 @@ trigger-siunits:
   only:
     - dev
 
-trigger-sc:
+trigger-sc-dev:
   stage: test1
   trigger:
     project: monticore/statechart/sc-language
@@ -184,7 +184,7 @@ trigger-sc:
   only:
     - dev
 
-trigger-xml:
+trigger-xml-dev:
   stage: test1
   trigger:
     project: monticore/languages/xml
@@ -192,13 +192,101 @@ trigger-xml:
   only:
     - dev
 
-trigger-od:
+trigger-od-dev:
   stage: test1
   trigger:
     project: monticore/languages/od
     branch: master
   only:
     - dev
+
+trigger-cd4a-master:
+  stage: test1
+  trigger:
+    project: monticore/cd4analysis/cd4analysis
+    branch: master
+  only:
+    - master
+
+trigger-sd-master:
+  stage: test1
+  trigger:
+    project: monticore/statechart/sd-language
+    branch: master
+  only:
+    - master
+
+trigger-fd-master:
+  stage: test1
+  trigger:
+    project: monticore/languages/feature-diagram
+    branch: master
+  only:
+    - master
+
+trigger-guidsl-master:
+  stage: test1
+  trigger:
+    project: monticore/languages/gui-dsl
+    branch: master
+  only:
+    - master
+
+trigger-json-master:
+  stage: test1
+  trigger:
+    project: monticore/languages/json
+    branch: master
+  only:
+    - master
+
+trigger-ma-master:
+  stage: test1
+  trigger:
+    project: monticore/montiarc/core
+    branch: master
+  only:
+    - master
+
+trigger-ocl-master:
+  stage: test1
+  trigger:
+    project: monticore/languages/OCL
+    branch: master
+  only:
+    - master
+
+trigger-siunits-master:
+  stage: test1
+  trigger:
+    project: monticore/languages/siunits
+    branch: master
+  only:
+    - master
+
+trigger-sc-master:
+  stage: test1
+  trigger:
+    project: monticore/statechart/sc-language
+    branch: master
+  only:
+    - master
+
+trigger-xml-master:
+  stage: test1
+  trigger:
+    project: monticore/languages/xml
+    branch: master
+  only:
+    - master
+
+trigger-od-master:
+  stage: test1
+  trigger:
+    project: monticore/languages/od
+    branch: master
+  only:
+    - master
 
 pages:
   stage: report
