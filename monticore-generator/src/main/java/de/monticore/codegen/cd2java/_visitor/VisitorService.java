@@ -214,6 +214,34 @@ public class VisitorService extends AbstractService<VisitorService> {
   public ASTMCQualifiedType getVisitor2Type() {
     return getVisitor2Type(getCDSymbol());
   }
+  
+  /**
+   * handler name e.g. AutomataHandler
+   */
+  
+  public String getHandlerSimpleName() {
+    return getHandlerSimpleName(getCDSymbol());
+  }
+  
+  public String getHandlerSimpleName(CDDefinitionSymbol cdDefinitionSymbol) {
+    return cdDefinitionSymbol.getName() + HANDLER_SUFFIX;
+  }
+  
+  public String getHandlerFullName() {
+    return getHandlerFullName(getCDSymbol());
+  }
+  
+  public String getHandlerFullName(CDDefinitionSymbol cdDefinitionSymbol) {
+    return getPackage(cdDefinitionSymbol) + "." + getHandlerSimpleName(cdDefinitionSymbol);
+  }
+  
+  public ASTMCQualifiedType getHandlerType(CDDefinitionSymbol cdSymbol) {
+    return getMCTypeFacade().createQualifiedType(getHandlerFullName(cdSymbol));
+  }
+
+  public ASTMCQualifiedType getHandlerType() {
+    return getHandlerType(getCDSymbol());
+  }
 
   /**
    * other helpful methods

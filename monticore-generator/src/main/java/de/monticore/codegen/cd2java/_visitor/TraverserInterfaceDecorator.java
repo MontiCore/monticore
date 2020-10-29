@@ -139,7 +139,7 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
     String generatedErrorCode = visitorService.getGeneratedErrorCode(visitorType.printType(
         new MCSimpleGenericTypesPrettyPrinter(new IndentPrinter())) + SET_REAL_THIS);
     this.replaceTemplate(EMPTY_BODY, setRealThis, new StringHookPoint(
-        "    throw new UnsupportedOperationException(\"0xA7011"+generatedErrorCode+" The setter for realThis is " +
+        "    throw new UnsupportedOperationException(\"0xA7012"+generatedErrorCode+" The setter for realThis is " +
             "not implemented. You might want to implement a wrapper class to allow setting/getting realThis.\");\n"));
     return setRealThis;
   }
