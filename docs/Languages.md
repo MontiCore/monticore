@@ -244,7 +244,7 @@ and
   [*detailed description*](https://git.rwth-aachen.de/monticore/languages/json/-/blob/master/src/main/grammars/de/monticore/lang/json.md)
 
 
-### [MontiArc](https://git.rwth-aachen.de/monticore/montiarc/core) (Beta: In Stabilization)
+### [MontiArc](https://git.rwth-aachen.de/monticore/montiarc/core) (MontiCore Stable)
 * Caretaker: DS 
 * MontiArc is an architecture and behavior modeling language and framework 
     that provides an platform independent structure and behavior 
