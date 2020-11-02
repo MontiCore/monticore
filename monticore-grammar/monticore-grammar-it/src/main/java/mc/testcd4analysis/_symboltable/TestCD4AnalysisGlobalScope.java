@@ -10,7 +10,6 @@ import de.se_rwth.commons.Names;
 import de.se_rwth.commons.Splitters;
 import de.se_rwth.commons.logging.Log;
 import mc.testcd4analysis.TestCD4AnalysisMill;
-import mc.testcd4analysis._ast.ASTCDAttribute;
 import mc.testcd4analysis._ast.ASTCDCompilationUnit;
 import mc.testcd4analysis._parser.TestCD4AnalysisParser;
 
@@ -72,19 +71,33 @@ public class TestCD4AnalysisGlobalScope extends TestCD4AnalysisGlobalScopeTOP{
   }
 
   public  void loadFileForModelName (String modelName, String symbolName)  {
-    // 1. call super implementation to start with employing the DeSer
-    super.loadFileForModelName(modelName, symbolName);
+    String symbolFileExtension = getModelFileExtension() + "sym";
+    de.monticore.io.paths.ModelCoordinate symbolFileCoordinate =
+        de.monticore.io.paths.ModelCoordinates.createQualifiedCoordinate(modelName, symbolFileExtension);
+    String filePath = symbolFileCoordinate.getQualifiedPath().toString();
+    if(!isFileLoaded(filePath)) {
+      addLoadedFile(filePath);
 
-    // 2. calculate potential location of model file and try to find it in model path
-    ModelCoordinate model = ModelCoordinates
-        .createQualifiedCoordinate(modelName, getModelFileExtension());
-    model = getModelPath().resolveModel(model);
+      //Load symbol table into enclosing global scope if a file has been found
+      getModelPath().resolveModel(symbolFileCoordinate);
+      if (symbolFileCoordinate.hasLocation()) {
+        java.net.URL url = symbolFileCoordinate.getLocation();
+        this.addSubScope(scopeDeSer.load(url));
+      }
 
-    // 3. if the file was found, parse the model and create its symtab
-    if(model.hasLocation()){
-      ASTCDCompilationUnit ast = parse(model);
-//      TestCD4AnalysisMill.testCD4AnalysisSymbolTableCreator().createFromAST(ast);
-     new TestCD4AnalysisSymbolTableCreator(this).createFromAST(ast);
+      // else, use try to load model (instead of symbol table)
+      ModelCoordinate model = ModelCoordinates
+          .createQualifiedCoordinate(modelName, getModelFileExtension());
+      model = getModelPath().resolveModel(model);
+
+      // 3. if the file was found, parse the model and create its symtab
+      if(model.hasLocation()){
+        ASTCDCompilationUnit ast = parse(model);
+        TestCD4AnalysisMill.testCD4AnalysisSymbolTableCreator().createFromAST(ast);
+      }
+    } else {
+      Log.debug("Already tried to load model for '" + symbolName + "'. If model exists, continue with cached version.",
+          "TestCD4AnalysisGlobalScope");
     }
   }
 

@@ -3,8 +3,6 @@ package mc.typescalculator;
 
 import com.google.common.collect.Lists;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.io.paths.ModelPath;
-import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
@@ -13,16 +11,17 @@ import de.monticore.symboltable.ImportStatement;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.se_rwth.commons.logging.LogStub;
-import mc.testcd4analysis._symboltable.TestCD4AnalysisGlobalScope;
+import mc.testcd4analysis.TestCD4AnalysisMill;
+import mc.testcd4analysis._symboltable.ITestCD4AnalysisGlobalScope;
+import mc.typescalculator.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 import mc.typescalculator.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
-import mc.typescalculator.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsGlobalScope;
 import mc.typescalculator.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsSymbolTableCreatorDelegator;
 import mc.typescalculator.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsArtifactScope;
+import mc.typescalculator.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsGlobalScope;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.Optional;
 
 import static de.monticore.types.check.DefsTypeBasic.field;
@@ -37,13 +36,13 @@ public class CombineExpressionsWithLiteralsTest {
   @Test
   public void testCD() throws IOException {
     LogStub.init();
-    TestCD4AnalysisGlobalScope globalScope =
-            new TestCD4AnalysisGlobalScope(new ModelPath(Paths.get(MODEL_PATH)));
-
+    ITestCD4AnalysisGlobalScope globalScope = TestCD4AnalysisMill.testCD4AnalysisGlobalScope();
+    globalScope.getModelPath().addEntry(Paths.get(MODEL_PATH));
+    globalScope.setModelFileExtension("cd");
 
     CD2EAdapter adapter = new CD2EAdapter(globalScope);
-    CombineExpressionsWithLiteralsGlobalScope globalScope1 =
-        new CombineExpressionsWithLiteralsGlobalScope(new ModelPath());
+    ICombineExpressionsWithLiteralsGlobalScope globalScope1 = CombineExpressionsWithLiteralsMill
+        .combineExpressionsWithLiteralsGlobalScope();
     globalScope1.addAdaptedFieldSymbolResolver(adapter);
     globalScope1.addAdaptedOOTypeSymbolResolver(adapter);
     globalScope1.addAdaptedMethodSymbolResolver(adapter);
