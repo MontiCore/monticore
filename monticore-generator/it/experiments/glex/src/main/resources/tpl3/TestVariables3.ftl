@@ -11,7 +11,7 @@ ${glex.defineGlobalVar("v1",16)}
   B:ERROR
 </#if>
 <#if glex.hasGlobalVar("ast")>
-  C:ERROR
-<#else>
   C:OK
+<#else>
+  C:ERROR
 </#if>
