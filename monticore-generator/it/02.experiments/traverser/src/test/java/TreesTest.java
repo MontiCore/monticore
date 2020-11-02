@@ -55,7 +55,7 @@ public class TreesTest {
    */
   protected int leafCount(ASTRoot tree) {
     // create traverser using mill
-    ITreesTraverser traverser = TreesMill.treesTraverser();
+    ITreesTraverser traverser = TreesMill.traverser();
     LeafCounter counter = new LeafCounter();
     traverser.setTreesVisitor(counter);
     
