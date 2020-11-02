@@ -102,7 +102,7 @@ ElementValuePair
 ElementValueArrayInitializer implements ElementValue
     =   "{" (ElementValueOrExpr || ",")* (",")? "}";
 
-// ARRAYS
+// ARRAY-Creator
 
 ArrayDimensionByInitializer implements ArrayDimensionSpecifier
     = (dim:"[" "]")+ ArrayInit;
