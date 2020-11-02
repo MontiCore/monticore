@@ -25,7 +25,7 @@ import de.monticore.io.paths.IterablePath;
 public class CDTraverserDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCompilationUnit> {
 
   protected final TraverserInterfaceDecorator iTraverserDecorator;
-  protected final TraverserDecorator traverserDecorator;
+  protected final TraverserClassDecorator traverserDecorator;
   protected final Visitor2Decorator visitor2Decorator;
   protected final HandlerDecorator handlerDecorator;
   protected final IterablePath handCodedPath;
@@ -35,7 +35,7 @@ public class CDTraverserDecorator extends AbstractCreator<ASTCDCompilationUnit, 
                             final IterablePath handCodedPath,
                             final VisitorService visitorService,
                             final TraverserInterfaceDecorator iTraverserDecorator,
-                            final TraverserDecorator traverserDecorator,
+                            final TraverserClassDecorator traverserDecorator,
                             final Visitor2Decorator visitor2Decorator,
                             final HandlerDecorator handlerDecorator) {
     super(glex);

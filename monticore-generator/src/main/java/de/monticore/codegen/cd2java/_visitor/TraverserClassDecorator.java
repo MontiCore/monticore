@@ -38,13 +38,13 @@ import de.se_rwth.commons.StringTransformations;
 /**
  * creates a DelegatorVisitor class from a grammar
  */
-public class TraverserDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClass> {
+public class TraverserClassDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClass> {
 
   protected final VisitorService visitorService;
 
   protected final SymbolTableService symbolTableService;
 
-  public TraverserDecorator(final GlobalExtensionManagement glex,
+  public TraverserClassDecorator(final GlobalExtensionManagement glex,
                                    final VisitorService visitorService,
                                    final SymbolTableService symbolTableService) {
     super(glex);
