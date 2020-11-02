@@ -75,6 +75,8 @@ public final class VisitorConstants {
 
   public static final String TRAVERSER_SET_VISITOR_TEMPLATE = "_visitor.traverser.SetVisitor";
   
+  public static final String TRAVERSER_SET_HANDLER_TEMPLATE = "_visitor.traverser.SetHandler";
+  
   public static final String TRAVERSE_SCOPE_TEMPLATE= "_visitor.scope.TraverseScope";
   
   public static final String VISITOR_METHODS_TRAVERSER_DELEGATING_TEMPLATE = "_visitor.traverser.DelegatingMethods";
