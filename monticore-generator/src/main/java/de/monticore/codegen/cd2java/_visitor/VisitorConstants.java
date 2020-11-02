@@ -15,6 +15,8 @@ public final class VisitorConstants {
   
   public static final String TRAVERSER_SUFFIX = "Traverser";
   
+  public static final String TRAVERSER_CLASS_SUFFIX = "TraverserImplementation";
+  
   public static final String VISITOR2_SUFFIX = "Visitor2";
   
   public static final String HANDLER_SUFFIX = "Handler";

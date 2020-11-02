@@ -15,7 +15,7 @@ import tree.visitor.LeafCounter;
 import trees.TreesMill;
 import trees._ast.ASTRoot;
 import trees._parser.TreesParser;
-import trees._visitor.ITreesTraverser;
+import trees._visitor.TreesTraverser;
 
 public class TreesTest {
   
@@ -55,7 +55,7 @@ public class TreesTest {
    */
   protected int leafCount(ASTRoot tree) {
     // create traverser using mill
-    ITreesTraverser traverser = TreesMill.traverser();
+    TreesTraverser traverser = TreesMill.traverser();
     LeafCounter counter = new LeafCounter();
     traverser.setTreesVisitor(counter);
     

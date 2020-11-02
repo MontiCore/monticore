@@ -144,7 +144,7 @@ public class VisitorService extends AbstractService<VisitorService> {
   }
   
   public String getTraverserSimpleName(CDDefinitionSymbol cdDefinitionSymbol) {
-    return cdDefinitionSymbol.getName() + TRAVERSER_SUFFIX;
+    return cdDefinitionSymbol.getName() + TRAVERSER_CLASS_SUFFIX;
   }
   
   public String getTraverserFullName() {
@@ -168,7 +168,7 @@ public class VisitorService extends AbstractService<VisitorService> {
   }
   
   public String getTraverserInterfaceSimpleName(CDDefinitionSymbol cdDefinitionSymbol) {
-    return "I" + getTraverserSimpleName(cdDefinitionSymbol);
+    return cdDefinitionSymbol.getName() + TRAVERSER_SUFFIX;
   }
   
   public String getTraverserInterfaceFullName() {
