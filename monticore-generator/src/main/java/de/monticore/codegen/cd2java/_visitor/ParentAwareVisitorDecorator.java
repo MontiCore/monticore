@@ -5,6 +5,7 @@ import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
+import de.monticore.cd.cd4analysis._ast.ASTModifier;
 import de.monticore.cd.cd4code.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -13,11 +14,14 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.*;
+import static de.monticore.codegen.cd2java.CoreTemplates.ANNOTATIONS;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
+import static de.monticore.codegen.cd2java.CoreTemplates.createAnnotationsHookPoint;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
 
 /**
@@ -37,16 +41,22 @@ public class ParentAwareVisitorDecorator extends AbstractCreator<ASTCDCompilatio
   public ASTCDClass decorate(ASTCDCompilationUnit input) {
     ASTCDCompilationUnit compilationUnit = visitorService.calculateCDTypeNamesWithASTPackage(input);
     String languageInterfaceName = visitorService.getLanguageInterfaceName();
+    
+    ASTModifier modifier = PUBLIC_ABSTRACT.build();
+    visitorService.addDeprecatedStereotype(modifier, Optional.of("Will be removed. Use traverser infrastructure instead."));
 
-    return CD4CodeMill.cDClassBuilder()
+    ASTCDClass cdClass = CD4CodeMill.cDClassBuilder()
         .setName(visitorService.getParentAwareVisitorSimpleName())
-        .setModifier(PUBLIC_ABSTRACT.build())
+        .setModifier(modifier)
         .addInterface(visitorService.getVisitorType())
         .addCDAttribute(getParentAttribute(languageInterfaceName))
         .addCDMethod(getParentMethod(languageInterfaceName))
         .addCDMethod(getParentsMethod(languageInterfaceName))
         .addAllCDMethods(getTraversMethod(compilationUnit.getCDDefinition().getCDClassList()))
         .build();
+    
+    this.replaceTemplate(ANNOTATIONS, cdClass, createAnnotationsHookPoint(cdClass.getModifier()));
+    return cdClass;
   }
 
   protected ASTCDAttribute getParentAttribute(String languageInterfaceName) {
