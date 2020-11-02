@@ -8,11 +8,12 @@ Type systems are available in a variety of (programming) languages and
 facilitate programming because typing errors can already be detected at compile 
 time. To express type usages a language component 
 hierarchy for modeling types was developed for MontiCore-based languages. It 
-consists of four language components
+consists of five language components
 [`MCBasicTypes`](MCBasicTypes.mc4), 
 [`MCCollectionTypes`](MCCollectionTypes.mc4), 
-[`MCSimpleGenericTypes`](MCSimpleGenericTypes.mc4), and 
-[`MCFullGenericTypes`](MCFullGenericTypes.mc4).
+[`MCSimpleGenericTypes`](MCSimpleGenericTypes.mc4),  
+[`MCFullGenericTypes`](MCFullGenericTypes.mc4), and
+[`MCArrayTypes`](MCArrayTypes.mc4).
  
 ## MCBasicTypes
 
@@ -60,6 +61,13 @@ component `MCSimpleGenericTypes` and extends the expressible types with
 inner generics types of arbitrary classes with 
 arbitrary arguments including wild card types. When using this language component,
 types such as `Person<?>`, `Map<Person<String>, ? extends Person>` or `a.b.C<D>.E.F<G>.H` are expressible.
+
+## MCArrayTypes
+
+Arrays are orthogonal to the generic extensions. Thus
+they can be combined with any of the above variants.
+Language component [`MCArrayTypes`](MCArrayTypes.mc4) provides 
+possibilities to add arrays, such as `Person[]` or `int[][]`.
 
 ## Further Information
 
