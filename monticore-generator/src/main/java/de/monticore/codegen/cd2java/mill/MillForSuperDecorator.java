@@ -30,6 +30,7 @@ import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
 
 public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit, Collection<ASTCDClass>> {
 
@@ -177,7 +178,7 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
     String methodName = "_"+ StringTransformations.uncapitalize(superSymbolSimpleName) + prefix + SCOPE_SUFFIX;
     String scopeName = StringTransformations.uncapitalize(grammarName + prefix + SCOPE_SUFFIX);
     ASTCDMethod scopeMethod = getCDMethodFacade().createMethod(PROTECTED, getMCTypeFacade().createQualifiedType(returnType), methodName);
-    this.replaceTemplate(EMPTY_BODY, scopeMethod, new TemplateHookPoint("mill.ProtectedScopeMethodForSuper", grammarMillName, scopeName));
+    this.replaceTemplate(EMPTY_BODY, scopeMethod, new TemplateHookPoint("mill.ProtectedMethodForSuper", grammarMillName, scopeName));
     return scopeMethod;
   }
 
@@ -188,31 +189,28 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
    * @return The list of all internal traverser accessor methods
    */
   protected ASTCDMethod getSuperTraverserMethod(CDDefinitionSymbol cdSymbol) {
-      String traverserName = visitorService.getTraverserSimpleName(cdSymbol);
-      String traverserType = visitorService.getTraverserFullName();
       String traverserInterfaceType = visitorService.getTraverserInterfaceFullName(cdSymbol);
-      return getAttributeMethod(traverserName, traverserType, traverserInterfaceType);
+      return getProtectedForSuperMethod(TRAVERSER, traverserInterfaceType);
   }
   
   /**
-   * Creates protected internal method for a given attribute. The attribute is
-   * specified by its simple name, its qualified type, and the qualified return
-   * type of the methods. The return type of the method may by equals to the
-   * attribute type or a corresponding super type.
+   * Creates protected internal method for a given attribute. The method
+   * delegates to the public accessor method of the language-specific mill. The
+   * method is specified by its simple name and its qualified return type.
    * 
-   * @param attributeName The name of the attribute
-   * @param attributeType The qualified type of the attribute
+   * @param methodName The name of the method
    * @param methodType The return type of the methods
    * @return The internal method for the attribute
    */
-  protected ASTCDMethod getAttributeMethod(String attributeName, String attributeType, String methodType) {
-    // method names and return type
-    String protectedMethodName = "_" + StringTransformations.uncapitalize(attributeName);
+  protected ASTCDMethod getProtectedForSuperMethod(String methodName, String methodType) {
+    // method name and return type
+    String protectedMethodName = "_" + methodName;
     ASTMCType returnType = getMCTypeFacade().createQualifiedType(methodType);
     
     // protected internal method
     ASTCDMethod protectedMethod = getCDMethodFacade().createMethod(PROTECTED, returnType, protectedMethodName);
-    this.replaceTemplate(EMPTY_BODY, protectedMethod, new StringHookPoint("return new " + attributeType + "();"));
+    this.replaceTemplate(EMPTY_BODY, protectedMethod, new TemplateHookPoint("mill.ProtectedMethodForSuper", 
+        service.getMillFullName(), methodName));
     
     return protectedMethod;
   }
