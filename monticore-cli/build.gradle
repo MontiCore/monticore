@@ -1,0 +1,41 @@
+/* (c) https://github.com/MontiCore/monticore */
+plugins {
+  id "com.github.johnrengelman.shadow" version "6.0.0"
+  id 'java'
+}
+
+dependencies {
+  implementation project(':monticore-generator')
+  implementation "de.monticore:monticore-runtime:$previous_mc_version"
+  implementation "de.monticore:monticore-grammar:$previous_mc_version"
+  implementation "de.se_rwth.commons:se-commons-utilities:$se_commons_version"
+  implementation "de.se_rwth.commons:se-commons-logging:$se_commons_version"
+  implementation "de.se_rwth.commons:se-commons-groovy:$se_commons_version"
+  implementation 'org.slf4j:slf4j-api:1.7.10'
+  implementation 'com.google.guava:guava:25.1-jre'
+  implementation 'ch.qos.logback:logback-classic:1.1.2'
+  implementation 'ch.qos.logback:logback-core:1.1.2'
+  testImplementation "junit:junit:$junit_version"
+}
+
+description = 'MontiCore: CLI'
+
+shadowJar { // all in one jar
+  manifest {
+    attributes "Main-Class": "de.monticore.cli.MontiCoreCLI"
+  }
+  archiveClassifier = "cli"
+  minimize()
+}
+
+jar.dependsOn(shadowJar)
+
+// configure deployment
+publishing {
+  // configure what artifacts to publish
+  publications {
+    mavenJava(MavenPublication) {
+      artifact shadowJar
+    }
+  }
+}

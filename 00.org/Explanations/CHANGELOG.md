@@ -11,10 +11,21 @@ to be released
 * Added new Traverser generation to replace the visitor infrastructure in a future release
 
 ### Changes
+* MontiCore now uses Gradle as build tool
+  * some tasks have been introduced for the comfortable control of frequent activities, e.g., `buildMC`, `assembleMC` that can be found in the [`build.gradle`](../../build.gradle)
+  * relocated the EMF related subprojects:
+    * `monticore-emf-grammar` to `monticore-grammar-emf`
+    * `monticore-emf-runtime` to `monticore-runtime-emf`
+  * relocated integration tests and experiments:
+    * `monticore-generator/it` to `monticore-test/it`
+    * `monticore-generator/it/experiments` to `monticore-test/01.experiments`
+    * `monticore-generator/it/02.experiments` to `monticore-test/02.experiments`
+    * `monticore-grammar/monticore-grammar-it` to `monticore-test/monticore-grammar-it`
 * renamed `IXResolvingDelegate` to `IXResolver`
 * outsourced Type expressions for arrays to a separate grammar
   * was `FullGenericTypes`, is now `MCArrayTypes`
-* moved array initialization to `JavaLight` (was `MCVarDeclarationStatements`)
+* outsourced initialization for arrays to a separate grammar
+  * was `MCVarDeclarationStatements`, is now `MCArrayStatements`
 * In a composed language, mills of super languages now provide scope instances (scope, global scope and artifact scope) for the composed language
 * non-existing template paths now result in an error instead of a warning
 

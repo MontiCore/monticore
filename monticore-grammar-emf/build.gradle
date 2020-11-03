@@ -1,0 +1,110 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+plugins {
+  id "java"
+  id "monticore" version "$version" // MontiCore Plugin
+}
+
+description = 'MontiCore: EMF Grammar'
+
+dependencies {
+    implementation project(':monticore-runtime')
+    implementation "de.se_rwth.commons:se-commons-logging:$se_commons_version"
+    implementation "org.antlr:antlr4-runtime:$antlr_version"
+    implementation 'com.google.guava:guava:25.1-jre'
+    implementation project(':monticore-runtime-emf')
+    implementation 'org.eclipse.emf:org.eclipse.emf.ecore:2.15.0'
+    implementation 'org.eclipse.emf:org.eclipse.emf.ecore.xmi:2.15.0'
+    implementation 'org.eclipse.emf:org.eclipse.emf.common:2.15.0'
+    testImplementation "junit:junit:$junit_version"
+    testImplementation 'ch.qos.logback:logback-classic:1.1.2'
+    testImplementation 'org.codehaus.groovy:groovy:3.0.2'
+}
+
+def srcDir = "$buildDir/main/java"
+def testDir = "$buildDir/test/java"
+
+task copySrc(type: Copy) {
+  from "${project(':monticore-grammar').projectDir}/src/main/java"
+  into srcDir
+}
+
+task copyTest(type: Copy) {
+  from "${project(':monticore-grammar').projectDir}/src/test/java"
+  into testDir
+}
+
+def grammarDir = "${project(':monticore-grammar').projectDir}/src/main/grammars"
+def grammarOutDir = "$buildDir/generated-sources/monticore/sourcecode"
+def testGrammarOutDir = "$buildDir/generated-test-sources/monticore/sourcecode"
+
+sourceSets {
+  main.java.srcDirs = [ srcDir, grammarOutDir]
+  test.java.srcDirs = [ testDir, testGrammarOutDir]
+}
+
+task generate {}
+
+// one task per grammar file
+fileTree(grammarDir).matching { include '**/*.mc4'}.each {
+  def g = it
+  def taskname = "generateGrammar${it.getName().substring(0,it.getName().lastIndexOf('.'))}"
+  task  "$taskname" (type: MCTask) {
+    dependsOn(copySrc, copyTest)
+    script = "de/monticore/monticore_emf.groovy"
+    grammar = file g
+    outputDir = file grammarOutDir
+    modelPath "${project(':monticore-grammar').projectDir}/src/main/grammars"
+    handcodedPath srcDir
+    
+    def uptoDate = incCheck(getGrammarInclPackage(grammarDir, g))
+    outputs.upToDateWhen { uptoDate }
+  }
+  generate.dependsOn ("$taskname")
+}
+
+compileJava.dependsOn generate
+
+task generateTest {}
+def testGrammars = "${project(':monticore-grammar').projectDir}/src/test/grammars"
+// one task per file
+fileTree(testGrammars).matching { include '**/*.mc4'}.each {
+  def g = it
+  task  "generateTest${it.getName().substring(0,it.getName().lastIndexOf('.'))}" (type: MCTask) {
+    dependsOn(copySrc, copyTest)
+    grammar = file g
+    outputDir = file testGrammarOutDir
+    handcodedPath srcDir, testDir
+    script = "de/monticore/monticore_emf.groovy"
+    modelPath "$grammarDir", "${project(':monticore-grammar').projectDir}/src/main/examples"
+    def grammarIncludingPackage = file(testGrammars).toURI().relativize(g.toURI()).toString()
+    def uptoDate = incCheck(grammarIncludingPackage)
+    outputs.upToDateWhen { uptoDate }
+  }
+  generateTest.dependsOn ("generateTest${it.getName().substring(0,it.getName().lastIndexOf('.'))}")
+}
+
+def exampleGrammars = "${project(':monticore-grammar').projectDir}/src/main/examples"
+
+fileTree(exampleGrammars).matching { include '**/*.mc4'}.each {
+  def g = it
+  task  "generateTest${it.getName().substring(0,it.getName().lastIndexOf('.'))}" (type: MCTask) {
+    dependsOn(copySrc, copyTest)
+    grammar = file g
+    outputDir = file testGrammarOutDir
+    script = "de/monticore/monticore_emf.groovy"
+    handcodedPath srcDir
+    modelPath "$grammarDir", "${project(':monticore-grammar').projectDir}/src/main/examples"
+    def grammarIncludingPackage = file(exampleGrammars).toURI().relativize(g.toURI()).toString()
+    def uptoDate = incCheck(grammarIncludingPackage)
+    outputs.upToDateWhen { uptoDate }
+  }
+  generateTest.dependsOn ("generateTest${it.getName().substring(0,it.getName().lastIndexOf('.'))}")
+}
+
+compileTestJava.dependsOn (generateTest)
+
+String getGrammarInclPackage(String grammarDir, File grammarFile ){
+  return file(grammarDir).toURI().relativize(grammarFile.toURI()).toString()
+}
+
