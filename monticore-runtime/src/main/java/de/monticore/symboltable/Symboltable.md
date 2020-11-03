@@ -17,8 +17,16 @@
 * Indicate that a nonterminal uses the name of a symbol
 
 ## Runtime Environment for Symbol Table Infrastructure
+This section explains classes and interfaces that are part of the MontiCore runtime environment.
+
 ### Symbol Table Infrastructure Interfaces
+Most of the interfaces of the MontiCore runtime enviroenment are super types of generated classes
+or interfaces that are explained [here](#generated-symbol-table-infrastructure).
+
 #### IScope
+This interface is the super type of the generated scope interfaces. Thus, it is also transitive
+of global scope interfaces and artifact scope interfaces. 
+
 #### IArtifactScope
 #### IGlobalScope
 #### ISymbol
@@ -45,9 +53,8 @@ explained in the [MontiCore Reference Manual [HR17]](http://monticore.de/MontiCo
 
 <!-- ################################################################################### -->
 ### Infrastructure Generated per Language
-This section explains all prt of the symbol table infrastructure that MontiCore generated once per 
+This section explains all parts of the symbol table infrastructure that MontiCore generates once per 
 language.
-%
 For scopes, artifact scopes, and global scopes, MontiCore separated classes and interfaces. The 
 interfaces follow the (multiple) inheritance of the grammars and realized most behavior in form 
 of default method implementations. The classes implement the interface and manage access to attributes.
