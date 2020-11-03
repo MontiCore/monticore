@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore.statements;
+
+grammar TestMCVarDeclarationStatements extends de.monticore.statements.MCVarDeclarationStatements,
+                                               de.monticore.literals.MCCommonLiterals,
+                                               de.monticore.types.MCBasicTypes {
+
+  TModifier implements MCModifier = "private" | "static";
+
+}

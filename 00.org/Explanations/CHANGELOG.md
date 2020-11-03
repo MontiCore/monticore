@@ -14,7 +14,8 @@ to be released
 * renamed `IXResolvingDelegate` to `IXResolver`
 * outsourced Type expressions for arrays to a separate grammar
   * was `FullGenericTypes`, is now `MCArrayTypes`
-* moved array initialization to `JavaLight` (was `MCVarDeclarationStatements`)
+* outsourced initialization for arrays to a separate grammar
+  * was `MCVarDeclarationStatements`, is now `MCArrayStatements`
 * In a composed language, mills of super languages now provide scope instances (scope, global scope and artifact scope) for the composed language
 * non-existing template paths now result in an error instead of a warning
 
