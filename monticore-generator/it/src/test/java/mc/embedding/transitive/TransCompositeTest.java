@@ -2,7 +2,6 @@
 
 package mc.embedding.transitive;
 
-import de.monticore.io.paths.ModelPath;
 import mc.GeneratorIntegrationsTest;
 import mc.embedding.composite._symboltable.Text2ContentAdapter;
 import mc.embedding.embedded._symboltable.IEmbeddedScope;
@@ -12,7 +11,6 @@ import mc.embedding.host._symboltable.HostSymbol;
 import mc.embedding.host._symboltable.IHostScope;
 import mc.embedding.transitive.transcomposite.TransCompositeMill;
 import mc.embedding.transitive.transcomposite._symboltable.ITransCompositeGlobalScope;
-import mc.embedding.transitive.transcomposite._symboltable.TransCompositeGlobalScope;
 import mc.embedding.transitive.transhost._symboltable.TransStartSymbol;
 import org.junit.Test;
 
@@ -24,13 +22,9 @@ public class TransCompositeTest extends GeneratorIntegrationsTest {
 
   @Test
   public void test() {
-    final ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/mc/embedding/transitive/"));
-
-    final ITransCompositeGlobalScope scope = TransCompositeMill
-        .transCompositeGlobalScopeBuilder()
-        .setModelPath(modelPath)
-        .setModelFileExtension("transhost")
-        .build();
+    final ITransCompositeGlobalScope scope = TransCompositeMill.transCompositeGlobalScope();
+    scope.getModelPath().addEntry(Paths.get("src/test/resources/mc/embedding/transitive/"));
+    scope.setModelFileExtension("transhost");
 
     // Symbol of the host language
     final TransStartSymbol transHostSymbol = scope.resolveTransStart("TransComposite").orElse(null);
