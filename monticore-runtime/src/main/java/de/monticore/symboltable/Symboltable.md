@@ -23,27 +23,83 @@ This section explains classes and interfaces that are part of the MontiCore runt
 Most of the interfaces of the MontiCore runtime enviroenment are super types of generated classes
 or interfaces that are explained [here](#generated-symbol-table-infrastructure).
 
-#### IScope
-This interface is the super type of the generated scope interfaces. Thus, it is also transitive
-of global scope interfaces and artifact scope interfaces. 
+#### IScope Interface
+This interface is the super type of the generated scope interfaces and thus, it is also transitive
+of global scope interfaces and artifact scope interfaces. `IScope` contains signatures for methods  
+realizing the scope's connection to its environment (i.e., AST classes, sub scopes, enclosing scopes).
+Generated, language-specific scope interfaces refine the types of these methods. 
 
-#### IArtifactScope
-#### IGlobalScope
-#### ISymbol
-#### ISymbolPredicate
-#### IScopeSpanningSymbol
-#### IScope
+#### IArtifactScope Interface
+The `IArtifactScope` interface is an interface that all generated language-specific artifact scope
+interfaces extend. It provides an abstract method for obtaining an artifact scope's package as String.
+All further methods have either language-specific arguments or return types and are, thus, introduced
+in the language-specific artifact scope interfaces.
 
-### Resolving
+#### IGlobalScope Interface
+The `IGlobalScope` interface is an interface that all generated language-specific global scope
+interfaces extend. It provides an abstract method for obtaining the global scope's Modelpath.
+All further methods have either language-specific arguments or return types and are, thus, introduced
+in the language-specific global scope interfaces.
+
+#### ISymbol Interface
+The `ISymbol` interface is an interface that all generated language-specific symbol classes
+implement. It provides the signatures for methods to obtaining the symbol's name, its package, 
+its fully-qualified name, and its enclosing scope, and its AST node. 
+Further, the interface contains the signatures of methods for getting and setting the access 
+modifier of the symbol and default implementations for getting the source position of the symbol.
+It also includes a static method for sorting a collection of symbols by their source position, which
+is handy for realizing the semantics of ordered scopes. 
+All further methods have either language-specific arguments or return types and are, thus, introduced
+in the specific symbol classes.
+
+#### ISymbolPredicate Interface
+An `ISymbolPredicate` is a predicate of a symbol and is used for filtering the results of symbol 
+resolution. This is explained in more detail in [[HR17]](http://monticore.de/MontiCore_Reference-Manual.2017.pdf).
+The MontiCore runtime contains the class `IncludesAccessModifierSymbolPredicate`, which is an 
+implementation of a symbol predicate for filtering symbols based on their access modifier. 
+
+#### IScopeSpanningSymbol Interface
+The `IScopeSpanningSymbol` interface extends the interface `ISymbol` and adds a method signature
+for obtaining the scope that this symbol spans. Symbols that span a scope (which is the case, e.g., 
+if the respective nonterminal in the grammar is annotated with both the keywords `symbol` and `scope`)
+implement this interface instead of the `ISymbol` interface.  
 
 ### Modifiers
-
+The modifiers contained in the MontiCore runtime implement the interface `AccessModifier`, which again
+is a `Modifier`. Out of the box, MontiCore supports the two access modifier 
+implementations `BasicAccessModifier` and `NoAccessModifier`. Further, more sophisticated access modifiers
+have to be engineered individually, dedicated to their use for a specific modeling language.
 
 ### JSON Infrastructure for Symbol Table Serialization
-#### JsonPrinter class
-#### JsonParser class
-#### Json parsing infrastructure
-#### Json model
+The MontiCore runtime contains classes that are required for serializing and deserializing 
+symbol tables to Json-encoded Strings. The following explains these in short:
+
+#### JsonPrinter Class
+The class `JsonPrinter` wraps the concrete syntax of Json. It is an API for building Json-encoded 
+String via a series of method calls. 
+
+#### JsonParser Class
+The class `JsonParser` parses a Json-encoded String into an instance of the Json 
+[abstract syntax model](#json-model). The central method of this class is the static method 
+`JsonElement parse(String s)`. 
+
+#### Json Parsing Infrastructure
+Besides the `JsonParser` class, the MontiCore runtime contains more classes required
+for translating JSON-encoded Strings into instances of the Json [abstract syntax model](#json-model).
+The class `JsonLexer` lexes an input String into a sequence of `JsonToken` instances. 
+JsonToken instances realizes tokens that have a certain kind in form of a value from the 
+enumeration `JsonTokenKind`. The `NumberLexer` is able to lex all kinds of valid numbers encoded in
+Json.
+ 
+#### Json Model
+The MontiCore runtime contains a model of the abstract syntax of JSON
+that is used by the `JsonParser` and the `JsonPrinter` for serialization of symbol tables.
+Individual classes exist for the different abstract syntax types of JSON. 
+
+#### JsonDeSers Class
+The class `JsonDeSers` contains constants and static methods that support the generated language-specific 
+symbol and scope DeSer classes.
+
 
 ## Generated Symbol Table Infrastructure
 MontiCore generates large parts of the symbol table infrastructure that is strongly typed for each

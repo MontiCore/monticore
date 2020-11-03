@@ -5,8 +5,6 @@
  */
 package de.monticore.symboltable;
 
-import de.monticore.io.paths.ModelCoordinate;
-import de.monticore.io.paths.ModelCoordinates;
 import de.monticore.io.paths.ModelPath;
 
 /**
@@ -19,9 +17,6 @@ public interface IGlobalScope {
    *
    * @return
    */
-  public ModelPath getModelPath();
+  ModelPath getModelPath();
 
-  default ModelCoordinate getModelCoordinate(String modelName, String symbolFileExtension) {
-    return ModelCoordinates.createQualifiedCoordinate(modelName, symbolFileExtension);
-  }
 }
