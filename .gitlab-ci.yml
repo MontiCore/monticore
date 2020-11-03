@@ -11,11 +11,8 @@ variables:
 
 
 before_script:
-  - chmod +x monticore-gradle/gradlew
-  - chmod +x monticore-generator/it/experiments/gradlew
-  - chmod +x monticore-generator/it/gradlew
-  - chmod +x monticore-templateclassgenerator/it/monticore-templateclassgenerator-it/gradlew
-  - chmod +x monticore-grammar/monticore-grammar-it/gradlew
+  - chmod +x ./gradlew
+  - chmod +x monticore-tool/gradlew
   - export GRADLE_USER_HOME=`pwd`/.gradle
 
 #cache:
@@ -26,86 +23,111 @@ before_script:
 
 stages:
   - build
-  - test1
-  - test2
+  - test
+  - deploy
+  - trigger_languages
   - report
 
-build_dev:
+build:
   stage: build
   script:
-    - "mvn $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS deploy -Dpass=$password -Duser=$username -DdeployAtEnd=true"
-    - cd monticore-gradle
-    - "./gradlew build $GRADLE_OPTS"
-    - "./gradlew publish -PmavenPassword=$password -PmavenUser=$username $GRADLE_OPTS"
-    - awk -F"," '{ instructions += $4 + $5; covered += $5 } END { print covered, "/", instructions, "instructions covered"; print 100*covered/instructions, "% covered" }' ../*/target/site/jacoco/jacoco.csv
-  coverage: '/\d+.\d+ \% covered/'
-  only:
-    - dev
-    - cibuild
-  artifacts:
+    - "./gradlew buildMC $GRADLE_OPTS"
+  artifacts: 
     paths:
+      - ".gradle"
       - "*/target"
+      - "*/.gradle"
     expire_in: 1 week
-
-build_branches:
-  stage: build
-  script:
-    - "mvn $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS install"
-    - cd monticore-gradle
-    - "./gradlew build publishToMavenLocal $GRADLE_OPTS --project-prop useLocalRepo=true --refresh-dependencies"
-    - "cd ../monticore-generator/it/experiments"
-    - "./gradlew build $GRADLE_OPTS --project-prop useLocalRepo=true --refresh-dependencies"
-    - "cd ../02.experiments"
-    - "./gradlew build $GRADLE_OPTS --project-prop useLocalRepo=true --refresh-dependencies"
-    - "cd ../../../monticore-grammar/monticore-grammar-it"
-    - "./gradlew build $GRADLE_OPTS --project-prop useLocalRepo=true --refresh-dependencies"
-    - "cd ../../monticore-generator/it"
-    - "./gradlew build $GRADLE_OPTS --project-prop useLocalRepo=true --refresh-dependencies"
-    - "./gradlew build -PbuildProfile=emf $GRADLE_OPTS --project-prop useLocalRepo=true --refresh-dependencies"
-    - "cd ../../monticore-templateclassgenerator/it/monticore-templateclassgenerator-it"
-    - "./gradlew build $GRADLE_OPTS --project-prop useLocalRepo=true --refresh-dependencies"
   only:
     - merge_requests
     - branches
   except:
-    - dev
     - master
-
-it-gradle:
-  stage: test2
-  dependencies: []
+    
+test_01experiments:
+  stage: test
+  dependencies:
+    - build
   script:
-    - cd monticore-generator/it
-    - "./gradlew build $GRADLE_OPTS"
-    - "./gradlew build -PbuildProfile=emf $GRADLE_OPTS"
-    - "cd ../../monticore-templateclassgenerator/it/monticore-templateclassgenerator-it"
-    - "./gradlew build $GRADLE_OPTS"
+    - "./gradlew -p monticore-test/01.experiments build $GRADLE_OPTS"
+  only:
+    - merge_requests
+    - branches
+  except:
+    - master
+    
+test_02experiments:
+  stage: test
+  dependencies:
+    - build
+  script:
+    - "./gradlew -p monticore-test/02.experiments build $GRADLE_OPTS"
+  only:
+    - merge_requests
+    - branches
+  except:
+    - master
+    
+test_it:
+  stage: test
+  dependencies:
+    - build
+  script:
+    - "./gradlew -p monticore-test/it build $GRADLE_OPTS"
+  only:
+    - merge_requests
+    - branches
+  except:
+    - master
+    
+test_it_emf:
+  stage: test
+  dependencies:
+    - build
+  script:
+    - "./gradlew -p monticore-test/it build -PbuildProfile=emf $GRADLE_OPTS"
+  only:
+    - merge_requests
+    - branches
+  except:
+    - master
+    
+test_grammar_it:
+  stage: test
+  dependencies:
+    - build
+  script:
+    - "./gradlew -p monticore-test/monticore-grammar-it build $GRADLE_OPTS"
+  only:
+    - merge_requests
+    - branches
+  except:
+    - master
+    
+deploy:
+  stage: deploy
+  dependencies:
+    - build
+  script:
+    - "./gradlew deployMC -PmavenPassword=$password -PmavenUser=$username $GRADLE_OPTS"
+    - awk -F"," '{ instructions += $4 + $5; covered += $5 } END { print covered, "/", instructions, "instructions covered"; print 100*covered/instructions, "% covered" }' ../*/target/site/jacoco/jacoco.csv
+  coverage: '/\d+.\d+ \% covered/'
   only:
     - dev
+  except:
     - master
-
-  #rules:
-  #  - if: '$CI_COMMIT_REF_SLUG == "dev"'
-  #    when: always
-  #  - when: manual
-
-# build experiments and grammar with gradle for def
-it-experiments-grammar-gradle:
-  stage: test1
-  dependencies: []
+      
+build_maven:
+  stage: build
   script:
-    - cd monticore-generator/it/experiments
-    - "./gradlew build $GRADLE_OPTS"
-    - cd ../02.experiments
-    - "./gradlew build $GRADLE_OPTS"
-    - "cd ../../../monticore-grammar/monticore-grammar-it"
-    - "./gradlew build $GRADLE_OPTS"
+    - "mvn $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS install"
   only:
-    - dev
+    - schedules
+  except:
     - master
 
 trigger-automata:
-  stage: test1
+  stage: trigger_languages
   trigger:
     project: monticore/languages/automaton
     branch: master
@@ -113,7 +135,7 @@ trigger-automata:
     - dev
 
 trigger-cd4a-dev:
-  stage: test1
+  stage: trigger_languages
   trigger:
     project: monticore/cd4analysis/cd4analysis
     branch: develop
@@ -121,7 +143,7 @@ trigger-cd4a-dev:
     - dev
 
 trigger-sd-dev:
-  stage: test1
+  stage: trigger_languages
   trigger:
     project: monticore/statechart/sd-language
     branch: dev
@@ -129,7 +151,7 @@ trigger-sd-dev:
     - dev
 
 trigger-fd-dev:
-  stage: test1
+  stage: trigger_languages
   trigger:
     project: monticore/languages/feature-diagram
     branch: develop
@@ -137,7 +159,7 @@ trigger-fd-dev:
     - dev
 
 trigger-guidsl-dev:
-  stage: test1
+  stage: trigger_languages
   trigger:
     project: monticore/languages/gui-dsl
     branch: master
@@ -145,7 +167,7 @@ trigger-guidsl-dev:
     - dev
 
 trigger-json-dev:
-  stage: test1
+  stage: trigger_languages
   trigger:
     project: monticore/languages/json
     branch: develop
@@ -153,7 +175,7 @@ trigger-json-dev:
     - dev
 
 trigger-ma-dev:
-  stage: test1
+  stage: trigger_languages
   trigger:
     project: monticore/montiarc/core
     branch: develop
@@ -161,7 +183,7 @@ trigger-ma-dev:
     - dev
 
 trigger-ocl-dev:
-  stage: test1
+  stage: trigger_languages
   trigger:
     project: monticore/languages/OCL
     branch: develop
@@ -169,7 +191,7 @@ trigger-ocl-dev:
     - dev
 
 trigger-siunits-dev:
-  stage: test1
+  stage: trigger_languages
   trigger:
     project: monticore/languages/siunits
     branch: dev
@@ -177,7 +199,7 @@ trigger-siunits-dev:
     - dev
 
 trigger-sc-dev:
-  stage: test1
+  stage: trigger_languages
   trigger:
     project: monticore/statechart/sc-language
     branch: dev
@@ -185,7 +207,7 @@ trigger-sc-dev:
     - dev
 
 trigger-xml-dev:
-  stage: test1
+  stage: trigger_languages
   trigger:
     project: monticore/languages/xml
     branch: develop
@@ -193,7 +215,7 @@ trigger-xml-dev:
     - dev
 
 trigger-od-dev:
-  stage: test1
+  stage: trigger_languages
   trigger:
     project: monticore/languages/od
     branch: master
@@ -201,7 +223,7 @@ trigger-od-dev:
     - dev
 
 trigger-cd4a-master:
-  stage: test1
+  stage: trigger_languages
   trigger:
     project: monticore/cd4analysis/cd4analysis
     branch: master
@@ -209,7 +231,7 @@ trigger-cd4a-master:
     - master
 
 trigger-sd-master:
-  stage: test1
+  stage: trigger_languages
   trigger:
     project: monticore/statechart/sd-language
     branch: master
@@ -217,7 +239,7 @@ trigger-sd-master:
     - master
 
 trigger-fd-master:
-  stage: test1
+  stage: trigger_languages
   trigger:
     project: monticore/languages/feature-diagram
     branch: master
@@ -225,7 +247,7 @@ trigger-fd-master:
     - master
 
 trigger-guidsl-master:
-  stage: test1
+  stage: trigger_languages
   trigger:
     project: monticore/languages/gui-dsl
     branch: master
@@ -233,7 +255,7 @@ trigger-guidsl-master:
     - master
 
 trigger-json-master:
-  stage: test1
+  stage: trigger_languages
   trigger:
     project: monticore/languages/json
     branch: master
@@ -241,7 +263,7 @@ trigger-json-master:
     - master
 
 trigger-ma-master:
-  stage: test1
+  stage: trigger_languages
   trigger:
     project: monticore/montiarc/core
     branch: master
@@ -249,7 +271,7 @@ trigger-ma-master:
     - master
 
 trigger-ocl-master:
-  stage: test1
+  stage: trigger_languages
   trigger:
     project: monticore/languages/OCL
     branch: master
@@ -257,7 +279,7 @@ trigger-ocl-master:
     - master
 
 trigger-siunits-master:
-  stage: test1
+  stage: trigger_languages
   trigger:
     project: monticore/languages/siunits
     branch: master
@@ -265,7 +287,7 @@ trigger-siunits-master:
     - master
 
 trigger-sc-master:
-  stage: test1
+  stage: trigger_languages
   trigger:
     project: monticore/statechart/sc-language
     branch: master
@@ -273,7 +295,7 @@ trigger-sc-master:
     - master
 
 trigger-xml-master:
-  stage: test1
+  stage: trigger_languages
   trigger:
     project: monticore/languages/xml
     branch: master
@@ -281,7 +303,7 @@ trigger-xml-master:
     - master
 
 trigger-od-master:
-  stage: test1
+  stage: trigger_languages
   trigger:
     project: monticore/languages/od
     branch: master

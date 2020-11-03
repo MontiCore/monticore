@@ -1,0 +1,217 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+
+/* (c) https://github.com/MontiCore/monticore */
+
+plugins {
+  id "de.set.ecj" version "1.4.1" // Eclipse compiler as it's much faster than javac
+}
+
+allprojects {
+  group = 'de.monticore'
+  
+  ext.grammarDir = 'src/main/grammars'
+  buildDir = file("$projectDir/target")
+  
+  repositories {
+    if(("true").equals(getProperty('useLocalRepo'))){
+      mavenLocal()
+    }
+    maven {
+      credentials.username mavenUser
+      credentials.password mavenPassword
+      url repo
+    }
+    mavenCentral()
+  }
+}
+
+subprojects {
+  apply plugin: 'java'
+  apply plugin : 'de.set.ecj'
+  
+  tasks.withType(Test) {
+    useJUnit()
+    testLogging {
+      // controls whether test output is shown
+      showStandardStreams= ("false").equals(getProperty('showTestOutput'))? false : true
+      showExceptions true
+      showCauses true
+      showStackTraces true
+      exceptionFormat TestExceptionFormat.FULL
+      info {
+        events TestLogEvent.FAILED,
+                TestLogEvent.PASSED,
+                TestLogEvent.SKIPPED,
+                TestLogEvent.STANDARD_OUT
+      }
+    }
+    afterTest { desc, result ->
+      logger.lifecycle "${desc.className} > ${desc.name} ${result.resultType}"
+    }
+    afterSuite { desc, result ->
+      if (!desc.parent) { // will match the outermost suite
+        def output = "Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} passed, ${result.failedTestCount} failed, ${result.skippedTestCount} skipped)"
+        def startItem = '|  ', endItem = '  |'
+        logger.lifecycle startItem + output + endItem
+      }
+    }
+    reports {
+      junitXml.enabled = false
+      html.enabled = false
+    }
+  }
+  
+  // Fixes issue with java plugin in projects without resources
+  compileTestJava.doFirst { mkdir sourceSets.main.output.resourcesDir }
+  
+  sourceCompatibility = '1.8'
+  
+  tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+    options.deprecation false
+    options.warnings = false
+    options.fork = true
+    options.headerOutputDirectory.convention(null)
+  }
+  java {
+    withSourcesJar()
+  }
+  
+  
+}
+
+/**
+ *  Builds the core projects, i.e. the generator, runtime and grammar library.
+ *  Executes JUnit tests and assembles the jars.
+ */
+task buildMC {
+  group("build")
+  description('Builds the core projects, i.e. the generator, runtime and grammar library.')
+  dependsOn(
+          gradle.includedBuild('monticore-tool').task(':monticore-generator:build'),
+          gradle.includedBuild('monticore-tool').task(':monticore-cli:build'),
+          gradle.includedBuild('monticore-tool').task(':monticore-gradle:build'),
+          ":monticore-grammar:build",
+          ":monticore-runtime:build",
+          ":monticore-runtime-emf:build",
+          ":monticore-grammar-emf:build"
+  
+  )
+}
+
+/**
+ *  Assembles the core projects, i.e. the generator, runtime and grammar library.
+ *  Assembles the jars but does not execute JUnit tests.
+ */
+task assembleMC {
+  group("build")
+  description('Assembles the core projects, i.e. the generator, runtime and grammar library.')
+  dependsOn(
+          gradle.includedBuild('monticore-tool').task(':monticore-generator:assemble'),
+          gradle.includedBuild('monticore-tool').task(':monticore-cli:assemble'),
+          gradle.includedBuild('monticore-tool').task(':monticore-gradle:assemble'),
+          ":monticore-grammar:assemble",
+          ":monticore-runtime:assemble",
+          ":monticore-runtime-emf:assemble",
+          ":monticore-grammar-emf:assemble"
+  
+  )
+}
+
+/**
+ *  Executes JUnit tests of the core projects, i.e. the generator, runtime and grammar library.
+ */
+task testMC {
+  group("build")
+  description('Tests the core projects, i.e. the generator, runtime and grammar library.')
+  dependsOn(
+          gradle.includedBuild('monticore-tool').task(':monticore-generator:test'),
+          gradle.includedBuild('monticore-tool').task(':monticore-cli:test'),
+          gradle.includedBuild('monticore-tool').task(':monticore-gradle:test'),
+          ":monticore-grammar:test",
+          ":monticore-runtime:test",
+          ":monticore-runtime-emf:test",
+          ":monticore-grammar-emf:test"
+  
+  )
+}
+
+/**
+ *  Publishes the jars of the core projects, i.e. the generator, runtime and grammar library
+ *  to the nexus repository.
+ *  Assembles the jars and publishes them, but does not execute JUnit tests.
+ */
+task deployMC {
+  group("build")
+  description('Publishes the core projects, i.e. the generator, runtime and grammar library.')
+  dependsOn(
+          gradle.includedBuild('monticore-tool').task(':monticore-generator:publish'),
+          gradle.includedBuild('monticore-tool').task(':monticore-cli:publish'),
+          gradle.includedBuild('monticore-tool').task(':monticore-gradle:publish'),
+          ":monticore-grammar:publish",
+          ":monticore-runtime:publish",
+          ":monticore-runtime-emf:publish",
+          ":monticore-grammar-emf:publish"
+  
+  )
+}
+
+/**
+ *  Publishes the jars of the core projects, i.e. the generator, runtime and grammar library
+ *  to the local m2 repository. Typically this should not be needed.
+ *  Assembles the jars and publishes them, but does not execute JUnit tests.
+ */
+task publishMCToMavenLocal {
+  group("build")
+  description('Publishes the core projects, i.e. the generator, runtime and grammar library' +
+          'to the local maven repository.')
+  dependsOn(
+          gradle.includedBuild('monticore-tool').task(':monticore-generator:publishToMavenLocal'),
+          gradle.includedBuild('monticore-tool').task(':monticore-cli:publishToMavenLocal'),
+          gradle.includedBuild('monticore-tool').task(':monticore-gradle:publishToMavenLocal'),
+          ":monticore-grammar:publishToMavenLocal",
+          ":monticore-runtime:publishToMavenLocal",
+          ":monticore-runtime-emf:publishToMavenLocal",
+          ":monticore-grammar-emf:publishToMavenLocal"
+  
+  )
+}
+
+/**
+ *  Build the test projects, i.e. integration tests and experiments.
+ *  This includes code generation for these projects and JUnit tests.
+ */
+task testIT {
+  group("build")
+  description('Build the test projects, i.e. integration tests and experiments.')
+  dependsOn(
+          project(":monticore-test").subprojects.collect {
+            it.tasks.getByName "test"
+          }
+  )
+}
+
+
+configure([project(':monticore-grammar'),
+           project(':monticore-grammar-emf'),
+           project(':monticore-runtime'),
+           project(':monticore-runtime-emf')]){
+  apply plugin: 'maven-publish'
+  
+  // configure deployment
+  publishing {
+    publications {
+      maven(MavenPublication) {
+        from(components.java)
+      }
+    }
+    repositories.maven {
+      credentials.username mavenUser
+      credentials.password mavenPassword
+      def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-releases/"
+      def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-snapshots/"
+      url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+    }
+  }
+}
