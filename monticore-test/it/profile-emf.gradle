@@ -1,0 +1,38 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+buildDir = file("$projectDir/target-emf")
+ext.outDir = "$buildDir/generated-sources/monticore/sourcecode"
+sourceSets.main.java.srcDirs += [ outDir ]
+
+fileTree(dir: grammarDir, include: '**/*.mc4').each {
+  def g = it
+  def taskname = file(grammarDir).toURI().relativize(g.toURI()).toString()
+  taskname = taskname.substring(0, taskname.lastIndexOf(".")).replaceAll("/", '_')
+  task "generateEMF${taskname}"(type: MCTask) {
+    grammar = file g
+    outputDir = file outDir
+    handcodedPath "$projectDir/src/main/java"
+    modelPath "$projectDir/$grammarDir"
+    script = "$projectDir/it-emf.groovy"
+    def grammarIncludingPackage = file(grammarDir).toURI().relativize(g.toURI()).toString()
+    def uptoDate = incCheck(grammarIncludingPackage)
+    outputs.upToDateWhen { uptoDate }
+  }
+}
+
+sourceSets.test.java.srcDirs += ["$projectDir/src/test_emf/java"]
+
+def equinox_version ='3.10.400'
+dependencies {
+  implementation project(':monticore-runtime-emf')
+  implementation 'org.eclipse.emf:org.eclipse.emf.ecore.xmi:' + ecore_version
+  implementation 'org.eclipse.emf:org.eclipse.emf.compare.match:' + emf_compare_version
+  implementation 'org.eclipse.emf:org.eclipse.emf.compare.diff:' + emf_compare_version
+  testImplementation group:"org.eclipse.emf", name:"org.eclipse.emf.ecore.xmi", version:ecore_version
+  testImplementation group:"org.eclipse.emf", name:"org.eclipse.emf.ecore", version:ecore_version
+  testImplementation group:"org.eclipse.emf", name:"org.eclipse.emf.common", version:ecore_version
+  testImplementation group:"org.eclipse.emf", name:"org.eclipse.emf.compare", version:emf_compare_version
+  testImplementation group:"org.eclipse.emf", name:"org.eclipse.emf.compare.match", version:emf_compare_version
+  testImplementation group:"org.eclipse.emf", name:"org.eclipse.emf.compare.diff", version:emf_compare_version
+  testImplementation group:"org.eclipse.platform", name:"org.eclipse.equinox.common", version:equinox_version
+}
