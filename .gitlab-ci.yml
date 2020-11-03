@@ -110,8 +110,6 @@ deploy:
     - build
   script:
     - "./gradlew deployMC -PmavenPassword=$password -PmavenUser=$username $GRADLE_OPTS"
-    - awk -F"," '{ instructions += $4 + $5; covered += $5 } END { print covered, "/", instructions, "instructions covered"; print 100*covered/instructions, "% covered" }' ../*/target/site/jacoco/jacoco.csv
-  coverage: '/\d+.\d+ \% covered/'
   only:
     - dev
   except:
