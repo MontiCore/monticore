@@ -1,16 +1,20 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.feature.referencesymbol;
 
-import de.monticore.io.paths.ModelPath;
-import de.se_rwth.commons.logging.*;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import mc.feature.referencesymbol.reference.ReferenceMill;
 import mc.feature.referencesymbol.reference._ast.*;
 import mc.feature.referencesymbol.reference._parser.ReferenceParser;
-import mc.feature.referencesymbol.reference._symboltable.*;
+import mc.feature.referencesymbol.reference._symboltable.IReferenceArtifactScope;
+import mc.feature.referencesymbol.reference._symboltable.IReferenceGlobalScope;
+import mc.feature.referencesymbol.reference._symboltable.IReferenceScope;
+import mc.feature.referencesymbol.reference._symboltable.TestSymbol;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,27 +29,34 @@ public class ReferenceTest {
   private TestSymbol b;
   private TestSymbol c;
 
+
   @Before
   public void setUp() throws IOException {
     LogStub.init();         // replace log by a sideffect free variant
     // LogStub.initPlusLog();  // for manual testing purpose only
     Log.enableFailQuick(false);
+
+    // reset global scope
+    IReferenceGlobalScope globalScope = ReferenceMill.referenceGlobalScope();
+    globalScope.clearLoadedFiles();
+    for (IReferenceScope s : globalScope.getSubScopes()) {
+      globalScope.removeSubScope(s);
+    }
+    for (Path p : globalScope.getModelPath().getFullPathOfEntries()) {
+      globalScope.getModelPath().removeEntry(p);
+    }
+
+    // populate symtab
     ReferenceParser parser = new ReferenceParser();
     Optional<ASTRand> astRand = parser.parse("src/test/resources/mc/feature/referencesymbol/ReferenceModel.ref");
     assertFalse(parser.hasErrors());
     assertTrue(astRand.isPresent());
     //create symboltable
-    ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/mc/feature/referencesymbol"));
-    IReferenceGlobalScope globalScope = ReferenceMill
-        .referenceGlobalScopeBuilder()
-        .setModelPath(modelPath)
-        .setModelFileExtension("ref")
-        .build();
-    ReferenceSymbolTableCreatorDelegator symbolTableCreator = ReferenceMill
-        .referenceSymbolTableCreatorDelegatorBuilder()
-        .setGlobalScope(globalScope)
-        .build();
-    IReferenceArtifactScope artifactScope = symbolTableCreator.createFromAST(astRand.get());
+    globalScope.setModelFileExtension("ref");
+    globalScope.getModelPath().addEntry(Paths.get("src/test/resources/mc/feature/referencesymbol"));
+
+    IReferenceArtifactScope artifactScope = ReferenceMill
+        .referenceSymbolTableCreatorDelegator().createFromAST(astRand.get());
 
     Optional<? extends IReferenceScope> scopeOpt = artifactScope.getSubScopes().stream().findAny();
     assertTrue(scopeOpt.isPresent());

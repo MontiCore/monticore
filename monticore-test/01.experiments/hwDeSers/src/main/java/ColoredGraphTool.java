@@ -39,19 +39,15 @@ public class ColoredGraphTool {
     Log.info(model + " parsed successfully!", "ColoredGraphTool");
 
     // instantiate symbol table:
-    final IColoredGraphGlobalScope gs = ColoredGraphMill
-        .coloredGraphGlobalScope();
+    ColoredGraphMill.coloredGraphGlobalScope().setModelFileExtension("cg");
     final ColoredGraphSymbolTableCreatorDelegator stc = ColoredGraphMill
-        .coloredGraphSymbolTableCreatorDelegatorBuilder()
-        .setGlobalScope(gs)
-        .build();
+        .coloredGraphSymbolTableCreatorDelegator();
     final IColoredGraphArtifactScope symTab = stc.createFromAST(ast);
 
     Log.info("------------------", "ColoredGraphTool");
 
     // store symbol table
-    final ColoredGraphScopeDeSer deSer = ColoredGraphMill.coloredGraphScopeDeSerBuilder().build();
-    deSer.store(symTab, "target/" + model + "sym");
+    ColoredGraphMill.coloredGraphScopeDeSer().store(symTab, "target/" + model + "sym");
 
   }
 

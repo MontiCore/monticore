@@ -9,7 +9,7 @@ import de.se_rwth.commons.logging.Log;
  * valid json number, i.e. if it conforms to the regex:
  * "-?(0|([1-9][0-9]*))(\\.[0-9]+)?((e|E)(-|\\+)?[0-9]+)?"
  */
-public class NumberParser {
+public class NumberLexer {
 
   /**
    * enum with states within the lexing of a number token. The state is not visible outside of the
@@ -32,7 +32,7 @@ public class NumberParser {
 
   protected StringBuilder result;
 
-  public NumberParser() {
+  public NumberLexer() {
     reset();
   }
 

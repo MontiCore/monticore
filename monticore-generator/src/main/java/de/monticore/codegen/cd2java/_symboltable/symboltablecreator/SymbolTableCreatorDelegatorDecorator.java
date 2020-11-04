@@ -12,6 +12,7 @@ import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
+import de.se_rwth.commons.StringTransformations;
 
 import java.util.HashMap;
 import java.util.List;
@@ -66,6 +67,7 @@ public class SymbolTableCreatorDelegatorDecorator extends AbstractCreator<ASTCDC
           .setName(symbolTableCreatorDelegatorName)
           .setModifier(modifier)
           .setSuperclass(getMCTypeFacade().createQualifiedType(delegatorVisitorName))
+          .addCDConstructor(createZeroArgsConstructor(symbolTableCreatorDelegatorName))
           .addCDConstructor(createConstructor(symbolTableCreatorDelegatorName, globalScopeInterfaceName, symbolTableCreatorName, simpleName))
           .addCDAttribute(createScopeStackAttribute(dequeType))
           .addCDAttribute(createSymbolTableCreatorAttribute(symbolTableCreatorName))
@@ -91,6 +93,14 @@ public class SymbolTableCreatorDelegatorDecorator extends AbstractCreator<ASTCDC
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), symTabCreatorDelegator, globalScopeParam);
     this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint(TEMPLATE_PATH + "ConstructorSymbolTableCreatorDelegator",
         symTabMillFullName, superSymTabCreator, symbolTableCreator, simpleName));
+    return constructor;
+  }
+
+  protected ASTCDConstructor createZeroArgsConstructor(String symTabCreatorDelegator) {
+    String gs = StringTransformations.uncapitalize(symbolTableService.getGlobalScopeSimpleName());
+    String gsFromMill = symbolTableService.getMillFullName()+"."+gs+"()";
+    ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), symTabCreatorDelegator);
+    this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("this(" + gsFromMill + ");"));
     return constructor;
   }
 

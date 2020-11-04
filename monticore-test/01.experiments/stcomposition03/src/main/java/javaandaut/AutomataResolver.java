@@ -8,6 +8,7 @@ import basicjava._symboltable.*;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.modifiers.AccessModifier;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -16,21 +17,19 @@ import java.util.function.Predicate;
 
 public class AutomataResolver implements IStimulusSymbolResolver {
 
-  IBasicJavaGlobalScope javaGS;
-
   public AutomataResolver(ModelPath mp){
-    javaGS = BasicJavaMill
-        .basicJavaGlobalScopeBuilder()
-        .setModelPath(mp)
-        .setModelFileExtension("javamodel")
-        .build();
+    BasicJavaMill.basicJavaGlobalScope().setModelFileExtension("javamodel");
+    for(Path p : mp.getFullPathOfEntries()){
+      BasicJavaMill.basicJavaGlobalScope().getModelPath().addEntry(p);
+    }
   }
 
 
   @Override public List<StimulusSymbol> resolveAdaptedStimulusSymbol(boolean foundSymbols,
       String name, AccessModifier modifier, Predicate<StimulusSymbol> predicate) {
     List<StimulusSymbol> result = new ArrayList<>();
-    Optional<ClassDeclarationSymbol> classDeclSymbol = javaGS.resolveClassDeclaration(name, modifier);
+    Optional<ClassDeclarationSymbol> classDeclSymbol = BasicJavaMill.basicJavaGlobalScope()
+        .resolveClassDeclaration(name, modifier);
     if(classDeclSymbol.isPresent()){
       result.add(new Class2StimulusAdapter(classDeclSymbol.get()));
     }

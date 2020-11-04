@@ -9,7 +9,10 @@ import java.util.Deque;
 
 @Deprecated
 public class SM2SymbolTableCreator extends SM2SymbolTableCreatorTOP {
-  
+
+  public SM2SymbolTableCreator() {
+  }
+
   public SM2SymbolTableCreator(ISM2Scope enclosingScope) {
     super(enclosingScope);
   }

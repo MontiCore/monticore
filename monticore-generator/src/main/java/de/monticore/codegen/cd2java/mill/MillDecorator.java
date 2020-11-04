@@ -24,13 +24,14 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.*;
-import static de.monticore.codegen.cd2java.CoreTemplates.*;
+import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PACKAGE;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
-import static de.monticore.codegen.cd2java.top.TopDecorator.TOP_SUFFIX;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.TRAVERSER;
 import static de.monticore.codegen.cd2java.mill.MillConstants.*;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
+import static de.monticore.codegen.cd2java.top.TopDecorator.TOP_SUFFIX;
 
 /**
  * created mill class for a grammar
@@ -81,7 +82,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
           .stream()
           .filter(ASTCDClass::isPresentModifier)
           .filter(x -> !x.getModifier().isAbstract())
-          .filter(x -> x.getName().endsWith(BUILDER_SUFFIX))
+          .filter(cdClass -> checkIncludeInMill(cdClass))
           .collect(Collectors.toList());
 
 
@@ -97,7 +98,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
       // check if builder classes
       topClassList = topClassList
           .stream()
-          .filter(x -> x.getName().endsWith(BUILDER_SUFFIX))
+          .filter(cdClass -> checkIncludeInMill(cdClass))
           .collect(Collectors.toList());
       // add to classes which need a builder method
       classList.addAll(topClassList);
@@ -112,7 +113,6 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
       }
 
       List<ASTCDMethod> builderMethodsList = addBuilderMethods(classList, cd);
-
 
       millClass.addAllCDAttributes(attributeList);
       millClass.addAllCDMethods(builderMethodsList);
@@ -138,24 +138,6 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
 
       //artifactScope
       millClass.addAllCDMethods(getArtifactScopeMethods());
-
-      //scopeskeletoncreator
-      String scopeSkeletonCreatorAttributeName = MILL_INFIX + symbolTableService.getScopeSkeletonCreatorSimpleName();
-      ASTCDAttribute scopeSkeletonCreatorAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, millType, scopeSkeletonCreatorAttributeName);
-      millClass.addCDAttribute(scopeSkeletonCreatorAttribute);
-      millClass.addAllCDMethods(getScopeSkeletonCreatorMethods());
-
-      //scopeskeletoncreatordelegator
-      String scopeSkeletonCreatorDelegatorAttributeName = MILL_INFIX + symbolTableService.getScopeSkeletonCreatorDelegatorSimpleName();
-      ASTCDAttribute scopeSkeletonCreatorDelegatorAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, millType, scopeSkeletonCreatorDelegatorAttributeName);
-      millClass.addCDAttribute(scopeSkeletonCreatorDelegatorAttribute);
-      millClass.addAllCDMethods(getScopeSkeletonCreatorDelegatorMethods());
-
-      //phasedsymboltablecreatordelegator
-      String phasedSymbolTableCreatorDelegatorAttributeName = MILL_INFIX + symbolTableService.getPhasedSymbolTableCreatorDelegatorSimpleName();
-      ASTCDAttribute phasedSymbolTableCreatorDelegatorAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, millType, phasedSymbolTableCreatorDelegatorAttributeName);
-      millClass.addCDAttribute(phasedSymbolTableCreatorDelegatorAttribute);
-      millClass.addAllCDMethods(getPhasedSymbolTableCreatorDelegatorMethods());
     }
     //scope
     millClass.addAllCDMethods(getScopeMethods());
@@ -171,6 +153,17 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
     millClass.addCDMethod(resetMethod);
 
     return millClass;
+  }
+
+  protected boolean checkIncludeInMill(ASTCDClass cdClass){
+    String name = cdClass.getName();
+    return name.endsWith(BUILDER_SUFFIX)
+        || name.endsWith(SYMBOL_TABLE_CREATOR_SUFFIX)
+        || name.endsWith(SYMBOL_TABLE_CREATOR_SUFFIX + DELEGATOR_SUFFIX)
+        || name.endsWith(SCOPE_SKELETON_CREATOR_SUFFIX)
+        || name.endsWith(SCOPE_SKELETON_CREATOR_SUFFIX + DELEGATOR_SUFFIX)
+        || name.endsWith(DE_SER_SUFFIX)
+        || name.endsWith(SYMBOL_TABLE_PRINTER_SUFFIX);
   }
 
   protected List<String> getAttributeNameList(List<ASTCDClass> astcdClasses) {

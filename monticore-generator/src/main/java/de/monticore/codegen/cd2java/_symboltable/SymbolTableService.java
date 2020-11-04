@@ -210,34 +210,6 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   }
 
   /**
-   * model loader class names e.g. AutomataModelLoader
-   */
-
-  public String getModelLoaderClassFullName(CDDefinitionSymbol cdSymbol) {
-    return getPackage(cdSymbol) + "." + getModelLoaderClassSimpleName(cdSymbol);
-  }
-
-  public String getModelLoaderClassFullName() {
-    return getModelLoaderClassFullName(getCDSymbol());
-  }
-
-  public String getModelLoaderClassSimpleName(CDDefinitionSymbol cdSymbol) {
-    return cdSymbol.getName() + MODEL_LOADER_SUFFIX;
-  }
-
-  public String getModelLoaderClassSimpleName() {
-    return getModelLoaderClassSimpleName(getCDSymbol());
-  }
-
-  public ASTMCQualifiedType getModelLoaderType(CDDefinitionSymbol cdSymbol) {
-    return getMCTypeFacade().createQualifiedType(getModelLoaderClassFullName(cdSymbol));
-  }
-
-  public ASTMCQualifiedType getModelLoaderType() {
-    return getModelLoaderType(getCDSymbol());
-  }
-
-  /**
    * symbol reference class names e.g. AutomatonSymbolReference
    */
 

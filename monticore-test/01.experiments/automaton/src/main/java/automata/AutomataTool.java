@@ -148,9 +148,8 @@ public class AutomataTool {
         .build();
 
     AutomataSymbolTableCreator symbolTable = AutomataMill
-        .automataSymbolTableCreatorBuilder()
-        .addToScopeStack(globalScope)
-        .build();
+        .automataSymbolTableCreator();
+    symbolTable.putOnStack(globalScope);
 
     return symbolTable.createFromAST(ast);
   }

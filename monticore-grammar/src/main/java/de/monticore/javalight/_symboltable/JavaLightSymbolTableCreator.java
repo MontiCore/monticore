@@ -21,6 +21,10 @@ import static de.monticore.statements.mccommonstatements._ast.ASTConstantsMCComm
 @Deprecated
 public class JavaLightSymbolTableCreator extends JavaLightSymbolTableCreatorTOP {
 
+  public JavaLightSymbolTableCreator(){
+    super();
+  }
+
   public JavaLightSymbolTableCreator(IJavaLightScope enclosingScope) {
     super(enclosingScope);
   }

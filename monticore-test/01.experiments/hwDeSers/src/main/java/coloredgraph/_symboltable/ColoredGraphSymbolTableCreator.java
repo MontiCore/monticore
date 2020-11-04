@@ -12,17 +12,42 @@ import java.util.Deque;
 import java.util.HashSet;
 import java.util.Set;
 
-    // TODO AB: Erklaeren, wzu diese hwc class dient 
-    // (und warum sie gebraucht wird, zB wegen der symbolrule ...
-  
+/**
+ * This handwritten class extends the generated symbol table cretion to set the values of
+ * symbolrule and scoperule attributes.
+ * For the scoperule, all colors of the vertices in this model have to be counted.
+ * For setting the "color" symbolrule attribute of the VertexSymbol, the source in the model
+ * (and thus, also in the AST) can be either a symbolic color name or an RGB value.
+ * The "isInitial" symbolrule attribute can be directly translated from AST to symbol.
+  */
 public class ColoredGraphSymbolTableCreator extends ColoredGraphSymbolTableCreatorTOP {
 
-    // TODO AB: Erklaeren: einige allgemeine Mechanisen, zB warum enclosingScope notwendig
+  /**
+   * When using the TOP mechanism, all constructors of the TOP class should be overridden to
+   * be available everywhere, where they were used for the TOP class.
+   */
+  public ColoredGraphSymbolTableCreator() {
+    super();
+  }
+
+  /**
+   * When using the TOP mechanism, all constructors of the TOP class should be overridden to
+   * be available everywhere, where they were used for the TOP class.
+   * @param enclosingScope
+   */
   public ColoredGraphSymbolTableCreator(IColoredGraphScope enclosingScope) {
     super(enclosingScope);
   }
 
-    // TODO AB: Erklaeren oder weglassen: Braucht es für dieses beispiel den 2ten?
+  /**
+   * When using the TOP mechanism, all constructors of the TOP class should be overridden to
+   * be available everywhere, where they were used for the TOP class.
+   *
+   * For instance, this constructor enables reusing this symbol table creator as part of a
+   * (generated) symbol table creator delegator of a sub language, in which the scope stacks are
+   * shared between the delegated symbol table creators.
+   * @param scopeStack
+   */
   public ColoredGraphSymbolTableCreator(
       Deque<? extends IColoredGraphScope> scopeStack) {
     super(scopeStack);
@@ -96,7 +121,17 @@ public class ColoredGraphSymbolTableCreator extends ColoredGraphSymbolTableCreat
    * Section: createFromAST
    ****************************************************/
 
-    // TODO AB: Erklaeren:    
+  /**
+   * This method created the symbol table for a passed AST node, which is the result of the parse
+   * method of the Parser.
+   * This method is overridden to set the scoperule attribute: Before the symbol table creator
+   * traverses the AST, the set of all colors of the model is initialized with as empty set.
+   * During traversal, the colors of the vertices are added to this set.
+   * After the traversal, the value of the symbolrule of the artifact scope is set to the size
+   * of the set.
+   * @param rootNode
+   * @return
+   */
   @Override public IColoredGraphArtifactScope createFromAST(ASTGraph rootNode) {
     allColors = new HashSet<>();
     IColoredGraphArtifactScope as = super.createFromAST(rootNode);

@@ -21,11 +21,17 @@ import static de.monticore.statements.mccommonstatements._ast.ASTConstantsMCComm
 
 @Deprecated
 public class MCVarDeclarationStatementsSymbolTableCreator extends MCVarDeclarationStatementsSymbolTableCreatorTOP {
-  public MCVarDeclarationStatementsSymbolTableCreator(IMCVarDeclarationStatementsScope enclosingScope) {
+
+  public MCVarDeclarationStatementsSymbolTableCreator() {
+  }
+
+  public MCVarDeclarationStatementsSymbolTableCreator(
+      IMCVarDeclarationStatementsScope enclosingScope) {
     super(enclosingScope);
   }
 
-  public MCVarDeclarationStatementsSymbolTableCreator(Deque<? extends IMCVarDeclarationStatementsScope> scopeStack) {
+  public MCVarDeclarationStatementsSymbolTableCreator(
+      Deque<? extends IMCVarDeclarationStatementsScope> scopeStack) {
     super(scopeStack);
   }
 

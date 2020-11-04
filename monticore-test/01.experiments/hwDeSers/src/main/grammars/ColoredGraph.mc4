@@ -12,7 +12,7 @@ grammar ColoredGraph extends de.monticore.literals.MCCommonLiterals {
 
   NameColor implements Color  = Name;
 
-  Edge = s:Name@Vertex "-" ">"  t:Name@Vertex ";" ;
+  Edge = s:Name@Vertex "->"  t:Name@Vertex ";" ;
 
   // Each Vertex has a Color (stored as object java.awt.Color) 
   // and knows whether it is initial.

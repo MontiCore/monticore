@@ -3,6 +3,9 @@ package mc.feature.scopes;
 
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.*;
+import mc.feature.referencesymbol.reference.ReferenceMill;
+import mc.feature.referencesymbol.reference._symboltable.IReferenceGlobalScope;
+import mc.feature.referencesymbol.supgrammarref.SupGrammarRefMill;
 import mc.feature.scopes.scopeattributes.ScopeAttributesMill;
 import mc.feature.scopes.scopeattributes._ast.ASTStartProd;
 import mc.feature.scopes.scopeattributes._parser.ScopeAttributesParser;
@@ -35,17 +38,10 @@ public class ScopeAttributesTest {
     assertFalse(scopeAttributesParser.hasErrors());
     assertTrue(astSup.isPresent());
 
-    ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/mc/feature/scopes"));
-    IScopeAttributesGlobalScope globalScope = ScopeAttributesMill
-        .scopeAttributesGlobalScopeBuilder()
-        .setModelPath(modelPath)
-        .setModelFileExtension("sc")
-        .build();
-    ScopeAttributesSymbolTableCreatorDelegator symbolTableCreator = ScopeAttributesMill
-        .scopeAttributesSymbolTableCreatorDelegatorBuilder()
-        .setGlobalScope(globalScope)
-        .build();
-    scope = symbolTableCreator.createFromAST(astSup.get());
+    IScopeAttributesGlobalScope globalScope = ScopeAttributesMill.scopeAttributesGlobalScope();
+    globalScope.setModelFileExtension("sc");
+    globalScope.getModelPath().addEntry(Paths.get("src/test/resources/mc/feature/scopes"));
+    scope = ScopeAttributesMill.scopeAttributesSymbolTableCreatorDelegator().createFromAST(astSup.get());
   }
 
   /**

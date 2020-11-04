@@ -6,8 +6,16 @@ import java.util.Deque;
 @Deprecated
 public class TestSymTabMillSymbolTableCreator extends TestSymTabMillSymbolTableCreatorTOP {
 
-  public TestSymTabMillSymbolTableCreator(Deque<? extends ITestSymTabMillScope> scopeStack){
-    super(scopeStack);
+  public TestSymTabMillSymbolTableCreator() {
   }
 
+  public TestSymTabMillSymbolTableCreator(
+      ITestSymTabMillScope enclosingScope) {
+    super(enclosingScope);
+  }
+
+  public TestSymTabMillSymbolTableCreator(
+      Deque<? extends ITestSymTabMillScope> scopeStack) {
+    super(scopeStack);
+  }
 }

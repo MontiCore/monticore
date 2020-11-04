@@ -59,14 +59,14 @@ public class TransitionSourceExistsTest {
   @Test
   public void testRetrievalOfSymbol() throws IOException {
     ASTAutomaton ast = parser.parse_String(
-       "automaton Simple { state A;  state B;  A - x > A;  B - y > A; }"
+       "automaton Simple1 { state A;  state B;  A - x > A;  B - y > A; }"
     ).get();
     
     // setup the symbol table
     IAutomataArtifactScope modelTopScope = createSymbolTable(ast);
 
     // can be used for resolving names in the model
-    Optional<StateSymbol> aSymbol = modelTopScope.resolveState("Simple.A");
+    Optional<StateSymbol> aSymbol = modelTopScope.resolveState("Simple1.A");
     assertTrue(aSymbol.isPresent());
     assertEquals("A", aSymbol.get().getName());
     ASTNode n = aSymbol.get().getAstNode();
@@ -78,7 +78,7 @@ public class TransitionSourceExistsTest {
   @Test
   public void testOnValidModel() throws IOException {
     ASTAutomaton ast = parser.parse_String(
-      "automaton Simple { state A;  state B;  A -x> A;  B -y> A; }"
+      "automaton Simple2 { state A;  state B;  A -x> A;  B -y> A; }"
     ).get();
     
     // setup the symbol table
@@ -97,7 +97,7 @@ public class TransitionSourceExistsTest {
   @Test
   public void testOnInvalidModel() throws IOException {
     ASTAutomaton ast = parser.parse_String(
-       "automaton Simple { " +
+       "automaton Simple3 { " +
        "  state A;  state B; A - x > A;  Blubb - y > A; }"
     ).get();
     
@@ -124,18 +124,8 @@ public class TransitionSourceExistsTest {
    * @return
    */
   public static IAutomataArtifactScope createSymbolTable(ASTAutomaton ast) {
-    IAutomataGlobalScope globalScope = AutomataMill
-        .automataGlobalScopeBuilder()
-        .setModelPath(new ModelPath())
-        .setModelFileExtension("aut")
-        .build();
-
-    AutomataSymbolTableCreator symbolTable = AutomataMill
-        .automataSymbolTableCreatorBuilder()
-        .addToScopeStack(globalScope)
-        .build();
-
-    return symbolTable.createFromAST(ast);
+    AutomataMill.automataGlobalScope().setModelFileExtension("aut");
+    return AutomataMill.automataSymbolTableCreator().createFromAST(ast);
   }
 
 }

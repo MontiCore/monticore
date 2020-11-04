@@ -359,11 +359,9 @@ public class TemplatesTool {
    * @return
    */
   public IAutomataArtifactScope createSymbolTable(ASTAutomaton ast) {
-    return AutomataMill
-        .automataSymbolTableCreatorBuilder()
-        .addToScopeStack(globalScope)
-        .build()
-        .createFromAST(ast);
+    AutomataSymbolTableCreator stc = AutomataMill.automataSymbolTableCreator();
+    stc.putOnStack(globalScope);
+    return stc.createFromAST(ast);
   }
   
   /**

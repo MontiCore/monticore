@@ -9,15 +9,18 @@ import java.util.Deque;
 
 @Deprecated
 public class SM2SymbolTableCreator extends SM2SymbolTableCreatorTOP {
-  
+
+  public SM2SymbolTableCreator() {
+  }
+
   public SM2SymbolTableCreator(ISM2Scope enclosingScope) {
     super(enclosingScope);
   }
-  
+
   public SM2SymbolTableCreator(Deque<? extends ISM2Scope> scopeStack) {
     super(scopeStack);
   }
-  
+
   @Override
   public void visit(final ASTAutomaton automatonNode) {
     final AutomatonSymbol automaton = new AutomatonSymbol(automatonNode.getName());

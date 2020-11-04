@@ -1,7 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.feature.referencesymbol;
 
-import de.monticore.io.paths.ModelPath;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import mc.feature.referencesymbol.reference._ast.ASTTest;
 import mc.feature.referencesymbol.reference._symboltable.TestSymbol;
 import mc.feature.referencesymbol.supgrammarref.SupGrammarRefMill;
@@ -10,11 +11,15 @@ import mc.feature.referencesymbol.supgrammarref._ast.ASTSupRef;
 import mc.feature.referencesymbol.supgrammarref._ast.ASTSupRefList;
 import mc.feature.referencesymbol.supgrammarref._ast.ASTSupRefOpt;
 import mc.feature.referencesymbol.supgrammarref._parser.SupGrammarRefParser;
-import mc.feature.referencesymbol.supgrammarref._symboltable.*;
+import mc.feature.referencesymbol.supgrammarref._symboltable.ISupGrammarRefArtifactScope;
+import mc.feature.referencesymbol.supgrammarref._symboltable.ISupGrammarRefGlobalScope;
+import mc.feature.referencesymbol.supgrammarref._symboltable.ISupGrammarRefScope;
+import mc.feature.referencesymbol.supgrammarref._symboltable.SupGrammarRefSymbolTableCreatorDelegator;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +36,21 @@ public class SupReferenceTest {
 
   @Before
   public void setUp() throws IOException {
+    LogStub.init();         // replace log by a sideffect free variant
+    // LogStub.initPlusLog();  // for manual testing purpose only
+    Log.enableFailQuick(false);
 
+    // reset global scope
+    ISupGrammarRefGlobalScope globalScope = SupGrammarRefMill.supGrammarRefGlobalScope();
+    globalScope.clearLoadedFiles();
+    for (ISupGrammarRefScope s : globalScope.getSubScopes()) {
+      globalScope.removeSubScope(s);
+    }
+    for (Path p : globalScope.getModelPath().getFullPathOfEntries()) {
+      globalScope.getModelPath().removeEntry(p);
+    }
+
+    // populate symtab
     SupGrammarRefParser parser = new SupGrammarRefParser();
     Optional<ASTSupRand> astRand = parser.parse("src/test/resources/mc/feature/referencesymbol/SupReferenceModel.ref");
     assertFalse(parser.hasErrors());
@@ -39,17 +58,11 @@ public class SupReferenceTest {
     //create symboltable
     this.astsupRand = astRand.get();
 
+    globalScope.setModelFileExtension("ref");
+    globalScope.getModelPath().addEntry(Paths.get("src/test/resources/mc/feature/referencesymbol"));
 
-    ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/mc/feature/referencesymbol"));
-    ISupGrammarRefGlobalScope globalScope = SupGrammarRefMill
-        .supGrammarRefGlobalScopeBuilder()
-        .setModelPath(modelPath)
-        .setModelFileExtension("ref")
-        .build();
     SupGrammarRefSymbolTableCreatorDelegator symbolTableCreator = SupGrammarRefMill
-        .supGrammarRefSymbolTableCreatorDelegatorBuilder()
-        .setGlobalScope(globalScope)
-        .build();
+        .supGrammarRefSymbolTableCreatorDelegator();
     ISupGrammarRefArtifactScope artifact = symbolTableCreator.createFromAST(astsupRand);
     Optional<? extends ISupGrammarRefScope> scopeOpt = artifact.getSubScopes().stream().findAny();
     assertTrue(scopeOpt.isPresent());

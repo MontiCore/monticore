@@ -44,18 +44,8 @@ public class SymTabTest {
    */
   public static IJavaAutArtifactScope createSymTab(String model) {
     ASTCompilationUnit ast = parse(model);
-    IJavaAutGlobalScope globalScope = JavaAutMill.javaAutGlobalScopeBuilder()
-        .setModelPath(new ModelPath())
-        .setModelFileExtension("javaaut")
-        .build();
-
-    //initialize symbol table creators
-    JavaAutSymbolTableCreatorDelegator stc = JavaAutMill
-        .javaAutSymbolTableCreatorDelegatorBuilder()
-        .setGlobalScope(globalScope)
-        .build();
-
-    return stc.createFromAST(ast);
+    JavaAutMill.javaAutGlobalScope().setModelFileExtension("javaaut");
+    return JavaAutMill.javaAutSymbolTableCreatorDelegator().createFromAST(ast);
   }
 
   public static ASTCompilationUnit parse(String model) {

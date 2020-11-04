@@ -5,6 +5,7 @@ import basicjava._ast.ASTCompilationUnit;
 import basicjava._parser.BasicJavaParser;
 import basicjava._symboltable.*;
 import de.monticore.io.paths.ModelPath;
+import de.monticore.umlstereotype.UMLStereotypeMill;
 import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.RecognitionException;
 
@@ -15,18 +16,8 @@ public class BasicJavaTool {
 
   public static IBasicJavaArtifactScope createJavaSymTab(String model, ModelPath modelPath) {
     ASTCompilationUnit ast = parse(model);
-    IBasicJavaGlobalScope globalScope = BasicJavaMill
-        .basicJavaGlobalScopeBuilder()
-        .setModelPath(modelPath)
-        .setModelFileExtension("javamodel")
-        .build();
-    //initialize symbol table creators
-    BasicJavaSymbolTableCreator stc = BasicJavaMill
-        .basicJavaSymbolTableCreatorBuilder()
-        .addToScopeStack(globalScope)
-        .build();
-
-    return stc.createFromAST(ast);
+    BasicJavaMill.basicJavaGlobalScope().setModelFileExtension("javamodel");
+    return BasicJavaMill.basicJavaSymbolTableCreator().createFromAST(ast);
   }
 
   /**

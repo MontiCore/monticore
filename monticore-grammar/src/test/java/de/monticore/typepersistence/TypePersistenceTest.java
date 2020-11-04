@@ -41,7 +41,7 @@ public class TypePersistenceTest {
     //Parse blah model
     VariableParser blahParser = new VariableParser();
     Optional<ASTVar> varModel = blahParser.parse_String("var String a");
-    VariableSymbolTableCreator varSymbolTableCreator = VariableMill.variableSymbolTableCreatorBuilder().addToScopeStack(globalScope).build();
+    VariableSymbolTableCreator varSymbolTableCreator = VariableMill.variableSymbolTableCreator();
     IVariableScope blahSymbolTable = varSymbolTableCreator.createFromAST(varModel.get());
 ASTMCType a;
     assertTrue(varModel.isPresent());

@@ -5,10 +5,7 @@ import com.google.common.collect.Lists;
 import de.monticore.symbols.basicsymbols._symboltable.*;
 import de.monticore.symbols.oosymbols._symboltable.*;
 import de.monticore.symboltable.modifiers.AccessModifier;
-import mc.testcd4analysis._symboltable.CDFieldSymbol;
-import mc.testcd4analysis._symboltable.CDMethOrConstrSymbol;
-import mc.testcd4analysis._symboltable.CDTypeSymbol;
-import mc.testcd4analysis._symboltable.TestCD4AnalysisGlobalScope;
+import mc.testcd4analysis._symboltable.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,11 +13,11 @@ import java.util.function.Predicate;
 
 public class CD2EAdapter implements IOOTypeSymbolResolver, IMethodSymbolResolver, IFieldSymbolResolver, IFunctionSymbolResolver, IVariableSymbolResolver, ITypeSymbolResolver {
 
-  private TestCD4AnalysisGlobalScope cd4ascope;
+  private ITestCD4AnalysisGlobalScope cd4ascope;
 
   private CD2EHelper cd2EHelper;
 
-  public CD2EAdapter(TestCD4AnalysisGlobalScope cd4ascope) {
+  public CD2EAdapter(ITestCD4AnalysisGlobalScope cd4ascope) {
     this.cd4ascope = cd4ascope;
     this.cd2EHelper = new CD2EHelper();
   }

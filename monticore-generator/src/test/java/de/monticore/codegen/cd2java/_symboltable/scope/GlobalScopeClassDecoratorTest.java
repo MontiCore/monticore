@@ -133,7 +133,7 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeSize() {
-    assertEquals(9, scopeClass.sizeCDAttributes());
+    assertEquals(7, scopeClass.sizeCDAttributes());
   }
 
   @Test
@@ -144,22 +144,8 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testModelLoaderAttribute() {
-    ASTCDAttribute astcdAttribute = getAttributeBy("modelLoader", scopeClass);
-    assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
-    assertDeepEquals("Optional<AutomatonModelLoader>", astcdAttribute.getMCType());
-  }
-
-  @Test
   public void testFileExtensionAttribute() {
     ASTCDAttribute astcdAttribute = getAttributeBy("modelFileExtension", scopeClass);
-    assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
-    assertDeepEquals("String", astcdAttribute.getMCType());
-  }
-
-  @Test
-  public void testSymbolFileExtensionAttribute() {
-    ASTCDAttribute astcdAttribute = getAttributeBy("symbolFileExtension", scopeClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertDeepEquals("String", astcdAttribute.getMCType());
   }
@@ -234,7 +220,7 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(33, scopeClass.getCDMethodList().size());
+    assertEquals(25, scopeClass.getCDMethodList().size());
   }
 
   @Test
@@ -243,47 +229,6 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
     assertDeepEquals(PUBLIC, method.getModifier());
     assertDeepEquals(MODEL_PATH, method.getMCReturnType().getMCType());
-
-    assertTrue(method.isEmptyCDParameters());
-  }
-
-  @Test
-  public void testGetModelLoaderMethod() {
-    ASTCDMethod method = getMethodBy("getModelLoader", scopeClass);
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals("AutomatonModelLoader", method.getMCReturnType().getMCType());
-
-    assertTrue(method.isEmptyCDParameters());
-  }
-
-  @Test
-  public void testSetModelLoaderMethod() {
-    ASTCDMethod method = getMethodBy("setModelLoader", scopeClass);
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-
-    assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals("AutomatonModelLoader", method.getCDParameter(0).getMCType());
-    assertEquals("modelLoader", method.getCDParameter(0).getName());
-  }
-
-  @Test
-  public void testSetModelLoaderAbsentMethod() {
-    ASTCDMethod method = getMethodBy("setModelLoaderAbsent", scopeClass);
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-    assertTrue(method.isEmptyCDParameters());
-  }
-
-  @Test
-  public void testIsPresentModelLoaderMethod() {
-    ASTCDMethod method = getMethodBy("isPresentModelLoader", scopeClass);
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals("boolean", method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
   }
@@ -365,27 +310,6 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.sizeCDParameters());
     assertBoolean(method.getCDParameter(0).getMCType());
     assertEquals("stateSymbolsAlreadyResolved", method.getCDParameter(0).getName());
-  }
-
-  @Test
-  public void testGetSymbolFileExtensionMethod(){
-    ASTCDMethod method = getMethodBy("getSymbolFileExtension", scopeClass);
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertFalse(method.getMCReturnType().isPresentMCVoidType());
-    assertDeepEquals(String.class, method.getMCReturnType().getMCType());
-    assertTrue(method.isEmptyCDParameters());
-  }
-
-  @Test
-  public void testSetSymbolFileExtensionMethod(){
-    ASTCDMethod method = getMethodBy("setSymbolFileExtension", scopeClass);
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-    assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
-    assertEquals("symbolFileExtension", method.getCDParameter(0).getName());
   }
 
   @Test
