@@ -12,6 +12,7 @@ import de.monticore.javalight._ast.ASTJavaLightNode;
 import de.monticore.javalight._visitor.JavaLightDelegatorVisitor;
 import de.monticore.statements.mccommonstatements._ast.ASTMCCommonStatementsNode;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTMCVarDeclarationStatementsNode;
+import de.monticore.statements.prettyprint.MCArrayStatementsPrettyPrinter;
 import de.monticore.statements.prettyprint.MCCommonStatementsPrettyPrinter;
 import de.monticore.statements.prettyprint.MCVarDeclarationStatementsPrettyPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCBasicTypesNode;
@@ -34,6 +35,7 @@ public class JavaLightPrettyPrinterDelegator extends JavaLightDelegatorVisitor {
     setMCVarDeclarationStatementsVisitor(new MCVarDeclarationStatementsPrettyPrinter(printer));
     setJavaLightVisitor(new JavaLightPrettyPrinter(printer));
     setJavaClassExpressionsVisitor(new JavaClassExpressionsPrettyPrinter(printer));
+    setMCArrayStatementsVisitor(new MCArrayStatementsPrettyPrinter(printer));
   }
 
   public IndentPrinter getPrinter() {

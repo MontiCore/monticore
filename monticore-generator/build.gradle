@@ -1,0 +1,78 @@
+/* (c) https://github.com/MontiCore/monticore */
+buildscript {
+  // fake a different group for Gradle to prevent it from including the build in it self
+  group = "de.mc"
+}
+
+plugins {
+  id "java"
+  id "monticore" version "$previous_mc_version" // MontiCore Plugin
+}
+
+description = 'MontiCore: Generator'
+group = "de.monticore"
+
+
+dependencies {
+  implementation "de.monticore:monticore-runtime:$previous_mc_version"
+  implementation "de.monticore:monticore-grammar:$previous_mc_version"
+  grammar "de.monticore:monticore-grammar:$previous_mc_version:grammars"
+  implementation "de.se_rwth.commons:se-commons-groovy:$se_commons_version"
+  implementation "de.se_rwth.commons:se-commons-logging:$se_commons_version"
+  implementation "de.monticore.lang:cd4analysis:$cd4a_version"
+  implementation "org.antlr:antlr4:$antlr_version"
+  implementation ('com.google.guava:guava:25.1-jre'){
+    force(true)
+  }
+  implementation 'org.codehaus.groovy:groovy:3.0.2'
+  implementation 'org.apache.commons:commons-lang3:3.8.1'
+  testImplementation 'com.github.javaparser:javaparser-symbol-solver-core:3.14.11'
+  testImplementation "junit:junit:$junit_version"
+  testImplementation 'ch.qos.logback:logback-classic:1.1.2'
+  testImplementation 'org.mockito:mockito-core:3.3.3'
+}
+
+sourceSets {
+  main.java.srcDirs += [ "$buildDir/generated-sources/monticore/sourcecode"]
+  
+  grammars {
+    resources {
+      srcDirs(grammarDir)
+      include "**/*.mc4"
+    }
+  }
+}
+
+task  generateGrammar (type: MCTask) {
+  grammar = file "$grammarDir/de/monticore/grammar/Grammar.mc4"
+  outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
+  def uptoDate = incCheck("de/monticore/grammar/Grammar.mc4")
+  outputs.upToDateWhen { uptoDate }
+}
+
+task  generateGrammar_WConcepts (type: MCTask) {
+  grammar = file "$grammarDir/de/monticore/grammar/Grammar_WithConcepts.mc4"
+  outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
+  def uptoDate = incCheck("de/monticore/grammar/Grammar_WithConcepts.mc4")
+  superGrammars.from(file ("$grammarDir/de/monticore/grammar/Grammar.mc4"), file("$grammarDir/de/monticore/grammar/concepts/antlr/Antlr.mc4"))
+  outputs.upToDateWhen { uptoDate }
+}
+
+task  generateAntlr (type: MCTask) {
+  grammar = file "$grammarDir/de/monticore/grammar/concepts/antlr/Antlr.mc4"
+  outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
+  def uptoDate = incCheck("de/monticore/grammar/concepts/antlr/Antlr.mc4")
+  outputs.upToDateWhen { uptoDate }
+}
+
+compileJava {
+  dependsOn project.collect { it.tasks.withType(MCTask) }
+}
+
+java {
+  registerFeature('grammars') {
+    usingSourceSet(sourceSets.grammars)
+  }
+}
+
+jar.dependsOn grammarsJar

@@ -196,7 +196,6 @@ public class GeneratorSetup {
    * Construtor
    */
   public GeneratorSetup() {
-    TemplateController.clearActiveControllers();
   }
 
   /*******************************************************/

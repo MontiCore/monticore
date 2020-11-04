@@ -244,7 +244,7 @@ and
   [*detailed description*](https://git.rwth-aachen.de/monticore/languages/json/-/blob/master/src/main/grammars/de/monticore/lang/json.md)
 
 
-### [MontiArc](https://git.rwth-aachen.de/monticore/montiarc/core) (Beta: In Stabilization)
+### [MontiArc](https://git.rwth-aachen.de/monticore/montiarc/core) (MontiCore Stable)
 * Caretaker: DS 
 * MontiArc is an architecture and behavior modeling language and framework 
     that provides an platform independent structure and behavior 
@@ -321,10 +321,13 @@ component InteriorLight {                           // MontiArc language
 * OD is a language for textual denotation of object diagrams. The OD language
   has several purposes (when combined with appropriate language extensions):
   1. specification language for object structures (as part of the [UML/P](http://mbse.se-rwth.de/))
-  1. stage and transport of data sets (e.g. the artifact analysis toolchain), and
-  1. as a report format for the MontiCore tool infrastructure. 
-* OD covers **named and anonymous objects, links, attributes, attribute values, lists**, and
-  **visibilities**. For a comfortable definition, objects may be nested. An example:
+  1. store and transport of data sets (e.g. the artifact analysis toolchain), and
+  1. report format for the MontiCore tool infrastructure. 
+* OD covers **named and anonymous objects, object types, links, attributes, attribute values, 
+  lists, maps**, and
+  **visibilities**. Special data types, such as **Date** allow comfortable
+  definition and reading of ODs. For a comfortable definition, objects may be **nested**
+  into trees while easily retaining their full graph structure. An example:
   ```
   objectdiagram MyFamily {
     alice:Person {
@@ -346,7 +349,7 @@ component InteriorLight {                           // MontiArc language
     link married alice <-> bob;
   }
   ```
-* If ODs are used as specification techniqe, e.g. for tests or unwanted 
+* If ODs are used as specification techniqe, e.g. for tests or forbidden 
   situations,
   a more expressive version of expressions can be used for values 
   (e.g. by composing ODs with JavaExpressions). Furthermore, only 
@@ -357,6 +360,8 @@ component InteriorLight {                           // MontiArc language
   enabaling the definition real graph structures.
 * Main grammars:
     * [ODBasics](https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/lang/ODBasics.mc4)
+    * [OD4Data](https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/lang/OD4Data.mc4)
+    * [OD4Development](https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/lang/OD4Development.mc4)
     * [OD4Report](https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/lang/OD4Report.mc4)
     * [DateLiterals](https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/lang/DateLiterals.mc4)
 * [*Detailed description*](https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/lang/ODBasics.md) 

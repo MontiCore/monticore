@@ -68,21 +68,7 @@ public class GlobalExtensionManagement {
    */
   public void setGlobalData(SimpleHash data) {
     Log.errorIfNull(data);
-
     this.globalData = data;
-    try {
-      Map<Object, Object> map = data.toMap();
-      for (TemplateController tc: TemplateController.getActiveControllers()) {
-        for (Map.Entry<Object, Object> entry: map.entrySet()) {
-          if (entry.getKey() instanceof String) {
-            tc.setValueToData((String) entry.getKey(), entry.getValue());
-          }
-        }
-      }
-    } catch (TemplateModelException e) {
-      Log.error("0xA1062 Internal Error on global values");
-    }
-
   }
 
   /**
@@ -150,7 +136,6 @@ public class GlobalExtensionManagement {
       Log.error("0xA0124 Global Value '" + name + "' has not been defined.");
     } else {
       setGlobalValue(name, value);
-      TemplateController.getActiveControllers().forEach(t -> t.setValueToData(name, value));
     }
   }
 
