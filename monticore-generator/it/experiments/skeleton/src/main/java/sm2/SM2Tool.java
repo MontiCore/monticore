@@ -109,10 +109,10 @@ public class SM2Tool {
         .setModelFileExtension("aut")
         .build();
 
-    SM2SymbolTableCreator symbolTable = SM2Mill
-        .sM2SymbolTableCreatorBuilder()
-        .addToScopeStack(globalScope)
-        .build();
+    SM2ScopeSkeletonCreator symbolTable = SM2Mill
+        .sM2ScopeSkeletonCreator();
+
+    symbolTable.addToScopeStack(globalScope);
 
     return symbolTable.createFromAST(ast);
   }
