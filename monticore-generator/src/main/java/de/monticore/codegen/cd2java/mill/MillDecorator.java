@@ -114,7 +114,6 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
 
       List<ASTCDMethod> builderMethodsList = addBuilderMethods(classList, cd);
 
-
       millClass.addAllCDAttributes(attributeList);
       millClass.addAllCDMethods(builderMethodsList);
     }
@@ -139,24 +138,6 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
 
       //artifactScope
       millClass.addAllCDMethods(getArtifactScopeMethods());
-
-      //scopeskeletoncreator
-      String scopeSkeletonCreatorAttributeName = MILL_INFIX + symbolTableService.getScopeSkeletonCreatorSimpleName();
-      ASTCDAttribute scopeSkeletonCreatorAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, millType, scopeSkeletonCreatorAttributeName);
-      millClass.addCDAttribute(scopeSkeletonCreatorAttribute);
-      millClass.addAllCDMethods(getScopeSkeletonCreatorMethods());
-
-      //scopeskeletoncreatordelegator
-      String scopeSkeletonCreatorDelegatorAttributeName = MILL_INFIX + symbolTableService.getScopeSkeletonCreatorDelegatorSimpleName();
-      ASTCDAttribute scopeSkeletonCreatorDelegatorAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, millType, scopeSkeletonCreatorDelegatorAttributeName);
-      millClass.addCDAttribute(scopeSkeletonCreatorDelegatorAttribute);
-      millClass.addAllCDMethods(getScopeSkeletonCreatorDelegatorMethods());
-
-      //phasedsymboltablecreatordelegator
-      String phasedSymbolTableCreatorDelegatorAttributeName = MILL_INFIX + symbolTableService.getPhasedSymbolTableCreatorDelegatorSimpleName();
-      ASTCDAttribute phasedSymbolTableCreatorDelegatorAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, millType, phasedSymbolTableCreatorDelegatorAttributeName);
-      millClass.addCDAttribute(phasedSymbolTableCreatorDelegatorAttribute);
-      millClass.addAllCDMethods(getPhasedSymbolTableCreatorDelegatorMethods());
     }
     //scope
     millClass.addAllCDMethods(getScopeMethods());
@@ -179,6 +160,8 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
     return name.endsWith(BUILDER_SUFFIX)
         || name.endsWith(SYMBOL_TABLE_CREATOR_SUFFIX)
         || name.endsWith(SYMBOL_TABLE_CREATOR_SUFFIX + DELEGATOR_SUFFIX)
+        || name.endsWith(SCOPE_SKELETON_CREATOR_SUFFIX)
+        || name.endsWith(SCOPE_SKELETON_CREATOR_SUFFIX + DELEGATOR_SUFFIX)
         || name.endsWith(DE_SER_SUFFIX)
         || name.endsWith(SYMBOL_TABLE_PRINTER_SUFFIX);
   }

@@ -111,7 +111,7 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
                                 final SymbolTableCreatorForSuperTypes symbolTableCreatorForSuperTypes,
                                 final SymbolDeSerDecorator symbolDeSerDecorator,
                                 final ScopeDeSerDecorator scopeDeSerDecorator,
-                                final SymbolTablePrinterDecorator symbolTablePrinterDecorator){
+                                final SymbolTablePrinterDecorator symbolTablePrinterDecorator,
                                 final ScopeSkeletonCreatorDecorator scopeSkeletonCreatorDecorator,
                                 final ScopeSkeletonCreatorDelegatorDecorator scopeSkeletonCreatorDelegatorDecorator,
                                 final PhasedSymbolTableCreatorDelegatorDecorator phasedSymbolTableCreatorDelegatorDecorator) {
