@@ -11,6 +11,8 @@ import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 
+import java.util.Optional;
+
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
@@ -18,6 +20,10 @@ import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILD_M
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.cd.facade.CDModifier.*;
 
+/**
+ * @deprecated use ScopeSkeletonCreator instead
+ */
+@Deprecated
 public class SymbolTableCreatorBuilderDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClass> {
 
   protected final SymbolTableService symbolTableService;
@@ -41,10 +47,12 @@ public class SymbolTableCreatorBuilderDecorator extends AbstractCreator<ASTCDCom
     ASTMCQualifiedType builderType = getMCTypeFacade().createQualifiedType(symbolTableCreatorBuilder);
 
     ASTCDAttribute scopeStackAttribute = createScopeStackAttribute(dequeType);
+    ASTModifier modifier = PUBLIC.build();
+    symbolTableService.addDeprecatedStereotype(modifier, Optional.of("use ScopeSkeletonCreator instead"));
 
     return CD4AnalysisMill.cDClassBuilder()
         .setName(symbolTableCreatorBuilder)
-        .setModifier(PUBLIC.build())
+        .setModifier(modifier)
         .addCDConstructor(createConstructor(symbolTableCreatorBuilder))
         .addCDMethod(createBuildMethod(symbolTableCreator))
         .addCDAttribute(scopeStackAttribute)

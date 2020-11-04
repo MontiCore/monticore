@@ -26,8 +26,10 @@ import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILD_M
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 
 /**
+ * @deprecated use ScopeSkeletonCreator instead
  * creates a SymbolReference class from a grammar
  */
+@Deprecated
 public class SymbolTableCreatorForSuperTypesBuilder extends AbstractCreator<List<ASTCDClass>, List<ASTCDClass>> {
 
   protected static final String TEMPLATE_PATH = "_symboltable.symboltablecreatordelegator.";
@@ -55,6 +57,8 @@ public class SymbolTableCreatorForSuperTypesBuilder extends AbstractCreator<List
       superST.getCDMethodList().clear();
 
       ASTCDClass superSTBuilder = builderDecorator.decorate(superST);
+      ASTModifier modifier = superSTBuilder.getModifier();
+      symbolTableService.addDeprecatedStereotype(modifier, Optional.of("will be removed"));
 
       // search for build method
       Optional<ASTCDMethod> buildMethod = superSTBuilder.getCDMethodList()

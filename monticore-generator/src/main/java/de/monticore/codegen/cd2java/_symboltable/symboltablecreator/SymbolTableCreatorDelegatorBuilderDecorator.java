@@ -13,6 +13,11 @@ import java.util.Optional;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILD_METHOD;
 
+/**
+ * @deprecated use ScopeSkeletonCreator instead
+ */
+
+@Deprecated
 public class SymbolTableCreatorDelegatorBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
 
 

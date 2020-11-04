@@ -345,6 +345,66 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   }
 
   /**
+   * PhasedSymbolTableCreatorDelegator Names, e.g. AutomatonPhasedSymbolTableCreatorDelegator
+   */
+
+  public String getPhasedSymbolTableCreatorDelegatorSimpleName(CDDefinitionSymbol cdSymbol) {
+    return cdSymbol.getName() + PHASED_SUFFIX + SYMBOL_TABLE_CREATOR_SUFFIX + DELEGATOR_SUFFIX;
+  }
+
+  public String getPhasedSymbolTableCreatorDelegatorSimpleName() {
+    return getPhasedSymbolTableCreatorDelegatorSimpleName(getCDSymbol());
+  }
+
+  public String getPhasedSymbolTableCreatorDelegatorFullName(CDDefinitionSymbol cdSymbol) {
+    return getPackage(cdSymbol) + "." + getPhasedSymbolTableCreatorDelegatorSimpleName(cdSymbol);
+  }
+
+  public String getPhasedSymbolTableCreatorDelegatorFullName() {
+    return getPhasedSymbolTableCreatorDelegatorFullName(getCDSymbol());
+  }
+
+  /**
+   * ScopeSkeletonCreatorDelegator Names e.g. AutomatonScopeSkeletonCreatorDelegator
+   */
+
+  public String getScopeSkeletonCreatorDelegatorSimpleName(CDDefinitionSymbol cdSymbol) {
+    return cdSymbol.getName() + SCOPE_SKELETON_CREATOR_SUFFIX + DELEGATOR_SUFFIX;
+  }
+
+  public String getScopeSkeletonCreatorDelegatorSimpleName() {
+    return getScopeSkeletonCreatorDelegatorSimpleName(getCDSymbol());
+  }
+
+  public String getScopeSkeletonCreatorDelegatorFullName(CDDefinitionSymbol cdSymbol) {
+    return getPackage(cdSymbol) + "." + getScopeSkeletonCreatorDelegatorSimpleName(cdSymbol);
+  }
+
+  public String getScopeSkeletonCreatorDelegatorFullName() {
+    return getScopeSkeletonCreatorDelegatorFullName(getCDSymbol());
+  }
+
+  /**
+   * ScopeSkeletonCreator Names e.g. AutomatonScopeSkeletonCreator
+   */
+
+  public String getScopeSkeletonCreatorSimpleName(CDDefinitionSymbol cdSymbol) {
+    return cdSymbol.getName() + SCOPE_SKELETON_CREATOR_SUFFIX;
+  }
+
+  public String getScopeSkeletonCreatorSimpleName() {
+    return getScopeSkeletonCreatorSimpleName(getCDSymbol());
+  }
+
+  public String getScopeSkeletonCreatorFullName(CDDefinitionSymbol cdSymbol) {
+    return getPackage(cdSymbol) + "." + getScopeSkeletonCreatorSimpleName(cdSymbol);
+  }
+
+  public String getScopeSkeletonCreatorFullName() {
+    return getScopeSkeletonCreatorFullName(getCDSymbol());
+  }
+
+  /**
    * deser class names e.g. AutomataDeSer
    */
 
