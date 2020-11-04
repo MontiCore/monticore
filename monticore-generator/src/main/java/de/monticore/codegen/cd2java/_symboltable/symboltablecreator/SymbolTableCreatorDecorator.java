@@ -31,8 +31,10 @@ import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
 
 /**
+ * @deprecated use ScopeSkeletonCreator instead
  * creates a SymbolReference class from a grammar
  */
+@Deprecated
 public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilationUnit, Optional<ASTCDClass>> {
 
   protected final SymbolTableService symbolTableService;
@@ -80,9 +82,12 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
       List<ASTCDMethod> setScopeStack = methodDecorator.getMutatorDecorator()
           .decorate(scopeStackAttribute);
 
+      ASTModifier modifier = PUBLIC.build();
+      symbolTableService.addDeprecatedStereotype(modifier, Optional.of("use ScopeSkeletonCreator instead"));
+
       ASTCDClass symTabCreator = CD4CodeMill.cDClassBuilder()
           .setName(symbolTableCreator)
-          .setModifier(PUBLIC.build())
+          .setModifier(modifier)
           .addInterface(getMCTypeFacade().createQualifiedType(visitorName))
           .addCDConstructor(createZeroArgsConstructor(symbolTableCreator))
           .addCDConstructor(createSimpleConstructor(symbolTableCreator, scopeInterface))

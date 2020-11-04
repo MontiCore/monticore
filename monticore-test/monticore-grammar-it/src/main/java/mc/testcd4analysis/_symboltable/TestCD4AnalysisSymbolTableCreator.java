@@ -14,6 +14,7 @@ import java.util.Deque;
 import java.util.List;
 import java.util.Optional;
 
+@Deprecated
 public class TestCD4AnalysisSymbolTableCreator extends TestCD4AnalysisSymbolTableCreatorTOP {
 
   public TestCD4AnalysisSymbolTableCreator() {

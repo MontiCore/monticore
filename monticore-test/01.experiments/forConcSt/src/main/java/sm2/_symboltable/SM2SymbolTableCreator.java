@@ -7,6 +7,7 @@ import sm2._ast.ASTState;
 
 import java.util.Deque;
 
+@Deprecated
 public class SM2SymbolTableCreator extends SM2SymbolTableCreatorTOP {
 
   public SM2SymbolTableCreator() {

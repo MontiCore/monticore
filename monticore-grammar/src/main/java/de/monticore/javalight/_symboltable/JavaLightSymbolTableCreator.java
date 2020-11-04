@@ -18,6 +18,7 @@ import java.util.Deque;
 
 import static de.monticore.statements.mccommonstatements._ast.ASTConstantsMCCommonStatements.*;
 
+@Deprecated
 public class JavaLightSymbolTableCreator extends JavaLightSymbolTableCreatorTOP {
 
   public JavaLightSymbolTableCreator(){

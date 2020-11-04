@@ -3,6 +3,7 @@ package de.monticore.testsymtabmill.testsymtabmill._symboltable;
 
 import java.util.Deque;
 
+@Deprecated
 public class TestSymTabMillSymbolTableCreator extends TestSymTabMillSymbolTableCreatorTOP {
 
   public TestSymTabMillSymbolTableCreator() {

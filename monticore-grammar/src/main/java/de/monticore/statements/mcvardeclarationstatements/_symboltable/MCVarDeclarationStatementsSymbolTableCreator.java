@@ -19,6 +19,7 @@ import java.util.List;
 
 import static de.monticore.statements.mccommonstatements._ast.ASTConstantsMCCommonStatements.*;
 
+@Deprecated
 public class MCVarDeclarationStatementsSymbolTableCreator extends MCVarDeclarationStatementsSymbolTableCreatorTOP {
 
   public MCVarDeclarationStatementsSymbolTableCreator() {

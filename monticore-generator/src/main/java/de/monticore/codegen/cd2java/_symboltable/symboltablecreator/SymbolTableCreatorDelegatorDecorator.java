@@ -26,8 +26,10 @@ import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.DEQ
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SCOPE_STACK_VAR;
 
 /**
+ * @deprecated use ScopeSkeletonCreator instead
  * creates a SymbolReference class from a grammar
  */
+@Deprecated
 public class SymbolTableCreatorDelegatorDecorator extends AbstractCreator<ASTCDCompilationUnit, Optional<ASTCDClass>> {
 
   protected final SymbolTableService symbolTableService;
@@ -58,9 +60,12 @@ public class SymbolTableCreatorDelegatorDecorator extends AbstractCreator<ASTCDC
       String delegatorVisitorName = visitorService.getDelegatorVisitorFullName();
       ASTMCBasicGenericType dequeType = getMCTypeFacade().createBasicGenericTypeOf(DEQUE_TYPE, scopeInterface);
 
+      ASTModifier modifier = PUBLIC.build();
+      symbolTableService.addDeprecatedStereotype(modifier, Optional.of("use ScopeSkeletonCreatorDelegator instead"));
+
       ASTCDClass symTabCreatorDelegator = CD4CodeMill.cDClassBuilder()
           .setName(symbolTableCreatorDelegatorName)
-          .setModifier(PUBLIC.build())
+          .setModifier(modifier)
           .setSuperclass(getMCTypeFacade().createQualifiedType(delegatorVisitorName))
           .addCDConstructor(createZeroArgsConstructor(symbolTableCreatorDelegatorName))
           .addCDConstructor(createConstructor(symbolTableCreatorDelegatorName, globalScopeInterfaceName, symbolTableCreatorName, simpleName))

@@ -130,14 +130,35 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
     
     // decorate for global scope
     if(symbolTableService.hasStartProd()){
+      //globalScope
       String globalScopeAttributeName = StringTransformations.uncapitalize(symbolTableService.getGlobalScopeSimpleName());
       ASTCDAttribute globalScopeAttribute = getCDAttributeFacade().createAttribute(PROTECTED, symbolTableService.getGlobalScopeInterfaceType(),globalScopeAttributeName);
       List<ASTCDMethod> globalScopeMethods = getGlobalScopeMethods(globalScopeAttribute);
       millClass.addCDAttribute(globalScopeAttribute);
       millClass.addAllCDMethods(globalScopeMethods);
 
+      //artifactScope
       millClass.addAllCDMethods(getArtifactScopeMethods());
+
+      //scopeskeletoncreator
+      String scopeSkeletonCreatorAttributeName = MILL_INFIX + symbolTableService.getScopeSkeletonCreatorSimpleName();
+      ASTCDAttribute scopeSkeletonCreatorAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, millType, scopeSkeletonCreatorAttributeName);
+      millClass.addCDAttribute(scopeSkeletonCreatorAttribute);
+      millClass.addAllCDMethods(getScopeSkeletonCreatorMethods());
+
+      //scopeskeletoncreatordelegator
+      String scopeSkeletonCreatorDelegatorAttributeName = MILL_INFIX + symbolTableService.getScopeSkeletonCreatorDelegatorSimpleName();
+      ASTCDAttribute scopeSkeletonCreatorDelegatorAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, millType, scopeSkeletonCreatorDelegatorAttributeName);
+      millClass.addCDAttribute(scopeSkeletonCreatorDelegatorAttribute);
+      millClass.addAllCDMethods(getScopeSkeletonCreatorDelegatorMethods());
+
+      //phasedsymboltablecreatordelegator
+      String phasedSymbolTableCreatorDelegatorAttributeName = MILL_INFIX + symbolTableService.getPhasedSymbolTableCreatorDelegatorSimpleName();
+      ASTCDAttribute phasedSymbolTableCreatorDelegatorAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, millType, phasedSymbolTableCreatorDelegatorAttributeName);
+      millClass.addCDAttribute(phasedSymbolTableCreatorDelegatorAttribute);
+      millClass.addAllCDMethods(getPhasedSymbolTableCreatorDelegatorMethods());
     }
+    //scope
     millClass.addAllCDMethods(getScopeMethods());
 
     // add builder methods for each class
@@ -249,6 +270,40 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
       }
     }
     return superMethods;
+  }
+
+  protected List<ASTCDMethod> getPhasedSymbolTableCreatorDelegatorMethods(){
+    String phasedSymbolTableCreatorDelegatorName = symbolTableService.getPhasedSymbolTableCreatorDelegatorSimpleName();
+    String phasedSymbolTableCreatorDelegatorFullName = symbolTableService.getPhasedSymbolTableCreatorDelegatorFullName();
+    return getStaticAndProtectedMethods(phasedSymbolTableCreatorDelegatorName, phasedSymbolTableCreatorDelegatorFullName);
+  }
+
+  protected List<ASTCDMethod> getScopeSkeletonCreatorDelegatorMethods(){
+    String scopeSkeletonCreatorDelegatorName = symbolTableService.getScopeSkeletonCreatorDelegatorSimpleName();
+    String scopeSkeletonCreatorDelegatorFullName = symbolTableService.getScopeSkeletonCreatorDelegatorFullName();
+    return getStaticAndProtectedMethods(scopeSkeletonCreatorDelegatorName, scopeSkeletonCreatorDelegatorFullName);
+  }
+
+  protected List<ASTCDMethod> getScopeSkeletonCreatorMethods(){
+    String scopeSkeletonCreatorName = symbolTableService.getScopeSkeletonCreatorSimpleName();
+    String scopeSkeletonCreatorFullName = symbolTableService.getScopeSkeletonCreatorFullName();
+    return getStaticAndProtectedMethods(scopeSkeletonCreatorName, scopeSkeletonCreatorFullName);
+  }
+
+  protected List<ASTCDMethod> getStaticAndProtectedMethods(String name, String fullName){
+    List<ASTCDMethod> methods = Lists.newArrayList();
+    String staticMethodName = StringTransformations.uncapitalize(name);
+    String protectedMethodName = "_"+staticMethodName;
+    ASTMCType scopeSkeletonCreatorType = getMCTypeFacade().createQualifiedType(fullName);
+
+    ASTCDMethod staticMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC, scopeSkeletonCreatorType, staticMethodName);
+    this.replaceTemplate(EMPTY_BODY, staticMethod, new TemplateHookPoint("mill.BuilderMethod", name, staticMethodName));
+    methods.add(staticMethod);
+
+    ASTCDMethod protectedMethod = getCDMethodFacade().createMethod(PROTECTED, scopeSkeletonCreatorType, protectedMethodName);
+    this.replaceTemplate(EMPTY_BODY, protectedMethod, new TemplateHookPoint("mill.ProtectedBuilderMethod", fullName));
+    methods.add(protectedMethod);
+    return methods;
   }
 
   protected List<ASTCDMethod> getGlobalScopeMethods(ASTCDAttribute globalScopeAttribute){

@@ -18,6 +18,7 @@ import mc.typescalculator.combineexpressionswithliterals._parser.CombineExpressi
 import mc.typescalculator.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsSymbolTableCreatorDelegator;
 import mc.typescalculator.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsArtifactScope;
 import mc.typescalculator.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsGlobalScope;
+import mc.typescalculator.combineexpressionswithliterals._symboltable.*;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -75,7 +76,7 @@ public class CombineExpressionsWithLiteralsTest {
     CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
 
     Optional<ASTExpression> expr = p.parse_StringExpression("d.s+=d.s");
-    CombineExpressionsWithLiteralsSymbolTableCreatorDelegator del = new CombineExpressionsWithLiteralsSymbolTableCreatorDelegator(globalScope1);
+    CombineExpressionsWithLiteralsPhasedSymbolTableCreatorDelegator del = new CombineExpressionsWithLiteralsPhasedSymbolTableCreatorDelegator(globalScope1);
 
     assertTrue(expr.isPresent());
     ICombineExpressionsWithLiteralsArtifactScope art = del.createFromAST(expr.get());
