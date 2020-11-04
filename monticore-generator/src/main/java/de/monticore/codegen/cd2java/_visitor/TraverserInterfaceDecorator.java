@@ -102,6 +102,7 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
         .addCDMethod(addGetRealThisMethods(traverserType))
         .addCDMethod(addSetRealThisMethods(traverserType))
         .addAllCDMethods(addVisitor2Methods(definitionList))
+        .addAllCDMethods(addHanlderMethods(definitionList))
         .addAllCDMethods(createTraverserDelegatingMethods(compilationUnit.getCDDefinition()))
         .addAllCDMethods(addDefaultVisitorMethods(visitorSimpleNameList))
         .build();
@@ -139,7 +140,7 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
     String generatedErrorCode = visitorService.getGeneratedErrorCode(visitorType.printType(
         new MCSimpleGenericTypesPrettyPrinter(new IndentPrinter())) + SET_REAL_THIS);
     this.replaceTemplate(EMPTY_BODY, setRealThis, new StringHookPoint(
-        "    throw new UnsupportedOperationException(\"0xA7011"+generatedErrorCode+" The setter for realThis is " +
+        "    throw new UnsupportedOperationException(\"0xA7012"+generatedErrorCode+" The setter for realThis is " +
             "not implemented. You might want to implement a wrapper class to allow setting/getting realThis.\");\n"));
     return setRealThis;
   }
@@ -183,17 +184,45 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
     List<ASTCDMethod> methodList = new ArrayList<>();
     for (ASTCDDefinition cd : definitionList) {
       String simpleName = Names.getSimpleName(visitorService.getVisitorSimpleName(cd.getSymbol()));
-      //add setter for visitor attribute
-      //e.g. public void setAutomataVisitor(automata._visitor.AutomataVisitor AutomataVisitor)
-      ASTMCQualifiedType visitorType = getMCTypeFacade().createQualifiedType(visitorService.getVisitor2FullName(cd.getSymbol()));
+      // add setter for visitor attribute
+      // e.g. public void setAutomataVisitor(automata._visitor.AutomataVisitor2 automataVisitor)
+      ASTMCQualifiedType visitorType = visitorService.getVisitor2Type(cd.getSymbol());
       ASTCDParameter visitorParameter = getCDParameterFacade().createParameter(visitorType, StringTransformations.uncapitalize(simpleName));
       ASTCDMethod setVisitorMethod = getCDMethodFacade().createMethod(PUBLIC, "set" + simpleName, visitorParameter);
       methodList.add(setVisitorMethod);
 
-      //add getter for visitor attribute
-      // e.g. public Optional<automata._visitor.AutomataVisitor> getAutomataVisitor()
+      // add getter for visitor attribute
+      // e.g. public Optional<automata._visitor.AutomataVisitor2> getAutomataVisitor()
       ASTMCOptionalType optionalVisitorType = getMCTypeFacade().createOptionalTypeOf(visitorType);
       ASTCDMethod getVisitorMethod = getCDMethodFacade().createMethod(PUBLIC, optionalVisitorType, "get" + simpleName);
+      this.replaceTemplate(EMPTY_BODY, getVisitorMethod, new StringHookPoint("return Optional.empty();"));
+      methodList.add(getVisitorMethod);
+    }
+    return methodList;
+  }
+  
+  /**
+   * Adds the getter and setter methods for the attached handlers.
+   * 
+   * @param definitionList List of class diagrams to retrieve available visitors
+   * @return The decorated getter and setter methods
+   */
+  protected List<ASTCDMethod> addHanlderMethods(List<ASTCDDefinition> definitionList) {
+    // add setter and getter for created attribute in 'getVisitorAttributes'
+    List<ASTCDMethod> methodList = new ArrayList<>();
+    for (ASTCDDefinition cd : definitionList) {
+      String simpleName = Names.getSimpleName(visitorService.getHandlerSimpleName(cd.getSymbol()));
+      // add setter for handler attribute
+      // e.g. public void setAutomataHandler(automata._visitor.AutomataHandler automataHandler)
+      ASTMCQualifiedType handlerType = visitorService.getHandlerType(cd.getSymbol());
+      ASTCDParameter handlerParameter = getCDParameterFacade().createParameter(handlerType, StringTransformations.uncapitalize(simpleName));
+      ASTCDMethod setVisitorMethod = getCDMethodFacade().createMethod(PUBLIC, "set" + simpleName, handlerParameter);
+      methodList.add(setVisitorMethod);
+
+      // add getter for visitor attribute
+      // e.g. public Optional<automata._visitor.AutomataHandler> getAutomataHandler()
+      ASTMCOptionalType optionalHandlerType = getMCTypeFacade().createOptionalTypeOf(handlerType);
+      ASTCDMethod getVisitorMethod = getCDMethodFacade().createMethod(PUBLIC, optionalHandlerType, "get" + simpleName);
       this.replaceTemplate(EMPTY_BODY, getVisitorMethod, new StringHookPoint("return Optional.empty();"));
       methodList.add(getVisitorMethod);
     }

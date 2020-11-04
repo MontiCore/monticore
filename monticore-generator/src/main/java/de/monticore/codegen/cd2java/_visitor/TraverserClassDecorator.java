@@ -10,6 +10,7 @@ import static de.monticore.codegen.cd2java._visitor.VisitorConstants.REAL_THIS;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.SET_REAL_THIS;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.SET_REAL_THIS_DELEGATOR_TEMPLATE;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.TRAVERSER_SET_VISITOR_TEMPLATE;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.TRAVERSER_SET_HANDLER_TEMPLATE;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,13 +39,13 @@ import de.se_rwth.commons.StringTransformations;
 /**
  * creates a DelegatorVisitor class from a grammar
  */
-public class TraverserDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClass> {
+public class TraverserClassDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClass> {
 
   protected final VisitorService visitorService;
 
   protected final SymbolTableService symbolTableService;
 
-  public TraverserDecorator(final GlobalExtensionManagement glex,
+  public TraverserClassDecorator(final GlobalExtensionManagement glex,
                                    final VisitorService visitorService,
                                    final SymbolTableService symbolTableService) {
     super(glex);
@@ -74,7 +75,9 @@ public class TraverserDecorator extends AbstractCreator<ASTCDCompilationUnit, AS
         .addCDMethod(addGetRealThisMethod(delegatorVisitorSimpleName))
         .addCDMethod(addSetRealThisMethod(visitorType, delegatorVisitorSimpleName, simpleVisitorName))
         .addAllCDAttributes(getVisitorAttributes(cDsTransitive))
+        .addAllCDAttributes(getHandlerAttributes(cDsTransitive))
         .addAllCDMethods(addVisitorMethods(cDsTransitive))
+        .addAllCDMethods(addHandlerMethods(cDsTransitive))
         .build();
   }
 
@@ -171,8 +174,8 @@ public class TraverserDecorator extends AbstractCreator<ASTCDCompilationUnit, AS
     List<ASTCDMethod> methodList = new ArrayList<>();
     for (CDDefinitionSymbol cd : cdSymbols) {
       String simpleName = visitorService.getVisitorSimpleName(cd);
-      //add setter for visitor attribute
-      //e.g. public void setAutomataVisitor(automata._visitor.AutomataVisitor AutomataVisitor)
+      // add setter for visitor attribute
+      // e.g. public void setAutomataVisitor(automata._visitor.AutomataVisitor visitor)
       ASTMCQualifiedType visitorType = visitorService.getVisitor2Type(cd);
       ASTCDParameter visitorParameter = getCDParameterFacade().createParameter(visitorType, StringTransformations.uncapitalize(simpleName));
       ASTCDMethod setVisitorMethod = getCDMethodFacade().createMethod(PUBLIC, "set" + simpleName, visitorParameter);
@@ -180,7 +183,7 @@ public class TraverserDecorator extends AbstractCreator<ASTCDCompilationUnit, AS
           TRAVERSER_SET_VISITOR_TEMPLATE, simpleName));
       methodList.add(setVisitorMethod);
 
-      //add getter for visitor attribute
+      // add getter for visitor attribute
       // e.g. public Optional<automata._visitor.AutomataVisitor> getAutomataVisitor()
       ASTMCOptionalType optionalVisitorType = getMCTypeFacade().createOptionalTypeOf(visitorType);
       ASTCDMethod getVisitorMethod = getCDMethodFacade().createMethod(PUBLIC, optionalVisitorType, "get" + simpleName);
@@ -190,4 +193,63 @@ public class TraverserDecorator extends AbstractCreator<ASTCDCompilationUnit, AS
     }
     return methodList;
   }
+  
+  /**
+   * Adds the attributes for all attachable handlers for the current traverser.
+   * The available handlers result from the current language and its super
+   * languages.
+   * 
+   * @param cdSymbols The class diagram symbol of the current language and the
+   *          symbols of its transitive super languages
+   * @return The decorated handler attributes
+   */
+  protected List<ASTCDAttribute> getHandlerAttributes(List<CDDefinitionSymbol> cdSymbols) {
+    // generate a attribute for own handler and all super handlers
+    // e.g. private Optional<automata._visitor.AutomataHandler> automataHandler = Optional.empty();
+    List<ASTCDAttribute> attributeList = new ArrayList<>();
+    for (CDDefinitionSymbol cd : cdSymbols) {
+      String simpleName = visitorService.getHandlerSimpleName(cd);
+      ASTMCQualifiedType type = visitorService.getHandlerType(cd);
+      ASTCDAttribute handlerAttribute = getCDAttributeFacade().createAttribute(PRIVATE, getMCTypeFacade().createOptionalTypeOf(type),
+          StringTransformations.uncapitalize(simpleName));
+      this.replaceTemplate(VALUE, handlerAttribute, new StringHookPoint("= Optional.empty();"));
+      attributeList.add(handlerAttribute);
+    }
+    return attributeList;
+  }
+  
+  /**
+   * Adds the getter and setter methods for all attachable handlers for the
+   * current traverser. The available handlers result from the current language
+   * and its super languages.
+   * 
+   * @param cdSymbols The class diagram symbol of the current language and the
+   *          symbols of its transitive super languages
+   * @return The decorated handler getter and setter methods
+   */
+  protected List<ASTCDMethod> addHandlerMethods(List<CDDefinitionSymbol> cdSymbols) {
+    // add setter and getter for created attribute in 'getVisitorAttributes'
+    List<ASTCDMethod> methodList = new ArrayList<>();
+    for (CDDefinitionSymbol cd : cdSymbols) {
+      String simpleName = visitorService.getHandlerSimpleName(cd);
+      // add setter for handler attribute
+      // e.g. public void setAutomataHandler(automata._visitor.AutomataHandler handler)
+      ASTMCQualifiedType handlerType = visitorService.getHandlerType(cd);
+      ASTCDParameter handlerParameter = getCDParameterFacade().createParameter(handlerType, StringTransformations.uncapitalize(simpleName));
+      ASTCDMethod setHandlerMethod = getCDMethodFacade().createMethod(PUBLIC, "set" + simpleName, handlerParameter);
+      this.replaceTemplate(EMPTY_BODY, setHandlerMethod, new TemplateHookPoint(
+          TRAVERSER_SET_HANDLER_TEMPLATE, simpleName));
+      methodList.add(setHandlerMethod);
+
+      // add getter for handler attribute
+      // e.g. public Optional<automata._visitor.AutomataHandler> getAutomataHandler()
+      ASTMCOptionalType optionalHandlerType = getMCTypeFacade().createOptionalTypeOf(handlerType);
+      ASTCDMethod getHandlerMethod = getCDMethodFacade().createMethod(PUBLIC, optionalHandlerType, "get" + simpleName);
+      this.replaceTemplate(EMPTY_BODY, getHandlerMethod,
+          new StringHookPoint("return " + StringTransformations.uncapitalize(simpleName) + ";"));
+      methodList.add(getHandlerMethod);
+    }
+    return methodList;
+  }
+  
 }

@@ -25,8 +25,9 @@ import de.monticore.io.paths.IterablePath;
 public class CDTraverserDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCompilationUnit> {
 
   protected final TraverserInterfaceDecorator iTraverserDecorator;
-  protected final TraverserDecorator traverserDecorator;
+  protected final TraverserClassDecorator traverserDecorator;
   protected final Visitor2Decorator visitor2Decorator;
+  protected final HandlerDecorator handlerDecorator;
   protected final IterablePath handCodedPath;
   protected final VisitorService visitorService;
 
@@ -34,14 +35,16 @@ public class CDTraverserDecorator extends AbstractCreator<ASTCDCompilationUnit, 
                             final IterablePath handCodedPath,
                             final VisitorService visitorService,
                             final TraverserInterfaceDecorator iTraverserDecorator,
-                            final TraverserDecorator traverserDecorator,
-                            final Visitor2Decorator visitor2Decorator) {
+                            final TraverserClassDecorator traverserDecorator,
+                            final Visitor2Decorator visitor2Decorator,
+                            final HandlerDecorator handlerDecorator) {
     super(glex);
     this.handCodedPath = handCodedPath;
     this.visitorService = visitorService;
     this.iTraverserDecorator = iTraverserDecorator;
     this.traverserDecorator = traverserDecorator;
     this.visitor2Decorator = visitor2Decorator;
+    this.handlerDecorator = handlerDecorator;
   }
 
   @Override
@@ -57,6 +60,7 @@ public class CDTraverserDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     ASTCDInterface traverserInterface = iTraverserDecorator.decorate(input);
     ASTCDClass traverserClass = traverserDecorator.decorate(input);
     ASTCDInterface visitor2Interface = visitor2Decorator.decorate(input);
+    ASTCDInterface handlerInterface = handlerDecorator.decorate(input);
     
     // build cd
     ASTCDDefinition astCD = CD4CodeMill.cDDefinitionBuilder()
@@ -64,6 +68,7 @@ public class CDTraverserDecorator extends AbstractCreator<ASTCDCompilationUnit, 
         .addCDInterface(traverserInterface)
         .addCDClass(traverserClass)
         .addCDInterface(visitor2Interface)
+        .addCDInterface(handlerInterface)
         .build();
 
     for (ASTCDClass cdClass : astCD.getCDClassList()) {
