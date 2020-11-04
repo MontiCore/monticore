@@ -1,0 +1,157 @@
+package de.monticore.javalight._symboltable;
+
+import de.monticore.javalight._ast.*;
+import de.monticore.javalight._visitor.JavaLightVisitor;
+import de.monticore.statements.mccommonstatements._ast.ASTJavaModifier;
+import de.monticore.statements.mcstatementsbasis._ast.ASTMCModifier;
+import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
+import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
+import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.check.SymTypeExpressionFactory;
+import de.monticore.types.check.SymTypeOfNull;
+import de.monticore.types.check.SynthesizeSymTypeFromMCFullGenericTypes;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
+import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
+
+import static de.monticore.statements.mccommonstatements._ast.ASTConstantsMCCommonStatements.*;
+
+public class JavaLightSTCompleteTypes implements JavaLightVisitor {
+
+  private JavaLightVisitor realThis;
+
+  public JavaLightSTCompleteTypes(){
+    this.realThis = this;
+  }
+
+  @Override
+  public JavaLightVisitor getRealThis() {
+    return realThis;
+  }
+
+  @Override
+  public void setRealThis(JavaLightVisitor realThis) {
+    this.realThis = realThis;
+  }
+
+  @Override
+  public void endVisit(ASTLastFormalParameter ast) {
+    FieldSymbol symbol = ast.getDeclaratorId().getSymbol();
+    symbol.setType(createTypeLoader(ast.getMCType()));
+  }
+
+  @Override
+  public void endVisit(ASTMethodDeclaration ast){
+    JavaMethodSymbol symbol = ast.getSymbol();
+    addModifiersToMethOrConstr(symbol, ast.getMCModifierList());
+    symbol.setReturnType(createTypeLoader(ast.getMCReturnType()));
+    if (ast.isPresentThrows()) {
+      addThrowsToMethod(symbol, ast.getThrows());
+    }
+    if (ast.getFormalParameters().isPresentFormalParameterListing()
+        && ast.getFormalParameters().getFormalParameterListing().isPresentLastFormalParameter()) {
+      symbol.setIsElliptic(true);
+    }
+  }
+
+  @Override
+  public void endVisit(ASTInterfaceMethodDeclaration ast){
+    JavaMethodSymbol symbol = ast.getSymbol();
+    addModifiersToMethOrConstr(symbol, ast.getMCModifierList());
+    symbol.setReturnType(createTypeLoader(ast.getMCReturnType()));
+    if (ast.isPresentThrows()) {
+      addThrowsToMethod(symbol, ast.getThrows());
+    }
+    if (ast.getFormalParameters().isPresentFormalParameterListing()
+        && ast.getFormalParameters().getFormalParameterListing().isPresentLastFormalParameter()) {
+      symbol.setIsElliptic(true);
+    }
+  }
+
+  @Override
+  public void endVisit(ASTConstructorDeclaration ast){
+    JavaMethodSymbol symbol = ast.getSymbol();
+    addModifiersToMethOrConstr(symbol, ast.getMCModifierList());
+    if (ast.isPresentThrows()) {
+      addThrowsToMethod(symbol, ast.getThrows());
+    }
+    if (ast.getFormalParameters().isPresentFormalParameterListing()
+        && ast.getFormalParameters().getFormalParameterListing().isPresentLastFormalParameter()) {
+      symbol.setIsElliptic(true);
+    }
+  }
+
+  protected void addModifiersToMethOrConstr(JavaMethodSymbol javaMethodSymbol,
+                                            Iterable<? extends ASTMCModifier> astModifierList) {
+    for (ASTMCModifier modifier : astModifierList) {
+      if (modifier instanceof ASTJavaModifier) {
+        // visibility
+        switch (((ASTJavaModifier) modifier).getModifier()) {
+          case PUBLIC:
+            javaMethodSymbol.setIsPublic(true);
+            break;
+          case PROTECTED:
+            javaMethodSymbol.setIsProtected(true);
+            break;
+          case PRIVATE:
+            javaMethodSymbol.setIsPrivate(true);
+            // other variable modifiers as in jls7 8.3.1 Field Modifiers
+            break;
+          case ABSTRACT:
+            javaMethodSymbol.setIsAbstract(true);
+            break;
+          case STATIC:
+            javaMethodSymbol.setIsStatic(true);
+            break;
+          case FINAL:
+            javaMethodSymbol.setIsFinal(true);
+            break;
+          case NATIVE:
+            javaMethodSymbol.setIsNative(true);
+            break;
+          case STRICTFP:
+            javaMethodSymbol.setIsStrictfp(true);
+            break;
+          case SYNCHRONIZED:
+            javaMethodSymbol.setIsSynchronized(true);
+            break;
+          default:
+            break;
+        }
+      } else if (modifier instanceof ASTAnnotation) {
+        ASTAnnotation astAnnotation = (ASTAnnotation) modifier;
+        javaMethodSymbol.addAnnotations(createTypeLoader(astAnnotation.getAnnotationName()));
+      }
+    }
+  }
+
+  protected void addThrowsToMethod(JavaMethodSymbol javaMethodSymbol, ASTThrows throws1) {
+    for (ASTMCQualifiedName astQualifiedName : throws1.getMCQualifiedNameList()) {
+      javaMethodSymbol.addExceptions(createTypeLoader(astQualifiedName));
+    }
+  }
+
+  private SymTypeExpression createTypeLoader(ASTMCQualifiedName ast) {
+    SynthesizeSymTypeFromMCFullGenericTypes syn = new SynthesizeSymTypeFromMCFullGenericTypes();
+    // Start visitor
+    ast.accept(syn);
+    return syn.getResult().orElse(new SymTypeOfNull());
+  }
+
+  private SymTypeExpression createTypeLoader(ASTMCType ast) {
+    SynthesizeSymTypeFromMCFullGenericTypes syn = new SynthesizeSymTypeFromMCFullGenericTypes();
+    // Start visitor
+    ast.accept(syn);
+    return syn.getResult().orElse(new SymTypeOfNull());
+  }
+
+  private SymTypeExpression createTypeLoader(ASTMCReturnType ast) {
+    if (ast.isPresentMCType()) {
+      return createTypeLoader(ast.getMCType());
+    } else {
+      // TODO Bessere Lösung
+      return SymTypeExpressionFactory.createTypeObject("void", (IOOSymbolsScope) ast.getEnclosingScope());
+    }
+
+  }
+}

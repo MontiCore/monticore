@@ -26,6 +26,8 @@ import de.monticore.codegen.cd2java._ast.enums.EnumDecorator;
 import de.monticore.codegen.cd2java._ast.factory.NodeFactoryDecorator;
 import de.monticore.codegen.cd2java._ast.factory.NodeFactoryService;
 import de.monticore.codegen.cd2java._symboltable.serialization.*;
+import de.monticore.codegen.cd2java._symboltable.scopeskeletoncreator.ScopeSkeletonCreatorDecorator;
+import de.monticore.codegen.cd2java._symboltable.scopeskeletoncreator.ScopeSkeletonCreatorDelegatorDecorator;
 import de.monticore.codegen.cd2java.mill.CDAuxiliaryDecorator;
 import de.monticore.codegen.cd2java.mill.CDMillDecorator;
 import de.monticore.codegen.cd2java.mill.MillDecorator;
@@ -558,6 +560,9 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     ScopeDeSerBuilderDecorator scopeDeSerBuilderDecorator = new ScopeDeSerBuilderDecorator(glex, builderDecorator);
     SymbolTablePrinterDecorator symbolTablePrinterDecorator = new SymbolTablePrinterDecorator(glex, symbolTableService, visitorService);
     SymbolTablePrinterBuilderDecorator symbolTablePrinterBuilderDecorator = new SymbolTablePrinterBuilderDecorator(glex, builderDecorator);
+    ScopeSkeletonCreatorDecorator scopeSkeletonCreatorDecorator = new ScopeSkeletonCreatorDecorator(glex, symbolTableService, visitorService, methodDecorator);
+    ScopeSkeletonCreatorDelegatorDecorator scopeSkeletonCreatorDelegatorDecorator = new ScopeSkeletonCreatorDelegatorDecorator(glex, symbolTableService, visitorService);
+    PhasedSymbolTableCreatorDelegatorDecorator phasedSymbolTableCreatorDelegatorDecorator = new PhasedSymbolTableCreatorDelegatorDecorator(glex, symbolTableService, visitorService);
 
     SymbolTableCDDecorator symbolTableCDDecorator = new SymbolTableCDDecorator(glex, handCodedPath, symbolTableService, symbolDecorator,
             symbolBuilderDecorator, symbolReferenceDecorator, symbolReferenceBuilderDecorator,
@@ -568,7 +573,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
             symbolResolverInterfaceDecorator, symbolTableCreatorDecorator, symbolTableCreatorBuilderDecorator,
             symbolTableCreatorDelegatorDecorator, symbolTableCreatorForSuperTypes, symbolTableCreatorDelegatorBuilderDecorator,
             symbolTableCreatorForSuperTypesBuilder, symbolDeSerDecorator, scopeDeSerDecorator, symbolTablePrinterDecorator, scopeDeSerBuilderDecorator,
-            symbolDeSerBuilderDecorator, symbolTablePrinterBuilderDecorator);
+            symbolDeSerBuilderDecorator, symbolTablePrinterBuilderDecorator, scopeSkeletonCreatorDecorator, scopeSkeletonCreatorDelegatorDecorator,
+            phasedSymbolTableCreatorDelegatorDecorator);
     ASTCDCompilationUnit symbolTableCompilationUnit = symbolTableCDDecorator.decorate(cd, symbolCD, scopeCD);
 
     TopDecorator topDecorator = new TopDecorator(handCodedPath);
