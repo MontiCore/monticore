@@ -200,7 +200,7 @@ public class MillDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeSize() {
-    assertEquals(33, millClass.sizeCDAttributes());
+    assertEquals(31, millClass.sizeCDAttributes());
   }
 
   @Test
