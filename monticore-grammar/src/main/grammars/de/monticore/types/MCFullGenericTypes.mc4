@@ -24,7 +24,7 @@ import de.monticore.types.*;
 */
 
 component grammar MCFullGenericTypes
-          extends MCSimpleGenericTypes, MCArrayTypes {
+          extends MCSimpleGenericTypes {
 
   /*=================================================================*/
 

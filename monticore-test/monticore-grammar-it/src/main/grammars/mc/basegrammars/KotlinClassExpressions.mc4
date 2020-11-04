@@ -1,10 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.basegrammars;
 
-component grammar KotlinClassExpressions extends
-        de.monticore.expressions.JavaClassExpressions{
+import de.monticore.expressions.*;
 
-    ThisAnnotationExpression implements Expression<330> =
-        "this" "@" Expression;
+component grammar KotlinClassExpressions extends JavaClassExpressions{
+
+  ThisAnnotationExpression implements Expression<330> =
+    "this" "@" Expression;
 
 }
