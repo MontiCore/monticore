@@ -11,9 +11,9 @@ import de.monticore.types.*;
 
 /**
  * This grammar defines Java's mechanism for the introduction
- * of local variables with a type, an array dim and
- * including the possibility to initialize the
- * variable, e.g. private int a[] = { ... }
+ * of local variables with a type and
+ * the possibility to initialize the
+ * variable, e.g. private int a = ...
  *
  * This grammar is part of a hierarchy of statements, namely
  * * statements/MCStatementsBasis.mc4
@@ -40,20 +40,20 @@ LocalVariableDeclarationStatement implements MCBlockStatement
     = LocalVariableDeclaration ";" ;
 
 LocalVariableDeclaration
-    =   MCModifier* MCType (VariableDeclarator || ",")+ ;
+    = MCModifier* MCType (VariableDeclarator || ",")+ ;
 
 VariableDeclarator
-    =   Declarator ("=" VariableInit)? ;
+    = Declarator ("=" VariableInit)? ;
 
 interface Declarator extends Field
-    =   Name;
+    = Name;
 
 DeclaratorId implements Declarator
-    =   Name;
+    = Name;
 
 interface VariableInit;
 
-SimpleInit implements VariableInit =
-                    Expression;
+SimpleInit implements VariableInit
+    = Expression;
 
 }

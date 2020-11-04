@@ -1,0 +1,51 @@
+/* (c) https://github.com/MontiCore/monticore */
+plugins {
+  id "monticore" version "$version"
+}
+
+description = 'MontiCore Generator Main Integration Test'
+sourceCompatibility = '1.8'
+
+ext.grammarDir = 'src/main/grammars'
+ext.junit_version = '4.13.1'
+
+configurations {grammar}
+
+dependencies {
+  implementation project(':monticore-runtime')
+  implementation project(':monticore-grammar')
+  implementation "de.se_rwth.commons:se-commons-logging:$se_commons_version"
+  implementation "de.se_rwth.commons:se-commons-utilities:$se_commons_version"
+  implementation "org.antlr:antlr4-runtime:$antlr_version"
+//  implementation project (':monticore-generator')
+  testImplementation group:'junit', name:'junit', version:junit_version
+  grammar (project(path: ':monticore-grammar')){
+    capabilities {
+      requireCapability("$group:monticore-grammar-grammars")
+    }
+  }
+}
+
+
+if (!hasProperty('buildProfile')) ext.buildProfile = 'default'  // chooses the profile
+
+apply from: "profile-${buildProfile}.gradle"  // includes the corresponding build file
+
+tasks.withType(JavaCompile) {
+  options.warnings = false
+  options.encoding = 'UTF-8'
+}
+
+compileJava {
+  dependsOn project.collect { it.tasks.withType(MCTask) }
+}
+
+// Fixes issue with java plugin in projects without resources
+compileTestJava.doFirst { mkdir sourceSets.main.output.resourcesDir }
+
+test {
+  testLogging {
+    showStandardStreams = true
+  }
+  
+}

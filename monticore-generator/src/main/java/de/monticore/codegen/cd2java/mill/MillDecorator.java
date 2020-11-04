@@ -28,8 +28,9 @@ import static de.monticore.codegen.cd2java.CoreTemplates.*;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PACKAGE;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
-import static de.monticore.codegen.cd2java.mill.MillConstants.*;
 import static de.monticore.codegen.cd2java.top.TopDecorator.TOP_SUFFIX;
+import static de.monticore.codegen.cd2java.mill.MillConstants.*;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
 
 /**
  * created mill class for a grammar
@@ -121,7 +122,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
     String traverserAttributeName = MILL_INFIX + visitorService.getTraverserSimpleName();
     ASTCDAttribute traverserAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, millType, traverserAttributeName);
     List<ASTCDMethod> traverserMethods = getAttributeMethods(visitorService.getTraverserSimpleName(),
-        visitorService.getTraverserFullName(), visitorService.getTraverserInterfaceFullName());
+        visitorService.getTraverserFullName(), TRAVERSER, visitorService.getTraverserInterfaceFullName());
     millClass.addCDAttribute(traverserAttribute);
     millClass.addAllCDMethods(traverserMethods);
     allClasses.add(CD4AnalysisMill.cDClassBuilder().setName(visitorService.getTraverserSimpleName()).build());
@@ -333,24 +334,24 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
    * Creates the public accessor and protected internal method for a given
    * attribute. The attribute is specified by its simple name, its qualified
    * type, and the qualified return type of the methods. The return type of the
-   * method may by equals to the attribute type or a corresponding super type.
+   * method may be equal to the attribute type or a corresponding super type.
    * 
    * @param attributeName The name of the attribute
    * @param attributeType The qualified type of the attribute
+   * @param methodName The name of the method
    * @param methodType The return type of the methods
    * @return The accessor and corresponding internal method for the attribute
    */
-  protected List<ASTCDMethod> getAttributeMethods(String attributeName, String attributeType, String methodType) {
+  protected List<ASTCDMethod> getAttributeMethods(String attributeName, String attributeType, String methodName, String methodType) {
     List<ASTCDMethod> attributeMethods = Lists.newArrayList();
     
     // method names and return type
-    String staticMethodName = StringTransformations.uncapitalize(attributeName);
-    String protectedMethodName = "_" + staticMethodName;
+    String protectedMethodName = "_" + methodName;
     ASTMCType returnType = getMCTypeFacade().createQualifiedType(methodType);
     
     // static accessor method
-    ASTCDMethod staticMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC, returnType, staticMethodName);
-    this.replaceTemplate(EMPTY_BODY, staticMethod, new TemplateHookPoint("mill.BuilderMethod", StringTransformations.capitalize(attributeName), staticMethodName));
+    ASTCDMethod staticMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC, returnType, methodName);
+    this.replaceTemplate(EMPTY_BODY, staticMethod, new TemplateHookPoint("mill.BuilderMethod", StringTransformations.capitalize(attributeName), methodName));
     attributeMethods.add(staticMethod);
     
     // protected internal method

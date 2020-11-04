@@ -22,7 +22,7 @@ import de.monticore.types.*;
 component grammar MCArrayTypes
           extends MCBasicTypes {
 
-  /** ASTArrayType introduce array for arbitrary types
+  /** ASTArrayType introduces array for arbitrary types
   */
   MCArrayType implements MCType =
     MCType 

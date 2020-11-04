@@ -1,0 +1,25 @@
+/* (c) https://github.com/MontiCore/monticore */
+pluginManagement {
+  repositories {
+    mavenCentral()
+    if(("true").equals(getProperty('useLocalRepo'))){
+      mavenLocal()
+    }
+    maven {
+      credentials.username mavenUser
+      credentials.password mavenPassword
+      url repo
+    }
+  
+    gradlePluginPortal()
+  }
+}
+
+rootProject.name = 'monticore-tool'
+include('monticore-generator')
+include('monticore-gradle')
+include('monticore-cli')
+project(':monticore-gradle').projectDir = file('../monticore-gradle')
+project(':monticore-generator').projectDir = file('../monticore-generator')
+project(':monticore-cli').projectDir = file('../monticore-cli')
+

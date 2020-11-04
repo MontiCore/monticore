@@ -1,0 +1,60 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+plugins {
+  id "de.set.ecj" version "1.4.1" // Eclipse compiler as it's much faster than javac
+}
+
+allprojects {
+  group = 'de.monticore'
+  
+  ext.grammarDir = 'src/main/grammars'
+  buildDir = file("$projectDir/target")
+  
+  repositories {
+    if(("true").equals(getProperty('useLocalRepo'))){
+      mavenLocal()
+    }
+    maven {
+      credentials.username mavenUser
+      credentials.password mavenPassword
+      url repo
+    }
+    mavenCentral()
+  }
+  
+}
+
+subprojects {
+  apply plugin: 'java'
+  apply plugin : 'de.set.ecj'
+  apply plugin: 'maven-publish'
+  
+  sourceCompatibility = '1.8'
+  
+  tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+    options.deprecation false
+    options.warnings = false
+    options.fork = true
+    options.headerOutputDirectory.convention(null)
+  }
+  java {
+    withSourcesJar()
+  }
+  
+  // configure deployment
+  publishing {
+    publications {
+      maven(MavenPublication) {
+        from(components.java)
+      }
+    }
+    repositories.maven {
+      credentials.username mavenUser
+      credentials.password mavenPassword
+      def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-releases/"
+      def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-snapshots/"
+      url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+    }
+  }
+}
