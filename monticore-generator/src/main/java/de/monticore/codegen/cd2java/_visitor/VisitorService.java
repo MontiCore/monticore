@@ -144,7 +144,7 @@ public class VisitorService extends AbstractService<VisitorService> {
   }
   
   public String getTraverserSimpleName(CDDefinitionSymbol cdDefinitionSymbol) {
-    return cdDefinitionSymbol.getName() + TRAVERSER_SUFFIX;
+    return cdDefinitionSymbol.getName() + TRAVERSER_CLASS_SUFFIX;
   }
   
   public String getTraverserFullName() {
@@ -168,7 +168,7 @@ public class VisitorService extends AbstractService<VisitorService> {
   }
   
   public String getTraverserInterfaceSimpleName(CDDefinitionSymbol cdDefinitionSymbol) {
-    return "I" + getTraverserSimpleName(cdDefinitionSymbol);
+    return cdDefinitionSymbol.getName() + TRAVERSER_SUFFIX;
   }
   
   public String getTraverserInterfaceFullName() {
@@ -213,6 +213,34 @@ public class VisitorService extends AbstractService<VisitorService> {
 
   public ASTMCQualifiedType getVisitor2Type() {
     return getVisitor2Type(getCDSymbol());
+  }
+  
+  /**
+   * handler name e.g. AutomataHandler
+   */
+  
+  public String getHandlerSimpleName() {
+    return getHandlerSimpleName(getCDSymbol());
+  }
+  
+  public String getHandlerSimpleName(CDDefinitionSymbol cdDefinitionSymbol) {
+    return cdDefinitionSymbol.getName() + HANDLER_SUFFIX;
+  }
+  
+  public String getHandlerFullName() {
+    return getHandlerFullName(getCDSymbol());
+  }
+  
+  public String getHandlerFullName(CDDefinitionSymbol cdDefinitionSymbol) {
+    return getPackage(cdDefinitionSymbol) + "." + getHandlerSimpleName(cdDefinitionSymbol);
+  }
+  
+  public ASTMCQualifiedType getHandlerType(CDDefinitionSymbol cdSymbol) {
+    return getMCTypeFacade().createQualifiedType(getHandlerFullName(cdSymbol));
+  }
+
+  public ASTMCQualifiedType getHandlerType() {
+    return getHandlerType(getCDSymbol());
   }
 
   /**

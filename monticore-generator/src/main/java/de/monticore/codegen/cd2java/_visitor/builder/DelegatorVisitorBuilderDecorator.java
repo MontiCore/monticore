@@ -5,6 +5,7 @@ import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDConstructor;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
+import de.monticore.cd.cd4analysis._ast.ASTModifier;
 import de.monticore.cd.cd4code.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._ast.builder.buildermethods.BuilderMutatorMethodDecorator;
@@ -20,11 +21,14 @@ import de.se_rwth.commons.StringTransformations;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.*;
+import static de.monticore.codegen.cd2java.CoreTemplates.ANNOTATIONS;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
+import static de.monticore.codegen.cd2java.CoreTemplates.createAnnotationsHookPoint;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.*;
 
 /**
@@ -88,9 +92,12 @@ public class DelegatorVisitorBuilderDecorator extends AbstractCreator<ASTCDClass
     ASTCDMethod buildMethod = this.getCDMethodFacade().createMethod(PUBLIC.build(), domainType, BUILD_METHOD);
     this.replaceTemplate(EMPTY_BODY, buildMethod, new TemplateHookPoint(VISITOR_BUILD_TEMPLATE, domainClass.getName(), builderAttributes));
     
-    return CD4CodeMill.cDClassBuilder()
+    ASTModifier modifier = PUBLIC.build();
+    visitorService.addDeprecatedStereotype(modifier, Optional.of("Will be removed. Use traverser infrastructure instead."));
+    
+    ASTCDClass cdClass = CD4CodeMill.cDClassBuilder()
         .setName(builderClassName)
-        .setModifier(PUBLIC.build())
+        .setModifier(modifier)
         .addCDConstructor(constructor)
         .addCDAttribute(realThisAttribute)
         .addAllCDAttributes(builderAttributes)
@@ -99,6 +106,9 @@ public class DelegatorVisitorBuilderDecorator extends AbstractCreator<ASTCDClass
         .addCDMethod(buildMethod)
         .addCDMethod(isValidMethod)
         .build();
+    
+    this.replaceTemplate(ANNOTATIONS, cdClass, createAnnotationsHookPoint(cdClass.getModifier()));
+    return cdClass;
   }
 
   /**
