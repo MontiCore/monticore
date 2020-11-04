@@ -2,7 +2,7 @@
 description = 'Experiments: skeleton'
 
 dependencies {
-  testImplementation group:'de.monticore', name:'monticore-generator', version:mc_version
+  testImplementation group:'de.monticore', name:'monticore-generator', version:version
 }
 
 fileTree(grammarDir).matching { include '**/*.mc4'}.each {
