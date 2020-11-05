@@ -13,12 +13,20 @@ to be released
     * `TraverserImplementation`
     * `XVisitor2`
     * `XHandler`
+* Added new ScopeSkeletonCreator generation to replace the SymbolTableCreator in a future release and to enable a phased symboltable creation
+    * `XScopeSkeletonCreator`
+    * `XScopeSkeletonCreatorDelegator`
+    * `XPhasedSymbolTableCreatorDelegator`
 * Added methods to directly obtain instances of the following classes in the mill (instead of their builders)
     * `XSymbolTableCreator` 
     * `XSymbolTableCreatorDelegator` 
+    * `XScopeSkeletonCreator`
+    * `XScopeSkeletonCreatorDelegator`
+    * `XPhasedSymbolTableCreatorDelegator`
     * `XScopeDeSer`
     * `XSymbolDeSer` 
     * `XSymbolTablePrinter`
+
 
 ### Changes
 * MontiCore now uses Gradle as build tool
@@ -47,6 +55,8 @@ to be released
 * non-existing template paths now result in an error instead of a warning
 * Set current visitor infrastructure to deprecated
 * Integrate new visitor infrastructure (i.e., traverser) into `XMill` to enable re-usability of visitors via language inheritance
+* Set SymbolTableCreator, SymbolTableCreatorDelegator and their builder to deprecated
+* Integrate new ScopeSkeletonCreator, ScopeSkeletonCreatorDelegator and PhasedSymbolTableCreatorDelegator into Mill
 
 ### Fixes
 
