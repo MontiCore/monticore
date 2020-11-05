@@ -9,6 +9,12 @@ to be released
 * added an experiment `hooks` showcasing hook point usage
 * IncCheck provided by the MontiCore Gradle Plugin now considers local super grammar changes to trigger new generation
 * Added new Traverser generation to replace the visitor infrastructure in a future release
+* Added methods to directly obtain instances of the following classes in the mill (instead of their builders)
+    * `XSymbolTableCreatorBuilder` 
+    * `XSymbolTableCreatorDelegatorBuilder` 
+    * `XScopeDeSerBuilder`
+    * `XSymbolDeSerBuilder` 
+    * `XSymbolTablePrinterBuilder`
 
 ### Changes
 * MontiCore now uses Gradle as build tool
@@ -21,6 +27,14 @@ to be released
     * `monticore-generator/it/experiments` to `monticore-test/01.experiments`
     * `monticore-generator/it/02.experiments` to `monticore-test/02.experiments`
     * `monticore-grammar/monticore-grammar-it` to `monticore-test/monticore-grammar-it`
+* Remove the generation of `XModelloader`. Languages should now use `XScopeDeSer` to load symbol tables instead.
+* Removed the generation of the following builder classes (also from the Mill, see [Additions](#Additions) for alternative solution)
+    * `XSymbolTableCreatorBuilder` 
+    * `XSymbolTableCreatorDelegatorBuilder` 
+    * `XScopeDeSerBuilder`
+    * `XSymbolDeSerBuilder` 
+    * `XSymbolTablePrinterBuilder`
+
 * renamed `IXResolvingDelegate` to `IXResolver`
 * outsourced Type expressions for arrays to a separate grammar
   * was `FullGenericTypes`, is now `MCArrayTypes`
