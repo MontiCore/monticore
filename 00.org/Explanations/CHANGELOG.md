@@ -26,6 +26,8 @@ to be released
     * `XScopeDeSer`
     * `XSymbolDeSer` 
     * `XSymbolTablePrinter`
+    * `IXScope`
+    * `IXArtifactScope`
 
 
 ### Changes
