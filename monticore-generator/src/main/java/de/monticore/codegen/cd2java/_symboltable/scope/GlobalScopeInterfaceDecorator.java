@@ -101,6 +101,8 @@ public class GlobalScopeInterfaceDecorator
         .addCDMethod(createAddLoadedFileMethod())
         .addCDMethod(createClearLoadedFilesMethod())
         .addCDMethod(createIsFileLoadedMethod())
+        .addCDMethod(createClearMethod())
+        .addCDMethod(createSetModelPathMethod())
         .build();
   }
 
@@ -348,6 +350,15 @@ public class GlobalScopeInterfaceDecorator
 
   protected ASTCDMethod createGetRealThisMethod(String realThis){
     return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, getMCTypeFacade().createQualifiedType(realThis), "getRealThis");
+  }
+
+  protected ASTCDMethod createClearMethod(){
+    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, "clear");
+  }
+
+  protected ASTCDMethod createSetModelPathMethod(){
+    ASTCDParameter modelPathParam = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(MODEL_PATH_TYPE), "modelPath");
+    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT,"setModelPath", modelPathParam);
   }
 
 

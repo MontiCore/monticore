@@ -79,6 +79,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
 
     ASTCDAttribute modelPathAttribute = createModelPathAttribute();
     List<ASTCDMethod> modelPathMethods = accessorDecorator.decorate(modelPathAttribute);
+    modelPathMethods.addAll(mutatorDecorator.decorate(modelPathAttribute));
 
     ASTCDAttribute fileExtensionAttribute = getCDAttributeFacade().createAttribute(PROTECTED,
         getMCTypeFacade().createStringType(), FILE_EXTENSION_VAR);
@@ -118,6 +119,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
         .addCDMethod(createLoadFileForModelNameMethod(definitionName))
         //
         .addCDMethod(createGetRealThisMethod(globalScopeName))
+        .addCDMethod(createClearMethod(resolverMethods))
         .build();
   }
 
@@ -314,6 +316,13 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     ASTCDParameter parameter = getCDParameterFacade().createParameter(getMCTypeFacade().createStringType(), NAME_VAR);
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createBooleanType(), "isFileLoaded", parameter);
     this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return cache.contains(name);"));
+    return method;
+  }
+
+  protected ASTCDMethod createClearMethod(List<ASTCDMethod> getResolverMethodList){
+    List<String> resolverListString = getResolverMethodList.stream().map(ASTCDMethod::getName).filter(name -> name.startsWith("get")).collect(Collectors.toList());
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, "clear");
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "Clear", resolverListString));
     return method;
   }
 
