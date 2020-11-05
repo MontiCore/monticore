@@ -4,3 +4,4 @@ ${tc.signature("resolverMethodList")}
 <#list resolverMethodList as resolverMethod>
   ${resolverMethod}().clear();
 </#list>
+  this.modelPath = new de.monticore.io.paths.ModelPath();
