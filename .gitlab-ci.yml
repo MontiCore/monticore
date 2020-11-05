@@ -126,9 +126,11 @@ build_maven:
 
 trigger-automata:
   stage: trigger_languages
+  allow_failure: true
   trigger:
     project: monticore/languages/automaton
     branch: master
+    strategy: depend
   only:
     - dev
 
