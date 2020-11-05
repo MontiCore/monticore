@@ -28,12 +28,13 @@ import de.monticore.statements.MCVarDeclarationStatements;
  *
 */
 
-component grammar MCArrayStatements extends MCVarDeclarationStatements {
+component grammar MCArrayStatements
+          extends MCVarDeclarationStatements {
 
-ArrayDeclaratorId implements Declarator
-    =   Name (dim:"[" "]")+ ;
-
-ArrayInit implements VariableInit
-     =   "{" (VariableInit || ",")* (",")? "}" ;
+  ArrayDeclaratorId implements Declarator
+      =   Name (dim:"[" "]")+ ;
+  
+  ArrayInit implements VariableInit
+       =   "{" (VariableInit || ",")* (",")? "}" ;
 
 }
