@@ -10,11 +10,11 @@ to be released
 * IncCheck provided by the MontiCore Gradle Plugin now considers local super grammar changes to trigger new generation
 * Added new Traverser generation to replace the visitor infrastructure in a future release
 * Added methods to directly obtain instances of the following classes in the mill (instead of their builders)
-    * `XSymbolTableCreatorBuilder` 
-    * `XSymbolTableCreatorDelegatorBuilder` 
-    * `XScopeDeSerBuilder`
-    * `XSymbolDeSerBuilder` 
-    * `XSymbolTablePrinterBuilder`
+    * `XSymbolTableCreator` 
+    * `XSymbolTableCreatorDelegator` 
+    * `XScopeDeSer`
+    * `XSymbolDeSer` 
+    * `XSymbolTablePrinter`
 
 ### Changes
 * MontiCore now uses Gradle as build tool
@@ -34,7 +34,6 @@ to be released
     * `XScopeDeSerBuilder`
     * `XSymbolDeSerBuilder` 
     * `XSymbolTablePrinterBuilder`
-
 * renamed `IXResolvingDelegate` to `IXResolver`
 * outsourced Type expressions for arrays to a separate grammar
   * was `FullGenericTypes`, is now `MCArrayTypes`
