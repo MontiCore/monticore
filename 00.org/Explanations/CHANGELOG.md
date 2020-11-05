@@ -10,7 +10,7 @@ to be released
 * IncCheck provided by the MontiCore Gradle Plugin now considers local super grammar changes to trigger new generation
 * Added new Traverser generation to replace the visitor infrastructure in a future release
     * `XTraverser`
-    * `TraverserImplementation`
+    * `XTraverserImplementation`
     * `XVisitor2`
     * `XHandler`
 * Added new ScopeSkeletonCreator generation to replace the SymbolTableCreator in a future release and to enable a phased symboltable creation
