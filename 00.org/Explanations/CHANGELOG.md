@@ -45,7 +45,8 @@ to be released
   * was `MCVarDeclarationStatements`, is now `MCArrayStatements`
 * In a composed language, mills of super languages now provide scope instances (scope, global scope and artifact scope) for the composed language
 * non-existing template paths now result in an error instead of a warning
-* Set current cisitor infrastructure to deprecated
+* Set current visitor infrastructure to deprecated
+* Integrate new visitor infrastructure (i.e., traverser) into `XMill` to enable re-usability of visitors via language inheritance
 
 ### Fixes
 
