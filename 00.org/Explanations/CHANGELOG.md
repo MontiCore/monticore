@@ -9,6 +9,10 @@ to be released
 * added an experiment `hooks` showcasing hook point usage
 * IncCheck provided by the MontiCore Gradle Plugin now considers local super grammar changes to trigger new generation
 * Added new Traverser generation to replace the visitor infrastructure in a future release
+    * `XTraverser`
+    * `TraverserImplementation`
+    * `XVisitor2`
+    * `XHandler`
 * Added methods to directly obtain instances of the following classes in the mill (instead of their builders)
     * `XSymbolTableCreator` 
     * `XSymbolTableCreatorDelegator` 
@@ -41,7 +45,7 @@ to be released
   * was `MCVarDeclarationStatements`, is now `MCArrayStatements`
 * In a composed language, mills of super languages now provide scope instances (scope, global scope and artifact scope) for the composed language
 * non-existing template paths now result in an error instead of a warning
-
+* Set current cisitor infrastructure to deprecated
 
 ### Fixes
 
