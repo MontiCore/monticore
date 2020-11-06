@@ -18,6 +18,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.MCTypeFacade;
 import de.se_rwth.commons.logging.*;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.List;
@@ -220,7 +221,7 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(25, scopeClass.getCDMethodList().size());
+    assertEquals(27, scopeClass.getCDMethodList().size());
   }
 
   @Test
@@ -323,6 +324,26 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
     assertEquals("modelName", method.getCDParameter(0).getName());
     assertDeepEquals(String.class, method.getCDParameter(1).getMCType());
     assertEquals("symbolName", method.getCDParameter(1).getName());
+  }
+
+  @Test
+  public void testClearMethod(){
+    ASTCDMethod method = getMethodBy("clear", scopeClass);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    assertTrue(method.isEmptyCDParameters());
+  }
+
+  @Test
+  public void testSetModelPathMethod(){
+    ASTCDMethod method = getMethodBy("setModelPath", scopeClass);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    assertEquals(1, method.sizeCDParameters());
+    assertEquals("modelPath", method.getCDParameter(0).getName());
+    assertDeepEquals(MODEL_PATH, method.getCDParameter(0).getMCType());
   }
 
   @Test

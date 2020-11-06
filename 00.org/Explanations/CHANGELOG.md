@@ -59,6 +59,7 @@ to be released
 * Integrate new visitor infrastructure (i.e., traverser) into `XMill` to enable re-usability of visitors via language inheritance
 * Set SymbolTableCreator, SymbolTableCreatorDelegator and their builder to deprecated
 * Integrate new ScopeSkeletonCreator, ScopeSkeletonCreatorDelegator and PhasedSymbolTableCreatorDelegator into Mill
+* Added a method `clear` to the GlobalScope that clears its cache and its resolvers and empties its ModelPath
 
 ### Fixes
 
