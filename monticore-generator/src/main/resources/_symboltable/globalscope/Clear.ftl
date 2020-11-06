@@ -5,3 +5,4 @@ ${tc.signature("resolverMethodList")}
   ${resolverMethod}().clear();
 </#list>
   this.modelPath = new de.monticore.io.paths.ModelPath();
+  this.subScopes.clear();
