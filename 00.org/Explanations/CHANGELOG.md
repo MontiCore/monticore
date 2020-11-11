@@ -1,6 +1,9 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 # Release Notes
 
+##  MontiCore 6.6.0-SNAPSHOT
+to be released 
+
 ##  MontiCore 6.5.0
 released: 11.11.2020
 
