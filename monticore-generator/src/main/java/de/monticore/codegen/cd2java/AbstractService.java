@@ -138,12 +138,12 @@ public class AbstractService<T extends AbstractService> {
    * use symboltabe to resolve for ClassDiagrams or CDTypes
    */
   public CDDefinitionSymbol resolveCD(String qualifiedName) {
-    return getCDSymbol().getEnclosingScope().<CDDefinitionSymbol>resolveCDDefinition(qualifiedName)
+    return getCDSymbol().getEnclosingScope().resolveCDDefinition(qualifiedName)
         .orElseThrow(() -> new DecorateException(DecoratorErrorCode.CD_SYMBOL_NOT_FOUND, qualifiedName));
   }
 
   public CDTypeSymbol resolveCDType(String qualifiedName) {
-    return getCDSymbol().getEnclosingScope().<CDDefinitionSymbol>resolveCDType(qualifiedName)
+    return getCDSymbol().getEnclosingScope().resolveCDType(qualifiedName)
         .orElseThrow(() -> new DecorateException(DecoratorErrorCode.CD_SYMBOL_NOT_FOUND, qualifiedName));
   }
 
