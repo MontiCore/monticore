@@ -18,6 +18,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.MCTypeFacade;
 import de.se_rwth.commons.logging.*;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.List;
@@ -133,7 +134,7 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeSize() {
-    assertEquals(9, scopeClass.sizeCDAttributes());
+    assertEquals(7, scopeClass.sizeCDAttributes());
   }
 
   @Test
@@ -144,22 +145,8 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testModelLoaderAttribute() {
-    ASTCDAttribute astcdAttribute = getAttributeBy("modelLoader", scopeClass);
-    assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
-    assertDeepEquals("Optional<AutomatonModelLoader>", astcdAttribute.getMCType());
-  }
-
-  @Test
   public void testFileExtensionAttribute() {
     ASTCDAttribute astcdAttribute = getAttributeBy("modelFileExtension", scopeClass);
-    assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
-    assertDeepEquals("String", astcdAttribute.getMCType());
-  }
-
-  @Test
-  public void testSymbolFileExtensionAttribute() {
-    ASTCDAttribute astcdAttribute = getAttributeBy("symbolFileExtension", scopeClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertDeepEquals("String", astcdAttribute.getMCType());
   }
@@ -203,38 +190,38 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testAdaptedAutomatonSymbolResolvingDelegateListAttribute() {
-    ASTCDAttribute astcdAttribute = getAttributeBy("adaptedAutomatonSymbolResolvingDelegate",
+  public void testAdaptedAutomatonSymbolResolverListAttribute() {
+    ASTCDAttribute astcdAttribute = getAttributeBy("adaptedAutomatonSymbolResolver",
         scopeClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertDeepEquals(
-        "List<de.monticore.codegen.ast.automaton._symboltable.IAutomatonSymbolResolvingDelegate>",
+        "List<de.monticore.codegen.ast.automaton._symboltable.IAutomatonSymbolResolver>",
         astcdAttribute.getMCType());
   }
 
   @Test
-  public void testAdaptedStateSymbolResolvingDelegateListAttribute() {
-    ASTCDAttribute astcdAttribute = getAttributeBy("adaptedStateSymbolResolvingDelegate",
+  public void testAdaptedStateSymbolResolverListAttribute() {
+    ASTCDAttribute astcdAttribute = getAttributeBy("adaptedStateSymbolResolver",
         scopeClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertDeepEquals(
-        "List<de.monticore.codegen.ast.automaton._symboltable.IStateSymbolResolvingDelegate>",
+        "List<de.monticore.codegen.ast.automaton._symboltable.IStateSymbolResolver>",
         astcdAttribute.getMCType());
   }
 
   @Test
-  public void testAdaptedQualifiedNameSymbolResolvingDelegateListAttribute() {
-    ASTCDAttribute astcdAttribute = getAttributeBy("adaptedQualifiedNameSymbolResolvingDelegate",
+  public void testAdaptedQualifiedNameSymbolResolverListAttribute() {
+    ASTCDAttribute astcdAttribute = getAttributeBy("adaptedQualifiedNameSymbolResolver",
         scopeClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertDeepEquals(
-        "List<de.monticore.codegen.ast.lexicals._symboltable.IQualifiedNameSymbolResolvingDelegate>",
+        "List<de.monticore.codegen.ast.lexicals._symboltable.IQualifiedNameSymbolResolver>",
         astcdAttribute.getMCType());
   }
 
   @Test
   public void testMethodCount() {
-    assertEquals(33, scopeClass.getCDMethodList().size());
+    assertEquals(27, scopeClass.getCDMethodList().size());
   }
 
   @Test
@@ -243,47 +230,6 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
     assertDeepEquals(PUBLIC, method.getModifier());
     assertDeepEquals(MODEL_PATH, method.getMCReturnType().getMCType());
-
-    assertTrue(method.isEmptyCDParameters());
-  }
-
-  @Test
-  public void testGetModelLoaderMethod() {
-    ASTCDMethod method = getMethodBy("getModelLoader", scopeClass);
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals("AutomatonModelLoader", method.getMCReturnType().getMCType());
-
-    assertTrue(method.isEmptyCDParameters());
-  }
-
-  @Test
-  public void testSetModelLoaderMethod() {
-    ASTCDMethod method = getMethodBy("setModelLoader", scopeClass);
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-
-    assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals("AutomatonModelLoader", method.getCDParameter(0).getMCType());
-    assertEquals("modelLoader", method.getCDParameter(0).getName());
-  }
-
-  @Test
-  public void testSetModelLoaderAbsentMethod() {
-    ASTCDMethod method = getMethodBy("setModelLoaderAbsent", scopeClass);
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-    assertTrue(method.isEmptyCDParameters());
-  }
-
-  @Test
-  public void testIsPresentModelLoaderMethod() {
-    ASTCDMethod method = getMethodBy("isPresentModelLoader", scopeClass);
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals("boolean", method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
   }
@@ -301,26 +247,26 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testSetAdaptedAutomatonSymbolResolvingDelegateListMethod() {
-    ASTCDMethod method = getMethodBy("setAdaptedAutomatonSymbolResolvingDelegateList", scopeClass);
+  public void testSetAdaptedAutomatonSymbolResolverListMethod() {
+    ASTCDMethod method = getMethodBy("setAdaptedAutomatonSymbolResolverList", scopeClass);
 
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
 
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(
-        "List<de.monticore.codegen.ast.automaton._symboltable.IAutomatonSymbolResolvingDelegate>",
+        "List<de.monticore.codegen.ast.automaton._symboltable.IAutomatonSymbolResolver>",
         method.getCDParameter(0).getMCType());
-    assertEquals("adaptedAutomatonSymbolResolvingDelegate", method.getCDParameter(0).getName());
+    assertEquals("adaptedAutomatonSymbolResolver", method.getCDParameter(0).getName());
   }
 
   @Test
-  public void testGetAdaptedAutomatonSymbolResolvingDelegateListMethod() {
-    ASTCDMethod method = getMethodBy("getAdaptedAutomatonSymbolResolvingDelegateList", scopeClass);
+  public void testGetAdaptedAutomatonSymbolResolverListMethod() {
+    ASTCDMethod method = getMethodBy("getAdaptedAutomatonSymbolResolverList", scopeClass);
 
     assertDeepEquals(PUBLIC, method.getModifier());
     assertDeepEquals(
-        "List<de.monticore.codegen.ast.automaton._symboltable.IAutomatonSymbolResolvingDelegate>",
+        "List<de.monticore.codegen.ast.automaton._symboltable.IAutomatonSymbolResolver>",
         method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
   }
@@ -368,27 +314,6 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testGetSymbolFileExtensionMethod(){
-    ASTCDMethod method = getMethodBy("getSymbolFileExtension", scopeClass);
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertFalse(method.getMCReturnType().isPresentMCVoidType());
-    assertDeepEquals(String.class, method.getMCReturnType().getMCType());
-    assertTrue(method.isEmptyCDParameters());
-  }
-
-  @Test
-  public void testSetSymbolFileExtensionMethod(){
-    ASTCDMethod method = getMethodBy("setSymbolFileExtension", scopeClass);
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-    assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
-    assertEquals("symbolFileExtension", method.getCDParameter(0).getName());
-  }
-
-  @Test
   public void testLoadFileForModelNameMethod(){
     ASTCDMethod method = getMethodBy("loadFileForModelName", scopeClass);
 
@@ -399,6 +324,26 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
     assertEquals("modelName", method.getCDParameter(0).getName());
     assertDeepEquals(String.class, method.getCDParameter(1).getMCType());
     assertEquals("symbolName", method.getCDParameter(1).getName());
+  }
+
+  @Test
+  public void testClearMethod(){
+    ASTCDMethod method = getMethodBy("clear", scopeClass);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    assertTrue(method.isEmptyCDParameters());
+  }
+
+  @Test
+  public void testSetModelPathMethod(){
+    ASTCDMethod method = getMethodBy("setModelPath", scopeClass);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    assertEquals(1, method.sizeCDParameters());
+    assertEquals("modelPath", method.getCDParameter(0).getName());
+    assertDeepEquals(MODEL_PATH, method.getCDParameter(0).getMCType());
   }
 
   @Test

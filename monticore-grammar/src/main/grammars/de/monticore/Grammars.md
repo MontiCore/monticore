@@ -64,7 +64,8 @@ other. Some snipets for type definitions:
   MCFullGenericTypes
                     Foo<? extends .>
                     Foo<? super .>
-                    Person[]
+  MCArrayTypes
+                    Person[]  int[][]
   ```
   
 ### [MCBasicTypes.mc4](types/MCBasicTypes.mc4) (stable)
@@ -100,6 +101,13 @@ support the full Java type system including wildcards Blubb<? extends A>
 * A general advice: When you are not sure that you need this kind of
 types, then use a simpler version from above. Type checking ist tricky.
 
+
+### [MCArrayTypes.mc4](types/MCArrayTypes.mc4) (stable)
+
+Arrays are orthogonal to the generic extensions and
+thus be combined with any of the above variants.
+Language component MCArrayTypes provides
+possibilities to add arrays, such as `Person[]` or `int[][]`.
 
 
 ## Symbols: List of Grammars in package `de.monticore.symbols`

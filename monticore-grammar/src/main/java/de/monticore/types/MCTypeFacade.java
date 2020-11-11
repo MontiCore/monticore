@@ -2,12 +2,13 @@
 package de.monticore.types;
 
 import com.google.common.collect.Lists;
+import de.monticore.types.mcarraytypes.MCArrayTypesMill;
+import de.monticore.types.mcarraytypes._ast.ASTMCArrayType;
 import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mccollectiontypes._ast.*;
-import de.monticore.types.mcfullgenerictypes._ast.ASTMCArrayType;
-import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardTypeArgument;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
+import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardTypeArgument;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 
 import java.util.ArrayList;
@@ -225,7 +226,7 @@ public class MCTypeFacade {
    */
 
   public ASTMCArrayType createArrayType(final ASTMCType type, int dimension) {
-    return MCFullGenericTypesMill.mCArrayTypeBuilder()
+    return MCArrayTypesMill.mCArrayTypeBuilder()
         .setMCType(type)
         .setDimensions(dimension)
         .build();

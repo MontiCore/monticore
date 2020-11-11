@@ -25,7 +25,8 @@ import de.monticore.types.*;
 
 component grammar JavaLight extends AssignmentExpressions,
                                     JavaClassExpressions,
-                                    MCCommonStatements {
+                                    MCCommonStatements,
+                                    MCArrayStatements {
 
 external ExtTypeParameters;
 
@@ -78,6 +79,7 @@ FormalParameterListing
 FormalParameters
     =   "(" FormalParameterListing? ")";
 
+
 // ANNOTATIONS
 
 Annotation implements MCModifier,  ElementValue
@@ -99,6 +101,8 @@ ElementValuePair
 
 ElementValueArrayInitializer implements ElementValue
     =   "{" (ElementValueOrExpr || ",")* (",")? "}";
+
+// ARRAY-Creator
 
 ArrayDimensionByInitializer implements ArrayDimensionSpecifier
     = (dim:"[" "]")+ ArrayInit;

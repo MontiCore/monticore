@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+graph TrafficLight {
+  initial vertex Bottom (green) ;
+  vertex Middle (yellow) ;
+  vertex Top (red) ;
+  Bottom -> Middle ;
+  Middle -> Top ;
+  Top -> Middle ;
+  Middle -> Bottom ;
+}

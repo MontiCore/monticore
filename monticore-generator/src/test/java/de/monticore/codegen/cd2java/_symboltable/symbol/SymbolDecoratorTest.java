@@ -206,12 +206,12 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethods() {
-    assertEquals(19, symbolClassAutomaton.getCDMethodList().size());
+    assertEquals(20, symbolClassAutomaton.getCDMethodList().size());
   }
 
   @Test
   public void testAcceptMethod() {
-    ASTCDMethod method = getMethodBy("accept", symbolClassAutomaton);
+    ASTCDMethod method = getMethodsBy("accept", symbolClassAutomaton).get(0);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
 
@@ -448,7 +448,7 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodsStateSymbol() {
-    assertEquals(17, symbolClassState.getCDMethodList().size());
+    assertEquals(18, symbolClassState.getCDMethodList().size());
   }
 
   @Test(expected = AssertionError.class)

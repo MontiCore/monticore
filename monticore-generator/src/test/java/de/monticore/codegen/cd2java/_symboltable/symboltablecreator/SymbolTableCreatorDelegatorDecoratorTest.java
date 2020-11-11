@@ -102,19 +102,28 @@ public class SymbolTableCreatorDelegatorDecoratorTest extends DecoratorTestCase 
 
   @Test
   public void testConstructorCount() {
-    assertEquals(1, symTabCreator.sizeCDConstructors());
+    assertEquals(2, symTabCreator.sizeCDConstructors());
+  }
+
+  @Test
+  public void testZeroArgsConstructor() {
+    ASTCDConstructor cdConstructor = symTabCreator.getCDConstructor(0);
+    assertDeepEquals(PUBLIC, cdConstructor.getModifier());
+    assertEquals("AutomatonSymbolTableCreatorDelegator", cdConstructor.getName());
+
+    assertEquals(0, cdConstructor.sizeCDParameters());
+    assertTrue(cdConstructor.isEmptyException());
   }
 
   @Test
   public void testConstructor() {
-    ASTCDConstructor cdConstructor = symTabCreator.getCDConstructor(0);
+    ASTCDConstructor cdConstructor = symTabCreator.getCDConstructor(1);
     assertDeepEquals(PUBLIC, cdConstructor.getModifier());
     assertEquals("AutomatonSymbolTableCreatorDelegator", cdConstructor.getName());
 
     assertEquals(1, cdConstructor.sizeCDParameters());
     assertDeepEquals(AUTOMATON_GLOBAL_SCOPE, cdConstructor.getCDParameter(0).getMCType());
     assertEquals("globalScope", cdConstructor.getCDParameter(0).getName());
-
 
     assertTrue(cdConstructor.isEmptyException());
   }

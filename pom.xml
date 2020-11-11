@@ -7,7 +7,7 @@
 
   <groupId>de.monticore</groupId>
   <artifactId>monticore</artifactId>
-  <version>6.4.0</version>
+  <version>6.5.0</version>
   <packaging>pom</packaging>
 
   <!-- == PROJECT MODULES ================================================= -->
@@ -18,9 +18,8 @@
     <module>monticore-generator</module>
     <module>monticore-maven</module>
     <module>monticore-runtime</module>
-    <module>monticore-emf-runtime</module>
-    <module>monticore-templateclassgenerator</module>
-    <module>monticore-emf-grammar</module>
+    <module>monticore-runtime-emf</module>
+    <module>monticore-grammar-emf</module>
   </modules>
 
   <!-- == PROJECT PROPERTIES ============================================== -->
@@ -31,9 +30,9 @@
     <!-- .. Libraries ..................................................... -->
 
     <cd4analysis.version>1.7.0.2</cd4analysis.version>
-    <last.mc.release>6.3.0</last.mc.release>
+    <last.mc.release>6.4.0</last.mc.release>
 
-    <se-commons.version>1.7.10</se-commons.version>
+    <se-commons.version>1.7.11</se-commons.version>
     <antlr.version>4.7.1</antlr.version>
     <commons.io.version>2.4</commons.io.version>
     <doxia-sink-api.version>1.6</doxia-sink-api.version>
@@ -46,7 +45,7 @@
     <jgrapht.version>0.9.1</jgrapht.version>
     <jline.version>2.12</jline.version>
     <jsr305.version>3.0.0</jsr305.version>
-    <junit.version>4.12</junit.version>
+    <junit.version>4.13.1</junit.version>
     <logback.version>1.1.2</logback.version>
     <maven-artifact.version>3.2.3</maven-artifact.version>
     <maven-core.version>3.2.3</maven-core.version>

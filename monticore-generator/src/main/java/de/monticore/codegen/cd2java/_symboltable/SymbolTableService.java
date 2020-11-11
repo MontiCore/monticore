@@ -152,8 +152,12 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     return getArtifactScopeInterfaceFullName(getCDSymbol());
   }
 
+  public ASTMCQualifiedType getArtifactScopeInterfaceType(CDDefinitionSymbol cdSymbol) {
+    return getMCTypeFacade().createQualifiedType(getArtifactScopeInterfaceFullName(cdSymbol));
+  }
+
   public ASTMCQualifiedType getArtifactScopeInterfaceType() {
-    return getMCTypeFacade().createQualifiedType(getArtifactScopeInterfaceFullName());
+    return getArtifactScopeInterfaceType(getCDSymbol());
   }
 
   /**
@@ -206,34 +210,6 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   }
 
   /**
-   * model loader class names e.g. AutomataModelLoader
-   */
-
-  public String getModelLoaderClassFullName(CDDefinitionSymbol cdSymbol) {
-    return getPackage(cdSymbol) + "." + getModelLoaderClassSimpleName(cdSymbol);
-  }
-
-  public String getModelLoaderClassFullName() {
-    return getModelLoaderClassFullName(getCDSymbol());
-  }
-
-  public String getModelLoaderClassSimpleName(CDDefinitionSymbol cdSymbol) {
-    return cdSymbol.getName() + MODEL_LOADER_SUFFIX;
-  }
-
-  public String getModelLoaderClassSimpleName() {
-    return getModelLoaderClassSimpleName(getCDSymbol());
-  }
-
-  public ASTMCQualifiedType getModelLoaderType(CDDefinitionSymbol cdSymbol) {
-    return getMCTypeFacade().createQualifiedType(getModelLoaderClassFullName(cdSymbol));
-  }
-
-  public ASTMCQualifiedType getModelLoaderType() {
-    return getModelLoaderType(getCDSymbol());
-  }
-
-  /**
    * symbol reference class names e.g. AutomatonSymbolReference
    */
 
@@ -265,19 +241,19 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   }
 
   /**
-   * resolving delegate symbol interface e.g. IAutomatonSymbolResolvingDelegate
+   * resolving delegate symbol interface e.g. IAutomatonSymbolResolver
    */
 
-  public String getSymbolResolvingDelegateInterfaceSimpleName(ASTCDType astcdType) {
-    return INTERFACE_PREFIX + getSymbolSimpleName(astcdType) + RESOLVING_DELEGATE_SUFFIX;
+  public String getSymbolResolverInterfaceSimpleName(ASTCDType astcdType) {
+    return INTERFACE_PREFIX + getSymbolSimpleName(astcdType) + RESOLVER_SUFFIX;
   }
 
-  public String getSymbolResolvingDelegateInterfaceFullName(ASTCDType astcdType) {
-    return getSymbolResolvingDelegateInterfaceFullName(astcdType, getCDSymbol());
+  public String getSymbolResolverInterfaceFullName(ASTCDType astcdType) {
+    return getSymbolResolverInterfaceFullName(astcdType, getCDSymbol());
   }
 
-  public String getSymbolResolvingDelegateInterfaceFullName(ASTCDType astcdType, CDDefinitionSymbol cdDefinitionSymbol) {
-    return getPackage(cdDefinitionSymbol) + "." + getSymbolResolvingDelegateInterfaceSimpleName(astcdType);
+  public String getSymbolResolverInterfaceFullName(ASTCDType astcdType, CDDefinitionSymbol cdDefinitionSymbol) {
+    return getPackage(cdDefinitionSymbol) + "." + getSymbolResolverInterfaceSimpleName(astcdType);
   }
 
   /**
@@ -338,6 +314,66 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
 
   public String getSymbolTableCreatorDelegatorFullName() {
     return getSymbolTableCreatorDelegatorFullName(getCDSymbol());
+  }
+
+  /**
+   * PhasedSymbolTableCreatorDelegator Names, e.g. AutomatonPhasedSymbolTableCreatorDelegator
+   */
+
+  public String getPhasedSymbolTableCreatorDelegatorSimpleName(CDDefinitionSymbol cdSymbol) {
+    return cdSymbol.getName() + PHASED_SUFFIX + SYMBOL_TABLE_CREATOR_SUFFIX + DELEGATOR_SUFFIX;
+  }
+
+  public String getPhasedSymbolTableCreatorDelegatorSimpleName() {
+    return getPhasedSymbolTableCreatorDelegatorSimpleName(getCDSymbol());
+  }
+
+  public String getPhasedSymbolTableCreatorDelegatorFullName(CDDefinitionSymbol cdSymbol) {
+    return getPackage(cdSymbol) + "." + getPhasedSymbolTableCreatorDelegatorSimpleName(cdSymbol);
+  }
+
+  public String getPhasedSymbolTableCreatorDelegatorFullName() {
+    return getPhasedSymbolTableCreatorDelegatorFullName(getCDSymbol());
+  }
+
+  /**
+   * ScopeSkeletonCreatorDelegator Names e.g. AutomatonScopeSkeletonCreatorDelegator
+   */
+
+  public String getScopeSkeletonCreatorDelegatorSimpleName(CDDefinitionSymbol cdSymbol) {
+    return cdSymbol.getName() + SCOPE_SKELETON_CREATOR_SUFFIX + DELEGATOR_SUFFIX;
+  }
+
+  public String getScopeSkeletonCreatorDelegatorSimpleName() {
+    return getScopeSkeletonCreatorDelegatorSimpleName(getCDSymbol());
+  }
+
+  public String getScopeSkeletonCreatorDelegatorFullName(CDDefinitionSymbol cdSymbol) {
+    return getPackage(cdSymbol) + "." + getScopeSkeletonCreatorDelegatorSimpleName(cdSymbol);
+  }
+
+  public String getScopeSkeletonCreatorDelegatorFullName() {
+    return getScopeSkeletonCreatorDelegatorFullName(getCDSymbol());
+  }
+
+  /**
+   * ScopeSkeletonCreator Names e.g. AutomatonScopeSkeletonCreator
+   */
+
+  public String getScopeSkeletonCreatorSimpleName(CDDefinitionSymbol cdSymbol) {
+    return cdSymbol.getName() + SCOPE_SKELETON_CREATOR_SUFFIX;
+  }
+
+  public String getScopeSkeletonCreatorSimpleName() {
+    return getScopeSkeletonCreatorSimpleName(getCDSymbol());
+  }
+
+  public String getScopeSkeletonCreatorFullName(CDDefinitionSymbol cdSymbol) {
+    return getPackage(cdSymbol) + "." + getScopeSkeletonCreatorSimpleName(cdSymbol);
+  }
+
+  public String getScopeSkeletonCreatorFullName() {
+    return getScopeSkeletonCreatorFullName(getCDSymbol());
   }
 
   /**
@@ -785,66 +821,6 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     }
   }
 
-  public Optional<String> getStartProd() {
-    if(this.getCDSymbol().isPresentAstNode()){
-      return getStartProd(this.getCDSymbol().getAstNode());
-    }
-    else return Optional.empty();
-  }
-
-  public Optional<String> getStartProd(ASTCDDefinition astcdDefinition) {
-    if (astcdDefinition.isPresentModifier() && hasStartProdStereotype(astcdDefinition.getModifier())) {
-      return getStartProdValue(astcdDefinition.getModifier());
-    }
-    for (ASTCDClass prod : astcdDefinition.getCDClassList()) {
-      if (hasStereotype(prod.getModifier(), MC2CDStereotypes.START_PROD)) {
-        return Optional.of(getCDSymbol().getPackageName() + "." + getCDName() + "." + prod.getName());
-      }
-    }
-    for (ASTCDInterface prod : astcdDefinition.getCDInterfaceList()) {
-      if (hasStereotype(prod.getModifier(), MC2CDStereotypes.START_PROD)) {
-        return Optional.of(getCDSymbol().getPackageName() + "." + getCDName() + "." + prod.getName());
-      }
-    }
-    return Optional.empty();
-  }
-
-  public Optional<String> getStartProdASTFullName(ASTCDDefinition astcdDefinition) {
-    Optional<String> startProd = getStartProd(astcdDefinition);
-    if (startProd.isPresent()) {
-      String simpleName = Names.getSimpleName(startProd.get());
-      simpleName = simpleName.startsWith(AST_PREFIX) ? simpleName : AST_PREFIX + simpleName;
-      String startProdAstName = getQualifier(startProd.get()).toLowerCase() + "." + AST_PACKAGE + "." + simpleName;
-      return Optional.of(startProdAstName);
-    }
-    return Optional.empty();
-  }
-
-  /**
-   * methods which determine if a special stereotype is present
-   */
-
-  public boolean hasStartProd() {
-    return getStartProd().isPresent();
-  }
-
-  public boolean hasStartProd(ASTCDDefinition astcdDefinition) {
-    if (astcdDefinition.isPresentModifier() && hasStartProdStereotype(astcdDefinition.getModifier())) {
-      return true;
-    }
-    for (ASTCDClass prod : astcdDefinition.getCDClassList()) {
-      if (hasStereotype(prod.getModifier(), MC2CDStereotypes.START_PROD)) {
-        return true;
-      }
-    }
-    for (ASTCDInterface prod : astcdDefinition.getCDInterfaceList()) {
-      if (hasStereotype(prod.getModifier(), MC2CDStereotypes.START_PROD)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
   public boolean hasComponentStereotype(ASTCDDefinition astcdDefinition) {
     return astcdDefinition.isPresentModifier() &&
         hasComponentStereotype(astcdDefinition.getModifier());
@@ -862,10 +838,6 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     return hasStereotype(modifier, MC2CDStereotypes.COMPONENT);
   }
 
-  public boolean hasStartProdStereotype(ASTModifier modifier) {
-    return hasStereotype(modifier, MC2CDStereotypes.START_PROD);
-  }
-
   public boolean hasShadowingStereotype(ASTModifier modifier) {
     return hasStereotype(modifier, MC2CDStereotypes.SHADOWING);
   }
@@ -876,14 +848,6 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
 
   public boolean hasOrderedStereotype(ASTModifier modifier) {
     return hasStereotype(modifier, MC2CDStereotypes.ORDERED);
-  }
-
-  public Optional<String> getStartProdValue(ASTModifier modifier) {
-    List<String> stereotypeValues = getStereotypeValues(modifier, MC2CDStereotypes.START_PROD);
-    if (!stereotypeValues.isEmpty()) {
-      return Optional.ofNullable(stereotypeValues.get(0));
-    }
-    return Optional.empty();
   }
 
   public String determineReturnType(ASTMCType type) {

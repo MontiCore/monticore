@@ -1,6 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore
 
+import com.google.common.hash.Hashing
+import com.google.common.io.Files
 import de.monticore.cli.MontiCoreCLI
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
@@ -31,158 +33,158 @@ import org.gradle.work.InputChanges
  *                        defaults to empty list
  */
 public class MCTask extends DefaultTask {
-
+  
   MCTask() {
     // set the task group name, in which all instances of MCTask will appear
     group = 'MC'
     // always add the files from the configuration 'grammar' to the config files
     grammarConfigFiles.setFrom(project.configurations.getByName("grammar").getFiles())
   }
-
+  
   final RegularFileProperty grammar = project.objects.fileProperty()
-
+  
   final DirectoryProperty outputDir = project.objects.directoryProperty()
-
+  
   // this attributes enables to defines super grammars for a grammar build task
   // is super grammar gets updated the task itself is rebuild as well
   final ConfigurableFileCollection superGrammars = project.objects.fileCollection()
-
+  
   final ConfigurableFileCollection grammarConfigFiles = project.objects.fileCollection()
-
+  
   boolean addGrammarConfig = true
-
-  List<File> handcodedPath = []
-
-  List<File> modelPath = []
-
-  List<File> templatePath = []
-
+  
+  List<String> handcodedPath = []
+  
+  List<String> modelPath = []
+  
+  List<String> templatePath = []
+  
   List<String> includeConfigs = []
-
+  
   String script
-
+  
   boolean help = false
-
+  
   boolean dev = false
-
+  
   @OutputDirectory
   DirectoryProperty getOutputDir() {
     return outputDir
   }
-
+  
   @Incremental
   @InputFile
   RegularFileProperty getGrammar() {
     return grammar
   }
-
+  
   @InputFile
   @Optional
   File customLog
-
+  
   @InputFiles
   @Incremental
   @Optional
   ConfigurableFileCollection getSuperGrammars() {
     return superGrammars
   }
-
+  
   @InputFiles
   @Optional
-  List<File> getHandcodedPath() {
+  List<String> getHandcodedPath() {
     return handcodedPath
   }
-
+  
   @InputFiles
   @Optional
-  List<File> getModelPath() {
+  List<String> getModelPath() {
     return modelPath
   }
-
+  
   @InputFiles
   @Optional
-  List<File> getTemplatePath() {
+  List<String> getTemplatePath() {
     return templatePath
   }
-
+  
   @InputFiles
   @Optional
   List<String> getIncludeConfigs() {
     return includeConfigs
   }
-
+  
   @InputFiles
   @Optional
   ConfigurableFileCollection getGrammarConfigFiles() {
     return grammarConfigFiles
   }
-
+  
   @Input
   @Optional
   String getScript() {
     return script
   }
-
+  
   @Input
   boolean getDev() {
     return dev
   }
-
+  
   @Input
   boolean getHelp() {
     return help
   }
-
+  
   @Input
   boolean getAddGrammarConfig() {
     return addGrammarConfig
   }
-
-  public void handcodedPath(File... paths) {
+  
+  public void handcodedPath(String... paths) {
     getHandcodedPath().addAll(paths)
   }
-
-  public void modelPath(File... paths) {
+  
+  public void modelPath(String... paths) {
     getModelPath().addAll(paths)
   }
-
-  public void templatePath(File... paths) {
+  
+  public void templatePath(String... paths) {
     getTemplatePath().addAll(paths)
   }
-
+  
   public void includeConfigs(String... configurations) {
     getIncludeConfigs().addAll(configurations)
   }
-
+  
   @TaskAction
   void execute(InputChanges inputs) {
     logger.info(inputs.isIncremental() ? "CHANGED inputs considered out of date"
-        : "ALL inputs considered out of date");
-
+            : "ALL inputs considered out of date");
+    
     // if no path for hand coded classes is specified use $projectDir/src/main/java as default
     if (handcodedPath.isEmpty()) {
       File hcp = project.layout.projectDirectory.file("src/main/java").getAsFile()
       if(hcp.exists()) {
-        handcodedPath.add(hcp)
+        handcodedPath.add(hcp.toString())
       }
     }
-
+    
     // if no model path is specified use $projectDir/src/main/grammars as default
     if (modelPath.isEmpty()) {
       File mp = project.layout.projectDirectory.file("src/main/grammars").getAsFile()
       if(mp.exists()) {
-        modelPath.add(mp)
+        modelPath.add(mp.toString())
       }
     }
-
+    
     // if no template path is specified use $projectDir/src/main/resources as default
     if (templatePath.isEmpty()) {
       File tp = project.layout.projectDirectory.file("src/main/resources").getAsFile()
       if(tp.exists()) {
-        templatePath.add(tp)
+        templatePath.add(tp.toString())
       }
     }
-
+    
     if (!inputs.getFileChanges(grammar).isEmpty()) {
       // execute MontiCore if task is out of date
       logger.info("Rebuild because " + grammar.get().getAsFile().getName() + " itself has changed.")
@@ -193,7 +195,7 @@ public class MCTask extends DefaultTask {
       rebuildGrammar()
     }
   }
-
+  
   void rebuildGrammar() {
     List<String> mp = new ArrayList()
     logger.info("out of date: " + grammar.get().getAsFile().getName())
@@ -205,7 +207,7 @@ public class MCTask extends DefaultTask {
     for (c in includeConfigs) {
       project.configurations.getByName(c).each { mp.add it }
     }
-
+    
     mp.addAll(modelPath)
     // construct string array from configuration to pass it to MontiCore
     List<String> params = [grammar.get().asFile.toString(),
@@ -232,11 +234,11 @@ public class MCTask extends DefaultTask {
       params.add("-h")
     }
     def p = params.toArray() as String[]
-
+    
     // execute Monticore with the given parameters
     MontiCoreCLI.main(p)
   }
-
+  
   /**
    *
    * @param grammar - the grammar relative to the surrounding folder structure.
@@ -270,18 +272,37 @@ public class MCTask extends DefaultTask {
         logger.info('Removed files:\n' + removed)
         return false
       }
+      // check whether local super grammars have changed
+      def grammarsUpToDate = true
+      inout.eachLine {
+        line -> if(line.startsWith('mc4:')){
+          def (grammarString,checksum) = line.toString().substring(4).tokenize( ' ' )
+          def grammarFile = new File(grammarString)
+          if(!grammarFile.exists()) { // deleted grammar -> generate
+            logger.info("Regenerating Code for "+ grammar + " : Grammar " + grammarString +  " does so longer exist.")
+            grammarsUpToDate = false
+            return
+          } else if(!Files.asByteSource(grammarFile).hash(Hashing.md5()).toString().equals(checksum.trim())){
+            // changed grammar -> generate
+            logger.info("Regenerating Code for "+ grammar + " : Grammar " + grammarString + " has changed")
+            grammarsUpToDate =  false
+            return
+          }
+        }
+      }
+      if(!grammarsUpToDate) {return false}
     } else { // no report -> generate
       logger.info("No previous generation report $inout found")
       return false
     }
     return true
   }
-
+  
   protected File fromBasePath(String filePath) {
     File file = new File(filePath);
     return !file.isAbsolute()
             ? new File(project.getProjectDir(), filePath)
             : file;
   }
-
+  
 }

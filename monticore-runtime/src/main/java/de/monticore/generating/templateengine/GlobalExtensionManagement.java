@@ -2,19 +2,11 @@
 
 package de.monticore.generating.templateengine;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
 import com.google.common.base.Strings;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
-
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.freemarker.SimpleHashFactory;
 import de.monticore.generating.templateengine.reporting.Reporting;
@@ -22,6 +14,9 @@ import de.se_rwth.commons.logging.Log;
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.SimpleHash;
 import freemarker.template.TemplateModelException;
+
+import java.io.IOException;
+import java.util.*;
 
 /**
  * Class for managing hook points, features and (global) variables in templates.
@@ -73,7 +68,6 @@ public class GlobalExtensionManagement {
    */
   public void setGlobalData(SimpleHash data) {
     Log.errorIfNull(data);
-
     this.globalData = data;
   }
 
@@ -217,7 +211,7 @@ public class GlobalExtensionManagement {
    * Returns the value of the given variable.
    *
    * @param name of the variable
-   * @param default replaces if the variable is not present
+   * @param defaultObject replaces if the variable is not present
    * @return the value or the default
    */
   @SuppressWarnings("deprecation")

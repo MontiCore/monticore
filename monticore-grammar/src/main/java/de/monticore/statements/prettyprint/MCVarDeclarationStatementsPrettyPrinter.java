@@ -4,7 +4,10 @@ package de.monticore.statements.prettyprint;
 
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.statements.mcvardeclarationstatements._ast.*;
+import de.monticore.statements.mcvardeclarationstatements._ast.ASTDeclaratorId;
+import de.monticore.statements.mcvardeclarationstatements._ast.ASTLocalVariableDeclaration;
+import de.monticore.statements.mcvardeclarationstatements._ast.ASTLocalVariableDeclarationStatement;
+import de.monticore.statements.mcvardeclarationstatements._ast.ASTVariableDeclarator;
 import de.monticore.statements.mcvardeclarationstatements._visitor.MCVarDeclarationStatementsVisitor;
 
 public class MCVarDeclarationStatementsPrettyPrinter implements
@@ -25,7 +28,7 @@ public class MCVarDeclarationStatementsPrettyPrinter implements
   @Override
   public void handle(ASTVariableDeclarator a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
-    a.getDeclaratorId().accept(getRealThis());
+    a.getDeclarator().accept(getRealThis());
     if (a.isPresentVariableInit()) {
       getPrinter().print(" = ");
       a.getVariableInit().accept(getRealThis());
@@ -37,23 +40,6 @@ public class MCVarDeclarationStatementsPrettyPrinter implements
   public void handle(ASTDeclaratorId a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     getPrinter().print(a.getName());
-    for (int i = 0; i < a.getDimList().size(); i++) {
-      getPrinter().print("[]");
-    }
-    CommentPrettyPrinter.printPostComments(a, getPrinter());
-  }
-
-  @Override
-  public void handle(ASTArrayInit a) {
-    CommentPrettyPrinter.printPreComments(a, getPrinter());
-    getPrinter().print("{");
-    String sep = "";
-    for (ASTVariableInit v: a.getVariableInitList()) {
-      getPrinter().print(sep);
-      sep = ", ";
-      v.accept(getRealThis());
-    }
-    getPrinter().print("}");
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
 

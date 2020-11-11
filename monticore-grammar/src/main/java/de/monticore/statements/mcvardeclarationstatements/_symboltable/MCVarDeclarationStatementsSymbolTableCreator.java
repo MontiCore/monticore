@@ -8,25 +8,30 @@ import de.monticore.statements.mccommonstatements._ast.ASTJavaModifier;
 import de.monticore.statements.mcstatementsbasis._ast.ASTMCModifier;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTLocalVariableDeclaration;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTVariableDeclarator;
-import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolSurrogate;
-import de.monticore.types.check.SymTypeArray;
+import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfNull;
 import de.monticore.types.check.SynthesizeSymTypeFromMCFullGenericTypes;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 
 import java.util.Deque;
 import java.util.List;
 
 import static de.monticore.statements.mccommonstatements._ast.ASTConstantsMCCommonStatements.*;
 
+@Deprecated
 public class MCVarDeclarationStatementsSymbolTableCreator extends MCVarDeclarationStatementsSymbolTableCreatorTOP {
-  public MCVarDeclarationStatementsSymbolTableCreator(IMCVarDeclarationStatementsScope enclosingScope) {
+
+  public MCVarDeclarationStatementsSymbolTableCreator() {
+  }
+
+  public MCVarDeclarationStatementsSymbolTableCreator(
+      IMCVarDeclarationStatementsScope enclosingScope) {
     super(enclosingScope);
   }
 
-  public MCVarDeclarationStatementsSymbolTableCreator(Deque<? extends IMCVarDeclarationStatementsScope> scopeStack) {
+  public MCVarDeclarationStatementsSymbolTableCreator(
+      Deque<? extends IMCVarDeclarationStatementsScope> scopeStack) {
     super(scopeStack);
   }
 
@@ -34,19 +39,8 @@ public class MCVarDeclarationStatementsSymbolTableCreator extends MCVarDeclarati
     List<FieldSymbol> symbols = Lists.newArrayList();
     for (ASTVariableDeclarator v : ast.getVariableDeclaratorList()) {
       SymTypeExpression simpleType = createTypeLoader(ast.getMCType());
-      if (v.getDeclaratorId().getDimList().size() > 0) {
-        if (simpleType instanceof SymTypeArray) {
-          SymTypeArray arraySymType = (SymTypeArray) simpleType;
-          arraySymType.setDim(arraySymType.getDim() + v.getDeclaratorId().getDimList().size());
-        } else {
-          OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate(v.getDeclaratorId().getName());
-          loader.setEnclosingScope(v.getDeclaratorId().getEnclosingScope());
-          simpleType = new SymTypeArray(loader,
-                  v.getDeclaratorId().getDimList().size(), simpleType);
-        }
-      }
-      v.getDeclaratorId().getSymbol().setType(simpleType);
-      symbols.add(v.getDeclaratorId().getSymbol());
+      v.getDeclarator().getSymbol().setType(simpleType);
+      symbols.add(v.getDeclarator().getSymbol());
     }
     addModifiersToVariables(symbols, ast.getMCModifierList());
   }

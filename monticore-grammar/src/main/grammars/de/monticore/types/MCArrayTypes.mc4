@@ -1,0 +1,34 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.types;
+
+/* This is a MontiCore stable grammar.
+ * Adaptations -- if any -- are conservative. */
+
+import de.monticore.types.*;
+
+/**
+ * This grammar completes the type definitions to 
+ * support arrays like Person[][]
+ *
+ * This grammar is part of a hierarchy of types, namely 
+ * * types.MCBasicTypes.mc4       
+ *   * types/MCArrayTypes.mc4
+ *   * types/MCCollectionTypes.mc4  
+ *     * types/MCSimpleGenericTypes.mc4
+ *       * types/MCFullGenericTypes.mc4    
+ *
+*/
+
+component grammar MCArrayTypes
+          extends MCBasicTypes {
+
+  /** ASTArrayType introduces array for arbitrary types
+  */
+  MCArrayType implements MCType =
+    MCType 
+    ("[" "]" {_aNode.setDimensions(_aNode.getDimensions()+1);} )+;
+
+  // counter dimensions counts the array depth
+  astrule MCArrayType =
+    dimensions:int;
+}

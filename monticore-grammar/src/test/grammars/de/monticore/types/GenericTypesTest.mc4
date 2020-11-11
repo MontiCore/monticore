@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore.types;
+
+grammar GenericTypesTest extends de.monticore.types.MCFullGenericTypes, de.monticore.types.MCArrayTypes {
+
+
+}

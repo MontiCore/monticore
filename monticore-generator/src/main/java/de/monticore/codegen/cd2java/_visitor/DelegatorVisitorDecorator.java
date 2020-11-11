@@ -23,8 +23,10 @@ import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.PRIVATE;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java.CoreTemplates.ANNOTATIONS;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
+import static de.monticore.codegen.cd2java.CoreTemplates.createAnnotationsHookPoint;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_INTERFACE;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SCOPE;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SYMBOL;
@@ -78,9 +80,12 @@ public class DelegatorVisitorDecorator extends AbstractCreator<ASTCDCompilationU
         .map(visitorService::calculateCDTypeNamesWithASTPackage)
         .collect(Collectors.toList()));
 
-    return CD4CodeMill.cDClassBuilder()
+    ASTModifier modifier = PUBLIC.build();
+    visitorService.addDeprecatedStereotype(modifier, Optional.of("Will be removed. Use traverser infrastructure instead."));
+    
+    ASTCDClass cdClass = CD4CodeMill.cDClassBuilder()
         .setName(delegatorVisitorSimpleName)
-        .setModifier(PUBLIC.build())
+        .setModifier(modifier)
         .addInterface(getMCTypeFacade().createQualifiedType(visitorService.getInheritanceVisitorSimpleName()))
         .addCDAttribute(getRealThisAttribute(delegatorVisitorSimpleName))
         .addCDMethod(addGetRealThisMethod(delegatorVisitorSimpleName))
@@ -90,6 +95,9 @@ public class DelegatorVisitorDecorator extends AbstractCreator<ASTCDCompilationU
         .addAllCDMethods(createVisitorDelegatorMethods(definitionList))
         .addAllCDMethods(addDefaultVisitorMethods(visitorSimpleNameList))
         .build();
+    
+    this.replaceTemplate(ANNOTATIONS, cdClass, createAnnotationsHookPoint(cdClass.getModifier()));
+    return cdClass;
   }
 
 

@@ -21,7 +21,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
-import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodsBy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -67,12 +67,12 @@ public class ASTLanguageInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(1, languageInterface.sizeCDMethods());
+    assertEquals(2, languageInterface.sizeCDMethods());
   }
 
   @Test
   public void testAcceptMethod() {
-    ASTCDMethod method = getMethodBy("accept", languageInterface);
+    ASTCDMethod method = getMethodsBy("accept", languageInterface.getCDMethodList()).get(0);
     assertTrue(method.getModifier().isAbstract());
     assertTrue(method.getModifier().isPublic());
     assertTrue(method.getMCReturnType().isPresentMCVoidType()

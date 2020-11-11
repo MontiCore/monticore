@@ -11,14 +11,15 @@ import de.monticore.types.*;
 
 /**
  * This grammar defines Java's mechanism for the introduction
- * of local variables with a type, an array dim and
- * including the possibility to initialize the
- * variable, e.g. private int a[] = { ... }
+ * of local variables with a type and
+ * the possibility to initialize the
+ * variable, e.g. private int a = ...
  *
  * This grammar is part of a hierarchy of statements, namely
  * * statements/MCStatementsBasis.mc4
  * * -- statements/MCAssertStatements.mc4
  * * -- statements/MCVarDeclarationStatements.mc4
+ * * -- -- statements/MCArrayStatements.mc4
  * * -- -- statements/MCCommonStatements.mc4
  * * -- -- -- statements/MCExceptionStatements.mc4
  * * -- -- -- statements/MCSynchronizedStatements.mc4
@@ -36,24 +37,24 @@ component grammar MCVarDeclarationStatements
                   ExpressionsBasis,
                   OOSymbols {
 
-LocalVariableDeclarationStatement implements MCBlockStatement
-    = LocalVariableDeclaration ";" ;
-
-LocalVariableDeclaration
-    =   MCModifier* MCType (VariableDeclarator || ",")+ ;
-
-VariableDeclarator
-    =   DeclaratorId ("=" VariableInit)? ;
-
-DeclaratorId implements Field
-    =   Name (dim:"[" "]")* ;
-
-interface VariableInit;
-
-SimpleInit implements VariableInit =
-                    Expression;
-
-ArrayInit implements VariableInit
-     =   "{" (VariableInit || ",")* (",")? "}" ;
+  LocalVariableDeclarationStatement implements MCBlockStatement
+      = LocalVariableDeclaration ";" ;
+  
+  LocalVariableDeclaration
+      = MCModifier* MCType (VariableDeclarator || ",")+ ;
+  
+  VariableDeclarator
+      = Declarator ("=" VariableInit)? ;
+  
+  interface Declarator extends Field
+      = Name;
+  
+  DeclaratorId implements Declarator
+      = Name;
+  
+  interface VariableInit;
+  
+  SimpleInit implements VariableInit
+      = Expression;
 
 }
