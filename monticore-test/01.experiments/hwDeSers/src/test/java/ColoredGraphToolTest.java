@@ -38,7 +38,7 @@ public class ColoredGraphToolTest {
     assertTrue(stFile.exists());
 
     // load the stored file and check that important things in the artifact scope are still there
-    IColoredGraphArtifactScope as = new ColoredGraphScopeDeSer()
+    IColoredGraphArtifactScope as = ColoredGraphMill.coloredGraphScopeDeSer()
         .load("target/src/test/resources/Blinker.cgsym");
     assertEquals("Blinker", as.getName());
     assertEquals(2, as.getNumberOfColors());

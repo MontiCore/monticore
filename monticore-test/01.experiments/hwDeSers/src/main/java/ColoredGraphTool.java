@@ -47,7 +47,7 @@ public class ColoredGraphTool {
     Log.info("------------------", "ColoredGraphTool");
 
     // store symbol table
-    new ColoredGraphScopeDeSer().store(symTab, "target/" + model + "sym");
+    ColoredGraphMill.coloredGraphScopeDeSer().store(symTab, "target/" + model + "sym");
 
   }
 
