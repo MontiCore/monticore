@@ -27,12 +27,11 @@ public class ColoredGraphSymbolTablePrinter extends ColoredGraphSymbolTablePrint
    * @param color
    */
   @Override public void serializeVertexColor(Color color) {
-    JsonPrinter p = getJsonPrinter();
-    p.beginArray("color");
-    p.value(color.getRed());
-    p.value(color.getGreen());
-    p.value(color.getBlue());
-    p.endArray();
+    printer.beginArray("color");     // Serialize color as arrays,
+    printer.value(color.getRed());   // add red value first
+    printer.value(color.getGreen()); // ... followed by green
+    printer.value(color.getBlue());  // ... and blue.
+    printer.endArray();              // Print the array end.
   }
 }
 
