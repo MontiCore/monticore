@@ -6,7 +6,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.logging.LogStub;
 import mc.typescalculator.myownlanguage._parser.MyOwnLanguageParser;
 import mc.typescalculator.unittypes._ast.ASTMinuteType;
-import org.junit.Test;
+import org.junit.*;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -21,7 +21,7 @@ public class SynthesizeSymTypeFromMyOwnLanguageTest {
 
   @Before
   public void setup() {
-    Log.init();
+    LogStub.init();
   }
 
   @Test
