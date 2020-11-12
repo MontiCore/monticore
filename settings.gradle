@@ -71,3 +71,7 @@ include(':monticore-test:02experiments:symbols')
 include(':monticore-test:02experiments:mcgrammarlang')
 include(':monticore-test:02experiments:forGrammarOps')
 include(':monticore-test:02experiments:traverser')
+
+
+include 'example'
+project(':example').projectDir = file("monticore-test/example")
