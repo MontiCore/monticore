@@ -2,6 +2,7 @@
 
 package coloredgraph._symboltable;
 
+import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
 
@@ -9,13 +10,11 @@ import java.awt.*;
 import java.util.List;
 
 /**
- * This class extends the generated symbol DeSer for vertex symbols to add (de-)serialization of the
- * "color" symbolrule attribute of the VertexSymbol. As the type of "color" is not a built-in data
- * type, for which default (de)serialization exists, the serialization strategy has to be realized
- * manually.
- * TODO AB: Move the serialization method from SymbolTablePrinter to DeSers in MC generator
- */
+ *  Serializes Color as RGB values in form [0,0,0]
+ */ 
 public class VertexSymbolDeSer extends VertexSymbolDeSerTOP {
+
+  JsonPrinter printer = new JsonPrinter();
 
   /**
    * This method deserializes the color of a vertex from a JSON array with numeric values for
@@ -25,12 +24,31 @@ public class VertexSymbolDeSer extends VertexSymbolDeSerTOP {
    * @param enclosingScope
    * @return
    */
-  @Override public Color deserializeColor(JsonObject symbolJson,
-      IColoredGraphScope enclosingScope) {
-    final List<JsonElement> rgb = symbolJson.getArrayMember("color");
+  @Override 
+  public Color deserializeColor(JsonObject symbolJson,
+         IColoredGraphScope enclosingScope) {
+    // get color attribute from the symbol represented in Json
+    List<JsonElement> rgb = symbolJson.getArrayMember("color");
+
+    // cache each color value as integer number in a variable
     int r = rgb.get(0).getAsJsonNumber().getNumberAsInt();
     int g = rgb.get(1).getAsJsonNumber().getNumberAsInt();
     int b = rgb.get(2).getAsJsonNumber().getNumberAsInt();
+
+    // create new color using deserialized color values 
     return new Color(r, g, b);
+  }
+  
+    /**
+   * This method serializes the color of a vertex in form of an instance of java.awt.Color as a
+   * JSON array with numeric values for each red, green, and blue.
+   * @param color
+   */
+  public void serializeVertexColor(Color color) {
+    printer.beginArray("color");     // Serialize color as arrays,
+    printer.value(color.getRed());   // add red value first
+    printer.value(color.getGreen()); // ... followed by green
+    printer.value(color.getBlue());  // ... and blue.
+    printer.endArray();              // Print the array end.
   }
 }
