@@ -2,6 +2,7 @@
 
 package coloredgraph._symboltable;
 
+import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
 
@@ -12,6 +13,8 @@ import java.util.List;
  *  Serializes Color as RGB values in form [0,0,0]
  */ 
 public class VertexSymbolDeSer extends VertexSymbolDeSerTOP {
+
+  JsonPrinter printer = new JsonPrinter();
 
   /**
    * This method deserializes the color of a vertex from a JSON array with numeric values for
@@ -39,10 +42,8 @@ public class VertexSymbolDeSer extends VertexSymbolDeSerTOP {
     /**
    * This method serializes the color of a vertex in form of an instance of java.awt.Color as a
    * JSON array with numeric values for each red, green, and blue.
-   * TODO AB: Move these methods to SymbolDeSer in MC generator
    * @param color
    */
-  @Override 
   public void serializeVertexColor(Color color) {
     printer.beginArray("color");     // Serialize color as arrays,
     printer.value(color.getRed());   // add red value first
