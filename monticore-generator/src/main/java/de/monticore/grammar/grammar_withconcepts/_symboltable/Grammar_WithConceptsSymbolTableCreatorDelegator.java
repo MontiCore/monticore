@@ -6,7 +6,11 @@ public class Grammar_WithConceptsSymbolTableCreatorDelegator extends Grammar_Wit
       IGrammar_WithConceptsGlobalScope globalScope) {
     super(globalScope);
   }
-  
+
+  public Grammar_WithConceptsSymbolTableCreatorDelegator() {
+    super();
+  }
+
   public Grammar_WithConceptsArtifactScope createFromAST(de.monticore.grammar.grammar._ast.ASTMCGrammar rootNode) {
     Grammar_WithConceptsArtifactScope as =  symbolTable.createFromAST(rootNode);
     if (!as.getPackageName().isEmpty()){

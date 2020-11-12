@@ -18,7 +18,7 @@ import de.monticore.io.paths.IterablePath;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.cli.CLIArguments;
 import de.se_rwth.commons.configuration.ConfigurationPropertiesMapContributor;
-import de.se_rwth.commons.logging.*;
+import de.se_rwth.commons.logging.Log;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -174,7 +174,7 @@ public class MontiCoreScriptTest {
   public void testDefaultScriptSimpleArgs() {
     Log.getFindings().clear();
     testDefaultScript(simpleArgs);
-    Assert.assertTrue(Log.getFindings().isEmpty());
+    assertEquals(0, Log.getErrorCount());
   }
 
   static String[] subsubgrammarArgs = {"-grammars",
@@ -187,7 +187,7 @@ public class MontiCoreScriptTest {
     Log.getFindings().clear();
     testDefaultScript(subsubgrammarArgs);
     testDefaultScriptWithEmf(subsubgrammarArgs);
-    Assert.assertTrue(Log.getFindings().isEmpty());
+    assertEquals(0, Log.getErrorCount());
   }
 
   static String[] inheritedgrammarArgs = {"-grammars",
@@ -202,7 +202,7 @@ public class MontiCoreScriptTest {
     Log.getFindings().clear();
     testDefaultScript(inheritedgrammarArgs);
     testDefaultScriptWithEmf(inheritedgrammarArgs);
-    assertEquals(Log.getErrorCount(), 0);
+    assertEquals(0, Log.getErrorCount());
   }
 
   static String[] supersubgrammarArgs = {"-grammars",
@@ -216,7 +216,7 @@ public class MontiCoreScriptTest {
     Log.getFindings().clear();
     testDefaultScript(supersubgrammarArgs);
     testDefaultScriptWithEmf(supersubgrammarArgs);
-    Assert.assertTrue(Log.getFindings().isEmpty());
+    assertEquals(0, Log.getErrorCount());
   }
 
   private void testDefaultScript(String[] args) {

@@ -2,108 +2,111 @@
 
 package de.monticore;
 
-import com.google.common.collect.Lists;
-import com.google.common.io.Resources;
-import de.monticore.cd.cd4analysis.CD4AnalysisMill;
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
-import de.monticore.cd.cd4analysis._symboltable.*;
-import de.monticore.cd.prettyprint.CD4CodePrinter;
-import de.monticore.codegen.cd2java.AbstractService;
-import de.monticore.codegen.cd2java.CDGenerator;
-import de.monticore.codegen.cd2java.DecorationHelper;
-import de.monticore.codegen.cd2java._ast.ASTCDDecorator;
-import de.monticore.codegen.cd2java._ast.ast_class.*;
-import de.monticore.codegen.cd2java._ast.ast_class.reference.ASTReferenceDecorator;
-import de.monticore.codegen.cd2java._ast.ast_interface.ASTInterfaceDecorator;
-import de.monticore.codegen.cd2java._ast.ast_interface.ASTLanguageInterfaceDecorator;
-import de.monticore.codegen.cd2java._ast.ast_interface.FullASTInterfaceDecorator;
-import de.monticore.codegen.cd2java._ast.builder.ASTBuilderDecorator;
-import de.monticore.codegen.cd2java._ast.builder.BuilderDecorator;
-import de.monticore.codegen.cd2java._ast.constants.ASTConstantsDecorator;
-import de.monticore.codegen.cd2java._ast.enums.EnumDecorator;
-import de.monticore.codegen.cd2java._ast.factory.NodeFactoryDecorator;
-import de.monticore.codegen.cd2java._ast.factory.NodeFactoryService;
-import de.monticore.codegen.cd2java._symboltable.serialization.*;
-import de.monticore.codegen.cd2java._symboltable.scopeskeletoncreator.ScopeSkeletonCreatorDecorator;
-import de.monticore.codegen.cd2java._symboltable.scopeskeletoncreator.ScopeSkeletonCreatorDelegatorDecorator;
-import de.monticore.codegen.cd2java.mill.CDAuxiliaryDecorator;
-import de.monticore.codegen.cd2java.mill.CDMillDecorator;
-import de.monticore.codegen.cd2java.mill.MillDecorator;
-import de.monticore.codegen.cd2java.mill.MillForSuperDecorator;
-import de.monticore.codegen.cd2java._ast_emf.ASTEmfCDDecorator;
-import de.monticore.codegen.cd2java._ast_emf.CDEmfGenerator;
-import de.monticore.codegen.cd2java._ast_emf.EmfService;
-import de.monticore.codegen.cd2java._ast_emf.ast_class.ASTEmfDecorator;
-import de.monticore.codegen.cd2java._ast_emf.ast_class.ASTFullEmfDecorator;
-import de.monticore.codegen.cd2java._ast_emf.ast_class.DataEmfDecorator;
-import de.monticore.codegen.cd2java._ast_emf.ast_class.mutatordecorator.EmfMutatorDecorator;
-import de.monticore.codegen.cd2java._ast_emf.emf_package.PackageImplDecorator;
-import de.monticore.codegen.cd2java._ast_emf.emf_package.PackageInterfaceDecorator;
-import de.monticore.codegen.cd2java._ast_emf.enums.EmfEnumDecorator;
-import de.monticore.codegen.cd2java._ast_emf.factory.EmfNodeFactoryDecorator;
-import de.monticore.codegen.cd2java._cocos.CoCoCheckerDecorator;
-import de.monticore.codegen.cd2java._cocos.CoCoDecorator;
-import de.monticore.codegen.cd2java._cocos.CoCoInterfaceDecorator;
-import de.monticore.codegen.cd2java._cocos.CoCoService;
-import de.monticore.codegen.cd2java._od.ODCDDecorator;
-import de.monticore.codegen.cd2java._od.ODDecorator;
-import de.monticore.codegen.cd2java._od.ODService;
-import de.monticore.codegen.cd2java._symboltable.SymbolTableCDDecorator;
-import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
-import de.monticore.codegen.cd2java._symboltable.scope.*;
-import de.monticore.codegen.cd2java._symboltable.symbol.*;
-import de.monticore.codegen.cd2java._symboltable.symbol.symbolsurrogatemutator.MandatoryMutatorSymbolSurrogateDecorator;
-import de.monticore.codegen.cd2java._symboltable.symboltablecreator.*;
-import de.monticore.codegen.cd2java._visitor.*;
-import de.monticore.codegen.cd2java._visitor.builder.DelegatorVisitorBuilderDecorator;
-import de.monticore.codegen.cd2java.data.DataDecorator;
-import de.monticore.codegen.cd2java.data.DataDecoratorUtil;
-import de.monticore.codegen.cd2java.data.InterfaceDecorator;
-import de.monticore.codegen.cd2java.data.ListSuffixDecorator;
-import de.monticore.codegen.cd2java.methods.AccessorDecorator;
-import de.monticore.codegen.cd2java.methods.MethodDecorator;
-import de.monticore.codegen.cd2java.methods.accessor.MandatoryAccessorDecorator;
-import de.monticore.codegen.cd2java.top.TopDecorator;
-import de.monticore.codegen.cd2java.typecd2java.TypeCD2JavaDecorator;
-import de.monticore.codegen.mc2cd.MC2CDTransformation;
-import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
-import de.monticore.codegen.mc2cd.TransformationHelper;
-import de.monticore.codegen.mc2cd.scopeTransl.MC2CDScopeTranslation;
-import de.monticore.codegen.mc2cd.symbolTransl.MC2CDSymbolTranslation;
-import de.monticore.codegen.parser.Languages;
-import de.monticore.codegen.parser.ParserGenerator;
-import de.monticore.generating.GeneratorSetup;
-import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.generating.templateengine.reporting.Reporting;
-import de.monticore.grammar.cocos.GrammarCoCos;
-import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
-import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
-import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsArtifactScope;
-import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
-import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsSymbolTableCreatorDelegator;
-import de.monticore.io.paths.IterablePath;
-import de.monticore.io.paths.ModelPath;
-import de.se_rwth.commons.Joiners;
-import de.se_rwth.commons.Names;
-import de.se_rwth.commons.configuration.Configuration;
-import de.se_rwth.commons.groovy.GroovyInterpreter;
-import de.se_rwth.commons.groovy.GroovyRunner;
-import de.se_rwth.commons.groovy.GroovyRunnerBase;
-import de.se_rwth.commons.logging.Log;
-import groovy.lang.Script;
-import org.codehaus.groovy.control.customizers.ImportCustomizer;
-import parser.MCGrammarParser;
+ import com.google.common.collect.Lists;
+ import com.google.common.io.Resources;
+ import de.monticore.cd.cd4analysis.CD4AnalysisMill;
+ import de.monticore.cd.cd4analysis._ast.ASTCDClass;
+ import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+ import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
+ import de.monticore.cd.cd4analysis._symboltable.*;
+ import de.monticore.cd.prettyprint.CD4CodePrinter;
+ import de.monticore.codegen.cd2java.AbstractService;
+ import de.monticore.codegen.cd2java.CDGenerator;
+ import de.monticore.codegen.cd2java.DecorationHelper;
+ import de.monticore.codegen.cd2java._ast.ASTCDDecorator;
+ import de.monticore.codegen.cd2java._ast.ast_class.*;
+ import de.monticore.codegen.cd2java._ast.ast_class.reference.ASTReferenceDecorator;
+ import de.monticore.codegen.cd2java._ast.ast_interface.ASTInterfaceDecorator;
+ import de.monticore.codegen.cd2java._ast.ast_interface.ASTLanguageInterfaceDecorator;
+ import de.monticore.codegen.cd2java._ast.ast_interface.FullASTInterfaceDecorator;
+ import de.monticore.codegen.cd2java._ast.builder.ASTBuilderDecorator;
+ import de.monticore.codegen.cd2java._ast.builder.BuilderDecorator;
+ import de.monticore.codegen.cd2java._ast.constants.ASTConstantsDecorator;
+ import de.monticore.codegen.cd2java._ast.enums.EnumDecorator;
+ import de.monticore.codegen.cd2java._ast.factory.NodeFactoryDecorator;
+ import de.monticore.codegen.cd2java._ast.factory.NodeFactoryService;
+ import de.monticore.codegen.cd2java._ast_emf.ASTEmfCDDecorator;
+ import de.monticore.codegen.cd2java._ast_emf.CDEmfGenerator;
+ import de.monticore.codegen.cd2java._ast_emf.EmfService;
+ import de.monticore.codegen.cd2java._ast_emf.ast_class.ASTEmfDecorator;
+ import de.monticore.codegen.cd2java._ast_emf.ast_class.ASTFullEmfDecorator;
+ import de.monticore.codegen.cd2java._ast_emf.ast_class.DataEmfDecorator;
+ import de.monticore.codegen.cd2java._ast_emf.ast_class.mutatordecorator.EmfMutatorDecorator;
+ import de.monticore.codegen.cd2java._ast_emf.emf_package.PackageImplDecorator;
+ import de.monticore.codegen.cd2java._ast_emf.emf_package.PackageInterfaceDecorator;
+ import de.monticore.codegen.cd2java._ast_emf.enums.EmfEnumDecorator;
+ import de.monticore.codegen.cd2java._ast_emf.factory.EmfNodeFactoryDecorator;
+ import de.monticore.codegen.cd2java._cocos.CoCoCheckerDecorator;
+ import de.monticore.codegen.cd2java._cocos.CoCoDecorator;
+ import de.monticore.codegen.cd2java._cocos.CoCoInterfaceDecorator;
+ import de.monticore.codegen.cd2java._cocos.CoCoService;
+ import de.monticore.codegen.cd2java._od.ODCDDecorator;
+ import de.monticore.codegen.cd2java._od.ODDecorator;
+ import de.monticore.codegen.cd2java._od.ODService;
+ import de.monticore.codegen.cd2java._symboltable.SymbolTableCDDecorator;
+ import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
+ import de.monticore.codegen.cd2java._symboltable.scope.*;
+ import de.monticore.codegen.cd2java._symboltable.scopeskeletoncreator.ScopeSkeletonCreatorDecorator;
+ import de.monticore.codegen.cd2java._symboltable.scopeskeletoncreator.ScopeSkeletonCreatorDelegatorDecorator;
+ import de.monticore.codegen.cd2java._symboltable.serialization.ScopeDeSerDecorator;
+ import de.monticore.codegen.cd2java._symboltable.serialization.SymbolDeSerDecorator;
+ import de.monticore.codegen.cd2java._symboltable.serialization.SymbolTablePrinterDecorator;
+ import de.monticore.codegen.cd2java._symboltable.symbol.*;
+ import de.monticore.codegen.cd2java._symboltable.symbol.symbolsurrogatemutator.MandatoryMutatorSymbolSurrogateDecorator;
+ import de.monticore.codegen.cd2java._symboltable.symboltablecreator.PhasedSymbolTableCreatorDelegatorDecorator;
+ import de.monticore.codegen.cd2java._symboltable.symboltablecreator.SymbolTableCreatorDecorator;
+ import de.monticore.codegen.cd2java._symboltable.symboltablecreator.SymbolTableCreatorDelegatorDecorator;
+ import de.monticore.codegen.cd2java._symboltable.symboltablecreator.SymbolTableCreatorForSuperTypes;
+ import de.monticore.codegen.cd2java._visitor.*;
+ import de.monticore.codegen.cd2java._visitor.builder.DelegatorVisitorBuilderDecorator;
+ import de.monticore.codegen.cd2java.data.DataDecorator;
+ import de.monticore.codegen.cd2java.data.DataDecoratorUtil;
+ import de.monticore.codegen.cd2java.data.InterfaceDecorator;
+ import de.monticore.codegen.cd2java.data.ListSuffixDecorator;
+ import de.monticore.codegen.cd2java.methods.AccessorDecorator;
+ import de.monticore.codegen.cd2java.methods.MethodDecorator;
+ import de.monticore.codegen.cd2java.methods.accessor.MandatoryAccessorDecorator;
+ import de.monticore.codegen.cd2java.mill.CDAuxiliaryDecorator;
+ import de.monticore.codegen.cd2java.mill.CDMillDecorator;
+ import de.monticore.codegen.cd2java.mill.MillDecorator;
+ import de.monticore.codegen.cd2java.mill.MillForSuperDecorator;
+ import de.monticore.codegen.cd2java.top.TopDecorator;
+ import de.monticore.codegen.cd2java.typecd2java.TypeCD2JavaDecorator;
+ import de.monticore.codegen.mc2cd.MC2CDTransformation;
+ import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
+ import de.monticore.codegen.mc2cd.TransformationHelper;
+ import de.monticore.codegen.mc2cd.scopeTransl.MC2CDScopeTranslation;
+ import de.monticore.codegen.mc2cd.symbolTransl.MC2CDSymbolTranslation;
+ import de.monticore.codegen.parser.Languages;
+ import de.monticore.codegen.parser.ParserGenerator;
+ import de.monticore.generating.GeneratorSetup;
+ import de.monticore.generating.templateengine.GlobalExtensionManagement;
+ import de.monticore.generating.templateengine.reporting.Reporting;
+ import de.monticore.grammar.cocos.GrammarCoCos;
+ import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+ import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
+ import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
+ import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
+ import de.monticore.grammar.grammar_withconcepts._symboltable.*;
+ import de.monticore.io.paths.IterablePath;
+ import de.monticore.io.paths.ModelPath;
+ import de.se_rwth.commons.Joiners;
+ import de.se_rwth.commons.Names;
+ import de.se_rwth.commons.configuration.Configuration;
+ import de.se_rwth.commons.groovy.GroovyInterpreter;
+ import de.se_rwth.commons.groovy.GroovyRunner;
+ import de.se_rwth.commons.groovy.GroovyRunnerBase;
+ import de.se_rwth.commons.logging.Log;
+ import groovy.lang.Script;
+ import org.codehaus.groovy.control.customizers.ImportCustomizer;
+ import parser.MCGrammarParser;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.*;
+ import java.io.File;
+ import java.io.IOException;
+ import java.nio.charset.Charset;
+ import java.nio.file.Path;
+ import java.nio.file.Paths;
+ import java.util.*;
 
 /**
  * The actual top level functional implementation of MontiCore. This is the
@@ -320,9 +323,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     if (grammarSymbol.isPresent()) {
       result = grammarSymbol.get().getAstNode();
     } else {
-      Grammar_WithConceptsSymbolTableCreatorDelegator stCreator = Grammar_WithConceptsMill.grammar_WithConceptsSymbolTableCreatorDelegatorBuilder()
-              .setGlobalScope(globalScope)
-              .build();
+      Grammar_WithConceptsSymbolTableCreatorDelegator stCreator = new Grammar_WithConceptsSymbolTableCreatorDelegator(globalScope);
       stCreator.createFromAST(result);
       globalScope.addLoadedFile(qualifiedGrammarName);
     }
@@ -360,9 +361,9 @@ public class MontiCoreScript extends Script implements GroovyRunner {
       result = (ASTCDCompilationUnit) cdSymbol.get().getEnclosingScope().getAstNode();
       Log.debug("Used present symbol table for " + cdSymbol.get().getFullName(), LOG_ID);
     } else {
-      CD4AnalysisSymbolTableCreatorDelegator stCreator = CD4AnalysisMill.cD4AnalysisSymbolTableCreatorDelegatorBuilder()
-              .setGlobalScope(globalScope).build();
-      stCreator.createFromAST(result);
+      CD4AnalysisSymbolTableCreatorDelegator stCreator = CD4AnalysisMill.cD4AnalysisSymbolTableCreatorDelegator();
+      ICD4AnalysisArtifactScope artScope = stCreator.createFromAST(result);
+      globalScope.addSubScope(artScope);
       globalScope.addLoadedFile(qualifiedCDName);
     }
 
@@ -958,7 +959,14 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   }
 
   public Grammar_WithConceptsGlobalScope createMCGlobalScope(ModelPath modelPath) {
-    return new Grammar_WithConceptsGlobalScope(modelPath, "mc4");
+    IGrammar_WithConceptsGlobalScope scope = Grammar_WithConceptsMill.grammar_WithConceptsGlobalScope();
+    // reset global scope
+    scope.clear();
+
+    // Set Fileextension and ModelPath
+    scope.setModelFileExtension("mc4");
+    scope.setModelPath(modelPath);
+    return (Grammar_WithConceptsGlobalScope) scope;
   }
 
   /**
