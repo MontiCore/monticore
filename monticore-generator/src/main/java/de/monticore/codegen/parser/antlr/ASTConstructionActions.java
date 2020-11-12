@@ -2,6 +2,8 @@
 
 package de.monticore.codegen.parser.antlr;
 
+import java.util.Optional;
+
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
@@ -13,14 +15,12 @@ import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 
-import java.util.Optional;
-
 public class ASTConstructionActions {
 
   protected ParserGeneratorHelper parserGenHelper;
-  
+
   protected MCGrammarSymbol symbolTable;
-  
+
   public ASTConstructionActions(ParserGeneratorHelper parserGenHelper) {
     this.parserGenHelper = parserGenHelper;
     this.symbolTable = parserGenHelper.getGrammarSymbol();
@@ -33,13 +33,13 @@ public class ASTConstructionActions {
   }
 
   public String getConstantInConstantGroupMultipleEntries(ASTConstant constant,
-      ASTConstantGroup constgroup) {
+                                                          ASTConstantGroup constgroup) {
     String tmp = "";
     if (constgroup.isPresentUsageName()) {
       String constfile;
       String constantname;
       Optional<MCGrammarSymbol> ruleGrammar = MCGrammarSymbolTableHelper
-          .getMCGrammarSymbol(constgroup.getEnclosingScope());
+              .getMCGrammarSymbol(constgroup.getEnclosingScope());
       if (ruleGrammar.isPresent()) {
         constfile = getConstantClassName(ruleGrammar.get());
         constantname = parserGenHelper.getConstantNameForConstant(constant);
@@ -48,116 +48,107 @@ public class ASTConstructionActions {
         constfile = getConstantClassName(symbolTable);
         constantname = parserGenHelper.getConstantNameForConstant(constant);
       }
-      
+
       // Add as attribute to AST
-      tmp = "_aNode.set%uname%(%constfile%.%constantname%);";
-      
+      tmp = "_builder.set%uname%(%constfile%.%constantname%);";
+
       tmp = tmp.replaceAll("%uname%",
-          StringTransformations.capitalize(constgroup.getUsageName()));
-      
+              StringTransformations.capitalize(constgroup.getUsageName()));
+
       tmp = tmp.replaceAll("%constfile%", constfile);
 
       tmp = tmp.replaceAll("%constantname%", constantname);
     }
-    
+
     return tmp;
   }
-  
+
   public String getActionAfterConstantInEnumProdSingle(ASTConstant c) {
     return "ret = true ;";
   }
-  
+
   public String getConstantInConstantGroupSingleEntry(ASTConstant constant,
-      ASTConstantGroup constgroup) {
+                                                      ASTConstantGroup constgroup) {
     String tmp = "";
-    
+
     if (constgroup.isPresentUsageName()) {
       // Add as attribute to AST
-      tmp = "_aNode.set%uname%(true);";
-      
+      tmp = "_builder.set%uname%(true);";
+
       tmp = tmp.replaceAll("%uname%",
-          StringTransformations.capitalize(constgroup.getUsageName()));
-    }
-    else {
+              StringTransformations.capitalize(constgroup.getUsageName()));
+    } else {
       if (constgroup.getConstantList().size() == 1) {
         // both == null and #constants == 1 -> use constant string as name
-        tmp = "_aNode.set%cname%(true);";
+        tmp = "_builder.set%cname%(true);";
         tmp = tmp.replaceAll("%cname%", StringTransformations.capitalize(HelperGrammar
-            .getAttributeNameForConstant(constgroup.getConstantList().get(0))));
-      }
-      else {
+                .getAttributeNameForConstant(constgroup.getConstantList().get(0))));
+      } else {
         // both == null and #constants > 1 -> user wants to ignore token in AST
       }
     }
-    
+
     return tmp;
   }
-  
+
   public String getActionForRuleBeforeRuleBody(ASTClassProd a) {
     StringBuilder b = new StringBuilder();
     String type = MCGrammarSymbolTableHelper
-        .getQualifiedName(a.getSymbol());
+            .getQualifiedName(a.getSymbol());
     Optional<MCGrammarSymbol> grammar = MCGrammarSymbolTableHelper
-        .getMCGrammarSymbol(a.getEnclosingScope());
-    String name = grammar.isPresent()
-        ? grammar.get().getName()
-        : a.getSymbol().getName();
-    
-        // Setup return value
-        b.append(
-            "// ret is normally returned, a is used to be compatible with rule using the return construct\n");
-        b.append(type + " _aNode = null;\n");
-        b.append("_aNode=" + Names.getQualifier(type) + "." + name + "NodeFactory.create"
-            +
-            Names.getSimpleName(type) + "();\n");
-        b.append("$ret=_aNode;\n");
-        
-        return b.toString();
-      }
+            .getMCGrammarSymbol(a.getEnclosingScope());
+
+    // Setup builder
+    b.append("// getActionForAltBeforeRuleBody\n");
+    b.append(type + "Builder _builder = " + parserGenHelper.getQualifiedGrammarName().toLowerCase()
+            + "." + parserGenHelper.getGrammarSymbol().getName() + "Mill."
+            + StringTransformations.uncapitalize(a.getName()) + "Builder();\n");
+
+    return b.toString();
+  }
 
   public String getActionForAltBeforeRuleBody(String className, ASTAlt a) {
     StringBuilder b = new StringBuilder();
     String type = MCGrammarSymbolTableHelper
-        .getQualifiedName(symbolTable.getProdWithInherited(className).get());
+            .getQualifiedName(symbolTable.getProdWithInherited(className).get());
     Optional<MCGrammarSymbol> grammar = MCGrammarSymbolTableHelper
-        .getMCGrammarSymbol(a.getEnclosingScope());
+            .getMCGrammarSymbol(a.getEnclosingScope());
     String name = grammar.isPresent()
-        ? grammar.get().getName()
-        : symbolTable.getProdWithInherited(className).get().getName();
-    
-        // Setup return value
-        b.append(type + " _aNode = null;\n");
-        b.append("_aNode=" + Names.getQualifier(type) + "." + name + "NodeFactory.create"
-            +
-            Names.getSimpleName(type) + "();\n");
-        b.append("$ret=_aNode;\n");
-        
-        return b.toString();
-      }
+            ? grammar.get().getName()
+            : symbolTable.getProdWithInherited(className).get().getName();
 
-  
+    // Setup builder
+    b.append("// getActionForAltBeforeRuleBody\n");
+    b.append(type + "Builder _builder = " + parserGenHelper.getQualifiedGrammarName().toLowerCase()
+            + "." + parserGenHelper.getGrammarSymbol().getName() + "Mill."
+            + StringTransformations.uncapitalize(className) + "Builder();\n");
+
+    return b.toString();
+  }
+
+
   public String getActionForLexerRuleNotIteratedAttribute(ASTNonTerminal a) {
 
-    String tmp = "_aNode.set%u_usage%(convert" + a.getName() + "($%tmp%));";
-    
+    String tmp = "_builder.set%u_usage%(convert" + a.getName() + "($%tmp%));";
+
     // Replace templates
     tmp = tmp.replaceAll("%u_usage%",
-        StringTransformations.capitalize(HelperGrammar.getUsageName(a)));
+            StringTransformations.capitalize(HelperGrammar.getUsageName(a)));
     tmp = tmp.replaceAll("%tmp%", parserGenHelper.getTmpVarNameForAntlrCode(a));
-    
+
     return tmp;
-    
+
   }
-  
+
   public String getActionForLexerRuleIteratedAttribute(ASTNonTerminal a) {
 
     String tmpname = parserGenHelper.getTmpVarNameForAntlrCode(a);
-    String tmp = " addToIteratedAttributeIfNotNull(_aNode.get%u_usage%(), convert" + a.getName()
-        + "($%tmp%));";
+    String tmp = " addToIteratedAttributeIfNotNull(_builder.get%u_usage%(), convert" + a.getName()
+            + "($%tmp%));";
 
     // Replace templates
     tmp = tmp.replaceAll("%u_usage%",
-        StringTransformations.capitalize(HelperGrammar.getListName(a)));
+            StringTransformations.capitalize(HelperGrammar.getListName(a)));
     tmp = tmp.replaceAll("%tmp%", tmpname);
 
     return tmp;
@@ -165,51 +156,55 @@ public class ASTConstructionActions {
 
   public String getActionForInternalRuleIteratedAttribute(ASTNonTerminal a) {
 
-    String tmp = "addToIteratedAttributeIfNotNull(_aNode.get%u_usage%(), _localctx.%tmp%.ret);";
+    String tmp = "addToIteratedAttributeIfNotNull(_builder.get%u_usage%(), _localctx.%tmp%.ret);";
     // TODO GV: || isConst()
-    if (symbolTable.getProdWithInherited(a.getName()).get().isIsEnum() ) {
-      tmp = "addToIteratedAttributeIfNotNull(_aNode.get%u_usage%(), _localctx.%tmp%.ret);";
+    if (symbolTable.getProdWithInherited(a.getName()).get().isIsEnum()) {
+      tmp = "addToIteratedAttributeIfNotNull(_builder.get%u_usage%(), _localctx.%tmp%.ret);";
     }
-    
+
     // Replace templates
     tmp = tmp.replaceAll("%u_usage%",
-        StringTransformations.capitalize(HelperGrammar.getListName(a)));
+            StringTransformations.capitalize(HelperGrammar.getListName(a)));
     tmp = tmp.replaceAll("%tmp%", parserGenHelper.getTmpVarNameForAntlrCode(a));
-    
+
     return tmp;
   }
 
   public String getActionForInternalRuleNotIteratedAttribute(ASTNonTerminal a) {
-    
-    String tmp = "_aNode.set%u_usage%(_localctx.%tmp%.ret);";
-    
+
+    String tmp = "_builder.set%u_usage%(_localctx.%tmp%.ret);";
+
     // Replace templates
     tmp = tmp.replaceAll("%u_usage%",
-        StringTransformations.capitalize(HelperGrammar.getUsageName(a)));
+            StringTransformations.capitalize(HelperGrammar.getUsageName(a)));
     tmp = tmp.replaceAll("%tmp%", parserGenHelper.getTmpVarNameForAntlrCode(a));
-    
+
     return tmp;
   }
-  
+
   public String getActionForInternalRuleNotIteratedLeftRecursiveAttribute(ASTNonTerminal a) {
-    
+
     String type = MCGrammarSymbolTableHelper
-        .getQualifiedName(symbolTable.getProdWithInherited(a.getName()).get()); // TODO
-                                                                                // GV:
-                                                                                // getDefinedType().getQualifiedName()
+            .getQualifiedName(symbolTable.getProdWithInherited(a.getName()).get()); // TODO
+    // GV:
+    // getDefinedType().getQualifiedName()
     String name = MCGrammarSymbolTableHelper.getMCGrammarSymbol(a.getEnclosingScope()).get().getName();
     SourcePositionActions sourcePositionBuilder = new SourcePositionActions(parserGenHelper);
     StringBuilder b = new StringBuilder();
     b.append("// Action code for left recursive rule \n");
-    b.append("_aNode=" + Names.getQualifier(type) + "." + name + "NodeFactory.create"
-        +
-        Names.getSimpleName(type) + "();\n");
+    // Setup builder
+    b.append("// getActionForInternalRuleNotIteratedLeftRecursiveAttribute \n");
+    b.append(sourcePositionBuilder.endPosition());
+    b.append("_localctx." + parserGenHelper.getTmpVarName(a) + ".ret = _builder.uncheckedBuild();");
+    b.append("_builder=" + Names.getQualifier(type) + "." + name + "Mill."
+            +
+            StringTransformations.uncapitalize(a.getName()) + "Builder();\n");
     b.append(sourcePositionBuilder.startPositionForLeftRecursiveRule(a));
-    b.append(sourcePositionBuilder.endPositionForLeftRecursiveRule(a));
-    b.append("$ret=_aNode;\n");
+
+
     return b.toString();
   }
-  
+
   /**
    * Nothing to do for ignore
    */
@@ -219,7 +214,7 @@ public class ASTConstructionActions {
 
   public String getActionForTerminalNotIteratedAttribute(ASTITerminal a) {
 
-    String tmp = "_aNode.set%u_usage%(\"%text%\");";
+    String tmp = "_builder.set%u_usage%(\"%text%\");";
 
     if (!a.isPresentUsageName()) {
       return "";
@@ -238,7 +233,7 @@ public class ASTConstructionActions {
       return "";
     }
 
-    String tmp = "_aNode.get%u_usage%().add(\"%text%\");";
+    String tmp = "_builder.get%u_usage%().add(\"%text%\");";
 
     // Replace templates
     String usageName = StringTransformations.capitalize(a.getUsageName());
@@ -250,14 +245,14 @@ public class ASTConstructionActions {
 
   public String getActionForKeyTerminalNotIteratedAttribute(ASTKeyTerminal a) {
 
-    String tmp = "_aNode.set%u_usage%(_input.LT(-1).getText());";
+    String tmp = "_builder.set%u_usage%(_input.LT(-1).getText());";
 
     if (!a.isPresentUsageName()) {
       return "";
     }
     // Replace templates
     return tmp.replaceAll("%u_usage%", StringTransformations.capitalize(a.getUsageName()));
-   }
+  }
 
   public String getActionForKeyTerminalIteratedAttribute(ASTKeyTerminal a) {
 
@@ -265,11 +260,15 @@ public class ASTConstructionActions {
       return "";
     }
 
-    String tmp = "_aNode.get%u_usage%().add(_input.LT(-1).getText());";
+    String tmp = "_builder.get%u_usage%().add(_input.LT(-1).getText());";
 
     // Replace templates
     String usageName = StringTransformations.capitalize(a.getUsageName());
     return tmp.replaceAll("%u_usage%", StringTransformations.capitalize(usageName + DecorationHelper.GET_SUFFIX_LIST));
+  }
+
+  public String getBuildAction() {
+    return "\n_localctx.ret = _builder.uncheckedBuild();";
   }
 
 }

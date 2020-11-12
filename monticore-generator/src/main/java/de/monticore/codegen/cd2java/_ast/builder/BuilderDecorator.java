@@ -88,7 +88,12 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
 
     ASTCDMethod buildMethod = this.getCDMethodFacade().createMethod(modifier.deepClone(), domainType, BUILD_METHOD);
     if (isPrintBuildMethodTemplate()) {
-      this.replaceTemplate(EMPTY_BODY, buildMethod, new TemplateHookPoint("_ast.builder.BuildMethod", domainClass, mandatoryAttributes));
+      this.replaceTemplate(EMPTY_BODY, buildMethod, new TemplateHookPoint("_ast.builder.BuildMethod", domainClass, mandatoryAttributes, true));
+    }
+
+    ASTCDMethod uncheckedBuildMethod = this.getCDMethodFacade().createMethod(modifier.deepClone(), domainType, UNCHECKEDBUILD_METHOD);
+    if (isPrintBuildMethodTemplate()) {
+      this.replaceTemplate(EMPTY_BODY, uncheckedBuildMethod, new TemplateHookPoint("_ast.builder.BuildMethod", domainClass, mandatoryAttributes, false));
     }
 
     ASTCDMethod isValidMethod = this.getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createBooleanType(), IS_VALID);
@@ -120,6 +125,7 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
         .addAllCDAttributes(builderAttributes)
         .addCDConstructor(constructor)
         .addCDMethod(buildMethod)
+        .addCDMethod(uncheckedBuildMethod)
         .addCDMethod(isValidMethod)
         .addAllCDMethods(accessorMethods)
         .addAllCDMethods(mutatorMethods)

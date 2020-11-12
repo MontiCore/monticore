@@ -26,7 +26,7 @@ component grammar MCArrayTypes
   */
   MCArrayType implements MCType =
     MCType 
-    ("[" "]" {_aNode.setDimensions(_aNode.getDimensions()+1);} )+;
+    ("[" "]" {_builder.setDimensions(_builder.getDimensions()+1);} )+;
 
   // counter dimensions counts the array depth
   astrule MCArrayType =
