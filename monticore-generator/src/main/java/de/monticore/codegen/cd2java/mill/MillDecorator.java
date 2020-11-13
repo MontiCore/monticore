@@ -172,9 +172,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
         || name.endsWith(SYMBOL_TABLE_CREATOR_SUFFIX)
         || name.endsWith(SYMBOL_TABLE_CREATOR_SUFFIX + DELEGATOR_SUFFIX)
         || name.endsWith(SCOPE_SKELETON_CREATOR_SUFFIX)
-        || name.endsWith(SCOPE_SKELETON_CREATOR_SUFFIX + DELEGATOR_SUFFIX)
-        || name.endsWith(DE_SER_SUFFIX)
-        || name.endsWith(SYMBOL_TABLE_PRINTER_SUFFIX);
+        || name.endsWith(SCOPE_SKELETON_CREATOR_SUFFIX + DELEGATOR_SUFFIX);
   }
 
   protected List<String> getAttributeNameList(List<ASTCDClass> astcdClasses) {
