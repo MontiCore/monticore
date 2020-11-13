@@ -129,17 +129,17 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
 
     ASTCDParameter fileExtensionParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createStringType(), FILE_EXTENSION_VAR);
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), globalScopeClassName, modelPathParameter, fileExtensionParameter);
-    String millFullName = symbolTableService.getMillFullName();
+    String scopeDeSerFullName = symbolTableService.getScopeDeSerFullName();
     this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint(TEMPLATE_PATH + "ConstructorGlobalScope",
-        millFullName, symbolTableService.getCDName()));
+        scopeDeSerFullName, symbolTableService.getCDName()));
     return constructor;
   }
 
   protected ASTCDConstructor createZeroArgsConstructor(String className){
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), className);
-    String millFullName = symbolTableService.getMillFullName();
+    String scopeDeSerFullName = symbolTableService.getScopeDeSerFullName();
     String grammarName = symbolTableService.getCDName();
-    this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint(TEMPLATE_PATH + "ZeroArgsConstructorGlobalScope", millFullName, grammarName));
+    this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint(TEMPLATE_PATH + "ZeroArgsConstructorGlobalScope", scopeDeSerFullName, grammarName));
     return constructor;
   }
 
