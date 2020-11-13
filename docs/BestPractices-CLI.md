@@ -56,8 +56,8 @@ Some explanation to the arguments:
     that allows the calling build script to understand whether a redo is 
     needed (as part of a
     larger incremental and efficient development process).
-* Directories in `-path` are separated via `:` like in Java. 
-  Example: `-path a/b:x/y`.
+* Directories in `-path` are separated via whitespaces. 
+  Example: `-path a/b x/y`.
 * Directories in the above options `-path`, `-o` describe the root
   structure that is further refined  by packages (like in Java). 
   That means with `-path a/b:x/y`
