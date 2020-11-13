@@ -7,6 +7,7 @@ import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
 import de.monticore.codegen.cd2java.AbstractCreator;
+import de.monticore.codegen.cd2java._parser.ParserService;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -40,13 +41,16 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
 
   protected final SymbolTableService symbolTableService;
   protected final VisitorService visitorService;
+  protected final ParserService parserService;
 
   public MillDecorator(final GlobalExtensionManagement glex,
                        final SymbolTableService symbolTableService,
-                       final VisitorService visitorService) {
+                       final VisitorService visitorService,
+                       final ParserService parserService) {
     super(glex);
     this.symbolTableService = symbolTableService;
     this.visitorService = visitorService;
+    this.parserService = parserService;
   }
 
   public ASTCDClass decorate(final List<ASTCDCompilationUnit> cdList) {
@@ -138,6 +142,13 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
 
       //artifactScope
       millClass.addAllCDMethods(getArtifactScopeMethods());
+    }
+
+    if(!symbolTableService.hasComponentStereotype(symbolTableService.getCDSymbol().getAstNode())) {
+      ASTCDAttribute parserAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, millType, MILL_INFIX + "Parser");
+      List<ASTCDMethod> parserMethods = getParserMethods();
+      millClass.addCDAttribute(parserAttribute);
+      millClass.addAllCDMethods(parserMethods);
     }
     //scope
     millClass.addAllCDMethods(getScopeMethods());
@@ -287,6 +298,25 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
     this.replaceTemplate(EMPTY_BODY, protectedMethod, new TemplateHookPoint("mill.ProtectedBuilderMethod", fullName));
     methods.add(protectedMethod);
     return methods;
+  }
+
+  protected List<ASTCDMethod> getParserMethods(){
+    List<ASTCDMethod> parserMethods = Lists.newArrayList();
+
+    String parserName = "Parser";
+    String staticMethodName = "parser";
+    String protectedMethodName = "_"+staticMethodName;
+    ASTMCType parserType = getMCTypeFacade().createQualifiedType(parserService.getParserClassFullName());
+
+    ASTCDMethod staticMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC, parserType, staticMethodName);
+    this.replaceTemplate(EMPTY_BODY, staticMethod, new TemplateHookPoint("mill.BuilderMethod", parserName, staticMethodName));
+    parserMethods.add(staticMethod);
+
+    ASTCDMethod protectedMethod = getCDMethodFacade().createMethod(PROTECTED, parserType, protectedMethodName);
+    this.replaceTemplate(EMPTY_BODY, protectedMethod, new TemplateHookPoint("mill.ProtectedParserMethod", parserService.getParserClassFullName()));
+    parserMethods.add(protectedMethod);
+
+    return parserMethods;
   }
 
   protected List<ASTCDMethod> getGlobalScopeMethods(ASTCDAttribute globalScopeAttribute){

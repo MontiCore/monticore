@@ -1,0 +1,12 @@
+package mc2cdtransformation;
+
+
+grammar LeftRecursiveProd {
+
+  B = "Foo";
+
+  interface C;
+
+  A implements C = C "Bar" B A;
+
+}

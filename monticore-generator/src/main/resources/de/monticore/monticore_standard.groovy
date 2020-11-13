@@ -97,7 +97,7 @@ while (grammarIterator.hasNext()) {
       reportCD(astClassDiagram, decoratedASTClassDiagramm, decoratedSymbolTableCd, scopeClassDiagramm, report)
 
       // M6: generate parser and wrapper
-      generateParser(glex, astGrammar, mcScope, handcodedPath, out)
+      generateParser(glex, astClassDiagramWithST, astGrammar, mcScope, handcodedPath, out)
 
       // 
       TODO: Store astGrammar, und zugehoeriges astClassDiagramWithST

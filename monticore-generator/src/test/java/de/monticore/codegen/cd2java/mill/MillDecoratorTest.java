@@ -86,8 +86,8 @@ public class MillDecoratorTest extends DecoratorTestCase {
 
     SymbolTableService symbolTableService = new SymbolTableService(decoratedCompilationUnit);
     VisitorService visitorService = new VisitorService(decoratedCompilationUnit);
-
-    MillDecorator decorator = new MillDecorator(this.glex, symbolTableService, visitorService);
+    ParserService parserService = new ParserService(decoratedCompilationUnit);
+    MillDecorator decorator = new MillDecorator(this.glex, symbolTableService, visitorService, parserService);
     this.millClass = decorator.decorate(Lists.newArrayList(getASTCD(), getVisitorCD(), getSymbolCD()));
   }
 
@@ -200,7 +200,7 @@ public class MillDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeSize() {
-    assertEquals(31, millClass.sizeCDAttributes());
+    assertEquals(32, millClass.sizeCDAttributes());
   }
 
   @Test
