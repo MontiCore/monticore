@@ -24,7 +24,7 @@ import mc.feature.visitor.inheritance.c._visitor.CVisitor;
  * Tests composing simple visiors using the delegator visitor. The
  * SimpleXVisitors append "[NameOfVisitor].[h|t|v|e][ASTNode]" when a method of
  * them is called.
- *
+ * TODO NJ,DA replace Visitors by traverser/handler 
  */
 public class ComposeSimpleTest extends CommonVisitorTest {
   
@@ -115,7 +115,7 @@ public class ComposeSimpleTest extends CommonVisitorTest {
    */
   @Test
   public void testDelegtor3() {
-    // TODO RH
+    // TODO NJ,DA
   }
   
   /**
@@ -123,7 +123,7 @@ public class ComposeSimpleTest extends CommonVisitorTest {
    */
   @Test
   public void testDelegtor4() {
-    // TODO RH
+    // TODO NJ,DA
   }
   
   /**
@@ -131,7 +131,7 @@ public class ComposeSimpleTest extends CommonVisitorTest {
    */
   @Test
   public void testDelegtor5() {
-    // TODO RH
+    // TODO NJ,DA
   }
   
   /**
@@ -139,7 +139,7 @@ public class ComposeSimpleTest extends CommonVisitorTest {
    */
   @Test
   public void testDelegtor6() {
-    // TODO RH
+    // TODO NJ,DA
   }
   
   /**
@@ -147,7 +147,7 @@ public class ComposeSimpleTest extends CommonVisitorTest {
    */
   @Test
   public void testDelegtor7() {
-    // TODO RH
+    // TODO NJ,DA
   }
   
   // .

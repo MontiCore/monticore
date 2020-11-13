@@ -1,0 +1,67 @@
+objectdiagram Testautomat {
+  @Automaton!ASTNode(5,0):ASTAutomaton {
+    symbol = @Testautomat!Symbol(5,0);
+    enclosingScope = @Testautomat!ArtifactScope;
+    spanningScope = @Testautomat!Scope;
+    name = Testautomat;
+    states = [// *size: 2
+      @State!ASTNode(6,1):ASTState {
+        symbol = @a!Symbol(6,1);
+        enclosingScope = @Testautomat!Scope;
+        spanningScope = @a!Scope;
+        name = a;
+        initial = true;
+        r__final = true;
+      },
+      @State!ASTNode(10,1):ASTState {
+        symbol = @b!Symbol(10,1);
+        enclosingScope = @Testautomat!Scope;
+        spanningScope = @b!Scope;
+        name = b;
+        states = [// *size: 2
+          @State!ASTNode(11,2):ASTState {
+            symbol = @c!Symbol(11,2);
+            enclosingScope = @b!Scope;
+            spanningScope = @c!Scope;
+            name = c;
+            initial = false;
+            r__final = false;
+          },
+          @State!ASTNode(12,2):ASTState {
+            symbol = @d!Symbol(12,2);
+            enclosingScope = @b!Scope;
+            spanningScope = @d!Scope;
+            name = d;
+            initial = false;
+            r__final = true;
+          }];
+        transitions = [// *size: 2
+          @Transition!ASTNode(14,2):ASTTransition {
+            enclosingScope = @b!Scope;
+            from = c;
+            activate = y;
+            to = d;
+          },
+          @Transition!ASTNode(15,2):ASTTransition {
+            enclosingScope = @b!Scope;
+            from = d;
+            activate = y;
+            to = d;
+          }];
+        initial = false;
+        r__final = false;
+      }];
+    transitions = [// *size: 2
+      @Transition!ASTNode(8,1):ASTTransition {
+        enclosingScope = @Testautomat!Scope;
+        from = a;
+        activate = x;
+        to = c;
+      },
+      @Transition!ASTNode(18,1):ASTTransition {
+        enclosingScope = @Testautomat!Scope;
+        from = b;
+        activate = x;
+        to = a;
+      }];
+};}

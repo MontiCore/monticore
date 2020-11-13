@@ -69,8 +69,8 @@ public class VisitorTest extends GeneratorIntegrationsTest {
       @Override
       public void visit(ASTE node) {
         run.append("E");
-        // TODO parentaware visitor does not support super grammars, yet, but
-        // nobody uses it anyway.. its only a demonstrator
+        // parentaware visitor does not consider super grammars 
+        // but it is deprecated anyway
         // if (!getParent().isPresent()) {
         // fail("The parent must be present.");
         // }

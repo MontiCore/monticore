@@ -46,6 +46,7 @@ public class GenerateAutomataParser {
       Grammar_WithConceptsMill
           .grammar_WithConceptsSymbolTableCreatorDelegator()
           .createFromAST(ast);
+      
       // Hand coded path
       IterablePath handcodedPath = IterablePath.empty();
 

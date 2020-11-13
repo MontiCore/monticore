@@ -388,10 +388,6 @@ grammar ItTestLiterals extends mc.grammar.lexicals.ItTestLexicals {
   // §3.10.5 String Literals
   token String
     = '"' (StringCharacters)? '"' ;
-  // TODO: Sollen die Quotes rausgeworfen werden?
-  // Es gibt in MC3 2 Varianten. STRING (ohne Quote) und String (mit Quote)
-  // So würde man das rauswerfen:
-  //  : {setText(getText().substring(1, getText().length() - 1));};
 
   fragment token StringCharacters
     = (StringCharacter)+;
