@@ -43,6 +43,7 @@ package de.monticore;
  import de.monticore.codegen.cd2java._od.ODCDDecorator;
  import de.monticore.codegen.cd2java._od.ODDecorator;
  import de.monticore.codegen.cd2java._od.ODService;
+ import de.monticore.codegen.cd2java._parser.ParserService;
  import de.monticore.codegen.cd2java._symboltable.SymbolTableCDDecorator;
  import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
  import de.monticore.codegen.cd2java._symboltable.scope.*;
