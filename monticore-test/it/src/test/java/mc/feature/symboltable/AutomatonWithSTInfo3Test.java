@@ -26,7 +26,6 @@ public class AutomatonWithSTInfo3Test extends GeneratorIntegrationsTest {
     AutomatonWithSTInfo3ArtifactScope automatonWithSTInfo3ArtifactScope;
     AutomatonWithSTInfo3GlobalScope automatonWithSTInfo3GlobalScope;
     AutomatonWithSTInfo3Scope automatonWithSTInfo3Scope;
-    AutomatonWithSTInfo3ScopeBuilder automatonWithSTInfo3ScopeBuilder;
     AutomatonWithSTInfo3Mill automatonWithSTInfo3SymTabMill;
     IAutomatonWithSTInfo3Scope iAutomatonWithSTInfo3Scope;
     ICommonAutomatonWithSTInfo3Symbol iCommonAutomatonWithSTInfo3Symbol;

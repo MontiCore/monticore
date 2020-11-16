@@ -35,7 +35,8 @@ public class STPForLanguageCompositionTest {
   public void testSerializeLocalSymbols(){
     //create scope with symbols of the grammar SymbolTablePrinterSub and both of its supergrammars
     ISymbolTablePrinterSubScope scope = SymbolTablePrinterSubMill
-        .symbolTablePrinterSubScopeBuilder().setName("alphabet").build();
+        .symbolTablePrinterSubScope();
+    scope.setName("alphabet");
     scope.add(SymbolTablePrinterSup1Mill.aSymbolBuilder().setName("a").build());
     scope.add(SymbolTablePrinterSup2Mill.bSymbolBuilder().setName("b").build());
     scope.add(SymbolTablePrinterSubMill.cSymbolBuilder().setName("c").build());
