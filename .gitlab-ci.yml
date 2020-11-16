@@ -50,7 +50,6 @@ test_01experiments:
     - build
   script:
     - "./gradlew -p monticore-test/01.experiments build $GRADLE_OPTS"
-    - cd monticore-test/01.experiments/makeuse && make
   only:
     - merge_requests
     - branches
