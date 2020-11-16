@@ -8,6 +8,7 @@ buildscript {
 
 plugins {
   id "java"
+  id "com.github.johnrengelman.shadow" version "6.0.0"
   id "monticore" version "$version" // MontiCore Plugin
 }
 
@@ -21,7 +22,6 @@ dependencies {
     implementation 'com.google.guava:guava:25.1-jre'
     testImplementation "junit:junit:$junit_version"
     testImplementation 'ch.qos.logback:logback-classic:1.1.2'
-    testImplementation 'org.codehaus.groovy:groovy:3.0.2'
 }
 
 def grammarOutDir = "$buildDir/generated-sources/monticore/sourcecode"
