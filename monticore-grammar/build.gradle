@@ -96,4 +96,4 @@ java {
   }
 }
 
-jar.dependsOn grammarsJar
+jar.dependsOn(shadowJar,grammarsJar)
