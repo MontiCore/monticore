@@ -16,13 +16,6 @@ subprojects {
     implementation "de.se_rwth.commons:se-commons-logging:$se_commons_version"
     implementation "de.se_rwth.commons:se-commons-utilities:$se_commons_version"
     implementation "org.antlr:antlr4-runtime:$antlr_version"
-    implementation project(':monticore-runtime')
-    implementation project(':monticore-grammar')
-    grammar (project(path: ':monticore-grammar')){
-      capabilities {
-        requireCapability("$group:monticore-grammar-grammars")
-      }
-    }
     testImplementation group:'ch.qos.logback', name: 'logback-classic', version: '1.1.2'
     testImplementation group:'junit', name:'junit', version:junit_version
   }
@@ -36,6 +29,23 @@ subprojects {
     dependsOn project.collect { it.tasks.withType(MCTask) }
   }
 
+}
+
+configure(subprojects.findAll {it.name != 'forParser'})  {
+  dependencies {
+    implementation "de.se_rwth.commons:se-commons-logging:$se_commons_version"
+    implementation "de.se_rwth.commons:se-commons-utilities:$se_commons_version"
+    
+    implementation project(':monticore-runtime')
+    implementation project(':monticore-grammar')
+    grammar (project(path: ':monticore-grammar')){
+      capabilities {
+        requireCapability("$group:monticore-grammar-grammars")
+      }
+    }
+    testImplementation group:'ch.qos.logback', name: 'logback-classic', version: '1.1.2'
+    testImplementation group:'junit', name:'junit', version:junit_version
+  }
 }
 
 jar.enabled = false

@@ -2,9 +2,22 @@
 
 package mc.emf.generator;
 
+import de.monticore.emf.util.compare.AstEmfDiffUtility;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
+import mc.grammar.ittestgrammar._ast.ASTMCGrammar;
+import mc.grammar.ittestgrammar_withconcepts._parser.ItTestGrammar_WithConceptsParser;
+import org.antlr.v4.runtime.RecognitionException;
+import org.eclipse.emf.compare.diff.metamodel.DiffElement;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.Assert.*;
 
 public class GrammarDiffsTest {
   @BeforeClass
@@ -17,14 +30,14 @@ public class GrammarDiffsTest {
   // line 45 has NullPointer exception, because inherited attribute from ITTerminal in Terminal
   // if ASTTerminal_Name is not called in initializePackageContents, this should work
 
- /* @Test
-  public void testAstGrammarDiffs() {
+  @Test @Ignore
+  public void testAstGrammarDiffs() throws IOException {
     try {
       Optional<ASTMCGrammar> grammar1 = new ItTestGrammar_WithConceptsParser()
-          .parse("src/test/resources/mc/emf/generator/Automata.mc4");
+          .parse("src/test/resources/mc/emf/generator/Automaton.mc4");
 
       Optional<ASTMCGrammar> grammar2 = new ItTestGrammar_WithConceptsParser()
-          .parse("src/test/resources/mc/emf/generator/Automata2.mc4");
+          .parse("src/test/resources/mc/emf/generator/Automaton2.mc4");
 
       if (grammar1.isPresent() && grammar2.isPresent()) {
 
@@ -53,6 +66,6 @@ public class GrammarDiffsTest {
     catch (InterruptedException e) {
       fail("Should not reach this, but: " + e);
     }
-  }*/
+  }
 
 }

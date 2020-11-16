@@ -21,7 +21,7 @@ grammar AstAttributes {
       string2: java.lang.String
 
       bool1: boolean
-      // TODO bool2: Boolean
+      bool2: Boolean
       int1: int
       int2: Integer
 
