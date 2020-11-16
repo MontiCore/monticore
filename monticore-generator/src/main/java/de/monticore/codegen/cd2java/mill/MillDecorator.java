@@ -130,16 +130,25 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
     // decorate for global scope
     if(symbolTableService.hasStartProd()){
       //globalScope
+      String millGlobalScopeAttributeName = MILL_INFIX + symbolTableService.getGlobalScopeSimpleName();
+      ASTCDAttribute millGlobalScopeAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, millType, millGlobalScopeAttributeName);
       String globalScopeAttributeName = StringTransformations.uncapitalize(symbolTableService.getGlobalScopeSimpleName());
       ASTCDAttribute globalScopeAttribute = getCDAttributeFacade().createAttribute(PROTECTED, symbolTableService.getGlobalScopeInterfaceType(),globalScopeAttributeName);
       List<ASTCDMethod> globalScopeMethods = getGlobalScopeMethods(globalScopeAttribute);
+      millClass.addCDAttribute(millGlobalScopeAttribute);
       millClass.addCDAttribute(globalScopeAttribute);
       millClass.addAllCDMethods(globalScopeMethods);
 
       //artifactScope
+      String millArtifactScopeAttributeName = MILL_INFIX + symbolTableService.getArtifactScopeSimpleName();
+      ASTCDAttribute millArtifactScopeAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, millType, millArtifactScopeAttributeName);
+      millClass.addCDAttribute(millArtifactScopeAttribute);
       millClass.addAllCDMethods(getArtifactScopeMethods());
     }
     //scope
+    String millScopeAttributeName = MILL_INFIX + symbolTableService.getScopeClassSimpleName();
+    ASTCDAttribute millScopeAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, millType, millScopeAttributeName);
+    millClass.addCDAttribute(millScopeAttribute);
     millClass.addAllCDMethods(getScopeMethods());
 
     // add builder methods for each class
@@ -210,18 +219,12 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
 
       // add public static Method for Builder
       ASTModifier modifier = PUBLIC_STATIC.build();
-      if(methodName.contains("GlobalScopeBuilder")){
-        symbolTableService.addDeprecatedStereotype(modifier, Optional.empty());
-      }
       ASTCDMethod builderMethod = this.getCDMethodFacade().createMethod(modifier, builderType, methodName);
       builderMethodsList.add(builderMethod);
       this.replaceTemplate(EMPTY_BODY, builderMethod, new TemplateHookPoint("mill.BuilderMethod", astName, methodName));
 
       // add protected Method for Builder
       ASTModifier protectedModifier = PROTECTED.build();
-      if(methodName.contains("GlobalScopeBuilder")){
-        symbolTableService.addDeprecatedStereotype(protectedModifier, Optional.empty());
-      }
       ASTCDMethod protectedMethod = this.getCDMethodFacade().createMethod(protectedModifier, builderType, "_" + methodName);
       builderMethodsList.add(protectedMethod);
       this.replaceTemplate(EMPTY_BODY, protectedMethod, new TemplateHookPoint("mill.ProtectedBuilderMethod", builderType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter())));
@@ -295,11 +298,11 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
     String protectedMethodName = "_"+staticMethodName;
 
     ASTCDMethod staticMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC, globalScopeAttribute.getMCType(), staticMethodName);
-    this.replaceTemplate(EMPTY_BODY, staticMethod, new TemplateHookPoint("mill.BuilderMethod", StringTransformations.capitalize(attributeName)+BUILDER_SUFFIX, staticMethodName));
+    this.replaceTemplate(EMPTY_BODY, staticMethod, new TemplateHookPoint("mill.BuilderMethod", StringTransformations.capitalize(attributeName), staticMethodName));
     globalScopeMethods.add(staticMethod);
 
     ASTCDMethod protectedMethod = getCDMethodFacade().createMethod(PROTECTED, globalScopeAttribute.getMCType(), protectedMethodName);
-    this.replaceTemplate(EMPTY_BODY, protectedMethod, new TemplateHookPoint("mill.ProtectedGlobalScopeMethod", attributeName));
+    this.replaceTemplate(EMPTY_BODY, protectedMethod, new TemplateHookPoint("mill.ProtectedGlobalScopeMethod", attributeName, symbolTableService.getGlobalScopeFullName()));
     globalScopeMethods.add(protectedMethod);
 
     return globalScopeMethods;
@@ -325,7 +328,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
     String protectedMethodName = "_" + staticMethodName;
 
     ASTCDMethod staticMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC, returnType, staticMethodName);
-    this.replaceTemplate(EMPTY_BODY, staticMethod, new TemplateHookPoint("mill.BuilderMethod", scopeName + BUILDER_SUFFIX, staticMethodName));
+    this.replaceTemplate(EMPTY_BODY, staticMethod, new TemplateHookPoint("mill.BuilderMethod", scopeName, staticMethodName));
     scopeMethods.add(staticMethod);
 
     ASTCDMethod protectedMethod = getCDMethodFacade().createMethod(PROTECTED, returnType, protectedMethodName);
