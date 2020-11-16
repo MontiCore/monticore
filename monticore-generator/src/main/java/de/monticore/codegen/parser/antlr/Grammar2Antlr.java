@@ -909,6 +909,10 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
             endCodeSection();
           }
           alt.accept(getRealThis());
+          addToAction(positionActions.endPosition());
+          addToAction(astActions.getBuildAction());
+          addActionToCodeSectionWithNewLine();
+          endCodeSection();
         } else {
           // normal rule
           startCodeSection();
