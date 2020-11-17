@@ -20,6 +20,6 @@ ${tc.signature("symTabMill", "artifactScope", "artifactScopeBuilder", "scopeRule
   scope.${genHelper.getPlainSetter(attr)}(deserialize${attr.getName()?cap_first}(scopeJson));
   </#if>
 </#list>
-  deserializeAdditionalArtifactScopeAttributes(scope,scopeJson);
+  deserializeAddons(scope,scopeJson);
   addSymbols(scopeJson, scope);
   return scope;

@@ -267,12 +267,12 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
     ASTCDParameter scopeParam = getCDParameterFacade()
         .createParameter(symbolTableService.getScopeInterfaceType(), SCOPE_VAR);
     ASTCDMethod scopeMethod = getCDMethodFacade()
-        .createMethod(PROTECTED, "deserializeAdditionalScopeAttributes", scopeParam, jsonParam);
+        .createMethod(PROTECTED, "deserializeAddons", scopeParam, jsonParam);
 
     ASTCDParameter artifactScopeParam = getCDParameterFacade()
         .createParameter(symbolTableService.getArtifactScopeInterfaceType(), SCOPE_VAR);
     ASTCDMethod artifactScopeMethod = getCDMethodFacade()
-        .createMethod(PROTECTED, "deserializeAdditionalArtifactScopeAttributes", artifactScopeParam,
+        .createMethod(PROTECTED, "deserializeAddons", artifactScopeParam,
             jsonParam);
     return Lists.newArrayList(scopeMethod, artifactScopeMethod);
   }
