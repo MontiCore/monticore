@@ -1,21 +1,29 @@
 /* (c) https://github.com/MontiCore/monticore */
 package automata;
 
-import automata._ast.*;
-import automata._symboltable.*;
+import automata._ast.ASTAutomaton;
+import automata._ast.ASTState;
+import automata._ast.ASTTransition;
 import automata._parser.AutomataParser;
-import automata._symboltable.AutomataScopeDeSer;
+import automata._symboltable.AutomataSymbolTableCreator;
+import automata._symboltable.AutomataSymbols2Json;
+import automata._symboltable.IAutomataArtifactScope;
+import automata._symboltable.IAutomataGlobalScope;
 import com.google.common.collect.Lists;
-import de.monticore.generating.*;
+import de.monticore.generating.GeneratorEngine;
+import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.reporting.Reporting;
-import de.monticore.io.paths.*;
+import de.monticore.io.paths.IterablePath;
+import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.RecognitionException;
 
-import java.io.*;
-import java.nio.file.*;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 /**
@@ -163,7 +171,7 @@ public class TemplatesTool {
   
     // Part 3: Store Symboltable
     // store artifact scope and its symbols
-    AutomataScopeDeSer deser = new AutomataScopeDeSer();
+    AutomataSymbols2Json deser = new AutomataSymbols2Json();
     deser.store(modelTopScope, SYMBOL_LOCATION+"/"+ Paths.get(modelfilename).getFileName() + "sym");
     Log.info(modelfilename + " symboltable stored successfully", this.getClass().getName());
     
