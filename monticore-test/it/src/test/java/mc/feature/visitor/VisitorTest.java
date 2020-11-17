@@ -15,10 +15,12 @@ import org.junit.Test;
 
 import de.se_rwth.commons.logging.Log;
 import mc.GeneratorIntegrationsTest;
+import mc.feature.visitor.sub.SubMill;
 import mc.feature.visitor.sub._ast.ASTB;
 import mc.feature.visitor.sub._ast.ASTE;
 import mc.feature.visitor.sub._parser.SubParser;
 import mc.feature.visitor.sub._visitor.SubParentAwareVisitor;
+import mc.feature.visitor.sub._visitor.SubTraverser;
 import mc.feature.visitor.sub._visitor.SubVisitor;
 import mc.feature.visitor.sup._ast.ASTA;
 import mc.feature.visitor.sup._visitor.SupVisitor;
@@ -34,9 +36,11 @@ public class VisitorTest extends GeneratorIntegrationsTest {
     assertTrue(node.isPresent());
     
     // Running Visitor
+    SubTraverser traverser = SubMill.traverser();
     SubConcreteVisitor v = new SubConcreteVisitor();
+    traverser.setSubVisitor(v);
     
-    v.handle(node.get());
+    traverser.handle(node.get());
     assertTrue(v.hasVisited());
     
     SupVisitor vSup = new SupVisitor() {};
