@@ -12,17 +12,65 @@ import java.util.*;
  *
 
  */
-public class Automata16PrettyPrinter
-                extends Automata15PrettyPrinter
-                implements Automata16Visitor {
+public class Automata16PrettyPrinter  implements Automata16Visitor2 , Automata16Handler{
+
+  protected String result = "";
+
+  protected int indention = 0;
+
+  protected String indent = "";
+
+  protected Automata16Traverser traverser;
 
   @Override
-  public void visit(ASTAutomaton node) {
-    println("/* Printed in Version 16 */");
-    println("automaton " + node.getName() + " {");
-    indent();
+  public void setTraverser(Automata16Traverser traverser) {
+    this.traverser = traverser;
   }
-  
+
+  @Override
+  public Automata16Traverser getTraverser() {
+    return traverser;
+  }
+
+  /**
+   * Gets the printed result.
+   *
+   * @return the result of the pretty print.
+   */
+  public String getResult() {
+    return this.result;
+  }
+
+  // the following part manages indentation -----------------
+
+  protected void print(String s) {
+    result += (indent + s);
+    indent = "";
+  }
+
+  protected void println(String s) {
+    result += (indent + s + "\n");
+    indent = "";
+    calcIndention();
+  }
+
+  protected void calcIndention() {
+    indent = "";
+    for (int i = 0; i < indention; i++) {
+      indent += "  ";
+    }
+  }
+
+  protected void indent() {
+    indention++;
+    calcIndention();
+  }
+
+  protected void unindent() {
+    indention--;
+    calcIndention();
+  }
+
   @Override
   public void visit(automata16._ast.ASTTransition node) {
     print(node.getFrom() +" - " + node.getInput());

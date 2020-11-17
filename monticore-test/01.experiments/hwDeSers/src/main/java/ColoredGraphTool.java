@@ -35,19 +35,19 @@ public class ColoredGraphTool {
     String model = args[0];
 
     // parse the model and create the AST representation
-    final ASTGraph ast = parse(model);
+    ASTGraph ast = parse(model);
     Log.info(model + " parsed successfully!", "ColoredGraphTool");
 
     // instantiate symbol table:
     ColoredGraphMill.coloredGraphGlobalScope().setModelFileExtension("cg");
-    final ColoredGraphSymbolTableCreatorDelegator stc = ColoredGraphMill
+    ColoredGraphSymbolTableCreatorDelegator stc = ColoredGraphMill
         .coloredGraphSymbolTableCreatorDelegator();
-    final IColoredGraphArtifactScope symTab = stc.createFromAST(ast);
+    IColoredGraphArtifactScope symTab = stc.createFromAST(ast);
 
     Log.info("------------------", "ColoredGraphTool");
 
     // store symbol table
-    ColoredGraphMill.coloredGraphScopeDeSer().store(symTab, "target/" + model + "sym");
+    new ColoredGraphScopeDeSer().store(symTab, "target/" + model + "sym");
 
   }
 

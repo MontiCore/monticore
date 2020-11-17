@@ -19,7 +19,7 @@ dependencies {
 }
 
 sourceSets {
-  test.java {
+  test {
     resources {
       srcDirs += "src/test/java"
       includes = ["**/*.ftl"]

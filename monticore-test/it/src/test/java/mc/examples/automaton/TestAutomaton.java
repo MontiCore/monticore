@@ -6,13 +6,13 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Optional;
 
-import de.monticore.io.paths.ModelPath;
 import mc.examples.automaton.automaton.AutomatonMill;
-import mc.examples.automaton.automaton._symboltable.AutomatonGlobalScope;
-import mc.examples.automaton.automaton._symboltable.AutomatonSymbolTableCreatorDelegator;
-import mc.examples.automaton.automaton._symboltable.IAutomatonGlobalScope;
 import org.junit.Test;
 
 import de.monticore.generating.templateengine.reporting.commons.ASTNodeIdentHelper;
@@ -37,19 +37,26 @@ public class TestAutomaton extends GeneratorIntegrationsTest {
   }
 
 
-  private void printOD(ASTAutomaton ast, String symbolName) {
+  private void printOD(ASTAutomaton ast, String symbolName) throws IOException {
     ReportingRepository reporting = new ReportingRepository(new ASTNodeIdentHelper());
     IndentPrinter printer = new IndentPrinter();
     Automaton2OD odCreator = new Automaton2OD(printer, reporting);
     odCreator.printObjectDiagram(symbolName, ast);
-    // TODO Check the output?
     assertTrue(printer.getContent().length()>0);
+    assertTrue(readFile("src/test/resources/examples/automaton/Output.od", StandardCharsets.UTF_8).endsWith(printer.getContent()));
   }
 
   @Test
   public void test() throws IOException {
     ASTAutomaton ast = parse();
     printOD(ast, "Testautomat");
+  }
+  
+  protected String readFile(String path, Charset encoding)
+      throws IOException
+  {
+    byte[] encoded = Files.readAllBytes(Paths.get(path));
+    return new String(encoded, encoding);
   }
 
 }

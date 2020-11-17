@@ -38,14 +38,15 @@ public class QuestionnaireTool {
     Log.info(model + " parsed successfully!", "QuestionnaireTool");
 
     // run the pretty printing:
-    QuestionnaireVisitor qv = new QuestionnairePrettyPrinter(); 
-    ast.accept(qv);
-
+    QuestionnaireVisitor2 qv = new QuestionnairePrettyPrinter();
+    QuestionnaireTraverser traverser = QuestionnaireMill.traverser();
+    traverser.setQuestionnaireVisitor(qv);
+    ast.accept(traverser);
     Log.info("------------------", "QuestionnaireTool");
 
     // run the detailed tree pretty printing:
-    qv = new QuestionnaireTreePrinter(); 
-    ast.accept(qv);
+    QuestionnaireVisitor vis = new QuestionnaireTreePrinter();
+    ast.accept(vis);
   }
   
   /**
