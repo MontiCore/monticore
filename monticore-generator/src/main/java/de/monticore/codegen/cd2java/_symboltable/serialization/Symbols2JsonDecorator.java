@@ -79,13 +79,11 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
             .addAllCDMethods(createScopeVisitorMethods(scopeClassFullName, scopeInterfaceFullName, scopeCD, symbolDefiningProds))
             .addAllCDMethods(createSymbolVisitorMethods(symbolDefiningProds))
             .addAllCDMethods(createSymbolRuleMethods(symbolTypes))
-            .addAllCDMethods(createScopeRuleMethods(scopeTypes, scopeClassFullName, scopeInterfaceFullName, artifactScopeInterfaceFullName, symbolTableService.hasStartProd()))
+            .addAllCDMethods(createScopeRuleMethods(scopeTypes, scopeClassFullName, scopeInterfaceFullName, artifactScopeInterfaceFullName))
             .addAllCDMethods(createRealThisMethods(symbolTablePrinterName))
             .build();
-    if (symbolTableService.hasStartProd()) {
-      symbolTablePrinterClass.addAllCDMethods(createArtifactScopeVisitorMethods(artifactScopeFullName, artifactScopeInterfaceFullName, scopeTypes));
-      symbolTablePrinterClass.addCDMethod(createPrintKindHierarchyMethod(symbolDefiningProds));
-    }
+    symbolTablePrinterClass.addAllCDMethods(createArtifactScopeVisitorMethods(artifactScopeFullName, artifactScopeInterfaceFullName, scopeTypes));
+    symbolTablePrinterClass.addCDMethod(createPrintKindHierarchyMethod(symbolDefiningProds));
     return symbolTablePrinterClass;
   }
 
@@ -221,18 +219,17 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
   }
 
   protected List<ASTCDMethod> createScopeRuleMethods(List<ASTCDClass> scopeProds, String scopeClassFullName,
-                                                     String scopeInterfaceFullName, String artifactScopeInterfaceFullName, boolean hasArtifactScope) {
+                                                     String scopeInterfaceFullName, String artifactScopeInterfaceFullName) {
     List<ASTCDMethod> methodsCreated = new ArrayList<>();
 
     ASTCDParameter scopeParam = CDParameterFacade.getInstance().createParameter(getMCTypeFacade().createQualifiedType(scopeInterfaceFullName), "node");
     ASTCDMethod serAddScopeAttrMethod = CDMethodFacade.getInstance().createMethod(PROTECTED, "serializeAdditionalScopeAttributes", scopeParam);
     methodsCreated.add(serAddScopeAttrMethod);
 
-    if (hasArtifactScope) {
-      ASTCDParameter artScopeParam = CDParameterFacade.getInstance().createParameter(getMCTypeFacade().createQualifiedType(artifactScopeInterfaceFullName), "node");
-      ASTCDMethod serAddArtifactScopeAttrMethod = CDMethodFacade.getInstance().createMethod(PROTECTED, "serializeAdditionalArtifactScopeAttributes", artScopeParam);
-      methodsCreated.add(serAddArtifactScopeAttrMethod);
-    }
+    ASTCDParameter artScopeParam = CDParameterFacade.getInstance().createParameter(getMCTypeFacade().createQualifiedType(artifactScopeInterfaceFullName), "node");
+    ASTCDMethod serAddArtifactScopeAttrMethod = CDMethodFacade.getInstance().createMethod(PROTECTED, "serializeAdditionalArtifactScopeAttributes", artScopeParam);
+    methodsCreated.add(serAddArtifactScopeAttrMethod);
+
 
     String scopeSimpleName = Names.getSimpleName(scopeClassFullName);
     for (ASTCDClass scopeProd : scopeProds) {

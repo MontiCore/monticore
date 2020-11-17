@@ -181,13 +181,10 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
     //if the grammar is not a component grammar
 //    if (!symbolTableService.hasComponentStereotype(astCD.getCDDefinition())) {
 //    }
-    if (symbolTableService.hasStartProd(astCD.getCDDefinition())
-        || !symbolTableService.getSymbolDefiningSuperProds().isEmpty()) {
       symTabCD.addCDInterface(createGlobalScopeInterface(astCD, symbolTablePackage));
       symTabCD.addCDInterface(createArtifactScopeInterface(astCD));
 
-    }
-    if (symbolTableService.hasStartProd(astCD.getCDDefinition())) {
+
       // symboltable creator delegator
       Optional<ASTCDClass> symbolTableCreatorDelegator = createSymbolTableCreatorDelegator(astCD);
       if (symbolTableCreatorDelegator.isPresent()) {
@@ -230,7 +227,7 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
       // SuperSTCForSub
       List<ASTCDClass> symbolTableCreatorForSuperTypes = createSymbolTableCreatorForSuperTypes(astCD);
       symTabCD.addAllCDClasss(symbolTableCreatorForSuperTypes);
-    }
+
 
     addPackageAndAnnotation(symTabCD, symbolTablePackage);
 
