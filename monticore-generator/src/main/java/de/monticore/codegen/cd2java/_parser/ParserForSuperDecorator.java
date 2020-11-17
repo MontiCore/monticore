@@ -48,8 +48,10 @@ public class ParserForSuperDecorator extends AbstractDecorator {
           String superGrammarName = symbol.getName();
           List<ASTCDClass> astcdClasses = astCD.getCDDefinition().deepClone().getCDClassList();
           ASTMCObjectType superClass = getMCTypeFacade().createQualifiedType(service.getParserClassFullName(symbol));
+          String className = superGrammarName + PARSER_SUFFIX + FOR_SUFFIX + grammarName;
+
           ASTCDClass clazz = CD4AnalysisMill.cDClassBuilder()
-              .setName(superGrammarName + PARSER_SUFFIX + FOR_SUFFIX + grammarName)
+              .setName(className)
               .setModifier(PUBLIC.build())
               .setSuperclass(superClass)
               .addAllCDMethods(createParseMethods(astcdClasses, symbol))
@@ -63,20 +65,18 @@ public class ParserForSuperDecorator extends AbstractDecorator {
 
   protected List<ASTCDMethod> createParseMethods(List<ASTCDClass> astcdClassList, CDDefinitionSymbol symbol){
     List<ASTCDMethod> methods = Lists.newArrayList();
-    ASTMCQualifiedName ioException = MCBasicTypesMill.mCQualifiedNameBuilder()
-        .setPartsList(Lists.newArrayList("java", "io", "IOException"))
-        .build();
 
-    HashMap<CDDefinitionSymbol, Collection<CDTypeSymbol>> overridden = Maps.newHashMap();
-    Collection<CDTypeSymbol> firstClasses2 = Lists.newArrayList();
-    //get all overridden prods, store them in overridden
-    calculateOverriddenCds(symbol, astcdClassList.stream().map(ASTCDClass::getName).collect(Collectors.toList()), overridden, firstClasses2);
+    HashMap<CDDefinitionSymbol, Collection<CDTypeSymbol>> overridden = getOverridden(astcdClassList, symbol);
+    Collection<CDTypeSymbol> firstClasses = getFirstClasses(astcdClassList);
 
-    HashMap<CDDefinitionSymbol, Collection<CDTypeSymbol>> overridden2 = Maps.newHashMap();
-    Collection<CDTypeSymbol> firstClasses = Lists.newArrayList();
-    calculateOverriddenCds(service.getCDSymbol(), astcdClassList.stream().map(ASTCDClass::getName).collect(Collectors.toList()), overridden2, firstClasses);
     //get the other (not overridden) super prods whose parse methods needs to be overridden
     Map<CDDefinitionSymbol, Collection<CDTypeSymbol>> superProds = calculateNonOverriddenCds(Maps.newHashMap(), symbol, overridden, Lists.newArrayList());
+    Map<CDDefinitionSymbol, Collection<CDTypeSymbol>> superProdsFromThis = calculateNonOverriddenCds(Maps.newHashMap(), service.getCDSymbol(), overridden, Lists.newArrayList());
+
+    //necessary if a nt is overridden in a grammar between the super grammar and this grammar
+    List<CDTypeSymbol> allSuperProdsFromThis = superProdsFromThis.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
+    List<String> superProdsFullNames = allSuperProdsFromThis.stream().map(CDTypeSymbol::getFullName).collect(Collectors.toList());
+
     for(CDDefinitionSymbol grammar: superProds.keySet()){
       Collection<CDTypeSymbol> typesInGrammar = superProds.get(grammar);
       //remove the prods that have no parse method
@@ -89,8 +89,6 @@ public class ParserForSuperDecorator extends AbstractDecorator {
     List<CDTypeSymbol> allOverriddenTypes = overridden.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
 
 
-    String millFullName = service.getMillFullName();
-
     //iterate over every overridden prod, generate parse methods for them
     for(Map.Entry<CDDefinitionSymbol, Collection<CDTypeSymbol>> entry: overridden.entrySet()){
       for(CDTypeSymbol type: entry.getValue()) {
@@ -102,67 +100,41 @@ public class ParserForSuperDecorator extends AbstractDecorator {
         if(allOverriddenTypes.stream().anyMatch(overriddenType -> overriddenType.getName().equals(type.getName()) && overrides(overriddenType, type))){
           continue;
         }
-        String prod = type.getName();
-        String prodName = service.removeASTPrefix(prod);
-        String superProdFullName = service.getASTPackage(entry.getKey()) + "." + prod;
-        String prodFullName = service.getASTPackage() + "." + prod;
-
-        ASTMCType returnType = getMCTypeFacade().createOptionalTypeOf(getMCTypeFacade().createQualifiedType(superProdFullName));
-        ASTCDParameter fileNameParameter = getCDParameterFacade().createParameter(String.class, "fileName");
-        ASTCDMethod parse = getCDMethodFacade().createMethod(PUBLIC, returnType, "parse" + prodName, fileNameParameter);
-        parse.addException(ioException);
-
-
-        ASTMCType readerType = getMCTypeFacade().createQualifiedType("java.io.Reader");
-        ASTCDParameter readerParameter = getCDParameterFacade().createParameter(readerType, "reader");
-        ASTCDMethod parseReader = getCDMethodFacade().createMethod(PUBLIC, returnType, "parse" + prodName, readerParameter);
-        parseReader.addException(ioException);
-
-        //if a nonterminal overrides two or more other nonterminals that do not extend each other then the nonterminal can only extend one of them due to single inheritance
-        //the parse-method generated for the second or third/fourth... overridden nonterminal logs an error upon invocation because the overridding nonterminal does not extend it and
-        //so the parse method cannot be generated normally. A correct parse method is only generated for the first overridden nonterminal because the overriding nonterminal extends it
-        if (firstClasses.contains(type)) {
-          this.replaceTemplate(EMPTY_BODY, parse, new TemplateHookPoint(TEMPLATE_PATH + "ParseOverridden", prodName, prodFullName, millFullName));
-          this.replaceTemplate(EMPTY_BODY, parseReader, new TemplateHookPoint(TEMPLATE_PATH + "ParseOverriddenReader", prodName, prodFullName, millFullName));
-        } else {
-          String generatedErrorCode1 = service.getGeneratedErrorCode(prod + "Parse");
-          String generatedErrorCode2 = service.getGeneratedErrorCode(prod + "ParseReader");
-          this.replaceTemplate(EMPTY_BODY, parse, new StringHookPoint("Log.error(\"0xA7056" + generatedErrorCode1 + " Overridden production " +
-              prodName + " is not reachable\");\nreturn null;"));
-
-          this.replaceTemplate(EMPTY_BODY, parseReader, new StringHookPoint("Log.error(\"0xA7057" + generatedErrorCode2 + " Overridden production " +
-              prodName + " is not reachable\");\nreturn null;"));
-        }
-
-        methods.add(parse);
-        methods.add(parseReader);
+        methods.addAll(getOverriddenMethods(type, entry.getKey(), firstClasses));
       }
     }
 
     //iterate over every non-overridden prod, generate parse methods for them
     for(Map.Entry<CDDefinitionSymbol, Collection<CDTypeSymbol>> entry: superProds.entrySet()){
       for(CDTypeSymbol type: entry.getValue()){
-        String prod = type.getName();
-        String prodName = service.removeASTPrefix(prod);
-        String superProdFullName = service.getASTPackage(entry.getKey()) + "." + prod;
-
-        ASTMCType returnType = getMCTypeFacade().createOptionalTypeOf(getMCTypeFacade().createQualifiedType(superProdFullName));
-        ASTCDParameter fileNameParameter = getCDParameterFacade().createParameter(String.class, "fileName");
-        ASTCDMethod parse = getCDMethodFacade().createMethod(PUBLIC, returnType, "parse" + prodName, fileNameParameter);
-        parse.addException(ioException);
-        this.replaceTemplate(EMPTY_BODY, parse, new TemplateHookPoint(TEMPLATE_PATH + "ParseSup", millFullName, prodName));
-        methods.add(parse);
-
-        ASTMCType readerType = getMCTypeFacade().createQualifiedType("java.io.Reader");
-        ASTCDParameter readerParameter = getCDParameterFacade().createParameter(readerType, "reader");
-        ASTCDMethod parseReader = getCDMethodFacade().createMethod(PUBLIC, returnType, "parse" + prodName, readerParameter);
-        parseReader.addException(ioException);
-        this.replaceTemplate(EMPTY_BODY, parseReader, new TemplateHookPoint(TEMPLATE_PATH + "ParseSupReader", millFullName, prodName));
-        methods.add(parseReader);
+        //necessary if a nt of a grammar between this grammar and the super grammar is overridden
+        if(!superProdsFullNames.contains(type.getFullName())){
+          String name = type.getName();
+          Optional<CDTypeSymbol> optType = allSuperProdsFromThis.stream().filter(typeSymbol -> typeSymbol.getName().equals(name)).findFirst();
+          if(optType.isPresent()){
+            methods.addAll(getOverriddenMethods(type, entry.getKey(), firstClasses));
+          }
+        }else {
+          methods.addAll(getParseMethodsForOtherProds(type, entry.getKey()));
+        }
       }
     }
 
     return methods;
+  }
+
+  public List<CDTypeSymbol> getFirstClasses(List<ASTCDClass> astcdClassList){
+    HashMap<CDDefinitionSymbol, Collection<CDTypeSymbol>> overridden = Maps.newHashMap();
+    List<CDTypeSymbol> firstClasses = Lists.newArrayList();
+    calculateOverriddenCds(service.getCDSymbol(), astcdClassList.stream().map(ASTCDClass::getName).collect(Collectors.toList()), overridden, firstClasses);
+    return firstClasses;
+  }
+
+  public HashMap<CDDefinitionSymbol, Collection<CDTypeSymbol>> getOverridden(List<ASTCDClass> astcdClassList, CDDefinitionSymbol symbol){
+    HashMap<CDDefinitionSymbol, Collection<CDTypeSymbol>> overridden = Maps.newHashMap();
+    List<CDTypeSymbol> firstClasses = Lists.newArrayList();
+    calculateOverriddenCds(symbol, astcdClassList.stream().map(ASTCDClass::getName).collect(Collectors.toList()), overridden, firstClasses);
+    return overridden;
   }
 
   /**
@@ -239,6 +211,80 @@ public class ParserForSuperDecorator extends AbstractDecorator {
 
   protected boolean overrides(CDTypeSymbol first, CDTypeSymbol second){
     return first.getSuperTypesTransitive().stream().map(CDTypeSymbol::getFullName).collect(Collectors.toList()).contains(second.getFullName());
+  }
+
+  protected List<ASTCDMethod> getOverriddenMethods(CDTypeSymbol type, CDDefinitionSymbol grammar, Collection<CDTypeSymbol> firstClasses){
+    List<ASTCDMethod> methods = Lists.newArrayList();
+    ASTMCQualifiedName ioException = MCBasicTypesMill.mCQualifiedNameBuilder()
+        .setPartsList(Lists.newArrayList("java", "io", "IOException"))
+        .build();
+
+    String millFullName = service.getMillFullName();
+
+    String prod = type.getName();
+    String prodName = service.removeASTPrefix(prod);
+    String superProdFullName = service.getASTPackage(grammar) + "." + prod;
+    String prodFullName = service.getASTPackage() + "." + prod;
+
+    ASTMCType returnType = getMCTypeFacade().createOptionalTypeOf(getMCTypeFacade().createQualifiedType(superProdFullName));
+    ASTCDParameter fileNameParameter = getCDParameterFacade().createParameter(String.class, "fileName");
+    ASTCDMethod parse = getCDMethodFacade().createMethod(PUBLIC, returnType, "parse" + prodName, fileNameParameter);
+    parse.addException(ioException);
+
+
+    ASTMCType readerType = getMCTypeFacade().createQualifiedType("java.io.Reader");
+    ASTCDParameter readerParameter = getCDParameterFacade().createParameter(readerType, "reader");
+    ASTCDMethod parseReader = getCDMethodFacade().createMethod(PUBLIC, returnType, "parse" + prodName, readerParameter);
+    parseReader.addException(ioException);
+
+    //if a nonterminal overrides two or more other nonterminals that do not extend each other then the nonterminal can only extend one of them due to single inheritance
+    //the parse-method generated for the second or third/fourth... overridden nonterminal logs an error upon invocation because the overridding nonterminal does not extend it and
+    //so the parse method cannot be generated normally. A correct parse method is only generated for the first overridden nonterminal because the overriding nonterminal extends it
+    if (firstClasses.contains(type)) {
+      this.replaceTemplate(EMPTY_BODY, parse, new TemplateHookPoint(TEMPLATE_PATH + "ParseOverridden", prodName, prodFullName, millFullName));
+      this.replaceTemplate(EMPTY_BODY, parseReader, new TemplateHookPoint(TEMPLATE_PATH + "ParseOverriddenReader", prodName, prodFullName, millFullName));
+    } else {
+      String generatedErrorCode1 = service.getGeneratedErrorCode(prod + "Parse");
+      String generatedErrorCode2 = service.getGeneratedErrorCode(prod + "ParseReader");
+      this.replaceTemplate(EMPTY_BODY, parse, new StringHookPoint("Log.error(\"0xA7056" + generatedErrorCode1 + " Overridden production " +
+          prodName + " is not reachable\");\nreturn null;"));
+
+      this.replaceTemplate(EMPTY_BODY, parseReader, new StringHookPoint("Log.error(\"0xA7057" + generatedErrorCode2 + " Overridden production " +
+          prodName + " is not reachable\");\nreturn null;"));
+    }
+
+    methods.add(parse);
+    methods.add(parseReader);
+
+    return methods;
+  }
+
+  protected List<ASTCDMethod> getParseMethodsForOtherProds(CDTypeSymbol type, CDDefinitionSymbol grammar){
+    List<ASTCDMethod> methods = Lists.newArrayList();
+    ASTMCQualifiedName ioException = MCBasicTypesMill.mCQualifiedNameBuilder()
+        .setPartsList(Lists.newArrayList("java", "io", "IOException"))
+        .build();
+
+    String millFullName = service.getMillFullName();
+
+    String prod = type.getName();
+    String prodName = service.removeASTPrefix(prod);
+    String superProdFullName = service.getASTPackage(grammar) + "." + prod;
+
+    ASTMCType returnType = getMCTypeFacade().createOptionalTypeOf(getMCTypeFacade().createQualifiedType(superProdFullName));
+    ASTCDParameter fileNameParameter = getCDParameterFacade().createParameter(String.class, "fileName");
+    ASTCDMethod parse = getCDMethodFacade().createMethod(PUBLIC, returnType, "parse" + prodName, fileNameParameter);
+    parse.addException(ioException);
+    this.replaceTemplate(EMPTY_BODY, parse, new TemplateHookPoint(TEMPLATE_PATH + "ParseSup", millFullName, prodName));
+    methods.add(parse);
+
+    ASTMCType readerType = getMCTypeFacade().createQualifiedType("java.io.Reader");
+    ASTCDParameter readerParameter = getCDParameterFacade().createParameter(readerType, "reader");
+    ASTCDMethod parseReader = getCDMethodFacade().createMethod(PUBLIC, returnType, "parse" + prodName, readerParameter);
+    parseReader.addException(ioException);
+    this.replaceTemplate(EMPTY_BODY, parseReader, new TemplateHookPoint(TEMPLATE_PATH + "ParseSupReader", millFullName, prodName));
+    methods.add(parseReader);
+    return methods;
   }
 
 }
