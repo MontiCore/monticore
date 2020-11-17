@@ -178,6 +178,8 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
 
     // Start code codeSection for rules
     addToCodeSection(ruleName);
+    List<PredicatePair> subRules = grammarInfo
+            .getSubRulesForParsing(ast.getName());
 
     if (embeddedJavaCode) {
       addToCodeSection(" returns [", classnameFromRulenameorInterfacename, " ret = ",
@@ -205,6 +207,9 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
       // Action at end of rule
       addToAction(positionActions.endPosition());
       addToAction(attributeConstraints.addActionForRuleAfterRuleBody(ast));
+      if (subRules != null && !subRules.isEmpty()) {
+        addToAction("\nif (_localctx.ret == null)");
+      }
       addToAction(astActions.getBuildAction());
 
       if (!isActionEmpty()) {
@@ -219,8 +224,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     startCodeSection();
     addToCodeSection("\n : ");
 
-    List<PredicatePair> subRules = grammarInfo
-            .getSubRulesForParsing(ast.getName());
+
     if (subRules != null && !subRules.isEmpty()) {
 
       addToCodeSection("// Adding subrules");

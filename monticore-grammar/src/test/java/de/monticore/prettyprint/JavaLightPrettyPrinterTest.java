@@ -50,22 +50,6 @@ public class JavaLightPrettyPrinterTest {
   }
 
   @Test
-  public void tetBlockDeclaration() throws IOException {
-    Optional<ASTMCJavaBlock> result = parser.parse_StringMCJavaBlock("{ private Integer foo = a; }");
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
-    ASTMCJavaBlock ast = result.get();
-
-    ast.accept(prettyPrinter);
-    String output = prettyPrinter.getPrinter().toString();
-
-    result = parser.parse_StringMCJavaBlock(output);
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
-
-    assertTrue(ast.deepEquals(result.get()));
-  }
-  @Test
   public void testConstructorDeclaration() throws IOException {
     Optional<ASTConstructorDeclaration> result = parser.parse_StringConstructorDeclaration("public ClassName(String s, boolean b) throws e.Exception { private Integer foo = a;}");
     assertFalse(parser.hasErrors());
