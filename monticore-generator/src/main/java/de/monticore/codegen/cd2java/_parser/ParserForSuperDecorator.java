@@ -80,6 +80,7 @@ public class ParserForSuperDecorator extends AbstractDecorator {
     for(CDDefinitionSymbol grammar: superProds.keySet()){
       Collection<CDTypeSymbol> typesInGrammar = superProds.get(grammar);
       //remove the prods that have no parse method
+      typesInGrammar.removeIf(type -> type.getAstNode() instanceof ASTCDEnum);
       typesInGrammar.removeIf(type -> type.getName().equals(grammar.getName() + LITERALS_SUFFIX));
       typesInGrammar.removeIf(type -> type.getName().equals(AST_PREFIX + grammar.getName() + NODE_SUFFIX));
       typesInGrammar.removeIf(type -> type.getAstNode().isPresentModifier() &&

@@ -62,7 +62,7 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
         .collect(Collectors.toList()));
 
     Collection<CDDefinitionSymbol> superSymbolList = service.getSuperCDsTransitive();
-    List<ASTCDClass> superMills = new ArrayList<ASTCDClass>();
+    List<ASTCDClass> superMills = new ArrayList<>();
     List<ASTCDClass> astcdClassList = Lists.newArrayList(astcdDefinition.getCDClassList());
 
     for (CDDefinitionSymbol superSymbol : superSymbolList) {
@@ -84,7 +84,9 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
           .build();
 
       if(!superSymbol.getAstNode().isPresentModifier() || !service.hasComponentStereotype(superSymbol.getAstNode().getModifier())){
-        superMill.addCDMethod(createParserMethod(superSymbol));
+        if(!service.getCDSymbol().getAstNode().isPresentModifier() || !service.hasComponentStereotype(service.getCDSymbol().getAstNode().getModifier())) {
+          superMill.addCDMethod(createParserMethod(superSymbol));
+        }
       }
       superMills.add(superMill);
     }
