@@ -10,7 +10,6 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.symbols.oosymbols._symboltable.OOSymbolsScope;
 import de.monticore.utils.Names;
 import de.se_rwth.commons.StringTransformations;
 
@@ -50,7 +49,7 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
     this.enclosingScopeParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(symbolTableService.getScopeInterfaceFullName()), ENCLOSING_SCOPE_VAR);
 
     ASTCDAttribute symbolTablePrinter = getCDAttributeFacade().createAttribute(PROTECTED,
-        getMCTypeFacade().createQualifiedType(symbolTableService.getSymbolTablePrinterFullName()),"symbolTablePrinter");
+        getMCTypeFacade().createQualifiedType(symbolTableService.getSymbols2JsonFullName()),"symbolTablePrinter");
 
 
     return CD4CodeMill.cDClassBuilder()
@@ -72,7 +71,7 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
   protected ASTCDConstructor createConstructor(String symbolDeSerName) {
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC, symbolDeSerName);
     this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("this.symbolTablePrinter = new "
-        + symbolTableService.getSymbolTablePrinterFullName() + "();"));
+        + symbolTableService.getSymbols2JsonFullName() + "();"));
     return constructor;
   }
 

@@ -11,12 +11,12 @@ import de.monticore.types.check.SymTypeExpressionDeSer;
 
 import java.util.List;
 
-public class BasicSymbolsSymbolTablePrinter extends BasicSymbolsSymbolTablePrinterTOP {
+public class BasicSymbolsSymbols2Json extends BasicSymbolsSymbols2JsonTOP {
 
-  public BasicSymbolsSymbolTablePrinter() {
+  public BasicSymbolsSymbols2Json() {
   }
 
-  public BasicSymbolsSymbolTablePrinter(JsonPrinter printer) {
+  public BasicSymbolsSymbols2Json(JsonPrinter printer) {
     super(printer);
   }
 

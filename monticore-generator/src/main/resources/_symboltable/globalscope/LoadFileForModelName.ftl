@@ -10,7 +10,7 @@ ${tc.signature("definitionName")}
     getModelPath().resolveModel(modelCoordinate);
     if (modelCoordinate.hasLocation()) {
       java.net.URL url = modelCoordinate.getLocation();
-      this.addSubScope(scopeDeSer.load(url));
+      this.addSubScope(symbols2Json.load(url));
     }
     addLoadedFile(filePath);
   } else {

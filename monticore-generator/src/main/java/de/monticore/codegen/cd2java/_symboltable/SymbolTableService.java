@@ -20,7 +20,6 @@ import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.*;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.utils.Names.getSimpleName;
-import static de.se_rwth.commons.Names.getQualifier;
 
 public class SymbolTableService extends AbstractService<SymbolTableService> {
 
@@ -457,20 +456,20 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
    * symTabMill interface names e.g. AutomataSymTabMill
    */
 
-  public String getSymbolTablePrinterSimpleName(CDDefinitionSymbol cdSymbol) {
+  public String getSymbols2JsonSimpleName(CDDefinitionSymbol cdSymbol) {
     return cdSymbol.getName() + SYMBOL_TABLE_PRINTER_SUFFIX;
   }
 
-  public String getSymbolTablePrinterSimpleName() {
-    return getSymbolTablePrinterSimpleName(getCDSymbol());
+  public String getSymbols2JsonSimpleName() {
+    return getSymbols2JsonSimpleName(getCDSymbol());
   }
 
-  public String getSymbolTablePrinterFullName(CDDefinitionSymbol cdSymbol) {
-    return getSerializationPackage(cdSymbol) + "." + getSymbolTablePrinterSimpleName(cdSymbol);
+  public String getSymbols2JsonFullName(CDDefinitionSymbol cdSymbol) {
+    return getSerializationPackage(cdSymbol) + "." + getSymbols2JsonSimpleName(cdSymbol);
   }
 
-  public String getSymbolTablePrinterFullName() {
-    return getSymbolTablePrinterFullName(getCDSymbol());
+  public String getSymbols2JsonFullName() {
+    return getSymbols2JsonFullName(getCDSymbol());
   }
 
   public ASTMCQualifiedType getJsonPrinterType(){
