@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+grammar G1 {
+
+  T = "T1";
+
+  N = "...N1" ["opt"]? a:T*;
+
+}

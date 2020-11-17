@@ -247,10 +247,10 @@ public class ParserForSuperDecorator extends AbstractDecorator {
       String generatedErrorCode1 = service.getGeneratedErrorCode(prod + "Parse");
       String generatedErrorCode2 = service.getGeneratedErrorCode(prod + "ParseReader");
       this.replaceTemplate(EMPTY_BODY, parse, new StringHookPoint("Log.error(\"0xA7056" + generatedErrorCode1 + " Overridden production " +
-          prodName + " is not reachable\");\nreturn null;"));
+          prodName + " is not reachable\");\n\treturn Optional.empty();"));
 
       this.replaceTemplate(EMPTY_BODY, parseReader, new StringHookPoint("Log.error(\"0xA7057" + generatedErrorCode2 + " Overridden production " +
-          prodName + " is not reachable\");\nreturn null;"));
+          prodName + " is not reachable\");\n\treturn Optional.empty();"));
     }
 
     methods.add(parse);
