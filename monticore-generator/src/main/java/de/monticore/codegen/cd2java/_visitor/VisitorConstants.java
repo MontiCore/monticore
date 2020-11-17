@@ -57,6 +57,12 @@ public final class VisitorConstants {
 
   public static final String TRAVERSE_TEMPLATE = "_visitor.Traverse";
   
+  public static final String TRAVERSER_HANDLE_TEMPLATE = "_visitor.traverser.Handle";
+  
+  public static final String TRAVERSER_TRAVERSE_TEMPLATE = "_visitor.traverser.Traverse";
+  
+  public static final String TRAVERSER_TRAVERSE_SCOPE_TEMPLATE = "_visitor.traverser.TraverseScope";
+  
   public static final String HANDLER_HANDLE_TEMPLATE = "_visitor.handler.Handle";
   
   public static final String HANDLER_TRAVERSE_TEMPLATE = "_visitor.handler.Traverse";
