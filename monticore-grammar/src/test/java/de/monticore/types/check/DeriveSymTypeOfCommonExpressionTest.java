@@ -676,14 +676,6 @@ public class DeriveSymTypeOfCommonExpressionTest {
   public void init_advanced() {
     ICombineExpressionsWithLiteralsGlobalScope globalScope = CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsGlobalScope();
     globalScope.clear();
-    globalScope.getLocalFieldSymbols().clear();
-    globalScope.getLocalMethodSymbols().clear();
-    globalScope.getLocalTypeSymbols().clear();
-    globalScope.getLocalOOTypeSymbols().clear();
-    globalScope.getLocalFunctionSymbols().clear();
-    globalScope.getLocalVariableSymbols().clear();
-    globalScope.getLocalTypeVarSymbols().clear();
-    globalScope.getLocalDiagramSymbols().clear();
     globalScope.setModelPath(new ModelPath());
     globalScope.setModelFileExtension("ce");
 
