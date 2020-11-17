@@ -2,6 +2,7 @@
 package automata6;
 
 import automata5._ast.*;
+import automata5._visitor.Automata5Traverser;
 import automata6._ast.*;
 import automata6._visitor.*;
 import automata5.*;
@@ -12,23 +13,71 @@ import automata5.*;
  *
 
  */
-public class Automata6PrettyPrinter
-                extends Automata5PrettyPrinter
-                implements Automata6Visitor {
+public class Automata6PrettyPrinter implements Automata6Visitor2 , Automata6Handler {
+
+  protected String result = "";
+
+  protected int indention = 0;
+
+  protected String indent = "";
+
+  protected Automata6Traverser traverser;
 
   @Override
-  public void visit(ASTAutomaton node) {
-    println("/* Printed in Version 6 */");
-    println("automaton " + node.getName() + " {");
-    indent();
+  public void setTraverser(Automata6Traverser traverser) {
+    this.traverser = traverser;
   }
-  
+
+  @Override
+  public Automata6Traverser getTraverser() {
+    return traverser;
+  }
+
+  /**
+   * Gets the printed result.
+   *
+   * @return the result of the pretty print.
+   */
+  public String getResult() {
+    return this.result;
+  }
+
   @Override
   public void visit(ASTTransitionWithOutput node) {
     print(node.getFrom());
     print(" - " + node.getInput() +" / " + node.getOutput() +" > ");
     print(node.getTo());
     println(";");
+  }
+
+  // the following part manages indentation -----------------
+
+  protected void print(String s) {
+    result += (indent + s);
+    indent = "";
+  }
+
+  protected void println(String s) {
+    result += (indent + s + "\n");
+    indent = "";
+    calcIndention();
+  }
+
+  protected void calcIndention() {
+    indent = "";
+    for (int i = 0; i < indention; i++) {
+      indent += "  ";
+    }
+  }
+
+  protected void indent() {
+    indention++;
+    calcIndention();
+  }
+
+  protected void unindent() {
+    indention--;
+    calcIndention();
   }
 }
 

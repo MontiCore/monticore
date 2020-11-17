@@ -9,14 +9,26 @@ import automata15._visitor.*;
  *
 
  */
-public class Automata15PrettyPrinter implements Automata15Visitor {
+public class Automata15PrettyPrinter implements Automata15Visitor2 , Automata15Handler {
 
   protected String result = "";
   
   protected int indention = 0;
   
   protected String indent = "";
-  
+
+  protected   Automata15Traverser traverser;
+
+  @Override
+  public void setTraverser(Automata15Traverser traverser) {
+    this.traverser = traverser;
+  }
+
+  @Override
+  public Automata15Traverser getTraverser() {
+    return traverser;
+  }
+
   /**
    * Prints the automaton
    * 
