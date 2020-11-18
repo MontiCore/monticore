@@ -2,7 +2,6 @@
 package automata6;
 
 import automata5._ast.*;
-import automata5._visitor.Automata5Traverser;
 import automata6._ast.*;
 import automata6._visitor.*;
 import automata5.*;
@@ -20,18 +19,6 @@ public class Automata6PrettyPrinter implements Automata6Visitor2 {
   protected int indention = 0;
 
   protected String indent = "";
-
-  protected Automata6Traverser traverser;
-
-  @Override
-  public void setTraverser(Automata6Traverser traverser) {
-    this.traverser = traverser;
-  }
-
-  @Override
-  public Automata6Traverser getTraverser() {
-    return traverser;
-  }
 
   /**
    * Gets the printed result.

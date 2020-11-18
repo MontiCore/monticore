@@ -17,27 +17,6 @@ public class Automata5PrettyPrinter implements Automata5Visitor2 {
   protected int indention = 0;
   
   protected String indent = "";
-
-  protected Automata5Traverser traverser;
-
-  @Override
-  public void setTraverser(Automata5Traverser traverser) {
-    this.traverser = traverser;
-  }
-
-  @Override
-  public Automata5Traverser getTraverser() {
-    return traverser;
-  }
-
-  /**
-   * Prints the automaton
-   * 
-   * @param automaton
-   */
-  public void print(ASTAutomaton automaton) {
-    handle(automaton);
-  }
   
   /**
    * Gets the printed result.
