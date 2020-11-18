@@ -130,25 +130,24 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
     millClass.addCDAttribute(traverserAttribute);
     millClass.addAllCDMethods(traverserMethods);
     allClasses.add(CD4AnalysisMill.cDClassBuilder().setName(visitorService.getTraverserSimpleName()).build());
-    
-    // decorate for global scope
-    if(symbolTableService.hasStartProd()){
-      //globalScope
-      String millGlobalScopeAttributeName = MILL_INFIX + symbolTableService.getGlobalScopeSimpleName();
-      ASTCDAttribute millGlobalScopeAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, millType, millGlobalScopeAttributeName);
-      String globalScopeAttributeName = StringTransformations.uncapitalize(symbolTableService.getGlobalScopeSimpleName());
-      ASTCDAttribute globalScopeAttribute = getCDAttributeFacade().createAttribute(PROTECTED, symbolTableService.getGlobalScopeInterfaceType(),globalScopeAttributeName);
-      List<ASTCDMethod> globalScopeMethods = getGlobalScopeMethods(globalScopeAttribute);
-      millClass.addCDAttribute(millGlobalScopeAttribute);
-      millClass.addCDAttribute(globalScopeAttribute);
-      millClass.addAllCDMethods(globalScopeMethods);
 
-      //artifactScope
-      String millArtifactScopeAttributeName = MILL_INFIX + symbolTableService.getArtifactScopeSimpleName();
-      ASTCDAttribute millArtifactScopeAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, millType, millArtifactScopeAttributeName);
-      millClass.addCDAttribute(millArtifactScopeAttribute);
-      millClass.addAllCDMethods(getArtifactScopeMethods());
-    }
+    // decorate for global scope
+    //globalScope
+    String millGlobalScopeAttributeName = MILL_INFIX + symbolTableService.getGlobalScopeSimpleName();
+    ASTCDAttribute millGlobalScopeAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, millType, millGlobalScopeAttributeName);
+    String globalScopeAttributeName = StringTransformations.uncapitalize(symbolTableService.getGlobalScopeSimpleName());
+    ASTCDAttribute globalScopeAttribute = getCDAttributeFacade().createAttribute(PROTECTED, symbolTableService.getGlobalScopeInterfaceType(),globalScopeAttributeName);
+    List<ASTCDMethod> globalScopeMethods = getGlobalScopeMethods(globalScopeAttribute);
+    millClass.addCDAttribute(millGlobalScopeAttribute);
+    millClass.addCDAttribute(globalScopeAttribute);
+    millClass.addAllCDMethods(globalScopeMethods);
+
+    //artifactScope
+    String millArtifactScopeAttributeName = MILL_INFIX + symbolTableService.getArtifactScopeSimpleName();
+    ASTCDAttribute millArtifactScopeAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, millType, millArtifactScopeAttributeName);
+    millClass.addCDAttribute(millArtifactScopeAttribute);
+    millClass.addAllCDMethods(getArtifactScopeMethods());
+
 
     if(!symbolTableService.hasComponentStereotype(symbolTableService.getCDSymbol().getAstNode())) {
       ASTCDAttribute parserAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, millType, MILL_INFIX + "Parser");
