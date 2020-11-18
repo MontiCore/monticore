@@ -102,12 +102,9 @@ public class SM2Tool {
    * @return
    */
   public static ISM2ArtifactScope createSymbolTable(ASTAutomaton ast) {
-    
-    ISM2GlobalScope globalScope = SM2Mill
-        .sM2GlobalScopeBuilder()
-        .setModelPath(new ModelPath())
-        .setModelFileExtension("aut")
-        .build();
+    ISM2GlobalScope globalScope = SM2Mill.sM2GlobalScope();
+    globalScope.setModelFileExtension("aut");
+    globalScope.setModelPath(new ModelPath());
 
     SM2SymbolTableCreator symbolTable = SM2Mill
         .sM2SymbolTableCreator();

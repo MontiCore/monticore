@@ -167,7 +167,7 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testDeserializeAdditionalAttributesMethod(){
-    ASTCDMethod method = getMethodBy("deserializeAdditionalAutomatonSymbolAttributes", symbolClassAutomaton);
+    ASTCDMethod method = getMethodBy("deserializeAddons", symbolClassAutomaton);
     assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
     assertEquals(0, method.sizeException());
     assertEquals(2, method.sizeCDParameters());
@@ -270,7 +270,7 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testDeserializeAdditionalAttributesMethodFoo(){
-    ASTCDMethod method = getMethodBy("deserializeAdditionalFooSymbolAttributes", symbolClassFoo);
+    ASTCDMethod method = getMethodBy("deserializeAddons", symbolClassFoo);
     assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
     assertEquals(0, method.sizeException());
     assertEquals(2, method.sizeCDParameters());

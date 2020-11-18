@@ -140,11 +140,9 @@ public class AutomataTool {
    */
   public static IAutomataArtifactScope createSymbolTable(ASTAutomaton ast) {
 
-    IAutomataGlobalScope globalScope = AutomataMill
-        .automataGlobalScopeBuilder()
-        .setModelPath(new ModelPath())
-        .setModelFileExtension("aut")
-        .build();
+    IAutomataGlobalScope globalScope = AutomataMill.automataGlobalScope();
+    globalScope.setModelPath(new ModelPath());
+    globalScope.setModelFileExtension("aut");
 
     AutomataSymbolTableCreator symbolTable = AutomataMill
         .automataSymbolTableCreator();

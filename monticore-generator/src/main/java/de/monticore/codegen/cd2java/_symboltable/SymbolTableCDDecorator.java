@@ -48,19 +48,13 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
 
   protected final ScopeClassDecorator scopeClassDecorator;
 
-  protected final ScopeClassBuilderDecorator scopeClassBuilderDecorator;
-
   protected final ScopeInterfaceDecorator scopeInterfaceDecorator;
 
   protected final GlobalScopeClassDecorator globalScopeClassDecorator;
 
   protected final GlobalScopeInterfaceDecorator globalScopeInterfaceDecorator;
 
-  protected final GlobalScopeClassBuilderDecorator globalScopeClassBuilderDecorator;
-
   protected final ArtifactScopeClassDecorator artifactScopeDecorator;
-
-  protected final ArtifactScopeClassBuilderDecorator artifactScopeBuilderDecorator;
 
   protected final ArtifactScopeInterfaceDecorator artifactScopeInterfaceDecorator;
 
@@ -97,13 +91,10 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
                                 final SymbolSurrogateBuilderDecorator symbolReferenceBuilderDecorator,
                                 final ScopeInterfaceDecorator scopeInterfaceDecorator,
                                 final ScopeClassDecorator scopeClassDecorator,
-                                final ScopeClassBuilderDecorator scopeClassBuilderDecorator,
                                 final GlobalScopeInterfaceDecorator globalScopeInterfaceDecorator,
                                 final GlobalScopeClassDecorator globalScopeClassDecorator,
-                                final GlobalScopeClassBuilderDecorator globalScopeClassBuilderDecorator,
                                 final ArtifactScopeInterfaceDecorator artifactScopeInterfaceDecorator,
                                 final ArtifactScopeClassDecorator artifactScopeDecorator,
-                                final ArtifactScopeClassBuilderDecorator artifactScopeBuilderDecorator,
                                 final CommonSymbolInterfaceDecorator commonSymbolInterfaceDecorator,
                                 final SymbolResolverInterfaceDecorator symbolResolverInterfaceDecorator,
                                 final SymbolTableCreatorDecorator symbolTableCreatorDecorator,
@@ -122,12 +113,9 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
     this.symbolTableService = symbolTableService;
     this.scopeInterfaceDecorator = scopeInterfaceDecorator;
     this.scopeClassDecorator = scopeClassDecorator;
-    this.scopeClassBuilderDecorator = scopeClassBuilderDecorator;
     this.globalScopeInterfaceDecorator = globalScopeInterfaceDecorator;
     this.globalScopeClassDecorator = globalScopeClassDecorator;
-    this.globalScopeClassBuilderDecorator = globalScopeClassBuilderDecorator;
     this.artifactScopeDecorator = artifactScopeDecorator;
-    this.artifactScopeBuilderDecorator = artifactScopeBuilderDecorator;
     this.artifactScopeInterfaceDecorator = artifactScopeInterfaceDecorator;
     this.symbolReferenceBuilderDecorator = symbolReferenceBuilderDecorator;
     this.commonSymbolInterfaceDecorator = commonSymbolInterfaceDecorator;
@@ -168,7 +156,6 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
         .addAllCDClasss(decoratedSymbolClasses)
         .addAllCDClasss(createSymbolBuilderClasses(symbolCD.getCDDefinition().getCDClassList()))
         .addCDClass(scopeClass)
-        .addCDClass(createScopeClassBuilder(scopeClass))
         .addCDInterface(createScopeInterface(scopeCD, symbolCD))
         .addAllCDClasss(createSymbolReferenceClasses(symbolCD.getCDDefinition().getCDClassList()))
         .addAllCDClasss(createSymbolReferenceBuilderClasses(symbolCD.getCDDefinition().getCDClassList()))
@@ -196,7 +183,6 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
       // global scope
       ASTCDClass globalScopeClass = createGlobalScopeClass(astCD, symbolTablePackage);
       symTabCD.addCDClass(globalScopeClass);
-      symTabCD.addCDClass(createGlobalScopeClassBuilder(globalScopeClass));
 
       // artifact scope
       boolean isArtifactScopeHandCoded = existsHandwrittenClass(handCodedPath,
@@ -204,7 +190,6 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
       this.artifactScopeDecorator.setArtifactScopeTop(isArtifactScopeHandCoded);
       ASTCDClass artifactScope = createArtifactScope(astCD);
       symTabCD.addCDClass(artifactScope);
-      symTabCD.addCDClass(createArtifactBuilderScope(artifactScope));
 
       // scope deser
       ASTCDClass scopeDeSer = createScopeDeSerClass(scopeCD, symbolCD);
@@ -306,10 +291,6 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
     return scopeClassDecorator.decorate(scopeCD, symbolCd);
   }
 
-  protected ASTCDClass createScopeClassBuilder(ASTCDClass scopeClass) {
-    return scopeClassBuilderDecorator.decorate(scopeClass);
-  }
-
   protected ASTCDInterface createScopeInterface(ASTCDCompilationUnit scopeCD, ASTCDCompilationUnit symbolCD) {
     return scopeInterfaceDecorator.decorate(scopeCD, symbolCD);
   }
@@ -328,16 +309,8 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
     return globalScopeInterfaceDecorator.decorate(compilationUnit);
   }
 
-  protected ASTCDClass createGlobalScopeClassBuilder(ASTCDClass globalScopeClass) {
-    return globalScopeClassBuilderDecorator.decorate(globalScopeClass);
-  }
-
   protected ASTCDClass createArtifactScope(ASTCDCompilationUnit compilationUnit) {
     return artifactScopeDecorator.decorate(compilationUnit);
-  }
-
-  protected ASTCDClass createArtifactBuilderScope(ASTCDClass artifactScopeClass) {
-    return artifactScopeBuilderDecorator.decorate(artifactScopeClass);
   }
 
   protected ASTCDInterface createArtifactScopeInterface(ASTCDCompilationUnit compilationUnit) {

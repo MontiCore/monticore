@@ -98,6 +98,10 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     symbolClasses.addAll(symbolTableService.getSymbolDefiningSuperProds());
 
     List<ASTCDMethod> resolverMethods = createResolverMethods(resolverAttributes.values());
+    List<ASTCDType> symbolList = symbolTableService.getSymbolDefiningSuperProds();
+    symbolList.addAll(symbolTableService.getSymbolDefiningProds(input.getCDDefinition()));
+
+    List<String> symbolListString = symbolList.stream().map(symbolTableService::getSymbolSimpleName).collect(Collectors.toList());
 
     return CD4AnalysisMill.cDClassBuilder()
         .setName(globalScopeName)
@@ -126,7 +130,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
         .addCDMethod(createLoadFileForModelNameMethod(definitionName))
         //
         .addCDMethod(createGetRealThisMethod(globalScopeName))
-        .addCDMethod(createClearMethod(resolverMethods))
+        .addCDMethod(createClearMethod(resolverMethods, symbolListString))
         .build();
   }
 
@@ -331,10 +335,10 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     return method;
   }
 
-  protected ASTCDMethod createClearMethod(List<ASTCDMethod> getResolverMethodList){
+  protected ASTCDMethod createClearMethod(List<ASTCDMethod> getResolverMethodList, List<String> symbolList){
     List<String> resolverListString = getResolverMethodList.stream().map(ASTCDMethod::getName).filter(name -> name.startsWith("get")).collect(Collectors.toList());
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, "clear");
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "Clear", resolverListString));
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "Clear", resolverListString, symbolList));
     return method;
   }
 

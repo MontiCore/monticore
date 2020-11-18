@@ -16,5 +16,5 @@ ${tc.signature("symbolBuilderFullName","symbolBuilderSimpleName", "symTabMill", 
   </#if>
 </#list>
   ${symbolFullName} symbol = builder.build();
-  deserializeAdditional${symbolSimpleName}Attributes(symbol, symbolJson);
+  deserializeAddons(symbol, symbolJson);
   return symbol;
