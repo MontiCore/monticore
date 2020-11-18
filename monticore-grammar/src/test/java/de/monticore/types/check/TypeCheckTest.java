@@ -42,12 +42,10 @@ public class TypeCheckTest {
   public void setupForEach() {
     // Setting up a Scope Infrastructure (without a global Scope)
     DefsTypeBasic.setup();
-    scope =
-        CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder()
-            .setEnclosingScope(null)       // No enclosing Scope: Search ending here
-            .setExportingSymbols(true)
-            .setAstNode(null)
-            .setName("Phantasy2").build();     // hopefully unused
+    scope = CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScope();
+    scope.setEnclosingScope(null);       // No enclosing Scope: Search ending here
+    scope.setExportingSymbols(true);
+    scope.setAstNode(null);     // hopefully unused
     // we add a variety of TypeSymbols to the same scope (which in reality doesn't happen)
     add2scope(scope, DefsTypeBasic._int);
     add2scope(scope, DefsTypeBasic._char);

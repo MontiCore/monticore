@@ -32,21 +32,18 @@ public class BuiltInJavaSymbolResolver
 
   protected static IOOSymbolsGlobalScope initScope() {
     gs = OOSymbolsMill
-        .oOSymbolsGlobalScopeBuilder()
-        .setModelPath(new ModelPath())
-        .setModelFileExtension("ts")
-        .build();
+        .oOSymbolsGlobalScope();
+    gs.setModelPath(new ModelPath());
+    gs.setModelFileExtension("ts");
     //package java.lang
     IOOSymbolsArtifactScope javalang = OOSymbolsMill
-        .oOSymbolsArtifactScopeBuilder()
-        .setPackageName("java.lang")
-        .build();
+        .oOSymbolsArtifactScope();
+    javalang.setPackageName("java.lang");
     gs.addSubScope(javalang);
     //package java.util
     IOOSymbolsArtifactScope javautil = OOSymbolsMill
-        .oOSymbolsArtifactScopeBuilder()
-        .setPackageName("java.util")
-        .build();
+        .oOSymbolsArtifactScope();
+    javautil.setPackageName("java.util");
     gs.addSubScope(javautil);
 
     //some SymTypeExpressions to use for methods and fields
@@ -375,20 +372,20 @@ public class BuiltInJavaSymbolResolver
 
   public static MethodSymbol methodSymbol(String name, SymTypeExpression returnType){
     MethodSymbol m = OOSymbolsMill.methodSymbolBuilder()
-        .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
+        .setSpannedScope(OOSymbolsMill.oOSymbolsScope())
         .setName(name)
         .setFullName(name)  // can later be adapted, when fullname of Type is known
         .setAccessModifier(AccessModifier.ALL_INCLUSION)
         .setReturnType(returnType)
         .build();
-    m.setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build());
+    m.setSpannedScope(OOSymbolsMill.oOSymbolsScope());
     return m;
   }
 
   public static OOTypeSymbol typeSymbol(String name, List<MethodSymbol> methodList, List<FieldSymbol> fieldList, List<SymTypeExpression> superTypeList, List<TypeVarSymbol> typeVariableList, IOOSymbolsScope enclosingScope){
     OOTypeSymbol t = OOSymbolsMill.oOTypeSymbolBuilder()
         .setEnclosingScope(enclosingScope)
-        .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
+        .setSpannedScope(OOSymbolsMill.oOSymbolsScope())
         .setName(name)
         .setFullName(name)
         .setSuperTypesList(superTypeList).build();

@@ -31,6 +31,7 @@ public class TestAutomaton extends GeneratorIntegrationsTest {
     optAutomaton = parser.parseAutomaton("src/test/resources/examples/automaton/Testautomat.aut");
     assertFalse(parser.hasErrors());
     assertTrue(optAutomaton.isPresent());
+    AutomatonMill.automatonGlobalScope().clear();
     AutomatonMill.automatonGlobalScope().setModelFileExtension("aut");
     AutomatonMill.automatonSymbolTableCreatorDelegator().createFromAST(optAutomaton.get());
     return optAutomaton.get();
