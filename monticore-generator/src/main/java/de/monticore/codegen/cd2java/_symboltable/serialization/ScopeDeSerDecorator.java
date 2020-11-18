@@ -128,17 +128,6 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
   protected ASTCDConstructor createConstructor(String scopeDeSerName) {
     ASTCDConstructor constructor = getCDConstructorFacade()
         .createConstructor(PUBLIC, scopeDeSerName);
-    Map<String, String> symbolTablePrinters = new HashMap<>();
-    CDDefinitionSymbol lang = symbolTableService.getCDSymbol();
-    symbolTablePrinters.put(lang.getName(), symbolTableService.getSymbols2JsonFullName(lang));
-    for (CDDefinitionSymbol superCD : symbolTableService.getSuperCDsTransitive()) {
-      symbolTablePrinters
-          .put(superCD.getName(), symbolTableService.getSymbols2JsonFullName(superCD));
-    }
-
-    this.replaceTemplate(EMPTY_BODY, constructor,
-        new TemplateHookPoint("_symboltable.serialization.scopeDeSer.Constructor4ScopeDeSer",
-            visitorService.getDelegatorVisitorFullName(), symbolTablePrinters));
     return constructor;
   }
 
@@ -175,12 +164,22 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
   }
 
   protected ASTCDMethod createSerializeMethod(String scopeInterfaceName) {
+    Map<String, String> symbolTablePrinters = new HashMap<>();
+    CDDefinitionSymbol lang = symbolTableService.getCDSymbol();
+    symbolTablePrinters.put(lang.getName(), symbolTableService.getSymbols2JsonFullName(lang));
+    for (CDDefinitionSymbol superCD : symbolTableService.getSuperCDsTransitive()) {
+      symbolTablePrinters
+              .put(superCD.getName(), symbolTableService.getSymbols2JsonFullName(superCD));
+    }
+
     ASTCDParameter toSerializeParam = getCDParameterFacade()
         .createParameter(getMCTypeFacade().createQualifiedType(scopeInterfaceName), "toSerialize");
     ASTCDMethod serializeMethod = getCDMethodFacade()
         .createMethod(PUBLIC, getMCTypeFacade().createStringType(), "serialize", toSerializeParam);
+
     this.replaceTemplate(EMPTY_BODY, serializeMethod,
-        new TemplateHookPoint("_symboltable.serialization.scopeDeSer.Serialize4ScopeDeSer"));
+            new TemplateHookPoint("_symboltable.serialization.scopeDeSer.Serialize4ScopeDeSer",
+                    visitorService.getDelegatorVisitorFullName(), symbolTablePrinters));
     return serializeMethod;
   }
 
