@@ -39,14 +39,18 @@ public class QuestionnaireTool {
 
     // run the pretty printing:
     QuestionnaireVisitor2 qv = new QuestionnairePrettyPrinter();
-    QuestionnaireTraverser traverser = QuestionnaireMill.traverser();
-    traverser.setQuestionnaireVisitor(qv);
-    ast.accept(traverser);
+    QuestionnaireTraverser t1 = QuestionnaireMill.traverser();
+    t1.setQuestionnaireVisitor(qv);
+    ast.accept(t1);
     Log.info("------------------", "QuestionnaireTool");
 
-    // run the detailed tree pretty printing:
-    QuestionnaireVisitor vis = new QuestionnaireTreePrinter();
-    ast.accept(vis);
+ // run the detailed tree pretty printing:
+    QuestionnaireTraverser t2 = QuestionnaireMill.traverser();
+    QuestionnaireVisitor2 vis = new QuestionnaireTreePrinter();
+    QuestionnaireHandler han = new QuestionnaireTreeHandler();
+    t2.setQuestionnaireVisitor(vis);
+    t2.setQuestionnaireHandler(han);
+    t2.accept(vis);
   }
 
   /**
