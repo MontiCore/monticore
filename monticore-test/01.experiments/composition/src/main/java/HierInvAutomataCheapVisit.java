@@ -1,14 +1,20 @@
 /* (c) https://github.com/MontiCore/monticore */
 import automata3._ast.ASTInvariant;
+import automata3._visitor.Automata3Visitor2;
+import de.monticore.ast.ASTNode;
+import de.monticore.symboltable.IScope;
+import de.monticore.symboltable.ISymbol;
 import de.se_rwth.commons.logging.Log;
 import expression._ast.ASTAnd;
 import expression._ast.ASTNot;
 import expression._ast.ASTTruth;
 import expression._ast.ASTVariable;
+import expression._visitor.ExpressionVisitor2;
 import hierinvautomata._ast.ASTStateBody;
-import hierinvautomata._visitor.HierInvAutomataVisitor;
+import hierinvautomata._visitor.HierInvAutomataVisitor2;
 import invautomata._ast.ASTAutomaton;
 import invautomata._ast.ASTTransition;
+import invautomata._visitor.InvAutomataVisitor2;
 
 /**
  * Visitor for the composed language  HierInvAutomata
@@ -18,7 +24,8 @@ import invautomata._ast.ASTTransition;
  * (actually this is a bad an cheap form of reuse)
  */
 public class HierInvAutomataCheapVisit
-                        implements HierInvAutomataVisitor {
+                        implements HierInvAutomataVisitor2, Automata3Visitor2, 
+                                   InvAutomataVisitor2, ExpressionVisitor2 {
 
 
   // ----------------------------------------------------------
@@ -29,22 +36,6 @@ public class HierInvAutomataCheapVisit
     verbose = true; 
   }
 
-  // ----------------------------------------------------------
-  // setRealThis, getRealThis are necessary to make the visitor compositional
-  //
-  // (the Vistors are then composed using theRealThis Pattern)
-  //
-  HierInvAutomataVisitor realThis = this;
-
-  @Override
-  public void setRealThis(HierInvAutomataVisitor realThis) {
-    this.realThis = realThis;
-  }
-
-  @Override
-  public HierInvAutomataVisitor getRealThis() {
-    return realThis;
-  }
 
   // ----------------------------------------------------------
   // Typical visit/endvisit methods:
@@ -207,6 +198,32 @@ public class HierInvAutomataCheapVisit
   public void endVisit(ASTTransition node) {
     if(verbose)
       Log.println("    HA-/Transition ");
+  }
+
+  // Overriding shared methods of multiple interfaces.
+  
+  @Override
+  public void endVisit(ASTNode node) {
+  }
+  
+  @Override
+  public void endVisit(ISymbol node) {
+  }
+  
+  @Override
+  public void endVisit(IScope node) {
+  }
+  
+  @Override
+  public void visit(ASTNode node) {
+  }
+  
+  @Override
+  public void visit(ISymbol node) {
+  }
+  
+  @Override
+  public void visit(IScope node) {
   }
   
 }

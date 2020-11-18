@@ -9,40 +9,29 @@ import invautomata._visitor.*;
  *
 
  */
-public class InvAutomataPrettyPrinter
-                        implements InvAutomataVisitor {
+public class InvAutomataSublangPP
+                        implements InvAutomataVisitor2 {
 
-  // ----------------------------------------------------------
-  // setRealThis, getRealThis are necessary to make the visitor compositional
-  //
-  // (the Vistors are then composed using theRealThis Pattern)
-  //
-  InvAutomataVisitor realThis = this;
-
-  @Override
-  public void setRealThis(InvAutomataVisitor realThis) {
-    this.realThis = realThis;
-  }
-
-  @Override
-  public InvAutomataVisitor getRealThis() {
-    return realThis;
-  }
-
-  // ----------------------------------------------------------
   protected IndentPrinter out;
 
-  public InvAutomataPrettyPrinter(IndentPrinter o) {
+  public InvAutomataSublangPP(IndentPrinter o) {
     out = o;
   }
 
   // ----------------------------------------------------------
   // Typical visit/endvist methods:
 
+//  @Override
+//  public void visit(ASTAutomaton node) {
+//    out.println("/* printed with InvAutomataPrettyPrinter */");
+//    out.println("automaton " + node.getName() + " {");
+//    out.indent();
+//  }
+  
   @Override
   public void visit(ASTAutomaton node) {
-    out.println("/* printed with InvAutomataPrettyPrinter */");
-    out.println("automaton " + node.getName() + " {");
+    out.println("/* print by composed Automata3PrettyPrinter */");
+    out.println("automata " + node.getName() + " {");
     out.indent();
   }
   

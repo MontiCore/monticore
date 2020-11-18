@@ -5,7 +5,9 @@ import java.util.Optional;
 import org.antlr.v4.runtime.RecognitionException;
 
 import de.se_rwth.commons.logging.Log;
+import hierinvautomata.HierInvAutomataMill;
 import hierinvautomata._parser.HierInvAutomataParser;
+import hierinvautomata._visitor.HierInvAutomataTraverser;
 import invautomata._ast.ASTAutomaton;
 
 
@@ -41,11 +43,13 @@ public class HierInvAutomataTool {
 
     // Example, how to use a monolithic visitor on the model
     Log.info("=== 2: HierInvAutomatonCheapVisit =============", "HierIAT");
-   HierInvAutomataCheapVisit acv1 = new HierInvAutomataCheapVisit();
-   ast.accept(acv1);
-   // XXXYX // acv1.setVerbosity();
-   // Log.info("=== 3: HierInvAutomatonCheapVisit.verbose() ===", "HierIAT");
-   // ast.accept(acv1);
+    HierInvAutomataTraverser traverser = HierInvAutomataMill.traverser();
+    HierInvAutomataCheapVisit acv1 = new HierInvAutomataCheapVisit();
+    traverser.setHierInvAutomataVisitor(acv1);;
+    ast.accept(traverser);
+    // XXXYX // acv1.setVerbosity();
+    // Log.info("=== 3: HierInvAutomatonCheapVisit.verbose() ===", "HierIAT");
+    // ast.accept(acv1);
 
   }
   

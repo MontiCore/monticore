@@ -3,26 +3,14 @@ import expression._ast.*;
 import expression._visitor.*;
 
 /**
- *
+ * Visitor for the expression language. 
+ * 
+ * But the visitor contains only the content of the elements defined on
+ * Automata3 level. Nodes from super languages must be visited by their
+ * respective visitors providing the corresponding visit and endVisit 
+ * methods.
  */
-public class ExpressionCheapVisit implements ExpressionVisitor {
-
-  // ----------------------------------------------------------
-  // setRealThis, getRealThis are necessary to make the visitor compositional
-  //
-  // (the Vistors are then composed using theRealThis Pattern)
-  //
-  ExpressionVisitor realThis = this;
-
-  @Override
-  public void setRealThis(ExpressionVisitor realThis) {
-    this.realThis = realThis;
-  }
-
-  @Override
-  public ExpressionVisitor getRealThis() {
-    return realThis;
-  }
+public class ExpressionVisit implements ExpressionVisitor2 {
 
   // ----------------------------------------------------------
   // Typical visit/endvist methods:
