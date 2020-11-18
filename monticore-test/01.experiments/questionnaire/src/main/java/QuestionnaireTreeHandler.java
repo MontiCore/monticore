@@ -125,7 +125,6 @@ public class QuestionnaireTreeHandler implements QuestionnaireHandler {
     getTraverser().visit((ASTNode) node);
     getTraverser().visit((questionnaire._ast.ASTQuestionnaireNode) node);
     getTraverser().visit(node);
-    getTraverser().traverse(node);
     getTraverser().endVisit(node);
     getTraverser().endVisit((questionnaire._ast.ASTQuestionnaireNode) node);
     getTraverser().endVisit((ASTNode) node);
@@ -136,7 +135,6 @@ public class QuestionnaireTreeHandler implements QuestionnaireHandler {
     getTraverser().visit((ASTNode) node);
     getTraverser().visit((questionnaire._ast.ASTQuestionnaireNode) node);
     getTraverser().visit(node);
-    getTraverser().traverse(node);
     getTraverser().endVisit(node);
     getTraverser().endVisit((questionnaire._ast.ASTQuestionnaireNode) node);
     getTraverser().endVisit((ASTNode) node);

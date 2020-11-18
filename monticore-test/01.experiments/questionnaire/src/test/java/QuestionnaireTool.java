@@ -50,7 +50,7 @@ public class QuestionnaireTool {
     QuestionnaireHandler han = new QuestionnaireTreeHandler();
     t2.setQuestionnaireVisitor(vis);
     t2.setQuestionnaireHandler(han);
-    t2.accept(vis);
+    ast.accept(t2);
   }
 
   /**

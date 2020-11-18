@@ -11,7 +11,7 @@ import java.util.Optional;
 /**
  * Small pretty printer for questionnaires
  */
-public class QuestionnaireTreePrinter implements QuestionnaireInheritanceVisitor2
+public class QuestionnaireTreePrinter implements QuestionnaireVisitor2
         /* see alternate behavior, then use: QuestionnaireVisitor */
 {
 
