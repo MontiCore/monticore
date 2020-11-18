@@ -7,7 +7,7 @@ import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.symbols.oosymbols._symboltable.BuiltInJavaSymbolResolvingDelegate;
+import de.monticore.symbols.oosymbols._symboltable.BuiltInJavaSymbolResolver;
 import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
 import de.monticore.symbols.oosymbols._symboltable.OOSymbolsScope;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolSurrogate;
@@ -38,7 +38,7 @@ public class DeSerMap {
 
   protected static final Map<SymTypeExpression, String> primitiveDataTypes = new HashMap<>();
 
-  protected static IOOSymbolsScope gs = BuiltInJavaSymbolResolvingDelegate.getScope();
+  protected static IOOSymbolsScope gs = BuiltInJavaSymbolResolver.getScope();
 
   static {
     primitiveDataTypes.put(createTypeConstant("boolean"), "getBooleanMember(\"%s\")");
@@ -53,8 +53,8 @@ public class DeSerMap {
     primitiveDataTypes.put(createTypeConstant("float"), getNumberMember("Float"));
     primitiveDataTypes.put(createObjectType("java.lang.Float"), getNumberMember("Float"));
 
-    primitiveDataTypes.put(createTypeConstant("int"), getNumberMember("Long"));
-    primitiveDataTypes.put(createObjectType("java.lang.Integer"), getNumberMember("Long"));
+    primitiveDataTypes.put(createTypeConstant("int"), getNumberMember("Int"));
+    primitiveDataTypes.put(createObjectType("java.lang.Integer"), getNumberMember("Int"));
 
     primitiveDataTypes.put(createTypeConstant("long"), getNumberMember("Long"));
     primitiveDataTypes.put(createObjectType("java.lang.Long"), getNumberMember("Long"));

@@ -19,6 +19,7 @@ package de.monticore.statements;
  * * statements/MCStatementsBasis.mc4
  * * -- statements/MCAssertStatements.mc4
  * * -- statements/MCVarDeclarationStatements.mc4
+ * * -- -- statements/MCArrayStatements.mc4
  * * -- -- statements/MCCommonStatements.mc4
  * * -- -- -- statements/MCExceptionStatements.mc4
  * * -- -- -- statements/MCSynchronizedStatements.mc4

@@ -77,6 +77,7 @@ public class ArtifactScopeClassDecorator extends AbstractCreator<ASTCDCompilatio
         .addCDMethod(createGetNameMethod())
         .addCDMethod(createAcceptMethod(artifactScopeSimpleName))
         .addCDMethod(createSetEnclosingScopeMethod(scopeClassFullName, artifactScopeSimpleName, globalScopeClassSimpleName))
+        .addCDMethod(createAcceptTraverserMethod(artifactScopeSimpleName))
         .build();
   }
 
@@ -92,7 +93,11 @@ public class ArtifactScopeClassDecorator extends AbstractCreator<ASTCDCompilatio
     ASTCDConstructor constructorWithEnclosingScope = getCDConstructorFacade().createConstructor(PUBLIC.build(),
         artifactScopeName, enclosingScopeParam, packageNameParam, importsParam);
     this.replaceTemplate(EMPTY_BODY, constructorWithEnclosingScope, new TemplateHookPoint(TEMPLATE_PATH + "ConstructorArtifactScope"));
-    return new ArrayList<>(Arrays.asList(constructor, constructorWithEnclosingScope));
+
+
+    ASTCDConstructor zeroArgsConstructor = getCDConstructorFacade().createConstructor(PUBLIC, artifactScopeName);
+    this.replaceTemplate(EMPTY_BODY, zeroArgsConstructor, new StringHookPoint("this(\"\", new java.util.ArrayList<>());"));
+    return new ArrayList<>(Arrays.asList(constructor, constructorWithEnclosingScope, zeroArgsConstructor));
   }
 
   protected ASTCDAttribute createPackageNameAttribute() {
@@ -133,6 +138,20 @@ public class ArtifactScopeClassDecorator extends AbstractCreator<ASTCDCompilatio
 
   protected ASTCDMethod createAcceptMethod(String artifactScopeName) {
     String visitor = visitorService.getVisitorFullName();
+    ASTCDParameter parameter = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(visitor), VISITOR_PREFIX);
+    ASTCDMethod acceptMethod = getCDMethodFacade().createMethod(PUBLIC, ACCEPT_METHOD, parameter);
+    if (!isArtifactScopeTop()) {
+      this.replaceTemplate(EMPTY_BODY, acceptMethod, new StringHookPoint("visitor.handle(this);"));
+    } else {
+      String errorCode = symbolTableService.getGeneratedErrorCode(artifactScopeName);
+      this.replaceTemplate(EMPTY_BODY, acceptMethod, new TemplateHookPoint(
+          "_symboltable.AcceptTop", artifactScopeName, errorCode));
+    }
+    return acceptMethod;
+  }
+
+  protected ASTCDMethod createAcceptTraverserMethod(String artifactScopeName) {
+    String visitor = visitorService.getTraverserInterfaceFullName();
     ASTCDParameter parameter = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(visitor), VISITOR_PREFIX);
     ASTCDMethod acceptMethod = getCDMethodFacade().createMethod(PUBLIC, ACCEPT_METHOD, parameter);
     if (!isArtifactScopeTop()) {

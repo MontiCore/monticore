@@ -1,0 +1,53 @@
+/* (c) https://github.com/MontiCore/monticore */
+import de.monticore.MCTask
+
+plugins {
+  id 'java'
+  id 'monticore'  version '6.6.0-SNAPSHOT' // MontiCore Plugin
+}
+
+buildDir = file("$projectDir/target")
+def mc_version  = '6.6.0-SNAPSHOT'
+def se_commons_version = '1.7.11'
+def antlr_version = '4.7.1'
+def grammarDir = 'src/main/grammars'
+def outDir = "$buildDir/generated-sources/"
+
+group = "de.monticore"
+version = '1.0.0-SNAPSHOT'
+sourceCompatibility = "1.8"
+
+dependencies {
+  implementation "de.monticore:monticore-runtime:$mc_version"
+  implementation "de.monticore:monticore-grammar:$mc_version"
+  grammar "de.monticore:monticore-grammar:$mc_version:grammars"
+  implementation "de.se_rwth.commons:se-commons-logging:$se_commons_version"
+  implementation "de.se_rwth.commons:se-commons-utilities:$se_commons_version"
+  implementation group:'org.antlr', name:'antlr4-runtime', version:antlr_version
+  testImplementation "junit:junit:4.13.1"
+  testImplementation group:'ch.qos.logback', name: 'logback-classic', version: '1.1.2'
+}
+
+repositories {
+  maven {
+    url "https://nexus.se.rwth-aachen.de/content/groups/public"
+  }
+}
+
+// configure non-standard source sets
+sourceSets {
+  main.java.srcDirs += [ outDir ]
+}
+
+task generate (type: MCTask) {
+  grammar = file "$grammarDir/Automata.mc4"
+  outputDir = file outDir
+  def uptoDate = incCheck("Automata.mc4")
+  outputs.upToDateWhen { uptoDate }
+}
+
+compileJava {
+  dependsOn project.collect { it.tasks.withType(MCTask) }
+}
+
+

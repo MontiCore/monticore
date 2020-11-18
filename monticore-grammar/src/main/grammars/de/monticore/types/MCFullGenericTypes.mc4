@@ -16,6 +16,7 @@ import de.monticore.types.*;
  * 
  * This grammar is part of a hierarchy of types, namely 
  * * types.MCBasicTypes.mc4       
+ *   * types/MCArrayTypes.mc4
  *   * types/MCCollectionTypes.mc4  
  *     * types/MCSimpleGenericTypes.mc4
  *       * types/MCFullGenericTypes.mc4    
@@ -53,15 +54,4 @@ component grammar MCFullGenericTypes
   // this left open to the embedding nonterminal
   MCInnerType = Name ("<" (MCTypeArgument || ",")+ ">")?;
 
-
-  /*=================================================================*/
-
-  /** ASTArrayType introduce array for arbitrary types
-  */
-  MCArrayType implements MCType =
-       MCType ("[" "]" {_aNode.setDimensions(_aNode.getDimensions()+1);} )+;
-
-  // counter dimensions counts the array depth
-  astrule MCArrayType =
-    dimensions:int;
 }

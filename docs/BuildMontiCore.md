@@ -38,8 +38,7 @@ by executing the following configuration:
     
 ## Build MontiCore
 
-MontiCore is currently partially still built using maven, but partially 
-already migrated to gradle. It is recommended to use the MontiCore internal gradle
+MontiCore is currently built using Gradle. It is recommended to use the MontiCore internal gradle
 wrapper (`gradlew`).
 
 Please note that from the top level build script, not everything is built and 
@@ -47,28 +46,24 @@ all tests executed. It is a deliberate decision, to exclude some of the longer
 lasting tasks.
 
 * build the productive code (including the unit tests, ~8 min)
-`mvn install`
-  * skipping the unit tests: `mvn install -Dmaven.test.skip=true`
+  * `gradlew buildMC`
+  * skipping the unit tests: `gradlew assembleMC`
 * run integration tests (which are not included in the unit tests, ~30 min)   
+  * all integration tests
+    * `gradlew testIT`
   * Integration tests of the generator: 
-    * maven (deprecated): `mvn install -f monticore-generator/it/pom.xml` or 
-    * gradle: in `monticore-generator/it/` call `gradlew build`
-  * EMF Integration tests of the generator: 
-    * maven (deprecated): `mvn install -f monticore-generator/it/pom.xml -P emf-it-tests` or 
-    * gradle: in `monticore-generator/it/` call `gradlew build -PbuildProfile=emf`
+    *  `gradlew -p monticore-test/it build`
+  * EMF Integration tests of the generator (only test collection not included in `testIt`): 
+    * `gradlew -p monticore-test/it build -PbuildProfile=emf`
   * Experiments (from the Reference Manual) as integration tests:
-    * maven (deprecated): `mvn install -f monticore-generator/it/experiments/pom.xml` or
-    * gradle: in `monticore-generator/it/experiments/` call `gradlew build`
+    * `gradlew -p monticore-test/01.experiments build` and 
+    * `gradlew -p monticore-test/02.experiments build`
   * Grammar integration tests:
-     * in `monticore-grammar/monticore-grammar-it` call `gradlew build`
-  * TemplateClassGenerator integration tests 
-    * maven (deprecated): `mvn install -f /monticore-templateclassgenerator/it/monticore-templateclassgenerator-it/pom.xml` or 
-    * gradle: in `/monticore-templateclassgenerator/it/monticore-templateclassgenerator-it` call `gradlew build`
+     * `gradlew -p monticore-test/monticore-grammar-it build`
 * clean:
-  * call `mvn clean`
+  * call `gradlew clean`
   * cleaning integration tests:
-    * using maven (deprecated): `mvn clean` (including the `-f` argument, see above) 
-    * using gradle `gradlew clean` within the corresponding directory (see above)
+    * using gradle `gradlew clean` within the corresponding subproject (see above)
 
   
 ## Further Information

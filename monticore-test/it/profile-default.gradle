@@ -1,0 +1,26 @@
+/* (c) https://github.com/MontiCore/monticore */
+buildDir = file("$projectDir/target")
+ext.outDir = "$buildDir/generated-sources/monticore/sourcecode"
+sourceSets.main.java.srcDirs += [ outDir ]
+
+fileTree(dir: grammarDir, include: '**/*.mc4').each {
+  def g = it
+  def taskname = file(grammarDir).toURI().relativize(g.toURI()).toString()
+  taskname = taskname.substring(0, taskname.lastIndexOf(".")).replaceAll("/", '_')
+  task "generate${taskname}"(type: MCTask) {
+    grammar = file g
+    outputDir = file outDir
+    script = "$projectDir/it.groovy"
+    def grammarIncludingPackage = file(grammarDir).toURI().relativize(g.toURI()).toString()
+    def uptoDate = incCheck(grammarIncludingPackage)
+    outputs.upToDateWhen { uptoDate }
+  }
+}
+
+task generatePython(type:MCTask){
+  grammar = file "$grammarDir/mc/feature/python3/PythonAutomaton.mc4"
+  outputDir = file outDir+"/python"
+  handcodedPath "$projectDir/src/main/java"
+  modelPath "$projectDir/$grammarDir"
+  script = "$projectDir/it-python.groovy"
+}

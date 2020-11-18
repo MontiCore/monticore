@@ -8,6 +8,10 @@ import java.util.Optional;
 
 public class TestSymTabMillArtifactScope extends TestSymTabMillArtifactScopeTOP {
 
+  public TestSymTabMillArtifactScope(){
+    super();
+  }
+
   public TestSymTabMillArtifactScope(String packageName, List<ImportStatement> imports){
     super(packageName,imports);
   }

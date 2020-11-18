@@ -187,7 +187,6 @@ public class JavaLightPrettyPrinter extends MCCommonStatementsPrettyPrinter impl
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
 
-
   @Override
   public void handle(ASTArrayDimensionByInitializer a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());

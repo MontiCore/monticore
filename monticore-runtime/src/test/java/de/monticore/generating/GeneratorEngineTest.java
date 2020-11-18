@@ -2,27 +2,35 @@
 
 package de.monticore.generating;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import com.google.common.collect.Lists;
+import de.monticore.ast.ASTNodeMock;
+import de.monticore.generating.templateengine.FreeMarkerTemplateEngineMock;
+import de.monticore.generating.templateengine.FreeMarkerTemplateMock;
+import de.monticore.io.FileReaderWriter;
+import de.monticore.io.FileReaderWriterMock;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.File;
 import java.nio.file.Paths;
 
-import de.monticore.io.FileReaderWriter;
-import org.junit.AfterClass;
-import org.junit.Test;
-
-import de.monticore.ast.ASTNodeMock;
-import de.monticore.generating.templateengine.FreeMarkerTemplateEngineMock;
-import de.monticore.generating.templateengine.FreeMarkerTemplateMock;
-import de.monticore.io.FileReaderWriterMock;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests for {@link de.monticore.generating.GeneratorEngine}.
  *
  */
 public class GeneratorEngineTest {
-  
+
+  @Before
+  public void setup() {
+    LogStub.init();
+    LogStub.enableFailQuick(false);
+  }
 
   @Test
   public void testGenerateInFile() {
@@ -47,7 +55,6 @@ public class GeneratorEngineTest {
     assertEquals(1, fileHandler.getStoredFilesAndContents().size());
     assertTrue(fileHandler.getStoredFilesAndContents().containsKey(Paths.get
         (new File("target1/a/GenerateInFile.test").getAbsolutePath())));
-
   }
 
   @AfterClass
@@ -74,8 +81,18 @@ public class GeneratorEngineTest {
     assertEquals("the.Template", template.getName());
 
     assertEquals(0, fileHandler.getStoredFilesAndContents().size());
-   
+  }
 
+  @Test
+  public void testWrongPath() {
+    final GeneratorSetup setup = new GeneratorSetup();
+    FileReaderWriterMock fileHandler = new FileReaderWriterMock();
+    File file = new File("doesnotexist");
+    setup.setAdditionalTemplatePaths(Lists.newArrayList(file));
+    setup.setFileHandler(fileHandler);
+    FreeMarkerTemplateEngineMock freeMarkerTemplateEngine = new FreeMarkerTemplateEngineMock(setup.getConfig());
+    assertEquals(1, Log.getErrorCount());
+    assertEquals("0xA1020 Unable to load templates from path doesnotexist", Log.getFindings().get(0).getMsg());
   }
 
 }

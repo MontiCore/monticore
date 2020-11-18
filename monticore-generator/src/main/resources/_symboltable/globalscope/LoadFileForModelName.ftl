@@ -1,20 +1,16 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("definitionName")}
-  de.monticore.io.paths.ModelCoordinate modelCoordinate = getModelCoordinate(modelName, getSymbolFileExtension());
+  String symbolFileExtension = getModelFileExtension() + "sym";
+  de.monticore.io.paths.ModelCoordinate modelCoordinate =
+     de.monticore.io.paths.ModelCoordinates.createQualifiedCoordinate(modelName, symbolFileExtension);
   String filePath = modelCoordinate.getQualifiedPath().toString();
   if(!isFileLoaded(filePath)) {
-    boolean success = false;
 
-    //1.Load symbol table into enclosing global scope if a file has been found
+    //Load symbol table into enclosing global scope if a file has been found
     getModelPath().resolveModel(modelCoordinate);
     if (modelCoordinate.hasLocation()) {
       java.net.URL url = modelCoordinate.getLocation();
       this.addSubScope(scopeDeSer.load(url));
-      success = true;
-    }
-    //2. If no symbol was found with deser, try to load model with modelloader
-    if(!success && isPresentModelLoader()){
-      getModelLoader().loadModelsIntoScope(modelName, getModelPath(), getRealThis());
     }
     addLoadedFile(filePath);
   } else {

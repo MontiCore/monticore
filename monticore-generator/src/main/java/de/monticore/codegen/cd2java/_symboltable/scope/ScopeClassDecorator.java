@@ -168,6 +168,7 @@ public class ScopeClassDecorator extends AbstractDecorator {
         .addCDAttribute(createSubScopesAttribute(scopeInterfaceType))
         .addAllCDMethods(createSubScopeMethods(scopeInterfaceType))
         .addAllCDMethods(createAcceptMethods(scopeClassName))
+        .addAllCDMethods(createAcceptTraverserMethods(scopeClassName))
         .addAllCDMethods(createSuperScopeMethods(symbolTableService.getScopeInterfaceFullName()));
     if (scopeRuleSuperClass.isPresent()) {
       builder.setSuperclass(scopeRuleSuperClass.get());
@@ -229,6 +230,32 @@ public class ScopeClassDecorator extends AbstractDecorator {
 
     for (CDDefinitionSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
       String superVisitor = visitorService.getVisitorFullName(cdDefinitionSymbol);
+      ASTCDParameter superVisitorParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(superVisitor), VISITOR_PREFIX);
+      ASTCDMethod acceptMethod = getCDMethodFacade().createMethod(PUBLIC, ACCEPT_METHOD, superVisitorParameter);
+      String errorCode = symbolTableService.getGeneratedErrorCode(scopeClassName + cdDefinitionSymbol.getFullName()+ACCEPT_METHOD);
+      this.replaceTemplate(EMPTY_BODY, acceptMethod, new TemplateHookPoint(TEMPLATE_PATH + "AcceptScope", visitor, scopeClassName, superVisitor, errorCode));
+      acceptMethods.add(acceptMethod);
+    }
+
+    return acceptMethods;
+  }
+  
+  protected List<ASTCDMethod> createAcceptTraverserMethods(String scopeClassName) {
+    List<ASTCDMethod> acceptMethods = new ArrayList<>();
+
+    String visitor = visitorService.getTraverserInterfaceFullName();
+    ASTCDParameter parameter = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(visitor), VISITOR_PREFIX);
+    ASTCDMethod ownAcceptMethod = getCDMethodFacade().createMethod(PUBLIC, ACCEPT_METHOD, parameter);
+    if (isScopeTop()) {
+      String errorCode = symbolTableService.getGeneratedErrorCode(scopeClassName + ACCEPT_METHOD);
+      this.replaceTemplate(EMPTY_BODY, ownAcceptMethod, new TemplateHookPoint(TEMPLATE_PATH + "AcceptOwn", scopeClassName, errorCode));
+    } else {
+      this.replaceTemplate(EMPTY_BODY, ownAcceptMethod, new StringHookPoint("visitor.handle(this);"));
+    }
+    acceptMethods.add(ownAcceptMethod);
+
+    for (CDDefinitionSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
+      String superVisitor = visitorService.getTraverserInterfaceFullName(cdDefinitionSymbol);
       ASTCDParameter superVisitorParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(superVisitor), VISITOR_PREFIX);
       ASTCDMethod acceptMethod = getCDMethodFacade().createMethod(PUBLIC, ACCEPT_METHOD, superVisitorParameter);
       String errorCode = symbolTableService.getGeneratedErrorCode(scopeClassName + cdDefinitionSymbol.getFullName()+ACCEPT_METHOD);

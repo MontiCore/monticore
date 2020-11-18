@@ -160,7 +160,7 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
       ASTCDParameter jsonParam) {
     ASTCDParameter symbolParam = getCDParameterFacade()
         .createParameter(getMCTypeFacade().createQualifiedType(symbolFullName), SYMBOL_VAR);
-    String methodName = "deserializeAdditional"+ Names.getSimpleName(symbolFullName)+"Attributes";
+    String methodName = "deserializeAddons";
     return getCDMethodFacade()
         .createMethod(PROTECTED, methodName, symbolParam, jsonParam, enclosingScopeParameter);
   }

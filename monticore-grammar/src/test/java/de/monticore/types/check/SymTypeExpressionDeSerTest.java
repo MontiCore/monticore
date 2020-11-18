@@ -19,7 +19,7 @@ import static de.monticore.types.check.SymTypeExpressionFactory.*;
 import static org.junit.Assert.*;
 
 public class SymTypeExpressionDeSerTest {
-  private static IOOSymbolsScope scope = BuiltInJavaSymbolResolvingDelegate.getScope();
+  private static IOOSymbolsScope scope = BuiltInJavaSymbolResolver.getScope();
 
   // setup of objects (unchanged during tests)
   // these should be the same as those of SymTypeExpressionText

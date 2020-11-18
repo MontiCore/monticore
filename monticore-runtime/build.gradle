@@ -1,0 +1,45 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+configurations {
+  testsImplementation.extendsFrom(testImplementation)
+}
+
+dependencies {
+  implementation 'de.se_rwth.commons:se-commons-utilities:' + se_commons_version
+  implementation 'de.se_rwth.commons:se-commons-logging:' + se_commons_version
+  implementation 'com.google.guava:guava:25.1-jre'
+  implementation 'org.reflections:reflections:0.9.9'
+  implementation "org.antlr:antlr4-runtime:$antlr_version"
+  implementation 'org.freemarker:freemarker:2.3.28'
+  testImplementation "junit:junit:$junit_version"
+  testImplementation 'ch.qos.logback:logback-classic:1.1.2'
+  
+  
+}
+
+sourceSets {
+  test {
+    resources {
+      srcDirs += "src/test/java"
+      includes = ["**/*.ftl"]
+    }
+  }
+  tests.java{
+    srcDirs += "$projectDir/src/test/java"
+    includes = ["**/Assert.java"]
+  }
+}
+
+description = 'MontiCore: Runtime'
+
+java {
+  registerFeature('tests') {
+    usingSourceSet(sourceSets.tests)
+  }
+}
+
+compileTestsJava {
+  options.headerOutputDirectory.convention(null)
+}
+
+jar.dependsOn testsJar

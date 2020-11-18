@@ -2,19 +2,11 @@
 
 package de.monticore.generating.templateengine;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
 import com.google.common.base.Strings;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
-
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.freemarker.SimpleHashFactory;
 import de.monticore.generating.templateengine.reporting.Reporting;
@@ -23,6 +15,9 @@ import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.SimpleHash;
 import freemarker.template.TemplateModelException;
 
+import java.io.IOException;
+import java.util.*;
+
 /**
  * Class for managing hook points, features and (global) variables in templates.
  *
@@ -30,26 +25,36 @@ import freemarker.template.TemplateModelException;
 public class GlobalExtensionManagement {
 
 
-// TODO MB:
-// Auch hier wird eine künstliche Unterscheidung zwischen Hook Points mit
-// explizitem Namen und Templates gemacht.
-// Dabei ist das so einfach und systematisch:
-// Hookpoint hat einen namen! (= String oder Template name, was ja auch ein String ist)
-// In before, after und replace wird nachgesehen, wie im text beschrieben
-//
   private SimpleHash globalData = SimpleHashFactory.getInstance().createSimpleHash();
 
-  // use these list to handle replacements aka template forwardings
+  // This list contains hook point decorations that are added **before**
+  // a template is called (may be a list)
   private final Multimap<String, HookPoint> before = ArrayListMultimap.create();
 
+  // This list of hookpoints replaces a template (i.e. the hookpoints are 
+  // executed and their results printed to output in the order they arrive)
+  // but the original template is not executed anymore.
   private final Multimap<String, HookPoint> replace = ArrayListMultimap.create();
 
+  // This list contains hook point decorations that are added **after**
+  // a template is called (may be a list)
   private final Multimap<String, HookPoint> after = ArrayListMultimap.create();
 
+  // While Variable "replace" replaces all templates when executed, this
+  // specificReplacement is only applied when template name and ASTnode fit
+  // (thus the replacement is individual for each ASTnode)
   private final Map<String, Map<ASTNode, HookPoint>> specificReplacement = Maps.newHashMap();
 
   /**
    * Map of all hook points
+   * for explicitely define hook points (which are internally managed
+   * to be disjoint from the template hook points)
+   * This also means explicitely define hook points cannot be decorated
+   * with "before" or "after" and they also do not contain a list, but only
+   * a single realization.
+   *
+   * This could be harmonized with the replace hook points
+   * (by simple integration with replacements, before and after structure)
    */
   private final Map<String, HookPoint> hookPoints = Maps.newHashMap();
 
@@ -63,7 +68,6 @@ public class GlobalExtensionManagement {
    */
   public void setGlobalData(SimpleHash data) {
     Log.errorIfNull(data);
-
     this.globalData = data;
   }
 
@@ -207,7 +211,7 @@ public class GlobalExtensionManagement {
    * Returns the value of the given variable.
    *
    * @param name of the variable
-   * @param default replaces if the variable is not present
+   * @param defaultObject replaces if the variable is not present
    * @return the value or the default
    */
   @SuppressWarnings("deprecation")

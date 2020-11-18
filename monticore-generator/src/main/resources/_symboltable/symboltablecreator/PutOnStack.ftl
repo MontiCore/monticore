@@ -10,8 +10,4 @@ if (scope.getEnclosingScope() == null && getCurrentScope().isPresent()) {
     }
   }
 
-  if (firstCreatedScope == null) {
-    firstCreatedScope = scope;
-  }
-
   scopeStack.addLast(scope);

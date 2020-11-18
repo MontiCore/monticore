@@ -108,7 +108,7 @@ public class SymbolSurrogateDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeCount() {
-    assertEquals(3, symbolClassAutomaton.sizeCDAttributes());
+    assertEquals(1, symbolClassAutomaton.sizeCDAttributes());
   }
 
   @Test
@@ -143,6 +143,7 @@ public class SymbolSurrogateDecoratorTest extends DecoratorTestCase {
     assertEquals("name", method.getCDParameter(0).getName());
     assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
   }
+
 
   @Test
   public void testLoadSymbolMethod() {

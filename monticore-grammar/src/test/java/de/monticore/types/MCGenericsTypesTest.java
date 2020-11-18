@@ -1,10 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types;
 
+import de.monticore.types.generictypestest._parser.GenericTypesTestParser;
+import de.monticore.types.mcarraytypes._ast.ASTMCArrayType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcfullgenerictypes._ast.ASTMCArrayType;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCMultipleGenericType;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardTypeArgument;
 import de.monticore.types.mcfullgenerictypestest._parser.MCFullGenericTypesTestParser;
@@ -54,10 +55,10 @@ public class MCGenericsTypesTest {
     };
 
     for (String testType : types) {
-      MCFullGenericTypesTestParser mcBasicTypesParser = new MCFullGenericTypesTestParser();
+      GenericTypesTestParser genericTypesTestParser = new GenericTypesTestParser();
       // .parseType(primitive);
 
-      Optional<ASTMCType> type = mcBasicTypesParser.parse_StringMCType(testType);
+      Optional<ASTMCType> type = genericTypesTestParser.parse_StringMCType(testType);
 
       assertNotNull(type);
       assertTrue(type.isPresent());
@@ -89,8 +90,8 @@ public class MCGenericsTypesTest {
 
   @Test
   public void testOldComplexArrayTypes() {
-
-    MCFullGenericTypesTestParser parser = new MCFullGenericTypesTestParser();
+  
+    GenericTypesTestParser parser = new GenericTypesTestParser();
     try {
       // test-data
       HashMap<String, Integer> testdata = new HashMap<String, Integer>();
@@ -153,10 +154,10 @@ public class MCGenericsTypesTest {
     };
 
     for (String testType : typesToTest) {
-      MCFullGenericTypesTestParser mcBasicTypesParser = new MCFullGenericTypesTestParser();
+      GenericTypesTestParser genericTypesTestParser = new GenericTypesTestParser();
       // .parseType(primitive);
 
-      Optional<ASTMCType> type = mcBasicTypesParser.parse_StringMCType(testType);
+      Optional<ASTMCType> type = genericTypesTestParser.parse_StringMCType(testType);
 
       assertNotNull(type);
       assertTrue(type.isPresent());

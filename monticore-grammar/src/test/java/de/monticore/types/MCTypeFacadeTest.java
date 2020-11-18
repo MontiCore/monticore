@@ -2,12 +2,12 @@
 package de.monticore.types;
 
 import com.google.common.collect.Lists;
+import de.monticore.types.mcarraytypes._ast.ASTMCArrayType;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._ast.ASTMCVoidType;
 import de.monticore.types.mccollectiontypes._ast.*;
-import de.monticore.types.mcfullgenerictypes._ast.ASTMCArrayType;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardTypeArgument;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.se_rwth.commons.logging.Log;

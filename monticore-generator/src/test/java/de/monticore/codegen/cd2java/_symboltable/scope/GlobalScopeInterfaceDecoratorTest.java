@@ -144,26 +144,6 @@ public class GlobalScopeInterfaceDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testGetSymbolFileExtensionMethod() {
-    ASTCDMethod method = getMethodBy("getSymbolFileExtension", scopeInterface);
-
-    assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
-    assertDeepEquals(String.class, method.getMCReturnType().getMCType());
-    assertTrue(method.isEmptyCDParameters());
-  }
-
-  @Test
-  public void testSetSymbolFileExtensionMethod() {
-    ASTCDMethod method = getMethodBy("setSymbolFileExtension", scopeInterface);
-
-    assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-    assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
-    assertEquals("symbolFileExtension", method.getCDParameter(0).getName());
-  }
-
-  @Test
   public void testResolveAdaptedAutomatonMethod() {
     ASTCDMethod method = getMethodBy("resolveAdaptedAutomaton", scopeInterface);
 
@@ -199,8 +179,8 @@ public class GlobalScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
 
   @Test
-  public void testAddAdaptedAutomatonSymbolResolvingDelegateMethod() {
-    List<ASTCDMethod> methods = getMethodsBy("addAdaptedAutomatonSymbolResolvingDelegate", 1,
+  public void testAddAdaptedAutomatonSymbolResolverMethod() {
+    List<ASTCDMethod> methods = getMethodsBy("addAdaptedAutomatonSymbolResolver", 1,
         scopeInterface);
 
     assertEquals(1, methods.size());
@@ -212,7 +192,7 @@ public class GlobalScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(
-        "de.monticore.codegen.ast.automaton._symboltable.IAutomatonSymbolResolvingDelegate",
+        "de.monticore.codegen.ast.automaton._symboltable.IAutomatonSymbolResolver",
         method.getCDParameter(0).getMCType());
     assertEquals("element", method.getCDParameter(0).getName());
   }

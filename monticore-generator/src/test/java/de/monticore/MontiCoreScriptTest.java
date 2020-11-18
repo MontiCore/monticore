@@ -18,7 +18,7 @@ import de.monticore.io.paths.IterablePath;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.cli.CLIArguments;
 import de.se_rwth.commons.configuration.ConfigurationPropertiesMapContributor;
-import de.se_rwth.commons.logging.*;
+import de.se_rwth.commons.logging.Log;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -174,7 +174,7 @@ public class MontiCoreScriptTest {
   public void testDefaultScriptSimpleArgs() {
     Log.getFindings().clear();
     testDefaultScript(simpleArgs);
-    Assert.assertTrue(Log.getFindings().isEmpty());
+    assertEquals(0, Log.getErrorCount());
   }
 
   static String[] subsubgrammarArgs = {"-grammars",
@@ -187,7 +187,7 @@ public class MontiCoreScriptTest {
     Log.getFindings().clear();
     testDefaultScript(subsubgrammarArgs);
     testDefaultScriptWithEmf(subsubgrammarArgs);
-    Assert.assertTrue(Log.getFindings().isEmpty());
+    assertEquals(0, Log.getErrorCount());
   }
 
   static String[] inheritedgrammarArgs = {"-grammars",
@@ -202,7 +202,7 @@ public class MontiCoreScriptTest {
     Log.getFindings().clear();
     testDefaultScript(inheritedgrammarArgs);
     testDefaultScriptWithEmf(inheritedgrammarArgs);
-    assertEquals(Log.getErrorCount(), 0);
+    assertEquals(0, Log.getErrorCount());
   }
 
   static String[] supersubgrammarArgs = {"-grammars",
@@ -216,7 +216,7 @@ public class MontiCoreScriptTest {
     Log.getFindings().clear();
     testDefaultScript(supersubgrammarArgs);
     testDefaultScriptWithEmf(supersubgrammarArgs);
-    Assert.assertTrue(Log.getFindings().isEmpty());
+    assertEquals(0, Log.getErrorCount());
   }
 
   private void testDefaultScript(String[] args) {
@@ -336,23 +336,20 @@ public class MontiCoreScriptTest {
     assertEquals("Statechart", symbolPackageCD.getCDDefinition().getName());
 
     int index = 0;
-    assertEquals(16, symbolPackageCD.getCDDefinition().sizeCDClasss());
+    assertEquals(13, symbolPackageCD.getCDDefinition().sizeCDClasss());
     assertEquals("StatechartScope", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
     assertEquals("StatechartScopeBuilder", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
     assertEquals("StatechartSymbolTablePrinter", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
-    assertEquals("StatechartSymbolTablePrinterBuilder", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
     assertEquals("StatechartSymbolTableCreatorDelegator", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
-    assertEquals("StatechartSymbolTableCreatorDelegatorBuilder", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
+    assertEquals("StatechartScopeSkeletonCreatorDelegator", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
     assertEquals("StatechartGlobalScope", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
     assertEquals("StatechartGlobalScopeBuilder", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
     assertEquals("StatechartArtifactScope", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
     assertEquals("StatechartArtifactScopeBuilder", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
     assertEquals("StatechartScopeDeSer", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
-    assertEquals("StatechartScopeDeSerBuilder", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
-    assertEquals("StatechartModelLoader", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
-    assertEquals("StatechartModelLoaderBuilder", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
     assertEquals("StatechartSymbolTableCreator", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
-    assertEquals("StatechartSymbolTableCreatorBuilder", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
+    assertEquals("StatechartScopeSkeletonCreator", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
+    assertEquals("StatechartPhasedSymbolTableCreatorDelegator", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
 
     index = 0;
     assertEquals(4, symbolPackageCD.getCDDefinition().sizeCDInterfaces());

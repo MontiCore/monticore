@@ -7,5 +7,6 @@ ${tc.signature("symTabMill", "superSymTabCreators", "symTabCreatorName", "simple
   set${name}Visitor(${name?uncap_first}SymbolTableCreator);
 
 </#list>
-  symbolTable = ${symTabMill}.${symTabCreatorName?uncap_first}Builder().setScopeStack(scopeStack).build();
+  symbolTable = ${symTabMill}.${symTabCreatorName?uncap_first}();
+  symbolTable.setScopeStack(scopeStack);
   set${simpleName}Visitor(symbolTable);
