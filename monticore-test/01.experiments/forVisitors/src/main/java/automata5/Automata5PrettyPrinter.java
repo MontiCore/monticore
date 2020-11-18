@@ -10,7 +10,7 @@ import automata5._visitor.*;
  *
 
  */
-public class Automata5PrettyPrinter implements Automata5Visitor2 , Automata5Handler {
+public class Automata5PrettyPrinter implements Automata5Visitor2 {
 
   protected String result = "";
   

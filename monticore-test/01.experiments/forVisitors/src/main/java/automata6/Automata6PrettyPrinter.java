@@ -13,7 +13,7 @@ import automata5.*;
  *
 
  */
-public class Automata6PrettyPrinter implements Automata6Visitor2 , Automata6Handler {
+public class Automata6PrettyPrinter implements Automata6Visitor2 {
 
   protected String result = "";
 
