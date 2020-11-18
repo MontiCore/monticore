@@ -9,7 +9,7 @@ import automata15._visitor.*;
  *
 
  */
-public class Automata15PrettyPrinter implements Automata15Visitor2 , Automata15Handler {
+public class Automata15PrettyPrinter implements Automata15Visitor2 {
 
   protected String result = "";
   
@@ -17,27 +17,6 @@ public class Automata15PrettyPrinter implements Automata15Visitor2 , Automata15H
   
   protected String indent = "";
 
-  protected   Automata15Traverser traverser;
-
-  @Override
-  public void setTraverser(Automata15Traverser traverser) {
-    this.traverser = traverser;
-  }
-
-  @Override
-  public Automata15Traverser getTraverser() {
-    return traverser;
-  }
-
-  /**
-   * Prints the automaton
-   * 
-   * @param automaton
-   */
-  public void print(ASTAutomaton automaton) {
-    handle(automaton);
-  }
-  
   /**
    * Gets the printed result.
    * 

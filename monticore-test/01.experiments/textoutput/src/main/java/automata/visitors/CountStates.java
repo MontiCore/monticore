@@ -2,7 +2,6 @@
 package automata.visitors;
 
 import automata._ast.ASTState;
-import automata._visitor.AutomataVisitor;
 import automata._visitor.AutomataVisitor2;
 
 /**

@@ -4,7 +4,6 @@ package automata;
 import automata._ast.*;
 import automata._visitor.AutomataHandler;
 import automata._visitor.AutomataTraverser;
-import automata._visitor.AutomataVisitor;
 import automata._visitor.AutomataVisitor2;
 import automata.visitors.CountStates;
 import java.util.*;

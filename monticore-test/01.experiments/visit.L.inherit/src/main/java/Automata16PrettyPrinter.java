@@ -12,25 +12,13 @@ import java.util.*;
  *
 
  */
-public class Automata16PrettyPrinter  implements Automata16Visitor2 , Automata16Handler{
+public class Automata16PrettyPrinter  implements Automata16Visitor2 {
 
   protected String result = "";
 
   protected int indention = 0;
 
   protected String indent = "";
-
-  protected Automata16Traverser traverser;
-
-  @Override
-  public void setTraverser(Automata16Traverser traverser) {
-    this.traverser = traverser;
-  }
-
-  @Override
-  public Automata16Traverser getTraverser() {
-    return traverser;
-  }
 
   /**
    * Gets the printed result.
