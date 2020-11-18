@@ -3,9 +3,9 @@ description = 'Experiments: forParser'
 
 dependencies {
   implementation group:'de.monticore', name:'monticore-generator', version:version
-  implementation group:'de.monticore', name:'monticore-grammar', version:previous_mc_version
-  implementation group:'de.monticore', name:'monticore-runtime', version:previous_mc_version
-  implementation group:'de.monticore', name:'monticore-grammar', version:previous_mc_version, classifier:"grammars"
+  implementation group:'de.monticore', name:'monticore-grammar', version:version
+  implementation group:'de.monticore', name:'monticore-runtime', version:version
+  implementation group:'de.monticore', name:'monticore-grammar', version:version, classifier:"grammars"
 }
 
 fileTree(grammarDir).matching { include '**/*.mc4'}.each {
