@@ -184,19 +184,15 @@ public class ASTConstructionActions {
 
   public String getActionForInternalRuleNotIteratedLeftRecursiveAttribute(ASTNonTerminal a) {
 
-    String type = MCGrammarSymbolTableHelper
-            .getQualifiedName(symbolTable.getProdWithInherited(a.getName()).get()); // TODO
-    // GV:
-    // getDefinedType().getQualifiedName()
-    String name = MCGrammarSymbolTableHelper.getMCGrammarSymbol(a.getEnclosingScope()).get().getName();
     SourcePositionActions sourcePositionBuilder = new SourcePositionActions(parserGenHelper);
     StringBuilder b = new StringBuilder();
     b.append("// Action code for left recursive rule \n");
     // Setup builder
     b.append("// getActionForInternalRuleNotIteratedLeftRecursiveAttribute \n");
     b.append(sourcePositionBuilder.endPosition());
-    b.append("_localctx." + parserGenHelper.getTmpVarName(a) + ".ret = _builder.uncheckedBuild();");
-    b.append("_builder=" + Names.getQualifier(type) + "." + name + "Mill."
+    b.append("\n_localctx." + parserGenHelper.getTmpVarName(a) + ".ret = _builder.uncheckedBuild();");
+    b.append("\n_builder=" + parserGenHelper.getQualifiedGrammarName().toLowerCase()
+            + "." + parserGenHelper.getGrammarSymbol().getName() + "Mill."
             +
             StringTransformations.uncapitalize(a.getName()) + "Builder();\n");
     b.append(sourcePositionBuilder.startPositionForLeftRecursiveRule(a));
