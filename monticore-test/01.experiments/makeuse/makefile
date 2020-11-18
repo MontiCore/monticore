@@ -143,10 +143,12 @@ testsAndExecution: $(GenSrc)-tests.f  $(GenSrc)-executes.f
 $(GenSrc).incGenStamp.f: $(InitTarget) force
 	@echo "[MINFO]. 1: Check if generation for \"" $(GramName)"\" is needed?"
 	@[ -e $@ ] || touch $@
-	@[ -e $(GenSrc)/IncGenCheck.sh ] && sh $(GenSrc)/IncGenCheck.sh $@ || true
+	@[ -e $(GenSrc)/IncGenCheck.sh ] \
+	  && sh $(GenSrc)/IncGenCheck.sh $@ || true
 
 # Activity 1 (M2): run MontiCore generator
-$(GenSrc).f: $(GRAMMAR) $(MCJAR) $(MCGRAMMARS) $(GenSrc).incGenStamp.f
+$(GenSrc).f: $(GRAMMAR) $(MCJAR) $(MCGRAMMARS) \
+                        $(GenSrc).incGenStamp.f
 	@echo "[MINFO]. 1: Generation of tool code from" $(GRAMMAR)
 	java -jar $(MCJAR) \
 		$(GRAMMAR) \
@@ -206,7 +208,8 @@ $(GenSrc)-testclasses.f: $(Tool) $(SRC) $(MCRTE) $(JUNIT)
 # Activity 5 (M1): execute the tests
 $(GenSrc)-tests.f: $(GenSrc)-testclasses.f $(JUNIT) $(HAMCREST)
 	@echo "[MINFO]. 5: Run tests in" $(GenSrc)-testclasses
-	@java  -cp "$(GenSrc)-testclasses;$(Tool);$(MCRTE);$(JUNIT);$(HAMCREST)" \
+	@java  -cp \
+	  "$(GenSrc)-testclasses;$(Tool);$(MCRTE);$(JUNIT);$(HAMCREST)" \
 	       org.junit.runner.JUnitCore \
 	       $(TESTCLASSES)
 	@touch $@
@@ -224,20 +227,20 @@ $(InitTarget):
 
 # position the MontiCore LWB; MontiCore RTE; MontiCore base grammars
 $(MCJAR): $(InitTarget)
-	cp ~/monticore/./monticore-cli/target/monticore-cli-*-with-dependencies.jar $(MCJAR)
+	cp ../../../monticore-cli/target/libs/monticore-cli-*-cli.jar $(MCJAR)
 
 $(MCGRAMMARS): $(InitTarget)
-	cp ~/monticore/./monticore-grammar/target/monticore-grammar-*-grammars.jar $(MCGRAMMARS)
+	cp ../../../monticore-grammar/target/libs/monticore-grammar-*-grammars.jar $(MCGRAMMARS)
 
 $(MCRTE): $(InitTarget)
-	cp ~/monticore/./monticore-grammar/target/monticore-grammar-*-with-dependencies.jar $(MCRTE)
+	cp ../../../monticore-grammar/target/libs/monticore-grammar-*-all.jar $(MCRTE)
 
 # get the testing libraries
 $(JUNIT): $(InitTarget)
-	cp ~/.m2/repository/./junit/junit/4.12/junit-4.12.jar $(JUNIT)
+	wget -O $(JUNIT) "https://nexus.se.rwth-aachen.de/service/rest/v1/search/assets/download?repository=public&maven.groupId=junit&maven.artifactId=junit&maven.extension=jar&maven.baseVersion=4.13.1&maven.classifier="
 
 $(HAMCREST): $(InitTarget)
-	cp ~/.m2/repository/./org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar $(HAMCREST)
+	wget -O $(HAMCREST) "https://nexus.se.rwth-aachen.de/service/rest/v1/search/assets/download?repository=public&maven.groupId=org.hamcrest&maven.artifactId=hamcrest-core&maven.extension=jar&maven.baseVersion=1.3&maven.classifier="
 
 clean:
 	rm -rf target

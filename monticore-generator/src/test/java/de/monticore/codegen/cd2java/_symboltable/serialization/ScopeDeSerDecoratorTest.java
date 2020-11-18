@@ -22,6 +22,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.*;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
@@ -229,31 +231,20 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testDeserializeAdditionalScopeAttributesMethod(){
-    ASTCDMethod method = getMethodBy("deserializeAdditionalScopeAttributes", scopeClass);
-    assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
-    assertEquals(0, method.sizeException());
-    assertEquals(2, method.sizeCDParameters());
-    List<ASTCDParameter> parameters = method.getCDParameterList();
-    assertEquals("scope", parameters.get(0).getName());
-    assertDeepEquals(I_AUTOMATON_SCOPE, parameters.get(0).getMCType());
-    assertEquals("scopeJson", parameters.get(1).getName());
-    assertDeepEquals(JSON_OBJECT, parameters.get(1).getMCType());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-  }
-
-  @Test
-  public void testDeserializeAdditionalArtifactScopeAttributesMethod(){
-    ASTCDMethod method = getMethodBy("deserializeAdditionalArtifactScopeAttributes", scopeClass);
-    assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
-    assertEquals(0, method.sizeException());
-    assertEquals(2, method.sizeCDParameters());
-    List<ASTCDParameter> parameters = method.getCDParameterList();
-    assertEquals("scope", parameters.get(0).getName());
-    assertDeepEquals(AUTOMATON_ARTIFACT_SCOPE, parameters.get(0).getMCType());
-    assertEquals("scopeJson", parameters.get(1).getName());
-    assertDeepEquals(JSON_OBJECT, parameters.get(1).getMCType());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+  public void testDeserializeAddonsMethods(){
+    List<ASTCDMethod> methodList = getMethodsBy("deserializeAddons", scopeClass);
+    assertEquals(2, methodList.size());
+    for (ASTCDMethod method: methodList) {
+      assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
+      assertEquals(0, method.sizeException());
+      List<ASTCDParameter> parameters = method.getCDParameterList();
+      assertEquals("scope", parameters.get(0).getName());
+      //assertDeepEquals(I_AUTOMATON_SCOPE, parameters.get(0).getMCType());
+      //assertDeepEquals(AUTOMATON_ARTIFACT_SCOPE, parameters.get(0).getMCType());
+      assertEquals("scopeJson", parameters.get(1).getName());
+      assertDeepEquals(JSON_OBJECT, parameters.get(1).getMCType());
+      assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    }
   }
 
   @Test

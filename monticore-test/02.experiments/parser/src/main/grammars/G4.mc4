@@ -1,0 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+grammar G4 extends G1, G3{
+
+  N = "...N4" ["opt"]? a:T* b:T;
+
+}

@@ -13,7 +13,6 @@ dependencies {
   implementation 'org.freemarker:freemarker:2.3.28'
   testImplementation "junit:junit:$junit_version"
   testImplementation 'ch.qos.logback:logback-classic:1.1.2'
-  testImplementation 'org.codehaus.groovy:groovy:3.0.2'
   
   
 }

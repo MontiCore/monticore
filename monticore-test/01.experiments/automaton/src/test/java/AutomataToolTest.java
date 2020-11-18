@@ -1,5 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
+import automata.AutomataMill;
 import automata.AutomataTool;
 import org.junit.*;
 import de.se_rwth.commons.logging.Log;
@@ -25,6 +26,7 @@ public class AutomataToolTest {
   public void setUp() {
     Log.clearFindings();
     LogStub.clearPrints();
+    AutomataMill.automataGlobalScope().clear();
   }
   
   @Test
