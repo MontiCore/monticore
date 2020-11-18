@@ -457,7 +457,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
    */
 
   public String getSymbols2JsonSimpleName(CDDefinitionSymbol cdSymbol) {
-    return cdSymbol.getName() + SYMBOL_TABLE_PRINTER_SUFFIX;
+    return cdSymbol.getName() + SYMBOLS_2_JSON_SUFFIX;
   }
 
   public String getSymbols2JsonSimpleName() {
