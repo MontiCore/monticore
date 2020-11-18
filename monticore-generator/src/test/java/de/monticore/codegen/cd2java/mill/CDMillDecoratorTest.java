@@ -81,7 +81,8 @@ public class CDMillDecoratorTest extends DecoratorTestCase {
 
     SymbolTableService symbolTableService = new SymbolTableService(decoratedCompilationUnit);
     VisitorService visitorService = new VisitorService(decoratedCompilationUnit);
-    MillDecorator millDecorator = new MillDecorator(this.glex, symbolTableService, visitorService);
+    ParserService parserService = new ParserService(decoratedCompilationUnit);
+    MillDecorator millDecorator = new MillDecorator(this.glex, symbolTableService, visitorService, parserService);
 
     CDMillDecorator cdMillDecorator = new CDMillDecorator(this.glex, millDecorator);
     this.millCD = cdMillDecorator.decorate(Lists.newArrayList(getASTCD(), getVisitorCD(), getSymbolCD()));

@@ -1,5 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.codegen.mc2cd.MC2CDTransformation;
 import de.monticore.codegen.parser.ParserGenerator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
@@ -35,6 +37,8 @@ public class GenerateAutomataParser {
       ASTMCGrammar ast = new Grammar_WithConceptsParser()
               .parseMCGrammar(filename).get();
 
+      ASTCDCompilationUnit astCD = new MC2CDTransformation(new GlobalExtensionManagement()).apply(ast);
+
       // Initialize symbol table
       // (using imported grammars from the model path)
       ModelPath modelPath = new ModelPath(Paths.get(
@@ -56,7 +60,7 @@ public class GenerateAutomataParser {
       // Generate the parser
       GlobalExtensionManagement glex =  new GlobalExtensionManagement();
       ParserGenerator.generateFullParser(
-          glex, ast, gs, handcodedPath, outputDir);
+          glex, astCD, ast, gs, handcodedPath, outputDir);
     }
     catch (IOException e) {
       // If something happens ... handling necessary
