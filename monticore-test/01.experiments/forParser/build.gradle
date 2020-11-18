@@ -9,13 +9,3 @@ dependencies {
   implementation group:'de.monticore.lang', name:'cd4analysis', version:'1.7.0.3'
 }
 
-fileTree(grammarDir).matching { include '**/*.mc4'}.each {
-  def g = it
-  task  "generate${it.getName().substring(0,it.getName().lastIndexOf('.'))}" (type: MCTask) {
-    grammar = file g
-    outputDir = file outDir
-    def grammarIncludingPackage = file(grammarDir).toURI().relativize(g.toURI()).toString()
-    def uptoDate = incCheck(grammarIncludingPackage)
-    outputs.upToDateWhen { uptoDate }
-  }
-}
