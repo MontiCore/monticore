@@ -143,7 +143,7 @@ public abstract class SymTypeExpression {
         fieldSymbols.add(parameter.deepClone());
       }
       FunctionSymbol copiedMethodSymbol = method.deepClone();
-      IOOSymbolsScope scope = OOSymbolsMill.oOSymbolsScopeBuilder().build();
+      IOOSymbolsScope scope = OOSymbolsMill.oOSymbolsScope();
       for(VariableSymbol parameter: fieldSymbols){
         scope.add(parameter);
       }
