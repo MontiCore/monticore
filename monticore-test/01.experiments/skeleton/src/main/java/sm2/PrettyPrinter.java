@@ -65,8 +65,8 @@ public class PrettyPrinter implements SM2Visitor2, SM2Handler {
   @Override
   public void traverse(ASTAutomaton node) {
     // guarantee ordering: states before transitions
-    node.getStateList().stream().forEach(s -> s.accept(getRealThis()));
-    node.getTransitionList().stream().forEach(t -> t.accept(getRealThis()));
+    node.getStateList().stream().forEach(s -> s.accept(getTraverser()));
+    node.getTransitionList().stream().forEach(t -> t.accept(getTraverser()));
   }
   
   @Override
