@@ -15,11 +15,11 @@ to be released
 * Multiple renamings and signature changes regarding the deser infrastructure
   * renamed `XSymbolTablePrinter` to `XSymbols2Json`
   * moved load and store methods form `XScopeDeSer` to `XSymbols2Json`
-  * removed enclosing scope parameter as global scope is iused in symbol desers
+  * removed enclosing scope as method argument of symbol deser methods, as global scope shall be used instead
   * renamed `deserializeAdditionalSSymbolAttributes` to `deserializeAddons`
   * renamed `deserializeAdditionalXScopeAttributes` and `deserializeAdditionalXScopeAttributes` to `deserializeAddons`
   * added the JSON printer as a parameter to the methods of `XScopeDeSer`, `SSymbolDeSer` und `XSymbols2Json`
-
+* `XScopeDeSer`, `SSymbolDeSer` und `XSymbols2Json` are no longer available via the mill. The constructors can be used instead.
 
 ### Fixes
 * Traverser now properly delegate to handlers as intended
