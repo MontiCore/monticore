@@ -5,6 +5,7 @@ import automata._ast.ASTAutomaton;
 import automata._cocos.*;
 import automata._parser.AutomataParser;
 import automata._symboltable.*;
+import automata._visitor.AutomataTraverser;
 import automata.prettyprint.PrettyPrinter;
 import automata.visitors.CountStates;
 import de.monticore.io.paths.ModelPath;
@@ -59,12 +60,17 @@ public class AutomataTool {
     
     // analyze the model with a visitor
     CountStates cs = new CountStates();
-    cs.handle(ast);
-    Log.info("The model contains " + cs.getCount() + " states.", "AutomataTool");
+    AutomataTraverser traverser = AutomataMill.traverser();
+    traverser.setAutomataVisitor(cs);
+    ast.accept(traverser);
+    Log.info("Automaton has " + cs.getCount() + " states.", "AutomataTool");
 
     // execute a pretty printer
     PrettyPrinter pp = new PrettyPrinter();
-    pp.handle(ast);
+    AutomataTraverser traverser2 = AutomataMill.traverser();
+    traverser2.setAutomataVisitor(pp);
+    traverser2.setAutomataHandler(pp);
+    ast.accept(traverser2);
     Log.info("Pretty printing the parsed automaton into console:", "AutomataTool");
     // print the result
     Log.println(pp.getResult());

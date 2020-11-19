@@ -8,6 +8,7 @@ import sm2._ast.ASTAutomaton;
 import sm2._cocos.SM2CoCoChecker;
 import sm2._parser.SM2Parser;
 import sm2._symboltable.*;
+import sm2._visitor.SM2Traverser;
 import sm2.cocos.AtLeastOneInitialState;
 import sm2.cocos.SM2CoCos;
 import sm2.cocos.StateNameStartsWithCapitalLetter;
@@ -63,14 +64,20 @@ public class SM2Tool {
 
     // analyze the model with a visitor
     CountStates cs = new CountStates();
-    cs.handle(ast);
+    SM2Traverser traverser = SM2Mill.traverser();
+    traverser.setSM2Visitor(cs);
+    ast.accept(traverser);
     Log.info("The model contains " + cs.getCount() + " states.", "SM2Tool");
     
     // execute a pretty printer
     PrettyPrinter pp = new PrettyPrinter();
-    pp.handle(ast);
+    SM2Traverser traverser2 = SM2Mill.traverser();
+    traverser2.setSM2Visitor(pp);
+    traverser2.setSM2Handler(pp);
+    ast.accept(traverser2);
     Log.info("Pretty printing the parsed sm2 into console:", "SM2Tool");
     Log.println(pp.getResult());
+
   }
   
   /**

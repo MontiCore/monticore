@@ -1,5 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.examples.automaton.automaton._visitor;
 
-public class AutomatonDelegatorVisitor extends AutomatonDelegatorVisitorTOP {
+public class AutomatonTraverserImplementation extends AutomatonTraverserImplementationTOP {
+  
 }
