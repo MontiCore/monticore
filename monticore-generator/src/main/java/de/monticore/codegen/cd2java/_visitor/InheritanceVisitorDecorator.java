@@ -123,9 +123,7 @@ public class InheritanceVisitorDecorator extends AbstractCreator<ASTCDCompilatio
     List<ASTCDMethod> handleMethods = new ArrayList<ASTCDMethod>();
     List<String> superScopesTransitive = new ArrayList<String>();
     for (CDDefinitionSymbol cd : visitorService.getSuperCDsTransitive()) {
-      if (symbolTableService.hasProd(cd.getAstNode()) || symbolTableService.hasStartProd(cd.getAstNode())) {
-        superScopesTransitive.add(symbolTableService.getScopeInterfaceFullName(cd));
-      }
+      superScopesTransitive.add(symbolTableService.getScopeInterfaceFullName(cd));
     }
     superScopesTransitive.add(I_SCOPE);
     
@@ -137,17 +135,15 @@ public class InheritanceVisitorDecorator extends AbstractCreator<ASTCDCompilatio
             visitorSimpleTypeName, superScopesTransitive));
     
     // handle language artifact scope
-    if (symbolTableService.hasProd(astcdDefinition) || symbolTableService.hasStartProd()) {
-      List<String> superScopesTransitiveForAS = new ArrayList<String>();
-      superScopesTransitiveForAS.add(symbolTableService.getScopeInterfaceFullName());
-      superScopesTransitiveForAS.addAll(superScopesTransitive);
-      ASTCDMethod handleArtifactScopeMethod = visitorService.getVisitorMethod(HANDLE, symbolTableService.getArtifactScopeInterfaceType());
-      handleMethods.add(handleArtifactScopeMethod);
-      replaceTemplate(EMPTY_BODY, handleArtifactScopeMethod, 
-          new TemplateHookPoint(HANDLE_SYMTAB_INHERITANCE_TEMPLATE, 
-              visitorSimpleTypeName, superScopesTransitiveForAS));
-    }
-    
+    List<String> superScopesTransitiveForAS = new ArrayList<String>();
+    superScopesTransitiveForAS.add(symbolTableService.getScopeInterfaceFullName());
+    superScopesTransitiveForAS.addAll(superScopesTransitive);
+    ASTCDMethod handleArtifactScopeMethod = visitorService.getVisitorMethod(HANDLE, symbolTableService.getArtifactScopeInterfaceType());
+    handleMethods.add(handleArtifactScopeMethod);
+    replaceTemplate(EMPTY_BODY, handleArtifactScopeMethod,
+            new TemplateHookPoint(HANDLE_SYMTAB_INHERITANCE_TEMPLATE,
+                    visitorSimpleTypeName, superScopesTransitiveForAS));
+
     return handleMethods;
   }
 

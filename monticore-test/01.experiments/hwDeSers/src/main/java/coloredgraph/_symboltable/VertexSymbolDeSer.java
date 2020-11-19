@@ -21,12 +21,10 @@ public class VertexSymbolDeSer extends VertexSymbolDeSerTOP {
    * each red, green, and blue to an instance of java.awt.Color.
    *
    * @param symbolJson
-   * @param enclosingScope
    * @return
    */
   @Override 
-  public Color deserializeColor(JsonObject symbolJson,
-         IColoredGraphScope enclosingScope) {
+  public Color deserializeColor(JsonObject symbolJson) {
     // get color attribute from the symbol represented in Json
     List<JsonElement> rgb = symbolJson.getArrayMember("color");
 

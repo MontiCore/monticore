@@ -9,7 +9,7 @@ import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java._symboltable.scope.*;
 import de.monticore.codegen.cd2java._symboltable.serialization.ScopeDeSerDecorator;
 import de.monticore.codegen.cd2java._symboltable.serialization.SymbolDeSerDecorator;
-import de.monticore.codegen.cd2java._symboltable.serialization.SymbolTablePrinterDecorator;
+import de.monticore.codegen.cd2java._symboltable.serialization.Symbols2JsonDecorator;
 import de.monticore.codegen.cd2java._symboltable.symbol.*;
 import de.monticore.codegen.cd2java._symboltable.scopeskeletoncreator.ScopeSkeletonCreatorDecorator;
 import de.monticore.codegen.cd2java._symboltable.scopeskeletoncreator.ScopeSkeletonCreatorDelegatorDecorator;
@@ -74,7 +74,7 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
 
   protected final ScopeDeSerDecorator scopeDeSerDecorator;
 
-  protected final SymbolTablePrinterDecorator symbolTablePrinterDecorator;
+  protected final Symbols2JsonDecorator symbols2JsonDecorator;
 
   protected final ScopeSkeletonCreatorDecorator scopeSkeletonCreatorDecorator;
 
@@ -102,7 +102,7 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
                                 final SymbolTableCreatorForSuperTypes symbolTableCreatorForSuperTypes,
                                 final SymbolDeSerDecorator symbolDeSerDecorator,
                                 final ScopeDeSerDecorator scopeDeSerDecorator,
-                                final SymbolTablePrinterDecorator symbolTablePrinterDecorator,
+                                final Symbols2JsonDecorator symbols2JsonDecorator,
                                 final ScopeSkeletonCreatorDecorator scopeSkeletonCreatorDecorator,
                                 final ScopeSkeletonCreatorDelegatorDecorator scopeSkeletonCreatorDelegatorDecorator,
                                 final PhasedSymbolTableCreatorDelegatorDecorator phasedSymbolTableCreatorDelegatorDecorator) {
@@ -126,7 +126,7 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
     this.symbolTableCreatorForSuperTypes = symbolTableCreatorForSuperTypes;
     this.symbolDeSerDecorator = symbolDeSerDecorator;
     this.scopeDeSerDecorator = scopeDeSerDecorator;
-    this.symbolTablePrinterDecorator = symbolTablePrinterDecorator;
+    this.symbols2JsonDecorator = symbols2JsonDecorator;
     this.scopeSkeletonCreatorDecorator = scopeSkeletonCreatorDecorator;
     this.scopeSkeletonCreatorDelegatorDecorator = scopeSkeletonCreatorDelegatorDecorator;
     this.phasedSymbolTableCreatorDelegatorDecorator = phasedSymbolTableCreatorDelegatorDecorator;
@@ -168,13 +168,10 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
     //if the grammar is not a component grammar
 //    if (!symbolTableService.hasComponentStereotype(astCD.getCDDefinition())) {
 //    }
-    if (symbolTableService.hasStartProd(astCD.getCDDefinition())
-        || !symbolTableService.getSymbolDefiningSuperProds().isEmpty()) {
       symTabCD.addCDInterface(createGlobalScopeInterface(astCD, symbolTablePackage));
       symTabCD.addCDInterface(createArtifactScopeInterface(astCD));
 
-    }
-    if (symbolTableService.hasStartProd(astCD.getCDDefinition())) {
+
       // symboltable creator delegator
       Optional<ASTCDClass> symbolTableCreatorDelegator = createSymbolTableCreatorDelegator(astCD);
       if (symbolTableCreatorDelegator.isPresent()) {
@@ -215,7 +212,7 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
       // SuperSTCForSub
       List<ASTCDClass> symbolTableCreatorForSuperTypes = createSymbolTableCreatorForSuperTypes(astCD);
       symTabCD.addAllCDClasss(symbolTableCreatorForSuperTypes);
-    }
+
 
     addPackageAndAnnotation(symTabCD, symbolTablePackage);
 
@@ -348,7 +345,7 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
   }
 
   protected ASTCDClass createSymbolTablePrinterClass(ASTCDCompilationUnit scopeCD, ASTCDCompilationUnit symbolCd) {
-    return symbolTablePrinterDecorator.decorate(scopeCD, symbolCd);
+    return symbols2JsonDecorator.decorate(scopeCD, symbolCd);
   }
 
   protected Optional<ASTCDClass> createScopeSkeletonCreatorDelegator(ASTCDCompilationUnit astCD){

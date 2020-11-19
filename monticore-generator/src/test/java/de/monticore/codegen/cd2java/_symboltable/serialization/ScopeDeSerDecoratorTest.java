@@ -17,7 +17,6 @@ import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.types.MCTypeFacade;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -37,8 +36,6 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
 
   private GlobalExtensionManagement glex;
 
-  private MCTypeFacade mcTypeFacade;
-
   private ASTCDCompilationUnit decoratedSymbolCompilationUnit;
 
   private ASTCDCompilationUnit decoratedScopeCompilationUnit;
@@ -50,8 +47,6 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
   private static final String AUTOMATON_SCOPE = "de.monticore.codegen.symboltable.automaton._symboltable.IAutomatonScope";
 
   private static final String AUTOMATON_ARTIFACT_SCOPE = "de.monticore.codegen.symboltable.automaton._symboltable.IAutomatonArtifactScope";
-
-  private static final String AUTOMATON_GLOBAL_SCOPE = "de.monticore.codegen.symboltable.automaton._symboltable.IAutomatonGlobalScope";
 
   private static final String I_AUTOMATON_SCOPE = "de.monticore.codegen.symboltable.automaton._symboltable.IAutomatonScope";
 
@@ -68,7 +63,6 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
   @Before
   public void setUp(){
     this.glex = new GlobalExtensionManagement();
-    this.mcTypeFacade = MCTypeFacade.getInstance();
 
     this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
@@ -141,41 +135,7 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount(){
-    assertEquals(19, scopeClass.sizeCDMethods());
-  }
-
-  @Test
-  public void testLoadMethods(){
-    List<ASTCDMethod> methods = getMethodsBy("load", scopeClass);
-    assertEquals(3, methods.size());
-    for(ASTCDMethod method: methods){
-      assertDeepEquals(AUTOMATON_ARTIFACT_SCOPE, method.getMCReturnType().getMCType());
-      assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
-      assertEquals(1, method.sizeCDParameters());
-    }
-
-    assertEquals("url", methods.get(0).getCDParameter(0).getName());
-    assertDeepEquals("java.net.URL", methods.get(0).getCDParameter(0).getMCType());
-
-    assertEquals("reader", methods.get(1).getCDParameter(0).getName());
-    assertDeepEquals("java.io.Reader", methods.get(1).getCDParameter(0).getMCType());
-
-    assertEquals("model", methods.get(2).getCDParameter(0).getName());
-    assertDeepEquals(String.class, methods.get(2).getCDParameter(0).getMCType());
-  }
-
-  @Test
-  public void testStoreMethod(){
-    ASTCDMethod method = getMethodBy("store", scopeClass);
-
-    assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
-    assertEquals(2, method.sizeCDParameters());
-    assertEquals("scope", method.getCDParameter(0).getName());
-    assertDeepEquals(AUTOMATON_ARTIFACT_SCOPE, method.getCDParameter(0).getMCType());
-    assertEquals("fileName", method.getCDParameter(1).getName());
-    assertDeepEquals(String.class, method.getCDParameter(1).getMCType());
-    assertFalse(method.getMCReturnType().isPresentMCVoidType());
-    assertDeepEquals(String.class, method.getMCReturnType().getMCType());
+    assertEquals(15, scopeClass.sizeCDMethods());
   }
 
   @Test
