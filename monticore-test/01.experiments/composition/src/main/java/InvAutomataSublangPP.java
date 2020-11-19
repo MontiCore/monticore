@@ -20,13 +20,6 @@ public class InvAutomataSublangPP
 
   // ----------------------------------------------------------
   // Typical visit/endvist methods:
-
-//  @Override
-//  public void visit(ASTAutomaton node) {
-//    out.println("/* printed with InvAutomataPrettyPrinter */");
-//    out.println("automaton " + node.getName() + " {");
-//    out.indent();
-//  }
   
   @Override
   public void visit(ASTAutomaton node) {
