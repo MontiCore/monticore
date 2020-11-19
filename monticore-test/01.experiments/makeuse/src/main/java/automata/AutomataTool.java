@@ -4,6 +4,7 @@ package automata;
 import automata._ast.ASTAutomaton;
 import automata._cocos.AutomataCoCoChecker;
 import automata._parser.AutomataParser;
+import automata._visitor.AutomataTraverser;
 import automata._symboltable.*;
 import automata.cocos.AtLeastOneInitialAndFinalState;
 import automata.cocos.StateNameStartsWithCapitalLetter;
@@ -13,7 +14,7 @@ import automata.visitors.CountStates;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.RecognitionException;
-
+import automata.AutomataMill;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Optional;
@@ -100,12 +101,17 @@ public class AutomataTool {
 
     // analyze the model with a visitor
     CountStates cs = new CountStates();
-    cs.handle(ast);
+    AutomataTraverser traverser = AutomataMill.traverser();
+    traverser.setAutomataVisitor(cs);
+    ast.accept(traverser);
     Log.info("Automaton has " + cs.getCount() + " states.", "AutomataTool");
 
     // execute a pretty printer
     PrettyPrinter pp = new PrettyPrinter();
-    pp.handle(ast);
+    AutomataTraverser traverser1 = AutomataMill.traverser();
+    traverser1.setAutomataVisitor(pp);
+    traverser1.setAutomataHandler(pp);
+    ast.accept(traverser1);
     Log.info("Pretty printing automaton into console:", "AutomataTool");
     // print the result
     Log.println(pp.getResult());

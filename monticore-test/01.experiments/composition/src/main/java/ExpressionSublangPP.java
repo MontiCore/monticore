@@ -8,30 +8,21 @@ import expression._visitor.*;
  * print and get the result by using {@link #getResult()}.
  *
  */
-public class ExpressionPrettyPrinter implements ExpressionVisitor {
+public class ExpressionSublangPP implements ExpressionVisitor2, ExpressionHandler {
 
-  // ----------------------------------------------------------
-  // setRealThis, getRealThis are necessary to make the visitor compositional
-  //
-  // (the Vistors are then composed using theRealThis Pattern)
-  //
-  ExpressionVisitor realThis = this;
-
-  @Override
-  public void setRealThis(ExpressionVisitor realThis) {
-    this.realThis = realThis;
-  }
-
-  @Override
-  public ExpressionVisitor getRealThis() {
-    return realThis;
-  }
-
-  // ----------------------------------------------------------
   protected IndentPrinter out;
-
-  public ExpressionPrettyPrinter(IndentPrinter o) {
+  protected ExpressionTraverser traverser;
+  
+  public ExpressionSublangPP(IndentPrinter o) {
     out = o;
+  }
+  
+  public ExpressionTraverser getTraverser() {
+    return traverser;
+  }
+  
+  public void setTraverser(ExpressionTraverser traverser) {
+    this.traverser = traverser;
   }
 
   // ----------------------------------------------------------
@@ -63,9 +54,9 @@ public class ExpressionPrettyPrinter implements ExpressionVisitor {
    */ 
   public void handle(ASTAnd node) {
     // out.print("/*(*/ ");
-    node.getLeft().accept(getRealThis());
+    node.getLeft().accept(getTraverser());
     out.print("&& ");
-    node.getRight().accept(getRealThis());
+    node.getRight().accept(getTraverser());
     // out.print("/*)*/ ");
   }
 
