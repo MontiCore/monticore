@@ -20,6 +20,7 @@ to be released
   * renamed `deserializeAdditionalXScopeAttributes` and `deserializeAdditionalXScopeAttributes` to `deserializeAddons`
   * added the JSON printer as a parameter to the methods of `XScopeDeSer`, `SSymbolDeSer` und `XSymbols2Json`
 * `XScopeDeSer`, `SSymbolDeSer` und `XSymbols2Json` are no longer available via the mill. The constructors can be used instead.
+* Scope builder have been removed as they did not support multiple inheritance, scope creation methods of the mill should be used instead
 
 ### Fixes
 * Traverser now properly delegate to handlers as intended
