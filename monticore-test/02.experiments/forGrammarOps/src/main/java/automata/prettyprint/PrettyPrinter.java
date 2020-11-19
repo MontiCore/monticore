@@ -4,20 +4,32 @@ package automata.prettyprint;
 import automata._ast.ASTAutomaton;
 import automata._ast.ASTState;
 import automata._ast.ASTTransition;
-import automata._visitor.AutomataVisitor;
+import automata._visitor.AutomataTraverser;
+import automata._visitor.AutomataVisitor2;
+import automata._visitor.AutomataHandler;
 /**
  * Pretty prints automatons. Use {@link #print(ASTAutomaton)} to start a pretty
  * print and get the result by using {@link #getResult()}.
  *
 
  */
-public class PrettyPrinter implements AutomataVisitor {
+public class PrettyPrinter implements AutomataVisitor2 , AutomataHandler {
   private String result = "";
   
   private int indention = 0;
   
   private String indent = "";
-  
+
+  protected AutomataTraverser traverser;
+
+  public void setTraverser(AutomataTraverser traverser) {
+    this.traverser = traverser;
+  }
+
+  public AutomataTraverser getTraverser() {
+    return traverser;
+  }
+
   /**
    * Prints the automaton
    *
@@ -51,8 +63,8 @@ public class PrettyPrinter implements AutomataVisitor {
   @Override
   public void traverse(ASTAutomaton node) {
     // guarantee ordering: states before transitions
-    node.getStateList().stream().forEach(s -> s.accept(getRealThis()));
-    node.getTransitionList().stream().forEach(t -> t.accept(getRealThis()));
+    node.getStateList().stream().forEach(s -> s.accept(getTraverser()));
+    node.getTransitionList().stream().forEach(t -> t.accept(getTraverser()));
   }
   
   @Override

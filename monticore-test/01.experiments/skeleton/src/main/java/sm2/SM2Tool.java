@@ -12,6 +12,7 @@ import sm2.cocos.AtLeastOneInitialState;
 import sm2.cocos.SM2CoCos;
 import sm2.cocos.StateNameStartsWithCapitalLetter;
 import sm2.cocos.TransitionSourceExists;
+import sm2._visitor.SM2Traverser;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -62,13 +63,18 @@ public class SM2Tool {
     customCoCos.checkAll(ast);
 
     // analyze the model with a visitor
+    SM2Traverser t1 = SM2Mill.traverser();
     CountStates cs = new CountStates();
-    cs.handle(ast);
+    t1.setSM2Visitor(cs);
+    t1.handle(ast);
     Log.info("The model contains " + cs.getCount() + " states.", "SM2Tool");
     
     // execute a pretty printer
+    SM2Traverser t2 = SM2Mill.traverser();
     PrettyPrinter pp = new PrettyPrinter();
-    pp.handle(ast);
+    t2.setSM2Visitor(pp);
+    t2.setSM2Handler(pp);
+    t2.handle(ast);
     Log.info("Pretty printing the parsed sm2 into console:", "SM2Tool");
     Log.println(pp.getResult());
   }

@@ -3,10 +3,8 @@
 package mc.examples.coord.cartesian.prettyprint;
 
 import de.monticore.prettyprint.IndentPrinter;
-import mc.examples.cartesian.coordcartesian._ast.ASTCoordcartesianNode;
 import mc.examples.cartesian.coordcartesian._ast.ASTCoordinate;
-import mc.examples.cartesian.coordcartesian._visitor.CoordcartesianVisitor;
-import mc.examples.polar.coordpolar._ast.ASTCoordpolarNode;
+import mc.examples.cartesian.coordcartesian._visitor.CoordcartesianVisitor2;
 
 /**
  * This class is responsible for pretty-printing cartesian coordinates The
@@ -16,7 +14,7 @@ import mc.examples.polar.coordpolar._ast.ASTCoordpolarNode;
  * ownVisit-Methods stop the automatic traversal order and allow to explictly
  * visit subtrees by calling getVisitor().startVisit(ASTNode)
  */
-public class CartesianPrettyPrinterConcreteVisitor implements CoordcartesianVisitor {
+public class CartesianPrettyPrinterConcreteVisitor implements CoordcartesianVisitor2 {
   
   // printer to use
   private IndentPrinter p;
@@ -38,10 +36,6 @@ public class CartesianPrettyPrinterConcreteVisitor implements CoordcartesianVisi
   @Override
   public void visit(ASTCoordinate a) {
     p.print("(" + a.getX() + "," + a.getY() + ") ");
-  }
-  
-  public void print(ASTCoordcartesianNode ast) {
-    ast.accept(getRealThis());
   }
  
 }

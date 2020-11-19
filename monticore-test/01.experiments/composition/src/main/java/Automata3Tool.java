@@ -79,7 +79,7 @@ public class Automata3Tool {
     Automata3PrettyPrinter acpp = new Automata3PrettyPrinter(ppi);
     
     // run the visitor
-    ast.accept(acpp);
+    acpp.print(ast);
 
     Log.info("Pretty printing into console:", "Automata3Tool");
     Log.println(ppi.getContent());
