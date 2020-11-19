@@ -39,10 +39,10 @@ grammar ScopesExample extends mc.grammar.lexicals.ItTestLexicals {
 	//actions are not used at the moment cause classgenwithingrammar cannot generate attributes of any type :(
 	Assignement =  varname:Name "=" (value:STRING
 										| var:Name
-										| bool:"false" {_aNode.setType("Boolean");}
-										| bool:"true" {_aNode.setType("Boolean");}
-										| int:INT {_aNode.setType("Int");}
-										| float:FLOAT {_aNode.setType("Float");}
+										| bool:"false" {_builder.setType("Boolean");}
+										| bool:"true" {_builder.setType("Boolean");}
+										| int:INT {_builder.setType("Int");}
+										| float:FLOAT {_builder.setType("Float");}
 										| call:MethodCall) ";";
 
 
