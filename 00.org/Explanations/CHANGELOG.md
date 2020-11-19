@@ -2,7 +2,28 @@
 # Release Notes
 
 ##  MontiCore 6.6.0-SNAPSHOT
-to be released 
+to be released
+
+### Additions
+* The mill of a language now provides a method `parser()` to get the parser of the language 
+    * mill initialization allows to reconfigure the mill to provide a parser for a sublanguage
+    * parser delegator `XForYParser` are generated that extend a parser of a super language and delegate to the parser of the current language
+    * Due to multiple inheritance, delegation and subclasses are used in combination 
+* experiments now showcase the use of traversers   
+
+### Changes
+* Multiple renamings and signature changes regarding the deser infrastructure
+  * renamed `XSymbolTablePrinter` to `XSymbols2Json`
+  * moved load and store methods form `XScopeDeSer` to `XSymbols2Json`
+  * removed enclosing scope parameter as global scope is iused in symbol desers
+  * renamed `deserializeAdditionalSSymbolAttributes` to `deserializeAddons`
+  * renamed `deserializeAdditionalXScopeAttributes` and `deserializeAdditionalXScopeAttributes` to `deserializeAddons`
+  * added the JSON printer as a parameter to the methods of `XScopeDeSer`, `SSymbolDeSer` und `XSymbols2Json`
+
+
+### Fixes
+* Traverser now properly delegate to handlers as intended
+* ScopeSkeletonCreator now properly use the mill to create scope instances to ensure substitution via the mill pattern
 
 ##  MontiCore 6.5.0
 released: 11.11.2020
