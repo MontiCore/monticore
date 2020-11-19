@@ -30,6 +30,10 @@ public class TestCD4AnalysisGlobalScope extends TestCD4AnalysisGlobalScopeTOP{
     super(modelPath, modelFileExtension);
   }
 
+  public TestCD4AnalysisGlobalScope(){
+    super();
+  }
+
   @Override
   public Set<String> calculateModelNamesForCDType(String name) {
     // e.g., if p.CD.Clazz, return p.CD

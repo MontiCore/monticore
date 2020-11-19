@@ -12,6 +12,7 @@ import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.AbstractService;
+import de.monticore.codegen.cd2java._parser.ParserService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -29,6 +30,7 @@ import static de.monticore.cd.facade.CDModifier.PUBLIC_STATIC;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
+import static de.monticore.codegen.cd2java._parser.ParserConstants.*;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
 
@@ -38,11 +40,16 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
 
   protected final AbstractService<?> service;
   protected final VisitorService visitorService;
+  protected final ParserService parserService;
 
-  public MillForSuperDecorator(final GlobalExtensionManagement glex, final AbstractService<?> service, VisitorService visitorService) {
+  public MillForSuperDecorator(final GlobalExtensionManagement glex,
+                               final AbstractService<?> service,
+                               final VisitorService visitorService,
+                               final ParserService parserService) {
     super(glex);
     this.service = service;
     this.visitorService = visitorService;
+    this.parserService = parserService;
   }
 
   public List<ASTCDClass> decorate(final ASTCDCompilationUnit compilationUnit) {
@@ -55,7 +62,7 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
         .collect(Collectors.toList()));
 
     Collection<CDDefinitionSymbol> superSymbolList = service.getSuperCDsTransitive();
-    List<ASTCDClass> superMills = new ArrayList<ASTCDClass>();
+    List<ASTCDClass> superMills = new ArrayList<>();
     List<ASTCDClass> astcdClassList = Lists.newArrayList(astcdDefinition.getCDClassList());
 
     for (CDDefinitionSymbol superSymbol : superSymbolList) {
@@ -67,15 +74,21 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
           basePackage + superSymbol.getName().toLowerCase() + "." + superSymbol.getName() + MillConstants.MILL_SUFFIX);
 
       List<ASTCDMethod> correctScopeMethods = createScopeMethods(basePackage + superSymbol.getName(), service.hasStartProd(superSymbol.getAstNode()), service.getCDSymbol().getPackageName()+ ".", service.getCDName());
-
-      superMills.add(CD4AnalysisMill.cDClassBuilder()
+      ASTCDClass superMill = CD4AnalysisMill.cDClassBuilder()
           .setModifier(PUBLIC.build())
           .setName(millClassName)
           .setSuperclass(superclass)
           .addAllCDMethods(builderMethodsList)
           .addAllCDMethods(correctScopeMethods)
           .addCDMethod(getSuperTraverserMethod(superSymbol))
-          .build());
+          .build();
+
+      if(!superSymbol.getAstNode().isPresentModifier() || !service.hasComponentStereotype(superSymbol.getAstNode().getModifier())){
+        if(!service.getCDSymbol().getAstNode().isPresentModifier() || !service.hasComponentStereotype(service.getCDSymbol().getAstNode().getModifier())) {
+          superMill.addCDMethod(createParserMethod(superSymbol));
+        }
+      }
+      superMills.add(superMill);
     }
 
     return superMills;
@@ -150,6 +163,15 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
       calculateOverriddenCds(superCd, nativeClasses, overridden, firstClasses);
     }
     firstClasses.addAll(l.values());
+  }
+
+  public ASTCDMethod createParserMethod(CDDefinitionSymbol superSymbol){
+    String parserForSuper = String.join(".", parserService.getPackage(),
+        superSymbol.getName() + PARSER_SUFFIX + FOR_SUFFIX + service.getCDName());
+    ASTMCType superSymbolParser = getMCTypeFacade().createQualifiedType(parserService.getParserClassFullName(superSymbol));
+    ASTCDMethod method = getCDMethodFacade().createMethod(PROTECTED, superSymbolParser, "_parser");
+    this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return new " + parserForSuper + "();"));
+    return method;
   }
 
   public List<ASTCDMethod> createScopeMethods(String fullSuperSymbolName, boolean superSymbolHasStartProd, String packageName, String grammarName){

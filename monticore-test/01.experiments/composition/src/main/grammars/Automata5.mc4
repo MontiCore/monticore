@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+grammar Automata5 extends Automata1 {
+  
+  start Automaton;
+  
+
+  //Override and eliminate the body
+  @Override
+  Automaton = ;
+
+}

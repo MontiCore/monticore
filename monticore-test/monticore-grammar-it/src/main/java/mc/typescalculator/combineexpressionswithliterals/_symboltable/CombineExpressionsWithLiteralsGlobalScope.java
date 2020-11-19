@@ -14,6 +14,10 @@ public class CombineExpressionsWithLiteralsGlobalScope extends CombineExpression
     super(modelPath, modelFileExtension);
   }
 
+  public CombineExpressionsWithLiteralsGlobalScope(){
+    super();
+  }
+
   @Override
   public CombineExpressionsWithLiteralsGlobalScope getRealThis() {
     return this;

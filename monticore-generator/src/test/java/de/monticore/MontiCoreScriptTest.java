@@ -99,14 +99,19 @@ public class MontiCoreScriptTest {
   }
 
   /**
-   * {@link MontiCoreScript#generateParser(GlobalExtensionManagement, ASTMCGrammar, Grammar_WithConceptsGlobalScope, IterablePath, File)}
+   * {@link MontiCoreScript#generateParser(GlobalExtensionManagement, ASTCDCompilationUnit, ASTMCGrammar, Grammar_WithConceptsGlobalScope, IterablePath, File)}
    */
   @Test
   public void testGenerateParser() {
     assertNotNull(grammar);
     MontiCoreScript mc = new MontiCoreScript();
     Grammar_WithConceptsGlobalScope symbolTable = TestHelper.createGlobalScope(modelPath);
-    mc.generateParser(glex, grammar, symbolTable, IterablePath.empty(), new File("target/generated-sources/monticore/testcode"));
+    mc.createSymbolsFromAST(symbolTable, grammar);
+    CD4AnalysisGlobalScope cd4AGlobalScope = mc.createCD4AGlobalScope(modelPath);
+    cdCompilationUnit = mc.deriveCD(grammar, glex, cd4AGlobalScope);
+    File f = new File("target/generated-sources/monticore/testcode");
+    mc.generateParser(glex, cdCompilationUnit, grammar, symbolTable, IterablePath.empty(), f);
+    f.delete();
   }
 
   @Test
@@ -336,16 +341,13 @@ public class MontiCoreScriptTest {
     assertEquals("Statechart", symbolPackageCD.getCDDefinition().getName());
 
     int index = 0;
-    assertEquals(13, symbolPackageCD.getCDDefinition().sizeCDClasss());
+    assertEquals(10, symbolPackageCD.getCDDefinition().sizeCDClasss());
     assertEquals("StatechartScope", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
-    assertEquals("StatechartScopeBuilder", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
     assertEquals("StatechartSymbolTablePrinter", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
     assertEquals("StatechartSymbolTableCreatorDelegator", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
     assertEquals("StatechartScopeSkeletonCreatorDelegator", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
     assertEquals("StatechartGlobalScope", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
-    assertEquals("StatechartGlobalScopeBuilder", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
     assertEquals("StatechartArtifactScope", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
-    assertEquals("StatechartArtifactScopeBuilder", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
     assertEquals("StatechartScopeDeSer", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
     assertEquals("StatechartSymbolTableCreator", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
     assertEquals("StatechartScopeSkeletonCreator", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());

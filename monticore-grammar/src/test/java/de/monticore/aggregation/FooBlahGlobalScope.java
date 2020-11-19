@@ -21,10 +21,9 @@ public class FooBlahGlobalScope extends FooGlobalScope {
   public FooBlahGlobalScope(ModelPath modelPath){
     super(modelPath, "blah");
     iBlahGS = BlahMill
-        .blahGlobalScopeBuilder()
-        .setModelPath(modelPath)
-        .setModelFileExtension("blah")
-        .build();
+        .blahGlobalScope();
+    iBlahGS.setModelPath(modelPath);
+    iBlahGS.setModelFileExtension("blah");
   }
 
   IBlahGlobalScope iBlahGS;

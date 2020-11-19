@@ -152,10 +152,9 @@ public class TemplatesTool {
 
     // setup the symbol table
     globalScope =  AutomataMill
-        .automataGlobalScopeBuilder()
-        .setModelPath(new ModelPath())
-        .setModelFileExtension("aut")
-        .build();
+        .automataGlobalScope();
+    globalScope.setModelPath(new ModelPath());
+    globalScope.setModelFileExtension("aut");
     modelTopScope = createSymbolTable(ast);
   
     // Part 2: CoCos

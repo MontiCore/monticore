@@ -81,7 +81,8 @@ public class CDMillDecoratorTest extends DecoratorTestCase {
 
     SymbolTableService symbolTableService = new SymbolTableService(decoratedCompilationUnit);
     VisitorService visitorService = new VisitorService(decoratedCompilationUnit);
-    MillDecorator millDecorator = new MillDecorator(this.glex, symbolTableService, visitorService);
+    ParserService parserService = new ParserService(decoratedCompilationUnit);
+    MillDecorator millDecorator = new MillDecorator(this.glex, symbolTableService, visitorService, parserService);
 
     CDMillDecorator cdMillDecorator = new CDMillDecorator(this.glex, millDecorator);
     this.millCD = cdMillDecorator.decorate(Lists.newArrayList(getASTCD(), getVisitorCD(), getSymbolCD()));
@@ -129,13 +130,10 @@ public class CDMillDecoratorTest extends DecoratorTestCase {
     SymbolBuilderDecorator symbolBuilderDecorator = new SymbolBuilderDecorator(glex, symbolTableService, builderDecorator);
     ScopeInterfaceDecorator scopeInterfaceDecorator = new ScopeInterfaceDecorator(glex, symbolTableService, visitorService, methodDecorator);
     ScopeClassDecorator scopeClassDecorator = new ScopeClassDecorator(glex, symbolTableService, visitorService, methodDecorator);
-    ScopeClassBuilderDecorator scopeClassBuilderDecorator = new ScopeClassBuilderDecorator(glex, symbolTableService, builderDecorator);
     GlobalScopeInterfaceDecorator globalScopeInterfaceDecorator = new GlobalScopeInterfaceDecorator(glex, symbolTableService, methodDecorator);
     GlobalScopeClassDecorator globalScopeClassDecorator = new GlobalScopeClassDecorator(glex, symbolTableService, methodDecorator);
-    GlobalScopeClassBuilderDecorator globalScopeClassBuilderDecorator = new GlobalScopeClassBuilderDecorator(glex, symbolTableService, builderDecorator);
     ArtifactScopeInterfaceDecorator artifactScopeInterfaceDecorator = new ArtifactScopeInterfaceDecorator(glex, symbolTableService, visitorService, methodDecorator);
     ArtifactScopeClassDecorator artifactScopeDecorator = new ArtifactScopeClassDecorator(glex, symbolTableService, visitorService, methodDecorator);
-    ArtifactScopeClassBuilderDecorator artifactScopeBuilderDecorator = new ArtifactScopeClassBuilderDecorator(glex, symbolTableService, builderDecorator, accessorDecorator);
     SymbolSurrogateDecorator symbolReferenceDecorator = new SymbolSurrogateDecorator(glex, symbolTableService, methodDecorator, new MandatoryMutatorSymbolSurrogateDecorator(glex));
     SymbolSurrogateBuilderDecorator symbolReferenceBuilderDecorator = new SymbolSurrogateBuilderDecorator(glex, symbolTableService, accessorDecorator);
     CommonSymbolInterfaceDecorator commonSymbolInterfaceDecorator = new CommonSymbolInterfaceDecorator(glex, symbolTableService, visitorService, methodDecorator);
@@ -154,9 +152,9 @@ public class CDMillDecoratorTest extends DecoratorTestCase {
 
     SymbolTableCDDecorator symbolTableCDDecorator = new SymbolTableCDDecorator(glex, targetPath, symbolTableService, symbolDecorator,
         symbolBuilderDecorator, symbolReferenceDecorator, symbolReferenceBuilderDecorator,
-        scopeInterfaceDecorator, scopeClassDecorator, scopeClassBuilderDecorator,
-        globalScopeInterfaceDecorator, globalScopeClassDecorator, globalScopeClassBuilderDecorator,
-        artifactScopeInterfaceDecorator, artifactScopeDecorator, artifactScopeBuilderDecorator,
+        scopeInterfaceDecorator, scopeClassDecorator,
+        globalScopeInterfaceDecorator, globalScopeClassDecorator,
+        artifactScopeInterfaceDecorator, artifactScopeDecorator,
         commonSymbolInterfaceDecorator,  symbolResolverInterfaceDecorator, symbolTableCreatorDecorator,
         symbolTableCreatorDelegatorDecorator, symbolTableCreatorForSuperTypes,
         symbolDeSerDecorator, scopeDeSerDecorator, symbolTablePrinterDecorator, scopeSkeletonCreatorDecorator, scopeSkeletonCreatorDelegatorDecorator,

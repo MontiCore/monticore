@@ -6,6 +6,7 @@ dependencies {
   implementation group:'de.monticore', name:'monticore-grammar', version:previous_mc_version
   implementation group:'de.monticore', name:'monticore-runtime', version:previous_mc_version
   implementation group:'de.monticore', name:'monticore-grammar', version:previous_mc_version, classifier:"grammars"
+  implementation group:'de.monticore.lang', name:'cd4analysis', version:'1.7.0.3'
 }
 
 fileTree(grammarDir).matching { include '**/*.mc4'}.each {
