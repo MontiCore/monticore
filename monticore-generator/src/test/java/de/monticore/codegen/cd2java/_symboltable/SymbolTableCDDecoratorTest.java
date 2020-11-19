@@ -284,7 +284,7 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testClassCountComponent() {
-    assertEquals(22, symTabCDComponent.getCDDefinition().getCDClassList().size());
+    assertEquals(30, symTabCDComponent.getCDDefinition().getCDClassList().size());
   }
 
   @Test

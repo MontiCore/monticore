@@ -26,6 +26,7 @@ import java.util.stream.Stream;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.*;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodsBy;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.JSON_PRINTER;
 import static org.junit.Assert.*;
 

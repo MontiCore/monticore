@@ -22,6 +22,7 @@ import de.monticore.codegen.cd2java._ast.constants.ASTConstantsDecorator;
 import de.monticore.codegen.cd2java._ast.enums.EnumDecorator;
 import de.monticore.codegen.cd2java._ast.factory.NodeFactoryDecorator;
 import de.monticore.codegen.cd2java._ast.factory.NodeFactoryService;
+import de.monticore.codegen.cd2java._parser.ParserService;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableCDDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._symboltable.scope.*;
