@@ -7,7 +7,7 @@ grammar Automata6 extends Automata1 {
 
   //Override and define a new body
   @Override
-  State implement AutElement = 
+  State implements AutElement = 
      ( ["initial"] | ["final"] )* "state" Name;
 
 }
