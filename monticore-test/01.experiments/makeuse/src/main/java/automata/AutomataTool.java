@@ -147,7 +147,7 @@ public class AutomataTool {
    * @return
    */
   public static IAutomataArtifactScope createSymbolTable(ASTAutomaton ast) {
-    AutomataMill.automataGlobalScope().setModelFileExtension("aut");
+    AutomataMill.globalScope().setFileExt("aut");
     return AutomataMill.automataSymbolTableCreator().createFromAST(ast);
   }
 

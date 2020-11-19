@@ -39,7 +39,7 @@ public class ColoredGraphTool {
     Log.info(model + " parsed successfully!", "ColoredGraphTool");
 
     // instantiate symbol table:
-    ColoredGraphMill.coloredGraphGlobalScope().setModelFileExtension("cg");
+    ColoredGraphMill.globalScope().setFileExt("cg");
     ColoredGraphSymbolTableCreatorDelegator stc = ColoredGraphMill
         .coloredGraphSymbolTableCreatorDelegator();
     IColoredGraphArtifactScope symTab = stc.createFromAST(ast);

@@ -26,7 +26,7 @@ public class AutomataToolTest {
   public void setUp() {
     Log.clearFindings();
     LogStub.clearPrints();
-    AutomataMill.automataGlobalScope().clear();
+    AutomataMill.globalScope().clear();
   }
   
   @Test

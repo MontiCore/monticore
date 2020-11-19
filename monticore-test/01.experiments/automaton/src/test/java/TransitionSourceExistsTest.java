@@ -123,10 +123,10 @@ public class TransitionSourceExistsTest {
    * @return
    */
   public static IAutomataArtifactScope createSymbolTable(ASTAutomaton ast) {
-    IAutomataGlobalScope globalScope = AutomataMill.automataGlobalScope();
+    IAutomataGlobalScope globalScope = AutomataMill.globalScope();
     globalScope.clear();
     globalScope.setModelPath(new ModelPath());
-    globalScope.setModelFileExtension("aut");
+    globalScope.setFileExt("aut");
 
     AutomataSymbolTableCreator symbolTable = AutomataMill
         .automataSymbolTableCreator();

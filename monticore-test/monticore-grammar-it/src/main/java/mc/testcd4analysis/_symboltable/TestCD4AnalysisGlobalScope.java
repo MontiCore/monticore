@@ -75,7 +75,7 @@ public class TestCD4AnalysisGlobalScope extends TestCD4AnalysisGlobalScopeTOP{
   }
 
   public  void loadFileForModelName (String modelName, String symbolName)  {
-    String symbolFileExtension = getModelFileExtension() + "sym";
+    String symbolFileExtension = getFileExt() + "sym";
     de.monticore.io.paths.ModelCoordinate symbolFileCoordinate =
         de.monticore.io.paths.ModelCoordinates.createQualifiedCoordinate(modelName, symbolFileExtension);
     String filePath = symbolFileCoordinate.getQualifiedPath().toString();
@@ -91,7 +91,7 @@ public class TestCD4AnalysisGlobalScope extends TestCD4AnalysisGlobalScopeTOP{
 
       // else, use try to load model (instead of symbol table)
       ModelCoordinate model = ModelCoordinates
-          .createQualifiedCoordinate(modelName, getModelFileExtension());
+          .createQualifiedCoordinate(modelName, getFileExt());
       model = getModelPath().resolveModel(model);
 
       // 3. if the file was found, parse the model and create its symtab

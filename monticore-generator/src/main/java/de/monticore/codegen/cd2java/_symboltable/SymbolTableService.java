@@ -20,7 +20,6 @@ import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.*;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.utils.Names.getSimpleName;
-import static de.se_rwth.commons.Names.getQualifier;
 
 public class SymbolTableService extends AbstractService<SymbolTableService> {
 
@@ -340,40 +339,40 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
    * ScopeSkeletonCreatorDelegator Names e.g. AutomatonScopeSkeletonCreatorDelegator
    */
 
-  public String getScopeSkeletonCreatorDelegatorSimpleName(CDDefinitionSymbol cdSymbol) {
-    return cdSymbol.getName() + SCOPE_SKELETON_CREATOR_SUFFIX + DELEGATOR_SUFFIX;
+  public String getScopesGenitorDelegatorSimpleName(CDDefinitionSymbol cdSymbol) {
+    return cdSymbol.getName() + SCOPES_GENITOR_SUFFIX + DELEGATOR_SUFFIX;
   }
 
-  public String getScopeSkeletonCreatorDelegatorSimpleName() {
-    return getScopeSkeletonCreatorDelegatorSimpleName(getCDSymbol());
+  public String getScopesGenitorDelegatorSimpleName() {
+    return getScopesGenitorDelegatorSimpleName(getCDSymbol());
   }
 
-  public String getScopeSkeletonCreatorDelegatorFullName(CDDefinitionSymbol cdSymbol) {
-    return getPackage(cdSymbol) + "." + getScopeSkeletonCreatorDelegatorSimpleName(cdSymbol);
+  public String getScopesGenitorDelegatorFullName(CDDefinitionSymbol cdSymbol) {
+    return getPackage(cdSymbol) + "." + getScopesGenitorDelegatorSimpleName(cdSymbol);
   }
 
-  public String getScopeSkeletonCreatorDelegatorFullName() {
-    return getScopeSkeletonCreatorDelegatorFullName(getCDSymbol());
+  public String getScopesGenitorDelegatorFullName() {
+    return getScopesGenitorDelegatorFullName(getCDSymbol());
   }
 
   /**
    * ScopeSkeletonCreator Names e.g. AutomatonScopeSkeletonCreator
    */
 
-  public String getScopeSkeletonCreatorSimpleName(CDDefinitionSymbol cdSymbol) {
-    return cdSymbol.getName() + SCOPE_SKELETON_CREATOR_SUFFIX;
+  public String getScopesGenitorSimpleName(CDDefinitionSymbol cdSymbol) {
+    return cdSymbol.getName() + SCOPES_GENITOR_SUFFIX;
   }
 
-  public String getScopeSkeletonCreatorSimpleName() {
-    return getScopeSkeletonCreatorSimpleName(getCDSymbol());
+  public String getScopesGenitorSimpleName() {
+    return getScopesGenitorSimpleName(getCDSymbol());
   }
 
-  public String getScopeSkeletonCreatorFullName(CDDefinitionSymbol cdSymbol) {
-    return getPackage(cdSymbol) + "." + getScopeSkeletonCreatorSimpleName(cdSymbol);
+  public String getScopesGenitorFullName(CDDefinitionSymbol cdSymbol) {
+    return getPackage(cdSymbol) + "." + getScopesGenitorSimpleName(cdSymbol);
   }
 
-  public String getScopeSkeletonCreatorFullName() {
-    return getScopeSkeletonCreatorFullName(getCDSymbol());
+  public String getScopesGenitorFullName() {
+    return getScopesGenitorFullName(getCDSymbol());
   }
 
   /**

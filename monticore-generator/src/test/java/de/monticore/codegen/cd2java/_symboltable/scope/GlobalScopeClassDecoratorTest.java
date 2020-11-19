@@ -119,7 +119,7 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
     assertEquals("modelPath", cdConstructor.getCDParameter(0).getName());
 
     assertDeepEquals("String", cdConstructor.getCDParameter(1).getMCType());
-    assertEquals("modelFileExtension", cdConstructor.getCDParameter(1).getName());
+    assertEquals("fileExt", cdConstructor.getCDParameter(1).getName());
 
     assertTrue(cdConstructor.isEmptyException());
 
@@ -146,7 +146,7 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testFileExtensionAttribute() {
-    ASTCDAttribute astcdAttribute = getAttributeBy("modelFileExtension", scopeClass);
+    ASTCDAttribute astcdAttribute = getAttributeBy("fileExt", scopeClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertDeepEquals("String", astcdAttribute.getMCType());
   }

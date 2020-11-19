@@ -318,6 +318,10 @@ public class AbstractService<T extends AbstractService> {
     return Optional.empty();
   }
 
+  public Optional<String> getStartProdASTFullName(){
+    return getStartProdASTFullName(cdSymbol.getAstNode());
+  }
+
   public Optional<String> getStartProdASTFullName(ASTCDDefinition astcdDefinition) {
     Optional<String> startProd = getStartProd(astcdDefinition);
     if (startProd.isPresent()) {

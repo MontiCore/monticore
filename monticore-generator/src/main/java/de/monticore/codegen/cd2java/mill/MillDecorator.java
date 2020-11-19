@@ -162,6 +162,20 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
     millClass.addCDAttribute(millScopeAttribute);
     millClass.addAllCDMethods(getScopeMethods());
 
+    //decorate for scopesgenitor
+    Optional<String> startProd = symbolTableService.getStartProdASTFullName();
+    if (startProd.isPresent()){
+      String millScopesGenitorAttributeName = MILL_INFIX + symbolTableService.getScopesGenitorSimpleName();
+      ASTCDAttribute millScopesGenitorAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, millType, millScopesGenitorAttributeName);
+      millClass.addCDAttribute(millScopesGenitorAttribute);
+      millClass.addAllCDMethods(getScopesGenitorMethods());
+
+      String millScopesGenitorDelegatorAttributeName = MILL_INFIX + symbolTableService.getScopesGenitorDelegatorSimpleName();
+      ASTCDAttribute millScopesGenitorDelegatorAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, millType, millScopesGenitorDelegatorAttributeName);
+      millClass.addCDAttribute(millScopesGenitorDelegatorAttribute);
+      millClass.addAllCDMethods(getScopesGenitorDelegatorMethods());
+    }
+
     // add builder methods for each class
     List<ASTCDMethod> superMethodsList = addSuperBuilderMethods(superSymbolList, allClasses);
     millClass.addAllCDMethods(superMethodsList);
@@ -179,9 +193,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
     String name = cdClass.getName();
     return name.endsWith(BUILDER_SUFFIX)
         || name.endsWith(SYMBOL_TABLE_CREATOR_SUFFIX)
-        || name.endsWith(SYMBOL_TABLE_CREATOR_SUFFIX + DELEGATOR_SUFFIX)
-        || name.endsWith(SCOPE_SKELETON_CREATOR_SUFFIX)
-        || name.endsWith(SCOPE_SKELETON_CREATOR_SUFFIX + DELEGATOR_SUFFIX);
+        || name.endsWith(SYMBOL_TABLE_CREATOR_SUFFIX + DELEGATOR_SUFFIX);
   }
 
   protected List<String> getAttributeNameList(List<ASTCDClass> astcdClasses) {
@@ -270,32 +282,32 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
   protected List<ASTCDMethod> getPhasedSymbolTableCreatorDelegatorMethods(){
     String phasedSymbolTableCreatorDelegatorName = symbolTableService.getPhasedSymbolTableCreatorDelegatorSimpleName();
     String phasedSymbolTableCreatorDelegatorFullName = symbolTableService.getPhasedSymbolTableCreatorDelegatorFullName();
-    return getStaticAndProtectedMethods(phasedSymbolTableCreatorDelegatorName, phasedSymbolTableCreatorDelegatorFullName);
+    return getStaticAndProtectedMethods(StringTransformations.uncapitalize(PHASED_SUFFIX + SYMBOL_TABLE_CREATOR_SUFFIX + DELEGATOR_SUFFIX), phasedSymbolTableCreatorDelegatorName, phasedSymbolTableCreatorDelegatorFullName);
   }
 
-  protected List<ASTCDMethod> getScopeSkeletonCreatorDelegatorMethods(){
-    String scopeSkeletonCreatorDelegatorName = symbolTableService.getScopeSkeletonCreatorDelegatorSimpleName();
-    String scopeSkeletonCreatorDelegatorFullName = symbolTableService.getScopeSkeletonCreatorDelegatorFullName();
-    return getStaticAndProtectedMethods(scopeSkeletonCreatorDelegatorName, scopeSkeletonCreatorDelegatorFullName);
+  protected List<ASTCDMethod> getScopesGenitorDelegatorMethods(){
+    String scopesGenitorSimpleName = symbolTableService.getScopesGenitorDelegatorSimpleName();
+    String scopesGenitorFullName = symbolTableService.getScopesGenitorDelegatorFullName();
+    return getStaticAndProtectedMethods(StringTransformations.uncapitalize(SCOPES_GENITOR_SUFFIX + DELEGATOR_SUFFIX), scopesGenitorSimpleName, scopesGenitorFullName);
   }
 
-  protected List<ASTCDMethod> getScopeSkeletonCreatorMethods(){
-    String scopeSkeletonCreatorName = symbolTableService.getScopeSkeletonCreatorSimpleName();
-    String scopeSkeletonCreatorFullName = symbolTableService.getScopeSkeletonCreatorFullName();
-    return getStaticAndProtectedMethods(scopeSkeletonCreatorName, scopeSkeletonCreatorFullName);
+  protected List<ASTCDMethod> getScopesGenitorMethods(){
+    String scopesGenitorSimpleName = symbolTableService.getScopesGenitorSimpleName();
+    String scopesGenitorFullName = symbolTableService.getScopesGenitorFullName();
+    return getStaticAndProtectedMethods(StringTransformations.uncapitalize(SCOPES_GENITOR_SUFFIX), scopesGenitorSimpleName, scopesGenitorFullName);
   }
 
-  protected List<ASTCDMethod> getStaticAndProtectedMethods(String name, String fullName){
+  protected List<ASTCDMethod> getStaticAndProtectedMethods(String methodName, String name, String fullName){
     List<ASTCDMethod> methods = Lists.newArrayList();
-    String staticMethodName = StringTransformations.uncapitalize(name);
+    String staticMethodName = StringTransformations.uncapitalize(methodName);
     String protectedMethodName = "_"+staticMethodName;
-    ASTMCType scopeSkeletonCreatorType = getMCTypeFacade().createQualifiedType(fullName);
+    ASTMCType scopesGenitorType = getMCTypeFacade().createQualifiedType(fullName);
 
-    ASTCDMethod staticMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC, scopeSkeletonCreatorType, staticMethodName);
+    ASTCDMethod staticMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC, scopesGenitorType, staticMethodName);
     this.replaceTemplate(EMPTY_BODY, staticMethod, new TemplateHookPoint("mill.BuilderMethod", name, staticMethodName));
     methods.add(staticMethod);
 
-    ASTCDMethod protectedMethod = getCDMethodFacade().createMethod(PROTECTED, scopeSkeletonCreatorType, protectedMethodName);
+    ASTCDMethod protectedMethod = getCDMethodFacade().createMethod(PROTECTED, scopesGenitorType, protectedMethodName);
     this.replaceTemplate(EMPTY_BODY, protectedMethod, new TemplateHookPoint("mill.ProtectedBuilderMethod", fullName));
     methods.add(protectedMethod);
     return methods;
@@ -324,7 +336,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
     List<ASTCDMethod> globalScopeMethods = Lists.newArrayList();
 
     String attributeName = globalScopeAttribute.getName();
-    String staticMethodName = StringTransformations.uncapitalize(symbolTableService.getGlobalScopeSimpleName());
+    String staticMethodName = "globalScope";
     String protectedMethodName = "_"+staticMethodName;
 
     ASTCDMethod staticMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC, globalScopeAttribute.getMCType(), staticMethodName);
@@ -342,19 +354,19 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
     String artifactScopeName = symbolTableService.getArtifactScopeSimpleName();
     ASTMCType returnType = symbolTableService.getArtifactScopeInterfaceType();
     ASTMCType scopeType = symbolTableService.getArtifactScopeType();
-    return getStaticAndProtectedScopeMethods(artifactScopeName, returnType, scopeType);
+    return getStaticAndProtectedScopeMethods(StringTransformations.uncapitalize(ARTIFACT_PREFIX + SCOPE_SUFFIX), artifactScopeName, returnType, scopeType);
   }
 
   protected List<ASTCDMethod> getScopeMethods(){
     String scopeName = symbolTableService.getScopeClassSimpleName();
     ASTMCType returnType = symbolTableService.getScopeInterfaceType();
     ASTMCType scopeType = symbolTableService.getScopeType();
-    return getStaticAndProtectedScopeMethods(scopeName, returnType, scopeType);
+    return getStaticAndProtectedScopeMethods(StringTransformations.uncapitalize(SCOPE_SUFFIX), scopeName, returnType, scopeType);
   }
 
-  protected List<ASTCDMethod> getStaticAndProtectedScopeMethods(String scopeName, ASTMCType returnType, ASTMCType scopeType) {
+  protected List<ASTCDMethod> getStaticAndProtectedScopeMethods(String methodName, String scopeName, ASTMCType returnType, ASTMCType scopeType) {
     List<ASTCDMethod> scopeMethods = Lists.newArrayList();
-    String staticMethodName = StringTransformations.uncapitalize(scopeName);
+    String staticMethodName = StringTransformations.uncapitalize(methodName);
     String protectedMethodName = "_" + staticMethodName;
 
     ASTCDMethod staticMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC, returnType, staticMethodName);

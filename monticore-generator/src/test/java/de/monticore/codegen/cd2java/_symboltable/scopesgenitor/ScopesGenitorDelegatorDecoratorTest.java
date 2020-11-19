@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.codegen.cd2java._symboltable.scopeskeletoncreator;
+package de.monticore.codegen.cd2java._symboltable.scopesgenitor;
 
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
@@ -11,9 +11,7 @@ import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
-import de.monticore.codegen.cd2java._symboltable.symboltablecreator.PhasedSymbolTableCreatorDelegatorDecorator;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
-import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -30,9 +28,9 @@ import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static org.junit.Assert.*;
 
-public class ScopeSkeletonCreatorDelegatorDecoratorTest extends DecoratorTestCase {
+public class ScopesGenitorDelegatorDecoratorTest extends DecoratorTestCase {
 
-  private ASTCDClass scopeSkeletonCreator;
+  private ASTCDClass scopesGenitorClass;
 
   private GlobalExtensionManagement glex;
 
@@ -42,11 +40,11 @@ public class ScopeSkeletonCreatorDelegatorDecoratorTest extends DecoratorTestCas
 
   private de.monticore.types.MCTypeFacade MCTypeFacade;
 
-  private ScopeSkeletonCreatorDelegatorDecorator decorator;
+  private ScopesGenitorDelegatorDecorator decorator;
 
   private static final String AUTOMATON_GLOBAL_SCOPE = "de.monticore.codegen.symboltable.automaton._symboltable.IAutomatonGlobalScope";
 
-  private static final String AUTOMATON_SCOPE_SKELETON_CREATOR = "AutomatonScopeSkeletonCreator";
+  private static final String AUTOMATON_SCOPES_GENITOR = "AutomatonScopesGenitor";
 
   private static final String AUTOMATON_DELEGATOR_VISITOR = "de.monticore.codegen.symboltable.automaton._visitor.AutomatonDelegatorVisitor";
 
@@ -65,13 +63,13 @@ public class ScopeSkeletonCreatorDelegatorDecoratorTest extends DecoratorTestCas
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
 
-    this.decorator = new ScopeSkeletonCreatorDelegatorDecorator(this.glex,
+    this.decorator = new ScopesGenitorDelegatorDecorator(this.glex,
         new SymbolTableService(decoratedCompilationUnit), new VisitorService(decoratedCompilationUnit));
 
     //creates normal Symbol
     Optional<ASTCDClass> optScopeSkeletonCreator = decorator.decorate(decoratedCompilationUnit);
     assertTrue(optScopeSkeletonCreator.isPresent());
-    this.scopeSkeletonCreator = optScopeSkeletonCreator.get();
+    this.scopesGenitorClass = optScopeSkeletonCreator.get();
   }
 
   @Test
@@ -88,7 +86,7 @@ public class ScopeSkeletonCreatorDelegatorDecoratorTest extends DecoratorTestCas
     SymbolTableService mockService = Mockito.spy(new SymbolTableService(cd));
     Mockito.doReturn(Optional.empty()).when(mockService).getStartProdASTFullName(Mockito.any(ASTCDDefinition.class));
 
-    ScopeSkeletonCreatorDelegatorDecorator decorator = new ScopeSkeletonCreatorDelegatorDecorator(glex,
+    ScopesGenitorDelegatorDecorator decorator = new ScopesGenitorDelegatorDecorator(glex,
         mockService, new VisitorService(cd));
 
     //create non present SymbolTableCreator
@@ -103,30 +101,30 @@ public class ScopeSkeletonCreatorDelegatorDecoratorTest extends DecoratorTestCas
 
   @Test
   public void testClassName() {
-    assertEquals("AutomatonScopeSkeletonCreatorDelegator", scopeSkeletonCreator.getName());
+    assertEquals("AutomatonScopesGenitorDelegator", scopesGenitorClass.getName());
   }
 
   @Test
   public void testNoSuperInterfaces() {
-    assertTrue(scopeSkeletonCreator.isEmptyInterface());
+    assertTrue(scopesGenitorClass.isEmptyInterface());
   }
 
   @Test
   public void testSuperClass() {
-    assertTrue(scopeSkeletonCreator.isPresentSuperclass());
-    assertDeepEquals(AUTOMATON_DELEGATOR_VISITOR, scopeSkeletonCreator.getSuperclass());
+    assertTrue(scopesGenitorClass.isPresentSuperclass());
+    assertDeepEquals(AUTOMATON_DELEGATOR_VISITOR, scopesGenitorClass.getSuperclass());
   }
 
   @Test
   public void testConstructorCount() {
-    assertEquals(2, scopeSkeletonCreator.sizeCDConstructors());
+    assertEquals(2, scopesGenitorClass.sizeCDConstructors());
   }
 
   @Test
   public void testConstructor() {
-    ASTCDConstructor cdConstructor = scopeSkeletonCreator.getCDConstructor(0);
+    ASTCDConstructor cdConstructor = scopesGenitorClass.getCDConstructor(0);
     assertDeepEquals(PUBLIC, cdConstructor.getModifier());
-    assertEquals("AutomatonScopeSkeletonCreatorDelegator", cdConstructor.getName());
+    assertEquals("AutomatonScopesGenitorDelegator", cdConstructor.getName());
 
     assertEquals(1, cdConstructor.sizeCDParameters());
     assertDeepEquals(AUTOMATON_GLOBAL_SCOPE, cdConstructor.getCDParameter(0).getMCType());
@@ -138,47 +136,47 @@ public class ScopeSkeletonCreatorDelegatorDecoratorTest extends DecoratorTestCas
 
   @Test
   public void testZeroArgsConstructor(){
-    ASTCDConstructor constructor = scopeSkeletonCreator.getCDConstructor(1);
+    ASTCDConstructor constructor = scopesGenitorClass.getCDConstructor(1);
     assertDeepEquals(PUBLIC, constructor.getModifier());
-    assertEquals("AutomatonScopeSkeletonCreatorDelegator", constructor.getName());
+    assertEquals("AutomatonScopesGenitorDelegator", constructor.getName());
     assertTrue(constructor.isEmptyCDParameters());
     assertTrue(constructor.isEmptyException());
   }
 
   @Test
   public void testAttributeSize() {
-    assertEquals(3, scopeSkeletonCreator.sizeCDAttributes());
+    assertEquals(3, scopesGenitorClass.sizeCDAttributes());
   }
 
   @Test
   public void testScopeStackAttribute() {
-    ASTCDAttribute astcdAttribute = getAttributeBy("scopeStack", scopeSkeletonCreator);
+    ASTCDAttribute astcdAttribute = getAttributeBy("scopeStack", scopesGenitorClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertDeepEquals("Deque<de.monticore.codegen.symboltable.automaton._symboltable.IAutomatonScope>", astcdAttribute.getMCType());
   }
 
   @Test
   public void testSymTabAttribute() {
-    ASTCDAttribute astcdAttribute = getAttributeBy("symbolTable", scopeSkeletonCreator);
+    ASTCDAttribute astcdAttribute = getAttributeBy("symbolTable", scopesGenitorClass);
     assertDeepEquals(PROTECTED_FINAL, astcdAttribute.getModifier());
-    assertDeepEquals(AUTOMATON_SCOPE_SKELETON_CREATOR, astcdAttribute.getMCType());
+    assertDeepEquals(AUTOMATON_SCOPES_GENITOR, astcdAttribute.getMCType());
   }
 
   @Test
   public void testGlobalScopeAttribute() {
-    ASTCDAttribute astcdAttribute = getAttributeBy("globalScope", scopeSkeletonCreator);
+    ASTCDAttribute astcdAttribute = getAttributeBy("globalScope", scopesGenitorClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertDeepEquals(AUTOMATON_GLOBAL_SCOPE, astcdAttribute.getMCType());
   }
 
   @Test
   public void testMethods() {
-    assertEquals(1, scopeSkeletonCreator.getCDMethodList().size());
+    assertEquals(1, scopesGenitorClass.getCDMethodList().size());
   }
 
   @Test
   public void testCreateFromASTMethod() {
-    ASTCDMethod method = getMethodBy("createFromAST", scopeSkeletonCreator);
+    ASTCDMethod method = getMethodBy("createFromAST", scopesGenitorClass);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertDeepEquals("de.monticore.codegen.symboltable.automaton._symboltable.IAutomatonArtifactScope", method.getMCReturnType().getMCType());
 
@@ -192,7 +190,7 @@ public class ScopeSkeletonCreatorDelegatorDecoratorTest extends DecoratorTestCas
     GeneratorSetup generatorSetup = new GeneratorSetup();
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
-    StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, scopeSkeletonCreator, scopeSkeletonCreator);
+    StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, scopesGenitorClass, scopesGenitorClass);
     // test parsing
     ParserConfiguration configuration = new ParserConfiguration();
     JavaParser parser = new JavaParser(configuration);

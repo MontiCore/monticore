@@ -89,7 +89,7 @@ public class MillForSuperDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testScopeMethod(){
-    ASTCDMethod method = getMethodBy("_lexicalsScope", millClass);
+    ASTCDMethod method = getMethodBy("_scope", millClass);
     assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.IAutomatonScope", method.getMCReturnType().getMCType());
