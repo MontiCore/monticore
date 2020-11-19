@@ -15,6 +15,7 @@ import org.antlr.v4.runtime.RecognitionException;
 import org.eclipse.emf.compare.diff.metamodel.DiffElement;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.junit.Ignore;
 import org.junit.Test;
 
 //import de.monticore.emf.fautomaton.automatonwithaction.actionautomaton._ast.ActionAutomatonPackage;
@@ -28,8 +29,9 @@ import mc.feature.fautomaton.automaton.flatautomaton._ast.FlatAutomatonNodeFacto
 import mc.feature.fautomaton.automaton.flatautomaton._ast.FlatAutomatonPackage;
 import mc.feature.fautomaton.automaton.flatautomaton._parser.FlatAutomatonParser;
 
+@Ignore
 public class ASTInstanceSerialDeserialTest extends GeneratorIntegrationsTest {
-  
+
   @Test
   public void testSerializeAndDeserializeParseInstance() {
     try {
