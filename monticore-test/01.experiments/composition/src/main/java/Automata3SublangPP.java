@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 import automata3._ast.ASTInvariant;
-import automata3._visitor.Automata3Visitor;
+import automata3._visitor.Automata3Visitor2;
 import de.monticore.prettyprint.IndentPrinter;
 
 /**
@@ -9,26 +9,8 @@ import de.monticore.prettyprint.IndentPrinter;
  *
 
  */
-public class Automata3SublangPP implements Automata3Visitor {
+public class Automata3SublangPP implements Automata3Visitor2 {
 
-  // ----------------------------------------------------------
-  // setRealThis, getRealThis are necessary to make the visitor compositional
-  //
-  // (the Vistors are then composed using theRealThis Pattern)
-  //
-  Automata3Visitor realThis = this;
-
-  @Override
-  public void setRealThis(Automata3Visitor realThis) {
-    this.realThis = realThis;
-  }
-
-  @Override
-  public Automata3Visitor getRealThis() {
-    return realThis;
-  }
-
-  // ----------------------------------------------------------
   protected IndentPrinter out;
 
   public Automata3SublangPP(IndentPrinter o) {

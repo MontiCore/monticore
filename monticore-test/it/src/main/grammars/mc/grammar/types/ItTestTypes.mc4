@@ -157,7 +157,7 @@ grammar ItTestTypes extends mc.grammar.literals.ItTestLiterals {
           (
             (
               "[" "]"
-              {_aNode.setDimensions(_aNode.getDimensions()+1);}
+              {_builder.setDimensions(_builder.getDimensions()+1);}
             )+
           )
         );
@@ -173,7 +173,7 @@ grammar ItTestTypes extends mc.grammar.literals.ItTestLiterals {
         componentType:PrimitiveType
           (
             "[" "]"
-            {_aNode.setDimensions(_aNode.getDimensions()+1);}
+            {_builder.setDimensions(_builder.getDimensions()+1);}
           )+;
     
     /** ASTVoidType represents the return type "void".

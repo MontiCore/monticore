@@ -490,8 +490,8 @@ component grammar ItTestGrammar extends mc.grammar.literals.ItTestLiterals {
   GenericType  = 
     (Name& || ".")+
     ("<" (GenericType || ",")+  ">")?
-    {_aNode.setDimension(0);} ("[" "]"
-      {_aNode.setDimension(_aNode.getDimension()+1);} )*;
+    {_builder.setDimension(0);} ("[" "]"
+      {_builder.setDimension(_builder.getDimension()+1);} )*;
  
   astrule GenericType =
     Dimension:int

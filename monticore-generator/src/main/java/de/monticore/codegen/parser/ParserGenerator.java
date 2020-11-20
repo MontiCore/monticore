@@ -71,7 +71,8 @@ public class ParserGenerator {
       ASTMCGrammar astGrammar,
       IGrammar_WithConceptsGlobalScope symbolTable,
       IterablePath handcodedPath,
-      File targetDir) {
+      File targetDir) 
+  {
     generateParser(glex, astGrammar, symbolTable, handcodedPath, targetDir, true, Languages.JAVA);
   }
 

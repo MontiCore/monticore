@@ -9,24 +9,7 @@ import invautomata._visitor.*;
  * da InvAutomata eine component grammar ist und nicht direkt
  * AST nodes aufbauen kann.
  */
-public class InvAutomataCheapVisit implements InvAutomataVisitor {
-
-  // ----------------------------------------------------------
-  // setRealThis, getRealThis are necessary to make the visitor compositional
-  //
-  // (the Vistors are then composed using theRealThis Pattern)
-  //
-  InvAutomataVisitor realThis = this;
-
-  @Override
-  public void setRealThis(InvAutomataVisitor realThis) {
-    this.realThis = realThis;
-  }
-
-  @Override
-  public InvAutomataVisitor getRealThis() {
-    return realThis;
-  }
+public class InvAutomataCheapVisit implements InvAutomataVisitor2 {
 
   // ----------------------------------------------------------
   // Typical visit/endvist methods:

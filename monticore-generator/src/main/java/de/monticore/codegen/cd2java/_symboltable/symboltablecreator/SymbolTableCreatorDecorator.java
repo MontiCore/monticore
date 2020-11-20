@@ -101,7 +101,7 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
           .addAllCDMethods(setScopeStack)
           .addAllCDMethods(createCurrentScopeMethods(scopeInterface))
           .addCDMethod(createSetScopeStackMethod(dequeType, simpleName))
-          .addCDMethod(createCreateScopeMethod(scopeInterface, input.getCDDefinition().getName()))
+          .addCDMethod(createCreateScopeMethod(scopeInterface))
           .addAllCDMethods(createSymbolClassMethods(symbolDefiningClasses, scopeInterface))
           .addAllCDMethods(createSymbolClassMethods(inheritedSymbolPropertyClasses, scopeInterface))
           .addAllCDMethods(createVisitForNoSymbolMethods(noSymbolDefiningClasses))
@@ -122,8 +122,7 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
   }
 
   protected ASTCDConstructor createZeroArgsConstructor(String symTabCreator) {
-    String gs = StringTransformations.uncapitalize(symbolTableService.getGlobalScopeSimpleName());
-    String gsFromMill = symbolTableService.getMillFullName()+"."+gs+"()";
+    String gsFromMill = symbolTableService.getMillFullName()+".globalScope()";
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), symTabCreator);
     this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("putOnStack(" + gsFromMill + ");"));
     return constructor;
@@ -199,13 +198,13 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
     return createFromAST;
   }
 
-  protected ASTCDMethod createCreateScopeMethod(String scopeInterfaceName, String definitionName) {
+  protected ASTCDMethod createCreateScopeMethod(String scopeInterfaceName) {
     String symTabMill = symbolTableService.getMillFullName();
     ASTCDParameter boolParam = getCDParameterFacade().createParameter(getMCTypeFacade().createBooleanType(), SHADOWING_VAR);
     ASTCDMethod createFromAST = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createQualifiedType(scopeInterfaceName),
         "createScope", boolParam);
     this.replaceTemplate(EMPTY_BODY, createFromAST, new TemplateHookPoint(
-        TEMPLATE_PATH + "CreateScope", scopeInterfaceName, symTabMill, definitionName));
+        TEMPLATE_PATH + "CreateScope", scopeInterfaceName, symTabMill));
     return createFromAST;
   }
 

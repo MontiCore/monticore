@@ -58,7 +58,7 @@ public class SymbolTableCreatorForSuperTypes extends AbstractCreator<ASTCDCompil
             .setModifier(modifier)
             .setSuperclass(getMCTypeFacade().createQualifiedType(superSTC))
             .addCDConstructor(createConstructor(superSTCForSubSTCName, dequeWildcardType))
-            .addCDMethod(createCreateScopeMethod(ownScopeInterface, symbolTableService.getCDName()))
+            .addCDMethod(createCreateScopeMethod(ownScopeInterface))
             .build();
         superForSubSTC.add(superSTCForSubClass);
       }
@@ -73,13 +73,13 @@ public class SymbolTableCreatorForSuperTypes extends AbstractCreator<ASTCDCompil
     return constructor;
   }
 
-  protected ASTCDMethod createCreateScopeMethod(String scopeInterfaceName, String definitionName) {
+  protected ASTCDMethod createCreateScopeMethod(String scopeInterfaceName) {
     String symTabMill = symbolTableService.getMillFullName();
     ASTCDParameter boolParam = getCDParameterFacade().createParameter(getMCTypeFacade().createBooleanType(), SHADOWING_VAR);
     ASTCDMethod createFromAST = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createQualifiedType(scopeInterfaceName),
         "createScope", boolParam);
     this.replaceTemplate(EMPTY_BODY, createFromAST, new TemplateHookPoint(
-        "_symboltable.symboltablecreator.CreateScope", scopeInterfaceName, symTabMill, definitionName));
+        "_symboltable.symboltablecreator.CreateScope", scopeInterfaceName, symTabMill));
     return createFromAST;
   }
 }

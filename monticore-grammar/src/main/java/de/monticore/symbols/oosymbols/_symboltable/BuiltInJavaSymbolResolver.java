@@ -32,17 +32,17 @@ public class BuiltInJavaSymbolResolver
 
   protected static IOOSymbolsGlobalScope initScope() {
     gs = OOSymbolsMill
-        .oOSymbolsGlobalScope();
+        .globalScope();
     gs.setModelPath(new ModelPath());
-    gs.setModelFileExtension("ts");
+    gs.setFileExt("ts");
     //package java.lang
     IOOSymbolsArtifactScope javalang = OOSymbolsMill
-        .oOSymbolsArtifactScope();
+        .artifactScope();
     javalang.setPackageName("java.lang");
     gs.addSubScope(javalang);
     //package java.util
     IOOSymbolsArtifactScope javautil = OOSymbolsMill
-        .oOSymbolsArtifactScope();
+        .artifactScope();
     javautil.setPackageName("java.util");
     gs.addSubScope(javautil);
 
@@ -372,20 +372,20 @@ public class BuiltInJavaSymbolResolver
 
   public static MethodSymbol methodSymbol(String name, SymTypeExpression returnType){
     MethodSymbol m = OOSymbolsMill.methodSymbolBuilder()
-        .setSpannedScope(OOSymbolsMill.oOSymbolsScope())
+        .setSpannedScope(OOSymbolsMill.scope())
         .setName(name)
         .setFullName(name)  // can later be adapted, when fullname of Type is known
         .setAccessModifier(AccessModifier.ALL_INCLUSION)
         .setReturnType(returnType)
         .build();
-    m.setSpannedScope(OOSymbolsMill.oOSymbolsScope());
+    m.setSpannedScope(OOSymbolsMill.scope());
     return m;
   }
 
   public static OOTypeSymbol typeSymbol(String name, List<MethodSymbol> methodList, List<FieldSymbol> fieldList, List<SymTypeExpression> superTypeList, List<TypeVarSymbol> typeVariableList, IOOSymbolsScope enclosingScope){
     OOTypeSymbol t = OOSymbolsMill.oOTypeSymbolBuilder()
         .setEnclosingScope(enclosingScope)
-        .setSpannedScope(OOSymbolsMill.oOSymbolsScope())
+        .setSpannedScope(OOSymbolsMill.scope())
         .setName(name)
         .setFullName(name)
         .setSuperTypesList(superTypeList).build();

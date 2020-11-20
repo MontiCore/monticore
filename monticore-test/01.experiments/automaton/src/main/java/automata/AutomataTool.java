@@ -5,6 +5,7 @@ import automata._ast.ASTAutomaton;
 import automata._cocos.AutomataCoCoChecker;
 import automata._parser.AutomataParser;
 import automata._symboltable.*;
+import automata._visitor.AutomataTraverser;
 import automata.cocos.AtLeastOneInitialAndFinalState;
 import automata.cocos.StateNameStartsWithCapitalLetter;
 import automata.cocos.TransitionSourceExists;
@@ -15,7 +16,6 @@ import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.RecognitionException;
 
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.Optional;
 
 /**
@@ -94,17 +94,22 @@ public class AutomataTool {
     // Now we know the model is well-formed and start backend
 
     // store artifact scope and its symbols
-    AutomataScopeDeSer deser = new AutomataScopeDeSer();
+    AutomataSymbols2Json deser = new AutomataSymbols2Json();
     deser.store(modelTopScope, args[1]);
 
     // analyze the model with a visitor
     CountStates cs = new CountStates();
-    cs.handle(ast);
+    AutomataTraverser traverser = AutomataMill.traverser();
+    traverser.setAutomataVisitor(cs);
+    ast.accept(traverser);
     Log.info("Automaton has " + cs.getCount() + " states.", "AutomataTool");
 
     // execute a pretty printer
     PrettyPrinter pp = new PrettyPrinter();
-    pp.handle(ast);
+    AutomataTraverser traverser2 = AutomataMill.traverser();
+    traverser2.setAutomataVisitor(pp);
+    traverser2.setAutomataHandler(pp);
+    ast.accept(traverser2);
     Log.info("Pretty printing automaton into console:", "AutomataTool");
     // print the result
     Log.println(pp.getResult());
@@ -141,9 +146,9 @@ public class AutomataTool {
    */
   public static IAutomataArtifactScope createSymbolTable(ASTAutomaton ast) {
 
-    IAutomataGlobalScope globalScope = AutomataMill.automataGlobalScope();
+    IAutomataGlobalScope globalScope = AutomataMill.globalScope();
     globalScope.setModelPath(new ModelPath());
-    globalScope.setModelFileExtension("aut");
+    globalScope.setFileExt("aut");
 
     AutomataSymbolTableCreator symbolTable = AutomataMill
         .automataSymbolTableCreator();

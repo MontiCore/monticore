@@ -6,15 +6,15 @@ ${tc.signature("symbolBuilderFullName","symbolBuilderSimpleName", "symTabMill", 
   builder.setName(symbolJson.getStringMember(de.monticore.symboltable.serialization.JsonDeSers.NAME));
 <#list symbolRuleAttribute as attr>
   <#if genHelper.isOptional(attr.getMCType())>
-    if (deserialize${attr.getName()?cap_first}(symbolJson, enclosingScope).isPresent()) {
-  builder.${genHelper.getPlainSetter(attr)}(deserialize${attr.getName()?cap_first}(symbolJson,enclosingScope).get());
+    if (deserialize${attr.getName()?cap_first}(symbolJson).isPresent()) {
+  builder.${genHelper.getPlainSetter(attr)}(deserialize${attr.getName()?cap_first}(symbolJson).get());
   } else {
   builder.${genHelper.getPlainSetter(attr)}Absent();
   }
   <#else>
-  builder.${genHelper.getPlainSetter(attr)}(deserialize${attr.getName()?cap_first}(symbolJson, enclosingScope));
+  builder.${genHelper.getPlainSetter(attr)}(deserialize${attr.getName()?cap_first}(symbolJson));
   </#if>
 </#list>
   ${symbolFullName} symbol = builder.build();
-  deserializeAddons(symbol, symbolJson, enclosingScope);
+  deserializeAddons(symbol, symbolJson);
   return symbol;

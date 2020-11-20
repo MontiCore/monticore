@@ -4,6 +4,7 @@ package automata;
 import automata._ast.ASTAutomaton;
 import automata._parser.AutomataParser;
 import automata._symboltable.*;
+import automata._visitor.AutomataTraverser;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.RecognitionException;
@@ -44,7 +45,10 @@ public class AutomataTextTool {
 
     // execute a pretty printer
     TextPrinter pp = new TextPrinter();
-    pp.handle(ast);
+    AutomataTraverser traverser = AutomataMill.traverser();
+    traverser.setAutomataVisitor(pp);
+    traverser.setAutomataHandler(pp);
+    ast.accept(traverser);
     Log.info("Printing the parsed automaton into textual form:", "AutomataTool");
     Log.println(pp.getResult());
 

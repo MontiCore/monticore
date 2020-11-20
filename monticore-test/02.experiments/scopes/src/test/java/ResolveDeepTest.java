@@ -82,7 +82,7 @@ public class ResolveDeepTest {
    * @return The artifact scope derived from the parsed AST
    */
   public static IAutomataArtifactScope createSymbolTable(ASTAutomaton ast) {
-    AutomataMill.automataGlobalScope().setModelFileExtension("aut");
+    AutomataMill.globalScope().setFileExt("aut");
     return AutomataMill.automataSymbolTableCreator().createFromAST(ast);
   }
   

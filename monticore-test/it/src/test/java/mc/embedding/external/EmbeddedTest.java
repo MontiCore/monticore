@@ -18,9 +18,9 @@ public class EmbeddedTest extends GeneratorIntegrationsTest {
   @Test
   public void test() {
 
-    final IEmbeddedGlobalScope scope = EmbeddedMill.embeddedGlobalScope();
+    final IEmbeddedGlobalScope scope = EmbeddedMill.globalScope();
     scope.getModelPath().addEntry(Paths.get("src/test/resources/mc/embedding"));
-    scope.setModelFileExtension("embedded");
+    scope.setFileExt("embedded");
 
     final TextSymbol textSymbol = scope.resolveText("E").orElse(null);
     assertNotNull(textSymbol);

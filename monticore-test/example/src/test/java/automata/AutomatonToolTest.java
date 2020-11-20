@@ -11,7 +11,7 @@ public class AutomatonToolTest {
 
   @Before
   public void setup(){
-    AutomataMill.automataGlobalScope().clear();
+    AutomataMill.globalScope().clear();
   }
   
   @Test
