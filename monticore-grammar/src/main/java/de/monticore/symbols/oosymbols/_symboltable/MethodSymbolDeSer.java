@@ -13,7 +13,7 @@ public class MethodSymbolDeSer extends MethodSymbolDeSerTOP {
   @Override
   public SymTypeExpression deserializeReturnType(JsonObject symbolJson) {
     return SymTypeExpressionDeSer.deserializeMember("returnType", symbolJson,
-            OOSymbolsMill.oOSymbolsGlobalScope());
+            OOSymbolsMill.globalScope());
   }
 
 }
