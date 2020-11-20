@@ -13,12 +13,12 @@ public class MillTest {
 
   @Test
   public void testMill(){
-    ITestSymTabMillScope scope = TestSymTabMillMill.testSymTabMillScope();
-    ITestSymTabMillArtifactScope artifactScope = TestSymTabMillMill.testSymTabMillArtifactScope();
+    ITestSymTabMillScope scope = TestSymTabMillMill.scope();
+    ITestSymTabMillArtifactScope artifactScope = TestSymTabMillMill.artifactScope();
     artifactScope.setPackageName("sym");
-    ITestSymTabMillGlobalScope globalScope = TestSymTabMillMill.testSymTabMillGlobalScope();
+    ITestSymTabMillGlobalScope globalScope = TestSymTabMillMill.globalScope();
     globalScope.setModelPath(new ModelPath());
-    globalScope.setModelFileExtension("mill");
+    globalScope.setFileExt("mill");
     TestSymTabMillSymbolTableCreator symbolTableCreator = TestSymTabMillMill.testSymTabMillSymbolTableCreator();
     symbolTableCreator.putOnStack(scope);
     TestSymTabMillSymbolTableCreatorDelegator symbolTableCreatorDelegator = TestSymTabMillMill.testSymTabMillSymbolTableCreatorDelegator();

@@ -18,9 +18,9 @@ import java.util.function.Predicate;
 public class AutomataResolver implements IStimulusSymbolResolver {
 
   public AutomataResolver(ModelPath mp){
-    BasicJavaMill.basicJavaGlobalScope().setModelFileExtension("javamodel");
+    BasicJavaMill.globalScope().setFileExt("javamodel");
     for(Path p : mp.getFullPathOfEntries()){
-      BasicJavaMill.basicJavaGlobalScope().getModelPath().addEntry(p);
+      BasicJavaMill.globalScope().getModelPath().addEntry(p);
     }
   }
 
@@ -28,7 +28,7 @@ public class AutomataResolver implements IStimulusSymbolResolver {
   @Override public List<StimulusSymbol> resolveAdaptedStimulusSymbol(boolean foundSymbols,
       String name, AccessModifier modifier, Predicate<StimulusSymbol> predicate) {
     List<StimulusSymbol> result = new ArrayList<>();
-    Optional<ClassDeclarationSymbol> classDeclSymbol = BasicJavaMill.basicJavaGlobalScope()
+    Optional<ClassDeclarationSymbol> classDeclSymbol = BasicJavaMill.globalScope()
         .resolveClassDeclaration(name, modifier);
     if(classDeclSymbol.isPresent()){
       result.add(new Class2StimulusAdapter(classDeclSymbol.get()));

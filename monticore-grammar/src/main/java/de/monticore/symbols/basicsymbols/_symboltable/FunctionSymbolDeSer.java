@@ -15,7 +15,7 @@ public class FunctionSymbolDeSer extends FunctionSymbolDeSerTOP {
   @Override
   public SymTypeExpression deserializeReturnType(JsonObject symbolJson) {
     return SymTypeExpressionDeSer.deserializeMember("returnType",
-            symbolJson, BasicSymbolsMill.basicSymbolsGlobalScope());
+            symbolJson, BasicSymbolsMill.globalScope());
   }
 
 }

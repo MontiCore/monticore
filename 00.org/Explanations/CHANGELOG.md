@@ -21,6 +21,7 @@ to be released
   * added the JSON printer as a parameter to the methods of `XScopeDeSer`, `SSymbolDeSer` und `XSymbols2Json`
 * `XScopeDeSer`, `SSymbolDeSer` und `XSymbols2Json` are no longer available via the mill. The constructors can be used instead.
 * Scope builder have been removed as they did not support multiple inheritance, scope creation methods of the mill should be used instead
+* Shortened the name of the scope creation methods in the mill from `xScope`, `xGlobalScope` and `xArtifactScope` to `scope`, `globalScope` and `artifactScope`
 
 ### Fixes
 * Traverser now properly delegate to handlers as intended

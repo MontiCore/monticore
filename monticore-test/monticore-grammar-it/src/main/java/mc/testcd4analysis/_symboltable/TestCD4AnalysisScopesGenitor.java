@@ -7,17 +7,17 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.Optional;
 
-public class TestCD4AnalysisScopeSkeletonCreator extends TestCD4AnalysisScopeSkeletonCreatorTOP {
+public class TestCD4AnalysisScopesGenitor extends TestCD4AnalysisScopesGenitorTOP {
 
-  public TestCD4AnalysisScopeSkeletonCreator(ITestCD4AnalysisScope enclosingScope){
+  public TestCD4AnalysisScopesGenitor(ITestCD4AnalysisScope enclosingScope){
     super(enclosingScope);
   }
 
-  public TestCD4AnalysisScopeSkeletonCreator(Deque<? extends ITestCD4AnalysisScope> scopeStack){
+  public TestCD4AnalysisScopesGenitor(Deque<? extends ITestCD4AnalysisScope> scopeStack){
     super(scopeStack);
   }
 
-  public TestCD4AnalysisScopeSkeletonCreator(){
+  public TestCD4AnalysisScopesGenitor(){
     super();
   }
 

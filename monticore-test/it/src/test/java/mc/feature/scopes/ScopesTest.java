@@ -41,8 +41,8 @@ public class ScopesTest {
     assertFalse(supAutomatonParser.hasErrors());
     assertTrue(astSup.isPresent());
 
-    ISupAutomatonGlobalScope globalScope = SupAutomatonMill.supAutomatonGlobalScope();
-    globalScope.setModelFileExtension("aut");
+    ISupAutomatonGlobalScope globalScope = SupAutomatonMill.globalScope();
+    globalScope.setFileExt("aut");
     globalScope.getModelPath().addEntry(Paths.get("src/test/resources/mc/feature/scopes"));
     this.symbolTableCreator = SupAutomatonMill.supAutomatonSymbolTableCreatorDelegator();
 

@@ -42,7 +42,7 @@ public class TypeCheckTest {
   public void setupForEach() {
     // Setting up a Scope Infrastructure (without a global Scope)
     DefsTypeBasic.setup();
-    scope = CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScope();
+    scope = CombineExpressionsWithLiteralsMill.scope();
     scope.setEnclosingScope(null);       // No enclosing Scope: Search ending here
     scope.setExportingSymbols(true);
     scope.setAstNode(null);     // hopefully unused

@@ -9,7 +9,7 @@ ${tc.signature("symbolSimpleName","symbolFullName", "spansScope", "scopeSimpleNa
     symbolJson.getObjectMember(de.monticore.symboltable.serialization.JsonDeSers.SPANNED_SCOPE));
   }
   else {
-    spannedScope = ${symTabMill}.${scopeSimpleName?uncap_first}();
+    spannedScope = ${symTabMill}.scope();
   }
   symbol.setSpannedScope(spannedScope);
   spannedScope.setName(symbol.getName());

@@ -6,17 +6,17 @@ import sm2._ast.ASTState;
 
 import java.util.Deque;
 
-public class SM2ScopeSkeletonCreator extends SM2ScopeSkeletonCreatorTOP {
+public class SM2ScopesGenitor extends SM2ScopesGenitorTOP {
 
-  public SM2ScopeSkeletonCreator(ISM2Scope enclosingScope) {
+  public SM2ScopesGenitor(ISM2Scope enclosingScope) {
     super(enclosingScope);
   }
 
-  public SM2ScopeSkeletonCreator(Deque<? extends ISM2Scope> scopeStack) {
+  public SM2ScopesGenitor(Deque<? extends ISM2Scope> scopeStack) {
     super(scopeStack);
   }
 
-  public SM2ScopeSkeletonCreator(){
+  public SM2ScopesGenitor(){
     super();
   }
 

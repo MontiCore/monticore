@@ -22,10 +22,10 @@ public class BuiltInJavaTypesTest {
   public static void setup(){
     LogStub.init();
     gs = OOSymbolsMill
-        .oOSymbolsGlobalScope();
+        .globalScope();
     gs.clear();
     gs.setModelPath(new ModelPath());
-    gs.setModelFileExtension("bijt");
+    gs.setFileExt("bijt");
     gs.addAdaptedOOTypeSymbolResolver(new BuiltInJavaSymbolResolver());
     gs.addAdaptedTypeSymbolResolver(new BuiltInJavaSymbolResolver());
 

@@ -38,8 +38,8 @@ public class ScopeAttributesTest {
     assertFalse(scopeAttributesParser.hasErrors());
     assertTrue(astSup.isPresent());
 
-    IScopeAttributesGlobalScope globalScope = ScopeAttributesMill.scopeAttributesGlobalScope();
-    globalScope.setModelFileExtension("sc");
+    IScopeAttributesGlobalScope globalScope = ScopeAttributesMill.globalScope();
+    globalScope.setFileExt("sc");
     globalScope.getModelPath().addEntry(Paths.get("src/test/resources/mc/feature/scopes"));
     scope = ScopeAttributesMill.scopeAttributesSymbolTableCreatorDelegator().createFromAST(astSup.get());
   }
