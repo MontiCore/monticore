@@ -1,16 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-package coloredgraph._symboltable;
+package strules._symboltable;
 
 import coloredgraph._ast.ASTGraph;
-import coloredgraph._ast.ASTNameColor;
-import coloredgraph._ast.ASTRGBColor;
-import coloredgraph._ast.ASTVertex;
 
-import java.awt.*;
 import java.util.Deque;
 import java.util.HashSet;
-import java.util.Set;
 
 /**
  * This handwritten class extends the generated symbol table cretion to set the values of
@@ -48,8 +43,7 @@ public class STRulesSymbolTableCreator extends STRulesSymbolTableCreatorTOP {
    * shared between the delegated symbol table creators.
    * @param scopeStack
    */
-  public STRulesSymbolTableCreator(
-      Deque<? extends IColoredGraphScope> scopeStack) {
+  public STRulesSymbolTableCreator(Deque<? extends ISTRulesScope> scopeStack) {
     super(scopeStack);
   }
 
@@ -57,29 +51,6 @@ public class STRulesSymbolTableCreator extends STRulesSymbolTableCreatorTOP {
   /****************************************************
    * Section: visitors
    ****************************************************/
-
-
-  /****************************************************
-   * Section: createFromAST
-   ****************************************************/
-
-  /**
-   * This method created the symbol table for a passed AST node, which is the result of the parse
-   * method of the Parser.
-   * This method is overridden to set the scoperule attribute: Before the symbol table creator
-   * traverses the AST, the set of all colors of the model is initialized with as empty set.
-   * During traversal, the colors of the vertices are added to this set.
-   * After the traversal, the value of the symbolrule of the artifact scope is set to the size
-   * of the set.
-   * @param rootNode
-   * @return
-   */
-  @Override public ISTRulesArtifactScope createFromAST(ASTGraph rootNode) {
-    allColors = new HashSet<>();
-    ISTRulesArtifactScope as = super.createFromAST(rootNode);
-    as.setNumberOfColors(allColors.size());
-    return as;
-  }
 
 
 }

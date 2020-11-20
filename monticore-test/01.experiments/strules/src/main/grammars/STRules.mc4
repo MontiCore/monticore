@@ -8,6 +8,8 @@ grammar STRules extends de.monticore.MCBasics {
 
   symbol S2 = "file" Name ";" ;
 
+  symbol S3 extends S1 = "archive" Name "{" (S1 | S2)* "}";
+
   symbolrule S1 = a:AType b:java.lang.String? ;
 
   symbolrule S2 =  c:int*
@@ -19,6 +21,10 @@ grammar STRules extends de.monticore.MCBasics {
                     return result;
                   }
                   ;
+
+   symbolrule S3 = b:boolean bo:boolean? bl:boolean* bp:boolean+
+
+
 
   scoperule = a:ISymbol* b:boolean
   method public boolean isEmpty() {

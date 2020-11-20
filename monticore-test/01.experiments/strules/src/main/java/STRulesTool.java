@@ -1,14 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import coloredgraph.ColoredGraphMill;
-import coloredgraph._ast.ASTGraph;
-import coloredgraph._parser.ColoredGraphParser;
-import coloredgraph._symboltable.ColoredGraphScopeDeSer;
-import coloredgraph._symboltable.ColoredGraphSymbolTableCreatorDelegator;
-import coloredgraph._symboltable.IColoredGraphArtifactScope;
-import coloredgraph._symboltable.IColoredGraphGlobalScope;
 import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.RecognitionException;
+import strules.STRulesMill;
+import strules._ast.ASTSTRules;
+import strules._parser.STRulesParser;
+import strules._symboltable.ISTRulesArtifactScope;
+import strules._symboltable.STRulesSymbolTableCreatorDelegator;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -18,36 +16,36 @@ import java.util.Optional;
  * <p>
  * and also includes a main function
  */
-public class STrulesTool {
+public class STRulesTool {
 
   /**
-   * Use the single argument for specifying the single input colored graph file.
+   * Use the single argument for specifying the single input strule file.
    *
    * @param args
    */
   public static void main(String[] args) {
     if (args.length != 1) {
-      Log.error("0xAE749 Please specify only one single path to the input model.");
+      Log.error("0xFE749 Please specify only one single path to the input model.");
       return;
     }
-    Log.info("ColoredGraph DSL Tool", "ColoredGraphTool");
-    Log.info("------------------", "ColoredGraphTool");
+    Log.info("ColoredGraph DSL Tool", "STRulesTool");
+    Log.info("------------------", "STRulesTool");
     String model = args[0];
 
     // parse the model and create the AST representation
-    ASTGraph ast = parse(model);
+    ASTSTRules ast = parse(model);
     Log.info(model + " parsed successfully!", "ColoredGraphTool");
 
     // instantiate symbol table:
-    ColoredGraphMill.coloredGraphGlobalScope().setModelFileExtension("cg");
-    ColoredGraphSymbolTableCreatorDelegator stc = ColoredGraphMill
-        .coloredGraphSymbolTableCreatorDelegator();
-    IColoredGraphArtifactScope symTab = stc.createFromAST(ast);
+    STRulesMill.sTRulesGlobalScope().setModelFileExtension("cg");
+    STRulesSymbolTableCreatorDelegator stc = STRulesMill
+        .sTRulesSymbolTableCreatorDelegator();
+    ISTRulesArtifactScope symTab = stc.createFromAST(ast);
+    if (null== symTab){
+      Log.error("0xFE349 Symbol table of Model could not be parsed.");
+    }
 
     Log.info("------------------", "ColoredGraphTool");
-
-    // store symbol table
-    new ColoredGraphScopeDeSer().store(symTab, "target/" + model + "sym");
 
   }
 
@@ -57,18 +55,18 @@ public class STrulesTool {
    * @param model - file to parse
    * @return
    */
-  public static ASTGraph parse(String model) {
+  public static ASTSTRules parse(String model) {
     try {
-      ColoredGraphParser parser = new ColoredGraphParser();
-      Optional<ASTGraph> optAST = parser.parse(model);
+      STRulesParser parser = new STRulesParser();
+      Optional<ASTSTRules> optAST = parser.parse(model);
 
       if (!parser.hasErrors() && optAST.isPresent()) {
         return optAST.get();
       }
-      Log.error("0xAE849 Model could not be parsed.");
+      Log.error("0xFE849 Model could not be parsed.");
     }
     catch (RecognitionException | IOException e) {
-      Log.error("0xAE649 Failed to parse " + model, e);
+      Log.error("0xFE649 Failed to parse " + model, e);
     }
     return null;
   }
