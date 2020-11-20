@@ -37,7 +37,7 @@ public class CD2EHelper {
   private Map<String, MethodSymbol> methodSymbolMap = new HashMap<>();
 
   public CD2EHelper() {
-    this.iOOSymbolsScope = OOSymbolsMill.oOSymbolsScope();
+    this.iOOSymbolsScope = OOSymbolsMill.scope();
   }
 
   public OOTypeSymbol createOOTypeSymbolFormCDTypeSymbol(CDTypeSymbol cdTypeSymbol) {
@@ -47,7 +47,7 @@ public class CD2EHelper {
       // add to map
       OOTypeSymbol typeSymbol = OOSymbolsMill.oOTypeSymbolBuilder()
           .setName(cdTypeSymbol.getName())
-          .setSpannedScope(OOSymbolsMill.oOSymbolsScope())
+          .setSpannedScope(OOSymbolsMill.scope())
           .build();
       typeSymbolMap.put(cdTypeSymbol.getName(), typeSymbol);
 
@@ -147,7 +147,7 @@ public class CD2EHelper {
         String typeName = symbolLoader.getName();
         OOTypeSymbol typeSymbol = OOSymbolsMill.oOTypeSymbolBuilder()
             .setName(typeName)
-            .setSpannedScope(OOSymbolsMill.oOSymbolsScope())
+            .setSpannedScope(OOSymbolsMill.scope())
             .build();
         iOOSymbolsScope.add(typeSymbol);
         iOOSymbolsScope.add((TypeSymbol) typeSymbol);

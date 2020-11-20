@@ -5,9 +5,8 @@ import de.monticore.symboltable.serialization.JsonPrinter;
 import de.se_rwth.commons.logging.Log;
 import mc.feature.symboltableprinter.symboltableprintersub.SymbolTablePrinterSubMill;
 import mc.feature.symboltableprinter.symboltableprintersub._symboltable.ISymbolTablePrinterSubScope;
-import mc.feature.symboltableprinter.symboltableprintersub._symboltable.SymbolTablePrinterSubScope;
 import mc.feature.symboltableprinter.symboltableprintersub._symboltable.SymbolTablePrinterSubScopeDeSer;
-import mc.feature.symboltableprinter.symboltableprintersub._symboltable.SymbolTablePrinterSubSymbolTablePrinter;
+import mc.feature.symboltableprinter.symboltableprintersub._symboltable.SymbolTablePrinterSubSymbols2Json;
 import mc.feature.symboltableprinter.symboltableprintersup1.SymbolTablePrinterSup1Mill;
 import mc.feature.symboltableprinter.symboltableprintersup2.SymbolTablePrinterSup2Mill;
 import org.junit.BeforeClass;
@@ -24,7 +23,7 @@ public class STPForLanguageCompositionTest {
 
   @Test
   public void testGetAndSetJsonPrinter(){
-    SymbolTablePrinterSubSymbolTablePrinter symTabPrinter = new SymbolTablePrinterSubSymbolTablePrinter();
+    SymbolTablePrinterSubSymbols2Json symTabPrinter = new SymbolTablePrinterSubSymbols2Json();
     JsonPrinter printer = symTabPrinter.getJsonPrinter();
     assertNotNull(printer);
     symTabPrinter.setJsonPrinter(new JsonPrinter());
@@ -35,7 +34,7 @@ public class STPForLanguageCompositionTest {
   public void testSerializeLocalSymbols(){
     //create scope with symbols of the grammar SymbolTablePrinterSub and both of its supergrammars
     ISymbolTablePrinterSubScope scope = SymbolTablePrinterSubMill
-        .symbolTablePrinterSubScope();
+        .scope();
     scope.setName("alphabet");
     scope.add(SymbolTablePrinterSup1Mill.aSymbolBuilder().setName("a").build());
     scope.add(SymbolTablePrinterSup2Mill.bSymbolBuilder().setName("b").build());
@@ -53,7 +52,7 @@ public class STPForLanguageCompositionTest {
   @Test
   public void testSecondConstructor(){
     JsonPrinter printer = new JsonPrinter();
-    SymbolTablePrinterSubSymbolTablePrinter symTabPrinter = new SymbolTablePrinterSubSymbolTablePrinter(printer);
+    SymbolTablePrinterSubSymbols2Json symTabPrinter = new SymbolTablePrinterSubSymbols2Json(printer);
     assertEquals(printer,symTabPrinter.getJsonPrinter());
   }
 

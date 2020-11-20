@@ -9,10 +9,8 @@ import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
-import de.monticore.codegen.cd2java._symboltable.serialization.SymbolTablePrinterDecorator;
-import de.monticore.codegen.cd2java._symboltable.symboltablecreator.SymbolTableCreatorDecorator;
+import de.monticore.codegen.cd2java._symboltable.serialization.Symbols2JsonDecorator;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
-import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
@@ -21,9 +19,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
-import java.util.Optional;
 
-import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
@@ -31,7 +27,7 @@ import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodsBy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class SymbolTablePrinterTest extends DecoratorTestCase {
+public class Symbols2JsonTest extends DecoratorTestCase {
 
   private ASTCDClass symTabPrinterClass;
 
@@ -62,7 +58,7 @@ public class SymbolTablePrinterTest extends DecoratorTestCase {
     decoratedSymbolCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "AutomatonSymbolCD");
     this.glex.setGlobalValue("service", new AbstractService(decoratedASTCompilationUnit));
 
-    SymbolTablePrinterDecorator decorator = new SymbolTablePrinterDecorator(this.glex,
+    Symbols2JsonDecorator decorator = new Symbols2JsonDecorator(this.glex,
         new SymbolTableService(decoratedASTCompilationUnit), new VisitorService(decoratedASTCompilationUnit));
 
     this.symTabPrinterClass = decorator.decorate(decoratedScopeCompilationUnit, decoratedSymbolCompilationUnit);

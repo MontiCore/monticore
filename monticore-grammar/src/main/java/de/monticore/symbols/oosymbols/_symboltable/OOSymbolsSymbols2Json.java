@@ -9,12 +9,12 @@ import de.monticore.types.check.SymTypeExpressionDeSer;
 
 import java.util.List;
 
-public class OOSymbolsSymbolTablePrinter extends OOSymbolsSymbolTablePrinterTOP {
+public class OOSymbolsSymbols2Json extends OOSymbolsSymbols2JsonTOP {
 
-  public OOSymbolsSymbolTablePrinter() {
+  public OOSymbolsSymbols2Json() {
   }
 
-  public OOSymbolsSymbolTablePrinter(JsonPrinter printer) {
+  public OOSymbolsSymbols2Json(JsonPrinter printer) {
     super(printer);
   }
 

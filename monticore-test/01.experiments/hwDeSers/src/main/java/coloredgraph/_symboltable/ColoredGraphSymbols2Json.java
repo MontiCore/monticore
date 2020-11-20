@@ -11,12 +11,12 @@ import java.awt.*;
  * symbolrule attribute of the VertexSymbol. As the type of "color" is not a built-in data type,
  * for which default serialization exists, the serialization strategy has to be realized manually.
  */
-public class ColoredGraphSymbolTablePrinter extends ColoredGraphSymbolTablePrinterTOP {
+public class ColoredGraphSymbols2Json extends ColoredGraphSymbols2JsonTOP {
 
-  public ColoredGraphSymbolTablePrinter() {
+  public ColoredGraphSymbols2Json() {
    }
 
-  public ColoredGraphSymbolTablePrinter(JsonPrinter printer) {
+  public ColoredGraphSymbols2Json(JsonPrinter printer) {
     super(printer);
   }
 

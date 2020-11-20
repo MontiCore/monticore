@@ -44,7 +44,7 @@ public class DeriveSymTypeOfSetExpressionsTest {
   public void setupForEach() {
     // Setting up a Scope Infrastructure (without a global Scope)
     DefsTypeBasic.setup();
-    scope = CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScope();
+    scope = CombineExpressionsWithLiteralsMill.scope();
     scope.setEnclosingScope(null);       // No enclosing Scope: Search ending here
     scope.setExportingSymbols(true);
     scope.setAstNode(null);
@@ -111,7 +111,7 @@ public class DeriveSymTypeOfSetExpressionsTest {
     TypeSymbol loader = new OOTypeSymbolSurrogate("Set");
     loader.setEnclosingScope(scope);
     OOTypeSymbol setDoubleType = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(OOSymbolsMill.oOSymbolsScope())
+        .setSpannedScope(OOSymbolsMill.scope())
         .setName("Set")
         .setEnclosingScope(scope)
         .build();
@@ -143,7 +143,7 @@ public class DeriveSymTypeOfSetExpressionsTest {
     TypeSymbol loader = new OOTypeSymbolSurrogate("Set");
     loader.setEnclosingScope(scope);
     OOTypeSymbol setIntType = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(OOSymbolsMill.oOSymbolsScope())
+        .setSpannedScope(OOSymbolsMill.scope())
         .setName("Set")
         .setEnclosingScope(scope)
         .build();
@@ -174,7 +174,7 @@ public class DeriveSymTypeOfSetExpressionsTest {
     TypeSymbol loader = new OOTypeSymbolSurrogate("Set");
     loader.setEnclosingScope(scope);
     OOTypeSymbol setDoubleType = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(OOSymbolsMill.oOSymbolsScope())
+        .setSpannedScope(OOSymbolsMill.scope())
         .setName("Set")
         .setEnclosingScope(scope)
         .build();
@@ -206,7 +206,7 @@ public class DeriveSymTypeOfSetExpressionsTest {
     TypeSymbol loader = new OOTypeSymbolSurrogate("Set");
     loader.setEnclosingScope(scope);
     OOTypeSymbol setIntType = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(OOSymbolsMill.oOSymbolsScope())
+        .setSpannedScope(OOSymbolsMill.scope())
         .setName("Set")
         .setEnclosingScope(scope)
         .build();
@@ -237,7 +237,7 @@ public class DeriveSymTypeOfSetExpressionsTest {
     TypeSymbol loader = new OOTypeSymbolSurrogate("Set");
     loader.setEnclosingScope(scope);
     OOTypeSymbol setinttype = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(OOSymbolsMill.oOSymbolsScope())
+        .setSpannedScope(OOSymbolsMill.scope())
         .setName("Set")
         .setEnclosingScope(scope)
         .build();
@@ -273,7 +273,7 @@ public class DeriveSymTypeOfSetExpressionsTest {
     TypeSymbol loader = new OOTypeSymbolSurrogate("Set");
     loader.setEnclosingScope(scope);
     OOTypeSymbol setIntType = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(OOSymbolsMill.oOSymbolsScope())
+        .setSpannedScope(OOSymbolsMill.scope())
         .setName("Set")
         .setEnclosingScope(scope)
         .build();    add2scope(scope,setIntType);
@@ -303,7 +303,7 @@ public class DeriveSymTypeOfSetExpressionsTest {
     TypeSymbol loader = new OOTypeSymbolSurrogate("Set");
     loader.setEnclosingScope(scope);
     OOTypeSymbol setIntType = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(OOSymbolsMill.oOSymbolsScope())
+        .setSpannedScope(OOSymbolsMill.scope())
         .setName("Set")
         .setEnclosingScope(scope)
         .build();
@@ -337,7 +337,7 @@ public class DeriveSymTypeOfSetExpressionsTest {
     TypeSymbol loader = new OOTypeSymbolSurrogate("Set");
     loader.setEnclosingScope(scope);
     OOTypeSymbol setinttype = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(OOSymbolsMill.oOSymbolsScope())
+        .setSpannedScope(OOSymbolsMill.scope())
         .setName("Set")
         .setEnclosingScope(scope)
         .build();
@@ -373,7 +373,7 @@ public class DeriveSymTypeOfSetExpressionsTest {
     TypeSymbol loader = new OOTypeSymbolSurrogate("Set");
     loader.setEnclosingScope(scope);
     OOTypeSymbol setIntType = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(OOSymbolsMill.oOSymbolsScope())
+        .setSpannedScope(OOSymbolsMill.scope())
         .setName("Set")
         .setEnclosingScope(scope)
         .build();
@@ -404,7 +404,7 @@ public class DeriveSymTypeOfSetExpressionsTest {
     TypeSymbol loader = new OOTypeSymbolSurrogate("Set");
     loader.setEnclosingScope(scope);
     OOTypeSymbol setIntType = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(OOSymbolsMill.oOSymbolsScope())
+        .setSpannedScope(OOSymbolsMill.scope())
         .setName("Set")
         .setEnclosingScope(scope)
         .build();

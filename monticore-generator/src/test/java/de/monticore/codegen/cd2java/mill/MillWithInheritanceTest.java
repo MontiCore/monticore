@@ -142,7 +142,7 @@ public class MillWithInheritanceTest extends DecoratorTestCase {
   public void testAttributeModifier() {
     for (ASTCDAttribute astcdAttribute : millClass.getCDAttributeList()) {
         assertTrue(astcdAttribute.isPresentModifier());
-        assertTrue(PROTECTED_STATIC.build().deepEquals(astcdAttribute.getModifier()));
+        assertTrue(astcdAttribute.getModifier().isProtected());
     }
   }
 

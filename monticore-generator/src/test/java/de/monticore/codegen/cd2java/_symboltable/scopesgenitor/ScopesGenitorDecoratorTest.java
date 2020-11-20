@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.codegen.cd2java._symboltable.scopeskeletoncreator;
+package de.monticore.codegen.cd2java._symboltable.scopesgenitor;
 
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
@@ -33,9 +33,9 @@ import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
 import static org.junit.Assert.*;
 
-public class ScopeSkeletonCreatorDecoratorTest extends DecoratorTestCase {
+public class ScopesGenitorDecoratorTest extends DecoratorTestCase {
 
-  private ASTCDClass scopeSkeletonCreatorClass;
+  private ASTCDClass scopesGenitorClass;
 
   private GlobalExtensionManagement glex;
 
@@ -80,14 +80,14 @@ public class ScopeSkeletonCreatorDecoratorTest extends DecoratorTestCase {
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
 
-    ScopeSkeletonCreatorDecorator decorator = new ScopeSkeletonCreatorDecorator(this.glex,
+    ScopesGenitorDecorator decorator = new ScopesGenitorDecorator(this.glex,
         new SymbolTableService(decoratedCompilationUnit), new VisitorService(decoratedCompilationUnit),
         new MethodDecorator(glex, new SymbolTableService(decoratedCompilationUnit)));
 
     //creates normal Symbol
     Optional<ASTCDClass> optScopeSkeletonCreator = decorator.decorate(decoratedCompilationUnit);
     assertTrue(optScopeSkeletonCreator.isPresent());
-    this.scopeSkeletonCreatorClass = optScopeSkeletonCreator.get();
+    this.scopesGenitorClass = optScopeSkeletonCreator.get();
   }
 
   @Test
@@ -97,34 +97,34 @@ public class ScopeSkeletonCreatorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testClassName() {
-    assertEquals("AutomatonScopeSkeletonCreator", scopeSkeletonCreatorClass.getName());
+    assertEquals("AutomatonScopesGenitor", scopesGenitorClass.getName());
   }
 
   @Test
   public void testSuperInterfacesCount() {
-    assertEquals(1, scopeSkeletonCreatorClass.sizeInterface());
+    assertEquals(1, scopesGenitorClass.sizeInterface());
   }
 
   @Test
   public void testSuperInterface() {
-    assertDeepEquals(AUTOMATON_VISITOR, scopeSkeletonCreatorClass.getInterface(0));
+    assertDeepEquals(AUTOMATON_VISITOR, scopesGenitorClass.getInterface(0));
   }
 
   @Test
   public void testNoSuperClass() {
-    assertFalse(scopeSkeletonCreatorClass.isPresentSuperclass());
+    assertFalse(scopesGenitorClass.isPresentSuperclass());
   }
 
   @Test
   public void testConstructorCount() {
-    assertEquals(3, scopeSkeletonCreatorClass.sizeCDConstructors());
+    assertEquals(3, scopesGenitorClass.sizeCDConstructors());
   }
 
   @Test
   public void testConstructor() {
-    ASTCDConstructor cdConstructor = scopeSkeletonCreatorClass.getCDConstructor(0);
+    ASTCDConstructor cdConstructor = scopesGenitorClass.getCDConstructor(0);
     assertDeepEquals(PUBLIC, cdConstructor.getModifier());
-    assertEquals("AutomatonScopeSkeletonCreator", cdConstructor.getName());
+    assertEquals("AutomatonScopesGenitor", cdConstructor.getName());
 
     assertEquals(1, cdConstructor.sizeCDParameters());
     assertDeepEquals(I_AUTOMATON_SCOPE, cdConstructor.getCDParameter(0).getMCType());
@@ -137,9 +137,9 @@ public class ScopeSkeletonCreatorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testConstructorWithEnclosingScope() {
-    ASTCDConstructor cdConstructor = scopeSkeletonCreatorClass.getCDConstructor(1);
+    ASTCDConstructor cdConstructor = scopesGenitorClass.getCDConstructor(1);
     assertDeepEquals(PUBLIC, cdConstructor.getModifier());
-    assertEquals("AutomatonScopeSkeletonCreator", cdConstructor.getName());
+    assertEquals("AutomatonScopesGenitor", cdConstructor.getName());
 
     assertEquals(1, cdConstructor.sizeCDParameters());
 
@@ -151,9 +151,9 @@ public class ScopeSkeletonCreatorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testZeroArgsConstructor(){
-    ASTCDConstructor constructor = scopeSkeletonCreatorClass.getCDConstructor(2);
+    ASTCDConstructor constructor = scopesGenitorClass.getCDConstructor(2);
     assertDeepEquals(PUBLIC, constructor.getModifier());
-    assertEquals("AutomatonScopeSkeletonCreator", constructor.getName());
+    assertEquals("AutomatonScopesGenitor", constructor.getName());
     assertTrue(constructor.isEmptyCDParameters());
     assertTrue(constructor.isEmptyException());
   }
@@ -161,38 +161,38 @@ public class ScopeSkeletonCreatorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeSize() {
-    assertEquals(3, scopeSkeletonCreatorClass.sizeCDAttributes());
+    assertEquals(3, scopesGenitorClass.sizeCDAttributes());
   }
 
   @Test
   public void testScopeStackAttribute() {
-    ASTCDAttribute astcdAttribute = getAttributeBy("scopeStack", scopeSkeletonCreatorClass);
+    ASTCDAttribute astcdAttribute = getAttributeBy("scopeStack", scopesGenitorClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertDeepEquals("Deque<de.monticore.codegen.symboltable.automaton._symboltable.IAutomatonScope>", astcdAttribute.getMCType());
   }
 
   @Test
   public void testRealThisAttribute() {
-    ASTCDAttribute astcdAttribute = getAttributeBy("realThis", scopeSkeletonCreatorClass);
+    ASTCDAttribute astcdAttribute = getAttributeBy("realThis", scopesGenitorClass);
     assertDeepEquals(PRIVATE, astcdAttribute.getModifier());
     assertDeepEquals("de.monticore.codegen.symboltable.automaton._visitor.AutomatonVisitor", astcdAttribute.getMCType());
   }
 
   @Test
   public void testFirstCreatedScopeAttribute() {
-    ASTCDAttribute astcdAttribute = getAttributeBy("firstCreatedScope", scopeSkeletonCreatorClass);
+    ASTCDAttribute astcdAttribute = getAttributeBy("firstCreatedScope", scopesGenitorClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertDeepEquals(I_AUTOMATON_SCOPE, astcdAttribute.getMCType());
   }
 
   @Test
   public void testMethods() {
-    assertEquals(35, scopeSkeletonCreatorClass.getCDMethodList().size());
+    assertEquals(35, scopesGenitorClass.getCDMethodList().size());
   }
 
   @Test
   public void testCreateFromASTMethod() {
-    ASTCDMethod method = getMethodBy("createFromAST", scopeSkeletonCreatorClass);
+    ASTCDMethod method = getMethodBy("createFromAST", scopesGenitorClass);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertDeepEquals("de.monticore.codegen.symboltable.automaton._symboltable.IAutomatonArtifactScope", method.getMCReturnType().getMCType());
 
@@ -204,7 +204,7 @@ public class ScopeSkeletonCreatorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testGetFirstCreatedScopeMethod() {
-    ASTCDMethod method = getMethodBy("getFirstCreatedScope", scopeSkeletonCreatorClass);
+    ASTCDMethod method = getMethodBy("getFirstCreatedScope", scopesGenitorClass);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertDeepEquals(I_AUTOMATON_SCOPE, method.getMCReturnType().getMCType());
 
@@ -213,7 +213,7 @@ public class ScopeSkeletonCreatorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testPutOnStackMethod() {
-    ASTCDMethod method = getMethodBy("putOnStack", scopeSkeletonCreatorClass);
+    ASTCDMethod method = getMethodBy("putOnStack", scopesGenitorClass);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
 
@@ -225,7 +225,7 @@ public class ScopeSkeletonCreatorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testGetRealThis() {
-    ASTCDMethod method = getMethodBy("getRealThis", scopeSkeletonCreatorClass);
+    ASTCDMethod method = getMethodBy("getRealThis", scopesGenitorClass);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertDeepEquals(AUTOMATON_VISITOR, method.getMCReturnType().getMCType());
@@ -234,7 +234,7 @@ public class ScopeSkeletonCreatorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSetRealThis() {
-    ASTCDMethod method = getMethodBy("setRealThis", scopeSkeletonCreatorClass);
+    ASTCDMethod method = getMethodBy("setRealThis", scopesGenitorClass);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, method.sizeCDParameters());
@@ -244,7 +244,7 @@ public class ScopeSkeletonCreatorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSetAutomatonScopeStack() {
-    ASTCDMethod method = getMethodBy("setAutomatonScopeStack", scopeSkeletonCreatorClass);
+    ASTCDMethod method = getMethodBy("setAutomatonScopeStack", scopesGenitorClass);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
 
@@ -255,7 +255,7 @@ public class ScopeSkeletonCreatorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testGetCurrentScopeThis() {
-    ASTCDMethod method = getMethodBy("getCurrentScope", scopeSkeletonCreatorClass);
+    ASTCDMethod method = getMethodBy("getCurrentScope", scopesGenitorClass);
     assertDeepEquals(PUBLIC_FINAL, method.getModifier());
     ASTMCType astType = this.mcTypeFacade.createOptionalTypeOf(I_AUTOMATON_SCOPE);
     assertTrue(method.getMCReturnType().isPresentMCType());
@@ -265,7 +265,7 @@ public class ScopeSkeletonCreatorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testRemoveCurrentScopeThis() {
-    ASTCDMethod method = getMethodBy("removeCurrentScope", scopeSkeletonCreatorClass);
+    ASTCDMethod method = getMethodBy("removeCurrentScope", scopesGenitorClass);
     assertDeepEquals(PUBLIC_FINAL, method.getModifier());
     ASTMCType astType = this.mcTypeFacade.createOptionalTypeOf(I_AUTOMATON_SCOPE);
     assertTrue(method.getMCReturnType().isPresentMCType());
@@ -275,7 +275,7 @@ public class ScopeSkeletonCreatorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testCreateScopeThis() {
-    ASTCDMethod method = getMethodBy("createScope", scopeSkeletonCreatorClass);
+    ASTCDMethod method = getMethodBy("createScope", scopesGenitorClass);
     assertDeepEquals(PUBLIC, method.getModifier());
 
     assertTrue(method.getMCReturnType().isPresentMCType());
@@ -288,7 +288,7 @@ public class ScopeSkeletonCreatorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testEndVisitASTAutomatonNode() {
-    List<ASTCDMethod> methodList = getMethodsBy("endVisit", 1, scopeSkeletonCreatorClass);
+    List<ASTCDMethod> methodList = getMethodsBy("endVisit", 1, scopesGenitorClass);
     ASTMCType astType = this.mcTypeFacade.createQualifiedType(AST_AUTOMATON);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
@@ -300,7 +300,7 @@ public class ScopeSkeletonCreatorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testVisitASTAutomatonNode() {
-    List<ASTCDMethod> methodList = getMethodsBy("visit", 1, scopeSkeletonCreatorClass);
+    List<ASTCDMethod> methodList = getMethodsBy("visit", 1, scopesGenitorClass);
     ASTMCType astType = this.mcTypeFacade.createQualifiedType(AST_AUTOMATON);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
@@ -313,7 +313,7 @@ public class ScopeSkeletonCreatorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testEndVisitASTStateNode() {
-    List<ASTCDMethod> methodList = getMethodsBy("endVisit", 1, scopeSkeletonCreatorClass);
+    List<ASTCDMethod> methodList = getMethodsBy("endVisit", 1, scopesGenitorClass);
     ASTMCType astType = this.mcTypeFacade.createQualifiedType(AST_STATE);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
@@ -325,7 +325,7 @@ public class ScopeSkeletonCreatorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testVisitASTStateNode() {
-    List<ASTCDMethod> methodList = getMethodsBy("visit", 1, scopeSkeletonCreatorClass);
+    List<ASTCDMethod> methodList = getMethodsBy("visit", 1, scopesGenitorClass);
     ASTMCType astType = this.mcTypeFacade.createQualifiedType(AST_STATE);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
@@ -337,7 +337,7 @@ public class ScopeSkeletonCreatorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testCreate_ASTAutomatonNode() {
-    ASTCDMethod method = getMethodBy("create_Automaton", scopeSkeletonCreatorClass);
+    ASTCDMethod method = getMethodBy("create_Automaton", scopesGenitorClass);
     assertDeepEquals(PROTECTED, method.getModifier());
 
     assertTrue(method.getMCReturnType().isPresentMCType());
@@ -351,7 +351,7 @@ public class ScopeSkeletonCreatorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testCreate_ASTStateNode() {
-    ASTCDMethod method = getMethodBy("create_State", scopeSkeletonCreatorClass);
+    ASTCDMethod method = getMethodBy("create_State", scopesGenitorClass);
     assertDeepEquals(PROTECTED, method.getModifier());
 
     assertTrue(method.getMCReturnType().isPresentMCType());
@@ -365,7 +365,7 @@ public class ScopeSkeletonCreatorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testCreate_ASTInheritedSymbolClass() {
-    ASTCDMethod method = getMethodBy("create_InheritedSymbolClass", scopeSkeletonCreatorClass);
+    ASTCDMethod method = getMethodBy("create_InheritedSymbolClass", scopesGenitorClass);
     assertDeepEquals(PROTECTED, method.getModifier());
 
     assertTrue(method.getMCReturnType().isPresentMCType());
@@ -379,7 +379,7 @@ public class ScopeSkeletonCreatorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testEndVisitASTInheritedSymbolClassNode() {
-    List<ASTCDMethod> methodList = getMethodsBy("endVisit", 1, scopeSkeletonCreatorClass);
+    List<ASTCDMethod> methodList = getMethodsBy("endVisit", 1, scopesGenitorClass);
     ASTMCType astType = this.mcTypeFacade.createQualifiedType(AST_INHERITED_SYMBOL);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
@@ -391,7 +391,7 @@ public class ScopeSkeletonCreatorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testVisitASTInheritedSymbolClassNode() {
-    List<ASTCDMethod> methodList = getMethodsBy("visit", 1, scopeSkeletonCreatorClass);
+    List<ASTCDMethod> methodList = getMethodsBy("visit", 1, scopesGenitorClass);
     ASTMCType astType = this.mcTypeFacade.createQualifiedType(AST_INHERITED_SYMBOL);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
@@ -404,7 +404,7 @@ public class ScopeSkeletonCreatorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAddToScopeAndLinkWithNodeAutomatonNode() {
-    List<ASTCDMethod> methodList = getMethodsBy("addToScopeAndLinkWithNode", 2, scopeSkeletonCreatorClass);
+    List<ASTCDMethod> methodList = getMethodsBy("addToScopeAndLinkWithNode", 2, scopesGenitorClass);
     ASTMCType astType = this.mcTypeFacade.createQualifiedType(AUTOMATON_SYMBOL);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
@@ -423,7 +423,7 @@ public class ScopeSkeletonCreatorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAddToScopeAndLinkWithNodeStateNode() {
-    List<ASTCDMethod> methodList = getMethodsBy("addToScopeAndLinkWithNode", 2, scopeSkeletonCreatorClass);
+    List<ASTCDMethod> methodList = getMethodsBy("addToScopeAndLinkWithNode", 2, scopesGenitorClass);
     ASTMCType astType = this.mcTypeFacade.createQualifiedType(STATE_SYMBOL);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
@@ -442,7 +442,7 @@ public class ScopeSkeletonCreatorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSetLinkBetweenSymbolAndNodeAutomatonNode() {
-    List<ASTCDMethod> methodList = getMethodsBy("setLinkBetweenSymbolAndNode", 2, scopeSkeletonCreatorClass);
+    List<ASTCDMethod> methodList = getMethodsBy("setLinkBetweenSymbolAndNode", 2, scopesGenitorClass);
     ASTMCType astType = this.mcTypeFacade.createQualifiedType(AUTOMATON_SYMBOL);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
@@ -461,7 +461,7 @@ public class ScopeSkeletonCreatorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSetLinkBetweenSymbolAndNodeStateNode() {
-    List<ASTCDMethod> methodList = getMethodsBy("setLinkBetweenSymbolAndNode", 2, scopeSkeletonCreatorClass);
+    List<ASTCDMethod> methodList = getMethodsBy("setLinkBetweenSymbolAndNode", 2, scopesGenitorClass);
     ASTMCType astType = this.mcTypeFacade.createQualifiedType(STATE_SYMBOL);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
@@ -480,7 +480,7 @@ public class ScopeSkeletonCreatorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSetLinkBetweenSymbolAndNodeInheritedSymbolClassNode() {
-    List<ASTCDMethod> methodList = getMethodsBy("setLinkBetweenSymbolAndNode", 2, scopeSkeletonCreatorClass);
+    List<ASTCDMethod> methodList = getMethodsBy("setLinkBetweenSymbolAndNode", 2, scopesGenitorClass);
     ASTMCType astType = this.mcTypeFacade.createQualifiedType(INHERITED_SYMBOL);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
@@ -499,7 +499,7 @@ public class ScopeSkeletonCreatorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSetLinkBetweenSpannedScopeAndNodeAutomatonNode() {
-    List<ASTCDMethod> methodList = getMethodsBy("setLinkBetweenSpannedScopeAndNode", 2, scopeSkeletonCreatorClass);
+    List<ASTCDMethod> methodList = getMethodsBy("setLinkBetweenSpannedScopeAndNode", 2, scopesGenitorClass);
     ASTMCType astType = this.mcTypeFacade.createQualifiedType(AST_AUTOMATON);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(1).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(1).getMCType())).count());
@@ -519,7 +519,7 @@ public class ScopeSkeletonCreatorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testVisitASTTransitionNode() {
-    List<ASTCDMethod> methodList = getMethodsBy("visit", 1, scopeSkeletonCreatorClass);
+    List<ASTCDMethod> methodList = getMethodsBy("visit", 1, scopesGenitorClass);
     ASTMCType astType = this.mcTypeFacade.createQualifiedType(AST_TRANSITION);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
@@ -531,7 +531,7 @@ public class ScopeSkeletonCreatorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testVisitASTScopeNode() {
-    List<ASTCDMethod> methodList = getMethodsBy("visit", 1, scopeSkeletonCreatorClass);
+    List<ASTCDMethod> methodList = getMethodsBy("visit", 1, scopesGenitorClass);
     ASTMCType astType = this.mcTypeFacade.createQualifiedType(AST_SCOPE);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
@@ -543,7 +543,7 @@ public class ScopeSkeletonCreatorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSetLinkBetweenSpannedScopeAndNodeScopeNode() {
-    List<ASTCDMethod> methodList = getMethodsBy("setLinkBetweenSpannedScopeAndNode", 2, scopeSkeletonCreatorClass);
+    List<ASTCDMethod> methodList = getMethodsBy("setLinkBetweenSpannedScopeAndNode", 2, scopesGenitorClass);
     ASTMCType astType = this.mcTypeFacade.createQualifiedType(AST_SCOPE);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(1).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(1).getMCType())).count());
@@ -563,7 +563,7 @@ public class ScopeSkeletonCreatorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testCreate_ASTScopeNode() {
-    ASTCDMethod method = getMethodBy("create_Scope", scopeSkeletonCreatorClass);
+    ASTCDMethod method = getMethodBy("create_Scope", scopesGenitorClass);
     assertDeepEquals(PROTECTED, method.getModifier());
 
     assertTrue(method.getMCReturnType().isPresentMCType());
@@ -577,7 +577,7 @@ public class ScopeSkeletonCreatorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAddToScopeAutomatonNode() {
-    List<ASTCDMethod> methodList = getMethodsBy("addToScope", 1, scopeSkeletonCreatorClass);
+    List<ASTCDMethod> methodList = getMethodsBy("addToScope", 1, scopesGenitorClass);
     ASTMCType astType = this.mcTypeFacade.createQualifiedType(AUTOMATON_SYMBOL);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
@@ -589,7 +589,7 @@ public class ScopeSkeletonCreatorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAddToScopeStateNode() {
-    List<ASTCDMethod> methodList = getMethodsBy("addToScope", 1, scopeSkeletonCreatorClass);
+    List<ASTCDMethod> methodList = getMethodsBy("addToScope", 1, scopesGenitorClass);
     ASTMCType astType = this.mcTypeFacade.createQualifiedType(STATE_SYMBOL);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
@@ -601,7 +601,7 @@ public class ScopeSkeletonCreatorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAddToScopeQualifiedNameNode() {
-    List<ASTCDMethod> methodList = getMethodsBy("addToScope", 1, scopeSkeletonCreatorClass);
+    List<ASTCDMethod> methodList = getMethodsBy("addToScope", 1, scopesGenitorClass);
     ASTMCType astType = this.mcTypeFacade.createQualifiedType(QUALIFIED_NAME_SYMBOL);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
@@ -613,7 +613,7 @@ public class ScopeSkeletonCreatorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAddToScopeStackMethod(){
-    ASTCDMethod method = getMethodBy("addToScopeStack", scopeSkeletonCreatorClass);
+    ASTCDMethod method = getMethodBy("addToScopeStack", scopesGenitorClass);
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertDeepEquals(PUBLIC, method.getModifier());
     assertEquals(1, method.sizeCDParameters());
@@ -626,7 +626,7 @@ public class ScopeSkeletonCreatorDecoratorTest extends DecoratorTestCase {
     GeneratorSetup generatorSetup = new GeneratorSetup();
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
-    StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, scopeSkeletonCreatorClass, scopeSkeletonCreatorClass);
+    StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, scopesGenitorClass, scopesGenitorClass);
     // test parsing
     ParserConfiguration configuration = new ParserConfiguration();
     JavaParser parser = new JavaParser(configuration);
@@ -648,7 +648,7 @@ public class ScopeSkeletonCreatorDecoratorTest extends DecoratorTestCase {
     SymbolTableService mockService = Mockito.spy(new SymbolTableService(cd));
     Mockito.doReturn(Optional.empty()).when(mockService).getStartProdASTFullName(Mockito.any(ASTCDDefinition.class));
 
-    ScopeSkeletonCreatorDecorator decorator = new ScopeSkeletonCreatorDecorator(glex,
+    ScopesGenitorDecorator decorator = new ScopesGenitorDecorator(glex,
         mockService, new VisitorService(cd), new MethodDecorator(glex, new SymbolTableService(decoratedCompilationUnit)));
 
     //create non present SymbolTableCreator

@@ -338,11 +338,8 @@ public class HandlerDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
     
     visitorMethods.addAll(createHandlerScopeMethod(scopeType, simpleVisitorName, traverseSymbolsBody));
 
-    // only create artifact scope methods if grammar contains productions or
-    // refers to a starting production of a super grammar
-    if (symbolTableService.hasProd(astcdDefinition) || symbolTableService.hasStartProd(astcdDefinition)) {
-      visitorMethods.addAll(createHandlerScopeMethod(artifactScopeType, simpleVisitorName, traverseDelegationBody));
-    }
+    visitorMethods.addAll(createHandlerScopeMethod(artifactScopeType, simpleVisitorName, traverseDelegationBody));
+
     return visitorMethods;
   }
 

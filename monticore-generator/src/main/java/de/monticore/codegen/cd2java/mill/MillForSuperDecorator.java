@@ -178,27 +178,26 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
     List<ASTCDMethod> methods = Lists.newArrayList();
     //if the super symbol does not have a start prod the mill of the super grammar (the superclass of this class) does not have methods for the artifactscope and globalscope
     String[] nameParts = fullSuperSymbolName.split("\\.");
-    String superSymbolSimpleName = nameParts[nameParts.length-1];
     if(superSymbolHasStartProd && service.hasStartProd()){
       //additionally create scope builder for artifact and global scope
-      methods.add(getScopeMethods(packageName, grammarName, superSymbolSimpleName, ARTIFACT_PREFIX));
-      methods.add(getScopeMethods(packageName, grammarName, superSymbolSimpleName, GLOBAL_SUFFIX));
+      methods.add(getScopeMethods(packageName, grammarName, ARTIFACT_PREFIX));
+      methods.add(getScopeMethods(packageName, grammarName, GLOBAL_SUFFIX));
     }
     //create scope builder for normal scope
-    methods.add(getScopeMethods(packageName, grammarName, superSymbolSimpleName, ""));
+    methods.add(getScopeMethods(packageName, grammarName, ""));
     return methods;
   }
 
-  protected ASTCDMethod getScopeMethods(String packageName, String grammarName, String superSymbolSimpleName, String prefix) {
+  protected ASTCDMethod getScopeMethods(String packageName, String grammarName, String prefix) {
     if(packageName.equals(".")){
       packageName = "";
     }
     String grammarMillName = service.getMillFullName();
-    String scopeClassName = grammarName + prefix + SCOPE_SUFFIX;;
+    String scopeClassName = grammarName + prefix + SCOPE_SUFFIX;
     String scopeInterfaceName = "I" + scopeClassName;
     String returnType = packageName + grammarName.toLowerCase() + "." + SYMBOL_TABLE_PACKAGE + "." + scopeInterfaceName;
-    String methodName = "_"+ StringTransformations.uncapitalize(superSymbolSimpleName) + prefix + SCOPE_SUFFIX;
-    String scopeName = StringTransformations.uncapitalize(grammarName + prefix + SCOPE_SUFFIX);
+    String methodName = "_" + StringTransformations.uncapitalize(prefix + SCOPE_SUFFIX);
+    String scopeName = StringTransformations.uncapitalize( prefix + SCOPE_SUFFIX);
     ASTCDMethod scopeMethod = getCDMethodFacade().createMethod(PROTECTED, getMCTypeFacade().createQualifiedType(returnType), methodName);
     this.replaceTemplate(EMPTY_BODY, scopeMethod, new TemplateHookPoint("mill.ProtectedMethodForSuper", grammarMillName, scopeName));
     return scopeMethod;

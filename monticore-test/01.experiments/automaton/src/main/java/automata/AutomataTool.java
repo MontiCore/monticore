@@ -16,7 +16,6 @@ import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.RecognitionException;
 
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.Optional;
 
 /**
@@ -95,7 +94,7 @@ public class AutomataTool {
     // Now we know the model is well-formed and start backend
 
     // store artifact scope and its symbols
-    AutomataScopeDeSer deser = new AutomataScopeDeSer();
+    AutomataSymbols2Json deser = new AutomataSymbols2Json();
     deser.store(modelTopScope, args[1]);
 
     // analyze the model with a visitor
@@ -147,9 +146,9 @@ public class AutomataTool {
    */
   public static IAutomataArtifactScope createSymbolTable(ASTAutomaton ast) {
 
-    IAutomataGlobalScope globalScope = AutomataMill.automataGlobalScope();
+    IAutomataGlobalScope globalScope = AutomataMill.globalScope();
     globalScope.setModelPath(new ModelPath());
-    globalScope.setModelFileExtension("aut");
+    globalScope.setFileExt("aut");
 
     AutomataSymbolTableCreator symbolTable = AutomataMill
         .automataSymbolTableCreator();

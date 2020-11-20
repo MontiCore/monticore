@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("scopeSkeletonCreatorDelegator")}
+${tc.signature("scopesGenitorDelegator")}
   this.globalScope = globalScope;
-  this.scopeSkeletonCreator = new ${scopeSkeletonCreatorDelegator}(globalScope);
+  this.scopesGenitorDelegator = new ${scopesGenitorDelegator}(globalScope);
   this.priorityList = new java.util.ArrayList<>();

@@ -97,8 +97,7 @@ public class SymbolTableCreatorDelegatorDecorator extends AbstractCreator<ASTCDC
   }
 
   protected ASTCDConstructor createZeroArgsConstructor(String symTabCreatorDelegator) {
-    String gs = StringTransformations.uncapitalize(symbolTableService.getGlobalScopeSimpleName());
-    String gsFromMill = symbolTableService.getMillFullName()+"."+gs+"()";
+    String gsFromMill = symbolTableService.getMillFullName()+".globalScope()";
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), symTabCreatorDelegator);
     this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("this(" + gsFromMill + ");"));
     return constructor;

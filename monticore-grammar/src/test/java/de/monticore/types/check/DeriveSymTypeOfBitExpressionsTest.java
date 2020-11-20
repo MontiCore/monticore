@@ -38,7 +38,7 @@ public class DeriveSymTypeOfBitExpressionsTest {
   @Before
   public void setupForEach() {
     // Setting up a Scope Infrastructure (without a global Scope)
-    scope = CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScope();
+    scope = CombineExpressionsWithLiteralsMill.scope();
     scope.setEnclosingScope(null);       // No enclosing Scope: Search ending here
     scope.setExportingSymbols(true);
     scope.setAstNode(null); // hopefully unused

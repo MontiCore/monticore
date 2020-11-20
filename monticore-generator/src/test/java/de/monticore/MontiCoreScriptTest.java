@@ -343,14 +343,14 @@ public class MontiCoreScriptTest {
     int index = 0;
     assertEquals(10, symbolPackageCD.getCDDefinition().sizeCDClasss());
     assertEquals("StatechartScope", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
-    assertEquals("StatechartSymbolTablePrinter", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
+    assertEquals("StatechartSymbols2Json", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
     assertEquals("StatechartSymbolTableCreatorDelegator", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
-    assertEquals("StatechartScopeSkeletonCreatorDelegator", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
+    assertEquals("StatechartScopesGenitorDelegator", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
     assertEquals("StatechartGlobalScope", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
     assertEquals("StatechartArtifactScope", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
     assertEquals("StatechartScopeDeSer", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
     assertEquals("StatechartSymbolTableCreator", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
-    assertEquals("StatechartScopeSkeletonCreator", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
+    assertEquals("StatechartScopesGenitor", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
     assertEquals("StatechartPhasedSymbolTableCreatorDelegator", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
 
     index = 0;
