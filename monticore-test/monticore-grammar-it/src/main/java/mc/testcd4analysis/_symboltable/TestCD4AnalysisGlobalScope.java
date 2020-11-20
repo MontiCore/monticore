@@ -86,7 +86,7 @@ public class TestCD4AnalysisGlobalScope extends TestCD4AnalysisGlobalScopeTOP{
       getModelPath().resolveModel(symbolFileCoordinate);
       if (symbolFileCoordinate.hasLocation()) {
         java.net.URL url = symbolFileCoordinate.getLocation();
-        this.addSubScope(scopeDeSer.load(url));
+        this.addSubScope(symbols2Json.load(url));
       }
 
       // else, use try to load model (instead of symbol table)

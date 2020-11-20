@@ -3,10 +3,9 @@
 import coloredgraph.ColoredGraphMill;
 import coloredgraph._ast.ASTGraph;
 import coloredgraph._parser.ColoredGraphParser;
-import coloredgraph._symboltable.ColoredGraphScopeDeSer;
 import coloredgraph._symboltable.ColoredGraphSymbolTableCreatorDelegator;
+import coloredgraph._symboltable.ColoredGraphSymbols2Json;
 import coloredgraph._symboltable.IColoredGraphArtifactScope;
-import coloredgraph._symboltable.IColoredGraphGlobalScope;
 import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.RecognitionException;
 
@@ -47,7 +46,7 @@ public class ColoredGraphTool {
     Log.info("------------------", "ColoredGraphTool");
 
     // store symbol table
-    new ColoredGraphScopeDeSer().store(symTab, "target/" + model + "sym");
+    new ColoredGraphSymbols2Json().store(symTab, "target/" + model + "sym");
 
   }
 

@@ -37,10 +37,6 @@ public class GenerateAutomataParser {
       ASTMCGrammar ast = new Grammar_WithConceptsParser()
               .parseMCGrammar(filename).get();
       
-      GlobalExtensionManagement glex = new GlobalExtensionManagement();
-
-      ASTCDCompilationUnit astCD = new MC2CDTransformation(glex).apply(ast);
-
       // Initialize symbol table
       // (using imported grammars from the model path)
       ModelPath modelPath = new ModelPath(Paths.get(
@@ -60,8 +56,9 @@ public class GenerateAutomataParser {
       File outputDir = new File(args[1]);
 
       // Generate the parser
-      ParserGenerator.generateFullParser(
-          glex, astCD, ast, gs, handcodedPath, outputDir);
+      GlobalExtensionManagement glex = new GlobalExtensionManagement();
+      ParserGenerator.generateParser(
+          glex, ast, gs, handcodedPath, outputDir);
     }
     catch (IOException e) {
       // If something happens ... handling necessary

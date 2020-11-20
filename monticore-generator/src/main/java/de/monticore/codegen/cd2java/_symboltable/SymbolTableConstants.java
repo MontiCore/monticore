@@ -46,7 +46,7 @@ public class SymbolTableConstants {
 
   public static final String DE_SER_SUFFIX = "DeSer";
 
-  public static final String SYMBOL_TABLE_PRINTER_SUFFIX = "SymbolTablePrinter";
+  public static final String SYMBOLS_2_JSON_SUFFIX = "Symbols2Json";
 
   /**
    * runtime classes

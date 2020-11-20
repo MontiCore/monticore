@@ -16,7 +16,6 @@ import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.types.MCTypeFacade;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,11 +26,9 @@ import static de.monticore.codegen.cd2java.DecoratorAssert.*;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
 import static org.junit.Assert.*;
 
-public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
+public class Symbols2JsonDecoratorTest extends DecoratorTestCase {
 
   private GlobalExtensionManagement glex;
-
-  private MCTypeFacade mcTypeFacade;
 
   private ASTCDCompilationUnit decoratedSymbolCompilationUnit;
 
@@ -58,7 +55,6 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
   @Before
   public void setUp(){
     Log.init();
-    this.mcTypeFacade = MCTypeFacade.getInstance();
     this.glex = new GlobalExtensionManagement();
 
     this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
@@ -69,7 +65,7 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
     originalCompilationUnit = decoratedSymbolCompilationUnit.deepClone();
     this.glex.setGlobalValue("service", new AbstractService(astcdCompilationUnit));
 
-    SymbolTablePrinterDecorator decorator = new SymbolTablePrinterDecorator(glex, new SymbolTableService(astcdCompilationUnit), new VisitorService(decoratedSymbolCompilationUnit));
+    Symbols2JsonDecorator decorator = new Symbols2JsonDecorator(glex, new SymbolTableService(astcdCompilationUnit), new VisitorService(decoratedSymbolCompilationUnit));
     this.symbolTablePrinterClass = decorator.decorate(decoratedScopeCompilationUnit, decoratedSymbolCompilationUnit);
   }
 
@@ -80,7 +76,7 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testClassName(){
-    assertEquals("AutomatonSymbolTablePrinter", symbolTablePrinterClass.getName());
+    assertEquals("AutomatonSymbols2Json", symbolTablePrinterClass.getName());
   }
 
   @Test
@@ -125,7 +121,7 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount(){
-    assertEquals(29, symbolTablePrinterClass.sizeCDMethods());
+    assertEquals(33, symbolTablePrinterClass.sizeCDMethods());
   }
 
   @Test
@@ -367,6 +363,40 @@ public class SymbolTablePrinterDecoratorTest extends DecoratorTestCase {
     assertEquals("node", parameter.getName());
     assertDeepEquals(FOO_SYMBOL, parameter.getMCType());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
+  }
+
+  @Test
+  public void testLoadMethods(){
+    List<ASTCDMethod> methods = getMethodsBy("load", symbolTablePrinterClass);
+    assertEquals(3, methods.size());
+    for(ASTCDMethod method: methods){
+      assertDeepEquals(I_AUTOMATON_ARTIFACT_SCOPE, method.getMCReturnType().getMCType());
+      assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
+      assertEquals(1, method.sizeCDParameters());
+    }
+
+    assertEquals("url", methods.get(0).getCDParameter(0).getName());
+    assertDeepEquals("java.net.URL", methods.get(0).getCDParameter(0).getMCType());
+
+    assertEquals("reader", methods.get(1).getCDParameter(0).getName());
+    assertDeepEquals("java.io.Reader", methods.get(1).getCDParameter(0).getMCType());
+
+    assertEquals("model", methods.get(2).getCDParameter(0).getName());
+    assertDeepEquals(String.class, methods.get(2).getCDParameter(0).getMCType());
+  }
+
+  @Test
+  public void testStoreMethod(){
+    ASTCDMethod method = getMethodBy("store", symbolTablePrinterClass);
+
+    assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
+    assertEquals(2, method.sizeCDParameters());
+    assertEquals("scope", method.getCDParameter(0).getName());
+    assertDeepEquals(I_AUTOMATON_ARTIFACT_SCOPE, method.getCDParameter(0).getMCType());
+    assertEquals("fileName", method.getCDParameter(1).getName());
+    assertDeepEquals(String.class, method.getCDParameter(1).getMCType());
+    assertFalse(method.getMCReturnType().isPresentMCVoidType());
+    assertDeepEquals(String.class, method.getMCReturnType().getMCType());
   }
 
   @Test

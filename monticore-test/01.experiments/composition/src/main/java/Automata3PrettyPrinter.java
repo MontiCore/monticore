@@ -37,15 +37,5 @@ public class Automata3PrettyPrinter {
     return out.getContent();
   }
 
-  // ----------------------------------------------------------
-  // Here we can override any visit, endVisit, ... method 
-  // Which gets precedence over any (by default) delegated method:
-
-//  @Override
-  public void visit(ASTAutomaton node) {
-    out.println("/* print by composed Automata3PrettyPrinter */");
-    out.println("automata " + node.getName() + " {");
-    out.indent();
-  }
 }
 
