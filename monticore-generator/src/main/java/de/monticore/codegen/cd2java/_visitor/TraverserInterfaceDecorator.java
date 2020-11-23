@@ -128,7 +128,7 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
     boolean isScopeSpanningSymbol = symbolTableService.hasScopeStereotype(astcdClass.getModifier()) ||
         symbolTableService.hasInheritedScopeStereotype(astcdClass.getModifier());
     String handlerName = visitorService.getHandlerSimpleName();
-    String topCast = isTop() ? "(" + visitorService.getTraverserSimpleName() + ") " : "";
+    String topCast = isTop() ? "(" + visitorService.getTraverserInterfaceSimpleName() + ") " : "";
     this.replaceTemplate(EMPTY_BODY, traverseMethod, new TemplateHookPoint(TRAVERSER_TRAVERSE_TEMPLATE, astcdClass, isScopeSpanningSymbol, handlerName, topCast));
     return traverseMethod;
   }
@@ -388,7 +388,7 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
     ASTMCQualifiedType scopeType = getMCTypeFacade().createQualifiedType(symbolTableService.getScopeInterfaceFullName(cdSymbol));
     ASTMCQualifiedType artifactScopeType = getMCTypeFacade().createQualifiedType(symbolTableService.getArtifactScopeInterfaceFullName(cdSymbol));
     String handlerName = visitorService.getHandlerSimpleName();
-    String topCast = isTop() ? "(" + visitorService.getTraverserSimpleName() + ") " : "";
+    String topCast = isTop() ? "(" + visitorService.getTraverserInterfaceSimpleName() + ") " : "";
     
     TemplateHookPoint traverseSymbolsBody = new TemplateHookPoint(TRAVERSER_TRAVERSE_SCOPE_TEMPLATE, getSymbolsTransitive(), handlerName, topCast);
     StringHookPoint traverseDelegationBody = new StringHookPoint(TRAVERSE + "(("
