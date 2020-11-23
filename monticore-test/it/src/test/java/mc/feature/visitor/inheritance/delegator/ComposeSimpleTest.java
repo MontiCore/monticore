@@ -49,9 +49,9 @@ public class ComposeSimpleTest extends CommonVisitorTest {
     expectedRun.setLength(0);
     if (!setUpDone) {
       setUpDone = true;
-      traverser.setAVisitor(aVis);
-      traverser.setBVisitor(bVis);
-      traverser.setCVisitor(cVis);
+      traverser.addAVisitor(aVis);
+      traverser.addBVisitor(bVis);
+      traverser.addCVisitor(cVis);
       traverser.setAHandler(aHan);
       traverser.setBHandler(bHan);
       traverser.setCHandler(cHan);

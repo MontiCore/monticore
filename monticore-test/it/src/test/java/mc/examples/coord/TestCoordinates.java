@@ -88,14 +88,14 @@ public class TestCoordinates extends GeneratorIntegrationsTest {
     // Transform cartesian to polar coordinates
     CoordcartesianTraverser t1 = CoordcartesianMill.traverser();
     CartesianToPolar transformer = new CartesianToPolar();
-    t1.setCoordcartesianVisitor(transformer);
+    t1.addCoordcartesianVisitor(transformer);
     astCartesian.get().accept(t1);
     
     // Create PrettyPrinter
     CoordpolarTraverser t2 = CoordpolarMill.traverser();
     IndentPrinter ip = new IndentPrinter();
     PolarPrettyPrinterConcreteVisitor p = new PolarPrettyPrinterConcreteVisitor(ip);
-    t2.setCoordpolarVisitor(p);
+    t2.addCoordpolarVisitor(p);
     
     // Pretty-print the cartesian coordinates
     transformer.getResult().accept(t2);
@@ -141,14 +141,14 @@ public class TestCoordinates extends GeneratorIntegrationsTest {
     // Transform cartesian to polar coordinates
     CoordcartesianTraverser t1 = CoordcartesianMill.traverser();
     Mirror transformer = new Mirror();
-    t1.setCoordcartesianVisitor(transformer);
+    t1.addCoordcartesianVisitor(transformer);
     astCartesian.get().accept(t1);
     
     // Create PrettyPrinter
     CoordcartesianTraverser t2 = CoordcartesianMill.traverser();
     IndentPrinter ip = new IndentPrinter();
     CartesianPrettyPrinterConcreteVisitor p = new CartesianPrettyPrinterConcreteVisitor(ip);
-    t2.setCoordcartesianVisitor(p);
+    t2.addCoordcartesianVisitor(p);
     
     // Pretty-print the cartesian coordinates
     astCartesian.get().accept(t2);
