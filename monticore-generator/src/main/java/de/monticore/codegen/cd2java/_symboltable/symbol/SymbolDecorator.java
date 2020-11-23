@@ -140,7 +140,7 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
     if (symbolInput.isPresentModifier() &&
             (symbolTableService.hasScopeStereotype(symbolInput.getModifier()) || symbolTableService.hasInheritedScopeStereotype(symbolInput.getModifier()))) {
       ASTCDAttribute spannedScopeAttribute = createSpannedScopeAttribute();
-      if (!symbolTableService.hasInheritedScopeStereotype(symbolInput.getModifier())) {
+      if (!symbolTableService.hasInheritedSymbolStereotype(symbolInput.getModifier())) {
         symbolClass.addCDAttribute(spannedScopeAttribute);
       }
       symbolClass.addAllCDMethods(createSpannedScopeMethods(scopeInterface));
