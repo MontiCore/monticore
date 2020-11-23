@@ -79,7 +79,7 @@ public final class VisitorConstants {
   
   public static final String VISITOR_METHODS_DELEGATOR_TEMPLATE = "_visitor.delegator.VisitorMethods";
 
-  public static final String TRAVERSER_SET_VISITOR_TEMPLATE = "_visitor.traverser.SetVisitor";
+  public static final String TRAVERSER_ADD_VISITOR_TEMPLATE = "_visitor.traverser.AddVisitor";
   
   public static final String TRAVERSER_SET_HANDLER_TEMPLATE = "_visitor.traverser.SetHandler";
   

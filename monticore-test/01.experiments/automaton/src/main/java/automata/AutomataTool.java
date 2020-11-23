@@ -100,14 +100,14 @@ public class AutomataTool {
     // analyze the model with a visitor
     CountStates cs = new CountStates();
     AutomataTraverser traverser = AutomataMill.traverser();
-    traverser.setAutomataVisitor(cs);
+    traverser.addAutomataVisitor(cs);
     ast.accept(traverser);
     Log.info("Automaton has " + cs.getCount() + " states.", "AutomataTool");
 
     // execute a pretty printer
     PrettyPrinter pp = new PrettyPrinter();
     AutomataTraverser traverser2 = AutomataMill.traverser();
-    traverser2.setAutomataVisitor(pp);
+    traverser2.addAutomataVisitor(pp);
     traverser2.setAutomataHandler(pp);
     ast.accept(traverser2);
     Log.info("Pretty printing automaton into console:", "AutomataTool");

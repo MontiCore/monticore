@@ -40,6 +40,7 @@ import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
@@ -126,7 +127,9 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
     ASTCDMethod traverseMethod = visitorService.getVisitorMethod(TRAVERSE, astType);
     boolean isScopeSpanningSymbol = symbolTableService.hasScopeStereotype(astcdClass.getModifier()) ||
         symbolTableService.hasInheritedScopeStereotype(astcdClass.getModifier());
-    this.replaceTemplate(EMPTY_BODY, traverseMethod, new TemplateHookPoint(TRAVERSER_TRAVERSE_TEMPLATE, astcdClass, isScopeSpanningSymbol, visitorService.getHandlerSimpleName()));
+    String handlerName = visitorService.getHandlerSimpleName();
+    String topCast = isTop() ? "(" + visitorService.getTraverserSimpleName() + ") " : "";
+    this.replaceTemplate(EMPTY_BODY, traverseMethod, new TemplateHookPoint(TRAVERSER_TRAVERSE_TEMPLATE, astcdClass, isScopeSpanningSymbol, handlerName, topCast));
     return traverseMethod;
   }
   
@@ -145,15 +148,15 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
       // e.g. public void setAutomataVisitor(automata._visitor.AutomataVisitor2 automataVisitor)
       ASTMCQualifiedType visitorType = visitorService.getVisitor2Type(cd.getSymbol());
       ASTCDParameter visitorParameter = getCDParameterFacade().createParameter(visitorType, StringTransformations.uncapitalize(simpleName));
-      ASTCDMethod setVisitorMethod = getCDMethodFacade().createMethod(PUBLIC, "set" + simpleName, visitorParameter);
-      methodList.add(setVisitorMethod);
+      ASTCDMethod addVisitorMethod = getCDMethodFacade().createMethod(PUBLIC, "add" + simpleName, visitorParameter);
+      methodList.add(addVisitorMethod);
 
       // add getter for visitor attribute
       // e.g. public Optional<automata._visitor.AutomataVisitor2> getAutomataVisitor()
-      ASTMCOptionalType optionalVisitorType = getMCTypeFacade().createOptionalTypeOf(visitorType);
-      ASTCDMethod getVisitorMethod = getCDMethodFacade().createMethod(PUBLIC, optionalVisitorType, "get" + simpleName);
-      this.replaceTemplate(EMPTY_BODY, getVisitorMethod, new StringHookPoint("return Optional.empty();"));
-      methodList.add(getVisitorMethod);
+      ASTMCListType listVisitorType = getMCTypeFacade().createListTypeOf(visitorType);
+      ASTCDMethod getVisitorsMethod = getCDMethodFacade().createMethod(PUBLIC, listVisitorType, "get" + simpleName + "List");
+      this.replaceTemplate(EMPTY_BODY, getVisitorsMethod, new StringHookPoint("return new ArrayList<>();"));
+      methodList.add(getVisitorsMethod);
     }
     return methodList;
   }
@@ -384,8 +387,10 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
     CDDefinitionSymbol cdSymbol = astcdDefinition.getSymbol();
     ASTMCQualifiedType scopeType = getMCTypeFacade().createQualifiedType(symbolTableService.getScopeInterfaceFullName(cdSymbol));
     ASTMCQualifiedType artifactScopeType = getMCTypeFacade().createQualifiedType(symbolTableService.getArtifactScopeInterfaceFullName(cdSymbol));
+    String handlerName = visitorService.getHandlerSimpleName();
+    String topCast = isTop() ? "(" + visitorService.getTraverserSimpleName() + ") " : "";
     
-    TemplateHookPoint traverseSymbolsBody = new TemplateHookPoint(TRAVERSER_TRAVERSE_SCOPE_TEMPLATE, getSymbolsTransitive(), visitorService.getHandlerSimpleName());
+    TemplateHookPoint traverseSymbolsBody = new TemplateHookPoint(TRAVERSER_TRAVERSE_SCOPE_TEMPLATE, getSymbolsTransitive(), handlerName, topCast);
     StringHookPoint traverseDelegationBody = new StringHookPoint(TRAVERSE + "(("
         + symbolTableService.getScopeInterfaceFullName() + ") node);");
     
