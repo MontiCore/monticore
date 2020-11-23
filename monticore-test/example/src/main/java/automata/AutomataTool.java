@@ -34,7 +34,7 @@ public class AutomataTool {
     String model = args[0];
     
     // setup the deser infrastructure
-    final AutomataScopeDeSer deser = new AutomataScopeDeSer();
+    AutomataSymbols2Json deser = new AutomataSymbols2Json();
 
     // parse the model and create the AST representation
     final ASTAutomaton ast = parse(model);
