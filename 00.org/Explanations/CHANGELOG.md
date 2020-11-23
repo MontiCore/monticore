@@ -12,6 +12,7 @@ to be released
 * experiments now showcase the use of traversers   
 
 ### Changes
+* The generated parser uses the builder instead of the factory. This means that in grammars the variable `_aNode` is no longer available. Use instead `_builder`. 
 * Multiple renamings and signature changes regarding the deser infrastructure
   * renamed `XSymbolTablePrinter` to `XSymbols2Json`
   * moved load and store methods form `XScopeDeSer` to `XSymbols2Json`
