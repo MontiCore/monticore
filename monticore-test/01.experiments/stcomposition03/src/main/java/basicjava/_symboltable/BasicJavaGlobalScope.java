@@ -33,7 +33,7 @@ public class BasicJavaGlobalScope extends BasicJavaGlobalScopeTOP {
     super.loadFileForModelName(modelName, symbolName);
 
     // 2. calculate potential location of model file and try to find it in model path
-    ModelCoordinate model = ModelCoordinates.createQualifiedCoordinate(modelName, getFileExt());
+    ModelCoordinate model = ModelCoordinates.createQualifiedCoordinate(modelName, "javamodel");
     model = getModelPath().resolveModel(model);
 
     // 3. if the file was found, parse the model and create its symtab

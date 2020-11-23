@@ -30,7 +30,7 @@ public class TransHostGlobalScope extends TransHostGlobalScopeTOP {
   @Override public void loadFileForModelName(String modelName, String symbolName) {
     super.loadFileForModelName(modelName, symbolName);
     ModelCoordinate modelCoordinate = ModelCoordinates
-        .createQualifiedCoordinate(modelName, getFileExt());
+        .createQualifiedCoordinate(modelName,"transhost");
     String filePath = modelCoordinate.getQualifiedPath().toString();
     if (!isFileLoaded(filePath)) {
       addLoadedFile(filePath);

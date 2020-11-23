@@ -12,6 +12,7 @@ import org.apache.commons.io.filefilter.RegexFileFilter;
 import java.io.File;
 import java.io.FileFilter;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -49,8 +50,9 @@ public class FileFinder {
       File folder = p.resolve(folderPath).toFile(); //e.g., "src/test/resources/foo/bar"
       if (folder.exists() && folder.isDirectory()) {
         // perform the actual file filter on the folder and collect result
-        File[] files = folder.listFiles(filter);
-        result.addAll(Arrays.asList(files));
+        for (File f : folder.listFiles(filter)) {
+          result.add(Paths.get(folderPath, f.getName()).toFile());
+        }
       }
     }
 
@@ -61,8 +63,8 @@ public class FileFinder {
       Set<String> loadedFiles) {
     List<ModelCoordinate> result = new ArrayList<>();
     for (File f : files) {
-      if (!loadedFiles.contains(f.getName())) {
-        ModelCoordinate mc = ModelCoordinates.createQualifiedCoordinate(f.toPath());
+      if (!loadedFiles.contains(f.toString())) {
+        ModelCoordinate mc = ModelCoordinates.createQualifiedCoordinate(Paths.get(f.toString()));
         mc = mp.resolveModel(mc);
         result.add(mc);
       }
@@ -90,7 +92,7 @@ public class FileFinder {
       return null;
     }
     else if (1 > files.size()) {
-//      Log.error("0xA7655 Cannot find a file containing the model '" + qualifiedModelName + "'!");
+      //      Log.error("0xA7655 Cannot find a file containing the model '" + qualifiedModelName + "'!");
       return null;
     }
     else

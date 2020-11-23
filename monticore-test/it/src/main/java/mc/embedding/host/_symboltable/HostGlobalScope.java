@@ -30,7 +30,7 @@ public class HostGlobalScope extends HostGlobalScopeTOP {
   @Override public void loadFileForModelName(String modelName, String symbolName) {
     super.loadFileForModelName(modelName, symbolName);
     ModelCoordinate modelCoordinate = ModelCoordinates
-        .createQualifiedCoordinate(modelName, getFileExt());
+        .createQualifiedCoordinate(modelName, "host");
     String filePath = modelCoordinate.getQualifiedPath().toString();
     if (!isFileLoaded(filePath)) {
       addLoadedFile(filePath);
