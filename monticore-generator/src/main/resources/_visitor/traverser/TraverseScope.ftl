@@ -10,7 +10,7 @@ ${tc.signature("symbols", "handler")}
       <#assign simpleName= symbol?substring(symbol?last_index_of(".")+1)>
     </#if>
   for (${symbol} s : node.getLocal${simpleName}s()) {
-    s.accept(getRealThis());
+    s.accept(this);
   }
 </#list>
 }

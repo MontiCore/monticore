@@ -8,7 +8,7 @@ import static de.monticore.codegen.cd2java._visitor.VisitorConstants.HANDLE;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.HANDLER_HANDLE_TEMPLATE;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.HANDLER_TRAVERSE_SCOPE_TEMPLATE;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.HANDLER_TRAVERSE_TEMPLATE;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.REAL_THIS;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.TRAVERSER;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.SET_TRAVERSER;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.TRAVERSE;
 
@@ -89,7 +89,7 @@ public class HandlerDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
         .setName(handlerSimpleName)
         .setModifier(PUBLIC.build())
         .addCDMethod(addGetTraverserMethod(traverserType))
-        .addCDMethod(addTraverserMethod(traverserType))
+        .addCDMethod(addSetTraverserMethod(traverserType))
         .addAllCDMethods(createHandlerMethods(compilationUnit.getCDDefinition()))
         .build();
     
@@ -118,8 +118,8 @@ public class HandlerDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
    * @param visitorType The input parameter type
    * @return The decorated setRealThis method
    */
-  protected ASTCDMethod addTraverserMethod(ASTMCType visitorType) {
-    ASTCDParameter visitorParameter = getCDParameterFacade().createParameter(visitorType, REAL_THIS);
+  protected ASTCDMethod addSetTraverserMethod(ASTMCType visitorType) {
+    ASTCDParameter visitorParameter = getCDParameterFacade().createParameter(visitorType, TRAVERSER);
     ASTCDMethod setRealThis = this.getCDMethodFacade().createMethod(PUBLIC, SET_TRAVERSER, visitorParameter);
     String generatedErrorCode = visitorService.getGeneratedErrorCode(visitorType.printType(
         new MCSimpleGenericTypesPrettyPrinter(new IndentPrinter())) + SET_TRAVERSER);
