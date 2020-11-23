@@ -40,7 +40,7 @@ public class QuestionnaireTool {
     // run the pretty printing:
     QuestionnaireVisitor2 qv = new QuestionnairePrettyPrinter();
     QuestionnaireTraverser t1 = QuestionnaireMill.traverser();
-    t1.setQuestionnaireVisitor(qv);
+    t1.addQuestionnaireVisitor(qv);
     ast.accept(t1);
     Log.info("------------------", "QuestionnaireTool");
 
@@ -48,7 +48,7 @@ public class QuestionnaireTool {
     QuestionnaireTraverser t2 = QuestionnaireMill.traverser();
     QuestionnaireVisitor2 vis = new QuestionnaireTreePrinter();
     QuestionnaireHandler han = new QuestionnaireTreeHandler();
-    t2.setQuestionnaireVisitor(vis);
+    t2.addQuestionnaireVisitor(vis);
     t2.setQuestionnaireHandler(han);
     ast.accept(t2);
   }

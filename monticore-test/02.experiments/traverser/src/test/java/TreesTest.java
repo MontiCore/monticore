@@ -57,7 +57,7 @@ public class TreesTest {
     // create traverser using mill
     TreesTraverser traverser = TreesMill.traverser();
     LeafCounter counter = new LeafCounter();
-    traverser.setTreesVisitor(counter);
+    traverser.addTreesVisitor(counter);
     
     // compute
     tree.accept(traverser);

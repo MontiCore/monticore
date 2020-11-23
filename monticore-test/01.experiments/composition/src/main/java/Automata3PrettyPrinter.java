@@ -23,9 +23,9 @@ public class Automata3PrettyPrinter {
     ExpressionSublangPP espp = new ExpressionSublangPP(o);
 
     // ... configured with three sublanguage visitors
-    traverser.setInvAutomataVisitor(new InvAutomataSublangPP(o));
-    traverser.setExpressionVisitor(espp);
-    traverser.setAutomata3Visitor(new Automata3SublangPP(o));
+    traverser.addInvAutomataVisitor(new InvAutomataSublangPP(o));
+    traverser.addExpressionVisitor(espp);
+    traverser.addAutomata3Visitor(new Automata3SublangPP(o));
     
     // add expression sublanguage visitor also as handler 
     // as it provides a custom handle strategy
