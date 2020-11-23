@@ -1,7 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("simpleHandlerNameList", "methodName")}
-<#list simpleHandlerNameList as simpleVisitorName>
-  if (getRealThis().get${simpleVisitorName}().isPresent()) {
-    getRealThis().get${simpleVisitorName}().get().${methodName}(node);
-  }
+${tc.signature("simpleVisitorNameList", "methodName")}
+<#list simpleVisitorNameList as simpleVisitorName>
+  get${simpleVisitorName}List().forEach(v -> v.${methodName}(node));
 </#list>

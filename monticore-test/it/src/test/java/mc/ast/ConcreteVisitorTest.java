@@ -22,7 +22,7 @@ public class ConcreteVisitorTest extends GeneratorIntegrationsTest {
     
     FeatureDSLTraverser traverser = FeatureDSLMill.traverser();
     TestVisitor v = new TestVisitor();
-    traverser.setFeatureDSLVisitor(v);
+    traverser.addFeatureDSLVisitor(v);
     TestHandler h = new TestHandler();
     traverser.setFeatureDSLHandler(h);
     
