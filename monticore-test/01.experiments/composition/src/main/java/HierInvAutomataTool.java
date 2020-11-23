@@ -45,10 +45,10 @@ public class HierInvAutomataTool {
     Log.info("=== 2: HierInvAutomatonCheapVisit =============", "HierIAT");
     HierInvAutomataTraverser traverser = HierInvAutomataMill.traverser();
     HierInvAutomataCheapVisit acv1 = new HierInvAutomataCheapVisit();
-    traverser.setHierInvAutomataVisitor(acv1);
-    traverser.setAutomata3Visitor(acv1);
-    traverser.setExpressionVisitor(acv1);
-    traverser.setInvAutomataVisitor(acv1);
+    traverser.addHierInvAutomataVisitor(acv1);
+    traverser.addAutomata3Visitor(acv1);
+    traverser.addExpressionVisitor(acv1);
+    traverser.addInvAutomataVisitor(acv1);
     ast.accept(traverser);
     // XXXYX // acv1.setVerbosity();
     // Log.info("=== 3: HierInvAutomatonCheapVisit.verbose() ===", "HierIAT");
