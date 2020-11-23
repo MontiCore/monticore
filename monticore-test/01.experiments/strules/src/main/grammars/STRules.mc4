@@ -15,16 +15,18 @@ grammar STRules extends de.monticore.MCBasics {
   symbolrule S2 =  c:int*
                    method public int sumCs() {
                     int result = 0;
-                    for(int i = 0 ; i < c.length() ; i++) {
+                    for(int i = 0 ; i < c.size() ; i++) {
                       result += c.get(i);
                     }
                     return result;
                   }
                   ;
 
-   symbolrule S3 = b:boolean bo:boolean? bl:boolean* bp:boolean+
-
-
+   symbolrule S3 = /*b:boolean bo:boolean?*/ bl:boolean* bp:boolean+
+                   i:int     io:int?    il:int*    ip:int+
+                   d:double d_o:double? dl:double* dp:double+
+                   s:String  so:String? sl:String* sp:String+
+   ;
 
   scoperule = a:ISymbol* b:boolean
   method public boolean isEmpty() {

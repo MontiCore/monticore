@@ -2,10 +2,7 @@
 
 package strules._symboltable;
 
-import coloredgraph._ast.ASTGraph;
-
 import java.util.Deque;
-import java.util.HashSet;
 
 /**
  * This handwritten class extends the generated symbol table cretion to set the values of

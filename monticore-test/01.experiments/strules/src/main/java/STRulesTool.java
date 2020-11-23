@@ -37,7 +37,6 @@ public class STRulesTool {
     Log.info(model + " parsed successfully!", "ColoredGraphTool");
 
     // instantiate symbol table:
-    STRulesMill.sTRulesGlobalScope().setModelFileExtension("cg");
     STRulesSymbolTableCreatorDelegator stc = STRulesMill
         .sTRulesSymbolTableCreatorDelegator();
     ISTRulesArtifactScope symTab = stc.createFromAST(ast);
