@@ -45,7 +45,7 @@ public class Automata15Tool {
     // execute a pretty printer
     Automata15PrettyPrinter pp = new Automata15PrettyPrinter();
     Automata15Traverser traverser = Automata15Mill.traverser();
-    traverser.setAutomata15Visitor(pp);
+    traverser.addAutomata15Visitor(pp);
     ast.accept(traverser);
     Log.info("Pretty printing the parsed automaton into console:", "Automata15Tool");
     System.out.println(pp.getResult());

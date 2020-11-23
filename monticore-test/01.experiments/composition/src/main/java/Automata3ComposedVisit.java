@@ -16,7 +16,7 @@ public class Automata3ComposedVisit {
     Automata3Visitor2 v3 = new Automata3Visit();
     Automata3Handle h3 = new Automata3Handle();
     
-    traverser.setAutomata3Visitor(v3);
+    traverser.addAutomata3Visitor(v3);
     traverser.setAutomata3Handler(h3);
     
     ast.accept(traverser);
