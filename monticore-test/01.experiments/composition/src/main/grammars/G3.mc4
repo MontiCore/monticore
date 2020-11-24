@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+grammar G3 extends G2 {
+
+start N;
+ 
+  // not allowed
+  //  enum E = "FOO2" | "Bla2";
+}

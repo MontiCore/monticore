@@ -28,10 +28,12 @@ public class BasicSymbolsScopeDeSerTest {
 //    Log.enableFailQuick(false);
 
     //initialize scope, add some TypeSymbols, TypeVarSymbols, VariableSymbols and FunctionSymbols
-    scope = BasicSymbolsMill.basicSymbolsArtifactScopeBuilder().setPackageName("").setImportsList(Lists.newArrayList()).build();
+    scope = BasicSymbolsMill.artifactScope();
+    scope.setPackageName("");
+    scope.setImportsList(Lists.newArrayList());
     scope.setName("Test");
 
-    IBasicSymbolsScope typeSpannedScope = BasicSymbolsMill.basicSymbolsScopeBuilder().build();
+    IBasicSymbolsScope typeSpannedScope = BasicSymbolsMill.scope();
 
     //put type into main scope
     TypeSymbol type = BasicSymbolsMill.typeSymbolBuilder()
@@ -48,12 +50,12 @@ public class BasicSymbolsScopeDeSerTest {
     //put subtype into main scope, test if supertypes are serialized correctly
     TypeSymbol subtype = BasicSymbolsMill.typeSymbolBuilder()
         .setName("SubType")
-        .setSpannedScope(BasicSymbolsMill.basicSymbolsScopeBuilder().build())
+        .setSpannedScope(BasicSymbolsMill.scope())
         .setEnclosingScope(scope)
         .setSuperTypesList(Lists.newArrayList(symType1))
         .build();
 
-    subtype.setSpannedScope(BasicSymbolsMill.basicSymbolsScopeBuilder().build());
+    subtype.setSpannedScope(BasicSymbolsMill.scope());
 
     //put TypeVariable T into spanned scope of type
     TypeVarSymbol t = BasicSymbolsMill.typeVarSymbolBuilder()
@@ -61,7 +63,7 @@ public class BasicSymbolsScopeDeSerTest {
         .setEnclosingScope(type.getSpannedScope())
         .build();
 
-    t.setSpannedScope(BasicSymbolsMill.basicSymbolsScopeBuilder().build());
+    t.setSpannedScope(BasicSymbolsMill.scope());
 
     typeSpannedScope.add(t);
 
@@ -78,11 +80,11 @@ public class BasicSymbolsScopeDeSerTest {
     FunctionSymbol function = BasicSymbolsMill.functionSymbolBuilder()
         .setName("function")
         .setEnclosingScope(type.getSpannedScope())
-        .setSpannedScope(BasicSymbolsMill.basicSymbolsScopeBuilder().build())
+        .setSpannedScope(BasicSymbolsMill.scope())
         .setReturnType(SymTypeExpressionFactory.createTypeConstant("int"))
         .build();
 
-    function.setSpannedScope(BasicSymbolsMill.basicSymbolsScopeBuilder().build());
+    function.setSpannedScope(BasicSymbolsMill.scope());
 
     typeSpannedScope.add(function);
 

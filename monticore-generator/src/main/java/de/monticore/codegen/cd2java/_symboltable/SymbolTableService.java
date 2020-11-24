@@ -20,7 +20,6 @@ import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.*;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.utils.Names.getSimpleName;
-import static de.se_rwth.commons.Names.getQualifier;
 
 public class SymbolTableService extends AbstractService<SymbolTableService> {
 
@@ -210,34 +209,6 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   }
 
   /**
-   * model loader class names e.g. AutomataModelLoader
-   */
-
-  public String getModelLoaderClassFullName(CDDefinitionSymbol cdSymbol) {
-    return getPackage(cdSymbol) + "." + getModelLoaderClassSimpleName(cdSymbol);
-  }
-
-  public String getModelLoaderClassFullName() {
-    return getModelLoaderClassFullName(getCDSymbol());
-  }
-
-  public String getModelLoaderClassSimpleName(CDDefinitionSymbol cdSymbol) {
-    return cdSymbol.getName() + MODEL_LOADER_SUFFIX;
-  }
-
-  public String getModelLoaderClassSimpleName() {
-    return getModelLoaderClassSimpleName(getCDSymbol());
-  }
-
-  public ASTMCQualifiedType getModelLoaderType(CDDefinitionSymbol cdSymbol) {
-    return getMCTypeFacade().createQualifiedType(getModelLoaderClassFullName(cdSymbol));
-  }
-
-  public ASTMCQualifiedType getModelLoaderType() {
-    return getModelLoaderType(getCDSymbol());
-  }
-
-  /**
    * symbol reference class names e.g. AutomatonSymbolReference
    */
 
@@ -345,6 +316,66 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   }
 
   /**
+   * PhasedSymbolTableCreatorDelegator Names, e.g. AutomatonPhasedSymbolTableCreatorDelegator
+   */
+
+  public String getPhasedSymbolTableCreatorDelegatorSimpleName(CDDefinitionSymbol cdSymbol) {
+    return cdSymbol.getName() + PHASED_SUFFIX + SYMBOL_TABLE_CREATOR_SUFFIX + DELEGATOR_SUFFIX;
+  }
+
+  public String getPhasedSymbolTableCreatorDelegatorSimpleName() {
+    return getPhasedSymbolTableCreatorDelegatorSimpleName(getCDSymbol());
+  }
+
+  public String getPhasedSymbolTableCreatorDelegatorFullName(CDDefinitionSymbol cdSymbol) {
+    return getPackage(cdSymbol) + "." + getPhasedSymbolTableCreatorDelegatorSimpleName(cdSymbol);
+  }
+
+  public String getPhasedSymbolTableCreatorDelegatorFullName() {
+    return getPhasedSymbolTableCreatorDelegatorFullName(getCDSymbol());
+  }
+
+  /**
+   * ScopeSkeletonCreatorDelegator Names e.g. AutomatonScopeSkeletonCreatorDelegator
+   */
+
+  public String getScopesGenitorDelegatorSimpleName(CDDefinitionSymbol cdSymbol) {
+    return cdSymbol.getName() + SCOPES_GENITOR_SUFFIX + DELEGATOR_SUFFIX;
+  }
+
+  public String getScopesGenitorDelegatorSimpleName() {
+    return getScopesGenitorDelegatorSimpleName(getCDSymbol());
+  }
+
+  public String getScopesGenitorDelegatorFullName(CDDefinitionSymbol cdSymbol) {
+    return getPackage(cdSymbol) + "." + getScopesGenitorDelegatorSimpleName(cdSymbol);
+  }
+
+  public String getScopesGenitorDelegatorFullName() {
+    return getScopesGenitorDelegatorFullName(getCDSymbol());
+  }
+
+  /**
+   * ScopeSkeletonCreator Names e.g. AutomatonScopeSkeletonCreator
+   */
+
+  public String getScopesGenitorSimpleName(CDDefinitionSymbol cdSymbol) {
+    return cdSymbol.getName() + SCOPES_GENITOR_SUFFIX;
+  }
+
+  public String getScopesGenitorSimpleName() {
+    return getScopesGenitorSimpleName(getCDSymbol());
+  }
+
+  public String getScopesGenitorFullName(CDDefinitionSymbol cdSymbol) {
+    return getPackage(cdSymbol) + "." + getScopesGenitorSimpleName(cdSymbol);
+  }
+
+  public String getScopesGenitorFullName() {
+    return getScopesGenitorFullName(getCDSymbol());
+  }
+
+  /**
    * deser class names e.g. AutomataDeSer
    */
 
@@ -425,20 +456,20 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
    * symTabMill interface names e.g. AutomataSymTabMill
    */
 
-  public String getSymbolTablePrinterSimpleName(CDDefinitionSymbol cdSymbol) {
-    return cdSymbol.getName() + SYMBOL_TABLE_PRINTER_SUFFIX;
+  public String getSymbols2JsonSimpleName(CDDefinitionSymbol cdSymbol) {
+    return cdSymbol.getName() + SYMBOLS_2_JSON_SUFFIX;
   }
 
-  public String getSymbolTablePrinterSimpleName() {
-    return getSymbolTablePrinterSimpleName(getCDSymbol());
+  public String getSymbols2JsonSimpleName() {
+    return getSymbols2JsonSimpleName(getCDSymbol());
   }
 
-  public String getSymbolTablePrinterFullName(CDDefinitionSymbol cdSymbol) {
-    return getSerializationPackage(cdSymbol) + "." + getSymbolTablePrinterSimpleName(cdSymbol);
+  public String getSymbols2JsonFullName(CDDefinitionSymbol cdSymbol) {
+    return getSerializationPackage(cdSymbol) + "." + getSymbols2JsonSimpleName(cdSymbol);
   }
 
-  public String getSymbolTablePrinterFullName() {
-    return getSymbolTablePrinterFullName(getCDSymbol());
+  public String getSymbols2JsonFullName() {
+    return getSymbols2JsonFullName(getCDSymbol());
   }
 
   public ASTMCQualifiedType getJsonPrinterType(){

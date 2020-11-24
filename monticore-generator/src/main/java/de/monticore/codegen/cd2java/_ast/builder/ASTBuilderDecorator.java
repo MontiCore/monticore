@@ -1,24 +1,28 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast.builder;
 
+import com.google.common.collect.Lists;
 import de.monticore.ast.ASTCNode;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
+import de.monticore.cd.cd4analysis._ast.ASTModifier;
 import de.monticore.codegen.cd2java.AbstractCreator;
+import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.*;
 
@@ -28,15 +32,20 @@ import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.*;
 public class ASTBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
 
   protected final BuilderDecorator builderDecorator;
+  protected final AbstractService service;
 
-  public ASTBuilderDecorator(final GlobalExtensionManagement glex, final BuilderDecorator builderDecorator) {
+  public ASTBuilderDecorator(final GlobalExtensionManagement glex, final BuilderDecorator builderDecorator,
+                             final AbstractService service) {
     super(glex);
     this.builderDecorator = builderDecorator;
+    this.service = service;
   }
 
   @Override
   public ASTCDClass decorate(final ASTCDClass domainClass) {
     ASTCDClass builderClass = this.builderDecorator.decorate(domainClass);
+    ASTMCType domainType = this.getMCTypeFacade().createQualifiedType(domainClass.getName());
+
     String builderClassName = builderClass.getName();
 
     builderClass.setSuperclass(createBuilderSuperClass(domainClass, builderClassName));
@@ -49,6 +58,20 @@ public class ASTBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass>
     Optional<ASTCDMethod> buildMethod = builderClass.getCDMethodList().stream().filter(m -> BUILD_METHOD.equals(m.getName())).findFirst();
     buildMethod.ifPresent(b ->
         this.replaceTemplate(BUILD_INIT_TEMPLATE, b, new TemplateHookPoint(AST_BUILDER_INIT_TEMPLATE, domainClass)));
+
+    // make the builder abstract for a abstract AST class
+    ASTModifier modifier = domainClass.isPresentModifier() ?
+            service.createModifierPublicModifier(domainClass.getModifier()) :
+            PUBLIC.build();
+    if (domainClass.isPresentModifier() && domainClass.getModifier().isAbstract()) {
+      modifier.setAbstract(true);
+    }
+    ASTCDMethod uncheckedBuildMethod = this.getCDMethodFacade().createMethod(modifier, domainType, UNCHECKEDBUILD_METHOD);
+    if (!domainClass.isPresentModifier() || !domainClass.getModifier().isAbstract()) {
+      this.replaceTemplate(EMPTY_BODY, uncheckedBuildMethod, new TemplateHookPoint("_ast.builder.BuildMethod", domainClass, Lists.newArrayList(), false));
+      this.replaceTemplate(BUILD_INIT_TEMPLATE, uncheckedBuildMethod, new TemplateHookPoint(AST_BUILDER_INIT_TEMPLATE, domainClass));
+    }
+    builderClass.addCDMethod(uncheckedBuildMethod);
 
     return builderClass;
   }

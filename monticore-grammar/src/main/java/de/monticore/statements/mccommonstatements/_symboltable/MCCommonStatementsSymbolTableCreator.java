@@ -10,10 +10,19 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 import java.util.Deque;
 
-
+@Deprecated
 public   class MCCommonStatementsSymbolTableCreator extends MCCommonStatementsSymbolTableCreatorTOP {
 
-  public MCCommonStatementsSymbolTableCreator(Deque<? extends IMCCommonStatementsScope> scopeStack) {
+  public MCCommonStatementsSymbolTableCreator() {
+  }
+
+  public MCCommonStatementsSymbolTableCreator(
+      IMCCommonStatementsScope enclosingScope) {
+    super(enclosingScope);
+  }
+
+  public MCCommonStatementsSymbolTableCreator(
+      Deque<? extends IMCCommonStatementsScope> scopeStack) {
     super(scopeStack);
   }
 

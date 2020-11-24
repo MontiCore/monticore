@@ -33,15 +33,14 @@ public class TypePersistenceTest {
 
     //Create global scope for our language combination
     IVariableGlobalScope globalScope = VariableMill
-        .variableGlobalScopeBuilder()
-        .setModelPath(new ModelPath())
-        .setModelFileExtension("tp")
-        .build();
+        .globalScope();
+    globalScope.setModelPath(new ModelPath());
+    globalScope.setFileExt("tp");
 
     //Parse blah model
     VariableParser blahParser = new VariableParser();
     Optional<ASTVar> varModel = blahParser.parse_String("var String a");
-    VariableSymbolTableCreator varSymbolTableCreator = VariableMill.variableSymbolTableCreatorBuilder().addToScopeStack(globalScope).build();
+    VariableSymbolTableCreator varSymbolTableCreator = VariableMill.variableSymbolTableCreator();
     IVariableScope blahSymbolTable = varSymbolTableCreator.createFromAST(varModel.get());
 ASTMCType a;
     assertTrue(varModel.isPresent());

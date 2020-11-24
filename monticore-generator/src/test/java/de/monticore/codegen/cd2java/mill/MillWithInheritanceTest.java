@@ -23,6 +23,7 @@ import de.monticore.codegen.cd2java._ast.constants.ASTConstantsDecorator;
 import de.monticore.codegen.cd2java._ast.enums.EnumDecorator;
 import de.monticore.codegen.cd2java._ast.factory.NodeFactoryDecorator;
 import de.monticore.codegen.cd2java._ast.factory.NodeFactoryService;
+import de.monticore.codegen.cd2java._parser.ParserService;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.*;
 import de.monticore.codegen.cd2java._visitor.builder.DelegatorVisitorBuilderDecorator;
@@ -70,9 +71,10 @@ public class MillWithInheritanceTest extends DecoratorTestCase {
 
     SymbolTableService symbolTableService = new SymbolTableService(decoratedCompilationUnit);
     VisitorService visitorService = new VisitorService(decoratedCompilationUnit);
+    ParserService parserService = new ParserService(decoratedCompilationUnit);
 
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
-    MillDecorator decorator = new MillDecorator(this.glex, symbolTableService, visitorService);
+    MillDecorator decorator = new MillDecorator(this.glex, symbolTableService, visitorService, parserService);
     this.millClass = decorator.decorate(Lists.newArrayList(getASTCD(), getVisitorCD()));
   }
 
@@ -92,7 +94,7 @@ public class MillWithInheritanceTest extends DecoratorTestCase {
     ASTFullDecorator fullDecorator = new ASTFullDecorator(dataDecorator, astDecorator, astClassReferencedSymbolDecorator);
     ASTLanguageInterfaceDecorator astLanguageInterfaceDecorator = new ASTLanguageInterfaceDecorator(astService, visitorService);
     BuilderDecorator builderDecorator = new BuilderDecorator(glex, new AccessorDecorator(glex, astService), new ASTService(decoratedCompilationUnit));
-    ASTBuilderDecorator astBuilderDecorator = new ASTBuilderDecorator(glex, builderDecorator);
+    ASTBuilderDecorator astBuilderDecorator = new ASTBuilderDecorator(glex, builderDecorator, astService);
     NodeFactoryDecorator nodeFactoryDecorator = new NodeFactoryDecorator(glex, nodeFactoryService);
     ASTConstantsDecorator astConstantsDecorator = new ASTConstantsDecorator(glex, astService);
     EnumDecorator enumDecorator = new EnumDecorator(glex, new AccessorDecorator(glex, astService), astService);
@@ -140,7 +142,7 @@ public class MillWithInheritanceTest extends DecoratorTestCase {
   public void testAttributeModifier() {
     for (ASTCDAttribute astcdAttribute : millClass.getCDAttributeList()) {
         assertTrue(astcdAttribute.isPresentModifier());
-        assertTrue(PROTECTED_STATIC.build().deepEquals(astcdAttribute.getModifier()));
+        assertTrue(astcdAttribute.getModifier().isProtected());
     }
   }
 

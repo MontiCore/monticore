@@ -1,0 +1,32 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package mc.feature.semanticpredicate;
+
+grammar SemPredWithInterface extends mc.common.Basics {
+
+    concept antlr {
+      parserjava {
+        boolean first = true;
+      }
+    }
+    
+    ISequence = I*;
+    
+    interface I;
+    
+    astrule I = 
+      method public boolean isFirst() {}
+      method public void setFirst(boolean first) {};
+      
+    astrule FirstRun =
+      first: boolean;
+      
+    astrule OtherRun =
+      first: boolean;
+    
+    FirstRun implements { first }? I =
+        { _builder.setFirst(true); first = false;} "foo";
+    
+    OtherRun implements { !first }? I =
+        {_builder.setFirst(false);} "foo";
+}

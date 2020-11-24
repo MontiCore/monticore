@@ -31,8 +31,10 @@ import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
 
 /**
+ * @deprecated use ScopeSkeletonCreator instead
  * creates a SymbolReference class from a grammar
  */
+@Deprecated
 public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilationUnit, Optional<ASTCDClass>> {
 
   protected final SymbolTableService symbolTableService;
@@ -76,25 +78,30 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
       ASTCDAttribute realThisAttribute = createRealThisAttribute(visitorName);
       List<ASTCDMethod> realThisMethods = methodDecorator.decorate(realThisAttribute);
 
-      ASTCDAttribute firstCreatedScopeAttribute = createFirstCreatedScopeAttribute(scopeInterface);
-      List<ASTCDMethod> firstCreatedScopeMethod = methodDecorator.getAccessorDecorator().decorate(firstCreatedScopeAttribute);
+      ASTCDAttribute scopeStackAttribute = createScopeStackAttribute(dequeType);
+      List<ASTCDMethod> setScopeStack = methodDecorator.getMutatorDecorator()
+          .decorate(scopeStackAttribute);
+
+      ASTModifier modifier = PUBLIC.build();
+      symbolTableService.addDeprecatedStereotype(modifier, Optional.of("use ScopeSkeletonCreator instead"));
 
       ASTCDClass symTabCreator = CD4CodeMill.cDClassBuilder()
           .setName(symbolTableCreator)
-          .setModifier(PUBLIC.build())
+          .setModifier(modifier)
           .addInterface(getMCTypeFacade().createQualifiedType(visitorName))
+          .addCDConstructor(createZeroArgsConstructor(symbolTableCreator))
           .addCDConstructor(createSimpleConstructor(symbolTableCreator, scopeInterface))
           .addCDConstructor(createDequeConstructor(symbolTableCreator, dequeWildcardType, dequeType))
-          .addCDAttribute(createScopeStackAttribute(dequeType))
+          .addCDAttribute(scopeStackAttribute)
           .addCDAttribute(realThisAttribute)
           .addAllCDMethods(realThisMethods)
-          .addCDAttribute(firstCreatedScopeAttribute)
-          .addAllCDMethods(firstCreatedScopeMethod)
+          .addCDMethod(getFirstCreatedScopeMethod(scopeInterface))
           .addCDMethod(createCreateFromASTMethod(astFullName, symbolTableCreator, symTabMillFullName))
           .addCDMethod(createPutOnStackMethod(scopeInterface))
+          .addAllCDMethods(setScopeStack)
           .addAllCDMethods(createCurrentScopeMethods(scopeInterface))
           .addCDMethod(createSetScopeStackMethod(dequeType, simpleName))
-          .addCDMethod(createCreateScopeMethod(scopeInterface, input.getCDDefinition().getName()))
+          .addCDMethod(createCreateScopeMethod(scopeInterface))
           .addAllCDMethods(createSymbolClassMethods(symbolDefiningClasses, scopeInterface))
           .addAllCDMethods(createSymbolClassMethods(inheritedSymbolPropertyClasses, scopeInterface))
           .addAllCDMethods(createVisitForNoSymbolMethods(noSymbolDefiningClasses))
@@ -105,6 +112,20 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
       return Optional.ofNullable(symTabCreator);
     }
     return Optional.empty();
+  }
+
+  private ASTCDMethod getFirstCreatedScopeMethod(String scopeInterface) {
+    ASTCDMethod method =  getCDMethodFacade().createMethod(PUBLIC.build(),
+        getMCTypeFacade().createQualifiedType(scopeInterface),"getFirstCreatedScope");
+    this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return this.scopeStack.peek();"));
+    return method;
+  }
+
+  protected ASTCDConstructor createZeroArgsConstructor(String symTabCreator) {
+    String gsFromMill = symbolTableService.getMillFullName()+".globalScope()";
+    ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), symTabCreator);
+    this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("putOnStack(" + gsFromMill + ");"));
+    return constructor;
   }
 
   protected ASTCDConstructor createSimpleConstructor(String symTabCreator, String scopeInterface) {
@@ -127,10 +148,6 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
     ASTCDAttribute scopeStack = getCDAttributeFacade().createAttribute(PROTECTED, dequeType, SCOPE_STACK_VAR);
     this.replaceTemplate(VALUE, scopeStack, new StringHookPoint("= new java.util.ArrayDeque<>()"));
     return scopeStack;
-  }
-
-  protected ASTCDAttribute createFirstCreatedScopeAttribute(String scopeInterface) {
-    return getCDAttributeFacade().createAttribute(PROTECTED, scopeInterface, "firstCreatedScope");
   }
 
   protected ASTCDAttribute createRealThisAttribute(String visitor) {
@@ -181,13 +198,13 @@ public class SymbolTableCreatorDecorator extends AbstractCreator<ASTCDCompilatio
     return createFromAST;
   }
 
-  protected ASTCDMethod createCreateScopeMethod(String scopeInterfaceName, String definitionName) {
+  protected ASTCDMethod createCreateScopeMethod(String scopeInterfaceName) {
     String symTabMill = symbolTableService.getMillFullName();
     ASTCDParameter boolParam = getCDParameterFacade().createParameter(getMCTypeFacade().createBooleanType(), SHADOWING_VAR);
     ASTCDMethod createFromAST = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createQualifiedType(scopeInterfaceName),
         "createScope", boolParam);
     this.replaceTemplate(EMPTY_BODY, createFromAST, new TemplateHookPoint(
-        TEMPLATE_PATH + "CreateScope", scopeInterfaceName, symTabMill, definitionName));
+        TEMPLATE_PATH + "CreateScope", scopeInterfaceName, symTabMill));
     return createFromAST;
   }
 

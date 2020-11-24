@@ -1,12 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore */ -->
-${tc.signature("component", "millFullName", "grammarName")}
+${tc.signature("scopeDeSerName", "grammarName")}
   this.modelPath = new de.monticore.io.paths.ModelPath();
-  this.modelFileExtension = "";
-<#if component>
-  this.modelLoader = Optional.empty();
-<#else>
-  this.enableModelLoader();
-</#if>
-  this.scopeDeSer = ${millFullName}
-    .${grammarName?uncap_first}ScopeDeSerBuilder()
-    .build();
+  this.fileExt = "";
+  this.scopeDeSer = new ${scopeDeSerName}();
+  this.symbols2Json = new ${symbols2Json}();

@@ -2,7 +2,7 @@
 package de.monticore.prettyprint;
 
 import de.monticore.javalight._ast.*;
-import de.monticore.statements.mcvardeclarationstatements._ast.ASTLocalVariableDeclaration;
+import de.monticore.statements.mccommonstatements._ast.ASTMCJavaBlock;
 import de.monticore.testjavalight._parser.TestJavaLightParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -32,8 +32,7 @@ public class JavaLightPrettyPrinterTest {
   public void init() {
     prettyPrinter.getPrinter().clearBuffer();
   }
-
-
+  
   @Test
   public void testMethodDeclaration() throws IOException {
     Optional<ASTMethodDeclaration> result = parser.parse_StringMethodDeclaration("private static final int foo(String s, boolean b)[][][] throws e.Exception { private Integer foo = a; }");
@@ -60,23 +59,6 @@ public class JavaLightPrettyPrinterTest {
     String output = prettyPrinter.prettyprint(ast);
 
     result = parser.parse_StringConstructorDeclaration(output);
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
-
-    assertTrue(ast.deepEquals(result.get()));
-  }
-
-  @Test
-  public void testFieldDeclaration() throws IOException {
-    Optional<ASTLocalVariableDeclaration> result = parser.parse_StringLocalVariableDeclaration("private static List a = b, c = d");
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
-    ASTLocalVariableDeclaration ast = result.get();
-
-    prettyPrinter.handle(ast);
-    String output = prettyPrinter.getPrinter().getContent();
-
-    result = parser.parse_StringLocalVariableDeclaration(output);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
 
@@ -222,22 +204,6 @@ public class JavaLightPrettyPrinterTest {
     String output = prettyPrinter.prettyprint(ast);
 
     result = parser.parse_StringElementValueOrExpr(output);
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
-
-    assertTrue(ast.deepEquals(result.get()));
-  }
-
-  @Test
-  public void testArrayInitializer() throws IOException {
-    Optional<ASTArrayInit> result = parser.parse_StringArrayInit("{a, b, foo}");
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
-    ASTArrayInit ast = result.get();
-
-    String output = prettyPrinter.prettyprint(ast);
-
-    result = parser.parse_StringArrayInit(output);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
 

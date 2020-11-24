@@ -33,6 +33,10 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
 
   private MCGrammarSymbol grammarSymbol;
 
+  public GrammarSymbolTableCreator() {
+    super();
+  }
+
   private ASTMCGrammar astGrammar;
 
   public GrammarSymbolTableCreator(IGrammarScope enclosingScope) {

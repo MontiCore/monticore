@@ -1,0 +1,8 @@
+package mc2cdtransformation;
+
+grammar ExternalInterface {
+
+  external A;
+
+  B = "Foo";
+}

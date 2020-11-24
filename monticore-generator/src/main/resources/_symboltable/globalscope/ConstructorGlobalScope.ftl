@@ -1,12 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore */ -->
-${tc.signature("component", "millFullName", "grammarName")}
+${tc.signature( "scopeDeSerName", "symbols2Json", "grammarName")}
   this.modelPath = Log.errorIfNull(modelPath);
-  this.modelFileExtension = Log.errorIfNull(modelFileExtension);
-<#if component>
-  this.modelLoader = Optional.empty();
-<#else>
-  this.enableModelLoader();
-</#if>
-  this.scopeDeSer = ${millFullName}
-    .${grammarName?uncap_first}ScopeDeSerBuilder()
-    .build();
+  this.fileExt = Log.errorIfNull(fileExt);
+  this.scopeDeSer = new ${scopeDeSerName}();
+  this.symbols2Json = new ${symbols2Json}();

@@ -75,7 +75,15 @@ public enum MC2CDStereotypes {
   /**
    * To mark class as scope
    */
-  DERIVED_ATTRIBUTE_NAME("derived_attribute_name");
+  DERIVED_ATTRIBUTE_NAME("derived_attribute_name"),
+  /**
+   * To mark a prod as left recursive -> for parser
+   */
+  LEFT_RECURSIVE("left_recursive"),
+  /**
+   * To mark an interface generated from an external prod
+   */
+  EXTERNAL_INTERFACE("externalInterface");
 
   private final String stereotype;
 

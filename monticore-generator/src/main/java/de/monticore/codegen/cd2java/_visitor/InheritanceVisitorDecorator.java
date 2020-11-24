@@ -2,7 +2,10 @@
 package de.monticore.codegen.cd2java._visitor;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
+import static de.monticore.codegen.cd2java.CoreTemplates.ANNOTATIONS;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
+import static de.monticore.codegen.cd2java.CoreTemplates.createAnnotationsHookPoint;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SCOPE;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SYMBOL;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.HANDLE;
@@ -12,6 +15,7 @@ import static de.monticore.codegen.cd2java._visitor.VisitorConstants.HANDLE_SYMT
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
@@ -20,6 +24,7 @@ import de.monticore.cd.cd4analysis._ast.ASTCDDefinition;
 import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.cd.cd4analysis._ast.ASTCDType;
+import de.monticore.cd.cd4analysis._ast.ASTModifier;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.cd4code.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractCreator;
@@ -51,15 +56,21 @@ public class InheritanceVisitorDecorator extends AbstractCreator<ASTCDCompilatio
     String languageInterfaceName = visitorService.getLanguageInterfaceName();
     String visitorSimpleTypeName = visitorService.getVisitorSimpleName();
 
-    return CD4CodeMill.cDInterfaceBuilder()
+    ASTModifier modifier = PUBLIC.build();
+    visitorService.addDeprecatedStereotype(modifier, Optional.of("Will be removed. Use traverser infrastructure instead."));
+    
+    ASTCDInterface cdInterface = CD4CodeMill.cDInterfaceBuilder()
         .setName(visitorService.getInheritanceVisitorSimpleName())
-        .setModifier(PUBLIC.build())
+        .setModifier(modifier)
         .addInterface(visitorService.getVisitorType())
         .addAllInterface(visitorService.getSuperInheritanceVisitors())
         .addAllCDMethods(getASTHandleMethods(compilationUnit.getCDDefinition(), visitorSimpleTypeName, languageInterfaceName))
         .addAllCDMethods(getScopeHandleMethods(cdDefinition, visitorSimpleTypeName))
         .addAllCDMethods(getSymbolHandleMethods(cdDefinition, visitorSimpleTypeName))
         .build();
+    
+    this.replaceTemplate(ANNOTATIONS, cdInterface, createAnnotationsHookPoint(cdInterface.getModifier()));
+    return cdInterface;
   }
 
   protected List<ASTCDMethod> getASTHandleMethods(ASTCDDefinition astcdDefinition, String visitorSimpleTypeName, String languageInterfaceName) {
@@ -112,9 +123,7 @@ public class InheritanceVisitorDecorator extends AbstractCreator<ASTCDCompilatio
     List<ASTCDMethod> handleMethods = new ArrayList<ASTCDMethod>();
     List<String> superScopesTransitive = new ArrayList<String>();
     for (CDDefinitionSymbol cd : visitorService.getSuperCDsTransitive()) {
-      if (symbolTableService.hasProd(cd.getAstNode()) || symbolTableService.hasStartProd(cd.getAstNode())) {
-        superScopesTransitive.add(symbolTableService.getScopeInterfaceFullName(cd));
-      }
+      superScopesTransitive.add(symbolTableService.getScopeInterfaceFullName(cd));
     }
     superScopesTransitive.add(I_SCOPE);
     
@@ -126,17 +135,15 @@ public class InheritanceVisitorDecorator extends AbstractCreator<ASTCDCompilatio
             visitorSimpleTypeName, superScopesTransitive));
     
     // handle language artifact scope
-    if (symbolTableService.hasProd(astcdDefinition) || symbolTableService.hasStartProd()) {
-      List<String> superScopesTransitiveForAS = new ArrayList<String>();
-      superScopesTransitiveForAS.add(symbolTableService.getScopeInterfaceFullName());
-      superScopesTransitiveForAS.addAll(superScopesTransitive);
-      ASTCDMethod handleArtifactScopeMethod = visitorService.getVisitorMethod(HANDLE, symbolTableService.getArtifactScopeInterfaceType());
-      handleMethods.add(handleArtifactScopeMethod);
-      replaceTemplate(EMPTY_BODY, handleArtifactScopeMethod, 
-          new TemplateHookPoint(HANDLE_SYMTAB_INHERITANCE_TEMPLATE, 
-              visitorSimpleTypeName, superScopesTransitiveForAS));
-    }
-    
+    List<String> superScopesTransitiveForAS = new ArrayList<String>();
+    superScopesTransitiveForAS.add(symbolTableService.getScopeInterfaceFullName());
+    superScopesTransitiveForAS.addAll(superScopesTransitive);
+    ASTCDMethod handleArtifactScopeMethod = visitorService.getVisitorMethod(HANDLE, symbolTableService.getArtifactScopeInterfaceType());
+    handleMethods.add(handleArtifactScopeMethod);
+    replaceTemplate(EMPTY_BODY, handleArtifactScopeMethod,
+            new TemplateHookPoint(HANDLE_SYMTAB_INHERITANCE_TEMPLATE,
+                    visitorSimpleTypeName, superScopesTransitiveForAS));
+
     return handleMethods;
   }
 

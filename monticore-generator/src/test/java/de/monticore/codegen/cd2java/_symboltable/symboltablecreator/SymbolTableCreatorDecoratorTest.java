@@ -117,12 +117,22 @@ SymbolTableCreatorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testConstructorCount() {
-    assertEquals(2, symTabCreatorClass.sizeCDConstructors());
+    assertEquals(3, symTabCreatorClass.sizeCDConstructors());
+  }
+
+  @Test
+  public void testZeroArgsConstructor() {
+    ASTCDConstructor cdConstructor = symTabCreatorClass.getCDConstructor(0);
+    assertDeepEquals(PUBLIC, cdConstructor.getModifier());
+    assertEquals("AutomatonSymbolTableCreator", cdConstructor.getName());
+
+    assertEquals(0, cdConstructor.sizeCDParameters());
+    assertTrue(cdConstructor.isEmptyException());
   }
 
   @Test
   public void testConstructor() {
-    ASTCDConstructor cdConstructor = symTabCreatorClass.getCDConstructor(0);
+    ASTCDConstructor cdConstructor = symTabCreatorClass.getCDConstructor(1);
     assertDeepEquals(PUBLIC, cdConstructor.getModifier());
     assertEquals("AutomatonSymbolTableCreator", cdConstructor.getName());
 
@@ -137,7 +147,7 @@ SymbolTableCreatorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testConstructorWithEnclosingScope() {
-    ASTCDConstructor cdConstructor = symTabCreatorClass.getCDConstructor(1);
+    ASTCDConstructor cdConstructor = symTabCreatorClass.getCDConstructor(2);
     assertDeepEquals(PUBLIC, cdConstructor.getModifier());
     assertEquals("AutomatonSymbolTableCreator", cdConstructor.getName());
 
@@ -152,7 +162,7 @@ SymbolTableCreatorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeSize() {
-    assertEquals(3, symTabCreatorClass.sizeCDAttributes());
+    assertEquals(2, symTabCreatorClass.sizeCDAttributes());
   }
 
   @Test
@@ -170,15 +180,8 @@ SymbolTableCreatorDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testFirstCreatedScopeAttribute() {
-    ASTCDAttribute astcdAttribute = getAttributeBy("firstCreatedScope", symTabCreatorClass);
-    assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
-    assertDeepEquals(I_AUTOMATON_SCOPE, astcdAttribute.getMCType());
-  }
-
-  @Test
   public void testMethods() {
-    assertEquals(38, symTabCreatorClass.getCDMethodList().size());
+    assertEquals(39, symTabCreatorClass.getCDMethodList().size());
   }
 
   @Test

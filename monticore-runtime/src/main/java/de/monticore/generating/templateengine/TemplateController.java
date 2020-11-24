@@ -2,35 +2,34 @@
 
 package de.monticore.generating.templateengine;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Strings.isNullOrEmpty;
-import static com.google.common.collect.Lists.newArrayList;
-
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import com.google.common.collect.ImmutableList;
-import de.monticore.io.FileReaderWriter;
-import org.apache.commons.io.FilenameUtils;
-
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.freemarker.SimpleHashFactory;
 import de.monticore.generating.templateengine.reporting.Reporting;
+import de.monticore.io.FileReaderWriter;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import freemarker.core.Macro;
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.SimpleHash;
 import freemarker.template.Template;
+import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
+import org.apache.commons.io.FilenameUtils;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.Set;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.google.common.collect.Lists.newArrayList;
 
 /**
  * Provides methods for manipulating the content of templates, mainly for
@@ -75,12 +74,9 @@ public class TemplateController {
 
   private SimpleHash data = SimpleHashFactory.getInstance().createSimpleHash();
 
-  private static List<TemplateController> activeControllers = Lists.newArrayList();
-
   public TemplateController(GeneratorSetup setup, String templatename) {
     this.config = setup;
     this.templatename = templatename;
-    activeControllers.add(this);
   }
 
   /**
@@ -386,7 +382,6 @@ public class TemplateController {
    * and the given <code>templateArguments</code> and writes the content into
    * the <code>filePath</code>. Note: Unless not absolute, the
    * <code>filePath</code> is relative to the configured target directory (i.e.,
-   * {@link TemplateControllerConfiguration#getTargetDir()})
    *
    * @param templateName the template to be processes
    * @param filePath the file path in which the content is to be written
@@ -518,29 +513,31 @@ public class TemplateController {
 
       TemplateController tc = config.getNewTemplateController(template.getName());
 
-      SimpleHash d = SimpleHashFactory.getInstance().createSimpleHash();
+      SimpleHash d = config.getGlex().getGlobalData();
+      Optional<TemplateModel> oldAst = Optional.empty();
+      if (d.containsKey(AST)) {
+        try {
+          oldAst = Optional.ofNullable(d.get(AST));
+        } catch (TemplateModelException e) {
+
+          String usage = this.templatename != null ? " (" + this.templatename + ")" : "";
+          Log.error("0xA0128 Globally defined data could not be passed to the called template "
+                  + usage + ". ## This is an internal"
+                  + "error that should not happen. Try to remove all global data. ##");
+        }
+      }
       d.put(AST, ast);
       d.put(TC, tc);
       d.put(GLEX, config.getGlex());
-
-      // add all global data to be accessible in the template
-      try {
-        d.putAll(config.getGlex().getGlobalData().toMap());
-      }
-      catch (TemplateModelException e) {
-        
-        String usage = this.templatename != null ? " (" + this.templatename + ")" : "";
-        Log.error("0xA0128 Globally defined data could not be passed to the called template "
-            + usage + ". ## This is an internal"
-            + "error that should not happen. Try to remove all global data. ##");
-      }
 
       tc.data = d;
       tc.arguments = newArrayList(passedArguments);
 
       // Run template with data to create output
       config.getFreeMarkerTemplateEngine().run(ret, d, template);
-      activeControllers.remove(tc);
+      if (oldAst.isPresent()) {
+        d.put(AST, oldAst.get());
+      }
     }
     else {
       // no template
@@ -734,12 +731,5 @@ public class TemplateController {
     Log.error(msg);
   }
 
-  public static List<TemplateController> getActiveControllers() {
-    return ImmutableList.copyOf(activeControllers);
-  }
-
-  public static void clearActiveControllers() {
-    activeControllers.clear();
-  }
 
 }

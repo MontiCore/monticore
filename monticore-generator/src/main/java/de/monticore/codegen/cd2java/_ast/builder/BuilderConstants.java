@@ -11,6 +11,8 @@ public class BuilderConstants {
 
   public static final String BUILD_METHOD = "build";
 
+  public static final String UNCHECKEDBUILD_METHOD = "uncheckedBuild";
+
   public static final String IS_VALID = "isValid";
 
   public static final String DEFAULT_SUPER_CLASS = "de.monticore.ast.ASTNodeBuilder<%s>";

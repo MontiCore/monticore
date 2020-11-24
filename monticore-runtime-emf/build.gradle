@@ -1,0 +1,24 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+
+
+dependencies {
+  implementation 'de.se_rwth.commons:se-commons-utilities:' + se_commons_version
+  implementation 'de.se_rwth.commons:se-commons-logging:' + se_commons_version
+  implementation project(':monticore-runtime')
+  implementation 'org.eclipse.emf:org.eclipse.emf.ecore.xmi:' + ecore_version
+  implementation 'org.eclipse.emf:org.eclipse.emf.compare.match:' + emf_compare_version
+  implementation 'org.eclipse.emf:org.eclipse.emf.compare.diff:' + emf_compare_version
+  testImplementation "junit:junit:$junit_version"
+  testImplementation 'ch.qos.logback:logback-classic:1.1.2'
+  testImplementation 'org.codehaus.groovy:groovy:3.0.2'
+}
+
+description = 'MontiCore: EMF Runtime Environment'
+
+task testsJar(type: Jar) {
+  classifier = 'tests'
+  from(sourceSets.test.output)
+}
+
+publishing.publications.maven.artifact(testsJar)

@@ -15,7 +15,11 @@ public final class VisitorConstants {
   
   public static final String TRAVERSER_SUFFIX = "Traverser";
   
+  public static final String TRAVERSER_CLASS_SUFFIX = "TraverserImplementation";
+  
   public static final String VISITOR2_SUFFIX = "Visitor2";
+  
+  public static final String HANDLER_SUFFIX = "Handler";
 
   public static final String PARENTS_ATTRIBUTE = "parents";
 
@@ -25,10 +29,16 @@ public final class VisitorConstants {
 
   public static final String VISITOR_PREFIX = "visitor";
 
+  public static final String TRAVERSER = "traverser";
+
   public static final String GET_REAL_THIS = "getRealThis";
 
   public static final String SET_REAL_THIS = "setRealThis";
+  
+  public static final String GET_TRAVERSER = "getTraverser";
 
+  public static final String SET_TRAVERSER = "setTraverser";
+  
   public static final String REAL_THIS = "realThis";
 
   public static final String VISIT = "visit";
@@ -46,6 +56,18 @@ public final class VisitorConstants {
   public static final String HANDLE_TEMPLATE = "_visitor.Handle";
 
   public static final String TRAVERSE_TEMPLATE = "_visitor.Traverse";
+  
+  public static final String TRAVERSER_HANDLE_TEMPLATE = "_visitor.traverser.Handle";
+  
+  public static final String TRAVERSER_TRAVERSE_TEMPLATE = "_visitor.traverser.Traverse";
+  
+  public static final String TRAVERSER_TRAVERSE_SCOPE_TEMPLATE = "_visitor.traverser.TraverseScope";
+  
+  public static final String HANDLER_HANDLE_TEMPLATE = "_visitor.handler.Handle";
+  
+  public static final String HANDLER_TRAVERSE_TEMPLATE = "_visitor.handler.Traverse";
+  
+  public static final String HANDLER_TRAVERSE_SCOPE_TEMPLATE = "_visitor.handler.TraverseScope";
 
   public static final String GET_PARENT_PAREENTAWARE_TEMPLATE = "_visitor.parentaware.GetParent";
 
@@ -57,7 +79,9 @@ public final class VisitorConstants {
   
   public static final String VISITOR_METHODS_DELEGATOR_TEMPLATE = "_visitor.delegator.VisitorMethods";
 
-  public static final String TRAVERSER_SET_VISITOR_TEMPLATE = "_visitor.traverser.SetVisitor";
+  public static final String TRAVERSER_ADD_VISITOR_TEMPLATE = "_visitor.traverser.AddVisitor";
+  
+  public static final String TRAVERSER_SET_HANDLER_TEMPLATE = "_visitor.traverser.SetHandler";
   
   public static final String TRAVERSE_SCOPE_TEMPLATE= "_visitor.scope.TraverseScope";
   

@@ -83,7 +83,7 @@ public class DeprecatedTest extends DecoratorTestCase {
 
     AccessorDecorator accessorDecorator = new AccessorDecorator(glex, astService);
     BuilderDecorator builderDecorator = new BuilderDecorator(glex, accessorDecorator, astService);
-    astBuilderDecorator = new ASTBuilderDecorator(glex, builderDecorator);
+    astBuilderDecorator = new ASTBuilderDecorator(glex, builderDecorator, astService);
 
     coCoInterfaceDecorator = new CoCoInterfaceDecorator(glex, new CoCoService(compilationUnit), astService);
 

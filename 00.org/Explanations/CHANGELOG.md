@@ -1,23 +1,92 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 # Release Notes
 
-##  MontiCore 6.5.0-SNAPSHOT
-to be released 
+##  MontiCore 6.6.0-SNAPSHOT
+to be released
+
+### Additions
+* The mill of a language now provides a method `parser()` to get the parser of the language 
+    * mill initialization allows to reconfigure the mill to provide a parser for a sublanguage
+    * parser delegator `XForYParser` are generated that extend a parser of a super language and delegate to the parser of the current language
+    * Due to multiple inheritance, delegation and subclasses are used in combination 
+* experiments now showcase the use of traversers   
+
+### Changes
+* The generated parser uses the builder instead of the factory. This means that in grammars the variable `_aNode` is no longer available. Use instead `_builder`. 
+* Multiple renamings and signature changes regarding the deser infrastructure
+  * renamed `XSymbolTablePrinter` to `XSymbols2Json`
+  * moved load and store methods form `XScopeDeSer` to `XSymbols2Json`
+  * removed enclosing scope as method argument of symbol deser methods, as global scope shall be used instead
+  * renamed `deserializeAdditionalSSymbolAttributes` to `deserializeAddons`
+  * renamed `deserializeAdditionalXScopeAttributes` and `deserializeAdditionalXScopeAttributes` to `deserializeAddons`
+  * added the JSON printer as a parameter to the methods of `XScopeDeSer`, `SSymbolDeSer` und `XSymbols2Json`
+* `XScopeDeSer`, `SSymbolDeSer` und `XSymbols2Json` are no longer available via the mill. The constructors can be used instead.
+* Scope builder have been removed as they did not support multiple inheritance, scope creation methods of the mill should be used instead
+* Shortened the name of the scope creation methods in the mill from `xScope`, `xGlobalScope` and `xArtifactScope` to `scope`, `globalScope` and `artifactScope`
+
+### Fixes
+* Traverser now properly delegate to handlers as intended
+* ScopeSkeletonCreator now properly use the mill to create scope instances to ensure substitution via the mill pattern
+
+##  MontiCore 6.5.0
+released: 11.11.2020
 
 ### Additions
 * added an experiment `hwDeSers` showcasing serialization and deserialization
 * added an experiment `hooks` showcasing hook point usage
 * IncCheck provided by the MontiCore Gradle Plugin now considers local super grammar changes to trigger new generation
 * Added new Traverser generation to replace the visitor infrastructure in a future release
+    * `XTraverser`
+    * `XTraverserImplementation`
+    * `XVisitor2`
+    * `XHandler`
+* Added new ScopeSkeletonCreator generation to replace the SymbolTableCreator in a future release and to enable a phased symboltable creation
+    * `XScopeSkeletonCreator`
+    * `XScopeSkeletonCreatorDelegator`
+    * `XPhasedSymbolTableCreatorDelegator`
+* Added methods to directly obtain instances of the following classes in the mill (instead of their builders)
+    * `XSymbolTableCreator` 
+    * `XSymbolTableCreatorDelegator` 
+    * `XScopeSkeletonCreator`
+    * `XScopeSkeletonCreatorDelegator`
+    * `XPhasedSymbolTableCreatorDelegator`
+    * `XScopeDeSer`
+    * `XSymbolDeSer` 
+    * `XSymbolTablePrinter`
+    * `IXScope`
+    * `IXArtifactScope`
+
 
 ### Changes
+* MontiCore now uses Gradle as build tool
+  * some tasks have been introduced for the comfortable control of frequent activities, e.g., `buildMC`, `assembleMC` that can be found in the [`build.gradle`](../../build.gradle)
+  * relocated the EMF related subprojects:
+    * `monticore-emf-grammar` to `monticore-grammar-emf`
+    * `monticore-emf-runtime` to `monticore-runtime-emf`
+  * relocated integration tests and experiments:
+    * `monticore-generator/it` to `monticore-test/it`
+    * `monticore-generator/it/experiments` to `monticore-test/01.experiments`
+    * `monticore-generator/it/02.experiments` to `monticore-test/02.experiments`
+    * `monticore-grammar/monticore-grammar-it` to `monticore-test/monticore-grammar-it`
+* Remove the generation of `XModelloader`. Languages should now use `XScopeDeSer` to load symbol tables instead.
+* Removed the generation of the following builder classes (also from the Mill, see [Additions](#Additions) for alternative solution)
+    * `XSymbolTableCreatorBuilder` 
+    * `XSymbolTableCreatorDelegatorBuilder` 
+    * `XScopeDeSerBuilder`
+    * `XSymbolDeSerBuilder` 
+    * `XSymbolTablePrinterBuilder`
 * renamed `IXResolvingDelegate` to `IXResolver`
 * outsourced Type expressions for arrays to a separate grammar
   * was `FullGenericTypes`, is now `MCArrayTypes`
-* moved array initialization to `JavaLight` (was `MCVarDeclarationStatements`)
+* outsourced initialization for arrays to a separate grammar
+  * was `MCVarDeclarationStatements`, is now `MCArrayStatements`
 * In a composed language, mills of super languages now provide scope instances (scope, global scope and artifact scope) for the composed language
 * non-existing template paths now result in an error instead of a warning
-
+* Set current visitor infrastructure to deprecated
+* Integrate new visitor infrastructure (i.e., traverser) into `XMill` to enable re-usability of visitors via language inheritance
+* Set SymbolTableCreator, SymbolTableCreatorDelegator and their builder to deprecated
+* Integrate new ScopeSkeletonCreator, ScopeSkeletonCreatorDelegator and PhasedSymbolTableCreatorDelegator into Mill
+* Added a method `clear` to the GlobalScope that clears its cache and its resolvers and empties its ModelPath
 
 ### Fixes
 

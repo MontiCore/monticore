@@ -15,14 +15,17 @@ import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 
 /**
+ * @deprecated use ScopeSkeletonCreator instead
  * creates a SymbolReference class from a grammar
  */
+@Deprecated
 public class SymbolTableCreatorForSuperTypes extends AbstractCreator<ASTCDCompilationUnit, List<ASTCDClass>> {
 
   protected final SymbolTableService symbolTableService;
@@ -47,12 +50,15 @@ public class SymbolTableCreatorForSuperTypes extends AbstractCreator<ASTCDCompil
         ASTMCWildcardTypeArgument wildCardTypeArgument = getMCTypeFacade().createWildCardWithUpperBoundType(superScopeInterface);
         ASTMCBasicGenericType dequeWildcardType = getMCTypeFacade().createBasicGenericTypeOf(DEQUE_TYPE, wildCardTypeArgument);
 
+        ASTModifier modifier = PUBLIC.build();
+        symbolTableService.addDeprecatedStereotype(modifier, Optional.of("will be removed"));
+
         ASTCDClass superSTCForSubClass = CD4CodeMill.cDClassBuilder()
             .setName(superSTCForSubSTCName)
-            .setModifier(PUBLIC.build())
+            .setModifier(modifier)
             .setSuperclass(getMCTypeFacade().createQualifiedType(superSTC))
             .addCDConstructor(createConstructor(superSTCForSubSTCName, dequeWildcardType))
-            .addCDMethod(createCreateScopeMethod(ownScopeInterface, symbolTableService.getCDName()))
+            .addCDMethod(createCreateScopeMethod(ownScopeInterface))
             .build();
         superForSubSTC.add(superSTCForSubClass);
       }
@@ -67,13 +73,13 @@ public class SymbolTableCreatorForSuperTypes extends AbstractCreator<ASTCDCompil
     return constructor;
   }
 
-  protected ASTCDMethod createCreateScopeMethod(String scopeInterfaceName, String definitionName) {
+  protected ASTCDMethod createCreateScopeMethod(String scopeInterfaceName) {
     String symTabMill = symbolTableService.getMillFullName();
     ASTCDParameter boolParam = getCDParameterFacade().createParameter(getMCTypeFacade().createBooleanType(), SHADOWING_VAR);
     ASTCDMethod createFromAST = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createQualifiedType(scopeInterfaceName),
         "createScope", boolParam);
     this.replaceTemplate(EMPTY_BODY, createFromAST, new TemplateHookPoint(
-        "_symboltable.symboltablecreator.CreateScope", scopeInterfaceName, symTabMill, definitionName));
+        "_symboltable.symboltablecreator.CreateScope", scopeInterfaceName, symTabMill));
     return createFromAST;
   }
 }

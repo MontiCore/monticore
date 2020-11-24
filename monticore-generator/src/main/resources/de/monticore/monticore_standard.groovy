@@ -89,7 +89,7 @@ while (grammarIterator.hasNext()) {
       reportCD(astClassDiagramWithST, decoratedASTClassDiagramm, decoratedSymbolTableCd, scopeClassDiagramm, report)
 
       // M6: generate parser and wrapper
-      generateParser(glex, astGrammar, mcScope, handcodedPath, out)
+      generateParser(glex, astClassDiagramWithST, astGrammar, mcScope, handcodedPath, out)
 
       resultMap.put(astGrammar, [astClassDiagramWithST, symbolClassDiagramm, scopeClassDiagramm])
     }

@@ -2,7 +2,9 @@
 package de.monticore.codegen.cd2java._visitor;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java.CoreTemplates.ANNOTATIONS;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
+import static de.monticore.codegen.cd2java.CoreTemplates.createAnnotationsHookPoint;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_INTERFACE;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SCOPE;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SYMBOL;
@@ -20,6 +22,7 @@ import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISIT;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
@@ -29,6 +32,7 @@ import de.monticore.cd.cd4analysis._ast.ASTCDEnum;
 import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
+import de.monticore.cd.cd4analysis._ast.ASTModifier;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.cd4code.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractCreator;
@@ -68,10 +72,13 @@ public class VisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
     ASTMCType astNodeType = getMCTypeFacade().createQualifiedType(AST_INTERFACE);
     Set<String> symbolNames = symbolTableService.retrieveSymbolNamesFromCD(visitorService.getCDSymbol());
 
+    ASTModifier modifier = PUBLIC.build();
+    visitorService.addDeprecatedStereotype(modifier, Optional.of("Will be removed. Use traverser infrastructure instead."));
+    
     ASTCDInterface visitorInterface = CD4CodeMill.cDInterfaceBuilder()
         .setName(this.visitorService.getVisitorSimpleName())
         .addAllInterface(this.visitorService.getSuperVisitors())
-        .setModifier(PUBLIC.build())
+        .setModifier(modifier)
         .addCDMethod(addGetRealThisMethods(visitorType))
         .addCDMethod(addSetRealThisMethods(visitorType))
         .addCDMethod(addEndVisitASTNodeMethods(astNodeType))
@@ -102,7 +109,8 @@ public class VisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
         visitorInterface.addCDMethod(enumMethod);
       }
     }
-
+    
+    this.replaceTemplate(ANNOTATIONS, visitorInterface, createAnnotationsHookPoint(visitorInterface.getModifier()));
     return visitorInterface;
   }
 
@@ -268,11 +276,7 @@ public class VisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
 
     List<ASTCDMethod> methodList = new ArrayList<>();
     methodList.addAll(createScopeVisitorMethods(scopeType, traverseSymbolsBody));
-    // only create artifact scope methods if grammar contains productions or
-    // refers to a starting production of a super grammar
-    if (symbolTableService.hasProd(astcdDefinition) || symbolTableService.hasStartProd()) {
-      methodList.addAll(createScopeVisitorMethods(artifactScopeType, traverseDelegationBody));
-    }
+    methodList.addAll(createScopeVisitorMethods(artifactScopeType, traverseDelegationBody));
     return methodList;
   }
   

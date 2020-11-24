@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+grammar G extends de.monticore.literals.MCCommonLiterals {
+   
+  interface C    = x:Number  y:String ;    // order irrelevant
+  A implements C = x:Number "," y:String ;
+  B implements C = y:String ":" x:Number ;
+ 
+  Number = NatLiteral;
+}
