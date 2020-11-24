@@ -10,7 +10,7 @@ import mchexnumbers._ast.ASTHexadecimal;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import prettyprint.MCHexNumbersPrettyPrinter;
+import prettyprint.MCHexNumbersFullPrettyPrinter;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -41,7 +41,7 @@ public class MCHexNumbersPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTHexadecimal hexadecimal = result.get();
     
-    MCHexNumbersPrettyPrinter prettyPrinter = new MCHexNumbersPrettyPrinter(new IndentPrinter());
+    MCHexNumbersFullPrettyPrinter prettyPrinter = new MCHexNumbersFullPrettyPrinter(new IndentPrinter());
     String output = prettyPrinter.prettyprint(hexadecimal);
     
     result = parser.parseHexadecimal(new StringReader(output));
@@ -59,7 +59,7 @@ public class MCHexNumbersPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTHexInteger hexinteger = result.get();
     
-    MCHexNumbersPrettyPrinter prettyPrinter = new MCHexNumbersPrettyPrinter(new IndentPrinter());
+    MCHexNumbersFullPrettyPrinter prettyPrinter = new MCHexNumbersFullPrettyPrinter(new IndentPrinter());
     String output = prettyPrinter.prettyprint(hexinteger);
     
     result = parser.parseHexInteger(new StringReader(output));
@@ -77,7 +77,7 @@ public class MCHexNumbersPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTHexInteger hexinteger = result.get();
     
-    MCHexNumbersPrettyPrinter prettyPrinter = new MCHexNumbersPrettyPrinter(new IndentPrinter());
+    MCHexNumbersFullPrettyPrinter prettyPrinter = new MCHexNumbersFullPrettyPrinter(new IndentPrinter());
     String output = prettyPrinter.prettyprint(hexinteger);
     
     result = parser.parseHexInteger(new StringReader(output));

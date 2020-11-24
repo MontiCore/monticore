@@ -3,13 +3,11 @@ package de.monticore.types.prettyprint;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.prettyprint.MCBasicsPrettyPrinter;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
-import de.monticore.types.mcfullgenerictypes._ast.ASTMCFullGenericTypesNode;
 import de.monticore.types.mcfullgenerictypes._visitor.MCFullGenericTypesTraverser;
-import de.monticore.types.mcsimplegenerictypes._ast.ASTMCSimpleGenericTypesNode;
 
 public class MCFullGenericTypesFullPrettyPrinter extends MCSimpleGenericTypesFullPrettyPrinter {
 
-  protected MCFullGenericTypesTraverser traverser;
+  private MCFullGenericTypesTraverser traverser;
 
   public MCFullGenericTypesFullPrettyPrinter(IndentPrinter printer) {
     super(printer);

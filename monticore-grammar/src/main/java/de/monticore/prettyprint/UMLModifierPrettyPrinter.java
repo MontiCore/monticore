@@ -3,11 +3,13 @@ package de.monticore.prettyprint;
 
 import de.monticore.umlmodifier._ast.ASTModifier;
 import de.monticore.umlmodifier._ast.ASTUMLModifierNode;
-import de.monticore.umlmodifier._visitor.UMLModifierVisitor;
+import de.monticore.umlmodifier._visitor.UMLModifierHandler;
+import de.monticore.umlmodifier._visitor.UMLModifierTraverser;
+import de.monticore.umlmodifier._visitor.UMLModifierVisitor2;
 
-public class UMLModifierPrettyPrinter implements UMLModifierVisitor {
+public class UMLModifierPrettyPrinter implements UMLModifierVisitor2, UMLModifierHandler {
 
-  private UMLModifierVisitor realThis= this;
+  protected UMLModifierTraverser traverser;
 
   private IndentPrinter printer;
 
@@ -19,7 +21,7 @@ public class UMLModifierPrettyPrinter implements UMLModifierVisitor {
   public void handle(ASTModifier a) {
     // print stereotypes
     if (a.isPresentStereotype()) {
-      a.getStereotype().accept(getRealThis());
+      a.getStereotype().accept(getTraverser());
       getPrinter().print(" ");
     }
     if (a.isPublic()) {
@@ -51,24 +53,24 @@ public class UMLModifierPrettyPrinter implements UMLModifierVisitor {
     }
   }
 
+  @Override
+  public UMLModifierTraverser getTraverser() {
+    return traverser;
+  }
+
+  @Override
+  public void setTraverser(UMLModifierTraverser traverser) {
+    this.traverser = traverser;
+  }
+
   public IndentPrinter getPrinter() {
     return this.printer;
   }
 
   public String prettyprint(ASTUMLModifierNode node) {
     getPrinter().clearBuffer();
-    node.accept(getRealThis());
+    node.accept(getTraverser());
     return getPrinter().getContent();
-  }
-
-  @Override
-  public void setRealThis(UMLModifierVisitor realThis) {
-    this.realThis = realThis;
-  }
-
-  @Override
-  public UMLModifierVisitor getRealThis() {
-    return realThis;
   }
 
 }

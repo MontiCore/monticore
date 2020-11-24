@@ -2,15 +2,13 @@ package de.monticore.types.prettyprint;
 
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.prettyprint.MCBasicsPrettyPrinter;
-import de.monticore.types.mcbasictypes._ast.ASTMCBasicTypesNode;
 import de.monticore.types.mccollectiontypes.MCCollectionTypesMill;
-import de.monticore.types.mccollectiontypes._ast.ASTMCCollectionTypesNode;
 import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
 import de.monticore.types.mccollectiontypes._visitor.MCCollectionTypesTraverser;
 
 public class MCCollectionTypesFullPrettyPrinter extends MCBasicTypesFullPrettyPrinter {
 
-  protected MCCollectionTypesTraverser traverser;
+  private MCCollectionTypesTraverser traverser;
 
   public MCCollectionTypesFullPrettyPrinter(IndentPrinter printer){
     super(printer);

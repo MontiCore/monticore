@@ -21,7 +21,7 @@ component grammar StringLiterals extends de.monticore.MCBasics {
 
   astrule CharLiteral =
     method public char getValue() {
-      return de.monticore.MCLiteralsDecoder.decodeChar(getSource());
+      return de.monticore.literals.MCLiteralsDecoder.decodeChar(getSource());
     }
   ;
 
@@ -49,7 +49,7 @@ component grammar StringLiterals extends de.monticore.MCBasics {
     method public String getValue() {
       if(content == null) {
         content =
-            de.monticore.MCLiteralsDecoder.decodeString(getSource());
+            de.monticore.literals.MCLiteralsDecoder.decodeString(getSource());
       }
       return content;
     };

@@ -2,8 +2,6 @@
 package de.monticore.types.prettyprint;
 
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.types.mcbasictypes._ast.ASTMCBasicTypesNode;
-import de.monticore.types.mccollectiontypes.MCCollectionTypesMill;
 import de.monticore.types.mccollectiontypes._ast.*;
 import de.monticore.types.mccollectiontypes._visitor.MCCollectionTypesHandler;
 import de.monticore.types.mccollectiontypes._visitor.MCCollectionTypesTraverser;
@@ -63,18 +61,6 @@ public class MCCollectionTypesPrettyPrinter implements MCCollectionTypesVisitor2
     getPrinter().print(",");
     a.getValue().accept(getTraverser());
     getPrinter().print(">");
-  }
-
-  public String prettyprint(ASTMCTypeArgument a) {
-    getPrinter().clearBuffer();
-    a.accept(getTraverser());
-    return getPrinter().getContent();
-  }
-
-  public String prettyprint(ASTMCCollectionTypesNode a) {
-    getPrinter().clearBuffer();
-    a.accept(getTraverser());
-    return getPrinter().getContent();
   }
 
 }

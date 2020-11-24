@@ -2,19 +2,21 @@
 
 package de.monticore.statements.prettyprint;
 
-import de.monticore.expressions.prettyprint.ExpressionsBasisPrettyPrinter;
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.statements.mcassertstatements._ast.ASTAssertStatement;
-import de.monticore.statements.mcassertstatements._ast.ASTMCAssertStatementsNode;
-import de.monticore.statements.mcassertstatements._visitor.MCAssertStatementsVisitor;
+import de.monticore.statements.mcassertstatements._visitor.MCAssertStatementsHandler;
+import de.monticore.statements.mcassertstatements._visitor.MCAssertStatementsTraverser;
+import de.monticore.statements.mcassertstatements._visitor.MCAssertStatementsVisitor2;
 
-public class MCAssertStatementsPrettyPrinter extends ExpressionsBasisPrettyPrinter implements MCAssertStatementsVisitor {
+public class MCAssertStatementsPrettyPrinter implements MCAssertStatementsVisitor2, MCAssertStatementsHandler {
 
-  private MCAssertStatementsVisitor realThis = this;
+  protected MCAssertStatementsTraverser traverser;
+
+  protected IndentPrinter printer;
 
   public MCAssertStatementsPrettyPrinter(IndentPrinter out) {
-    super(out);
+    this.printer = out;
   }
 
   public IndentPrinter getPrinter() {
@@ -22,38 +24,26 @@ public class MCAssertStatementsPrettyPrinter extends ExpressionsBasisPrettyPrint
   }
 
   @Override
+  public void setTraverser(MCAssertStatementsTraverser traverser) {
+    this.traverser = traverser;
+  }
+
+  @Override
+  public MCAssertStatementsTraverser getTraverser() {
+    return traverser;
+  }
+
+  @Override
   public void handle(ASTAssertStatement a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     getPrinter().print("assert ");
-    a.getAssertion().accept(getRealThis());
+    a.getAssertion().accept(getTraverser());
     if (a.isPresentMessage()) {
       getPrinter().print(" : ");
-      a.getMessage().accept(getRealThis());
+      a.getMessage().accept(getTraverser());
     }
     getPrinter().println(";");
     CommentPrettyPrinter.printPostComments(a, getPrinter());
-  }
-
-  /**
-   * This method prettyprints a given node from Java.
-   *
-   * @param a A node from Java.
-   * @return String representation.
-   */
-  public String prettyprint(ASTMCAssertStatementsNode a) {
-    getPrinter().clearBuffer();
-    a.accept(getRealThis());
-    return getPrinter().getContent();
-  }
-
-  @Override
-  public void setRealThis(MCAssertStatementsVisitor realThis) {
-    this.realThis = realThis;
-  }
-
-  @Override
-  public MCAssertStatementsVisitor getRealThis() {
-    return realThis;
   }
   
 }

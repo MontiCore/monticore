@@ -4,11 +4,13 @@ package de.monticore.prettyprint;
 import de.monticore.umlstereotype._ast.ASTStereoValue;
 import de.monticore.umlstereotype._ast.ASTStereotype;
 import de.monticore.umlstereotype._ast.ASTUMLStereotypeNode;
-import de.monticore.umlstereotype._visitor.UMLStereotypeVisitor;
+import de.monticore.umlstereotype._visitor.UMLStereotypeHandler;
+import de.monticore.umlstereotype._visitor.UMLStereotypeTraverser;
+import de.monticore.umlstereotype._visitor.UMLStereotypeVisitor2;
 
-public class UMLStereotypePrettyPrinter implements UMLStereotypeVisitor {
+public class UMLStereotypePrettyPrinter implements UMLStereotypeVisitor2, UMLStereotypeHandler {
 
-  private UMLStereotypeVisitor realThis = this;
+  protected UMLStereotypeTraverser traverser;
   
   private IndentPrinter printer;
   
@@ -22,7 +24,7 @@ public class UMLStereotypePrettyPrinter implements UMLStereotypeVisitor {
     String sep = "";
     for (ASTStereoValue value : a.getValuesList()) {
       getPrinter().print(sep);
-      value.accept(getRealThis());
+      value.accept(getTraverser());
       sep = ", ";
     }
     getPrinter().print(">>");
@@ -35,25 +37,25 @@ public class UMLStereotypePrettyPrinter implements UMLStereotypeVisitor {
       getPrinter().print("=" + "\"" + a.getText().getSource() + "\"");
     }
   }
-  
+
+  @Override
+  public UMLStereotypeTraverser getTraverser() {
+    return traverser;
+  }
+
+  @Override
+  public void setTraverser(UMLStereotypeTraverser traverser) {
+    this.traverser = traverser;
+  }
+
   public IndentPrinter getPrinter() {
     return this.printer;
   }
   
   public String prettyprint(ASTUMLStereotypeNode node) {
     getPrinter().clearBuffer();
-    node.accept(getRealThis());
+    node.accept(getTraverser());
     return getPrinter().getContent();
-  }
-
-  @Override
-  public void setRealThis(UMLStereotypeVisitor realThis) {
-    this.realThis = realThis;
-  }
-
-  @Override
-  public UMLStereotypeVisitor getRealThis() {
-    return realThis;
   }
 
 }

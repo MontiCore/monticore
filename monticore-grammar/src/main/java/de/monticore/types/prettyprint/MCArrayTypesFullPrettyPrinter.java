@@ -3,15 +3,11 @@ package de.monticore.types.prettyprint;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.prettyprint.MCBasicsPrettyPrinter;
 import de.monticore.types.mcarraytypes.MCArrayTypesMill;
-import de.monticore.types.mcarraytypes._ast.ASTMCArrayTypesNode;
 import de.monticore.types.mcarraytypes._visitor.MCArrayTypesTraverser;
-import de.monticore.types.mccollectiontypes.MCCollectionTypesMill;
-import de.monticore.types.mccollectiontypes._ast.ASTMCCollectionTypesNode;
-import de.monticore.types.mccollectiontypes._visitor.MCCollectionTypesTraverser;
 
 public class MCArrayTypesFullPrettyPrinter extends MCBasicTypesFullPrettyPrinter {
 
-  protected MCArrayTypesTraverser traverser;
+  private MCArrayTypesTraverser traverser;
 
   public MCArrayTypesFullPrettyPrinter(IndentPrinter printer) {
     super(printer);

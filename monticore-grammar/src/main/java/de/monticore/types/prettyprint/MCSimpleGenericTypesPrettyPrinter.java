@@ -60,13 +60,6 @@ public class MCSimpleGenericTypesPrettyPrinter implements MCSimpleGenericTypesVi
   }
 
 
-  public String prettyprint(ASTMCCustomTypeArgument a) {
-    getPrinter().clearBuffer();
-    a.accept(getTraverser());
-    return getPrinter().getContent();
-  }
-
-
   /**
    * Prints a list
    *

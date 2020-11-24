@@ -2,7 +2,6 @@
 package de.monticore.prettyprint;
 
 import de.monticore.javalight._ast.*;
-import de.monticore.statements.mccommonstatements._ast.ASTMCJavaBlock;
 import de.monticore.testjavalight._parser.TestJavaLightParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -20,7 +19,7 @@ public class JavaLightPrettyPrinterTest {
 
   private TestJavaLightParser parser = new TestJavaLightParser();
 
-  private JavaLightPrettyPrinterDelegator prettyPrinter = new JavaLightPrettyPrinterDelegator(new IndentPrinter());
+  private JavaLightFullPrettyPrinter prettyPrinter = new JavaLightFullPrettyPrinter(new IndentPrinter());
 
   @BeforeClass
   public static void setUp() {
