@@ -15,7 +15,6 @@ public class MCArrayTypesFullPrettyPrinter extends MCBasicTypesFullPrettyPrinter
 
   public MCArrayTypesFullPrettyPrinter(IndentPrinter printer) {
     super(printer);
-
     this.traverser = MCArrayTypesMill.traverser();
 
     MCArrayTypesPrettyPrinter arrayTypes = new MCArrayTypesPrettyPrinter(printer);

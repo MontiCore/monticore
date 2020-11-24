@@ -4,26 +4,43 @@
 package de.monticore.expressions.prettyprint;
 
 import de.monticore.expressions.assignmentexpressions._ast.*;
+import de.monticore.expressions.assignmentexpressions._visitor.AssignmentExpressionsHandler;
+import de.monticore.expressions.assignmentexpressions._visitor.AssignmentExpressionsTraverser;
 import de.monticore.expressions.assignmentexpressions._visitor.AssignmentExpressionsVisitor;
+import de.monticore.expressions.assignmentexpressions._visitor.AssignmentExpressionsVisitor2;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.se_rwth.commons.logging.Log;
 
-public class AssignmentExpressionsPrettyPrinter extends ExpressionsBasisPrettyPrinter implements AssignmentExpressionsVisitor {
-  
-  protected AssignmentExpressionsVisitor realThis;
-  
+public class AssignmentExpressionsPrettyPrinter implements AssignmentExpressionsVisitor2, AssignmentExpressionsHandler {
+
+  protected AssignmentExpressionsTraverser traverser;
+
+  @Override
+  public AssignmentExpressionsTraverser getTraverser() {
+    return traverser;
+  }
+
+  @Override
+  public void setTraverser(AssignmentExpressionsTraverser traverser) {
+    this.traverser = traverser;
+  }
+  protected IndentPrinter printer;
+
+
+  public void setPrinter(IndentPrinter printer) {
+    this.printer = printer;
+  }
 
   public AssignmentExpressionsPrettyPrinter(IndentPrinter printer) {
-    super(printer);
-    realThis = this;
+    this.printer = printer;
   }
   
   @Override
   public void handle(ASTIncSuffixExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getExpression().accept(getRealThis());
+    node.getExpression().accept(getTraverser());
     getPrinter().print("++");
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
@@ -31,7 +48,7 @@ public class AssignmentExpressionsPrettyPrinter extends ExpressionsBasisPrettyPr
   @Override
   public void handle(ASTDecSuffixExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getExpression().accept(getRealThis());
+    node.getExpression().accept(getTraverser());
     getPrinter().print("--");
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
@@ -40,7 +57,7 @@ public class AssignmentExpressionsPrettyPrinter extends ExpressionsBasisPrettyPr
   public void handle(ASTIncPrefixExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     getPrinter().print("++");
-    node.getExpression().accept(getRealThis());
+    node.getExpression().accept(getTraverser());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
@@ -48,14 +65,14 @@ public class AssignmentExpressionsPrettyPrinter extends ExpressionsBasisPrettyPr
   public void handle(ASTDecPrefixExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     getPrinter().print("--");
-    node.getExpression().accept(getRealThis());
+    node.getExpression().accept(getTraverser());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
 
   @Override
   public void handle(ASTAssignmentExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getLeft().accept(getRealThis());
+    node.getLeft().accept(getTraverser());
     // ["="|"+="|"-="|"*="|"/="|"&="|"|="|"^="|">>="|">>>="|"<<="|"%="]
     switch (node.getOperator()) {
       case ASTConstantsAssignmentExpressions.EQUALS:
@@ -97,7 +114,7 @@ public class AssignmentExpressionsPrettyPrinter extends ExpressionsBasisPrettyPr
       default:
         Log.error("0xA0114 Missing implementation for RegularAssignmentExpression");
     }
-    node.getRight().accept(getRealThis());
+    node.getRight().accept(getTraverser());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
 
@@ -108,19 +125,8 @@ public class AssignmentExpressionsPrettyPrinter extends ExpressionsBasisPrettyPr
   
   public String prettyprint(ASTExpression node) {
     getPrinter().clearBuffer();
-    node.accept(getRealThis());
+    node.accept(getTraverser());
     return getPrinter().getContent();
   }
-  
-  @Override
-  public void setRealThis(AssignmentExpressionsVisitor realThis) {
-    this.realThis = realThis;
-  }
-  
-  @Override
-  public AssignmentExpressionsVisitor getRealThis() {
-    return realThis;
-  }
- 
   
 }
