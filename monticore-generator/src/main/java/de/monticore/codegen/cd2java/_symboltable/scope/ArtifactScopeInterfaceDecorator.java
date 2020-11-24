@@ -67,7 +67,6 @@ public class ArtifactScopeInterfaceDecorator extends AbstractCreator<ASTCDCompil
         .addAllCDMethods(createImportsAttributeMethods())
         .addCDMethod(createGetTopLevelSymbolMethod(symbolProds))
         .addCDMethod(createCheckIfContinueAsSubScopeMethod())
-        .addCDMethod(createGetRemainingNameForResolveDownMethod())
         .addAllCDMethods(createContinueWithEnclosingScopeMethods(symbolProds, symbolTableService.getCDSymbol()))
         .addAllCDMethods(createSuperContinueWithEnclosingScopeMethods())
         .addCDMethod(createGetFullNameMethod())
@@ -139,13 +138,6 @@ public class ArtifactScopeInterfaceDecorator extends AbstractCreator<ASTCDCompil
     ASTCDMethod getNameMethod = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createBooleanType(), "checkIfContinueAsSubScope", symbolNameParam);
     this.replaceTemplate(EMPTY_BODY, getNameMethod, new TemplateHookPoint(TEMPLATE_PATH + "CheckIfContinueAsSubScope"));
     return getNameMethod;
-  }
-
-  protected ASTCDMethod createGetRemainingNameForResolveDownMethod() {
-    ASTCDParameter parameter = getCDParameterFacade().createParameter(String.class, "symbolName");
-    ASTCDMethod getRemainingNameForResolveDown = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createStringType(), "getRemainingNameForResolveDown", parameter);
-    this.replaceTemplate(EMPTY_BODY, getRemainingNameForResolveDown, new TemplateHookPoint(TEMPLATE_PATH + "GetRemainingNameForResolveDown"));
-    return getRemainingNameForResolveDown;
   }
 
   protected List<ASTCDMethod> createContinueWithEnclosingScopeMethods(List<ASTCDType> symbolProds, CDDefinitionSymbol definitionSymbol) {
