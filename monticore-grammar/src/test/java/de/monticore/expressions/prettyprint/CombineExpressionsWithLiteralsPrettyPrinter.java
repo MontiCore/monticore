@@ -2,7 +2,7 @@
 
 package de.monticore.expressions.prettyprint;
 
-import de.monticore.MCCommonLiteralsPrettyPrinter;
+import de.monticore.literals.prettyprint.MCCommonLiteralsPrettyPrinter;
 import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsDelegatorVisitor;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;

@@ -1,9 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.statements.prettyprint;
 
-import de.monticore.MCCommonLiteralsPrettyPrinter;
+import de.monticore.literals.prettyprint.MCCommonLiteralsPrettyPrinter;
 import de.monticore.expressions.prettyprint.ExpressionsBasisPrettyPrinter;
-import de.monticore.javalight._ast.ASTJavaLightNode;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.statements.mcarraystatements._ast.ASTArrayDeclaratorId;
 import de.monticore.statements.mcarraystatements._ast.ASTArrayInit;

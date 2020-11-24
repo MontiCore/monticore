@@ -36,7 +36,7 @@ public class MCBasicTypesPrettyPrinterTest {
     assertTrue(ast.isPresent());
     assertFalse(parser.hasErrors());
     ASTMCQualifiedName qualifiedName = ast.get();
-    MCBasicTypesPrettyPrinter printer = new MCBasicTypesPrettyPrinter(new IndentPrinter());
+    MCBasicTypesFullPrettyPrinter printer = new MCBasicTypesFullPrettyPrinter(new IndentPrinter());
     String output = printer.prettyprint(ast.get());
     ast = parser.parse_StringMCQualifiedName(output);
     assertFalse(parser.hasErrors());
@@ -51,7 +51,7 @@ public class MCBasicTypesPrettyPrinterTest {
     assertTrue(ast.isPresent());
     assertFalse(parser.hasErrors());
     ASTMCImportStatement importStatement = ast.get();
-    MCBasicTypesPrettyPrinter printer = new MCBasicTypesPrettyPrinter(new IndentPrinter());
+    MCBasicTypesFullPrettyPrinter printer = new MCBasicTypesFullPrettyPrinter(new IndentPrinter());
     String output = printer.prettyprint(ast.get());
     ast = parser.parse_StringMCImportStatement(output);
     assertFalse(parser.hasErrors());
@@ -66,7 +66,7 @@ public class MCBasicTypesPrettyPrinterTest {
     assertTrue(ast.isPresent());
     assertFalse(parser.hasErrors());
     ASTMCPrimitiveType primitiveType = ast.get();
-    MCBasicTypesPrettyPrinter printer = new MCBasicTypesPrettyPrinter(new IndentPrinter());
+    MCBasicTypesFullPrettyPrinter printer = new MCBasicTypesFullPrettyPrinter(new IndentPrinter());
     String output = printer.prettyprint(ast.get());
     ast = parser.parse_StringMCPrimitiveType(output);
     assertFalse(parser.hasErrors());
@@ -81,7 +81,7 @@ public class MCBasicTypesPrettyPrinterTest {
     assertTrue(ast.isPresent());
     assertFalse(parser.hasErrors());
     ASTMCVoidType voidType = ast.get();
-    MCBasicTypesPrettyPrinter printer = new MCBasicTypesPrettyPrinter(new IndentPrinter());
+    MCBasicTypesFullPrettyPrinter printer = new MCBasicTypesFullPrettyPrinter(new IndentPrinter());
     String output = printer.prettyprint(ast.get());
     ast = parser.parse_StringMCVoidType(output);
     assertFalse(parser.hasErrors());
@@ -96,7 +96,7 @@ public class MCBasicTypesPrettyPrinterTest {
     assertTrue(ast.isPresent());
     assertFalse(parser.hasErrors());
     ASTMCReturnType voidType = ast.get();
-    MCBasicTypesPrettyPrinter printer = new MCBasicTypesPrettyPrinter(new IndentPrinter());
+    MCBasicTypesFullPrettyPrinter printer = new MCBasicTypesFullPrettyPrinter(new IndentPrinter());
     String output = printer.prettyprint(ast.get());
     ast = parser.parse_StringMCReturnType(output);
     assertFalse(parser.hasErrors());
@@ -111,7 +111,7 @@ public class MCBasicTypesPrettyPrinterTest {
     assertTrue(ast.isPresent());
     assertFalse(parser.hasErrors());
     ASTMCReturnType voidType = ast.get();
-    MCBasicTypesPrettyPrinter printer = new MCBasicTypesPrettyPrinter(new IndentPrinter());
+    MCBasicTypesFullPrettyPrinter printer = new MCBasicTypesFullPrettyPrinter(new IndentPrinter());
     String output = printer.prettyprint(ast.get());
     ast = parser.parse_StringMCReturnType(output);
     assertFalse(parser.hasErrors());
@@ -126,7 +126,7 @@ public class MCBasicTypesPrettyPrinterTest {
     assertTrue(ast.isPresent());
     assertFalse(parser.hasErrors());
     ASTMCQualifiedType qualifiedReferenceType = ast.get();
-    MCBasicTypesPrettyPrinter printer = new MCBasicTypesPrettyPrinter(new IndentPrinter());
+    MCBasicTypesFullPrettyPrinter printer = new MCBasicTypesFullPrettyPrinter(new IndentPrinter());
     String output = printer.prettyprint(ast.get());
     ast = parser.parse_StringMCQualifiedType(output);
     assertFalse(parser.hasErrors());
@@ -137,7 +137,7 @@ public class MCBasicTypesPrettyPrinterTest {
   @Test
   public void primitivesTest(){
     Class foo = boolean.class;
-    MCBasicTypesPrettyPrinter prettyprinter = new MCBasicTypesPrettyPrinter(new IndentPrinter());
+    MCBasicTypesFullPrettyPrinter prettyprinter = new MCBasicTypesFullPrettyPrinter(new IndentPrinter());
 
     String[] primitives = new String[]{"boolean", "byte", "char", "short", "int", "long",
         "float", "double"};
@@ -148,7 +148,7 @@ public class MCBasicTypesPrettyPrinterTest {
         // .parseType(primitive);
 
         Optional<? extends ASTMCType> type = mcBasicTypesParser.parse_StringMCPrimitiveType(primitive);
-        type.get().accept(prettyprinter);
+        type.get().accept(prettyprinter.getTraverser());
         assertTrue(type.isPresent());
         assertEquals(primitive,prettyprinter.getPrinter().getContent());
         assertTrue(type.get() instanceof ASTMCPrimitiveType);
@@ -161,12 +161,12 @@ public class MCBasicTypesPrettyPrinterTest {
 
   @Test
   public void simpleReferenceTest(){
-    MCBasicTypesPrettyPrinter prettyprinter = new MCBasicTypesPrettyPrinter(new IndentPrinter());
+    MCBasicTypesFullPrettyPrinter prettyprinter = new MCBasicTypesFullPrettyPrinter(new IndentPrinter());
     String simpleReference = "de.monticore.types.prettyprint";
     try{
       MCBasicTypesTestParser mcBasicTypesParser= new MCBasicTypesTestParser();
       Optional<? extends ASTMCType> type = mcBasicTypesParser.parse_StringMCQualifiedType(simpleReference);
-      type.get().accept(prettyprinter);
+      type.get().accept(prettyprinter.getTraverser());
       assertTrue(type.isPresent());
       assertEquals(simpleReference,prettyprinter.getPrinter().getContent());
       assertTrue(type.get() instanceof ASTMCQualifiedType);

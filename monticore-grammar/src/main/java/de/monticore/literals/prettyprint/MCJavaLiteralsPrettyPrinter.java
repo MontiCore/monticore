@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-package de.monticore;
+package de.monticore.literals.prettyprint;
 
 import de.monticore.literals.mcjavaliterals._ast.*;
 import de.monticore.literals.mcjavaliterals._visitor.MCJavaLiteralsVisitor;

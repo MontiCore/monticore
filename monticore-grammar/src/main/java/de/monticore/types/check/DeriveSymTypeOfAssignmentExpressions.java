@@ -2,7 +2,9 @@
 package de.monticore.types.check;
 
 import de.monticore.expressions.assignmentexpressions._ast.*;
-import de.monticore.expressions.assignmentexpressions._visitor.AssignmentExpressionsVisitor;
+import de.monticore.expressions.assignmentexpressions._visitor.AssignmentExpressionsHandler;
+import de.monticore.expressions.assignmentexpressions._visitor.AssignmentExpressionsTraverser;
+import de.monticore.expressions.assignmentexpressions._visitor.AssignmentExpressionsVisitor2;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.se_rwth.commons.logging.Log;
 
@@ -15,22 +17,18 @@ import static de.monticore.types.check.TypeCheck.*;
  * This Visitor can calculate a SymTypeExpression (type) for the expressions in AssignmentExpressions
  * It can be combined with other expressions in your language by creating a DelegatorVisitor
  */
-public class DeriveSymTypeOfAssignmentExpressions extends DeriveSymTypeOfExpression implements AssignmentExpressionsVisitor {
+public class DeriveSymTypeOfAssignmentExpressions extends AbstractDeriveFromExpression implements AssignmentExpressionsVisitor2, AssignmentExpressionsHandler {
 
-  private AssignmentExpressionsVisitor realThis;
+  protected AssignmentExpressionsTraverser traverser;
 
   @Override
-  public void setRealThis(AssignmentExpressionsVisitor realThis) {
-    this.realThis = realThis;
+  public void setTraverser(AssignmentExpressionsTraverser traverser) {
+    this.traverser = traverser;
   }
 
   @Override
-  public AssignmentExpressionsVisitor getRealThis() {
-    return realThis;
-  }
-
-  public DeriveSymTypeOfAssignmentExpressions() {
-    realThis = this;
+  public AssignmentExpressionsTraverser getTraverser() {
+    return traverser;
   }
 
   @Override

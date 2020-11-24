@@ -4,15 +4,14 @@ package de.monticore.javalight._symboltable;
 import de.monticore.javalight._ast.*;
 import de.monticore.statements.mccommonstatements._ast.ASTJavaModifier;
 import de.monticore.statements.mcstatementsbasis._ast.ASTMCModifier;
-import de.monticore.types.check.SymTypeExpression;
-import de.monticore.types.check.SymTypeExpressionFactory;
-import de.monticore.types.check.SymTypeOfNull;
-import de.monticore.types.check.SynthesizeSymTypeFromMCFullGenericTypes;
+import de.monticore.types.check.*;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
+import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
+import de.monticore.types.mcfullgenerictypes._visitor.MCFullGenericTypesTraverser;
 
 import java.util.Deque;
 
@@ -128,17 +127,34 @@ public class JavaLightSymbolTableCreator extends JavaLightSymbolTableCreatorTOP 
   }
 
   private SymTypeExpression createTypeLoader(ASTMCQualifiedName ast) {
-    SynthesizeSymTypeFromMCFullGenericTypes syn = new SynthesizeSymTypeFromMCFullGenericTypes();
+    SynthesizeSymTypeFromMCFullGenericTypes synFromFull = new SynthesizeSymTypeFromMCFullGenericTypes();
     // Start visitor
-    ast.accept(syn);
-    return syn.getResult().orElse(new SymTypeOfNull());
+    ast.accept(getSynthesizer(synFromFull));
+    return synFromFull.getResult().orElse(new SymTypeOfNull());
   }
 
   private SymTypeExpression createTypeLoader(ASTMCType ast) {
-    SynthesizeSymTypeFromMCFullGenericTypes syn = new SynthesizeSymTypeFromMCFullGenericTypes();
+    SynthesizeSymTypeFromMCFullGenericTypes synFromFull = new SynthesizeSymTypeFromMCFullGenericTypes();
     // Start visitor
-    ast.accept(syn);
-    return syn.getResult().orElse(new SymTypeOfNull());
+    ast.accept(getSynthesizer(synFromFull));
+    return synFromFull.getResult().orElse(new SymTypeOfNull());
+  }
+
+  private MCFullGenericTypesTraverser getSynthesizer(SynthesizeSymTypeFromMCFullGenericTypes synFromFull){
+    SynthesizeSymTypeFromMCSimpleGenericTypes synFromSimple = new SynthesizeSymTypeFromMCSimpleGenericTypes();
+    SynthesizeSymTypeFromMCCollectionTypes synFromCollection = new SynthesizeSymTypeFromMCCollectionTypes();
+    SynthesizeSymTypeFromMCBasicTypes synFromBasic = new SynthesizeSymTypeFromMCBasicTypes();
+
+    MCFullGenericTypesTraverser traverser = MCFullGenericTypesMill.traverser();
+    traverser.addMCFullGenericTypesVisitor(synFromFull);
+    traverser.setMCFullGenericTypesHandler(synFromFull);
+    traverser.addMCSimpleGenericTypesVisitor(synFromSimple);
+    traverser.setMCSimpleGenericTypesHandler(synFromSimple);
+    traverser.addMCCollectionTypesVisitor(synFromCollection);
+    traverser.setMCCollectionTypesHandler(synFromCollection);
+    traverser.addMCBasicTypesVisitor(synFromBasic);
+    traverser.setMCBasicTypesHandler(synFromBasic);
+    return traverser;
   }
 
   private SymTypeExpression createTypeLoader(ASTMCReturnType ast) {

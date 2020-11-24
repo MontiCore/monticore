@@ -5,14 +5,26 @@ package de.monticore.types.prettyprint;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.MCBasicTypesHelper;
 import de.monticore.types.mcbasictypes._ast.*;
-import de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor;
+import de.monticore.types.mcbasictypes._visitor.MCBasicTypesHandler;
+import de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser;
+import de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2;
 import de.se_rwth.commons.Names;
 
 import java.util.Iterator;
 
-public class MCBasicTypesPrettyPrinter implements MCBasicTypesVisitor {
+public class MCBasicTypesPrettyPrinter implements MCBasicTypesVisitor2, MCBasicTypesHandler {
 
-  private MCBasicTypesVisitor realThis = this;
+  protected MCBasicTypesTraverser traverser;
+
+  @Override
+  public MCBasicTypesTraverser getTraverser() {
+    return traverser;
+  }
+
+  @Override
+  public void setTraverser(MCBasicTypesTraverser traverser) {
+    this.traverser = traverser;
+  }
 
   public IndentPrinter getPrinter() {
     return printer;
@@ -78,19 +90,8 @@ public class MCBasicTypesPrettyPrinter implements MCBasicTypesVisitor {
    */
   public String prettyprint(ASTMCBasicTypesNode a) {
     getPrinter().clearBuffer();
-    a.accept(getRealThis());
+    a.accept(getTraverser());
     return getPrinter().getContent();
-  }
-
-
-  public void setRealThis(MCBasicTypesVisitor realThis) {
-    this.realThis = realThis;
-  }
-
-
-  @Override
-  public MCBasicTypesVisitor getRealThis() {
-    return realThis;
   }
 
   /**
@@ -104,7 +105,7 @@ public class MCBasicTypesPrettyPrinter implements MCBasicTypesVisitor {
     String sep = "";
     while (iter.hasNext()) {
       getPrinter().print(sep);
-      iter.next().accept(getRealThis());
+      iter.next().accept(getTraverser());
       sep = separator;
     }
   }

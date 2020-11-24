@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.prettyprint;
 
-import de.monticore.MCJavaLiteralsPrettyPrinter;
+import de.monticore.literals.prettyprint.MCJavaLiteralsPrettyPrinter;
 import de.monticore.literals.mcjavaliterals._ast.ASTDoubleLiteral;
 import de.monticore.literals.mcjavaliterals._ast.ASTFloatLiteral;
 import de.monticore.literals.mcjavaliterals._ast.ASTIntLiteral;

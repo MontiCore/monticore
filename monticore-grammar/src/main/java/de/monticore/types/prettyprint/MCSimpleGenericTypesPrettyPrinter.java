@@ -6,30 +6,38 @@ import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCCustomTypeArgument;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCSimpleGenericTypesNode;
-import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesVisitor;
+import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesHandler;
+import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesTraverser;
+import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesVisitor2;
 
 import java.util.Iterator;
 
-public class MCSimpleGenericTypesPrettyPrinter extends MCCollectionTypesPrettyPrinter implements MCSimpleGenericTypesVisitor {
-  private MCSimpleGenericTypesVisitor realThis = this;
+public class MCSimpleGenericTypesPrettyPrinter implements MCSimpleGenericTypesVisitor2, MCSimpleGenericTypesHandler {
+
+  protected MCSimpleGenericTypesTraverser traverser;
+
+  protected IndentPrinter printer;
 
   public MCSimpleGenericTypesPrettyPrinter(IndentPrinter printer){
-    super(printer);
+    this.printer = printer;
   }
 
-  public MCSimpleGenericTypesPrettyPrinter(IndentPrinter printer, MCSimpleGenericTypesVisitor realThis) {
-    super(printer);
-    this.realThis = realThis;
+  public IndentPrinter getPrinter() {
+    return printer;
+  }
+
+  public void setPrinter(IndentPrinter printer) {
+    this.printer = printer;
   }
 
   @Override
-  public MCSimpleGenericTypesVisitor getRealThis(){
-    return realThis;
+  public MCSimpleGenericTypesTraverser getTraverser() {
+    return traverser;
   }
 
   @Override
-  public void setRealThis(MCSimpleGenericTypesVisitor realThis){
-    this.realThis=realThis;
+  public void setTraverser(MCSimpleGenericTypesTraverser traverser) {
+    this.traverser = traverser;
   }
 
   public void handle(ASTMCBasicGenericType node) {
@@ -41,20 +49,20 @@ public class MCSimpleGenericTypesPrettyPrinter extends MCCollectionTypesPrettyPr
 
    for(ASTMCTypeArgument t:node.getMCTypeArgumentList()) {
      getPrinter().print(sepTemp);
-     t.accept(getRealThis());
+     t.accept(getTraverser());
      sepTemp = seperator;
    }
     getPrinter().print(">");
   }
 
   public void handle(ASTMCCustomTypeArgument node) {
-    node.getMCType().accept(getRealThis());
+    node.getMCType().accept(getTraverser());
   }
 
 
   public String prettyprint(ASTMCCustomTypeArgument a) {
     getPrinter().clearBuffer();
-    a.accept(getRealThis());
+    a.accept(getTraverser());
     return getPrinter().getContent();
   }
 
@@ -70,7 +78,7 @@ public class MCSimpleGenericTypesPrettyPrinter extends MCCollectionTypesPrettyPr
     String sep = "";
     while (iter.hasNext()) {
       getPrinter().print(sep);
-      iter.next().accept(getRealThis());
+      iter.next().accept(getTraverser());
       sep = seperator;
     }
   }
