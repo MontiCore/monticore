@@ -5,7 +5,6 @@ package de.monticore.types.check;
 import de.monticore.types.mcarraytypes._ast.ASTMCArrayType;
 import de.monticore.types.mcarraytypes._visitor.MCArrayTypesHandler;
 import de.monticore.types.mcarraytypes._visitor.MCArrayTypesTraverser;
-import de.monticore.types.mcarraytypes._visitor.MCArrayTypesVisitor;
 import de.monticore.types.mcarraytypes._visitor.MCArrayTypesVisitor2;
 import de.se_rwth.commons.logging.Log;
 

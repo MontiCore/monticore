@@ -5,7 +5,6 @@ package de.monticore.types.check;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardTypeArgument;
 import de.monticore.types.mcfullgenerictypes._visitor.MCFullGenericTypesHandler;
 import de.monticore.types.mcfullgenerictypes._visitor.MCFullGenericTypesTraverser;
-import de.monticore.types.mcfullgenerictypes._visitor.MCFullGenericTypesVisitor;
 import de.monticore.types.mcfullgenerictypes._visitor.MCFullGenericTypesVisitor2;
 import de.se_rwth.commons.logging.Log;
 

@@ -2,9 +2,7 @@
 package de.monticore.types.prettyprint;
 
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.types.mcarraytypes.MCArrayTypesMill;
 import de.monticore.types.mcarraytypes._ast.ASTMCArrayType;
-import de.monticore.types.mcarraytypes._ast.ASTMCArrayTypesNode;
 import de.monticore.types.mcarraytypes._visitor.MCArrayTypesHandler;
 import de.monticore.types.mcarraytypes._visitor.MCArrayTypesTraverser;
 import de.monticore.types.mcarraytypes._visitor.MCArrayTypesVisitor2;

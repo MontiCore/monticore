@@ -8,7 +8,7 @@ import de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser;
 
 public class MCBasicTypesFullPrettyPrinter {
 
-  protected MCBasicTypesTraverser traverser;
+  private MCBasicTypesTraverser traverser;
 
   protected IndentPrinter printer;
 

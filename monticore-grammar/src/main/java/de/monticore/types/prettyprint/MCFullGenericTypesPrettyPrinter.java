@@ -3,7 +3,6 @@ package de.monticore.types.prettyprint;
 
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
-import de.monticore.types.mcfullgenerictypes._ast.ASTMCFullGenericTypesNode;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCInnerType;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCMultipleGenericType;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardTypeArgument;
@@ -76,17 +75,5 @@ public class MCFullGenericTypesPrettyPrinter implements MCFullGenericTypesVisito
       getPrinter().print(".");
       innerType.accept(getTraverser());
     }
-  }
-
-  public String prettyprint(ASTMCWildcardTypeArgument a) {
-    getPrinter().clearBuffer();
-    a.accept(getTraverser());
-    return getPrinter().getContent();
-  }
-
-  public String prettyprint(ASTMCFullGenericTypesNode a) {
-    getPrinter().clearBuffer();
-    a.accept(getTraverser());
-    return getPrinter().getContent();
   }
 }

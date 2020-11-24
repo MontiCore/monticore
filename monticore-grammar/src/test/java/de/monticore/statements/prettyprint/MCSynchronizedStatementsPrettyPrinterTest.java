@@ -2,9 +2,7 @@
 package de.monticore.statements.prettyprint;
 
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.statements.mcreturnstatements._ast.ASTReturnStatement;
 import de.monticore.statements.mcsynchronizedstatements._ast.ASTSynchronizedStatement;
-import de.monticore.statements.testmcreturnstatements._parser.TestMCReturnStatementsParser;
 import de.monticore.statements.testmcsynchronizedstatements._parser.TestMCSynchronizedStatementsParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -22,7 +20,7 @@ public class MCSynchronizedStatementsPrettyPrinterTest {
 
   private TestMCSynchronizedStatementsParser parser = new TestMCSynchronizedStatementsParser();
 
-  private MCSynchronizedStatementsPrettyPrinterDelegator prettyPrinter = new MCSynchronizedStatementsPrettyPrinterDelegator(new IndentPrinter());
+  private MCSynchronizedStatementsFullPrettyPrinter prettyPrinter = new MCSynchronizedStatementsFullPrettyPrinter(new IndentPrinter());
 
   @BeforeClass
   public static void setUp() {

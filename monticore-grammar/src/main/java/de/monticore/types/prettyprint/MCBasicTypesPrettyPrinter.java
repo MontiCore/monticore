@@ -83,18 +83,6 @@ public class MCBasicTypesPrettyPrinter implements MCBasicTypesVisitor2, MCBasicT
   }
 
   /**
-   * This method prettyprints a given node from type grammar.
-   *
-   * @param a A node from type grammar.
-   * @return String representation.
-   */
-  public String prettyprint(ASTMCBasicTypesNode a) {
-    getPrinter().clearBuffer();
-    a.accept(getTraverser());
-    return getPrinter().getContent();
-  }
-
-  /**
    * Prints a list
    *
    * @param iter iterator for the list

@@ -8,7 +8,7 @@ import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import prettyprint.StringLiteralsPrettyPrinter;
+import prettyprint.StringLiteralsFullPrettyPrinter;
 import stringliterals._ast.ASTCharLiteral;
 import stringliterals._ast.ASTStringLiteral;
 
@@ -41,7 +41,7 @@ public class StringLiteralsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTCharLiteral cliteral = result.get();
     
-    StringLiteralsPrettyPrinter prettyPrinter = new StringLiteralsPrettyPrinter(
+    StringLiteralsFullPrettyPrinter prettyPrinter = new StringLiteralsFullPrettyPrinter(
         new IndentPrinter());
     String output = prettyPrinter.prettyprint(cliteral);
     
@@ -60,7 +60,7 @@ public class StringLiteralsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTCharLiteral cliteral = result.get();
     
-    StringLiteralsPrettyPrinter prettyPrinter = new StringLiteralsPrettyPrinter(
+    StringLiteralsFullPrettyPrinter prettyPrinter = new StringLiteralsFullPrettyPrinter(
         new IndentPrinter());
     String output = prettyPrinter.prettyprint(cliteral);
     
@@ -80,7 +80,7 @@ public class StringLiteralsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTStringLiteral sliteral = result.get();
     
-    StringLiteralsPrettyPrinter prettyPrinter = new StringLiteralsPrettyPrinter(
+    StringLiteralsFullPrettyPrinter prettyPrinter = new StringLiteralsFullPrettyPrinter(
         new IndentPrinter());
     String output = prettyPrinter.prettyprint(sliteral);
     result = parser.parseStringLiteral(new StringReader(output));

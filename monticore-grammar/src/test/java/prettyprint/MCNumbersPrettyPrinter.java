@@ -5,16 +5,30 @@ import de.monticore.prettyprint.IndentPrinter;
 import mcnumbers._ast.ASTDecimal;
 import mcnumbers._ast.ASTInteger;
 import mcnumbers._ast.ASTMCNumbersNode;
-import mcnumbers._visitor.MCNumbersVisitor;
+import mcnumbers._visitor.MCNumbersHandler;
+import mcnumbers._visitor.MCNumbersTraverser;
+import mcnumbers._visitor.MCNumbersVisitor2;
 
-public class MCNumbersPrettyPrinter implements MCNumbersVisitor {
-  
+public class MCNumbersPrettyPrinter implements MCNumbersVisitor2, MCNumbersHandler {
+
+  protected MCNumbersTraverser traverser;
+
   private IndentPrinter printer = null;
   
   public MCNumbersPrettyPrinter(IndentPrinter printer) {
     this.printer = printer;
   }
-  
+
+  @Override
+  public MCNumbersTraverser getTraverser() {
+    return traverser;
+  }
+
+  @Override
+  public void setTraverser(MCNumbersTraverser traverser) {
+    this.traverser = traverser;
+  }
+
   @Override
   public void handle(ASTDecimal node) {
     getPrinter().print(node.getSource());
@@ -34,7 +48,7 @@ public class MCNumbersPrettyPrinter implements MCNumbersVisitor {
   
   public String prettyprint(ASTMCNumbersNode node) {
     getPrinter().clearBuffer();
-    node.accept(getRealThis());
+    node.accept(getTraverser());
     return getPrinter().getContent();
   }
   
