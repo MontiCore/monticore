@@ -7,6 +7,7 @@ import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsHand
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsTraverser;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisitor2;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.expressions.prettyprint.CommonExpressionsFullPrettyPrinter;
 import de.monticore.expressions.prettyprint.CommonExpressionsPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
@@ -337,7 +338,7 @@ public class DeriveSymTypeOfCommonExpressions extends AbstractDeriveFromExpressi
    */
   @Override
   public void traverse(ASTFieldAccessExpression expr) {
-    CommonExpressionsPrettyPrinter printer = new CommonExpressionsPrettyPrinter(new IndentPrinter());
+    CommonExpressionsFullPrettyPrinter printer = new CommonExpressionsFullPrettyPrinter(new IndentPrinter());
     SymTypeExpression innerResult;
     expr.getExpression().accept(getTraverser());
     if (typeCheckResult.isPresentCurrentResult()) {

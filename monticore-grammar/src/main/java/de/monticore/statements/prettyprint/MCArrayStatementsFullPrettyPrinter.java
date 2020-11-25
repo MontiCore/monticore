@@ -34,4 +34,13 @@ public class MCArrayStatementsFullPrettyPrinter extends MCVarDeclarationStatemen
     traverser.addMCArrayStatementsVisitor(arrayStatements);
     traverser.setMCArrayStatementsHandler(arrayStatements);
   }
+
+  @Override
+  public MCArrayStatementsTraverser getTraverser() {
+    return traverser;
+  }
+
+  public void setTraverser(MCArrayStatementsTraverser traverser) {
+    this.traverser = traverser;
+  }
 }
