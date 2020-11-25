@@ -2,38 +2,61 @@
 
 package mc.typescalculator.combineexpressionswithliterals.prettyprint;
 
-import de.monticore.literals.prettyprint.MCCommonLiteralsPrettyPrinter;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.prettyprint.*;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
+import de.monticore.literals.prettyprint.MCCommonLiteralsPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
-import mc.typescalculator.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsDelegatorVisitor;
+import mc.typescalculator.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
+import mc.typescalculator.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
 
-public class CombineExpressionsWithLiteralsPrettyPrinter extends CombineExpressionsWithLiteralsDelegatorVisitor {
+public class CombineExpressionsWithLiteralsPrettyPrinter {
 
   protected IndentPrinter printer;
-  private CombineExpressionsWithLiteralsDelegatorVisitor realThis;
+  private CombineExpressionsWithLiteralsTraverser traverser;
 
   public CombineExpressionsWithLiteralsPrettyPrinter(IndentPrinter printer){
     this.printer = printer;
-    realThis = this;
+    this.traverser = CombineExpressionsWithLiteralsMill.traverser();
 
-    setAssignmentExpressionsVisitor(new AssignmentExpressionsPrettyPrinter(printer));
-    setCommonExpressionsVisitor(new CommonExpressionsPrettyPrinter(printer));
-    setBitExpressionsVisitor(new BitExpressionsPrettyPrinter(printer));
-    setExpressionsBasisVisitor(new ExpressionsBasisPrettyPrinter(printer));
-    setMCCommonLiteralsVisitor(new MCCommonLiteralsPrettyPrinter(printer));
+    AssignmentExpressionsPrettyPrinter assignmentExpressions = new AssignmentExpressionsPrettyPrinter(printer);
+    traverser.addAssignmentExpressionsVisitor(assignmentExpressions);
+    traverser.setAssignmentExpressionsHandler(assignmentExpressions);
+
+    CommonExpressionsPrettyPrinter commonExpressions = new CommonExpressionsPrettyPrinter(printer);
+    traverser.addCommonExpressionsVisitor(commonExpressions);
+    traverser.setCommonExpressionsHandler(commonExpressions);
+
+    BitExpressionsPrettyPrinter bitExpressions = new BitExpressionsPrettyPrinter(printer);
+    traverser.addBitExpressionsVisitor(bitExpressions);
+    traverser.setBitExpressionsHandler(bitExpressions);
+
+    ExpressionsBasisPrettyPrinter expressionsBasis = new ExpressionsBasisPrettyPrinter(printer);
+    traverser.addExpressionsBasisVisitor(expressionsBasis);
+    traverser.setExpressionsBasisHandler(expressionsBasis);
+
+    MCCommonLiteralsPrettyPrinter commonLiterals = new MCCommonLiteralsPrettyPrinter(printer);
+    traverser.addMCCommonLiteralsVisitor(commonLiterals);
+    traverser.setMCCommonLiteralsHandler(commonLiterals);
   }
 
   public String prettyprint(ASTExpression node) {
     this.printer.clearBuffer();
-    node.accept(getRealThis());
+    node.accept(getTraverser());
     return this.printer.getContent();
   }
 
   public String prettyprint(ASTLiteral node) {
     this.printer.clearBuffer();
-    node.accept(getRealThis());
+    node.accept(getTraverser());
     return this.printer.getContent();
+  }
+
+  public CombineExpressionsWithLiteralsTraverser getTraverser() {
+    return traverser;
+  }
+
+  public void setTraverser(CombineExpressionsWithLiteralsTraverser traverser) {
+    this.traverser = traverser;
   }
 }
