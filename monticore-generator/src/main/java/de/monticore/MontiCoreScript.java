@@ -4,7 +4,6 @@ package de.monticore;
 
  import com.google.common.collect.Lists;
  import com.google.common.io.Resources;
- import de.monticore.cd.cd4analysis.CD4AnalysisMill;
  import de.monticore.cd.cd4analysis._ast.ASTCDClass;
  import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
  import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
@@ -347,7 +346,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param ast
    * @return
    */
-  public ASTCDCompilationUnit createSymbolsFromAST(CD4AnalysisGlobalScope globalScope,
+  public ASTCDCompilationUnit createSymbolsFromAST(ICD4AnalysisGlobalScope globalScope,
                                                    ASTCDCompilationUnit ast) {
     // Build grammar symbol table (if not already built)
 
@@ -362,8 +361,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
       result = (ASTCDCompilationUnit) cdSymbol.get().getEnclosingScope().getAstNode();
       Log.debug("Used present symbol table for " + cdSymbol.get().getFullName(), LOG_ID);
     } else {
-      CD4AnalysisSymbolTableCreatorDelegator stCreator = CD4AnalysisMill.cD4AnalysisSymbolTableCreatorDelegator();
-      ICD4AnalysisArtifactScope artScope = stCreator.createFromAST(result);
+      Grammar_WithConceptsSymbolTableCreatorDelegator stCreator = Grammar_WithConceptsMill.grammar_WithConceptsSymbolTableCreatorDelegator();
+      Grammar_WithConceptsArtifactScope artScope = stCreator.createFromAST(result);
       globalScope.addSubScope(artScope);
       globalScope.addLoadedFile(qualifiedCDName);
     }
@@ -391,7 +390,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param symbolTable - cd symbol table
    */
   public ASTCDCompilationUnit getOrCreateCD(ASTMCGrammar astGrammar,
-                                            GlobalExtensionManagement glex, CD4AnalysisGlobalScope symbolTable) {
+                                            GlobalExtensionManagement glex, ICD4AnalysisGlobalScope symbolTable) {
     // transformation
     return TransformationHelper.getCDforGrammar(symbolTable, astGrammar)
             .orElse(new MC2CDTransformation(glex)
@@ -408,7 +407,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    */
   public ASTCDCompilationUnit deriveCD(ASTMCGrammar astGrammar,
                                        GlobalExtensionManagement glex,
-                                       CD4AnalysisGlobalScope cdScope) {
+                                       ICD4AnalysisGlobalScope cdScope) {
     // transformation
     Optional<ASTCDCompilationUnit> ast = TransformationHelper.getCDforGrammar(cdScope, astGrammar);
     ASTCDCompilationUnit astCD = ast.orElse(transformAndCreateSymbolTable(astGrammar, glex, cdScope));
@@ -418,7 +417,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   }
 
   public ASTCDCompilationUnit deriveSymbolCD(ASTMCGrammar astGrammar,
-                                             CD4AnalysisGlobalScope cdScope) {
+                                             ICD4AnalysisGlobalScope cdScope) {
     Optional<ASTCDCompilationUnit> ast = TransformationHelper.getCDforGrammar(cdScope, astGrammar, "Symbols");
     ASTCDCompilationUnit astCD = ast.orElse(transformAndCreateSymbolTableForSymbolCD(astGrammar, cdScope));
     createCDSymbolsForSuperGrammarsForSymbolCD(astGrammar, cdScope);
@@ -427,7 +426,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   }
 
   public ASTCDCompilationUnit deriveScopeCD(ASTMCGrammar astGrammar,
-                                            CD4AnalysisGlobalScope cdScope) {
+                                            ICD4AnalysisGlobalScope cdScope) {
     Optional<ASTCDCompilationUnit> ast = TransformationHelper.getCDforGrammar(cdScope, astGrammar, "Scope");
     ASTCDCompilationUnit astCD = ast.orElse(transformAndCreateSymbolTableForScopeCD(astGrammar, cdScope));
     createCDSymbolsForSuperGrammarsForScopeCD(astGrammar, cdScope);
@@ -950,7 +949,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   }
 
   private void createCDSymbolsForSuperGrammars(GlobalExtensionManagement glex, ASTMCGrammar astGrammar,
-                                               CD4AnalysisGlobalScope cdScope) {
+                                               ICD4AnalysisGlobalScope cdScope) {
     if (astGrammar.isPresentSymbol()) {
       MCGrammarSymbol sym = astGrammar.getSymbol();
       for (MCGrammarSymbol mcgsym : MCGrammarSymbolTableHelper.getAllSuperGrammars(sym)) {
@@ -963,7 +962,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   }
 
   private void createCDSymbolsForSuperGrammarsForSymbolCD(ASTMCGrammar astGrammar,
-                                                          CD4AnalysisGlobalScope cdScope) {
+                                                          ICD4AnalysisGlobalScope cdScope) {
     if (astGrammar.isPresentSymbol()) {
       MCGrammarSymbol sym = astGrammar.getSymbol();
       for (MCGrammarSymbol mcgsym : MCGrammarSymbolTableHelper.getAllSuperGrammars(sym)) {
@@ -976,7 +975,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   }
 
   private void createCDSymbolsForSuperGrammarsForScopeCD(ASTMCGrammar astGrammar,
-                                                         CD4AnalysisGlobalScope cdScope) {
+                                                         ICD4AnalysisGlobalScope cdScope) {
     if (astGrammar.isPresentSymbol()) {
       MCGrammarSymbol sym = astGrammar.getSymbol();
       for (MCGrammarSymbol mcgsym : MCGrammarSymbolTableHelper.getAllSuperGrammars(sym)) {
@@ -997,29 +996,29 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param symbolTable grammar symbol table
    */
   private ASTCDCompilationUnit transformAndCreateSymbolTable(ASTMCGrammar astGrammar,
-                                                             GlobalExtensionManagement glex, CD4AnalysisGlobalScope symbolTable) {
+                                                             GlobalExtensionManagement glex, ICD4AnalysisGlobalScope symbolTable) {
     // transformation
     ASTCDCompilationUnit compUnit = new MC2CDTransformation(glex).apply(astGrammar);
     return createSymbolsFromAST(symbolTable, compUnit);
   }
 
-  private ASTCDCompilationUnit transformAndCreateSymbolTableForSymbolCD(ASTMCGrammar astGrammar, CD4AnalysisGlobalScope symbolTable) {
+  private ASTCDCompilationUnit transformAndCreateSymbolTableForSymbolCD(ASTMCGrammar astGrammar, ICD4AnalysisGlobalScope symbolTable) {
     // transformation
     ASTCDCompilationUnit compUnit = new MC2CDSymbolTranslation().apply(astGrammar);
     return createSymbolsFromAST(symbolTable, compUnit);
   }
 
-  private ASTCDCompilationUnit transformAndCreateSymbolTableForScopeCD(ASTMCGrammar astGrammar, CD4AnalysisGlobalScope symbolTable) {
+  private ASTCDCompilationUnit transformAndCreateSymbolTableForScopeCD(ASTMCGrammar astGrammar, ICD4AnalysisGlobalScope symbolTable) {
     // transformation
     ASTCDCompilationUnit compUnit = new MC2CDScopeTranslation().apply(astGrammar);
     return createSymbolsFromAST(symbolTable, compUnit);
   }
 
-  public CD4AnalysisGlobalScope createCD4AGlobalScope(ModelPath modelPath) {
-    return new CD4AnalysisGlobalScope(modelPath, "cd");
+  public ICD4AnalysisGlobalScope createCD4AGlobalScope(ModelPath modelPath) {
+    return createMCGlobalScope(modelPath);
   }
 
-  public Grammar_WithConceptsGlobalScope createMCGlobalScope(ModelPath modelPath) {
+  public IGrammar_WithConceptsGlobalScope createMCGlobalScope(ModelPath modelPath) {
     IGrammar_WithConceptsGlobalScope scope = Grammar_WithConceptsMill.grammar_WithConceptsGlobalScope();
     // reset global scope
     scope.clear();
