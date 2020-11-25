@@ -28,9 +28,9 @@ public class DerivedAndManualListName implements GrammarASTProdCoCo {
 
   public static final String ERROR_CODE = "0xA2008";
 
-  public static final String ERROR_MSG_FORMAT = " The production '%s' contains two list NonTerminals " +
+  public static final String ERROR_MSG_FORMAT = " The production '%s' contains two list nonterminals " +
       "that result in the attribute name '%s'. " +
-      "But one name is derived from the NonTerminal name and one is set manually. This is not allowed.";
+      "But one name is derived from the nonterminal name and one is set manually. This is not allowed.";
 
   @Override
   public void check(ASTProd node) {

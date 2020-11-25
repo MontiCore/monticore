@@ -21,7 +21,7 @@ public class OverridingAbstractNTsHaveNoSuperRules implements GrammarASTAbstract
   public static final String ERROR_CODE = "0xA4002";
   
   public static final String ERROR_MSG_FORMAT = " The abstract production %s overriding a production of " +
-          "a super grammar must not extend the production %s.\n" +
+          "a sub grammar must not extend the production %s.\n" +
           "Hint: Overriding productions can only implement interfaces.";
   
   @Override

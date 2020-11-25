@@ -10,7 +10,7 @@ public class KeyConstantInvalid implements GrammarASTKeyConstantCoCo {
   public static final String ERROR_CODE = "0xA4091";
 
   public static final String ERROR_MSG_FORMAT =
-          " The string '%s' must be compatible to 'Name'";
+          " The string '%s' for key() must be compatible to 'Name'";
 
   @Override
   public void check(ASTKeyConstant a) {

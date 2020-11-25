@@ -15,7 +15,7 @@ public class ExternalNTNoASTRule implements GrammarASTASTRuleCoCo {
   public static final String ERROR_CODE = "0xA4118";
 
   public static final String ERROR_MSG_FORMAT = " The external production %s must not have a " +
-      "corresponding ASTRule";
+      "corresponding ASTRule.";
 
   @Override
   public void check(ASTASTRule node) {
