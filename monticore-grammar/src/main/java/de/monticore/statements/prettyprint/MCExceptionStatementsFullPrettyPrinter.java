@@ -13,8 +13,6 @@ public class MCExceptionStatementsFullPrettyPrinter extends MCCommonStatementsFu
 
   private MCExceptionStatementsTraverser traverser;
 
-  protected IndentPrinter printer;
-
   public MCExceptionStatementsFullPrettyPrinter(IndentPrinter printer) {
     super(printer);
     this.traverser = MCExceptionStatementsMill.traverser();
@@ -50,10 +48,6 @@ public class MCExceptionStatementsFullPrettyPrinter extends MCCommonStatementsFu
 
   public void setTraverser(MCExceptionStatementsTraverser traverser) {
     this.traverser = traverser;
-  }
-
-  protected IndentPrinter getPrinter() {
-    return this.printer;
   }
 
   public String prettyprint(ASTMCExceptionStatementsNode a) {

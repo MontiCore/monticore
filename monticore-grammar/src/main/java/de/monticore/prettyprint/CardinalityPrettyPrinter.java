@@ -52,10 +52,4 @@ public class CardinalityPrettyPrinter implements CardinalityVisitor2, Cardinalit
     return this.printer;
   }
 
-  public String prettyprint(ASTCardinalityNode node) {
-    getPrinter().clearBuffer();
-    node.accept(getTraverser());
-    return getPrinter().getContent();
-  }
-
 }

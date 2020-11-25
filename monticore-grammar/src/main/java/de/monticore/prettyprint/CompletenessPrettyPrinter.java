@@ -47,10 +47,4 @@ public class CompletenessPrettyPrinter implements CompletenessVisitor2, Complete
     return this.printer;
   }
 
-  public String prettyprint(ASTCompletenessNode node) {
-    getPrinter().clearBuffer();
-    node.accept(getTraverser());
-    return getPrinter().getContent();
-  }
-
 }

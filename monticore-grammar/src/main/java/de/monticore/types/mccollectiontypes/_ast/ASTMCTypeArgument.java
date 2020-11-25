@@ -2,6 +2,7 @@
 package de.monticore.types.mccollectiontypes._ast;
 
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.prettyprint.MCCollectionTypesFullPrettyPrinter;
 import de.monticore.types.prettyprint.MCCollectionTypesPrettyPrinter;
 
 import java.util.Optional;
@@ -12,7 +13,7 @@ public interface ASTMCTypeArgument extends ASTMCTypeArgumentTOP {
   /**
    * Conversion to a compact string, such as "int", "Person", "List< A >"
    */
-  default String printType(MCCollectionTypesPrettyPrinter pp) {
+  default String printType(MCCollectionTypesFullPrettyPrinter pp) {
     return pp.prettyprint(this);
   }
 }

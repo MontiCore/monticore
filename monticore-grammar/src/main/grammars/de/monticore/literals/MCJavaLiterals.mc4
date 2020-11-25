@@ -216,27 +216,27 @@ component grammar MCJavaLiterals extends MCCommonLiterals {
 
   astrule IntLiteral =
     method public int getValue() {
-      return de.monticore.MCLiteralsDecoder.literals.decodeInt(getSource());
+      return de.monticore.literals.MCLiteralsDecoder.decodeInt(getSource());
     }
   ;
 
   astrule LongLiteral =
     method public long getValue() {
-      return de.monticore.MCLiteralsDecoder.literals.decodeLong(getSource());
+      return de.monticore.literals.MCLiteralsDecoder.decodeLong(getSource());
     }
   ;
 
 
   astrule FloatLiteral =
     method public float getValue() {
-      return de.monticore.MCLiteralsDecoder.literals.decodeFloat(getSource());
+      return de.monticore.literals.MCLiteralsDecoder.decodeFloat(getSource());
     }
   ;
 
 
   astrule DoubleLiteral =
     method public double getValue() {
-      return de.monticore.MCLiteralsDecoder.literals.decodeDouble(getSource());
+      return de.monticore.literals.MCLiteralsDecoder.decodeDouble(getSource());
     }
   ;
 

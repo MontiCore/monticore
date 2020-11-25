@@ -7,41 +7,29 @@ import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.prettyprint.MCBasicsPrettyPrinter;
 
 public class CommonExpressionsFullPrettyPrinter extends ExpressionsBasisFullPrettyPrinter {
-    private CommonExpressionsTraverser traverser;
+  private CommonExpressionsTraverser traverser;
 
-    @Override
-    public CommonExpressionsTraverser getTraverser() {
-        return traverser;
-    }
+  @Override
+  public CommonExpressionsTraverser getTraverser() {
+    return traverser;
+  }
 
-    public void setTraverser(CommonExpressionsTraverser traverser) {
-        this.traverser = traverser;
-    }
+  public void setTraverser(CommonExpressionsTraverser traverser) {
+    this.traverser = traverser;
+  }
 
-    public CommonExpressionsFullPrettyPrinter(IndentPrinter printer) {
-        super(printer);
-        this.traverser = CommonExpressionsMill.traverser();
+  public CommonExpressionsFullPrettyPrinter(IndentPrinter printer) {
+    super(printer);
+    this.traverser = CommonExpressionsMill.traverser();
 
-        CommonExpressionsPrettyPrinter commonExpressions = new CommonExpressionsPrettyPrinter(printer);
-        traverser.setCommonExpressionsHandler(commonExpressions);
-        traverser.addCommonExpressionsVisitor(commonExpressions);
-        ExpressionsBasisPrettyPrinter basicExpression = new ExpressionsBasisPrettyPrinter(printer);
-        traverser.setExpressionsBasisHandler(basicExpression);
-        traverser.addExpressionsBasisVisitor(basicExpression);
-        MCBasicsPrettyPrinter basic = new MCBasicsPrettyPrinter(printer);
-        traverser.addMCBasicsVisitor(basic);
-    }
-
-    /**
-     * This method prettyprints a given node from type grammar.
-     *
-     * @param a A node from type grammar.
-     * @return String representation.
-     */
-    public String prettyprint(ASTCommonExpressionsNode a) {
-        getPrinter().clearBuffer();
-        a.accept(getTraverser());
-        return getPrinter().getContent();
-    }
+    CommonExpressionsPrettyPrinter commonExpressions = new CommonExpressionsPrettyPrinter(printer);
+    traverser.setCommonExpressionsHandler(commonExpressions);
+    traverser.addCommonExpressionsVisitor(commonExpressions);
+    ExpressionsBasisPrettyPrinter basicExpression = new ExpressionsBasisPrettyPrinter(printer);
+    traverser.setExpressionsBasisHandler(basicExpression);
+    traverser.addExpressionsBasisVisitor(basicExpression);
+    MCBasicsPrettyPrinter basic = new MCBasicsPrettyPrinter(printer);
+    traverser.addMCBasicsVisitor(basic);
+  }
 }
 

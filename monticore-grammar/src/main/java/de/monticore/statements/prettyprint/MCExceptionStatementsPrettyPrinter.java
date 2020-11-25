@@ -15,7 +15,6 @@ import java.util.Iterator;
 public class MCExceptionStatementsPrettyPrinter implements
     MCExceptionStatementsVisitor2, MCExceptionStatementsHandler {
 
-
   protected MCExceptionStatementsTraverser traverser;
   
   protected IndentPrinter printer;

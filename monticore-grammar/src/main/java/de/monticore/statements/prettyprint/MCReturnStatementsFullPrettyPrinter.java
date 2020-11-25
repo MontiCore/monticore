@@ -8,12 +8,14 @@ import de.monticore.statements.mcreturnstatements.MCReturnStatementsMill;
 import de.monticore.statements.mcreturnstatements._ast.ASTMCReturnStatementsNode;
 import de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsTraverser;
 
-public class MCReturnStatementsFullPrettyPrinter extends ExpressionsBasisFullPrettyPrinter {
+public class MCReturnStatementsFullPrettyPrinter {
 
   private MCReturnStatementsTraverser traverser;
 
+  protected IndentPrinter printer;
+
   public MCReturnStatementsFullPrettyPrinter(IndentPrinter printer){
-    super(printer);
+    this.printer = printer;
     this.traverser = MCReturnStatementsMill.traverser();
 
     ExpressionsBasisPrettyPrinter expressionsBasis = new ExpressionsBasisPrettyPrinter(printer);
@@ -33,6 +35,10 @@ public class MCReturnStatementsFullPrettyPrinter extends ExpressionsBasisFullPre
 
   public void setTraverser(MCReturnStatementsTraverser traverser) {
     this.traverser = traverser;
+  }
+
+  public IndentPrinter getPrinter() {
+    return printer;
   }
 
   /**

@@ -6,7 +6,6 @@ package de.monticore.expressions.prettyprint;
 import de.monticore.expressions.assignmentexpressions._ast.*;
 import de.monticore.expressions.assignmentexpressions._visitor.AssignmentExpressionsHandler;
 import de.monticore.expressions.assignmentexpressions._visitor.AssignmentExpressionsTraverser;
-import de.monticore.expressions.assignmentexpressions._visitor.AssignmentExpressionsVisitor;
 import de.monticore.expressions.assignmentexpressions._visitor.AssignmentExpressionsVisitor2;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.prettyprint.CommentPrettyPrinter;
@@ -26,6 +25,7 @@ public class AssignmentExpressionsPrettyPrinter implements AssignmentExpressions
   public void setTraverser(AssignmentExpressionsTraverser traverser) {
     this.traverser = traverser;
   }
+
   protected IndentPrinter printer;
 
 
@@ -36,7 +36,7 @@ public class AssignmentExpressionsPrettyPrinter implements AssignmentExpressions
   public AssignmentExpressionsPrettyPrinter(IndentPrinter printer) {
     this.printer = printer;
   }
-  
+
   @Override
   public void handle(ASTIncSuffixExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
@@ -44,7 +44,7 @@ public class AssignmentExpressionsPrettyPrinter implements AssignmentExpressions
     getPrinter().print("++");
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
-  
+
   @Override
   public void handle(ASTDecSuffixExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
@@ -52,7 +52,7 @@ public class AssignmentExpressionsPrettyPrinter implements AssignmentExpressions
     getPrinter().print("--");
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
-  
+
   @Override
   public void handle(ASTIncPrefixExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
@@ -60,7 +60,7 @@ public class AssignmentExpressionsPrettyPrinter implements AssignmentExpressions
     node.getExpression().accept(getTraverser());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
-  
+
   @Override
   public void handle(ASTDecPrefixExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
@@ -118,15 +118,15 @@ public class AssignmentExpressionsPrettyPrinter implements AssignmentExpressions
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
 
-  
+
   public IndentPrinter getPrinter() {
     return this.printer;
   }
-  
+
   public String prettyprint(ASTExpression node) {
     getPrinter().clearBuffer();
     node.accept(getTraverser());
     return getPrinter().getContent();
   }
-  
+
 }

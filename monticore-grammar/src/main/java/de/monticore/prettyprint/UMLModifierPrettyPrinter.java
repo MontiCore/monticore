@@ -67,10 +67,4 @@ public class UMLModifierPrettyPrinter implements UMLModifierVisitor2, UMLModifie
     return this.printer;
   }
 
-  public String prettyprint(ASTUMLModifierNode node) {
-    getPrinter().clearBuffer();
-    node.accept(getTraverser());
-    return getPrinter().getContent();
-  }
-
 }

@@ -8,40 +8,29 @@ import de.monticore.prettyprint.MCBasicsPrettyPrinter;
 
 
 public class AssignmentExpressionsFullPrettyPrinter extends ExpressionsBasisFullPrettyPrinter {
-    private AssignmentExpressionsTraverser traverser;
 
-    public AssignmentExpressionsFullPrettyPrinter(IndentPrinter printer){
-        super(printer);
-        this.traverser = AssignmentExpressionsMill.traverser();
+  private AssignmentExpressionsTraverser traverser;
 
-        AssignmentExpressionsPrettyPrinter assignmentExpressions = new AssignmentExpressionsPrettyPrinter(printer);
-        traverser.setAssignmentExpressionsHandler(assignmentExpressions);
-        traverser.addAssignmentExpressionsVisitor(assignmentExpressions);
-        ExpressionsBasisPrettyPrinter basisExpression = new ExpressionsBasisPrettyPrinter(printer);
-        traverser.setExpressionsBasisHandler(basisExpression);
-        traverser.addExpressionsBasisVisitor(basisExpression);
-        MCBasicsPrettyPrinter basic = new MCBasicsPrettyPrinter(printer);
-        traverser.addMCBasicsVisitor(basic);
-    }
+  public AssignmentExpressionsFullPrettyPrinter(IndentPrinter printer) {
+    super(printer);
+    this.traverser = AssignmentExpressionsMill.traverser();
+
+    AssignmentExpressionsPrettyPrinter assignmentExpressions = new AssignmentExpressionsPrettyPrinter(printer);
+    traverser.setAssignmentExpressionsHandler(assignmentExpressions);
+    traverser.addAssignmentExpressionsVisitor(assignmentExpressions);
+    ExpressionsBasisPrettyPrinter basisExpression = new ExpressionsBasisPrettyPrinter(printer);
+    traverser.setExpressionsBasisHandler(basisExpression);
+    traverser.addExpressionsBasisVisitor(basisExpression);
+    MCBasicsPrettyPrinter basic = new MCBasicsPrettyPrinter(printer);
+    traverser.addMCBasicsVisitor(basic);
+  }
 
 
-    public AssignmentExpressionsTraverser getTraverser() {
-        return traverser;
-    }
+  public AssignmentExpressionsTraverser getTraverser() {
+    return traverser;
+  }
 
-    public void setTraverser(AssignmentExpressionsTraverser traverser) {
-        this.traverser = traverser;
-    }
-
-    /**
-     * This method prettyprints a given node from type grammar.
-     *
-     * @param a A node from type grammar.
-     * @return String representation.
-     */
-    public String prettyprint(ASTAssignmentExpressionsNode a) {
-        getPrinter().clearBuffer();
-        a.accept(getTraverser());
-        return getPrinter().getContent();
-    }
+  public void setTraverser(AssignmentExpressionsTraverser traverser) {
+    this.traverser = traverser;
+  }
 }

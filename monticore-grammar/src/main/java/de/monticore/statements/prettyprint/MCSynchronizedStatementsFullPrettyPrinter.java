@@ -13,8 +13,6 @@ public class MCSynchronizedStatementsFullPrettyPrinter extends MCCommonStatement
 
   private MCSynchronizedStatementsTraverser traverser;
 
-  protected IndentPrinter printer;
-
   public MCSynchronizedStatementsFullPrettyPrinter(IndentPrinter printer) {
     super(printer);
     this.traverser = MCSynchronizedStatementsMill.traverser();
@@ -41,10 +39,6 @@ public class MCSynchronizedStatementsFullPrettyPrinter extends MCCommonStatement
     MCSynchronizedStatementsPrettyPrinter synchronizedStatements = new MCSynchronizedStatementsPrettyPrinter(printer);
     traverser.setMCSynchronizedStatementsHandler(synchronizedStatements);
     traverser.addMCSynchronizedStatementsVisitor(synchronizedStatements);
-  }
-
-  protected IndentPrinter getPrinter() {
-    return this.printer;
   }
 
   public String prettyprint(ASTMCSynchronizedStatementsNode a) {

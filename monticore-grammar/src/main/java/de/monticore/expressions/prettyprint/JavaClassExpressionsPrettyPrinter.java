@@ -7,13 +7,12 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.javaclassexpressions._ast.*;
 import de.monticore.expressions.javaclassexpressions._visitor.JavaClassExpressionsHandler;
 import de.monticore.expressions.javaclassexpressions._visitor.JavaClassExpressionsTraverser;
-import de.monticore.expressions.javaclassexpressions._visitor.JavaClassExpressionsVisitor;
 import de.monticore.expressions.javaclassexpressions._visitor.JavaClassExpressionsVisitor2;
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 
 public class JavaClassExpressionsPrettyPrinter implements JavaClassExpressionsVisitor2, JavaClassExpressionsHandler {
-  
+
   protected JavaClassExpressionsTraverser traverser;
 
   @Override

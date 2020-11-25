@@ -19,6 +19,16 @@ public class MCReturnStatementsPrettyPrinter implements MCReturnStatementsVisito
     this.printer = out;
   }
 
+  @Override
+  public MCReturnStatementsTraverser getTraverser() {
+    return traverser;
+  }
+
+  @Override
+  public void setTraverser(MCReturnStatementsTraverser traverser) {
+    this.traverser = traverser;
+  }
+
   public IndentPrinter getPrinter() {
     return this.printer;
   }

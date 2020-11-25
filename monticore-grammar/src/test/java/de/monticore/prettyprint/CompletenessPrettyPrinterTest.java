@@ -13,7 +13,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import de.monticore.completeness._ast.ASTCompleteness;
-import de.monticore.prettyprint.CompletenessPrettyPrinter;
+import de.monticore.prettyprint.CompletenessFullPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.testcompleteness._parser.TestCompletenessParser;
 import de.se_rwth.commons.logging.Log;
@@ -41,7 +41,7 @@ public class CompletenessPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTCompleteness completeness = result.get();
     
-    CompletenessPrettyPrinter prettyPrinter = new CompletenessPrettyPrinter(new IndentPrinter());
+    CompletenessFullPrettyPrinter prettyPrinter = new CompletenessFullPrettyPrinter(new IndentPrinter());
     String output = prettyPrinter.prettyprint(completeness);
     
     result = parser.parseCompleteness(new StringReader(output));
@@ -59,7 +59,7 @@ public class CompletenessPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTCompleteness completeness = result.get();
     
-    CompletenessPrettyPrinter prettyPrinter = new CompletenessPrettyPrinter(new IndentPrinter());
+    CompletenessFullPrettyPrinter prettyPrinter = new CompletenessFullPrettyPrinter(new IndentPrinter());
     String output = prettyPrinter.prettyprint(completeness);
     
     result = parser.parseCompleteness(new StringReader(output));
@@ -77,7 +77,7 @@ public class CompletenessPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTCompleteness completeness = result.get();
     
-    CompletenessPrettyPrinter prettyPrinter = new CompletenessPrettyPrinter(new IndentPrinter());
+    CompletenessFullPrettyPrinter prettyPrinter = new CompletenessFullPrettyPrinter(new IndentPrinter());
     String output = prettyPrinter.prettyprint(completeness);
     
     result = parser.parseCompleteness(new StringReader(output));
@@ -95,7 +95,7 @@ public class CompletenessPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTCompleteness completeness = result.get();
     
-    CompletenessPrettyPrinter prettyPrinter = new CompletenessPrettyPrinter(new IndentPrinter());
+    CompletenessFullPrettyPrinter prettyPrinter = new CompletenessFullPrettyPrinter(new IndentPrinter());
     String output = prettyPrinter.prettyprint(completeness);
     
     result = parser.parseCompleteness(new StringReader(output));

@@ -51,11 +51,5 @@ public class UMLStereotypePrettyPrinter implements UMLStereotypeVisitor2, UMLSte
   public IndentPrinter getPrinter() {
     return this.printer;
   }
-  
-  public String prettyprint(ASTUMLStereotypeNode node) {
-    getPrinter().clearBuffer();
-    node.accept(getTraverser());
-    return getPrinter().getContent();
-  }
 
 }
