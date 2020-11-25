@@ -3,10 +3,6 @@
 
 package de.monticore.symboltable;
 
-import com.google.common.collect.FluentIterable;
-import de.se_rwth.commons.Joiners;
-import de.se_rwth.commons.Splitters;
-
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -16,26 +12,32 @@ import static de.se_rwth.commons.Names.getSimpleName;
 import static de.se_rwth.commons.logging.Log.trace;
 
 /**
- * Common interface for all artifact scopes
+ * Common interface for all artifact scopes.
  */
 public interface IArtifactScope {
 
+  /**
+   * This method returns the package name of the current artifact scope.
+   * If the package is empty or a language does not support packages,
+   * the method implementation returns an empty String.
+   * @return
+   */
   String getPackageName();
 
-  default String getRemainingNameForResolveDown(String symbolName) {
-    final FluentIterable<String> packageASNameParts = FluentIterable
-        .from(Splitters.DOT.omitEmptyStrings().split(getPackageName()));
+  /**
+   * This method can be used to set the package name of the current
+   * artifact scope.
+   * @param packageName
+   */
+  void setPackageName(String packageName);
 
-    final FluentIterable<String> symbolNameParts = FluentIterable
-        .from(Splitters.DOT.split(symbolName));
-    String remainingSymbolName = symbolName;
-
-    if (symbolNameParts.size() > packageASNameParts.size()) {
-      remainingSymbolName = Joiners.DOT.join(symbolNameParts.skip(packageASNameParts.size()));
-    }
-
-    return remainingSymbolName;
-  }
+  /**
+   * This method returns the full name of the current artifact scope.
+   * The full name of an artifact scope is the name of the artifact,
+   * preceded by the package, if it is not empty.
+   * @return
+   */
+  String getFullName();
 
   /**
    * Calculates possible qualified names for the <code>simpleName</code>. For this,
