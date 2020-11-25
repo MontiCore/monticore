@@ -110,19 +110,6 @@ public class GlobalScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertEquals("name", method.getCDParameter(0).getName());
   }
 
-
-  @Test
-  public void testAddLoadedFileMethod() {
-    ASTCDMethod method = getMethodBy("addLoadedFile", scopeInterface);
-
-    assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-
-    assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
-    assertEquals("name", method.getCDParameter(0).getName());
-  }
-
   @Test
   public void testGetEnclosingScopeMethod() {
     ASTCDMethod method = getMethodBy("getEnclosingScope", scopeInterface);
@@ -254,7 +241,7 @@ public class GlobalScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(92, scopeInterface.getCDMethodList().size());
+    assertEquals(85, scopeInterface.getCDMethodList().size());
   }
 
 }

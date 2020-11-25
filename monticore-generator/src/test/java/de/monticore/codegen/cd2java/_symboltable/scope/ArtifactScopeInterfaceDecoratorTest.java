@@ -94,29 +94,7 @@ public class ArtifactScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(43, scopeInterface.getCDMethodList().size());
-  }
-
-  @Test
-  public void testGetPackageNameMethod() {
-    ASTCDMethod method = getMethodBy("getPackageName", scopeInterface);
-
-    assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
-    assertDeepEquals(String.class, method.getMCReturnType().getMCType());
-
-    assertTrue(method.isEmptyCDParameters());
-  }
-
-  @Test
-  public void testSetPackageNameMethod() {
-    ASTCDMethod method = getMethodBy("setPackageName", scopeInterface);
-
-    assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-
-    assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
-    assertEquals("packageName", method.getCDParameter(0).getName());
+    assertEquals(41, scopeInterface.getCDMethodList().size());
   }
 
   @Test
