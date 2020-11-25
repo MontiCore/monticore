@@ -2,7 +2,9 @@
 package automata;
 
 import automata._ast.*;
-import automata._visitor.AutomataVisitor;
+import automata._visitor.AutomataHandler;
+import automata._visitor.AutomataTraverser;
+import automata._visitor.AutomataVisitor2;
 import automata.visitors.CountStates;
 import java.util.*;
 
@@ -13,9 +15,21 @@ import java.util.*;
  *
 
  */
-public class TextPrinter implements AutomataVisitor {
+public class TextPrinter implements AutomataVisitor2 , AutomataHandler {
   private String result = "";
-  
+
+  protected AutomataTraverser traverser;
+
+  @Override
+  public void setTraverser(AutomataTraverser traverser) {
+    this.traverser = traverser;
+  }
+
+  @Override
+  public AutomataTraverser getTraverser() {
+    return traverser;
+  }
+
   /**
    * Prints the automaton
    * 
@@ -42,7 +56,9 @@ public class TextPrinter implements AutomataVisitor {
     print  ("The states are named as ");
     // to identify the end correctly we collect the number of states first
     CountStates cs = new CountStates();
-    cs.handle(node);
+    AutomataTraverser traverser = AutomataMill.traverser();
+    traverser.addAutomataVisitor(cs);
+    node.accept(traverser);
     stateCount = cs.getCount();
     stateNumber = stateCount;
   }
@@ -69,7 +85,7 @@ public class TextPrinter implements AutomataVisitor {
   
     // handling state list
     phase = 1;
-    node.getStateList().stream().forEach(s -> s.accept(getRealThis()));
+    node.getStateList().stream().forEach(s -> s.accept(getTraverser()));
   
     // handle nesting: traversing states a second time
     phase = 2;
@@ -77,22 +93,22 @@ public class TextPrinter implements AutomataVisitor {
       println("The state space is hierarchically nested.");
     }
     statehierarchy = new Stack<>();
-    node.getStateList().stream().forEach(s -> s.accept(getRealThis()));
+    node.getStateList().stream().forEach(s -> s.accept(getTraverser()));
   
     /// could be separately listed: initial and final
     phase = 3;
   
     // handle the transitions (cross all hierarchy)
     phase = 5;
-    node.getTransitionList().stream().forEach(t -> t.accept(getRealThis()));
+    node.getTransitionList().stream().forEach(t -> t.accept(getTraverser()));
   }
   
   @Override
   public void traverse(ASTState node) {
     if(phase <= 4) {
-      node.getStateList().stream().forEach(s -> s.accept(getRealThis()));
+      node.getStateList().stream().forEach(s -> s.accept(getTraverser()));
     } else if(phase >= 5) {
-      node.getTransitionList().stream().forEach(t -> t.accept(getRealThis()));
+      node.getTransitionList().stream().forEach(t -> t.accept(getTraverser()));
     }
   }
 

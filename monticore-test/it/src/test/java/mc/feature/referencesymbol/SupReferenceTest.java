@@ -41,7 +41,7 @@ public class SupReferenceTest {
     Log.enableFailQuick(false);
 
     // reset global scope
-    ISupGrammarRefGlobalScope globalScope = SupGrammarRefMill.supGrammarRefGlobalScope();
+    ISupGrammarRefGlobalScope globalScope = SupGrammarRefMill.globalScope();
     globalScope.clearLoadedFiles();
     for (ISupGrammarRefScope s : globalScope.getSubScopes()) {
       globalScope.removeSubScope(s);
@@ -58,7 +58,7 @@ public class SupReferenceTest {
     //create symboltable
     this.astsupRand = astRand.get();
 
-    globalScope.setModelFileExtension("ref");
+    globalScope.setFileExt("ref");
     globalScope.getModelPath().addEntry(Paths.get("src/test/resources/mc/feature/referencesymbol"));
 
     SupGrammarRefSymbolTableCreatorDelegator symbolTableCreator = SupGrammarRefMill

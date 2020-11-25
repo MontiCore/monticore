@@ -43,7 +43,7 @@ grammar TestOD extends mc.grammar.common.ItTestCommon {
         | ";"?
       );
    
-     // TODO external Value;
+     
      Value = SignedLiteral;
 
      Version = "version" StringLiteral ";";

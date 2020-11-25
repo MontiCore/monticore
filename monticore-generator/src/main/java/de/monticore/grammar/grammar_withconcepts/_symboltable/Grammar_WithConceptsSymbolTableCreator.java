@@ -7,7 +7,6 @@
 package de.monticore.grammar.grammar_withconcepts._symboltable;
 
 import de.monticore.symboltable.ImportStatement;
-import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 
@@ -26,6 +25,10 @@ public class Grammar_WithConceptsSymbolTableCreator extends Grammar_WithConcepts
     super(scopeStack);
   }
 
+  public Grammar_WithConceptsSymbolTableCreator() {
+    super();
+  }
+
   /**
     * Creates the symbol table starting from the <code>rootNode</code> and
     * returns the first scope that was created.
@@ -38,6 +41,7 @@ public class Grammar_WithConceptsSymbolTableCreator extends Grammar_WithConcepts
     List<ImportStatement> imports = new ArrayList<>();
     rootNode.getImportStatementList().stream().forEach(i -> imports.add(new ImportStatement(i.getQName(), i.isStar())));
     Grammar_WithConceptsArtifactScope artifactScope = new Grammar_WithConceptsArtifactScope(Optional.empty(), Names.getQualifiedName(rootNode.getPackageList()), imports);
+    artifactScope.setName(rootNode.getName());
     putOnStack(artifactScope);
     rootNode.accept(getRealThis());
     return artifactScope;

@@ -4,39 +4,42 @@ package mc.feature.visitor.inheritance.delegator;
 
 import static org.junit.Assert.assertEquals;
 
-import mc.feature.visitor.inheritance.a.AMill;
-import mc.feature.visitor.inheritance.b.BMill;
 import org.junit.Before;
 import org.junit.Test;
 
+import mc.feature.visitor.inheritance.a.AMill;
 import mc.feature.visitor.inheritance.a._ast.ASTXA;
-import mc.feature.visitor.inheritance.a._visitor.AVisitor;
-import mc.feature.visitor.inheritance.b._ast.ASTXB;
+import mc.feature.visitor.inheritance.a._visitor.AHandler;
+import mc.feature.visitor.inheritance.a._visitor.AVisitor2;
+import mc.feature.visitor.inheritance.b.BMill;
 import mc.feature.visitor.inheritance.b._ast.ASTYB;
 import mc.feature.visitor.inheritance.b._ast.ASTZB;
-import mc.feature.visitor.inheritance.b._visitor.BVisitor;
-import mc.feature.visitor.inheritance.c._ast.ASTXC;
+import mc.feature.visitor.inheritance.b._visitor.BHandler;
+import mc.feature.visitor.inheritance.b._visitor.BVisitor2;
+import mc.feature.visitor.inheritance.c.CMill;
 import mc.feature.visitor.inheritance.c._ast.ASTYC;
-import mc.feature.visitor.inheritance.c._visitor.CDelegatorVisitor;
-import mc.feature.visitor.inheritance.c._visitor.CVisitor;
+import mc.feature.visitor.inheritance.c._visitor.CHandler;
+import mc.feature.visitor.inheritance.c._visitor.CTraverser;
+import mc.feature.visitor.inheritance.c._visitor.CVisitor2;
 
 /**
- * Tests composing simple visiors using the delegator visitor. The
+ * Tests composing simple visiors using the traverser visitor. The
  * SimpleXVisitors append "[NameOfVisitor].[h|t|v|e][ASTNode]" when a method of
  * them is called.
- *
+ * TODO NJ,DA replace Visitors by traverser/handler 
  */
 public class ComposeSimpleTest extends CommonVisitorTest {
   
   // the composer
-  private CDelegatorVisitor v = new CDelegatorVisitor();
+  private CTraverser traverser = CMill.traverser();
   
-  // the simple visitors about to compose
-  private AVisitor aVis = new SimpleAVisitor(run);
-  
-  private BVisitor bVis = new SimpleBVisitor(run);
-  
-  private CVisitor cVis = new SimpleCVisitor(run);
+  // the simple visitors and handlers about to compose
+  private AVisitor2 aVis = new SimpleAVisitor(run);
+  private BVisitor2 bVis = new SimpleBVisitor(run);
+  private CVisitor2 cVis = new SimpleCVisitor(run);
+  private AHandler aHan = new SimpleAHandler(run);
+  private BHandler bHan = new SimpleBHandler(run);
+  private CHandler cHan = new SimpleCHandler(run);
   
   private boolean setUpDone = false;
   
@@ -46,29 +49,32 @@ public class ComposeSimpleTest extends CommonVisitorTest {
     expectedRun.setLength(0);
     if (!setUpDone) {
       setUpDone = true;
-      v.setAVisitor(aVis);
-      v.setBVisitor(bVis);
-      v.setCVisitor(cVis);
+      traverser.addAVisitor(aVis);
+      traverser.addBVisitor(bVis);
+      traverser.addCVisitor(cVis);
+      traverser.setAHandler(aHan);
+      traverser.setBHandler(bHan);
+      traverser.setCHandler(cHan);
     }
   }
   
   @Test
   public void testSimpleComposed() {
-    v.handle(AMill.xABuilder().build());
+    traverser.handle(AMill.xABuilder().build());
     assertEquals("SimpleAVisitor.hXASimpleAVisitor.vXASimpleAVisitor.tXASimpleAVisitor.eXA",
         run.toString());
   }
   
   @Test
   public void testSimpleComposed2() {
-    v.handle(BMill.xBBuilder().build());
+    traverser.handle(BMill.xBBuilder().build());
     assertEquals("SimpleBVisitor.hXBSimpleBVisitor.vXBSimpleBVisitor.tXBSimpleBVisitor.eXB",
         run.toString());
   }
   
   @Test
   public void testSimpleComposed3() {
-    v.handle(mc.feature.visitor.inheritance.c.CMill.xCBuilder().build());
+    traverser.handle(mc.feature.visitor.inheritance.c.CMill.xCBuilder().build());
     assertEquals("SimpleCVisitor.hXCSimpleCVisitor.vXCSimpleCVisitor.tXCSimpleCVisitor.eXC",
         run.toString());
   }
@@ -79,7 +85,7 @@ public class ComposeSimpleTest extends CommonVisitorTest {
     ASTYC yc = mc.feature.visitor.inheritance.c.CMill.yCBuilder()
         .setYB(yb)
         .build();
-    v.handle(yc);
+    traverser.handle(yc);
     // first part of yc handling
     expectedRun.append("SimpleCVisitor.hYCSimpleCVisitor.vYCSimpleCVisitor.tYC");
     // handle yb
@@ -97,7 +103,7 @@ public class ComposeSimpleTest extends CommonVisitorTest {
         .setXA(xa)
         .setYB(yb)
         .build();
-    v.handle(zb);
+    traverser.handle(zb);
     
     // first part of zb handling
     expectedRun.append("SimpleBVisitor.hZBSimpleBVisitor.vZBSimpleBVisitor.tZB");
@@ -109,84 +115,5 @@ public class ComposeSimpleTest extends CommonVisitorTest {
     expectedRun.append("SimpleBVisitor.eZB");
     assertEquals(expectedRun.toString(), run.toString());
   }
-  
-  /**
-   * Composing only inheritance visitors
-   */
-  @Test
-  public void testDelegtor3() {
-    // TODO RH
-  }
-  
-  /**
-   * Composing simple with delegator
-   */
-  @Test
-  public void testDelegtor4() {
-    // TODO RH
-  }
-  
-  /**
-   * Composing inheritance with delegator
-   */
-  @Test
-  public void testDelegtor5() {
-    // TODO RH
-  }
-  
-  /**
-   * Composing simple, inheritance and delegator
-   */
-  @Test
-  public void testDelegtor6() {
-    // TODO RH
-  }
-  
-  /**
-   * Composing only delegators
-   */
-  @Test
-  public void testDelegtor7() {
-    // TODO RH
-  }
-  
-  // .
-  
-  public static class MyCVisitor implements
-      CVisitor {
-    final private StringBuilder run;
-    
-    public MyCVisitor(StringBuilder run) {
-      this.run = run;
-    }
-    
-    @Override
-    public void visit(ASTXA node) {
-      run.append("MyCVisitor.A");
-    }
-    
-    @Override
-    public void visit(ASTXB node) {
-      run.append("MyCVisitor.B");
-    }
-    
-    @Override
-    public void visit(ASTXC node) {
-      run.append("MyCVisitor.C");
-    }
-    
-    // realthis pattern
-    private CVisitor realThis;
-    
-    @Override
-    public void setRealThis(CVisitor realThis) {
-      this.realThis = realThis;
-    }
-    
-    @Override
-    public CVisitor getRealThis() {
-      return realThis;
-    }
-  }
-  
+
 }

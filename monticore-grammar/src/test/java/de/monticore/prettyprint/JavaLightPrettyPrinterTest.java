@@ -2,6 +2,7 @@
 package de.monticore.prettyprint;
 
 import de.monticore.javalight._ast.*;
+import de.monticore.statements.mccommonstatements._ast.ASTMCJavaBlock;
 import de.monticore.testjavalight._parser.TestJavaLightParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -31,8 +32,7 @@ public class JavaLightPrettyPrinterTest {
   public void init() {
     prettyPrinter.getPrinter().clearBuffer();
   }
-
-
+  
   @Test
   public void testMethodDeclaration() throws IOException {
     Optional<ASTMethodDeclaration> result = parser.parse_StringMethodDeclaration("private static final int foo(String s, boolean b)[][][] throws e.Exception { private Integer foo = a; }");

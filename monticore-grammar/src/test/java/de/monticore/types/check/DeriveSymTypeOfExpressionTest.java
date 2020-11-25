@@ -38,12 +38,10 @@ public class DeriveSymTypeOfExpressionTest {
   @Before
   public void setupForEach() {
     // Setting up a Scope Infrastructure (without a global Scope)
-    scope =
-            CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder()
-                    .setEnclosingScope(null)       // No enclosing Scope: Search ending here
-                .setExportingSymbols(true)
-                    .setAstNode(null)
-                    .build();     // hopefully unused
+    scope = CombineExpressionsWithLiteralsMill.scope();
+    scope.setEnclosingScope(null);       // No enclosing Scope: Search ending here
+    scope.setExportingSymbols(true);
+    scope.setAstNode(null);
     // we add a variety of TypeSymbols to the same scope (which in reality doesn't happen)
     add2scope(scope, DefsTypeBasic._int);
     add2scope(scope, DefsTypeBasic._char);
@@ -76,7 +74,7 @@ public class DeriveSymTypeOfExpressionTest {
     //testing for generics
     TypeVarSymbol genArgs = typeVariable("GenArg");
     OOTypeSymbol genSuperType = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
+        .setSpannedScope(OOSymbolsMill.scope())
         .setEnclosingScope(scope)
         .setName("GenSuper")
         .build();
@@ -84,7 +82,7 @@ public class DeriveSymTypeOfExpressionTest {
     SymTypeExpression genArg = SymTypeExpressionFactory.createTypeVariable("GenArg",scope);
     SymTypeExpression genSuper = SymTypeExpressionFactory.createGenerics("GenSuper",scope,genArg);
     OOTypeSymbol genSubType = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
+        .setSpannedScope(OOSymbolsMill.scope())
         .setName("GenSub")
         .setSuperTypesList(Lists.newArrayList(genSuper))
         .setEnclosingScope(scope)

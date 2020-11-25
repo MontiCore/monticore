@@ -3,9 +3,9 @@
 package mc.feature.visitor;
 
 import mc.feature.visitor.sub._ast.ASTE;
-import mc.feature.visitor.sub._visitor.SubVisitor;
+import mc.feature.visitor.sub._visitor.SubVisitor2;
 
-public class SubConcreteVisitor implements SubVisitor {
+public class SubConcreteVisitor implements SubVisitor2 {
   
   private boolean visited = false;
 

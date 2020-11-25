@@ -4,10 +4,13 @@ package de.monticore.codegen.cd2java._symboltable.symboltablecreator;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
+import de.monticore.cd.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDConstructor;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
+import de.monticore.cd.cd4analysis._symboltable.ICD4AnalysisGlobalScope;
+import de.monticore.cd.cd4analysis._symboltable.ICD4AnalysisScope;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
@@ -17,11 +20,13 @@ import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.grammar.grammar_withconcepts._symboltable.IGrammar_WithConceptsScope;
 import de.monticore.types.MCTypeFacade;
 import de.se_rwth.commons.logging.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,6 +57,14 @@ public class SymbolTableCreatorForSuperTypesTest extends DecoratorTestCase {
   public void setUp() {
     LogStub.init();         // replace log by a sideffect free variant
     // LogStub.initPlusLog();  // for manual testing purpose only
+
+    // reset global scope
+    ICD4AnalysisGlobalScope scope = CD4AnalysisMill.cD4AnalysisGlobalScope();
+    scope.clearLoadedFiles();
+    for (ICD4AnalysisScope s : scope.getSubScopes()) {
+      scope.removeSubScope(s);
+    }
+
     this.glex = new GlobalExtensionManagement();
     this.MCTypeFacade = MCTypeFacade.getInstance();
 

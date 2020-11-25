@@ -29,17 +29,17 @@ component grammar Cardinality
   */
   Cardinality =
     "["
-    ( many:["*"] {_aNode.setLowerBound(0);_aNode.setUpperBound(0);}
+    ( many:["*"] {_builder.setLowerBound(0);_builder.setUpperBound(0);}
       | lowerBoundLit:NatLiteral
-        { _aNode.setLowerBound(
-             _aNode.getLowerBoundLit().getValue());
-          _aNode.setUpperBound(_aNode.getLowerBound()); }
+        { _builder.setLowerBound(
+             _builder.getLowerBoundLit().getValue());
+          _builder.setUpperBound(_builder.getLowerBound()); }
       ( ".." (
         upperBoundLit:NatLiteral
-        ( {_aNode.setUpperBound(
-                  _aNode.getUpperBoundLit().getValue());})
+        ( {_builder.setUpperBound(
+                  _builder.getUpperBoundLit().getValue());})
         |
-        noUpperLimit:["*"] {_aNode.setUpperBound(0);} ) )?
+        noUpperLimit:["*"] {_builder.setUpperBound(0);} ) )?
     ) "]";
 
   /**

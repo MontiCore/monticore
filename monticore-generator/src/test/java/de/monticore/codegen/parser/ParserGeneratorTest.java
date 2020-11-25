@@ -16,6 +16,7 @@ import de.monticore.grammar.MCGrammarInfo;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
+import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsArtifactScope;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsSymbolTableCreatorDelegator;
 import de.monticore.io.paths.ModelPath;
@@ -212,9 +213,9 @@ public class ParserGeneratorTest {
       result = grammarSymbol.get().getAstNode();
     } else {
 
-      Grammar_WithConceptsSymbolTableCreatorDelegator stCreator = Grammar_WithConceptsMill.grammar_WithConceptsSymbolTableCreatorDelegatorBuilder()
-              .setGlobalScope(globalScope).build();
-      stCreator.createFromAST(result);
+      Grammar_WithConceptsSymbolTableCreatorDelegator stCreator = Grammar_WithConceptsMill.grammar_WithConceptsSymbolTableCreatorDelegator();
+      Grammar_WithConceptsArtifactScope artScope = stCreator.createFromAST(result);
+      globalScope.addSubScope(artScope);
       globalScope.addLoadedFile(qualifiedGrammarName);
     }
 

@@ -24,6 +24,7 @@ import mc.feature.fautomaton.automaton.flatautomaton._parser.FlatAutomatonParser
 
 import static org.junit.Assert.*;
 
+@Ignore
 public class EcoreUtilTest extends GeneratorIntegrationsTest {
 
   @Test

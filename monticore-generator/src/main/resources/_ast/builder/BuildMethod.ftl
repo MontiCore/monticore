@@ -1,5 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("domainClass", "mandatoryAttributes")}
+${tc.signature("domainClass", "mandatoryAttributes", "check")}
+      <#if check>
         if (!isValid()) {
         <#list mandatoryAttributes as attribute>
             if (${attribute.getName()} == null) {
@@ -8,6 +9,7 @@ ${tc.signature("domainClass", "mandatoryAttributes")}
         </#list>
           throw new IllegalStateException();
         }
+      </#if>
         ${domainClass.getName()} value;
         ${tc.include("_ast.builder.BuildInit")}
         return value;

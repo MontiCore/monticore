@@ -233,11 +233,8 @@ public class Visitor2Decorator extends AbstractCreator<ASTCDCompilationUnit, AST
 
     List<ASTCDMethod> methodList = new ArrayList<>();
     methodList.addAll(createScopeVisitorMethods(scopeType));
-    // only create artifact scope methods if grammar contains productions or
-    // refers to a starting production of a super grammar
-    if (symbolTableService.hasProd(astcdDefinition) || symbolTableService.hasStartProd()) {
-      methodList.addAll(createScopeVisitorMethods(artifactScopeType));
-    }
+    methodList.addAll(createScopeVisitorMethods(artifactScopeType));
+
     return methodList;
   }
   

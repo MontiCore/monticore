@@ -37,8 +37,8 @@ public class NoTopScopeTest {
     assertTrue(astSup.isPresent());
 
     // create symboltable
-    INoTopScopeGlobalScope globalScope = NoTopScopeMill.noTopScopeGlobalScope();
-    globalScope.setModelFileExtension("st");
+    INoTopScopeGlobalScope globalScope = NoTopScopeMill.globalScope();
+    globalScope.setFileExt("st");
     globalScope.getModelPath().addEntry(Paths.get("src/test/resources/mc/feature/symboltable"));
 
     INoTopScopeArtifactScope scope = NoTopScopeMill
@@ -65,8 +65,8 @@ public class NoTopScopeTest {
     assertTrue(astSup.isPresent());
 
     // create symboltable
-    ISubNoTopScopeGlobalScope globalScope = SubNoTopScopeMill.subNoTopScopeGlobalScope();
-    globalScope.setModelFileExtension("st");
+    ISubNoTopScopeGlobalScope globalScope = SubNoTopScopeMill.globalScope();
+    globalScope.setFileExt("st");
     globalScope.getModelPath().addEntry(Paths.get("src/test/resources/mc/feature/symboltable"));
 
     INoTopScopeArtifactScope scope = SubNoTopScopeMill

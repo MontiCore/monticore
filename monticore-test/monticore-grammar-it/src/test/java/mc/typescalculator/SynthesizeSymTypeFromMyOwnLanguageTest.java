@@ -3,9 +3,10 @@ package mc.typescalculator;
 
 import de.monticore.types.check.TypeCheck;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.se_rwth.commons.logging.LogStub;
 import mc.typescalculator.myownlanguage._parser.MyOwnLanguageParser;
 import mc.typescalculator.unittypes._ast.ASTMinuteType;
-import org.junit.Test;
+import org.junit.*;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -17,6 +18,11 @@ public class SynthesizeSymTypeFromMyOwnLanguageTest {
 
   protected MyOwnLanguageParser parser = new MyOwnLanguageParser();
   protected TypeCheck tc = new TypeCheck(new SynthesizeSymTypeFromMyOwnLanguage(),null);
+
+  @Before
+  public void setup() {
+    LogStub.init();
+  }
 
   @Test
   public void testMCCollectionTypes() throws IOException {

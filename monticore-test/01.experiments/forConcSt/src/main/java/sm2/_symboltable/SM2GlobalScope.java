@@ -18,6 +18,10 @@ public class SM2GlobalScope extends SM2GlobalScopeTOP {
     super(modelPath, modelFileExtension);
   }
 
+  public SM2GlobalScope(){
+    super();
+  }
+
   @Override public SM2GlobalScope getRealThis() {
     return this;
   }

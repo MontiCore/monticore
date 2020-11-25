@@ -3,6 +3,7 @@
 import java.io.IOException;
 import java.util.*;
 
+import automata15.Automata15Mill;
 import org.antlr.v4.runtime.RecognitionException;
 
 import automata15._ast.*;
@@ -43,7 +44,9 @@ public class Automata15Tool {
     
     // execute a pretty printer
     Automata15PrettyPrinter pp = new Automata15PrettyPrinter();
-    pp.handle(ast);
+    Automata15Traverser traverser = Automata15Mill.traverser();
+    traverser.addAutomata15Visitor(pp);
+    ast.accept(traverser);
     Log.info("Pretty printing the parsed automaton into console:", "Automata15Tool");
     System.out.println(pp.getResult());
   }

@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-grammar ColoredGraph extends de.monticore.literals.MCCommonLiterals {
+grammar ColoredGraph 
+              extends de.monticore.literals.MCCommonLiterals {
 
   symbol scope Graph = "graph" Name "{" ( Vertex | Edge )* "}" ;
 
@@ -8,7 +9,8 @@ grammar ColoredGraph extends de.monticore.literals.MCCommonLiterals {
 
   interface Color;
 
-  RGBColor implements Color = NatLiteral "," NatLiteral "," NatLiteral ;
+  RGBColor implements Color = NatLiteral "," NatLiteral 
+                              "," NatLiteral ;
 
   NameColor implements Color  = Name;
 

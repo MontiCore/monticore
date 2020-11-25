@@ -20,7 +20,7 @@ However, we suggest some default arguments for standardized access.
 -h,--help                    Prints this help dialog
 -i,--input <file>            Reads the (mandatory) source file resp. the
                              contents of the model
--path <dirlist>              Sets the artifact path for imported symbols
+-path <dirlist>              Sets the artifact path for imported symbols, space separated
 -pp,--prettyprint <file>     Prints the AST to stdout or the specified output 
                              file (optional)
 -s, --symboltable <file>      Serializes and prints the symbol table to stdout 
@@ -31,7 +31,7 @@ However, we suggest some default arguments for standardized access.
 -o,--output <dir>            Path of generated files (optional)
 -so,--syntaxobjects <file>   Prints an object diagram of the AST to stdout or
                              the specified file (optional)
--sc, --script <file>         Advanced configuration 2: through a groovy script 
+-sc,--script <file>          Advanced configuration 2: through a groovy script 
                              that allows to adapt and extend the tool workflow (optional) 
                              (only some tools provide groovy scripting)
 -ct, --configtemplate        Advanced configuration 1: through a Freemarker template
@@ -56,11 +56,11 @@ Some explanation to the arguments:
     that allows the calling build script to understand whether a redo is 
     needed (as part of a
     larger incremental and efficient development process).
-* Directories in `-path` are separated via `:` like in Java. 
-  Example: `-path a/b:x/y`.
+* Directories in `-path` are separated via spaces, i.e. each path is an argument on its own. 
+  Example: `-path a/b x/y`.
 * Directories in the above options `-path`, `-o` describe the root
   structure that is further refined  by packages (like in Java). 
-  That means with `-path a/b:x/y`
+  That means with `-path a/b x/y`
   the actual symboltable for a Statechart `de.mine.Door` is found in 
   `a/b/de/mine/Door.scsym` or `x/y/de/mine/Door.scsym` (in that order)
 * Groovy-scripting (`-sc`, `--script`): A Groovy Script is meant to describe the tool internal 
