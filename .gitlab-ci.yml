@@ -31,7 +31,8 @@ stages:
 build:
   stage: build
   script:
-    - "./gradlew buildMC $GRADLE_OPTS"
+    - "cd monticore-tool && ./gradlew build $GRADLE_OPTS"
+    - "cd .. &&./gradlew buildMC $GRADLE_OPTS"
   artifacts: 
     paths:
       - ".gradle"

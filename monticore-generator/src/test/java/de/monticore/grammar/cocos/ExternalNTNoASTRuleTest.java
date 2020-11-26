@@ -12,7 +12,7 @@ public class ExternalNTNoASTRuleTest extends CocoTest {
 
   private static final String grammar = "cocos.invalid.A4118.A4118";
 
-  private static final String MESSAGE = " The external production A must not have a corresponding ASTRule";
+  private static final String MESSAGE = " The external production A must not have a corresponding ASTRule.";
 
   private static Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
 

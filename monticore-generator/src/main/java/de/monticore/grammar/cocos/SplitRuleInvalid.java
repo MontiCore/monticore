@@ -12,7 +12,7 @@ public class SplitRuleInvalid implements GrammarASTSplitRuleCoCo {
   public static final String ERROR_CODE = "0xA4079";
 
   public static final String ERROR_MSG_FORMAT =
-          " The string '%s' may not contain any letters or digits and must be longer than 2.";
+          " The string '%s' for splittoken may not contain any letters or digits and must be longer than 2.";
 
   @Override
   public void check(ASTSplitRule a) {
