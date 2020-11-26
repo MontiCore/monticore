@@ -6,14 +6,14 @@
 
 package de.monticore.grammar.grammar_withconcepts._symboltable;
 
-import de.monticore.symboltable.ImportStatement;
-import de.se_rwth.commons.Names;
-import de.se_rwth.commons.logging.Log;
-
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 import java.util.Optional;
+
+import de.monticore.symboltable.ImportStatement;
+import de.se_rwth.commons.Names;
+import de.se_rwth.commons.logging.Log;
 
 public class Grammar_WithConceptsSymbolTableCreator extends Grammar_WithConceptsSymbolTableCreatorTOP {
 
@@ -42,6 +42,21 @@ public class Grammar_WithConceptsSymbolTableCreator extends Grammar_WithConcepts
     rootNode.getImportStatementList().stream().forEach(i -> imports.add(new ImportStatement(i.getQName(), i.isStar())));
     Grammar_WithConceptsArtifactScope artifactScope = new Grammar_WithConceptsArtifactScope(Optional.empty(), Names.getQualifiedName(rootNode.getPackageList()), imports);
     artifactScope.setName(rootNode.getName());
+    putOnStack(artifactScope);
+    rootNode.accept(getRealThis());
+    return artifactScope;
+  }
+  
+  /**
+   * Creates the symbol table starting from the <code>rootNode</code> and
+   * returns the first scope that was created.
+   *
+   * @param rootNode the root node
+   * @return the first scope that was created
+   */
+  public Grammar_WithConceptsArtifactScope createFromAST(de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit rootNode) {
+    Grammar_WithConceptsArtifactScope artifactScope = new Grammar_WithConceptsArtifactScope(Optional.empty(),
+        Names.getQualifiedName(rootNode.getPackageList()), new ArrayList<>());
     putOnStack(artifactScope);
     rootNode.accept(getRealThis());
     return artifactScope;

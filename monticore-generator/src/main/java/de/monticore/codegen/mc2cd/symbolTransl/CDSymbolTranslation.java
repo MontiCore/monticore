@@ -16,7 +16,7 @@ public class CDSymbolTranslation implements UnaryOperator<Link<ASTMCGrammar, AST
           Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink) {
 
     return new GrammarToCDDefinition()
-        .andThen(new CDDefinitionNameTranslation())
+        .andThen(new SymbolsCDDefinitionNameTranslation())
         .andThen(new CreateSymbolProds())
         .andThen(new SymbolRulesToCDClassAndCDInterface())
         .andThen(new AttributeInSymbolRuleToCDAttribute())
