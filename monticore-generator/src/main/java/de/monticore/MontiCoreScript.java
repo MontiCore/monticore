@@ -405,7 +405,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    *                   variables
    * @param cdScope    - grammar symbol table
    */
-  public ASTCDCompilationUnit deriveCD(ASTMCGrammar astGrammar,
+  public ASTCDCompilationUnit deriveASTCD(ASTMCGrammar astGrammar,
                                        GlobalExtensionManagement glex,
                                        ICD4AnalysisGlobalScope cdScope) {
     // transformation

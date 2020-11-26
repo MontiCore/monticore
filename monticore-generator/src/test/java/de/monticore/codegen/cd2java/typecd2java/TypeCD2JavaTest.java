@@ -41,7 +41,7 @@ public class TypeCD2JavaTest {
     //create ASTCDDefinition from MontiCoreScript
     MontiCoreScript script = new MontiCoreScript();
     script.createSymbolsFromAST(grammar_withConceptsGlobalScope, grammar.get());
-    cdCompilationUnit = script.deriveCD(grammar.get(), new GlobalExtensionManagement(),
+    cdCompilationUnit = script.deriveASTCD(grammar.get(), new GlobalExtensionManagement(),
         grammar_withConceptsGlobalScope);
 
     cdCompilationUnit.setEnclosingScope(grammar_withConceptsGlobalScope);
