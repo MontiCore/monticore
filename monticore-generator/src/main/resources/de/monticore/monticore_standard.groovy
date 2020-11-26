@@ -63,30 +63,20 @@ while (grammarIterator.hasNext()) {
     // M4: Execute context conditions
     runGrammarCoCos(astGrammar, mcScope)
 
-    // M5: Transform grammar AST into class diagram AST and create symbol and scope class diagram
-    // M5.1: Transform grammar AST into Class Diagram AST
-    astClassDiagram = deriveASTCD(astGrammar, glex, mcScope)
-    
-    // M5.2: Create symbol and scope class diagramm for the grammar
-    symbolClassDiagramm = deriveSymbolCD(astGrammar, mcScope)
-    scopeClassDiagramm = deriveScopeCD(astGrammar, mcScope)
+    // M5: Transform grammar AST into a class diagram and report it
+    cd = deriveCD(astGrammar, glex, mcScope)
 
-    // M5.3 Report the basic class diagram for AST
-    reportCD(astClassDiagram, report)
-    
-    // M5.4 Report the full AST incl. Symbols diagrams
-    astClassDiagram = addListSuffixToAttributeName(astClassDiagram)
-    reportCD(astClassDiagram, symbolClassDiagramm, scopeClassDiagramm, report)
+    cd = addListSuffixToAttributeName(cd)
+    reportCD(cd, report)
 
     // M6: Generate parser and wrapper
-    generateParser(glex, astClassDiagram, astGrammar, mcScope, handcodedPath, out)
+    generateParser(glex, cd, astGrammar, mcScope, handcodedPath, out)
 
     // M7: Decorate class diagrams
-    cds = decorateForCDs(glex, mcScope, astClassDiagram, symbolClassDiagramm, 
-        scopeClassDiagramm, handcodedPath)
+    decoratedCD = decorateCD(glex, mcScope, cd, handcodedPath)
   
     // M8 Generate ast classes, symbol table, visitor, and context conditions
-    generateFromCD(glex, astClassDiagram, cds, out, handcodedPath)
+    generateFromCD(glex, cd, decoratedCD, out, handcodedPath)
   
     // M9: Write reports to files
     // M9.1: Inform about successful completion for grammar

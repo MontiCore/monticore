@@ -278,6 +278,24 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
   /**
    * Generates the parser for the given grammar.
+   * 
+   * @param glex The global extension management
+   * @param cds List of class diagrams (will be only one in the future)
+   * @param grammar The input grammar to generate a parser for
+   * @param symbolTable The global scope
+   * @param handcodedPath The path to hand-coded java artifacts
+   * @param outputDirectory The output directory for generated Java code
+   */
+  public void generateParser(GlobalExtensionManagement glex, List<ASTCDCompilationUnit> cds, 
+                             ASTMCGrammar grammar, Grammar_WithConceptsGlobalScope symbolTable,
+                             IterablePath handcodedPath, File outputDirectory) {
+    // first cd (representing AST package) ist relevant 
+    // -> will be only one cd in the future
+    ParserGenerator.generateFullParser(glex, cds.get(0), grammar, symbolTable, handcodedPath, outputDirectory);
+  }
+  
+  /**
+   * Generates the parser for the given grammar.
    *
    * @param grammar         to generate the parser for
    * @param symbolTable
@@ -405,6 +423,24 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    *                   variables
    * @param cdScope    - grammar symbol table
    */
+  public List<ASTCDCompilationUnit> deriveCD(ASTMCGrammar astGrammar,
+                                       GlobalExtensionManagement glex,
+                                       ICD4AnalysisGlobalScope cdScope) {
+    List<ASTCDCompilationUnit> cds = new ArrayList<ASTCDCompilationUnit>();
+    cds.add(deriveASTCD(astGrammar, glex, cdScope));
+    cds.add(deriveSymbolCD(astGrammar, cdScope));
+    cds.add(deriveScopeCD(astGrammar, cdScope));
+    return cds;
+  }
+  
+  /**
+   * Transforms grammar AST to class diagram AST.
+   *
+   * @param astGrammar - grammar AST
+   * @param glex       - object for managing hook points, features and global
+   *                   variables
+   * @param cdScope    - grammar symbol table
+   */
   public ASTCDCompilationUnit deriveASTCD(ASTMCGrammar astGrammar,
                                        GlobalExtensionManagement glex,
                                        ICD4AnalysisGlobalScope cdScope) {
@@ -437,16 +473,15 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   /**
    * Prints Cd4Analysis AST to the CD-file (*.cd) in the reporting directory.
    * 
-   * @param astCd The input CD of the AST
-   * @param symbolCd The input CD for existing symbols
-   * @param scopeCd The input CD for scopes of the language
+   * @param cds The predefined list of cds for AST, symbols, and scopes.
    * @param outputDirectory The output directory to print to
    */
-  public void reportCD(ASTCDCompilationUnit astCd, ASTCDCompilationUnit symbolCd, 
-      ASTCDCompilationUnit scopeCd, File outputDirectory) {
-    reportCD(astCd, astCd, symbolCd, scopeCd, outputDirectory);
+  public void reportCD(List<ASTCDCompilationUnit> cds, File outputDirectory) {
+    // We precisely know the structure of the given list.
+    // In future versions, this will be one combined CD only.
+    reportCD(cds.get(0), cds.get(0), cds.get(1), cds.get(2), outputDirectory);
   }
-
+  
   /**
    * Prints Cd4Analysis AST to the CD-file (*.cd) in the reporting directory
    *
@@ -531,30 +566,28 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * 
    * @param glex The global extension management
    * @param cdScope The common scope of the class diagrams
-   * @param astClassDiagram The class diagram of the AST
-   * @param symbolClassDiagramm The class diagram for the specified symbols
-   * @param scopeClassDiagramm The class diagram for the scope of a language
+   * @param cds The class diagrams of the AST, symbols and scope of a language
    * @param handCodedPath The path to hand-coded java artifacts
    * @return The list of decorated class diagrams
    */
-  public List<ASTCDCompilationUnit> decorateForCDs(GlobalExtensionManagement glex, ICD4AnalysisScope cdScope,
-      ASTCDCompilationUnit astClassDiagram, ASTCDCompilationUnit symbolClassDiagramm,
-      ASTCDCompilationUnit scopeClassDiagramm, IterablePath handCodedPath) {
+  public List<ASTCDCompilationUnit> decorateCD(GlobalExtensionManagement glex, ICD4AnalysisScope cdScope,
+      List<ASTCDCompilationUnit> cds, IterablePath handCodedPath) {
     List<ASTCDCompilationUnit> decoratedCDs = new ArrayList<ASTCDCompilationUnit>();
-    
-    ASTCDCompilationUnit decoratedSymbolTableCd = decorateForSymbolTablePackage(glex, cdScope, astClassDiagram, 
-        symbolClassDiagramm, scopeClassDiagramm, handCodedPath);
+    // we precisely know the strucutre of the given cd list
+    // in a future version, we will only handle one single cd
+    ASTCDCompilationUnit decoratedSymbolTableCd = decorateForSymbolTablePackage(glex, cdScope, cds.get(0), 
+        cds.get(1), cds.get(2), handCodedPath);
     decoratedCDs.add(decoratedSymbolTableCd);
-    ASTCDCompilationUnit decoratedVisitorCD = decorateForVisitorPackage(glex, cdScope, astClassDiagram, handCodedPath);
+    ASTCDCompilationUnit decoratedVisitorCD = decorateForVisitorPackage(glex, cdScope, cds.get(0), handCodedPath);
     decoratedCDs.add(decoratedVisitorCD);
-    decoratedCDs.add(decorateTraverserForVisitorPackage(glex, cdScope, astClassDiagram, handCodedPath));
-    decoratedCDs.add(decorateForCoCoPackage(glex, cdScope, astClassDiagram, handCodedPath));
-    decoratedCDs.add(decorateForODPackage(glex, cdScope, astClassDiagram, handCodedPath));
-    ASTCDCompilationUnit decoratedASTClassDiagramm = decorateForASTPackage(glex, cdScope, astClassDiagram, handCodedPath);
+    decoratedCDs.add(decorateTraverserForVisitorPackage(glex, cdScope, cds.get(0), handCodedPath));
+    decoratedCDs.add(decorateForCoCoPackage(glex, cdScope, cds.get(0), handCodedPath));
+    decoratedCDs.add(decorateForODPackage(glex, cdScope, cds.get(0), handCodedPath));
+    ASTCDCompilationUnit decoratedASTClassDiagramm = decorateForASTPackage(glex, cdScope, cds.get(0), handCodedPath);
     decoratedCDs.add(decoratedASTClassDiagramm);
-    decoratedCDs.add(decorateMill(glex, cdScope, astClassDiagram, decoratedASTClassDiagramm, decoratedVisitorCD, 
+    decoratedCDs.add(decorateMill(glex, cdScope, cds.get(0), decoratedASTClassDiagramm, decoratedVisitorCD, 
         decoratedSymbolTableCd, handCodedPath));
-    decoratedCDs.add(decorateAuxiliary(glex, cdScope, astClassDiagram, decoratedASTClassDiagramm, handCodedPath));
+    decoratedCDs.add(decorateAuxiliary(glex, cdScope, cds.get(0), decoratedASTClassDiagramm, handCodedPath));
     return decoratedCDs;
   }
 
@@ -773,6 +806,20 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
   }
 
+  /**
+   * Adds the suffix "List" to all attribute names that comprise multiple
+   * instances.
+   * 
+   * @param originalCDs The list of input cds
+   * @return The decorated list of output cds
+   */
+  public List<ASTCDCompilationUnit> addListSuffixToAttributeName(List<ASTCDCompilationUnit> originalCDs) {
+    ListSuffixDecorator listSuffixDecorator = new ListSuffixDecorator();
+    // decoration is only applied to the first cd, representing the AST package
+    listSuffixDecorator.decorate(originalCDs.get(0), originalCDs.get(0));
+    return originalCDs;
+  }
+  
   public ASTCDCompilationUnit addListSuffixToAttributeName(ASTCDCompilationUnit originalCD) {
     ListSuffixDecorator listSuffixDecorator = new ListSuffixDecorator();
     return listSuffixDecorator.decorate(originalCD, originalCD);
@@ -851,6 +898,37 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     return topDecorator.decorate(compilationUnit);
   }
 
+  /**
+   * Decorates the class diagrams of a given language (specified via three input
+   * class diagrams) for AST, symbol table, visitor, CoCos, OD, and mill with
+   * EMF-compatible elements.
+   * 
+   * @param glex The global extension management
+   * @param cdScope The common scope of the class diagrams
+   * @param cds The class diagrams of the AST, symbols and scope of a language
+   * @param handCodedPath The path to hand-coded java artifacts
+   * @return The list of decorated class diagrams
+   */
+  public List<ASTCDCompilationUnit> decorateEmfCD(GlobalExtensionManagement glex, ICD4AnalysisScope cdScope,
+      List<ASTCDCompilationUnit> cds, IterablePath handCodedPath) {
+    List<ASTCDCompilationUnit> decoratedCDs = new ArrayList<ASTCDCompilationUnit>();
+    // we precisely know the strucutre of the given cd list
+    // in a future version, we will only handle one single cd
+    ASTCDCompilationUnit decoratedSymbolTableCd = decorateForSymbolTablePackage(glex, cdScope, cds.get(0), 
+        cds.get(1), cds.get(2), handCodedPath);
+    decoratedCDs.add(decoratedSymbolTableCd);
+    ASTCDCompilationUnit decoratedVisitorCD = decorateForVisitorPackage(glex, cdScope, cds.get(0), handCodedPath);
+    decoratedCDs.add(decoratedVisitorCD);
+    decoratedCDs.add(decorateTraverserForVisitorPackage(glex, cdScope, cds.get(0), handCodedPath));
+    decoratedCDs.add(decorateForCoCoPackage(glex, cdScope, cds.get(0), handCodedPath));
+    decoratedCDs.add(decorateForODPackage(glex, cdScope, cds.get(0), handCodedPath));
+    ASTCDCompilationUnit decoratedASTClassDiagramm = decorateEmfForASTPackage(glex, cdScope, cds.get(0), handCodedPath);
+    decoratedCDs.add(decoratedASTClassDiagramm);
+    decoratedCDs.add(decorateMill(glex, cdScope, cds.get(0), decoratedASTClassDiagramm, decoratedVisitorCD, 
+        decoratedSymbolTableCd, handCodedPath));
+    decoratedCDs.add(decorateAuxiliary(glex, cdScope, cds.get(0), decoratedASTClassDiagramm, handCodedPath));
+    return decoratedCDs;
+  }
 
   private ASTCDCompilationUnit decorateEmfWithAST(ASTCDCompilationUnit cd, GlobalExtensionManagement glex, IterablePath handCodedPath) {
     ASTService astService = new ASTService(cd);
@@ -901,13 +979,17 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * Generates the Java artifacts for the given class diagrams.
    * 
    * @param glex The global extension management
-   * @param oldCD The basic class diagram
+   * @param oldCDs The basic class diagrams for AST, symbols and scope
    * @param cds A list of input class diagrams to generate code for
    * @param outputDirectory The corresponding output directory
    * @param handcodedPath The path to hand-coded java artifacts
    */
-  public void generateFromCD(GlobalExtensionManagement glex, ASTCDCompilationUnit oldCD, 
+  public void generateFromCD(GlobalExtensionManagement glex, List<ASTCDCompilationUnit> oldCDs, 
       List<ASTCDCompilationUnit> cds, File outputDirectory, IterablePath handcodedPath) {
+    // we precisely know the list of old CDs, which will be merged to a single
+    // CD in the future
+    ASTCDCompilationUnit oldCD = oldCDs.get(0);
+    
     // generate from CDs
     for (ASTCDCompilationUnit cd : cds) {
       generateFromCD(glex, oldCD, cd, outputDirectory, handcodedPath);
@@ -930,6 +1012,27 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     generator.generate(decoratedCD);
   }
 
+  /**
+   * Generates the Java artifacts for the given class diagrams.
+   * 
+   * @param glex The global extension management
+   * @param oldCDs The basic class diagrams for AST, symbols and scope
+   * @param cds A list of input class diagrams to generate code for
+   * @param outputDirectory The corresponding output directory
+   * @param handcodedPath The path to hand-coded java artifacts
+   */
+  public void generateEmfFromCD(GlobalExtensionManagement glex, List<ASTCDCompilationUnit> oldCDs, 
+      List<ASTCDCompilationUnit> cds, File outputDirectory, IterablePath handcodedPath) {
+    // we precisely know the list of old CDs, which will be merged to a single
+    // CD in the future
+    ASTCDCompilationUnit oldCD = oldCDs.get(0);
+    
+    // generate from CDs
+    for (ASTCDCompilationUnit cd : cds) {
+      generateEmfFromCD(glex, oldCD, cd, outputDirectory, handcodedPath);
+    }
+  }
+  
   public void generateEmfFromCD(GlobalExtensionManagement glex, ASTCDCompilationUnit oldCD, ASTCDCompilationUnit decoratedCD,
                                 File outputDirectory, IterablePath handcodedPath) {
     // need symboltable of the old cd
