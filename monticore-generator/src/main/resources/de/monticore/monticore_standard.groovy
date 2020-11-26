@@ -33,7 +33,6 @@ Log.debug("Handcoded files     : " + handcodedPath, LOG_ID)
 
 // M1.2: Build Global Scope
 mcScope = createMCGlobalScope(modelPath)
-cdScope = createCD4AGlobalScope(modelPath)
 
 // M1.3: Initialize reporting (output)
 Reporting.init(out.getAbsolutePath(), report.getAbsolutePath(), reportManagerFactory)
@@ -66,11 +65,11 @@ while (grammarIterator.hasNext()) {
 
     // M5: Transform grammar AST into class diagram AST and create symbol and scope class diagram
     // M5.1: Transform grammar AST into Class Diagram AST
-    astClassDiagram = deriveCD(astGrammar, glex, cdScope)
+    astClassDiagram = deriveCD(astGrammar, glex, mcScope)
     
     // M5.2: Create symbol and scope class diagramm for the grammar
-    symbolClassDiagramm = deriveSymbolCD(astGrammar, cdScope)
-    scopeClassDiagramm = deriveScopeCD(astGrammar, cdScope)
+    symbolClassDiagramm = deriveSymbolCD(astGrammar, mcScope)
+    scopeClassDiagramm = deriveScopeCD(astGrammar, mcScope)
 
     // M5.3 Report the basic class diagram for AST
     reportCD(astClassDiagram, report)
@@ -83,7 +82,7 @@ while (grammarIterator.hasNext()) {
     generateParser(glex, astClassDiagram, astGrammar, mcScope, handcodedPath, out)
 
     // M7: Decorate class diagrams
-    cds = decorateForCDs(glex, cdScope, astClassDiagram, symbolClassDiagramm, 
+    cds = decorateForCDs(glex, mcScope, astClassDiagram, symbolClassDiagramm, 
         scopeClassDiagramm, handcodedPath)
   
     // M8 Generate ast classes, symbol table, visitor, and context conditions
