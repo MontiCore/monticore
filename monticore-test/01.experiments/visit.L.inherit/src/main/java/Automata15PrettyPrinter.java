@@ -9,23 +9,14 @@ import automata15._visitor.*;
  *
 
  */
-public class Automata15PrettyPrinter implements Automata15Visitor {
+public class Automata15PrettyPrinter implements Automata15Visitor2 {
 
   protected String result = "";
   
   protected int indention = 0;
   
   protected String indent = "";
-  
-  /**
-   * Prints the automaton
-   * 
-   * @param automaton
-   */
-  public void print(ASTAutomaton automaton) {
-    handle(automaton);
-  }
-  
+
   /**
    * Gets the printed result.
    * 

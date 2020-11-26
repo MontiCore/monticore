@@ -120,7 +120,7 @@ public class SymbolSurrogateDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethods() {
-    assertEquals(5, symbolClassAutomaton.getCDMethodList().size());
+    assertEquals(6, symbolClassAutomaton.getCDMethodList().size());
   }
 
   @Test
@@ -174,6 +174,15 @@ public class SymbolSurrogateDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.sizeCDParameters());
     assertEquals("enclosingScope", method.getCDParameter(0).getName());
     assertDeepEquals(I_AUTOMATON_SCOPE, method.getCDParameter(0).getMCType());
+  }
+
+  @Test
+  public void testGetFullNameMethod() {
+    ASTCDMethod method = getMethodBy("getFullName", symbolClassAutomaton);
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertDeepEquals(String.class, method.getMCReturnType().getMCType());
+
+    assertTrue(method.isEmptyCDParameters());
   }
 
   @Test

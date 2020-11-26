@@ -80,12 +80,7 @@ public class ArtifactScopeInterfaceDecorator extends AbstractCreator<ASTCDCompil
             + "' that is supergrammar of '" + symbolTableService.getCDName() + "'.");
         continue;
       }
-      if (symbolTableService.hasStartProd(superGrammar.getAstNode())
-          ||!symbolTableService.getSymbolDefiningSuperProds(superGrammar).isEmpty() ) {
-        result.add(symbolTableService.getArtifactScopeInterfaceType(superGrammar));
-      }else{
-        result.addAll(getSuperArtifactScopeInterfaces(superGrammar));
-      }
+      result.add(symbolTableService.getArtifactScopeInterfaceType(superGrammar));
     }
     if (result.isEmpty()) {
       result.add(getMCTypeFacade().createQualifiedType(I_ARTIFACT_SCOPE_TYPE));

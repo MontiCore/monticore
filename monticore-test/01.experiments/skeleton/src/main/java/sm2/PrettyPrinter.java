@@ -4,18 +4,33 @@ package sm2;
 import sm2._ast.ASTAutomaton;
 import sm2._ast.ASTState;
 import sm2._ast.ASTTransition;
-import sm2._visitor.SM2Visitor;
+import sm2._visitor.SM2Visitor2;
+import sm2._visitor.SM2Handler;
+import sm2._visitor.SM2Traverser;
+
 
 /**
  * Pretty prints sm2. Use {@link #print(ASTAutomaton)} to start a pretty
  * print and get the result by using {@link #getResult()}.
  */
-public class PrettyPrinter implements SM2Visitor {
+public class PrettyPrinter implements SM2Visitor2, SM2Handler {
   private String result = "";
   
   private int indention = 0;
   
   private String indent = "";
+  
+  protected SM2Traverser traverser;
+
+  @Override
+  public SM2Traverser getTraverser() {
+    return traverser;
+  }
+
+  @Override
+  public void setTraverser(SM2Traverser traverser) {
+    this.traverser = traverser;
+  }
   
   /**
    * Prints the sm2
@@ -50,8 +65,8 @@ public class PrettyPrinter implements SM2Visitor {
   @Override
   public void traverse(ASTAutomaton node) {
     // guarantee ordering: states before transitions
-    node.getStateList().stream().forEach(s -> s.accept(getRealThis()));
-    node.getTransitionList().stream().forEach(t -> t.accept(getRealThis()));
+    node.getStateList().stream().forEach(s -> s.accept(getTraverser()));
+    node.getTransitionList().stream().forEach(t -> t.accept(getTraverser()));
   }
   
   @Override

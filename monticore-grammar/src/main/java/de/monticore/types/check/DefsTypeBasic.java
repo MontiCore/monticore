@@ -67,7 +67,7 @@ public class DefsTypeBasic {
    */
   public static OOTypeSymbol type(String name, String fullName) {
     return OOSymbolsMill.oOTypeSymbolBuilder()
-            .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
+            .setSpannedScope(OOSymbolsMill.scope())
             .setName(name)
             .setFullName(fullName)
             .setAccessModifier(AccessModifier.ALL_INCLUSION)
@@ -76,7 +76,7 @@ public class DefsTypeBasic {
 
   public static OOTypeSymbol type(String name, List<SymTypeExpression> superTypes){
     return OOSymbolsMill.oOTypeSymbolBuilder()
-            .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
+            .setSpannedScope(OOSymbolsMill.scope())
             .setName(name)
             .setFullName(name)
             .setSuperTypesList(superTypes)
@@ -84,7 +84,7 @@ public class DefsTypeBasic {
   }
 
   public static OOTypeSymbol type(String name, List<SymTypeExpression> superTypes, List<TypeVarSymbol> typeArguments){
-    IOOSymbolsScope spannedScope = OOSymbolsMill.oOSymbolsScopeBuilder().build();
+    IOOSymbolsScope spannedScope = OOSymbolsMill.scope();
     OOTypeSymbol ts = OOSymbolsMill.oOTypeSymbolBuilder()
             .setSpannedScope(spannedScope)
             .setName(name)
@@ -98,7 +98,7 @@ public class DefsTypeBasic {
   public static OOTypeSymbol type(String name, List<MethodSymbol> methodList, List<FieldSymbol> fieldList,
                                   List<SymTypeExpression> superTypeList, List<TypeVarSymbol> typeVariableList){
     OOTypeSymbol ts = OOSymbolsMill.oOTypeSymbolBuilder()
-          .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
+          .setSpannedScope(OOSymbolsMill.scope())
           .setName(name)
           .setFullName(name)
           .setSuperTypesList(superTypeList)
@@ -114,7 +114,7 @@ public class DefsTypeBasic {
                                   IOOSymbolsScope enclosingScope){
     OOTypeSymbol t = OOSymbolsMill.oOTypeSymbolBuilder()
         .setEnclosingScope(enclosingScope)
-        .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
+        .setSpannedScope(OOSymbolsMill.scope())
         .setName(name)
         .setFullName(name)
         .setSuperTypesList(superTypeList)
@@ -155,13 +155,13 @@ public class DefsTypeBasic {
    */
   public static MethodSymbol method(String name, SymTypeExpression returnType) {
     MethodSymbol m = OOSymbolsMill.methodSymbolBuilder()
-            .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
+            .setSpannedScope(OOSymbolsMill.scope())
             .setName(name)
             .setFullName(name)  // can later be adapted, when fullname of Type is known
             .setAccessModifier(AccessModifier.ALL_INCLUSION)
             .setReturnType(returnType)
             .build();
-    m.setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build());
+    m.setSpannedScope(OOSymbolsMill.scope());
     return m;
   }
   
@@ -327,7 +327,7 @@ public class DefsTypeBasic {
 
   public static void link_String() {
     MethodSymbol m; FieldSymbol f;
-    IOOSymbolsScope scope = OOSymbolsMill.oOSymbolsScopeBuilder().build();
+    IOOSymbolsScope scope = OOSymbolsMill.scope();
     
     // hashCode()
     add(_String, method("hashCode", _intSymType));

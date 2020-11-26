@@ -23,7 +23,7 @@ public class OverridingNTsHaveNoSuperRules implements GrammarASTClassProdCoCo {
   public static final String ERROR_CODE = "0xA4001";
   
   public static final String ERROR_MSG_FORMAT = " The production %s overriding a production of " +
-          "a super grammar must not extend the production %s.\n" +
+          "a sub grammar must not extend the production %s.\n" +
           "Hint: Overriding productions can only implement interfaces.";
   
   @Override

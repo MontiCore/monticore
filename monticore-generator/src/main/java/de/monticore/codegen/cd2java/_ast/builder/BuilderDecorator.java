@@ -88,7 +88,7 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
 
     ASTCDMethod buildMethod = this.getCDMethodFacade().createMethod(modifier.deepClone(), domainType, BUILD_METHOD);
     if (isPrintBuildMethodTemplate()) {
-      this.replaceTemplate(EMPTY_BODY, buildMethod, new TemplateHookPoint("_ast.builder.BuildMethod", domainClass, mandatoryAttributes));
+      this.replaceTemplate(EMPTY_BODY, buildMethod, new TemplateHookPoint("_ast.builder.BuildMethod", domainClass, mandatoryAttributes, true));
     }
 
     ASTCDMethod isValidMethod = this.getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createBooleanType(), IS_VALID);

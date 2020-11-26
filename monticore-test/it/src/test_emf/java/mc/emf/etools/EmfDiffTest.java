@@ -8,6 +8,7 @@ import mc.feature.fautomaton.automaton.flatautomaton._parser.FlatAutomatonParser
 import org.antlr.v4.runtime.RecognitionException;
 import org.eclipse.emf.compare.diff.metamodel.DiffElement;
 import org.junit.Test;
+import org.junit.Ignore;
 
 import java.io.IOException;
 import java.util.List;
@@ -17,7 +18,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 public class EmfDiffTest extends GeneratorIntegrationsTest {
-  
+
+  @Ignore
   @Test
   public void testDiffAutomaton() {
     try {

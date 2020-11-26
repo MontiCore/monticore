@@ -15,13 +15,13 @@ import org.junit.Test;
 
 import de.se_rwth.commons.logging.Log;
 import mc.GeneratorIntegrationsTest;
+import mc.feature.visitor.sub.SubMill;
 import mc.feature.visitor.sub._ast.ASTB;
 import mc.feature.visitor.sub._ast.ASTE;
 import mc.feature.visitor.sub._parser.SubParser;
-import mc.feature.visitor.sub._visitor.SubParentAwareVisitor;
-import mc.feature.visitor.sub._visitor.SubVisitor;
+import mc.feature.visitor.sub._visitor.SubTraverser;
 import mc.feature.visitor.sup._ast.ASTA;
-import mc.feature.visitor.sup._visitor.SupVisitor;
+import mc.feature.visitor.sup._visitor.SupVisitor2;
 
 public class VisitorTest extends GeneratorIntegrationsTest {
   
@@ -34,66 +34,20 @@ public class VisitorTest extends GeneratorIntegrationsTest {
     assertTrue(node.isPresent());
     
     // Running Visitor
+    SubTraverser t1 = SubMill.traverser();
     SubConcreteVisitor v = new SubConcreteVisitor();
+    t1.addSubVisitor(v);
     
-    v.handle(node.get());
+    t1.handle(node.get());
     assertTrue(v.hasVisited());
-    
-    SupVisitor vSup = new SupVisitor() {};
+
+    SubTraverser t2 = SubMill.traverser();
+    SupVisitor2 vSup = new SupVisitor2() {};
+    t2.addSupVisitor(vSup);
     long errorCount = Log.getErrorCount();
-    // expected error, because super visitor may not run on sub language
-    vSup.handle(node.get());
-    assertEquals(errorCount + 1, Log.getErrorCount());
+    // no expected error, as super visitor should run on sub language
+    t2.handle(node.get());
+    assertEquals(errorCount, Log.getErrorCount());
   }
   
-  @Test
-  public void testParentAware() throws IOException {
-    // Create AST
-    SubParser p = new SubParser();
-    // in b ist parent a
-    Optional<ASTA> node = p.parseA(new StringReader("test1 test2"));
-    assertFalse(p.hasErrors());
-    assertTrue(node.isPresent());
-    
-    // Running Visitor
-    final StringBuilder run = new StringBuilder();
-    SubVisitor v = new SubParentAwareVisitor() {
-      @Override
-      public void visit(ASTA node) {
-        run.append("A");
-        if (getParent().isPresent()) {
-          fail("The parent must not be present, but was set to " + getParent().get());
-        }
-      }
-      
-      @Override
-      public void visit(ASTE node) {
-        run.append("E");
-        // parentaware visitor does not consider super grammars 
-        // but it is deprecated anyway
-        // if (!getParent().isPresent()) {
-        // fail("The parent must be present.");
-        // }
-        // if (!(getParent().get() instanceof ASTA)) {
-        // fail("The parent must be present as A, but was " +
-        // getParent().get());
-        // }
-      }
-      
-      @Override
-      public void visit(ASTB node) {
-        run.append("B");
-        if (!getParent().isPresent()) {
-          System.out.println(run);
-          fail("The parent must be present.");
-        }
-        if (!(getParent().get() instanceof ASTE)) {
-          fail("The parent must be present as E, but was " + getParent().get());
-        }
-      }
-    };
-    
-    v.handle(node.get());
-    assertEquals("AEB", run.toString());
-  }
 }

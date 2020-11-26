@@ -43,14 +43,15 @@ package de.monticore;
  import de.monticore.codegen.cd2java._od.ODCDDecorator;
  import de.monticore.codegen.cd2java._od.ODDecorator;
  import de.monticore.codegen.cd2java._od.ODService;
+ import de.monticore.codegen.cd2java._parser.ParserService;
  import de.monticore.codegen.cd2java._symboltable.SymbolTableCDDecorator;
  import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
  import de.monticore.codegen.cd2java._symboltable.scope.*;
- import de.monticore.codegen.cd2java._symboltable.scopeskeletoncreator.ScopeSkeletonCreatorDecorator;
- import de.monticore.codegen.cd2java._symboltable.scopeskeletoncreator.ScopeSkeletonCreatorDelegatorDecorator;
+ import de.monticore.codegen.cd2java._symboltable.scopesgenitor.ScopesGenitorDecorator;
+ import de.monticore.codegen.cd2java._symboltable.scopesgenitor.ScopesGenitorDelegatorDecorator;
  import de.monticore.codegen.cd2java._symboltable.serialization.ScopeDeSerDecorator;
  import de.monticore.codegen.cd2java._symboltable.serialization.SymbolDeSerDecorator;
- import de.monticore.codegen.cd2java._symboltable.serialization.SymbolTablePrinterDecorator;
+ import de.monticore.codegen.cd2java._symboltable.serialization.Symbols2JsonDecorator;
  import de.monticore.codegen.cd2java._symboltable.symbol.*;
  import de.monticore.codegen.cd2java._symboltable.symbol.symbolsurrogatemutator.MandatoryMutatorSymbolSurrogateDecorator;
  import de.monticore.codegen.cd2java._symboltable.symboltablecreator.PhasedSymbolTableCreatorDelegatorDecorator;
@@ -283,13 +284,13 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param symbolTable
    * @param outputDirectory output directory for generated Java code
    */
-  public void generateParser(GlobalExtensionManagement glex, ASTMCGrammar grammar,
+  public void generateParser(GlobalExtensionManagement glex, ASTCDCompilationUnit astClassDiagram, ASTMCGrammar grammar,
                              Grammar_WithConceptsGlobalScope symbolTable,
                              IterablePath handcodedPath, File outputDirectory) {
     Log.errorIfNull(
-            grammar,
-            "0xA4107 Parser generation can't be processed: the reference to the grammar ast is null");
-    ParserGenerator.generateFullParser(glex, grammar, symbolTable, handcodedPath, outputDirectory);
+        grammar,
+        "0xA4107 Parser generation can't be processed: the reference to the grammar ast is null");
+    ParserGenerator.generateFullParser(glex, astClassDiagram, grammar, symbolTable, handcodedPath, outputDirectory);
   }
 
   /**
@@ -534,13 +535,10 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     SymbolBuilderDecorator symbolBuilderDecorator = new SymbolBuilderDecorator(glex, symbolTableService, builderDecorator);
     ScopeInterfaceDecorator scopeInterfaceDecorator = new ScopeInterfaceDecorator(glex, symbolTableService, visitorService, methodDecorator);
     ScopeClassDecorator scopeClassDecorator = new ScopeClassDecorator(glex, symbolTableService, visitorService, methodDecorator);
-    ScopeClassBuilderDecorator scopeClassBuilderDecorator = new ScopeClassBuilderDecorator(glex, symbolTableService, builderDecorator);
     GlobalScopeInterfaceDecorator globalScopeInterfaceDecorator = new GlobalScopeInterfaceDecorator(glex, symbolTableService, methodDecorator);
     GlobalScopeClassDecorator globalScopeClassDecorator = new GlobalScopeClassDecorator(glex, symbolTableService, methodDecorator);
-    GlobalScopeClassBuilderDecorator globalScopeClassBuilderDecorator = new GlobalScopeClassBuilderDecorator(glex, symbolTableService, builderDecorator);
     ArtifactScopeInterfaceDecorator artifactScopeInterfaceDecorator = new ArtifactScopeInterfaceDecorator(glex, symbolTableService, visitorService, methodDecorator);
     ArtifactScopeClassDecorator artifactScopeDecorator = new ArtifactScopeClassDecorator(glex, symbolTableService, visitorService, methodDecorator);
-    ArtifactScopeClassBuilderDecorator artifactScopeBuilderDecorator = new ArtifactScopeClassBuilderDecorator(glex, symbolTableService, builderDecorator, accessorDecorator);
     SymbolSurrogateDecorator symbolReferenceDecorator = new SymbolSurrogateDecorator(glex, symbolTableService, methodDecorator, new MandatoryMutatorSymbolSurrogateDecorator(glex));
     SymbolSurrogateBuilderDecorator symbolReferenceBuilderDecorator = new SymbolSurrogateBuilderDecorator(glex, symbolTableService, accessorDecorator);
     CommonSymbolInterfaceDecorator commonSymbolInterfaceDecorator = new CommonSymbolInterfaceDecorator(glex, symbolTableService, visitorService, methodDecorator);
@@ -550,20 +548,20 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     SymbolTableCreatorForSuperTypes symbolTableCreatorForSuperTypes = new SymbolTableCreatorForSuperTypes(glex, symbolTableService);
     SymbolDeSerDecorator symbolDeSerDecorator = new SymbolDeSerDecorator(glex, symbolTableService);
     ScopeDeSerDecorator scopeDeSerDecorator = new ScopeDeSerDecorator(glex, symbolTableService, methodDecorator, visitorService);
-    SymbolTablePrinterDecorator symbolTablePrinterDecorator = new SymbolTablePrinterDecorator(glex, symbolTableService, visitorService);
-    ScopeSkeletonCreatorDecorator scopeSkeletonCreatorDecorator = new ScopeSkeletonCreatorDecorator(glex, symbolTableService, visitorService, methodDecorator);
-    ScopeSkeletonCreatorDelegatorDecorator scopeSkeletonCreatorDelegatorDecorator = new ScopeSkeletonCreatorDelegatorDecorator(glex, symbolTableService, visitorService);
+    Symbols2JsonDecorator symbolTablePrinterDecorator = new Symbols2JsonDecorator(glex, symbolTableService, visitorService);
+    ScopesGenitorDecorator scopesGenitorDecorator = new ScopesGenitorDecorator(glex, symbolTableService, visitorService, methodDecorator);
+    ScopesGenitorDelegatorDecorator scopesGenitorDelegatorDecorator = new ScopesGenitorDelegatorDecorator(glex, symbolTableService, visitorService);
     PhasedSymbolTableCreatorDelegatorDecorator phasedSymbolTableCreatorDelegatorDecorator = new PhasedSymbolTableCreatorDelegatorDecorator(glex, symbolTableService, visitorService);
 
     SymbolTableCDDecorator symbolTableCDDecorator = new SymbolTableCDDecorator(glex, handCodedPath, symbolTableService, symbolDecorator,
             symbolBuilderDecorator, symbolReferenceDecorator, symbolReferenceBuilderDecorator,
-            scopeInterfaceDecorator, scopeClassDecorator, scopeClassBuilderDecorator,
-            globalScopeInterfaceDecorator, globalScopeClassDecorator, globalScopeClassBuilderDecorator,
-        artifactScopeInterfaceDecorator, artifactScopeDecorator, artifactScopeBuilderDecorator,
+            scopeInterfaceDecorator, scopeClassDecorator,
+            globalScopeInterfaceDecorator, globalScopeClassDecorator,
+            artifactScopeInterfaceDecorator, artifactScopeDecorator,
             commonSymbolInterfaceDecorator,
             symbolResolverInterfaceDecorator, symbolTableCreatorDecorator,
             symbolTableCreatorDelegatorDecorator, symbolTableCreatorForSuperTypes,
-            symbolDeSerDecorator, scopeDeSerDecorator, symbolTablePrinterDecorator, scopeSkeletonCreatorDecorator, scopeSkeletonCreatorDelegatorDecorator,
+            symbolDeSerDecorator, scopeDeSerDecorator, symbolTablePrinterDecorator, scopesGenitorDecorator, scopesGenitorDelegatorDecorator,
         phasedSymbolTableCreatorDelegatorDecorator);
     ASTCDCompilationUnit symbolTableCompilationUnit = symbolTableCDDecorator.decorate(cd, symbolCD, scopeCD);
 
@@ -698,7 +696,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
                                             IterablePath handCodedPath) {
     SymbolTableService symbolTableService = new SymbolTableService(cd);
     VisitorService visitorService = new VisitorService(cd);
-    MillDecorator millDecorator = new MillDecorator(glex, symbolTableService, visitorService);
+    ParserService parserService = new ParserService(cd);
+    MillDecorator millDecorator = new MillDecorator(glex, symbolTableService, visitorService, parserService);
     CDMillDecorator cdMillDecorator = new CDMillDecorator(glex, millDecorator);
 
     ASTCDCompilationUnit millCD = cdMillDecorator.decorate(Lists.newArrayList(astCD, visitorCD, symbolCD));
@@ -719,7 +718,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
                                                  GlobalExtensionManagement glex, IterablePath handCodedPath){
     SymbolTableService symbolTableService = new SymbolTableService(cd);
     VisitorService visitorService = new VisitorService(cd);
-    MillForSuperDecorator millForSuperDecorator = new MillForSuperDecorator(glex, symbolTableService, visitorService);
+    ParserService parserService = new ParserService(cd);
+    MillForSuperDecorator millForSuperDecorator = new MillForSuperDecorator(glex, symbolTableService, visitorService, parserService);
     CDAuxiliaryDecorator cdAuxiliaryDecorator = new CDAuxiliaryDecorator(glex, millForSuperDecorator);
 
     ASTCDCompilationUnit auxiliaryCD = cdAuxiliaryDecorator.decorate(astCD);
@@ -787,7 +787,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     ASTLanguageInterfaceDecorator astLanguageInterfaceDecorator = new ASTLanguageInterfaceDecorator(astService, visitorService);
 
     BuilderDecorator builderDecorator = new BuilderDecorator(glex, new AccessorDecorator(glex, astService), astService);
-    ASTBuilderDecorator astBuilderDecorator = new ASTBuilderDecorator(glex, builderDecorator);
+    ASTBuilderDecorator astBuilderDecorator = new ASTBuilderDecorator(glex, builderDecorator, astService);
 
     NodeFactoryDecorator nodeFactoryDecorator = new NodeFactoryDecorator(glex, nodeFactoryService);
 
@@ -829,7 +829,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     ASTLanguageInterfaceDecorator astLanguageInterfaceDecorator = new ASTLanguageInterfaceDecorator(astService, visitorService);
 
     BuilderDecorator builderDecorator = new BuilderDecorator(glex, new AccessorDecorator(glex, emfService), astService);
-    ASTBuilderDecorator astBuilderDecorator = new ASTBuilderDecorator(glex, builderDecorator);
+    ASTBuilderDecorator astBuilderDecorator = new ASTBuilderDecorator(glex, builderDecorator, astService);
 
     EmfNodeFactoryDecorator nodeFactoryDecorator = new EmfNodeFactoryDecorator(glex, nodeFactoryService);
 

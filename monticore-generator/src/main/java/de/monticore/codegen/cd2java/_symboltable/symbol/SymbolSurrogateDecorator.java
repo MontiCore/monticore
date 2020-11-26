@@ -95,6 +95,7 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
             .addCDConstructor(createConstructor(symbolSurrogateSimpleName))
             .addAllCDMethods(nameMethods)
             .addAllCDMethods(delegateSymbolRuleAttributeMethods)
+            .addCDMethod(createGetFullNameMethod())
             .addAllCDMethods(delegateSymbolRuleMethods);
     return builder
             .addCDAttribute(delegateAttribute)
@@ -143,6 +144,12 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
     String generatedError2 = symbolTableService.getGeneratedErrorCode("lazyLoadDelegate2");
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "LazyLoadDelegate", symbolSurrogateName,
             symbolName, simpleName, scopeName, generatedError1, generatedError2));
+    return method;
+  }
+
+  protected ASTCDMethod createGetFullNameMethod(){
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createStringType(), "getFullName");
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "GetFullName"));
     return method;
   }
 

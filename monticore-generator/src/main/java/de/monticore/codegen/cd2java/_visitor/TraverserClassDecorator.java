@@ -9,7 +9,7 @@ import static de.monticore.codegen.cd2java._visitor.VisitorConstants.GET_REAL_TH
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.REAL_THIS;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.SET_REAL_THIS;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.SET_REAL_THIS_DELEGATOR_TEMPLATE;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.TRAVERSER_SET_VISITOR_TEMPLATE;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.TRAVERSER_ADD_VISITOR_TEMPLATE;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.TRAVERSER_SET_HANDLER_TEMPLATE;
 
 import java.util.ArrayList;
@@ -31,6 +31,7 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.monticore.types.prettyprint.MCSimpleGenericTypesPrettyPrinter;
@@ -72,8 +73,6 @@ public class TraverserClassDecorator extends AbstractCreator<ASTCDCompilationUni
         .setModifier(PUBLIC.build())
         .addInterface(getMCTypeFacade().createQualifiedType(visitorService.getTraverserInterfaceFullName()))
         .addCDAttribute(getRealThisAttribute(delegatorVisitorSimpleName))
-        .addCDMethod(addGetRealThisMethod(delegatorVisitorSimpleName))
-        .addCDMethod(addSetRealThisMethod(visitorType, delegatorVisitorSimpleName, simpleVisitorName))
         .addAllCDAttributes(getVisitorAttributes(cDsTransitive))
         .addAllCDAttributes(getHandlerAttributes(cDsTransitive))
         .addAllCDMethods(addVisitorMethods(cDsTransitive))
@@ -95,48 +94,6 @@ public class TraverserClassDecorator extends AbstractCreator<ASTCDCompilationUni
   }
 
   /**
-   * Adds the getRealThis method.
-   * 
-   * @param delegatorVisitorSimpleName The return type of the method
-   * @return The decorated getRealThis method
-   */
-  protected ASTCDMethod addGetRealThisMethod(String delegatorVisitorSimpleName) {
-    ASTMCQualifiedType visitorType = getMCTypeFacade().createQualifiedType(delegatorVisitorSimpleName);
-
-    ASTCDMethod getRealThisMethod = this.getCDMethodFacade().createMethod(PUBLIC, visitorType, GET_REAL_THIS);
-    this.replaceTemplate(EMPTY_BODY, getRealThisMethod, new StringHookPoint("return realThis;"));
-    return getRealThisMethod;
-  }
-
-  /**
-   * Adds the setRealThis method.
-   * 
-   * @param visitorType The input parameter type
-   * @param delegatorVisitorSimpleName The name and type of the traverser
-   * @param simpleVisitorType The name of the available visitor of this language
-   * @return The decorated setRealThis method
-   */
-  protected ASTCDMethod addSetRealThisMethod(ASTMCType visitorType, String delegatorVisitorSimpleName,
-                                              String simpleVisitorType) {
-    ASTCDParameter visitorParameter = getCDParameterFacade().createParameter(visitorType, "realThis");
-
-    List<ASTMCQualifiedType> superVisitors = visitorService.getSuperVisitors();
-    List<String> superVisitorNames = superVisitors
-        .stream()
-        .map(t -> t.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()))
-        .filter(s -> s.contains("."))
-        .map(s -> s = s.substring(s.lastIndexOf(".") + 1))
-        .collect(Collectors.toList());
-    String generatedErrorCode = visitorService.getGeneratedErrorCode(visitorType.printType(new MCSimpleGenericTypesPrettyPrinter(new IndentPrinter())) +
-        delegatorVisitorSimpleName + simpleVisitorType);
-    ASTCDMethod getRealThisMethod = this.getCDMethodFacade().createMethod(PUBLIC, SET_REAL_THIS, visitorParameter);
-    this.replaceTemplate(EMPTY_BODY, getRealThisMethod, new TemplateHookPoint(
-        SET_REAL_THIS_DELEGATOR_TEMPLATE, delegatorVisitorSimpleName, simpleVisitorType,
-        superVisitorNames, generatedErrorCode ));
-    return getRealThisMethod;
-  }
-
-  /**
    * Adds the attributes for all attachable visitors for the current traverser.
    * The available visitors result from the current language and its super
    * languages.
@@ -150,11 +107,11 @@ public class TraverserClassDecorator extends AbstractCreator<ASTCDCompilationUni
     // e.g. private Optional<automata._visitor.AutomataVisitor> automataVisitor = Optional.empty();
     List<ASTCDAttribute> attributeList = new ArrayList<>();
     for (CDDefinitionSymbol cd : cdSymbols) {
-      String simpleName = visitorService.getVisitorSimpleName(cd);
+      String simpleName = visitorService.getVisitorSimpleName(cd) + "List";
       ASTMCQualifiedType type = visitorService.getVisitor2Type(cd);
-      ASTCDAttribute visitorAttribute = getCDAttributeFacade().createAttribute(PRIVATE, getMCTypeFacade().createOptionalTypeOf(type),
+      ASTCDAttribute visitorAttribute = getCDAttributeFacade().createAttribute(PRIVATE, getMCTypeFacade().createListTypeOf(type),
           StringTransformations.uncapitalize(simpleName));
-      this.replaceTemplate(VALUE, visitorAttribute, new StringHookPoint("= Optional.empty();"));
+      this.replaceTemplate(VALUE, visitorAttribute, new StringHookPoint("= new ArrayList<>();"));
       attributeList.add(visitorAttribute);
     }
     return attributeList;
@@ -178,17 +135,17 @@ public class TraverserClassDecorator extends AbstractCreator<ASTCDCompilationUni
       // e.g. public void setAutomataVisitor(automata._visitor.AutomataVisitor visitor)
       ASTMCQualifiedType visitorType = visitorService.getVisitor2Type(cd);
       ASTCDParameter visitorParameter = getCDParameterFacade().createParameter(visitorType, StringTransformations.uncapitalize(simpleName));
-      ASTCDMethod setVisitorMethod = getCDMethodFacade().createMethod(PUBLIC, "set" + simpleName, visitorParameter);
-      this.replaceTemplate(EMPTY_BODY, setVisitorMethod, new TemplateHookPoint(
-          TRAVERSER_SET_VISITOR_TEMPLATE, simpleName));
-      methodList.add(setVisitorMethod);
+      ASTCDMethod addVisitorMethod = getCDMethodFacade().createMethod(PUBLIC, "add" + simpleName, visitorParameter);
+      this.replaceTemplate(EMPTY_BODY, addVisitorMethod, new TemplateHookPoint(
+          TRAVERSER_ADD_VISITOR_TEMPLATE, simpleName));
+      methodList.add(addVisitorMethod);
 
       // add getter for visitor attribute
       // e.g. public Optional<automata._visitor.AutomataVisitor> getAutomataVisitor()
-      ASTMCOptionalType optionalVisitorType = getMCTypeFacade().createOptionalTypeOf(visitorType);
-      ASTCDMethod getVisitorMethod = getCDMethodFacade().createMethod(PUBLIC, optionalVisitorType, "get" + simpleName);
+      ASTMCListType listVisitorType = getMCTypeFacade().createListTypeOf(visitorType);
+      ASTCDMethod getVisitorMethod = getCDMethodFacade().createMethod(PUBLIC, listVisitorType, "get" + simpleName + "List");
       this.replaceTemplate(EMPTY_BODY, getVisitorMethod,
-          new StringHookPoint("return " + StringTransformations.uncapitalize(simpleName) + ";"));
+          new StringHookPoint("return " + StringTransformations.uncapitalize(simpleName) + "List;"));
       methodList.add(getVisitorMethod);
     }
     return methodList;

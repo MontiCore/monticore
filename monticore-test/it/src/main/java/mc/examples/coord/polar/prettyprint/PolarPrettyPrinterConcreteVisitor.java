@@ -4,8 +4,7 @@ package mc.examples.coord.polar.prettyprint;
 
 import de.monticore.prettyprint.IndentPrinter;
 import mc.examples.polar.coordpolar._ast.ASTCoordinate;
-import mc.examples.polar.coordpolar._ast.ASTCoordpolarNode;
-import mc.examples.polar.coordpolar._visitor.CoordpolarVisitor;
+import mc.examples.polar.coordpolar._visitor.CoordpolarVisitor2;
 
 /**
  * This class is responsible for pretty-printing polar coordinates The Visitor
@@ -15,7 +14,7 @@ import mc.examples.polar.coordpolar._visitor.CoordpolarVisitor;
  * automatic traversal order and allow to explictly visit subtrees by calling
  * getVisitor().startVisit(ASTNode)
  */
-public class PolarPrettyPrinterConcreteVisitor implements CoordpolarVisitor {
+public class PolarPrettyPrinterConcreteVisitor implements CoordpolarVisitor2 {
   
   // printer to use
   private IndentPrinter p;
@@ -36,10 +35,6 @@ public class PolarPrettyPrinterConcreteVisitor implements CoordpolarVisitor {
    */
   public void visit(ASTCoordinate a) {
     p.print("[" + a.getD() + ";" + a.getPhi() + "] ");
-  }
-  
-  public void print(ASTCoordpolarNode ast) {
-    ast.accept(getRealThis());
   }
   
 }

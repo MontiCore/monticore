@@ -1,0 +1,34 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.codegen.parser;
+
+import de.monticore.codegen.ast.Lexicals.*;
+
+classdiagram Automaton {
+
+    public interface ASTAutomatonNode;
+
+    <<scope, symbol, startProd>> public class ASTAutomaton{
+      protected String name;
+      <<astType>> protected java.util.List<de.monticore.codegen.ast.automaton._ast.ASTState> states;
+      <<astType>> protected java.util.List<de.monticore.codegen.ast.automaton._ast.ASTTransition> transitions;
+    }
+
+    <<symbol>> public class ASTState{
+      protected String name;
+      <<astType>> protected java.util.List<de.monticore.codegen.ast.automaton._ast.ASTState> states;
+      <<astType>> protected java.util.List<de.monticore.codegen.ast.automaton._ast.ASTTransition> transitions;
+    }
+
+    public class ASTTransition{
+      protected String from;
+      protected String input;
+      protected String to;
+    }
+
+    public abstract class ASTAbstractClass {}
+
+    enum AutomatonLiterals{
+      FINAL,
+      INITIAL;
+    }
+}

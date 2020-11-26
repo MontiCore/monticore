@@ -27,10 +27,12 @@ public class OOSymbolsScopeDeSerTest {
 //    Log.enableFailQuick(false);
 
     //initialize scope, add some TypeSymbols, TypeVarSymbols, VariableSymbols and FunctionSymbols
-    scope = OOSymbolsMill.oOSymbolsArtifactScopeBuilder().setPackageName("").setImportsList(Lists.newArrayList()).build();
+    scope = OOSymbolsMill.artifactScope();
+    scope.setPackageName("");
+    scope.setImportsList(Lists.newArrayList());
     scope.setName("Test");
 
-    IOOSymbolsScope typeSpannedScope = OOSymbolsMill.oOSymbolsScopeBuilder().build();
+    IOOSymbolsScope typeSpannedScope = OOSymbolsMill.scope();
 
     //put type into main scope
     OOTypeSymbol type = OOSymbolsMill.oOTypeSymbolBuilder()
@@ -46,12 +48,12 @@ public class OOSymbolsScopeDeSerTest {
     //put subtype into main scope, test if supertypes are serialized correctly
     OOTypeSymbol subtype = OOSymbolsMill.oOTypeSymbolBuilder()
         .setName("SubType")
-        .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
+        .setSpannedScope(OOSymbolsMill.scope())
         .setEnclosingScope(scope)
         .setSuperTypesList(Lists.newArrayList(symType1))
         .build();
 
-    subtype.setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build());
+    subtype.setSpannedScope(OOSymbolsMill.scope());
 
     //put Variable variable into spanned scope of type
     FieldSymbol variable = OOSymbolsMill.fieldSymbolBuilder()
@@ -66,11 +68,11 @@ public class OOSymbolsScopeDeSerTest {
     MethodSymbol function = OOSymbolsMill.methodSymbolBuilder()
         .setName("function")
         .setEnclosingScope(type.getSpannedScope())
-        .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
+        .setSpannedScope(OOSymbolsMill.scope())
         .setReturnType(SymTypeExpressionFactory.createTypeConstant("int"))
         .build();
 
-    function.setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build());
+    function.setSpannedScope(OOSymbolsMill.scope());
 
     typeSpannedScope.add(function);
 

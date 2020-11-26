@@ -4,18 +4,20 @@ package automata;
 import automata._ast.ASTAutomaton;
 import automata._cocos.AutomataCoCoChecker;
 import automata._parser.AutomataParser;
+import automata._symboltable.AutomataSymbols2Json;
+import automata._symboltable.IAutomataArtifactScope;
+import automata._symboltable.StateSymbol;
+import automata._visitor.AutomataTraverser;
 import automata._symboltable.*;
 import automata.cocos.AtLeastOneInitialAndFinalState;
 import automata.cocos.StateNameStartsWithCapitalLetter;
 import automata.cocos.TransitionSourceExists;
 import automata.prettyprint.PrettyPrinter;
 import automata.visitors.CountStates;
-import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.RecognitionException;
-
+import automata.AutomataMill;
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.Optional;
 
 /**
@@ -94,18 +96,23 @@ public class AutomataTool {
     // Now we know the model is well-formed and start backend
 
     // store artifact scope and its symbols
-    AutomataScopeDeSer deser = new AutomataScopeDeSer();
+    AutomataSymbols2Json deser = new AutomataSymbols2Json();
     deser.store(modelTopScope, args[1]);
     Log.info("Symbol table stored in " + args[1] +".", "AutomataTool");
 
     // analyze the model with a visitor
     CountStates cs = new CountStates();
-    cs.handle(ast);
+    AutomataTraverser traverser = AutomataMill.traverser();
+    traverser.addAutomataVisitor(cs);
+    ast.accept(traverser);
     Log.info("Automaton has " + cs.getCount() + " states.", "AutomataTool");
 
     // execute a pretty printer
     PrettyPrinter pp = new PrettyPrinter();
-    pp.handle(ast);
+    AutomataTraverser traverser1 = AutomataMill.traverser();
+    traverser1.addAutomataVisitor(pp);
+    traverser1.setAutomataHandler(pp);
+    ast.accept(traverser1);
     Log.info("Pretty printing automaton into console:", "AutomataTool");
     // print the result
     Log.println(pp.getResult());
@@ -141,7 +148,7 @@ public class AutomataTool {
    * @return
    */
   public static IAutomataArtifactScope createSymbolTable(ASTAutomaton ast) {
-    AutomataMill.automataGlobalScope().setModelFileExtension("aut");
+    AutomataMill.globalScope().setFileExt("aut");
     return AutomataMill.automataSymbolTableCreator().createFromAST(ast);
   }
 

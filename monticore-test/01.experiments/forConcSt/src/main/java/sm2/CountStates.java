@@ -2,12 +2,12 @@
 package sm2;
 
 import sm2._ast.ASTState;
-import sm2._visitor.SM2Visitor;
+import sm2._visitor.SM2Visitor2;
 
 /**
  * Counts the states of an sm2.
  */
-public class CountStates implements SM2Visitor {
+public class CountStates implements SM2Visitor2 {
   private int count = 0;
   
   @Override

@@ -37,13 +37,13 @@ public class CombineExpressionsWithLiteralsTest {
   @Test
   public void testCD() throws IOException {
     LogStub.init();
-    ITestCD4AnalysisGlobalScope globalScope = TestCD4AnalysisMill.testCD4AnalysisGlobalScope();
+    ITestCD4AnalysisGlobalScope globalScope = TestCD4AnalysisMill.globalScope();
     globalScope.getModelPath().addEntry(Paths.get(MODEL_PATH));
-    globalScope.setModelFileExtension("cd");
+    globalScope.setFileExt("cd");
 
     CD2EAdapter adapter = new CD2EAdapter(globalScope);
     ICombineExpressionsWithLiteralsGlobalScope globalScope1 = CombineExpressionsWithLiteralsMill
-        .combineExpressionsWithLiteralsGlobalScope();
+        .globalScope();
     globalScope1.addAdaptedFieldSymbolResolver(adapter);
     globalScope1.addAdaptedOOTypeSymbolResolver(adapter);
     globalScope1.addAdaptedMethodSymbolResolver(adapter);

@@ -15,6 +15,7 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCSetType;
+import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -24,6 +25,8 @@ import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
+import static de.monticore.codegen.cd2java.DecorationHelper.GET_PREFIX;
+import static de.monticore.codegen.cd2java.DecorationHelper.SET_PREFIX;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.codegen.cd2java._symboltable.scope.GlobalScopeClassDecorator.LOAD;
 
@@ -145,10 +148,10 @@ public class GlobalScopeInterfaceDecorator
 
   protected List<ASTCDMethod> createModelFileExtensionAttributeMethods() {
     ASTCDMethod getMethod = getCDMethodFacade()
-        .createMethod(PUBLIC_ABSTRACT, getMCTypeFacade().createStringType(), "getModelFileExtension");
+        .createMethod(PUBLIC_ABSTRACT, getMCTypeFacade().createStringType(), GET_PREFIX + StringTransformations.capitalize(FILE_EXTENSION_VAR));
     ASTCDMethod setMethod = getCDMethodFacade()
-        .createMethod(PUBLIC_ABSTRACT, "setModelFileExtension",
-            getCDParameterFacade().createParameter(getMCTypeFacade().createStringType(), "modelFileExtension"));
+        .createMethod(PUBLIC_ABSTRACT, SET_PREFIX + StringTransformations.capitalize(FILE_EXTENSION_VAR),
+            getCDParameterFacade().createParameter(getMCTypeFacade().createStringType(), FILE_EXTENSION_VAR));
     return Lists.newArrayList(getMethod, setMethod);
   }
 

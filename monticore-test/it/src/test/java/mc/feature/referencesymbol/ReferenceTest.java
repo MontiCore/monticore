@@ -37,7 +37,7 @@ public class ReferenceTest {
     Log.enableFailQuick(false);
 
     // reset global scope
-    IReferenceGlobalScope globalScope = ReferenceMill.referenceGlobalScope();
+    IReferenceGlobalScope globalScope = ReferenceMill.globalScope();
     globalScope.clearLoadedFiles();
     for (IReferenceScope s : globalScope.getSubScopes()) {
       globalScope.removeSubScope(s);
@@ -52,7 +52,7 @@ public class ReferenceTest {
     assertFalse(parser.hasErrors());
     assertTrue(astRand.isPresent());
     //create symboltable
-    globalScope.setModelFileExtension("ref");
+    globalScope.setFileExt("ref");
     globalScope.getModelPath().addEntry(Paths.get("src/test/resources/mc/feature/referencesymbol"));
 
     IReferenceArtifactScope artifactScope = ReferenceMill
