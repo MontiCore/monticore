@@ -10,7 +10,7 @@ import org.junit.Test;
 public class OverridingNTsHaveNoSuperRulesTest extends CocoTest{
 
   private final String MESSAGE =  " The production QualifiedName overriding a production of " +
-          "a super grammar must not extend the production Name.\n" +
+          "a sub grammar must not extend the production Name.\n" +
           "Hint: Overriding productions can only implement interfaces.";
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
   private final String grammar = "cocos.invalid.A4001.A4001";
