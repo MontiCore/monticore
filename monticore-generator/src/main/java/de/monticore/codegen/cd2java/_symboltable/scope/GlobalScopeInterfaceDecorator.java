@@ -105,6 +105,7 @@ public class GlobalScopeInterfaceDecorator
         .addCDMethod(createClearLoadedFilesMethod())
         .addCDMethod(createIsFileLoadedMethod())
         .addCDMethod(createClearMethod())
+        .addCDMethod(createInitMethod())
         .addCDMethod(createSetModelPathMethod())
         .build();
   }
@@ -357,6 +358,10 @@ public class GlobalScopeInterfaceDecorator
 
   protected ASTCDMethod createClearMethod(){
     return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, "clear");
+  }
+
+  protected ASTCDMethod createInitMethod(){
+    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, "init");
   }
 
   protected ASTCDMethod createSetModelPathMethod(){
