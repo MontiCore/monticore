@@ -1,19 +1,7 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("loaderAttributeName", "attributeName", "attributeType")}
-    for (String name : ${attributeName}) {
-        if (!${loaderAttributeName}.containsKey(name)) {
-            ${attributeType} attr = new ${attributeType}(name);
-            attr.setEnclosingScope(this.getEnclosingScope());
-            ${loaderAttributeName}.put(name, attr);
-        }
-        ${attributeType} loader = ${loaderAttributeName}.get(name);
-        if (loader == null) {
-            ${attributeType} attr = new ${attributeType}(name);
-            attr.setEnclosingScope(this.getEnclosingScope());
-            ${loaderAttributeName}.put(name, attr);
-        } else if (!loader.getName().equals(name)) {
-            loader.setName(name);
-        } else if (getEnclosingScope() != null && !getEnclosingScope().equals(loader.getEnclosingScope())) {
-            loader.setEnclosingScope(getEnclosingScope());
-        }
-    }
+${tc.signature("symbolName", "attributeName", "symbolType")}
+for (String name : ${attributeName}) {
+  if (!${symbolName}.containsKey(name)) {
+    ${symbolName}.put(name, getEnclosingScope().resolve${symbolType}(get${attributeName?cap_first}()));
+  }
+}

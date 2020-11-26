@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("attributeName", "referencedSymbol", "simpleSymbolName")}
-    update${attributeName?cap_first}Surrogate();
+    update${attributeName?cap_first}();
     java.util.List<Optional<${referencedSymbol}>> temp = new java.util.ArrayList<>();
         if (getEnclosingScope() != null) {
             for (String element : this.${simpleSymbolName}) {
