@@ -384,6 +384,8 @@ public class GlobalScopeInterfaceDecorator
     ASTCDMethod getMethod = getCDMethodFacade().createMethod(PUBLIC, returnType, "getDeSer", key);
     deSerMapMethods.add(getMethod);
 
+    deSerMapMethods.forEach(x -> x.getModifier().setAbstract(true));
+
     return deSerMapMethods;
   }
 
