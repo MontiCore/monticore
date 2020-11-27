@@ -1,12 +1,15 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("symTabMill", "simpleName", "cdName", "superSymTabCreators")}
+${tc.signature("mill", "simpleName", "cdName", "superSymTabCreators")}
   this.scopeStack.push(globalScope);
   this.globalScope = globalScope;
+  this.traverser = ${mill}.traverser();
 <#list superSymTabCreators?keys as name>
   ${superSymTabCreators[name]} ${name?uncap_first}ScopesGenitor = new ${superSymTabCreators[name]}(scopeStack);
-  set${name}Visitor(${name?uncap_first}ScopesGenitor);
+  traverser.add${name}Visitor(${name?uncap_first}ScopesGenitor);
+  traverser.set${name}Handler(${name?uncap_first}ScopesGenitor);
 
 </#list>
-  symbolTable = ${symTabMill}.scopesGenitor();
+  symbolTable = ${mill}.scopesGenitor();
   symbolTable.set${simpleName}ScopeStack(scopeStack);
-  set${cdName}Visitor(symbolTable);
+  traverser.add${cdName}Visitor(symbolTable);
+  traverser.set${cdName}Handler(symbolTable);

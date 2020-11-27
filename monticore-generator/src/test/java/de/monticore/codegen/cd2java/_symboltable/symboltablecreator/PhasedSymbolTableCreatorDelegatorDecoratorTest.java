@@ -50,7 +50,7 @@ public class PhasedSymbolTableCreatorDelegatorDecoratorTest extends DecoratorTes
 
   private static final String AUTOMATON_SCOPES_GENITOR_DELEGATOR = "AutomatonScopesGenitorDelegator";
 
-  private static final String AUTOMATON_VISITOR = "de.monticore.codegen.symboltable.automaton._visitor.AutomatonVisitor";
+  private static final String AUTOMATON_TRAVERSER = "de.monticore.codegen.symboltable.automaton._visitor.AutomatonTraverser";
 
   private static final String AST_AUTOMATON = "de.monticore.codegen.symboltable.automaton._ast.ASTAutomaton";
 
@@ -151,7 +151,7 @@ public class PhasedSymbolTableCreatorDelegatorDecoratorTest extends DecoratorTes
   public void testPriorityListAttribute(){
     ASTCDAttribute attribute = getAttributeBy("priorityList", phasedSTCClass);
     assertDeepEquals(CDModifier.PROTECTED, attribute.getModifier());
-    ASTMCType type = mcTypeFacade.createListTypeOf(AUTOMATON_VISITOR);
+    ASTMCType type = mcTypeFacade.createListTypeOf(AUTOMATON_TRAVERSER);
     assertDeepEquals(type, attribute.getMCType());
   }
 

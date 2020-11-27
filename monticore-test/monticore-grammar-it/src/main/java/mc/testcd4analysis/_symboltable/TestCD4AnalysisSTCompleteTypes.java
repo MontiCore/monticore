@@ -7,27 +7,16 @@ import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.prettyprint.MCCollectionTypesPrettyPrinter;
 import mc.testcd4analysis._ast.*;
 import mc.testcd4analysis._visitor.TestCD4AnalysisVisitor;
+import mc.testcd4analysis._visitor.TestCD4AnalysisVisitor2;
 
 import java.util.Deque;
 import java.util.List;
 
-public class TestCD4AnalysisSTCompleteTypes implements TestCD4AnalysisVisitor {
+public class TestCD4AnalysisSTCompleteTypes implements TestCD4AnalysisVisitor2 {
 
-  private TestCD4AnalysisVisitor realThis;
   protected Deque<? extends ITestCD4AnalysisScope> scopeStack;
 
-  @Override
-  public TestCD4AnalysisVisitor getRealThis() {
-    return realThis;
-  }
-
-  @Override
-  public void setRealThis(TestCD4AnalysisVisitor realThis) {
-    this.realThis = realThis;
-  }
-
   public TestCD4AnalysisSTCompleteTypes(Deque<? extends ITestCD4AnalysisScope> scopeStack){
-    this.realThis = this;
     this.scopeStack = scopeStack;
   }
 
