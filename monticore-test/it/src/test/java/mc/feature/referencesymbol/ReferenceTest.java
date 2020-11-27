@@ -57,13 +57,14 @@ public class ReferenceTest {
 
     IReferenceArtifactScope artifactScope = ReferenceMill
         .referenceSymbolTableCreatorDelegator().createFromAST(astRand.get());
+    artifactScope.setName("ReferenceTest");
 
     Optional<? extends IReferenceScope> scopeOpt = artifactScope.getSubScopes().stream().findAny();
     assertTrue(scopeOpt.isPresent());
     IReferenceScope innerScope = scopeOpt.get();
 
-    Optional<TestSymbol> a = globalScope.resolveTest("ReferenceTest.ReferenceTest.A");
-    Optional<TestSymbol> b = artifactScope.resolveTest("ReferenceTest.ReferenceTest.B");
+    Optional<TestSymbol> a = globalScope.resolveTest("ReferenceTest.A");
+    Optional<TestSymbol> b = artifactScope.resolveTest("ReferenceTest.B");
     Optional<TestSymbol> c = innerScope.resolveTest("C");
 
     assertTrue(a.isPresent());

@@ -165,7 +165,7 @@ public class ArtifactScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(8, scopeClass.getCDMethodList().size());
+    assertEquals(9, scopeClass.getCDMethodList().size());
   }
 
   @Test

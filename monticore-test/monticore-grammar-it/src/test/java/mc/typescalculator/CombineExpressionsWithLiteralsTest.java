@@ -51,10 +51,10 @@ public class CombineExpressionsWithLiteralsTest {
     globalScope1.addAdaptedVariableSymbolResolver(adapter);
     globalScope1.addAdaptedTypeSymbolResolver(adapter);
 
-    Optional<OOTypeSymbol> classD = globalScope1.resolveOOType("mc.typescalculator.TestCD.TestCD.D");
+    Optional<OOTypeSymbol> classD = globalScope1.resolveOOType("mc.typescalculator.TestCD.D");
     assertTrue(classD.isPresent());
 
-    Optional<OOTypeSymbol> classB = globalScope1.resolveOOType("mc.typescalculator.TestCD.TestCD.B");
+    Optional<OOTypeSymbol> classB = globalScope1.resolveOOType("mc.typescalculator.TestCD.B");
     assertTrue(classB.isPresent());
 
     OOTypeSymbol dSurrogate = new OOTypeSymbolSurrogate("D");
@@ -85,7 +85,7 @@ public class CombineExpressionsWithLiteralsTest {
     assertTrue(j.isPresent());
     assertEquals("int", unbox(j.get().print()));
 
-    Optional<ASTExpression> exprC = p.parse_StringExpression("d.f = mc.typescalculator.TestCD.TestCD.C.f");
+    Optional<ASTExpression> exprC = p.parse_StringExpression("d.f = mc.typescalculator.TestCD.C.f");
     assertTrue(exprC.isPresent());
     del.createFromAST(exprC.get());
     j = calc.calculateType(exprC.get());
@@ -99,7 +99,7 @@ public class CombineExpressionsWithLiteralsTest {
     assertTrue(j3.isPresent());
     assertEquals("double",j3.get().print());
 
-    Optional<ASTExpression> exprB = p.parse_StringExpression("b.x = mc.typescalculator.TestCD.TestCD.B.z");
+    Optional<ASTExpression> exprB = p.parse_StringExpression("b.x = mc.typescalculator.TestCD.B.z");
     assertTrue(exprB.isPresent());
     del.createFromAST(exprB.get());
 

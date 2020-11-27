@@ -64,6 +64,7 @@ public class SupReferenceTest {
     SupGrammarRefSymbolTableCreatorDelegator symbolTableCreator = SupGrammarRefMill
         .supGrammarRefSymbolTableCreatorDelegator();
     ISupGrammarRefArtifactScope artifact = symbolTableCreator.createFromAST(astsupRand);
+    artifact.setName("SupReferenceModel");
     Optional<? extends ISupGrammarRefScope> scopeOpt = artifact.getSubScopes().stream().findAny();
     assertTrue(scopeOpt.isPresent());
     ISupGrammarRefScope innerScope = scopeOpt.get();

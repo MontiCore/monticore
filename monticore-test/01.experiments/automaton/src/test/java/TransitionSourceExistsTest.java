@@ -66,7 +66,7 @@ public class TransitionSourceExistsTest {
     modelTopScope.setName("Simple");
 
     // can be used for resolving names in the model
-    Optional<StateSymbol> aSymbol = modelTopScope.resolveState("Simple.Simple.A");
+    Optional<StateSymbol> aSymbol = modelTopScope.resolveState("Simple.A");
     assertTrue(aSymbol.isPresent());
     assertEquals("A", aSymbol.get().getName());
     ASTNode n = aSymbol.get().getAstNode();

@@ -1,13 +1,16 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-  final com.google.common.collect.FluentIterable<String> packageASNameParts = com.google.common.collect.FluentIterable
-  .from(de.se_rwth.commons.Splitters.DOT.omitEmptyStrings().split(getFullName()));
-
-  final com.google.common.collect.FluentIterable<String> symbolNameParts = com.google.common.collect.FluentIterable
-    .from(de.se_rwth.commons.Splitters.DOT.split(symbolName));
-  String remainingSymbolName = symbolName;
-
-  if (symbolNameParts.size() > packageASNameParts.size()) {
-    remainingSymbolName = de.se_rwth.commons.Joiners.DOT.join(symbolNameParts.skip(packageASNameParts.size()));
+  List<String> remainingSymbolNames = new ArrayList<>();
+  String packageAS = this.getPackageName();
+  if(symbolName.startsWith(packageAS)){
+    if(!packageAS.equals("")){
+      symbolName = symbolName.substring(packageAS.length()+1);
+    }
+    String asName = this.getName();
+    remainingSymbolNames.add(symbolName);
+    if(symbolName.startsWith(asName) && symbolName.contains(".")){
+      symbolName = symbolName.substring(asName.length()+1);
+      remainingSymbolNames.add(symbolName);
+    }
   }
 
-  return remainingSymbolName;
+  return remainingSymbolNames;
