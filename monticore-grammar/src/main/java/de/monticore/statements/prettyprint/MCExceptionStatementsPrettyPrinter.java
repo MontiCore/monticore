@@ -5,31 +5,52 @@ package de.monticore.statements.prettyprint;
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.statements.mcexceptionstatements._ast.*;
-import de.monticore.statements.mcexceptionstatements._visitor.MCExceptionStatementsVisitor;
+import de.monticore.statements.mcexceptionstatements._visitor.MCExceptionStatementsHandler;
+import de.monticore.statements.mcexceptionstatements._visitor.MCExceptionStatementsTraverser;
+import de.monticore.statements.mcexceptionstatements._visitor.MCExceptionStatementsVisitor2;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
 
 import java.util.Iterator;
 
-public class MCExceptionStatementsPrettyPrinter extends MCCommonStatementsPrettyPrinter implements
-        MCExceptionStatementsVisitor {
+public class MCExceptionStatementsPrettyPrinter implements
+    MCExceptionStatementsVisitor2, MCExceptionStatementsHandler {
 
-
-  private MCExceptionStatementsVisitor realThis = this;
+  protected MCExceptionStatementsTraverser traverser;
+  
+  protected IndentPrinter printer;
 
   public MCExceptionStatementsPrettyPrinter(IndentPrinter out) {
-    super(out);
+    this.printer = out;
+  }
+
+  @Override
+  public MCExceptionStatementsTraverser getTraverser() {
+    return traverser;
+  }
+
+  @Override
+  public void setTraverser(MCExceptionStatementsTraverser traverser) {
+    this.traverser = traverser;
+  }
+
+  public IndentPrinter getPrinter() {
+    return printer;
+  }
+
+  public void setPrinter(IndentPrinter printer) {
+    this.printer = printer;
   }
 
   @Override
   public void handle(ASTTryStatement1 a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     getPrinter().println("try ");
-    a.getCore().accept(getRealThis());
+    a.getCore().accept(getTraverser());
     printExceptionStatementsList(a.getCatchClauseList().iterator(), "");
     getPrinter().println();
     if (a.isPresentFinally()) {
       getPrinter().print(" finally ");
-      a.getFinally().accept(getRealThis());
+      a.getFinally().accept(getTraverser());
     }
     getPrinter().println();
     CommentPrettyPrinter.printPostComments(a, getPrinter());
@@ -39,11 +60,11 @@ public class MCExceptionStatementsPrettyPrinter extends MCCommonStatementsPretty
   public void handle(ASTTryStatement2 a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     getPrinter().println("try ");
-    a.getCore().accept(getRealThis());
+    a.getCore().accept(getTraverser());
     printExceptionStatementsList(a.getCatchClauseList().iterator(), "");
     getPrinter().println();
     getPrinter().print(" finally ");
-    a.getFinally().accept(getRealThis());
+    a.getFinally().accept(getTraverser());
     getPrinter().println();
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
@@ -56,15 +77,15 @@ public class MCExceptionStatementsPrettyPrinter extends MCCommonStatementsPretty
     for (ASTTryLocalVariableDeclaration l: a.getTryLocalVariableDeclarationList()) {
       getPrinter().print(sep);
       sep = "; ";
-      l.accept(getRealThis());
+      l.accept(getTraverser());
     }
     getPrinter().print(")");
-    a.getCore().accept(getRealThis());
+    a.getCore().accept(getTraverser());
     printExceptionStatementsList(a.getCatchClauseList().iterator(), "");
     getPrinter().println();
     if (a.isPresentFinally()) {
       getPrinter().print(" finally ");
-      a.getFinally().accept(getRealThis());
+      a.getFinally().accept(getTraverser());
     }
     getPrinter().println();
     CommentPrettyPrinter.printPostComments(a, getPrinter());
@@ -73,12 +94,12 @@ public class MCExceptionStatementsPrettyPrinter extends MCCommonStatementsPretty
   @Override
   public void handle(ASTTryLocalVariableDeclaration a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
-    a.getJavaModifierList().stream().forEach(m -> {m.accept(getRealThis()); getPrinter().print(" ");});
-    a.getMCType().accept(getRealThis());
+    a.getJavaModifierList().stream().forEach(m -> {m.accept(getTraverser()); getPrinter().print(" ");});
+    a.getMCType().accept(getTraverser());
     getPrinter().print(" ");
-    a.getDeclaratorId().accept(getRealThis());
+    a.getDeclaratorId().accept(getTraverser());
     getPrinter().print(" = ");
-    a.getExpression().accept(getRealThis());
+    a.getExpression().accept(getTraverser());
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
 
@@ -87,7 +108,7 @@ public class MCExceptionStatementsPrettyPrinter extends MCCommonStatementsPretty
   public void handle(ASTThrowStatement a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     getPrinter().print("throw ");
-    a.getExpression().accept(getRealThis());
+    a.getExpression().accept(getTraverser());
     getPrinter().println(";");
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
@@ -96,12 +117,12 @@ public class MCExceptionStatementsPrettyPrinter extends MCCommonStatementsPretty
   public void handle(ASTCatchClause a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     getPrinter().print("catch (");
-    a.getJavaModifierList().stream().forEach(m -> {m.accept(getRealThis()); getPrinter().print(" ");});
-    a.getCatchTypeList().accept(getRealThis());
+    a.getJavaModifierList().stream().forEach(m -> {m.accept(getTraverser()); getPrinter().print(" ");});
+    a.getCatchTypeList().accept(getTraverser());
     getPrinter().print(" ");
     getPrinter().print(a.getName());
     getPrinter().print(") ");
-    a.getMCJavaBlock().accept(getRealThis());
+    a.getMCJavaBlock().accept(getTraverser());
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
 
@@ -111,7 +132,7 @@ public class MCExceptionStatementsPrettyPrinter extends MCCommonStatementsPretty
     String sep = "";
     for (ASTMCQualifiedName q: a.getMCQualifiedNameList()) {
       getPrinter().print(sep);
-      q.accept(getRealThis());
+      q.accept(getTraverser());
       sep = "|";
     }
     CommentPrettyPrinter.printPostComments(a, getPrinter());
@@ -123,33 +144,9 @@ public class MCExceptionStatementsPrettyPrinter extends MCCommonStatementsPretty
     String sep = "";
     while (iter.hasNext()) {
       getPrinter().print(sep);
-      iter.next().accept(getRealThis());
+      iter.next().accept(getTraverser());
       sep = separator;
     }
-  }
-
-
-  /**
-   * This method prettyprints a given node from Java.
-   *
-   * @param a A node from Java.
-   * @return String representation.
-   */
-  public String prettyprint(ASTMCExceptionStatementsNode a) {
-    getPrinter().clearBuffer();
-    a.accept(getRealThis());
-    return getPrinter().getContent();
-  }
-
-
-  @Override
-  public void setRealThis(MCExceptionStatementsVisitor realThis) {
-    this.realThis = realThis;
-  }
-
-  @Override
-  public MCExceptionStatementsVisitor getRealThis() {
-    return realThis;
   }
   
   

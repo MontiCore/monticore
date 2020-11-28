@@ -20,7 +20,7 @@ public class MCReturnStatementsPrettyPrinterTest  {
 
   private TestMCReturnStatementsParser parser = new TestMCReturnStatementsParser();
 
-  private MCReturnStatementsPrettyPrinter prettyPrinter = new MCReturnStatementsPrettyPrinter(new IndentPrinter());
+  private MCReturnStatementsFullPrettyPrinter prettyPrinter = new MCReturnStatementsFullPrettyPrinter(new IndentPrinter());
 
   @BeforeClass
   public static void setUp() {

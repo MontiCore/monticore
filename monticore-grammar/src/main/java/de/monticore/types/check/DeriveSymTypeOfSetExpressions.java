@@ -7,10 +7,11 @@ import de.monticore.expressions.setexpressions._ast.ASTIntersectionExpressionInf
 import de.monticore.expressions.setexpressions._ast.ASTIsInExpression;
 import de.monticore.expressions.setexpressions._ast.ASTSetInExpression;
 import de.monticore.expressions.setexpressions._ast.ASTUnionExpressionInfix;
-import de.monticore.expressions.setexpressions._visitor.SetExpressionsVisitor;
+import de.monticore.expressions.setexpressions._visitor.SetExpressionsHandler;
+import de.monticore.expressions.setexpressions._visitor.SetExpressionsTraverser;
+import de.monticore.expressions.setexpressions._visitor.SetExpressionsVisitor2;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
-import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolSurrogate;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,24 +24,20 @@ import static de.monticore.types.check.TypeCheck.isSubtypeOf;
  * This Visitor can calculate a SymTypeExpression (type) for the expressions in SetExpressions
  * It can be combined with other expressions in your language by creating a DelegatorVisitor
  */
-public class DeriveSymTypeOfSetExpressions extends DeriveSymTypeOfExpression implements SetExpressionsVisitor {
+public class DeriveSymTypeOfSetExpressions extends AbstractDeriveFromExpression implements SetExpressionsVisitor2, SetExpressionsHandler {
 
-    private SetExpressionsVisitor realThis;
+    protected SetExpressionsTraverser traverser;
 
     protected final List<String> collections = Lists.newArrayList("List", "Set");
 
-    public DeriveSymTypeOfSetExpressions() {
-        this.realThis = this;
+    @Override
+    public SetExpressionsTraverser getTraverser() {
+        return traverser;
     }
 
     @Override
-    public void setRealThis(SetExpressionsVisitor realThis) {
-        this.realThis = realThis;
-    }
-
-    @Override
-    public SetExpressionsVisitor getRealThis() {
-        return realThis;
+    public void setTraverser(SetExpressionsTraverser traverser) {
+        this.traverser = traverser;
     }
 
     @Override

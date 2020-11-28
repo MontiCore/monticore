@@ -3,7 +3,7 @@ package de.monticore.types.check;
 
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisScope;
-import de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisVisitor;
+import de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisVisitor2;
 import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
 import de.se_rwth.commons.logging.Log;
 
@@ -13,7 +13,7 @@ import de.se_rwth.commons.logging.Log;
  * i.e. for
  *    literals/MCLiteralsBasis.mc4
  */
-public class DeriveSymTypeOfLiterals implements MCLiteralsBasisVisitor {
+public class DeriveSymTypeOfLiterals implements MCLiteralsBasisVisitor2 {
 
   public IOOSymbolsScope getScope (IMCLiteralsBasisScope mcLiteralsBasisScope){
     // is accepted only here, decided on 07.04.2020
@@ -23,38 +23,20 @@ public class DeriveSymTypeOfLiterals implements MCLiteralsBasisVisitor {
     // is accepted only here, decided on 07.04.2020
     return (IOOSymbolsScope) mcLiteralsBasisScope;
   }
-  
-  // ----------------------------------------------------------  realThis start
-  // setRealThis, getRealThis are necessary to make the visitor compositional
-  //
-  // (the Vistors are then composed using theRealThis Pattern)
-  //
-  MCLiteralsBasisVisitor realThis = this;
-  
-  @Override
-  public void setRealThis(MCLiteralsBasisVisitor realThis) {
-    this.realThis = realThis;
-  }
-  
-  @Override
-  public MCLiteralsBasisVisitor getRealThis() {
-    return realThis;
-  }
-  
-  // ---------------------------------------------------------- Storage result
+
   
   /**
    * Storage in the Visitor: result of the last endVisit.
    * This attribute is synthesized upward.
    */
-  protected TypeCheckResult result;
+  protected TypeCheckResult typeCheckResult;
   
   public TypeCheckResult getTypeCheckResult() {
-    return result;
+    return typeCheckResult;
   }
   
   public void init() {
-    result = new TypeCheckResult();
+    typeCheckResult = new TypeCheckResult();
   }
 
   
@@ -72,6 +54,6 @@ public class DeriveSymTypeOfLiterals implements MCLiteralsBasisVisitor {
   }
 
   public void setTypeCheckResult(TypeCheckResult result) {
-    this.result = result;
+    this.typeCheckResult = result;
   }
 }

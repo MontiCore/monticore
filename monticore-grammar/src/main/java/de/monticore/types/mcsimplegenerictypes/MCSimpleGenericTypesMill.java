@@ -8,7 +8,7 @@ package de.monticore.types.mcsimplegenerictypes;
 
 
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.types.prettyprint.MCSimpleGenericTypesPrettyPrinter;
+import de.monticore.types.prettyprint.MCSimpleGenericTypesFullPrettyPrinter;
 
 /**
  * Extension of the generated Mill to provide a (currently handcrafted)
@@ -18,14 +18,14 @@ public  class MCSimpleGenericTypesMill extends MCSimpleGenericTypesMillTOP {
   
   private static MCSimpleGenericTypesMill mcSimpleGenericTypesPrettyPrinter;
   
-  private static MCSimpleGenericTypesPrettyPrinter prettyPrinter;
+  private static MCSimpleGenericTypesFullPrettyPrinter prettyPrinter;
   
   /**
    * Static getter for the pretty printer that delegates to the non static implementation.
    * Only one pretty printer object is created and reused.
    * @return the pretty printer instance
    */
-  public  static MCSimpleGenericTypesPrettyPrinter mcSimpleGenericTypesPrettyPrinter ()  {
+  public  static MCSimpleGenericTypesFullPrettyPrinter mcSimpleGenericTypesPrettyPrinter ()  {
     
     if (mcSimpleGenericTypesPrettyPrinter == null) {
       mcSimpleGenericTypesPrettyPrinter = getMill();
@@ -38,7 +38,7 @@ public  class MCSimpleGenericTypesMill extends MCSimpleGenericTypesMillTOP {
   }
   
   
-  protected MCSimpleGenericTypesPrettyPrinter _mcSimpleGenericTypesPrettyPrinter () {
+  protected MCSimpleGenericTypesFullPrettyPrinter _mcSimpleGenericTypesPrettyPrinter () {
     
     if (mcSimpleGenericTypesPrettyPrinter == null) {
       mcSimpleGenericTypesPrettyPrinter = getMill();
@@ -51,7 +51,7 @@ public  class MCSimpleGenericTypesMill extends MCSimpleGenericTypesMillTOP {
     return prettyPrinter;
   }
   
-  private static MCSimpleGenericTypesPrettyPrinter getPrettyPrinter() {
-    return new MCSimpleGenericTypesPrettyPrinter(new IndentPrinter());
+  private static MCSimpleGenericTypesFullPrettyPrinter getPrettyPrinter() {
+    return new MCSimpleGenericTypesFullPrettyPrinter(new IndentPrinter());
   }
 }

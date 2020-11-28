@@ -7,29 +7,30 @@ import de.monticore.expressions.expressionsbasis._ast.ASTArguments;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
-import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisitor;
+import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisHandler;
+import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisTraverser;
+import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisitor2;
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 
-public class ExpressionsBasisPrettyPrinter implements ExpressionsBasisVisitor {
+public class ExpressionsBasisPrettyPrinter implements ExpressionsBasisVisitor2, ExpressionsBasisHandler {
 
-  protected ExpressionsBasisVisitor realThis;
+  protected ExpressionsBasisTraverser traverser;
+
+  @Override
+  public void setTraverser(ExpressionsBasisTraverser traverser) {
+    this.traverser = traverser;
+  }
+
+  @Override
+  public ExpressionsBasisTraverser getTraverser() {
+    return traverser;
+  }
 
   protected IndentPrinter printer;
 
   public ExpressionsBasisPrettyPrinter(IndentPrinter printer) {
     this.printer = printer;
-    realThis = this;
-  }
-
-  @Override
-  public void setRealThis(ExpressionsBasisVisitor realThis) {
-    this.realThis = realThis;
-  }
-
-  @Override
-  public ExpressionsBasisVisitor getRealThis() {
-    return realThis;
   }
 
   public IndentPrinter getPrinter() {
@@ -46,7 +47,7 @@ public class ExpressionsBasisPrettyPrinter implements ExpressionsBasisVisitor {
   @Override
   public void handle(ASTLiteralExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getLiteral().accept(getRealThis());
+    node.getLiteral().accept(getTraverser());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
 
@@ -60,7 +61,7 @@ public class ExpressionsBasisPrettyPrinter implements ExpressionsBasisVisitor {
         if (count > 0) {
           getPrinter().print(",");
         }
-        ast.accept(getRealThis());
+        ast.accept(getTraverser());
         count++;
       }
     }
@@ -70,7 +71,7 @@ public class ExpressionsBasisPrettyPrinter implements ExpressionsBasisVisitor {
 
   public String prettyprint(ASTExpression node) {
     getPrinter().clearBuffer();
-    node.accept(getRealThis());
+    node.accept(getTraverser());
     return getPrinter().getContent();
   }
 }

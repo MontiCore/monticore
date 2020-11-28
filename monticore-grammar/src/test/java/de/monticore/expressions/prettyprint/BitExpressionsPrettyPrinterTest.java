@@ -22,7 +22,7 @@ public class BitExpressionsPrettyPrinterTest {
 
   private TestBitExpressionsParser parser = new TestBitExpressionsParser();
 
-  private BitExpressionsPrettyPrinter prettyPrinter= new BitExpressionsPrettyPrinter(new IndentPrinter());
+  private BitExpressionsFullPrettyPrinter prettyPrinter= new BitExpressionsFullPrettyPrinter(new IndentPrinter());
 
   @BeforeClass
   public static void setUp() {

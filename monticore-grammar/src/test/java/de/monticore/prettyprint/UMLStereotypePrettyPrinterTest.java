@@ -11,7 +11,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.prettyprint.UMLStereotypePrettyPrinter;
+import de.monticore.prettyprint.UMLStereotypeFullPrettyPrinter;
 import de.monticore.testumlstereotype._parser.TestUMLStereotypeParser;
 import de.monticore.umlstereotype._ast.ASTStereoValue;
 import de.monticore.umlstereotype._ast.ASTStereotype;
@@ -40,7 +40,7 @@ public class UMLStereotypePrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTStereotype stereotype = result.get();
     
-    UMLStereotypePrettyPrinter prettyPrinter = new UMLStereotypePrettyPrinter(new IndentPrinter());
+    UMLStereotypeFullPrettyPrinter prettyPrinter = new UMLStereotypeFullPrettyPrinter(new IndentPrinter());
     String output = prettyPrinter.prettyprint(stereotype);
     
     result = parser.parseStereotype(new StringReader(output));
@@ -58,7 +58,7 @@ public class UMLStereotypePrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTStereoValue stereovalue = result.get();
     
-    UMLStereotypePrettyPrinter prettyPrinter = new UMLStereotypePrettyPrinter(new IndentPrinter());
+    UMLStereotypeFullPrettyPrinter prettyPrinter = new UMLStereotypeFullPrettyPrinter(new IndentPrinter());
     String output = prettyPrinter.prettyprint(stereovalue);
     result = parser.parseStereoValue(new StringReader(output));
     

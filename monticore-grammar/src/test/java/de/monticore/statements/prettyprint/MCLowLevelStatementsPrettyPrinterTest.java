@@ -22,7 +22,7 @@ public class MCLowLevelStatementsPrettyPrinterTest  {
 
   private TestMCLowLevelStatementsParser parser = new TestMCLowLevelStatementsParser();
 
-  private MCLowLevelStatementsPrettyPrinter prettyPrinter = new MCLowLevelStatementsPrettyPrinter(new IndentPrinter());
+  private MCLowLevelStatementsFullPrettyPrinter prettyPrinter = new MCLowLevelStatementsFullPrettyPrinter(new IndentPrinter());
 
   @BeforeClass
   public static void setUp() {

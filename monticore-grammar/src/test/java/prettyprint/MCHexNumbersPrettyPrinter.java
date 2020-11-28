@@ -5,16 +5,30 @@ import de.monticore.prettyprint.IndentPrinter;
 import mchexnumbers._ast.ASTHexInteger;
 import mchexnumbers._ast.ASTHexadecimal;
 import mchexnumbers._ast.ASTMCHexNumbersNode;
-import mchexnumbers._visitor.MCHexNumbersVisitor;
+import mchexnumbers._visitor.MCHexNumbersHandler;
+import mchexnumbers._visitor.MCHexNumbersTraverser;
+import mchexnumbers._visitor.MCHexNumbersVisitor2;
 
-public class MCHexNumbersPrettyPrinter implements MCHexNumbersVisitor {
-  
+public class MCHexNumbersPrettyPrinter implements MCHexNumbersVisitor2, MCHexNumbersHandler {
+
+  protected MCHexNumbersTraverser traverser;
+
   private IndentPrinter printer = null;
   
   public MCHexNumbersPrettyPrinter(IndentPrinter printer) {
     this.printer = printer;
   }
-  
+
+  @Override
+  public MCHexNumbersTraverser getTraverser() {
+    return traverser;
+  }
+
+  @Override
+  public void setTraverser(MCHexNumbersTraverser traverser) {
+    this.traverser = traverser;
+  }
+
   @Override
   public void handle(ASTHexadecimal node) {
     getPrinter().print(node.getSource());
@@ -34,7 +48,7 @@ public class MCHexNumbersPrettyPrinter implements MCHexNumbersVisitor {
   
   public String prettyprint(ASTMCHexNumbersNode node) {
     getPrinter().clearBuffer();
-    node.accept(getRealThis());
+    node.accept(getTraverser());
     return getPrinter().getContent();
   }
 }
