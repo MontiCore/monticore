@@ -15,9 +15,10 @@ and most importandly, these
 extensions and the grammar composition are compatible, which
 leads to optimal forms of **reuse**.
 
-The following is a list of language components, mainly defined through a 
-primary grammar plus associated Java- and Template-Files, 
-available in the *MontiCore* core project 
+The following is a library of language components
+that the core MontiCore project provides, mainly defined through a 
+primary grammar plus associated Java- and Template-Files. 
+These are available in the *MontiCore* core project 
 together with short descriptions and their status 
 ([Status of Grammars](../../../../../../00.org/Explanations/StatusOfGrammars.md)).
 
@@ -31,7 +32,7 @@ project under `monticore-grammar/src/main/grammars/` in packages
 * `de.monticore.symbols`
 * `de.monticore.types`
 
-For [more langauges, see here](../../../../../../docs/Languages.md).
+For [more langauges and language components, see here](../../../../../../docs/Languages.md).
 
 
 Table of Contents:
