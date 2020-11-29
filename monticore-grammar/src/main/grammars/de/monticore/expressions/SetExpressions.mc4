@@ -25,6 +25,7 @@ import de.monticore.expressions.*;
  *
 */
 
+@Deprecated
 component grammar SetExpressions
           extends ExpressionsBasis {
 
