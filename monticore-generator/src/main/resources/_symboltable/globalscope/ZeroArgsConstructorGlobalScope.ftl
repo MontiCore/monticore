@@ -4,3 +4,4 @@ ${tc.signature("scopeDeSerName", "grammarName")}
   this.fileExt = "";
   this.scopeDeSer = new ${scopeDeSerName}();
   this.symbols2Json = new ${symbols2Json}();
+  init();
