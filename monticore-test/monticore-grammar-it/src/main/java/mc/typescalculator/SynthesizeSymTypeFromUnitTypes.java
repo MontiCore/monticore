@@ -2,28 +2,29 @@
 package mc.typescalculator;
 
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
-import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolSurrogate;
+import de.monticore.types.check.AbstractSynthesizeFromType;
 import de.monticore.types.check.ISynthesize;
-import de.monticore.types.check.SynthesizeSymTypeFromMCBasicTypes;
 import mc.typescalculator.unittypes._ast.ASTMinuteType;
-import mc.typescalculator.unittypes._visitor.UnitTypesVisitor;
+import mc.typescalculator.unittypes._visitor.UnitTypesHandler;
+import mc.typescalculator.unittypes._visitor.UnitTypesTraverser;
+import mc.typescalculator.unittypes._visitor.UnitTypesVisitor2;
 
-public class SynthesizeSymTypeFromUnitTypes extends SynthesizeSymTypeFromMCBasicTypes implements UnitTypesVisitor, ISynthesize {
+public class SynthesizeSymTypeFromUnitTypes extends AbstractSynthesizeFromType implements UnitTypesVisitor2, UnitTypesHandler, ISynthesize {
 
-  private UnitTypesVisitor realThis;
+  protected UnitTypesTraverser traverser;
 
   public SynthesizeSymTypeFromUnitTypes() {
     super();
   }
 
   @Override
-  public UnitTypesVisitor getRealThis() {
-    return realThis;
+  public UnitTypesTraverser getTraverser() {
+    return traverser;
   }
 
   @Override
-  public void setRealThis(UnitTypesVisitor realThis) {
-    this.realThis = realThis;
+  public void setTraverser(UnitTypesTraverser traverser) {
+    this.traverser = traverser;
   }
 
   @Override

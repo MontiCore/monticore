@@ -1,13 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
-import de.monticore.types.mcbasictypes.MCBasicTypesMill;
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCMapType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCSetType;
-import de.monticore.types.mccollectiontypes._visitor.MCCollectionTypesVisitor;
+import de.monticore.types.mccollectiontypes._visitor.MCCollectionTypesHandler;
+import de.monticore.types.mccollectiontypes._visitor.MCCollectionTypesTraverser;
+import de.monticore.types.mccollectiontypes._visitor.MCCollectionTypesVisitor2;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -15,36 +15,20 @@ import de.se_rwth.commons.logging.Log;
  * i.e. for
  * types/MCBasicTypes.mc4
  */
-public class SynthesizeSymTypeFromMCCollectionTypes extends SynthesizeSymTypeFromMCBasicTypes
-    implements MCCollectionTypesVisitor, ISynthesize {
+public class SynthesizeSymTypeFromMCCollectionTypes extends AbstractSynthesizeFromType implements MCCollectionTypesVisitor2, MCCollectionTypesHandler, ISynthesize {
 
 
-  /**
-   * Using the visitor functionality to calculate the SymType Expression
-   */
+  protected MCCollectionTypesTraverser traverser;
 
-  // ----------------------------------------------------------  realThis start
-  // setRealThis, getRealThis are necessary to make the visitor compositional
-  //
-  // (the Vistors are then composed using theRealThis Pattern)
-  //
-  MCCollectionTypesVisitor realThis = this;
-
-  public SynthesizeSymTypeFromMCCollectionTypes(){
-    super();
+  @Override
+  public void setTraverser(MCCollectionTypesTraverser traverser) {
+    this.traverser = traverser;
   }
 
   @Override
-  public void setRealThis(MCCollectionTypesVisitor realThis) {
-    this.realThis = realThis;
-    super.realThis = realThis;  // not necessarily needed, but to be safe ...
+  public MCCollectionTypesTraverser getTraverser() {
+    return traverser;
   }
-
-  @Override
-  public MCCollectionTypesVisitor getRealThis() {
-    return realThis;
-  }
-  // ---------------------------------------------------------- realThis end
 
   /**
    * Storage in the Visitor: result of the last endVisit
@@ -97,7 +81,7 @@ public class SynthesizeSymTypeFromMCCollectionTypes extends SynthesizeSymTypeFro
   public void traverse(ASTMCMapType node) {
     // Argument 1:
     if (null != node.getKey()) {
-      node.getKey().accept(getRealThis());
+      node.getKey().accept(getTraverser());
     }
     if (!typeCheckResult.isPresentCurrentResult()) {
       Log.error("0xE9FDA Internal Error: Missing SymType argument 1 for Map type. "
@@ -107,7 +91,7 @@ public class SynthesizeSymTypeFromMCCollectionTypes extends SynthesizeSymTypeFro
 
     // Argument 2:
     if (null != node.getValue()) {
-      node.getValue().accept(getRealThis());
+      node.getValue().accept(getTraverser());
     }
     if (!typeCheckResult.isPresentCurrentResult()) {
       Log.error("0xE9FDB Internal Error: Missing SymType argument 1 for Map type. "
@@ -119,22 +103,6 @@ public class SynthesizeSymTypeFromMCCollectionTypes extends SynthesizeSymTypeFro
         SymTypeExpressionFactory.createGenerics(
             "Map", getScope(node.getEnclosingScope()), argument1, argument2);
     typeCheckResult.setCurrentResult(tex);
-  }
-
-  /**
-   * There are several forms of qualified Types possible:
-   * ** Object-types
-   * ** Boxed primitives, such as "java.lang.Boolean"
-   * Primitives, like "int", void, null are not possible here.
-   * This are the qualified Types that may occur.
-   * <p>
-   * To distinguish these kinds, we use the symbol that the ASTMCQualifiedType identifies
-   *
-   * @param qType
-   */
-  @Override
-  public void endVisit(ASTMCQualifiedType qType) {
-    typeCheckResult.setCurrentResult(SymTypeExpressionFactory.createTypeObject(qType.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()), getScope(qType.getEnclosingScope())));
   }
 
   // ASTMCTypeArgument, ASTMCBasicTypeArgument and  MCPrimitiveTypeArgument:

@@ -30,7 +30,7 @@ public class CDScopeTranslationTest {
 
   @Test
   public void testDefinitionName() {
-    assertEquals("ScopeRule", compilationUnit.getCDDefinition().getName());
+    assertEquals("ScopeRuleScope", compilationUnit.getCDDefinition().getName());
   }
 
   @Test

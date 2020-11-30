@@ -8,17 +8,29 @@ import de.monticore.statements.mcvardeclarationstatements._ast.ASTDeclaratorId;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTLocalVariableDeclaration;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTLocalVariableDeclarationStatement;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTVariableDeclarator;
-import de.monticore.statements.mcvardeclarationstatements._visitor.MCVarDeclarationStatementsVisitor;
+import de.monticore.statements.mcvardeclarationstatements._visitor.MCVarDeclarationStatementsHandler;
+import de.monticore.statements.mcvardeclarationstatements._visitor.MCVarDeclarationStatementsTraverser;
+import de.monticore.statements.mcvardeclarationstatements._visitor.MCVarDeclarationStatementsVisitor2;
 
 public class MCVarDeclarationStatementsPrettyPrinter implements
-        MCVarDeclarationStatementsVisitor {
+    MCVarDeclarationStatementsVisitor2, MCVarDeclarationStatementsHandler {
 
   protected IndentPrinter printer;
 
-  private MCVarDeclarationStatementsVisitor realThis = this;
+  private MCVarDeclarationStatementsTraverser traverser;
 
   public MCVarDeclarationStatementsPrettyPrinter(IndentPrinter out) {
     this.printer = out;
+  }
+
+  @Override
+  public MCVarDeclarationStatementsTraverser getTraverser() {
+    return traverser;
+  }
+
+  @Override
+  public void setTraverser(MCVarDeclarationStatementsTraverser traverser) {
+    this.traverser = traverser;
   }
 
   public IndentPrinter getPrinter() {
@@ -28,10 +40,10 @@ public class MCVarDeclarationStatementsPrettyPrinter implements
   @Override
   public void handle(ASTVariableDeclarator a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
-    a.getDeclarator().accept(getRealThis());
+    a.getDeclarator().accept(getTraverser());
     if (a.isPresentVariableInit()) {
       getPrinter().print(" = ");
-      a.getVariableInit().accept(getRealThis());
+      a.getVariableInit().accept(getTraverser());
     }
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
@@ -46,7 +58,7 @@ public class MCVarDeclarationStatementsPrettyPrinter implements
   @Override
   public void handle(ASTLocalVariableDeclarationStatement a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
-    a.getLocalVariableDeclaration().accept(getRealThis());
+    a.getLocalVariableDeclaration().accept(getTraverser());
     getPrinter().println(";");
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
@@ -54,27 +66,17 @@ public class MCVarDeclarationStatementsPrettyPrinter implements
   @Override
   public void handle(ASTLocalVariableDeclaration a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
-    a.getMCModifierList().stream().forEach(m -> {getPrinter().print(" "); m.accept(getRealThis()); getPrinter().print(" ");});
+    a.getMCModifierList().stream().forEach(m -> {getPrinter().print(" "); m.accept(getTraverser()); getPrinter().print(" ");});
     getPrinter().print(" ");
-    a.getMCType().accept(getRealThis());
+    a.getMCType().accept(getTraverser());
     getPrinter().print(" ");
     String sep = "";
     for (ASTVariableDeclarator v: a.getVariableDeclaratorList()) {
       getPrinter().print(sep);
       sep = ", ";
-      v.accept(getRealThis());
+      v.accept(getTraverser());
     }
     CommentPrettyPrinter.printPostComments(a, getPrinter());
-  }
-
-  @Override
-  public void setRealThis(MCVarDeclarationStatementsVisitor realThis) {
-    this.realThis = realThis;
-  }
-
-  @Override
-  public MCVarDeclarationStatementsVisitor getRealThis() {
-    return realThis;
   }
 
 }

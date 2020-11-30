@@ -204,13 +204,13 @@ component grammar MCCommonLiterals
 
   astrule CharLiteral =
     method public char getValue() {
-      return de.monticore.MCLiteralsDecoder.decodeChar(getSource());
+      return de.monticore.literals.MCLiteralsDecoder.decodeChar(getSource());
     }
   ;
 
   astrule StringLiteral =
     method public String getValue() {
-      return de.monticore.MCLiteralsDecoder.decodeString(getSource());
+      return de.monticore.literals.MCLiteralsDecoder.decodeString(getSource());
     }
   ;
 
@@ -219,7 +219,7 @@ component grammar MCCommonLiterals
          return getDigits();
     }
     method public int getValue() {
-      return de.monticore.MCLiteralsDecoder.decodeNat(getSource());
+      return de.monticore.literals.MCLiteralsDecoder.decodeNat(getSource());
     }
   ;
 
@@ -228,7 +228,7 @@ component grammar MCCommonLiterals
       return (negative?"-":"") + getDigits();
     }
     method public int getValue() {
-      return de.monticore.MCLiteralsDecoder.decodeNat(getSource());
+      return de.monticore.literals.MCLiteralsDecoder.decodeNat(getSource());
     }
   ;
 
@@ -237,7 +237,7 @@ component grammar MCCommonLiterals
          return getDigits() + "L";
     }
     method public long getValue() {
-      return de.monticore.MCLiteralsDecoder.decodeLong(getSource());
+      return de.monticore.literals.MCLiteralsDecoder.decodeLong(getSource());
     }
   ;
 
@@ -246,7 +246,7 @@ component grammar MCCommonLiterals
       return (negative?"-":"") + getDigits() + "L";
     }
     method public long getValue() {
-      return de.monticore.MCLiteralsDecoder.decodeLong(getSource());
+      return de.monticore.literals.MCLiteralsDecoder.decodeLong(getSource());
     }
   ;
 
@@ -255,7 +255,7 @@ component grammar MCCommonLiterals
       return getPre() + "." + getPost() + "F";
     }
     method public float getValue() {
-      return de.monticore.MCLiteralsDecoder.decodeFloat(getSource());
+      return de.monticore.literals.MCLiteralsDecoder.decodeFloat(getSource());
     }
   ;
 
@@ -264,7 +264,7 @@ component grammar MCCommonLiterals
       return  (isNegative()?"-":"") + getPre() + "." + getPost() + "F";
     }
     method public float getValue() {
-      return de.monticore.MCLiteralsDecoder.decodeFloat(getSource());
+      return de.monticore.literals.MCLiteralsDecoder.decodeFloat(getSource());
     }
   ;
 
@@ -273,7 +273,7 @@ component grammar MCCommonLiterals
       return getPre() + "." + getPost();
     }
     method public double getValue() {
-      return de.monticore.MCLiteralsDecoder.decodeDouble(getSource());
+      return de.monticore.literals.MCLiteralsDecoder.decodeDouble(getSource());
     }
   ;
 
@@ -282,7 +282,7 @@ component grammar MCCommonLiterals
       return (isNegative()?"-":"") + getPre() + "." + getPost();
     }
     method public double getValue() {
-      return de.monticore.MCLiteralsDecoder.decodeDouble(getSource());
+      return de.monticore.literals.MCLiteralsDecoder.decodeDouble(getSource());
     }
   ;
 

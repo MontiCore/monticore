@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsScope;
+import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
@@ -28,6 +29,7 @@ public class DeriveSymTypeOfExpressionTest {
    */
   private ICombineExpressionsWithLiteralsScope scope;
   private FlatExpressionScopeSetter flatExpressionScopeSetter;
+  private CombineExpressionsWithLiteralsTraverser traverser;
   
   @BeforeClass
   public static void setup() {
@@ -97,6 +99,7 @@ public class DeriveSymTypeOfExpressionTest {
     add2scope(scope,genSuperField);
 
     flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
+    traverser = getTraverser(flatExpressionScopeSetter);
   }
   
   // Parer used for convenience:
@@ -120,7 +123,7 @@ public class DeriveSymTypeOfExpressionTest {
   @Test
   public void deriveTFromASTNameExpression() throws IOException {
     ASTExpression astex = p.parse_StringExpression("foo").get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("int", tc.typeOf(astex).print());
   }
 
@@ -128,7 +131,7 @@ public class DeriveSymTypeOfExpressionTest {
   public void deriveTFromASTNameExpression2() throws IOException {
     String s = "bar2";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("boolean", tc.typeOf(astex).print());
   }
 
@@ -136,7 +139,7 @@ public class DeriveSymTypeOfExpressionTest {
   public void deriveTFromASTNameExpression3() throws IOException{
     String s = "person1";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("Person", tc.typeOf(astex).print());
   }
 
@@ -144,7 +147,7 @@ public class DeriveSymTypeOfExpressionTest {
   public void deriveTFromASTNameExpression4() throws IOException{
     String s = "student1";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("Student",tc.typeOf(astex).print());
   }
 
@@ -152,29 +155,41 @@ public class DeriveSymTypeOfExpressionTest {
   public void deriveTFromASTNameExpression5() throws IOException{
     String s = "firstsemester";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("FirstSemesterStudent",tc.typeOf(astex).print());
   }
 
    @Test
   public void deriveTFromLiteral() throws IOException {
     ASTExpression astex = p.parse_StringExpression("42").get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("int", tc.typeOf(astex).print());
   }
 
   @Test
   public void deriveTFromLiteralString() throws IOException {
     ASTExpression astex = p.parse_StringExpression("\"aStringi\"").get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("String", tc.typeOf(astex).print());
   }
 
   @Test
   public void genericsTest() throws IOException {
     ASTExpression astex = p.parse_StringExpression("genericSuper = genericSub").get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("GenSuper<GenArg>",tc.typeOf(astex).print());
+  }
+
+  public CombineExpressionsWithLiteralsTraverser getTraverser(FlatExpressionScopeSetter flatExpressionScopeSetter){
+    CombineExpressionsWithLiteralsTraverser traverser = CombineExpressionsWithLiteralsMill.traverser();
+    traverser.addAssignmentExpressionsVisitor(flatExpressionScopeSetter);
+    traverser.addBitExpressionsVisitor(flatExpressionScopeSetter);
+    traverser.addCommonExpressionsVisitor(flatExpressionScopeSetter);
+    traverser.addExpressionsBasisVisitor(flatExpressionScopeSetter);
+    traverser.addSetExpressionsVisitor(flatExpressionScopeSetter);
+    traverser.addJavaClassExpressionsVisitor(flatExpressionScopeSetter);
+    traverser.addMCBasicTypesVisitor(flatExpressionScopeSetter);
+    return traverser;
   }
 
 }

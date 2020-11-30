@@ -7,6 +7,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mccollectiontypes.MCCollectionTypesMill;
 import de.monticore.types.mccollectiontypes._ast.*;
 import de.monticore.types.mccollectiontypeswithoutprimitivestest._parser.MCCollectionTypesWithoutPrimitivesTestParser;
+import de.monticore.types.prettyprint.MCCollectionTypesFullPrettyPrinter;
 import de.monticore.types.prettyprint.MCCollectionTypesPrettyPrinter;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -32,7 +33,7 @@ public class MCollectionTypesCorrectStateTest {
 
   private ASTMCBasicTypeArgument typeArgumentString;
   
-  private MCCollectionTypesPrettyPrinter printer = MCCollectionTypesMill.mcCollectionTypesPrettyPrinter();
+  private MCCollectionTypesFullPrettyPrinter printer = MCCollectionTypesMill.mcCollectionTypesPrettyPrinter();
 
   @Before
   public void setUp() throws IOException {

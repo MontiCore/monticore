@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.prettyprint;
 
-import de.monticore.MCJavaLiteralsPrettyPrinter;
+import de.monticore.literals.prettyprint.MCJavaLiteralsFullPrettyPrinter;
 import de.monticore.literals.mcjavaliterals._ast.ASTDoubleLiteral;
 import de.monticore.literals.mcjavaliterals._ast.ASTFloatLiteral;
 import de.monticore.literals.mcjavaliterals._ast.ASTIntLiteral;
@@ -23,7 +23,7 @@ public class MCJavaLiteralsPrettyPrinterTest {
 
   private TestMCJavaLiteralsParser parser = new TestMCJavaLiteralsParser();
 
-  private MCJavaLiteralsPrettyPrinter prettyPrinter = new MCJavaLiteralsPrettyPrinter(new IndentPrinter());
+  private MCJavaLiteralsFullPrettyPrinter prettyPrinter = new MCJavaLiteralsFullPrettyPrinter(new IndentPrinter());
 
   @BeforeClass
   public static void setUp() {

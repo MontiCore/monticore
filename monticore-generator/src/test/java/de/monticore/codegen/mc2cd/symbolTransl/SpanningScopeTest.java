@@ -29,7 +29,7 @@ public class SpanningScopeTest {
 
   @Test
   public void testDefinitionName() {
-    assertEquals("ScopeSpanning", compilationUnit.getCDDefinition().getName());
+    assertEquals("ScopeSpanningSymbols", compilationUnit.getCDDefinition().getName());
   }
 
   @Test

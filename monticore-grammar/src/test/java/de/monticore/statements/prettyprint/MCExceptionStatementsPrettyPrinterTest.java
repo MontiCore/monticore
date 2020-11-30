@@ -20,7 +20,7 @@ public class MCExceptionStatementsPrettyPrinterTest {
 
   private TestMCExceptionStatementsParser parser = new TestMCExceptionStatementsParser();
 
-  private MCExceptionStatementsPrettyPrinterDelegator prettyPrinter = new MCExceptionStatementsPrettyPrinterDelegator(new IndentPrinter());
+  private MCExceptionStatementsFullPrettyPrinter prettyPrinter = new MCExceptionStatementsFullPrettyPrinter(new IndentPrinter());
 
   @BeforeClass
   public static void setUp() {

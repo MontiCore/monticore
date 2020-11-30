@@ -3,11 +3,13 @@ package de.monticore.prettyprint;
 
 import de.monticore.cardinality._ast.ASTCardinality;
 import de.monticore.cardinality._ast.ASTCardinalityNode;
-import de.monticore.cardinality._visitor.CardinalityVisitor;
+import de.monticore.cardinality._visitor.CardinalityHandler;
+import de.monticore.cardinality._visitor.CardinalityTraverser;
+import de.monticore.cardinality._visitor.CardinalityVisitor2;
 
-public class CardinalityPrettyPrinter implements CardinalityVisitor {
+public class CardinalityPrettyPrinter implements CardinalityVisitor2, CardinalityHandler {
 
-  private CardinalityVisitor realThis = this;
+  protected CardinalityTraverser traverser;
 
   private IndentPrinter printer;
 
@@ -36,24 +38,18 @@ public class CardinalityPrettyPrinter implements CardinalityVisitor {
     getPrinter().print("]");
   }
 
+  @Override
+  public CardinalityTraverser getTraverser() {
+    return traverser;
+  }
+
+  @Override
+  public void setTraverser(CardinalityTraverser traverser) {
+    this.traverser = traverser;
+  }
+
   public IndentPrinter getPrinter() {
     return this.printer;
-  }
-
-  public String prettyprint(ASTCardinalityNode node) {
-    getPrinter().clearBuffer();
-    node.accept(getRealThis());
-    return getPrinter().getContent();
-  }
-
-  @Override
-  public void setRealThis(CardinalityVisitor realThis) {
-    this.realThis = realThis;
-  }
-
-  @Override
-  public CardinalityVisitor getRealThis() {
-    return realThis;
   }
 
 }

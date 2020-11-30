@@ -20,7 +20,7 @@ public class MCAssertStatementsPrettyPrinterTest {
 
   private TestMCAssertStatementsParser parser = new TestMCAssertStatementsParser();
 
-  private MCAssertStatementsPrettyPrinter prettyPrinter= new MCAssertStatementsPrettyPrinter(new IndentPrinter());
+  private MCAssertStatementsFullPrettyPrinter prettyPrinter= new MCAssertStatementsFullPrettyPrinter(new IndentPrinter());
 
   @BeforeClass
   public static void setUp() {

@@ -3,7 +3,9 @@
 package de.monticore.types.check;
 
 import de.monticore.types.mcarraytypes._ast.ASTMCArrayType;
-import de.monticore.types.mcarraytypes._visitor.MCArrayTypesVisitor;
+import de.monticore.types.mcarraytypes._visitor.MCArrayTypesHandler;
+import de.monticore.types.mcarraytypes._visitor.MCArrayTypesTraverser;
+import de.monticore.types.mcarraytypes._visitor.MCArrayTypesVisitor2;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -11,35 +13,20 @@ import de.se_rwth.commons.logging.Log;
  * i.e. for
  * types/MCArrayTypes.mc4
  */
-public class SynthesizeSymTypeFromMCArrayTypes extends SynthesizeSymTypeFromMCBasicTypes
-    implements MCArrayTypesVisitor, ISynthesize {
+public class SynthesizeSymTypeFromMCArrayTypes extends AbstractSynthesizeFromType
+    implements MCArrayTypesVisitor2, MCArrayTypesHandler, ISynthesize {
 
-  /**
-   * Using the visitor functionality to calculate the SymType Expression
-   */
-
-  public SynthesizeSymTypeFromMCArrayTypes(){
-    super();
-  }
-
-  // ----------------------------------------------------------  realThis start
-  // setRealThis, getRealThis are necessary to make the visitor compositional
-  //
-  // (the Vistors are then composed using theRealThis Pattern)
-  //
-  MCArrayTypesVisitor realThis = this;
+  protected MCArrayTypesTraverser traverser;
 
   @Override
-  public void setRealThis(MCArrayTypesVisitor realThis) {
-    this.realThis = realThis;
-    super.realThis = realThis;  // not necessarily needed, but to be safe ...
+  public void setTraverser(MCArrayTypesTraverser traverser) {
+    this.traverser = traverser;
   }
 
   @Override
-  public MCArrayTypesVisitor getRealThis() {
-    return realThis;
+  public MCArrayTypesTraverser getTraverser() {
+    return traverser;
   }
-  // ---------------------------------------------------------- realThis end
 
   /**
    * Storage in the Visitor: result of the last endVisit
@@ -53,7 +40,7 @@ public class SynthesizeSymTypeFromMCArrayTypes extends SynthesizeSymTypeFromMCBa
    */
 
   public void traverse(ASTMCArrayType arrayType) {
-    arrayType.getMCType().accept(getRealThis());
+    arrayType.getMCType().accept(getTraverser());
     if (!typeCheckResult.isPresentCurrentResult()) {
       Log.error("0xE9CDA Internal Error: SymType argument missing for generic type. "
               + " Probably TypeCheck mis-configured.");

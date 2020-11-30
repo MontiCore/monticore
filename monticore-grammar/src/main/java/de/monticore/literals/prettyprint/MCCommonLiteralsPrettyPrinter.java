@@ -1,18 +1,31 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-package de.monticore;
+package de.monticore.literals.prettyprint;
 
 import de.monticore.literals.mccommonliterals._ast.*;
-import de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor;
+import de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsHandler;
+import de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser;
+import de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor2;
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.prettyprint.MCBasicsPrettyPrinter;
 
-public class MCCommonLiteralsPrettyPrinter extends MCBasicsPrettyPrinter implements MCCommonLiteralsVisitor {
+public class MCCommonLiteralsPrettyPrinter implements MCCommonLiteralsVisitor2, MCCommonLiteralsHandler {
+
+  protected MCCommonLiteralsTraverser traverser;
+
+  protected IndentPrinter printer;
   
-  private MCCommonLiteralsVisitor realThis = this;
-
   public MCCommonLiteralsPrettyPrinter(IndentPrinter printer) {
-    super(printer);
+    this.printer = printer;
+  }
+
+  @Override
+  public MCCommonLiteralsTraverser getTraverser() {
+    return traverser;
+  }
+
+  @Override
+  public void setTraverser(MCCommonLiteralsTraverser traverser) {
+    this.traverser = traverser;
   }
 
   /**
@@ -134,33 +147,6 @@ public class MCCommonLiteralsPrettyPrinter extends MCBasicsPrettyPrinter impleme
   @Override
   public void visit(ASTSignedBasicFloatLiteral a) {
     printer.print(a.getSource());
-  }
-
-  /**
-   * This method prettyprints a given node from literal grammar.
-   * 
-   * @param a A node from literal grammar.
-   * @return String representation.
-   */
-  public String prettyprint(ASTMCCommonLiteralsNode a) {
-    a.accept(getRealThis());
-    return printer.getContent();
-  }
-
-  /**
-   * @see de.monticore.literals.literals._visitor.LiteralsVisitor#setRealThis(de.monticore.literals.literals._visitor.LiteralsVisitor)
-   */
-  @Override
-  public void setRealThis(MCCommonLiteralsVisitor realThis) {
-    this.realThis = realThis;
-  }
-
-  /**
-   * @see de.monticore.literals.literals._visitor.LiteralsVisitor#getRealThis()
-   */
-  @Override
-  public MCCommonLiteralsVisitor getRealThis() {
-    return realThis;
   }
 
 }

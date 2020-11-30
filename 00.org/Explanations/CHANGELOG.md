@@ -10,6 +10,7 @@ to be released
     * parser delegator `XForYParser` are generated that extend a parser of a super language and delegate to the parser of the current language
     * Due to multiple inheritance, delegation and subclasses are used in combination 
 * experiments now showcase the use of traversers   
+* add coco (checks if additional attributes are declared twice)
 
 ### Changes
 * The generated parser uses the builder instead of the factory. This means that in grammars the variable `_aNode` is no longer available. Use instead `_builder`. 

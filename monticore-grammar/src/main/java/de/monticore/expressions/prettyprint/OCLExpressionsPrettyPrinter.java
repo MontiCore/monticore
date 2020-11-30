@@ -5,26 +5,39 @@ package de.monticore.expressions.prettyprint;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.oclexpressions._ast.*;
-import de.monticore.expressions.oclexpressions._visitor.OCLExpressionsVisitor;
+import de.monticore.expressions.oclexpressions._visitor.OCLExpressionsHandler;
+import de.monticore.expressions.oclexpressions._visitor.OCLExpressionsTraverser;
+import de.monticore.expressions.oclexpressions._visitor.OCLExpressionsVisitor2;
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 
 import java.util.Iterator;
 
-public class OCLExpressionsPrettyPrinter extends ExpressionsBasisPrettyPrinter implements OCLExpressionsVisitor {
+public class OCLExpressionsPrettyPrinter implements OCLExpressionsVisitor2, OCLExpressionsHandler {
 
-  protected OCLExpressionsVisitor realThis;
+  protected OCLExpressionsTraverser traverser;
+  
+  protected IndentPrinter printer;
 
   public OCLExpressionsPrettyPrinter(IndentPrinter printer) {
-    super(printer);
-    realThis = this;
+    this.printer = printer;
+  }
+
+  @Override
+  public OCLExpressionsTraverser getTraverser() {
+    return traverser;
+  }
+
+  @Override
+  public void setTraverser(OCLExpressionsTraverser traverser) {
+    this.traverser = traverser;
   }
 
   @Override
   public void handle(ASTInExpr node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     if (node.isPresentExtType())
-      node.getExtType().accept(getRealThis());
+      node.getExtType().accept(getTraverser());
 
     Iterator iter = node.getVarNameList().iterator();
     getPrinter().print(iter.next());
@@ -35,7 +48,7 @@ public class OCLExpressionsPrettyPrinter extends ExpressionsBasisPrettyPrinter i
 
     if (node.isPresentExpression()) {
       getPrinter().print(" in ");
-      node.getExpression().accept(getRealThis());
+      node.getExpression().accept(getTraverser());
     }
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
@@ -43,27 +56,27 @@ public class OCLExpressionsPrettyPrinter extends ExpressionsBasisPrettyPrinter i
   @Override
   public void handle(ASTImpliesExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getLeft().accept(getRealThis());
+    node.getLeft().accept(getTraverser());
     getPrinter().print(" implies ");
-    node.getRight().accept(getRealThis());
+    node.getRight().accept(getTraverser());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
 
   @Override
   public void handle(ASTSingleLogicalORExpr node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getLeft().accept(getRealThis());
+    node.getLeft().accept(getTraverser());
     getPrinter().print(" | ");
-    node.getRight().accept(getRealThis());
+    node.getRight().accept(getTraverser());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
 
   @Override
   public void handle(ASTSingleLogicalANDExpr node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getLeft().accept(getRealThis());
+    node.getLeft().accept(getTraverser());
     getPrinter().print(" & ");
-    node.getRight().accept(getRealThis());
+    node.getRight().accept(getTraverser());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
 
@@ -71,10 +84,10 @@ public class OCLExpressionsPrettyPrinter extends ExpressionsBasisPrettyPrinter i
   public void handle(ASTForallExpr node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     getPrinter().print("forall ");
-    node.getInExprList().forEach(e -> e.accept(getRealThis()));
+    node.getInExprList().forEach(e -> e.accept(getTraverser()));
 
     getPrinter().print(":");
-    node.getExpression().accept(getRealThis());
+    node.getExpression().accept(getTraverser());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
 
@@ -82,10 +95,10 @@ public class OCLExpressionsPrettyPrinter extends ExpressionsBasisPrettyPrinter i
   public void handle(ASTExistsExpr node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     getPrinter().print("exists ");
-    node.getInExprList().forEach(e -> e.accept(getRealThis()));
+    node.getInExprList().forEach(e -> e.accept(getTraverser()));
 
     getPrinter().print(":");
-    node.getExpression().accept(getRealThis());
+    node.getExpression().accept(getTraverser());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
 
@@ -93,7 +106,7 @@ public class OCLExpressionsPrettyPrinter extends ExpressionsBasisPrettyPrinter i
   public void handle(ASTAnyExpr node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     getPrinter().print("any ");
-    node.getExpression().accept(getRealThis());
+    node.getExpression().accept(getTraverser());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
 
@@ -102,11 +115,11 @@ public class OCLExpressionsPrettyPrinter extends ExpressionsBasisPrettyPrinter i
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     getPrinter().print("let ");
     for (ASTEDeclarationExt ast : node.getEDeclarationList()) {
-      ast.accept(getRealThis());
+      ast.accept(getTraverser());
       getPrinter().print("; ");
     }
     getPrinter().print("in ");
-    node.getExpression().accept(getRealThis());
+    node.getExpression().accept(getTraverser());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
 
@@ -114,12 +127,12 @@ public class OCLExpressionsPrettyPrinter extends ExpressionsBasisPrettyPrinter i
   public void handle(ASTIterateExpr node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     getPrinter().print("iterate { ");
-    node.getIteration().accept(getRealThis());
+    node.getIteration().accept(getTraverser());
     getPrinter().print("; ");
-    node.getInit().accept(getRealThis());
+    node.getInit().accept(getTraverser());
     getPrinter().print(" : ");
     getPrinter().print(node.getName() + " = ");
-    node.getValue().accept(getRealThis());
+    node.getValue().accept(getTraverser());
     getPrinter().print(" }");
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
@@ -127,9 +140,9 @@ public class OCLExpressionsPrettyPrinter extends ExpressionsBasisPrettyPrinter i
   @Override
   public void handle(ASTInstanceOfExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getLeft().accept(getRealThis());
+    node.getLeft().accept(getTraverser());
     getPrinter().print(" instanceof ");
-    node.getExtType().accept(getRealThis());
+    node.getExtType().accept(getTraverser());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
 
@@ -137,7 +150,7 @@ public class OCLExpressionsPrettyPrinter extends ExpressionsBasisPrettyPrinter i
   public void handle(ASTThenExpressionPart node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     getPrinter().print(" then ");
-    node.getThenExpression().accept(getRealThis());
+    node.getThenExpression().accept(getTraverser());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
 
@@ -145,7 +158,7 @@ public class OCLExpressionsPrettyPrinter extends ExpressionsBasisPrettyPrinter i
   public void handle(ASTElseExpressionPart node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     getPrinter().print(" else ");
-    node.getElseExpression().accept(getRealThis());
+    node.getElseExpression().accept(getTraverser());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
 
@@ -153,9 +166,9 @@ public class OCLExpressionsPrettyPrinter extends ExpressionsBasisPrettyPrinter i
   public void handle(ASTIfThenElseExpr node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     getPrinter().print("if ");
-    node.getCondition().accept(getRealThis());
-    node.getThenExpressionPart().accept(getRealThis());
-    node.getElseExpressionPart().accept(getRealThis());
+    node.getCondition().accept(getTraverser());
+    node.getThenExpressionPart().accept(getTraverser());
+    node.getElseExpressionPart().accept(getTraverser());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
 
@@ -163,11 +176,11 @@ public class OCLExpressionsPrettyPrinter extends ExpressionsBasisPrettyPrinter i
   public void handle(ASTParenthizedExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     getPrinter().print("(");
-    node.getExpression().accept(getRealThis());
+    node.getExpression().accept(getTraverser());
     getPrinter().print(")");
     if (node.isPresentQualification()) {
       getPrinter().print(".");
-      node.getQualification().accept(getRealThis());
+      node.getQualification().accept(getTraverser());
     }
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
@@ -176,24 +189,24 @@ public class OCLExpressionsPrettyPrinter extends ExpressionsBasisPrettyPrinter i
   public void handle(ASTTypeCastExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     getPrinter().print("(");
-    node.getExtType().accept(getRealThis());
+    node.getExtType().accept(getTraverser());
     getPrinter().print(")");
-    node.getExpression().accept(getRealThis());
+    node.getExpression().accept(getTraverser());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
 
   @Override
   public void handle(ASTOCLComprehensionPrimary node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getExtType().accept(getRealThis());
+    node.getExtType().accept(getTraverser());
     getPrinter().print("{");
     if (node.isPresentExpression()) {
-      node.getExpression().accept(getRealThis());
+      node.getExpression().accept(getTraverser());
     }
     getPrinter().print("}");
     if (node.isPresentQualification()) {
       getPrinter().print(".");
-      node.getQualification().accept(getRealThis());
+      node.getQualification().accept(getTraverser());
     }
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
@@ -202,7 +215,7 @@ public class OCLExpressionsPrettyPrinter extends ExpressionsBasisPrettyPrinter i
   public void handle(ASTOCLIsNewPrimary node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     getPrinter().print("isnew(");
-    node.getExpression().accept(getRealThis());
+    node.getExpression().accept(getTraverser());
     getPrinter().print(")");
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
@@ -211,7 +224,7 @@ public class OCLExpressionsPrettyPrinter extends ExpressionsBasisPrettyPrinter i
   public void handle(ASTOCLDefinedPrimary node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     getPrinter().print("defined(");
-    node.getExpression().accept(getRealThis());
+    node.getExpression().accept(getTraverser());
     getPrinter().print(")");
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
@@ -221,7 +234,7 @@ public class OCLExpressionsPrettyPrinter extends ExpressionsBasisPrettyPrinter i
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     for (ASTExpression astExpression : node.getArgumentsList()) {
       getPrinter().print("[");
-      astExpression.accept(getRealThis());
+      astExpression.accept(getTraverser());
       getPrinter().print("]");
     }
     CommentPrettyPrinter.printPostComments(node, getPrinter());
@@ -235,7 +248,7 @@ public class OCLExpressionsPrettyPrinter extends ExpressionsBasisPrettyPrinter i
       if (i != 0) {
         getPrinter().print(", ");
       }
-      node.getExpression(i).accept(getRealThis());
+      node.getExpression(i).accept(getTraverser());
     }
     getPrinter().print(")");
     CommentPrettyPrinter.printPostComments(node, getPrinter());
@@ -261,11 +274,11 @@ public class OCLExpressionsPrettyPrinter extends ExpressionsBasisPrettyPrinter i
     String qualifiedName = String.join(".", node.getNameList());
     getPrinter().print(qualifiedName + " ");
     if (node.isPresentPostfix()) {
-      node.getPostfix().accept(getRealThis());
+      node.getPostfix().accept(getTraverser());
     }
     if (node.isPresentOCLQualifiedPrimary()) {
       getPrinter().print(".");
-      node.getOCLQualifiedPrimary().accept(getRealThis());
+      node.getOCLQualifiedPrimary().accept(getTraverser());
     }
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
@@ -273,13 +286,13 @@ public class OCLExpressionsPrettyPrinter extends ExpressionsBasisPrettyPrinter i
   @Override
   public void handle(ASTOCLComprehensionExpressionStyle node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getExpression().accept(getRealThis());
+    node.getExpression().accept(getTraverser());
     getPrinter().print(" | ");
     for (int i = 0; i < node.getOCLComprehensionItemList().size(); i++) {
       if (i != 0) {
         getPrinter().print(", ");
       }
-      node.getOCLComprehensionItem(i).accept(getRealThis());
+      node.getOCLComprehensionItem(i).accept(getTraverser());
     }
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
@@ -288,11 +301,11 @@ public class OCLExpressionsPrettyPrinter extends ExpressionsBasisPrettyPrinter i
   public void handle(ASTOCLComprehensionItem node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     if (node.isPresentGenerator()) {
-      node.getGenerator().accept(getRealThis());
+      node.getGenerator().accept(getTraverser());
     } else if (node.isPresentDeclaration()) {
-      node.getDeclaration().accept(getRealThis());
+      node.getDeclaration().accept(getTraverser());
     } else if (node.isPresentFilter()) {
-      node.getFilter().accept(getRealThis());
+      node.getFilter().accept(getTraverser());
     }
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
@@ -300,7 +313,7 @@ public class OCLExpressionsPrettyPrinter extends ExpressionsBasisPrettyPrinter i
   @Override
   public void handle(ASTOCLComprehensionEnumerationStyle node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getOCLCollectionItemList().forEach(i -> i.accept(getRealThis()));
+    node.getOCLCollectionItemList().forEach(i -> i.accept(getTraverser()));
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
 
@@ -308,15 +321,15 @@ public class OCLExpressionsPrettyPrinter extends ExpressionsBasisPrettyPrinter i
   public void handle(ASTOCLCollectionItem node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     if(node.sizeExpressions() == 2){
-      node.getExpression(0).accept(getRealThis());
+      node.getExpression(0).accept(getTraverser());
       getPrinter().print(" .. ");
-      node.getExpression(1).accept(getRealThis());
+      node.getExpression(1).accept(getTraverser());
     }else {
       for (int i = 0; i < node.getExpressionList().size(); i++) {
         if (i != 0) {
           getPrinter().print(", ");
         }
-        node.getExpression(i).accept(getRealThis());
+        node.getExpression(i).accept(getTraverser());
       }
     }
     CommentPrettyPrinter.printPostComments(node, getPrinter());
@@ -325,60 +338,14 @@ public class OCLExpressionsPrettyPrinter extends ExpressionsBasisPrettyPrinter i
   @Override
   public void handle(ASTOCLEquivalentExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getLeft().accept(getRealThis());
+    node.getLeft().accept(getTraverser());
     getPrinter().print("<=>");
-    node.getRight().accept(getRealThis());
+    node.getRight().accept(getTraverser());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
 
   public IndentPrinter getPrinter() {
     return this.printer;
-  }
-
-  public String prettyprint(ASTExpression node) {
-    getPrinter().clearBuffer();
-    node.accept(getRealThis());
-    return getPrinter().getContent();
-  }
-
-  public String prettyprint(ASTThenExpressionPart node) {
-    getPrinter().clearBuffer();
-    node.accept(getRealThis());
-    return getPrinter().getContent();
-  }
-
-  public String prettyprint(ASTElseExpressionPart node) {
-    getPrinter().clearBuffer();
-    node.accept(getRealThis());
-    return getPrinter().getContent();
-  }
-
-  public String prettyprint(ASTOCLQualification node) {
-    getPrinter().clearBuffer();
-    node.accept(getRealThis());
-    return getPrinter().getContent();
-  }
-
-  public String prettyprint(ASTOCLComprehensionExpr node) {
-    getPrinter().clearBuffer();
-    node.accept(getRealThis());
-    return getPrinter().getContent();
-  }
-
-  public String prettyprint(ASTOCLCollectionItem node) {
-    getPrinter().clearBuffer();
-    node.accept(getRealThis());
-    return getPrinter().getContent();
-  }
-
-  @Override
-  public void setRealThis(OCLExpressionsVisitor realThis) {
-    this.realThis = realThis;
-  }
-
-  @Override
-  public OCLExpressionsVisitor getRealThis() {
-    return realThis;
   }
 
 }

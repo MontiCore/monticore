@@ -20,6 +20,7 @@ dependencies {
   implementation "de.se_rwth.commons:se-commons-groovy:$se_commons_version"
   implementation "de.se_rwth.commons:se-commons-logging:$se_commons_version"
   implementation "de.monticore.lang:cd4analysis:$cd4a_version"
+  grammar "de.monticore.lang:cd4analysis:$cd4a_version:grammars"
   implementation "org.antlr:antlr4:$antlr_version"
   implementation ('com.google.guava:guava:25.1-jre'){
     force(true)

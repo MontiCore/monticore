@@ -57,7 +57,7 @@ while (grammarIterator.hasNext()) {
       runGrammarCoCos(astGrammar, mcScope)
 
       // M5: transform grammar AST into Class Diagram AST
-      astClassDiagramWithST = deriveCD(astGrammar, glex, cdScope)
+      astClassDiagramWithST = deriveASTCD(astGrammar, glex, cdScope)
 
       // M6: generate parser and wrapper
       generateParser(glex, astClassDiagramWithST, astGrammar, mcScope, handcodedPath, out)

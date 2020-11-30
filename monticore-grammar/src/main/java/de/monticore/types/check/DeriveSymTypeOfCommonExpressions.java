@@ -1,16 +1,19 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import de.monticore.expressions.commonexpressions.CommonExpressionsMill;
 import de.monticore.expressions.commonexpressions._ast.*;
-import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisitor;
+import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsHandler;
+import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsTraverser;
+import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisitor2;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.expressions.prettyprint.CommonExpressionsFullPrettyPrinter;
 import de.monticore.expressions.prettyprint.CommonExpressionsPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
-import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.se_rwth.commons.logging.Log;
@@ -27,22 +30,18 @@ import static de.monticore.types.check.TypeCheck.*;
  * This Visitor can calculate a SymTypeExpression (type) for the expressions in CommonExpressions
  * It can be combined with other expressions in your language by creating a DelegatorVisitor
  */
-public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression implements CommonExpressionsVisitor {
+public class DeriveSymTypeOfCommonExpressions extends AbstractDeriveFromExpression implements CommonExpressionsVisitor2, CommonExpressionsHandler {
 
-  private CommonExpressionsVisitor realThis;
+  protected CommonExpressionsTraverser traverser;
 
   @Override
-  public void setRealThis(CommonExpressionsVisitor realThis) {
-    this.realThis = realThis;
+  public CommonExpressionsTraverser getTraverser() {
+    return traverser;
   }
 
   @Override
-  public CommonExpressionsVisitor getRealThis() {
-    return realThis;
-  }
-
-  public DeriveSymTypeOfCommonExpressions() {
-    realThis = this;
+  public void setTraverser(CommonExpressionsTraverser traverser) {
+    this.traverser = traverser;
   }
 
   @Override
@@ -339,9 +338,9 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
    */
   @Override
   public void traverse(ASTFieldAccessExpression expr) {
-    CommonExpressionsPrettyPrinter printer = new CommonExpressionsPrettyPrinter(new IndentPrinter());
+    CommonExpressionsFullPrettyPrinter printer = new CommonExpressionsFullPrettyPrinter(new IndentPrinter());
     SymTypeExpression innerResult;
-    expr.getExpression().accept(getRealThis());
+    expr.getExpression().accept(getTraverser());
     if (typeCheckResult.isPresentCurrentResult()) {
       //store the type of the inner expression in a variable
       innerResult = typeCheckResult.getCurrentResult();
@@ -416,9 +415,14 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
   @Override
   public void traverse(ASTCallExpression expr) {
     NameToCallExpressionVisitor visitor = new NameToCallExpressionVisitor();
-    expr.accept(visitor);
+    CommonExpressionsTraverser traverser = CommonExpressionsMill.traverser();
+    traverser.setCommonExpressionsHandler(visitor);
+    traverser.addCommonExpressionsVisitor(visitor);
+    traverser.setExpressionsBasisHandler(visitor);
+    traverser.addExpressionsBasisVisitor(visitor);
+    expr.accept(traverser);
     SymTypeExpression innerResult;
-    expr.getExpression().accept(getRealThis());
+    expr.getExpression().accept(getTraverser());
     if (typeCheckResult.isPresentCurrentResult()) {
       innerResult = typeCheckResult.getCurrentResult();
       //resolve methods with name of the inner expression
@@ -470,7 +474,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfExpression 
       if (expr.getArguments().getExpressionList().size() == method.getParameterList().size()) {
         boolean success = true;
         for (int i = 0; i < method.getParameterList().size(); i++) {
-          expr.getArguments().getExpression(i).accept(getRealThis());
+          expr.getArguments().getExpression(i).accept(getTraverser());
           //test if every single argument is correct
           if (!method.getParameterList().get(i).getType().deepEquals(typeCheckResult.getCurrentResult()) &&
               !compatible(method.getParameterList().get(i).getType(), typeCheckResult.getCurrentResult())) {

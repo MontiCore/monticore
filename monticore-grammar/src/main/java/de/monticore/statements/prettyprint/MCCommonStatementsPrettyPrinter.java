@@ -6,20 +6,32 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.statements.mccommonstatements._ast.*;
-import de.monticore.statements.mccommonstatements._visitor.MCCommonStatementsVisitor;
+import de.monticore.statements.mccommonstatements._visitor.MCCommonStatementsHandler;
+import de.monticore.statements.mccommonstatements._visitor.MCCommonStatementsTraverser;
+import de.monticore.statements.mccommonstatements._visitor.MCCommonStatementsVisitor2;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 import java.util.Iterator;
 
 public class MCCommonStatementsPrettyPrinter implements
-        MCCommonStatementsVisitor {
+    MCCommonStatementsVisitor2, MCCommonStatementsHandler {
+  
+  protected MCCommonStatementsTraverser traverser;
 
   protected IndentPrinter printer;
 
-  private MCCommonStatementsVisitor realThis = this;
-
   public MCCommonStatementsPrettyPrinter(IndentPrinter out) {
     this.printer = out;
+  }
+
+  @Override
+  public MCCommonStatementsTraverser getTraverser() {
+    return traverser;
+  }
+
+  @Override
+  public void setTraverser(MCCommonStatementsTraverser traverser) {
+    this.traverser = traverser;
   }
 
   public IndentPrinter getPrinter() {
@@ -35,7 +47,7 @@ public class MCCommonStatementsPrettyPrinter implements
     String sep = "";
     while (iter.hasNext()) {
       getPrinter().print(sep);
-      iter.next().accept(getRealThis());
+      iter.next().accept(getTraverser());
       sep = separator;
     }
   }
@@ -45,7 +57,7 @@ public class MCCommonStatementsPrettyPrinter implements
     String sep = "";
     while (iter.hasNext()) {
       getPrinter().print(sep);
-      iter.next().accept(getRealThis());
+      iter.next().accept(getTraverser());
       sep = separator;
     }
   }
@@ -55,7 +67,7 @@ public class MCCommonStatementsPrettyPrinter implements
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     getPrinter().println("{");
     getPrinter().indent();
-    a.getMCBlockStatementList().stream().forEach(m -> m.accept(getRealThis()));
+    a.getMCBlockStatementList().stream().forEach(m -> m.accept(getTraverser()));
     getPrinter().unindent();
     getPrinter().println("}");
     CommentPrettyPrinter.printPostComments(a, getPrinter());
@@ -65,12 +77,12 @@ public class MCCommonStatementsPrettyPrinter implements
   public void handle(ASTIfStatement a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     getPrinter().print("if (");
-    a.getCondition().accept(getRealThis());
+    a.getCondition().accept(getTraverser());
     getPrinter().print(") ");
-    a.getThenStatement().accept(getRealThis());
+    a.getThenStatement().accept(getTraverser());
     if (a.isPresentElseStatement()) {
       getPrinter().println("else ");
-      a.getElseStatement().accept(getRealThis());
+      a.getElseStatement().accept(getTraverser());
     }
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
@@ -79,9 +91,9 @@ public class MCCommonStatementsPrettyPrinter implements
   public void handle(ASTForStatement a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     getPrinter().print("for (");
-    a.getForControl().accept(getRealThis());
+    a.getForControl().accept(getTraverser());
     getPrinter().print(")");
-    a.getMCStatement().accept(getRealThis());
+    a.getMCStatement().accept(getTraverser());
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
 
@@ -89,9 +101,9 @@ public class MCCommonStatementsPrettyPrinter implements
   public void handle(ASTWhileStatement a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     getPrinter().print("while (");
-    a.getCondition().accept(getRealThis());
+    a.getCondition().accept(getTraverser());
     getPrinter().print(")");
-    a.getMCStatement().accept(getRealThis());
+    a.getMCStatement().accept(getTraverser());
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
 
@@ -99,9 +111,9 @@ public class MCCommonStatementsPrettyPrinter implements
   public void handle(ASTDoWhileStatement a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     getPrinter().print("do ");
-    a.getMCStatement().accept(getRealThis());
+    a.getMCStatement().accept(getTraverser());
     getPrinter().print("while (");
-    a.getCondition().accept(getRealThis());
+    a.getCondition().accept(getTraverser());
     getPrinter().println(");");
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
@@ -110,11 +122,11 @@ public class MCCommonStatementsPrettyPrinter implements
   public void handle(ASTCommonForControl a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     if (a.isPresentForInit()) {
-      a.getForInit().accept(getRealThis());
+      a.getForInit().accept(getTraverser());
     }
     getPrinter().print(";");
     if (a.isPresentCondition()) {
-      a.getCondition().accept(getRealThis());
+      a.getCondition().accept(getTraverser());
     }
     getPrinter().print(";");
     printExpressionsList(a.getExpressionList().iterator(), ",");
@@ -132,9 +144,9 @@ public class MCCommonStatementsPrettyPrinter implements
   @Override
   public void handle(ASTEnhancedForControl a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
-    a.getFormalParameter().accept(getRealThis());
+    a.getFormalParameter().accept(getTraverser());
     getPrinter().print(": ");
-    a.getExpression().accept(getRealThis());
+    a.getExpression().accept(getTraverser());
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
 
@@ -149,9 +161,9 @@ public class MCCommonStatementsPrettyPrinter implements
   public void handle(ASTFormalParameter a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     printSeparated(a.getJavaModifierList().iterator(), " ");
-    a.getMCType().accept(getRealThis());
+    a.getMCType().accept(getTraverser());
     getPrinter().print(" ");
-    a.getDeclaratorId().accept(getRealThis());
+    a.getDeclaratorId().accept(getTraverser());
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
 
@@ -165,7 +177,7 @@ public class MCCommonStatementsPrettyPrinter implements
   @Override
   public void handle(ASTExpressionStatement a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
-    a.getExpression().accept(getRealThis());
+    a.getExpression().accept(getTraverser());
     getPrinter().println(";");
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
@@ -174,7 +186,7 @@ public class MCCommonStatementsPrettyPrinter implements
   public void handle(ASTSwitchStatement a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     getPrinter().print("switch (");
-    a.getExpression().accept(getRealThis());
+    a.getExpression().accept(getTraverser());
     getPrinter().println(") {");
     getPrinter().indent();
     printSeparated(a.getSwitchBlockStatementGroupList().iterator(), "");
@@ -188,7 +200,7 @@ public class MCCommonStatementsPrettyPrinter implements
   public void handle(ASTConstantExpressionSwitchLabel a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     getPrinter().println("case ");
-    a.getConstant().accept(getRealThis());
+    a.getConstant().accept(getTraverser());
     getPrinter().println(":");
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
@@ -220,21 +232,9 @@ public class MCCommonStatementsPrettyPrinter implements
     String sep = "";
     while (iter.hasNext()) {
       getPrinter().print(sep);
-      iter.next().accept(getRealThis());
+      iter.next().accept(getTraverser());
       sep = separator;
     }
-  }
-
-  /**
-   * This method prettyprints a given node from Java.
-   *
-   * @param a A node from Java.
-   * @return String representation.
-   */
-  public String prettyprint(ASTMCCommonStatementsNode a) {
-    getPrinter().clearBuffer();
-    a.accept(getRealThis());
-    return getPrinter().getContent();
   }
 
   private String printModifier(int constant) {
@@ -267,16 +267,6 @@ public class MCCommonStatementsPrettyPrinter implements
       default:
         return null;
     }
-  }
-
-  @Override
-  public void setRealThis(MCCommonStatementsVisitor realThis) {
-    this.realThis = realThis;
-  }
-
-  @Override
-  public MCCommonStatementsVisitor getRealThis() {
-    return realThis;
   }
   
   
