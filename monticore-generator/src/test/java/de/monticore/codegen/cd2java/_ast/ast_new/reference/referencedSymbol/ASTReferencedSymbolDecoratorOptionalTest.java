@@ -36,7 +36,7 @@ public class ASTReferencedSymbolDecoratorOptionalTest extends DecoratorTestCase 
 
   private ASTCDClass mandAttrClass;
 
-  private static final String NAME_SYMBOL_LOADER = "de.monticore.codegen.ast.referencedsymbol._symboltable.FooSymbolSurrogate";
+  private static final String NAME_SYMBOL_LOADER = "de.monticore.codegen.ast.referencedsymbol._symboltable.FooSymbol";
 
   private static final String NAME_SYMBOL = "de.monticore.codegen.ast.referencedsymbol._symboltable.FooSymbol";
 
@@ -93,7 +93,7 @@ public class ASTReferencedSymbolDecoratorOptionalTest extends DecoratorTestCase 
 
   @Test
   public void testSymbolAttribute() {
-    ASTCDAttribute symbolAttribute = getAttributeBy("nameSymbolSurrogate", astClass);
+    ASTCDAttribute symbolAttribute = getAttributeBy("nameSymbol", astClass);
     assertTrue(symbolAttribute.getModifier().isProtected());
     assertDeepEquals(NAME_SYMBOL_LOADER, symbolAttribute.getMCType());
   }
@@ -150,7 +150,7 @@ public class ASTReferencedSymbolDecoratorOptionalTest extends DecoratorTestCase 
 
   @Test
   public void testSymbolAttributeMand() {
-    ASTCDAttribute symbolAttribute = getAttributeBy("nameSymbolSurrogate", mandAttrClass);
+    ASTCDAttribute symbolAttribute = getAttributeBy("nameSymbol", mandAttrClass);
     assertTrue(symbolAttribute.getModifier().isProtected());
     assertDeepEquals(NAME_SYMBOL_LOADER, symbolAttribute.getMCType());
   }
@@ -162,7 +162,7 @@ public class ASTReferencedSymbolDecoratorOptionalTest extends DecoratorTestCase 
 
   @Test
   public void testUpdateNameSymbolSurrogateMethod() {
-    ASTCDMethod method = getMethodBy("updateNameSymbolSurrogate", mandAttrClass);
+    ASTCDMethod method = getMethodBy("updateNameSymbol", mandAttrClass);
     assertDeepEquals(PROTECTED, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertTrue(method.isEmptyCDParameters());
