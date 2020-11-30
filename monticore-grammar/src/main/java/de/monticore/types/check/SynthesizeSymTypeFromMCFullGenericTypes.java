@@ -3,7 +3,9 @@
 package de.monticore.types.check;
 
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardTypeArgument;
-import de.monticore.types.mcfullgenerictypes._visitor.MCFullGenericTypesVisitor;
+import de.monticore.types.mcfullgenerictypes._visitor.MCFullGenericTypesHandler;
+import de.monticore.types.mcfullgenerictypes._visitor.MCFullGenericTypesTraverser;
+import de.monticore.types.mcfullgenerictypes._visitor.MCFullGenericTypesVisitor2;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -11,35 +13,20 @@ import de.se_rwth.commons.logging.Log;
  * i.e. for
  * types/MCFullGenericTypes.mc4
  */
-public class SynthesizeSymTypeFromMCFullGenericTypes extends SynthesizeSymTypeFromMCSimpleGenericTypes
-    implements MCFullGenericTypesVisitor, ISynthesize {
+public class SynthesizeSymTypeFromMCFullGenericTypes extends AbstractSynthesizeFromType
+    implements MCFullGenericTypesVisitor2, MCFullGenericTypesHandler, ISynthesize {
 
-  /**
-   * Using the visitor functionality to calculate the SymType Expression
-   */
-
-  public SynthesizeSymTypeFromMCFullGenericTypes(){
-    super();
-  }
-
-  // ----------------------------------------------------------  realThis start
-  // setRealThis, getRealThis are necessary to make the visitor compositional
-  //
-  // (the Vistors are then composed using theRealThis Pattern)
-  //
-  MCFullGenericTypesVisitor realThis = this;
+  protected MCFullGenericTypesTraverser traverser;
 
   @Override
-  public void setRealThis(MCFullGenericTypesVisitor realThis) {
-    this.realThis = realThis;
-    super.realThis = realThis;  // not necessarily needed, but to be safe ...
+  public MCFullGenericTypesTraverser getTraverser() {
+    return traverser;
   }
 
   @Override
-  public MCFullGenericTypesVisitor getRealThis() {
-    return realThis;
+  public void setTraverser(MCFullGenericTypesTraverser traverser) {
+    this.traverser = traverser;
   }
-  // ---------------------------------------------------------- realThis end
 
   /**
    * Storage in the Visitor: result of the last endVisit
@@ -55,14 +42,14 @@ public class SynthesizeSymTypeFromMCFullGenericTypes extends SynthesizeSymTypeFr
   public void traverse(ASTMCWildcardTypeArgument wildcardType) {
     SymTypeOfWildcard tex;
     if (wildcardType.isPresentLowerBound()) {
-      wildcardType.getLowerBound().accept(getRealThis());
+      wildcardType.getLowerBound().accept(getTraverser());
       if (!typeCheckResult.isPresentCurrentResult()) {
         Log.error("0xE9CDA Internal Error: SymType argument missing for generic type. "
                 + " Probably TypeCheck mis-configured.");
       }
       tex = SymTypeExpressionFactory.createWildcard(false, typeCheckResult.getCurrentResult());
     } else if (wildcardType.isPresentUpperBound()) {
-      wildcardType.getUpperBound().accept(getRealThis());
+      wildcardType.getUpperBound().accept(getTraverser());
       if (!typeCheckResult.isPresentCurrentResult()) {
         Log.error("0xE9CDA Internal Error: SymType argument missing for generic type. "
                 + " Probably TypeCheck mis-configured.");

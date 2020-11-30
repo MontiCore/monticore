@@ -2,7 +2,9 @@
 package de.monticore.types.check;
 
 import de.monticore.expressions.bitexpressions._ast.*;
-import de.monticore.expressions.bitexpressions._visitor.BitExpressionsVisitor;
+import de.monticore.expressions.bitexpressions._visitor.BitExpressionsHandler;
+import de.monticore.expressions.bitexpressions._visitor.BitExpressionsTraverser;
+import de.monticore.expressions.bitexpressions._visitor.BitExpressionsVisitor2;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 
 import java.util.Optional;
@@ -13,22 +15,18 @@ import static de.monticore.types.check.TypeCheck.*;
  * This Visitor can calculate a SymTypeExpression (type) for the expressions in BitExpressions
  * It can be combined with other expressions in your language by creating a DelegatorVisitor
  */
-public class DeriveSymTypeOfBitExpressions extends DeriveSymTypeOfExpression implements BitExpressionsVisitor {
+public class DeriveSymTypeOfBitExpressions extends AbstractDeriveFromExpression implements BitExpressionsVisitor2, BitExpressionsHandler {
 
-  private BitExpressionsVisitor realThis;
+  protected BitExpressionsTraverser traverser;
 
   @Override
-  public void setRealThis(BitExpressionsVisitor realThis) {
-    this.realThis = realThis;
+  public void setTraverser(BitExpressionsTraverser traverser) {
+    this.traverser = traverser;
   }
 
   @Override
-  public BitExpressionsVisitor getRealThis(){
-    return realThis;
-  }
-
-  public DeriveSymTypeOfBitExpressions(){
-    realThis = this;
+  public BitExpressionsTraverser getTraverser() {
+    return traverser;
   }
 
   @Override

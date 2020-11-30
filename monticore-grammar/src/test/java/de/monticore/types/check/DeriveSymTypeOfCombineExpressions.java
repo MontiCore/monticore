@@ -4,34 +4,36 @@ package de.monticore.types.check;
 import de.monticore.expressions.combineexpressionswithliterals._ast.ASTExtReturnType;
 import de.monticore.expressions.combineexpressionswithliterals._ast.ASTExtType;
 import de.monticore.expressions.combineexpressionswithliterals._ast.ASTExtTypeArgument;
-import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsVisitor;
+import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsHandler;
+import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
+import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsVisitor2;
 
 import java.util.Optional;
 
-public class DeriveSymTypeOfCombineExpressions extends DeriveSymTypeOfExpression implements CombineExpressionsWithLiteralsVisitor {
+public class DeriveSymTypeOfCombineExpressions extends AbstractDeriveFromExpression implements CombineExpressionsWithLiteralsVisitor2, CombineExpressionsWithLiteralsHandler {
 
-  private CombineExpressionsWithLiteralsVisitor realThis;
-  private SynthesizeSymTypeFromMCBasicTypes synthesizer;
+  private SynthesizeSymTypeFromCombineExpressionsWithLiteralsDelegator synthesizer;
+
+  protected CombineExpressionsWithLiteralsTraverser traverser;
 
   @Override
-  public void setRealThis(CombineExpressionsWithLiteralsVisitor realThis) {
-    this.realThis = realThis;
+  public CombineExpressionsWithLiteralsTraverser getTraverser() {
+    return traverser;
   }
 
   @Override
-  public CombineExpressionsWithLiteralsVisitor getRealThis() {
-    return realThis;
+  public void setTraverser(CombineExpressionsWithLiteralsTraverser traverser) {
+    this.traverser = traverser;
   }
 
-  public DeriveSymTypeOfCombineExpressions(SynthesizeSymTypeFromMCBasicTypes synthesizer){
-    this.realThis=this;
+  public DeriveSymTypeOfCombineExpressions(SynthesizeSymTypeFromCombineExpressionsWithLiteralsDelegator synthesizer){
     this.synthesizer = synthesizer;
   }
 
   @Override
   public void traverse(ASTExtType type){
     SymTypeExpression wholeResult = null;
-    type.getMCType().accept(synthesizer);
+    type.getMCType().accept(synthesizer.getTraverser());
     Optional<SymTypeExpression> result = synthesizer.getResult();
     if(result.isPresent()){
       wholeResult=result.get();
@@ -50,7 +52,7 @@ public class DeriveSymTypeOfCombineExpressions extends DeriveSymTypeOfExpression
     if(returnType.getMCReturnType().isPresentMCVoidType()){
       wholeResult = SymTypeExpressionFactory.createTypeVoid();
     }else if(returnType.getMCReturnType().isPresentMCType()){
-      returnType.getMCReturnType().accept(synthesizer);
+      returnType.getMCReturnType().accept(synthesizer.getTraverser());
       if(synthesizer.getResult().isPresent()){
         wholeResult = synthesizer.getResult().get();
       }
@@ -67,7 +69,7 @@ public class DeriveSymTypeOfCombineExpressions extends DeriveSymTypeOfExpression
   public void traverse(ASTExtTypeArgument typeArgument){
     SymTypeExpression wholeResult = null;
     if(typeArgument.getMCTypeArgument().getMCTypeOpt().isPresent()){
-      typeArgument.getMCTypeArgument().getMCTypeOpt().get().accept(synthesizer);
+      typeArgument.getMCTypeArgument().getMCTypeOpt().get().accept(synthesizer.getTraverser());
       if(synthesizer.getResult().isPresent()){
         wholeResult = synthesizer.getResult().get();
       }

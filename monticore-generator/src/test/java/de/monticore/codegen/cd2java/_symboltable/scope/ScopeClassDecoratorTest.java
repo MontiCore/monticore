@@ -100,7 +100,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testClassName() {
-    assertEquals("AutomatonScopeCDScope", scopeClass.getName());
+    assertEquals("AutomatonScope", scopeClass.getName());
   }
 
   @Test
@@ -128,7 +128,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
   public void testDefaultConstructor() {
     ASTCDConstructor cdConstructor = scopeClass.getCDConstructor(0);
     assertDeepEquals(PUBLIC, cdConstructor.getModifier());
-    assertEquals("AutomatonScopeCDScope", cdConstructor.getName());
+    assertEquals("AutomatonScope", cdConstructor.getName());
 
     assertTrue(cdConstructor.isEmptyCDParameters());
 
@@ -139,7 +139,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
   public void testShadowingConstructor() {
     ASTCDConstructor cdConstructor = scopeClass.getCDConstructor(1);
     assertDeepEquals(PUBLIC, cdConstructor.getModifier());
-    assertEquals("AutomatonScopeCDScope", cdConstructor.getName());
+    assertEquals("AutomatonScope", cdConstructor.getName());
 
     assertEquals(1, cdConstructor.sizeCDParameters());
     assertBoolean(cdConstructor.getCDParameter(0).getMCType());
@@ -152,7 +152,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
   public void testEnclosingScopeConstructor() {
     ASTCDConstructor cdConstructor = scopeClass.getCDConstructor(2);
     assertDeepEquals(PUBLIC, cdConstructor.getModifier());
-    assertEquals("AutomatonScopeCDScope", cdConstructor.getName());
+    assertEquals("AutomatonScope", cdConstructor.getName());
 
     assertEquals(1, cdConstructor.sizeCDParameters());
     assertDeepEquals(I_AUTOMATON_SCOPE, cdConstructor.getCDParameter(0).getMCType());
@@ -165,7 +165,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
   public void testShadowingAndEnclosingScopeConstructor() {
     ASTCDConstructor cdConstructor = scopeClass.getCDConstructor(3);
     assertDeepEquals(PUBLIC, cdConstructor.getModifier());
-    assertEquals("AutomatonScopeCDScope", cdConstructor.getName());
+    assertEquals("AutomatonScope", cdConstructor.getName());
 
     assertEquals(2, cdConstructor.sizeCDParameters());
     assertDeepEquals(I_AUTOMATON_SCOPE, cdConstructor.getCDParameter(0).getMCType());

@@ -22,7 +22,7 @@ public class JavaClassExpressionsPrettyPrinterTest {
 
   private TestJavaClassExpressionsParser parser = new TestJavaClassExpressionsParser();
 
-  private JavaClassExpressionsPrettyPrinter prettyPrinter= new JavaClassExpressionsPrettyPrinter(new IndentPrinter());
+  private JavaClassExpressionsFullPrettyPrinter prettyPrinter= new JavaClassExpressionsFullPrettyPrinter(new IndentPrinter());
 
   @BeforeClass
   public static void setUp() {

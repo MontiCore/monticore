@@ -82,7 +82,7 @@ component grammar UMLStereotype extends MCCommonLiterals {
         method public String getValue() {
           if(content == null) {
             if (text.isPresent()) {
-              content = de.monticore.MCLiteralsDecoder.decodeString(
+              content = de.monticore.literals.MCLiteralsDecoder.decodeString(
                     text.get().getValue());
             } else {
               content = "";   // absent value

@@ -2,40 +2,73 @@
 
 package de.monticore.codegen.mc2cd;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Strings.isNullOrEmpty;
+
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+
 import de.monticore.ast.ASTNode;
-import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd.cd4analysis._ast.ASTCD4AnalysisNode;
+import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
+import de.monticore.cd.cd4analysis._ast.ASTCDClass;
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.cd4analysis._ast.ASTCDDefinition;
+import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
+import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
+import de.monticore.cd.cd4analysis._ast.ASTCDStereoValue;
+import de.monticore.cd.cd4analysis._ast.ASTCDType;
+import de.monticore.cd.cd4analysis._ast.ASTModifier;
+import de.monticore.cd.cd4analysis._ast.CD4AnalysisNodeFactory;
 import de.monticore.cd.cd4analysis._parser.CD4AnalysisParser;
-import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisGlobalScope;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
+import de.monticore.cd.cd4analysis._symboltable.ICD4AnalysisGlobalScope;
 import de.monticore.cd.prettyprint.CDPrettyPrinter;
 import de.monticore.generating.templateengine.reporting.Reporting;
-import de.monticore.grammar.grammar._ast.*;
+import de.monticore.grammar.grammar._ast.ASTAdditionalAttribute;
+import de.monticore.grammar.grammar._ast.ASTClassProd;
+import de.monticore.grammar.grammar._ast.ASTConstant;
+import de.monticore.grammar.grammar._ast.ASTConstantGroup;
+import de.monticore.grammar.grammar._ast.ASTEnumProd;
+import de.monticore.grammar.grammar._ast.ASTGrammarNode;
+import de.monticore.grammar.grammar._ast.ASTITerminal;
+import de.monticore.grammar.grammar._ast.ASTInterfaceProd;
+import de.monticore.grammar.grammar._ast.ASTKeyTerminal;
+import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.grammar.grammar._ast.ASTNonTerminal;
+import de.monticore.grammar.grammar._ast.ASTNonTerminalSeparator;
+import de.monticore.grammar.grammar._ast.ASTProd;
+import de.monticore.grammar.grammar._ast.ASTRuleComponent;
+import de.monticore.grammar.grammar._ast.ASTRuleReference;
+import de.monticore.grammar.grammar._ast.ASTTerminal;
+import de.monticore.grammar.grammar._ast.ASTTokenTerminal;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
 import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVisitor;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.types.mcarraytypes._ast.ASTMCArrayType;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
-import de.monticore.types.mcarraytypes._ast.ASTMCArrayType;
 import de.se_rwth.commons.JavaNamesHelper;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
-
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Strings.isNullOrEmpty;
 
 public final class TransformationHelper {
 
@@ -274,14 +307,28 @@ public final class TransformationHelper {
   }
 
   /**
-   * Get the corresponding CD for MC grammar if exists
-   *
-   * @param ast
-   * @return
+   * Get the corresponding CD for MC grammar if exists.
+   * 
+   * @param globalScope The global scope in which the CD is resolved
+   * @param ast The input grammar, providing the qualified name
+   * @return The CD if resolved from global scope, Optional.empty() otherwise
    */
-  public static Optional<ASTCDCompilationUnit> getCDforGrammar(CD4AnalysisGlobalScope globalScope,
+  public static Optional<ASTCDCompilationUnit> getCDforGrammar(ICD4AnalysisGlobalScope globalScope, 
                                                                ASTMCGrammar ast) {
-    final String qualifiedCDName = Names.getQualifiedName(ast.getPackageList(), ast.getName());
+    return getCDforGrammar(globalScope, ast, "");
+  }
+  
+  /**
+   * Get the corresponding CD for MC grammar if exists.
+   * 
+   * @param globalScope The global scope in which the CD is resolved
+   * @param ast The input grammar, providing the qualified name
+   * @param nameSuffix A suffix to distinguish between different CDs
+   * @return The CD if resolved from global scope, Optional.empty() otherwise
+   */
+  public static Optional<ASTCDCompilationUnit> getCDforGrammar(ICD4AnalysisGlobalScope globalScope,
+                                                               ASTMCGrammar ast, String nameSuffix) {
+    final String qualifiedCDName = Names.getQualifiedName(ast.getPackageList(), ast.getName() + nameSuffix);
 
     Optional<CDDefinitionSymbol> cdSymbol = globalScope.resolveCDDefinitionDown(
         qualifiedCDName);

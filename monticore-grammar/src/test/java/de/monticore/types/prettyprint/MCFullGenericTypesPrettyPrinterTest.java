@@ -37,7 +37,7 @@ public class MCFullGenericTypesPrettyPrinterTest {
     assertTrue(ast.isPresent());
     assertFalse(parser.hasErrors());
     ASTMCWildcardTypeArgument wildcardType = ast.get();
-    MCFullGenericTypesPrettyPrinter printer = new MCFullGenericTypesPrettyPrinter(new IndentPrinter());
+    MCFullGenericTypesFullPrettyPrinter printer = new MCFullGenericTypesFullPrettyPrinter(new IndentPrinter());
     String output = printer.prettyprint(ast.get());
     ast = parser.parse_StringMCWildcardTypeArgument(output);
     assertFalse(parser.hasErrors());
@@ -52,7 +52,7 @@ public class MCFullGenericTypesPrettyPrinterTest {
     assertTrue(ast.isPresent());
     assertFalse(parser.hasErrors());
     ASTMCWildcardTypeArgument wildcardType = ast.get();
-    MCFullGenericTypesPrettyPrinter printer = new MCFullGenericTypesPrettyPrinter(new IndentPrinter());
+    MCFullGenericTypesFullPrettyPrinter printer = new MCFullGenericTypesFullPrettyPrinter(new IndentPrinter());
     String output = printer.prettyprint(ast.get());
     ast = parser.parse_StringMCWildcardTypeArgument(output);
     assertFalse(parser.hasErrors());
@@ -67,7 +67,7 @@ public class MCFullGenericTypesPrettyPrinterTest {
     assertTrue(ast.isPresent());
     assertFalse(parser.hasErrors());
     ASTMCMultipleGenericType complexReferenceType = ast.get();
-    MCFullGenericTypesPrettyPrinter printer = new MCFullGenericTypesPrettyPrinter(new IndentPrinter());
+    MCFullGenericTypesFullPrettyPrinter printer = new MCFullGenericTypesFullPrettyPrinter(new IndentPrinter());
     String output = printer.prettyprint(ast.get());
     ast = parser.parse_StringMCMultipleGenericType(output);
     assertFalse(parser.hasErrors());

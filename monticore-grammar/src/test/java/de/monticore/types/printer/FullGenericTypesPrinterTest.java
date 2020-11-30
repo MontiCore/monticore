@@ -5,6 +5,7 @@ import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCMultipleGenericType;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardTypeArgument;
 import de.monticore.types.mcfullgenerictypestest._parser.MCFullGenericTypesTestParser;
+import de.monticore.types.prettyprint.MCFullGenericTypesFullPrettyPrinter;
 import de.monticore.types.prettyprint.MCFullGenericTypesPrettyPrinter;
 import de.se_rwth.commons.logging.Log;
 import org.junit.BeforeClass;
@@ -40,7 +41,7 @@ public class FullGenericTypesPrinterTest {
 //    assertTrue(astmcTypeVariableDeclaration.isPresent());
 //    assertTrue(astmcTypeParameters.isPresent());
 
-    MCFullGenericTypesPrettyPrinter printer = MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter();
+    MCFullGenericTypesFullPrettyPrinter printer = MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter();
     assertEquals("?", printer.prettyprint(astmcWildcardTypeArgument.get()));
     assertEquals("? extends List", printer.prettyprint(astmcWildcardTypeArgument1.get()));
     assertEquals("? super Stream", printer.prettyprint(astmcWildcardTypeArgument2.get()));

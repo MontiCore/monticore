@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-package de.monticore;
+package de.monticore.literals;
 
 import de.se_rwth.commons.logging.Log;
 

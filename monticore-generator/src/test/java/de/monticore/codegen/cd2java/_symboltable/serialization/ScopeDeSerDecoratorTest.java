@@ -88,8 +88,8 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testNoSuperInterfaces(){
-    assertTrue(scopeClass.isEmptyInterface());
+  public void testSuperInterfaceCount(){
+    assertEquals(1, scopeClass.sizeInterface());
   }
 
   @Test

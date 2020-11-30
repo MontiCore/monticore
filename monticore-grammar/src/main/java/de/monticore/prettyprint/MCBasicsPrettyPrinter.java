@@ -2,7 +2,7 @@
 
 package de.monticore.prettyprint;
 
-import de.monticore.mcbasics._visitor.MCBasicsVisitor;
+import de.monticore.mcbasics._visitor.MCBasicsVisitor2;
 
 /**
  * This class is responsible for pretty-printing types of the common type system. It is implemented
@@ -11,9 +11,7 @@ import de.monticore.mcbasics._visitor.MCBasicsVisitor;
  * whole subtree of a node has been traversed. The ownVisit-Methods stop the automatic traversal
  * order and allow to explictly visit subtrees by calling getVisitor().startVisit(ASTNode)
  */
-public class MCBasicsPrettyPrinter implements MCBasicsVisitor {
-
-  private MCBasicsVisitor realThis = this;
+public class MCBasicsPrettyPrinter implements MCBasicsVisitor2 {
 
   protected IndentPrinter printer;
 
@@ -28,16 +26,6 @@ public class MCBasicsPrettyPrinter implements MCBasicsVisitor {
 
   public IndentPrinter getPrinter() {
     return printer;
-  }
-
-  @Override
-  public void setRealThis(MCBasicsVisitor realThis) {
-    this.realThis = realThis;
-  }
-
-  @Override
-  public MCBasicsVisitor getRealThis() {
-    return realThis;
   }
 
 }

@@ -95,6 +95,7 @@ public class GlobalScopeInterfaceDecorator
         .addAllCDMethods(createResolveMethods(symbolClasses, definitionName))
         .addAllCDMethods(createSuperProdResolveMethods(definitionName))
         .addAllCDMethods(createEnclosingScopeMethods(globalScopeName))
+        .addAllCDMethods(createDeSerMapMethods())
         .addCDMethod(createGetNameMethod(globalScopeName))
         .addCDMethod(createIsPresentNameMethod())
         .addCDMethod(creatCheckIfContinueAsSubScopeMethod())
@@ -296,6 +297,35 @@ public class GlobalScopeInterfaceDecorator
 
   protected ASTCDMethod createGetRealThisMethod(String realThis){
     return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, getMCTypeFacade().createQualifiedType(realThis), "getRealThis");
+  }
+
+  protected List<ASTCDMethod> createDeSerMapMethods(){
+    ASTCDAttribute deSerMapAttribute = getCDAttributeFacade().createAttribute(PROTECTED,
+            getMCTypeFacade().createQualifiedType("Map<String," + I_DE_SER + ">"),
+            DESERS_VAR);
+    List<ASTCDMethod> deSerMapMethods = accessorDecorator.decorate(deSerMapAttribute);
+    deSerMapMethods.addAll(mutatorDecorator.decorate(deSerMapAttribute));
+
+    // Create simple putDeSer(String key, IDeSer value)
+    ASTCDParameter key = getCDParameterFacade().createParameter(String.class, "key");
+    ASTCDParameter value = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(I_DE_SER), "value");
+    ASTCDMethod putMethod = getCDMethodFacade().createMethod(PUBLIC, "putDeSer", key, value);
+    deSerMapMethods.add(putMethod);
+
+    // Create simple value getDeSer(String key)
+    key = getCDParameterFacade().createParameter(String.class, "key");
+    ASTMCQualifiedType returnType = getMCTypeFacade().createQualifiedType(I_DE_SER);
+    ASTCDMethod getMethod = getCDMethodFacade().createMethod(PUBLIC, returnType, "getDeSer", key);
+    deSerMapMethods.add(getMethod);
+
+    deSerMapMethods.forEach(x -> x.getModifier().setAbstract(true));
+
+    return deSerMapMethods;
+  }
+
+  protected ASTCDMethod createSetModelPathMethod(){
+    ASTCDParameter modelPathParam = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(MODEL_PATH_TYPE), "modelPath");
+    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT,"setModelPath", modelPathParam);
   }
 
 

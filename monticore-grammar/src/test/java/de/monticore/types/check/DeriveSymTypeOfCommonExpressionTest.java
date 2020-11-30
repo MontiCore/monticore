@@ -8,6 +8,7 @@ import de.monticore.expressions.combineexpressionswithliterals._symboltable.Comb
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsArtifactScope;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsGlobalScope;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsScope;
+import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
@@ -34,6 +35,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
 
   private ICombineExpressionsWithLiteralsScope scope;
   private FlatExpressionScopeSetter flatExpressionScopeSetter;
+  private CombineExpressionsWithLiteralsTraverser traverser;
 
   /**
    * Focus: Deriving Type of Literals, here:
@@ -359,6 +361,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     add2scope(scope, add(method("isInt", _booleanSymType), field("maxLength", _intSymType)));
     tc = new TypeCheck(null, derLit);
     flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
+    traverser = getTraverser(flatExpressionScopeSetter);
   }
 
   /**
@@ -377,13 +380,13 @@ public class DeriveSymTypeOfCommonExpressionTest {
     //example with two objects of the same class
     s = "student1==student2";
     astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("boolean", tc.typeOf(astex).print());
 
     //example with two objects in sub-supertype relation
     s = "person1==student1";
     astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("boolean", tc.typeOf(astex).print());
   }
 
@@ -407,7 +410,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     //person1 has the type Person, foo is a boolean
     String s = "person1==foo";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     try{
       tc.typeOf(astex);
     }catch(RuntimeException e){
@@ -431,13 +434,13 @@ public class DeriveSymTypeOfCommonExpressionTest {
     //example with two objects of the same class
     s = "person1!=person2";
     astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("boolean", tc.typeOf(astex).print());
 
     //example with two objects in sub-supertype relation
     s = "student2!=person2";
     astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("boolean", tc.typeOf(astex).print());
   }
 
@@ -460,7 +463,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     //person1 is a Person, foo is a boolean
     String s = "person1!=foo";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     try{
       tc.typeOf(astex);
     }catch(RuntimeException e){
@@ -570,7 +573,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     //test without primitive types in inner expression
     s = "(person1)";
     astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("Person", tc.typeOf(astex).print());
   }
 
@@ -580,7 +583,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     init_basic();
     String s = "(a)";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     try{
       tc.typeOf(astex);
     }catch(RuntimeException e){
@@ -609,13 +612,13 @@ public class DeriveSymTypeOfCommonExpressionTest {
     //test without primitive types as true and false expression
     s = "3<9?person1:person2";
     astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("Person", tc.typeOf(astex).print());
 
     //test with two objects in a sub-supertype relation
     s = "3<9?student1:person2";
     astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("Person", tc.typeOf(astex).print());
   }
 
@@ -801,6 +804,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
 
     tc = new TypeCheck(null, derLit);
     flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
+    traverser = getTraverser(flatExpressionScopeSetter);
   }
 
   /**
@@ -814,36 +818,36 @@ public class DeriveSymTypeOfCommonExpressionTest {
     //test for type with only one package
     String s = "types.Test";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("types.Test", tc.typeOf(astex).print());
 
     //test for variable of a type with one package
     s = "types.Test.variable";
     astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("int", tc.typeOf(astex).print());
 
     //test for type with more than one package
     s = "types2.types3.types2.Test";
     astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("types3.types3.types2.Test", tc.typeOf(astex).print());
 
     //test for variable of type with more than one package
     s = "types2.types3.types2.Test.variable";
     astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("int", tc.typeOf(astex).print());
 
     s = "Test";
     astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("Test", tc.typeOf(astex).print());
 
     //test for variable in inner type
     s="types2.types3.types2.Test.TestInnerType.testVariable";
     astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("short",tc.typeOf(astex).print());
   }
 
@@ -858,37 +862,37 @@ public class DeriveSymTypeOfCommonExpressionTest {
     //test for method with unqualified name without parameters
     String s = "isInt()";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("boolean", tc.typeOf(astex).print());
 
     //test for method with unqualified name with parameters
     s = "isInt(4)";
     astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("boolean", tc.typeOf(astex).print());
 
     //test for method with qualified name without parameters
     s = "types.Test.store()";
     astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("double", tc.typeOf(astex).print());
 
     //test for method with qualified name with parameters
     s = "types.Test.pay(4)";
     astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("void", tc.typeOf(astex).print());
 
     //test for String method
     s = "\"test\".hashCode()";
     astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("int", tc.typeOf(astex).print());
 
     //test for multiple CallExpressions in a row
     s = "\"test\".toString().charAt(1)";
     astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("char", tc.typeOf(astex).print());
   }
 
@@ -898,7 +902,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     init_advanced();
     String s = "isNot()";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     try{
       tc.typeOf(astex);
     }catch(RuntimeException e){
@@ -958,12 +962,13 @@ public class DeriveSymTypeOfCommonExpressionTest {
 
     tc = new TypeCheck(null, derLit);
     flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
+    traverser = getTraverser(flatExpressionScopeSetter);
   }
 
   /**
    * test if the methods and fields of superclasses can be used by subclasses
    */
-  @Test @Ignore
+  @Test
   public void testInheritance() throws IOException {
     //initialize symbol table
     init_inheritance();
@@ -972,24 +977,24 @@ public class DeriveSymTypeOfCommonExpressionTest {
     //test normal inheritance
     String s = "myList.add(\"Hello\")";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("void", tc.typeOf(astex).print());
 
     //test inheritance over two levels
     s = "mySubList.add(\"World\")";
     astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("void", tc.typeOf(astex).print());
 
     //fields
     s = "myList.field";
     astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("boolean", tc.typeOf(astex).print());
 
     s = "mySubList.field";
     astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("boolean", tc.typeOf(astex).print());
   }
 
@@ -1052,27 +1057,28 @@ public class DeriveSymTypeOfCommonExpressionTest {
 
     tc = new TypeCheck(null, derLit);
     flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
+    traverser = getTraverser(flatExpressionScopeSetter);
 
     //test methods and fields of the supertype
     String s = "listVar.add(2)";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("boolean", tc.typeOf(astex).print());
 
     s = "listVar.next";
     astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("int", tc.typeOf(astex).print());
 
     //test inherited methods and fields of the subtype
     s = "arraylistVar.add(3)";
     astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("boolean", tc.typeOf(astex).print());
 
     s = "arraylistVar.next";
     astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("int", tc.typeOf(astex).print());
   }
 
@@ -1155,53 +1161,54 @@ public class DeriveSymTypeOfCommonExpressionTest {
 
     tc = new TypeCheck(null, derLit);
     flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
+    traverser = getTraverser(flatExpressionScopeSetter);
 
     //supertype: test methods and fields
     String s = "genSupVar.load(3)";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("String", tc.typeOf(astex).print());
 
     s = "genSupVar.f1";
     astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("String", tc.typeOf(astex).print());
 
     s = "genSupVar.f2";
     astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("int", tc.typeOf(astex).print());
 
     //subtype: test inherited methods and fields
     s = "genSubVar.load(3)";
     astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("String", tc.typeOf(astex).print());
 
     s = "genSubVar.f1";
     astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("String", tc.typeOf(astex).print());
 
     s = "genSubVar.f2";
     astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("int", tc.typeOf(astex).print());
 
     //subsubtype: test inherited methods and fields
     s = "genSubSubVar.load(\"Hello\")";
     astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("int", tc.typeOf(astex).print());
 
     s = "genSubSubVar.f1";
     astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("int", tc.typeOf(astex).print());
 
     s = "genSubSubVar.f2";
     astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("String", tc.typeOf(astex).print());
   }
 
@@ -1256,22 +1263,23 @@ public class DeriveSymTypeOfCommonExpressionTest {
 
     tc = new TypeCheck(null, derLit);
     flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
+    traverser = getTraverser(flatExpressionScopeSetter);
 
     //test own methods first
     String s = "varGen.calculate()";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("String", tc.typeOf(astex).print());
 
     //test inherited methods and fields
     s = "varGen.add(4)";
     astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("boolean", tc.typeOf(astex).print());
 
     s = "varGen.next";
     astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("int", tc.typeOf(astex).print());
   }
 
@@ -1331,22 +1339,23 @@ public class DeriveSymTypeOfCommonExpressionTest {
 
     tc = new TypeCheck(null, derLit);
     flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
+    traverser = getTraverser(flatExpressionScopeSetter);
 
     //test own method
     String s = "moreGen.insert(12L)";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("int", tc.typeOf(astex).print());
 
     //test inherited methods and fields
     s = "moreGen.add(12)";
     astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("boolean", tc.typeOf(astex).print());
 
     s = "moreGen.next";
     astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("int", tc.typeOf(astex).print());
   }
 
@@ -1393,16 +1402,17 @@ public class DeriveSymTypeOfCommonExpressionTest {
 
     tc = new TypeCheck(null, derLit);
     flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
+    traverser = getTraverser(flatExpressionScopeSetter);
 
     //test inherited methods and fields
     String s = "notGen.add(14)";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("boolean", tc.typeOf(astex).print());
 
     s = "notGen.next";
     astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("int", tc.typeOf(astex).print());
   }
 
@@ -1465,25 +1475,26 @@ public class DeriveSymTypeOfCommonExpressionTest {
 
     tc = new TypeCheck(null, derLit);
     flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
+    traverser = getTraverser(flatExpressionScopeSetter);
 
     String s = "sub.testA()";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("char", tc.typeOf(astex).print());
 
     s = "sub.currentA";
     astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("char", tc.typeOf(astex).print());
 
     s = "sub.testB()";
     astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("char", tc.typeOf(astex).print());
 
     s = "sub.currentB";
     astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("char", tc.typeOf(astex).print());
   }
 
@@ -1547,25 +1558,26 @@ public class DeriveSymTypeOfCommonExpressionTest {
 
     tc = new TypeCheck(null, derLit);
     flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
+    traverser = getTraverser(flatExpressionScopeSetter);
 
     String s1 = "sub.testA()";
     ASTExpression astex = p.parse_StringExpression(s1).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("boolean", tc.typeOf(astex).print());
 
     s1 = "sub.currentA";
     astex = p.parse_StringExpression(s1).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("boolean", tc.typeOf(astex).print());
 
     s1 = "sub.testB()";
     astex = p.parse_StringExpression(s1).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("char", tc.typeOf(astex).print());
 
     s1 = "sub.currentB";
     astex = p.parse_StringExpression(s1).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("char", tc.typeOf(astex).print());
   }
 
@@ -1634,30 +1646,31 @@ public class DeriveSymTypeOfCommonExpressionTest {
     //set scope of method myAdd as standard resolving scope
     tc = new TypeCheck(null, derLit);
     flatExpressionScopeSetter = new FlatExpressionScopeSetter((CombineExpressionsWithLiteralsScope) myAdd.getSpannedScope());
+    traverser = getTraverser(flatExpressionScopeSetter);
 
     String s = "mySubList";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("MySubList", tc.typeOf(astex).print());
 
     s = "myAdd()";
     astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("void", tc.typeOf(astex).print());
 
     s = "myNext";
     astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("String", tc.typeOf(astex).print());
 
     s = "add(\"Hello\")";
     astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("void", tc.typeOf(astex).print());
 
     s = "field";
     astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("boolean", tc.typeOf(astex).print());
   }
 
@@ -1718,6 +1731,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
 
     tc = new TypeCheck(null,derLit);
     flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
+    traverser = getTraverser(flatExpressionScopeSetter);
   }
 
   @Test
@@ -1727,7 +1741,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     Optional<ASTExpression> sType = p.parse_StringExpression("A.D");
     assertTrue(sType.isPresent());
     ASTExpression type = sType.get();
-    type.accept(flatExpressionScopeSetter);
+    type.accept(traverser);
     assertEquals("A.D",tc.typeOf(type).print());
   }
 
@@ -1738,7 +1752,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     Optional<ASTExpression> sType = p.parse_StringExpression("B.D");
     assertTrue(sType.isPresent());
     ASTExpression type = sType.get();
-    type.accept(flatExpressionScopeSetter);
+    type.accept(traverser);
     try{
       tc.typeOf(type);
     }catch(RuntimeException e){
@@ -1753,7 +1767,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     Optional<ASTExpression> sField = p.parse_StringExpression("A.field");
     assertTrue(sField.isPresent());
     ASTExpression field = sField.get();
-    field.accept(flatExpressionScopeSetter);
+    field.accept(traverser);
     assertEquals("int",tc.typeOf(field).print());
   }
 
@@ -1764,7 +1778,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     Optional<ASTExpression> sField = p.parse_StringExpression("B.field");
     assertTrue(sField.isPresent());
     ASTExpression field = sField.get();
-    field.accept(flatExpressionScopeSetter);
+    field.accept(traverser);
     try{
       tc.typeOf(field);
     }catch(RuntimeException e){
@@ -1779,7 +1793,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     Optional<ASTExpression> sMethod = p.parse_StringExpression("A.test()");
     assertTrue(sMethod.isPresent());
     ASTExpression method = sMethod.get();
-    method.accept(flatExpressionScopeSetter);
+    method.accept(traverser);
     assertEquals("void",tc.typeOf(method).print());
   }
 
@@ -1790,7 +1804,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     Optional<ASTExpression> sMethod = p.parse_StringExpression("B.test()");
     assertTrue(sMethod.isPresent());
     ASTExpression method = sMethod.get();
-    method.accept(flatExpressionScopeSetter);
+    method.accept(traverser);
     try{
       tc.typeOf(method);
     }catch (RuntimeException e){
@@ -1805,7 +1819,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     Optional<ASTExpression> sMethod = p.parse_StringExpression("C.test()");
     assertTrue(sMethod.isPresent());
     ASTExpression method = sMethod.get();
-    method.accept(flatExpressionScopeSetter);
+    method.accept(traverser);
     try{
       tc.typeOf(method);
     }catch(RuntimeException e){
@@ -1820,7 +1834,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     Optional<ASTExpression> sField = p.parse_StringExpression("C.field");
     assertTrue(sField.isPresent());
     ASTExpression field = sField.get();
-    field.accept(flatExpressionScopeSetter);
+    field.accept(traverser);
     try{
       tc.typeOf(field);
     }catch(RuntimeException e){
@@ -1835,5 +1849,17 @@ public class DeriveSymTypeOfCommonExpressionTest {
     Optional<ASTExpression> sType = p.parse_StringExpression("C.D");
     assertTrue(sType.isPresent());
     //TODO ND: complete when inner types are added
+  }
+
+  public CombineExpressionsWithLiteralsTraverser getTraverser(FlatExpressionScopeSetter flatExpressionScopeSetter){
+    CombineExpressionsWithLiteralsTraverser traverser = CombineExpressionsWithLiteralsMill.traverser();
+    traverser.addAssignmentExpressionsVisitor(flatExpressionScopeSetter);
+    traverser.addBitExpressionsVisitor(flatExpressionScopeSetter);
+    traverser.addCommonExpressionsVisitor(flatExpressionScopeSetter);
+    traverser.addExpressionsBasisVisitor(flatExpressionScopeSetter);
+    traverser.addSetExpressionsVisitor(flatExpressionScopeSetter);
+    traverser.addJavaClassExpressionsVisitor(flatExpressionScopeSetter);
+    traverser.addMCBasicTypesVisitor(flatExpressionScopeSetter);
+    return traverser;
   }
 }

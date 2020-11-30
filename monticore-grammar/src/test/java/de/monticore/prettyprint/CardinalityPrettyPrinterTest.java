@@ -39,7 +39,7 @@ public class CardinalityPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTCardinality cardinality = result.get();
     
-    CardinalityPrettyPrinter prettyPrinter = new CardinalityPrettyPrinter(new IndentPrinter());
+    CardinalityFullPrettyPrinter prettyPrinter = new CardinalityFullPrettyPrinter(new IndentPrinter());
     String output = prettyPrinter.prettyprint(cardinality);
     
     result = parser.parseCardinality(new StringReader(output));
@@ -57,7 +57,7 @@ public class CardinalityPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTCardinality cardinality = result.get();
     
-    CardinalityPrettyPrinter prettyPrinter = new CardinalityPrettyPrinter(new IndentPrinter());
+    CardinalityFullPrettyPrinter prettyPrinter = new CardinalityFullPrettyPrinter(new IndentPrinter());
     String output = prettyPrinter.prettyprint(cardinality);
     
     result = parser.parseCardinality(new StringReader(output));
@@ -75,7 +75,7 @@ public class CardinalityPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTCardinality cardinality = result.get();
     
-    CardinalityPrettyPrinter prettyPrinter = new CardinalityPrettyPrinter(new IndentPrinter());
+    CardinalityFullPrettyPrinter prettyPrinter = new CardinalityFullPrettyPrinter(new IndentPrinter());
     String output = prettyPrinter.prettyprint(cardinality);
     
     result = parser.parseCardinality(new StringReader(output));

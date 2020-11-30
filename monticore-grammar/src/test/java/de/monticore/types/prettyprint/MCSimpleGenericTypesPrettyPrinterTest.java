@@ -38,7 +38,7 @@ public class MCSimpleGenericTypesPrettyPrinterTest {
     assertTrue(ast.isPresent());
     assertFalse(parser.hasErrors());
     ASTMCBasicGenericType typeArgument = ast.get();
-    MCSimpleGenericTypesPrettyPrinter printer = new MCSimpleGenericTypesPrettyPrinter(new IndentPrinter());
+    MCSimpleGenericTypesFullPrettyPrinter printer = new MCSimpleGenericTypesFullPrettyPrinter(new IndentPrinter());
     String output = printer.prettyprint(ast.get());
     ast = parser.parse_StringMCBasicGenericType(output);
     assertFalse(parser.hasErrors());
@@ -53,7 +53,7 @@ public class MCSimpleGenericTypesPrettyPrinterTest {
     assertTrue(ast.isPresent());
     assertFalse(parser.hasErrors());
     ASTMCBasicGenericType typeArgument = ast.get();
-    MCSimpleGenericTypesPrettyPrinter printer = new MCSimpleGenericTypesPrettyPrinter(new IndentPrinter());
+    MCSimpleGenericTypesFullPrettyPrinter printer = new MCSimpleGenericTypesFullPrettyPrinter(new IndentPrinter());
     String output = printer.prettyprint(ast.get());
     ast = parser.parse_StringMCBasicGenericType(output);
     assertFalse(parser.hasErrors());
@@ -68,7 +68,7 @@ public class MCSimpleGenericTypesPrettyPrinterTest {
     assertTrue(ast.isPresent());
     assertFalse(parser.hasErrors());
     ASTMCCustomTypeArgument typeArgument = ast.get();
-    MCSimpleGenericTypesPrettyPrinter printer = new MCSimpleGenericTypesPrettyPrinter(new IndentPrinter());
+    MCSimpleGenericTypesFullPrettyPrinter printer = new MCSimpleGenericTypesFullPrettyPrinter(new IndentPrinter());
     String output = printer.prettyprint(ast.get());
     ast = parser.parse_StringMCCustomTypeArgument(output);
     assertFalse(parser.hasErrors());
@@ -80,16 +80,16 @@ public class MCSimpleGenericTypesPrettyPrinterTest {
   public void testMultipleMCCustomTypeArgument() throws IOException {
     String type = "java.util.List<socnet.Person<Konto>,List<boolean>>";
     MCSimpleGenericTypesTestParser parser = new MCSimpleGenericTypesTestParser();
-    Optional<ASTMCType> ast = parser.parse_StringMCType(type);
+    Optional<ASTMCBasicGenericType> ast = parser.parse_StringMCBasicGenericType(type);
     assertTrue(ast.isPresent());
     assertFalse(parser.hasErrors());
-    Optional<ASTMCType> astBefore = ast;
-    MCSimpleGenericTypesPrettyPrinter printer = new MCSimpleGenericTypesPrettyPrinter(new IndentPrinter());
+    Optional<ASTMCBasicGenericType> astBefore = ast;
+    MCSimpleGenericTypesFullPrettyPrinter printer = new MCSimpleGenericTypesFullPrettyPrinter(new IndentPrinter());
     String output = printer.prettyprint(ast.get());
 
     assertEquals(type,output);
 
-    ast = parser.parse_StringMCType(output);
+    ast = parser.parse_StringMCBasicGenericType(output);
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
     assertTrue(astBefore.get().deepEquals(ast.get()));

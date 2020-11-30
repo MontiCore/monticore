@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.prettyprint;
 
-import de.monticore.MCCommonLiteralsPrettyPrinter;
+import de.monticore.literals.prettyprint.MCCommonLiteralsFullPrettyPrinter;
 import de.monticore.literals.mccommonliterals._ast.*;
 import de.monticore.literals.testmccommonliterals._parser.TestMCCommonLiteralsParser;
 import de.se_rwth.commons.logging.Log;
@@ -20,7 +20,7 @@ public class MCCommonLiteralsPrettyPrinterTest {
 
   private TestMCCommonLiteralsParser parser = new TestMCCommonLiteralsParser();
 
-  private MCCommonLiteralsPrettyPrinter prettyPrinter = new MCCommonLiteralsPrettyPrinter(new IndentPrinter());
+  private MCCommonLiteralsFullPrettyPrinter prettyPrinter = new MCCommonLiteralsFullPrettyPrinter(new IndentPrinter());
 
   @BeforeClass
   public static void setUp() {

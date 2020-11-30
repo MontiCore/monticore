@@ -135,7 +135,7 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeSize() {
-    assertEquals(8, scopeClass.sizeCDAttributes());
+    assertEquals(9, scopeClass.sizeCDAttributes());
   }
 
   @Test
@@ -222,7 +222,7 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(29, scopeClass.getCDMethodList().size());
+    assertEquals(34, scopeClass.getCDMethodList().size());
   }
 
   @Test

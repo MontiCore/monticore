@@ -36,7 +36,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
   MCSimpleGenericTypesTestParser parser = new MCSimpleGenericTypesTestParser();
   
   // This is Visitor for SimpleGeneric types under test:
-  SynthesizeSymTypeFromMCSimpleGenericTypes synt = new SynthesizeSymTypeFromMCSimpleGenericTypes();
+  SynthesizeSymTypeFromCombineExpressionsWithLiteralsDelegator synt = new SynthesizeSymTypeFromCombineExpressionsWithLiteralsDelegator();
   
   // other arguments not used (and therefore deliberately null)
   

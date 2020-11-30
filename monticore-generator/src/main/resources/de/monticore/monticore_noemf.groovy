@@ -55,7 +55,7 @@ while (grammarIterator.hasNext()) {
 
       // M5: transform grammar AST into Class Diagram AST
       //     and create symbol and scope class diagramm
-      astClassDiagramWithST = deriveCD(astGrammar, glex, cdScope)
+      astClassDiagramWithST = deriveASTCD(astGrammar, glex, cdScope)
       deriveSymbolCD(astGrammar, symbolCdScope)
       deriveScopeCD(astGrammar, scopeCdScope)
 

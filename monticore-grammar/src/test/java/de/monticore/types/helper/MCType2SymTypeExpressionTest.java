@@ -8,7 +8,11 @@ import de.monticore.types.mccollectiontypes._ast.ASTMCMapType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCSetType;
 import de.monticore.types.mccollectiontypestest._parser.MCCollectionTypesTestParser;
+import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
+import de.monticore.types.mcfullgenerictypes._visitor.MCFullGenericTypesTraverser;
 import de.monticore.types.mcfullgenerictypestest._parser.MCFullGenericTypesTestParser;
+import de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMill;
+import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesTraverser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
@@ -34,10 +38,9 @@ public class MCType2SymTypeExpressionTest {
   List<String> primitiveTypes = Arrays
       .asList("boolean", "byte", "char", "short", "int", "long", "float", "double");
 
-
   private SymTypeExpression mcType2TypeExpression(ASTMCBasicTypesNode type) {
-    SynthesizeSymTypeFromMCSimpleGenericTypes visitor = new SynthesizeSymTypeFromMCSimpleGenericTypes();
-    type.accept(visitor);
+    SynthesizeSymTypeFromCombineExpressionsWithLiteralsDelegator visitor = new SynthesizeSymTypeFromCombineExpressionsWithLiteralsDelegator();
+    type.accept(visitor.getTraverser());
     return visitor.getResult().get();
   }
 

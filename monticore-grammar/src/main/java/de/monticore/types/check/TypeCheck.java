@@ -85,7 +85,7 @@ public class TypeCheck {
    */
   public SymTypeExpression symTypeFromAST(ASTMCType astMCType) {
     iSynthesize.init();
-    astMCType.accept(iSynthesize);
+    astMCType.accept(iSynthesize.getTraverser());
     Optional<SymTypeExpression> result = iSynthesize.getResult();
     if(!result.isPresent()) {
       Log.error("0xE9FD4 Internal Error: No SymType for: "
@@ -111,7 +111,7 @@ public class TypeCheck {
    */
   public SymTypeExpression symTypeFromAST(ASTMCReturnType astMCReturnType) {
     iSynthesize.init();
-    astMCReturnType.accept(iSynthesize);
+    astMCReturnType.accept(iSynthesize.getTraverser());
     Optional<SymTypeExpression> result = iSynthesize.getResult();
     if(!result.isPresent()) {
       Log.error("0xE9FD5 Internal Error: No SymType for return type: "
@@ -129,7 +129,7 @@ public class TypeCheck {
    */
   public SymTypeExpression symTypeFromAST(ASTMCQualifiedName astMCQualifiedName) {
     iSynthesize.init();
-    astMCQualifiedName.accept(iSynthesize);
+    astMCQualifiedName.accept(iSynthesize.getTraverser());
     Optional<SymTypeExpression> result = iSynthesize.getResult();
     if(!result.isPresent()) {
       Log.error("0xE9FD5 Internal Error: No SymType for MCQualifiedName: "

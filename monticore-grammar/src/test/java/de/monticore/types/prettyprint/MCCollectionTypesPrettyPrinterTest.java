@@ -36,7 +36,7 @@ public class MCCollectionTypesPrettyPrinterTest {
     assertTrue(ast.isPresent());
     assertFalse(parser.hasErrors());
     ASTMCPrimitiveTypeArgument typeArgument = ast.get();
-    MCCollectionTypesPrettyPrinter printer = new MCCollectionTypesPrettyPrinter(new IndentPrinter());
+    MCCollectionTypesFullPrettyPrinter printer = new MCCollectionTypesFullPrettyPrinter(new IndentPrinter());
     String output = printer.prettyprint(ast.get());
     ast = parser.parse_StringMCPrimitiveTypeArgument(output);
     assertFalse(parser.hasErrors());
@@ -51,7 +51,7 @@ public class MCCollectionTypesPrettyPrinterTest {
     assertTrue(ast.isPresent());
     assertFalse(parser.hasErrors());
     ASTMCBasicTypeArgument typeArgument = ast.get();
-    MCCollectionTypesPrettyPrinter printer = new MCCollectionTypesPrettyPrinter(new IndentPrinter());
+    MCCollectionTypesFullPrettyPrinter printer = new MCCollectionTypesFullPrettyPrinter(new IndentPrinter());
     String output = printer.prettyprint(ast.get());
     ast = parser.parse_StringMCBasicTypeArgument(output);
     assertFalse(parser.hasErrors());
@@ -66,7 +66,7 @@ public class MCCollectionTypesPrettyPrinterTest {
     assertTrue(ast.isPresent());
     assertFalse(parser.hasErrors());
     ASTMCListType listType = ast.get();
-    MCCollectionTypesPrettyPrinter printer = new MCCollectionTypesPrettyPrinter(new IndentPrinter());
+    MCCollectionTypesFullPrettyPrinter printer = new MCCollectionTypesFullPrettyPrinter(new IndentPrinter());
     String output = printer.prettyprint(ast.get());
     ast = parser.parse_StringMCListType(output);
     assertFalse(parser.hasErrors());
@@ -81,7 +81,7 @@ public class MCCollectionTypesPrettyPrinterTest {
     assertTrue(ast.isPresent());
     assertFalse(parser.hasErrors());
     ASTMCOptionalType optionalType = ast.get();
-    MCCollectionTypesPrettyPrinter printer = new MCCollectionTypesPrettyPrinter(new IndentPrinter());
+    MCCollectionTypesFullPrettyPrinter printer = new MCCollectionTypesFullPrettyPrinter(new IndentPrinter());
     String output = printer.prettyprint(ast.get());
     ast = parser.parse_StringMCOptionalType(output);
     assertFalse(parser.hasErrors());
@@ -96,7 +96,7 @@ public class MCCollectionTypesPrettyPrinterTest {
     assertTrue(ast.isPresent());
     assertFalse(parser.hasErrors());
     ASTMCMapType mapType = ast.get();
-    MCCollectionTypesPrettyPrinter printer = new MCCollectionTypesPrettyPrinter(new IndentPrinter());
+    MCCollectionTypesFullPrettyPrinter printer = new MCCollectionTypesFullPrettyPrinter(new IndentPrinter());
     String output = printer.prettyprint(ast.get());
     ast = parser.parse_StringMCMapType(output);
     assertFalse(parser.hasErrors());
@@ -111,7 +111,7 @@ public class MCCollectionTypesPrettyPrinterTest {
     assertTrue(ast.isPresent());
     assertFalse(parser.hasErrors());
     ASTMCSetType setType = ast.get();
-    MCCollectionTypesPrettyPrinter printer = new MCCollectionTypesPrettyPrinter(new IndentPrinter());
+    MCCollectionTypesFullPrettyPrinter printer = new MCCollectionTypesFullPrettyPrinter(new IndentPrinter());
     String output = printer.prettyprint(ast.get());
     ast = parser.parse_StringMCSetType(output);
     assertFalse(parser.hasErrors());
