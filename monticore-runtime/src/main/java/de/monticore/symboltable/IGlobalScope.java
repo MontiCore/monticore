@@ -37,9 +37,15 @@ public interface IGlobalScope {
   boolean isFileLoaded(String name);
 
   /**
-   * This methods resets all state-based attributes of the global scope including
+   * This method initialized global scope attributes such as, e.g., the map of DeSers.
+   */
+  void init();
+
+  /**
+   * This method resets all state-based attributes of the global scope including
    * the lists with resolvers, the model path entries, the list of loaded files, etc.
    * This is useful, e.g., for unit testing the symbol table.
    */
   void clear();
+
 }

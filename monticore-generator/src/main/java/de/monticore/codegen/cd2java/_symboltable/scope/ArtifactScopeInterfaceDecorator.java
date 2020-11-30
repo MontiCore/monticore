@@ -66,8 +66,10 @@ public class ArtifactScopeInterfaceDecorator extends AbstractCreator<ASTCDCompil
         .addAllCDMethods(createImportsAttributeMethods())
         .addCDMethod(createGetTopLevelSymbolMethod(symbolProds))
         .addCDMethod(createCheckIfContinueAsSubScopeMethod())
+        .addCDMethod(createGetRemainingNameForResolveDownMethod())
         .addAllCDMethods(createContinueWithEnclosingScopeMethods(symbolProds, symbolTableService.getCDSymbol()))
         .addAllCDMethods(createSuperContinueWithEnclosingScopeMethods())
+        .addCDMethod(createGetFullNameMethod())
         .build();
   }
 
@@ -129,6 +131,13 @@ public class ArtifactScopeInterfaceDecorator extends AbstractCreator<ASTCDCompil
     return getNameMethod;
   }
 
+  protected ASTCDMethod createGetRemainingNameForResolveDownMethod() {
+    ASTCDParameter parameter = getCDParameterFacade().createParameter(String.class, "symbolName");
+    ASTCDMethod getRemainingNameForResolveDown = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createStringType(), "getRemainingNameForResolveDown", parameter);
+    this.replaceTemplate(EMPTY_BODY, getRemainingNameForResolveDown, new TemplateHookPoint(TEMPLATE_PATH + "GetRemainingNameForResolveDown"));
+    return getRemainingNameForResolveDown;
+  }
+
   protected List<ASTCDMethod> createContinueWithEnclosingScopeMethods(List<ASTCDType> symbolProds, CDDefinitionSymbol definitionSymbol) {
     List<ASTCDMethod> methodList = new ArrayList<>();
     ASTCDParameter parameterFoundSymbols = getCDParameterFacade().createParameter(getMCTypeFacade().createBooleanType(), FOUND_SYMBOLS_VAR);
@@ -153,6 +162,12 @@ public class ArtifactScopeInterfaceDecorator extends AbstractCreator<ASTCDCompil
       }
     }
     return methodList;
+  }
+
+  protected ASTCDMethod createGetFullNameMethod(){
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createStringType(), "getFullName");
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "GetFullName"));
+    return method;
   }
 
   protected List<ASTCDMethod> createSuperContinueWithEnclosingScopeMethods() {

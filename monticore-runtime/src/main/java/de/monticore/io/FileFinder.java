@@ -14,8 +14,8 @@ import java.io.FileFilter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public class FileFinder {
@@ -78,10 +78,13 @@ public class FileFinder {
     return findFiles(files, mp, loadedFiles);
   }
 
-  public static ModelCoordinate findFile(ModelPath mp,
+  public static Optional<ModelCoordinate> findFile(ModelPath mp,
       String qualifiedModelName, String fileExtRegEx, Set<String> loadedFiles) {
     List<ModelCoordinate> files = findFiles(mp, qualifiedModelName, fileExtRegEx, loadedFiles);
-    if (1 < files.size()) {
+    if (1 == files.size()) {
+      return Optional.of(files.get(0));
+    }
+    else if (1 < files.size()) {
       StringBuilder sb = new StringBuilder();
       sb.append("0xA7654 Found multiple files in the model path that could contain the model '"
           + qualifiedModelName + "'!\nThe files are:");
@@ -89,14 +92,8 @@ public class FileFinder {
         sb.append("\n" + mc.getLocation());
       }
       Log.error(sb.toString());
-      return null;
     }
-    else if (1 > files.size()) {
-      //      Log.error("0xA7655 Cannot find a file containing the model '" + qualifiedModelName + "'!");
-      return null;
-    }
-    else
-      return files.get(0);
+    return Optional.empty();
   }
 
 }

@@ -257,8 +257,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
 
   protected ASTCDMethod createLoadFileForModelNameMethod(String definitionName){
     ASTCDParameter modelNameParam = getCDParameterFacade().createParameter(String.class, "modelName");
-    ASTCDParameter symbolNameParam = getCDParameterFacade().createParameter(String.class, "symbolName");
-    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, "loadFileForModelName", modelNameParam, symbolNameParam);
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, "loadFileForModelName", modelNameParam);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "LoadFileForModelName", definitionName));
     return method;
   }

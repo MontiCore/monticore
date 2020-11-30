@@ -241,7 +241,7 @@ public class GlobalScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(90, scopeInterface.getCDMethodList().size());
+    assertEquals(89, scopeInterface.getCDMethodList().size());
   }
 
 }
