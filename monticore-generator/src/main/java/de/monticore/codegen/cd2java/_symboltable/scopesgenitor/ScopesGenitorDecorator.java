@@ -56,7 +56,7 @@ public class ScopesGenitorDecorator extends AbstractCreator<ASTCDCompilationUnit
     if (startProd.isPresent()) {
       String astFullName = startProd.get();
       String scopesGenitorName = symbolTableService.getScopesGenitorSimpleName();
-      String visitorName = visitorService.getVisitorFullName() + "2";
+      String visitorName = visitorService.getVisitor2FullName();
       String handlerName = visitorService.getHandlerFullName();
       String traverserName = visitorService.getTraverserInterfaceFullName();
       String scopeInterface = symbolTableService.getScopeInterfaceFullName();
