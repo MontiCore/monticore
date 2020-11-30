@@ -2,6 +2,7 @@ package de.monticore.statements.mccommonstatements._symboltable;
 
 import de.monticore.statements.mccommonstatements._ast.ASTFormalParameter;
 import de.monticore.statements.mccommonstatements._visitor.MCCommonStatementsVisitor;
+import de.monticore.statements.mccommonstatements._visitor.MCCommonStatementsVisitor2;
 import de.monticore.statements.mcvardeclarationstatements._visitor.MCVarDeclarationStatementsVisitor;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 import de.monticore.types.check.*;
@@ -9,23 +10,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.monticore.types.mcfullgenerictypes._visitor.MCFullGenericTypesTraverser;
 
-public class MCCommonStatementsSTCompleteTypes implements MCCommonStatementsVisitor {
-
-  private MCCommonStatementsVisitor realThis;
-
-  public MCCommonStatementsSTCompleteTypes(){
-    this.realThis = this;
-  }
-
-  @Override
-  public MCCommonStatementsVisitor getRealThis() {
-    return realThis;
-  }
-
-  @Override
-  public void setRealThis(MCCommonStatementsVisitor realThis) {
-    this.realThis = realThis;
-  }
+public class MCCommonStatementsSTCompleteTypes implements MCCommonStatementsVisitor2 {
 
   @Override
   public void endVisit(ASTFormalParameter ast) {

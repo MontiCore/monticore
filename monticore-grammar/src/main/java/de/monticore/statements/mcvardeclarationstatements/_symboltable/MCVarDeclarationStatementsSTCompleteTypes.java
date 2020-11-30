@@ -6,6 +6,7 @@ import de.monticore.statements.mcstatementsbasis._ast.ASTMCModifier;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTLocalVariableDeclaration;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTVariableDeclarator;
 import de.monticore.statements.mcvardeclarationstatements._visitor.MCVarDeclarationStatementsVisitor;
+import de.monticore.statements.mcvardeclarationstatements._visitor.MCVarDeclarationStatementsVisitor2;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolSurrogate;
 import de.monticore.types.check.*;
@@ -17,23 +18,7 @@ import java.util.List;
 
 import static de.monticore.statements.mccommonstatements._ast.ASTConstantsMCCommonStatements.*;
 
-public class MCVarDeclarationStatementsSTCompleteTypes implements MCVarDeclarationStatementsVisitor {
-
-  private MCVarDeclarationStatementsVisitor realThis;
-
-  public MCVarDeclarationStatementsSTCompleteTypes(){
-    this.realThis = this;
-  }
-
-  @Override
-  public MCVarDeclarationStatementsVisitor getRealThis() {
-    return realThis;
-  }
-
-  @Override
-  public void setRealThis(MCVarDeclarationStatementsVisitor realThis) {
-    this.realThis = realThis;
-  }
+public class MCVarDeclarationStatementsSTCompleteTypes implements MCVarDeclarationStatementsVisitor2 {
 
   public void endVisit(ASTLocalVariableDeclaration ast) {
     List<FieldSymbol> symbols = Lists.newArrayList();

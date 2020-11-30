@@ -39,11 +39,11 @@ public class PhasedSymbolTableCreatorDelegatorDecorator extends AbstractCreator<
       String globalScopeInterface = symbolTableService.getGlobalScopeInterfaceSimpleName();
       String artifactScopeInterface = symbolTableService.getArtifactScopeInterfaceSimpleName();
       String scopesGenitorDelegator = symbolTableService.getScopesGenitorDelegatorSimpleName();
-      String visitor = visitorService.getVisitorFullName();
+      String traverser = visitorService.getTraverserInterfaceFullName();
 
       ASTCDAttribute globalScopeAttribute = getCDAttributeFacade().createAttribute(PROTECTED, globalScopeInterface, "globalScope");
       ASTCDAttribute scopeSkeletonCreatorDelegatorAttribute = getCDAttributeFacade().createAttribute(PROTECTED, scopesGenitorDelegator, "scopesGenitorDelegator");
-      ASTCDAttribute priorityListAttribute = getCDAttributeFacade().createAttribute(PROTECTED, getMCTypeFacade().createListTypeOf(visitor), "priorityList");
+      ASTCDAttribute priorityListAttribute = getCDAttributeFacade().createAttribute(PROTECTED, getMCTypeFacade().createListTypeOf(traverser), "priorityList");
       ASTModifier modifier = PUBLIC.build();
       symbolTableService.addDeprecatedStereotype(modifier, Optional.of("Will be removed in a later release"));
 
@@ -70,7 +70,6 @@ public class PhasedSymbolTableCreatorDelegatorDecorator extends AbstractCreator<
 
   protected ASTCDConstructor createZeroArgsConstructor(String className){
     String millFullName = symbolTableService.getMillFullName();
-    String simpleName = symbolTableService.getCDName();
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), className);
     this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("this("+millFullName + ".globalScope());"));
     return constructor;
