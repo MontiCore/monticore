@@ -28,9 +28,9 @@ public class BasicJavaGlobalScope extends BasicJavaGlobalScopeTOP {
     return this;
   }
 
-  public  void loadFileForModelName (String modelName, String symbolName)  {
+  public  void loadFileForModelName (String modelName)  {
     // 1. call super implementation to start with employing the DeSer
-    super.loadFileForModelName(modelName, symbolName);
+    super.loadFileForModelName(modelName);
 
     // 2. calculate potential location of model file and try to find it in model path
     ModelCoordinate model = ModelCoordinates.createQualifiedCoordinate(modelName, "javamodel");

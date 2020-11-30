@@ -39,7 +39,7 @@ public class CompositeGlobalScope extends CompositeGlobalScopeTOP{
     return this;
   }
 
-  @Override public void loadFileForModelName(String modelName, String symbolName) {
+  @Override public void loadFileForModelName(String modelName) {
     ModelCoordinate modelCoordinate = ModelCoordinates
         .createQualifiedCoordinate(modelName, "host");
     String filePath = modelCoordinate.getQualifiedPath().toString();
@@ -52,7 +52,7 @@ public class CompositeGlobalScope extends CompositeGlobalScopeTOP{
       }
     }
     else {
-      Log.debug("Already tried to load model for '" + symbolName
+      Log.debug("Already tried to load model for '" + modelName
               + "'. If model exists, continue with cached version.",
           "CompositeGlobalScope");
     }

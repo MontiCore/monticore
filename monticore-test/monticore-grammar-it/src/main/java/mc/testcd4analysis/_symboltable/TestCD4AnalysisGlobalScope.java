@@ -74,7 +74,7 @@ public class TestCD4AnalysisGlobalScope extends TestCD4AnalysisGlobalScopeTOP{
     return this;
   }
 
-  public  void loadFileForModelName (String modelName, String symbolName)  {
+  public  void loadFileForModelName (String modelName)  {
     String symbolFileExtension = getFileExt() + "sym";
     de.monticore.io.paths.ModelCoordinate symbolFileCoordinate =
         de.monticore.io.paths.ModelCoordinates.createQualifiedCoordinate(modelName, symbolFileExtension);
