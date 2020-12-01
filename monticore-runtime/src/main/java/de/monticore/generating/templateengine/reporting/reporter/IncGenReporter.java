@@ -22,6 +22,8 @@ public abstract class IncGenReporter extends AReporter {
 
   protected Set<Path> filesThatMatterButAreNotThereInTime = new LinkedHashSet<>();
 
+  protected List<String> userTemplates = Lists.newArrayList();
+
   protected static Map<Path, Path> modelToArtifactMap = new HashMap<>();
 
   protected String inputFile;
@@ -64,6 +66,7 @@ public abstract class IncGenReporter extends AReporter {
     notExistentHWCFiles.clear();
     usedHWCFiles.clear();
     grammarFiles.clear();
+    userTemplates.clear();
     filesThatMatterButAreNotThereInTime.clear();
     inputFile = inputFilePath.toString();
 
@@ -98,6 +101,17 @@ public abstract class IncGenReporter extends AReporter {
     }
     if (!toAdd.isEmpty() && !grammarFiles.contains(toAdd)) {
       grammarFiles.add(toAdd);
+    }
+  }
+
+  /**
+   * @see de.monticore.generating.templateengine.reporting.commons.DefaultReportEventHandler#reportUserSpecificTemplate(java.nio.file.Path,
+   * java.nio.file.Path)
+   */
+  @Override
+  public void reportUserSpecificTemplate(Path parentDir, Path fileName) {
+    if (parentDir != null) {
+      userTemplates.add(Paths.get(parentDir.toString(), fileName.toString()).toString());
     }
   }
 

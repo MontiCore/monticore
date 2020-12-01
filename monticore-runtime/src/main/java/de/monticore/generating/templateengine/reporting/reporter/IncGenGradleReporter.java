@@ -63,6 +63,20 @@ public class IncGenGradleReporter extends IncGenReporter {
         }
       }
     }
+    //create check: user templates changed or deleted?
+    for (String s : userTemplates) {
+      //only local files are important
+      if (!s.contains(".jar")) {
+        File inputFile = new File(s);
+        String checkSum;
+        if (inputFile.exists()) {
+          checkSum = IncrementalChecker.getChecksum(inputFile.toString());
+        }else{
+          checkSum = MISSING;
+        }
+        writeLine("ftl:" + s.replaceAll("\\\\", "/") + " " + checkSum);
+      }
+    }
     // create check: used file deleted?
     for (String p : usedHWCFiles) {
 //      writeLine("if (-not (Test-Path " + p + ")) { echo \"" + p + " removed!\"; exit}");
