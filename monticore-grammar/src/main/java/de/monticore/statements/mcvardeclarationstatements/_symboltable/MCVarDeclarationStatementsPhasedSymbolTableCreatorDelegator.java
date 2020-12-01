@@ -8,14 +8,14 @@ public class MCVarDeclarationStatementsPhasedSymbolTableCreatorDelegator extends
   public MCVarDeclarationStatementsPhasedSymbolTableCreatorDelegator(IMCVarDeclarationStatementsGlobalScope globalScope) {
     super(globalScope);
     MCVarDeclarationStatementsTraverser traverser = MCVarDeclarationStatementsMill.traverser();
-    traverser.addMCVarDeclarationStatementsVisitor(new MCVarDeclarationStatementsSTCompleteTypes());
+    traverser.add4MCVarDeclarationStatements(new MCVarDeclarationStatementsSTCompleteTypes());
     this.priorityList.add(traverser);
   }
 
   public MCVarDeclarationStatementsPhasedSymbolTableCreatorDelegator(){
     super();
     MCVarDeclarationStatementsTraverser traverser = MCVarDeclarationStatementsMill.traverser();
-    traverser.addMCVarDeclarationStatementsVisitor(new MCVarDeclarationStatementsSTCompleteTypes());
+    traverser.add4MCVarDeclarationStatements(new MCVarDeclarationStatementsSTCompleteTypes());
     this.priorityList.add(traverser);
   }
 

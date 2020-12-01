@@ -16,7 +16,7 @@ public class CompletenessFullPrettyPrinter {
     this.traverser = CompletenessMill.traverser();
 
     CompletenessPrettyPrinter completeness = new CompletenessPrettyPrinter(printer);
-    traverser.addCompletenessVisitor(completeness);
+    traverser.add4Completeness(completeness);
     traverser.setCompletenessHandler(completeness);
   }
 

@@ -16,14 +16,14 @@ public class UMLStereotypeFullPrettyPrinter {
     this.traverser = UMLStereotypeMill.traverser();
 
     UMLStereotypePrettyPrinter umlStereotype = new UMLStereotypePrettyPrinter(printer);
-    traverser.addUMLStereotypeVisitor(umlStereotype);
+    traverser.add4UMLStereotype(umlStereotype);
     traverser.setUMLStereotypeHandler(umlStereotype);
 
     MCCommonLiteralsPrettyPrinter commonLiterals = new MCCommonLiteralsPrettyPrinter(printer);
-    traverser.addMCCommonLiteralsVisitor(commonLiterals);
+    traverser.add4MCCommonLiterals(commonLiterals);
     traverser.setMCCommonLiteralsHandler(commonLiterals);
 
-    traverser.addMCBasicsVisitor(new MCBasicsPrettyPrinter(printer));
+    traverser.add4MCBasics(new MCBasicsPrettyPrinter(printer));
   }
 
   public UMLStereotypeTraverser getTraverser() {

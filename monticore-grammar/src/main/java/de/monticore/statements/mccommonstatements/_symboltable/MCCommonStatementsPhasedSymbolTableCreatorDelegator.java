@@ -8,14 +8,14 @@ public class MCCommonStatementsPhasedSymbolTableCreatorDelegator extends MCCommo
   public MCCommonStatementsPhasedSymbolTableCreatorDelegator(IMCCommonStatementsGlobalScope globalScope) {
     super(globalScope);
     MCCommonStatementsTraverser traverser = MCCommonStatementsMill.traverser();
-    traverser.addMCCommonStatementsVisitor(new MCCommonStatementsSTCompleteTypes());
+    traverser.add4MCCommonStatements(new MCCommonStatementsSTCompleteTypes());
     this.priorityList.add(traverser);
   }
 
   public MCCommonStatementsPhasedSymbolTableCreatorDelegator(){
     super();
     MCCommonStatementsTraverser traverser = MCCommonStatementsMill.traverser();
-    traverser.addMCCommonStatementsVisitor(new MCCommonStatementsSTCompleteTypes());
+    traverser.add4MCCommonStatements(new MCCommonStatementsSTCompleteTypes());
     this.priorityList.add(traverser);
   }
 

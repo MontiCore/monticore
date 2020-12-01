@@ -16,18 +16,18 @@ public class UMLModifierFullPrettyPrinter {
     this.traverser = UMLModifierMill.traverser();
 
     UMLModifierPrettyPrinter umlModifier = new UMLModifierPrettyPrinter(printer);
-    traverser.addUMLModifierVisitor(umlModifier);
+    traverser.add4UMLModifier(umlModifier);
     traverser.setUMLModifierHandler(umlModifier);
 
     MCCommonLiteralsPrettyPrinter commonLiterals = new MCCommonLiteralsPrettyPrinter(printer);
-    traverser.addMCCommonLiteralsVisitor(commonLiterals);
+    traverser.add4MCCommonLiterals(commonLiterals);
     traverser.setMCCommonLiteralsHandler(commonLiterals);
 
     UMLStereotypePrettyPrinter umlStereotype = new UMLStereotypePrettyPrinter(printer);
-    traverser.addUMLStereotypeVisitor(umlStereotype);
+    traverser.add4UMLStereotype(umlStereotype);
     traverser.setUMLStereotypeHandler(umlStereotype);
 
-    traverser.addMCBasicsVisitor(new MCBasicsPrettyPrinter(printer));
+    traverser.add4MCBasics(new MCBasicsPrettyPrinter(printer));
   }
 
   public UMLModifierTraverser getTraverser() {

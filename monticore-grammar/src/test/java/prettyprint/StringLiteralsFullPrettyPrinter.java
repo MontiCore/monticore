@@ -17,10 +17,10 @@ public class StringLiteralsFullPrettyPrinter {
     this.traverser = StringLiteralsMill.traverser();
 
     StringLiteralsPrettyPrinter stringLiterals = new StringLiteralsPrettyPrinter(printer);
-    traverser.addStringLiteralsVisitor(stringLiterals);
+    traverser.add4StringLiterals(stringLiterals);
     traverser.setStringLiteralsHandler(stringLiterals);
 
-    traverser.addMCBasicsVisitor(new MCBasicsPrettyPrinter(printer));
+    traverser.add4MCBasics(new MCBasicsPrettyPrinter(printer));
   }
 
   public StringLiteralsTraverser getTraverser() {

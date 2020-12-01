@@ -17,9 +17,9 @@ public class ExpressionsBasisFullPrettyPrinter {
 
     ExpressionsBasisPrettyPrinter basisExpression = new ExpressionsBasisPrettyPrinter(printer);
     traverser.setExpressionsBasisHandler(basisExpression);
-    traverser.addExpressionsBasisVisitor(basisExpression);
+    traverser.add4ExpressionsBasis(basisExpression);
     MCBasicsPrettyPrinter basics = new MCBasicsPrettyPrinter(printer);
-    traverser.addMCBasicsVisitor(basics);
+    traverser.add4MCBasics(basics);
   }
 
   public IndentPrinter getPrinter() {

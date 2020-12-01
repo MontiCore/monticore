@@ -15,12 +15,12 @@ public class SetExpressionsFullPrettyPrinter extends ExpressionsBasisFullPrettyP
 
     ExpressionsBasisPrettyPrinter basisExpression = new ExpressionsBasisPrettyPrinter(printer);
     traverser.setExpressionsBasisHandler(basisExpression);
-    traverser.addExpressionsBasisVisitor(basisExpression);
+    traverser.add4ExpressionsBasis(basisExpression);
     MCBasicsPrettyPrinter basics = new MCBasicsPrettyPrinter(printer);
-    traverser.addMCBasicsVisitor(basics);
+    traverser.add4MCBasics(basics);
     SetExpressionsPrettyPrinter setExpressions = new SetExpressionsPrettyPrinter(printer);
     traverser.setSetExpressionsHandler(setExpressions);
-    traverser.addSetExpressionsVisitor(setExpressions);
+    traverser.add4SetExpressions(setExpressions);
   }
 
   @Override

@@ -17,12 +17,12 @@ public class OCLExpressionsFullPrettyPrinter extends ExpressionsBasisFullPrettyP
 
     ExpressionsBasisPrettyPrinter basisExpression = new ExpressionsBasisPrettyPrinter(printer);
     traverser.setExpressionsBasisHandler(basisExpression);
-    traverser.addExpressionsBasisVisitor(basisExpression);
+    traverser.add4ExpressionsBasis(basisExpression);
     MCBasicsPrettyPrinter basics = new MCBasicsPrettyPrinter(printer);
-    traverser.addMCBasicsVisitor(basics);
+    traverser.add4MCBasics(basics);
     OCLExpressionsPrettyPrinter oclExpressions = new OCLExpressionsPrettyPrinter(printer);
     traverser.setOCLExpressionsHandler(oclExpressions);
-    traverser.addOCLExpressionsVisitor(oclExpressions);
+    traverser.add4OCLExpressions(oclExpressions);
   }
 
   @Override

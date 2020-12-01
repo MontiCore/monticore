@@ -25,38 +25,38 @@ public class JavaLightFullPrettyPrinter {
     this.traverser = JavaLightMill.traverser();
 
     MCBasicTypesPrettyPrinter basicTypes = new MCBasicTypesPrettyPrinter(printer);
-    traverser.addMCBasicTypesVisitor(basicTypes);
+    traverser.add4MCBasicTypes(basicTypes);
     traverser.setMCBasicTypesHandler(basicTypes);
 
     ExpressionsBasisPrettyPrinter expressionsBasis = new ExpressionsBasisPrettyPrinter(printer);
-    traverser.addExpressionsBasisVisitor(expressionsBasis);
+    traverser.add4ExpressionsBasis(expressionsBasis);
     traverser.setExpressionsBasisHandler(expressionsBasis);
 
     MCCommonStatementsPrettyPrinter commonStatements = new MCCommonStatementsPrettyPrinter(printer);
-    traverser.addMCCommonStatementsVisitor(commonStatements);
+    traverser.add4MCCommonStatements(commonStatements);
     traverser.setMCCommonStatementsHandler(commonStatements);
 
     AssignmentExpressionsPrettyPrinter assignmentExpressions = new AssignmentExpressionsPrettyPrinter(printer);
-    traverser.addAssignmentExpressionsVisitor(assignmentExpressions);
+    traverser.add4AssignmentExpressions(assignmentExpressions);
     traverser.setAssignmentExpressionsHandler(assignmentExpressions);
 
     MCVarDeclarationStatementsPrettyPrinter varDecl = new MCVarDeclarationStatementsPrettyPrinter(printer);
-    traverser.addMCVarDeclarationStatementsVisitor(varDecl);
+    traverser.add4MCVarDeclarationStatements(varDecl);
     traverser.setMCVarDeclarationStatementsHandler(varDecl);
 
     JavaLightPrettyPrinter javaLight = new JavaLightPrettyPrinter(printer);
-    traverser.addJavaLightVisitor(javaLight);
+    traverser.add4JavaLight(javaLight);
     traverser.setJavaLightHandler(javaLight);
 
     JavaClassExpressionsPrettyPrinter javaClassExpressions = new JavaClassExpressionsPrettyPrinter(printer);
-    traverser.addJavaClassExpressionsVisitor(javaClassExpressions);
+    traverser.add4JavaClassExpressions(javaClassExpressions);
     traverser.setJavaClassExpressionsHandler(javaClassExpressions);
 
     MCArrayStatementsPrettyPrinter arrayStatements = new MCArrayStatementsPrettyPrinter(printer);
-    traverser.addMCArrayStatementsVisitor(arrayStatements);
+    traverser.add4MCArrayStatements(arrayStatements);
     traverser.setMCArrayStatementsHandler(arrayStatements);
 
-    traverser.addMCBasicsVisitor(new MCBasicsPrettyPrinter(printer));
+    traverser.add4MCBasics(new MCBasicsPrettyPrinter(printer));
   }
 
   public IndentPrinter getPrinter() {

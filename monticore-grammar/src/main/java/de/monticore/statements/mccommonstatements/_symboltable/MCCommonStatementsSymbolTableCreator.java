@@ -45,13 +45,13 @@ public   class MCCommonStatementsSymbolTableCreator extends MCCommonStatementsSy
     SynthesizeSymTypeFromMCBasicTypes synFromBasic = new SynthesizeSymTypeFromMCBasicTypes();
 
     MCFullGenericTypesTraverser traverser = MCFullGenericTypesMill.traverser();
-    traverser.addMCFullGenericTypesVisitor(synFromFull);
+    traverser.add4MCFullGenericTypes(synFromFull);
     traverser.setMCFullGenericTypesHandler(synFromFull);
-    traverser.addMCSimpleGenericTypesVisitor(synFromSimple);
+    traverser.add4MCSimpleGenericTypes(synFromSimple);
     traverser.setMCSimpleGenericTypesHandler(synFromSimple);
-    traverser.addMCCollectionTypesVisitor(synFromCollection);
+    traverser.add4MCCollectionTypes(synFromCollection);
     traverser.setMCCollectionTypesHandler(synFromCollection);
-    traverser.addMCBasicTypesVisitor(synFromBasic);
+    traverser.add4MCBasicTypes(synFromBasic);
     traverser.setMCBasicTypesHandler(synFromBasic);
     return traverser;
   }
