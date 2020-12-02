@@ -14,7 +14,7 @@ import de.se_rwth.commons.logging.Log;
  * types/MCArrayTypes.mc4
  */
 public class SynthesizeSymTypeFromMCArrayTypes extends AbstractSynthesizeFromType
-    implements MCArrayTypesVisitor2, MCArrayTypesHandler, ISynthesize {
+    implements MCArrayTypesVisitor2, MCArrayTypesHandler {
 
   protected MCArrayTypesTraverser traverser;
 

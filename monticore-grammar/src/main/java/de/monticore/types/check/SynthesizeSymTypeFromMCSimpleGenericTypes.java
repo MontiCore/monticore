@@ -20,7 +20,7 @@ import java.util.List;
  * types/MCSimpleGenericTypes.mc4
  */
 public class SynthesizeSymTypeFromMCSimpleGenericTypes extends AbstractSynthesizeFromType
-    implements MCSimpleGenericTypesVisitor2, MCSimpleGenericTypesHandler, ISynthesize {
+    implements MCSimpleGenericTypesVisitor2, MCSimpleGenericTypesHandler {
 
 
   protected MCSimpleGenericTypesTraverser traverser;
