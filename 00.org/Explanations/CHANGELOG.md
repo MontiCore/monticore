@@ -11,6 +11,7 @@ to be released
     * Due to multiple inheritance, delegation and subclasses are used in combination 
 * experiments now showcase the use of traversers   
 * add coco (checks if additional attributes are declared twice)
+* added built-in primitive types to the mills of grammars that extend the grammar BasicSymbols. Add to Mill by executing `BasicSymbolsMill.initializePrimitives()`
 
 ### Changes
 * The generated parser uses the builder instead of the factory. This means that in grammars the variable `_aNode` is no longer available. Use instead `_builder`. 
@@ -29,6 +30,9 @@ to be released
 * Deprecated the `XPhasedSymbolTableCreatorDelegator`, will be removed without replacement in a future release
 * PrettyPrinters and other visitors in monticore-grammar now use the new Traverser infrastructure instead of the old Visitor infrastructure
 * generated `XScopeGenitor` and `XScopeGenitorDelegator` now use the new Traverser infrastructure instead of the old Visitor infrastructure
+* Changes to resolving
+  * if name of a topLevelSymbol in ArtifactScope = name of ArtifactScope: qualify symbols in spanned scopes of the topLevelSymbol like before with `<topLevelSymbolName>.<symbolName>`
+  * if name of a topLevelSymbol in ArtifactScope != name of ArtifactScope: qualify symbols in spanned scope of the topLevelSymbol with `<ArtifactScopeName>.<topLevelSymbolName>.<symbolName>` 
 
 ### Fixes
 * Traverser now properly delegate to handlers as intended
