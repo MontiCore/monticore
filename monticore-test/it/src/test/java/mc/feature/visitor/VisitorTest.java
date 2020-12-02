@@ -36,14 +36,14 @@ public class VisitorTest extends GeneratorIntegrationsTest {
     // Running Visitor
     SubTraverser t1 = SubMill.traverser();
     SubConcreteVisitor v = new SubConcreteVisitor();
-    t1.addSubVisitor(v);
+    t1.add4Sub(v);
     
     t1.handle(node.get());
     assertTrue(v.hasVisited());
 
     SubTraverser t2 = SubMill.traverser();
     SupVisitor2 vSup = new SupVisitor2() {};
-    t2.addSupVisitor(vSup);
+    t2.add4Sup(vSup);
     long errorCount = Log.getErrorCount();
     // no expected error, as super visitor should run on sub language
     t2.handle(node.get());
