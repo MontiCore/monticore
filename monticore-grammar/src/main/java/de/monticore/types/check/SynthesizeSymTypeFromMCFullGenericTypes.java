@@ -14,7 +14,7 @@ import de.se_rwth.commons.logging.Log;
  * types/MCFullGenericTypes.mc4
  */
 public class SynthesizeSymTypeFromMCFullGenericTypes extends AbstractSynthesizeFromType
-    implements MCFullGenericTypesVisitor2, MCFullGenericTypesHandler, ISynthesize {
+    implements MCFullGenericTypesVisitor2, MCFullGenericTypesHandler {
 
   protected MCFullGenericTypesTraverser traverser;
 

@@ -116,35 +116,17 @@ public class JavaLightSTCompleteTypes implements JavaLightVisitor2 {
   }
 
   private SymTypeExpression createTypeLoader(ASTMCQualifiedName ast) {
-    SynthesizeSymTypeFromMCFullGenericTypes synFromFull = new SynthesizeSymTypeFromMCFullGenericTypes();
+    FullSynthesizeFromMCFullGenericTypes synFromFull = new FullSynthesizeFromMCFullGenericTypes();
     // Start visitor
-    ast.accept(getSynthesizer(synFromFull));
+    ast.accept(synFromFull.getTraverser());
     return synFromFull.getResult().orElse(new SymTypeOfNull());
   }
 
   private SymTypeExpression createTypeLoader(ASTMCType ast) {
-    SynthesizeSymTypeFromMCFullGenericTypes synFromFull = new SynthesizeSymTypeFromMCFullGenericTypes();
+    FullSynthesizeFromMCFullGenericTypes synFromFull = new FullSynthesizeFromMCFullGenericTypes();
     // Start visitor
-    ast.accept(getSynthesizer(synFromFull));
+    ast.accept(synFromFull.getTraverser());
     return synFromFull.getResult().orElse(new SymTypeOfNull());
-  }
-
-  private MCFullGenericTypesTraverser getSynthesizer(SynthesizeSymTypeFromMCFullGenericTypes synFromFull){
-    SynthesizeSymTypeFromMCSimpleGenericTypes synFromSimple = new SynthesizeSymTypeFromMCSimpleGenericTypes();
-    SynthesizeSymTypeFromMCCollectionTypes synFromCollection = new SynthesizeSymTypeFromMCCollectionTypes();
-    SynthesizeSymTypeFromMCBasicTypes synFromBasic = new SynthesizeSymTypeFromMCBasicTypes();
-
-    MCFullGenericTypesTraverser traverser = MCFullGenericTypesMill.traverser();
-    traverser.add4MCFullGenericTypes(synFromFull);
-    traverser.setMCFullGenericTypesHandler(synFromFull);
-    traverser.add4MCSimpleGenericTypes(synFromSimple);
-    traverser.setMCSimpleGenericTypesHandler(synFromSimple);
-    traverser.add4MCCollectionTypes(synFromCollection);
-    traverser.setMCCollectionTypesHandler(synFromCollection);
-    traverser.add4MCBasicTypes(synFromBasic);
-    traverser.setMCBasicTypesHandler(synFromBasic);
-
-    return traverser;
   }
 
   private SymTypeExpression createTypeLoader(ASTMCReturnType ast) {
