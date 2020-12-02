@@ -31,6 +31,7 @@ public class BasicJavaToolTest {
     ModelPath mp = new ModelPath(Paths.get("src/test/resources/example"));
     IAutomata7ArtifactScope symTab = JavaAndAutTool
         .createJavaAndAutSymTab("src/test/resources/example/PingPong.aut", mp);
+    symTab.setName("PingPong");
     Optional<StimulusSymbol> hit = symTab.resolveStimulus("Hit");
     assertTrue(hit.isPresent());
     assertEquals("Hit", hit.get().getName());
