@@ -144,8 +144,7 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
           .createMethod(PUBLIC, astcdAttribute.getMCType(), methodName , jsonParam);
       String generatedErrorCode = symbolTableService.getGeneratedErrorCode(methodName);
       HookPoint deserImplementation = DeSerMap.getDeserializationImplementation(astcdAttribute, methodName, "symbolJson",
-              // TODO Find correct scope!
-              null, generatedErrorCode);
+               generatedErrorCode);
         this.replaceTemplate(EMPTY_BODY, deserializeMethod, deserImplementation);
       methodList.add(deserializeMethod);
     }
