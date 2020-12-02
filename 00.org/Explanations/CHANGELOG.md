@@ -33,6 +33,8 @@ to be released
 * Changes to resolving
   * if name of a topLevelSymbol in ArtifactScope = name of ArtifactScope: qualify symbols in spanned scopes of the topLevelSymbol like before with `<topLevelSymbolName>.<symbolName>`
   * if name of a topLevelSymbol in ArtifactScope != name of ArtifactScope: qualify symbols in spanned scope of the topLevelSymbol with `<ArtifactScopeName>.<topLevelSymbolName>.<symbolName>` 
+* Traverser now support lists of `Visitor2` interfaces instead of only one instance
+* Rename accessor of Traverser from `addXVisitor` to `add4X` 
 
 ### Fixes
 * Traverser now properly delegate to handlers as intended
