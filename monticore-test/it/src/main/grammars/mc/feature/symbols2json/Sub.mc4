@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.feature.symbols2json;
+
+grammar Sub extends mc.feature.symbols2json.Sup1,
+                    mc.feature.symbols2json.Sup2 {
+
+    symbol C = "test" Name;
+
+    symbolrule C = type:String* isAdditional:boolean*;
+}
+    

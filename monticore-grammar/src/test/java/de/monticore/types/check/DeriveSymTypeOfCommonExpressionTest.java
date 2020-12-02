@@ -682,31 +682,25 @@ public class DeriveSymTypeOfCommonExpressionTest {
     globalScope.setModelPath(new ModelPath());
     globalScope.setFileExt("ce");
 
-    ICombineExpressionsWithLiteralsArtifactScope artifactScope1 = CombineExpressionsWithLiteralsMill.artifactScope();
-    artifactScope1.setEnclosingScope(globalScope);
-    artifactScope1.setImportsList(Lists.newArrayList());
-    artifactScope1.setPackageName("");
-
     ICombineExpressionsWithLiteralsArtifactScope artifactScope2 = CombineExpressionsWithLiteralsMill.artifactScope();
     artifactScope2.setEnclosingScope(globalScope);
     artifactScope2.setImportsList(Lists.newArrayList());
     artifactScope2.setPackageName("");
+    artifactScope2.setName("types");
 
     ICombineExpressionsWithLiteralsArtifactScope artifactScope3 = CombineExpressionsWithLiteralsMill.artifactScope();
     artifactScope3.setEnclosingScope(globalScope);
     artifactScope3.setImportsList(Lists.newArrayList());
-    artifactScope3.setPackageName("types2");
+    artifactScope3.setName("types2");
 
     ICombineExpressionsWithLiteralsArtifactScope artifactScope4 = CombineExpressionsWithLiteralsMill.artifactScope();
-    artifactScope4.setEnclosingScope(artifactScope3);
+    artifactScope4.setEnclosingScope(globalScope);
     artifactScope4.setImportsList(Lists.newArrayList());
+    artifactScope4.setName("types3");
     artifactScope4.setPackageName("types3");
 
     scope = globalScope;
     // No enclosing Scope: Search ending here
-    ICombineExpressionsWithLiteralsScope scope2 = CombineExpressionsWithLiteralsMill.scope();
-    scope2.setName("types");
-    scope2.setEnclosingScope(artifactScope2);
 
     ICombineExpressionsWithLiteralsScope scope3 = CombineExpressionsWithLiteralsMill.scope();
     scope3.setName("types2");
@@ -731,15 +725,15 @@ public class DeriveSymTypeOfCommonExpressionTest {
         .setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student",scope)))
         .setEnclosingScope(scope)
         .build();
-    add2scope(scope2, person);
+    add2scope(artifactScope2, person);
     add2scope(scope3, person);
     add2scope(scope, person);
 
-    add2scope(scope2, student);
+    add2scope(artifactScope2, student);
     add2scope(scope3, student);
     add2scope(scope, student);
 
-    add2scope(scope2, firstsemesterstudent);
+    add2scope(artifactScope2, firstsemesterstudent);
     add2scope(scope3, firstsemesterstudent);
     add2scope(scope, firstsemesterstudent);
 
@@ -770,7 +764,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     OOTypeSymbol testType2 = OOSymbolsMill.oOTypeSymbolBuilder()
         .setName("Test")
         .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
-        .setEnclosingScope(scope2)
+        .setEnclosingScope(artifactScope2)
         .build();
     testType2.setMethodList(Lists.newArrayList(ms,ms1));
     testType2.addFieldSymbol(fs);
@@ -798,7 +792,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
 
     testType3.setSpannedScope(testScope);
 
-    add2scope(scope2, testType2);
+    add2scope(artifactScope2, testType2);
     add2scope(scope3, testType3);
     add2scope(scope,testType);
 
@@ -819,7 +813,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     String s = "types.Test";
     ASTExpression astex = p.parse_StringExpression(s).get();
     astex.accept(traverser);
-    assertEquals("types.Test", tc.typeOf(astex).print());
+    assertEquals("Test", tc.typeOf(astex).print());
 
     //test for variable of a type with one package
     s = "types.Test.variable";
@@ -828,13 +822,13 @@ public class DeriveSymTypeOfCommonExpressionTest {
     assertEquals("int", tc.typeOf(astex).print());
 
     //test for type with more than one package
-    s = "types2.types3.types2.Test";
+    s = "types3.types2.Test";
     astex = p.parse_StringExpression(s).get();
     astex.accept(traverser);
-    assertEquals("types3.types3.types2.Test", tc.typeOf(astex).print());
+    assertEquals("types3.types2.Test", tc.typeOf(astex).print());
 
     //test for variable of type with more than one package
-    s = "types2.types3.types2.Test.variable";
+    s = "types3.types2.Test.variable";
     astex = p.parse_StringExpression(s).get();
     astex.accept(traverser);
     assertEquals("int", tc.typeOf(astex).print());
@@ -845,7 +839,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     assertEquals("Test", tc.typeOf(astex).print());
 
     //test for variable in inner type
-    s="types2.types3.types2.Test.TestInnerType.testVariable";
+    s="types3.types2.Test.TestInnerType.testVariable";
     astex = p.parse_StringExpression(s).get();
     astex.accept(traverser);
     assertEquals("short",tc.typeOf(astex).print());

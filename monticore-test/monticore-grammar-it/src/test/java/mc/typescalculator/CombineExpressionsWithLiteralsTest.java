@@ -15,7 +15,6 @@ import mc.testcd4analysis.TestCD4AnalysisMill;
 import mc.testcd4analysis._symboltable.ITestCD4AnalysisGlobalScope;
 import mc.typescalculator.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 import mc.typescalculator.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
-import mc.typescalculator.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsSymbolTableCreatorDelegator;
 import mc.typescalculator.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsArtifactScope;
 import mc.typescalculator.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsGlobalScope;
 import mc.typescalculator.combineexpressionswithliterals._symboltable.*;
@@ -80,37 +79,32 @@ public class CombineExpressionsWithLiteralsTest {
 
     assertTrue(expr.isPresent());
     ICombineExpressionsWithLiteralsArtifactScope art = del.createFromAST(expr.get());
+    art.setName("");
     art.setImportsList(Lists.newArrayList(new ImportStatement("mc.typescalculator.TestCD.D", true)));
     Optional<SymTypeExpression> j = calc.calculateType(expr.get());
     assertTrue(j.isPresent());
     assertEquals("int", unbox(j.get().print()));
 
-    Optional<ASTExpression> expr2 = p.parse_StringExpression("s+=s");
-    assertTrue(expr2.isPresent());
-    del.createFromAST(expr2.get());
-
-    Optional<SymTypeExpression> j2 = calc.calculateType(expr2.get());
-    assertTrue(j2.isPresent());
-    assertEquals("int",j2.get().print());
-
     Optional<ASTExpression> exprC = p.parse_StringExpression("d.f = mc.typescalculator.TestCD.C.f");
     assertTrue(exprC.isPresent());
-    del.createFromAST(exprC.get());
+    ICombineExpressionsWithLiteralsArtifactScope artifactScope = del.createFromAST(exprC.get());
+    artifactScope.setName("");
     j = calc.calculateType(exprC.get());
     assertTrue(j.isPresent());
     assertEquals("G",j.get().print());
 
     Optional<ASTExpression> exprD = p.parse_StringExpression("(b.a)++");
     assertTrue(exprD.isPresent());
-    del.createFromAST(exprD.get());
+    artifactScope = del.createFromAST(exprD.get());
+    artifactScope.setName("");
     Optional<SymTypeExpression> j3 = calc.calculateType(exprD.get());
     assertTrue(j3.isPresent());
     assertEquals("double",j3.get().print());
 
     Optional<ASTExpression> exprB = p.parse_StringExpression("b.x = mc.typescalculator.TestCD.B.z");
     assertTrue(exprB.isPresent());
-    del.createFromAST(exprB.get());
-
+    artifactScope = del.createFromAST(exprB.get());
+    artifactScope.setName("");
     ASTExpression eb = exprB.get();
 
     Optional<SymTypeExpression> k = calc.calculateType(eb);

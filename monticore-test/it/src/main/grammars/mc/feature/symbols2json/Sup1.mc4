@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.feature.symbols2json;
+
+grammar Sup1 extends mc.common.Basics {
+
+    symbol A = "foo" Name;
+
+    symbolrule A = type:String isInitial:boolean;
+}    
+    
