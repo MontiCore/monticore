@@ -27,7 +27,7 @@ to be released
 * Shortened the name of the `modelFileExtension` attribute in the `XGlobalScope` class to `fileExt`
 * renamed `XScopeSkeletonCreator` and `XScopeSkeletonCreatorDelegator` to `XScopesGenitor` and `XScopesGenitorDelegator`
 * Deprecated the `XPhasedSymbolTableCreatorDelegator`, will be removed without replacement in a future release
-* PrettyPrinters in monticore-grammar now use the new Traverser infrastructure instead of the old Visitor infrastructure
+* PrettyPrinters and other visitors in monticore-grammar now use the new Traverser infrastructure instead of the old Visitor infrastructure
 * generated `XScopeGenitor` and `XScopeGenitorDelegator` now use the new Traverser infrastructure instead of the old Visitor infrastructure
 
 ### Fixes
