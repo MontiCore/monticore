@@ -239,7 +239,7 @@ public class ArtifactScopeClassDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, method.getModifier());
     assertEquals(1, method.sizeCDParameters());
     assertEquals("enclosingScope", method.getCDParameter(0).getName());
-    assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.AutomatonScope", method.getCDParameter(0).getMCType());
+    assertDeepEquals(I_AUTOMATON_SCOPE, method.getCDParameter(0).getMCType());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
   }
 

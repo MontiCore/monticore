@@ -59,6 +59,7 @@ public class ArtifactScopeClassDecorator extends AbstractCreator<ASTCDCompilatio
     String artifactScopeSimpleName = symbolTableService.getArtifactScopeSimpleName();
     String scopeClassFullName = symbolTableService.getScopeClassFullName();
     String globalScopeClassSimpleName = symbolTableService.getGlobalScopeSimpleName();
+    String scopeInterfaceFullName = symbolTableService.getScopeInterfaceFullName();
 
     ASTCDAttribute packageNameAttribute = createPackageNameAttribute();
     ASTCDAttribute importsAttribute = createImportsAttribute();
@@ -76,7 +77,7 @@ public class ArtifactScopeClassDecorator extends AbstractCreator<ASTCDCompilatio
         .addCDMethod(createIsPresentNameMethod())
         .addCDMethod(createGetNameMethod())
         .addCDMethod(createAcceptMethod(artifactScopeSimpleName))
-        .addCDMethod(createSetEnclosingScopeMethod(scopeClassFullName, artifactScopeSimpleName, globalScopeClassSimpleName))
+        .addCDMethod(createSetEnclosingScopeMethod(scopeInterfaceFullName, artifactScopeSimpleName, globalScopeClassSimpleName))
         .addCDMethod(createAcceptTraverserMethod(artifactScopeSimpleName))
         .build();
   }
@@ -164,8 +165,8 @@ public class ArtifactScopeClassDecorator extends AbstractCreator<ASTCDCompilatio
     return acceptMethod;
   }
 
-  protected ASTCDMethod createSetEnclosingScopeMethod(String scopeClassSimpleName, String artifactScopeClassName, String globalScopeClassName){
-    ASTMCType scopeInterfaceType = getMCTypeFacade().createQualifiedType(scopeClassSimpleName);
+  protected ASTCDMethod createSetEnclosingScopeMethod(String scopeInterfaceFullName, String artifactScopeClassName, String globalScopeClassName){
+    ASTMCType scopeInterfaceType = getMCTypeFacade().createQualifiedType(scopeInterfaceFullName);
     ASTCDParameter enclosingScopeParameter = getCDParameterFacade().createParameter(scopeInterfaceType, "enclosingScope");
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, "setEnclosingScope", enclosingScopeParameter);
     String generatedErrorCode = symbolTableService.getGeneratedErrorCode(artifactScopeClassName);
