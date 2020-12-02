@@ -29,6 +29,8 @@ to be released
 * Deprecated the `XPhasedSymbolTableCreatorDelegator`, will be removed without replacement in a future release
 * PrettyPrinters and other visitors in monticore-grammar now use the new Traverser infrastructure instead of the old Visitor infrastructure
 * generated `XScopeGenitor` and `XScopeGenitorDelegator` now use the new Traverser infrastructure instead of the old Visitor infrastructure
+* Traverser now support lists of `Visitor2` interfaces instead of only one instance
+* Rename accessor of Traverser from `addXVisitor` to `add4X` 
 
 ### Fixes
 * Traverser now properly delegate to handlers as intended
