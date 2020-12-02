@@ -25,6 +25,7 @@ import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.DEQUE_TYPE;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SCOPE_STACK_VAR;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.TRAVERSER;
 
 public class ScopesGenitorDelegatorDecorator extends AbstractCreator<ASTCDCompilationUnit, Optional<ASTCDClass>> {
 
@@ -47,24 +48,24 @@ public class ScopesGenitorDelegatorDecorator extends AbstractCreator<ASTCDCompil
     Optional<String> startProd = symbolTableService.getStartProdASTFullName(input.getCDDefinition());
     if (startProd.isPresent()) {
       String astFullName = startProd.get();
+      String traverserName = visitorService.getTraverserInterfaceFullName();
       String scopesGenitorDelegatorName = symbolTableService.getScopesGenitorDelegatorSimpleName();
       String scopesGenitorName = symbolTableService.getScopesGenitorSimpleName();
       String scopeInterface = symbolTableService.getScopeInterfaceFullName();
       String globalScopeInterfaceName = symbolTableService.getGlobalScopeInterfaceFullName();
       String simpleName = symbolTableService.removeASTPrefix(Names.getSimpleName(astFullName));
       String artifactScopeName = symbolTableService.getArtifactScopeInterfaceFullName();
-      String delegatorVisitorName = visitorService.getDelegatorVisitorFullName();
       ASTMCBasicGenericType dequeType = getMCTypeFacade().createBasicGenericTypeOf(DEQUE_TYPE, scopeInterface);
       String cdName = symbolTableService.getCDName();
 
       ASTCDClass scopesGenitorDelegator = CD4CodeMill.cDClassBuilder()
           .setName(scopesGenitorDelegatorName)
           .setModifier(PUBLIC.build())
-          .setSuperclass(getMCTypeFacade().createQualifiedType(delegatorVisitorName))
           .addAllCDConstructors(createConstructors(scopesGenitorDelegatorName, globalScopeInterfaceName, simpleName, cdName))
           .addCDAttribute(createScopeStackAttribute(dequeType))
           .addCDAttribute(createScopeSkeletonCreatorAttributes(scopesGenitorName))
           .addCDAttribute(createGlobalScopeAttribute(globalScopeInterfaceName))
+          .addCDAttribute(createTraverserAttribute(traverserName))
           .addCDMethod(createCreateFromASTMethod(astFullName, artifactScopeName))
           .build();
       return Optional.ofNullable(scopesGenitorDelegator);
@@ -107,6 +108,10 @@ public class ScopesGenitorDelegatorDecorator extends AbstractCreator<ASTCDCompil
 
   protected ASTCDAttribute createGlobalScopeAttribute(String globalScopeInterface) {
     return getCDAttributeFacade().createAttribute(PROTECTED, globalScopeInterface, "globalScope");
+  }
+
+  protected ASTCDAttribute createTraverserAttribute(String traverserName){
+    return getCDAttributeFacade().createAttribute(PROTECTED, traverserName, TRAVERSER);
   }
 
   protected ASTCDMethod createCreateFromASTMethod(String startProd, String artifactScope) {

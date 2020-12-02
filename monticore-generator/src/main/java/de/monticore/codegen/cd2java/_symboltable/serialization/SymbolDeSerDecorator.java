@@ -10,6 +10,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.utils.Names;
 import de.se_rwth.commons.StringTransformations;
 
@@ -47,11 +48,13 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
 
     ASTCDAttribute symbolTablePrinter = getCDAttributeFacade().createAttribute(PROTECTED,
         getMCTypeFacade().createQualifiedType(symbolTableService.getSymbols2JsonFullName()),"symbolTablePrinter");
+    ASTMCQualifiedType interfaceName = getMCTypeFacade().createQualifiedType(I_DE_SER+"<"+symbolFullName+">");
 
 
     return CD4CodeMill.cDClassBuilder()
         .setName(symbolDeSerName)
         .setModifier(PUBLIC.build())
+        .addInterface(interfaceName)
         .addCDConstructor(createConstructor(symbolDeSerName))
         .addCDAttribute(symbolTablePrinter)
         .addCDMethod(createGetSerializedKindMethod(symbolFullName))

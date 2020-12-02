@@ -6,6 +6,7 @@ import com.google.common.collect.Lists;
 import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsScope;
+import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.se_rwth.commons.logging.Log;
@@ -27,7 +28,7 @@ import static org.junit.Assert.assertTrue;
 public class TypeCheckTest {
 
   private ICombineExpressionsWithLiteralsScope scope;
-  private TypeCheck tc = new TypeCheck(null, new DeriveSymTypeOfCombineExpressionsDelegator());
+  private TypeCheck tc = new TypeCheck(new SynthesizeSymTypeFromCombineExpressionsWithLiteralsDelegator(), new DeriveSymTypeOfCombineExpressionsDelegator());
   private CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
   private FlatExpressionScopeSetter flatExpressionScopeSetter;
 
@@ -90,20 +91,21 @@ public class TypeCheckTest {
   @Test
   public void testIsOfTypeForAssign() throws IOException {
     //primitives
+    CombineExpressionsWithLiteralsTraverser traverser = getTraverser(flatExpressionScopeSetter);
     ASTExpression bool1 = p.parse_StringExpression("true").get();
-    bool1.accept(flatExpressionScopeSetter);
+    bool1.accept(traverser);
     ASTExpression bool2 = p.parse_StringExpression("false").get();
-    bool2.accept(flatExpressionScopeSetter);
+    bool2.accept(traverser);
     ASTExpression float1 = p.parse_StringExpression("3.4f").get();
-    float1.accept(flatExpressionScopeSetter);
+    float1.accept(traverser);
     ASTExpression int1 = p.parse_StringExpression("3").get();
-    int1.accept(flatExpressionScopeSetter);
+    int1.accept(traverser);
     ASTExpression double1 = p.parse_StringExpression("3.46").get();
-    double1.accept(flatExpressionScopeSetter);
+    double1.accept(traverser);
     ASTExpression long1 = p.parse_StringExpression("5L").get();
-    long1.accept(flatExpressionScopeSetter);
+    long1.accept(traverser);
     ASTExpression char1 = p.parse_StringExpression("\'a\'").get();
-    char1.accept(flatExpressionScopeSetter);
+    char1.accept(traverser);
 
     assertTrue(tc.isOfTypeForAssign(tc.typeOf(bool1), bool2));
     assertTrue(tc.isOfTypeForAssign(tc.typeOf(double1), int1));
@@ -118,11 +120,11 @@ public class TypeCheckTest {
 
     //non-primitives
     ASTExpression pers = p.parse_StringExpression("Person").get();
-    pers.accept(flatExpressionScopeSetter);
+    pers.accept(traverser);
     ASTExpression stud = p.parse_StringExpression("Student").get();
-    stud.accept(flatExpressionScopeSetter);
+    stud.accept(traverser);
     ASTExpression fstud = p.parse_StringExpression("FirstSemesterStudent").get();
-    fstud.accept(flatExpressionScopeSetter);
+    fstud.accept(traverser);
 
     assertTrue(tc.isOfTypeForAssign(tc.typeOf(pers), stud));
     assertTrue(tc.isOfTypeForAssign(tc.typeOf(pers), fstud));
@@ -138,20 +140,21 @@ public class TypeCheckTest {
   @Test
   public void testIsSubtype() throws IOException {
     //primitives
+    CombineExpressionsWithLiteralsTraverser traverser = getTraverser(flatExpressionScopeSetter);
     ASTExpression bool1 = p.parse_StringExpression("true").get();
-    bool1.accept(flatExpressionScopeSetter);
+    bool1.accept(traverser);
     ASTExpression bool2 = p.parse_StringExpression("false").get();
-    bool2.accept(flatExpressionScopeSetter);
+    bool2.accept(traverser);
     ASTExpression float1 = p.parse_StringExpression("3.4f").get();
-    float1.accept(flatExpressionScopeSetter);
+    float1.accept(traverser);
     ASTExpression int1 = p.parse_StringExpression("3").get();
-    int1.accept(flatExpressionScopeSetter);
+    int1.accept(traverser);
     ASTExpression double1 = p.parse_StringExpression("3.46").get();
-    double1.accept(flatExpressionScopeSetter);
+    double1.accept(traverser);
     ASTExpression long1 = p.parse_StringExpression("5L").get();
-    long1.accept(flatExpressionScopeSetter);
+    long1.accept(traverser);
     ASTExpression char1 = p.parse_StringExpression("\'a\'").get();
-    char1.accept(flatExpressionScopeSetter);
+    char1.accept(traverser);
 
 
     assertFalse(isSubtypeOf(tc.typeOf(bool1), tc.typeOf(bool2)));
@@ -167,11 +170,11 @@ public class TypeCheckTest {
 
     //non-primitives
     ASTExpression pers = p.parse_StringExpression("Person").get();
-    pers.accept(flatExpressionScopeSetter);
+    pers.accept(traverser);
     ASTExpression stud = p.parse_StringExpression("Student").get();
-    stud.accept(flatExpressionScopeSetter);
+    stud.accept(traverser);
     ASTExpression fstud = p.parse_StringExpression("FirstSemesterStudent").get();
-    fstud.accept(flatExpressionScopeSetter);
+    fstud.accept(traverser);
 
     assertTrue(isSubtypeOf(tc.typeOf(stud), tc.typeOf(pers)));
     assertTrue(isSubtypeOf(tc.typeOf(fstud), tc.typeOf(pers)));
@@ -182,5 +185,17 @@ public class TypeCheckTest {
     assertFalse(isSubtypeOf(tc.typeOf(pers), tc.typeOf(pers)));
 
     assertFalse(isSubtypeOf(tc.typeOf(int1), tc.typeOf(pers)));
+  }
+
+  public CombineExpressionsWithLiteralsTraverser getTraverser(FlatExpressionScopeSetter flatExpressionScopeSetter){
+    CombineExpressionsWithLiteralsTraverser traverser = CombineExpressionsWithLiteralsMill.traverser();
+    traverser.addAssignmentExpressionsVisitor(flatExpressionScopeSetter);
+    traverser.addBitExpressionsVisitor(flatExpressionScopeSetter);
+    traverser.addCommonExpressionsVisitor(flatExpressionScopeSetter);
+    traverser.addExpressionsBasisVisitor(flatExpressionScopeSetter);
+    traverser.addSetExpressionsVisitor(flatExpressionScopeSetter);
+    traverser.addJavaClassExpressionsVisitor(flatExpressionScopeSetter);
+    traverser.addMCBasicTypesVisitor(flatExpressionScopeSetter);
+    return traverser;
   }
 }

@@ -19,6 +19,7 @@ grammar SymbolRules extends mc.grammars.types.TestTypes {
  abstract symbol C = Name;
 
  symbolrule C =
+  bla:boolean
   method public int getDepth() {}
 ;
 

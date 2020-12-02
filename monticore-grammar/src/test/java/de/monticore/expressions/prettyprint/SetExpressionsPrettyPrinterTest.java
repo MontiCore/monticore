@@ -21,7 +21,7 @@ public class SetExpressionsPrettyPrinterTest {
 
   private TestSetExpressionsParser parser = new TestSetExpressionsParser();
 
-  private SetExpressionsPrettyPrinter prettyPrinter = new SetExpressionsPrettyPrinter(new IndentPrinter());
+  private SetExpressionsFullPrettyPrinter prettyPrinter = new SetExpressionsFullPrettyPrinter(new IndentPrinter());
 
   @BeforeClass
   public static void setUp() {

@@ -1,77 +1,26 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
-import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
+import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolSurrogate;
 import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mcbasictypes._ast.*;
-import de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope;
-import de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor;
-import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
-import de.se_rwth.commons.logging.Log;
+import de.monticore.types.mcbasictypes._visitor.MCBasicTypesHandler;
+import de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser;
+import de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2;
 
-import java.util.Optional;
+import static de.monticore.types.check.SymTypeExpressionFactory.createTypeObject;
+
 
 /**
  * Visitor for Derivation of SymType from MCBasicTypes
  * i.e. for
  *    types/MCBasicTypes.mc4
  */
-public class SynthesizeSymTypeFromMCBasicTypes implements MCBasicTypesVisitor, ISynthesize {
-  
-  /**
-   * Using the visitor functionality to calculate the SymType Expression
-   */
+public class SynthesizeSymTypeFromMCBasicTypes extends AbstractSynthesizeFromType implements MCBasicTypesVisitor2, MCBasicTypesHandler {
 
-  // ----------------------------------------------------------  realThis start
-  // setRealThis, getRealThis are necessary to make the visitor compositional
-  //
-  // (the Vistors are then composed using theRealThis Pattern)
-  //
-  MCBasicTypesVisitor realThis = this;
+  protected MCBasicTypesTraverser traverser;
 
-  public SynthesizeSymTypeFromMCBasicTypes(){
-
-  }
-  
-  @Override
-  public void setRealThis(MCBasicTypesVisitor realThis) {
-    this.realThis = realThis;
-  }
-  
-  @Override
-  public MCBasicTypesVisitor getRealThis() {
-    return realThis;
-  }
-  
-  // ---------------------------------------------------------- Storage result
-
-  public IBasicSymbolsScope getScope (IMCBasicTypesScope mcBasicTypesScope){
-    // is accepted only here, decided on 07.04.2020
-    if(!(mcBasicTypesScope instanceof IBasicSymbolsScope)){
-      Log.error("0xA0308 the enclosing scope of the type does not implement the interface IBasicSymbolsScope");
-    }
-    // is accepted only here, decided on 07.04.2020
-    return (IBasicSymbolsScope) mcBasicTypesScope;
-  }
-
-  /**
-   * Storage in the Visitor: result of the last endVisit.
-   * This attribute is synthesized upward.
-   */
-  public TypeCheckResult typeCheckResult = new TypeCheckResult();
-  
-  public Optional<SymTypeExpression> getResult() {
-    return Optional.of(typeCheckResult.getCurrentResult());
-  }
-  
-  public void init() {
-    typeCheckResult = new TypeCheckResult();
-  }
-
-  public void setTypeCheckResult(TypeCheckResult typeCheckResult){
-    this.typeCheckResult = typeCheckResult;
-  }
-  
   // ---------------------------------------------------------- Visting Methods
 
   /**
@@ -100,11 +49,30 @@ public class SynthesizeSymTypeFromMCBasicTypes implements MCBasicTypesVisitor, I
   public void endVisit(ASTMCQualifiedType qType) {
     // Otherwise the Visitor is applied to the wrong AST (and an internal error 0x893F62 is issued
     typeCheckResult.setCurrentResult(
-        SymTypeExpressionFactory.createTypeObject(qType.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()), getScope(qType.getEnclosingScope())));
+        createTypeObject(qType.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()), getScope(qType.getEnclosingScope())));
   }
   
   public void endVisit(ASTMCReturnType rType) {
     // result is pushed upward (no change)
   }
+
+  @Override
+  public MCBasicTypesTraverser getTraverser() {
+    return traverser;
+  }
+
+  @Override
+  public void setTraverser(MCBasicTypesTraverser traverser) {
+    this.traverser = traverser;
+  }
+
+  @Override
+  public void endVisit(ASTMCQualifiedName qName) {
+    TypeSymbol loader = new OOTypeSymbolSurrogate(qName.getQName());
+    loader.setEnclosingScope(getScope(qName.getEnclosingScope()));
+    SymTypeOfObject oType = createTypeObject(loader);
+    typeCheckResult.setCurrentResult(oType);
+  }
+
 
 }

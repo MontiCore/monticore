@@ -22,7 +22,7 @@ public class OCLExpressionsPrettyPrinterTest {
 
   private TestOCLExpressionsParser parser = new TestOCLExpressionsParser();
 
-  private OCLExpressionsPrettyPrinter prettyPrinter = new OCLExpressionsPrettyPrinter(new IndentPrinter());
+  private OCLExpressionsFullPrettyPrinter prettyPrinter = new OCLExpressionsFullPrettyPrinter(new IndentPrinter());
 
   @BeforeClass
   public static void setUp() {

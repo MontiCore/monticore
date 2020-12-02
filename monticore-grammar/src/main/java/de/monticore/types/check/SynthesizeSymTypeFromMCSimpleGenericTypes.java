@@ -4,53 +4,36 @@ package de.monticore.types.check;
 
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolSurrogate;
-import de.monticore.types.mcbasictypes.MCBasicTypesMill;
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
-import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesVisitor;
+import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesHandler;
+import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesTraverser;
+import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesVisitor2;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.LinkedList;
 import java.util.List;
-
-import static de.monticore.types.check.SymTypeExpressionFactory.createTypeObject;
 
 /**
  * Visitor for Derivation of SymType from MCSimpleGenericTypes
  * i.e. for
  * types/MCSimpleGenericTypes.mc4
  */
-public class SynthesizeSymTypeFromMCSimpleGenericTypes extends SynthesizeSymTypeFromMCCollectionTypes
-    implements MCSimpleGenericTypesVisitor, ISynthesize {
+public class SynthesizeSymTypeFromMCSimpleGenericTypes extends AbstractSynthesizeFromType
+    implements MCSimpleGenericTypesVisitor2, MCSimpleGenericTypesHandler {
 
-  /**
-   * Using the visitor functionality to calculate the SymType Expression
-   */
 
-  public SynthesizeSymTypeFromMCSimpleGenericTypes(){
-    super();
-  }
-
-  // ----------------------------------------------------------  realThis start
-  // setRealThis, getRealThis are necessary to make the visitor compositional
-  //
-  // (the Vistors are then composed using theRealThis Pattern)
-  //
-  MCSimpleGenericTypesVisitor realThis = this;
+  protected MCSimpleGenericTypesTraverser traverser;
 
   @Override
-  public void setRealThis(MCSimpleGenericTypesVisitor realThis) {
-    this.realThis = realThis;
-    super.realThis = realThis;  // not necessarily needed, but to be safe ...
+  public MCSimpleGenericTypesTraverser getTraverser() {
+    return traverser;
   }
 
   @Override
-  public MCSimpleGenericTypesVisitor getRealThis() {
-    return realThis;
+  public void setTraverser(MCSimpleGenericTypesTraverser traverser) {
+    this.traverser = traverser;
   }
-  // ---------------------------------------------------------- realThis end
 
   /**
    * Storage in the Visitor: result of the last endVisit
@@ -68,7 +51,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypes extends SynthesizeSymType
     List<SymTypeExpression> arguments = new LinkedList<SymTypeExpression>();
     for (ASTMCTypeArgument arg : genericType.getMCTypeArgumentList()) {
       if (null != arg) {
-        arg.accept(getRealThis());
+        arg.accept(getTraverser());
       }
 
       if (!typeCheckResult.isPresentCurrentResult()) {
@@ -82,36 +65,6 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypes extends SynthesizeSymType
     SymTypeExpression tex = SymTypeExpressionFactory.createGenerics(
         loader, arguments);
     typeCheckResult.setCurrentResult(tex);
-  }
-
-  /**
-   * There are several forms of qualified Types possible:
-   * ** Object-types
-   * ** Boxed primitives, such as "java.lang.Boolean"
-   * ** Type Variables
-   * Primitives, like "int", void, null are not possible here.
-   * This are the qualified Types that may occur.
-   * <p>
-   * To distinguish these kinds, we use the symbol that the ASTMCQualifiedType identifies
-   *
-   * @param qType
-   */
-  @Override
-  public void endVisit(ASTMCQualifiedType qType) {
-
-    // TODO TODO ! This implementation is incomplete, it does only create Object-Types, but the
-    // type could also be a boxed Primitive or an Type Variable!
-    // We need the SymbolTable to distinguish this stuff
-    // PS: that also applies to other Visitors.
-    typeCheckResult.setCurrentResult(SymTypeExpressionFactory.createTypeObject(qType.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()), getScope(qType.getEnclosingScope())));
-  }
-
-  @Override
-  public void endVisit(ASTMCQualifiedName qName) {
-    TypeSymbol loader = new OOTypeSymbolSurrogate(qName.getQName());
-    loader.setEnclosingScope(getScope(qName.getEnclosingScope()));
-    SymTypeOfObject oType = createTypeObject(loader);
-    typeCheckResult.setCurrentResult(oType);
   }
 
 }

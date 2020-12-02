@@ -10,6 +10,7 @@ to be released
     * parser delegator `XForYParser` are generated that extend a parser of a super language and delegate to the parser of the current language
     * Due to multiple inheritance, delegation and subclasses are used in combination 
 * experiments now showcase the use of traversers   
+* add coco (checks if additional attributes are declared twice)
 
 ### Changes
 * The generated parser uses the builder instead of the factory. This means that in grammars the variable `_aNode` is no longer available. Use instead `_builder`. 
@@ -23,10 +24,17 @@ to be released
 * `XScopeDeSer`, `SSymbolDeSer` und `XSymbols2Json` are no longer available via the mill. The constructors can be used instead.
 * Scope builder have been removed as they did not support multiple inheritance, scope creation methods of the mill should be used instead
 * Shortened the name of the scope creation methods in the mill from `xScope`, `xGlobalScope` and `xArtifactScope` to `scope`, `globalScope` and `artifactScope`
+* Shortened the name of the `modelFileExtension` attribute in the `XGlobalScope` class to `fileExt`
+* renamed `XScopeSkeletonCreator` and `XScopeSkeletonCreatorDelegator` to `XScopesGenitor` and `XScopesGenitorDelegator`
+* Deprecated the `XPhasedSymbolTableCreatorDelegator`, will be removed without replacement in a future release
+* PrettyPrinters and other visitors in monticore-grammar now use the new Traverser infrastructure instead of the old Visitor infrastructure
+* generated `XScopeGenitor` and `XScopeGenitorDelegator` now use the new Traverser infrastructure instead of the old Visitor infrastructure
 
 ### Fixes
 * Traverser now properly delegate to handlers as intended
 * ScopeSkeletonCreator now properly use the mill to create scope instances to ensure substitution via the mill pattern
+* Fixed a bug where the SymbolSurrogates wrongly qualified their fullName
+* The clear method of the GlobalScope now deletes all symbols stored in the GlobalScope
 
 ##  MontiCore 6.5.0
 released: 11.11.2020

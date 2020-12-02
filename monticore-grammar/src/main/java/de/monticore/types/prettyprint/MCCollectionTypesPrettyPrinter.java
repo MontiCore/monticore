@@ -3,59 +3,64 @@ package de.monticore.types.prettyprint;
 
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mccollectiontypes._ast.*;
-import de.monticore.types.mccollectiontypes._visitor.MCCollectionTypesVisitor;
+import de.monticore.types.mccollectiontypes._visitor.MCCollectionTypesHandler;
+import de.monticore.types.mccollectiontypes._visitor.MCCollectionTypesTraverser;
+import de.monticore.types.mccollectiontypes._visitor.MCCollectionTypesVisitor2;
 
-public class MCCollectionTypesPrettyPrinter extends MCBasicTypesPrettyPrinter implements MCCollectionTypesVisitor {
-  private MCCollectionTypesVisitor realThis = this;
+public class MCCollectionTypesPrettyPrinter implements MCCollectionTypesVisitor2, MCCollectionTypesHandler {
+
+  protected IndentPrinter printer;
+
+  protected MCCollectionTypesTraverser traverser;
 
   public MCCollectionTypesPrettyPrinter(IndentPrinter printer) {
-    super(printer);
+    this.printer = printer;
   }
 
-  @Override
-  public MCCollectionTypesVisitor getRealThis() {
-    return realThis;
+  public MCCollectionTypesTraverser getTraverser() {
+    return traverser;
   }
 
-  @Override
-  public void setRealThis(MCCollectionTypesVisitor realThis) {
-    this.realThis = realThis;
+  public void setTraverser(MCCollectionTypesTraverser traverser) {
+    this.traverser = traverser;
+  }
+
+  public IndentPrinter getPrinter() {
+    return printer;
+  }
+
+  public void setPrinter(IndentPrinter printer) {
+    this.printer = printer;
   }
 
   @Override
   public void handle(ASTMCListType a) {
     getPrinter().print("List<");
-    a.getMCTypeArgument().accept(getRealThis());
+    a.getMCTypeArgument().accept(getTraverser());
     getPrinter().print(">");
   }
 
   @Override
   public void handle(ASTMCOptionalType a) {
     getPrinter().print("Optional<");
-    a.getMCTypeArgument().accept(getRealThis());
+    a.getMCTypeArgument().accept(getTraverser());
     getPrinter().print(">");
   }
 
   @Override
   public void handle(ASTMCSetType a) {
     getPrinter().print("Set<");
-    a.getMCTypeArgument().accept(getRealThis());
+    a.getMCTypeArgument().accept(getTraverser());
     getPrinter().print(">");
   }
 
   @Override
   public void handle(ASTMCMapType a) {
     getPrinter().print("Map<");
-    a.getKey().accept(getRealThis());
+    a.getKey().accept(getTraverser());
     getPrinter().print(",");
-    a.getValue().accept(getRealThis());
+    a.getValue().accept(getTraverser());
     getPrinter().print(">");
-  }
-
-  public String prettyprint(ASTMCTypeArgument a) {
-    getPrinter().clearBuffer();
-    a.accept(getRealThis());
-    return getPrinter().getContent();
   }
 
 }

@@ -5,6 +5,7 @@ import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
+import de.monticore.types.prettyprint.MCCollectionTypesFullPrettyPrinter;
 import de.monticore.types.prettyprint.MCCollectionTypesPrettyPrinter;
 import de.se_rwth.commons.Names;
 import mc.testcd4analysis._ast.*;
@@ -45,7 +46,7 @@ public class TestCD4AnalysisSymbolTableCreator extends TestCD4AnalysisSymbolTabl
     if (astType instanceof ASTMCGenericType) {
       typeName = ((ASTMCGenericType) astType).printWithoutTypeArguments();
     } else {
-      typeName = astAttribute.getMCType().printType(new MCCollectionTypesPrettyPrinter(new IndentPrinter()));
+      typeName = astAttribute.getMCType().printType(new MCCollectionTypesFullPrettyPrinter(new IndentPrinter()));
     }
 
     final CDTypeSymbolSurrogate typeReference = new CDTypeSymbolSurrogate(typeName);
@@ -82,7 +83,7 @@ public class TestCD4AnalysisSymbolTableCreator extends TestCD4AnalysisSymbolTabl
 
   public void setReturnTypeOfMethod(final CDMethOrConstrSymbol methodSymbol, ASTCDMethod astMethod) {
     final CDTypeSymbolSurrogate returnSymbol = new CDTypeSymbolSurrogate(
-        ( astMethod.getMCReturnType().printType(new MCCollectionTypesPrettyPrinter(new IndentPrinter()))));
+        ( astMethod.getMCReturnType().printType(new MCCollectionTypesFullPrettyPrinter(new IndentPrinter()))));
     returnSymbol.setEnclosingScope(getCurrentScope().get());
     methodSymbol.setReturnType(returnSymbol);
   }
@@ -125,7 +126,7 @@ public class TestCD4AnalysisSymbolTableCreator extends TestCD4AnalysisSymbolTabl
 
   CDTypeSymbolSurrogate createCDTypeSymbolFromReference(final ASTMCObjectType astmcObjectType) {
     CDTypeSymbolSurrogate surrogate =  new CDTypeSymbolSurrogate(
-        astmcObjectType.printType(new MCCollectionTypesPrettyPrinter(new IndentPrinter())));
+        astmcObjectType.printType(new MCCollectionTypesFullPrettyPrinter(new IndentPrinter())));
     surrogate.setEnclosingScope(getCurrentScope().get());
     return surrogate;
   }

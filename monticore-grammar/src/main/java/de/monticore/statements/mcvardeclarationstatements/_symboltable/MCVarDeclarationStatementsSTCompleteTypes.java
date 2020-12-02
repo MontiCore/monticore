@@ -6,35 +6,19 @@ import de.monticore.statements.mcstatementsbasis._ast.ASTMCModifier;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTLocalVariableDeclaration;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTVariableDeclarator;
 import de.monticore.statements.mcvardeclarationstatements._visitor.MCVarDeclarationStatementsVisitor;
+import de.monticore.statements.mcvardeclarationstatements._visitor.MCVarDeclarationStatementsVisitor2;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolSurrogate;
-import de.monticore.types.check.SymTypeArray;
-import de.monticore.types.check.SymTypeExpression;
-import de.monticore.types.check.SymTypeOfNull;
-import de.monticore.types.check.SynthesizeSymTypeFromMCFullGenericTypes;
+import de.monticore.types.check.*;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
+import de.monticore.types.mcfullgenerictypes._visitor.MCFullGenericTypesTraverser;
 
 import java.util.List;
 
 import static de.monticore.statements.mccommonstatements._ast.ASTConstantsMCCommonStatements.*;
 
-public class MCVarDeclarationStatementsSTCompleteTypes implements MCVarDeclarationStatementsVisitor {
-
-  private MCVarDeclarationStatementsVisitor realThis;
-
-  public MCVarDeclarationStatementsSTCompleteTypes(){
-    this.realThis = this;
-  }
-
-  @Override
-  public MCVarDeclarationStatementsVisitor getRealThis() {
-    return realThis;
-  }
-
-  @Override
-  public void setRealThis(MCVarDeclarationStatementsVisitor realThis) {
-    this.realThis = realThis;
-  }
+public class MCVarDeclarationStatementsSTCompleteTypes implements MCVarDeclarationStatementsVisitor2 {
 
   public void endVisit(ASTLocalVariableDeclaration ast) {
     List<FieldSymbol> symbols = Lists.newArrayList();
@@ -77,11 +61,9 @@ public class MCVarDeclarationStatementsSTCompleteTypes implements MCVarDeclarati
   }
 
   private SymTypeExpression createTypeLoader(ASTMCType ast) {
-    SynthesizeSymTypeFromMCFullGenericTypes syn = new SynthesizeSymTypeFromMCFullGenericTypes();
+    FullSynthesizeFromMCFullGenericTypes synFromFull = new FullSynthesizeFromMCFullGenericTypes();
     // Start visitor
-    ast.accept(syn);
-    return syn.getResult().orElse(new SymTypeOfNull());
+    ast.accept(synFromFull.getTraverser());
+    return synFromFull.getResult().orElse(new SymTypeOfNull());
   }
-
-
 }

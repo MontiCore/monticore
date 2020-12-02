@@ -10,7 +10,7 @@ import mcnumbers._ast.ASTInteger;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import prettyprint.MCNumbersPrettyPrinter;
+import prettyprint.MCNumbersFullPrettyPrinter;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -41,7 +41,7 @@ public class MCNumbersPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTDecimal decimal = result.get();
     
-    MCNumbersPrettyPrinter prettyPrinter = new MCNumbersPrettyPrinter(new IndentPrinter());
+    MCNumbersFullPrettyPrinter prettyPrinter = new MCNumbersFullPrettyPrinter(new IndentPrinter());
     String output = prettyPrinter.prettyprint(decimal);
     
     result = parser.parseDecimal(new StringReader(output));
@@ -59,7 +59,7 @@ public class MCNumbersPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTDecimal decimal = result.get();
     
-    MCNumbersPrettyPrinter prettyPrinter = new MCNumbersPrettyPrinter(new IndentPrinter());
+    MCNumbersFullPrettyPrinter prettyPrinter = new MCNumbersFullPrettyPrinter(new IndentPrinter());
     String output = prettyPrinter.prettyprint(decimal);
     
     result = parser.parseDecimal(new StringReader(output));
@@ -77,7 +77,7 @@ public class MCNumbersPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTInteger integer = result.get();
     
-    MCNumbersPrettyPrinter prettyPrinter = new MCNumbersPrettyPrinter(new IndentPrinter());
+    MCNumbersFullPrettyPrinter prettyPrinter = new MCNumbersFullPrettyPrinter(new IndentPrinter());
     String output = prettyPrinter.prettyprint(integer);
     
     result = parser.parseInteger(new StringReader(output));
@@ -95,7 +95,7 @@ public class MCNumbersPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTInteger integer = result.get();
     
-    MCNumbersPrettyPrinter prettyPrinter = new MCNumbersPrettyPrinter(new IndentPrinter());
+    MCNumbersFullPrettyPrinter prettyPrinter = new MCNumbersFullPrettyPrinter(new IndentPrinter());
     String output = prettyPrinter.prettyprint(integer);
     
     result = parser.parseInteger(new StringReader(output));

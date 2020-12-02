@@ -82,8 +82,8 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testNoSuperInterface(){
-    assertTrue(symbolClassAutomaton.isEmptyInterface());
+  public void testSuperInterfaceCount(){
+    assertEquals(1, symbolClassAutomaton.sizeInterface());
   }
 
   @Test
@@ -186,7 +186,7 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testNoSuperInterfaceFoo(){
-    assertTrue(symbolClassFoo.isEmptyInterface());
+    assertEquals(1, symbolClassFoo.sizeInterface());
   }
 
   @Test

@@ -82,6 +82,8 @@ public class SymbolTableConstants {
 
   public static final String MODEL_PATH_TYPE = "de.monticore.io.paths.ModelPath";
 
+  public static final String I_DE_SER = "de.monticore.symboltable.serialization.IDeSer";
+
   /**
    * attribute names
    */
@@ -123,6 +125,8 @@ public class SymbolTableConstants {
   public static final String SYMBOL_JSON_VAR = "symbolJson";
 
   public static final String SCOPE_JSON_VAR = "scopeJson";
+
+  public static final String DESERS_VAR = "desers";
 
   public static final String FOUND_SYMBOL_DELEGATE = "false";
 

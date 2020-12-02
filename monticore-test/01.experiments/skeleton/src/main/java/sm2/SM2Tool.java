@@ -112,10 +112,8 @@ public class SM2Tool {
     globalScope.setModelPath(new ModelPath());
     globalScope.setFileExt("aut");
 
-    SM2ScopesGenitor symbolTable = SM2Mill
-        .scopesGenitor();
-
-    symbolTable.addToScopeStack(globalScope);
+    SM2ScopesGenitorDelegator symbolTable = SM2Mill
+        .scopesGenitorDelegator();
 
     return symbolTable.createFromAST(ast);
   }

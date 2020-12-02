@@ -75,6 +75,7 @@ public class GrammarCoCos {
     checker.addCoCo(new DerivedAndManualListName());
     checker.addCoCo(new KeyRuleWithoutName());
     checker.addCoCo(new SymbolWithManyNames());
+    checker.addCoCo(new OverridingAdditionalAttributes());
     // checker.addCoCo(new NoNTInheritanceCycle());
 
     return checker;

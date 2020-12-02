@@ -14,7 +14,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.prettyprint.UMLModifierPrettyPrinter;
+import de.monticore.prettyprint.UMLModifierFullPrettyPrinter;
 import de.monticore.testumlmodifier._parser.TestUMLModifierParser;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import de.se_rwth.commons.logging.Log;
@@ -42,7 +42,7 @@ public class UMLModifierPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTModifier modifier = result.get();
     
-    UMLModifierPrettyPrinter prettyPrinter = new UMLModifierPrettyPrinter(new IndentPrinter());
+    UMLModifierFullPrettyPrinter prettyPrinter = new UMLModifierFullPrettyPrinter(new IndentPrinter());
     String output = prettyPrinter.prettyprint(modifier);
     
     result = parser.parseModifier(new StringReader(output));
@@ -60,7 +60,7 @@ public class UMLModifierPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTModifier modifier = result.get();
     
-    UMLModifierPrettyPrinter prettyPrinter = new UMLModifierPrettyPrinter(new IndentPrinter());
+    UMLModifierFullPrettyPrinter prettyPrinter = new UMLModifierFullPrettyPrinter(new IndentPrinter());
     String output = prettyPrinter.prettyprint(modifier);
     
     result = parser.parseModifier(new StringReader(output));

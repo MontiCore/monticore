@@ -6,28 +6,36 @@ import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCInnerType;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCMultipleGenericType;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardTypeArgument;
-import de.monticore.types.mcfullgenerictypes._visitor.MCFullGenericTypesVisitor;
+import de.monticore.types.mcfullgenerictypes._visitor.MCFullGenericTypesHandler;
+import de.monticore.types.mcfullgenerictypes._visitor.MCFullGenericTypesTraverser;
+import de.monticore.types.mcfullgenerictypes._visitor.MCFullGenericTypesVisitor2;
 
-public class MCFullGenericTypesPrettyPrinter extends MCSimpleGenericTypesPrettyPrinter implements MCFullGenericTypesVisitor {
-  private MCFullGenericTypesVisitor realThis = this;
+public class MCFullGenericTypesPrettyPrinter implements MCFullGenericTypesVisitor2, MCFullGenericTypesHandler {
+
+  protected MCFullGenericTypesTraverser traverser;
+
+  protected IndentPrinter printer;
 
   public MCFullGenericTypesPrettyPrinter(IndentPrinter printer) {
-    super(printer);
+    this.printer = printer;
   }
 
-  public MCFullGenericTypesPrettyPrinter(IndentPrinter printer, MCFullGenericTypesVisitor realThis) {
-    super(printer);
-    this.realThis = realThis;
+  public IndentPrinter getPrinter() {
+    return printer;
+  }
+
+  public void setPrinter(IndentPrinter printer) {
+    this.printer = printer;
   }
 
   @Override
-  public MCFullGenericTypesVisitor getRealThis() {
-    return realThis;
+  public MCFullGenericTypesTraverser getTraverser() {
+    return traverser;
   }
 
   @Override
-  public void setRealThis(MCFullGenericTypesVisitor realThis) {
-    this.realThis = realThis;
+  public void setTraverser(MCFullGenericTypesTraverser traverser) {
+    this.traverser = traverser;
   }
 
   @Override
@@ -35,10 +43,10 @@ public class MCFullGenericTypesPrettyPrinter extends MCSimpleGenericTypesPrettyP
     getPrinter().print("?");
     if (node.isPresentUpperBound()) {
       getPrinter().print(" extends ");
-      node.getUpperBound().accept(getRealThis());
+      node.getUpperBound().accept(getTraverser());
     } else if (node.isPresentLowerBound()) {
       getPrinter().print(" super ");
-      node.getLowerBound().accept(getRealThis());
+      node.getLowerBound().accept(getTraverser());
     }
   }
 
@@ -50,7 +58,7 @@ public class MCFullGenericTypesPrettyPrinter extends MCSimpleGenericTypesPrettyP
       String komma = "";
       for (ASTMCTypeArgument arg : innerType.getMCTypeArgumentList()) {
         getPrinter().print(komma);
-        arg.accept(getRealThis());
+        arg.accept(getTraverser());
         komma = ",";
       }
       getPrinter().print(">");
@@ -61,17 +69,11 @@ public class MCFullGenericTypesPrettyPrinter extends MCSimpleGenericTypesPrettyP
   @Override
   public void handle(ASTMCMultipleGenericType node) {
     // prints first part a.b.C.E<F>
-    node.getMCBasicGenericType().accept(getRealThis());
+    node.getMCBasicGenericType().accept(getTraverser());
 
     for(ASTMCInnerType innerType : node.getMCInnerTypeList()) {
       getPrinter().print(".");
-      innerType.accept(getRealThis());
+      innerType.accept(getTraverser());
     }
-  }
-
-  public String prettyprint(ASTMCWildcardTypeArgument a) {
-    getPrinter().clearBuffer();
-    a.accept(getRealThis());
-    return getPrinter().getContent();
   }
 }
