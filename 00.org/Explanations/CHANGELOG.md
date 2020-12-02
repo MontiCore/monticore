@@ -39,6 +39,7 @@ to be released
 * ScopeSkeletonCreator now properly use the mill to create scope instances to ensure substitution via the mill pattern
 * Fixed a bug where the SymbolSurrogates wrongly qualified their fullName
 * The clear method of the GlobalScope now deletes all symbols stored in the GlobalScope
+* Serializing symbolrule attributes of Strings now works properly
 
 ##  MontiCore 6.5.0
 released: 11.11.2020
