@@ -50,7 +50,7 @@ grammar NESTML extends org.nest.spl.SPL {
 
   StructureLine = compartments:QualifiedName ("-" compartments:QualifiedName)*;
 
-  // TODO model it better
+  
   Function implements BodyElement =
           "function" Name "(" Parameters? ")" (returnType:QualifiedName | PrimitiveType)?
              BLOCK_OPEN
@@ -67,7 +67,7 @@ grammar NESTML extends org.nest.spl.SPL {
   // e.g. first: current time, second: timestep in ms
   Dynamics implements BodyElement = "dynamics" (MinDelay | TimeStep)
                                     "(" Parameters? ")"
-                                      BLOCK_OPEN // Todo remove me. It is not the way for modular extension
+                                      BLOCK_OPEN 
                                         Block
                                       BLOCK_CLOSE;
 

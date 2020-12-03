@@ -9,6 +9,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
+import de.monticore.types.prettyprint.MCSimpleGenericTypesFullPrettyPrinter;
 import de.monticore.types.prettyprint.MCSimpleGenericTypesPrettyPrinter;
 import de.se_rwth.commons.logging.Log;
 
@@ -28,7 +29,7 @@ public class NoClassExpressionForGenerics implements JavaClassExpressionsASTClas
   }
 
   private void checkNoGeneric(ASTExtReturnType extreturnType){
-    MCSimpleGenericTypesPrettyPrinter prettyPrinter = new MCSimpleGenericTypesPrettyPrinter(new IndentPrinter());
+    MCSimpleGenericTypesFullPrettyPrinter prettyPrinter = new MCSimpleGenericTypesFullPrettyPrinter(new IndentPrinter());
     ASTMCReturnType returnType = extreturnType.getMCReturnType();
     if(returnType.isPresentMCType()){
       ASTMCType type = returnType.getMCType();

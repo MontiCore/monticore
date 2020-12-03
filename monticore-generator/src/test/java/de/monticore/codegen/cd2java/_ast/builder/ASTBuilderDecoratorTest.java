@@ -49,7 +49,7 @@ public class ASTBuilderDecoratorTest extends DecoratorTestCase {
 
     AccessorDecorator methodDecorator = new AccessorDecorator(glex, new ASTService(decoratedCompilationUnit));
     BuilderDecorator builderDecorator = new BuilderDecorator(glex, methodDecorator, new ASTService(decoratedCompilationUnit));
-    ASTBuilderDecorator builderASTNodeDecorator = new ASTBuilderDecorator(glex, builderDecorator);
+    ASTBuilderDecorator builderASTNodeDecorator = new ASTBuilderDecorator(glex, builderDecorator, new ASTService(decoratedCompilationUnit));
     this.builderClass = builderASTNodeDecorator.decorate(cdClass);
   }
 
@@ -70,7 +70,7 @@ public class ASTBuilderDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethods() {
-    assertEquals(36, builderClass.getCDMethodList().size());
+    assertEquals(37, builderClass.getCDMethodList().size());
   }
 
   @Test

@@ -37,7 +37,7 @@ public class ReferenceTest {
     Log.enableFailQuick(false);
 
     // reset global scope
-    IReferenceGlobalScope globalScope = ReferenceMill.referenceGlobalScope();
+    IReferenceGlobalScope globalScope = ReferenceMill.globalScope();
     globalScope.clearLoadedFiles();
     for (IReferenceScope s : globalScope.getSubScopes()) {
       globalScope.removeSubScope(s);
@@ -52,11 +52,12 @@ public class ReferenceTest {
     assertFalse(parser.hasErrors());
     assertTrue(astRand.isPresent());
     //create symboltable
-    globalScope.setModelFileExtension("ref");
+    globalScope.setFileExt("ref");
     globalScope.getModelPath().addEntry(Paths.get("src/test/resources/mc/feature/referencesymbol"));
 
     IReferenceArtifactScope artifactScope = ReferenceMill
         .referenceSymbolTableCreatorDelegator().createFromAST(astRand.get());
+    artifactScope.setName("ReferenceTest");
 
     Optional<? extends IReferenceScope> scopeOpt = artifactScope.getSubScopes().stream().findAny();
     assertTrue(scopeOpt.isPresent());
@@ -111,15 +112,6 @@ public class ReferenceTest {
     assertTrue(astReferenceToTest.isPresentNameDefinition());
     assertEquals(astReferenceToTest.getNameSymbol(), b);
     assertEquals(astReferenceToTest.getNameDefinition(), b.getAstNode());
-
-    // set enclosing scope null
-    astReferenceToTest = astRand.getReferenceToTest(0);
-    IReferenceScope enclosingScope = astReferenceToTest.getEnclosingScope();
-    astReferenceToTest.setEnclosingScope(null);
-    assertFalse(astReferenceToTest.isPresentNameDefinition());
-    assertFalse(astReferenceToTest.isPresentNameSymbol());
-
-    astReferenceToTest.setEnclosingScope(enclosingScope);
   }
 
   @Test
@@ -162,13 +154,6 @@ public class ReferenceTest {
     assertFalse(astOptionalRef.isPresentNameSymbol());
     assertFalse(astOptionalRef.isPresentNameDefinition());
     astOptionalRef.setName(name);
-
-    // set enclosing scope null
-    astOptionalRef = astRand.getOptionalRef(0);
-    IReferenceScope enclosingScope = astOptionalRef.getEnclosingScope();
-    astOptionalRef.setEnclosingScope(null);
-    assertFalse(astOptionalRef.isPresentNameDefinition());
-    assertFalse(astOptionalRef.isPresentNameSymbol());
   }
 
   @Test
@@ -223,17 +208,6 @@ public class ReferenceTest {
     assertTrue(astListRef.containsNamesSymbol(Optional.ofNullable(a)));
     assertTrue(astListRef.containsNamesSymbol(Optional.ofNullable(b)));
     assertTrue(astListRef.containsNamesSymbol(Optional.ofNullable(c)));
-
-    IReferenceScope enclosingScope = astListRef.getEnclosingScope();
-    // set enclosing scope null
-    astListRef.setEnclosingScope(null);
-    assertTrue( astListRef.isEmptyNamesSymbol());
-    assertTrue(astListRef.isEmptyNamesDefinition());
-
-    // reactivate enclosing scope
-    astListRef.setEnclosingScope(enclosingScope);
-    assertFalse( astListRef.isEmptyNamesSymbol());
-    assertFalse(astListRef.isEmptyNamesDefinition());
 
     // clear name list
     astListRef.clearNames();

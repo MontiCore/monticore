@@ -64,6 +64,7 @@ public class TransitionSourceExistsTest {
     
     // setup the symbol table
     IAutomataArtifactScope modelTopScope = createSymbolTable(ast);
+    modelTopScope.setName("Simple1");
 
     // can be used for resolving names in the model
     Optional<StateSymbol> aSymbol = modelTopScope.resolveState("Simple1.A");
@@ -124,7 +125,7 @@ public class TransitionSourceExistsTest {
    * @return
    */
   public static IAutomataArtifactScope createSymbolTable(ASTAutomaton ast) {
-    AutomataMill.automataGlobalScope().setModelFileExtension("aut");
+    AutomataMill.globalScope().setFileExt("aut");
     return AutomataMill.automataSymbolTableCreator().createFromAST(ast);
   }
 

@@ -27,6 +27,7 @@ public class SM2ToolTest {
   public void setUp() {
     Log.clearFindings();
     LogStub.clearPrints();
+    SM2Mill.globalScope().clear();
   }
   
   @Test

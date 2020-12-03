@@ -11,7 +11,7 @@ import org.antlr.v4.runtime.RecognitionException;
 /**
  * Small pretty printer for questionnaires
  */
-public class QuestionnairePrettyPrinter implements QuestionnaireVisitor {
+public class QuestionnairePrettyPrinter implements QuestionnaireVisitor2 {
 
   // additional function: helps the others ...
   public void print(String s) {

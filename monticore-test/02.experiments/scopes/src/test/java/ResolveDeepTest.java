@@ -45,15 +45,15 @@ public class ResolveDeepTest {
     assertTrue(scope.resolveStateDown("PingPong.very.deep.substate").isPresent());
     
     // test deep resolving with unqualified symbol name
-    assertTrue(scope.resolveStateDown("substate").isPresent());
+    assertTrue(scope.resolveStateDown("PingPong.substate").isPresent());
     
     // test unqualified resolving with multiple occurrences: 2 Ping symbols
-    assertEquals(scope.resolveStateDownMany("Ping").size(), 2, 0);
+    assertEquals(scope.resolveStateDownMany("PingPong.Ping").size(), 2, 0);
     
     // test negative case, where we try to resolve one Ping state
     boolean success = true;
     try {
-      scope.resolveStateDown("Ping");
+      scope.resolveStateDown("PingPong.Ping");
     }
     catch (ResolvedSeveralEntriesForSymbolException e) {
       success = false;
@@ -82,7 +82,7 @@ public class ResolveDeepTest {
    * @return The artifact scope derived from the parsed AST
    */
   public static IAutomataArtifactScope createSymbolTable(ASTAutomaton ast) {
-    AutomataMill.automataGlobalScope().setModelFileExtension("aut");
+    AutomataMill.globalScope().setFileExt("aut");
     return AutomataMill.automataSymbolTableCreator().createFromAST(ast);
   }
   

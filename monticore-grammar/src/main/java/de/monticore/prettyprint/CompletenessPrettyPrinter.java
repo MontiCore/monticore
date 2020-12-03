@@ -3,11 +3,13 @@ package de.monticore.prettyprint;
 
 import de.monticore.completeness._ast.ASTCompleteness;
 import de.monticore.completeness._ast.ASTCompletenessNode;
-import de.monticore.completeness._visitor.CompletenessVisitor;
+import de.monticore.completeness._visitor.CompletenessHandler;
+import de.monticore.completeness._visitor.CompletenessTraverser;
+import de.monticore.completeness._visitor.CompletenessVisitor2;
 
-public class CompletenessPrettyPrinter implements CompletenessVisitor {
+public class CompletenessPrettyPrinter implements CompletenessVisitor2, CompletenessHandler {
 
-  private CompletenessVisitor realThis = this;
+  protected CompletenessTraverser traverser;
 
   private IndentPrinter printer;
 
@@ -31,24 +33,18 @@ public class CompletenessPrettyPrinter implements CompletenessVisitor {
     }
   }
 
+  @Override
+  public CompletenessTraverser getTraverser() {
+    return traverser;
+  }
+
+  @Override
+  public void setTraverser(CompletenessTraverser traverser) {
+    this.traverser = traverser;
+  }
+
   public IndentPrinter getPrinter() {
     return this.printer;
-  }
-
-  public String prettyprint(ASTCompletenessNode node) {
-    getPrinter().clearBuffer();
-    node.accept(getRealThis());
-    return getPrinter().getContent();
-  }
-
-  @Override
-  public void setRealThis(CompletenessVisitor realThis) {
-    this.realThis = realThis;
-  }
-
-  @Override
-  public CompletenessVisitor getRealThis() {
-    return realThis;
   }
 
 }

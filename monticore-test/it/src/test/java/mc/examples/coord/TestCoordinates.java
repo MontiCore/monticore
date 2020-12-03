@@ -14,13 +14,17 @@ import org.junit.Test;
 
 import de.monticore.prettyprint.IndentPrinter;
 import mc.GeneratorIntegrationsTest;
+import mc.examples.cartesian.coordcartesian.CoordcartesianMill;
 import mc.examples.cartesian.coordcartesian._ast.ASTCoordinateFile;
 import mc.examples.cartesian.coordcartesian._parser.CoordcartesianParser;
+import mc.examples.cartesian.coordcartesian._visitor.CoordcartesianTraverser;
 import mc.examples.coord.cartesian.prettyprint.CartesianPrettyPrinterConcreteVisitor;
 import mc.examples.coord.polar.prettyprint.PolarPrettyPrinterConcreteVisitor;
 import mc.examples.coord.transform.CartesianToPolar;
 import mc.examples.coord.transform.Mirror;
+import mc.examples.polar.coordpolar.CoordpolarMill;
 import mc.examples.polar.coordpolar._parser.CoordpolarParser;
+import mc.examples.polar.coordpolar._visitor.CoordpolarTraverser;
 
 public class TestCoordinates extends GeneratorIntegrationsTest {
   
@@ -82,15 +86,19 @@ public class TestCoordinates extends GeneratorIntegrationsTest {
     assertTrue(astCartesian.isPresent());
     
     // Transform cartesian to polar coordinates
+    CoordcartesianTraverser t1 = CoordcartesianMill.traverser();
     CartesianToPolar transformer = new CartesianToPolar();
-    transformer.transform(astCartesian.get());
+    t1.add4Coordcartesian(transformer);
+    astCartesian.get().accept(t1);
     
     // Create PrettyPrinter
+    CoordpolarTraverser t2 = CoordpolarMill.traverser();
     IndentPrinter ip = new IndentPrinter();
     PolarPrettyPrinterConcreteVisitor p = new PolarPrettyPrinterConcreteVisitor(ip);
+    t2.add4Coordpolar(p);
     
     // Pretty-print the cartesian coordinates
-    p.print(transformer.getResult());
+    transformer.getResult().accept(t2);
     
     mc.examples.polar.coordpolar._parser.CoordpolarParser polarParser = new CoordpolarParser();
     Optional<mc.examples.polar.coordpolar._ast.ASTCoordinateFile> astPolar = polarParser
@@ -131,15 +139,19 @@ public class TestCoordinates extends GeneratorIntegrationsTest {
     assertEquals(astCartesian.get().getCoordinateList().get(2).getY(), 7);
     
     // Transform cartesian to polar coordinates
+    CoordcartesianTraverser t1 = CoordcartesianMill.traverser();
     Mirror transformer = new Mirror();
-    transformer.transform(astCartesian.get());
+    t1.add4Coordcartesian(transformer);
+    astCartesian.get().accept(t1);
     
     // Create PrettyPrinter
+    CoordcartesianTraverser t2 = CoordcartesianMill.traverser();
     IndentPrinter ip = new IndentPrinter();
     CartesianPrettyPrinterConcreteVisitor p = new CartesianPrettyPrinterConcreteVisitor(ip);
+    t2.add4Coordcartesian(p);
     
     // Pretty-print the cartesian coordinates
-    p.print(astCartesian.get());
+    astCartesian.get().accept(t2);
     
     Optional<ASTCoordinateFile> astTransformed = parser.parseCoordinateFile(new StringReader(ip.getContent()));
     assertFalse(parser.hasErrors());

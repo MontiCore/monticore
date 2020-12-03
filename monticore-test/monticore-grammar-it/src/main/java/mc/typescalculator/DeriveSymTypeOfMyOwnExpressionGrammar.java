@@ -1,26 +1,28 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.typescalculator;
 
-import de.monticore.types.check.DeriveSymTypeOfExpression;
+import de.monticore.types.check.AbstractDeriveFromExpression;
 import de.monticore.types.check.SymTypeConstant;
 import de.monticore.types.check.SymTypeExpression;
-import mc.typescalculator.myownexpressiongrammar._visitor.MyOwnExpressionGrammarVisitor;
+import mc.typescalculator.myownexpressiongrammar._visitor.MyOwnExpressionGrammarHandler;
+import mc.typescalculator.myownexpressiongrammar._visitor.MyOwnExpressionGrammarTraverser;
 import mc.typescalculator.myownexpressiongrammar._ast.ASTAbsoluteExpression;
 import de.se_rwth.commons.logging.Log;
+import mc.typescalculator.myownexpressiongrammar._visitor.MyOwnExpressionGrammarVisitor2;
 
-public class DeriveSymTypeOfMyOwnExpressionGrammar
-    extends DeriveSymTypeOfExpression
-    implements MyOwnExpressionGrammarVisitor {
+public class DeriveSymTypeOfMyOwnExpressionGrammar extends AbstractDeriveFromExpression
+    implements MyOwnExpressionGrammarVisitor2, MyOwnExpressionGrammarHandler {
 
-  protected MyOwnExpressionGrammarVisitor realThis;
+  protected MyOwnExpressionGrammarTraverser traverser;
 
-  public void setRealThis(MyOwnExpressionGrammarVisitor realThis) {
-    this.realThis = realThis;
+  @Override
+  public MyOwnExpressionGrammarTraverser getTraverser() {
+    return traverser;
   }
 
   @Override
-  public MyOwnExpressionGrammarVisitor getRealThis() {
-    return realThis;
+  public void setTraverser(MyOwnExpressionGrammarTraverser traverser) {
+    this.traverser = traverser;
   }
 
   @Override
@@ -28,7 +30,7 @@ public class DeriveSymTypeOfMyOwnExpressionGrammar
     SymTypeExpression inner = null;
     SymTypeExpression result = null;
 
-    expr.getExpression().accept(getRealThis());
+    expr.getExpression().accept(getTraverser());
     if(typeCheckResult.isPresentCurrentResult()){
       inner = typeCheckResult.getCurrentResult();
     }else{

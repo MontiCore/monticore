@@ -16,17 +16,18 @@ import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.MCTypeFacade;
-import de.se_rwth.commons.logging.*;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
-import java.util.List;
-
-import static de.monticore.cd.facade.CDModifier.*;
-import static de.monticore.codegen.cd2java.DecoratorAssert.*;
-import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
-import static org.junit.Assert.*;
+import static de.monticore.cd.facade.CDModifier.PROTECTED;
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java.DecoratorAssert.assertBoolean;
+import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
@@ -119,7 +120,7 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
     assertEquals("modelPath", cdConstructor.getCDParameter(0).getName());
 
     assertDeepEquals("String", cdConstructor.getCDParameter(1).getMCType());
-    assertEquals("modelFileExtension", cdConstructor.getCDParameter(1).getName());
+    assertEquals("fileExt", cdConstructor.getCDParameter(1).getName());
 
     assertTrue(cdConstructor.isEmptyException());
 
@@ -134,7 +135,7 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeSize() {
-    assertEquals(7, scopeClass.sizeCDAttributes());
+    assertEquals(9, scopeClass.sizeCDAttributes());
   }
 
   @Test
@@ -146,7 +147,7 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testFileExtensionAttribute() {
-    ASTCDAttribute astcdAttribute = getAttributeBy("modelFileExtension", scopeClass);
+    ASTCDAttribute astcdAttribute = getAttributeBy("fileExt", scopeClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertDeepEquals("String", astcdAttribute.getMCType());
   }
@@ -221,7 +222,7 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(27, scopeClass.getCDMethodList().size());
+    assertEquals(34, scopeClass.getCDMethodList().size());
   }
 
   @Test

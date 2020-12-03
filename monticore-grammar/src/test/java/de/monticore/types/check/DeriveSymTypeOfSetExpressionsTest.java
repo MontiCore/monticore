@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsScope;
+import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
@@ -27,6 +28,7 @@ public class DeriveSymTypeOfSetExpressionsTest {
 
   private ICombineExpressionsWithLiteralsScope scope;
   private FlatExpressionScopeSetter flatExpressionScopeSetter;
+  private CombineExpressionsWithLiteralsTraverser traverser;
 
   /**
    * Focus: Deriving Type of Literals, here:
@@ -44,12 +46,10 @@ public class DeriveSymTypeOfSetExpressionsTest {
   public void setupForEach() {
     // Setting up a Scope Infrastructure (without a global Scope)
     DefsTypeBasic.setup();
-    scope =
-        CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder()
-            .setEnclosingScope(null)       // No enclosing Scope: Search ending here
-            .setExportingSymbols(true)
-            .setAstNode(null)
-            .build();     // hopefully unused
+    scope = CombineExpressionsWithLiteralsMill.scope();
+    scope.setEnclosingScope(null);       // No enclosing Scope: Search ending here
+    scope.setExportingSymbols(true);
+    scope.setAstNode(null);
     // we add a variety of TypeSymbols to the same scope (which in reality doesn't happen)
     add2scope(scope, DefsTypeBasic._int);
     add2scope(scope, DefsTypeBasic._char);
@@ -86,6 +86,7 @@ public class DeriveSymTypeOfSetExpressionsTest {
     add2scope(scope, field("firstsemester", SymTypeExpressionFactory.createTypeObject("FirstSemesterStudent", scope)));
 
     flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
+    traverser = getTraverser(flatExpressionScopeSetter);
 
     LogStub.init();
   }
@@ -113,7 +114,7 @@ public class DeriveSymTypeOfSetExpressionsTest {
     TypeSymbol loader = new OOTypeSymbolSurrogate("Set");
     loader.setEnclosingScope(scope);
     OOTypeSymbol setDoubleType = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
+        .setSpannedScope(OOSymbolsMill.scope())
         .setName("Set")
         .setEnclosingScope(scope)
         .build();
@@ -128,14 +129,15 @@ public class DeriveSymTypeOfSetExpressionsTest {
 
     tc = new TypeCheck(null, derLit);
     flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
+    traverser = getTraverser(flatExpressionScopeSetter);
 
     ASTExpression a = p.parse_StringExpression("number in setdouble").get();
-    a.accept(flatExpressionScopeSetter);
+    a.accept(traverser);
     assertEquals("double",tc.typeOf(a).print());
 
     //TEST 2: int in Set<double> -> subtype of the argument
     ASTExpression b = p.parse_StringExpression("3 in setdouble").get();
-    b.accept(flatExpressionScopeSetter);
+    b.accept(traverser);
     assertEquals("double",tc.typeOf(b).print());
   }
 
@@ -145,7 +147,7 @@ public class DeriveSymTypeOfSetExpressionsTest {
     TypeSymbol loader = new OOTypeSymbolSurrogate("Set");
     loader.setEnclosingScope(scope);
     OOTypeSymbol setIntType = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
+        .setSpannedScope(OOSymbolsMill.scope())
         .setName("Set")
         .setEnclosingScope(scope)
         .build();
@@ -160,9 +162,10 @@ public class DeriveSymTypeOfSetExpressionsTest {
 
     tc = new TypeCheck(null, derLit);
     flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
+    traverser = getTraverser(flatExpressionScopeSetter);
 
     ASTExpression a = p.parse_StringExpression("number in setint").get();
-    a.accept(flatExpressionScopeSetter);
+    a.accept(traverser);
     try{
       tc.typeOf(a);
     }catch(RuntimeException e){
@@ -176,7 +179,7 @@ public class DeriveSymTypeOfSetExpressionsTest {
     TypeSymbol loader = new OOTypeSymbolSurrogate("Set");
     loader.setEnclosingScope(scope);
     OOTypeSymbol setDoubleType = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
+        .setSpannedScope(OOSymbolsMill.scope())
         .setName("Set")
         .setEnclosingScope(scope)
         .build();
@@ -191,14 +194,15 @@ public class DeriveSymTypeOfSetExpressionsTest {
 
     tc = new TypeCheck(null, derLit);
     flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
+    traverser = getTraverser(flatExpressionScopeSetter);
 
     ASTExpression a = p.parse_StringExpression("number isin setdouble").get();
-    a.accept(flatExpressionScopeSetter);
+    a.accept(traverser);
     assertEquals("boolean",tc.typeOf(a).print());
 
     //TEST 2: int in Set<double> -> subtype of the argument
     ASTExpression b = p.parse_StringExpression("3 isin setdouble").get();
-    b.accept(flatExpressionScopeSetter);
+    b.accept(traverser);
     assertEquals("boolean",tc.typeOf(b).print());
   }
 
@@ -208,7 +212,7 @@ public class DeriveSymTypeOfSetExpressionsTest {
     TypeSymbol loader = new OOTypeSymbolSurrogate("Set");
     loader.setEnclosingScope(scope);
     OOTypeSymbol setIntType = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
+        .setSpannedScope(OOSymbolsMill.scope())
         .setName("Set")
         .setEnclosingScope(scope)
         .build();
@@ -223,9 +227,10 @@ public class DeriveSymTypeOfSetExpressionsTest {
 
     tc = new TypeCheck(null, derLit);
     flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
+    traverser = getTraverser(flatExpressionScopeSetter);
 
     ASTExpression a = p.parse_StringExpression("number isin setint").get();
-    a.accept(flatExpressionScopeSetter);
+    a.accept(traverser);
     try{
       tc.typeOf(a);
     }catch(RuntimeException e){
@@ -239,7 +244,7 @@ public class DeriveSymTypeOfSetExpressionsTest {
     TypeSymbol loader = new OOTypeSymbolSurrogate("Set");
     loader.setEnclosingScope(scope);
     OOTypeSymbol setinttype = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
+        .setSpannedScope(OOSymbolsMill.scope())
         .setName("Set")
         .setEnclosingScope(scope)
         .build();
@@ -257,15 +262,16 @@ public class DeriveSymTypeOfSetExpressionsTest {
 
     tc = new TypeCheck(null, derLit);
     flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
+    traverser = getTraverser(flatExpressionScopeSetter);
 
     //TEST 1: Set<int> union Set<int>
     ASTExpression a = p.parse_StringExpression("setint union setint").get();
-    a.accept(flatExpressionScopeSetter);
+    a.accept(traverser);
     assertEquals("Set<int>",tc.typeOf(a).print());
 
     //TEST 2: Set<int> union Set<double> -> int subtype of double
     ASTExpression b = p.parse_StringExpression("setint union setdouble").get();
-    b.accept(flatExpressionScopeSetter);
+    b.accept(traverser);
     assertEquals("Set<double>",tc.typeOf(b).print());
   }
 
@@ -275,7 +281,7 @@ public class DeriveSymTypeOfSetExpressionsTest {
     TypeSymbol loader = new OOTypeSymbolSurrogate("Set");
     loader.setEnclosingScope(scope);
     OOTypeSymbol setIntType = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
+        .setSpannedScope(OOSymbolsMill.scope())
         .setName("Set")
         .setEnclosingScope(scope)
         .build();    add2scope(scope,setIntType);
@@ -289,9 +295,10 @@ public class DeriveSymTypeOfSetExpressionsTest {
 
     tc = new TypeCheck(null, derLit);
     flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
+    traverser = getTraverser(flatExpressionScopeSetter);
 
     ASTExpression a = p.parse_StringExpression("number union setint").get();
-    a.accept(flatExpressionScopeSetter);
+    a.accept(traverser);
     try{
       tc.typeOf(a);
     }catch(RuntimeException e){
@@ -305,7 +312,7 @@ public class DeriveSymTypeOfSetExpressionsTest {
     TypeSymbol loader = new OOTypeSymbolSurrogate("Set");
     loader.setEnclosingScope(scope);
     OOTypeSymbol setIntType = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
+        .setSpannedScope(OOSymbolsMill.scope())
         .setName("Set")
         .setEnclosingScope(scope)
         .build();
@@ -323,9 +330,10 @@ public class DeriveSymTypeOfSetExpressionsTest {
 
     tc = new TypeCheck(null, derLit);
     flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
+    traverser = getTraverser(flatExpressionScopeSetter);
 
     ASTExpression a = p.parse_StringExpression("setbool union setint").get();
-    a.accept(flatExpressionScopeSetter);
+    a.accept(traverser);
     try{
       tc.typeOf(a);
     }catch(RuntimeException e){
@@ -339,7 +347,7 @@ public class DeriveSymTypeOfSetExpressionsTest {
     TypeSymbol loader = new OOTypeSymbolSurrogate("Set");
     loader.setEnclosingScope(scope);
     OOTypeSymbol setinttype = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
+        .setSpannedScope(OOSymbolsMill.scope())
         .setName("Set")
         .setEnclosingScope(scope)
         .build();
@@ -357,15 +365,16 @@ public class DeriveSymTypeOfSetExpressionsTest {
 
     tc = new TypeCheck(null, derLit);
     flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
+    traverser = getTraverser(flatExpressionScopeSetter);
 
     //TEST 1: Set<double> intersect Set<double>
     ASTExpression a = p.parse_StringExpression("setchar intersect setchar").get();
-    a.accept(flatExpressionScopeSetter);
+    a.accept(traverser);
     assertEquals("Set<char>",tc.typeOf(a).print());
 
     //TEST 2: Set<double> intersect Set<int> -> int subtype of double
     ASTExpression b = p.parse_StringExpression("setint intersect setchar").get();
-    b.accept(flatExpressionScopeSetter);
+    b.accept(traverser);
     assertEquals("Set<int>",tc.typeOf(b).print());
   }
 
@@ -375,7 +384,7 @@ public class DeriveSymTypeOfSetExpressionsTest {
     TypeSymbol loader = new OOTypeSymbolSurrogate("Set");
     loader.setEnclosingScope(scope);
     OOTypeSymbol setIntType = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
+        .setSpannedScope(OOSymbolsMill.scope())
         .setName("Set")
         .setEnclosingScope(scope)
         .build();
@@ -390,9 +399,10 @@ public class DeriveSymTypeOfSetExpressionsTest {
 
     tc = new TypeCheck(null, derLit);
     flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
+    traverser = getTraverser(flatExpressionScopeSetter);
 
     ASTExpression a = p.parse_StringExpression("number intersect setint").get();
-    a.accept(flatExpressionScopeSetter);
+    a.accept(traverser);
     try{
       tc.typeOf(a);
     }catch(RuntimeException e){
@@ -406,7 +416,7 @@ public class DeriveSymTypeOfSetExpressionsTest {
     TypeSymbol loader = new OOTypeSymbolSurrogate("Set");
     loader.setEnclosingScope(scope);
     OOTypeSymbol setIntType = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
+        .setSpannedScope(OOSymbolsMill.scope())
         .setName("Set")
         .setEnclosingScope(scope)
         .build();
@@ -424,13 +434,26 @@ public class DeriveSymTypeOfSetExpressionsTest {
 
     tc = new TypeCheck(null, derLit);
     flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
+    traverser = getTraverser(flatExpressionScopeSetter);
 
     ASTExpression a = p.parse_StringExpression("setbool intersect setint").get();
-    a.accept(flatExpressionScopeSetter);
+    a.accept(traverser);
     try{
       tc.typeOf(a);
     }catch(RuntimeException e){
       assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0293"));
     }
+  }
+
+  public CombineExpressionsWithLiteralsTraverser getTraverser(FlatExpressionScopeSetter flatExpressionScopeSetter){
+    CombineExpressionsWithLiteralsTraverser traverser = CombineExpressionsWithLiteralsMill.traverser();
+    traverser.add4AssignmentExpressions(flatExpressionScopeSetter);
+    traverser.add4BitExpressions(flatExpressionScopeSetter);
+    traverser.add4CommonExpressions(flatExpressionScopeSetter);
+    traverser.add4ExpressionsBasis(flatExpressionScopeSetter);
+    traverser.add4SetExpressions(flatExpressionScopeSetter);
+    traverser.add4JavaClassExpressions(flatExpressionScopeSetter);
+    traverser.add4MCBasicTypes(flatExpressionScopeSetter);
+    return traverser;
   }
 }

@@ -2,8 +2,10 @@
 package de.monticore.types.check;
 
 import com.google.common.collect.Lists;
-import de.monticore.symbols.oosymbols._symboltable.BuiltInJavaSymbolResolver;
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
+import de.monticore.symbols.oosymbols._symboltable.OOSymbolsScope;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.json.JsonElement;
@@ -24,7 +26,7 @@ import static org.junit.Assert.*;
 
 public class SymTypeExpressionTest {
 
-  private static IOOSymbolsScope scope = BuiltInJavaSymbolResolver.getScope();
+  private static IOOSymbolsScope scope = OOSymbolsMill.scope();
 
   // setup of objects (unchanged during tests)
   SymTypeExpression teDouble = createTypeConstant("double");
@@ -81,6 +83,7 @@ public class SymTypeExpressionTest {
   @BeforeClass
   public static void setUpScope(){
     LogStub.init();
+    BasicSymbolsMill.initializePrimitives();
     scope.add(new OOTypeSymbol("long"));
     scope.add(new OOTypeSymbol("Human"));
   }

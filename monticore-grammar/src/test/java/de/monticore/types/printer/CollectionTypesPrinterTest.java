@@ -4,6 +4,7 @@ package de.monticore.types.printer;
 import de.monticore.types.mccollectiontypes.MCCollectionTypesMill;
 import de.monticore.types.mccollectiontypes._ast.*;
 import de.monticore.types.mccollectiontypestest._parser.MCCollectionTypesTestParser;
+import de.monticore.types.prettyprint.MCCollectionTypesFullPrettyPrinter;
 import de.monticore.types.prettyprint.MCCollectionTypesPrettyPrinter;
 import org.junit.Test;
 
@@ -31,7 +32,7 @@ public class CollectionTypesPrinterTest {
     assertTrue(astmcOptionalType.isPresent());
     assertTrue(astmcMapType.isPresent());
 
-    MCCollectionTypesPrettyPrinter printer = MCCollectionTypesMill.mcCollectionTypesPrettyPrinter();
+    MCCollectionTypesFullPrettyPrinter printer = MCCollectionTypesMill.mcCollectionTypesPrettyPrinter();
     assertEquals("java.util.List", printer.prettyprint(astmcBasicTypeArgument.get()));
     assertEquals("int", printer.prettyprint(astmcPrimitiveTypeArgument.get()));
     assertEquals("List<java.lang.String>",printer.prettyprint(astmcListType.get())); // funktioniert nicht

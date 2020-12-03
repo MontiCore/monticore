@@ -19,7 +19,7 @@ public class JavaLightPrettyPrinterTest {
 
   private TestJavaLightParser parser = new TestJavaLightParser();
 
-  private JavaLightPrettyPrinterDelegator prettyPrinter = new JavaLightPrettyPrinterDelegator(new IndentPrinter());
+  private JavaLightFullPrettyPrinter prettyPrinter = new JavaLightFullPrettyPrinter(new IndentPrinter());
 
   @BeforeClass
   public static void setUp() {
@@ -31,8 +31,7 @@ public class JavaLightPrettyPrinterTest {
   public void init() {
     prettyPrinter.getPrinter().clearBuffer();
   }
-
-
+  
   @Test
   public void testMethodDeclaration() throws IOException {
     Optional<ASTMethodDeclaration> result = parser.parse_StringMethodDeclaration("private static final int foo(String s, boolean b)[][][] throws e.Exception { private Integer foo = a; }");

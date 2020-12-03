@@ -4,6 +4,9 @@ package automata6;
 import java.io.IOException;
 import java.util.*;
 
+import automata5.Automata5Mill;
+import automata5.Automata5PrettyPrinter;
+import automata5._visitor.Automata5Traverser;
 import org.antlr.v4.runtime.RecognitionException;
 
 import automata5._ast.*;
@@ -45,7 +48,11 @@ public class Automata6Tool {
     
     // execute a pretty printer
     Automata6PrettyPrinter pp = new Automata6PrettyPrinter();
-    pp.handle(ast);
+    Automata5PrettyPrinter pp5 = new Automata5PrettyPrinter();
+    Automata6Traverser traverser = Automata6Mill.traverser();
+    traverser.add4Automata6(pp);
+    traverser.add4Automata5(pp5);
+    ast.accept(traverser);
     Log.info("Pretty printing the parsed automaton into console:", "Automata6Tool");
     System.out.println(pp.getResult());
   }

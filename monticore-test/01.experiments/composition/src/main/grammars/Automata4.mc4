@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+grammar Automata4 extends Automata1 {
+  
+  start Automaton;
+  
+  interface AutElement;
+
+  //Override and add interface but keep original body
+  @Override
+  State implements AutElement;
+
+}

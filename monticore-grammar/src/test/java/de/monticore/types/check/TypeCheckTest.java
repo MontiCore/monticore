@@ -6,6 +6,7 @@ import com.google.common.collect.Lists;
 import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsScope;
+import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.se_rwth.commons.logging.Log;
@@ -27,7 +28,7 @@ import static org.junit.Assert.assertTrue;
 public class TypeCheckTest {
 
   private ICombineExpressionsWithLiteralsScope scope;
-  private TypeCheck tc = new TypeCheck(null, new DeriveSymTypeOfCombineExpressionsDelegator());
+  private TypeCheck tc = new TypeCheck(new SynthesizeSymTypeFromCombineExpressionsWithLiteralsDelegator(), new DeriveSymTypeOfCombineExpressionsDelegator());
   private CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
   private FlatExpressionScopeSetter flatExpressionScopeSetter;
 
@@ -42,12 +43,10 @@ public class TypeCheckTest {
   public void setupForEach() {
     // Setting up a Scope Infrastructure (without a global Scope)
     DefsTypeBasic.setup();
-    scope =
-        CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder()
-            .setEnclosingScope(null)       // No enclosing Scope: Search ending here
-            .setExportingSymbols(true)
-            .setAstNode(null)
-            .setName("Phantasy2").build();     // hopefully unused
+    scope = CombineExpressionsWithLiteralsMill.scope();
+    scope.setEnclosingScope(null);       // No enclosing Scope: Search ending here
+    scope.setExportingSymbols(true);
+    scope.setAstNode(null);     // hopefully unused
     // we add a variety of TypeSymbols to the same scope (which in reality doesn't happen)
     add2scope(scope, DefsTypeBasic._int);
     add2scope(scope, DefsTypeBasic._char);
@@ -92,20 +91,21 @@ public class TypeCheckTest {
   @Test
   public void testIsOfTypeForAssign() throws IOException {
     //primitives
+    CombineExpressionsWithLiteralsTraverser traverser = getTraverser(flatExpressionScopeSetter);
     ASTExpression bool1 = p.parse_StringExpression("true").get();
-    bool1.accept(flatExpressionScopeSetter);
+    bool1.accept(traverser);
     ASTExpression bool2 = p.parse_StringExpression("false").get();
-    bool2.accept(flatExpressionScopeSetter);
+    bool2.accept(traverser);
     ASTExpression float1 = p.parse_StringExpression("3.4f").get();
-    float1.accept(flatExpressionScopeSetter);
+    float1.accept(traverser);
     ASTExpression int1 = p.parse_StringExpression("3").get();
-    int1.accept(flatExpressionScopeSetter);
+    int1.accept(traverser);
     ASTExpression double1 = p.parse_StringExpression("3.46").get();
-    double1.accept(flatExpressionScopeSetter);
+    double1.accept(traverser);
     ASTExpression long1 = p.parse_StringExpression("5L").get();
-    long1.accept(flatExpressionScopeSetter);
+    long1.accept(traverser);
     ASTExpression char1 = p.parse_StringExpression("\'a\'").get();
-    char1.accept(flatExpressionScopeSetter);
+    char1.accept(traverser);
 
     assertTrue(tc.isOfTypeForAssign(tc.typeOf(bool1), bool2));
     assertTrue(tc.isOfTypeForAssign(tc.typeOf(double1), int1));
@@ -120,11 +120,11 @@ public class TypeCheckTest {
 
     //non-primitives
     ASTExpression pers = p.parse_StringExpression("Person").get();
-    pers.accept(flatExpressionScopeSetter);
+    pers.accept(traverser);
     ASTExpression stud = p.parse_StringExpression("Student").get();
-    stud.accept(flatExpressionScopeSetter);
+    stud.accept(traverser);
     ASTExpression fstud = p.parse_StringExpression("FirstSemesterStudent").get();
-    fstud.accept(flatExpressionScopeSetter);
+    fstud.accept(traverser);
 
     assertTrue(tc.isOfTypeForAssign(tc.typeOf(pers), stud));
     assertTrue(tc.isOfTypeForAssign(tc.typeOf(pers), fstud));
@@ -140,20 +140,21 @@ public class TypeCheckTest {
   @Test
   public void testIsSubtype() throws IOException {
     //primitives
+    CombineExpressionsWithLiteralsTraverser traverser = getTraverser(flatExpressionScopeSetter);
     ASTExpression bool1 = p.parse_StringExpression("true").get();
-    bool1.accept(flatExpressionScopeSetter);
+    bool1.accept(traverser);
     ASTExpression bool2 = p.parse_StringExpression("false").get();
-    bool2.accept(flatExpressionScopeSetter);
+    bool2.accept(traverser);
     ASTExpression float1 = p.parse_StringExpression("3.4f").get();
-    float1.accept(flatExpressionScopeSetter);
+    float1.accept(traverser);
     ASTExpression int1 = p.parse_StringExpression("3").get();
-    int1.accept(flatExpressionScopeSetter);
+    int1.accept(traverser);
     ASTExpression double1 = p.parse_StringExpression("3.46").get();
-    double1.accept(flatExpressionScopeSetter);
+    double1.accept(traverser);
     ASTExpression long1 = p.parse_StringExpression("5L").get();
-    long1.accept(flatExpressionScopeSetter);
+    long1.accept(traverser);
     ASTExpression char1 = p.parse_StringExpression("\'a\'").get();
-    char1.accept(flatExpressionScopeSetter);
+    char1.accept(traverser);
 
 
     assertFalse(isSubtypeOf(tc.typeOf(bool1), tc.typeOf(bool2)));
@@ -169,11 +170,11 @@ public class TypeCheckTest {
 
     //non-primitives
     ASTExpression pers = p.parse_StringExpression("Person").get();
-    pers.accept(flatExpressionScopeSetter);
+    pers.accept(traverser);
     ASTExpression stud = p.parse_StringExpression("Student").get();
-    stud.accept(flatExpressionScopeSetter);
+    stud.accept(traverser);
     ASTExpression fstud = p.parse_StringExpression("FirstSemesterStudent").get();
-    fstud.accept(flatExpressionScopeSetter);
+    fstud.accept(traverser);
 
     assertTrue(isSubtypeOf(tc.typeOf(stud), tc.typeOf(pers)));
     assertTrue(isSubtypeOf(tc.typeOf(fstud), tc.typeOf(pers)));
@@ -184,5 +185,17 @@ public class TypeCheckTest {
     assertFalse(isSubtypeOf(tc.typeOf(pers), tc.typeOf(pers)));
 
     assertFalse(isSubtypeOf(tc.typeOf(int1), tc.typeOf(pers)));
+  }
+
+  public CombineExpressionsWithLiteralsTraverser getTraverser(FlatExpressionScopeSetter flatExpressionScopeSetter){
+    CombineExpressionsWithLiteralsTraverser traverser = CombineExpressionsWithLiteralsMill.traverser();
+    traverser.add4AssignmentExpressions(flatExpressionScopeSetter);
+    traverser.add4BitExpressions(flatExpressionScopeSetter);
+    traverser.add4CommonExpressions(flatExpressionScopeSetter);
+    traverser.add4ExpressionsBasis(flatExpressionScopeSetter);
+    traverser.add4SetExpressions(flatExpressionScopeSetter);
+    traverser.add4JavaClassExpressions(flatExpressionScopeSetter);
+    traverser.add4MCBasicTypes(flatExpressionScopeSetter);
+    return traverser;
   }
 }

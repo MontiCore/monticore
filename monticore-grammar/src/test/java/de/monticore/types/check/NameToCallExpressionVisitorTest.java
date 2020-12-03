@@ -1,7 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
+import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
 import de.monticore.expressions.commonexpressions._ast.ASTCallExpression;
 import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
@@ -22,8 +24,8 @@ public class NameToCallExpressionVisitorTest {
   @Test
   public void nameTest() throws IOException {
     Optional<ASTExpression> astex = p.parse_StringExpression("test()");
-    NameToCallExpressionVisitor visitor = new NameToCallExpressionVisitor();
-    astex.get().accept(visitor);
+    CombineExpressionsWithLiteralsTraverser traverser = getTraverser();
+    astex.get().accept(traverser);
     assertEquals("test",((ASTCallExpression)astex.get()).getName());
   }
 
@@ -35,10 +37,20 @@ public class NameToCallExpressionVisitorTest {
     Optional<ASTExpression> astex = p.parse_StringExpression("a.b.test()");
     ASTExpression expr = ((ASTCallExpression)astex.get()).getExpression();
     ASTExpression innerExpr = ((ASTFieldAccessExpression)expr).getExpression();
-    NameToCallExpressionVisitor visitor = new NameToCallExpressionVisitor();
-    astex.get().accept(visitor);
+    CombineExpressionsWithLiteralsTraverser traverser = getTraverser();
+    astex.get().accept(traverser);
     assertEquals("test",((ASTCallExpression)astex.get()).getName());
     assertEquals(((ASTCallExpression)astex.get()).getExpression(),innerExpr);
+  }
+
+  private CombineExpressionsWithLiteralsTraverser getTraverser(){
+    CombineExpressionsWithLiteralsTraverser traverser = CombineExpressionsWithLiteralsMill.traverser();
+    NameToCallExpressionVisitor visitor = new NameToCallExpressionVisitor();
+    traverser.setCommonExpressionsHandler(visitor);
+    traverser.add4CommonExpressions(visitor);
+    traverser.setExpressionsBasisHandler(visitor);
+    traverser.add4ExpressionsBasis(visitor);
+    return traverser;
   }
 
 }

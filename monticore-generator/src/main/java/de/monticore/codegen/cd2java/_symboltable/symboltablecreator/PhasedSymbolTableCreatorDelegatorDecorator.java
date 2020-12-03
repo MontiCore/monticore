@@ -13,9 +13,9 @@ import de.se_rwth.commons.StringTransformations;
 import java.util.Optional;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISITOR_SUFFIX;
 import static de.monticore.cd.facade.CDModifier.*;
 
+@Deprecated
 public class PhasedSymbolTableCreatorDelegatorDecorator extends AbstractCreator<ASTCDCompilationUnit, Optional<ASTCDClass>> {
 
   protected final SymbolTableService symbolTableService;
@@ -38,20 +38,22 @@ public class PhasedSymbolTableCreatorDelegatorDecorator extends AbstractCreator<
       String phasedSTName = symbolTableService.getPhasedSymbolTableCreatorDelegatorSimpleName();
       String globalScopeInterface = symbolTableService.getGlobalScopeInterfaceSimpleName();
       String artifactScopeInterface = symbolTableService.getArtifactScopeInterfaceSimpleName();
-      String scopeSkeletonCreatorDelegator = symbolTableService.getScopeSkeletonCreatorDelegatorSimpleName();
-      String visitor = visitorService.getVisitorFullName();
+      String scopesGenitorDelegator = symbolTableService.getScopesGenitorDelegatorSimpleName();
+      String traverser = visitorService.getTraverserInterfaceFullName();
 
       ASTCDAttribute globalScopeAttribute = getCDAttributeFacade().createAttribute(PROTECTED, globalScopeInterface, "globalScope");
-      ASTCDAttribute scopeSkeletonCreatorDelegatorAttribute = getCDAttributeFacade().createAttribute(PROTECTED, scopeSkeletonCreatorDelegator, "scopeSkeletonCreator");
-      ASTCDAttribute priorityListAttribute = getCDAttributeFacade().createAttribute(PROTECTED, getMCTypeFacade().createListTypeOf(visitor), "priorityList");
+      ASTCDAttribute scopeSkeletonCreatorDelegatorAttribute = getCDAttributeFacade().createAttribute(PROTECTED, scopesGenitorDelegator, "scopesGenitorDelegator");
+      ASTCDAttribute priorityListAttribute = getCDAttributeFacade().createAttribute(PROTECTED, getMCTypeFacade().createListTypeOf(traverser), "priorityList");
+      ASTModifier modifier = PUBLIC.build();
+      symbolTableService.addDeprecatedStereotype(modifier, Optional.of("Will be removed in a later release"));
 
       return Optional.of(CD4AnalysisMill.cDClassBuilder()
           .setName(phasedSTName)
-          .setModifier(PUBLIC.build())
+          .setModifier(modifier)
           .addCDAttribute(globalScopeAttribute)
           .addCDAttribute(scopeSkeletonCreatorDelegatorAttribute)
           .addCDAttribute(priorityListAttribute)
-          .addCDConstructor(createConstructor(phasedSTName, globalScopeInterface, scopeSkeletonCreatorDelegator))
+          .addCDConstructor(createConstructor(phasedSTName, globalScopeInterface, scopesGenitorDelegator))
           .addCDConstructor(createZeroArgsConstructor(phasedSTName))
           .addCDMethod(createCreateFromASTMethod(startProdFullName, artifactScopeInterface))
           .build());
@@ -68,10 +70,8 @@ public class PhasedSymbolTableCreatorDelegatorDecorator extends AbstractCreator<
 
   protected ASTCDConstructor createZeroArgsConstructor(String className){
     String millFullName = symbolTableService.getMillFullName();
-    String simpleName = symbolTableService.getCDName();
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), className);
-    this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("this("+millFullName + "."+
-        StringTransformations.uncapitalize(simpleName)+"GlobalScope());"));
+    this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("this("+millFullName + ".globalScope());"));
     return constructor;
   }
 

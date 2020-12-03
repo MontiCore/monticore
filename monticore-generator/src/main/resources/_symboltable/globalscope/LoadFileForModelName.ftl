@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("definitionName")}
-  String symbolFileExtension = getModelFileExtension() + "sym";
+  String symbolFileExtension = getFileExt() + "sym";
   de.monticore.io.paths.ModelCoordinate modelCoordinate =
      de.monticore.io.paths.ModelCoordinates.createQualifiedCoordinate(modelName, symbolFileExtension);
   String filePath = modelCoordinate.getQualifiedPath().toString();
@@ -10,7 +10,7 @@ ${tc.signature("definitionName")}
     getModelPath().resolveModel(modelCoordinate);
     if (modelCoordinate.hasLocation()) {
       java.net.URL url = modelCoordinate.getLocation();
-      this.addSubScope(scopeDeSer.load(url));
+      this.addSubScope(symbols2Json.load(url));
     }
     addLoadedFile(filePath);
   } else {

@@ -5,13 +5,14 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.literals.mccommonliterals._ast.ASTSignedLiteral;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.types.check.*;
-import mc.typescalculator.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsDelegatorVisitor;
+import mc.typescalculator.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
+import mc.typescalculator.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
 
 import java.util.Optional;
 
-public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpressionsWithLiteralsDelegatorVisitor implements ITypesCalculator {
+public class CombineExpressionsWithLiteralsTypesCalculator implements ITypesCalculator {
 
-  private CombineExpressionsWithLiteralsDelegatorVisitor realThis;
+  private CombineExpressionsWithLiteralsTraverser traverser;
 
   private DeriveSymTypeOfAssignmentExpressions assignmentExpressionTypesCalculator;
 
@@ -29,36 +30,11 @@ public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpres
 
 
   public CombineExpressionsWithLiteralsTypesCalculator(){
-    this.realThis=this;
-    commonExpressionTypesCalculator = new DeriveSymTypeOfCommonExpressions();
-    commonExpressionTypesCalculator.setTypeCheckResult(typeCheckResult);
-    setCommonExpressionsVisitor(commonExpressionTypesCalculator);
-
-    deriveSymTypeOfBitExpressions = new DeriveSymTypeOfBitExpressions();
-    setBitExpressionsVisitor(deriveSymTypeOfBitExpressions);
-
-    assignmentExpressionTypesCalculator = new DeriveSymTypeOfAssignmentExpressions();
-    assignmentExpressionTypesCalculator.setTypeCheckResult(typeCheckResult);
-    setAssignmentExpressionsVisitor(assignmentExpressionTypesCalculator);
-
-    expressionsBasisTypesCalculator = new DeriveSymTypeOfExpression();
-    expressionsBasisTypesCalculator.setTypeCheckResult(typeCheckResult);
-    setExpressionsBasisVisitor(expressionsBasisTypesCalculator);
-  
-    DeriveSymTypeOfLiterals deriveSymTypeOfLiterals = new DeriveSymTypeOfLiterals();
-    deriveSymTypeOfLiterals.setTypeCheckResult(typeCheckResult);
-    setMCLiteralsBasisVisitor(deriveSymTypeOfLiterals);
-    this.deriveSymTypeOfLiterals = deriveSymTypeOfLiterals;
-
-    commonLiteralsTypesCalculator = new DeriveSymTypeOfMCCommonLiterals();
-    commonExpressionTypesCalculator.setTypeCheckResult(typeCheckResult);
-    setMCCommonLiteralsVisitor(commonLiteralsTypesCalculator);
-
-    setTypeCheckResult(typeCheckResult);
+    init();
   }
 
   public Optional<SymTypeExpression> calculateType(ASTExpression e){
-    e.accept(realThis);
+    e.accept(traverser);
     Optional<SymTypeExpression> last = Optional.empty();
     if (typeCheckResult.isPresentCurrentResult()) {
       last = Optional.ofNullable(typeCheckResult.getCurrentResult());
@@ -69,7 +45,7 @@ public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpres
 
   @Override
   public Optional<SymTypeExpression> calculateType(ASTLiteral lit) {
-    lit.accept(realThis);
+    lit.accept(traverser);
     Optional<SymTypeExpression> last = Optional.empty();
     if (typeCheckResult.isPresentCurrentResult()) {
       last = Optional.ofNullable(typeCheckResult.getCurrentResult());
@@ -80,7 +56,7 @@ public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpres
 
   @Override
   public Optional<SymTypeExpression> calculateType(ASTSignedLiteral lit) {
-    lit.accept(realThis);
+    lit.accept(traverser);
     Optional<SymTypeExpression> last = Optional.empty();
     if (typeCheckResult.isPresentCurrentResult()) {
       last = Optional.ofNullable(typeCheckResult.getCurrentResult());
@@ -91,20 +67,46 @@ public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpres
 
   @Override
   public void init() {
-    deriveSymTypeOfLiterals = new DeriveSymTypeOfLiterals();
-    deriveSymTypeOfBitExpressions = new DeriveSymTypeOfBitExpressions();
-    commonLiteralsTypesCalculator = new DeriveSymTypeOfMCCommonLiterals();
+    this.typeCheckResult = new TypeCheckResult();
+    this.traverser = CombineExpressionsWithLiteralsMill.traverser();
+
     commonExpressionTypesCalculator = new DeriveSymTypeOfCommonExpressions();
+    commonExpressionTypesCalculator.setTypeCheckResult(typeCheckResult);
+    traverser.setCommonExpressionsHandler(commonExpressionTypesCalculator);
+    traverser.add4CommonExpressions(commonExpressionTypesCalculator);
+
+    deriveSymTypeOfBitExpressions = new DeriveSymTypeOfBitExpressions();
+    deriveSymTypeOfBitExpressions.setTypeCheckResult(typeCheckResult);
+    traverser.setBitExpressionsHandler(deriveSymTypeOfBitExpressions);
+    traverser.add4BitExpressions(deriveSymTypeOfBitExpressions);
+
     assignmentExpressionTypesCalculator = new DeriveSymTypeOfAssignmentExpressions();
+    assignmentExpressionTypesCalculator.setTypeCheckResult(typeCheckResult);
+    traverser.add4AssignmentExpressions(assignmentExpressionTypesCalculator);
+    traverser.setAssignmentExpressionsHandler(assignmentExpressionTypesCalculator);
+
     expressionsBasisTypesCalculator = new DeriveSymTypeOfExpression();
-    setTypeCheckResult(typeCheckResult);
+    expressionsBasisTypesCalculator.setTypeCheckResult(typeCheckResult);
+    traverser.setExpressionsBasisHandler(expressionsBasisTypesCalculator);
+    traverser.add4ExpressionsBasis(expressionsBasisTypesCalculator);
+
+    deriveSymTypeOfLiterals = new DeriveSymTypeOfLiterals();
+    deriveSymTypeOfLiterals.setTypeCheckResult(typeCheckResult);
+    traverser.add4MCLiteralsBasis(deriveSymTypeOfLiterals);
+
+    commonLiteralsTypesCalculator = new DeriveSymTypeOfMCCommonLiterals();
+    commonExpressionTypesCalculator.setTypeCheckResult(typeCheckResult);
+    traverser.add4MCCommonLiterals(commonLiteralsTypesCalculator);
   }
 
   @Override
-  public CombineExpressionsWithLiteralsDelegatorVisitor getRealThis(){
-    return realThis;
+  public CombineExpressionsWithLiteralsTraverser getTraverser() {
+    return traverser;
   }
 
+  public void setTraverser(CombineExpressionsWithLiteralsTraverser traverser) {
+    this.traverser = traverser;
+  }
 
   public void setTypeCheckResult(TypeCheckResult typeCheckResult){
     this.typeCheckResult = typeCheckResult;

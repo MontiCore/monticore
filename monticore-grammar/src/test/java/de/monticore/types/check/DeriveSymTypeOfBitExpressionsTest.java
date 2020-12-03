@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsScope;
+import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.se_rwth.commons.logging.Log;
@@ -23,6 +24,7 @@ public class DeriveSymTypeOfBitExpressionsTest {
 
   private ICombineExpressionsWithLiteralsScope scope;
   private FlatExpressionScopeSetter flatExpressionScopeSetter;
+  private CombineExpressionsWithLiteralsTraverser traverser;
 
   /**
    * Focus: Deriving Type of Literals, here:
@@ -38,12 +40,10 @@ public class DeriveSymTypeOfBitExpressionsTest {
   @Before
   public void setupForEach() {
     // Setting up a Scope Infrastructure (without a global Scope)
-    scope =
-        CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder()
-            .setEnclosingScope(null)       // No enclosing Scope: Search ending here
-            .setExportingSymbols(true)
-            .setAstNode(null)
-            .build();     // hopefully unused
+    scope = CombineExpressionsWithLiteralsMill.scope();
+    scope.setEnclosingScope(null);       // No enclosing Scope: Search ending here
+    scope.setExportingSymbols(true);
+    scope.setAstNode(null); // hopefully unused
     // we add a variety of TypeSymbols to the same scope (which in reality doesn't happen)
     add2scope(scope, DefsTypeBasic._int);
     add2scope(scope, DefsTypeBasic._char);
@@ -76,6 +76,7 @@ public class DeriveSymTypeOfBitExpressionsTest {
     add2scope(scope,field("student2",SymTypeExpressionFactory.createTypeObject("Student",scope)));
     add2scope(scope,field("firstsemester",SymTypeExpressionFactory.createTypeObject("FirstSemesterStudent",scope)));
     flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
+    traverser = getTraverser(flatExpressionScopeSetter);
     LogStub.init();
   }
 
@@ -104,13 +105,13 @@ public class DeriveSymTypeOfBitExpressionsTest {
     //example with int - int
     String s = "3<<5";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("int",tc.typeOf(astex).print());
 
     //example with char - long
     s = "\'a\'<<4L";
     astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("int",tc.typeOf(astex).print());
   }
 
@@ -119,7 +120,7 @@ public class DeriveSymTypeOfBitExpressionsTest {
     //only possible with integral types
     String s = "3<<4.5";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     try{
       tc.typeOf(astex);
     }catch(RuntimeException e){
@@ -135,13 +136,13 @@ public class DeriveSymTypeOfBitExpressionsTest {
     //example with int - int
     String s = "3>>5";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("int",tc.typeOf(astex).print());
 
     //example with long - long
     s = "6L>>4L";
     astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("long",tc.typeOf(astex).print());
   }
 
@@ -150,7 +151,7 @@ public class DeriveSymTypeOfBitExpressionsTest {
     //only possible with integral types
     String s = "3>>4.5";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     try{
       tc.typeOf(astex);
     }catch(RuntimeException e){
@@ -166,13 +167,13 @@ public class DeriveSymTypeOfBitExpressionsTest {
     //example with int - int
     String s = "3>>>5";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("int",tc.typeOf(astex).print());
 
     //example with int - long
     s = "12>>>4L";
     astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("int",tc.typeOf(astex).print());
   }
 
@@ -181,7 +182,7 @@ public class DeriveSymTypeOfBitExpressionsTest {
     //only possible with integral types
     String s = "3>>>4.5";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     try{
       tc.typeOf(astex);
     }catch(RuntimeException e){
@@ -197,13 +198,13 @@ public class DeriveSymTypeOfBitExpressionsTest {
     //example with int - int
     String s = "3|5";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("int",tc.typeOf(astex).print());
 
     //example with char - long
     s = "\'a\'|4L";
     astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("long",tc.typeOf(astex).print());
   }
 
@@ -212,7 +213,7 @@ public class DeriveSymTypeOfBitExpressionsTest {
     //only possible with integral types
     String s = "3|4.5";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     try{
       tc.typeOf(astex);
     }catch(RuntimeException e){
@@ -228,13 +229,13 @@ public class DeriveSymTypeOfBitExpressionsTest {
     //example with int - int
     String s = "3&5";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("int",tc.typeOf(astex).print());
 
     //example with long - long
     s = "4L&12L";
     astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("long",tc.typeOf(astex).print());
   }
 
@@ -243,7 +244,7 @@ public class DeriveSymTypeOfBitExpressionsTest {
     //only possible with integral types
     String s = "3&4.5";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     try{
       tc.typeOf(astex);
     }catch(RuntimeException e){
@@ -259,13 +260,13 @@ public class DeriveSymTypeOfBitExpressionsTest {
     //example with int - int
     String s = "3^5";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("int",tc.typeOf(astex).print());
 
     //example with boolean - boolean
     s = "true^false";
     astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("boolean",tc.typeOf(astex).print());
   }
 
@@ -274,11 +275,23 @@ public class DeriveSymTypeOfBitExpressionsTest {
     //only possible with integral types
     String s = "3^4.5";
     ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     try{
       tc.typeOf(astex);
     }catch(RuntimeException e){
       assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0205"));
     }
+  }
+
+  public CombineExpressionsWithLiteralsTraverser getTraverser(FlatExpressionScopeSetter flatExpressionScopeSetter){
+    CombineExpressionsWithLiteralsTraverser traverser = CombineExpressionsWithLiteralsMill.traverser();
+    traverser.add4AssignmentExpressions(flatExpressionScopeSetter);
+    traverser.add4BitExpressions(flatExpressionScopeSetter);
+    traverser.add4CommonExpressions(flatExpressionScopeSetter);
+    traverser.add4ExpressionsBasis(flatExpressionScopeSetter);
+    traverser.add4SetExpressions(flatExpressionScopeSetter);
+    traverser.add4JavaClassExpressions(flatExpressionScopeSetter);
+    traverser.add4MCBasicTypes(flatExpressionScopeSetter);
+    return traverser;
   }
 }

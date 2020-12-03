@@ -15,6 +15,7 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCSetType;
+import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -24,6 +25,8 @@ import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
+import static de.monticore.codegen.cd2java.DecorationHelper.GET_PREFIX;
+import static de.monticore.codegen.cd2java.DecorationHelper.SET_PREFIX;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.codegen.cd2java._symboltable.scope.GlobalScopeClassDecorator.LOAD;
 
@@ -94,6 +97,7 @@ public class GlobalScopeInterfaceDecorator
         .addAllCDMethods(createResolveMethods(symbolClasses, definitionName))
         .addAllCDMethods(createSuperProdResolveMethods(definitionName))
         .addAllCDMethods(createEnclosingScopeMethods(globalScopeName))
+        .addAllCDMethods(createDeSerMapMethods())
         .addCDMethod(createGetNameMethod(globalScopeName))
         .addCDMethod(createIsPresentNameMethod())
         .addCDMethod(creatCheckIfContinueAsSubScopeMethod())
@@ -102,6 +106,7 @@ public class GlobalScopeInterfaceDecorator
         .addCDMethod(createClearLoadedFilesMethod())
         .addCDMethod(createIsFileLoadedMethod())
         .addCDMethod(createClearMethod())
+        .addCDMethod(createInitMethod())
         .addCDMethod(createSetModelPathMethod())
         .build();
   }
@@ -145,10 +150,10 @@ public class GlobalScopeInterfaceDecorator
 
   protected List<ASTCDMethod> createModelFileExtensionAttributeMethods() {
     ASTCDMethod getMethod = getCDMethodFacade()
-        .createMethod(PUBLIC_ABSTRACT, getMCTypeFacade().createStringType(), "getModelFileExtension");
+        .createMethod(PUBLIC_ABSTRACT, getMCTypeFacade().createStringType(), GET_PREFIX + StringTransformations.capitalize(FILE_EXTENSION_VAR));
     ASTCDMethod setMethod = getCDMethodFacade()
-        .createMethod(PUBLIC_ABSTRACT, "setModelFileExtension",
-            getCDParameterFacade().createParameter(getMCTypeFacade().createStringType(), "modelFileExtension"));
+        .createMethod(PUBLIC_ABSTRACT, SET_PREFIX + StringTransformations.capitalize(FILE_EXTENSION_VAR),
+            getCDParameterFacade().createParameter(getMCTypeFacade().createStringType(), FILE_EXTENSION_VAR));
     return Lists.newArrayList(getMethod, setMethod);
   }
 
@@ -354,6 +359,34 @@ public class GlobalScopeInterfaceDecorator
 
   protected ASTCDMethod createClearMethod(){
     return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, "clear");
+  }
+
+  protected ASTCDMethod createInitMethod(){
+    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, "init");
+  }
+
+  protected List<ASTCDMethod> createDeSerMapMethods(){
+    ASTCDAttribute deSerMapAttribute = getCDAttributeFacade().createAttribute(PROTECTED,
+            getMCTypeFacade().createQualifiedType("Map<String," + I_DE_SER + ">"),
+            DESERS_VAR);
+    List<ASTCDMethod> deSerMapMethods = accessorDecorator.decorate(deSerMapAttribute);
+    deSerMapMethods.addAll(mutatorDecorator.decorate(deSerMapAttribute));
+
+    // Create simple putDeSer(String key, IDeSer value)
+    ASTCDParameter key = getCDParameterFacade().createParameter(String.class, "key");
+    ASTCDParameter value = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(I_DE_SER), "value");
+    ASTCDMethod putMethod = getCDMethodFacade().createMethod(PUBLIC, "putDeSer", key, value);
+    deSerMapMethods.add(putMethod);
+
+    // Create simple value getDeSer(String key)
+    key = getCDParameterFacade().createParameter(String.class, "key");
+    ASTMCQualifiedType returnType = getMCTypeFacade().createQualifiedType(I_DE_SER);
+    ASTCDMethod getMethod = getCDMethodFacade().createMethod(PUBLIC, returnType, "getDeSer", key);
+    deSerMapMethods.add(getMethod);
+
+    deSerMapMethods.forEach(x -> x.getModifier().setAbstract(true));
+
+    return deSerMapMethods;
   }
 
   protected ASTCDMethod createSetModelPathMethod(){

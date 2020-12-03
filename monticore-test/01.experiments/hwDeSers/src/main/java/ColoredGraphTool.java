@@ -3,10 +3,9 @@
 import coloredgraph.ColoredGraphMill;
 import coloredgraph._ast.ASTGraph;
 import coloredgraph._parser.ColoredGraphParser;
-import coloredgraph._symboltable.ColoredGraphScopeDeSer;
 import coloredgraph._symboltable.ColoredGraphSymbolTableCreatorDelegator;
+import coloredgraph._symboltable.ColoredGraphSymbols2Json;
 import coloredgraph._symboltable.IColoredGraphArtifactScope;
-import coloredgraph._symboltable.IColoredGraphGlobalScope;
 import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.RecognitionException;
 
@@ -35,19 +34,19 @@ public class ColoredGraphTool {
     String model = args[0];
 
     // parse the model and create the AST representation
-    final ASTGraph ast = parse(model);
+    ASTGraph ast = parse(model);
     Log.info(model + " parsed successfully!", "ColoredGraphTool");
 
     // instantiate symbol table:
-    ColoredGraphMill.coloredGraphGlobalScope().setModelFileExtension("cg");
-    final ColoredGraphSymbolTableCreatorDelegator stc = ColoredGraphMill
+    ColoredGraphMill.globalScope().setFileExt("cg");
+    ColoredGraphSymbolTableCreatorDelegator stc = ColoredGraphMill
         .coloredGraphSymbolTableCreatorDelegator();
-    final IColoredGraphArtifactScope symTab = stc.createFromAST(ast);
+    IColoredGraphArtifactScope symTab = stc.createFromAST(ast);
 
     Log.info("------------------", "ColoredGraphTool");
 
     // store symbol table
-    ColoredGraphMill.coloredGraphScopeDeSer().store(symTab, "target/" + model + "sym");
+    new ColoredGraphSymbols2Json().store(symTab, "target/" + model + "sym");
 
   }
 

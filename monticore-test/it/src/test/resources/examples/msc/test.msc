@@ -7,10 +7,16 @@ msc test{
     out Hello to j;
     in World from j;
 
-    //TODO add more conditions      
     condition cond shared all{
      a
     }
+    condition cond2 shared Foo, Bar{
+     a
+    }
+    condition cond3 {
+     a
+    }
+    condition cond4;
   }
 
   instance j{

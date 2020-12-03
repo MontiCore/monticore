@@ -7,6 +7,10 @@ public class ParserConstants {
 
   public static final String PARSER_SUFFIX = "Parser";
 
+  public static final String ANTLR_SUFFIX = "Antlr";
+
+  public static final String FOR_SUFFIX = "For";
+
   private ParserConstants() {
   }
 }

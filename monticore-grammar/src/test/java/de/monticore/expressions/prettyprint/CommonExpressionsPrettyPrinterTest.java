@@ -22,7 +22,7 @@ public class CommonExpressionsPrettyPrinterTest {
 
   private TestCommonExpressionsParser parser = new TestCommonExpressionsParser();
 
-  private CommonExpressionsPrettyPrinter prettyPrinter = new CommonExpressionsPrettyPrinter(new IndentPrinter());
+  private CommonExpressionsFullPrettyPrinter prettyPrinter = new CommonExpressionsFullPrettyPrinter(new IndentPrinter());
 
   @BeforeClass
   public static void setUp() {

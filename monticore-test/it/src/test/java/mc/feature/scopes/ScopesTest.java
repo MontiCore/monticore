@@ -41,8 +41,8 @@ public class ScopesTest {
     assertFalse(supAutomatonParser.hasErrors());
     assertTrue(astSup.isPresent());
 
-    ISupAutomatonGlobalScope globalScope = SupAutomatonMill.supAutomatonGlobalScope();
-    globalScope.setModelFileExtension("aut");
+    ISupAutomatonGlobalScope globalScope = SupAutomatonMill.globalScope();
+    globalScope.setFileExt("aut");
     globalScope.getModelPath().addEntry(Paths.get("src/test/resources/mc/feature/scopes"));
     this.symbolTableCreator = SupAutomatonMill.supAutomatonSymbolTableCreatorDelegator();
 
@@ -55,6 +55,7 @@ public class ScopesTest {
   public void testResolvingFromGrammarScope(){
 
     SupAutomatonScope fromAST = (SupAutomatonScope) symbolTableCreator.createFromAST(astSup);
+    fromAST.setName("TopPingPong");
 
     //findet, denn liegt im ersten Scope
     Optional<AutomatonSymbol> pingPongAutomatonSymbolLokal = fromAST.getSubScopes().stream().findAny().get().resolveAutomaton("PingPong");

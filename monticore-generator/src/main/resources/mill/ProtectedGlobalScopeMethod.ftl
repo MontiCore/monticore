@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("attributeName")}
+${tc.signature("attributeName", "globalScope")}
   if(null == ${attributeName}){
-    ${attributeName} = ${attributeName}Builder().build();
+    ${attributeName} = new ${globalScope}();
   }
   return ${attributeName};

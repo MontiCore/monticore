@@ -2,36 +2,31 @@
 package mc.typescalculator;
 
 import de.monticore.types.check.*;
-import mc.typescalculator.myownlanguage._visitor.MyOwnLanguageDelegatorVisitor;
+import mc.typescalculator.myownlanguage.MyOwnLanguageMill;
+import mc.typescalculator.myownlanguage._visitor.MyOwnLanguageTraverser;
 
 import java.util.Optional;
 
-public class SynthesizeSymTypeFromMyOwnLanguage extends MyOwnLanguageDelegatorVisitor implements ISynthesize {
+public class SynthesizeSymTypeFromMyOwnLanguage implements ISynthesize {
 
   protected SynthesizeSymTypeFromMCBasicTypes symTypeFromMCBasicTypes;
   protected SynthesizeSymTypeFromMCCollectionTypes symTypeFromMCCollectionTypes;
   protected SynthesizeSymTypeFromUnitTypes symTypeFromUnitTypes;
   protected TypeCheckResult result = new TypeCheckResult();
-  private MyOwnLanguageDelegatorVisitor realThis;
-
-  @Override
-  public MyOwnLanguageDelegatorVisitor getRealThis() {
-    return realThis;
-  }
+  private MyOwnLanguageTraverser traverser;
 
   public SynthesizeSymTypeFromMyOwnLanguage(){
-    realThis = this;
-    symTypeFromMCBasicTypes = new SynthesizeSymTypeFromMCBasicTypes();
-    symTypeFromMCBasicTypes.setTypeCheckResult(result);
-    setMCBasicTypesVisitor(symTypeFromMCBasicTypes);
-    symTypeFromMCCollectionTypes = new SynthesizeSymTypeFromMCCollectionTypes();
-    symTypeFromMCCollectionTypes.setTypeCheckResult(result);
-    setMCCollectionTypesVisitor(symTypeFromMCCollectionTypes);
-    symTypeFromUnitTypes = new SynthesizeSymTypeFromUnitTypes();
-    symTypeFromUnitTypes.setTypeCheckResult(result);
-    setUnitTypesVisitor(symTypeFromUnitTypes);
+    init();
   }
 
+  @Override
+  public MyOwnLanguageTraverser getTraverser() {
+    return traverser;
+  }
+
+  public void setTraverser(MyOwnLanguageTraverser traverser) {
+    this.traverser = traverser;
+  }
 
   @Override
   public Optional<SymTypeExpression> getResult() {
@@ -41,11 +36,21 @@ public class SynthesizeSymTypeFromMyOwnLanguage extends MyOwnLanguageDelegatorVi
   @Override
   public void init() {
     result = new TypeCheckResult();
+    traverser = MyOwnLanguageMill.traverser();
+
+    symTypeFromUnitTypes = new SynthesizeSymTypeFromUnitTypes();
     symTypeFromUnitTypes.setTypeCheckResult(result);
-    setUnitTypesVisitor(symTypeFromUnitTypes);
+    traverser.add4UnitTypes(symTypeFromUnitTypes);
+    traverser.setUnitTypesHandler(symTypeFromUnitTypes);
+
+    symTypeFromMCCollectionTypes = new SynthesizeSymTypeFromMCCollectionTypes();
     symTypeFromMCCollectionTypes.setTypeCheckResult(result);
-    setMCCollectionTypesVisitor(symTypeFromMCCollectionTypes);
+    traverser.add4MCCollectionTypes(symTypeFromMCCollectionTypes);
+    traverser.setMCCollectionTypesHandler(symTypeFromMCCollectionTypes);
+
+    symTypeFromMCBasicTypes = new SynthesizeSymTypeFromMCBasicTypes();
     symTypeFromMCBasicTypes.setTypeCheckResult(result);
-    setMCBasicTypesVisitor(symTypeFromMCBasicTypes);
+    traverser.setMCBasicTypesHandler(symTypeFromMCBasicTypes);
+    traverser.add4MCBasicTypes(symTypeFromMCBasicTypes);
   }
 }

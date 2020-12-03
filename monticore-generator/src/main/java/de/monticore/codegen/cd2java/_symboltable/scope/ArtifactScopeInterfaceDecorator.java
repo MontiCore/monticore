@@ -11,7 +11,6 @@ import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
@@ -19,16 +18,13 @@ import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
-import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.ACCEPT_METHOD;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISITOR_PREFIX;
 
 /**
  * creates an artifactScope interface from a grammar
@@ -68,8 +64,6 @@ public class ArtifactScopeInterfaceDecorator extends AbstractCreator<ASTCDCompil
         .addCDMethod(createGetTopLevelSymbolMethod(symbolProds))
         .addCDMethod(createCheckIfContinueAsSubScopeMethod())
         .addCDMethod(createGetRemainingNameForResolveDownMethod())
-        .addAllCDMethods(createContinueWithEnclosingScopeMethods(symbolProds, symbolTableService.getCDSymbol()))
-        .addAllCDMethods(createSuperContinueWithEnclosingScopeMethods())
         .addCDMethod(createGetFullNameMethod())
         .build();
   }
@@ -86,12 +80,7 @@ public class ArtifactScopeInterfaceDecorator extends AbstractCreator<ASTCDCompil
             + "' that is supergrammar of '" + symbolTableService.getCDName() + "'.");
         continue;
       }
-      if (symbolTableService.hasStartProd(superGrammar.getAstNode())
-          ||!symbolTableService.getSymbolDefiningSuperProds(superGrammar).isEmpty() ) {
-        result.add(symbolTableService.getArtifactScopeInterfaceType(superGrammar));
-      }else{
-        result.addAll(getSuperArtifactScopeInterfaces(superGrammar));
-      }
+      result.add(symbolTableService.getArtifactScopeInterfaceType(superGrammar));
     }
     if (result.isEmpty()) {
       result.add(getMCTypeFacade().createQualifiedType(I_ARTIFACT_SCOPE_TYPE));
@@ -148,7 +137,7 @@ public class ArtifactScopeInterfaceDecorator extends AbstractCreator<ASTCDCompil
 
   protected ASTCDMethod createGetRemainingNameForResolveDownMethod() {
     ASTCDParameter parameter = getCDParameterFacade().createParameter(String.class, "symbolName");
-    ASTCDMethod getRemainingNameForResolveDown = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createStringType(), "getRemainingNameForResolveDown", parameter);
+    ASTCDMethod getRemainingNameForResolveDown = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createListTypeOf("String"), "getRemainingNameForResolveDown", parameter);
     this.replaceTemplate(EMPTY_BODY, getRemainingNameForResolveDown, new TemplateHookPoint(TEMPLATE_PATH + "GetRemainingNameForResolveDown"));
     return getRemainingNameForResolveDown;
   }

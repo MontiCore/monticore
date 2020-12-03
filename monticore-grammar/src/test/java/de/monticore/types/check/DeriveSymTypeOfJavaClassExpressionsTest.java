@@ -6,6 +6,7 @@ import de.monticore.expressions.combineexpressionswithliterals.CombineExpression
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsScope;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsScope;
+import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
@@ -28,6 +29,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
 
   private ICombineExpressionsWithLiteralsScope scope;
   private FlatExpressionScopeSetter flatExpressionScopeSetter;
+  private CombineExpressionsWithLiteralsTraverser traverser;
 
   /**
    * Focus: Deriving Type of Literals, here:
@@ -45,12 +47,10 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
   public void setupForEach() {
     // Setting up a Scope Infrastructure (without a global Scope)
     DefsTypeBasic.setup();
-    scope =
-        CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder()
-            .setEnclosingScope(null)       // No enclosing Scope: Search ending here
-            .setExportingSymbols(true)
-            .setAstNode(null)
-            .build();     // hopefully unused
+    scope = CombineExpressionsWithLiteralsMill.scope();
+    scope.setEnclosingScope(null);       // No enclosing Scope: Search ending here
+    scope.setExportingSymbols(true);
+    scope.setAstNode(null);
     // we add a variety of TypeSymbols to the same scope (which in reality doesn't happen)
     add2scope(scope, DefsTypeBasic._int);
     add2scope(scope, DefsTypeBasic._char);
@@ -86,6 +86,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     add2scope(scope, field("student2", SymTypeExpressionFactory.createTypeObject("Student", scope)));
     add2scope(scope, field("firstsemester", SymTypeExpressionFactory.createTypeObject("FirstSemesterStudent", scope)));
     flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
+    traverser = getTraverser(flatExpressionScopeSetter);
     LogStub.init();
   }
 
@@ -105,7 +106,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
   @Test
   public void deriveFromPrimarySuperExpression() throws IOException {
     OOTypeSymbol supType = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(OOSymbolsMill.oOSymbolsScopeBuilder().build())
+        .setSpannedScope(OOSymbolsMill.scope())
         .setName("A")
         .setEnclosingScope(scope)
         .build();
@@ -117,9 +118,9 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
         .setName("get")
         .setReturnType(_voidSymType)
         .build();
-    get.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
+    get.setSpannedScope(CombineExpressionsWithLiteralsMill.scope());
     OOTypeSymbol p = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
         .setName("AB")
         .setSuperTypesList(Lists.newArrayList(sup))
         .setEnclosingScope(scope)
@@ -130,16 +131,17 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
 
     //use the spanned scope of the type
     flatExpressionScopeSetter = new FlatExpressionScopeSetter((ICombineExpressionsWithLiteralsScope) p.getSpannedScope());
+    traverser = getTraverser(flatExpressionScopeSetter);
     CombineExpressionsWithLiteralsParser parser = new CombineExpressionsWithLiteralsParser();
 
     Optional<ASTExpression> a = parser.parse_StringExpression("super");
     assertTrue(a.isPresent());
     ASTExpression astex = a.get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("A",tc.typeOf(astex).print());
 
     //use the spanned scope of the method
-    astex.accept(new FlatExpressionScopeSetter((ICombineExpressionsWithLiteralsScope) get.getSpannedScope()));
+    astex.accept(getTraverser(new FlatExpressionScopeSetter((ICombineExpressionsWithLiteralsScope) get.getSpannedScope())));
     assertEquals("A",tc.typeOf(astex).print());
   }
 
@@ -149,7 +151,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     Optional<ASTExpression> a = p.parse_StringExpression("super");
     assertTrue(a.isPresent());
     ASTExpression astex = a.get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     try{
       tc.typeOf(astex);
     }catch(RuntimeException e){
@@ -163,9 +165,9 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
         .setName("get")
         .setReturnType(_voidSymType)
         .build();
-    get.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
+    get.setSpannedScope(CombineExpressionsWithLiteralsMill.scope());
     OOTypeSymbol p = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
         .setName("AB")
         .setEnclosingScope(scope)
         .build();
@@ -175,17 +177,18 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
 
     //use the spanned scope of the type
     flatExpressionScopeSetter = new FlatExpressionScopeSetter((ICombineExpressionsWithLiteralsScope) p.getSpannedScope());
+    traverser = getTraverser(flatExpressionScopeSetter);
     CombineExpressionsWithLiteralsParser parser = new CombineExpressionsWithLiteralsParser();
 
     Optional<ASTExpression> a = parser.parse_StringExpression("this");
     assertTrue(a.isPresent());
     ASTExpression astex = a.get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("AB",tc.typeOf(astex).print());
 
     //use the spanned scope of the method
     flatExpressionScopeSetter = new FlatExpressionScopeSetter((ICombineExpressionsWithLiteralsScope) get.getSpannedScope());
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     assertEquals("AB",tc.typeOf(astex).print());
   }
 
@@ -195,7 +198,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     Optional<ASTExpression> a = p.parse_StringExpression("this");
     assertTrue(a.isPresent());
     ASTExpression astex = a.get();
-    astex.accept(flatExpressionScopeSetter);
+    astex.accept(traverser);
     try{
       tc.typeOf(astex);
     }catch(RuntimeException e){
@@ -229,7 +232,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
 
     //build infrastructure for previous comment
     OOTypeSymbol outer = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
         .setName("Outer")
         .setEnclosingScope(scope)
         .build();
@@ -239,9 +242,9 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
         .setName("methodInner")
         .setReturnType(_voidSymType)
         .build();
-    methodInner.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
+    methodInner.setSpannedScope(CombineExpressionsWithLiteralsMill.scope());
     OOTypeSymbol inner = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
         .setName("Inner")
         .setEnclosingScope(outer.getSpannedScope())
         .build();
@@ -253,9 +256,9 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
         .setName("methodInnerInner")
         .setReturnType(_voidSymType)
         .build();
-    methodInnerInner.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
+    methodInnerInner.setSpannedScope(CombineExpressionsWithLiteralsMill.scope());
     OOTypeSymbol innerinner = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
         .setName("InnerInner")
         .setEnclosingScope(inner.getSpannedScope())
         .build();
@@ -266,6 +269,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
 
     //test 1: Outer.this in methodInner()
     flatExpressionScopeSetter = new FlatExpressionScopeSetter((ICombineExpressionsWithLiteralsScope) methodInner.getSpannedScope());
+    traverser = getTraverser(flatExpressionScopeSetter);
 
     Optional<ASTExpression> this1 = p.parse_StringExpression("Outer.this");
     Optional<ASTExpression> this2 = p.parse_StringExpression("Inner.this");
@@ -274,14 +278,15 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     assertTrue(this2.isPresent());
     ASTExpression t1 = this1.get();
     ASTExpression t2 = this2.get();
-    t1.accept(flatExpressionScopeSetter);
+    t1.accept(traverser);
 
     assertEquals("Outer",tc.typeOf(t1).print());
 
     //test 2&3: Outer.this and Inner.this in methodInnerInner()
     flatExpressionScopeSetter = new FlatExpressionScopeSetter((ICombineExpressionsWithLiteralsScope) methodInnerInner.getSpannedScope());
-    t1.accept(flatExpressionScopeSetter);
-    t2.accept(flatExpressionScopeSetter);
+    traverser = getTraverser(flatExpressionScopeSetter);
+    t1.accept(traverser);
+    t2.accept(traverser);
 
     assertEquals("Inner",tc.typeOf(t2).print());
     assertEquals("Outer",tc.typeOf(t1).print());
@@ -291,18 +296,19 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
   public void failDeriveFromThisExpression1() throws IOException{
     //.this in enclosing class
     OOTypeSymbol fail = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
         .setName("Fail")
         .setEnclosingScope(scope)
         .build();
     add2scope(scope,fail);
 
     flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
+    traverser = getTraverser(flatExpressionScopeSetter);
 
     Optional<ASTExpression> this1 = p.parse_StringExpression("Fail.this");
     assertTrue(this1.isPresent());
     ASTExpression t1 = this1.get();
-    t1.accept(flatExpressionScopeSetter);
+    t1.accept(traverser);
     try{
       tc.typeOf(t1);
     }catch(RuntimeException e){
@@ -317,7 +323,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     Optional<ASTExpression> this1 = p.parse_StringExpression("person1.this");
     assertTrue(this1.isPresent());
     ASTExpression t1 = this1.get();
-    t1.accept(flatExpressionScopeSetter);
+    t1.accept(traverser);
     try{
       tc.typeOf(this1.get());
     }catch(RuntimeException e){
@@ -344,7 +350,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     TypeVarSymbol t = typeVariable("T");
     add2scope(scope,t);
     OOTypeSymbol list = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
         .setName("List")
         .setEnclosingScope(scope)
         .build();
@@ -379,13 +385,13 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     ASTExpression a6 = arr6.get();
     ASTExpression a7 = arr7.get();
 
-    a1.accept(flatExpressionScopeSetter);
-    a2.accept(flatExpressionScopeSetter);
-    a3.accept(flatExpressionScopeSetter);
-    a4.accept(flatExpressionScopeSetter);
-    a5.accept(flatExpressionScopeSetter);
-    a6.accept(flatExpressionScopeSetter);
-    a7.accept(flatExpressionScopeSetter);
+    a1.accept(traverser);
+    a2.accept(traverser);
+    a3.accept(traverser);
+    a4.accept(traverser);
+    a5.accept(traverser);
+    a6.accept(traverser);
+    a7.accept(traverser);
 
     assertEquals("int[]",tc.typeOf(a1).print());
     assertEquals("int",tc.typeOf(a2).print());
@@ -400,18 +406,19 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
   public void failDeriveSymTypeOfArrayExpression() throws IOException {
     //assert that a type will throw an error -> no int[4]
     OOTypeSymbol test = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
         .setName("Test")
         .setEnclosingScope(scope)
         .build();
     add2scope(scope,test);
 
     flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
+    traverser = getTraverser(flatExpressionScopeSetter);
 
     Optional<ASTExpression> arr1 = p.parse_StringExpression("Test[4]");
     assertTrue(arr1.isPresent());
     ASTExpression a1 = arr1.get();
-    a1.accept(flatExpressionScopeSetter);
+    a1.accept(traverser);
     try{
       tc.typeOf(a1);
     }catch(RuntimeException e){
@@ -429,7 +436,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     Optional<ASTExpression> arr1 = p.parse_StringExpression("a[7.5]");
     assertTrue(arr1.isPresent());
     ASTExpression a1 = arr1.get();
-    a1.accept(flatExpressionScopeSetter);
+    a1.accept(traverser);
 
     try{
       tc.typeOf(a1);
@@ -448,7 +455,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     Optional<ASTExpression> arr1 = p.parse_StringExpression("a[Person]");
     assertTrue(arr1.isPresent());
     ASTExpression a1 = arr1.get();
-    a1.accept(flatExpressionScopeSetter);
+    a1.accept(traverser);
 
     try{
       tc.typeOf(a1);
@@ -471,9 +478,9 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     ASTExpression c2 = class2.get();
     ASTExpression c3 = class3.get();
 
-    c1.accept(flatExpressionScopeSetter);
-    c2.accept(flatExpressionScopeSetter);
-    c3.accept(flatExpressionScopeSetter);
+    c1.accept(traverser);
+    c2.accept(traverser);
+    c3.accept(traverser);
 
     //soll es so funktionieren wie in Java? Dann duerfte man naemlich keine Generics akzeptieren
     //hier sind erst einmal Generics mit dabei, s. Testfall #3
@@ -509,9 +516,9 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     ASTExpression i2 = inst2.get();
     ASTExpression i3 = inst3.get();
 
-    i1.accept(flatExpressionScopeSetter);
-    i2.accept(flatExpressionScopeSetter);
-    i3.accept(flatExpressionScopeSetter);
+    i1.accept(traverser);
+    i2.accept(traverser);
+    i3.accept(traverser);
 
     assertEquals("boolean",tc.typeOf(i1).print());
     assertEquals("boolean",tc.typeOf(i2).print());
@@ -524,7 +531,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     Optional<ASTExpression> inst1 = p.parse_StringExpression("Student instanceof Person");
     assertTrue(inst1.isPresent());
     ASTExpression i1 = inst1.get();
-    i1.accept(flatExpressionScopeSetter);
+    i1.accept(traverser);
 
     try{
       tc.typeOf(i1);
@@ -547,9 +554,9 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     ASTExpression c2 = cast2.get();
     ASTExpression c3 = cast3.get();
 
-    c1.accept(flatExpressionScopeSetter);
-    c2.accept(flatExpressionScopeSetter);
-    c3.accept(flatExpressionScopeSetter);
+    c1.accept(traverser);
+    c2.accept(traverser);
+    c3.accept(traverser);
 
     assertEquals("Person",tc.typeOf(c1).print());
     assertEquals("Person",tc.typeOf(c2).print());
@@ -562,7 +569,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     Optional<ASTExpression> cast1 = p.parse_StringExpression("(Student)Person");
     assertTrue(cast1.isPresent());
     ASTExpression c1 = cast1.get();
-    c1.accept(flatExpressionScopeSetter);
+    c1.accept(traverser);
 
     try{
       tc.typeOf(c1);
@@ -577,7 +584,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     Optional<ASTExpression> cast1 = p.parse_StringExpression("(String)person1");
     assertTrue(cast1.isPresent());
     ASTExpression c1 = cast1.get();
-    c1.accept(flatExpressionScopeSetter);
+    c1.accept(traverser);
 
     try{
       tc.typeOf(c1);
@@ -629,10 +636,10 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
         .setName("test")
         .setReturnType(_intSymType)
         .build();
-    test.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
+    test.setSpannedScope(CombineExpressionsWithLiteralsMill.scope());
     FieldSymbol field = field("field",_intSymType);
     OOTypeSymbol superOuter = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
         .setName("SuperOuter")
         .setEnclosingScope(scope)
         .build();
@@ -646,7 +653,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
 
     //class Outer
     OOTypeSymbol outer = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
         .setName("Outer")
         .setSuperTypesList(Lists.newArrayList(superOuterType))
         .setEnclosingScope(scope)
@@ -657,11 +664,11 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
         .setName("methodInner")
         .setReturnType(_voidSymType)
         .build();
-    methodInner.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
+    methodInner.setSpannedScope(CombineExpressionsWithLiteralsMill.scope());
 
     //class Inner
     OOTypeSymbol inner = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
         .setName("Inner")
         .setEnclosingScope(outer.getSpannedScope())
         .build();
@@ -673,11 +680,11 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
         .setName("methodInnerInner")
         .setReturnType(_voidSymType)
         .build();
-    methodInnerInner.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
+    methodInnerInner.setSpannedScope(CombineExpressionsWithLiteralsMill.scope());
 
     //class InnerInner
     OOTypeSymbol innerinner = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
         .setName("InnerInner")
         .setEnclosingScope(inner.getSpannedScope())
         .build();
@@ -687,6 +694,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     add2scope(inner.getSpannedScope(),innerinner);
 
     flatExpressionScopeSetter = new FlatExpressionScopeSetter((CombineExpressionsWithLiteralsScope) methodInner.getSpannedScope());
+    traverser = getTraverser(flatExpressionScopeSetter);
 
     Optional<ASTExpression> super1 = p.parse_StringExpression("Outer.super.test()");
     Optional<ASTExpression> super2 = p.parse_StringExpression("Outer.super.field");
@@ -697,15 +705,17 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     ASTExpression s1 = super1.get();
     ASTExpression s2 = super2.get();
 
-    s1.accept(flatExpressionScopeSetter);
-    s2.accept(flatExpressionScopeSetter);
+    s1.accept(traverser);
+    s2.accept(traverser);
 
     assertEquals("int",tc.typeOf(s1).print());
     assertEquals("int",tc.typeOf(s2).print());
 
     flatExpressionScopeSetter = new FlatExpressionScopeSetter((CombineExpressionsWithLiteralsScope) methodInnerInner.getSpannedScope());
-    s1.accept(flatExpressionScopeSetter);
-    s2.accept(flatExpressionScopeSetter);
+    traverser = getTraverser(flatExpressionScopeSetter);
+
+    s1.accept(traverser);
+    s2.accept(traverser);
     assertEquals("int",tc.typeOf(s1).print());
     assertEquals("int",tc.typeOf(s2).print());
   }
@@ -714,7 +724,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
   public void failDeriveFromSuperExpression1() throws IOException{
     //.super in enclosing class
     OOTypeSymbol fail = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
         .setName("Fail")
         .setEnclosingScope(scope)
         .build();
@@ -722,11 +732,12 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     add2scope(scope,fail);
 
     flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
+    traverser = getTraverser(flatExpressionScopeSetter);
 
     Optional<ASTExpression> super1 = p.parse_StringExpression("Fail.super.get()");
     assertTrue(super1.isPresent());
     ASTExpression s1 = super1.get();
-    s1.accept(flatExpressionScopeSetter);
+    s1.accept(traverser);
     try{
       tc.typeOf(s1);
     }catch(RuntimeException e){
@@ -740,7 +751,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     Optional<ASTExpression> super1 = p.parse_StringExpression("person1.super.get()");
     assertTrue(super1.isPresent());
     ASTExpression s1 = super1.get();
-    s1.accept(flatExpressionScopeSetter);
+    s1.accept(traverser);
     try{
       tc.typeOf(s1);
     }catch(RuntimeException e){
@@ -756,9 +767,9 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
         .setName("test")
         .setReturnType(_intSymType)
         .build();
-    test.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
+    test.setSpannedScope(CombineExpressionsWithLiteralsMill.scope());
     OOTypeSymbol superOuter = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
         .setName("SuperOuter")
         .setEnclosingScope(scope)
         .build();
@@ -771,7 +782,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
 
     //second super type
     OOTypeSymbol superOuterTwo = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
         .setName("SuperOuterTwo")
         .setEnclosingScope(scope)
         .build();
@@ -782,7 +793,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
 
     //class Outer
     OOTypeSymbol outer = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
         .setName("Outer")
         .setSuperTypesList(Lists.newArrayList(superOuterType, superOuterTwoType))
         .setEnclosingScope(scope)
@@ -793,11 +804,11 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
         .setName("methodInner")
         .setReturnType(_voidSymType)
         .build();
-    methodInner.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
+    methodInner.setSpannedScope(CombineExpressionsWithLiteralsMill.scope());
 
     //class Inner
     OOTypeSymbol inner = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
         .setName("Inner")
         .setEnclosingScope(outer.getSpannedScope())
         .build();
@@ -809,11 +820,11 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
         .setName("methodInnerInner")
         .setReturnType(_voidSymType)
         .build();
-    methodInnerInner.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
+    methodInnerInner.setSpannedScope(CombineExpressionsWithLiteralsMill.scope());
 
     //class InnerInner
     OOTypeSymbol innerinner = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
         .setName("InnerInner")
         .setEnclosingScope(inner.getSpannedScope())
         .build();
@@ -823,11 +834,12 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     add2scope(inner.getSpannedScope(),innerinner);
 
     flatExpressionScopeSetter = new FlatExpressionScopeSetter((CombineExpressionsWithLiteralsScope) methodInnerInner.getSpannedScope());
+    traverser = getTraverser(flatExpressionScopeSetter);
 
     Optional<ASTExpression> super1 = p.parse_StringExpression("Outer.super.test()");
     assertTrue(super1.isPresent());
     ASTExpression s1 = super1.get();
-    s1.accept(flatExpressionScopeSetter);
+    s1.accept(traverser);
     try{
       tc.typeOf(s1);
     }catch(RuntimeException e){
@@ -840,7 +852,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     //.super without a super type
     //class Outer
     OOTypeSymbol outer = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
         .setName("Outer")
         .setSuperTypesList(Lists.newArrayList())
         .setEnclosingScope(scope)
@@ -849,11 +861,12 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     add2scope(scope,outer);
 
     flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
+    traverser = getTraverser(flatExpressionScopeSetter);
 
     Optional<ASTExpression> super1 = p.parse_StringExpression("Outer.super.test()");
     assertTrue(super1.isPresent());
     ASTExpression s1 = super1.get();
-    s1.accept(flatExpressionScopeSetter);
+    s1.accept(traverser);
 
     try{
       tc.typeOf(s1);
@@ -869,9 +882,9 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
         .setName("test")
         .setReturnType(_intSymType)
         .build();
-    test.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
+    test.setSpannedScope(CombineExpressionsWithLiteralsMill.scope());
     OOTypeSymbol superOuter = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
         .setName("SuperOuter")
         .setEnclosingScope(scope)
         .build();
@@ -884,7 +897,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
 
     //class Outer
     OOTypeSymbol outer = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
         .setName("Outer")
         .setSuperTypesList(Lists.newArrayList(superOuterType))
         .setEnclosingScope(scope)
@@ -893,12 +906,13 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     add2scope(scope,outer);
 
     flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
+    traverser = getTraverser(flatExpressionScopeSetter);
 
     //SuperOuter does not have a method "get"
     Optional<ASTExpression> super1 = p.parse_StringExpression("Outer.super.get()");
     assertTrue(super1.isPresent());
     ASTExpression s1 = super1.get();
-    s1.accept(flatExpressionScopeSetter);
+    s1.accept(traverser);
     try{
       tc.typeOf(s1);
     }catch(RuntimeException e){
@@ -920,10 +934,10 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
         .setName("ASuper")
         .setReturnType(_intSymType)
         .build();
-    asuperconstr.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
+    asuperconstr.setSpannedScope(CombineExpressionsWithLiteralsMill.scope());
     add2scope(asuperconstr.getSpannedScope(), t);
     OOTypeSymbol aSuper = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
         .setName("ASuper")
         .setEnclosingScope(scope)
         .build();
@@ -940,19 +954,19 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
         .setName("test")
         .setReturnType(_intSymType)
         .build();
-    test.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
+    test.setSpannedScope(CombineExpressionsWithLiteralsMill.scope());
     add2scope(test.getSpannedScope(), t);
     MethodSymbol get = OOSymbolsMill.methodSymbolBuilder()
         .setName("get")
         .setReturnType(tType)
         .build();
-    get.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
+    get.setSpannedScope(CombineExpressionsWithLiteralsMill.scope());
     add2scope(get.getSpannedScope(), t);
     MethodSymbol aconstr = OOSymbolsMill.methodSymbolBuilder()
         .setName("A")
         .setReturnType(_intSymType)
         .build();
-    aconstr.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
+    aconstr.setSpannedScope(CombineExpressionsWithLiteralsMill.scope());
     add2scope(aconstr.getSpannedScope(),t);
     FieldSymbol sParam = field("s", sType);
     FieldSymbol tParam = field("t", tType);
@@ -960,13 +974,13 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
         .setName("set")
         .setReturnType(_StringSymType)
         .build();
-    set.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
+    set.setSpannedScope(CombineExpressionsWithLiteralsMill.scope());
     add2scope(set.getSpannedScope(), sParam);
     add2scope(set.getSpannedScope(), tParam);
     add2scope(set.getSpannedScope(), t);
     add2scope(set.getSpannedScope(), s);
     OOTypeSymbol a = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
         .setName("A")
         .setSuperTypesList(Lists.newArrayList(aSuperType))
         .setEnclosingScope(scope)
@@ -982,40 +996,41 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     add2scope(scope, a);
 
     flatExpressionScopeSetter = new FlatExpressionScopeSetter((CombineExpressionsWithLiteralsScope) a.getSpannedScope());
+    traverser = getTraverser(flatExpressionScopeSetter);
 
     //basic test
     Optional<ASTExpression> pgie1 = p.parse_StringExpression("<int>test()");
     assertTrue(pgie1.isPresent());
     ASTExpression pg1 = pgie1.get();
-    pg1.accept(flatExpressionScopeSetter);
+    pg1.accept(traverser);
     assertEquals("int",tc.typeOf(pg1).print());
 
     //test with variable return type of method
     Optional<ASTExpression> pgie2 = p.parse_StringExpression("<int>get()");
     assertTrue(pgie2.isPresent());
     ASTExpression pg2 = pgie2.get();
-    pg2.accept(flatExpressionScopeSetter);
+    pg2.accept(traverser);
     assertEquals("int",tc.typeOf(pg2).print());
 
     //test with more than one type variable and with args in method
     Optional<ASTExpression> pgie3 = p.parse_StringExpression("<int,double>set(3.2,4)");
     assertTrue(pgie3.isPresent());
     ASTExpression pg3 = pgie3.get();
-    pg3.accept(flatExpressionScopeSetter);
+    pg3.accept(traverser);
     assertEquals("String",tc.typeOf(pg3).print());
 
     //test with super()
     Optional<ASTExpression> pgie4 = p.parse_StringExpression("<int>super()");
     assertTrue(pgie4.isPresent());
     ASTExpression pg4 = pgie4.get();
-    pg4.accept(flatExpressionScopeSetter);
+    pg4.accept(traverser);
     assertEquals("ASuper",tc.typeOf(pg4).print());
 
     //test with this()
     Optional<ASTExpression> pgie5 = p.parse_StringExpression("<int>this()");
     assertTrue(pgie5.isPresent());
     ASTExpression pg5 = pgie5.get();
-    pg5.accept(flatExpressionScopeSetter);
+    pg5.accept(traverser);
     assertEquals("A",tc.typeOf(pg5).print());
   }
 
@@ -1026,9 +1041,9 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
         .setName("help")
         .setReturnType(_doubleSymType)
         .build();
-    help.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
+    help.setSpannedScope(CombineExpressionsWithLiteralsMill.scope());
     OOTypeSymbol sup = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
         .setName("Sup")
         .setEnclosingScope(scope)
         .build();
@@ -1039,7 +1054,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     add2scope(scope,sup);
     SymTypeExpression supType = SymTypeExpressionFactory.createTypeObject("Sup",scope);
     OOTypeSymbol sub = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
         .setName("Sub")
         .setSuperTypesList(Lists.newArrayList(supType))
         .setEnclosingScope(scope)
@@ -1048,11 +1063,12 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     add2scope(scope,sub);
 
     flatExpressionScopeSetter = new FlatExpressionScopeSetter((CombineExpressionsWithLiteralsScope) sub.getSpannedScope());
+    traverser = getTraverser(flatExpressionScopeSetter);
 
     Optional<ASTExpression> pgie1 = p.parse_StringExpression("<int>super.help()");
     assertTrue(pgie1.isPresent());
     ASTExpression pg1 = pgie1.get();
-    pg1.accept(flatExpressionScopeSetter);
+    pg1.accept(traverser);
 
     try {
       tc.typeOf(pg1);
@@ -1069,11 +1085,11 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
         .setName("help")
         .setReturnType(_doubleSymType)
         .build();
-    help.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
+    help.setSpannedScope(CombineExpressionsWithLiteralsMill.scope());
     add2scope(help.getSpannedScope(), typeVariable("T"));
     add2scope(help.getSpannedScope(), xParam);
     OOTypeSymbol sup = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
         .setName("Sup")
         .setEnclosingScope(scope)
         .build();
@@ -1084,7 +1100,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     add2scope(scope,sup);
     SymTypeExpression supType = SymTypeExpressionFactory.createTypeObject("Sup",scope);
     OOTypeSymbol sub = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
         .setName("Sub")
         .setSuperTypesList(Lists.newArrayList(supType))
         .setEnclosingScope(scope)
@@ -1093,11 +1109,12 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     add2scope(scope,sub);
 
     flatExpressionScopeSetter = new FlatExpressionScopeSetter((CombineExpressionsWithLiteralsScope) sub.getSpannedScope());
+    traverser = getTraverser(flatExpressionScopeSetter);
 
     Optional<ASTExpression> pgie1 = p.parse_StringExpression("<int>super.<double>help(2)");
     assertTrue(pgie1.isPresent());
     ASTExpression pg1 = pgie1.get();
-    pg1.accept(flatExpressionScopeSetter);
+    pg1.accept(traverser);
 
     try {
       tc.typeOf(pg1);
@@ -1111,7 +1128,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     //<TypeArg>super.field
     FieldSymbol test = field("test",_booleanSymType);
     OOTypeSymbol sup = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
         .setName("Sup")
         .setEnclosingScope(scope)
         .build();
@@ -1121,7 +1138,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     add2scope(scope,sup);
     SymTypeExpression supType = SymTypeExpressionFactory.createTypeObject("Sup",scope);
     OOTypeSymbol sub = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
         .setName("Sub")
         .setSuperTypesList(Lists.newArrayList(supType))
         .setEnclosingScope(scope)
@@ -1130,11 +1147,12 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     add2scope(scope,sub);
 
     flatExpressionScopeSetter = new FlatExpressionScopeSetter((CombineExpressionsWithLiteralsScope) sub.getSpannedScope());
+    traverser = getTraverser(flatExpressionScopeSetter);
 
     Optional<ASTExpression> pgie1 = p.parse_StringExpression("<int>super.test");
     assertTrue(pgie1.isPresent());
     ASTExpression pg1 = pgie1.get();
-    pg1.accept(flatExpressionScopeSetter);
+    pg1.accept(traverser);
     try {
       tc.typeOf(pg1);
     }catch(RuntimeException e){
@@ -1150,10 +1168,10 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
         .setName("test")
         .setReturnType(_charSymType)
         .build();
-    test.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
+    test.setSpannedScope(CombineExpressionsWithLiteralsMill.scope());
     add2scope(test.getSpannedScope(),t);
     OOTypeSymbol a = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
         .setName("A")
         .setEnclosingScope(scope)
         .build();
@@ -1166,11 +1184,12 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     add2scope(scope,a);
 
     flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
+    traverser = getTraverser(flatExpressionScopeSetter);
 
     Optional<ASTExpression> gie1 = p.parse_StringExpression("a.<int>test()");
     assertTrue(gie1.isPresent());
     ASTExpression g1 = gie1.get();
-    g1.accept(flatExpressionScopeSetter);
+    g1.accept(traverser);
     assertEquals("char",tc.typeOf(g1).print());
   }
 
@@ -1182,10 +1201,10 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
         .setName("A")
         .setReturnType(_charSymType)
         .build();
-    constr.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
+    constr.setSpannedScope(CombineExpressionsWithLiteralsMill.scope());
     add2scope(constr.getSpannedScope(), t);
     OOTypeSymbol a = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
         .setName("A")
         .setEnclosingScope(scope)
         .build();
@@ -1199,11 +1218,12 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     add2scope(scope,a);
 
     flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
+    traverser = getTraverser(flatExpressionScopeSetter);
 
     Optional<ASTExpression> gie1 = p.parse_StringExpression("a.<int>this()");
     assertTrue(gie1.isPresent());
     ASTExpression g1 = gie1.get();
-    g1.accept(flatExpressionScopeSetter);
+    g1.accept(traverser);
 
     try{
       tc.typeOf(g1);
@@ -1220,10 +1240,10 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
         .setName("ASuper")
         .setReturnType(_charSymType)
         .build();
-    constr.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
+    constr.setSpannedScope(CombineExpressionsWithLiteralsMill.scope());
     add2scope(constr.getSpannedScope(), t);
     OOTypeSymbol aSuper = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
         .setName("ASuper")
         .setEnclosingScope(scope)
         .build();
@@ -1234,7 +1254,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     constr.setReturnType(asupertype);
     add2scope(scope,aSuper);
     OOTypeSymbol a = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
         .setName("A")
         .setEnclosingScope(scope)
         .build();
@@ -1245,11 +1265,12 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     add2scope(scope,a);
 
     flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
+    traverser = getTraverser(flatExpressionScopeSetter);
 
     Optional<ASTExpression> gie1 = p.parse_StringExpression("a.<int>super()");
     assertTrue(gie1.isPresent());
     ASTExpression g1 = gie1.get();
-    g1.accept(flatExpressionScopeSetter);
+    g1.accept(traverser);
 
     try{
       tc.typeOf(g1);
@@ -1267,10 +1288,10 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
         .setName("test")
         .setReturnType(_charSymType)
         .build();
-    test.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
+    test.setSpannedScope(CombineExpressionsWithLiteralsMill.scope());
     add2scope(test.getSpannedScope(), t);
     OOTypeSymbol a = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
         .setName("A")
         .setEnclosingScope(scope)
         .build();
@@ -1280,11 +1301,12 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     add2scope(scope,a);
 
     flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
+    traverser = getTraverser(flatExpressionScopeSetter);
 
     Optional<ASTExpression> gie1 = p.parse_StringExpression("A.<int>test()");
     assertTrue(gie1.isPresent());
     ASTExpression g1 = gie1.get();
-    g1.accept(flatExpressionScopeSetter);
+    g1.accept(traverser);
 
     try{
       tc.typeOf(g1);
@@ -1302,11 +1324,11 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
         .setName("test")
         .setReturnType(_charSymType)
         .build();
-    test.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
+    test.setSpannedScope(CombineExpressionsWithLiteralsMill.scope());
     add2scope(test.getSpannedScope(), t);
     test.setIsStatic(true);
     OOTypeSymbol a = OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
         .setName("A")
         .setEnclosingScope(scope)
         .build();
@@ -1316,11 +1338,12 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     add2scope(scope,a);
 
     flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
+    traverser = getTraverser(flatExpressionScopeSetter);
 
     Optional<ASTExpression> gie1 = p.parse_StringExpression("A.<int>test()");
     assertTrue(gie1.isPresent());
     ASTExpression g1 = gie1.get();
-    g1.accept(flatExpressionScopeSetter);
+    g1.accept(traverser);
 
     assertEquals("char",tc.typeOf(g1).print());
   }
@@ -1337,8 +1360,8 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     //Bsp1
     OOTypeSymbol bsp1 = CombineExpressionsWithLiteralsMill.oOTypeSymbolBuilder()
         .setName("Bsp1")
-        .setEnclosingScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
-        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setEnclosingScope(CombineExpressionsWithLiteralsMill.scope())
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
         .build();
 
     add2scope(scope, bsp1);
@@ -1349,12 +1372,12 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
         .setReturnType(_intSymType)
         .build();
 
-    bsp2constr.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
+    bsp2constr.setSpannedScope(CombineExpressionsWithLiteralsMill.scope());
 
     OOTypeSymbol bsp2 = CombineExpressionsWithLiteralsMill.oOTypeSymbolBuilder()
         .setName("Bsp2")
-        .setEnclosingScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
-        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setEnclosingScope(CombineExpressionsWithLiteralsMill.scope())
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
         .build();
     bsp2.addMethodSymbol(bsp2constr);
 
@@ -1383,7 +1406,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
         .setReturnType(_intSymType)
         .build();
 
-    bsp3constr.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
+    bsp3constr.setSpannedScope(CombineExpressionsWithLiteralsMill.scope());
     add2scope(bsp3constr.getSpannedScope(),field1);
     add2scope(bsp3constr.getSpannedScope(),field2);
 
@@ -1392,12 +1415,12 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
         .setName("Bsp3")
         .setReturnType(_intSymType)
         .build();
-    bsp3constr2.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
+    bsp3constr2.setSpannedScope(CombineExpressionsWithLiteralsMill.scope());
 
     OOTypeSymbol bsp3 = CombineExpressionsWithLiteralsMill.oOTypeSymbolBuilder()
         .setName("Bsp3")
-        .setEnclosingScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
-        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setEnclosingScope(CombineExpressionsWithLiteralsMill.scope())
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
         .build();
     bsp3.addMethodSymbol(bsp3constr2);
 
@@ -1412,6 +1435,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     add2scope(scope, bsp3);
 
     flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
+    traverser = getTraverser(flatExpressionScopeSetter);
 
     Optional<ASTExpression> new1 = p.parse_StringExpression("new Bsp1()");
     Optional<ASTExpression> new2 = p.parse_StringExpression("new Bsp2()");
@@ -1428,10 +1452,10 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     ASTExpression n3 = new3.get();
     ASTExpression n4 = new4.get();
 
-    n1.accept(flatExpressionScopeSetter);
-    n2.accept(flatExpressionScopeSetter);
-    n3.accept(flatExpressionScopeSetter);
-    n4.accept(flatExpressionScopeSetter);
+    n1.accept(traverser);
+    n2.accept(traverser);
+    n3.accept(traverser);
+    n4.accept(traverser);
 
     assertEquals("Bsp1",tc.typeOf(n1).print());
     assertEquals("Bsp2",tc.typeOf(n2).print());
@@ -1445,7 +1469,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     Optional<ASTExpression> new1 = p.parse_StringExpression("new int()");
     assertTrue(new1.isPresent());
     ASTExpression n1 = new1.get();
-    n1.accept(flatExpressionScopeSetter);
+    n1.accept(traverser);
     try{
       tc.typeOf(n1);
     }catch(RuntimeException e){
@@ -1459,17 +1483,18 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     //Bsp2
     OOTypeSymbol bsp2 = CombineExpressionsWithLiteralsMill.oOTypeSymbolBuilder()
         .setName("Bsp2")
-        .setEnclosingScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
-        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setEnclosingScope(CombineExpressionsWithLiteralsMill.scope())
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
         .build();
 
     add2scope(scope, bsp2);
     flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
+    traverser = getTraverser(flatExpressionScopeSetter);
 
     Optional<ASTExpression> new2 = p.parse_StringExpression("new Bsp2(3,4)");
     assertTrue(new2.isPresent());
     ASTExpression n2 = new2.get();
-    n2.accept(flatExpressionScopeSetter);
+    n2.accept(traverser);
     try{
       tc.typeOf(n2);
     }catch(RuntimeException e){
@@ -1486,7 +1511,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
         .setReturnType(_intSymType)
         .build();
 
-    bsp3constr.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
+    bsp3constr.setSpannedScope(CombineExpressionsWithLiteralsMill.scope());
     FieldSymbol field1 = CombineExpressionsWithLiteralsMill.fieldSymbolBuilder()
         .setName("a")
         .setType(_intSymType)
@@ -1502,8 +1527,8 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
 
     OOTypeSymbol bsp3 = CombineExpressionsWithLiteralsMill.oOTypeSymbolBuilder()
         .setName("Bsp3")
-        .setEnclosingScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
-        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setEnclosingScope(CombineExpressionsWithLiteralsMill.scope())
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
         .build();
     bsp3.addMethodSymbol(bsp3constr);
 
@@ -1515,11 +1540,12 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     add2scope(bsp3.getSpannedScope(), bsp3constr);
     add2scope(scope, bsp3);
     flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
+    traverser = getTraverser(flatExpressionScopeSetter);
 
     Optional<ASTExpression> new3 = p.parse_StringExpression("new Bsp3()");
     assertTrue(new3.isPresent());
     ASTExpression n3 = new3.get();
-    n3.accept(flatExpressionScopeSetter);
+    n3.accept(traverser);
     try{
       tc.typeOf(n3);
     }catch(RuntimeException e){
@@ -1548,12 +1574,12 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
 
     OOTypeSymbol bsp4 = CombineExpressionsWithLiteralsMill.oOTypeSymbolBuilder()
         .setName("Bsp4")
-        .setEnclosingScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
-        .setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build())
+        .setEnclosingScope(CombineExpressionsWithLiteralsMill.scope())
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
         .build();
     bsp4.addMethodSymbol(bsp4constr);
 
-    bsp4constr.setSpannedScope(CombineExpressionsWithLiteralsMill.combineExpressionsWithLiteralsScopeBuilder().build());
+    bsp4constr.setSpannedScope(CombineExpressionsWithLiteralsMill.scope());
     add2scope(bsp4constr.getSpannedScope(),field1);
     add2scope(bsp4constr.getSpannedScope(),field2);
     SymTypeExpression bsp4Sym = SymTypeExpressionFactory.createTypeObject("Bsp4",scope);
@@ -1561,11 +1587,12 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     add2scope(bsp4.getSpannedScope(), bsp4constr);
     add2scope(scope,bsp4);
     flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
+    traverser = getTraverser(flatExpressionScopeSetter);
 
     Optional<ASTExpression> new4 = p.parse_StringExpression("new Bsp4(true,4)");
     assertTrue(new4.isPresent());
     ASTExpression n4 = new4.get();
-    n4.accept(flatExpressionScopeSetter);
+    n4.accept(traverser);
 
     try{
       tc.typeOf(n4);
@@ -1582,14 +1609,14 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     Optional<ASTExpression> creator1 = p.parse_StringExpression("new double[3][4]");
     assertTrue(creator1.isPresent());
     ASTExpression c1 = creator1.get();
-    c1.accept(flatExpressionScopeSetter);
+    c1.accept(traverser);
     assertEquals("double[][]", tc.typeOf(c1).print());
 
       //Test mit int[3][][] --> int[3][][]
     Optional<ASTExpression> creator2 = p.parse_StringExpression("new int[3][][]");
     assertTrue(creator2.isPresent());
     ASTExpression c2 = creator2.get();
-    c2.accept(flatExpressionScopeSetter);
+    c2.accept(traverser);
     assertEquals("int[][][]", tc.typeOf(c2).print());
 
   }
@@ -1600,12 +1627,24 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     Optional<ASTExpression> creator1 = p.parse_StringExpression("new String[3.4]");
     assertTrue(creator1.isPresent());
     ASTExpression c1 = creator1.get();
-    c1.accept(flatExpressionScopeSetter);
+    c1.accept(traverser);
     try{
       tc.typeOf(c1);
     }catch(RuntimeException e){
       assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0315"));
     }
+  }
+
+  public CombineExpressionsWithLiteralsTraverser getTraverser(FlatExpressionScopeSetter flatExpressionScopeSetter){
+    CombineExpressionsWithLiteralsTraverser traverser = CombineExpressionsWithLiteralsMill.traverser();
+    traverser.add4AssignmentExpressions(flatExpressionScopeSetter);
+    traverser.add4BitExpressions(flatExpressionScopeSetter);
+    traverser.add4CommonExpressions(flatExpressionScopeSetter);
+    traverser.add4ExpressionsBasis(flatExpressionScopeSetter);
+    traverser.add4SetExpressions(flatExpressionScopeSetter);
+    traverser.add4JavaClassExpressions(flatExpressionScopeSetter);
+    traverser.add4MCBasicTypes(flatExpressionScopeSetter);
+    return traverser;
   }
 
 }

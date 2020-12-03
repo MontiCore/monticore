@@ -1,24 +1,26 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java.typecd2java;
 
-import de.monticore.MontiCoreScript;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisGlobalScope;
-import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
-import de.monticore.io.paths.ModelPath;
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
-import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
+
+import de.monticore.MontiCoreScript;
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
+import de.monticore.io.paths.ModelPath;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 
 public class TypeCD2JavaTest {
 
@@ -34,18 +36,17 @@ public class TypeCD2JavaTest {
             "src/test/resources/Automaton.mc4").getAbsolutePath()));
     assertTrue(grammar.isPresent());
 
-    CD4AnalysisGlobalScope cd4AnalysisGlobalScope = new CD4AnalysisGlobalScope(modelPath, "cd");
     Grammar_WithConceptsGlobalScope grammar_withConceptsGlobalScope = new Grammar_WithConceptsGlobalScope(modelPath, "mc4");
 
     //create ASTCDDefinition from MontiCoreScript
     MontiCoreScript script = new MontiCoreScript();
     script.createSymbolsFromAST(grammar_withConceptsGlobalScope, grammar.get());
-    cdCompilationUnit = script.deriveCD(grammar.get(), new GlobalExtensionManagement(),
-        cd4AnalysisGlobalScope);
+    cdCompilationUnit = script.deriveASTCD(grammar.get(), new GlobalExtensionManagement(),
+        grammar_withConceptsGlobalScope);
 
-    cdCompilationUnit.setEnclosingScope(cd4AnalysisGlobalScope);
+    cdCompilationUnit.setEnclosingScope(grammar_withConceptsGlobalScope);
     //make types java compatible
-    TypeCD2JavaDecorator decorator = new TypeCD2JavaDecorator(cd4AnalysisGlobalScope);
+    TypeCD2JavaDecorator decorator = new TypeCD2JavaDecorator(grammar_withConceptsGlobalScope);
     decorator.decorate(cdCompilationUnit);
   }
 

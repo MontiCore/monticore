@@ -7,14 +7,11 @@ import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_INTER
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SCOPE;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SYMBOL;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.END_VISIT;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.GET_REAL_THIS;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.HANDLE;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.HANDLE_TEMPLATE;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.REAL_THIS;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.SET_REAL_THIS;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.TRAVERSE;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.TRAVERSE_SCOPE_TEMPLATE;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.TRAVERSE_TEMPLATE;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.TRAVERSER_HANDLE_TEMPLATE;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.TRAVERSER_TRAVERSE_SCOPE_TEMPLATE;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.TRAVERSER_TRAVERSE_TEMPLATE;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISIT;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISITOR_METHODS_TRAVERSER_DELEGATING_TEMPLATE;
 
@@ -41,11 +38,10 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
-import de.monticore.types.prettyprint.MCSimpleGenericTypesPrettyPrinter;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 
@@ -73,7 +69,6 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
     ASTCDCompilationUnit compilationUnit = visitorService.calculateCDTypeNamesWithASTPackage(ast);
     
     String traverserSimpleName = visitorService.getTraverserInterfaceSimpleName();
-    ASTMCQualifiedType traverserType = visitorService.getTraverserInterfaceType();
     
     // get visitor types and names of super cds and own cd
     List<CDDefinitionSymbol> superCDsTransitive = visitorService.getSuperCDsTransitive();
@@ -99,8 +94,6 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
         .setName(traverserSimpleName)
         .addAllInterface(this.visitorService.getSuperTraverserInterfaces())
         .setModifier(PUBLIC.build())
-        .addCDMethod(addGetRealThisMethods(traverserType))
-        .addCDMethod(addSetRealThisMethods(traverserType))
         .addAllCDMethods(addVisitor2Methods(definitionList))
         .addAllCDMethods(addHanlderMethods(definitionList))
         .addAllCDMethods(createTraverserDelegatingMethods(compilationUnit.getCDDefinition()))
@@ -108,41 +101,6 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
         .build();
     
     return visitorInterface;
-  }
-
-  /**
-   * Adds the getRealThis method with respect to the TOP mechanism.
-   * 
-   * @param visitorType The return type of the method
-   * @return The decorated getRealThis method
-   */
-  protected ASTCDMethod addGetRealThisMethods(ASTMCType visitorType) {
-    String hookPoint;
-    if (!isTop()) {
-      hookPoint = "return this;";
-    } else {
-      hookPoint = "return (" + visitorService.getTraverserInterfaceSimpleName() + ")this;";
-    }
-    ASTCDMethod getRealThisMethod = this.getCDMethodFacade().createMethod(PUBLIC, visitorType, GET_REAL_THIS);
-    this.replaceTemplate(EMPTY_BODY, getRealThisMethod, new StringHookPoint(hookPoint));
-    return getRealThisMethod;
-  }
-
-  /**
-   * Adds the setRealThis method.
-   * 
-   * @param visitorType The input parameter type
-   * @return The decorated setRealThis method
-   */
-  protected ASTCDMethod addSetRealThisMethods(ASTMCType visitorType) {
-    ASTCDParameter visitorParameter = getCDParameterFacade().createParameter(visitorType, REAL_THIS);
-    ASTCDMethod setRealThis = this.getCDMethodFacade().createMethod(PUBLIC, SET_REAL_THIS, visitorParameter);
-    String generatedErrorCode = visitorService.getGeneratedErrorCode(visitorType.printType(
-        new MCSimpleGenericTypesPrettyPrinter(new IndentPrinter())) + SET_REAL_THIS);
-    this.replaceTemplate(EMPTY_BODY, setRealThis, new StringHookPoint(
-        "    throw new UnsupportedOperationException(\"0xA7012"+generatedErrorCode+" The setter for realThis is " +
-            "not implemented. You might want to implement a wrapper class to allow setting/getting realThis.\");\n"));
-    return setRealThis;
   }
 
   /**
@@ -154,7 +112,7 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
    */
   protected ASTCDMethod addHandleMethod(ASTMCType astType, boolean traverse) {
     ASTCDMethod handleMethod = visitorService.getVisitorMethod(HANDLE, astType);
-    this.replaceTemplate(EMPTY_BODY, handleMethod, new TemplateHookPoint(HANDLE_TEMPLATE, traverse));
+    this.replaceTemplate(EMPTY_BODY, handleMethod, new TemplateHookPoint(TRAVERSER_HANDLE_TEMPLATE, visitorService.getHandlerSimpleName(), traverse));
     return handleMethod;
   }
 
@@ -169,7 +127,9 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
     ASTCDMethod traverseMethod = visitorService.getVisitorMethod(TRAVERSE, astType);
     boolean isScopeSpanningSymbol = symbolTableService.hasScopeStereotype(astcdClass.getModifier()) ||
         symbolTableService.hasInheritedScopeStereotype(astcdClass.getModifier());
-    this.replaceTemplate(EMPTY_BODY, traverseMethod, new TemplateHookPoint(TRAVERSE_TEMPLATE, astcdClass, isScopeSpanningSymbol));
+    String handlerName = visitorService.getHandlerSimpleName();
+    String topCast = isTop() ? "(" + visitorService.getTraverserInterfaceSimpleName() + ") " : "";
+    this.replaceTemplate(EMPTY_BODY, traverseMethod, new TemplateHookPoint(TRAVERSER_TRAVERSE_TEMPLATE, astcdClass, isScopeSpanningSymbol, handlerName, topCast));
     return traverseMethod;
   }
   
@@ -188,15 +148,15 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
       // e.g. public void setAutomataVisitor(automata._visitor.AutomataVisitor2 automataVisitor)
       ASTMCQualifiedType visitorType = visitorService.getVisitor2Type(cd.getSymbol());
       ASTCDParameter visitorParameter = getCDParameterFacade().createParameter(visitorType, StringTransformations.uncapitalize(simpleName));
-      ASTCDMethod setVisitorMethod = getCDMethodFacade().createMethod(PUBLIC, "set" + simpleName, visitorParameter);
-      methodList.add(setVisitorMethod);
+      ASTCDMethod addVisitorMethod = getCDMethodFacade().createMethod(PUBLIC, "add4" + cd.getName(), visitorParameter);
+      methodList.add(addVisitorMethod);
 
       // add getter for visitor attribute
       // e.g. public Optional<automata._visitor.AutomataVisitor2> getAutomataVisitor()
-      ASTMCOptionalType optionalVisitorType = getMCTypeFacade().createOptionalTypeOf(visitorType);
-      ASTCDMethod getVisitorMethod = getCDMethodFacade().createMethod(PUBLIC, optionalVisitorType, "get" + simpleName);
-      this.replaceTemplate(EMPTY_BODY, getVisitorMethod, new StringHookPoint("return Optional.empty();"));
-      methodList.add(getVisitorMethod);
+      ASTMCListType listVisitorType = getMCTypeFacade().createListTypeOf(visitorType);
+      ASTCDMethod getVisitorsMethod = getCDMethodFacade().createMethod(PUBLIC, listVisitorType, "get" + simpleName + "List");
+      this.replaceTemplate(EMPTY_BODY, getVisitorsMethod, new StringHookPoint("return new ArrayList<>();"));
+      methodList.add(getVisitorsMethod);
     }
     return methodList;
   }
@@ -406,7 +366,7 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
     
     // non-delegating traverser methods
     ASTCDMethod handleMethod = visitorService.getVisitorMethod(HANDLE, symbolType);
-    this.replaceTemplate(EMPTY_BODY, handleMethod, new TemplateHookPoint(HANDLE_TEMPLATE, true));
+    this.replaceTemplate(EMPTY_BODY, handleMethod, new TemplateHookPoint(TRAVERSER_HANDLE_TEMPLATE, visitorService.getHandlerSimpleName(), true));
     visitorMethods.add(handleMethod);
     visitorMethods.add(visitorService.getVisitorMethod(TRAVERSE, symbolType));
     
@@ -427,18 +387,17 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
     CDDefinitionSymbol cdSymbol = astcdDefinition.getSymbol();
     ASTMCQualifiedType scopeType = getMCTypeFacade().createQualifiedType(symbolTableService.getScopeInterfaceFullName(cdSymbol));
     ASTMCQualifiedType artifactScopeType = getMCTypeFacade().createQualifiedType(symbolTableService.getArtifactScopeInterfaceFullName(cdSymbol));
+    String handlerName = visitorService.getHandlerSimpleName();
+    String topCast = isTop() ? "(" + visitorService.getTraverserInterfaceSimpleName() + ") " : "";
     
-    TemplateHookPoint traverseSymbolsBody = new TemplateHookPoint(TRAVERSE_SCOPE_TEMPLATE, getSymbolsTransitive());
+    TemplateHookPoint traverseSymbolsBody = new TemplateHookPoint(TRAVERSER_TRAVERSE_SCOPE_TEMPLATE, getSymbolsTransitive(), handlerName, topCast);
     StringHookPoint traverseDelegationBody = new StringHookPoint(TRAVERSE + "(("
         + symbolTableService.getScopeInterfaceFullName() + ") node);");
     
     visitorMethods.addAll(createVisitorDelegatorScopeMethod(scopeType, simpleVisitorName, traverseSymbolsBody));
 
-    // only create artifact scope methods if grammar contains productions or
-    // refers to a starting production of a super grammar
-    if (symbolTableService.hasProd(astcdDefinition) || symbolTableService.hasStartProd(astcdDefinition)) {
-      visitorMethods.addAll(createVisitorDelegatorScopeMethod(artifactScopeType, simpleVisitorName, traverseDelegationBody));
-    }
+    visitorMethods.addAll(createVisitorDelegatorScopeMethod(artifactScopeType, simpleVisitorName, traverseDelegationBody));
+
     return visitorMethods;
   }
 
@@ -461,7 +420,7 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
     
     // non-delegating traverser methods
     ASTCDMethod handleMethod = visitorService.getVisitorMethod(HANDLE, scopeType);
-    this.replaceTemplate(EMPTY_BODY, handleMethod, new TemplateHookPoint(HANDLE_TEMPLATE, true));
+    this.replaceTemplate(EMPTY_BODY, handleMethod, new TemplateHookPoint(TRAVERSER_HANDLE_TEMPLATE, visitorService.getHandlerSimpleName(), true));
     visitorMethods.add(handleMethod);
     ASTCDMethod traverseMethod = visitorService.getVisitorMethod(TRAVERSE, scopeType);
     visitorMethods.add(traverseMethod);

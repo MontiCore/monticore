@@ -3,15 +3,9 @@ description = 'Experiments: forParser'
 
 dependencies {
   implementation group:'de.monticore', name:'monticore-generator', version:version
+  implementation group:'de.monticore', name:'monticore-grammar', version:version
+  implementation group:'de.monticore', name:'monticore-runtime', version:version
+  implementation group:'de.monticore', name:'monticore-grammar', version:version, classifier:"grammars"
+  implementation group:'de.monticore.lang', name:'cd4analysis', version:'1.7.0.4'
 }
 
-fileTree(grammarDir).matching { include '**/*.mc4'}.each {
-  def g = it
-  task  "generate${it.getName().substring(0,it.getName().lastIndexOf('.'))}" (type: MCTask) {
-    grammar = file g
-    outputDir = file outDir
-    def grammarIncludingPackage = file(grammarDir).toURI().relativize(g.toURI()).toString()
-    def uptoDate = incCheck(grammarIncludingPackage)
-    outputs.upToDateWhen { uptoDate }
-  }
-}

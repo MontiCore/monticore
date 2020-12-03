@@ -3,10 +3,10 @@ package de.monticore.statements.mccommonstatements._symboltable;
 
 import de.monticore.statements.mccommonstatements._ast.ASTFormalParameter;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
-import de.monticore.types.check.SymTypeExpression;
-import de.monticore.types.check.SymTypeOfNull;
-import de.monticore.types.check.SynthesizeSymTypeFromMCFullGenericTypes;
+import de.monticore.types.check.*;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
+import de.monticore.types.mcfullgenerictypes._visitor.MCFullGenericTypesTraverser;
 
 import java.util.Deque;
 
@@ -33,10 +33,10 @@ public   class MCCommonStatementsSymbolTableCreator extends MCCommonStatementsSy
   }
 
   private SymTypeExpression createTypeLoader(ASTMCType ast) {
-    SynthesizeSymTypeFromMCFullGenericTypes syn = new SynthesizeSymTypeFromMCFullGenericTypes();
+    FullSynthesizeFromMCFullGenericTypes synFromFull = new FullSynthesizeFromMCFullGenericTypes();
     // Start visitor
-    ast.accept(syn);
-    return syn.getResult().orElse(new SymTypeOfNull());
+    ast.accept(synFromFull.getTraverser());
+    return synFromFull.getResult().orElse(new SymTypeOfNull());
   }
 
 }

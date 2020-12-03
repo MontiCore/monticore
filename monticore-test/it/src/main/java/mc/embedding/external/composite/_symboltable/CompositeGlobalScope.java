@@ -28,6 +28,10 @@ public class CompositeGlobalScope extends CompositeGlobalScopeTOP {
     super(modelPath, modelFileExtension);
   }
 
+  public CompositeGlobalScope(){
+    super();
+  }
+
   @Override public List<ContentSymbol> resolveAdaptedContent(boolean foundSymbols,
       String symbolName, AccessModifier modifier, Predicate<ContentSymbol> predicate) {
     Collection<TextSymbol> symbols = resolveTextMany(foundSymbols, symbolName, modifier, x -> true);
@@ -41,7 +45,7 @@ public class CompositeGlobalScope extends CompositeGlobalScopeTOP {
   @Override public void loadFileForModelName(String modelName, String symbolName) {
     super.loadFileForModelName(modelName, symbolName);
     ModelCoordinate modelCoordinate = ModelCoordinates
-        .createQualifiedCoordinate(modelName, getModelFileExtension());
+        .createQualifiedCoordinate(modelName, getFileExt());
     String filePath = modelCoordinate.getQualifiedPath().toString();
     if (!isFileLoaded(filePath)) {
       addLoadedFile(filePath);

@@ -29,6 +29,7 @@ public class SymTabTest {
   @Test
   public void testPingPong() {
     IJavaAutArtifactScope as = createSymTab("src/test/resources/example/PingPong.javaaut");
+    as.setName("PingPong");
     Optional<MethodSymbol> symbol = as
         .resolveMethod("PingPong.simulate.Game"); //in example model, this is an automaton
     assertTrue(symbol.isPresent());
@@ -44,7 +45,7 @@ public class SymTabTest {
    */
   public static IJavaAutArtifactScope createSymTab(String model) {
     ASTCompilationUnit ast = parse(model);
-    JavaAutMill.javaAutGlobalScope().setModelFileExtension("javaaut");
+    JavaAutMill.globalScope().setFileExt("javaaut");
     return JavaAutMill.javaAutSymbolTableCreatorDelegator().createFromAST(ast);
   }
 

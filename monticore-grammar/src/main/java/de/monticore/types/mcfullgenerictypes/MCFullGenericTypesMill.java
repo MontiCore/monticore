@@ -6,6 +6,7 @@ package de.monticore.types.mcfullgenerictypes;
 
 
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.types.prettyprint.MCFullGenericTypesFullPrettyPrinter;
 import de.monticore.types.prettyprint.MCFullGenericTypesPrettyPrinter;
 
 /**
@@ -16,14 +17,14 @@ public  class MCFullGenericTypesMill extends MCFullGenericTypesMillTOP {
   
   private static MCFullGenericTypesMill mcFullGenericTypesPrettyPrinter;
   
-  private static MCFullGenericTypesPrettyPrinter prettyPrinter;
+  private static MCFullGenericTypesFullPrettyPrinter prettyPrinter;
   
   /**
    * Static getter for the pretty printer that delegates to the non static implementation.
    * Only one pretty printer object is created and reused.
    * @return the pretty printer instance
    */
-  public  static MCFullGenericTypesPrettyPrinter mcFullGenericTypesPrettyPrinter ()  {
+  public  static MCFullGenericTypesFullPrettyPrinter mcFullGenericTypesPrettyPrinter ()  {
     
     if (mcFullGenericTypesPrettyPrinter == null) {
       mcFullGenericTypesPrettyPrinter = getMill();
@@ -35,7 +36,7 @@ public  class MCFullGenericTypesMill extends MCFullGenericTypesMillTOP {
     
   }
   
-  protected MCFullGenericTypesPrettyPrinter _mcFullGenericTypesPrettyPrinter () {
+  protected MCFullGenericTypesFullPrettyPrinter _mcFullGenericTypesPrettyPrinter () {
     
     if (mcFullGenericTypesPrettyPrinter == null) {
       mcFullGenericTypesPrettyPrinter = getMill();
@@ -48,7 +49,7 @@ public  class MCFullGenericTypesMill extends MCFullGenericTypesMillTOP {
     return prettyPrinter;
   }
   
-  private static MCFullGenericTypesPrettyPrinter getPrettyPrinter() {
-    return new MCFullGenericTypesPrettyPrinter(new IndentPrinter());
+  private static MCFullGenericTypesFullPrettyPrinter getPrettyPrinter() {
+    return new MCFullGenericTypesFullPrettyPrinter(new IndentPrinter());
   }
 }

@@ -4,30 +4,20 @@ import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
+import de.monticore.types.prettyprint.MCCollectionTypesFullPrettyPrinter;
 import de.monticore.types.prettyprint.MCCollectionTypesPrettyPrinter;
 import mc.testcd4analysis._ast.*;
 import mc.testcd4analysis._visitor.TestCD4AnalysisVisitor;
+import mc.testcd4analysis._visitor.TestCD4AnalysisVisitor2;
 
 import java.util.Deque;
 import java.util.List;
 
-public class TestCD4AnalysisSTCompleteTypes implements TestCD4AnalysisVisitor {
+public class TestCD4AnalysisSTCompleteTypes implements TestCD4AnalysisVisitor2 {
 
-  private TestCD4AnalysisVisitor realThis;
   protected Deque<? extends ITestCD4AnalysisScope> scopeStack;
 
-  @Override
-  public TestCD4AnalysisVisitor getRealThis() {
-    return realThis;
-  }
-
-  @Override
-  public void setRealThis(TestCD4AnalysisVisitor realThis) {
-    this.realThis = realThis;
-  }
-
   public TestCD4AnalysisSTCompleteTypes(Deque<? extends ITestCD4AnalysisScope> scopeStack){
-    this.realThis = this;
     this.scopeStack = scopeStack;
   }
 
@@ -39,7 +29,7 @@ public class TestCD4AnalysisSTCompleteTypes implements TestCD4AnalysisVisitor {
     if (astType instanceof ASTMCGenericType) {
       typeName = ((ASTMCGenericType) astType).printWithoutTypeArguments();
     } else {
-      typeName = astAttribute.getMCType().printType(new MCCollectionTypesPrettyPrinter(new IndentPrinter()));
+      typeName = astAttribute.getMCType().printType(new MCCollectionTypesFullPrettyPrinter(new IndentPrinter()));
     }
 
     final CDTypeSymbolSurrogate typeReference = new CDTypeSymbolSurrogate(typeName);
@@ -77,7 +67,7 @@ public class TestCD4AnalysisSTCompleteTypes implements TestCD4AnalysisVisitor {
 
   public void setReturnTypeOfMethod(final CDMethOrConstrSymbol methodSymbol, ASTCDMethod astMethod) {
     final CDTypeSymbolSurrogate returnSymbol = new CDTypeSymbolSurrogate(
-        ( astMethod.getMCReturnType().printType(new MCCollectionTypesPrettyPrinter(new IndentPrinter()))));
+        ( astMethod.getMCReturnType().printType(new MCCollectionTypesFullPrettyPrinter(new IndentPrinter()))));
     returnSymbol.setEnclosingScope(scopeStack.peekLast());
     methodSymbol.setReturnType(returnSymbol);
   }
@@ -107,7 +97,7 @@ public class TestCD4AnalysisSTCompleteTypes implements TestCD4AnalysisVisitor {
 
   CDTypeSymbolSurrogate createCDTypeSymbolFromReference(final ASTMCObjectType astmcObjectType) {
     CDTypeSymbolSurrogate surrogate =  new CDTypeSymbolSurrogate(
-        astmcObjectType.printType(new MCCollectionTypesPrettyPrinter(new IndentPrinter())));
+        astmcObjectType.printType(new MCCollectionTypesFullPrettyPrinter(new IndentPrinter())));
     surrogate.setEnclosingScope(scopeStack.peekLast());
     return surrogate;
   }

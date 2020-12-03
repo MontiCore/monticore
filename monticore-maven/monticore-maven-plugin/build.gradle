@@ -5,7 +5,7 @@
 dependencies {
     compile project(':monticore-generator')
     compile project(':monticore-runtime')
-    compile project(':monticore-emf-runtime')
+    compile project(':monticore-runtime-emf')
     compile 'de.se_rwth.commons:se-commons-utilities:1.7.10-SNAPSHOT'
     compile 'org.apache.maven:maven-core:3.2.3'
     compile 'org.apache.maven:maven-artifact:3.2.3'

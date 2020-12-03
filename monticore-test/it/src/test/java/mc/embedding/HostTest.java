@@ -17,9 +17,9 @@ public class HostTest extends GeneratorIntegrationsTest {
 
   @Test
   public void test() {
-    final IHostGlobalScope scope = HostMill.hostGlobalScope();
+    final IHostGlobalScope scope = HostMill.globalScope();
     scope.getModelPath().addEntry(Paths.get("src/test/resources/mc/embedding"));
-    scope.setModelFileExtension("host");
+    scope.setFileExt("host");
 
     HostSymbol hostSymbol = scope.resolveHost("H").orElse(null);
     assertNotNull(hostSymbol);

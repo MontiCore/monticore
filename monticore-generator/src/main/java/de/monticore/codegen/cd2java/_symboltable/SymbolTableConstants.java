@@ -26,7 +26,7 @@ public class SymbolTableConstants {
 
   public static final String SYMBOL_TABLE_CREATOR_SUFFIX = "SymbolTableCreator";
 
-  public static final String SCOPE_SKELETON_CREATOR_SUFFIX = "ScopeSkeletonCreator";
+  public static final String SCOPES_GENITOR_SUFFIX = "ScopesGenitor";
 
   public static final String SYM_TAB_MILL_SUFFIX = "SymTabMill";
 
@@ -46,7 +46,7 @@ public class SymbolTableConstants {
 
   public static final String DE_SER_SUFFIX = "DeSer";
 
-  public static final String SYMBOL_TABLE_PRINTER_SUFFIX = "SymbolTablePrinter";
+  public static final String SYMBOLS_2_JSON_SUFFIX = "Symbols2Json";
 
   /**
    * runtime classes
@@ -82,6 +82,8 @@ public class SymbolTableConstants {
 
   public static final String MODEL_PATH_TYPE = "de.monticore.io.paths.ModelPath";
 
+  public static final String I_DE_SER = "de.monticore.symboltable.serialization.IDeSer";
+
   /**
    * attribute names
    */
@@ -102,7 +104,7 @@ public class SymbolTableConstants {
 
   public static final String MODEL_PATH_VAR = "modelPath";
 
-  public static final String FILE_EXTENSION_VAR = "modelFileExtension";
+  public static final String FILE_EXTENSION_VAR = "fileExt";
 
   public static final String MODEL_LOADER_VAR = "modelLoader";
 
@@ -123,6 +125,8 @@ public class SymbolTableConstants {
   public static final String SYMBOL_JSON_VAR = "symbolJson";
 
   public static final String SCOPE_JSON_VAR = "scopeJson";
+
+  public static final String DESERS_VAR = "desers";
 
   public static final String FOUND_SYMBOL_DELEGATE = "false";
 

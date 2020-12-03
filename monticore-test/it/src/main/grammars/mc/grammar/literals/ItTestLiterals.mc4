@@ -24,7 +24,7 @@ grammar ItTestLiterals extends mc.grammar.lexicals.ItTestLexicals {
   astrule CharLiteral = 
     method public char getValue() {
       try {
-        return de.monticore.MCLiteralsDecoder.decodeChar(getSource());
+        return de.monticore.literals.MCLiteralsDecoder.decodeChar(getSource());
       }
       catch (Exception e) {
         return ' '; 
@@ -35,7 +35,7 @@ grammar ItTestLiterals extends mc.grammar.lexicals.ItTestLexicals {
   astrule StringLiteral = 
     method public String getValue() {
       try {
-        return de.monticore.MCLiteralsDecoder.decodeString(getSource());
+        return de.monticore.literals.MCLiteralsDecoder.decodeString(getSource());
       }
       catch (Exception e) {
         return "";
@@ -46,7 +46,7 @@ grammar ItTestLiterals extends mc.grammar.lexicals.ItTestLexicals {
   astrule IntLiteral = 
     method public int getValue() {
       try {
-        return de.monticore.MCLiteralsDecoder.decodeInt(getSource());
+        return de.monticore.literals.MCLiteralsDecoder.decodeInt(getSource());
       }
       catch (NumberFormatException e) {
         return 0;
@@ -66,7 +66,7 @@ grammar ItTestLiterals extends mc.grammar.lexicals.ItTestLexicals {
   astrule LongLiteral = 
     method public long getValue() {
       try {
-        return de.monticore.MCLiteralsDecoder.decodeLong(getSource());
+        return de.monticore.literals.MCLiteralsDecoder.decodeLong(getSource());
       }
       catch (NumberFormatException e) {
         return 0;
@@ -86,7 +86,7 @@ grammar ItTestLiterals extends mc.grammar.lexicals.ItTestLexicals {
   astrule FloatLiteral = 
     method public float getValue() {
       try {
-        return de.monticore.MCLiteralsDecoder.decodeFloat(getSource());
+        return de.monticore.literals.MCLiteralsDecoder.decodeFloat(getSource());
       }
       catch (NumberFormatException e) {
         return 0.0f;
@@ -106,7 +106,7 @@ grammar ItTestLiterals extends mc.grammar.lexicals.ItTestLexicals {
   astrule DoubleLiteral = 
     method public double getValue() {
       try {
-        return de.monticore.MCLiteralsDecoder.decodeDouble(getSource());
+        return de.monticore.literals.MCLiteralsDecoder.decodeDouble(getSource());
       }
       catch (NumberFormatException e) {
         return 0.0;
@@ -388,10 +388,6 @@ grammar ItTestLiterals extends mc.grammar.lexicals.ItTestLexicals {
   // §3.10.5 String Literals
   token String
     = '"' (StringCharacters)? '"' ;
-  // TODO: Sollen die Quotes rausgeworfen werden?
-  // Es gibt in MC3 2 Varianten. STRING (ohne Quote) und String (mit Quote)
-  // So würde man das rauswerfen:
-  //  : {setText(getText().substring(1, getText().length() - 1));};
 
   fragment token StringCharacters
     = (StringCharacter)+;

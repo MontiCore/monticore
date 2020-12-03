@@ -3,33 +3,41 @@ package de.monticore.types.prettyprint;
 
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcarraytypes._ast.ASTMCArrayType;
-import de.monticore.types.mcarraytypes._visitor.MCArrayTypesVisitor;
+import de.monticore.types.mcarraytypes._visitor.MCArrayTypesHandler;
+import de.monticore.types.mcarraytypes._visitor.MCArrayTypesTraverser;
+import de.monticore.types.mcarraytypes._visitor.MCArrayTypesVisitor2;
 
-public class MCArrayTypesPrettyPrinter extends MCBasicTypesPrettyPrinter implements MCArrayTypesVisitor {
-  private MCArrayTypesVisitor realThis = this;
+public class MCArrayTypesPrettyPrinter implements MCArrayTypesVisitor2, MCArrayTypesHandler {
+
+  protected MCArrayTypesTraverser traverser;
+
+  protected IndentPrinter printer;
 
   public MCArrayTypesPrettyPrinter(IndentPrinter printer) {
-    super(printer);
+    this.printer = printer;
   }
 
-  public MCArrayTypesPrettyPrinter(IndentPrinter printer, MCArrayTypesPrettyPrinter realThis) {
-    super(printer);
-    this.realThis = realThis;
+  public IndentPrinter getPrinter() {
+    return printer;
+  }
+
+  public void setPrinter(IndentPrinter printer) {
+    this.printer = printer;
   }
 
   @Override
-  public MCArrayTypesVisitor getRealThis() {
-    return realThis;
+  public MCArrayTypesTraverser getTraverser() {
+    return traverser;
   }
 
   @Override
-  public void setRealThis(MCArrayTypesVisitor realThis) {
-    this.realThis = realThis;
+  public void setTraverser(MCArrayTypesTraverser traverser) {
+    this.traverser = traverser;
   }
 
   @Override
   public void handle(ASTMCArrayType node) {
-    node.getMCType().accept(getRealThis());
+    node.getMCType().accept(getTraverser());
     for (int i = 0; i < node.getDimensions(); i++) {
       getPrinter().print("[]");
     }

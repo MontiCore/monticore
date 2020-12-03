@@ -29,8 +29,8 @@ public class MC2CDTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCDC
     this.glex = glex;
     this.lexNamer = (glex.hasGlobalVar("lexNamer")
         && glex.getGlobalVar("lexNamer") instanceof LexNamer)
-            ? (LexNamer) glex.getGlobalVar("lexNamer")
-            : new LexNamer();
+        ? (LexNamer) glex.getGlobalVar("lexNamer")
+        : new LexNamer();
   }
 
   @Override
@@ -52,6 +52,7 @@ public class MC2CDTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCDC
         .andThen(new ReferenceTypeTranslation())
         .andThen(new EnumTranslation())
         .andThen(new ExternalImplementationTranslation())
+        .andThen(new ExternalInterfaceTranslation())
         .andThen(new ConstantTypeTranslation())
         .andThen(new MultiplicityTranslation())
         .andThen(new ConstantsTranslation(lexNamer))
@@ -60,6 +61,7 @@ public class MC2CDTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCDC
         .andThen(new SymbolAndScopeTranslation())
         .andThen(new ComponentTranslation())
         .andThen(new StartProdTranslation())
+        .andThen(new LeftRecursiveTranslation())
         .andThen(new RemoveOverriddenAttributesTranslation())
         .apply(rootLink);
   }

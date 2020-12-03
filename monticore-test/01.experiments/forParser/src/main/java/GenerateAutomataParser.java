@@ -1,5 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.codegen.mc2cd.MC2CDTransformation;
 import de.monticore.codegen.parser.ParserGenerator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
@@ -34,20 +36,19 @@ public class GenerateAutomataParser {
       String filename = args[0];
       ASTMCGrammar ast = new Grammar_WithConceptsParser()
               .parseMCGrammar(filename).get();
-
+      
       // Initialize symbol table
       // (using imported grammars from the model path)
       ModelPath modelPath = new ModelPath(Paths.get(
           "target/monticore-grammar-grammars.jar"));
       IGrammar_WithConceptsGlobalScope gs = Grammar_WithConceptsMill
-          .grammar_WithConceptsGlobalScopeBuilder()
-          .setModelPath(modelPath)
-          .build();
+          .grammar_WithConceptsGlobalScope();
+      gs.setModelPath(modelPath);
+      gs.setModelFileExtension("mc4");
       Grammar_WithConceptsMill
-          .grammar_WithConceptsSymbolTableCreatorDelegatorBuilder()
-          .setGlobalScope(gs)
-          .build()
+          .grammar_WithConceptsSymbolTableCreatorDelegator()
           .createFromAST(ast);
+      
       // Hand coded path
       IterablePath handcodedPath = IterablePath.empty();
 
@@ -55,8 +56,8 @@ public class GenerateAutomataParser {
       File outputDir = new File(args[1]);
 
       // Generate the parser
-      GlobalExtensionManagement glex =  new GlobalExtensionManagement();
-      ParserGenerator.generateFullParser(
+      GlobalExtensionManagement glex = new GlobalExtensionManagement();
+      ParserGenerator.generateParser(
           glex, ast, gs, handcodedPath, outputDir);
     }
     catch (IOException e) {

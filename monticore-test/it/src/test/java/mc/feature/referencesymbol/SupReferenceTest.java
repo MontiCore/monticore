@@ -41,7 +41,7 @@ public class SupReferenceTest {
     Log.enableFailQuick(false);
 
     // reset global scope
-    ISupGrammarRefGlobalScope globalScope = SupGrammarRefMill.supGrammarRefGlobalScope();
+    ISupGrammarRefGlobalScope globalScope = SupGrammarRefMill.globalScope();
     globalScope.clearLoadedFiles();
     for (ISupGrammarRefScope s : globalScope.getSubScopes()) {
       globalScope.removeSubScope(s);
@@ -58,19 +58,20 @@ public class SupReferenceTest {
     //create symboltable
     this.astsupRand = astRand.get();
 
-    globalScope.setModelFileExtension("ref");
+    globalScope.setFileExt("ref");
     globalScope.getModelPath().addEntry(Paths.get("src/test/resources/mc/feature/referencesymbol"));
 
     SupGrammarRefSymbolTableCreatorDelegator symbolTableCreator = SupGrammarRefMill
         .supGrammarRefSymbolTableCreatorDelegator();
     ISupGrammarRefArtifactScope artifact = symbolTableCreator.createFromAST(astsupRand);
+    artifact.setName("SupReferenceModel");
     Optional<? extends ISupGrammarRefScope> scopeOpt = artifact.getSubScopes().stream().findAny();
     assertTrue(scopeOpt.isPresent());
     ISupGrammarRefScope innerScope = scopeOpt.get();
 
 
-    Optional<TestSymbol> a = globalScope.resolveTest("SupReferenceTest.A");
-    Optional<TestSymbol> b = artifact.resolveTest("SupReferenceTest.B");
+    Optional<TestSymbol> a = globalScope.resolveTest("SupReferenceModel.SupReferenceTest.A");
+    Optional<TestSymbol> b = artifact.resolveTest("SupReferenceModel.SupReferenceTest.B");
     Optional<TestSymbol> c = innerScope.resolveTest("C");
     Optional<TestSymbol> d = innerScope.resolveTest("D");
 
@@ -124,12 +125,12 @@ public class SupReferenceTest {
     assertTrue(astRand.isPresent());
     ASTSupRefList supRefList = astRand.get().getSupRefList(0);
 
-    assertTrue(supRefList.getNamesDefinitionList().isEmpty());
-    assertTrue(supRefList.getNamesSymbolList().isEmpty());
+    assertEquals(3, supRefList.sizeNamesDefinition());
+    supRefList.getNamesDefinitionList().forEach(n -> assertFalse(n.isPresent()));
+    assertEquals(3,supRefList.sizeNamesSymbol());
+    supRefList.getNamesSymbolList().forEach(n -> assertFalse(n.isPresent()));
     assertFalse(supRefList.getNameList().isEmpty());
     assertEquals(supRefList.sizeNames(), 3);
-    assertEquals(supRefList.sizeNamesDefinition(), 0);
-    assertEquals(supRefList.sizeNamesSymbol(), 0);
     assertEquals("A", supRefList.getName(0));
     supRefList.setName(0, "B");
     assertEquals("B", supRefList.getName(0));

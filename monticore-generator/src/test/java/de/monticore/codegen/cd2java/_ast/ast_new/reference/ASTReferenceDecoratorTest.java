@@ -63,9 +63,9 @@ public class ASTReferenceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMandatorySymbolAttribute() {
-    ASTCDAttribute nameSymbol = getAttributeBy("nameSymbolSurrogate", astMandClass);
+    ASTCDAttribute nameSymbol = getAttributeBy("nameSymbol", astMandClass);
     assertTrue(nameSymbol.getModifier().isProtected());
-    assertDeepEquals("de.monticore.codegen.ast.referencedsymbol._symboltable.FooSymbolSurrogate", nameSymbol.getMCType());
+    assertDeepEquals("de.monticore.codegen.ast.referencedsymbol._symboltable.FooSymbol", nameSymbol.getMCType());
   }
 
   @Test
@@ -76,9 +76,9 @@ public class ASTReferenceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testOptionalSymbolAttribute() {
-    ASTCDAttribute nameSymbol = getAttributeBy("nameSymbolSurrogate", astOptClass);
+    ASTCDAttribute nameSymbol = getAttributeBy("nameSymbol", astOptClass);
     assertTrue(nameSymbol.getModifier().isProtected());
-    assertDeepEquals("de.monticore.codegen.ast.referencedsymbol._symboltable.FooSymbolSurrogate", nameSymbol.getMCType());
+    assertDeepEquals("de.monticore.codegen.ast.referencedsymbol._symboltable.FooSymbol", nameSymbol.getMCType());
   }
 
   @Test
@@ -89,9 +89,9 @@ public class ASTReferenceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testListSymbolAttribute() {
-    ASTCDAttribute nameSymbol = getAttributeBy("nameSymbolSurrogate", astListClass);
+    ASTCDAttribute nameSymbol = getAttributeBy("nameSymbol", astListClass);
     assertTrue(nameSymbol.getModifier().isProtected());
-    assertDeepEquals("Map<String,de.monticore.codegen.ast.referencedsymbol._symboltable.FooSymbolSurrogate>", nameSymbol.getMCType());
+    assertDeepEquals("Map<String,de.monticore.codegen.ast.referencedsymbol._symboltable.FooSymbol>", nameSymbol.getMCType());
   }
 
   @Test

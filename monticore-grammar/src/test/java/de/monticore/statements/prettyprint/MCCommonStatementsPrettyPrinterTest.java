@@ -24,7 +24,7 @@ public class MCCommonStatementsPrettyPrinterTest {
 
   private TestMCCommonStatementsParser parser = new TestMCCommonStatementsParser();
 
-  private MCCommonStatementsPrettyPrinterDelegator prettyPrinter= new MCCommonStatementsPrettyPrinterDelegator(new IndentPrinter());
+  private MCCommonStatementsFullPrettyPrinter prettyPrinter= new MCCommonStatementsFullPrettyPrinter(new IndentPrinter());
 
   @BeforeClass
   public static void setUp() {
@@ -60,7 +60,7 @@ public class MCCommonStatementsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTMCBlockStatement ast = result.get();
 
-    ast.accept(prettyPrinter);
+    ast.accept(prettyPrinter.getTraverser());
     String output = prettyPrinter.getPrinter().getContent();
 
     result = parser.parse_StringMCBlockStatement(output);

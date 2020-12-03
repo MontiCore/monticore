@@ -22,7 +22,7 @@ public class AssignmentExpressionsPrettyPrinterTest {
 
   private TestAssignmentExpressionsParser parser = new TestAssignmentExpressionsParser();
 
-  private AssignmentExpressionsPrettyPrinter prettyPrinter= new AssignmentExpressionsPrettyPrinter(new IndentPrinter());
+  private AssignmentExpressionsFullPrettyPrinter prettyPrinter= new AssignmentExpressionsFullPrettyPrinter(new IndentPrinter());
 
   @BeforeClass
   public static void setUp() {
