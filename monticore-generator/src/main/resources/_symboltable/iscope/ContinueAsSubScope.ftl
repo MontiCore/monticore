@@ -1,8 +1,10 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature( "simpleName")}
+  List<${simpleName}Symbol> resultList = new ArrayList<>();
   set${simpleName}SymbolsAlreadyResolved(false);
   if (checkIfContinueAsSubScope(name)) {
-    final String remainingSymbolName = getRemainingNameForResolveDown(name);
-    return this.resolve${simpleName}DownMany(foundSymbols, remainingSymbolName, modifier, predicate);
+    for(String remainingSymbolName: getRemainingNameForResolveDown(name)) {
+      resultList.addAll(this.resolve${simpleName}DownMany(foundSymbols, remainingSymbolName, modifier, predicate));
+    }
   }
-  return new ArrayList<>();
+  return resultList;

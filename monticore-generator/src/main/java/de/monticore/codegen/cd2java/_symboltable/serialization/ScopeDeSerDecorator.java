@@ -15,6 +15,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.utils.Names;
 import de.se_rwth.commons.StringTransformations;
 
@@ -64,6 +65,8 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
     String symTabMillFullName = symbolTableService.getMillFullName();
     ASTCDParameter scopeJsonParam = getCDParameterFacade()
         .createParameter(getMCTypeFacade().createQualifiedType(JSON_OBJECT), SCOPE_JSON_VAR);
+    ASTMCQualifiedType interfaceName = getMCTypeFacade().
+            createQualifiedType(I_DE_SER+"<"+scopeInterfaceName+">");
 
     Map<ASTCDType, ASTCDDefinition> symbolDefiningProds = createSymbolMap(symbolInput.getCDDefinition());
 
@@ -89,6 +92,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
     return CD4CodeMill.cDClassBuilder()
         .setName(scopeDeSerName)
         .setModifier(PUBLIC.build())
+        .addInterface(interfaceName)
         .addCDConstructor(createConstructor(scopeDeSerName))
         .addAllCDAttributes(createSymbolDeSerAttributes(symbolDefinition))
         .addCDAttribute(jsonPrinter)
@@ -315,8 +319,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
       String generatedErrorCode = symbolTableService.getGeneratedErrorCode(methodName);
       HookPoint deserImplementation = DeSerMap
           .getDeserializationImplementation(astcdAttribute, methodName, "scopeJson",
-                  // TODO Find correct scope!
-                  null, generatedErrorCode);
+                   generatedErrorCode);
       this.replaceTemplate(EMPTY_BODY, deserializeMethod, deserImplementation);
       methodList.add(deserializeMethod);
     }

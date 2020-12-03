@@ -19,14 +19,14 @@ public class MCReturnStatementsFullPrettyPrinter {
     this.traverser = MCReturnStatementsMill.traverser();
 
     ExpressionsBasisPrettyPrinter expressionsBasis = new ExpressionsBasisPrettyPrinter(printer);
-    traverser.addExpressionsBasisVisitor(expressionsBasis);
+    traverser.add4ExpressionsBasis(expressionsBasis);
     traverser.setExpressionsBasisHandler(expressionsBasis);
 
     MCReturnStatementsPrettyPrinter returnStatements = new MCReturnStatementsPrettyPrinter(printer);
-    traverser.addMCReturnStatementsVisitor(returnStatements);
+    traverser.add4MCReturnStatements(returnStatements);
     traverser.setMCReturnStatementsHandler(returnStatements);
 
-    traverser.addMCBasicsVisitor(new MCBasicsPrettyPrinter(printer));
+    traverser.add4MCBasics(new MCBasicsPrettyPrinter(printer));
   }
 
   public MCReturnStatementsTraverser getTraverser() {

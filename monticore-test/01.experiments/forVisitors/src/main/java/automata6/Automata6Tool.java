@@ -50,8 +50,8 @@ public class Automata6Tool {
     Automata6PrettyPrinter pp = new Automata6PrettyPrinter();
     Automata5PrettyPrinter pp5 = new Automata5PrettyPrinter();
     Automata6Traverser traverser = Automata6Mill.traverser();
-    traverser.addAutomata6Visitor(pp);
-    traverser.addAutomata5Visitor(pp5);
+    traverser.add4Automata6(pp);
+    traverser.add4Automata5(pp5);
     ast.accept(traverser);
     Log.info("Pretty printing the parsed automaton into console:", "Automata6Tool");
     System.out.println(pp.getResult());

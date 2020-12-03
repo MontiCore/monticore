@@ -28,7 +28,7 @@ import static org.junit.Assert.assertTrue;
 public class TypeCheckTest {
 
   private ICombineExpressionsWithLiteralsScope scope;
-  private TypeCheck tc = new TypeCheck(null, new DeriveSymTypeOfCombineExpressionsDelegator());
+  private TypeCheck tc = new TypeCheck(new SynthesizeSymTypeFromCombineExpressionsWithLiteralsDelegator(), new DeriveSymTypeOfCombineExpressionsDelegator());
   private CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
   private FlatExpressionScopeSetter flatExpressionScopeSetter;
 
@@ -189,13 +189,13 @@ public class TypeCheckTest {
 
   public CombineExpressionsWithLiteralsTraverser getTraverser(FlatExpressionScopeSetter flatExpressionScopeSetter){
     CombineExpressionsWithLiteralsTraverser traverser = CombineExpressionsWithLiteralsMill.traverser();
-    traverser.addAssignmentExpressionsVisitor(flatExpressionScopeSetter);
-    traverser.addBitExpressionsVisitor(flatExpressionScopeSetter);
-    traverser.addCommonExpressionsVisitor(flatExpressionScopeSetter);
-    traverser.addExpressionsBasisVisitor(flatExpressionScopeSetter);
-    traverser.addSetExpressionsVisitor(flatExpressionScopeSetter);
-    traverser.addJavaClassExpressionsVisitor(flatExpressionScopeSetter);
-    traverser.addMCBasicTypesVisitor(flatExpressionScopeSetter);
+    traverser.add4AssignmentExpressions(flatExpressionScopeSetter);
+    traverser.add4BitExpressions(flatExpressionScopeSetter);
+    traverser.add4CommonExpressions(flatExpressionScopeSetter);
+    traverser.add4ExpressionsBasis(flatExpressionScopeSetter);
+    traverser.add4SetExpressions(flatExpressionScopeSetter);
+    traverser.add4JavaClassExpressions(flatExpressionScopeSetter);
+    traverser.add4MCBasicTypes(flatExpressionScopeSetter);
     return traverser;
   }
 }

@@ -11,6 +11,7 @@ to be released
     * Due to multiple inheritance, delegation and subclasses are used in combination 
 * experiments now showcase the use of traversers   
 * add coco (checks if additional attributes are declared twice)
+* added built-in primitive types to the mills of grammars that extend the grammar BasicSymbols. Add to Mill by executing `BasicSymbolsMill.initializePrimitives()`
 
 ### Changes
 * The generated parser uses the builder instead of the factory. This means that in grammars the variable `_aNode` is no longer available. Use instead `_builder`. 
@@ -24,10 +25,23 @@ to be released
 * `XScopeDeSer`, `SSymbolDeSer` und `XSymbols2Json` are no longer available via the mill. The constructors can be used instead.
 * Scope builder have been removed as they did not support multiple inheritance, scope creation methods of the mill should be used instead
 * Shortened the name of the scope creation methods in the mill from `xScope`, `xGlobalScope` and `xArtifactScope` to `scope`, `globalScope` and `artifactScope`
+* Shortened the name of the `modelFileExtension` attribute in the `XGlobalScope` class to `fileExt`
+* renamed `XScopeSkeletonCreator` and `XScopeSkeletonCreatorDelegator` to `XScopesGenitor` and `XScopesGenitorDelegator`
+* Deprecated the `XPhasedSymbolTableCreatorDelegator`, will be removed without replacement in a future release
+* PrettyPrinters and other visitors in monticore-grammar now use the new Traverser infrastructure instead of the old Visitor infrastructure
+* generated `XScopeGenitor` and `XScopeGenitorDelegator` now use the new Traverser infrastructure instead of the old Visitor infrastructure
+* Changes to resolving
+  * if name of a topLevelSymbol in ArtifactScope = name of ArtifactScope: qualify symbols in spanned scopes of the topLevelSymbol like before with `<topLevelSymbolName>.<symbolName>`
+  * if name of a topLevelSymbol in ArtifactScope != name of ArtifactScope: qualify symbols in spanned scope of the topLevelSymbol with `<ArtifactScopeName>.<topLevelSymbolName>.<symbolName>` 
+* Traverser now support lists of `Visitor2` interfaces instead of only one instance
+* Rename accessor of Traverser from `addXVisitor` to `add4X` 
 
 ### Fixes
 * Traverser now properly delegate to handlers as intended
 * ScopeSkeletonCreator now properly use the mill to create scope instances to ensure substitution via the mill pattern
+* Fixed a bug where the SymbolSurrogates wrongly qualified their fullName
+* The clear method of the GlobalScope now deletes all symbols stored in the GlobalScope
+* Serializing symbolrule attributes of Strings now works properly
 
 ##  MontiCore 6.5.0
 released: 11.11.2020

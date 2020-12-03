@@ -55,6 +55,7 @@ public class ScopesTest {
   public void testResolvingFromGrammarScope(){
 
     SupAutomatonScope fromAST = (SupAutomatonScope) symbolTableCreator.createFromAST(astSup);
+    fromAST.setName("TopPingPong");
 
     //findet, denn liegt im ersten Scope
     Optional<AutomatonSymbol> pingPongAutomatonSymbolLokal = fromAST.getSubScopes().stream().findAny().get().resolveAutomaton("PingPong");

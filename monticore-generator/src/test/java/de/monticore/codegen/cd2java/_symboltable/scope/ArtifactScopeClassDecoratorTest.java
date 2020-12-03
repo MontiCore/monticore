@@ -165,7 +165,7 @@ public class ArtifactScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(8, scopeClass.getCDMethodList().size());
+    assertEquals(9, scopeClass.getCDMethodList().size());
   }
 
   @Test
@@ -231,6 +231,16 @@ public class ArtifactScopeClassDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(String.class, method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
+  }
+
+  @Test
+  public void testSetEnclosingScopeMethod(){
+    ASTCDMethod method = getMethodBy("setEnclosingScope", scopeClass);
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertEquals(1, method.sizeCDParameters());
+    assertEquals("enclosingScope", method.getCDParameter(0).getName());
+    assertDeepEquals(I_AUTOMATON_SCOPE, method.getCDParameter(0).getMCType());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
   }
 
 

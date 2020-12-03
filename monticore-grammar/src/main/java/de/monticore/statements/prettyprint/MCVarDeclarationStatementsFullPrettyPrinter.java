@@ -19,18 +19,18 @@ public class MCVarDeclarationStatementsFullPrettyPrinter {
     this.traverser = MCVarDeclarationStatementsMill.traverser();
 
     ExpressionsBasisPrettyPrinter expressionsBasis = new ExpressionsBasisPrettyPrinter(printer);
-    traverser.addExpressionsBasisVisitor(expressionsBasis);
+    traverser.add4ExpressionsBasis(expressionsBasis);
     traverser.setExpressionsBasisHandler(expressionsBasis);
 
     MCBasicsPrettyPrinter basics = new MCBasicsPrettyPrinter(printer);
-    traverser.addMCBasicsVisitor(basics);
+    traverser.add4MCBasics(basics);
 
     MCBasicTypesPrettyPrinter basicTypes = new MCBasicTypesPrettyPrinter(printer);
-    traverser.addMCBasicTypesVisitor(basicTypes);
+    traverser.add4MCBasicTypes(basicTypes);
     traverser.setMCBasicTypesHandler(basicTypes);
 
     MCVarDeclarationStatementsPrettyPrinter varDecl = new MCVarDeclarationStatementsPrettyPrinter(printer);
-    traverser.addMCVarDeclarationStatementsVisitor(varDecl);
+    traverser.add4MCVarDeclarationStatements(varDecl);
     traverser.setMCVarDeclarationStatementsHandler(varDecl);
   }
 

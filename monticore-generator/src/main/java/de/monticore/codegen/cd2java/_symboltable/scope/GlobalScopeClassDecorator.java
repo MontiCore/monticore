@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._symboltable.scope;
 
+import com.google.common.collect.Lists;
 import de.monticore.cd.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
@@ -72,6 +73,8 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     ASTCDAttribute cacheAttribute = createCacheAttribute();
     this.replaceTemplate(VALUE, cacheAttribute, new StringHookPoint("= new java.util.HashSet<>()"));
 
+    ASTCDAttribute deSerMapAttribute = createDeSerMapAttribute();
+
     ASTCDAttribute scopeDeSerAttribute = createScopeDeSerAttribute(scopeDeSerName);
     List<ASTCDMethod> scopeDeSerMethods = accessorDecorator.decorate(scopeDeSerAttribute);
     scopeDeSerMethods.addAll(mutatorDecorator.decorate(scopeDeSerAttribute));
@@ -98,10 +101,8 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     symbolClasses.addAll(symbolTableService.getSymbolDefiningSuperProds());
 
     List<ASTCDMethod> resolverMethods = createResolverMethods(resolverAttributes.values());
-    List<ASTCDType> symbolList = symbolTableService.getSymbolDefiningSuperProds();
-    symbolList.addAll(symbolTableService.getSymbolDefiningProds(input.getCDDefinition()));
 
-    List<String> symbolListString = symbolList.stream().map(symbolTableService::getSymbolSimpleName).collect(Collectors.toList());
+    List<String> symbolListString = symbolClasses.stream().map(symbolTableService::getSymbolSimpleName).collect(Collectors.toList());
 
     return CD4AnalysisMill.cDClassBuilder()
         .setName(globalScopeName)
@@ -114,6 +115,8 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
         .addAllCDMethods(modelPathMethods)
         .addCDAttribute(fileExtensionAttribute)
         .addAllCDMethods(fileExtensionMethods)
+        .addCDAttribute(deSerMapAttribute)
+        .addAllCDMethods(createDeSerMapMethods(deSerMapAttribute))
         .addCDAttribute(scopeDeSerAttribute)
         .addAllCDMethods(scopeDeSerMethods)
         .addCDAttribute(symbols2JsonAttribute)
@@ -122,6 +125,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
         .addCDMethod(createAddLoadedFileMethod())
         .addCDMethod(createClearLoadedFilesMethod())
         .addCDMethod(createIsFileLoadedMethod())
+        .addCDMethod(createInitMethod(symbolProds))
         .addAllCDAttributes(resolverAttributes.values())
         .addAllCDMethods(resolverMethods)
         .addAllCDMethods(createAlreadyResolvedMethods(symbolProds))
@@ -157,6 +161,35 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
 
   protected ASTCDAttribute createModelPathAttribute() {
     return getCDAttributeFacade().createAttribute(PROTECTED, MODEL_PATH_TYPE, MODEL_PATH_VAR);
+  }
+
+  protected ASTCDAttribute createDeSerMapAttribute(){
+    ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PROTECTED,
+            getMCTypeFacade().createQualifiedType("Map<String," + I_DE_SER + ">"),
+            DESERS_VAR);
+    this.replaceTemplate(VALUE, attribute, new StringHookPoint(" = com.google.common.collect.Maps.newHashMap()"));
+    return attribute;
+  }
+
+  protected Collection<? extends ASTCDMethod> createDeSerMapMethods(ASTCDAttribute deSerMapAttribute) {
+    List<ASTCDMethod> deSerMapMethods = accessorDecorator.decorate(deSerMapAttribute);
+    deSerMapMethods.addAll(mutatorDecorator.decorate(deSerMapAttribute));
+
+    // Create simple putDeSer(String key, IDeSer value)
+    ASTCDParameter key = getCDParameterFacade().createParameter(String.class, "key");
+    ASTCDParameter value = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(I_DE_SER), "value");
+    ASTCDMethod putMethod = getCDMethodFacade().createMethod(PUBLIC, "putDeSer", key, value);
+    replaceTemplate(EMPTY_BODY, putMethod, new StringHookPoint(DESERS_VAR + ".put(key, value);"));
+    deSerMapMethods.add(putMethod);
+
+    // Create simple value getDeSer(String key)
+    key = getCDParameterFacade().createParameter(String.class, "key");
+    ASTMCQualifiedType returnType = getMCTypeFacade().createQualifiedType(I_DE_SER);
+    ASTCDMethod getMethod = getCDMethodFacade().createMethod(PUBLIC, returnType, "getDeSer", key);
+    replaceTemplate(EMPTY_BODY, getMethod, new StringHookPoint("return " + DESERS_VAR + ".get(key);"));
+    deSerMapMethods.add(getMethod);
+
+    return deSerMapMethods;
   }
 
   protected ASTCDAttribute createScopeDeSerAttribute(String scopeDeSerName){
@@ -339,6 +372,19 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     List<String> resolverListString = getResolverMethodList.stream().map(ASTCDMethod::getName).filter(name -> name.startsWith("get")).collect(Collectors.toList());
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, "clear");
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "Clear", resolverListString, symbolList));
+    return method;
+  }
+
+  protected ASTCDMethod createInitMethod(List<ASTCDType> symbolDefiningProds){
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, "init");
+    List<String> keys = Lists.newArrayList();
+    keys.add(symbolTableService.getScopeClassFullName());
+    symbolDefiningProds.forEach(s -> keys.add(symbolTableService.getSymbolFullName(s)));
+    for (CDDefinitionSymbol cdSymbol: symbolTableService.getSuperCDsTransitive()) {
+      keys.add(symbolTableService.getScopeClassFullName(cdSymbol));
+      symbolTableService.getSymbolDefiningProds(cdSymbol.getAstNode()).forEach(s -> keys.add(symbolTableService.getSymbolFullName(s, cdSymbol)));
+    }
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "Init", keys));
     return method;
   }
 

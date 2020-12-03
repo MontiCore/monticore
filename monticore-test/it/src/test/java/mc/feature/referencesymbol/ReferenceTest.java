@@ -57,6 +57,7 @@ public class ReferenceTest {
 
     IReferenceArtifactScope artifactScope = ReferenceMill
         .referenceSymbolTableCreatorDelegator().createFromAST(astRand.get());
+    artifactScope.setName("ReferenceTest");
 
     Optional<? extends IReferenceScope> scopeOpt = artifactScope.getSubScopes().stream().findAny();
     assertTrue(scopeOpt.isPresent());

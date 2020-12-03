@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.feature.symbols2json;
+
+grammar Sup2 extends mc.common.Basics {
+
+    symbol B = "bar" Name;
+
+    symbolrule B = type:java.lang.String? isFinal:boolean?;
+}    
+    

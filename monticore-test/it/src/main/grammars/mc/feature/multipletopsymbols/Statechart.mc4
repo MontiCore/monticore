@@ -1,0 +1,13 @@
+package mc.feature.multipletopsymbols;
+
+grammar Statechart extends mc.common.Basics, mc.grammar.types.ItTestTypes {
+
+  SCArtifact = PackageDeclaration? Statechart*;
+
+  PackageDeclaration = "package" QualifiedName ";";
+
+  symbol scope Statechart = "statechart" Name "{" State* "}";
+
+  symbol scope State = "state" Name (";" | "{" State* "}");
+
+}

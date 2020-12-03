@@ -18,27 +18,27 @@ public class MCExceptionStatementsFullPrettyPrinter extends MCCommonStatementsFu
     this.traverser = MCExceptionStatementsMill.traverser();
 
     ExpressionsBasisPrettyPrinter expressionsBasis = new ExpressionsBasisPrettyPrinter(printer);
-    traverser.addExpressionsBasisVisitor(expressionsBasis);
+    traverser.add4ExpressionsBasis(expressionsBasis);
     traverser.setExpressionsBasisHandler(expressionsBasis);
 
     MCBasicTypesPrettyPrinter basicTypes = new MCBasicTypesPrettyPrinter(printer);
     traverser.setMCBasicTypesHandler(basicTypes);
-    traverser.addMCBasicTypesVisitor(basicTypes);
+    traverser.add4MCBasicTypes(basicTypes);
 
     MCCommonStatementsPrettyPrinter commonStatements = new MCCommonStatementsPrettyPrinter(printer);
     traverser.setMCCommonStatementsHandler(commonStatements);
-    traverser.addMCCommonStatementsVisitor(commonStatements);
+    traverser.add4MCCommonStatements(commonStatements);
 
     MCVarDeclarationStatementsPrettyPrinter varDecl = new MCVarDeclarationStatementsPrettyPrinter(printer);
     traverser.setMCVarDeclarationStatementsHandler(varDecl);
-    traverser.addMCVarDeclarationStatementsVisitor(varDecl);
+    traverser.add4MCVarDeclarationStatements(varDecl);
 
     MCBasicsPrettyPrinter basics = new MCBasicsPrettyPrinter(printer);
-    traverser.addMCBasicsVisitor(basics);
+    traverser.add4MCBasics(basics);
 
     MCExceptionStatementsPrettyPrinter exceptionStatements = new MCExceptionStatementsPrettyPrinter(printer);
     traverser.setMCExceptionStatementsHandler(exceptionStatements);
-    traverser.addMCExceptionStatementsVisitor(exceptionStatements);
+    traverser.add4MCExceptionStatements(exceptionStatements);
   }
 
   @Override

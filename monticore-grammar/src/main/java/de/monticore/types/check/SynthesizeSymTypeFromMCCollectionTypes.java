@@ -15,7 +15,7 @@ import de.se_rwth.commons.logging.Log;
  * i.e. for
  * types/MCBasicTypes.mc4
  */
-public class SynthesizeSymTypeFromMCCollectionTypes extends AbstractSynthesizeFromType implements MCCollectionTypesVisitor2, MCCollectionTypesHandler, ISynthesize {
+public class SynthesizeSymTypeFromMCCollectionTypes extends AbstractSynthesizeFromType implements MCCollectionTypesVisitor2, MCCollectionTypesHandler {
 
 
   protected MCCollectionTypesTraverser traverser;

@@ -16,11 +16,11 @@ public class MCLowLevelStatementsFullPrettyPrinter {
     this.printer = printer;
     this.traverser = MCLowLevelStatementsMill.traverser();
 
-    traverser.addMCBasicsVisitor(new MCBasicsPrettyPrinter(printer));
+    traverser.add4MCBasics(new MCBasicsPrettyPrinter(printer));
 
     MCLowLevelStatementsPrettyPrinter lowLevel = new MCLowLevelStatementsPrettyPrinter(printer);
     traverser.setMCLowLevelStatementsHandler(lowLevel);
-    traverser.addMCLowLevelStatementsVisitor(lowLevel);
+    traverser.add4MCLowLevelStatements(lowLevel);
   }
 
   public void setTraverser(MCLowLevelStatementsTraverser traverser) {

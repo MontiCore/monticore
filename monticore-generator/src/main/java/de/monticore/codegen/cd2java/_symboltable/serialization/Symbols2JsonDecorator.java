@@ -16,6 +16,7 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.monticore.types.prettyprint.MCFullGenericTypesPrettyPrinter;
 import de.monticore.utils.Names;
 import de.se_rwth.commons.StringTransformations;
@@ -302,7 +303,7 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
   }
 
   protected boolean isAutoSerialized(ASTCDAttribute attr) {
-    String type = attr.printType();
+    String type = attr.getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter());
 
     if (isPrimitive(type)) {
       return true;
@@ -355,6 +356,7 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
       case "Char":
       case "Float":
       case "Double":
+      case "String":
       case "java.lang.Boolean":
       case "java.lang.Character":
       case "java.lang.Short":

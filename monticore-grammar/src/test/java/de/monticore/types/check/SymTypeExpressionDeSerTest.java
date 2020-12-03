@@ -2,7 +2,9 @@
 package de.monticore.types.check;
 
 import com.google.common.collect.Lists;
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
+import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.*;
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.JsonPrinter;
@@ -19,7 +21,7 @@ import static de.monticore.types.check.SymTypeExpressionFactory.*;
 import static org.junit.Assert.*;
 
 public class SymTypeExpressionDeSerTest {
-  private static IOOSymbolsScope scope = BuiltInJavaSymbolResolver.getScope();
+  private static IOOSymbolsScope scope = OOSymbolsMill.scope();
 
   // setup of objects (unchanged during tests)
   // these should be the same as those of SymTypeExpressionText
@@ -76,6 +78,8 @@ public class SymTypeExpressionDeSerTest {
     scope.add(new OOTypeSymbol("B"));
     scope.add(new OOTypeSymbol("Human"));
     scope.add(new OOTypeSymbol("Map"));
+
+    BasicSymbolsMill.initializePrimitives();
 
     OOSymbolsArtifactScope javaUtilAS = new OOSymbolsArtifactScope("java.util",
         new ArrayList<>());

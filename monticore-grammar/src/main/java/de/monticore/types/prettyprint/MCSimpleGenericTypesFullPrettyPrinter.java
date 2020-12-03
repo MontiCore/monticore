@@ -15,18 +15,18 @@ public class MCSimpleGenericTypesFullPrettyPrinter extends MCCollectionTypesFull
 
     MCSimpleGenericTypesPrettyPrinter simpleGenericTypes = new MCSimpleGenericTypesPrettyPrinter(printer);
     traverser.setMCSimpleGenericTypesHandler(simpleGenericTypes);
-    traverser.addMCSimpleGenericTypesVisitor(simpleGenericTypes);
+    traverser.add4MCSimpleGenericTypes(simpleGenericTypes);
 
     MCCollectionTypesPrettyPrinter collectionTypes = new MCCollectionTypesPrettyPrinter(printer);
     traverser.setMCCollectionTypesHandler(collectionTypes);
-    traverser.addMCCollectionTypesVisitor(collectionTypes);
+    traverser.add4MCCollectionTypes(collectionTypes);
 
     MCBasicTypesPrettyPrinter basicTypes = new MCBasicTypesPrettyPrinter(printer);
     traverser.setMCBasicTypesHandler(basicTypes);
-    traverser.addMCBasicTypesVisitor(basicTypes);
+    traverser.add4MCBasicTypes(basicTypes);
 
     MCBasicsPrettyPrinter basics = new MCBasicsPrettyPrinter(printer);
-    traverser.addMCBasicsVisitor(basics);
+    traverser.add4MCBasics(basics);
   }
 
   public void setTraverser(MCSimpleGenericTypesTraverser traverser) {

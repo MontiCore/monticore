@@ -26,7 +26,7 @@ public class TestCD4AnalysisScopesGenitor extends TestCD4AnalysisScopesGenitorTO
     TestCD4AnalysisArtifactScope artifactScope = new TestCD4AnalysisArtifactScope(Optional.empty(),
         Names.getQualifiedName(rootNode.getPackageList()), new ArrayList<>());
     putOnStack(artifactScope);
-    rootNode.accept(getRealThis());
+    rootNode.accept(getTraverser());
     return artifactScope;
   }
 
