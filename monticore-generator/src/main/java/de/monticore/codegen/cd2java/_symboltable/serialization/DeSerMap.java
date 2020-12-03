@@ -6,6 +6,9 @@ import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
+import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.check.TypeCheck;
 import de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMill;
 
 import java.util.HashMap;

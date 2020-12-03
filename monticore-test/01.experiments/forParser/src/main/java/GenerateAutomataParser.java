@@ -42,9 +42,9 @@ public class GenerateAutomataParser {
       ModelPath modelPath = new ModelPath(Paths.get(
           "target/monticore-grammar-grammars.jar"));
       IGrammar_WithConceptsGlobalScope gs = Grammar_WithConceptsMill
-          .grammar_WithConceptsGlobalScope();
+          .globalScope();
       gs.setModelPath(modelPath);
-      gs.setModelFileExtension("mc4");
+      gs.setFileExt("mc4");
       Grammar_WithConceptsMill
           .grammar_WithConceptsSymbolTableCreatorDelegator()
           .createFromAST(ast);

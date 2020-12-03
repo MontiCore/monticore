@@ -3,11 +3,11 @@ import de.monticore.MCTask
 
 plugins {
   id 'java'
-  id 'monticore'  version '6.6.0' // MontiCore Plugin
+  id 'monticore'  version '6.7.0-SNAPSHOT' // MontiCore Plugin
 }
 
 buildDir = file("$projectDir/target")
-def mc_version  = '6.6.0'
+def mc_version  = '6.7.0-SNAPSHOT'
 def se_commons_version = '1.7.11'
 def antlr_version = '4.7.1'
 def grammarDir = 'src/main/grammars'

@@ -14,7 +14,6 @@ import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsSymbolTableCreatorDelegator;
 import de.monticore.grammar.grammar_withconcepts._symboltable.IGrammar_WithConceptsGlobalScope;
-import de.monticore.grammar.grammar_withconcepts._symboltable.IGrammar_WithConceptsScope;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
@@ -72,12 +71,12 @@ public class TestHelper {
   }
   
   public static Grammar_WithConceptsGlobalScope createGlobalScope(ModelPath modelPath) {
-    IGrammar_WithConceptsGlobalScope scope = Grammar_WithConceptsMill.grammar_WithConceptsGlobalScope();
+    IGrammar_WithConceptsGlobalScope scope = Grammar_WithConceptsMill.globalScope();
     // reset global scope
     scope.clear();
 
     // Set Fileextension and ModelPath
-    scope.setModelFileExtension("mc4");
+    scope.setFileExt("mc4");
     scope.setModelPath(modelPath);
     return (Grammar_WithConceptsGlobalScope) scope;
   }

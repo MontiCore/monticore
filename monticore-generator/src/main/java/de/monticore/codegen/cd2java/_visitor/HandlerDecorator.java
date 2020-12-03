@@ -1,31 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._visitor;
 
-import static de.monticore.cd.facade.CDModifier.PUBLIC;
-import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.GET_TRAVERSER;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.HANDLE;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.HANDLER_HANDLE_TEMPLATE;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.HANDLER_TRAVERSE_SCOPE_TEMPLATE;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.HANDLER_TRAVERSE_TEMPLATE;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.TRAVERSER;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.SET_TRAVERSER;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.TRAVERSE;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDDefinition;
-import de.monticore.cd.cd4analysis._ast.ASTCDEnum;
-import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
-import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
-import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
+import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
+import de.monticore.cd.cd4code.CD4CodeFullPrettyPrinter;
 import de.monticore.cd.cd4code.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
@@ -36,7 +14,16 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.prettyprint.MCSimpleGenericTypesPrettyPrinter;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
 
 /**
  * creates a Visitor interface from a grammar
@@ -105,7 +92,7 @@ public class HandlerDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
   protected ASTCDMethod addGetTraverserMethod(ASTMCType visitorType) {
     ASTCDMethod getRealThisMethod = this.getCDMethodFacade().createMethod(PUBLIC, visitorType, GET_TRAVERSER);
     String generatedErrorCode = visitorService.getGeneratedErrorCode(visitorType.printType(
-        new MCSimpleGenericTypesPrettyPrinter(new IndentPrinter())) + GET_TRAVERSER);
+        new CD4CodeFullPrettyPrinter(new IndentPrinter())) + GET_TRAVERSER);
     this.replaceTemplate(EMPTY_BODY, getRealThisMethod, new StringHookPoint(
         "    throw new UnsupportedOperationException(\"0xA7015" + generatedErrorCode + " The getter for the traverser is " +
             "not implemented. You might want to implement a wrapper class to allow setting/getting the traverser.\");\n"));
@@ -122,7 +109,7 @@ public class HandlerDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
     ASTCDParameter visitorParameter = getCDParameterFacade().createParameter(visitorType, TRAVERSER);
     ASTCDMethod setRealThis = this.getCDMethodFacade().createMethod(PUBLIC, SET_TRAVERSER, visitorParameter);
     String generatedErrorCode = visitorService.getGeneratedErrorCode(visitorType.printType(
-        new MCSimpleGenericTypesPrettyPrinter(new IndentPrinter())) + SET_TRAVERSER);
+        new CD4CodeFullPrettyPrinter(new IndentPrinter())) + SET_TRAVERSER);
     this.replaceTemplate(EMPTY_BODY, setRealThis, new StringHookPoint(
         "    throw new UnsupportedOperationException(\"0xA7016" + generatedErrorCode + " The setter for the traverser is " +
             "not implemented. You might want to implement a wrapper class to allow setting/getting the traverser.\");\n"));
@@ -233,7 +220,7 @@ public class HandlerDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
   /**
    * Creates the handle method for a given interface.
    * 
-   * @param astcdClass The input interface
+   * @param astcdInterface The input interface
    * @param simpleVisitorName The name of the visited entity
    * @return The decorated visitor methods
    */
@@ -249,7 +236,7 @@ public class HandlerDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
   /**
    * Creates the handle method for a list of enumerations.
    * 
-   * @param astcdInterfaceList The input list of enumerations
+   * @param astcdEnumList The input list of enumerations
    * @param simpleVisitorName The name of the visited entity
    * @return The decorated visitor methods
    */
@@ -266,7 +253,7 @@ public class HandlerDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
   /**
    * Creates the handle method for a given enumeration.
    * 
-   * @param astcdClass The input enumeration
+   * @param astcdEnum The input enumeration
    * @param simpleVisitorName The name of the visited entity
    * @return The decorated visitor methods
    */

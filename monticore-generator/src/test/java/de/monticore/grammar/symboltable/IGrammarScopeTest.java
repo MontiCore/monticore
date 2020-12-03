@@ -5,7 +5,6 @@ import de.monticore.MontiCoreScript;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._symboltable.IGrammarScope;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
-import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsSymbolTableCreatorDelegator;
 import de.monticore.grammar.grammar_withconcepts._symboltable.IGrammar_WithConceptsGlobalScope;
 import de.monticore.io.paths.ModelPath;
@@ -28,10 +27,10 @@ public class IGrammarScopeTest {
   @Before
   public void setup() {
     Log.init();
-    IGrammar_WithConceptsGlobalScope scope = Grammar_WithConceptsMill.grammar_WithConceptsGlobalScope();
+    IGrammar_WithConceptsGlobalScope scope = Grammar_WithConceptsMill.globalScope();
     scope.clear();
     scope.setModelPath(modelPath);
-    scope.setModelFileExtension("mc4");
+    scope.setFileExt("mc4");
   }
 
   @Test

@@ -1,6 +1,9 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 # Release Notes
 
+##  MontiCore 6.7.0-SNAPSHOT
+to be released
+
 ##  MontiCore 6.6.0
 released: 03.12.2020
 
@@ -44,7 +47,7 @@ released: 03.12.2020
 * The clear method of the GlobalScope now deletes all symbols stored in the GlobalScope
 * Serializing symbolrule attributes of Strings now works properly
 
-##  MontiCore 6.5.0
+##  MontiCore 6.6.0
 released: 11.11.2020
 
 ### Additions
