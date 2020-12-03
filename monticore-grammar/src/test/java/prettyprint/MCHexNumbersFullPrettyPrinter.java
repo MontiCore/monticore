@@ -17,14 +17,14 @@ public class MCHexNumbersFullPrettyPrinter extends MCNumbersFullPrettyPrinter {
     this.traverser = MCHexNumbersMill.traverser();
 
     MCHexNumbersPrettyPrinter hexNumbers = new MCHexNumbersPrettyPrinter(printer);
-    traverser.addMCHexNumbersVisitor(hexNumbers);
+    traverser.add4MCHexNumbers(hexNumbers);
     traverser.setMCHexNumbersHandler(hexNumbers);
 
     MCNumbersPrettyPrinter numbers = new MCNumbersPrettyPrinter(printer);
-    traverser.addMCNumbersVisitor(numbers);
+    traverser.add4MCNumbers(numbers);
     traverser.setMCNumbersHandler(numbers);
 
-    traverser.addMCBasicsVisitor(new MCBasicsPrettyPrinter(printer));
+    traverser.add4MCBasics(new MCBasicsPrettyPrinter(printer));
   }
 
   public MCHexNumbersTraverser getTraverser() {

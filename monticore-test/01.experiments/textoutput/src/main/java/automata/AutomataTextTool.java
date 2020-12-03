@@ -46,7 +46,7 @@ public class AutomataTextTool {
     // execute a pretty printer
     TextPrinter pp = new TextPrinter();
     AutomataTraverser traverser = AutomataMill.traverser();
-    traverser.addAutomataVisitor(pp);
+    traverser.add4Automata(pp);
     traverser.setAutomataHandler(pp);
     ast.accept(traverser);
     Log.info("Printing the parsed automaton into textual form:", "AutomataTool");

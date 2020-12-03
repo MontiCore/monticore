@@ -102,21 +102,21 @@ public class DeriveSymTypeOfCombineExpressionsDelegator implements ITypesCalcula
     deriveSymTypeOfCombineExpressions = new DeriveSymTypeOfCombineExpressions(synthesizer);
     setTypeCheckResult(typeCheckResult);
 
-    traverser.addCommonExpressionsVisitor(deriveSymTypeOfCommonExpressions);
+    traverser.add4CommonExpressions(deriveSymTypeOfCommonExpressions);
     traverser.setCommonExpressionsHandler(deriveSymTypeOfCommonExpressions);
-    traverser.addAssignmentExpressionsVisitor(deriveSymTypeOfAssignmentExpressions);
+    traverser.add4AssignmentExpressions(deriveSymTypeOfAssignmentExpressions);
     traverser.setAssignmentExpressionsHandler(deriveSymTypeOfAssignmentExpressions);
-    traverser.addMCCommonLiteralsVisitor(deriveSymTypeOfMCCommonLiterals);
-    traverser.addExpressionsBasisVisitor(deriveSymTypeOfExpression);
+    traverser.add4MCCommonLiterals(deriveSymTypeOfMCCommonLiterals);
+    traverser.add4ExpressionsBasis(deriveSymTypeOfExpression);
     traverser.setExpressionsBasisHandler(deriveSymTypeOfExpression);
-    traverser.addMCLiteralsBasisVisitor(deriveSymTypeOfLiterals);
-    traverser.addBitExpressionsVisitor(deriveSymTypeOfBitExpressions);
+    traverser.add4MCLiteralsBasis(deriveSymTypeOfLiterals);
+    traverser.add4BitExpressions(deriveSymTypeOfBitExpressions);
     traverser.setBitExpressionsHandler(deriveSymTypeOfBitExpressions);
-    traverser.addJavaClassExpressionsVisitor(deriveSymTypeOfJavaClassExpressions);
+    traverser.add4JavaClassExpressions(deriveSymTypeOfJavaClassExpressions);
     traverser.setJavaClassExpressionsHandler(deriveSymTypeOfJavaClassExpressions);
-    traverser.addSetExpressionsVisitor(deriveSymTypeOfSetExpressions);
+    traverser.add4SetExpressions(deriveSymTypeOfSetExpressions);
     traverser.setSetExpressionsHandler(deriveSymTypeOfSetExpressions);
-    traverser.addCombineExpressionsWithLiteralsVisitor(deriveSymTypeOfCombineExpressions);
+    traverser.add4CombineExpressionsWithLiterals(deriveSymTypeOfCombineExpressions);
     traverser.setCombineExpressionsWithLiteralsHandler(deriveSymTypeOfCombineExpressions);
   }
 

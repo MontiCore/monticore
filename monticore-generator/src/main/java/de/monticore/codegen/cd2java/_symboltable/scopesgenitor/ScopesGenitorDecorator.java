@@ -56,7 +56,9 @@ public class ScopesGenitorDecorator extends AbstractCreator<ASTCDCompilationUnit
     if (startProd.isPresent()) {
       String astFullName = startProd.get();
       String scopesGenitorName = symbolTableService.getScopesGenitorSimpleName();
-      String visitorName = visitorService.getVisitorFullName();
+      String visitorName = visitorService.getVisitor2FullName();
+      String handlerName = visitorService.getHandlerFullName();
+      String traverserName = visitorService.getTraverserInterfaceFullName();
       String scopeInterface = symbolTableService.getScopeInterfaceFullName();
       String symTabMillFullName = symbolTableService.getMillFullName();
       ASTMCBasicGenericType dequeType = getMCTypeFacade().createBasicGenericTypeOf(DEQUE_TYPE, scopeInterface);
@@ -70,8 +72,8 @@ public class ScopesGenitorDecorator extends AbstractCreator<ASTCDCompilationUnit
       List<ASTCDType> symbolDefiningProds = symbolTableService.getSymbolDefiningProds(input.getCDDefinition());
       List<ASTCDType> onlyScopeProds = symbolTableService.getOnlyScopeClasses(input.getCDDefinition());
 
-      ASTCDAttribute realThisAttribute = createRealThisAttribute(visitorName);
-      List<ASTCDMethod> realThisMethods = methodDecorator.decorate(realThisAttribute);
+      ASTCDAttribute traverserAttribute = createTraverserAttribute(traverserName);
+      List<ASTCDMethod> traverserMethods = methodDecorator.decorate(traverserAttribute);
 
       ASTCDAttribute firstCreatedScopeAttribute = createFirstCreatedScopeAttribute(scopeInterface);
       List<ASTCDMethod> firstCreatedScopeMethod = methodDecorator.getAccessorDecorator().decorate(firstCreatedScopeAttribute);
@@ -80,12 +82,13 @@ public class ScopesGenitorDecorator extends AbstractCreator<ASTCDCompilationUnit
           .setName(scopesGenitorName)
           .setModifier(PUBLIC.build())
           .addInterface(getMCTypeFacade().createQualifiedType(visitorName))
+          .addInterface(getMCTypeFacade().createQualifiedType(handlerName))
           .addCDConstructor(createSimpleConstructor(scopesGenitorName, scopeInterface))
           .addCDConstructor(createDequeConstructor(scopesGenitorName, dequeWildcardType, dequeType))
           .addCDConstructor(createZeroArgsConstructor(scopesGenitorName))
           .addCDAttribute(createScopeStackAttribute(dequeType))
-          .addCDAttribute(realThisAttribute)
-          .addAllCDMethods(realThisMethods)
+          .addCDAttribute(traverserAttribute)
+          .addAllCDMethods(traverserMethods)
           .addCDAttribute(firstCreatedScopeAttribute)
           .addAllCDMethods(firstCreatedScopeMethod)
           .addCDMethod(createCreateFromASTMethod(astFullName, scopesGenitorName, symTabMillFullName))
@@ -138,10 +141,8 @@ public class ScopesGenitorDecorator extends AbstractCreator<ASTCDCompilationUnit
     return getCDAttributeFacade().createAttribute(PROTECTED, scopeInterface, "firstCreatedScope");
   }
 
-  protected ASTCDAttribute createRealThisAttribute(String visitor) {
-    ASTCDAttribute scopeStack = getCDAttributeFacade().createAttribute(PRIVATE, visitor, REAL_THIS);
-    this.replaceTemplate(VALUE, scopeStack, new StringHookPoint("= this"));
-    return scopeStack;
+  protected ASTCDAttribute createTraverserAttribute(String visitor) {
+    return getCDAttributeFacade().createAttribute(PROTECTED, visitor, TRAVERSER);
   }
 
   protected ASTCDMethod createCreateFromASTMethod(String astStartProd, String scopesGenitor, String symTabMillFullName) {

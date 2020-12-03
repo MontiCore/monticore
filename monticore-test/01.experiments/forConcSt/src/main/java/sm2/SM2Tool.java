@@ -65,14 +65,14 @@ public class SM2Tool {
     // analyze the model with a visitor
     CountStates cs = new CountStates();
     SM2Traverser traverser = SM2Mill.traverser();
-    traverser.addSM2Visitor(cs);
+    traverser.add4SM2(cs);
     ast.accept(traverser);
     Log.info("The model contains " + cs.getCount() + " states.", "SM2Tool");
     
     // execute a pretty printer
     PrettyPrinter pp = new PrettyPrinter();
     SM2Traverser traverser2 = SM2Mill.traverser();
-    traverser2.addSM2Visitor(pp);
+    traverser2.add4SM2(pp);
     traverser2.setSM2Handler(pp);
     ast.accept(traverser2);
     Log.info("Pretty printing the parsed sm2 into console:", "SM2Tool");

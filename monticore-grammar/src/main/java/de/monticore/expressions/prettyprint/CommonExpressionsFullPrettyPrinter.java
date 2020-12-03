@@ -24,12 +24,12 @@ public class CommonExpressionsFullPrettyPrinter extends ExpressionsBasisFullPret
 
     CommonExpressionsPrettyPrinter commonExpressions = new CommonExpressionsPrettyPrinter(printer);
     traverser.setCommonExpressionsHandler(commonExpressions);
-    traverser.addCommonExpressionsVisitor(commonExpressions);
+    traverser.add4CommonExpressions(commonExpressions);
     ExpressionsBasisPrettyPrinter basicExpression = new ExpressionsBasisPrettyPrinter(printer);
     traverser.setExpressionsBasisHandler(basicExpression);
-    traverser.addExpressionsBasisVisitor(basicExpression);
+    traverser.add4ExpressionsBasis(basicExpression);
     MCBasicsPrettyPrinter basic = new MCBasicsPrettyPrinter(printer);
-    traverser.addMCBasicsVisitor(basic);
+    traverser.add4MCBasics(basic);
   }
 }
 

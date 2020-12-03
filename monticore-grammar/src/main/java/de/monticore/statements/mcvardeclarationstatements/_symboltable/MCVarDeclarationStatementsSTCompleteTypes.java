@@ -6,6 +6,7 @@ import de.monticore.statements.mcstatementsbasis._ast.ASTMCModifier;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTLocalVariableDeclaration;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTVariableDeclarator;
 import de.monticore.statements.mcvardeclarationstatements._visitor.MCVarDeclarationStatementsVisitor;
+import de.monticore.statements.mcvardeclarationstatements._visitor.MCVarDeclarationStatementsVisitor2;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolSurrogate;
 import de.monticore.types.check.*;
@@ -17,23 +18,7 @@ import java.util.List;
 
 import static de.monticore.statements.mccommonstatements._ast.ASTConstantsMCCommonStatements.*;
 
-public class MCVarDeclarationStatementsSTCompleteTypes implements MCVarDeclarationStatementsVisitor {
-
-  private MCVarDeclarationStatementsVisitor realThis;
-
-  public MCVarDeclarationStatementsSTCompleteTypes(){
-    this.realThis = this;
-  }
-
-  @Override
-  public MCVarDeclarationStatementsVisitor getRealThis() {
-    return realThis;
-  }
-
-  @Override
-  public void setRealThis(MCVarDeclarationStatementsVisitor realThis) {
-    this.realThis = realThis;
-  }
+public class MCVarDeclarationStatementsSTCompleteTypes implements MCVarDeclarationStatementsVisitor2 {
 
   public void endVisit(ASTLocalVariableDeclaration ast) {
     List<FieldSymbol> symbols = Lists.newArrayList();
@@ -76,28 +61,9 @@ public class MCVarDeclarationStatementsSTCompleteTypes implements MCVarDeclarati
   }
 
   private SymTypeExpression createTypeLoader(ASTMCType ast) {
-    SynthesizeSymTypeFromMCFullGenericTypes synFromFull = new SynthesizeSymTypeFromMCFullGenericTypes();
+    FullSynthesizeFromMCFullGenericTypes synFromFull = new FullSynthesizeFromMCFullGenericTypes();
     // Start visitor
-    ast.accept(getSynthesizer(synFromFull));
+    ast.accept(synFromFull.getTraverser());
     return synFromFull.getResult().orElse(new SymTypeOfNull());
   }
-
-  private MCFullGenericTypesTraverser getSynthesizer(SynthesizeSymTypeFromMCFullGenericTypes synFromFull){
-    SynthesizeSymTypeFromMCSimpleGenericTypes synFromSimple = new SynthesizeSymTypeFromMCSimpleGenericTypes();
-    SynthesizeSymTypeFromMCCollectionTypes synFromCollection = new SynthesizeSymTypeFromMCCollectionTypes();
-    SynthesizeSymTypeFromMCBasicTypes synFromBasic = new SynthesizeSymTypeFromMCBasicTypes();
-
-    MCFullGenericTypesTraverser traverser = MCFullGenericTypesMill.traverser();
-    traverser.addMCFullGenericTypesVisitor(synFromFull);
-    traverser.setMCFullGenericTypesHandler(synFromFull);
-    traverser.addMCSimpleGenericTypesVisitor(synFromSimple);
-    traverser.setMCSimpleGenericTypesHandler(synFromSimple);
-    traverser.addMCCollectionTypesVisitor(synFromCollection);
-    traverser.setMCCollectionTypesHandler(synFromCollection);
-    traverser.addMCBasicTypesVisitor(synFromBasic);
-    traverser.setMCBasicTypesHandler(synFromBasic);
-    return traverser;
-  }
-
-
 }

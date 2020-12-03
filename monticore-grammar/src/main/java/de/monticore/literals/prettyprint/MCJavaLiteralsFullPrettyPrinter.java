@@ -15,14 +15,14 @@ public class MCJavaLiteralsFullPrettyPrinter extends MCCommonLiteralsFullPrettyP
 
     MCJavaLiteralsPrettyPrinter javaLiterals = new MCJavaLiteralsPrettyPrinter(printer);
     traverser.setMCJavaLiteralsHandler(javaLiterals);
-    traverser.addMCJavaLiteralsVisitor(javaLiterals);
+    traverser.add4MCJavaLiterals(javaLiterals);
 
     MCCommonLiteralsPrettyPrinter commonLiterals = new MCCommonLiteralsPrettyPrinter(printer);
     traverser.setMCCommonLiteralsHandler(commonLiterals);
-    traverser.addMCCommonLiteralsVisitor(commonLiterals);
+    traverser.add4MCCommonLiterals(commonLiterals);
 
     MCBasicsPrettyPrinter basics = new MCBasicsPrettyPrinter(printer);
-    traverser.addMCBasicsVisitor(basics);
+    traverser.add4MCBasics(basics);
   }
 
   public void setTraverser(MCJavaLiteralsTraverser traverser) {

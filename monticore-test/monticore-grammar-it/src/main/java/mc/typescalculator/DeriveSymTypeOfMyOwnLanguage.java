@@ -54,21 +54,21 @@ public class DeriveSymTypeOfMyOwnLanguage
     typeCheckResult = new TypeCheckResult();
     DeriveSymTypeOfCommonExpressions ce = new DeriveSymTypeOfCommonExpressions();
     ce.setTypeCheckResult(typeCheckResult);
-    traverser.addCommonExpressionsVisitor(ce);
+    traverser.add4CommonExpressions(ce);
     traverser.setCommonExpressionsHandler(ce);
 
     DeriveSymTypeOfExpression eb = new DeriveSymTypeOfExpression();
     eb.setTypeCheckResult(typeCheckResult);
-    traverser.addExpressionsBasisVisitor(eb);
+    traverser.add4ExpressionsBasis(eb);
     traverser.setExpressionsBasisHandler(eb);
 
     DeriveSymTypeOfMyOwnExpressionGrammar moeg = new DeriveSymTypeOfMyOwnExpressionGrammar();
     moeg.setTypeCheckResult(typeCheckResult);
     traverser.setMyOwnExpressionGrammarHandler(moeg);
-    traverser.addMyOwnExpressionGrammarVisitor(moeg);
+    traverser.add4MyOwnExpressionGrammar(moeg);
 
     DeriveSymTypeOfMCCommonLiterals cl = new DeriveSymTypeOfMCCommonLiterals();
     cl.setTypeCheckResult(typeCheckResult);
-    traverser.addMCCommonLiteralsVisitor(cl);
+    traverser.add4MCCommonLiterals(cl);
   }
 }

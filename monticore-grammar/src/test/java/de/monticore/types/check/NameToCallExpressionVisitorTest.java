@@ -47,9 +47,9 @@ public class NameToCallExpressionVisitorTest {
     CombineExpressionsWithLiteralsTraverser traverser = CombineExpressionsWithLiteralsMill.traverser();
     NameToCallExpressionVisitor visitor = new NameToCallExpressionVisitor();
     traverser.setCommonExpressionsHandler(visitor);
-    traverser.addCommonExpressionsVisitor(visitor);
+    traverser.add4CommonExpressions(visitor);
     traverser.setExpressionsBasisHandler(visitor);
-    traverser.addExpressionsBasisVisitor(visitor);
+    traverser.add4ExpressionsBasis(visitor);
     return traverser;
   }
 

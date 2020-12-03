@@ -64,13 +64,14 @@ public class SupReferenceTest {
     SupGrammarRefSymbolTableCreatorDelegator symbolTableCreator = SupGrammarRefMill
         .supGrammarRefSymbolTableCreatorDelegator();
     ISupGrammarRefArtifactScope artifact = symbolTableCreator.createFromAST(astsupRand);
+    artifact.setName("SupReferenceModel");
     Optional<? extends ISupGrammarRefScope> scopeOpt = artifact.getSubScopes().stream().findAny();
     assertTrue(scopeOpt.isPresent());
     ISupGrammarRefScope innerScope = scopeOpt.get();
 
 
-    Optional<TestSymbol> a = globalScope.resolveTest("SupReferenceTest.A");
-    Optional<TestSymbol> b = artifact.resolveTest("SupReferenceTest.B");
+    Optional<TestSymbol> a = globalScope.resolveTest("SupReferenceModel.SupReferenceTest.A");
+    Optional<TestSymbol> b = artifact.resolveTest("SupReferenceModel.SupReferenceTest.B");
     Optional<TestSymbol> c = innerScope.resolveTest("C");
     Optional<TestSymbol> d = innerScope.resolveTest("D");
 

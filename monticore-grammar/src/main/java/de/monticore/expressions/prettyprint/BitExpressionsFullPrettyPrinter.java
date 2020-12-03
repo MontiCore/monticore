@@ -15,12 +15,12 @@ public class BitExpressionsFullPrettyPrinter extends ExpressionsBasisFullPrettyP
 
     ExpressionsBasisPrettyPrinter basisExpression = new ExpressionsBasisPrettyPrinter(printer);
     traverser.setExpressionsBasisHandler(basisExpression);
-    traverser.addExpressionsBasisVisitor(basisExpression);
+    traverser.add4ExpressionsBasis(basisExpression);
     MCBasicsPrettyPrinter basics = new MCBasicsPrettyPrinter(printer);
-    traverser.addMCBasicsVisitor(basics);
+    traverser.add4MCBasics(basics);
     BitExpressionsPrettyPrinter bitExpressions = new BitExpressionsPrettyPrinter(printer);
     traverser.setBitExpressionsHandler(bitExpressions);
-    traverser.addBitExpressionsVisitor(bitExpressions);
+    traverser.add4BitExpressions(bitExpressions);
   }
 
   @Override

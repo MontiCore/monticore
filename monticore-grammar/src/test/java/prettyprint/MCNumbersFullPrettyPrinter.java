@@ -17,10 +17,10 @@ public class MCNumbersFullPrettyPrinter {
     this.traverser = MCNumbersMill.traverser();
 
     MCNumbersPrettyPrinter numbers = new MCNumbersPrettyPrinter(printer);
-    traverser.addMCNumbersVisitor(numbers);
+    traverser.add4MCNumbers(numbers);
     traverser.setMCNumbersHandler(numbers);
 
-    traverser.addMCBasicsVisitor(new MCBasicsPrettyPrinter(printer));
+    traverser.add4MCBasics(new MCBasicsPrettyPrinter(printer));
   }
 
   public MCNumbersTraverser getTraverser() {

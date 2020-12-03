@@ -73,30 +73,30 @@ public class CombineExpressionsWithLiteralsTypesCalculator implements ITypesCalc
     commonExpressionTypesCalculator = new DeriveSymTypeOfCommonExpressions();
     commonExpressionTypesCalculator.setTypeCheckResult(typeCheckResult);
     traverser.setCommonExpressionsHandler(commonExpressionTypesCalculator);
-    traverser.addCommonExpressionsVisitor(commonExpressionTypesCalculator);
+    traverser.add4CommonExpressions(commonExpressionTypesCalculator);
 
     deriveSymTypeOfBitExpressions = new DeriveSymTypeOfBitExpressions();
     deriveSymTypeOfBitExpressions.setTypeCheckResult(typeCheckResult);
     traverser.setBitExpressionsHandler(deriveSymTypeOfBitExpressions);
-    traverser.addBitExpressionsVisitor(deriveSymTypeOfBitExpressions);
+    traverser.add4BitExpressions(deriveSymTypeOfBitExpressions);
 
     assignmentExpressionTypesCalculator = new DeriveSymTypeOfAssignmentExpressions();
     assignmentExpressionTypesCalculator.setTypeCheckResult(typeCheckResult);
-    traverser.addAssignmentExpressionsVisitor(assignmentExpressionTypesCalculator);
+    traverser.add4AssignmentExpressions(assignmentExpressionTypesCalculator);
     traverser.setAssignmentExpressionsHandler(assignmentExpressionTypesCalculator);
 
     expressionsBasisTypesCalculator = new DeriveSymTypeOfExpression();
     expressionsBasisTypesCalculator.setTypeCheckResult(typeCheckResult);
     traverser.setExpressionsBasisHandler(expressionsBasisTypesCalculator);
-    traverser.addExpressionsBasisVisitor(expressionsBasisTypesCalculator);
+    traverser.add4ExpressionsBasis(expressionsBasisTypesCalculator);
 
     deriveSymTypeOfLiterals = new DeriveSymTypeOfLiterals();
     deriveSymTypeOfLiterals.setTypeCheckResult(typeCheckResult);
-    traverser.addMCLiteralsBasisVisitor(deriveSymTypeOfLiterals);
+    traverser.add4MCLiteralsBasis(deriveSymTypeOfLiterals);
 
     commonLiteralsTypesCalculator = new DeriveSymTypeOfMCCommonLiterals();
     commonExpressionTypesCalculator.setTypeCheckResult(typeCheckResult);
-    traverser.addMCCommonLiteralsVisitor(commonLiteralsTypesCalculator);
+    traverser.add4MCCommonLiterals(commonLiteralsTypesCalculator);
   }
 
   @Override

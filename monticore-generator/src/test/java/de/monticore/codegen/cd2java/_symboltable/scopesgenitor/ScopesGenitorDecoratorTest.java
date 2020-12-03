@@ -53,7 +53,11 @@ public class ScopesGenitorDecoratorTest extends DecoratorTestCase {
 
   private static final String QUALIFIED_NAME_SYMBOL = "de.monticore.codegen.symboltable.automaton._symboltable.StateSymbol";
 
-  private static final String AUTOMATON_VISITOR = "de.monticore.codegen.symboltable.automaton._visitor.AutomatonVisitor";
+  private static final String AUTOMATON_VISITOR = "de.monticore.codegen.symboltable.automaton._visitor.AutomatonVisitor2";
+
+  private static final String AUTOMATON_HANDLER = "de.monticore.codegen.symboltable.automaton._visitor.AutomatonHandler";
+
+  private static final String AUTOMATON_TRAVERSER = "de.monticore.codegen.symboltable.automaton._visitor.AutomatonTraverser";
 
   private static final String AST_AUTOMATON = "de.monticore.codegen.symboltable.automaton._ast.ASTAutomaton";
 
@@ -102,12 +106,13 @@ public class ScopesGenitorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterfacesCount() {
-    assertEquals(1, scopesGenitorClass.sizeInterface());
+    assertEquals(2, scopesGenitorClass.sizeInterface());
   }
 
   @Test
   public void testSuperInterface() {
     assertDeepEquals(AUTOMATON_VISITOR, scopesGenitorClass.getInterface(0));
+    assertDeepEquals(AUTOMATON_HANDLER, scopesGenitorClass.getInterface(1));
   }
 
   @Test
@@ -172,10 +177,10 @@ public class ScopesGenitorDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testRealThisAttribute() {
-    ASTCDAttribute astcdAttribute = getAttributeBy("realThis", scopesGenitorClass);
-    assertDeepEquals(PRIVATE, astcdAttribute.getModifier());
-    assertDeepEquals("de.monticore.codegen.symboltable.automaton._visitor.AutomatonVisitor", astcdAttribute.getMCType());
+  public void testTraverserAttribute() {
+    ASTCDAttribute astcdAttribute = getAttributeBy("traverser", scopesGenitorClass);
+    assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
+    assertDeepEquals(AUTOMATON_TRAVERSER , astcdAttribute.getMCType());
   }
 
   @Test
@@ -224,22 +229,22 @@ public class ScopesGenitorDecoratorTest extends DecoratorTestCase {
 
 
   @Test
-  public void testGetRealThis() {
-    ASTCDMethod method = getMethodBy("getRealThis", scopesGenitorClass);
+  public void testGetTraverserMethod() {
+    ASTCDMethod method = getMethodBy("getTraverser", scopesGenitorClass);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCType());
-    assertDeepEquals(AUTOMATON_VISITOR, method.getMCReturnType().getMCType());
+    assertDeepEquals(AUTOMATON_TRAVERSER, method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
   }
 
   @Test
-  public void testSetRealThis() {
-    ASTCDMethod method = getMethodBy("setRealThis", scopesGenitorClass);
+  public void testSetTraverserMethod() {
+    ASTCDMethod method = getMethodBy("setTraverser", scopesGenitorClass);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(AUTOMATON_VISITOR, method.getCDParameter(0).getMCType());
-    assertEquals("realThis", method.getCDParameter(0).getName());
+    assertDeepEquals(AUTOMATON_TRAVERSER, method.getCDParameter(0).getMCType());
+    assertEquals("traverser", method.getCDParameter(0).getName());
   }
 
   @Test

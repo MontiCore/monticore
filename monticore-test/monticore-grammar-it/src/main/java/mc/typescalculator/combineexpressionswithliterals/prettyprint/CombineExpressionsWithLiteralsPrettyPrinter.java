@@ -20,23 +20,23 @@ public class CombineExpressionsWithLiteralsPrettyPrinter {
     this.traverser = CombineExpressionsWithLiteralsMill.traverser();
 
     AssignmentExpressionsPrettyPrinter assignmentExpressions = new AssignmentExpressionsPrettyPrinter(printer);
-    traverser.addAssignmentExpressionsVisitor(assignmentExpressions);
+    traverser.add4AssignmentExpressions(assignmentExpressions);
     traverser.setAssignmentExpressionsHandler(assignmentExpressions);
 
     CommonExpressionsPrettyPrinter commonExpressions = new CommonExpressionsPrettyPrinter(printer);
-    traverser.addCommonExpressionsVisitor(commonExpressions);
+    traverser.add4CommonExpressions(commonExpressions);
     traverser.setCommonExpressionsHandler(commonExpressions);
 
     BitExpressionsPrettyPrinter bitExpressions = new BitExpressionsPrettyPrinter(printer);
-    traverser.addBitExpressionsVisitor(bitExpressions);
+    traverser.add4BitExpressions(bitExpressions);
     traverser.setBitExpressionsHandler(bitExpressions);
 
     ExpressionsBasisPrettyPrinter expressionsBasis = new ExpressionsBasisPrettyPrinter(printer);
-    traverser.addExpressionsBasisVisitor(expressionsBasis);
+    traverser.add4ExpressionsBasis(expressionsBasis);
     traverser.setExpressionsBasisHandler(expressionsBasis);
 
     MCCommonLiteralsPrettyPrinter commonLiterals = new MCCommonLiteralsPrettyPrinter(printer);
-    traverser.addMCCommonLiteralsVisitor(commonLiterals);
+    traverser.add4MCCommonLiterals(commonLiterals);
     traverser.setMCCommonLiteralsHandler(commonLiterals);
   }
 
