@@ -16,14 +16,14 @@ public class MCCollectionTypesFullPrettyPrinter extends MCBasicTypesFullPrettyPr
 
     MCCollectionTypesPrettyPrinter collectionTypes = new MCCollectionTypesPrettyPrinter(printer);
     traverser.setMCCollectionTypesHandler(collectionTypes);
-    traverser.addMCCollectionTypesVisitor(collectionTypes);
+    traverser.add4MCCollectionTypes(collectionTypes);
 
     MCBasicTypesPrettyPrinter basicTypes = new MCBasicTypesPrettyPrinter(printer);
     traverser.setMCBasicTypesHandler(basicTypes);
-    traverser.addMCBasicTypesVisitor(basicTypes);
+    traverser.add4MCBasicTypes(basicTypes);
 
     MCBasicsPrettyPrinter basics = new MCBasicsPrettyPrinter(printer);
-    traverser.addMCBasicsVisitor(basics);
+    traverser.add4MCBasics(basics);
   }
 
   public MCCollectionTypesTraverser getTraverser() {

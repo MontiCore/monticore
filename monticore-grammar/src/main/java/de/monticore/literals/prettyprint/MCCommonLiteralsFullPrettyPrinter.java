@@ -18,10 +18,10 @@ public class MCCommonLiteralsFullPrettyPrinter {
 
     MCCommonLiteralsPrettyPrinter commonLiterals = new MCCommonLiteralsPrettyPrinter(printer);
     traverser.setMCCommonLiteralsHandler(commonLiterals);
-    traverser.addMCCommonLiteralsVisitor(commonLiterals);
+    traverser.add4MCCommonLiterals(commonLiterals);
 
     MCBasicsPrettyPrinter basics = new MCBasicsPrettyPrinter(printer);
-    traverser.addMCBasicsVisitor(basics);
+    traverser.add4MCBasics(basics);
   }
 
   public MCCommonLiteralsTraverser getTraverser() {

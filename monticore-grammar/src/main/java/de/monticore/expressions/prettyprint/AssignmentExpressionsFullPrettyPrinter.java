@@ -17,12 +17,12 @@ public class AssignmentExpressionsFullPrettyPrinter extends ExpressionsBasisFull
 
     AssignmentExpressionsPrettyPrinter assignmentExpressions = new AssignmentExpressionsPrettyPrinter(printer);
     traverser.setAssignmentExpressionsHandler(assignmentExpressions);
-    traverser.addAssignmentExpressionsVisitor(assignmentExpressions);
+    traverser.add4AssignmentExpressions(assignmentExpressions);
     ExpressionsBasisPrettyPrinter basisExpression = new ExpressionsBasisPrettyPrinter(printer);
     traverser.setExpressionsBasisHandler(basisExpression);
-    traverser.addExpressionsBasisVisitor(basisExpression);
+    traverser.add4ExpressionsBasis(basisExpression);
     MCBasicsPrettyPrinter basic = new MCBasicsPrettyPrinter(printer);
-    traverser.addMCBasicsVisitor(basic);
+    traverser.add4MCBasics(basic);
   }
 
 

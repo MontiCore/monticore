@@ -26,47 +26,47 @@ public class CombineExpressionsWithLiteralsPrettyPrinter {
     this.traverser = CombineExpressionsWithLiteralsMill.traverser();
 
     AssignmentExpressionsPrettyPrinter assignmentExpressions = new AssignmentExpressionsPrettyPrinter(printer);
-    traverser.addAssignmentExpressionsVisitor(assignmentExpressions);
+    traverser.add4AssignmentExpressions(assignmentExpressions);
     traverser.setAssignmentExpressionsHandler(assignmentExpressions);
 
     CommonExpressionsPrettyPrinter commonExpressions = new CommonExpressionsPrettyPrinter(printer);
-    traverser.addCommonExpressionsVisitor(commonExpressions);
+    traverser.add4CommonExpressions(commonExpressions);
     traverser.setCommonExpressionsHandler(commonExpressions);
 
     BitExpressionsPrettyPrinter bitExpressions = new BitExpressionsPrettyPrinter(printer);
-    traverser.addBitExpressionsVisitor(bitExpressions);
+    traverser.add4BitExpressions(bitExpressions);
     traverser.setBitExpressionsHandler(bitExpressions);
 
     ExpressionsBasisPrettyPrinter expressionsBasis = new ExpressionsBasisPrettyPrinter(printer);
-    traverser.addExpressionsBasisVisitor(expressionsBasis);
+    traverser.add4ExpressionsBasis(expressionsBasis);
     traverser.setExpressionsBasisHandler(expressionsBasis);
 
     JavaClassExpressionsPrettyPrinter javaClassExpressions = new JavaClassExpressionsPrettyPrinter(printer);
-    traverser.addJavaClassExpressionsVisitor(javaClassExpressions);
+    traverser.add4JavaClassExpressions(javaClassExpressions);
     traverser.setJavaClassExpressionsHandler(javaClassExpressions);
 
     SetExpressionsPrettyPrinter setExpressions = new SetExpressionsPrettyPrinter(printer);
-    traverser.addSetExpressionsVisitor(setExpressions);
+    traverser.add4SetExpressions(setExpressions);
     traverser.setSetExpressionsHandler(setExpressions);
 
     MCCommonLiteralsPrettyPrinter commonLiterals = new MCCommonLiteralsPrettyPrinter(printer);
-    traverser.addMCCommonLiteralsVisitor(commonLiterals);
+    traverser.add4MCCommonLiterals(commonLiterals);
     traverser.setMCCommonLiteralsHandler(commonLiterals);
 
     MCSimpleGenericTypesPrettyPrinter simpleGenericTypes = new MCSimpleGenericTypesPrettyPrinter(printer);
-    traverser.addMCSimpleGenericTypesVisitor(simpleGenericTypes);
+    traverser.add4MCSimpleGenericTypes(simpleGenericTypes);
     traverser.setMCSimpleGenericTypesHandler(simpleGenericTypes);
 
     MCCollectionTypesPrettyPrinter collectionTypes = new MCCollectionTypesPrettyPrinter(printer);
-    traverser.addMCCollectionTypesVisitor(collectionTypes);
+    traverser.add4MCCollectionTypes(collectionTypes);
     traverser.setMCCollectionTypesHandler(collectionTypes);
 
     MCBasicTypesPrettyPrinter basicTypes = new MCBasicTypesPrettyPrinter(printer);
-    traverser.addMCBasicTypesVisitor(basicTypes);
+    traverser.add4MCBasicTypes(basicTypes);
     traverser.setMCBasicTypesHandler(basicTypes);
 
     MCBasicsPrettyPrinter basics = new MCBasicsPrettyPrinter(printer);
-    traverser.addMCBasicsVisitor(basics);
+    traverser.add4MCBasics(basics);
   }
 
   public CombineExpressionsWithLiteralsTraverser getTraverser() {

@@ -13,7 +13,7 @@ public class TestCD4AnalysisPhasedSymbolTableCreatorDelegator extends TestCD4Ana
     Deque<ITestCD4AnalysisScope> scopeStack = new ArrayDeque<>();
     scopeStack.push(globalScope);
     TestCD4AnalysisTraverser traverser = TestCD4AnalysisMill.traverser();
-    traverser.addTestCD4AnalysisVisitor(new TestCD4AnalysisSTCompleteTypes(scopeStack));
+    traverser.add4TestCD4Analysis(new TestCD4AnalysisSTCompleteTypes(scopeStack));
     this.priorityList.add(traverser);
   }
 
@@ -22,7 +22,7 @@ public class TestCD4AnalysisPhasedSymbolTableCreatorDelegator extends TestCD4Ana
     Deque<ITestCD4AnalysisScope> scopeStack = new ArrayDeque<>();
     scopeStack.push(globalScope);
     TestCD4AnalysisTraverser traverser = TestCD4AnalysisMill.traverser();
-    traverser.addTestCD4AnalysisVisitor(new TestCD4AnalysisSTCompleteTypes(scopeStack));
+    traverser.add4TestCD4Analysis(new TestCD4AnalysisSTCompleteTypes(scopeStack));
     this.priorityList.add(traverser);
   }
 

@@ -16,14 +16,14 @@ public class CardinalityFullPrettyPrinter {
     this.traverser = CardinalityMill.traverser();
 
     CardinalityPrettyPrinter cardinality = new CardinalityPrettyPrinter(printer);
-    traverser.addCardinalityVisitor(cardinality);
+    traverser.add4Cardinality(cardinality);
     traverser.setCardinalityHandler(cardinality);
 
     MCCommonLiteralsPrettyPrinter commonLiterals = new MCCommonLiteralsPrettyPrinter(printer);
-    traverser.addMCCommonLiteralsVisitor(commonLiterals);
+    traverser.add4MCCommonLiterals(commonLiterals);
     traverser.setMCCommonLiteralsHandler(commonLiterals);
 
-    traverser.addMCBasicsVisitor(new MCBasicsPrettyPrinter(printer));
+    traverser.add4MCBasics(new MCBasicsPrettyPrinter(printer));
   }
 
   public CardinalityTraverser getTraverser() {

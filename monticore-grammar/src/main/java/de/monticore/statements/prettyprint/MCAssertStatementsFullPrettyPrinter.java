@@ -17,14 +17,14 @@ public class MCAssertStatementsFullPrettyPrinter extends ExpressionsBasisFullPre
     this.traverser = MCAssertStatementsMill.traverser();
 
     ExpressionsBasisPrettyPrinter expressionsBasis = new ExpressionsBasisPrettyPrinter(printer);
-    traverser.addExpressionsBasisVisitor(expressionsBasis);
+    traverser.add4ExpressionsBasis(expressionsBasis);
     traverser.setExpressionsBasisHandler(expressionsBasis);
 
     MCAssertStatementsPrettyPrinter assertStatements = new MCAssertStatementsPrettyPrinter(printer);
-    traverser.addMCAssertStatementsVisitor(assertStatements);
+    traverser.add4MCAssertStatements(assertStatements);
     traverser.setMCAssertStatementsHandler(assertStatements);
 
-    traverser.addMCBasicsVisitor(new MCBasicsPrettyPrinter(printer));
+    traverser.add4MCBasics(new MCBasicsPrettyPrinter(printer));
   }
 
   public MCAssertStatementsTraverser getTraverser() {

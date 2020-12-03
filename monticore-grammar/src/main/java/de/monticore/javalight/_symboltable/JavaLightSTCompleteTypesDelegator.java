@@ -13,9 +13,9 @@ public class JavaLightSTCompleteTypesDelegator {
   public JavaLightSTCompleteTypesDelegator(){
     this.traverser = JavaLightMill.traverser();
 
-    traverser.addMCVarDeclarationStatementsVisitor(new MCVarDeclarationStatementsSTCompleteTypes());
-    traverser.addMCCommonStatementsVisitor(new MCCommonStatementsSTCompleteTypes());
-    traverser.addJavaLightVisitor(new JavaLightSTCompleteTypes());
+    traverser.add4MCVarDeclarationStatements(new MCVarDeclarationStatementsSTCompleteTypes());
+    traverser.add4MCCommonStatements(new MCCommonStatementsSTCompleteTypes());
+    traverser.add4JavaLight(new JavaLightSTCompleteTypes());
   }
 
   public JavaLightTraverser getTraverser() {
