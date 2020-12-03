@@ -1,8 +1,8 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 # Release Notes
 
-##  MontiCore 6.6.0-SNAPSHOT
-to be released
+##  MontiCore 6.6.0
+released: 03.12.2020
 
 ### Additions
 * The mill of a language now provides a method `parser()` to get the parser of the language 
