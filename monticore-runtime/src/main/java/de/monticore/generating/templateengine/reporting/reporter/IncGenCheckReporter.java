@@ -71,6 +71,26 @@ public class IncGenCheckReporter extends IncGenReporter {
         writeLine("md5sum -c <<<\"" +digest +" *" + file + "\" || (touch $1; echo " + file + " changed!; exit 0;)");
       }
     }
+    //create check: user templates changed or deleted?
+    for (String s : userTemplates) {
+      String digest;
+      if (!s.contains(".jar")) {
+        File inputFile = new File(s);
+        if (inputFile.exists()) {
+          digest = IncrementalChecker.getChecksum(inputFile.toString());
+        }else {
+          digest = MISSING;
+        }
+      }else{
+        //only the local files are important
+        continue;
+      }
+      String file = s.replaceAll("\\\\", "/");
+      //test if file was removed
+      writeLine("[ -e " + file + " ] || (touch $1; echo " + file + " removed!; exit 0;)");
+      //test if file was changed by comparing its hash to its previous hash
+      writeLine("md5sum -c <<<\"" +digest +" *" + file + "\" || (touch $1; echo " + file + " changed!; exit 0;)");
+    }
     // create check: used file deleted?
     for (String p : usedHWCFiles) {
       writeLine("[ -e " + p + " ] || (touch $1; echo " + p + " removed!; exit 0;)");
