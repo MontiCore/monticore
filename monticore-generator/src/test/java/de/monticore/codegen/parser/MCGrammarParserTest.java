@@ -3,6 +3,7 @@
 package de.monticore.codegen.parser;
 
 import de.monticore.grammar.grammar._ast.*;
+import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
 import de.monticore.grammar.transformation.GrammarTransformer;
 import de.se_rwth.commons.logging.Log;
@@ -29,7 +30,7 @@ public class MCGrammarParserTest {
     String model = "src/test/resources/de/monticore/statechart/Statechart.mc4";
 
     Grammar_WithConceptsParser parser =
-                      new Grammar_WithConceptsParser();
+        Grammar_WithConceptsMill.parser();
     Optional<ASTMCGrammar> result = parser.parse(model);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
