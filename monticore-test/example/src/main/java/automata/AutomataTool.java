@@ -61,7 +61,7 @@ public class AutomataTool {
     String packagePath = Paths.get(qualifiedModelName).getParent().toString();
     String storagePath = Paths.get("target/symbols", packagePath,
         outputFileName).toString();
-    deser.store(modelTopScope,storagePath);
+    // XXX aukommentiert, weil fehlerhaft: (BR) TODO :::  deser.store(modelTopScope,storagePath);
   }
   
   /**
