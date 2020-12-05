@@ -433,9 +433,13 @@ sequencediagram AuctionTest {
 
 ### [Statecharts](https://git.rwth-aachen.de/monticore/statechart/sc-language) (MontiCore stable)
 * Caretaker: KH  
-* A set of language variants for Statecharts (UML-like or also embedded SysML-like)
-* creates transformation language within SC and sc<->cd4a
-* [*Detailed description*](https://git.rwth-aachen.de/monticore/statechart/sc-language/-/blob/dev/src/main/grammars/de/monticore/Statecharts.md) 
+* A set of language variants for Statecharts (UML-like or also embedded SysML-like).
+* It is possible to define syntactically simpler or more complex and comfortable
+  forms of statecharts using a subset of the eleven provided language components.
+  Two complete Statechart language variants are composed for direct usability.
+* The project also creates a transformation language 
+  that allows to define transformations of various forms from
+  one Statechart to another and also from a Statechart to a CD4A class diagram.
 * A compact teaser for the (one variant of the) Statechart language:
     ```
     statechart Door {
@@ -449,16 +453,17 @@ sequencediagram AuctionTest {
       Locked -> Closed [isAuthorized() && doorIsLocked] unlock() /
     }
     ```
-  This example models the different states of a door: `Opened`, `Closed`, and `Locked`.
-  When the statechart is in state `Opened`, it is possible to close the door using `close()`.
-  When the statechart is in state `Closed`, it is possible to open the door using `open()`. 
-  In the latter case the action  `ringDoorBell()` is executed. 
-  When the door is `Closed` it is automatically locked after some time due to a 
-  `timeout()` event that triggers the `lockDoor()` action.
-  Consequently, the post-condition `doorIsLocked` holds. In case the door is locked,
-  it can be unlocked by using `unlock()` if the pre-condition `isAuthorized` is fulfilled.
+* This example models the different states of a door: `Opened`, `Closed`, and `Locked`.
+  A transition is triggered e.g. by function/method call `close()` that changes a from a state `Opened` to state `Closed`. 
+* Transitions can have actions, such as  
+  `{ringDoorBell();}` containing in this case Java statements, or preconditions, such  
+  as `[ ... ]` containg a Boolean expression.
 * *State invariants* and *transition preconditions* are defined using `Expressions`
   and *entry/exit/transition actions* are defined using `Statements`.
+* A Statechart may also have hierarchically decomposed states and other forms of 
+  events (not shown here).
+* Detailed description*](https://git.rwth-aachen.de/monticore/statechart/sc-language/-/blob/dev/src/main/grammars/de/monticore/Statecharts.md) 
+
 
 ### [SysML_2](https://git.rwth-aachen.de/monticore/languages/sysml2/sysml2official) (Alpha: Intention to become stable)
 * Caretaker: NJ
