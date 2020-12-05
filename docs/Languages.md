@@ -455,14 +455,13 @@ sequencediagram AuctionTest {
     ```
 * This example models the different states of a door: `Opened`, `Closed`, and `Locked`.
   A transition is triggered e.g. by function/method call `close()` that changes a from a state `Opened` to state `Closed`. 
-* Transitions can have actions, such as  
-  `{ringDoorBell();}` containing in this case Java statements, or preconditions, such  
-  as `[ ... ]` containg a Boolean expression.
+* Transitions can have actions, such as `{ringDoorBell();}` containing in this case 
+  Java statements, or preconditions, such  as `[ ... ]` containg a Boolean expression.
 * *State invariants* and *transition preconditions* are defined using `Expressions`
   and *entry/exit/transition actions* are defined using `Statements`.
 * A Statechart may also have hierarchically decomposed states and other forms of 
   events (not shown here).
-* Detailed description*](https://git.rwth-aachen.de/monticore/statechart/sc-language/-/blob/dev/src/main/grammars/de/monticore/Statecharts.md) 
+* [*Detailed description*](https://git.rwth-aachen.de/monticore/statechart/sc-language/-/blob/dev/src/main/grammars/de/monticore/Statecharts.md) 
 
 
 ### [SysML_2](https://git.rwth-aachen.de/monticore/languages/sysml2/sysml2official) (Alpha: Intention to become stable)
