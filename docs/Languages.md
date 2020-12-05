@@ -496,7 +496,6 @@ package 'Coffee' {                      // a SysML activity diagram
   correctly produced SysML 2 models only.
 * MontiCore's SysML 2 is a language familiy that comes with a textual 
   representation to describe SysML 2 diagrams with respect to the standard. 
-
 * SysML 2 covers **ADs**, **BDDs**, **IBDs**, **PackageDiagrams**, 
   **ParametricDiagrams**, **RequirementDiagrams**, **SDs**, **SMDs**, 
   **UseCaseDiagrams**, and general **SysMLBasics**
