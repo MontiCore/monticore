@@ -440,7 +440,7 @@ sequencediagram AuctionTest {
 * The project also creates a transformation language 
   that allows to define transformations of various forms from
   one Statechart to another and also from a Statechart to a CD4A class diagram.
-* A compact teaser for the (one variant of the) Statechart language:
+* A compact teaser for one variant of the Statechart languages:
     ```
     statechart Door {
       state Opened
