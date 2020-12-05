@@ -433,7 +433,7 @@ sequencediagram AuctionTest {
 
 ### [Statecharts](https://git.rwth-aachen.de/monticore/statechart/sc-language) (MontiCore stable)
 * Caretaker: KH  
-* A set language variants for Statecharts (UML-like or also embedded SysML-like)
+* A set of language variants for Statecharts (UML-like or also embedded SysML-like)
 * creates transformation language within SC and sc<->cd4a
 * [*Detailed description*](https://git.rwth-aachen.de/monticore/statechart/sc-language/-/blob/dev/src/main/grammars/de/monticore/Statecharts.md) 
 * A compact teaser for the (one variant of the) Statechart language:
