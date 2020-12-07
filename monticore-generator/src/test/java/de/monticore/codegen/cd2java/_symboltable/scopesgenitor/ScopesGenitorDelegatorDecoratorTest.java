@@ -46,7 +46,7 @@ public class ScopesGenitorDelegatorDecoratorTest extends DecoratorTestCase {
 
   private static final String AUTOMATON_SCOPES_GENITOR = "AutomatonScopesGenitor";
 
-  private static final String AUTOMATON_DELEGATOR_VISITOR = "de.monticore.codegen.symboltable.automaton._visitor.AutomatonDelegatorVisitor";
+  private static final String AUTOMATON_TRAVERSER = "de.monticore.codegen.symboltable.automaton._visitor.AutomatonTraverser";
 
   private static final String AST_AUTOMATON = "de.monticore.codegen.symboltable.automaton._ast.ASTAutomaton";
 
@@ -110,9 +110,8 @@ public class ScopesGenitorDelegatorDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testSuperClass() {
-    assertTrue(scopesGenitorClass.isPresentSuperclass());
-    assertDeepEquals(AUTOMATON_DELEGATOR_VISITOR, scopesGenitorClass.getSuperclass());
+  public void testNoSuperClass() {
+    assertFalse(scopesGenitorClass.isPresentSuperclass());
   }
 
   @Test
@@ -145,7 +144,7 @@ public class ScopesGenitorDelegatorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeSize() {
-    assertEquals(3, scopesGenitorClass.sizeCDAttributes());
+    assertEquals(4, scopesGenitorClass.sizeCDAttributes());
   }
 
   @Test
@@ -167,6 +166,13 @@ public class ScopesGenitorDelegatorDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute astcdAttribute = getAttributeBy("globalScope", scopesGenitorClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertDeepEquals(AUTOMATON_GLOBAL_SCOPE, astcdAttribute.getMCType());
+  }
+
+  @Test
+  public void testTraverserAttribute(){
+    ASTCDAttribute astcdAttribute = getAttributeBy("traverser", scopesGenitorClass);
+    assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
+    assertDeepEquals(AUTOMATON_TRAVERSER, astcdAttribute.getMCType());
   }
 
   @Test

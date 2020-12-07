@@ -135,7 +135,7 @@ public class TraverserClassDecorator extends AbstractCreator<ASTCDCompilationUni
       // e.g. public void setAutomataVisitor(automata._visitor.AutomataVisitor visitor)
       ASTMCQualifiedType visitorType = visitorService.getVisitor2Type(cd);
       ASTCDParameter visitorParameter = getCDParameterFacade().createParameter(visitorType, StringTransformations.uncapitalize(simpleName));
-      ASTCDMethod addVisitorMethod = getCDMethodFacade().createMethod(PUBLIC, "add" + simpleName, visitorParameter);
+      ASTCDMethod addVisitorMethod = getCDMethodFacade().createMethod(PUBLIC, "add4" + cd.getName(), visitorParameter);
       this.replaceTemplate(EMPTY_BODY, addVisitorMethod, new TemplateHookPoint(
           TRAVERSER_ADD_VISITOR_TEMPLATE, simpleName));
       methodList.add(addVisitorMethod);

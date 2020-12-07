@@ -9,7 +9,7 @@ import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTMethodParameter;
 import de.monticore.grammar.grammar._ast.ASTSymbolRule;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTAction;
-import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
+import de.monticore.grammar.prettyprint.Grammar_WithConceptsFullPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.statements.mcstatementsbasis._ast.ASTMCBlockStatement;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
@@ -57,7 +57,7 @@ public class SymbolRuleMethodTranslation implements UnaryOperator<Link<ASTMCGram
     if (method.getBody() instanceof ASTAction) {
       StringBuilder code = new StringBuilder();
       for (ASTMCBlockStatement action : ((ASTAction) method.getBody()).getMCBlockStatementList()) {
-        code.append(new Grammar_WithConceptsPrettyPrinter(new IndentPrinter()).prettyprint(action));
+        code.append(new Grammar_WithConceptsFullPrettyPrinter(new IndentPrinter()).prettyprint(action));
       }
       addMethodBodyStereotype(cdMethod.getModifier(), code);
     }

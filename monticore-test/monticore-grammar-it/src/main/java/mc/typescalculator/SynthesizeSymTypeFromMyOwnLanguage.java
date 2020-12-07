@@ -40,17 +40,17 @@ public class SynthesizeSymTypeFromMyOwnLanguage implements ISynthesize {
 
     symTypeFromUnitTypes = new SynthesizeSymTypeFromUnitTypes();
     symTypeFromUnitTypes.setTypeCheckResult(result);
-    traverser.addUnitTypesVisitor(symTypeFromUnitTypes);
+    traverser.add4UnitTypes(symTypeFromUnitTypes);
     traverser.setUnitTypesHandler(symTypeFromUnitTypes);
 
     symTypeFromMCCollectionTypes = new SynthesizeSymTypeFromMCCollectionTypes();
     symTypeFromMCCollectionTypes.setTypeCheckResult(result);
-    traverser.addMCCollectionTypesVisitor(symTypeFromMCCollectionTypes);
+    traverser.add4MCCollectionTypes(symTypeFromMCCollectionTypes);
     traverser.setMCCollectionTypesHandler(symTypeFromMCCollectionTypes);
 
     symTypeFromMCBasicTypes = new SynthesizeSymTypeFromMCBasicTypes();
     symTypeFromMCBasicTypes.setTypeCheckResult(result);
     traverser.setMCBasicTypesHandler(symTypeFromMCBasicTypes);
-    traverser.addMCBasicTypesVisitor(symTypeFromMCBasicTypes);
+    traverser.add4MCBasicTypes(symTypeFromMCBasicTypes);
   }
 }

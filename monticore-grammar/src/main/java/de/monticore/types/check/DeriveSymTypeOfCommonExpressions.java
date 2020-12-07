@@ -417,9 +417,9 @@ public class DeriveSymTypeOfCommonExpressions extends AbstractDeriveFromExpressi
     NameToCallExpressionVisitor visitor = new NameToCallExpressionVisitor();
     CommonExpressionsTraverser traverser = CommonExpressionsMill.traverser();
     traverser.setCommonExpressionsHandler(visitor);
-    traverser.addCommonExpressionsVisitor(visitor);
+    traverser.add4CommonExpressions(visitor);
     traverser.setExpressionsBasisHandler(visitor);
-    traverser.addExpressionsBasisVisitor(visitor);
+    traverser.add4ExpressionsBasis(visitor);
     expr.accept(traverser);
     SymTypeExpression innerResult;
     expr.getExpression().accept(getTraverser());

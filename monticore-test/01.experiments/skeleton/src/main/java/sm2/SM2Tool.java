@@ -65,14 +65,14 @@ public class SM2Tool {
     // analyze the model with a visitor
     SM2Traverser t1 = SM2Mill.traverser();
     CountStates cs = new CountStates();
-    t1.addSM2Visitor(cs);
+    t1.add4SM2(cs);
     t1.handle(ast);
     Log.info("The model contains " + cs.getCount() + " states.", "SM2Tool");
     
     // execute a pretty printer
     SM2Traverser t2 = SM2Mill.traverser();
     PrettyPrinter pp = new PrettyPrinter();
-    t2.addSM2Visitor(pp);
+    t2.add4SM2(pp);
     t2.setSM2Handler(pp);
     t2.handle(ast);
     Log.info("Pretty printing the parsed sm2 into console:", "SM2Tool");
@@ -112,10 +112,8 @@ public class SM2Tool {
     globalScope.setModelPath(new ModelPath());
     globalScope.setFileExt("aut");
 
-    SM2ScopesGenitor symbolTable = SM2Mill
-        .scopesGenitor();
-
-    symbolTable.addToScopeStack(globalScope);
+    SM2ScopesGenitorDelegator symbolTable = SM2Mill
+        .scopesGenitorDelegator();
 
     return symbolTable.createFromAST(ast);
   }

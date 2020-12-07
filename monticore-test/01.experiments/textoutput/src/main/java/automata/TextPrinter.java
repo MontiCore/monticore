@@ -57,7 +57,7 @@ public class TextPrinter implements AutomataVisitor2 , AutomataHandler {
     // to identify the end correctly we collect the number of states first
     CountStates cs = new CountStates();
     AutomataTraverser traverser = AutomataMill.traverser();
-    traverser.addAutomataVisitor(cs);
+    traverser.add4Automata(cs);
     node.accept(traverser);
     stateCount = cs.getCount();
     stateNumber = stateCount;

@@ -18,27 +18,27 @@ public class MCSynchronizedStatementsFullPrettyPrinter extends MCCommonStatement
     this.traverser = MCSynchronizedStatementsMill.traverser();
 
     ExpressionsBasisPrettyPrinter expressionsBasis = new ExpressionsBasisPrettyPrinter(printer);
-    traverser.addExpressionsBasisVisitor(expressionsBasis);
+    traverser.add4ExpressionsBasis(expressionsBasis);
     traverser.setExpressionsBasisHandler(expressionsBasis);
 
     MCBasicTypesPrettyPrinter basicTypes = new MCBasicTypesPrettyPrinter(printer);
     traverser.setMCBasicTypesHandler(basicTypes);
-    traverser.addMCBasicTypesVisitor(basicTypes);
+    traverser.add4MCBasicTypes(basicTypes);
 
     MCCommonStatementsPrettyPrinter commonStatements = new MCCommonStatementsPrettyPrinter(printer);
     traverser.setMCCommonStatementsHandler(commonStatements);
-    traverser.addMCCommonStatementsVisitor(commonStatements);
+    traverser.add4MCCommonStatements(commonStatements);
 
     MCVarDeclarationStatementsPrettyPrinter varDecl = new MCVarDeclarationStatementsPrettyPrinter(printer);
     traverser.setMCVarDeclarationStatementsHandler(varDecl);
-    traverser.addMCVarDeclarationStatementsVisitor(varDecl);
+    traverser.add4MCVarDeclarationStatements(varDecl);
 
     MCBasicsPrettyPrinter basics = new MCBasicsPrettyPrinter(printer);
-    traverser.addMCBasicsVisitor(basics);
+    traverser.add4MCBasics(basics);
 
     MCSynchronizedStatementsPrettyPrinter synchronizedStatements = new MCSynchronizedStatementsPrettyPrinter(printer);
     traverser.setMCSynchronizedStatementsHandler(synchronizedStatements);
-    traverser.addMCSynchronizedStatementsVisitor(synchronizedStatements);
+    traverser.add4MCSynchronizedStatements(synchronizedStatements);
   }
 
   public String prettyprint(ASTMCSynchronizedStatementsNode a) {

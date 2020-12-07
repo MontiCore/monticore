@@ -25,15 +25,15 @@ public class JavaClassExpressionsFullPrettyPrinter extends CommonExpressionsFull
     this.traverser = JavaClassExpressionsMill.traverser();
     CommonExpressionsPrettyPrinter commonExpression = new CommonExpressionsPrettyPrinter(printer);
     traverser.setCommonExpressionsHandler(commonExpression);
-    traverser.addCommonExpressionsVisitor(commonExpression);
+    traverser.add4CommonExpressions(commonExpression);
     ExpressionsBasisPrettyPrinter expressionBasis = new ExpressionsBasisPrettyPrinter(printer);
     traverser.setExpressionsBasisHandler(expressionBasis);
-    traverser.addExpressionsBasisVisitor(expressionBasis);
+    traverser.add4ExpressionsBasis(expressionBasis);
     JavaClassExpressionsPrettyPrinter javaClassExpression = new JavaClassExpressionsPrettyPrinter(printer);
     traverser.setJavaClassExpressionsHandler(javaClassExpression);
-    traverser.addJavaClassExpressionsVisitor(javaClassExpression);
+    traverser.add4JavaClassExpressions(javaClassExpression);
     MCBasicsPrettyPrinter basic = new MCBasicsPrettyPrinter(printer);
-    traverser.addMCBasicsVisitor(basic);
+    traverser.add4MCBasics(basic);
   }
 
   public String prettyprint(ASTGenericInvocationSuffix node){

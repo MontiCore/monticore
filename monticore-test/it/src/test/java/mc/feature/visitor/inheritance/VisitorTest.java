@@ -27,9 +27,9 @@ public class VisitorTest extends GeneratorIntegrationsTest {
   public void testSimple() {
     CTraverser traverser = CMill.traverser();
     SimpleVisitor v = new SimpleVisitor();
-    traverser.addAVisitor(v);
-    traverser.addBVisitor(v);
-    traverser.addCVisitor(v);
+    traverser.add4A(v);
+    traverser.add4B(v);
+    traverser.add4C(v);
     
     traverser.handle(AMill.xABuilder().build());
     assertEquals("A", v.getRun());

@@ -15,14 +15,14 @@ public class MCArrayTypesFullPrettyPrinter extends MCBasicTypesFullPrettyPrinter
 
     MCArrayTypesPrettyPrinter arrayTypes = new MCArrayTypesPrettyPrinter(printer);
     traverser.setMCArrayTypesHandler(arrayTypes);
-    traverser.addMCArrayTypesVisitor(arrayTypes);
+    traverser.add4MCArrayTypes(arrayTypes);
 
     MCBasicTypesPrettyPrinter basicTypes = new MCBasicTypesPrettyPrinter(printer);
     traverser.setMCBasicTypesHandler(basicTypes);
-    traverser.addMCBasicTypesVisitor(basicTypes);
+    traverser.add4MCBasicTypes(basicTypes);
 
     MCBasicsPrettyPrinter basics = new MCBasicsPrettyPrinter(printer);
-    traverser.addMCBasicsVisitor(basics);
+    traverser.add4MCBasics(basics);
   }
 
   public MCArrayTypesTraverser getTraverser() {

@@ -17,7 +17,7 @@ import static de.monticore.types.check.SymTypeExpressionFactory.createTypeObject
  * i.e. for
  *    types/MCBasicTypes.mc4
  */
-public class SynthesizeSymTypeFromMCBasicTypes extends AbstractSynthesizeFromType implements MCBasicTypesVisitor2, MCBasicTypesHandler, ISynthesize {
+public class SynthesizeSymTypeFromMCBasicTypes extends AbstractSynthesizeFromType implements MCBasicTypesVisitor2, MCBasicTypesHandler {
 
   protected MCBasicTypesTraverser traverser;
 

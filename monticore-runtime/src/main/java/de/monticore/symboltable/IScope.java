@@ -2,6 +2,7 @@
 package de.monticore.symboltable;
 
 import com.google.common.collect.FluentIterable;
+import com.google.common.collect.Lists;
 import de.monticore.ast.ASTNode;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.modifiers.IncludesAccessModifierSymbolPredicate;
@@ -83,9 +84,9 @@ public interface IScope {
 
   boolean isPresentName();
 
-  default String getRemainingNameForResolveDown(String symbolName) {
+  default List<String> getRemainingNameForResolveDown(String symbolName) {
     final FluentIterable<String> nameParts = getNameParts(symbolName);
-    return (nameParts.size() > 1) ? DOT.join(nameParts.skip(1)) : symbolName;
+    return Lists.newArrayList((nameParts.size() > 1) ? DOT.join(nameParts.skip(1)) : symbolName);
   }
 
   default FluentIterable<String> getNameParts(String symbolName) {

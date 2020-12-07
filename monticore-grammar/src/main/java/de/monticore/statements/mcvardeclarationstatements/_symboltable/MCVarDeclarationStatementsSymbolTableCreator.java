@@ -78,27 +78,10 @@ public class MCVarDeclarationStatementsSymbolTableCreator extends MCVarDeclarati
   }
 
   private SymTypeExpression createTypeLoader(ASTMCType ast) {
-    SynthesizeSymTypeFromMCFullGenericTypes synFromFull = new SynthesizeSymTypeFromMCFullGenericTypes();
+    FullSynthesizeFromMCFullGenericTypes synFromFull = new FullSynthesizeFromMCFullGenericTypes();
     // Start visitor
-    ast.accept(getSynthesizer(synFromFull));
+    ast.accept(synFromFull.getTraverser());
     return synFromFull.getResult().orElse(new SymTypeOfNull());
-  }
-
-  private MCFullGenericTypesTraverser getSynthesizer(SynthesizeSymTypeFromMCFullGenericTypes synFromFull){
-    SynthesizeSymTypeFromMCSimpleGenericTypes synFromSimple = new SynthesizeSymTypeFromMCSimpleGenericTypes();
-    SynthesizeSymTypeFromMCCollectionTypes synFromCollection = new SynthesizeSymTypeFromMCCollectionTypes();
-    SynthesizeSymTypeFromMCBasicTypes synFromBasic = new SynthesizeSymTypeFromMCBasicTypes();
-
-    MCFullGenericTypesTraverser traverser = MCFullGenericTypesMill.traverser();
-    traverser.addMCFullGenericTypesVisitor(synFromFull);
-    traverser.setMCFullGenericTypesHandler(synFromFull);
-    traverser.addMCSimpleGenericTypesVisitor(synFromSimple);
-    traverser.setMCSimpleGenericTypesHandler(synFromSimple);
-    traverser.addMCCollectionTypesVisitor(synFromCollection);
-    traverser.setMCCollectionTypesHandler(synFromCollection);
-    traverser.addMCBasicTypesVisitor(synFromBasic);
-    traverser.setMCBasicTypesHandler(synFromBasic);
-    return traverser;
   }
 
 }
