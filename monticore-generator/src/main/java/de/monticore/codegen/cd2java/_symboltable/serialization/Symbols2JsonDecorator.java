@@ -159,7 +159,7 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
     List<ASTCDType> symbolProdsIncludingInherited = new ArrayList<>(symbolProds);
     symbolProdsIncludingInherited.addAll(symbolTableService.getSymbolDefiningSuperProds());
     Map<String, String> kindHierarchy = SymbolKindHierarchyCollector.calculateKindHierarchy(symbolProdsIncludingInherited, symbolTableService);
-    HookPoint hp = new TemplateHookPoint(TEMPLATE_PATH + "symbolTablePrinter.PrintKindHierarchy",
+    HookPoint hp = new TemplateHookPoint(TEMPLATE_PATH + "symbols2Json.PrintKindHierarchy",
             kindHierarchy);
     this.replaceTemplate(EMPTY_BODY, method, hp);
     return method;
@@ -185,7 +185,7 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
     for (ASTCDClass scopeClass : scopeCD.getCDDefinition().getCDClassList()) {
       ASTCDMethod visitMethod = visitorService.getVisitorMethod(VISIT, getMCTypeFacade().createQualifiedType(scopeInterfaceName));
       this.replaceTemplate(EMPTY_BODY, visitMethod, new TemplateHookPoint(TEMPLATE_PATH
-              + "symbolTablePrinter.VisitScope4STP", scopeInterfaceName, scopeClass.getName(), scopeClass.getCDAttributeList()));
+              + "symbols2Json.VisitScope4STP", scopeInterfaceName, scopeClass.getName(), scopeClass.getCDAttributeList()));
       visitorMethods.add(visitMethod);
 
       ASTCDMethod endVisitMethod = visitorService.getVisitorMethod(END_VISIT, getMCTypeFacade().createQualifiedType(scopeInterfaceName));
@@ -200,7 +200,7 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
     for (ASTCDClass artScopeClass : scopeTypes) {
       ASTCDMethod visitMethod = visitorService.getVisitorMethod(VISIT, getMCTypeFacade().createQualifiedType(artifactScopeInterfaceName));
       this.replaceTemplate(EMPTY_BODY, visitMethod, new TemplateHookPoint(TEMPLATE_PATH
-              + "symbolTablePrinter.VisitArtifactScope", artifactScopeInterfaceName, artScopeClass.getName(), artScopeClass.getCDAttributeList()));
+              + "symbols2Json.VisitArtifactScope", artifactScopeInterfaceName, artScopeClass.getName(), artScopeClass.getCDAttributeList()));
       visitorMethods.add(visitMethod);
 
       ASTCDMethod endVisitMethod = visitorService
@@ -219,7 +219,7 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
       String kind = symbolTableService.getSymbolFullName(symbolProd);
       ASTCDMethod visitMethod = visitorService.getVisitorMethod(VISIT, getMCTypeFacade().createQualifiedType(symbolFullName));
       this.replaceTemplate(EMPTY_BODY, visitMethod,
-              new TemplateHookPoint(TEMPLATE_PATH + "symbolTablePrinter.VisitSymbol", kind, symbolProd.getName(), symbolProd.getCDAttributeList()));
+              new TemplateHookPoint(TEMPLATE_PATH + "symbols2Json.VisitSymbol", kind, symbolProd.getName(), symbolProd.getCDAttributeList()));
       visitorMethods.add(visitMethod);
 
       ASTCDMethod endVisitMethod = visitorService.getVisitorMethod(END_VISIT, getMCTypeFacade().createQualifiedType(symbolFullName));
@@ -227,7 +227,7 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
       visitorMethods.add(endVisitMethod);
       if (symbolTableService.hasSymbolSpannedScope(symbolProd)) {
         ASTCDMethod traverseMethod = visitorService.getVisitorMethod(TRAVERSE, getMCTypeFacade().createQualifiedType(symbolFullName));
-        this.replaceTemplate(EMPTY_BODY, traverseMethod, new TemplateHookPoint(TEMPLATE_PATH + "symbolTablePrinter.TraverseSymbol"));
+        this.replaceTemplate(EMPTY_BODY, traverseMethod, new TemplateHookPoint(TEMPLATE_PATH + "symbols2Json.TraverseSymbol"));
         visitorMethods.add(traverseMethod);
       }
     }
@@ -299,7 +299,7 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
         serializeAsList(serializeAttrMethod, attr);
       } else if (isSerializedAsOptional(attr)) {
         this.replaceTemplate(EMPTY_BODY, serializeAttrMethod, new TemplateHookPoint(TEMPLATE_PATH
-                + "symbolTablePrinter.SerializeOptAttribute", attr));
+                + "symbols2Json.SerializeOptAttribute", attr));
       } else {
         this.replaceTemplate(EMPTY_BODY, serializeAttrMethod, new TemplateHookPoint(
                 TEMPLATE_PATH + "PrintSimpleAttribute", attr.getName(), attr.getName()));
@@ -314,7 +314,7 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
 
   protected void serializeAsList(ASTCDMethod method, ASTCDAttribute attr) {
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH
-            + "symbolTablePrinter.SerializeSimpleListAttribute", attr.getName()));
+            + "symbols2Json.SerializeSimpleListAttribute", attr.getName()));
   }
 
   protected boolean isAutoSerialized(ASTCDAttribute attr) {
@@ -390,7 +390,7 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
     ASTCDMethod loadMethod = getCDMethodFacade()
             .createMethod(PUBLIC, returnType, "load", parameter);
     this.replaceTemplate(EMPTY_BODY, loadMethod,
-            new TemplateHookPoint("_symboltable.serialization.symbolTablePrinter.Load",
+            new TemplateHookPoint(TEMPLATE_PATH + "symbols2Json.Load",
                     parameterInvocation, deSerFullName));
     return loadMethod;
   }
@@ -401,7 +401,7 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
     ASTCDParameter fileNameParam = getCDParameterFacade()
             .createParameter(getMCTypeFacade().createStringType(), "fileName");
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createStringType(), "store", artifactScopeParam, fileNameParam);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_symboltable.serialization.symbolTablePrinter.Store", deSerFullName));
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "symbols2Json.Store", deSerFullName));
     return method;
   }
 
