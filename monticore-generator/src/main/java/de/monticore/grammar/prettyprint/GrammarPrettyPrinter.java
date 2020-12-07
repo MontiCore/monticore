@@ -3,7 +3,9 @@
 package de.monticore.grammar.prettyprint;
 
 import de.monticore.grammar.grammar._ast.*;
-import de.monticore.grammar.grammar._visitor.GrammarVisitor;
+import de.monticore.grammar.grammar._visitor.GrammarHandler;
+import de.monticore.grammar.grammar._visitor.GrammarTraverser;
+import de.monticore.grammar.grammar._visitor.GrammarVisitor2;
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCBasicTypesNode;
@@ -12,22 +14,17 @@ import de.se_rwth.commons.Names;
 
 import java.util.Iterator;
 
-public class GrammarPrettyPrinter
-    implements GrammarVisitor {
+public class GrammarPrettyPrinter implements GrammarVisitor2, GrammarHandler {
 
   private final String QUOTE = "\"";
 
-  private GrammarVisitor realThis = this;
+  protected GrammarTraverser traverser;
+  
+  protected IndentPrinter printer;
 
-  private IndentPrinter getPrinter() {
-    return out;
-  }
-
-  private IndentPrinter out;
-
-  public GrammarPrettyPrinter(IndentPrinter out) {
-    this.out = out;
-    out.setIndentLength(2);
+  public GrammarPrettyPrinter(IndentPrinter printer) {
+    this.printer = printer;
+    printer.setIndentLength(2);
   }
 
   @Override
@@ -47,7 +44,7 @@ public class GrammarPrettyPrinter
       print(" {");
       getPrinter().println();
       getPrinter().indent();
-      a.getExpressionPredicate().accept(getRealThis());
+      a.getExpressionPredicate().accept(getTraverser());
       getPrinter().unindent();
       print("}");
       print(" ?");
@@ -56,7 +53,7 @@ public class GrammarPrettyPrinter
       print(" {");
       getPrinter().println();
       getPrinter().indent();
-      a.getAction().accept(getRealThis());
+      a.getAction().accept(getTraverser());
       getPrinter().unindent();
       print("}");
     }
@@ -77,7 +74,7 @@ public class GrammarPrettyPrinter
     getPrinter().print(a.getName());
 
     if (a.isPresentMCType()) {
-      a.getMCType().accept(getRealThis());
+      a.getMCType().accept(getTraverser());
     }
     getPrinter().print(";");
     CommentPrettyPrinter.printPostComments(a, getPrinter());
@@ -140,7 +137,7 @@ public class GrammarPrettyPrinter
     if (a.isPresentUsageName()) {
       print("" + a.getUsageName() + ":");
     }
-    a.getKeyConstant().accept(getRealThis());
+    a.getKeyConstant().accept(getTraverser());
     outputIteration(a.getIteration());
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
@@ -163,7 +160,7 @@ public class GrammarPrettyPrinter
     if (a.isPresentUsageName()) {
       print("" + a.getUsageName() + ":");
     }
-    a.getTokenConstant().accept(getRealThis());
+    a.getTokenConstant().accept(getTraverser());
     outputIteration(a.getIteration());
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
@@ -221,7 +218,7 @@ public class GrammarPrettyPrinter
       print(" {");
       getPrinter().println();
       getPrinter().indent();
-      a.getInitAction().accept(getRealThis());
+      a.getInitAction().accept(getTraverser());
       getPrinter().unindent();
       print("}");
     }
@@ -250,7 +247,7 @@ public class GrammarPrettyPrinter
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     println("concept " + a.getName() + "{ ");
 
-    a.getConcept().accept(getRealThis());
+    a.getConcept().accept(getTraverser());
 
     CommentPrettyPrinter.printPostComments(a, getPrinter());
     println("}");
@@ -268,9 +265,9 @@ public class GrammarPrettyPrinter
       print(a.getUsageName() + ":");
     }
     if (a.isPresentKeyConstant()) {
-      a.getKeyConstant().accept(getRealThis());
+      a.getKeyConstant().accept(getTraverser());
     }else if (a.isPresentTokenConstant()) {
-      a.getTokenConstant().accept(getRealThis());
+      a.getTokenConstant().accept(getTraverser());
     } else {
       print(QUOTE + a.getName() + QUOTE);
     }
@@ -308,7 +305,7 @@ public class GrammarPrettyPrinter
       getPrinter().print(" <rightassoc> ");
     }
     if (a.isPresentGrammarAnnotation()) {
-      a.getGrammarAnnotation().accept(getRealThis());
+      a.getGrammarAnnotation().accept(getTraverser());
     }
     printList(a.getComponentList().iterator(), " ");
     CommentPrettyPrinter.printPostComments(a, getPrinter());
@@ -330,7 +327,7 @@ public class GrammarPrettyPrinter
       String comma = "";
       for (ASTRuleReference x : a.getSuperInterfaceRuleList()) {
         getPrinter().print(comma);
-        x.accept(getRealThis());
+        x.accept(getTraverser());
         comma = ", ";
       }
     }
@@ -340,7 +337,7 @@ public class GrammarPrettyPrinter
       String comma = "";
       for (ASTMCType x : a.getASTSuperInterfaceList()) {
         getPrinter().print(comma);
-        x.accept(getRealThis());
+        x.accept(getTraverser());
         comma = ", ";
       }
     }
@@ -370,7 +367,7 @@ public class GrammarPrettyPrinter
     String sep = "";
     for (ASTConstant ref : a.getConstantList()) {
       print(sep);
-      ref.accept(getRealThis());
+      ref.accept(getTraverser());
       sep = " | ";
     }
     getPrinter().print(" ");
@@ -394,7 +391,7 @@ public class GrammarPrettyPrinter
       String comma = "";
       for (ASTMCType x : a.getASTSuperClassList()) {
         getPrinter().print(comma);
-        x.accept(getRealThis());
+        x.accept(getTraverser());
         comma = ", ";
       }
     }
@@ -404,7 +401,7 @@ public class GrammarPrettyPrinter
       String comma = "";
       for (ASTMCType x : a.getASTSuperInterfaceList()) {
         getPrinter().print(comma);
-        x.accept(getRealThis());
+        x.accept(getTraverser());
         comma = ", ";
       }
     }
@@ -436,7 +433,7 @@ public class GrammarPrettyPrinter
       String comma = "";
       for (ASTMCType x : a.getSuperClassList()) {
         getPrinter().print(comma);
-        x.accept(getRealThis());
+        x.accept(getTraverser());
         comma = ", ";
       }
     }
@@ -446,7 +443,7 @@ public class GrammarPrettyPrinter
       String comma = "";
       for (ASTMCType x : a.getSuperInterfaceList()) {
         getPrinter().print(comma);
-        x.accept(getRealThis());
+        x.accept(getTraverser());
         comma = ", ";
       }
     }
@@ -477,7 +474,7 @@ public class GrammarPrettyPrinter
       String comma = "";
       for (ASTMCType x : a.getSuperClassList()) {
         getPrinter().print(comma);
-        x.accept(getRealThis());
+        x.accept(getTraverser());
         comma = ", ";
       }
     }
@@ -487,7 +484,7 @@ public class GrammarPrettyPrinter
       String comma = "";
       for (ASTMCType x : a.getSuperInterfaceList()) {
         getPrinter().print(comma);
-        x.accept(getRealThis());
+        x.accept(getTraverser());
         comma = ", ";
       }
     }
@@ -529,14 +526,14 @@ public class GrammarPrettyPrinter
       print("protected ");
     }
 
-    a.getMCReturnType().accept(getRealThis());
+    a.getMCReturnType().accept(getTraverser());
 
     print(" " + a.getName() + "(");
 
     String comma = "";
     for (ASTMethodParameter x : a.getMethodParameterList()) {
       getPrinter().print(comma);
-      x.getType().accept(getRealThis());
+      x.getType().accept(getTraverser());
       getPrinter().print(" " + x.getName());
       comma = ", ";
     }
@@ -549,7 +546,7 @@ public class GrammarPrettyPrinter
       comma = "";
       for (ASTMCType x : a.getExceptionList()) {
         getPrinter().print(comma);
-        x.accept(getRealThis());
+        x.accept(getTraverser());
         comma = ", ";
       }
 
@@ -559,7 +556,7 @@ public class GrammarPrettyPrinter
     print(" {");
     getPrinter().println();
     getPrinter().indent();
-    a.getBody().accept(getRealThis());
+    a.getBody().accept(getTraverser());
     getPrinter().unindent();
     print("}");
 
@@ -594,7 +591,7 @@ public class GrammarPrettyPrinter
 
   @Override
   public void visit(ASTMethodParameter a) {
-    a.accept(getRealThis());
+    a.accept(getTraverser());
     print(a.getName());
   }
 
@@ -605,7 +602,7 @@ public class GrammarPrettyPrinter
       getPrinter().print(a.getName());
       getPrinter().print(":");
     }
-    a.getMCType().accept(getRealThis());
+    a.getMCType().accept(getTraverser());
     if (a.isPresentCard()) {
       ASTCard card = a.getCard();
       if (card.getIteration() != ASTConstantsGrammar.DEFAULT) {
@@ -658,7 +655,7 @@ public class GrammarPrettyPrinter
       print(" {");
       getPrinter().println();
       getPrinter().indent();
-      a.getAction().accept(getRealThis());
+      a.getAction().accept(getTraverser());
       getPrinter().unindent();
       print("}");
     }
@@ -696,13 +693,13 @@ public class GrammarPrettyPrinter
     getPrinter().indent();
 
     if (a.isPresentLexOption()) {
-      a.getLexOption().accept(getRealThis());
+      a.getLexOption().accept(getTraverser());
     }
     if (a.isPresentInitAction()) {
       print(" {");
       getPrinter().println();
       getPrinter().indent();
-      a.getInitAction().accept(getRealThis());
+      a.getInitAction().accept(getTraverser());
       getPrinter().unindent();
       print("}");
     }
@@ -723,7 +720,7 @@ public class GrammarPrettyPrinter
         print(" {");
         getPrinter().println();
         getPrinter().indent();
-        a.getEndAction().accept(getRealThis());
+        a.getEndAction().accept(getTraverser());
         getPrinter().unindent();
         print("}");
       }
@@ -741,7 +738,7 @@ public class GrammarPrettyPrinter
               print(" {");
               getPrinter().println();
               getPrinter().indent();
-              a.getBlock().accept(getRealThis());
+              a.getBlock().accept(getTraverser());
               getPrinter().unindent();
               print("}");
             }
@@ -783,7 +780,7 @@ public class GrammarPrettyPrinter
       print(" {");
       getPrinter().println();
       getPrinter().indent();
-      a.getInitAction().accept(getRealThis());
+      a.getInitAction().accept(getTraverser());
       getPrinter().unindent();
       print("}");
     }
@@ -814,7 +811,7 @@ public class GrammarPrettyPrinter
     CommentPrettyPrinter.printPreComments(a, getPrinter());
 
     if (a.isPresentGrammarAnnotation()) {
-      a.getGrammarAnnotation().accept(getRealThis());
+      a.getGrammarAnnotation().accept(getTraverser());
     }
 
     if (!a.getPackageList().isEmpty()) {
@@ -840,7 +837,7 @@ public class GrammarPrettyPrinter
     println(" {");
     getPrinter().indent();
     if (a.isPresentGrammarOption()) {
-      a.getGrammarOption().accept(getRealThis());
+      a.getGrammarOption().accept(getTraverser());
     }
     printList(a.getLexProdList().iterator(), "");
     printList(a.getClassProdList().iterator(), "");
@@ -851,11 +848,11 @@ public class GrammarPrettyPrinter
     printList(a.getASTRuleList().iterator(), "");
     printList(a.getConceptList().iterator(), "");
     if (a.isPresentStartRule()) {
-      a.getStartRule().accept(getRealThis());
+      a.getStartRule().accept(getTraverser());
     }
     printList(a.getSymbolRuleList().iterator(), "");
     if (a.isPresentScopeRule()) {
-      a.getScopeRule().accept(getRealThis());
+      a.getScopeRule().accept(getTraverser());
     }
 
     getPrinter().unindent();
@@ -906,7 +903,7 @@ public class GrammarPrettyPrinter
     String sep = "";
     for (ASTLexComponent c : a.getLexComponentList()) {
       print(sep);
-      c.accept(getRealThis());
+      c.accept(getTraverser());
       sep = " ";
     }
     CommentPrettyPrinter.printPostComments(a, getPrinter());
@@ -951,7 +948,7 @@ public class GrammarPrettyPrinter
   @Override
   public void handle(ASTRuleReference a) {
     if (a.isPresentSemanticpredicateOrAction()) {
-      a.getSemanticpredicateOrAction().accept(getRealThis());
+      a.getSemanticpredicateOrAction().accept(getTraverser());
     }
     getPrinter().print(a.getName());
     if (a.isPresentPrio()) {
@@ -983,7 +980,7 @@ public class GrammarPrettyPrinter
     print(" {");
     getPrinter().println();
     getPrinter().indent();
-    a.getExpressionPredicate().accept(getRealThis());
+    a.getExpressionPredicate().accept(getTraverser());
     getPrinter().unindent();
     print("}");
 
@@ -1064,7 +1061,7 @@ public class GrammarPrettyPrinter
   public void handle(ASTFollowOption a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     print("follow " + a.getProdName() + " ");
-    a.getAlt().accept(getRealThis());
+    a.getAlt().accept(getTraverser());
     println(";");
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
@@ -1120,24 +1117,8 @@ public class GrammarPrettyPrinter
 
   public String prettyprint(ASTGrammarNode a) {
     getPrinter().clearBuffer();
-    a.accept(getRealThis());
+    a.accept(getTraverser());
     return getPrinter().getContent();
-  }
-
-  /**
-   * @see de.monticore.grammar.grammar._visitor.GrammarVisitor#setRealThis(de.monticore.grammar.grammar._visitor.GrammarVisitor)
-   */
-  @Override
-  public void setRealThis(GrammarVisitor realThis) {
-    this.realThis = realThis;
-  }
-
-  /**
-   * @see de.monticore.grammar.grammar._visitor.GrammarVisitor#getRealThis()
-   */
-  @Override
-  public GrammarVisitor getRealThis() {
-    return realThis;
   }
 
   /**
@@ -1151,7 +1132,7 @@ public class GrammarPrettyPrinter
     String sep = "";
     while (iter.hasNext()) {
       getPrinter().print(sep);
-      iter.next().accept(getRealThis());
+      iter.next().accept(getTraverser());
       sep = seperator;
     }
   }
@@ -1166,9 +1147,27 @@ public class GrammarPrettyPrinter
     String sep = "";
     while (iter.hasNext()) {
       getPrinter().print(sep);
-      iter.next().accept(getRealThis());
+      iter.next().accept(getTraverser());
       sep = seperator;
     }
+  }
+
+  @Override
+  public GrammarTraverser getTraverser() {
+    return traverser;
+  }
+
+  @Override
+  public void setTraverser(GrammarTraverser traverser) {
+    this.traverser = traverser;
+  }
+
+  public IndentPrinter getPrinter() {
+    return printer;
+  }
+
+  public void setPrinter(IndentPrinter printer) {
+    this.printer = printer;
   }
 
 }

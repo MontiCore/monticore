@@ -1,39 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._visitor;
 
-import static de.monticore.cd.facade.CDModifier.PUBLIC;
-import static de.monticore.codegen.cd2java.CoreTemplates.ANNOTATIONS;
-import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
-import static de.monticore.codegen.cd2java.CoreTemplates.createAnnotationsHookPoint;
-import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_INTERFACE;
-import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SCOPE;
-import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SYMBOL;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.END_VISIT;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.GET_REAL_THIS;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.HANDLE;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.HANDLE_TEMPLATE;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.REAL_THIS;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.SET_REAL_THIS;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.TRAVERSE;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.TRAVERSE_SCOPE_TEMPLATE;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.TRAVERSE_TEMPLATE;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISIT;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDDefinition;
-import de.monticore.cd.cd4analysis._ast.ASTCDEnum;
-import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
-import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
-import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
-import de.monticore.cd.cd4analysis._ast.ASTModifier;
+import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
+import de.monticore.cd.cd4code.CD4CodeFullPrettyPrinter;
 import de.monticore.cd.cd4code.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
@@ -44,7 +14,15 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.prettyprint.MCSimpleGenericTypesPrettyPrinter;
+
+import java.util.*;
+
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java.CoreTemplates.*;
+import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_INTERFACE;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SCOPE;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SYMBOL;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
 
 /**
  * creates a Visitor interface from a grammar
@@ -138,7 +116,7 @@ public class VisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
     ASTCDParameter visitorParameter = getCDParameterFacade().createParameter(visitorType, REAL_THIS);
     ASTCDMethod setRealThis = this.getCDMethodFacade().createMethod(PUBLIC, SET_REAL_THIS, visitorParameter);
     String generatedErrorCode = visitorService.getGeneratedErrorCode(visitorType.printType(
-        new MCSimpleGenericTypesPrettyPrinter(new IndentPrinter())) + SET_REAL_THIS);
+        new CD4CodeFullPrettyPrinter(new IndentPrinter())) + SET_REAL_THIS);
     this.replaceTemplate(EMPTY_BODY, setRealThis, new StringHookPoint(
         "    throw new UnsupportedOperationException(\"0xA7011"+generatedErrorCode+" The setter for realThis is " +
             "not implemented. You might want to implement a wrapper class to allow setting/getting realThis.\");\n"));

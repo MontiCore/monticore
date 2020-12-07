@@ -1,8 +1,11 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 # Release Notes
 
-##  MontiCore 6.6.0-SNAPSHOT
+##  MontiCore 6.7.0-SNAPSHOT
 to be released
+
+##  MontiCore 6.6.0
+released: 03.12.2020
 
 ### Additions
 * The mill of a language now provides a method `parser()` to get the parser of the language 
@@ -35,6 +38,7 @@ to be released
   * if name of a topLevelSymbol in ArtifactScope != name of ArtifactScope: qualify symbols in spanned scope of the topLevelSymbol with `<ArtifactScopeName>.<topLevelSymbolName>.<symbolName>` 
 * Traverser now support lists of `Visitor2` interfaces instead of only one instance
 * Rename accessor of Traverser from `addXVisitor` to `add4X` 
+* Methods returning referenced symbols save the symbols instead of the surroogates
 
 ### Fixes
 * Traverser now properly delegate to handlers as intended
@@ -43,7 +47,7 @@ to be released
 * The clear method of the GlobalScope now deletes all symbols stored in the GlobalScope
 * Serializing symbolrule attributes of Strings now works properly
 
-##  MontiCore 6.5.0
+##  MontiCore 6.6.0
 released: 11.11.2020
 
 ### Additions
@@ -343,7 +347,11 @@ released: 07.05.2020
 
 ## Further Information
 
-* [MontiCore project](../../README.md) - MontiCore
 * [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
 * [MontiCore documentation](http://www.monticore.de/)
+* [**List of languages**](https://github.com/MontiCore/monticore/blob/dev/docs/Languages.md)
+* [**MontiCore Core Grammar Library**](https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
+* [Best Practices](https://github.com/MontiCore/monticore/blob/dev/docs/BestPractices.md)
+* [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
+* [Licence definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
 

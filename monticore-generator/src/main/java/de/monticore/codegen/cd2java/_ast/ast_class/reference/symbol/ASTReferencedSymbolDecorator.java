@@ -1,7 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast.ast_class.reference.symbol;
 
-import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
+import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
+import de.monticore.cd.cd4analysis._ast.ASTCDType;
+import de.monticore.cd.cd4analysis._ast.ASTModifier;
 import de.monticore.codegen.cd2java.AbstractTransformer;
 import de.monticore.codegen.cd2java._ast.ast_class.reference.symbol.methoddecorator.ReferencedSymbolAccessorDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
@@ -12,6 +15,7 @@ import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.utils.Names;
 import de.se_rwth.commons.StringTransformations;
 
 import java.util.ArrayList;
@@ -21,7 +25,6 @@ import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
-import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SURROGATE_SUFFIX;
 
 /**
  * is a transforming class for the ast generation
@@ -53,16 +56,20 @@ public class ASTReferencedSymbolDecorator<T extends ASTCDType> extends AbstractT
     for (ASTCDAttribute astcdAttribute : originalClass.getCDAttributeList()) {
       if (symbolTableService.isReferencedSymbol(astcdAttribute)) {
         String referencedSymbolType = symbolTableService.getReferencedSymbolTypeName(astcdAttribute);
+        String simpleSymbolName = Names.getSimpleName(referencedSymbolType);
+        if (simpleSymbolName.endsWith(SYMBOL)) {
+          simpleSymbolName = simpleSymbolName.substring(0, simpleSymbolName.length()-6);
+        }
         //create referenced symbol attribute and methods
         ASTCDAttribute refSymbolAttribute = getRefSymbolAttribute(astcdAttribute, referencedSymbolType);
         attributeList.add(refSymbolAttribute);
 
         methodList.addAll(getRefSymbolMethods(astcdAttribute, referencedSymbolType));
         if (!getDecorationHelper().isListType(astcdAttribute.printType())) {
-          methodList.add(getUpdateLoaderAttribute(refSymbolAttribute, astcdAttribute.getName(),
+          methodList.add(getUpdateLoaderAttribute(refSymbolAttribute, astcdAttribute.getName(), simpleSymbolName,
               getDecorationHelper().isOptional(astcdAttribute.printType())));
         } else {
-          methodList.add(getUpdateLoaderListAttribute(refSymbolAttribute.getName(), referencedSymbolType, astcdAttribute.getName()));
+          methodList.add(getUpdateLoaderListAttribute(refSymbolAttribute.getName(), astcdAttribute.getName(), simpleSymbolName));
         }
       }
     }
@@ -80,16 +87,16 @@ public class ASTReferencedSymbolDecorator<T extends ASTCDType> extends AbstractT
     //add referenced Symbol modifier that it can later be distinguished
     TransformationHelper.addStereotypeValue(modifier, MC2CDStereotypes.REFERENCED_SYMBOL_ATTRIBUTE.toString());
 
-    ASTMCQualifiedType symbolLoaderType = getMCTypeFacade().createQualifiedType(referencedSymbol + SURROGATE_SUFFIX);
+    ASTMCQualifiedType symbolLoaderType = getMCTypeFacade().createQualifiedType(referencedSymbol );
     if (getDecorationHelper().isListType(attribute.printType())) {
       //if the attribute is a list
       ASTMCType attributeType = getMCTypeFacade().createMapTypeOf(getMCTypeFacade().createStringType(), symbolLoaderType);
-      ASTCDAttribute symbolAttribute = this.getCDAttributeFacade().createAttribute(modifier, attributeType, attribute.getName() + SYMBOL + SURROGATE_SUFFIX);
+      ASTCDAttribute symbolAttribute = this.getCDAttributeFacade().createAttribute(modifier, attributeType, attribute.getName() + SYMBOL);
       replaceTemplate(VALUE, symbolAttribute, new StringHookPoint("= new HashMap<>()"));
       return symbolAttribute;
     } else {
       //if the attribute is mandatory or optional
-      return this.getCDAttributeFacade().createAttribute(modifier, symbolLoaderType, attribute.getName() + SYMBOL + SURROGATE_SUFFIX);
+      return this.getCDAttributeFacade().createAttribute(modifier, symbolLoaderType, attribute.getName() + SYMBOL);
     }
   }
 
@@ -114,19 +121,19 @@ public class ASTReferencedSymbolDecorator<T extends ASTCDType> extends AbstractT
   }
 
 
-  protected ASTCDMethod getUpdateLoaderAttribute(ASTCDAttribute loaderAttribute, String nameAttributeName, boolean wasOptional) {
+  protected ASTCDMethod getUpdateLoaderAttribute(ASTCDAttribute loaderAttribute, String nameAttributeName, String simpleName, boolean wasOptional) {
     ASTCDMethod updateLoaderMethod = getCDMethodFacade().createMethod(PROTECTED, "update" +
         StringTransformations.capitalize(loaderAttribute.getName()));
     replaceTemplate(EMPTY_BODY, updateLoaderMethod, new TemplateHookPoint("_ast.ast_class.refSymbolMethods.UpdateLoader",
-        loaderAttribute.getName(), getDecorationHelper().getNativeAttributeName(nameAttributeName), loaderAttribute.printType(), wasOptional));
+        loaderAttribute.getName(), getDecorationHelper().getNativeAttributeName(nameAttributeName), simpleName, wasOptional));
     return updateLoaderMethod;
   }
 
-  protected ASTCDMethod getUpdateLoaderListAttribute(String referencedAttributeName, String referencedAttributeType, String nameAttributeName) {
+  protected ASTCDMethod getUpdateLoaderListAttribute(String referencedAttributeName, String nameAttributeName, String simpleName) {
     ASTCDMethod updateLoaderMethod = getCDMethodFacade().createMethod(PROTECTED, "update" +
         StringTransformations.capitalize(referencedAttributeName));
     replaceTemplate(EMPTY_BODY, updateLoaderMethod, new TemplateHookPoint("_ast.ast_class.refSymbolMethods.UpdateLoaderList",
-        referencedAttributeName, nameAttributeName, referencedAttributeType + SURROGATE_SUFFIX));
+        referencedAttributeName, nameAttributeName, simpleName));
     return updateLoaderMethod;
   }
 

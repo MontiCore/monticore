@@ -125,12 +125,12 @@ public class SupReferenceTest {
     assertTrue(astRand.isPresent());
     ASTSupRefList supRefList = astRand.get().getSupRefList(0);
 
-    assertTrue(supRefList.getNamesDefinitionList().isEmpty());
-    assertTrue(supRefList.getNamesSymbolList().isEmpty());
+    assertEquals(3, supRefList.sizeNamesDefinition());
+    supRefList.getNamesDefinitionList().forEach(n -> assertFalse(n.isPresent()));
+    assertEquals(3,supRefList.sizeNamesSymbol());
+    supRefList.getNamesSymbolList().forEach(n -> assertFalse(n.isPresent()));
     assertFalse(supRefList.getNameList().isEmpty());
     assertEquals(supRefList.sizeNames(), 3);
-    assertEquals(supRefList.sizeNamesDefinition(), 0);
-    assertEquals(supRefList.sizeNamesSymbol(), 0);
     assertEquals("A", supRefList.getName(0));
     supRefList.setName(0, "B");
     assertEquals("B", supRefList.getName(0));

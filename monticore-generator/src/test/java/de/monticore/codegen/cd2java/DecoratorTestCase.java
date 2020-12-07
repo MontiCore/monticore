@@ -4,7 +4,6 @@ package de.monticore.codegen.cd2java;
 import de.monticore.cd.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._parser.CD4AnalysisParser;
-import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisGlobalScope;
 import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisSymbolTableCreatorDelegator;
 import de.monticore.cd.cd4analysis._symboltable.ICD4AnalysisGlobalScope;
 import de.monticore.io.paths.ModelPath;
@@ -22,9 +21,9 @@ public abstract class DecoratorTestCase {
 
   @BeforeClass
   public static void setUpDecoratorTestCase() {
-    ICD4AnalysisGlobalScope globalScope = CD4AnalysisMill.cD4AnalysisGlobalScope();
+    ICD4AnalysisGlobalScope globalScope = CD4AnalysisMill.globalScope();
     globalScope.clear();
-    globalScope.setModelFileExtension("cd");
+    globalScope.setFileExt("cd");
     globalScope.setModelPath(new ModelPath(Paths.get(MODEL_PATH)));
   }
 

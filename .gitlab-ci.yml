@@ -219,7 +219,7 @@ trigger-od-dev:
   stage: trigger_languages
   trigger:
     project: monticore/languages/od
-    branch: master
+    branch: dev
   only:
     - dev
 

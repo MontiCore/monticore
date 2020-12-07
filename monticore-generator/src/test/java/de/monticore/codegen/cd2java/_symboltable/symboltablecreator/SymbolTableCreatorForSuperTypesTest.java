@@ -20,13 +20,11 @@ import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.grammar.grammar_withconcepts._symboltable.IGrammar_WithConceptsScope;
 import de.monticore.types.MCTypeFacade;
-import de.se_rwth.commons.logging.*;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,7 +57,7 @@ public class SymbolTableCreatorForSuperTypesTest extends DecoratorTestCase {
     // LogStub.initPlusLog();  // for manual testing purpose only
 
     // reset global scope
-    ICD4AnalysisGlobalScope scope = CD4AnalysisMill.cD4AnalysisGlobalScope();
+    ICD4AnalysisGlobalScope scope = CD4AnalysisMill.globalScope();
     scope.clearLoadedFiles();
     for (ICD4AnalysisScope s : scope.getSubScopes()) {
       scope.removeSubScope(s);

@@ -1122,12 +1122,12 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   }
 
   public IGrammar_WithConceptsGlobalScope createMCGlobalScope(ModelPath modelPath) {
-    IGrammar_WithConceptsGlobalScope scope = Grammar_WithConceptsMill.grammar_WithConceptsGlobalScope();
+    IGrammar_WithConceptsGlobalScope scope = Grammar_WithConceptsMill.globalScope();
     // reset global scope
     scope.clear();
 
     // Set Fileextension and ModelPath
-    scope.setModelFileExtension("mc4");
+    scope.setFileExt("mc4");
     scope.setModelPath(modelPath);
     return (Grammar_WithConceptsGlobalScope) scope;
   }
