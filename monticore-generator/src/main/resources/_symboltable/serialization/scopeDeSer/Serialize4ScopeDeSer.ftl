@@ -1,9 +1,8 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("delegatorVisitorFullName", "symbolTablePrinters")}
-  de.monticore.symboltable.serialization.JsonPrinter printer = new de.monticore.symboltable.serialization.JsonPrinter();
-  ${delegatorVisitorFullName} symbolTablePrinter = new ${delegatorVisitorFullName}();
-<#list symbolTablePrinters?keys as p>
-  symbolTablePrinter.set${p}Visitor(new ${symbolTablePrinters[p]}(printer));
+${tc.signature("scopeAttr")}
+  de.monticore.symboltable.serialization.JsonPrinter printer = s2j.getJsonPrinter();
+  printer.member(de.monticore.symboltable.serialization.JsonDeSers.IS_SHADOWING_SCOPE, toSerialize.isShadowing());
+<#list scopeAttr as attr>
+  serialize${attr}(toSerialize, s2j);
 </#list>
-  toSerialize.accept(symbolTablePrinter);
-  return printer.getContent();
+  return printer.toString();

@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
-import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 
 /**
@@ -33,9 +32,14 @@ import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
  */
 public class ScopeDeSerDecorator extends AbstractDecorator {
 
+  //The following is a complete list of templates used by this decorator (i.e., all other templates
+  // associated with scope desers can be removed):
+  public static final String SERIALIZE_TEMPL = "_symboltable.serialization.scopeDeSer.Serialize4ScopeDeSer";
+  public static final String SERIALIZE_AS_TEMPL = "_symboltable.serialization.scopeDeSer.SerializeAS4ScopeDeSer";
+
   protected final SymbolTableService symbolTableService;
 
-  protected static final String TEMPLATE_PATH = "_symboltable.serialization.scopeDeSer.";
+//  protected static final String TEMPLATE_PATH = "_symboltable.serialization.scopeDeSer.";
 
   protected MethodDecorator methodDecorator;
 
@@ -57,6 +61,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
   public ASTCDClass decorate(ASTCDCompilationUnit scopeInput, ASTCDCompilationUnit symbolInput) {
     String scopeDeSerName = symbolTableService.getScopeDeSerSimpleName();
     String scopeInterfaceName = symbolTableService.getScopeInterfaceFullName();
+    String symbols2JsonName = symbolTableService.getSymbols2JsonFullName();
     String artifactScopeFullName = symbolTableService.getArtifactScopeFullName();
     String artifactScopeInterfaceFullName = symbolTableService.getArtifactScopeInterfaceFullName();
     String globalScopeInterfaceFullName = symbolTableService.getGlobalScopeInterfaceFullName();
@@ -66,20 +71,27 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
     ASTCDParameter scopeJsonParam = getCDParameterFacade()
         .createParameter(getMCTypeFacade().createQualifiedType(JSON_OBJECT), SCOPE_JSON_VAR);
     ASTMCQualifiedType interfaceName = getMCTypeFacade().
-            createQualifiedType(I_DE_SER+"<"+scopeInterfaceName+">");
+            createQualifiedType(I_DE_SER+"<"+scopeInterfaceName+", "+ symbols2JsonName +">");
 
-    Map<ASTCDType, ASTCDDefinition> symbolDefiningProds = createSymbolMap(symbolInput.getCDDefinition());
 
-    ASTCDDefinition symbolDefinition = symbolInput.getCDDefinition().deepClone();
+    ASTCDParameter scopeParam = getCDParameterFacade().createParameter(getMCTypeFacade()
+            .createQualifiedType(scopeInterfaceName),"toSerialize");
+    ASTCDParameter asParam = getCDParameterFacade().createParameter(getMCTypeFacade()
+            .createQualifiedType(artifactScopeInterfaceFullName),"toSerialize");
+    ASTCDParameter s2jParam = getCDParameterFacade().createParameter(getMCTypeFacade()
+        .createQualifiedType(symbols2JsonName),"s2j");
+
+
+//    Map<ASTCDType, ASTCDDefinition> symbolDefiningProds = createSymbolMap(symbolInput.getCDDefinition());
 
     // list of all scope rule attributes
-    List<ASTCDAttribute> scopeRuleAttributeList = scopeInput.deepClone().getCDDefinition()
+    List<ASTCDAttribute> scopeRuleAttrList = scopeInput.deepClone().getCDDefinition()
         .getCDClassList()
         .stream()
         .map(ASTCDClass::getCDAttributeList)
         .flatMap(List::stream)
         .collect(Collectors.toList());
-    scopeRuleAttributeList
+    scopeRuleAttrList
         .forEach(a -> getDecorationHelper().addAttributeDefaultValues(a, this.glex));
 
     ASTCDAttribute jsonPrinter = getCDAttributeFacade()
@@ -93,99 +105,69 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
         .setName(scopeDeSerName)
         .setModifier(PUBLIC.build())
         .addInterface(interfaceName)
-        .addCDConstructor(createConstructor(scopeDeSerName))
-        .addAllCDAttributes(createSymbolDeSerAttributes(symbolDefinition))
-        .addCDAttribute(jsonPrinter)
-        .addCDAttribute(symbolTablePrinter)
+
+        // serialization
+        .addCDMethod(createSerializeMethod(scopeParam, s2jParam, scopeRuleAttrList))
+        .addCDMethod(createSerializeASMethod(asParam, s2jParam, scopeRuleAttrList))
+        .addAllCDMethods(createSerializeScopeRuleAttributesMethod(scopeRuleAttrList))
+        .addCDMethod(createSerializeAddonsMethod(scopeParam, s2jParam))
+        .addCDMethod(createSerializeAddonsMethod(asParam, s2jParam))
+
+        //deserialization
         .addCDMethod(createDeserializeStringMethod(artifactScopeFullName, artifactScopeInterfaceFullName))
-        .addCDMethod(createDeserializeScopeMethod(scopeClassFullName, simpleName, symTabMillFullName, scopeJsonParam, scopeRuleAttributeList))
-        .addCDMethod(createDeserializeArtifactScopeMethod(artifactScopeInterfaceFullName, simpleName, symTabMillFullName, scopeJsonParam, scopeRuleAttributeList))
-        .addAllCDMethods(createDeserializeAdditionalAttributesMethods(scopeJsonParam))
+        .addCDMethod(createDeserializeScopeMethod(scopeClassFullName, simpleName, symTabMillFullName, scopeJsonParam, scopeRuleAttrList))
+        .addCDMethod(createDeserializeArtifactScopeMethod(artifactScopeInterfaceFullName, simpleName, symTabMillFullName, scopeJsonParam, scopeRuleAttrList))
+        .addAllCDMethods(createDeserializeAddonsMethods(scopeJsonParam))
         .addCDMethod(createAddSymbolsMethod())
         .addCDMethod(createAddSymbolMethod(symbolDefiningProds))
         .addAllCDMethods(createDeserializeSymbolMethods(symbolDefiningProds))
-        .addCDMethod(createSerializeMethod(scopeInterfaceName))
+
         .addAllCDMethods(
-            createDeserializeScopeRuleAttributesMethod(scopeRuleAttributeList))
+            createDeserializeScopeRuleAttributesMethod(scopeRuleAttrList))
         .build();
   }
 
-  protected Map<ASTCDType, ASTCDDefinition> createSymbolMap(ASTCDDefinition symbolInput) {
-    Map<ASTCDType, ASTCDDefinition> result = new HashMap<>();
-    //add local symbols
-    symbolTableService.getSymbolDefiningProds(symbolInput).forEach(s -> result.put(s, symbolTableService.getCDSymbol().getAstNode()));
+//  protected Map<ASTCDType, ASTCDDefinition> createSymbolMap(ASTCDDefinition symbolInput) {
+//    Map<ASTCDType, ASTCDDefinition> result = new HashMap<>();
+//    //add local symbols
+//    symbolTableService.getSymbolDefiningProds(symbolInput).forEach(s -> result.put(s, symbolTableService.getCDSymbol().getAstNode()));
+//
+//    //add symbols from super grammars
+//    for (CDDefinitionSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
+//      for (CDTypeSymbol type : cdDefinitionSymbol.getTypes()) {
+//        if (type.isPresentAstNode() && type.getAstNode().isPresentModifier()
+//            && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifier())) {
+//          result.put(type.getAstNode(), cdDefinitionSymbol.getAstNode());
+//        }
+//      }
+//    }
+//    //sort the map based on the alphabetical order of keys, to always generated the same order of methods
+//    return result.entrySet().stream().sorted(Ordering.natural().onResultOf(a -> a.getKey().getName()))
+//        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2, LinkedHashMap::new));
+//  }
 
-    //add symbols from super grammars
-    for (CDDefinitionSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
-      for (CDTypeSymbol type : cdDefinitionSymbol.getTypes()) {
-        if (type.isPresentAstNode() && type.getAstNode().isPresentModifier()
-            && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifier())) {
-          result.put(type.getAstNode(), cdDefinitionSymbol.getAstNode());
-        }
-      }
-    }
-    //sort the map based on the alphabetical order of keys, to always generated the same order of methods
-    return result.entrySet().stream().sorted(Ordering.natural().onResultOf(a -> a.getKey().getName()))
-        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2, LinkedHashMap::new));
+  ////////////////////////////// SERIALIZATON //////////////////////////////////////////////////////
+  protected ASTCDMethod createSerializeMethod(ASTCDParameter toSerialize, ASTCDParameter s2j,
+      List<ASTCDAttribute> scopeRuleAttrList) {
+    ASTCDMethod method = getCDMethodFacade()
+        .createMethod(PUBLIC, getMCTypeFacade().createStringType(), "serialize", toSerialize, s2j);
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(SERIALIZE_TEMPL, scopeRuleAttrList));
+    return method;
   }
 
-  protected ASTCDConstructor createConstructor(String scopeDeSerName) {
-    ASTCDConstructor constructor = getCDConstructorFacade()
-        .createConstructor(PUBLIC, scopeDeSerName);
-    return constructor;
+  protected ASTCDMethod createSerializeASMethod(ASTCDParameter toSerialize, ASTCDParameter s2j,
+      List<ASTCDAttribute> scopeRuleAttrList) {
+    ASTCDMethod method = getCDMethodFacade()
+        .createMethod(PUBLIC, getMCTypeFacade().createStringType(), "serialize", toSerialize, s2j);
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(SERIALIZE_AS_TEMPL,  scopeRuleAttrList));
+    return method;
   }
 
-  protected List<ASTCDAttribute> createSymbolDeSerAttributes(ASTCDDefinition astcdDefinition) {
-    // collects symbolDeSer names from local symbol definitions
-    List<String> symbolDeSerNames = symbolTableService
-        .getSymbolDefiningProds(astcdDefinition).stream()
-        .map(symbolTableService::getSymbolDeSerSimpleName)
-        .collect(Collectors.toList());
-
-    // collects symbolDeSer names form parent grammar symbol definitions
-    for (CDDefinitionSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
-      for (CDTypeSymbol type : cdDefinitionSymbol.getTypes()) {
-        if (type.isPresentAstNode() && type.getAstNode().isPresentModifier()
-            && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifier())) {
-          String pckge = symbolTableService.getSerializationPackage(cdDefinitionSymbol);
-          String deser = symbolTableService.getSymbolDeSerSimpleName(type.getAstNode());
-          symbolDeSerNames.add(Names.getQualifiedName(pckge, deser));
-        }
-      }
-    }
-
-    // build attributes for all collected symbolDeSer names
-    List<ASTCDAttribute> symbolDeSerAttributes = new ArrayList<>();
-    for (String symbolDeSerName : symbolDeSerNames) {
-      ASTCDAttribute attribute = getCDAttributeFacade()
-          .createAttribute(PACKAGE_PRIVATE, symbolDeSerName,
-              StringTransformations.uncapitalize(Names.getSimpleName(symbolDeSerName)));
-      this.replaceTemplate(VALUE, attribute,
-          new StringHookPoint("= new " + symbolDeSerName + "()"));
-      symbolDeSerAttributes.add(attribute);
-    }
-    return symbolDeSerAttributes;
+  protected ASTCDMethod createSerializeAddonsMethod(ASTCDParameter toSerialize, ASTCDParameter s2j) {
+    return getCDMethodFacade().createMethod(PUBLIC, "serializeAddons", toSerialize, s2j);
   }
 
-  protected ASTCDMethod createSerializeMethod(String scopeInterfaceName) {
-    Map<String, String> symbolTablePrinters = new HashMap<>();
-    CDDefinitionSymbol lang = symbolTableService.getCDSymbol();
-    symbolTablePrinters.put(lang.getName(), symbolTableService.getSymbols2JsonFullName(lang));
-    for (CDDefinitionSymbol superCD : symbolTableService.getSuperCDsTransitive()) {
-      symbolTablePrinters
-              .put(superCD.getName(), symbolTableService.getSymbols2JsonFullName(superCD));
-    }
-
-    ASTCDParameter toSerializeParam = getCDParameterFacade()
-        .createParameter(getMCTypeFacade().createQualifiedType(scopeInterfaceName), "toSerialize");
-    ASTCDMethod serializeMethod = getCDMethodFacade()
-        .createMethod(PUBLIC, getMCTypeFacade().createStringType(), "serialize", toSerializeParam);
-
-    this.replaceTemplate(EMPTY_BODY, serializeMethod,
-            new TemplateHookPoint("_symboltable.serialization.scopeDeSer.Serialize4ScopeDeSer",
-                    visitorService.getDelegatorVisitorFullName(), symbolTablePrinters));
-    return serializeMethod;
-  }
+  ////////////////////////////// DESERIALIZATON ////////////////////////////////////////////////////
 
   protected ASTCDMethod createDeserializeStringMethod(String artifactScopeName, String artifactScopeInterfaceName) {
     ASTCDParameter stringParam = getCDParameterFacade()
@@ -222,7 +204,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
     return deserializeMethod;
   }
 
-  protected List<ASTCDMethod> createDeserializeAdditionalAttributesMethods(ASTCDParameter jsonParam) {
+  protected List<ASTCDMethod> createDeserializeAddonsMethods(ASTCDParameter jsonParam) {
     ASTCDParameter scopeParam = getCDParameterFacade()
         .createParameter(symbolTableService.getScopeInterfaceType(), SCOPE_VAR);
     ASTCDMethod scopeMethod = getCDMethodFacade()
