@@ -6,18 +6,18 @@ import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4code.CD4CodeMill;
 import de.monticore.cd.facade.CDMethodFacade;
 import de.monticore.cd.facade.CDParameterFacade;
+import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
+import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
-import de.monticore.types.prettyprint.MCFullGenericTypesPrettyPrinter;
 import de.monticore.utils.Names;
 import de.se_rwth.commons.StringTransformations;
 
@@ -40,6 +40,12 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
 
   protected final VisitorService visitorService;
 
+  protected final MethodDecorator methodDecorator;
+
+  protected final AbstractCreator<ASTCDAttribute, List<ASTCDMethod>> accessorDecorator;
+
+  protected final AbstractCreator<ASTCDAttribute, List<ASTCDMethod>> mutatorDecorator;
+
   protected static final String TEMPLATE_PATH = "_symboltable.serialization.";
 
   protected static final String PRINTER_END_OBJECT = "printer.endObject();";
@@ -48,32 +54,46 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
 
   public Symbols2JsonDecorator(final GlobalExtensionManagement glex,
                                final SymbolTableService symbolTableService,
-                               final VisitorService visitorService) {
+                               final VisitorService visitorService,
+                               final MethodDecorator methodDecorator) {
     super(glex);
     this.symbolTableService = symbolTableService;
     this.visitorService = visitorService;
+    this.methodDecorator = methodDecorator;
+    this.accessorDecorator = methodDecorator.getAccessorDecorator();
+    this.mutatorDecorator = methodDecorator.getMutatorDecorator();
+
   }
 
   public ASTCDClass decorate(ASTCDCompilationUnit scopeCD, ASTCDCompilationUnit symbolCD) {
-    String symbolTablePrinterName = symbolTableService.getSymbols2JsonSimpleName();
+    String symbols2JsonName = symbolTableService.getSymbols2JsonSimpleName();
     String scopeInterfaceFullName = symbolTableService.getScopeInterfaceFullName();
     String artifactScopeFullName = symbolTableService.getArtifactScopeFullName();
     String artifactScopeInterfaceFullName = symbolTableService.getArtifactScopeInterfaceFullName();
     String scopeClassFullName = symbolTableService.getScopeClassFullName();
     String deSerFullName = symbolTableService.getScopeDeSerFullName();
     List<ASTCDType> symbolDefiningProds = symbolTableService.getSymbolDefiningProds(symbolCD.getCDDefinition());
-    String visitorFullName = visitorService.getVisitorFullName();
+    String visitorFullName = visitorService.getVisitor2FullName();
+    String traverserFullName = visitorService.getTraverserInterfaceFullName();
+    String millName = visitorService.getMillFullName();
+
     List<ASTCDClass> symbolTypes = symbolCD.getCDDefinition().getCDClassList();
     List<ASTCDClass> scopeTypes = scopeCD.getCDDefinition().getCDClassList();
-    ASTCDClass symbolTablePrinterClass = CD4CodeMill.cDClassBuilder()
-            .setName(symbolTablePrinterName)
+
+    ASTCDAttribute traverserAttribute = createTraverserAttribute(traverserFullName);
+
+    ASTCDClass symbols2JsonClass = CD4CodeMill.cDClassBuilder()
+            .setName(symbols2JsonName)
             .setModifier(PUBLIC.build())
             .addInterface(getMCTypeFacade().createQualifiedType(visitorFullName))
             .addCDAttribute(getCDAttributeFacade().createAttribute(PROTECTED, JSON_PRINTER, "printer"))
-            .addCDAttribute(createRealThisAttribute(symbolTablePrinterName))
-            .addAllCDConstructors(createConstructors(symbolTablePrinterName))
             .addCDMethod(createGetJsonPrinterMethod())
             .addCDMethod(createSetJsonPrinterMethod())
+            .addCDAttribute(traverserAttribute)
+            .addAllCDMethods(accessorDecorator.decorate(traverserAttribute))
+            .addAllCDMethods(mutatorDecorator.decorate(traverserAttribute))
+            .addAllCDConstructors(createConstructors(millName, traverserFullName, symbols2JsonName))
+            .addCDMethod(createInitMethod())
             .addCDMethod(createGetSerializedStringMethod())
             .addAllCDMethods(createLoadMethods(artifactScopeInterfaceFullName, deSerFullName))
             .addCDMethod(createStoreMethod(artifactScopeInterfaceFullName, deSerFullName))
@@ -81,36 +101,42 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
             .addAllCDMethods(createSymbolVisitorMethods(symbolDefiningProds))
             .addAllCDMethods(createSymbolRuleMethods(symbolTypes))
             .addAllCDMethods(createScopeRuleMethods(scopeTypes, scopeClassFullName, scopeInterfaceFullName, artifactScopeInterfaceFullName))
-            .addAllCDMethods(createRealThisMethods(symbolTablePrinterName))
+            .addAllCDMethods(createArtifactScopeVisitorMethods(artifactScopeFullName, artifactScopeInterfaceFullName, scopeTypes))
+            .addCDMethod(createPrintKindHierarchyMethod(symbolDefiningProds))
             .build();
-    symbolTablePrinterClass.addAllCDMethods(createArtifactScopeVisitorMethods(artifactScopeFullName, artifactScopeInterfaceFullName, scopeTypes));
-    symbolTablePrinterClass.addCDMethod(createPrintKindHierarchyMethod(symbolDefiningProds));
-    return symbolTablePrinterClass;
+    return symbols2JsonClass;
   }
 
-  protected ASTCDAttribute createRealThisAttribute(String symbolTablePrinterName) {
+  protected ASTCDAttribute createTraverserAttribute(String traverserFullName) {
     return getCDAttributeFacade()
-            .createAttribute(PRIVATE, visitorService.getVisitorFullName(), "realThis");
+            .createAttribute(PRIVATE, traverserFullName, "traverser");
   }
 
-  protected List<ASTCDConstructor> createConstructors(String symbolTablePrinterName) {
+  protected List<ASTCDConstructor> createConstructors(String millName, String traverserFullName, String symbolTablePrinterName) {
     List<ASTCDConstructor> constructors = new ArrayList<>();
 
-    MCFullGenericTypesPrettyPrinter prettyPrinter = new MCFullGenericTypesPrettyPrinter(new IndentPrinter());
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC, symbolTablePrinterName);
-    StringBuilder sb = new StringBuilder("this(new " + JSON_PRINTER + "());\n");
+    StringBuilder sb = new StringBuilder("this(" + millName + ".traverser(), new " + JSON_PRINTER + "());\n");
     this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint(sb.toString()));
     constructors.add(constructor);
 
     List<ASTCDParameter> constructorParameters = new ArrayList<>();
-    String parameterName = "printer";
-    constructorParameters.add(getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(JSON_PRINTER), parameterName));
+    String traverserParam = "traverser";
+    constructorParameters.add(getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(traverserFullName), traverserParam));
+    String printerParam = "printer";
+    constructorParameters.add(getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(JSON_PRINTER), printerParam));
     ASTCDConstructor constructorB = getCDConstructorFacade().createConstructor(PUBLIC, symbolTablePrinterName, constructorParameters);
-    StringBuilder sb2 = new StringBuilder("this.printer = " + parameterName + ";\n");
-    sb2.append("    setRealThis(this);\n");
+    StringBuilder sb2 = new StringBuilder("this.printer = " + printerParam + ";\n");
+    sb2.append("this.traverser = " + traverserParam + ";\n");
+    sb2.append("init();\n");
     this.replaceTemplate(EMPTY_BODY, constructorB, new StringHookPoint(sb2.toString()));
     constructors.add(constructorB);
     return constructors;
+  }
+
+  protected ASTCDMethod createInitMethod() {
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, "init");
+    return method;
   }
 
   protected ASTCDMethod createGetJsonPrinterMethod() {
@@ -126,17 +152,6 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, "setJsonPrinter", parameter);
     this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint("this.printer=printer;"));
     return method;
-  }
-
-  protected List<ASTCDMethod> createRealThisMethods(String symbolTablePrinterName) {
-    ASTMCType type = getMCTypeFacade().createQualifiedType(visitorService.getVisitorFullName());
-    ASTCDMethod getMethod = getCDMethodFacade().createMethod(PUBLIC, type, GET_REAL_THIS);
-    this.replaceTemplate(EMPTY_BODY, getMethod, new StringHookPoint("return realThis;"));
-
-    ASTCDParameter param = getCDParameterFacade().createParameter(type, "realThis");
-    ASTCDMethod setMethod = getCDMethodFacade().createMethod(PUBLIC, SET_REAL_THIS, param);
-    this.replaceTemplate(EMPTY_BODY, setMethod, new StringHookPoint("this.realThis = realThis;"));
-    return Lists.newArrayList(getMethod, setMethod);
   }
 
   protected ASTCDMethod createPrintKindHierarchyMethod(List<ASTCDType> symbolProds) {

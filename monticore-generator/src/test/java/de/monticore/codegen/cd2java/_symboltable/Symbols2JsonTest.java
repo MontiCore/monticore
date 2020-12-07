@@ -11,10 +11,11 @@ import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.serialization.Symbols2JsonDecorator;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
+import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.se_rwth.commons.logging.*;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -22,7 +23,6 @@ import java.util.List;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
-import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodsBy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -59,7 +59,9 @@ public class Symbols2JsonTest extends DecoratorTestCase {
     this.glex.setGlobalValue("service", new AbstractService(decoratedASTCompilationUnit));
 
     Symbols2JsonDecorator decorator = new Symbols2JsonDecorator(this.glex,
-        new SymbolTableService(decoratedASTCompilationUnit), new VisitorService(decoratedASTCompilationUnit));
+            new SymbolTableService(decoratedASTCompilationUnit),
+            new VisitorService(decoratedASTCompilationUnit),
+            new MethodDecorator(glex, new SymbolTableService(decoratedSymbolCompilationUnit)));
 
     this.symTabPrinterClass = decorator.decorate(decoratedScopeCompilationUnit, decoratedSymbolCompilationUnit);
   }

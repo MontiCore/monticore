@@ -105,7 +105,7 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
         .createParameter(getMCTypeFacade().createQualifiedType(symbolName), "toSerialize");
     ASTCDMethod serializeMethod = getCDMethodFacade()
         .createMethod(PUBLIC, getMCTypeFacade().createStringType(), "serialize", toSerializeParam);
-    this.replaceTemplate(EMPTY_BODY, serializeMethod, new StringHookPoint("  toSerialize.accept(symbolTablePrinter);\n"
+    this.replaceTemplate(EMPTY_BODY, serializeMethod, new StringHookPoint("  toSerialize.accept(symbolTablePrinter.getTraverser());\n"
         + "  return symbolTablePrinter.getSerializedString();"));
     return serializeMethod;
   }
