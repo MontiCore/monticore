@@ -2,6 +2,7 @@
 package de.monticore.codegen.cd2java._symboltable.serialization;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4code.CD4CodeMill;
 import de.monticore.cd.facade.CDMethodFacade;
@@ -86,6 +87,7 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
             .setName(symbols2JsonName)
             .setModifier(PUBLIC.build())
             .addInterface(getMCTypeFacade().createQualifiedType(visitorFullName))
+            .addAllCDAttributes(createDeSerAttrs(symbolDefiningProds))
             .addCDAttribute(getCDAttributeFacade().createAttribute(PROTECTED, JSON_PRINTER, "printer"))
             .addCDMethod(createGetJsonPrinterMethod())
             .addCDMethod(createSetJsonPrinterMethod())
@@ -93,7 +95,7 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
             .addAllCDMethods(accessorDecorator.decorate(traverserAttribute))
             .addAllCDMethods(mutatorDecorator.decorate(traverserAttribute))
             .addAllCDConstructors(createConstructors(millName, traverserFullName, symbols2JsonName))
-            .addCDMethod(createInitMethod())
+            .addCDMethod(createInitMethod(symbolDefiningProds))
             .addCDMethod(createGetSerializedStringMethod())
             .addAllCDMethods(createLoadMethods(artifactScopeInterfaceFullName, deSerFullName))
             .addCDMethod(createStoreMethod(artifactScopeInterfaceFullName, deSerFullName))
@@ -134,9 +136,30 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
     return constructors;
   }
 
-  protected ASTCDMethod createInitMethod() {
-    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, "init");
-    return method;
+  protected ASTCDMethod createInitMethod(List<ASTCDType> prods) {
+    ASTCDMethod initMethod = getCDMethodFacade().createMethod(PUBLIC, "init");
+    String globalScope = symbolTableService.getGlobalScopeInterfaceFullName();
+    String millName = symbolTableService.getMillFullName();
+
+    Map<String, String> deSerMap = Maps.newHashMap();
+    deSerMap.put("scopeDeSer", symbolTableService.getScopeClassFullName());
+    for (ASTCDType prod : prods) {
+      deSerMap.put(symbolTableService.getSymbolDeSerSimpleName(prod), symbolTableService.getSymbolFullName(prod));
+    }
+    this.replaceTemplate(EMPTY_BODY, initMethod,
+            new TemplateHookPoint(TEMPLATE_PATH + "symbols2Json.Init",
+                    globalScope, millName, deSerMap, symbolTableService.getCDName()));
+    return initMethod;
+  }
+
+  protected List<ASTCDAttribute> createDeSerAttrs(List<ASTCDType> prods) {
+    List<ASTCDAttribute> attrList = Lists.newArrayList();
+    attrList.add(getCDAttributeFacade().createAttribute(PROTECTED, symbolTableService.getScopeDeSerFullName(), "scopeDeSer"));
+    for (ASTCDType prod : prods) {
+      String name = StringTransformations.uncapitalize(symbolTableService.getSymbolDeSerSimpleName(prod));
+      attrList.add(getCDAttributeFacade().createAttribute(PROTECTED, symbolTableService.getSymbolDeSerFullName(prod), name));
+    }
+    return attrList;
   }
 
   protected ASTCDMethod createGetJsonPrinterMethod() {
