@@ -4,6 +4,7 @@ package de.monticore.codegen.cd2java._symboltable.serialization;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.cd4code.CD4CodeMill;
 import de.monticore.cd.facade.CDMethodFacade;
 import de.monticore.cd.facade.CDParameterFacade;
@@ -77,6 +78,7 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
     String visitorFullName = visitorService.getVisitor2FullName();
     String traverserFullName = visitorService.getTraverserInterfaceFullName();
     String millName = visitorService.getMillFullName();
+    List<CDDefinitionSymbol> superGrammars = symbolTableService.getSuperCDsTransitive();
 
     List<ASTCDClass> symbolTypes = symbolCD.getCDDefinition().getCDClassList();
     List<ASTCDClass> scopeTypes = scopeCD.getCDDefinition().getCDClassList();
@@ -95,7 +97,7 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
             .addAllCDMethods(accessorDecorator.decorate(traverserAttribute))
             .addAllCDMethods(mutatorDecorator.decorate(traverserAttribute))
             .addAllCDConstructors(createConstructors(millName, traverserFullName, symbols2JsonName))
-            .addCDMethod(createInitMethod(symbolDefiningProds))
+            .addCDMethod(createInitMethod(symbolDefiningProds, superGrammars))
             .addCDMethod(createGetSerializedStringMethod())
             .addAllCDMethods(createLoadMethods(artifactScopeInterfaceFullName, deSerFullName))
             .addCDMethod(createStoreMethod(artifactScopeInterfaceFullName, deSerFullName))
@@ -136,7 +138,7 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
     return constructors;
   }
 
-  protected ASTCDMethod createInitMethod(List<ASTCDType> prods) {
+  protected ASTCDMethod createInitMethod(List<ASTCDType> prods, List<CDDefinitionSymbol> superGrammars) {
     ASTCDMethod initMethod = getCDMethodFacade().createMethod(PUBLIC, "init");
     String globalScope = symbolTableService.getGlobalScopeInterfaceFullName();
     String millName = symbolTableService.getMillFullName();
@@ -146,9 +148,13 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
     for (ASTCDType prod : prods) {
       deSerMap.put(symbolTableService.getSymbolDeSerSimpleName(prod), symbolTableService.getSymbolFullName(prod));
     }
+    Map<String, String> printerMap = Maps.newHashMap();
+    for (CDDefinitionSymbol cdSymbol: superGrammars) {
+      printerMap.put(cdSymbol.getName(), symbolTableService.getSymbols2JsonFullName(cdSymbol));
+    }
     this.replaceTemplate(EMPTY_BODY, initMethod,
             new TemplateHookPoint(TEMPLATE_PATH + "symbols2Json.Init",
-                    globalScope, millName, deSerMap, symbolTableService.getCDName()));
+                    globalScope, millName, deSerMap, symbolTableService.getCDName(), printerMap));
     return initMethod;
   }
 

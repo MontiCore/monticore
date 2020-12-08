@@ -108,7 +108,7 @@ public class Symbols2JsonDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testCountAttributes(){
-    assertEquals(2, symbolTablePrinterClass.sizeCDAttributes());
+    assertEquals(6, symbolTablePrinterClass.sizeCDAttributes());
   }
 
   @Test
