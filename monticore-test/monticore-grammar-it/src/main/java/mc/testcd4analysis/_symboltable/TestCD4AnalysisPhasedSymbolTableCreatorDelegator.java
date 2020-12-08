@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 
-public class TestCD4AnalysisPhasedSymbolTableCreatorDelegator extends TestCD4AnalysisPhasedSymbolTableCreatorDelegatorTOP {
+public class TestCD4AnalysisPhasedSymbolTableCreatorDelegator {
 
   protected ITestCD4AnalysisGlobalScope globalScope;
 
