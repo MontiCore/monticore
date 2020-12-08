@@ -74,7 +74,7 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
 
     ScopeDeSerDecorator decorator = new ScopeDeSerDecorator(glex, new SymbolTableService(astcdCompilationUnit), new MethodDecorator(glex, new SymbolTableService(decoratedScopeCompilationUnit)), new VisitorService(astcdCompilationUnit));
 
-    this.scopeClass = decorator.decorate(decoratedScopeCompilationUnit, decoratedSymbolCompilationUnit);
+    this.scopeClass = decorator.decorate(decoratedScopeCompilationUnit);
   }
 
   @Test

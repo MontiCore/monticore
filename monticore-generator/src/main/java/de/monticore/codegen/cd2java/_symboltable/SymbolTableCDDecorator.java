@@ -192,7 +192,7 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
       symTabCD.addCDClass(artifactScope);
 
       // scope deser
-      ASTCDClass scopeDeSer = createScopeDeSerClass(scopeCD, symbolCD);
+      ASTCDClass scopeDeSer = createScopeDeSerClass(scopeCD);
       symTabCD.addCDClass(scopeDeSer);
 
       // symbol table creator
@@ -340,8 +340,8 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
         .collect(Collectors.toList());
   }
 
-  protected ASTCDClass createScopeDeSerClass(ASTCDCompilationUnit scopeCD, ASTCDCompilationUnit symbolCd) {
-    return scopeDeSerDecorator.decorate(scopeCD, symbolCd);
+  protected ASTCDClass createScopeDeSerClass(ASTCDCompilationUnit scopeCD) {
+    return scopeDeSerDecorator.decorate(scopeCD);
   }
 
   protected ASTCDClass createSymbolTablePrinterClass(ASTCDCompilationUnit scopeCD, ASTCDCompilationUnit symbolCd) {
