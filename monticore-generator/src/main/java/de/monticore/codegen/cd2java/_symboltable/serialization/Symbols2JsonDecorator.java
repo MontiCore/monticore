@@ -100,7 +100,7 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
             .addCDMethod(createInitMethod(symbolDefiningProds, superGrammars))
             .addCDMethod(createGetSerializedStringMethod())
             .addAllCDMethods(createLoadMethods(artifactScopeInterfaceFullName, deSerFullName))
-            .addCDMethod(createStoreMethod(artifactScopeInterfaceFullName, deSerFullName))
+            .addCDMethod(createStoreMethod(artifactScopeInterfaceFullName))
             .addAllCDMethods(createScopeVisitorMethods(scopeClassFullName, scopeInterfaceFullName, scopeCD, symbolDefiningProds))
             .addAllCDMethods(createSymbolVisitorMethods(symbolDefiningProds))
             .addAllCDMethods(createSymbolRuleMethods(symbolTypes))
@@ -424,13 +424,13 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
     return loadMethod;
   }
 
-  protected ASTCDMethod createStoreMethod(String artifactScopeName, String deSerFullName) {
+  protected ASTCDMethod createStoreMethod(String artifactScopeName) {
     ASTCDParameter artifactScopeParam = getCDParameterFacade()
             .createParameter(getMCTypeFacade().createQualifiedType(artifactScopeName), "scope");
     ASTCDParameter fileNameParam = getCDParameterFacade()
             .createParameter(getMCTypeFacade().createStringType(), "fileName");
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createStringType(), "store", artifactScopeParam, fileNameParam);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "symbols2Json.Store", deSerFullName));
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "symbols2Json.Store"));
     return method;
   }
 
