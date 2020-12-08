@@ -126,7 +126,7 @@ public class TransitionSourceExistsTest {
    */
   public static IAutomataArtifactScope createSymbolTable(ASTAutomaton ast) {
     AutomataMill.globalScope().setFileExt("aut");
-    return AutomataMill.automataSymbolTableCreator().createFromAST(ast);
+    return AutomataMill.scopesGenitorDelegator().createFromAST(ast);
   }
 
 }

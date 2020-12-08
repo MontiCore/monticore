@@ -150,9 +150,8 @@ public class AutomataTool {
     globalScope.setModelPath(new ModelPath());
     globalScope.setFileExt("aut");
 
-    AutomataSymbolTableCreator symbolTable = AutomataMill
-        .automataSymbolTableCreator();
-    symbolTable.putOnStack(globalScope);
+    AutomataScopesGenitorDelegator symbolTable = AutomataMill
+        .scopesGenitorDelegator();
 
     return symbolTable.createFromAST(ast);
   }

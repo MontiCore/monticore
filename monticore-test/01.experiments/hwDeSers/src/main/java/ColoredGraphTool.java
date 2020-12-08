@@ -3,9 +3,7 @@
 import coloredgraph.ColoredGraphMill;
 import coloredgraph._ast.ASTGraph;
 import coloredgraph._parser.ColoredGraphParser;
-import coloredgraph._symboltable.ColoredGraphSymbolTableCreatorDelegator;
-import coloredgraph._symboltable.ColoredGraphSymbols2Json;
-import coloredgraph._symboltable.IColoredGraphArtifactScope;
+import coloredgraph._symboltable.*;
 import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.RecognitionException;
 
@@ -39,8 +37,7 @@ public class ColoredGraphTool {
 
     // instantiate symbol table:
     ColoredGraphMill.globalScope().setFileExt("cg");
-    ColoredGraphSymbolTableCreatorDelegator stc = ColoredGraphMill
-        .coloredGraphSymbolTableCreatorDelegator();
+    ColoredGraphPhasedSymbolTableCreatorDelegator stc = new ColoredGraphPhasedSymbolTableCreatorDelegator();
     IColoredGraphArtifactScope symTab = stc.createFromAST(ast);
 
     Log.info("------------------", "ColoredGraphTool");

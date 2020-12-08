@@ -39,7 +39,7 @@ public class BasicJavaGlobalScope extends BasicJavaGlobalScopeTOP {
     // 3. if the file was found, parse the model and create its symtab
     if(model.hasLocation()){
       ASTCompilationUnit ast = parse(model);
-      BasicJavaMill.basicJavaSymbolTableCreator().createFromAST(ast);
+      BasicJavaMill.scopesGenitorDelegator().createFromAST(ast);
     }
   }
 

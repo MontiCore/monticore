@@ -30,7 +30,7 @@ public class SM2ScopesGenitor extends SM2ScopesGenitorTOP {
   public void visit(final ASTState stateNode) {
     final StateSymbol stateSymbol = new StateSymbol(stateNode.getName());
 
-    Log.info("StateSymbol defined for " + stateSymbol.getName(), "SM2SymbolTableCreator");
+    Log.info("StateSymbol defined for " + stateSymbol.getName(), "SM2ScopsGenitor");
 
     addToScopeAndLinkWithNode(stateSymbol, stateNode);
   }
