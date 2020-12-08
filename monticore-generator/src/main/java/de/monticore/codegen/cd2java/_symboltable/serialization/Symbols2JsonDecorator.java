@@ -4,6 +4,7 @@ package de.monticore.codegen.cd2java._symboltable.serialization;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.cd4code.CD4CodeMill;
 import de.monticore.cd.facade.CDMethodFacade;
 import de.monticore.cd.facade.CDParameterFacade;
@@ -25,12 +26,12 @@ import de.se_rwth.commons.StringTransformations;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.JSON_PRINTER;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.END_VISIT;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISIT;
 
 /**
  * creates a SymbolTablePrinter class from a grammar
@@ -77,6 +78,7 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
     String visitorFullName = visitorService.getVisitor2FullName();
     String traverserFullName = visitorService.getTraverserInterfaceFullName();
     String millName = visitorService.getMillFullName();
+    List<CDDefinitionSymbol> superGrammars = symbolTableService.getSuperCDsTransitive();
 
     List<ASTCDClass> symbolTypes = symbolCD.getCDDefinition().getCDClassList();
     List<ASTCDClass> scopeTypes = scopeCD.getCDDefinition().getCDClassList();
@@ -95,15 +97,15 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
             .addAllCDMethods(accessorDecorator.decorate(traverserAttribute))
             .addAllCDMethods(mutatorDecorator.decorate(traverserAttribute))
             .addAllCDConstructors(createConstructors(millName, traverserFullName, symbols2JsonName))
-            .addCDMethod(createInitMethod(symbolDefiningProds))
+            .addCDMethod(createInitMethod(symbolDefiningProds, superGrammars))
             .addCDMethod(createGetSerializedStringMethod())
             .addAllCDMethods(createLoadMethods(artifactScopeInterfaceFullName, deSerFullName))
-            .addCDMethod(createStoreMethod(artifactScopeInterfaceFullName, deSerFullName))
-            .addAllCDMethods(createScopeVisitorMethods(scopeClassFullName, scopeInterfaceFullName, scopeCD, symbolDefiningProds))
+            .addCDMethod(createStoreMethod(artifactScopeInterfaceFullName))
+            .addAllCDMethods(createScopeVisitorMethods(scopeInterfaceFullName))
             .addAllCDMethods(createSymbolVisitorMethods(symbolDefiningProds))
             .addAllCDMethods(createSymbolRuleMethods(symbolTypes))
             .addAllCDMethods(createScopeRuleMethods(scopeTypes, scopeClassFullName, scopeInterfaceFullName, artifactScopeInterfaceFullName))
-            .addAllCDMethods(createArtifactScopeVisitorMethods(artifactScopeFullName, artifactScopeInterfaceFullName, scopeTypes))
+            .addAllCDMethods(createArtifactScopeVisitorMethods(artifactScopeInterfaceFullName))
             .addCDMethod(createPrintKindHierarchyMethod(symbolDefiningProds))
             .build();
     return symbols2JsonClass;
@@ -136,7 +138,7 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
     return constructors;
   }
 
-  protected ASTCDMethod createInitMethod(List<ASTCDType> prods) {
+  protected ASTCDMethod createInitMethod(List<ASTCDType> prods, List<CDDefinitionSymbol> superGrammars) {
     ASTCDMethod initMethod = getCDMethodFacade().createMethod(PUBLIC, "init");
     String globalScope = symbolTableService.getGlobalScopeInterfaceFullName();
     String millName = symbolTableService.getMillFullName();
@@ -146,9 +148,13 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
     for (ASTCDType prod : prods) {
       deSerMap.put(symbolTableService.getSymbolDeSerSimpleName(prod), symbolTableService.getSymbolFullName(prod));
     }
+    Map<String, String> printerMap = Maps.newHashMap();
+    for (CDDefinitionSymbol cdSymbol: superGrammars) {
+      printerMap.put(cdSymbol.getName(), symbolTableService.getSymbols2JsonFullName(cdSymbol));
+    }
     this.replaceTemplate(EMPTY_BODY, initMethod,
             new TemplateHookPoint(TEMPLATE_PATH + "symbols2Json.Init",
-                    globalScope, millName, deSerMap, symbolTableService.getCDName()));
+                    globalScope, millName, deSerMap, symbolTableService.getCDName(), printerMap));
     return initMethod;
   }
 
@@ -195,42 +201,33 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
     return method;
   }
 
-  protected List<ASTCDMethod> createScopeVisitorMethods(String scopeClassName, String scopeInterfaceName, ASTCDCompilationUnit scopeCD, List<ASTCDType> symbolProds) {
+  protected List<ASTCDMethod> createScopeVisitorMethods(String scopeInterfaceName) {
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
-    List<String> simpleSymbolNames = symbolProds.stream()
-            .map(symbolTableService::removeASTPrefix)
-            .collect(Collectors.toList());
 
-    List<String> superScopeInterfaces = symbolTableService.getSuperCDsDirect().stream()
-            .map(cd -> symbolTableService.getScopeInterfaceFullName(cd))
-            .collect(Collectors.toList());
+    ASTCDMethod visitMethod = visitorService.getVisitorMethod(VISIT, getMCTypeFacade().createQualifiedType(scopeInterfaceName));
+    this.replaceTemplate(EMPTY_BODY, visitMethod, new TemplateHookPoint(TEMPLATE_PATH
+            + "symbols2Json.VisitScope4STP"));
+    visitorMethods.add(visitMethod);
 
-    for (ASTCDClass scopeClass : scopeCD.getCDDefinition().getCDClassList()) {
-      ASTCDMethod visitMethod = visitorService.getVisitorMethod(VISIT, getMCTypeFacade().createQualifiedType(scopeInterfaceName));
-      this.replaceTemplate(EMPTY_BODY, visitMethod, new TemplateHookPoint(TEMPLATE_PATH
-              + "symbols2Json.VisitScope4STP", scopeInterfaceName, scopeClass.getName(), scopeClass.getCDAttributeList()));
-      visitorMethods.add(visitMethod);
+    ASTCDMethod endVisitMethod = visitorService.getVisitorMethod(END_VISIT, getMCTypeFacade().createQualifiedType(scopeInterfaceName));
+    this.replaceTemplate(EMPTY_BODY, endVisitMethod, new StringHookPoint(PRINTER_END_ARRAY + "\n" + PRINTER_END_OBJECT));
+    visitorMethods.add(endVisitMethod);
 
-      ASTCDMethod endVisitMethod = visitorService.getVisitorMethod(END_VISIT, getMCTypeFacade().createQualifiedType(scopeInterfaceName));
-      this.replaceTemplate(EMPTY_BODY, endVisitMethod, new StringHookPoint(PRINTER_END_ARRAY + "\n" + PRINTER_END_OBJECT));
-      visitorMethods.add(endVisitMethod);
-    }
     return visitorMethods;
   }
 
-  protected List<ASTCDMethod> createArtifactScopeVisitorMethods(String artifactScopeClassName, String artifactScopeInterfaceName, List<ASTCDClass> scopeTypes) {
+  protected List<ASTCDMethod> createArtifactScopeVisitorMethods(String artifactScopeInterfaceName) {
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
-    for (ASTCDClass artScopeClass : scopeTypes) {
-      ASTCDMethod visitMethod = visitorService.getVisitorMethod(VISIT, getMCTypeFacade().createQualifiedType(artifactScopeInterfaceName));
-      this.replaceTemplate(EMPTY_BODY, visitMethod, new TemplateHookPoint(TEMPLATE_PATH
-              + "symbols2Json.VisitArtifactScope", artifactScopeInterfaceName, artScopeClass.getName(), artScopeClass.getCDAttributeList()));
-      visitorMethods.add(visitMethod);
+    ASTCDMethod visitMethod = visitorService.getVisitorMethod(VISIT, getMCTypeFacade().createQualifiedType(artifactScopeInterfaceName));
+    this.replaceTemplate(EMPTY_BODY, visitMethod, new TemplateHookPoint(TEMPLATE_PATH
+            + "symbols2Json.VisitArtifactScope"));
+    visitorMethods.add(visitMethod);
 
-      ASTCDMethod endVisitMethod = visitorService
-              .getVisitorMethod(END_VISIT, getMCTypeFacade().createQualifiedType(artifactScopeInterfaceName));
-      this.replaceTemplate(EMPTY_BODY, endVisitMethod, new StringHookPoint(PRINTER_END_ARRAY + "\n" + PRINTER_END_OBJECT));
-      visitorMethods.add(endVisitMethod);
-    }
+    ASTCDMethod endVisitMethod = visitorService
+            .getVisitorMethod(END_VISIT, getMCTypeFacade().createQualifiedType(artifactScopeInterfaceName));
+    this.replaceTemplate(EMPTY_BODY, endVisitMethod, new StringHookPoint(PRINTER_END_ARRAY + "\n" + PRINTER_END_OBJECT));
+    visitorMethods.add(endVisitMethod);
+
     return visitorMethods;
   }
 
@@ -242,17 +239,8 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
       String kind = symbolTableService.getSymbolFullName(symbolProd);
       ASTCDMethod visitMethod = visitorService.getVisitorMethod(VISIT, getMCTypeFacade().createQualifiedType(symbolFullName));
       this.replaceTemplate(EMPTY_BODY, visitMethod,
-              new TemplateHookPoint(TEMPLATE_PATH + "symbols2Json.VisitSymbol", kind, symbolProd.getName(), symbolProd.getCDAttributeList()));
+              new TemplateHookPoint(TEMPLATE_PATH + "symbols2Json.VisitSymbol", symbolProd.getName()));
       visitorMethods.add(visitMethod);
-
-      ASTCDMethod endVisitMethod = visitorService.getVisitorMethod(END_VISIT, getMCTypeFacade().createQualifiedType(symbolFullName));
-      this.replaceTemplate(EMPTY_BODY, endVisitMethod, new StringHookPoint(PRINTER_END_OBJECT));
-      visitorMethods.add(endVisitMethod);
-      if (symbolTableService.hasSymbolSpannedScope(symbolProd)) {
-        ASTCDMethod traverseMethod = visitorService.getVisitorMethod(TRAVERSE, getMCTypeFacade().createQualifiedType(symbolFullName));
-        this.replaceTemplate(EMPTY_BODY, traverseMethod, new TemplateHookPoint(TEMPLATE_PATH + "symbols2Json.TraverseSymbol"));
-        visitorMethods.add(traverseMethod);
-      }
     }
     return visitorMethods;
   }
@@ -418,13 +406,13 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
     return loadMethod;
   }
 
-  protected ASTCDMethod createStoreMethod(String artifactScopeName, String deSerFullName) {
+  protected ASTCDMethod createStoreMethod(String artifactScopeName) {
     ASTCDParameter artifactScopeParam = getCDParameterFacade()
             .createParameter(getMCTypeFacade().createQualifiedType(artifactScopeName), "scope");
     ASTCDParameter fileNameParam = getCDParameterFacade()
             .createParameter(getMCTypeFacade().createStringType(), "fileName");
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createStringType(), "store", artifactScopeParam, fileNameParam);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "symbols2Json.Store", deSerFullName));
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "symbols2Json.Store"));
     return method;
   }
 

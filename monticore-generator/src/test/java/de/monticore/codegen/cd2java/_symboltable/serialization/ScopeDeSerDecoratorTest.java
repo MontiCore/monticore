@@ -143,7 +143,7 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = getMethodBy("serialize", scopeClass);
     assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
     assertEquals(0, method.sizeException());
-    assertEquals(1, method.sizeCDParameters());
+    assertEquals(2, method.sizeCDParameters());
     ASTCDParameter parameter = method.getCDParameter(0);
     assertEquals("toSerialize", parameter.getName());
     assertDeepEquals(I_AUTOMATON_SCOPE, parameter.getMCType());

@@ -68,7 +68,7 @@ public class Symbols2JsonTest extends DecoratorTestCase {
 
   @Test
   public void testTraverseAutomatonSymbolMethod() {
-    List<ASTCDMethod> methodList = getMethodsBy("traverse", 1, symTabPrinterClass);
+    List<ASTCDMethod> methodList = getMethodsBy("visit", 1, symTabPrinterClass);
     ASTMCType astType = this.mcTypeFacade.createQualifiedType(AUTOMATON_SYMBOL);
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());

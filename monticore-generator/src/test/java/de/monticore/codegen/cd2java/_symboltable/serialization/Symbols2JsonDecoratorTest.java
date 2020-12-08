@@ -108,7 +108,7 @@ public class Symbols2JsonDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testCountAttributes(){
-    assertEquals(2, symbolTablePrinterClass.sizeCDAttributes());
+    assertEquals(6, symbolTablePrinterClass.sizeCDAttributes());
   }
 
   @Test
@@ -127,7 +127,7 @@ public class Symbols2JsonDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount(){
-    assertEquals(34, symbolTablePrinterClass.sizeCDMethods());
+    assertEquals(30, symbolTablePrinterClass.sizeCDMethods());
   }
 
   @Test
@@ -212,7 +212,7 @@ public class Symbols2JsonDecoratorTest extends DecoratorTestCase {
   @Test
   public void testEndVisitMethods(){
     List<ASTCDMethod> methods = getMethodsBy("endVisit", symbolTablePrinterClass);
-    assertEquals(5, methods.size());
+    assertEquals(2, methods.size());
     for(ASTCDMethod method: methods){
       assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
       assertTrue(method.getMCReturnType().isPresentMCVoidType());
@@ -220,23 +220,18 @@ public class Symbols2JsonDecoratorTest extends DecoratorTestCase {
       assertEquals("node", method.getCDParameter(0).getName());
     }
     assertDeepEquals(I_AUTOMATON_SCOPE, methods.get(0).getCDParameter(0).getMCType());
-    assertDeepEquals(AUTOMATON_SYMBOL, methods.get(1).getCDParameter(0).getMCType());
-    assertDeepEquals(STATE_SYMBOL, methods.get(2).getCDParameter(0).getMCType());
-    assertDeepEquals(FOO_SYMBOL, methods.get(3).getCDParameter(0).getMCType());
-    assertDeepEquals(I_AUTOMATON_ARTIFACT_SCOPE, methods.get(4).getCDParameter(0).getMCType());
+    assertDeepEquals(I_AUTOMATON_ARTIFACT_SCOPE, methods.get(1).getCDParameter(0).getMCType());
   }
 
   @Test
-  public void testTraverseMethods(){
-    List<ASTCDMethod> methods = getMethodsBy("traverse", symbolTablePrinterClass);
+  public void testInitMethods(){
+    List<ASTCDMethod> methods = getMethodsBy("init", symbolTablePrinterClass);
     assertEquals(1, methods.size());
     for(ASTCDMethod method: methods){
       assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
       assertTrue(method.getMCReturnType().isPresentMCVoidType());
-      assertEquals(1, method.sizeCDParameters());
-      assertEquals("node", method.getCDParameter(0).getName());
+      assertEquals(0, method.sizeCDParameters());
     }
-    assertDeepEquals(AUTOMATON_SYMBOL, methods.get(0).getCDParameter(0).getMCType());
   }
 
   @Test

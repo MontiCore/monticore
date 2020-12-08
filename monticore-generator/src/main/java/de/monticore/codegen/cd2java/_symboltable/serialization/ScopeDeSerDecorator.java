@@ -64,7 +64,6 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
     String symbols2JsonName = symbolTableService.getSymbols2JsonFullName();
     String artifactScopeFullName = symbolTableService.getArtifactScopeFullName();
     String artifactScopeInterfaceFullName = symbolTableService.getArtifactScopeInterfaceFullName();
-    String globalScopeInterfaceFullName = symbolTableService.getGlobalScopeInterfaceFullName();
     String scopeClassFullName = symbolTableService.getScopeInterfaceFullName();
     String simpleName = symbolTableService.getCDName();
     String symTabMillFullName = symbolTableService.getMillFullName();

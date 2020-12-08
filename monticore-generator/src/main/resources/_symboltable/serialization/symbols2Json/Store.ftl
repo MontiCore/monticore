@@ -1,6 +1,7 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("deSer")}
-  java.io.File file = new java.io.File(fileName);
-  String serialized = new ${deSer}().serialize(scope);
-  de.monticore.io.FileReaderWriter.storeInFile(file.toPath(), serialized);
+${tc.signature()}
+  getJsonPrinter().clearBuffer();
+  scope.accept(getTraverser());
+  String serialized = getJsonPrinter().getContent();
+  de.monticore.io.FileReaderWriter.storeInFile(java.nio.file.Paths.get(fileName), serialized);
   return serialized;
