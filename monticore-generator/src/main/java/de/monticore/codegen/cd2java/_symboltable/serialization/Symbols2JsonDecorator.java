@@ -248,17 +248,8 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
       String kind = symbolTableService.getSymbolFullName(symbolProd);
       ASTCDMethod visitMethod = visitorService.getVisitorMethod(VISIT, getMCTypeFacade().createQualifiedType(symbolFullName));
       this.replaceTemplate(EMPTY_BODY, visitMethod,
-              new TemplateHookPoint(TEMPLATE_PATH + "symbols2Json.VisitSymbol", kind, symbolProd.getName(), symbolProd.getCDAttributeList()));
+              new TemplateHookPoint(TEMPLATE_PATH + "symbols2Json.VisitSymbol", symbolProd.getName()));
       visitorMethods.add(visitMethod);
-
-      ASTCDMethod endVisitMethod = visitorService.getVisitorMethod(END_VISIT, getMCTypeFacade().createQualifiedType(symbolFullName));
-      this.replaceTemplate(EMPTY_BODY, endVisitMethod, new StringHookPoint(PRINTER_END_OBJECT));
-      visitorMethods.add(endVisitMethod);
-      if (symbolTableService.hasSymbolSpannedScope(symbolProd)) {
-        ASTCDMethod traverseMethod = visitorService.getVisitorMethod(TRAVERSE, getMCTypeFacade().createQualifiedType(symbolFullName));
-        this.replaceTemplate(EMPTY_BODY, traverseMethod, new TemplateHookPoint(TEMPLATE_PATH + "symbols2Json.TraverseSymbol"));
-        visitorMethods.add(traverseMethod);
-      }
     }
     return visitorMethods;
   }
