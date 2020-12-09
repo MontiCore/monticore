@@ -75,7 +75,7 @@ public class CombineExpressionsWithLiteralsTest {
     CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
 
     Optional<ASTExpression> expr = p.parse_StringExpression("d.s+=d.s");
-    CombineExpressionsWithLiteralsPhasedSymbolTableCreatorDelegator del = new CombineExpressionsWithLiteralsPhasedSymbolTableCreatorDelegator(globalScope1);
+    CombineExpressionsWithLiteralsScopesGenitorDelegator del = new CombineExpressionsWithLiteralsScopesGenitorDelegator(globalScope1);
 
     assertTrue(expr.isPresent());
     ICombineExpressionsWithLiteralsArtifactScope art = del.createFromAST(expr.get());

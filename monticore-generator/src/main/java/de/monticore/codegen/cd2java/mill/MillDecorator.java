@@ -278,12 +278,6 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
     return superMethods;
   }
 
-  protected List<ASTCDMethod> getPhasedSymbolTableCreatorDelegatorMethods(){
-    String phasedSymbolTableCreatorDelegatorName = symbolTableService.getPhasedSymbolTableCreatorDelegatorSimpleName();
-    String phasedSymbolTableCreatorDelegatorFullName = symbolTableService.getPhasedSymbolTableCreatorDelegatorFullName();
-    return getStaticAndProtectedMethods(StringTransformations.uncapitalize(PHASED_SUFFIX + SYMBOL_TABLE_CREATOR_SUFFIX + DELEGATOR_SUFFIX), phasedSymbolTableCreatorDelegatorName, phasedSymbolTableCreatorDelegatorFullName);
-  }
-
   protected List<ASTCDMethod> getScopesGenitorDelegatorMethods(){
     String scopesGenitorSimpleName = symbolTableService.getScopesGenitorDelegatorSimpleName();
     String scopesGenitorFullName = symbolTableService.getScopesGenitorDelegatorFullName();
