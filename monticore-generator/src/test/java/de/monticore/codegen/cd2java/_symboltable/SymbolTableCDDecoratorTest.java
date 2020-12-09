@@ -178,7 +178,7 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
     ASTCDClass automatonArtifactScope = getClassBy("AutomatonArtifactScope", symTabCD);
     ASTCDClass automatonSymbolTableCreator = getClassBy("AutomatonSymbolTableCreator", symTabCD);
     ASTCDClass automatonSymbolTableCreatorDelegator = getClassBy("AutomatonSymbolTableCreatorDelegator", symTabCD);
-    ASTCDClass automatonScopeDeSer = getClassBy("AutomatonScopeDeSer", symTabCD);
+    ASTCDClass automatonDeSer = getClassBy("AutomatonDeSer", symTabCD);
     ASTCDClass automatonSymbolDeSer = getClassBy("AutomatonSymbolDeSer", symTabCD);
     ASTCDClass stateSymbolDeSer = getClassBy("StateSymbolDeSer", symTabCD);
     ASTCDClass fooSymbolDeSer = getClassBy("FooSymbolDeSer", symTabCD);
