@@ -21,7 +21,6 @@ public class CompositeTest extends GeneratorIntegrationsTest {
   @Test
   public void test() {
     final ICompositeGlobalScope scope = CompositeMill.globalScope();
-    scope.setFileExt("host");
     scope.getModelPath().addEntry(Paths.get("src/test/resources/mc/embedding"));
 
   // Symbol of the host language

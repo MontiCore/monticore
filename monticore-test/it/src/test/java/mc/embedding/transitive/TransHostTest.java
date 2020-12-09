@@ -19,7 +19,6 @@ public class TransHostTest extends GeneratorIntegrationsTest {
   public void test() {
     final ITransHostGlobalScope scope = TransHostMill.globalScope();
     scope.getModelPath().addEntry(Paths.get("src/test/resources/mc/embedding/transitive"));
-    scope.setFileExt("transhost");
 
     TransStartSymbol hostSymbol = scope.resolveTransStart("TH").orElse(null);
     assertNotNull(hostSymbol);

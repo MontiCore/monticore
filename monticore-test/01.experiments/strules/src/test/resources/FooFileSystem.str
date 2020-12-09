@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+filesystem {
+  file Foo;
+  folder Bla {
+    folder Bla2 { }
+  }
+}
+

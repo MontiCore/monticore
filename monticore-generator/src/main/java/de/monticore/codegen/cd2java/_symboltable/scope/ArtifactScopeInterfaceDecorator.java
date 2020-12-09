@@ -59,7 +59,6 @@ public class ArtifactScopeInterfaceDecorator extends AbstractCreator<ASTCDCompil
         .setModifier(PUBLIC.build())
         .addAllInterface(getSuperArtifactScopeInterfaces())
         .addInterface(symbolTableService.getScopeInterfaceType())
-        .addAllCDMethods(createPackageNameAttributeMethods())
         .addAllCDMethods(createImportsAttributeMethods())
         .addCDMethod(createGetTopLevelSymbolMethod(symbolProds))
         .addCDMethod(createCheckIfContinueAsSubScopeMethod())
@@ -86,15 +85,6 @@ public class ArtifactScopeInterfaceDecorator extends AbstractCreator<ASTCDCompil
       result.add(getMCTypeFacade().createQualifiedType(I_ARTIFACT_SCOPE_TYPE));
     }
     return result;
-  }
-
-  protected List<ASTCDMethod> createPackageNameAttributeMethods() {
-    ASTCDMethod getMethod = getCDMethodFacade()
-        .createMethod(PUBLIC_ABSTRACT, getMCTypeFacade().createStringType(), "getPackageName");
-    ASTCDMethod setMethod = getCDMethodFacade()
-        .createMethod(PUBLIC_ABSTRACT,  "setPackageName",
-            getCDParameterFacade().createParameter(getMCTypeFacade().createStringType(), "packageName"));
-    return Lists.newArrayList(getMethod, setMethod);
   }
 
   protected List<ASTCDMethod> createImportsAttributeMethods() {
