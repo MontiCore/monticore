@@ -26,7 +26,6 @@ public class BasicSymbolsMill extends BasicSymbolsMillTOP {
     millFunctionSymbolSurrogateBuilder = a;
     millBasicSymbolsSymbolTableCreatorDelegator = a;
     millBasicSymbolsSymbolTableCreator = a;
-    millBasicSymbolsPhasedSymbolTableCreatorDelegator = a;
     millBasicSymbolsTraverserImplementation = a;
     primitiveTypesInitializer = a;
   }
