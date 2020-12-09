@@ -23,6 +23,7 @@ public class SymTabTest {
   @BeforeClass
   public static void setUp(){
     LogStub.init();         // replace log by a sideffect free variant
+    JavaAutMill.init();
     // LogStub.initPlusLog();  // for manual testing purpose only
   }
 
