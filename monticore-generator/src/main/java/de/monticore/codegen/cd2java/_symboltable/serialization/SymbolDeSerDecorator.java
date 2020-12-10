@@ -126,7 +126,7 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
       ASTCDParameter jsonParam, List<ASTCDAttribute> symbolRuleAttributes) {
     ASTCDMethod deserializeMethod = getCDMethodFacade()
         .createMethod(PUBLIC, getMCTypeFacade().createQualifiedType(symbolFullName),
-            DESERIALIZE + symbolSimpleName, jsonParam);
+            DESERIALIZE, jsonParam);
     this.replaceTemplate(EMPTY_BODY, deserializeMethod,
         new TemplateHookPoint(TEMPLATE_PATH + "DeserializeSymbol4SymbolDeSer",
             symbolBuilderFullName, symbolBuilderSimpleName, symTabMill, symbolFullName,

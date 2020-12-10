@@ -1,6 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.symboltable.serialization;
 
+import de.monticore.symboltable.serialization.json.JsonObject;
+
 /**
  * Interface that all (symbol and scope) DeSers implement to provide uniform serialize and
  * deserialize methods. This is required to handle DeSers in the global scopes.

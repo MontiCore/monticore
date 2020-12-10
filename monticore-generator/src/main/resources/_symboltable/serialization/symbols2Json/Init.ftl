@@ -8,5 +8,5 @@ ${tc.signature("globalScope", "scopeDeSerName", "scopeName", "mill", "deSerMap",
   </#list>
   traverser.add4${grammar}(this);
   <#list printerMap as name, printer>
-  traverser.add4${name}(new ${printer}(getJsonPrinter(), getTraverser()));
+  traverser.add4${name}(new ${printer}(getTraverser(), getJsonPrinter()));
   </#list>

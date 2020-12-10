@@ -268,7 +268,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
 
     //add local symbols
     for (ASTCDType prod : symbolTableService.getSymbolDefiningProds(symbolInput)) {
-      String name = symbolTableService.getSymbolFullName(prod, symbolInput.getSymbol());
+      String name = symbolTableService.getSymbolFullName(prod);
       boolean spansScope = symbolTableService.hasScopeStereotype(prod.getModifier());
       symbolMap.put(name, spansScope);
     }
@@ -279,7 +279,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
         if (type.isPresentAstNode() && type.getAstNode().isPresentModifier()
             && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifier())) {
           String name = symbolTableService
-              .getSymbolFullName(type.getAstNode(), symbolInput.getSymbol());
+              .getSymbolFullName(type.getAstNode(), cdDefinitionSymbol);
           boolean spansScope = symbolTableService
               .hasScopeStereotype(type.getAstNode().getModifier());
           symbolMap.put(name, spansScope);

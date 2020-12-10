@@ -2,6 +2,7 @@
 package de.monticore.codegen.cd2java._symboltable.scope;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import de.monticore.cd.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
@@ -378,14 +379,16 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
 
   protected ASTCDMethod createInitMethod(String scopeFullName, String scopeDeSerFullName, List<ASTCDType> symbolDefiningProds){
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, "init");
-    List<String> keys = Lists.newArrayList();
-    symbolDefiningProds.forEach(s -> keys.add(symbolTableService.getSymbolFullName(s)));
+    Map<String, String> map = Maps.newHashMap();
+    symbolDefiningProds.forEach(s ->
+            map.put(symbolTableService.getSymbolFullName(s), symbolTableService.getSymbolDeSerFullName(s)));
     for (CDDefinitionSymbol cdSymbol: symbolTableService.getSuperCDsTransitive()) {
-      keys.add(symbolTableService.getScopeClassFullName(cdSymbol));
-      symbolTableService.getSymbolDefiningProds(cdSymbol.getAstNode()).forEach(s -> keys.add(symbolTableService.getSymbolFullName(s, cdSymbol)));
+      map.put(symbolTableService.getScopeClassFullName(cdSymbol), symbolTableService.getScopeDeSerFullName(cdSymbol));
+      symbolTableService.getSymbolDefiningProds(cdSymbol.getAstNode()).forEach(s ->
+              map.put(symbolTableService.getSymbolFullName(s, cdSymbol), symbolTableService.getSymbolDeSerFullName(s, cdSymbol)));
     }
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "Init",
-            scopeFullName, scopeDeSerFullName, keys));
+            scopeFullName, scopeDeSerFullName, map));
     return method;
   }
 
