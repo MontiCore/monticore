@@ -628,7 +628,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     Symbols2JsonDecorator symbolTablePrinterDecorator = new Symbols2JsonDecorator(glex, symbolTableService, visitorService, methodDecorator);
     ScopesGenitorDecorator scopesGenitorDecorator = new ScopesGenitorDecorator(glex, symbolTableService, visitorService, methodDecorator);
     ScopesGenitorDelegatorDecorator scopesGenitorDelegatorDecorator = new ScopesGenitorDelegatorDecorator(glex, symbolTableService, visitorService);
-    PhasedSymbolTableCreatorDelegatorDecorator phasedSymbolTableCreatorDelegatorDecorator = new PhasedSymbolTableCreatorDelegatorDecorator(glex, symbolTableService, visitorService);
 
     SymbolTableCDDecorator symbolTableCDDecorator = new SymbolTableCDDecorator(glex, handCodedPath, symbolTableService, symbolDecorator,
             symbolBuilderDecorator, symbolReferenceDecorator, symbolReferenceBuilderDecorator,
@@ -638,8 +637,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
             commonSymbolInterfaceDecorator,
             symbolResolverInterfaceDecorator, symbolTableCreatorDecorator,
             symbolTableCreatorDelegatorDecorator, symbolTableCreatorForSuperTypes,
-            symbolDeSerDecorator, scopeDeSerDecorator, symbolTablePrinterDecorator, scopesGenitorDecorator, scopesGenitorDelegatorDecorator,
-        phasedSymbolTableCreatorDelegatorDecorator);
+            symbolDeSerDecorator, scopeDeSerDecorator, symbolTablePrinterDecorator, scopesGenitorDecorator, scopesGenitorDelegatorDecorator);
     ASTCDCompilationUnit symbolTableCompilationUnit = symbolTableCDDecorator.decorate(cd, symbolCD, scopeCD);
 
     TopDecorator topDecorator = new TopDecorator(handCodedPath);
