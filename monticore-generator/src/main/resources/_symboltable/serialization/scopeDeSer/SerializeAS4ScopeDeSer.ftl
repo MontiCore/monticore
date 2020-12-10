@@ -9,6 +9,6 @@ ${tc.signature("scopeAttr")}
     printer.member(de.monticore.symboltable.serialization.JsonDeSers.PACKAGE, toSerialize.getPackageName());
   }
 <#list scopeAttr as attr>
-  serialize${attr}(toSerialize, s2j);
+  serialize${attr?cap_first}(toSerialize, s2j);
 </#list>
   return printer.toString();

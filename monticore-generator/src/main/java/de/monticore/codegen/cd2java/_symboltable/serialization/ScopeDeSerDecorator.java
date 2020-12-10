@@ -3,6 +3,7 @@ package de.monticore.codegen.cd2java._symboltable.serialization;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
+import de.monticore.ast.Comment;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
@@ -51,6 +52,8 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
 
   protected BITSer bitser;
 
+  protected boolean generateAbstractClass;
+
   public ScopeDeSerDecorator(final GlobalExtensionManagement glex,
       final SymbolTableService symbolTableService, final MethodDecorator methodDecorator,
       VisitorService visitorService) {
@@ -59,6 +62,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
     this.symbolTableService = symbolTableService;
     this.methodDecorator = methodDecorator;
     this.bitser = new BITSer();
+    this.generateAbstractClass = false;
   }
 
   /**
@@ -100,26 +104,33 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
     // map with all symbol kinds  available in this scope
     Map<String, Boolean> symbolMap = createSymbolMap(symbolInput.getCDDefinition());
 
-    return CD4CodeMill.cDClassBuilder()
+    ASTCDClass clazz = CD4CodeMill.cDClassBuilder()
         .setName(scopeDeSerName)
         .setModifier(PUBLIC.build())
         .addInterface(interfaceName)
 
-        // serialization
+        // add serialization methods
         .addCDMethod(createSerializeMethod(scopeParam, s2jParam, attrNameList))
         .addCDMethod(createSerializeASMethod(asParam, s2jParam, attrNameList))
         .addAllCDMethods(createSerializeAttrMethod(scopeRuleAttrList, scopeParam, s2jParam))
         .addCDMethod(createSerializeAddonsMethod(scopeParam, s2jParam))
         .addCDMethod(createSerializeAddonsMethod(asParam, s2jParam))
 
-        //deserialization
+        // add deserialization methods
         .addCDMethod(createDeserializeStringMethod(asInterfaceName))
-        .addCDMethod(createDeserializeScopeMethod(scopeClassName, millName, scopeJsonParam, scopeRuleAttrList))
-        .addCDMethod(createDeserializeArtifactScopeMethod(asInterfaceName, millName, scopeJsonParam, scopeRuleAttrList))
-        .addCDMethod(createDeserializeSymbolsMethods(scopeVarParam, scopeJsonParam, symbolMap, millName))
+        .addCDMethod(createDeserializeScopeMethod(scopeClassName, millName, scopeJsonParam,
+            scopeRuleAttrList))
+        .addCDMethod(createDeserializeArtifactScopeMethod(asInterfaceName, millName, scopeJsonParam,
+            scopeRuleAttrList))
+        .addCDMethod(
+            createDeserializeSymbolsMethods(scopeVarParam, scopeJsonParam, symbolMap, millName))
         .addAllCDMethods(createDeserializeAttrMethod(scopeRuleAttrList, scopeJsonParam))
         .addAllCDMethods(createDeserializeAddonsMethods(scopeVarParam, scopeJsonParam))
         .build();
+    if(generateAbstractClass){
+      clazz.getModifier().setAbstract(true);
+    }
+    return clazz;
   }
 
   ////////////////////////////// SERIALIZATON //////////////////////////////////////////////////////
@@ -143,7 +154,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
 
   protected ASTCDMethod createSerializeAddonsMethod(ASTCDParameter toSerialize,
       ASTCDParameter s2j) {
-    return getCDMethodFacade().createMethod(PUBLIC, "serializeAddons", toSerialize, s2j);
+    return getCDMethodFacade().createMethod(PROTECTED, "serializeAddons", toSerialize, s2j);
   }
 
   protected List<ASTCDMethod> createSerializeAttrMethod(
@@ -151,7 +162,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
     List<ASTCDMethod> methodList = new ArrayList<>();
     for (ASTCDAttribute attr : attributeList) {
       String methodName = "serialize" + StringTransformations.capitalize(attr.getName());
-      ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, methodName, toSerialize, s2j);
+      ASTCDMethod method = getCDMethodFacade().createMethod(PROTECTED, methodName, toSerialize, s2j);
 
       // Check whether built-in serialization exists. If yes, use it and otherwise make method abstract
       Optional<HookPoint> impl = bitser.getSerialHook(attr.printType(), attr.getName());
@@ -159,7 +170,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
         this.replaceTemplate(EMPTY_BODY, method, impl.get());
       }
       else {
-        method.getModifier().setAbstract(true);
+        makeMethodAbstract(method, attr);
       }
       methodList.add(method);
     }
@@ -227,7 +238,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
     for (ASTCDAttribute attr : attributeList) {
       String methodName = DESERIALIZE + StringTransformations.capitalize(attr.getName());
       ASTCDMethod method = getCDMethodFacade()
-          .createMethod(PUBLIC, attr.getMCType(), methodName, scopeJsonParam);
+          .createMethod(PROTECTED, attr.getMCType(), methodName, scopeJsonParam);
 
       // Check whether built-in serialization exists. If yes, use it and otherwise make method abstract
       Optional<HookPoint> impl = bitser
@@ -236,7 +247,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
         this.replaceTemplate(EMPTY_BODY, method, impl.get());
       }
       else {
-        method.getModifier().setAbstract(true);
+        makeMethodAbstract(method,attr);
       }
       methodList.add(method);
     }
@@ -279,6 +290,16 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
     return symbolMap.entrySet().stream()
         .sorted(Ordering.natural().onResultOf(a -> a.getKey())).collect(Collectors
             .toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2, LinkedHashMap::new));
+  }
+
+  private void makeMethodAbstract(ASTCDMethod method, ASTCDAttribute attr) {
+    generateAbstractClass = true;
+    method.getModifier().setAbstract(true);
+    method.add_PreComment(new Comment("  /**\n"
+        + "   * Extend the class with the TOP mechanism and implement this method to realize a serialization \n"
+        + "   * strategy for the attribute '\"+attr.getName()+\"'\n"
+        + "   * of type '\"+attr.printType()+\"'!\n"
+        + "   */" ));
   }
 
 }

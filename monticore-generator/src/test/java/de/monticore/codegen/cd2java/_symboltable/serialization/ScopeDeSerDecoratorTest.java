@@ -52,6 +52,8 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
 
   private static final String I_AUTOMATON_SCOPE = "de.monticore.codegen.symboltable.automaton._symboltable.IAutomatonScope";
 
+
+
   @Before
   public void setUp() {
     this.glex = new GlobalExtensionManagement();
@@ -127,7 +129,7 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
     List<ASTCDMethod> methodList = getMethodsBy("serializeAddons", scopeClass);
     assertEquals(2, methodList.size());
     for (ASTCDMethod method : methodList) {
-      assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
+      assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
       assertEquals(0, method.sizeException());
       assertEquals(2, method.sizeCDParameters());
       ASTCDParameter parameter = method.getCDParameter(0);
@@ -192,11 +194,10 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
     }
   }
 
-
   @Test
   public void testDeserializeExtraAttributeMethod(){
     ASTCDMethod method = getMethodBy("deserializeExtraAttribute", scopeClass);
-    assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
+    assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
     assertEquals(0, method.sizeException());
     assertEquals(1, method.sizeCDParameters());
     List<ASTCDParameter> parameters = method.getCDParameterList();
@@ -209,7 +210,7 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
   @Test
   public void testDeserializeFooMethod(){
     ASTCDMethod method = getMethodBy("deserializeFoo", scopeClass);
-    assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
+    assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
     assertEquals(0, method.sizeException());
     assertEquals(1, method.sizeCDParameters());
     List<ASTCDParameter> parameters = method.getCDParameterList();
@@ -222,7 +223,7 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
   @Test
   public void testDeserializeBlaMethod(){
     ASTCDMethod method = getMethodBy("deserializeBla", scopeClass);
-    assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
+    assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
     assertEquals(0, method.sizeException());
     assertEquals(1, method.sizeCDParameters());
     List<ASTCDParameter> parameters = method.getCDParameterList();

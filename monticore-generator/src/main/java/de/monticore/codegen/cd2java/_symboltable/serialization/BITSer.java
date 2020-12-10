@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public class BITSer {
 
-  protected static final Map<String, BITSerStrategy> bitsers = new HashMap<>();
+  protected Map<String, BITSerStrategy> bitsers = new HashMap<>();
 
   public BITSer() {
     init();
@@ -51,25 +51,25 @@ public class BITSer {
    */
   public Optional<HookPoint> getSerialHook(String attrType, String attrName) {
     if (attrType.startsWith("java.util.List<") && attrType.endsWith(">")) {
-      attrName = attrType.substring("java.util.List<".length(), attrType.length() - 1);
+      attrType = attrType.substring("java.util.List<".length(), attrType.length() - 1);
       if (bitsers.containsKey(attrType)) {
         return Optional.of(bitsers.get(attrType).getListSerialHook(attrName));
       }
     }
     else if (attrType.startsWith("List<") && attrType.endsWith(">")) {
-      attrName = attrType.substring("List<".length(), attrType.length() - 1);
+      attrType = attrType.substring("List<".length(), attrType.length() - 1);
       if (bitsers.containsKey(attrType)) {
         return Optional.of(bitsers.get(attrType).getListSerialHook(attrName));
       }
     }
     else if (attrType.startsWith("java.util.Optional<") && attrType.endsWith(">")) {
-      attrName = attrType.substring("java.util.Optional<".length(), attrType.length() - 1);
+      attrType = attrType.substring("java.util.Optional<".length(), attrType.length() - 1);
       if (bitsers.containsKey(attrType)) {
         return Optional.of(bitsers.get(attrType).getOptSerialHook(attrName));
       }
     }
     else if (attrType.startsWith("Optional<") && attrType.endsWith(">")) {
-      attrName = attrType.substring("Optional<".length(), attrType.length() - 1);
+      attrType = attrType.substring("Optional<".length(), attrType.length() - 1);
       if (bitsers.containsKey(attrType)) {
         return Optional.of(bitsers.get(attrType).getOptSerialHook(attrName));
       }
@@ -92,25 +92,25 @@ public class BITSer {
    */
   public Optional<HookPoint> getDeserialHook(String attrType, String attrName, String jsonName) {
     if (attrType.startsWith("java.util.List<") && attrType.endsWith(">")) {
-      attrName = attrType.substring("java.util.List<".length(), attrType.length() - 1);
+      attrType = attrType.substring("java.util.List<".length(), attrType.length() - 1);
       if (bitsers.containsKey(attrType)) {
         return Optional.of(bitsers.get(attrType).getListDeserialHook(jsonName, attrName));
       }
     }
     else if (attrType.startsWith("List<") && attrType.endsWith(">")) {
-      attrName = attrType.substring("List<".length(), attrType.length() - 1);
+      attrType = attrType.substring("List<".length(), attrType.length() - 1);
       if (bitsers.containsKey(attrType)) {
         return Optional.of(bitsers.get(attrType).getListDeserialHook(jsonName, attrName));
       }
     }
     else if (attrType.startsWith("java.util.Optional<") && attrType.endsWith(">")) {
-      attrName = attrType.substring("java.util.Optional<".length(), attrType.length() - 1);
+      attrType = attrType.substring("java.util.Optional<".length(), attrType.length() - 1);
       if (bitsers.containsKey(attrType)) {
         return Optional.of(bitsers.get(attrType).getOptDeserialHook(jsonName, attrName));
       }
     }
     else if (attrType.startsWith("Optional<") && attrType.endsWith(">")) {
-      attrName = attrType.substring("Optional<".length(), attrType.length() - 1);
+      attrType = attrType.substring("Optional<".length(), attrType.length() - 1);
       if (bitsers.containsKey(attrType)) {
         return Optional.of(bitsers.get(attrType).getOptDeserialHook(jsonName, attrName));
       }
