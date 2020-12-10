@@ -84,7 +84,7 @@ This will compile all generated classes located in ‹out/› and all handwritte
     6.  **hwc/automata/_symboltable** contains handwritten extensions of the generated symbol table infrastructure.
 2.  Running the automata DSL tool
     *  Execute the command: <br>
-    **java -cp "src/;out/;hwc/;monticore-cli.jar" automata.AutomataTextTool example/PingPong.aut** <br>
+    **java -cp "src/;out/;hwc/;monticore-cli.jar" automata.AutomataTool example/PingPong.aut** <br>
     **Please note:** on Unix systems paths are separated using ":" (colon) instead of semicolons.
     This will run the automata DSL tool. The argument ‹example/PingPong.aut› is passed to the automata DSL tool as input file. Examine the output on the command line which shows the processing of the example automata model.
 
