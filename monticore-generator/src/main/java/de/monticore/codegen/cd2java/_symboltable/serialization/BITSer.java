@@ -25,9 +25,9 @@ public class BITSer {
     bitsers.put("String", new BITSerStrategy("String"));
     bitsers.put("java.lang.String", new BITSerStrategy("String"));
 
-    bitsers.put("int", new BITSerStrategy("Int"));
-    bitsers.put("java.lang.Integer", new BITSerStrategy("Int"));
-    bitsers.put("Integer", new BITSerStrategy("Int"));
+    bitsers.put("int", new BITSerStrategy("Integer"));
+    bitsers.put("java.lang.Integer", new BITSerStrategy("Integer"));
+    bitsers.put("Integer", new BITSerStrategy("Integer"));
 
     bitsers.put("double", new BITSerStrategy("Double"));
     bitsers.put("java.lang.Double", new BITSerStrategy("Double"));

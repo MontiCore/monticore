@@ -14,13 +14,13 @@ import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
 import de.se_rwth.commons.StringTransformations;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static de.monticore.cd.facade.CDModifier.*;
+import static de.monticore.cd.facade.CDModifier.PROTECTED;
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
@@ -66,8 +66,10 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     String globalScopeName = symbolTableService.getGlobalScopeSimpleName();
     ASTMCQualifiedType scopeType = symbolTableService.getScopeType();
     ASTMCQualifiedType globalScopeInterface = symbolTableService.getGlobalScopeInterfaceType();
+    String scopeFullName = symbolTableService.getScopeClassFullName();
     String definitionName = input.getCDDefinition().getName();
     String scopeDeSerName = symbolTableService.getScopeDeSerSimpleName();
+    String scopeDeSerFullName = symbolTableService.getScopeDeSerFullName();
     String symbols2JsonName = symbolTableService.getSymbols2JsonSimpleName();
 
     ASTCDAttribute cacheAttribute = createCacheAttribute();
@@ -125,7 +127,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
         .addCDMethod(createAddLoadedFileMethod())
         .addCDMethod(createClearLoadedFilesMethod())
         .addCDMethod(createIsFileLoadedMethod())
-        .addCDMethod(createInitMethod(symbolProds))
+        .addCDMethod(createInitMethod(scopeFullName, scopeDeSerFullName, symbolProds))
         .addAllCDAttributes(resolverAttributes.values())
         .addAllCDMethods(resolverMethods)
         .addAllCDMethods(createAlreadyResolvedMethods(symbolProds))
@@ -375,16 +377,16 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     return method;
   }
 
-  protected ASTCDMethod createInitMethod(List<ASTCDType> symbolDefiningProds){
+  protected ASTCDMethod createInitMethod(String scopeFullName, String scopeDeSerFullName, List<ASTCDType> symbolDefiningProds){
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, "init");
     List<String> keys = Lists.newArrayList();
-    keys.add(symbolTableService.getScopeClassFullName());
     symbolDefiningProds.forEach(s -> keys.add(symbolTableService.getSymbolFullName(s)));
     for (CDDefinitionSymbol cdSymbol: symbolTableService.getSuperCDsTransitive()) {
       keys.add(symbolTableService.getScopeClassFullName(cdSymbol));
       symbolTableService.getSymbolDefiningProds(cdSymbol.getAstNode()).forEach(s -> keys.add(symbolTableService.getSymbolFullName(s, cdSymbol)));
     }
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "Init", keys));
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "Init",
+            scopeFullName, scopeDeSerFullName, keys));
     return method;
   }
 
