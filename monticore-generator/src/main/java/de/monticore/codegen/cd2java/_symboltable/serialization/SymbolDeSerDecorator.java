@@ -144,7 +144,7 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
           .createParameter(getMCTypeFacade().createQualifiedType(JSON_OBJECT), "symbolJson");
       ASTCDMethod method = getCDMethodFacade()
           .createMethod(PUBLIC, attr.getMCType(), methodName , jsonParam);
-      Optional<HookPoint> impl = bitser.getDeserialHook(attr.printType(), attr.getName(), "scopeJson");
+      Optional<HookPoint> impl = bitser.getDeserialHook(attr.printType(), attr.getName(), "symbolJson");
       if(impl.isPresent()){
         this.replaceTemplate(EMPTY_BODY, method, impl.get());
       }

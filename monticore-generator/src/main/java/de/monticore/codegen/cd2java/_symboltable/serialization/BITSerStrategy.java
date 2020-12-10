@@ -38,7 +38,7 @@ public class BITSerStrategy {
   }
 
   public HookPoint getDeserialHook(String jsonParam, String attrParam) {
-    String typeMap = ".get" + type + "Member(" + attrParam + ");";
+    String typeMap = ".get" + type + "Member(\"" + attrParam + "\");";
     return new StringHookPoint("return " + jsonParam + typeMap);
   }
 
