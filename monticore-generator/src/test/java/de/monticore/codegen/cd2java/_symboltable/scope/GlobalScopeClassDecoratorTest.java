@@ -187,7 +187,7 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
   public void testScopeDeSerAttribute(){
     ASTCDAttribute astcdAttribute = getAttributeBy("scopeDeSer", scopeClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
-    assertDeepEquals("AutomatonScopeDeSer", astcdAttribute.getMCType());
+    assertDeepEquals("AutomatonDeSer", astcdAttribute.getMCType());
   }
 
   @Test
