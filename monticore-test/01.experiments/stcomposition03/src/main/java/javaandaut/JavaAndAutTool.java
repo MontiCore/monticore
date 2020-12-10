@@ -20,7 +20,6 @@ public class JavaAndAutTool {
   public static IAutomata7ArtifactScope createJavaAndAutSymTab(String model, ModelPath modelPath) {
     ASTAutomaton ast = parseAut(model);
     IAutomata7GlobalScope gs = Automata7Mill.globalScope();
-    gs.setFileExt("aut");
     for (Path p : modelPath.getFullPathOfEntries()) {
       gs.getModelPath().addEntry(p);
     }

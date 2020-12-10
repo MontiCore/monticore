@@ -1,0 +1,36 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+grammar STRules extends de.monticore.MCBasics {
+
+  STRules = "filesystem" "{" (S1 | S2)* "}" ;
+
+  symbol scope S1 = "folder" Name "{" (S1 | S2)* "}";
+
+  symbol S2 = "file" Name ";" ;
+
+  symbol S3 extends S1 = "archive" Name "{" (S1 | S2)* "}";
+
+  symbolrule S1 = a:AType b:java.lang.String? ;
+
+  symbolrule S2 =  c:int*
+                   method public int sumCs() {
+                    int result = 0;
+                    for(int i = 0 ; i < c.size() ; i++) {
+                      result += c.get(i);
+                    }
+                    return result;
+                  }
+                  ;
+
+   symbolrule S3 = /*b:boolean bo:boolean?*/ bl:boolean* bp:boolean+
+                   i:int     io:int?    il:int*    ip:int+
+                   d:double d_o:double? dl:double* dp:double+
+                   s:String  so:String? sl:String* sp:String+
+   ;
+
+  scoperule = a:ISymbol* b:boolean
+  method public boolean isEmpty() {
+    return this.getSymbolsSize() == 0 ;
+  } ;
+
+}
