@@ -26,7 +26,7 @@ public class BITSerStrategy {
   }
 
   public HookPoint getSerialHook(String attrParam) {
-    return new StringHookPoint("return printer.value(" + attrParam + ");");
+    return new StringHookPoint("return s2j.getJsonPrinter().value(" + attrParam + ");");
   }
 
   public HookPoint getOptSerialHook(String attrParam) {

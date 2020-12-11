@@ -1,5 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("name")}
-  printer.beginArray("${name}");
-  ${name}.stream().forEach(e -> printer.value(e));
-  printer.endArray();
+  de.monticore.symboltable.serialization.JsonPrinter p = s2j.getJsonPrinter();
+  p.beginArray("${name}");
+  ${name}.stream().forEach(e -> p.value(e));
+  p.endArray();
