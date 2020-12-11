@@ -2,7 +2,6 @@
 
 package de.monticore.codegen.cd2java._symboltable.serialization;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.generating.templateengine.HookPoint;
 
 import java.util.HashMap;

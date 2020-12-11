@@ -5,6 +5,7 @@ import de.monticore.ast.Comment;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4code.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractCreator;
+import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
@@ -84,7 +85,7 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
 
         //serialization
         .addCDMethod(createSerializeMethod(symbolClass, symParam, s2jParam, spansScope))
-        .addAllCDMethods(createSerializeAttrMethods(attr, symParam, s2jParam))
+        .addAllCDMethods(createSerializeAttrMethods(attr, s2jParam))
         .addCDMethod(createSerializeAddonsMethod(symParam, s2jParam))
 
         //deserialization
@@ -122,10 +123,12 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
   }
 
   protected List<ASTCDMethod> createSerializeAttrMethods(
-      List<ASTCDAttribute> attributes, ASTCDParameter toSerialize, ASTCDParameter s2j) {
+      List<ASTCDAttribute> attributes, ASTCDParameter s2j) {
     List<ASTCDMethod> methodList = new ArrayList<>();
     for (ASTCDAttribute attr : attributes) {
       String methodName = "serialize" + StringTransformations.capitalize(attr.getName());
+      ASTCDParameter toSerialize = getCDParameterFacade()
+          .createParameter(attr.getMCType(), attr.getName());
       ASTCDMethod method = getCDMethodFacade()
           .createMethod(PROTECTED, methodName, toSerialize, s2j);
 

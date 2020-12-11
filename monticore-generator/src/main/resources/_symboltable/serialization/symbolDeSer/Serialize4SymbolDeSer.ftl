@@ -1,5 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("hasSpannedScope", "symbolRuleAttributes")}
+<#assign genHelper = glex.getGlobalVar("astHelper")>
   de.monticore.symboltable.serialization.JsonPrinter p = s2j.getJsonPrinter();
   p.beginObject();
   p.member(de.monticore.symboltable.serialization.JsonDeSers.KIND, getSerializedKind());
@@ -7,7 +8,7 @@ ${tc.signature("hasSpannedScope", "symbolRuleAttributes")}
 
   // serialize symbolrule attributes
 <#list symbolRuleAttributes as attr>
-  serialize${attr.getName()?cap_first}(toSerialize, s2j);
+  serialize${attr.getName()?cap_first}(toSerialize.${genHelper.getPlainGetter(attr)}(), s2j);
 </#list>
 
 <#if hasSpannedScope>

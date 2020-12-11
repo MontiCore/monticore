@@ -99,8 +99,6 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
         .collect(Collectors.toList());
     scopeRuleAttrList.forEach(a -> getDecorationHelper().addAttributeDefaultValues(a, this.glex));
 
-    List<String> attrNameList = scopeRuleAttrList.stream().map(a -> a.getName()).collect(Collectors.toList());;
-
     // map with all symbol kinds  available in this scope
     Map<String, Boolean> symbolMap = createSymbolMap(symbolInput.getCDDefinition());
 
@@ -110,9 +108,9 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
         .addInterface(interfaceName)
 
         // add serialization methods
-        .addCDMethod(createSerializeMethod(scopeParam, s2jParam, attrNameList))
-        .addCDMethod(createSerializeASMethod(asParam, s2jParam, attrNameList))
-        .addAllCDMethods(createSerializeAttrMethods(scopeRuleAttrList, scopeParam, s2jParam))
+        .addCDMethod(createSerializeMethod(scopeParam, s2jParam, scopeRuleAttrList))
+        .addCDMethod(createSerializeASMethod(asParam, s2jParam, scopeRuleAttrList))
+        .addAllCDMethods(createSerializeAttrMethods(scopeRuleAttrList, s2jParam))
         .addCDMethod(createSerializeAddonsMethod(scopeParam, s2jParam))
         .addCDMethod(createSerializeAddonsMethod(asParam, s2jParam))
 
@@ -136,7 +134,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
   ////////////////////////////// SERIALIZATON //////////////////////////////////////////////////////
 
   protected ASTCDMethod createSerializeMethod(ASTCDParameter toSerialize, ASTCDParameter s2j,
-      List<String> scopeRuleAttrList) {
+      List<ASTCDAttribute> scopeRuleAttrList) {
     ASTCDMethod method = getCDMethodFacade()
         .createMethod(PUBLIC, getMCTypeFacade().createStringType(), "serialize", toSerialize, s2j);
     this.replaceTemplate(EMPTY_BODY, method,
@@ -145,7 +143,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
   }
 
   protected ASTCDMethod createSerializeASMethod(ASTCDParameter toSerialize, ASTCDParameter s2j,
-      List<String> scopeRuleAttrList) {
+      List<ASTCDAttribute> scopeRuleAttrList) {
     ASTCDMethod method = getCDMethodFacade()
         .createMethod(PUBLIC, getMCTypeFacade().createStringType(), "serialize", toSerialize, s2j);
     this.replaceTemplate(EMPTY_BODY, method,
@@ -158,10 +156,12 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
   }
 
   protected List<ASTCDMethod> createSerializeAttrMethods(
-      List<ASTCDAttribute> attributeList, ASTCDParameter toSerialize, ASTCDParameter s2j) {
+      List<ASTCDAttribute> attributeList, ASTCDParameter s2j) {
     List<ASTCDMethod> methodList = new ArrayList<>();
     for (ASTCDAttribute attr : attributeList) {
       String methodName = "serialize" + StringTransformations.capitalize(attr.getName());
+      ASTCDParameter toSerialize = getCDParameterFacade()
+          .createParameter(attr.getMCType(), attr.getName());
       ASTCDMethod method = getCDMethodFacade().createMethod(PROTECTED, methodName, toSerialize, s2j);
 
       // Check whether built-in serialization exists. If yes, use it and otherwise make method abstract
