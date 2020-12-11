@@ -18,7 +18,7 @@ ${tc.signature("symTabMill", "symbolFullName", "symbolSimpleName","symbolRuleAtt
 
 <#if spansScope>
   if(symbolJson.hasObjectMember(de.monticore.symboltable.serialization.JsonDeSers.SPANNED_SCOPE)){
-    ${scopeFullName} spannedScope = ${symTabMill}.getDeSer("${scopeFullName}")
+    ${scopeFullName} spannedScope = ${symTabMill}.globalScope().getDeSer("${scopeFullName}")
         .deserializeScope(symbolJson.getObjectMember(
             de.monticore.symboltable.serialization.JsonDeSers.SPANNED_SCOPE));
     symbol.setSpannedScope(spannedScope);
