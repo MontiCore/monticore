@@ -14,7 +14,6 @@ ${tc.signature("hasSpannedScope", "symbolRuleAttributes")}
   // serialize spanned scope
   if (toSerialize.getSpannedScope().isExportingSymbols()
     && toSerialize.getSpannedScope().getSymbolsSize() > 0) {
-//      printer.beginObject(de.monticore.symboltable.serialization.JsonDeSers.SPANNED_SCOPE);
     toSerialize.getSpannedScope().accept(symbols2Json.getTraverser());
   }
 </#if>
@@ -22,4 +21,4 @@ ${tc.signature("hasSpannedScope", "symbolRuleAttributes")}
   serializeAddons(toSerialize, symbols2Json);
   p.endObject();
 
-return p.toString();
+  return p.toString();

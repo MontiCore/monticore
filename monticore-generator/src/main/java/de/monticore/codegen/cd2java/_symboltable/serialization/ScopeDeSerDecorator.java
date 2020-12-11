@@ -112,7 +112,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
         // add serialization methods
         .addCDMethod(createSerializeMethod(scopeParam, s2jParam, attrNameList))
         .addCDMethod(createSerializeASMethod(asParam, s2jParam, attrNameList))
-        .addAllCDMethods(createSerializeAttrMethod(scopeRuleAttrList, scopeParam, s2jParam))
+        .addAllCDMethods(createSerializeAttrMethods(scopeRuleAttrList, scopeParam, s2jParam))
         .addCDMethod(createSerializeAddonsMethod(scopeParam, s2jParam))
         .addCDMethod(createSerializeAddonsMethod(asParam, s2jParam))
 
@@ -124,7 +124,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
             scopeRuleAttrList))
         .addCDMethod(
             createDeserializeSymbolsMethods(scopeVarParam, scopeJsonParam, symbolMap, millName))
-        .addAllCDMethods(createDeserializeAttrMethod(scopeRuleAttrList, scopeJsonParam))
+        .addAllCDMethods(createDeserializeAttrMethods(scopeRuleAttrList, scopeJsonParam))
         .addAllCDMethods(createDeserializeAddonsMethods(scopeVarParam, scopeJsonParam))
         .build();
     if(generateAbstractClass){
@@ -134,6 +134,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
   }
 
   ////////////////////////////// SERIALIZATON //////////////////////////////////////////////////////
+
   protected ASTCDMethod createSerializeMethod(ASTCDParameter toSerialize, ASTCDParameter s2j,
       List<String> scopeRuleAttrList) {
     ASTCDMethod method = getCDMethodFacade()
@@ -152,12 +153,11 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
     return method;
   }
 
-  protected ASTCDMethod createSerializeAddonsMethod(ASTCDParameter toSerialize,
-      ASTCDParameter s2j) {
-    return getCDMethodFacade().createMethod(PROTECTED, "serializeAddons", toSerialize, s2j);
+  protected ASTCDMethod createSerializeAddonsMethod(ASTCDParameter toSer, ASTCDParameter s2j) {
+    return getCDMethodFacade().createMethod(PROTECTED, "serializeAddons", toSer, s2j);
   }
 
-  protected List<ASTCDMethod> createSerializeAttrMethod(
+  protected List<ASTCDMethod> createSerializeAttrMethods(
       List<ASTCDAttribute> attributeList, ASTCDParameter toSerialize, ASTCDParameter s2j) {
     List<ASTCDMethod> methodList = new ArrayList<>();
     for (ASTCDAttribute attr : attributeList) {
@@ -232,7 +232,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
     return method;
   }
 
-  protected List<ASTCDMethod> createDeserializeAttrMethod(
+  protected List<ASTCDMethod> createDeserializeAttrMethods(
       List<ASTCDAttribute> attributeList, ASTCDParameter scopeJsonParam) {
     List<ASTCDMethod> methodList = new ArrayList<>();
     for (ASTCDAttribute attr : attributeList) {
@@ -297,8 +297,8 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
     method.getModifier().setAbstract(true);
     method.add_PreComment(new Comment("  /**\n"
         + "   * Extend the class with the TOP mechanism and implement this method to realize a serialization \n"
-        + "   * strategy for the attribute '\"+attr.getName()+\"'\n"
-        + "   * of type '\"+attr.printType()+\"'!\n"
+        + "   * strategy for the attribute '"+attr.getName()+"'\n"
+        + "   * of type '"+attr.printType()+"'!\n"
         + "   */" ));
   }
 
