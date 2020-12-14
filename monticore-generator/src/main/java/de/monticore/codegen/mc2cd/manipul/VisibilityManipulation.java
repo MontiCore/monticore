@@ -2,6 +2,7 @@
 
 package de.monticore.codegen.mc2cd.manipul;
 
+import de.monticore.cd.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._visitor.CD4AnalysisVisitor;
 
@@ -37,8 +38,7 @@ final class VisibilityManipulation implements UnaryOperator<ASTCDCompilationUnit
   public void visit(ASTCDAttribute cdAttribute) {
     ASTModifier newModifier = cdAttribute.isPresentModifier()
             ? cdAttribute.getModifier()
-            : CD4AnalysisNodeFactory
-            .createASTModifier();
+            : CD4AnalysisMill.modifierBuilder().build();
     newModifier.setProtected(true);
     cdAttribute.setModifier(newModifier);
   }
@@ -49,8 +49,7 @@ final class VisibilityManipulation implements UnaryOperator<ASTCDCompilationUnit
   public void visit(ASTCDClass cdClass) {
     ASTModifier newModifier = cdClass.isPresentModifier()
             ? cdClass.getModifier()
-            : CD4AnalysisNodeFactory
-            .createASTModifier();
+            : CD4AnalysisMill.modifierBuilder().build();
     newModifier.setPublic(true);
     cdClass.setModifier(newModifier);
   }
@@ -61,8 +60,7 @@ final class VisibilityManipulation implements UnaryOperator<ASTCDCompilationUnit
   public void visit(ASTCDInterface cdInterface) {
     ASTModifier newModifier = cdInterface.isPresentModifier()
             ? cdInterface.getModifier()
-            : CD4AnalysisNodeFactory
-            .createASTModifier();
+            : CD4AnalysisMill.modifierBuilder().build();
     newModifier.setPublic(true);
     cdInterface.setModifier(newModifier);
   }

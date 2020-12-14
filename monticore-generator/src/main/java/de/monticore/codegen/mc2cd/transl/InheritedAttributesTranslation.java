@@ -2,10 +2,10 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
+import de.monticore.cd.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.CD4AnalysisNodeFactory;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
@@ -111,7 +111,7 @@ public class InheritedAttributesTranslation implements
             .map(MCGrammarSymbol::getFullName)
             .orElse("");
 
-    ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
+    ASTCDAttribute cdAttribute = CD4AnalysisMill.cDAttributeBuilder().uncheckedBuild();
     if (!interfacesWithoutImplementation.contains(definingNode)) {
       TransformationHelper.addStereoType(
               cdAttribute, MC2CDStereotypes.INHERITED.toString(), superGrammarName);

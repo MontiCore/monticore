@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.mc2cd.scopeTransl;
 
+import de.monticore.cd.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TransformationHelper;
@@ -34,16 +35,16 @@ public class ScopeRuleMethodTranslation implements UnaryOperator<Link<ASTMCGramm
   }
 
   private ASTCDMethod createSimpleCDMethod(ASTGrammarMethod method) {
-    ASTCDMethod cdMethod = CD4AnalysisNodeFactory.createASTCDMethod();
-    cdMethod.setModifier(TransformationHelper.createPublicModifier());
-    cdMethod.setName(method.getName());
+    ASTCDMethodBuilder cdMethod = CD4AnalysisMill.cDMethodBuilder()
+            .setModifier(TransformationHelper.createPublicModifier())
+            .setName(method.getName());
     String dotSeparatedName = MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(method.getMCReturnType());
     cdMethod.setMCReturnType(TransformationHelper.createReturnType(dotSeparatedName));
     for (ASTMethodParameter param : method.getMethodParameterList()) {
       String typeName = MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(param.getType());
       cdMethod.getCDParameterList().add(TransformationHelper.createParameter(typeName, param.getName()));
     }
-    return cdMethod;
+    return cdMethod.build();
   }
 
   private void addMethodBodyStereotype(ASTModifier modifier, StringBuilder code){

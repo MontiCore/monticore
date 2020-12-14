@@ -16,7 +16,7 @@ import de.monticore.visitor.CommonVisitor;
  * type2count member maps the AST-Node-Type as String to it's object count.
  *
  */
-public class ObjectCountVisitor  {
+public class ObjectCountVisitor implements CommonVisitor {
   
   private Map<String, Integer> type2count;
   
@@ -67,7 +67,5 @@ public class ObjectCountVisitor  {
     this.type2count = Maps.newHashMap();
     this.type2countPos = Maps.newHashMap();
   }
-
-  class Counter implements I
   
 }

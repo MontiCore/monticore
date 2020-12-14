@@ -5,6 +5,7 @@ package de.monticore.codegen.mc2cd;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import de.monticore.ast.ASTNode;
+import de.monticore.cd.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._parser.CD4AnalysisParser;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
@@ -147,17 +148,14 @@ public final class TransformationHelper {
 
   public static ASTCDParameter createParameter(String typeName,
                                                String parameterName) {
-    ASTCDParameter parameter = CD4AnalysisNodeFactory
-        .createASTCDParameter();
-    parameter.setMCType(TransformationHelper.createType(typeName));
-    parameter.setName(parameterName);
+    ASTCDParameter parameter = CD4AnalysisMill.cDParameterBuilder()
+      .setMCType(TransformationHelper.createType(typeName))
+      .setName(parameterName).build();
     return parameter;
   }
 
   public static ASTModifier createPublicModifier() {
-    ASTModifier modifier = CD4AnalysisNodeFactory.createASTModifier();
-    modifier.setPublic(true);
-    return modifier;
+    return CD4AnalysisMill.modifierBuilder().setPublic(true).build();
   }
 
   public static ASTMCGenericType createType(
@@ -360,7 +358,7 @@ public final class TransformationHelper {
   public static void addStereoType(ASTCDType type, String stereotypeName,
                                    String stereotypeValue) {
     if (!type.isPresentModifier()) {
-      type.setModifier(CD4AnalysisNodeFactory.createASTModifier());
+      type.setModifier(CD4AnalysisMill.modifierBuilder().build());
     }
     addStereotypeValue(type.getModifier(),
         stereotypeName, stereotypeValue);
@@ -369,7 +367,7 @@ public final class TransformationHelper {
   public static void addStereoType(ASTCDType type, String stereotypeName,
                                    String stereotypeValue, boolean multiple) {
     if (!type.isPresentModifier()) {
-      type.setModifier(CD4AnalysisNodeFactory.createASTModifier());
+      type.setModifier(CD4AnalysisMill.modifierBuilder().build());
     } else if (!multiple) {
       if (type.getModifier().isPresentStereotype()
               && type.getModifier().getStereotype().getValueList().stream().anyMatch(v -> v.getName().equals(stereotypeName))) {
@@ -382,7 +380,7 @@ public final class TransformationHelper {
 
   public static void addStereoType(ASTCDType type, String stereotypeName) {
     if (!type.isPresentModifier()) {
-      type.setModifier(CD4AnalysisNodeFactory.createASTModifier());
+      type.setModifier(CD4AnalysisMill.modifierBuilder().build());
     }
     addStereotypeValue(type.getModifier(),
         stereotypeName);
@@ -390,7 +388,7 @@ public final class TransformationHelper {
 
   public static void addStereoType(ASTCDDefinition type, String stereotypeName) {
     if (!type.isPresentModifier()) {
-      type.setModifier(CD4AnalysisNodeFactory.createASTModifier());
+      type.setModifier(CD4AnalysisMill.modifierBuilder().build());
     }
     addStereotypeValue(type.getModifier(),
         stereotypeName);
@@ -400,7 +398,7 @@ public final class TransformationHelper {
                                    String stereotypeName,
                                    String stereotypeValue) {
     if (!attribute.isPresentModifier()) {
-      attribute.setModifier(CD4AnalysisNodeFactory.createASTModifier());
+      attribute.setModifier(CD4AnalysisMill.modifierBuilder().build());
     }
     addStereotypeValue(attribute.getModifier(),
         stereotypeName, stereotypeValue);
@@ -409,7 +407,7 @@ public final class TransformationHelper {
   public static void addStereoType(ASTCDDefinition type, String stereotypeName,
                                    String stereotypeValue) {
     if (!type.isPresentModifier()) {
-      type.setModifier(CD4AnalysisNodeFactory.createASTModifier());
+      type.setModifier(CD4AnalysisMill.modifierBuilder().build());
     }
     addStereotypeValue(type.getModifier(),
         stereotypeName, stereotypeValue);
@@ -419,29 +417,25 @@ public final class TransformationHelper {
                                         String stereotypeName,
                                         String stereotypeValue) {
     if (!astModifier.isPresentStereotype()) {
-      astModifier.setStereotype(CD4AnalysisNodeFactory
-          .createASTCDStereotype());
+      astModifier.setStereotype(CD4AnalysisMill.cDStereotypeBuilder().build());
     }
     List<ASTCDStereoValue> stereoValueList = astModifier.getStereotype()
         .getValueList();
-    ASTCDStereoValue stereoValue = CD4AnalysisNodeFactory
-        .createASTCDStereoValue();
-    stereoValue.setName(stereotypeName);
-    stereoValue.setValue(stereotypeValue);
+    ASTCDStereoValue stereoValue = CD4AnalysisMill.cDStereoValueBuilder()
+            .setName(stereotypeName)
+            .setValue(stereotypeValue).build();
     stereoValueList.add(stereoValue);
   }
 
   public static void addStereotypeValue(ASTModifier astModifier,
                                         String stereotypeName) {
     if (!astModifier.isPresentStereotype()) {
-      astModifier.setStereotype(CD4AnalysisNodeFactory
-          .createASTCDStereotype());
+      astModifier.setStereotype(CD4AnalysisMill.cDStereotypeBuilder().build());
     }
     List<ASTCDStereoValue> stereoValueList = astModifier.getStereotype()
         .getValueList();
-    ASTCDStereoValue stereoValue = CD4AnalysisNodeFactory
-        .createASTCDStereoValue();
-    stereoValue.setName(stereotypeName);
+    ASTCDStereoValue stereoValue = CD4AnalysisMill.cDStereoValueBuilder()
+            .setName(stereotypeName).build();
     stereoValueList.add(stereoValue);
   }
 

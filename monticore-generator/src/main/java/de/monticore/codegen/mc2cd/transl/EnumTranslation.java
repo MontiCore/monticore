@@ -2,10 +2,10 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
+import de.monticore.cd.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDEnum;
 import de.monticore.cd.cd4analysis._ast.ASTCDEnumConstant;
-import de.monticore.cd.cd4analysis._ast.CD4AnalysisNodeFactory;
 import de.monticore.grammar.LexNamer;
 import de.monticore.grammar.grammar._ast.ASTConstant;
 import de.monticore.grammar.grammar._ast.ASTEnumProd;
@@ -29,8 +29,8 @@ public class EnumTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCDCo
            name = constant.getName();
         }
         final String goodName = LexNamer.createGoodName(name);
-        ASTCDEnumConstant enumConstant = CD4AnalysisNodeFactory.createASTCDEnumConstant();
-        enumConstant.setName(goodName);
+        ASTCDEnumConstant enumConstant = CD4AnalysisMill.cDEnumConstantBuilder()
+                .setName(goodName).build();
         boolean constantAlreadyExists = link.target().getCDEnumConstantList().stream()
             .filter(existing -> existing.getName().equals(goodName))
             .findAny().isPresent();

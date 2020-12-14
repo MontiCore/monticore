@@ -16,6 +16,7 @@ import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
+import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTAction;
 import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVisitor;
 import de.se_rwth.commons.StringTransformations;
@@ -1016,15 +1017,13 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
       addToAntlrCode("/* Automatically added keywords " + grammarInfo.getKeywords()
               + " */");
 
-      // TODO PN, GV
       ArrayList<String> keys = Lists.newArrayList(grammarInfo.getKeywords());
       keys.removeAll(grammarInfo.getKeywordRules());
       for (String y : keys) {
         addToAntlrCode(" | ");
-        ASTTerminal term = GrammarNodeFactory.createASTTerminal();
+        ASTTerminal term = Grammar_WithConceptsMill.terminalBuilder()
+                .setName(y).build();
         ast.get_Children().add(term);
-        // term.set_Parent(ast);
-        term.setName(y);
 
         if (ast.isPresentSymbol()) {
           RuleComponentSymbol componentSymbol = ast.getSymbol();

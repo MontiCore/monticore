@@ -2,10 +2,10 @@
 package de.monticore.codegen.mc2cd.symbolTransl;
 
 import com.google.common.collect.Iterables;
+import de.monticore.cd.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDDefinition;
-import de.monticore.cd.cd4analysis._ast.CD4AnalysisNodeFactory;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.utils.Link;
 
@@ -50,8 +50,8 @@ public class SymbolRulesToCDClassAndCDInterface implements UnaryOperator<Link<AS
 
     for (ASTSymbolRule symbolRule : rootLink.source().getSymbolRuleList()) {
       if (!matchedASTRules.contains(symbolRule)) {
-        ASTCDClass cdClass = CD4AnalysisNodeFactory.createASTCDClass();
-        cdClass.setModifier(CD4AnalysisNodeFactory.createASTModifier());
+        ASTCDClass cdClass = CD4AnalysisMill.cDClassBuilder()
+                .setModifier(CD4AnalysisMill.modifierBuilder().build()).uncheckedBuild();
 
         Link<ASTMCGrammar, ASTCDDefinition> parentLink = Iterables.getOnlyElement(rootLink
             .getLinks(ASTMCGrammar.class, ASTCDDefinition.class));

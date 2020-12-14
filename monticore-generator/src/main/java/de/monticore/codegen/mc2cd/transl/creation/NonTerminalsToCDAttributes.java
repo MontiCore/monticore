@@ -2,6 +2,7 @@
 
 package de.monticore.codegen.mc2cd.transl.creation;
 
+import de.monticore.cd.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVisitor;
@@ -56,7 +57,7 @@ public class NonTerminalsToCDAttributes implements
 
   @Override
   public void visit(ASTNonTerminal node) {
-    ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
+    ASTCDAttribute cdAttribute = CD4AnalysisMill.cDAttributeBuilder().uncheckedBuild();
     link.target().getCDAttributeList().add(cdAttribute);
     new Link<>(node, cdAttribute, link);
 
