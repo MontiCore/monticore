@@ -62,6 +62,7 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
     String scopeName = symbolTableService.getScopeInterfaceFullName();
     String millName = symbolTableService.getMillFullName();
     String s2jName = symbolTableService.getSymbols2JsonFullName();
+    String deSerName = symbolTableService.getScopeDeSerFullName();
 
     ASTMCQualifiedType iDeSerType = getMCTypeFacade().
         createQualifiedType(I_DE_SER + "<" + symName + ", " + s2jName + ">");
@@ -91,7 +92,7 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
         //deserialization
         .addCDMethod(createDeserializeStringMethod(symType))
         .addCDMethod(
-            createDeserializeJsonMethod(symType, millName, symName, jsonParam, attr, spansScope, scopeName))
+            createDeserializeJsonMethod(symType, millName, symName, jsonParam, attr, spansScope, scopeName, deSerName))
         .addAllCDMethods(createDeserializeAttrMethods(attr, jsonParam))
         .addCDMethod(createDeserializeAddons(sym2Param, jsonParam))
 
@@ -161,12 +162,12 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
 
   protected ASTCDMethod createDeserializeJsonMethod(ASTMCQualifiedType type, String symTabMill,
       String symbolFullName, ASTCDParameter jsonParam,
-      List<ASTCDAttribute> symbolRuleAttributes, boolean spansScope, String scopeFullName) {
+      List<ASTCDAttribute> symbolRuleAttributes, boolean spansScope, String scopeFullName, String deSerFullName) {
     ASTCDMethod deserializeMethod = getCDMethodFacade()
         .createMethod(PUBLIC, type, DESERIALIZE, jsonParam);
     this.replaceTemplate(EMPTY_BODY, deserializeMethod,
         new TemplateHookPoint(DESER_SYM_TEMPL, symTabMill, symbolFullName,
-            Names.getSimpleName(symbolFullName), symbolRuleAttributes, spansScope, scopeFullName));
+            Names.getSimpleName(symbolFullName), symbolRuleAttributes, spansScope, scopeFullName, deSerFullName));
     return deserializeMethod;
   }
 

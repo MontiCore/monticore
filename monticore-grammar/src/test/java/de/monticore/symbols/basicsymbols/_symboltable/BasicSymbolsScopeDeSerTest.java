@@ -100,9 +100,9 @@ public class BasicSymbolsScopeDeSerTest {
   }
 
   public void performRoundTripSerialization(IBasicSymbolsScope scope){
-    BasicSymbolsScopeDeSer deser = new BasicSymbolsScopeDeSer();
+    BasicSymbolsDeSer deser = new BasicSymbolsDeSer();
     //first serialize the scope using the deser
-    String serialized = deser.serialize(scope);
+    String serialized = deser.serialize(scope, new BasicSymbolsSymbols2Json());
     // then deserialize it
     IBasicSymbolsArtifactScope deserialized = deser.deserialize(serialized);
     assertNotNull(deserialized);
@@ -154,7 +154,7 @@ public class BasicSymbolsScopeDeSerTest {
     String invalidJsonForSerializing2 = "{\"symbols\": [\"SymbolIsNotAnObject\"]}";
     String invalidJsonForSerializing3 = "{\"symbols\": [{\"kind\":\"unknown\"}]}";
 
-    BasicSymbolsScopeDeSer deser = new BasicSymbolsScopeDeSer();
+    BasicSymbolsDeSer deser = new BasicSymbolsDeSer();
     deser.deserialize(invalidJsonForSerializing);
     assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA1235"));
 

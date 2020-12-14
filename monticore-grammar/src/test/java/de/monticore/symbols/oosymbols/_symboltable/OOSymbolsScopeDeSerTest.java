@@ -5,8 +5,8 @@ package de.monticore.symbols.oosymbols._symboltable;
 
 import com.google.common.collect.Lists;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
-import de.monticore.symbols.oosymbols._symboltable.*;
-import de.monticore.types.check.*;
+import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.check.SymTypeExpressionFactory;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
@@ -15,7 +15,6 @@ import org.junit.Test;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertTrue;
 
 public class OOSymbolsScopeDeSerTest {
 
@@ -87,9 +86,9 @@ public class OOSymbolsScopeDeSerTest {
 
 
   public void performRoundTripSerialization(IOOSymbolsScope scope){
-    OOSymbolsScopeDeSer deser = new OOSymbolsScopeDeSer();
+    OOSymbolsDeSer deser = new OOSymbolsDeSer();
     //first serialize the scope using the deser
-    String serialized = deser.serialize(scope);
+    String serialized = deser.serialize(scope, new OOSymbolsSymbols2Json());
     // then deserialize it
     IOOSymbolsArtifactScope deserialized = deser.deserialize(serialized);
     assertNotNull(deserialized);
@@ -139,7 +138,7 @@ public class OOSymbolsScopeDeSerTest {
     String invalidJsonForSerializing2 = "{\"symbols\": [\"SymbolIsNotAnObject\"]}";
     String invalidJsonForSerializing3 = "{\"symbols\": [{\"kind\":\"unknown\"}]}";
 
-    OOSymbolsScopeDeSer deser = new OOSymbolsScopeDeSer();
+    OOSymbolsDeSer deser = new OOSymbolsDeSer();
     deser.deserialize(invalidJsonForSerializing);
     assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA1235"));
 
