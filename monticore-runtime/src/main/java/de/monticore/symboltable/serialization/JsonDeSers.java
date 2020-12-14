@@ -6,6 +6,7 @@ import de.monticore.symboltable.serialization.json.JsonArray;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.se_rwth.commons.logging.Log;
+import org.checkerframework.checker.units.qual.K;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,7 +55,12 @@ public class JsonDeSers {
     List<JsonObject> symbols = new ArrayList<>();
     if (scopeJson.hasArrayMember(SYMBOLS)) {
       for (JsonElement e : scopeJson.getArrayMember(SYMBOLS)) {
-        symbols.add(e.getAsJsonObject());
+        if(e.isJsonObject()){
+          symbols.add(e.getAsJsonObject());
+        }
+        else {
+          Log.error("0xA1233 Serialized symbol is not a JSON object: '" + e + "'.");
+        }
       }
     }
     return symbols;
@@ -150,4 +156,11 @@ public class JsonDeSers {
     }
   }
 
+  public static String getKind(JsonObject symbol) {
+    if(!symbol.hasStringMember(KIND)){
+      Log.error("0xA1235 Serialized object does not have a kind attribute: '" + symbol + "'.");
+      return "error";
+    }
+    return symbol.getStringMember(KIND);
+  }
 }

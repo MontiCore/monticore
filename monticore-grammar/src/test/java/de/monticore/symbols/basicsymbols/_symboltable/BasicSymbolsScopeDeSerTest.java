@@ -150,7 +150,7 @@ public class BasicSymbolsScopeDeSerTest {
 
   @Test
   public void testInvalidJsonForSerializingReturnsError(){
-    String invalidJsonForSerializing = "{\n\t\"symbols\":\"SymbolsAreNotInAnArray\"\n}";
+    String invalidJsonForSerializing = "{\n\t\"symbols\":[{\"noKind\":true}]}\n}";
     String invalidJsonForSerializing2 = "{\"symbols\": [\"SymbolIsNotAnObject\"]}";
     String invalidJsonForSerializing3 = "{\"symbols\": [{\"kind\":\"unknown\"}]}";
 
@@ -159,10 +159,10 @@ public class BasicSymbolsScopeDeSerTest {
     assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA1235"));
 
     deser.deserialize(invalidJsonForSerializing2);
-    assertTrue(Log.getFindings().get(1).getMsg().startsWith("0xA1234"));
+    assertTrue(Log.getFindings().get(2).getMsg().startsWith("0xA1233"));
 
     deser.deserialize(invalidJsonForSerializing3);
-    assertTrue(Log.getFindings().get(2).getMsg().startsWith("0xA1234"));
+    assertTrue(Log.getFindings().get(3).getMsg().startsWith("0xA1234"));
   }
 
 

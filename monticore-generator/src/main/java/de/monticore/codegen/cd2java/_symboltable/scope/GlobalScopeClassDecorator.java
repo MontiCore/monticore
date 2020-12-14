@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._symboltable.scope;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import de.monticore.cd.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd.cd4analysis._ast.*;
@@ -11,6 +10,7 @@ import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
@@ -83,8 +83,8 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     scopeDeSerMethods.addAll(mutatorDecorator.decorate(scopeDeSerAttribute));
 
     ASTCDAttribute symbols2JsonAttribute = createSymbols2JsonAttribute(symbols2JsonName);
-    List<ASTCDMethod> symbols2JsonMethods = accessorDecorator.decorate(symbols2JsonAttribute);
-    symbols2JsonMethods.addAll(mutatorDecorator.decorate(symbols2JsonAttribute));
+    List<ASTCDMethod> symbols2JsonMethods = mutatorDecorator.decorate(symbols2JsonAttribute);
+    symbols2JsonMethods.add(createGetSymbols2JsonMethod(symbols2JsonAttribute));
 
     List<ASTCDType> symbolProds = symbolTableService.getSymbolDefiningProds(input.getCDDefinition());
 
@@ -148,17 +148,15 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     ASTCDParameter fileExtensionParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createStringType(), FILE_EXTENSION_VAR);
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), globalScopeClassName, modelPathParameter, fileExtensionParameter);
     String scopeDeSerFullName = symbolTableService.getScopeDeSerFullName();
-    String symbols2JsonFullName = symbolTableService.getSymbols2JsonFullName();
     this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint(TEMPLATE_PATH + "ConstructorGlobalScope",
-        scopeDeSerFullName, symbols2JsonFullName, symbolTableService.getCDName()));
+        scopeDeSerFullName));
     return constructor;
   }
 
   protected ASTCDConstructor createZeroArgsConstructor(String className){
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), className);
     String scopeDeSerFullName = symbolTableService.getScopeDeSerFullName();
-    String grammarName = symbolTableService.getCDName();
-    this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint(TEMPLATE_PATH + "ZeroArgsConstructorGlobalScope", scopeDeSerFullName, grammarName));
+    this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint(TEMPLATE_PATH + "ZeroArgsConstructorGlobalScope", scopeDeSerFullName));
     return constructor;
   }
 
@@ -367,6 +365,14 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     ASTCDParameter parameter = getCDParameterFacade().createParameter(getMCTypeFacade().createStringType(), NAME_VAR);
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createBooleanType(), "isFileLoaded", parameter);
     this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return cache.contains(name);"));
+    return method;
+  }
+
+  protected ASTCDMethod createGetSymbols2JsonMethod(ASTCDAttribute s2j) {
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, s2j.getMCType(), "getSymbols2Json");
+    String s2jClassName = symbolTableService.getSymbols2JsonFullName();
+    HookPoint hookPoint = new TemplateHookPoint(TEMPLATE_PATH + "GetSymbols2Json", s2j.getName(), s2jClassName);
+    this.replaceTemplate(EMPTY_BODY, method, hookPoint);
     return method;
   }
 

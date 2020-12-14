@@ -105,6 +105,7 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
 
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC, symbolTablePrinterName);
     StringBuilder sb = new StringBuilder("this(" + millName + ".traverser(), new " + JSON_PRINTER + "());\n");
+    sb.append(  "traverser.add4"+symbolTableService.getCDName()+"(this);");
     this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint(sb.toString()));
     constructors.add(constructor);
 
@@ -136,9 +137,8 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
       printerMap.put(cdSymbol.getName(), symbolTableService.getSymbols2JsonFullName(cdSymbol));
     }
     this.replaceTemplate(EMPTY_BODY, initMethod,
-            new TemplateHookPoint(TEMPLATE_PATH + "symbols2Json.Init",
-                    globalScope, deSerFullName, scopeFullName, millName,
-                    deSerMap, symbolTableService.getCDName(), printerMap));
+            new TemplateHookPoint(TEMPLATE_PATH + "symbols2Json.Init", globalScope,
+                deSerFullName, scopeFullName, millName, deSerMap, printerMap));
     return initMethod;
   }
 

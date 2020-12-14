@@ -224,11 +224,11 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
 
   protected ASTCDMethod createDeserializeSymbolsMethods(ASTCDParameter scopeParam,
       ASTCDParameter jsonParam, Map<String, Boolean> symbolMap, String millName) {
-
     ASTCDMethod method = getCDMethodFacade()
         .createMethod(PROTECTED, "deserializeSymbols", scopeParam, jsonParam);
+    String errorCode = symbolTableService.getGeneratedErrorCode("deserializeSymbols"+millName);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(
-        DESERIALIZE_SYMBOLS_TEMPL, symbolMap, millName));
+        DESERIALIZE_SYMBOLS_TEMPL, symbolMap, millName, errorCode));
     return method;
   }
 

@@ -1,8 +1,8 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("symbolMap", "mill")}
+${tc.signature("symbolMap", "mill", "errorCode")}
   for (de.monticore.symboltable.serialization.json.JsonObject symbol :
       de.monticore.symboltable.serialization.JsonDeSers.getSymbols(scopeJson)) {
-    String kind = symbol.getStringMember(de.monticore.symboltable.serialization.JsonDeSers.KIND);
+    String kind = de.monticore.symboltable.serialization.JsonDeSers.getKind(symbol);
 <#assign count=0>
     switch (kind) {
 <#list symbolMap?keys as kind>
@@ -17,7 +17,7 @@ ${tc.signature("symbolMap", "mill")}
 <#assign count++>
 </#list>
       default:
-        Log.warn("Ignoring deserialization of unknown symbol kind '"+kind+"'");
+        Log.error("0xA1234x${errorCode} Unable to deserialize symbol of kind `" + kind + "`");
     }
   }
 
