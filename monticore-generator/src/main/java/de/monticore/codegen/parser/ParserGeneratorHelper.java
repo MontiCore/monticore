@@ -460,9 +460,6 @@ public class ParserGeneratorHelper {
     return StringTransformations.uncapitalize(rule.getName());
   }
 
-  public static String getParseRuleNameJavaCompatible(ProdSymbol rule) {
-    return JavaNamesHelper.getNonReservedName(StringTransformations.uncapitalize(rule.getName()));
-  }
 
   /**
    * @return the qualified name for this type

@@ -311,7 +311,7 @@ public final class TransformationHelper {
   }
 
   public static String getQualifiedTypeNameAndMarkIfExternal(ASTMCType ruleReference,
-                                                             ASTMCGrammar grammar, ASTCDClass cdClass) {
+                                                             ASTMCGrammar grammar, ASTCDType cdType) {
 
     Optional<ProdSymbol> typeSymbol = resolveAstRuleType(grammar, ruleReference);
 
@@ -319,24 +319,7 @@ public final class TransformationHelper {
         typeSymbol, ruleReference);
 
     if (!typeSymbol.isPresent()) {
-      addStereoType(cdClass,
-          MC2CDStereotypes.EXTERNAL_TYPE.toString(), qualifiedRuleName);
-    }
-
-    return qualifiedRuleName;
-  }
-
-  // TODO GV: remove this if CDInterface and CDClass have a common type CDType
-  public static String getQualifiedTypeNameAndMarkIfExternal(ASTMCType ruleReference,
-                                                             ASTMCGrammar grammar, ASTCDInterface interf) {
-
-    Optional<ProdSymbol> typeSymbol = resolveAstRuleType(grammar, ruleReference);
-
-    String qualifiedRuleName = getQualifiedAstName(
-        typeSymbol, ruleReference);
-
-    if (!typeSymbol.isPresent()) {
-      addStereoType(interf,
+      addStereoType(cdType,
           MC2CDStereotypes.EXTERNAL_TYPE.toString(), qualifiedRuleName);
     }
 
@@ -351,17 +334,12 @@ public final class TransformationHelper {
     Optional<ProdSymbol> ruleSymbol = MCGrammarSymbolTableHelper.resolveRule(node,
         simpleName
             .substring(AST_PREFIX.length()));
-    if (ruleSymbol.isPresent() && istPartOfGrammar(ruleSymbol.get())) {
+    if (ruleSymbol.isPresent()) {
       return ruleSymbol;
     }
     return Optional.empty();
   }
 
-  // TODO GV, PN: change it
-  public static boolean istPartOfGrammar(ProdSymbol rule) {
-    return rule.getEnclosingScope().isPresentSpanningSymbol()
-        && rule.getEnclosingScope().getSpanningSymbol() instanceof MCGrammarSymbol;
-  }
 
   public static String getGrammarName(ProdSymbol rule) {
     return Names.getQualifier(rule.getFullName());

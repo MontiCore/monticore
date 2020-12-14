@@ -5,14 +5,13 @@ package de.monticore.codegen.mc2cd;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
 import de.monticore.ast.ASTNode;
 import de.monticore.grammar.HelperGrammar;
 import de.monticore.grammar.RegExpBuilder;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.*;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
-import de.monticore.symboltable.IScope;
+import de.monticore.symboltable.IScopeSpanningSymbol;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.Util;
 import de.se_rwth.commons.logging.Log;
@@ -65,12 +64,13 @@ public class MCGrammarSymbolTableHelper {
   }
 
   public static Optional<ProdSymbol> getEnclosingRule(ASTRuleComponent astNode) {
-    return getAllScopes(astNode.getEnclosingScope()).stream()
-        .filter(IScope::isPresentSpanningSymbol)
-        .map(IScope::getSpanningSymbol)
-        .filter(ProdSymbol.class::isInstance)
-        .map(ProdSymbol.class::cast)
-        .findFirst();
+    if (astNode.getEnclosingScope().isPresentSpanningSymbol()) {
+      IScopeSpanningSymbol s = astNode.getEnclosingScope().getSpanningSymbol();
+      if (s instanceof ProdSymbol) {
+        return Optional.of((ProdSymbol) s);
+      }
+    }
+    return Optional.empty();
   }
 
   public static Optional<ProdSymbol> getEnclosingRule(RuleComponentSymbol prod) {
@@ -107,20 +107,6 @@ public class MCGrammarSymbolTableHelper {
         || ((ASTLexProd) astNode).isFragment();
   }
 
-  private static Set<IGrammarScope> getAllScopes(IGrammarScope scope) {
-    Set<IGrammarScope> ret = Sets.newHashSet(scope);
-    // TODO
-    // return getAllSubSymbols(astNode).stream()
-    // .map(Symbol::getEnclosingScope)
-    // .flatMap(
-    // scope -> listTillNull(scope, childScope ->
-    // childScope.getEnclosingScope().orElse(null))
-    // .stream())
-    // .collect(Collectors.toSet());
-    return ret;
-
-  }
-
   private static String getLexString(MCGrammarSymbol grammar, ASTLexProd lexNode) {
     StringBuilder builder = new StringBuilder();
     RegExpBuilder regExp = new RegExpBuilder(builder, grammar);
@@ -146,52 +132,19 @@ public class MCGrammarSymbolTableHelper {
     return ret;
   }
 
-  // TODO GV:
-
-  /**
-   * Returns the STType associated with this name Use "super." as a prefix to
-   * explicitly access the type of supergrammars this grammar overriddes.
-   * Native/external types are types that are not defined in the grammar but are
-   * refered from it. These types are indicated by the suffix "/" in the grammar
-   * and refer to regular Java types. To access these type use the prefix "/"
-   * e.g. "/String" or "/int"
-   *
-   * @param name Name of the type
-   * @return Symboltable entry for this type
-   */
-  public static Optional<ProdSymbol> getTypeWithInherited(String name,
-                                                          MCGrammarSymbol gramamrSymbol) {
-    Optional<ProdSymbol> ret = Optional.empty();
-    if (name.startsWith("super.")) {
-      name = name.substring(6);
-    } else {
-      ret = gramamrSymbol.getProd(name);
-    }
-
-    if (!ret.isPresent()) {
-      ret = gramamrSymbol.getProdWithInherited(name);
-    }
-    return ret;
-  }
 
   /**
    * @return the qualified name for this type
    */
-  // TODO GV: change implementation
   public static String getQualifiedName(ProdSymbol symbol) {
     if (!symbol.isPresentAstNode()) {
       return "UNKNOWN_TYPE";
     }
     if (symbol.isIsLexerProd()) {
       return getLexType(symbol.getAstNode());
-    }
-    if (symbol.isIsEnum()) {
+    } else {
       return getQualifiedName(symbol.getAstNode(), symbol, AST_PREFIX, "");
-      // return "int";
-      // TODO GV:
-      // return getConstantType();
     }
-    return getQualifiedName(symbol.getAstNode(), symbol, AST_PREFIX, "");
   }
 
   public static String getDefaultValue(ProdSymbol symbol) {

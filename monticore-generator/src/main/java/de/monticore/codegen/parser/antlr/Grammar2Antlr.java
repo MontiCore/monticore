@@ -169,10 +169,6 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
       options = "@rulecatch{}";
     }
 
-    // TODO: Antlr4 Dies war die Alternative, wenn es keine Parameter
-    // gibt.
-    // Ist aber wahrscheinlich so korrekt,
-    // erzeugt bestimmt Default für ret ...
     addDummyRules(ast.getName(), ruleName,
             classnameFromRulenameorInterfacename);
 
@@ -1062,7 +1058,6 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
   private void addCodeForRuleReference(ASTNonTerminal ast) {
     Optional<ProdSymbol> scope = MCGrammarSymbolTableHelper.getEnclosingRule(ast);
     if (!scope.isPresent()) {
-      // TODO MB: Ist hier wirklich ein Optional nötig?
       return;
     }
     boolean isLeftRecursive = false;
@@ -1092,7 +1087,6 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
                 .getActionForInternalRuleNotIteratedLeftRecursiveAttribute(ast));
       }
       addToAction(attributeConstraints.addActionForNonTerminal(ast));
-      // TODO GV:
       String attributename = ast.isPresentUsageName() ? ast.getUsageName() : StringTransformations.uncapitalize(ast.getName());
       List<RuleComponentSymbol> rcs = scope.get().getSpannedScope().resolveRuleComponentDownMany(attributename);
       if (!rcs.isEmpty() && rcs.get(0).isIsList()) {
@@ -1101,7 +1095,6 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
         addToAction(astActions.getActionForInternalRuleNotIteratedAttribute(ast));
       }
 
-      // TODO GV: replaceAll("..", ".")); is deprecated?
       addActionToCodeSection();
     }
 
