@@ -4,6 +4,7 @@ import coloredgraph.ColoredGraphMill;
 import coloredgraph._ast.ASTGraph;
 import coloredgraph._parser.ColoredGraphParser;
 import coloredgraph._symboltable.*;
+import coloredgraph._visitor.ColoredGraphTraverser;
 import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.RecognitionException;
 
@@ -37,8 +38,13 @@ public class ColoredGraphTool {
 
     // instantiate symbol table:
     ColoredGraphMill.globalScope().setFileExt("cg");
-    ColoredGraphPhasedSymbolTableCreatorDelegator stc = new ColoredGraphPhasedSymbolTableCreatorDelegator();
+    ColoredGraphScopesGenitorDelegator stc = ColoredGraphMill.scopesGenitorDelegator();
     IColoredGraphArtifactScope symTab = stc.createFromAST(ast);
+    ColoredGraphSTCompleteTypes stCompleteTypes = new ColoredGraphSTCompleteTypes();
+    ColoredGraphTraverser traverser = ColoredGraphMill.traverser();
+    traverser.add4ColoredGraph(stCompleteTypes);
+    ast.accept(traverser);
+    symTab.setNumberOfColors(stCompleteTypes.getAllColors().size());
 
     Log.info("------------------", "ColoredGraphTool");
 
