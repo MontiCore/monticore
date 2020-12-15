@@ -14,8 +14,6 @@ import java.util.List;
  */ 
 public class VertexSymbolDeSer extends VertexSymbolDeSerTOP {
 
-  JsonPrinter printer = new JsonPrinter();
-
   /**
    * This method deserializes the color of a vertex from a JSON array with numeric values for
    * each red, green, and blue to an instance of java.awt.Color.
@@ -45,10 +43,11 @@ public class VertexSymbolDeSer extends VertexSymbolDeSerTOP {
    */
     @Override
     public void serializeColor(Color color, ColoredGraphSymbols2Json s2j) {
-    printer.beginArray("color");     // Serialize color as arrays,
-    printer.value(color.getRed());   // add red value first
-    printer.value(color.getGreen()); // ... followed by green
-    printer.value(color.getBlue());  // ... and blue.
-    printer.endArray();              // Print the array end.
+      JsonPrinter p = s2j.getJsonPrinter();
+      p.beginArray("color");  // Serialize color as arrays,
+      p.value(color.getRed());      // add red value first
+      p.value(color.getGreen());    // ... followed by green
+      p.value(color.getBlue());     // ... and blue.
+      p.endArray();                 // Print the array end.
   }
 }
