@@ -9,7 +9,6 @@ import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConcep
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

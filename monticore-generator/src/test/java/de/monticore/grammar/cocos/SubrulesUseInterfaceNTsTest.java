@@ -5,7 +5,6 @@ package de.monticore.grammar.cocos;
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class SubrulesUseInterfaceNTsTest extends CocoTest {

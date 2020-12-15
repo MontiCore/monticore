@@ -7,7 +7,6 @@ import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.nio.file.Paths;
