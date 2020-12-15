@@ -24,6 +24,10 @@ ${tc.signature("symTabMill", "symbolFullName", "symbolSimpleName","symbolRuleAtt
             de.monticore.symboltable.serialization.JsonDeSers.SPANNED_SCOPE));
     symbol.setSpannedScope(spannedScope);
   }
+  else{
+  ${scopeFullName} spannedScope = ${symTabMill}.scope();
+  symbol.setSpannedScope(spannedScope);
+  }
 </#if>
 
   deserializeAddons(symbol, symbolJson);

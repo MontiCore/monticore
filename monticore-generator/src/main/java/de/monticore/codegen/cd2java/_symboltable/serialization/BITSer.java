@@ -17,28 +17,35 @@ public class BITSer {
   }
 
   public void init() {
-    bitsers.put("boolean", new BITSerStrategy("Boolean"));
-    bitsers.put("Boolean", new BITSerStrategy("Boolean"));
-    bitsers.put("java.lang.Boolean", new BITSerStrategy("Boolean"));
 
-    bitsers.put("String", new BITSerStrategy("String"));
-    bitsers.put("java.lang.String", new BITSerStrategy("String"));
+    BITSerStrategy bool = new BITSerStrategy("Boolean","false");
+    bitsers.put("boolean", bool);
+    bitsers.put("Boolean", bool);
+    bitsers.put("java.lang.Boolean", bool);
 
-    bitsers.put("int", new BITSerStrategy("Integer"));
-    bitsers.put("java.lang.Integer", new BITSerStrategy("Integer"));
-    bitsers.put("Integer", new BITSerStrategy("Integer"));
+    BITSerStrategy string = new BITSerStrategy("Boolean","\"\"", true);
+    bitsers.put("String", string);
+    bitsers.put("java.lang.String", string);
 
-    bitsers.put("double", new BITSerStrategy("Double"));
-    bitsers.put("java.lang.Double", new BITSerStrategy("Double"));
-    bitsers.put("Double", new BITSerStrategy("Double"));
+    BITSerStrategy _int = new BITSerStrategy("Integer","0");
+    bitsers.put("int", _int);
+    bitsers.put("java.lang.Integer", _int);
+    bitsers.put("Integer", _int);
 
-    bitsers.put("float", new BITSerStrategy("Float"));
-    bitsers.put("java.lang.Float", new BITSerStrategy("Float"));
-    bitsers.put("Float", new BITSerStrategy("Float"));
+    BITSerStrategy _double = new BITSerStrategy("Double","0.0");
+    bitsers.put("double", _double);
+    bitsers.put("java.lang.Double", _double);
+    bitsers.put("Double", _double);
 
-    bitsers.put("long", new BITSerStrategy("Long"));
-    bitsers.put("java.lang.Long", new BITSerStrategy("Long"));
-    bitsers.put("Long", new BITSerStrategy("Long"));
+    BITSerStrategy _float = new BITSerStrategy("Float","0.0f");
+    bitsers.put("float", _float);
+    bitsers.put("java.lang.Float", _float);
+    bitsers.put("Float", _float);
+
+    BITSerStrategy _long = new BITSerStrategy("Long","0L");
+    bitsers.put("long", _long);
+    bitsers.put("java.lang.Long", _long);
+    bitsers.put("Long", _long);
   }
 
   /**

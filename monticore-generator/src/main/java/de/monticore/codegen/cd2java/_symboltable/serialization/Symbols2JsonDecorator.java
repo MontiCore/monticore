@@ -62,7 +62,6 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
     String symbols2JsonName = symbolTableService.getSymbols2JsonSimpleName();
     String scopeInterfaceFullName = symbolTableService.getScopeInterfaceFullName();
     String artifactScopeInterfaceFullName = symbolTableService.getArtifactScopeInterfaceFullName();
-    String scopeClassFullName = symbolTableService.getScopeClassFullName();
     String deSerFullName = symbolTableService.getScopeDeSerFullName();
     List<ASTCDType> symbolDefiningProds = symbolTableService.getSymbolDefiningProds(symbolCD.getCDDefinition());
     String visitorFullName = visitorService.getVisitor2FullName();
@@ -84,7 +83,7 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
             .addAllCDMethods(accessorDecorator.decorate(traverserAttribute))
             .addAllCDMethods(mutatorDecorator.decorate(traverserAttribute))
             .addAllCDConstructors(createConstructors(millName, traverserFullName, symbols2JsonName))
-            .addCDMethod(createInitMethod(deSerFullName, scopeClassFullName, symbolDefiningProds, superGrammars))
+            .addCDMethod(createInitMethod(deSerFullName, scopeInterfaceFullName, symbolDefiningProds, superGrammars))
             .addCDMethod(createGetSerializedStringMethod())
             .addAllCDMethods(createLoadMethods(artifactScopeInterfaceFullName))
             .addCDMethod(createStoreMethod(artifactScopeInterfaceFullName))

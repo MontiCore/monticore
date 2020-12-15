@@ -11,6 +11,8 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
  */
 public class BITSerStrategy {
 
+  protected static final String PRINT_PLAIN_TEMPLATE = "_symboltable.serialization.PrintPlainAttribute";
+
   protected static final String PRINT_LIST_TEMPLATE = "_symboltable.serialization.PrintListAttribute";
 
   protected static final String PRINT_OPT_TEMPLATE = "_symboltable.serialization.PrintOptionalAttribute";
@@ -21,12 +23,24 @@ public class BITSerStrategy {
 
   protected String type;
 
-  public BITSerStrategy(String type) {
+  protected String defaultValue;
+
+  protected boolean useEquals;
+
+  public BITSerStrategy(String type, String defaultValue) {
     this.type = type;
+    this.defaultValue = defaultValue;
+    this.useEquals = false;
+  }
+
+  public BITSerStrategy(String type, String defaultValue, boolean useEquals) {
+    this.type = type;
+    this.defaultValue = defaultValue;
+    this.useEquals = useEquals;
   }
 
   public HookPoint getSerialHook(String attrParam) {
-    return new StringHookPoint("s2j.getJsonPrinter().member(\"" + attrParam +"\", "+attrParam + ");");
+    return new TemplateHookPoint(PRINT_PLAIN_TEMPLATE, attrParam, defaultValue, useEquals);
   }
 
   public HookPoint getOptSerialHook(String attrParam) {
@@ -38,7 +52,7 @@ public class BITSerStrategy {
   }
 
   public HookPoint getDeserialHook(String jsonParam, String attrParam) {
-    String typeMap = ".get" + type + "Member(\"" + attrParam + "\");";
+    String typeMap = ".get" + type + "MemberOpt(\"" + attrParam + "\").orElse("+defaultValue+");";
     return new StringHookPoint("return " + jsonParam + typeMap);
   }
 

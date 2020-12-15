@@ -67,7 +67,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     String globalScopeName = symbolTableService.getGlobalScopeSimpleName();
     ASTMCQualifiedType scopeType = symbolTableService.getScopeType();
     ASTMCQualifiedType globalScopeInterface = symbolTableService.getGlobalScopeInterfaceType();
-    String scopeFullName = symbolTableService.getScopeClassFullName();
+    String scopeInterfaceFullName = symbolTableService.getScopeInterfaceFullName();
     String definitionName = input.getCDDefinition().getName();
     String scopeDeSerName = symbolTableService.getScopeDeSerSimpleName();
     String scopeDeSerFullName = symbolTableService.getScopeDeSerFullName();
@@ -128,7 +128,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
         .addCDMethod(createAddLoadedFileMethod())
         .addCDMethod(createClearLoadedFilesMethod())
         .addCDMethod(createIsFileLoadedMethod())
-        .addCDMethod(createInitMethod(scopeFullName, scopeDeSerFullName, symbolProds))
+        .addCDMethod(createInitMethod(scopeInterfaceFullName, scopeDeSerFullName, symbolProds))
         .addAllCDAttributes(resolverAttributes.values())
         .addAllCDMethods(resolverMethods)
         .addAllCDMethods(createAlreadyResolvedMethods(symbolProds))
