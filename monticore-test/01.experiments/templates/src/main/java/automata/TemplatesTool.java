@@ -5,10 +5,7 @@ import automata._ast.ASTAutomaton;
 import automata._ast.ASTState;
 import automata._ast.ASTTransition;
 import automata._parser.AutomataParser;
-import automata._symboltable.AutomataSymbolTableCreator;
-import automata._symboltable.AutomataSymbols2Json;
-import automata._symboltable.IAutomataArtifactScope;
-import automata._symboltable.IAutomataGlobalScope;
+import automata._symboltable.*;
 import com.google.common.collect.Lists;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
@@ -366,9 +363,8 @@ public class TemplatesTool {
    * @return
    */
   public IAutomataArtifactScope createSymbolTable(ASTAutomaton ast) {
-    AutomataSymbolTableCreator stc = AutomataMill.automataSymbolTableCreator();
-    stc.putOnStack(globalScope);
-    return stc.createFromAST(ast);
+    AutomataScopesGenitorDelegator stc = AutomataMill.scopesGenitorDelegator();
+        return stc.createFromAST(ast);
   }
   
   /**

@@ -16,7 +16,7 @@ public class BasicJavaTool {
 
   public static IBasicJavaArtifactScope createJavaSymTab(String model, ModelPath modelPath) {
     ASTCompilationUnit ast = parse(model);
-    return BasicJavaMill.basicJavaSymbolTableCreator().createFromAST(ast);
+    return BasicJavaMill.scopesGenitorDelegator().createFromAST(ast);
   }
 
   /**
