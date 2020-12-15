@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.json.JsonElement;
@@ -16,11 +17,11 @@ public class SymTypeOfWildcardDeSer {
     return toSerialize.printAsJson();
   }
 
-  public SymTypeOfWildcard deserialize(String serialized, IOOSymbolsScope enclosingScope) {
+  public SymTypeOfWildcard deserialize(String serialized, IBasicSymbolsScope enclosingScope) {
     return deserialize(JsonParser.parseJsonObject(serialized), enclosingScope);
   }
 
-  public SymTypeOfWildcard deserialize(JsonObject serialized, IOOSymbolsScope enclosingScope) {
+  public SymTypeOfWildcard deserialize(JsonObject serialized, IBasicSymbolsScope enclosingScope) {
     if (serialized.hasBooleanMember("isUpper")) {
       boolean isUpper = serialized.getBooleanMember("isUpper");
       JsonElement boundString = serialized.getMember("bound");

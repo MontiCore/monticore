@@ -91,32 +91,6 @@ public class SymTypeExpressionDeSer {
     return result;
   }
 
-  public static SymTypeExpression deserializeMember(String memberName, JsonObject json,
-      IOOSymbolsScope enclosingScope) {
-    return getInstance().deserialize(json.getMember(memberName), enclosingScope);
-  }
-
-  public static Optional<SymTypeExpression> deserializeOptionalMember(String memberName,
-      JsonObject json, IOOSymbolsScope enclosingScope) {
-    if (json.hasMember(memberName)) {
-      return Optional.of(getInstance().deserialize(json.getMember(memberName), enclosingScope));
-    }
-    else {
-      return Optional.empty();
-    }
-  }
-
-  public static List<SymTypeExpression> deserializeListMember(String memberName, JsonObject json,
-      IOOSymbolsScope enclosingScope) {
-    List<SymTypeExpression> result = new ArrayList<>();
-    if (json.hasMember(memberName)) {
-      for (JsonElement e : json.getArrayMember(memberName)) {
-        result.add(getInstance().deserialize(e, enclosingScope));
-      }
-    }
-    return result;
-  }
-
   public static SymTypeExpressionDeSer getInstance() {
     if (null == instance) {
       instance = new SymTypeExpressionDeSer();
@@ -163,32 +137,7 @@ public class SymTypeExpressionDeSer {
     return deserialize(JsonParser.parse(serialized), enclosingScope);
   }
 
-  public SymTypeExpression deserialize(JsonElement serialized,
-      IBasicSymbolsScope enclosingScope) {
-    // void and null are stored as strings
-    if (serialized.isJsonString()) {
-      String value = serialized.getAsJsonString().getValue();
-      if (value.equals(DefsTypeBasic._nullTypeString)) {
-        return SymTypeExpressionFactory.createTypeOfNull();
-      }
-      else if (value.equals(DefsTypeBasic._voidTypeString)) {
-        return SymTypeExpressionFactory.createTypeVoid();
-      }
-    }
-    else if (enclosingScope instanceof IOOSymbolsScope) {
-      return deserialize(serialized, (IOOSymbolsScope) enclosingScope);
-    }
-    Log.error(
-        "0x823F3 Internal error: Loading ill-structured SymTab: Unknown serialization of SymTypeExpression: "
-            + serialized);
-    return null;
-  }
-
-  public SymTypeExpression deserialize(String serialized, IOOSymbolsScope enclosingScope) {
-    return deserialize(JsonParser.parse(serialized), enclosingScope);
-  }
-
-  public SymTypeExpression deserialize(JsonElement serialized, IOOSymbolsScope enclosingScope) {
+  public SymTypeExpression deserialize(JsonElement serialized, IBasicSymbolsScope enclosingScope) {
 
     // void and null are stored as strings
     if (serialized.isJsonString()) {

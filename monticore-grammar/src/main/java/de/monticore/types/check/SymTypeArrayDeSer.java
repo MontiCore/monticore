@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.json.JsonElement;
@@ -16,11 +17,11 @@ public class SymTypeArrayDeSer {
     return toSerialize.printAsJson();
   }
 
-  public SymTypeArray deserialize(String serialized, IOOSymbolsScope enclosingScope) {
+  public SymTypeArray deserialize(String serialized, IBasicSymbolsScope enclosingScope) {
     return deserialize(JsonParser.parseJsonObject(serialized), enclosingScope);
   }
 
-  public SymTypeArray deserialize(JsonObject serialized, IOOSymbolsScope enclosingScope) {
+  public SymTypeArray deserialize(JsonObject serialized, IBasicSymbolsScope enclosingScope) {
     if (serialized.hasIntegerMember("dim") && serialized.hasMember("argument")) {
       int dim = serialized.getIntegerMember("dim");
       JsonElement argumentJson = serialized.getMember("argument");

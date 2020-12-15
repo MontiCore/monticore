@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.json.JsonObject;
@@ -15,11 +16,11 @@ public class SymTypeOfObjectDeSer {
     return toSerialize.printAsJson();
   }
 
-  public SymTypeOfObject deserialize(String serialized, IOOSymbolsScope enclosingScope) {
+  public SymTypeOfObject deserialize(String serialized, IBasicSymbolsScope enclosingScope) {
     return deserialize(JsonParser.parseJsonObject(serialized), enclosingScope);
   }
 
-  public SymTypeOfObject deserialize(JsonObject serialized, IOOSymbolsScope enclosingScope) {
+  public SymTypeOfObject deserialize(JsonObject serialized, IBasicSymbolsScope enclosingScope) {
     if (serialized.hasStringMember("objName")) {
       String objName = serialized.getStringMember("objName");
       return SymTypeExpressionFactory.createTypeObject(objName, enclosingScope);
