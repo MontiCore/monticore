@@ -23,7 +23,7 @@ public class BITSer {
     bitsers.put("Boolean", bool);
     bitsers.put("java.lang.Boolean", bool);
 
-    BITSerStrategy string = new BITSerStrategy("Boolean","\"\"", true);
+    BITSerStrategy string = new BITSerStrategy("String","\"\"", true);
     bitsers.put("String", string);
     bitsers.put("java.lang.String", string);
 

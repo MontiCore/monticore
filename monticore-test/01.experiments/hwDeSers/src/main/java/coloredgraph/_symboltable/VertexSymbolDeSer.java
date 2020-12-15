@@ -41,8 +41,10 @@ public class VertexSymbolDeSer extends VertexSymbolDeSerTOP {
    * This method serializes the color of a vertex in form of an instance of java.awt.Color as a
    * JSON array with numeric values for each red, green, and blue.
    * @param color
+   * @param s2j
    */
-  public void serializeVertexColor(Color color) {
+    @Override
+    public void serializeColor(Color color, ColoredGraphSymbols2Json s2j) {
     printer.beginArray("color");     // Serialize color as arrays,
     printer.value(color.getRed());   // add red value first
     printer.value(color.getGreen()); // ... followed by green
