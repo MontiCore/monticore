@@ -96,8 +96,6 @@ public class MontiCoreCLITest {
   
   @Test
   public void testMontiCoreCLI() {
-    
-    System.out.println("simpleArgs:");
     MontiCoreStandardCLI.main(simpleArgs);
     
     assertTrue(!false);
@@ -105,8 +103,6 @@ public class MontiCoreCLITest {
   
   @Test
   public void testMontiCoreDevLogCLI() {
-    
-    System.out.println("devLogArgs");
     MontiCoreStandardCLI.main(devLogArgs);
     
     assertTrue(!false);
@@ -114,8 +110,6 @@ public class MontiCoreCLITest {
   
   @Test
   public void testMontiCoreCustomLogCLI() {
-    
-    System.out.println("customLogArgs");
     MontiCoreStandardCLI.main(customLogArgs);
     
     assertTrue(!false);
@@ -123,7 +117,6 @@ public class MontiCoreCLITest {
 
   @Test
   public void testMontiCoreCustomScriptCLI() {
-    System.out.println("customScriptArgs");
     MontiCoreStandardCLI.main(customScriptArgs);
     
     assertTrue(!false);
@@ -131,7 +124,6 @@ public class MontiCoreCLITest {
 
   @Test
   public void testMontiCoreCustomEmfScriptCLI() {
-    System.out.println("customEmfScriptArgs");
     MontiCoreStandardCLI.main(customEmfScriptArgs);
     
     assertTrue(!false);
@@ -139,7 +131,6 @@ public class MontiCoreCLITest {
   
   @Test
   public void testHelp() {
-    System.out.println("help");
     MontiCoreStandardCLI.main(help);
 
     assertTrue(!false);
