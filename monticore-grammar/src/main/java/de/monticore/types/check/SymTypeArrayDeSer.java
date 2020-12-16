@@ -2,6 +2,7 @@
 package de.monticore.types.check;
 
 import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
+import de.monticore.symboltable.serialization.IDeSer;
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;

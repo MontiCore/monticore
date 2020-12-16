@@ -351,7 +351,7 @@ public class MontiCoreScriptTest {
     assertEquals("StatechartScopesGenitorDelegator", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
     assertEquals("StatechartGlobalScope", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
     assertEquals("StatechartArtifactScope", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
-    assertEquals("StatechartScopeDeSer", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
+    assertEquals("StatechartDeSer", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
     assertEquals("StatechartSymbolTableCreator", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
     assertEquals("StatechartScopesGenitor", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
 

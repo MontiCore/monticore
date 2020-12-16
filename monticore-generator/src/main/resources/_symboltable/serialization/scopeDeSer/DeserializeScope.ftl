@@ -1,7 +1,9 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("symTabMill", "scopeClass", "scopeRuleAttrList")}
 <#assign genHelper = glex.getGlobalVar("astHelper")>
-  boolean isShadowingScope = scopeJson.getBooleanMemberOpt(de.monticore.symboltable.serialization.JsonDeSers.IS_SHADOWING_SCOPE).orElse(false);
+  boolean isShadowingScope = scopeJson
+      .getBooleanMemberOpt(de.monticore.symboltable.serialization.JsonDeSers.IS_SHADOWING_SCOPE)
+      .orElse(false);
   ${scopeClass} scope = ${symTabMill}.scope();
   scope.setShadowing(isShadowingScope);
   scope.setExportingSymbols(true);
@@ -18,6 +20,7 @@ ${tc.signature("symTabMill", "scopeClass", "scopeRuleAttrList")}
     scope.${genHelper.getPlainSetter(attr)}(deserialize${attr.getName()?cap_first}(scopeJson));
   </#if>
 </#list>
+
   deserializeAddons(scope,scopeJson);
-  addSymbols(scopeJson, scope);
+  deserializeSymbols(scope, scopeJson);
   return scope;

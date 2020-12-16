@@ -1,7 +1,3 @@
-// (c) https://github.com/MontiCore/monticore
-
-// (c) https://github.com/MontiCore/monticore
-
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.symbols.basicsymbols._symboltable;
 
@@ -14,6 +10,11 @@ import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
 import java.util.List;
 
 public class TypeVarSymbolDeSer extends TypeVarSymbolDeSerTOP {
+
+  @Override
+  protected void serializeSuperTypes(List<SymTypeExpression> superTypes, BasicSymbolsSymbols2Json s2j) {
+    SymTypeExpressionDeSer.serializeMember(s2j.getJsonPrinter(), "superTypes", superTypes);
+  }
 
   @Override
   public List<SymTypeExpression> deserializeSuperTypes(JsonObject symbolJson) {
