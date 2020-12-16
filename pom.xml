@@ -64,6 +64,8 @@
     <emf.ecore.xmi.version>2.15.0</emf.ecore.xmi.version>
     <emf.compare.version>1.2.0</emf.compare.version>
     <equinox.common.version>3.10.0</equinox.common.version>
+    <commons_cli.version>1.4</commons_cli.version>
+    <commons_lang3.version>3.8.1</commons_lang3.version>
     <!-- has been relocated to that version -->
     <xml-apis.version>1.0.b2</xml-apis.version>
 
@@ -290,6 +292,18 @@
         <groupId>org.freemarker</groupId>
         <artifactId>freemarker</artifactId>
         <version>${freemarker.version}</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>commons-cli</groupId>
+        <artifactId>commons-cli</artifactId>
+        <version>${commons_cli.version}</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-lang3</artifactId>
+        <version>${commons_lang3.version}</version>
       </dependency>
 
       <!-- EMF dependencies -->
