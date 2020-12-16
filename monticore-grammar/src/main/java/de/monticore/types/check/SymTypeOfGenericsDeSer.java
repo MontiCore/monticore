@@ -3,7 +3,6 @@ package de.monticore.types.check;
 
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsGlobalScope;
-import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
@@ -33,7 +32,7 @@ public class SymTypeOfGenericsDeSer {
 
       List<SymTypeExpression> arguments = new ArrayList<>();
       for (JsonElement e : serialized.getMember("arguments").getAsJsonArray().getValues()) {
-        arguments.add(SymTypeExpressionDeSer.getInstance().deserialize(e, gs));
+        arguments.add(SymTypeExpressionDeSer.getInstance().deserialize(e));
       }
 
       return SymTypeExpressionFactory

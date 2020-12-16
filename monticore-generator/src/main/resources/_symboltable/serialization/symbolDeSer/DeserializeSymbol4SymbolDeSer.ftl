@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("symTabMill", "symbolFullName", "symbolSimpleName","symbolRuleAttribute", "spansScope", "scopeFullName", "deSerFullName")}
+${tc.signature("symTabMill", "symbolFullName", "symbolSimpleName","symbolRuleAttribute", "spansScope", "scopeIntfName", "scopeClassFullName", "deSerFullName")}
 <#assign genHelper = glex.getGlobalVar("astHelper")>
   ${symbolFullName}Builder builder = ${symTabMill}.${symbolSimpleName?uncap_first}Builder();
   builder.setName(symbolJson.getStringMember(de.monticore.symboltable.serialization.JsonDeSers.NAME));
@@ -18,14 +18,14 @@ ${tc.signature("symTabMill", "symbolFullName", "symbolSimpleName","symbolRuleAtt
 
 <#if spansScope>
   if(symbolJson.hasObjectMember(de.monticore.symboltable.serialization.JsonDeSers.SPANNED_SCOPE)){
-    ${scopeFullName} spannedScope = ((${deSerFullName}) ${symTabMill}.globalScope()
-        .getDeSer("${scopeFullName}"))
+    ${scopeIntfName} spannedScope = ((${deSerFullName}) ${symTabMill}.globalScope()
+        .getDeSer("${scopeClassFullName}"))
         .deserializeScope(symbolJson.getObjectMember(
             de.monticore.symboltable.serialization.JsonDeSers.SPANNED_SCOPE));
     symbol.setSpannedScope(spannedScope);
   }
   else{
-  ${scopeFullName} spannedScope = ${symTabMill}.scope();
+  ${scopeIntfName} spannedScope = ${symTabMill}.scope();
   symbol.setSpannedScope(spannedScope);
   }
 </#if>

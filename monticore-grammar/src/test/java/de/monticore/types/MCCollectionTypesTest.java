@@ -37,7 +37,6 @@ public class MCCollectionTypesTest {
     for (String testType : types) {
       MCCollectionTypesTestParser mcBasicTypesParser = new MCCollectionTypesTestParser();
       // .parseType(primitive);
-
       Optional<ASTMCType> type = mcBasicTypesParser.parse_StringMCType(testType);
 
       assertNotNull(type);

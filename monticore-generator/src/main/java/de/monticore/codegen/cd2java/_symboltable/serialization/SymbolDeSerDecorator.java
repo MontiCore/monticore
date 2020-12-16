@@ -60,7 +60,8 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
     generateAbstractClass = false;
     String className = symbolTableService.getSymbolDeSerSimpleName(symbolClass);
     String symName = symbolTableService.getSymbolFullName(symbolClass);
-    String scopeName = symbolTableService.getScopeInterfaceFullName();
+    String iScopeName = symbolTableService.getScopeInterfaceFullName();
+    String scopeName = symbolTableService.getScopeClassFullName();
     String millName = symbolTableService.getMillFullName();
     String s2jName = symbolTableService.getSymbols2JsonFullName();
     String deSerName = symbolTableService.getScopeDeSerFullName();
@@ -93,7 +94,7 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
         //deserialization
         .addCDMethod(createDeserializeStringMethod(symType))
         .addCDMethod(
-            createDeserializeJsonMethod(symType, millName, symName, jsonParam, attr, spansScope, scopeName, deSerName))
+            createDeserializeJsonMethod(symType, millName, symName, jsonParam, attr, spansScope, iScopeName, scopeName, deSerName))
         .addAllCDMethods(createDeserializeAttrMethods(attr, jsonParam))
         .addCDMethod(createDeserializeAddons(sym2Param, jsonParam))
 
@@ -163,12 +164,13 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
 
   protected ASTCDMethod createDeserializeJsonMethod(ASTMCQualifiedType type, String symTabMill,
       String symbolFullName, ASTCDParameter jsonParam,
-      List<ASTCDAttribute> symbolRuleAttributes, boolean spansScope, String scopeFullName, String deSerFullName) {
+      List<ASTCDAttribute> symbolRuleAttributes, boolean spansScope, String scopeIntfFullName,
+      String scopeClassFullName, String deSerFullName) {
     ASTCDMethod deserializeMethod = getCDMethodFacade()
         .createMethod(PUBLIC, type, DESERIALIZE, jsonParam);
     this.replaceTemplate(EMPTY_BODY, deserializeMethod,
         new TemplateHookPoint(DESER_SYM_TEMPL, symTabMill, symbolFullName,
-            Names.getSimpleName(symbolFullName), symbolRuleAttributes, spansScope, scopeFullName, deSerFullName));
+            Names.getSimpleName(symbolFullName), symbolRuleAttributes, spansScope, scopeIntfFullName, scopeClassFullName, deSerFullName));
     return deserializeMethod;
   }
 
