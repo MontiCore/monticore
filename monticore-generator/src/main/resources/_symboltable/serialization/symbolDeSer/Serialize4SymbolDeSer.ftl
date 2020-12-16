@@ -9,7 +9,7 @@ ${tc.signature("hasSpannedScope", "symbolRuleAttributes")}
   // serialize symbolrule attributes
 <#list symbolRuleAttributes as attr>
 <#if astHelper.isOptional(attr.getMCType())>
-  if (toSerialize.isPresentType()) {
+  if (toSerialize.isPresent${attr.getName()?cap_first}()) {
     serialize${attr.getName()?cap_first}(Optional.of(toSerialize.${genHelper.getPlainGetter(attr)}()), s2j);
   }
 <#else>

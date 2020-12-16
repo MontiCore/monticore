@@ -57,6 +57,7 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
 
   @Override
   public ASTCDClass decorate(ASTCDType symbolClass) {
+    generateAbstractClass = false;
     String className = symbolTableService.getSymbolDeSerSimpleName(symbolClass);
     String symName = symbolTableService.getSymbolFullName(symbolClass);
     String scopeName = symbolTableService.getScopeInterfaceFullName();
