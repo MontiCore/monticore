@@ -49,6 +49,8 @@ to be released
 * GlobalScopes manage a map with all relevant DeSers. The map maps the serialized (symbol or scope)
   kind to the DeSer that (de)serialized this kind. This mechanism can be used to exchange the DeSer
   for a specific kind of symbol or scope.
+* Scope DeSers have new `serialize` methods without `Symbols2Json` argment that can be used for
+  for serializing (artifact) scopes for, e.g., unit tests 
  
 ### Fixes
 
