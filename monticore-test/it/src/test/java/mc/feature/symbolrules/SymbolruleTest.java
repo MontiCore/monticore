@@ -37,11 +37,11 @@ public class SymbolruleTest {
     ISymbolruleTestArtifactScope as = deSer.deserialize(serialized);
     assertTrue(as.isBar());
     assertEquals(17, as.getNumber());
-    /*TODO wieder einkommentieren, wenn #2669 fertig
+
     assertEquals(3, as.getModifiedNameList().size());
     assertEquals("foo", as.getModifiedName(0));
     assertEquals("bar", as.getModifiedName(1));
-    assertEquals("test", as.getModifiedName(2));*/
+    assertEquals("test", as.getModifiedName(2));
     assertTrue(SymTypeExpressionFactory.createTypeConstant("int").deepEquals(as.getSymType()));
   }
 

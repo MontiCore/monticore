@@ -29,8 +29,7 @@ public class ScoperuleTest {
 
     ScoperuleTestScopeDeSer deSer = new ScoperuleTestScopeDeSer();
     String serialized = deSer.serialize(scope);
-    assertEquals("{\"isShadowingScope\":false,\"number\":17,\"bar\":true,\"modifiedName\":[\"foo\",\"bar\",\"test\"],\"symType\":{\"kind\":\"de.monticore.types.check.SymTypeConstant\",\"constName\":\"int\"}}", serialized);
-    /* TODO wieder einkommentieren, sobald Ticket #2669 geschlossen
+    //assertEquals("{\"isShadowingScope\":false,\"number\":17,\"bar\":true,\"modifiedName\":[\"foo\",\"bar\",\"test\"],\"symType\":{\"kind\":\"de.monticore.types.check.SymTypeConstant\",\"constName\":\"int\"}}", serialized);
     IScoperuleTestScope as = deSer.deserialize(serialized);
     assertTrue(as.isBar());
     assertEquals(17, as.getNumber());
@@ -39,7 +38,6 @@ public class ScoperuleTest {
     assertEquals("bar", as.getModifiedName(1));
     assertEquals("test", as.getModifiedName(2));
     assertTrue(SymTypeExpressionFactory.createTypeConstant("int").deepEquals(as.getSymType()));
-     */
   }
 
   @Test
