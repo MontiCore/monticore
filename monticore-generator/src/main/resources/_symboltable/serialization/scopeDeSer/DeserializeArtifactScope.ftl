@@ -1,9 +1,8 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("symTabMill", "artifactScope", "scopeRuleAttrList")}
 <#assign genHelper = glex.getGlobalVar("astHelper")>
-  String packageName = scopeJson.getStringMemberOpt(de.monticore.symboltable.serialization.JsonDeSers.PACKAGE).orElse("");
   ${artifactScope} scope = ${symTabMill}.artifactScope();
-  scope.setPackageName(packageName);
+  scope.setPackageName(de.monticore.symboltable.serialization.JsonDeSers.getPackage(scopeJson));
   if (scopeJson.hasStringMember(de.monticore.symboltable.serialization.JsonDeSers.NAME)) {
     scope.setName(scopeJson.getStringMember(de.monticore.symboltable.serialization.JsonDeSers.NAME));
   }
@@ -21,6 +20,7 @@ ${tc.signature("symTabMill", "artifactScope", "scopeRuleAttrList")}
   scope.${genHelper.getPlainSetter(attr)}(deserialize${attr.getName()?cap_first}(scopeJson));
   </#if>
 </#list>
+
   deserializeAddons(scope,scopeJson);
-  addSymbols(scopeJson, scope);
+  deserializeSymbols(scope, scopeJson);
   return scope;

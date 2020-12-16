@@ -341,4 +341,120 @@ public class JsonObject implements JsonElement {
     return Optional.empty();
   }
 
+  /**
+   * Checks whether there exists a member with the corresponding name and checks
+   * whether it is of type JSON-Double.
+   *
+   * @param name The name of the possible JSON element
+   * @return true if the correctly typed member available, false otherwise
+   */
+  public boolean hasDoubleMember(String name) {
+    return hasMember(name) && getMember(name).isJsonNumber();
+  }
+
+  /**
+   * This method returns the value of an Double member of this object, if it exists, Otherwise, raises an error and returns null.
+   *
+   * @param name
+   * @return
+   */
+  public double getDoubleMember(String name) {
+    if (hasIntegerMember(name)) {
+      return getMember(name).getAsJsonNumber().getNumberAsDouble();
+    }
+    Log.error("0xA0578 \"" + name + "\" is not a Json Double member of \"" + this + "\"!");
+    return -1;
+  }
+
+  /**
+   * This method returns an Optional of an Double member of this object, if it exists, Otherwise,
+   * returns an empty optional.
+   *
+   * @param name
+   * @return
+   */
+  public Optional<Double> getDoubleMemberOpt(String name) {
+    if (hasIntegerMember(name)) {
+      return Optional.ofNullable(getMember(name).getAsJsonNumber().getNumberAsDouble());
+    }
+    return Optional.empty();
+  }
+
+  /**
+   * Checks whether there exists a member with the corresponding name and checks
+   * whether it is of type JSON-Float.
+   *
+   * @param name The name of the possible JSON element
+   * @return true if the correctly typed member available, false otherwise
+   */
+  public boolean hasFloatMember(String name) {
+    return hasMember(name) && getMember(name).isJsonNumber();
+  }
+
+  /**
+   * This method returns the value of an Float member of this object, if it exists, Otherwise, raises an error and returns null.
+   *
+   * @param name
+   * @return
+   */
+  public float getFloatMember(String name) {
+    if (hasIntegerMember(name)) {
+      return getMember(name).getAsJsonNumber().getNumberAsFloat();
+    }
+    Log.error("0xA0579 \"" + name + "\" is not a Json Float member of \"" + this + "\"!");
+    return -1;
+  }
+
+  /**
+   * This method returns an Optional of an Double member of this object, if it exists, Otherwise,
+   * returns an empty optional.
+   *
+   * @param name
+   * @return
+   */
+  public Optional<Float> getFloatMemberOpt(String name) {
+    if (hasIntegerMember(name)) {
+      return Optional.ofNullable(getMember(name).getAsJsonNumber().getNumberAsFloat());
+    }
+    return Optional.empty();
+  }
+
+  /**
+   * Checks whether there exists a member with the corresponding name and checks
+   * whether it is of type JSON-Long.
+   *
+   * @param name The name of the possible JSON element
+   * @return true if the correctly typed member available, false otherwise
+   */
+  public boolean hasLongMember(String name) {
+    return hasMember(name) && getMember(name).isJsonNumber();
+  }
+
+  /**
+   * This method returns the value of an Long member of this object, if it exists, Otherwise, raises an error and returns null.
+   *
+   * @param name
+   * @return
+   */
+  public long getLongMember(String name) {
+    if (hasIntegerMember(name)) {
+      return getMember(name).getAsJsonNumber().getNumberAsLong();
+    }
+    Log.error("0xA0565 \"" + name + "\" is not a Json Long member of \"" + this + "\"!");
+    return -1;
+  }
+
+  /**
+   * This method returns an Optional of an Long member of this object, if it exists, Otherwise,
+   * returns an empty optional.
+   *
+   * @param name
+   * @return
+   */
+  public Optional<Long> getLongMemberOpt(String name) {
+    if (hasIntegerMember(name)) {
+      return Optional.ofNullable(getMember(name).getAsJsonNumber().getNumberAsLong());
+    }
+    return Optional.empty();
+  }
 }

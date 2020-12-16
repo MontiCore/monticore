@@ -45,18 +45,6 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
   private static final String AUTOMATON_SCOPE = "de.monticore.codegen.ast.automaton._symboltable.AutomatonScope";
 
-  private static final String I_AUTOMATON_SCOPE = "de.monticore.codegen.ast.automaton._symboltable.IAutomatonScope";
-
-  private static final String AUTOMATON_SYMBOL = "de.monticore.codegen.ast.automaton._symboltable.AutomatonSymbol";
-
-  private static final String ACCESS_MODIFIER = "de.monticore.symboltable.modifiers.AccessModifier";
-
-  private static final String PREDICATE_AUTOMATON = "java.util.function.Predicate<de.monticore.codegen.ast.automaton._symboltable.AutomatonSymbol>";
-
-  private static final String QUALIFIED_NAME_SYMBOL = "de.monticore.codegen.ast.lexicals._symboltable.QualifiedNameSymbol";
-
-  private static final String PREDICATE_QUALIFIED_NAME = "java.util.function.Predicate<de.monticore.codegen.ast.lexicals._symboltable.QualifiedNameSymbol>";
-
   @Before
   public void setUp() {
     LogStub.init();         // replace log by a sideffect free variant
@@ -187,7 +175,7 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
   public void testScopeDeSerAttribute(){
     ASTCDAttribute astcdAttribute = getAttributeBy("scopeDeSer", scopeClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
-    assertDeepEquals("AutomatonScopeDeSer", astcdAttribute.getMCType());
+    assertDeepEquals("AutomatonDeSer", astcdAttribute.getMCType());
   }
 
   @Test

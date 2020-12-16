@@ -6,6 +6,7 @@ import strules.STRulesMill;
 import strules._ast.ASTSTRules;
 import strules._parser.STRulesParser;
 import strules._symboltable.ISTRulesArtifactScope;
+import strules._symboltable.STRulesScopesGenitorDelegator;
 import strules._symboltable.STRulesSymbolTableCreatorDelegator;
 
 import java.io.IOException;
@@ -37,8 +38,8 @@ public class STRulesTool {
     Log.info(model + " parsed successfully!", "ColoredGraphTool");
 
     // instantiate symbol table:
-    STRulesSymbolTableCreatorDelegator stc = STRulesMill
-        .sTRulesSymbolTableCreatorDelegator();
+    STRulesScopesGenitorDelegator stc = STRulesMill
+        .scopesGenitorDelegator();
     ISTRulesArtifactScope symTab = stc.createFromAST(ast);
     if (null== symTab){
       Log.error("0xFE349 Symbol table of Model could not be parsed.");

@@ -3,10 +3,12 @@ package automata;
 
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
 import automata._symboltable.*;
+import de.monticore.utils.Names;
 import org.antlr.v4.runtime.RecognitionException;
 
 import automata._ast.ASTAutomaton;
@@ -15,12 +17,14 @@ import automata._parser.AutomataParser;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
 
+import static de.se_rwth.commons.Names.getPathFromPackage;
+
 /**
  * Main class for the Automaton DSL tool.
  *
  */
 public class AutomataTool {
-  
+
   /**
    * Use the single argument for specifying the single input automata file.
    *
@@ -32,14 +36,14 @@ public class AutomataTool {
       return;
     }
     String model = args[0];
-    
-    // setup the deser infrastructure
-    AutomataSymbols2Json deser = new AutomataSymbols2Json();
+
+    // setup the serialization infrastructure
+    final AutomataSymbols2Json s2j = new AutomataSymbols2Json();
 
     // parse the model and create the AST representation
     final ASTAutomaton ast = parse(model);
     Log.info(model + " parsed successfully!", AutomataTool.class.getName());
-    
+
     // setup the symbol table
     IAutomataArtifactScope modelTopScope = createSymbolTable(ast);
 
@@ -49,21 +53,16 @@ public class AutomataTool {
       Log.info("Resolved state symbol \"Ping\"; FQN = " + aSymbol.get().toString(),
           AutomataTool.class.getName());
     }
-    
+
     // execute a custom set of context conditions
     AutomataCoCoChecker customCoCos = new AutomataCoCoChecker();
     customCoCos.checkAll(ast);
-    
+
     // store artifact scope
-    String qualifiedModelName = model.replace("src/main/resources", "");
-    qualifiedModelName = qualifiedModelName.replace("src/test/resources", "");
-    String outputFileName = Paths.get(model).getFileName()+"sym";
-    String packagePath = Paths.get(qualifiedModelName).getParent().toString();
-    String storagePath = Paths.get("target/symbols", packagePath,
-        outputFileName).toString();
-    // XXX aukommentiert, weil fehlerhaft: (BR) TODO :::  deser.store(modelTopScope,storagePath);
+    String symFile = "target/symbols/"+ getPathFromPackage(modelTopScope.getFullName()) + ".autsym";
+    s2j.store(modelTopScope, symFile);
   }
-  
+
   /**
    * Parse the model contained in the specified file.
    *
@@ -74,7 +73,7 @@ public class AutomataTool {
     try {
       AutomataParser parser = new AutomataParser() ;
       Optional<ASTAutomaton> optAutomaton = parser.parse(model);
-      
+
       if (!parser.hasErrors() && optAutomaton.isPresent()) {
         return optAutomaton.get();
       }
@@ -85,7 +84,7 @@ public class AutomataTool {
     }
     return null;
   }
-  
+
   /**
    * Create the symbol table from the parsed AST.
    *
@@ -100,9 +99,9 @@ public class AutomataTool {
     AutomataSymbolTableCreator symbolTable = AutomataMill
         .automataSymbolTableCreator();
     symbolTable.putOnStack(globalScope);
-  
+
     return symbolTable.createFromAST(ast);
   }
-  
-  
+
+
 }

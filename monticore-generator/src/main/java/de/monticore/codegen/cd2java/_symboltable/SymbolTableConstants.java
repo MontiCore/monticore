@@ -106,8 +106,6 @@ public class SymbolTableConstants {
 
   public static final String FILE_EXTENSION_VAR = "fileExt";
 
-  public static final String MODEL_LOADER_VAR = "modelLoader";
-
   public static final String FOUND_SYMBOLS_VAR = "foundSymbols";
 
   public static final String PREDICATE_VAR = "predicate";
