@@ -26,7 +26,8 @@ import de.monticore.expressions.*;
  *
 */
 
-component grammar BitExpressions extends ExpressionsBasis {
+component grammar BitExpressions 
+                  extends ExpressionsBasis {
 
   /*=================================================================*/
 
@@ -55,7 +56,8 @@ component grammar BitExpressions extends ExpressionsBasis {
     shiftOp:">>"
     right:Expression;
 
-  LogicalRightShiftExpression implements Expression <160>, ShiftExpression =
+  LogicalRightShiftExpression implements Expression <160>, 
+                                         ShiftExpression =
     left:Expression
     shiftOp:">>>"
     right:Expression;
