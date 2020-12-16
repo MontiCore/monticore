@@ -437,9 +437,6 @@ sequencediagram AuctionTest {
 * It is possible to define syntactically simpler or more complex and comfortable
   forms of statecharts using a subset of the eleven provided language components.
   Two complete Statechart language variants are composed for direct usability.
-* The project also creates a transformation language 
-  that allows to define transformations of various forms from
-  one Statechart to another and also from a Statechart to a CD4A class diagram.
 * A compact teaser for one variant of the Statechart languages:
     ```
     statechart Door {

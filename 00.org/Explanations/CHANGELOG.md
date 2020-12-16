@@ -4,6 +4,21 @@
 ##  MontiCore 6.7.0-SNAPSHOT
 to be released
 
+### Additions
+### Changes
+* Attribute fileExt in GlobalScopes now refers to a regular expression for file extensions of 
+  symbol table files. The default value of the attribute is "*sym", which usually includes symbol 
+  files of all MontiCore languages. Attention: If your language used the "setFileExt" method in
+  previous versions of MontiCore to set the file extension of the model file (e.g., to "aut"), this 
+  will cause problems now as the symbol files of the language have differen file extensions 
+  (e.g., "autsym). To fix this, it is sufficient to remove all invocations of "setFileExt" from the 
+  handwritten source code.
+* For scopes, artifact scopes, and global scopes: Moved abstract methods that do not have a language-
+  specific name or (argument, return) type from language-specific interface to MontiCore-runtime interfaces
+* new experiment "strules" demonstrating the use of symbolrules and scoperules
+
+### Fixes
+
 ##  MontiCore 6.6.0
 released: 03.12.2020
 

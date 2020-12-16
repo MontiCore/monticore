@@ -18,7 +18,7 @@ dependencies {
     implementation 'org.eclipse.emf:org.eclipse.emf.common:2.15.0'
     testImplementation "junit:junit:$junit_version"
     testImplementation 'ch.qos.logback:logback-classic:1.1.2'
-    testImplementation 'org.codehaus.groovy:groovy:3.0.2'
+    testImplementation 'org.codehaus.groovy:groovy:3.0.7'
 }
 
 def srcDir = "$buildDir/main/java"

@@ -32,7 +32,6 @@ public class TestAutomaton extends GeneratorIntegrationsTest {
     assertFalse(parser.hasErrors());
     assertTrue(optAutomaton.isPresent());
     AutomatonMill.globalScope().clear();
-    AutomatonMill.globalScope().setFileExt("aut");
     AutomatonMill.automatonSymbolTableCreatorDelegator().createFromAST(optAutomaton.get());
     return optAutomaton.get();
   }
