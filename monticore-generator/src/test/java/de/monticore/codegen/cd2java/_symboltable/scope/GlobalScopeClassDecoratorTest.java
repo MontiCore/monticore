@@ -320,11 +320,9 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
-    assertEquals(2, method.sizeCDParameters());
+    assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
     assertEquals("modelName", method.getCDParameter(0).getName());
-    assertDeepEquals(String.class, method.getCDParameter(1).getMCType());
-    assertEquals("symbolName", method.getCDParameter(1).getName());
   }
 
   @Test

@@ -27,10 +27,10 @@ public class HostGlobalScope extends HostGlobalScopeTOP {
     return this;
   }
 
-  @Override public void loadFileForModelName(String modelName, String symbolName) {
-    super.loadFileForModelName(modelName, symbolName);
+  @Override public void loadFileForModelName(String modelName) {
+    super.loadFileForModelName(modelName);
     ModelCoordinate modelCoordinate = ModelCoordinates
-        .createQualifiedCoordinate(modelName, getFileExt());
+        .createQualifiedCoordinate(modelName, "host");
     String filePath = modelCoordinate.getQualifiedPath().toString();
     if (!isFileLoaded(filePath)) {
       addLoadedFile(filePath);
@@ -41,7 +41,7 @@ public class HostGlobalScope extends HostGlobalScopeTOP {
       }
     }
     else {
-      Log.debug("Already tried to load model for '" + symbolName
+      Log.debug("Already tried to load model for '" + modelName
               + "'. If model exists, continue with cached version.",
           "CompositeGlobalScope");
     }

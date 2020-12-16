@@ -23,6 +23,7 @@ public class SymTabTest {
   @BeforeClass
   public static void setUp(){
     LogStub.init();         // replace log by a sideffect free variant
+    JavaAutMill.init();
     // LogStub.initPlusLog();  // for manual testing purpose only
   }
 
@@ -46,7 +47,7 @@ public class SymTabTest {
   public static IJavaAutArtifactScope createSymTab(String model) {
     ASTCompilationUnit ast = parse(model);
     JavaAutMill.globalScope().setFileExt("javaaut");
-    return JavaAutMill.javaAutSymbolTableCreatorDelegator().createFromAST(ast);
+    return JavaAutMill.scopesGenitorDelegator().createFromAST(ast);
   }
 
   public static ASTCompilationUnit parse(String model) {

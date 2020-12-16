@@ -74,7 +74,7 @@ public class TestCD4AnalysisGlobalScope extends TestCD4AnalysisGlobalScopeTOP{
     return this;
   }
 
-  public  void loadFileForModelName (String modelName, String symbolName)  {
+  public  void loadFileForModelName (String modelName)  {
     String symbolFileExtension = getFileExt() + "sym";
     de.monticore.io.paths.ModelCoordinate symbolFileCoordinate =
         de.monticore.io.paths.ModelCoordinates.createQualifiedCoordinate(modelName, symbolFileExtension);
@@ -100,7 +100,7 @@ public class TestCD4AnalysisGlobalScope extends TestCD4AnalysisGlobalScopeTOP{
         TestCD4AnalysisMill.testCD4AnalysisSymbolTableCreator().createFromAST(ast);
       }
     } else {
-      Log.debug("Already tried to load model for '" + symbolName + "'. If model exists, continue with cached version.",
+      Log.debug("Already tried to load model for '" + modelName + "'. If model exists, continue with cached version.",
           "TestCD4AnalysisGlobalScope");
     }
   }
