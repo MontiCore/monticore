@@ -5,6 +5,7 @@
 to be released
 
 ### Additions
+* Add new CLI for the MontiCOre generator engine
 ### Changes
 * Attribute fileExt in GlobalScopes now refers to a regular expression for file extensions of 
   symbol table files. The default value of the attribute is "*sym", which usually includes symbol 
