@@ -16,17 +16,16 @@ public class SymTypeOfWildcardDeSer {
     return toSerialize.printAsJson();
   }
 
-  public SymTypeOfWildcard deserialize(String serialized, IOOSymbolsScope enclosingScope) {
-    return deserialize(JsonParser.parseJsonObject(serialized), enclosingScope);
+  public SymTypeOfWildcard deserialize(String serialized) {
+    return deserialize(JsonParser.parseJsonObject(serialized));
   }
 
-  public SymTypeOfWildcard deserialize(JsonObject serialized, IOOSymbolsScope enclosingScope) {
+  public SymTypeOfWildcard deserialize(JsonObject serialized) {
     if (serialized.hasBooleanMember("isUpper")) {
       boolean isUpper = serialized.getBooleanMember("isUpper");
       JsonElement boundString = serialized.getMember("bound");
       if (boundString != null) {
-        SymTypeExpression bound = SymTypeExpressionDeSer.getInstance()
-            .deserialize(boundString, enclosingScope);
+        SymTypeExpression bound = SymTypeExpressionDeSer.getInstance().deserialize(boundString);
         return SymTypeExpressionFactory.createWildcard(isUpper, bound);
       }
       return SymTypeExpressionFactory.createWildcard();

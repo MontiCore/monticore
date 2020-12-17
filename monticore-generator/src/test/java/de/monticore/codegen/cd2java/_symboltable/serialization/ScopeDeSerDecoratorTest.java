@@ -105,17 +105,17 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(16, scopeClass.sizeCDMethods());
+    assertEquals(18, scopeClass.sizeCDMethods());
   }
 
   @Test
   public void testSerializeMethods() {
     List<ASTCDMethod> methodList = getMethodsBy("serialize", scopeClass);
-    assertEquals(2, methodList.size());
+    assertEquals(4, methodList.size());
     for (ASTCDMethod method : methodList) {
       assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
       assertEquals(0, method.sizeException());
-      assertEquals(2, method.sizeCDParameters());
+      assertEquals(2, method.sizeCDParameters(), 1);
       ASTCDParameter parameter = method.getCDParameter(0);
       assertEquals("toSerialize", parameter.getName());
       assertOneOf(parameter.getMCType(), I_AUTOMATON_SCOPE, AUTOMATON_ARTIFACT_SCOPE);

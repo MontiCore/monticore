@@ -42,6 +42,8 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
 
   public static final String SERIALIZE_TEMPL = "_symboltable.serialization.scopeDeSer.Serialize4ScopeDeSer";
 
+  public static final String SERIALIZES2J_TEMPL = "_symboltable.serialization.scopeDeSer.SerializeS2J4ScopeDeSer";
+
   public static final String SERIALIZE_AS_TEMPL = "_symboltable.serialization.scopeDeSer.SerializeAS4ScopeDeSer";
 
   protected final SymbolTableService symbolTableService;
@@ -109,7 +111,9 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
 
         // add serialization methods
         .addCDMethod(createSerializeMethod(scopeParam, s2jParam, scopeRuleAttrList))
+        .addCDMethod(createSerialize2Method(scopeParam, symbols2JsonName))
         .addCDMethod(createSerializeASMethod(asParam, s2jParam, scopeRuleAttrList))
+        .addCDMethod(createSerialize2Method(asParam, symbols2JsonName))
         .addAllCDMethods(createSerializeAttrMethods(scopeRuleAttrList, s2jParam))
         .addCDMethod(createSerializeAddonsMethod(scopeParam, s2jParam))
         .addCDMethod(createSerializeAddonsMethod(asParam, s2jParam))
@@ -137,8 +141,14 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
       List<ASTCDAttribute> scopeRuleAttrList) {
     ASTCDMethod method = getCDMethodFacade()
         .createMethod(PUBLIC, getMCTypeFacade().createStringType(), "serialize", toSerialize, s2j);
-    this.replaceTemplate(EMPTY_BODY, method,
-        new TemplateHookPoint(SERIALIZE_TEMPL, scopeRuleAttrList));
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(SERIALIZES2J_TEMPL, scopeRuleAttrList));
+    return method;
+  }
+
+  protected ASTCDMethod createSerialize2Method(ASTCDParameter toSerialize, String s2jFullName) {
+    ASTCDMethod method = getCDMethodFacade()
+        .createMethod(PUBLIC, getMCTypeFacade().createStringType(), "serialize", toSerialize);
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(SERIALIZE_TEMPL, s2jFullName));
     return method;
   }
 
