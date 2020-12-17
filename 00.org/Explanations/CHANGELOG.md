@@ -16,7 +16,42 @@ to be released
 * For scopes, artifact scopes, and global scopes: Moved abstract methods that do not have a language-
   specific name or (argument, return) type from language-specific interface to MontiCore-runtime interfaces
 * new experiment "strules" demonstrating the use of symbolrules and scoperules
-
+* `deserialize` methods in SymTypeExpressionDeSers do not have an `enclosingScope` argument anymore.
+  Internally, it uses the singleton global scope instead. 
+* renamed `serializeAdditionalSSymbolAttributes` in `Symbols2Json` class to `serializeAddons` and moved
+  to scope and symbol DeSers.
+* `XScopeDeSer` is renamed to `XDeSer`
+* In Symbols2Json classes:
+  * now implementss Visitor2 
+  * new attribute "XTraverser traverser" with getter and setter
+  * Removed attribute "realThis" with getter and setter
+  * New constructor with two arguments `XTraverser` and `JsonPrinter`
+  * New zero args constructor
+  * Removed constructor with single `JsonPrinter` argument
+  * New attributes of all known symbol DeSers and current scope DeSers
+  * New method "protected void init()", initializing the DeSer attributes with the GlobalScope
+    and the traverser with symbols2json of inherited languages
+   * adjusted store method to use traverser
+   * visit methods for symbols delegate to serialize method of the symbol DeSer
+   * visit and endVisit methods for scope interface and artifact scope interface print object stub 
+     and delegate serialization to scope DeSers
+* DeSers do not have an attribute of Symbols2Json class anymore, instead it is passed as argument 
+  in the `serialize` methods 
+* Default values of built-in types that occur in attributes of symbolrules or scoperules are 
+  omitted during serialization and deserialization. The defaults are as follows:
+  * Boolean : false
+  * String : ""
+  * Numeric types: 0 (and 0L and 0.0 and 0.0f)
+* For symbolrule and scoperule attributes with non-built-in data type, no Log.error is thrown
+  at execution time of the serialize method call anymore. Instead, these methods (and then, their 
+  classes as well) are generated abstract to yield compilation errors instead.
+* New interface `IDeSer` that all symbol and scope DeSers implement.
+* GlobalScopes manage a map with all relevant DeSers. The map maps the serialized (symbol or scope)
+  kind to the DeSer that (de)serialized this kind. This mechanism can be used to exchange the DeSer
+  for a specific kind of symbol or scope.
+* Scope DeSers have new `serialize` methods without `Symbols2Json` argment that can be used for
+  for serializing (artifact) scopes for, e.g., unit tests 
+ 
 ### Fixes
 
 ##  MontiCore 6.6.0

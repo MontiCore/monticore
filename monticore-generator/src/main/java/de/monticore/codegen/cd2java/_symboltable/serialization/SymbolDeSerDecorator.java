@@ -5,7 +5,6 @@ import de.monticore.ast.Comment;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4code.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractCreator;
-import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
@@ -60,7 +59,7 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
     generateAbstractClass = false;
     String className = symbolTableService.getSymbolDeSerSimpleName(symbolClass);
     String symName = symbolTableService.getSymbolFullName(symbolClass);
-    String scopeName = symbolTableService.getScopeInterfaceFullName();
+    String iScopeName = symbolTableService.getScopeInterfaceFullName();
     String millName = symbolTableService.getMillFullName();
     String s2jName = symbolTableService.getSymbols2JsonFullName();
     String deSerName = symbolTableService.getScopeDeSerFullName();
@@ -93,7 +92,7 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
         //deserialization
         .addCDMethod(createDeserializeStringMethod(symType))
         .addCDMethod(
-            createDeserializeJsonMethod(symType, millName, symName, jsonParam, attr, spansScope, scopeName, deSerName))
+            createDeserializeJsonMethod(symType, millName, symName, jsonParam, attr, spansScope, iScopeName, deSerName))
         .addAllCDMethods(createDeserializeAttrMethods(attr, jsonParam))
         .addCDMethod(createDeserializeAddons(sym2Param, jsonParam))
 
@@ -163,12 +162,13 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
 
   protected ASTCDMethod createDeserializeJsonMethod(ASTMCQualifiedType type, String symTabMill,
       String symbolFullName, ASTCDParameter jsonParam,
-      List<ASTCDAttribute> symbolRuleAttributes, boolean spansScope, String scopeFullName, String deSerFullName) {
+      List<ASTCDAttribute> symbolRuleAttributes, boolean spansScope, String scopeName,
+      String deSerFullName) {
     ASTCDMethod deserializeMethod = getCDMethodFacade()
         .createMethod(PUBLIC, type, DESERIALIZE, jsonParam);
     this.replaceTemplate(EMPTY_BODY, deserializeMethod,
         new TemplateHookPoint(DESER_SYM_TEMPL, symTabMill, symbolFullName,
-            Names.getSimpleName(symbolFullName), symbolRuleAttributes, spansScope, scopeFullName, deSerFullName));
+            Names.getSimpleName(symbolFullName), symbolRuleAttributes, spansScope, scopeName, deSerFullName));
     return deserializeMethod;
   }
 

@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
-import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
-import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsGlobalScope;
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.se_rwth.commons.logging.Log;
@@ -16,14 +16,15 @@ public class SymTypeVariableDeSer {
     return toSerialize.printAsJson();
   }
 
-  public SymTypeVariable deserialize(String serialized, IBasicSymbolsScope enclosingScope) {
-    return deserialize(JsonParser.parseJsonObject(serialized), enclosingScope);
+  public SymTypeVariable deserialize(String serialized) {
+    return deserialize(JsonParser.parseJsonObject(serialized));
   }
 
-  public SymTypeVariable deserialize(JsonObject serialized, IBasicSymbolsScope enclosingScope) {
+  public SymTypeVariable deserialize(JsonObject serialized) {
     if (serialized.hasStringMember("varName")) {
       String varName = serialized.getStringMember("varName");
-      return SymTypeExpressionFactory.createTypeVariable(varName, enclosingScope);
+      IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
+      return SymTypeExpressionFactory.createTypeVariable(varName, gs);
     }
     Log.error("0x823F5 Internal error: Cannot load \"" + serialized + "\" as  SymTypeVariable!");
     return null;

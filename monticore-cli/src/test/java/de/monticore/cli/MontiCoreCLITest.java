@@ -22,6 +22,7 @@ public class MontiCoreCLITest {
    * Pretty default arguments.
    */
   static String[] simpleArgs = {
+      "-" + MontiCoreConfiguration.Options.GRAMMARS,
       "src/test/resources/de/monticore/Automaton.mc4",
       "-" + MontiCoreConfiguration.Options.MODELPATH, "src/test/resources",
       "-" + MontiCoreConfiguration.Options.OUT, "target/test-run",
@@ -59,7 +60,7 @@ public class MontiCoreCLITest {
       "-" + MontiCoreConfiguration.Options.OUT, "target/test-run",
       "-" + MontiCoreConfiguration.Options.HANDCODEDPATH, "src/test/java",
       "-" + MontiCoreCLIConfiguration.Options.SCRIPT, "src/test/resources/my_noemf.groovy",
-      "-" + MontiCoreConfiguration.Options.FORCE };
+      };
   
   /**
    * Arguments for using a custom Groovy script.
@@ -71,7 +72,7 @@ public class MontiCoreCLITest {
       "-" + MontiCoreConfiguration.Options.OUT, "target/test-run",
       "-" + MontiCoreConfiguration.Options.HANDCODEDPATH, "src/test/java",
       "-" + MontiCoreCLIConfiguration.Options.SCRIPT, "src/test/resources/my_emf.groovy",
-      "-" + MontiCoreConfiguration.Options.FORCE };
+      };
   
   /**
    * These arguments specify inputs where there are no ".mc4" files. This will
@@ -95,52 +96,49 @@ public class MontiCoreCLITest {
   
   @Test
   public void testMontiCoreCLI() {
-    
-    MontiCoreCLI.main(simpleArgs);
+    MontiCoreStandardCLI.main(simpleArgs);
     
     assertTrue(!false);
   }
   
   @Test
   public void testMontiCoreDevLogCLI() {
-    
-    MontiCoreCLI.main(devLogArgs);
+    MontiCoreStandardCLI.main(devLogArgs);
     
     assertTrue(!false);
   }
   
   @Test
   public void testMontiCoreCustomLogCLI() {
-    
-    MontiCoreCLI.main(customLogArgs);
+    MontiCoreStandardCLI.main(customLogArgs);
     
     assertTrue(!false);
   }
 
   @Test
   public void testMontiCoreCustomScriptCLI() {
-    MontiCoreCLI.main(customScriptArgs);
+    MontiCoreStandardCLI.main(customScriptArgs);
     
     assertTrue(!false);
   }
 
   @Test
   public void testMontiCoreCustomEmfScriptCLI() {
-    MontiCoreCLI.main(customEmfScriptArgs);
+    MontiCoreStandardCLI.main(customEmfScriptArgs);
     
     assertTrue(!false);
   }
   
   @Test
   public void testHelp() {
-    MontiCoreCLI.main(help);
+    MontiCoreStandardCLI.main(help);
 
     assertTrue(!false);
 }
   @Ignore // It's not possible to switch off fail quick (Logger in CLI)
   @Test
   public void testArgsWithNoGrammars() {
-    MontiCoreCLI.main(argsWithNoGrammars);
+    MontiCoreStandardCLI.main(argsWithNoGrammars);
     
     assertTrue(!false);
   }
