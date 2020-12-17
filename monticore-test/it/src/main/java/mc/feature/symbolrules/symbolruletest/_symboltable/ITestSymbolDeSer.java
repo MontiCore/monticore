@@ -16,7 +16,7 @@ public class ITestSymbolDeSer extends ITestSymbolDeSerTOP {
 
   @Override
   public java.util.List<de.monticore.types.check.SymTypeExpression> deserializeSuperTypes (de.monticore.symboltable.serialization.json.JsonObject symbolJson)  {
-    return SymTypeExpressionDeSer.deserializeListMember("superTypes", symbolJson, BasicSymbolsMill.globalScope());
+    return SymTypeExpressionDeSer.deserializeListMember("superTypes", symbolJson);
   }
 
 }

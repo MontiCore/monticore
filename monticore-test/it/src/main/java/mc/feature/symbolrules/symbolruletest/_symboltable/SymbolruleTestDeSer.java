@@ -11,7 +11,7 @@ public class SymbolruleTestDeSer extends SymbolruleTestDeSerTOP {
 
   @Override
   public java.util.Optional<de.monticore.types.check.SymTypeExpression> deserializeSymType (de.monticore.symboltable.serialization.json.JsonObject symbolJson)  {
-    return SymTypeExpressionDeSer.deserializeOptionalMember("symType", symbolJson, BasicSymbolsMill.globalScope());
+    return SymTypeExpressionDeSer.deserializeOptionalMember("symType", symbolJson);
   }
 
   @Override

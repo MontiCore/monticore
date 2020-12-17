@@ -10,7 +10,7 @@ public class ScoperuleTestDeSer extends ScoperuleTestDeSerTOP {
 
   @Override
   public Optional<SymTypeExpression> deserializeSymType (de.monticore.symboltable.serialization.json.JsonObject scopeJson)  {
-    return SymTypeExpressionDeSer.deserializeOptionalMember("symType",scopeJson, null);
+    return SymTypeExpressionDeSer.deserializeOptionalMember("symType",scopeJson);
   }
 
   @Override
