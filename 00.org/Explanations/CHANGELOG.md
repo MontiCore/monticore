@@ -52,6 +52,8 @@ to be released
   for a specific kind of symbol or scope.
 * Scope DeSers have new `serialize` methods without `Symbols2Json` argment that can be used for
   for serializing (artifact) scopes for, e.g., unit tests 
+* removed the generation of `XPhasedSymbolTableCreatorDelegator` classes
+* Experiments now use ScopesGenitor-infrastructure instead of SymbolTableCreator-infrastructure
  
 ### Fixes
 
