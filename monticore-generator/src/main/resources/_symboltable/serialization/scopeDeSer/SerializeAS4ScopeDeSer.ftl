@@ -10,6 +10,12 @@ ${tc.signature("scopeAttr")}
     printer.member(de.monticore.symboltable.serialization.JsonDeSers.PACKAGE, toSerialize.getPackageName());
   }
 <#list scopeAttr as attr>
-  serialize${attr.name?cap_first}(toSerialize.${genHelper.getPlainGetter(attr)}(), s2j);
+  <#if astHelper.isOptional(attr.getMCType())>
+  if (toSerialize.isPresent${attr.getName()?cap_first}()) {
+    serialize${attr.getName()?cap_first}(Optional.of(toSerialize.${genHelper.getPlainGetter(attr)}()), s2j);
+  }
+  <#else>
+  serialize${attr.getName()?cap_first}(toSerialize.${genHelper.getPlainGetter(attr)}(), s2j);
+  </#if>
 </#list>
   return printer.toString();
