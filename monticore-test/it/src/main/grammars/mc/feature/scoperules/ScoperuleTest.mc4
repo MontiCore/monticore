@@ -3,6 +3,18 @@ package mc.feature.scoperules;
 
 grammar ScoperuleTest extends mc.common.Basics {
 
+  scope symbol Foo = "foo" Name "{" IBar* "}";
+
+  interface scope symbol IBar = Name;
+
+  scope symbol Bar implements IBar = "bar" Name "{" ITest* "}";
+
+  interface symbol ITest = "test" Name;
+
+  symbol Test1 implements ITest = "test1" Name;
+
+  symbol Test2 implements ITest = "test2" Name;
+
   scoperule extends Dummy implements IDummy = number:int
       method public void addToNumber(int count) {
         number+=count;

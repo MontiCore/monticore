@@ -25,33 +25,12 @@ public class SymbolruleTest {
   }
 
   @Test
-  public void testScope(){
-    ISymbolruleTestScope scope = SymbolruleTestMill.scope();
-    scope.setBar(true);
-    scope.setNumber(17);
-    //scope.setModifiedNameList(Lists.newArrayList("foo", "bar", "test"));
-    scope.setSymType(SymTypeExpressionFactory.createTypeConstant("int"));
-
-    SymbolruleTestScopeDeSer deSer = new SymbolruleTestScopeDeSer();
-    String serialized = deSer.serialize(scope);
-    ISymbolruleTestArtifactScope as = deSer.deserialize(serialized);
-    assertTrue(as.isBar());
-    assertEquals(17, as.getNumber());
-
-    assertEquals(3, as.getModifiedNameList().size());
-    assertEquals("foo", as.getModifiedName(0));
-    assertEquals("bar", as.getModifiedName(1));
-    assertEquals("test", as.getModifiedName(2));
-    assertTrue(SymTypeExpressionFactory.createTypeConstant("int").deepEquals(as.getSymType()));
-  }
-
-  @Test
   public void testSymbols(){
     FooSymbol fooSymbol = SymbolruleTestMill.fooSymbolBuilder().setName("foofoo").build();
     fooSymbol.setSpannedScope(SymbolruleTestMill.scope());
     fooSymbol.setBarName("barbar");
     FooSymbolDeSer fooSymbolDeSer = new FooSymbolDeSer();
-    String serializedFoo = fooSymbolDeSer.serialize(fooSymbol);
+    String serializedFoo = fooSymbolDeSer.serialize(fooSymbol, new SymbolruleTestSymbols2Json());
     FooSymbol deserializedFoo = fooSymbolDeSer.deserialize(serializedFoo);
     assertEquals(fooSymbol.getName(), deserializedFoo.getName());
     assertEquals(fooSymbol.getBarName(), deserializedFoo.getBarName());
@@ -60,7 +39,7 @@ public class SymbolruleTest {
     ITestSymbol itest = SymbolruleTestMill.iTestSymbolBuilder().setName("itest").build();
     itest.setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeConstant("int")));
     ITestSymbolDeSer iTestSymbolDeSer = new ITestSymbolDeSer();
-    String serializedITest = iTestSymbolDeSer.serialize(itest);
+    String serializedITest = iTestSymbolDeSer.serialize(itest, new SymbolruleTestSymbols2Json());
     ITestSymbol deserializedITest = iTestSymbolDeSer.deserialize(serializedITest);
     assertEquals(itest.getName(), deserializedITest.getName());
     assertEquals(1, deserializedITest.sizeSuperTypes());
@@ -71,7 +50,7 @@ public class SymbolruleTest {
     test1.setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeConstant("int")));
     test1.setIsPrivate(true);
     Test1SymbolDeSer test1SymbolDeSer = new Test1SymbolDeSer();
-    String serializedTest1 = test1SymbolDeSer.serialize(test1);
+    String serializedTest1 = test1SymbolDeSer.serialize(test1, new SymbolruleTestSymbols2Json());
     Test1Symbol deserializedTest1 = test1SymbolDeSer.deserialize(serializedTest1);
     assertEquals(test1.getName(), deserializedTest1.getName());
     assertEquals(1, deserializedTest1.sizeSuperTypes());
@@ -84,7 +63,7 @@ public class SymbolruleTest {
     test2.setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeConstant("int")));
     test2.setIsPublic(true);
     Test2SymbolDeSer test2SymbolDeSer = new Test2SymbolDeSer();
-    String serializedTest2 = test2SymbolDeSer.serialize(test2);
+    String serializedTest2 = test2SymbolDeSer.serialize(test2, new SymbolruleTestSymbols2Json());
     Test2Symbol deserializedTest2 = test2SymbolDeSer.deserialize(serializedTest2);
     assertEquals(test2.getName(), deserializedTest2.getName());
     assertEquals(1, deserializedTest2.sizeSuperTypes());
@@ -103,13 +82,23 @@ public class SymbolruleTest {
     SymbolruleTestScopesGenitorDelegator scopesGenitor = SymbolruleTestMill.scopesGenitorDelegator();
     ISymbolruleTestArtifactScope as = scopesGenitor.createFromAST(model.get());
     as.setName("SymbolruleTest");
+    as.setBar(true);
+    as.setNumber(17);
+    //TODO wieder einkommentieren, wenn #2674 abgeschlossen
+    //as.setModifiedNameList(Lists.newArrayList("foo", "bar", "test"));
+    as.setSymType(SymTypeExpressionFactory.createTypeConstant("int"));
 
-    SymbolruleTestScopeDeSer deSer = new SymbolruleTestScopeDeSer();
-    String serialized = deSer.serialize(as);
+    SymbolruleTestSymbols2Json symbols2Json = new SymbolruleTestSymbols2Json();
+    as.accept(symbols2Json.getTraverser());
+    String serialized = symbols2Json.getSerializedString();
 
+    SymbolruleTestDeSer deSer = new SymbolruleTestDeSer();
     ISymbolruleTestArtifactScope as2 = deSer.deserialize(serialized);
     assertEquals(as.getName(), as2.getName());
     assertEquals(as.getSymbolsSize(), as2.getSymbolsSize());
+    assertTrue(as2.isBar());
+    assertEquals(17, as2.getNumber());
+    assertTrue(SymTypeExpressionFactory.createTypeConstant("int").deepEquals(as2.getSymType()));
     assertEquals(1, as2.getLocalFooSymbols().size());
     ISymbolruleTestScope fooSpannedScope = as2.getLocalFooSymbols().get(0).getSpannedScope();
     /* TODO wieder einkommentieren, wenn gefixt -> momentan Problem, dass Subsymbolen auch in
