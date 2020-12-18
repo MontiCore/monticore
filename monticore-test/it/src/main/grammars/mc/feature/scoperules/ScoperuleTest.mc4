@@ -1,0 +1,43 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.feature.scoperules;
+
+grammar ScoperuleTest extends mc.common.Basics {
+
+  scope symbol Foo = "foo" Name "{" IBar* "}";
+
+  interface scope symbol IBar = Name;
+
+  scope symbol Bar implements IBar = "bar" Name "{" ITest* "}";
+
+  interface symbol ITest = "test" Name;
+
+  symbol Test1 implements ITest = "test1" Name;
+
+  symbol Test2 implements ITest = "test2" Name;
+
+  scoperule extends Dummy implements IDummy = number:int
+      method public void addToNumber(int count) {
+        number+=count;
+      }
+      bar:boolean
+      method public void addBarIfNonePresent() {
+        if(!isBar()){
+          Log.info("Added Bar!", this.getClass().getName());
+        }
+      }
+      modifiedName:String*
+      method public List<String> calculateModifiedNames() {
+        for(String s: modifiedName){
+          s = "Modified" + s;
+        }
+        return modifiedName;
+      }
+      symType:de.monticore.types.check.SymTypeExpression?
+      method public void createSymType(){
+        if(!symType.isPresent()){
+          symType = Optional.of(de.monticore.types.check.SymTypeExpressionFactory.createTypeConstant("double"));
+        }
+      };
+
+
+}

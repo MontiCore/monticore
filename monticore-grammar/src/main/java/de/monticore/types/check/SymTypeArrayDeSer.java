@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
-import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
-import de.monticore.symboltable.serialization.IDeSer;
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsGlobalScope;
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
@@ -17,23 +17,20 @@ public class SymTypeArrayDeSer {
     return toSerialize.printAsJson();
   }
 
-  public SymTypeArray deserialize(String serialized, IOOSymbolsScope enclosingScope) {
-    return deserialize(JsonParser.parseJsonObject(serialized), enclosingScope);
+  public SymTypeArray deserialize(String serialized) {
+    return deserialize(JsonParser.parseJsonObject(serialized));
   }
 
-  public SymTypeArray deserialize(JsonObject serialized, IOOSymbolsScope enclosingScope) {
+  public SymTypeArray deserialize(JsonObject serialized) {
     if (serialized.hasIntegerMember("dim") && serialized.hasMember("argument")) {
       int dim = serialized.getIntegerMember("dim");
       JsonElement argumentJson = serialized.getMember("argument");
-      SymTypeExpression argument = SymTypeExpressionDeSer.getInstance()
-          .deserialize(argumentJson, enclosingScope);
-      return SymTypeExpressionFactory.createTypeArray(argument.print(),
-          enclosingScope, dim, argument);
+      SymTypeExpression arg = SymTypeExpressionDeSer.getInstance().deserialize(argumentJson);
+      IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
+      return SymTypeExpressionFactory.createTypeArray(arg.print(), gs, dim, arg);
     }
-    else {
-      Log.error(
-          "0x823F2 Internal error: Cannot deserialize \"" + serialized + "\" as SymTypeArray!");
-    }
+    Log.error(
+        "0x823F2 Internal error: Cannot deserialize \"" + serialized + "\" as SymTypeArray!");
     return null;
   }
 

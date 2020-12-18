@@ -4,6 +4,6 @@ ${tc.signature("definitionName")}
   de.monticore.io.FileFinder.findFile(getModelPath(), modelName, getFileExt(), cache);
   if(mc.isPresent()){
     addLoadedFile(mc.get().getQualifiedPath().toString());
-    I${definitionName}ArtifactScope as = symbols2Json.load(mc.get().getLocation());
+    I${definitionName}ArtifactScope as = getSymbols2Json().load(mc.get().getLocation());
     addSubScope(as);
   }

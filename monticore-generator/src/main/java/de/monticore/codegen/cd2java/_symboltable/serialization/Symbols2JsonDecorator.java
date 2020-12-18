@@ -87,8 +87,8 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
             .addCDMethod(createGetSerializedStringMethod())
             .addAllCDMethods(createLoadMethods(artifactScopeInterfaceFullName))
             .addCDMethod(createStoreMethod(artifactScopeInterfaceFullName))
-            .addAllCDMethods(createScopeVisitorMethods(scopeInterfaceFullName, symbols2JsonName))
-            .addAllCDMethods(createSymbolVisitorMethods(symbolDefiningProds, symbols2JsonName))
+            .addAllCDMethods(createScopeVisitorMethods(scopeInterfaceFullName))
+            .addAllCDMethods(createSymbolVisitorMethods(symbolDefiningProds))
              .addAllCDMethods(createArtifactScopeVisitorMethods(artifactScopeInterfaceFullName, symbols2JsonName))
             .build();
     return symbols2JsonClass;
@@ -172,17 +172,17 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
     return method;
   }
 
-  protected List<ASTCDMethod> createScopeVisitorMethods(String scopeInterfaceName, String symbols2Json) {
+  protected List<ASTCDMethod> createScopeVisitorMethods(String scopeInterfaceName) {
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
 
     ASTCDMethod visitMethod = visitorService.getVisitorMethod(VISIT, getMCTypeFacade().createQualifiedType(scopeInterfaceName));
     this.replaceTemplate(EMPTY_BODY, visitMethod, new TemplateHookPoint(TEMPLATE_PATH
-            + "symbols2Json.VisitScope4STP", symbols2Json));
+            + "symbols2Json.VisitScope4STP"));
     visitorMethods.add(visitMethod);
 
     ASTCDMethod endVisitMethod = visitorService.getVisitorMethod(END_VISIT, getMCTypeFacade().createQualifiedType(scopeInterfaceName));
     this.replaceTemplate(EMPTY_BODY, endVisitMethod, new TemplateHookPoint(TEMPLATE_PATH
-            + "symbols2Json.EndVisit4Scope", symbols2Json));
+            + "symbols2Json.EndVisit4Scope"));
     visitorMethods.add(endVisitMethod);
 
     return visitorMethods;
@@ -204,7 +204,7 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
     return visitorMethods;
   }
 
-  protected List<ASTCDMethod> createSymbolVisitorMethods(List<ASTCDType> symbolProds, String symbols2Json) {
+  protected List<ASTCDMethod> createSymbolVisitorMethods(List<ASTCDType> symbolProds) {
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
 
     for (ASTCDType symbolProd : symbolProds) {
@@ -212,7 +212,7 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
       ASTCDMethod visitMethod = visitorService.getVisitorMethod(VISIT, getMCTypeFacade().createQualifiedType(symbolFullName));
       this.replaceTemplate(EMPTY_BODY, visitMethod,
               new TemplateHookPoint(TEMPLATE_PATH + "symbols2Json.VisitSymbol",
-                      symbolProd.getName(), symbols2Json));
+                      symbolProd.getName()));
       visitorMethods.add(visitMethod);
     }
     return visitorMethods;

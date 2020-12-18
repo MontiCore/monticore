@@ -1,6 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("symbols2Json")}
   getJsonPrinter().endArray();
-  scopeDeSer.serializeAddons(node, (${symbols2Json}) this);
+  scopeDeSer.serializeAddons(node, this);
   getJsonPrinter().endObject();
 
