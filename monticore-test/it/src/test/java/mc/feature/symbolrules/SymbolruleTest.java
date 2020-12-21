@@ -4,6 +4,12 @@ package mc.feature.symbolrules;
 import com.google.common.collect.Lists;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.SymTypeExpressionFactory;
+import mc.feature.symbolrules.symbolrulelisttest.SymbolruleListTestMill;
+import mc.feature.symbolrules.symbolrulelisttest._parser.SymbolruleListTestParser;
+import mc.feature.symbolrules.symbolrulelisttest._symboltable.ISymbolruleListTestArtifactScope;
+import mc.feature.symbolrules.symbolrulelisttest._symboltable.SymbolruleListTestDeSer;
+import mc.feature.symbolrules.symbolrulelisttest._symboltable.SymbolruleListTestScopesGenitorDelegator;
+import mc.feature.symbolrules.symbolrulelisttest._symboltable.SymbolruleListTestSymbols2Json;
 import mc.feature.symbolrules.symbolruletest.SymbolruleTestMill;
 import mc.feature.symbolrules.symbolruletest._ast.ASTFoo;
 import mc.feature.symbolrules.symbolruletest._parser.SymbolruleTestParser;
@@ -84,8 +90,7 @@ public class SymbolruleTest {
     as.setName("SymbolruleTest");
     as.setBar(true);
     as.setNumber(17);
-    //TODO wieder einkommentieren, wenn #2674 abgeschlossen
-    //as.setModifiedNameList(Lists.newArrayList("foo", "bar", "test"));
+    as.setModifiedNameList(Lists.newArrayList("foo", "bar", "test"));
     as.setSymType(SymTypeExpressionFactory.createTypeConstant("int"));
 
     SymbolruleTestSymbols2Json symbols2Json = new SymbolruleTestSymbols2Json();
@@ -98,6 +103,10 @@ public class SymbolruleTest {
     assertEquals(as.getSymbolsSize(), as2.getSymbolsSize());
     assertTrue(as2.isBar());
     assertEquals(17, as2.getNumber());
+    assertEquals(3, as.getModifiedNameList().size());
+    assertEquals("foo", as.getModifiedName(0));
+    assertEquals("bar", as.getModifiedName(1));
+    assertEquals("test", as.getModifiedName(2));
     assertTrue(SymTypeExpressionFactory.createTypeConstant("int").deepEquals(as2.getSymType()));
     assertEquals(1, as2.getLocalFooSymbols().size());
     ISymbolruleTestScope fooSpannedScope = as2.getLocalFooSymbols().get(0).getSpannedScope();
@@ -127,6 +136,57 @@ public class SymbolruleTest {
     Dummy dummy = (Dummy) symbol;
     assertTrue(symbol instanceof IDummy);
     IDummy iDummy = (IDummy) symbol;
+  }
+
+  @Test
+  public void testSymbolruleListAttributes() throws IOException{
+    SymbolruleListTestParser parser = SymbolruleListTestMill.parser();
+    Optional<mc.feature.symbolrules.symbolrulelisttest._ast.ASTFoo> opt = parser.parse("src/test/resources/mc/feature/symbolrules/SymbolruleTest.rule");
+    assertTrue(opt.isPresent());
+    SymbolruleListTestScopesGenitorDelegator scopesGenitor = SymbolruleListTestMill.scopesGenitorDelegator();
+    ISymbolruleListTestArtifactScope as = scopesGenitor.createFromAST(opt.get());
+    as.setName("SymbolruleTest");
+    as.setNumbersList(Lists.newArrayList(3,4,5));
+    as.setNamesList(Lists.newArrayList("A", "B", "C"));
+    as.setSymTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeConstant("int"), SymTypeExpressionFactory.createTypeConstant("double")));
+    as.setArePresentList(Lists.newArrayList(false, true, true, false));
+    as.setBigNumbersList(Lists.newArrayList(3l));
+    as.setDoubleFloatingPointsList(Lists.newArrayList(3.4,6.3,5.5));
+    as.setFloatingPointsList(Lists.newArrayList(3.4f,32.4f,1.3f));
+
+    SymbolruleListTestSymbols2Json symbols2Json = new SymbolruleListTestSymbols2Json();
+    as.accept(symbols2Json.getTraverser());
+    String serialized = symbols2Json.getSerializedString();
+
+    SymbolruleListTestDeSer deSer = new SymbolruleListTestDeSer();
+    ISymbolruleListTestArtifactScope as2 = deSer.deserialize(serialized);
+    assertEquals(as.getName(), as2.getName());
+    assertEquals(as.sizeNumbers(), as2.sizeNumbers());
+    assertEquals(as.getNumbers(0), as2.getNumbers(0));
+    assertEquals(as.getNumbers(1), as2.getNumbers(1));
+    assertEquals(as.getNumbers(2), as2.getNumbers(2));
+    assertEquals(as.sizeNames(), as2.sizeNames());
+    assertEquals(as.getNames(0), as2.getNames(0));
+    assertEquals(as.getNames(1), as2.getNames(1));
+    assertEquals(as.getNames(2), as2.getNames(2));
+    assertEquals(as.sizeSymTypes(), as2.sizeSymTypes());
+    assertTrue(as.getSymTypes(0).deepEquals(as2.getSymTypes(0)));
+    assertTrue(as.getSymTypes(1).deepEquals(as2.getSymTypes(1)));
+    assertEquals(as.sizeArePresent(), as2.sizeArePresent());
+    assertEquals(as.getArePresent(0), as2.getArePresent(0));
+    assertEquals(as.getArePresent(1), as2.getArePresent(1));
+    assertEquals(as.getArePresent(2), as2.getArePresent(2));
+    assertEquals(as.getArePresent(3), as2.getArePresent(3));
+    assertEquals(as.sizeBigNumbers(), as2.sizeBigNumbers());
+    assertEquals(as.getBigNumbers(0), as2.getBigNumbers(0));
+    assertEquals(as.sizeDoubleFloatingPoints(), as2.sizeDoubleFloatingPoints());
+    assertEquals(as.getDoubleFloatingPoints(0), as2.getDoubleFloatingPoints(0));
+    assertEquals(as.getDoubleFloatingPoints(1), as2.getDoubleFloatingPoints(1));
+    assertEquals(as.getDoubleFloatingPoints(2), as2.getDoubleFloatingPoints(2));
+    assertEquals(as.sizeFloatingPoints(), as2.sizeFloatingPoints());
+    assertEquals(as.getFloatingPoints(0), as2.getFloatingPoints(0));
+    assertEquals(as.getFloatingPoints(1), as2.getFloatingPoints(1));
+    assertEquals(as.getFloatingPoints(2), as2.getFloatingPoints(2));
   }
 
 

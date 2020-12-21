@@ -58,7 +58,7 @@ public class JsonParserTest {
     assertEquals(false, result.getMember("foo").getAsJsonBoolean().getValue());
     
     assertTrue(result.getMember("bar").isJsonNumber());
-    assertEquals(3, result.getMember("bar").getAsJsonNumber().getNumberAsInt());
+    assertEquals(3, result.getMember("bar").getAsJsonNumber().getNumberAsInteger());
 
     assertTrue(result.getMember("bla").isJsonString());
     assertEquals("yes", result.getMember("bla").getAsJsonString().getValue());

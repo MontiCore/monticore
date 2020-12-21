@@ -5,6 +5,6 @@ ${tc.signature("jsonParamName", "attrType", "attrName", "typeMap")}
     return result;
   }
   for(de.monticore.symboltable.serialization.json.JsonElement e : ${jsonParamName}.getArrayMember("${attrName}")) {
-    result.add(${jsonParamName}.${typeMap});
+    result.add(e.${typeMap});
   }
   return result;
