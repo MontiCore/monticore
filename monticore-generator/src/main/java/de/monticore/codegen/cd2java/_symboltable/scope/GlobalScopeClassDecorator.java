@@ -69,7 +69,6 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     ASTMCQualifiedType globalScopeInterface = symbolTableService.getGlobalScopeInterfaceType();
     String scopeInterfaceFullName = symbolTableService.getScopeInterfaceFullName();
     String definitionName = input.getCDDefinition().getName();
-    String scopeDeSerName = symbolTableService.getScopeDeSerSimpleName();
     String scopeDeSerFullName = symbolTableService.getScopeDeSerFullName();
     String symbols2JsonName = symbolTableService.getSymbols2JsonSimpleName();
 
@@ -77,10 +76,6 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     this.replaceTemplate(VALUE, cacheAttribute, new StringHookPoint("= new java.util.HashSet<>()"));
 
     ASTCDAttribute deSerMapAttribute = createDeSerMapAttribute();
-
-    ASTCDAttribute scopeDeSerAttribute = createScopeDeSerAttribute(scopeDeSerName);
-    List<ASTCDMethod> scopeDeSerMethods = accessorDecorator.decorate(scopeDeSerAttribute);
-    scopeDeSerMethods.addAll(mutatorDecorator.decorate(scopeDeSerAttribute));
 
     ASTCDAttribute symbols2JsonAttribute = createSymbols2JsonAttribute(symbols2JsonName);
     List<ASTCDMethod> symbols2JsonMethods = mutatorDecorator.decorate(symbols2JsonAttribute);
@@ -120,8 +115,6 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
         .addAllCDMethods(fileExtensionMethods)
         .addCDAttribute(deSerMapAttribute)
         .addAllCDMethods(createDeSerMapMethods(deSerMapAttribute))
-        .addCDAttribute(scopeDeSerAttribute)
-        .addAllCDMethods(scopeDeSerMethods)
         .addCDAttribute(symbols2JsonAttribute)
         .addAllCDMethods(symbols2JsonMethods)
         .addCDAttribute(cacheAttribute)
@@ -147,16 +140,13 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
 
     ASTCDParameter fileExtensionParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createStringType(), FILE_EXTENSION_VAR);
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), globalScopeClassName, modelPathParameter, fileExtensionParameter);
-    String scopeDeSerFullName = symbolTableService.getScopeDeSerFullName();
-    this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint(TEMPLATE_PATH + "ConstructorGlobalScope",
-        scopeDeSerFullName));
+    this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint(TEMPLATE_PATH + "ConstructorGlobalScope"));
     return constructor;
   }
 
   protected ASTCDConstructor createZeroArgsConstructor(String className){
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), className);
-    String scopeDeSerFullName = symbolTableService.getScopeDeSerFullName();
-    this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint(TEMPLATE_PATH + "ZeroArgsConstructorGlobalScope", scopeDeSerFullName));
+    this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint(TEMPLATE_PATH + "ZeroArgsConstructorGlobalScope"));
     return constructor;
   }
 
