@@ -61,7 +61,6 @@ public class CoCoCheckerDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     ASTCDClass cocoChecker = CD4AnalysisMill.cDClassBuilder()
         .setName(cocoCheckerName)
         .setModifier(PUBLIC.build())
-        .addInterface(getMCTypeFacade().createQualifiedType(visitorService.getInheritanceVisitorFullName()))
         .addCDAttribute(traverserAttribute)
         .addCDConstructor(constructor)
         .addAllCDMethods(traverserMethods)
