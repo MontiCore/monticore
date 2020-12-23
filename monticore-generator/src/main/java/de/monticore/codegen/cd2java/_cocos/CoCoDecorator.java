@@ -45,10 +45,6 @@ public class CoCoDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCo
     List<String> cocoPackage = Lists.newArrayList();
     input.getPackageList().forEach(p -> cocoPackage.add(p.toLowerCase()));
     cocoPackage.addAll(Arrays.asList(input.getCDDefinition().getName().toLowerCase(), CoCoConstants.COCO_PACKAGE));
-    // set attribute for special generation for CoCoChecker Top classes
-    boolean checkerHandCoded = existsHandwrittenClass(handCodedPath,
-        constructQualifiedName(cocoPackage, input.getCDDefinition().getName() + CoCoConstants.COCO_CHECKER_SUFFIX));
-    cocoCheckerDecorator.setHandCoded(checkerHandCoded);
 
     ASTCDDefinition cocoCD = CD4AnalysisMill.cDDefinitionBuilder()
         .setName(input.getCDDefinition().getName())
