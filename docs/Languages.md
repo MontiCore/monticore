@@ -358,12 +358,15 @@ component InteriorLight {                           // MontiArc language
 * The ODs differ from JSON structures, e.g., in 
   the possibility to give the object a name as it is the case for `tiger`, or `alice` 
   enabaling the definition real graph structures.
-* Main grammars:
-    * [ODBasics](https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/lang/ODBasics.mc4)
+* Main grammars (directly usable):
     * [OD4Data](https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/lang/OD4Data.mc4)
     * [OD4Development](https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/lang/OD4Development.mc4)
     * [OD4Report](https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/lang/OD4Report.mc4)
+* Main grammar components:
     * [DateLiterals](https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/lang/DateLiterals.mc4)
+    * [ODBasis](https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/lang/ODBasis.mc4)
+    * [ODAttribute](https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/lang/ODAttribute.mc4)
+    * [ODLink](https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/lang/ODLink.mc4)
 * [*Detailed description*](https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/lang/ODBasics.md) 
 
 
