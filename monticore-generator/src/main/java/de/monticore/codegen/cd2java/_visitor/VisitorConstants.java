@@ -49,6 +49,12 @@ public final class VisitorConstants {
 
   public static final String TRAVERSE = "traverse";
 
+  public static final String IVISTOR_FULL_NAME = "de.monticore.visitor.IVisitor2";
+
+  public static final String ITRAVERSER_FULL_NAME = "de.monticore.visitor.ITraverser";
+
+  public static final String IHANDLER_FULL_NAME = "de.monticore.visitor.IHandler";
+
   public static final String HANDLE_AST_INHERITANCE_TEMPLATE = "_visitor.inheritance.HandleASTInheritance";
   
   public static final String HANDLE_SYMTAB_INHERITANCE_TEMPLATE = "_visitor.inheritance.HandleSymTabInheritance";

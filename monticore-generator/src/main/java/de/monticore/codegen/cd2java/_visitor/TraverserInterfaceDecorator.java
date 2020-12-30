@@ -1,35 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._visitor;
 
-import static de.monticore.cd.facade.CDModifier.PUBLIC;
-import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
-import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_INTERFACE;
-import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SCOPE;
-import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SYMBOL;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.END_VISIT;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.HANDLE;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.TRAVERSE;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.TRAVERSER_HANDLE_TEMPLATE;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.TRAVERSER_TRAVERSE_SCOPE_TEMPLATE;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.TRAVERSER_TRAVERSE_TEMPLATE;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISIT;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISITOR_METHODS_TRAVERSER_DELEGATING_TEMPLATE;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDDefinition;
-import de.monticore.cd.cd4analysis._ast.ASTCDEnum;
-import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
-import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
-import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
+import com.google.common.collect.Lists;
+import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.cd4code.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractCreator;
@@ -44,6 +17,16 @@ import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
+import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_INTERFACE;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SCOPE;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SYMBOL;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
 
 /**
  * creates a Visitor interface from a grammar
@@ -85,14 +68,19 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
         .map(visitorService::calculateCDTypeNamesWithASTPackage)
         .collect(Collectors.toList()));
     
-    List<String> visitorSimpleNameList =new ArrayList<>();
+    List<String> visitorSimpleNameList = Lists.newArrayList(visitorService.getVisitorSimpleName());
     visitorSimpleNameList.addAll(superCDsTransitive.stream()
         .map(visitorService::getVisitorSimpleName)
         .collect(Collectors.toList()));
-    
+
+    List<ASTMCQualifiedType> superInterfaces = this.visitorService.getSuperTraverserInterfaces();
+    if (superInterfaces.isEmpty()) {
+      superInterfaces.add(getMCTypeFacade().createQualifiedType(ITRAVERSER_FULL_NAME));
+    }
+
     ASTCDInterface visitorInterface = CD4CodeMill.cDInterfaceBuilder()
         .setName(traverserSimpleName)
-        .addAllInterface(this.visitorService.getSuperTraverserInterfaces())
+        .addAllInterface(superInterfaces)
         .setModifier(PUBLIC.build())
         .addAllCDMethods(addVisitor2Methods(definitionList))
         .addAllCDMethods(addHanlderMethods(definitionList))
@@ -272,7 +260,7 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
    * Creates visit, endVisit, handle, and traverse methods for a given
    * interface.
    * 
-   * @param astcdClass The input interface
+   * @param astcdInterface The input interface
    * @param simpleVisitorName The name of the visited entity
    * @return The decorated visitor methods
    */
@@ -294,7 +282,7 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
    * Creates visit, endVisit, handle, and traverse methods for a list of
    * enumerations.
    * 
-   * @param astcdInterfaceList The input list of enumerations
+   * @param astcdEnumList The input list of enumerations
    * @param simpleVisitorName The name of the visited entity
    * @return The decorated visitor methods
    */
@@ -312,7 +300,7 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
    * Creates visit, endVisit, handle, and traverse methods for a given
    * enumeration.
    * 
-   * @param astcdClass The input enumeration
+   * @param astcdEnum The input enumeration
    * @param simpleVisitorName The name of the visited entity
    * @return The decorated visitor methods
    */
