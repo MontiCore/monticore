@@ -64,8 +64,16 @@ public class CoCoService extends AbstractService<CoCoService> {
     return getCDName() + CoCoConstants.COCO_CHECKER_SUFFIX;
   }
 
+  public String getCheckerSimpleTypeName(CDDefinitionSymbol cdSymbol) {
+    return cdSymbol.getName() + CoCoConstants.COCO_CHECKER_SUFFIX;
+  }
+
   public String getCheckerFullTypeName() {
     return String.join(".", getPackage(), getCheckerSimpleTypeName());
+  }
+
+  public String getCheckerFullTypeName(CDDefinitionSymbol cdSymbol) {
+    return String.join(".", getPackage(cdSymbol), getCheckerSimpleTypeName(cdSymbol));
   }
 
   public ASTMCType getCheckerType() {
