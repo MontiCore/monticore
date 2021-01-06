@@ -9,33 +9,79 @@ import de.monticore.ast.ASTNode;
 import de.monticore.symboltable.IScope;
 import de.monticore.symboltable.ISymbol;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 public interface ITraverser {
 
+  default void add4IVisitor (IVisitor iVisitor) {}
+
+  default List<IVisitor> getIVisitorList () {
+    return new ArrayList<>();
+  }
+
+  default Optional<IHandler> getIHandler ()  {
+    return Optional.empty();
+  }
+
+  default void setIHandler (IHandler iHandler)  {
+  }
+
   // ASTNode
-  // void handle(ASTNode node);
+  default void handle(ASTNode node) {
+    if (getIHandler().isPresent()) {
+      getIHandler().get().handle(node);
+    } else {
+      visit(node);
+      // no traverse() for abstract classes, interfaces and enums, only concrete classes are traversed
+      endVisit(node);
+    }
+  }
 
-  void visit(ASTNode node);
+  default void visit(ASTNode node) {
+    getIVisitorList().forEach(v -> v.visit(node));
+  }
 
-  // void traverse (ASTNode node);
-
-  void endVisit(ASTNode node);
+  default void endVisit(ASTNode node) {
+    getIVisitorList().forEach(v -> v.endVisit(node));
+  }
 
   // ISymbol
-  // void handle(ISymbol symbol);
+  default void handle(ISymbol symbol) {
+    if (getIHandler().isPresent()) {
+      getIHandler().get().handle(symbol);
+    } else {
+      visit(symbol);
+      // no traverse() for abstract classes, interfaces and enums, only concrete classes are traversed
+      endVisit(symbol);
+    }
+  }
 
-  void visit(ISymbol symbol);
+  default void visit(ISymbol symbol){
+    getIVisitorList().forEach(v -> v.visit(symbol));
+  }
 
-  // void traverse (ISymbol symbol);
-
-  void endVisit(ISymbol symbol);
+  default void endVisit(ISymbol symbol){
+    getIVisitorList().forEach(v -> v.endVisit(symbol));
+  }
 
   // IScope
-  // void handle(IScope scope);
+  default void handle(IScope scope) {
+    if (getIHandler().isPresent()) {
+      getIHandler().get().handle(scope);
+    } else {
+      visit(scope);
+      // no traverse() for abstract classes, interfaces and enums, only concrete classes are traversed
+      endVisit(scope);
+    }
+  }
 
-  void visit(IScope scope);
+  default void visit(IScope scope){
+    getIVisitorList().forEach(v -> v.visit(scope));
+  }
 
-  // void traverse (IScope scope);
-
-  void endVisit(IScope scope);
-
+  default void endVisit(IScope scope){
+    getIVisitorList().forEach(v -> v.endVisit(scope));
+  }
 }

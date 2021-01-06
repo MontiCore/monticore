@@ -9,7 +9,7 @@ import de.monticore.ast.ASTNode;
 import de.monticore.symboltable.IScope;
 import de.monticore.symboltable.ISymbol;
 
-public interface IVisitor2 {
+public interface IVisitor {
 
   default void endVisit(ASTNode node) {
   }

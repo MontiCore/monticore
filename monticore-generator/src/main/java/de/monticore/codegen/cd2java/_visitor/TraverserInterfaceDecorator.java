@@ -85,7 +85,6 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
         .addAllCDMethods(addVisitor2Methods(definitionList))
         .addAllCDMethods(addHanlderMethods(definitionList))
         .addAllCDMethods(createTraverserDelegatingMethods(compilationUnit.getCDDefinition()))
-        .addAllCDMethods(addDefaultVisitorMethods(visitorSimpleNameList))
         .build();
     
     return visitorInterface;
@@ -447,36 +446,7 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
         VISITOR_METHODS_TRAVERSER_DELEGATING_TEMPLATE, simpleVisitorName, methodName));
     return visitorMethod;
   }
-  
-  /**
-   * Creates visit and endVisit methods for ASTNode, ISymbol, and IScope.
-   * 
-   * @param simpleVisitorNameList The list of all qualified (super) visitors
-   * @return The corresponding visitor methods for default elements
-   */
-  protected List<ASTCDMethod> addDefaultVisitorMethods(List<String> simpleVisitorNameList) {
-    // only visit and endVisit
-    List<ASTCDMethod> visitorMethods = new ArrayList<>();
-    ArrayList<String> reversedList = new ArrayList<>(simpleVisitorNameList);
-    Collections.reverse(reversedList);
-    
-    // ASTNode methods
-    ASTMCQualifiedType astInterfaceType = getMCTypeFacade().createQualifiedType(AST_INTERFACE);
-    visitorMethods.add(addDelegatingMethod(astInterfaceType, simpleVisitorNameList, VISIT));
-    visitorMethods.add(addDelegatingMethod(astInterfaceType, reversedList, END_VISIT));
-    
-    // ISymbol methods
-    ASTMCQualifiedType symoblInterfaceType = getMCTypeFacade().createQualifiedType(I_SYMBOL);
-    visitorMethods.add(addDelegatingMethod(symoblInterfaceType, simpleVisitorNameList, VISIT));
-    visitorMethods.add(addDelegatingMethod(symoblInterfaceType, reversedList, END_VISIT));
-    
-    // IScope methods
-    ASTMCQualifiedType scopeInterfaceType = getMCTypeFacade().createQualifiedType(I_SCOPE);
-    visitorMethods.add(addDelegatingMethod(scopeInterfaceType, simpleVisitorNameList, VISIT));
-    visitorMethods.add(addDelegatingMethod(scopeInterfaceType, reversedList, END_VISIT));
-    
-    return visitorMethods;
-  }
+
   
   /**
    * Returns a set of qualified symbol names. Considers the complete inheritance
