@@ -7,7 +7,9 @@ package de.monticore;
  import de.monticore.cd.cd4analysis._ast.ASTCDClass;
  import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
  import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
- import de.monticore.cd.cd4analysis._symboltable.*;
+ import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
+ import de.monticore.cd.cd4analysis._symboltable.ICD4AnalysisGlobalScope;
+ import de.monticore.cd.cd4analysis._symboltable.ICD4AnalysisScope;
  import de.monticore.cd.prettyprint.CD4CodePrinter;
  import de.monticore.codegen.cd2java.AbstractService;
  import de.monticore.codegen.cd2java.CDGenerator;
@@ -53,7 +55,6 @@ package de.monticore;
  import de.monticore.codegen.cd2java._symboltable.serialization.Symbols2JsonDecorator;
  import de.monticore.codegen.cd2java._symboltable.symbol.*;
  import de.monticore.codegen.cd2java._symboltable.symbol.symbolsurrogatemutator.MandatoryMutatorSymbolSurrogateDecorator;
- import de.monticore.codegen.cd2java._symboltable.symboltablecreator.PhasedSymbolTableCreatorDelegatorDecorator;
  import de.monticore.codegen.cd2java._symboltable.symboltablecreator.SymbolTableCreatorDecorator;
  import de.monticore.codegen.cd2java._symboltable.symboltablecreator.SymbolTableCreatorDelegatorDecorator;
  import de.monticore.codegen.cd2java._symboltable.symboltablecreator.SymbolTableCreatorForSuperTypes;
@@ -87,7 +88,10 @@ package de.monticore;
  import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
  import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
  import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
- import de.monticore.grammar.grammar_withconcepts._symboltable.*;
+ import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsArtifactScope;
+ import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
+ import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsSymbolTableCreatorDelegator;
+ import de.monticore.grammar.grammar_withconcepts._symboltable.IGrammar_WithConceptsGlobalScope;
  import de.monticore.io.paths.IterablePath;
  import de.monticore.io.paths.ModelPath;
  import de.se_rwth.commons.Joiners;
@@ -700,13 +704,15 @@ public class MontiCoreScript extends Script implements GroovyRunner {
       IterablePath handCodedPath) {
     SymbolTableService symbolTableService = new SymbolTableService(cd);
     VisitorService visitorService = new VisitorService(cd);
+    MethodDecorator methodDecorator = new MethodDecorator(glex, visitorService);
 
     TraverserInterfaceDecorator iTraverserDecorator = new TraverserInterfaceDecorator(glex, visitorService, symbolTableService);
     TraverserClassDecorator traverserDecorator = new TraverserClassDecorator(glex, visitorService, symbolTableService);
     Visitor2Decorator visitor2Decorator = new Visitor2Decorator(glex, visitorService, symbolTableService);
     HandlerDecorator handlerDecorator = new HandlerDecorator(glex, visitorService, symbolTableService);
+    InheritanceHandlerDecorator inheritanceHandlerDecorator = new InheritanceHandlerDecorator(glex, methodDecorator, visitorService, symbolTableService);
 
-    CDTraverserDecorator decorator = new CDTraverserDecorator(glex, handCodedPath, visitorService, iTraverserDecorator, traverserDecorator, visitor2Decorator, handlerDecorator);
+    CDTraverserDecorator decorator = new CDTraverserDecorator(glex, handCodedPath, visitorService, iTraverserDecorator, traverserDecorator, visitor2Decorator, handlerDecorator, inheritanceHandlerDecorator);
 
     ASTCDCompilationUnit visitorCompilationUnit = decorator.decorate(cd);
 

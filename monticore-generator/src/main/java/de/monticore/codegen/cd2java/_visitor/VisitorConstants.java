@@ -57,7 +57,7 @@ public final class VisitorConstants {
 
   public static final String HANDLE_AST_INHERITANCE_TEMPLATE = "_visitor.inheritance.HandleASTInheritance";
   
-  public static final String HANDLE_SYMTAB_INHERITANCE_TEMPLATE = "_visitor.inheritance.HandleSymTabInheritance";
+  public static final String HANDLE_SYMTAB_INHERITANCE_TEMPLATE = "_visitor.handler.HandleSymTabInheritance";
 
   public static final String HANDLE_TEMPLATE = "_visitor.Handle";
 
