@@ -123,7 +123,7 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeSize() {
-    assertEquals(9, scopeClass.sizeCDAttributes());
+    assertEquals(8, scopeClass.sizeCDAttributes());
   }
 
   @Test
@@ -172,13 +172,6 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testScopeDeSerAttribute(){
-    ASTCDAttribute astcdAttribute = getAttributeBy("scopeDeSer", scopeClass);
-    assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
-    assertDeepEquals("AutomatonDeSer", astcdAttribute.getMCType());
-  }
-
-  @Test
   public void testAdaptedAutomatonSymbolResolverListAttribute() {
     ASTCDAttribute astcdAttribute = getAttributeBy("adaptedAutomatonSymbolResolver",
         scopeClass);
@@ -210,7 +203,7 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(34, scopeClass.getCDMethodList().size());
+    assertEquals(32, scopeClass.getCDMethodList().size());
   }
 
   @Test

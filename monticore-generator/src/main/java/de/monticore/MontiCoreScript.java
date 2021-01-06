@@ -572,6 +572,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    */
   public List<ASTCDCompilationUnit> decorateCD(GlobalExtensionManagement glex, ICD4AnalysisScope cdScope,
       List<ASTCDCompilationUnit> cds, IterablePath handCodedPath) {
+    cds = addListSuffixToAttributeName(cds);
     List<ASTCDCompilationUnit> decoratedCDs = new ArrayList<ASTCDCompilationUnit>();
     // we precisely know the strucutre of the given cd list
     // in a future version, we will only handle one single cd
