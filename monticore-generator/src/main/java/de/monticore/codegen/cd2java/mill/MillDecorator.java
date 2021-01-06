@@ -86,7 +86,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
           .stream()
           .filter(ASTCDClass::isPresentModifier)
           .filter(x -> !x.getModifier().isAbstract())
-          .filter(cdClass -> checkIncludeInMill(cdClass))
+          .filter(this::checkIncludeInMill)
           .collect(Collectors.toList());
 
 
@@ -102,7 +102,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
       // check if builder classes
       topClassList = topClassList
           .stream()
-          .filter(cdClass -> checkIncludeInMill(cdClass))
+          .filter(this::checkIncludeInMill)
           .collect(Collectors.toList());
       // add to classes which need a builder method
       classList.addAll(topClassList);
@@ -141,25 +141,29 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
     millClass.addCDAttribute(millGlobalScopeAttribute);
     millClass.addCDAttribute(globalScopeAttribute);
     millClass.addAllCDMethods(globalScopeMethods);
+    allClasses.add(CD4AnalysisMill.cDClassBuilder().setName(symbolTableService.getGlobalScopeSimpleName()).build());
 
     //artifactScope
     String millArtifactScopeAttributeName = MILL_INFIX + symbolTableService.getArtifactScopeSimpleName();
     ASTCDAttribute millArtifactScopeAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, millType, millArtifactScopeAttributeName);
     millClass.addCDAttribute(millArtifactScopeAttribute);
     millClass.addAllCDMethods(getArtifactScopeMethods());
+    allClasses.add(CD4AnalysisMill.cDClassBuilder().setName(symbolTableService.getArtifactScopeSimpleName()).build());
 
 
     if(!symbolTableService.hasComponentStereotype(symbolTableService.getCDSymbol().getAstNode())) {
-      ASTCDAttribute parserAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, millType, MILL_INFIX + "Parser");
+      ASTCDAttribute parserAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, millType, MILL_INFIX + parserService.getParserClassSimpleName());
       List<ASTCDMethod> parserMethods = getParserMethods();
       millClass.addCDAttribute(parserAttribute);
       millClass.addAllCDMethods(parserMethods);
+      allClasses.add(CD4AnalysisMill.cDClassBuilder().setName(parserService.getParserClassSimpleName()).build());
     }
     //scope
     String millScopeAttributeName = MILL_INFIX + symbolTableService.getScopeClassSimpleName();
     ASTCDAttribute millScopeAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, millType, millScopeAttributeName);
     millClass.addCDAttribute(millScopeAttribute);
     millClass.addAllCDMethods(getScopeMethods());
+    allClasses.add(CD4AnalysisMill.cDClassBuilder().setName(symbolTableService.getScopeClassSimpleName()).build());
 
     //decorate for scopesgenitor
     Optional<String> startProd = symbolTableService.getStartProdASTFullName();
@@ -168,11 +172,13 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
       ASTCDAttribute millScopesGenitorAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, millType, millScopesGenitorAttributeName);
       millClass.addCDAttribute(millScopesGenitorAttribute);
       millClass.addAllCDMethods(getScopesGenitorMethods());
+      allClasses.add(CD4AnalysisMill.cDClassBuilder().setName(symbolTableService.getScopesGenitorSimpleName()).build());
 
       String millScopesGenitorDelegatorAttributeName = MILL_INFIX + symbolTableService.getScopesGenitorDelegatorSimpleName();
       ASTCDAttribute millScopesGenitorDelegatorAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, millType, millScopesGenitorDelegatorAttributeName);
       millClass.addCDAttribute(millScopesGenitorDelegatorAttribute);
       millClass.addAllCDMethods(getScopesGenitorDelegatorMethods());
+      allClasses.add(CD4AnalysisMill.cDClassBuilder().setName(symbolTableService.getScopesGenitorDelegatorSimpleName()).build());
     }
 
     // add builder methods for each class
@@ -309,7 +315,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
   protected List<ASTCDMethod> getParserMethods(){
     List<ASTCDMethod> parserMethods = Lists.newArrayList();
 
-    String parserName = "Parser";
+    String parserName = parserService.getParserClassSimpleName();
     String staticMethodName = "parser";
     String protectedMethodName = "_"+staticMethodName;
     ASTMCType parserType = getMCTypeFacade().createQualifiedType(parserService.getParserClassFullName());

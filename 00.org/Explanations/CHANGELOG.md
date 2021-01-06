@@ -56,6 +56,7 @@ to be released
 * Experiments now use ScopesGenitor-infrastructure instead of SymbolTableCreator-infrastructure
  
 ### Fixes
+* The `initMe` and `reset` methods of the mill now initialize and reset all attributes properly
 
 ##  MontiCore 6.6.0
 released: 03.12.2020
