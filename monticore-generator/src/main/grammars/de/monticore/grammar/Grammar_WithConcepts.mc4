@@ -13,6 +13,10 @@ grammar Grammar_WithConcepts extends
            de.monticore.expressions.BitExpressions,
            de.monticore.cd.CD4Analysis
 {
+
+  //CD4A keywords are no keywords here
+  nokeyword "association", "composition", "ordered", "targetimport", "classdiagram";
+
   // keep the old axiom
   start MCGrammar;
   

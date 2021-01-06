@@ -1,0 +1,20 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.feature.cd4akeywords;
+
+grammar CD4AKeywords extends mc.common.Basics {
+
+  A = association:Name;
+
+  symbol B = Name;
+
+  symbolrule B = association:String;
+
+  C = composition:Name;
+
+  astrule C = ordered:boolean;
+
+  D = targetimport:Name;
+
+  astrule D = classdiagram:int;
+
+}

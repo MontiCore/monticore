@@ -57,6 +57,9 @@ to be released
  
 ### Fixes
 
+* The CD4Analysis keywords `ordered`, `composition`, `association`, `targetimport` and `classdiagram` 
+  can be used in grammars again
+
 ##  MontiCore 6.6.0
 released: 03.12.2020
 
