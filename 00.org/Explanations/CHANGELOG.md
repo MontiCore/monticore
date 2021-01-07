@@ -56,6 +56,7 @@ to be released
 * Experiments now use ScopesGenitor-infrastructure instead of SymbolTableCreator-infrastructure
  
 ### Fixes
+* The `initMe` and `reset` methods of the mill now initialize and reset all attributes properly
 
 * The CD4Analysis keywords `ordered`, `composition`, `association`, `targetimport` and `classdiagram` 
   can be used in grammars again
