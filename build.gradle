@@ -89,9 +89,7 @@ task buildMC {
   group("build")
   description('Builds the core projects, i.e. the generator, runtime and grammar library.')
   dependsOn(
-          gradle.includedBuild('monticore-tool').task(':monticore-generator:build'),
-          gradle.includedBuild('monticore-tool').task(':monticore-cli:build'),
-          gradle.includedBuild('monticore-tool').task(':monticore-gradle:build'),
+          gradle.includedBuilds*.task(':buildAll'),
           ":monticore-grammar:build",
           ":monticore-runtime:build",
           ":monticore-runtime-emf:build",
@@ -108,9 +106,7 @@ task assembleMC {
   group("build")
   description('Assembles the core projects, i.e. the generator, runtime and grammar library.')
   dependsOn(
-          gradle.includedBuild('monticore-tool').task(':monticore-generator:assemble'),
-          gradle.includedBuild('monticore-tool').task(':monticore-cli:assemble'),
-          gradle.includedBuild('monticore-tool').task(':monticore-gradle:assemble'),
+          gradle.includedBuilds*.task(':assembleAll'),
           ":monticore-grammar:assemble",
           ":monticore-runtime:assemble",
           ":monticore-runtime-emf:assemble",
@@ -126,9 +122,7 @@ task testMC {
   group("build")
   description('Tests the core projects, i.e. the generator, runtime and grammar library.')
   dependsOn(
-          gradle.includedBuild('monticore-tool').task(':monticore-generator:test'),
-          gradle.includedBuild('monticore-tool').task(':monticore-cli:test'),
-          gradle.includedBuild('monticore-tool').task(':monticore-gradle:test'),
+          gradle.includedBuilds*.task(':testAll'),
           ":monticore-grammar:test",
           ":monticore-runtime:test",
           ":monticore-runtime-emf:test",
@@ -146,9 +140,7 @@ task deployMC {
   group("build")
   description('Publishes the core projects, i.e. the generator, runtime and grammar library.')
   dependsOn(
-          gradle.includedBuild('monticore-tool').task(':monticore-generator:publish'),
-          gradle.includedBuild('monticore-tool').task(':monticore-cli:publish'),
-          gradle.includedBuild('monticore-tool').task(':monticore-gradle:publish'),
+          gradle.includedBuilds*.task(':publishAll'),
           ":monticore-grammar:publish",
           ":monticore-runtime:publish",
           ":monticore-runtime-emf:publish",
@@ -167,9 +159,7 @@ task publishMCToMavenLocal {
   description('Publishes the core projects, i.e. the generator, runtime and grammar library' +
           'to the local maven repository.')
   dependsOn(
-          gradle.includedBuild('monticore-tool').task(':monticore-generator:publishToMavenLocal'),
-          gradle.includedBuild('monticore-tool').task(':monticore-cli:publishToMavenLocal'),
-          gradle.includedBuild('monticore-tool').task(':monticore-gradle:publishToMavenLocal'),
+          gradle.includedBuilds*.task(':publishToMavenLocalAll'),
           ":monticore-grammar:publishToMavenLocal",
           ":monticore-runtime:publishToMavenLocal",
           ":monticore-runtime-emf:publishToMavenLocal",

@@ -58,3 +58,23 @@ subprojects {
     }
   }
 }
+
+task buildAll(type: GradleBuild) {
+  tasks = [ 'build' ]
+}
+
+task assembleAll(type: GradleBuild) {
+  tasks = [ 'assemble' ]
+}
+
+task publishToMavenLocalAll(type: GradleBuild) {
+  tasks = [ 'publishToMavenLocal' ]
+}
+
+task publishAll(type: GradleBuild) {
+  tasks = [ 'publish' ]
+}
+
+task testAll(type: GradleBuild) {
+  tasks = [ 'test' ]
+}
