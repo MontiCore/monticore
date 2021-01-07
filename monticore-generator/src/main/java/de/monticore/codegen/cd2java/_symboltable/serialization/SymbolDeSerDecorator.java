@@ -29,9 +29,6 @@ import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
  */
 public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass> {
 
-  @Deprecated
-  protected static final String TEMPLATE_PATH = "_symboltable.serialization.symbolDeSer.";
-
   protected static final String SER_TEMPL = "_symboltable.serialization.symbolDeSer.Serialize4SymbolDeSer";
 
   protected static final String DESER_STR_TEMPL = "_symboltable.serialization.symbolDeSer.DeserializeString4SymbolDeSer";

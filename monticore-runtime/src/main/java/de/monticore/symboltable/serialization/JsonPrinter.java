@@ -500,13 +500,13 @@ public class JsonPrinter {
   }
 
   private void printBufferedBeginArray() {
-    if (indentBeforeNewLine) {
-      indent();
-      indentBeforeNewLine = false;
-    }
     if (isInEmptyArray) {
       isInEmptyArray = false;
       print(arrayBeginBuffer);
+    }
+    if (indentBeforeNewLine) {
+      indent();
+      indentBeforeNewLine = false;
     }
   }
 
