@@ -67,12 +67,16 @@ task assembleAll(type: GradleBuild) {
   tasks = [ 'assemble' ]
 }
 
-task publishToMavenLocalAll(type: GradleBuild) {
-  tasks = [ 'publishToMavenLocal' ]
+task publishToMavenLocalAll {
+  dependsOn ":monticore-generator:publishToMavenLocal",
+            ":monticore-cli:publishToMavenLocal",
+            ":monticore-gradle:publishToMavenLocal"
 }
 
-task publishAll(type: GradleBuild) {
-  tasks = [ 'publish' ]
+task publishAll {
+  dependsOn ":monticore-generator:publish",
+            ":monticore-cli:publish",
+            ":monticore-gradle:publish"
 }
 
 task testAll(type: GradleBuild) {
