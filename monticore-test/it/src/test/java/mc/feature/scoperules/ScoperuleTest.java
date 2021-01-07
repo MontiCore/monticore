@@ -35,8 +35,7 @@ public class ScoperuleTest {
     scope.setName("SymbolruleTest");
     scope.setBar(true);
     scope.setNumber(17);
-    //TODO wieder einkommentieren, wenn #2674 erledigt
-//    scope.setModifiedNameList(Lists.newArrayList("foo", "bar", "test"));
+    scope.setModifiedNameList(Lists.newArrayList("foo", "bar", "test"));
     scope.setSymType(SymTypeExpressionFactory.createTypeConstant("int"));
     ScoperuleTestSymbols2Json symbols2Json = new ScoperuleTestSymbols2Json();
     scope.accept(symbols2Json.getTraverser());
@@ -45,10 +44,10 @@ public class ScoperuleTest {
     IScoperuleTestScope as = deSer.deserialize(serialized);
     assertTrue(as.isBar());
     assertEquals(17, as.getNumber());
-//    assertEquals(3, as.getModifiedNameList().size());
-//    assertEquals("foo", as.getModifiedName(0));
-//    assertEquals("bar", as.getModifiedName(1));
-//    assertEquals("test", as.getModifiedName(2));
+    assertEquals(3, as.getModifiedNameList().size());
+    assertEquals("foo", as.getModifiedName(0));
+    assertEquals("bar", as.getModifiedName(1));
+    assertEquals("test", as.getModifiedName(2));
     assertTrue(SymTypeExpressionFactory.createTypeConstant("int").deepEquals(as.getSymType()));
   }
 
