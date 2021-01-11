@@ -2,20 +2,16 @@
 
 package de.monticore.generating.templateengine.reporting.reporter;
 
+import com.google.common.collect.Maps;
+import de.monticore.ast.ASTNode;
+import de.monticore.generating.templateengine.reporting.commons.*;
+import de.monticore.visitor.ITraverser;
+import de.se_rwth.commons.SourcePosition;
+
 import java.io.File;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-
-import com.google.common.collect.Maps;
-
-import de.monticore.ast.ASTNode;
-import de.monticore.generating.templateengine.reporting.commons.AReporter;
-import de.monticore.generating.templateengine.reporting.commons.Layouter;
-import de.monticore.generating.templateengine.reporting.commons.MapUtil;
-import de.monticore.generating.templateengine.reporting.commons.ObjectCountVisitor;
-import de.monticore.generating.templateengine.reporting.commons.ReportingConstants;
-import de.se_rwth.commons.SourcePosition;
 
 /**
  */
@@ -26,11 +22,18 @@ public class NodeTypesReporter extends AReporter {
   private Map<String, Integer> nodeTypeCount = Maps.newTreeMap();
   
   private Map<String, Integer> nodeTypeCountPos = Maps.newTreeMap();
+
+  private ITraverser traverser;
+
+  private ObjectCountVisitor ocv;
   
-  public NodeTypesReporter(String outputDir, String modelName) {
+  public NodeTypesReporter(String outputDir, String modelName, ITraverser traverser) {
     super(outputDir
         + File.separator + modelName, SIMPLE_FILE_NAME,
         ReportingConstants.REPORT_FILE_EXTENSION);
+    this.traverser = traverser;
+    this.ocv = new ObjectCountVisitor();
+    traverser.add4IVisitor(ocv);
   }
   
   @Override
@@ -43,9 +46,9 @@ public class NodeTypesReporter extends AReporter {
     if (ast == null) {
       return;
     }
-    
-    ObjectCountVisitor ocv = new ObjectCountVisitor();
-    ocv.handle(ast);
+
+    ocv.clear();
+    traverser.handle(ast);
     Map<String, Integer> type2count = ocv.getObjectCountMap();
     
     writeMaps(nodeTypeCount, type2count);

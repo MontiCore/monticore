@@ -2,26 +2,20 @@
 
 package de.monticore.generating.templateengine.reporting.reporter;
 
+import com.google.common.collect.Sets;
+import de.monticore.ast.ASTNode;
+import de.monticore.generating.templateengine.CodeHookPoint;
+import de.monticore.generating.templateengine.HookPoint;
+import de.monticore.generating.templateengine.StringHookPoint;
+import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.generating.templateengine.reporting.commons.*;
+import de.monticore.visitor.ITraverser;
+
 import java.io.File;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-
-import de.monticore.ast.ASTNode;
-
-import com.google.common.collect.Sets;
-
-import de.monticore.generating.templateengine.CodeHookPoint;
-import de.monticore.generating.templateengine.HookPoint;
-import de.monticore.generating.templateengine.StringHookPoint;
-import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.generating.templateengine.reporting.commons.AReporter;
-import de.monticore.generating.templateengine.reporting.commons.Layouter;
-import de.monticore.generating.templateengine.reporting.commons.ObjectCountVisitor;
-import de.monticore.generating.templateengine.reporting.commons.ReportingConstants;
-import de.monticore.generating.templateengine.reporting.commons.ReportingHelper;
-import de.monticore.generating.templateengine.reporting.commons.ReportingRepository;
 
 /**
  */
@@ -136,20 +130,29 @@ public class SummaryReporter extends AReporter {
   private Set<String> calledUnsetHookpoints = Sets.newLinkedHashSet();
   
   private ReportingRepository repository;
+
+  private ITraverser traverser;
+
+  private ObjectCountVisitor ocv;
   
   public SummaryReporter(
       String outputDir,
       String modelName,
-      ReportingRepository repository) {
+      ReportingRepository repository,
+      ITraverser traverser) {
     super(outputDir
         + File.separator + modelName, SIMPLE_FILE_NAME,
         ReportingConstants.REPORT_FILE_EXTENSION);
     resetVariables();
     this.repository = repository;
+    this.traverser = traverser;
+    this.ocv = new ObjectCountVisitor();
+    traverser.add4IVisitor(ocv);
+
   }
   
   /**
-   * @see mc.codegen.reporting.commons.DefaultReportEventHandler#reportWarning(java.lang.String)
+   * @see de.monticore.generating.templateengine.reporting.commons.DefaultReportEventHandler#reportWarning(java.lang.String)
    */
   @Override
   public void reportWarning(String message) {
@@ -157,7 +160,7 @@ public class SummaryReporter extends AReporter {
   }
   
   /**
-   * @see mc.codegen.reporting.commons.DefaultReportEventHandler#reportError(java.lang.String)
+   * @see de.monticore.generating.templateengine.reporting.commons.DefaultReportEventHandler#reportError(java.lang.String)
    */
   @Override
   public void reportError(String message) {
@@ -165,7 +168,7 @@ public class SummaryReporter extends AReporter {
   }
   
   /**
-   * @see mc.codegen.reporting.commons.DefaultReportEventHandler#reportFileCreation(java.lang.String,
+   * @see de.monticore.generating.templateengine.reporting.commons.DefaultReportEventHandler#reportFileCreation(java.lang.String,
    * java.lang.String, java.lang.String, de.monticore.ast.ASTNode)
    */
   @Override
@@ -175,7 +178,7 @@ public class SummaryReporter extends AReporter {
   }
   
   /**
-   * @see mc.codegen.reporting.commons.DefaultReportEventHandler#reportSetValue(java.lang.String,
+   * @see de.monticore.generating.templateengine.reporting.commons.DefaultReportEventHandler#reportSetValue(java.lang.String,
    * java.lang.Object)
    */
   @Override
@@ -185,7 +188,7 @@ public class SummaryReporter extends AReporter {
   }
   
   /**
-   * @see mc.codegen.reporting.commons.DefaultReportEventHandler#reportInstantiate(java.lang.String,
+   * @see de.monticore.generating.templateengine.reporting.commons.DefaultReportEventHandler#reportInstantiate(java.lang.String,
    * java.util.List)
    */
   @Override
@@ -194,7 +197,7 @@ public class SummaryReporter extends AReporter {
   }
   
   /**
-   * @see mc.codegen.reporting.commons.DefaultReportEventHandler#reportTemplateInclude(java.lang.String,
+   * @see de.monticore.generating.templateengine.reporting.commons.DefaultReportEventHandler#reportTemplateInclude(java.lang.String,
    * de.monticore.ast.ASTNode)
    */
   @Override
@@ -203,7 +206,7 @@ public class SummaryReporter extends AReporter {
   }
   
   /**
-   * @see mc.codegen.reporting.commons.DefaultReportEventHandler#reportTemplateWrite(java.lang.String,
+   * @see de.monticore.generating.templateengine.reporting.commons.DefaultReportEventHandler#reportTemplateWrite(java.lang.String,
    * de.monticore.ast.ASTNode)
    */
   @Override
@@ -212,7 +215,7 @@ public class SummaryReporter extends AReporter {
   }
   
   /**
-   * @see mc.codegen.reporting.commons.DefaultReportEventHandler#reportTemplateStart(java.lang.String,
+   * @see de.monticore.generating.templateengine.reporting.commons.DefaultReportEventHandler#reportTemplateStart(java.lang.String,
    * de.monticore.ast.ASTNode)
    */
   @Override
@@ -231,7 +234,7 @@ public class SummaryReporter extends AReporter {
   }
   
   /**
-   * @see mc.codegen.reporting.commons.DefaultReportEventHandler#reportTemplateEnd(java.lang.String,
+   * @see de.monticore.generating.templateengine.reporting.commons.DefaultReportEventHandler#reportTemplateEnd(java.lang.String,
    * de.monticore.ast.ASTNode)
    */
   @Override
@@ -318,8 +321,8 @@ public class SummaryReporter extends AReporter {
       return;
     }
     
-    ObjectCountVisitor ocv = new ObjectCountVisitor();
-    ocv.handle(ast);
+    ocv.clear();
+    traverser.handle(ast);
     numASTNodeInstances = ocv.getTotalCount();
     numASTNodeTypes = ocv.getObjectCountMap().size();
     numCalledUnsetHookpoints = calledUnsetHookpoints.size();
@@ -439,8 +442,8 @@ public class SummaryReporter extends AReporter {
   }
   
   /**
-   * @see mc.codegen.reporting.commons.DefaultReportEventHandler#reportSetHookPoint(java.lang.String,
-   * mc.codegen.HookPoint)
+   * @see de.monticore.generating.templateengine.reporting.commons.DefaultReportEventHandler#reportSetHookPoint(java.lang.String,
+   * de.monticore.generating.templateengine.HookPoint)
    */
   @Override
   public void reportSetHookPoint(String hookName, HookPoint hp) {
@@ -456,8 +459,8 @@ public class SummaryReporter extends AReporter {
   }
   
   /**
-   * @see mc.codegen.reporting.commons.DefaultReportEventHandler#reportCallHookPointStart(java.lang.String,
-   * mc.codegen.HookPoint, de.monticore.ast.ASTNode)
+   * @see de.monticore.generating.templateengine.reporting.commons.DefaultReportEventHandler#reportCallHookPointStart(java.lang.String,
+   * de.monticore.generating.templateengine.HookPoint, de.monticore.ast.ASTNode)
    */
   @Override
   public void reportCallHookPointStart(String hookName, HookPoint hp, ASTNode ast) {
@@ -475,8 +478,8 @@ public class SummaryReporter extends AReporter {
   }
   
   /**
-   * @see mc.codegen.reporting.commons.DefaultReportEventHandler#reportASTSpecificTemplateReplacement(java.lang.String,
-   * de.monticore.ast.ASTNode, mc.codegen.HookPoint)
+   * @see de.monticore.generating.templateengine.reporting.commons.DefaultReportEventHandler#reportASTSpecificTemplateReplacement(java.lang.String,
+   * de.monticore.ast.ASTNode, de.monticore.generating.templateengine.HookPoint)
    */
   @Override
   public void reportASTSpecificTemplateReplacement(String oldTemplate, ASTNode node, HookPoint newHp) {
@@ -484,7 +487,7 @@ public class SummaryReporter extends AReporter {
   }
   
   /**
-   * @see mc.codegen.reporting.commons.DefaultReportEventHandler#reportSetBeforeTemplate(java.lang.String,
+   * @see de.monticore.generating.templateengine.reporting.commons.DefaultReportEventHandler#reportSetBeforeTemplate(java.lang.String,
    * java.util.List)
    */
   @Override
@@ -503,7 +506,7 @@ public class SummaryReporter extends AReporter {
   }
   
   /**
-   * @see mc.codegen.reporting.commons.DefaultReportEventHandler#reportSetAfterTemplate(java.lang.String,
+   * @see de.monticore.generating.templateengine.reporting.commons.DefaultReportEventHandler#reportSetAfterTemplate(java.lang.String,
    * java.util.List)
    */
   @Override
@@ -522,7 +525,7 @@ public class SummaryReporter extends AReporter {
   }
   
   /**
-   * @see mc.codegen.reporting.commons.IReportEventHandler#reportTemplateReplacement(java.lang.String,
+   * @see de.monticore.generating.templateengine.reporting.commons.IReportEventHandler#reportTemplateReplacement(java.lang.String,
    * java.util.List)
    */
   @Override

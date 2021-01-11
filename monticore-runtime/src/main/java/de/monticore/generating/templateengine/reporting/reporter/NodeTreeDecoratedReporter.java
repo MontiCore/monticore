@@ -22,6 +22,7 @@ import de.monticore.generating.templateengine.reporting.commons.ReportingConstan
 import de.monticore.generating.templateengine.reporting.commons.ReportingHelper;
 import de.monticore.generating.templateengine.reporting.commons.ReportingRepository;
 import de.monticore.generating.templateengine.reporting.commons.TreePrintVisitor;
+import de.monticore.visitor.ITraverser;
 import de.se_rwth.commons.Names;
 
 /**
@@ -51,9 +52,13 @@ public class NodeTreeDecoratedReporter extends AReporter {
   private Map<String, List<String>> astNodeExtraInfos;
   
   private List<String> serializedTreeResult;
+
+  private ITraverser traverser;
+
+  private TreePrintVisitor tpv;
   
   public NodeTreeDecoratedReporter(String outputDir, String modelName,
-      ReportingRepository repository) {
+      ReportingRepository repository, ITraverser traverser) {
     super(outputDir
         + File.separator + modelName, SIMPLE_FILE_NAME,
         ReportingConstants.REPORT_FILE_EXTENSION);
@@ -61,6 +66,9 @@ public class NodeTreeDecoratedReporter extends AReporter {
     nodeVisits = Maps.newHashMap();
     astNodeExtraInfos = Maps.newHashMap();
     serializedTreeResult = Lists.newArrayList();
+    this.traverser = traverser;
+    this.tpv = new TreePrintVisitor();
+    traverser.add4IVisitor(tpv);
   }
   
   @Override
@@ -124,10 +132,6 @@ public class NodeTreeDecoratedReporter extends AReporter {
         + ReportingHelper.getTemplateName(templatename));
   }
   
-  /**
-   * @see mc.codegen.reporting.commons.IReportEventHandler#reportFileCreation(java.lang.String,
-   * java.lang.String, java.lang.String, de.monticore.ast.ASTNode)
-   */
   @Override
   public void reportFileCreation(String templatename,
       String qualifiedfilename, String fileextension, ASTNode ast) {
@@ -195,7 +199,6 @@ public class NodeTreeDecoratedReporter extends AReporter {
    * coming from
    * 
    * @param ast
-   * @param ast2idents
    * @return
    */
   private void deriveTreeStructureAST(ASTNode ast) {
@@ -206,10 +209,12 @@ public class NodeTreeDecoratedReporter extends AReporter {
     for (Entry<String, Integer> entry : nodeVisits.entrySet()) {
       endLineDecoration.put(entry.getKey(), "(" + entry.getValue() + "x)");
     }
-    
-    TreePrintVisitor tpv = new TreePrintVisitor(repository,
-        endLineDecoration, astNodeExtraInfos);
-    tpv.handle(ast);
+
+    tpv.clear();
+    tpv.setRepo(repository);
+    tpv.setEndLineDecoration(endLineDecoration);
+    tpv.setAstNodeExtraInfos(astNodeExtraInfos);
+    traverser.handle(ast);
      
     serializedTreeResult = tpv.getTreeResult();
     

@@ -2,21 +2,20 @@
 
 package de.monticore.generating.templateengine.reporting.commons;
 
-import java.util.Map;
-
+import com.google.common.collect.Maps;
 import de.monticore.ast.ASTNode;
+import de.monticore.visitor.IVisitor;
 import de.se_rwth.commons.SourcePosition;
 
-import com.google.common.collect.Maps;
+import java.util.Map;
 
-import de.monticore.visitor.CommonVisitor;
 
 /**
  * We use this visit mechanism to count instances of AST-Node-Types classes. The
  * type2count member maps the AST-Node-Type as String to it's object count.
  *
  */
-public class ObjectCountVisitor implements CommonVisitor {
+public class ObjectCountVisitor implements IVisitor {
   
   private Map<String, Integer> type2count;
   
@@ -66,6 +65,12 @@ public class ObjectCountVisitor implements CommonVisitor {
     super();
     this.type2count = Maps.newHashMap();
     this.type2countPos = Maps.newHashMap();
+  }
+
+  public void clear() {
+    this.type2count.clear();
+    this.type2countPos.clear();
+    this.totalCount = 0;
   }
   
 }
