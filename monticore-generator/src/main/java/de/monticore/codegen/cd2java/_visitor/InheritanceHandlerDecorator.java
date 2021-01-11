@@ -72,7 +72,9 @@ public class InheritanceHandlerDecorator extends AbstractCreator<ASTCDCompilatio
 
     // generate handle(ASTNode node)
     ASTCDMethod handleNodeMethod = visitorService.getVisitorMethod(HANDLE, getMCTypeFacade().createQualifiedType(AST_INTERFACE));
-    List<String> classList = astcdDefinition.streamCDClasss().map(c -> c.getName()).collect(Collectors.toList());
+    List<String> classList = astcdDefinition.streamCDClasss()
+            .filter(c -> !c.getModifier().isAbstract())
+            .map(c -> c.getName()).collect(Collectors.toList());
     replaceTemplate(EMPTY_BODY, handleNodeMethod,
             new TemplateHookPoint(HANDLE_AST_NODE_INHERITANCE_TEMPLATE, classList));
     handleMethods.add(handleNodeMethod);
