@@ -74,7 +74,6 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
     changedClass.addCDMethod(createAcceptTraverserMethod(changedClass));
     changedClass.addAllCDMethods(createAcceptTraverserSuperMethods(originalClass));
     changedClass.addCDMethod(getConstructMethod(originalClass));
-    changedClass.addCDMethod(createGetChildrenMethod(originalClass));
     if (!originalClass.isPresentSuperclass()) {
       changedClass.setSuperclass(this.getMCTypeFacade().createQualifiedType(ASTCNode.class));
     }
@@ -132,13 +131,6 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
     ASTCDMethod acceptMethod = this.getCDMethodFacade().createMethod(PUBLIC, ASTConstants.ACCEPT_METHOD, visitorParameter);
     this.replaceTemplate(EMPTY_BODY, acceptMethod, new TemplateHookPoint("_ast.ast_class.Accept", astClass));
     return acceptMethod;
-  }
-
-  protected ASTCDMethod createGetChildrenMethod(ASTCDClass astClass) {
-    ASTMCType astNodeType = getMCTypeFacade().createCollectionTypeOf(ASTConstants.AST_INTERFACE);
-    ASTCDMethod getChildrenMethod = this.getCDMethodFacade().createMethod(PUBLIC, astNodeType, ASTConstants.GET_CHILDREN_METHOD);
-    this.replaceTemplate(EMPTY_BODY, getChildrenMethod, new TemplateHookPoint("_ast.ast_class.GetChildren", astClass));
-    return getChildrenMethod;
   }
 
   protected List<ASTCDMethod> createAcceptSuperMethods(ASTCDClass astClass) {

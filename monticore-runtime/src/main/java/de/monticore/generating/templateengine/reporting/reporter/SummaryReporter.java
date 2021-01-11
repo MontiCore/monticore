@@ -333,7 +333,7 @@ public class SummaryReporter extends AReporter {
     int numUnusedHWTemplates = repository.getAllHWTemplateNames().size() -
         numUsedHWTemplates;
     int numVariables = variableNames.size();
-    int maxASTDepth = ReportingHelper.getASTDepth(ast);
+    // int maxASTDepth = ReportingHelper.getASTDepth(ast);
     writeSummaryLine(NUM_ERRORS, numErrors);
     writeSummaryLine(NUM_WARNINGS, numWarnings);
     writeSummaryLine(NUM_GENERATED_FILES, numGeneratedFiles);
@@ -345,7 +345,7 @@ public class SummaryReporter extends AReporter {
     writeSummaryLine(NUM_USED_HWTEMPLATES, numUsedHWTemplates);
     writeSummaryLine(NUM_UNUSED_HWTEMPLATES, numUnusedHWTemplates);
     writeSummaryLine(MAX_TEMPLATE_DEPTH, maxTemplateDepth);
-    writeSummaryLine(MAX_AST_DEPTH, maxASTDepth);
+    // writeSummaryLine(MAX_AST_DEPTH, maxASTDepth);
     writeSummaryLine(NUM_ASTNODE_INSTANCES, numASTNodeInstances);
     writeSummaryLine(NUM_ASTNODE_TYPES, numASTNodeTypes);
     writeSummaryLine(NUM_ASTNODE_VISITS, numASTNodeVisits);

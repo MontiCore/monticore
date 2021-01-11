@@ -22,6 +22,8 @@ public class ObjectCountVisitor implements IVisitor {
   private Map<String, Integer> type2countPos;
   
   private int totalCount;
+
+  private int maxDepth;
   
   @Override
   public void visit(ASTNode a) {
