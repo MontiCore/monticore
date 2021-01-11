@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 import static de.monticore.cd.facade.CDModifier.PRIVATE;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.CoreTemplates.*;
+import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_INTERFACE;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SCOPE;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SYMBOL;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
@@ -68,11 +69,21 @@ public class InheritanceHandlerDecorator extends AbstractCreator<ASTCDCompilatio
 
   protected List<ASTCDMethod> getASTHandleMethods(ASTCDDefinition astcdDefinition, String handlerSimpleTypeName, String languageInterfaceName) {
     List<ASTCDMethod> handleMethods = new ArrayList<>();
+
+    // generate handle(ASTNode node)
+    ASTCDMethod handleNodeMethod = visitorService.getVisitorMethod(HANDLE, getMCTypeFacade().createQualifiedType(AST_INTERFACE));
+    List<String> classList = astcdDefinition.streamCDClasss().map(c -> c.getName()).collect(Collectors.toList());
+    replaceTemplate(EMPTY_BODY, handleNodeMethod,
+            new TemplateHookPoint(HANDLE_AST_NODE_INHERITANCE_TEMPLATE, classList));
+    handleMethods.add(handleNodeMethod);
+
+    // generate handle(ASTX node) for all classes X
     handleMethods.addAll(astcdDefinition.getCDClassList()
         .stream()
         .map(c -> getASTHandleMethod(c, languageInterfaceName, handlerSimpleTypeName))
         .collect(Collectors.toList()));
 
+    // generate handle(ASTX node) for all interfaces X
     handleMethods.addAll(astcdDefinition.getCDInterfaceList()
         .stream()
         .map(c -> getHandleASTMethod(c, languageInterfaceName, handlerSimpleTypeName))
