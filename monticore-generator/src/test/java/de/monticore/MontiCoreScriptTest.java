@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import de.monticore.cd.cd4analysis.CD4AnalysisMill;
+import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -73,6 +75,8 @@ public class MontiCoreScriptTest {
     Log.init();         // replace log by a sideffect free variant
     // LogStub.initPlusLog();  // for manual testing purpose only
     Log.enableFailQuick(false);
+    Grammar_WithConceptsMill.reset();
+    Grammar_WithConceptsMill.init();
     additionalMethods.add("deepEquals");
     additionalMethods.add("deepEqualsWithComments");
     additionalMethods.add("equalAttributes");

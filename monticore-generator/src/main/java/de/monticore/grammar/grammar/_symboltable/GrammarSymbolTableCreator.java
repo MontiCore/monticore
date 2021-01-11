@@ -27,6 +27,7 @@ import static java.util.Collections.max;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 
+@Deprecated
 public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
 
   private static final String SET_SCOPE_ERROR = "Could not set enclosing scope of ASTNode \"%s\", because no scope is set yet!";

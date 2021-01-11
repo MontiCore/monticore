@@ -12,12 +12,13 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
-import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsSymbolTableCreatorDelegator;
+import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsPhasedSTC;
 import de.monticore.grammar.grammar_withconcepts._symboltable.IGrammar_WithConceptsGlobalScope;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
+import org.junit.BeforeClass;
 import parser.MCGrammarParser;
 
 import java.nio.file.Path;
@@ -39,7 +40,7 @@ public class TestHelper {
       return Optional.empty();
     }
     Grammar_WithConceptsGlobalScope symbolTable = createGlobalScope(new ModelPath(Paths.get("src/test/resources")));
-    Grammar_WithConceptsSymbolTableCreatorDelegator stc = Grammar_WithConceptsMill.grammar_WithConceptsSymbolTableCreatorDelegator();
+    Grammar_WithConceptsPhasedSTC stc = new Grammar_WithConceptsPhasedSTC();
     stc.createFromAST(grammar.get());
     ASTCDCompilationUnit cdCompilationUnit = new MC2CDSymbolTranslation().apply(grammar.get());
     return Optional.of(cdCompilationUnit);

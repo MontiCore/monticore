@@ -2,6 +2,8 @@
 
 package de.monticore
 
+import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill
+
 /*
  * This configuration file contains the standard workflow of MontiCore:
  * It mainly processes a grammar (and imported sub-grammars) and produces
