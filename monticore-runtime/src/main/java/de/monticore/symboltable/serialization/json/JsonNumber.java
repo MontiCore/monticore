@@ -67,7 +67,7 @@ public class JsonNumber implements JsonElement {
   /**
    * @return number
    */
-  public int getNumberAsInt() {
+  public int getNumberAsInteger() {
     return Integer.parseInt(value);
   }
   
