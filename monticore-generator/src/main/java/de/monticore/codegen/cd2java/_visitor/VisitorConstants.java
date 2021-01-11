@@ -31,6 +31,8 @@ public final class VisitorConstants {
 
   public static final String TRAVERSER = "traverser";
 
+  public static final String INHERITANCE_TRAVERSER = "inheritanceTraverser";
+
   public static final String GET_REAL_THIS = "getRealThis";
 
   public static final String SET_REAL_THIS = "setRealThis";

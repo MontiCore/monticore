@@ -30,6 +30,7 @@ import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PACKA
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.INHERITANCE_TRAVERSER;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.TRAVERSER;
 import static de.monticore.codegen.cd2java.mill.MillConstants.*;
 import static de.monticore.codegen.cd2java.top.TopDecorator.TOP_SUFFIX;
@@ -129,6 +130,15 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
         visitorService.getTraverserFullName(), TRAVERSER, visitorService.getTraverserInterfaceFullName());
     millClass.addCDAttribute(traverserAttribute);
     millClass.addAllCDMethods(traverserMethods);
+    allClasses.add(CD4AnalysisMill.cDClassBuilder().setName(visitorService.getTraverserSimpleName()).build());
+
+    // decorate for traverser with InheritanceHandler
+    String traverserInheritanceAttributeName = MILL_INFIX + visitorService.getInheritanceHandlerSimpleName();
+    ASTCDAttribute traverserInheritanceAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, millType, traverserInheritanceAttributeName);
+    List<ASTCDMethod> traverserInheritanceMethods = getInheritanceTraverserMethods(visitorService.getInheritanceHandlerSimpleName(),
+            visitorService.getTraverserFullName(), INHERITANCE_TRAVERSER, visitorService.getTraverserInterfaceFullName());
+    millClass.addCDAttribute(traverserInheritanceAttribute);
+    millClass.addAllCDMethods(traverserInheritanceMethods);
     allClasses.add(CD4AnalysisMill.cDClassBuilder().setName(visitorService.getTraverserSimpleName()).build());
 
     // decorate for global scope
@@ -419,7 +429,42 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
     }
     return superMethods;
   }
-  
+
+  /**
+   * Creates the public accessor and protected internal method for a given
+   * attribute. The attribute is specified by its simple name, its qualified
+   * type, and the qualified return type of the methods. The return type of the
+   * method may be equal to the attribute type or a corresponding super type.
+   *
+   * @param attributeName The name of the attribute
+   * @param attributeType The qualified type of the attribute
+   * @param methodName The name of the method
+   * @param methodType The return type of the methods
+   * @return The accessor and corresponding internal method for the attribute
+   */
+  protected List<ASTCDMethod> getInheritanceTraverserMethods(String attributeName, String attributeType, String methodName, String methodType) {
+    List<ASTCDMethod> attributeMethods = Lists.newArrayList();
+
+    // method names and return type
+    String protectedMethodName = "_" + methodName;
+    ASTMCType returnType = getMCTypeFacade().createQualifiedType(methodType);
+
+    // static accessor method
+    ASTCDMethod staticMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC, returnType, methodName);
+    this.replaceTemplate(EMPTY_BODY, staticMethod, new TemplateHookPoint("mill.BuilderMethod", StringTransformations.capitalize(attributeName), methodName));
+    attributeMethods.add(staticMethod);
+
+    // protected internal method
+    ASTCDMethod protectedMethod = getCDMethodFacade().createMethod(PROTECTED, returnType, protectedMethodName);
+    this.replaceTemplate(EMPTY_BODY, protectedMethod,
+            new TemplateHookPoint("mill.InheritanceHandlerMethod", attributeType,
+                    visitorService.getAllCDs(), visitorService));
+
+    attributeMethods.add(protectedMethod);
+
+    return attributeMethods;
+  }
+
   /**
    * Creates the public accessor and protected internal method for a given
    * attribute. The attribute is specified by its simple name, its qualified
