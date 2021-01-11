@@ -82,6 +82,11 @@ public class MCBasicTypesPrettyPrinter implements MCBasicTypesVisitor2, MCBasicT
     getPrinter().print(";");
   }
 
+  @Override
+  public void handle(ASTMCPackageDeclaration a){
+    getPrinter().print("package " + a.getMCQualifiedName().toString() + ";");
+  }
+
   /**
    * Prints a list
    *
