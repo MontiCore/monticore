@@ -81,7 +81,7 @@ public class InheritanceHandlerDecorator extends AbstractCreator<ASTCDCompilatio
     return handleMethods;
   }
 
-  protected ASTCDMethod getASTHandleMethod(ASTCDClass astcdClass, String languageInterfaceName, String handlerSimpleTypeName) {
+  protected ASTCDMethod   getASTHandleMethod(ASTCDClass astcdClass, String languageInterfaceName, String handlerSimpleTypeName) {
     ASTCDMethod handleMethod = visitorService.getVisitorMethod(HANDLE, getMCTypeFacade().createQualifiedType(astcdClass.getName()));
     List<String> superTypeList = new ArrayList<>();
     // super classes

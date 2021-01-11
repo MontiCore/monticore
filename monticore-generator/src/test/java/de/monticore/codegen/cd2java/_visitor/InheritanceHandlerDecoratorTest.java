@@ -4,6 +4,7 @@ package de.monticore.codegen.cd2java._visitor;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
+import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
@@ -22,13 +23,17 @@ import org.junit.Test;
 
 import java.util.List;
 
+import static de.monticore.cd.facade.CDModifier.PRIVATE;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodsBy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class InheritanceHandlerDecoratorTest extends DecoratorTestCase {
+
+  private static final String AUTOMATON_TRAVERSER = "de.monticore.codegen.ast.automaton._visitor.AutomatonTraverser";
 
   private MCTypeFacade mcTypeFacade;
 
@@ -110,6 +115,12 @@ public class InheritanceHandlerDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
   }
 
+  @Test
+  public void testTraverserAttribute() {
+    ASTCDAttribute astcdAttribute = getAttributeBy("traverser", handlerClass);
+    assertDeepEquals(PRIVATE, astcdAttribute.getModifier());
+    assertDeepEquals(AUTOMATON_TRAVERSER, astcdAttribute.getMCType());
+  }
 
   @Test
   public void tesHandleASTState() {
