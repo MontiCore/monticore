@@ -85,7 +85,7 @@ public class InheritanceHandlerDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(12, handlerClass.sizeCDMethods());
+    assertEquals(11, handlerClass.sizeCDMethods());
   }
 
   @Test
@@ -181,7 +181,7 @@ public class InheritanceHandlerDecoratorTest extends DecoratorTestCase {
         visitorService, symbolTableService);
     ASTCDClass handlerClass = decorator.decorate(decoratedCompilationUnit);
 
-    assertEquals(14, handlerClass.sizeCDMethods());
+    assertEquals(13, handlerClass.sizeCDMethods());
     List<ASTCDMethod> handleMethods = getMethodsBy("handle", 1, handlerClass);
 
     ASTMCType astType = this.mcTypeFacade.createQualifiedType("de.monticore.codegen._ast_emf.automata._ast.ASTTransitionWithAction");

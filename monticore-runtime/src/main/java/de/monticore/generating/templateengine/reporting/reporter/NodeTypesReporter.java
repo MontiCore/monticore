@@ -48,7 +48,7 @@ public class NodeTypesReporter extends AReporter {
     }
 
     ocv.clear();
-    traverser.handle(ast);
+    ast.accept(traverser);
     Map<String, Integer> type2count = ocv.getObjectCountMap();
     
     writeMaps(nodeTypeCount, type2count);

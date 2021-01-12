@@ -3,6 +3,7 @@
 package de.monticore.ast;
 
 import de.monticore.symboltable.IScope;
+import de.monticore.visitor.ITraverser;
 import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
 
@@ -693,5 +694,9 @@ public interface ASTNode {
     * @return an array of the type Object
     */
     Object[] toArray_PostComments();
+
+  default void accept (ITraverser visitor)  {
+    visitor.handle(this);
+  }
 
 }

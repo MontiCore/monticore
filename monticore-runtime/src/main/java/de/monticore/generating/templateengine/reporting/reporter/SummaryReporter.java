@@ -322,7 +322,8 @@ public class SummaryReporter extends AReporter {
     }
     
     ocv.clear();
-    traverser.handle(ast);
+    ast.accept(traverser);
+    //traverser.handle(ast);
     numASTNodeInstances = ocv.getTotalCount();
     numASTNodeTypes = ocv.getObjectCountMap().size();
     numCalledUnsetHookpoints = calledUnsetHookpoints.size();

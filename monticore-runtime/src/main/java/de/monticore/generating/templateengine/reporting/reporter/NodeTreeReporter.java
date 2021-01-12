@@ -192,8 +192,7 @@ public class NodeTreeReporter extends AReporter {
     tpv.clear();
     tpv.setRepo(repository);
     tpv.setEndLineDecoration(endLineDecoration);
-    traverser.handle(ast);
-    
+    ast.accept(traverser);
     serializedTreeResult = tpv.getTreeResult();
     
   }
