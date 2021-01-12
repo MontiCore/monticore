@@ -99,8 +99,11 @@ component grammar MCCommonLiterals
          @attribute source String-representation (including '"').
     */
   SignedBasicLongLiteral implements SignedNumericLiteral<1> =
-    { cmpToken(3,"l","L") && noSpace(2,3) }? negative:["-"] Digits key("l" | "L") |
-    { cmpToken(2,"l","L") && noSpace(2) }?                  Digits key("l" | "L");
+    { cmpToken(3,"l","L") && noSpace(2,3) }? 
+      negative:["-"] Digits key("l" | "L") 
+      |
+    { cmpToken(2,"l","L") && noSpace(2) }? 
+                     Digits key("l" | "L");
 
   /** ASTFloatLiteral represents a positive float.
         @attribute source String-representation (including '"').
@@ -204,13 +207,15 @@ component grammar MCCommonLiterals
 
   astrule CharLiteral =
     method public char getValue() {
-      return de.monticore.literals.MCLiteralsDecoder.decodeChar(getSource());
+      return de.monticore.literals.MCLiteralsDecoder.decodeChar(
+        getSource());
     }
   ;
 
   astrule StringLiteral =
     method public String getValue() {
-      return de.monticore.literals.MCLiteralsDecoder.decodeString(getSource());
+      return de.monticore.literals.MCLiteralsDecoder.decodeString(
+        getSource());
     }
   ;
 
@@ -219,7 +224,8 @@ component grammar MCCommonLiterals
          return getDigits();
     }
     method public int getValue() {
-      return de.monticore.literals.MCLiteralsDecoder.decodeNat(getSource());
+      return de.monticore.literals.MCLiteralsDecoder.decodeNat(
+        getSource());
     }
   ;
 
@@ -228,7 +234,8 @@ component grammar MCCommonLiterals
       return (negative?"-":"") + getDigits();
     }
     method public int getValue() {
-      return de.monticore.literals.MCLiteralsDecoder.decodeNat(getSource());
+      return de.monticore.literals.MCLiteralsDecoder.decodeNat(
+        getSource());
     }
   ;
 

@@ -25,8 +25,9 @@ dependencies {
   implementation ('com.google.guava:guava:25.1-jre'){
     force(true)
   }
-  implementation 'org.codehaus.groovy:groovy:3.0.2'
-  implementation 'org.apache.commons:commons-lang3:3.8.1'
+  implementation 'org.codehaus.groovy:groovy:3.0.7'
+  implementation "org.apache.commons:commons-lang3:$commons_lang3_version"
+  implementation "commons-cli:commons-cli:$commons_cli_version"
   testImplementation 'com.github.javaparser:javaparser-symbol-solver-core:3.14.11'
   testImplementation "junit:junit:$junit_version"
   testImplementation 'ch.qos.logback:logback-classic:1.1.2'

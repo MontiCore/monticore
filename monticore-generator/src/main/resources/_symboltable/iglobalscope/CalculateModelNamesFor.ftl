@@ -1,4 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-  final Set<String> modelNames = new LinkedHashSet<>();
-  modelNames.add(name);
-  return modelNames;
+  if (name.contains(".")) {
+    return com.google.common.collect.Sets.newHashSet(de.se_rwth.commons.Names.getQualifier(name), name);
+  }
+  return com.google.common.collect.Sets.newHashSet(name);

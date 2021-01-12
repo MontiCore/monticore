@@ -45,18 +45,6 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
   private static final String AUTOMATON_SCOPE = "de.monticore.codegen.ast.automaton._symboltable.AutomatonScope";
 
-  private static final String I_AUTOMATON_SCOPE = "de.monticore.codegen.ast.automaton._symboltable.IAutomatonScope";
-
-  private static final String AUTOMATON_SYMBOL = "de.monticore.codegen.ast.automaton._symboltable.AutomatonSymbol";
-
-  private static final String ACCESS_MODIFIER = "de.monticore.symboltable.modifiers.AccessModifier";
-
-  private static final String PREDICATE_AUTOMATON = "java.util.function.Predicate<de.monticore.codegen.ast.automaton._symboltable.AutomatonSymbol>";
-
-  private static final String QUALIFIED_NAME_SYMBOL = "de.monticore.codegen.ast.lexicals._symboltable.QualifiedNameSymbol";
-
-  private static final String PREDICATE_QUALIFIED_NAME = "java.util.function.Predicate<de.monticore.codegen.ast.lexicals._symboltable.QualifiedNameSymbol>";
-
   @Before
   public void setUp() {
     LogStub.init();         // replace log by a sideffect free variant
@@ -135,7 +123,7 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeSize() {
-    assertEquals(9, scopeClass.sizeCDAttributes());
+    assertEquals(8, scopeClass.sizeCDAttributes());
   }
 
   @Test
@@ -184,13 +172,6 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testScopeDeSerAttribute(){
-    ASTCDAttribute astcdAttribute = getAttributeBy("scopeDeSer", scopeClass);
-    assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
-    assertDeepEquals("AutomatonScopeDeSer", astcdAttribute.getMCType());
-  }
-
-  @Test
   public void testAdaptedAutomatonSymbolResolverListAttribute() {
     ASTCDAttribute astcdAttribute = getAttributeBy("adaptedAutomatonSymbolResolver",
         scopeClass);
@@ -222,7 +203,7 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(34, scopeClass.getCDMethodList().size());
+    assertEquals(32, scopeClass.getCDMethodList().size());
   }
 
   @Test
@@ -320,11 +301,9 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
-    assertEquals(2, method.sizeCDParameters());
+    assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
     assertEquals("modelName", method.getCDParameter(0).getName());
-    assertDeepEquals(String.class, method.getCDParameter(1).getMCType());
-    assertEquals("symbolName", method.getCDParameter(1).getName());
   }
 
   @Test

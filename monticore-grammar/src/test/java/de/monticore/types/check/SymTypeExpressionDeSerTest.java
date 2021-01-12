@@ -140,7 +140,7 @@ public class SymTypeExpressionDeSerTest {
     //first serialize the expression using the deser
     String serialized = deser.serialize(expr);
     // then deserialize it
-    SymTypeExpression deserialized = deser.deserialize(serialized, scope);
+    SymTypeExpression deserialized = deser.deserialize(serialized);
     assertNotNull(deserialized);
     // and assert that the serialized and deserialized symtype expression equals the one before
     assertEquals(expr.print(), deserialized.print());
@@ -157,7 +157,7 @@ public class SymTypeExpressionDeSerTest {
 
     String serialized = deser.serialize(expr);
 
-    SymTypeExpression deserialized = deser.deserialize(serialized, scope);
+    SymTypeExpression deserialized = deser.deserialize(serialized);
     assertNotNull(deserialized);
 
     assertEquals(expr.print(), deserialized.print());
@@ -172,7 +172,7 @@ public class SymTypeExpressionDeSerTest {
 
     String serialized = deser.serialize(expr);
 
-    SymTypeExpression deserialized = deser.deserialize(serialized, scope);
+    SymTypeExpression deserialized = deser.deserialize(serialized);
     assertNotNull(deserialized);
 
     assertEquals(expr.print(), deserialized.print());
@@ -187,7 +187,7 @@ public class SymTypeExpressionDeSerTest {
 
     String serialized = deser.serialize(expr);
 
-    SymTypeExpression deserialized = deser.deserialize(serialized, scope);
+    SymTypeExpression deserialized = deser.deserialize(serialized);
     assertNotNull(deserialized);
 
     assertEquals(expr.print(), deserialized.print());
@@ -202,7 +202,7 @@ public class SymTypeExpressionDeSerTest {
 
     String serialized = deser.serialize(expr);
 
-    SymTypeExpression deserialized = deser.deserialize(serialized, scope);
+    SymTypeExpression deserialized = deser.deserialize(serialized);
     assertNotNull(deserialized);
 
     assertEquals(expr.print(), deserialized.print());
@@ -257,7 +257,7 @@ public class SymTypeExpressionDeSerTest {
     String serialized = deser.serialize(expr);
 
     // then deserialize it
-    SymTypeExpression loaded = deser.deserialize(serialized, scope);
+    SymTypeExpression loaded = deser.deserialize(serialized);
     assertNotNull(loaded);
     // and assert that the serialized and deserialized symtype expression equals the one before
     assertEquals(expr.print(), loaded.print());
@@ -273,7 +273,7 @@ public class SymTypeExpressionDeSerTest {
     SymTypeExpressionDeSer.serializeMember(printer, "foo", expr);
     //produce a fake JSON object from the serialized member and parse this
     JsonObject json = JsonParser.parseJsonObject("{" + printer.getContent() + "}");
-    SymTypeExpression deserialized = SymTypeExpressionDeSer.deserializeMember("foo", json, scope);
+    SymTypeExpression deserialized = SymTypeExpressionDeSer.deserializeMember("foo", json);
     assertEquals(expr.print(), deserialized.print());
 
     // optional member that is present
@@ -281,7 +281,7 @@ public class SymTypeExpressionDeSerTest {
     SymTypeExpressionDeSer.serializeMember(printer, "foo", Optional.ofNullable(expr));
     json = JsonParser.parseJsonObject("{" + printer.getContent() + "}");
     Optional<SymTypeExpression> deserializedOpt = SymTypeExpressionDeSer
-        .deserializeOptionalMember("foo", json, scope);
+        .deserializeOptionalMember("foo", json);
     assertTrue(deserializedOpt.isPresent());
     assertEquals(expr.print(), deserializedOpt.get().print());
 
@@ -289,7 +289,7 @@ public class SymTypeExpressionDeSerTest {
     printer = new JsonPrinter();
     SymTypeExpressionDeSer.serializeMember(printer, "foo", Optional.empty());
     json = JsonParser.parseJsonObject("{" + printer.getContent() + "}");
-    deserializedOpt = SymTypeExpressionDeSer.deserializeOptionalMember("foo", json, scope);
+    deserializedOpt = SymTypeExpressionDeSer.deserializeOptionalMember("foo", json);
     assertTrue(!deserializedOpt.isPresent());
 
     // list member that is empty
@@ -297,14 +297,14 @@ public class SymTypeExpressionDeSerTest {
     SymTypeExpressionDeSer.serializeMember(printer, "foo", new ArrayList<>());
     json = JsonParser.parseJsonObject("{" + printer.getContent() + "}");
     List<SymTypeExpression> deserializedList = SymTypeExpressionDeSer
-        .deserializeListMember("foo", json, scope);
+        .deserializeListMember("foo", json);
     assertEquals(0, deserializedList.size());
 
     // list member with single element
     printer = new JsonPrinter();
     SymTypeExpressionDeSer.serializeMember(printer, "foo", Lists.newArrayList(expr));
     json = JsonParser.parseJsonObject("{" + printer.getContent() + "}");
-    deserializedList = SymTypeExpressionDeSer.deserializeListMember("foo", json, scope);
+    deserializedList = SymTypeExpressionDeSer.deserializeListMember("foo", json);
     assertEquals(1, deserializedList.size());
     assertEquals(expr.print(), deserializedList.get(0).print());
 
@@ -312,7 +312,7 @@ public class SymTypeExpressionDeSerTest {
     printer = new JsonPrinter();
     SymTypeExpressionDeSer.serializeMember(printer, "foo", Lists.newArrayList(expr, expr));
     json = JsonParser.parseJsonObject("{" + printer.getContent() + "}");
-    deserializedList = SymTypeExpressionDeSer.deserializeListMember("foo", json, scope);
+    deserializedList = SymTypeExpressionDeSer.deserializeListMember("foo", json);
     assertEquals(2, deserializedList.size());
     assertEquals(expr.print(), deserializedList.get(0).print());
     assertEquals(expr.print(), deserializedList.get(1).print());
@@ -323,26 +323,26 @@ public class SymTypeExpressionDeSerTest {
     String invalidJsonForSerializing = "\"Foo\":\"bar\"";
     String invalidJsonForSerializing2 = "{\n\t\"symTypeExpression\": {\n\t\t\"foo\":\"bar\", \n\t\t\"foo2\":\"bar2\"\n\t}\n}";
 
-    SymTypeExpressionDeSer.getInstance().deserialize(invalidJsonForSerializing, scope);
-    assertTrue(Log.getFindings().get(Log.getFindings().size() - 1).getMsg().startsWith("0x823F3"));
+    SymTypeExpressionDeSer.getInstance().deserialize(invalidJsonForSerializing);
+    assertTrue(Log.getFindings().get(Log.getFindings().size() - 1).getMsg().startsWith("0x823FE"));
 
-    SymTypeExpressionDeSer.getInstance().deserialize(invalidJsonForSerializing2, scope);
+    SymTypeExpressionDeSer.getInstance().deserialize(invalidJsonForSerializing2);
     assertTrue(Log.getFindings().get(Log.getFindings().size() - 1).getMsg().startsWith("0x823FE"));
 
     SymTypeOfGenericsDeSer symTypeOfGenericsDeSer = new SymTypeOfGenericsDeSer();
-    symTypeOfGenericsDeSer.deserialize(invalidJsonForSerializing2, scope);
+    symTypeOfGenericsDeSer.deserialize(invalidJsonForSerializing2);
     assertTrue(Log.getFindings().get(Log.getFindings().size() - 1).getMsg().startsWith("0x823F6"));
 
     SymTypeArrayDeSer symTypeArrayDeSer = new SymTypeArrayDeSer();
-    symTypeArrayDeSer.deserialize(invalidJsonForSerializing2, scope);
+    symTypeArrayDeSer.deserialize(invalidJsonForSerializing2);
     assertTrue(Log.getFindings().get(Log.getFindings().size() - 1).getMsg().startsWith("0x823F2"));
 
     SymTypeOfObjectDeSer symTypeOfObjectDeSer = new SymTypeOfObjectDeSer();
-    symTypeOfObjectDeSer.deserialize(invalidJsonForSerializing2, scope);
+    symTypeOfObjectDeSer.deserialize(invalidJsonForSerializing2);
     assertTrue(Log.getFindings().get(Log.getFindings().size() - 1).getMsg().startsWith("0x823F4"));
 
     SymTypeVariableDeSer symTypeVariableDeSer = new SymTypeVariableDeSer();
-    symTypeVariableDeSer.deserialize(invalidJsonForSerializing2, scope);
+    symTypeVariableDeSer.deserialize(invalidJsonForSerializing2);
     assertTrue(Log.getFindings().get(Log.getFindings().size() - 1).getMsg().startsWith("0x823F5"));
 
     SymTypeConstantDeSer symTypeConstantDeser = new SymTypeConstantDeSer();
@@ -350,7 +350,7 @@ public class SymTypeExpressionDeSerTest {
     assertTrue(Log.getFindings().get(Log.getFindings().size() - 1).getMsg().startsWith("0x823F1"));
 
     SymTypeOfWildcardDeSer symTypeOfWildcardDeSer = new SymTypeOfWildcardDeSer();
-    symTypeOfWildcardDeSer.deserialize(invalidJsonForSerializing2, scope);
+    symTypeOfWildcardDeSer.deserialize(invalidJsonForSerializing2);
     assertTrue(Log.getFindings().get(Log.getFindings().size() - 1).getMsg().startsWith("0x823F7"));
   }
 

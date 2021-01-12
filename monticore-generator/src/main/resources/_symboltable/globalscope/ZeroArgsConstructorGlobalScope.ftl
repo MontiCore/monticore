@@ -1,7 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore */ -->
-${tc.signature("scopeDeSerName", "grammarName")}
+${tc.signature()}
   this.modelPath = new de.monticore.io.paths.ModelPath();
-  this.fileExt = "";
-  this.scopeDeSer = new ${scopeDeSerName}();
-  this.symbols2Json = new ${symbols2Json}();
+  this.fileExt = "*sym";
   init();

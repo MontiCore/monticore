@@ -1,8 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
-import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
-import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
 import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.JsonPrinter;
@@ -65,53 +63,25 @@ public class SymTypeExpressionDeSer {
     printer.array(memberName, member, SymTypeExpression::printAsJson);
   }
 
-  public static SymTypeExpression deserializeMember(String memberName, JsonObject json,
-      IBasicSymbolsScope enclosingScope) {
-    return getInstance().deserialize(json.getMember(memberName), enclosingScope);
+  public static SymTypeExpression deserializeMember(String memberName, JsonObject json) {
+    return getInstance().deserialize(json.getMember(memberName));
   }
 
   public static Optional<SymTypeExpression> deserializeOptionalMember(String memberName,
-      JsonObject json, IBasicSymbolsScope enclosingScope) {
+      JsonObject json) {
     if (json.hasMember(memberName)) {
-      return Optional.of(getInstance().deserialize(json.getMember(memberName), enclosingScope));
+      return Optional.of(getInstance().deserialize(json.getMember(memberName)));
     }
     else {
       return Optional.empty();
     }
   }
 
-  public static List<SymTypeExpression> deserializeListMember(String memberName, JsonObject json,
-      IBasicSymbolsScope enclosingScope) {
+  public static List<SymTypeExpression> deserializeListMember(String memberName, JsonObject json) {
     List<SymTypeExpression> result = new ArrayList<>();
     if (json.hasMember(memberName)) {
       for (JsonElement e : json.getArrayMember(memberName)) {
-        result.add(getInstance().deserialize(e, enclosingScope));
-      }
-    }
-    return result;
-  }
-
-  public static SymTypeExpression deserializeMember(String memberName, JsonObject json,
-      IOOSymbolsScope enclosingScope) {
-    return getInstance().deserialize(json.getMember(memberName), enclosingScope);
-  }
-
-  public static Optional<SymTypeExpression> deserializeOptionalMember(String memberName,
-      JsonObject json, IOOSymbolsScope enclosingScope) {
-    if (json.hasMember(memberName)) {
-      return Optional.of(getInstance().deserialize(json.getMember(memberName), enclosingScope));
-    }
-    else {
-      return Optional.empty();
-    }
-  }
-
-  public static List<SymTypeExpression> deserializeListMember(String memberName, JsonObject json,
-      IOOSymbolsScope enclosingScope) {
-    List<SymTypeExpression> result = new ArrayList<>();
-    if (json.hasMember(memberName)) {
-      for (JsonElement e : json.getArrayMember(memberName)) {
-        result.add(getInstance().deserialize(e, enclosingScope));
+        result.add(getInstance().deserialize(e));
       }
     }
     return result;
@@ -147,100 +117,55 @@ public class SymTypeExpressionDeSer {
    * a List of SymTypeExpressions as member.
    *
    * @param serializedMember
-   * @param enclosingScope
    * @return
    */
-  public List<SymTypeExpression> deserializeList(JsonElement serializedMember,
-      IBasicSymbolsScope enclosingScope) {
+  public List<SymTypeExpression> deserializeList(JsonElement serializedMember) {
     List<SymTypeExpression> result = new ArrayList<>();
     for (JsonElement e : serializedMember.getAsJsonArray().getValues()) {
-      result.add(deserialize(e, enclosingScope));
+      result.add(deserialize(e));
     }
     return result;
   }
 
-  public SymTypeExpression deserialize(String serialized, IBasicSymbolsScope enclosingScope) {
-    return deserialize(JsonParser.parse(serialized), enclosingScope);
+  public SymTypeExpression deserialize(String serialized) {
+    return deserialize(JsonParser.parse(serialized));
   }
 
-  public SymTypeExpression deserialize(JsonElement serialized,
-      IBasicSymbolsScope enclosingScope) {
-    // void and null are stored as strings
-    if (serialized.isJsonString()) {
-      String value = serialized.getAsJsonString().getValue();
-      if (value.equals(DefsTypeBasic._nullTypeString)) {
-        return SymTypeExpressionFactory.createTypeOfNull();
-      }
-      else if (value.equals(DefsTypeBasic._voidTypeString)) {
-        return SymTypeExpressionFactory.createTypeVoid();
-      }
-    }
-    else if (enclosingScope instanceof IOOSymbolsScope) {
-      return deserialize(serialized, (IOOSymbolsScope) enclosingScope);
-    }
-    Log.error(
-        "0x823F3 Internal error: Loading ill-structured SymTab: Unknown serialization of SymTypeExpression: "
-            + serialized);
-    return null;
-  }
-
-  public SymTypeExpression deserialize(String serialized, IOOSymbolsScope enclosingScope) {
-    return deserialize(JsonParser.parse(serialized), enclosingScope);
-  }
-
-  public SymTypeExpression deserialize(JsonElement serialized, IOOSymbolsScope enclosingScope) {
+  public SymTypeExpression deserialize(JsonElement serialized) {
 
     // void and null are stored as strings
     if (serialized.isJsonString()) {
-      String value = serialized.getAsJsonString().getValue();
-
-      if (value.equals(DefsTypeBasic._nullTypeString)) {
-        return SymTypeExpressionFactory.createTypeOfNull();
-      }
-      else if (value.equals(DefsTypeBasic._voidTypeString)) {
-        return SymTypeExpressionFactory.createTypeVoid();
-      }
-      else {
-        Log.error(
-            "0x823F3 Internal error: Loading ill-structured SymTab: Unknown serialization of SymTypeExpression: "
-                + serialized);
-        return null;
+      switch(serialized.getAsJsonString().getValue()){
+        case DefsTypeBasic._nullTypeString:
+          return SymTypeExpressionFactory.createTypeOfNull();
+        case DefsTypeBasic._voidTypeString:
+          return SymTypeExpressionFactory.createTypeVoid();
       }
     }
 
     // all other serialized SymTypeExrpressions are json objects with a kind
     if (serialized.isJsonObject()) {
       JsonObject o = serialized.getAsJsonObject();
-      if (isCorrectDeSerForKind(symTypeArrayDeSer.SERIALIZED_KIND, o)) {
-        return symTypeArrayDeSer.deserialize(o, enclosingScope);
-      }
-      else if (isCorrectDeSerForKind(symTypeConstantDeSer.SERIALIZED_KIND, o)) {
-        return symTypeConstantDeSer.deserialize(o);
-      }
-      else if (isCorrectDeSerForKind(symTypeOfGenericsDeSer.SERIALIZED_KIND, o)) {
-        return symTypeOfGenericsDeSer.deserialize(o, enclosingScope);
-      }
-      else if (isCorrectDeSerForKind(symTypeOfObjectDeSer.SERIALIZED_KIND, o)) {
-        return symTypeOfObjectDeSer.deserialize(o, enclosingScope);
-      }
-      else if (isCorrectDeSerForKind(symTypeVariableDeSer.SERIALIZED_KIND, o)) {
-        return symTypeVariableDeSer.deserialize(o, enclosingScope);
-      }
-      else if (isCorrectDeSerForKind(symTypeOfWildcardDeSer.SERIALIZED_KIND, o)) {
-        return symTypeOfWildcardDeSer.deserialize(o, enclosingScope);
+      switch (JsonDeSers.getKind(o)) {
+        case SymTypeArrayDeSer.SERIALIZED_KIND:
+          return symTypeArrayDeSer.deserialize(o);
+        case SymTypeConstantDeSer.SERIALIZED_KIND:
+          return symTypeConstantDeSer.deserialize(o);
+        case SymTypeOfGenericsDeSer.SERIALIZED_KIND:
+          return symTypeOfGenericsDeSer.deserialize(o);
+        case SymTypeOfObjectDeSer.SERIALIZED_KIND:
+          return symTypeOfObjectDeSer.deserialize(o);
+        case SymTypeVariableDeSer.SERIALIZED_KIND:
+          return symTypeVariableDeSer.deserialize(o);
+        case SymTypeOfWildcardDeSer.SERIALIZED_KIND:
+          return symTypeOfWildcardDeSer.deserialize(o);
       }
     }
+
     Log.error(
         "0x823FE Internal error: Loading ill-structured SymTab: Unknown serialization of SymTypeExpression: "
             + serialized);
     return null;
-  }
-
-  protected boolean isCorrectDeSerForKind(String deSerSymbolKind, JsonObject serializedElement) {
-    if (!serializedElement.hasMember(JsonDeSers.KIND)) {
-      return false;
-    }
-    return serializedElement.getStringMember(JsonDeSers.KIND).equals(deSerSymbolKind);
   }
 
 }

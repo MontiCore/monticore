@@ -37,7 +37,7 @@
     <commons.io.version>2.4</commons.io.version>
     <doxia-sink-api.version>1.6</doxia-sink-api.version>
     <doxia-site-renderer.version>1.6</doxia-site-renderer.version>
-    <groovy.version>3.0.2</groovy.version>
+    <groovy.version>3.0.7</groovy.version>
     <guava.version>25.1-jre</guava.version>
     <guice.version>3.0</guice.version>
     <hamcrest.version>1.3</hamcrest.version>
@@ -64,6 +64,8 @@
     <emf.ecore.xmi.version>2.15.0</emf.ecore.xmi.version>
     <emf.compare.version>1.2.0</emf.compare.version>
     <equinox.common.version>3.10.0</equinox.common.version>
+    <commons_cli.version>1.4</commons_cli.version>
+    <commons_lang3.version>3.8.1</commons_lang3.version>
     <!-- has been relocated to that version -->
     <xml-apis.version>1.0.b2</xml-apis.version>
 
@@ -290,6 +292,18 @@
         <groupId>org.freemarker</groupId>
         <artifactId>freemarker</artifactId>
         <version>${freemarker.version}</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>commons-cli</groupId>
+        <artifactId>commons-cli</artifactId>
+        <version>${commons_cli.version}</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-lang3</artifactId>
+        <version>${commons_lang3.version}</version>
       </dependency>
 
       <!-- EMF dependencies -->

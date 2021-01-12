@@ -1,10 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("attrType", "attrName", "jsonParamName", "typeMap")}
-  ${attrType} result = new ArrayList<>();
-  if(!${jsonParamName}.hasMember("${attrName}")) {
-    return result;
-  }
-  for(de.monticore.symboltable.serialization.json.JsonElement e : ${jsonParamName}.getArrayMember("${attrName}")) {
-    result.add(${jsonParamName}.${typeMap});
-  }
-return result;
+${tc.signature("name")}
+  de.monticore.symboltable.serialization.JsonPrinter p = s2j.getJsonPrinter();
+  p.beginArray("${name}");
+  ${name}.stream().forEach(e -> p.value(e));
+  p.endArray();

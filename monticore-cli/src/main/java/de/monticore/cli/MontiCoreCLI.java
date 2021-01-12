@@ -37,7 +37,9 @@ import de.se_rwth.commons.logging.Slf4jLog;
 /**
  * Command line interface for MontiCore.
  *
- */
+ * @deprecated Will be removed. Use MontiCoreStandardCLI instead.
+ **/
+@Deprecated
 public class MontiCoreCLI {
   
   /**

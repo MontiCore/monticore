@@ -15,6 +15,10 @@ import de.se_rwth.commons.configuration.ConfigurationPropertiesMapContributor;
 
 // TODO: Deprecate the class and Simplify the use of Parameters (which is a fixed set)
 
+/**
+ * @deprecated Will be removed. Use MontiCoreConfiguration instead.
+ **/
+@Deprecated
 public final class MontiCoreCLIConfiguration implements Configuration {
   
   public enum Options {

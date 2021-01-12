@@ -28,6 +28,7 @@ public class CDTraverserDecorator extends AbstractCreator<ASTCDCompilationUnit, 
   protected final TraverserClassDecorator traverserDecorator;
   protected final Visitor2Decorator visitor2Decorator;
   protected final HandlerDecorator handlerDecorator;
+  protected final InheritanceHandlerDecorator inheritanceHandlerDecorator;
   protected final IterablePath handCodedPath;
   protected final VisitorService visitorService;
 
@@ -37,7 +38,8 @@ public class CDTraverserDecorator extends AbstractCreator<ASTCDCompilationUnit, 
                             final TraverserInterfaceDecorator iTraverserDecorator,
                             final TraverserClassDecorator traverserDecorator,
                             final Visitor2Decorator visitor2Decorator,
-                            final HandlerDecorator handlerDecorator) {
+                            final HandlerDecorator handlerDecorator,
+                            final InheritanceHandlerDecorator inheritanceHandlerDecorator) {
     super(glex);
     this.handCodedPath = handCodedPath;
     this.visitorService = visitorService;
@@ -45,6 +47,7 @@ public class CDTraverserDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     this.traverserDecorator = traverserDecorator;
     this.visitor2Decorator = visitor2Decorator;
     this.handlerDecorator = handlerDecorator;
+    this.inheritanceHandlerDecorator = inheritanceHandlerDecorator;
   }
 
   @Override
@@ -61,6 +64,7 @@ public class CDTraverserDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     ASTCDClass traverserClass = traverserDecorator.decorate(input);
     ASTCDInterface visitor2Interface = visitor2Decorator.decorate(input);
     ASTCDInterface handlerInterface = handlerDecorator.decorate(input);
+    ASTCDClass inheritanceClass  = inheritanceHandlerDecorator.decorate(input);
     
     // build cd
     ASTCDDefinition astCD = CD4CodeMill.cDDefinitionBuilder()
@@ -69,6 +73,7 @@ public class CDTraverserDecorator extends AbstractCreator<ASTCDCompilationUnit, 
         .addCDClass(traverserClass)
         .addCDInterface(visitor2Interface)
         .addCDInterface(handlerInterface)
+        .addCDClass(inheritanceClass)
         .build();
 
     for (ASTCDClass cdClass : astCD.getCDClassList()) {

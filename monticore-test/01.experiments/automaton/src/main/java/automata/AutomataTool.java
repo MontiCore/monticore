@@ -107,7 +107,6 @@ public class AutomataTool {
     // execute a pretty printer
     PrettyPrinter pp = new PrettyPrinter();
     AutomataTraverser traverser2 = AutomataMill.traverser();
-    traverser2.add4Automata(pp);
     traverser2.setAutomataHandler(pp);
     ast.accept(traverser2);
     Log.info("Pretty printing automaton into console:", "AutomataTool");
@@ -150,9 +149,8 @@ public class AutomataTool {
     globalScope.setModelPath(new ModelPath());
     globalScope.setFileExt("aut");
 
-    AutomataSymbolTableCreator symbolTable = AutomataMill
-        .automataSymbolTableCreator();
-    symbolTable.putOnStack(globalScope);
+    AutomataScopesGenitorDelegator symbolTable = AutomataMill
+        .scopesGenitorDelegator();
 
     return symbolTable.createFromAST(ast);
   }

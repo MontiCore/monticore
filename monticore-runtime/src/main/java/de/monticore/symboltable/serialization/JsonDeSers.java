@@ -6,7 +6,9 @@ import de.monticore.symboltable.serialization.json.JsonArray;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.se_rwth.commons.logging.Log;
+import org.checkerframework.checker.units.qual.K;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,21 +22,13 @@ public class JsonDeSers {
 
   public static final String PACKAGE = "package";
 
-  @Deprecated
-  public static final String IMPORTS = "imports";
-
-  @Deprecated
-  public static final String SUBSCOPES = "subScopes";
-
-  @Deprecated
-  public static final String EXPORTS_SYMBOLS = "exportsSymbols";
-
   public static final String IS_SHADOWING_SCOPE = "isShadowingScope";
 
   public static final String NAME = "name";
 
   public static final String KIND = "kind";
 
+  @Deprecated
   public static final String KIND_HIERARCHY = "kindHierarchy";
 
   public static final String SYMBOLS = "symbols";
@@ -42,11 +36,43 @@ public class JsonDeSers {
   public static final String SPANNED_SCOPE = "spannedScope";
 
   /**
+   * This method deserializes a stored package. If no package is stored, the default
+   * empty package ("") is returned.
+   *
+   * @param scopeJson
+   * @return
+   */
+  public static String getPackage(JsonObject scopeJson) {
+    return scopeJson.getStringMemberOpt(PACKAGE).orElse("");
+  }
+
+  /**
+   * This method returns a list of JsonObjects from a passed serialized scope.
+   * @param scopeJson
+   * @return
+   */
+  public static List<JsonObject> getSymbols(JsonObject scopeJson) {
+    List<JsonObject> symbols = new ArrayList<>();
+    if (scopeJson.hasArrayMember(SYMBOLS)) {
+      for (JsonElement e : scopeJson.getArrayMember(SYMBOLS)) {
+        if(e.isJsonObject()){
+          symbols.add(e.getAsJsonObject());
+        }
+        else {
+          Log.error("0xA1233 Serialized symbol is not a JSON object: '" + e + "'.");
+        }
+      }
+    }
+    return symbols;
+  }
+
+  /**
    * This method deserializes a stored map with kind hierarchies from the passed serialized scope.
    *
    * @param scopeJson
    * @return
    */
+  @Deprecated
   public static Map<String, String> deserializeKindHierarchy(JsonObject scopeJson) {
     Map<String, String> kindHierarchy = new HashMap<>();
     if (scopeJson.hasArrayMember(KIND_HIERARCHY)) {
@@ -67,10 +93,12 @@ public class JsonDeSers {
     return kindHierarchy;
   }
 
+  @Deprecated
   public static void printKindHierarchyEntry(JsonPrinter printer, String kind, String superKind){
     printer.array(Lists.newArrayList(kind, superKind), s -> "\""+s+"\"");
   }
 
+  @Deprecated
   public static String getParentKind(String kind, Map<String, String> kindHierarchy) {
     if (null != kind && kindHierarchy.containsKey(kind)) {
       return kindHierarchy.get(kind);
@@ -87,6 +115,7 @@ public class JsonDeSers {
    * @param serializedElement
    * @return
    */
+  @Deprecated
   public static boolean isCorrectDeSerForKind(String deSerSymbolKind,
       JsonElement serializedElement) {
     if (!serializedElement.isJsonObject()) {
@@ -127,4 +156,11 @@ public class JsonDeSers {
     }
   }
 
+  public static String getKind(JsonObject symbol) {
+    if(!symbol.hasStringMember(KIND)){
+      Log.error("0xA1235 Serialized object does not have a kind attribute: '" + symbol + "'.");
+      return "error";
+    }
+    return symbol.getStringMember(KIND);
+  }
 }

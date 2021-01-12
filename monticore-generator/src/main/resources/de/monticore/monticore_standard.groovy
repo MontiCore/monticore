@@ -21,10 +21,10 @@ import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill
 // ############################################################
 // M1: Basic setup and initialization
 // M1.1: Logging
-Log.debug("--------------------------------", LOG_ID)
-Log.debug("MontiCore", LOG_ID)
-Log.debug(" - eating your models since 2005", LOG_ID)
-Log.debug("--------------------------------", LOG_ID)
+Log.info("--------------------------------", LOG_ID)
+Log.info("MontiCore", LOG_ID)
+Log.info(" - eating your models since 2005", LOG_ID)
+Log.info("--------------------------------", LOG_ID)
 Log.debug("Grammar argument    : " + _configuration.getGrammarsAsStrings(), LOG_ID)
 Log.debug("Grammar files       : " + grammars, LOG_ID)
 Log.debug("Modelpath           : " + modelPath, LOG_ID)
@@ -67,8 +67,6 @@ while (grammarIterator.hasNext()) {
 
     // M5: Transform grammar AST into a class diagram and report it
     cd = deriveCD(astGrammar, glex, mcScope)
-
-    cd = addListSuffixToAttributeName(cd)
     reportCD(cd, report)
 
     // M6: Generate parser and wrapper
