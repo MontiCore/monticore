@@ -97,6 +97,7 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
 
     if (generateAbstractClass) {
       clazz.getModifier().setAbstract(true);
+      AbstractDeSers.add(symbolTableService.getSymbolDeSerFullName(symbolClass));
     }
     return clazz;
   }

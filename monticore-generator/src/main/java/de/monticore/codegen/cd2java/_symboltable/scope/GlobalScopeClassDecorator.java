@@ -8,6 +8,7 @@ import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
+import de.monticore.codegen.cd2java._symboltable.serialization.AbstractDeSers;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
@@ -18,7 +19,6 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 
-import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -380,35 +380,39 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     Map<String, String> map = Maps.newHashMap();
 
     // add DeSers for locally defined symbols
-    symbolDefiningProds.forEach(s ->
-            map.put(symbolTableService.getSymbolFullName(s), symbolTableService.getSymbolDeSerFullName(s)));
+    for(ASTCDType s :symbolDefiningProds) {
+      String symbol = symbolTableService.getSymbolFullName(s);
+      String deser = symbolTableService.getSymbolDeSerFullName(s);
+      map.put(symbol, deser);
+    }
 
     // add DeSers for symbols defined in inherited languages
     for (CDDefinitionSymbol cdSymbol: symbolTableService.getSuperCDsTransitive()) {
-//      map.put(symbolTableService.getScopeClassFullName(cdSymbol), symbolTableService.getScopeDeSerFullName(cdSymbol));
-      symbolTableService.getSymbolDefiningProds(cdSymbol.getAstNode()).forEach(s ->
-              map.put(symbolTableService.getSymbolFullName(s, cdSymbol), symbolTableService.getSymbolDeSerFullName(s, cdSymbol)));
+      symbolTableService.getSymbolDefiningProds(cdSymbol.getAstNode()).forEach(s -> {
+        String symbol = symbolTableService.getSymbolFullName(s, cdSymbol);
+        String deser = symbolTableService.getSymbolDeSerFullName(s, cdSymbol);
+        map.put(symbol, deser);
+      });
     }
 
-    // filter DeSers that are generated as abstract classes
-    map.entrySet().stream().filter(e -> !isAbstract(e.getValue()));
+    // filter DeSers that are generated as abstract classes (or have the TOP suffix)
+    List<String> removeDeSers = new ArrayList<>();
+    for(Map.Entry<String, String> e : map.entrySet()){
+      if(AbstractDeSers.contains(e.getValue())){
+        Log.warn("The DeSer '"  + e.getValue()
+            + "' is not added to the map in " + symbolTableService.getGlobalScopeFullName()
+            + ", because it is abstract. Please extend the class with the TOP mechanism!");
+        removeDeSers.add(e.getValue());
+      }
+    }
+    map.entrySet().removeIf(entry -> removeDeSers.contains(entry.getValue()));
+
+    AbstractDeSers.reset(); // reset for next generator invocation
 
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "Init",
             scopeFullName, scopeDeSerFullName, map));
     return method;
   }
-
-  private boolean isAbstract(String qualifiedName){
-    try {
-      return Modifier.isAbstract(ClassLoader.getSystemClassLoader().loadClass(qualifiedName).getModifiers());
-    }
-    catch (ClassNotFoundException e) {
-      Log.warn("MC Generator could not find generated class '"+qualifiedName+"' and now assumes"
-          + " that it is not an abstract class");
-    }
-    return false;
-  }
-
   public boolean isGlobalScopeTop() {
     return isGlobalScopeTop;
   }

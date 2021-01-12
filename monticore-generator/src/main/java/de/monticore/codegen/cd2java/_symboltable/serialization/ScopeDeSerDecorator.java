@@ -131,6 +131,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
         .build();
     if(generateAbstractClass){
       clazz.getModifier().setAbstract(true);
+      AbstractDeSers.add(symbolTableService.getScopeDeSerFullName());
     }
     return clazz;
   }
