@@ -4,23 +4,53 @@ plugins {
   id 'groovy'
   id 'java-gradle-plugin'
   id 'maven-publish'
+  id 'com.github.johnrengelman.shadow' version '6.0.0' apply false
+}
+
+if(hasProperty('bootstrap')) {
+  apply plugin: 'com.github.johnrengelman.shadow'
 }
 
 dependencies {
-  implementation gradleApi()
-  implementation localGroovy()
+  if(!hasProperty('bootstrap')){
+    implementation gradleApi()
+    implementation localGroovy()
+  } else {
+    shadow gradleApi()
+    shadow localGroovy()
+  }
+  
   implementation project(":monticore-generator")
   implementation project(":monticore-cli")
-  implementation (group: 'de.monticore', name: 'monticore-grammar', version: "$previous_mc_version"){
-    force true
-  }
   implementation 'de.se_rwth.commons:se-commons-groovy:' + se_commons_version
+}
+
+if(hasProperty('bootstrap')) {
+  shadowJar {
+    classifier = ''
+    zip64 true
+  }
 }
 
 gradlePlugin.plugins {
   monticore {
-    id = 'monticore'
+    if(!hasProperty('bootstrap')) {
+      id = 'monticore'
+    } else {
+      id = 'monticore-bs'
+    }
     implementationClass = 'de.monticore.MCPlugin'
   }
 }
 
+if(hasProperty('bootstrap')) {
+// configure deployment
+  publishing {
+    // configure what artifacts to publish
+    publications {
+      shadow(MavenPublication) { publication ->
+        project.shadow.component(publication)
+      }
+    }
+  }
+}

@@ -13,7 +13,11 @@ plugins {
 }
 
 description = 'MontiCore: Grammar'
-group = "de.monticore"
+if(!hasProperty('bootstrap')){
+  group = "de.monticore"
+} else {
+  group = "de.monticore.bs"
+}
 
 dependencies {
     implementation project(':monticore-runtime')
