@@ -16,7 +16,9 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.StringTransformations;
+import de.se_rwth.commons.logging.Log;
 
+import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -376,16 +378,35 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
   protected ASTCDMethod createInitMethod(String scopeFullName, String scopeDeSerFullName, List<ASTCDType> symbolDefiningProds){
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, "init");
     Map<String, String> map = Maps.newHashMap();
+
+    // add DeSers for locally defined symbols
     symbolDefiningProds.forEach(s ->
             map.put(symbolTableService.getSymbolFullName(s), symbolTableService.getSymbolDeSerFullName(s)));
+
+    // add DeSers for symbols defined in inherited languages
     for (CDDefinitionSymbol cdSymbol: symbolTableService.getSuperCDsTransitive()) {
-      map.put(symbolTableService.getScopeClassFullName(cdSymbol), symbolTableService.getScopeDeSerFullName(cdSymbol));
+//      map.put(symbolTableService.getScopeClassFullName(cdSymbol), symbolTableService.getScopeDeSerFullName(cdSymbol));
       symbolTableService.getSymbolDefiningProds(cdSymbol.getAstNode()).forEach(s ->
               map.put(symbolTableService.getSymbolFullName(s, cdSymbol), symbolTableService.getSymbolDeSerFullName(s, cdSymbol)));
     }
+
+    // filter DeSers that are generated as abstract classes
+    map.entrySet().stream().filter(e -> !isAbstract(e.getValue()));
+
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "Init",
             scopeFullName, scopeDeSerFullName, map));
     return method;
+  }
+
+  private boolean isAbstract(String qualifiedName){
+    try {
+      return Modifier.isAbstract(ClassLoader.getSystemClassLoader().loadClass(qualifiedName).getModifiers());
+    }
+    catch (ClassNotFoundException e) {
+      Log.warn("MC Generator could not find generated class '"+qualifiedName+"' and now assumes"
+          + " that it is not an abstract class");
+    }
+    return false;
   }
 
   public boolean isGlobalScopeTop() {
