@@ -15,10 +15,12 @@ import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.grammar.MCGrammarInfo;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
+import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._symboltable.*;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.Names;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.File;
@@ -41,6 +43,11 @@ public class ParserGeneratorTest {
   private ModelPath modelPath;
 
   private File outputPath;
+
+  @BeforeClass
+  public static void setup(){
+    Grammar_WithConceptsMill.init();
+  }
 
   @Before
   public void setUp() {

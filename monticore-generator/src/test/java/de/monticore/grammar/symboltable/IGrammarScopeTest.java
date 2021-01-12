@@ -11,6 +11,7 @@ import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.File;
@@ -23,6 +24,11 @@ import static org.junit.Assert.assertTrue;
 public class IGrammarScopeTest {
 
   private static ModelPath modelPath = new ModelPath(Paths.get("src/test/resources"));
+
+  @BeforeClass
+  public static void setUp(){
+    Grammar_WithConceptsMill.init();
+  }
 
   @Before
   public void setup() {

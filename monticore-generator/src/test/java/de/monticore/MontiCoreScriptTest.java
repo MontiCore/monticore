@@ -15,6 +15,9 @@ import java.util.Optional;
 import java.util.Set;
 
 import de.monticore.cd.cd4analysis.CD4AnalysisMill;
+import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisScope;
+import de.monticore.cd.cd4analysis._symboltable.ICD4AnalysisArtifactScope;
+import de.monticore.cd.cd4analysis._symboltable.ICD4AnalysisScope;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import org.junit.Before;
 import org.junit.BeforeClass;

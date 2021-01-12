@@ -7,6 +7,8 @@ import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
+import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -24,6 +26,11 @@ public class AttributeInASTOverridingTest {
   private ASTCDClass astA;
   
   private ASTCDClass astB;
+
+  @BeforeClass
+  public static void setup(){
+    Grammar_WithConceptsMill.init();
+  }
   
   public AttributeInASTOverridingTest() {
     ASTCDCompilationUnit cdCompilationUnit = TestHelper.parseAndTransform(Paths

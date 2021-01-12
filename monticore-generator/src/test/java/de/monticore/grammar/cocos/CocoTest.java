@@ -14,6 +14,11 @@ import org.junit.BeforeClass;
 import static org.junit.Assert.*;
 
 public abstract class CocoTest {
+
+  @BeforeClass
+  public static void setup(){
+    Grammar_WithConceptsMill.init();
+  }
   
   protected void testValidGrammar(String grammar, Grammar_WithConceptsCoCoChecker checker) {
     final Grammar_WithConceptsGlobalScope globalScope = GrammarGlobalScopeTestFactory.create();

@@ -3,7 +3,9 @@ package de.monticore.codegen.mc2cd.transl;
 
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
+import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.nio.file.Paths;
@@ -15,6 +17,11 @@ public class ComponetTranslationTest {
   private ASTCDCompilationUnit componentCD;
 
   private ASTCDCompilationUnit nonComponentCD;
+
+  @BeforeClass
+  public static void setup(){
+    Grammar_WithConceptsMill.init();
+  }
 
   @Before
   public void setUp() {
