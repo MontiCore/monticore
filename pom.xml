@@ -29,7 +29,7 @@
 
     <!-- .. Libraries ..................................................... -->
 
-    <cd4analysis.version>1.7.0.5</cd4analysis.version>
+    <cd4analysis.version>6.6.0-SNAPSHOT</cd4analysis.version>
     <last.mc.release>6.6.0</last.mc.release>
 
     <se-commons.version>1.7.11</se-commons.version>
