@@ -12,9 +12,11 @@ import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
+import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.io.paths.IterablePath;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.se_rwth.commons.StringTransformations;
 
@@ -56,15 +58,18 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
 
   protected boolean generateAbstractClass;
 
+  protected IterablePath hw;
+
   public ScopeDeSerDecorator(final GlobalExtensionManagement glex,
       final SymbolTableService symbolTableService, final MethodDecorator methodDecorator,
-      VisitorService visitorService) {
+      VisitorService visitorService, final IterablePath hw) {
     super(glex);
     this.visitorService = visitorService;
     this.symbolTableService = symbolTableService;
     this.methodDecorator = methodDecorator;
     this.bitser = new BITSer();
     this.generateAbstractClass = false;
+    this.hw = hw;
   }
 
   /**
@@ -131,7 +136,9 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
         .build();
     if(generateAbstractClass){
       clazz.getModifier().setAbstract(true);
-      AbstractDeSers.add(symbolTableService.getScopeDeSerFullName());
+      if (!TransformationHelper.existsHandwrittenClass(hw, symbolTableService.getScopeDeSerFullName())) {
+        AbstractDeSers.add(symbolTableService.getScopeDeSerFullName());
+      }
     }
     return clazz;
   }

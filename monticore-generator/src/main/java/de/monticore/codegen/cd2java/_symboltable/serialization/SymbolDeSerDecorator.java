@@ -6,10 +6,12 @@ import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4code.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
+import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.io.paths.IterablePath;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.utils.Names;
@@ -43,10 +45,13 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
 
   protected boolean generateAbstractClass;
 
+  protected IterablePath hw;
+
   public SymbolDeSerDecorator(final GlobalExtensionManagement glex,
-      final SymbolTableService symbolTableService) {
+      final SymbolTableService symbolTableService, final IterablePath hw) {
     super(glex);
     this.symbolTableService = symbolTableService;
+    this.hw = hw;
     bitser = new BITSer();
     generateAbstractClass = false;
   }
@@ -97,7 +102,9 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
 
     if (generateAbstractClass) {
       clazz.getModifier().setAbstract(true);
-      AbstractDeSers.add(symbolTableService.getSymbolDeSerFullName(symbolClass));
+      if (!TransformationHelper.existsHandwrittenClass(hw, symbolTableService.getSymbolDeSerFullName(symbolClass))) {
+        AbstractDeSers.add(symbolTableService.getSymbolDeSerFullName(symbolClass));
+      }
     }
     return clazz;
   }
