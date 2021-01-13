@@ -6,7 +6,6 @@ import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._parser.CD4AnalysisParser;
 import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisPhasedSTC;
 import de.monticore.cd.cd4analysis._symboltable.ICD4AnalysisGlobalScope;
-import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.io.paths.ModelPath;
 import org.junit.BeforeClass;
 

@@ -3,7 +3,6 @@
 package de.monticore.cli;
 
 import de.monticore.MontiCoreConfiguration;
-import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.se_rwth.commons.logging.Log;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
