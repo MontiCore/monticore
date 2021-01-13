@@ -164,19 +164,6 @@ public class ASTDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testGetChildrenMethod() {
-    ASTCDMethod method = getMethodBy("get_Children", astClass);
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-
-    ASTMCType returnType = this.mcTypeFacade.createCollectionTypeOf("de.monticore.ast.ASTNode");
-    assertTrue(method.getMCReturnType().isPresentMCType());
-    assertDeepEquals(returnType, method.getMCReturnType().getMCType());
-
-    assertTrue(method.isEmptyCDParameters());
-  }
-
-  @Test
   public void testConstructMethod() {
     ASTCDMethod method = getMethodBy("_construct", astClass);
     assertDeepEquals(PROTECTED, method.getModifier());
