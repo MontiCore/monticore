@@ -20,6 +20,7 @@ import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.io.paths.IterablePath;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,7 +28,6 @@ import org.junit.Test;
 import java.util.List;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.*;
-import static de.monticore.codegen.cd2java.DecoratorAssert.assertOptionalOf;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodsBy;
 import static org.junit.Assert.*;
@@ -72,7 +72,7 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
     ScopeDeSerDecorator decorator = new ScopeDeSerDecorator(glex,
         new SymbolTableService(astcdCompilationUnit),
         new MethodDecorator(glex, new SymbolTableService(decoratedScopeCompilationUnit)),
-        new VisitorService(astcdCompilationUnit));
+        new VisitorService(astcdCompilationUnit), IterablePath.empty());
 
     this.scopeClass = decorator
         .decorate(decoratedScopeCompilationUnit, decoratedSymbolCompilationUnit);
