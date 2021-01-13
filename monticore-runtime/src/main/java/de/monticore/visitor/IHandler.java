@@ -15,8 +15,6 @@ public interface IHandler {
 
   ITraverser getTraverser();
 
-  default void setTraverser(ITraverser traverser) {}
-
   default void handle(ASTNode node) {
     getTraverser().visit(node);
     getTraverser().endVisit(node);
