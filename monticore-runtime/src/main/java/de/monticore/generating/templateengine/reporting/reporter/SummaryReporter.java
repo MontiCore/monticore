@@ -96,11 +96,7 @@ public class SummaryReporter extends AReporter {
   private int maxTemplateDepth;
   
   private int numASTNodeVisits;
-  
-  private int numASTNodeTypes;
-  
-  private int numASTNodeInstances;
-  
+
   private int numASTSpecificReplacements;
   
   private int numASTSpecificCalls;
@@ -324,9 +320,10 @@ public class SummaryReporter extends AReporter {
     ocv.clear();
     ast.accept(traverser);
     //traverser.handle(ast);
-    numASTNodeInstances = ocv.getTotalCount();
-    numASTNodeTypes = ocv.getObjectCountMap().size();
-    numCalledUnsetHookpoints = calledUnsetHookpoints.size();
+    int numASTNodeInstances = ocv.getTotalCount();
+    int numASTNodeTypes = ocv.getObjectCountMap().size();
+    int maxASTDepth = ocv.getMaxDepth();
+    int numCalledUnsetHookpoints = calledUnsetHookpoints.size();
     int numUsedTemplates = usedTemplates.size();
     int numUsedHWTemplates = usedHWTemplates.size();
     int numUnusedTemplates = repository.getAllTemplateNames().size() -
@@ -334,7 +331,6 @@ public class SummaryReporter extends AReporter {
     int numUnusedHWTemplates = repository.getAllHWTemplateNames().size() -
         numUsedHWTemplates;
     int numVariables = variableNames.size();
-    // int maxASTDepth = ReportingHelper.getASTDepth(ast);
     writeSummaryLine(NUM_ERRORS, numErrors);
     writeSummaryLine(NUM_WARNINGS, numWarnings);
     writeSummaryLine(NUM_GENERATED_FILES, numGeneratedFiles);
@@ -346,7 +342,7 @@ public class SummaryReporter extends AReporter {
     writeSummaryLine(NUM_USED_HWTEMPLATES, numUsedHWTemplates);
     writeSummaryLine(NUM_UNUSED_HWTEMPLATES, numUnusedHWTemplates);
     writeSummaryLine(MAX_TEMPLATE_DEPTH, maxTemplateDepth);
-    // writeSummaryLine(MAX_AST_DEPTH, maxASTDepth);
+    writeSummaryLine(MAX_AST_DEPTH, maxASTDepth);
     writeSummaryLine(NUM_ASTNODE_INSTANCES, numASTNodeInstances);
     writeSummaryLine(NUM_ASTNODE_TYPES, numASTNodeTypes);
     writeSummaryLine(NUM_ASTNODE_VISITS, numASTNodeVisits);
@@ -376,8 +372,6 @@ public class SummaryReporter extends AReporter {
     numInstantiations = 0;
     variableNames.clear();
     numVariableAssignments = 0;
-    numASTNodeInstances = 0;
-    numASTNodeTypes = 0;
     numASTNodeVisits = 0;
     numErrors = 0;
     numWarnings = 0;
