@@ -176,9 +176,6 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
 
       Optional<ASTCDClass> scopeSkeletonCreatorDelegator = createScopesGenitorDelegator(astCD);
       scopeSkeletonCreatorDelegator.ifPresent(symTabCD::addCDClass);
-      // global scope
-      ASTCDClass globalScopeClass = createGlobalScopeClass(astCD, symbolTablePackage);
-      symTabCD.addCDClass(globalScopeClass);
 
       // artifact scope
       boolean isArtifactScopeHandCoded = existsHandwrittenClass(handCodedPath,
@@ -190,6 +187,10 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
       // scope deser
       ASTCDClass scopeDeSer = createScopeDeSerClass(scopeCD, symbolCD);
       symTabCD.addCDClass(scopeDeSer);
+
+      // global scope
+      ASTCDClass globalScopeClass = createGlobalScopeClass(astCD, symbolTablePackage);
+      symTabCD.addCDClass(globalScopeClass);
 
       // symbol table creator
       Optional<ASTCDClass> symbolTableCreator = createSymbolTableCreator(astCD);
