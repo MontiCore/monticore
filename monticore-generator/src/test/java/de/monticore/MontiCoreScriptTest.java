@@ -78,7 +78,6 @@ public class MontiCoreScriptTest {
     additionalMethods.add("equalAttributes");
     additionalMethods.add("deepClone");
     additionalMethods.add("_construct");
-    additionalMethods.add("get_Children");
     additionalMethods.add("accept");
   }
 

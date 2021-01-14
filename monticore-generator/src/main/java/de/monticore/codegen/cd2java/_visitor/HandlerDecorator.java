@@ -75,6 +75,7 @@ public class HandlerDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
     ASTCDInterface visitorInterface = CD4CodeMill.cDInterfaceBuilder()
         .setName(handlerSimpleName)
         .setModifier(PUBLIC.build())
+        .addInterface(getMCTypeFacade().createQualifiedType(IHANDLER_FULL_NAME))
         .addCDMethod(addGetTraverserMethod(traverserType))
         .addCDMethod(addSetTraverserMethod(traverserType))
         .addAllCDMethods(createHandlerMethods(compilationUnit.getCDDefinition()))

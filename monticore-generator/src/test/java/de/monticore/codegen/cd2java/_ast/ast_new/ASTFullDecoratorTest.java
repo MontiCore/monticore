@@ -72,7 +72,6 @@ public class ASTFullDecoratorTest extends DecoratorTestCase {
     // because it defines a symbol but has no name attribute or a getName method
     assertTrue(astClass.getModifier().isAbstract());
   }
-
   @Test
   public void testAttributeSize() {
     assertEquals(3, astClass.getCDAttributeList().size());

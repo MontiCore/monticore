@@ -2,34 +2,35 @@
 
 package de.monticore.generating.templateengine.reporting.commons;
 
-import java.util.Map;
-
+import com.google.common.collect.Maps;
 import de.monticore.ast.ASTNode;
+import de.monticore.visitor.IVisitor;
 import de.se_rwth.commons.SourcePosition;
 
-import com.google.common.collect.Maps;
+import java.util.Map;
 
-import de.monticore.visitor.CommonVisitor;
 
 /**
  * We use this visit mechanism to count instances of AST-Node-Types classes. The
  * type2count member maps the AST-Node-Type as String to it's object count.
  *
  */
-public class ObjectCountVisitor implements CommonVisitor {
+public class ObjectCountVisitor implements IVisitor {
   
   private Map<String, Integer> type2count;
   
   private Map<String, Integer> type2countPos;
   
   private int totalCount;
+
+  private int maxDepth;
+
+  private int depth;
   
   @Override
   public void visit(ASTNode a) {
-    if (a == null) {
-      return;
-    }
     totalCount++;
+    depth++;
     String key = Layouter.nodeName(a);
     MapUtil.incMapValue(type2count, key);
     // count astnodes with source position
@@ -37,7 +38,15 @@ public class ObjectCountVisitor implements CommonVisitor {
       MapUtil.incMapValue(type2countPos, key);
     }
   }
-  
+
+  @Override
+  public void endVisit(ASTNode a) {
+    if (depth>maxDepth) {
+      maxDepth = depth;
+    }
+    depth--;
+  }
+
   /**
    * Return the result map
    */
@@ -58,14 +67,31 @@ public class ObjectCountVisitor implements CommonVisitor {
   public int getTotalCount() {
     return this.totalCount;
   }
-  
+
+  /**
+   * Return the max depth
+   */
+  public int getMaxDepth() {
+    return this.maxDepth;
+  }
+
   /**
    * Constructor for reporting.ObjectCountVisitor
    */
   public ObjectCountVisitor() {
-    super();
     this.type2count = Maps.newHashMap();
     this.type2countPos = Maps.newHashMap();
+    this.totalCount = 0;
+    this.maxDepth = 0;
+    this.depth = 0;
+  }
+
+  public void clear() {
+    this.type2count.clear();
+    this.type2countPos.clear();
+    this.totalCount = 0;
+    this.maxDepth = 0;
+    this.depth = 0;
   }
   
 }

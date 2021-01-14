@@ -2,14 +2,10 @@
 
 package de.monticore.ast;
 
-import java.util.Collection;
-import java.util.List;
-
-import de.monticore.ast.ASTNode;
-
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import de.monticore.symboltable.IScope;
+
+import java.util.List;
 
 /**
  * Mock for ASTCNode.
@@ -25,21 +21,6 @@ public class ASTCNodeMock extends ASTCNode {
     children.add(child);
   }
 
-  /**
-   * @see de.monticore.ast.ASTNode#get_Children()
-   */
-  @Override
-  @Deprecated
-  public Collection<ASTNode> get_Children() {
-    return ImmutableList.copyOf(children);
-  }
-
-  /**
-   * @see de.monticore.ast.ASTNode#remove_Child(de.monticore.ast.ASTNode)
-   */
-  @Override
-  public void remove_Child(ASTNode child) {
-  }
 
   @Override public IScope getEnclosingScope() {
     return null;

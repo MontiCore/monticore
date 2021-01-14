@@ -2,10 +2,7 @@
 
 package de.monticore.generating.templateengine.reporting.commons;
 
-import de.monticore.ast.ASTNode;
 import de.se_rwth.commons.Names;
-
-import java.util.Collection;
 
 /**
  * Helper to write files
@@ -67,24 +64,5 @@ public class ReportingHelper {
     return Names.getSimpleName(hookName) + "."
         + ReportingConstants.TEMPLATE_FILE_EXTENSION;
   }
-  
-  public static int getASTDepth(ASTNode node) {
-    return getASTDepthX(node);
-  }
-  
-  private static int getASTDepthX(ASTNode node) {
-    // node has no children
-    Collection<ASTNode> children = node.get_Children();
-    if (children == null || children.size() == 0) {
-      return 0;
-    }
-    int maxDepth = -1; // default value
-    for (ASTNode child : children) {
-      int depthX = getASTDepthX(child) + 1;
-      if (depthX > maxDepth) {
-        maxDepth = depthX;
-      }
-    }
-    return maxDepth;
-  }
+
 }

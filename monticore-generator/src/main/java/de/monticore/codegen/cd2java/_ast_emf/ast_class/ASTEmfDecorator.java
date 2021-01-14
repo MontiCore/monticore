@@ -55,7 +55,6 @@ public class ASTEmfDecorator extends ASTDecorator {
     changedClass.addCDMethod(createAcceptTraverserMethod(changedClass));
     changedClass.addAllCDMethods(createAcceptTraverserSuperMethods(changedClass));
     changedClass.addCDMethod(getConstructMethod(originalClass));
-    changedClass.addCDMethod(createGetChildrenMethod(originalClass));
     changedClass.addAllCDMethods(createEMethods(originalClass));
 
     if (!originalClass.isPresentSuperclass()) {
