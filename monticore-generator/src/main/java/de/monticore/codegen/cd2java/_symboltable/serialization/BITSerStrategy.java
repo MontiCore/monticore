@@ -62,7 +62,12 @@ public class BITSerStrategy {
   }
 
   public HookPoint getListDeserialHook(String jsonParam, String attrParam) {
-    String typeMap = "get" + type + "Member(\"" + attrParam + "\")";
+    String typeMap;
+    if(type.equals("String") || type.equals("Boolean")){
+      typeMap = "getAsJson" + type + "().getValue()";
+    }else{
+      typeMap = "getAsJsonNumber().getNumberAs" + type + "()";
+    }
     return new TemplateHookPoint(READ_LIST_TEMPLATE, jsonParam, type, attrParam, typeMap);
   }
 }

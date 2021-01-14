@@ -7,6 +7,8 @@ to be released
 ### Additions
 * Add new CLI for the MontiCOre generator engine
 ### Changes
+* The context conditions use the new traverser infrastructure. This leads to small changes in the api.
+  The return value of the method addCoCo is void.
 * Attribute fileExt in GlobalScopes now refers to a regular expression for file extensions of 
   symbol table files. The default value of the attribute is "*sym", which usually includes symbol 
   files of all MontiCore languages. Attention: If your language used the "setFileExt" method in
@@ -56,6 +58,10 @@ to be released
 * Experiments now use ScopesGenitor-infrastructure instead of SymbolTableCreator-infrastructure
  
 ### Fixes
+* The `initMe` and `reset` methods of the mill now initialize and reset all attributes properly
+
+* The CD4Analysis keywords `ordered`, `composition`, `association`, `targetimport` and `classdiagram` 
+  can be used in grammars again
 
 ##  MontiCore 6.6.0
 released: 03.12.2020

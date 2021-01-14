@@ -1,24 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._visitor;
 
-import static de.monticore.cd.facade.CDModifier.PUBLIC;
-import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_INTERFACE;
-import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SCOPE;
-import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SYMBOL;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.END_VISIT;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISIT;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDDefinition;
-import de.monticore.cd.cd4analysis._ast.ASTCDEnum;
-import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
-import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
+import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.cd4code.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractCreator;
@@ -26,6 +9,14 @@ import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
 
 /**
  * creates a Visitor interface from a grammar
@@ -49,18 +40,14 @@ public class Visitor2Decorator extends AbstractCreator<ASTCDCompilationUnit, AST
   @Override
   public ASTCDInterface decorate(ASTCDCompilationUnit ast) {
     ASTCDCompilationUnit compilationUnit = visitorService.calculateCDTypeNamesWithASTPackage(ast);
-    ASTMCType astNodeType = getMCTypeFacade().createQualifiedType(AST_INTERFACE);
     Set<String> symbolNames = symbolTableService.retrieveSymbolNamesFromCD(visitorService.getCDSymbol());
 
     ASTCDInterface visitorInterface = CD4CodeMill.cDInterfaceBuilder()
         .setName(this.visitorService.getVisitor2SimpleName())
         .setModifier(PUBLIC.build())
-        .addCDMethod(addEndVisitASTNodeMethods(astNodeType))
-        .addCDMethod(addVisitASTNodeMethods(astNodeType))
+        .addInterface(getMCTypeFacade().createQualifiedType(IVISTOR_FULL_NAME))
         .addAllCDMethods(addASTNodeVisitorMethods(compilationUnit.getCDDefinition()))
-        .addAllCDMethods(addISymbolVisitorMethods())
         .addAllCDMethods(addSymbolVisitorMethods(symbolNames))
-        .addAllCDMethods(addIScopeVisitorMethods())
         .addAllCDMethods(addScopeVisitorMethods(getSymbolsTransitive(), ast.getCDDefinition()))
         .build();
 

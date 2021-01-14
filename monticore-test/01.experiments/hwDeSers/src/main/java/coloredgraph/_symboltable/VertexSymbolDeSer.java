@@ -27,9 +27,9 @@ public class VertexSymbolDeSer extends VertexSymbolDeSerTOP {
     List<JsonElement> rgb = symbolJson.getArrayMember("color");
 
     // cache each color value as integer number in a variable
-    int r = rgb.get(0).getAsJsonNumber().getNumberAsInt();
-    int g = rgb.get(1).getAsJsonNumber().getNumberAsInt();
-    int b = rgb.get(2).getAsJsonNumber().getNumberAsInt();
+    int r = rgb.get(0).getAsJsonNumber().getNumberAsInteger();
+    int g = rgb.get(1).getAsJsonNumber().getNumberAsInteger();
+    int b = rgb.get(2).getAsJsonNumber().getNumberAsInteger();
 
     // create new color using deserialized color values 
     return new Color(r, g, b);

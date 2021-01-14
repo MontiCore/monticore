@@ -58,3 +58,27 @@ subprojects {
     }
   }
 }
+
+task buildAll(type: GradleBuild) {
+  tasks = [ 'build' ]
+}
+
+task assembleAll(type: GradleBuild) {
+  tasks = [ 'assemble' ]
+}
+
+task publishToMavenLocalAll {
+  dependsOn ":monticore-generator:publishToMavenLocal",
+            ":monticore-cli:publishToMavenLocal",
+            ":monticore-gradle:publishToMavenLocal"
+}
+
+task publishAll {
+  dependsOn ":monticore-generator:publish",
+            ":monticore-cli:publish",
+            ":monticore-gradle:publish"
+}
+
+task testAll(type: GradleBuild) {
+  tasks = [ 'test' ]
+}

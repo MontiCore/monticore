@@ -321,7 +321,7 @@ public class JsonObject implements JsonElement {
    */
   public int getIntegerMember(String name) {
     if (hasIntegerMember(name)) {
-      return getMember(name).getAsJsonNumber().getNumberAsInt();
+      return getMember(name).getAsJsonNumber().getNumberAsInteger();
     }
     Log.error("0xA0576 \"" + name + "\" is not a Json Integer member of \"" + this + "\"!");
     return -1;
@@ -336,7 +336,7 @@ public class JsonObject implements JsonElement {
    */
   public Optional<Integer> getIntegerMemberOpt(String name) {
     if (hasIntegerMember(name)) {
-      return Optional.ofNullable(getMember(name).getAsJsonNumber().getNumberAsInt());
+      return Optional.ofNullable(getMember(name).getAsJsonNumber().getNumberAsInteger());
     }
     return Optional.empty();
   }

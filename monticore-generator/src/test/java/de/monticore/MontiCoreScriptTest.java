@@ -78,7 +78,6 @@ public class MontiCoreScriptTest {
     additionalMethods.add("equalAttributes");
     additionalMethods.add("deepClone");
     additionalMethods.add("_construct");
-    additionalMethods.add("get_Children");
     additionalMethods.add("accept");
   }
 
@@ -349,9 +348,9 @@ public class MontiCoreScriptTest {
     assertEquals("StatechartSymbols2Json", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
     assertEquals("StatechartSymbolTableCreatorDelegator", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
     assertEquals("StatechartScopesGenitorDelegator", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
-    assertEquals("StatechartGlobalScope", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
     assertEquals("StatechartArtifactScope", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
     assertEquals("StatechartDeSer", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
+    assertEquals("StatechartGlobalScope", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
     assertEquals("StatechartSymbolTableCreator", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
     assertEquals("StatechartScopesGenitor", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
 
