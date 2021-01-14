@@ -137,7 +137,7 @@ released: 11.11.2020
 
 ### Changes
 * MontiCore now uses Gradle as build tool
-  * some tasks have been introduced for the comfortable control of frequent activities, e.g., `buildMC`, `assembleMC` that can be found in the [`build.gradle`](../../build.gradle)
+  * some tasks have been introduced for the comfortable control of frequent activities, e.g., `buildMC`, `assembleMC` that can be found in the [`build.gradle`](https://github.com/MontiCore/monticore/blob/dev/build.gradle)
   * relocated the EMF related subprojects:
     * `monticore-emf-grammar` to `monticore-grammar-emf`
     * `monticore-emf-runtime` to `monticore-runtime-emf`
