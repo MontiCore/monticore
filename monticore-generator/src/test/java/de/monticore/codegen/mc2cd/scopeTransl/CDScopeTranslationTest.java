@@ -7,8 +7,10 @@ import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
 import de.monticore.cd.facade.CDModifier;
 import de.monticore.codegen.mc2cd.TestHelper;
+import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.nio.file.Paths;
@@ -21,6 +23,11 @@ import static org.junit.Assert.assertTrue;
 public class CDScopeTranslationTest {
 
   private ASTCDCompilationUnit compilationUnit;
+
+  @BeforeClass
+  public static void setup(){
+    Grammar_WithConceptsMill.init();
+  }
 
   @Before
   public void setUp() {

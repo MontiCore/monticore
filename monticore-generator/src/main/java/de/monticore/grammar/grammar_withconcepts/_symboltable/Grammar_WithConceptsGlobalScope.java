@@ -46,7 +46,7 @@ public class Grammar_WithConceptsGlobalScope extends Grammar_WithConceptsGlobalS
       // 3. if the file was found, parse the model and create its symtab
       if (model.hasLocation()) {
         ASTMCGrammar ast = parse(model);
-        Grammar_WithConceptsArtifactScope artScope = Grammar_WithConceptsMill.grammar_WithConceptsSymbolTableCreatorDelegator().createFromAST(ast);
+        IGrammar_WithConceptsArtifactScope artScope = new Grammar_WithConceptsPhasedSTC().createFromAST(ast);
         addSubScope(artScope);
         addLoadedFile(filePath);
       }

@@ -3,6 +3,7 @@
 package de.monticore.codegen.prettyprint;
 
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsFullPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
@@ -22,6 +23,7 @@ public class MCGrammarPrettyPrinterTest {
   
   @BeforeClass
   public static void setup() {
+    Grammar_WithConceptsMill.init();
     Log.init();
     Log.enableFailQuick(false);
   }

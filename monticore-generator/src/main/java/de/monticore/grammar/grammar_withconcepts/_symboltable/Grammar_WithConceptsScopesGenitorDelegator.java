@@ -1,17 +1,17 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.grammar.grammar_withconcepts._symboltable;
 
-@Deprecated
-public class Grammar_WithConceptsSymbolTableCreatorDelegator extends Grammar_WithConceptsSymbolTableCreatorDelegatorTOP {
-  public Grammar_WithConceptsSymbolTableCreatorDelegator(
+public class Grammar_WithConceptsScopesGenitorDelegator extends Grammar_WithConceptsScopesGenitorDelegatorTOP {
+
+  public Grammar_WithConceptsScopesGenitorDelegator(
       IGrammar_WithConceptsGlobalScope globalScope) {
     super(globalScope);
   }
 
-  public Grammar_WithConceptsSymbolTableCreatorDelegator() {
+  public Grammar_WithConceptsScopesGenitorDelegator() {
     super();
   }
-  
+
   /**
    * Creates the symbol table starting from the <code>rootNode</code> and
    * returns the first scope that was created.
@@ -28,7 +28,7 @@ public class Grammar_WithConceptsSymbolTableCreatorDelegator extends Grammar_Wit
     }
     return as;
   }
-  
+
   /**
    * Creates the symbol table starting from the <code>rootNode</code> and
    * returns the first scope that was created.
@@ -45,4 +45,5 @@ public class Grammar_WithConceptsSymbolTableCreatorDelegator extends Grammar_Wit
     }
     return as;
   }
+
 }
