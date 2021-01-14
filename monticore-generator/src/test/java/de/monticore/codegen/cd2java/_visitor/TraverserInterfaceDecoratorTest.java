@@ -3,7 +3,10 @@ package de.monticore.codegen.cd2java._visitor;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
-import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
+import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
+import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecorationHelper;
@@ -88,13 +91,7 @@ public class TraverserInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(48, traverserInterface.sizeCDMethods());
-    for (ASTCDMethod astcdMethod : traverserInterface.getCDMethodList()) {
-      System.out.println(astcdMethod.getName());
-      if (astcdMethod.sizeCDParameters() > 0) {
-        System.out.println(astcdMethod.getCDParameter(0).getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()));
-      }
-    }
+    assertEquals(42, traverserInterface.sizeCDMethods());
   }
 
   @Test

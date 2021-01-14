@@ -3,7 +3,6 @@ package de.monticore.codegen.cd2java._visitor;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
-import de.monticore.ast.ASTNode;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
@@ -24,9 +23,7 @@ import org.junit.Test;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
-import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodsBy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -98,37 +95,13 @@ public class Visitor2DecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(24, visitor2.sizeCDMethods());
+    assertEquals(18, visitor2.sizeCDMethods());
 
   }
 
   @Test
   public void testInterfaceCount() {
-    assertEquals(0, visitor2.sizeInterface());
-  }
-
-  @Test
-  public void testVisitASTNode() {
-    List<ASTCDMethod> list = getMethodsBy("visit", 1, visitor2);
-    List<ASTCDMethod> methods = list.stream()
-        .filter(m -> m.getCDParameter(0).getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()).equals(ASTNODE))
-        .collect(Collectors.toList());
-    assertEquals(1, methods.size());
-    ASTCDMethod method = methods.get(0);
-    assertEquals("node", method.getCDParameter(0).getName());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-  }
-
-  @Test
-  public void testEndVisitASTNode() {
-    List<ASTCDMethod> list = getMethodsBy("endVisit", 1, visitor2);
-    List<ASTCDMethod> methods = list.stream()
-        .filter(m -> m.getCDParameter(0).getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()).equals(ASTNODE))
-        .collect(Collectors.toList());
-    assertEquals(1, methods.size());
-    ASTCDMethod method = methods.get(0);
-    assertEquals("node", method.getCDParameter(0).getName());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    assertEquals(1, visitor2.sizeInterface());
   }
 
   @Test
@@ -180,30 +153,6 @@ public class Visitor2DecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testVisitISymbol() {
-    List<ASTCDMethod> list = getMethodsBy("visit", 1, visitor2);
-    List<ASTCDMethod> methods = list.stream()
-        .filter(m -> m.getCDParameter(0).getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()).equals(ISYMBOL))
-        .collect(Collectors.toList());
-    assertEquals(1, methods.size());
-    ASTCDMethod method = methods.get(0);
-    assertEquals("node", method.getCDParameter(0).getName());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-  }
-
-  @Test
-  public void testEndVisitISymbol() {
-    List<ASTCDMethod> list = getMethodsBy("endVisit", 1, visitor2);
-    List<ASTCDMethod> methods = list.stream()
-        .filter(m -> m.getCDParameter(0).getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()).equals(ISYMBOL))
-        .collect(Collectors.toList());
-    assertEquals(1, methods.size());
-    ASTCDMethod method = methods.get(0);
-    assertEquals("node", method.getCDParameter(0).getName());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-  }
-
-  @Test
   public void testVisitStateSymbol() {
     List<ASTCDMethod> list = getMethodsBy("visit", 1, visitor2);
     List<ASTCDMethod> methods = list.stream()
@@ -220,30 +169,6 @@ public class Visitor2DecoratorTest extends DecoratorTestCase {
     List<ASTCDMethod> list = getMethodsBy("endVisit", 1, visitor2);
     List<ASTCDMethod> methods = list.stream()
         .filter(m -> m.getCDParameter(0).getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()).equals(STATESYMBOL))
-        .collect(Collectors.toList());
-    assertEquals(1, methods.size());
-    ASTCDMethod method = methods.get(0);
-    assertEquals("node", method.getCDParameter(0).getName());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-  }
-
-  @Test
-  public void testVisitIScope() {
-    List<ASTCDMethod> list = getMethodsBy("visit", 1, visitor2);
-    List<ASTCDMethod> methods = list.stream()
-        .filter(m -> m.getCDParameter(0).getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()).equals(ISCOPE))
-        .collect(Collectors.toList());
-    assertEquals(1, methods.size());
-    ASTCDMethod method = methods.get(0);
-    assertEquals("node", method.getCDParameter(0).getName());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-  }
-
-  @Test
-  public void testEndVisitIScope() {
-    List<ASTCDMethod> list = getMethodsBy("endVisit", 1, visitor2);
-    List<ASTCDMethod> methods = list.stream()
-        .filter(m -> m.getCDParameter(0).getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()).equals(ISCOPE))
         .collect(Collectors.toList());
     assertEquals(1, methods.size());
     ASTCDMethod method = methods.get(0);

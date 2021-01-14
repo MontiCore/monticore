@@ -9,13 +9,11 @@ import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
-import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.MCTypeFacade;
 import de.se_rwth.commons.logging.LogStub;
-import org.checkerframework.common.value.qual.StaticallyExecutable;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,7 +22,8 @@ import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.DecoratorAssert.*;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class TraverserClassDecoratorTest extends DecoratorTestCase {
 
@@ -78,12 +77,12 @@ public class TraverserClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeCount() {
-    assertEquals(5, traverserClass.sizeCDAttributes());
+    assertEquals(6, traverserClass.sizeCDAttributes());
   }
 
   @Test
   public void testMethodCount() {
-    assertEquals(8, traverserClass.sizeCDMethods());
+    assertEquals(10, traverserClass.sizeCDMethods());
   }
 
   @Test

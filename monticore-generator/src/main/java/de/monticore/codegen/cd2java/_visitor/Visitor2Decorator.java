@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Set;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SCOPE;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SYMBOL;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
 
 /**
@@ -169,9 +171,9 @@ public class Visitor2Decorator extends AbstractCreator<ASTCDCompilationUnit, AST
    */
   protected List<ASTCDMethod> addISymbolVisitorMethods() {
     List<ASTCDMethod> methodList = new ArrayList<>();
-    ASTMCQualifiedType iScopeType = getMCTypeFacade().createQualifiedType(I_SYMBOL);
-    methodList.add(visitorService.getVisitorMethod(VISIT, iScopeType));
-    methodList.add(visitorService.getVisitorMethod(END_VISIT, iScopeType));
+    ASTMCQualifiedType iSymbolType = getMCTypeFacade().createQualifiedType(I_SYMBOL);
+    methodList.add(visitorService.getVisitorMethod(VISIT, iSymbolType));
+    methodList.add(visitorService.getVisitorMethod(END_VISIT, iSymbolType));
     return methodList;
   }
 
