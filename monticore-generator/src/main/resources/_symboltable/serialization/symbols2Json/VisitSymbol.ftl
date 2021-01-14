@@ -1,3 +1,3 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("symbolName")}
-  ${symbolName?uncap_first}SymbolDeSer.serialize(node, this);
+${tc.signature("symbolName", "symbols2Json")}
+  ${symbolName?uncap_first}SymbolDeSer.serialize(node, (${symbols2Json}) this);
