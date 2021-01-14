@@ -21,6 +21,7 @@ public class MCGrammarParserTest {
 
   @BeforeClass
   public static void setup() {
+    Grammar_WithConceptsMill.init();
     LogStub.init();
     LogStub.enableFailQuick(false);
   }

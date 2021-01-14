@@ -5,12 +5,13 @@ import de.monticore.MontiCoreScript;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._symboltable.IGrammarScope;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
-import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsSymbolTableCreatorDelegator;
+import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsPhasedSTC;
 import de.monticore.grammar.grammar_withconcepts._symboltable.IGrammar_WithConceptsGlobalScope;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.File;
@@ -23,6 +24,11 @@ import static org.junit.Assert.assertTrue;
 public class IGrammarScopeTest {
 
   private static ModelPath modelPath = new ModelPath(Paths.get("src/test/resources"));
+
+  @BeforeClass
+  public static void setUp(){
+    Grammar_WithConceptsMill.init();
+  }
 
   @Before
   public void setup() {
@@ -41,7 +47,7 @@ public class IGrammarScopeTest {
 
     assertTrue(ast.isPresent());
 
-    Grammar_WithConceptsSymbolTableCreatorDelegator stCreator = Grammar_WithConceptsMill.grammar_WithConceptsSymbolTableCreatorDelegator();
+    Grammar_WithConceptsPhasedSTC stCreator = new Grammar_WithConceptsPhasedSTC();
     stCreator.createFromAST(ast.get());
 
     IGrammarScope innerScope = ast.get().getClassProd(0).getEnclosingScope();
@@ -76,7 +82,7 @@ public class IGrammarScopeTest {
 
     assertTrue(ast.isPresent());
 
-    Grammar_WithConceptsSymbolTableCreatorDelegator stCreator = Grammar_WithConceptsMill.grammar_WithConceptsSymbolTableCreatorDelegator();
+    Grammar_WithConceptsPhasedSTC stCreator = new Grammar_WithConceptsPhasedSTC();
     stCreator.createFromAST(ast.get());
 
     IGrammarScope innerScope = ast.get().getClassProd(0).getEnclosingScope();
@@ -104,7 +110,7 @@ public class IGrammarScopeTest {
             "src/test/resources/de/monticore/inherited/subsub/Subsubgrammar.mc4").getAbsolutePath()));
     assertTrue(ast.isPresent());
 
-    Grammar_WithConceptsSymbolTableCreatorDelegator stCreator = Grammar_WithConceptsMill.grammar_WithConceptsSymbolTableCreatorDelegator();
+    Grammar_WithConceptsPhasedSTC stCreator = new Grammar_WithConceptsPhasedSTC();
     stCreator.createFromAST(ast.get());
     IGrammarScope innerScope = ast.get().getClassProd(0).getEnclosingScope();
 
@@ -146,7 +152,7 @@ public class IGrammarScopeTest {
             "src/test/resources/de/monticore/inherited/subsub/Subsubgrammar.mc4").getAbsolutePath()));
     assertTrue(ast.isPresent());
 
-    Grammar_WithConceptsSymbolTableCreatorDelegator stCreator = Grammar_WithConceptsMill.grammar_WithConceptsSymbolTableCreatorDelegator();
+    Grammar_WithConceptsPhasedSTC stCreator = new Grammar_WithConceptsPhasedSTC();
     stCreator.createFromAST(ast.get());
     IGrammarScope innerScope = ast.get().getClassProd(0).getEnclosingScope();
 

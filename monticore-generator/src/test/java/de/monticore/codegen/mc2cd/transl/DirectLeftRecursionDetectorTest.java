@@ -5,7 +5,9 @@ package de.monticore.codegen.mc2cd.transl;
 import de.monticore.grammar.DirectLeftRecursionDetector;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import parser.MCGrammarParser;
 
@@ -26,6 +28,10 @@ public class DirectLeftRecursionDetectorTest {
   
   private DirectLeftRecursionDetector directLeftRecursionDetector = new DirectLeftRecursionDetector();
 
+  @BeforeClass
+  public static void setUp(){
+    Grammar_WithConceptsMill.init();
+  }
 
   @Before
   public void setup() {
