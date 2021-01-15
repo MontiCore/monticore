@@ -3,20 +3,20 @@
   <div style="text-align:center" ><img src="mc-logo.png" /></div>
 </center>
 
-# MontiCore - Language Workbench And Development Tool Framework 
+# MontiCore - Language Workbench and Development Tool Framework 
 
-[MontiCore](http://www.monticore.de) is a language workbench for an efficient 
+[MontiCore](http://www.monticore.de) is a language workbench for the efficient 
 development of domain-specific languages (DSLs). It processes an extended 
 grammar format which defines the DSL and generates Java components for processing 
-the DSL documents. Examples for these components are parser, 
+the DSL documents. Examples for these components are parsers, 
 AST classes, symboltables or pretty printers.
 This enables a user to rapidly define a language and use it together 
 with the MontiCore-framework to build domain specific tools. 
 
 Some MontiCore advantages are the reusability of predefined language 
-components, conservative extension and composition mechanisms and an 
+components, conservative extension and composition mechanisms, and an 
 optimal integration of hand-written code into the generated tools. Its 
-grammar languages are rather comfortable. 
+grammar languages are rather comfortable to use. 
 
 ## A Teaser for MontiCore
 
