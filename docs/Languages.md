@@ -48,7 +48,6 @@ MontiCore projects are hosted at
 
 
 ### [Class Diagram For Analysis (CD4A)](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis) (MontiCore stable)
-* Responsible: SVa
 * CD4A is the textual representation to describe **UML class diagrams** 
   (it uses the [UML/P](http://mbse.se-rwth.de/) variant).
 * CD4A covers **classes, interfaces, inheritance, attributes with types,
@@ -88,7 +87,6 @@ MontiCore projects are hosted at
 
 
 ### [Class Diagram for Code (CD4Code)](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis) (MontiCore stable)
-* Responsible: SVa
 * CD4Code describes **UML class diagrams**.
 * CD4Code is a conservative extension of **CD4A**, 
   which includes method signatures. An example:
@@ -120,7 +118,6 @@ MontiCore projects are hosted at
 
 
 ### [Feature Diagrams](https://git.rwth-aachen.de/monticore/languages/feature-diagram) (MontiCore stable)
-* Caretaker: AB, DS
 * Language for feature models and feature configurations.
 * **Feature diagrams** are used to model (software) **product lines** and their **variants**.
 * **Feature configurations** select a subset of features of a feature model 
@@ -148,7 +145,6 @@ MontiCore projects are hosted at
 
 
 ### [GUI DSL](https://git.rwth-aachen.de/monticore/languages/gui-dsl) (Alpha: Intention to become stable)
-* Caretaker: LN, AGe
 * Language for textual definition of Graphical User Interfaces of Web
 Applications
 * GUI DSL covers GUI elements and relevant configuration, which include
@@ -180,7 +176,6 @@ and
 
 
 ### [MontiCore Grammar](https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-generator) (MontiCore Stable)
-* Caretaker: MB 
 * Language for MontiCore Grammars itself. It can be understood as 
   *meta language*, but also used as ordinary language.
 * Its main use currently: A MontiCore grammar defines the 
@@ -215,7 +210,6 @@ and
   
 
 ### [JSON](https://git.rwth-aachen.de/monticore/languages/json) (MontiCore Stable)
-* Responsible: NJ
 * The MontiCore language for parsing JSON artifacts. An example:
   ```
   { "Alice": {
@@ -244,8 +238,7 @@ and
   [*detailed description*](https://git.rwth-aachen.de/monticore/languages/json/-/blob/master/src/main/grammars/de/monticore/lang/json.md)
 
 
-### [MontiArc](https://git.rwth-aachen.de/monticore/montiarc/core) (MontiCore Stable)
-* Caretaker: DS 
+### [MontiArc](https://git.rwth-aachen.de/monticore/montiarc/core) (MontiCore Stable) 
 * MontiArc is an architecture and behavior modeling language and framework 
     that provides an platform independent structure and behavior 
     modeling language with an extensible code generation framework.
@@ -293,7 +286,6 @@ component InteriorLight {                           // MontiArc language
 
 
 ### [OCL/P](https://git.rwth-aachen.de/monticore/languages/OCL) (Alpha: Intention to become stable)
-* Caretaker: CKi, supported by SVa, SH, OKa
 * OCL/P is the textual representation of the UML OCL standard, adapted 
   with Java-like syntax.
   It's main goal is the usage in combination with other languages like 
@@ -317,7 +309,6 @@ component InteriorLight {                           // MontiArc language
 
 
 ### [Object Diagrams](https://git.rwth-aachen.de/monticore/languages/od) (MontiCore Stable)
-* Caretaker: SH
 * OD is a language for textual denotation of object diagrams. The OD language
   has several purposes (when combined with appropriate language extensions):
   1. specification language for object structures (as part of the [UML/P](http://mbse.se-rwth.de/))
@@ -371,7 +362,6 @@ component InteriorLight {                           // MontiArc language
 
 
 ### [Sequence Diagrams](https://git.rwth-aachen.de/monticore/statechart/sd-language)  (MontiCore stable) 
-* Caretaker: OKa
 * A textual sequence diagram (SD) language.
 * The project includes grammars, a symbol table infrastructure, a PrettyPrinter, 
   and various CoCos for typechecking.
@@ -401,7 +391,6 @@ sequencediagram AuctionTest {
 ```
 
 ### [SI Units](https://git.rwth-aachen.de/monticore/languages/siunits) (MontiCore Stable)
-* Caretaker: EK
 * The international system of units (SI units) is a physical unit system widely used in the entire world. 
   It is based on the basis units `s, m, kg, A, K, mol, cd`, 
   provides a variety of derived units, and can be refined using prefixes such 
@@ -435,7 +424,6 @@ sequencediagram AuctionTest {
 
 
 ### [Statecharts](https://git.rwth-aachen.de/monticore/statechart/sc-language) (MontiCore stable)
-* Caretaker: KH  
 * A set of language variants for Statecharts (UML-like or also embedded SysML-like).
 * It is possible to define syntactically simpler or more complex and comfortable
   forms of statecharts using a subset of the eleven provided language components.
@@ -465,7 +453,6 @@ sequencediagram AuctionTest {
 
 
 ### [SysML_2](https://git.rwth-aachen.de/monticore/languages/sysml2/sysml2official) (Alpha: Intention to become stable)
-* Caretaker: NJ
 * MontiCore languages for parsing artifacts of the SysML 2 language famlily. 
   Examples:
 ```
@@ -505,7 +492,6 @@ package 'Coffee' {                      // a SysML activity diagram
 
 
 ### [Tagging](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging) (Alpha: Intention to become stable)
-* Caretaker: SVa
 * **Tags** are known e.g. from the UML and SysML and mainly used to add
   extra information to a model element. 
   Normally tags (and **stereotypes**) are inserted within the models,
@@ -538,7 +524,6 @@ package 'Coffee' {                      // a SysML activity diagram
 
 
 ### [XML](https://git.rwth-aachen.de/monticore/languages/xml) (Alpha: Intention to become stable)
-* Responsible: NJ
 * The MontiCore language for parsing XML artifacts. An example:
   ```
   <Calendar>
@@ -566,7 +551,6 @@ package 'Coffee' {                      // a SysML activity diagram
 
 
 ### [JavaLight](https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/JavaLight.mc4) (MontiCore Stable)
-* Caretaker: MB
 * This is a reduced version of the **Java language**.
   JavaLight is meant to be used to integrate simplified Java-like parts 
   in modeling languages but not to parse complete Java implementations.
@@ -588,7 +572,6 @@ package 'Coffee' {                      // a SysML activity diagram
 
 
 ### [Java](https://git.rwth-aachen.de/monticore/javaDSL) (Beta: In Stabilization) (30% to MC6)
-* Caretaker: MB
 * This is the full Java' Language (as Opposed to JavaLight).
 * Main Grammar [`JavaDSL`](https://git.rwth-aachen.de/monticore/javaDSL/-/blob/dev/javaDSL/src/main/grammars/de/monticore/java/JavaDSL.mc4)
   and
