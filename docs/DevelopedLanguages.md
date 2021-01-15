@@ -1,15 +1,15 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
-# Languages and Language Components that have been developed with MontiCore
+# Languages and Language Components Developed with MontiCore
 
 The MontiCore language workbench has been under development already 
 for a while and of course has been used by our group to develop 
-many other languages. Not all of those languages are of publicly 
+many other languages. Not all of those languages are publicly 
 available and some of these languages are equipped with tools based 
 on MontiCore 5. 
 
 Some of these languages are monolithic, others are composed of each 
 other. The available languages can also be used for adaptation, 
-extension, and composition 
+extension, and composition. 
 
 Please also have a look at our literature references for further 
 information on many of the languages. 
@@ -81,7 +81,6 @@ development. See language definition and usage method in
             between software and infrastructure architectures.
     * **Architecture Scenario Description Language:** used to model 
             scenario-based test cases for software architectures.
-<p>
 
 * **I/O-TestDSL**  
         for the definition of stream-based, input-output 
@@ -126,7 +125,6 @@ development. See language definition and usage method in
 
 * **MontiCore** itself uses a family of DSLs for the definition of 
     DSLs, i.e., their grammars. [[HR17]](https://www.se-rwth.de/publications/)
-
 
 ## More Languages 
 
