@@ -89,9 +89,6 @@ Please also note that `PlusExpr` is mutually left-recursive.
 
 ## More Information about MontiCore
 
-* [**MontiCore Online Demonstrator**]().
-   (TODO: needs to be released)
-
 * [**MontiCore Reference Manual**](http://monticore.de/MontiCore_Reference-Manual.2017.pdf).
    The reference Manual describes how to use MontiCore as a out-of-the-box 
    *language workbench*), but also as grey box *tooling framework*.
@@ -112,67 +109,12 @@ Please also note that `PlusExpr` is mutually left-recursive.
    These complete languages are usually composed of a number of language
    components.
 
+* This project is freely available software; you can redistribute 
+  the MontiCore language workbench according to the rules described
+  in the [**licensing section**](00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md).
 
-## MontiCore 3-Level License on files (informal description)
-
-Summary: This project is freely available software; you can redistribute 
-the MontiCore language workbench according to the following rules.
-
-Details: The MontiCore Languag Workbench deals with three levels of code 
-(MontiCore, tool derivates, product code). Each with different 
-licenses: 
-
-* *Product code*: when you use a MontiCore tool derivate to generate 
-code, the generated code is absolutely free for each form of use 
-including commercial use without any license. 
-
-* *Tool derivate*: when you derive a tool using the MontiCore language 
-workbench, then you mention that it is a MontiCore derivate. There is 
-no other restriction. (BSD 3 Clause license) 
-
-* *MontiCore adaptations*: you may also freely adapt MontiCore itself, 
-but then you have to mention MontiCore AND the resulting code is to be 
-pushed back into this LPGL repository (LGPL license). 
-
-As a consequence using MontiCore during development is rather flexible 
-and the final products do not have any restriction.
-
-If questions appear e.g. on building an interpreter, please contact 
-monticore@se-rwth.de. 
-
-
-## General disclaimer
-
-(Repeated from the the BSD 3 Clause license): 
-
-This software is provided by the copyright holders and contributors
-"as is" and any expressed or implied warranties, including, but not limited
-to, the implied warranties of merchantability and fitness for a particular
-purpose are disclaimed. In no event shall the copyright holder or
-contributors be liable for any direct, indirect, incidental, special,
-exemplary, or consequential damages (including, but not limited to,
-procurement of substitute goods or services; loss of use, data, or
-profits; or business interruption) however caused and on any theory of
-liability, whether in contract, strict liability, or tort (including
-negligence or otherwise) arising in any way out of the use of this
-software, even if advised of the possibility of such damage.
-
-
-## Included Software
-
-This product includes the following software:
-
-* [AntLR](http://www.antlr.org/)
-* [FreeMarker](http://freemarker.org/)
-
-## Contribution 
-
-When you want to contribute: Please make sure that your complete workspace only 
-uses UNIX line endings (LF) and all files are UTF-8 without BOM. On Windows you should 
-configure git to not automatically replace LF with CRLF during checkout 
-by executing the following configuration: 
-
-    git config --global core.autocrlf input
+* If questions appear e.g. on building an interpreter, please contact 
+  monticore@se-rwth.de. 
     
 ## Further Information
 
