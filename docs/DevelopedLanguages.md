@@ -2,10 +2,10 @@
 # Languages and Language Components that have been developed with MontiCore
 
 The MontiCore language workbench has been under development already 
-for a while and of course has old been used by our group to develop 
+for a while and of course has been used by our group to develop 
 many other languages. Not all of those languages are of publicly 
 available and some of these languages are equipped with tools based 
-on MontiCore 5-. 
+on MontiCore 5. 
 
 Some of these languages are monolithic, others are composed of each 
 other. The available languages can also be used for adaptation, 
@@ -13,6 +13,17 @@ extension, and composition
 
 Please also have a look at our literature references for further 
 information on many of the languages. 
+
+## Publicly Available Languages
+* [Class Diagrams](https://github.com/MontiCore/cd4analysis)
+* [Sequence Diagrams](https://github.com/MontiCore/sequence-diagram)
+* [JSON](https://github.com/MontiCore/json)
+* [Feature Diagrams](https://github.com/MontiCore/feature-diagram)
+* [SI Units](https://github.com/MontiCore/siunits)
+* [automaton](https://github.com/MontiCore/automaton)
+* [EmbeddedMontiArc](https://github.com/MontiCore/EmbeddedMontiArc)
+
+## Languages Without Publicly Available Sources
 
 * **MontiArc ADL** is an architectural definition language for 
     component and connector models with enhanced connection facilities, 
@@ -119,9 +130,6 @@ development. See language definition and usage method in
 
 
 ## More Languages 
-
-* [**MontiCore Online Demonstrator**]().
-   (TODO: needs to be released)
 
 * [**MontiCore Reference Manual**](http://monticore.de/MontiCore_Reference-Manual.2017.pdf).
    The reference Manual describes how to use MontiCore as a out-of-the-box 
