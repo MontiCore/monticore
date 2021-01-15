@@ -34,12 +34,6 @@ project under `monticore-grammar/src/main/grammars/` in packages
 
 For [more langauges and language components, see here](../../../../../../docs/Languages.md).
 
-
-Table of Contents:
-
-[[_TOC_]]
-
-
 ## General: List of Grammars in package `de.monticore`
 
 ### [MCBasics.mc4](MCBasics.mc4)  (stable)
