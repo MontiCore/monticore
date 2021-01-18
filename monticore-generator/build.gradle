@@ -78,3 +78,11 @@ java {
 }
 
 jar.dependsOn grammarsJar
+
+publishing {
+  publications {
+    maven(org.gradle.api.publish.maven.MavenPublication) {
+      from(components.java)
+    }
+  }
+}

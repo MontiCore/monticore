@@ -35,7 +35,7 @@ publishing {
   // configure what artifacts to publish
   publications {
     mavenJava(MavenPublication) {
-      artifact shadowJar
+      from components.java
     }
   }
 }
