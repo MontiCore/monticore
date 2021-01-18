@@ -6,35 +6,24 @@ package de.monticore.grammar;
 import com.google.common.collect.Lists;
 import de.monticore.ast.ASTNode;
 import de.monticore.grammar.grammar._ast.*;
-import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVisitor;
+import de.monticore.grammar.grammar._visitor.GrammarVisitor2;
 
 import java.util.List;
 import java.util.Stack;
 
-public class MultiplicityVisitor implements Grammar_WithConceptsVisitor {
+public class MultiplicityVisitor implements GrammarVisitor2 {
 
-  private Grammar_WithConceptsVisitor realThis= this;
 
-  @Override
-  public Grammar_WithConceptsVisitor getRealThis() {
-    return realThis;
-  }
-
-  @Override
-  public void setRealThis(Grammar_WithConceptsVisitor realThis) {
-    this.realThis = realThis;
-  }
-
-  private Stack<ASTNode> components = new Stack<>();
-  private List<ASTNode> result = Lists.newArrayList();
+  private Stack<ASTGrammarNode> components = new Stack<>();
+  private List<ASTGrammarNode> result = Lists.newArrayList();
 
   private ASTNode last;
 
-  public List<ASTNode> getComponents(ASTNode root, ASTNode last) {
+  public MultiplicityVisitor(ASTGrammarNode last) {
     this.last = last;
-    components.clear();
-    result.clear();
-    ((ASTGrammarNode)root).accept(getRealThis());
+  }
+
+  public List<ASTGrammarNode> getComponents() {
     return result;
   }
 

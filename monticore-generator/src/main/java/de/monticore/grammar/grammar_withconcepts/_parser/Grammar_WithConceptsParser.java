@@ -5,7 +5,6 @@ package de.monticore.grammar.grammar_withconcepts._parser;
 import com.google.common.io.Files;
 import de.monticore.antlr4.MCConcreteParser;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.transformation.GrammarTransformer;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 

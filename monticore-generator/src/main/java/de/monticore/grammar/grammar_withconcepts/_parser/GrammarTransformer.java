@@ -1,9 +1,12 @@
+// (c) https://github.com/MontiCore/monticore
+
 /* (c) https://github.com/MontiCore/monticore */
 
-package de.monticore.grammar.transformation;
+package de.monticore.grammar.grammar_withconcepts._parser;
 
 import de.monticore.grammar.grammar._ast.*;
-import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
+import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
+import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsTraverser;
 import de.monticore.utils.ASTTraverser;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
@@ -39,10 +42,11 @@ public class GrammarTransformer {
   public static void removeNonTerminalSeparators(ASTMCGrammar grammar) {
     Map<ASTNonTerminalSeparator, ASTAlt> map = new HashMap<ASTNonTerminalSeparator, ASTAlt>();
     RuleComponentListFinder componentListTransformer = new RuleComponentListFinder(map);
-    ASTTraverser traverser = new ASTTraverser(componentListTransformer);
 
+    Grammar_WithConceptsTraverser traverser = Grammar_WithConceptsMill.traverser();
+    traverser.add4Grammar(componentListTransformer);
     // execute the search
-    traverser.traverse(grammar);
+    grammar.accept(traverser);
 
     // execute the transformation
     for (Entry<ASTNonTerminalSeparator, ASTAlt> entry : map.entrySet()) {

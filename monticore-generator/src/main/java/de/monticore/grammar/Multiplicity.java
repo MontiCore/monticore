@@ -7,6 +7,8 @@ import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.IGrammarScope;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
+import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
+import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsTraverser;
 import de.monticore.symboltable.IGlobalScope;
 
 import java.util.ArrayList;
@@ -107,7 +109,11 @@ public enum Multiplicity {
   }
 
   private static Multiplicity multiplicityByAlternative(ASTMCGrammar rootNode, ASTRuleComponent astNode) {
-    List<ASTNode> intermediates = new MultiplicityVisitor().getComponents(rootNode, astNode);
+    MultiplicityVisitor mv = new MultiplicityVisitor(astNode);
+    Grammar_WithConceptsTraverser traverser = Grammar_WithConceptsMill.traverser();
+    traverser.add4Grammar(mv);
+    rootNode.accept(traverser);
+    List<ASTGrammarNode> intermediates = mv.getComponents();
     boolean containedInAlternative = false;
     for (ASTNode intermediate : intermediates) {
       if (intermediate instanceof ASTClassProd) {
@@ -143,12 +149,16 @@ public enum Multiplicity {
 
   private static Stream<ASTRuleComponent> getAllNodesInRelatedRuleComponents(ASTMCGrammar rootNode,
                                                                     ASTRuleComponent astNode) {
-    Set<ASTRuleComponent> ancestorRuleComponents = new MultiplicityVisitor().getComponents(rootNode, astNode).stream()
+    MultiplicityVisitor mv = new MultiplicityVisitor(astNode);
+    Grammar_WithConceptsTraverser traverser = Grammar_WithConceptsMill.traverser();
+    traverser.add4Grammar(mv);
+    rootNode.accept(traverser);
+    Set<ASTRuleComponent> ancestorRuleComponents = mv.getComponents().stream()
         .filter(ASTRuleComponent.class::isInstance)
         .map(ASTRuleComponent.class::cast)
         .collect(Collectors.toSet());
 
-    return new MultiplicityVisitor().getComponents(rootNode, astNode).stream()
+    return mv.getComponents().stream()
         .filter(ASTAlt.class::isInstance)
         .map(ASTAlt.class::cast)
         .flatMap(alt -> alt.getComponentList().stream())
@@ -158,7 +168,11 @@ public enum Multiplicity {
 
   public static Multiplicity multiplicityByIteration(ASTMCGrammar rootNode, ASTRuleComponent astNode) {
     Multiplicity multiplicity = STANDARD;
-    for (ASTNode intermediate : new MultiplicityVisitor().getComponents(rootNode, astNode)) {
+    MultiplicityVisitor mv = new MultiplicityVisitor(astNode);
+    Grammar_WithConceptsTraverser traverser = Grammar_WithConceptsMill.traverser();
+    traverser.add4Grammar(mv);
+    rootNode.accept(traverser);
+    for (ASTNode intermediate :mv.getComponents()) {
       int iteration = getIterationInt(intermediate);
 
       if (iteration == ASTConstantsGrammar.PLUS || iteration == ASTConstantsGrammar.STAR) {

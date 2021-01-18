@@ -1,21 +1,22 @@
+// (c) https://github.com/MontiCore/monticore
+
 /* (c) https://github.com/MontiCore/monticore */
 
-package de.monticore.grammar.transformation;
+package de.monticore.grammar.grammar_withconcepts._parser;
 
-import java.util.Map;
-
-import de.monticore.annotations.Visit;
 import de.monticore.grammar.grammar._ast.ASTAlt;
 import de.monticore.grammar.grammar._ast.ASTNonTerminalSeparator;
 import de.monticore.grammar.grammar._ast.ASTRuleComponent;
-import de.monticore.utils.ASTTraverser;
+import de.monticore.grammar.grammar._visitor.GrammarVisitor2;
 
-public class RuleComponentListFinder implements ASTTraverser.Visitor{
+import java.util.Map;
+
+public class RuleComponentListFinder implements GrammarVisitor2 {
   
   private Map<ASTNonTerminalSeparator, ASTAlt> map;
   
   /**
-   * Constructor for de.monticore.grammar.transformation.RuleComponentListFinder.
+   * Constructor for de.monticore.grammar.grammar_withconcepts._parser.RuleComponentListFinder.
    * @param map
    */
   public RuleComponentListFinder(Map<ASTNonTerminalSeparator, ASTAlt> map) {
@@ -23,8 +24,7 @@ public class RuleComponentListFinder implements ASTTraverser.Visitor{
     this.map = map;
   }
   
-  @Visit
-  private void find(ASTAlt alt) {
+  public void visit(ASTAlt alt) {
     for (ASTRuleComponent component: alt.getComponentList()) {
       if (component instanceof ASTNonTerminalSeparator) {
         map.put((ASTNonTerminalSeparator) component, alt);
