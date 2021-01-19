@@ -9,7 +9,6 @@ import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +18,8 @@ import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java._od.ODConstants.INDENT_PRINTER;
 import static de.monticore.codegen.cd2java._od.ODConstants.REPORTING_REPOSITORY;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.HANDLE;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.TRAVERSER;
 
 public class ODDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClass> {
 
@@ -42,7 +42,8 @@ public class ODDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClas
   @Override
   public ASTCDClass decorate(ASTCDCompilationUnit input) {
     String odName = odService.getODName(input.getCDDefinition());
-    String visitorFullName = visitorService.getVisitorFullName();
+    String visitorFullName = visitorService.getVisitor2FullName();
+    String traverserFullName = visitorService.getTraverserInterfaceFullName();
 
     ASTCDAttribute printEmptyOptionalAttribute = createPrintEmptyOptionalAttribute();
     List<ASTCDMethod> printEmptyOptionalMethods = methodDecorator.decorate(printEmptyOptionalAttribute);
@@ -50,22 +51,24 @@ public class ODDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClas
     ASTCDAttribute printEmptyListAttribute = createPrintEmptyListAttribute();
     List<ASTCDMethod> printEmptyListMethods = methodDecorator.decorate(printEmptyListAttribute);
 
+    ASTCDAttribute traverserAttribute = createTraverserAttribute(traverserFullName);
+    List<ASTCDMethod> traverserMethods = methodDecorator.decorate(traverserAttribute);
+
     return CD4CodeMill.cDClassBuilder()
         .setName(odName)
         .setModifier(PUBLIC.build())
         .addInterface(getMCTypeFacade().createQualifiedType(visitorFullName))
         .addCDConstructor(createConstructor(odName))
-        .addCDAttribute(createRealThisAttribute(visitorFullName))
+        .addCDAttribute(traverserAttribute)
         .addCDAttribute(createIndentPrinterAttribute())
         .addCDAttribute(createReportingRepositoryAttribute())
         .addCDAttribute(printEmptyOptionalAttribute)
         .addCDAttribute(printEmptyListAttribute)
         .addAllCDMethods(createHandleMethods(input.getCDDefinition()))
+        .addAllCDMethods(traverserMethods)
         .addCDMethod(createPrintAttributeMethod())
         .addCDMethod(createPrintObjectMethod())
         .addCDMethod(createPrintObjectDiagramMethod())
-        .addCDMethod(createGetRealThisMethod(visitorFullName))
-        .addCDMethod(createSetRealThisMethod(visitorFullName))
         .addAllCDMethods(printEmptyOptionalMethods)
         .addAllCDMethods(printEmptyListMethods)
         .build();
@@ -80,9 +83,8 @@ public class ODDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClas
     return constructor;
   }
 
-  protected ASTCDAttribute createRealThisAttribute(String visitorName) {
-    ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PRIVATE, visitorName, REAL_THIS);
-    this.replaceTemplate(VALUE, attribute, new StringHookPoint("= this;"));
+  protected ASTCDAttribute createTraverserAttribute(String visitorName) {
+    ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PRIVATE, visitorName, TRAVERSER);
     return attribute;
   }
 
@@ -147,17 +149,4 @@ public class ODDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClas
     return printAttributeMethod;
   }
 
-  protected ASTCDMethod createGetRealThisMethod(String visitorName) {
-    ASTMCQualifiedType visitorType = getMCTypeFacade().createQualifiedType(visitorName);
-    ASTCDMethod getRealThisMethod = this.getCDMethodFacade().createMethod(PUBLIC, visitorType, GET_REAL_THIS);
-    this.replaceTemplate(EMPTY_BODY, getRealThisMethod, new StringHookPoint("return realThis;"));
-    return getRealThisMethod;
-  }
-
-  protected ASTCDMethod createSetRealThisMethod(String visitorName) {
-    ASTCDParameter visitorParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(visitorName), REAL_THIS);
-    ASTCDMethod setRealThis = this.getCDMethodFacade().createMethod(PUBLIC, SET_REAL_THIS, visitorParameter);
-    this.replaceTemplate(EMPTY_BODY, setRealThis, new StringHookPoint("this.realThis = realThis;"));
-    return setRealThis;
-  }
 }
