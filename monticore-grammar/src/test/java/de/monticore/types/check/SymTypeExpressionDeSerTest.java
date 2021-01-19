@@ -7,13 +7,12 @@ import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsArtifactScope;
 import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
-import de.monticore.symbols.oosymbols._symboltable.OOSymbolsArtifactScope;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.se_rwth.commons.logging.Log;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -24,60 +23,104 @@ import static de.monticore.types.check.SymTypeExpressionFactory.*;
 import static org.junit.Assert.*;
 
 public class SymTypeExpressionDeSerTest {
-  private static IOOSymbolsScope scope = OOSymbolsMill.scope();
+  IOOSymbolsScope scope;
 
   // setup of objects (unchanged during tests)
   // these should be the same as those of SymTypeExpressionText
-  SymTypeConstant teDouble = createTypeConstant("double");
+  SymTypeConstant teDouble;
 
-  SymTypeConstant teInt = createTypeConstant("int");
+  SymTypeConstant teInt;
 
-  SymTypeVariable teVarA = createTypeVariable("A", scope);
+  SymTypeVariable teVarA;
 
-  SymTypeVariable teVarB = createTypeVariable("B", scope);
+  SymTypeVariable teVarB;
 
-  SymTypeOfObject teP = createTypeObject("de.x.Person", scope);
+  SymTypeOfObject teP;
 
-  SymTypeOfObject teH = createTypeObject("Human", scope);  // on purpose: package missing
+  SymTypeOfObject teH;  // on purpose: package missing
 
-  SymTypeVoid teVoid = createTypeVoid();
+  SymTypeVoid teVoid;
 
-  SymTypeOfNull teNull = createTypeOfNull();
+  SymTypeOfNull teNull;
 
-  SymTypeArray teArr1 = createTypeArray(teH.print(), scope, 1, teH);
+  SymTypeArray teArr1;
 
-  SymTypeArray teArr3 = createTypeArray(teInt.print(), scope, 3, teInt);
+  SymTypeArray teArr3;
 
-  SymTypeOfGenerics teSet = createGenerics("java.util.Set", scope, Lists.newArrayList(teP));
+  SymTypeOfGenerics teSet;
 
-  SymTypeOfGenerics teSetA = createGenerics("java.util.Set", scope, Lists.newArrayList(teVarA));
+  SymTypeOfGenerics teSetA;
 
-  SymTypeOfGenerics teMap = createGenerics("Map", scope,
-      Lists.newArrayList(teInt, teP)); // no package!
+  SymTypeOfGenerics teMap;
 
-  SymTypeOfGenerics teFoo = createGenerics("x.Foo", scope,
-      Lists.newArrayList(teP, teDouble, teInt, teH));
+  SymTypeOfGenerics teFoo;
 
-  SymTypeOfGenerics teDeep1 = createGenerics("java.util.Set", scope, Lists.newArrayList(teMap));
+  SymTypeOfGenerics teDeep1;
 
-  SymTypeOfGenerics teDeep2 = createGenerics("java.util.Map2", scope,
-      Lists.newArrayList(teInt, teDeep1));
+  SymTypeOfGenerics teDeep2;
 
-  SymTypeOfWildcard teLowerBound = createWildcard(false, teInt);
+  SymTypeOfWildcard teLowerBound;
 
-  SymTypeOfWildcard teUpperBound = createWildcard(true, teH);
+  SymTypeOfWildcard teUpperBound;
 
-  SymTypeOfWildcard teWildcard = createWildcard();
+  SymTypeOfWildcard teWildcard;
 
-  SymTypeOfGenerics teMap2 = createGenerics("Map", scope,
-      Lists.newArrayList(teUpperBound, teWildcard));
+  SymTypeOfGenerics teMap2;
 
-  @BeforeClass
-  public static void init() {
+  @Before
+  public void init() {
     Log.enableFailQuick(false);
     //    LogStub.init();
     OOSymbolsMill.reset();
     OOSymbolsMill.init();
+
+    IOOSymbolsScope scope = OOSymbolsMill.scope();
+
+    // setup of objects (unchanged during tests)
+    // these should be the same as those of SymTypeExpressionText
+    teDouble = createTypeConstant("double");
+
+    teInt = createTypeConstant("int");
+
+    teVarA = createTypeVariable("A", scope);
+
+    teVarB = createTypeVariable("B", scope);
+
+    teP = createTypeObject("de.x.Person", scope);
+
+    teH = createTypeObject("Human", scope);  // on purpose: package missing
+
+    teVoid = createTypeVoid();
+
+    teNull = createTypeOfNull();
+
+    teArr1 = createTypeArray(teH.print(), scope, 1, teH);
+
+    teArr3 = createTypeArray(teInt.print(), scope, 3, teInt);
+
+    teSet = createGenerics("java.util.Set", scope, Lists.newArrayList(teP));
+
+    teSetA = createGenerics("java.util.Set", scope, Lists.newArrayList(teVarA));
+
+    teMap = createGenerics("Map", scope,
+            Lists.newArrayList(teInt, teP)); // no package!
+
+    teFoo = createGenerics("x.Foo", scope,
+            Lists.newArrayList(teP, teDouble, teInt, teH));
+
+    teDeep1 = createGenerics("java.util.Set", scope, Lists.newArrayList(teMap));
+
+    teDeep2 = createGenerics("java.util.Map2", scope,
+            Lists.newArrayList(teInt, teDeep1));
+
+    teLowerBound = createWildcard(false, teInt);
+
+    teUpperBound = createWildcard(true, teH);
+
+    teWildcard = createWildcard();
+
+    teMap2 = createGenerics("Map", scope,
+            Lists.newArrayList(teUpperBound, teWildcard));
 
     scope.add(new OOTypeSymbol("A"));
     scope.add(new OOTypeSymbol("B"));
@@ -90,11 +133,11 @@ public class SymTypeExpressionDeSerTest {
     javaUtilAS.add(new OOTypeSymbol("Map2"));
     scope.addSubScope(javaUtilAS);
 
-    OOSymbolsArtifactScope deXAS = new OOSymbolsArtifactScope("de.x", new ArrayList<>());
+    IOOSymbolsArtifactScope deXAS = OOSymbolsMill.artifactScope();
     deXAS.add(new OOTypeSymbol("Person"));
     scope.addSubScope(deXAS);
 
-    OOSymbolsArtifactScope xAS = new OOSymbolsArtifactScope("x", new ArrayList<>());
+    IOOSymbolsArtifactScope xAS = OOSymbolsMill.artifactScope();
     xAS.add(new OOTypeSymbol("Foo"));
     scope.addSubScope(xAS);
   }
