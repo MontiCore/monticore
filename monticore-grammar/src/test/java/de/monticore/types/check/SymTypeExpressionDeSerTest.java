@@ -5,7 +5,10 @@ import com.google.common.collect.Lists;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
-import de.monticore.symbols.oosymbols._symboltable.*;
+import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsArtifactScope;
+import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
+import de.monticore.symbols.oosymbols._symboltable.OOSymbolsArtifactScope;
+import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.symboltable.serialization.json.JsonObject;
@@ -73,6 +76,8 @@ public class SymTypeExpressionDeSerTest {
   public static void init() {
     Log.enableFailQuick(false);
     //    LogStub.init();
+    OOSymbolsMill.reset();
+    OOSymbolsMill.init();
 
     scope.add(new OOTypeSymbol("A"));
     scope.add(new OOTypeSymbol("B"));
@@ -81,8 +86,7 @@ public class SymTypeExpressionDeSerTest {
 
     BasicSymbolsMill.initializePrimitives();
 
-    OOSymbolsArtifactScope javaUtilAS = new OOSymbolsArtifactScope("java.util",
-        new ArrayList<>());
+    IOOSymbolsArtifactScope javaUtilAS = OOSymbolsMill.artifactScope();
     javaUtilAS.add(new OOTypeSymbol("Map2"));
     scope.addSubScope(javaUtilAS);
 

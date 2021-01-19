@@ -46,6 +46,8 @@ public class DeriveSymTypeOfCommonExpressionTest {
   public static void setup() {
     LogStub.init();
     LogStub.enableFailQuick(false);
+    CombineExpressionsWithLiteralsMill.reset();
+    CombineExpressionsWithLiteralsMill.init();
   }
 
   @Before
