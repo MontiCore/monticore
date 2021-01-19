@@ -20,7 +20,8 @@ dependencies {
     implementation "de.se_rwth.commons:se-commons-logging:$se_commons_version"
     implementation "org.antlr:antlr4-runtime:$antlr_version"
     implementation 'com.google.guava:guava:25.1-jre'
-    testImplementation "junit:junit:$junit_version"
+    implementation "org.apache.commons:commons-lang3:$commons_lang3_version"
+  testImplementation "junit:junit:$junit_version"
     testImplementation 'ch.qos.logback:logback-classic:1.1.2'
 }
 

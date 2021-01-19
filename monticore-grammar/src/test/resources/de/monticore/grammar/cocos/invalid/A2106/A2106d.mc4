@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package  de.monticore.grammar.cocos.invalid.A2106;
+
+grammar A2106d {
+  enum A = "a";
+
+  abstract B implements A;
+
+}
+
