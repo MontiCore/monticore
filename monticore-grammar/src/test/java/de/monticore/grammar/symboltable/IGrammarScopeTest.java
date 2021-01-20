@@ -1,13 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.grammar.symboltable;
 
+import de.monticore.grammar.GrammarGlobalScopeTestFactory;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._symboltable.IGrammarScope;
+import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
+import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsPhasedSTC;
-import de.monticore.grammar.grammar_withconcepts._symboltable.IGrammar_WithConceptsGlobalScope;
-import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
@@ -15,7 +16,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.Optional;
 
 import static org.junit.Assert.assertFalse;
@@ -23,33 +23,24 @@ import static org.junit.Assert.assertTrue;
 
 public class IGrammarScopeTest {
 
-  private static ModelPath modelPath = new ModelPath(Paths.get("src/test/resources"));
-
   @BeforeClass
   public static void setUp(){
-    Grammar_WithConceptsMill.init();
-  }
-
-  @Before
-  public void setup() {
     Log.init();
-    IGrammar_WithConceptsGlobalScope scope = Grammar_WithConceptsMill.globalScope();
-    scope.clear();
-    scope.setModelPath(modelPath);
-    scope.setFileExt("mc4");
+    Log.enableFailQuick(false);
+    Grammar_WithConceptsMill.reset();
+    Grammar_WithConceptsMill.init();
   }
 
   @Test
   public void testCombiningGrammarSymbolTable() throws IOException {
-    Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
-    Optional<ASTMCGrammar> ast = parser.parse("src/test/resources/de/monticore/CombiningGrammar.mc4");
+    final Grammar_WithConceptsGlobalScope globalScope = GrammarGlobalScopeTestFactory.create();
+    final Optional<MCGrammarSymbol> grammar = globalScope
+            .resolveMCGrammar("de.monticore.CombiningGrammar");
+    assertTrue(grammar.isPresent());
+    assertTrue(grammar.get().isPresentAstNode());
+    ASTMCGrammar ast = grammar.get().getAstNode();
 
-    assertTrue(ast.isPresent());
-
-    Grammar_WithConceptsPhasedSTC stCreator = new Grammar_WithConceptsPhasedSTC();
-    stCreator.createFromAST(ast.get());
-
-    IGrammarScope innerScope = ast.get().getClassProd(0).getEnclosingScope();
+    IGrammarScope innerScope = ast.getClassProd(0).getEnclosingScope();
 
     assertTrue(innerScope.resolveProd("NewProd").isPresent());
 
@@ -75,15 +66,14 @@ public class IGrammarScopeTest {
 
   @Test
   public void testCombiningGrammarResolveInSuperGrammars() throws IOException {
-    Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
-    Optional<ASTMCGrammar> ast = parser.parse("src/test/resources/de/monticore/CombiningGrammar.mc4");
+    final Grammar_WithConceptsGlobalScope globalScope = GrammarGlobalScopeTestFactory.create();
+    final Optional<MCGrammarSymbol> grammar = globalScope
+            .resolveMCGrammar("de.monticore.CombiningGrammar");
+    assertTrue(grammar.isPresent());
+    assertTrue(grammar.get().isPresentAstNode());
+    ASTMCGrammar ast = grammar.get().getAstNode();
 
-    assertTrue(ast.isPresent());
-
-    Grammar_WithConceptsPhasedSTC stCreator = new Grammar_WithConceptsPhasedSTC();
-    stCreator.createFromAST(ast.get());
-
-    IGrammarScope innerScope = ast.get().getClassProd(0).getEnclosingScope();
+    IGrammarScope innerScope = ast.getClassProd(0).getEnclosingScope();
 
     assertTrue(innerScope.resolveInSuperGrammars("Automaton", AccessModifier.ALL_INCLUSION).isPresent());
     assertTrue(innerScope.resolveInSuperGrammars("Transition", AccessModifier.ALL_INCLUSION).isPresent());
@@ -103,13 +93,14 @@ public class IGrammarScopeTest {
 
   @Test
   public void testSubsubgrammarSymbolTable() throws IOException {
-    Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
-    Optional<ASTMCGrammar> ast = parser.parse("src/test/resources/de/monticore/inherited/Subsubgrammar.mc4");
-    assertTrue(ast.isPresent());
+    final Grammar_WithConceptsGlobalScope globalScope = GrammarGlobalScopeTestFactory.create();
+    final Optional<MCGrammarSymbol> grammar = globalScope
+            .resolveMCGrammar("de.monticore.inherited.Subsubgrammar");
+    assertTrue(grammar.isPresent());
+    assertTrue(grammar.get().isPresentAstNode());
+    ASTMCGrammar ast = grammar.get().getAstNode();
 
-    Grammar_WithConceptsPhasedSTC stCreator = new Grammar_WithConceptsPhasedSTC();
-    stCreator.createFromAST(ast.get());
-    IGrammarScope innerScope = ast.get().getClassProd(0).getEnclosingScope();
+    IGrammarScope innerScope = ast.getClassProd(0).getEnclosingScope();
 
     assertTrue(innerScope.resolveProd("N").isPresent());
     assertTrue(innerScope.resolveProd("S").isPresent());
@@ -132,9 +123,9 @@ public class IGrammarScopeTest {
     assertFalse(innerScope.resolveProd("Supergrammar").isPresent());
     assertFalse(innerScope.resolveProd("de.monticore.inherited.Supergrammar").isPresent());
     assertFalse(innerScope.resolveProd("Subgrammar").isPresent());
-    assertFalse(innerScope.resolveProd("de.monticore.inherited.sub.Subgrammar").isPresent());
+    assertFalse(innerScope.resolveProd("de.monticore.inherited.Subgrammar").isPresent());
     assertFalse(innerScope.resolveProd("Subsubgrammar").isPresent());
-    assertFalse(innerScope.resolveProd("de.monticore.inherited.subsub.Subsubgrammar").isPresent());
+    assertFalse(innerScope.resolveProd("de.monticore.inherited.Subsubgrammar").isPresent());
 
     assertTrue(innerScope.resolveMCGrammar("de.monticore.inherited.Supergrammar").isPresent());
     assertTrue(innerScope.resolveMCGrammar("de.monticore.inherited.Subgrammar").isPresent());
@@ -144,13 +135,13 @@ public class IGrammarScopeTest {
 
   @Test
   public void testSubsubgrammarResolveInSuperGrammars() throws IOException {
-    Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
-    Optional<ASTMCGrammar> ast = parser.parse("src/test/resources/de/monticore/inherited/Subsubgrammar.mc4");
-    assertTrue(ast.isPresent());
-
-    Grammar_WithConceptsPhasedSTC stCreator = new Grammar_WithConceptsPhasedSTC();
-    stCreator.createFromAST(ast.get());
-    IGrammarScope innerScope = ast.get().getClassProd(0).getEnclosingScope();
+    final Grammar_WithConceptsGlobalScope globalScope = GrammarGlobalScopeTestFactory.create();
+    final Optional<MCGrammarSymbol> grammar = globalScope
+            .resolveMCGrammar("de.monticore.inherited.Subsubgrammar");
+    assertTrue(grammar.isPresent());
+    assertTrue(grammar.get().isPresentAstNode());
+    ASTMCGrammar ast = grammar.get().getAstNode();
+    IGrammarScope innerScope = ast.getClassProd(0).getEnclosingScope();
 
     assertTrue(innerScope.resolveInSuperGrammars("N", AccessModifier.ALL_INCLUSION).isPresent());
 
@@ -172,8 +163,8 @@ public class IGrammarScopeTest {
     assertFalse(innerScope.resolveInSuperGrammars("Supergrammar", AccessModifier.ALL_INCLUSION).isPresent());
     assertFalse(innerScope.resolveInSuperGrammars("de.monticore.inherited.Supergrammar", AccessModifier.ALL_INCLUSION).isPresent());
     assertFalse(innerScope.resolveInSuperGrammars("Subgrammar", AccessModifier.ALL_INCLUSION).isPresent());
-    assertFalse(innerScope.resolveInSuperGrammars("de.monticore.inherited.sub.Subgrammar", AccessModifier.ALL_INCLUSION).isPresent());
+    assertFalse(innerScope.resolveInSuperGrammars("de.monticore.inherited.Subgrammar", AccessModifier.ALL_INCLUSION).isPresent());
     assertFalse(innerScope.resolveInSuperGrammars("Subsubgrammar", AccessModifier.ALL_INCLUSION).isPresent());
-    assertFalse(innerScope.resolveInSuperGrammars("de.monticore.inherited.subsub.Subsubgrammar", AccessModifier.ALL_INCLUSION).isPresent());
+    assertFalse(innerScope.resolveInSuperGrammars("de.monticore.inherited.Subsubgrammar", AccessModifier.ALL_INCLUSION).isPresent());
   }
 }
