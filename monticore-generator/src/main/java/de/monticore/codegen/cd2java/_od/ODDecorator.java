@@ -44,6 +44,7 @@ public class ODDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClas
     String odName = odService.getODName(input.getCDDefinition());
     String visitorFullName = visitorService.getVisitor2FullName();
     String traverserFullName = visitorService.getTraverserInterfaceFullName();
+    String handlerFullName = visitorService.getHandlerFullName();
 
     ASTCDAttribute printEmptyOptionalAttribute = createPrintEmptyOptionalAttribute();
     List<ASTCDMethod> printEmptyOptionalMethods = methodDecorator.decorate(printEmptyOptionalAttribute);
@@ -58,6 +59,7 @@ public class ODDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClas
         .setName(odName)
         .setModifier(PUBLIC.build())
         .addInterface(getMCTypeFacade().createQualifiedType(visitorFullName))
+        .addInterface(getMCTypeFacade().createQualifiedType(handlerFullName))
         .addCDConstructor(createConstructor(odName))
         .addCDAttribute(traverserAttribute)
         .addCDAttribute(createIndentPrinterAttribute())
