@@ -1,0 +1,19 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore;
+
+grammar Annotations {
+
+  @Deprecated
+  interface A;
+
+  @Override
+  B;
+
+  @Override
+  @Deprecated("message")
+  abstract C;
+
+  D = @Deprecated A | B;
+
+}

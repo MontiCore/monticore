@@ -32,7 +32,8 @@ symbol State =
     @attribute To Name of the state to which the transitions goes
 */ 
 Transition =
-  from:Name "-" input:Name ">" to:Name ";" ;
+  from:Name@State "-" Name ">" to:Name@State ";";
+
 
   Transition2 extends Transition =
     "foo";
