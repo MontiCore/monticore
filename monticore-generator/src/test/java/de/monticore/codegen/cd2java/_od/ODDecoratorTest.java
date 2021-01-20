@@ -43,6 +43,8 @@ public class ODDecoratorTest extends DecoratorTestCase {
 
   private static final String VISITOR_FULL_NAME = "de.monticore.codegen.symboltable.automaton._visitor.AutomatonVisitor2";
 
+  private static final String TRAVERSER_FULL_NAME = "de.monticore.codegen.symboltable.automaton._visitor.AutomatonTraverser";
+
   private static final String INDENT_PRINTER = "de.monticore.prettyprint.IndentPrinter";
 
   private static final String REPORTING_REPOSITORY = "de.monticore.generating.templateengine.reporting.commons.ReportingRepository";
@@ -137,7 +139,7 @@ public class ODDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute automatonVisitor = getAttributeBy("traverser", odClass);
     assertTrue(automatonVisitor.isPresentModifier());
     assertDeepEquals(PRIVATE, automatonVisitor.getModifier());
-    assertDeepEquals(VISITOR_FULL_NAME, automatonVisitor.getMCType());
+    assertDeepEquals(TRAVERSER_FULL_NAME, automatonVisitor.getMCType());
   }
 
   @Test
@@ -289,7 +291,7 @@ public class ODDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = getMethodBy("getTraverser", odClass);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCType());
-    assertDeepEquals(VISITOR_FULL_NAME, method.getMCReturnType().getMCType());
+    assertDeepEquals(TRAVERSER_FULL_NAME, method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
   }
 
@@ -299,7 +301,7 @@ public class ODDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(VISITOR_FULL_NAME, method.getCDParameter(0).getMCType());
+    assertDeepEquals(TRAVERSER_FULL_NAME, method.getCDParameter(0).getMCType());
     assertEquals("traverser", method.getCDParameter(0).getName());
   }
 
