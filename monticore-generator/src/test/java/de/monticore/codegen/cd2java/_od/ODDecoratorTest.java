@@ -122,7 +122,7 @@ public class ODDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testInterfaceCount() {
-    assertEquals(1, odClass.sizeInterface());
+    assertEquals(2, odClass.sizeInterface());
   }
 
   @Test
