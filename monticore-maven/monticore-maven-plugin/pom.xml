@@ -38,12 +38,14 @@
     </dependency>
 
     <dependency>
-      <groupId>de.monticore</groupId>
+      <groupId>de.monticore.bs</groupId>
+      <version>${last.mc.release}</version>
       <artifactId>monticore-runtime</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>de.monticore</groupId>
+      <groupId>de.monticore.bs</groupId>
+      <version>${last.mc.release}</version>
       <artifactId>monticore-runtime-emf</artifactId>
     </dependency>
 
