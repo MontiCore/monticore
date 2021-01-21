@@ -31,9 +31,7 @@ of the reference manual.
 
 * [**Designing Command Line Interfaces**](BestPractices-CLI.md) 
 
-* **Generating Code with Templates**
-
-  (no practice defined here yet) 
+* **Generating Code with Templates** (no practice defined here yet) 
 
 
 ## Further Information
