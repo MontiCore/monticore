@@ -3,7 +3,7 @@
 
 The MontiCore language workbench has been under development already 
 for a while and of course has been used by our group to develop 
-many other languages. Not all of those languages are publicly 
+many languages. Not all of those languages are publicly 
 available and some of these languages are equipped with tools based 
 on MontiCore 5. 
 

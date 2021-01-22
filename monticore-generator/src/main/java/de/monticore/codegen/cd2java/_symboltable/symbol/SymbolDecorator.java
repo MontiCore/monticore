@@ -73,6 +73,8 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
     String scopeInterface = symbolTableService.getScopeInterfaceFullName();
     String symbolName = symbolTableService.getNameWithSymbolSuffix(symbolInput);
     boolean hasInheritedSymbol = symbolTableService.hasInheritedSymbolStereotype(symbolInput.getModifier());
+    boolean hasInheritedScope = symbolTableService.hasInheritedScopeStereotype(symbolInput.getModifier());
+    boolean hasScope = symbolTableService.hasScopeStereotype(symbolInput.getModifier());
     ASTModifier modifier = symbolInput.isPresentModifier() ?
             symbolTableService.createModifierPublicModifier(symbolInput.getModifier()) :
             PUBLIC.build();
@@ -137,10 +139,10 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
             .build();
 
     // add only for scope spanning symbols
-    if (symbolInput.isPresentModifier() &&
-            (symbolTableService.hasScopeStereotype(symbolInput.getModifier()) || symbolTableService.hasInheritedScopeStereotype(symbolInput.getModifier()))) {
+    if (hasScope || hasInheritedScope) {
       ASTCDAttribute spannedScopeAttribute = createSpannedScopeAttribute();
-      if (!symbolTableService.hasInheritedSymbolStereotype(symbolInput.getModifier())) {
+      if (!hasInheritedSymbol ||
+              (!hasInheritedScope && hasScope)) {
         symbolClass.addCDAttribute(spannedScopeAttribute);
       }
       symbolClass.addAllCDMethods(createSpannedScopeMethods(scopeInterface));

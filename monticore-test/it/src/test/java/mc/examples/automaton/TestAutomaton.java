@@ -13,6 +13,7 @@ import java.nio.file.Paths;
 import java.util.Optional;
 
 import mc.examples.automaton.automaton.AutomatonMill;
+import mc.examples.automaton.automaton._visitor.AutomatonTraverser;
 import org.junit.Test;
 
 import de.monticore.generating.templateengine.reporting.commons.ASTNodeIdentHelper;
@@ -41,6 +42,9 @@ public class TestAutomaton extends GeneratorIntegrationsTest {
     ReportingRepository reporting = new ReportingRepository(new ASTNodeIdentHelper());
     IndentPrinter printer = new IndentPrinter();
     Automaton2OD odCreator = new Automaton2OD(printer, reporting);
+    AutomatonTraverser traverser = AutomatonMill.traverser();
+    traverser.add4Automaton(odCreator);
+    traverser.setAutomatonHandler(odCreator);
     odCreator.printObjectDiagram(symbolName, ast);
     assertTrue(printer.getContent().length()>0);
     assertTrue(readFile("src/test/resources/examples/automaton/Output.od", StandardCharsets.UTF_8).endsWith(printer.getContent()));

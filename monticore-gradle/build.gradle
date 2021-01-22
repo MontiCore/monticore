@@ -11,7 +11,7 @@ dependencies {
   implementation localGroovy()
   implementation project(":monticore-generator")
   implementation project(":monticore-cli")
-  implementation (group: 'de.monticore', name: 'monticore-grammar', version: "$previous_mc_version"){
+  implementation (group: 'de.monticore.bs', name: 'monticore-grammar', version: "$previous_mc_version"){
     force true
   }
   implementation 'de.se_rwth.commons:se-commons-groovy:' + se_commons_version

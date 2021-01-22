@@ -6,7 +6,7 @@ buildscript {
 
 plugins {
   id "java"
-  id "monticore" version "$previous_mc_version" // MontiCore Plugin
+  id "monticore-bs" version "$previous_mc_version" // MontiCore Plugin
 }
 
 description = 'MontiCore: Generator'
@@ -14,13 +14,14 @@ group = "de.monticore"
 
 
 dependencies {
-  implementation "de.monticore:monticore-runtime:$previous_mc_version"
-  implementation "de.monticore:monticore-grammar:$previous_mc_version"
-  grammar "de.monticore:monticore-grammar:$previous_mc_version:grammars"
+  implementation "de.monticore.bs:monticore-runtime:$previous_mc_version"
+  implementation "de.monticore.bs:monticore-grammar:$previous_mc_version"
+  grammar "de.monticore.bs:monticore-grammar:$previous_mc_version:grammars"
+  implementation "de.monticore.bs:monticore-grammar:$previous_mc_version:grammars"
   implementation "de.se_rwth.commons:se-commons-groovy:$se_commons_version"
   implementation "de.se_rwth.commons:se-commons-logging:$se_commons_version"
-  implementation "de.monticore.lang:cd4analysis:$cd4a_version"
-  grammar "de.monticore.lang:cd4analysis:$cd4a_version:grammars"
+  implementation "de.monticore.lang.bs:cd4analysis:$cd4a_version"
+  grammar "de.monticore.lang.bs:cd4analysis:$cd4a_version:grammars"
   implementation "org.antlr:antlr4:$antlr_version"
   implementation ('com.google.guava:guava:25.1-jre'){
     force(true)
@@ -78,3 +79,11 @@ java {
 }
 
 jar.dependsOn grammarsJar
+
+publishing {
+  publications {
+    maven(org.gradle.api.publish.maven.MavenPublication) {
+      from(components.java)
+    }
+  }
+}
