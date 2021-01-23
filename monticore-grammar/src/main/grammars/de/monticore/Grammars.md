@@ -139,17 +139,19 @@ infrastructure.
 
 This modularity of expressions and associated types greatly eases 
 the reuse of type structures in languages similar to Java.
-Some snipets for operators definrd in expressions:
+Some snipets for operators defined in expressions:
 
 
     CommonExp:     /  %  +  -  <=  >=  ==  >  <  !=  ~.  !.  .?.:.
-    PLogicExp:     &&  ||  ~. 
+                   &&  ||  ~. 
     AssigementExp: ++  --  =  +=  -=  *=  /=  &=  |=  ^=  >>=  >>>=  <<=  %=
     BitExp:        &  |  ^  <<  >>  >>>
     OclExp:        implies  <=>  |  &  forall  exists  let.in. .@pre  .[.]  .**
                    Set{.|.}
-    JavaClass:     this  .[.]  (.).  super  .instanceof.
     SetExp:        .isin.  .in.  union  intersect  setand  setor
+                   { item | specifier }
+    OptionalOps:   ?:  ?<=  ?>=  ?<  ?>  ?==  ?!=  ?~~   ?!~ 
+    JavaClass:     this  .[.]  (.).  super  .instanceof.
 
 
 ### [ExpressionsBasis.mc4](expressions/ExpressionsBasis.mc4) (stable)
@@ -168,6 +170,12 @@ mainly for arithmetic, comparisons, variable use (v),
 attribute use (o.att), method call (foo(arg,arg2)) and brackets (exp).
 
 
+### [AssignmentExpressions.mc4](expressions/AssignmentExpressions.mc4) (stable)
+* This grammar defines all Java expressions that have side effects.
+* This includes assignment expressions like =, +=, etc. and 
+suffix and prefix expressions like ++, --, etc.
+
+
 ### [BitExpressions.mc4](expressions/BitExpressions.mc4) (stable)
 * This grammar defines a typical standard set of operations for
 expressions. 
@@ -175,10 +183,31 @@ expressions.
 like <<, >>, >>>, &, ^ and |
 
 
-### [AssignmentExpressions.mc4](expressions/AssignmentExpressions.mc4) (stable)
-* This grammar defines all Java expressions that have side effects.
-* This includes assignment expressions like =, +=, etc. and 
-suffix and prefix expressions like ++, --, etc.
+### [OCLExpressions.mc4](expressions/OCLExpressions.mc4) (stable)
+* This grammar defines expressions typical to UMLs OCL .
+  OCL expressions can savely be composed if with other forms of expressions  
+  given in the MontiCore core project (i.e. as conservative extension).
+* It contains various logical operations, such as quantifiers, 
+  the `let` and the `@pre` construct, and a transitive closure for 
+  associations, as discussed in [Rum17,Rum17].
+* This grammar resides in the MontiCore/OCL project.
+
+
+### [SetExpressions.mc4](expressions/SetExpressions.mc4) (stable)
+* This grammar defines set expressions like set union, intersection etc.
+these operations are typical for a logic with set operations, like 
+UML's OCL. These operators are usiually infix and are thus more intuitive
+as they allow math oriented style of specification.
+* Most of these operators are in principle executable, so it might be interesting to include them in a high level programming language (see e.g. Haskell)
+* This grammar resides in the MontiCore/OCL project.
+
+
+### [OptionalOperators.mc4](expressions/OptionalOperators.mc4) (stable)
+* This grammar defines nine operators dealing with optional values, e.g. defined by 
+  `java.lang.Optional`. The operators are also called *Elvis operators*.
+* E.g.: `val ?: 0W`     equals to   `val.isPresent ? val.get : 0W`
+* `x ?>= y` equals `x.isPresent && x.get >= y` 
+* This grammar resides in the MontiCore/OCL project.
 
 
 ### [JavaClassExpressions.mc4](expressions/JavaClassExpressions.mc4) (stable)
@@ -188,17 +217,6 @@ this, type cast, etc.
 intended and the full power of Java should be available in the 
 modelling language.
 
-
-### [SetExpressions.mc4](expressions/SetExpressions.mc4) (Beta: In Stabilization)
-* This grammar defines set expressions like set union, intersection etc.
-these operations are typical for a logic with set operations, like 
-UML's OCL.
-
-
-### [OCLExpressions.mc4](expressions/OCLExpressions.mc4) (Alpha: Needs restructuring)
-* This grammar defines a expressions typical to UMLs OCL .
-* This grammar will be restructured. Especially the non expression 
-  part of the OCL will be separated.
 
 
 
