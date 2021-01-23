@@ -285,7 +285,7 @@ component InteriorLight {                           // MontiArc language
   [*detailed description*](https://git.rwth-aachen.de/monticore/montiarc/core/-/blob/modularization/languages/montiarc-fe/src/main/grammars/MontiArc.md)
 
 
-### [OCL/P](https://git.rwth-aachen.de/monticore/languages/OCL) (Alpha: Intention to become stable)
+### [OCL/P](https://git.rwth-aachen.de/monticore/languages/OCL) (Beta: Intention to become stable)
 * OCL/P is the textual representation of the UML OCL standard, adapted 
   with Java-like syntax.
   It's main goal is the usage in combination with other languages like 
@@ -299,8 +299,8 @@ component InteriorLight {                           // MontiArc language
   **transitive closure operator**.
 * OCL/P comes with an 
   [OCL to Java generator](https://git.rwth-aachen.de/monticore/languages/OCL2Java)
-  and a second generator for OCL in combination with 
-  [*Embedded MontiArc*](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/OCL_EMA2Java).
+  and is used in combination with 
+  [*Embedded MontiArc*](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/OCL_EMA2Java) and the MontiCore artefact tooling.
 * Main grammar 
   [`ocl.monticore.ocl.OCL`](https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/develop/src/main/grammars/de/monticore/ocl/OCL.mc4), 
   [Expressions](https://git.rwth-aachen.de/monticore/languages/OCL/-/tree/develop/src/main/grammars/de/monticore/ocl/expressions),
