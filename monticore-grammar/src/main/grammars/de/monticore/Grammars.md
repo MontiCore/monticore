@@ -4,6 +4,8 @@
 
 # MontiCore Core Grammars - an Overview
 
+[[_TOC_]]
+
 [MontiCore](http://www.monticore.de) is a language workbench. It uses 
 grammars as primary mechanism to describe DSLs. The extended 
 grammar format allows to **compose language components** by
@@ -196,7 +198,7 @@ like <<, >>, >>>, &, ^ and |
 ### [SetExpressions.mc4](expressions/SetExpressions.mc4) (stable)
 * This grammar defines set expressions like set union, intersection etc.
 these operations are typical for a logic with set operations, like 
-UML's OCL. These operators are usiually infix and are thus more intuitive
+UML's OCL. These operators are usually infix and are thus more intuitive
 as they allow math oriented style of specification.
 * Most of these operators are in principle executable, so it might be interesting to include them in a high level programming language (see e.g. Haskell)
 * This grammar resides in the MontiCore/OCL project.
