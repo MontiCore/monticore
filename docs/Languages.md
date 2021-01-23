@@ -2,6 +2,7 @@
 
 # MontiCore Languages - an Overview
 
+[[_TOC_]]
 
 [MontiCore](http://www.monticore.de) is a language workbench
 with an explicit notion of language components. It uses 
@@ -36,8 +37,6 @@ MontiCore projects are hosted at
 * [`https://git.rwth-aachen.de/monticore`](https://git.rwth-aachen.de/monticore), 
     and partially also at
 * [`https://github.com/MontiCore/`](https://github.com/MontiCore/monticore)
-
-[[_TOC_]]
 
 ## List of Languages 
 
