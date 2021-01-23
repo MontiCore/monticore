@@ -153,6 +153,7 @@ Some snipets for operators defined in expressions:
     SetExp:        .isin.  .in.  union  intersect  setand  setor
                    { item | specifier }
     OptionalOps:   ?:  ?<=  ?>=  ?<  ?>  ?==  ?!=  ?~~   ?!~ 
+    SIUnits:       5km  3,2m/s  22l  2.400J  
     JavaClass:     this  .[.]  (.).  super  .instanceof.
 
 
