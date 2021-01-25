@@ -1,14 +1,24 @@
+/* (c) https://github.com/MontiCore/monticore */
+
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
-
-/* (c) https://github.com/MontiCore/monticore */
 
 plugins {
   id "de.set.ecj" version "1.4.1" // Eclipse compiler as it's much faster than javac
 }
 
+if(!hasProperty('bootstrap')){
+  allprojects {
+    group = "de.monticore"
+  }
+} else {
+  allprojects {
+    group = "de.monticore.bs"
+  }
+}
+
 allprojects {
-  group = 'de.monticore'
+  
   
   ext.grammarDir = 'src/main/grammars'
   buildDir = file("$projectDir/target")

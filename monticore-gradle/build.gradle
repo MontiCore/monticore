@@ -17,9 +17,13 @@ dependencies {
   implementation 'de.se_rwth.commons:se-commons-groovy:' + se_commons_version
 }
 
+def pluginName = 'monticore'
+if(hasProperty('bootstrap')) {
+  pluginName = 'monticore-bs'
+}
 gradlePlugin.plugins {
   monticore {
-    id = 'monticore'
+    id = pluginName
     implementationClass = 'de.monticore.MCPlugin'
   }
 }

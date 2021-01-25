@@ -10,7 +10,11 @@ plugins {
 }
 
 description = 'MontiCore: Generator'
-group = "de.monticore"
+if(!hasProperty('bootstrap')){
+  group = "de.monticore"
+} else {
+  group = "de.monticore.bs"
+}
 
 
 dependencies {
