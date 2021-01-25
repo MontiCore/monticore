@@ -48,6 +48,9 @@ fileTree("src/main/grammars").matching { include '**/*.mc4'}.each {
   task  "$taskname" (type: MCTask) {
     grammar = file g
     outputDir = file grammarOutDir
+    if(findProperty("ci")!= null) {
+      script = "de/monticore/monticore_noreports.groovy"
+    }
     def grammarIncludingPackage = file("src/main/grammars").toURI().relativize(g.toURI()).toString()
     def uptoDate = incCheck(grammarIncludingPackage)
     outputs.upToDateWhen { uptoDate }
@@ -67,6 +70,9 @@ fileTree("src/test/grammars").matching { include '**/*.mc4'}.each {
     outputDir = file testGrammarOutDir
     handcodedPath "$projectDir/src/main/java", "$projectDir/src/test/java"
     modelPath "$projectDir/$grammarDir", "$projectDir/src/main/examples"
+    if(findProperty("ci")!= null) {
+      script = "de/monticore/monticore_noreports.groovy"
+    }
     def grammarIncludingPackage = file("src/test/grammars").toURI().relativize(g.toURI()).toString()
     def uptoDate = incCheck(grammarIncludingPackage)
     outputs.upToDateWhen { uptoDate }
@@ -81,6 +87,9 @@ fileTree("src/main/examples").matching { include '**/*.mc4'}.each {
     outputDir = file testGrammarOutDir
     handcodedPath "$projectDir/src/main/java"
     modelPath "$projectDir/$grammarDir", "$projectDir/src/main/examples"
+    if(findProperty("ci")!= null) {
+      script = "de/monticore/monticore_noreports.groovy"
+    }
     def grammarIncludingPackage = file("src/main/examples").toURI().relativize(g.toURI()).toString()
     def uptoDate = incCheck(grammarIncludingPackage)
     outputs.upToDateWhen { uptoDate }
@@ -96,4 +105,8 @@ java {
   }
 }
 
-jar.dependsOn(shadowJar,grammarsJar)
+jar.dependsOn(grammarsJar)
+
+if(findProperty('ci') == null){
+  jar.dependsOn(shadowJar)
+}
