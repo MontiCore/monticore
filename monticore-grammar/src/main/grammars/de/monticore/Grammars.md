@@ -186,31 +186,30 @@ expressions.
 like <<, >>, >>>, &, ^ and |
 
 
-### [OCLExpressions.mc4](expressions/OCLExpressions.mc4) (stable)
+### [OCLExpressions.mc4][OCL-OCLExpressions] (stable)
 * This grammar defines expressions typical to UMLs OCL .
   OCL expressions can savely be composed if with other forms of expressions  
   given in the MontiCore core project (i.e. as conservative extension).
 * It contains various logical operations, such as quantifiers, 
   the `let` and the `@pre` construct, and a transitive closure for 
   associations, as discussed in [Rum17,Rum17].
-* This grammar resides in the MontiCore/OCL project.
+* This grammar resides in the [MontiCore/OCL][OCL] project.
 
-
-### [SetExpressions.mc4](expressions/SetExpressions.mc4) (stable)
+### [SetExpressions.mc4][OCL-SetExpressions] (stable)
 * This grammar defines set expressions like set union, intersection etc.
 these operations are typical for a logic with set operations, like 
 UML's OCL. These operators are usually infix and are thus more intuitive
 as they allow math oriented style of specification.
 * Most of these operators are in principle executable, so it might be interesting to include them in a high level programming language (see e.g. Haskell)
-* This grammar resides in the MontiCore/OCL project.
+* This grammar resides in the [MontiCore/OCL][OCL] project.
 
 
-### [OptionalOperators.mc4](expressions/OptionalOperators.mc4) (stable)
+### [OptionalOperators.mc4][OCL-OptionalOperators] (stable)
 * This grammar defines nine operators dealing with optional values, e.g. defined by 
   `java.lang.Optional`. The operators are also called *Elvis operators*.
 * E.g.: `val ?: 0W`     equals to   `val.isPresent ? val.get : 0W`
 * `x ?>= y` equals `x.isPresent && x.get >= y` 
-* This grammar resides in the MontiCore/OCL project.
+* This grammar resides in the [MontiCore/OCL][OCL] project.
 
 
 ### [SI Units](https://git.rwth-aachen.de/monticore/languages/siunits) (stable)
@@ -397,3 +396,8 @@ These can also be used if someone is interested:
 * [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
 * [Licence definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
 
+<!-- Links to other sites-->
+[OCL]: https://git.rwth-aachen.de/monticore/languages/OCL
+[OCL-OCLExpressions]: https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/develop/src/main/grammars/de/monticore/ocl/OCLExpressions.mc4
+[OCL-OptionalOperators]: https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/develop/src/main/grammars/de/monticore/ocl/OptionalOperators.mc4
+[OCL-SetExpressions]: https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/develop/src/main/grammars/de/monticore/ocl/SetExpressions.mc4
