@@ -49,17 +49,29 @@ public class SymbolBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDCla
     ASTCDClass decoratedSymbolClass = symbolClass.deepClone();
     decoratedSymbolClass.setName(symbolTableService.getNameWithSymbolSuffix(symbolClass));
     decoratedSymbolClass.getCDMethodList().clear();
-    boolean isInherited = symbolTableService.hasInheritedSymbolStereotype(symbolClass.getModifier());
+    boolean hasInheritedSymbol = symbolTableService.hasInheritedSymbolStereotype(symbolClass.getModifier());
+    boolean hasInheritedScope = symbolTableService.hasInheritedScopeStereotype(symbolClass.getModifier());
+    boolean hasScope = symbolTableService.hasScopeStereotype(symbolClass.getModifier());
     List<ASTCDAttribute> defaultAttrs = createSymbolAttributes(symbolClass);
-    if (!isInherited) {
+    if (!hasInheritedSymbol) {
       decoratedSymbolClass.addAllCDAttributes(defaultAttrs);
+    }
+    if (hasScope || hasInheritedScope) {
+      ASTCDAttribute spannedScopeAttr = getCDAttributeFacade()
+              .createAttribute(PROTECTED, symbolTableService.getScopeInterfaceType(), SPANNED_SCOPE_VAR);
+      if (!hasInheritedSymbol ||
+              (!hasInheritedScope && hasScope)) {
+        decoratedSymbolClass.addCDAttribute(spannedScopeAttr);
+      } else {
+        defaultAttrs.add(spannedScopeAttr);
+      }
     }
 
     builderDecorator.setPrintBuildMethodTemplate(false);
     ASTCDClass symbolBuilder = builderDecorator.decorate(decoratedSymbolClass);
     builderDecorator.setPrintBuildMethodTemplate(true);
 
-    if (isInherited) {
+    if (hasInheritedSymbol) {
       // set superclass
       Map<ASTCDClass, String> values = symbolTableService.getInheritedSymbolPropertyClasses(Lists.newArrayList(symbolClass));
       String value = values.getOrDefault(symbolClass, "");
@@ -73,10 +85,7 @@ public class SymbolBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDCla
       symbolBuilder.addAllCDMethods(
               getMethodsForDefaultAttrs(defaultAttrs, builderMutatorMethodDecorator));
       // Override getScope-Methods
-      boolean hasInheritedSpannedScope = symbolClass.isPresentModifier() &&
-          (symbolTableService.hasScopeStereotype(symbolClass.getModifier())
-              || symbolTableService.hasInheritedScopeStereotype(symbolClass.getModifier()));
-      symbolBuilder.addAllCDMethods(createScopeMethods(hasInheritedSpannedScope));
+      symbolBuilder.addAllCDMethods(createScopeMethods(hasInheritedScope));
     }
 
     List<ASTCDAttribute> buildAttributes = Lists.newArrayList(symbolClass.getCDAttributeList());
@@ -84,11 +93,11 @@ public class SymbolBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDCla
     defaultAttrs.stream().filter(a -> !SPANNED_SCOPE_VAR.equals(a.getName())).forEach(a -> buildAttributes.add(a));
     // new build method template
     Optional<ASTCDMethod> buildMethod = symbolBuilder.getCDMethodList()
-        .stream()
-        .filter(m -> BUILD_METHOD.equals(m.getName()))
-        .findFirst();
+            .stream()
+            .filter(m -> BUILD_METHOD.equals(m.getName()))
+            .findFirst();
     buildMethod.ifPresent(b -> this.replaceTemplate(EMPTY_BODY, b,
-        new TemplateHookPoint(TEMPLATE_PATH + "BuildSymbol", decoratedSymbolClass.getName(), buildAttributes)));
+            new TemplateHookPoint(TEMPLATE_PATH + "BuildSymbol", decoratedSymbolClass.getName(), buildAttributes)));
 
     return symbolBuilder;
   }
@@ -132,21 +141,15 @@ public class SymbolBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDCla
     attrs.add(this.getCDAttributeFacade().createAttribute(PROTECTED,
             symbolTableService.getScopeInterfaceFullName(), ENCLOSING_SCOPE_VAR));
 
-    // add only for scope spanning symbols
-    if (symbolClass.isPresentModifier() && (symbolTableService.hasScopeStereotype(symbolClass.getModifier())
-            || symbolTableService.hasInheritedScopeStereotype(symbolClass.getModifier()))) {
-      attrs.add(this.getCDAttributeFacade().createAttribute(PROTECTED,
-              symbolTableService.getScopeInterfaceFullName(), SPANNED_SCOPE_VAR));
-    }
     return attrs;
   }
 
   protected List<ASTCDMethod> getMethodsForDefaultAttrs(List<ASTCDAttribute> defaultAttrs,
                                                         BuilderMutatorMethodDecorator builderMutatorMethodDecorator) {
     return defaultAttrs.stream()
-        .map(builderMutatorMethodDecorator::decorate)
-        .flatMap(Collection::stream)
-        .collect(Collectors.toList());
+            .map(builderMutatorMethodDecorator::decorate)
+            .flatMap(Collection::stream)
+            .collect(Collectors.toList());
   }
 
 }
