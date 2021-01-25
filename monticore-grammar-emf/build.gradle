@@ -13,6 +13,7 @@ dependencies {
     implementation "org.antlr:antlr4-runtime:$antlr_version"
     implementation 'com.google.guava:guava:25.1-jre'
     implementation project(':monticore-runtime-emf')
+    implementation "org.apache.commons:commons-lang3:$commons_lang3_version"
     implementation 'org.eclipse.emf:org.eclipse.emf.ecore:2.15.0'
     implementation 'org.eclipse.emf:org.eclipse.emf.ecore.xmi:2.15.0'
     implementation 'org.eclipse.emf:org.eclipse.emf.common:2.15.0'
@@ -34,6 +35,11 @@ task copyTest(type: Copy) {
   into testDir
 }
 
+task copyTestResources(type: Copy) {
+    from "${project(':monticore-grammar').projectDir}/src/test/resources"
+    into "$buildDir/test/resources"
+}
+
 def grammarDir = "${project(':monticore-grammar').projectDir}/src/main/grammars"
 def grammarOutDir = "$buildDir/generated-sources/monticore/sourcecode"
 def testGrammarOutDir = "$buildDir/generated-test-sources/monticore/sourcecode"
@@ -50,7 +56,7 @@ fileTree(grammarDir).matching { include '**/*.mc4'}.each {
   def g = it
   def taskname = "generateGrammar${it.getName().substring(0,it.getName().lastIndexOf('.'))}"
   task  "$taskname" (type: MCTask) {
-    dependsOn(copySrc, copyTest)
+    dependsOn(copySrc, copyTest, copyTestResources)
     script = "de/monticore/monticore_emf.groovy"
     grammar = file g
     outputDir = file grammarOutDir
@@ -74,7 +80,7 @@ def testGrammars = "${project(':monticore-grammar').projectDir}/src/test/grammar
 fileTree(testGrammars).matching { include '**/*.mc4'}.each {
   def g = it
   task  "generateTest${it.getName().substring(0,it.getName().lastIndexOf('.'))}" (type: MCTask) {
-    dependsOn(copySrc, copyTest)
+    dependsOn(copySrc, copyTest, copyTestResources)
     grammar = file g
     outputDir = file testGrammarOutDir
     handcodedPath srcDir, testDir
@@ -95,7 +101,7 @@ def exampleGrammars = "${project(':monticore-grammar').projectDir}/src/main/exam
 fileTree(exampleGrammars).matching { include '**/*.mc4'}.each {
   def g = it
   task  "generateTest${it.getName().substring(0,it.getName().lastIndexOf('.'))}" (type: MCTask) {
-    dependsOn(copySrc, copyTest)
+    dependsOn(copySrc, copyTest, copyTestResources)
     grammar = file g
     outputDir = file testGrammarOutDir
     script = "de/monticore/monticore_emf.groovy"
@@ -109,6 +115,13 @@ fileTree(exampleGrammars).matching { include '**/*.mc4'}.each {
     outputs.upToDateWhen { uptoDate }
   }
   generateTest.dependsOn ("generateTest${it.getName().substring(0,it.getName().lastIndexOf('.'))}")
+}
+
+test {
+  exclude '**/GrammarInheritanceCycleTest.class'
+  exclude '**/GrammarNameEqualsFileNameTest.class'
+  exclude '**/MCGrammarParserTest.class'
+  exclude '**/MCGrammarPrettyPrinterTest.class'
 }
 
 compileTestJava.dependsOn (generateTest)

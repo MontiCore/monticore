@@ -7,63 +7,68 @@ import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._ast.CD4AnalysisNodeFactory;
 import de.monticore.grammar.grammar._ast.*;
-import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVisitor;
+import de.monticore.grammar.grammar._visitor.GrammarTraverser;
+import de.monticore.grammar.grammar._visitor.GrammarVisitor2;
+import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
+import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsTraverser;
 import de.monticore.utils.Link;
 
 import java.util.function.UnaryOperator;
 
 public class TerminalsToCDAttributes implements
-        UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>>, Grammar_WithConceptsVisitor {
-
-  Grammar_WithConceptsVisitor realThis = this;
-
-  @Override
-  public Grammar_WithConceptsVisitor getRealThis() {
-    return realThis;
-  }
-
-  @Override
-  public void setRealThis(Grammar_WithConceptsVisitor realThis) {
-    this.realThis = realThis;
-  }
+        UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {
 
   Link<ASTClassProd, ASTCDClass> link;
 
   @Override
   public Link<ASTMCGrammar, ASTCDCompilationUnit> apply(
           Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink) {
+    Grammar_WithConceptsTraverser traverser = Grammar_WithConceptsMill.traverser();
+    traverser.add4Grammar(new TerminalVisitor());
     for (Link<ASTClassProd, ASTCDClass> link : rootLink.getLinks(ASTClassProd.class,
             ASTCDClass.class)) {
       this.link = link;
-      link.source().accept(getRealThis());
+      link.source().accept(traverser);
     }
     return rootLink;
   }
 
-  @Override
-  public void visit(ASTTerminal terminal) {
-    if (terminal.isPresentUsageName()) {
-      ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
-      link.target().getCDAttributeList().add(cdAttribute);
-      new Link<>(terminal, cdAttribute, link);
+  private class TerminalVisitor implements GrammarVisitor2 {
+    public GrammarTraverser getTraverser() {
+      return traverser;
     }
-  }
 
-  @Override
-  public void visit(ASTKeyTerminal terminal) {
-    if (terminal.isPresentUsageName()) {
-      ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
-      link.target().getCDAttributeList().add(cdAttribute);
-      new Link<>(terminal, cdAttribute, link);
+    public void setTraverser(GrammarTraverser traverser) {
+      this.traverser = traverser;
     }
-  }
 
-  @Override
-  public void visit(ASTTokenTerminal terminal) {
-    if (terminal.isPresentUsageName()) {
-      ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
-      link.target().getCDAttributeList().add(cdAttribute);
-      new Link<>(terminal, cdAttribute, link);
+    GrammarTraverser traverser;
+
+    @Override
+    public void visit(ASTTerminal terminal) {
+      if (terminal.isPresentUsageName()) {
+        ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
+        link.target().getCDAttributeList().add(cdAttribute);
+        new Link<>(terminal, cdAttribute, link);
+      }
+    }
+
+    @Override
+    public void visit(ASTKeyTerminal terminal) {
+      if (terminal.isPresentUsageName()) {
+        ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
+        link.target().getCDAttributeList().add(cdAttribute);
+        new Link<>(terminal, cdAttribute, link);
+      }
+    }
+
+    @Override
+    public void visit(ASTTokenTerminal terminal) {
+      if (terminal.isPresentUsageName()) {
+        ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
+        link.target().getCDAttributeList().add(cdAttribute);
+        new Link<>(terminal, cdAttribute, link);
+      }
     }
   }
 }

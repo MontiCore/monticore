@@ -16,9 +16,11 @@ import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
+import de.monticore.grammar.grammar._visitor.GrammarHandler;
+import de.monticore.grammar.grammar._visitor.GrammarTraverser;
+import de.monticore.grammar.grammar._visitor.GrammarVisitor2;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTAction;
-import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVisitor;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 
@@ -26,9 +28,11 @@ import java.util.*;
 
 import static de.monticore.codegen.parser.ParserGeneratorHelper.printIteration;
 
-public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
+public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
 
   private MCGrammarSymbol grammarEntry;
+
+  GrammarTraverser traverser;
 
   /**
    * This list is used for the detection of the left recursion
@@ -105,7 +109,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
 
     // Print option
     if (ast.isPresentLexOption()) {
-      ast.getLexOption().accept(getRealThis());
+      ast.getLexOption().accept(getTraverser());
     }
 
     startCodeSection();
@@ -236,7 +240,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
 
         ASTRuleReference ruleRef = x.getRuleReference();
         if (ruleRef.isPresentSemanticpredicateOrAction() && ruleRef.getSemanticpredicateOrAction().isPredicate()) {
-          ruleRef.getSemanticpredicateOrAction().accept(getRealThis());
+          ruleRef.getSemanticpredicateOrAction().accept(getTraverser());
         }
 
 
@@ -388,7 +392,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     for (Iterator<ASTAlt> iter = alts.iterator(); iter.hasNext(); ) {
       addToAntlrCode(del);
 
-      iter.next().accept(getRealThis());
+      iter.next().accept(getTraverser());
 
       del = "|";
     }
@@ -399,7 +403,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     for (ASTLexAlt anAst : ast) {
       addToAntlrCode(del);
 
-      anAst.accept(getRealThis());
+      anAst.accept(getTraverser());
 
       del = "|";
     }
@@ -445,13 +449,13 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
 
     // Visit all alternatives
     if (ast.isPresentLexChar()) {
-      ast.getLexChar().accept(getRealThis());
+      ast.getLexChar().accept(getTraverser());
     } else if (ast.isPresentLexString()) {
-      ast.getLexString().accept(getRealThis());
+      ast.getLexString().accept(getTraverser());
     } else if (ast.isPresentLexNonTerminal()) {
-      ast.getLexNonTerminal().accept(getRealThis());
+      ast.getLexNonTerminal().accept(getTraverser());
     } else if (ast.isPresentLexAnyChar()) {
-      ast.getLexAnyChar().accept(getRealThis());
+      ast.getLexAnyChar().accept(getTraverser());
     }
 
     // Close block and print iteration
@@ -801,7 +805,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
   public List<String> createAntlrCode(ASTProd ast) {
     clearAntlrCode();
     parserHelper.resetTmpVarNames();
-    ast.accept(getRealThis());
+    ast.accept(getTraverser());
     return getAntlrCode();
   }
 
@@ -875,7 +879,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
       if (entry.getPredicatePair().getRuleReference().isPresentSemanticpredicateOrAction()) {
         ASTSemanticpredicateOrAction semPredicate = entry.getPredicatePair().getRuleReference().getSemanticpredicateOrAction();
         if (semPredicate.isPredicate()) {
-          semPredicate.accept(getRealThis());
+          semPredicate.accept(getTraverser());
         }
       }
 
@@ -891,7 +895,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
           // Action for determining positions of comments (First set position)
           addToAction("setActiveBuilder(_builder);\n");
         }
-        alt.accept(getRealThis());
+        alt.accept(getTraverser());
         if (embeddedJavaCode) {
           addToAction(positionActions.endPosition());
           addToAction(astActions.getBuildAction());
@@ -913,7 +917,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
             addActionToCodeSection();
             endCodeSection();
           }
-          alt.accept(getRealThis());
+          alt.accept(getTraverser());
           addToAction(positionActions.endPosition());
           addToAction(astActions.getBuildAction());
           addActionToCodeSectionWithNewLine();
@@ -1170,7 +1174,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     }
     endCodeSection();
 
-    follow2.get().accept(getRealThis());
+    follow2.get().accept(getTraverser());
 
     addToAntlrCode(end);
   }
@@ -1321,4 +1325,13 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     Arrays.asList(code).forEach(s -> action.append(s));
   }
 
+  @Override
+  public GrammarTraverser getTraverser() {
+    return this.traverser;
+  }
+
+  @Override
+  public void setTraverser(GrammarTraverser traverser) {
+    this.traverser = traverser;
+  }
 }

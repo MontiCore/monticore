@@ -14,8 +14,11 @@ import de.monticore.grammar.concepts.antlr.antlr._ast.ASTJavaCodeExt;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
+import de.monticore.grammar.grammar._visitor.GrammarTraverser;
+import de.monticore.grammar.grammar._visitor.GrammarVisitor2;
+import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTMCConcept;
-import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVisitor;
+import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsTraverser;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
@@ -326,7 +329,10 @@ public class MCGrammarInfo {
           ASTProd astProd = ruleSymbol.getAstNode();
           Optional<MCGrammarSymbol> refGrammarSymbol = MCGrammarSymbolTableHelper
               .getMCGrammarSymbol(astProd.getEnclosingScope());
-          astProd.accept(new TerminalVisitor(refGrammarSymbol));
+          TerminalVisitor tv = new TerminalVisitor(refGrammarSymbol);
+          Grammar_WithConceptsTraverser traverser = Grammar_WithConceptsMill.traverser();
+          traverser.add4Grammar(tv);
+          astProd.accept(traverser);
         }
       }
     }
@@ -364,7 +370,7 @@ public class MCGrammarInfo {
     return keywords.contains(rule);
   }
 
-  private class TerminalVisitor implements Grammar_WithConceptsVisitor {
+  private class TerminalVisitor implements GrammarVisitor2 {
 
     TerminalVisitor(Optional<MCGrammarSymbol> refGrammarSymbol) {
       this.refGrammarSymbol = refGrammarSymbol;
@@ -372,17 +378,15 @@ public class MCGrammarInfo {
 
     Optional<MCGrammarSymbol> refGrammarSymbol;
 
-    Grammar_WithConceptsVisitor realThis = this;
-
-    @Override
-    public Grammar_WithConceptsVisitor getRealThis() {
-      return realThis;
+    public GrammarTraverser getTraverser() {
+      return traverser;
     }
 
-    @Override
-    public void setRealThis(Grammar_WithConceptsVisitor realThis) {
-      this.realThis = realThis;
+    public void setTraverser(GrammarTraverser traverser) {
+      this.traverser = traverser;
     }
+
+    GrammarTraverser traverser;
 
     @Override
     public void visit(ASTTerminal keyword) {

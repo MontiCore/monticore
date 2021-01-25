@@ -1,0 +1,685 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.grammar;
+
+/**
+  The grammar describes the MontiCore grammar in its own format
+*/
+component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
+                                  de.monticore.types.MCSimpleGenericTypes {
+
+  /**
+    Used for embedding actions
+  */
+  external Action;
+
+  /**
+    Used as Expression in syntactic predicates
+  */
+  external ExpressionPredicate;
+
+  /**
+    Used for embedding concepts
+  */
+  external MCConcept;
+
+  /**
+    A MontiCore grammar describes a context free grammar in an own format
+      @attribute name The name of this grammar
+      @attribute supergrammar Supergrammars of this grammar
+      @attribute GrammarOption Options for this grammar
+      @attribute LexProd Lexical productions
+      @attribute ClassProd Class productions
+      @attribute EnumProd Enumeration productions
+      @attribute ExternalProd External productions
+      @attribute InterfaceProd List of all interface productions of this grammar
+      @attribute AbstractProd List of all abstract productions of this grammar
+      @attribute ASTRule List of all ast rules of this grammar
+      @attribute Concepts List of additional concepts
+      @attribute StartRule defines the start rule
+  */
+  symbol scope MCGrammar =
+    ("package" package:(Name& || ".")+ ";")?
+    (importStatement:MCImportStatement)*
+
+    GrammarAnnotation? ["component"]? key("grammar") Name
+      ("extends" supergrammar:(GrammarReference || ",")+ )?
+      "{"
+         (
+           GrammarOption
+         |
+           LexProd
+         |
+           ClassProd
+         |
+           EnumProd
+         |
+           ExternalProd
+         |
+           InterfaceProd
+         |
+           AbstractProd
+         |
+           ASTRule
+         |
+           SymbolRule
+         |
+           ScopeRule
+         |
+           Concept
+         |
+           StartRule
+         |
+           SplitRule
+         |
+           KeywordRule
+         )*
+      "}" ;
+
+  // One OptionBlock, one StartRule, one ScopeRule only
+  astrule MCGrammar =
+    grammarOption:GrammarOption max=1
+    startRule:StartRule max=1
+    scopeRule:ScopeRule max=1 ;
+ 
+  symbolrule MCGrammar =
+    isComponent:boolean
+    splitRules:String*
+    noKeywords:String*;
+
+
+  /**
+    A GrammarReference references another grammar
+    @attribute name Qualified name of the other grammar
+  */
+  GrammarReference =
+    (Name& || ".")+  ;
+
+  // --------------------------------------------------------------------
+  // Options
+
+  /**
+    Options for a grammar
+    @attribute followOption Expression that shall be realized by lexer rules
+    @attribute genericOption Expression that shall be realized by lexer rules
+  */
+  GrammarOption=
+    "options" "{"
+      (
+        FollowOption
+      |
+        AntlrOption
+      |
+        KeywordOption
+      )*
+    "}" ;
+
+  /**
+    A FollowOption specifies an additional follow set for a production
+    @attribute prodName name of the production
+    @attribute alt the follow set
+  */
+  FollowOption =
+    "follow" prodName:Name Alt ";";
+
+
+  /**
+    A antlr option is an option that is passed on Anltr itself
+    @attribute name name of the option
+    @attribute value optional value
+  */
+  AntlrOption =
+    Name  ("=" value:Name |"=" value:String)? ;
+
+  KeywordOption =
+    ["allkeywords"] |
+    "keywords" Name+ ";";
+
+  /**
+    The start rule should be the rule defining the whole model.
+    If there is no start rule the first rule of the grammar is 
+    used as start rule.
+    @attribute ruleReference name of the start rule
+  */
+  StartRule =
+    "start" Name ";";
+
+  GrammarAnnotation =
+   {noSpace(2)}? "@" ([key("Deprecated")] ( "(" message:String ")" )?  | [key("Override")]);
+
+  // --------------------------------------------------------------------
+  // Productions
+
+  /**
+    Productions form the syntactical structure of the grammar
+  */
+  interface symbol scope Prod = GrammarAnnotation* Name;
+  
+  symbolrule Prod = 
+    isStartProd:boolean 
+    isInterface:boolean 
+    isAbstract:boolean 
+    isExternal:boolean  
+    isEnum:boolean 
+    isLexerProd:boolean 
+    isScopeSpanning:boolean
+    isSymbolDefinition:boolean
+    ;
+
+  /**
+    ParserProduction are handled by the parser
+  */
+  interface ParserProd extends Prod;
+
+ // --------------------------------------------------------------------
+ // Productions
+
+  /**
+    A LexProd is formed by the keyword ident in the beginning followed by
+    an option slash indicating that this LexProd is protected.
+    The following name, options and symbol are handed to antlr directly
+    @attribute Protected If true, this identifier is protected and call
+      only be called by
+                       other identifiers
+    @attribute Name Name of this identifier, only uppercase letters should be used
+    @attribute LexOption Options for lexer rule
+    @attribute InitAction Init actions for lexer rule
+    @attribute Alts List of alts for this lexer rule
+    @attribute Variable Variable used for mapping
+                      (if type != null) or standard type (if type == null)
+    @attribute Type Type of the lexer tokens
+    @attribute Block Block used if other than standard mapping shall be used
+  */
+  LexProd implements Prod =
+    GrammarAnnotation* (["fragment"] | ["comment"])*
+    "token" Name
+    (
+      (
+        LexOption ("{" initAction:Action "}")? // Statements
+      |
+        "{" initAction:Action "}"
+      )?
+      "=" alt:(LexAlt || "|")+
+
+      (":"  ("->" lexerCommand:Name)? ("{" endAction:Action  "}")? (variable:Name&
+        ("->" type:( Name& || ".")+ (":" "{" block:Action "}" )? )? )? // Statements
+      )?
+    )
+    ";";
+
+
+  /**
+    An Enumeration-Production
+    @attribute name Name of the production
+    @attribute constant List of all constants
+  */
+  EnumProd implements Prod =
+    GrammarAnnotation* "enum" Name "=" (Constant || "|")+ ";";
+
+
+  /**
+    A ExternalProduction represents a hole in the grammar
+    where another production can be plugged in
+    @attribute name Name of the hole
+    @attribute MCType External type used for this hole rule
+  */
+  ExternalProd implements Prod =
+    GrammarAnnotation* "external" SymbolDefinition* Name MCType? ";";
+
+
+  /**
+    An ASTInterfaceProd represents an explicit definition for an
+    interface production and may overwrite the standard generated rule
+    which is mentioned in the productions
+    @attribute external True if this interface is programmed manually
+    @attribute name Name of the production
+    @attribute superInterfaceRule Super interfaces
+    @attribute aSTSuperInterface Super interfaces abstract syntax only
+  */
+  InterfaceProd implements ParserProd =
+    GrammarAnnotation* "interface" SymbolDefinition* Name
+    (
+      "extends" superInterfaceRule:(RuleReference || "," )+
+    |
+      "astextends" aSTSuperInterface:(MCType || ",")+
+    )*
+   ("=" alt:(Alt || "|")+ )? ";";
+
+
+  /**
+    An ASTAbstractprod represents an abstract production in a
+    context free grammar
+    @attribute name Name of the production
+    @attribute superRule Super productions
+    @attribute superInterfaceRule Super interfaces
+    @attribute aSTSuperClass Super productions (abstract syntax only)
+    @attribute aSTSuperInterface Super interfaces  (abstract syntax only)
+  */
+  AbstractProd implements Prod =
+    GrammarAnnotation* "abstract" SymbolDefinition* Name
+    (
+      "extends" superRule:(RuleReference || ",")+
+    |
+      "implements" superInterfaceRule:(RuleReference || ",")+
+    |
+      "astextends" aSTSuperClass:(MCType || ",")+
+    |
+      "astimplements" aSTSuperInterface:(MCType || ",")+
+    )*
+    ("=" alt:(Alt || "|")+ )? ";";
+
+  /**
+    A rule represents a rule (production) in a context free grammar.
+    @attribute name Name of the rule
+    @attribute superrule Rule reference to a super rule
+    @attribute superInterfaceRule Rule reference to a super interface rule
+    @attribute aSTSuperClass Rule reference to a super rule
+               (used for abstract syntax only)
+    @attribute aSTSuperInterfacerule Rule reference to a super rule
+               (used for abstract syntax only)
+    @attribute action Action executed priot to the rule body
+    @attribute alts List of alternatives representing the body of the rule
+  */
+  ClassProd implements ParserProd =
+    GrammarAnnotation* SymbolDefinition* Name
+    (
+       "extends" superRule:(RuleReference || ",")+
+    |
+       "implements" superInterfaceRule:(RuleReference || ",")+
+    |
+       "astextends" aSTSuperClass:(MCType || ",")+
+    |
+       "astimplements" aSTSuperInterface:(MCType || ",")+
+    )*
+
+    ("{" Action "}")?    // Statements
+    ("=" (Alt || "|")+ )? ";";
+
+  astrule ClassProd =
+    method public String toString() { return name; } ;
+
+
+  /**
+    Cardinality
+    @attribute True if unbounded cardinality (min and max are meaningless)
+    @attribute min Minimal cardinality
+    @attribute max Maximal cardinality
+  */
+  Card =
+   (
+     iteration:["?"|"*"|"+"]
+   |
+     "min" "=" min:Digits
+     ("max" "=" ( max:Digits | max:"*"))?
+   |
+     "max" "=" ( max:Digits | max:"*")
+   );
+
+
+
+  /**
+    A RuleReference refers to another production
+  */
+  RuleReference  =
+    SemanticpredicateOrAction? Name ("<"prio:Digits">")? ;
+
+  astrule RuleReference =
+    method public String getTypeName() {
+      return getName();
+    }
+    method public boolean isExternal() {
+        return false;
+    };
+
+  // --------------------------------------------------------------------
+  // Production body
+
+
+  /**
+    An alternative represents an alternative in a rule or block and
+    contains (Rule)Components
+    @attribute rightAssoc The alternative is right associative (the default is left)
+    @attribute Components List of the rule components of this alternative
+  */
+  Alt =
+    [rightAssoc:"<rightassoc>"]? GrammarAnnotation? component:RuleComponent* ;
+
+
+  /**
+    RuleComponents are parts of the alternatives
+  */
+  interface symbol RuleComponent;
+  
+  symbolrule RuleComponent = 
+    isTerminal:boolean
+    isNonterminal:boolean
+    isConstantGroup:boolean
+    isConstant:boolean
+    isLexerNonterminal:boolean
+    isList:boolean
+    isOptional:boolean
+    subProds:String* 
+    referencedType:Name?
+    ;
+
+  /**
+    A NonTerminalSeparator is a shortcut for the description of list
+    structures
+    @attribute variableName Name for a variable binding (Note: Only one attribute of
+                          VariableName and UsuageName may have a value)
+    @attribute usageName Name for attribute
+    @attribute name The name of the nonterminal
+    @attribute separator The terminal as list separator
+    @attribute plusKeywords True indicates that all keywords are allowed as well
+    @attribute iteration Iteration of nonterminal
+  */
+  NonTerminalSeparator implements RuleComponent =
+    (usageName:Name&  ":")?
+    "(" Name  ("@" referencedSymbol:Name)? plusKeywords:["&"]? "||" separator:String ")" iteration:["*"|"+"];
+
+
+
+  /**
+    A block is something used in rules which is surrounded by ()
+    @attribute Option options for this look like a non-greedy behavior
+    @attribute Alts List of alternatives
+    @attribute Iteration Iteration of this block
+  */
+  Block  implements RuleComponent =
+    "("
+    (
+      (
+        Option  ( "init" "{" initAction:Action "}" )? // Statements
+      |
+        "init" "{" initAction:Action "}"  // Statements
+      )
+      ":"
+    )?
+    alt:(Alt || "|")+ ")"
+    iteration:["?"|"*"|"+"]?;
+
+
+  /**
+    Option values handed to Antlr
+    @attribute optionValue Value handes to Antlr
+  */
+  Option =
+    "options" "{" OptionValue+ "}";
+
+
+  /**
+    Key/Value pairs handed to Antlr
+    @attribute key Key
+    @attribute value Value
+  */
+  OptionValue =
+    key:Name "=" value:Name ";" ;
+
+
+  /**
+    Reference to another rule
+    @attribute variableName Name for a variable binding
+    (Note: Only one attribute of VariableName and UsuageName
+    may have a value)
+    @attribute usageName Name for attribute
+    @attribute plusKeywords True indicates that all keywords are allowed as well
+    @attribute iteration Iteration of nonterminal
+  */
+  NonTerminal implements RuleComponent =
+    (usageName:Name&  ":")?
+    Name ("@" referencedSymbol:Name)? (genSymbol:["!!"] symbolName:Name?)?
+    plusKeywords:["&"]? iteration:["?"|"*"|"+"]?;
+
+
+  interface ITerminal =
+    usageName:Name?;
+
+  astrule ITerminal =
+      Name;
+
+  /**
+    A Terminal is usually something like "," or "start"
+  */
+  Terminal implements RuleComponent, ITerminal =
+    (usageName:Name&  ":")?
+    name:String
+    iteration:["?"|"*"|"+"]?;
+
+  /**
+    Use KeyTerminal instead of Terminal if you don't want this to be a keyword
+  */
+  KeyTerminal implements RuleComponent, ITerminal =
+    (usageName:Name&  ":")?
+    KeyConstant
+    iteration:["?"|"*"|"+"]?;
+
+  TokenTerminal implements RuleComponent, ITerminal =
+    (usageName:Name&  ":")?
+    TokenConstant
+    iteration:["?"|"*"|"+"]?;
+
+  TokenConstant =
+    "token" "(" String ")";
+
+  KeyConstant =
+    "key" "(" (String || "|")+ ")";
+
+  /**
+    Constants are constant string but lead to an attribute
+  */
+  Constant implements ITerminal =
+    (usageName:Name& ":")? (String | KeyConstant | TokenConstant) ;
+
+  /**
+    Constants are sth like keywords which one needs to know that they
+    where there, e.g. public. In the ast-class they are reflected
+    as int oder boolean isMethods 
+  */
+  ConstantGroup implements RuleComponent =
+     (usageName:Name&  ":")?
+     "[" Constant ("|" Constant )* "]"
+     iteration:["?"|"*"|"+"]? ;
+
+
+  /**
+    End of file as EOF keyword
+  */
+  Eof implements RuleComponent =
+    "EOF";
+
+  /**
+    Handed on as antlr action or predicate, realised by external JavaDSLParser
+  */
+  SemanticpredicateOrAction implements RuleComponent=
+     "{" ExpressionPredicate "}" Predicate:["?"]
+     |
+      "{" Action "}"
+     ;
+
+
+  // --------------------------------------------------------------------
+  // Concept
+
+
+  /**
+    The grammar can be extended by using concepts
+    @attribute name Name of the concept
+    @attribute concept The concept itself
+  */
+  Concept=
+    "concept" Name& concept:MCConcept;
+
+  // --------------------------------------------------------------------
+  // Control rules
+
+  /**
+    Allows splitting of token, such as ">>" to single character token
+  */
+  SplitRule =
+    "splittoken" (String || ",")+ ";";
+
+  /**
+    Makes keywords local 
+  */
+  KeywordRule =
+    "nokeyword" (String || ",")+ ";";
+
+
+  // ----------------------------------------------------------------------
+  // AST
+
+
+  /**
+    An ASTRule contains additional information for the class
+    generation process
+    @attribute type Type this rule refers to
+    @attribute aSTSuperInterface Super interfaces abstract syntax only
+    @attribute aSTSuperClass Super productions abstract syntax only
+    @attribute methods Methods to be added to the class generation
+    @attribute AdditionalAttribute Attributes to be added to the class generation
+  */
+  ASTRule =
+     "astrule" type:Name
+    (
+      "astextends" aSTSuperClass:(MCType || ",")+
+    |
+      "astimplements" aSTSuperInterface:(MCType || ",")+
+    )*
+    (
+      "=" ( GrammarMethod | AdditionalAttribute )*
+    )? ";";
+
+
+  /**
+    A method to be added to a certain ASTClass
+    @attribute public True if method is public
+    @attribute private True if method is private
+    @attribute protected True if method is protected
+    @attribute final True if method is final
+    @attribute static True if method is static
+    @attribute returnType Qualified name of the return type of the method
+    @attribute name Name of the method
+    @attribute methodParameter List of the parameters
+    @attribute exceptions Lit of the thrown exceptions
+    @attribute body Body of the Method (mostly a JavaLazy-Object)
+  */
+  GrammarMethod=
+      "method"
+      (["public"] | ["private"] | ["protected"])?
+      ["final"]?
+      ["static"]?
+      MCReturnType Name
+      "(" (MethodParameter || ",")* ")"
+      ("throws" exception:(MCType || ",")+)?
+      "{" body:Action "}" ; // Statements
+
+
+  /**
+    Formal parameter of a method
+    @attribute type Qualified name of the type
+    @attribute name Name of the parameter
+  */
+  MethodParameter =
+    type:MCType Name;
+
+
+  /**
+    An attribute to be added to a certain ASTClass
+    @attribute name Name of the attribute
+    @attribute genericType Name of the referring type
+    @attribute card Cardinality
+  */
+  symbol AdditionalAttribute =
+    (Name  ":")?
+    MCType
+    Card?;
+
+  symbolrule AdditionalAttribute =
+    type:String
+    isAstAttr:boolean;
+
+  // --------------------------------------------------------------------
+  // Lexer
+
+  LexAlt =
+    lexComponent:LexComponent*;
+
+  interface LexComponent;
+
+  LexBlock implements LexComponent =
+    negate:["~"]? "("
+    (
+      (
+        option:LexOption ("init" "{" initAction:Action "}")? // Statements
+      |
+        "init" "{" initAction:Action "}" // Statements
+      )
+      ":"
+     )?
+     lexAlt:(LexAlt || "|")+ ")"
+     (iteration:["?"|"*"|"+"])?;
+
+  LexCharRange implements LexComponent =
+     negate:["~"]? lowerChar:Char ".." upperChar:Char;
+
+  LexChar implements LexComponent =
+    negate:["~"]? Char ;
+
+  LexAnyChar implements LexComponent =
+    ".";
+
+  LexString implements LexComponent =
+    string:String ;
+
+  LexActionOrPredicate implements LexComponent =
+     "{" ExpressionPredicate "}" Predicate:["?"]
+     ;
+
+  LexNonTerminal implements LexComponent, RuleComponent =
+    Name ;
+
+  LexSimpleIteration implements LexComponent =
+    (LexNonTerminal | LexString | LexChar | LexAnyChar) iteration:["?"|"*"|"+"] question:["?"]?;
+
+  LexOption =
+    "options" "{" iD:Name "=" value:Name ";" "}";
+
+
+  // --------------------------------------------------------------------
+  // Symbol Table
+
+  SymbolDefinition =
+    genSymbol:["symbol"] |
+    genScope:["scope"] ("(" (["shadowing"] | ["non_exporting"] | ["ordered"])+ ")")?;
+
+  /**
+    An SymbolRule contains additional information for the class
+    generation process
+    @attribute type Type this rule refers to
+    @attribute superInterface Super interfaces abstract syntax only
+    @attribute superClass Super productions abstract syntax only
+    @attribute methods Methods to be added to the class generation
+    @attribute additionalAttribute Attributes to be added to the class generation
+  */
+  SymbolRule =
+     "symbolrule"  type:Name
+    (
+      "extends" superClass:(MCType || ",")+
+    |
+      "implements" superInterface:(MCType || ",")+
+    )*
+    (
+      "=" ( GrammarMethod | AdditionalAttribute )*
+    )? ";";
+    
+  ScopeRule =
+    "scoperule" (
+      "extends" superClass:(MCType || ",")+
+    |
+      "implements" superInterface:(MCType || ",")+
+    )*
+    (
+      "=" ( GrammarMethod | AdditionalAttribute )*
+    )? 
+   ";";
+     
+}

@@ -6,6 +6,7 @@ package de.monticore.symbols.basicsymbols._symboltable;
 
 import com.google.common.collect.Lists;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.se_rwth.commons.logging.Log;
@@ -25,9 +26,11 @@ public class BasicSymbolsScopeDeSerTest {
   @Before
   public void setUp(){
     LogStub.init();
-//    Log.enableFailQuick(false);
+    Log.enableFailQuick(false);
 
     //initialize scope, add some TypeSymbols, TypeVarSymbols, VariableSymbols and FunctionSymbols
+    BasicSymbolsMill.reset();
+    BasicSymbolsMill.init();
     scope = BasicSymbolsMill.artifactScope();
     scope.setPackageName("");
     scope.setImportsList(Lists.newArrayList());

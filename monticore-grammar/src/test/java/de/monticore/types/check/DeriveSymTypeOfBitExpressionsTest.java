@@ -39,6 +39,8 @@ public class DeriveSymTypeOfBitExpressionsTest {
 
   @Before
   public void setupForEach() {
+    CombineExpressionsWithLiteralsMill.reset();
+    CombineExpressionsWithLiteralsMill.init();
     // Setting up a Scope Infrastructure (without a global Scope)
     scope = CombineExpressionsWithLiteralsMill.scope();
     scope.setEnclosingScope(null);       // No enclosing Scope: Search ending here
