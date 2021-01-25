@@ -28,7 +28,9 @@ shadowJar { // all in one jar
   zip64 true
 }
 
-jar.dependsOn(shadowJar)
+if(findProperty('ci') == null){
+  jar.dependsOn(shadowJar)
+}
 
 // configure deployment
 publishing {

@@ -31,8 +31,8 @@ stages:
 build:
   stage: build
   script:
-    - "cd monticore-tool && ./gradlew build $GRADLE_OPTS"
-    - "cd .. &&./gradlew buildMC $GRADLE_OPTS"
+    - "cd monticore-tool && ./gradlew build $GRADLE_OPTS -Pci"
+    - "cd .. &&./gradlew buildMC $GRADLE_OPTS -Pci"
   artifacts: 
     paths:
       - ".gradle"
