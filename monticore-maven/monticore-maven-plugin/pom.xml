@@ -14,7 +14,11 @@
   <artifactId>monticore-maven-plugin</artifactId>
 
   <packaging>maven-plugin</packaging>
-
+  
+  <properties>
+    <cd4analysis.version>1.7.0.7-SNAPSHOT</cd4analysis.version>
+    <last.mc.release>6.6.0.1</last.mc.release>
+  </properties>
   <!-- == PROJECT METAINFORMATION ========================================= -->
 
   <name>MontiCore: Maven Plugin</name>
@@ -35,12 +39,14 @@
     </dependency>
 
     <dependency>
-      <groupId>de.monticore</groupId>
+      <groupId>de.monticore.bs</groupId>
+      <version>${last.mc.release}</version>
       <artifactId>monticore-runtime</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>de.monticore</groupId>
+      <groupId>de.monticore.bs</groupId>
+      <version>${last.mc.release}</version>
       <artifactId>monticore-runtime-emf</artifactId>
     </dependency>
 

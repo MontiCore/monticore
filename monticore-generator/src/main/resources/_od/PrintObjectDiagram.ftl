@@ -5,7 +5,7 @@
   pp.print(modelName);
   pp.println(" {");
   pp.indent();
-  node.accept(getRealThis());
+  node.accept(getTraverser());
   pp.print(";");
   pp.unindent();
   pp.println("}");

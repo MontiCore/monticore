@@ -1,11 +1,13 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
+
 # Release Notes
 
 ##  MontiCore 6.7.0-SNAPSHOT
 to be released
 
 ### Additions
-* Add new CLI for the MontiCOre generator engine
+* Add new CLI for the MontiCore generator engine
+
 ### Changes
 * The context conditions use the new traverser infrastructure. This leads to small changes in the api.
   The return value of the method addCoCo is void.

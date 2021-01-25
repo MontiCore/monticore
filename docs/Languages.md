@@ -38,7 +38,6 @@ MontiCore projects are hosted at
     and partially also at
 * [`https://github.com/MontiCore/`](https://github.com/MontiCore/monticore)
 
-
 ## List of Languages 
 
 <!--
@@ -285,7 +284,7 @@ component InteriorLight {                           // MontiArc language
   [*detailed description*](https://git.rwth-aachen.de/monticore/montiarc/core/-/blob/modularization/languages/montiarc-fe/src/main/grammars/MontiArc.md)
 
 
-### [OCL/P](https://git.rwth-aachen.de/monticore/languages/OCL) (Alpha: Intention to become stable)
+### [OCL/P](https://git.rwth-aachen.de/monticore/languages/OCL) (Beta: Intention to become stable)
 * OCL/P is the textual representation of the UML OCL standard, adapted 
   with Java-like syntax.
   It's main goal is the usage in combination with other languages like 
@@ -299,8 +298,8 @@ component InteriorLight {                           // MontiArc language
   **transitive closure operator**.
 * OCL/P comes with an 
   [OCL to Java generator](https://git.rwth-aachen.de/monticore/languages/OCL2Java)
-  and a second generator for OCL in combination with 
-  [*Embedded MontiArc*](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/OCL_EMA2Java).
+  and is used in combination with 
+  [*Embedded MontiArc*](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/OCL_EMA2Java) and the MontiCore artefact tooling.
 * Main grammar 
   [`ocl.monticore.ocl.OCL`](https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/develop/src/main/grammars/de/monticore/ocl/OCL.mc4), 
   [Expressions](https://git.rwth-aachen.de/monticore/languages/OCL/-/tree/develop/src/main/grammars/de/monticore/ocl/expressions),
@@ -398,8 +397,8 @@ sequencediagram AuctionTest {
 * The SI Unit project aims to deliver SI units to MontiCore-based languages with expressions. 
   It provides a grammar for all types of SI units and prefixes usable for type 
   definition.
-* Second, it provides the SI Unit literals, such as "5 km" as expression values
-  and a language for SI unit types, such as "km/h" or "km/h<long>". Some examples:
+* Second, it provides the SI Unit literals, such as `5 km` as expression values
+  and a language for SI unit types, such as `km/h` or `km/h<long>`. Some examples:
   ```
     km/h speed = 5 m / 27 s                         // variable definition using type km/h
     speed = (3 * 4m  +  17km/h * 10h) / 3.5h        // values with SI unit types
@@ -410,8 +409,8 @@ sequencediagram AuctionTest {
   The SI unit literals integrate with MontiCore's expressions and the
   SI Unit types integrate with MontiCore's type system. 
   The SI unit language remains *fully type safe*.
-* The math version uses "km/h" as idealistic full precision real number, while the
-  computing version allows to contrain  the precision with "km/h<long>". 
+* The math version uses `km/h` as idealistic full precision real number, while the
+  computing version allows to contrain  the precision with `km/h<long>`. 
 * Main grammar components:
     * [SI units](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/siunits/SIUnits.mc4)
     * [SI unit literals](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/siunits/SIUnitLiterals.mc4)

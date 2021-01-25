@@ -182,6 +182,10 @@ task testIT {
   )
 }
 
+task buildAll(type: GradleBuild) {
+  tasks = [ 'build' ]
+}
+
 
 configure([project(':monticore-grammar'),
            project(':monticore-grammar-emf'),

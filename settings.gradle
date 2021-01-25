@@ -18,7 +18,11 @@ pluginManagement {
 }
 
 rootProject.name = 'monticore'
-includeBuild('monticore-tool')
+
+boolean inComposite = gradle.parent != null
+if (!inComposite) {
+  includeBuild('monticore-tool')
+}
 
 include(':monticore-runtime')
 include(':monticore-grammar')
