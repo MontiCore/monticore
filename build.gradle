@@ -213,6 +213,18 @@ if(!hasProperty('bootstrap')) {
  *  Build the test projects, i.e. integration tests and experiments.
  *  This includes code generation for these projects and JUnit tests.
  */
+task testIT {
+  group("build")
+  description('Build the test projects, i.e. integration tests and experiments.')
+  dependsOn(
+          project(":monticore-test").subprojects.collect {
+            it.tasks.getByName "test"
+          }
+  )
+}
+
+task buildAll(type: GradleBuild) {
+    dependsOn(subprojects.collect {getTasksByName("build",false)})
 if(!hasProperty('bootstrap')) {
   task testIT {
     group("build")
@@ -249,3 +261,5 @@ configure([project(':monticore-grammar'),
     }
   }
 }
+
+defaultTasks 'build'
