@@ -2,7 +2,7 @@
 package de.monticore.codegen.mc2cd.transl.creation;
 
 import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
+import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;

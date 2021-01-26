@@ -74,7 +74,7 @@ package de.monticore;
  import de.monticore.codegen.cd2java.top.TopDecorator;
  import de.monticore.codegen.cd2java.typecd2java.TypeCD2JavaDecorator;
  import de.monticore.codegen.mc2cd.MC2CDTransformation;
- import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
+ import de.monticore.grammar.MCGrammarSymbolTableHelper;
  import de.monticore.codegen.mc2cd.TransformationHelper;
  import de.monticore.codegen.mc2cd.scopeTransl.MC2CDScopeTranslation;
  import de.monticore.codegen.mc2cd.symbolTransl.MC2CDSymbolTranslation;
@@ -86,9 +86,11 @@ package de.monticore;
  import de.monticore.grammar.cocos.GrammarCoCos;
  import de.monticore.grammar.grammar._ast.ASTMCGrammar;
  import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
- import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
  import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
- import de.monticore.grammar.grammar_withconcepts._symboltable.*;
+ import de.monticore.grammar.grammar_withconcepts._symboltable.IGrammar_WithConceptsGlobalScope;
+ import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
+ import de.monticore.grammar.grammarfamily._cocos.GrammarFamilyCoCoChecker;
+ import de.monticore.grammar.grammarfamily._symboltable.*;
  import de.monticore.io.paths.IterablePath;
  import de.monticore.io.paths.ModelPath;
  import de.se_rwth.commons.Joiners;
@@ -272,9 +274,9 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    */
   public void storeGrammarSymbol(ASTMCGrammar grammar, String location) {
     // as there are no nested grammars, all grammar symbols have an artifact scope as enclosing scope.
-    Grammar_WithConceptsArtifactScope enclosingScope = (Grammar_WithConceptsArtifactScope) grammar.getEnclosingScope();
+    GrammarFamilyArtifactScope enclosingScope = (GrammarFamilyArtifactScope) grammar.getEnclosingScope();
     Path locPath = Paths.get(__configuration.getOut().getAbsolutePath(), location);
-//  new Grammar_WithConceptsScopeDeSer().store(enclosingScope, locPath);
+//  new GrammarFamilyScopeDeSer().store(enclosingScope, locPath);
   }
 
   /**
@@ -288,7 +290,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param outputDirectory The output directory for generated Java code
    */
   public void generateParser(GlobalExtensionManagement glex, List<ASTCDCompilationUnit> cds, 
-                             ASTMCGrammar grammar, Grammar_WithConceptsGlobalScope symbolTable,
+                             ASTMCGrammar grammar, GrammarFamilyGlobalScope symbolTable,
                              IterablePath handcodedPath, File outputDirectory) {
     // first cd (representing AST package) ist relevant 
     // -> will be only one cd in the future
@@ -303,7 +305,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param outputDirectory output directory for generated Java code
    */
   public void generateParser(GlobalExtensionManagement glex, ASTCDCompilationUnit astClassDiagram, ASTMCGrammar grammar,
-                             Grammar_WithConceptsGlobalScope symbolTable,
+                             GrammarFamilyGlobalScope symbolTable,
                              IterablePath handcodedPath, File outputDirectory) {
     Log.errorIfNull(
         grammar,
@@ -319,7 +321,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param outputDirectory output directory for generated Java code
    */
   public void generateParser(GlobalExtensionManagement glex, ASTMCGrammar grammar,
-                             Grammar_WithConceptsGlobalScope symbolTable,
+                             GrammarFamilyGlobalScope symbolTable,
                              IterablePath handcodedPath, File outputDirectory, boolean embeddedJavaCode, Languages lang) {
     Log.errorIfNull(
             grammar,
@@ -331,7 +333,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param ast
    * @return
    */
-  public ASTMCGrammar createSymbolsFromAST(IGrammar_WithConceptsGlobalScope globalScope, ASTMCGrammar ast) {
+  public ASTMCGrammar createSymbolsFromAST(IGrammarFamilyGlobalScope globalScope, ASTMCGrammar ast) {
     // Build grammar symbol table (if not already built)
     String qualifiedGrammarName = Names.getQualifiedName(ast.getPackageList(), ast.getName());
     Optional<MCGrammarSymbol> grammarSymbol = globalScope
@@ -342,7 +344,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     if (grammarSymbol.isPresent()) {
       result = grammarSymbol.get().getAstNode();
     } else {
-      Grammar_WithConceptsPhasedSTC stCreator = new Grammar_WithConceptsPhasedSTC(globalScope);
+      GrammarFamilyPhasedSTC stCreator = new GrammarFamilyPhasedSTC(globalScope);
       stCreator.createFromAST(result);
       globalScope.addLoadedFile(qualifiedGrammarName);
     }
@@ -380,8 +382,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
       result = (ASTCDCompilationUnit) cdSymbol.get().getEnclosingScope().getAstNode();
       Log.debug("Used present symbol table for " + cdSymbol.get().getFullName(), LOG_ID);
     } else {
-      Grammar_WithConceptsPhasedSTC stCreator = new Grammar_WithConceptsPhasedSTC();
-      IGrammar_WithConceptsArtifactScope artScope = stCreator.createFromAST(result);
+      GrammarFamilyPhasedSTC stCreator = new GrammarFamilyPhasedSTC();
+      IGrammarFamilyArtifactScope artScope = stCreator.createFromAST(result);
       globalScope.addSubScope(artScope);
       globalScope.addLoadedFile(qualifiedCDName);
     }
@@ -393,10 +395,11 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param ast
    * @param scope
    */
-  public void runGrammarCoCos(ASTMCGrammar ast, Grammar_WithConceptsGlobalScope scope) {
+  public void runGrammarCoCos(ASTMCGrammar ast, IGrammar_WithConceptsGlobalScope scope) {
     // Run context conditions
-    Grammar_WithConceptsCoCoChecker checker = new GrammarCoCos().getCoCoChecker();
-    checker.handle(ast);
+    GrammarFamilyCoCoChecker checker = new GrammarFamilyCoCoChecker();
+    checker.addChecker((new GrammarCoCos()).getCoCoChecker());
+    checker.checkAll(ast);
     return;
   }
 
@@ -1123,15 +1126,15 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     return createMCGlobalScope(modelPath);
   }
 
-  public IGrammar_WithConceptsGlobalScope createMCGlobalScope(ModelPath modelPath) {
-    IGrammar_WithConceptsGlobalScope scope = Grammar_WithConceptsMill.globalScope();
+  public IGrammarFamilyGlobalScope createMCGlobalScope(ModelPath modelPath) {
+    IGrammarFamilyGlobalScope scope = GrammarFamilyMill.globalScope();
     // reset global scope
     scope.clear();
 
     // Set Fileextension and ModelPath
     scope.setFileExt("mc4");
     scope.setModelPath(modelPath);
-    return (Grammar_WithConceptsGlobalScope) scope;
+    return scope;
   }
 
   /**
@@ -1178,7 +1181,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
      */
     @Override
     protected void doRun(String script, Configuration configuration) {
-      Grammar_WithConceptsMill.init();
+      GrammarFamilyMill.init();
       GroovyInterpreter.Builder builder = GroovyInterpreter.newInterpreter()
               .withScriptBaseClass(MontiCoreScript.class)
               .withImportCustomizer(new ImportCustomizer().addStarImports(DEFAULT_IMPORTS)

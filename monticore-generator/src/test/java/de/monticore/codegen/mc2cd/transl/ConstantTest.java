@@ -6,6 +6,7 @@ import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
+import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
 import org.junit.BeforeClass;
 
 import java.nio.file.Paths;
@@ -18,7 +19,7 @@ public class ConstantTest {
 
   @BeforeClass
   public static void setup(){
-    Grammar_WithConceptsMill.init();
+    GrammarFamilyMill.init();
   }
   
   public ConstantTest() {

@@ -3,7 +3,7 @@
 package de.monticore.codegen.parser.antlr;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
+import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.parser.ParserGeneratorHelper;
 import de.monticore.grammar.HelperGrammar;

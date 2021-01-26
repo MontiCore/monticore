@@ -6,7 +6,7 @@ import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TestHelper;
-import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
+import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -22,7 +22,7 @@ public class DerivedAttributeNameTest {
 
   @BeforeClass
   public static void setup(){
-    Grammar_WithConceptsMill.init();
+    GrammarFamilyMill.init();
   }
 
   @Before
