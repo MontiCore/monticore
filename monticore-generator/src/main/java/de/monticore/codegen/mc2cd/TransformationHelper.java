@@ -15,7 +15,9 @@ import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
-import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVisitor;
+import de.monticore.grammar.grammar._visitor.GrammarVisitor2;
+import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
+import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsTraverser;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcarraytypes._ast.ASTMCArrayType;
@@ -575,28 +577,19 @@ public final class TransformationHelper {
   }
 
   public static List<ASTRuleComponent> getAllComponents(ASTGrammarNode node) {
-    return new CollectRuleComponents().getRuleComponents(node);
+    CollectRuleComponents cv = new CollectRuleComponents();
+    Grammar_WithConceptsTraverser traverser = Grammar_WithConceptsMill.traverser();
+    traverser.add4Grammar(cv);
+    node.accept(traverser);
+    return cv.getRuleComponents();
   }
 
-  private static class CollectRuleComponents implements Grammar_WithConceptsVisitor {
-    Grammar_WithConceptsVisitor realThis = this;
-
-    @Override
-    public Grammar_WithConceptsVisitor getRealThis() {
-      return realThis;
-    }
-
-    @Override
-    public void setRealThis(Grammar_WithConceptsVisitor realThis) {
-      this.realThis = realThis;
-    }
+  private static class CollectRuleComponents implements GrammarVisitor2 {
 
     public List<ASTRuleComponent> ruleComponentList = Lists.newArrayList();
 
-    public List<ASTRuleComponent> getRuleComponents(ASTGrammarNode node) {
-      ruleComponentList.clear();
-      node.accept(getRealThis());
-      return ruleComponentList;
+    public List<ASTRuleComponent> getRuleComponents() {
+       return ruleComponentList;
     }
 
     @Override

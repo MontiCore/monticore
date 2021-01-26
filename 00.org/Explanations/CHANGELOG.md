@@ -1,11 +1,13 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
+
 # Release Notes
 
 ##  MontiCore 6.7.0-SNAPSHOT
 to be released
 
 ### Additions
-* Add new CLI for the MontiCOre generator engine
+* Add new CLI for the MontiCore generator engine
+
 ### Changes
 * The context conditions use the new traverser infrastructure. This leads to small changes in the api.
   The return value of the method addCoCo is void.
@@ -137,7 +139,7 @@ released: 11.11.2020
 
 ### Changes
 * MontiCore now uses Gradle as build tool
-  * some tasks have been introduced for the comfortable control of frequent activities, e.g., `buildMC`, `assembleMC` that can be found in the [`build.gradle`](../../build.gradle)
+  * some tasks have been introduced for the comfortable control of frequent activities, e.g., `buildMC`, `assembleMC` that can be found in the [`build.gradle`](https://github.com/MontiCore/monticore/blob/dev/build.gradle)
   * relocated the EMF related subprojects:
     * `monticore-emf-grammar` to `monticore-grammar-emf`
     * `monticore-emf-runtime` to `monticore-runtime-emf`

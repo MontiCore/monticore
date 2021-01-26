@@ -19,18 +19,16 @@ nav:
       - 'General': 'docs/GettingStarted.md'
       - 'Eclipse': 'docs/GettingStartedEclipse.md'
       - 'IntelliJ': 'docs/GettingStartedIntelliJ.md'
-  - 'Best Practices': 'docs/BestPractices.md'
   - Grammars:
       - 'General': 'monticore-grammar/src/main/grammars/de/monticore/Grammars.md'
       - 'Expressions': 'monticore-grammar/src/main/grammars/de/monticore/expressions/Expressions.md'
       - 'Literals': 'monticore-grammar/src/main/grammars/de/monticore/literals/Literals.md'
       - 'Types': 'monticore-grammar/src/main/grammars/de/monticore/types/Types.md'
   - Languages: 'docs/DevelopedLanguages.md'
+  - 'Best Practices': 'docs/BestPractices.md'
+  - Changelog: '00.org/Explanations/CHANGELOG.md'
   - Publications: 'docs/Publications.md'
-  - 'More Information':
-      - Changelog: '00.org/Explanations/CHANGELOG.md'
-      - License: '00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md'
-      - 'FAQ': '00.org/Explanations/FAQ.md'
+  - License: '00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md'
   - Impressum: 'docs/further_docs/Impressum.md'
 
 

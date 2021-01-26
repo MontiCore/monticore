@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+
+grammar Automaton extends InvAutomaton, Expression {
+  
+  start Automaton;
+  
+  Invariant = Exp;
+}

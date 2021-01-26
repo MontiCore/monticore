@@ -39,6 +39,7 @@ public class MCTask extends DefaultTask {
     group = 'MC'
     // always add the files from the configuration 'grammar' to the config files
     grammarConfigFiles.setFrom(project.configurations.getByName("grammar").getFiles())
+    dependsOn(project.configurations.getByName("grammar"))
   }
   
   final RegularFileProperty grammar = project.objects.fileProperty()

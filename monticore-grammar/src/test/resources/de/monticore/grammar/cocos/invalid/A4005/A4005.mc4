@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package  de.monticore.grammar.cocos.invalid.A4005;
+
+grammar A4005 {
+  A;
+
+  B = ((C:A)*)?;
+
+}
