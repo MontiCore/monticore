@@ -224,6 +224,7 @@ if(!hasProperty('bootstrap')) {
             }
     )
   }
+}
   
   
 task buildAll(type: GradleBuild) {
