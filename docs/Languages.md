@@ -269,7 +269,7 @@ component InteriorLight {                           // MontiArc language
   cntr.status -> status;
 }
 ```
-* MontiArcs main goal is to provide a textual notation for Component&Connector 
+* MontiArc's main goal is to provide a textual notation for Component&Connector 
   diagrams, which is used quite often in various variants in industry.
   E.g. SysML's BDD, UML's component composition diagrams use the same 
   paradigm. 
@@ -284,7 +284,7 @@ component InteriorLight {                           // MontiArc language
   [*detailed description*](https://git.rwth-aachen.de/monticore/montiarc/core/-/blob/modularization/languages/montiarc-fe/src/main/grammars/MontiArc.md)
 
 
-### [OCL/P](https://git.rwth-aachen.de/monticore/languages/OCL) (Beta: Intention to become stable)
+### [OCL/P](https://git.rwth-aachen.de/monticore/languages/OCL) (MontiCore Stable)
 * OCL/P is the textual representation of the UML OCL standard, adapted 
   with Java-like syntax.
   It's main goal is the usage in combination with other languages like 
@@ -296,6 +296,12 @@ component InteriorLight {                           // MontiArc language
   OCL standard concepts, but extend it e.g. by **set comprehensions** 
   known from Haskell, a **typesafe cast** or a 
   **transitive closure operator**.
+  An example:
+```
+TODO                           // OCL language
+```
+
+
 * OCL/P comes with an 
   [OCL to Java generator](https://git.rwth-aachen.de/monticore/languages/OCL2Java)
   and is used in combination with 

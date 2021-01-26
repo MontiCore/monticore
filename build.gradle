@@ -225,6 +225,11 @@ if(!hasProperty('bootstrap')) {
     )
   }
 }
+  
+  
+task buildAll(type: GradleBuild) {
+  dependsOn(subprojects.collect { getTasksByName("build", false) })
+}
 
 
 configure([project(':monticore-grammar'),
@@ -249,3 +254,5 @@ configure([project(':monticore-grammar'),
     }
   }
 }
+
+defaultTasks 'build'
