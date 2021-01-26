@@ -14,6 +14,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import de.monticore.cd.cd4analysis.CD4AnalysisMill;
+import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisScope;
+import de.monticore.cd.cd4analysis._symboltable.ICD4AnalysisArtifactScope;
+import de.monticore.cd.cd4analysis._symboltable.ICD4AnalysisScope;
+import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -73,12 +78,13 @@ public class MontiCoreScriptTest {
     Log.init();         // replace log by a sideffect free variant
     // LogStub.initPlusLog();  // for manual testing purpose only
     Log.enableFailQuick(false);
+    Grammar_WithConceptsMill.reset();
+    Grammar_WithConceptsMill.init();
     additionalMethods.add("deepEquals");
     additionalMethods.add("deepEqualsWithComments");
     additionalMethods.add("equalAttributes");
     additionalMethods.add("deepClone");
     additionalMethods.add("_construct");
-    additionalMethods.add("get_Children");
     additionalMethods.add("accept");
   }
 
@@ -344,17 +350,16 @@ public class MontiCoreScriptTest {
     assertEquals("Statechart", symbolPackageCD.getCDDefinition().getName());
 
     int index = 0;
-    assertEquals(10, symbolPackageCD.getCDDefinition().sizeCDClasss());
+    assertEquals(9, symbolPackageCD.getCDDefinition().sizeCDClasss());
     assertEquals("StatechartScope", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
     assertEquals("StatechartSymbols2Json", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
     assertEquals("StatechartSymbolTableCreatorDelegator", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
     assertEquals("StatechartScopesGenitorDelegator", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
-    assertEquals("StatechartGlobalScope", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
     assertEquals("StatechartArtifactScope", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
-    assertEquals("StatechartScopeDeSer", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
+    assertEquals("StatechartDeSer", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
+    assertEquals("StatechartGlobalScope", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
     assertEquals("StatechartSymbolTableCreator", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
     assertEquals("StatechartScopesGenitor", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
-    assertEquals("StatechartPhasedSymbolTableCreatorDelegator", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
 
     index = 0;
     assertEquals(4, symbolPackageCD.getCDDefinition().sizeCDInterfaces());

@@ -1,26 +1,29 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._symboltable.scope;
 
-import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import de.monticore.cd.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
+import de.monticore.codegen.cd2java._symboltable.serialization.AbstractDeSers;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
 import de.se_rwth.commons.StringTransformations;
+import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static de.monticore.cd.facade.CDModifier.*;
+import static de.monticore.cd.facade.CDModifier.PROTECTED;
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
@@ -66,8 +69,9 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     String globalScopeName = symbolTableService.getGlobalScopeSimpleName();
     ASTMCQualifiedType scopeType = symbolTableService.getScopeType();
     ASTMCQualifiedType globalScopeInterface = symbolTableService.getGlobalScopeInterfaceType();
+    String scopeInterfaceFullName = symbolTableService.getScopeInterfaceFullName();
     String definitionName = input.getCDDefinition().getName();
-    String scopeDeSerName = symbolTableService.getScopeDeSerSimpleName();
+    String scopeDeSerFullName = symbolTableService.getScopeDeSerFullName();
     String symbols2JsonName = symbolTableService.getSymbols2JsonSimpleName();
 
     ASTCDAttribute cacheAttribute = createCacheAttribute();
@@ -75,13 +79,9 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
 
     ASTCDAttribute deSerMapAttribute = createDeSerMapAttribute();
 
-    ASTCDAttribute scopeDeSerAttribute = createScopeDeSerAttribute(scopeDeSerName);
-    List<ASTCDMethod> scopeDeSerMethods = accessorDecorator.decorate(scopeDeSerAttribute);
-    scopeDeSerMethods.addAll(mutatorDecorator.decorate(scopeDeSerAttribute));
-
     ASTCDAttribute symbols2JsonAttribute = createSymbols2JsonAttribute(symbols2JsonName);
-    List<ASTCDMethod> symbols2JsonMethods = accessorDecorator.decorate(symbols2JsonAttribute);
-    symbols2JsonMethods.addAll(mutatorDecorator.decorate(symbols2JsonAttribute));
+    List<ASTCDMethod> symbols2JsonMethods = mutatorDecorator.decorate(symbols2JsonAttribute);
+    symbols2JsonMethods.add(createGetSymbols2JsonMethod(symbols2JsonAttribute));
 
     List<ASTCDType> symbolProds = symbolTableService.getSymbolDefiningProds(input.getCDDefinition());
 
@@ -117,15 +117,13 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
         .addAllCDMethods(fileExtensionMethods)
         .addCDAttribute(deSerMapAttribute)
         .addAllCDMethods(createDeSerMapMethods(deSerMapAttribute))
-        .addCDAttribute(scopeDeSerAttribute)
-        .addAllCDMethods(scopeDeSerMethods)
         .addCDAttribute(symbols2JsonAttribute)
         .addAllCDMethods(symbols2JsonMethods)
         .addCDAttribute(cacheAttribute)
         .addCDMethod(createAddLoadedFileMethod())
         .addCDMethod(createClearLoadedFilesMethod())
         .addCDMethod(createIsFileLoadedMethod())
-        .addCDMethod(createInitMethod(symbolProds))
+        .addCDMethod(createInitMethod(scopeInterfaceFullName, scopeDeSerFullName, symbolProds))
         .addAllCDAttributes(resolverAttributes.values())
         .addAllCDMethods(resolverMethods)
         .addAllCDMethods(createAlreadyResolvedMethods(symbolProds))
@@ -144,18 +142,13 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
 
     ASTCDParameter fileExtensionParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createStringType(), FILE_EXTENSION_VAR);
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), globalScopeClassName, modelPathParameter, fileExtensionParameter);
-    String scopeDeSerFullName = symbolTableService.getScopeDeSerFullName();
-    String symbols2JsonFullName = symbolTableService.getSymbols2JsonFullName();
-    this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint(TEMPLATE_PATH + "ConstructorGlobalScope",
-        scopeDeSerFullName, symbols2JsonFullName, symbolTableService.getCDName()));
+    this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint(TEMPLATE_PATH + "ConstructorGlobalScope"));
     return constructor;
   }
 
   protected ASTCDConstructor createZeroArgsConstructor(String className){
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), className);
-    String scopeDeSerFullName = symbolTableService.getScopeDeSerFullName();
-    String grammarName = symbolTableService.getCDName();
-    this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint(TEMPLATE_PATH + "ZeroArgsConstructorGlobalScope", scopeDeSerFullName, grammarName));
+    this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint(TEMPLATE_PATH + "ZeroArgsConstructorGlobalScope"));
     return constructor;
   }
 
@@ -257,8 +250,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
 
   protected ASTCDMethod createLoadFileForModelNameMethod(String definitionName){
     ASTCDParameter modelNameParam = getCDParameterFacade().createParameter(String.class, "modelName");
-    ASTCDParameter symbolNameParam = getCDParameterFacade().createParameter(String.class, "symbolName");
-    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, "loadFileForModelName", modelNameParam, symbolNameParam);
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, "loadFileForModelName", modelNameParam);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "LoadFileForModelName", definitionName));
     return method;
   }
@@ -368,6 +360,14 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     return method;
   }
 
+  protected ASTCDMethod createGetSymbols2JsonMethod(ASTCDAttribute s2j) {
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, s2j.getMCType(), "getSymbols2Json");
+    String s2jClassName = symbolTableService.getSymbols2JsonFullName();
+    HookPoint hookPoint = new TemplateHookPoint(TEMPLATE_PATH + "GetSymbols2Json", s2j.getName(), s2jClassName);
+    this.replaceTemplate(EMPTY_BODY, method, hookPoint);
+    return method;
+  }
+
   protected ASTCDMethod createClearMethod(List<ASTCDMethod> getResolverMethodList, List<String> symbolList){
     List<String> resolverListString = getResolverMethodList.stream().map(ASTCDMethod::getName).filter(name -> name.startsWith("get")).collect(Collectors.toList());
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, "clear");
@@ -375,19 +375,44 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     return method;
   }
 
-  protected ASTCDMethod createInitMethod(List<ASTCDType> symbolDefiningProds){
+  protected ASTCDMethod createInitMethod(String scopeFullName, String scopeDeSerFullName, List<ASTCDType> symbolDefiningProds){
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, "init");
-    List<String> keys = Lists.newArrayList();
-    keys.add(symbolTableService.getScopeClassFullName());
-    symbolDefiningProds.forEach(s -> keys.add(symbolTableService.getSymbolFullName(s)));
-    for (CDDefinitionSymbol cdSymbol: symbolTableService.getSuperCDsTransitive()) {
-      keys.add(symbolTableService.getScopeClassFullName(cdSymbol));
-      symbolTableService.getSymbolDefiningProds(cdSymbol.getAstNode()).forEach(s -> keys.add(symbolTableService.getSymbolFullName(s, cdSymbol)));
+    Map<String, String> map = Maps.newHashMap();
+
+    // add DeSers for locally defined symbols
+    for(ASTCDType s :symbolDefiningProds) {
+      String symbol = symbolTableService.getSymbolFullName(s);
+      String deser = symbolTableService.getSymbolDeSerFullName(s);
+      map.put(symbol, deser);
     }
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "Init", keys));
+
+    // add DeSers for symbols defined in inherited languages
+    for (CDDefinitionSymbol cdSymbol: symbolTableService.getSuperCDsTransitive()) {
+      symbolTableService.getSymbolDefiningProds(cdSymbol.getAstNode()).forEach(s -> {
+        String symbol = symbolTableService.getSymbolFullName(s, cdSymbol);
+        String deser = symbolTableService.getSymbolDeSerFullName(s, cdSymbol);
+        map.put(symbol, deser);
+      });
+    }
+
+    // filter DeSers that are generated as abstract classes (or have the TOP suffix)
+    List<String> removeDeSers = new ArrayList<>();
+    for(Map.Entry<String, String> e : map.entrySet()){
+      if(AbstractDeSers.contains(e.getValue())){
+        Log.warn("The DeSer '"  + e.getValue()
+            + "' is not added to the map in " + symbolTableService.getGlobalScopeFullName()
+            + ", because it is abstract. Please extend the class with the TOP mechanism!");
+        removeDeSers.add(e.getValue());
+      }
+    }
+    map.entrySet().removeIf(entry -> removeDeSers.contains(entry.getValue()));
+
+    AbstractDeSers.reset(); // reset for next generator invocation
+
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "Init",
+            scopeFullName, scopeDeSerFullName, map));
     return method;
   }
-
   public boolean isGlobalScopeTop() {
     return isGlobalScopeTop;
   }

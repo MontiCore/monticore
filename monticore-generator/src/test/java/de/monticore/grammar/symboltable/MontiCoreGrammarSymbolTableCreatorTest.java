@@ -5,6 +5,7 @@ package de.monticore.grammar.symboltable;
 import de.monticore.GrammarGlobalScopeTestFactory;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.*;
+import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
 import de.se_rwth.commons.logging.Log;
 import org.junit.BeforeClass;
@@ -21,6 +22,7 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
   @BeforeClass
   public static void disableFailQuick() {
     Log.init();
+    Grammar_WithConceptsMill.init();
     Log.enableFailQuick(false);
   }
   

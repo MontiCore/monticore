@@ -18,7 +18,7 @@ import de.monticore.grammar.grammar_withconcepts._ast.ASTAction;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTExpressionPredicate;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTGrammar_WithConceptsNode;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTJavaCode;
-import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
+import de.monticore.grammar.prettyprint.Grammar_WithConceptsFullPrettyPrinter;
 import de.monticore.javalight._ast.ASTClassBodyDeclaration;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.statements.mcstatementsbasis._ast.ASTMCBlockStatement;
@@ -45,7 +45,7 @@ public class ParserGeneratorHelper {
 
   private static final String NOKEYWORD = "nokeyword_";
 
-  private static Grammar_WithConceptsPrettyPrinter prettyPrinter;
+  private static Grammar_WithConceptsFullPrettyPrinter prettyPrinter;
 
   private ASTMCGrammar astGrammar;
 
@@ -409,9 +409,9 @@ public class ParserGeneratorHelper {
     return MCGrammarSymbolTableHelper.getQualifiedName(rule);
   }
 
-  public static Grammar_WithConceptsPrettyPrinter getPrettyPrinter() {
+  public static Grammar_WithConceptsFullPrettyPrinter getPrettyPrinter() {
     if (prettyPrinter == null) {
-      prettyPrinter = new Grammar_WithConceptsPrettyPrinter(new IndentPrinter());
+      prettyPrinter = new Grammar_WithConceptsFullPrettyPrinter(new IndentPrinter());
     }
     return prettyPrinter;
   }

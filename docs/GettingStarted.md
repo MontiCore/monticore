@@ -84,7 +84,7 @@ This will compile all generated classes located in ‹out/› and all handwritte
     6.  **hwc/automata/_symboltable** contains handwritten extensions of the generated symbol table infrastructure.
 2.  Running the automata DSL tool
     *  Execute the command: <br>
-    **java -cp "src/;out/;hwc/;monticore-cli.jar" automata.AutomataTextTool example/PingPong.aut** <br>
+    **java -cp "src/;out/;hwc/;monticore-cli.jar" automata.AutomataTool example/PingPong.aut** <br>
     **Please note:** on Unix systems paths are separated using ":" (colon) instead of semicolons.
     This will run the automata DSL tool. The argument ‹example/PingPong.aut› is passed to the automata DSL tool as input file. Examine the output on the command line which shows the processing of the example automata model.
 
@@ -117,11 +117,9 @@ Please include the processed grammar, model, and the log file.
 
 * [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
 * [MontiCore documentation](http://www.monticore.de/)
-
-* [Overview Best Practices](BestPractices.md)
-* [**List of languages**](https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/docs/Languages.md)
-* [**MontiCore Core Grammar Library**](https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
+* [**List of languages**](https://github.com/MontiCore/monticore/blob/dev/docs/Languages.md)
+* [**MontiCore Core Grammar Library**](https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
+* [Best Practices](https://github.com/MontiCore/monticore/blob/dev/docs/BestPractices.md)
 * [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
-
-
+* [Licence definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
 

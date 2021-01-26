@@ -6,7 +6,7 @@ import de.monticore.symboltable.serialization.JsonPrinter;
 import de.se_rwth.commons.logging.Log;
 import mc.feature.symbols2json.sub.SubMill;
 import mc.feature.symbols2json.sub._symboltable.ISubScope;
-import mc.feature.symbols2json.sub._symboltable.SubScopeDeSer;
+import mc.feature.symbols2json.sub._symboltable.SubDeSer;
 import mc.feature.symbols2json.sub._symboltable.SubSymbols2Json;
 import mc.feature.symbols2json.sup1.Sup1Mill;
 import mc.feature.symbols2json.sup2.Sup2Mill;
@@ -35,7 +35,7 @@ public class STPForLanguageCompositionTest {
   public void testSerializeLocalSymbols(){
     //create scope with symbols of the grammar SymbolTablePrinterSub and both of its supergrammars
     ISubScope scope = SubMill
-        .scope();
+            .scope();
     scope.setName("alphabet");
     scope.add(Sup1Mill.aSymbolBuilder().setName("a").setType("Type1").build());
     scope.add(Sup2Mill.bSymbolBuilder().setName("b").setType("Type2").build());
@@ -45,8 +45,10 @@ public class STPForLanguageCompositionTest {
     scope.add(SubMill.cSymbolBuilder().setName("c3").setTypeList(Lists.newArrayList()).build());
 
     //serialize symbols and assert that the serialized String contains all the symbols
-    SubScopeDeSer deSer = new SubScopeDeSer();
-    String serialized =  deSer.serialize(scope);
+    SubSymbols2Json symbols2JSon = new SubSymbols2Json();
+    scope.accept(symbols2JSon.getTraverser());
+    String serialized = symbols2JSon.getSerializedString();
+
     assertTrue(serialized.contains("symbols"));
     assertTrue(serialized.contains("\"name\":\"a\""));
     assertTrue(serialized.contains("\"name\":\"b\""));
@@ -59,7 +61,7 @@ public class STPForLanguageCompositionTest {
   @Test
   public void testSecondConstructor(){
     JsonPrinter printer = new JsonPrinter();
-    SubSymbols2Json symTabPrinter = new SubSymbols2Json(printer);
+    SubSymbols2Json symTabPrinter = new SubSymbols2Json(SubMill.traverser(), printer);
     assertEquals(printer,symTabPrinter.getJsonPrinter());
   }
 

@@ -2,30 +2,32 @@
 
 package de.monticore;
 
-grammar Statechart { 
-      
-  Statechart implements SCStructure= "statechart" Name "{" (States:State | Transitions:Transition | UserCode:Code)* "}" EOF;
-  
-  
-  EntryAction= "entry" ":" Block:BlockStatement;
-  
-  ExitAction= "exit" ":" Block:BlockStatement;
-  
- 
-  State implements SCStructure = "state" Name ("<<" (Initial:["initial"] | Final:["final"])* ">>")?
-    ( ("{ options{}" (EntryAction:EntryAction)? (ExitAction:ExitAction)? (States:State | Transitions:Transition)* "}") | ";") ;
- 
-  Transition = From:Name "->" To:Name 
-            (":" (Event:Name ( "(" (Arguments:(Argument || ",")+) ")" )? )?
-             ("[" Guard: Expression "]")?
-             ("/" Action: BlockStatement)? ";"
-          | ";");
-    
-  Argument= ParamType:Name ParamName:Name;
- 
-  Code= "code" Code: Classbody ;
-  
-  interface SCStructure; 
+component grammar Statechart extends de.monticore.common.TestLexicals {
+
+  Statechart implements SCStructure= "statechart" Name "{" (State | transition:Transition | userCode:Code)* "}" EOF;
+
+
+  EntryAction= "entry" ":" block:BlockStatement;
+
+  ExitAction= "exit" ":" block:BlockStatement;
+
+
+  State implements SCStructure = "state" Name ("<<" (initial:["initial"] | final:["final"])* ">>")?
+    ( ("{ options{}" (entryAction:EntryAction)? (exitAction:ExitAction)? (state:State | transition:Transition)* "}") | ";") ;
+
+  Transition = from:Name "->" to:Name
+    				(":" (event:Name ( "(" ((Argument || ",")+) ")" )? )?
+  					 ("[" guard: Expression "]")?
+  					 ("/" action: BlockStatement)? ";"
+  				| ";");
+
+  Argument= paramType:Name paramName:Name;
+
+  Code= "code" body: Classbody ;
+
+  interface SCStructure;
+
+  abstract AbstractAnything;
   
   external BlockStatement;
   

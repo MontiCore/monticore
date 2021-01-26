@@ -7,7 +7,7 @@ import com.google.common.collect.Lists;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.Multiplicity;
 import de.monticore.grammar.grammar._ast.*;
-import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
+import de.monticore.grammar.prettyprint.Grammar_WithConceptsFullPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
@@ -27,6 +27,7 @@ import static java.util.Collections.max;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 
+@Deprecated
 public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
 
   private static final String SET_SCOPE_ERROR = "Could not set enclosing scope of ASTNode \"%s\", because no scope is set yet!";
@@ -373,7 +374,7 @@ public class GrammarSymbolTableCreator extends GrammarSymbolTableCreatorTOP {
    */
   @Override
   public void visit(ASTLexActionOrPredicate action) {
-    Grammar_WithConceptsPrettyPrinter prettyPrinter = new Grammar_WithConceptsPrettyPrinter(new IndentPrinter());
+    Grammar_WithConceptsFullPrettyPrinter prettyPrinter = new Grammar_WithConceptsFullPrettyPrinter(new IndentPrinter());
     for (String typeName : findImplicitTypes(action, prettyPrinter)) {
       // Create rule if needed
       Optional<ProdSymbol> rule = grammarSymbol.getProd(typeName);

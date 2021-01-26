@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package  de.monticore.grammar.cocos.invalid.A4002;
+
+grammar A4002 extends de.monticore.common.TestTypes {
+
+  abstract ArrayType extends Name;
+
+}

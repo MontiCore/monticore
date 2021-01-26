@@ -1,0 +1,29 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.feature.symbolrules;
+
+grammar SymbolruleListTest extends mc.common.Basics {
+
+  scope symbol Foo = "foo" Name "{" IBar* "}";
+
+  interface scope symbol IBar = Name;
+
+  scope symbol Bar implements IBar = "bar" Name "{" ITest* "}";
+
+  interface symbol ITest = "test" Name;
+
+  symbol Test1 implements ITest = "test1" Name;
+
+  symbol Test2 implements ITest = "test2" Name;
+
+  //test for String, int, boolean, long, double, float and custom type
+
+  scoperule = names:String*
+              symTypes:de.monticore.types.check.SymTypeExpression*
+              numbers:int*
+              arePresent:boolean*
+              bigNumbers:long*
+              doubleFloatingPoints:double*
+              floatingPoints:float*;
+
+
+}

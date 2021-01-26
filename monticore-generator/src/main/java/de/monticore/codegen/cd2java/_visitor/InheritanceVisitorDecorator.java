@@ -1,30 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._visitor;
 
-import static de.monticore.cd.facade.CDModifier.PUBLIC;
-import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
-import static de.monticore.codegen.cd2java.CoreTemplates.ANNOTATIONS;
-import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
-import static de.monticore.codegen.cd2java.CoreTemplates.createAnnotationsHookPoint;
-import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SCOPE;
-import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SYMBOL;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.HANDLE;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.HANDLE_AST_INHERITANCE_TEMPLATE;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.HANDLE_SYMTAB_INHERITANCE_TEMPLATE;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDDefinition;
-import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
-import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
-import de.monticore.cd.cd4analysis._ast.ASTCDType;
-import de.monticore.cd.cd4analysis._ast.ASTModifier;
+import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.cd4code.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractCreator;
@@ -32,10 +9,26 @@ import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java.CoreTemplates.*;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SCOPE;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SYMBOL;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.HANDLE;
+
 /**
  * creates a InheritanceVisitor class from a grammar
  */
 public class InheritanceVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDInterface> {
+
+  public static final String HANDLE_AST_INHERITANCE_TEMPLATE = "_visitor.inheritance.HandleASTInheritance";
+
+  public static final String HANDLE_SYMTAB_INHERITANCE_TEMPLATE = "_visitor.inheritance.HandleSymTabInheritance";
 
   protected final VisitorService visitorService;
   

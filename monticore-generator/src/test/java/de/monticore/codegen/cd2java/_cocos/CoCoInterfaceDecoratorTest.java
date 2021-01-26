@@ -21,6 +21,7 @@ import org.junit.Test;
 
 import java.util.List;
 
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static org.junit.Assert.assertEquals;
@@ -48,10 +49,19 @@ public class CoCoInterfaceDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
+  public void testSuperInterface() {
+    ASTCDInterface cdInterface = interfaces.get(0);
+    assertEquals(1, cdInterface.sizeInterface());
+    assertDeepEquals("de.monticore.codegen.cocos.cocos._visitor.CoCosVisitor2", cdInterface.getInterface(0));
+  }
+
+  @Test
   public void testCoCosNodeInterface() {
     ASTCDInterface cdInterface = interfaces.get(1);
     assertEquals("CoCosASTCoCosNodeCoCo", cdInterface.getName());
-    assertEquals(1, cdInterface.getCDMethodList().size());
+    assertEquals(2, cdInterface.getCDMethodList().size());
+
+    // Check method check
     ASTCDMethod method = cdInterface.getCDMethod(0);
     assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
@@ -60,13 +70,25 @@ public class CoCoInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDParameter parameter = method.getCDParameter(0);
     assertDeepEquals("de.monticore.codegen.cocos.cocos._ast.ASTCoCosNode", parameter.getMCType());
     assertEquals("node", parameter.getName());
+
+    // Check method visit
+    method = cdInterface.getCDMethod(1);
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    assertEquals("visit", method.getName());
+    assertEquals(1, method.getCDParameterList().size());
+    parameter = method.getCDParameter(0);
+    assertDeepEquals("de.monticore.codegen.cocos.cocos._ast.ASTCoCosNode", parameter.getMCType());
+    assertEquals("node", parameter.getName());
   }
 
   @Test
   public void testAInterface() {
     ASTCDInterface cdInterface = interfaces.get(0);
     assertEquals("CoCosASTACoCo", cdInterface.getName());
-    assertEquals(1, cdInterface.getCDMethodList().size());
+    assertEquals(2, cdInterface.getCDMethodList().size());
+
+    // check method check
     ASTCDMethod method = cdInterface.getCDMethod(0);
     assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
@@ -75,19 +97,41 @@ public class CoCoInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDParameter parameter = method.getCDParameter(0);
     assertDeepEquals("de.monticore.codegen.cocos.cocos._ast.ASTA", parameter.getMCType());
     assertEquals("node", parameter.getName());
+
+    // Check method visit
+    method = cdInterface.getCDMethod(1);
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    assertEquals("visit", method.getName());
+    assertEquals(1, method.getCDParameterList().size());
+    parameter = method.getCDParameter(0);
+    assertDeepEquals("de.monticore.codegen.cocos.cocos._ast.ASTA", parameter.getMCType());
+    assertEquals("node", parameter.getName());
   }
 
   @Test
   public void testIInterface() {
     ASTCDInterface cdInterface = interfaces.get(2);
     assertEquals("CoCosASTICoCo", cdInterface.getName());
-    assertEquals(1, cdInterface.getCDMethodList().size());
+    assertEquals(2, cdInterface.getCDMethodList().size());
+
+    // Check method check
     ASTCDMethod method = cdInterface.getCDMethod(0);
     assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals("check", method.getName());
     assertEquals(1, method.getCDParameterList().size());
     ASTCDParameter parameter = method.getCDParameter(0);
+    assertDeepEquals("de.monticore.codegen.cocos.cocos._ast.ASTI", parameter.getMCType());
+    assertEquals("node", parameter.getName());
+
+    // Check method visit
+    method = cdInterface.getCDMethod(1);
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    assertEquals("visit", method.getName());
+    assertEquals(1, method.getCDParameterList().size());
+    parameter = method.getCDParameter(0);
     assertDeepEquals("de.monticore.codegen.cocos.cocos._ast.ASTI", parameter.getMCType());
     assertEquals("node", parameter.getName());
   }

@@ -45,6 +45,8 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
 
   @Before
   public void setupForEach() {
+    CombineExpressionsWithLiteralsMill.reset();
+    CombineExpressionsWithLiteralsMill.init();
     // Setting up a Scope Infrastructure (without a global Scope)
     DefsTypeBasic.setup();
     scope = CombineExpressionsWithLiteralsMill.scope();

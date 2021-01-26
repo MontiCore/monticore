@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package  de.monticore.grammar.cocos.invalid.A4024;
+
+grammar A4024 {
+  A = a:C;
+
+  B extends A = a:D;
+
+  C;
+
+  D;
+
+}

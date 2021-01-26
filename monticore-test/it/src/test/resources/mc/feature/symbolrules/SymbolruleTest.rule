@@ -1,0 +1,13 @@
+foo SymbolruleTest {
+  bar Test1 {
+    test1 symbol1
+    test1 symbol11
+    test2 symbol2
+  }
+
+  bar Test2 {
+    test1 symbol3
+    test1 symbol4
+    test2 symbol22
+  }
+}

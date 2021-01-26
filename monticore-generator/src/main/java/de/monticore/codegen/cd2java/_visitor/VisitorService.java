@@ -86,6 +86,22 @@ public class VisitorService extends AbstractService<VisitorService> {
     return cdSymbol.getName() + INHERITANCE_SUFFIX + VisitorConstants.VISITOR_SUFFIX;
   }
 
+  public String getInheritanceHandlerSimpleName() {
+    return getInheritanceHandlerSimpleName(getCDSymbol());
+  }
+
+  public String getInheritanceHandlerSimpleName(CDDefinitionSymbol cdSymbol) {
+    return cdSymbol.getName() + INHERITANCE_SUFFIX + HANDLER_SUFFIX;
+  }
+
+  public String getInheritanceHandlerFullName() {
+    return getInheritanceHandlerFullName(getCDSymbol());
+  }
+
+  public String getInheritanceHandlerFullName(CDDefinitionSymbol cdSymbol) {
+    return getPackage(cdSymbol) + "." + getInheritanceHandlerSimpleName(cdSymbol);
+  }
+
   public String getInheritanceVisitorFullName(CDDefinitionSymbol cdSymbol) {
     return getPackage(cdSymbol) + "." + getInheritanceVisitorSimpleName(cdSymbol);
   }

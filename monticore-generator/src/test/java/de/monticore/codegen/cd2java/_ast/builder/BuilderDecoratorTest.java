@@ -2,6 +2,7 @@
 package de.monticore.codegen.cd2java._ast.builder;
 
 import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd.cd4code.CD4CodeFullPrettyPrinter;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
@@ -13,7 +14,6 @@ import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.types.prettyprint.MCSimpleGenericTypesPrettyPrinter;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
@@ -130,7 +130,7 @@ public class BuilderDecoratorTest extends DecoratorTestCase {
   public void testInheritedSetterNoGetter(){
     ASTCDMethod setF = getMethodBy("setF", builderClass);
     assertTrue(setF.getMCReturnType().isPresentMCType());
-    assertEquals(builderClass.getName(), setF.getMCReturnType().printType(new MCSimpleGenericTypesPrettyPrinter(new IndentPrinter())));
+    assertEquals(builderClass.getName(), setF.getMCReturnType().printType(new CD4CodeFullPrettyPrinter(new IndentPrinter())));
     assertDeepEquals(PUBLIC, setF.getModifier());
     assertEquals(1, setF.getCDParameterList().size());
 

@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.grammar.grammar_withconcepts._symboltable;
 
+@Deprecated
 public class Grammar_WithConceptsSymbolTableCreatorDelegator extends Grammar_WithConceptsSymbolTableCreatorDelegatorTOP {
   public Grammar_WithConceptsSymbolTableCreatorDelegator(
       IGrammar_WithConceptsGlobalScope globalScope) {

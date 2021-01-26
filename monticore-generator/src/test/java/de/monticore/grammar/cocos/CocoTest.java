@@ -4,14 +4,21 @@ package de.monticore.grammar.cocos;
 
 import de.monticore.GrammarGlobalScopeTestFactory;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
+import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
+import org.junit.BeforeClass;
 
 import static org.junit.Assert.*;
 
 public abstract class CocoTest {
+
+  @BeforeClass
+  public static void setup(){
+    Grammar_WithConceptsMill.init();
+  }
   
   protected void testValidGrammar(String grammar, Grammar_WithConceptsCoCoChecker checker) {
     final Grammar_WithConceptsGlobalScope globalScope = GrammarGlobalScopeTestFactory.create();

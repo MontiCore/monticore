@@ -38,7 +38,6 @@ MontiCore projects are hosted at
     and partially also at
 * [`https://github.com/MontiCore/`](https://github.com/MontiCore/monticore)
 
-
 ## List of Languages 
 
 <!--
@@ -48,7 +47,6 @@ MontiCore projects are hosted at
 
 
 ### [Class Diagram For Analysis (CD4A)](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis) (MontiCore stable)
-* Responsible: SVa
 * CD4A is the textual representation to describe **UML class diagrams** 
   (it uses the [UML/P](http://mbse.se-rwth.de/) variant).
 * CD4A covers **classes, interfaces, inheritance, attributes with types,
@@ -88,7 +86,6 @@ MontiCore projects are hosted at
 
 
 ### [Class Diagram for Code (CD4Code)](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis) (MontiCore stable)
-* Responsible: SVa
 * CD4Code describes **UML class diagrams**.
 * CD4Code is a conservative extension of **CD4A**, 
   which includes method signatures. An example:
@@ -120,7 +117,6 @@ MontiCore projects are hosted at
 
 
 ### [Feature Diagrams](https://git.rwth-aachen.de/monticore/languages/feature-diagram) (MontiCore stable)
-* Caretaker: AB, DS
 * Language for feature models and feature configurations.
 * **Feature diagrams** are used to model (software) **product lines** and their **variants**.
 * **Feature configurations** select a subset of features of a feature model 
@@ -148,7 +144,6 @@ MontiCore projects are hosted at
 
 
 ### [GUI DSL](https://git.rwth-aachen.de/monticore/languages/gui-dsl) (Alpha: Intention to become stable)
-* Caretaker: LN, AGe
 * Language for textual definition of Graphical User Interfaces of Web
 Applications
 * GUI DSL covers GUI elements and relevant configuration, which include
@@ -180,7 +175,6 @@ and
 
 
 ### [MontiCore Grammar](https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-generator) (MontiCore Stable)
-* Caretaker: MB 
 * Language for MontiCore Grammars itself. It can be understood as 
   *meta language*, but also used as ordinary language.
 * Its main use currently: A MontiCore grammar defines the 
@@ -215,7 +209,6 @@ and
   
 
 ### [JSON](https://git.rwth-aachen.de/monticore/languages/json) (MontiCore Stable)
-* Responsible: NJ
 * The MontiCore language for parsing JSON artifacts. An example:
   ```
   { "Alice": {
@@ -244,8 +237,7 @@ and
   [*detailed description*](https://git.rwth-aachen.de/monticore/languages/json/-/blob/master/src/main/grammars/de/monticore/lang/json.md)
 
 
-### [MontiArc](https://git.rwth-aachen.de/monticore/montiarc/core) (MontiCore Stable)
-* Caretaker: DS 
+### [MontiArc](https://git.rwth-aachen.de/monticore/montiarc/core) (MontiCore Stable) 
 * MontiArc is an architecture and behavior modeling language and framework 
     that provides an platform independent structure and behavior 
     modeling language with an extensible code generation framework.
@@ -277,7 +269,7 @@ component InteriorLight {                           // MontiArc language
   cntr.status -> status;
 }
 ```
-* MontiArcs main goal is to provide a textual notation for Component&Connector 
+* MontiArc's main goal is to provide a textual notation for Component&Connector 
   diagrams, which is used quite often in various variants in industry.
   E.g. SysML's BDD, UML's component composition diagrams use the same 
   paradigm. 
@@ -292,8 +284,7 @@ component InteriorLight {                           // MontiArc language
   [*detailed description*](https://git.rwth-aachen.de/monticore/montiarc/core/-/blob/modularization/languages/montiarc-fe/src/main/grammars/MontiArc.md)
 
 
-### [OCL/P](https://git.rwth-aachen.de/monticore/languages/OCL) (Alpha: Intention to become stable)
-* Caretaker: CKi, supported by SVa, SH, OKa
+### [OCL/P](https://git.rwth-aachen.de/monticore/languages/OCL) (MontiCore Stable)
 * OCL/P is the textual representation of the UML OCL standard, adapted 
   with Java-like syntax.
   It's main goal is the usage in combination with other languages like 
@@ -305,10 +296,25 @@ component InteriorLight {                           // MontiArc language
   OCL standard concepts, but extend it e.g. by **set comprehensions** 
   known from Haskell, a **typesafe cast** or a 
   **transitive closure operator**.
+  An example:
+```
+ocl BankingChecks {
+  context Bank b inv OverallBalanceCorrect:
+  let
+    balances = { acc.balance | Account acc in b.account };
+    calculatedBalance = iterate { balance in balances;
+                                  double sum = 0.0 :
+                                  sum = sum + balance }
+  in
+    b.overallBalance == calculatedBalance;
+}
+```
+
+
 * OCL/P comes with an 
   [OCL to Java generator](https://git.rwth-aachen.de/monticore/languages/OCL2Java)
-  and a second generator for OCL in combination with 
-  [*Embedded MontiArc*](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/OCL_EMA2Java).
+  and is used in combination with 
+  [*Embedded MontiArc*](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/OCL_EMA2Java) and the MontiCore artefact tooling.
 * Main grammar 
   [`ocl.monticore.ocl.OCL`](https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/develop/src/main/grammars/de/monticore/ocl/OCL.mc4), 
   [Expressions](https://git.rwth-aachen.de/monticore/languages/OCL/-/tree/develop/src/main/grammars/de/monticore/ocl/expressions),
@@ -317,7 +323,6 @@ component InteriorLight {                           // MontiArc language
 
 
 ### [Object Diagrams](https://git.rwth-aachen.de/monticore/languages/od) (MontiCore Stable)
-* Caretaker: SH
 * OD is a language for textual denotation of object diagrams. The OD language
   has several purposes (when combined with appropriate language extensions):
   1. specification language for object structures (as part of the [UML/P](http://mbse.se-rwth.de/))
@@ -358,17 +363,19 @@ component InteriorLight {                           // MontiArc language
 * The ODs differ from JSON structures, e.g., in 
   the possibility to give the object a name as it is the case for `tiger`, or `alice` 
   enabaling the definition real graph structures.
-* Main grammars:
-    * [ODBasics](https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/lang/ODBasics.mc4)
+* Main grammars (directly usable):
     * [OD4Data](https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/lang/OD4Data.mc4)
     * [OD4Development](https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/lang/OD4Development.mc4)
     * [OD4Report](https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/lang/OD4Report.mc4)
+* Main grammar components:
     * [DateLiterals](https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/lang/DateLiterals.mc4)
+    * [ODBasis](https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/lang/ODBasis.mc4)
+    * [ODAttribute](https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/lang/ODAttribute.mc4)
+    * [ODLink](https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/lang/ODLink.mc4)
 * [*Detailed description*](https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/lang/ODBasics.md) 
 
 
 ### [Sequence Diagrams](https://git.rwth-aachen.de/monticore/statechart/sd-language)  (MontiCore stable) 
-* Caretaker: OKa
 * A textual sequence diagram (SD) language.
 * The project includes grammars, a symbol table infrastructure, a PrettyPrinter, 
   and various CoCos for typechecking.
@@ -398,7 +405,6 @@ sequencediagram AuctionTest {
 ```
 
 ### [SI Units](https://git.rwth-aachen.de/monticore/languages/siunits) (MontiCore Stable)
-* Caretaker: EK
 * The international system of units (SI units) is a physical unit system widely used in the entire world. 
   It is based on the basis units `s, m, kg, A, K, mol, cd`, 
   provides a variety of derived units, and can be refined using prefixes such 
@@ -406,8 +412,8 @@ sequencediagram AuctionTest {
 * The SI Unit project aims to deliver SI units to MontiCore-based languages with expressions. 
   It provides a grammar for all types of SI units and prefixes usable for type 
   definition.
-* Second, it provides the SI Unit literals, such as "5 km" as expression values
-  and a language for SI unit types, such as "km/h" or "km/h<long>". Some examples:
+* Second, it provides the SI Unit literals, such as `5 km` as expression values
+  and a language for SI unit types, such as `km/h` or `km/h<long>`. Some examples:
   ```
     km/h speed = 5 m / 27 s                         // variable definition using type km/h
     speed = (3 * 4m  +  17km/h * 10h) / 3.5h        // values with SI unit types
@@ -418,8 +424,8 @@ sequencediagram AuctionTest {
   The SI unit literals integrate with MontiCore's expressions and the
   SI Unit types integrate with MontiCore's type system. 
   The SI unit language remains *fully type safe*.
-* The math version uses "km/h" as idealistic full precision real number, while the
-  computing version allows to contrain  the precision with "km/h<long>". 
+* The math version uses `km/h` as idealistic full precision real number, while the
+  computing version allows to contrain  the precision with `km/h<long>`. 
 * Main grammar components:
     * [SI units](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/siunits/SIUnits.mc4)
     * [SI unit literals](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/siunits/SIUnitLiterals.mc4)
@@ -432,11 +438,11 @@ sequencediagram AuctionTest {
 
 
 ### [Statecharts](https://git.rwth-aachen.de/monticore/statechart/sc-language) (MontiCore stable)
-* Caretaker: KH  
-* A set language variants for Statecharts (UML-like or also embedded SysML-like)
-* creates transformation language within SC and sc<->cd4a
-* [*Detailed description*](https://git.rwth-aachen.de/monticore/statechart/sc-language/-/blob/dev/src/main/grammars/de/monticore/Statecharts.md) 
-* A compact teaser for the (one variant of the) Statechart language:
+* A set of language variants for Statecharts (UML-like or also embedded SysML-like).
+* It is possible to define syntactically simpler or more complex and comfortable
+  forms of statecharts using a subset of the eleven provided language components.
+  Two complete Statechart language variants are composed for direct usability.
+* A compact teaser for one variant of the Statechart languages:
     ```
     statechart Door {
       state Opened
@@ -449,19 +455,18 @@ sequencediagram AuctionTest {
       Locked -> Closed [isAuthorized() && doorIsLocked] unlock() /
     }
     ```
-  This example models the different states of a door: `Opened`, `Closed`, and `Locked`.
-  When the statechart is in state `Opened`, it is possible to close the door using `close()`.
-  When the statechart is in state `Closed`, it is possible to open the door using `open()`. 
-  In the latter case the action  `ringDoorBell()` is executed. 
-  When the door is `Closed` it is automatically locked after some time due to a 
-  `timeout()` event that triggers the `lockDoor()` action.
-  Consequently, the post-condition `doorIsLocked` holds. In case the door is locked,
-  it can be unlocked by using `unlock()` if the pre-condition `isAuthorized` is fulfilled.
+* This example models the different states of a door: `Opened`, `Closed`, and `Locked`.
+  A transition is triggered e.g. by function/method call `close()` that changes a from a state `Opened` to state `Closed`. 
+* Transitions can have actions, such as `{ringDoorBell();}` containing in this case 
+  Java statements, or preconditions, such  as `[ ... ]` containg a Boolean expression.
 * *State invariants* and *transition preconditions* are defined using `Expressions`
   and *entry/exit/transition actions* are defined using `Statements`.
+* A Statechart may also have hierarchically decomposed states and other forms of 
+  events (not shown here).
+* [*Detailed description*](https://git.rwth-aachen.de/monticore/statechart/sc-language/-/blob/dev/src/main/grammars/de/monticore/Statecharts.md) 
+
 
 ### [SysML_2](https://git.rwth-aachen.de/monticore/languages/sysml2/sysml2official) (Alpha: Intention to become stable)
-* Caretaker: NJ
 * MontiCore languages for parsing artifacts of the SysML 2 language famlily. 
   Examples:
 ```
@@ -492,7 +497,6 @@ package 'Coffee' {                      // a SysML activity diagram
   correctly produced SysML 2 models only.
 * MontiCore's SysML 2 is a language familiy that comes with a textual 
   representation to describe SysML 2 diagrams with respect to the standard. 
-
 * SysML 2 covers **ADs**, **BDDs**, **IBDs**, **PackageDiagrams**, 
   **ParametricDiagrams**, **RequirementDiagrams**, **SDs**, **SMDs**, 
   **UseCaseDiagrams**, and general **SysMLBasics**
@@ -502,7 +506,6 @@ package 'Coffee' {                      // a SysML activity diagram
 
 
 ### [Tagging](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging) (Alpha: Intention to become stable)
-* Caretaker: SVa
 * **Tags** are known e.g. from the UML and SysML and mainly used to add
   extra information to a model element. 
   Normally tags (and **stereotypes**) are inserted within the models,
@@ -535,7 +538,6 @@ package 'Coffee' {                      // a SysML activity diagram
 
 
 ### [XML](https://git.rwth-aachen.de/monticore/languages/xml) (Alpha: Intention to become stable)
-* Responsible: NJ
 * The MontiCore language for parsing XML artifacts. An example:
   ```
   <Calendar>
@@ -563,7 +565,6 @@ package 'Coffee' {                      // a SysML activity diagram
 
 
 ### [JavaLight](https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/JavaLight.mc4) (MontiCore Stable)
-* Caretaker: MB
 * This is a reduced version of the **Java language**.
   JavaLight is meant to be used to integrate simplified Java-like parts 
   in modeling languages but not to parse complete Java implementations.
@@ -585,7 +586,6 @@ package 'Coffee' {                      // a SysML activity diagram
 
 
 ### [Java](https://git.rwth-aachen.de/monticore/javaDSL) (Beta: In Stabilization) (30% to MC6)
-* Caretaker: MB
 * This is the full Java' Language (as Opposed to JavaLight).
 * Main Grammar [`JavaDSL`](https://git.rwth-aachen.de/monticore/javaDSL/-/blob/dev/javaDSL/src/main/grammars/de/monticore/java/JavaDSL.mc4)
   and
@@ -596,11 +596,9 @@ package 'Coffee' {                      // a SysML activity diagram
 
 * [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
 * [MontiCore documentation](http://www.monticore.de/)
-* [**List of languages**](https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/docs/Languages.md)
-* [**MontiCore Core Grammar Library**](https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
-* [Overview Best Practices](BestPractices.md)
+* [**List of languages**](https://github.com/MontiCore/monticore/blob/dev/docs/Languages.md)
+* [**MontiCore Core Grammar Library**](https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
+* [Best Practices](https://github.com/MontiCore/monticore/blob/dev/docs/BestPractices.md)
 * [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
-
 * [Licence definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
-
 

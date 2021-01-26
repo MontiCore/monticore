@@ -6,7 +6,7 @@ import com.google.common.collect.Lists;
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.AdditionalAttributeSymbol;
-import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
+import de.monticore.grammar.prettyprint.Grammar_WithConceptsFullPrettyPrinter;
 import de.se_rwth.commons.JavaNamesHelper;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
@@ -15,7 +15,8 @@ import de.se_rwth.commons.logging.Log;
 import java.util.List;
 import java.util.Optional;
 
-import static de.monticore.grammar.Multiplicity.*;
+import static de.monticore.grammar.Multiplicity.LIST;
+import static de.monticore.grammar.Multiplicity.determineMultiplicity;
 
 /**
  * Some helper methods for GrammarDSL
@@ -83,7 +84,7 @@ public class HelperGrammar {
    * @return
    */
   public static String createConvertFunction(ASTLexProd a,
-                                             Grammar_WithConceptsPrettyPrinter prettyPrinter) {
+                                             Grammar_WithConceptsFullPrettyPrinter prettyPrinter) {
     String name = a.getName();
     // simple String
     if (!a.isPresentVariable()) {
@@ -300,7 +301,7 @@ public class HelperGrammar {
   }
 
   public static List<String> findImplicitTypes(ASTLexActionOrPredicate action,
-                                               Grammar_WithConceptsPrettyPrinter prettyPrinter) {
+                                               Grammar_WithConceptsFullPrettyPrinter prettyPrinter) {
     List<String> ret = Lists.newArrayList();
     StringBuilder buffer = new StringBuilder();
     buffer.append(prettyPrinter.prettyprint(action.getExpressionPredicate()));

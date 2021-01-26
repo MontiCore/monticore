@@ -1,7 +1,8 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("symbolAttributeNameList")}
-    return
+
+Set<ISymbol> allSymbols = new HashSet<>();
 <#list symbolAttributeNameList as attrName>
-    get${attrName?cap_first}().size() <#if !attrName?is_last> + </#if>
+    allSymbols.addAll(get${attrName?cap_first}().values());
 </#list>
-  ;
+return allSymbols.size();

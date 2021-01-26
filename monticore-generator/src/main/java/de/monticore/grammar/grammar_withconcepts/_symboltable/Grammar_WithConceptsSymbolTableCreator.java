@@ -15,6 +15,7 @@ import de.monticore.symboltable.ImportStatement;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 
+@Deprecated
 public class Grammar_WithConceptsSymbolTableCreator extends Grammar_WithConceptsSymbolTableCreatorTOP {
 
   public Grammar_WithConceptsSymbolTableCreator(IGrammar_WithConceptsScope enclosingScope) {

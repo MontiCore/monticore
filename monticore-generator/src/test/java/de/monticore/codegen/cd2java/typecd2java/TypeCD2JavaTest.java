@@ -5,48 +5,28 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Optional;
-
+import de.monticore.cd.cd4analysis.CD4AnalysisMill;
+import de.monticore.cd.cd4analysis._symboltable.ICD4AnalysisGlobalScope;
+import de.monticore.codegen.cd2java.DecoratorTestCase;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.monticore.MontiCoreScript;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
-import de.monticore.io.paths.ModelPath;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 
-public class TypeCD2JavaTest {
+public class TypeCD2JavaTest extends DecoratorTestCase {
 
   private ASTCDCompilationUnit cdCompilationUnit;
 
   @Before
   public void setUp() {
-    //create grammar from ModelPath
-    Path modelPathPath = Paths.get("src/test/resources");
-    ModelPath modelPath = new ModelPath(modelPathPath);
-    Optional<ASTMCGrammar> grammar = new MontiCoreScript()
-        .parseGrammar(Paths.get(new File(
-            "src/test/resources/Automaton.mc4").getAbsolutePath()));
-    assertTrue(grammar.isPresent());
+    ICD4AnalysisGlobalScope globalScope = CD4AnalysisMill.globalScope();
+    cdCompilationUnit = parse("de", "monticore", "codegen", "ast", "Automaton");
+    cdCompilationUnit.setEnclosingScope(globalScope);
 
-    Grammar_WithConceptsGlobalScope grammar_withConceptsGlobalScope = new Grammar_WithConceptsGlobalScope(modelPath, "mc4");
-
-    //create ASTCDDefinition from MontiCoreScript
-    MontiCoreScript script = new MontiCoreScript();
-    script.createSymbolsFromAST(grammar_withConceptsGlobalScope, grammar.get());
-    cdCompilationUnit = script.deriveASTCD(grammar.get(), new GlobalExtensionManagement(),
-        grammar_withConceptsGlobalScope);
-
-    cdCompilationUnit.setEnclosingScope(grammar_withConceptsGlobalScope);
     //make types java compatible
-    TypeCD2JavaDecorator decorator = new TypeCD2JavaDecorator(grammar_withConceptsGlobalScope);
+    TypeCD2JavaDecorator decorator = new TypeCD2JavaDecorator(globalScope);
     decorator.decorate(cdCompilationUnit);
   }
 
@@ -70,10 +50,14 @@ public class TypeCD2JavaTest {
     assertTrue(listType.getMCTypeArgumentList().get(0).getMCTypeOpt().isPresent());
     assertTrue(listType.getMCTypeArgumentList().get(0).getMCTypeOpt().get() instanceof ASTMCQualifiedType);
     ASTMCQualifiedType typeArgument = (ASTMCQualifiedType) listType.getMCTypeArgumentList().get(0).getMCTypeOpt().get();
-    assertEquals(3, typeArgument.getNameList().size());
-    assertEquals("automaton", typeArgument.getNameList().get(0));
-    assertEquals("_ast", typeArgument.getNameList().get(1));
-    assertEquals("ASTState", typeArgument.getNameList().get(2));
+    assertEquals(7, typeArgument.getNameList().size());
+    assertEquals("de", typeArgument.getNameList().get(0));
+    assertEquals("monticore", typeArgument.getNameList().get(1));
+    assertEquals("codegen", typeArgument.getNameList().get(2));
+    assertEquals("ast", typeArgument.getNameList().get(3));
+    assertEquals("automaton", typeArgument.getNameList().get(4));
+    assertEquals("_ast", typeArgument.getNameList().get(5));
+    assertEquals("ASTState", typeArgument.getNameList().get(6));
   }
 
   @Test

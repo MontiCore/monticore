@@ -16,15 +16,17 @@ import de.monticore.grammar.MCGrammarInfo;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
-import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsArtifactScope;
-import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
-import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsSymbolTableCreatorDelegator;
+import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
+import de.monticore.grammar.grammar_withconcepts._symboltable.*;
+import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsTraverser;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.Names;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
@@ -44,6 +46,11 @@ public class ParserGeneratorTest {
   private ModelPath modelPath;
 
   private File outputPath;
+
+  @BeforeClass
+  public static void setup(){
+    Grammar_WithConceptsMill.init();
+  }
 
   @Before
   public void setUp() {
@@ -73,10 +80,10 @@ public class ParserGeneratorTest {
   }
 
   @Test
-  public void testExpressionParserGeneration() {
-    Optional<ASTMCGrammar> ast = new MontiCoreScript()
-        .parseGrammar(Paths.get(new File(
-            "src/test/resources/de/monticore/expression/Expression.mc4").getAbsolutePath()));
+  public void testExpressionParserGeneration() throws IOException {
+    Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
+    Optional<ASTMCGrammar> ast = parser
+        .parse("src/test/resources/de/monticore/expression/Expression.mc4");
     assertTrue(ast.isPresent());
     ASTMCGrammar grammar = ast.get();
 
@@ -195,9 +202,11 @@ public class ParserGeneratorTest {
 
     final Path filePath = Paths.get(Names.getPathFromPackage(genHelper.getParserPackage()),
         astGrammar.getName() + "Antlr.g4");
-    new GeneratorEngine(setup).generate("parser.Parser", filePath, astGrammar,
-        new Grammar2Antlr(genHelper,
-            grammarInfo, true));
+    Grammar2Antlr grammar2Antlr = new Grammar2Antlr(genHelper, grammarInfo, true);
+    Grammar_WithConceptsTraverser traverser = Grammar_WithConceptsMill.traverser();
+    traverser.add4Grammar(grammar2Antlr);
+    traverser.setGrammarHandler(grammar2Antlr);
+    new GeneratorEngine(setup).generate("parser.Parser", filePath, astGrammar, grammar2Antlr);
   }
 
 
@@ -213,8 +222,8 @@ public class ParserGeneratorTest {
       result = grammarSymbol.get().getAstNode();
     } else {
 
-      Grammar_WithConceptsSymbolTableCreatorDelegator stCreator = Grammar_WithConceptsMill.grammar_WithConceptsSymbolTableCreatorDelegator();
-      Grammar_WithConceptsArtifactScope artScope = stCreator.createFromAST(result);
+      Grammar_WithConceptsPhasedSTC stCreator = new Grammar_WithConceptsPhasedSTC();
+      IGrammar_WithConceptsArtifactScope artScope = stCreator.createFromAST(result);
       globalScope.addSubScope(artScope);
       globalScope.addLoadedFile(qualifiedGrammarName);
     }

@@ -2,7 +2,9 @@
 package de.monticore.types.prettyprint;
 
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mcbasictypes._ast.*;
+import de.monticore.types.mcbasictypestest.MCBasicTypesTestMill;
 import de.monticore.types.mcbasictypestest._parser.MCBasicTypesTestParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -132,6 +134,21 @@ public class MCBasicTypesPrettyPrinterTest {
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
     assertTrue(qualifiedReferenceType.deepEquals(ast.get()));
+  }
+  
+  @Test
+  public void testMCPackageDeclaration() throws IOException {
+    MCBasicTypesTestParser parser = MCBasicTypesTestMill.parser();
+    Optional<ASTMCPackageDeclaration> ast = parser.parse_StringMCPackageDeclaration("package a.b.c.d;");
+    assertTrue(ast.isPresent());
+    assertFalse(parser.hasErrors());
+    ASTMCPackageDeclaration packageDeclaration = ast.get();
+    MCBasicTypesFullPrettyPrinter printer = new MCBasicTypesFullPrettyPrinter(new IndentPrinter());
+    String output = printer.prettyprint(ast.get());
+    ast = parser.parse_StringMCPackageDeclaration(output);
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertTrue(packageDeclaration.deepEquals(ast.get()));
   }
 
   @Test

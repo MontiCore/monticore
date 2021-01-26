@@ -1,18 +1,29 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
-# Languages and Language Components that have been developed with MontiCore
+# Languages and Language Components Developed with MontiCore
 
 The MontiCore language workbench has been under development already 
-for a while and of course has old been used by our group to develop 
-many other languages. Not all of those languages are of publicly 
+for a while and of course has been used by our group to develop 
+many languages. Not all of those languages are publicly 
 available and some of these languages are equipped with tools based 
-on MontiCore 5-. 
+on MontiCore 5. 
 
 Some of these languages are monolithic, others are composed of each 
 other. The available languages can also be used for adaptation, 
-extension, and composition 
+extension, and composition. 
 
 Please also have a look at our literature references for further 
 information on many of the languages. 
+
+## Publicly Available Languages
+* [Class Diagrams](https://github.com/MontiCore/cd4analysis)
+* [Sequence Diagrams](https://github.com/MontiCore/sequence-diagram)
+* [JSON](https://github.com/MontiCore/json)
+* [Feature Diagrams](https://github.com/MontiCore/feature-diagram)
+* [SI Units](https://github.com/MontiCore/siunits)
+* [automaton](https://github.com/MontiCore/automaton)
+* [EmbeddedMontiArc](https://github.com/MontiCore/EmbeddedMontiArc)
+
+## Languages Without Publicly Available Sources
 
 * **MontiArc ADL** is an architectural definition language for 
     component and connector models with enhanced connection facilities, 
@@ -38,7 +49,6 @@ development. See language definition and usage method in
     * **UML/P Sequence Diagrams** for interaction
     * **Activity Diagrams** for workflows and requirements 
         (an extension to the books)
-<p>
 
 * **Delta-MontiArc** [[HRRS12,HKR+11,HRRS11]](http://mbse.se-rwth.de/) 
  is a DSL for expressing deltas on MontiArc component definitions, 
@@ -71,7 +81,6 @@ development. See language definition and usage method in
             between software and infrastructure architectures.
     * **Architecture Scenario Description Language:** used to model 
             scenario-based test cases for software architectures.
-<p>
 
 * **I/O-TestDSL**  
         for the definition of stream-based, input-output 
@@ -117,11 +126,7 @@ development. See language definition and usage method in
 * **MontiCore** itself uses a family of DSLs for the definition of 
     DSLs, i.e., their grammars. [[HR17]](https://www.se-rwth.de/publications/)
 
-
-## Further Languages and Information 
-
-* [**MontiCore Online Demonstrator**]().
-   (TODO: needs to be released)
+## More Languages 
 
 * [**MontiCore Reference Manual**](http://monticore.de/MontiCore_Reference-Manual.2017.pdf).
    The reference Manual describes how to use MontiCore as a out-of-the-box 
@@ -143,10 +148,16 @@ development. See language definition and usage method in
    These complete languages are usually composed of a number of language
    components.
 
-* [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
-
 * [**MontiCore topic list**](https://www.se-rwth.de/topics/) 
 
-* [MontiCore project](../README.md) - MontiCore
 
+## Further Information
+
+* [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
+* [MontiCore documentation](http://www.monticore.de/)
+* [**List of languages**](https://github.com/MontiCore/monticore/blob/dev/docs/Languages.md)
+* [**MontiCore Core Grammar Library**](https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
+* [Best Practices](https://github.com/MontiCore/monticore/blob/dev/docs/BestPractices.md)
+* [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
+* [Licence definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
 

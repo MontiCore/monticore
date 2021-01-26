@@ -1,11 +1,24 @@
 /* (c) https://github.com/MontiCore/monticore */
 
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+
 plugins {
   id "de.set.ecj" version "1.4.1" // Eclipse compiler as it's much faster than javac
 }
 
+if(!hasProperty('bootstrap')){
+  allprojects {
+    group = "de.monticore"
+  }
+} else {
+  allprojects {
+    group = "de.monticore.bs"
+  }
+}
+
 allprojects {
-  group = 'de.monticore'
+  
   
   ext.grammarDir = 'src/main/grammars'
   buildDir = file("$projectDir/target")
@@ -28,6 +41,38 @@ subprojects {
   apply plugin: 'java'
   apply plugin : 'de.set.ecj'
   apply plugin: 'maven-publish'
+
+  tasks.withType(Test) {
+    useJUnit()
+    testLogging {
+      // controls whether test output is shown
+      showStandardStreams= ("false").equals(getProperty('showTestOutput'))? false : true
+      showExceptions true
+      showCauses true
+      showStackTraces true
+      exceptionFormat TestExceptionFormat.FULL
+      info {
+        events TestLogEvent.FAILED,
+                TestLogEvent.PASSED,
+                TestLogEvent.SKIPPED,
+                TestLogEvent.STANDARD_OUT
+      }
+    }
+    afterTest { desc, result ->
+      logger.lifecycle "${desc.className} > ${desc.name} ${result.resultType}"
+    }
+    afterSuite { desc, result ->
+      if (!desc.parent) { // will match the outermost suite
+        def output = "Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} passed, ${result.failedTestCount} failed, ${result.skippedTestCount} skipped)"
+        def startItem = '|  ', endItem = '  |'
+        logger.lifecycle startItem + output + endItem
+      }
+    }
+    reports {
+      junitXml.enabled = false
+      html.enabled = false
+    }
+  }
   
   sourceCompatibility = '1.8'
   
@@ -44,11 +89,6 @@ subprojects {
   
   // configure deployment
   publishing {
-    publications {
-      maven(MavenPublication) {
-        from(components.java)
-      }
-    }
     repositories.maven {
       credentials.username mavenUser
       credentials.password mavenPassword
@@ -57,4 +97,28 @@ subprojects {
       url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
     }
   }
+}
+
+task buildAll(type: GradleBuild) {
+  tasks = [ 'build' ]
+}
+
+task assembleAll(type: GradleBuild) {
+  tasks = [ 'assemble' ]
+}
+
+task publishToMavenLocalAll {
+  dependsOn ":monticore-generator:publishToMavenLocal",
+            ":monticore-cli:publishToMavenLocal",
+            ":monticore-gradle:publishToMavenLocal"
+}
+
+task publishAll {
+  dependsOn ":monticore-generator:publish",
+            ":monticore-cli:publish",
+            ":monticore-gradle:publish"
+}
+
+task testAll(type: GradleBuild) {
+  tasks = [ 'test' ]
 }

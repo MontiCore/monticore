@@ -14,7 +14,7 @@ import de.se_rwth.commons.logging.Log;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.util.*;
+import java.util.Optional;
 
 
 public class Grammar_WithConceptsGlobalScope extends Grammar_WithConceptsGlobalScopeTOP {
@@ -36,7 +36,7 @@ public class Grammar_WithConceptsGlobalScope extends Grammar_WithConceptsGlobalS
     // 1. call super implementation to start with employing the DeSer
     super.loadFileForModelName(modelName, symbolName);
 
-    ModelCoordinate model = ModelCoordinates.createQualifiedCoordinate(modelName, getModelFileExtension());
+    ModelCoordinate model = ModelCoordinates.createQualifiedCoordinate(modelName, getFileExt());
     String filePath = model.getQualifiedPath().toString();
     if (!isFileLoaded(filePath)) {
 
@@ -46,7 +46,7 @@ public class Grammar_WithConceptsGlobalScope extends Grammar_WithConceptsGlobalS
       // 3. if the file was found, parse the model and create its symtab
       if (model.hasLocation()) {
         ASTMCGrammar ast = parse(model);
-        Grammar_WithConceptsArtifactScope artScope = Grammar_WithConceptsMill.grammar_WithConceptsSymbolTableCreatorDelegator().createFromAST(ast);
+        IGrammar_WithConceptsArtifactScope artScope = new Grammar_WithConceptsPhasedSTC().createFromAST(ast);
         addSubScope(artScope);
         addLoadedFile(filePath);
       }

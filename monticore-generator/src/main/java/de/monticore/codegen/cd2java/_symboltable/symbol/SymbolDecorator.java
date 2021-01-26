@@ -4,6 +4,7 @@ package de.monticore.codegen.cd2java._symboltable.symbol;
 import com.google.common.collect.Lists;
 import de.monticore.cd.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd.cd4code.CD4CodeFullPrettyPrinter;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
@@ -15,7 +16,6 @@ import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
-import de.monticore.types.prettyprint.MCFullGenericTypesPrettyPrinter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -73,6 +73,8 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
     String scopeInterface = symbolTableService.getScopeInterfaceFullName();
     String symbolName = symbolTableService.getNameWithSymbolSuffix(symbolInput);
     boolean hasInheritedSymbol = symbolTableService.hasInheritedSymbolStereotype(symbolInput.getModifier());
+    boolean hasInheritedScope = symbolTableService.hasInheritedScopeStereotype(symbolInput.getModifier());
+    boolean hasScope = symbolTableService.hasScopeStereotype(symbolInput.getModifier());
     ASTModifier modifier = symbolInput.isPresentModifier() ?
             symbolTableService.createModifierPublicModifier(symbolInput.getModifier()) :
             PUBLIC.build();
@@ -137,10 +139,10 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
             .build();
 
     // add only for scope spanning symbols
-    if (symbolInput.isPresentModifier() &&
-            (symbolTableService.hasScopeStereotype(symbolInput.getModifier()) || symbolTableService.hasInheritedScopeStereotype(symbolInput.getModifier()))) {
+    if (hasScope || hasInheritedScope) {
       ASTCDAttribute spannedScopeAttribute = createSpannedScopeAttribute();
-      if (!symbolTableService.hasInheritedSymbolStereotype(symbolInput.getModifier())) {
+      if (!hasInheritedSymbol ||
+              (!hasInheritedScope && hasScope)) {
         symbolClass.addCDAttribute(spannedScopeAttribute);
       }
       symbolClass.addAllCDMethods(createSpannedScopeMethods(scopeInterface));
@@ -177,7 +179,7 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
     ASTMCQualifiedType retType = getMCTypeFacade().createQualifiedType(symbolTableService.getASTPackage() + "." + AST_PREFIX + astClassName);
     method = getCDMethodFacade().createMethod(PUBLIC, retType, "getAstNode");
     this.replaceTemplate(EMPTY_BODY,method, new StringHookPoint("return ("
-            + retType.printType(new MCFullGenericTypesPrettyPrinter(new IndentPrinter()))
+            + retType.printType(new CD4CodeFullPrettyPrinter(new IndentPrinter()))
             + ") super.getAstNode();"));
     methods.add(method);
     return methods;
