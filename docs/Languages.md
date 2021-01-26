@@ -298,7 +298,16 @@ component InteriorLight {                           // MontiArc language
   **transitive closure operator**.
   An example:
 ```
-TODO                           // OCL language
+ocl BankingChecks {
+  context Bank b inv OverallBalanceCorrect:
+  let
+    balances = { acc.balance | Account acc in b.account };
+    calculatedBalance = iterate { balance in balances;
+                                  double sum = 0.0 :
+                                  sum = sum + balance }
+  in
+    b.overallBalance == calculatedBalance;
+}
 ```
 
 
