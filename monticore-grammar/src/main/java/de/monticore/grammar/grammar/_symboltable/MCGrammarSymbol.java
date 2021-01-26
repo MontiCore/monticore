@@ -10,6 +10,8 @@ import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsArtifactScope;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
+import de.monticore.grammar.grammar_withconcepts._symboltable.IGrammar_WithConceptsArtifactScope;
+import de.monticore.grammar.grammar_withconcepts._symboltable.IGrammar_WithConceptsGlobalScope;
 import de.se_rwth.commons.Names;
 
 import java.util.*;
@@ -203,8 +205,8 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
         break;
       }
 
-      if (!(currentScope instanceof Grammar_WithConceptsGlobalScope)) {
-        if (currentScope instanceof Grammar_WithConceptsArtifactScope) {
+      if (!(currentScope instanceof IGrammar_WithConceptsGlobalScope)) {
+        if (currentScope instanceof IGrammar_WithConceptsArtifactScope) {
           // We have reached the artifact scope. Get the package name from the
           // symbol itself, since it might be set manually.
           if (!getPackageName().isEmpty()) {
@@ -236,8 +238,8 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
         // package name. This check is important, since the package name of the
         // enclosing symbol might be set manually.
         return currentScope.getSpanningSymbol().getPackageName();
-      } else if (currentScope instanceof Grammar_WithConceptsArtifactScope) {
-        return ((Grammar_WithConceptsArtifactScope) currentScope).getPackageName();
+      } else if (currentScope instanceof IGrammar_WithConceptsArtifactScope) {
+        return ((IGrammar_WithConceptsArtifactScope) currentScope).getPackageName();
       }
 
       optCurrentScope = Optional.of(currentScope.getEnclosingScope());

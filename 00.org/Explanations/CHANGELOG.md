@@ -5,6 +5,9 @@
 ##  MontiCore 6.8.0-SNAPSHOT
 to be released
 
+##  MontiCore 6.7.0
+released: 26.01.2021
+
 ### Additions
 * Add new CLI for the MontiCore generator engine
 
