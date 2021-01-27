@@ -24,7 +24,7 @@ These are available in the *MontiCore* core project
 together with short descriptions and their status 
 ([Status of Grammars](../../../../../../00.org/Explanations/StatusOfGrammars.md)).
 
-The list covers the core grammars to be found in the `MontiCore/monticore` 
+The list covers mainly the core grammars to be found in the `MontiCore/monticore` 
 project under `monticore-grammar/src/main/grammars/` in packages 
 
 * `de.monticore`
@@ -49,6 +49,7 @@ It should be useful in many languages.
 These grammars generally deal with type definitions and build on each 
 other. Some snipets for type definitions:
 
+    grammars          some examples
     MCBasicTypes      boolean  byte  short  int
                       long  char  float  double
                       void  Person  a.b.Person
@@ -143,7 +144,7 @@ This modularity of expressions and associated types greatly eases
 the reuse of type structures in languages similar to Java.
 Some snipets for operators defined in expressions:
 
-
+    grammar        operators and examples in this grammar
     CommonExp:     /  %  +  -  <=  >=  ==  >  <  !=  ~.  !.  .?.:.
                    &&  ||  ~. 
     AssigementExp: ++  --  =  +=  -=  *=  /=  &=  |=  ^=  >>=  >>>=  <<=  %=
@@ -232,12 +233,12 @@ modelling language.
 
 
 
-
 ## Literals: List of Grammars in package `de.monticore.literals`
 
 Literals are the basic elements of expressions, such as numbers, strings, 
 truth values. Some snipets:
 
+    grammar           examples of this grammar
     MCCommonLit       3  -3  2.17  -4  true  false  'c'  '\03AE' 
                       3L  2.17d  2.17f  0xAF  "string" "str\b\n\\"  
                       "str\uAF01\u0001\377"  null

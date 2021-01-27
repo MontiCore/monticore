@@ -1,6 +1,6 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 
-# MontiCore Languages - an Overview
+# MontiCore Languages, Level II - an Overview
 
 [[_TOC_]]
 
@@ -21,12 +21,12 @@ component grammar.
 
 Language components are currently organized in two levels:
 In this list you mainly find grammars for 
-**complete (but also reusable and adaptable) languages**.
+**complete (but also reusable and adaptable) languages** (Level II).
 A list of
 [**grammar components**](../monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
 with individual reusable nonterminals is also available in
 the MontiCore core project 
-([development status](../00.org/Explanations/StatusOfGrammars.md)).
+([development status](../00.org/Explanations/StatusOfGrammars.md)) (Level I).
 
 The following list contains the language grammars found in the
 `MontiCore` projects, such as `cd4analysis/cd4analysis`.
@@ -39,11 +39,6 @@ MontiCore projects are hosted at
 * [`https://github.com/MontiCore/`](https://github.com/MontiCore/monticore)
 
 ## List of Languages 
-
-<!--
-### [Activity Diagrams](INSERT LINK HERE) (not adressed yet)
-* TO be added
--->
 
 
 ### [Class Diagram For Analysis (CD4A)](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis) (MontiCore stable)
