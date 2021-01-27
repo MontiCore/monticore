@@ -1,7 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.mc2cd.symbolTransl;
 
-import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd4codebasis._ast.CD4CodeBasisNodeFactory;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cdbasis._ast.*;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.grammar._ast.ASTGrammarMethod;
@@ -32,7 +34,7 @@ public class SymbolRuleMethodTranslation implements UnaryOperator<Link<ASTMCGram
   }
 
   private ASTCDMethod createSimpleCDMethod(ASTGrammarMethod method) {
-    ASTCDMethod cdMethod = CD4AnalysisNodeFactory.createASTCDMethod();
+    ASTCDMethod cdMethod = CD4CodeBasisNodeFactory.createASTCDMethod();
     cdMethod.setModifier(TransformationHelper.createPublicModifier());
     cdMethod.setName(method.getName());
     String dotSeparatedName = MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(method.getMCReturnType());

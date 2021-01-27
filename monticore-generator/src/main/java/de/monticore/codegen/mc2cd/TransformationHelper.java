@@ -5,11 +5,15 @@ package de.monticore.codegen.mc2cd;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import de.monticore.ast.ASTNode;
-import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.cd.cd4analysis._parser.CD4AnalysisParser;
-import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
-import de.monticore.cd.cd4analysis._symboltable.ICD4AnalysisGlobalScope;
-import de.monticore.cd.prettyprint.CD4AnalysisFullPrettyPrinter;
+import de.monticore.cdbasis._ast.*;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
+import de.monticore.cd4analysis._ast.ASTCD4AnalysisNode;
+import de.monticore.cd4analysis._ast.CD4AnalysisNodeFactory;
+import de.monticore.cd4analysis._parser.CD4AnalysisParser;
+import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
+import de.monticore.cd4analysis._symboltable.ICD4AnalysisGlobalScope;
+import de.monticore.cd4analysis.prettyprint.CD4AnalysisFullPrettyPrinter;
+import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
@@ -24,6 +28,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
+import de.monticore.umlmodifier._ast.ASTModifier;
 import de.se_rwth.commons.JavaNamesHelper;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
@@ -297,7 +302,7 @@ public final class TransformationHelper {
                                                                ASTMCGrammar ast, String nameSuffix) {
     final String qualifiedCDName = Names.getQualifiedName(ast.getPackageList(), ast.getName() + nameSuffix);
 
-    Optional<CDDefinitionSymbol> cdSymbol = globalScope.resolveCDDefinitionDown(
+    Optional<DiagramSymbol> cdSymbol = globalScope.resolveCDDefinitionDown(
         qualifiedCDName);
 
     if (cdSymbol.isPresent() && cdSymbol.get().getEnclosingScope().isPresentAstNode()) {

@@ -35,7 +35,7 @@ public class Grammar_WithConceptsSymbolTableCreatorDelegator extends Grammar_Wit
    * @param rootNode the root node
    * @return the first scope that was created
    */
-  public Grammar_WithConceptsArtifactScope createFromAST(de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit rootNode) {
+  public Grammar_WithConceptsArtifactScope createFromAST(de.monticore.cdbasis._ast.ASTCDCompilationUnit rootNode) {
     Grammar_WithConceptsArtifactScope as =  symbolTable.createFromAST(rootNode);
     if (!as.getPackageName().isEmpty()){
       globalScope.addLoadedFile(as.getPackageName() + "." + as.getName());

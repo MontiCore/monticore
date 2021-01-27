@@ -1,7 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.mc2cd.scopeTransl;
 
-import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cd4codebasis._ast.CD4CodeBasisNodeFactory;
+import de.monticore.cdbasis._ast.*;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.grammar._ast.ASTGrammarMethod;
@@ -13,6 +15,7 @@ import de.monticore.grammar.prettyprint.Grammar_WithConceptsFullPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.statements.mcstatementsbasis._ast.ASTMCBlockStatement;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
+import de.monticore.umlmodifier._ast.ASTModifier;
 import de.monticore.utils.Link;
 
 import java.util.function.UnaryOperator;
@@ -34,7 +37,7 @@ public class ScopeRuleMethodTranslation implements UnaryOperator<Link<ASTMCGramm
   }
 
   private ASTCDMethod createSimpleCDMethod(ASTGrammarMethod method) {
-    ASTCDMethod cdMethod = CD4AnalysisNodeFactory.createASTCDMethod();
+    ASTCDMethod cdMethod = CD4CodeBasisNodeFactory.createASTCDMethod();
     cdMethod.setModifier(TransformationHelper.createPublicModifier());
     cdMethod.setName(method.getName());
     String dotSeparatedName = MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(method.getMCReturnType());

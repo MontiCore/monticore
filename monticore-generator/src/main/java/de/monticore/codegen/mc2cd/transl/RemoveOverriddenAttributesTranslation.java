@@ -4,7 +4,7 @@ package de.monticore.codegen.mc2cd.transl;
 
 import com.google.common.collect.Lists;
 import de.monticore.ast.ASTNode;
-import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cdbasis._ast.*;
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TransformationHelper;
@@ -12,6 +12,7 @@ import de.monticore.grammar.grammar._ast.ASTAdditionalAttribute;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
+import de.monticore.umlmodifier._ast.ASTModifier;
 import de.monticore.utils.Link;
 import de.se_rwth.commons.StringTransformations;
 

@@ -2,11 +2,11 @@
 package de.monticore.codegen.cd2java._visitor;
 
 import com.google.common.collect.Lists;
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDDefinition;
-import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
-import de.monticore.cd.cd4code.CD4CodeMill;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDDefinition;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java._visitor.builder.DelegatorVisitorBuilderDecorator;
@@ -75,11 +75,11 @@ public class CDVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, AS
         .addCDClass(delegatorVisitorBuilderDecorator.decorate(delegatorVisitor))
         .build();
 
-    for (ASTCDClass cdClass : astCD.getCDClassList()) {
+    for (ASTCDClass cdClass : astCD.getCDClassesList()) {
       this.replaceTemplate(PACKAGE, cdClass, createPackageHookPoint(visitorPackage));
     }
 
-    for (ASTCDInterface cdInterface : astCD.getCDInterfaceList()) {
+    for (ASTCDInterface cdInterface : astCD.getCDInterfacesList()) {
       this.replaceTemplate(CoreTemplates.PACKAGE, cdInterface, createPackageHookPoint(visitorPackage));
     }
 

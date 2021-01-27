@@ -1,10 +1,10 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.codegen.cd2java._od;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDDefinition;
-import de.monticore.cd.cd4analysis.CD4AnalysisMill;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDDefinition;
+import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -36,7 +36,7 @@ public class ODCDDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCo
 
     ASTCDDefinition odCDDefinition = CD4AnalysisMill.cDDefinitionBuilder()
         .setName(input.getCDDefinition().getName())
-        .addCDClass(odClass)
+        .addCDElement(odClass)
         .build();
 
     return CD4AnalysisMill.cDCompilationUnitBuilder()

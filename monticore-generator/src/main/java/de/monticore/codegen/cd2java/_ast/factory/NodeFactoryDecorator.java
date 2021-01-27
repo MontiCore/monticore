@@ -2,20 +2,22 @@
 package de.monticore.codegen.cd2java._ast.factory;
 
 import com.google.common.collect.Lists;
-import de.monticore.cd.cd4analysis.CD4AnalysisMill;
-import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
+import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cd4codebasis._ast.*;
+import de.monticore.cdbasis._ast.*;
+import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.typecd2java.TypeCD2JavaVisitor;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.umlmodifier._ast.ASTModifier;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static de.monticore.cd.facade.CDModifier.*;
+import static de.monticore.codegen.cd2java.CDModifier.*;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PACKAGE;
 import static de.monticore.codegen.cd2java._ast.factory.NodeFactoryConstants.*;
@@ -81,14 +83,14 @@ public class NodeFactoryDecorator extends AbstractCreator<ASTCDCompilationUnit, 
 
 
   protected ASTCDMethod addGetFactoryMethod(ASTMCType factoryType, String factoryClassName) {
-    ASTCDMethod getFactoryMethod = this.getCDMethodFacade().createMethod(PRIVATE_STATIC, factoryType, GET_FACTORY_METHOD);
+    ASTCDMethod getFactoryMethod = this.getCDMethodFacade().createMethod(PRIVATE_STATIC.build(), factoryType, GET_FACTORY_METHOD);
     this.replaceTemplate(EMPTY_BODY, getFactoryMethod, new TemplateHookPoint("_ast.nodefactory.GetFactory", factoryClassName));
     return getFactoryMethod;
   }
 
   protected ASTCDAttribute addAttribute(ASTCDClass astcdClass, ASTMCType factoryType) {
     // create attribute for AST
-    return this.getCDAttributeFacade().createAttribute(PROTECTED_STATIC, factoryType, FACTORY + astcdClass.getName());
+    return this.getCDAttributeFacade().createAttribute(PROTECTED_STATIC.build(), factoryType, FACTORY + astcdClass.getName());
   }
 
   protected List<ASTCDMethod> addFactoryMethods(ASTCDClass astcdClass) {
@@ -106,13 +108,13 @@ public class NodeFactoryDecorator extends AbstractCreator<ASTCDCompilationUnit, 
   }
 
   protected ASTCDMethod addCreateMethod(String astName, ASTMCType astType) {
-    ASTCDMethod createWithoutParameters = this.getCDMethodFacade().createMethod(PUBLIC_STATIC, astType, CREATE_METHOD + astName);
+    ASTCDMethod createWithoutParameters = this.getCDMethodFacade().createMethod(PUBLIC_STATIC.build(), astType, CREATE_METHOD + astName);
     this.replaceTemplate(EMPTY_BODY, createWithoutParameters, new TemplateHookPoint("_ast.nodefactory.Create", astName));
     return createWithoutParameters;
   }
 
   protected ASTCDMethod addDoCreateMethod(String astName, ASTMCType astType) {
-    ASTCDMethod doCreateWithoutParameters = this.getCDMethodFacade().createMethod(PROTECTED, astType, DO_CREATE_METHOD + astName);
+    ASTCDMethod doCreateWithoutParameters = this.getCDMethodFacade().createMethod(PROTECTED.build(), astType, DO_CREATE_METHOD + astName);
     this.replaceTemplate(EMPTY_BODY, doCreateWithoutParameters, new TemplateHookPoint("_ast.nodefactory.DoCreate", astName));
     return doCreateWithoutParameters;
   }
@@ -124,7 +126,7 @@ public class NodeFactoryDecorator extends AbstractCreator<ASTCDCompilationUnit, 
   protected List<ASTCDMethod> addFactoryDelegateMethods(List<ASTCDClass> classList) {
     List<ASTCDMethod> delegateMethodList = new ArrayList<>();
     //get super symbols
-    for (CDDefinitionSymbol superSymbol : nodeFactoryService.getSuperCDsTransitive()) {
+    for (DiagramSymbol superSymbol : nodeFactoryService.getSuperCDsTransitive()) {
       if (superSymbol.isPresentAstNode()) {
         //get super cdDefinition
         ASTCDDefinition superDefinition = superSymbol.getAstNode();
@@ -133,7 +135,7 @@ public class NodeFactoryDecorator extends AbstractCreator<ASTCDCompilationUnit, 
         ASTCDCompilationUnit a = CD4AnalysisMill.cDCompilationUnitBuilder().setCDDefinition(superDefinition).build();
         a.accept(visitor);
 
-        for (ASTCDClass superClass : superDefinition.getCDClassList()) {
+        for (ASTCDClass superClass : superDefinition.getCDClassesList()) {
           if (canAddDelegateMethod(superClass, classList, delegateMethodList)) {
             String packageName = superSymbol.getFullName().toLowerCase() + "." + AST_PACKAGE + ".";
             ASTMCType superAstType = this.getMCTypeFacade().createQualifiedType(packageName + superClass.getName());
@@ -159,7 +161,7 @@ public class NodeFactoryDecorator extends AbstractCreator<ASTCDCompilationUnit, 
   }
 
   protected ASTCDMethod addCreateDelegateMethod(ASTMCType superAstType, String className, String packageName, String symbolName) {
-    ASTCDMethod createDelegateMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC, superAstType, CREATE_METHOD + className);
+    ASTCDMethod createDelegateMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC.build(), superAstType, CREATE_METHOD + className);
     this.replaceTemplate(EMPTY_BODY, createDelegateMethod, new TemplateHookPoint("_ast.nodefactory.CreateDelegateMethod", packageName + symbolName, className, ""));
     return createDelegateMethod;
   }

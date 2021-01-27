@@ -2,8 +2,8 @@
 package de.monticore.codegen.cd2java._parser;
 
 import com.google.common.collect.Lists;
-import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
+import de.monticore.cdbasis._ast.*;
+import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
@@ -25,7 +25,7 @@ public class ParserService extends AbstractService<ParserService> {
     super(compilationUnit);
   }
 
-  public ParserService(CDDefinitionSymbol cdSymbol) {
+  public ParserService(DiagramSymbol cdSymbol) {
     super(cdSymbol);
   }
 
@@ -39,11 +39,11 @@ public class ParserService extends AbstractService<ParserService> {
   }
 
   @Override
-  protected ParserService createService(CDDefinitionSymbol cdSymbol) {
+  protected ParserService createService(DiagramSymbol cdSymbol) {
     return createParserService(cdSymbol);
   }
 
-  public static ParserService createParserService(CDDefinitionSymbol cdSymbol) {
+  public static ParserService createParserService(DiagramSymbol cdSymbol) {
     return new ParserService(cdSymbol);
   }
 
@@ -51,7 +51,7 @@ public class ParserService extends AbstractService<ParserService> {
    * parser class names e.g. AutomataParser
    */
 
-  public String getParserClassFullName(CDDefinitionSymbol cdSymbol) {
+  public String getParserClassFullName(DiagramSymbol cdSymbol) {
     return getPackage(cdSymbol) + "." + getParserClassSimpleName(cdSymbol);
   }
 
@@ -59,7 +59,7 @@ public class ParserService extends AbstractService<ParserService> {
     return getParserClassFullName(getCDSymbol());
   }
 
-  public String getParserClassSimpleName(CDDefinitionSymbol cdSymbol) {
+  public String getParserClassSimpleName(DiagramSymbol cdSymbol) {
     return cdSymbol.getName() + PARSER_SUFFIX;
   }
 
@@ -71,7 +71,7 @@ public class ParserService extends AbstractService<ParserService> {
     return getAntlrParserSimpleName(getCDSymbol());
   }
 
-  public String getAntlrParserSimpleName(CDDefinitionSymbol cdSymbol){
+  public String getAntlrParserSimpleName(DiagramSymbol cdSymbol){
     return cdSymbol.getName() + ANTLR_SUFFIX + PARSER_SUFFIX;
   }
 
@@ -94,18 +94,18 @@ public class ParserService extends AbstractService<ParserService> {
     if (astcdDefinition.isPresentModifier() && hasStartProdStereotype(astcdDefinition.getModifier())) {
       return getStartProdValue(astcdDefinition.getModifier());
     }
-    for (ASTCDClass prod : astcdDefinition.getCDClassList()) {
+    for (ASTCDClass prod : astcdDefinition.getCDClassesList()) {
       if (hasStereotype(prod.getModifier(), MC2CDStereotypes.START_PROD)) {
         return Optional.of(astcdDefinition.getSymbol().getPackageName() + "." + astcdDefinition.getSymbol().getName() + "." + prod.getName());
       }
     }
-    for (ASTCDInterface prod : astcdDefinition.getCDInterfaceList()) {
+    for (ASTCDInterface prod : astcdDefinition.getCDInterfacesList()) {
       if (hasStereotype(prod.getModifier(), MC2CDStereotypes.START_PROD)) {
         return Optional.of(astcdDefinition.getSymbol().getPackageName() + "." + astcdDefinition.getSymbol().getName() + "." + prod.getName());
       }
     }
     //look for a start prod in super grammars
-    for(CDDefinitionSymbol def: getSuperCDsDirect(astcdDefinition.getSymbol())){
+    for(DiagramSymbol def: getSuperCDsDirect(astcdDefinition.getSymbol())){
       return getStartProd(def.getAstNode());
     }
     return Optional.empty();

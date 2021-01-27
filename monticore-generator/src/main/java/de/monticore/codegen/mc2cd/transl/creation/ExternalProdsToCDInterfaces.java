@@ -2,10 +2,10 @@
 
 package de.monticore.codegen.mc2cd.transl.creation;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDDefinition;
-import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
-import de.monticore.cd.cd4analysis._ast.CD4AnalysisNodeFactory;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDDefinition;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
+import de.monticore.cd4analysis._ast.CD4AnalysisNodeFactory;
 import de.monticore.grammar.grammar._ast.ASTExternalProd;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.utils.Link;
@@ -23,7 +23,7 @@ public class ExternalProdsToCDInterfaces implements
       for (ASTExternalProd externalProd : link.source().getExternalProdList()) {
         ASTCDInterface cdInterface = CD4AnalysisNodeFactory.createASTCDInterface();
         cdInterface.setModifier(CD4AnalysisNodeFactory.createASTModifier());
-        link.target().getCDInterfaceList().add(cdInterface);
+        link.target().getCDInterfacesList().add(cdInterface);
         new Link<>(externalProd, cdInterface, link);
       }
     }

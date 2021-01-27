@@ -2,10 +2,11 @@
 package de.monticore.codegen.cd2java.mill;
 
 import com.google.common.collect.Lists;
-import de.monticore.cd.cd4analysis.CD4AnalysisMill;
-import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
-import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
+import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cdbasis._ast.*;
+import de.monticore.cd4codebasis._ast.*;
+import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
+import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._parser.ParserService;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
@@ -24,7 +25,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static de.monticore.cd.facade.CDModifier.*;
+import static de.monticore.codegen.cd2java.CDModifier.*;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PACKAGE;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
@@ -59,7 +60,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
 
     String fullDefinitionName = symbolTableService.getCDSymbol().getFullName();
 
-    List<CDDefinitionSymbol> superSymbolList = symbolTableService.getSuperCDsTransitive();
+    List<DiagramSymbol> superSymbolList = symbolTableService.getSuperCDsTransitive();
 
     ASTCDConstructor constructor = this.getCDConstructorFacade().createConstructor(PROTECTED, millClassName);
 
@@ -82,7 +83,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
 
     for (ASTCDCompilationUnit cd : cdList) {
       // filter out all classes that are abstract and only builder classes
-      List<ASTCDClass> classList = cd.getCDDefinition().deepClone().getCDClassList()
+      List<ASTCDClass> classList = cd.getCDDefinition().deepClone().getCDClassesList()
           .stream()
           .filter(ASTCDClass::isPresentModifier)
           .filter(x -> !x.getModifier().isAbstract())
@@ -91,7 +92,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
 
 
       // filter out all classes that are abstract and end with the TOP suffix
-      List<ASTCDClass> topClassList = cd.getCDDefinition().deepClone().getCDClassList()
+      List<ASTCDClass> topClassList = cd.getCDDefinition().deepClone().getCDClassesList()
           .stream()
           .filter(ASTCDClass::isPresentModifier)
           .filter(x -> x.getModifier().isAbstract())
@@ -222,13 +223,13 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
     return initMeMethod;
   }
 
-  protected ASTCDMethod addInitMethod(ASTMCType millType, List<CDDefinitionSymbol> superSymbolList, String fullDefinitionName) {
+  protected ASTCDMethod addInitMethod(ASTMCType millType, List<DiagramSymbol> superSymbolList, String fullDefinitionName) {
     ASTCDMethod initMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC, INIT);
     this.replaceTemplate(EMPTY_BODY, initMethod, new TemplateHookPoint("mill.InitMethod", millType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()), superSymbolList, fullDefinitionName+"."+AUXILIARY_PACKAGE));
     return initMethod;
   }
 
-  protected ASTCDMethod addResetMethod(List<ASTCDClass> astcdClassList, List<CDDefinitionSymbol> superSymbolList) {
+  protected ASTCDMethod addResetMethod(List<ASTCDClass> astcdClassList, List<DiagramSymbol> superSymbolList) {
     ASTCDMethod resetMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC, RESET);
     this.replaceTemplate(EMPTY_BODY, resetMethod, new TemplateHookPoint("mill.ResetMethod", getAttributeNameList(astcdClassList), superSymbolList));
     return resetMethod;
@@ -264,10 +265,10 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
   /**
    * adds builder methods for the delegation to builders of super grammars
    */
-  protected List<ASTCDMethod> addSuperBuilderMethods(List<CDDefinitionSymbol> superSymbolList, List<ASTCDClass> classList) {
+  protected List<ASTCDMethod> addSuperBuilderMethods(List<DiagramSymbol> superSymbolList, List<ASTCDClass> classList) {
     List<ASTCDMethod> superMethods = new ArrayList<>();
     // get super symbols
-    for (CDDefinitionSymbol superSymbol : superSymbolList) {
+    for (DiagramSymbol superSymbol : superSymbolList) {
       if (superSymbol.isPresentAstNode()) {
         for (CDTypeSymbol type : superSymbol.getTypes()) {
           if (type.isPresentAstNode() && type.getAstNode().isPresentModifier()
@@ -379,7 +380,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
     return scopeMethods;
   }
 
-  protected List<ASTCDMethod> getSuperSymbolMethods(CDDefinitionSymbol superSymbol, CDTypeSymbol type) {
+  protected List<ASTCDMethod> getSuperSymbolMethods(DiagramSymbol superSymbol, CDTypeSymbol type) {
     List<ASTCDMethod> superMethods = new ArrayList<>();
     // for prod with symbol property create delegate builder method
     String symbolBuilderFullName = symbolTableService.getSymbolBuilderFullName(type.getAstNode(), superSymbol);
@@ -403,7 +404,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
   }
 
 
-  protected List<ASTCDMethod> getSuperASTMethods(CDDefinitionSymbol superSymbol, CDTypeSymbol type,
+  protected List<ASTCDMethod> getSuperASTMethods(DiagramSymbol superSymbol, CDTypeSymbol type,
                                                  List<ASTCDMethod> alreadyDefinedMethods) {
     List<ASTCDMethod> superMethods = new ArrayList<>();
     String astPackageName = superSymbol.getFullName().toLowerCase() + "." + AST_PACKAGE + ".";

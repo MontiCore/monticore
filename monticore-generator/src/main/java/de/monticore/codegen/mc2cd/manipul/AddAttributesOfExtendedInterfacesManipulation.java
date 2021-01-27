@@ -3,10 +3,10 @@
 package de.monticore.codegen.mc2cd.manipul;
 
 import com.google.common.collect.Maps;
-import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 
@@ -23,7 +23,7 @@ public class AddAttributesOfExtendedInterfacesManipulation implements
   private Map<String, ASTCDInterface> cDInterfaces = Maps.newHashMap();
   
   private void initInterfaceMap(ASTCDCompilationUnit cdCompilationUnit) {
-    for (ASTCDInterface cdInterface : cdCompilationUnit.getCDDefinition().getCDInterfaceList()) {
+    for (ASTCDInterface cdInterface : cdCompilationUnit.getCDDefinition().getCDInterfacesList()) {
       cDInterfaces.put(
           TransformationHelper.getPackageName(cdCompilationUnit) + cdInterface.getName(),
           cdInterface);
@@ -35,7 +35,7 @@ public class AddAttributesOfExtendedInterfacesManipulation implements
     
     initInterfaceMap(cdCompilationUnit);
     
-    for (ASTCDClass cdClass : cdCompilationUnit.getCDDefinition().getCDClassList()) {
+    for (ASTCDClass cdClass : cdCompilationUnit.getCDDefinition().getCDClassesList()) {
       addAttributesOfExtendedInterfaces(cdClass);
     }
     

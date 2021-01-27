@@ -5,9 +5,9 @@ package de.monticore.codegen.cd2java;
 
 import com.google.common.base.Preconditions;
 import de.monticore.ast.ASTNode;
-import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbolSurrogate;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._symboltable.CDTypeSymbolSurrogate;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -58,7 +58,7 @@ public class DecorationHelper extends MCBasicTypesHelper {
    */
   public boolean isAstNode(ASTCDAttribute attr) {
     if (attr.getModifier().isPresentStereotype()) {
-      return attr.getModifier().getStereotype().getValueList().stream().anyMatch(v -> v.getName().equals(MC2CDStereotypes.AST_TYPE.toString()));
+      return attr.getModifier().getStereotype().getValuesList().stream().anyMatch(v -> v.getName().equals(MC2CDStereotypes.AST_TYPE.toString()));
     }
     return false;
   }

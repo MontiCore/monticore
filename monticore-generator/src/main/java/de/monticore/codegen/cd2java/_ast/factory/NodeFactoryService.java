@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast.factory;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
 
@@ -15,7 +15,7 @@ public class NodeFactoryService extends AbstractService<NodeFactoryService> {
     super(compilationUnit);
   }
 
-  public NodeFactoryService(CDDefinitionSymbol cdSymbol) {
+  public NodeFactoryService(DiagramSymbol cdSymbol) {
     super(cdSymbol);
   }
 
@@ -29,11 +29,11 @@ public class NodeFactoryService extends AbstractService<NodeFactoryService> {
   }
 
   @Override
-  protected NodeFactoryService createService(CDDefinitionSymbol cdSymbol) {
+  protected NodeFactoryService createService(DiagramSymbol cdSymbol) {
     return createNodeFactoryService(cdSymbol);
   }
 
-  public static NodeFactoryService createNodeFactoryService(CDDefinitionSymbol cdSymbol) {
+  public static NodeFactoryService createNodeFactoryService(DiagramSymbol cdSymbol) {
     return new NodeFactoryService(cdSymbol);
   }
 
@@ -44,7 +44,7 @@ public class NodeFactoryService extends AbstractService<NodeFactoryService> {
     return getNodeFactorySimpleTypeName(getCDSymbol());
   }
 
-  public String getNodeFactorySimpleTypeName(CDDefinitionSymbol cdSymbol) {
+  public String getNodeFactorySimpleTypeName(DiagramSymbol cdSymbol) {
     return cdSymbol.getName() + NodeFactoryConstants.NODE_FACTORY_SUFFIX;
   }
 
@@ -52,7 +52,7 @@ public class NodeFactoryService extends AbstractService<NodeFactoryService> {
     return getNodeFactoryFullTypeName(getCDSymbol());
   }
 
-  public String getNodeFactoryFullTypeName(CDDefinitionSymbol cdSymbol) {
+  public String getNodeFactoryFullTypeName(DiagramSymbol cdSymbol) {
     return String.join(".", getPackage(cdSymbol), getNodeFactorySimpleTypeName(cdSymbol));
   }
 }

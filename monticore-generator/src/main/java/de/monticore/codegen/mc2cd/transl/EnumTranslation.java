@@ -2,10 +2,10 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDEnum;
-import de.monticore.cd.cd4analysis._ast.ASTCDEnumConstant;
-import de.monticore.cd.cd4analysis._ast.CD4AnalysisNodeFactory;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
+import de.monticore.cdinterfaceandenum._ast.ASTCDEnumConstant;
+import de.monticore.cd4analysis._ast.CD4AnalysisNodeFactory;
 import de.monticore.grammar.LexNamer;
 import de.monticore.grammar.grammar._ast.ASTConstant;
 import de.monticore.grammar.grammar._ast.ASTEnumProd;

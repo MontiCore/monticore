@@ -2,9 +2,9 @@
 package de.monticore.codegen.cd2java._symboltable.symbol;
 
 import com.google.common.collect.Lists;
-import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._ast.builder.BuilderConstants;
 import de.monticore.codegen.cd2java._ast.builder.BuilderDecorator;
@@ -21,8 +21,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static de.monticore.cd.facade.CDModifier.PROTECTED;
-import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java.CDModifier.PROTECTED;
+import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILD_METHOD;
@@ -52,7 +52,7 @@ public class SymbolBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDCla
     boolean isInherited = symbolTableService.hasInheritedSymbolStereotype(symbolClass.getModifier());
     List<ASTCDAttribute> defaultAttrs = createSymbolAttributes(symbolClass);
     if (!isInherited) {
-      decoratedSymbolClass.addAllCDAttributes(defaultAttrs);
+      decoratedSymbolClass.addAllCDMembers(defaultAttrs);
     }
 
     builderDecorator.setPrintBuildMethodTemplate(false);
@@ -70,13 +70,13 @@ public class SymbolBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDCla
       // overwrite setters since they need to return the correct Builder type
       ASTMCType builderType = this.getMCTypeFacade().createQualifiedType(symbolBuilder.getName());
       BuilderMutatorMethodDecorator builderMutatorMethodDecorator =  new BuilderMutatorMethodDecorator(glex, builderType);
-      symbolBuilder.addAllCDMethods(
+      symbolBuilder.addAllCDMembers(
               getMethodsForDefaultAttrs(defaultAttrs, builderMutatorMethodDecorator));
       // Override getScope-Methods
       boolean hasInheritedSpannedScope = symbolClass.isPresentModifier() &&
           (symbolTableService.hasScopeStereotype(symbolClass.getModifier())
               || symbolTableService.hasInheritedScopeStereotype(symbolClass.getModifier()));
-      symbolBuilder.addAllCDMethods(createScopeMethods(hasInheritedSpannedScope));
+      symbolBuilder.addAllCDMembers(createScopeMethods(hasInheritedSpannedScope));
     }
 
     List<ASTCDAttribute> buildAttributes = Lists.newArrayList(symbolClass.getCDAttributeList());

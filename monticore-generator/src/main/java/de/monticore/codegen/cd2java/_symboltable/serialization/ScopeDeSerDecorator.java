@@ -4,10 +4,11 @@ package de.monticore.codegen.cd2java._symboltable.serialization;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import de.monticore.ast.Comment;
-import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
-import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
-import de.monticore.cd.cd4code.CD4CodeMill;
+import de.monticore.cdbasis._ast.*;
+import de.monticore.cd4codebasis._ast.*;
+import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
+import de.monticore.cdbasis._symboltable.CDTypeSymbol;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
@@ -21,8 +22,8 @@ import de.se_rwth.commons.StringTransformations;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static de.monticore.cd.facade.CDModifier.PROTECTED;
-import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java.CDModifier.PROTECTED;
+import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 
@@ -94,7 +95,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
 
     // list of all scope rule attributes
     List<ASTCDAttribute> scopeRuleAttrList = scopeInput.deepClone().getCDDefinition()
-        .getCDClassList()
+        .getCDClassesList()
         .stream()
         .map(ASTCDClass::getCDAttributeList)
         .flatMap(List::stream)
@@ -284,7 +285,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
     }
 
     //add symbols from super grammars
-    for (CDDefinitionSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
+    for (DiagramSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
       for (CDTypeSymbol type : cdDefinitionSymbol.getTypes()) {
         if (type.isPresentAstNode() && type.getAstNode().isPresentModifier()
             && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifier())) {

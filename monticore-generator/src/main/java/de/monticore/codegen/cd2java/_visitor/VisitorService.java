@@ -1,11 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._visitor;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDDefinition;
-import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
-import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
-import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDDefinition;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cd4codebasis._ast.ASTCDParameter;
+import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.cd.facade.CDMethodFacade;
 import de.monticore.cd.facade.CDParameterFacade;
 import de.monticore.codegen.cd2java.AbstractService;
@@ -15,7 +15,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
 
 public class VisitorService extends AbstractService<VisitorService> {
@@ -24,7 +24,7 @@ public class VisitorService extends AbstractService<VisitorService> {
     super(compilationUnit);
   }
 
-  public VisitorService(CDDefinitionSymbol cdSymbol) {
+  public VisitorService(DiagramSymbol cdSymbol) {
     super(cdSymbol);
   }
 
@@ -38,11 +38,11 @@ public class VisitorService extends AbstractService<VisitorService> {
   }
 
   @Override
-  protected VisitorService createService(CDDefinitionSymbol cdSymbol) {
+  protected VisitorService createService(DiagramSymbol cdSymbol) {
     return createVisitorService(cdSymbol);
   }
 
-  public static VisitorService createVisitorService(CDDefinitionSymbol cdSymbol) {
+  public static VisitorService createVisitorService(DiagramSymbol cdSymbol) {
     return new VisitorService(cdSymbol);
   }
 
@@ -54,7 +54,7 @@ public class VisitorService extends AbstractService<VisitorService> {
     return getVisitorSimpleName(getCDSymbol());
   }
 
-  public String getVisitorSimpleName(CDDefinitionSymbol cdSymbol) {
+  public String getVisitorSimpleName(DiagramSymbol cdSymbol) {
     return cdSymbol.getName() + VisitorConstants.VISITOR_SUFFIX;
   }
 
@@ -62,11 +62,11 @@ public class VisitorService extends AbstractService<VisitorService> {
     return getVisitorFullName(getCDSymbol());
   }
 
-  public String getVisitorFullName(CDDefinitionSymbol cdSymbol) {
+  public String getVisitorFullName(DiagramSymbol cdSymbol) {
     return String.join(".", getPackage(cdSymbol), getVisitorSimpleName(cdSymbol));
   }
 
-  public ASTMCQualifiedType getVisitorType(CDDefinitionSymbol cdSymbol) {
+  public ASTMCQualifiedType getVisitorType(DiagramSymbol cdSymbol) {
     return getMCTypeFacade().createQualifiedType(getVisitorFullName(cdSymbol));
   }
 
@@ -82,7 +82,7 @@ public class VisitorService extends AbstractService<VisitorService> {
     return getInheritanceVisitorSimpleName(getCDSymbol());
   }
 
-  public String getInheritanceVisitorSimpleName(CDDefinitionSymbol cdSymbol) {
+  public String getInheritanceVisitorSimpleName(DiagramSymbol cdSymbol) {
     return cdSymbol.getName() + INHERITANCE_SUFFIX + VisitorConstants.VISITOR_SUFFIX;
   }
 
@@ -90,7 +90,7 @@ public class VisitorService extends AbstractService<VisitorService> {
     return getInheritanceHandlerSimpleName(getCDSymbol());
   }
 
-  public String getInheritanceHandlerSimpleName(CDDefinitionSymbol cdSymbol) {
+  public String getInheritanceHandlerSimpleName(DiagramSymbol cdSymbol) {
     return cdSymbol.getName() + INHERITANCE_SUFFIX + HANDLER_SUFFIX;
   }
 
@@ -98,11 +98,11 @@ public class VisitorService extends AbstractService<VisitorService> {
     return getInheritanceHandlerFullName(getCDSymbol());
   }
 
-  public String getInheritanceHandlerFullName(CDDefinitionSymbol cdSymbol) {
+  public String getInheritanceHandlerFullName(DiagramSymbol cdSymbol) {
     return getPackage(cdSymbol) + "." + getInheritanceHandlerSimpleName(cdSymbol);
   }
 
-  public String getInheritanceVisitorFullName(CDDefinitionSymbol cdSymbol) {
+  public String getInheritanceVisitorFullName(DiagramSymbol cdSymbol) {
     return getPackage(cdSymbol) + "." + getInheritanceVisitorSimpleName(cdSymbol);
   }
 
@@ -118,7 +118,7 @@ public class VisitorService extends AbstractService<VisitorService> {
     return getParentAwareVisitorSimpleName(getCDSymbol());
   }
 
-  public String getParentAwareVisitorSimpleName(CDDefinitionSymbol cdDefinitionSymbol) {
+  public String getParentAwareVisitorSimpleName(DiagramSymbol cdDefinitionSymbol) {
     return cdDefinitionSymbol.getName() + PARENT_AWARE_SUFFIX + VisitorConstants.VISITOR_SUFFIX;
   }
 
@@ -126,7 +126,7 @@ public class VisitorService extends AbstractService<VisitorService> {
     return getParentAwareVisitorFullName(getCDSymbol());
   }
 
-  public String getParentAwareVisitorFullName(CDDefinitionSymbol cdDefinitionSymbol) {
+  public String getParentAwareVisitorFullName(DiagramSymbol cdDefinitionSymbol) {
     return getPackage(cdDefinitionSymbol) + "." + getParentAwareVisitorSimpleName(cdDefinitionSymbol);
   }
 
@@ -139,7 +139,7 @@ public class VisitorService extends AbstractService<VisitorService> {
   }
 
 
-  public String getDelegatorVisitorSimpleName(CDDefinitionSymbol cdDefinitionSymbol) {
+  public String getDelegatorVisitorSimpleName(DiagramSymbol cdDefinitionSymbol) {
     return cdDefinitionSymbol.getName() + DELEGATOR_SUFFIX + VisitorConstants.VISITOR_SUFFIX;
   }
 
@@ -147,7 +147,7 @@ public class VisitorService extends AbstractService<VisitorService> {
     return getDelegatorVisitorFullName(getCDSymbol());
   }
 
-  public String getDelegatorVisitorFullName(CDDefinitionSymbol cdDefinitionSymbol) {
+  public String getDelegatorVisitorFullName(DiagramSymbol cdDefinitionSymbol) {
     return getPackage(cdDefinitionSymbol) + "." + getDelegatorVisitorSimpleName(cdDefinitionSymbol);
   }
 
@@ -159,7 +159,7 @@ public class VisitorService extends AbstractService<VisitorService> {
     return getTraverserSimpleName(getCDSymbol());
   }
   
-  public String getTraverserSimpleName(CDDefinitionSymbol cdDefinitionSymbol) {
+  public String getTraverserSimpleName(DiagramSymbol cdDefinitionSymbol) {
     return cdDefinitionSymbol.getName() + TRAVERSER_CLASS_SUFFIX;
   }
   
@@ -167,11 +167,11 @@ public class VisitorService extends AbstractService<VisitorService> {
     return getTraverserFullName(getCDSymbol());
   }
   
-  public String getTraverserFullName(CDDefinitionSymbol cdDefinitionSymbol) {
+  public String getTraverserFullName(DiagramSymbol cdDefinitionSymbol) {
     return getPackage(cdDefinitionSymbol) + "." + getTraverserSimpleName(cdDefinitionSymbol);
   }
   
-  public ASTMCQualifiedType getTraverserType(CDDefinitionSymbol cdSymbol) {
+  public ASTMCQualifiedType getTraverserType(DiagramSymbol cdSymbol) {
     return getMCTypeFacade().createQualifiedType(getTraverserFullName(cdSymbol));
   }
 
@@ -183,7 +183,7 @@ public class VisitorService extends AbstractService<VisitorService> {
     return getTraverserInterfaceSimpleName(getCDSymbol());
   }
   
-  public String getTraverserInterfaceSimpleName(CDDefinitionSymbol cdDefinitionSymbol) {
+  public String getTraverserInterfaceSimpleName(DiagramSymbol cdDefinitionSymbol) {
     return cdDefinitionSymbol.getName() + TRAVERSER_SUFFIX;
   }
   
@@ -191,11 +191,11 @@ public class VisitorService extends AbstractService<VisitorService> {
     return getTraverserInterfaceFullName(getCDSymbol());
   }
   
-  public String getTraverserInterfaceFullName(CDDefinitionSymbol cdDefinitionSymbol) {
+  public String getTraverserInterfaceFullName(DiagramSymbol cdDefinitionSymbol) {
     return getPackage(cdDefinitionSymbol) + "." + getTraverserInterfaceSimpleName(cdDefinitionSymbol);
   }
   
-  public ASTMCQualifiedType getTraverserInterfaceType(CDDefinitionSymbol cdSymbol) {
+  public ASTMCQualifiedType getTraverserInterfaceType(DiagramSymbol cdSymbol) {
     return getMCTypeFacade().createQualifiedType(getTraverserInterfaceFullName(cdSymbol));
   }
 
@@ -211,7 +211,7 @@ public class VisitorService extends AbstractService<VisitorService> {
     return getVisitor2SimpleName(getCDSymbol());
   }
   
-  public String getVisitor2SimpleName(CDDefinitionSymbol cdDefinitionSymbol) {
+  public String getVisitor2SimpleName(DiagramSymbol cdDefinitionSymbol) {
     return cdDefinitionSymbol.getName() + VISITOR2_SUFFIX;
   }
   
@@ -219,11 +219,11 @@ public class VisitorService extends AbstractService<VisitorService> {
     return getVisitor2FullName(getCDSymbol());
   }
   
-  public String getVisitor2FullName(CDDefinitionSymbol cdDefinitionSymbol) {
+  public String getVisitor2FullName(DiagramSymbol cdDefinitionSymbol) {
     return getPackage(cdDefinitionSymbol) + "." + getVisitor2SimpleName(cdDefinitionSymbol);
   }
   
-  public ASTMCQualifiedType getVisitor2Type(CDDefinitionSymbol cdSymbol) {
+  public ASTMCQualifiedType getVisitor2Type(DiagramSymbol cdSymbol) {
     return getMCTypeFacade().createQualifiedType(getVisitor2FullName(cdSymbol));
   }
 
@@ -239,7 +239,7 @@ public class VisitorService extends AbstractService<VisitorService> {
     return getHandlerSimpleName(getCDSymbol());
   }
   
-  public String getHandlerSimpleName(CDDefinitionSymbol cdDefinitionSymbol) {
+  public String getHandlerSimpleName(DiagramSymbol cdDefinitionSymbol) {
     return cdDefinitionSymbol.getName() + HANDLER_SUFFIX;
   }
   
@@ -247,11 +247,11 @@ public class VisitorService extends AbstractService<VisitorService> {
     return getHandlerFullName(getCDSymbol());
   }
   
-  public String getHandlerFullName(CDDefinitionSymbol cdDefinitionSymbol) {
+  public String getHandlerFullName(DiagramSymbol cdDefinitionSymbol) {
     return getPackage(cdDefinitionSymbol) + "." + getHandlerSimpleName(cdDefinitionSymbol);
   }
   
-  public ASTMCQualifiedType getHandlerType(CDDefinitionSymbol cdSymbol) {
+  public ASTMCQualifiedType getHandlerType(DiagramSymbol cdSymbol) {
     return getMCTypeFacade().createQualifiedType(getHandlerFullName(cdSymbol));
   }
 
@@ -299,7 +299,7 @@ public class VisitorService extends AbstractService<VisitorService> {
    * add AST package to all classes, interfaces and enums at the beginning
    * needed because visitor classes are in a different package and so need to fully qualify the ast classes
    */
-  public ASTCDDefinition calculateCDTypeNamesWithASTPackage(CDDefinitionSymbol input) {
+  public ASTCDDefinition calculateCDTypeNamesWithASTPackage(DiagramSymbol input) {
     // transform inherited cd
     ASTCDDefinition astcdDefinition = input.getAstNode().deepClone();
     //set classname to correct Name with path
@@ -312,7 +312,7 @@ public class VisitorService extends AbstractService<VisitorService> {
 
   public List<ASTMCQualifiedType> getSuperInheritanceVisitors() {
     //only direct super cds, not transitive
-    List<CDDefinitionSymbol> superCDs = getSuperCDsDirect();
+    List<DiagramSymbol> superCDs = getSuperCDsDirect();
     return superCDs
         .stream()
         .map(this::getInheritanceVisitorFullName)
@@ -322,7 +322,7 @@ public class VisitorService extends AbstractService<VisitorService> {
 
   public List<ASTMCQualifiedType> getSuperVisitors() {
     //only direct super cds, not transitive
-    List<CDDefinitionSymbol> superCDs = getSuperCDsDirect();
+    List<DiagramSymbol> superCDs = getSuperCDsDirect();
     return superCDs
         .stream()
         .map(this::getVisitorType)
@@ -337,7 +337,7 @@ public class VisitorService extends AbstractService<VisitorService> {
    */
   public List<ASTMCQualifiedType> getSuperTraverserInterfaces() {
     // only direct super cds, not transitive
-    List<CDDefinitionSymbol> superCDs = getSuperCDsDirect();
+    List<DiagramSymbol> superCDs = getSuperCDsDirect();
     return superCDs
         .stream()
         .map(this::getTraverserInterfaceType)
@@ -346,7 +346,7 @@ public class VisitorService extends AbstractService<VisitorService> {
 
   public List<ASTMCQualifiedType> getSuperSymbolVisitors() {
     //only direct super cds, not transitive
-    List<CDDefinitionSymbol> superCDs = getSuperCDsDirect();
+    List<DiagramSymbol> superCDs = getSuperCDsDirect();
     return superCDs
             .stream()
             .map(this::getVisitorFullName)

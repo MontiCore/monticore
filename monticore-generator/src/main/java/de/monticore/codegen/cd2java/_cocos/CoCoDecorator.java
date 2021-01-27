@@ -2,15 +2,16 @@
 package de.monticore.codegen.cd2java._cocos;
 
 import com.google.common.collect.Lists;
-import de.monticore.cd.cd4analysis.CD4AnalysisMill;
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDDefinition;
-import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
+import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDDefinition;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.IterablePath;
+import de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration;
 
 import java.util.Arrays;
 import java.util.List;
@@ -43,32 +44,38 @@ public class CoCoDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCo
   @Override
   public ASTCDCompilationUnit decorate(ASTCDCompilationUnit input) {
     List<String> cocoPackage = Lists.newArrayList();
-    input.getPackageList().forEach(p -> cocoPackage.add(p.toLowerCase()));
+    input.getMCPackageDeclaration().getMCQualifiedName().getPartsList().forEach(p -> cocoPackage.add(p.toLowerCase()));
     cocoPackage.addAll(Arrays.asList(input.getCDDefinition().getName().toLowerCase(), CoCoConstants.COCO_PACKAGE));
 
     ASTCDDefinition cocoCD = CD4AnalysisMill.cDDefinitionBuilder()
         .setName(input.getCDDefinition().getName())
-        .addCDClass(cocoCheckerDecorator.decorate(input))
+        .addCDElement(cocoCheckerDecorator.decorate(input))
         .addAllCDInterfaces(cocoInterfaceDecorator.decorate(input.getCDDefinition()))
         .build();
 
     // change the package to _coco
-    for (ASTCDClass ast : cocoCD.getCDClassList()) {
+    for (ASTCDClass ast : cocoCD.getCDClassesList()) {
       this.replaceTemplate(CoreTemplates.PACKAGE, ast, createPackageHookPoint(cocoPackage));
       if (ast.isPresentModifier()) {
         this.replaceTemplate(ANNOTATIONS, ast, createAnnotationsHookPoint(ast.getModifier()));
       }
     }
 
-    for (ASTCDInterface ast : cocoCD.getCDInterfaceList()) {
+    for (ASTCDInterface ast : cocoCD.getCDInterfacesList()) {
       this.replaceTemplate(CoreTemplates.PACKAGE, ast, createPackageHookPoint(cocoPackage));
       if (ast.isPresentModifier()) {
         this.replaceTemplate(ANNOTATIONS, ast, createAnnotationsHookPoint(ast.getModifier()));
       }
     }
+    
+    ASTMCPackageDeclaration mCPackageDeclaration = CD4AnalysisMill.mCPackageDeclarationBuilder().setMCQualifiedName(
+        CD4AnalysisMill.mCQualifiedNameBuilder()
+        .setPartsList(cocoPackage)
+        .build())
+        .build();
 
     return CD4AnalysisMill.cDCompilationUnitBuilder()
-        .setPackageList(cocoPackage)
+        .setMCPackageDeclaration(mCPackageDeclaration)
         .setCDDefinition(cocoCD)
         .build();
   }

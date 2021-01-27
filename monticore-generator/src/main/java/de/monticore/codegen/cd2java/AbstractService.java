@@ -2,10 +2,10 @@
 package de.monticore.codegen.cd2java;
 
 import com.google.common.collect.Lists;
-import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
-import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
-import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbolSurrogate;
+import de.monticore.cd4analysis._ast.*;
+import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
+import de.monticore.cdbasis._symboltable.CDTypeSymbol;
+import de.monticore.cdbasis._symboltable.CDTypeSymbolSurrogate;
 import de.monticore.codegen.cd2java.exception.DecorateException;
 import de.monticore.codegen.cd2java.exception.DecoratorErrorCode;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;

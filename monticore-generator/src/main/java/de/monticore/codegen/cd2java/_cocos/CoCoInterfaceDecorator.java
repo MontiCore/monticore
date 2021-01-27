@@ -1,8 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._cocos;
 
-import de.monticore.cd.cd4analysis.CD4AnalysisMill;
-import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cd4codebasis._ast.*;
+import de.monticore.cdbasis._ast.*;
+import de.monticore.cdinterfaceandenum._ast.*;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
@@ -10,13 +12,14 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.umlmodifier._ast.ASTModifier;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static de.monticore.cd.facade.CDModifier.PUBLIC;
-import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
+import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java.CDModifier.PUBLIC_ABSTRACT;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 
 /**
@@ -38,11 +41,11 @@ public class CoCoInterfaceDecorator extends AbstractCreator<ASTCDDefinition, Lis
   public List<ASTCDInterface> decorate(ASTCDDefinition definition) {
     List<ASTCDInterface> cocoInterfaces = new ArrayList<>();
     String visitorName = new VisitorService(astService.getCDSymbol()).getVisitor2FullName();
-    cocoInterfaces.addAll(definition.getCDClassList().stream()
+    cocoInterfaces.addAll(definition.getCDClassesList().stream()
         .map(c -> createCoCoInterface(c, visitorName))
         .collect(Collectors.toList()));
 
-    cocoInterfaces.addAll(definition.getCDInterfaceList().stream()
+    cocoInterfaces.addAll(definition.getCDInterfacesList().stream()
         .map(i -> createCoCoInterface(i, visitorName))
         .collect(Collectors.toList()));
 
@@ -66,13 +69,13 @@ public class CoCoInterfaceDecorator extends AbstractCreator<ASTCDDefinition, Lis
   protected ASTCDMethod createCheckMethod(ASTCDType cdType) {
     ASTMCType parameterType = astService.getASTType(cdType);
     ASTCDParameter parameter = getCDParameterFacade().createParameter(parameterType, "node");
-    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, CoCoConstants.CHECK, parameter);
+    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT.build(), CoCoConstants.CHECK, parameter);
   }
 
   protected ASTCDMethod createVisitMethod(ASTCDType cdType) {
     ASTMCType parameterType = astService.getASTType(cdType);
     ASTCDParameter parameter = getCDParameterFacade().createParameter(parameterType, "node");
-    ASTCDMethod visitMethod = getCDMethodFacade().createMethod(PUBLIC, "visit", parameter);
+    ASTCDMethod visitMethod = getCDMethodFacade().createMethod(PUBLIC.build(), "visit", parameter);
     this.replaceTemplate(EMPTY_BODY, visitMethod, new StringHookPoint("check(node);"));
     return visitMethod;
   }

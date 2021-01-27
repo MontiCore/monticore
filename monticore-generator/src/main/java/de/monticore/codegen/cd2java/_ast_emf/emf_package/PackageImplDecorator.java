@@ -1,8 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast_emf.emf_package;
 
-import de.monticore.cd.cd4analysis.CD4AnalysisMill;
-import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cd4codebasis._ast.*;
+import de.monticore.cdbasis._ast.*;
+import de.monticore.cdinterfaceandenum._ast.*;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._ast_emf.EmfService;
 import de.monticore.codegen.cd2java.methods.accessor.MandatoryAccessorDecorator;
@@ -20,7 +22,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static de.monticore.cd.facade.CDModifier.*;
+import static de.monticore.codegen.cd2java.CDModifier.*;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast.factory.NodeFactoryConstants.*;
 import static de.monticore.codegen.cd2java._ast_emf.EmfConstants.*;
@@ -88,25 +90,25 @@ public class PackageImplDecorator extends AbstractCreator<ASTCDCompilationUnit, 
   protected ASTCDDefinition prepareCDForEmfPackageDecoration(ASTCDDefinition astcdDefinition) {
     ASTCDDefinition copiedDefinition = astcdDefinition.deepClone();
     //remove inherited attributes
-    List<ASTCDClass> preparedClasses = copiedDefinition.getCDClassList()
+    List<ASTCDClass> preparedClasses = copiedDefinition.getCDClassesList()
         .stream()
         .map(emfService::removeInheritedAttributes)
         .collect(Collectors.toList());
-    copiedDefinition.setCDClassList(preparedClasses);
+    copiedDefinition.setCDClassesList(preparedClasses);
 
     //remove ast node Interface e.g. ASTAutomataNode
-    List<ASTCDInterface> astcdInterfaces = copiedDefinition.getCDInterfaceList()
+    List<ASTCDInterface> astcdInterfaces = copiedDefinition.getCDInterfacesList()
         .stream()
         .filter(x -> !emfService.isASTNodeInterface(x, copiedDefinition))
         .collect(Collectors.toList());
-    copiedDefinition.setCDInterfaceList(astcdInterfaces);
+    copiedDefinition.setCDInterfacesList(astcdInterfaces);
 
     //remove inherited attributes
     astcdInterfaces = astcdInterfaces
         .stream()
         .map(emfService::removeInheritedAttributes)
         .collect(Collectors.toList());
-    copiedDefinition.setCDInterfaceList(astcdInterfaces);
+    copiedDefinition.setCDInterfacesList(astcdInterfaces);
 
     return copiedDefinition;
   }
@@ -114,11 +116,11 @@ public class PackageImplDecorator extends AbstractCreator<ASTCDCompilationUnit, 
   protected List<ASTCDAttribute> getEClassAttributes(ASTCDDefinition astcdDefinition) {
     //e.g.  private EClass automaton;
     List<ASTCDAttribute> attributeList = new ArrayList<>();
-    for (ASTCDClass astcdClass : astcdDefinition.getCDClassList()) {
-      attributeList.add(getCDAttributeFacade().createAttribute(PRIVATE, E_CLASS_TYPE, StringTransformations.uncapitalize(astcdClass.getName())));
+    for (ASTCDClass astcdClass : astcdDefinition.getCDClassesList()) {
+      attributeList.add(getCDAttributeFacade().createAttribute(PRIVATE.build(), E_CLASS_TYPE, StringTransformations.uncapitalize(astcdClass.getName())));
     }
-    for (ASTCDInterface astcdInterface : astcdDefinition.getCDInterfaceList()) {
-      attributeList.add(getCDAttributeFacade().createAttribute(PRIVATE, E_CLASS_TYPE, StringTransformations.uncapitalize(astcdInterface.getName())));
+    for (ASTCDInterface astcdInterface : astcdDefinition.getCDInterfacesList()) {
+      attributeList.add(getCDAttributeFacade().createAttribute(PRIVATE.build(), E_CLASS_TYPE, StringTransformations.uncapitalize(astcdInterface.getName())));
     }
     return attributeList;
   }
@@ -126,7 +128,7 @@ public class PackageImplDecorator extends AbstractCreator<ASTCDCompilationUnit, 
   protected List<ASTCDAttribute> getEDataTypeAttributes(ASTCDDefinition astcdDefinition) {
     Set<String> eDataTypes = emfService.getEDataTypes(astcdDefinition);
     return eDataTypes.stream()
-        .map(x -> getCDAttributeFacade().createAttribute(PUBLIC, E_DATA_TYPE,
+        .map(x -> getCDAttributeFacade().createAttribute(PUBLIC.build(), E_DATA_TYPE,
             StringTransformations.uncapitalize(getDecorationHelper().getSimpleNativeType(x))))
         .collect(Collectors.toList());
   }
@@ -134,32 +136,32 @@ public class PackageImplDecorator extends AbstractCreator<ASTCDCompilationUnit, 
 
   protected ASTCDAttribute createConstantsEEnumAttribute(String definitionName) {
     // private EEnum constantsAutomataEEnum
-    return getCDAttributeFacade().createAttribute(PRIVATE, E_ENUM_TYPE,
+    return getCDAttributeFacade().createAttribute(PRIVATE.build(), E_ENUM_TYPE,
         StringTransformations.uncapitalize(CONSTANTS_PREFIX) + definitionName);
   }
 
   protected ASTCDAttribute createISCreatedAttribute() {
-    return getCDAttributeFacade().createAttribute(PRIVATE, getMCTypeFacade().createBooleanType(), IS_CREATED);
+    return getCDAttributeFacade().createAttribute(PRIVATE.build(), getMCTypeFacade().createBooleanType(), IS_CREATED);
   }
 
   protected ASTCDAttribute createIsInitializedAttribute() {
-    return getCDAttributeFacade().createAttribute(PRIVATE, getMCTypeFacade().createBooleanType(), IS_INITIALIZED);
+    return getCDAttributeFacade().createAttribute(PRIVATE.build(), getMCTypeFacade().createBooleanType(), IS_INITIALIZED);
   }
 
 
   protected ASTCDAttribute createIsInitedAttribute() {
-    return getCDAttributeFacade().createAttribute(PRIVATE_STATIC, getMCTypeFacade().createBooleanType(), IS_INITED);
+    return getCDAttributeFacade().createAttribute(PRIVATE_STATIC.build(), getMCTypeFacade().createBooleanType(), IS_INITED);
   }
 
   protected ASTCDConstructor createConstructor(String packageImplName, String definitionName) {
-    ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PRIVATE, packageImplName);
+    ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PRIVATE.build(), packageImplName);
     replaceTemplate(EMPTY_BODY, constructor,
         new StringHookPoint("super(" + ENS_URI + "," + definitionName + NODE_FACTORY_SUFFIX + "." + GET_FACTORY_METHOD + "());"));
     return constructor;
   }
 
   protected ASTCDMethod createInitMethod(String packageName) {
-    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC_STATIC, getMCTypeFacade().createQualifiedType(packageName), "init");
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC_STATIC.build(), getMCTypeFacade().createQualifiedType(packageName), "init");
     replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast_emf.emf_package.InitEmfMethod", packageName));
     return method;
   }
@@ -167,34 +169,34 @@ public class PackageImplDecorator extends AbstractCreator<ASTCDCompilationUnit, 
   protected ASTCDMethod createGetNodeFactoryMethod(String definitionName) {
     // e.g. AutomataNodeFactory getAutomataFactory();
     String methodName = String.format(GET, definitionName + FACTORY_SUFFIX);
-    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createQualifiedType(definitionName + NODE_FACTORY_SUFFIX), methodName);
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), getMCTypeFacade().createQualifiedType(definitionName + NODE_FACTORY_SUFFIX), methodName);
     replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return (" + definitionName + NODE_FACTORY_SUFFIX + ")getEFactoryInstance();"));
     return method;
   }
 
   protected ASTCDMethod createGetPackageMethod(String definitionName) {
     // e.g. public String getPackageName() { return "automata"; }
-    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createStringType(), "getPackageName");
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), getMCTypeFacade().createStringType(), "getPackageName");
     replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return \"" + StringTransformations.uncapitalize(definitionName) + "\";"));
     return method;
   }
 
   protected ASTCDMethod createASTESuperPackagesMethod() {
     ASTMCType type = getMCTypeFacade().createListTypeOf(ASTE_PACKAGE);
-    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, type, "getASTESuperPackages");
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), type, "getASTESuperPackages");
     replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast_emf.emf_package.GetASTESuperPackages"));
     return method;
   }
 
   protected List<ASTCDMethod> createGetEAttributeMethods(ASTCDDefinition astcdDefinition) {
     List<ASTCDMethod> methodList = new ArrayList<>();
-    for (ASTCDClass astcdClass : astcdDefinition.getCDClassList()) {
+    for (ASTCDClass astcdClass : astcdDefinition.getCDClassesList()) {
       for (int i = 0; i < astcdClass.getCDAttributeList().size(); i++) {
         methodList.add(createGetEAttributeMethod(astcdClass.getCDAttribute(i), i, astcdClass.getName()));
       }
     }
 
-    for (ASTCDInterface astcdInterface : astcdDefinition.getCDInterfaceList()) {
+    for (ASTCDInterface astcdInterface : astcdDefinition.getCDInterfacesList()) {
       for (int i = 0; i < astcdInterface.getCDAttributeList().size(); i++) {
         methodList.add(createGetEAttributeMethod(astcdInterface.getCDAttribute(i), i, astcdInterface.getName()));
       }
@@ -205,7 +207,7 @@ public class PackageImplDecorator extends AbstractCreator<ASTCDCompilationUnit, 
   protected ASTCDMethod createGetEAttributeMethod(ASTCDAttribute astcdAttribute, int index, String astcdClassName) {
     ASTMCQualifiedType type = emfService.getEmfAttributeType(astcdAttribute);
     String methodName = String.format(GET, astcdClassName + "_" + StringTransformations.capitalize(astcdAttribute.getName()));
-    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, type, methodName);
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), type, methodName);
 
     replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return ("
         + type.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()) + ")" +
@@ -214,16 +216,16 @@ public class PackageImplDecorator extends AbstractCreator<ASTCDCompilationUnit, 
   }
 
   protected ASTCDMethod createCreatePackageContentsMethod(String definitionName, ASTCDDefinition astcdDefinition) {
-    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, "createPackageContents");
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), "createPackageContents");
     replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast_emf.emf_package.CreatePackageContents",
         definitionName, astcdDefinition));
     return method;
   }
 
   protected ASTCDMethod createInitializePackageContentsMethod(ASTCDDefinition astcdDefinition) {
-    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, "initializePackageContents");
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), "initializePackageContents");
     //find literalsEnum in CD
-    Optional<ASTCDEnum> literalsEnum = astcdDefinition.getCDEnumList()
+    Optional<ASTCDEnum> literalsEnum = astcdDefinition.getCDEnumsList()
         .stream()
         .filter(x -> emfService.isLiteralsEnum(x, astcdDefinition.getName()))
         .findFirst();

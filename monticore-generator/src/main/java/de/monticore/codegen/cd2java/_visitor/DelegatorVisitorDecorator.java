@@ -1,10 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._visitor;
 
-import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
-import de.monticore.cd.cd4code.CD4CodeFullPrettyPrinter;
-import de.monticore.cd.cd4code.CD4CodeMill;
+import de.monticore.cdbasis._ast.*;
+import de.monticore.cd4codebasis._ast.*;
+import de.monticore.cdinterfaceandenum._ast.*;
+import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
+import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -15,14 +17,15 @@ import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
+import de.monticore.umlmodifier._ast.ASTModifier;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static de.monticore.cd.facade.CDModifier.PRIVATE;
-import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java.CDModifier.PRIVATE;
+import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.CoreTemplates.*;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_INTERFACE;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SCOPE;
@@ -56,7 +59,7 @@ public class DelegatorVisitorDecorator extends AbstractCreator<ASTCDCompilationU
     String simpleVisitorName = visitorService.getVisitorSimpleName();
 
     // get visitor types and names of super cds and own cd
-    List<CDDefinitionSymbol> superCDsTransitive = visitorService.getSuperCDsTransitive();
+    List<DiagramSymbol> superCDsTransitive = visitorService.getSuperCDsTransitive();
 
     List<String> visitorFullNameList = superCDsTransitive.stream()
         .map(visitorService::getVisitorFullName)
@@ -175,8 +178,8 @@ public class DelegatorVisitorDecorator extends AbstractCreator<ASTCDCompilationU
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
     for (ASTCDDefinition astcdDefinition : definitionList) {
       String simpleVisitorName = visitorService.getVisitorSimpleName(astcdDefinition.getSymbol());
-      visitorMethods.addAll(createVisitorDelegatorClassMethods(astcdDefinition.getCDClassList(), simpleVisitorName));
-      visitorMethods.addAll(createVisitorDelegatorInterfaceMethods(astcdDefinition.getCDInterfaceList(), simpleVisitorName));
+      visitorMethods.addAll(createVisitorDelegatorClassMethods(astcdDefinition.getCDClassesList(), simpleVisitorName));
+      visitorMethods.addAll(createVisitorDelegatorInterfaceMethods(astcdDefinition.getCDInterfacesList(), simpleVisitorName));
       visitorMethods.addAll(createVisitorDelegatorSymbolMethods(astcdDefinition, simpleVisitorName));
       visitorMethods.addAll(createVisitorDelegatorScopeMethods(astcdDefinition, simpleVisitorName));
     }
@@ -267,7 +270,7 @@ public class DelegatorVisitorDecorator extends AbstractCreator<ASTCDCompilationU
    */
   protected List<ASTCDMethod> createVisitorDelegatorScopeMethods(ASTCDDefinition astcdDefinition, String simpleVisitorName) {
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
-    CDDefinitionSymbol cdSymbol = astcdDefinition.getSymbol();
+    DiagramSymbol cdSymbol = astcdDefinition.getSymbol();
     ASTMCQualifiedType scopeType = getMCTypeFacade().createQualifiedType(symbolTableService.getScopeInterfaceFullName(cdSymbol));
     ASTMCQualifiedType artifactScopeType = getMCTypeFacade().createQualifiedType(symbolTableService.getArtifactScopeInterfaceFullName(cdSymbol));
     

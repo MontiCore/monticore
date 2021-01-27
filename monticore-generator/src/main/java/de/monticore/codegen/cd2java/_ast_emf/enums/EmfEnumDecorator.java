@@ -1,9 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast_emf.enums;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDEnum;
-import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
-import de.monticore.cd.facade.CDModifier;
+import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.codegen.cd2java.CDModifier;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
 import de.monticore.codegen.cd2java._ast.enums.EnumDecorator;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
@@ -32,19 +32,19 @@ public class EmfEnumDecorator extends EnumDecorator {
   }
 
   protected ASTCDMethod createGetNameMethod(){
-    ASTCDMethod method = getCDMethodFacade().createMethod(CDModifier.PUBLIC, getMCTypeFacade().createStringType(), "getName");
+    ASTCDMethod method = getCDMethodFacade().createMethod(CDModifier.PUBLIC.build(), getMCTypeFacade().createStringType(), "getName");
     replaceTemplate(EMPTY_BODY, method, new StringHookPoint(TO_STRING_CALL));
     return method;
   }
 
   protected ASTCDMethod createGetLiteralMethod(){
-    ASTCDMethod method = getCDMethodFacade().createMethod(CDModifier.PUBLIC, getMCTypeFacade().createStringType(), "getLiteral");
+    ASTCDMethod method = getCDMethodFacade().createMethod(CDModifier.PUBLIC.build(), getMCTypeFacade().createStringType(), "getLiteral");
     replaceTemplate(EMPTY_BODY, method, new StringHookPoint(TO_STRING_CALL));
     return method;
   }
 
   protected ASTCDMethod createGetValueMethod(){
-    ASTCDMethod method = getCDMethodFacade().createMethod(CDModifier.PUBLIC, getMCTypeFacade().createIntType(), "getValue");
+    ASTCDMethod method = getCDMethodFacade().createMethod(CDModifier.PUBLIC.build(), getMCTypeFacade().createIntType(), "getValue");
     replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return intValue;"));
     return method;
   }

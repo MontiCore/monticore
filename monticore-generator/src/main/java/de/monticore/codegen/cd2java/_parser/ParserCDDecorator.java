@@ -1,8 +1,9 @@
 package de.monticore.codegen.cd2java._parser;
 
 import com.google.common.collect.Lists;
-import de.monticore.cd.cd4analysis.CD4AnalysisMill;
-import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cdbasis._ast.*;
+import de.monticore.cdinterfaceandenum._ast.*;
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -44,7 +45,7 @@ public class ParserCDDecorator extends AbstractDecorator {
 
     createParserClass(astCD).ifPresent(parserCD::addCDClass);
     List<ASTCDClass> parserForSuperClasses = createParserForSuperClasses(astCD);
-    parserCD.addAllCDClasss(parserForSuperClasses);
+    parserCD.addAllCDElements(parserForSuperClasses);
 
     addPackageAndAnnotation(parserCD, parserPackage);
 
@@ -63,21 +64,21 @@ public class ParserCDDecorator extends AbstractDecorator {
   }
 
   protected void addPackageAndAnnotation(ASTCDDefinition parserCD, List<String> parserPackage) {
-    for (ASTCDClass cdClass : parserCD.getCDClassList()) {
+    for (ASTCDClass cdClass : parserCD.getCDClassesList()) {
       this.replaceTemplate(PACKAGE, cdClass, createPackageHookPoint(parserPackage));
       if (cdClass.isPresentModifier()) {
         this.replaceTemplate(ANNOTATIONS, cdClass, createAnnotationsHookPoint(cdClass.getModifier()));
       }
     }
 
-    for (ASTCDInterface cdInterface : parserCD.getCDInterfaceList()) {
+    for (ASTCDInterface cdInterface : parserCD.getCDInterfacesList()) {
       this.replaceTemplate(CoreTemplates.PACKAGE, cdInterface, createPackageHookPoint(parserPackage));
       if (cdInterface.isPresentModifier()) {
         this.replaceTemplate(ANNOTATIONS, cdInterface, createAnnotationsHookPoint(cdInterface.getModifier()));
       }
     }
 
-    for (ASTCDEnum cdEnum : parserCD.getCDEnumList()) {
+    for (ASTCDEnum cdEnum : parserCD.getCDEnumsList()) {
       this.replaceTemplate(CoreTemplates.PACKAGE, cdEnum, createPackageHookPoint(parserPackage));
       if (cdEnum.isPresentModifier()) {
         this.replaceTemplate(ANNOTATIONS, cdEnum, createAnnotationsHookPoint(cdEnum.getModifier()));

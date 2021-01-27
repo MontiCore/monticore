@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java.typecd2java;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._symboltable.ICD4AnalysisScope;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cd4analysis._symboltable.ICD4AnalysisScope;
 import de.monticore.codegen.cd2java.AbstractCreator;
 
 public class TypeCD2JavaDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCompilationUnit> {

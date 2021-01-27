@@ -2,10 +2,12 @@
 package de.monticore.codegen.cd2java._symboltable.scope;
 
 import com.google.common.collect.Lists;
-import de.monticore.cd.cd4analysis.CD4AnalysisMill;
-import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
-import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
+import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cd4codebasis._ast.*;
+import de.monticore.cdbasis._ast.*;
+import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
+import de.monticore.cdbasis._symboltable.CDTypeSymbol;
+import de.monticore.cdinterfaceandenum._ast.*;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
@@ -22,7 +24,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static de.monticore.cd.facade.CDModifier.*;
+import static de.monticore.codegen.cd2java.CDModifier.*;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 
@@ -71,9 +73,9 @@ public class ArtifactScopeInterfaceDecorator extends AbstractCreator<ASTCDCompil
     return getSuperArtifactScopeInterfaces(symbolTableService.getCDSymbol());
   }
 
-  protected List<ASTMCQualifiedType> getSuperArtifactScopeInterfaces(CDDefinitionSymbol symbol){
+  protected List<ASTMCQualifiedType> getSuperArtifactScopeInterfaces(DiagramSymbol symbol){
     List<ASTMCQualifiedType> result = new ArrayList<>();
-    for (CDDefinitionSymbol superGrammar : symbolTableService.getSuperCDsDirect(symbol)) {
+    for (DiagramSymbol superGrammar : symbolTableService.getSuperCDsDirect(symbol)) {
       if (!superGrammar.isPresentAstNode()) {
         Log.error("0xA4323 Unable to load AST of '" + superGrammar.getFullName()
             + "' that is supergrammar of '" + symbolTableService.getCDName() + "'.");
@@ -89,16 +91,16 @@ public class ArtifactScopeInterfaceDecorator extends AbstractCreator<ASTCDCompil
 
   protected List<ASTCDMethod> createImportsAttributeMethods() {
     ASTMCListType type = getMCTypeFacade().createListTypeOf(IMPORT_STATEMENT);
-    ASTCDAttribute attr = getCDAttributeFacade().createAttribute(PRIVATE, type, "imports");
+    ASTCDAttribute attr = getCDAttributeFacade().createAttribute(PRIVATE.build(), type, "imports");
     List<ASTCDMethod> methods = methodDecorator.decorate(attr).stream()
         .filter(m -> !(m.getName().equals("getImportsList") || m.getName().equals("setImportsList")))
         .collect(Collectors.toList());
 
     ASTCDMethod getMethod = getCDMethodFacade()
-        .createMethod(PUBLIC_ABSTRACT, type, "getImportsList");
+        .createMethod(PUBLIC_ABSTRACT.build(), type, "getImportsList");
     methods.add(getMethod);
 
-    ASTCDMethod setMethod = getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, "setImportsList",
+    ASTCDMethod setMethod = getCDMethodFacade().createMethod(PUBLIC_ABSTRACT.build(), "setImportsList",
         getCDParameterFacade().createParameter(type, "imports"));
     methods.add(setMethod);
 
@@ -113,26 +115,26 @@ public class ArtifactScopeInterfaceDecorator extends AbstractCreator<ASTCDCompil
         .map(ASTCDType::getName)
         .map(symbolTableService::removeASTPrefix)
         .collect(Collectors.toList());
-    ASTCDMethod getTopLevelSymbol = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createOptionalTypeOf(I_SYMBOL), "getTopLevelSymbol");
+    ASTCDMethod getTopLevelSymbol = getCDMethodFacade().createMethod(PUBLIC.build(), getMCTypeFacade().createOptionalTypeOf(I_SYMBOL), "getTopLevelSymbol");
     this.replaceTemplate(EMPTY_BODY, getTopLevelSymbol, new TemplateHookPoint(TEMPLATE_PATH + "GetTopLevelSymbol", symbolNames));
     return getTopLevelSymbol;
   }
 
   protected ASTCDMethod createCheckIfContinueAsSubScopeMethod() {
     ASTCDParameter symbolNameParam = getCDParameterFacade().createParameter(String.class, "symbolName");
-    ASTCDMethod getNameMethod = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createBooleanType(), "checkIfContinueAsSubScope", symbolNameParam);
+    ASTCDMethod getNameMethod = getCDMethodFacade().createMethod(PUBLIC.build(), getMCTypeFacade().createBooleanType(), "checkIfContinueAsSubScope", symbolNameParam);
     this.replaceTemplate(EMPTY_BODY, getNameMethod, new TemplateHookPoint(TEMPLATE_PATH + "CheckIfContinueAsSubScope"));
     return getNameMethod;
   }
 
   protected ASTCDMethod createGetRemainingNameForResolveDownMethod() {
     ASTCDParameter parameter = getCDParameterFacade().createParameter(String.class, "symbolName");
-    ASTCDMethod getRemainingNameForResolveDown = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createListTypeOf("String"), "getRemainingNameForResolveDown", parameter);
+    ASTCDMethod getRemainingNameForResolveDown = getCDMethodFacade().createMethod(PUBLIC.build(), getMCTypeFacade().createListTypeOf("String"), "getRemainingNameForResolveDown", parameter);
     this.replaceTemplate(EMPTY_BODY, getRemainingNameForResolveDown, new TemplateHookPoint(TEMPLATE_PATH + "GetRemainingNameForResolveDown"));
     return getRemainingNameForResolveDown;
   }
 
-  protected List<ASTCDMethod> createContinueWithEnclosingScopeMethods(List<ASTCDType> symbolProds, CDDefinitionSymbol definitionSymbol) {
+  protected List<ASTCDMethod> createContinueWithEnclosingScopeMethods(List<ASTCDType> symbolProds, DiagramSymbol definitionSymbol) {
     List<ASTCDMethod> methodList = new ArrayList<>();
     ASTCDParameter parameterFoundSymbols = getCDParameterFacade().createParameter(getMCTypeFacade().createBooleanType(), FOUND_SYMBOLS_VAR);
     ASTCDParameter parameterName = getCDParameterFacade().createParameter(getMCTypeFacade().createStringType(), NAME_VAR);
@@ -148,7 +150,7 @@ public class ArtifactScopeInterfaceDecorator extends AbstractCreator<ASTCDCompil
             PREDICATE, definingSymbolFullName.get()), PREDICATE_VAR);
         String methodName = String.format(CONTINUE_WITH_ENCLOSING_SCOPE, className);
 
-        ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createListTypeOf(definingSymbolFullName.get()),
+        ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), getMCTypeFacade().createListTypeOf(definingSymbolFullName.get()),
             methodName, parameterFoundSymbols, parameterName, parameterModifier, parameterPredicate);
         this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(
             TEMPLATE_PATH + "ContinueWithEnclosingScope4ArtifactScope", definingSymbolFullName.get(), className, globalScope));
@@ -159,14 +161,14 @@ public class ArtifactScopeInterfaceDecorator extends AbstractCreator<ASTCDCompil
   }
 
   protected ASTCDMethod createGetFullNameMethod(){
-    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createStringType(), "getFullName");
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), getMCTypeFacade().createStringType(), "getFullName");
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "GetFullName"));
     return method;
   }
 
   protected List<ASTCDMethod> createSuperContinueWithEnclosingScopeMethods() {
     List<ASTCDMethod> methodList = new ArrayList<>();
-    for (CDDefinitionSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
+    for (DiagramSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
       // only filter for types which define a symbol
       List<ASTCDType> symbolProds = cdDefinitionSymbol.getTypes()
           .stream()
@@ -183,7 +185,7 @@ public class ArtifactScopeInterfaceDecorator extends AbstractCreator<ASTCDCompil
 
   public List<ASTCDType> getSuperSymbols() {
     List<ASTCDType> symbolAttributes = new ArrayList<>();
-    for (CDDefinitionSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
+    for (DiagramSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
       for (CDTypeSymbol type : cdDefinitionSymbol.getTypes()) {
         if (type.isPresentAstNode() && type.getAstNode().isPresentModifier()
             && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifier())) {

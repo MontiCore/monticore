@@ -3,7 +3,9 @@
 package de.monticore.codegen.mc2cd.transl.creation;
 
 import com.google.common.collect.Iterables;
-import de.monticore.cd.cd4analysis._ast.*;
+
+import de.monticore.cdbasis._ast.*;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.utils.Link;
 
@@ -92,7 +94,7 @@ public class ASTRulesToCDClassesAndCDInterfaces implements
 
         Link<ASTMCGrammar, ASTCDDefinition> parentLink = Iterables.getOnlyElement(rootLink
                 .getLinks(ASTMCGrammar.class, ASTCDDefinition.class));
-        parentLink.target().getCDClassList().add(cdClass);
+        parentLink.target().getCDClassesList().add(cdClass);
         new Link<>(astRule, cdClass, parentLink);
       }
     }

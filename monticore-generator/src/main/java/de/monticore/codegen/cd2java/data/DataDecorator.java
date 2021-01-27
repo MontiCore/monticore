@@ -1,7 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java.data;
 
-import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cdbasis._ast.*;
+import de.monticore.cd4codebasis._ast.*;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.AbstractTransformer;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
@@ -14,8 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static de.monticore.cd.facade.CDModifier.PROTECTED;
-import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java.CDModifier.PROTECTED;
+import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 
@@ -46,8 +47,8 @@ public class DataDecorator extends AbstractTransformer<ASTCDClass> {
     if (originalClass.isPresentSuperclass()) {
       changedClass.setSuperclass(originalClass.getSuperclass());
     }
-    changedClass.addAllInterface(originalClass.getInterfaceList());
-    changedClass.addAllCDMethods(originalClass.getCDMethodList());
+    changedClass.addCDMember(originalClass.getInterfaceList());
+    changedClass.addAllCDMembers(originalClass.getCDMethodList());
 
     //remove inherited attributes, because these are already defined in superclass
     List<ASTCDAttribute> ownAttributes = originalClass.deepClone().getCDAttributeList()

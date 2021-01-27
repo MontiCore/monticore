@@ -54,7 +54,7 @@ public class Grammar_WithConceptsSymbolTableCreator extends Grammar_WithConcepts
    * @param rootNode the root node
    * @return the first scope that was created
    */
-  public Grammar_WithConceptsArtifactScope createFromAST(de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit rootNode) {
+  public Grammar_WithConceptsArtifactScope createFromAST(de.monticore.cdbasis._ast.ASTCDCompilationUnit rootNode) {
     Grammar_WithConceptsArtifactScope artifactScope = new Grammar_WithConceptsArtifactScope(Optional.empty(),
         Names.getQualifiedName(rootNode.getPackageList()), new ArrayList<>());
     putOnStack(artifactScope);

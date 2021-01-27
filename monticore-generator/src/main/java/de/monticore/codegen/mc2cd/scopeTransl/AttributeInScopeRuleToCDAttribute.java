@@ -1,7 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.mc2cd.scopeTransl;
 
-import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd4analysis._ast.CD4AnalysisNodeFactory;
+import de.monticore.cdbasis._ast.*;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.grammar.grammar._ast.ASTAdditionalAttribute;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTScopeRule;
@@ -9,7 +11,7 @@ import de.monticore.utils.Link;
 
 import java.util.function.UnaryOperator;
 
-import static de.monticore.cd.facade.CDModifier.PROTECTED;
+import static de.monticore.codegen.cd2java.CDModifier.PROTECTED;
 
 public class AttributeInScopeRuleToCDAttribute implements
         UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {

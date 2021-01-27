@@ -1,8 +1,9 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.codegen.cd2java._od;
 
-import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.cd.cd4code.CD4CodeMill;
+import de.monticore.cdbasis._ast.*;
+import de.monticore.cd4code.CD4CodeMill;
+import de.monticore.cd4codebasis._ast.*;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
@@ -14,7 +15,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import java.util.ArrayList;
 import java.util.List;
 
-import static de.monticore.cd.facade.CDModifier.*;
+import static de.monticore.codegen.cd2java.CDModifier.*;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java._od.ODConstants.INDENT_PRINTER;
@@ -81,38 +82,38 @@ public class ODDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClas
   }
 
   protected ASTCDAttribute createRealThisAttribute(String visitorName) {
-    ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PRIVATE, visitorName, REAL_THIS);
+    ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PRIVATE.build(), visitorName, REAL_THIS);
     this.replaceTemplate(VALUE, attribute, new StringHookPoint("= this;"));
     return attribute;
   }
 
 
   protected ASTCDAttribute createIndentPrinterAttribute() {
-    return getCDAttributeFacade().createAttribute(PROTECTED, INDENT_PRINTER, "pp");
+    return getCDAttributeFacade().createAttribute(PROTECTED.build(), INDENT_PRINTER, "pp");
   }
 
 
   protected ASTCDAttribute createReportingRepositoryAttribute() {
-    return getCDAttributeFacade().createAttribute(PROTECTED, REPORTING_REPOSITORY, "reporting");
+    return getCDAttributeFacade().createAttribute(PROTECTED.build(), REPORTING_REPOSITORY, "reporting");
   }
 
 
   protected ASTCDAttribute createPrintEmptyOptionalAttribute() {
-    ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PROTECTED, getMCTypeFacade().createBooleanType(), "printEmptyOptional");
+    ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PROTECTED.build(), getMCTypeFacade().createBooleanType(), "printEmptyOptional");
     this.replaceTemplate(VALUE, attribute, new StringHookPoint("= false;"));
     return attribute;
   }
 
 
   protected ASTCDAttribute createPrintEmptyListAttribute() {
-    ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PROTECTED, getMCTypeFacade().createBooleanType(), "printEmptyList");
+    ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PROTECTED.build(), getMCTypeFacade().createBooleanType(), "printEmptyList");
     this.replaceTemplate(VALUE, attribute, new StringHookPoint("= false;"));
     return attribute;
   }
 
   protected List<ASTCDMethod> createHandleMethods(ASTCDDefinition astcdDefinition) {
     List<ASTCDMethod> handleMethodList = new ArrayList<>();
-    for (ASTCDClass astcdClass : astcdDefinition.getCDClassList()) {
+    for (ASTCDClass astcdClass : astcdDefinition.getCDClassesList()) {
       String astFullName = odService.getASTPackage() + "." + astcdClass.getName();
       ASTCDMethod handleMethod = visitorService.getVisitorMethod(HANDLE, getMCTypeFacade().createQualifiedType(astFullName));
       replaceTemplate(EMPTY_BODY, handleMethod, new TemplateHookPoint("_od.HandleOD", astcdClass, astFullName));
@@ -124,7 +125,7 @@ public class ODDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClas
   protected ASTCDMethod createPrintAttributeMethod() {
     ASTCDParameter nameParam = getCDParameterFacade().createParameter(getMCTypeFacade().createStringType(), "name");
     ASTCDParameter valueParam = getCDParameterFacade().createParameter(getMCTypeFacade().createStringType(), "value");
-    ASTCDMethod printAttributeMethod = getCDMethodFacade().createMethod(PRIVATE, "printAttribute", nameParam, valueParam);
+    ASTCDMethod printAttributeMethod = getCDMethodFacade().createMethod(PRIVATE.build(), "printAttribute", nameParam, valueParam);
     replaceTemplate(EMPTY_BODY, printAttributeMethod, new TemplateHookPoint("_od.PrintAttribute"));
     return printAttributeMethod;
   }
@@ -132,7 +133,7 @@ public class ODDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClas
   protected ASTCDMethod createPrintObjectMethod() {
     ASTCDParameter nameParam = getCDParameterFacade().createParameter(getMCTypeFacade().createStringType(), "objName");
     ASTCDParameter valueParam = getCDParameterFacade().createParameter(getMCTypeFacade().createStringType(), "objType");
-    ASTCDMethod printAttributeMethod = getCDMethodFacade().createMethod(PRIVATE, "printObject", nameParam, valueParam);
+    ASTCDMethod printAttributeMethod = getCDMethodFacade().createMethod(PRIVATE.build(), "printObject", nameParam, valueParam);
     replaceTemplate(EMPTY_BODY, printAttributeMethod, new TemplateHookPoint("_od.PrintObject"));
     return printAttributeMethod;
   }
@@ -141,7 +142,7 @@ public class ODDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClas
     ASTCDParameter nameParam = getCDParameterFacade().createParameter(getMCTypeFacade().createStringType(), "modelName");
     String languageInterfaceName = odService.getLanguageInterfaceName();
     ASTCDParameter valueParam = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(languageInterfaceName), "node");
-    ASTCDMethod printAttributeMethod = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createStringType(),
+    ASTCDMethod printAttributeMethod = getCDMethodFacade().createMethod(PUBLIC.build(), getMCTypeFacade().createStringType(),
         "printObjectDiagram", nameParam, valueParam);
     replaceTemplate(EMPTY_BODY, printAttributeMethod, new TemplateHookPoint("_od.PrintObjectDiagram"));
     return printAttributeMethod;
@@ -149,14 +150,14 @@ public class ODDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClas
 
   protected ASTCDMethod createGetRealThisMethod(String visitorName) {
     ASTMCQualifiedType visitorType = getMCTypeFacade().createQualifiedType(visitorName);
-    ASTCDMethod getRealThisMethod = this.getCDMethodFacade().createMethod(PUBLIC, visitorType, GET_REAL_THIS);
+    ASTCDMethod getRealThisMethod = this.getCDMethodFacade().createMethod(PUBLIC.build(), visitorType, GET_REAL_THIS);
     this.replaceTemplate(EMPTY_BODY, getRealThisMethod, new StringHookPoint("return realThis;"));
     return getRealThisMethod;
   }
 
   protected ASTCDMethod createSetRealThisMethod(String visitorName) {
     ASTCDParameter visitorParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(visitorName), REAL_THIS);
-    ASTCDMethod setRealThis = this.getCDMethodFacade().createMethod(PUBLIC, SET_REAL_THIS, visitorParameter);
+    ASTCDMethod setRealThis = this.getCDMethodFacade().createMethod(PUBLIC.build(), SET_REAL_THIS, visitorParameter);
     this.replaceTemplate(EMPTY_BODY, setRealThis, new StringHookPoint("this.realThis = realThis;"));
     return setRealThis;
   }

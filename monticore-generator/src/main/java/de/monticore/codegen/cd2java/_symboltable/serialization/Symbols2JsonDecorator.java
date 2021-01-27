@@ -3,9 +3,10 @@ package de.monticore.codegen.cd2java._symboltable.serialization;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
-import de.monticore.cd.cd4code.CD4CodeMill;
+import de.monticore.cdbasis._ast.*;
+import de.monticore.cd4codebasis._ast.*;
+import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
@@ -22,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static de.monticore.cd.facade.CDModifier.*;
+import static de.monticore.codegen.cd2java.CDModifier.*;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.JSON_PRINTER;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.END_VISIT;
@@ -67,7 +68,7 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
     String visitorFullName = visitorService.getVisitor2FullName();
     String traverserFullName = visitorService.getTraverserInterfaceFullName();
     String millName = visitorService.getMillFullName();
-    List<CDDefinitionSymbol> superGrammars = symbolTableService.getSuperCDsTransitive();
+    List<DiagramSymbol> superGrammars = symbolTableService.getSuperCDsTransitive();
 
     ASTCDAttribute traverserAttribute = createTraverserAttribute(traverserFullName);
 
@@ -99,13 +100,13 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
             .createAttribute(PRIVATE, traverserFullName, "traverser");
   }
 
-  protected List<ASTCDConstructor> createConstructors(String millName, String traverserFullName, String symbolTablePrinterName, List<CDDefinitionSymbol> superGrammars) {
+  protected List<ASTCDConstructor> createConstructors(String millName, String traverserFullName, String symbolTablePrinterName, List<DiagramSymbol> superGrammars) {
     List<ASTCDConstructor> constructors = new ArrayList<>();
 
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC, symbolTablePrinterName);
     StringBuilder sb = new StringBuilder("this(" + millName + ".traverser(), new " + JSON_PRINTER + "());\n");
     sb.append(  "traverser.add4"+symbolTableService.getCDName()+"(this);\n");
-    for(CDDefinitionSymbol s: superGrammars){
+    for(DiagramSymbol s: superGrammars){
       String s2j = symbolTableService.getSymbols2JsonFullName(s);
       sb.append(  "traverser.add4"+s.getName()+"(new "+s2j+"(getTraverser(), getJsonPrinter()));\n");
     }

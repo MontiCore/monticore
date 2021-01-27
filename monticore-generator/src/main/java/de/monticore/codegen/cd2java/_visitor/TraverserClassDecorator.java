@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._visitor;
 
-import static de.monticore.cd.facade.CDModifier.PRIVATE;
-import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java.CDModifier.PRIVATE;
+import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.GET_REAL_THIS;
@@ -16,13 +16,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
-import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
-import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
-import de.monticore.cd.cd4code.CD4CodeMill;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cd4codebasis._ast.ASTCDParameter;
+import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -65,7 +65,7 @@ public class TraverserClassDecorator extends AbstractCreator<ASTCDCompilationUni
     String simpleVisitorName = visitorService.getVisitorSimpleName();
 
     // get visitor types and names of super cds and own cd
-    List<CDDefinitionSymbol> cDsTransitive = visitorService.getSuperCDsTransitive();
+    List<DiagramSymbol> cDsTransitive = visitorService.getSuperCDsTransitive();
     cDsTransitive.add(visitorService.getCDSymbol());
 
     return CD4CodeMill.cDClassBuilder()
@@ -102,11 +102,11 @@ public class TraverserClassDecorator extends AbstractCreator<ASTCDCompilationUni
    *          symbols of its transitive super languages
    * @return The decorated visitor attributes
    */
-  protected List<ASTCDAttribute> getVisitorAttributes(List<CDDefinitionSymbol> cdSymbols) {
+  protected List<ASTCDAttribute> getVisitorAttributes(List<DiagramSymbol> cdSymbols) {
     // generate a attribute for own visitor and all super visitors
     // e.g. private Optional<automata._visitor.AutomataVisitor> automataVisitor = Optional.empty();
     List<ASTCDAttribute> attributeList = new ArrayList<>();
-    for (CDDefinitionSymbol cd : cdSymbols) {
+    for (DiagramSymbol cd : cdSymbols) {
       String simpleName = visitorService.getVisitorSimpleName(cd) + "List";
       ASTMCQualifiedType type = visitorService.getVisitor2Type(cd);
       ASTCDAttribute visitorAttribute = getCDAttributeFacade().createAttribute(PRIVATE, getMCTypeFacade().createListTypeOf(type),
@@ -126,10 +126,10 @@ public class TraverserClassDecorator extends AbstractCreator<ASTCDCompilationUni
    *          symbols of its transitive super languages
    * @return The decorated visitor getter and setter methods
    */
-  protected List<ASTCDMethod> addVisitorMethods(List<CDDefinitionSymbol> cdSymbols) {
+  protected List<ASTCDMethod> addVisitorMethods(List<DiagramSymbol> cdSymbols) {
     // add setter and getter for created attribute in 'getVisitorAttributes'
     List<ASTCDMethod> methodList = new ArrayList<>();
-    for (CDDefinitionSymbol cd : cdSymbols) {
+    for (DiagramSymbol cd : cdSymbols) {
       String simpleName = visitorService.getVisitorSimpleName(cd);
       // add setter for visitor attribute
       // e.g. public void setAutomataVisitor(automata._visitor.AutomataVisitor visitor)
@@ -160,11 +160,11 @@ public class TraverserClassDecorator extends AbstractCreator<ASTCDCompilationUni
    *          symbols of its transitive super languages
    * @return The decorated handler attributes
    */
-  protected List<ASTCDAttribute> getHandlerAttributes(List<CDDefinitionSymbol> cdSymbols) {
+  protected List<ASTCDAttribute> getHandlerAttributes(List<DiagramSymbol> cdSymbols) {
     // generate a attribute for own handler and all super handlers
     // e.g. private Optional<automata._visitor.AutomataHandler> automataHandler = Optional.empty();
     List<ASTCDAttribute> attributeList = new ArrayList<>();
-    for (CDDefinitionSymbol cd : cdSymbols) {
+    for (DiagramSymbol cd : cdSymbols) {
       String simpleName = visitorService.getHandlerSimpleName(cd);
       ASTMCQualifiedType type = visitorService.getHandlerType(cd);
       ASTCDAttribute handlerAttribute = getCDAttributeFacade().createAttribute(PRIVATE, getMCTypeFacade().createOptionalTypeOf(type),
@@ -184,10 +184,10 @@ public class TraverserClassDecorator extends AbstractCreator<ASTCDCompilationUni
    *          symbols of its transitive super languages
    * @return The decorated handler getter and setter methods
    */
-  protected List<ASTCDMethod> addHandlerMethods(List<CDDefinitionSymbol> cdSymbols) {
+  protected List<ASTCDMethod> addHandlerMethods(List<DiagramSymbol> cdSymbols) {
     // add setter and getter for created attribute in 'getVisitorAttributes'
     List<ASTCDMethod> methodList = new ArrayList<>();
-    for (CDDefinitionSymbol cd : cdSymbols) {
+    for (DiagramSymbol cd : cdSymbols) {
       String simpleName = visitorService.getHandlerSimpleName(cd);
       // add setter for handler attribute
       // e.g. public void setAutomataHandler(automata._visitor.AutomataHandler handler)

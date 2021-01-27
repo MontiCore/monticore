@@ -1,9 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._symboltable.symboltablecreator;
 
-import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
-import de.monticore.cd.cd4code.CD4CodeMill;
+import de.monticore.cdbasis._ast.*;
+import de.monticore.cd4codebasis._ast.*;
+import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
@@ -12,6 +13,7 @@ import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
+import de.monticore.umlmodifier._ast.ASTModifier;
 import de.se_rwth.commons.StringTransformations;
 
 import java.util.HashMap;
@@ -19,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static de.monticore.cd.facade.CDModifier.*;
+import static de.monticore.codegen.cd2java.CDModifier.*;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.DEQUE_TYPE;
@@ -81,10 +83,10 @@ public class SymbolTableCreatorDelegatorDecorator extends AbstractCreator<ASTCDC
 
   protected ASTCDConstructor createConstructor(String symTabCreatorDelegator, String globalScopeInterface,
                                                String symbolTableCreator, String simpleName) {
-    List<CDDefinitionSymbol> superCDsTransitive = symbolTableService.getSuperCDsTransitive();
+    List<DiagramSymbol> superCDsTransitive = symbolTableService.getSuperCDsTransitive();
     String symTabMillFullName = symbolTableService.getMillFullName();
     Map<String, String> superSymTabCreator = new HashMap<>();
-    for (CDDefinitionSymbol cdDefinitionSymbol : superCDsTransitive) {
+    for (DiagramSymbol cdDefinitionSymbol : superCDsTransitive) {
       if (cdDefinitionSymbol.isPresentAstNode() && symbolTableService.hasStartProd(cdDefinitionSymbol.getAstNode())) {
         superSymTabCreator.put(cdDefinitionSymbol.getName(), symbolTableService.getSuperSTCForSubSTCSimpleName(cdDefinitionSymbol));
       }

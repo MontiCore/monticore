@@ -1,7 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java.data;
 
-import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cdbasis._ast.*;
+import de.monticore.cdinterfaceandenum._ast.*;
 import de.monticore.codegen.cd2java.AbstractTransformer;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 
@@ -18,15 +19,15 @@ public class ListSuffixDecorator extends AbstractTransformer<ASTCDCompilationUni
 
   @Override
   public ASTCDCompilationUnit decorate(final ASTCDCompilationUnit originalInput, ASTCDCompilationUnit changedInput) {
-    for (ASTCDInterface astcdInterface : changedInput.getCDDefinition().getCDInterfaceList()) {
+    for (ASTCDInterface astcdInterface : changedInput.getCDDefinition().getCDInterfacesList()) {
       addSToListAttributes(astcdInterface.getCDAttributeList());
       astcdInterface.setCDAttributeList(getAttributesUniqueAgain(astcdInterface.getCDAttributeList()));
     }
-    for (ASTCDClass astcdClass : changedInput.getCDDefinition().getCDClassList()) {
+    for (ASTCDClass astcdClass : changedInput.getCDDefinition().getCDClassesList()) {
       addSToListAttributes(astcdClass.getCDAttributeList());
       astcdClass.setCDAttributeList(getAttributesUniqueAgain(astcdClass.getCDAttributeList()));
     }
-    for (ASTCDEnum astcdEnum : changedInput.getCDDefinition().getCDEnumList()) {
+    for (ASTCDEnum astcdEnum : changedInput.getCDDefinition().getCDEnumsList()) {
       addSToListAttributes(astcdEnum.getCDAttributeList());
       astcdEnum.setCDAttributeList(getAttributesUniqueAgain(astcdEnum.getCDAttributeList()));
     }
@@ -65,7 +66,7 @@ public class ListSuffixDecorator extends AbstractTransformer<ASTCDCompilationUni
   protected boolean hasDerivedAttributeName(ASTCDAttribute astcdAttribute) {
     return astcdAttribute.isPresentModifier() && astcdAttribute.getModifier().isPresentStereotype()
         && astcdAttribute.getModifier().getStereotype().sizeValue() > 0 &&
-        astcdAttribute.getModifier().getStereotype().getValueList()
+        astcdAttribute.getModifier().getStereotype().getValuesList()
             .stream()
             .anyMatch(v -> v.getName().equals(MC2CDStereotypes.DERIVED_ATTRIBUTE_NAME.toString()));
   }

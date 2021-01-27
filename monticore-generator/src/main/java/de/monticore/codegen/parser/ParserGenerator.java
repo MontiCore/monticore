@@ -3,8 +3,8 @@
 package de.monticore.codegen.parser;
 
 import com.google.common.base.Joiner;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.prettyprint.CD4CodePrinter;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CDGenerator;
 import de.monticore.codegen.cd2java.DecorationHelper;

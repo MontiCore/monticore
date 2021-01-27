@@ -2,10 +2,10 @@
 
 package de.monticore.codegen.mc2cd.transl.creation;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDDefinition;
-import de.monticore.cd.cd4analysis._ast.ASTCDEnum;
-import de.monticore.cd.cd4analysis._ast.CD4AnalysisNodeFactory;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDDefinition;
+import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
+import de.monticore.cd4analysis._ast.CD4AnalysisNodeFactory;
 import de.monticore.grammar.grammar._ast.ASTEnumProd;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.utils.Link;
@@ -28,7 +28,7 @@ public class EnumProdsToCDEnums implements UnaryOperator<Link<ASTMCGrammar, ASTC
     for (ASTEnumProd enumProd : link.source().getEnumProdList()) {
       ASTCDEnum cdEnum = CD4AnalysisNodeFactory.createASTCDEnum();
       cdEnum.setModifier(CD4AnalysisNodeFactory.createASTModifier());
-      link.target().getCDEnumList().add(cdEnum);
+      link.target().getCDEnumsList().add(cdEnum);
       new Link<>(enumProd, cdEnum, link);
     }
   }

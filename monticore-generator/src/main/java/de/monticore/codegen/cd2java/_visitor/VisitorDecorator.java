@@ -1,10 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._visitor;
 
-import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
-import de.monticore.cd.cd4code.CD4CodeFullPrettyPrinter;
-import de.monticore.cd.cd4code.CD4CodeMill;
+import de.monticore.cdbasis._ast.*;
+import de.monticore.cd4codebasis._ast.*;
+import de.monticore.cdinterfaceandenum._ast.*;
+import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
+import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -14,10 +16,11 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.umlmodifier._ast.ASTModifier;
 
 import java.util.*;
 
-import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.CoreTemplates.*;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_INTERFACE;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SCOPE;
@@ -290,8 +293,8 @@ public class VisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
     superSymbolNames.addAll(symbolTableService.retrieveSymbolNamesFromCD(visitorService.getCDSymbol()));
     
     // add symbols of super CDs
-    List<CDDefinitionSymbol> superCDsTransitive = visitorService.getSuperCDsTransitive();
-    for (CDDefinitionSymbol cdSymbol : superCDsTransitive) {
+    List<DiagramSymbol> superCDsTransitive = visitorService.getSuperCDsTransitive();
+    for (DiagramSymbol cdSymbol : superCDsTransitive) {
       superSymbolNames.addAll(symbolTableService.retrieveSymbolNamesFromCD(cdSymbol));
     }
     return superSymbolNames;

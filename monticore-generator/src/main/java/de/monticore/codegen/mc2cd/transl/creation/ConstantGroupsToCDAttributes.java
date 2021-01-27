@@ -1,7 +1,9 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.codegen.mc2cd.transl.creation;
 
-import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cdbasis._ast.*;
+import de.monticore.cd4analysis._ast.*;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;

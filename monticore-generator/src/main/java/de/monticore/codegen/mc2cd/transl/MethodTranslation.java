@@ -2,7 +2,10 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
-import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd4code._ast.CD4CodeNodeFactory;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cdbasis._ast.*;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -15,6 +18,7 @@ import de.monticore.grammar.prettyprint.Grammar_WithConceptsFullPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.statements.mcstatementsbasis._ast.ASTMCBlockStatement;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
+import de.monticore.umlmodifier._ast.ASTModifier;
 import de.monticore.utils.Link;
 
 import java.util.function.UnaryOperator;
@@ -59,7 +63,7 @@ public class MethodTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCD
   }
 
   private ASTCDMethod createSimpleCDMethod(ASTGrammarMethod method) {
-    ASTCDMethod cdMethod = CD4AnalysisNodeFactory.createASTCDMethod();
+    ASTCDMethod cdMethod = CD4CodeNodeFactory.createASTCDMethod();
     cdMethod.setModifier(TransformationHelper.createPublicModifier());
     cdMethod.setName(method.getName());
     String dotSeparatedName = MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(method.getMCReturnType());

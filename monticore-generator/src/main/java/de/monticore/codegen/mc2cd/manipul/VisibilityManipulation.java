@@ -2,8 +2,11 @@
 
 package de.monticore.codegen.mc2cd.manipul;
 
-import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.cd.cd4analysis._visitor.CD4AnalysisVisitor;
+import de.monticore.cdbasis._ast.*;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
+import de.monticore.umlmodifier._ast.ASTModifier;
+import de.monticore.cd4analysis._ast.CD4AnalysisNodeFactory;
+import de.monticore.cd4analysis._visitor.CD4AnalysisVisitor;
 
 import java.util.function.UnaryOperator;
 

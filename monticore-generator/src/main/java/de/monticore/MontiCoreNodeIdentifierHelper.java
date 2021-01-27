@@ -3,7 +3,7 @@
 package de.monticore;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.cd.cd4analysis._ast.ASTCD4AnalysisNode;
+import de.monticore.cd4analysis._ast.ASTCD4AnalysisNode;
 import de.monticore.cd.reporting.CD4ANodeIdentHelper;
 import de.monticore.generating.templateengine.reporting.commons.Layouter;
 import de.monticore.grammar.LexNamer;

@@ -1,10 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._visitor;
 
-import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
-import de.monticore.cd.cd4code.CD4CodeFullPrettyPrinter;
-import de.monticore.cd.cd4code.CD4CodeMill;
+import de.monticore.cdbasis._ast.*;
+import de.monticore.cd4codebasis._ast.*;
+import de.monticore.cdinterfaceandenum._ast.*;
+import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
+import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -21,7 +23,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
 
@@ -53,7 +55,7 @@ public class HandlerDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
     ASTMCQualifiedType traverserType = visitorService.getTraverserInterfaceType();
     
     // get visitor types and names of super cds and own cd
-    List<CDDefinitionSymbol> superCDsTransitive = visitorService.getSuperCDsTransitive();
+    List<DiagramSymbol> superCDsTransitive = visitorService.getSuperCDsTransitive();
     List<String> visitorFullNameList = superCDsTransitive.stream()
         .map(visitorService::getVisitor2FullName)
         .collect(Collectors.toList());
@@ -157,9 +159,9 @@ public class HandlerDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
     String simpleVisitorName = visitorService.getVisitorSimpleName(cdDefinition.getSymbol());
     
     // add methods for classes, interfaces, enumerations, symbols, and scopes
-    visitorMethods.addAll(createHandlerClassMethods(cdDefinition.getCDClassList(), simpleVisitorName));
-    visitorMethods.addAll(createHandlerInterfaceMethods(cdDefinition.getCDInterfaceList(), simpleVisitorName));
-    visitorMethods.addAll(createHandlerEnumMethods(cdDefinition.getCDEnumList(), simpleVisitorName, cdDefinition.getName()));
+    visitorMethods.addAll(createHandlerClassMethods(cdDefinition.getCDClassesList(), simpleVisitorName));
+    visitorMethods.addAll(createHandlerInterfaceMethods(cdDefinition.getCDInterfacesList(), simpleVisitorName));
+    visitorMethods.addAll(createHandlerEnumMethods(cdDefinition.getCDEnumsList(), simpleVisitorName, cdDefinition.getName()));
     visitorMethods.addAll(createHandlerSymbolMethods(cdDefinition, simpleVisitorName));
     visitorMethods.addAll(createHandlerScopeMethods(cdDefinition, simpleVisitorName));
     
@@ -315,7 +317,7 @@ public class HandlerDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
    */
   protected List<ASTCDMethod> createHandlerScopeMethods(ASTCDDefinition astcdDefinition, String simpleVisitorName) {
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
-    CDDefinitionSymbol cdSymbol = astcdDefinition.getSymbol();
+    DiagramSymbol cdSymbol = astcdDefinition.getSymbol();
     ASTMCQualifiedType scopeType = getMCTypeFacade().createQualifiedType(symbolTableService.getScopeInterfaceFullName(cdSymbol));
     ASTMCQualifiedType artifactScopeType = getMCTypeFacade().createQualifiedType(symbolTableService.getArtifactScopeInterfaceFullName(cdSymbol));
     
@@ -365,8 +367,8 @@ public class HandlerDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
     superSymbolNames.addAll(symbolTableService.retrieveSymbolNamesFromCD(visitorService.getCDSymbol()));
     
     // add symbols of super CDs
-    List<CDDefinitionSymbol> superCDsTransitive = visitorService.getSuperCDsTransitive();
-    for (CDDefinitionSymbol cdSymbol : superCDsTransitive) {
+    List<DiagramSymbol> superCDsTransitive = visitorService.getSuperCDsTransitive();
+    for (DiagramSymbol cdSymbol : superCDsTransitive) {
       superSymbolNames.addAll(symbolTableService.retrieveSymbolNamesFromCD(cdSymbol));
     }
     return superSymbolNames;
