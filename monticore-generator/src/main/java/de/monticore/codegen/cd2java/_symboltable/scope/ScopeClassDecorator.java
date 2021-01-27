@@ -1,12 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._symboltable.scope;
 
+import com.google.common.collect.ListMultimap;
 import de.monticore.cd.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.AbstractDecorator;
+import de.monticore.codegen.cd2java._symboltable.SymbolKindHierarchies;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
@@ -17,6 +19,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
+import de.monticore.utils.Names;
 import de.se_rwth.commons.StringTransformations;
 
 import java.util.*;
@@ -583,32 +586,47 @@ public class ScopeClassDecorator extends AbstractDecorator {
   protected List<ASTCDMethod> createResolveSubKindsNameMethods(ASTCDDefinition symbolDefinition) {
     List<ASTCDMethod> result = new ArrayList<>();
 
-    ASTCDParameter foundSymbolsParam = getCDParameterFacade()
+    // initialize parameters that are equal for all symbol methods
+    ASTCDParameter foundSymParam = getCDParameterFacade()
         .createParameter(getMCTypeFacade().createBooleanType(), FOUND_SYMBOLS_VAR);
     ASTCDParameter nameParam = getCDParameterFacade().createParameter(String.class, NAME_VAR);
-    ASTCDParameter accessModParam = getCDParameterFacade()
+    ASTCDParameter accModParam = getCDParameterFacade()
         .createParameter(getMCTypeFacade().createQualifiedType(ACCESS_MODIFIER), MODIFIER_VAR);
-
 
     List<ASTCDType> symbols = symbolTableService.getSymbolDefiningProds(symbolDefinition);
     symbols.addAll(symbolTableService.getSymbolDefiningSuperProds());
 
-    for (ASTCDType symbolProd : symbols) {
-      ASTCDMethod method = createResolveSubKindsNameMethod(symbolProd, foundSymbolsParam,
-          nameParam, accessModParam);
-      result.add(method);
+    ListMultimap<String, String> subKinds = SymbolKindHierarchies
+        .calculateSubKinds(symbols, symbolTableService);
+
+    //add methods for local symbols
+    for (ASTCDType s : symbolTableService.getSymbolDefiningProds(symbolDefinition)) {
+      String name = symbolTableService.getSymbolFullName(s);
+      String simpleName = Names.getSimpleName(name);
+      result.add(createResolveSubKindsMethod(name, s.getName(), subKinds.get(simpleName),
+          foundSymParam, nameParam, accModParam));
     }
 
+    //add symbols from super grammars
+    for (CDDefinitionSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
+      for (CDTypeSymbol type : cdDefinitionSymbol.getTypes()) {
+        if (type.isPresentAstNode() && type.getAstNode().isPresentModifier()
+            && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifier())) {
+          String name = symbolTableService.getSymbolFullName(type.getAstNode(), cdDefinitionSymbol);
+          String ntName = type.getAstNode().getName().substring(3);
+          result.add(createResolveSubKindsMethod(name, ntName, subKinds.get(ntName),
+              foundSymParam, nameParam, accModParam));
+        }
+      }
+    }
     return result;
   }
 
-  protected ASTCDMethod createResolveSubKindsNameMethod(ASTCDType symbolProd,
-      ASTCDParameter foundSymbolsParameter, ASTCDParameter nameParameter,
+  protected ASTCDMethod createResolveSubKindsMethod(String symbolFullName, String symbolNTName,
+      List<String> subKinds, ASTCDParameter foundSymbolsParameter, ASTCDParameter nameParameter,
       ASTCDParameter accessModifierParameter) {
 
-    String symbolName = symbolTableService.removeASTPrefix(symbolProd);
-    String symbolFullName = symbolTableService.getSymbolFullName(symbolProd);
-    String methodName = String.format("resolve%sSubKinds", symbolName);
+    String methodName = String.format("resolve%sSubKinds", symbolNTName);
 
     ASTCDParameter predicateParameter = getCDParameterFacade().createParameter(getMCTypeFacade()
         .createBasicGenericTypeOf(PREDICATE, symbolFullName), PREDICATE_VAR);
@@ -618,7 +636,6 @@ public class ScopeClassDecorator extends AbstractDecorator {
         .createMethod(PUBLIC, listSymbol, methodName,
             foundSymbolsParameter, nameParameter, accessModifierParameter, predicateParameter);
 
-    List<String> subKinds = new ArrayList<>(); // TODO
     this.replaceTemplate(EMPTY_BODY, method,
         new TemplateHookPoint(TEMPLATE_PATH + "ResolveSubKinds", symbolFullName, subKinds));
     return method;

@@ -205,7 +205,7 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
 
       // resolve sub kinds method
       String resolveSubKindsMethodName = String.format(RESOLVE_SUBKINDS, className);
-      resolveMethods.add(createResolveSubKindsNameMethod(resolveSubKindsMethodName, listSymbol,
+      resolveMethods.add(createResolveSubKindsMethod(resolveSubKindsMethodName, listSymbol,
           foundSymbolsParameter, nameParameter, accessModifierParameter, predicateParameter));
 
       // resolve many methods
@@ -370,7 +370,7 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
     return method;
   }
 
-  protected ASTCDMethod createResolveSubKindsNameMethod(String methodName, ASTMCType returnType,
+  protected ASTCDMethod createResolveSubKindsMethod(String methodName, ASTMCType returnType,
       ASTCDParameter foundSymbolsParameter,
       ASTCDParameter nameParameter, ASTCDParameter accessModifierParameter,
       ASTCDParameter predicateParameter) {
