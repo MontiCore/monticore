@@ -21,7 +21,7 @@ dependencies {
   testImplementation group:'junit', name:'junit', version:junit_version
   grammar (project(path: ':monticore-grammar')){
     capabilities {
-      requireCapability("$group:monticore-grammar-grammars")
+      requireCapability("de.monticore:monticore-grammar-grammars")
     }
   }
 }

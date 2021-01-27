@@ -9,7 +9,9 @@ plugins {
 dependencies {
   implementation gradleApi()
   implementation localGroovy()
-  implementation project(":monticore-generator")
+  implementation (project(":monticore-generator")){
+      exclude group: 'de.monticore.bs', module: 'monticore-grammar'
+  }
   implementation project(":monticore-cli")
   implementation (group: 'de.monticore.bs', name: 'monticore-grammar', version: "$previous_mc_version"){
     force true
