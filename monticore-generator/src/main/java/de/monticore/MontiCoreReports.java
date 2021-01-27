@@ -6,6 +6,8 @@ import de.monticore.generating.templateengine.reporting.commons.ReportManager;
 import de.monticore.generating.templateengine.reporting.commons.ReportManager.ReportManagerFactory;
 import de.monticore.generating.templateengine.reporting.commons.ReportingRepository;
 import de.monticore.generating.templateengine.reporting.reporter.*;
+import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
+import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsTraverser;
 import de.monticore.io.paths.IterablePath;
 
 /**
@@ -51,8 +53,9 @@ public class MontiCoreReports implements ReportManagerFactory {
     repository.initAllHWTemplates(this.templatePath);
     
     ReportManager reports = new ReportManager(this.outputDirectory);
-    
-    SummaryReporter summary = new SummaryReporter(this.reportDirectory, lowerCaseName, repository);
+
+    Grammar_WithConceptsTraverser traverserSummary = Grammar_WithConceptsMill.inheritanceTraverser();
+    SummaryReporter summary = new SummaryReporter(this.reportDirectory, lowerCaseName, repository, traverserSummary);
     GeneratedFilesReporter generated = new GeneratedFilesReporter(this.reportDirectory, lowerCaseName,
         repository);
     HandWrittenCodeReporter handwritten = new HandWrittenCodeReporter(this.reportDirectory,
@@ -66,10 +69,13 @@ public class MontiCoreReports implements ReportManagerFactory {
     DetailedReporter detail = new DetailedReporter(this.reportDirectory, lowerCaseName, repository);
     TemplateTreeReporter templateTree = new TemplateTreeReporter(this.reportDirectory, lowerCaseName);
     InvolvedFilesReporter ioReporter = new InvolvedFilesReporter(this.reportDirectory);
-    NodeTreeReporter nodeTree = new NodeTreeReporter(this.reportDirectory, lowerCaseName, repository);
+    Grammar_WithConceptsTraverser traverserNodeTree = Grammar_WithConceptsMill.inheritanceTraverser();
+    NodeTreeReporter nodeTree = new NodeTreeReporter(this.reportDirectory, lowerCaseName, repository, traverserNodeTree);
+    Grammar_WithConceptsTraverser traverserNodeTree2 = Grammar_WithConceptsMill.inheritanceTraverser();
     NodeTreeDecoratedReporter nodeTreeDecorated = new NodeTreeDecoratedReporter(
-        this.reportDirectory, lowerCaseName, repository);
-    NodeTypesReporter nodeTypes = new NodeTypesReporter(this.reportDirectory, lowerCaseName);
+        this.reportDirectory, lowerCaseName, repository, traverserNodeTree2);
+    Grammar_WithConceptsTraverser traverserNodeType = Grammar_WithConceptsMill.inheritanceTraverser();
+    NodeTypesReporter nodeTypes = new NodeTypesReporter(this.reportDirectory, lowerCaseName, traverserNodeType);
 //    SymbolTableReporter2 symbolTable = new SymbolTableReporter2(this.reportDirectory, lowerCaseName, repository);
     TransformationReporter transformations = new TransformationReporter(this.reportDirectory,
         lowerCaseName, repository);

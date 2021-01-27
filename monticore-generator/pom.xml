@@ -8,7 +8,7 @@
   <parent>
     <groupId>de.monticore</groupId>
     <artifactId>monticore</artifactId>
-    <version>6.7.0-SNAPSHOT</version>
+    <version>6.8.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>monticore-generator</artifactId>
@@ -97,13 +97,13 @@
  
     <!-- AST generation dependencies -->
     <dependency>
-      <groupId>de.monticore.lang</groupId>
+      <groupId>de.monticore.lang.bs</groupId>
       <artifactId>cd4analysis</artifactId>
       <version>${cd4analysis.version}</version>
     </dependency>
     
     <dependency>
-      <groupId>de.monticore.lang</groupId>
+      <groupId>de.monticore.lang.bs</groupId>
       <artifactId>cd4analysis</artifactId>
       <version>${cd4analysis.version}</version>
       <classifier>${grammars.classifier}</classifier>

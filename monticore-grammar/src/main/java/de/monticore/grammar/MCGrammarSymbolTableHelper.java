@@ -9,7 +9,9 @@ import com.google.common.collect.Sets;
 import de.monticore.ast.ASTNode;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.*;
-import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
+import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
+import de.monticore.grammar.grammar_withconcepts._symboltable.IGrammar_WithConceptsGlobalScope;
+import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsTraverser;
 import de.monticore.symboltable.IScope;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.Util;
@@ -53,7 +55,7 @@ public class MCGrammarSymbolTableHelper {
       if (scope.isPresentSpanningSymbol() && scope.getSpanningSymbol() instanceof MCGrammarSymbol) {
         return Optional.of((MCGrammarSymbol) scope.getSpanningSymbol());
       }
-      if (scope instanceof Grammar_WithConceptsGlobalScope) {
+      if (scope instanceof IGrammar_WithConceptsGlobalScope) {
         exist = false;
       } else {
         scope = scope.getEnclosingScope();
@@ -122,7 +124,10 @@ public class MCGrammarSymbolTableHelper {
   private static String getLexString(MCGrammarSymbol grammar, ASTLexProd lexNode) {
     StringBuilder builder = new StringBuilder();
     RegExpBuilder regExp = new RegExpBuilder(builder, grammar);
-    regExp.handle(lexNode);
+    Grammar_WithConceptsTraverser traverser = Grammar_WithConceptsMill.traverser();
+    traverser.add4Grammar(regExp);
+    traverser.setGrammarHandler(regExp);
+    lexNode.accept(traverser);
     return builder.toString();
   }
 
@@ -483,6 +488,32 @@ public class MCGrammarSymbolTableHelper {
       }
     }
     return Optional.empty();
+  }
+
+  /**
+   * @return the qualified name for this type
+   */
+  public static String getQualifiedName(ProdSymbol symbol) {
+    if (!symbol.isPresentAstNode()) {
+      return "UNKNOWN_TYPE";
+    }
+    if (symbol.isIsLexerProd()) {
+      return getLexType(symbol.getAstNode());
+    }
+    if (symbol.isIsEnum()) {
+      return getQualifiedName(symbol.getAstNode(), symbol, "AST", "");
+    }
+    return getQualifiedName(symbol.getAstNode(), symbol, "AST", "");
+  }
+
+  public static String getDefaultValue(ProdSymbol symbol) {
+    if ("int".equals(getQualifiedName(symbol))) {
+      return "0";
+    } else if ("boolean".equals(getQualifiedName(symbol))) {
+      return "false";
+    } else {
+      return "null";
+    }
   }
 
 }

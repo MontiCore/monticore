@@ -20,7 +20,7 @@ subprojects {
     implementation project(':monticore-grammar')
     grammar (project(path: ':monticore-grammar')){
       capabilities {
-        requireCapability("$group:monticore-grammar-grammars")
+        requireCapability("de.monticore:monticore-grammar-grammars")
       }
     }
     testImplementation group:'ch.qos.logback', name: 'logback-classic', version: '1.1.2'

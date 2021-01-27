@@ -2,9 +2,11 @@
 
 package de.monticore.grammar.cocos;
 
+import de.monticore.grammar.grammar.GrammarMill;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
+import de.monticore.grammar.grammar._visitor.GrammarTraverser;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
@@ -40,8 +42,11 @@ public class NoTokenDefined implements GrammarASTMCGrammarCoCo {
 
   private boolean hasTokenDefinition(ASTMCGrammar node) {
     //if there is a body check if the body contains tokens
+    GrammarTraverser traverser = GrammarMill.traverser();
     NoTokenDefinedVisitor visitor = new NoTokenDefinedVisitor();
-    node.accept(visitor);
+    traverser.add4Grammar(visitor);
+    traverser.setGrammarHandler(visitor);
+    node.accept(traverser);
     return visitor.foundTerminal();
   }
 }
