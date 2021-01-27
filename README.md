@@ -87,7 +87,7 @@ They only need to be extended to the added variants.
 Please also note that `PlusExpr` is mutually left-recursive.
 -- Yes, that works in MontiCore 6.
 
-## MontiCore has a relaxed 3-Level License on files 
+## MontiCore has a relaxed 3-Level License  
 
 Informal summary: 
 The MontiCore Languag Workbench deals with three levels of code 
