@@ -1,6 +1,6 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 
-# MontiCore Languages, Level II - an Overview
+# MontiCore Languages of Level II - an Overview
 
 [[_TOC_]]
 
