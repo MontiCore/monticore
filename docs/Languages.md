@@ -293,15 +293,38 @@ component InteriorLight {                           // MontiArc language
   **transitive closure operator**.
   An example:
 ```
-ocl BankingChecks {
-  context Bank b inv OverallBalanceCorrect:
-  let
-    balances = { acc.balance | Account acc in b.account };
-    calculatedBalance = iterate { balance in balances;
-                                  double sum = 0.0 :
-                                  sum = sum + balance }
-  in
-    b.overallBalance == calculatedBalance;
+ocl bookshop {
+  context Shop s inv CustomersWithUnpaidInvoicesMayNotOrder:
+    forall Customer c in s.customers:
+      c.allowedToOrder implies !exists Invoice i in s.invoices:
+        i.customer == c && i.moneyPayed < i.totalPrice
+    ;
+
+  context Invoice Stock.sellBook(String iban, int discountPercent, Customer c) 
+    let 
+      availableBooks = 
+        { book | Book book in booksInStock, bookToSell.iban == iban }
+    
+    pre:
+      // Only sell books that are in stock 
+      availableBooks.size > 0;
+      
+      // Only sell to customers who have paid their past invoices
+      c.allowedToOrder;
+
+    post: 
+      // Do not make a loss by applying coupons
+      let b = result.soldBook
+      in b.cost <= b.price * (100 - discountPercent)/100;
+
+      // Selling a book removes this book (and only this book) from the stock
+      !(result.soldBook isin booksInStock);
+      booksInStock.size@pre == booksInStock.size + 1;
+
+      // Invoice is correct
+      result.soldBook.iban == iban;
+      result.total == result.soldBook.price * (100 - discountPercent)/100;
+      result.buyer == c;
 }
 ```
 
