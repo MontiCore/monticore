@@ -89,6 +89,14 @@ They only need to be extended to the added variants.
 Please also note that `PlusExpr` is mutually left-recursive.
 -- Yes, that works in MontiCore 6.
 
+Quick Start:
+```
+$ cd /usr/local/lib
+$ wget www.monticore.de/download/monticore-cli.jar
+$ export CLASSPATH=".:/usr/local/lib/monticore-cli.jar:$CLASSPATH"
+$ alias mc='java -jar /usr/local/lib/monticore-cli.jar'
+```
+
 ## MontiCore has a Relaxed 3-Level License  
 
 Informal summary: 
