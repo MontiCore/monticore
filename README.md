@@ -18,6 +18,8 @@ components, conservative extension and composition mechanisms, and an
 optimal integration of hand-written code into the generated tools. Its 
 grammar languages are rather comfortable to use. 
 
+[**Start here for developing with MontiCore.**](docs/GettingStarted.md)
+
 ## A Teaser for MontiCore
 
 To show a little of MontiCore's capabilities, the following (incomplete) 
