@@ -296,23 +296,23 @@ component InteriorLight {                           // MontiArc language
   An example shows several of the above mentioned syntactic features:
 ```
 ocl Bookshop {
-  context Shop s inv CustomerPaysBeforeNewOrder:    // invariant
-    forall Customer c in s.customers:               // quantifiers available
+  context Shop s inv CustomerPaysBeforeNewOrder:      // invariant
+    forall Customer c in s.customers:                 // quantifiers available
       c.allowedToOrder implies !exists Invoice i in s.invoices:
-        i.customer == c && i.moneyPayed < i.totalPrice ;
+        i.customer == c && i.moneyPayed < i.invoiceAmount ;
 
   // Method specification for selling a book
   context Invoice Stock.sellBook(String iban, int discountPercent, Customer c) 
-    let availableBooks =                            // set comprehension
+    let availableBooks =                              // set comprehension
           { book | Book book in booksInStock, book.iban == iban }
-    pre:  !availableBooks.isEmpty &&                // precondition
+    pre:  !availableBooks.isEmpty &&                  // precondition
           c.allowedToOrder;
-    post: let b = result.soldBook,                  // postcondition, let
-              discount = (100 - discountPercent)/100
-          in                                        // result variable 
-              !(result.soldBook isin booksInStock) &&
+    post: let discount = (100 - discountPercent)/100; // postcondition, let
+              b = result.soldBook                     // result variable 
+          in                                        
+              !(b isin booksInStock) &&
               booksInStock.size@pre == booksInStock.size + 1 &&  // @pre
-              result.payment == result.soldBook.price * discount;
+              result.invoiceAmount == b.price * discount;  // result variable 
 }
 ```
 
