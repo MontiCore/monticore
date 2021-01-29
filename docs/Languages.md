@@ -285,46 +285,33 @@ component InteriorLight {                           // MontiArc language
   It's main goal is the usage in combination with other languages like 
   CD4A or Object Diagrams as an integrated part of that languages.
 * OCL/P allows to define **invariants** and **pre/post conditions** in 
-  the known OCL style. Furthermore, it offers a large set **expressions**
+  the known OCL style plus some extensions, such as 
+  a generalized `let` construction. 
+  Furthermore, it offers a large set **expressions**
   to model constraints. These expressions include **Java expressions**,
   **set operations**, **list operations** etc., completely covering the 
   OCL standard concepts, but extend it e.g. by **set comprehensions** 
   known from Haskell, a **typesafe cast** or a 
   **transitive closure operator**.
-  An example:
+  An example shows several of the above mentioned syntactic features:
 ```
-ocl bookshop {
-  context Shop s inv CustomersWithUnpaidInvoicesMayNotOrder:
+ocl Bookshop {
+  context Shop s inv CustomerPaysBeforeNewOrder:
     forall Customer c in s.customers:
       c.allowedToOrder implies !exists Invoice i in s.invoices:
-        i.customer == c && i.moneyPayed < i.totalPrice
-    ;
+        i.customer == c && i.moneyPayed < i.totalPrice ;
 
+  // Method specification for selling a book
   context Invoice Stock.sellBook(String iban, int discountPercent, Customer c) 
-    let 
-      availableBooks = 
-        { book | Book book in booksInStock, bookToSell.iban == iban }
-    
-    pre:
-      // Only sell books that are in stock 
-      availableBooks.size > 0;
-      
-      // Only sell to customers who have paid their past invoices
-      c.allowedToOrder;
-
-    post: 
-      // Do not make a loss by applying coupons
-      let b = result.soldBook
-      in b.cost <= b.price * (100 - discountPercent)/100;
-
-      // Selling a book removes this book (and only this book) from the stock
-      !(result.soldBook isin booksInStock);
-      booksInStock.size@pre == booksInStock.size + 1;
-
-      // Invoice is correct
-      result.soldBook.iban == iban;
-      result.total == result.soldBook.price * (100 - discountPercent)/100;
-      result.buyer == c;
+    let availableBooks = 
+          { book | Book book in booksInStock, book.iban == iban }
+    pre:  !availableBooks.isEmpty &&
+          c.allowedToOrder;
+    post: let b = result.soldBook,
+              discount = (100 - discountPercent)/100
+          in  
+              !(result.soldBook isin booksInStock) &&
+              result.payment == result.soldBook.price * discount;
 }
 ```
 
