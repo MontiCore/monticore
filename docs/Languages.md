@@ -49,25 +49,25 @@ MontiCore projects are hosted at
   and all kinds of **associations** and **composition**, including **qualified**
   and **ordered associations**. Classes can be placed in different **packages**.
   An example:
-  ```
-  classdiagram MyLife { 
-    abstract class Person {
-      int age;
-      Date birthday;
-      List<String> nickNames;
-    }
-    package com.universityLib {
-      <<myStereotype>> class Student extends Person {
-        StudentStatus status;
-      }
-      enum StudentStatus { ENROLLED, FINISHED; }
-    }
-    
-    composition Person -> Address [*]  {ordered};
-    association [0..2] Person (parent) <-> (child) Person [*];
-    association phonebook Person [String] -> PhoneNumber ;
+```
+classdiagram MyLife { 
+  abstract class Person {
+    int age;
+    Date birthday;
+    List<String> nickNames;
   }
-  ```
+  package com.universityLib {
+    <<myStereotype>> class Student extends Person {
+      StudentStatus status;
+    }
+    enum StudentStatus { ENROLLED, FINISHED; }
+  }
+  
+  composition Person -> Address [*]  {ordered};
+  association [0..2] Person (parent) <-> (child) Person [*];
+  association phonebook Person [String] -> PhoneNumber ;
+}
+```
 * CD4A focusses on the analysis phase in typical data-driven development 
   projects and is therefore mainly for data modelling.
   Consequently, it omits method signatures and complex generics.
@@ -84,16 +84,16 @@ MontiCore projects are hosted at
 * CD4Code describes **UML class diagrams**.
 * CD4Code is a conservative extension of **CD4A**, 
   which includes method signatures. An example:
-  ```
-  classdiagram MyLife2 {
-    // like CD4A but also allows:
-    class Person {
-      protected List<Person> closestFriends(int n);
-      void addFriend(Person friends...);
-      <<myStereotype>> void relocate();
-    }
+```
+classdiagram MyLife2 {
+  // like CD4A but also allows:
+  class Person {
+    protected List<Person> closestFriends(int n);
+    void addFriend(Person friends...);
+    <<myStereotype>> void relocate();
   }
-  ```
+}
+```
 * CD4Code is often used as tool-internal AST that allows to
   map any kind of source models to a class/attribute/method/association based
   intermediate structure, before it is printed e.g. as Java code. 
@@ -116,17 +116,17 @@ MontiCore projects are hosted at
 * **Feature diagrams** are used to model (software) **product lines** and their **variants**.
 * **Feature configurations** select a subset of features of a feature model 
   to describe a product of the product line. An example:
-  ```
-  featurediagram MyPhones {
-    Phone -> Memory & OS & Camera? & Screen;
-    Memory -> Internal & External?;
-    Internal -> [1..2] of {Small, Medium, Large};
-    OS -> iOS ^ Android;
-    Screen -> Flexible | FullHD;
+```
+featurediagram MyPhones {
+  Phone -> Memory & OS & Camera? & Screen;
+  Memory -> Internal & External?;
+  Internal -> [1..2] of {Small, Medium, Large};
+  OS -> iOS ^ Android;
+  Screen -> Flexible | FullHD;
 
-    Camera requires (iOS && External) || Android ;
-  }
-  ```
+  Camera requires (iOS && External) || Android ;
+}
+```
   Rules `F -> ...` have a parent feature (left-hand side) 
   and its child features (right-hand side). 
   Operators are: **optional** feature `?`, **and** `&`, **or** `|`, **xor** `^`,
@@ -205,17 +205,17 @@ and
 
 ### [JSON](https://git.rwth-aachen.de/monticore/languages/json) (MontiCore Stable)
 * The MontiCore language for parsing JSON artifacts. An example:
-  ```
-  { "Alice": {
-      "fullname": "Alice Anderson",
-      "address": {
-        "postal_code": 10459, 
-        "street": "Beck Street",
-        "number": 56              }  },
-    "Bob": { ... },
-    "Caroll": { ... }, ...
-  }
-  ```
+```
+{ "Alice": {
+    "fullname": "Alice Anderson",
+    "address": {
+      "postal_code": 10459, 
+      "street": "Beck Street",
+      "number": 56              }  },
+  "Bob": { ... },
+  "Caroll": { ... }, ...
+}
+```
 * The JSON grammar adheres to the common **JSON standard** and allows parsing 
   arbitrary JSON artifacts for further processing.
 * Actually the grammar represents a slight superset to the official JSON standard. 
@@ -339,27 +339,27 @@ ocl Bookshop {
   **visibilities**. Special data types, such as **Date** allow comfortable
   definition and reading of ODs. For a comfortable definition, objects may be **nested**
   into trees while easily retaining their full graph structure. An example:
-  ```
-  objectdiagram MyFamily {
-    alice:Person {
-      age = 29;
-      cars = [
-        :BMW {
-          color = BLUE;
-        },
-        tiger:Jaguar {
-          color = RED;
-          length = 5.3; 
-        }
-      ];
-    };
-    bob:Person {
-      nicknames = ["Bob", "Bobby", "Robert"];
-      cars = [tiger];
-    };
-    link married alice <-> bob;
-  }
-  ```
+```
+objectdiagram MyFamily {
+  alice:Person {
+    age = 29;
+    cars = [
+      :BMW {
+        color = BLUE;
+      },
+      tiger:Jaguar {
+        color = RED;
+        length = 5.3; 
+      }
+    ];
+  };
+  bob:Person {
+    nicknames = ["Bob", "Bobby", "Robert"];
+    cars = [tiger];
+  };
+  link married alice <-> bob;
+}
+```
 * If ODs are used as specification techniqe, e.g. for tests or forbidden 
   situations,
   a more expressive version of expressions can be used for values 
@@ -420,14 +420,14 @@ sequencediagram AuctionTest {
   definition.
 * Second, it provides the SI Unit literals, such as `5 km` as expression values
   and a language for SI unit types, such as `km/h` or `km/h<long>`. Some examples:
-  ```
-    km/h speed = 5 m / 27 s                         // variable definition using type km/h
-    speed = (3 * 4m  +  17km/h * 10h) / 3.5h        // values with SI unit types
-    °C/s<float> coolingSpeed;                       // types (°C/s) with precision (float)
-    g/mm^2<int> pressure; 
-    Map<Location,°C> temperatures;                  // nesting of types 
-  ```
-  The SI unit literals integrate with MontiCore's expressions and the
+```
+  km/h speed = 5 m / 27 s                         // variable definition using type km/h
+  speed = (3 * 4m  +  17km/h * 10h) / 3.5h        // values with SI unit types
+  °C/s<float> coolingSpeed;                       // types (°C/s) with precision (float)
+  g/mm^2<int> pressure; 
+  Map<Location,°C> temperatures;                  // nesting of types 
+```
+* The SI unit literals integrate with MontiCore's expressions and the
   SI Unit types integrate with MontiCore's type system. 
   The SI unit language remains *fully type safe*.
 * The math version uses `km/h` as idealistic full precision real number, while the
@@ -449,18 +449,18 @@ sequencediagram AuctionTest {
   forms of statecharts using a subset of the eleven provided language components.
   Two complete Statechart language variants are composed for direct usability.
 * A compact teaser for one variant of the Statechart languages:
-    ```
-    statechart Door {
-      state Opened
-      initial state Closed
-      state Locked
-    
-      Opened -> Closed close() /
-      Closed -> Opened open(1) / {ringTheDoorBell();}
-      Closed -> Locked timeOut(n) / { lockDoor(); } [doorIsLocked]
-      Locked -> Closed [isAuthorized() && doorIsLocked] unlock() /
-    }
-    ```
+```
+statechart Door {
+  state Opened
+  initial state Closed
+  state Locked
+
+  Opened -> Closed close() /
+  Closed -> Opened open(1) / {ringTheDoorBell();}
+  Closed -> Locked timeOut(n) / { lockDoor(); } [doorIsLocked]
+  Locked -> Closed [isAuthorized() && doorIsLocked] unlock() /
+}
+```
 * This example models the different states of a door: `Opened`, `Closed`, and `Locked`.
   A transition is triggered e.g. by function/method call `close()` that changes a from a state `Opened` to state `Closed`. 
 * Transitions can have actions, such as `{ringDoorBell();}` containing in this case 
@@ -545,15 +545,15 @@ package 'Coffee' {                      // a SysML activity diagram
 
 ### [XML](https://git.rwth-aachen.de/monticore/languages/xml) (Alpha: Intention to become stable)
 * The MontiCore language for parsing XML artifacts. An example:
-  ```
-  <Calendar>
-    <Appointment name="lunch">
-      <Date>24.04.2020</Date>
-      <Time>11:30</Time>
-      <Location>cafeteria</Location>
-    </Appointment>
-  </Calendar>
-  ```
+```
+<Calendar>
+  <Appointment name="lunch">
+    <Date>24.04.2020</Date>
+    <Time>11:30</Time>
+    <Location>cafeteria</Location>
+  </Appointment>
+</Calendar>
+```
 * The XML grammar adheres to the common **XML standard** and allows parsing 
   arbitrary XML artifacts for further processing.
 * Actually the grammar represents a slight superset to the official XML standard. 
@@ -580,12 +580,12 @@ package 'Coffee' {                      // a SysML activity diagram
   also no wildcards in the type system.
 * One main usage of JavaLight is in the Grammar-language to model e.g. 
   Java methods. An example:
-  ```
-  public void print(String name) {
-    System.out.println("Hello " + name);
-  }
-  ```
-* [Main grammar `de.monticore.JavaLight`]((https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/JavaLight.mc4)
+```
+public void print(String name) {
+  System.out.println("Hello " + name);
+}
+```
+* [Main grammar `de.monticore.JavaLight`](https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/JavaLight.mc4)
   and 
   [*detailed description*](https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/monticore-grammar/src/main/grammars/de/monticore/JavaLight.md).
 
