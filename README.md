@@ -89,7 +89,8 @@ They only need to be extended to the added variants.
 Please also note that `PlusExpr` is mutually left-recursive.
 -- Yes, that works in MontiCore 6.
 
-Quick Start:
+## Quick Start
+
 ```
 $ cd /usr/local/lib
 $ wget www.monticore.de/download/monticore-cli.jar
