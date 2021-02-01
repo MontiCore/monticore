@@ -92,7 +92,7 @@ Please also note that `PlusExpr` is mutually left-recursive.
 ## Quick Start
 
 ```
-$ cd /usr/local/tmp
+$ cd /usr/local
 $ wget www.monticore.de/aut.tar.gz
 $ tar -xf aut.tar.gz
 $ cd mc-workspace
