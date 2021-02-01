@@ -4,6 +4,12 @@
 
 ##  MontiCore 6.8.0-SNAPSHOT
 to be released
+### Additions
+
+### Changes
+* delete deprecated grammars OCLExpressions and SetExpressions
+
+### Fixes
 
 ##  MontiCore 6.7.0
 released: 26.01.2021
