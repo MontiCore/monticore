@@ -1,3 +1,4 @@
+// (c) https://github.com/MontiCore/monticore
 package de.monticore.symbols.basicsymbols;
 
 import com.google.common.collect.Lists;
