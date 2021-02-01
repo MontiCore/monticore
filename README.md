@@ -92,10 +92,14 @@ Please also note that `PlusExpr` is mutually left-recursive.
 ## Quick Start
 
 ```
-$ cd /usr/local/lib
-$ wget www.monticore.de/download/monticore-cli.jar
-$ export CLASSPATH=".:/usr/local/lib/monticore-cli.jar:$CLASSPATH"
-$ alias mc='java -jar /usr/local/lib/monticore-cli.jar'
+$ cd /usr/local/tmp
+$ wget www.monticore.de/aut.tar.gz
+$ tar -xf aut.tar.gz
+$ cd mc-workspace
+$ wget www.monticore.de/monticore-cli.jar
+$ java -jar monticore-cli.jar Automata.mc4 -hcp hwc/
+$ javac -cp monticore-cli.jar -sourcepath "src/;out/;hwc/" src/automata/AutomataTool.java
+$ java -cp "src/;out/;hwc/;monticore-cli.jar" automata.AutomataTool example/PingPong.aut PingPong.autsym
 ```
 
 ## MontiCore has a Relaxed 3-Level License  
