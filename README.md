@@ -93,10 +93,10 @@ Please also note that `PlusExpr` is mutually left-recursive.
 
 ```
 $ cd /usr/local
-$ wget www.monticore.de/aut.tar.gz
+$ wget www.monticore.de/download/aut.tar.gz
 $ tar -xf aut.tar.gz
 $ cd mc-workspace
-$ wget www.monticore.de/monticore-cli.jar
+$ wget www.monticore.de/download/monticore-cli.jar
 $ java -jar monticore-cli.jar Automata.mc4 -hcp hwc/
 $ javac -cp monticore-cli.jar -sourcepath "src/;out/;hwc/" src/automata/AutomataTool.java
 $ java -cp "src/;out/;hwc/;monticore-cli.jar" automata.AutomataTool example/PingPong.aut PingPong.autsym
