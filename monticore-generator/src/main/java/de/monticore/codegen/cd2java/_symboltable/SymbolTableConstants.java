@@ -84,6 +84,8 @@ public class SymbolTableConstants {
 
   public static final String I_DE_SER = "de.monticore.symboltable.serialization.IDeSer";
 
+  public static final String I_SYMBOL_DE_SER = "de.monticore.symboltable.serialization.ISymbolDeSer";
+
   /**
    * attribute names
    */
@@ -124,7 +126,9 @@ public class SymbolTableConstants {
 
   public static final String SCOPE_JSON_VAR = "scopeJson";
 
-  public static final String DESERS_VAR = "desers";
+  public static final String SYM_DESERS_VAR = "symbolDesers";
+
+  public static final String DESER_VAR = "deser";
 
   public static final String FOUND_SYMBOL_DELEGATE = "false";
 

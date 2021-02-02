@@ -1,17 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.symboltable.serialization;
 
-import de.monticore.symboltable.IScope;
-import de.monticore.symboltable.serialization.json.JsonObject;
+import de.monticore.symboltable.ISymbol;
 
 /**
- * Interface that all scope DeSers implement to provide uniform serialize and
+ * Interface that all symbol DeSers implement to provide uniform serialize and
  * deserialize methods. This is required to handle DeSers in the global scopes.
  * A DeSer class realizes the serialization strategy for a specific type T.
  * @param <T> The type to serialize
  * @param <S> The language-specific Symbols2Json Class for traversing the Symbol table
  */
-public interface IDeSer <T extends IScope, S> {
+public interface ISymbolDeSer<T extends ISymbol, S> {
 
   /**
    * serialize a passed object to a String that is returned.
@@ -27,11 +26,5 @@ public interface IDeSer <T extends IScope, S> {
    * @return
    */
   T deserialize (String serialized);
-
-  T deserialize (JsonObject scopeJson);
-
-  T deserializeScope(JsonObject scopeJson);
-
-  T deserializeArtifactScope(JsonObject scopeJson);
 
 }

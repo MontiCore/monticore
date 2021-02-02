@@ -67,7 +67,7 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
     String deSerName = symbolTableService.getScopeDeSerFullName();
 
     ASTMCQualifiedType iDeSerType = getMCTypeFacade().
-        createQualifiedType(I_DE_SER + "<" + symName + ", " + s2jName + ">");
+        createQualifiedType(I_SYMBOL_DE_SER + "<" + symName + ", " + s2jName + ">");
     ASTMCQualifiedType symType = getMCTypeFacade().createQualifiedType(symName);
 
     ASTCDParameter symParam = getCDParameterFacade().createParameter(symType, "toSerialize");
