@@ -144,7 +144,7 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
 
   protected List<ASTCDAttribute> createDeSerAttrs(List<ASTCDType> prods) {
     List<ASTCDAttribute> attrList = Lists.newArrayList();
-    attrList.add(getCDAttributeFacade().createAttribute(PROTECTED, symbolTableService.getScopeDeSerFullName(), "scopeDeSer"));
+    attrList.add(getCDAttributeFacade().createAttribute(PROTECTED, I_DE_SER, "scopeDeSer"));
     for (ASTCDType prod : prods) {
       String name = StringTransformations.uncapitalize(symbolTableService.getSymbolDeSerSimpleName(prod));
       attrList.add(getCDAttributeFacade().createAttribute(PROTECTED, symbolTableService.getSymbolDeSerFullName(prod), name));
