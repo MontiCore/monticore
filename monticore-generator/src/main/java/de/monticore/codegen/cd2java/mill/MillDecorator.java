@@ -179,6 +179,11 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
     return millClass;
   }
 
+  /**
+   * checks if the class is generated specifically, i.e. there are special methods for the parser, scope, artifactScope and globalScope
+   * These special methods can also be seen in this class, e.g. {@link #getScopeMethods()}
+   * if a new class does not need a specific mill implementation, normal methods will be generated for it
+   */
   protected boolean checkNotGeneratedSpecifically(ASTCDClass cdClass){
     String name = cdClass.getName();
     String cdName = symbolTableService.getCDName();
@@ -192,6 +197,10 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
         || name.endsWith(INHERITANCE_SUFFIX + HANDLER_SUFFIX));
   }
 
+  /**
+   * checks if a class should be included in the mill, example: serialization classes should not be included
+   * so they are not mentioned in this method
+   */
   protected boolean checkIncludeInMill(ASTCDClass cdClass){
     String name = cdClass.getName();
     String cdName = symbolTableService.getCDName();
