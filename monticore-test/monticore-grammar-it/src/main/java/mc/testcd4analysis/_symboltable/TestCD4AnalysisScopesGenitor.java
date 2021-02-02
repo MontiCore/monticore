@@ -21,13 +21,13 @@ public class TestCD4AnalysisScopesGenitor extends TestCD4AnalysisScopesGenitorTO
     super();
   }
 
-  @Override
+ /* @Override
   public TestCD4AnalysisArtifactScope createFromAST(ASTCDCompilationUnit rootNode) {
     TestCD4AnalysisArtifactScope artifactScope = new TestCD4AnalysisArtifactScope(Optional.empty(),
         Names.getQualifiedName(rootNode.getPackageList()), new ArrayList<>());
     putOnStack(artifactScope);
     rootNode.accept(getTraverser());
     return artifactScope;
-  }
+  }*/
 
 }

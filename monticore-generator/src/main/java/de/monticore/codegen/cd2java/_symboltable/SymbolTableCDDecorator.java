@@ -7,16 +7,12 @@ import de.monticore.cd.cd4analysis._ast.*;
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java._symboltable.scope.*;
+import de.monticore.codegen.cd2java._symboltable.scopesgenitor.ScopesGenitorDecorator;
+import de.monticore.codegen.cd2java._symboltable.scopesgenitor.ScopesGenitorDelegatorDecorator;
 import de.monticore.codegen.cd2java._symboltable.serialization.ScopeDeSerDecorator;
 import de.monticore.codegen.cd2java._symboltable.serialization.SymbolDeSerDecorator;
 import de.monticore.codegen.cd2java._symboltable.serialization.Symbols2JsonDecorator;
 import de.monticore.codegen.cd2java._symboltable.symbol.*;
-import de.monticore.codegen.cd2java._symboltable.scopesgenitor.ScopesGenitorDecorator;
-import de.monticore.codegen.cd2java._symboltable.scopesgenitor.ScopesGenitorDelegatorDecorator;
-import de.monticore.codegen.cd2java._symboltable.symboltablecreator.*;
-import de.monticore.codegen.cd2java._symboltable.symboltablecreator.SymbolTableCreatorDecorator;
-import de.monticore.codegen.cd2java._symboltable.symboltablecreator.SymbolTableCreatorDelegatorDecorator;
-import de.monticore.codegen.cd2java._symboltable.symboltablecreator.SymbolTableCreatorForSuperTypes;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.IterablePath;
 
@@ -64,12 +60,6 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
 
   protected final SymbolResolverInterfaceDecorator symbolResolverInterfaceDecorator;
 
-  protected final SymbolTableCreatorDecorator symbolTableCreatorDecorator;
-
-  protected final SymbolTableCreatorDelegatorDecorator symbolTableCreatorDelegatorDecorator;
-
-  protected final SymbolTableCreatorForSuperTypes symbolTableCreatorForSuperTypes;
-
   protected final SymbolDeSerDecorator symbolDeSerDecorator;
 
   protected final ScopeDeSerDecorator scopeDeSerDecorator;
@@ -95,9 +85,6 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
                                 final ArtifactScopeClassDecorator artifactScopeDecorator,
                                 final CommonSymbolInterfaceDecorator commonSymbolInterfaceDecorator,
                                 final SymbolResolverInterfaceDecorator symbolResolverInterfaceDecorator,
-                                final SymbolTableCreatorDecorator symbolTableCreatorDecorator,
-                                final SymbolTableCreatorDelegatorDecorator symbolTableCreatorDelegatorDecorator,
-                                final SymbolTableCreatorForSuperTypes symbolTableCreatorForSuperTypes,
                                 final SymbolDeSerDecorator symbolDeSerDecorator,
                                 final ScopeDeSerDecorator scopeDeSerDecorator,
                                 final Symbols2JsonDecorator symbols2JsonDecorator,
@@ -118,9 +105,6 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
     this.commonSymbolInterfaceDecorator = commonSymbolInterfaceDecorator;
     this.handCodedPath = handCodedPath;
     this.symbolResolverInterfaceDecorator = symbolResolverInterfaceDecorator;
-    this.symbolTableCreatorDecorator = symbolTableCreatorDecorator;
-    this.symbolTableCreatorDelegatorDecorator = symbolTableCreatorDelegatorDecorator;
-    this.symbolTableCreatorForSuperTypes = symbolTableCreatorForSuperTypes;
     this.symbolDeSerDecorator = symbolDeSerDecorator;
     this.scopeDeSerDecorator = scopeDeSerDecorator;
     this.symbols2JsonDecorator = symbols2JsonDecorator;
@@ -167,13 +151,6 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
       symTabCD.addCDInterface(createGlobalScopeInterface(astCD, symbolTablePackage));
       symTabCD.addCDInterface(createArtifactScopeInterface(astCD));
 
-
-      // symboltable creator delegator
-      Optional<ASTCDClass> symbolTableCreatorDelegator = createSymbolTableCreatorDelegator(astCD);
-      if (symbolTableCreatorDelegator.isPresent()) {
-        symTabCD.addCDClass(symbolTableCreatorDelegator.get());
-      }
-
       Optional<ASTCDClass> scopeSkeletonCreatorDelegator = createScopesGenitorDelegator(astCD);
       scopeSkeletonCreatorDelegator.ifPresent(symTabCD::addCDClass);
 
@@ -192,20 +169,10 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
       ASTCDClass globalScopeClass = createGlobalScopeClass(astCD, symbolTablePackage);
       symTabCD.addCDClass(globalScopeClass);
 
-      // symbol table creator
-      Optional<ASTCDClass> symbolTableCreator = createSymbolTableCreator(astCD);
-      if (symbolTableCreator.isPresent()) {
-        symTabCD.addCDClass(symbolTableCreator.get());
-      }
 
       //scope skeleton creator
       Optional<ASTCDClass> scopeSkeletonCreator = createScopesGenitor(astCD);
       scopeSkeletonCreator.ifPresent(symTabCD::addCDClass);
-
-      // SuperSTCForSub
-      List<ASTCDClass> symbolTableCreatorForSuperTypes = createSymbolTableCreatorForSuperTypes(astCD);
-      symTabCD.addAllCDClasss(symbolTableCreatorForSuperTypes);
-
 
     addPackageAndAnnotation(symTabCD, symbolTablePackage);
 
@@ -312,18 +279,6 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
 
   protected ASTCDInterface createICommonSymbol(ASTCDCompilationUnit compilationUnit) {
     return commonSymbolInterfaceDecorator.decorate(compilationUnit);
-  }
-
-  protected Optional<ASTCDClass> createSymbolTableCreator(ASTCDCompilationUnit compilationUnit) {
-    return symbolTableCreatorDecorator.decorate(compilationUnit);
-  }
-
-  protected Optional<ASTCDClass> createSymbolTableCreatorDelegator(ASTCDCompilationUnit compilationUnit) {
-    return symbolTableCreatorDelegatorDecorator.decorate(compilationUnit);
-  }
-
-  protected List<ASTCDClass> createSymbolTableCreatorForSuperTypes(ASTCDCompilationUnit compilationUnit) {
-    return symbolTableCreatorForSuperTypes.decorate(compilationUnit);
   }
 
   protected List<ASTCDClass> createSymbolDeSerClasses(List<ASTCDClass> symbolClassList) {

@@ -132,7 +132,6 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
             .addAllCDMethods(symbolRuleMethods)
             .addAllCDMethods(symbolMethods)
             .addAllCDMethods(symbolNameMethods)
-            .addCDMethod(createAcceptMethod(symbolName))
             .addCDMethod(createAcceptTraverserMethod(symbolName))
             .addCDMethod(createDeterminePackageName(scopeInterface))
             .addCDMethod(createDetermineFullName(scopeInterface))
@@ -243,20 +242,6 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
 
     return methods;
 
-  }
-
-  protected ASTCDMethod createAcceptMethod(String symbolName) {
-    ASTMCQualifiedType visitorType = getMCTypeFacade().createQualifiedType(visitorService.getVisitorFullName());
-    ASTCDParameter parameter = getCDParameterFacade().createParameter(visitorType, VISITOR_PREFIX);
-    ASTCDMethod acceptMethod = getCDMethodFacade().createMethod(PUBLIC, ACCEPT_METHOD, parameter);
-    if (!isSymbolTop()) {
-      this.replaceTemplate(EMPTY_BODY, acceptMethod, new StringHookPoint("visitor.handle(this);"));
-    } else {
-      String errorCode = symbolTableService.getGeneratedErrorCode(symbolName + ACCEPT_METHOD);
-      this.replaceTemplate(EMPTY_BODY, acceptMethod, new TemplateHookPoint(
-              "_symboltable.AcceptTop", symbolName, errorCode));
-    }
-    return acceptMethod;
   }
   
   protected ASTCDMethod createAcceptTraverserMethod(String symbolName) {

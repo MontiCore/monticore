@@ -13,7 +13,6 @@ import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
 import de.monticore.grammar.grammarfamily._symboltable.GrammarFamilyGlobalScope;
 import de.monticore.grammar.grammarfamily._symboltable.IGrammarFamilyGlobalScope;
@@ -344,15 +343,13 @@ public class MontiCoreScriptTest {
     assertEquals("Statechart", symbolPackageCD.getCDDefinition().getName());
 
     int index = 0;
-    assertEquals(9, symbolPackageCD.getCDDefinition().sizeCDClasss());
+    assertEquals(7, symbolPackageCD.getCDDefinition().sizeCDClasss());
     assertEquals("StatechartScope", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
     assertEquals("StatechartSymbols2Json", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
-    assertEquals("StatechartSymbolTableCreatorDelegator", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
     assertEquals("StatechartScopesGenitorDelegator", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
     assertEquals("StatechartArtifactScope", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
     assertEquals("StatechartDeSer", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
     assertEquals("StatechartGlobalScope", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
-    assertEquals("StatechartSymbolTableCreator", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
     assertEquals("StatechartScopesGenitor", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
 
     index = 0;
@@ -373,17 +370,18 @@ public class MontiCoreScriptTest {
     ASTCDCompilationUnit cd = mc.deriveASTCD(grammar, glex, cd4AGlobalScope);
     IterablePath handcodedPath = IterablePath.from(new File("src/test/resources"), "java");
 
-    ASTCDCompilationUnit visitorPackageCD = mc.decorateForVisitorPackage(glex, cd4AGlobalScope, cd, handcodedPath);
+    ASTCDCompilationUnit visitorPackageCD = mc.decorateTraverserForVisitorPackage(glex, cd4AGlobalScope, cd, handcodedPath);
 
     assertNotNull(visitorPackageCD);
     assertNotNull(visitorPackageCD.getCDDefinition());
     assertEquals("Statechart", visitorPackageCD.getCDDefinition().getName());
-    assertEquals(3, visitorPackageCD.getCDDefinition().sizeCDClasss());
-    assertEquals("StatechartDelegatorVisitor", visitorPackageCD.getCDDefinition().getCDClass(0).getName());
-    assertEquals("StatechartParentAwareVisitor", visitorPackageCD.getCDDefinition().getCDClass(1).getName());
-    assertEquals(2, visitorPackageCD.getCDDefinition().sizeCDInterfaces());
-    assertEquals("StatechartVisitor", visitorPackageCD.getCDDefinition().getCDInterface(0).getName());
-    assertEquals("StatechartInheritanceVisitor", visitorPackageCD.getCDDefinition().getCDInterface(1).getName());
+    assertEquals(2, visitorPackageCD.getCDDefinition().sizeCDClasss());
+    assertEquals("StatechartTraverserImplementation", visitorPackageCD.getCDDefinition().getCDClass(0).getName());
+    assertEquals("StatechartInheritanceHandler", visitorPackageCD.getCDDefinition().getCDClass(1).getName());
+    assertEquals(3, visitorPackageCD.getCDDefinition().sizeCDInterfaces());
+    assertEquals("StatechartTraverser", visitorPackageCD.getCDDefinition().getCDInterface(0).getName());
+    assertEquals("StatechartVisitor2", visitorPackageCD.getCDDefinition().getCDInterface(1).getName());
+    assertEquals("StatechartHandler", visitorPackageCD.getCDDefinition().getCDInterface(2).getName());
   }
 
   @Test
@@ -545,7 +543,7 @@ public class MontiCoreScriptTest {
     ASTCDCompilationUnit cd = mc.deriveASTCD(grammar, glex, cd4AGlobalScope);
     IterablePath handcodedPath = IterablePath.from(new File("src/test/resources"), "java");
 
-    ASTCDCompilationUnit millCd = mc.decorateMill(glex, cd4AGlobalScope, cd, getASTCD(cd), getVisitorCD(cd), getSymbolCD(cd), handcodedPath);
+    ASTCDCompilationUnit millCd = mc.decorateMill(glex, cd4AGlobalScope, cd, getASTCD(cd), getSymbolCD(cd), handcodedPath);
 
     assertNotNull(millCd);
     assertNotNull(millCd.getCDDefinition());
@@ -586,18 +584,6 @@ public class MontiCoreScriptTest {
     assertEquals("TestLexicalsMillForStatechart", auxiliaryCD.getCDDefinition().getCDClass(0).getName());
     assertTrue(auxiliaryCD.getCDDefinition().isEmptyCDInterfaces());
     assertTrue(auxiliaryCD.getCDDefinition().isEmptyCDEnums());
-  }
-
-  protected ASTCDCompilationUnit getVisitorCD(ASTCDCompilationUnit decoratedCompilationUnit) {
-    MontiCoreScript mc = new MontiCoreScript();
-    GlobalExtensionManagement glex = new GlobalExtensionManagement();
-    IGrammarFamilyGlobalScope symbolTable = TestHelper.createGlobalScope(modelPath);
-    mc.createSymbolsFromAST(symbolTable, grammar);
-    ICD4AnalysisGlobalScope cd4AGlobalScope = mc.createCD4AGlobalScope(modelPath);
-    ASTCDCompilationUnit cd = mc.deriveASTCD(grammar, glex, cd4AGlobalScope);
-    IterablePath handcodedPath = IterablePath.from(new File("src/test/resources"), "java");
-
-    return mc.decorateForVisitorPackage(glex, cd4AGlobalScope, cd, handcodedPath);
   }
 
   protected ASTCDCompilationUnit getSymbolCD(ASTCDCompilationUnit decoratedCompilationUnit) {

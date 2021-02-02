@@ -5,9 +5,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.prettyprint.MCCollectionTypesFullPrettyPrinter;
-import de.monticore.types.prettyprint.MCCollectionTypesPrettyPrinter;
 import mc.testcd4analysis._ast.*;
-import mc.testcd4analysis._visitor.TestCD4AnalysisVisitor;
 import mc.testcd4analysis._visitor.TestCD4AnalysisVisitor2;
 
 import java.util.Deque;

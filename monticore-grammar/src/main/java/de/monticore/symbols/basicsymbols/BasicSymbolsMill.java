@@ -1,7 +1,6 @@
 package de.monticore.symbols.basicsymbols;
 
 import com.google.common.collect.Lists;
-import de.monticore.symbols.basicsymbols._symboltable.BasicSymbolsGlobalScope;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsGlobalScope;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 
@@ -13,7 +12,6 @@ public class BasicSymbolsMill extends BasicSymbolsMillTOP {
 
   public static void initMe (BasicSymbolsMill a)  {
     mill = a;
-    millBasicSymbolsDelegatorVisitorBuilder = a;
     millDiagramSymbolBuilder = a;
     millTypeSymbolBuilder = a;
     millTypeVarSymbolBuilder = a;
@@ -24,8 +22,6 @@ public class BasicSymbolsMill extends BasicSymbolsMillTOP {
     millTypeVarSymbolSurrogateBuilder = a;
     millVariableSymbolSurrogateBuilder = a;
     millFunctionSymbolSurrogateBuilder = a;
-    millBasicSymbolsSymbolTableCreatorDelegator = a;
-    millBasicSymbolsSymbolTableCreator = a;
     millBasicSymbolsTraverserImplementation = a;
     primitiveTypesInitializer = a;
   }

@@ -10,6 +10,7 @@ import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolSurrogate;
 import de.monticore.symboltable.ImportStatement;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
+import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import mc.testcd4analysis.TestCD4AnalysisMill;
 import mc.testcd4analysis._symboltable.ITestCD4AnalysisGlobalScope;
@@ -18,6 +19,7 @@ import mc.typescalculator.combineexpressionswithliterals._parser.CombineExpressi
 import mc.typescalculator.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsArtifactScope;
 import mc.typescalculator.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsGlobalScope;
 import mc.typescalculator.combineexpressionswithliterals._symboltable.*;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -32,6 +34,19 @@ import static org.junit.Assert.assertTrue;
 public class CombineExpressionsWithLiteralsTest {
 
   private static final String MODEL_PATH = "src/test/resources";
+
+
+  @Before
+  public void setup() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+
+    TestCD4AnalysisMill.reset();
+    TestCD4AnalysisMill.init();
+
+    CombineExpressionsWithLiteralsMill.reset();
+    CombineExpressionsWithLiteralsMill.init();
+  }
 
   @Test
   public void testCD() throws IOException {

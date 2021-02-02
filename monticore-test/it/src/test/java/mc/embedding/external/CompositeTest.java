@@ -2,6 +2,8 @@
 
 package mc.embedding.external;
 
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import mc.GeneratorIntegrationsTest;
 import mc.embedding.external.composite.CompositeMill;
 import mc.embedding.external.composite._symboltable.ContentSymbol;
@@ -10,13 +12,25 @@ import mc.embedding.external.composite._symboltable.ICompositeScope;
 import mc.embedding.external.composite._symboltable.Text2ContentAdapter;
 import mc.embedding.external.embedded._symboltable.TextSymbol;
 import mc.embedding.external.host._symboltable.HostSymbol;
+import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.nio.file.Paths;
 
 import static org.junit.Assert.*;
 
 public class CompositeTest extends GeneratorIntegrationsTest {
+
+  @Before
+  public void setUp() throws IOException {
+    LogStub.init();         // replace log by a sideffect free variant
+    // LogStub.initPlusLog();  // for manual testing purpose only
+    Log.enableFailQuick(false);
+
+    CompositeMill.reset();
+    CompositeMill.init();
+  }
 
   @Test
   public void test() {
