@@ -13,7 +13,6 @@ import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
 import de.monticore.grammar.grammarfamily._symboltable.GrammarFamilyGlobalScope;
 import de.monticore.grammar.grammarfamily._symboltable.IGrammarFamilyGlobalScope;
@@ -632,7 +631,7 @@ public class MontiCoreScriptTest {
   protected ASTCDCompilationUnit getTraverserCD(ASTCDCompilationUnit decoratedCompilationUnit) {
     MontiCoreScript mc = new MontiCoreScript();
     GlobalExtensionManagement glex = new GlobalExtensionManagement();
-    Grammar_WithConceptsGlobalScope symbolTable = TestHelper.createGlobalScope(modelPath);
+    IGrammarFamilyGlobalScope symbolTable = TestHelper.createGlobalScope(modelPath);
     mc.createSymbolsFromAST(symbolTable, grammar);
     ICD4AnalysisGlobalScope cd4AGlobalScope = mc.createCD4AGlobalScope(modelPath);
     ASTCDCompilationUnit cd = mc.deriveASTCD(grammar, glex, cd4AGlobalScope);
