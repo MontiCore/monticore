@@ -170,7 +170,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
   }
 
   protected ASTCDMethod createSerializeAddonsMethod(ASTCDParameter toSer, ASTCDParameter s2j) {
-    return getCDMethodFacade().createMethod(PROTECTED, "serializeAddons", toSer, s2j);
+    return getCDMethodFacade().createMethod(PUBLIC, "serializeAddons", toSer, s2j);
   }
 
   protected List<ASTCDMethod> createSerializeAttrMethods(
@@ -231,12 +231,12 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
   protected List<ASTCDMethod> createDeserializeAddonsMethods(ASTCDParameter scopeParam,
       ASTCDParameter jsonParam) {
     ASTCDMethod method = getCDMethodFacade()
-        .createMethod(PROTECTED, "deserializeAddons", scopeParam, jsonParam);
+        .createMethod(PUBLIC, "deserializeAddons", scopeParam, jsonParam);
 
     ASTCDParameter asParam = getCDParameterFacade()
         .createParameter(symbolTableService.getArtifactScopeInterfaceType(), SCOPE_VAR);
     ASTCDMethod asMethod = getCDMethodFacade()
-        .createMethod(PROTECTED, "deserializeAddons", asParam, jsonParam);
+        .createMethod(PUBLIC, "deserializeAddons", asParam, jsonParam);
     return Lists.newArrayList(method, asMethod);
   }
 

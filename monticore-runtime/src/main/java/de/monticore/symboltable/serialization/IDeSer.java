@@ -22,6 +22,8 @@ public interface IDeSer <S extends IScope, J> {
    */
   String serialize (S toSerialize, J symbol2json);
 
+  String serializeAddons (S toSerialize, J symbol2json);
+
   /**
    * Deserialize a passed String to an instance of the type T
    * @param serialized
@@ -32,5 +34,7 @@ public interface IDeSer <S extends IScope, J> {
   IScope deserializeScope(JsonObject scopeJson);
 
   S deserializeArtifactScope(JsonObject scopeJson);
+
+  void deserializeAddons(S artifactScope, JsonObject scopeJson);
 
 }
