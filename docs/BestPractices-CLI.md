@@ -137,6 +137,7 @@ functions as attributes.
 Instead, it makes more sense to pass these arguments as parameters when calling 
 the respective methods.
 This yields several advantages:
+
 * Values that have not yet been set do not have to be displayed with Optionals 
 * As a result. tedious unwrapping of Optionals with corresponding error messages 
   is no longer necessary

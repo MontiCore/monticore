@@ -1,6 +1,6 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 
-# MontiCore Languages - an Overview
+# MontiCore Languages of Level II - an Overview
 
 [[_TOC_]]
 
@@ -21,12 +21,12 @@ component grammar.
 
 Language components are currently organized in two levels:
 In this list you mainly find grammars for 
-**complete (but also reusable and adaptable) languages**.
+**complete (but also reusable and adaptable) languages** (Level II).
 A list of
 [**grammar components**](../monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
 with individual reusable nonterminals is also available in
 the MontiCore core project 
-([development status](../00.org/Explanations/StatusOfGrammars.md)).
+([development status](../00.org/Explanations/StatusOfGrammars.md)) (Level I).
 
 The following list contains the language grammars found in the
 `MontiCore` projects, such as `cd4analysis/cd4analysis`.
@@ -40,11 +40,6 @@ MontiCore projects are hosted at
 
 ## List of Languages 
 
-<!--
-### [Activity Diagrams](INSERT LINK HERE) (not adressed yet)
-* TO be added
--->
-
 
 ### [Class Diagram For Analysis (CD4A)](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis) (MontiCore stable)
 * CD4A is the textual representation to describe **UML class diagrams** 
@@ -54,25 +49,25 @@ MontiCore projects are hosted at
   and all kinds of **associations** and **composition**, including **qualified**
   and **ordered associations**. Classes can be placed in different **packages**.
   An example:
-  ```
-  classdiagram MyLife { 
-    abstract class Person {
-      int age;
-      Date birthday;
-      List<String> nickNames;
-    }
-    package com.universityLib {
-      <<myStereotype>> class Student extends Person {
-        StudentStatus status;
-      }
-      enum StudentStatus { ENROLLED, FINISHED; }
-    }
-    
-    composition Person -> Address [*]  {ordered};
-    association [0..2] Person (parent) <-> (child) Person [*];
-    association phonebook Person [String] -> PhoneNumber ;
+```
+classdiagram MyLife { 
+  abstract class Person {
+    int age;
+    Date birthday;
+    List<String> nickNames;
   }
-  ```
+  package com.universityLib {
+    <<myStereotype>> class Student extends Person {
+      StudentStatus status;
+    }
+    enum StudentStatus { ENROLLED, FINISHED; }
+  }
+  
+  composition Person -> Address [*]  {ordered};
+  association [0..2] Person (parent) <-> (child) Person [*];
+  association phonebook Person [String] -> PhoneNumber ;
+}
+```
 * CD4A focusses on the analysis phase in typical data-driven development 
   projects and is therefore mainly for data modelling.
   Consequently, it omits method signatures and complex generics.
@@ -89,16 +84,16 @@ MontiCore projects are hosted at
 * CD4Code describes **UML class diagrams**.
 * CD4Code is a conservative extension of **CD4A**, 
   which includes method signatures. An example:
-  ```
-  classdiagram MyLife2 {
-    // like CD4A but also allows:
-    class Person {
-      protected List<Person> closestFriends(int n);
-      void addFriend(Person friends...);
-      <<myStereotype>> void relocate();
-    }
+```
+classdiagram MyLife2 {
+  // like CD4A but also allows:
+  class Person {
+    protected List<Person> closestFriends(int n);
+    void addFriend(Person friends...);
+    <<myStereotype>> void relocate();
   }
-  ```
+}
+```
 * CD4Code is often used as tool-internal AST that allows to
   map any kind of source models to a class/attribute/method/association based
   intermediate structure, before it is printed e.g. as Java code. 
@@ -121,17 +116,17 @@ MontiCore projects are hosted at
 * **Feature diagrams** are used to model (software) **product lines** and their **variants**.
 * **Feature configurations** select a subset of features of a feature model 
   to describe a product of the product line. An example:
-  ```
-  featurediagram MyPhones {
-    Phone -> Memory & OS & Camera? & Screen;
-    Memory -> Internal & External?;
-    Internal -> [1..2] of {Small, Medium, Large};
-    OS -> iOS ^ Android;
-    Screen -> Flexible | FullHD;
+```
+featurediagram MyPhones {
+  Phone -> Memory & OS & Camera? & Screen;
+  Memory -> Internal & External?;
+  Internal -> [1..2] of {Small, Medium, Large};
+  OS -> iOS ^ Android;
+  Screen -> Flexible | FullHD;
 
-    Camera requires (iOS && External) || Android ;
-  }
-  ```
+  Camera requires (iOS && External) || Android ;
+}
+```
   Rules `F -> ...` have a parent feature (left-hand side) 
   and its child features (right-hand side). 
   Operators are: **optional** feature `?`, **and** `&`, **or** `|`, **xor** `^`,
@@ -210,17 +205,17 @@ and
 
 ### [JSON](https://git.rwth-aachen.de/monticore/languages/json) (MontiCore Stable)
 * The MontiCore language for parsing JSON artifacts. An example:
-  ```
-  { "Alice": {
-      "fullname": "Alice Anderson",
-      "address": {
-        "postal_code": 10459, 
-        "street": "Beck Street",
-        "number": 56              }  },
-    "Bob": { ... },
-    "Caroll": { ... }, ...
-  }
-  ```
+```
+{ "Alice": {
+    "fullname": "Alice Anderson",
+    "address": {
+      "postal_code": 10459, 
+      "street": "Beck Street",
+      "number": 56              }  },
+  "Bob": { ... },
+  "Caroll": { ... }, ...
+}
+```
 * The JSON grammar adheres to the common **JSON standard** and allows parsing 
   arbitrary JSON artifacts for further processing.
 * Actually the grammar represents a slight superset to the official JSON standard. 
@@ -290,15 +285,35 @@ component InteriorLight {                           // MontiArc language
   It's main goal is the usage in combination with other languages like 
   CD4A or Object Diagrams as an integrated part of that languages.
 * OCL/P allows to define **invariants** and **pre/post conditions** in 
-  the known OCL style. Furthermore, it offers a large set **expressions**
+  the known OCL style plus some extensions, such as 
+  a generalized `let` construction. 
+  Furthermore, it offers a large set **expressions**
   to model constraints. These expressions include **Java expressions**,
   **set operations**, **list operations** etc., completely covering the 
   OCL standard concepts, but extend it e.g. by **set comprehensions** 
   known from Haskell, a **typesafe cast** or a 
   **transitive closure operator**.
-  An example:
+  An example shows several of the above mentioned syntactic features:
 ```
-TODO                           // OCL language
+ocl Bookshop {
+  context Shop s inv CustomerPaysBeforeNewOrder:      // invariant
+    forall Customer c in s.customers:                 // quantifiers available
+      c.allowedToOrder implies !exists Invoice i in s.invoices:
+        i.customer == c && i.moneyPayed < i.invoiceAmount ;
+
+  // Method specification for selling a book
+  context Invoice Stock.sellBook(String iban, int discountPercent, Customer c) 
+    let availableBooks =                              // set comprehension
+          { book | Book book in booksInStock, book.iban == iban }
+    pre:  !availableBooks.isEmpty &&                  // precondition
+          c.allowedToOrder;
+    post: let discount = (100 - discountPercent)/100; // postcondition, let
+              b = result.soldBook                     // result variable 
+          in                                        
+              !(b isin booksInStock) &&
+              booksInStock.size@pre == booksInStock.size + 1 &&  // @pre
+              result.invoiceAmount == b.price * discount;  // result variable 
+}
 ```
 
 
@@ -324,27 +339,27 @@ TODO                           // OCL language
   **visibilities**. Special data types, such as **Date** allow comfortable
   definition and reading of ODs. For a comfortable definition, objects may be **nested**
   into trees while easily retaining their full graph structure. An example:
-  ```
-  objectdiagram MyFamily {
-    alice:Person {
-      age = 29;
-      cars = [
-        :BMW {
-          color = BLUE;
-        },
-        tiger:Jaguar {
-          color = RED;
-          length = 5.3; 
-        }
-      ];
-    };
-    bob:Person {
-      nicknames = ["Bob", "Bobby", "Robert"];
-      cars = [tiger];
-    };
-    link married alice <-> bob;
-  }
-  ```
+```
+objectdiagram MyFamily {
+  alice:Person {
+    age = 29;
+    cars = [
+      :BMW {
+        color = BLUE;
+      },
+      tiger:Jaguar {
+        color = RED;
+        length = 5.3; 
+      }
+    ];
+  };
+  bob:Person {
+    nicknames = ["Bob", "Bobby", "Robert"];
+    cars = [tiger];
+  };
+  link married alice <-> bob;
+}
+```
 * If ODs are used as specification techniqe, e.g. for tests or forbidden 
   situations,
   a more expressive version of expressions can be used for values 
@@ -405,14 +420,14 @@ sequencediagram AuctionTest {
   definition.
 * Second, it provides the SI Unit literals, such as `5 km` as expression values
   and a language for SI unit types, such as `km/h` or `km/h<long>`. Some examples:
-  ```
-    km/h speed = 5 m / 27 s                         // variable definition using type km/h
-    speed = (3 * 4m  +  17km/h * 10h) / 3.5h        // values with SI unit types
-    °C/s<float> coolingSpeed;                       // types (°C/s) with precision (float)
-    g/mm^2<int> pressure; 
-    Map<Location,°C> temperatures;                  // nesting of types 
-  ```
-  The SI unit literals integrate with MontiCore's expressions and the
+```
+  km/h speed = 5 m / 27 s                         // variable definition using type km/h
+  speed = (3 * 4m  +  17km/h * 10h) / 3.5h        // values with SI unit types
+  °C/s<float> coolingSpeed;                       // types (°C/s) with precision (float)
+  g/mm^2<int> pressure; 
+  Map<Location,°C> temperatures;                  // nesting of types 
+```
+* The SI unit literals integrate with MontiCore's expressions and the
   SI Unit types integrate with MontiCore's type system. 
   The SI unit language remains *fully type safe*.
 * The math version uses `km/h` as idealistic full precision real number, while the
@@ -434,18 +449,18 @@ sequencediagram AuctionTest {
   forms of statecharts using a subset of the eleven provided language components.
   Two complete Statechart language variants are composed for direct usability.
 * A compact teaser for one variant of the Statechart languages:
-    ```
-    statechart Door {
-      state Opened
-      initial state Closed
-      state Locked
-    
-      Opened -> Closed close() /
-      Closed -> Opened open(1) / {ringTheDoorBell();}
-      Closed -> Locked timeOut(n) / { lockDoor(); } [doorIsLocked]
-      Locked -> Closed [isAuthorized() && doorIsLocked] unlock() /
-    }
-    ```
+```
+statechart Door {
+  state Opened
+  initial state Closed
+  state Locked
+
+  Opened -> Closed close() /
+  Closed -> Opened open(1) / {ringTheDoorBell();}
+  Closed -> Locked timeOut(n) / { lockDoor(); } [doorIsLocked]
+  Locked -> Closed [isAuthorized() && doorIsLocked] unlock() /
+}
+```
 * This example models the different states of a door: `Opened`, `Closed`, and `Locked`.
   A transition is triggered e.g. by function/method call `close()` that changes a from a state `Opened` to state `Closed`. 
 * Transitions can have actions, such as `{ringDoorBell();}` containing in this case 
@@ -530,15 +545,15 @@ package 'Coffee' {                      // a SysML activity diagram
 
 ### [XML](https://git.rwth-aachen.de/monticore/languages/xml) (Alpha: Intention to become stable)
 * The MontiCore language for parsing XML artifacts. An example:
-  ```
-  <Calendar>
-    <Appointment name="lunch">
-      <Date>24.04.2020</Date>
-      <Time>11:30</Time>
-      <Location>cafeteria</Location>
-    </Appointment>
-  </Calendar>
-  ```
+```
+<Calendar>
+  <Appointment name="lunch">
+    <Date>24.04.2020</Date>
+    <Time>11:30</Time>
+    <Location>cafeteria</Location>
+  </Appointment>
+</Calendar>
+```
 * The XML grammar adheres to the common **XML standard** and allows parsing 
   arbitrary XML artifacts for further processing.
 * Actually the grammar represents a slight superset to the official XML standard. 
@@ -565,12 +580,12 @@ package 'Coffee' {                      // a SysML activity diagram
   also no wildcards in the type system.
 * One main usage of JavaLight is in the Grammar-language to model e.g. 
   Java methods. An example:
-  ```
-  public void print(String name) {
-    System.out.println("Hello " + name);
-  }
-  ```
-* [Main grammar `de.monticore.JavaLight`]((https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/JavaLight.mc4)
+```
+public void print(String name) {
+  System.out.println("Hello " + name);
+}
+```
+* [Main grammar `de.monticore.JavaLight`](https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/JavaLight.mc4)
   and 
   [*detailed description*](https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/monticore-grammar/src/main/grammars/de/monticore/JavaLight.md).
 

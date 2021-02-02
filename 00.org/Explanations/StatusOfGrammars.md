@@ -42,16 +42,12 @@ keeping the grammar up to date. One might use it as inspiration for their
 own developments.
 
 1. **Deprecated**:
-The grammar should not be used anymore, it is deprecated, will be deleted in 
-the future, and a newer version of the content exists in another grammar.
+The grammar should not be used anymore, it is deprecated, and only 
+there for compatibility. Normally a newer version of the content 
+exists in other, often decomposed grammars, allowing to configure
+which part of the grammar to be used.
+Deprecated grammars are not listed in any overview.
 
-1. **Unclarified**:
-Some of the grammars are just there to be used for example as
-tests or as inspirations for your own definitions. It may be that 
-such a grammar becomes stable, if enough interest exists.
-
-The deprecated grammars are often not listed in an overview anymore.
-There may also be further unclarfied and example grammars around.
 
 ## Marking the Status of Grammars
 

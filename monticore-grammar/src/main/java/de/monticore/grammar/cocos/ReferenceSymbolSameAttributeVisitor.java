@@ -1,13 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.grammar.cocos;
 
+import de.monticore.grammar.grammar._visitor.GrammarVisitor2;
 import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVisitor;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class ReferenceSymbolSameAttributeVisitor implements Grammar_WithConceptsVisitor {
+public class ReferenceSymbolSameAttributeVisitor implements GrammarVisitor2 {
 
   public static final String ERROR_CODE = "0xA4100";
 

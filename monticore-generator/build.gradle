@@ -50,25 +50,10 @@ sourceSets {
   }
 }
 
-task  generateGrammar (type: MCTask) {
-  grammar = file "$grammarDir/de/monticore/grammar/Grammar.mc4"
+task  generateGrammarFamily (type: MCTask) {
+  grammar = file "$grammarDir/de/monticore/grammar/GrammarFamily.mc4"
   outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
-  def uptoDate = incCheck("de/monticore/grammar/Grammar.mc4")
-  outputs.upToDateWhen { uptoDate }
-}
-
-task  generateGrammar_WConcepts (type: MCTask) {
-  grammar = file "$grammarDir/de/monticore/grammar/Grammar_WithConcepts.mc4"
-  outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
-  def uptoDate = incCheck("de/monticore/grammar/Grammar_WithConcepts.mc4")
-  superGrammars.from(file ("$grammarDir/de/monticore/grammar/Grammar.mc4"), file("$grammarDir/de/monticore/grammar/concepts/antlr/Antlr.mc4"))
-  outputs.upToDateWhen { uptoDate }
-}
-
-task  generateAntlr (type: MCTask) {
-  grammar = file "$grammarDir/de/monticore/grammar/concepts/antlr/Antlr.mc4"
-  outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
-  def uptoDate = incCheck("de/monticore/grammar/concepts/antlr/Antlr.mc4")
+  def uptoDate = incCheck("de/monticore/grammar/GrammarFamily.mc4")
   outputs.upToDateWhen { uptoDate }
 }
 

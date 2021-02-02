@@ -6,7 +6,8 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
+import de.monticore.codegen.cd2java.DecorationHelper;
+import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.parser.ParserGeneratorHelper;
 import de.monticore.grammar.concepts.antlr.antlr._ast.ASTConceptAntlr;
@@ -365,7 +366,20 @@ public class MCGrammarInfo {
       }
     }
   }
-  
+
+  public static String getListName(ASTNonTerminal a) {
+    String name;
+    if (a.isPresentUsageName()) {
+      name = a.getUsageName();
+    } else {
+      // Use Nonterminal name as attribute name starting with lower case
+      // for a list (iterated) nonterminal a 's' is added for the name
+      name = a.getName();
+    }
+    return name + DecorationHelper.GET_SUFFIX_LIST;
+  }
+
+
   private boolean mustBeKeyword(String rule) {
     return keywords.contains(rule);
   }

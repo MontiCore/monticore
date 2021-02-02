@@ -16,8 +16,8 @@ import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
 import de.monticore.grammar.grammar._visitor.GrammarVisitor2;
-import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
-import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsTraverser;
+import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
+import de.monticore.grammar.grammarfamily._visitor.GrammarFamilyTraverser;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcarraytypes._ast.ASTMCArrayType;
@@ -26,6 +26,8 @@ import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
+import de.monticore.grammar.MCGrammarSymbolTableHelper;
+
 import de.se_rwth.commons.JavaNamesHelper;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
@@ -578,7 +580,7 @@ public final class TransformationHelper {
 
   public static List<ASTRuleComponent> getAllComponents(ASTGrammarNode node) {
     CollectRuleComponents cv = new CollectRuleComponents();
-    Grammar_WithConceptsTraverser traverser = Grammar_WithConceptsMill.traverser();
+    GrammarFamilyTraverser traverser = GrammarFamilyMill.traverser();
     traverser.add4Grammar(cv);
     node.accept(traverser);
     return cv.getRuleComponents();

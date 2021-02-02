@@ -22,3 +22,8 @@ mv 00.org docs/00.org
 mv *.md docs/
 mv *.png docs/
 echo "[INFO] Moved *.md files to 'docs' folder"
+
+# remove all occurences of '[[_TOC_]]' in markdown files
+# because mkdocs already renders its own toc
+find ./docs -type f -name "*.md" -exec sed -i 's/\[\[_TOC_\]\]//' {} \;
+echo "[INFO] Removed all occureneces of '[[_TOC_]]' in *.md files"
