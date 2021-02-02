@@ -24,8 +24,7 @@ import java.util.Map;
 
 import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
-import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_DE_SER;
-import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.JSON_PRINTER;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.END_VISIT;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISIT;
 
@@ -183,7 +182,7 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
 
     ASTCDMethod endVisitMethod = visitorService.getVisitorMethod(END_VISIT, getMCTypeFacade().createQualifiedType(scopeInterfaceName));
     this.replaceTemplate(EMPTY_BODY, endVisitMethod, new TemplateHookPoint(TEMPLATE_PATH
-            + "symbols2Json.EndVisit4Scope", symbols2Json));
+            + "symbols2Json.EndVisit4Scope", I_SCOPE, symbols2Json));
     visitorMethods.add(endVisitMethod);
 
     return visitorMethods;
@@ -199,7 +198,7 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
     ASTCDMethod endVisitMethod = visitorService
             .getVisitorMethod(END_VISIT, getMCTypeFacade().createQualifiedType(artifactScopeInterfaceName));
     this.replaceTemplate(EMPTY_BODY, endVisitMethod, new TemplateHookPoint(TEMPLATE_PATH
-            + "symbols2Json.EndVisit4Scope", symbols2Json));
+            + "symbols2Json.EndVisit4Scope", I_ARTIFACT_SCOPE_TYPE, symbols2Json));
     visitorMethods.add(endVisitMethod);
 
     return visitorMethods;

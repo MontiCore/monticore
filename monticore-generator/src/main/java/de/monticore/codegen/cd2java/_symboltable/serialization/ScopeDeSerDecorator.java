@@ -84,7 +84,8 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
     String millName = symbolTableService.getMillFullName();
 
     ASTMCQualifiedType interfaceName = getMCTypeFacade().
-        createQualifiedType(I_DE_SER + "<" + asInterfaceName + ", " + symbols2JsonName + ">");
+        createQualifiedType(I_DE_SER + "<"  + scopeInterfaceName + ", " +
+            asInterfaceName + ", " + symbols2JsonName + ">");
 
     ASTCDParameter scopeParam = getCDParameterFacade().createParameter(getMCTypeFacade()
         .createQualifiedType(scopeInterfaceName), "toSerialize");
