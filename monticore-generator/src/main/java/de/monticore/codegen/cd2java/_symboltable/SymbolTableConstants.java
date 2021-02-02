@@ -126,9 +126,9 @@ public class SymbolTableConstants {
 
   public static final String SCOPE_JSON_VAR = "scopeJson";
 
-  public static final String SYM_DESERS_VAR = "symbolDesers";
+  public static final String SYM_DESERS_VAR = "symbolDeSers";
 
-  public static final String DESER_VAR = "deser";
+  public static final String DESER_VAR = "deSer";
 
   public static final String FOUND_SYMBOL_DELEGATE = "false";
 

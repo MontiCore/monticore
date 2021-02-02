@@ -8,7 +8,7 @@ ${tc.signature("symbolMap", "mill", "errorCode")}
 <#list symbolMap?keys as kind>
       case "${kind}":
         ${kind} s${count} = (${kind})
-            ${mill}.globalScope().getDeSer(kind).deserialize(symbol);
+            ${mill}.globalScope().getSymbolDeSer(kind).deserialize(symbol);
         scope.add(s${count});
   <#if symbolMap[kind]>
         scope.addSubScope(s${count}.getSpannedScope());

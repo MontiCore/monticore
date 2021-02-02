@@ -72,7 +72,6 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     String scopeInterfaceFullName = symbolTableService.getScopeInterfaceFullName();
     String definitionName = input.getCDDefinition().getName();
     String scopeDeSerFullName = symbolTableService.getScopeDeSerFullName();
-    String scopeDeSerName = symbolTableService.getScopeDeSerSimpleName();
     String symbols2JsonName = symbolTableService.getSymbols2JsonSimpleName();
 
     ASTCDAttribute cacheAttribute = createCacheAttribute();
@@ -84,7 +83,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     List<ASTCDMethod> symbols2JsonMethods = mutatorDecorator.decorate(symbols2JsonAttribute);
     symbols2JsonMethods.add(createGetSymbols2JsonMethod(symbols2JsonAttribute));
 
-    ASTCDAttribute deserAttribute = createScopeDeSerAttribute(scopeDeSerName);
+    ASTCDAttribute deserAttribute = createScopeDeSerAttribute(I_DE_SER);
     List<ASTCDMethod> deserMethods = accessorDecorator.decorate(deserAttribute);
     deserMethods.addAll(mutatorDecorator.decorate(deserAttribute));
 
@@ -193,7 +192,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
   }
 
   protected ASTCDAttribute createScopeDeSerAttribute(String scopeDeSerName){
-    return getCDAttributeFacade().createAttribute(PROTECTED, getMCTypeFacade().createQualifiedType(scopeDeSerName), "deSer");
+    return getCDAttributeFacade().createAttribute(PUBLIC, getMCTypeFacade().createQualifiedType(scopeDeSerName), "deSer");
   }
 
   protected ASTCDAttribute createSymbols2JsonAttribute(String s2jName){
