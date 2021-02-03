@@ -87,7 +87,7 @@ public class MillDecoratorTest extends DecoratorTestCase {
     VisitorService visitorService = new VisitorService(decoratedCompilationUnit);
     ParserService parserService = new ParserService(decoratedCompilationUnit);
     MillDecorator decorator = new MillDecorator(this.glex, symbolTableService, visitorService, parserService);
-    this.millClass = decorator.decorate(Lists.newArrayList(getASTCD(), getVisitorCD(), getSymbolCD()));
+    this.millClass = decorator.decorate(Lists.newArrayList(getASTCD(), getVisitorCD(), getTraverserCD(), getSymbolCD()));
   }
 
   protected ASTCDCompilationUnit getASTCD() {
@@ -134,6 +134,23 @@ public class MillDecoratorTest extends DecoratorTestCase {
     CDVisitorDecorator decorator = new CDVisitorDecorator(this.glex, targetPath, visitorService,
         astVisitorDecorator, delegatorVisitorDecorator, inheritanceVisitorDecorator,
         parentAwareVisitorDecorator, delegatorVisitorBuilderDecorator);
+    return decorator.decorate(decoratedCompilationUnit);
+  }
+
+  protected ASTCDCompilationUnit getTraverserCD() {
+    IterablePath targetPath = Mockito.mock(IterablePath.class);
+    VisitorService visitorService = new VisitorService(decoratedCompilationUnit);
+    SymbolTableService symbolTableService = new SymbolTableService(decoratedCompilationUnit);
+    MethodDecorator methodDecorator = new MethodDecorator(glex, visitorService);
+
+    TraverserInterfaceDecorator traverserInterfaceDecorator = new TraverserInterfaceDecorator(glex, visitorService, symbolTableService);
+    TraverserClassDecorator traverserClassDecorator = new TraverserClassDecorator(glex, visitorService, symbolTableService);
+    Visitor2Decorator visitor2Decorator = new Visitor2Decorator(glex, visitorService, symbolTableService);
+    HandlerDecorator handlerDecorator = new HandlerDecorator(glex, visitorService, symbolTableService);
+    InheritanceHandlerDecorator inheritanceHandlerDecorator = new InheritanceHandlerDecorator(glex, methodDecorator, visitorService, symbolTableService);
+
+    CDTraverserDecorator decorator = new CDTraverserDecorator(this.glex, targetPath, visitorService, traverserInterfaceDecorator,
+        traverserClassDecorator, visitor2Decorator, handlerDecorator, inheritanceHandlerDecorator);
     return decorator.decorate(decoratedCompilationUnit);
   }
 
@@ -222,6 +239,9 @@ public class MillDecoratorTest extends DecoratorTestCase {
     getAttributeBy("automatonGlobalScope", millClass);
     getAttributeBy("millAutomatonSymbolTableCreator", millClass);
     getAttributeBy("millAutomatonSymbolTableCreatorDelegator", millClass);
+
+    getAttributeBy("millAutomatonTraverserImplementation", millClass);
+    getAttributeBy("millAutomatonInheritanceHandler", millClass);
 
     getAttributeBy("millAutomatonScopesGenitor", millClass);
     getAttributeBy("millAutomatonScopesGenitorDelegator", millClass);
