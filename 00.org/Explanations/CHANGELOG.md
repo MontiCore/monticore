@@ -5,11 +5,15 @@
 ##  MontiCore 6.8.0-SNAPSHOT
 to be released
 ### Additions
+* resolveXSubKinds(..) resolves for local symbols of all subkinds of a symbol kind X. This method is used
+  by the implementation of the resolveXLocally(..) method. It enables proper handling of symbol kind hierarchies
+  during symbol resolution beyond the borders of a language.
 
 ### Changes
 * delete deprecated grammars OCLExpressions and SetExpressions
 
 ### Fixes
+* Symbols with hierarchical symbol kinds are not serialized multiple times anymore.
 
 ##  MontiCore 6.7.0
 released: 26.01.2021
