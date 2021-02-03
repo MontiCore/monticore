@@ -140,7 +140,7 @@ public class GrammarScopesGenitor extends GrammarScopesGenitorTOP {
 
   @Override
   public void visit(ASTASTRule ast) {
-    final Optional<ProdSymbol> prodSymbol = grammarSymbol.getProdWithInherited(ast.getType());
+    final Optional<ProdSymbol> prodSymbol = grammarSymbol.getProd(ast.getType());
     if (prodSymbol.isPresent()) {
       ast.getAdditionalAttributeList().forEach(a -> addAttributeInAST(prodSymbol.get(), a, true));
     } else {
@@ -154,12 +154,12 @@ public class GrammarScopesGenitor extends GrammarScopesGenitorTOP {
 
   @Override
   public void visit(ASTSymbolRule ast) {
-    final Optional<ProdSymbol> prodSymbol = grammarSymbol.getProdWithInherited(ast.getType());
+    final Optional<ProdSymbol> prodSymbol = grammarSymbol.getProd(ast.getType());
     if (prodSymbol.isPresent()) {
       ast.getAdditionalAttributeList().forEach(a -> addAttributeInAST(prodSymbol.get(), a, false));
     } else {
       error(
-          "0xA4077 There must not exist an AST rule for the nonterminal " + ast.getType()
+          "0xA4077 There must not exist an symbol rule for the nonterminal " + ast.getType()
               + " because there exists no production defining " + ast.getType(),
           ast.get_SourcePositionStart());
     }
