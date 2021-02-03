@@ -97,7 +97,9 @@ public class TestCD4AnalysisGlobalScope extends TestCD4AnalysisGlobalScopeTOP{
       // 3. if the file was found, parse the model and create its symtab
       if(model.hasLocation()){
         ASTCDCompilationUnit ast = parse(model);
-        TestCD4AnalysisMill.scopesGenitorDelegator().createFromAST(ast);
+        ITestCD4AnalysisArtifactScope artScope = new TestCD4AnalysisPhasedSymbolTableCreatorDelegator().createFromAST(ast);
+        addSubScope(artScope);
+        addLoadedFile(filePath);
       }
     } else {
       Log.debug("Already tried to load model for '" + modelName + "'. If model exists, continue with cached version.",

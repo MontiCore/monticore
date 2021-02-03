@@ -13,6 +13,7 @@ import de.monticore.types.check.SymTypeExpressionFactory;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import mc.testcd4analysis.TestCD4AnalysisMill;
+import mc.testcd4analysis._symboltable.CDTypeSymbol;
 import mc.testcd4analysis._symboltable.ITestCD4AnalysisGlobalScope;
 import mc.typescalculator.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 import mc.typescalculator.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
@@ -38,8 +39,7 @@ public class CombineExpressionsWithLiteralsTest {
 
   @Before
   public void setup() {
-    LogStub.init();
-    Log.enableFailQuick(false);
+    Log.init();
 
     TestCD4AnalysisMill.reset();
     TestCD4AnalysisMill.init();
@@ -50,7 +50,6 @@ public class CombineExpressionsWithLiteralsTest {
 
   @Test
   public void testCD() throws IOException {
-    LogStub.init();
     ITestCD4AnalysisGlobalScope globalScope = TestCD4AnalysisMill.globalScope();
     globalScope.getModelPath().addEntry(Paths.get(MODEL_PATH));
     globalScope.setFileExt("cd");
