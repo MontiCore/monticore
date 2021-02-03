@@ -13,7 +13,6 @@ import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
 import de.monticore.grammar.grammarfamily._symboltable.GrammarFamilyGlobalScope;
 import de.monticore.grammar.grammarfamily._symboltable.IGrammarFamilyGlobalScope;
@@ -545,7 +544,7 @@ public class MontiCoreScriptTest {
     ASTCDCompilationUnit cd = mc.deriveASTCD(grammar, glex, cd4AGlobalScope);
     IterablePath handcodedPath = IterablePath.from(new File("src/test/resources"), "java");
 
-    ASTCDCompilationUnit millCd = mc.decorateMill(glex, cd4AGlobalScope, cd, getASTCD(cd), getVisitorCD(cd), getSymbolCD(cd), handcodedPath);
+    ASTCDCompilationUnit millCd = mc.decorateMill(glex, cd4AGlobalScope, cd, getASTCD(cd), getVisitorCD(cd), getSymbolCD(cd), getTraverserCD(cd), handcodedPath);
 
     assertNotNull(millCd);
     assertNotNull(millCd.getCDDefinition());
@@ -627,5 +626,17 @@ public class MontiCoreScriptTest {
     IterablePath handcodedPath = IterablePath.from(new File("src/test/resources"), "java");
 
     return mc.decorateForASTPackage(glex, cd4AGlobalScope, cd, handcodedPath);
+  }
+
+  protected ASTCDCompilationUnit getTraverserCD(ASTCDCompilationUnit decoratedCompilationUnit) {
+    MontiCoreScript mc = new MontiCoreScript();
+    GlobalExtensionManagement glex = new GlobalExtensionManagement();
+    IGrammarFamilyGlobalScope symbolTable = TestHelper.createGlobalScope(modelPath);
+    mc.createSymbolsFromAST(symbolTable, grammar);
+    ICD4AnalysisGlobalScope cd4AGlobalScope = mc.createCD4AGlobalScope(modelPath);
+    ASTCDCompilationUnit cd = mc.deriveASTCD(grammar, glex, cd4AGlobalScope);
+    IterablePath handcodedPath = IterablePath.from(new File("src/test/resources"), "java");
+
+    return mc.decorateTraverserForVisitorPackage(glex, cd4AGlobalScope, cd, handcodedPath);
   }
 }
