@@ -1,0 +1,31 @@
+How to:
+
+ In order to include MontiCore in your project, simply add the following to your POM:
+
+---
+<build>
+  <plugins>
+...
+    <plugin>
+      <groupId>de.monticore.mojo</groupId>
+      <artifactId>monticore-maven-plugin</artifactId>
+      <version>${monticore-maven.version}</version>
+      <executions>              
+        <execution>                
+          <goals>
+            <goal>generate</goal>
+          </goals>
+          <configuration>
+            <grammars>
+              <param>${paths.to.grammars}<param>
+            </grammars>
+          </configuration>
+        </execution>
+      </executions>
+    </plugin>
+...
+  </plugins>
+</build>
+---
+
+ The configuration section is optional. See {{{./generate-mojo.html}monticore:generate}} for configuration parameter details and defaults.
