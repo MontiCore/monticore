@@ -6,6 +6,7 @@ import de.monticore.cd.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.cd4analysis._ast.CD4AnalysisNodeFactory;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._visitor.GrammarTraverser;
 import de.monticore.grammar.grammar._visitor.GrammarVisitor2;

@@ -11,7 +11,7 @@ import de.monticore.grammar.grammar._symboltable.*;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._symboltable.IGrammar_WithConceptsGlobalScope;
 import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsTraverser;
-import de.monticore.symboltable.IScope;
+import de.monticore.symboltable.IScopeSpanningSymbol;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.Util;
 import de.se_rwth.commons.logging.Log;
