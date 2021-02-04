@@ -10,7 +10,7 @@ to be released
   during symbol resolution beyond the borders of a language.
 
 ### Changes
-* delete deprecated grammars OCLExpressions and SetExpressions
+* move grammars OCLExpressions and SetExpressions into OCL-project for further development
 
 ### Fixes
 * Symbols with hierarchical symbol kinds are not serialized multiple times anymore.
