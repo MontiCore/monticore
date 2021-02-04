@@ -5,7 +5,7 @@ package de.monticore.codegen.parser;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import de.monticore.ast.ASTNode;
-import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
+import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.HelperGrammar;
 import de.monticore.grammar.MCGrammarInfo;

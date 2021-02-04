@@ -18,61 +18,71 @@ pluginManagement {
 }
 
 rootProject.name = 'monticore'
-includeBuild('monticore-tool')
+
+boolean inComposite = gradle.parent != null
+if(!hasProperty('bootstrap')) {
+  if (!inComposite) {
+    includeBuild('monticore-tool')
+  }
+}
 
 include(':monticore-runtime')
 include(':monticore-grammar')
 include(':monticore-runtime-emf')
 include(':monticore-grammar-emf')
 
-include(':monticore-test:monticore-grammar-it')
-
-include(':monticore-test:it')
-
-include(':monticore-test:01experiments')
-project(':monticore-test:01experiments').projectDir = file("monticore-test/01.experiments")
-include(':monticore-test:01experiments:automaton')
-include(':monticore-test:01experiments:makeuse')
-include(':monticore-test:01experiments:builderAtm')
-include(':monticore-test:01experiments:ch17')
-include(':monticore-test:01experiments:codeChecks')
-include(':monticore-test:01experiments:composition')
-include(':monticore-test:01experiments:extensionvariants')
-include(':monticore-test:01experiments:forAst')
-include(':monticore-test:01experiments:forConcSt')
-include(':monticore-test:01experiments:forEmfAst')
-include(':monticore-test:01experiments:forParser')
-include(':monticore-test:01experiments:forVisitors')
-include(':monticore-test:01experiments:generator')
-include(':monticore-test:01experiments:glex')
-include(':monticore-test:01experiments:patternAccess')
-include(':monticore-test:01experiments:questionnaire')
-include(':monticore-test:01experiments:S01_intro')
-include(':monticore-test:01experiments:scannerless')
-include(':monticore-test:01experiments:spaceOnOff-negative')
-include(':monticore-test:01experiments:spacesOffWithPositionCheck')
-include(':monticore-test:01experiments:stcomposition01')
-include(':monticore-test:01experiments:stcomposition02')
-include(':monticore-test:01experiments:stcomposition03')
-include(':monticore-test:01experiments:visit_L_inherit')
-project(':monticore-test:01experiments:S01_intro').projectDir = file('monticore-test/01.experiments/S01.intro')
-project(':monticore-test:01experiments:visit_L_inherit').projectDir = file('monticore-test/01.experiments/visit.L.inherit')
-include ':monticore-test:01experiments:templates'
-include ':monticore-test:01experiments:hooks'
-include ':monticore-test:01experiments:textoutput'
-include ':monticore-test:01experiments:hwDeSers'
-include ':monticore-test:01experiments:skeleton'
-
-include ':monticore-test:02experiments'
-project(':monticore-test:02experiments').projectDir = file("monticore-test/02.experiments")
-
-include(':monticore-test:02experiments:scopes')
-include(':monticore-test:02experiments:symbols')
-include(':monticore-test:02experiments:mcgrammarlang')
-include(':monticore-test:02experiments:forGrammarOps')
-include(':monticore-test:02experiments:parser')
-include(':monticore-test:02experiments:traverser')
-
-
-include 'example'
-project(':example').projectDir = file("monticore-test/example")
+if(!hasProperty('bootstrap')) {
+  include(':monticore-test:monticore-grammar-it')
+  
+  include(':monticore-test:it')
+  
+  include(':monticore-test:01experiments')
+  project(':monticore-test:01experiments').projectDir = file("monticore-test/01.experiments")
+  include(':monticore-test:01experiments:automaton')
+  include(':monticore-test:01experiments:makeuse')
+  include(':monticore-test:01experiments:builderAtm')
+  include(':monticore-test:01experiments:ch17')
+  include(':monticore-test:01experiments:codeChecks')
+  include(':monticore-test:01experiments:composition')
+  include(':monticore-test:01experiments:extensionvariants')
+  include(':monticore-test:01experiments:forAst')
+  include(':monticore-test:01experiments:forConcSt')
+  include(':monticore-test:01experiments:forEmfAst')
+  include(':monticore-test:01experiments:forMill')
+  include(':monticore-test:01experiments:forParser')
+  include(':monticore-test:01experiments:forVisitors')
+  include(':monticore-test:01experiments:generator')
+  include(':monticore-test:01experiments:glex')
+  include(':monticore-test:01experiments:patternAccess')
+  include(':monticore-test:01experiments:questionnaire')
+  include(':monticore-test:01experiments:S01_intro')
+  include(':monticore-test:01experiments:scannerless')
+  include(':monticore-test:01experiments:spaceOnOff-negative')
+  include(':monticore-test:01experiments:spacesOffWithPositionCheck')
+  include(':monticore-test:01experiments:stcomposition01')
+  include(':monticore-test:01experiments:stcomposition02')
+  include(':monticore-test:01experiments:stcomposition03')
+  include(':monticore-test:01experiments:strules')
+  include(':monticore-test:01experiments:visit_L_inherit')
+  project(':monticore-test:01experiments:S01_intro').projectDir = file('monticore-test/01.experiments/S01.intro')
+  project(':monticore-test:01experiments:visit_L_inherit').projectDir = file('monticore-test/01.experiments/visit.L.inherit')
+  include ':monticore-test:01experiments:templates'
+  include ':monticore-test:01experiments:hooks'
+  include ':monticore-test:01experiments:textoutput'
+  include ':monticore-test:01experiments:hwDeSers'
+  include ':monticore-test:01experiments:skeleton'
+  
+  include ':monticore-test:02experiments'
+  project(':monticore-test:02experiments').projectDir = file("monticore-test/02.experiments")
+  
+  include(':monticore-test:02experiments:scopes')
+  include(':monticore-test:02experiments:symbols')
+  include(':monticore-test:02experiments:mcgrammarlang')
+  include(':monticore-test:02experiments:forGrammarOps')
+  include(':monticore-test:02experiments:parser')
+  include(':monticore-test:02experiments:traverser')
+  
+  
+ // include 'example'
+ // project(':example').projectDir = file("monticore-test/example")
+}

@@ -34,8 +34,8 @@ public class GenerateAutomataParser {
     try {
       // Create the AST
       String filename = args[0];
-      ASTMCGrammar ast = new Grammar_WithConceptsParser()
-              .parseMCGrammar(filename).get();
+      ASTMCGrammar ast = Grammar_WithConceptsMill.parser()
+              .parse(filename).get();
       
       // Initialize symbol table
       // (using imported grammars from the model path)
@@ -44,9 +44,8 @@ public class GenerateAutomataParser {
       IGrammar_WithConceptsGlobalScope gs = Grammar_WithConceptsMill
           .globalScope();
       gs.setModelPath(modelPath);
-      gs.setFileExt("mc4");
-      Grammar_WithConceptsMill
-          .grammar_WithConceptsSymbolTableCreatorDelegator()
+      
+      Grammar_WithConceptsMill.scopesGenitorDelegator()
           .createFromAST(ast);
       
       // Hand coded path

@@ -1,3 +1,4 @@
+// (c) https://github.com/MontiCore/monticore
 package sm2._symboltable;
 
 import de.se_rwth.commons.logging.Log;
@@ -30,7 +31,7 @@ public class SM2ScopesGenitor extends SM2ScopesGenitorTOP {
   public void visit(final ASTState stateNode) {
     final StateSymbol stateSymbol = new StateSymbol(stateNode.getName());
 
-    Log.info("StateSymbol defined for " + stateSymbol.getName(), "SM2SymbolTableCreator");
+    Log.info("StateSymbol defined for " + stateSymbol.getName(), "SM2ScopesGenitor");
 
     addToScopeAndLinkWithNode(stateSymbol, stateNode);
   }

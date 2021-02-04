@@ -2,15 +2,13 @@
 
 package de.monticore.generating.templateengine.reporting.commons;
 
+import com.google.common.collect.Lists;
+import de.monticore.ast.ASTNode;
+import de.monticore.visitor.IVisitor;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
-
-import de.monticore.ast.ASTNode;
-
-import com.google.common.collect.Lists;
-
-import de.monticore.visitor.CommonVisitor;
 
 /**
  * We use the visit mechanism to map the AST to a list of showing the AST-Nodes
@@ -18,7 +16,7 @@ import de.monticore.visitor.CommonVisitor;
  * compact form. Result is store as list for print
  * 
  */
-public class TreePrintVisitor implements CommonVisitor {
+public class TreePrintVisitor implements IVisitor {
   private ReportingRepository repo;
   
   // output to be stored here:
@@ -76,23 +74,32 @@ public class TreePrintVisitor implements CommonVisitor {
     // remove children stuff
     indents.pop();
   }
-  
+
+  public void setRepo(ReportingRepository repo) {
+    this.repo = repo;
+  }
+
+  public void setEndLineDecoration(Map<String, String> endLineDecoration) {
+    this.endLineDecoration = endLineDecoration;
+  }
+
+  public void setAstNodeExtraInfos(Map<String, List<String>> astNodeExtraInfos) {
+    this.astNodeExtraInfos = astNodeExtraInfos;
+  }
+
   /**
    * produces the raw tree without any decoration
    * 
-   * @param ast2idents
-   * @param treeResult
    */
   public TreePrintVisitor() {
-    this(null, null, null);
+    this.treeResult = Lists.newArrayList();
+    indents = new Stack<String>();
+    indents.add(INITALINDENT);
   }
   
   /**
    * produces the tree with an inline decoration (at the end of each line)
    * 
-   * @param ast2idents
-   * @param treeResult
-   * @param endLineDecoration
    */
   public TreePrintVisitor(ReportingRepository repo,
       Map<String, String> endLineDecoration,
@@ -108,5 +115,11 @@ public class TreePrintVisitor implements CommonVisitor {
   
   public List<String> getTreeResult() {
     return treeResult;
+  }
+
+  public void clear() {
+    this.treeResult.clear();
+    this.indents.clear();
+    indents.add(INITALINDENT);
   }
 }

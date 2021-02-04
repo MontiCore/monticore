@@ -1,5 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("deSerNames")}
-<#list deSerNames as deSerName>
-  desers.put("${deSerName}", new ${deSerName}DeSer());
+${tc.signature("scopeName", "scopeDeSerName", "deSerMap")}
+  desers.put("${scopeName}", new ${scopeDeSerName}());
+<#list deSerMap as className, deSerName>
+  desers.put("${className}", new ${deSerName}());
 </#list>

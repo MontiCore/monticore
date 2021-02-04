@@ -29,8 +29,10 @@ import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PACKAGE;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
+import static de.monticore.codegen.cd2java._parser.ParserConstants.PARSER_SUFFIX;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.TRAVERSER;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.DELEGATOR_SUFFIX;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
 import static de.monticore.codegen.cd2java.mill.MillConstants.*;
 import static de.monticore.codegen.cd2java.top.TopDecorator.TOP_SUFFIX;
 
@@ -86,7 +88,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
           .stream()
           .filter(ASTCDClass::isPresentModifier)
           .filter(x -> !x.getModifier().isAbstract())
-          .filter(cdClass -> checkIncludeInMill(cdClass))
+          .filter(this::checkIncludeInMill)
           .collect(Collectors.toList());
 
 
@@ -102,7 +104,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
       // check if builder classes
       topClassList = topClassList
           .stream()
-          .filter(cdClass -> checkIncludeInMill(cdClass))
+          .filter(this::checkIncludeInMill)
           .collect(Collectors.toList());
       // add to classes which need a builder method
       classList.addAll(topClassList);
@@ -116,6 +118,8 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
         attributeList.add(this.getCDAttributeFacade().createAttribute(PROTECTED_STATIC, millType, MILL_INFIX + attributeName));
       }
 
+      //remove the methods that are generated in the code below the for-loop
+      classList = classList.stream().filter(this::checkNotGeneratedSpecifically).collect(Collectors.toList());
       List<ASTCDMethod> builderMethodsList = addBuilderMethods(classList, cd);
 
       millClass.addAllCDAttributes(attributeList);
@@ -123,55 +127,42 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
     }
     
     // decorate for traverser
-    String traverserAttributeName = MILL_INFIX + visitorService.getTraverserSimpleName();
-    ASTCDAttribute traverserAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, millType, traverserAttributeName);
     List<ASTCDMethod> traverserMethods = getAttributeMethods(visitorService.getTraverserSimpleName(),
         visitorService.getTraverserFullName(), TRAVERSER, visitorService.getTraverserInterfaceFullName());
-    millClass.addCDAttribute(traverserAttribute);
     millClass.addAllCDMethods(traverserMethods);
-    allClasses.add(CD4AnalysisMill.cDClassBuilder().setName(visitorService.getTraverserSimpleName()).build());
+
+    // decorate for traverser with InheritanceHandler
+    List<ASTCDMethod> traverserInheritanceMethods = getInheritanceTraverserMethods(visitorService.getInheritanceHandlerSimpleName(),
+            visitorService.getTraverserFullName(), INHERITANCE_TRAVERSER, visitorService.getTraverserInterfaceFullName());
+    millClass.addAllCDMethods(traverserInheritanceMethods);
 
     // decorate for global scope
     //globalScope
-    String millGlobalScopeAttributeName = MILL_INFIX + symbolTableService.getGlobalScopeSimpleName();
-    ASTCDAttribute millGlobalScopeAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, millType, millGlobalScopeAttributeName);
     String globalScopeAttributeName = StringTransformations.uncapitalize(symbolTableService.getGlobalScopeSimpleName());
     ASTCDAttribute globalScopeAttribute = getCDAttributeFacade().createAttribute(PROTECTED, symbolTableService.getGlobalScopeInterfaceType(),globalScopeAttributeName);
     List<ASTCDMethod> globalScopeMethods = getGlobalScopeMethods(globalScopeAttribute);
-    millClass.addCDAttribute(millGlobalScopeAttribute);
     millClass.addCDAttribute(globalScopeAttribute);
     millClass.addAllCDMethods(globalScopeMethods);
 
     //artifactScope
-    String millArtifactScopeAttributeName = MILL_INFIX + symbolTableService.getArtifactScopeSimpleName();
-    ASTCDAttribute millArtifactScopeAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, millType, millArtifactScopeAttributeName);
-    millClass.addCDAttribute(millArtifactScopeAttribute);
     millClass.addAllCDMethods(getArtifactScopeMethods());
 
 
     if(!symbolTableService.hasComponentStereotype(symbolTableService.getCDSymbol().getAstNode())) {
-      ASTCDAttribute parserAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, millType, MILL_INFIX + "Parser");
+      ASTCDAttribute parserAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, millType, MILL_INFIX + parserService.getParserClassSimpleName());
       List<ASTCDMethod> parserMethods = getParserMethods();
       millClass.addCDAttribute(parserAttribute);
       millClass.addAllCDMethods(parserMethods);
+      allClasses.add(CD4AnalysisMill.cDClassBuilder().setName(parserService.getParserClassSimpleName()).build());
     }
     //scope
-    String millScopeAttributeName = MILL_INFIX + symbolTableService.getScopeClassSimpleName();
-    ASTCDAttribute millScopeAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, millType, millScopeAttributeName);
-    millClass.addCDAttribute(millScopeAttribute);
     millClass.addAllCDMethods(getScopeMethods());
 
     //decorate for scopesgenitor
     Optional<String> startProd = symbolTableService.getStartProdASTFullName();
     if (startProd.isPresent()){
-      String millScopesGenitorAttributeName = MILL_INFIX + symbolTableService.getScopesGenitorSimpleName();
-      ASTCDAttribute millScopesGenitorAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, millType, millScopesGenitorAttributeName);
-      millClass.addCDAttribute(millScopesGenitorAttribute);
       millClass.addAllCDMethods(getScopesGenitorMethods());
 
-      String millScopesGenitorDelegatorAttributeName = MILL_INFIX + symbolTableService.getScopesGenitorDelegatorSimpleName();
-      ASTCDAttribute millScopesGenitorDelegatorAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC, millType, millScopesGenitorDelegatorAttributeName);
-      millClass.addCDAttribute(millScopesGenitorDelegatorAttribute);
       millClass.addAllCDMethods(getScopesGenitorDelegatorMethods());
     }
 
@@ -188,11 +179,42 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
     return millClass;
   }
 
+  /**
+   * checks if the class is generated specifically, i.e. there are special methods for the parser, scope, artifactScope and globalScope
+   * These special methods can also be seen in this class, e.g. {@link #getScopeMethods()}
+   * if a new class does not need a specific mill implementation, normal methods will be generated for it
+   */
+  protected boolean checkNotGeneratedSpecifically(ASTCDClass cdClass){
+    String name = cdClass.getName();
+    String cdName = symbolTableService.getCDName();
+    return !(name.endsWith(PARSER_SUFFIX)
+        || name.endsWith(cdName + SCOPE_SUFFIX)
+        || name.endsWith(cdName + ARTIFACT_PREFIX + SCOPE_SUFFIX)
+        || name.endsWith(cdName + GLOBAL_SUFFIX + SCOPE_SUFFIX)
+        || name.endsWith(SCOPES_GENITOR_SUFFIX)
+        || name.endsWith(SCOPES_GENITOR_SUFFIX + DELEGATOR_SUFFIX)
+        || name.endsWith(TRAVERSER_CLASS_SUFFIX)
+        || name.endsWith(INHERITANCE_SUFFIX + HANDLER_SUFFIX));
+  }
+
+  /**
+   * checks if a class should be included in the mill, example: serialization classes should not be included
+   * so they are not mentioned in this method
+   */
   protected boolean checkIncludeInMill(ASTCDClass cdClass){
     String name = cdClass.getName();
+    String cdName = symbolTableService.getCDName();
     return name.endsWith(BUILDER_SUFFIX)
         || name.endsWith(SYMBOL_TABLE_CREATOR_SUFFIX)
-        || name.endsWith(SYMBOL_TABLE_CREATOR_SUFFIX + DELEGATOR_SUFFIX);
+        || name.endsWith(SYMBOL_TABLE_CREATOR_SUFFIX + DELEGATOR_SUFFIX)
+        || name.endsWith(PARSER_SUFFIX)
+        || name.endsWith(cdName + SCOPE_SUFFIX)
+        || name.endsWith(cdName + ARTIFACT_PREFIX + SCOPE_SUFFIX)
+        || name.endsWith(cdName + GLOBAL_SUFFIX + SCOPE_SUFFIX)
+        || name.endsWith(SCOPES_GENITOR_SUFFIX)
+        || name.endsWith(SCOPES_GENITOR_SUFFIX + DELEGATOR_SUFFIX)
+        || name.endsWith(TRAVERSER_CLASS_SUFFIX)
+        || name.endsWith(INHERITANCE_SUFFIX + HANDLER_SUFFIX);
   }
 
   protected List<String> getAttributeNameList(List<ASTCDClass> astcdClasses) {
@@ -278,12 +300,6 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
     return superMethods;
   }
 
-  protected List<ASTCDMethod> getPhasedSymbolTableCreatorDelegatorMethods(){
-    String phasedSymbolTableCreatorDelegatorName = symbolTableService.getPhasedSymbolTableCreatorDelegatorSimpleName();
-    String phasedSymbolTableCreatorDelegatorFullName = symbolTableService.getPhasedSymbolTableCreatorDelegatorFullName();
-    return getStaticAndProtectedMethods(StringTransformations.uncapitalize(PHASED_SUFFIX + SYMBOL_TABLE_CREATOR_SUFFIX + DELEGATOR_SUFFIX), phasedSymbolTableCreatorDelegatorName, phasedSymbolTableCreatorDelegatorFullName);
-  }
-
   protected List<ASTCDMethod> getScopesGenitorDelegatorMethods(){
     String scopesGenitorSimpleName = symbolTableService.getScopesGenitorDelegatorSimpleName();
     String scopesGenitorFullName = symbolTableService.getScopesGenitorDelegatorFullName();
@@ -315,7 +331,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
   protected List<ASTCDMethod> getParserMethods(){
     List<ASTCDMethod> parserMethods = Lists.newArrayList();
 
-    String parserName = "Parser";
+    String parserName = parserService.getParserClassSimpleName();
     String staticMethodName = "parser";
     String protectedMethodName = "_"+staticMethodName;
     ASTMCType parserType = getMCTypeFacade().createQualifiedType(parserService.getParserClassFullName());
@@ -419,7 +435,42 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
     }
     return superMethods;
   }
-  
+
+  /**
+   * Creates the public accessor and protected internal method for a given
+   * attribute. The attribute is specified by its simple name, its qualified
+   * type, and the qualified return type of the methods. The return type of the
+   * method may be equal to the attribute type or a corresponding super type.
+   *
+   * @param attributeName The name of the attribute
+   * @param attributeType The qualified type of the attribute
+   * @param methodName The name of the method
+   * @param methodType The return type of the methods
+   * @return The accessor and corresponding internal method for the attribute
+   */
+  protected List<ASTCDMethod> getInheritanceTraverserMethods(String attributeName, String attributeType, String methodName, String methodType) {
+    List<ASTCDMethod> attributeMethods = Lists.newArrayList();
+
+    // method names and return type
+    String protectedMethodName = "_" + methodName;
+    ASTMCType returnType = getMCTypeFacade().createQualifiedType(methodType);
+
+    // static accessor method
+    ASTCDMethod staticMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC, returnType, methodName);
+    this.replaceTemplate(EMPTY_BODY, staticMethod, new TemplateHookPoint("mill.BuilderMethod", StringTransformations.capitalize(attributeName), methodName));
+    attributeMethods.add(staticMethod);
+
+    // protected internal method
+    ASTCDMethod protectedMethod = getCDMethodFacade().createMethod(PROTECTED, returnType, protectedMethodName);
+    this.replaceTemplate(EMPTY_BODY, protectedMethod,
+            new TemplateHookPoint("mill.InheritanceHandlerMethod", attributeType,
+                    visitorService.getAllCDs(), visitorService));
+
+    attributeMethods.add(protectedMethod);
+
+    return attributeMethods;
+  }
+
   /**
    * Creates the public accessor and protected internal method for a given
    * attribute. The attribute is specified by its simple name, its qualified

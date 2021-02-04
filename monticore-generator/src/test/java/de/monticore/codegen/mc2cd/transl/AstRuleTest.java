@@ -6,6 +6,7 @@ import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
+import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -28,6 +29,7 @@ public final class AstRuleTest {
 
   @BeforeClass
   public static void setup() {
+    GrammarFamilyMill.init();
     LogStub.init();
     LogStub.enableFailQuick(false);
   }

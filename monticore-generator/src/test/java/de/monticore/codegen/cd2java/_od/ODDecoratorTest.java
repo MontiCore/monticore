@@ -41,7 +41,9 @@ public class ODDecoratorTest extends DecoratorTestCase {
 
   private ASTCDClass odClass;
 
-  private static final String VISITOR_FULL_NAME = "de.monticore.codegen.symboltable.automaton._visitor.AutomatonVisitor";
+  private static final String VISITOR_FULL_NAME = "de.monticore.codegen.symboltable.automaton._visitor.AutomatonVisitor2";
+
+  private static final String TRAVERSER_FULL_NAME = "de.monticore.codegen.symboltable.automaton._visitor.AutomatonTraverser";
 
   private static final String INDENT_PRINTER = "de.monticore.prettyprint.IndentPrinter";
 
@@ -120,7 +122,7 @@ public class ODDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testInterfaceCount() {
-    assertEquals(1, odClass.sizeInterface());
+    assertEquals(2, odClass.sizeInterface());
   }
 
   @Test
@@ -133,11 +135,11 @@ public class ODDecoratorTest extends DecoratorTestCase {
    */
 
   @Test
-  public void testRealThisAttribute() {
-    ASTCDAttribute automatonVisitor = getAttributeBy("realThis", odClass);
+  public void testTraverserAttribute() {
+    ASTCDAttribute automatonVisitor = getAttributeBy("traverser", odClass);
     assertTrue(automatonVisitor.isPresentModifier());
     assertDeepEquals(PRIVATE, automatonVisitor.getModifier());
-    assertDeepEquals(VISITOR_FULL_NAME, automatonVisitor.getMCType());
+    assertDeepEquals(TRAVERSER_FULL_NAME, automatonVisitor.getMCType());
   }
 
   @Test
@@ -285,22 +287,22 @@ public class ODDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testGetRealThisMethod() {
-    ASTCDMethod method = getMethodBy("getRealThis", odClass);
+  public void testGetTraverserMethod() {
+    ASTCDMethod method = getMethodBy("getTraverser", odClass);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCType());
-    assertDeepEquals(VISITOR_FULL_NAME, method.getMCReturnType().getMCType());
+    assertDeepEquals(TRAVERSER_FULL_NAME, method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
   }
 
   @Test
-  public void testSetRealThisMethod() {
-    ASTCDMethod method = getMethodBy("setRealThis", odClass);
+  public void testSetTraverserMethod() {
+    ASTCDMethod method = getMethodBy("setTraverser", odClass);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(VISITOR_FULL_NAME, method.getCDParameter(0).getMCType());
-    assertEquals("realThis", method.getCDParameter(0).getName());
+    assertDeepEquals(TRAVERSER_FULL_NAME, method.getCDParameter(0).getMCType());
+    assertEquals("traverser", method.getCDParameter(0).getName());
   }
 
   @Test

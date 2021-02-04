@@ -6,10 +6,12 @@ plugins {
 
 dependencies {
   implementation project(':monticore-generator')
-  implementation "de.monticore:monticore-runtime:$previous_mc_version"
-  implementation "de.monticore:monticore-grammar:$previous_mc_version"
+  implementation "de.monticore.bs:monticore-runtime:$previous_mc_version"
+  implementation "de.monticore.bs:monticore-grammar:$previous_mc_version"
   implementation "de.se_rwth.commons:se-commons-logging:$se_commons_version"
   implementation "de.se_rwth.commons:se-commons-groovy:$se_commons_version"
+  implementation "org.apache.commons:commons-lang3:$commons_lang3_version"
+  implementation "commons-cli:commons-cli:$commons_cli_version"
   implementation 'org.slf4j:slf4j-api:1.7.10'
   implementation 'ch.qos.logback:logback-classic:1.1.2'
   implementation 'ch.qos.logback:logback-core:1.1.2'
@@ -26,14 +28,16 @@ shadowJar { // all in one jar
   zip64 true
 }
 
-jar.dependsOn(shadowJar)
+if(findProperty('ci') == null){
+  jar.dependsOn(shadowJar)
+}
 
 // configure deployment
 publishing {
   // configure what artifacts to publish
   publications {
     mavenJava(MavenPublication) {
-      artifact shadowJar
+      from components.java
     }
   }
 }

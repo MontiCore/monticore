@@ -4,7 +4,7 @@ package de.monticore.codegen.cd2java;
 import de.monticore.cd.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.cd4analysis._parser.CD4AnalysisParser;
-import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisSymbolTableCreatorDelegator;
+import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisPhasedSTC;
 import de.monticore.cd.cd4analysis._symboltable.ICD4AnalysisGlobalScope;
 import de.monticore.io.paths.ModelPath;
 import org.junit.BeforeClass;
@@ -21,6 +21,8 @@ public abstract class DecoratorTestCase {
 
   @BeforeClass
   public static void setUpDecoratorTestCase() {
+    CD4AnalysisMill.reset();
+    CD4AnalysisMill.init();
     ICD4AnalysisGlobalScope globalScope = CD4AnalysisMill.globalScope();
     globalScope.clear();
     globalScope.setFileExt("cd");
@@ -40,7 +42,7 @@ public abstract class DecoratorTestCase {
     if (!ast.isPresent()) {
       fail(String.format("Failed to load model '%s'", qualifiedName));
     }
-    CD4AnalysisSymbolTableCreatorDelegator creator = CD4AnalysisMill.cD4AnalysisSymbolTableCreatorDelegator();
+    CD4AnalysisPhasedSTC creator = new CD4AnalysisPhasedSTC();
     creator.createFromAST(ast.get());
     return ast.get();
   }

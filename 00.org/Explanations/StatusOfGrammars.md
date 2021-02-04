@@ -42,16 +42,12 @@ keeping the grammar up to date. One might use it as inspiration for their
 own developments.
 
 1. **Deprecated**:
-The grammar should not be used anymore, it is deprecated, will be deleted in 
-the future, and a newer version of the content exists in another grammar.
+The grammar should not be used anymore, it is deprecated, and only 
+there for compatibility. Normally a newer version of the content 
+exists in other, often decomposed grammars, allowing to configure
+which part of the grammar to be used.
+Deprecated grammars are not listed in any overview.
 
-1. **Unclarified**:
-Some of the grammars are just there to be used for example as
-tests or as inspirations for your own definitions. It may be that 
-such a grammar becomes stable, if enough interest exists.
-
-The deprecated grammars are often not listed in an overview anymore.
-There may also be further unclarfied and example grammars around.
 
 ## Marking the Status of Grammars
 
@@ -67,14 +63,9 @@ A comment of the following form within the grammar defines this status:
 
 * [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
 * [MontiCore documentation](http://www.monticore.de/)
-
-* [Overview Best Practices](BestPractices.md)
-* [**MontiCore Core Grammar Library**](https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
-* [**List of languages**](https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/docs/Languages.md).
+* [**List of languages**](https://github.com/MontiCore/monticore/blob/dev/docs/Languages.md)
+* [**MontiCore Core Grammar Library**](https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
+* [Best Practices](https://github.com/MontiCore/monticore/blob/dev/docs/BestPractices.md)
 * [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
-
-
-
-
-
+* [Licence definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
 

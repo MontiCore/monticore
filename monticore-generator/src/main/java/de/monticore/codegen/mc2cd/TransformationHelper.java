@@ -16,7 +16,9 @@ import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
-import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVisitor;
+import de.monticore.grammar.grammar._visitor.GrammarVisitor2;
+import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
+import de.monticore.grammar.grammarfamily._visitor.GrammarFamilyTraverser;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcarraytypes._ast.ASTMCArrayType;
@@ -25,6 +27,8 @@ import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
+import de.monticore.grammar.MCGrammarSymbolTableHelper;
+
 import de.se_rwth.commons.JavaNamesHelper;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
@@ -547,28 +551,19 @@ public final class TransformationHelper {
   }
 
   public static List<ASTRuleComponent> getAllComponents(ASTGrammarNode node) {
-    return new CollectRuleComponents().getRuleComponents(node);
+    CollectRuleComponents cv = new CollectRuleComponents();
+    GrammarFamilyTraverser traverser = GrammarFamilyMill.traverser();
+    traverser.add4Grammar(cv);
+    node.accept(traverser);
+    return cv.getRuleComponents();
   }
 
-  private static class CollectRuleComponents implements Grammar_WithConceptsVisitor {
-    Grammar_WithConceptsVisitor realThis = this;
-
-    @Override
-    public Grammar_WithConceptsVisitor getRealThis() {
-      return realThis;
-    }
-
-    @Override
-    public void setRealThis(Grammar_WithConceptsVisitor realThis) {
-      this.realThis = realThis;
-    }
+  private static class CollectRuleComponents implements GrammarVisitor2 {
 
     public List<ASTRuleComponent> ruleComponentList = Lists.newArrayList();
 
-    public List<ASTRuleComponent> getRuleComponents(ASTGrammarNode node) {
-      ruleComponentList.clear();
-      node.accept(getRealThis());
-      return ruleComponentList;
+    public List<ASTRuleComponent> getRuleComponents() {
+       return ruleComponentList;
     }
 
     @Override

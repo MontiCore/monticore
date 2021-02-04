@@ -18,7 +18,6 @@ import java.util.function.Predicate;
 public class AutomataResolver implements IStimulusSymbolResolver {
 
   public AutomataResolver(ModelPath mp){
-    BasicJavaMill.globalScope().setFileExt("javamodel");
     for(Path p : mp.getFullPathOfEntries()){
       BasicJavaMill.globalScope().getModelPath().addEntry(p);
     }

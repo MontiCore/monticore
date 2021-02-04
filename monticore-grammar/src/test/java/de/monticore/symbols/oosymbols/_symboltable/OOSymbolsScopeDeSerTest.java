@@ -5,8 +5,8 @@ package de.monticore.symbols.oosymbols._symboltable;
 
 import com.google.common.collect.Lists;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
-import de.monticore.symbols.oosymbols._symboltable.*;
-import de.monticore.types.check.*;
+import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.check.SymTypeExpressionFactory;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
@@ -15,7 +15,6 @@ import org.junit.Test;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertTrue;
 
 public class OOSymbolsScopeDeSerTest {
 
@@ -24,9 +23,11 @@ public class OOSymbolsScopeDeSerTest {
   @Before
   public void setUp(){
     LogStub.init();
-//    Log.enableFailQuick(false);
+    Log.enableFailQuick(false);
 
     //initialize scope, add some TypeSymbols, TypeVarSymbols, VariableSymbols and FunctionSymbols
+    OOSymbolsMill.reset();
+    OOSymbolsMill.init();
     scope = OOSymbolsMill.artifactScope();
     scope.setPackageName("");
     scope.setImportsList(Lists.newArrayList());
@@ -87,9 +88,11 @@ public class OOSymbolsScopeDeSerTest {
 
 
   public void performRoundTripSerialization(IOOSymbolsScope scope){
-    OOSymbolsScopeDeSer deser = new OOSymbolsScopeDeSer();
+    OOSymbolsDeSer deser = new OOSymbolsDeSer();
     //first serialize the scope using the deser
-    String serialized = deser.serialize(scope);
+    OOSymbolsSymbols2Json s2j = ((OOSymbolsGlobalScope) OOSymbolsMill.globalScope()).getSymbols2Json();
+    scope.accept(s2j.getTraverser());
+    String serialized = s2j.getJsonPrinter().getContent();
     // then deserialize it
     IOOSymbolsArtifactScope deserialized = deser.deserialize(serialized);
     assertNotNull(deserialized);
@@ -135,19 +138,19 @@ public class OOSymbolsScopeDeSerTest {
 
   @Test
   public void testInvalidJsonForSerializingReturnsError(){
-    String invalidJsonForSerializing = "{\n\t\"symbols\":\"SymbolsAreNotInAnArray\"\n}";
+    String invalidJsonForSerializing = "{\n\t\"symbols\":[{\"noKind\":true}]}\n}";
     String invalidJsonForSerializing2 = "{\"symbols\": [\"SymbolIsNotAnObject\"]}";
     String invalidJsonForSerializing3 = "{\"symbols\": [{\"kind\":\"unknown\"}]}";
 
-    OOSymbolsScopeDeSer deser = new OOSymbolsScopeDeSer();
+    OOSymbolsDeSer deser = new OOSymbolsDeSer();
     deser.deserialize(invalidJsonForSerializing);
     assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA1235"));
 
     deser.deserialize(invalidJsonForSerializing2);
-    assertTrue(Log.getFindings().get(1).getMsg().startsWith("0xA1234"));
+    assertTrue(Log.getFindings().get(2).getMsg().startsWith("0xA1233"));
 
     deser.deserialize(invalidJsonForSerializing3);
-    assertTrue(Log.getFindings().get(2).getMsg().startsWith("0xA1234"));
+    assertTrue(Log.getFindings().get(3).getMsg().startsWith("0xA1234"));
   }
 
 }

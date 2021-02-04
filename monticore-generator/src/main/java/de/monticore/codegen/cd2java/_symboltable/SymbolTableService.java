@@ -380,7 +380,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
    */
 
   public String getScopeDeSerSimpleName(CDDefinitionSymbol cdSymbol) {
-    return cdSymbol.getName() + SCOPE_SUFFIX + DE_SER_SUFFIX;
+    return cdSymbol.getName() + DE_SER_SUFFIX;
   }
 
   public String getScopeDeSerSimpleName() {
@@ -404,16 +404,8 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     return cdSymbol.getName() + SYM_TAB_MILL_SUFFIX;
   }
 
-  public String getSymTabMillSimpleName() {
-    return getSymTabMillSimpleName(getCDSymbol());
-  }
-
   public String getSymTabMillFullName(CDDefinitionSymbol cdSymbol) {
     return getPackage(cdSymbol) + "." + getSymTabMillSimpleName(cdSymbol);
-  }
-
-  public String getSymTabMillFullName() {
-    return getSymTabMillFullName(getCDSymbol());
   }
 
   /**

@@ -27,7 +27,7 @@ ${tc.signature("cdClass", "classFullName")}
   if (node.isPresent${genHelper.getNativeAttributeName(attr.getName())?cap_first}()) {
     pp.print("${attr.getName()}");
     pp.print(" = ");
-    node.${attrGetter}().accept(getRealThis());
+    node.${attrGetter}().accept(getTraverser());
     pp.println(";");
   } else if (printEmptyOptional) {
     pp.println("${attr.getName()} = absent;");
@@ -36,7 +36,7 @@ ${tc.signature("cdClass", "classFullName")}
   if (null != node.${attrGetter}()) {
     pp.print("${attr.getName()}");
     pp.print(" = ");
-    node.${attrGetter}().accept(getRealThis());
+    node.${attrGetter}().accept(getTraverser());
     pp.println(";");
   }
     <#elseif genHelper.isListAstNode(attr)>
@@ -60,7 +60,7 @@ ${tc.signature("cdClass", "classFullName")}
         pp.println(",");
       }
       isFirst = false;
-      iter_${attr.getName()}.next().accept(getRealThis());
+      iter_${attr.getName()}.next().accept(getTraverser());
     }
     if (!isEmpty) {
       pp.println("];");

@@ -87,7 +87,7 @@ public class MillDecoratorTest extends DecoratorTestCase {
     VisitorService visitorService = new VisitorService(decoratedCompilationUnit);
     ParserService parserService = new ParserService(decoratedCompilationUnit);
     MillDecorator decorator = new MillDecorator(this.glex, symbolTableService, visitorService, parserService);
-    this.millClass = decorator.decorate(Lists.newArrayList(getASTCD(), getVisitorCD(), getSymbolCD()));
+    this.millClass = decorator.decorate(Lists.newArrayList(getASTCD(), getVisitorCD(), getTraverserCD(), getSymbolCD()));
   }
 
   protected ASTCDCompilationUnit getASTCD() {
@@ -137,6 +137,23 @@ public class MillDecoratorTest extends DecoratorTestCase {
     return decorator.decorate(decoratedCompilationUnit);
   }
 
+  protected ASTCDCompilationUnit getTraverserCD() {
+    IterablePath targetPath = Mockito.mock(IterablePath.class);
+    VisitorService visitorService = new VisitorService(decoratedCompilationUnit);
+    SymbolTableService symbolTableService = new SymbolTableService(decoratedCompilationUnit);
+    MethodDecorator methodDecorator = new MethodDecorator(glex, visitorService);
+
+    TraverserInterfaceDecorator traverserInterfaceDecorator = new TraverserInterfaceDecorator(glex, visitorService, symbolTableService);
+    TraverserClassDecorator traverserClassDecorator = new TraverserClassDecorator(glex, visitorService, symbolTableService);
+    Visitor2Decorator visitor2Decorator = new Visitor2Decorator(glex, visitorService, symbolTableService);
+    HandlerDecorator handlerDecorator = new HandlerDecorator(glex, visitorService, symbolTableService);
+    InheritanceHandlerDecorator inheritanceHandlerDecorator = new InheritanceHandlerDecorator(glex, methodDecorator, visitorService, symbolTableService);
+
+    CDTraverserDecorator decorator = new CDTraverserDecorator(this.glex, targetPath, visitorService, traverserInterfaceDecorator,
+        traverserClassDecorator, visitor2Decorator, handlerDecorator, inheritanceHandlerDecorator);
+    return decorator.decorate(decoratedCompilationUnit);
+  }
+
   protected ASTCDCompilationUnit getSymbolCD() {
     SymbolTableService symbolTableService = new SymbolTableService(decoratedCompilationUnit);
     VisitorService visitorService = new VisitorService(decoratedCompilationUnit);
@@ -159,12 +176,11 @@ public class MillDecoratorTest extends DecoratorTestCase {
     SymbolTableCreatorDecorator symbolTableCreatorDecorator = new SymbolTableCreatorDecorator(glex, symbolTableService, visitorService, methodDecorator);
     SymbolTableCreatorDelegatorDecorator symbolTableCreatorDelegatorDecorator = new SymbolTableCreatorDelegatorDecorator(glex, symbolTableService, visitorService);
     SymbolTableCreatorForSuperTypes symbolTableCreatorForSuperTypes = new SymbolTableCreatorForSuperTypes(glex, symbolTableService);
-    SymbolDeSerDecorator symbolDeSerDecorator = new SymbolDeSerDecorator(glex, symbolTableService);
-    ScopeDeSerDecorator scopeDeSerDecorator = new ScopeDeSerDecorator(glex, symbolTableService, methodDecorator, visitorService);
+    SymbolDeSerDecorator symbolDeSerDecorator = new SymbolDeSerDecorator(glex, symbolTableService, IterablePath.empty());
+    ScopeDeSerDecorator scopeDeSerDecorator = new ScopeDeSerDecorator(glex, symbolTableService, methodDecorator, visitorService, IterablePath.empty());
     ScopesGenitorDecorator scopesGenitorDecorator = new ScopesGenitorDecorator(glex, symbolTableService, visitorService, methodDecorator);
     ScopesGenitorDelegatorDecorator scopesGenitorDelegatorDecorator = new ScopesGenitorDelegatorDecorator(glex, symbolTableService, visitorService);
-    Symbols2JsonDecorator symbolTablePrinterDecorator = new Symbols2JsonDecorator(glex, symbolTableService, visitorService);
-    PhasedSymbolTableCreatorDelegatorDecorator phasedSymbolTableCreatorDelegatorDecorator = new PhasedSymbolTableCreatorDelegatorDecorator(glex, symbolTableService, visitorService);
+    Symbols2JsonDecorator symbolTablePrinterDecorator = new Symbols2JsonDecorator(glex, symbolTableService, visitorService, methodDecorator);
 
     IterablePath targetPath = Mockito.mock(IterablePath.class);
 
@@ -176,8 +192,7 @@ public class MillDecoratorTest extends DecoratorTestCase {
         commonSymbolInterfaceDecorator,
         symbolResolverInterfaceDecorator, symbolTableCreatorDecorator,
         symbolTableCreatorDelegatorDecorator, symbolTableCreatorForSuperTypes,
-        symbolDeSerDecorator, scopeDeSerDecorator, symbolTablePrinterDecorator, scopesGenitorDecorator, scopesGenitorDelegatorDecorator,
-        phasedSymbolTableCreatorDelegatorDecorator);
+        symbolDeSerDecorator, scopeDeSerDecorator, symbolTablePrinterDecorator, scopesGenitorDecorator, scopesGenitorDelegatorDecorator);
 
     // cd with no handcoded classes
     return symbolTableCDDecorator.decorate(decoratedCompilationUnit, decoratedSymbolCompilationUnit, decoratedScopeCompilationUnit);
@@ -225,9 +240,11 @@ public class MillDecoratorTest extends DecoratorTestCase {
     getAttributeBy("millAutomatonSymbolTableCreator", millClass);
     getAttributeBy("millAutomatonSymbolTableCreatorDelegator", millClass);
 
+    getAttributeBy("millAutomatonTraverserImplementation", millClass);
+    getAttributeBy("millAutomatonInheritanceHandler", millClass);
+
     getAttributeBy("millAutomatonScopesGenitor", millClass);
     getAttributeBy("millAutomatonScopesGenitorDelegator", millClass);
-    getAttributeBy("millAutomatonPhasedSymbolTableCreatorDelegator", millClass);
   }
 
   @Test

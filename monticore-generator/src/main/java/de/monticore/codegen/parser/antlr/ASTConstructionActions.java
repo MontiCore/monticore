@@ -2,18 +2,18 @@
 
 package de.monticore.codegen.parser.antlr;
 
-import java.util.Optional;
-
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
-import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
+import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.parser.ParserGeneratorHelper;
 import de.monticore.grammar.HelperGrammar;
+import de.monticore.grammar.MCGrammarInfo;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.se_rwth.commons.Joiners;
-import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
+
+import java.util.Optional;
 
 public class ASTConstructionActions {
 
@@ -148,7 +148,7 @@ public class ASTConstructionActions {
 
     // Replace templates
     tmp = tmp.replaceAll("%u_usage%",
-            StringTransformations.capitalize(HelperGrammar.getListName(a)));
+            StringTransformations.capitalize(MCGrammarInfo.getListName(a)));
     tmp = tmp.replaceAll("%tmp%", tmpname);
 
     return tmp;
@@ -163,7 +163,7 @@ public class ASTConstructionActions {
 
     // Replace templates
     tmp = tmp.replaceAll("%u_usage%",
-            StringTransformations.capitalize(HelperGrammar.getListName(a)));
+            StringTransformations.capitalize(MCGrammarInfo.getListName(a)));
     tmp = tmp.replaceAll("%tmp%", parserGenHelper.getTmpVarNameForAntlrCode(a));
 
     return tmp;

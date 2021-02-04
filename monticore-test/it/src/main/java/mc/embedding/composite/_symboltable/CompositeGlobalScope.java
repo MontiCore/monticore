@@ -21,12 +21,8 @@ import java.util.stream.Collectors;
 
 public class CompositeGlobalScope extends CompositeGlobalScopeTOP{
 
-  public CompositeGlobalScope(ModelPath modelPath) {
-    super(modelPath, "host");
-  }
-
-  public CompositeGlobalScope(ModelPath modelPath, String modelFileExtension) {
-    super(modelPath, modelFileExtension);
+  public CompositeGlobalScope(ModelPath modelPath, String fileExt) {
+    super(modelPath, fileExt);
   }
 
   public CompositeGlobalScope(){
@@ -43,10 +39,9 @@ public class CompositeGlobalScope extends CompositeGlobalScopeTOP{
     return this;
   }
 
-  @Override public void loadFileForModelName(String modelName, String symbolName) {
-    super.loadFileForModelName(modelName, symbolName);
+  @Override public void loadFileForModelName(String modelName) {
     ModelCoordinate modelCoordinate = ModelCoordinates
-        .createQualifiedCoordinate(modelName, getFileExt());
+        .createQualifiedCoordinate(modelName, "host");
     String filePath = modelCoordinate.getQualifiedPath().toString();
     if (!isFileLoaded(filePath)) {
       addLoadedFile(filePath);
@@ -57,7 +52,7 @@ public class CompositeGlobalScope extends CompositeGlobalScopeTOP{
       }
     }
     else {
-      Log.debug("Already tried to load model for '" + symbolName
+      Log.debug("Already tried to load model for '" + modelName
               + "'. If model exists, continue with cached version.",
           "CompositeGlobalScope");
     }

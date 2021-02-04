@@ -1,0 +1,79 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.feature.symbolrules;
+
+grammar SymbolruleTest extends mc.common.Basics {
+
+  scope symbol Foo = "foo" Name "{" IBar* "}";
+
+  interface scope symbol IBar = Name;
+
+  scope symbol Bar implements IBar = "bar" Name "{" ITest* "}";
+
+  interface symbol ITest = "test" Name;
+
+  symbol Test1 implements ITest = "test1" Name;
+
+  symbol Test2 implements ITest = "test2" Name;
+
+  symbolrule Foo = barName:String?;
+
+  symbolrule IBar extends Dummy implements IDummy;
+
+  symbolrule ITest = superTypes:de.monticore.types.check.SymTypeExpression*
+    method public de.monticore.types.check.SymTypeExpression getByName(String name){
+      Optional<de.monticore.types.check.SymTypeExpression> expr = Optional.empty();
+      for(de.monticore.types.check.SymTypeExpression symType:superTypes){
+        if(symType.print().equals(name)){
+          expr = Optional.of(symType);
+        }
+      }
+      return expr.orElse(null);
+    };
+
+  symbolrule Test1 = isPrivate:boolean
+    method public Test1Symbol getIfPrivate(){
+      if(this.isIsPrivate()){
+        return this;
+      }else{
+        Log.info("This is not private!", this.getClass().getName());
+        return null;
+      }
+    };
+
+  symbolrule Test2 = isPublic:boolean
+    method public Test2Symbol getIfPublic(){
+      if(this.isIsPublic()){
+        return this;
+      }else{
+        Log.info("This is not public!", this.getClass().getName());
+        return null;
+      }
+    };
+
+
+  scoperule = number:int
+    method public void addToNumber(int count) {
+      number+=count;
+    }
+    bar:boolean
+    method public void addBarIfNonePresent() {
+      if(!isBar()){
+        Log.info("Added Bar!", this.getClass().getName());
+      }
+    }
+    modifiedName:String*
+    method public List<String> calculateModifiedNames() {
+      for(String s: modifiedName){
+        s = "Modified" + s;
+      }
+      return modifiedName;
+    }
+    symType:de.monticore.types.check.SymTypeExpression?
+    method public void createSymType(){
+      if(!symType.isPresent()){
+        symType = Optional.of(de.monticore.types.check.SymTypeExpressionFactory.createTypeConstant("double"));
+      }
+    };
+
+
+}

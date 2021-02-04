@@ -1,8 +1,78 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
+
 # Release Notes
 
-##  MontiCore 6.7.0-SNAPSHOT
+##  MontiCore 6.8.0-SNAPSHOT
 to be released
+### Additions
+
+### Changes
+* delete deprecated grammars OCLExpressions and SetExpressions
+
+### Fixes
+
+##  MontiCore 6.7.0
+released: 26.01.2021
+
+### Additions
+* Add new CLI for the MontiCore generator engine
+
+### Changes
+* The context conditions use the new traverser infrastructure. This leads to small changes in the api.
+  The return value of the method addCoCo is void.
+* Attribute fileExt in GlobalScopes now refers to a regular expression for file extensions of 
+  symbol table files. The default value of the attribute is "*sym", which usually includes symbol 
+  files of all MontiCore languages. Attention: If your language used the "setFileExt" method in
+  previous versions of MontiCore to set the file extension of the model file (e.g., to "aut"), this 
+  will cause problems now as the symbol files of the language have differen file extensions 
+  (e.g., "autsym). To fix this, it is sufficient to remove all invocations of "setFileExt" from the 
+  handwritten source code.
+* For scopes, artifact scopes, and global scopes: Moved abstract methods that do not have a language-
+  specific name or (argument, return) type from language-specific interface to MontiCore-runtime interfaces
+* new experiment "strules" demonstrating the use of symbolrules and scoperules
+* `deserialize` methods in SymTypeExpressionDeSers do not have an `enclosingScope` argument anymore.
+  Internally, it uses the singleton global scope instead. 
+* renamed `serializeAdditionalSSymbolAttributes` in `Symbols2Json` class to `serializeAddons` and moved
+  to scope and symbol DeSers.
+* `XScopeDeSer` is renamed to `XDeSer`
+* In Symbols2Json classes:
+  * now implementss Visitor2 
+  * new attribute "XTraverser traverser" with getter and setter
+  * Removed attribute "realThis" with getter and setter
+  * New constructor with two arguments `XTraverser` and `JsonPrinter`
+  * New zero args constructor
+  * Removed constructor with single `JsonPrinter` argument
+  * New attributes of all known symbol DeSers and current scope DeSers
+  * New method "protected void init()", initializing the DeSer attributes with the GlobalScope
+    and the traverser with symbols2json of inherited languages
+   * adjusted store method to use traverser
+   * visit methods for symbols delegate to serialize method of the symbol DeSer
+   * visit and endVisit methods for scope interface and artifact scope interface print object stub 
+     and delegate serialization to scope DeSers
+* DeSers do not have an attribute of Symbols2Json class anymore, instead it is passed as argument 
+  in the `serialize` methods 
+* Default values of built-in types that occur in attributes of symbolrules or scoperules are 
+  omitted during serialization and deserialization. The defaults are as follows:
+  * Boolean : false
+  * String : ""
+  * Numeric types: 0 (and 0L and 0.0 and 0.0f)
+* For symbolrule and scoperule attributes with non-built-in data type, no Log.error is thrown
+  at execution time of the serialize method call anymore. Instead, these methods (and then, their 
+  classes as well) are generated abstract to yield compilation errors instead.
+* New interface `IDeSer` that all symbol and scope DeSers implement.
+* GlobalScopes manage a map with all relevant DeSers. The map maps the serialized (symbol or scope)
+  kind to the DeSer that (de)serialized this kind. This mechanism can be used to exchange the DeSer
+  for a specific kind of symbol or scope.
+* Scope DeSers have new `serialize` methods without `Symbols2Json` argment that can be used for
+  for serializing (artifact) scopes for, e.g., unit tests 
+* removed the generation of `XPhasedSymbolTableCreatorDelegator` classes
+* Experiments now use ScopesGenitor-infrastructure instead of SymbolTableCreator-infrastructure
+ 
+### Fixes
+* The `initMe` and `reset` methods of the mill now initialize and reset all attributes properly
+
+* The CD4Analysis keywords `ordered`, `composition`, `association`, `targetimport` and `classdiagram` 
+  can be used in grammars again
 
 ##  MontiCore 6.6.0
 released: 03.12.2020
@@ -78,7 +148,7 @@ released: 11.11.2020
 
 ### Changes
 * MontiCore now uses Gradle as build tool
-  * some tasks have been introduced for the comfortable control of frequent activities, e.g., `buildMC`, `assembleMC` that can be found in the [`build.gradle`](../../build.gradle)
+  * some tasks have been introduced for the comfortable control of frequent activities, e.g., `buildMC`, `assembleMC` that can be found in the [`build.gradle`](https://github.com/MontiCore/monticore/blob/dev/build.gradle)
   * relocated the EMF related subprojects:
     * `monticore-emf-grammar` to `monticore-grammar-emf`
     * `monticore-emf-runtime` to `monticore-runtime-emf`
@@ -347,7 +417,11 @@ released: 07.05.2020
 
 ## Further Information
 
-* [MontiCore project](../../README.md) - MontiCore
 * [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
 * [MontiCore documentation](http://www.monticore.de/)
+* [**List of languages**](https://github.com/MontiCore/monticore/blob/dev/docs/Languages.md)
+* [**MontiCore Core Grammar Library**](https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
+* [Best Practices](https://github.com/MontiCore/monticore/blob/dev/docs/BestPractices.md)
+* [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
+* [Licence definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
 

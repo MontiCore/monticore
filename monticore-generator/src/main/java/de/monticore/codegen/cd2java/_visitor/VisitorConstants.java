@@ -31,6 +31,8 @@ public final class VisitorConstants {
 
   public static final String TRAVERSER = "traverser";
 
+  public static final String INHERITANCE_TRAVERSER = "inheritanceTraverser";
+
   public static final String GET_REAL_THIS = "getRealThis";
 
   public static final String SET_REAL_THIS = "setRealThis";
@@ -49,9 +51,17 @@ public final class VisitorConstants {
 
   public static final String TRAVERSE = "traverse";
 
-  public static final String HANDLE_AST_INHERITANCE_TEMPLATE = "_visitor.inheritance.HandleASTInheritance";
-  
-  public static final String HANDLE_SYMTAB_INHERITANCE_TEMPLATE = "_visitor.inheritance.HandleSymTabInheritance";
+  public static final String IVISTOR_FULL_NAME = "de.monticore.visitor.IVisitor";
+
+  public static final String ITRAVERSER_FULL_NAME = "de.monticore.visitor.ITraverser";
+
+  public static final String IHANDLER_FULL_NAME = "de.monticore.visitor.IHandler";
+
+  public static final String HANDLE_AST_INHERITANCE_TEMPLATE = "_visitor.handler.HandleASTInheritance";
+
+  public static final String HANDLE_AST_NODE_INHERITANCE_TEMPLATE = "_visitor.handler.HandleASTNodeInheritance";
+
+  public static final String HANDLE_SYMTAB_INHERITANCE_TEMPLATE = "_visitor.handler.HandleSymTabInheritance";
 
   public static final String HANDLE_TEMPLATE = "_visitor.Handle";
 

@@ -6,6 +6,7 @@ package de.monticore.symbols.basicsymbols._symboltable;
 
 import com.google.common.collect.Lists;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.se_rwth.commons.logging.Log;
@@ -25,9 +26,11 @@ public class BasicSymbolsScopeDeSerTest {
   @Before
   public void setUp(){
     LogStub.init();
-//    Log.enableFailQuick(false);
+    Log.enableFailQuick(false);
 
     //initialize scope, add some TypeSymbols, TypeVarSymbols, VariableSymbols and FunctionSymbols
+    BasicSymbolsMill.reset();
+    BasicSymbolsMill.init();
     scope = BasicSymbolsMill.artifactScope();
     scope.setPackageName("");
     scope.setImportsList(Lists.newArrayList());
@@ -100,9 +103,9 @@ public class BasicSymbolsScopeDeSerTest {
   }
 
   public void performRoundTripSerialization(IBasicSymbolsScope scope){
-    BasicSymbolsScopeDeSer deser = new BasicSymbolsScopeDeSer();
+    BasicSymbolsDeSer deser = new BasicSymbolsDeSer();
     //first serialize the scope using the deser
-    String serialized = deser.serialize(scope);
+    String serialized = deser.serialize(scope, new BasicSymbolsSymbols2Json());
     // then deserialize it
     IBasicSymbolsArtifactScope deserialized = deser.deserialize(serialized);
     assertNotNull(deserialized);
@@ -150,19 +153,19 @@ public class BasicSymbolsScopeDeSerTest {
 
   @Test
   public void testInvalidJsonForSerializingReturnsError(){
-    String invalidJsonForSerializing = "{\n\t\"symbols\":\"SymbolsAreNotInAnArray\"\n}";
+    String invalidJsonForSerializing = "{\n\t\"symbols\":[{\"noKind\":true}]}\n}";
     String invalidJsonForSerializing2 = "{\"symbols\": [\"SymbolIsNotAnObject\"]}";
     String invalidJsonForSerializing3 = "{\"symbols\": [{\"kind\":\"unknown\"}]}";
 
-    BasicSymbolsScopeDeSer deser = new BasicSymbolsScopeDeSer();
+    BasicSymbolsDeSer deser = new BasicSymbolsDeSer();
     deser.deserialize(invalidJsonForSerializing);
     assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA1235"));
 
     deser.deserialize(invalidJsonForSerializing2);
-    assertTrue(Log.getFindings().get(1).getMsg().startsWith("0xA1234"));
+    assertTrue(Log.getFindings().get(2).getMsg().startsWith("0xA1233"));
 
     deser.deserialize(invalidJsonForSerializing3);
-    assertTrue(Log.getFindings().get(2).getMsg().startsWith("0xA1234"));
+    assertTrue(Log.getFindings().get(3).getMsg().startsWith("0xA1234"));
   }
 
 

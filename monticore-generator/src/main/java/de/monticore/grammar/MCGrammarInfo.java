@@ -6,7 +6,8 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
+import de.monticore.codegen.cd2java.DecorationHelper;
+import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.parser.ParserGeneratorHelper;
 import de.monticore.grammar.concepts.antlr.antlr._ast.ASTConceptAntlr;
@@ -14,8 +15,11 @@ import de.monticore.grammar.concepts.antlr.antlr._ast.ASTJavaCodeExt;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
+import de.monticore.grammar.grammar._visitor.GrammarTraverser;
+import de.monticore.grammar.grammar._visitor.GrammarVisitor2;
+import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTMCConcept;
-import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVisitor;
+import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsTraverser;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
@@ -326,7 +330,10 @@ public class MCGrammarInfo {
           ASTProd astProd = ruleSymbol.getAstNode();
           Optional<MCGrammarSymbol> refGrammarSymbol = MCGrammarSymbolTableHelper
               .getMCGrammarSymbol(astProd.getEnclosingScope());
-          astProd.accept(new TerminalVisitor(refGrammarSymbol));
+          TerminalVisitor tv = new TerminalVisitor(refGrammarSymbol);
+          Grammar_WithConceptsTraverser traverser = Grammar_WithConceptsMill.traverser();
+          traverser.add4Grammar(tv);
+          astProd.accept(traverser);
         }
       }
     }
@@ -359,12 +366,25 @@ public class MCGrammarInfo {
       }
     }
   }
-  
+
+  public static String getListName(ASTNonTerminal a) {
+    String name;
+    if (a.isPresentUsageName()) {
+      name = a.getUsageName();
+    } else {
+      // Use Nonterminal name as attribute name starting with lower case
+      // for a list (iterated) nonterminal a 's' is added for the name
+      name = a.getName();
+    }
+    return name + DecorationHelper.GET_SUFFIX_LIST;
+  }
+
+
   private boolean mustBeKeyword(String rule) {
     return keywords.contains(rule);
   }
 
-  private class TerminalVisitor implements Grammar_WithConceptsVisitor {
+  private class TerminalVisitor implements GrammarVisitor2 {
 
     TerminalVisitor(Optional<MCGrammarSymbol> refGrammarSymbol) {
       this.refGrammarSymbol = refGrammarSymbol;
@@ -372,17 +392,15 @@ public class MCGrammarInfo {
 
     Optional<MCGrammarSymbol> refGrammarSymbol;
 
-    Grammar_WithConceptsVisitor realThis = this;
-
-    @Override
-    public Grammar_WithConceptsVisitor getRealThis() {
-      return realThis;
+    public GrammarTraverser getTraverser() {
+      return traverser;
     }
 
-    @Override
-    public void setRealThis(Grammar_WithConceptsVisitor realThis) {
-      this.realThis = realThis;
+    public void setTraverser(GrammarTraverser traverser) {
+      this.traverser = traverser;
     }
+
+    GrammarTraverser traverser;
 
     @Override
     public void visit(ASTTerminal keyword) {

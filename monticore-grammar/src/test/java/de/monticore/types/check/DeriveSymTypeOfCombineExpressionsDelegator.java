@@ -2,15 +2,10 @@
 package de.monticore.types.check;
 
 import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
-import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsDelegatorVisitor;
 import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.literals.mccommonliterals._ast.ASTSignedLiteral;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
-import de.monticore.types.mcbasictypes.MCBasicTypesMill;
-import de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser;
-import de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMill;
-import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesTraverser;
 
 import java.util.Optional;
 
@@ -30,8 +25,6 @@ public class DeriveSymTypeOfCombineExpressionsDelegator implements ITypesCalcula
   private DeriveSymTypeOfExpression deriveSymTypeOfExpression;
 
   private DeriveSymTypeOfJavaClassExpressions deriveSymTypeOfJavaClassExpressions;
-
-  private DeriveSymTypeOfSetExpressions deriveSymTypeOfSetExpressions;
 
   private DeriveSymTypeOfLiterals deriveSymTypeOfLiterals;
 
@@ -79,7 +72,6 @@ public class DeriveSymTypeOfCombineExpressionsDelegator implements ITypesCalcula
     deriveSymTypeOfLiterals.setTypeCheckResult(typeCheckResult);
     deriveSymTypeOfBitExpressions.setTypeCheckResult(typeCheckResult);
     deriveSymTypeOfJavaClassExpressions.setTypeCheckResult(typeCheckResult);
-    deriveSymTypeOfSetExpressions.setTypeCheckResult(typeCheckResult);
     deriveSymTypeOfCombineExpressions.setTypeCheckResult(typeCheckResult);
   }
 
@@ -97,7 +89,6 @@ public class DeriveSymTypeOfCombineExpressionsDelegator implements ITypesCalcula
     deriveSymTypeOfLiterals = new DeriveSymTypeOfLiterals();
     deriveSymTypeOfBitExpressions = new DeriveSymTypeOfBitExpressions();
     deriveSymTypeOfJavaClassExpressions = new DeriveSymTypeOfJavaClassExpressions();
-    deriveSymTypeOfSetExpressions = new DeriveSymTypeOfSetExpressions();
     synthesizer = new SynthesizeSymTypeFromCombineExpressionsWithLiteralsDelegator();
     deriveSymTypeOfCombineExpressions = new DeriveSymTypeOfCombineExpressions(synthesizer);
     setTypeCheckResult(typeCheckResult);
@@ -114,8 +105,6 @@ public class DeriveSymTypeOfCombineExpressionsDelegator implements ITypesCalcula
     traverser.setBitExpressionsHandler(deriveSymTypeOfBitExpressions);
     traverser.add4JavaClassExpressions(deriveSymTypeOfJavaClassExpressions);
     traverser.setJavaClassExpressionsHandler(deriveSymTypeOfJavaClassExpressions);
-    traverser.add4SetExpressions(deriveSymTypeOfSetExpressions);
-    traverser.setSetExpressionsHandler(deriveSymTypeOfSetExpressions);
     traverser.add4CombineExpressionsWithLiterals(deriveSymTypeOfCombineExpressions);
     traverser.setCombineExpressionsWithLiteralsHandler(deriveSymTypeOfCombineExpressions);
   }

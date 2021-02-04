@@ -20,10 +20,8 @@ public class CompositeTest extends GeneratorIntegrationsTest {
 
   @Test
   public void test() {
-
     final ICompositeGlobalScope scope = CompositeMill.globalScope();
     scope.getModelPath().addEntry(Paths.get("src/test/resources/mc/embedding"));
-    scope.setFileExt("host");
 
     // Symbol of the host language
     final HostSymbol hostSymbol = scope.resolveHost("ZComposite").orElse(null);

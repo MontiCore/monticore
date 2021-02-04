@@ -4,6 +4,8 @@ package de.monticore.codegen.mc2cd.transl;
 
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
+import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.nio.file.Paths;
@@ -14,6 +16,11 @@ import static org.junit.Assert.assertEquals;
 public class EnumProdTest {
 
   private final ASTCDCompilationUnit cdCompilationUnit;
+
+  @BeforeClass
+  public static void setup(){
+    GrammarFamilyMill.init();
+  }
 
   public EnumProdTest() {
     Optional<ASTCDCompilationUnit> cdCompilationUnit = TestHelper.parseAndTransform(Paths

@@ -1,22 +1,38 @@
+// (c) https://github.com/MontiCore/monticore
 package de.monticore.statements.mccommonstatements._symboltable;
 
 import de.monticore.statements.mccommonstatements.MCCommonStatementsMill;
+import de.monticore.statements.mccommonstatements._ast.ASTMCJavaBlock;
 import de.monticore.statements.mccommonstatements._visitor.MCCommonStatementsTraverser;
 
-public class MCCommonStatementsPhasedSymbolTableCreatorDelegator extends MCCommonStatementsPhasedSymbolTableCreatorDelegatorTOP {
+import java.util.ArrayList;
+import java.util.List;
+
+public class MCCommonStatementsPhasedSymbolTableCreatorDelegator {
+
+  protected IMCCommonStatementsGlobalScope globalScope;
+
+  protected MCCommonStatementsScopesGenitorDelegator scopesGenitorDelegator;
+
+  protected List<MCCommonStatementsTraverser> priorityList;
 
   public MCCommonStatementsPhasedSymbolTableCreatorDelegator(IMCCommonStatementsGlobalScope globalScope) {
-    super(globalScope);
+    this.globalScope = globalScope;
+    this.scopesGenitorDelegator = new MCCommonStatementsScopesGenitorDelegator(globalScope);
+    this.priorityList = new ArrayList<>();
     MCCommonStatementsTraverser traverser = MCCommonStatementsMill.traverser();
     traverser.add4MCCommonStatements(new MCCommonStatementsSTCompleteTypes());
     this.priorityList.add(traverser);
   }
 
   public MCCommonStatementsPhasedSymbolTableCreatorDelegator(){
-    super();
-    MCCommonStatementsTraverser traverser = MCCommonStatementsMill.traverser();
-    traverser.add4MCCommonStatements(new MCCommonStatementsSTCompleteTypes());
-    this.priorityList.add(traverser);
+    this(MCCommonStatementsMill.globalScope());
+  }
+
+  public IMCCommonStatementsArtifactScope createFromAST(ASTMCJavaBlock rootNode){
+    IMCCommonStatementsArtifactScope as = scopesGenitorDelegator.createFromAST(rootNode);
+    this.priorityList.forEach(rootNode::accept);
+    return as;
   }
 
 }
