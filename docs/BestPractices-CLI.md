@@ -102,6 +102,7 @@ shadowJar {
     }
     archiveFileName = "${archiveBaseName.get()}-cli.${archiveExtension.get()}"
     minimize()
+    archiveClassifier = "cli"
 }
 
 jar.dependsOn shadowJar
