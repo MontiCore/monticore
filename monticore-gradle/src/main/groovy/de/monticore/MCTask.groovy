@@ -42,8 +42,6 @@ abstract public class MCTask extends DefaultTask {
     // always add the files from the configuration 'grammar' to the config files
     grammarConfigFiles.setFrom(project.configurations.getByName("grammar").getFiles())
     dependsOn(project.configurations.getByName("grammar"))
-    // Register the service
-    usesService(project.ext.serviceProvider)
   }
   
   final RegularFileProperty grammar = project.objects.fileProperty()
@@ -72,9 +70,6 @@ abstract public class MCTask extends DefaultTask {
   
   boolean dev = false
   
-  // This property provides access to the service instance
-  @Internal
-  abstract Property<MCService> getService();
   
   @OutputDirectory
   DirectoryProperty getOutputDir() {

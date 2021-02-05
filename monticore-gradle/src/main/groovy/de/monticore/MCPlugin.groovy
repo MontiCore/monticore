@@ -15,8 +15,5 @@ public class MCPlugin implements Plugin<Project> {
     project.ext.MCTask = de.monticore.MCTask
     project.ext.GroovyTask = de.monticore.GroovyTask
     project.configurations.create("grammar")
-    project.ext.serviceProvider = project.getGradle().getSharedServices()
-            .registerIfAbsent("mcservice", MCService.class,  
-                    { spec -> spec.getMaxParallelUsages().set(1)})
   }
 }
