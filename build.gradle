@@ -255,3 +255,4 @@ configure([project(':monticore-grammar'),
 }
 
 defaultTasks 'build'
+
