@@ -110,8 +110,3 @@ jar.dependsOn(grammarsJar)
 if(findProperty('ci') == null){
   jar.dependsOn(shadowJar)
 }
-
-tasks.withType(MCTask) {
-  getService().set(project.ext.serviceProvider)
-  println(name)
-}

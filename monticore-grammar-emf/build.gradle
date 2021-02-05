@@ -129,8 +129,3 @@ compileTestJava.dependsOn (generateTest)
 String getGrammarInclPackage(String grammarDir, File grammarFile ){
   return file(grammarDir).toURI().relativize(grammarFile.toURI()).toString()
 }
-
-//tasks.withType(MCTask) {
-//  getService().set(project.ext.serviceProvider)
-//  println(name)
-//}
