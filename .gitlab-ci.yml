@@ -27,6 +27,7 @@ stages:
   - deploy
   - trigger_languages
   - report
+  - check
 
 build:
   stage: build
@@ -329,3 +330,17 @@ pages:
       - public
   only:
     - schedules
+
+checkMDLinks:
+  stage: check
+  dependencies:
+    - report
+  script:
+    - "curl --location --header \"PRIVATE-TOKEN: $secibuildtoken\" \"https://git.rwth-aachen.de/api/v4/projects/monticore%2Fmdlinkchecker/jobs/artifacts/master/raw/target/libs/MDLinkCheckerCLI.jar?job=build\" --output MDLinkCheckerCLI.jar"
+    - "https://git.rwth-aachen.de/monticore/monticore/-/tree/dev"
+    - "linkCheckRes=$(java -jar MDLinkCheckerCLI.jar -url $url -t $secibuildtoken)"
+    - "echo \"$linkCheckRes\""
+    - "if [[ $linkCheckRes == *\"ERROR\"* ]]; then exit 1; fi"
+  only:
+    - dev
+
