@@ -169,7 +169,7 @@ and
 [*documentation*](https://git.rwth-aachen.de/monticore/languages/gui-dsl/wikis/home).
 
 
-### [MontiCore Grammar](https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-generator) (MontiCore Stable)
+### [MontiCore Grammar](https://git.rwth-aachen.de/monticore/monticore/-/tree/dev/monticore-grammar/src/main/grammars/de/monticore/grammar) (MontiCore Stable)
 * Language for MontiCore Grammars itself. It can be understood as 
   *meta language*, but also used as ordinary language.
 * Its main use currently: A MontiCore grammar defines the 
