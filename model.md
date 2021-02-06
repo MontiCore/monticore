@@ -60,22 +60,22 @@ definitions.
    * A metamodel describes the syntax of ALL valid models (not of a
      single particular one)
 1. A *concept model* is a model informally visualizing
-  the concepts and their connections described in a text.
-  * Concept models are not to be developed or used by system
-    developers, but to explain certain relationships on the
-    method, the used models, etc.
-  * Any subject occurring in the text may be visualized as a concept
-    any relation as connection between concepts in such a model.
-  * A concept model as to some extent and illustrative character and
-    is therefore allowed to be informal.
-  * Still often class diagrams are used, where boxes are concepts
-    and association's are the relations between these concepts.
-  * The often used *reference models* are a certain form of concept
-    model, metamodels describing the abstract syntax are,
-    methodological connections are.
+   the concepts and their connections described in a text.
+   * Concept models are not to be developed or used by system
+     developers, but to explain certain relationships on the
+     method, the used models, etc.
+   * Any subject occurring in the text may be visualized as a concept
+     any relation as connection between concepts in such a model.
+   * A concept model as to some extent and illustrative character and
+     is therefore allowed to be informal.
+   * Still often class diagrams are used, where boxes are concepts
+     and association's are the relations between these concepts.
+   * The often used *reference models* are a certain form of concept
+     model, metamodels describing the abstract syntax are,
+     methodological connections are.
 1. *development model* is a model that is used by the developer to
    specify the system
-  * as opposed to the concept models
+   * as opposed to the concept models
 
 ## Development process / Method
 
