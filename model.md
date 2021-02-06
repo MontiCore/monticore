@@ -82,18 +82,18 @@ definitions.
 1. An *artifact model* is a *concept model* whose model elements
   denote artifacts in the development process and their relationships.
 1. A *generic model*
-  * Bedeutung unklar, kann es sein, dass "concept model" das auch trifft?
+   * Bedeutung unklar, kann es sein, dass "concept model" das auch trifft?
 1. *context model* is a development model of a systems context.
 1. The *universal system model*
-  * Variant A: is a concept model that describes the relevant SPES
-    concepts, such as abstraction, refinement, context, SPES models,
-    composition, interface, state machine, code, etc.
-  * Variant B: is a concept in SPES comprising what development models
-    have in common, namely context, system border, system interface
-    internal structure and their semantics in focus.
-    * The universal system model needs to be put to life by concrete
-      modelling languages whose models play this role.
-    * The universal system model is hierarchically composed.
+   * Variant A: is a concept model that describes the relevant SPES
+     concepts, such as abstraction, refinement, context, SPES models,
+     composition, interface, state machine, code, etc.
+   * Variant B: is a concept in SPES comprising what development models
+     have in common, namely context, system border, system interface
+     internal structure and their semantics in focus.
+     * The universal system model needs to be put to life by concrete
+       modelling languages whose models play this role.
+     * The universal system model is hierarchically composed. 
 
 
 ## Classes of models
@@ -103,13 +103,13 @@ definitions.
 1. *behavior model*
 1. *Data model*
 1. and all the classes of models mentioned for the viewpoints
-  * Requirements Viewpoint: Models for system goals, UseCases and
-    requirements
-  * Functional Viewpoint: Models that describe system
-    functionality
-  * Logical Viewpoint: Models for the implementation
-    independent system architecture
-  * Technical Architecture Viewpoint:
-    Models for the implementation related architecture,
-    including special models related to software and hardware
-    architectures.
+   * Requirements Viewpoint: Models for system goals, UseCases and
+     requirements
+   * Functional Viewpoint: Models that describe system
+     functionality
+   * Logical Viewpoint: Models for the implementation
+     independent system architecture
+   * Technical Architecture Viewpoint:
+     Models for the implementation related architecture,
+     including special models related to software and hardware
+     architectures.
