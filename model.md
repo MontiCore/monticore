@@ -14,34 +14,34 @@ Universellen und Generic Models .
 ## Core terms
 
 1. A *model* is an abstraction of an aspect of reality that is built 
-  for a given purpose.
-  * One might ad a longer discussion here about kinds of models, e.g. 
-    written more explicitly in a modelling language, 
-    or more implicitly; whether it is a mental model only versus a
-    syntactically expressed model; prescriptive or descriptive; etc.
+   for a given purpose.
+   * One might ad a longer discussion here about kinds of models, e.g. 
+     written more explicitly in a modelling language, 
+     or more implicitly; whether it is a mental model only versus a
+     syntactically expressed model; prescriptive or descriptive; etc.
 1. A *modeling language* defines a set of models that can be used for
-modeling purposes. Its definition consists of (1) the syntax,
-describing how models appear, (2) the semantics, describing what each
-of its models means, and (3) its pragmatics, describing how to use its
-models according to their purpose.
+   modeling purposes. Its definition consists of (1) the syntax,
+   describing how models appear, (2) the semantics, describing what each
+   of its models means, and (3) its pragmatics, describing how to use its
+   models according to their purpose.
 1. A *system model* is a model of a system (usually a system to be
-developed).
+   developed).
 1. A *formal model* is a model that comprises concrete and abstract
-  syntax. That is a *formal model* is an element of an explicitly
-  defined modelling language.
-  * Synonym: "explicitly represented model"?
-  * Variant: A *formal model* has an explicitly, mathematically
-    defined concrete and abstract syntax, semantic domain and
-    semantics definition.
+   syntax. That is a *formal model* is an element of an explicitly
+   defined modelling language.
+   * Synonym: "explicitly represented model"?
+   * Variant: A *formal model* has an explicitly, mathematically
+     defined concrete and abstract syntax, semantic domain and
+     semantics definition.
 1. An *abstract formal model* (or in short *abstract model*)
    is a formal model without concrete syntax.
    * Option could be: only call it "abstract model" or "model
-   essence". Not even sure we need that, just call thsi model and
-   ignore that it has a concrete syntax.
+     essence". Not even sure we need that, just call thsi model and
+     ignore that it has a concrete syntax.
 1. A *modelling theory* is a modelling language, whose models also
-  have a formal semantics, and that includes a logical calculus of
-  operations that allow to manipulate, transform, and reason about these
-  models in semantically useful ways.
+   have a formal semantics, and that includes a logical calculus of
+   operations that allow to manipulate, transform, and reason about these
+   models in semantically useful ways.
 
 ## Language Stuff
 
