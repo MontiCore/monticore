@@ -8,6 +8,7 @@ import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisTraver
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisitor2;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.se_rwth.commons.logging.Log;
 
@@ -70,6 +71,7 @@ public class DeriveSymTypeOfExpression extends AbstractDeriveFromExpression impl
 
   protected Optional<SymTypeExpression> calculateNameExpression(ASTNameExpression expr){
     Optional<VariableSymbol> optVar = getScope(expr.getEnclosingScope()).resolveVariable(expr.getName());
+    Optional<TypeVarSymbol> optTypeVar = getScope(expr.getEnclosingScope()).resolveTypeVar(expr.getName());
     Optional<TypeSymbol> optType = getScope(expr.getEnclosingScope()).resolveType(expr.getName());
     if (optVar.isPresent()) {
       //no method here, test variable first
@@ -78,10 +80,15 @@ public class DeriveSymTypeOfExpression extends AbstractDeriveFromExpression impl
       SymTypeExpression res = var.getType().deepClone();
       typeCheckResult.setField();
       return Optional.of(res);
+    } else if(optTypeVar.isPresent()) {
+      TypeVarSymbol typeVar = optTypeVar.get();
+      SymTypeExpression res = createTypeVariable(typeVar);
+      typeCheckResult.setType();
+      return Optional.of(res);
     } else if (optType.isPresent()) {
       //no variable found, test if name is type
       TypeSymbol type = optType.get();
-      SymTypeExpression res = createTypeExpression(type.getName(), type.getEnclosingScope());
+      SymTypeExpression res = createTypeExpression(type);
       typeCheckResult.setType();
       return Optional.of(res);
     }

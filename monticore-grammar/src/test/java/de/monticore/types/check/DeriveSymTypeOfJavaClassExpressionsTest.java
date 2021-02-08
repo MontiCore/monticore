@@ -5,14 +5,13 @@ import com.google.common.collect.Lists;
 import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsScope;
+import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsGlobalScope;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsScope;
 import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
-import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
-import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
-import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
+import de.monticore.symbols.oosymbols._symboltable.*;
 import de.se_rwth.commons.logging.*;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
@@ -49,10 +48,12 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     CombineExpressionsWithLiteralsMill.init();
     // Setting up a Scope Infrastructure (without a global Scope)
     DefsTypeBasic.setup();
+    ICombineExpressionsWithLiteralsGlobalScope gs = CombineExpressionsWithLiteralsMill.globalScope();
     scope = CombineExpressionsWithLiteralsMill.scope();
     scope.setEnclosingScope(null);       // No enclosing Scope: Search ending here
     scope.setExportingSymbols(true);
     scope.setAstNode(null);
+    scope.setEnclosingScope(gs);
     // we add a variety of TypeSymbols to the same scope (which in reality doesn't happen)
     add2scope(scope, DefsTypeBasic._int);
     add2scope(scope, DefsTypeBasic._char);
@@ -65,7 +66,15 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     add2scope(scope, DefsTypeBasic._Object);
     add2scope(scope, DefsTypeBasic._String);
 
+    IOOSymbolsArtifactScope scope2 = CombineExpressionsWithLiteralsMill.artifactScope();
+    scope2.setPackageName("java.util");
+    scope2.setName("Set");
+    scope2.setEnclosingScope(gs);
+    OOTypeSymbol set = new OOTypeSymbol("Set");
+    add2scope(scope2, set);
     // some FieldSymbols (ie. Variables, Attributes)
+    OOTypeSymbol integer = new OOTypeSymbol("Integer");
+    add2scope(scope, integer);
     OOTypeSymbol p = new OOTypeSymbol("Person");
     add2scope(scope,p);
     OOTypeSymbol s = new OOTypeSymbol("Student");
@@ -1646,6 +1655,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     traverser.add4SetExpressions(flatExpressionScopeSetter);
     traverser.add4JavaClassExpressions(flatExpressionScopeSetter);
     traverser.add4MCBasicTypes(flatExpressionScopeSetter);
+    traverser.add4MCSimpleGenericTypes(flatExpressionScopeSetter);
     return traverser;
   }
 

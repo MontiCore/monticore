@@ -4,13 +4,13 @@ package de.monticore.types.check;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.literals.mccommonliterals._ast.ASTSignedLiteral;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
-import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcbasictypes._ast.ASTMCVoidType;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
+import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.se_rwth.commons.logging.Log;
 
+import java.util.List;
 import java.util.Optional;
 
 import static de.monticore.types.check.SymTypeConstant.unbox;
@@ -54,23 +54,6 @@ public class TypeCheck {
   public TypeCheck(ISynthesize synthesizeSymType,
                    ITypesCalculator iTypesCalculator) {
     this.iSynthesize = synthesizeSymType;
-    this.iTypesCalculator = iTypesCalculator;
-  }
-
-  /**
-   *
-   * @param synthesizeSymType defines, which AST Types are mapped (and how)
-   */
-  public TypeCheck(ISynthesize synthesizeSymType){
-    this.iSynthesize = synthesizeSymType;
-  }
-
-  /**
-   *
-   * @param iTypesCalculator defines, which AST Literals are handled
-   *                               through the Expression type recognition
-   */
-  public TypeCheck(ITypesCalculator iTypesCalculator){
     this.iTypesCalculator = iTypesCalculator;
   }
   
@@ -253,7 +236,7 @@ public class TypeCheck {
       return false;
     } else if(unbox(left.print()).equals(unbox(right.print()))) {
       return true;
-    } else if(isSubtypeOf(right,left)){
+    } else if(isSubtypeOf(right,left)) {
       return true;
     } else if (right.print().equals(left.print())) {
       return true;

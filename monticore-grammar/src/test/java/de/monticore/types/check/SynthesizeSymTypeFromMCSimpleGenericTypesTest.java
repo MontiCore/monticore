@@ -3,6 +3,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
+import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._ast.ASTMCVoidType;
@@ -30,6 +33,8 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
   public void setup() {
     LogStub.init();
     Log.enableFailQuick(false);
+    CombineExpressionsWithLiteralsMill.reset();
+    CombineExpressionsWithLiteralsMill.init();
   }
   
   // Parer used for convenience:
@@ -42,6 +47,17 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
   
   // This is the TypeChecker under Test:
   TypeCheck tc = new TypeCheck(synt,null);
+
+  FlatExpressionScopeSetter scopeSetter = new FlatExpressionScopeSetter(BasicSymbolsMill.scope());
+  CombineExpressionsWithLiteralsTraverser traverser = CombineExpressionsWithLiteralsMill.traverser();
+
+  @Before
+  public void initScope(){
+    traverser = CombineExpressionsWithLiteralsMill.traverser();
+    traverser.add4MCSimpleGenericTypes(scopeSetter);
+    traverser.add4MCCollectionTypes(scopeSetter);
+    traverser.add4MCBasicTypes(scopeSetter);
+  }
   
   // ------------------------------------------------------  Tests for Function 1, 1b, 1c
 
@@ -52,6 +68,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
     String s = "double";
     parser = new MCSimpleGenericTypesTestParser();
     ASTMCType asttype = parser.parse_StringMCType(s).get();
+    asttype.accept(traverser);
     assertEquals(s, tc.symTypeFromAST(asttype).print());
   }
   
@@ -59,6 +76,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
   public void symTypeFromAST_Test4() throws IOException {
     String s = "Person";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
+    asttype.accept(traverser);
     assertEquals(s, tc.symTypeFromAST(asttype).print());
   }
   
@@ -66,6 +84,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
   public void symTypeFromAST_Test5() throws IOException {
     String s = "de.x.Person";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
+    asttype.accept(traverser);
     assertEquals(s, tc.symTypeFromAST(asttype).print());
   }
   
@@ -82,6 +101,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
     // und nochmal einen normalen Typ:
     String s = "Person";
     ASTMCReturnType r = parser.parse_StringMCReturnType(s).get();
+    r.accept(traverser);
     assertEquals(s, tc.symTypeFromAST(r).print());
   }
 
@@ -91,6 +111,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
   public void symTypeFromAST_TestListQual() throws IOException {
     String s = "List<a.z.Person>";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
+    asttype.accept(traverser);
     assertEquals(s, tc.symTypeFromAST(asttype).print());
   }
   
@@ -98,6 +119,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
   public void symTypeFromAST_TestListQual2() throws IOException {
     String s = "Set<Auto>";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
+    asttype.accept(traverser);
     assertEquals(s, tc.symTypeFromAST(asttype).print());
   }
   
@@ -105,6 +127,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
   public void symTypeFromAST_TestListQual3() throws IOException {
     String s = "Map<int,Auto>";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
+    asttype.accept(traverser);
     assertEquals(s, tc.symTypeFromAST(asttype).print());
   }
   
@@ -112,6 +135,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
   public void symTypeFromAST_TestListQual4() throws IOException {
     String s = "Set<int>";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
+    asttype.accept(traverser);
     assertEquals(s, tc.symTypeFromAST(asttype).print());
   }
   
@@ -121,6 +145,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
   public void symTypeFromAST_TestGeneric() throws IOException {
     String s = "Iterator<Person>";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
+    asttype.accept(traverser);
     assertEquals(s, tc.symTypeFromAST(asttype).print());
   }
 
@@ -128,6 +153,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
   public void symTypeFromAST_TestGeneric2() throws IOException {
     String s = "java.util.Iterator<java.lang.String>";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
+    asttype.accept(traverser);
     assertEquals(s, tc.symTypeFromAST(asttype).print());
   }
 
@@ -135,6 +161,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
   public void symTypeFromAST_TestGeneric3() throws IOException {
     String s = "Collection<int>";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
+    asttype.accept(traverser);
     assertEquals(s, tc.symTypeFromAST(asttype).print());
   }
 
@@ -142,6 +169,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
   public void symTypeFromAST_TestGeneric4() throws IOException {
     String s = "java.util.Iterator<Void>";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
+    asttype.accept(traverser);
     assertEquals(s, tc.symTypeFromAST(asttype).print());
   }
 
@@ -149,6 +177,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
   public void symTypeFromAST_TestGeneric5() throws IOException {
     String s = "java.util.Iterator<java.lang.String,java.lang.Person,java.lang.String,int>";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
+    asttype.accept(traverser);
     assertEquals(s, tc.symTypeFromAST(asttype).print());
   }
 
@@ -156,6 +185,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
   public void symTypeFromAST_TestGeneric6() throws IOException {
     String s = "java.util.Iterator<java.util.Iterator<java.util.Iterator<int>>>";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
+    asttype.accept(traverser);
     assertEquals(s, tc.symTypeFromAST(asttype).print());
   }
 
@@ -163,6 +193,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
   public void symTypeFromAST_TestGeneric7() throws IOException {
     String s = "java.util.Iterator<List<java.util.Iterator<int>>>";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
+    asttype.accept(traverser);
     assertEquals(s, tc.symTypeFromAST(asttype).print());
   }
 

@@ -244,7 +244,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
           if (superSuffix.isPresentArguments()) {
             //case 1 -> Expression.super.<TypeArgument>Method(Args)
             List<SymTypeExpression> typeArgsList = calculateTypeArguments(superSuffix.getExtTypeArgumentList());
-            List<FunctionSymbol> methods = superClass.getMethodList(superSuffix.getName());
+            List<FunctionSymbol> methods = superClass.getMethodList(superSuffix.getName(), false);
             if (!methods.isEmpty() && null != superSuffix.getArguments()) {
               //check if the methods fit and return the right returntype
               ASTArguments args = superSuffix.getArguments();
@@ -253,7 +253,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
           }
           else {
             //case 2 -> Expression.super.Field
-            List<VariableSymbol> fields = superClass.getFieldList(superSuffix.getName());
+            List<VariableSymbol> fields = superClass.getFieldList(superSuffix.getName(), false);
             if (fields.size()==1) {
               wholeResult = fields.get(0).getType();
             }else{
@@ -433,7 +433,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
 
     //search in the scope of the type that before the "." for a method that has the right name
     if(node.getPrimaryGenericInvocationExpression().getGenericInvocationSuffix().isPresentName()) {
-      List<FunctionSymbol> methods = expressionResult.getMethodList(node.getPrimaryGenericInvocationExpression().getGenericInvocationSuffix().getName(),isType);
+      List<FunctionSymbol> methods = expressionResult.getMethodList(node.getPrimaryGenericInvocationExpression().getGenericInvocationSuffix().getName(),isType,false);
       //if the last result is a type then the method has to be static to be accessible
       if(isType){
         methods = filterStaticMethodSymbols(methods);
@@ -590,7 +590,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
         //get the superclass of this typesymbol and search for its fitting constructor
         if(subType!=null&&subType.getSuperClassesOnly().size()==1){
           SymTypeExpression superClass = subType.getSuperClassesOnly().get(0);
-          List<FunctionSymbol> methods = superClass.getMethodList(superClass.getTypeInfo().getName());
+          List<FunctionSymbol> methods = superClass.getMethodList(superClass.getTypeInfo().getName(), false);
           if(!methods.isEmpty() && superSuffix.isPresentArguments()){
             //check if the constructors fit and return the right returntype
             ASTArguments args = superSuffix.getArguments();
@@ -649,7 +649,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
       }
       if(!extType.isTypeConstant()){
         //see if there is a constructor fitting for the arguments
-        List<FunctionSymbol> constructors = extType.getMethodList(extType.getTypeInfo().getName());
+        List<FunctionSymbol> constructors = extType.getMethodList(extType.getTypeInfo().getName(), false);
         if(!constructors.isEmpty()){
           if(testForCorrectArguments(constructors, creator.getArguments())){
             wholeResult = extType;

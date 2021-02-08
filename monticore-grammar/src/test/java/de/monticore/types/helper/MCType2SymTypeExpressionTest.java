@@ -1,6 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.helper;
 
+import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
+import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.*;
 import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
@@ -15,6 +18,7 @@ import de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMill;
 import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesTraverser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -33,12 +37,26 @@ public class MCType2SymTypeExpressionTest {
   public static void setup() {
     LogStub.init();
     Log.enableFailQuick(false);
+    CombineExpressionsWithLiteralsMill.reset();
+    CombineExpressionsWithLiteralsMill.init();
+  }
+
+  FlatExpressionScopeSetter scopeSetter = new FlatExpressionScopeSetter(BasicSymbolsMill.scope());
+  CombineExpressionsWithLiteralsTraverser traverser = CombineExpressionsWithLiteralsMill.traverser();
+
+  @Before
+  public void initScope(){
+    traverser = CombineExpressionsWithLiteralsMill.traverser();
+    traverser.add4MCSimpleGenericTypes(scopeSetter);
+    traverser.add4MCCollectionTypes(scopeSetter);
+    traverser.add4MCBasicTypes(scopeSetter);
   }
 
   List<String> primitiveTypes = Arrays
       .asList("boolean", "byte", "char", "short", "int", "long", "float", "double");
 
   private SymTypeExpression mcType2TypeExpression(ASTMCBasicTypesNode type) {
+    type.accept(traverser);
     SynthesizeSymTypeFromCombineExpressionsWithLiteralsDelegator visitor = new SynthesizeSymTypeFromCombineExpressionsWithLiteralsDelegator();
     type.accept(visitor.getTraverser());
     return visitor.getResult().get();

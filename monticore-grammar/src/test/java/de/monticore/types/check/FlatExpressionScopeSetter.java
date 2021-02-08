@@ -20,19 +20,28 @@ import de.monticore.expressions.setexpressions._ast.ASTIsInExpression;
 import de.monticore.expressions.setexpressions._ast.ASTSetInExpression;
 import de.monticore.expressions.setexpressions._ast.ASTUnionExpressionInfix;
 import de.monticore.expressions.setexpressions._visitor.SetExpressionsVisitor2;
+import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symboltable.IScope;
 import de.monticore.symboltable.ISymbol;
+import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2;
+import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCMapType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCSetType;
+import de.monticore.types.mccollectiontypes._visitor.MCCollectionTypesVisitor2;
+import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
+import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesVisitor2;
 
-public class FlatExpressionScopeSetter implements AssignmentExpressionsVisitor2, CommonExpressionsVisitor2,
-    JavaClassExpressionsVisitor2, SetExpressionsVisitor2, BitExpressionsVisitor2, ExpressionsBasisVisitor2, MCBasicTypesVisitor2 {
+public class FlatExpressionScopeSetter implements AssignmentExpressionsVisitor2, CommonExpressionsVisitor2, JavaClassExpressionsVisitor2, SetExpressionsVisitor2, BitExpressionsVisitor2,
+    ExpressionsBasisVisitor2, MCBasicTypesVisitor2, MCCollectionTypesVisitor2, MCSimpleGenericTypesVisitor2 {
 
-  private ICombineExpressionsWithLiteralsScope scope;
+  private IBasicSymbolsScope scope;
 
-  public FlatExpressionScopeSetter(ICombineExpressionsWithLiteralsScope scope){
+  public FlatExpressionScopeSetter(IBasicSymbolsScope scope){
     this.scope = scope;
   }
 
@@ -311,6 +320,9 @@ public class FlatExpressionScopeSetter implements AssignmentExpressionsVisitor2,
     expr.setEnclosingScope(scope);
   }
 
+
+  /*************************************************MCBASICTYPES****************************************************/
+
   @Override
   public void visit(ASTMCQualifiedType type){
     type.setEnclosingScope(scope);
@@ -323,6 +335,40 @@ public class FlatExpressionScopeSetter implements AssignmentExpressionsVisitor2,
 
   @Override
   public void visit(ASTMCReturnType type){
+    type.setEnclosingScope(scope);
+  }
+
+  @Override
+  public void visit(ASTMCPrimitiveType type) {
+    type.setEnclosingScope(scope);
+  }
+
+  /*************************************************MCCOLLECTIONTYPES****************************************************/
+
+  @Override
+  public void visit(ASTMCMapType node) {
+    node.setEnclosingScope(scope);
+  }
+
+  @Override
+  public void visit(ASTMCSetType node) {
+    node.setEnclosingScope(scope);
+  }
+
+  @Override
+  public void visit(ASTMCListType node) {
+    node.setEnclosingScope(scope);
+  }
+
+  @Override
+  public void visit(ASTMCOptionalType node) {
+    node.setEnclosingScope(scope);
+  }
+
+  /*************************************************MCSIMPLEGENERICTYPES****************************************************/
+
+  @Override
+  public void visit(ASTMCBasicGenericType type) {
     type.setEnclosingScope(scope);
   }
 

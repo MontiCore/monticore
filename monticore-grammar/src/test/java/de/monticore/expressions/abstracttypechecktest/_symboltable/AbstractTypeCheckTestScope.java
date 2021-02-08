@@ -1,7 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.symbols.basicsymbols._symboltable;
+package de.monticore.expressions.abstracttypechecktest._symboltable;
 
-import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
+import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symboltable.IScopeSpanningSymbol;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.types.check.SymTypeExpression;
@@ -9,22 +11,22 @@ import de.monticore.types.check.SymTypeExpression;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class BasicSymbolsScope extends BasicSymbolsScopeTOP {
+public class AbstractTypeCheckTestScope extends AbstractTypeCheckTestScopeTOP {
 
-  public BasicSymbolsScope() {
+  public AbstractTypeCheckTestScope(){
     super();
   }
 
-  public BasicSymbolsScope(boolean isShadowingScope) {
-    super(isShadowingScope);
+  public AbstractTypeCheckTestScope(boolean isShadowing){
+    super(isShadowing);
   }
 
-  public BasicSymbolsScope(IOOSymbolsScope enclosingScope) {
-    this(enclosingScope, false);
+  public AbstractTypeCheckTestScope(IAbstractTypeCheckTestScope enclosingScope){
+    super(enclosingScope, false);
   }
 
-  public BasicSymbolsScope(IOOSymbolsScope enclosingScope, boolean isShadowingScope) {
-    super(enclosingScope,isShadowingScope);
+  public AbstractTypeCheckTestScope(IAbstractTypeCheckTestScope enclosingScope, boolean isShadowing){
+    super(enclosingScope, isShadowing);
   }
 
   /**
@@ -58,7 +60,7 @@ public class BasicSymbolsScope extends BasicSymbolsScopeTOP {
    * it is used by the method getFieldList in SymTypeExpression
    */
   @Override
-  public List<VariableSymbol> resolveVariableLocallyMany(boolean foundSymbols, String name, AccessModifier modifier, Predicate predicate){
+  public List<VariableSymbol> resolveVariableLocallyMany(boolean foundSymbols, String name, AccessModifier modifier, Predicate<VariableSymbol> predicate){
     //resolve methods by using overridden method
     List<VariableSymbol> result = super.resolveVariableLocallyMany(foundSymbols,name,modifier,predicate);
     if(this.isPresentSpanningSymbol()){
@@ -74,19 +76,4 @@ public class BasicSymbolsScope extends BasicSymbolsScopeTOP {
     return result;
   }
 
-  @Override
-  public List<TypeSymbol> resolveTypeLocallyMany(boolean foundSymbols, String name, AccessModifier modifier, Predicate predicate){
-    List<TypeSymbol> result = super.resolveTypeLocallyMany(foundSymbols,name,modifier,predicate);
-    //    TODO ND: uncomment when adding inner types
-    //    if(this.isPresentSpanningSymbol()){
-    //      IScopeSpanningSymbol spanningSymbol = getSpanningSymbol();
-    //      if(spanningSymbol instanceof TypeSymbol){
-    //        TypeSymbol typeSymbol = (TypeSymbol) spanningSymbol;
-    //        for(SymTypeExpression superType : typeSymbol.getSuperTypeList()){
-    //          result.addAll(superType.getInnerTypeList(name));
-    //        }
-    //      }
-    //    }
-    return result;
-  }
 }

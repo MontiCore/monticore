@@ -1,13 +1,19 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
+import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolSurrogate;
 import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesHandler;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2;
+import de.se_rwth.commons.logging.Log;
+
+import java.util.Optional;
 
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeObject;
 
@@ -38,20 +44,6 @@ public class SynthesizeSymTypeFromMCBasicTypes extends AbstractSynthesizeFromTyp
     typeCheckResult.setCurrentResult(SymTypeExpressionFactory.createTypeVoid());
   }
   
-  /**
-   * Asks the SymTypeExpressionFactory to create the correct Type
-   * Here: the Argument may be qualified Type object, but that allows only primitives, such as "int" or
-   * boxed versions, such as "java.lang.Boolean"
-   * This are the only qualified Types that may occur.
-   * In particular: This method needs to be overriden when real qualified Types occur.
-   * @param qType
-   */
-  public void endVisit(ASTMCQualifiedType qType) {
-    // Otherwise the Visitor is applied to the wrong AST (and an internal error 0x893F62 is issued
-    typeCheckResult.setCurrentResult(
-        createTypeObject(qType.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()), getScope(qType.getEnclosingScope())));
-  }
-  
   public void endVisit(ASTMCReturnType rType) {
     // result is pushed upward (no change)
   }
@@ -68,10 +60,22 @@ public class SynthesizeSymTypeFromMCBasicTypes extends AbstractSynthesizeFromTyp
 
   @Override
   public void endVisit(ASTMCQualifiedName qName) {
-    TypeSymbol loader = new OOTypeSymbolSurrogate(qName.getQName());
-    loader.setEnclosingScope(getScope(qName.getEnclosingScope()));
-    SymTypeOfObject oType = createTypeObject(loader);
-    typeCheckResult.setCurrentResult(oType);
+    Optional<TypeVarSymbol> typeVar = getScope(qName.getEnclosingScope()).resolveTypeVar(qName.getQName());
+    SymTypeExpression symType = null;
+    if(typeVar.isPresent()){
+      symType = SymTypeExpressionFactory.createTypeVariable(typeVar.get());
+    }else{
+      //then test for types
+      Optional<TypeSymbol> type = getScope(qName.getEnclosingScope()).resolveType(qName.getQName());
+      if(type.isPresent()){
+        symType = SymTypeExpressionFactory.createTypeObject(type.get());
+      }else{
+        TypeSymbol surrogate = new TypeSymbolSurrogate(qName.getQName());
+        surrogate.setEnclosingScope(getScope(qName.getEnclosingScope()));
+        symType = SymTypeExpressionFactory.createTypeObject(surrogate);
+      }
+    }
+    typeCheckResult.setCurrentResult(symType);
   }
 
 

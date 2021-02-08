@@ -1,6 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
+import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._ast.ASTMCVoidType;
@@ -8,6 +11,7 @@ import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mcbasictypestest._parser.MCBasicTypesTestParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -30,12 +34,25 @@ public class SynthesizeSymTypeFromMCBasicTypesTest {
   public static void setup() {
     LogStub.init();
     Log.enableFailQuick(false);
+    CombineExpressionsWithLiteralsMill.reset();
+    CombineExpressionsWithLiteralsMill.init();
   }
   
   // Parer used for convenience:
   MCBasicTypesTestParser parser = new MCBasicTypesTestParser();
   // This is the TypeChecker under Test:
   TypeCheck tc = new TypeCheck(new SynthesizeSymTypeFromCombineExpressionsWithLiteralsDelegator(),null);
+
+  FlatExpressionScopeSetter scopeSetter = new FlatExpressionScopeSetter(BasicSymbolsMill.scope());
+  CombineExpressionsWithLiteralsTraverser traverser = CombineExpressionsWithLiteralsMill.traverser();
+
+  @Before
+  public void initScope(){
+    traverser = CombineExpressionsWithLiteralsMill.traverser();
+    traverser.add4MCSimpleGenericTypes(scopeSetter);
+    traverser.add4MCCollectionTypes(scopeSetter);
+    traverser.add4MCBasicTypes(scopeSetter);
+  }
   
   // ------------------------------------------------------  Tests for Function 1, 1b, 1c
   
@@ -43,6 +60,7 @@ public class SynthesizeSymTypeFromMCBasicTypesTest {
   public void symTypeFromAST_Test1() throws IOException {
     String s = "double";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
+    asttype.accept(traverser);
     assertEquals(s, tc.symTypeFromAST(asttype).print());
   }
   
@@ -50,6 +68,7 @@ public class SynthesizeSymTypeFromMCBasicTypesTest {
   public void symTypeFromAST_Test2() throws IOException {
     String s = "int";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
+    asttype.accept(traverser);
     assertEquals(s, tc.symTypeFromAST(asttype).print());
   }
   
@@ -57,6 +76,7 @@ public class SynthesizeSymTypeFromMCBasicTypesTest {
   public void symTypeFromAST_Test3() throws IOException {
     String s = "A";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
+    asttype.accept(traverser);
     assertEquals(s, tc.symTypeFromAST(asttype).print());
   }
   
@@ -64,6 +84,7 @@ public class SynthesizeSymTypeFromMCBasicTypesTest {
   public void symTypeFromAST_Test4() throws IOException {
     String s = "Person";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
+    asttype.accept(traverser);
     assertEquals(s, tc.symTypeFromAST(asttype).print());
   }
   
@@ -71,6 +92,7 @@ public class SynthesizeSymTypeFromMCBasicTypesTest {
   public void symTypeFromAST_Test5() throws IOException {
     String s = "de.x.Person";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
+    asttype.accept(traverser);
     assertEquals(s, tc.symTypeFromAST(asttype).print());
   }
   
@@ -100,6 +122,7 @@ public class SynthesizeSymTypeFromMCBasicTypesTest {
     // und nochmal einen normalen Typ:
     String s = "Person";
     ASTMCReturnType r = parser.parse_StringMCReturnType(s).get();
+    r.accept(traverser);
     assertEquals(s, tc.symTypeFromAST(r).print());
   }
   
