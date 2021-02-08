@@ -1,3 +1,4 @@
+// (c) https://github.com/MontiCore/monticore
 package de.monticore.umlmodifier._ast;
 
 import de.monticore.umlstereotype.UMLStereotypeMill;

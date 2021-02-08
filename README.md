@@ -18,6 +18,8 @@ components, conservative extension and composition mechanisms, and an
 optimal integration of hand-written code into the generated tools. Its 
 grammar languages are rather comfortable to use. 
 
+[**Start here for developing with MontiCore.**](docs/GettingStarted.md)
+
 ## A Teaser for MontiCore
 
 To show a little of MontiCore's capabilities, the following (incomplete) 
@@ -86,6 +88,19 @@ predefined typechecks, code generation, etc.
 They only need to be extended to the added variants.
 Please also note that `PlusExpr` is mutually left-recursive.
 -- Yes, that works in MontiCore 6.
+
+## Quick Start
+
+```
+$ cd /usr/local
+$ wget www.monticore.de/download/aut.tar.gz
+$ tar -xf aut.tar.gz
+$ cd mc-workspace
+$ wget www.monticore.de/download/monticore-cli.jar
+$ java -jar monticore-cli.jar Automata.mc4 -hcp hwc/
+$ javac -cp monticore-cli.jar -sourcepath "src/;out/;hwc/" src/automata/AutomataTool.java
+$ java -cp "src/;out/;hwc/;monticore-cli.jar" automata.AutomataTool example/PingPong.aut PingPong.autsym
+```
 
 ## MontiCore has a Relaxed 3-Level License  
 

@@ -129,4 +129,3 @@ compileTestJava.dependsOn (generateTest)
 String getGrammarInclPackage(String grammarDir, File grammarFile ){
   return file(grammarDir).toURI().relativize(grammarFile.toURI()).toString()
 }
-

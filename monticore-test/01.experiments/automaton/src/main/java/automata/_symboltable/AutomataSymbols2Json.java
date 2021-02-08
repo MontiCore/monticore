@@ -6,7 +6,9 @@ import automata._visitor.AutomataHandler;
 import automata._visitor.AutomataTraverser;
 import de.monticore.symboltable.serialization.JsonPrinter;
 
-public class AutomataSymbols2Json extends AutomataSymbols2JsonTOP implements AutomataHandler {
+public class AutomataSymbols2Json
+    extends AutomataSymbols2JsonTOP
+    implements AutomataHandler {
 
   public AutomataSymbols2Json(){
     super();
@@ -18,10 +20,9 @@ public class AutomataSymbols2Json extends AutomataSymbols2JsonTOP implements Aut
     super(traverser, printer);
   }
 
-  @Override public void traverse(IAutomataScope node) {
-    for (automata._symboltable.AutomatonSymbol s : node.getLocalAutomatonSymbols()) {
-      s.accept(getTraverser());
+  @Override public void traverse(IAutomataScope s) {
+    for (AutomatonSymbol aut : s.getLocalAutomatonSymbols()) {
+      aut.accept(getTraverser());
     }
   }
-
 }

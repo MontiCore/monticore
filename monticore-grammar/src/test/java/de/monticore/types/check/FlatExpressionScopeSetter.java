@@ -15,11 +15,6 @@ import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisitor2;
 import de.monticore.expressions.javaclassexpressions._ast.*;
 import de.monticore.expressions.javaclassexpressions._visitor.JavaClassExpressionsVisitor2;
-import de.monticore.expressions.setexpressions._ast.ASTIntersectionExpressionInfix;
-import de.monticore.expressions.setexpressions._ast.ASTIsInExpression;
-import de.monticore.expressions.setexpressions._ast.ASTSetInExpression;
-import de.monticore.expressions.setexpressions._ast.ASTUnionExpressionInfix;
-import de.monticore.expressions.setexpressions._visitor.SetExpressionsVisitor2;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symboltable.IScope;
 import de.monticore.symboltable.ISymbol;
@@ -36,7 +31,7 @@ import de.monticore.types.mccollectiontypes._visitor.MCCollectionTypesVisitor2;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesVisitor2;
 
-public class FlatExpressionScopeSetter implements AssignmentExpressionsVisitor2, CommonExpressionsVisitor2, JavaClassExpressionsVisitor2, SetExpressionsVisitor2, BitExpressionsVisitor2,
+public class FlatExpressionScopeSetter implements AssignmentExpressionsVisitor2, CommonExpressionsVisitor2, JavaClassExpressionsVisitor2, BitExpressionsVisitor2,
     ExpressionsBasisVisitor2, MCBasicTypesVisitor2, MCCollectionTypesVisitor2, MCSimpleGenericTypesVisitor2 {
 
   private IBasicSymbolsScope scope;
@@ -231,28 +226,6 @@ public class FlatExpressionScopeSetter implements AssignmentExpressionsVisitor2,
 
   @Override
   public void visit(ASTBinaryXorExpression expr){
-    expr.setEnclosingScope(scope);
-  }
-
-  /*************************************************SET EXPRESSIONS****************************************************/
-
-  @Override
-  public void visit(ASTIsInExpression expr){
-    expr.setEnclosingScope(scope);
-  }
-
-  @Override
-  public void visit(ASTSetInExpression expr){
-    expr.setEnclosingScope(scope);
-  }
-
-  @Override
-  public void visit(ASTUnionExpressionInfix expr){
-    expr.setEnclosingScope(scope);
-  }
-
-  @Override
-  public void visit(ASTIntersectionExpressionInfix expr){
     expr.setEnclosingScope(scope);
   }
 
