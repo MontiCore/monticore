@@ -107,10 +107,7 @@ task buildMC {
 }
 
 if(!hasProperty('bootstrap')) {
-  buildMC.dependsOn(
-          gradle.includedBuild('monticore-tool').task(':monticore-generator:build'),
-          gradle.includedBuild('monticore-tool').task(':monticore-cli:build'),
-          gradle.includedBuild('monticore-tool').task(':monticore-gradle:build'))
+  buildMC.dependsOn(gradle.includedBuilds*.task(':buildAll'))
 }
 
 /**
@@ -130,10 +127,7 @@ task assembleMC {
   )
 }
 if(!hasProperty('bootstrap')) {
-  assembleMC.dependsOn(
-          gradle.includedBuild('monticore-tool').task(':monticore-generator:assemble'),
-          gradle.includedBuild('monticore-tool').task(':monticore-cli:assemble'),
-          gradle.includedBuild('monticore-tool').task(':monticore-gradle:assemble'))
+  assembleMC.dependsOn(gradle.includedBuilds*.task(':assembleAll'))
 }
 
 /**
@@ -153,10 +147,7 @@ task testMC {
 }
 
 if(!hasProperty('bootstrap')) {
-  testMC.dependsOn(
-          gradle.includedBuild('monticore-tool').task(':monticore-generator:test'),
-          gradle.includedBuild('monticore-tool').task(':monticore-cli:test'),
-          gradle.includedBuild('monticore-tool').task(':monticore-gradle:test'))
+  testMC.dependsOn(gradle.includedBuilds*.task(':testAll'))
 }
 
 /**
@@ -178,10 +169,7 @@ task deployMC {
 }
 
 if(!hasProperty('bootstrap')) {
-  deployMC.dependsOn(
-          gradle.includedBuild('monticore-tool').task(':monticore-generator:publish'),
-          gradle.includedBuild('monticore-tool').task(':monticore-cli:publish'),
-          gradle.includedBuild('monticore-tool').task(':monticore-gradle:publish'))
+  deployMC.dependsOn(gradle.includedBuilds*.task(':publishAll'))
 }
 
 /**
@@ -193,8 +181,8 @@ task publishMCToMavenLocal {
   group("build")
   description('Publishes the core projects, i.e. the generator, runtime and grammar library' +
           'to the local maven repository.')
-  
-  dependsOn(":monticore-grammar:publishToMavenLocal",
+  dependsOn(
+          ":monticore-grammar:publishToMavenLocal",
           ":monticore-runtime:publishToMavenLocal",
           ":monticore-runtime-emf:publishToMavenLocal",
           ":monticore-grammar-emf:publishToMavenLocal"
@@ -202,11 +190,7 @@ task publishMCToMavenLocal {
 }
 
 if(!hasProperty('bootstrap')) {
-  publishMCToMavenLocal.dependsOn(
-          gradle.includedBuild('monticore-tool').task(':monticore-generator:publishToMavenLocal'),
-          gradle.includedBuild('monticore-tool').task(':monticore-cli:publishToMavenLocal'),
-          gradle.includedBuild('monticore-tool').task(':monticore-gradle:publishToMavenLocal')
-  )
+  publishMCToMavenLocal.dependsOn(gradle.includedBuilds*.task(':publishToMavenLocalAll'))
 }
 
 /**
@@ -229,6 +213,21 @@ if(!hasProperty('bootstrap')) {
   
 task buildAll(type: GradleBuild) {
   dependsOn(subprojects.collect { getTasksByName("build", false) })
+}
+
+task cleanMC {
+  dependsOn(
+          ":monticore-grammar:clean",
+          ":monticore-runtime:clean",
+          ":monticore-runtime-emf:clean",
+          ":monticore-grammar-emf:clean"
+  
+  )
+  dependsOn(
+          project(":monticore-test").subprojects.collect {
+            it.tasks.getByName "clean"
+          }
+  )
 }
 
 
@@ -256,3 +255,4 @@ configure([project(':monticore-grammar'),
 }
 
 defaultTasks 'build'
+

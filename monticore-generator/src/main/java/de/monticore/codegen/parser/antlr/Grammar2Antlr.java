@@ -6,7 +6,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import de.monticore.ast.ASTNode;
-import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
+import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.parser.ParserGeneratorHelper;
 import de.monticore.grammar.DirectLeftRecursionDetector;
 import de.monticore.grammar.HelperGrammar;

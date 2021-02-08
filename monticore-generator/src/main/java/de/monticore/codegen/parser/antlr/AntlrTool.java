@@ -111,11 +111,11 @@ public class AntlrTool extends Tool {
     
     // Create message
     ST messageST = message.getMessageTemplate(false);
-    String output = "0xA0129 " + messageST.render() +
-            "\n(issued from Antlr subsystem, please see in the ANTLR manual, what went wrong)";
-    
+
     // Print message
     if (isError) {
+      String output = "0xA0129 " + "Error from Antlr subsystem: "
+              + messageST.render() + " (see e.g. www.antlr.org)";
       if (position.equals(SourcePosition.getDefaultSourcePosition())) {
         Log.error(output);
       }
@@ -124,6 +124,8 @@ public class AntlrTool extends Tool {
       }
     }
     else {
+      String output = "0xA0129 " + "Warning from Antlr subsystem: "
+              + messageST.render() + " (see e.g. www.antlr.org)";
       if (position.equals(SourcePosition.getDefaultSourcePosition())) {
         Log.warn(output);
       }

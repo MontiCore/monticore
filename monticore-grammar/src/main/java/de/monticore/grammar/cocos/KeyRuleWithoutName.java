@@ -2,11 +2,14 @@
 
 package de.monticore.grammar.cocos;
 
+import de.monticore.grammar.grammar.GrammarMill;
 import de.monticore.grammar.grammar._ast.ASTGrammarNode;
 import de.monticore.grammar.grammar._ast.ASTKeyConstant;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
+import de.monticore.grammar.grammar._visitor.GrammarTraverser;
+import de.monticore.grammar.grammar._visitor.GrammarVisitor2;
 import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVisitor;
 import de.se_rwth.commons.logging.Log;
 
@@ -29,11 +32,13 @@ public class KeyRuleWithoutName implements GrammarASTMCGrammarCoCo {
     }
   }
 
-  private class FindKeyConstant implements Grammar_WithConceptsVisitor {
+  private class FindKeyConstant implements GrammarVisitor2 {
     private boolean hasKeyConstant = false;
 
     public boolean getResult(ASTGrammarNode ast) {
-      ast.accept(getRealThis());
+      GrammarTraverser traverser = GrammarMill.traverser();
+      traverser.add4Grammar(this);
+      ast.accept(traverser);
       return hasKeyConstant;
     }
 

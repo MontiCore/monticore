@@ -110,23 +110,21 @@ public class SymbolruleTest {
     assertTrue(SymTypeExpressionFactory.createTypeConstant("int").deepEquals(as2.getSymType()));
     assertEquals(1, as2.getLocalFooSymbols().size());
     ISymbolruleTestScope fooSpannedScope = as2.getLocalFooSymbols().get(0).getSpannedScope();
-    /* TODO wieder einkommentieren, wenn gefixt -> momentan Problem, dass Subsymbolen auch in
-        Supersymbollisten von Scopes gespeichert und damit mehrmals serialisiert werden
     assertEquals(2, fooSpannedScope.getLocalBarSymbols().size());
     assertEquals("Test1", fooSpannedScope.getLocalBarSymbols().get(0).getName());
     assertEquals("Test2", fooSpannedScope.getLocalBarSymbols().get(1).getName());
     ISymbolruleTestScope bar1SpannedScope = fooSpannedScope.getLocalBarSymbols().get(0).getSpannedScope();
-    assertEquals(2, bar1SpannedScope.getLocalTest1Symbols());
+    assertEquals(2, bar1SpannedScope.getLocalTest1Symbols().size());
     assertEquals("symbol1", bar1SpannedScope.getLocalTest1Symbols().get(0).getName());
     assertEquals("symbol11", bar1SpannedScope.getLocalTest1Symbols().get(1).getName());
-    assertEquals(1, bar1SpannedScope.getLocalTest2Symbols());
+    assertEquals(1, bar1SpannedScope.getLocalTest2Symbols().size());
     assertEquals("symbol2", bar1SpannedScope.getLocalTest2Symbols().get(0).getName());
     ISymbolruleTestScope bar2SpannedScope = fooSpannedScope.getLocalBarSymbols().get(1).getSpannedScope();
-    assertEquals(2, bar2SpannedScope.getLocalTest1Symbols());
+    assertEquals(2, bar2SpannedScope.getLocalTest1Symbols().size());
     assertEquals("symbol3", bar2SpannedScope.getLocalTest1Symbols().get(0).getName());
     assertEquals("symbol4", bar2SpannedScope.getLocalTest1Symbols().get(1).getName());
-    assertEquals(1, bar2SpannedScope.getLocalTest2Symbols());
-    assertEquals("symbol22", bar2SpannedScope.getLocalTest2Symbols().get(0).getName());*/
+    assertEquals(1, bar2SpannedScope.getLocalTest2Symbols().size());
+    assertEquals("symbol22", bar2SpannedScope.getLocalTest2Symbols().get(0).getName());
   }
 
   @Test
