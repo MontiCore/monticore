@@ -46,11 +46,12 @@ public class SynthesizeSymTypeFromMCCollectionTypesTest {
   // This is the TypeChecker under Test:
   TypeCheck tc = new TypeCheck(synt,null);
 
-  FlatExpressionScopeSetter scopeSetter = new FlatExpressionScopeSetter(BasicSymbolsMill.scope());
-  CombineExpressionsWithLiteralsTraverser traverser = CombineExpressionsWithLiteralsMill.traverser();
+  FlatExpressionScopeSetter scopeSetter;
+  CombineExpressionsWithLiteralsTraverser traverser;
 
   @Before
   public void initScope(){
+    scopeSetter = new FlatExpressionScopeSetter(BasicSymbolsMill.scope());
     traverser = CombineExpressionsWithLiteralsMill.traverser();
     traverser.add4MCSimpleGenericTypes(scopeSetter);
     traverser.add4MCCollectionTypes(scopeSetter);
