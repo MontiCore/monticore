@@ -2,6 +2,7 @@
 package de.monticore.grammar.cocos;
 
 import de.monticore.grammar.MCGrammarSymbolTableHelper;
+import de.monticore.grammar.grammar._ast.ASTGrammarAnnotation;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
@@ -23,19 +24,21 @@ public class ConservativeExtensionCheck implements GrammarASTMCGrammarCoCo {
   public void check(ASTMCGrammar node) {
     MCGrammarSymbol g = node.getSymbol();
     for (ProdSymbol nt : g.getProds()) {
-      //check when you extend a class not conservative directly (Subclass extends Superclass = ...)
-      if (nt.isClass() && !nt.getSuperProds().isEmpty()
-              && !MCGrammarSymbolTableHelper.getAllSuperProds(nt).isEmpty()) {
-        for (ProdSymbol superNt : MCGrammarSymbolTableHelper.getAllSuperProds(nt)) {
-          compareComponents(nt, superNt);
+      if (!hasNonConservativeAnno(nt.getAstNode().getGrammarAnnotationList())) {
+        //check when you extend a class not conservative directly (Subclass extends Superclass = ...)
+        if (nt.isClass() && !nt.getSuperProds().isEmpty()
+                && !MCGrammarSymbolTableHelper.getAllSuperProds(nt).isEmpty()) {
+          for (ProdSymbol superNt : MCGrammarSymbolTableHelper.getAllSuperProds(nt)) {
+            compareComponents(nt, superNt);
+          }
         }
-      }
-      //checks when you define a Prod with the same Name as a Prod in a Supergrammar
-      if(!g.getSuperGrammarSymbols().isEmpty()){
-        for(MCGrammarSymbol superg : g.getSuperGrammarSymbols()){
-          for(ProdSymbol superNt : superg.getProds()){
-            if(nt.getName().equals(superNt.getName())){
-              compareComponents(nt, superNt);
+        //checks when you define a Prod with the same Name as a Prod in a Supergrammar
+        if(!g.getSuperGrammarSymbols().isEmpty()){
+          for(MCGrammarSymbol superg : g.getSuperGrammarSymbols()){
+            for(ProdSymbol superNt : superg.getProds()){
+              if(nt.getName().equals(superNt.getName())){
+                compareComponents(nt, superNt);
+              }
             }
           }
         }
@@ -58,5 +61,14 @@ public class ConservativeExtensionCheck implements GrammarASTMCGrammarCoCo {
             p.getSourcePosition());
       }
     }
+  }
+
+  private boolean hasNonConservativeAnno(List<ASTGrammarAnnotation> grammarAnnotationsList) {
+    for (ASTGrammarAnnotation anno : grammarAnnotationsList) {
+      if (anno.isNonConservative()) {
+        return true;
+      }
+    }
+    return false;
   }
 }
