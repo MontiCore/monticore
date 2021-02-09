@@ -1,4 +1,4 @@
-// (c) https://github.com/MontiCore/monticore
+/* (c) https://github.com/MontiCore/monticore */
 package mc.feature.visitor.inheritance;
 
 import mc.feature.visitor.inheritance.a._ast.ASTXA;
