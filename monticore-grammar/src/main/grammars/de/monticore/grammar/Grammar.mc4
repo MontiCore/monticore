@@ -144,7 +144,9 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
     "start" Name ";";
 
   GrammarAnnotation =
-   {noSpace(2)}? "@" ([key("Deprecated")] ( "(" message:String ")" )?  | [key("Override")]);
+   {noSpace(2)}? "@" ([key("Deprecated")] ( "(" message:String ")" )?
+                    | [key("Override")]
+                    | [key("NonConservative")]);
 
   // --------------------------------------------------------------------
   // Productions

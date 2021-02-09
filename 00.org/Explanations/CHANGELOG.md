@@ -8,6 +8,7 @@ to be released
 * resolveXSubKinds(..) resolves for local symbols of all subkinds of a symbol kind X. This method is used
   by the implementation of the resolveXLocally(..) method. It enables proper handling of symbol kind hierarchies
   during symbol resolution beyond the borders of a language.
+* new annotation @NonConservative for productions
 
 ### Changes
 * move grammars OCLExpressions and SetExpressions into OCL-project for further development
