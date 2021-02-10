@@ -7,6 +7,10 @@ plugins {
 
 description = 'MontiCore: EMF Grammar'
 
+sonarqube {
+  skipProject = true
+}
+
 dependencies {
     implementation project(':monticore-runtime')
     implementation "de.se_rwth.commons:se-commons-logging:$se_commons_version"

@@ -5,6 +5,19 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 plugins {
   id "de.set.ecj" version "1.4.1" // Eclipse compiler as it's much faster than javac
+  id "org.sonarqube" version "3.0"
+  id "jacoco"
+  id 'org.barfuin.gradle.jacocolog' version '1.2.3'
+}
+
+sonarqube {
+  properties {
+    property 'sonar.host.url', 'https://metric.se.rwth-aachen.de'
+    property 'sonar.sourceEncoding', 'UTF-8'
+    property 'sonar.projectKey', 'de.monticore:monticore'
+    property 'sonar.exclusions', '**/target/generated-sources/**'
+    property 'sonar.jacoco.reportPath', 'target/jacoco/jacocoMergeSubprojects.exec'
+  }
 }
 
 if(!hasProperty('bootstrap')){

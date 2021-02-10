@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 plugins {
   id "monticore" version "$version"
+  id "jacoco"
 }
 
 description = 'MontiCore Generator Main Integration Test'
@@ -10,6 +11,10 @@ ext.grammarDir = 'src/main/grammars'
 ext.junit_version = '4.13.1'
 
 configurations {grammar}
+
+sonarqube {
+  skipProject = true
+}
 
 dependencies {
   implementation project(':monticore-runtime')
