@@ -188,7 +188,6 @@ public class DeriveSymTypeOfExpressionTest {
     traverser.add4BitExpressions(flatExpressionScopeSetter);
     traverser.add4CommonExpressions(flatExpressionScopeSetter);
     traverser.add4ExpressionsBasis(flatExpressionScopeSetter);
-    traverser.add4SetExpressions(flatExpressionScopeSetter);
     traverser.add4JavaClassExpressions(flatExpressionScopeSetter);
     traverser.add4MCBasicTypes(flatExpressionScopeSetter);
     return traverser;

@@ -43,10 +43,6 @@ public class CombineExpressionsWithLiteralsPrettyPrinter {
     traverser.add4JavaClassExpressions(javaClassExpressions);
     traverser.setJavaClassExpressionsHandler(javaClassExpressions);
 
-    SetExpressionsPrettyPrinter setExpressions = new SetExpressionsPrettyPrinter(printer);
-    traverser.add4SetExpressions(setExpressions);
-    traverser.setSetExpressionsHandler(setExpressions);
-
     MCCommonLiteralsPrettyPrinter commonLiterals = new MCCommonLiteralsPrettyPrinter(printer);
     traverser.add4MCCommonLiterals(commonLiterals);
     traverser.setMCCommonLiteralsHandler(commonLiterals);

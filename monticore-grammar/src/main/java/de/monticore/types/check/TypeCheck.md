@@ -13,7 +13,6 @@ subexpressions, -types or -literals and combining them to the SymTypeExpression 
 * [DeriveSymTypeOfCommonExpressions](DeriveSymTypeOfCommonExpressions.java) (calculate a SymTypeExpression for the expressions in the grammar CommonExpressions)
 * [DeriveSymTypeOfAssignmentExpressions](DeriveSymTypeOfAssignmentExpressions.java) (calculate a SymTypeExpression for the expressions in the grammar AssignmentExpressions)
 * [DeriveSymTypeOfBitExpressions](DeriveSymTypeOfBitExpressions.java) (calculate a SymTypeExpression for the expressions in the grammar BitExpressions)
-* [DeriveSymTypeOfSetExpressions](DeriveSymTypeOfSetExpressions.java) (calculate a SymTypeExpression for the expressions in the grammar SetExpressions)
 * [DeriveSymTypeOfLiterals](DeriveSymTypeOfLiterals.java) (calculate a SymTypeExpression for the literals in the grammar LiteralsBasis)
 * [DeriveSymTypeOfMCCommonLiterals](DeriveSymTypeOfMCCommonLiterals.java) (calculate a SymTypeExpression for the literals in the grammar MCCommonLiterals)
 * [DeriveSymTypeOfMCJavaLiterals](DeriveSymTypeOfMCJavaLiterals.java) (calculate a SymTypeExpression for the literals in the grammar MCJavaLiterals)

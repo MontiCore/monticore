@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.javalight._symboltable;
 
 import de.monticore.javalight._ast.*;

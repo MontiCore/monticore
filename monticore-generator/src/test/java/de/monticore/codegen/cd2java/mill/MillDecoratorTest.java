@@ -87,7 +87,7 @@ public class MillDecoratorTest extends DecoratorTestCase {
     VisitorService visitorService = new VisitorService(decoratedCompilationUnit);
     ParserService parserService = new ParserService(decoratedCompilationUnit);
     MillDecorator decorator = new MillDecorator(this.glex, symbolTableService, visitorService, parserService);
-    this.millClass = decorator.decorate(Lists.newArrayList(getASTCD(), getSymbolCD()));
+    this.millClass = decorator.decorate(Lists.newArrayList(getASTCD(), getVisitorCD(), getTraverserCD(), getSymbolCD()));
   }
 
   protected ASTCDCompilationUnit getASTCD() {
@@ -117,6 +117,41 @@ public class MillDecoratorTest extends DecoratorTestCase {
     ASTCDDecorator astcdDecorator = new ASTCDDecorator(glex, fullDecorator, astLanguageInterfaceDecorator, astBuilderDecorator, nodeFactoryDecorator,
         astConstantsDecorator, enumDecorator, fullASTInterfaceDecorator);
     return astcdDecorator.decorate(decoratedCompilationUnit);
+  }
+
+  protected ASTCDCompilationUnit getVisitorCD() {
+    IterablePath targetPath = Mockito.mock(IterablePath.class);
+    VisitorService visitorService = new VisitorService(decoratedCompilationUnit);
+    SymbolTableService symbolTableService = new SymbolTableService(decoratedCompilationUnit);
+
+    VisitorDecorator astVisitorDecorator = new VisitorDecorator(this.glex, visitorService, symbolTableService);
+    DelegatorVisitorDecorator delegatorVisitorDecorator = new DelegatorVisitorDecorator(this.glex, visitorService, symbolTableService);
+    ParentAwareVisitorDecorator parentAwareVisitorDecorator = new ParentAwareVisitorDecorator(this.glex, visitorService);
+    InheritanceVisitorDecorator inheritanceVisitorDecorator = new InheritanceVisitorDecorator(this.glex, visitorService, symbolTableService);
+    DelegatorVisitorBuilderDecorator delegatorVisitorBuilderDecorator = new DelegatorVisitorBuilderDecorator(this.glex, visitorService, symbolTableService);
+
+
+    CDVisitorDecorator decorator = new CDVisitorDecorator(this.glex, targetPath, visitorService,
+        astVisitorDecorator, delegatorVisitorDecorator, inheritanceVisitorDecorator,
+        parentAwareVisitorDecorator, delegatorVisitorBuilderDecorator);
+    return decorator.decorate(decoratedCompilationUnit);
+  }
+
+  protected ASTCDCompilationUnit getTraverserCD() {
+    IterablePath targetPath = Mockito.mock(IterablePath.class);
+    VisitorService visitorService = new VisitorService(decoratedCompilationUnit);
+    SymbolTableService symbolTableService = new SymbolTableService(decoratedCompilationUnit);
+    MethodDecorator methodDecorator = new MethodDecorator(glex, visitorService);
+
+    TraverserInterfaceDecorator traverserInterfaceDecorator = new TraverserInterfaceDecorator(glex, visitorService, symbolTableService);
+    TraverserClassDecorator traverserClassDecorator = new TraverserClassDecorator(glex, visitorService, symbolTableService);
+    Visitor2Decorator visitor2Decorator = new Visitor2Decorator(glex, visitorService, symbolTableService);
+    HandlerDecorator handlerDecorator = new HandlerDecorator(glex, visitorService, symbolTableService);
+    InheritanceHandlerDecorator inheritanceHandlerDecorator = new InheritanceHandlerDecorator(glex, methodDecorator, visitorService, symbolTableService);
+
+    CDTraverserDecorator decorator = new CDTraverserDecorator(this.glex, targetPath, visitorService, traverserInterfaceDecorator,
+        traverserClassDecorator, visitor2Decorator, handlerDecorator, inheritanceHandlerDecorator);
+    return decorator.decorate(decoratedCompilationUnit);
   }
 
   protected ASTCDCompilationUnit getSymbolCD() {
@@ -196,6 +231,9 @@ public class MillDecoratorTest extends DecoratorTestCase {
     getAttributeBy("millAutomatonArtifactScope", millClass);
 
     getAttributeBy("automatonGlobalScope", millClass);
+
+    getAttributeBy("millAutomatonTraverserImplementation", millClass);
+    getAttributeBy("millAutomatonInheritanceHandler", millClass);
 
     getAttributeBy("millAutomatonScopesGenitor", millClass);
     getAttributeBy("millAutomatonScopesGenitorDelegator", millClass);

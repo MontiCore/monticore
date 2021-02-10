@@ -578,13 +578,16 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     ASTCDCompilationUnit decoratedSymbolTableCd = decorateForSymbolTablePackage(glex, cdScope, cds.get(0), 
         cds.get(1), cds.get(2), handCodedPath);
     decoratedCDs.add(decoratedSymbolTableCd);
-    decoratedCDs.add(decorateTraverserForVisitorPackage(glex, cdScope, cds.get(0), handCodedPath));
+    ASTCDCompilationUnit decoratedVisitorCD = decorateForVisitorPackage(glex, cdScope, cds.get(0), handCodedPath);
+    ASTCDCompilationUnit decoratedTraverserCD = decorateTraverserForVisitorPackage(glex, cdScope, cds.get(0), handCodedPath);
+    decoratedCDs.add(decoratedVisitorCD);
+    decoratedCDs.add(decoratedTraverserCD);
     decoratedCDs.add(decorateForCoCoPackage(glex, cdScope, cds.get(0), handCodedPath));
     decoratedCDs.add(decorateForODPackage(glex, cdScope, cds.get(0), handCodedPath));
     ASTCDCompilationUnit decoratedASTClassDiagramm = decorateForASTPackage(glex, cdScope, cds.get(0), handCodedPath);
     decoratedCDs.add(decoratedASTClassDiagramm);
-    decoratedCDs.add(decorateMill(glex, cdScope, cds.get(0), decoratedASTClassDiagramm,
-        decoratedSymbolTableCd, handCodedPath));
+    decoratedCDs.add(decorateMill(glex, cdScope, cds.get(0), decoratedASTClassDiagramm, decoratedVisitorCD, 
+        decoratedSymbolTableCd, decoratedTraverserCD, handCodedPath));
     decoratedCDs.add(decorateAuxiliary(glex, cdScope, cds.get(0), decoratedASTClassDiagramm, handCodedPath));
     return decoratedCDs;
   }
@@ -730,22 +733,22 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
   public ASTCDCompilationUnit decorateMill(GlobalExtensionManagement glex, ICD4AnalysisScope cdScope,
                                            ASTCDCompilationUnit cd, ASTCDCompilationUnit astClassDiagram,
-                                           ASTCDCompilationUnit symbolCD,
-                                           IterablePath handCodedPath) {
+                                           ASTCDCompilationUnit visitorCD, ASTCDCompilationUnit symbolCD,
+                                           ASTCDCompilationUnit traverserCD, IterablePath handCodedPath) {
     ASTCDCompilationUnit preparedCD = prepareCD(cdScope, cd);
-    return generateMill(preparedCD, astClassDiagram, symbolCD, glex, handCodedPath);
+    return generateMill(preparedCD, astClassDiagram, symbolCD, traverserCD, glex, handCodedPath);
   }
 
-  private ASTCDCompilationUnit generateMill(ASTCDCompilationUnit cd, ASTCDCompilationUnit astCD,
-                                            ASTCDCompilationUnit symbolCD, GlobalExtensionManagement glex,
-                                            IterablePath handCodedPath) {
+  private ASTCDCompilationUnit generateMill(ASTCDCompilationUnit cd, ASTCDCompilationUnit astCD, ASTCDCompilationUnit visitorCD,
+                                            ASTCDCompilationUnit symbolCD, ASTCDCompilationUnit traverserCD,
+                                            GlobalExtensionManagement glex, IterablePath handCodedPath) {
     SymbolTableService symbolTableService = new SymbolTableService(cd);
     VisitorService visitorService = new VisitorService(cd);
     ParserService parserService = new ParserService(cd);
     MillDecorator millDecorator = new MillDecorator(glex, symbolTableService, visitorService, parserService);
     CDMillDecorator cdMillDecorator = new CDMillDecorator(glex, millDecorator);
 
-    ASTCDCompilationUnit millCD = cdMillDecorator.decorate(Lists.newArrayList(astCD, symbolCD));
+    ASTCDCompilationUnit millCD = cdMillDecorator.decorate(Lists.newArrayList(astCD, traverserCD, symbolCD));
 
 
     TopDecorator topDecorator = new TopDecorator(handCodedPath);
@@ -885,13 +888,16 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     ASTCDCompilationUnit decoratedSymbolTableCd = decorateForSymbolTablePackage(glex, cdScope, cds.get(0), 
         cds.get(1), cds.get(2), handCodedPath);
     decoratedCDs.add(decoratedSymbolTableCd);
-    decoratedCDs.add(decorateTraverserForVisitorPackage(glex, cdScope, cds.get(0), handCodedPath));
+    ASTCDCompilationUnit decoratedVisitorCD = decorateForVisitorPackage(glex, cdScope, cds.get(0), handCodedPath);
+    ASTCDCompilationUnit decoratedTraverserCD = decorateTraverserForVisitorPackage(glex, cdScope, cds.get(0), handCodedPath);
+    decoratedCDs.add(decoratedVisitorCD);
+    decoratedCDs.add(decoratedTraverserCD);
     decoratedCDs.add(decorateForCoCoPackage(glex, cdScope, cds.get(0), handCodedPath));
     decoratedCDs.add(decorateForODPackage(glex, cdScope, cds.get(0), handCodedPath));
     ASTCDCompilationUnit decoratedASTClassDiagramm = decorateEmfForASTPackage(glex, cdScope, cds.get(0), handCodedPath);
     decoratedCDs.add(decoratedASTClassDiagramm);
     decoratedCDs.add(decorateMill(glex, cdScope, cds.get(0), decoratedASTClassDiagramm,
-        decoratedSymbolTableCd, handCodedPath));
+        decoratedSymbolTableCd, decoratedTraverserCD, handCodedPath));
     decoratedCDs.add(decorateAuxiliary(glex, cdScope, cds.get(0), decoratedASTClassDiagramm, handCodedPath));
     return decoratedCDs;
   }

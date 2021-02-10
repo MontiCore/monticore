@@ -1,8 +1,4 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("superType")}
-<#if superType.isPresent()>
-  addToScope((${superType.get()}) symbol);
-</#if>
 if (getCurrentScope().isPresent()) {
     getCurrentScope().get().add(symbol);
   } else {
