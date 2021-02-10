@@ -4,6 +4,6 @@ package mc.feature.scopes;
 
 grammar SupAutomaton extends mc.feature.scopes.SuperAutomaton {
 
-  scope Sup = "sup" Name "{" Automaton "}";
+  scope symbol Sup = "sup" Name "{" Automaton "}";
 
 }

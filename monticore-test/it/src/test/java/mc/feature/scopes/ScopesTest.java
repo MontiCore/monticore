@@ -1,17 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.feature.scopes;
 
-import de.monticore.io.paths.ModelPath;
-import de.se_rwth.commons.logging.*;
-import mc.feature.scopes.scopeattributes.ScopeAttributesMill;
-import mc.feature.scopes.scopeattributes._symboltable.IScopeAttributesGlobalScope;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import mc.feature.scopes.supautomaton.SupAutomatonMill;
 import mc.feature.scopes.supautomaton._ast.ASTSup;
 import mc.feature.scopes.supautomaton._parser.SupAutomatonParser;
 import mc.feature.scopes.supautomaton._symboltable.ISupAutomatonGlobalScope;
-import mc.feature.scopes.supautomaton._symboltable.SupAutomatonGlobalScope;
 import mc.feature.scopes.supautomaton._symboltable.SupAutomatonScope;
-import mc.feature.scopes.supautomaton._symboltable.SupAutomatonSymbolTableCreatorDelegator;
+import mc.feature.scopes.supautomaton._symboltable.SupAutomatonScopesGenitorDelegator;
 import mc.feature.scopes.superautomaton._symboltable.AutomatonSymbol;
 import mc.feature.scopes.superautomaton._symboltable.StateSymbol;
 import org.junit.Before;
@@ -27,7 +24,7 @@ import static org.junit.Assert.assertTrue;
 public class ScopesTest {
 
   private ASTSup astSup;
-  private SupAutomatonSymbolTableCreatorDelegator symbolTableCreator;
+  private SupAutomatonScopesGenitorDelegator symbolTableCreator;
   private ISupAutomatonGlobalScope globalScope;
 
 
@@ -36,6 +33,8 @@ public class ScopesTest {
     LogStub.init();         // replace log by a sideffect free variant
         // LogStub.initPlusLog();  // for manual testing purpose only
     Log.enableFailQuick(false);
+    SupAutomatonMill.reset();
+    SupAutomatonMill.init();
     SupAutomatonParser supAutomatonParser = new SupAutomatonParser();
     Optional<ASTSup> astSup = supAutomatonParser.parse("src/test/resources/mc/feature/scopes/SupAutomatonModel.aut");
     assertFalse(supAutomatonParser.hasErrors());
@@ -44,7 +43,7 @@ public class ScopesTest {
     ISupAutomatonGlobalScope globalScope = SupAutomatonMill.globalScope();
     globalScope.setFileExt("aut");
     globalScope.getModelPath().addEntry(Paths.get("src/test/resources/mc/feature/scopes"));
-    this.symbolTableCreator = SupAutomatonMill.supAutomatonSymbolTableCreatorDelegator();
+    this.symbolTableCreator = SupAutomatonMill.scopesGenitorDelegator();
 
     this.astSup = astSup.get();
     this.globalScope = globalScope;
@@ -55,7 +54,6 @@ public class ScopesTest {
   public void testResolvingFromGrammarScope(){
 
     SupAutomatonScope fromAST = (SupAutomatonScope) symbolTableCreator.createFromAST(astSup);
-    fromAST.setName("TopPingPong");
 
     //findet, denn liegt im ersten Scope
     Optional<AutomatonSymbol> pingPongAutomatonSymbolLokal = fromAST.getSubScopes().stream().findAny().get().resolveAutomaton("PingPong");
