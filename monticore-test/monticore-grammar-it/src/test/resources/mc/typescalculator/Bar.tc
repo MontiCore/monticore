@@ -1,0 +1,19 @@
+package mc.typescalculator;
+
+tc Bar {
+
+  static int max = 3
+  int age = 1
+
+  static int getMax(){
+    double d = 3.4
+    double f = d + 1
+    print(max*4)
+  }
+
+  int getAge(){
+    boolean b = true
+    b = false
+  }
+
+}

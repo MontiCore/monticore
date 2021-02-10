@@ -58,6 +58,7 @@ public class TestCD4AnalysisSTCompleteTypes implements TestCD4AnalysisVisitor2 {
   @Override
   public void endVisit(ASTCDMethod astMethod){
     CDMethOrConstrSymbol methodSymbol = astMethod.getSymbol();
+    methodSymbol.setIsStatic(astMethod.getModifier().isStatic());
     setReturnTypeOfMethod(methodSymbol, astMethod);
     if (!astMethod.getCDParameterList().isEmpty()) {
       if (astMethod.getCDParameter(astMethod.getCDParameterList().size() - 1).isEllipsis()) {

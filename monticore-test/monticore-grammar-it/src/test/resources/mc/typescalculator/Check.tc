@@ -1,0 +1,23 @@
+package mc.typescalculator;
+
+tc Check {
+
+  int foo = 3
+
+  mc.typescalculator.Bar getBar(){
+    mc.typescalculator.Bar bar
+    foo = bar.getAge()
+  }
+
+  void doSomething(){
+    mc.typescalculator.Bar bar = getBar()
+    print(mc.typescalculator.Bar.getMax())
+  }
+
+  void print(int max){
+    mc.typescalculator.InheritanceBar inBar
+    mc.typescalculator.Bar bar = inBar
+    int foo = inBar.getAge()
+  }
+
+}
