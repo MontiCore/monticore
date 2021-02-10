@@ -1,9 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java.method.mutator;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
-import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cd4codebasis._ast.*;
 import de.monticore.cd.facade.CDAttributeFacade;
 import de.monticore.codegen.cd2java.methods.mutator.ListMutatorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -19,8 +18,8 @@ import java.util.stream.Collectors;
 import static de.monticore.codegen.cd2java.DecoratorAssert.*;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodsBy;
-import static de.monticore.cd.facade.CDModifier.PROTECTED;
-import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java.CDModifier.PROTECTED;
+import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 
@@ -35,7 +34,7 @@ public class ListMutatorDecoratorTest {
     LogStub.init();
     LogStub.enableFailQuick(false);
     ASTMCType listType = MCTypeFacade.getInstance().createListTypeOf(String.class);
-    ASTCDAttribute attribute = CDAttributeFacade.getInstance().createAttribute(PROTECTED, listType, "a");
+    ASTCDAttribute attribute = CDAttributeFacade.getInstance().createAttribute(PROTECTED.build(), listType, "a");
     ListMutatorDecorator listMutatorDecorator = new ListMutatorDecorator(glex);
     this.methods = listMutatorDecorator.decorate(attribute);
   }

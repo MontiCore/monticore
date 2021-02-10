@@ -1,9 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast.builder;
 
-import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.cd.cd4code.CD4CodeFullPrettyPrinter;
-import de.monticore.cd.prettyprint.CD4CodePrinter;
+import de.monticore.cdbasis._ast.*;
+import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
+import de.monticore.cd4codebasis._ast.ASTCDConstructor;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecorationHelper;
@@ -20,8 +21,8 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static de.monticore.cd.facade.CDModifier.PROTECTED;
-import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java.CDModifier.PROTECTED;
+import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.DecoratorAssert.*;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.*;
@@ -42,7 +43,7 @@ public class BuilderDecoratorTest extends DecoratorTestCase {
     ASTCDCompilationUnit ast = parse("de", "monticore", "codegen", "builder", "Builder");
     this.glex.setGlobalValue("service", new AbstractService(ast));
     this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
-    this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
+    this.glex.setGlobalValue("cdPrinter", new CD4CodeFullPrettyPrinter());
 
     originalClass = getClassBy("A", ast);
 

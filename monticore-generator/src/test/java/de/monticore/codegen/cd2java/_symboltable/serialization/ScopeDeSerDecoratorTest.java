@@ -4,12 +4,12 @@ package de.monticore.codegen.cd2java._symboltable.serialization;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
-import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
-import de.monticore.cd.facade.CDModifier;
-import de.monticore.cd.prettyprint.CD4CodePrinter;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cd4codebasis._ast.*;
+import de.monticore.codegen.cd2java.CDModifier;
+import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecorationHelper;
@@ -59,7 +59,7 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
     this.glex = new GlobalExtensionManagement();
 
     this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
-    this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
+    this.glex.setGlobalValue("cdPrinter", new CD4CodeFullPrettyPrinter());
     ASTCDCompilationUnit astcdCompilationUnit = this
         .parse("de", "monticore", "codegen", "symboltable", "Automaton");
     decoratedSymbolCompilationUnit = this
@@ -262,7 +262,7 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
 
   public static void assertOneOf(ASTMCType actualType, String... expected) {
     boolean result = false;
-    String actual = (new CD4CodePrinter()).printType(actualType);
+    String actual = (new CD4CodeFullPrettyPrinter()).printType(actualType);
     for (String exp : expected) {
       if (actual.equals(exp)) {
         result = true;

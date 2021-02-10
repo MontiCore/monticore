@@ -1,7 +1,7 @@
 package de.monticore.codegen.cd2java._parser;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.types.MCTypeFacade;
 import org.junit.Before;

@@ -1,8 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._symboltable;
 
-import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.cd.prettyprint.CD4CodePrinter;
+import de.monticore.cdbasis._ast.*;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
+import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
@@ -70,7 +71,7 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
     IterablePath targetPath = Mockito.mock(IterablePath.class);
 
     this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
-    this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
+    this.glex.setGlobalValue("cdPrinter", new CD4CodeFullPrettyPrinter());
     decoratedASTCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "Automaton");
     decoratedScopeCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "AutomatonScopeCD");
     decoratedSymbolCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "AutomatonSymbolCD");
@@ -153,7 +154,7 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testClassCount() {
-    assertEquals(29, symTabCD.getCDDefinition().getCDClassList().size());
+    assertEquals(29, symTabCD.getCDDefinition().getCDClassesList().size());
   }
 
   @Test
@@ -186,7 +187,7 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testInterfaceCount() {
-    assertEquals(7, symTabCD.getCDDefinition().getCDInterfaceList().size());
+    assertEquals(7, symTabCD.getCDDefinition().getCDInterfacesList().size());
   }
 
   @Test
@@ -230,7 +231,7 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testClassCountWithHC() {
-    assertEquals(29, symTabCDWithHC.getCDDefinition().getCDClassList().size());
+    assertEquals(29, symTabCDWithHC.getCDDefinition().getCDClassesList().size());
   }
 
   @Test
@@ -258,7 +259,7 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testInterfaceCountWithHC() {
-    assertEquals(7, symTabCDWithHC.getCDDefinition().getCDInterfaceList().size());
+    assertEquals(7, symTabCDWithHC.getCDDefinition().getCDInterfacesList().size());
   }
 
   @Test
@@ -284,7 +285,7 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testClassCountComponent() {
-    assertEquals(29, symTabCDComponent.getCDDefinition().getCDClassList().size());
+    assertEquals(29, symTabCDComponent.getCDDefinition().getCDClassesList().size());
   }
 
   @Test
@@ -306,7 +307,7 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testInterfaceCountComponent() {
-    assertEquals(7, symTabCDComponent.getCDDefinition().getCDInterfaceList().size());
+    assertEquals(7, symTabCDComponent.getCDDefinition().getCDInterfacesList().size());
   }
 
   @Test

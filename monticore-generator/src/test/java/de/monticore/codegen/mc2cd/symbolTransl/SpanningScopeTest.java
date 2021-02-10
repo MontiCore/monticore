@@ -1,10 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.mc2cd.symbolTransl;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDStereoValue;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
+import de.monticore.umlstereotype._ast.ASTStereoValue;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -41,7 +42,7 @@ public class SpanningScopeTest {
 
   @Test
   public void testClassCount() {
-    assertEquals(2, compilationUnit.getCDDefinition().sizeCDClasss());
+    assertEquals(2, compilationUnit.getCDDefinition().sizeCDClasses());
   }
 
   @Test
@@ -58,9 +59,9 @@ public class SpanningScopeTest {
     assertTrue(symbolClassSymbol.getModifier().isPresentStereotype());
     assertFalse(symbolClassSymbol.getModifier().getStereotype().isEmptyValue());
     assertEquals(2, symbolClassSymbol.getModifier().getStereotype().sizeValue());
-    ASTCDStereoValue symbolStereotype = symbolClassSymbol.getModifier().getStereotype().getValue(0);
+    ASTStereoValue symbolStereotype = symbolClassSymbol.getModifier().getStereotype().getValue(0);
     assertEquals("symbol", symbolStereotype.getName());
-    ASTCDStereoValue scopeStereotype = symbolClassSymbol.getModifier().getStereotype().getValue(1);
+    ASTStereoValue scopeStereotype = symbolClassSymbol.getModifier().getStereotype().getValue(1);
     assertEquals("scope", scopeStereotype.getName());
   }
 
@@ -78,9 +79,9 @@ public class SpanningScopeTest {
     assertTrue(symbolClassSymbol.getModifier().isPresentStereotype());
     assertFalse(symbolClassSymbol.getModifier().getStereotype().isEmptyValue());
     assertEquals(2, symbolClassSymbol.getModifier().getStereotype().sizeValue());
-    ASTCDStereoValue symbolStereotype = symbolClassSymbol.getModifier().getStereotype().getValue(0);
+    ASTStereoValue symbolStereotype = symbolClassSymbol.getModifier().getStereotype().getValue(0);
     assertEquals("symbol", symbolStereotype.getName());
-    ASTCDStereoValue startProdStereotype = symbolClassSymbol.getModifier().getStereotype().getValue(1);
+    ASTStereoValue startProdStereotype = symbolClassSymbol.getModifier().getStereotype().getValue(1);
     assertEquals("startProd", startProdStereotype.getName());
   }
 }

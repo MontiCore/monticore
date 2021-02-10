@@ -1,7 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java;
 
-import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd4codebasis._ast.*;
+import de.monticore.cdbasis._ast.*;
+import de.monticore.cdinterfaceandenum._ast.*;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -16,7 +18,7 @@ public final class DecoratorTestUtil {
   private DecoratorTestUtil() {}
 
   public static ASTCDClass getClassBy(String name, ASTCDCompilationUnit ast) {
-    List<ASTCDClass> filtered = ast.getCDDefinition().getCDClassList().stream()
+    List<ASTCDClass> filtered = ast.getCDDefinition().getCDClassesList().stream()
         .filter(c -> name.equals(c.getName()))
         .collect(Collectors.toList());
     assertEquals(String.format("Expected to find 1 class, but found '%s'", filtered.size()), 1, filtered.size());
@@ -24,7 +26,7 @@ public final class DecoratorTestUtil {
   }
 
   public static ASTCDInterface getInterfaceBy(String name, ASTCDCompilationUnit ast) {
-    List<ASTCDInterface> filtered = ast.getCDDefinition().getCDInterfaceList().stream()
+    List<ASTCDInterface> filtered = ast.getCDDefinition().getCDInterfacesList().stream()
         .filter(c -> name.equals(c.getName()))
         .collect(Collectors.toList());
     assertEquals(String.format("Expected to find 1 interface, but found '%s'", filtered.size()), 1, filtered.size());
@@ -32,7 +34,7 @@ public final class DecoratorTestUtil {
   }
 
   public static ASTCDEnum getEnumBy(String name, ASTCDCompilationUnit ast) {
-    List<ASTCDEnum> filtered = ast.getCDDefinition().getCDEnumList().stream()
+    List<ASTCDEnum> filtered = ast.getCDDefinition().getCDEnumsList().stream()
         .filter(c -> name.equals(c.getName()))
         .collect(Collectors.toList());
     assertEquals(String.format("Expected to find 1 enum, but found '%s'", filtered.size()), 1, filtered.size());

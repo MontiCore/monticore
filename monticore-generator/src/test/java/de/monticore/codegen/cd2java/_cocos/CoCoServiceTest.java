@@ -1,8 +1,8 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.codegen.cd2java._cocos;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import org.junit.Before;
 import org.junit.Test;

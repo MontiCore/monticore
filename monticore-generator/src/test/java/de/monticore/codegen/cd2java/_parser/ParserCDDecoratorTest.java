@@ -1,7 +1,7 @@
 package de.monticore.codegen.cd2java._parser;
 
-import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.cd.prettyprint.CD4CodePrinter;
+import de.monticore.cdbasis._ast.*;
+import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
@@ -40,7 +40,7 @@ public class ParserCDDecoratorTest extends DecoratorTestCase {
     IterablePath targetPath = Mockito.mock(IterablePath.class);
 
     this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
-    this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
+    this.glex.setGlobalValue("cdPrinter", new CD4CodeFullPrettyPrinter());
     decoratedASTCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "Automaton");
     originalASTCompilationUnit = decoratedASTCompilationUnit.deepClone();
 
