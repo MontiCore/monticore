@@ -1,4 +1,4 @@
-// (c) https://github.com/MontiCore/monticore
+/*(c) https://github.com/MontiCore/monticore*/
 package de.monticore.statements.mcvardeclarationstatements._symboltable;
 
 import com.google.common.collect.Lists;

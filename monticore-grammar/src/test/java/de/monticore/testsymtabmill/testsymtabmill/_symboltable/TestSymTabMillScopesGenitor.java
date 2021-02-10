@@ -1,4 +1,4 @@
-// (c) https://github.com/MontiCore/monticore
+/*(c) https://github.com/MontiCore/monticore*/
 package de.monticore.testsymtabmill.testsymtabmill._symboltable;
 
 import java.util.Deque;
