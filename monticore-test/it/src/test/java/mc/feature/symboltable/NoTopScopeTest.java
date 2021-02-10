@@ -1,16 +1,17 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.feature.symboltable;
 
-import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.ISymbol;
 import mc.feature.symboltable.notopscope.NoTopScopeMill;
 import mc.feature.symboltable.notopscope._ast.ASTFoo;
 import mc.feature.symboltable.notopscope._parser.NoTopScopeParser;
-import mc.feature.symboltable.notopscope._symboltable.*;
+import mc.feature.symboltable.notopscope._symboltable.FooSymbol;
+import mc.feature.symboltable.notopscope._symboltable.INoTopScopeArtifactScope;
+import mc.feature.symboltable.notopscope._symboltable.INoTopScopeGlobalScope;
 import mc.feature.symboltable.subnotopscope.SubNoTopScopeMill;
 import mc.feature.symboltable.subnotopscope._ast.ASTSubFoo;
 import mc.feature.symboltable.subnotopscope._parser.SubNoTopScopeParser;
-import mc.feature.symboltable.subnotopscope._symboltable.*;
+import mc.feature.symboltable.subnotopscope._symboltable.ISubNoTopScopeGlobalScope;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -42,7 +43,7 @@ public class NoTopScopeTest {
     globalScope.getModelPath().addEntry(Paths.get("src/test/resources/mc/feature/symboltable"));
 
     INoTopScopeArtifactScope scope = NoTopScopeMill
-        .noTopScopeSymbolTableCreatorDelegator().createFromAST(astSup.get());
+        .scopesGenitorDelegator().createFromAST(astSup.get());
 
     // only one symbol
     Optional<ISymbol> topLevelSymbol = scope.getTopLevelSymbol();
@@ -70,7 +71,7 @@ public class NoTopScopeTest {
     globalScope.getModelPath().addEntry(Paths.get("src/test/resources/mc/feature/symboltable"));
 
     INoTopScopeArtifactScope scope = SubNoTopScopeMill
-        .subNoTopScopeSymbolTableCreatorDelegator().createFromAST(astSup.get());
+        .scopesGenitorDelegator().createFromAST(astSup.get());
 
     // only one symbol
     Optional<ISymbol> topLevelSymbol = scope.getTopLevelSymbol();

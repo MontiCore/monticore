@@ -37,7 +37,7 @@ public class EmbeddedGlobalScope extends EmbeddedGlobalScopeTOP {
       getModelPath().resolveModel(modelCoordinate);
       if (modelCoordinate.hasLocation()) {
         ASTText parse = parse(modelCoordinate);
-        EmbeddedMill.embeddedSymbolTableCreatorDelegator().createFromAST(parse);
+        EmbeddedMill.scopesGenitorDelegator().createFromAST(parse);
       }
     }
     else {

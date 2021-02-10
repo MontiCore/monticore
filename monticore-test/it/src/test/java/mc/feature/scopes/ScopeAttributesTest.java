@@ -1,15 +1,14 @@
 // (c) https://github.com/MontiCore/monticore
 package mc.feature.scopes;
 
-import de.monticore.io.paths.ModelPath;
-import de.se_rwth.commons.logging.*;
-import mc.feature.referencesymbol.reference.ReferenceMill;
-import mc.feature.referencesymbol.reference._symboltable.IReferenceGlobalScope;
-import mc.feature.referencesymbol.supgrammarref.SupGrammarRefMill;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import mc.feature.scopes.scopeattributes.ScopeAttributesMill;
 import mc.feature.scopes.scopeattributes._ast.ASTStartProd;
 import mc.feature.scopes.scopeattributes._parser.ScopeAttributesParser;
-import mc.feature.scopes.scopeattributes._symboltable.*;
+import mc.feature.scopes.scopeattributes._symboltable.IScopeAttributesArtifactScope;
+import mc.feature.scopes.scopeattributes._symboltable.IScopeAttributesGlobalScope;
+import mc.feature.scopes.scopeattributes._symboltable.IScopeAttributesScope;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,8 +16,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Optional;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * test that the attributes for scopes in the grammar are relevant
@@ -27,6 +25,7 @@ import static org.junit.Assert.assertTrue;
 public class ScopeAttributesTest {
 
   private IScopeAttributesArtifactScope scope;
+  private ASTStartProd startProd;
 
   @Before
   public void setUp() throws IOException {
@@ -37,11 +36,15 @@ public class ScopeAttributesTest {
     Optional<ASTStartProd> astSup = scopeAttributesParser.parse("src/test/resources/mc/feature/scopes/ScopeAttributesModel.sc");
     assertFalse(scopeAttributesParser.hasErrors());
     assertTrue(astSup.isPresent());
+    startProd = astSup.get();
+
+    ScopeAttributesMill.reset();
+    ScopeAttributesMill.init();
 
     IScopeAttributesGlobalScope globalScope = ScopeAttributesMill.globalScope();
     globalScope.setFileExt("sc");
     globalScope.getModelPath().addEntry(Paths.get("src/test/resources/mc/feature/scopes"));
-    scope = ScopeAttributesMill.scopeAttributesSymbolTableCreatorDelegator().createFromAST(astSup.get());
+    scope = ScopeAttributesMill.scopesGenitorDelegator().createFromAST(astSup.get());
   }
 
   /**
@@ -49,7 +52,8 @@ public class ScopeAttributesTest {
    */
   @Test
   public void testScopeShadowing() {
-    IScopeAttributesScope scopeShadowed = getSubScopeByName("ScopeShadowed");
+    assertEquals(1, startProd.getAList().size());
+    IScopeAttributesScope scopeShadowed = startProd.getAList().get(0).getSpannedScope();
     assertTrue(scopeShadowed.isShadowing());
     assertFalse(scopeShadowed.isOrdered());
     assertTrue(scopeShadowed.isExportingSymbols());
@@ -57,7 +61,8 @@ public class ScopeAttributesTest {
 
   @Test
   public void testScopeNonExporting() {
-    IScopeAttributesScope scopeShadowed = getSubScopeByName("ScopeNonExporting");
+    assertEquals(1, startProd.getBList().size());
+    IScopeAttributesScope scopeShadowed = startProd.getBList().get(0).getSpannedScope();
     assertFalse(scopeShadowed.isShadowing());
     assertFalse(scopeShadowed.isOrdered());
     assertFalse(scopeShadowed.isExportingSymbols());
@@ -65,7 +70,8 @@ public class ScopeAttributesTest {
 
   @Test
   public void testScopeOrdered() {
-    IScopeAttributesScope scopeShadowed = getSubScopeByName("ScopeOrdered");
+    assertEquals(1, startProd.getCList().size());
+    IScopeAttributesScope scopeShadowed = startProd.getCList().get(0).getSpannedScope();
     assertFalse(scopeShadowed.isShadowing());
     assertTrue(scopeShadowed.isOrdered());
     assertTrue(scopeShadowed.isExportingSymbols());
@@ -76,7 +82,8 @@ public class ScopeAttributesTest {
    */
   @Test
   public void testScopeSpanningSymbolShadowing() {
-    IScopeAttributesScope scopeShadowed = getSubScopeByName("SymbolScopeShadowed");
+    assertEquals(1, startProd.getDList().size());
+    IScopeAttributesScope scopeShadowed = startProd.getDList().get(0).getSpannedScope();
     assertTrue(scopeShadowed.isShadowing());
     assertFalse(scopeShadowed.isOrdered());
     assertTrue(scopeShadowed.isExportingSymbols());
@@ -84,7 +91,8 @@ public class ScopeAttributesTest {
 
   @Test
   public void testScopeSpanningSymbolNonExporting() {
-    IScopeAttributesScope scopeShadowed = getSubScopeByName("SymbolScopeNonExporting");
+    assertEquals(1, startProd.getEList().size());
+    IScopeAttributesScope scopeShadowed = startProd.getEList().get(0).getSpannedScope();
     assertFalse(scopeShadowed.isShadowing());
     assertFalse(scopeShadowed.isOrdered());
     assertFalse(scopeShadowed.isExportingSymbols());
@@ -92,20 +100,11 @@ public class ScopeAttributesTest {
 
   @Test
   public void testScopeSpanningSymbolOrdered() {
-    IScopeAttributesScope scopeShadowed = getSubScopeByName("SymbolScopeOrdered");
+    assertEquals(1, startProd.getFList().size());
+    IScopeAttributesScope scopeShadowed = startProd.getFList().get(0).getSpannedScope();
     assertFalse(scopeShadowed.isShadowing());
     assertTrue(scopeShadowed.isOrdered());
     assertTrue(scopeShadowed.isExportingSymbols());
-  }
-
-
-  private IScopeAttributesScope getSubScopeByName(String name) {
-    Optional<? extends IScopeAttributesScope> subScope = scope.getSubScopes()
-        .stream()
-        .filter(x -> x.getName().equals(name))
-        .findFirst();
-    assertTrue(subScope.isPresent());
-    return subScope.get();
   }
 
 }
