@@ -34,7 +34,7 @@ build:
   script:
     - "cd monticore-tool && ./gradlew build $GRADLE_OPTS -Pci"
     - "cd .. &&./gradlew buildMC $GRADLE_OPTS -Pci"
-    - "mvn $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS install -f monticore-maven-plugin/pom.xml"
+    - "cd monticore-maven-plugin && mvn $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS install"
   artifacts: 
     paths:
       - ".gradle"
