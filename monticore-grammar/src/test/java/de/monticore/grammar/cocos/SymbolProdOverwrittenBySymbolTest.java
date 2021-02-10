@@ -12,7 +12,7 @@ public class SymbolProdOverwrittenBySymbolTest extends CocoTest {
 
   @BeforeClass
   public static void disableFailQuick() {
-    LogStub.enableFailQuick(false);
+    LogStub.init();
     checker.addCoCo(new SymbolProdOverwrittenBySymbol());
   }
 
