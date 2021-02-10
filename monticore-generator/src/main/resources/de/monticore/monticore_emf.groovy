@@ -109,7 +109,7 @@ for (astGrammar in getParsedGrammars()) {
 
   // decorate and generate CD for the mills
   decoratedMillCD = decorateMill(glex, cdScope, astClassDiagram, decoratedASTClassDiagramm,
-            decoratedVisitorCD, decoratedSymbolTableCd, decoratedTraverserCD, handcodedPath)
+                                 decoratedSymbolTableCd, decoratedTraverserCD, handcodedPath)
   generateFromCD(glex, astClassDiagram, decoratedMillCD, out, handcodedPath)
 
   // decorate and generate CD for the '_auxiliary' package

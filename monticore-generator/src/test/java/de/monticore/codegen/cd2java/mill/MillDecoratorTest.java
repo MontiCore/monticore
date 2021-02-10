@@ -33,7 +33,7 @@ import de.monticore.codegen.cd2java._symboltable.serialization.SymbolDeSerDecora
 import de.monticore.codegen.cd2java._symboltable.serialization.Symbols2JsonDecorator;
 import de.monticore.codegen.cd2java._symboltable.symbol.*;
 import de.monticore.codegen.cd2java._symboltable.symbol.symbolsurrogatemutator.MandatoryMutatorSymbolSurrogateDecorator;
-import de.monticore.codegen.cd2java._visitor.VisitorService;
+import de.monticore.codegen.cd2java._visitor.*;
 import de.monticore.codegen.cd2java.data.DataDecorator;
 import de.monticore.codegen.cd2java.data.DataDecoratorUtil;
 import de.monticore.codegen.cd2java.data.InterfaceDecorator;
@@ -87,7 +87,7 @@ public class MillDecoratorTest extends DecoratorTestCase {
     VisitorService visitorService = new VisitorService(decoratedCompilationUnit);
     ParserService parserService = new ParserService(decoratedCompilationUnit);
     MillDecorator decorator = new MillDecorator(this.glex, symbolTableService, visitorService, parserService);
-    this.millClass = decorator.decorate(Lists.newArrayList(getASTCD(), getVisitorCD(), getTraverserCD(), getSymbolCD()));
+    this.millClass = decorator.decorate(Lists.newArrayList(getASTCD(), getTraverserCD(), getSymbolCD()));
   }
 
   protected ASTCDCompilationUnit getASTCD() {
@@ -117,24 +117,6 @@ public class MillDecoratorTest extends DecoratorTestCase {
     ASTCDDecorator astcdDecorator = new ASTCDDecorator(glex, fullDecorator, astLanguageInterfaceDecorator, astBuilderDecorator, nodeFactoryDecorator,
         astConstantsDecorator, enumDecorator, fullASTInterfaceDecorator);
     return astcdDecorator.decorate(decoratedCompilationUnit);
-  }
-
-  protected ASTCDCompilationUnit getVisitorCD() {
-    IterablePath targetPath = Mockito.mock(IterablePath.class);
-    VisitorService visitorService = new VisitorService(decoratedCompilationUnit);
-    SymbolTableService symbolTableService = new SymbolTableService(decoratedCompilationUnit);
-
-    VisitorDecorator astVisitorDecorator = new VisitorDecorator(this.glex, visitorService, symbolTableService);
-    DelegatorVisitorDecorator delegatorVisitorDecorator = new DelegatorVisitorDecorator(this.glex, visitorService, symbolTableService);
-    ParentAwareVisitorDecorator parentAwareVisitorDecorator = new ParentAwareVisitorDecorator(this.glex, visitorService);
-    InheritanceVisitorDecorator inheritanceVisitorDecorator = new InheritanceVisitorDecorator(this.glex, visitorService, symbolTableService);
-    DelegatorVisitorBuilderDecorator delegatorVisitorBuilderDecorator = new DelegatorVisitorBuilderDecorator(this.glex, visitorService, symbolTableService);
-
-
-    CDVisitorDecorator decorator = new CDVisitorDecorator(this.glex, targetPath, visitorService,
-        astVisitorDecorator, delegatorVisitorDecorator, inheritanceVisitorDecorator,
-        parentAwareVisitorDecorator, delegatorVisitorBuilderDecorator);
-    return decorator.decorate(decoratedCompilationUnit);
   }
 
   protected ASTCDCompilationUnit getTraverserCD() {
