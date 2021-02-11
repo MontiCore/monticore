@@ -122,7 +122,6 @@ deploy:
 
 sonar:
   stage: sonar
-  dependsOn: test
   script:
     - "./gradlew jacocoMergeSubprojects sonarqube $GRADLE_OPTS $SONAR_OPTS"
   only:
