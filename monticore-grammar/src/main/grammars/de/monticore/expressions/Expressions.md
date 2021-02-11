@@ -24,7 +24,7 @@ Two further expression languages are defined in the OCL project:
 * [OCL-OCLExpressions] (extends ExpressionsBasis, introduces OCL to MontiCore)
 
 Furthermore, composite SI unit expressions are defined in the SI Units project:
-* [SI Units](https://github.com/MontiCore/siunits/blob/master/src/main/grammars/de/monticore/SIUnits.mc4)
+* [SI Units](https://github.com/MontiCore/siunits/blob/master/src/main/grammars/de/monticore/SIUnits.mc4) (can be used to parse primitive units as well as their products, quotients, and powers)
 
 ### Using Expressions
 
