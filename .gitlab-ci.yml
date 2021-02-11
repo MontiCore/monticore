@@ -111,7 +111,7 @@ test_grammar_it:
 sonar:
   stage: sonar
   dependencies:
-    - test
+    - deploy
   script:
     - "./gradlew jacocoMergeSubprojects sonarqube $GRADLE_OPTS $SONAR_OPTS"
   only:
