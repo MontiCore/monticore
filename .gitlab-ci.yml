@@ -8,7 +8,7 @@ variables:
   MC_MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2"
   GRADLE_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2"
   MC_MAVEN_CLI_OPTS: "--settings settings.xml --batch-mode -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn"
-
+  SONAR_OPTS: "-Dsonar.login=$sonarUser -Dsonar.password=$sonarPassword"
 
 before_script:
   - chmod +x ./gradlew
@@ -24,6 +24,7 @@ before_script:
 stages:
   - build
   - test
+  - sonar
   - deploy
   - trigger_languages
   - report
@@ -107,6 +108,18 @@ test_grammar_it:
   except:
     - master
     
+sonar:
+  stage: sonar
+  dependencies:
+    - test
+  script:
+    - "./gradlew jacocoMergeSubprojects sonarqube $GRADLE_OPTS $SONAR_OPTS"
+  only:
+    - merge_requests
+    - branches
+  except:
+    - master
+
 deploy:
   stage: deploy
   dependencies:
