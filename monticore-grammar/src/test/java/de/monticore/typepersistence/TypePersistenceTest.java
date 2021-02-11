@@ -7,9 +7,7 @@ import de.monticore.typepersistence.variable._ast.ASTVar;
 import de.monticore.typepersistence.variable._parser.VariableParser;
 import de.monticore.typepersistence.variable._symboltable.IVariableGlobalScope;
 import de.monticore.typepersistence.variable._symboltable.IVariableScope;
-import de.monticore.typepersistence.variable._symboltable.VariableGlobalScope;
-import de.monticore.typepersistence.variable._symboltable.VariableSymbolTableCreator;
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.typepersistence.variable._symboltable.VariableScopesGenitorDelegator;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -40,9 +38,8 @@ public class TypePersistenceTest {
     //Parse blah model
     VariableParser blahParser = new VariableParser();
     Optional<ASTVar> varModel = blahParser.parse_String("var String a");
-    VariableSymbolTableCreator varSymbolTableCreator = VariableMill.variableSymbolTableCreator();
+    VariableScopesGenitorDelegator varSymbolTableCreator = VariableMill.scopesGenitorDelegator();
     IVariableScope blahSymbolTable = varSymbolTableCreator.createFromAST(varModel.get());
-ASTMCType a;
     assertTrue(varModel.isPresent());
   }
 }

@@ -74,17 +74,6 @@ public class VisitorService extends AbstractService<VisitorService> {
     return getVisitorType(getCDSymbol());
   }
 
-  /**
-   * inheritance visitor name e.g. AutomataInheritanceVisitor
-   */
-
-  public String getInheritanceVisitorSimpleName() {
-    return getInheritanceVisitorSimpleName(getCDSymbol());
-  }
-
-  public String getInheritanceVisitorSimpleName(CDDefinitionSymbol cdSymbol) {
-    return cdSymbol.getName() + INHERITANCE_SUFFIX + VisitorConstants.VISITOR_SUFFIX;
-  }
 
   public String getInheritanceHandlerSimpleName() {
     return getInheritanceHandlerSimpleName(getCDSymbol());
@@ -102,54 +91,6 @@ public class VisitorService extends AbstractService<VisitorService> {
     return getPackage(cdSymbol) + "." + getInheritanceHandlerSimpleName(cdSymbol);
   }
 
-  public String getInheritanceVisitorFullName(CDDefinitionSymbol cdSymbol) {
-    return getPackage(cdSymbol) + "." + getInheritanceVisitorSimpleName(cdSymbol);
-  }
-
-  public String getInheritanceVisitorFullName() {
-    return getInheritanceVisitorFullName(getCDSymbol());
-  }
-
-  /**
-   * parent aware visitor name e.g. AutomataParentAwareVisitor
-   */
-
-  public String getParentAwareVisitorSimpleName() {
-    return getParentAwareVisitorSimpleName(getCDSymbol());
-  }
-
-  public String getParentAwareVisitorSimpleName(CDDefinitionSymbol cdDefinitionSymbol) {
-    return cdDefinitionSymbol.getName() + PARENT_AWARE_SUFFIX + VisitorConstants.VISITOR_SUFFIX;
-  }
-
-  public String getParentAwareVisitorFullName() {
-    return getParentAwareVisitorFullName(getCDSymbol());
-  }
-
-  public String getParentAwareVisitorFullName(CDDefinitionSymbol cdDefinitionSymbol) {
-    return getPackage(cdDefinitionSymbol) + "." + getParentAwareVisitorSimpleName(cdDefinitionSymbol);
-  }
-
-  /**
-   * delegator visitor name e.g. AutomataDelegatorVisitor
-   */
-
-  public String getDelegatorVisitorSimpleName() {
-    return getDelegatorVisitorSimpleName(getCDSymbol());
-  }
-
-
-  public String getDelegatorVisitorSimpleName(CDDefinitionSymbol cdDefinitionSymbol) {
-    return cdDefinitionSymbol.getName() + DELEGATOR_SUFFIX + VisitorConstants.VISITOR_SUFFIX;
-  }
-
-  public String getDelegatorVisitorFullName() {
-    return getDelegatorVisitorFullName(getCDSymbol());
-  }
-
-  public String getDelegatorVisitorFullName(CDDefinitionSymbol cdDefinitionSymbol) {
-    return getPackage(cdDefinitionSymbol) + "." + getDelegatorVisitorSimpleName(cdDefinitionSymbol);
-  }
 
   /**
    * traverser (+ interface) name e.g. AutomataTraverser
@@ -263,12 +204,7 @@ public class VisitorService extends AbstractService<VisitorService> {
    * other helpful methods
    */
 
-  public List<ASTMCQualifiedType> getAllVisitorTypesInHierarchy() {
-    return getServicesOfSuperCDs().stream()
-        .map(VisitorService::getVisitorType)
-        .collect(Collectors.toList());
-  }
-  
+
   public List<ASTMCQualifiedType> getAllTraverserInterfacesTypesInHierarchy() {
     return getServicesOfSuperCDs().stream()
         .map(VisitorService::getTraverserInterfaceType)
@@ -309,25 +245,6 @@ public class VisitorService extends AbstractService<VisitorService> {
     astcdDefinition.getCDEnumList().forEach(e -> e.setName(astPath + "." + e.getName()));
     return astcdDefinition;
   }
-
-  public List<ASTMCQualifiedType> getSuperInheritanceVisitors() {
-    //only direct super cds, not transitive
-    List<CDDefinitionSymbol> superCDs = getSuperCDsDirect();
-    return superCDs
-        .stream()
-        .map(this::getInheritanceVisitorFullName)
-        .map(getMCTypeFacade()::createQualifiedType)
-        .collect(Collectors.toList());
-  }
-
-  public List<ASTMCQualifiedType> getSuperVisitors() {
-    //only direct super cds, not transitive
-    List<CDDefinitionSymbol> superCDs = getSuperCDsDirect();
-    return superCDs
-        .stream()
-        .map(this::getVisitorType)
-        .collect(Collectors.toList());
-  }
   
   /**
    * Retrieves the super traverser interfaces with respect to the type
@@ -344,13 +261,4 @@ public class VisitorService extends AbstractService<VisitorService> {
         .collect(Collectors.toList());
   }
 
-  public List<ASTMCQualifiedType> getSuperSymbolVisitors() {
-    //only direct super cds, not transitive
-    List<CDDefinitionSymbol> superCDs = getSuperCDsDirect();
-    return superCDs
-            .stream()
-            .map(this::getVisitorFullName)
-            .map(getMCTypeFacade()::createQualifiedType)
-            .collect(Collectors.toList());
-  }
 }

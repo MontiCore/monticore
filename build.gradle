@@ -36,7 +36,7 @@ allprojects {
 }
 
 subprojects {
-  apply plugin: 'java'
+  apply plugin: 'java-library'
   apply plugin : 'de.set.ecj'
   
   tasks.withType(Test) {
@@ -215,6 +215,21 @@ task buildAll(type: GradleBuild) {
   dependsOn(subprojects.collect { getTasksByName("build", false) })
 }
 
+task cleanMC {
+  dependsOn(
+          ":monticore-grammar:clean",
+          ":monticore-runtime:clean",
+          ":monticore-runtime-emf:clean",
+          ":monticore-grammar-emf:clean"
+  
+  )
+  dependsOn(
+          project(":monticore-test").subprojects.collect {
+            it.tasks.getByName "clean"
+          }
+  )
+}
+
 
 configure([project(':monticore-grammar'),
            project(':monticore-grammar-emf'),
@@ -240,3 +255,4 @@ configure([project(':monticore-grammar'),
 }
 
 defaultTasks 'build'
+

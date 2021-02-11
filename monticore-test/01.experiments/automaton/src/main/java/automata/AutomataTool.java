@@ -18,6 +18,7 @@ import org.antlr.v4.runtime.RecognitionException;
 import java.io.IOException;
 import java.util.Optional;
 
+
 /**
  * Main class for the Automata DSL tool.
  *

@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("grammarName")}
-  ${grammarName}AntlrLexer lexer = new ${grammarName}AntlrLexer(new org.antlr.v4.runtime.ANTLRInputStream(reader));
+  ${grammarName}AntlrLexer lexer = new ${grammarName}AntlrLexer(org.antlr.v4.runtime.CharStreams.fromReader(reader));
   org.antlr.v4.runtime.CommonTokenStream tokens = new org.antlr.v4.runtime.CommonTokenStream(lexer);
   ${grammarName}AntlrParser parser = new ${grammarName}AntlrParser(tokens);
   lexer.setMCParser(parser);

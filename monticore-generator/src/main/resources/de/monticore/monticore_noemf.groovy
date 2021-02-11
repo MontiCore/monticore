@@ -91,10 +91,6 @@ for (astGrammar in getParsedGrammars()) {
            symbolClassDiagramm, scopeClassDiagramm, handcodedPath)
   generateFromCD(glex, astClassDiagram, decoratedSymbolTableCd, out, handcodedPath)
 
-  // decorate and generate Visitor CD for the '_visitor' package
-  decoratedVisitorCD = decorateForVisitorPackage(glex, cdScope, astClassDiagram, handcodedPath)
-  generateFromCD(glex, astClassDiagram, decoratedVisitorCD, out, handcodedPath)
-  
   // decorate and generate Traverser CD for the '_visitor' package
   decoratedTraverserCD = decorateTraverserForVisitorPackage(glex, cdScope, astClassDiagram, handcodedPath)
   generateFromCD(glex, astClassDiagram, decoratedTraverserCD, out, handcodedPath)
@@ -113,7 +109,7 @@ for (astGrammar in getParsedGrammars()) {
 
   // decorate and generate CD for the mills
   decoratedMillCD = decorateMill(glex, cdScope, astClassDiagram, decoratedASTClassDiagramm,
-            decoratedVisitorCD, decoratedSymbolTableCd, decoratedTraverserCD, handcodedPath)
+                                 decoratedSymbolTableCd, decoratedTraverserCD, handcodedPath)
   generateFromCD(glex, astClassDiagram, decoratedMillCD, out, handcodedPath)
 
   //decorate and generate CD for the '_auxiliary' package

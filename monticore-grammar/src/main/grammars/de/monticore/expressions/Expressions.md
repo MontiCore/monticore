@@ -20,8 +20,8 @@ Currently, there are five expression languages. These are
 
 Two further expression languages are defined in the OCL project:
 
-* [OCL-SetExpressions](SetExpressions.mc4) (extends ExpressionsBasis, ideal for working with sets)
-* [OCL-OCLExpressions](OCLExpressions.mc4) (extends ExpressionsBasis, introduces OCL to MontiCore)
+* [OCL-SetExpressions] (extends ExpressionsBasis, ideal for working with sets)
+* [OCL-OCLExpressions] (extends ExpressionsBasis, introduces OCL to MontiCore)
 
 ### Using Expressions
 

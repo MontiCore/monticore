@@ -131,7 +131,6 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
         .addAllCDMethods(createEnclosingScopeMethods(scopeInterfaceName))
         .addAllCDMethods(scopeRuleMethodList)
         .addAllCDMethods(scopeRuleAttributeMethods)
-        .addCDMethod(createAcceptMethod())
         .addCDMethod(createAcceptTraverserMethod())
         .addCDMethod(createSymbolsSizeMethod(symbolAttributes))
         .build();
@@ -544,12 +543,6 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
     return enclosingScopeMethods;
   }
 
-  protected ASTCDMethod createAcceptMethod() {
-    String visitor = visitorService.getVisitorFullName();
-    ASTCDParameter parameter = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(visitor), VISITOR_PREFIX);
-    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, ACCEPT_METHOD, parameter);
-  }
-  
   protected ASTCDMethod createAcceptTraverserMethod() {
     String visitor = visitorService.getTraverserInterfaceFullName();
     ASTCDParameter parameter = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(visitor), VISITOR_PREFIX);

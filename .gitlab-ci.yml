@@ -7,7 +7,7 @@ image: registry.git.rwth-aachen.de/monticore/container-registry/maven:3-jdk-8
 variables:
   MC_MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2"
   GRADLE_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2"
-  MC_MAVEN_CLI_OPTS: "--settings settings.xml --batch-mode -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn"
+  MC_MAVEN_CLI_OPTS: "--settings ./settings.xml --batch-mode -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn"
 
 
 before_script:
@@ -27,12 +27,14 @@ stages:
   - deploy
   - trigger_languages
   - report
+  - check
 
 build:
   stage: build
   script:
     - "cd monticore-tool && ./gradlew build $GRADLE_OPTS -Pci"
     - "cd .. &&./gradlew buildMC $GRADLE_OPTS -Pci"
+    - "cd monticore-maven-plugin && mvn $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS install"
   artifacts: 
     paths:
       - ".gradle"
@@ -111,20 +113,12 @@ deploy:
     - build
   script:
     - "./gradlew deployMC -PmavenPassword=$password -PmavenUser=$username $GRADLE_OPTS"
+    - "cd monticore-maven-plugin && mvn $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS deploy -Dpass=$password -Duser=$username"
   only:
     - dev
   except:
     - master
       
-build_maven:
-  stage: build
-  script:
-    - "mvn $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS install"
-  only:
-    - schedules
-  except:
-    - master
-
 trigger-automata:
   stage: trigger_languages
   allow_failure: true
@@ -329,3 +323,16 @@ pages:
       - public
   only:
     - schedules
+
+checkMDLinks:
+  stage: check
+  allow_failure: true
+  script:
+    - "curl --location --header \"PRIVATE-TOKEN: $secibuildtoken\" \"https://git.rwth-aachen.de/api/v4/projects/monticore%2Fmdlinkchecker/jobs/artifacts/master/raw/target/libs/MDLinkCheckerCLI.jar?job=build\" --output MDLinkCheckerCLI.jar"
+    - "url=https://git.rwth-aachen.de/monticore/monticore/-/tree/dev"
+    - "linkCheckRes=$(java -jar MDLinkCheckerCLI.jar -url $url -t $secibuildtoken)"
+    - "echo \"$linkCheckRes\""
+    - "if [[ $linkCheckRes == *\"ERROR\"* ]]; then exit 1; fi"
+  only:
+    - dev
+

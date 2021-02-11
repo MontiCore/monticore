@@ -40,7 +40,7 @@ However, we suggest some default arguments for standardized access.
 ```
 
 An example of a complete yet relatively small CLI example can be found in the 
-[JSON project](https://git.rwth-aachen.de/monticore/languages/json).
+[JSON project](https://github.com/MontiCore/json).
 
 Some explanation to the arguments:
 * The CLI is meant for handling one individual model (`-i`) and store the
@@ -102,6 +102,7 @@ shadowJar {
     }
     archiveFileName = "${archiveBaseName.get()}-cli.${archiveExtension.get()}"
     minimize()
+    archiveClassifier = "cli"
 }
 
 jar.dependsOn shadowJar

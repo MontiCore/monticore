@@ -6,7 +6,6 @@ import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._visitor.GrammarHandler;
 import de.monticore.grammar.grammar._visitor.GrammarTraverser;
 import de.monticore.grammar.grammar._visitor.GrammarVisitor2;
-import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVisitor;
 
 public class NoTokenDefinedVisitor implements GrammarVisitor2, GrammarHandler {
 

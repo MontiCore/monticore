@@ -1,4 +1,4 @@
-// (c) https://github.com/MontiCore/monticore
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.mc2cd.transl.creation;
 
 import de.monticore.cd.cd4analysis.CD4AnalysisMill;
