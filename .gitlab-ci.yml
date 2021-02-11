@@ -24,8 +24,8 @@ before_script:
 stages:
   - build
   - test
-  - sonar
   - deploy
+  - sonar
   - trigger_languages
   - report
   - check
@@ -107,18 +107,6 @@ test_grammar_it:
     - branches
   except:
     - master
-    
-sonar:
-  stage: sonar
-  dependencies:
-    - deploy
-  script:
-    - "./gradlew jacocoMergeSubprojects sonarqube $GRADLE_OPTS $SONAR_OPTS"
-  only:
-    - merge_requests
-    - branches
-  except:
-    - master
 
 deploy:
   stage: deploy
@@ -131,7 +119,18 @@ deploy:
     - dev
   except:
     - master
-      
+
+sonar:
+  stage: sonar
+  dependsOn: test
+  script:
+    - "./gradlew jacocoMergeSubprojects sonarqube $GRADLE_OPTS $SONAR_OPTS"
+  only:
+    - merge_requests
+    - branches
+  except:
+    - master
+
 build_maven:
   stage: build
   script:
