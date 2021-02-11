@@ -78,65 +78,38 @@ public class CoCoTests {
   }
 
   @Test
-  public void testValidModelsOO(){
-    //test for oo tc
-    ISynthesize synthesize = new SynthesizeSymTypeFromTypeCheckTest();
-    ITypesCalculator typesCalculator = new DeriveSymTypeFromTypeCheckTest();
-    TypeCheck tc = new TypeCheck(synthesize, typesCalculator);
-    TypeCheckTestCoCoChecker checker = new TypeCheckTestCoCoChecker();
-    checker.addCoCo(new VariableDeclarationIsCorrect(tc));
-    checker.addCoCo(new VariableAssignmentCorrectType(tc));
-
-    checker.checkAll(check);
-    checker.checkAll(bar);
-    checker.checkAll(inheritanceBar);
+  public void testValidCheckOOAndAbstract(){
+    testValidOO(check);
+    testValidAbstract(check);
   }
 
   @Test
-  public void testValidModelsAbstract(){
-    //test for abstract tc
-    ISynthesize synthesize = new SynthesizeSymTypeFromTypeCheckTest();
-    ITypesCalculator typesCalculator = new DeriveSymTypeFromTypeCheckTestAbstract();
-    TypeCheck tc = new TypeCheck(synthesize, typesCalculator);
-    TypeCheckTestCoCoChecker checker = new TypeCheckTestCoCoChecker();
-    checker.addCoCo(new VariableDeclarationIsCorrect(tc));
-    checker.addCoCo(new VariableAssignmentCorrectType(tc));
+  public void testValidBarOOAndAbstract(){
+    testValidOO(bar);
+    testValidAbstract(bar);
+  }
 
-    checker.checkAll(check);
-    checker.checkAll(bar);
-    checker.checkAll(inheritanceBar);
+  @Test
+  public void testValidInheritanceBarOOAndAbstract(){
+    testValidOO(inheritanceBar);
+    testValidAbstract(inheritanceBar);
   }
 
   @Test
   public void testStaticAbstractOOMethods(){
-    testAbstractWorksButOODoesNot("0xA0239", staticAbstractOOMethods);
+    testValidAbstract(staticAbstractOOMethods);
+    testInvalidOO("0xA0239", staticAbstractOOMethods);
   }
 
   @Test
   public void testStaticAbstractOOFields(){
-    testAbstractWorksButOODoesNot("0xA0237", staticAbstractOOFields);
+    testValidAbstract(staticAbstractOOFields);
+    testInvalidOO("0xA0237", staticAbstractOOFields);
   }
 
-  protected void testAbstractWorksButOODoesNot(String errorCode, ASTTCCompilationUnit comp){
-    //abstract tc
+  protected void testInvalidAbstract(String errorCode, ASTTCCompilationUnit comp){
     Log.clearFindings();
-    ISynthesize synthesize = new SynthesizeSymTypeFromTypeCheckTest();
-    ITypesCalculator typesCalculatorAbs = new DeriveSymTypeFromTypeCheckTestAbstract();
-    TypeCheck tc = new TypeCheck(synthesize, typesCalculatorAbs);
-    TypeCheckTestCoCoChecker checker = new TypeCheckTestCoCoChecker();
-    checker.addCoCo(new VariableDeclarationIsCorrect(tc));
-    checker.addCoCo(new VariableAssignmentCorrectType(tc));
-
-    checker.checkAll(comp);
-    assertEquals(0, Log.getFindingsCount());
-
-    //oo tc
-    ITypesCalculator typesCalculatorOO = new DeriveSymTypeFromTypeCheckTest();
-    tc = new TypeCheck(synthesize, typesCalculatorOO);
-    checker = new TypeCheckTestCoCoChecker();
-    checker.addCoCo(new VariableDeclarationIsCorrect(tc));
-    checker.addCoCo(new VariableAssignmentCorrectType(tc));
-
+    TypeCheckTestCoCoChecker checker = getAbstractChecker();
     try{
       checker.checkAll(comp);
     }catch(Exception e){
@@ -146,6 +119,50 @@ public class CoCoTests {
     assertTrue(Log.getFindings().get(0).getMsg().startsWith(errorCode));
   }
 
+  protected void testInvalidOO(String errorCode, ASTTCCompilationUnit comp){
+    Log.clearFindings();
+    TypeCheckTestCoCoChecker checker = getOOChecker();
+    try{
+      checker.checkAll(comp);
+    }catch(Exception e){
+      //do nothing here, just catch the exception for further testing
+    }
+    assertEquals(1, Log.getFindingsCount());
+    assertTrue(Log.getFindings().get(0).getMsg().startsWith(errorCode));
+  }
 
+  protected void testValidAbstract(ASTTCCompilationUnit comp){
+    Log.clearFindings();
+    TypeCheckTestCoCoChecker checker = getAbstractChecker();
+    checker.checkAll(comp);
+    assertEquals(0, Log.getFindingsCount());
+  }
+
+  protected void testValidOO(ASTTCCompilationUnit comp){
+    Log.clearFindings();
+    TypeCheckTestCoCoChecker checker = getOOChecker();
+    checker.checkAll(comp);
+    assertEquals(0, Log.getFindingsCount());
+  }
+
+  protected TypeCheckTestCoCoChecker getOOChecker(){
+    ISynthesize synthesize = new SynthesizeSymTypeFromTypeCheckTest();
+    ITypesCalculator typesCalculator = new DeriveSymTypeFromTypeCheckTest();
+    TypeCheck tc = new TypeCheck(synthesize, typesCalculator);
+    TypeCheckTestCoCoChecker checker = new TypeCheckTestCoCoChecker();
+    checker.addCoCo(new VariableDeclarationIsCorrect(tc));
+    checker.addCoCo(new VariableAssignmentCorrectType(tc));
+    return checker;
+  }
+
+  protected TypeCheckTestCoCoChecker getAbstractChecker(){
+    ISynthesize synthesize = new SynthesizeSymTypeFromTypeCheckTest();
+    ITypesCalculator typesCalculator = new DeriveSymTypeFromTypeCheckTestAbstract();
+    TypeCheck tc = new TypeCheck(synthesize, typesCalculator);
+    TypeCheckTestCoCoChecker checker = new TypeCheckTestCoCoChecker();
+    checker.addCoCo(new VariableDeclarationIsCorrect(tc));
+    checker.addCoCo(new VariableAssignmentCorrectType(tc));
+    return checker;
+  }
 
 }
