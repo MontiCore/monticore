@@ -73,7 +73,7 @@ public class HandlerDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
    * @return The decorated getRealThis method
    */
   protected ASTCDMethod addGetTraverserMethod(ASTMCType visitorType) {
-    ASTCDMethod getRealThisMethod = this.getCDMethodFacade().createMethod(PUBLIC, visitorType, GET_TRAVERSER);
+    ASTCDMethod getRealThisMethod = this.getCDMethodFacade().createMethod(PUBLIC.build(), visitorType, GET_TRAVERSER);
     String generatedErrorCode = visitorService.getGeneratedErrorCode(visitorType.printType(
         new CD4CodeFullPrettyPrinter(new IndentPrinter())) + GET_TRAVERSER);
     this.replaceTemplate(EMPTY_BODY, getRealThisMethod, new StringHookPoint(
@@ -90,7 +90,7 @@ public class HandlerDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
    */
   protected ASTCDMethod addSetTraverserMethod(ASTMCType visitorType) {
     ASTCDParameter visitorParameter = getCDParameterFacade().createParameter(visitorType, TRAVERSER);
-    ASTCDMethod setRealThis = this.getCDMethodFacade().createMethod(PUBLIC, SET_TRAVERSER, visitorParameter);
+    ASTCDMethod setRealThis = this.getCDMethodFacade().createMethod(PUBLIC.build(), SET_TRAVERSER, visitorParameter);
     String generatedErrorCode = visitorService.getGeneratedErrorCode(visitorType.printType(
         new CD4CodeFullPrettyPrinter(new IndentPrinter())) + SET_TRAVERSER);
     this.replaceTemplate(EMPTY_BODY, setRealThis, new StringHookPoint(

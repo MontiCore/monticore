@@ -21,7 +21,7 @@ public class MandatoryMutatorSymbolSurrogateDecorator extends MandatoryMutatorDe
   @Override
   protected ASTCDMethod createSetter(final ASTCDAttribute ast) {
     String name = String.format(SET, StringUtils.capitalize(getDecorationHelper().getNativeAttributeName(ast.getName())));
-    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, name, this.getCDParameterFacade().createParameters(ast));
+    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), name, this.getCDParameterFacade().createParameters(ast));
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_symboltable.symbolsurrogate.Set4SymbolSurrogate", ast));
     return method;
   }

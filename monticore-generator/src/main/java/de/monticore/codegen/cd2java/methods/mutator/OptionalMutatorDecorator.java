@@ -41,14 +41,14 @@ public class OptionalMutatorDecorator extends AbstractCreator<ASTCDAttribute, Li
     String name = String.format(SET, naiveAttributeName);
     ASTMCType parameterType = getDecorationHelper().getReferenceTypeFromOptional(ast.getMCType()).getMCTypeOpt().get().deepClone();
     ASTCDParameter parameter = this.getCDParameterFacade().createParameter(parameterType, ast.getName());
-    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, name, parameter);
+    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), name, parameter);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.opt.Set4Opt", ast, naiveAttributeName));
     return method;
   }
 
   protected ASTCDMethod createSetAbsentMethod(final ASTCDAttribute ast) {
     String name = String.format(SET_ABSENT, naiveAttributeName);
-    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, name);
+    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), name);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.opt.SetAbsent", ast));
     return method;
   }

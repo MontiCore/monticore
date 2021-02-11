@@ -63,12 +63,12 @@ public class ScopesGenitorDelegatorDecorator extends AbstractCreator<ASTCDCompil
       ASTCDClass scopesGenitorDelegator = CD4CodeMill.cDClassBuilder()
           .setName(scopesGenitorDelegatorName)
           .setModifier(PUBLIC.build())
-          .addAllCDConstructors(createConstructors(scopesGenitorDelegatorName, globalScopeInterfaceName, simpleName, cdName))
-          .addCDAttribute(createScopeStackAttribute(dequeType))
-          .addCDAttribute(createScopeSkeletonCreatorAttributes(scopesGenitorName))
-          .addCDAttribute(createGlobalScopeAttribute(globalScopeInterfaceName))
-          .addCDAttribute(createTraverserAttribute(traverserName))
-          .addCDMethod(createCreateFromASTMethod(astFullName, artifactScopeName))
+          .addAllCDMembers(createConstructors(scopesGenitorDelegatorName, globalScopeInterfaceName, simpleName, cdName))
+          .addCDMember(createScopeStackAttribute(dequeType))
+          .addCDMember(createScopeSkeletonCreatorAttributes(scopesGenitorName))
+          .addCDMember(createGlobalScopeAttribute(globalScopeInterfaceName))
+          .addCDMember(createTraverserAttribute(traverserName))
+          .addCDMember(createCreateFromASTMethod(astFullName, artifactScopeName))
           .build();
       return Optional.ofNullable(scopesGenitorDelegator);
     }
@@ -79,9 +79,9 @@ public class ScopesGenitorDelegatorDecorator extends AbstractCreator<ASTCDCompil
                                                String simpleName, String cdName) {
     List<ASTCDConstructor> constructors = Lists.newArrayList();
     String symTabMillFullName = symbolTableService.getMillFullName();
-    List<CDDefinitionSymbol> superCDsTransitive = symbolTableService.getSuperCDsTransitive();
+    List<DiagramSymbol> superCDsTransitive = symbolTableService.getSuperCDsTransitive();
     Map<String, String> superSymTabCreator = new HashMap<>();
-    for (CDDefinitionSymbol cdDefinitionSymbol : superCDsTransitive) {
+    for (DiagramSymbol cdDefinitionSymbol : superCDsTransitive) {
       if (cdDefinitionSymbol.isPresentAstNode() && symbolTableService.hasStartProd(cdDefinitionSymbol.getAstNode())) {
         superSymTabCreator.put(cdDefinitionSymbol.getName(), symbolTableService.getScopesGenitorFullName(cdDefinitionSymbol));
       }
@@ -99,26 +99,26 @@ public class ScopesGenitorDelegatorDecorator extends AbstractCreator<ASTCDCompil
   }
 
   protected ASTCDAttribute createScopeStackAttribute(ASTMCType dequeType) {
-    ASTCDAttribute scopeStack = getCDAttributeFacade().createAttribute(PROTECTED, dequeType, SCOPE_STACK_VAR);
+    ASTCDAttribute scopeStack = getCDAttributeFacade().createAttribute(PROTECTED.build(), dequeType, SCOPE_STACK_VAR);
     this.replaceTemplate(VALUE, scopeStack, new StringHookPoint("= new java.util.ArrayDeque<>()"));
     return scopeStack;
   }
 
   protected ASTCDAttribute createScopeSkeletonCreatorAttributes(String scopesGenitor) {
-    return getCDAttributeFacade().createAttribute(PROTECTED_FINAL, scopesGenitor, "symbolTable");
+    return getCDAttributeFacade().createAttribute(PROTECTED_FINAL.build(), scopesGenitor, "symbolTable");
   }
 
   protected ASTCDAttribute createGlobalScopeAttribute(String globalScopeInterface) {
-    return getCDAttributeFacade().createAttribute(PROTECTED, globalScopeInterface, "globalScope");
+    return getCDAttributeFacade().createAttribute(PROTECTED.build(), globalScopeInterface, "globalScope");
   }
 
   protected ASTCDAttribute createTraverserAttribute(String traverserName){
-    return getCDAttributeFacade().createAttribute(PROTECTED, traverserName, TRAVERSER);
+    return getCDAttributeFacade().createAttribute(PROTECTED.build(), traverserName, TRAVERSER);
   }
 
   protected ASTCDMethod createCreateFromASTMethod(String startProd, String artifactScope) {
     ASTCDParameter startProdParam = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(startProd), "rootNode");
-    ASTCDMethod createFromAST = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createQualifiedType(artifactScope),
+    ASTCDMethod createFromAST = getCDMethodFacade().createMethod(PUBLIC.build(), getMCTypeFacade().createQualifiedType(artifactScope),
         "createFromAST", startProdParam);
     this.replaceTemplate(EMPTY_BODY, createFromAST, new TemplateHookPoint(TEMPLATE_PATH + "CreateFromASTDelegator",
         artifactScope));

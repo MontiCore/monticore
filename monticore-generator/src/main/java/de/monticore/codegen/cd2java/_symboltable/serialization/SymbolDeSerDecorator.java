@@ -112,7 +112,7 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
 
   protected ASTCDMethod createGetSerializedKindMethod(String symbolName) {
     ASTCDMethod getSerializedKindMethod = getCDMethodFacade()
-        .createMethod(PUBLIC, string, "getSerializedKind");
+        .createMethod(PUBLIC.build(), string, "getSerializedKind");
     this.replaceTemplate(EMPTY_BODY, getSerializedKindMethod,
         new StringHookPoint("return \"" + symbolName + "\";"));
     return getSerializedKindMethod;
@@ -123,7 +123,7 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
   protected ASTCDMethod createSerializeMethod(ASTCDType cdType, ASTCDParameter symParam,
       ASTCDParameter s2jParam, boolean spansScope) {
     ASTCDMethod method = getCDMethodFacade()
-        .createMethod(PUBLIC, string, "serialize", symParam, s2jParam);
+        .createMethod(PUBLIC.build(), string, "serialize", symParam, s2jParam);
     HookPoint hp = new TemplateHookPoint(SER_TEMPL, spansScope, cdType.getCDAttributeList());
     this.replaceTemplate(EMPTY_BODY, method, hp);
     return method;
@@ -137,7 +137,7 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
       ASTCDParameter toSerialize = getCDParameterFacade()
           .createParameter(attr.getMCType(), attr.getName());
       ASTCDMethod method = getCDMethodFacade()
-          .createMethod(PROTECTED, methodName, toSerialize, s2j);
+          .createMethod(PROTECTED.build(), methodName, toSerialize, s2j);
 
       // Check whether built-in serialization exists. If yes, use it and otherwise make method abstract
       Optional<HookPoint> impl = bitser.getSerialHook(attr.printType(), attr.getName());
@@ -153,7 +153,7 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
   }
 
   protected ASTCDMethod createSerializeAddonsMethod(ASTCDParameter symbol, ASTCDParameter json) {
-    return getCDMethodFacade().createMethod(PROTECTED, "serializeAddons", symbol, json);
+    return getCDMethodFacade().createMethod(PROTECTED.build(), "serializeAddons", symbol, json);
   }
 
   ////////////////////////////// DESERIALIZATON ////////////////////////////////////////////////////
@@ -161,7 +161,7 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
   protected ASTCDMethod createDeserializeStringMethod(ASTMCQualifiedType symType) {
     ASTCDParameter stringParam = getCDParameterFacade().createParameter(string, "serialized");
     ASTCDMethod deserializeMethod = getCDMethodFacade()
-        .createMethod(PUBLIC, symType, DESERIALIZE, stringParam);
+        .createMethod(PUBLIC.build(), symType, DESERIALIZE, stringParam);
     this.replaceTemplate(EMPTY_BODY, deserializeMethod, new TemplateHookPoint(DESER_STR_TEMPL));
     return deserializeMethod;
   }
@@ -171,7 +171,7 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
       List<ASTCDAttribute> symbolRuleAttributes, boolean spansScope, String scopeName,
       String deSerFullName) {
     ASTCDMethod deserializeMethod = getCDMethodFacade()
-        .createMethod(PUBLIC, type, DESERIALIZE, jsonParam);
+        .createMethod(PUBLIC.build(), type, DESERIALIZE, jsonParam);
     this.replaceTemplate(EMPTY_BODY, deserializeMethod,
         new TemplateHookPoint(DESER_SYM_TEMPL, symTabMill, symbolFullName,
             Names.getSimpleName(symbolFullName), symbolRuleAttributes, spansScope, scopeName, deSerFullName));
@@ -184,7 +184,7 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
     for (ASTCDAttribute attr : attributeList) {
       String methodName = DESERIALIZE + StringTransformations.capitalize(attr.getName());
       ASTCDMethod method = getCDMethodFacade()
-          .createMethod(PROTECTED, attr.getMCType(), methodName, scopeJsonParam);
+          .createMethod(PROTECTED.build(), attr.getMCType(), methodName, scopeJsonParam);
 
       // Check whether built-in serialization exists. If yes, use it and otherwise make method abstract
       Optional<HookPoint> impl = bitser
@@ -201,7 +201,7 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
   }
 
   protected ASTCDMethod createDeserializeAddons(ASTCDParameter symbol, ASTCDParameter json) {
-    return getCDMethodFacade().createMethod(PROTECTED, "deserializeAddons", symbol, json);
+    return getCDMethodFacade().createMethod(PROTECTED.build(), "deserializeAddons", symbol, json);
   }
 
   //////////////////////////////// internal calculations //////////////////////////////////

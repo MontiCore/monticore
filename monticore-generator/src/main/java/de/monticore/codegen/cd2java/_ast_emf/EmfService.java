@@ -103,7 +103,7 @@ public class EmfService extends AbstractService<EmfService> {
     for (ASTCDClass astcdClass : astcdDefinition.getCDClassesList()) {
       eDataTypeMap.addAll(getEDataTypes(astcdClass));
     }
-    for (ASTCDInterface astcdInterface : astcdDefinition.getCDInterfaceList()) {
+    for (ASTCDInterface astcdInterface : astcdDefinition.getCDInterfacesList()) {
       eDataTypeMap.addAll(getEDataTypes(astcdInterface));
     }
     return eDataTypeMap;

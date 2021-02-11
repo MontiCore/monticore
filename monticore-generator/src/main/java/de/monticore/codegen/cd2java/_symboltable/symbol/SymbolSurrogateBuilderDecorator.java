@@ -87,41 +87,41 @@ public class SymbolSurrogateBuilderDecorator extends AbstractCreator<ASTCDType, 
     return CD4AnalysisMill.cDClassBuilder()
         .setName(symbolSurrogateBuilderName)
         .setModifier(modifier)
-        .addCDConstructor(createDefaultConstructor(symbolSurrogateBuilderName))
-        .addCDAttribute(createRealThisAttribute(symbolSurrogateBuilderName))
-        .addAllCDAttributes(builderAttributes)
-        .addCDAttribute(nameAttribute)
-        .addCDAttribute(enclosingScopeAttribute)
-        .addAllCDMethods(accessorMethods)
-        .addAllCDMethods(mutatorMethods)
-        .addAllCDMethods(nameMutatorMethods)
-        .addAllCDMethods(nameAccessorMethods)
-        .addAllCDMethods(enclosingScopeAccessorMethods)
-        .addAllCDMethods(enclosingScopeMutatorMethods)
-        .addCDMethod(createBuildMethod(symbolSurrogateName, builderAttributes))
+        .addCDMember(createDefaultConstructor(symbolSurrogateBuilderName))
+        .addCDMember(createRealThisAttribute(symbolSurrogateBuilderName))
+        .addAllCDMembers(builderAttributes)
+        .addCDMember(nameAttribute)
+        .addCDMember(enclosingScopeAttribute)
+        .addAllCDMembers(accessorMethods)
+        .addAllCDMembers(mutatorMethods)
+        .addAllCDMembers(nameMutatorMethods)
+        .addAllCDMembers(nameAccessorMethods)
+        .addAllCDMembers(enclosingScopeAccessorMethods)
+        .addAllCDMembers(enclosingScopeMutatorMethods)
+        .addCDMember(createBuildMethod(symbolSurrogateName, builderAttributes))
         .build();
   }
 
   protected ASTCDConstructor createDefaultConstructor(String symbolSurrogateBuilderName) {
-    ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC, symbolSurrogateBuilderName);
+    ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), symbolSurrogateBuilderName);
     this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("this." + REAL_BUILDER + " = (" + symbolSurrogateBuilderName + ") this;"));
     return constructor;
   }
 
   protected ASTCDAttribute createNameAttribute() {
-    return this.getCDAttributeFacade().createAttribute(PROTECTED, String.class, NAME_VAR);
+    return this.getCDAttributeFacade().createAttribute(PROTECTED.build(), String.class, NAME_VAR);
   }
 
   protected ASTCDAttribute createEnclosingScopeAttribute(String scopeInterface) {
-    return this.getCDAttributeFacade().createAttribute(PROTECTED, scopeInterface, ENCLOSING_SCOPE_VAR);
+    return this.getCDAttributeFacade().createAttribute(PROTECTED.build(), scopeInterface, ENCLOSING_SCOPE_VAR);
   }
 
   protected ASTCDAttribute createRealThisAttribute(String symbolSurrogateBuilderName) {
-    return this.getCDAttributeFacade().createAttribute(PROTECTED, symbolSurrogateBuilderName, REAL_BUILDER);
+    return this.getCDAttributeFacade().createAttribute(PROTECTED.build(), symbolSurrogateBuilderName, REAL_BUILDER);
   }
 
   protected ASTCDMethod createBuildMethod(String symbolSurrogate, List<ASTCDAttribute> attributeList) {
-    ASTCDMethod buildMethod = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createQualifiedType(symbolSurrogate), "build");
+    ASTCDMethod buildMethod = getCDMethodFacade().createMethod(PUBLIC.build(), getMCTypeFacade().createQualifiedType(symbolSurrogate), "build");
     this.replaceTemplate(EMPTY_BODY, buildMethod, new TemplateHookPoint(TEMPLATE_PATH + "BuildSymbolSurrogate", symbolSurrogate, attributeList));
     return buildMethod;
   }

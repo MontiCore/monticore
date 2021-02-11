@@ -69,11 +69,11 @@ public class CDTraverserDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     // build cd
     ASTCDDefinition astCD = CD4CodeMill.cDDefinitionBuilder()
         .setName(input.getCDDefinition().getName())
-        .addCDInterface(traverserInterface)
-        .addCDClass(traverserClass)
-        .addCDInterface(visitor2Interface)
-        .addCDInterface(handlerInterface)
-        .addCDClass(inheritanceClass)
+        .addCDElement(traverserInterface)
+        .addCDElement(traverserClass)
+        .addCDElement(visitor2Interface)
+        .addCDElement(handlerInterface)
+        .addCDElement(inheritanceClass)
         .build();
 
     for (ASTCDClass cdClass : astCD.getCDClassesList()) {

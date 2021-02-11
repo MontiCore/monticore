@@ -4,6 +4,8 @@ package de.monticore.codegen.mc2cd;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import de.monticore.umlmodifier._ast.ASTModifier;
+import de.monticore.umlstereotype._ast.*;
 import de.monticore.ast.ASTNode;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
@@ -450,14 +452,14 @@ public final class TransformationHelper {
                                         String stereotypeValue) {
     if (!astModifier.isPresentStereotype()) {
       astModifier.setStereotype(CD4AnalysisNodeFactory
-          .createASTCDStereotype());
+          .createASTStereotype());
     }
-    List<ASTCDStereoValue> stereoValueList = astModifier.getStereotype()
-        .getValueList();
-    ASTCDStereoValue stereoValue = CD4AnalysisNodeFactory
-        .createASTCDStereoValue();
+    List<ASTStereoValue> stereoValueList = astModifier.getStereotype()
+        .getValuesList();
+    ASTStereoValue stereoValue = CD4AnalysisNodeFactory
+        .createASTStereoValue();
     stereoValue.setName(stereotypeName);
-    stereoValue.setValue(stereotypeValue);
+    stereoValue.setContent(stereotypeValue);
     stereoValueList.add(stereoValue);
   }
 
@@ -465,12 +467,12 @@ public final class TransformationHelper {
                                         String stereotypeName) {
     if (!astModifier.isPresentStereotype()) {
       astModifier.setStereotype(CD4AnalysisNodeFactory
-          .createASTCDStereotype());
+          .createASTStereotype());
     }
-    List<ASTCDStereoValue> stereoValueList = astModifier.getStereotype()
-        .getValueList();
-    ASTCDStereoValue stereoValue = CD4AnalysisNodeFactory
-        .createASTCDStereoValue();
+    List<ASTStereoValue> stereoValueList = astModifier.getStereotype()
+        .getValuesList();
+    ASTStereoValue stereoValue = CD4AnalysisNodeFactory
+        .createASTStereoValue();
     stereoValue.setName(stereotypeName);
     stereoValueList.add(stereoValue);
   }

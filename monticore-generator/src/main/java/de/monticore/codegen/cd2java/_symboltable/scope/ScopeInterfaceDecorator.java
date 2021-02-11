@@ -375,7 +375,7 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
       ASTCDParameter foundSymbolsParameter,
       ASTCDParameter nameParameter, ASTCDParameter accessModifierParameter,
       ASTCDParameter predicateParameter) {
-    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, returnType, methodName,
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC_ABSTRACT.build(), returnType, methodName,
         foundSymbolsParameter, nameParameter, accessModifierParameter, predicateParameter);
     return method;
   }

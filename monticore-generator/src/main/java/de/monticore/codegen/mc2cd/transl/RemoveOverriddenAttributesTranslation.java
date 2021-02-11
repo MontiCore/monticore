@@ -13,6 +13,7 @@ import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.monticore.umlmodifier._ast.ASTModifier;
+import de.monticore.umlstereotype._ast.ASTStereoValue;
 import de.monticore.utils.Link;
 import de.se_rwth.commons.StringTransformations;
 
@@ -103,7 +104,7 @@ public class RemoveOverriddenAttributesTranslation implements
 
   private boolean hasDerivedStereotype(ASTModifier modifier) {
     if (modifier.isPresentStereotype()) {
-      return modifier.getStereotype().getValueList()
+      return modifier.getStereotype().getValuesList()
           .stream()
           .anyMatch(v -> v.getName().equals(MC2CDStereotypes.DERIVED_ATTRIBUTE_NAME.toString()));
     }
@@ -130,8 +131,8 @@ public class RemoveOverriddenAttributesTranslation implements
     if (!cdAttribute.getModifier().isPresentStereotype()) {
       return true;
     }
-    return cdAttribute.getModifier().getStereotype().getValueList().stream()
-        .map(ASTCDStereoValue::getName)
+    return cdAttribute.getModifier().getStereotype().getValuesList().stream()
+        .map(ASTStereoValue::getName)
         .noneMatch(MC2CDStereotypes.INHERITED.toString()::equals);
   }
 }

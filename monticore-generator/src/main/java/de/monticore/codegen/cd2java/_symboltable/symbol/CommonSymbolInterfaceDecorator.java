@@ -58,11 +58,11 @@ public class CommonSymbolInterfaceDecorator extends AbstractCreator<ASTCDCompila
   protected ASTCDMethod createAcceptTraverserMethod() {
     ASTMCQualifiedType visitorType = getMCTypeFacade().createQualifiedType(visitorService.getTraverserInterfaceFullName());
     ASTCDParameter parameter = getCDParameterFacade().createParameter(visitorType, VISITOR_PREFIX);
-    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, ACCEPT_METHOD, parameter);
+    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT.build(), ACCEPT_METHOD, parameter);
   }
 
   protected ASTCDAttribute createEnclosingScopeAttribute(String scopeInterface) {
-    return this.getCDAttributeFacade().createAttribute(PROTECTED, scopeInterface, ENCLOSING_SCOPE_VAR);
+    return this.getCDAttributeFacade().createAttribute(PROTECTED.build(), scopeInterface, ENCLOSING_SCOPE_VAR);
   }
 
   protected List<ASTCDMethod> createEnclosingScopeMethods(String scopeInterface) {

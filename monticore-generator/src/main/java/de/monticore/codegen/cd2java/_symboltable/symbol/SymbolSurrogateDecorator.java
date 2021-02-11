@@ -100,15 +100,15 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
             .addCDMethod(createGetFullNameMethod())
             .addAllCDMethods(delegateSymbolRuleMethods);
     return builder
-            .addCDAttribute(delegateAttribute)
-            .addAllCDMethods(enclosingScopeMethods)
-            .addCDMethod(createLazyLoadDelegateMethod(symbolSurrogateSimpleName, symbolFullName, simpleName, scopeInterfaceType))
+            .addCDMember(delegateAttribute)
+            .addAllCDMembers(enclosingScopeMethods)
+            .addCDMember(createLazyLoadDelegateMethod(symbolSurrogateSimpleName, symbolFullName, simpleName, scopeInterfaceType))
             .build();
   }
 
   protected ASTCDMethod createSetEnclosingScopeMethod(ASTCDAttribute enclosingScopeAttribute, String scopeName) {
     ASTCDParameter param = getCDParameterFacade().createParameter(enclosingScopeAttribute.getMCType(), "enclosingScope");
-    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, "setEnclosingScope", param);
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), "setEnclosingScope", param);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "SetEnclosingScope4SymbolSurrogate", enclosingScopeAttribute, scopeName));
     return method;
   }
@@ -121,27 +121,27 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
   }
 
   protected ASTCDAttribute createNameAttribute() {
-    return getCDAttributeFacade().createAttribute(PROTECTED, "String", "name");
+    return getCDAttributeFacade().createAttribute(PROTECTED.build(), "String", "name");
   }
 
   protected ASTCDAttribute createEnclosingScopeAttribute(String scopeType) {
-    return getCDAttributeFacade().createAttribute(PROTECTED, scopeType, "enclosingScope");
+    return getCDAttributeFacade().createAttribute(PROTECTED.build(), scopeType, "enclosingScope");
   }
 
   protected ASTCDMethod createGetEnclosingScopeMethod(ASTCDAttribute enclosingScopeAttribute){
-    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, enclosingScopeAttribute.getMCType(), "getEnclosingScope");
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), enclosingScopeAttribute.getMCType(), "getEnclosingScope");
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "GetEnclosingScopeSymbolSurrogate", symbolTableService.getScopeInterfaceSimpleName()));
     return method;
   }
 
   protected ASTCDAttribute createDelegateAttribute(String symbolType) {
-    ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PROTECTED, getMCTypeFacade().createOptionalTypeOf(symbolType), "delegate");
+    ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PROTECTED.build(), getMCTypeFacade().createOptionalTypeOf(symbolType), "delegate");
     getDecorationHelper().addAttributeDefaultValues(attribute, glex);
     return attribute;
   }
 
   protected ASTCDMethod createLazyLoadDelegateMethod(String symbolSurrogateName, String symbolName, String simpleName, String scopeName) {
-    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createQualifiedType(symbolName), "lazyLoadDelegate");
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), getMCTypeFacade().createQualifiedType(symbolName), "lazyLoadDelegate");
     String generatedError1 = symbolTableService.getGeneratedErrorCode("lazyLoadDelegate1");
     String generatedError2 = symbolTableService.getGeneratedErrorCode("lazyLoadDelegate2");
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "LazyLoadDelegate", symbolSurrogateName,
@@ -150,7 +150,7 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
   }
 
   protected ASTCDMethod createGetFullNameMethod(){
-    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createStringType(), "getFullName");
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), getMCTypeFacade().createStringType(), "getFullName");
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "GetFullName"));
     return method;
   }

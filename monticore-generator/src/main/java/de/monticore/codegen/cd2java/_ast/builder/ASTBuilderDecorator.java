@@ -52,7 +52,7 @@ public class ASTBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass>
 
     if (!hasSuperClassOtherThanASTCNode(domainClass)) {
       ASTMCType builderType = this.getMCTypeFacade().createQualifiedType(builderClassName);
-      builderClass.addAllCDMethods(createBuilderMethodForASTCNodeMethods(builderType));
+      builderClass.addAllCDMembers(createBuilderMethodForASTCNodeMethods(builderType));
     }
 
     Optional<ASTCDMethod> buildMethod = builderClass.getCDMethodList().stream().filter(m -> BUILD_METHOD.equals(m.getName())).findFirst();
@@ -71,7 +71,7 @@ public class ASTBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass>
       this.replaceTemplate(EMPTY_BODY, uncheckedBuildMethod, new TemplateHookPoint("_ast.builder.BuildMethod", domainClass, Lists.newArrayList(), false));
       this.replaceTemplate(BUILD_INIT_TEMPLATE, uncheckedBuildMethod, new TemplateHookPoint(AST_BUILDER_INIT_TEMPLATE, domainClass));
     }
-    builderClass.addCDMethod(uncheckedBuildMethod);
+    builderClass.addCDMember(uncheckedBuildMethod);
 
     return builderClass;
   }

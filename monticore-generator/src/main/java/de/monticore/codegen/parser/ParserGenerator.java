@@ -163,7 +163,7 @@ public class ParserGenerator {
 
     glex.setGlobalValue("service", new AbstractService(astClassDiagram));
     glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
-    glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
+    glex.setGlobalValue("cdPrinter", new CD4CodeFullPrettyPrinter());
     final String diagramName = decoratedCD.getCDDefinition().getName();
     GeneratorSetup setup = new GeneratorSetup();
     setup.setOutputDirectory(targetDir);

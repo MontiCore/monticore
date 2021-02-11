@@ -3,21 +3,26 @@ package de.monticore.codegen.cd2java;
 
 import com.google.common.collect.Lists;
 import de.monticore.cd4analysis._ast.*;
+import de.monticore.cd4codebasis._ast.*;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
+import de.monticore.cdbasis._ast.*;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.cdbasis._symboltable.CDTypeSymbolSurrogate;
+import de.monticore.cdinterfaceandenum._ast.*;
 import de.monticore.codegen.cd2java.exception.DecorateException;
 import de.monticore.codegen.cd2java.exception.DecoratorErrorCode;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
+import de.monticore.umlmodifier._ast.ASTModifier;
+import de.monticore.umlstereotype._ast.ASTStereoValue;
 import de.se_rwth.commons.Names;
 
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.*;
 import static de.monticore.codegen.cd2java._ast.constants.ASTConstantsDecorator.LITERALS_SUFFIX;
 import static de.monticore.codegen.cd2java.mill.MillConstants.MILL_SUFFIX;
@@ -25,7 +30,7 @@ import static de.se_rwth.commons.Names.getQualifier;
 
 public class AbstractService<T extends AbstractService> {
 
-  private final CDDefinitionSymbol cdSymbol;
+  private final DiagramSymbol cdSymbol;
 
 
   private final MCTypeFacade mcTypeFacade;
@@ -36,13 +41,13 @@ public class AbstractService<T extends AbstractService> {
     this(compilationUnit.getCDDefinition().getSymbol());
   }
 
-  public AbstractService(final CDDefinitionSymbol cdSymbol) {
+  public AbstractService(final DiagramSymbol cdSymbol) {
     this.cdSymbol = cdSymbol;
     this.mcTypeFacade = MCTypeFacade.getInstance();
     this.decorationHelper = DecorationHelper.getInstance();
   }
 
-  public CDDefinitionSymbol getCDSymbol() {
+  public DiagramSymbol getCDSymbol() {
     return this.cdSymbol;
   }
 
@@ -54,7 +59,7 @@ public class AbstractService<T extends AbstractService> {
     return this.mcTypeFacade;
   }
 
-  public Collection<CDDefinitionSymbol> getAllCDs() {
+  public Collection<DiagramSymbol> getAllCDs() {
     return Stream.of(Collections.singletonList(getCDSymbol()), getSuperCDsTransitive())
         .flatMap(Collection::stream)
         .collect(Collectors.toList());
@@ -63,32 +68,32 @@ public class AbstractService<T extends AbstractService> {
   /**
    * different methods for getting a list od super ClassDiagrams
    */
-  public List<CDDefinitionSymbol> getSuperCDsDirect() {
+  public List<DiagramSymbol> getSuperCDsDirect() {
     return getSuperCDsDirect(getCDSymbol());
   }
 
-  public List<CDDefinitionSymbol> getSuperCDsDirect(CDDefinitionSymbol cdSymbol) {
+  public List<DiagramSymbol> getSuperCDsDirect(DiagramSymbol cdSymbol) {
     // get direct parent CDSymbols
-    List<CDDefinitionSymbol> superCDs = cdSymbol.getImports().stream()
+    List<DiagramSymbol> superCDs = cdSymbol.getImports().stream()
         .map(this::resolveCD)
         .collect(Collectors.toList());
     return superCDs;
   }
 
-  public List<CDDefinitionSymbol> getSuperCDsTransitive() {
+  public List<DiagramSymbol> getSuperCDsTransitive() {
     return getSuperCDsTransitive(getCDSymbol());
   }
 
-  public List<CDDefinitionSymbol> getSuperCDsTransitive(CDDefinitionSymbol cdSymbol) {
+  public List<DiagramSymbol> getSuperCDsTransitive(DiagramSymbol cdSymbol) {
     // get direct parent CDSymbols
-    List<CDDefinitionSymbol> directSuperCdSymbols = cdSymbol.getImports().stream()
+    List<DiagramSymbol> directSuperCdSymbols = cdSymbol.getImports().stream()
         .map(this::resolveCD)
         .collect(Collectors.toList());
     // search for super Cds in super Cds
-    List<CDDefinitionSymbol> resolvedCds = new ArrayList<>(directSuperCdSymbols);
-    for (CDDefinitionSymbol superSymbol : directSuperCdSymbols) {
-      List<CDDefinitionSymbol> superCDs = getSuperCDsTransitive(superSymbol);
-      for (CDDefinitionSymbol superCD : superCDs) {
+    List<DiagramSymbol> resolvedCds = new ArrayList<>(directSuperCdSymbols);
+    for (DiagramSymbol superSymbol : directSuperCdSymbols) {
+      List<DiagramSymbol> superCDs = getSuperCDsTransitive(superSymbol);
+      for (DiagramSymbol superCD : superCDs) {
         if (resolvedCds
             .stream()
             .noneMatch(c -> c.getFullName().equals(superCD.getFullName()))) {
@@ -137,7 +142,7 @@ public class AbstractService<T extends AbstractService> {
   /**
    * use symboltabe to resolve for ClassDiagrams or CDTypes
    */
-  public CDDefinitionSymbol resolveCD(String qualifiedName) {
+  public DiagramSymbol resolveCD(String qualifiedName) {
     return getCDSymbol().getEnclosingScope().resolveCDDefinition(qualifiedName)
         .orElseThrow(() -> new DecorateException(DecoratorErrorCode.CD_SYMBOL_NOT_FOUND, qualifiedName));
   }
@@ -158,7 +163,7 @@ public class AbstractService<T extends AbstractService> {
     return getPackage(getCDSymbol());
   }
 
-  public String getPackage(CDDefinitionSymbol cdSymbol) {
+  public String getPackage(DiagramSymbol cdSymbol) {
     if (cdSymbol.getPackageName().isEmpty()) {
       return String.join(".", cdSymbol.getName(), getSubPackage()).toLowerCase();
     }
@@ -185,7 +190,7 @@ public class AbstractService<T extends AbstractService> {
   /**
    * method should be overwritten in SubClasses of the AbstractService to return the correct type
    */
-  protected T createService(CDDefinitionSymbol cdSymbol) {
+  protected T createService(DiagramSymbol cdSymbol) {
     return (T) new AbstractService(cdSymbol);
   }
 
@@ -194,7 +199,7 @@ public class AbstractService<T extends AbstractService> {
    */
   public boolean hasStereotype(ASTModifier modifier, MC2CDStereotypes stereotype) {
     if (modifier.isPresentStereotype()) {
-      return modifier.getStereotype().getValueList().stream().anyMatch(v -> v.getName().equals(stereotype.toString()));
+      return modifier.getStereotype().getValuesList().stream().anyMatch(v -> v.getName().equals(stereotype.toString()));
     }
     return false;
   }
@@ -202,9 +207,9 @@ public class AbstractService<T extends AbstractService> {
   protected List<String> getStereotypeValues(ASTModifier modifier, MC2CDStereotypes stereotype) {
     List<String> values = Lists.newArrayList();
     if (modifier.isPresentStereotype()) {
-      modifier.getStereotype().getValueList().stream()
+      modifier.getStereotype().getValuesList().stream()
           .filter(value -> value.getName().equals(stereotype.toString()))
-          .filter(ASTCDStereoValue::isPresentValue)
+          .filter(ASTStereoValue::isPresentText)
           .forEach(value -> values.add(value.getValue()));
     }
     return values;
@@ -281,12 +286,12 @@ public class AbstractService<T extends AbstractService> {
     if (astcdDefinition.isPresentModifier() && hasStartProdStereotype(astcdDefinition.getModifier())) {
       return true;
     }
-    for (ASTCDClass prod : astcdDefinition.getCDClassList()) {
+    for (ASTCDClass prod : astcdDefinition.getCDClassesList()) {
       if (hasStereotype(prod.getModifier(), MC2CDStereotypes.START_PROD)) {
         return true;
       }
     }
-    for (ASTCDInterface prod : astcdDefinition.getCDInterfaceList()) {
+    for (ASTCDInterface prod : astcdDefinition.getCDInterfacesList()) {
       if (hasStereotype(prod.getModifier(), MC2CDStereotypes.START_PROD)) {
         return true;
       }
@@ -305,12 +310,12 @@ public class AbstractService<T extends AbstractService> {
     if (astcdDefinition.isPresentModifier() && hasStartProdStereotype(astcdDefinition.getModifier())) {
       return getStartProdValue(astcdDefinition.getModifier());
     }
-    for (ASTCDClass prod : astcdDefinition.getCDClassList()) {
+    for (ASTCDClass prod : astcdDefinition.getCDClassesList()) {
       if (hasStereotype(prod.getModifier(), MC2CDStereotypes.START_PROD)) {
         return Optional.of(getCDSymbol().getPackageName() + "." + getCDName() + "." + prod.getName());
       }
     }
-    for (ASTCDInterface prod : astcdDefinition.getCDInterfaceList()) {
+    for (ASTCDInterface prod : astcdDefinition.getCDInterfacesList()) {
       if (hasStereotype(prod.getModifier(), MC2CDStereotypes.START_PROD)) {
         return Optional.of(getCDSymbol().getPackageName() + "." + getCDName() + "." + prod.getName());
       }
@@ -357,15 +362,15 @@ public class AbstractService<T extends AbstractService> {
   public void addDeprecatedStereotype(ASTModifier modifier, Optional<String> deprecatedValue) {
     if (!modifier.isPresentStereotype()) {
       modifier.setStereotype(CD4AnalysisNodeFactory
-          .createASTCDStereotype());
+          .createASTStereotype());
     }
-    List<ASTCDStereoValue> stereoValueList = modifier.getStereotype()
-        .getValueList();
-    ASTCDStereoValue stereoValue = CD4AnalysisNodeFactory
-        .createASTCDStereoValue();
+    List<ASTStereoValue> stereoValueList = modifier.getStereotype()
+        .getValuesList();
+    ASTStereoValue stereoValue = CD4AnalysisNodeFactory
+        .createASTStereoValue();
     stereoValue.setName(MC2CDStereotypes.DEPRECATED.toString());
     if (deprecatedValue.isPresent()) {
-      stereoValue.setValue(deprecatedValue.get());
+      stereoValue.setContent(deprecatedValue.get());
     }
     stereoValueList.add(stereoValue);
   }
@@ -470,7 +475,7 @@ public class AbstractService<T extends AbstractService> {
     return getASTPackage(getCDSymbol());
   }
 
-  public String getASTPackage(CDDefinitionSymbol cdSymbol) {
+  public String getASTPackage(DiagramSymbol cdSymbol) {
     if (cdSymbol.getPackageName().isEmpty()) {
       return String.join(".", cdSymbol.getName(), AST_PACKAGE).toLowerCase();
     }
@@ -507,7 +512,7 @@ public class AbstractService<T extends AbstractService> {
    * Mill class names e.g. AutomataMill
    */
 
-  public String getMillSimpleName(CDDefinitionSymbol cdSymbol) {
+  public String getMillSimpleName(DiagramSymbol cdSymbol) {
     return cdSymbol.getName() + MILL_SUFFIX;
   }
 
@@ -515,7 +520,7 @@ public class AbstractService<T extends AbstractService> {
     return getMillSimpleName(getCDSymbol());
   }
 
-  public String getMillFullName(CDDefinitionSymbol cdSymbol) {
+  public String getMillFullName(DiagramSymbol cdSymbol) {
     if (cdSymbol.getPackageName().isEmpty()) {
       return cdSymbol.getName().toLowerCase() + "." + getMillSimpleName(cdSymbol);
     }else {

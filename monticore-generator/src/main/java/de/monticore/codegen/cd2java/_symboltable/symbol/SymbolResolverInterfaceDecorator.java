@@ -51,7 +51,7 @@ public class SymbolResolverInterfaceDecorator extends AbstractCreator<ASTCDType,
     ASTCDParameter foundSymbolsParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createBooleanType(), FOUND_SYMBOLS_VAR);
     ASTCDParameter predicateParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createBasicGenericTypeOf(PREDICATE, fullSymbolName), PREDICATE_VAR);
 
-    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, listTypeOfSymbol, String.format(RESOLVE_ADAPTED, simpleSymbolName),
+    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT.build(), listTypeOfSymbol, String.format(RESOLVE_ADAPTED, simpleSymbolName),
         foundSymbolsParameter, nameParameter, accessModifierParameter, predicateParameter);
   }
 }

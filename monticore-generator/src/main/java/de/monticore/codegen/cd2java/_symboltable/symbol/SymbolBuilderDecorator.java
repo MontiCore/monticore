@@ -58,10 +58,10 @@ public class SymbolBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDCla
     }
     if (hasScope || hasInheritedScope) {
       ASTCDAttribute spannedScopeAttr = getCDAttributeFacade()
-              .createAttribute(PROTECTED, symbolTableService.getScopeInterfaceType(), SPANNED_SCOPE_VAR);
+              .createAttribute(PROTECTED.build(), symbolTableService.getScopeInterfaceType(), SPANNED_SCOPE_VAR);
       if (!hasInheritedSymbol ||
               (!hasInheritedScope && hasScope)) {
-        decoratedSymbolClass.addCDAttribute(spannedScopeAttr);
+        decoratedSymbolClass.addCDMember(spannedScopeAttr);
       } else {
         defaultAttrs.add(spannedScopeAttr);
       }
@@ -107,7 +107,7 @@ public class SymbolBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDCla
     List<ASTCDMethod> methods = Lists.newArrayList();
 
     // getEnclosingScope
-    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createQualifiedType(scopeInterface), "getEnclosingScope");
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), getMCTypeFacade().createQualifiedType(scopeInterface), "getEnclosingScope");
     String errorCode = symbolTableService.getGeneratedErrorCode(scopeInterface + "getEnclosingScope");
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "GetScope",
             ENCLOSING_SCOPE_VAR, scopeInterface, errorCode));
@@ -115,7 +115,7 @@ public class SymbolBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDCla
 
     // getSpannedScope
     if (hasInheritedSpannedScope) {
-      method = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createQualifiedType(scopeInterface), "getSpannedScope");
+      method = getCDMethodFacade().createMethod(PUBLIC.build(), getMCTypeFacade().createQualifiedType(scopeInterface), "getSpannedScope");
       errorCode = symbolTableService.getGeneratedErrorCode(scopeInterface + "getSpannedScope");
       this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "GetScope",
               SPANNED_SCOPE_VAR, scopeInterface, errorCode));
@@ -126,19 +126,19 @@ public class SymbolBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDCla
 
   protected List<ASTCDAttribute> createSymbolAttributes(ASTCDClass symbolClass) {
     List<ASTCDAttribute> attrs = Lists.newArrayList();
-    attrs.add(this.getCDAttributeFacade().createAttribute(PROTECTED, String.class, NAME_VAR));
+    attrs.add(this.getCDAttributeFacade().createAttribute(PROTECTED.build(), String.class, NAME_VAR));
 
-    attrs.add(this.getCDAttributeFacade().createAttribute(PROTECTED, String.class, FULL_NAME_VAR));
+    attrs.add(this.getCDAttributeFacade().createAttribute(PROTECTED.build(), String.class, FULL_NAME_VAR));
 
-    attrs.add(this.getCDAttributeFacade().createAttribute(PROTECTED, String.class, PACKAGE_NAME_VAR));
+    attrs.add(this.getCDAttributeFacade().createAttribute(PROTECTED.build(), String.class, PACKAGE_NAME_VAR));
 
     ASTMCOptionalType optionalTypeOfASTNode = getMCTypeFacade().createOptionalTypeOf(
             symbolTableService.getASTPackage() + "." + AST_PREFIX + symbolClass.getName());
-    attrs.add(this.getCDAttributeFacade().createAttribute(PROTECTED, optionalTypeOfASTNode, AST_NODE_VAR));
+    attrs.add(this.getCDAttributeFacade().createAttribute(PROTECTED.build(), optionalTypeOfASTNode, AST_NODE_VAR));
 
-    attrs.add(this.getCDAttributeFacade().createAttribute(PROTECTED, ACCESS_MODIFIER, "accessModifier"));
+    attrs.add(this.getCDAttributeFacade().createAttribute(PROTECTED.build(), ACCESS_MODIFIER, "accessModifier"));
 
-    attrs.add(this.getCDAttributeFacade().createAttribute(PROTECTED,
+    attrs.add(this.getCDAttributeFacade().createAttribute(PROTECTED.build(),
             symbolTableService.getScopeInterfaceFullName(), ENCLOSING_SCOPE_VAR));
 
     return attrs;

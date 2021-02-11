@@ -71,9 +71,9 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
   public ASTCDClass decorate(final ASTCDClass originalClass, ASTCDClass changedClass) {
     changedClass.addInterface(this.astService.getASTBaseInterface());
     // have to use the changed one here because this one will get the TOP prefix
-    changedClass.addCDMethod(createAcceptTraverserMethod(changedClass));
-    changedClass.addAllCDMethods(createAcceptTraverserSuperMethods(originalClass));
-    changedClass.addCDMethod(getConstructMethod(originalClass));
+    changedClass.addCDMember(createAcceptTraverserMethod(changedClass));
+    changedClass.addAllCDMembers(createAcceptTraverserSuperMethods(originalClass));
+    changedClass.addCDMember(getConstructMethod(originalClass));
     if (!originalClass.isPresentSuperclass()) {
       changedClass.setSuperclass(this.getMCTypeFacade().createQualifiedType(ASTCNode.class));
     }
@@ -88,7 +88,7 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
     // class and getName method are getting abstract
     if (astService.isSymbolWithoutName(originalClass)) {
       changedClass.getModifier().setAbstract(true);
-      changedClass.addCDMethod(astService.createGetNameMethod());
+      changedClass.addCDMember(astService.createGetNameMethod());
     }
     return changedClass;
   }
@@ -99,8 +99,8 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
   protected void addSymbolTableMethods(List<ASTCDAttribute> astcdAttributes, ASTCDClass clazz) {
     for (ASTCDAttribute attribute : astcdAttributes) {
       if (!astService.hasStereotype(attribute.getModifier(), MC2CDStereotypes.INHERITED)) {
-        clazz.addCDAttribute(attribute);
-        clazz.addAllCDMethods(methodDecorator.decorate(attribute));
+        clazz.addCDMember(attribute);
+        clazz.addAllCDMembers(methodDecorator.decorate(attribute));
       } else {
         String scopeInterfaceType = symbolTableService.getScopeInterfaceFullName();
 
@@ -114,7 +114,7 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
                 this.replaceTemplate(EMPTY_BODY, m, new TemplateHookPoint("_ast.ast_class.symboltable.InheritedSetSpannedScope", errorCode,
                         MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(m.getCDParameter(0).getMCType()), scopeInterfaceType)));
         methodDecorator.enableTemplates();
-        clazz.addAllCDMethods(methods);
+        clazz.addAllCDMembers(methods);
       }
     }
   }

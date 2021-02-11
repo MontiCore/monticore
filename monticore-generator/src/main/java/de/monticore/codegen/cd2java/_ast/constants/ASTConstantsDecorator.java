@@ -73,12 +73,12 @@ public class ASTConstantsDecorator extends AbstractCreator<ASTCDCompilationUnit,
     return CD4AnalysisMill.cDClassBuilder()
         .setModifier(PUBLIC.build())
         .setName(className)
-        .addCDAttribute(getLanguageAttribute(grammarName))
-        .addCDAttribute(getDefaultAttribute())
-        .addAllCDAttributes(getConstantAttribute(enumConstants))
-        .addCDAttribute(getSuperGrammarsAttribute(superSymbolList))
-        .addCDConstructor(getDefaultConstructor(className))
-        .addCDMethod(getGetAllLanguagesMethod(superSymbolList))
+        .addCDMember(getLanguageAttribute(grammarName))
+        .addCDMember(getDefaultAttribute())
+        .addAllCDMembers(getConstantAttribute(enumConstants))
+        .addCDMember(getSuperGrammarsAttribute(superSymbolList))
+        .addCDMember(getDefaultConstructor(className))
+        .addCDMember(getGetAllLanguagesMethod(superSymbolList))
         .build();
   }
 

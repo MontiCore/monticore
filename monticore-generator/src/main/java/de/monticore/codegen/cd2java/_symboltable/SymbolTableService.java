@@ -559,7 +559,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
       }
     }
     // add symbol definitions from nonterminals
-    for (ASTCDClass astcdClass : astcdDefinition.getCDClassList()) {
+    for (ASTCDClass astcdClass : astcdDefinition.getCDClassesList()) {
       if (astcdClass.isPresentModifier() && hasSymbolStereotype(astcdClass.getModifier())) {
         symbolNames.add(getSymbolFullName(astcdClass, cdSymbol));
       }

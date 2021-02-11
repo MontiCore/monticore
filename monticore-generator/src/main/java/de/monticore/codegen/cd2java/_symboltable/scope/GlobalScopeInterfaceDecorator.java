@@ -299,7 +299,7 @@ public class GlobalScopeInterfaceDecorator
 
   protected List<ASTCDMethod> createDeSerMethods(){
     // attribute and methods for scope deser
-    ASTCDAttribute deSerAttr = getCDAttributeFacade().createAttribute(PROTECTED,
+    ASTCDAttribute deSerAttr = getCDAttributeFacade().createAttribute(PROTECTED.build(),
         getMCTypeFacade().createQualifiedType(I_DE_SER), DESER_VAR);
     List<ASTCDMethod> deSerMethods = accessorDecorator.decorate(deSerAttr);
     deSerMethods.addAll(mutatorDecorator.decorate(deSerAttr));
@@ -314,13 +314,13 @@ public class GlobalScopeInterfaceDecorator
     // Create simple putDeSer(String key, IDeSer value)
     ASTCDParameter key = getCDParameterFacade().createParameter(String.class, "key");
     ASTCDParameter value = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(I_SYMBOL_DE_SER), "value");
-    ASTCDMethod putMethod = getCDMethodFacade().createMethod(PUBLIC, "putSymbolDeSer", key, value);
+    ASTCDMethod putMethod = getCDMethodFacade().createMethod(PUBLIC.build(), "putSymbolDeSer", key, value);
     deSerMapMethods.add(putMethod);
 
     // Create simple value getDeSer(String key)
     key = getCDParameterFacade().createParameter(String.class, "key");
     ASTMCQualifiedType returnType = getMCTypeFacade().createQualifiedType(I_SYMBOL_DE_SER);
-    ASTCDMethod getMethod = getCDMethodFacade().createMethod(PUBLIC, returnType, "getSymbolDeSer", key);
+    ASTCDMethod getMethod = getCDMethodFacade().createMethod(PUBLIC.build(), returnType, "getSymbolDeSer", key);
     deSerMapMethods.add(getMethod);
 
     deSerMapMethods.addAll(deSerMethods);

@@ -2,6 +2,7 @@
 
 package de.monticore.codegen.mc2cd.transl.creation;
 
+import de.monticore.cd4analysis._ast.CD4AnalysisNodeFactory;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.grammar.grammar._ast.ASTASTRule;

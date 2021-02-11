@@ -178,14 +178,14 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     // Create simple putDeSer(String key, IDeSer value)
     ASTCDParameter key = getCDParameterFacade().createParameter(String.class, "key");
     ASTCDParameter value = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(I_SYMBOL_DE_SER), "value");
-    ASTCDMethod putMethod = getCDMethodFacade().createMethod(PUBLIC, "putSymbolDeSer", key, value);
+    ASTCDMethod putMethod = getCDMethodFacade().createMethod(PUBLIC.build(), "putSymbolDeSer", key, value);
     replaceTemplate(EMPTY_BODY, putMethod, new StringHookPoint(SYM_DESERS_VAR + ".put(key, value);"));
     deSerMapMethods.add(putMethod);
 
     // Create simple value getDeSer(String key)
     key = getCDParameterFacade().createParameter(String.class, "key");
     ASTMCQualifiedType returnType = getMCTypeFacade().createQualifiedType(I_SYMBOL_DE_SER);
-    ASTCDMethod getMethod = getCDMethodFacade().createMethod(PUBLIC, returnType, "getSymbolDeSer", key);
+    ASTCDMethod getMethod = getCDMethodFacade().createMethod(PUBLIC.build(), returnType, "getSymbolDeSer", key);
     replaceTemplate(EMPTY_BODY, getMethod, new StringHookPoint("return " + SYM_DESERS_VAR + ".get(key);"));
     deSerMapMethods.add(getMethod);
 
@@ -193,11 +193,11 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
   }
 
   protected ASTCDAttribute createScopeDeSerAttribute(String scopeDeSerName){
-    return getCDAttributeFacade().createAttribute(PUBLIC, getMCTypeFacade().createQualifiedType(scopeDeSerName), "deSer");
+    return getCDAttributeFacade().createAttribute(PUBLIC.build(), getMCTypeFacade().createQualifiedType(scopeDeSerName), "deSer");
   }
 
   protected ASTCDAttribute createSymbols2JsonAttribute(String s2jName){
-    return getCDAttributeFacade().createAttribute(PROTECTED, getMCTypeFacade().createQualifiedType(s2jName), "symbols2Json");
+    return getCDAttributeFacade().createAttribute(PROTECTED.build(), getMCTypeFacade().createQualifiedType(s2jName), "symbols2Json");
   }
 
   protected ASTCDAttribute createCacheAttribute(){

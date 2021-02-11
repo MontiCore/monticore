@@ -2,6 +2,7 @@
 package de.monticore.codegen.cd2java._visitor;
 
 import de.monticore.cdbasis._ast.*;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.cd4codebasis._ast.*;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.cd4code.CD4CodeMill;
@@ -50,7 +51,7 @@ public class InheritanceHandlerDecorator extends AbstractCreator<ASTCDCompilatio
     String languageInterfaceName = visitorService.getLanguageInterfaceName();
     String handlerSimpleName = visitorService.getHandlerSimpleName();
 
-    ASTCDAttribute traverserAttribute = getCDAttributeFacade().createAttribute(PRIVATE, visitorService.getTraverserInterfaceType(), TRAVERSER);
+    ASTCDAttribute traverserAttribute = getCDAttributeFacade().createAttribute(PRIVATE.build(), visitorService.getTraverserInterfaceType(), TRAVERSER);
     List<ASTCDMethod> traverserMethods = methodDecorator.decorate(traverserAttribute);
 
     ASTCDClass cdClass = CD4CodeMill.cDClassBuilder()
@@ -72,13 +73,13 @@ public class InheritanceHandlerDecorator extends AbstractCreator<ASTCDCompilatio
     List<ASTCDMethod> handleMethods = new ArrayList<>();
 
     // generate handle(ASTX node) for all classes X
-    handleMethods.addAll(astcdDefinition.getCDClassList()
+    handleMethods.addAll(astcdDefinition.getCDClassesList()
         .stream()
         .map(c -> getASTHandleMethod(c, languageInterfaceName, handlerSimpleTypeName))
         .collect(Collectors.toList()));
 
     // generate handle(ASTX node) for all interfaces X
-    handleMethods.addAll(astcdDefinition.getCDInterfaceList()
+    handleMethods.addAll(astcdDefinition.getCDInterfacesList()
         .stream()
         .map(c -> getHandleASTMethod(c, languageInterfaceName, handlerSimpleTypeName))
         .collect(Collectors.toList()));

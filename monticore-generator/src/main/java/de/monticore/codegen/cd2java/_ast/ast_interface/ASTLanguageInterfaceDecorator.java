@@ -42,6 +42,6 @@ public class ASTLanguageInterfaceDecorator extends AbstractCreator<ASTCDCompilat
   protected ASTCDMethod getAcceptTraverserMethod() {
     ASTMCType visitorType = visitorService.getTraverserInterfaceType();
     ASTCDParameter visitorParameter = this.getCDParameterFacade().createParameter(visitorType, "visitor");
-    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, ACCEPT_METHOD, visitorParameter);
+    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT.build(), ACCEPT_METHOD, visitorParameter);
   }
 }

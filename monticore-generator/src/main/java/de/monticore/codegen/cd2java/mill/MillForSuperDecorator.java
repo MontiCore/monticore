@@ -86,7 +86,7 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
 
       if(!superSymbol.getAstNode().isPresentModifier() || !service.hasComponentStereotype(superSymbol.getAstNode().getModifier())){
         if(!service.getCDSymbol().getAstNode().isPresentModifier() || !service.hasComponentStereotype(service.getCDSymbol().getAstNode().getModifier())) {
-          superMill.addCDMethod(createParserMethod(superSymbol));
+          superMill.addCDMember(createParserMethod(superSymbol));
         }
       }
       superMills.add(superMill);
@@ -126,12 +126,12 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
       if (firstClasses.contains(cdType)) {
         String packageDef = service.getASTPackage(superSymbol);
         ASTMCType builderType = this.getMCTypeFacade().createQualifiedType(packageDef+"."+astName + BUILDER_SUFFIX);
-        protectedMethod = this.getCDMethodFacade().createMethod(PROTECTED, builderType, "_" + methodName);
+        protectedMethod = this.getCDMethodFacade().createMethod(PROTECTED.build(), builderType, "_" + methodName);
         this.replaceTemplate(EMPTY_BODY, protectedMethod, new TemplateHookPoint("mill.ProtectedBuilderForSuperMethod",
             service.getMillFullName(), methodName));
       } else {
         ASTMCQualifiedType builderType = this.getMCTypeFacade().createQualifiedType(service.getASTPackage(superSymbol) + "." + astName + BUILDER_SUFFIX);
-        protectedMethod = this.getCDMethodFacade().createMethod(PROTECTED, builderType, "_" + methodName);
+        protectedMethod = this.getCDMethodFacade().createMethod(PROTECTED.build(), builderType, "_" + methodName);
         this.replaceTemplate(EMPTY_BODY, protectedMethod, new StringHookPoint("Log.error(\"0xA7009" +
             service.getGeneratedErrorCode(clazz.getName() + cdType.getFullName()) + " Overridden production " +
             clazz.getName() + " is not reachable\");\nreturn null;\n"));
@@ -170,7 +170,7 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
     String parserForSuper = String.join(".", parserService.getPackage(),
         superSymbol.getName() + PARSER_SUFFIX + FOR_SUFFIX + service.getCDName());
     ASTMCType superSymbolParser = getMCTypeFacade().createQualifiedType(parserService.getParserClassFullName(superSymbol));
-    ASTCDMethod method = getCDMethodFacade().createMethod(PROTECTED, superSymbolParser, "_parser");
+    ASTCDMethod method = getCDMethodFacade().createMethod(PROTECTED.build(), superSymbolParser, "_parser");
     this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return new " + parserForSuper + "();"));
     return method;
   }
@@ -199,7 +199,7 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
     String returnType = packageName + grammarName.toLowerCase() + "." + SYMBOL_TABLE_PACKAGE + "." + scopeInterfaceName;
     String methodName = "_" + StringTransformations.uncapitalize(prefix + SCOPE_SUFFIX);
     String scopeName = StringTransformations.uncapitalize( prefix + SCOPE_SUFFIX);
-    ASTCDMethod scopeMethod = getCDMethodFacade().createMethod(PROTECTED, getMCTypeFacade().createQualifiedType(returnType), methodName);
+    ASTCDMethod scopeMethod = getCDMethodFacade().createMethod(PROTECTED.build(), getMCTypeFacade().createQualifiedType(returnType), methodName);
     this.replaceTemplate(EMPTY_BODY, scopeMethod, new TemplateHookPoint("mill.ProtectedMethodForSuper", grammarMillName, scopeName));
     return scopeMethod;
   }
@@ -221,7 +221,7 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
    * @param cdSymbol The symbol of the given class diagram
    * @return The list of all internal traverser accessor methods
    */
-  protected ASTCDMethod getSuperInheritanceTraverserMethod(CDDefinitionSymbol cdSymbol) {
+  protected ASTCDMethod getSuperInheritanceTraverserMethod(DiagramSymbol cdSymbol) {
     String traverserInterfaceType = visitorService.getTraverserInterfaceFullName(cdSymbol);
     return getProtectedForSuperMethod(INHERITANCE_TRAVERSER, traverserInterfaceType);
   }
@@ -241,7 +241,7 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
     ASTMCType returnType = getMCTypeFacade().createQualifiedType(methodType);
     
     // protected internal method
-    ASTCDMethod protectedMethod = getCDMethodFacade().createMethod(PROTECTED, returnType, protectedMethodName);
+    ASTCDMethod protectedMethod = getCDMethodFacade().createMethod(PROTECTED.build(), returnType, protectedMethodName);
     this.replaceTemplate(EMPTY_BODY, protectedMethod, new TemplateHookPoint("mill.ProtectedMethodForSuper", 
         service.getMillFullName(), methodName));
     

@@ -62,9 +62,9 @@ public class CoCoCheckerDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     ASTCDClass cocoChecker = CD4AnalysisMill.cDClassBuilder()
         .setName(cocoCheckerName)
         .setModifier(PUBLIC.build())
-        .addCDAttribute(traverserAttribute)
-        .addCDConstructor(constructor)
-        .addAllCDMethods(traverserMethods)
+        .addCDMember(traverserAttribute)
+        .addCDMember(constructor)
+        .addAllCDMembers(traverserMethods)
         .build();
 
     // travers all Super CDDefinitionSymbol transitive and own one
@@ -72,14 +72,14 @@ public class CoCoCheckerDecorator extends AbstractCreator<ASTCDCompilationUnit, 
       CoCoService cocoService = CoCoService.createCoCoService(currentCDSymbol);
       ASTService astService = ASTService.createASTService(currentCDSymbol);
 
-      cocoChecker.addCDMethod(createAddCheckerMethod(currentCDSymbol));
+      cocoChecker.addCDMember(createAddCheckerMethod(currentCDSymbol));
 
       ASTMCType astBaseInterfaceType = astService.getASTBaseInterface();
 
       ASTCDMethod checkAll = createCheckAllMethod(astBaseInterfaceType);
       this.replaceTemplate(EMPTY_BODY, checkAll, new StringHookPoint(NODE_SIMPLE_NAME + ".accept(getTraverser());"));
 
-      cocoChecker.addCDMethod(checkAll);
+      cocoChecker.addCDMember(checkAll);
 
       for (CDTypeSymbol cdTypeSymbol : currentCDSymbol.getTypes()) {
         // do not generate for enums (only classes and interfaces)
@@ -92,7 +92,7 @@ public class CoCoCheckerDecorator extends AbstractCreator<ASTCDCompilationUnit, 
         ASTCDMethod addCoCo = createAddCoCoMethod(cocoType);
         this.replaceTemplate(EMPTY_BODY, addCoCo, createAddCoCoImpl(currentCDSymbol.getName()));
 
-        cocoChecker.addCDMethod(addCoCo);
+        cocoChecker.addCDMember(addCoCo);
       }
     }
 

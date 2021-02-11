@@ -39,13 +39,13 @@ public class NodeFactoryDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     String factoryClassName = astcdDefinition.getName() + NODE_FACTORY_SUFFIX;
     ASTMCType factoryType = this.getMCTypeFacade().createQualifiedType(factoryClassName);
 
-    ASTCDConstructor constructor = this.getCDConstructorFacade().createConstructor(PROTECTED, factoryClassName);
+    ASTCDConstructor constructor = this.getCDConstructorFacade().createConstructor(PROTECTED.build(), factoryClassName);
 
-    ASTCDAttribute factoryAttribute = this.getCDAttributeFacade().createAttribute(PROTECTED_STATIC, factoryType, FACTORY);
+    ASTCDAttribute factoryAttribute = this.getCDAttributeFacade().createAttribute(PROTECTED_STATIC.build(), factoryType, FACTORY);
 
     ASTCDMethod getFactoryMethod = addGetFactoryMethod(factoryType, factoryClassName);
 
-    List<ASTCDClass> astcdClassList = Lists.newArrayList(astcdDefinition.getCDClassList());
+    List<ASTCDClass> astcdClassList = Lists.newArrayList(astcdDefinition.getCDClassesList());
 
     List<ASTCDMethod> createMethodList = new ArrayList<>();
 
@@ -72,12 +72,12 @@ public class NodeFactoryDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     return CD4AnalysisMill.cDClassBuilder()
         .setModifier(modifier)
         .setName(factoryClassName)
-        .addCDAttribute(factoryAttribute)
-        .addAllCDAttributes(factoryAttributeList)
-        .addCDConstructor(constructor)
-        .addCDMethod(getFactoryMethod)
-        .addAllCDMethods(createMethodList)
-        .addAllCDMethods(delegateMethodList)
+        .addCDMember(factoryAttribute)
+        .addAllCDMembers(factoryAttributeList)
+        .addCDMember(constructor)
+        .addCDMember(getFactoryMethod)
+        .addAllCDMembers(createMethodList)
+        .addAllCDMembers(delegateMethodList)
         .build();
   }
 

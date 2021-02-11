@@ -64,7 +64,7 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
       modifier.setAbstract(true);
     }
 
-    ASTCDAttribute realThisAttribute = this.getCDAttributeFacade().createAttribute(PROTECTED, builderType, REAL_BUILDER);
+    ASTCDAttribute realThisAttribute = this.getCDAttributeFacade().createAttribute(PROTECTED.build(), builderType, REAL_BUILDER);
     List<ASTCDAttribute> builderAttributes = domainClass.getCDAttributeList().stream()
         .map(ASTCDAttribute::deepClone)
         .filter(a -> !a.getModifier().isFinal())
@@ -85,7 +85,7 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
         .collect(Collectors.toList());
 
 
-    ASTCDConstructor constructor = this.getCDConstructorFacade().createConstructor(PUBLIC, builderClassName);
+    ASTCDConstructor constructor = this.getCDConstructorFacade().createConstructor(PUBLIC.build(), builderClassName);
     this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("this." + REAL_BUILDER + " = (" + builderClassName + ") this;"));
 
     ASTCDMethod buildMethod = this.getCDMethodFacade().createMethod(modifier.deepClone(), domainType, BUILD_METHOD);
@@ -93,7 +93,7 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
       this.replaceTemplate(EMPTY_BODY, buildMethod, new TemplateHookPoint("_ast.builder.BuildMethod", domainClass, mandatoryAttributes, true));
     }
 
-    ASTCDMethod isValidMethod = this.getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createBooleanType(), IS_VALID);
+    ASTCDMethod isValidMethod = this.getCDMethodFacade().createMethod(PUBLIC.build(), getMCTypeFacade().createBooleanType(), IS_VALID);
     this.replaceTemplate(EMPTY_BODY, isValidMethod, new TemplateHookPoint("_ast.builder.IsValidMethod", mandatoryAttributes));
 
     List<ASTCDMethod> accessorMethods = builderAttributes.stream()
@@ -118,14 +118,14 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
     return CD4AnalysisMill.cDClassBuilder()
         .setModifier(modifier)
         .setName(builderClassName)
-        .addCDAttribute(realThisAttribute)
-        .addAllCDAttributes(builderAttributes)
-        .addCDConstructor(constructor)
-        .addCDMethod(buildMethod)
-        .addCDMethod(isValidMethod)
-        .addAllCDMethods(accessorMethods)
-        .addAllCDMethods(mutatorMethods)
-        .addAllCDMethods(inheritedMutatorMethods)
+        .addCDMember(realThisAttribute)
+        .addAllCDMembers(builderAttributes)
+        .addCDMember(constructor)
+        .addCDMember(buildMethod)
+        .addCDMember(isValidMethod)
+        .addAllCDMembers(accessorMethods)
+        .addAllCDMembers(mutatorMethods)
+        .addAllCDMembers(inheritedMutatorMethods)
         .build();
   }
 

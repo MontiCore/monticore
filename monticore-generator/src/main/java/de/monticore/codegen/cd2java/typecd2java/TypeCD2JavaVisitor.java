@@ -2,8 +2,8 @@
 package de.monticore.codegen.cd2java.typecd2java;
 
 import com.google.common.collect.Lists;
-import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
-import de.monticore.cd.cd4analysis._symboltable.ICD4AnalysisScope;
+import de.monticore.cdbasis._symboltable.CDTypeSymbol;
+import de.monticore.cd4analysis._symboltable.ICD4AnalysisScope;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
 import de.monticore.grammar.grammarfamily._visitor.GrammarFamilyVisitor;
 import de.monticore.symboltable.IScope;

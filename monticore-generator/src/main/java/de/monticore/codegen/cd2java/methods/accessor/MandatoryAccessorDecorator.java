@@ -41,7 +41,7 @@ public class MandatoryAccessorDecorator extends AbstractCreator<ASTCDAttribute, 
     }
     String name = String.format(getterPrefix, StringUtils.capitalize(getDecorationHelper().getNativeAttributeName(ast.getName())));
     ASTMCType type = ast.getMCType().deepClone();
-    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, type, name);
+    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), type, name);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.Get", ast));
     return method;
   }
