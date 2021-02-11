@@ -5,13 +5,18 @@ import de.monticore.expressions.assignmentexpressions._ast.ASTAssignmentExpressi
 import de.monticore.expressions.assignmentexpressions._cocos.AssignmentExpressionsASTAssignmentExpressionCoCo;
 import de.monticore.types.check.TypeCheck;
 import de.se_rwth.commons.logging.Log;
-import mc.typechecktest.DeriveSymTypeFromTypeCheckTest;
-import mc.typechecktest.SynthesizeSymTypeFromTypeCheckTest;
 
 public class VariableAssignmentCorrectType implements AssignmentExpressionsASTAssignmentExpressionCoCo {
+
+  protected TypeCheck tc;
+
+  public VariableAssignmentCorrectType(TypeCheck tc){
+    this.tc = tc;
+  }
+
+
   @Override
   public void check(ASTAssignmentExpression node) {
-    TypeCheck tc = new TypeCheck(new SynthesizeSymTypeFromTypeCheckTest(), new DeriveSymTypeFromTypeCheckTest());
     if(!TypeCheck.compatible(tc.typeOf(node.getLeft()), tc.typeOf(node.getRight()))){
       Log.error("The types of the assignment are not compatible.");
     }
