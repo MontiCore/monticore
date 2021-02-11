@@ -23,6 +23,9 @@ Two further expression languages are defined in the OCL project:
 * [OCL-SetExpressions] (extends ExpressionsBasis, ideal for working with sets)
 * [OCL-OCLExpressions] (extends ExpressionsBasis, introduces OCL to MontiCore)
 
+Furthermore, composite SI unit expressions are defined in the SI Units project:
+* [SI Units](https://github.com/MontiCore/siunits/blob/master/src/main/grammars/de/monticore/SIUnits.mc4)
+
 ### Using Expressions
 
 If you want to use one (or more) of the given expression languages in your
