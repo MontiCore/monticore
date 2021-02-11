@@ -4,8 +4,9 @@ package de.monticore.codegen.parser;
 
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
+import de.monticore.grammar.grammar_withconcepts._parser.GrammarTransformer;
 import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
-import de.monticore.grammar.transformation.GrammarTransformer;
+import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
@@ -21,6 +22,7 @@ public class MCGrammarParserTest {
 
   @BeforeClass
   public static void setup() {
+    GrammarFamilyMill.init();
     LogStub.init();
     LogStub.enableFailQuick(false);
   }

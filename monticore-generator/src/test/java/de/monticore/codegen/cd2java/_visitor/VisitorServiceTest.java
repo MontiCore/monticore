@@ -1,4 +1,4 @@
-// (c) https://github.com/MontiCore/monticore
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._visitor;
 
 import de.monticore.cdbasis._ast.ASTCDClass;
@@ -80,42 +80,6 @@ public class VisitorServiceTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testGetInheritanceVisitorSimpleName() {
-    assertEquals("AutomatonInheritanceVisitor", astService.getInheritanceVisitorSimpleName());
-    assertEquals("AutomatonInheritanceVisitor", astService.getInheritanceVisitorSimpleName(astcdCompilationUnit.getCDDefinition().getSymbol()));
-  }
-
-  @Test
-  public void testGetInheritanceVisitorFullName() {
-    assertEquals(VISITOR_AUT_PACKAGE + "AutomatonInheritanceVisitor", astService.getInheritanceVisitorFullName());
-    assertEquals(VISITOR_AUT_PACKAGE + "AutomatonInheritanceVisitor", astService.getInheritanceVisitorFullName(astcdCompilationUnit.getCDDefinition().getSymbol()));
-  }
-
-  @Test
-  public void testGetDelegatorVisitorSimpleName() {
-    assertEquals("AutomatonDelegatorVisitor", astService.getDelegatorVisitorSimpleName());
-    assertEquals("AutomatonDelegatorVisitor", astService.getDelegatorVisitorSimpleName(astcdCompilationUnit.getCDDefinition().getSymbol()));
-  }
-
-  @Test
-  public void testGetDelegatorVisitorFullName() {
-    assertEquals(VISITOR_AUT_PACKAGE + "AutomatonDelegatorVisitor", astService.getDelegatorVisitorFullName());
-    assertEquals(VISITOR_AUT_PACKAGE + "AutomatonDelegatorVisitor", astService.getDelegatorVisitorFullName(astcdCompilationUnit.getCDDefinition().getSymbol()));
-  }
-
-  @Test
-  public void testGetParentAwareVisitorSimpleName() {
-    assertEquals("AutomatonParentAwareVisitor", astService.getParentAwareVisitorSimpleName());
-    assertEquals("AutomatonParentAwareVisitor", astService.getParentAwareVisitorSimpleName(astcdCompilationUnit.getCDDefinition().getSymbol()));
-  }
-
-  @Test
-  public void testGetParentAwareVisitorFullName() {
-    assertEquals(VISITOR_AUT_PACKAGE + "AutomatonParentAwareVisitor", astService.getParentAwareVisitorFullName());
-    assertEquals(VISITOR_AUT_PACKAGE + "AutomatonParentAwareVisitor", astService.getParentAwareVisitorFullName(astcdCompilationUnit.getCDDefinition().getSymbol()));
-  }
-
-  @Test
   public void testGetVisitorMethod() {
     ASTCDMethod visitMethod = astService.getVisitorMethod("visit", mcTypeFacade.createQualifiedType("_ast.ASTFoo"));
     assertEquals("visit", visitMethod.getName());
@@ -127,16 +91,9 @@ public class VisitorServiceTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testGetSuperVisitors() {
-    List<ASTMCQualifiedType> allVisitorTypesInHierarchy = astService.getSuperVisitors();
-    assertEquals(1, allVisitorTypesInHierarchy.size());
-    assertDeepEquals("de.monticore.codegen.ast.lexicals._visitor.LexicalsVisitor", allVisitorTypesInHierarchy.get(0));
-  }
-
-  @Test
   public void testGetSuperInheritanceVisitors() {
-    List<ASTMCQualifiedType> allVisitorTypesInHierarchy = astService.getSuperInheritanceVisitors();
+    List<ASTMCQualifiedType> allVisitorTypesInHierarchy = astService.getSuperTraverserInterfaces();
     assertEquals(1, allVisitorTypesInHierarchy.size());
-    assertDeepEquals("de.monticore.codegen.ast.lexicals._visitor.LexicalsInheritanceVisitor", allVisitorTypesInHierarchy.get(0));
+    assertDeepEquals("de.monticore.codegen.ast.lexicals._visitor.LexicalsTraverser", allVisitorTypesInHierarchy.get(0));
   }
 }

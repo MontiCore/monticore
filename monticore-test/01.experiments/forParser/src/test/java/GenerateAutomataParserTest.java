@@ -1,4 +1,4 @@
-// (c) https://github.com/MontiCore/monticore
+/* (c) https://github.com/MontiCore/monticore */
 
 import de.se_rwth.commons.logging.*;
 import org.junit.Ignore;

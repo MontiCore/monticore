@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package mc.feature.multipletopsymbols;
 
 import de.monticore.io.paths.ModelPath;
@@ -37,7 +38,7 @@ public class StatechartResolvingTest {
     assertTrue(artifact.isPresent());
     assertFalse(parser.hasErrors());
 
-    IStatechartArtifactScope as = StatechartMill.statechartSymbolTableCreator().createFromAST(artifact.get());
+    IStatechartArtifactScope as = StatechartMill.scopesGenitorDelegator().createFromAST(artifact.get());
     String packageName = String.join(".", artifact.get().getPackageDeclaration().getQualifiedName().getPartList());
     as.setPackageName(packageName);
     as.setName("MyStatechart");

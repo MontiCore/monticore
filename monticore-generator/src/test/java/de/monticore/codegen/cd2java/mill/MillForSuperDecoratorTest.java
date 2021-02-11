@@ -1,4 +1,4 @@
-// (c) https://github.com/MontiCore/monticore
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java.mill;
 
 import de.monticore.cdbasis._ast.ASTCDClass;
@@ -83,7 +83,7 @@ public class MillForSuperDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodSize() {
-    assertEquals(2, millClass.sizeCDMethods());
+    assertEquals(3, millClass.sizeCDMethods());
   }
 
   @Test

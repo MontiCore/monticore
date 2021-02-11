@@ -5,8 +5,11 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.mc2cd.TestHelper;
-import de.se_rwth.commons.logging.*;
+import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.nio.file.Paths;
@@ -18,6 +21,11 @@ import static org.junit.Assert.*;
 public class SymbolAndScopeTranslationTest {
 
   private ASTCDCompilationUnit symbolCD;
+
+  @BeforeClass
+  public static void setup(){
+    GrammarFamilyMill.init();
+  }
 
   @Before
   public void setUp() {

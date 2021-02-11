@@ -104,7 +104,7 @@ public class FullASTInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(61, astcdInterface.sizeCDMethods());
+    assertEquals(60, astcdInterface.sizeCDMethods());
   }
 
   /**
@@ -145,23 +145,6 @@ public class FullASTInterfaceDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertBoolean(method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
-  }
-
-  /**
-   * ASTInterface methods
-   */
-  @Test
-  public void testAcceptMethod() {
-    ASTCDMethod method = getMethodBy("accept", astcdInterface);
-    assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-
-    assertFalse(method.isEmptyCDParameters());
-    assertEquals(1, method.sizeCDParameters());
-
-    ASTCDParameter parameter = method.getCDParameter(0);
-    assertDeepEquals("de.monticore.codegen.data.datainterface._visitor.DataInterfaceVisitor", parameter.getMCType());
-    assertEquals("visitor", parameter.getName());
   }
 
   @Test

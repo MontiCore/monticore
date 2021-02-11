@@ -1,12 +1,30 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
+
 # Release Notes
 
-##  MontiCore 6.7.0-SNAPSHOT
+##  MontiCore 6.8.0-SNAPSHOT
 to be released
+### Additions
+* resolveXSubKinds(..) resolves for local symbols of all subkinds of a symbol kind X. This method is used
+  by the implementation of the resolveXLocally(..) method. It enables proper handling of symbol kind hierarchies
+  during symbol resolution beyond the borders of a language.
+* new annotation @NonConservative for productions
+
+### Changes
+* move grammars OCLExpressions and SetExpressions into OCL-project for further development
+
+### Fixes
+* Symbols with hierarchical symbol kinds are not serialized multiple times anymore.
+
+##  MontiCore 6.7.0
+released: 26.01.2021
 
 ### Additions
-* Add new CLI for the MontiCOre generator engine
+* Add new CLI for the MontiCore generator engine
+
 ### Changes
+* The context conditions use the new traverser infrastructure. This leads to small changes in the api.
+  The return value of the method addCoCo is void.
 * Attribute fileExt in GlobalScopes now refers to a regular expression for file extensions of 
   symbol table files. The default value of the attribute is "*sym", which usually includes symbol 
   files of all MontiCore languages. Attention: If your language used the "setFileExt" method in
@@ -135,7 +153,7 @@ released: 11.11.2020
 
 ### Changes
 * MontiCore now uses Gradle as build tool
-  * some tasks have been introduced for the comfortable control of frequent activities, e.g., `buildMC`, `assembleMC` that can be found in the [`build.gradle`](../../build.gradle)
+  * some tasks have been introduced for the comfortable control of frequent activities, e.g., `buildMC`, `assembleMC` that can be found in the [`build.gradle`](https://github.com/MontiCore/monticore/blob/dev/build.gradle)
   * relocated the EMF related subprojects:
     * `monticore-emf-grammar` to `monticore-grammar-emf`
     * `monticore-emf-runtime` to `monticore-runtime-emf`

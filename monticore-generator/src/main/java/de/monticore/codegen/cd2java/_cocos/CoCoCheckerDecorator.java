@@ -57,8 +57,7 @@ public class CoCoCheckerDecorator extends AbstractCreator<ASTCDCompilationUnit, 
 
     ASTCDConstructor constructor = this.getCDConstructorFacade().createConstructor(PUBLIC.build(), cocoCheckerName);
     this.replaceTemplate(EMPTY_BODY, constructor,
-            new TemplateHookPoint(TEMPLATE_PATH + "CoCoCheckerConstructor", cocoService.getMillFullName(),
-                    cocoService.getAllCDs(), visitorService));
+            new TemplateHookPoint(TEMPLATE_PATH + "CoCoCheckerConstructor", cocoService.getMillFullName()));
 
     ASTCDClass cocoChecker = CD4AnalysisMill.cDClassBuilder()
         .setName(cocoCheckerName)

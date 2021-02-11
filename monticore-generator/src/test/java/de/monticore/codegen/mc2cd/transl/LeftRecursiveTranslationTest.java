@@ -1,9 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.mc2cd.transl;
 
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
+import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.nio.file.Paths;
@@ -14,6 +17,11 @@ import static org.junit.Assert.*;
 public class LeftRecursiveTranslationTest {
 
   private ASTCDCompilationUnit leftRecursive;
+
+  @BeforeClass
+  public static void setup(){
+    GrammarFamilyMill.init();
+  }
 
   @Before
   public void setUp() {

@@ -7,6 +7,7 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TestHelper;
+import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
@@ -40,6 +41,7 @@ public class AstRuleInheritanceTest {
 
   @BeforeClass
   public static void init() {
+    GrammarFamilyMill.init();
     LogStub.init();
     LogStub.enableFailQuick(false);
   }

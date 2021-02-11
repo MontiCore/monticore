@@ -20,6 +20,7 @@ import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.io.paths.IterablePath;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,7 +28,6 @@ import org.junit.Test;
 import java.util.List;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.*;
-import static de.monticore.codegen.cd2java.DecoratorAssert.assertOptionalOf;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodsBy;
 import static org.junit.Assert.*;
@@ -72,7 +72,7 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
     ScopeDeSerDecorator decorator = new ScopeDeSerDecorator(glex,
         new SymbolTableService(astcdCompilationUnit),
         new MethodDecorator(glex, new SymbolTableService(decoratedScopeCompilationUnit)),
-        new VisitorService(astcdCompilationUnit));
+        new VisitorService(astcdCompilationUnit), IterablePath.empty());
 
     this.scopeClass = decorator
         .decorate(decoratedScopeCompilationUnit, decoratedSymbolCompilationUnit);
@@ -129,7 +129,7 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
     List<ASTCDMethod> methodList = getMethodsBy("serializeAddons", scopeClass);
     assertEquals(2, methodList.size());
     for (ASTCDMethod method : methodList) {
-      assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
+      assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
       assertEquals(0, method.sizeException());
       assertEquals(2, method.sizeCDParameters());
       ASTCDParameter parameter = method.getCDParameter(0);
@@ -155,7 +155,7 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
   @Test
   public void testDeserializeScopeMethod() {
     ASTCDMethod method = getMethodBy("deserializeScope", scopeClass);
-    assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
+    assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
     assertEquals(0, method.sizeException());
     assertEquals(1, method.sizeCDParameters());
     ASTCDParameter parameter = method.getCDParameter(0);
@@ -168,7 +168,7 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
   @Test
   public void testDeserializeArtifactScopeMethod() {
     ASTCDMethod method = getMethodBy("deserializeArtifactScope", scopeClass);
-    assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
+    assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
     assertEquals(0, method.sizeException());
     assertEquals(1, method.sizeCDParameters());
     ASTCDParameter parameter = method.getCDParameter(0);
@@ -183,7 +183,7 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
     List<ASTCDMethod> methodList = getMethodsBy("deserializeAddons", scopeClass);
     assertEquals(2, methodList.size());
     for (ASTCDMethod method : methodList) {
-      assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
+      assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
       assertEquals(0, method.sizeException());
       List<ASTCDParameter> parameters = method.getCDParameterList();
       assertEquals("scope", parameters.get(0).getName());

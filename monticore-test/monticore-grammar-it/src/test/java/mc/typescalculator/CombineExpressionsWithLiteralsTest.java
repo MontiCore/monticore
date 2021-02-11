@@ -10,14 +10,17 @@ import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolSurrogate;
 import de.monticore.symboltable.ImportStatement;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
+import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import mc.testcd4analysis.TestCD4AnalysisMill;
+import mc.testcd4analysis._symboltable.CDTypeSymbol;
 import mc.testcd4analysis._symboltable.ITestCD4AnalysisGlobalScope;
 import mc.typescalculator.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 import mc.typescalculator.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import mc.typescalculator.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsArtifactScope;
 import mc.typescalculator.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsGlobalScope;
 import mc.typescalculator.combineexpressionswithliterals._symboltable.*;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -33,9 +36,20 @@ public class CombineExpressionsWithLiteralsTest {
 
   private static final String MODEL_PATH = "src/test/resources";
 
+
+  @Before
+  public void setup() {
+    Log.init();
+
+    TestCD4AnalysisMill.reset();
+    TestCD4AnalysisMill.init();
+
+    CombineExpressionsWithLiteralsMill.reset();
+    CombineExpressionsWithLiteralsMill.init();
+  }
+
   @Test
   public void testCD() throws IOException {
-    LogStub.init();
     ITestCD4AnalysisGlobalScope globalScope = TestCD4AnalysisMill.globalScope();
     globalScope.getModelPath().addEntry(Paths.get(MODEL_PATH));
     globalScope.setFileExt("cd");

@@ -9,7 +9,15 @@ is partly published under LGPL.
 
 To be usable in commercial and any other forms of projects, the finally 
 generated code is, however, completely freely available. 
-Three levels of licenses are needed.
+
+
+
+## Included Software
+
+This product includes the following software:
+
+* [AntLR](http://www.antlr.org/)
+* [FreeMarker](http://freemarker.org/)
 
 ## License overview 
 
@@ -74,6 +82,9 @@ The MontiCore 3 Level license is built on:
 * [LGPL V3.0](https://github.com/MontiCore/monticore/tree/master/00.org/Licenses/LICENSE-LGPL.md) 
 
 * [BSD-3-Clause](https://github.com/MontiCore/monticore/tree/master/00.org/Licenses/LICENSE-BSD3CLAUSE.md) 
+
+Please also note the general disclaimer from the BSD 3 Clause license on 
+liability, etc. 
 
 ## Further Information
 

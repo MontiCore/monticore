@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package  de.monticore.grammar.cocos.invalid.A4013;
+
+grammar A4013 {
+  A extends B;
+
+  astrule A astextends C;
+
+  B;
+
+  C;
+
+}

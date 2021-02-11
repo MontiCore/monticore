@@ -7,8 +7,10 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.codegen.cd2java.CDModifier;
 import de.monticore.codegen.mc2cd.TestHelper;
+import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.nio.file.Paths;
@@ -20,6 +22,11 @@ import static org.junit.Assert.*;
 public class CDSymbolTranslationTest {
 
   private ASTCDCompilationUnit compilationUnit;
+
+  @BeforeClass
+  public static void setup(){
+    GrammarFamilyMill.init();
+  }
 
   @Before
   public void setUp() {

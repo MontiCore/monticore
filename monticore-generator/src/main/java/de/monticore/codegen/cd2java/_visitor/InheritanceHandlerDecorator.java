@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 import static de.monticore.codegen.cd2java.CDModifier.PRIVATE;
 import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.CoreTemplates.*;
+import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_INTERFACE;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SCOPE;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SYMBOL;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
@@ -69,11 +70,14 @@ public class InheritanceHandlerDecorator extends AbstractCreator<ASTCDCompilatio
 
   protected List<ASTCDMethod> getASTHandleMethods(ASTCDDefinition astcdDefinition, String handlerSimpleTypeName, String languageInterfaceName) {
     List<ASTCDMethod> handleMethods = new ArrayList<>();
+
+    // generate handle(ASTX node) for all classes X
     handleMethods.addAll(astcdDefinition.getCDClassList()
         .stream()
         .map(c -> getASTHandleMethod(c, languageInterfaceName, handlerSimpleTypeName))
         .collect(Collectors.toList()));
 
+    // generate handle(ASTX node) for all interfaces X
     handleMethods.addAll(astcdDefinition.getCDInterfaceList()
         .stream()
         .map(c -> getHandleASTMethod(c, languageInterfaceName, handlerSimpleTypeName))
@@ -82,7 +86,7 @@ public class InheritanceHandlerDecorator extends AbstractCreator<ASTCDCompilatio
     return handleMethods;
   }
 
-  protected ASTCDMethod getASTHandleMethod(ASTCDClass astcdClass, String languageInterfaceName, String handlerSimpleTypeName) {
+  protected ASTCDMethod   getASTHandleMethod(ASTCDClass astcdClass, String languageInterfaceName, String handlerSimpleTypeName) {
     ASTCDMethod handleMethod = visitorService.getVisitorMethod(HANDLE, getMCTypeFacade().createQualifiedType(astcdClass.getName()));
     List<String> superTypeList = new ArrayList<>();
     // super classes

@@ -4,9 +4,9 @@ package de.monticore.codegen.mc2cd.symbolTransl;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
-import de.monticore.umlstereotype._ast.ASTStereoValue;
-
+import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.nio.file.Paths;
@@ -21,6 +21,11 @@ public class SpanningScopeTest {
    */
 
   private ASTCDCompilationUnit compilationUnit;
+
+  @BeforeClass
+  public static void setup(){
+    GrammarFamilyMill.init();
+  }
 
   @Before
   public void setUp() {

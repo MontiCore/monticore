@@ -5,7 +5,9 @@ package de.monticore.codegen.mc2cd.transl;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.mc2cd.TestHelper;
+import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.nio.file.Paths;
@@ -25,6 +27,11 @@ public class InterfaceProdTest {
   private ASTCDInterface astB;
   
   private ASTCDInterface astC;
+
+  @BeforeClass
+  public static void setup(){
+    GrammarFamilyMill.init();
+  }
   
   public InterfaceProdTest() {
     ASTCDCompilationUnit cdCompilationUnit = TestHelper.parseAndTransform(Paths

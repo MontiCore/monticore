@@ -4,6 +4,8 @@
 
 # MontiCore Core Grammars - an Overview
 
+[[_TOC_]]
+
 [MontiCore](http://www.monticore.de) is a language workbench. It uses 
 grammars as primary mechanism to describe DSLs. The extended 
 grammar format allows to **compose language components** by
@@ -22,7 +24,7 @@ These are available in the *MontiCore* core project
 together with short descriptions and their status 
 ([Status of Grammars](../../../../../../00.org/Explanations/StatusOfGrammars.md)).
 
-The list covers the core grammars to be found in the `MontiCore/monticore` 
+The list covers mainly the core grammars to be found in the `MontiCore/monticore` 
 project under `monticore-grammar/src/main/grammars/` in packages 
 
 * `de.monticore`
@@ -33,12 +35,6 @@ project under `monticore-grammar/src/main/grammars/` in packages
 * `de.monticore.types`
 
 For [more langauges and language components, see here](../../../../../../docs/Languages.md).
-
-
-Table of Contents:
-
-[[_TOC_]]
-
 
 ## General: List of Grammars in package `de.monticore`
 
@@ -53,21 +49,20 @@ It should be useful in many languages.
 These grammars generally deal with type definitions and build on each 
 other. Some snipets for type definitions:
 
-  ```
-  MCBasicTypes      boolean  byte  short  int
-                    long  char  float  double
-                    void  Person  a.b.Person
-                    import a.b.Foo.*;
-  MCCollectionTypes List<.>   Set<.>
-                    Optional<.>   Map<.,.>
-  MCSimpleGenericTypes
-                    Foo<.>  a.b.Bar<.,..,.>
-  MCFullGenericTypes
-                    Foo<? extends .>
-                    Foo<? super .>
-  MCArrayTypes
-                    Person[]  int[][]
-  ```
+    grammars          some examples
+    MCBasicTypes      boolean  byte  short  int
+                      long  char  float  double
+                      void  Person  a.b.Person
+                      import a.b.Foo.*;
+    MCCollectionTypes List<.>   Set<.>
+                      Optional<.>   Map<.,.>
+    MCSimpleGenericTypes
+                      Foo<.>  a.b.Bar<.,..,.>
+    MCFullGenericTypes
+                      Foo<? extends .>
+                      Foo<? super .>
+    MCArrayTypes
+                      Person[]  int[][]
   
 ### [MCBasicTypes.mc4](types/MCBasicTypes.mc4) (stable)
 * This grammar defines basic types. This eases the reuse of type 
@@ -147,18 +142,21 @@ infrastructure.
 
 This modularity of expressions and associated types greatly eases 
 the reuse of type structures in languages similar to Java.
-Some snipets for operators definrd in expressions:
+Some snipets for operators defined in expressions:
 
-  ```
-  CommonExp:     /  %  +  -  <=  >=  ==  >  <  !=  ~.  !.  .?.:.
-  PLogicExp:     &&  ||  ~. 
-  AssigementExp: ++  --  =  +=  -=  *=  /=  &=  |=  ^=  >>=  >>>=  <<=  %=
-  BitExp:        &  |  ^  <<  >>  >>>
-  OclExp:        implies  <=>  |  &  forall  exists  let.in. .@pre  .[.]  .**
-                 Set{.|.}
-  JavaClass:     this  .[.]  (.).  super  .instanceof.
-  SetExp:        .isin.  .in.  union  intersect  setand  setor
-  ```
+    grammar        operators and examples in this grammar
+    CommonExp:     /  %  +  -  <=  >=  ==  >  <  !=  ~.  !.  .?.:.
+                   &&  ||  ~. 
+    AssigementExp: ++  --  =  +=  -=  *=  /=  &=  |=  ^=  >>=  >>>=  <<=  %=
+    BitExp:        &  |  ^  <<  >>  >>>
+    OclExp:        implies  <=>  |  &  forall  exists  let.in. .@pre  .[.]  .**
+                   Set{.|.}
+    SetExp:        .isin.  .in.  union  intersect  setand  setor
+                   { item | specifier }
+    OptionalOps:   ?:  ?<=  ?>=  ?<  ?>  ?==  ?!=  ?~~   ?!~ 
+    SIUnits:       5km  3,2m/s  22l  2.400J  
+    JavaClass:     this  .[.]  (.).  super  .instanceof.
+
 
 ### [ExpressionsBasis.mc4](expressions/ExpressionsBasis.mc4) (stable)
 * This grammar defines core interfaces for expressions and imports the 
@@ -176,6 +174,12 @@ mainly for arithmetic, comparisons, variable use (v),
 attribute use (o.att), method call (foo(arg,arg2)) and brackets (exp).
 
 
+### [AssignmentExpressions.mc4](expressions/AssignmentExpressions.mc4) (stable)
+* This grammar defines all Java expressions that have side effects.
+* This includes assignment expressions like =, +=, etc. and 
+suffix and prefix expressions like ++, --, etc.
+
+
 ### [BitExpressions.mc4](expressions/BitExpressions.mc4) (stable)
 * This grammar defines a typical standard set of operations for
 expressions. 
@@ -183,10 +187,41 @@ expressions.
 like <<, >>, >>>, &, ^ and |
 
 
-### [AssignmentExpressions.mc4](expressions/AssignmentExpressions.mc4) (stable)
-* This grammar defines all Java expressions that have side effects.
-* This includes assignment expressions like =, +=, etc. and 
-suffix and prefix expressions like ++, --, etc.
+### [OCLExpressions.mc4][OCL-OCLExpressions] (stable)
+* This grammar defines expressions typical to UMLs OCL .
+  OCL expressions can savely be composed if with other forms of expressions  
+  given in the MontiCore core project (i.e. as conservative extension).
+* It contains various logical operations, such as quantifiers, 
+  the `let` and the `@pre` construct, and a transitive closure for 
+  associations, as discussed in [Rum17,Rum17].
+* This grammar resides in the [MontiCore/OCL][OCL] project.
+
+### [SetExpressions.mc4][OCL-SetExpressions] (stable)
+* This grammar defines set expressions like set union, intersection etc.
+these operations are typical for a logic with set operations, like 
+UML's OCL. These operators are usually infix and are thus more intuitive
+as they allow math oriented style of specification.
+* Most of these operators are in principle executable, so it might be interesting to include them in a high level programming language (see e.g. Haskell)
+* This grammar resides in the [MontiCore/OCL][OCL] project.
+
+
+### [OptionalOperators.mc4][OCL-OptionalOperators] (stable)
+* This grammar defines nine operators dealing with optional values, e.g. defined by 
+  `java.lang.Optional`. The operators are also called *Elvis operators*.
+* E.g.: `val ?: 0W`     equals to   `val.isPresent ? val.get : 0W`
+* `x ?>= y` equals `x.isPresent && x.get >= y` 
+* This grammar resides in the [MontiCore/OCL][OCL] project.
+
+
+### [SI Units](https://git.rwth-aachen.de/monticore/languages/siunits) (stable)
+* This grammar the international system of units (SI units), based on 
+  the basis units `s, m, kg, A, K, mol, cd`, 
+  provides a variety of derived units, and can be refined using prefixes such 
+  as `m`(milli), `k`(kilo), etc.
+* The SI Unit grammar provides an extension to expressions, but also to the 
+  typing system, e.g.  `km/h` or `km/h<long>`,
+  and literals, allowing e.g. `5 km/h`.
+* The grammars reside in the [MontiCore/SIunits](https://github.com/MontiCore/siunits/blob/master/src/main/grammars/de/monticore/SIUnits.md) project
 
 
 ### [JavaClassExpressions.mc4](expressions/JavaClassExpressions.mc4) (stable)
@@ -197,30 +232,17 @@ intended and the full power of Java should be available in the
 modelling language.
 
 
-### [SetExpressions.mc4](expressions/SetExpressions.mc4) (Beta: In Stabilization)
-* This grammar defines set expressions like set union, intersection etc.
-these operations are typical for a logic with set operations, like 
-UML's OCL.
-
-
-### [OCLExpressions.mc4](expressions/OCLExpressions.mc4) (Alpha: Needs restructuring)
-* This grammar defines a expressions typical to UMLs OCL .
-* This grammar will be restructured. Especially the non expression 
-  part of the OCL will be separated.
-
-
 
 ## Literals: List of Grammars in package `de.monticore.literals`
 
 Literals are the basic elements of expressions, such as numbers, strings, 
 truth values. Some snipets:
 
-  ```
-  MCCommonLit       3  -3  2.17  -4  true  false  'c'  '\03AE' 
-                    3L  2.17d  2.17f  0xAF  "string" "str\b\n\\"  
-                    "str\uAF01\u0001\377"  null
-  MCJavaLiterals    999_999  0x3F2A  0b0001_0101  0567  1.2e-7F
-  ```
+    grammar           examples of this grammar
+    MCCommonLit       3  -3  2.17  -4  true  false  'c'  '\03AE' 
+                      3L  2.17d  2.17f  0xAF  "string" "str\b\n\\"  
+                      "str\uAF01\u0001\377"  null
+    MCJavaLiterals    999_999  0x3F2A  0b0001_0101  0567  1.2e-7F
 
 ### [MCLiteralsBasis.mc4](literals/MCLiteralsBasis.mc4) (stable)
 * This grammar defines core interface for literals.
@@ -258,17 +280,15 @@ the developers to choose needed forms of statements and extend it
 by their own additional needs. The provided list of statements
 is inspired by Java (actually subset of Java). Some example statements:
 
-  ```
-  int i;   int j = 2;                     Person p[] = { foo(3+7), p2, ...}
-  if (.) then . else .                    for ( i = .; .; .) {.}
-  while (.) .                             do . while (.)
-  switch (.) { case .: .; default: .}
-  foo(1,2,3)                              return .                                
-  assert . : "..."
-  try {.} catch (.) {.} finally {.}       throw .           
-  break .                                 continue .
-  label:                                  private  static  final  native ...
-  ```
+    int i;   int j = 2;                     Person p[] = { foo(3+7), p2, ...}
+    if (.) then . else .                    for ( i = .; .; .) {.}
+    while (.) .                             do . while (.)
+    switch (.) { case .: .; default: .}
+    foo(1,2,3)                              return .                                
+    assert . : "..."
+    try {.} catch (.) {.} finally {.}       throw .           
+    break .                                 continue .
+    label:                                  private  static  final  native ...
 
 ### [MCStatementsBasis.mc4](statements/MCStatementsBasis.mc4) (stable)
 * This grammar defines the core interface for statements.
@@ -303,9 +323,6 @@ is inspired by Java (actually subset of Java). Some example statements:
 * This grammar defines all Java statements.
 * This is neither a generalized approximation nor a restricted overapproximation,
   but exact.
-
-
-
 
 ## Further grammars in package `de.monticore`
 
@@ -380,3 +397,8 @@ These can also be used if someone is interested:
 * [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
 * [Licence definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
 
+<!-- Links to other sites-->
+[OCL]: https://git.rwth-aachen.de/monticore/languages/OCL
+[OCL-OCLExpressions]: https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/develop/src/main/grammars/de/monticore/ocl/OCLExpressions.mc4
+[OCL-OptionalOperators]: https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/develop/src/main/grammars/de/monticore/ocl/OptionalOperators.mc4
+[OCL-SetExpressions]: https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/develop/src/main/grammars/de/monticore/ocl/SetExpressions.mc4

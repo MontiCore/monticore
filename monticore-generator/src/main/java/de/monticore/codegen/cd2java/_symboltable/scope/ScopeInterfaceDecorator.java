@@ -48,7 +48,7 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
 
   protected static final String FILTER = "filter%s";
 
-  protected static final String RESOLVE_IMPORTED = "resolve%sImported";
+  protected static final String RESOLVE_SUBKINDS = "resolve%sSubKinds";
 
   protected static final String RESOLVE_LOCALLY = "resolve%sLocally";
 
@@ -133,7 +133,6 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
         .addAllCDMethods(createEnclosingScopeMethods(scopeInterfaceName))
         .addAllCDMethods(scopeRuleMethodList)
         .addAllCDMethods(scopeRuleAttributeMethods)
-        .addCDMethod(createAcceptMethod())
         .addCDMethod(createAcceptTraverserMethod())
         .addCDMethod(createSymbolsSizeMethod(symbolAttributes))
         .build();
@@ -205,9 +204,10 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
       resolveMethods.add(createResolveLocallyManyMethod(resolveLocallyManyMethodName, className, symbolFullTypeName,
           listSymbol, foundSymbolsParameter, nameParameter, accessModifierParameter, predicateParameter));
 
-      // resolve imported method
-      String resolveImportedMethodName = String.format(RESOLVE_IMPORTED, className);
-      resolveMethods.add(createResolveImportedNameMethod(resolveImportedMethodName, className, optSymbol, nameParameter));
+      // resolve sub kinds method
+      String resolveSubKindsMethodName = String.format(RESOLVE_SUBKINDS, className);
+      resolveMethods.add(createResolveSubKindsMethod(resolveSubKindsMethodName, listSymbol,
+          foundSymbolsParameter, nameParameter, accessModifierParameter, predicateParameter));
 
       // resolve many methods
       String resolveManyMethodName = String.format(RESOLVE_MANY, className);
@@ -371,9 +371,12 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
     return method;
   }
 
-  protected ASTCDMethod createResolveImportedNameMethod(String methodName, String className, ASTMCType returnType, ASTCDParameter nameParameter) {
-    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), returnType, methodName, nameParameter);
-    this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return this.resolve" + className + "Locally(" + NAME_VAR + ");"));
+  protected ASTCDMethod createResolveSubKindsMethod(String methodName, ASTMCType returnType,
+      ASTCDParameter foundSymbolsParameter,
+      ASTCDParameter nameParameter, ASTCDParameter accessModifierParameter,
+      ASTCDParameter predicateParameter) {
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, returnType, methodName,
+        foundSymbolsParameter, nameParameter, accessModifierParameter, predicateParameter);
     return method;
   }
 
@@ -542,12 +545,6 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
     return enclosingScopeMethods;
   }
 
-  protected ASTCDMethod createAcceptMethod() {
-    String visitor = visitorService.getVisitorFullName();
-    ASTCDParameter parameter = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(visitor), VISITOR_PREFIX);
-    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT.build(), ACCEPT_METHOD, parameter);
-  }
-  
   protected ASTCDMethod createAcceptTraverserMethod() {
     String visitor = visitorService.getTraverserInterfaceFullName();
     ASTCDParameter parameter = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(visitor), VISITOR_PREFIX);

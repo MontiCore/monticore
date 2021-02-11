@@ -11,6 +11,9 @@ ${tc.signature("simpleName", "symbolFullName")}
     resolvedSymbols.addAll(e.getSymbols());
   }
 
+  // add all symbols of sub kinds of the current kind
+  resolvedSymbols.addAll(resolve${simpleName}SubKinds(foundSymbols, name, modifier, predicate));
+
   // filter out symbols that are not included within the access modifier
   List<${symbolFullName}> filteredSymbols = filterSymbolsByAccessModifier(modifier, resolvedSymbols);
   filteredSymbols = new ArrayList<>(filteredSymbols.stream().filter(predicate).collect(java.util.stream.Collectors.toList()));

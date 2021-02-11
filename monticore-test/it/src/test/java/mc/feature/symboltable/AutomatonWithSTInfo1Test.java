@@ -20,7 +20,7 @@ public class AutomatonWithSTInfo1Test extends GeneratorIntegrationsTest {
     AutomatonSymbol automatonSymbol = new AutomatonSymbol("A");
 //    Collection<StateSymbol> stateSymbols = automatonSymbol.getStates();
     AutomatonSymbolSurrogate automatonSymbolSurrogate;
-    AutomatonWithSTInfo1SymbolTableCreator automatonWithSTInfo1SymbolTableCreator;
+    AutomatonWithSTInfo1ScopesGenitorDelegator automatonWithSTInfo1SymbolTableCreator;
     StateSymbol stateSymbol = new StateSymbol("S");
     assertTrue(stateSymbol instanceof StateSymbol);
 //    Collection<StateSymbol> stateSymbols2 = stateSymbol.getStates();

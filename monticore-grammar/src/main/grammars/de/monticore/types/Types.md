@@ -11,7 +11,7 @@ hierarchy for modeling types was developed for MontiCore-based languages. It
 consists of five language components
 [`MCBasicTypes`](MCBasicTypes.mc4), 
 [`MCCollectionTypes`](MCCollectionTypes.mc4), 
-[`MCSimpleGenericTypes`](MCSimpleGenericTypes.mc4),  
+[`MCSimpleGenericTypes`](MCSimpleGenericTypes.mc4),
 [`MCFullGenericTypes`](MCFullGenericTypes.mc4), and
 [`MCArrayTypes`](MCArrayTypes.mc4).
  

@@ -18,6 +18,7 @@ import org.antlr.v4.runtime.RecognitionException;
 import java.io.IOException;
 import java.util.Optional;
 
+
 /**
  * Main class for the Automata DSL tool.
  *
@@ -120,7 +121,7 @@ public class AutomataTool {
    * @param model - file to parse
    * @return
    */
-  public static ASTAutomaton parse(String model) {
+  public ASTAutomaton parse(String model) {
     try {
       AutomataParser parser = new AutomataParser() ;
       Optional<ASTAutomaton> optAutomaton = parser.parse(model);
@@ -143,7 +144,7 @@ public class AutomataTool {
    * @param ast
    * @return
    */
-  public static IAutomataArtifactScope createSymbolTable(ASTAutomaton ast) {
+  public IAutomataArtifactScope createSymbolTable(ASTAutomaton ast) {
 
     IAutomataGlobalScope globalScope = AutomataMill.globalScope();
     globalScope.setModelPath(new ModelPath());

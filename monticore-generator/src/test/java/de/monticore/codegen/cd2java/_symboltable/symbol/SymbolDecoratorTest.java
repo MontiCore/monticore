@@ -55,7 +55,7 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
 
   private static final String I_AUTOMATON_SCOPE = "de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.IAutomatonSymbolCDScope";
 
-  private static final String AUTOMATON_VISITOR = "de.monticore.codegen.symboltable.automatonsymbolcd._visitor.AutomatonSymbolCDVisitor";
+  private static final String AUTOMATON_TRAVERSER = "de.monticore.codegen.symboltable.automatonsymbolcd._visitor.AutomatonSymbolCDTraverser";
 
   @Before
   public void setUp() {
@@ -207,7 +207,7 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethods() {
-    assertEquals(20, symbolClassAutomaton.getCDMethodList().size());
+    assertEquals(19, symbolClassAutomaton.getCDMethodList().size());
   }
 
   @Test
@@ -217,7 +217,7 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
 
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(mcTypeFacade.createQualifiedType(AUTOMATON_VISITOR),
+    assertDeepEquals(mcTypeFacade.createQualifiedType(AUTOMATON_TRAVERSER),
         method.getCDParameter(0).getMCType());
     assertEquals("visitor", method.getCDParameter(0).getName());
   }
@@ -449,7 +449,7 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodsStateSymbol() {
-    assertEquals(18, symbolClassState.getCDMethodList().size());
+    assertEquals(17, symbolClassState.getCDMethodList().size());
   }
 
   @Test(expected = AssertionError.class)

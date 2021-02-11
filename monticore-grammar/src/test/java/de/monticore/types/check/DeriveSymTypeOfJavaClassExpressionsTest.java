@@ -13,7 +13,7 @@ import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
-import de.se_rwth.commons.logging.*;
+import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -45,6 +45,8 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
 
   @Before
   public void setupForEach() {
+    CombineExpressionsWithLiteralsMill.reset();
+    CombineExpressionsWithLiteralsMill.init();
     // Setting up a Scope Infrastructure (without a global Scope)
     DefsTypeBasic.setup();
     scope = CombineExpressionsWithLiteralsMill.scope();
@@ -1641,7 +1643,6 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
     traverser.add4BitExpressions(flatExpressionScopeSetter);
     traverser.add4CommonExpressions(flatExpressionScopeSetter);
     traverser.add4ExpressionsBasis(flatExpressionScopeSetter);
-    traverser.add4SetExpressions(flatExpressionScopeSetter);
     traverser.add4JavaClassExpressions(flatExpressionScopeSetter);
     traverser.add4MCBasicTypes(flatExpressionScopeSetter);
     return traverser;

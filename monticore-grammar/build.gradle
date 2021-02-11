@@ -1,25 +1,23 @@
 ///* (c) https://github.com/MontiCore/monticore */
 import de.monticore.MCTask
 
-buildscript {
-  // fake a different group for Gradle to prevent it from including the build in it self
-  group = "de.mc" 
-}
-
 plugins {
-  id "java"
+  id "java-library"
   id "com.github.johnrengelman.shadow" version "6.0.0"
   id "monticore" version "$version" // MontiCore Plugin
 }
 
 description = 'MontiCore: Grammar'
-group = "de.monticore"
+if(!hasProperty('bootstrap')){
+  group = "de.monticore"
+} else {
+  group = "de.monticore.bs"
+}
 
 dependencies {
-    implementation project(':monticore-runtime')
-    implementation "de.se_rwth.commons:se-commons-logging:$se_commons_version"
-    implementation "org.antlr:antlr4-runtime:$antlr_version"
+    api project(':monticore-runtime')
     implementation 'com.google.guava:guava:25.1-jre'
+    implementation "org.apache.commons:commons-lang3:$commons_lang3_version"
     testImplementation "junit:junit:$junit_version"
     testImplementation 'ch.qos.logback:logback-classic:1.1.2'
 }
@@ -48,6 +46,9 @@ fileTree("src/main/grammars").matching { include '**/*.mc4'}.each {
   task  "$taskname" (type: MCTask) {
     grammar = file g
     outputDir = file grammarOutDir
+    if(findProperty("ci")!= null) {
+      script = "de/monticore/monticore_noreports.groovy"
+    }
     def grammarIncludingPackage = file("src/main/grammars").toURI().relativize(g.toURI()).toString()
     def uptoDate = incCheck(grammarIncludingPackage)
     outputs.upToDateWhen { uptoDate }
@@ -67,6 +68,9 @@ fileTree("src/test/grammars").matching { include '**/*.mc4'}.each {
     outputDir = file testGrammarOutDir
     handcodedPath "$projectDir/src/main/java", "$projectDir/src/test/java"
     modelPath "$projectDir/$grammarDir", "$projectDir/src/main/examples"
+    if(findProperty("ci")!= null) {
+      script = "de/monticore/monticore_noreports.groovy"
+    }
     def grammarIncludingPackage = file("src/test/grammars").toURI().relativize(g.toURI()).toString()
     def uptoDate = incCheck(grammarIncludingPackage)
     outputs.upToDateWhen { uptoDate }
@@ -81,6 +85,9 @@ fileTree("src/main/examples").matching { include '**/*.mc4'}.each {
     outputDir = file testGrammarOutDir
     handcodedPath "$projectDir/src/main/java"
     modelPath "$projectDir/$grammarDir", "$projectDir/src/main/examples"
+    if(findProperty("ci")!= null) {
+      script = "de/monticore/monticore_noreports.groovy"
+    }
     def grammarIncludingPackage = file("src/main/examples").toURI().relativize(g.toURI()).toString()
     def uptoDate = incCheck(grammarIncludingPackage)
     outputs.upToDateWhen { uptoDate }
@@ -96,4 +103,8 @@ java {
   }
 }
 
-jar.dependsOn(shadowJar,grammarsJar)
+jar.dependsOn(grammarsJar)
+
+if(findProperty('ci') == null){
+  jar.dependsOn(shadowJar)
+}

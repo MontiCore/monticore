@@ -45,6 +45,10 @@ public final class DecoratorTestUtil {
     return getMethodsBy(name, clazz.getCDMethodList());
   }
 
+  public static List<ASTCDMethod> getMethodsBy(String name, ASTCDInterface interfazz) {
+    return getMethodsBy(name, interfazz.getCDMethodList());
+  }
+
   public static List<ASTCDMethod> getMethodsBy(String name, int parameterSize, ASTCDClass clazz) {
     return getMethodsBy(name, parameterSize, clazz.getCDMethodList());
   }

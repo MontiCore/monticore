@@ -166,7 +166,7 @@ public class ArtifactScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(9, scopeClass.getCDMethodList().size());
+    assertEquals(8, scopeClass.getCDMethodList().size());
   }
 
   @Test
@@ -220,7 +220,7 @@ public class ArtifactScopeClassDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals("de.monticore.codegen.ast.automaton._visitor.AutomatonVisitor", method.getCDParameter(0).getMCType());
+    assertDeepEquals("de.monticore.codegen.ast.automaton._visitor.AutomatonTraverser", method.getCDParameter(0).getMCType());
     assertEquals("visitor", method.getCDParameter(0).getName());
   }
 

@@ -21,7 +21,9 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.grammar.MCGrammarInfo;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
+import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._symboltable.IGrammar_WithConceptsGlobalScope;
+import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsTraverser;
 import de.monticore.io.paths.IterablePath;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
@@ -121,9 +123,11 @@ public class ParserGenerator {
 
     final Path filePath = Paths.get(Names.getPathFromPackage(genHelper.getParserPackage()),
         astGrammar.getName() + "Antlr.g4");
-    new GeneratorEngine(setup).generate("parser.Parser", filePath, astGrammar,
-        new Grammar2Antlr(genHelper,
-            grammarInfo, embeddedJavaCode));
+    Grammar2Antlr grammar2Antlr = new Grammar2Antlr(genHelper, grammarInfo, true);
+    Grammar_WithConceptsTraverser traverser = Grammar_WithConceptsMill.traverser();
+    traverser.add4Grammar(grammar2Antlr);
+    traverser.setGrammarHandler(grammar2Antlr);
+    new GeneratorEngine(setup).generate("parser.Parser", filePath, astGrammar, grammar2Antlr);
 
     // construct parser, lexer, ... (antlr),
     String gFile = Paths.get(targetDir.getAbsolutePath(), filePath.toString()).toString();

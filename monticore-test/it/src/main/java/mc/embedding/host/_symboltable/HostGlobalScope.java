@@ -37,7 +37,7 @@ public class HostGlobalScope extends HostGlobalScopeTOP {
       getModelPath().resolveModel(modelCoordinate);
       if (modelCoordinate.hasLocation()) {
         ASTHost parse = parse(modelCoordinate);
-        HostMill.hostSymbolTableCreatorDelegator().createFromAST(parse);
+        HostMill.scopesGenitorDelegator().createFromAST(parse);
       }
     }
     else {

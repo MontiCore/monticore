@@ -21,7 +21,6 @@ import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -46,6 +45,8 @@ public class DeriveSymTypeOfCommonExpressionTest {
   public static void setup() {
     LogStub.init();
     LogStub.enableFailQuick(false);
+    CombineExpressionsWithLiteralsMill.reset();
+    CombineExpressionsWithLiteralsMill.init();
   }
 
   @Before
@@ -1851,7 +1852,6 @@ public class DeriveSymTypeOfCommonExpressionTest {
     traverser.add4BitExpressions(flatExpressionScopeSetter);
     traverser.add4CommonExpressions(flatExpressionScopeSetter);
     traverser.add4ExpressionsBasis(flatExpressionScopeSetter);
-    traverser.add4SetExpressions(flatExpressionScopeSetter);
     traverser.add4JavaClassExpressions(flatExpressionScopeSetter);
     traverser.add4MCBasicTypes(flatExpressionScopeSetter);
     return traverser;

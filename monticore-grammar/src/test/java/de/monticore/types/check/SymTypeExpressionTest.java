@@ -5,7 +5,6 @@ import com.google.common.collect.Lists;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
-import de.monticore.symbols.oosymbols._symboltable.OOSymbolsScope;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.json.JsonElement;
@@ -20,7 +19,7 @@ import java.util.Spliterator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static de.monticore.types.check.DefsTypeBasic.*;
+import static de.monticore.types.check.DefsTypeBasic._intSymType;
 import static de.monticore.types.check.SymTypeExpressionFactory.*;
 import static org.junit.Assert.*;
 
@@ -83,6 +82,8 @@ public class SymTypeExpressionTest {
   @BeforeClass
   public static void setUpScope(){
     LogStub.init();
+    OOSymbolsMill.reset();
+    OOSymbolsMill.init();
     BasicSymbolsMill.initializePrimitives();
     scope.add(new OOTypeSymbol("long"));
     scope.add(new OOTypeSymbol("Human"));

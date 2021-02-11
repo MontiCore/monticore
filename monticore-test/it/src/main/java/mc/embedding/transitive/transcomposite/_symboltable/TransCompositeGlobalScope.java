@@ -37,7 +37,7 @@ public class TransCompositeGlobalScope extends TransCompositeGlobalScopeTOP {
       getModelPath().resolveModel(modelCoordinate);
       if (modelCoordinate.hasLocation()) {
         ASTTransStart parse = parse(modelCoordinate);
-        TransCompositeMill.transCompositeSymbolTableCreatorDelegator().createFromAST(parse);
+        TransCompositeMill.scopesGenitorDelegator().createFromAST(parse);
       }
     }
     else {

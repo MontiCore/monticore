@@ -53,30 +53,11 @@ public class HandlerDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
     
     String handlerSimpleName = visitorService.getHandlerSimpleName();
     ASTMCQualifiedType traverserType = visitorService.getTraverserInterfaceType();
-    
-    // get visitor types and names of super cds and own cd
-    List<DiagramSymbol> superCDsTransitive = visitorService.getSuperCDsTransitive();
-    List<String> visitorFullNameList = superCDsTransitive.stream()
-        .map(visitorService::getVisitor2FullName)
-        .collect(Collectors.toList());
-    visitorFullNameList.add(visitorService.getVisitor2FullName());
-    
-    // create list of cdDefinitions from superclass and own class
-    List<ASTCDDefinition> definitionList = new ArrayList<>();
-    definitionList.add(compilationUnit.getCDDefinition());
-    definitionList.addAll(superCDsTransitive
-        .stream()
-        .map(visitorService::calculateCDTypeNamesWithASTPackage)
-        .collect(Collectors.toList()));
-    
-    List<String> visitorSimpleNameList =new ArrayList<>();
-    visitorSimpleNameList.addAll(superCDsTransitive.stream()
-        .map(visitorService::getVisitorSimpleName)
-        .collect(Collectors.toList()));
-    
+
     ASTCDInterface visitorInterface = CD4CodeMill.cDInterfaceBuilder()
         .setName(handlerSimpleName)
         .setModifier(PUBLIC.build())
+        .addInterface(getMCTypeFacade().createQualifiedType(IHANDLER_FULL_NAME))
         .addCDMethod(addGetTraverserMethod(traverserType))
         .addCDMethod(addSetTraverserMethod(traverserType))
         .addAllCDMethods(createHandlerMethods(compilationUnit.getCDDefinition()))

@@ -2,11 +2,10 @@
 package de.monticore.codegen.cd2java.typecd2java;
 
 import com.google.common.collect.Lists;
-import de.monticore.cdbasis._symboltable.CDTypeSymbol;
-import de.monticore.cd4analysis._symboltable.ICD4AnalysisScope;
-import de.monticore.cd4analysis._visitor.CD4AnalysisVisitor;
+import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
+import de.monticore.cd.cd4analysis._symboltable.ICD4AnalysisScope;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
-import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVisitor;
+import de.monticore.grammar.grammarfamily._visitor.GrammarFamilyVisitor;
 import de.monticore.symboltable.IScope;
 import de.monticore.symboltable.ISymbol;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
@@ -17,7 +16,7 @@ import java.util.Optional;
 
 import static de.monticore.codegen.mc2cd.TransformationHelper.simpleName;
 
-public class TypeCD2JavaVisitor implements Grammar_WithConceptsVisitor {
+public class TypeCD2JavaVisitor implements GrammarFamilyVisitor {
 
   private static final String PACKAGE_SEPARATOR = "\\.";
 

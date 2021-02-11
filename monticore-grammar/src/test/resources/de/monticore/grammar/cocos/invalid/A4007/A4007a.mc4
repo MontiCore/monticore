@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package  de.monticore.grammar.cocos.invalid.A4007;
+
+grammar A4007a extends de.monticore.grammar.cocos.invalid.A4007.A4007 {
+
+  interface ReturnType;
+
+}

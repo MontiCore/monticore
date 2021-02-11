@@ -7,7 +7,8 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
-import org.junit.Ignore;
+import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.nio.file.Paths;
@@ -24,6 +25,11 @@ public class AttributeInASTOverridingTest {
   private ASTCDClass astA;
   
   private ASTCDClass astB;
+
+  @BeforeClass
+  public static void setup(){
+    GrammarFamilyMill.init();
+  }
   
   public AttributeInASTOverridingTest() {
     ASTCDCompilationUnit cdCompilationUnit = TestHelper.parseAndTransform(Paths

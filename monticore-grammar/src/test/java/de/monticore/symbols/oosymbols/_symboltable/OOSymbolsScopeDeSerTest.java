@@ -1,5 +1,3 @@
-// (c) https://github.com/MontiCore/monticore
-
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.symbols.oosymbols._symboltable;
 
@@ -23,9 +21,11 @@ public class OOSymbolsScopeDeSerTest {
   @Before
   public void setUp(){
     LogStub.init();
-//    Log.enableFailQuick(false);
+    Log.enableFailQuick(false);
 
     //initialize scope, add some TypeSymbols, TypeVarSymbols, VariableSymbols and FunctionSymbols
+    OOSymbolsMill.reset();
+    OOSymbolsMill.init();
     scope = OOSymbolsMill.artifactScope();
     scope.setPackageName("");
     scope.setImportsList(Lists.newArrayList());

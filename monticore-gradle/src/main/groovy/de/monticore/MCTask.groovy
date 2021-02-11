@@ -8,6 +8,8 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.provider.Property
+import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.*
 import org.gradle.work.Incremental
 import org.gradle.work.InputChanges
@@ -32,13 +34,14 @@ import org.gradle.work.InputChanges
  *   - includeConfigs   - list of names of configurations that should be added to the model path
  *                        defaults to empty list
  */
-public class MCTask extends DefaultTask {
+abstract public class MCTask extends DefaultTask {
   
   MCTask() {
     // set the task group name, in which all instances of MCTask will appear
     group = 'MC'
     // always add the files from the configuration 'grammar' to the config files
     grammarConfigFiles.setFrom(project.configurations.getByName("grammar").getFiles())
+    dependsOn(project.configurations.getByName("grammar"))
   }
   
   final RegularFileProperty grammar = project.objects.fileProperty()
@@ -66,6 +69,7 @@ public class MCTask extends DefaultTask {
   boolean help = false
   
   boolean dev = false
+  
   
   @OutputDirectory
   DirectoryProperty getOutputDir() {

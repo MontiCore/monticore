@@ -1,3 +1,4 @@
+/*(c) https://github.com/MontiCore/monticore*/
 package de.monticore.statements.mcvardeclarationstatements._symboltable;
 
 import de.monticore.statements.mccommonstatements._ast.ASTMCJavaBlock;

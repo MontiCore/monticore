@@ -3,7 +3,9 @@ package de.monticore.codegen.mc2cd.transl;
 
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
+import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.nio.file.Paths;
@@ -15,6 +17,11 @@ public class ComponetTranslationTest {
   private ASTCDCompilationUnit componentCD;
 
   private ASTCDCompilationUnit nonComponentCD;
+
+  @BeforeClass
+  public static void setup(){
+    GrammarFamilyMill.init();
+  }
 
   @Before
   public void setUp() {

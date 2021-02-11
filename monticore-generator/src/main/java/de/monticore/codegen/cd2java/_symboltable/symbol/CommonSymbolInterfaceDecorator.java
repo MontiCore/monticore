@@ -49,18 +49,12 @@ public class CommonSymbolInterfaceDecorator extends AbstractCreator<ASTCDCompila
         .setName(commonSymbolInterfaceName)
         .setModifier(PUBLIC.build())
         .addInterface(getMCTypeFacade().createQualifiedType(I_SYMBOL))
-        .addCDMethod(createAcceptMethod())
         .addCDMethod(createAcceptTraverserMethod())
         .addAllCDMethods(createEnclosingScopeMethods(scopeInterfaceName))
         .build();
   }
 
-  protected ASTCDMethod createAcceptMethod() {
-    ASTMCQualifiedType visitorType = getMCTypeFacade().createQualifiedType(visitorService.getVisitorFullName());
-    ASTCDParameter parameter = getCDParameterFacade().createParameter(visitorType, VISITOR_PREFIX);
-    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, ACCEPT_METHOD, parameter);
-  }
-  
+
   protected ASTCDMethod createAcceptTraverserMethod() {
     ASTMCQualifiedType visitorType = getMCTypeFacade().createQualifiedType(visitorService.getTraverserInterfaceFullName());
     ASTCDParameter parameter = getCDParameterFacade().createParameter(visitorType, VISITOR_PREFIX);

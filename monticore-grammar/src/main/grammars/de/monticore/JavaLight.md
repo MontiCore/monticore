@@ -1,6 +1,6 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 
-/* Beta-version: This is intended to become a MontiCore stable grammar. */
+<!-- Beta-version: This is intended to become a MontiCore stable explanation. -->
 
 # JavaLight
 JavaLight is a subset of Java. JavaLight provides methods, a subset 

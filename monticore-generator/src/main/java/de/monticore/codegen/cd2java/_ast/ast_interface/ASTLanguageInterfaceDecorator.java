@@ -35,17 +35,10 @@ public class ASTLanguageInterfaceDecorator extends AbstractCreator<ASTCDCompilat
         .setModifier(PUBLIC.build())
         .setName(astService.getASTBaseInterfaceSimpleName())
         .addInterface(getMCTypeFacade().createQualifiedType(ASTNode.class))
-        .addCDMethod(getAcceptMethod())
         .addCDMethod(getAcceptTraverserMethod())
         .build();
   }
 
-  protected ASTCDMethod getAcceptMethod() {
-    ASTMCType visitorType = visitorService.getVisitorType();
-    ASTCDParameter visitorParameter = this.getCDParameterFacade().createParameter(visitorType, "visitor");
-    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, ACCEPT_METHOD, visitorParameter);
-  }
-  
   protected ASTCDMethod getAcceptTraverserMethod() {
     ASTMCType visitorType = visitorService.getTraverserInterfaceType();
     ASTCDParameter visitorParameter = this.getCDParameterFacade().createParameter(visitorType, "visitor");

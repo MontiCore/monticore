@@ -69,21 +69,7 @@ public class ASTInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(6, dataInterface.sizeCDMethods());
-  }
-
-  @Test
-  public void testAcceptMethod() {
-    ASTCDMethod method = getMethodBy("accept", dataInterface);
-    assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-
-    assertFalse(method.isEmptyCDParameters());
-    assertEquals(1, method.sizeCDParameters());
-
-    ASTCDParameter parameter = method.getCDParameter(0);
-    assertDeepEquals("de.monticore.codegen.data.datainterface._visitor.DataInterfaceVisitor", parameter.getMCType());
-    assertEquals("visitor", parameter.getName());
+    assertEquals(5, dataInterface.sizeCDMethods());
   }
 
   @Test
@@ -194,7 +180,7 @@ public class ASTInterfaceDecoratorTest extends DecoratorTestCase {
 
     ASTCDInterface noNameSymbol = decorator.decorate(interfaceBy, changeInterface);
 
-    assertEquals(6, noNameSymbol.sizeCDMethods());
+    assertEquals(5, noNameSymbol.sizeCDMethods());
 
     ASTCDMethod method = getMethodBy("getName", noNameSymbol);
     assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());

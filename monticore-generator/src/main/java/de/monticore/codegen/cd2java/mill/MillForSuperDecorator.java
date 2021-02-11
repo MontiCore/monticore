@@ -81,6 +81,7 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
           .addAllCDMethods(builderMethodsList)
           .addAllCDMethods(correctScopeMethods)
           .addCDMethod(getSuperTraverserMethod(superSymbol))
+          .addCDMethod(getSuperInheritanceTraverserMethod(superSymbol))
           .build();
 
       if(!superSymbol.getAstNode().isPresentModifier() || !service.hasComponentStereotype(superSymbol.getAstNode().getModifier())){
@@ -213,7 +214,18 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
       String traverserInterfaceType = visitorService.getTraverserInterfaceFullName(cdSymbol);
       return getProtectedForSuperMethod(TRAVERSER, traverserInterfaceType);
   }
-  
+
+  /**
+   * Creates the protected internal traverser method for the given cd symbol.
+   *
+   * @param cdSymbol The symbol of the given class diagram
+   * @return The list of all internal traverser accessor methods
+   */
+  protected ASTCDMethod getSuperInheritanceTraverserMethod(CDDefinitionSymbol cdSymbol) {
+    String traverserInterfaceType = visitorService.getTraverserInterfaceFullName(cdSymbol);
+    return getProtectedForSuperMethod(INHERITANCE_TRAVERSER, traverserInterfaceType);
+  }
+
   /**
    * Creates protected internal method for a given attribute. The method
    * delegates to the public accessor method of the language-specific mill. The
