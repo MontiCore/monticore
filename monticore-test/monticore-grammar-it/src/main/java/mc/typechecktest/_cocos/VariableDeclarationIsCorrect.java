@@ -18,7 +18,7 @@ public class VariableDeclarationIsCorrect implements TypeCheckTestASTTCVarDeclCo
   public void check(ASTTCVarDecl node) {
     if (node.isPresentExpression()) {
       if (!TypeCheck.compatible(tc.symTypeFromAST(node.getMCType()), tc.typeOf(node.getExpression()))) {
-        Log.error("The type and the expression of the variable declaration "
+        Log.error("0xA0457 The type and the expression of the variable declaration "
             + node.getName() + " are not compatible");
       }
     }

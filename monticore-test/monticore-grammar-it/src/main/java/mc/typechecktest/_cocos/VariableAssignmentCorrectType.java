@@ -18,7 +18,7 @@ public class VariableAssignmentCorrectType implements AssignmentExpressionsASTAs
   @Override
   public void check(ASTAssignmentExpression node) {
     if(!TypeCheck.compatible(tc.typeOf(node.getLeft()), tc.typeOf(node.getRight()))){
-      Log.error("The types of the assignment are not compatible.");
+      Log.error("0xA0456 The types of the assignment are not compatible.");
     }
   }
 }

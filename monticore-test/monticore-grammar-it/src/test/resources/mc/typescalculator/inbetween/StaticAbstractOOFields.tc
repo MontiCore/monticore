@@ -1,12 +1,12 @@
-package mc.typescalculator;
+package mc.typescalculator.inbetween;
 
 tc StaticAbstractOOFields {
 
   void foo() {
     //should be okay with both abstract and oo type check
-    int a = mc.typescalculator.Bar.max
+    int a = mc.typescalculator.valid.Bar.max
     //oo type check should throw an error here
-    int b = mc.typescalculator.Bar.age
+    int b = mc.typescalculator.valid.Bar.age
   }
 
 }

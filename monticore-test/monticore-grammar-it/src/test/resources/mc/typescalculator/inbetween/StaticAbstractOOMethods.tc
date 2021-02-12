@@ -1,12 +1,12 @@
-package mc.typescalculator;
+package mc.typescalculator.inbetween;
 
 tc StaticAbstractOOMethods {
 
   void foo() {
     //should be okay with both abstract and oo type check
-    int a = mc.typescalculator.Bar.getMax()
+    int a = mc.typescalculator.valid.Bar.getMax()
     //oo type check should throw an error here
-    int b = mc.typescalculator.Bar.getAge()
+    int b = mc.typescalculator.valid.Bar.getAge()
   }
 
 }

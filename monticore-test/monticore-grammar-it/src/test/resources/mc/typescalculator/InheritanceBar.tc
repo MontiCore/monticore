@@ -1,7 +1,0 @@
-package mc.typescalculator;
-
-tc InheritanceBar extends mc.typescalculator.Bar {
-
-
-
-}
