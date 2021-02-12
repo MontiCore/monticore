@@ -19,7 +19,7 @@ import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.MCTypeFacade;
-import de.se_rwth.commons.logging.*;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -44,7 +44,7 @@ public class CommonSymbolInterfaceDecoratorTest extends DecoratorTestCase {
 
   private static final String I_AUTOMATON_SCOPE = "de.monticore.codegen.ast.automaton._symboltable.IAutomatonScope";
 
-  private static final String AUTOMATON_VISITOR = "de.monticore.codegen.ast.automaton._visitor.AutomatonVisitor";
+  private static final String AUTOMATON_TRAVERSER = "de.monticore.codegen.ast.automaton._visitor.AutomatonTraverser";
 
   @Before
   public void setUp() {
@@ -90,7 +90,7 @@ public class CommonSymbolInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethods() {
-    assertEquals(4, commonSymbolInterface.getCDMethodList().size());
+    assertEquals(3, commonSymbolInterface.getCDMethodList().size());
   }
 
   @Test
@@ -100,7 +100,7 @@ public class CommonSymbolInterfaceDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
 
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(mcTypeFacade.createQualifiedType(AUTOMATON_VISITOR),
+    assertDeepEquals(mcTypeFacade.createQualifiedType(AUTOMATON_TRAVERSER),
         method.getCDParameter(0).getMCType());
     assertEquals("visitor", method.getCDParameter(0).getName());
   }

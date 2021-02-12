@@ -4,7 +4,10 @@ package de.monticore.aggregation;
 import de.monticore.aggregation.blah.BlahMill;
 import de.monticore.aggregation.blah._ast.ASTBlahModel;
 import de.monticore.aggregation.blah._parser.BlahParser;
-import de.monticore.aggregation.blah._symboltable.*;
+import de.monticore.aggregation.blah._symboltable.BlahScopesGenitor;
+import de.monticore.aggregation.blah._symboltable.DummySymbol;
+import de.monticore.aggregation.blah._symboltable.IBlahArtifactScope;
+import de.monticore.aggregation.blah._visitor.BlahTraverser;
 import de.monticore.aggregation.foo.FooMill;
 import de.monticore.aggregation.foo._ast.ASTBar;
 import de.monticore.aggregation.foo._parser.FooParser;
@@ -15,7 +18,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.ArrayDeque;
 import java.util.Optional;
 
 import static junit.framework.TestCase.assertTrue;
@@ -24,7 +26,9 @@ public class AggregationTest {
 
  @BeforeClass
  public static void disableFailQuick() {
+  Log.init();
   Log.enableFailQuick(false);
+
  }
 
 
@@ -41,7 +45,7 @@ public class AggregationTest {
     */
  
   //Create global scope for our language combination
-  FooBlahGlobalScope globalScope = new FooBlahGlobalScope(new ModelPath());
+  FooGlobalScope globalScope = (FooGlobalScope) FooMill.globalScope();
  
   //Parse blah model
   BlahParser blahParser = new BlahParser();
@@ -57,7 +61,11 @@ public class AggregationTest {
   );
   
   // create symbol table for "blah"
-  BlahSymbolTableCreator blahSymbolTableCreator = new BlahSymbolTableCreator(globalScope.getIBlahGS());
+  BlahTraverser traverser = BlahMill.traverser();
+  BlahScopesGenitor blahSymbolTableCreator = new BlahScopesGenitor(globalScope.getIBlahGS());
+  traverser.add4Blah(blahSymbolTableCreator);
+  traverser.setBlahHandler(blahSymbolTableCreator);
+
   IBlahArtifactScope blahSymbolTable = blahSymbolTableCreator.createFromAST(blahModel.get());
   blahSymbolTable.setName("blahmodel");
   
@@ -88,7 +96,7 @@ public class AggregationTest {
   assertTrue(fooModel.isPresent());
  
   // create symbol table for "foo"
-  FooSymbolTableCreatorDelegator fooSymbolTableCreator = FooMill.fooSymbolTableCreatorDelegator();
+  FooScopesGenitorDelegator fooSymbolTableCreator = FooMill.scopesGenitorDelegator();
   IFooArtifactScope fooScope = fooSymbolTableCreator.createFromAST(fooModel.get());
   
   // check symbol is resolvable

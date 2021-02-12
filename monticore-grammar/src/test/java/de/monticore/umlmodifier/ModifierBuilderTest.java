@@ -1,4 +1,5 @@
-// (c) https://github.com/MontiCore/monticore
+/*(c) https://github.com/MontiCore/monticore*/
+
 package de.monticore.umlmodifier;
 
 import de.monticore.umlmodifier._ast.ASTModifierBuilder;

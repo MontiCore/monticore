@@ -72,10 +72,11 @@ for (astGrammar in getParsedGrammars()) {
   astClassDiagram = getCDOfParsedGrammar(astGrammar)
   reportCD(astClassDiagram, report)
 
-  // M9 Generate ast classes, visitor and context condition
-  decoratedVisitorCD = decorateForVisitorPackage(glex, cdScope, astClassDiagram, handcodedPath)
-  generateEmfFromCD(glex, astClassDiagram, decoratedVisitorCD, out, handcodedPath)
+  // decorate and generate Traverser CD for the '_visitor' package
+  decoratedTraverserCD = decorateTraverserForVisitorPackage(glex, cdScope, astClassDiagram, handcodedPath)
+  generateFromCD(glex, astClassDiagram, decoratedTraverserCD, out, handcodedPath)
 
+  // M9 Generate ast classes, and context condition
   decoratedCoCoCD = decorateForCoCoPackage(glex, cdScope, astClassDiagram, handcodedPath)
   generateFromCD(glex, astClassDiagram, decoratedCoCoCD, out, handcodedPath)
 

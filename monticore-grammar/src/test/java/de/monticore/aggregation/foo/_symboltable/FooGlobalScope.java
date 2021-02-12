@@ -1,13 +1,12 @@
+// (c) https://github.com/MontiCore/monticore
+
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.aggregation;
+package de.monticore.aggregation.foo._symboltable;
 
 import de.monticore.aggregation.blah.Bar2DummySymbol;
 import de.monticore.aggregation.blah.BlahMill;
-import de.monticore.aggregation.blah._symboltable.BlahGlobalScope;
 import de.monticore.aggregation.blah._symboltable.DummySymbol;
 import de.monticore.aggregation.blah._symboltable.IBlahGlobalScope;
-import de.monticore.aggregation.foo._symboltable.BarSymbol;
-import de.monticore.aggregation.foo._symboltable.FooGlobalScope;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.modifiers.AccessModifier;
 
@@ -16,9 +15,16 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class FooBlahGlobalScope extends FooGlobalScope {
+public class FooGlobalScope extends de.monticore.aggregation.foo._symboltable.FooGlobalScopeTOP {
+  public FooGlobalScope() {
+    super();
+    iBlahGS = BlahMill
+            .globalScope();
+    iBlahGS.setModelPath(modelPath);
+    iBlahGS.setFileExt("blah");
+  }
 
-  public FooBlahGlobalScope(ModelPath modelPath){
+  public FooGlobalScope(ModelPath modelPath, String ext){
     super(modelPath, "blah");
     iBlahGS = BlahMill
         .globalScope();
@@ -48,4 +54,8 @@ public class FooBlahGlobalScope extends FooGlobalScope {
     this.iBlahGS = iBlahGS;
   }
 
+  @Override
+  public FooGlobalScope getRealThis() {
+    return this;
+  }
 }

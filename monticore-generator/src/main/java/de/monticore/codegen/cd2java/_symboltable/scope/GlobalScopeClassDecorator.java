@@ -83,6 +83,10 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     List<ASTCDMethod> symbols2JsonMethods = mutatorDecorator.decorate(symbols2JsonAttribute);
     symbols2JsonMethods.add(createGetSymbols2JsonMethod(symbols2JsonAttribute));
 
+    ASTCDAttribute deserAttribute = createScopeDeSerAttribute(I_DE_SER);
+    List<ASTCDMethod> deserMethods = accessorDecorator.decorate(deserAttribute);
+    deserMethods.addAll(mutatorDecorator.decorate(deserAttribute));
+
     List<ASTCDType> symbolProds = symbolTableService.getSymbolDefiningProds(input.getCDDefinition());
 
     ASTCDAttribute modelPathAttribute = createModelPathAttribute();
@@ -115,6 +119,8 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
         .addAllCDMethods(modelPathMethods)
         .addCDAttribute(fileExtensionAttribute)
         .addAllCDMethods(fileExtensionMethods)
+        .addCDAttribute(deserAttribute)
+        .addAllCDMethods(deserMethods)
         .addCDAttribute(deSerMapAttribute)
         .addAllCDMethods(createDeSerMapMethods(deSerMapAttribute))
         .addCDAttribute(symbols2JsonAttribute)
@@ -158,8 +164,8 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
 
   protected ASTCDAttribute createDeSerMapAttribute(){
     ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PROTECTED,
-            getMCTypeFacade().createQualifiedType("Map<String," + I_DE_SER + ">"),
-            DESERS_VAR);
+            getMCTypeFacade().createQualifiedType("Map<String," + I_SYMBOL_DE_SER + ">"),
+        SYM_DESERS_VAR);
     this.replaceTemplate(VALUE, attribute, new StringHookPoint(" = com.google.common.collect.Maps.newHashMap()"));
     return attribute;
   }
@@ -170,27 +176,27 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
 
     // Create simple putDeSer(String key, IDeSer value)
     ASTCDParameter key = getCDParameterFacade().createParameter(String.class, "key");
-    ASTCDParameter value = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(I_DE_SER), "value");
-    ASTCDMethod putMethod = getCDMethodFacade().createMethod(PUBLIC, "putDeSer", key, value);
-    replaceTemplate(EMPTY_BODY, putMethod, new StringHookPoint(DESERS_VAR + ".put(key, value);"));
+    ASTCDParameter value = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(I_SYMBOL_DE_SER), "value");
+    ASTCDMethod putMethod = getCDMethodFacade().createMethod(PUBLIC, "putSymbolDeSer", key, value);
+    replaceTemplate(EMPTY_BODY, putMethod, new StringHookPoint(SYM_DESERS_VAR + ".put(key, value);"));
     deSerMapMethods.add(putMethod);
 
     // Create simple value getDeSer(String key)
     key = getCDParameterFacade().createParameter(String.class, "key");
-    ASTMCQualifiedType returnType = getMCTypeFacade().createQualifiedType(I_DE_SER);
-    ASTCDMethod getMethod = getCDMethodFacade().createMethod(PUBLIC, returnType, "getDeSer", key);
-    replaceTemplate(EMPTY_BODY, getMethod, new StringHookPoint("return " + DESERS_VAR + ".get(key);"));
+    ASTMCQualifiedType returnType = getMCTypeFacade().createQualifiedType(I_SYMBOL_DE_SER);
+    ASTCDMethod getMethod = getCDMethodFacade().createMethod(PUBLIC, returnType, "getSymbolDeSer", key);
+    replaceTemplate(EMPTY_BODY, getMethod, new StringHookPoint("return " + SYM_DESERS_VAR + ".get(key);"));
     deSerMapMethods.add(getMethod);
 
     return deSerMapMethods;
   }
 
   protected ASTCDAttribute createScopeDeSerAttribute(String scopeDeSerName){
-    return getCDAttributeFacade().createAttribute(PROTECTED, getMCTypeFacade().createQualifiedType(scopeDeSerName), "scopeDeSer");
+    return getCDAttributeFacade().createAttribute(PUBLIC, getMCTypeFacade().createQualifiedType(scopeDeSerName), "deSer");
   }
 
-  protected ASTCDAttribute createSymbols2JsonAttribute(String scopeDeSerName){
-    return getCDAttributeFacade().createAttribute(PROTECTED, getMCTypeFacade().createQualifiedType(scopeDeSerName), "symbols2Json");
+  protected ASTCDAttribute createSymbols2JsonAttribute(String s2jName){
+    return getCDAttributeFacade().createAttribute(PROTECTED, getMCTypeFacade().createQualifiedType(s2jName), "symbols2Json");
   }
 
   protected ASTCDAttribute createCacheAttribute(){
@@ -409,8 +415,8 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
 
     AbstractDeSers.reset(); // reset for next generator invocation
 
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "Init",
-            scopeFullName, scopeDeSerFullName, map));
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(
+        TEMPLATE_PATH + "Init", scopeDeSerFullName, map));
     return method;
   }
   public boolean isGlobalScopeTop() {
