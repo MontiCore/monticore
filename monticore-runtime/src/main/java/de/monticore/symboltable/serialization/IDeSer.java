@@ -15,32 +15,80 @@ import de.monticore.symboltable.serialization.json.JsonObject;
 public interface IDeSer <S extends IScope, A extends IArtifactScope, J> {
 
   /**
-   * serialize a passed object to a String that is returned.
+   * serialize a passed artifact scope object to a String that is returned.
    * @param toSerialize
    * @param symbol2json
    * @return
    */
   String serialize (A toSerialize, J symbol2json);
 
+  /**
+   * serialize a passed scope object to a String that is returned.
+   * @param toSerialize
+   * @param symbol2json
+   * @return
+   */
   String serialize (S toSerialize, J symbol2json);
 
+  /**
+   * Hook point for realizing additional serializations of a passed
+   * artifact scope object.
+   * @param toSerialize
+   * @param symbol2json
+   * @return
+   */
   void serializeAddons (A toSerialize, J symbol2json);
 
+  /**
+   * Hook point for realizing additional serializations of a passed
+   * scope object.
+   * @param toSerialize
+   * @param symbol2json
+   * @return
+   */
   void serializeAddons (S toSerialize, J symbol2json);
 
   /**
-   * Deserialize a passed String to an instance of the type T
+   * Deserialize a passed String to an instance of the
+   * language-specific artifact scope interface
    * @param serialized
    * @return
    */
-  A deserialize (String serialized);
+  default A deserialize (String serialized) {
+    JsonObject scope = JsonParser.parseJsonObject(serialized);
+    return deserializeArtifactScope(scope);
+  }
 
+  /**
+   * deserialize a passed artifact scope object.
+   * @param scopeJson
+   * @return
+   */
   A deserializeArtifactScope(JsonObject scopeJson);
 
+  /**
+   * deserialize a passed scope object.
+   * @param scopeJson
+   * @return
+   */
   S deserializeScope(JsonObject scopeJson);
 
+  /**
+   * Hook point for realizing additional deserializations of a passed
+   * artifact scope object.
+   * @param artifactScope
+   * @param scopeJson
+   * @return
+   */
   void deserializeAddons(A artifactScope, JsonObject scopeJson);
 
+  /**
+   * Hook point for realizing additional deserializations of a passed
+   * scope object.
+   * @param scope
+   * @param scopeJson
+   * @return
+   */
   void deserializeAddons(S scope, JsonObject scopeJson);
 
 }
