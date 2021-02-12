@@ -178,7 +178,7 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCountFoo() {
-    assertEquals(6, symbolClassFoo.sizeCDMethods());
+    assertEquals(11, symbolClassFoo.sizeCDMethods());
   }
 
   @Test
