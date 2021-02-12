@@ -132,7 +132,7 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testDeserializeMethods() {
+  public void testDeserializeMethod() {
     ASTCDMethod method = getMethodBy("deserialize", symbolClassAutomaton);
     assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
     assertEquals(0, method.sizeException());
@@ -178,7 +178,7 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCountFoo() {
-    assertEquals(6, symbolClassAutomaton.sizeCDMethods());
+    assertEquals(6, symbolClassFoo.sizeCDMethods());
   }
 
   @Test
@@ -209,16 +209,12 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testDeserializeMethodFoo() {
-    List<ASTCDMethod> methods = getMethodsBy("deserialize", symbolClassFoo);
-    assertEquals(2, methods.size());
-    for (ASTCDMethod method : methods) {
-      assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
-      assertEquals(0, method.sizeException());
-      assertEquals(1, method.sizeCDParameters());
-      List<ASTCDParameter> parameterList = method.getCDParameterList();
-      assertFalse(method.getMCReturnType().isPresentMCVoidType());
-      assertDeepEquals(FOO_SYMBOL, method.getMCReturnType().getMCType());
-    }
+    ASTCDMethod method = getMethodBy("deserialize", symbolClassFoo);
+    assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
+    assertEquals(0, method.sizeException());
+    assertEquals(1, method.sizeCDParameters());
+    assertFalse(method.getMCReturnType().isPresentMCVoidType());
+    assertDeepEquals(FOO_SYMBOL, method.getMCReturnType().getMCType());
   }
 
   @Test
