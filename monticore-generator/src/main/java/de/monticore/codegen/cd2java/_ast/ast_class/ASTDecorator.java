@@ -22,6 +22,7 @@ import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
+import de.monticore.types.prettyprint.MCBasicTypesFullPrettyPrinter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -136,7 +137,7 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
 
       ASTCDMethod superAccept = this.getCDMethodFacade().createMethod(PUBLIC.build(), ASTConstants.ACCEPT_METHOD, superVisitorParameter);
       String errorCode = astService.getGeneratedErrorCode(astClass.getName()+
-              superVisitorType.printType(new CD4CodeFullPrettyPrinter(new IndentPrinter())));
+              superVisitorType.printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())));
       this.replaceTemplate(EMPTY_BODY, superAccept, new TemplateHookPoint("_ast.ast_class.AcceptSuper",
           this.visitorService.getTraverserInterfaceFullName(), errorCode, astClass.getName(),
               MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(superVisitorType)));

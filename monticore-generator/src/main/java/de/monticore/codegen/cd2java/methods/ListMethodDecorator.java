@@ -2,6 +2,7 @@
 package de.monticore.codegen.cd2java.methods;
 
 import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.codegen.cd2java.AbstractCreator;
@@ -73,7 +74,7 @@ public abstract class ListMethodDecorator extends AbstractCreator<ASTCDAttribute
     String parameterCall = method.getCDParameterList().stream()
         .map(ASTCDParameter::getName)
         .collect(Collectors.joining(", "));
-    String returnType = method.printReturnType();
+    String returnType = (new CD4CodeFullPrettyPrinter()).prettyprint(method.getMCReturnType());
 
     return new TemplateHookPoint("methods.MethodDelegate", attributeName, methodName, parameterCall, returnType);
   }

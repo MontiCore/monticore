@@ -43,7 +43,7 @@ public class DataDecorator extends AbstractTransformer<ASTCDClass> {
   @Override
   public ASTCDClass decorate(final ASTCDClass originalClass, ASTCDClass changedClass) {
     this.clazzName = originalClass.deepClone().getName();
-    changedClass.addCDConstructor(createDefaultConstructor(originalClass));
+    changedClass.addCDMember(createDefaultConstructor(originalClass));
     if (originalClass.isPresentSuperclass()) {
       changedClass.setSuperclass(originalClass.getSuperclass());
     }
@@ -64,8 +64,8 @@ public class DataDecorator extends AbstractTransformer<ASTCDClass> {
     changedClass.getCDAttributeList().forEach(this::addAttributeDefaultValues);
 
     //remove methods that are already defined by ast rules
-    changedClass.addAllCDMethods(service.getMethodListWithoutDuplicates(originalClass.getCDMethodList(), createGetter(ownAttributes)));
-    changedClass.addAllCDMethods(service.getMethodListWithoutDuplicates(originalClass.getCDMethodList(), createSetter(ownAttributes)));
+    changedClass.addAllCDMembers(service.getMethodListWithoutDuplicates(originalClass.getCDMethodList(), createGetter(ownAttributes)));
+    changedClass.addAllCDMembers(service.getMethodListWithoutDuplicates(originalClass.getCDMethodList(), createSetter(ownAttributes)));
 
     return changedClass;
   }
