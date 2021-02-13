@@ -23,7 +23,7 @@ public class Automata3PrettyPrinter {
     
     // ... configured with three sublanguage visitors
     traverser.add4InvAutomata(new InvAutomataSublangPP(o));
-	ExpressionSublangPP espp = new ExpressionSublangPP(o);
+    ExpressionSublangPP espp = new ExpressionSublangPP(o);
     traverser.add4Expression(espp);
     traverser.add4Automata3(new Automata3SublangPP(o));
     
