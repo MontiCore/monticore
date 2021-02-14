@@ -529,9 +529,9 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     }
 
     // Remove methods and constructors
-    astCdForReporting.getCDDefinition().forEachCDClasss(c -> {c.clearCDMethods(); c.clearCDConstructors();});
-    astCdForReporting.getCDDefinition().forEachCDInterfaces(c -> c.clearCDMethods());
-    astCdForReporting.getCDDefinition().forEachCDEnums(c -> {c.clearCDMethods(); c.clearCDConstructors();});
+    astCdForReporting.getCDDefinition().forEachCDClasss(c -> {c.clearCDMethodList(); c.clearCDConstructorList();});
+    astCdForReporting.getCDDefinition().forEachCDInterfaces(c -> c.clearCDMethodList());
+    astCdForReporting.getCDDefinition().forEachCDEnums(c -> {c.clearCDMethodList(); c.clearCDConstructorList();});
 
     new CDReporting().prettyPrintAstCd(astCdForReporting, outputDirectory, reportSubDir);
   }
