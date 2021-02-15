@@ -5,8 +5,10 @@ package de.monticore.types;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mccollectiontypes.MCCollectionTypesMill;
 import de.monticore.types.mccollectiontypes._ast.*;
-import de.monticore.types.mccollectiontypes._visitor.MCCollectionTypesVisitor;
+import de.monticore.types.mccollectiontypes._visitor.MCCollectionTypesTraverser;
+import de.monticore.types.mccollectiontypes._visitor.MCCollectionTypesVisitor2;
 import de.monticore.types.mccollectiontypestest._parser.MCCollectionTypesTestParser;
 import de.monticore.types.mccollectiontypeswithoutprimitivestest._parser.MCCollectionTypesWithoutPrimitivesTestParser;
 import de.se_rwth.commons.logging.Log;
@@ -44,25 +46,18 @@ public class MCCollectionTypesTest {
       assertTrue(type.get() instanceof ASTMCObjectType);
 
       ASTMCObjectType t = (ASTMCObjectType) type.get();
-      t.accept(new MCCollectionTypesVisitor() {
-        public void visit(ASTMCListType t) {
-          assertTrue(true);
-          t.getMCTypeArgument().accept(new MCCollectionTypesVisitor() {
-            @Override
-            public void visit(ASTMCType node) {
-              if (!(node instanceof ASTMCQualifiedType)) {
-                fail("Found not String");
-              }
-            }
-          });
-        }
-      });
+      MCCollectionTypesTraverser traverser = MCCollectionTypesMill.traverser();
+      traverser.add4MCCollectionTypes(new CheckTypeVisitor());
+      t.accept(traverser);
     }
   }
 
-
-  private class CheckTypeVisitor implements MCCollectionTypesVisitor {
-
+  private class CheckTypeVisitor implements MCCollectionTypesVisitor2 {
+    public void visit(ASTMCType node) {
+      if (!(node instanceof ASTMCQualifiedType)) {
+        fail("Found not String");
+      }
+    }
   }
 
   @Test

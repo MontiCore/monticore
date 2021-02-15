@@ -2,7 +2,6 @@
 package de.monticore.javalight._symboltable;
 
 import de.monticore.javalight.JavaLightMill;
-import de.monticore.javalight._visitor.JavaLightDelegatorVisitor;
 import de.monticore.javalight._visitor.JavaLightTraverser;
 import de.monticore.statements.mccommonstatements._symboltable.MCCommonStatementsSTCompleteTypes;
 import de.monticore.statements.mcvardeclarationstatements._symboltable.MCVarDeclarationStatementsSTCompleteTypes;

@@ -5,6 +5,7 @@ dependencies {
   implementation group:'de.monticore', name:'monticore-generator', version:version
   implementation group:'de.monticore.bs', name:'monticore-grammar', version:previous_mc_version
   implementation group:'de.monticore.bs', name:'monticore-runtime', version:previous_mc_version
+  implementation 'de.se_rwth.commons:se-commons-logging:' + se_commons_version
   implementation group:'de.monticore.bs', name:'monticore-grammar', version:previous_mc_version, classifier:"grammars"
   implementation group:'de.monticore.lang.bs', name:'cd4analysis', version:cd4a_version
 }
