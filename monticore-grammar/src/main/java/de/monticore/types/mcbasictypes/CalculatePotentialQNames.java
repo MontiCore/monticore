@@ -18,14 +18,18 @@ public class CalculatePotentialQNames {
     //if in a spanned scope
     potentialQNames.add(simpleName);
     //if in the same package
-    potentialQNames.add(packageDeclaration.getMCQualifiedName().getQName() + "." + simpleName);
+    if(packageDeclaration!=null && !packageDeclaration.getMCQualifiedName().getQName().isEmpty()) {
+      potentialQNames.add(packageDeclaration.getMCQualifiedName().getQName() + "." + simpleName);
+    }
     //import statements
     for(ASTMCImportStatement importStatement: importStatements){
-      if(importStatement.isStar()){
-        potentialQNames.add(importStatement.getQName() + "." + simpleName);
-      }else{
-        if(importStatement.getMCQualifiedName().getBaseName().equals(simpleName)){
-          potentialQNames.add(importStatement.getQName());
+      if(importStatement.getMCQualifiedName() != null && !importStatement.getMCQualifiedName().getQName().isEmpty()) {
+        if (importStatement.isStar()) {
+          potentialQNames.add(importStatement.getQName() + "." + simpleName);
+        } else {
+          if (importStatement.getMCQualifiedName().getBaseName().equals(simpleName)) {
+            potentialQNames.add(importStatement.getQName());
+          }
         }
       }
     }
