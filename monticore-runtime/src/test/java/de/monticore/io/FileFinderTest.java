@@ -33,15 +33,15 @@ public class FileFinderTest {
     String fileExt = "*sym";
     String qualifiedModelName = "de.monticore.io.Model1";
     List<Path> entries = new ArrayList<>();
-    entries.add(Paths.get("src\\test\\models"));
-    entries.add(Paths.get("src\\test\\resources"));
+    entries.add(Paths.get("src"+File.separator+"test"+File.separator+"models"));
+    entries.add(Paths.get("src"+File.separator+"test"+File.separator+"resources"));
     ModelPath mp = new ModelPath(entries);
     List<File> files = FileFinder.getFiles(mp, qualifiedModelName, fileExt);
     assertEquals(2, files.size());
     File f1 = files.get(0);
-    assertTrue(f1.getAbsolutePath().endsWith("de\\monticore\\io\\Model1.cdsym"));
+    assertTrue(f1.getAbsolutePath().endsWith("de"+File.separator+"monticore"+File.separator+"io"+File.separator+"Model1.cdsym"));
     File f2 = files.get(1);
-    assertTrue(f2.getAbsolutePath().endsWith("de\\monticore\\io\\Model1.cdsym"));
+    assertTrue(f2.getAbsolutePath().endsWith("de"+File.separator+"monticore"+File.separator+"io"+File.separator+"Model1.cdsym"));
   }
 
   @Test
@@ -49,13 +49,13 @@ public class FileFinderTest {
     String fileExt = "mc4";
     String qualifiedModelName = "de.monticore.io.Model2";
     List<Path> entries = new ArrayList<>();
-    entries.add(Paths.get("src\\test\\models"));
-    entries.add(Paths.get("src\\test\\resources"));
+    entries.add(Paths.get("src"+File.separator+"test"+File.separator+"models"));
+    entries.add(Paths.get("src"+File.separator+"test"+File.separator+"resources"));
     ModelPath mp = new ModelPath(entries);
     List<File> files = FileFinder.getFiles(mp, qualifiedModelName, fileExt);
     assertEquals(1, files.size());
     File f1 = files.get(0);
-    assertTrue(f1.getAbsolutePath().endsWith("de\\monticore\\io\\Model2.mc4"));
+    assertTrue(f1.getAbsolutePath().endsWith("de"+File.separator+"monticore"+File.separator+"io"+File.separator+"Model2.mc4"));
   }
 
   @Test
@@ -63,8 +63,8 @@ public class FileFinderTest {
     String fileExt = "mc4";
     String qualifiedModelName = "de.monticore.io.Model23";
     List<Path> entries = new ArrayList<>();
-    entries.add(Paths.get("src\\test\\models"));
-    entries.add(Paths.get("src\\test\\resources"));
+    entries.add(Paths.get("src"+File.separator+"test"+File.separator+"models"));
+    entries.add(Paths.get("src"+File.separator+"test"+File.separator+"resources"));
     ModelPath mp = new ModelPath(entries);
     List<File> files = FileFinder.getFiles(mp, qualifiedModelName, fileExt);
     assertEquals(0, files.size());
@@ -75,15 +75,15 @@ public class FileFinderTest {
     String fileExt = "cdsym";
     String qualifiedModelName = "de.monticore.io.Model1";
     List<Path> entries = new ArrayList<>();
-    entries.add(Paths.get("src\\test\\models"));
-    entries.add(Paths.get("src\\test\\resources"));
+    entries.add(Paths.get("src"+File.separator+"test"+File.separator+"models"));
+    entries.add(Paths.get("src"+File.separator+"test"+File.separator+"resources"));
     ModelPath mp = new ModelPath(entries);
     List<File> files = FileFinder.getFiles(mp, qualifiedModelName, fileExt);
     assertEquals(2, files.size());
     File f1 = files.get(0);
-    assertTrue(f1.getAbsolutePath().endsWith("de\\monticore\\io\\Model1.cdsym"));
+    assertTrue(f1.getAbsolutePath().endsWith("de"+File.separator+"monticore"+File.separator+"io"+File.separator+"Model1.cdsym"));
     File f2 = files.get(1);
-    assertTrue(f2.getAbsolutePath().endsWith("de\\monticore\\io\\Model1.cdsym"));
+    assertTrue(f2.getAbsolutePath().endsWith("de"+File.separator+"monticore"+File.separator+"io"+File.separator+"Model1.cdsym"));
   }
 
   @Test
@@ -91,8 +91,8 @@ public class FileFinderTest {
     String fileExt = "fdsym";
     String qualifiedModelName = "de.monticore.io.Model1";
     List<Path> entries = new ArrayList<>();
-    entries.add(Paths.get("src\\test\\models"));
-    entries.add(Paths.get("src\\test\\resources"));
+    entries.add(Paths.get("src"+File.separator+"test"+File.separator+"models"));
+    entries.add(Paths.get("src"+File.separator+"test"+File.separator+"resources"));
     ModelPath mp = new ModelPath(entries);
     List<File> files = FileFinder.getFiles(mp, qualifiedModelName, fileExt);
     assertEquals(0, files.size());
@@ -103,8 +103,8 @@ public class FileFinderTest {
     String fileExt = "*sym";
     String qualifiedModelName = "de.monticore.io.Model1";
     List<Path> entries = new ArrayList<>();
-    entries.add(Paths.get("src\\test\\models"));
-    entries.add(Paths.get("src\\test\\resources"));
+    entries.add(Paths.get("src"+File.separator+"test"+File.separator+"models"));
+    entries.add(Paths.get("src"+File.separator+"test"+File.separator+"resources"));
     ModelPath mp = new ModelPath(entries);
     Set<String> loaded = new HashSet<>();
     List<ModelCoordinate> list = FileFinder.findFiles(mp,qualifiedModelName,fileExt,loaded );
@@ -116,13 +116,13 @@ public class FileFinderTest {
     String fileExt = "mc4";
     String qualifiedModelName = "de.monticore.io.Model2";
     List<Path> entries = new ArrayList<>();
-    entries.add(Paths.get("src\\test\\models"));
-    entries.add(Paths.get("src\\test\\resources"));
+    entries.add(Paths.get("src"+File.separator+"test"+File.separator+"models"));
+    entries.add(Paths.get("src"+File.separator+"test"+File.separator+"resources"));
     ModelPath mp = new ModelPath(entries);
     Set<String> loaded = new HashSet<>();
     List<ModelCoordinate> list = FileFinder.findFiles(mp,qualifiedModelName,fileExt,loaded );
     assertEquals(1,list.size());
-    assertEquals("de\\monticore\\io\\Model2.mc4", list.get(0).getQualifiedPath().toString());
+    assertEquals("de"+File.separator+"monticore"+File.separator+"io"+File.separator+"Model2.mc4", list.get(0).getQualifiedPath().toString());
   }
 
   @Test
@@ -130,11 +130,11 @@ public class FileFinderTest {
     String fileExt = "mc4";
     String qualifiedModelName = "de.monticore.io.Model2";
     List<Path> entries = new ArrayList<>();
-    entries.add(Paths.get("src\\test\\models"));
-    entries.add(Paths.get("src\\test\\resources"));
+    entries.add(Paths.get("src"+File.separator+"test"+File.separator+"models"));
+    entries.add(Paths.get("src"+File.separator+"test"+File.separator+"resources"));
     ModelPath mp = new ModelPath(entries);
     Set<String> loaded = new HashSet<>();
-    loaded.add("de\\monticore\\io\\Model2.mc4");
+    loaded.add("de"+File.separator+"monticore"+File.separator+"io"+File.separator+"Model2.mc4");
     List<ModelCoordinate> list = FileFinder.findFiles(mp,qualifiedModelName,fileExt,loaded );
     assertEquals(0,list.size());
   }
@@ -144,8 +144,8 @@ public class FileFinderTest {
     String fileExt = "mc4";
     String qualifiedModelName = "de.monticore.io.Model22";
     List<Path> entries = new ArrayList<>();
-    entries.add(Paths.get("src\\test\\models"));
-    entries.add(Paths.get("src\\test\\resources"));
+    entries.add(Paths.get("src"+File.separator+"test"+File.separator+"models"));
+    entries.add(Paths.get("src"+File.separator+"test"+File.separator+"resources"));
     ModelPath mp = new ModelPath(entries);
     Set<String> loaded = new HashSet<>();
     List<ModelCoordinate> list = FileFinder.findFiles(mp,qualifiedModelName,fileExt,loaded );
@@ -158,14 +158,14 @@ public class FileFinderTest {
     String fileExt = "*4";
     String qualifiedModelName = "de.monticore.io.Model2";
     List<Path> entries = new ArrayList<>();
-    entries.add(Paths.get("src\\test\\models"));
-    entries.add(Paths.get("src\\test\\resources"));
+    entries.add(Paths.get("src"+File.separator+"test"+File.separator+"models"));
+    entries.add(Paths.get("src"+File.separator+"test"+File.separator+"resources"));
     ModelPath mp = new ModelPath(entries);
     Set<String> loaded = new HashSet<>();
     List<ModelCoordinate> list = FileFinder.findFiles(mp,qualifiedModelName,fileExt,loaded );
     assertEquals(2,list.size());
-    assertEquals("de\\monticore\\io\\Model2.cd4", list.get(0).getQualifiedPath().toString());
-    assertEquals("de\\monticore\\io\\Model2.mc4", list.get(1).getQualifiedPath().toString());
+    assertEquals("de"+File.separator+"monticore"+File.separator+"io"+File.separator+"Model2.cd4", list.get(0).getQualifiedPath().toString());
+    assertEquals("de"+File.separator+"monticore"+File.separator+"io"+File.separator+"Model2.mc4", list.get(1).getQualifiedPath().toString());
   }
 
   @Test
@@ -173,8 +173,8 @@ public class FileFinderTest {
     String fileExt = "*4";
     String qualifiedModelName = "de.monticore.io.Model2";
     List<Path> entries = new ArrayList<>();
-    entries.add(Paths.get("src\\test\\models"));
-    entries.add(Paths.get("src\\test\\resources"));
+    entries.add(Paths.get("src"+File.separator+"test"+File.separator+"models"));
+    entries.add(Paths.get("src"+File.separator+"test"+File.separator+"resources"));
     ModelPath mp = new ModelPath(entries);
     Set<String> loaded = new HashSet<>();
     Optional <ModelCoordinate> opt = FileFinder.findFile(mp,qualifiedModelName,fileExt,loaded );
@@ -186,13 +186,13 @@ public class FileFinderTest {
     String fileExt = "mc4";
     String qualifiedModelName = "de.monticore.io.Model2";
     List<Path> entries = new ArrayList<>();
-    entries.add(Paths.get("src\\test\\models"));
-    entries.add(Paths.get("src\\test\\resources"));
+    entries.add(Paths.get("src"+File.separator+"test"+File.separator+"models"));
+    entries.add(Paths.get("src"+File.separator+"test"+File.separator+"resources"));
     ModelPath mp = new ModelPath(entries);
     Set<String> loaded = new HashSet<>();
     Optional <ModelCoordinate> opt = FileFinder.findFile(mp,qualifiedModelName,fileExt,loaded );
     assertTrue(opt.isPresent());
-    assertEquals("de\\monticore\\io\\Model2.mc4", opt.get().getQualifiedPath().toString());
+    assertEquals("de"+File.separator+"monticore"+File.separator+"io"+File.separator+"Model2.mc4", opt.get().getQualifiedPath().toString());
   }
 
   @Test
@@ -200,11 +200,11 @@ public class FileFinderTest {
     String fileExt = "mc4";
     String qualifiedModelName = "de.monticore.io.Model2";
     List<Path> entries = new ArrayList<>();
-    entries.add(Paths.get("src\\test\\models"));
-    entries.add(Paths.get("src\\test\\resources"));
+    entries.add(Paths.get("src"+File.separator+"test"+File.separator+"models"));
+    entries.add(Paths.get("src"+File.separator+"test"+File.separator+"resources"));
     ModelPath mp = new ModelPath(entries);
     Set<String> loaded = new HashSet<>();
-    loaded.add("de\\monticore\\io\\Model2.mc4");
+    loaded.add("de"+File.separator+"monticore"+File.separator+"io"+File.separator+"Model2.mc4");
     Optional <ModelCoordinate> opt = FileFinder.findFile(mp,qualifiedModelName,fileExt,loaded );
     assertFalse(opt.isPresent());
   }
@@ -214,8 +214,8 @@ public class FileFinderTest {
     String fileExt = "mc4";
     String qualifiedModelName = "de.monticore.io.Model22";
     List<Path> entries = new ArrayList<>();
-    entries.add(Paths.get("src\\test\\models"));
-    entries.add(Paths.get("src\\test\\resources"));
+    entries.add(Paths.get("src"+File.separator+"test"+File.separator+"models"));
+    entries.add(Paths.get("src"+File.separator+"test"+File.separator+"resources"));
     ModelPath mp = new ModelPath(entries);
     Set<String> loaded = new HashSet<>();
     Optional <ModelCoordinate> opt = FileFinder.findFile(mp,qualifiedModelName,fileExt,loaded );
