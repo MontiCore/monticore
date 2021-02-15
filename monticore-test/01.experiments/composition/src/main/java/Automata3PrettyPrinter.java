@@ -20,10 +20,10 @@ public class Automata3PrettyPrinter {
   public Automata3PrettyPrinter(IndentPrinter o) {
     out = o;
     traverser = Automata3Mill.traverser();
-    ExpressionSublangPP espp = new ExpressionSublangPP(o);
-
+    
     // ... configured with three sublanguage visitors
     traverser.add4InvAutomata(new InvAutomataSublangPP(o));
+    ExpressionSublangPP espp = new ExpressionSublangPP(o);
     traverser.add4Expression(espp);
     traverser.add4Automata3(new Automata3SublangPP(o));
     

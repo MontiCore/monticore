@@ -158,7 +158,7 @@ public class HierInvAutomataCheapVisit
     // This one should not occur: Objects of that class are not
     // instatiated; subclasss has its own visit
     Log.print(" HA-illegal ASTState object detected: "
-    						+ node.getName() +" ");
+                            + node.getName() +" ");
   }
 
   @Override

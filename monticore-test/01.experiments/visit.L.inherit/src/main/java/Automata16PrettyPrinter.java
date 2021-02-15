@@ -12,7 +12,8 @@ import java.util.*;
  *
 
  */
-public class Automata16PrettyPrinter  implements Automata16Visitor2 {
+public class Automata16PrettyPrinter
+                implements Automata16Visitor2 {
 
   protected String result = "";
 
