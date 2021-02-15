@@ -221,6 +221,5 @@ public class FileFinderTest {
     Optional <ModelCoordinate> opt = FileFinder.findFile(mp,qualifiedModelName,fileExt,loaded );
     assertFalse(opt.isPresent());
   }
-
 }
 
