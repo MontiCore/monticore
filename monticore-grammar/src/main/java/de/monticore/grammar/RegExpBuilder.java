@@ -69,7 +69,7 @@ public class RegExpBuilder implements GrammarVisitor2, GrammarHandler {
 
     // Start of Block with iteration
     b.append(")");
-    b.append(HelperGrammar.printIteration(a.getIteration()));
+    b.append(printIteration(a.getIteration()));
 
   }
 
@@ -149,4 +149,16 @@ public class RegExpBuilder implements GrammarVisitor2, GrammarHandler {
 
   }
 
+  private String printIteration(int i) {
+    switch (i) {
+      case ASTConstantsGrammar.PLUS:
+        return "+";
+      case ASTConstantsGrammar.STAR:
+        return "*";
+      case ASTConstantsGrammar.QUESTION:
+        return "?";
+      default:
+        return "";
+    }
+  }
 }

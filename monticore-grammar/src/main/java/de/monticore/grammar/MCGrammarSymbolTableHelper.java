@@ -2,23 +2,17 @@
 
 package de.monticore.grammar;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import de.monticore.ast.ASTNode;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.*;
-import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._symboltable.IGrammar_WithConceptsGlobalScope;
-import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsTraverser;
 import de.monticore.symboltable.IScopeSpanningSymbol;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.Util;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -102,51 +96,6 @@ public class MCGrammarSymbolTableHelper {
     return ImmutableSet.copyOf(allSuperGrammars);
   }
 
-  public static boolean isFragment(ASTProd astNode) {
-    return !(astNode instanceof ASTLexProd)
-        || ((ASTLexProd) astNode).isFragment();
-  }
-
-  private static String getLexString(MCGrammarSymbol grammar, ASTLexProd lexNode) {
-    StringBuilder builder = new StringBuilder();
-    RegExpBuilder regExp = new RegExpBuilder(builder, grammar);
-    Grammar_WithConceptsTraverser traverser = Grammar_WithConceptsMill.traverser();
-    traverser.add4Grammar(regExp);
-    traverser.setGrammarHandler(regExp);
-    lexNode.accept(traverser);
-    return builder.toString();
-  }
-
-  public static Optional<Pattern> calculateLexPattern(MCGrammarSymbol grammar,
-                                                      ASTLexProd lexNode) {
-    Optional<Pattern> ret = Optional.empty();
-
-    final String lexString = getLexString(grammar, lexNode);
-    try {
-      if ("[[]".equals(lexString)) {
-        return Optional.ofNullable(Pattern.compile("[\\[]"));
-      } else {
-        return Optional.ofNullable(Pattern.compile(lexString));
-      }
-    } catch (PatternSyntaxException e) {
-      Log.error("0xA0913 Internal error with pattern handling for lex rules. Pattern: " + lexString
-          + "\n", e);
-    }
-    return ret;
-  }
-
-
-
-  private static String getLexType(ASTNode node) {
-    if (node instanceof ASTLexProd) {
-      return HelperGrammar.createConvertType((ASTLexProd) node);
-    }
-    if (node instanceof ASTLexActionOrPredicate) {
-      return "String";
-    }
-    return "UNKNOWN_TYPE";
-  }
-
   public static String getQualifiedName(ASTProd astNode, ProdSymbol symbol, String prefix,
                                         String suffix) {
     if (symbol.isIsExternal()) {
@@ -166,19 +115,7 @@ public class MCGrammarSymbolTableHelper {
     }
   }
 
-  public static String getConstantName(RuleComponentSymbol compSymbol) {
-    if (compSymbol.isIsConstantGroup() && compSymbol.isPresentAstNode()
-        && compSymbol.getAstNode() instanceof ASTConstantGroup) {
-      return getConstantGroupName((ASTConstantGroup) compSymbol.getAstNode());
-    }
-    if (compSymbol.isIsConstant() && compSymbol.isPresentAstNode()
-        && compSymbol.getAstNode() instanceof ASTConstant) {
-      return
-          HelperGrammar.getAttributeNameForConstant((ASTConstant) compSymbol.getAstNode());
-    }
-    return "";
-  }
-  
+
   public static String getConstantGroupName(ASTConstantGroup ast) {
     // setAttributeMinMax(a.getIteration(), att);
     if (ast.isPresentUsageName()) {
@@ -187,28 +124,13 @@ public class MCGrammarSymbolTableHelper {
     // derive attribute name from constant entry (but only if we have
     // one entry!)
     else if (ast.getConstantList().size() == 1) {
-      return HelperGrammar.getAttributeNameForConstant(ast.getConstantList().get(0));
+      return ast.getConstantList().get(0).getHumanName();
     }
 
     Log.error("0xA2345 The name of the constant group could't be ascertained",
         ast.get_SourcePositionStart());
-    
-    return "";
-  }
 
-  public void addEnum(String name, String constant) {
-    // List of enum values for this type
-    Map<String, Set<String>> possibleValuesForEnum = new HashMap<>();
-    List<String> enumValues = new ArrayList<>();
-    Set<String> constantsInGrammar = possibleValuesForEnum.get(name.intern());
-    if (constantsInGrammar == null) {
-      constantsInGrammar = new LinkedHashSet<>();
-      possibleValuesForEnum.put(name.intern(), constantsInGrammar);
-    }
-    constantsInGrammar.add(constant.intern());
-    if (!enumValues.contains(name.intern())) {
-      enumValues.add(name.intern());
-    }
+    return "";
   }
 
   public static Set<ProdSymbol> getAllSuperProds(ProdSymbol prod) {
@@ -356,82 +278,12 @@ public class MCGrammarSymbolTableHelper {
     return false;
   }
 
-  /**
-   * @param ref1
-   * @param ref2
-   * @return
-   */
-  public static boolean isSubType(ProdSymbolSurrogate ref1, ProdSymbolSurrogate ref2) {
-    ProdSymbol type1 = ref1.lazyLoadDelegate();
-    ProdSymbol type2 = ref2.lazyLoadDelegate();
-    return areSameTypes(type1, type2) || isSubtype(type1, type2) || isSubtype(type2, type1);
-  }
-
-  /**
-   * @param prodComponent
-   * @return
-   */
-  public static boolean isConstGroupIterated(RuleComponentSymbol prodComponent) {
-    Preconditions.checkArgument(prodComponent.isIsConstantGroup());
-    Collection<String> set = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
-    for (RuleComponentSymbol comp: prodComponent.getEnclosingScope().resolveRuleComponentDownMany(prodComponent.getName())) {
-      comp.getSubProdsList().stream().forEach((p -> set.add(p)));
-    }
-    return set.size() > 1;
-  }
-
-  public static boolean isAttributeIterated(AdditionalAttributeSymbol attrSymbol) {
-    return attrSymbol.isPresentAstNode()
-        && isAttributeIterated((ASTAdditionalAttribute) attrSymbol.getAstNode());
-  }
-
-  /**
-   * @param ast
-   * @return
-   */
-  public static boolean isAttributeIterated(ASTAdditionalAttribute ast) {
-    if (!ast.isPresentCard()) {
-      return false;
-    }
-    if (ast.getCard().getIteration() == ASTConstantsGrammar.PLUS || ast.getCard().getIteration() == ASTConstantsGrammar.STAR) {
-      return true;
-    }
-    Optional<Integer> max = getMax(ast);
-    return max.isPresent() && (max.get() == STAR || max.get() > 1);
-  }
-
-  public static Optional<Integer> getMax(AdditionalAttributeSymbol attrSymbol) {
-    if (!attrSymbol.isPresentAstNode()) {
-      return Optional.empty();
-    }
-    return getMax(attrSymbol.getAstNode());
-  }
-
-  public static Optional<Integer> getMax(ASTAdditionalAttribute ast) {
-    if (ast.isPresentCard()
-        && ast.getCard().isPresentMax()) {
-      String max = ast.getCard().getMax();
-      if ("*".equals(max)) {
-        return Optional.of(STAR);
-      }
-      else {
-        try {
-          int x = Integer.parseInt(max);
-          return Optional.of(x);
-        } catch (NumberFormatException ignored) {
-          Log.warn("0xA0140 Failed to parse an integer value of max of ASTAdditionalAttribute "
-              + ast.getName() + " from string " + max);
-        }
-      }
-    }
-    return Optional.empty();
-  }
 
   public static Optional<Integer> getMin(AdditionalAttributeSymbol attrSymbol) {
     if (!attrSymbol.isPresentAstNode()) {
       return Optional.empty();
     }
-    return getMin((ASTAdditionalAttribute) attrSymbol.getAstNode());
+    return getMin(attrSymbol.getAstNode());
   }
 
   public static Optional<Integer> getMin(ASTAdditionalAttribute ast) {
@@ -449,30 +301,5 @@ public class MCGrammarSymbolTableHelper {
     return Optional.empty();
   }
 
-  /**
-   * @return the qualified name for this type
-   */
-  public static String getQualifiedName(ProdSymbol symbol) {
-    if (!symbol.isPresentAstNode()) {
-      return "UNKNOWN_TYPE";
-    }
-    if (symbol.isIsLexerProd()) {
-      return getLexType(symbol.getAstNode());
-    }
-    if (symbol.isIsEnum()) {
-      return getQualifiedName(symbol.getAstNode(), symbol, "AST", "");
-    }
-    return getQualifiedName(symbol.getAstNode(), symbol, "AST", "");
-  }
-
-  public static String getDefaultValue(ProdSymbol symbol) {
-    if ("int".equals(getQualifiedName(symbol))) {
-      return "0";
-    } else if ("boolean".equals(getQualifiedName(symbol))) {
-      return "false";
-    } else {
-      return "null";
-    }
-  }
 
 }

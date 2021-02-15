@@ -5,10 +5,9 @@ package de.monticore.codegen.parser;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import de.monticore.ast.ASTNode;
-import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
-import de.monticore.grammar.HelperGrammar;
 import de.monticore.grammar.MCGrammarInfo;
+import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.PredicatePair;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
@@ -22,7 +21,6 @@ import de.monticore.grammar.prettyprint.Grammar_WithConceptsFullPrettyPrinter;
 import de.monticore.javalight._ast.ASTClassBodyDeclaration;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.statements.mcstatementsbasis._ast.ASTMCBlockStatement;
-import de.se_rwth.commons.JavaNamesHelper;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
@@ -271,9 +269,106 @@ public class ParserGeneratorHelper {
 
   public static String getConvertFunction(ProdSymbol symbol) {
     if (symbol.isPresentAstNode() && symbol.isIsLexerProd()) {
-      return HelperGrammar.createConvertFunction((ASTLexProd) symbol.getAstNode(), getPrettyPrinter());
+      return createConvertFunction((ASTLexProd) symbol.getAstNode(), getPrettyPrinter());
     }
     return "";
+  }
+
+  /**
+   * Creates the convert function for a lexrule
+   *
+   * @param a
+   * @return
+   */
+  public static String createConvertFunction(ASTLexProd a,
+                                             Grammar_WithConceptsFullPrettyPrinter prettyPrinter) {
+    String name = a.getName();
+    // simple String
+    if (!a.isPresentVariable()) {
+      return createStringConvertFunction(name);
+    }
+
+    // default functions
+    else if (a.getTypeList() == null || a.getTypeList().isEmpty()) {
+      String variable = a.getVariable();
+
+      if ("int".equals(variable)) {
+        String function = "private int convert%name%(Token t) {\n"
+
+                + "  return Integer.parseInt(t.getText());\n"
+                + " }\n";
+        return createConvertFunction(name, function);
+      } else if ("boolean".equals(variable)) {
+        return createConvertFunction(
+                name,
+                "private boolean convert"
+                        + name
+                        + "(Token t) {\n"
+                        + "    if (t.getText().equals(\"1\")||t.getText().equals(\"start\")||t.getText().equals(\"on\")||t.getText().equals(\"true\")){return true;}else{return false;} \n"
+                        + "}\n");
+      } else if ("byte".equals(variable)) {
+        String function = "private byte convert%name%(Token t) {\n"
+                + "  return Byte.parseByte(t.getText());\n"
+                + " }\n";
+        return createConvertFunction(name, function);
+      } else if ("char".equals(variable)) {
+        return createConvertFunction(name, "private char convert" + name + "(Token t) " + "{\n"
+                + "  return t.getText().charAt(0); \n" + "}\n");
+      } else if ("float".equals(variable)) {
+        String function = "private float convert%name%(Token t) {\n"
+                + "  return Float.parseFloat(t.getText());\n"
+                + " }\n";
+        return createConvertFunction(name, function);
+      } else if ("double".equals(variable)) {
+        String function = "private double convert%name%(Token t) {\n"
+                + "  return Double.parseDouble(t.getText());\n"
+                + " }\n";
+        return createConvertFunction(name, function);
+      } else if ("long".equals(variable)) {
+        String function = "private long convert%name%(Token t) {\n"
+                + "  return Long.parseLong(t.getText());\n"
+                + " }\n";
+        return createConvertFunction(name, function);
+      } else if ("short".equals(variable)) {
+        String function = "private short convert%name%(Token t) {\n"
+                + "return Short.parseShort(t.getText());\n"
+                + " }\n";
+        return createConvertFunction(name, function);
+      } else if ("card".equals(variable)) {
+        String function = "private int convert%name%(Token t) {\n"
+                + "   if (t.getText().equals(\"*\")) return -1; else return Integer.parseInt(t.getText());\n"
+                + " }\n";
+        return createConvertFunction(name, function);
+      } else {
+        Log.warn(
+                "0xA1061 No function for " + a.getVariable() + " registered, will treat it as string!");
+        return createStringConvertFunction(name);
+      }
+    }
+    // specific function
+    else {
+      if (a.isPresentBlock()) {
+        StringBuilder buffer = new StringBuilder();
+        buffer.append(prettyPrinter.prettyprint(a.getBlock()));
+        String createConvertFunction = createConvertFunction(name,
+                "private " + Names.getQualifiedName(a.getTypeList()) + " convert" + name
+                        + "(Token " + a.getVariable() + ")" + " {\n" + buffer.toString() + "}\n");
+        return createConvertFunction;
+      }
+    }
+    return "";
+
+  }
+
+  private static String createConvertFunction(String name, String function) {
+    String f = function.replaceAll("%name%", name);
+    return "// convert function for " + name + "\n" + f;
+  }
+
+  public static String createStringConvertFunction(String name) {
+    String t = "private String convert" + name + "(Token t)  {\n" + "    return t.getText();\n"
+            + "}\n";
+    return "// convert function for " + name + "\n" + t;
   }
 
   /**
@@ -495,7 +590,7 @@ public class ParserGeneratorHelper {
 
   private static String getLexType(ASTNode node) {
       if (node instanceof ASTLexProd) {
-        return HelperGrammar.createConvertType((ASTLexProd) node);
+        return TransformationHelper.createConvertType((ASTLexProd) node);
       }
       if (node instanceof ASTLexActionOrPredicate) {
         return "String";
@@ -535,4 +630,23 @@ public class ParserGeneratorHelper {
         astGrammar.getName());
     return Joiner.on('.').join(qualifiedGrammarName.toLowerCase(), suffix);
   }
+
+  /**
+   * Creates usuage name from a NtSym usually from its attribute or creates name
+   *
+   * @param a
+   * @return
+   */
+  public static String getUsageName(ASTNonTerminal a) {
+    String name;
+    if (a.isPresentUsageName()) {
+      name = a.getUsageName();
+    } else {
+      // Use Nonterminal name as attribute name starting with lower case
+      // latter
+      name = StringTransformations.uncapitalize(a.getName());
+    }
+    return name;
+  }
+
 }
