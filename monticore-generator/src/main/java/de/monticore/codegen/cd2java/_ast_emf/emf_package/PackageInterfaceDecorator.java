@@ -53,19 +53,19 @@ public class PackageInterfaceDecorator extends AbstractCreator<ASTCDCompilationU
         .setName(interfaceName)
         .setModifier(PUBLIC.build())
         .addInterface(getMCTypeFacade().createQualifiedType(ASTE_PACKAGE))
-        .addCDAttribute(createENameAttribute(definitionName))
-        .addCDAttribute(createENSURIAttribute(definitionName))
-        .addCDAttribute(createENSPrefixAttribute(definitionName))
-        .addCDAttribute(createEInstanceAttribute(interfaceName))
-        .addCDAttribute(createConstantsAttribute(definitionName))
-        .addAllCDAttributes(prodAttributes)
-        .addAllCDAttributes(eDataTypeAttributes)
-        .addAllCDAttributes(createNonTerminalAttributes(astcdDefinition))
-        .addCDMethod(createNodeFactoryMethod(definitionName))
-        .addCDMethod(createEEnumMethod(definitionName))
-        .addAllCDMethods(eDataTypeMethods)
-        .addAllCDMethods(createEClassMethods(astcdDefinition))
-        .addAllCDMethods(createEAttributeMethods(astcdDefinition))
+        .addCDMember(createENameAttribute(definitionName))
+        .addCDMember(createENSURIAttribute(definitionName))
+        .addCDMember(createENSPrefixAttribute(definitionName))
+        .addCDMember(createEInstanceAttribute(interfaceName))
+        .addCDMember(createConstantsAttribute(definitionName))
+        .addAllCDMembers(prodAttributes)
+        .addAllCDMembers(eDataTypeAttributes)
+        .addAllCDMembers(createNonTerminalAttributes(astcdDefinition))
+        .addCDMember(createNodeFactoryMethod(definitionName))
+        .addCDMember(createEEnumMethod(definitionName))
+        .addAllCDMembers(eDataTypeMethods)
+        .addAllCDMembers(createEClassMethods(astcdDefinition))
+        .addAllCDMembers(createEAttributeMethods(astcdDefinition))
         .build();
 
   }
@@ -134,18 +134,20 @@ public class PackageInterfaceDecorator extends AbstractCreator<ASTCDCompilationU
 
 
     for (ASTCDClass astcdClass : astcdDefinition.getCDClassesList()) {
-      for (int i = 0; i < astcdClass.getCDAttributeList().size(); i++) {
-        ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PACKAGE_PRIVATE, getMCTypeFacade().createIntType(),
-            astcdClass.getName() + "_" + StringTransformations.capitalize(astcdClass.getCDAttribute(i).getName()));
+      List<ASTCDAttribute> attrList = astcdClass.getCDAttributeList();
+      for (int i = 0; i < attrList.size(); i++) {
+        ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PACKAGE_PRIVATE.build(), getMCTypeFacade().createIntType(),
+            astcdClass.getName() + "_" + StringTransformations.capitalize(attrList.get(i).getName()));
         this.replaceTemplate(VALUE, attribute, new StringHookPoint("= " + i));
         attributeList.add(attribute);
       }
     }
 
     for (ASTCDInterface astcdInterface : astcdDefinition.getCDInterfacesList()) {
-      for (int j = 0; j < astcdInterface.getCDAttributeList().size(); j++) {
-        ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PACKAGE_PRIVATE, getMCTypeFacade().createIntType(),
-            astcdInterface.getName() + "_" + StringTransformations.capitalize(astcdInterface.getCDAttribute(j).getName()));
+      List<ASTCDAttribute> attrList = astcdInterface.getCDAttributeList();
+      for (int j = 0; j < attrList.size(); j++) {
+        ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PACKAGE_PRIVATE.build(), getMCTypeFacade().createIntType(),
+            astcdInterface.getName() + "_" + StringTransformations.capitalize(attrList.get(j).getName()));
         this.replaceTemplate(VALUE, attribute, new StringHookPoint("= " + (j)));
         attributeList.add(attribute);
       }

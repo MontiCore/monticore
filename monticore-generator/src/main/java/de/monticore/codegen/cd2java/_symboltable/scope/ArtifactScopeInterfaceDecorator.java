@@ -7,6 +7,7 @@ import de.monticore.cd4codebasis._ast.*;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
+import de.monticore.cdbasis._symboltable.ICDBasisScope;
 import de.monticore.cdinterfaceandenum._ast.*;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
@@ -14,6 +15,7 @@ import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
@@ -59,22 +61,22 @@ public class ArtifactScopeInterfaceDecorator extends AbstractCreator<ASTCDCompil
     return CD4AnalysisMill.cDInterfaceBuilder()
         .setName(artifactScopeInterfaceSimpleName)
         .setModifier(PUBLIC.build())
-        .addAllInterface(getSuperArtifactScopeInterfaces())
+        .addAllInterfaces(getSuperArtifactScopeInterfaces())
         .addInterface(symbolTableService.getScopeInterfaceType())
-        .addAllCDMethods(createImportsAttributeMethods())
-        .addCDMethod(createGetTopLevelSymbolMethod(symbolProds))
-        .addCDMethod(createCheckIfContinueAsSubScopeMethod())
-        .addCDMethod(createGetRemainingNameForResolveDownMethod())
-        .addCDMethod(createGetFullNameMethod())
+        .addAllCDMembers(createImportsAttributeMethods())
+        .addCDMember(createGetTopLevelSymbolMethod(symbolProds))
+        .addCDMember(createCheckIfContinueAsSubScopeMethod())
+        .addCDMember(createGetRemainingNameForResolveDownMethod())
+        .addCDMember(createGetFullNameMethod())
         .build();
   }
 
-  protected List<ASTMCQualifiedType> getSuperArtifactScopeInterfaces(){
+  protected List<ASTMCObjectType> getSuperArtifactScopeInterfaces(){
     return getSuperArtifactScopeInterfaces(symbolTableService.getCDSymbol());
   }
 
-  protected List<ASTMCQualifiedType> getSuperArtifactScopeInterfaces(DiagramSymbol symbol){
-    List<ASTMCQualifiedType> result = new ArrayList<>();
+  protected List<ASTMCObjectType> getSuperArtifactScopeInterfaces(DiagramSymbol symbol){
+    List<ASTMCObjectType> result = new ArrayList<>();
     for (DiagramSymbol superGrammar : symbolTableService.getSuperCDsDirect(symbol)) {
       if (!superGrammar.isPresentAstNode()) {
         Log.error("0xA4323 Unable to load AST of '" + superGrammar.getFullName()
@@ -170,7 +172,7 @@ public class ArtifactScopeInterfaceDecorator extends AbstractCreator<ASTCDCompil
     List<ASTCDMethod> methodList = new ArrayList<>();
     for (DiagramSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
       // only filter for types which define a symbol
-      List<ASTCDType> symbolProds = cdDefinitionSymbol.getTypes()
+      List<ASTCDType> symbolProds = ((ICDBasisScope) cdDefinitionSymbol.getEnclosingScope()).getLocalCDTypeSymbols()
           .stream()
           .filter(t -> t.isPresentAstNode())
           .filter(t -> t.getAstNode().isPresentModifier())
@@ -186,7 +188,7 @@ public class ArtifactScopeInterfaceDecorator extends AbstractCreator<ASTCDCompil
   public List<ASTCDType> getSuperSymbols() {
     List<ASTCDType> symbolAttributes = new ArrayList<>();
     for (DiagramSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
-      for (CDTypeSymbol type : cdDefinitionSymbol.getTypes()) {
+      for (CDTypeSymbol type : ((ICDBasisScope) cdDefinitionSymbol.getEnclosingScope()).getLocalCDTypeSymbols()) {
         if (type.isPresentAstNode() && type.getAstNode().isPresentModifier()
             && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifier())) {
           symbolAttributes.add(type.getAstNode());

@@ -70,14 +70,14 @@ public class EmfNodeFactoryDecorator extends NodeFactoryDecorator {
         .setModifier(PUBLIC.build())
         .setName(factoryClassName)
         .setSuperclass(getMCTypeFacade().createQualifiedType(E_FACTORY_IMPL))
-        .addCDAttribute(factoryAttribute)
-        .addAllCDAttributes(factoryAttributeList)
-        .addCDConstructor(constructor)
-        .addCDMethod(getFactoryMethod)
-        .addCDMethod(emfCreateMethod)
-        .addCDMethod(getPackageMethod)
-        .addAllCDMethods(createMethodList)
-        .addAllCDMethods(delegateMethodList)
+        .addCDMember(factoryAttribute)
+        .addAllCDMembers(factoryAttributeList)
+        .addCDMember(constructor)
+        .addCDMember(getFactoryMethod)
+        .addCDMember(emfCreateMethod)
+        .addCDMember(getPackageMethod)
+        .addAllCDMembers(createMethodList)
+        .addAllCDMembers(delegateMethodList)
         .build();
   }
 

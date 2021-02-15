@@ -85,19 +85,19 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
         .setName(className)
         .setModifier(PUBLIC.build())
         .addInterface(iDeSerType)
-        .addCDMethod(createGetSerializedKindMethod(symName))
+        .addCDMember(createGetSerializedKindMethod(symName))
 
         //serialization
-        .addCDMethod(createSerializeMethod(symbolClass, symParam, s2jParam, spansScope))
-        .addAllCDMethods(createSerializeAttrMethods(attr, s2jParam))
-        .addCDMethod(createSerializeAddonsMethod(symParam, s2jParam))
+        .addCDMember(createSerializeMethod(symbolClass, symParam, s2jParam, spansScope))
+        .addAllCDMembers(createSerializeAttrMethods(attr, s2jParam))
+        .addCDMember(createSerializeAddonsMethod(symParam, s2jParam))
 
         //deserialization
-        .addCDMethod(createDeserializeStringMethod(symType))
-        .addCDMethod(
+        .addCDMember(createDeserializeStringMethod(symType))
+        .addCDMember(
             createDeserializeJsonMethod(symType, millName, symName, jsonParam, attr, spansScope, iScopeName, deSerName))
-        .addAllCDMethods(createDeserializeAttrMethods(attr, jsonParam))
-        .addCDMethod(createDeserializeAddons(sym2Param, jsonParam))
+        .addAllCDMembers(createDeserializeAttrMethods(attr, jsonParam))
+        .addCDMember(createDeserializeAddons(sym2Param, jsonParam))
 
         .build();
 

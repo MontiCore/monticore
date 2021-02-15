@@ -6,6 +6,7 @@ import de.monticore.cd4codebasis._ast.*;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
+import de.monticore.cdbasis._symboltable.ICDBasisScope;
 import de.monticore.cdinterfaceandenum._ast.*;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
@@ -13,6 +14,7 @@ import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCSetType;
@@ -84,20 +86,20 @@ public class GlobalScopeInterfaceDecorator
     return CD4AnalysisMill.cDInterfaceBuilder()
         .setName(globalScopeInterfaceName)
         .setModifier(PUBLIC.build())
-        .addAllInterface(getSuperGlobalScopeInterfaces())
+        .addAllInterfaces(getSuperGlobalScopeInterfaces())
         .addInterface(symbolTableService.getScopeInterfaceType())
-        .addAllCDMethods(createCalculateModelNameMethods(symbolClasses))
-        .addAllCDMethods(resolverMethods)
-        .addAllCDMethods(createResolveAdaptedMethods(symbolClasses))
-        .addAllCDMethods(createResolveAdaptedSuperMethods())
-        .addAllCDMethods(createResolveMethods(symbolClasses, definitionName))
-        .addAllCDMethods(createSuperProdResolveMethods(definitionName))
-        .addAllCDMethods(createEnclosingScopeMethods(globalScopeName))
-        .addAllCDMethods(createDeSerMethods())
-        .addCDMethod(createGetNameMethod(globalScopeName))
-        .addCDMethod(createIsPresentNameMethod())
-        .addCDMethod(creatCheckIfContinueAsSubScopeMethod())
-        .addCDMethod(createGetRealThisMethod(globalScopeInterfaceName))
+        .addAllCDMembers(createCalculateModelNameMethods(symbolClasses))
+        .addAllCDMembers(resolverMethods)
+        .addAllCDMembers(createResolveAdaptedMethods(symbolClasses))
+        .addAllCDMembers(createResolveAdaptedSuperMethods())
+        .addAllCDMembers(createResolveMethods(symbolClasses, definitionName))
+        .addAllCDMembers(createSuperProdResolveMethods(definitionName))
+        .addAllCDMembers(createEnclosingScopeMethods(globalScopeName))
+        .addAllCDMembers(createDeSerMethods())
+        .addCDMember(createGetNameMethod(globalScopeName))
+        .addCDMember(createIsPresentNameMethod())
+        .addCDMember(creatCheckIfContinueAsSubScopeMethod())
+        .addCDMember(createGetRealThisMethod(globalScopeInterfaceName))
         .build();
   }
 
@@ -113,19 +115,19 @@ public class GlobalScopeInterfaceDecorator
     }
   }
 
-  private List<ASTMCQualifiedType> getSuperGlobalScopeInterfaces() {
+  private List<ASTMCObjectType> getSuperGlobalScopeInterfaces() {
     return getSuperGlobalScopeInterfaces(symbolTableService.getCDSymbol());
   }
 
-  protected List<ASTMCQualifiedType> getSuperGlobalScopeInterfaces(DiagramSymbol symbol){
-    List<ASTMCQualifiedType> result = new ArrayList<>();
+  protected List<ASTMCObjectType> getSuperGlobalScopeInterfaces(DiagramSymbol symbol){
+    List<ASTMCObjectType> result = new ArrayList<>();
     for (DiagramSymbol superGrammar : symbolTableService.getSuperCDsDirect(symbol)) {
       if (!superGrammar.isPresentAstNode()) {
         Log.error("0xA4323 Unable to load AST of '" + superGrammar.getFullName()
             + "' that is supergrammar of '" + symbolTableService.getCDName() + "'.");
         continue;
       }
-      if (symbolTableService.hasStartProd(superGrammar.getAstNode())
+      if (symbolTableService.hasStartProd((ASTCDDefinition) superGrammar.getAstNode())
           ||!symbolTableService.getSymbolDefiningSuperProds(superGrammar).isEmpty() ) {
         result.add(symbolTableService.getGlobalScopeInterfaceType(superGrammar));
       }else{
@@ -211,7 +213,7 @@ public class GlobalScopeInterfaceDecorator
 
     List<ASTCDMethod> methodList = new ArrayList<>();
     for (DiagramSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
-      for (CDTypeSymbol type : cdDefinitionSymbol.getTypes()) {
+      for (CDTypeSymbol type : ((ICDBasisScope) cdDefinitionSymbol.getEnclosingScope()).getLocalCDTypeSymbols()) {
         if (type.isPresentAstNode() && type.getAstNode().isPresentModifier()
             && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifier())) {
           methodList.add(createResolveAdaptedMethod(type.getAstNode(), cdDefinitionSymbol, foundSymbolsParameter, nameParameter,
@@ -265,7 +267,7 @@ public class GlobalScopeInterfaceDecorator
     ASTCDParameter foundSymbolsParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createBooleanType(), FOUND_SYMBOLS_VAR);
 
     for (DiagramSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
-      for (CDTypeSymbol type : cdDefinitionSymbol.getTypes()) {
+      for (CDTypeSymbol type : ((ICDBasisScope) cdDefinitionSymbol.getEnclosingScope()).getLocalCDTypeSymbols()) {
         if (type.isPresentAstNode() && type.getAstNode().isPresentModifier()
             && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifier())) {
           resolveMethods.addAll(createResolveMethods(type.getAstNode(), nameParameter, foundSymbolsParameter,

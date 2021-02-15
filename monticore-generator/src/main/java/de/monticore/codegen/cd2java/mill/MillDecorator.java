@@ -7,6 +7,7 @@ import de.monticore.cdbasis._ast.*;
 import de.monticore.cd4codebasis._ast.*;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
+import de.monticore.cdbasis._symboltable.ICDBasisScope;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._parser.ParserService;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
@@ -150,7 +151,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
     millClass.addAllCDMembers(getArtifactScopeMethods());
 
 
-    if(!symbolTableService.hasComponentStereotype(symbolTableService.getCDSymbol().getAstNode())) {
+    if (!symbolTableService.hasComponentStereotype((ASTCDDefinition) symbolTableService.getCDSymbol().getAstNode())) {
       ASTCDAttribute parserAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC.build(), millType, MILL_INFIX + parserService.getParserClassSimpleName());
       List<ASTCDMethod> parserMethods = getParserMethods();
       millClass.addCDMember(parserAttribute);
@@ -287,7 +288,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
     // get super symbols
     for (DiagramSymbol superSymbol : superSymbolList) {
       if (superSymbol.isPresentAstNode()) {
-        for (CDTypeSymbol type : superSymbol.getTypes()) {
+        for (CDTypeSymbol type : ((ICDBasisScope) superSymbol.getEnclosingScope()).getLocalCDTypeSymbols()) {
           if (type.isPresentAstNode() && type.getAstNode().isPresentModifier()
               && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifier())) {
             superMethods.addAll(getSuperSymbolMethods(superSymbol, type));

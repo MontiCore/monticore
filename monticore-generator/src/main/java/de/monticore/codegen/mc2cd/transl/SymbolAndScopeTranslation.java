@@ -10,6 +10,7 @@ import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.utils.Link;
+import de.monticore.umlmodifier._ast.ASTModifier;
 
 import java.util.List;
 import java.util.Optional;
@@ -125,7 +126,7 @@ public class SymbolAndScopeTranslation implements
   }
 
   protected boolean hasStereotype(MC2CDStereotypes stereotype, ASTModifier modifier) {
-    return modifier.isPresentStereotype() && modifier.getStereotype().getValueList()
+    return modifier.isPresentStereotype() && modifier.getStereotype().getValuesList()
         .stream()
         .anyMatch(v -> v.getName().equals(stereotype.toString()));
   }

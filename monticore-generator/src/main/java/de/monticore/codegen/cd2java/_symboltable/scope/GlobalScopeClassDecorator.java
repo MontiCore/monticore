@@ -7,6 +7,7 @@ import de.monticore.cd4codebasis._ast.*;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
+import de.monticore.cdbasis._symboltable.ICDBasisScope;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._symboltable.serialization.AbstractDeSers;
@@ -114,32 +115,32 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
         .setModifier(PUBLIC.build())
         .setSuperclass(scopeType)
         .addInterface(globalScopeInterface)
-        .addCDConstructor(createConstructor(globalScopeName))
-        .addCDConstructor(createZeroArgsConstructor(globalScopeName))
-        .addCDAttribute(modelPathAttribute)
-        .addAllCDMethods(modelPathMethods)
-        .addCDAttribute(fileExtensionAttribute)
-        .addAllCDMethods(fileExtensionMethods)
-        .addCDAttribute(deserAttribute)
-        .addAllCDMethods(deserMethods)
-        .addCDAttribute(deSerMapAttribute)
-        .addAllCDMethods(createDeSerMapMethods(deSerMapAttribute))
-        .addCDAttribute(symbols2JsonAttribute)
-        .addAllCDMethods(symbols2JsonMethods)
-        .addCDAttribute(cacheAttribute)
-        .addCDMethod(createAddLoadedFileMethod())
-        .addCDMethod(createClearLoadedFilesMethod())
-        .addCDMethod(createIsFileLoadedMethod())
-        .addCDMethod(createInitMethod(scopeInterfaceFullName, scopeDeSerFullName, symbolProds))
-        .addAllCDAttributes(resolverAttributes.values())
-        .addAllCDMethods(resolverMethods)
-        .addAllCDMethods(createAlreadyResolvedMethods(symbolProds))
-        .addAllCDMethods(createAlreadyResolvedSuperMethods())
-        .addAllCDMethods(createLoadMethods(symbolClasses))
-        .addCDMethod(createLoadFileForModelNameMethod(definitionName))
+        .addCDMember(createConstructor(globalScopeName))
+        .addCDMember(createZeroArgsConstructor(globalScopeName))
+        .addCDMember(modelPathAttribute)
+        .addAllCDMembers(modelPathMethods)
+        .addCDMember(fileExtensionAttribute)
+        .addAllCDMembers(fileExtensionMethods)
+        .addCDMember(deserAttribute)
+        .addAllCDMembers(deserMethods)
+        .addCDMember(deSerMapAttribute)
+        .addAllCDMembers(createDeSerMapMethods(deSerMapAttribute))
+        .addCDMember(symbols2JsonAttribute)
+        .addAllCDMembers(symbols2JsonMethods)
+        .addCDMember(cacheAttribute)
+        .addCDMember(createAddLoadedFileMethod())
+        .addCDMember(createClearLoadedFilesMethod())
+        .addCDMember(createIsFileLoadedMethod())
+        .addCDMember(createInitMethod(scopeInterfaceFullName, scopeDeSerFullName, symbolProds))
+        .addAllCDMembers(resolverAttributes.values())
+        .addAllCDMembers(resolverMethods)
+        .addAllCDMembers(createAlreadyResolvedMethods(symbolProds))
+        .addAllCDMembers(createAlreadyResolvedSuperMethods())
+        .addAllCDMembers(createLoadMethods(symbolClasses))
+        .addCDMember(createLoadFileForModelNameMethod(definitionName))
         //
-        .addCDMethod(createGetRealThisMethod(globalScopeName))
-        .addCDMethod(createClearMethod(resolverMethods, symbolListString))
+        .addCDMember(createGetRealThisMethod(globalScopeName))
+        .addCDMember(createClearMethod(resolverMethods, symbolListString))
         .build();
   }
 
@@ -216,7 +217,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
   protected Map<String, ASTCDAttribute> createResolverSuperAttributes() {
     Map<String, ASTCDAttribute> symbolAttributes = new HashMap<>();
     for (DiagramSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
-      for (CDTypeSymbol type : cdDefinitionSymbol.getTypes()) {
+      for (CDTypeSymbol type : ((ICDBasisScope) cdDefinitionSymbol.getEnclosingScope()).getLocalCDTypeSymbols()) {
         if (type.isPresentAstNode() && symbolTableService.hasSymbolStereotype(type.getAstNode())) {
           Optional<ASTCDAttribute> symbolAttribute = createResolverAttribute(type.getAstNode(), cdDefinitionSymbol);
           symbolAttribute.ifPresent(attr -> symbolAttributes.put(attr.getName(), attr));
@@ -297,7 +298,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     List<ASTCDAttribute> symbolAlreadyResolvedAttributes = new ArrayList<>();
     for (DiagramSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
       // only types that define a symbol
-      List<ASTCDType> symbolProds = cdDefinitionSymbol.getTypes().stream().filter(t -> t.isPresentAstNode())
+      List<ASTCDType> symbolProds = ((ICDBasisScope) cdDefinitionSymbol.getEnclosingScope()).getLocalCDTypeSymbols().stream().filter(t -> t.isPresentAstNode())
           .filter(t -> t.getAstNode().isPresentModifier())
           .filter(t -> symbolTableService.hasSymbolStereotype(t.getAstNode().getModifier()))
           .filter(CDTypeSymbol::isPresentAstNode)
@@ -395,7 +396,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
 
     // add DeSers for symbols defined in inherited languages
     for (DiagramSymbol cdSymbol: symbolTableService.getSuperCDsTransitive()) {
-      symbolTableService.getSymbolDefiningProds(cdSymbol.getAstNode()).forEach(s -> {
+      symbolTableService.getSymbolDefiningProds((ASTCDDefinition) cdSymbol.getAstNode()).forEach(s -> {
         String symbol = symbolTableService.getSymbolFullName(s, cdSymbol);
         String deser = symbolTableService.getSymbolDeSerFullName(s, cdSymbol);
         map.put(symbol, deser);

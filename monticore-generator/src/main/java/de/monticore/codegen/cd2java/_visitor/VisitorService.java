@@ -9,6 +9,7 @@ import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.cd.facade.CDMethodFacade;
 import de.monticore.cd.facade.CDParameterFacade;
 import de.monticore.codegen.cd2java.AbstractService;
+import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
@@ -237,7 +238,7 @@ public class VisitorService extends AbstractService<VisitorService> {
    */
   public ASTCDDefinition calculateCDTypeNamesWithASTPackage(DiagramSymbol input) {
     // transform inherited cd
-    ASTCDDefinition astcdDefinition = input.getAstNode().deepClone();
+    ASTCDDefinition astcdDefinition = (ASTCDDefinition) input.getAstNode().deepClone();
     //set classname to correct Name with path
     String astPath = getASTPackage(input);
     astcdDefinition.getCDClassesList().forEach(c -> c.setName(astPath + "." + c.getName()));
@@ -252,7 +253,7 @@ public class VisitorService extends AbstractService<VisitorService> {
    * 
    * @return The super traverser interfaces as list of qualified names.
    */
-  public List<ASTMCQualifiedType> getSuperTraverserInterfaces() {
+  public List<ASTMCObjectType> getSuperTraverserInterfaces() {
     // only direct super cds, not transitive
     List<DiagramSymbol> superCDs = getSuperCDsDirect();
     return superCDs

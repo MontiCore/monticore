@@ -61,8 +61,8 @@ public class CoCoInterfaceDecorator extends AbstractCreator<ASTCDDefinition, Lis
         .setModifier(modifier)
         .setName(this.cocoService.getCoCoSimpleTypeName(type))
         .addInterface(interfaceType)
-        .addCDMethod(createCheckMethod(type))
-        .addCDMethod(createVisitMethod(type))
+        .addCDMember(createCheckMethod(type))
+        .addCDMember(createVisitMethod(type))
         .build();
   }
 

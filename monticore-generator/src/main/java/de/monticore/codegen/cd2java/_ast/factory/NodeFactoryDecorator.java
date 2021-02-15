@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd4codebasis._ast.*;
 import de.monticore.cdbasis._ast.*;
+import de.monticore.cdbasis._symboltable.ICDBasisScope;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.typecd2java.TypeCD2JavaVisitor;
@@ -129,9 +130,9 @@ public class NodeFactoryDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     for (DiagramSymbol superSymbol : nodeFactoryService.getSuperCDsTransitive()) {
       if (superSymbol.isPresentAstNode()) {
         //get super cdDefinition
-        ASTCDDefinition superDefinition = superSymbol.getAstNode();
+        ASTCDDefinition superDefinition = (ASTCDDefinition) superSymbol.getAstNode();
 
-        TypeCD2JavaVisitor visitor = new TypeCD2JavaVisitor(superSymbol.getEnclosingScope());
+        TypeCD2JavaVisitor visitor = new TypeCD2JavaVisitor((ICDBasisScope) superSymbol.getEnclosingScope());
         ASTCDCompilationUnit a = CD4AnalysisMill.cDCompilationUnitBuilder().setCDDefinition(superDefinition).build();
         a.accept(visitor);
 

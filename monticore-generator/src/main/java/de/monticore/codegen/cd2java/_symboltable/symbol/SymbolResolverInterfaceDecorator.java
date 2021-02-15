@@ -39,7 +39,7 @@ public class SymbolResolverInterfaceDecorator extends AbstractCreator<ASTCDType,
     return CD4AnalysisMill.cDInterfaceBuilder()
         .setName(symbolResolverInterface)
         .setModifier(modifier)
-        .addCDMethod(createResolveAdaptedStateSymbol(symbolFullName, symbolSimpleName))
+        .addCDMember(createResolveAdaptedStateSymbol(symbolFullName, symbolSimpleName))
         .build();
   }
 

@@ -8,6 +8,7 @@ import de.monticore.cdbasis._ast.*;
 import de.monticore.cd4codebasis._ast.*;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
+import de.monticore.cdbasis._symboltable.ICDBasisScope;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
@@ -117,24 +118,24 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
         .addInterface(interfaceName)
 
         // add serialization methods
-        .addCDMethod(createSerializeMethod(scopeParam, s2jParam, scopeRuleAttrList))
-        .addCDMethod(createSerialize2Method(scopeParam, symbols2JsonName))
-        .addCDMethod(createSerializeASMethod(asParam, s2jParam, scopeRuleAttrList))
-        .addCDMethod(createSerialize2Method(asParam, symbols2JsonName))
-        .addAllCDMethods(createSerializeAttrMethods(scopeRuleAttrList, s2jParam))
-        .addCDMethod(createSerializeAddonsMethod(scopeParam, s2jParam))
-        .addCDMethod(createSerializeAddonsMethod(asParam, s2jParam))
+        .addCDMember(createSerializeMethod(scopeParam, s2jParam, scopeRuleAttrList))
+        .addCDMember(createSerialize2Method(scopeParam, symbols2JsonName))
+        .addCDMember(createSerializeASMethod(asParam, s2jParam, scopeRuleAttrList))
+        .addCDMember(createSerialize2Method(asParam, symbols2JsonName))
+        .addAllCDMembers(createSerializeAttrMethods(scopeRuleAttrList, s2jParam))
+        .addCDMember(createSerializeAddonsMethod(scopeParam, s2jParam))
+        .addCDMember(createSerializeAddonsMethod(asParam, s2jParam))
 
         // add deserialization methods
-        .addCDMethod(createDeserializeStringMethod(asInterfaceName))
-        .addCDMethod(createDeserializeScopeMethod(scopeClassName, millName, scopeJsonParam,
+        .addCDMember(createDeserializeStringMethod(asInterfaceName))
+        .addCDMember(createDeserializeScopeMethod(scopeClassName, millName, scopeJsonParam,
             scopeRuleAttrList))
-        .addCDMethod(createDeserializeArtifactScopeMethod(asInterfaceName, millName, scopeJsonParam,
+        .addCDMember(createDeserializeArtifactScopeMethod(asInterfaceName, millName, scopeJsonParam,
             scopeRuleAttrList))
-        .addCDMethod(
+        .addCDMember(
             createDeserializeSymbolsMethods(scopeVarParam, scopeJsonParam, symbolMap, millName))
-        .addAllCDMethods(createDeserializeAttrMethods(scopeRuleAttrList, scopeJsonParam))
-        .addAllCDMethods(createDeserializeAddonsMethods(scopeVarParam, scopeJsonParam))
+        .addAllCDMembers(createDeserializeAttrMethods(scopeRuleAttrList, scopeJsonParam))
+        .addAllCDMembers(createDeserializeAddonsMethods(scopeVarParam, scopeJsonParam))
         .build();
     if(generateAbstractClass){
       clazz.getModifier().setAbstract(true);
@@ -295,7 +296,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
 
     //add symbols from super grammars
     for (DiagramSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
-      for (CDTypeSymbol type : cdDefinitionSymbol.getTypes()) {
+      for (CDTypeSymbol type : ((ICDBasisScope) cdDefinitionSymbol.getEnclosingScope()).getLocalCDTypeSymbols()) {
         if (type.isPresentAstNode() && type.getAstNode().isPresentModifier()
             && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifier())) {
           String name = symbolTableService

@@ -3,7 +3,7 @@ package de.monticore.codegen.cd2java.typecd2java;
 
 import com.google.common.collect.Lists;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
-import de.monticore.cd4analysis._symboltable.ICD4AnalysisScope;
+import de.monticore.cdbasis._symboltable.ICDBasisScope;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
 import de.monticore.grammar.grammarfamily._visitor.GrammarFamilyVisitor;
 import de.monticore.symboltable.IScope;
@@ -20,9 +20,9 @@ public class TypeCD2JavaVisitor implements GrammarFamilyVisitor {
 
   private static final String PACKAGE_SEPARATOR = "\\.";
 
-  protected ICD4AnalysisScope scope;
+  protected ICDBasisScope scope;
 
-  public TypeCD2JavaVisitor(ICD4AnalysisScope scope) {
+  public TypeCD2JavaVisitor(ICDBasisScope scope) {
     this.scope = scope;
   }
 

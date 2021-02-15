@@ -7,6 +7,7 @@ import de.monticore.cdinterfaceandenum._ast.*;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.cdbasis._symboltable.CDTypeSymbolSurrogate;
+import de.monticore.cdbasis._symboltable.ICDBasisScope;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
@@ -551,7 +552,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   public Set<String> retrieveSymbolNamesFromCD(DiagramSymbol cdSymbol) {
     Set<String> symbolNames = new HashSet<String>();
     // get AST for symbol
-    ASTCDDefinition astcdDefinition = cdSymbol.getAstNode();
+    ASTCDDefinition astcdDefinition = (ASTCDDefinition) cdSymbol.getAstNode();
     // add symbol definitions from interfaces
     for (ASTCDInterface astcdInterface : astcdDefinition.getCDInterfacesList()) {
       if (astcdInterface.isPresentModifier() && hasSymbolStereotype(astcdInterface.getModifier())) {
@@ -663,7 +664,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   public List<ASTCDType> getSymbolDefiningSuperProds() {
     List<ASTCDType> symbolProds = new ArrayList<>();
     for (DiagramSymbol cdDefinitionSymbol : getSuperCDsTransitive()) {
-      for (CDTypeSymbol type : cdDefinitionSymbol.getTypes()) {
+      for (CDTypeSymbol type : ((ICDBasisScope) cdDefinitionSymbol.getEnclosingScope()).getLocalCDTypeSymbols()) {
         if (type.isPresentAstNode() && type.getAstNode().isPresentModifier()
             && hasSymbolStereotype(type.getAstNode().getModifier())) {
           symbolProds.add(type.getAstNode());
@@ -676,7 +677,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   public List<ASTCDType> getSymbolDefiningSuperProds(DiagramSymbol symbol) {
     List<ASTCDType> symbolProds = new ArrayList<>();
     for (DiagramSymbol cdDefinitionSymbol : getSuperCDsTransitive(symbol)) {
-      for (CDTypeSymbol type : cdDefinitionSymbol.getTypes()) {
+      for (CDTypeSymbol type : ((ICDBasisScope) cdDefinitionSymbol.getEnclosingScope()).getLocalCDTypeSymbols()) {
         if (type.isPresentAstNode() && type.getAstNode().isPresentModifier()
             && hasSymbolStereotype(type.getAstNode().getModifier())) {
           symbolProds.add(type.getAstNode());
@@ -744,7 +745,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
         .filter(c -> !hasInheritedSymbolStereotype(c.getModifier()))
         .collect(Collectors.toList());
 
-    symbolProds.addAll(astcdDefinition.getCDInterfaceList().stream()
+    symbolProds.addAll(astcdDefinition.getCDInterfacesList().stream()
         .filter(ASTCDInterface::isPresentModifier)
         .filter(c -> hasScopeStereotype(c.getModifier()))
         .collect(Collectors.toList()));

@@ -6,6 +6,7 @@ import de.monticore.cdbasis._ast.*;
 import de.monticore.cd4codebasis._ast.*;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
+import de.monticore.cdbasis._symboltable.ICDBasisScope;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
@@ -86,26 +87,26 @@ public class ScopesGenitorDecorator extends AbstractCreator<ASTCDCompilationUnit
           .setModifier(PUBLIC.build())
           .addInterface(getMCTypeFacade().createQualifiedType(visitorName))
           .addInterface(getMCTypeFacade().createQualifiedType(handlerName))
-          .addCDConstructor(createSimpleConstructor(scopesGenitorName, scopeInterface))
-          .addCDConstructor(createDequeConstructor(scopesGenitorName, dequeWildcardType, dequeType))
-          .addCDConstructor(createZeroArgsConstructor(scopesGenitorName))
-          .addCDAttribute(createScopeStackAttribute(dequeType))
-          .addCDAttribute(traverserAttribute)
-          .addAllCDMethods(traverserMethods)
-          .addCDAttribute(firstCreatedScopeAttribute)
-          .addAllCDMethods(firstCreatedScopeMethod)
-          .addCDMethod(createCreateFromASTMethod(astFullName, scopesGenitorName, symTabMillFullName))
-          .addCDMethod(createPutOnStackMethod(scopeInterface))
-          .addAllCDMethods(createCurrentScopeMethods(scopeInterface))
-          .addCDMethod(createSetScopeStackMethod(dequeType, simpleName))
-          .addCDMethod(createCreateScopeMethod(scopeInterface))
-          .addAllCDMethods(createSymbolClassMethods(symbolDefiningClasses, scopeInterface))
-          .addAllCDMethods(createSymbolClassMethods(inheritedSymbolPropertyClasses, scopeInterface))
-          .addAllCDMethods(createVisitForNoSymbolMethods(noSymbolDefiningClasses))
-          .addAllCDMethods(createAddToScopeMethods(symbolDefiningProds))
-          .addAllCDMethods(createAddToScopeMethodsForSuperSymbols())
-          .addAllCDMethods(createScopeClassMethods(onlyScopeProds, scopeInterface))
-          .addCDMethod(createAddToScopeStackMethod())
+          .addCDMember(createSimpleConstructor(scopesGenitorName, scopeInterface))
+          .addCDMember(createDequeConstructor(scopesGenitorName, dequeWildcardType, dequeType))
+          .addCDMember(createZeroArgsConstructor(scopesGenitorName))
+          .addCDMember(createScopeStackAttribute(dequeType))
+          .addCDMember(traverserAttribute)
+          .addAllCDMembers(traverserMethods)
+          .addCDMember(firstCreatedScopeAttribute)
+          .addAllCDMembers(firstCreatedScopeMethod)
+          .addCDMember(createCreateFromASTMethod(astFullName, scopesGenitorName, symTabMillFullName))
+          .addCDMember(createPutOnStackMethod(scopeInterface))
+          .addAllCDMembers(createCurrentScopeMethods(scopeInterface))
+          .addCDMember(createSetScopeStackMethod(dequeType, simpleName))
+          .addCDMember(createCreateScopeMethod(scopeInterface))
+          .addAllCDMembers(createSymbolClassMethods(symbolDefiningClasses, scopeInterface))
+          .addAllCDMembers(createSymbolClassMethods(inheritedSymbolPropertyClasses, scopeInterface))
+          .addAllCDMembers(createVisitForNoSymbolMethods(noSymbolDefiningClasses))
+          .addAllCDMembers(createAddToScopeMethods(symbolDefiningProds))
+          .addAllCDMembers(createAddToScopeMethodsForSuperSymbols())
+          .addAllCDMembers(createScopeClassMethods(onlyScopeProds, scopeInterface))
+          .addCDMember(createAddToScopeStackMethod())
           .build();
       return Optional.ofNullable(scopesGenitor);
     }
@@ -392,7 +393,7 @@ public class ScopesGenitorDecorator extends AbstractCreator<ASTCDCompilationUnit
   protected List<ASTCDMethod> createAddToScopeMethodsForSuperSymbols() {
     List<ASTCDMethod> methodList = new ArrayList<>();
     for (DiagramSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
-      for (CDTypeSymbol type : cdDefinitionSymbol.getTypes()) {
+      for (CDTypeSymbol type : ((ICDBasisScope) cdDefinitionSymbol.getEnclosingScope()).getLocalCDTypeSymbols()) {
         if (type.isPresentAstNode() && type.getAstNode().isPresentModifier()
             && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifier())) {
           String symbolFullName = symbolTableService.getSymbolFullName(type.getAstNode(), cdDefinitionSymbol);

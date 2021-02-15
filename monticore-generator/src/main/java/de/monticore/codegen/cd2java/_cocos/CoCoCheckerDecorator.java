@@ -7,6 +7,7 @@ import de.monticore.cd4codebasis._ast.*;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
+import de.monticore.cdbasis._symboltable.ICDBasisScope;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
@@ -81,7 +82,7 @@ public class CoCoCheckerDecorator extends AbstractCreator<ASTCDCompilationUnit, 
 
       cocoChecker.addCDMember(checkAll);
 
-      for (CDTypeSymbol cdTypeSymbol : currentCDSymbol.getTypes()) {
+      for (CDTypeSymbol cdTypeSymbol : ((ICDBasisScope) currentCDSymbol.getEnclosingScope()).getLocalCDTypeSymbols()) {
         // do not generate for enums (only classes and interfaces)
         if (cdTypeSymbol.isIsEnum()) {
           continue;

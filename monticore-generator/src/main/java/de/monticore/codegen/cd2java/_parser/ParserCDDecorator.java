@@ -44,7 +44,7 @@ public class ParserCDDecorator extends AbstractDecorator {
         .setName(astCD.getCDDefinition().getName())
         .build();
 
-    createParserClass(astCD).ifPresent(parserCD::addCDClass);
+    createParserClass(astCD).ifPresent(parserCD::addCDElement);
     List<ASTCDClass> parserForSuperClasses = createParserForSuperClasses(astCD);
     parserCD.addAllCDElements(parserForSuperClasses);
 

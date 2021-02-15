@@ -3,6 +3,7 @@ package de.monticore.codegen.cd2java._parser;
 
 import com.google.common.collect.Lists;
 import de.monticore.cdbasis._ast.*;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
@@ -106,13 +107,13 @@ public class ParserService extends AbstractService<ParserService> {
     }
     //look for a start prod in super grammars
     for(DiagramSymbol def: getSuperCDsDirect(astcdDefinition.getSymbol())){
-      return getStartProd(def.getAstNode());
+      return getStartProd((ASTCDDefinition) def.getAstNode());
     }
     return Optional.empty();
   }
 
   public Optional<String> getStartProd(){
-    return getStartProd(getCDSymbol().getAstNode());
+    return getStartProd((ASTCDDefinition) getCDSymbol().getAstNode());
   }
 
 

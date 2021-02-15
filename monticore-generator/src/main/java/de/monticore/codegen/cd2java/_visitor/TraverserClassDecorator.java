@@ -62,13 +62,13 @@ public class TraverserClassDecorator extends AbstractCreator<ASTCDCompilationUni
         .setName(delegatorVisitorSimpleName)
         .setModifier(PUBLIC.build())
         .addInterface(getMCTypeFacade().createQualifiedType(visitorService.getTraverserInterfaceFullName()))
-        .addCDAttribute(getRealThisAttribute(delegatorVisitorSimpleName))
-        .addCDAttribute(ivisitorAttribute())
-        .addAllCDAttributes(getVisitorAttributes(cDsTransitive))
-        .addAllCDAttributes(getHandlerAttributes(cDsTransitive))
-        .addAllCDMethods(addVisitorMethods(cDsTransitive))
-        .addAllCDMethods(addHandlerMethods(cDsTransitive))
-        .addAllCDMethods(addDefaultMethods())
+        .addCDMember(getRealThisAttribute(delegatorVisitorSimpleName))
+        .addCDMember(ivisitorAttribute())
+        .addAllCDMembers(getVisitorAttributes(cDsTransitive))
+        .addAllCDMembers(getHandlerAttributes(cDsTransitive))
+        .addAllCDMembers(addVisitorMethods(cDsTransitive))
+        .addAllCDMembers(addHandlerMethods(cDsTransitive))
+        .addAllCDMembers(addDefaultMethods())
         .build();
   }
 

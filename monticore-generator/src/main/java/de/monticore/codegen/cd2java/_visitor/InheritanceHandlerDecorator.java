@@ -58,11 +58,11 @@ public class InheritanceHandlerDecorator extends AbstractCreator<ASTCDCompilatio
         .setName(visitorService.getInheritanceHandlerSimpleName())
         .setModifier(PUBLIC.build())
         .addInterface(visitorService.getHandlerType())
-        .addCDAttribute(traverserAttribute)
-        .addAllCDMethods(traverserMethods)
-        .addAllCDMethods(getASTHandleMethods(compilationUnit.getCDDefinition(), handlerSimpleName, languageInterfaceName))
-        .addAllCDMethods(getScopeHandleMethods(cdDefinition, handlerSimpleName))
-        .addAllCDMethods(getSymbolHandleMethods(cdDefinition, handlerSimpleName))
+        .addCDMember(traverserAttribute)
+        .addAllCDMembers(traverserMethods)
+        .addAllCDMembers(getASTHandleMethods(compilationUnit.getCDDefinition(), handlerSimpleName, languageInterfaceName))
+        .addAllCDMembers(getScopeHandleMethods(cdDefinition, handlerSimpleName))
+        .addAllCDMembers(getSymbolHandleMethods(cdDefinition, handlerSimpleName))
         .build();
     
     this.replaceTemplate(ANNOTATIONS, cdClass, createAnnotationsHookPoint(cdClass.getModifier()));

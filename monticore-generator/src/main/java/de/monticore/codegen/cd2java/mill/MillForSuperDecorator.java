@@ -10,6 +10,8 @@ import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
+import de.monticore.cdbasis._symboltable.ICDBasisArtifactScope;
+import de.monticore.cdbasis._symboltable.ICDBasisScope;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java._parser.ParserService;
@@ -73,7 +75,7 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
       ASTMCQualifiedType superclass = this.getMCTypeFacade().createQualifiedType(
           basePackage + superSymbol.getName().toLowerCase() + "." + superSymbol.getName() + MillConstants.MILL_SUFFIX);
 
-      List<ASTCDMethod> correctScopeMethods = createScopeMethods(basePackage + superSymbol.getName(), service.hasStartProd(superSymbol.getAstNode()), service.getCDSymbol().getPackageName()+ ".", service.getCDName());
+      List<ASTCDMethod> correctScopeMethods = createScopeMethods(basePackage + superSymbol.getName(), service.hasStartProd((ASTCDDefinition) superSymbol.getAstNode()), service.getCDSymbol().getPackageName()+ ".", service.getCDName());
       ASTCDClass superMill = CD4AnalysisMill.cDClassBuilder()
           .setModifier(PUBLIC.build())
           .setName(millClassName)
@@ -84,8 +86,8 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
           .addCDMember(getSuperInheritanceTraverserMethod(superSymbol))
           .build();
 
-      if(!superSymbol.getAstNode().isPresentModifier() || !service.hasComponentStereotype(superSymbol.getAstNode().getModifier())){
-        if(!service.getCDSymbol().getAstNode().isPresentModifier() || !service.hasComponentStereotype(service.getCDSymbol().getAstNode().getModifier())) {
+      if(!((ASTCDDefinition) superSymbol.getAstNode()).isPresentModifier() || !service.hasComponentStereotype(((ASTCDDefinition) superSymbol.getAstNode()).getModifier())){
+        if(!((ASTCDDefinition) service.getCDSymbol().getAstNode()).isPresentModifier() || !service.hasComponentStereotype(((ASTCDDefinition) service.getCDSymbol().getAstNode()).getModifier())) {
           superMill.addCDMember(createParserMethod(superSymbol));
         }
       }
@@ -145,11 +147,14 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
   protected void calculateOverriddenCds(DiagramSymbol cd, Collection<String> nativeClasses, HashMap<DiagramSymbol,
       Collection<CDTypeSymbol>> overridden, Collection<CDTypeSymbol> firstClasses) {
     HashMap<String, CDTypeSymbol> l = Maps.newHashMap();
-    Collection<DiagramSymbol> importedClasses = cd.getImports().stream().map(service::resolveCD).collect(Collectors.toList());
+    Collection<DiagramSymbol> importedClasses = ((ICDBasisArtifactScope) cd.getEnclosingScope()).getImportsList().stream()
+        .map(i -> i.getStatement())
+        .map(service::resolveCD)
+        .collect(Collectors.toList());
     for (DiagramSymbol superCd : importedClasses) {
       Collection<CDTypeSymbol> overriddenSet = Lists.newArrayList();
       for (String className : nativeClasses) {
-        Optional<CDTypeSymbol> cdType = superCd.getType(className);
+        Optional<CDTypeSymbol> cdType = ((ICDBasisScope) superCd.getEnclosingScope()).resolveCDTypeLocally(className);
         if (cdType.isPresent()) {
           overriddenSet.add(cdType.get());
           boolean ignore = firstClasses.stream().filter(s -> s.getName().equals(className)).count() > 0;

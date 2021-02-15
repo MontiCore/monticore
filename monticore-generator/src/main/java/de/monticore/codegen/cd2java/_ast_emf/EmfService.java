@@ -6,6 +6,7 @@ import de.monticore.cdinterfaceandenum._ast.*;
 import de.monticore.cd4analysis._ast.*;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
+import de.monticore.cdbasis._symboltable.ICDBasisScope;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
@@ -166,7 +167,7 @@ public class EmfService extends AbstractService<EmfService> {
     } else {
       List<DiagramSymbol> superCDs = getSuperCDsTransitive(resolveCD(astcdDefinition.getName()));
       for (DiagramSymbol superCD : superCDs) {
-        if (superCD.getTypes().stream().anyMatch(x -> x.getName().equals(simpleNativeAttributeType))) {
+        if (((ICDBasisScope) superCD.getEnclosingScope()).getLocalCDTypeSymbols().stream().anyMatch(x -> x.getName().equals(simpleNativeAttributeType))) {
           return superCD.getName() + "PackageImpl";
         }
       }

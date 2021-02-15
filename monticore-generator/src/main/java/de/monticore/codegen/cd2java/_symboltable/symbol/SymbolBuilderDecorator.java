@@ -85,7 +85,7 @@ public class SymbolBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDCla
       symbolBuilder.addAllCDMembers(
               getMethodsForDefaultAttrs(defaultAttrs, builderMutatorMethodDecorator));
       // Override getScope-Methods
-      symbolBuilder.addAllCDMethods(createScopeMethods(hasInheritedScope));
+      symbolBuilder.addAllCDMembers(createScopeMethods(hasInheritedScope));
     }
 
     List<ASTCDAttribute> buildAttributes = Lists.newArrayList(symbolClass.getCDAttributeList());

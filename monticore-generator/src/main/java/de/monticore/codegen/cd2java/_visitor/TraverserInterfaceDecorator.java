@@ -15,6 +15,7 @@ import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
+import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
@@ -77,18 +78,18 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
         .map(visitorService::getVisitorSimpleName)
         .collect(Collectors.toList()));
 
-    List<ASTMCQualifiedType> superInterfaces = this.visitorService.getSuperTraverserInterfaces();
+    List<ASTMCObjectType> superInterfaces = this.visitorService.getSuperTraverserInterfaces();
     if (superInterfaces.isEmpty()) {
       superInterfaces.add(getMCTypeFacade().createQualifiedType(ITRAVERSER_FULL_NAME));
     }
 
     ASTCDInterface visitorInterface = CD4CodeMill.cDInterfaceBuilder()
         .setName(traverserSimpleName)
-        .addAllInterface(superInterfaces)
+        .addAllInterfaces(superInterfaces)
         .setModifier(PUBLIC.build())
-        .addAllCDMethods(addVisitor2Methods(definitionList))
-        .addAllCDMethods(addHanlderMethods(definitionList))
-        .addAllCDMethods(createTraverserDelegatingMethods(compilationUnit.getCDDefinition()))
+        .addAllCDMembers(addVisitor2Methods(definitionList))
+        .addAllCDMembers(addHanlderMethods(definitionList))
+        .addAllCDMembers(createTraverserDelegatingMethods(compilationUnit.getCDDefinition()))
         .build();
     
     return visitorInterface;

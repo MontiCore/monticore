@@ -168,7 +168,7 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
 
       // global scope
       ASTCDClass globalScopeClass = createGlobalScopeClass(astCD, symbolTablePackage);
-      symTabCD.addCDClass(globalScopeClass);
+      symTabCD.addCDElement(globalScopeClass);
 
 
       //scope skeleton creator

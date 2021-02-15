@@ -82,7 +82,7 @@ public class ScopesGenitorDelegatorDecorator extends AbstractCreator<ASTCDCompil
     List<DiagramSymbol> superCDsTransitive = symbolTableService.getSuperCDsTransitive();
     Map<String, String> superSymTabCreator = new HashMap<>();
     for (DiagramSymbol cdDefinitionSymbol : superCDsTransitive) {
-      if (cdDefinitionSymbol.isPresentAstNode() && symbolTableService.hasStartProd(cdDefinitionSymbol.getAstNode())) {
+      if (cdDefinitionSymbol.isPresentAstNode() && symbolTableService.hasStartProd((ASTCDDefinition) cdDefinitionSymbol.getAstNode())) {
         superSymTabCreator.put(cdDefinitionSymbol.getName(), symbolTableService.getScopesGenitorFullName(cdDefinitionSymbol));
       }
     }

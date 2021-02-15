@@ -8,6 +8,7 @@ import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
+import de.monticore.cdbasis._symboltable.ICDBasisScope;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolKindHierarchies;
@@ -98,7 +99,7 @@ public class ScopeClassDecorator extends AbstractDecorator {
         .forEach(a -> getDecorationHelper().addAttributeDefaultValues(a, this.glex));
 
     List<ASTCDMethod> scopeRuleMethodList = scopeInput.deepClone().getCDDefinition()
-        .getCDClassList()
+        .getCDClassesList()
         .stream()
         .map(ASTCDClass::getCDMethodList)
         .flatMap(List::stream)
@@ -158,35 +159,35 @@ public class ScopeClassDecorator extends AbstractDecorator {
         .setName(scopeClassName)
         .setModifier(PUBLIC.build())
         .addInterface(scopeInterfaceType)
-        .addAllCDConstructors(createConstructors(scopeClassName))
-        .addAllCDAttributes(scopeRuleAttributeList)
-        .addAllCDMethods(scopeRuleMethodList)
-        .addAllCDMethods(scopeRuleAttributeMethods)
-        .addAllCDAttributes(symbolAttributes.values())
-        .addAllCDMethods(symbolMethods)
-        .addAllCDAttributes(symbolAlreadyResolvedAttributes)
-        .addAllCDMethods(symbolAlreadyResolvedMethods)
-        .addCDAttribute(enclosingScopeAttribute)
-        .addAllCDMethods(enclosingScopeMethods)
-        .addCDAttribute(spanningSymbolAttribute)
-        .addAllCDMethods(spanningSymbolMethods)
-        .addCDAttribute(shadowingAttribute)
-        .addAllCDMethods(shadowingMethods)
-        .addCDAttribute(exportSymbolsAttribute)
-        .addAllCDMethods(exportSymbolsMethods)
-        .addCDAttribute(orderedAttribute)
-        .addAllCDMethods(orderedMethods)
-        .addCDAttribute(nameAttribute)
-        .addAllCDMethods(nameMethods)
-        .addCDAttribute(astNodeAttribute)
-        .addAllCDMethods(astNodeMethods)
-        .addCDAttribute(createSubScopesAttribute(scopeInterfaceType))
-        .addAllCDMethods(createSubScopeMethods(scopeInterfaceType))
-        .addAllCDMethods(createAcceptTraverserMethods(scopeClassName))
-        .addAllCDMethods(createSuperScopeMethods(symbolTableService.getScopeInterfaceFullName()))
-        .addAllCDMethods(resolveSubKindsMethods);
+        .addAllCDMembers(createConstructors(scopeClassName))
+        .addAllCDMembers(scopeRuleAttributeList)
+        .addAllCDMembers(scopeRuleMethodList)
+        .addAllCDMembers(scopeRuleAttributeMethods)
+        .addAllCDMembers(symbolAttributes.values())
+        .addAllCDMembers(symbolMethods)
+        .addAllCDMembers(symbolAlreadyResolvedAttributes)
+        .addAllCDMembers(symbolAlreadyResolvedMethods)
+        .addCDMember(enclosingScopeAttribute)
+        .addAllCDMembers(enclosingScopeMethods)
+        .addCDMember(spanningSymbolAttribute)
+        .addAllCDMembers(spanningSymbolMethods)
+        .addCDMember(shadowingAttribute)
+        .addAllCDMembers(shadowingMethods)
+        .addCDMember(exportSymbolsAttribute)
+        .addAllCDMembers(exportSymbolsMethods)
+        .addCDMember(orderedAttribute)
+        .addAllCDMembers(orderedMethods)
+        .addCDMember(nameAttribute)
+        .addAllCDMembers(nameMethods)
+        .addCDMember(astNodeAttribute)
+        .addAllCDMembers(astNodeMethods)
+        .addCDMember(createSubScopesAttribute(scopeInterfaceType))
+        .addAllCDMembers(createSubScopeMethods(scopeInterfaceType))
+        .addAllCDMembers(createAcceptTraverserMethods(scopeClassName))
+        .addAllCDMembers(createSuperScopeMethods(symbolTableService.getScopeInterfaceFullName()))
+        .addAllCDMembers(resolveSubKindsMethods);
     if (scopeRuleSuperClass.isPresent()) {
-      builder.setSuperclass(scopeRuleSuperClass.get());
+      builder.setSuperclass((ASTMCQualifiedType) scopeRuleSuperClass.get());
     }
     return builder.build();
   }
@@ -283,7 +284,7 @@ public class ScopeClassDecorator extends AbstractDecorator {
   protected Map<String, ASTCDAttribute> getSuperSymbolAttributes() {
     Map<String, ASTCDAttribute> symbolAttributes = new HashMap<>();
     for (DiagramSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
-      for (CDTypeSymbol type : cdDefinitionSymbol.getTypes()) {
+      for (CDTypeSymbol type : ((ICDBasisScope) cdDefinitionSymbol.getEnclosingScope()).getLocalCDTypeSymbols()) {
         if (type.isPresentAstNode() && type.getAstNode().isPresentModifier()
             && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifier())) {
           Optional<ASTCDAttribute> symbolAttribute = createSymbolAttribute(type.getAstNode(),
@@ -575,7 +576,7 @@ public class ScopeClassDecorator extends AbstractDecorator {
 
     //add symbols from super grammars
     for (DiagramSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
-      for (CDTypeSymbol type : cdDefinitionSymbol.getTypes()) {
+      for (CDTypeSymbol type : ((ICDBasisScope) cdDefinitionSymbol.getEnclosingScope()).getLocalCDTypeSymbols()) {
         if (type.isPresentAstNode() && type.getAstNode().isPresentModifier()
             && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifier())) {
           String name = symbolTableService.getSymbolFullName(type.getAstNode(), cdDefinitionSymbol);

@@ -16,6 +16,7 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.prettyprint.MCBasicTypesFullPrettyPrinter;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -58,9 +59,9 @@ public class HandlerDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
         .setName(handlerSimpleName)
         .setModifier(PUBLIC.build())
         .addInterface(getMCTypeFacade().createQualifiedType(IHANDLER_FULL_NAME))
-        .addCDMethod(addGetTraverserMethod(traverserType))
-        .addCDMethod(addSetTraverserMethod(traverserType))
-        .addAllCDMethods(createHandlerMethods(compilationUnit.getCDDefinition()))
+        .addCDMember(addGetTraverserMethod(traverserType))
+        .addCDMember(addSetTraverserMethod(traverserType))
+        .addAllCDMembers(createHandlerMethods(compilationUnit.getCDDefinition()))
         .build();
     
     return visitorInterface;
@@ -75,7 +76,7 @@ public class HandlerDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
   protected ASTCDMethod addGetTraverserMethod(ASTMCType visitorType) {
     ASTCDMethod getRealThisMethod = this.getCDMethodFacade().createMethod(PUBLIC.build(), visitorType, GET_TRAVERSER);
     String generatedErrorCode = visitorService.getGeneratedErrorCode(visitorType.printType(
-        new CD4CodeFullPrettyPrinter(new IndentPrinter())) + GET_TRAVERSER);
+        new MCBasicTypesFullPrettyPrinter(new IndentPrinter())) + GET_TRAVERSER);
     this.replaceTemplate(EMPTY_BODY, getRealThisMethod, new StringHookPoint(
         "    throw new UnsupportedOperationException(\"0xA7015" + generatedErrorCode + " The getter for the traverser is " +
             "not implemented. You might want to implement a wrapper class to allow setting/getting the traverser.\");\n"));
@@ -92,7 +93,7 @@ public class HandlerDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
     ASTCDParameter visitorParameter = getCDParameterFacade().createParameter(visitorType, TRAVERSER);
     ASTCDMethod setRealThis = this.getCDMethodFacade().createMethod(PUBLIC.build(), SET_TRAVERSER, visitorParameter);
     String generatedErrorCode = visitorService.getGeneratedErrorCode(visitorType.printType(
-        new CD4CodeFullPrettyPrinter(new IndentPrinter())) + SET_TRAVERSER);
+        new MCBasicTypesFullPrettyPrinter(new IndentPrinter())) + SET_TRAVERSER);
     this.replaceTemplate(EMPTY_BODY, setRealThis, new StringHookPoint(
         "    throw new UnsupportedOperationException(\"0xA7016" + generatedErrorCode + " The setter for the traverser is " +
             "not implemented. You might want to implement a wrapper class to allow setting/getting the traverser.\");\n"));

@@ -8,12 +8,16 @@ import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.cdbasis._symboltable.CDTypeSymbolSurrogate;
+import de.monticore.cdbasis._symboltable.ICDBasisArtifactScope;
 import de.monticore.cdinterfaceandenum._ast.*;
 import de.monticore.codegen.cd2java.exception.DecorateException;
 import de.monticore.codegen.cd2java.exception.DecoratorErrorCode;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
+import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.MCTypeFacade;
+import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
+import de.monticore.types.prettyprint.MCBasicTypesFullPrettyPrinter;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import de.monticore.umlstereotype._ast.ASTStereoValue;
 import de.se_rwth.commons.Names;
@@ -74,7 +78,8 @@ public class AbstractService<T extends AbstractService> {
 
   public List<DiagramSymbol> getSuperCDsDirect(DiagramSymbol cdSymbol) {
     // get direct parent CDSymbols
-    List<DiagramSymbol> superCDs = cdSymbol.getImports().stream()
+    List<DiagramSymbol> superCDs = ((ICDBasisArtifactScope) cdSymbol.getEnclosingScope()).getImportsList().stream()
+        .map(i -> i.getStatement())
         .map(this::resolveCD)
         .collect(Collectors.toList());
     return superCDs;
@@ -86,7 +91,8 @@ public class AbstractService<T extends AbstractService> {
 
   public List<DiagramSymbol> getSuperCDsTransitive(DiagramSymbol cdSymbol) {
     // get direct parent CDSymbols
-    List<DiagramSymbol> directSuperCdSymbols = cdSymbol.getImports().stream()
+    List<DiagramSymbol> directSuperCdSymbols = ((ICDBasisArtifactScope) cdSymbol.getEnclosingScope()).getImportsList().stream()
+        .map(i -> i.getStatement())
         .map(this::resolveCD)
         .collect(Collectors.toList());
     // search for super Cds in super Cds
@@ -114,7 +120,7 @@ public class AbstractService<T extends AbstractService> {
         .collect(Collectors.toList());
   }
 
-  public List<CDTypeSymbol> getAllSuperClassesTransitive(CDTypeSymbol cdTypeSymbol) {
+  private List<CDTypeSymbol> getAllSuperClassesTransitive(CDTypeSymbol cdTypeSymbol) {
     List<CDTypeSymbol> superSymbolList = new ArrayList<>();
     if (cdTypeSymbol.isPresentSuperClass()) {
       CDTypeSymbol superSymbol = cdTypeSymbol.getSuperClass().lazyLoadDelegate();
@@ -128,10 +134,10 @@ public class AbstractService<T extends AbstractService> {
     return getAllSuperInterfacesTransitive(astcdClass.getSymbol());
   }
 
-  public List<String> getAllSuperInterfacesTransitive(CDTypeSymbol cdTypeSymbol) {
+  private List<String> getAllSuperInterfacesTransitive(CDTypeSymbol cdTypeSymbol) {
     List<String> superSymbolList = new ArrayList<>();
-    for (CDTypeSymbolSurrogate cdInterface : cdTypeSymbol.getCdInterfacesList()) {
-      String fullName = cdInterface.getFullName();
+    for (ASTMCObjectType cdInterface : ((ASTCDClass) cdTypeSymbol.getAstNode()).getCDInterfaceUsage().getInterfaceList()) {
+      String fullName = cdInterface.printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter()));
       superSymbolList.add(createASTFullName(fullName));
       CDTypeSymbol superSymbol = resolveCDType(fullName);
       superSymbolList.addAll(getAllSuperInterfacesTransitive(superSymbol));
@@ -143,12 +149,12 @@ public class AbstractService<T extends AbstractService> {
    * use symboltabe to resolve for ClassDiagrams or CDTypes
    */
   public DiagramSymbol resolveCD(String qualifiedName) {
-    return getCDSymbol().getEnclosingScope().resolveCDDefinition(qualifiedName)
+    return getCDSymbol().getEnclosingScope().resolveDiagram(qualifiedName)
         .orElseThrow(() -> new DecorateException(DecoratorErrorCode.CD_SYMBOL_NOT_FOUND, qualifiedName));
   }
 
   public CDTypeSymbol resolveCDType(String qualifiedName) {
-    return getCDSymbol().getEnclosingScope().resolveCDType(qualifiedName)
+    return ((ICDBasisArtifactScope)getCDSymbol().getEnclosingScope()).resolveCDType(qualifiedName)
         .orElseThrow(() -> new DecorateException(DecoratorErrorCode.CD_SYMBOL_NOT_FOUND, qualifiedName));
   }
 
@@ -301,7 +307,7 @@ public class AbstractService<T extends AbstractService> {
 
   public Optional<String> getStartProd() {
     if(this.getCDSymbol().isPresentAstNode()){
-      return getStartProd(this.getCDSymbol().getAstNode());
+      return getStartProd((ASTCDDefinition) this.getCDSymbol().getAstNode());
     }
     else return Optional.empty();
   }
@@ -324,7 +330,7 @@ public class AbstractService<T extends AbstractService> {
   }
 
   public Optional<String> getStartProdASTFullName(){
-    return getStartProdASTFullName(cdSymbol.getAstNode());
+    return getStartProdASTFullName((ASTCDDefinition) cdSymbol.getAstNode());
   }
 
   public Optional<String> getStartProdASTFullName(ASTCDDefinition astcdDefinition) {

@@ -61,19 +61,19 @@ public class ODDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClas
         .setModifier(PUBLIC.build())
         .addInterface(getMCTypeFacade().createQualifiedType(visitorFullName))
         .addInterface(getMCTypeFacade().createQualifiedType(handlerFullName))
-        .addCDConstructor(createConstructor(odName))
-        .addCDAttribute(traverserAttribute)
-        .addCDAttribute(createIndentPrinterAttribute())
-        .addCDAttribute(createReportingRepositoryAttribute())
-        .addCDAttribute(printEmptyOptionalAttribute)
-        .addCDAttribute(printEmptyListAttribute)
-        .addAllCDMethods(createHandleMethods(input.getCDDefinition()))
-        .addAllCDMethods(traverserMethods)
-        .addCDMethod(createPrintAttributeMethod())
-        .addCDMethod(createPrintObjectMethod())
-        .addCDMethod(createPrintObjectDiagramMethod())
-        .addAllCDMethods(printEmptyOptionalMethods)
-        .addAllCDMethods(printEmptyListMethods)
+        .addCDMember(createConstructor(odName))
+        .addCDMember(traverserAttribute)
+        .addCDMember(createIndentPrinterAttribute())
+        .addCDMember(createReportingRepositoryAttribute())
+        .addCDMember(printEmptyOptionalAttribute)
+        .addCDMember(printEmptyListAttribute)
+        .addAllCDMembers(createHandleMethods(input.getCDDefinition()))
+        .addAllCDMembers(traverserMethods)
+        .addCDMember(createPrintAttributeMethod())
+        .addCDMember(createPrintObjectMethod())
+        .addCDMember(createPrintObjectDiagramMethod())
+        .addAllCDMembers(printEmptyOptionalMethods)
+        .addAllCDMembers(printEmptyListMethods)
         .build();
   }
 
@@ -87,7 +87,7 @@ public class ODDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClas
   }
 
   protected ASTCDAttribute createTraverserAttribute(String visitorName) {
-    ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PRIVATE, visitorName, TRAVERSER);
+    ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PRIVATE.build(), visitorName, TRAVERSER);
     return attribute;
   }
 

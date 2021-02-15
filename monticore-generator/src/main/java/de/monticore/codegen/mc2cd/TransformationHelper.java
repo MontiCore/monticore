@@ -11,6 +11,7 @@ import de.monticore.cdbasis._ast.*;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.cd4analysis._ast.ASTCD4AnalysisNode;
 import de.monticore.cd4analysis._ast.CD4AnalysisNodeFactory;
+import de.monticore.cd4code._ast.CD4CodeNodeFactory;
 import de.monticore.cd4analysis._parser.CD4AnalysisParser;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.cd4analysis._symboltable.ICD4AnalysisGlobalScope;
@@ -157,7 +158,7 @@ public final class TransformationHelper {
 
   public static ASTCDParameter createParameter(String typeName,
                                                String parameterName) {
-    ASTCDParameter parameter = CD4AnalysisNodeFactory
+    ASTCDParameter parameter = CD4CodeNodeFactory
         .createASTCDParameter();
     parameter.setMCType(TransformationHelper.createType(typeName));
     parameter.setName(parameterName);
@@ -307,7 +308,7 @@ public final class TransformationHelper {
                                                                ASTMCGrammar ast, String nameSuffix) {
     final String qualifiedCDName = Names.getQualifiedName(ast.getPackageList(), ast.getName() + nameSuffix);
 
-    Optional<DiagramSymbol> cdSymbol = globalScope.resolveCDDefinitionDown(
+    Optional<DiagramSymbol> cdSymbol = globalScope.resolveDiagramDown(
         qualifiedCDName);
 
     if (cdSymbol.isPresent() && cdSymbol.get().getEnclosingScope().isPresentAstNode()) {
@@ -404,7 +405,7 @@ public final class TransformationHelper {
       type.setModifier(CD4AnalysisNodeFactory.createASTModifier());
     } else if (!multiple) {
       if (type.getModifier().isPresentStereotype()
-              && type.getModifier().getStereotype().getValueList().stream().anyMatch(v -> v.getName().equals(stereotypeName))) {
+              && type.getModifier().getStereotype().getValuesList().stream().anyMatch(v -> v.getName().equals(stereotypeName))) {
         return;
       }
     }

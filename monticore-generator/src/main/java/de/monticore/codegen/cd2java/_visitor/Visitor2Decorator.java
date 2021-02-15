@@ -51,9 +51,9 @@ public class Visitor2Decorator extends AbstractCreator<ASTCDCompilationUnit, AST
         .setName(this.visitorService.getVisitor2SimpleName())
         .setModifier(PUBLIC.build())
         .addInterface(getMCTypeFacade().createQualifiedType(IVISTOR_FULL_NAME))
-        .addAllCDMethods(addASTNodeVisitorMethods(compilationUnit.getCDDefinition()))
-        .addAllCDMethods(addSymbolVisitorMethods(symbolNames))
-        .addAllCDMethods(addScopeVisitorMethods(getSymbolsTransitive(), ast.getCDDefinition()))
+        .addAllCDMembers(addASTNodeVisitorMethods(compilationUnit.getCDDefinition()))
+        .addAllCDMembers(addSymbolVisitorMethods(symbolNames))
+        .addAllCDMembers(addScopeVisitorMethods(getSymbolsTransitive(), ast.getCDDefinition()))
         .build();
 
     return visitorInterface;

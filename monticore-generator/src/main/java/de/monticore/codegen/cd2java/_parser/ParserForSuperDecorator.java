@@ -9,6 +9,8 @@ import de.monticore.cd4codebasis._ast.*;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
+import de.monticore.cdbasis._symboltable.ICDBasisArtifactScope;
+import de.monticore.cdbasis._symboltable.ICDBasisScope;
 import de.monticore.cdinterfaceandenum._ast.*;
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -17,6 +19,7 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 import java.util.*;
@@ -47,17 +50,17 @@ public class ParserForSuperDecorator extends AbstractDecorator {
     if(!astCD.getCDDefinition().isPresentModifier() || !service.hasComponentStereotype(astCD.getCDDefinition().getModifier())){
       String grammarName = service.getCDName();
       for(DiagramSymbol symbol: service.getSuperCDsTransitive()){
-        if(!symbol.getAstNode().isPresentModifier() || !service.hasComponentStereotype(symbol.getAstNode().getModifier())){
+        if(!((ASTCDDefinition) symbol.getAstNode()).isPresentModifier() || !service.hasComponentStereotype(((ASTCDDefinition) symbol.getAstNode()).getModifier())){
           String superGrammarName = symbol.getName();
           List<ASTCDClass> astcdClasses = astCD.getCDDefinition().deepClone().getCDClassesList();
-          ASTMCObjectType superClass = getMCTypeFacade().createQualifiedType(service.getParserClassFullName(symbol));
+          ASTMCQualifiedType superClass = getMCTypeFacade().createQualifiedType(service.getParserClassFullName(symbol));
           String className = superGrammarName + PARSER_SUFFIX + FOR_SUFFIX + grammarName;
 
           ASTCDClass clazz = CD4AnalysisMill.cDClassBuilder()
               .setName(className)
               .setModifier(PUBLIC.build())
               .setSuperclass(superClass)
-              .addAllCDMethods(createParseMethods(astcdClasses, symbol))
+              .addAllCDMembers(createParseMethods(astcdClasses, symbol))
               .build();
           classList.add(clazz);
         }
@@ -153,7 +156,7 @@ public class ParserForSuperDecorator extends AbstractDecorator {
                                                                                         Map<DiagramSymbol, Collection<CDTypeSymbol>> overridden,
                                                                                         List<String> prodNames){
     Collection<CDTypeSymbol> types = overridden.get(symbol);
-    Collection<CDTypeSymbol> typesInSymbol = symbol.getTypes();
+    Collection<CDTypeSymbol> typesInSymbol = ((ICDBasisScope) symbol.getEnclosingScope()).getLocalCDTypeSymbols();
     Collection<CDTypeSymbol> otherProds = Lists.newArrayList();
 
     for(CDTypeSymbol type: typesInSymbol){
@@ -186,12 +189,15 @@ public class ParserForSuperDecorator extends AbstractDecorator {
       Collection<CDTypeSymbol>> overridden, Collection<CDTypeSymbol> firstClasses) {
     HashMap<String, CDTypeSymbol> l = Maps.newHashMap();
     //get all super cds / imports of the original cd
-    Collection<DiagramSymbol> importedClasses = cd.getImports().stream().map(service::resolveCD).collect(Collectors.toList());
+    Collection<DiagramSymbol> importedClasses = ((ICDBasisArtifactScope) cd.getEnclosingScope()).getImportsList().stream()
+        .map(i -> i.getStatement())
+        .map(service::resolveCD)
+        .collect(Collectors.toList());
     Collection<CDTypeSymbol> overriddenSet = Lists.newArrayList();
     //determine for every native prod of the original grammar if the super grammar has a prod with the same name
     //if yes then the prod is overridden
     for (String className : nativeClasses) {
-      Optional<CDTypeSymbol> cdType = cd.getType(className);
+      Optional<CDTypeSymbol> cdType = ((ICDBasisArtifactScope) cd.getEnclosingScope()).resolveCDTypeLocally(className);
       if (cdType.isPresent()) {
         overriddenSet.add(cdType.get());
         //if the type is already in the first classes container, then ignore it so that no correct parse method for it can be generated

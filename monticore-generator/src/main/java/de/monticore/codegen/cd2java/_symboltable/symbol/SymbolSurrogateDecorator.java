@@ -94,11 +94,11 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
             .setModifier(modifier)
             .setSuperclass(getMCTypeFacade()
             .createQualifiedType(symbolTableService.getSymbolFullName(symbolInput)))
-            .addCDConstructor(createConstructor(symbolSurrogateSimpleName))
-            .addAllCDMethods(nameMethods)
-            .addAllCDMethods(delegateSymbolRuleAttributeMethods)
-            .addCDMethod(createGetFullNameMethod())
-            .addAllCDMethods(delegateSymbolRuleMethods);
+            .addCDMember(createConstructor(symbolSurrogateSimpleName))
+            .addAllCDMembers(nameMethods)
+            .addAllCDMembers(delegateSymbolRuleAttributeMethods)
+            .addCDMember(createGetFullNameMethod())
+            .addAllCDMembers(delegateSymbolRuleMethods);
     return builder
             .addCDMember(delegateAttribute)
             .addAllCDMembers(enclosingScopeMethods)

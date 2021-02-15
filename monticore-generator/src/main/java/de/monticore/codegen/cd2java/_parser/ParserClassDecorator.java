@@ -49,9 +49,9 @@ public class ParserClassDecorator extends AbstractDecorator {
             .setName(service.getParserClassSimpleName())
             .setModifier(PUBLIC.build())
             .setSuperclass(superClass)
-            .addAllCDMethods(createCreateMethods(grammarName))
-            .addAllCDMethods(createParseMethods(startRuleName, qualifiedStartRuleName))
-            .addAllCDMethods(createParseMethodsForProds(grammarName, prods))
+            .addAllCDMembers(createCreateMethods(grammarName))
+            .addAllCDMembers(createParseMethods(startRuleName, qualifiedStartRuleName))
+            .addAllCDMembers(createParseMethodsForProds(grammarName, prods))
             .build());
       }
     }

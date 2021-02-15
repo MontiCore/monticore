@@ -69,21 +69,21 @@ public class PackageImplDecorator extends AbstractCreator<ASTCDCompilationUnit, 
         .setModifier(PUBLIC.build())
         .setSuperclass(getMCTypeFacade().createQualifiedType(E_PACKAGE_IMPL))
         .addInterface(getMCTypeFacade().createQualifiedType(packageName))
-        .addCDAttribute(constantsEEnumAttribute)
-        .addAllCDAttributes(eAttributes)
-        .addCDAttribute(createISCreatedAttribute())
-        .addCDAttribute(createIsInitializedAttribute())
-        .addCDAttribute(createIsInitedAttribute())
-        .addCDConstructor(createConstructor(packageImplName, definitionName))
-        .addCDMethod(createInitMethod(packageName))
-        .addAllCDMethods(eClassMethods)
-        .addAllCDMethods(constantsEEnumMethod)
-        .addCDMethod(createGetNodeFactoryMethod(definitionName))
-        .addCDMethod(createGetPackageMethod(definitionName))
-        .addCDMethod(createASTESuperPackagesMethod())
-        .addAllCDMethods(createGetEAttributeMethods(definition))
-        .addCDMethod(createCreatePackageContentsMethod(definitionName, definition))
-        .addCDMethod(createInitializePackageContentsMethod(compilationUnit.getCDDefinition()))
+        .addCDMember(constantsEEnumAttribute)
+        .addAllCDMembers(eAttributes)
+        .addCDMember(createISCreatedAttribute())
+        .addCDMember(createIsInitializedAttribute())
+        .addCDMember(createIsInitedAttribute())
+        .addCDMember(createConstructor(packageImplName, definitionName))
+        .addCDMember(createInitMethod(packageName))
+        .addAllCDMembers(eClassMethods)
+        .addAllCDMembers(constantsEEnumMethod)
+        .addCDMember(createGetNodeFactoryMethod(definitionName))
+        .addCDMember(createGetPackageMethod(definitionName))
+        .addCDMember(createASTESuperPackagesMethod())
+        .addAllCDMembers(createGetEAttributeMethods(definition))
+        .addCDMember(createCreatePackageContentsMethod(definitionName, definition))
+        .addCDMember(createInitializePackageContentsMethod(compilationUnit.getCDDefinition()))
         .build();
   }
 
@@ -191,14 +191,16 @@ public class PackageImplDecorator extends AbstractCreator<ASTCDCompilationUnit, 
   protected List<ASTCDMethod> createGetEAttributeMethods(ASTCDDefinition astcdDefinition) {
     List<ASTCDMethod> methodList = new ArrayList<>();
     for (ASTCDClass astcdClass : astcdDefinition.getCDClassesList()) {
-      for (int i = 0; i < astcdClass.getCDAttributeList().size(); i++) {
-        methodList.add(createGetEAttributeMethod(astcdClass.getCDAttribute(i), i, astcdClass.getName()));
+      List<ASTCDAttribute> attrList = astcdClass.getCDAttributeList();
+      for (int i = 0; i < attrList.size(); i++) {
+        methodList.add(createGetEAttributeMethod(attrList.get(i), i, astcdClass.getName()));
       }
     }
 
     for (ASTCDInterface astcdInterface : astcdDefinition.getCDInterfacesList()) {
-      for (int i = 0; i < astcdInterface.getCDAttributeList().size(); i++) {
-        methodList.add(createGetEAttributeMethod(astcdInterface.getCDAttribute(i), i, astcdInterface.getName()));
+      List<ASTCDAttribute> attrList = astcdInterface.getCDAttributeList();
+      for (int i = 0; i < attrList.size(); i++) {
+        methodList.add(createGetEAttributeMethod(attrList.get(i), i, astcdInterface.getName()));
       }
     }
     return methodList;

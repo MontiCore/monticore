@@ -105,7 +105,7 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
     scopeRuleAttributeMethods.forEach(m -> m.getModifier().setAbstract(true));
 
     List<DiagramSymbol> superCDsDirect = symbolTableService.getSuperCDsDirect();
-    List<ASTMCQualifiedType> superScopeInterfaces = superCDsDirect
+    List<ASTMCObjectType> superScopeInterfaces = superCDsDirect
         .stream()
         .map(symbolTableService::getScopeInterfaceType)
         .collect(Collectors.toList());
@@ -125,16 +125,16 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
     return CD4AnalysisMill.cDInterfaceBuilder()
         .setName(scopeInterfaceName)
         .setModifier(PUBLIC.build())
-        .addAllInterface(superScopeInterfaces)
-        .addAllInterface(scopeRuleInterfaces)
-        .addAllCDMethods(createAlreadyResolvedMethods(symbolInput.getCDDefinition().getCDClassesList()))
-        .addAllCDMethods(createScopeInterfaceMethodsForSymbols(symbolInput.getCDDefinition().getCDClassesList()))
-        .addAllCDMethods(createSubScopesMethods(scopeInterfaceName))
-        .addAllCDMethods(createEnclosingScopeMethods(scopeInterfaceName))
-        .addAllCDMethods(scopeRuleMethodList)
-        .addAllCDMethods(scopeRuleAttributeMethods)
-        .addCDMethod(createAcceptTraverserMethod())
-        .addCDMethod(createSymbolsSizeMethod(symbolAttributes))
+        .addAllInterfaces(superScopeInterfaces)
+        .addAllInterfaces(scopeRuleInterfaces)
+        .addAllCDMembers(createAlreadyResolvedMethods(symbolInput.getCDDefinition().getCDClassesList()))
+        .addAllCDMembers(createScopeInterfaceMethodsForSymbols(symbolInput.getCDDefinition().getCDClassesList()))
+        .addAllCDMembers(createSubScopesMethods(scopeInterfaceName))
+        .addAllCDMembers(createEnclosingScopeMethods(scopeInterfaceName))
+        .addAllCDMembers(scopeRuleMethodList)
+        .addAllCDMembers(scopeRuleAttributeMethods)
+        .addCDMember(createAcceptTraverserMethod())
+        .addCDMember(createSymbolsSizeMethod(symbolAttributes))
         .build();
   }
 

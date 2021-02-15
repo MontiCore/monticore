@@ -12,6 +12,7 @@ import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
+import de.monticore.types.prettyprint.MCBasicTypesFullPrettyPrinter;
 
 import java.util.Iterator;
 import java.util.List;
@@ -98,7 +99,7 @@ final class RemoveRedundantAttributesManipulation implements UnaryOperator<ASTCD
     if (cdAttribute.getMCType() instanceof ASTMCGenericType) {
       List<ASTMCTypeArgument> argList = ((ASTMCGenericType) cdAttribute.getMCType()).getMCTypeArgumentList();
       if (!argList.isEmpty()) {
-        String simpleTypeName = argList.get(0).getMCTypeOpt().get().printType(new CD4CodeFullPrettyPrinter(new IndentPrinter()));
+        String simpleTypeName = argList.get(0).getMCTypeOpt().get().printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter()));
         return Optional.of(simpleTypeName);
       }
     }
