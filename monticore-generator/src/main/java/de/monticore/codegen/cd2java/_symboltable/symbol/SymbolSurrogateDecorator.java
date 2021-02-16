@@ -12,6 +12,8 @@ import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.types.prettyprint.MCBasicTypesFullPrettyPrinter;
 import de.monticore.umlmodifier._ast.ASTModifier;
 
 import java.util.ArrayList;
@@ -160,7 +162,7 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
     for(ASTCDMethod inherited: inheritedMethods){
       ASTCDMethod method = getCDMethodFacade().createMethod(inherited.getModifier(), inherited.getMCReturnType(), inherited.getName(), inherited.getCDParameterList());
       StringBuilder message = new StringBuilder();
-      if(!method.printReturnType().equals("void")){
+      if(!method.getMCReturnType().printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())).equals("void")){
         message.append("return ");
       }
       message.append("lazyLoadDelegate().").append(method.getName()).append("(");

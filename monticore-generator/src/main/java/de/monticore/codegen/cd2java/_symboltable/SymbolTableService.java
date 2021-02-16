@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._symboltable;
 
-import de.monticore.cd.CD4AnalysisHelper;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.cdinterfaceandenum._ast.*;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
@@ -18,6 +17,8 @@ import de.se_rwth.commons.Names;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import com.google.common.collect.Lists;
 
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.*;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
@@ -594,8 +595,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   }
 
   public String getReferencedSymbolTypeName(ASTCDAttribute attribute) {
-    return CD4AnalysisHelper.getStereotypeValues(attribute,
-        MC2CDStereotypes.REFERENCED_SYMBOL.toString()).get(0);
+    return getStereotypeValues(attribute, MC2CDStereotypes.REFERENCED_SYMBOL.toString()).get(0);
   }
 
   public boolean isReferencedSymbol(ASTCDAttribute attribute) {
@@ -856,5 +856,17 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
       return "null";
     }
   }
+  
+  protected List<String> getStereotypeValues(ASTCDAttribute ast, String stereotypeName) {
+    List<String> values = Lists.newArrayList();
+    if (ast.isPresentModifier() && ast.getModifier().isPresentStereotype()) {
+      ast.getModifier().getStereotype().getValuesList().stream()
+          .filter(value -> value.getName().equals(stereotypeName))
+          .filter(value -> value.isPresentText())
+          .forEach(value -> values.add(value.getValue()));
+    }
+    return values;
+  }
+
 
 }

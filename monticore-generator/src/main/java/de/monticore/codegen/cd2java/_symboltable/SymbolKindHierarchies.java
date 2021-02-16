@@ -31,28 +31,29 @@ public class SymbolKindHierarchies {
     for (ASTCDType s : symbolProds) {
       CDTypeSymbol symbol = s.getSymbol();
       // if a symbol kind has a supersymbol kind, the CD symbol has the stereotype "inheritedSymbol"
-      if (hasInheritedSymbolStereotype(symbol)) {
+      if (hasInheritedSymbolStereotype(symbol, service)) {
         String symbolName = s.getName();
         symbolName = symbolName.startsWith("AST")? symbolName.substring(3) : symbolName;
-        String superSymbolName = getSuperSymbolName(symbol);
+        String superSymbolName = getSuperSymbolName(symbol, service);
         kindHierarchy.put(superSymbolName, symbolName);
       }
     }
     return kindHierarchy;
   }
 
-  protected static String getSuperSymbolName(CDTypeSymbol symbol) {
-    String qSymName = symbol.getStereotype(INHERITED_SYMBOL).get().getValue();
+  protected static String getSuperSymbolName(CDTypeSymbol symbol, SymbolTableService service) {
+    String qSymName =  service.getInheritedSymbol(symbol.getAstNode());
     int lastDotIndex = qSymName.contains(".") ? qSymName.lastIndexOf(".") + 1 : 0;
     int lengthWithoutSymSuffix = qSymName.length() - "Symbol".length();
     return qSymName.substring(lastDotIndex, lengthWithoutSymSuffix);
   }
 
-  protected static boolean hasInheritedSymbolStereotype(CDTypeSymbol symbol) {
-    if (null == symbol) {
+  protected static boolean hasInheritedSymbolStereotype(CDTypeSymbol symbol, SymbolTableService service) {
+    if (null == symbol || !symbol.isPresentAstNode() || !symbol.getAstNode().isPresentModifier() 
+        || symbol.getAstNode().getModifier().isPresentStereotype()) {
       return false;
     }
-    return symbol.getStereotype(INHERITED_SYMBOL).isPresent();
+    return service.hasInheritedSymbolStereotype(symbol.getAstNode().getModifier());
   }
 
 }

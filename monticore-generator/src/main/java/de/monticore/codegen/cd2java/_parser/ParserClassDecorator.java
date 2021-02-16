@@ -162,7 +162,7 @@ public class ParserClassDecorator extends AbstractDecorator {
     }
     //recursive call of the method for all direct super CDs
     for(DiagramSymbol superDefinition: service.getSuperCDsDirect(definition.getSymbol())){
-      superProds.putAll(getSuperProds(superDefinition.getAstNode(), nameList));
+      superProds.putAll(getSuperProds((ASTCDDefinition) superDefinition.getAstNode(), nameList));
     }
     return superProds;
   }
