@@ -17,9 +17,8 @@ import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
-import static de.monticore.codegen.cd2java._ast.factory.NodeFactoryConstants.FACTORY_SUFFIX;
-import static de.monticore.codegen.cd2java._ast.factory.NodeFactoryConstants.NODE_FACTORY_SUFFIX;
 import static de.monticore.codegen.cd2java._ast_emf.EmfConstants.*;
+import static de.monticore.codegen.cd2java.mill.MillConstants.MILL_SUFFIX;
 
 public class PackageInterfaceDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDInterface> {
 
@@ -59,7 +58,7 @@ public class PackageInterfaceDecorator extends AbstractCreator<ASTCDCompilationU
         .addAllCDAttributes(prodAttributes)
         .addAllCDAttributes(eDataTypeAttributes)
         .addAllCDAttributes(createNonTerminalAttributes(astcdDefinition))
-        .addCDMethod(createNodeFactoryMethod(definitionName))
+        .addCDMethod(createMillMethod(definitionName))
         .addCDMethod(createEEnumMethod(definitionName))
         .addAllCDMethods(eDataTypeMethods)
         .addAllCDMethods(createEClassMethods(astcdDefinition))
@@ -167,11 +166,11 @@ public class PackageInterfaceDecorator extends AbstractCreator<ASTCDCompilationU
     return astcdAttributes;
   }
 
-  protected ASTCDMethod createNodeFactoryMethod(String definitionName) {
+  protected ASTCDMethod createMillMethod(String definitionName) {
     // e.g. AutomataNodeFactory getAutomataFactory();
-    ASTMCQualifiedType nodeFactoryType = getMCTypeFacade().createQualifiedType(definitionName + NODE_FACTORY_SUFFIX);
-    String methodName = String.format(GET, definitionName + FACTORY_SUFFIX);
-    return getCDMethodFacade().createMethod(PACKAGE_PRIVATE_ABSTRACT, nodeFactoryType, methodName);
+    ASTMCQualifiedType millType = getMCTypeFacade().createQualifiedType(emfService.getMillFullName());
+    String methodName = String.format(GET, definitionName + MILL_SUFFIX);
+    return getCDMethodFacade().createMethod(PACKAGE_PRIVATE_ABSTRACT, millType, methodName);
   }
 
   protected ASTCDMethod createEEnumMethod(String definitionName) {

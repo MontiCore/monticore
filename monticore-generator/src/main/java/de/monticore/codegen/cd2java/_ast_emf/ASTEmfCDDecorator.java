@@ -15,7 +15,6 @@ import de.monticore.codegen.cd2java._ast_emf.ast_class.ASTFullEmfDecorator;
 import de.monticore.codegen.cd2java._ast_emf.emf_package.PackageImplDecorator;
 import de.monticore.codegen.cd2java._ast_emf.emf_package.PackageInterfaceDecorator;
 import de.monticore.codegen.cd2java._ast_emf.enums.EmfEnumDecorator;
-import de.monticore.codegen.cd2java._ast_emf.factory.EmfNodeFactoryDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 
 import java.util.ArrayList;
@@ -37,7 +36,6 @@ public class ASTEmfCDDecorator extends ASTCDDecorator {
                            final ASTFullEmfDecorator astFullDecorator,
                            final ASTLanguageInterfaceDecorator astLanguageInterfaceDecorator,
                            final ASTBuilderDecorator astBuilderDecorator,
-                           final EmfNodeFactoryDecorator nodeFactoryDecorator,
                            final ASTConstantsDecorator astConstantsDecorator,
                            final EmfEnumDecorator enumDecorator,
                            final FullASTInterfaceDecorator astInterfaceDecorator,
@@ -47,7 +45,6 @@ public class ASTEmfCDDecorator extends ASTCDDecorator {
         astFullDecorator,
         astLanguageInterfaceDecorator,
         astBuilderDecorator,
-        nodeFactoryDecorator,
         astConstantsDecorator,
         enumDecorator,
         astInterfaceDecorator);

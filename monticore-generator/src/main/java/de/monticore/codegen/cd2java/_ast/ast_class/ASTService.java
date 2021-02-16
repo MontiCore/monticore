@@ -26,6 +26,10 @@ public class ASTService extends AbstractService<ASTService> {
     super(cdSymbol);
   }
 
+  public static ASTService createASTService(CDDefinitionSymbol cdSymbol) {
+    return new ASTService(cdSymbol);
+  }
+
   /**
    * overwrite methods of AbstractService to add the correct '_ast' package for ast generation
    */
@@ -37,10 +41,6 @@ public class ASTService extends AbstractService<ASTService> {
   @Override
   protected ASTService createService(CDDefinitionSymbol cdSymbol) {
     return createASTService(cdSymbol);
-  }
-
-  public static ASTService createASTService(CDDefinitionSymbol cdSymbol) {
-    return new ASTService(cdSymbol);
   }
 
   /**
@@ -119,4 +119,19 @@ public class ASTService extends AbstractService<ASTService> {
   public ASTCDMethod createGetNameMethod() {
     return CDMethodFacade.getInstance().createMethod(PUBLIC_ABSTRACT, getMCTypeFacade().createStringType(), "getName");
   }
+
+  public String removeASTPrefix(ASTCDType clazz) {
+    // normal symbol name calculation from
+    return removeASTPrefix(clazz.getName());
+  }
+
+  public String removeASTPrefix(String clazzName) {
+    // normal symbol name calculation from
+    if (clazzName.startsWith(AST_PREFIX)) {
+      return clazzName.substring(AST_PREFIX.length());
+    } else {
+      return clazzName;
+    }
+  }
+
 }

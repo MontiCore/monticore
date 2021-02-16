@@ -24,8 +24,6 @@ package de.monticore;
  import de.monticore.codegen.cd2java._ast.builder.BuilderDecorator;
  import de.monticore.codegen.cd2java._ast.constants.ASTConstantsDecorator;
  import de.monticore.codegen.cd2java._ast.enums.EnumDecorator;
- import de.monticore.codegen.cd2java._ast.factory.NodeFactoryDecorator;
- import de.monticore.codegen.cd2java._ast.factory.NodeFactoryService;
  import de.monticore.codegen.cd2java._ast_emf.ASTEmfCDDecorator;
  import de.monticore.codegen.cd2java._ast_emf.CDEmfGenerator;
  import de.monticore.codegen.cd2java._ast_emf.EmfService;
@@ -36,7 +34,6 @@ package de.monticore;
  import de.monticore.codegen.cd2java._ast_emf.emf_package.PackageImplDecorator;
  import de.monticore.codegen.cd2java._ast_emf.emf_package.PackageInterfaceDecorator;
  import de.monticore.codegen.cd2java._ast_emf.enums.EmfEnumDecorator;
- import de.monticore.codegen.cd2java._ast_emf.factory.EmfNodeFactoryDecorator;
  import de.monticore.codegen.cd2java._cocos.CoCoCheckerDecorator;
  import de.monticore.codegen.cd2java._cocos.CoCoDecorator;
  import de.monticore.codegen.cd2java._cocos.CoCoInterfaceDecorator;
@@ -828,7 +825,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     ASTService astService = new ASTService(cd);
     SymbolTableService symbolTableService = new SymbolTableService(cd);
     VisitorService visitorService = new VisitorService(cd);
-    NodeFactoryService nodeFactoryService = new NodeFactoryService(cd);
 
     MethodDecorator methodDecorator = new MethodDecorator(glex, astService);
 
@@ -837,7 +833,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     DataDecorator dataDecorator = new DataDecorator(glex, methodDecorator, astService, decoratorUtil);
     ASTSymbolDecorator astSymbolDecorator = new ASTSymbolDecorator(glex, symbolTableService);
     ASTScopeDecorator astScopeDecorator = new ASTScopeDecorator(glex, symbolTableService);
-    ASTDecorator astDecorator = new ASTDecorator(glex, astService, visitorService, nodeFactoryService, astSymbolDecorator,
+    ASTDecorator astDecorator = new ASTDecorator(glex, astService, visitorService, astSymbolDecorator,
             astScopeDecorator, methodDecorator, symbolTableService);
 
     ASTReferenceDecorator<ASTCDClass> astClassReferencedSymbolDecorator = new ASTReferenceDecorator<ASTCDClass>(glex, symbolTableService);
@@ -849,8 +845,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     BuilderDecorator builderDecorator = new BuilderDecorator(glex, new AccessorDecorator(glex, astService), astService);
     ASTBuilderDecorator astBuilderDecorator = new ASTBuilderDecorator(glex, builderDecorator, astService);
 
-    NodeFactoryDecorator nodeFactoryDecorator = new NodeFactoryDecorator(glex, nodeFactoryService);
-
     ASTConstantsDecorator astConstantsDecorator = new ASTConstantsDecorator(glex, astService);
 
     EnumDecorator enumDecorator = new EnumDecorator(glex, new AccessorDecorator(glex, astService), astService);
@@ -860,7 +854,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     FullASTInterfaceDecorator fullASTInterfaceDecorator = new FullASTInterfaceDecorator(dataInterfaceDecorator, astInterfaceDecorator, astInterfaceReferencedSymbolDecorator);
 
     ASTCDDecorator astcdDecorator = new ASTCDDecorator(glex, fullDecorator, astLanguageInterfaceDecorator,
-            astBuilderDecorator, nodeFactoryDecorator, astConstantsDecorator, enumDecorator, fullASTInterfaceDecorator);
+            astBuilderDecorator, astConstantsDecorator, enumDecorator, fullASTInterfaceDecorator);
     ASTCDCompilationUnit compilationUnit = astcdDecorator.decorate(cd);
 
     TopDecorator topDecorator = new TopDecorator(handCodedPath);
@@ -902,14 +896,13 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     ASTService astService = new ASTService(cd);
     SymbolTableService symbolTableService = new SymbolTableService(cd);
     VisitorService visitorService = new VisitorService(cd);
-    NodeFactoryService nodeFactoryService = new NodeFactoryService(cd);
     EmfService emfService = new EmfService(cd);
     MethodDecorator methodDecorator = new MethodDecorator(glex, emfService);
     EmfMutatorDecorator emfMutatorDecorator = new EmfMutatorDecorator(glex, astService);
     DataEmfDecorator dataEmfDecorator = new DataEmfDecorator(glex, methodDecorator, astService, new DataDecoratorUtil(), emfMutatorDecorator);
     ASTSymbolDecorator astSymbolDecorator = new ASTSymbolDecorator(glex, symbolTableService);
     ASTScopeDecorator astScopeDecorator = new ASTScopeDecorator(glex, symbolTableService);
-    ASTEmfDecorator astEmfDecorator = new ASTEmfDecorator(glex, astService, visitorService, nodeFactoryService,
+    ASTEmfDecorator astEmfDecorator = new ASTEmfDecorator(glex, astService, visitorService,
             astSymbolDecorator, astScopeDecorator, methodDecorator, symbolTableService, emfService);
     ASTReferenceDecorator<ASTCDClass> astClassReferencedSymbolDecorator = new ASTReferenceDecorator<ASTCDClass>(glex, symbolTableService);
     ASTReferenceDecorator<ASTCDInterface> astInterfaceReferencedSymbolDecorator = new ASTReferenceDecorator<ASTCDInterface>(glex, symbolTableService);
@@ -921,7 +914,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     BuilderDecorator builderDecorator = new BuilderDecorator(glex, new AccessorDecorator(glex, emfService), astService);
     ASTBuilderDecorator astBuilderDecorator = new ASTBuilderDecorator(glex, builderDecorator, astService);
 
-    EmfNodeFactoryDecorator nodeFactoryDecorator = new EmfNodeFactoryDecorator(glex, nodeFactoryService);
 
     ASTConstantsDecorator astConstantsDecorator = new ASTConstantsDecorator(glex, astService);
 
@@ -935,7 +927,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     PackageImplDecorator packageImplDecorator = new PackageImplDecorator(glex, new MandatoryAccessorDecorator(glex), emfService);
     PackageInterfaceDecorator packageInterfaceDecorator = new PackageInterfaceDecorator(glex, emfService);
 
-    ASTEmfCDDecorator astcdDecorator = new ASTEmfCDDecorator(glex, fullEmfDecorator, astLanguageInterfaceDecorator, astBuilderDecorator, nodeFactoryDecorator,
+    ASTEmfCDDecorator astcdDecorator = new ASTEmfCDDecorator(glex, fullEmfDecorator, astLanguageInterfaceDecorator, astBuilderDecorator,
             astConstantsDecorator, emfEnumDecorator, fullASTInterfaceDecorator, packageImplDecorator, packageInterfaceDecorator);
     ASTCDCompilationUnit compilationUnit = astcdDecorator.decorate(cd);
 

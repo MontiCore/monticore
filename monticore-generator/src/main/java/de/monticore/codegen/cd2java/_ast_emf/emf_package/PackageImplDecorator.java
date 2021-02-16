@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
-import static de.monticore.codegen.cd2java._ast.factory.NodeFactoryConstants.*;
 import static de.monticore.codegen.cd2java._ast_emf.EmfConstants.*;
 
 public class PackageImplDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClass> {
@@ -76,7 +75,7 @@ public class PackageImplDecorator extends AbstractCreator<ASTCDCompilationUnit, 
         .addCDMethod(createInitMethod(packageName))
         .addAllCDMethods(eClassMethods)
         .addAllCDMethods(constantsEEnumMethod)
-        .addCDMethod(createGetNodeFactoryMethod(definitionName))
+        .addCDMethod(createGetMillMethod(definitionName))
         .addCDMethod(createGetPackageMethod(definitionName))
         .addCDMethod(createASTESuperPackagesMethod())
         .addAllCDMethods(createGetEAttributeMethods(definition))
@@ -154,7 +153,7 @@ public class PackageImplDecorator extends AbstractCreator<ASTCDCompilationUnit, 
   protected ASTCDConstructor createConstructor(String packageImplName, String definitionName) {
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PRIVATE, packageImplName);
     replaceTemplate(EMPTY_BODY, constructor,
-        new StringHookPoint("super(" + ENS_URI + "," + definitionName + NODE_FACTORY_SUFFIX + "." + GET_FACTORY_METHOD + "());"));
+        new StringHookPoint("super(" + ENS_URI + "," +emfService.getMillFullName() + ".getMill();" ));
     return constructor;
   }
 
@@ -164,11 +163,11 @@ public class PackageImplDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     return method;
   }
 
-  protected ASTCDMethod createGetNodeFactoryMethod(String definitionName) {
+  protected ASTCDMethod createGetMillMethod(String definitionName) {
     // e.g. AutomataNodeFactory getAutomataFactory();
-    String methodName = String.format(GET, definitionName + FACTORY_SUFFIX);
-    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createQualifiedType(definitionName + NODE_FACTORY_SUFFIX), methodName);
-    replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return (" + definitionName + NODE_FACTORY_SUFFIX + ")getEFactoryInstance();"));
+    String methodName = String.format(GET, emfService.getMillSimpleName());
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createQualifiedType(emfService.getMillFullName()), methodName);
+    replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return ("+ emfService.getMillFullName() +  ")getEFactoryInstance();"));
     return method;
   }
 
