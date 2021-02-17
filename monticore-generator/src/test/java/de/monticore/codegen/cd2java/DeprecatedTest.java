@@ -12,7 +12,6 @@ import de.monticore.codegen.cd2java._ast.ast_interface.ASTInterfaceDecorator;
 import de.monticore.codegen.cd2java._ast.builder.ASTBuilderDecorator;
 import de.monticore.codegen.cd2java._ast.builder.BuilderDecorator;
 import de.monticore.codegen.cd2java._ast.enums.EnumDecorator;
-import de.monticore.codegen.cd2java._ast.factory.NodeFactoryService;
 import de.monticore.codegen.cd2java._cocos.CoCoInterfaceDecorator;
 import de.monticore.codegen.cd2java._cocos.CoCoService;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
@@ -34,7 +33,8 @@ import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class DeprecatedTest extends DecoratorTestCase {
+public class
+DeprecatedTest extends DecoratorTestCase {
 
   private GlobalExtensionManagement glex = new GlobalExtensionManagement();
 
@@ -77,7 +77,7 @@ public class DeprecatedTest extends DecoratorTestCase {
     MethodDecorator methodDecorator = new MethodDecorator(glex, astService);
     ASTSymbolDecorator astSymbolDecorator = new ASTSymbolDecorator(glex, symbolTableService);
     ASTScopeDecorator astScopeDecorator = new ASTScopeDecorator(glex, symbolTableService);
-    astDecorator = new ASTDecorator(this.glex, astService, visitorService, new NodeFactoryService(compilationUnit),
+    astDecorator = new ASTDecorator(this.glex, astService, visitorService,
         astSymbolDecorator, astScopeDecorator, methodDecorator,
         symbolTableService);
 
