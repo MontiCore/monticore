@@ -383,6 +383,7 @@ objectdiagram MyFamily {
 
 ### [Sequence Diagrams](https://git.rwth-aachen.de/monticore/statechart/sd-language)  (MontiCore stable) 
 * A textual sequence diagram (SD) language.
+* [Detailed description](https://github.com/MontiCore/sequence-diagram/blob/master/src/main/grammars/de/monticore/lang/sd4development.md)
 * The project includes grammars, a symbol table infrastructure, a PrettyPrinter, 
   and various CoCos for typechecking.
 * The language is divided into the two grammars SDBasis and SD4Development.

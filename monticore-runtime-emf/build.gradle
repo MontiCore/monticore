@@ -5,7 +5,6 @@ plugins {
 
 dependencies {
   implementation 'de.se_rwth.commons:se-commons-utilities:' + se_commons_version
-  implementation 'de.se_rwth.commons:se-commons-logging:' + se_commons_version
   implementation project(':monticore-runtime')
   implementation 'org.eclipse.emf:org.eclipse.emf.ecore.xmi:' + ecore_version
   implementation 'org.eclipse.emf:org.eclipse.emf.compare.match:' + emf_compare_version

@@ -9,5 +9,5 @@ ${tc.signature("resolverMethodList", "symbolList")}
 </#list>
   this.modelPath = new de.monticore.io.paths.ModelPath();
   this.subScopes.clear();
-  this.desers.clear();
+  this.symbolDeSers.clear();
   init();

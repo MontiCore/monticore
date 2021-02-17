@@ -5,7 +5,7 @@ buildscript {
 }
 
 plugins {
-  id "java"
+  id "java-library"
   id "monticore-bs" version "$previous_mc_version" // MontiCore Plugin
   id "jacoco"
 }

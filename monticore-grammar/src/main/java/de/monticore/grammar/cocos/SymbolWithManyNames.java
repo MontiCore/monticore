@@ -1,6 +1,4 @@
-// (c) https://github.com/MontiCore/monticore
-
-// (c) https://github.com/MontiCore/monticore
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.grammar.cocos;
 
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;

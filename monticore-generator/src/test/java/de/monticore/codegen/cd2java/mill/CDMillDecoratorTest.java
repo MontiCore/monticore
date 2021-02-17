@@ -24,14 +24,14 @@ import de.monticore.codegen.cd2java._parser.ParserService;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableCDDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._symboltable.scope.*;
-import de.monticore.codegen.cd2java._symboltable.serialization.*;
-import de.monticore.codegen.cd2java._symboltable.symbol.*;
 import de.monticore.codegen.cd2java._symboltable.scopesgenitor.ScopesGenitorDecorator;
 import de.monticore.codegen.cd2java._symboltable.scopesgenitor.ScopesGenitorDelegatorDecorator;
+import de.monticore.codegen.cd2java._symboltable.serialization.ScopeDeSerDecorator;
+import de.monticore.codegen.cd2java._symboltable.serialization.SymbolDeSerDecorator;
+import de.monticore.codegen.cd2java._symboltable.serialization.Symbols2JsonDecorator;
+import de.monticore.codegen.cd2java._symboltable.symbol.*;
 import de.monticore.codegen.cd2java._symboltable.symbol.symbolsurrogatemutator.MandatoryMutatorSymbolSurrogateDecorator;
-import de.monticore.codegen.cd2java._symboltable.symboltablecreator.*;
-import de.monticore.codegen.cd2java._visitor.*;
-import de.monticore.codegen.cd2java._visitor.builder.DelegatorVisitorBuilderDecorator;
+import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.data.DataDecorator;
 import de.monticore.codegen.cd2java.data.DataDecoratorUtil;
 import de.monticore.codegen.cd2java.data.InterfaceDecorator;
@@ -46,9 +46,7 @@ import org.mockito.Mockito;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
-import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class CDMillDecoratorTest extends DecoratorTestCase {
 
@@ -85,7 +83,7 @@ public class CDMillDecoratorTest extends DecoratorTestCase {
     MillDecorator millDecorator = new MillDecorator(this.glex, symbolTableService, visitorService, parserService);
 
     CDMillDecorator cdMillDecorator = new CDMillDecorator(this.glex, millDecorator);
-    this.millCD = cdMillDecorator.decorate(Lists.newArrayList(getASTCD(), getVisitorCD(), getSymbolCD()));
+    this.millCD = cdMillDecorator.decorate(Lists.newArrayList(getASTCD(), getSymbolCD()));
   }
 
   protected ASTCDCompilationUnit getASTCD() {
@@ -138,9 +136,6 @@ public class CDMillDecoratorTest extends DecoratorTestCase {
     SymbolSurrogateBuilderDecorator symbolReferenceBuilderDecorator = new SymbolSurrogateBuilderDecorator(glex, symbolTableService, accessorDecorator);
     CommonSymbolInterfaceDecorator commonSymbolInterfaceDecorator = new CommonSymbolInterfaceDecorator(glex, symbolTableService, visitorService, methodDecorator);
     SymbolResolverInterfaceDecorator symbolResolverInterfaceDecorator = new SymbolResolverInterfaceDecorator(glex, symbolTableService);
-    SymbolTableCreatorDecorator symbolTableCreatorDecorator = new SymbolTableCreatorDecorator(glex, symbolTableService, visitorService, methodDecorator);
-    SymbolTableCreatorDelegatorDecorator symbolTableCreatorDelegatorDecorator = new SymbolTableCreatorDelegatorDecorator(glex, symbolTableService, visitorService);
-    SymbolTableCreatorForSuperTypes symbolTableCreatorForSuperTypes = new SymbolTableCreatorForSuperTypes(glex, symbolTableService);
     SymbolDeSerDecorator symbolDeSerDecorator = new SymbolDeSerDecorator(glex, symbolTableService, IterablePath.empty());
     ScopeDeSerDecorator scopeDeSerDecorator = new ScopeDeSerDecorator(glex, symbolTableService, methodDecorator, visitorService, IterablePath.empty());
     Symbols2JsonDecorator symbolTablePrinterDecorator = new Symbols2JsonDecorator(glex, symbolTableService, visitorService, methodDecorator);
@@ -154,30 +149,11 @@ public class CDMillDecoratorTest extends DecoratorTestCase {
         scopeInterfaceDecorator, scopeClassDecorator,
         globalScopeInterfaceDecorator, globalScopeClassDecorator,
         artifactScopeInterfaceDecorator, artifactScopeDecorator,
-        commonSymbolInterfaceDecorator,  symbolResolverInterfaceDecorator, symbolTableCreatorDecorator,
-        symbolTableCreatorDelegatorDecorator, symbolTableCreatorForSuperTypes,
+        commonSymbolInterfaceDecorator,  symbolResolverInterfaceDecorator,
         symbolDeSerDecorator, scopeDeSerDecorator, symbolTablePrinterDecorator, scopesGenitorDecorator, scopesGenitorDelegatorDecorator);
 
     // cd with no handcoded classes
     return symbolTableCDDecorator.decorate(decoratedCompilationUnit, decoratedSymbolCompilationUnit, decoratedScopeCompilationUnit);
-  }
-
-  protected ASTCDCompilationUnit getVisitorCD() {
-    IterablePath targetPath = Mockito.mock(IterablePath.class);
-    VisitorService visitorService = new VisitorService(decoratedCompilationUnit);
-    SymbolTableService symbolTableService = new SymbolTableService(decoratedCompilationUnit);
-
-    VisitorDecorator astVisitorDecorator = new VisitorDecorator(this.glex, visitorService, symbolTableService);
-    DelegatorVisitorDecorator delegatorVisitorDecorator = new DelegatorVisitorDecorator(this.glex, visitorService, symbolTableService);
-    ParentAwareVisitorDecorator parentAwareVisitorDecorator = new ParentAwareVisitorDecorator(this.glex, visitorService);
-    InheritanceVisitorDecorator inheritanceVisitorDecorator = new InheritanceVisitorDecorator(this.glex, visitorService, symbolTableService);
-    DelegatorVisitorBuilderDecorator delegatorVisitorBuilderDecorator = new DelegatorVisitorBuilderDecorator(this.glex, visitorService, symbolTableService);
-
-
-    CDVisitorDecorator decorator = new CDVisitorDecorator(this.glex, targetPath, visitorService,
-        astVisitorDecorator, delegatorVisitorDecorator, inheritanceVisitorDecorator,
-        parentAwareVisitorDecorator, delegatorVisitorBuilderDecorator);
-    return decorator.decorate(decoratedCompilationUnit);
   }
 
   @Test

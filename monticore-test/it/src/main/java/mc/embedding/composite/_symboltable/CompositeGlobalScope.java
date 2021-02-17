@@ -6,9 +6,9 @@ import de.monticore.io.paths.ModelCoordinates;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.se_rwth.commons.logging.Log;
-import mc.embedding.embedded._symboltable.TextSymbol;
 import mc.embedding.composite.CompositeMill;
 import mc.embedding.composite._parser.CompositeParser;
+import mc.embedding.embedded._symboltable.TextSymbol;
 import mc.embedding.host._ast.ASTHost;
 import mc.embedding.host._symboltable.ContentSymbol;
 
@@ -48,7 +48,7 @@ public class CompositeGlobalScope extends CompositeGlobalScopeTOP{
       getModelPath().resolveModel(modelCoordinate);
       if (modelCoordinate.hasLocation()) {
         ASTHost parse = parse(modelCoordinate);
-        CompositeMill.compositeSymbolTableCreatorDelegator().createFromAST(parse);
+        CompositeMill.scopesGenitorDelegator().createFromAST(parse);
       }
     }
     else {

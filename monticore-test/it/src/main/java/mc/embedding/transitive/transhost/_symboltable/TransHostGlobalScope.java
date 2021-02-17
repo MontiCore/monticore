@@ -37,7 +37,7 @@ public class TransHostGlobalScope extends TransHostGlobalScopeTOP {
       getModelPath().resolveModel(modelCoordinate);
       if (modelCoordinate.hasLocation()) {
         ASTTransStart parse = parse(modelCoordinate);
-        TransHostMill.transHostSymbolTableCreatorDelegator().createFromAST(parse);
+        TransHostMill.scopesGenitorDelegator().createFromAST(parse);
       }
     }
     else {
