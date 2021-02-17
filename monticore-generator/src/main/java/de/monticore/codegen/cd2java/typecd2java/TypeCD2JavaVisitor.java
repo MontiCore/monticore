@@ -26,9 +26,6 @@ public class TypeCD2JavaVisitor implements GrammarFamilyVisitor {
     this.scope = scope;
   }
 
-  private TypeCD2JavaVisitor() {
-  }
-
   @Override
   public void visit(ASTMCQualifiedType node) {
     //only take first one because at first the type has just one name which contains the complete qualified name
@@ -47,23 +44,6 @@ public class TypeCD2JavaVisitor implements GrammarFamilyVisitor {
     if(node.getNameList().size() <= 1){
       node.getMCQualifiedName().setPartsList(new ArrayList<>(Arrays.asList(node.getNameList().get(0).split(PACKAGE_SEPARATOR))));
     }
-  }
-
-  // TODO Lösche diese Methoden, wenn ein neues CD4A benutzt wird.
-  @Override
-  public void endVisit(ISymbol node) {
-  }
-
-  @Override
-  public void endVisit(IScope node) {
-  }
-
-  @Override
-  public void visit(ISymbol node) {
-  }
-
-  @Override
-  public void visit(IScope node) {
   }
 
 }

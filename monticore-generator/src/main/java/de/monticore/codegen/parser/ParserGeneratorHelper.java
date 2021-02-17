@@ -555,34 +555,11 @@ public class ParserGeneratorHelper {
     return StringTransformations.uncapitalize(rule.getName());
   }
 
-
-  /**
-   * @return the qualified name for this type
-   */
-  // TODO GV: change implementation
-  public static String getQualifiedName(ProdSymbol symbol) {
-    if (!symbol.isPresentAstNode()) {
-      return "UNKNOWN_TYPE";
-    }
-    if (symbol.isPresentAstNode() && symbol.isIsLexerProd()) {
-      return getLexType( symbol.getAstNode());
-    }
-    if (symbol.isIsEnum()) {
-
-      return "int";
-      // TODO GV:
-      // return getConstantType();
-    }
-    return MCGrammarSymbolTableHelper.getQualifiedName(symbol.getAstNode(), symbol,
-        AST_PREFIX, "");
-  }
-
   public static String getDefaultValue(ProdSymbol symbol) {
-    String name = getQualifiedName(symbol);
-    if ("int".equals(name)) {
+    if ("int".equals(symbol.getFullName())) {
       return "0";
     }
-    if ("boolean".equals(name)) {
+    if ("boolean".equals(symbol.getFullName())) {
       return "false";
     }
     return "null";

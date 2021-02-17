@@ -90,23 +90,6 @@ public final class TransformationHelper {
     return Names.getSimpleName(name);
   }
 
-  /**
-   * Pretty prints a CD AST to a String object.
-   *
-   * @param astNode the top node of the CD AST to be pretty printed
-   */
-  // TODO: should be placed somewhere in the UML/P CD project
-  public static String prettyPrint(ASTCD4AnalysisNode astNode) {
-    // set up objects
-    CD4AnalysisFullPrettyPrinter prettyPrinter = new CD4AnalysisFullPrettyPrinter(
-        new IndentPrinter());
-
-    // run, check result and return
-    String prettyPrintedAst = prettyPrinter.prettyprint(astNode);
-    checkArgument(!isNullOrEmpty(prettyPrintedAst));
-    return prettyPrintedAst;
-  }
-
   public static Optional<String> getUsageName(ASTNode root,
                                               ASTNode ancestor) {
       if (ancestor instanceof ASTConstantGroup && ((ASTConstantGroup) ancestor).isPresentUsageName()) {

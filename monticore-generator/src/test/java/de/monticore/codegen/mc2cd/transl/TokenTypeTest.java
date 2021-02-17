@@ -6,8 +6,8 @@ import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDClass;
 import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
-import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
+import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -15,7 +15,7 @@ import org.junit.Test;
 import java.nio.file.Paths;
 import java.util.Optional;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 public class TokenTypeTest {
 
@@ -46,66 +46,66 @@ public class TokenTypeTest {
   @Test
   public void testNumber() {
     ASTCDAttribute cdAttribute = getCDAttributeByName("a").get();
-    assertTrue(TransformationHelper.prettyPrint(cdAttribute).contains("int"));
+    assertEquals("int", cdAttribute.getMCType().printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()));
   }
 
   @Test
   public void testBoolean() {
     ASTCDAttribute cdAttribute = getCDAttributeByName("b").get();
-    assertTrue(TransformationHelper.prettyPrint(cdAttribute).contains("boolean"));
+    assertEquals("boolean", cdAttribute.getMCType().printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()));
   }
 
   @Test
   public void testChar() {
     ASTCDAttribute cdAttribute = getCDAttributeByName("c").get();
-    assertTrue(TransformationHelper.prettyPrint(cdAttribute).contains("char"));
+    assertEquals("char", cdAttribute.getMCType().printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()));
   }
 
   @Test
   public void testInt() {
     ASTCDAttribute cdAttribute = getCDAttributeByName("d").get();
-    assertTrue(TransformationHelper.prettyPrint(cdAttribute).contains("int"));
+    assertEquals("int", cdAttribute.getMCType().printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()));
   }
 
   @Test
   public void testFloat() {
     ASTCDAttribute cdAttribute = getCDAttributeByName("e").get();
-    assertTrue(TransformationHelper.prettyPrint(cdAttribute).contains("float"));
+    assertEquals("float", cdAttribute.getMCType().printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()));
   }
 
   @Test
   public void testDouble() {
     ASTCDAttribute cdAttribute = getCDAttributeByName("f").get();
-    assertTrue(TransformationHelper.prettyPrint(cdAttribute).contains("double"));
+    assertEquals("double", cdAttribute.getMCType().printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()));
   }
 
   @Test
   public void testLong() {
     ASTCDAttribute cdAttribute = getCDAttributeByName("g").get();
-    assertTrue(TransformationHelper.prettyPrint(cdAttribute).contains("long"));
+    assertEquals("long", cdAttribute.getMCType().printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()));
   }
 
   @Test
   public void testCard() {
     ASTCDAttribute cdAttribute = getCDAttributeByName("h").get();
-    assertTrue(TransformationHelper.prettyPrint(cdAttribute).contains("int"));
+    assertEquals("int", cdAttribute.getMCType().printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()));
   }
 
   @Test
   public void testShort() {
     ASTCDAttribute cdAttribute = getCDAttributeByName("i").get();
-    assertTrue(TransformationHelper.prettyPrint(cdAttribute).contains("short"));
+    assertEquals("short", cdAttribute.getMCType().printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()));
   }
 
   @Test
   public void testByte() {
     ASTCDAttribute cdAttribute = getCDAttributeByName("j").get();
-    assertTrue(TransformationHelper.prettyPrint(cdAttribute).contains("byte"));
+    assertEquals("byte", cdAttribute.getMCType().printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()));
   }
 
   @Test
   public void testByte2() {
     ASTCDAttribute cdAttribute = getCDAttributeByName("k").get();
-    assertTrue(TransformationHelper.prettyPrint(cdAttribute).contains("byte"));
+    assertEquals("byte", cdAttribute.getMCType().printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()));
   }
 }
