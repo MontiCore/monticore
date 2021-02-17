@@ -124,7 +124,8 @@ deploy:
 sonar:
   stage: sonar
   script:
-    - "./gradlew jacocoMergeSubprojects sonarqube $GRADLE_OPTS $SONAR_OPTS"
+    - "cd monticore-tool && ./gradlew test jacocoTestReport $GRADLE_OPTS"
+    - "cd .. && ./gradlew jacocoMergeSubprojects sonarqube $GRADLE_OPTS $SONAR_OPTS"
   only:
     - merge_requests
     - branches
