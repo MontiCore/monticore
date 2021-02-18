@@ -81,7 +81,7 @@ public class ArtifactScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterfacesCount() {
-    assertEquals(1, scopeClass.sizeInterface());
+    assertEquals(1, scopeClass.getInterfaceList().size());
   }
 
   @Test
@@ -96,12 +96,12 @@ public class ArtifactScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testConstructorCount() {
-    assertEquals(3, scopeClass.sizeCDConstructors());
+    assertEquals(3, scopeClass.getCDConstructorList().size());
   }
 
   @Test
   public void testConstructor() {
-    ASTCDConstructor cdConstructor = scopeClass.getCDConstructor(0);
+    ASTCDConstructor cdConstructor = scopeClass.getCDConstructorList().get(0);
     assertDeepEquals(PUBLIC, cdConstructor.getModifier());
     assertEquals("AutomatonArtifactScope", cdConstructor.getName());
 
@@ -112,13 +112,13 @@ public class ArtifactScopeClassDecoratorTest extends DecoratorTestCase {
     assertDeepEquals("List<de.monticore.symboltable.ImportStatement>", cdConstructor.getCDParameter(1).getMCType());
     assertEquals("imports", cdConstructor.getCDParameter(1).getName());
 
-    assertTrue(cdConstructor.isEmptyException());
+    assertTrue(cdConstructor.getCDThrowsDeclaration().isEmptyException());
   }
 
 
   @Test
   public void testConstructorWithEnclosingScope() {
-    ASTCDConstructor cdConstructor = scopeClass.getCDConstructor(1);
+    ASTCDConstructor cdConstructor = scopeClass.getCDConstructorList().get(1);
     assertDeepEquals(PUBLIC, cdConstructor.getModifier());
     assertEquals("AutomatonArtifactScope", cdConstructor.getName());
 
@@ -134,21 +134,21 @@ public class ArtifactScopeClassDecoratorTest extends DecoratorTestCase {
     assertEquals("imports", cdConstructor.getCDParameter(2).getName());
 
 
-    assertTrue(cdConstructor.isEmptyException());
+    assertTrue(cdConstructor.getCDThrowsDeclaration().isEmptyException());
   }
 
   @Test
   public void testZeroArgsConstructor(){
-    ASTCDConstructor cdConstructor = scopeClass.getCDConstructor(2);
+    ASTCDConstructor cdConstructor = scopeClass.getCDConstructorList().get(2);
     assertDeepEquals(PUBLIC, cdConstructor.getModifier());
     assertEquals("AutomatonArtifactScope", cdConstructor.getName());
     assertTrue(cdConstructor.isEmptyCDParameters());
-    assertTrue(cdConstructor.isEmptyException());
+    assertTrue(cdConstructor.getCDThrowsDeclaration().isEmptyException());
   }
 
   @Test
   public void testAttributeSize() {
-    assertEquals(2, scopeClass.sizeCDAttributes());
+    assertEquals(2, scopeClass.getCDAttributeList().size());
   }
 
   @Test

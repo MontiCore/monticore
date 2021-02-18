@@ -59,7 +59,7 @@ public class DataEmfDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributes() {
-    assertEquals(3, emfClass.sizeCDAttributes());
+    assertEquals(3, emfClass.getCDAttributeList().size());
   }
 
   @Test

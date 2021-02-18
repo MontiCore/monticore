@@ -69,17 +69,17 @@ public class CDTraverserDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testClassCount() {
-    assertEquals(2, visitorCompilationUnit.getCDDefinition().getCDClassList().size());
+    assertEquals(2, visitorCompilationUnit.getCDDefinition().getCDClassesList().size());
   }
 
   @Test
   public void testInterfaceCount() {
-    assertEquals(3, visitorCompilationUnit.getCDDefinition().getCDInterfaceList().size());
+    assertEquals(3, visitorCompilationUnit.getCDDefinition().getCDInterfacesList().size());
   }
 
   @Test
   public void testEnumEmpty() {
-    assertTrue(visitorCompilationUnit.getCDDefinition().isEmptyCDEnums());
+    assertTrue(visitorCompilationUnit.getCDDefinition().getCDEnumsList().isEmpty());
   }
 
   @Test
@@ -100,10 +100,10 @@ public class CDTraverserDecoratorTest extends DecoratorTestCase {
     GeneratorSetup generatorSetup = new GeneratorSetup();
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
-    for (ASTCDClass clazz : decoratedCompilationUnit.getCDDefinition().getCDClassList()) {
+    for (ASTCDClass clazz : decoratedCompilationUnit.getCDDefinition().getCDClassesList()) {
       StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, clazz, clazz);
     }
-    for (ASTCDInterface astcdInterface : decoratedCompilationUnit.getCDDefinition().getCDInterfaceList()) {
+    for (ASTCDInterface astcdInterface : decoratedCompilationUnit.getCDDefinition().getCDInterfacesList()) {
       StringBuilder sb = generatorEngine.generate(CoreTemplates.INTERFACE, astcdInterface, astcdInterface);
     }
 

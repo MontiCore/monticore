@@ -50,8 +50,8 @@ public class CoCoInterfaceDecoratorTest extends DecoratorTestCase {
   @Test
   public void testSuperInterface() {
     ASTCDInterface cdInterface = interfaces.get(0);
-    assertEquals(1, cdInterface.sizeInterface());
-    assertDeepEquals("de.monticore.codegen.cocos.cocos._visitor.CoCosVisitor2", cdInterface.getInterface(0));
+    assertEquals(1, cdInterface.getInterfaceList().size());
+    assertDeepEquals("de.monticore.codegen.cocos.cocos._visitor.CoCosVisitor2", cdInterface.getCDExtendUsage().getSuperclass(0));
   }
 
   @Test
@@ -61,7 +61,7 @@ public class CoCoInterfaceDecoratorTest extends DecoratorTestCase {
     assertEquals(2, cdInterface.getCDMethodList().size());
 
     // Check method check
-    ASTCDMethod method = cdInterface.getCDMethod(0);
+    ASTCDMethod method = cdInterface.getCDMethodList().get(0);
     assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals("check", method.getName());
@@ -71,7 +71,7 @@ public class CoCoInterfaceDecoratorTest extends DecoratorTestCase {
     assertEquals("node", parameter.getName());
 
     // Check method visit
-    method = cdInterface.getCDMethod(1);
+    method = cdInterface.getCDMethodList().get(1);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals("visit", method.getName());
@@ -88,7 +88,7 @@ public class CoCoInterfaceDecoratorTest extends DecoratorTestCase {
     assertEquals(2, cdInterface.getCDMethodList().size());
 
     // check method check
-    ASTCDMethod method = cdInterface.getCDMethod(0);
+    ASTCDMethod method = cdInterface.getCDMethodList().get(0);
     assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals("check", method.getName());
@@ -98,7 +98,7 @@ public class CoCoInterfaceDecoratorTest extends DecoratorTestCase {
     assertEquals("node", parameter.getName());
 
     // Check method visit
-    method = cdInterface.getCDMethod(1);
+    method = cdInterface.getCDMethodList().get(1);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals("visit", method.getName());
@@ -115,7 +115,7 @@ public class CoCoInterfaceDecoratorTest extends DecoratorTestCase {
     assertEquals(2, cdInterface.getCDMethodList().size());
 
     // Check method check
-    ASTCDMethod method = cdInterface.getCDMethod(0);
+    ASTCDMethod method = cdInterface.getCDMethodList().get(0);
     assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals("check", method.getName());
@@ -125,7 +125,7 @@ public class CoCoInterfaceDecoratorTest extends DecoratorTestCase {
     assertEquals("node", parameter.getName());
 
     // Check method visit
-    method = cdInterface.getCDMethod(1);
+    method = cdInterface.getCDMethodList().get(1);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals("visit", method.getName());

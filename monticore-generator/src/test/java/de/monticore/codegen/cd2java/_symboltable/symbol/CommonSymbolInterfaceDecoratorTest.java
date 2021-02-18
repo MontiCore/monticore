@@ -80,12 +80,12 @@ public class CommonSymbolInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterfacesCountAutomatonSymbol() {
-    assertEquals(1, commonSymbolInterface.sizeInterface());
+    assertEquals(1, commonSymbolInterface.getInterfaceList().size());
   }
 
   @Test
   public void testSuperInterfacesAutomatonSymbol() {
-    assertDeepEquals("de.monticore.symboltable.ISymbol", commonSymbolInterface.getInterface(0));
+    assertDeepEquals("de.monticore.symboltable.ISymbol", commonSymbolInterface.getCDExtendUsage().getSuperclass(0));
   }
 
   @Test

@@ -55,8 +55,8 @@ public class PackageImplDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterface() {
-    assertEquals(1, packageClass.sizeInterface());
-    assertDeepEquals("AutomataPackage", packageClass.getInterface(0));
+    assertEquals(1, packageClass.getInterfaceList().size());
+    assertDeepEquals("AutomataPackage", packageClass.getCDInterfaceUsage().getInterface(0));
   }
 
   @Test
@@ -79,8 +79,8 @@ public class PackageImplDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testConstructor() {
-    assertEquals(1, packageClass.sizeCDConstructors());
-    ASTCDConstructor cdConstructor = packageClass.getCDConstructor(0);
+    assertEquals(1, packageClass.getCDConstructorList().size());
+    ASTCDConstructor cdConstructor = packageClass.getCDConstructorList().get(0);
     assertEquals("AutomataPackageImpl", cdConstructor.getName());
     assertDeepEquals(PRIVATE, cdConstructor.getModifier());
     assertTrue(cdConstructor.isEmptyCDParameters());

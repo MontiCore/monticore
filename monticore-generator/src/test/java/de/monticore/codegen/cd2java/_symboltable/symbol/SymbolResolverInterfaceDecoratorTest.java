@@ -77,12 +77,12 @@ public class SymbolResolverInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testNoSuperInterfacesl() {
-    assertTrue( symbolClassAutomaton.isEmptyInterface());
+    assertTrue( symbolClassAutomaton.getCDExtendUsage().isEmptySuperclass());
   }
 
   @Test
   public void testNoAttribute() {
-    assertTrue( symbolClassAutomaton.isEmptyCDAttributes());
+    assertTrue( symbolClassAutomaton.getCDAttributeList().isEmpty());
   }
 
   @Test

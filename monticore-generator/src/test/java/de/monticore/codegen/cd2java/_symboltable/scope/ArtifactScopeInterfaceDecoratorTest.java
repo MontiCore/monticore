@@ -84,12 +84,12 @@ public class ArtifactScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterfacesCount() {
-    assertEquals(2, scopeInterface.sizeInterface());
+    assertEquals(2, scopeInterface.getInterfaceList().size());
   }
 
   @Test
   public void testAttributeSize() {
-    assertEquals(0, scopeInterface.sizeCDAttributes());
+    assertEquals(0, scopeInterface.getCDAttributeList().size());
   }
 
   @Test

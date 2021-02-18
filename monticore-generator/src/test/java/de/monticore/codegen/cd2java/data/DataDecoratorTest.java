@@ -59,7 +59,7 @@ public class DataDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributes() {
-    assertEquals(5, dataClass.sizeCDAttributes());
+    assertEquals(5, dataClass.getCDAttributeList().size());
   }
 
   @Test
@@ -99,21 +99,21 @@ public class DataDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testConstructors() {
-    assertFalse(dataClass.isEmptyCDConstructors());
-    assertEquals(1, dataClass.sizeCDConstructors());
+    assertFalse(dataClass.getCDConstructorList().isEmpty());
+    assertEquals(1, dataClass.getCDConstructorList().size());
   }
 
   @Test
   public void testDefaultConstructor() {
-    ASTCDConstructor defaultConstructor = dataClass.getCDConstructor(0);
+    ASTCDConstructor defaultConstructor = dataClass.getCDConstructorList().get(0);
     assertDeepEquals(PROTECTED, defaultConstructor.getModifier());
     assertTrue(defaultConstructor.isEmptyCDParameters());
   }
 
   @Test
   public void testMethods() {
-    assertFalse(dataClass.isEmptyCDMethods());
-    assertEquals(52, dataClass.sizeCDMethods());
+    assertFalse(dataClass.getCDMethodList().isEmpty());
+    assertEquals(52, dataClass.getCDMethodList().size());
   }
 
   @Test

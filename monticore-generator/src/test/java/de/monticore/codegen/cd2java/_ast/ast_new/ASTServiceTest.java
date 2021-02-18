@@ -31,7 +31,7 @@ public class ASTServiceTest extends DecoratorTestCase {
   @Before
   public void setup() {
     astcdCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
-    astAutomaton = astcdCompilationUnit.getCDDefinition().getCDClass(0);
+    astAutomaton = astcdCompilationUnit.getCDDefinition().getCDClassesList().get(0);
 
     astService = new ASTService(astcdCompilationUnit);
   }

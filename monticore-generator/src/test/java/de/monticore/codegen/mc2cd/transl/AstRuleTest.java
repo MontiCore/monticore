@@ -43,9 +43,9 @@ public final class AstRuleTest {
 
   @Test
   public void testAstRuleAddedAttribute() {
-    assertEquals(1, astC.sizeCDAttributes());
-    assertEquals("dimensions", astC.getCDAttribute(0).getName());
-    assertInt(astC.getCDAttribute(0).getMCType());
+    assertEquals(1, astC.getCDAttributeList().size());
+    assertEquals("dimensions", astC.getCDAttributeList().get(0).getName());
+    assertInt(astC.getCDAttributeList().get(0).getMCType());
   }
 
   @Test

@@ -35,9 +35,9 @@ public class ComponetTranslationTest {
   public void testIsComponent() {
     assertTrue(componentCD.getCDDefinition().isPresentModifier());
     assertTrue(componentCD.getCDDefinition().getModifier().isPresentStereotype());
-    assertEquals(1, componentCD.getCDDefinition().getModifier().getStereotype().sizeValue());
-    assertEquals("component",componentCD.getCDDefinition().getModifier().getStereotype().getValue(0).getName());
-    assertFalse(componentCD.getCDDefinition().getModifier().getStereotype().getValue(0).isPresentValue());
+    assertEquals(1, componentCD.getCDDefinition().getModifier().getStereotype().sizeValues());
+    assertEquals("component",componentCD.getCDDefinition().getModifier().getStereotype().getValues(0).getName());
+    assertFalse(componentCD.getCDDefinition().getModifier().getStereotype().getValues(0).isPresentText());
   }
 
   @Test

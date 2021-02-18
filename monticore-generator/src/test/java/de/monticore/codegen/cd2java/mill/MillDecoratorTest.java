@@ -45,6 +45,7 @@ import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.IterablePath;
+import de.monticore.umlmodifier._ast.ASTModifier;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
@@ -191,7 +192,7 @@ public class MillDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeSize() {
-    assertEquals(23, millClass.sizeCDAttributes());
+    assertEquals(23, millClass.getCDAttributeList().size());
   }
 
   @Test
@@ -236,9 +237,9 @@ public class MillDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testConstructor() {
-    assertEquals(1, millClass.sizeCDConstructors());
-    assertTrue(PROTECTED.build().deepEquals(millClass.getCDConstructor(0).getModifier()));
-    assertEquals("AutomatonMill", millClass.getCDConstructor(0).getName());
+    assertEquals(1, millClass.getCDConstructorList().size());
+    assertTrue(PROTECTED.build().deepEquals(millClass.getCDConstructorList().get(0).getModifier()));
+    assertEquals("AutomatonMill", millClass.getCDConstructorList().get(0).getName());
   }
 
   @Test

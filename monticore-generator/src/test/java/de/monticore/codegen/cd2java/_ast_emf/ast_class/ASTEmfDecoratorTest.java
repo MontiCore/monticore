@@ -74,8 +74,8 @@ public class ASTEmfDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterface() {
-    assertEquals(1, emfClass.sizeInterface());
-    assertDeepEquals("de.monticore.codegen._ast_emf.automata._ast.ASTAutomataNode", emfClass.getInterface(0));
+    assertEquals(1, emfClass.getInterfaceList().size());
+    assertDeepEquals("de.monticore.codegen._ast_emf.automata._ast.ASTAutomataNode", emfClass.getCDInterfaceUsage().getInterface(0));
   }
 
   @Test

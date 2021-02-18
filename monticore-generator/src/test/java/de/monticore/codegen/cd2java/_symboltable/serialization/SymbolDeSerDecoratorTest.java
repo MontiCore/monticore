@@ -4,13 +4,13 @@ package de.monticore.codegen.cd2java._symboltable.serialization;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
-import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
-import de.monticore.cd.facade.CDModifier;
-import de.monticore.cd.prettyprint.CD4CodePrinter;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.codegen.cd2java.AbstractService;
+import de.monticore.codegen.cd2java.CDModifier;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
@@ -85,29 +85,29 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterfaceCount(){
-    assertEquals(1, symbolClassAutomaton.sizeInterface());
+    assertEquals(1, symbolClassAutomaton.getInterfaceList().size());
   }
 
   @Test
   public void testConstructorCount(){
-    assertEquals(0, symbolClassAutomaton.sizeCDConstructors());
+    assertEquals(0, symbolClassAutomaton.getCDConstructorList().size());
   }
 
   @Test
   public void testAttributeCount(){
-    assertEquals(0, symbolClassAutomaton.sizeCDAttributes());
+    assertEquals(0, symbolClassAutomaton.getCDAttributeList().size());
   }
 
   @Test
   public void testMethodCount(){
-    assertEquals(6, symbolClassAutomaton.sizeCDMethods());
+    assertEquals(6, symbolClassAutomaton.getCDMethodList().size());
   }
 
   @Test
   public void testGetSerializedKindMethod(){
     ASTCDMethod method = getMethodBy("getSerializedKind", symbolClassAutomaton);
-    assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
-    assertEquals(0, method.sizeException());
+    assertDeepEquals(CDModifier.PUBLIC.build(), method.getModifier());
+    assertEquals(0, method.getCDThrowsDeclaration().sizeException());
     assertEquals(0, method.sizeCDParameters());
     assertFalse(method.getMCReturnType().isPresentMCVoidType());
     assertDeepEquals(String.class, method.getMCReturnType().getMCType());
@@ -116,8 +116,8 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
   @Test
   public void testSerializeMethod(){
     ASTCDMethod method = getMethodBy("serialize", symbolClassAutomaton);
-    assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
-    assertEquals(0, method.sizeException());
+    assertDeepEquals(CDModifier.PUBLIC.build(), method.getModifier());
+    assertEquals(0, method.getCDThrowsDeclaration().sizeException());
     assertEquals(2, method.sizeCDParameters());
     ASTCDParameter parameter = method.getCDParameter(0);
     assertEquals("toSerialize", parameter.getName());
@@ -134,8 +134,8 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
     List<ASTCDMethod> methods = getMethodsBy("deserialize", symbolClassAutomaton);
     assertEquals(2, methods.size());
     for (ASTCDMethod method: methods) {
-      assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
-      assertEquals(0, method.sizeException());
+      assertDeepEquals(CDModifier.PUBLIC.build(), method.getModifier());
+      assertEquals(0, method.getCDThrowsDeclaration().sizeException());
       assertEquals(1, method.sizeCDParameters());
       List<ASTCDParameter> parameterList = method.getCDParameterList();
       assertFalse(method.getMCReturnType().isPresentMCVoidType());
@@ -146,8 +146,8 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
   @Test
   public void testDeserializeAdditionalAttributesMethod(){
     ASTCDMethod method = getMethodBy("deserializeAddons", symbolClassAutomaton);
-    assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
-    assertEquals(0, method.sizeException());
+    assertDeepEquals(CDModifier.PROTECTED.build(), method.getModifier());
+    assertEquals(0, method.getCDThrowsDeclaration().sizeException());
     assertEquals(2, method.sizeCDParameters());
     List<ASTCDParameter> parameterList = method.getCDParameterList();
     assertEquals("symbol", parameterList.get(0).getName());
@@ -164,29 +164,29 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testNoSuperInterfaceFoo(){
-    assertEquals(1, symbolClassFoo.sizeInterface());
+    assertEquals(1, symbolClassFoo.getInterfaceList().size());
   }
 
   @Test
   public void testConstructorCountFoo(){
-    assertEquals(0, symbolClassFoo.sizeCDConstructors());
+    assertEquals(0, symbolClassFoo.getCDConstructorList().size());
   }
 
   @Test
   public void testAttributeCountFoo(){
-    assertEquals(0, symbolClassFoo.sizeCDAttributes());
+    assertEquals(0, symbolClassFoo.getCDAttributeList().size());
   }
 
   @Test
   public void testMethodCountFoo(){
-    assertEquals(6, symbolClassAutomaton.sizeCDMethods());
+    assertEquals(6, symbolClassAutomaton.getCDMethodList().size());
   }
 
   @Test
   public void testGetSerializedKindMethodFoo(){
     ASTCDMethod method = getMethodBy("getSerializedKind", symbolClassFoo);
-    assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
-    assertEquals(0, method.sizeException());
+    assertDeepEquals(CDModifier.PUBLIC.build(), method.getModifier());
+    assertEquals(0, method.getCDThrowsDeclaration().sizeException());
     assertEquals(0, method.sizeCDParameters());
     assertFalse(method.getMCReturnType().isPresentMCVoidType());
     assertDeepEquals(String.class, method.getMCReturnType().getMCType());
@@ -195,8 +195,8 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
   @Test
   public void testSerializeMethodFoo(){
     ASTCDMethod method = getMethodBy("serialize", symbolClassFoo);
-    assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
-    assertEquals(0, method.sizeException());
+    assertDeepEquals(CDModifier.PUBLIC.build(), method.getModifier());
+    assertEquals(0, method.getCDThrowsDeclaration().sizeException());
     assertEquals(2, method.sizeCDParameters());
     ASTCDParameter parameter = method.getCDParameter(0);
     assertEquals("toSerialize", parameter.getName());
@@ -213,8 +213,8 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
     List<ASTCDMethod> methods = getMethodsBy("deserialize", symbolClassFoo);
     assertEquals(2, methods.size());
     for (ASTCDMethod method: methods) {
-      assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
-      assertEquals(0, method.sizeException());
+      assertDeepEquals(CDModifier.PUBLIC.build(), method.getModifier());
+      assertEquals(0, method.getCDThrowsDeclaration().sizeException());
       assertEquals(1, method.sizeCDParameters());
       List<ASTCDParameter> parameterList = method.getCDParameterList();
       assertFalse(method.getMCReturnType().isPresentMCVoidType());
@@ -225,8 +225,8 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
   @Test
   public void testDeserializeAdditionalAttributesMethodFoo(){
     ASTCDMethod method = getMethodBy("deserializeAddons", symbolClassFoo);
-    assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
-    assertEquals(0, method.sizeException());
+    assertDeepEquals(CDModifier.PROTECTED.build(), method.getModifier());
+    assertEquals(0, method.getCDThrowsDeclaration().sizeException());
     assertEquals(2, method.sizeCDParameters());
     List<ASTCDParameter> parameterList = method.getCDParameterList();
     assertEquals("symbol", parameterList.get(0).getName());
@@ -239,8 +239,8 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
   @Test
   public void testSerializeAddonsMethod(){
     ASTCDMethod method = getMethodBy("serializeAddons", symbolClassFoo);
-    assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
-    assertEquals(0, method.sizeException());
+    assertDeepEquals(CDModifier.PROTECTED.build(), method.getModifier());
+    assertEquals(0, method.getCDThrowsDeclaration().sizeException());
     assertEquals(2, method.sizeCDParameters());
     List<ASTCDParameter> parameterList = method.getCDParameterList();
     assertEquals("toSerialize", parameterList.get(0).getName());
@@ -253,8 +253,8 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
   @Test
   public void testDeserializeExtraAttribute(){
     ASTCDMethod method = getMethodBy("deserializeExtraAttribute", symbolClassFoo);
-    assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
-    assertEquals(0, method.sizeException());
+    assertDeepEquals(CDModifier.PROTECTED.build(), method.getModifier());
+    assertEquals(0, method.getCDThrowsDeclaration().sizeException());
     assertEquals(1, method.sizeCDParameters());
     List<ASTCDParameter> parameterList = method.getCDParameterList();
     assertEquals("symbolJson", parameterList.get(0).getName());
@@ -266,8 +266,8 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
   @Test
   public void testDeserializeFoo(){
     ASTCDMethod method = getMethodBy("deserializeFoo", symbolClassFoo);
-    assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
-    assertEquals(0, method.sizeException());
+    assertDeepEquals(CDModifier.PROTECTED.build(), method.getModifier());
+    assertEquals(0, method.getCDThrowsDeclaration().sizeException());
     assertEquals(1, method.sizeCDParameters());
     List<ASTCDParameter> parameterList = method.getCDParameterList();
     assertEquals("symbolJson", parameterList.get(0).getName());
@@ -279,8 +279,8 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
   @Test
   public void testDeserializeBla(){
     ASTCDMethod method = getMethodBy("deserializeBla", symbolClassFoo);
-    assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
-    assertEquals(0, method.sizeException());
+    assertDeepEquals(CDModifier.PROTECTED.build(), method.getModifier());
+    assertEquals(0, method.getCDThrowsDeclaration().sizeException());
     assertEquals(1, method.sizeCDParameters());
     List<ASTCDParameter> parameterList = method.getCDParameterList();
     assertEquals("symbolJson", parameterList.get(0).getName());

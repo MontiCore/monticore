@@ -55,12 +55,12 @@ public class DataInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributesCount() {
-    assertTrue(dataInterface.isEmptyCDAttributes());
+    assertTrue(dataInterface.getCDAttributeList().isEmpty());
   }
 
   @Test
   public void testMethodCount() {
-    assertEquals(51, dataInterface.sizeCDMethods());
+    assertEquals(51, dataInterface.getCDMethodList().size());
   }
 
   @Test

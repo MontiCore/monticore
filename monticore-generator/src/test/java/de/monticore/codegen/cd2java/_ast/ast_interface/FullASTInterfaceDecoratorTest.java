@@ -82,29 +82,29 @@ public class FullASTInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterfacesCount() {
-    assertEquals(2, astcdInterface.sizeInterface());
+    assertEquals(2, astcdInterface.getInterfaceList().size());
   }
 
   @Test
   public void testASTNodeSuperInterface() {
-    ASTMCObjectType superInteface = astcdInterface.getInterface(0);
+    ASTMCObjectType superInteface = astcdInterface.getCDExtendUsage().getSuperclass(0);
     assertDeepEquals("de.monticore.ast.ASTNode", superInteface);
   }
 
   @Test
   public void testASTDataInterfaceNodeSuperInterface() {
-    ASTMCObjectType superInteface = astcdInterface.getInterface(1);
+    ASTMCObjectType superInteface = astcdInterface.getCDExtendUsage().getSuperclass(1);
     assertDeepEquals("de.monticore.codegen.data.datainterface._ast.ASTDataInterfaceNode", superInteface);
   }
 
   @Test
   public void testAttributesCount() {
-    assertTrue(astcdInterface.isEmptyCDAttributes());
+    assertTrue(astcdInterface.getCDAttributeList().isEmpty());
   }
 
   @Test
   public void testMethodCount() {
-    assertEquals(60, astcdInterface.sizeCDMethods());
+    assertEquals(60, astcdInterface.getCDMethodList().size());
   }
 
   /**

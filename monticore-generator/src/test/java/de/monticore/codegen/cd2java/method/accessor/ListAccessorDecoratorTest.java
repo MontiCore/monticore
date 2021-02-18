@@ -7,8 +7,10 @@ import de.monticore.cd.facade.CDAttributeFacade;
 import de.monticore.codegen.cd2java.CDTypeFactory;
 import de.monticore.codegen.cd2java.methods.accessor.ListAccessorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.prettyprint.MCBasicTypesFullPrettyPrinter;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -195,7 +197,7 @@ public class ListAccessorDecoratorTest {
   public void testHashCodeMethod() {
     ASTCDMethod method = getMethodBy("hashCodeA", this.methods);
     assertTrue(method.getCDParameterList().isEmpty());
-    assertEquals("int", method.printReturnType());
+    assertEquals("int", method.getMCReturnType().printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())));
     assertDeepEquals(PUBLIC, method.getModifier());
   }
 

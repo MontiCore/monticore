@@ -8,6 +8,7 @@ import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.IterablePath;
+import de.monticore.umlmodifier._ast.ASTModifier;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
@@ -76,7 +77,7 @@ public class ParserCDDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testClassCount() {
-    assertEquals(1, parserCD.getCDDefinition().sizeCDClasss());
+    assertEquals(1, parserCD.getCDDefinition().getCDClassesList().size());
   }
 
   @Test
@@ -86,12 +87,12 @@ public class ParserCDDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testNoEnum() {
-    assertTrue(parserCD.getCDDefinition().isEmptyCDEnums());
+    assertTrue(parserCD.getCDDefinition().getCDEnumsList().isEmpty());
   }
 
   @Test
   public void testNoInterface(){
-    assertTrue(parserCD.getCDDefinition().isEmptyCDInterfaces());
+    assertTrue(parserCD.getCDDefinition().getCDInterfacesList().isEmpty());
   }
 
   @Test
@@ -117,16 +118,16 @@ public class ParserCDDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testNoClassesComponent() {
-    assertTrue(parserCDComponent.getCDDefinition().isEmptyCDClasss());
+    assertTrue(parserCDComponent.getCDDefinition().getCDClassesList().isEmpty());
   }
 
   @Test
   public void testNoEnumComponent(){
-    assertTrue(parserCDComponent.getCDDefinition().isEmptyCDEnums());
+    assertTrue(parserCDComponent.getCDDefinition().getCDEnumsList().isEmpty());
   }
 
   @Test
   public void testNoInterfaceComponent(){
-    assertTrue(parserCDComponent.getCDDefinition().isEmptyCDInterfaces());
+    assertTrue(parserCDComponent.getCDDefinition().getCDInterfacesList().isEmpty());
   }
 }

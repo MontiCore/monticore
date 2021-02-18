@@ -88,7 +88,7 @@ public class ParserClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testNoSuperInterfaces(){
-    assertTrue(parserClass.isEmptyInterface());
+    assertTrue(parserClass.getInterfaceList().isEmpty());
   }
 
   @Test
@@ -99,17 +99,17 @@ public class ParserClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testNoAttributes(){
-    assertTrue(parserClass.isEmptyCDAttributes());
+    assertTrue(parserClass.getCDAttributeList().isEmpty());
   }
 
   @Test
   public void testNoConstructors(){
-    assertTrue(parserClass.isEmptyCDConstructors());
+    assertTrue(parserClass.getCDConstructorList().isEmpty());
   }
 
   @Test
   public void testMethodCount(){
-    assertEquals(29, parserClass.sizeCDMethods());
+    assertEquals(29, parserClass.getCDMethodList().size());
   }
 
   @Test
@@ -124,8 +124,8 @@ public class ParserClassDecoratorTest extends DecoratorTestCase {
     assertTrue(parseFileName.getMCReturnType().isPresentMCType());
     assertOptionalOf(AST_AUTOMATON, parseFileName.getMCReturnType().getMCType());
     assertDeepEquals(CDModifier.PUBLIC, parseFileName.getModifier());
-    assertEquals(1, parseFileName.sizeException());
-    assertDeepEquals(ioException, parseFileName.getException(0));
+    assertEquals(1, parseFileName.getCDThrowsDeclaration().getExceptionList().size());
+    assertDeepEquals(ioException, parseFileName.getCDThrowsDeclaration().getException(0));
     assertEquals(1, parseFileName.sizeCDParameters());
     assertDeepEquals(String.class, parseFileName.getCDParameter(0).getMCType());
     assertEquals("fileName", parseFileName.getCDParameter(0).getName());
@@ -135,8 +135,8 @@ public class ParserClassDecoratorTest extends DecoratorTestCase {
     assertTrue(parseReader.getMCReturnType().isPresentMCType());
     assertOptionalOf(AST_AUTOMATON, parseReader.getMCReturnType().getMCType());
     assertDeepEquals(CDModifier.PUBLIC, parseReader.getModifier());
-    assertEquals(1, parseReader.sizeException());
-    assertDeepEquals(ioException, parseReader.getException(0));
+    assertEquals(1, parseReader.getCDThrowsDeclaration().getExceptionList().size());
+    assertDeepEquals(ioException, parseReader.getCDThrowsDeclaration().getException(0));
     assertEquals(1, parseReader.sizeCDParameters());
     assertDeepEquals("java.io.Reader", parseReader.getCDParameter(0).getMCType());
     assertEquals("reader", parseReader.getCDParameter(0).getName());
@@ -146,8 +146,8 @@ public class ParserClassDecoratorTest extends DecoratorTestCase {
     assertTrue(parseString.getMCReturnType().isPresentMCType());
     assertOptionalOf(AST_AUTOMATON, parseString.getMCReturnType().getMCType());
     assertDeepEquals(CDModifier.PUBLIC, parseString.getModifier());
-    assertEquals(1, parseString.sizeException());
-    assertDeepEquals(ioException, parseString.getException(0));
+    assertEquals(1, parseString.getCDThrowsDeclaration().getExceptionList().size());
+    assertDeepEquals(ioException, parseString.getCDThrowsDeclaration().getException(0));
     assertEquals(1, parseString.sizeCDParameters());
     assertDeepEquals(String.class, parseString.getCDParameter(0).getMCType());
     assertEquals("str", parseString.getCDParameter(0).getName());
@@ -165,8 +165,8 @@ public class ParserClassDecoratorTest extends DecoratorTestCase {
     assertTrue(parseFileName.getMCReturnType().isPresentMCType());
     assertOptionalOf(AST_STATE, parseFileName.getMCReturnType().getMCType());
     assertDeepEquals(CDModifier.PUBLIC, parseFileName.getModifier());
-    assertEquals(1, parseFileName.sizeException());
-    assertDeepEquals(ioException, parseFileName.getException(0));
+    assertEquals(1, parseFileName.getCDThrowsDeclaration().getExceptionList().size());
+    assertDeepEquals(ioException, parseFileName.getCDThrowsDeclaration().getException(0));
     assertEquals(1, parseFileName.sizeCDParameters());
     assertDeepEquals(String.class, parseFileName.getCDParameter(0).getMCType());
     assertEquals("fileName", parseFileName.getCDParameter(0).getName());
@@ -176,8 +176,8 @@ public class ParserClassDecoratorTest extends DecoratorTestCase {
     assertTrue(parseReader.getMCReturnType().isPresentMCType());
     assertOptionalOf(AST_STATE, parseReader.getMCReturnType().getMCType());
     assertDeepEquals(CDModifier.PUBLIC, parseReader.getModifier());
-    assertEquals(1, parseReader.sizeException());
-    assertDeepEquals(ioException, parseReader.getException(0));
+    assertEquals(1, parseReader.getCDThrowsDeclaration().getExceptionList().size());
+    assertDeepEquals(ioException, parseReader.getCDThrowsDeclaration().getException(0));
     assertEquals(1, parseReader.sizeCDParameters());
     assertDeepEquals("java.io.Reader", parseReader.getCDParameter(0).getMCType());
     assertEquals("reader", parseReader.getCDParameter(0).getName());
@@ -187,8 +187,8 @@ public class ParserClassDecoratorTest extends DecoratorTestCase {
     assertTrue(parseString.getMCReturnType().isPresentMCType());
     assertOptionalOf(AST_STATE, parseString.getMCReturnType().getMCType());
     assertDeepEquals(CDModifier.PUBLIC, parseString.getModifier());
-    assertEquals(1, parseString.sizeException());
-    assertDeepEquals(ioException, parseString.getException(0));
+    assertEquals(1, parseString.getCDThrowsDeclaration().getExceptionList().size());
+    assertDeepEquals(ioException, parseString.getCDThrowsDeclaration().getException(0));
     assertEquals(1, parseString.sizeCDParameters());
     assertDeepEquals(String.class, parseString.getCDParameter(0).getMCType());
     assertEquals("str", parseString.getCDParameter(0).getName());
@@ -206,8 +206,8 @@ public class ParserClassDecoratorTest extends DecoratorTestCase {
     assertTrue(parseFileName.getMCReturnType().isPresentMCType());
     assertOptionalOf(AST_NAME, parseFileName.getMCReturnType().getMCType());
     assertDeepEquals(CDModifier.PUBLIC, parseFileName.getModifier());
-    assertEquals(1, parseFileName.sizeException());
-    assertDeepEquals(ioException, parseFileName.getException(0));
+    assertEquals(1, parseFileName.getCDThrowsDeclaration().getExceptionList().size());
+    assertDeepEquals(ioException, parseFileName.getCDThrowsDeclaration().getException(0));
     assertEquals(1, parseFileName.sizeCDParameters());
     assertDeepEquals(String.class, parseFileName.getCDParameter(0).getMCType());
     assertEquals("fileName", parseFileName.getCDParameter(0).getName());
@@ -217,8 +217,8 @@ public class ParserClassDecoratorTest extends DecoratorTestCase {
     assertTrue(parseReader.getMCReturnType().isPresentMCType());
     assertOptionalOf(AST_NAME, parseReader.getMCReturnType().getMCType());
     assertDeepEquals(CDModifier.PUBLIC, parseReader.getModifier());
-    assertEquals(1, parseReader.sizeException());
-    assertDeepEquals(ioException, parseReader.getException(0));
+    assertEquals(1, parseReader.getCDThrowsDeclaration().getExceptionList().size());
+    assertDeepEquals(ioException, parseReader.getCDThrowsDeclaration().getException(0));
     assertEquals(1, parseReader.sizeCDParameters());
     assertDeepEquals("java.io.Reader", parseReader.getCDParameter(0).getMCType());
     assertEquals("reader", parseReader.getCDParameter(0).getName());
@@ -228,8 +228,8 @@ public class ParserClassDecoratorTest extends DecoratorTestCase {
     assertTrue(parseString.getMCReturnType().isPresentMCType());
     assertOptionalOf(AST_NAME, parseString.getMCReturnType().getMCType());
     assertDeepEquals(CDModifier.PUBLIC, parseString.getModifier());
-    assertEquals(1, parseString.sizeException());
-    assertDeepEquals(ioException, parseString.getException(0));
+    assertEquals(1, parseString.getCDThrowsDeclaration().getExceptionList().size());
+    assertDeepEquals(ioException, parseString.getCDThrowsDeclaration().getException(0));
     assertEquals(1, parseString.sizeCDParameters());
     assertDeepEquals(String.class, parseString.getCDParameter(0).getMCType());
     assertEquals("str", parseString.getCDParameter(0).getName());
@@ -247,8 +247,8 @@ public class ParserClassDecoratorTest extends DecoratorTestCase {
     assertTrue(createFileName.getMCReturnType().isPresentMCType());
     assertDeepEquals(AUTOMATON_ANTLR_PARSER, createFileName.getMCReturnType().getMCType());
     assertDeepEquals(CDModifier.PROTECTED, createFileName.getModifier());
-    assertEquals(1, createFileName.sizeException());
-    assertDeepEquals(ioException, createFileName.getException(0));
+    assertEquals(1, createFileName.getCDThrowsDeclaration().getExceptionList().size());
+    assertDeepEquals(ioException, createFileName.getCDThrowsDeclaration().getException(0));
     assertEquals(1, createFileName.sizeCDParameters());
     assertDeepEquals(String.class, createFileName.getCDParameter(0).getMCType());
     assertEquals("fileName", createFileName.getCDParameter(0).getName());
@@ -258,8 +258,8 @@ public class ParserClassDecoratorTest extends DecoratorTestCase {
     assertTrue(createReader.getMCReturnType().isPresentMCType());
     assertDeepEquals(AUTOMATON_ANTLR_PARSER, createReader.getMCReturnType().getMCType());
     assertDeepEquals(CDModifier.PROTECTED, createReader.getModifier());
-    assertEquals(1, createReader.sizeException());
-    assertDeepEquals(ioException, createReader.getException(0));
+    assertEquals(1, createReader.getCDThrowsDeclaration().getExceptionList().size());
+    assertDeepEquals(ioException, createReader.getCDThrowsDeclaration().getException(0));
     assertEquals(1, createReader.sizeCDParameters());
     assertDeepEquals("java.io.Reader", createReader.getCDParameter(0).getMCType());
     assertEquals("reader", createReader.getCDParameter(0).getName());

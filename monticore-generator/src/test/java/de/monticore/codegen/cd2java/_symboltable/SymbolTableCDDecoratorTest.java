@@ -21,6 +21,7 @@ import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.IterablePath;
+import de.monticore.umlmodifier._ast.ASTModifier;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
@@ -145,7 +146,7 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testClassCount() {
-    assertEquals(27, symTabCD.getCDDefinition().getCDClassList().size());
+    assertEquals(27, symTabCD.getCDDefinition().getCDClassesList().size());
   }
 
   @Test
@@ -192,7 +193,7 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testNoEnum() {
-    assertTrue(symTabCD.getCDDefinition().isEmptyCDEnums());
+    assertTrue(symTabCD.getCDDefinition().getCDEnumsList().isEmpty());
   }
 
   @Test
@@ -220,7 +221,7 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testClassCountWithHC() {
-    assertEquals(27, symTabCDWithHC.getCDDefinition().getCDClassList().size());
+    assertEquals(27, symTabCDWithHC.getCDDefinition().getCDClassesList().size());
   }
 
   @Test
@@ -262,7 +263,7 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testNoEnumWithHC() {
-    assertTrue(symTabCDWithHC.getCDDefinition().isEmptyCDEnums());
+    assertTrue(symTabCDWithHC.getCDDefinition().getCDEnumsList().isEmpty());
   }
 
   @Test
@@ -272,7 +273,7 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testClassCountComponent() {
-    assertEquals(27, symTabCDComponent.getCDDefinition().getCDClassList().size());
+    assertEquals(27, symTabCDComponent.getCDDefinition().getCDClassesList().size());
   }
 
   @Test
@@ -310,6 +311,6 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testNoEnumComponent() {
-    assertTrue(symTabCDComponent.getCDDefinition().isEmptyCDEnums());
+    assertTrue(symTabCDComponent.getCDDefinition().getCDEnumsList().isEmpty());
   }
 }

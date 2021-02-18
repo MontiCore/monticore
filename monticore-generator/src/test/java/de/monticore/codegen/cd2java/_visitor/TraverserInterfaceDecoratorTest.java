@@ -4,11 +4,11 @@ package de.monticore.codegen.cd2java._visitor;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
-import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
-import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
-import de.monticore.cd.prettyprint.CD4CodePrinter;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cd4codebasis._ast.ASTCDParameter;
+import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
@@ -25,7 +25,7 @@ import org.junit.Test;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.DecoratorAssert.*;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodsBy;
@@ -67,7 +67,7 @@ public class TraverserInterfaceDecoratorTest extends DecoratorTestCase {
 
     this.glex.setGlobalValue("service", new VisitorService(decoratedCompilationUnit));
     this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
-    this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
+    this.glex.setGlobalValue("cdPrinter", new CD4CodeFullPrettyPrinter());
     VisitorService visitorService = new VisitorService(decoratedCompilationUnit);
     SymbolTableService symbolTableService = new SymbolTableService(decoratedCompilationUnit);
 
@@ -87,22 +87,22 @@ public class TraverserInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeCount() {
-    assertEquals(0, traverserInterface.sizeCDAttributes());
+    assertEquals(0, traverserInterface.getCDAttributeList().size());
   }
 
   @Test
   public void testMethodCount() {
-    assertEquals(42, traverserInterface.sizeCDMethods());
+    assertEquals(42, traverserInterface.getCDMethodList().size());
   }
 
   @Test
   public void testInterfaceCount() {
-    assertEquals(1, traverserInterface.sizeInterface());
+    assertEquals(1, traverserInterface.getInterfaceList().size());
   }
 
   @Test
   public void testInterface() {
-    assertDeepEquals("de.monticore.codegen.ast.lexicals._visitor.LexicalsTraverser", traverserInterface.getInterface(0));
+    assertDeepEquals("de.monticore.codegen.ast.lexicals._visitor.LexicalsTraverser", traverserInterface.getCDExtendUsage().getSuperclass(0));
   }
 
   @Test

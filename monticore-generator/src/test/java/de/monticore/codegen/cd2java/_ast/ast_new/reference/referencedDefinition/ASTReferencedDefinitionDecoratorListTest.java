@@ -58,7 +58,7 @@ public class ASTReferencedDefinitionDecoratorListTest extends DecoratorTestCase 
 
   @Test
   public void testAttributes() {
-    assertTrue(astClass.isEmptyCDAttributes());
+    assertTrue(astClass.getCDAttributeList().isEmpty());
   }
 
   @Test

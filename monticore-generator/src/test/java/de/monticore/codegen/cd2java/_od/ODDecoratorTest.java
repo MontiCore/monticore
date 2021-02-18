@@ -79,7 +79,7 @@ public class ODDecoratorTest extends DecoratorTestCase {
     this.odClass = decorator.decorate(decoratedCompilationUnit);
     this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
     this.glex.setGlobalValue("service", new ODService(decoratedCompilationUnit));
-    this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
+    this.glex.setGlobalValue("cdPrinter", new CD4CodeFullPrettyPrinter());
   }
 
   @Test
@@ -107,12 +107,12 @@ public class ODDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeSize() {
-    assertEquals(5, odClass.sizeCDAttributes());
+    assertEquals(5, odClass.getCDAttributeList().size());
   }
 
   @Test
   public void testMethodCount() {
-    assertEquals(14, odClass.sizeCDMethods());
+    assertEquals(14, odClass.getCDMethodList().size());
   }
 
   @Test
@@ -122,12 +122,12 @@ public class ODDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testInterfaceCount() {
-    assertEquals(2, odClass.sizeInterface());
+    assertEquals(2, odClass.getInterfaceList().size());
   }
 
   @Test
   public void testImplementsVisitorInterface() {
-    assertDeepEquals(VISITOR_FULL_NAME, odClass.getInterface(0));
+    assertDeepEquals(VISITOR_FULL_NAME, odClass.getCDInterfaceUsage().getInterface(0));
   }
 
   /**

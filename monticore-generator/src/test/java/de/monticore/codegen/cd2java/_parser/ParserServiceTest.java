@@ -3,6 +3,7 @@ package de.monticore.codegen.cd2java._parser;
 
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.types.MCTypeFacade;
 import org.junit.Before;
@@ -27,7 +28,7 @@ public class ParserServiceTest extends DecoratorTestCase {
     this.mcTypeFacade = MCTypeFacade.getInstance();
 
     astcdCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "Automaton");
-    astAutomaton = astcdCompilationUnit.getCDDefinition().getCDClass(0);
+    astAutomaton = astcdCompilationUnit.getCDDefinition().getCDClassesList().get(0);
 
     parserService = new ParserService(astcdCompilationUnit);
   }
@@ -78,7 +79,7 @@ public class ParserServiceTest extends DecoratorTestCase {
   @Test
   public void testGetStartProd(){
     assertTrue(parserService.getStartProd().isPresent());
-    assertEquals(parserService.getStartProd(), parserService.getStartProd(parserService.getCDSymbol().getAstNode()));
+    assertEquals(parserService.getStartProd(), parserService.getStartProd((ASTCDDefinition) parserService.getCDSymbol().getAstNode()));
     assertEquals("de.monticore.codegen.symboltable.Automaton.ASTAutomaton", parserService.getStartProd().get());
   }
 }

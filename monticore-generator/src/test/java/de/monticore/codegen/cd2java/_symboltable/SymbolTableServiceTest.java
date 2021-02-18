@@ -37,7 +37,7 @@ public class SymbolTableServiceTest extends DecoratorTestCase {
     this.mcTypeFacade = MCTypeFacade.getInstance();
 
     astcdCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "Automaton");
-    astAutomaton = astcdCompilationUnit.getCDDefinition().getCDClass(0);
+    astAutomaton = astcdCompilationUnit.getCDDefinition().getCDClassesList().get(0);
 
     symTabService = new SymbolTableService(astcdCompilationUnit);
   }

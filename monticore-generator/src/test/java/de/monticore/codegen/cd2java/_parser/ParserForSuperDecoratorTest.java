@@ -79,17 +79,17 @@ public class ParserForSuperDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testNoInterfaces() {
-    assertEquals(0, parserClass.sizeInterface());
+    assertEquals(0, parserClass.getInterfaceList().size());
   }
 
   @Test
   public void testNoAttributes() {
-    assertEquals(0, parserClass.sizeCDAttributes());
+    assertEquals(0, parserClass.getCDAttributeList().size());
   }
 
   @Test
   public void testMethodCount() {
-    assertEquals(12, parserClass.sizeCDMethods());
+    assertEquals(12, parserClass.getCDMethodList().size());
   }
 
   @Test
@@ -108,8 +108,8 @@ public class ParserForSuperDecoratorTest extends DecoratorTestCase {
     assertEquals(1, parse.sizeCDParameters());
     assertEquals("fileName", parse.getCDParameter(0).getName());
     assertDeepEquals(String.class, parse.getCDParameter(0).getMCType());
-    assertEquals(1, parse.sizeException());
-    assertDeepEquals(ioException, parse.getException(0));
+    assertEquals(1, parse.getCDThrowsDeclaration().getExceptionList());
+    assertDeepEquals(ioException, parse.getCDThrowsDeclaration().getException(0));
 
     ASTCDMethod parseReader = methods.get(1);
     assertDeepEquals(CDModifier.PUBLIC, parseReader.getModifier());
@@ -118,8 +118,8 @@ public class ParserForSuperDecoratorTest extends DecoratorTestCase {
     assertEquals(1, parseReader.sizeCDParameters());
     assertEquals("reader", parseReader.getCDParameter(0).getName());
     assertDeepEquals("java.io.Reader", parseReader.getCDParameter(0).getMCType());
-    assertEquals(1, parseReader.sizeException());
-    assertDeepEquals(ioException, parseReader.getException(0));
+    assertEquals(1, parseReader.getCDThrowsDeclaration().getExceptionList());
+    assertDeepEquals(ioException, parseReader.getCDThrowsDeclaration().getException(0));
   }
 
   @Test
@@ -138,8 +138,8 @@ public class ParserForSuperDecoratorTest extends DecoratorTestCase {
     assertEquals(1, parse.sizeCDParameters());
     assertEquals("fileName", parse.getCDParameter(0).getName());
     assertDeepEquals(String.class, parse.getCDParameter(0).getMCType());
-    assertEquals(1, parse.sizeException());
-    assertDeepEquals(ioException, parse.getException(0));
+    assertEquals(1, parse.getCDThrowsDeclaration().getExceptionList());
+    assertDeepEquals(ioException, parse.getCDThrowsDeclaration().getException(0));
 
     ASTCDMethod parseReader = methods.get(1);
     assertDeepEquals(CDModifier.PUBLIC, parseReader.getModifier());
@@ -148,8 +148,8 @@ public class ParserForSuperDecoratorTest extends DecoratorTestCase {
     assertEquals(1, parseReader.sizeCDParameters());
     assertEquals("reader", parseReader.getCDParameter(0).getName());
     assertDeepEquals("java.io.Reader", parseReader.getCDParameter(0).getMCType());
-    assertEquals(1, parseReader.sizeException());
-    assertDeepEquals(ioException, parseReader.getException(0));
+    assertEquals(1, parseReader.getCDThrowsDeclaration().getExceptionList());
+    assertDeepEquals(ioException, parseReader.getCDThrowsDeclaration().getException(0));
   }
 
   @Test

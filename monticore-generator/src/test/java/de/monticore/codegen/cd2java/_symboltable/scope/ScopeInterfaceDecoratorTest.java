@@ -88,18 +88,18 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterfacesCount() {
-    assertEquals(2, scopeInterface.sizeInterface());
+    assertEquals(2, scopeInterface.getInterfaceList().size());
   }
 
   @Test
   public void testSuperInterfaces() {
-    assertDeepEquals(I_LEXICAS_SCOPE, scopeInterface.getInterface(0));
-    assertDeepEquals("de.monticore.IBlaScope", scopeInterface.getInterface(1));
+    assertDeepEquals(I_LEXICAS_SCOPE, scopeInterface.getCDExtendUsage().getSuperclass(0));
+    assertDeepEquals("de.monticore.IBlaScope", scopeInterface.getCDExtendUsage().getSuperclass(1));
   }
 
   @Test
   public void testNoAttributes() {
-    assertTrue(scopeInterface.isEmptyCDAttributes());
+    assertTrue(scopeInterface.getCDAttributeList().isEmpty());
   }
 
   @Test

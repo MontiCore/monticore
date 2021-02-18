@@ -107,7 +107,7 @@ public class ScopesGenitorDelegatorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testNoSuperInterfaces() {
-    assertTrue(scopesGenitorClass.isEmptyInterface());
+    assertTrue(scopesGenitorClass.getCDInterfaceUsage().isEmptyInterface());
   }
 
   @Test
@@ -117,12 +117,12 @@ public class ScopesGenitorDelegatorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testConstructorCount() {
-    assertEquals(2, scopesGenitorClass.sizeCDConstructors());
+    assertEquals(2, scopesGenitorClass.getCDConstructorList().size());
   }
 
   @Test
   public void testConstructor() {
-    ASTCDConstructor cdConstructor = scopesGenitorClass.getCDConstructor(0);
+    ASTCDConstructor cdConstructor = scopesGenitorClass.getCDConstructorList().get(0);
     assertDeepEquals(PUBLIC, cdConstructor.getModifier());
     assertEquals("AutomatonScopesGenitorDelegator", cdConstructor.getName());
 
@@ -131,21 +131,21 @@ public class ScopesGenitorDelegatorDecoratorTest extends DecoratorTestCase {
     assertEquals("globalScope", cdConstructor.getCDParameter(0).getName());
 
 
-    assertTrue(cdConstructor.isEmptyException());
+    assertTrue(cdConstructor.getCDThrowsDeclaration().isEmptyException());
   }
 
   @Test
   public void testZeroArgsConstructor(){
-    ASTCDConstructor constructor = scopesGenitorClass.getCDConstructor(1);
+    ASTCDConstructor constructor = scopesGenitorClass.getCDConstructorList().get(1);
     assertDeepEquals(PUBLIC, constructor.getModifier());
     assertEquals("AutomatonScopesGenitorDelegator", constructor.getName());
     assertTrue(constructor.isEmptyCDParameters());
-    assertTrue(constructor.isEmptyException());
+    assertTrue(constructor.getCDThrowsDeclaration().isEmptyException());
   }
 
   @Test
   public void testAttributeSize() {
-    assertEquals(4, scopesGenitorClass.sizeCDAttributes());
+    assertEquals(4, scopesGenitorClass.getCDAttributeList().size());
   }
 
   @Test

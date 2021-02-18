@@ -4,10 +4,10 @@ package de.monticore.codegen.cd2java._visitor;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
-import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
-import de.monticore.cd.prettyprint.CD4CodePrinter;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
@@ -71,7 +71,7 @@ public class Visitor2DecoratorTest extends DecoratorTestCase {
 
     this.glex.setGlobalValue("service", new VisitorService(decoratedCompilationUnit));
     this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
-    this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
+    this.glex.setGlobalValue("cdPrinter", new CD4CodeFullPrettyPrinter());
     VisitorService visitorService = new VisitorService(decoratedCompilationUnit);
     SymbolTableService symbolTableService = new SymbolTableService(decoratedCompilationUnit);
 
@@ -91,18 +91,18 @@ public class Visitor2DecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeCount() {
-    assertEquals(0, visitor2.sizeCDAttributes());
+    assertEquals(0, visitor2.getCDAttributeList().size());
   }
 
   @Test
   public void testMethodCount() {
-    assertEquals(18, visitor2.sizeCDMethods());
+    assertEquals(18, visitor2.getCDMethodList().size());
 
   }
 
   @Test
   public void testInterfaceCount() {
-    assertEquals(1, visitor2.sizeInterface());
+    assertEquals(1, visitor2.getInterfaceList().size());
   }
 
   @Test

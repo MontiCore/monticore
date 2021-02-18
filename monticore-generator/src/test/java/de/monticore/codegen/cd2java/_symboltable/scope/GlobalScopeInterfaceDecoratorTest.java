@@ -81,15 +81,15 @@ public class GlobalScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterfacesCount() {
-    assertEquals(2, scopeInterface.sizeInterface());
+    assertEquals(2, scopeInterface.getInterfaceList().size());
   }
 
   @Test
   public void testSuperInterfaces() {
     assertDeepEquals("de.monticore.symboltable.IGlobalScope",
-        scopeInterface.getInterface(0));
+        scopeInterface.getCDExtendUsage().getSuperclass(0));
     assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.IAutomatonScope",
-        scopeInterface.getInterface(1));
+        scopeInterface.getCDExtendUsage().getSuperclass(1));
   }
 
   @Test

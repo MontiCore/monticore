@@ -45,7 +45,7 @@ public class MandatoryAccessorDecoratorTest {
 
   @Test
   public void testGetMethodBoolean() {
-    ASTCDAttribute attribute = CDAttributeFacade.getInstance().createAttribute(PROTECTED, String.class, "a");
+    ASTCDAttribute attribute = CDAttributeFacade.getInstance().createAttribute(PROTECTED.build(), String.class, "a");
     MandatoryAccessorDecorator mandatoryAccessorDecorator = new MandatoryAccessorDecorator(glex);
     List<ASTCDMethod> methods = mandatoryAccessorDecorator.decorate(attribute);
 

@@ -104,27 +104,27 @@ public class AstRuleInheritanceTest {
     assertTrue(astA.isPresentModifier());
     assertTrue(astA.getModifier().isPresentStereotype());
     // one stereotype for the startProd flag and one for the checked external type
-    assertEquals(2, astA.getModifier().getStereotype().getValueList().size());
-    assertEquals(astA.getModifier().getStereotype().getValueList().get(0).getName(),
+    assertEquals(2, astA.getModifier().getStereotype().getValuesList().size());
+    assertEquals(astA.getModifier().getStereotype().getValuesList().get(0).getName(),
         MC2CDStereotypes.EXTERNAL_TYPE.toString());
-    assertTrue(astA.getModifier().getStereotype().getValueList().get(0).isPresentValue());
-    assertEquals(astA.getModifier().getStereotype().getValueList().get(0).getValue(), "ASTExternalProd");
+    assertTrue(astA.getModifier().getStereotype().getValuesList().get(0).isPresentText());
+    assertEquals(astA.getModifier().getStereotype().getValuesList().get(0).getValue(), "ASTExternalProd");
 
     assertTrue(astF.isPresentModifier());
     assertTrue(astF.getModifier().isPresentStereotype());
-    assertEquals(1, astF.getModifier().getStereotype().getValueList().size());
-    assertEquals(astF.getModifier().getStereotype().getValueList().get(0).getName(),
+    assertEquals(1, astF.getModifier().getStereotype().getValuesList().size());
+    assertEquals(astF.getModifier().getStereotype().getValuesList().get(0).getName(),
         MC2CDStereotypes.EXTERNAL_TYPE.toString());
-    assertTrue(astF.getModifier().getStereotype().getValueList().get(0).isPresentValue());
-    assertEquals(astF.getModifier().getStereotype().getValueList().get(0).getValue(), "java.util.Observable");
+    assertTrue(astF.getModifier().getStereotype().getValuesList().get(0).isPresentText());
+    assertEquals(astF.getModifier().getStereotype().getValuesList().get(0).getValue(), "java.util.Observable");
 
     assertTrue(astD.isPresentModifier());
     assertTrue(astD.getModifier().isPresentStereotype());
-    assertEquals(1, astD.getModifier().getStereotype().getValueList().size());
-    assertEquals(astD.getModifier().getStereotype().getValueList().get(0).getName(),
+    assertEquals(1, astD.getModifier().getStereotype().getValuesList().size());
+    assertEquals(astD.getModifier().getStereotype().getValuesList().get(0).getName(),
         MC2CDStereotypes.EXTERNAL_TYPE.toString());
-    assertTrue(astD.getModifier().getStereotype().getValueList().get(0).isPresentValue());
-    assertEquals(astD.getModifier().getStereotype().getValueList().get(0).getValue(), "java.io.Serializable");
+    assertTrue(astD.getModifier().getStereotype().getValuesList().get(0).isPresentText());
+    assertEquals(astD.getModifier().getStereotype().getValuesList().get(0).getValue(), "java.io.Serializable");
   }
 
   /**
@@ -135,15 +135,15 @@ public class AstRuleInheritanceTest {
   public void testStereotypesForAstInterfaces() {
     assertTrue(astE.isPresentModifier());
     assertTrue(astE.getModifier().isPresentStereotype());
-    assertEquals(2, astE.getModifier().getStereotype().getValueList().size());
-    assertEquals(astE.getModifier().getStereotype().getValueList().get(0).getName(),
+    assertEquals(2, astE.getModifier().getStereotype().getValuesList().size());
+    assertEquals(astE.getModifier().getStereotype().getValuesList().get(0).getName(),
         MC2CDStereotypes.EXTERNAL_TYPE.toString());
-    assertTrue(astE.getModifier().getStereotype().getValueList().get(0).isPresentValue());
-    assertEquals(astE.getModifier().getStereotype().getValueList().get(0).getValue(), "ASTExternalInterface");
-    assertEquals(astE.getModifier().getStereotype().getValueList().get(1).getName(),
+    assertTrue(astE.getModifier().getStereotype().getValuesList().get(0).isPresentText());
+    assertEquals(astE.getModifier().getStereotype().getValuesList().get(0).getValue(), "ASTExternalInterface");
+    assertEquals(astE.getModifier().getStereotype().getValuesList().get(1).getName(),
         MC2CDStereotypes.EXTERNAL_TYPE.toString());
-    assertTrue(astE.getModifier().getStereotype().getValueList().get(1).isPresentValue());
-    assertEquals(astE.getModifier().getStereotype().getValueList().get(1).getValue(), "java.io.Serializable");
+    assertTrue(astE.getModifier().getStereotype().getValuesList().get(1).isPresentText());
+    assertEquals(astE.getModifier().getStereotype().getValuesList().get(1).getValue(), "java.io.Serializable");
   }
 
   /**

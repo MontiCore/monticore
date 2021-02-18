@@ -64,7 +64,7 @@ public class ASTReferencedDefinitionDecoratorOptionalTest extends DecoratorTestC
 
   @Test
   public void testAttributes() {
-    assertTrue(astClass.isEmptyCDAttributes());
+    assertTrue(astClass.getCDAttributeList().isEmpty());
   }
 
   @Test

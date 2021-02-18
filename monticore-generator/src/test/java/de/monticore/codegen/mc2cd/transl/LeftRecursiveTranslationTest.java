@@ -34,9 +34,9 @@ public class LeftRecursiveTranslationTest {
     ASTCDClass a = getClassBy("ASTA", leftRecursive);
     assertTrue(a.isPresentModifier());
     assertTrue(a.getModifier().isPresentStereotype());
-    assertEquals(1, a.getModifier().getStereotype().sizeValue());
-    assertEquals("left_recursive", a.getModifier().getStereotype().getValue(0).getName());
-    assertFalse(a.getModifier().getStereotype().getValue(0).isPresentValue());
+    assertEquals(1, a.getModifier().getStereotype().sizeValues());
+    assertEquals("left_recursive", a.getModifier().getStereotype().getValues(0).getName());
+    assertFalse(a.getModifier().getStereotype().getValues(0).isPresentText());
   }
 
 }

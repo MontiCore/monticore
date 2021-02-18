@@ -6,6 +6,7 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.types.MCTypeFacade;
+import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,7 +33,7 @@ public class VisitorServiceTest extends DecoratorTestCase {
   public void setup() {
     this.mcTypeFacade = MCTypeFacade.getInstance();
     astcdCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
-    astAutomaton = astcdCompilationUnit.getCDDefinition().getCDClass(0);
+    astAutomaton = astcdCompilationUnit.getCDDefinition().getCDClassesList().get(0);
 
     astService = new VisitorService(astcdCompilationUnit);
   }
@@ -92,7 +93,7 @@ public class VisitorServiceTest extends DecoratorTestCase {
 
   @Test
   public void testGetSuperInheritanceVisitors() {
-    List<ASTMCQualifiedType> allVisitorTypesInHierarchy = astService.getSuperTraverserInterfaces();
+    List<ASTMCObjectType> allVisitorTypesInHierarchy = astService.getSuperTraverserInterfaces();
     assertEquals(1, allVisitorTypesInHierarchy.size());
     assertDeepEquals("de.monticore.codegen.ast.lexicals._visitor.LexicalsTraverser", allVisitorTypesInHierarchy.get(0));
   }

@@ -73,7 +73,7 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterfacesEmpty() {
-    assertTrue(builderClass.isEmptyInterface());
+    assertTrue(builderClass.getCDInterfaceUsage().isEmptyInterface());
   }
 
   @Test
@@ -83,16 +83,16 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testConstructorCount() {
-    assertEquals(1, builderClass.sizeCDConstructors());
+    assertEquals(1, builderClass.getCDConstructorList().size());
   }
 
   @Test
   public void testDefaultConstructor() {
-    ASTCDConstructor cdConstructor = builderClass.getCDConstructor(0);
+    ASTCDConstructor cdConstructor = builderClass.getCDConstructorList().get(0);
     assertDeepEquals(PUBLIC, cdConstructor.getModifier());
     assertEquals("ASymbolBuilder", cdConstructor.getName());
     assertTrue(cdConstructor.isEmptyCDParameters());
-    assertTrue(cdConstructor.isEmptyException());
+    assertTrue(cdConstructor.getCDThrowsDeclaration().isEmptyException());
   }
 
   @Test

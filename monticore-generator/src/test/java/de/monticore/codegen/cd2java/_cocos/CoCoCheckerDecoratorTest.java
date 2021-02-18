@@ -110,7 +110,7 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testDefaultConstructor() {
-    ASTCDConstructor defaultConstructor = cocoChecker.getCDConstructor(0);
+    ASTCDConstructor defaultConstructor = cocoChecker.getCDConstructorList().get(0);
     assertDeepEquals(PUBLIC, defaultConstructor.getModifier());
     assertTrue(defaultConstructor.isEmptyCDParameters());
   }

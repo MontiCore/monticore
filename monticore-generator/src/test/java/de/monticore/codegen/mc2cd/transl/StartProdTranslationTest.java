@@ -44,10 +44,10 @@ public class StartProdTranslationTest {
   public void testGlobalStartProd() {
     assertTrue(globalStartProd.getCDDefinition().isPresentModifier());
     assertTrue(globalStartProd.getCDDefinition().getModifier().isPresentStereotype());
-    assertEquals(1, globalStartProd.getCDDefinition().getModifier().getStereotype().sizeValue());
-    assertEquals("startProd", globalStartProd.getCDDefinition().getModifier().getStereotype().getValue(0).getName());
-    assertTrue(globalStartProd.getCDDefinition().getModifier().getStereotype().getValue(0).isPresentValue());
-    assertEquals("mc2cdtransformation.Supergrammar.X", globalStartProd.getCDDefinition().getModifier().getStereotype().getValue(0).getValue());
+    assertEquals(1, globalStartProd.getCDDefinition().getModifier().getStereotype().sizeValues());
+    assertEquals("startProd", globalStartProd.getCDDefinition().getModifier().getStereotype().getValues(0).getName());
+    assertTrue(globalStartProd.getCDDefinition().getModifier().getStereotype().getValues(0).isPresentText());
+    assertEquals("mc2cdtransformation.Supergrammar.X", globalStartProd.getCDDefinition().getModifier().getStereotype().getValues(0).getValue());
   }
 
   @Test
@@ -57,9 +57,9 @@ public class StartProdTranslationTest {
     ASTCDClass xClass = getClassBy("ASTX", classStartProd);
     assertTrue(xClass.isPresentModifier());
     assertTrue(xClass.getModifier().isPresentStereotype());
-    assertEquals(1, xClass.getModifier().getStereotype().sizeValue());
-    assertEquals("startProd", xClass.getModifier().getStereotype().getValue(0).getName());
-    assertFalse(xClass.getModifier().getStereotype().getValue(0).isPresentValue());
+    assertEquals(1, xClass.getModifier().getStereotype().sizeValues());
+    assertEquals("startProd", xClass.getModifier().getStereotype().getValues(0).getName());
+    assertFalse(xClass.getModifier().getStereotype().getValues(0).isPresentText());
   }
 
   @Test
@@ -69,8 +69,8 @@ public class StartProdTranslationTest {
     ASTCDInterface aInterface = getInterfaceBy("ASTA", interfaceStartProd);
     assertTrue(aInterface.isPresentModifier());
     assertTrue(aInterface.getModifier().isPresentStereotype());
-    assertEquals(1, aInterface.getModifier().getStereotype().sizeValue());
-    assertEquals("startProd", aInterface.getModifier().getStereotype().getValue(0).getName());
-    assertFalse(aInterface.getModifier().getStereotype().getValue(0).isPresentValue());
+    assertEquals(1, aInterface.getModifier().getStereotype().sizeValues());
+    assertEquals("startProd", aInterface.getModifier().getStereotype().getValues(0).getName());
+    assertFalse(aInterface.getModifier().getStereotype().getValues(0).isPresentText());
   }
 }

@@ -6,6 +6,8 @@ import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
+import de.monticore.cd4codebasis._ast.ASTCDConstructor;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecorationHelper;
@@ -77,13 +79,13 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterfacesCount() {
-    assertEquals(1, scopeClass.sizeInterface());
+    assertEquals(1, scopeClass.getInterfaceList().size());
   }
 
   @Test
   public void testSuperInterfaces() {
     assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.IAutomatonGlobalScope",
-        scopeClass.getInterface(0));
+        scopeClass.getInterfaceList().get(0));
   }
 
   @Test
@@ -93,13 +95,13 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testConstructorCount() {
-    assertEquals(2, scopeClass.sizeCDConstructors());
+    assertEquals(2, scopeClass.getCDConstructorList().size());
   }
 
   @Test
   public void testConstructors() {
     // this(modelPath, modelFileExtension)
-    ASTCDConstructor cdConstructor = scopeClass.getCDConstructor(0);
+    ASTCDConstructor cdConstructor = scopeClass.getCDConstructorList().get(0);
     assertDeepEquals(PUBLIC, cdConstructor.getModifier());
     assertEquals("AutomatonGlobalScope", cdConstructor.getName());
 
@@ -110,20 +112,20 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
     assertDeepEquals("String", cdConstructor.getCDParameter(1).getMCType());
     assertEquals("fileExt", cdConstructor.getCDParameter(1).getName());
 
-    assertTrue(cdConstructor.isEmptyException());
+    assertTrue(cdConstructor.getCDThrowsDeclaration().isEmptyException());
 
-    ASTCDConstructor zeroArgsConstructor = scopeClass.getCDConstructor(1);
+    ASTCDConstructor zeroArgsConstructor = scopeClass.getCDConstructorList().get(1);
     assertDeepEquals(PUBLIC, zeroArgsConstructor.getModifier());
     assertEquals("AutomatonGlobalScope", zeroArgsConstructor.getName());
 
     assertEquals(0, zeroArgsConstructor.sizeCDParameters());
 
-    assertTrue(cdConstructor.isEmptyException());
+    assertTrue(cdConstructor.getCDThrowsDeclaration().isEmptyException());
   }
 
   @Test
   public void testAttributeSize() {
-    assertEquals(9, scopeClass.sizeCDAttributes());
+    assertEquals(9, scopeClass.getCDAttributeList().size());
   }
 
   @Test

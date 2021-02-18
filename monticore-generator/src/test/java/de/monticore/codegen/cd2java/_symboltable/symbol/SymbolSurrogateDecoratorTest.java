@@ -91,12 +91,12 @@ public class SymbolSurrogateDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testConstructorCount() {
-    assertEquals(1, symbolClassAutomaton.sizeCDConstructors());
+    assertEquals(1, symbolClassAutomaton.getCDConstructorList().size());
   }
 
   @Test
   public void testConstructor() {
-    ASTCDConstructor cdConstructor = symbolClassAutomaton.getCDConstructor(0);
+    ASTCDConstructor cdConstructor = symbolClassAutomaton.getCDConstructorList().get(0);
     assertDeepEquals(PUBLIC, cdConstructor.getModifier());
     assertEquals("AutomatonSymbolSurrogate", cdConstructor.getName());
 
@@ -104,12 +104,12 @@ public class SymbolSurrogateDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(String.class, cdConstructor.getCDParameter(0).getMCType());
     assertEquals("name", cdConstructor.getCDParameter(0).getName());
 
-    assertTrue(cdConstructor.isEmptyException());
+    assertTrue(cdConstructor.getCDThrowsDeclaration().isEmptyException());
   }
 
   @Test
   public void testAttributeCount() {
-    assertEquals(1, symbolClassAutomaton.sizeCDAttributes());
+    assertEquals(1, symbolClassAutomaton.getCDAttributeList().size());
   }
 
   @Test

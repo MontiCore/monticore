@@ -260,7 +260,7 @@ public class MontiCoreScriptTest {
     assertNotNull(cdCompilationUnit.getCDDefinition());
     assertEquals("StatechartSymbols", cdCompilationUnit.getCDDefinition().getName());
     // no symbol defined
-    assertEquals(0, cdCompilationUnit.getCDDefinition().sizeCDClasses());
+    assertEquals(0, cdCompilationUnit.getCDDefinition().getCDClassesList().size());
 
     // check saved cd for grammar
     ASTCDCompilationUnit symbolCDOfParsedGrammar = mc.getSymbolCDOfParsedGrammar(grammar);
@@ -268,7 +268,7 @@ public class MontiCoreScriptTest {
     assertNotNull(symbolCDOfParsedGrammar.getCDDefinition());
     assertEquals("StatechartSymbols", symbolCDOfParsedGrammar.getCDDefinition().getName());
     // no symbol defined
-    assertEquals(0, symbolCDOfParsedGrammar.getCDDefinition().sizeCDClasses());
+    assertEquals(0, symbolCDOfParsedGrammar.getCDDefinition().getCDClassesList().size());
   }
 
   @Test
@@ -282,16 +282,16 @@ public class MontiCoreScriptTest {
     assertNotNull(cdCompilationUnit);
     assertNotNull(cdCompilationUnit.getCDDefinition());
     assertEquals("StatechartScope", cdCompilationUnit.getCDDefinition().getName());
-    assertEquals(1, cdCompilationUnit.getCDDefinition().sizeCDClasses());
-    assertEquals("Statechart", cdCompilationUnit.getCDDefinition().getCDClass(0).getName());
+    assertEquals(1, cdCompilationUnit.getCDDefinition().getCDClassesList().size());
+    assertEquals("Statechart", cdCompilationUnit.getCDDefinition().getCDClassesList().get(0).getName());
 
     // test correct saved scope cd
     ASTCDCompilationUnit scopeCDOfParsedGrammar = mc.getScopeCDOfParsedGrammar(grammar);
     assertNotNull(scopeCDOfParsedGrammar);
     assertNotNull(scopeCDOfParsedGrammar.getCDDefinition());
     assertEquals("StatechartScope", scopeCDOfParsedGrammar.getCDDefinition().getName());
-    assertEquals(1, scopeCDOfParsedGrammar.getCDDefinition().sizeCDClasses());
-    assertEquals("Statechart", scopeCDOfParsedGrammar.getCDDefinition().getCDClass(0).getName());
+    assertEquals(1, scopeCDOfParsedGrammar.getCDDefinition().getCDClassesList().size());
+    assertEquals("Statechart", scopeCDOfParsedGrammar.getCDDefinition().getCDClassesList().get(0).getName());
   }
 
   @Test
@@ -305,7 +305,7 @@ public class MontiCoreScriptTest {
     assertNotNull(cdCompilationUnit);
     assertNotNull(cdCompilationUnit.getCDDefinition());
     assertEquals("Statechart", cdCompilationUnit.getCDDefinition().getName());
-    ASTCDClass stateChartClass = cdCompilationUnit.getCDDefinition().getCDClass(0);
+    ASTCDClass stateChartClass = cdCompilationUnit.getCDDefinition().getCDClassesList().get(0);
     assertEquals("ASTStatechart", stateChartClass.getName());
     assertEquals("state", stateChartClass.getCDAttributeList().get(1).getName());
 
@@ -315,7 +315,7 @@ public class MontiCoreScriptTest {
     assertNotNull(listSuffixCD);
     assertNotNull(listSuffixCD.getCDDefinition());
     assertEquals("Statechart", listSuffixCD.getCDDefinition().getName());
-    ASTCDClass listSuffixStateChartClass = listSuffixCD.getCDDefinition().getCDClass(0);
+    ASTCDClass listSuffixStateChartClass = listSuffixCD.getCDDefinition().getCDClassesList().get(0);
     assertEquals("ASTStatechart", listSuffixStateChartClass.getName());
     assertDeepEquals("java.util.List<de.monticore.statechart.Statechart.ASTState>", listSuffixStateChartClass.getCDAttributeList().get(1).getMCType());
     // attribute with 's' at the end now
@@ -343,21 +343,21 @@ public class MontiCoreScriptTest {
     assertEquals("Statechart", symbolPackageCD.getCDDefinition().getName());
 
     int index = 0;
-    assertEquals(7, symbolPackageCD.getCDDefinition().sizeCDClasss());
-    assertEquals("StatechartScope", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
-    assertEquals("StatechartSymbols2Json", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
-    assertEquals("StatechartScopesGenitorDelegator", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
-    assertEquals("StatechartArtifactScope", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
-    assertEquals("StatechartDeSer", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
-    assertEquals("StatechartGlobalScope", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
-    assertEquals("StatechartScopesGenitor", symbolPackageCD.getCDDefinition().getCDClass(index++).getName());
+    assertEquals(7, symbolPackageCD.getCDDefinition().getCDClassesList().size());
+    assertEquals("StatechartScope", symbolPackageCD.getCDDefinition().getCDClassesList().get(index++).getName());
+    assertEquals("StatechartSymbols2Json", symbolPackageCD.getCDDefinition().getCDClassesList().get(index++).getName());
+    assertEquals("StatechartScopesGenitorDelegator", symbolPackageCD.getCDDefinition().getCDClassesList().get(index++).getName());
+    assertEquals("StatechartArtifactScope", symbolPackageCD.getCDDefinition().getCDClassesList().get(index++).getName());
+    assertEquals("StatechartDeSer", symbolPackageCD.getCDDefinition().getCDClassesList().get(index++).getName());
+    assertEquals("StatechartGlobalScope", symbolPackageCD.getCDDefinition().getCDClassesList().get(index++).getName());
+    assertEquals("StatechartScopesGenitor", symbolPackageCD.getCDDefinition().getCDClassesList().get(index++).getName());
 
     index = 0;
-    assertEquals(4, symbolPackageCD.getCDDefinition().sizeCDInterfaces());
-    assertEquals("IStatechartScope", symbolPackageCD.getCDDefinition().getCDInterface(index++).getName());
-    assertEquals("ICommonStatechartSymbol", symbolPackageCD.getCDDefinition().getCDInterface(index++).getName());
-    assertEquals("IStatechartGlobalScope", symbolPackageCD.getCDDefinition().getCDInterface(index++).getName());
-    assertEquals("IStatechartArtifactScope", symbolPackageCD.getCDDefinition().getCDInterface(index++).getName());
+    assertEquals(4, symbolPackageCD.getCDDefinition().getCDInterfacesList().size());
+    assertEquals("IStatechartScope", symbolPackageCD.getCDDefinition().getCDInterfacesList().get(index++).getName());
+    assertEquals("ICommonStatechartSymbol", symbolPackageCD.getCDDefinition().getCDInterfacesList().get(index++).getName());
+    assertEquals("IStatechartGlobalScope", symbolPackageCD.getCDDefinition().getCDInterfacesList().get(index++).getName());
+    assertEquals("IStatechartArtifactScope", symbolPackageCD.getCDDefinition().getCDInterfacesList().get(index++).getName());
   }
 
   @Test
@@ -375,13 +375,13 @@ public class MontiCoreScriptTest {
     assertNotNull(visitorPackageCD);
     assertNotNull(visitorPackageCD.getCDDefinition());
     assertEquals("Statechart", visitorPackageCD.getCDDefinition().getName());
-    assertEquals(2, visitorPackageCD.getCDDefinition().sizeCDClasss());
-    assertEquals("StatechartTraverserImplementation", visitorPackageCD.getCDDefinition().getCDClass(0).getName());
-    assertEquals("StatechartInheritanceHandler", visitorPackageCD.getCDDefinition().getCDClass(1).getName());
-    assertEquals(3, visitorPackageCD.getCDDefinition().sizeCDInterfaces());
-    assertEquals("StatechartTraverser", visitorPackageCD.getCDDefinition().getCDInterface(0).getName());
-    assertEquals("StatechartVisitor2", visitorPackageCD.getCDDefinition().getCDInterface(1).getName());
-    assertEquals("StatechartHandler", visitorPackageCD.getCDDefinition().getCDInterface(2).getName());
+    assertEquals(2, visitorPackageCD.getCDDefinition().getCDClassesList().size());
+    assertEquals("StatechartTraverserImplementation", visitorPackageCD.getCDDefinition().getCDClassesList().get(0).getName());
+    assertEquals("StatechartInheritanceHandler", visitorPackageCD.getCDDefinition().getCDClassesList().get(1).getName());
+    assertEquals(3, visitorPackageCD.getCDDefinition().getCDInterfacesList().size());
+    assertEquals("StatechartTraverser", visitorPackageCD.getCDDefinition().getCDInterfacesList().get(0).getName());
+    assertEquals("StatechartVisitor2", visitorPackageCD.getCDDefinition().getCDInterfacesList().get(1).getName());
+    assertEquals("StatechartHandler", visitorPackageCD.getCDDefinition().getCDInterfacesList().get(2).getName());
   }
 
   @Test
@@ -399,22 +399,22 @@ public class MontiCoreScriptTest {
     assertNotNull(cocoPackageCD);
     assertNotNull(cocoPackageCD.getCDDefinition());
     assertEquals("Statechart", cocoPackageCD.getCDDefinition().getName());
-    assertEquals(1, cocoPackageCD.getCDDefinition().sizeCDClasses());
-    assertEquals("StatechartCoCoChecker", cocoPackageCD.getCDDefinition().getCDClass(0).getName());
-    assertEquals(13, cocoPackageCD.getCDDefinition().sizeCDInterfaces());
-    assertEquals("StatechartASTStatechartCoCo", cocoPackageCD.getCDDefinition().getCDInterface(0).getName());
-    assertEquals("StatechartASTEntryActionCoCo", cocoPackageCD.getCDDefinition().getCDInterface(1).getName());
-    assertEquals("StatechartASTExitActionCoCo", cocoPackageCD.getCDDefinition().getCDInterface(2).getName());
-    assertEquals("StatechartASTStateCoCo", cocoPackageCD.getCDDefinition().getCDInterface(3).getName());
-    assertEquals("StatechartASTTransitionCoCo", cocoPackageCD.getCDDefinition().getCDInterface(4).getName());
-    assertEquals("StatechartASTArgumentCoCo", cocoPackageCD.getCDDefinition().getCDInterface(5).getName());
-    assertEquals("StatechartASTCodeCoCo", cocoPackageCD.getCDDefinition().getCDInterface(6).getName());
-    assertEquals("StatechartASTAbstractAnythingCoCo", cocoPackageCD.getCDDefinition().getCDInterface(7).getName());
-    assertEquals("StatechartASTSCStructureCoCo", cocoPackageCD.getCDDefinition().getCDInterface(8).getName());
-    assertEquals("StatechartASTBlockStatementExtCoCo", cocoPackageCD.getCDDefinition().getCDInterface(9).getName());
-    assertEquals("StatechartASTExpressionExtCoCo", cocoPackageCD.getCDDefinition().getCDInterface(10).getName());
-    assertEquals("StatechartASTClassbodyExtCoCo", cocoPackageCD.getCDDefinition().getCDInterface(11).getName());
-    assertEquals("StatechartASTStatechartNodeCoCo", cocoPackageCD.getCDDefinition().getCDInterface(12).getName());
+    assertEquals(1, cocoPackageCD.getCDDefinition().getCDClassesList().size());
+    assertEquals("StatechartCoCoChecker", cocoPackageCD.getCDDefinition().getCDClassesList().get(0).getName());
+    assertEquals(13, cocoPackageCD.getCDDefinition().getCDInterfacesList().size());
+    assertEquals("StatechartASTStatechartCoCo", cocoPackageCD.getCDDefinition().getCDInterfacesList().get(0).getName());
+    assertEquals("StatechartASTEntryActionCoCo", cocoPackageCD.getCDDefinition().getCDInterfacesList().get(1).getName());
+    assertEquals("StatechartASTExitActionCoCo", cocoPackageCD.getCDDefinition().getCDInterfacesList().get(2).getName());
+    assertEquals("StatechartASTStateCoCo", cocoPackageCD.getCDDefinition().getCDInterfacesList().get(3).getName());
+    assertEquals("StatechartASTTransitionCoCo", cocoPackageCD.getCDDefinition().getCDInterfacesList().get(4).getName());
+    assertEquals("StatechartASTArgumentCoCo", cocoPackageCD.getCDDefinition().getCDInterfacesList().get(5).getName());
+    assertEquals("StatechartASTCodeCoCo", cocoPackageCD.getCDDefinition().getCDInterfacesList().get(6).getName());
+    assertEquals("StatechartASTAbstractAnythingCoCo", cocoPackageCD.getCDDefinition().getCDInterfacesList().get(7).getName());
+    assertEquals("StatechartASTSCStructureCoCo", cocoPackageCD.getCDDefinition().getCDInterfacesList().get(8).getName());
+    assertEquals("StatechartASTBlockStatementExtCoCo", cocoPackageCD.getCDDefinition().getCDInterfacesList().get(9).getName());
+    assertEquals("StatechartASTExpressionExtCoCo", cocoPackageCD.getCDDefinition().getCDInterfacesList().get(10).getName());
+    assertEquals("StatechartASTClassbodyExtCoCo", cocoPackageCD.getCDDefinition().getCDInterfacesList().get(11).getName());
+    assertEquals("StatechartASTStatechartNodeCoCo", cocoPackageCD.getCDDefinition().getCDInterfacesList().get(12).getName());
   }
 
   @Test
@@ -432,34 +432,34 @@ public class MontiCoreScriptTest {
     assertNotNull(astPackageCD);
     assertNotNull(astPackageCD.getCDDefinition());
     assertEquals("Statechart", astPackageCD.getCDDefinition().getName());
-    assertEquals(18, astPackageCD.getCDDefinition().sizeCDClasses());
-    assertEquals("ASTStatechart", astPackageCD.getCDDefinition().getCDClass(0).getName());
-    assertEquals("ASTEntryAction", astPackageCD.getCDDefinition().getCDClass(1).getName());
-    assertEquals("ASTExitAction", astPackageCD.getCDDefinition().getCDClass(2).getName());
-    assertEquals("ASTState", astPackageCD.getCDDefinition().getCDClass(3).getName());
-    assertEquals("ASTTransition", astPackageCD.getCDDefinition().getCDClass(4).getName());
-    assertEquals("ASTArgument", astPackageCD.getCDDefinition().getCDClass(5).getName());
-    assertEquals("ASTCode", astPackageCD.getCDDefinition().getCDClass(6).getName());
-    assertEquals("ASTAbstractAnything", astPackageCD.getCDDefinition().getCDClass(7).getName());
-    assertEquals("ASTStatechartBuilder", astPackageCD.getCDDefinition().getCDClass(8).getName());
-    assertEquals("ASTEntryActionBuilder", astPackageCD.getCDDefinition().getCDClass(9).getName());
-    assertEquals("ASTExitActionBuilder", astPackageCD.getCDDefinition().getCDClass(10).getName());
-    assertEquals("ASTStateBuilder", astPackageCD.getCDDefinition().getCDClass(11).getName());
-    assertEquals("ASTTransitionBuilder", astPackageCD.getCDDefinition().getCDClass(12).getName());
-    assertEquals("ASTArgumentBuilder", astPackageCD.getCDDefinition().getCDClass(13).getName());
-    assertEquals("ASTCodeBuilder", astPackageCD.getCDDefinition().getCDClass(14).getName());
-    assertEquals("ASTAbstractAnythingBuilder", astPackageCD.getCDDefinition().getCDClass(15).getName());
-    assertEquals("StatechartNodeFactory", astPackageCD.getCDDefinition().getCDClass(16).getName());
-    assertEquals("ASTConstantsStatechart", astPackageCD.getCDDefinition().getCDClass(17).getName());
+    assertEquals(18, astPackageCD.getCDDefinition().getCDClassesList().size());
+    assertEquals("ASTStatechart", astPackageCD.getCDDefinition().getCDClassesList().get(0).getName());
+    assertEquals("ASTEntryAction", astPackageCD.getCDDefinition().getCDClassesList().get(1).getName());
+    assertEquals("ASTExitAction", astPackageCD.getCDDefinition().getCDClassesList().get(2).getName());
+    assertEquals("ASTState", astPackageCD.getCDDefinition().getCDClassesList().get(3).getName());
+    assertEquals("ASTTransition", astPackageCD.getCDDefinition().getCDClassesList().get(4).getName());
+    assertEquals("ASTArgument", astPackageCD.getCDDefinition().getCDClassesList().get(5).getName());
+    assertEquals("ASTCode", astPackageCD.getCDDefinition().getCDClassesList().get(6).getName());
+    assertEquals("ASTAbstractAnything", astPackageCD.getCDDefinition().getCDClassesList().get(7).getName());
+    assertEquals("ASTStatechartBuilder", astPackageCD.getCDDefinition().getCDClassesList().get(8).getName());
+    assertEquals("ASTEntryActionBuilder", astPackageCD.getCDDefinition().getCDClassesList().get(9).getName());
+    assertEquals("ASTExitActionBuilder", astPackageCD.getCDDefinition().getCDClassesList().get(10).getName());
+    assertEquals("ASTStateBuilder", astPackageCD.getCDDefinition().getCDClassesList().get(11).getName());
+    assertEquals("ASTTransitionBuilder", astPackageCD.getCDDefinition().getCDClassesList().get(12).getName());
+    assertEquals("ASTArgumentBuilder", astPackageCD.getCDDefinition().getCDClassesList().get(13).getName());
+    assertEquals("ASTCodeBuilder", astPackageCD.getCDDefinition().getCDClassesList().get(14).getName());
+    assertEquals("ASTAbstractAnythingBuilder", astPackageCD.getCDDefinition().getCDClassesList().get(15).getName());
+    assertEquals("StatechartNodeFactory", astPackageCD.getCDDefinition().getCDClassesList().get(16).getName());
+    assertEquals("ASTConstantsStatechart", astPackageCD.getCDDefinition().getCDClassesList().get(17).getName());
 
-    assertEquals(5, astPackageCD.getCDDefinition().sizeCDInterfaces());
-    assertEquals("ASTSCStructure", astPackageCD.getCDDefinition().getCDInterface(0).getName());
-    assertEquals("ASTBlockStatementExt", astPackageCD.getCDDefinition().getCDInterface(1).getName());
-    assertEquals("ASTExpressionExt", astPackageCD.getCDDefinition().getCDInterface(2).getName());
-    assertEquals("ASTClassbodyExt", astPackageCD.getCDDefinition().getCDInterface(3).getName());
-    assertEquals("ASTStatechartNode", astPackageCD.getCDDefinition().getCDInterface(4).getName());
-    assertEquals(1, astPackageCD.getCDDefinition().sizeCDEnums());
-    assertEquals("StatechartLiterals", astPackageCD.getCDDefinition().getCDEnum(0).getName());
+    assertEquals(5, astPackageCD.getCDDefinition().getCDInterfacesList().size());
+    assertEquals("ASTSCStructure", astPackageCD.getCDDefinition().getCDInterfacesList().get(0).getName());
+    assertEquals("ASTBlockStatementExt", astPackageCD.getCDDefinition().getCDInterfacesList().get(1).getName());
+    assertEquals("ASTExpressionExt", astPackageCD.getCDDefinition().getCDInterfacesList().get(2).getName());
+    assertEquals("ASTClassbodyExt", astPackageCD.getCDDefinition().getCDInterfacesList().get(3).getName());
+    assertEquals("ASTStatechartNode", astPackageCD.getCDDefinition().getCDInterfacesList().get(4).getName());
+    assertEquals(1, astPackageCD.getCDDefinition().getCDEnumsList().size());
+    assertEquals("StatechartLiterals", astPackageCD.getCDDefinition().getCDEnumsList().get(0).getName());
   }
 
   @Test
@@ -477,37 +477,37 @@ public class MontiCoreScriptTest {
     assertNotNull(astEmfPackageCD);
     assertNotNull(astEmfPackageCD.getCDDefinition());
     assertEquals("Statechart", astEmfPackageCD.getCDDefinition().getName());
-    assertEquals(19, astEmfPackageCD.getCDDefinition().sizeCDClasses());
-    assertEquals("ASTStatechart", astEmfPackageCD.getCDDefinition().getCDClass(0).getName());
-    assertEquals("ASTEntryAction", astEmfPackageCD.getCDDefinition().getCDClass(1).getName());
-    assertEquals("ASTExitAction", astEmfPackageCD.getCDDefinition().getCDClass(2).getName());
-    assertEquals("ASTState", astEmfPackageCD.getCDDefinition().getCDClass(3).getName());
-    assertEquals("ASTTransition", astEmfPackageCD.getCDDefinition().getCDClass(4).getName());
-    assertEquals("ASTArgument", astEmfPackageCD.getCDDefinition().getCDClass(5).getName());
-    assertEquals("ASTCode", astEmfPackageCD.getCDDefinition().getCDClass(6).getName());
-    assertEquals("ASTAbstractAnything", astEmfPackageCD.getCDDefinition().getCDClass(7).getName());
-    assertEquals("ASTStatechartBuilder", astEmfPackageCD.getCDDefinition().getCDClass(8).getName());
-    assertEquals("ASTEntryActionBuilder", astEmfPackageCD.getCDDefinition().getCDClass(9).getName());
-    assertEquals("ASTExitActionBuilder", astEmfPackageCD.getCDDefinition().getCDClass(10).getName());
-    assertEquals("ASTStateBuilder", astEmfPackageCD.getCDDefinition().getCDClass(11).getName());
-    assertEquals("ASTTransitionBuilder", astEmfPackageCD.getCDDefinition().getCDClass(12).getName());
-    assertEquals("ASTArgumentBuilder", astEmfPackageCD.getCDDefinition().getCDClass(13).getName());
-    assertEquals("ASTCodeBuilder", astEmfPackageCD.getCDDefinition().getCDClass(14).getName());
-    assertEquals("ASTAbstractAnythingBuilder", astEmfPackageCD.getCDDefinition().getCDClass(15).getName());
-    assertEquals("StatechartNodeFactory", astEmfPackageCD.getCDDefinition().getCDClass(16).getName());
-    assertEquals("ASTConstantsStatechart", astEmfPackageCD.getCDDefinition().getCDClass(17).getName());
-    assertEquals("StatechartPackageImpl", astEmfPackageCD.getCDDefinition().getCDClass(18).getName());
+    assertEquals(19, astEmfPackageCD.getCDDefinition().getCDClassesList().size());
+    assertEquals("ASTStatechart", astEmfPackageCD.getCDDefinition().getCDClassesList().get(0).getName());
+    assertEquals("ASTEntryAction", astEmfPackageCD.getCDDefinition().getCDClassesList().get(1).getName());
+    assertEquals("ASTExitAction", astEmfPackageCD.getCDDefinition().getCDClassesList().get(2).getName());
+    assertEquals("ASTState", astEmfPackageCD.getCDDefinition().getCDClassesList().get(3).getName());
+    assertEquals("ASTTransition", astEmfPackageCD.getCDDefinition().getCDClassesList().get(4).getName());
+    assertEquals("ASTArgument", astEmfPackageCD.getCDDefinition().getCDClassesList().get(5).getName());
+    assertEquals("ASTCode", astEmfPackageCD.getCDDefinition().getCDClassesList().get(6).getName());
+    assertEquals("ASTAbstractAnything", astEmfPackageCD.getCDDefinition().getCDClassesList().get(7).getName());
+    assertEquals("ASTStatechartBuilder", astEmfPackageCD.getCDDefinition().getCDClassesList().get(8).getName());
+    assertEquals("ASTEntryActionBuilder", astEmfPackageCD.getCDDefinition().getCDClassesList().get(9).getName());
+    assertEquals("ASTExitActionBuilder", astEmfPackageCD.getCDDefinition().getCDClassesList().get(10).getName());
+    assertEquals("ASTStateBuilder", astEmfPackageCD.getCDDefinition().getCDClassesList().get(11).getName());
+    assertEquals("ASTTransitionBuilder", astEmfPackageCD.getCDDefinition().getCDClassesList().get(12).getName());
+    assertEquals("ASTArgumentBuilder", astEmfPackageCD.getCDDefinition().getCDClassesList().get(13).getName());
+    assertEquals("ASTCodeBuilder", astEmfPackageCD.getCDDefinition().getCDClassesList().get(14).getName());
+    assertEquals("ASTAbstractAnythingBuilder", astEmfPackageCD.getCDDefinition().getCDClassesList().get(15).getName());
+    assertEquals("StatechartNodeFactory", astEmfPackageCD.getCDDefinition().getCDClassesList().get(16).getName());
+    assertEquals("ASTConstantsStatechart", astEmfPackageCD.getCDDefinition().getCDClassesList().get(17).getName());
+    assertEquals("StatechartPackageImpl", astEmfPackageCD.getCDDefinition().getCDClassesList().get(18).getName());
 
-    assertEquals(6, astEmfPackageCD.getCDDefinition().sizeCDInterfaces());
-    assertEquals("ASTSCStructure", astEmfPackageCD.getCDDefinition().getCDInterface(0).getName());
-    assertEquals("ASTBlockStatementExt", astEmfPackageCD.getCDDefinition().getCDInterface(1).getName());
-    assertEquals("ASTExpressionExt", astEmfPackageCD.getCDDefinition().getCDInterface(2).getName());
-    assertEquals("ASTClassbodyExt", astEmfPackageCD.getCDDefinition().getCDInterface(3).getName());
-    assertEquals("ASTStatechartNode", astEmfPackageCD.getCDDefinition().getCDInterface(4).getName());
-    assertEquals("StatechartPackage", astEmfPackageCD.getCDDefinition().getCDInterface(5).getName());
+    assertEquals(6, astEmfPackageCD.getCDDefinition().getCDInterfacesList().size());
+    assertEquals("ASTSCStructure", astEmfPackageCD.getCDDefinition().getCDInterfacesList().get(0).getName());
+    assertEquals("ASTBlockStatementExt", astEmfPackageCD.getCDDefinition().getCDInterfacesList().get(1).getName());
+    assertEquals("ASTExpressionExt", astEmfPackageCD.getCDDefinition().getCDInterfacesList().get(2).getName());
+    assertEquals("ASTClassbodyExt", astEmfPackageCD.getCDDefinition().getCDInterfacesList().get(3).getName());
+    assertEquals("ASTStatechartNode", astEmfPackageCD.getCDDefinition().getCDInterfacesList().get(4).getName());
+    assertEquals("StatechartPackage", astEmfPackageCD.getCDDefinition().getCDInterfacesList().get(5).getName());
 
-    assertEquals(1, astEmfPackageCD.getCDDefinition().sizeCDEnums());
-    assertEquals("StatechartLiterals", astEmfPackageCD.getCDDefinition().getCDEnum(0).getName());
+    assertEquals(1, astEmfPackageCD.getCDDefinition().getCDEnumsList().size());
+    assertEquals("StatechartLiterals", astEmfPackageCD.getCDDefinition().getCDEnumsList().get(0).getName());
   }
 
   @Test
@@ -526,10 +526,10 @@ public class MontiCoreScriptTest {
     assertNotNull(odPackage);
     assertNotNull(odPackage.getCDDefinition());
     assertEquals("Statechart", odPackage.getCDDefinition().getName());
-    assertEquals(1, odPackage.getCDDefinition().sizeCDClasses());
-    assertEquals("Statechart2OD", odPackage.getCDDefinition().getCDClass(0).getName());
-    assertTrue(odPackage.getCDDefinition().isEmptyCDInterfaces());
-    assertTrue(odPackage.getCDDefinition().isEmptyCDEnums());
+    assertEquals(1, odPackage.getCDDefinition().getCDClassesList().size());
+    assertEquals("Statechart2OD", odPackage.getCDDefinition().getCDClassesList().get(0).getName());
+    assertTrue(odPackage.getCDDefinition().getCDInterfacesList().isEmpty());
+    assertTrue(odPackage.getCDDefinition().getCDEnumsList().isEmpty());
   }
 
   @Test
@@ -548,15 +548,15 @@ public class MontiCoreScriptTest {
     assertNotNull(millCd);
     assertNotNull(millCd.getCDDefinition());
     assertEquals(4, millCd.sizePackage());
-    assertEquals("de", millCd.getPackage(0));
-    assertEquals("monticore", millCd.getPackage(1));
-    assertEquals("statechart", millCd.getPackage(2));
-    assertEquals("statechart", millCd.getPackage(3));
+    assertEquals("de", millCd.getMCPackageDeclaration().getMCQualifiedName().getParts(0));
+    assertEquals("monticore", millCd.getMCPackageDeclaration().getMCQualifiedName().getParts(1));
+    assertEquals("statechart", millCd.getMCPackageDeclaration().getMCQualifiedName().getParts(2));
+    assertEquals("statechart", millCd.getMCPackageDeclaration().getMCQualifiedName().getParts(3));
     assertEquals("Statechart", millCd.getCDDefinition().getName());
-    assertEquals(1, millCd.getCDDefinition().sizeCDClasses());
-    assertEquals("StatechartMill", millCd.getCDDefinition().getCDClass(0).getName());
-    assertTrue(millCd.getCDDefinition().isEmptyCDInterfaces());
-    assertTrue(millCd.getCDDefinition().isEmptyCDEnums());
+    assertEquals(1, millCd.getCDDefinition().getCDClassesList().size());
+    assertEquals("StatechartMill", millCd.getCDDefinition().getCDClassesList().get(0).getName());
+    assertTrue(millCd.getCDDefinition().getCDInterfacesList().isEmpty());
+    assertTrue(millCd.getCDDefinition().getCDEnumsList().isEmpty());
   }
 
   @Test
@@ -574,16 +574,16 @@ public class MontiCoreScriptTest {
 
     assertNotNull(auxiliaryCD);
     assertNotNull(auxiliaryCD.getCDDefinition());
-    assertEquals("de", auxiliaryCD.getPackage(0));
-    assertEquals("monticore", auxiliaryCD.getPackage(1));
-    assertEquals("statechart", auxiliaryCD.getPackage(2));
-    assertEquals("statechart", auxiliaryCD.getPackage(3));
-    assertEquals("_auxiliary", auxiliaryCD.getPackage(4));
+    assertEquals("de", auxiliaryCD.getMCPackageDeclaration().getMCQualifiedName().getParts(0));
+    assertEquals("monticore", auxiliaryCD.getMCPackageDeclaration().getMCQualifiedName().getParts(1));
+    assertEquals("statechart", auxiliaryCD.getMCPackageDeclaration().getMCQualifiedName().getParts(2));
+    assertEquals("statechart", auxiliaryCD.getMCPackageDeclaration().getMCQualifiedName().getParts(3));
+    assertEquals("_auxiliary", auxiliaryCD.getMCPackageDeclaration().getMCQualifiedName().getParts(4));
     assertEquals("Statechart", auxiliaryCD.getCDDefinition().getName());
-    assertEquals(1, auxiliaryCD.getCDDefinition().sizeCDClasses());
-    assertEquals("TestLexicalsMillForStatechart", auxiliaryCD.getCDDefinition().getCDClass(0).getName());
-    assertTrue(auxiliaryCD.getCDDefinition().isEmptyCDInterfaces());
-    assertTrue(auxiliaryCD.getCDDefinition().isEmptyCDEnums());
+    assertEquals(1, auxiliaryCD.getCDDefinition().getCDClassesList().size());
+    assertEquals("TestLexicalsMillForStatechart", auxiliaryCD.getCDDefinition().getCDClassesList().get(0).getName());
+    assertTrue(auxiliaryCD.getCDDefinition().getCDInterfacesList().isEmpty());
+    assertTrue(auxiliaryCD.getCDDefinition().getCDEnumsList().isEmpty());
   }
 
   protected ASTCDCompilationUnit getSymbolCD(ASTCDCompilationUnit decoratedCompilationUnit) {

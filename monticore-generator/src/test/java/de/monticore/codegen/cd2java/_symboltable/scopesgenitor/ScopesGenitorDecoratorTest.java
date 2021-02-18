@@ -107,13 +107,13 @@ public class ScopesGenitorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterfacesCount() {
-    assertEquals(2, scopesGenitorClass.sizeInterface());
+    assertEquals(2, scopesGenitorClass.getInterfaceList().size());
   }
 
   @Test
   public void testSuperInterface() {
-    assertDeepEquals(AUTOMATON_VISITOR, scopesGenitorClass.getInterface(0));
-    assertDeepEquals(AUTOMATON_HANDLER, scopesGenitorClass.getInterface(1));
+    assertDeepEquals(AUTOMATON_VISITOR, scopesGenitorClass.getCDInterfaceUsage().getInterface(0));
+    assertDeepEquals(AUTOMATON_HANDLER, scopesGenitorClass.getCDInterfaceUsage().getInterface(1));
   }
 
   @Test
@@ -123,12 +123,12 @@ public class ScopesGenitorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testConstructorCount() {
-    assertEquals(3, scopesGenitorClass.sizeCDConstructors());
+    assertEquals(3, scopesGenitorClass.getCDConstructorList().size());
   }
 
   @Test
   public void testConstructor() {
-    ASTCDConstructor cdConstructor = scopesGenitorClass.getCDConstructor(0);
+    ASTCDConstructor cdConstructor = scopesGenitorClass.getCDConstructorList().get(0);
     assertDeepEquals(PUBLIC, cdConstructor.getModifier());
     assertEquals("AutomatonScopesGenitor", cdConstructor.getName());
 
@@ -137,13 +137,13 @@ public class ScopesGenitorDecoratorTest extends DecoratorTestCase {
     assertEquals("enclosingScope", cdConstructor.getCDParameter(0).getName());
 
 
-    assertTrue(cdConstructor.isEmptyException());
+    assertTrue(cdConstructor.getCDThrowsDeclaration().isEmptyException());
   }
 
 
   @Test
   public void testConstructorWithEnclosingScope() {
-    ASTCDConstructor cdConstructor = scopesGenitorClass.getCDConstructor(1);
+    ASTCDConstructor cdConstructor = scopesGenitorClass.getCDConstructorList().get(1);
     assertDeepEquals(PUBLIC, cdConstructor.getModifier());
     assertEquals("AutomatonScopesGenitor", cdConstructor.getName());
 
@@ -152,22 +152,22 @@ public class ScopesGenitorDecoratorTest extends DecoratorTestCase {
     assertDeepEquals("Deque<? extends " + I_AUTOMATON_SCOPE + ">", cdConstructor.getCDParameter(0).getMCType());
     assertEquals("scopeStack", cdConstructor.getCDParameter(0).getName());
 
-    assertTrue(cdConstructor.isEmptyException());
+    assertTrue(cdConstructor.getCDThrowsDeclaration().isEmptyException());
   }
 
   @Test
   public void testZeroArgsConstructor(){
-    ASTCDConstructor constructor = scopesGenitorClass.getCDConstructor(2);
+    ASTCDConstructor constructor = scopesGenitorClass.getCDConstructorList().get(2);
     assertDeepEquals(PUBLIC, constructor.getModifier());
     assertEquals("AutomatonScopesGenitor", constructor.getName());
     assertTrue(constructor.isEmptyCDParameters());
-    assertTrue(constructor.isEmptyException());
+    assertTrue(constructor.getCDThrowsDeclaration().isEmptyException());
   }
 
 
   @Test
   public void testAttributeSize() {
-    assertEquals(3, scopesGenitorClass.sizeCDAttributes());
+    assertEquals(3, scopesGenitorClass.getCDAttributeList().size());
   }
 
   @Test
@@ -647,7 +647,7 @@ public class ScopesGenitorDecoratorTest extends DecoratorTestCase {
     GlobalExtensionManagement glex = new GlobalExtensionManagement();
 
     glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
-    glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
+    glex.setGlobalValue("cdPrinter", new CD4CodeFullPrettyPrinter());
     ASTCDCompilationUnit cd = this.parse("de", "monticore", "codegen", "symboltable", "Automaton");
     glex.setGlobalValue("service", new AbstractService(cd));
 

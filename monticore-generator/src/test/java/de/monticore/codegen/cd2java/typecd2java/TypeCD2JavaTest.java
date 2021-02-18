@@ -5,8 +5,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import de.monticore.cd.cd4analysis.CD4AnalysisMill;
-import de.monticore.cd.cd4analysis._symboltable.ICD4AnalysisGlobalScope;
+import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cd4analysis._symboltable.ICD4AnalysisGlobalScope;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,8 +32,8 @@ public class TypeCD2JavaTest extends DecoratorTestCase {
 
   @Test
   public void testTypeJavaConformList() {
-    assertTrue(cdCompilationUnit.getCDDefinition().getCDClass(0).getCDAttribute(1).getMCType() instanceof ASTMCGenericType);
-    ASTMCGenericType simpleReferenceType = (ASTMCGenericType) cdCompilationUnit.getCDDefinition().getCDClass(0).getCDAttribute(1).getMCType();
+    assertTrue(cdCompilationUnit.getCDDefinition().getCDClassesList().get(0).getCDAttributeList().get(1).getMCType() instanceof ASTMCGenericType);
+    ASTMCGenericType simpleReferenceType = (ASTMCGenericType) cdCompilationUnit.getCDDefinition().getCDClassesList().get(0).getCDAttributeList().get(1).getMCType();
     assertFalse(simpleReferenceType.getNameList().isEmpty());
     assertEquals(3, simpleReferenceType.getNameList().size());
     assertEquals("java", simpleReferenceType.getNameList().get(0));
@@ -44,8 +44,8 @@ public class TypeCD2JavaTest extends DecoratorTestCase {
   @Test
   public void testTypeJavaConformASTPackage() {
     //test that for AST classes the package is now java conform
-    assertTrue(cdCompilationUnit.getCDDefinition().getCDClass(0).getCDAttribute(1).getMCType() instanceof ASTMCGenericType);
-    ASTMCGenericType listType = (ASTMCGenericType) cdCompilationUnit.getCDDefinition().getCDClass(0).getCDAttribute(1).getMCType();
+    assertTrue(cdCompilationUnit.getCDDefinition().getCDClassesList().get(0).getCDAttributeList().get(1).getMCType() instanceof ASTMCGenericType);
+    ASTMCGenericType listType = (ASTMCGenericType) cdCompilationUnit.getCDDefinition().getCDClassesList().get(0).getCDAttributeList().get(1).getMCType();
     assertEquals(1, listType.getMCTypeArgumentList().size());
     assertTrue(listType.getMCTypeArgumentList().get(0).getMCTypeOpt().isPresent());
     assertTrue(listType.getMCTypeArgumentList().get(0).getMCTypeOpt().get() instanceof ASTMCQualifiedType);
@@ -63,8 +63,8 @@ public class TypeCD2JavaTest extends DecoratorTestCase {
   @Test
   public void testStringType() {
     //test that types like String are not changed
-    assertTrue(cdCompilationUnit.getCDDefinition().getCDClass(0).getCDAttribute(0).getMCType() instanceof ASTMCQualifiedType);
-    ASTMCQualifiedType simpleReferenceType = (ASTMCQualifiedType) cdCompilationUnit.getCDDefinition().getCDClass(0).getCDAttribute(0).getMCType();
+    assertTrue(cdCompilationUnit.getCDDefinition().getCDClassesList().get(0).getCDAttributeList().get(0).getMCType() instanceof ASTMCQualifiedType);
+    ASTMCQualifiedType simpleReferenceType = (ASTMCQualifiedType) cdCompilationUnit.getCDDefinition().getCDClassesList().get(0).getCDAttributeList().get(0).getMCType();
     assertFalse(simpleReferenceType.getNameList().isEmpty());
     assertEquals(1, simpleReferenceType.getNameList().size());
     assertEquals("String", simpleReferenceType.getNameList().get(0));

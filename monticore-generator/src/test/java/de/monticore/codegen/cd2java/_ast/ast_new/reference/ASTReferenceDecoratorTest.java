@@ -57,8 +57,8 @@ public class ASTReferenceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMandatoryAttributeSize() {
-    assertFalse(astMandClass.isEmptyCDAttributes());
-    assertEquals(1, astMandClass.sizeCDAttributes());
+    assertFalse(astMandClass.getCDAttributeList().isEmpty());
+    assertEquals(1, astMandClass.getCDAttributeList().size());
   }
 
   @Test
@@ -70,8 +70,8 @@ public class ASTReferenceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testOptionalAttributeSize() {
-    assertFalse(astOptClass.isEmptyCDAttributes());
-    assertEquals(1, astOptClass.sizeCDAttributes());
+    assertFalse(astOptClass.getCDAttributeList().isEmpty());
+    assertEquals(1, astOptClass.getCDAttributeList().size());
   }
 
   @Test
@@ -83,8 +83,8 @@ public class ASTReferenceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testListAttributeSize() {
-    assertFalse(astListClass.isEmptyCDAttributes());
-    assertEquals(1, astListClass.sizeCDAttributes());
+    assertFalse(astListClass.getCDAttributeList().isEmpty());
+    assertEquals(1, astListClass.getCDAttributeList().size());
   }
 
   @Test

@@ -6,6 +6,7 @@ import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
 import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cdbasis._ast.*;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
 import de.monticore.cd4codebasis._ast.*;
 import de.monticore.codegen.cd2java.AbstractService;
@@ -62,10 +63,10 @@ public class NodeFactoryDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeName() {
-    assertEquals("factory", factoryClass.getCDAttribute(0).getName());
-    assertEquals("factoryASTAutomaton", factoryClass.getCDAttribute(1).getName());
-    assertEquals("factoryASTState", factoryClass.getCDAttribute(2).getName());
-    assertEquals("factoryASTTransition", factoryClass.getCDAttribute(3).getName());
+    assertEquals("factory", factoryClass.getCDAttributeList().get(0).getName());
+    assertEquals("factoryASTAutomaton", factoryClass.getCDAttributeList().get(1).getName());
+    assertEquals("factoryASTState", factoryClass.getCDAttributeList().get(2).getName());
+    assertEquals("factoryASTTransition", factoryClass.getCDAttributeList().get(3).getName());
   }
 
   @Test
@@ -78,17 +79,17 @@ public class NodeFactoryDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testConstructor() {
-    assertEquals(1, factoryClass.sizeCDConstructors());
-    ASTCDConstructor astcdConstructor = CD4AnalysisMill.cDConstructorBuilder()
+    assertEquals(1, factoryClass.getCDConstructorList().size());
+    ASTCDConstructor astcdConstructor = CD4CodeMill.cDConstructorBuilder()
         .setModifier(PROTECTED.build())
         .setName("AutomatonNodeFactory")
         .build();
-    assertDeepEquals(astcdConstructor, factoryClass.getCDConstructor(0));
+    assertDeepEquals(astcdConstructor, factoryClass.getCDConstructorList().get(0));
   }
 
   @Test
   public void testMethodGetFactory() {
-    ASTCDMethod method = factoryClass.getCDMethod(0);
+    ASTCDMethod method = factoryClass.getCDMethodList().get(0);
     //test name
     assertEquals("getFactory", method.getName());
     //test modifier
@@ -102,7 +103,7 @@ public class NodeFactoryDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCreateASTAutomatonWithoutParameter() {
-    ASTCDMethod method = factoryClass.getCDMethod(1);
+    ASTCDMethod method = factoryClass.getCDMethodList().get(1);
     //test name
     assertEquals("createASTAutomaton", method.getName());
     //test modifier
@@ -116,7 +117,7 @@ public class NodeFactoryDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodDoCreateASTAutomatonWithoutParameter() {
-    ASTCDMethod method = factoryClass.getCDMethod(2);
+    ASTCDMethod method = factoryClass.getCDMethodList().get(2);
     //test name
     assertEquals("doCreateASTAutomaton", method.getName());
     //test modifier

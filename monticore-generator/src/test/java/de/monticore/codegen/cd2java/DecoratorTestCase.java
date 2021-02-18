@@ -1,11 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java;
 
-import de.monticore.cd.cd4analysis.CD4AnalysisMill;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._parser.CD4AnalysisParser;
-import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisPhasedSTC;
-import de.monticore.cd.cd4analysis._symboltable.ICD4AnalysisGlobalScope;
+import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cd4analysis._parser.CD4AnalysisParser;
+import de.monticore.cd4analysis._symboltable.CD4AnalysisSymbolTableCompleter;
+import de.monticore.cd4analysis._symboltable.ICD4AnalysisGlobalScope;
 import de.monticore.io.paths.ModelPath;
 import org.junit.BeforeClass;
 
@@ -42,8 +42,9 @@ public abstract class DecoratorTestCase {
     if (!ast.isPresent()) {
       fail(String.format("Failed to load model '%s'", qualifiedName));
     }
-    CD4AnalysisPhasedSTC creator = new CD4AnalysisPhasedSTC();
-    creator.createFromAST(ast.get());
+    CD4AnalysisMill.scopesGenitorDelegator().createFromAST(ast.get());
+    CD4AnalysisSymbolTableCompleter creator = new CD4AnalysisSymbolTableCompleter(ast.get());
+    ast.get().accept(creator.getTraverser());
     return ast.get();
   }
 }

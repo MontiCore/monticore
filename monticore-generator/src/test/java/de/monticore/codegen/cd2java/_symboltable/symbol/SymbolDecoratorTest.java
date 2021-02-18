@@ -103,13 +103,13 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterfacesCountAutomatonSymbol() {
-    assertEquals(2, symbolClassAutomaton.sizeInterface());
+    assertEquals(2, symbolClassAutomaton.getInterfaceList().size());
   }
 
   @Test
   public void testSuperInterfacesAutomatonSymbol() {
-    assertDeepEquals("de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.ICommonAutomatonSymbolCDSymbol", symbolClassAutomaton.getInterface(0));
-    assertDeepEquals("de.monticore.symboltable.IScopeSpanningSymbol", symbolClassAutomaton.getInterface(1));
+    assertDeepEquals("de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.ICommonAutomatonSymbolCDSymbol", symbolClassAutomaton.getCDInterfaceUsage().getInterface(0));
+    assertDeepEquals("de.monticore.symboltable.IScopeSpanningSymbol", symbolClassAutomaton.getCDInterfaceUsage().getInterface(1));
   }
 
   @Test
@@ -119,12 +119,12 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testConstructorCount() {
-    assertEquals(1, symbolClassAutomaton.sizeCDConstructors());
+    assertEquals(1, symbolClassAutomaton.getCDConstructorList().size());
   }
 
   @Test
   public void testDefaultConstructor() {
-    ASTCDConstructor cdConstructor = symbolClassAutomaton.getCDConstructor(0);
+    ASTCDConstructor cdConstructor = symbolClassAutomaton.getCDConstructorList().get(0);
     assertDeepEquals(PUBLIC, cdConstructor.getModifier());
     assertEquals("AutomatonSymbol", cdConstructor.getName());
 
@@ -132,12 +132,12 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(String.class, cdConstructor.getCDParameter(0).getMCType());
     assertEquals("name", cdConstructor.getCDParameter(0).getName());
 
-    assertTrue(cdConstructor.isEmptyException());
+    assertTrue(cdConstructor.getCDThrowsDeclaration().isEmptyException());
   }
 
   @Test
   public void testAttributeCount() {
-    assertEquals(7, symbolClassAutomaton.sizeCDAttributes());
+    assertEquals(7, symbolClassAutomaton.getCDAttributeList().size());
   }
 
   @Test
@@ -429,17 +429,17 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterfacesCountStateSymbol() {
-    assertEquals(1, symbolClassState.sizeInterface());
+    assertEquals(1, symbolClassState.getInterfaceList().size());
   }
 
   @Test
   public void testSuperInterfacesStateSymbol() {
-    assertDeepEquals("de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.ICommonAutomatonSymbolCDSymbol", symbolClassState.getInterface(0));
+    assertDeepEquals("de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.ICommonAutomatonSymbolCDSymbol", symbolClassState.getCDInterfaceUsage().getInterface(0));
   }
 
   @Test
   public void testAttributeCountStateSymbol() {
-    assertEquals(6, symbolClassState.sizeCDAttributes());
+    assertEquals(6, symbolClassState.getCDAttributeList().size());
   }
 
   @Test(expected = AssertionError.class)
@@ -471,10 +471,10 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testFooSymbolInterfaces() {
-    assertEquals(2, symbolClassFoo.sizeInterface());
+    assertEquals(2, symbolClassFoo.getInterfaceList().size());
     assertDeepEquals("de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.ICommonAutomatonSymbolCDSymbol",
-        symbolClassFoo.getInterface(0));
-    assertDeepEquals("de.monticore.codegen.ast.Lexicals.ASTLexicalsNode", symbolClassFoo.getInterface(1));
+        symbolClassFoo.getCDInterfaceUsage().getInterface(0));
+    assertDeepEquals("de.monticore.codegen.ast.Lexicals.ASTLexicalsNode", symbolClassFoo.getCDInterfaceUsage().getInterface(1));
 
   }
 
