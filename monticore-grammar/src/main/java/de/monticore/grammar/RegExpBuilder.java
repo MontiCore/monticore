@@ -98,7 +98,7 @@ public class RegExpBuilder implements GrammarVisitor2, GrammarHandler {
     }
     else {
 
-      if (a.getChar().equals("[") || a.getChar().equals("]")) {
+      if ("[".equals(a.getChar()) || "]".equals(a.getChar())) {
 
         if (a.isNegate()) {
           b.append("^");
@@ -113,7 +113,6 @@ public class RegExpBuilder implements GrammarVisitor2, GrammarHandler {
         }
         b.append(a.getChar() + "]");
       }
-      ;
     }
   }
 

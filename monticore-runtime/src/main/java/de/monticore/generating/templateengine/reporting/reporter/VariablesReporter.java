@@ -22,7 +22,7 @@ import de.monticore.generating.templateengine.reporting.commons.ReportingConstan
  */
 public class VariablesReporter extends AReporter {
   
-  final static String SIMPLE_FILE_NAME = "07_Variables";
+  static final String SIMPLE_FILE_NAME = "07_Variables";
   
   private Map<String, Integer> var2asmt;
   

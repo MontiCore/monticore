@@ -12,8 +12,8 @@ import java.io.File;
  *
  */
 public class ArtifactGVReporter extends ArtifactReporter {
-  
-  final static String SIMPLE_FILE_NAME = "16_ArtifactGv";  
+
+  static final String SIMPLE_FILE_NAME = "16_ArtifactGv";
   
   public ArtifactGVReporter(String outputDir, String modelName) {
     super(outputDir + File.separator + modelName,

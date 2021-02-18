@@ -2,7 +2,6 @@
 package de.monticore.expressions.prettyprint;
 
 import de.monticore.expressions.assignmentexpressions.AssignmentExpressionsMill;
-import de.monticore.expressions.assignmentexpressions._ast.ASTAssignmentExpressionsNode;
 import de.monticore.expressions.assignmentexpressions._visitor.AssignmentExpressionsTraverser;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.prettyprint.MCBasicsPrettyPrinter;

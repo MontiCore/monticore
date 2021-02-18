@@ -38,13 +38,10 @@ public class GrammarScopesGenitor extends GrammarScopesGenitorTOP {
 
   private MCGrammarSymbol grammarSymbol;
 
-  private ASTMCGrammar astGrammar;
-
   @Override
   public void visit(ASTMCGrammar ast){
     super.visit(ast);
     grammarSymbol = ast.getSymbol();
-    astGrammar = ast;
   }
 
   @Override

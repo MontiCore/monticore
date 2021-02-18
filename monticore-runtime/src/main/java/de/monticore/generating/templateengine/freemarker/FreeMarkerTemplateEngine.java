@@ -66,7 +66,8 @@ public class FreeMarkerTemplateEngine {
    */
   public void run(StringBuilder buffer, Object data, Template template) {
     Log.errorIfNull(template, "0xA0562 The given template must not be null");
-    
+    String seperator = System.getProperty("line.seperator");
+
     Writer w = new StringWriter();
     try {
       template.process(data, w);
@@ -85,14 +86,15 @@ public class FreeMarkerTemplateEngine {
           causedExceptionInfo.append("\n").append(targetException);
         }
       }
-      throw new MontiCoreFreeMarkerException("0xA0561 Unable to execute template " + template.getName() + " : " + e.getLocalizedMessage() + 
-          System.getProperty("line.separator") + "Exception-type: " + e.getCause() + causedExceptionInfo.toString() + 
-          System.getProperty("line.separator") + "Caused by " + System.getProperty("line.separator") + e.getFTLInstructionStack(),
+      throw new MontiCoreFreeMarkerException("0xA0561 Unable to execute template " + template.getName() + " : " +
+              e.getLocalizedMessage() +
+              seperator + "Exception-type: " + e.getCause() + causedExceptionInfo.toString() +
+              seperator + "Caused by " + seperator + e.getFTLInstructionStack(),
           e.getCause());
     }
     catch (IOException e) {
       throw new MontiCoreFreeMarkerException("0xA0563 Could not read template " + template.getName() + " : " + e.getLocalizedMessage() +
-              System.getProperty("line.separator") + "Exception-type: " + e.getCause())  ;
+              seperator + "Exception-type: " + e.getCause())  ;
     }
     buffer.append(w.toString());
   }
