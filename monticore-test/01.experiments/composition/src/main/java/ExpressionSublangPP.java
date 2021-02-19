@@ -8,7 +8,8 @@ import expression._visitor.*;
  * print and get the result by using {@link #getResult()}.
  *
  */
-public class ExpressionSublangPP implements ExpressionVisitor2, ExpressionHandler {
+public class ExpressionSublangPP
+                implements ExpressionVisitor2, ExpressionHandler {
 
   protected IndentPrinter out;
   protected ExpressionTraverser traverser;
@@ -16,15 +17,17 @@ public class ExpressionSublangPP implements ExpressionVisitor2, ExpressionHandle
   public ExpressionSublangPP(IndentPrinter o) {
     out = o;
   }
+
+  @Override
+  public void setTraverser(ExpressionTraverser traverser) {
+    this.traverser = traverser;
+  }
   
+  @Override
   public ExpressionTraverser getTraverser() {
     return traverser;
   }
   
-  public void setTraverser(ExpressionTraverser traverser) {
-    this.traverser = traverser;
-  }
-
   // ----------------------------------------------------------
   // Typical visit/endvist methods:
 
