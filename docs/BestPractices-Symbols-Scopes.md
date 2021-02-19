@@ -86,13 +86,14 @@ to design, but powerful in their use.
 
 ## DeSerializing Unknown Symbol Kinds as Known Symbol Kinds
 
-Models require symbols of a specific kind for their well-formedness.
-Other languages may export symbols of kinds that are not directly known by the language.
+Languages indicate the usage of symbols with a specific kind, e.g., for checking the well-formedness of the model.
+In the context of language composition, a language therefore requires symbols of this kind that are exported elsewhere. 
+Other languages may export symbols of kinds that are not known by the language.
 Sometimes, it is the case that these symbols of the unknown kind should be loaded as symbols of the required kind. 
 Loading the symbols of the unknown kind as symbols of the specific known kind is possible in multiple ways.
 
 ### Loading Symbols of Some Kind as Symbols of Another Superkind
-Symbols of an unknown kind (e.g., CDTypeSymbol) may be loaded as symbols of another known kind (e.g., TypeSymbol).
+Symbols of an unknown kind (e.g., CDTypeSymbol) may be loaded as symbols of a known kind (e.g., TypeSymbol).
 This is especially useful if the unknown kind extends the known kind (e.g, CDTypeSymbol extends TypeSymbol).
 This behavior can be configured in the global scope by calling the method ```putSymbolDeser(String, ISymbolDeser)```. 
 The method can either be called in the constructor of the global scope to configure this behavior for every tool execution 
@@ -101,7 +102,7 @@ For instance, for loading ```CDTypeSymbols``` as ```TypeSymbols```, call the met
 ```putSymbolDeSer("de.monticore.cdbasis._symboltable.CDTypeSymbol", new TypeSymbolDeSer())```.
 
 ### Converting Stored Symbol Tables
-If a stored symbol table contains symbols of unknown kinds, then the serialized symbol table can be transformed to another symbol 
+If a stored symbol table contains symbols of unknown kinds, then the serialized symbol table can be transformed to another 
 serialized symbol table where the kind information is transformed as required.
 
 ## Further Information
