@@ -84,6 +84,26 @@ to design, but powerful in their use.
   keyboard property, because the newly defined symbol then is also 
   a subclass of the inherited symbol (in Java).
 
+## DeSerializing Unknown Symbol Kinds as Known Symbol Kinds
+
+Models require symbols of a specific kind for their well-formedness.
+Other languages may export symbols of kinds that are not directly known by the language.
+Sometimes, it is the case that these symbols of the unknown kind should be loaded as symbols of the required kind. 
+Loading the symbols of the unknown kind as symbols of the specific known kind is possible in multiple ways.
+
+### Loading Symbols of Some Kind as Symbols of Another Superkind
+Symbols of an unknown kind (e.g., CDTypeSymbol) may be loaded as symbols of another known kind (e.g., TypeSymbol).
+This is especially useful if the unknown kind extends the known kind (e.g, CDTypeSymbol extends TypeSymbol).
+This behavior can be configured in the global scope by calling the method ```putSymbolDeser(String, ISymbolDeser)```. 
+The method can either be called in the constructor of the global scope to configure this behavior for every tool execution 
+or the method can be called in a corresponding CLI for dynamically configuring the deserialization.
+For instance, for loading ```CDTypeSymbols``` as ```TypeSymbols```, call the method by 
+```putSymbolDeSer("de.monticore.cdbasis._symboltable.CDTypeSymbol", new TypeSymbolDeSer())```.
+
+### Converting Stored Symbol Tables
+If a stored symbol table contains symbols of unknown kinds, then the serialized symbol table can be transformed to another symbol 
+serialized symbol table where the kind information is transformed as required.
+
 ## Further Information
 
 * [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
