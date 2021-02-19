@@ -8,6 +8,7 @@ import de.monticore.symboltable.serialization.json.JsonObject;
 import de.se_rwth.commons.logging.Log;
 import org.checkerframework.checker.units.qual.K;
 
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -69,5 +70,17 @@ public class JsonDeSers {
       return "error";
     }
     return symbol.getStringMember(KIND);
+  }
+
+  public static String getSymbolFilePath(String symbolPath, String modelName,
+      String modelFileExtension) {
+    String simpleFileName = modelName + "." + modelFileExtension + "sym";
+    return Paths.get(symbolPath, simpleFileName).toString();
+  }
+
+  public static String getSymbolFilePath(String symbolPath, String packagePath, String modelName,
+      String modelFileExtension) {
+    String simpleFileName = modelName + "." + modelFileExtension + "sym";
+    return Paths.get(symbolPath, packagePath, simpleFileName).toString();
   }
 }
