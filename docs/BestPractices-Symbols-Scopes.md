@@ -88,7 +88,7 @@ to design, but powerful in their use.
 
 Specific languages (e.g. `CD`) may provide specific symbols, of specific kinds.
 A symbol import of these symbols into another language `L1` has to cope with 
-potentially unknown kinds of symbols, even though the superclass could be known. 
+potentially unknown kinds of symbols, even though the super kind could be known. 
 E.g. `TypeSymbol` is extended by `CDTypeSymbol` providing e.g. additional 
 visibility information.
 Upon loading an `CD`-symboltable into an `L1`-tool
