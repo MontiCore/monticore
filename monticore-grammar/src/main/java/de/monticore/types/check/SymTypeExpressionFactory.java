@@ -180,12 +180,12 @@ public class SymTypeExpressionFactory {
       if(c == '<'){
         depth++;
       }
-      if(c == '>'){
-        depth--;
-      }
       if(depth == 1 && (c == ',' || c == '>')){
         list.add(type.substring(start+1, i));
         start = i;
+      }
+      if(c == '>'){
+        depth--;
       }
     }
     return list;
