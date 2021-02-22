@@ -124,7 +124,7 @@ deploy:
 sonar:
   stage: sonar
   script:
-    - "cd  ./gradlew sonarMC $GRADLE_OPTS $SONAR_OPTS"
+    - "./gradlew sonarMC $GRADLE_OPTS $SONAR_OPTS"
   only:
     - merge_requests
     - branches
