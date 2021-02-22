@@ -1,0 +1,7 @@
+package mc.typescalculator.valid;
+
+tc InheritanceBar extends mc.typescalculator.valid.Bar {
+
+
+
+}

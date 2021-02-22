@@ -13,6 +13,8 @@ public class BasicSymbolsMill extends BasicSymbolsMillTOP {
 
   public static void initMe (BasicSymbolsMill a)  {
     mill = a;
+    millBasicSymbolsTraverserImplementation = a;
+    millBasicSymbolsInheritanceHandler = a;
     millDiagramSymbolBuilder = a;
     millTypeSymbolBuilder = a;
     millTypeVarSymbolBuilder = a;
@@ -23,7 +25,11 @@ public class BasicSymbolsMill extends BasicSymbolsMillTOP {
     millTypeVarSymbolSurrogateBuilder = a;
     millVariableSymbolSurrogateBuilder = a;
     millFunctionSymbolSurrogateBuilder = a;
-    millBasicSymbolsTraverserImplementation = a;
+    millBasicSymbolsScopesGenitorDelegator = a;
+    millBasicSymbolsArtifactScope = a;
+    millBasicSymbolsGlobalScope = a;
+    millBasicSymbolsScopesGenitor = a;
+    millBasicSymbolsScope = a;
     primitiveTypesInitializer = a;
   }
 

@@ -124,5 +124,13 @@ public class CombineExpressionsWithLiteralsTest {
     Optional<SymTypeExpression> k = calc.calculateType(eb);
     assertTrue(k.isPresent());
     assertEquals("C",k.get().print());
+
+    Optional<ASTExpression> complicated = p.parse_StringExpression("b.z.f.toString()");
+    assertTrue(complicated.isPresent());
+    artifactScope = del.createFromAST(complicated.get());
+    artifactScope.setName("");
+    Optional<SymTypeExpression> sym = calc.calculateType(complicated.get());
+    assertTrue(sym.isPresent());
+    assertEquals("String", sym.get().print());
   }
 }
