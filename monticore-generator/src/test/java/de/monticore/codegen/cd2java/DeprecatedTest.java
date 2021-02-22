@@ -33,6 +33,7 @@ import java.util.Optional;
 
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class DeprecatedTest extends DecoratorTestCase {
@@ -116,7 +117,7 @@ public class DeprecatedTest extends DecoratorTestCase {
 
     assertEquals(2, astA.getModifier().getStereotype().sizeValues());
     assertEquals("deprecated", astA.getModifier().getStereotype().getValues(0).getName());
-    assertTrue(astA.getModifier().getStereotype().getValues(0).isPresentText());
+    assertFalse(astA.getModifier().getStereotype().getValues(0).getValue().isEmpty());
     assertEquals("CommentA", astA.getModifier().getStereotype().getValues(0).getValue());
   }
 
@@ -129,7 +130,7 @@ public class DeprecatedTest extends DecoratorTestCase {
 
     assertEquals(1, astABuilder.getModifier().getStereotype().sizeValues());
     assertEquals("deprecated", astABuilder.getModifier().getStereotype().getValues(0).getName());
-    assertTrue(astABuilder.getModifier().getStereotype().getValues(0).isPresentText());
+    assertFalse(astABuilder.getModifier().getStereotype().getValues(0).getValue().isEmpty());
     assertEquals("CommentA", astABuilder.getModifier().getStereotype().getValues(0).getValue());
   }
 
@@ -143,7 +144,7 @@ public class DeprecatedTest extends DecoratorTestCase {
 
     assertEquals(1, astaCoCo.get().getModifier().getStereotype().sizeValues());
     assertEquals("deprecated", astaCoCo.get().getModifier().getStereotype().getValues(0).getName());
-    assertTrue(astaCoCo.get().getModifier().getStereotype().getValues(0).isPresentText());
+    assertFalse(astaCoCo.get().getModifier().getStereotype().getValues(0).getValue().isEmpty());
     assertEquals("CommentA", astaCoCo.get().getModifier().getStereotype().getValues(0).getValue());
   }
 
@@ -156,7 +157,7 @@ public class DeprecatedTest extends DecoratorTestCase {
 
     assertEquals(1, symbolA.getModifier().getStereotype().sizeValues());
     assertEquals("deprecated", symbolA.getModifier().getStereotype().getValues(0).getName());
-    assertTrue(symbolA.getModifier().getStereotype().getValues(0).isPresentText());
+    assertFalse(symbolA.getModifier().getStereotype().getValues(0).getValue().isEmpty());
     assertEquals("CommentA", symbolA.getModifier().getStereotype().getValues(0).getValue());
   }
 
@@ -169,7 +170,7 @@ public class DeprecatedTest extends DecoratorTestCase {
 
     assertEquals(1, symbolBuilderA.getModifier().getStereotype().sizeValues());
     assertEquals("deprecated", symbolBuilderA.getModifier().getStereotype().getValues(0).getName());
-    assertTrue(symbolBuilderA.getModifier().getStereotype().getValues(0).isPresentText());
+    assertFalse(symbolBuilderA.getModifier().getStereotype().getValues(0).getValue().isEmpty());
     assertEquals("CommentA", symbolBuilderA.getModifier().getStereotype().getValues(0).getValue());
   }
 
@@ -181,7 +182,7 @@ public class DeprecatedTest extends DecoratorTestCase {
 
     assertEquals(1, symbolLoaderA.getModifier().getStereotype().sizeValues());
     assertEquals("deprecated", symbolLoaderA.getModifier().getStereotype().getValues(0).getName());
-    assertTrue(symbolLoaderA.getModifier().getStereotype().getValues(0).isPresentText());
+    assertFalse(symbolLoaderA.getModifier().getStereotype().getValues(0).getValue().isEmpty());
     assertEquals("CommentA", symbolLoaderA.getModifier().getStereotype().getValues(0).getValue());
   }
 
@@ -193,7 +194,7 @@ public class DeprecatedTest extends DecoratorTestCase {
 
     assertEquals(1, symbolLoaderBuilderA.getModifier().getStereotype().sizeValues());
     assertEquals("deprecated", symbolLoaderBuilderA.getModifier().getStereotype().getValues(0).getName());
-    assertTrue(symbolLoaderBuilderA.getModifier().getStereotype().getValues(0).isPresentText());
+    assertFalse(symbolLoaderBuilderA.getModifier().getStereotype().getValues(0).getValue().isEmpty());
     assertEquals("CommentA", symbolLoaderBuilderA.getModifier().getStereotype().getValues(0).getValue());
   }
 
@@ -206,7 +207,7 @@ public class DeprecatedTest extends DecoratorTestCase {
 
     assertEquals(1, resolverA.getModifier().getStereotype().sizeValues());
     assertEquals("deprecated", resolverA.getModifier().getStereotype().getValues(0).getName());
-    assertTrue(resolverA.getModifier().getStereotype().getValues(0).isPresentText());
+    assertFalse(resolverA.getModifier().getStereotype().getValues(0).getValue().isEmpty());
     assertEquals("CommentA", resolverA.getModifier().getStereotype().getValues(0).getValue());
   }
 
@@ -221,7 +222,7 @@ public class DeprecatedTest extends DecoratorTestCase {
 
     assertEquals(2, astA.getModifier().getStereotype().sizeValues());
     assertEquals("deprecated", astA.getModifier().getStereotype().getValues(0).getName());
-    assertTrue(astA.getModifier().getStereotype().getValues(0).isPresentText());
+    assertFalse(astA.getModifier().getStereotype().getValues(0).getValue().isEmpty());
     assertEquals("CommentI", astA.getModifier().getStereotype().getValues(0).getValue());
   }
 
@@ -235,7 +236,7 @@ public class DeprecatedTest extends DecoratorTestCase {
 
     assertEquals(1, astaCoCo.get().getModifier().getStereotype().sizeValues());
     assertEquals("deprecated", astaCoCo.get().getModifier().getStereotype().getValues(0).getName());
-    assertTrue(astaCoCo.get().getModifier().getStereotype().getValues(0).isPresentText());
+    assertFalse(astaCoCo.get().getModifier().getStereotype().getValues(0).getValue().isEmpty());
     assertEquals("CommentI", astaCoCo.get().getModifier().getStereotype().getValues(0).getValue());
   }
 
@@ -247,7 +248,7 @@ public class DeprecatedTest extends DecoratorTestCase {
 
     assertEquals(1, symbolLoaderBuilderA.getModifier().getStereotype().sizeValues());
     assertEquals("deprecated", symbolLoaderBuilderA.getModifier().getStereotype().getValues(0).getName());
-    assertTrue(symbolLoaderBuilderA.getModifier().getStereotype().getValues(0).isPresentText());
+    assertFalse(symbolLoaderBuilderA.getModifier().getStereotype().getValues(0).getValue().isEmpty());
     assertEquals("CommentI", symbolLoaderBuilderA.getModifier().getStereotype().getValues(0).getValue());
   }
 
@@ -260,7 +261,7 @@ public class DeprecatedTest extends DecoratorTestCase {
 
     assertEquals(1, resolverA.getModifier().getStereotype().sizeValues());
     assertEquals("deprecated", resolverA.getModifier().getStereotype().getValues(0).getName());
-    assertTrue(resolverA.getModifier().getStereotype().getValues(0).isPresentText());
+    assertFalse(resolverA.getModifier().getStereotype().getValues(0).getValue().isEmpty());
     assertEquals("CommentI", resolverA.getModifier().getStereotype().getValues(0).getValue());
   }
 
