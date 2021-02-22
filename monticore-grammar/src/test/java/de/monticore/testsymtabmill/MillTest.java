@@ -19,9 +19,10 @@ public class MillTest {
     ITestSymTabMillGlobalScope globalScope = TestSymTabMillMill.globalScope();
     globalScope.setModelPath(new ModelPath());
     globalScope.setFileExt("mill");
-    TestSymTabMillSymbolTableCreator symbolTableCreator = TestSymTabMillMill.testSymTabMillSymbolTableCreator();
+    TestSymTabMillScopesGenitor symbolTableCreator = TestSymTabMillMill.scopesGenitor();
     symbolTableCreator.putOnStack(scope);
-    TestSymTabMillSymbolTableCreatorDelegator symbolTableCreatorDelegator = TestSymTabMillMill.testSymTabMillSymbolTableCreatorDelegator();
+
+    TestSymTabMillScopesGenitorDelegator symbolTableCreatorDelegator = TestSymTabMillMill.scopesGenitorDelegator();
 
     assertFalse(scope.isShadowing());
     assertTrue(symbolTableCreator.getCurrentScope().get().equals(scope));

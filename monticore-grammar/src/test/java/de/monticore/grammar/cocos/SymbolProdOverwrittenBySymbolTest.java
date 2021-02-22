@@ -1,4 +1,4 @@
-// (c) https://github.com/MontiCore/monticore
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.grammar.cocos;
 
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
@@ -12,7 +12,7 @@ public class SymbolProdOverwrittenBySymbolTest extends CocoTest {
 
   @BeforeClass
   public static void disableFailQuick() {
-    LogStub.enableFailQuick(false);
+    LogStub.init();
     checker.addCoCo(new SymbolProdOverwrittenBySymbol());
   }
 

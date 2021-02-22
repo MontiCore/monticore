@@ -14,7 +14,7 @@ import mc.feature.referencesymbol.supgrammarref._parser.SupGrammarRefParser;
 import mc.feature.referencesymbol.supgrammarref._symboltable.ISupGrammarRefArtifactScope;
 import mc.feature.referencesymbol.supgrammarref._symboltable.ISupGrammarRefGlobalScope;
 import mc.feature.referencesymbol.supgrammarref._symboltable.ISupGrammarRefScope;
-import mc.feature.referencesymbol.supgrammarref._symboltable.SupGrammarRefSymbolTableCreatorDelegator;
+import mc.feature.referencesymbol.supgrammarref._symboltable.SupGrammarRefScopesGenitorDelegator;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -61,8 +61,8 @@ public class SupReferenceTest {
     globalScope.setFileExt("ref");
     globalScope.getModelPath().addEntry(Paths.get("src/test/resources/mc/feature/referencesymbol"));
 
-    SupGrammarRefSymbolTableCreatorDelegator symbolTableCreator = SupGrammarRefMill
-        .supGrammarRefSymbolTableCreatorDelegator();
+    SupGrammarRefScopesGenitorDelegator symbolTableCreator = SupGrammarRefMill
+            .scopesGenitorDelegator();
     ISupGrammarRefArtifactScope artifact = symbolTableCreator.createFromAST(astsupRand);
     artifact.setName("SupReferenceModel");
     Optional<? extends ISupGrammarRefScope> scopeOpt = artifact.getSubScopes().stream().findAny();

@@ -16,4 +16,8 @@ grammar ConservativeExtensionSup extends de.monticore.grammar.cocos.valid.Conser
 
     F extends N = x:M? "one" M;
 
+    // With Anno
+    @NonConservative
+    A extends M = Name*;
+
 }

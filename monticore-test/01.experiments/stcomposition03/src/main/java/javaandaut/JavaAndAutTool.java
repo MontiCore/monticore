@@ -25,7 +25,7 @@ public class JavaAndAutTool {
     }
     gs.addAdaptedStimulusSymbolResolver(new AutomataResolver(modelPath));
 
-    return Automata7Mill.automata7SymbolTableCreator().createFromAST(ast);
+    return Automata7Mill.scopesGenitorDelegator().createFromAST(ast);
   }
 
   public static ASTAutomaton parseAut(String model) {
