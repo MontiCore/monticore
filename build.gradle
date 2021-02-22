@@ -243,6 +243,14 @@ task cleanMC {
   )
 }
 
+task sonarMC (type: GradleBuild) {
+  description('Generates code coverage')
+  dependsOn(
+          ":testMC"
+  )
+  tasks = [ 'jacocoMergeSubprojects', 'sonarqube' ]
+}
+
 
 configure([project(':monticore-grammar'),
            project(':monticore-grammar-emf'),
