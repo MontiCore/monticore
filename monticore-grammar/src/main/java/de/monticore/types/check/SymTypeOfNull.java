@@ -25,6 +25,11 @@ public class SymTypeOfNull extends SymTypeExpression {
       return DefsTypeBasic._nullTypeString;
   }
 
+  @Override
+  public String printFullName(){
+    return print();
+  }
+
   /**
    * printAsJson: Umwandlung in einen kompakten Json String
    */

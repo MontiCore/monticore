@@ -137,7 +137,7 @@ public class AbstractDeriveTest {
     assertTrue(expr.isPresent());
     expr.get().accept(traverser);
 
-    assertEquals("Person.Address", tc.typeOf(expr.get()).print());
+    assertEquals("Address", tc.typeOf(expr.get()).print());
   }
 
   @Test

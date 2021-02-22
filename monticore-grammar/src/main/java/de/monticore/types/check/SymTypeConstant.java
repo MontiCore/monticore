@@ -42,6 +42,11 @@ public class SymTypeConstant extends SymTypeExpression {
     return getConstName();
   }
 
+  @Override
+  public String printFullName(){
+    return print();
+  }
+
   /**
    * printAsJson: Umwandlung in einen kompakten Json String
    */

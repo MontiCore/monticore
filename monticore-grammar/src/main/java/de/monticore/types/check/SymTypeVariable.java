@@ -32,6 +32,11 @@ public class SymTypeVariable extends SymTypeExpression {
     return getVarName();
   }
 
+  @Override
+  public String printFullName() {
+    return typeSymbol.getName();
+  }
+
   /**
    * printAsJson: Umwandlung in einen kompakten Json String
    */

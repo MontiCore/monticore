@@ -25,6 +25,12 @@ public abstract class SymTypeExpression {
    * print: Conversion to a compact string, such as "int", "Person", "List< A >"
    */
   public abstract String print();
+
+  /**
+   * printFullName: prints the full name of the symbol, such as "java.util.List<java.lang.String>"
+   * @return
+   */
+  public abstract String printFullName();
   
   /**
    * printAsJson: Umwandlung in einen kompakten Json String

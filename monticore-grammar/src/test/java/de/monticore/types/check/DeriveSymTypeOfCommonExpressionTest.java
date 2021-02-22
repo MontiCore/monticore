@@ -826,7 +826,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     s = "types3.types2.Test";
     astex = p.parse_StringExpression(s).get();
     astex.accept(traverser);
-    assertEquals("types3.types2.Test", tc.typeOf(astex).print());
+    assertEquals("Test", tc.typeOf(astex).print());
 
     //test for variable of type with more than one package
     s = "types3.types2.Test.variable";
@@ -1737,7 +1737,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     assertTrue(sType.isPresent());
     ASTExpression type = sType.get();
     type.accept(traverser);
-    assertEquals("A.D",tc.typeOf(type).print());
+    assertEquals("D",tc.typeOf(type).print());
   }
 
   @Test

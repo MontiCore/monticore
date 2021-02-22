@@ -15,6 +15,11 @@ public class SymTypeVoid extends SymTypeExpression {
   public String print() {
     return "void";
   }
+
+  @Override
+  public String printFullName() {
+    return print();
+  }
   
   /**
    * printAsJson: Umwandlung in einen kompakten Json String

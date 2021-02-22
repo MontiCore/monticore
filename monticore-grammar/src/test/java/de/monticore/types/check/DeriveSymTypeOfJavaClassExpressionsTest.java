@@ -499,7 +499,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest {
 
     assertEquals("Class<String>",tc.typeOf(c1).print());
     assertEquals("Class<Integer>",tc.typeOf(c2).print());
-    assertEquals("Class<java.util.Set<double>>",tc.typeOf(c3).print());
+    assertEquals("Class<Set<double>>",tc.typeOf(c3).print());
   }
 
   @Test
