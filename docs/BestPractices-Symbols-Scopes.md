@@ -35,7 +35,7 @@ to design, but powerful in their use.
   creator or via providing an adapter translating a foreign symbol into an `S` symbol.
 * This can be used, e.g., in these scenarios: 
   * A name of a certain kind is introduced automatically the first time it occurs 
-    in a model. If it occurs more than once, all other occurences of the name 
+    in a model. If it occurs more than once, all other occurrences of the name 
     do not introduce new symbols. (e.g. this happens with features in FDs,
     and works because features do not have a body.)
   * A name in a language `E` refers to a named element of another language, 
@@ -88,7 +88,7 @@ to design, but powerful in their use.
 
 Specific languages (e.g. `CD`) may provide specific symbols, of specific kinds.
 A symbol import of these symbols into another language `L1` has to cope with 
-potentially unkown kinds of symbols, even though the superclass could be known. 
+potentially unknown kinds of symbols, even though the superclass could be known. 
 E.g. `TypeSymbol` is extended by `CDTypeSymbol` providing e.g. additional 
 visibility information.
 Upon loading an `CD`-symboltable into an `L1`-tool
@@ -118,7 +118,7 @@ For instance the call would be
 ```putSymbolDeSer("de.monticore.cdbasis._symboltable.CDTypeSymbol", new TypeSymbolDeSer())```.
 
 Because the global scope is a singleton, this configuration can be e.g. called in or shortly 
-after constructing the global scope. However, this would still encode the name of the unkown
+after constructing the global scope. However, this would still encode the name of the unknown
 symbol kind in the `L1`-tool, although it prevents any actual dependency to the imported tools.
 
 The method can also be called from a CLI for dynamically configuring the deserialization,
@@ -130,7 +130,7 @@ e.g. the information be fed to the `L1`-tool via parameters, e.g. like
 
 ### Converting Stored Symbol Tables
 
-If the unkown symbol kinds do have different attributes or some extra information
+If the unknown symbol kinds do have different attributes or some extra information
 needs to be calculated in the new symbols, then either the `L1`-tool needs to be adapted or
 the serialized symbol table can be transformed to another 
 serialized symbol table where the kind information is transformed as required as an
