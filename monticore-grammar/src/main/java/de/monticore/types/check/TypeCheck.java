@@ -234,6 +234,8 @@ public class TypeCheck {
         return true;
       }
       return false;
+    } else if (!left.isTypeConstant() && right.isNullType()){
+      return true;
     } else if(unbox(left.print()).equals(unbox(right.print()))) {
       return true;
     } else if(isSubtypeOf(right,left)) {
