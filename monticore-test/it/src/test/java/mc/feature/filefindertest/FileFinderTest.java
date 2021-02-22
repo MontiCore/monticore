@@ -42,7 +42,8 @@ public class FileFinderTest {
   }
 
   @Test
-  public void fileFinderDetectsCorrectModelRegex() {
+  public void testFileFinder1() {
+    //fileFinder detects the correct Modles with the standard Regex.
     IFileFinderTestGlobalScope gs = FileFinderTestMill.globalScope();
     gs.clear();
     gs.setModelPath(new ModelPath(Paths.get("src/test/resources")));
@@ -51,7 +52,8 @@ public class FileFinderTest {
   }
 
   @Test
-  public void fileFinderDetectsCorrectModel() {
+  public void testFileFinder2() {
+    // fileFinder detects the correct Model with the correct file Extension
     IFileFinderTestGlobalScope gs = FileFinderTestMill.globalScope();
     gs.clear();
     gs.setFileExt("scsym");
@@ -61,7 +63,8 @@ public class FileFinderTest {
   }
 
   @Test
-  public void fileFinderNotDetectsCorrectModelWorkingPath() {
+  public void testFileFinder3() {
+    //fileFinder does not detect any Models, Wrong file Extension.
     IFileFinderTestGlobalScope gs = FileFinderTestMill.globalScope();
     gs.clear();
     gs.setFileExt("ym");
@@ -71,7 +74,8 @@ public class FileFinderTest {
   }
 
   @Test
-  public void fileFinderNotDetectsCorrectModelBadPath() {
+  public void testFileFinder4() {
+    //fileFinder finds no Models, wrong Model Path.
     IFileFinderTestGlobalScope gs = FileFinderTestMill.globalScope();
     gs.clear();
     gs.setModelPath(new ModelPath(Paths.get("src/test")));
@@ -80,7 +84,8 @@ public class FileFinderTest {
   }
 
   @Test
-  public void fileFinderNotDetectsCorrectModelEmptyPath() {
+  public void testFileFinder5() {
+    //fileFinder finds no Models, empty Model Path.
     IFileFinderTestGlobalScope gs = FileFinderTestMill.globalScope();
     gs.clear();
     gs.setModelPath(new ModelPath());
@@ -89,7 +94,8 @@ public class FileFinderTest {
   }
 
   @Test
-  public void fileFinderDetectsCorrectModelCustomFileExt() {
+  public void testFileFinder6() {
+    //fileFinder detects 1 Model with custom File Extension
     IFileFinderTestGlobalScope gs = FileFinderTestMill.globalScope();
     gs.clear();
     gs.setFileExt("json");
