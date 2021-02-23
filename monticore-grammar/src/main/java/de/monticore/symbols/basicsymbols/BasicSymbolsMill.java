@@ -27,6 +27,27 @@ public class BasicSymbolsMill extends BasicSymbolsMillTOP {
     primitiveTypesInitializer = a;
   }
 
+  public static final String INT = "int";
+
+  public static final String DOUBLE = "double";
+
+  public static final String FLOAT = "float";
+
+  public static final String SHORT = "short";
+
+  public static final String LONG = "long";
+
+  public static final String BOOLEAN = "boolean";
+
+  public static final String BYTE = "byte";
+
+  public static final String CHAR = "char";
+
+  public static final String NULL = "null";
+
+  public static final String VOID = "void";
+
+
   public static void initializePrimitives(){
     if(primitiveTypesInitializer == null){
       primitiveTypesInitializer = getMill();
@@ -37,7 +58,7 @@ public class BasicSymbolsMill extends BasicSymbolsMillTOP {
   public void _initializePrimitives(){
     IBasicSymbolsGlobalScope gs = globalScope();
 
-    List<String> primitives = Lists.newArrayList("int", "double", "float", "short", "long", "boolean", "byte", "char");
+    List<String> primitives = Lists.newArrayList(INT, DOUBLE, FLOAT, SHORT, LONG, BOOLEAN, BYTE, CHAR);
 
     for(String primitive: primitives){
       gs.add(createPrimitive(primitive));

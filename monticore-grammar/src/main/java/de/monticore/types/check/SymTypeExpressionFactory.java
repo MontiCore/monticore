@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
@@ -8,9 +9,7 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.Arrays;
 import java.util.List;
-
-import static de.monticore.types.check.DefsTypeBasic.type;
-import static de.monticore.types.check.DefsTypeBasic.typeConstants;
+import java.util.Optional;
 
 /**
  * SymTypeExpressionFactory contains static functions that create
@@ -42,11 +41,11 @@ public class SymTypeExpressionFactory {
    * TypeInfo is not needed (as the Objects are predefined singletons)
    */
   public static SymTypeConstant createTypeConstant(String name) {
-    SymTypeConstant stc = typeConstants.get(name);
-    if (stc == null) {
+    Optional<TypeSymbol> type = BasicSymbolsMill.globalScope().resolveType(name);
+    if (!type.isPresent()) {
       Log.error("0x893F62 Internal Error: Non primitive type " + name + " stored as constant.");
     }
-    return stc;
+    return new SymTypeConstant(type.get());
   }
 
   /**
@@ -71,14 +70,14 @@ public class SymTypeExpressionFactory {
    * @return
    */
   public static SymTypeVoid createTypeVoid() {
-    return DefsTypeBasic._voidSymType;
+    return new SymTypeVoid();
   }
 
   /**
    * That is the pseudo-type of "null"
    */
   public static SymTypeOfNull createTypeOfNull() {
-    return DefsTypeBasic._nullSymType;
+    return new SymTypeOfNull();
   }
 
   /**
@@ -101,26 +100,6 @@ public class SymTypeExpressionFactory {
     return new SymTypeArray(typeSymbol, dim, argument);
   }
 
-  public static SymTypeExpression createTypeExpression(TypeSymbol typeSymbol){
-    SymTypeExpression o;
-    if(typeConstants.containsKey(typeSymbol.getName())){
-      o = createTypeConstant(typeSymbol.getName());
-    }
-    else if ("void".equals(typeSymbol.getName())) {
-      o = createTypeVoid();
-    }
-    else if ("null".equals(typeSymbol.getName())) {
-      o = createTypeOfNull();
-    }
-    else if (typeSymbol.getTypeParameterList().isEmpty()) {
-      o = createTypeObject(typeSymbol);
-    }
-    else {
-      o = createGenerics(typeSymbol);
-    }
-    return o;
-  }
-
   /**
    * creates a TypeExpression for primitives, such as "int", for "null", "void" and
    * also for object types, such as "Person" from a given symbol
@@ -132,10 +111,7 @@ public class SymTypeExpressionFactory {
    */
   public static SymTypeExpression createTypeExpression(String name, IBasicSymbolsScope scope) {
     SymTypeExpression o;
-    if (typeConstants.containsKey(name)) {
-      o = createTypeConstant(name);
-    }
-    else if ("void".equals(name)) {
+    if ("void".equals(name)) {
       o = createTypeVoid();
     }
     else if ("null".equals(name)) {
