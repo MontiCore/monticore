@@ -90,6 +90,13 @@ public class JsonPrinter {
   }
 
   /**
+   * @param serializeDefaults
+   */
+  public void setSerializeDefaults(boolean serializeDefaults) {
+    this.serializeDefaults = serializeDefaults;
+  }
+
+  /**
    * returns true, if the JsonPrinter is in a state in which at least
    * one object has been opened that is not closed yet.
    *
@@ -306,6 +313,9 @@ public class JsonPrinter {
       internalMember(kind, value);
     }
   }
+  public void memberNoDef(String kind, double value) {
+      internalMember(kind, value);
+  }
 
   /**
    * Prints a Json member with the given kind as key and the given long value, which is a basic data
@@ -319,6 +329,9 @@ public class JsonPrinter {
     if (DEFAULT_NUMBER != value || !serializeDefaults) {
       internalMember(kind, value);
     }
+  }
+  public void memberNoDef(String kind, long value) {
+      internalMember(kind, value);
   }
 
   /**
@@ -334,6 +347,9 @@ public class JsonPrinter {
       internalMember(kind, value);
     }
   }
+  public void memberNoDef(String kind, float value) {
+    internalMember(kind, value);
+  }
 
   /**
    * Prints a Json member with the given kind as key and the given int value, which is a basic data
@@ -348,6 +364,9 @@ public class JsonPrinter {
       internalMember(kind, value);
     }
   }
+  public void memberNoDef(String kind, int value) {
+    internalMember(kind, value);
+  }
 
   /**
    * Prints a Json member with the given kind as key and the given boolean value, which is a basic
@@ -361,6 +380,9 @@ public class JsonPrinter {
     if (DEFAULT_BOOLEAN != value || !serializeDefaults) {
       internalMember(kind, value);
     }
+  }
+  public void memberNoDef(String kind, boolean value) {
+    internalMember(kind, value);
   }
 
   /**
@@ -378,6 +400,9 @@ public class JsonPrinter {
       internalMember(kind, "\"" + escapeSpecialChars(value) + "\"");
     }
   }
+  public void memberNoDef(String kind, String value) {
+    internalMember(kind, "\"" + escapeSpecialChars(value) + "\"");
+  }
 
   /**
    * Prints a Json member with the given kind as key and the given String value that is encoded
@@ -394,6 +419,9 @@ public class JsonPrinter {
       internalMember(kind, value);
     }
   }
+  public void memberJsonNoDef(String kind, String value) {
+      internalMember(kind, value);
+  }
 
   /**
    * Prints a Json member with the given kind as key and a Json value that is of an object type and
@@ -407,39 +435,30 @@ public class JsonPrinter {
   }
 
   /**
-   * Prints a double as Json value, if it deviates from the default boolean value or if
-   * default values should be printed.
+   * Prints a double as Json value.
    *
    * @param value The double value of the Json attribute
    */
   public void value(double value) {
-    if (DEFAULT_NUMBER != value || !serializeDefaults) {
       internalValue(value);
-    }
   }
 
   /**
-   * Prints a long as Json value, if it deviates from the default boolean value or if
-   * default values should be printed.
+   * Prints a long as Json value.
    *
    * @param value The long value of the Json attribute
    */
   public void value(long value) {
-    if (DEFAULT_NUMBER != value || !serializeDefaults) {
       internalValue(value);
-    }
   }
 
   /**
-   * Prints a float as Json value, if it deviates from the default boolean value or if
-   * * default values should be printed.
+   * Prints a float as Json value.
    *
    * @param value The float value of the Json attribute
    */
   public void value(float value) {
-    if (DEFAULT_NUMBER != value || !serializeDefaults) {
       internalValue(value);
-    }
   }
 
   /**
@@ -449,35 +468,26 @@ public class JsonPrinter {
    * @param value The int value of the Json attribute
    */
   public void value(int value) {
-    if (DEFAULT_NUMBER != value || !serializeDefaults) {
-      internalValue(value);
-    }
+    internalValue(value);
   }
 
   /**
-   * Prints a boolean value as Json value, if it deviates from the default boolean value or if
-   * default values should be printed.
+   * Prints a boolean value as Json value.
    *
    * @param value The boolean value of the Json attribute
    */
   public void value(boolean value) {
-    if (DEFAULT_BOOLEAN != value || !serializeDefaults) {
-      internalValue(value);
-    }
+    internalValue(value);
   }
 
   /**
-   * Prints a String as Json value , if it deviates from the default boolean value or if default
-   * values should be printed. NOTE: if the parameter value is a serialized String, use the
+   * Prints a String as Json value. NOTE: if the parameter value is a serialized String, use the
    * value(JsonPrinter) method instead! Otherwise the content is escaped twice!
    *
    * @param value The String value of the Json attribute
    */
   public void value(String value) {
-    if (DEFAULT_STRING != value || !serializeDefaults) {
-      internalValue("\"" + escapeSpecialChars(value) + "\"");
-    }
-
+    internalValue("\"" + escapeSpecialChars(value) + "\"");
   }
 
   /**
@@ -487,9 +497,7 @@ public class JsonPrinter {
    * @param value The String encoded in JSON
    */
   public void valueJson(String value) {
-    if (DEFAULT_STRING != value || !serializeDefaults) {
       internalValue(value);
-    }
   }
 
   /**
@@ -500,6 +508,8 @@ public class JsonPrinter {
   public void value(JsonPrinter value) {
     valueJson(value.getContent());
   }
+
+  ////////////////////////////////////////////////////////////////////////////////////////
 
   /**
    * Adds escape sequences for all characters that are escaped in Java Strings according to
