@@ -8,12 +8,17 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Optional;
 
 import de.monticore.ast.ASTCNode;
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.TemplateController;
+import de.monticore.generating.templateengine.reporting.Reporting;
+import de.monticore.io.paths.IterablePath;
 import de.monticore.symboltable.IScope;
+import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -22,6 +27,10 @@ import de.se_rwth.commons.logging.Log;
  *
  */
 public class GeneratorEngine {
+  
+  public static final String DEFAULT_FILE_EXTENSION = ".java";
+  
+  public static final String TOP_NAME_EXTENSION = "TOP";
 
   /**
    * Contains all configuration data
@@ -160,6 +169,21 @@ public class GeneratorEngine {
     checkArgument(!isNullOrEmpty(templateName));
     TemplateController tc = setup.getNewTemplateController(templateName);
     return tc.includeArgs(templateName, Arrays.asList(templateArguments));
+  }
+  
+  /**
+   * Check whewther an handwritten version of that class already exits and shall be integrated
+   * (e.g. to apply TOP mechanism)
+   */
+  public static boolean existsHandwrittenClass(IterablePath targetPath, String qualifiedName) {
+    Path hwFile = Paths.get(Names.getPathFromPackage(qualifiedName)+ DEFAULT_FILE_EXTENSION);
+    Optional<Path> hwFilePath = targetPath.getResolvedPath(hwFile);
+    boolean result = hwFilePath.isPresent();
+    if (result) {
+      Reporting.reportUseHandwrittenCodeFile(hwFilePath.get(),hwFile);
+    }
+    Reporting.reportHWCExistenceCheck(targetPath, hwFile, hwFilePath);
+    return result;
   }
 
 }
