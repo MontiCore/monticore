@@ -123,7 +123,8 @@ public class AbstractService<T extends AbstractService> {
   private List<CDTypeSymbol> getAllSuperClassesTransitive(CDTypeSymbol cdTypeSymbol) {
     List<CDTypeSymbol> superSymbolList = new ArrayList<>();
     if (cdTypeSymbol.isPresentSuperClass()) {
-      CDTypeSymbol superSymbol = cdTypeSymbol.getSuperClass().lazyLoadDelegate();
+      String superName = cdTypeSymbol.getSuperClass().getTypeInfo().getFullName();
+      CDTypeSymbol superSymbol = cdTypeSymbol.getEnclosingScope().resolveCDType(superName).get();
       superSymbolList.add(superSymbol);
       superSymbolList.addAll(getAllSuperClassesTransitive(superSymbol));
     }
@@ -136,7 +137,7 @@ public class AbstractService<T extends AbstractService> {
 
   private List<String> getAllSuperInterfacesTransitive(CDTypeSymbol cdTypeSymbol) {
     List<String> superSymbolList = new ArrayList<>();
-    for (ASTMCObjectType cdInterface : ((ASTCDClass) cdTypeSymbol.getAstNode()).getCDInterfaceUsage().getInterfaceList()) {
+    for (ASTMCObjectType cdInterface : ((ASTCDClass) cdTypeSymbol.getAstNode()).getInterfaceList()) {
       String fullName = cdInterface.printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter()));
       superSymbolList.add(createASTFullName(fullName));
       CDTypeSymbol superSymbol = resolveCDType(fullName);

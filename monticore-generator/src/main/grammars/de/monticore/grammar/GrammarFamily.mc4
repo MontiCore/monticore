@@ -3,7 +3,7 @@ package de.monticore.grammar;
 
 grammar GrammarFamily extends
            de.monticore.grammar.Grammar_WithConcepts,
-           de.monticore.CD4Analysis
+           de.monticore.CD4Code
 {
   // keep the old axiom
   start MCGrammar;

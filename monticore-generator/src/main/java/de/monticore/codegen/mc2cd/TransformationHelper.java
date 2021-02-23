@@ -102,7 +102,7 @@ public final class TransformationHelper {
    * @param astNode the top node of the CD AST to be pretty printed
    */
   // TODO: should be placed somewhere in the UML/P CD project
-  public static String prettyPrint(ASTCD4AnalysisNode astNode) {
+  public static String prettyPrint(ASTCDBasisNode astNode) {
     // set up objects
     CD4AnalysisFullPrettyPrinter prettyPrinter = new CD4AnalysisFullPrettyPrinter(
         new IndentPrinter());
