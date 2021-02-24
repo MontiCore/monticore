@@ -31,7 +31,7 @@ public class FileFinderTest {
   @Test
   public void testGetFiles1() {
     // getFiles() should find 4 Models, using Regex
-    String fileExt = "*sym";
+    String fileExt = ".*sym";
     String qualifiedModelName = "de.monticore.io.Model1";
     List<Path> entries = new ArrayList<>();
     entries.add(Paths.get("src","test","models"));
@@ -111,7 +111,7 @@ public class FileFinderTest {
   @Test
   public void testGetFiles6(){
     //getFiles() should find 4 Models, using Regex.
-    String fileExt = "*dsym";
+    String fileExt = ".*dsym";
     String qualifiedModelName = "de.monticore.io.Model1";
     List<Path> entries = new ArrayList<>();
     entries.add(Paths.get("src","test","models"));
@@ -143,9 +143,23 @@ public class FileFinderTest {
   }
 
   @Test
+  public void testGetFiles8() {
+    // getFiles() should find 4 Models, using Regex
+    String fileExt = "sym";
+    String qualifiedModelName = "de.monticore.io.Model1";
+    List<Path> entries = new ArrayList<>();
+    entries.add(Paths.get("src","test","models"));
+    entries.add(Paths.get("src","test","resources"));
+    ModelPath mp = new ModelPath(entries);
+    List<File> files = FileFinder.getFiles(mp, qualifiedModelName, fileExt);
+    assertEquals(0, files.size());
+  }
+
+
+  @Test
   public void testFindFiles1() {
     //findFiles() throws an Error because it finds more than 1 Model.
-    String fileExt = "*sym";
+    String fileExt = ".*sym";
     String qualifiedModelName = "de.monticore.io.Model1";
     List<Path> entries = new ArrayList<>();
     entries.add(Paths.get("src","test","models"));
@@ -204,7 +218,7 @@ public class FileFinderTest {
   @Test
   public void testFindFiles5() {
     //fileFiles() finds 2 Models, with the same Name but in different ModelPath-Entries.
-    String fileExt = "*4";
+    String fileExt = ".*4";
     String qualifiedModelName = "de.monticore.io.Model2";
     List<Path> entries = new ArrayList<>();
     entries.add(Paths.get("src","test","models"));
@@ -220,7 +234,7 @@ public class FileFinderTest {
   @Test
   public void testFindFile1() {
     //findFile() throws an Error because it expects 1 Models and finds 2 instead.
-    String fileExt = "*4";
+    String fileExt = ".*4";
     String qualifiedModelName = "de.monticore.io.Model2";
     List<Path> entries = new ArrayList<>();
     entries.add(Paths.get("src","test","models"));
