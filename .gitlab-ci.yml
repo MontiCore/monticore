@@ -126,8 +126,7 @@ sonar:
   script:
     - "./gradlew sonarMC $GRADLE_OPTS $SONAR_OPTS"
   only:
-    - merge_requests
-    - branches
+    - dev
   except:
     - master
 
