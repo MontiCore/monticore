@@ -47,7 +47,7 @@ public class Visitor2Decorator extends AbstractCreator<ASTCDCompilationUnit, AST
     ASTCDInterface visitorInterface = CD4CodeMill.cDInterfaceBuilder()
         .setName(this.visitorService.getVisitor2SimpleName())
         .setModifier(PUBLIC.build())
-        .addInterface(getMCTypeFacade().createQualifiedType(IVISTOR_FULL_NAME))
+        .addInterface(getMCTypeFacade().createQualifiedType(IVISITOR_FULL_NAME))
         .addAllCDMethods(addASTNodeVisitorMethods(compilationUnit.getCDDefinition()))
         .addAllCDMethods(addSymbolVisitorMethods(symbolNames))
         .addAllCDMethods(addScopeVisitorMethods(getSymbolsTransitive(), ast.getCDDefinition()))
