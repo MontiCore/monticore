@@ -153,7 +153,7 @@ public class PackageImplDecorator extends AbstractCreator<ASTCDCompilationUnit, 
   protected ASTCDConstructor createConstructor(String packageImplName, String definitionName) {
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PRIVATE, packageImplName);
     replaceTemplate(EMPTY_BODY, constructor,
-        new StringHookPoint("super(" + ENS_URI + "," +emfService.getMillFullName() + ".getMill());" ));
+        new StringHookPoint("super(" + ENS_URI + ");" ));
     return constructor;
   }
 
