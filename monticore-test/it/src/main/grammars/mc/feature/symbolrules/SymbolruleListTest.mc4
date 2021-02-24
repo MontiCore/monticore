@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.feature.symbolrules;
 
-grammar SymbolruleListTest extends mc.common.Basics {
+grammar SymbolruleListTest extends de.monticore.MCBasics, de.monticore.symbols.BasicSymbols {
 
   scope symbol Foo = "foo" Name "{" IBar* "}";
 
