@@ -39,6 +39,7 @@ public class CombineExpressionsWithLiteralsTest {
   @Before
   public void setup() {
     Log.init();
+    Log.enableFailQuick(false);
 
     TestCD4AnalysisMill.reset();
     CombineExpressionsWithLiteralsMill.reset();
