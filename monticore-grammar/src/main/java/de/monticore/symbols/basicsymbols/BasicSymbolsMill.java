@@ -47,6 +47,8 @@ public class BasicSymbolsMill extends BasicSymbolsMillTOP {
 
   public static final String VOID = "void";
 
+  public static final List<String> PRIMITIVE_LIST = Lists.newArrayList(INT, DOUBLE, FLOAT, SHORT, LONG, BOOLEAN, BYTE, CHAR);
+
 
   public static void initializePrimitives(){
     if(primitiveTypesInitializer == null){
@@ -58,9 +60,7 @@ public class BasicSymbolsMill extends BasicSymbolsMillTOP {
   public void _initializePrimitives(){
     IBasicSymbolsGlobalScope gs = globalScope();
 
-    List<String> primitives = Lists.newArrayList(INT, DOUBLE, FLOAT, SHORT, LONG, BOOLEAN, BYTE, CHAR);
-
-    for(String primitive: primitives){
+    for(String primitive: PRIMITIVE_LIST){
       gs.add(createPrimitive(primitive));
     }
   }

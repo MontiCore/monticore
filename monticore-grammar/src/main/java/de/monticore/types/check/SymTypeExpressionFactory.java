@@ -11,6 +11,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static de.monticore.symbols.basicsymbols.BasicSymbolsMill.PRIMITIVE_LIST;
+
 /**
  * SymTypeExpressionFactory contains static functions that create
  * the various forms of TypeExpressions used for Sym-Types.
@@ -98,6 +100,26 @@ public class SymTypeExpressionFactory {
     TypeSymbol typeSymbol = new TypeSymbolSurrogate(name);
     typeSymbol.setEnclosingScope(typeSymbolsScope);
     return new SymTypeArray(typeSymbol, dim, argument);
+  }
+
+  public static SymTypeExpression createTypeExpression(TypeSymbol typeSymbol){
+    SymTypeExpression o;
+    if(PRIMITIVE_LIST.contains(typeSymbol.getName())){
+      o = createTypeConstant(typeSymbol.getName());
+    }
+    else if ("void".equals(typeSymbol.getName())) {
+      o = createTypeVoid();
+    }
+    else if ("null".equals(typeSymbol.getName())) {
+      o = createTypeOfNull();
+    }
+    else if (typeSymbol.getTypeParameterList().isEmpty()) {
+      o = createTypeObject(typeSymbol);
+    }
+    else {
+      o = createGenerics(typeSymbol);
+    }
+    return o;
   }
 
   /**
