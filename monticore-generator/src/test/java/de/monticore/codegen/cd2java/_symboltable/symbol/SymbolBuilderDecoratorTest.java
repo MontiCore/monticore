@@ -6,7 +6,7 @@ import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.codegen.cd2java.CDModifier;
-import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
+import de.monticore.codegen.cd2java.CdUtilsPrinter;
 import de.monticore.cd4codebasis._ast.*;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
@@ -55,7 +55,7 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
     ASTCDCompilationUnit ast = parse("de", "monticore", "codegen", "symboltable","cdForBuilder", "Symbol_Builder");
     ASTCDClass cdClass = getClassBy("A", ast);
     this.glex.setGlobalValue("service", new AbstractService(ast));
-    this.glex.setGlobalValue("cdPrinter", new CD4CodeFullPrettyPrinter());
+    this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
     this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
 
 

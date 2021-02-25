@@ -13,6 +13,7 @@ package de.monticore;
  import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
  import de.monticore.codegen.cd2java.AbstractService;
  import de.monticore.codegen.cd2java.CDGenerator;
+ import de.monticore.codegen.cd2java.CdUtilsPrinter;
  import de.monticore.codegen.cd2java.DecorationHelper;
  import de.monticore.codegen.cd2java._ast.ASTCDDecorator;
  import de.monticore.codegen.cd2java._ast.ast_class.*;
@@ -969,7 +970,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     // need symboltable of the old cd
     glex.setGlobalValue("service", new AbstractService(oldCD));
     glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
-    glex.setGlobalValue("cdPrinter", new CD4CodeFullPrettyPrinter());
+    glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
     final String diagramName = decoratedCD.getCDDefinition().getName();
     GeneratorSetup setup = new GeneratorSetup();
     setup.setOutputDirectory(outputDirectory);
@@ -1006,7 +1007,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     // need symboltable of the old cd
     glex.setGlobalValue("service", new EmfService(oldCD));
     glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
-    glex.setGlobalValue("cdPrinter", new CD4CodeFullPrettyPrinter());
+    glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
     final String diagramName = decoratedCD.getCDDefinition().getName();
     GeneratorSetup setup = new GeneratorSetup();
     setup.setOutputDirectory(outputDirectory);

@@ -7,6 +7,7 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CDGenerator;
+import de.monticore.codegen.cd2java.CdUtilsPrinter;
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java._parser.ParserCDDecorator;
 import de.monticore.codegen.cd2java._parser.ParserClassDecorator;
@@ -163,7 +164,7 @@ public class ParserGenerator {
 
     glex.setGlobalValue("service", new AbstractService(astClassDiagram));
     glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
-    glex.setGlobalValue("cdPrinter", new CD4CodeFullPrettyPrinter());
+    glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
     final String diagramName = decoratedCD.getCDDefinition().getName();
     GeneratorSetup setup = new GeneratorSetup();
     setup.setOutputDirectory(targetDir);

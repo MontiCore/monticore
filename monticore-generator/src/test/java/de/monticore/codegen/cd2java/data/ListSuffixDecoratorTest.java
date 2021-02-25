@@ -4,8 +4,8 @@ package de.monticore.codegen.cd2java.data;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
 import de.monticore.codegen.cd2java.AbstractService;
+import de.monticore.codegen.cd2java.CdUtilsPrinter;
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -36,7 +36,7 @@ public class ListSuffixDecoratorTest extends DecoratorTestCase {
     originalClass = getClassBy("A", cd).deepClone();
 
     this.glex.setGlobalValue("service", new AbstractService(cd));
-    this.glex.setGlobalValue("cdPrinter", new CD4CodeFullPrettyPrinter());
+    this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
 
     ListSuffixDecorator listSuffixDecorator = new ListSuffixDecorator();
     cd = listSuffixDecorator.decorate(cd, cd);

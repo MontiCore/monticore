@@ -67,7 +67,7 @@ public class ASTLanguageInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(1, languageInterface.getCDMethodList().isEmpty());
+    assertEquals(1, languageInterface.getCDMethodList().size());
   }
 
   @Test
