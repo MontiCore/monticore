@@ -23,7 +23,7 @@ public class AttributeInASTsToCDAttributes implements
             ASTCDClass.class)) {
       for (ASTAdditionalAttribute attributeInAST : link.source().getAdditionalAttributeList()) {
         ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
-        link.target().getCDAttributeList().add(cdAttribute);
+        link.target().addCDMember(cdAttribute);
         new Link<>(attributeInAST, cdAttribute, link);
       }
     }
@@ -32,7 +32,7 @@ public class AttributeInASTsToCDAttributes implements
             ASTCDInterface.class)) {
       for (ASTAdditionalAttribute attributeInAST :link.source().getAdditionalAttributeList()) {
         ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
-        link.target().getCDAttributeList().add(cdAttribute);
+        link.target().addCDMember(cdAttribute);
         new Link<>(attributeInAST, cdAttribute, link);
       }
     }

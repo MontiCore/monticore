@@ -58,7 +58,7 @@ public class AddAttributesOfExtendedInterfacesManipulation implements
       }
     }
     for (ASTCDAttribute attr : attributes) {
-      cdClass.getCDAttributeList().add(attr.deepClone());
+      cdClass.addCDMember(attr.deepClone());
     }
   }
 

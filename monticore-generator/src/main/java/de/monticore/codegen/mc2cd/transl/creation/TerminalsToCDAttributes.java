@@ -48,7 +48,7 @@ public class TerminalsToCDAttributes implements
     public void visit(ASTTerminal terminal) {
       if (terminal.isPresentUsageName()) {
         ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
-        link.target().getCDAttributeList().add(cdAttribute);
+        link.target().addCDMember(cdAttribute);
         new Link<>(terminal, cdAttribute, link);
       }
     }
@@ -57,7 +57,7 @@ public class TerminalsToCDAttributes implements
     public void visit(ASTKeyTerminal terminal) {
       if (terminal.isPresentUsageName()) {
         ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
-        link.target().getCDAttributeList().add(cdAttribute);
+        link.target().addCDMember(cdAttribute);
         new Link<>(terminal, cdAttribute, link);
       }
     }
@@ -66,7 +66,7 @@ public class TerminalsToCDAttributes implements
     public void visit(ASTTokenTerminal terminal) {
       if (terminal.isPresentUsageName()) {
         ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
-        link.target().getCDAttributeList().add(cdAttribute);
+        link.target().addCDMember(cdAttribute);
         new Link<>(terminal, cdAttribute, link);
       }
     }

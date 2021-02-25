@@ -57,7 +57,7 @@ public class InheritedSymbolAttributesTranslation extends InheritedAttributesTra
         if (superGrammarName.isPresent()) {
           TransformationHelper.addStereoType(cdAttribute, MC2CDStereotypes.INHERITED.toString(), superGrammarName.get());
         }
-        link.target().getCDAttributeList().add(cdAttribute);
+        link.target().addCDMember(cdAttribute);
         if (attributeInAST.isPresentAstNode()) {
           new Link<>(attributeInAST.getAstNode(), cdAttribute, link);
         }

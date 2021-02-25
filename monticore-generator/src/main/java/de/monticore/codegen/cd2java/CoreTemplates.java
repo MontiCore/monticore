@@ -53,7 +53,7 @@ public final class CoreTemplates {
       ASTStereotype stereo = modifier.getStereotype();
       for (ASTStereoValue stereoValue : stereo.getValuesList()) {
         if (MC2CDStereotypes.DEPRECATED.toString().equals(stereoValue.getName())) {
-          if (stereoValue.isPresentText()) {
+          if (!stereoValue.getValue().isEmpty()) {
             // Append tag for java api
             anno = "/**\n * @deprecated " + stereoValue.getValue() + "\n **/\n";
           }

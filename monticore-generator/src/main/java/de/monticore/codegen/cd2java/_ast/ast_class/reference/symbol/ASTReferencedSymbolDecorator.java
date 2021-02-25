@@ -73,8 +73,8 @@ public class ASTReferencedSymbolDecorator<T extends ASTCDType> extends AbstractT
         }
       }
     }
-    changedClass.getCDMethodList().addAll(methodList);
-    changedClass.getCDAttributeList().addAll(attributeList);
+    changedClass.addAllCDMembers(methodList);
+    changedClass.addAllCDMembers(attributeList);
     return changedClass;
   }
 

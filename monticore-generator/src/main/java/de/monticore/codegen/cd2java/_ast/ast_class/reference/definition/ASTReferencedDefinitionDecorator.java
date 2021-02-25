@@ -50,7 +50,7 @@ public class ASTReferencedDefinitionDecorator<T extends ASTCDType> extends Abstr
         methodList.addAll(getRefDefinitionMethods(astcdAttribute, referencedSymbolType));
       }
     }
-    changedInput.getCDMethodList().addAll(methodList);
+    changedInput.addAllCDMembers(methodList);
     return changedInput;
   }
 

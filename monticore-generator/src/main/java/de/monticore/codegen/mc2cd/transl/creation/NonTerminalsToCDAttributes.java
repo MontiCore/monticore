@@ -66,7 +66,7 @@ public class NonTerminalsToCDAttributes implements
     @Override
     public void visit (ASTNonTerminal node){
       ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
-      link.target().getCDAttributeList().add(cdAttribute);
+      link.target().addCDMember(cdAttribute);
       new Link<>(node, cdAttribute, link);
 
     }
