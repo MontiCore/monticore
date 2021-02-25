@@ -12,6 +12,8 @@ to be released
 
 ### Changes
 * move grammars OCLExpressions and SetExpressions into OCL-project for further development
+* DefsTypeBasic was moved to test. There are now only methods for creating symbols.
+  Use the BasicSymbolsMill to create the basic data types like int, ...
 
 ### Fixes
 * Symbols with hierarchical symbol kinds are not serialized multiple times anymore.

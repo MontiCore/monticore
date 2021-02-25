@@ -3,6 +3,7 @@ package mc.typescalculator;
 
 import com.google.common.collect.Lists;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
@@ -38,12 +39,15 @@ public class CombineExpressionsWithLiteralsTest {
   @Before
   public void setup() {
     Log.init();
+    Log.enableFailQuick(false);
 
     TestCD4AnalysisMill.reset();
-    TestCD4AnalysisMill.init();
-
     CombineExpressionsWithLiteralsMill.reset();
+
+    TestCD4AnalysisMill.init();
     CombineExpressionsWithLiteralsMill.init();
+
+    BasicSymbolsMill.initializePrimitives();
   }
 
   @Test
