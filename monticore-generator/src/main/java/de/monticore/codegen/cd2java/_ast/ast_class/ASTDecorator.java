@@ -150,7 +150,7 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
     } else {
       constructMethod = this.getCDMethodFacade().createMethod(PROTECTED, classType, ASTConstants.CONSTRUCT_METHOD);
       this.replaceTemplate(EMPTY_BODY, constructMethod,
-          new StringHookPoint("return " + astService.getMillFullName() + "."+ StringTransformations.uncapitalize(astService.removeASTPrefix(astClass.getName())) +  BUILDER_SUFFIX + "().build();"));
+          new StringHookPoint("return " + astService.getMillFullName() + "."+ StringTransformations.uncapitalize(astService.removeASTPrefix(astClass.getName())) +  BUILDER_SUFFIX + "().uncheckedBuild();"));
     }
     return constructMethod;
   }
