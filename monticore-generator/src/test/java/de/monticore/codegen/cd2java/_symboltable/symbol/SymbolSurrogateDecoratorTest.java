@@ -26,6 +26,7 @@ import static de.monticore.codegen.cd2java.CDModifier.*;
 import static de.monticore.codegen.cd2java.DecoratorAssert.*;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class SymbolSurrogateDecoratorTest extends DecoratorTestCase {
@@ -104,7 +105,7 @@ public class SymbolSurrogateDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(String.class, cdConstructor.getCDParameter(0).getMCType());
     assertEquals("name", cdConstructor.getCDParameter(0).getName());
 
-    assertTrue(cdConstructor.getCDThrowsDeclaration().isEmptyException());
+    assertFalse(cdConstructor.isPresentCDThrowsDeclaration());
   }
 
   @Test

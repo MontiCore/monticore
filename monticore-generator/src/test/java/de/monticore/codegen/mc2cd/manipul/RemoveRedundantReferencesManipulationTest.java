@@ -21,8 +21,8 @@ public class RemoveRedundantReferencesManipulationTest {
     
     assertEquals(2, cdClass.getCDAttributeList().size());
     
-    new RemoveRedundantAttributesManipulation()
-        .removeRedundantAttributes(cdClass.getCDAttributeList());
+    cdClass.setCDAttributeList(new RemoveRedundantAttributesManipulation()
+        .removeRedundantAttributes(cdClass.getCDAttributeList()));
     
     assertEquals(1, cdClass.getCDAttributeList().size());
   }
@@ -39,8 +39,8 @@ public class RemoveRedundantReferencesManipulationTest {
     listAttribute.setName(secondReferenceName);
     listAttribute.setMCType(secondReferenceType);
     
-    cdClass.getCDAttributeList().add(singleAttribute);
-    cdClass.getCDAttributeList().add(listAttribute);
+    cdClass.addCDMember(singleAttribute);
+    cdClass.addCDMember(listAttribute);
     
     return cdClass;
   }

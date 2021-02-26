@@ -3,18 +3,25 @@ package de.monticore.codegen.cd2java._ast_emf;
 
 import de.monticore.cdbasis._ast.*;
 import de.monticore.cdinterfaceandenum._ast.*;
+import de.monticore.ast.ASTNode;
 import de.monticore.cd4analysis._ast.*;
+import de.monticore.cd4code._symboltable.ICD4CodeArtifactScope;
+import de.monticore.cd4code._symboltable.ICD4CodeScope;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.cdbasis._symboltable.ICDBasisScope;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
+import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
+import de.monticore.types.prettyprint.MCBasicTypesFullPrettyPrinter;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -174,16 +181,34 @@ public class EmfService extends AbstractService<EmfService> {
     }
     return "this";
   }
+  
+  //for InitializePackageContents template
+  public List<CDTypeSymbol> retrieveSuperTypes(ASTCDClass c) {
+    List<CDTypeSymbol> res = new ArrayList<CDTypeSymbol>();
+    // superclass
+    if (c.isPresentSuperclass()) {
+      res.add(resolveCDType(c.printSuperClass()));
+    }
+    // interfaces
+    for (ASTMCObjectType i : c.getInterfaceList()) {
+      res.add(resolveCDType(i.printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter()))));
+    }
+    return res;
+  }
 
   /**
    * methods needed in templates
    */
   //for InitializePackageContents template
   public String getClassPackage(CDTypeSymbol cdTypeSymbol) {
-    if (Names.getQualifier(cdTypeSymbol.getFullName()).equalsIgnoreCase(getQualifiedCDName())) {
+    // in this version the scope carries all relevant naming information and we
+    // know that it is an artifact scope
+    ICD4CodeArtifactScope scope = ((ICD4CodeArtifactScope) cdTypeSymbol.getEnclosingScope());
+    String modelName = scope.getFullName();
+    if (modelName.equalsIgnoreCase(getQualifiedCDName())) {
       return "this";
     } else {
-      return StringTransformations.uncapitalize(getSimplePackageImplName(Names.getQualifier(cdTypeSymbol.getFullName())));
+      return StringTransformations.uncapitalize(getSimplePackageImplName(modelName));
     }
   }
 

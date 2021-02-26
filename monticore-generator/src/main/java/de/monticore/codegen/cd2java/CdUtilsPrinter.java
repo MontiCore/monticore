@@ -66,23 +66,4 @@ public class CdUtilsPrinter {
     return printer.getContent();
   }
   
-//  /**
-//   * Prints a list of extends declarations.
-//   *
-//   * @param extendsList a list of extends declarations
-//   * @return a string list of all extends declarations
-//   */
-//  public String printReferenceList(List<ASTMCObjectType> extendsList) {
-//    checkNotNull(extendsList);
-//
-//    return Joiner.on(",").join(
-//        Collections2.transform(extendsList,
-//            new Function<ASTMCObjectType, String>() {
-//
-//              @Override
-//              public String apply(ASTMCObjectType arg0) {
-//                return printType(arg0);
-//              }
-//            }));
-//  }
 }

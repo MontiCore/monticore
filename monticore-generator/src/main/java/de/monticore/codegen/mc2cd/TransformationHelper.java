@@ -13,6 +13,7 @@ import de.monticore.cd4analysis._ast.ASTCD4AnalysisNode;
 import de.monticore.cd4analysis._ast.CD4AnalysisNodeFactory;
 import de.monticore.cd4code._ast.CD4CodeNodeFactory;
 import de.monticore.cd4analysis._parser.CD4AnalysisParser;
+import de.monticore.cd4code._parser.CD4CodeParser;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.cd4analysis._symboltable.ICD4AnalysisGlobalScope;
 import de.monticore.cd4analysis.prettyprint.CD4AnalysisFullPrettyPrinter;
@@ -173,7 +174,7 @@ public final class TransformationHelper {
 
   public static ASTMCGenericType createType(
       String typeName, String generics) {
-    CD4AnalysisParser parser = new CD4AnalysisParser();
+    CD4CodeParser parser = new CD4CodeParser();
     Optional<ASTMCGenericType> optType = null;
     try {
       optType = parser.parse_StringMCGenericType(typeName + "<" + generics + ">");

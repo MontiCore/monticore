@@ -26,7 +26,7 @@ public class CreateScopeProd implements UnaryOperator<Link<ASTMCGrammar, ASTCDCo
     ASTCDClass cdClass = CD4AnalysisNodeFactory.createASTCDClass();
     cdClass.setModifier(CD4AnalysisNodeFactory.createASTModifier());
     cdClass.setName(link.source().getName());
-    link.target().getCDClassesList().add(cdClass);
+    link.target().addCDElement(cdClass);
     new Link<>(link.source(), cdClass, link);
   }
 }

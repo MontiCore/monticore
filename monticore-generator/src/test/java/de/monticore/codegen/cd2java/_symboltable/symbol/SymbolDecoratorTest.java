@@ -132,7 +132,7 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(String.class, cdConstructor.getCDParameter(0).getMCType());
     assertEquals("name", cdConstructor.getCDParameter(0).getName());
 
-    assertTrue(cdConstructor.getCDThrowsDeclaration().isEmptyException());
+    assertFalse(cdConstructor.isPresentCDThrowsDeclaration());
   }
 
   @Test

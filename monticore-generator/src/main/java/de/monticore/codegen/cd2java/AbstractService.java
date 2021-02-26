@@ -3,6 +3,7 @@ package de.monticore.codegen.cd2java;
 
 import com.google.common.collect.Lists;
 import de.monticore.cd4analysis._ast.*;
+import de.monticore.cd4code._symboltable.ICD4CodeScope;
 import de.monticore.cd4codebasis._ast.*;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.cdbasis._ast.*;
@@ -123,8 +124,8 @@ public class AbstractService<T extends AbstractService> {
   private List<CDTypeSymbol> getAllSuperClassesTransitive(CDTypeSymbol cdTypeSymbol) {
     List<CDTypeSymbol> superSymbolList = new ArrayList<>();
     if (cdTypeSymbol.isPresentSuperClass()) {
-      String superName = cdTypeSymbol.getSuperClass().getTypeInfo().getFullName();
-      CDTypeSymbol superSymbol = cdTypeSymbol.getEnclosingScope().resolveCDType(superName).get();
+      String superName = cdTypeSymbol.getSuperClass().getTypeInfo().getName();
+      CDTypeSymbol superSymbol = ((ICD4CodeScope) cdTypeSymbol.getSuperClass().getTypeInfo().getEnclosingScope()).resolveCDType(superName).get();
       superSymbolList.add(superSymbol);
       superSymbolList.addAll(getAllSuperClassesTransitive(superSymbol));
     }

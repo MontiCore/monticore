@@ -32,10 +32,10 @@ final class RemoveRedundantAttributesManipulation implements UnaryOperator<ASTCD
   @Override
   public ASTCDCompilationUnit apply(ASTCDCompilationUnit cdCompilationUnit) {
     for (ASTCDClass cdClass : cdCompilationUnit.getCDDefinition().getCDClassesList()) {
-      removeRedundantAttributes(cdClass.getCDAttributeList());
+      cdClass.setCDAttributeList(removeRedundantAttributes(cdClass.getCDAttributeList()));
     }
     for (ASTCDInterface cdClass : cdCompilationUnit.getCDDefinition().getCDInterfacesList()) {
-      removeRedundantAttributes(cdClass.getCDAttributeList());
+      cdClass.setCDAttributeList(removeRedundantAttributes(cdClass.getCDAttributeList()));
     }
     return cdCompilationUnit;
   }
@@ -43,7 +43,7 @@ final class RemoveRedundantAttributesManipulation implements UnaryOperator<ASTCD
   /**
    * @param cdAttributes the list of all the attributes in the class
    */
-  void removeRedundantAttributes(List<ASTCDAttribute> cdAttributes) {
+  List<ASTCDAttribute> removeRedundantAttributes(List<ASTCDAttribute> cdAttributes) {
     Iterator<ASTCDAttribute> iterator = cdAttributes.iterator();
     while (iterator.hasNext()) {
       ASTCDAttribute inspectedAttribute = iterator.next();
@@ -58,6 +58,7 @@ final class RemoveRedundantAttributesManipulation implements UnaryOperator<ASTCD
         iterator.remove();
       }
     }
+    return cdAttributes;
   }
 
   /**

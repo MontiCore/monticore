@@ -22,6 +22,7 @@ import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class SymbolResolverInterfaceDecoratorTest extends DecoratorTestCase {
@@ -77,7 +78,7 @@ public class SymbolResolverInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testNoSuperInterfacesl() {
-    assertTrue( symbolClassAutomaton.getCDExtendUsage().isEmptySuperclass());
+    assertFalse(symbolClassAutomaton.isPresentCDExtendUsage());
   }
 
   @Test

@@ -30,7 +30,7 @@ public class ClassProdsToCDClasses implements
     for (ASTClassProd classProd : link.source().getClassProdList()) {
       ASTCDClass cdClass = CD4AnalysisNodeFactory.createASTCDClass();
       cdClass.setModifier(CD4AnalysisNodeFactory.createASTModifier());
-      link.target().getCDClassesList().add(cdClass);
+      link.target().addCDElement(cdClass);
       new Link<>(classProd, cdClass, link);
     }
   }
