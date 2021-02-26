@@ -47,9 +47,9 @@ public class SymbolAndScopeTranslationTest {
     // only 2 because other one is the start prod stereotype
     assertEquals(2, astType.getModifier().getStereotype().getValuesList().size());
     assertEquals("symbol", astType.getModifier().getStereotype().getValues(0).getName());
-    assertFalse(astType.getModifier().getStereotype().getValues(0).isPresentText());
+    assertTrue(astType.getModifier().getStereotype().getValues(0).getValue().isEmpty());
     assertEquals("startProd", astType.getModifier().getStereotype().getValues(1).getName());
-    assertFalse(astType.getModifier().getStereotype().getValues(1).isPresentText());
+    assertTrue(astType.getModifier().getStereotype().getValues(1).getValue().isEmpty());
   }
 
   @Test
@@ -60,7 +60,7 @@ public class SymbolAndScopeTranslationTest {
 
     assertEquals(1, astType.getModifier().getStereotype().getValuesList().size());
     assertEquals("inheritedSymbol", astType.getModifier().getStereotype().getValues(0).getName());
-    assertTrue(astType.getModifier().getStereotype().getValues(0).isPresentText());
+    assertFalse(astType.getModifier().getStereotype().getValues(0).getValue().isEmpty());
     assertEquals("mc2cdtransformation.symbolandscopetranslation._symboltable.TypeSymbol",
         astType.getModifier().getStereotype().getValues(0).getValue());
   }
@@ -73,7 +73,7 @@ public class SymbolAndScopeTranslationTest {
 
     assertEquals(1, astType.getModifier().getStereotype().getValuesList().size());
     assertEquals("inheritedSymbol", astType.getModifier().getStereotype().getValues(0).getName());
-    assertTrue(astType.getModifier().getStereotype().getValues(0).isPresentText());
+    assertFalse(astType.getModifier().getStereotype().getValues(0).getValue().isEmpty());
     assertEquals("mc2cdtransformation.symbolandscopetranslation._symboltable.TypeSymbol",
         astType.getModifier().getStereotype().getValues(0).getValue());
   }
@@ -85,7 +85,7 @@ public class SymbolAndScopeTranslationTest {
     assertTrue(astType.getModifier().isPresentStereotype());
     assertEquals(1, astType.getModifier().getStereotype().getValuesList().size());
     assertEquals("symbol", astType.getModifier().getStereotype().getValues(0).getName());
-    assertFalse(astType.getModifier().getStereotype().getValues(0).isPresentText());
+    assertTrue(astType.getModifier().getStereotype().getValues(0).getValue().isEmpty());
   }
 
   @Test
@@ -95,12 +95,12 @@ public class SymbolAndScopeTranslationTest {
     assertTrue(astType.getModifier().isPresentStereotype());
     assertEquals(2, astType.getModifier().getStereotype().getValuesList().size());
     assertEquals("inheritedSymbol", astType.getModifier().getStereotype().getValues(0).getName());
-    assertTrue(astType.getModifier().getStereotype().getValues(0).isPresentText());
+    assertFalse(astType.getModifier().getStereotype().getValues(0).getValue().isEmpty());
     assertEquals("mc2cdtransformation.symboltransl.symbolrule._symboltable.SymbolClassSymbol",
         astType.getModifier().getStereotype().getValues(0).getValue());
 
     assertEquals("inheritedScope", astType.getModifier().getStereotype().getValues(1).getName());
-    assertFalse(astType.getModifier().getStereotype().getValues(1).isPresentText());
+    assertTrue(astType.getModifier().getStereotype().getValues(1).getValue().isEmpty());
   }
 
   @Test
@@ -110,12 +110,12 @@ public class SymbolAndScopeTranslationTest {
     assertTrue(astType.getModifier().isPresentStereotype());
     assertEquals(2, astType.getModifier().getStereotype().getValuesList().size());
     assertEquals("inheritedSymbol", astType.getModifier().getStereotype().getValues(0).getName());
-    assertTrue(astType.getModifier().getStereotype().getValues(0).isPresentText());
+    assertFalse(astType.getModifier().getStereotype().getValues(0).getValue().isEmpty());
     assertEquals("mc2cdtransformation.symbolandscopetranslation._symboltable.FooSymbol",
         astType.getModifier().getStereotype().getValues(0).getValue());
 
     assertEquals("inheritedScope", astType.getModifier().getStereotype().getValues(1).getName());
-    assertFalse(astType.getModifier().getStereotype().getValues(1).isPresentText());
+    assertTrue(astType.getModifier().getStereotype().getValues(1).getValue().isEmpty());
   }
 
   @Test
@@ -125,7 +125,7 @@ public class SymbolAndScopeTranslationTest {
     assertTrue(astType.getModifier().isPresentStereotype());
     assertEquals(1, astType.getModifier().getStereotype().getValuesList().size());
     assertEquals("inheritedSymbol", astType.getModifier().getStereotype().getValues(0).getName());
-    assertTrue(astType.getModifier().getStereotype().getValues(0).isPresentText());
+    assertFalse(astType.getModifier().getStereotype().getValues(0).getValue().isEmpty());
     assertEquals("mc2cdtransformation.symboltransl.symbolrule._symboltable.SymbolInterfaceSymbol",
         astType.getModifier().getStereotype().getValues(0).getValue());
   }
@@ -137,12 +137,12 @@ public class SymbolAndScopeTranslationTest {
     assertTrue(astType.getModifier().isPresentStereotype());
     assertEquals(2, astType.getModifier().getStereotype().getValuesList().size());
     assertEquals("inheritedSymbol", astType.getModifier().getStereotype().getValues(0).getName());
-    assertTrue(astType.getModifier().getStereotype().getValues(0).isPresentText());
+    assertFalse(astType.getModifier().getStereotype().getValues(0).getValue().isEmpty());
     assertEquals("mc2cdtransformation.symbolandscopetranslation._symboltable.InterfaceFooSymbol",
         astType.getModifier().getStereotype().getValues(0).getValue());
 
     assertEquals("inheritedScope", astType.getModifier().getStereotype().getValues(1).getName());
-    assertFalse(astType.getModifier().getStereotype().getValues(1).isPresentText());
+    assertTrue(astType.getModifier().getStereotype().getValues(1).getValue().isEmpty());
 
   }
 
@@ -153,7 +153,7 @@ public class SymbolAndScopeTranslationTest {
     assertTrue(astType.getModifier().isPresentStereotype());
     assertEquals(1, astType.getModifier().getStereotype().getValuesList().size());
     assertEquals("inheritedSymbol", astType.getModifier().getStereotype().getValues(0).getName());
-    assertTrue(astType.getModifier().getStereotype().getValues(0).isPresentText());
+    assertFalse(astType.getModifier().getStereotype().getValues(0).getValue().isEmpty());
     assertEquals("mc2cdtransformation.symboltransl.symbolrule._symboltable.SymbolAbstractClassSymbol",
         astType.getModifier().getStereotype().getValues(0).getValue());
   }
@@ -165,12 +165,12 @@ public class SymbolAndScopeTranslationTest {
     assertTrue(astType.getModifier().isPresentStereotype());
     assertEquals(2, astType.getModifier().getStereotype().getValuesList().size());
     assertEquals("inheritedSymbol", astType.getModifier().getStereotype().getValues(0).getName());
-    assertTrue(astType.getModifier().getStereotype().getValues(0).isPresentText());
+    assertFalse(astType.getModifier().getStereotype().getValues(0).getValue().isEmpty());
     assertEquals("mc2cdtransformation.symbolandscopetranslation._symboltable.AbstractFooSymbol",
         astType.getModifier().getStereotype().getValues(0).getValue());
 
     assertEquals("inheritedScope", astType.getModifier().getStereotype().getValues(1).getName());
-    assertFalse(astType.getModifier().getStereotype().getValues(1).isPresentText());
+    assertTrue(astType.getModifier().getStereotype().getValues(1).getValue().isEmpty());
   }
 
   /**
@@ -183,7 +183,7 @@ public class SymbolAndScopeTranslationTest {
     assertTrue(astType.getModifier().isPresentStereotype());
     assertEquals(1, astType.getModifier().getStereotype().getValuesList().size());
     assertEquals("scope", astType.getModifier().getStereotype().getValues(0).getName());
-    assertFalse(astType.getModifier().getStereotype().getValues(0).isPresentText());
+    assertTrue(astType.getModifier().getStereotype().getValues(0).getValue().isEmpty());
   }
 
   @Test
@@ -194,7 +194,7 @@ public class SymbolAndScopeTranslationTest {
 
     assertEquals(1, astType.getModifier().getStereotype().getValuesList().size());
     assertEquals("inheritedScope", astType.getModifier().getStereotype().getValues(0).getName());
-    assertFalse(astType.getModifier().getStereotype().getValues(0).isPresentText());
+    assertTrue(astType.getModifier().getStereotype().getValues(0).getValue().isEmpty());
   }
 
   @Test
@@ -205,7 +205,7 @@ public class SymbolAndScopeTranslationTest {
 
     assertEquals(1, astType.getModifier().getStereotype().getValuesList().size());
     assertEquals("inheritedScope", astType.getModifier().getStereotype().getValues(0).getName());
-    assertFalse(astType.getModifier().getStereotype().getValues(0).isPresentText());
+    assertTrue(astType.getModifier().getStereotype().getValues(0).getValue().isEmpty());
   }
 
   @Test
@@ -215,7 +215,7 @@ public class SymbolAndScopeTranslationTest {
     assertTrue(astType.getModifier().isPresentStereotype());
     assertEquals(1, astType.getModifier().getStereotype().getValuesList().size());
     assertEquals("scope", astType.getModifier().getStereotype().getValues(0).getName());
-    assertFalse(astType.getModifier().getStereotype().getValues(0).isPresentText());
+    assertTrue(astType.getModifier().getStereotype().getValues(0).getValue().isEmpty());
   }
 
   @Test
@@ -225,9 +225,9 @@ public class SymbolAndScopeTranslationTest {
     assertTrue(astType.getModifier().isPresentStereotype());
     assertEquals(2, astType.getModifier().getStereotype().getValuesList().size());
     assertEquals("scope", astType.getModifier().getStereotype().getValues(0).getName());
-    assertFalse(astType.getModifier().getStereotype().getValues(0).isPresentText());
+    assertTrue(astType.getModifier().getStereotype().getValues(0).getValue().isEmpty());
     assertEquals("shadowing", astType.getModifier().getStereotype().getValues(1).getName());
-    assertFalse(astType.getModifier().getStereotype().getValues(1).isPresentText());
+    assertTrue(astType.getModifier().getStereotype().getValues(1).getValue().isEmpty());
   }
 
   @Test
@@ -237,9 +237,9 @@ public class SymbolAndScopeTranslationTest {
     assertTrue(astType.getModifier().isPresentStereotype());
     assertEquals(2, astType.getModifier().getStereotype().getValuesList().size());
     assertEquals("scope", astType.getModifier().getStereotype().getValues(0).getName());
-    assertFalse(astType.getModifier().getStereotype().getValues(0).isPresentText());
+    assertTrue(astType.getModifier().getStereotype().getValues(0).getValue().isEmpty());
     assertEquals("non_exporting", astType.getModifier().getStereotype().getValues(1).getName());
-    assertFalse(astType.getModifier().getStereotype().getValues(1).isPresentText());
+    assertTrue(astType.getModifier().getStereotype().getValues(1).getValue().isEmpty());
   }
 
   @Test
@@ -249,8 +249,8 @@ public class SymbolAndScopeTranslationTest {
     assertTrue(astType.getModifier().isPresentStereotype());
     assertEquals(2, astType.getModifier().getStereotype().getValuesList().size());
     assertEquals("scope", astType.getModifier().getStereotype().getValues(0).getName());
-    assertFalse(astType.getModifier().getStereotype().getValues(0).isPresentText());
+    assertTrue(astType.getModifier().getStereotype().getValues(0).getValue().isEmpty());
     assertEquals("ordered", astType.getModifier().getStereotype().getValues(1).getName());
-    assertFalse(astType.getModifier().getStereotype().getValues(1).isPresentText());
+    assertTrue(astType.getModifier().getStereotype().getValues(1).getValue().isEmpty());
   }
 }

@@ -46,7 +46,7 @@ public class StartProdTranslationTest {
     assertTrue(globalStartProd.getCDDefinition().getModifier().isPresentStereotype());
     assertEquals(1, globalStartProd.getCDDefinition().getModifier().getStereotype().sizeValues());
     assertEquals("startProd", globalStartProd.getCDDefinition().getModifier().getStereotype().getValues(0).getName());
-    assertTrue(globalStartProd.getCDDefinition().getModifier().getStereotype().getValues(0).isPresentText());
+    assertFalse(globalStartProd.getCDDefinition().getModifier().getStereotype().getValues(0).getValue().isEmpty());
     assertEquals("mc2cdtransformation.Supergrammar.X", globalStartProd.getCDDefinition().getModifier().getStereotype().getValues(0).getValue());
   }
 
@@ -59,7 +59,7 @@ public class StartProdTranslationTest {
     assertTrue(xClass.getModifier().isPresentStereotype());
     assertEquals(1, xClass.getModifier().getStereotype().sizeValues());
     assertEquals("startProd", xClass.getModifier().getStereotype().getValues(0).getName());
-    assertFalse(xClass.getModifier().getStereotype().getValues(0).isPresentText());
+    assertTrue(xClass.getModifier().getStereotype().getValues(0).getValue().isEmpty());
   }
 
   @Test
@@ -71,6 +71,6 @@ public class StartProdTranslationTest {
     assertTrue(aInterface.getModifier().isPresentStereotype());
     assertEquals(1, aInterface.getModifier().getStereotype().sizeValues());
     assertEquals("startProd", aInterface.getModifier().getStereotype().getValues(0).getName());
-    assertFalse(aInterface.getModifier().getStereotype().getValues(0).isPresentText());
+    assertTrue(aInterface.getModifier().getStereotype().getValues(0).getValue().isEmpty());
   }
 }
