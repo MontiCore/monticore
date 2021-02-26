@@ -135,7 +135,7 @@ public class Symbols2JsonDecoratorTest extends DecoratorTestCase {
   public void testGetJsonPrinterMethod(){
     ASTCDMethod method = getMethodBy("getJsonPrinter", symbolTablePrinterClass);
     assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
-    assertEquals(0, method.getCDThrowsDeclaration().sizeException());
+    assertFalse(method.isPresentCDThrowsDeclaration());
     assertEquals(0, method.sizeCDParameters());
     assertFalse(method.getMCReturnType().isPresentMCVoidType());
     assertDeepEquals(JSON_PRINTER, method.getMCReturnType().getMCType());
@@ -145,7 +145,7 @@ public class Symbols2JsonDecoratorTest extends DecoratorTestCase {
   public void testSetJsonPrinterMethod(){
     ASTCDMethod method = getMethodBy("setJsonPrinter", symbolTablePrinterClass);
     assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
-    assertEquals(0, method.getCDThrowsDeclaration().sizeException());
+    assertFalse(method.isPresentCDThrowsDeclaration());
     assertEquals(1, method.sizeCDParameters());
     assertEquals("printer", method.getCDParameter(0).getName());
     assertDeepEquals(JSON_PRINTER, method.getCDParameter(0).getMCType());
@@ -156,7 +156,7 @@ public class Symbols2JsonDecoratorTest extends DecoratorTestCase {
   public void testGetTraverserMethod(){
     ASTCDMethod method = getMethodBy("getTraverser", symbolTablePrinterClass);
     assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
-    assertEquals(0, method.getCDThrowsDeclaration().sizeException());
+    assertFalse(method.isPresentCDThrowsDeclaration());
     assertEquals(0, method.sizeCDParameters());
     assertFalse(method.getMCReturnType().isPresentMCVoidType());
     assertDeepEquals(AUTOMATON_TRAVERSER, method.getMCReturnType().getMCType());
@@ -166,7 +166,7 @@ public class Symbols2JsonDecoratorTest extends DecoratorTestCase {
   public void testSetTraverserMethod(){
     ASTCDMethod method = getMethodBy("setTraverser", symbolTablePrinterClass);
     assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
-    assertEquals(0, method.getCDThrowsDeclaration().sizeException());
+    assertFalse(method.isPresentCDThrowsDeclaration());
     assertEquals(1, method.sizeCDParameters());
     ASTCDParameter parameter = method.getCDParameter(0);
     assertEquals("traverser", parameter.getName());
@@ -178,7 +178,7 @@ public class Symbols2JsonDecoratorTest extends DecoratorTestCase {
   public void testGetSerializedStringMethod(){
     ASTCDMethod method = getMethodBy("getSerializedString", symbolTablePrinterClass);
     assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
-    assertEquals(0, method.getCDThrowsDeclaration().sizeException());
+    assertFalse(method.isPresentCDThrowsDeclaration());
     assertEquals(0, method.sizeCDParameters());
     assertFalse(method.getMCReturnType().isPresentMCVoidType());
     assertDeepEquals(String.class, method.getMCReturnType().getMCType());

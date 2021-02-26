@@ -29,6 +29,7 @@ import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.DecoratorAssert.*;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class ScopeClassDecoratorTest extends DecoratorTestCase {
@@ -133,7 +134,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
 
     assertTrue(cdConstructor.isEmptyCDParameters());
 
-    assertTrue(cdConstructor.getCDThrowsDeclaration().isEmptyException());
+    assertFalse(cdConstructor.isPresentCDThrowsDeclaration());
   }
 
   @Test
@@ -146,7 +147,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertBoolean(cdConstructor.getCDParameter(0).getMCType());
     assertEquals("shadowing", cdConstructor.getCDParameter(0).getName());
 
-    assertTrue(cdConstructor.getCDThrowsDeclaration().isEmptyException());
+    assertFalse(cdConstructor.isPresentCDThrowsDeclaration());
   }
 
   @Test
@@ -159,7 +160,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(I_AUTOMATON_SCOPE, cdConstructor.getCDParameter(0).getMCType());
     assertEquals("enclosingScope", cdConstructor.getCDParameter(0).getName());
 
-    assertTrue(cdConstructor.getCDThrowsDeclaration().isEmptyException());
+    assertFalse(cdConstructor.isPresentCDThrowsDeclaration());
   }
 
   @Test
@@ -175,7 +176,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertBoolean(cdConstructor.getCDParameter(1).getMCType());
     assertEquals("shadowing", cdConstructor.getCDParameter(1).getName());
 
-    assertTrue(cdConstructor.getCDThrowsDeclaration().isEmptyException());
+    assertFalse(cdConstructor.isPresentCDThrowsDeclaration());
   }
 
   @Test

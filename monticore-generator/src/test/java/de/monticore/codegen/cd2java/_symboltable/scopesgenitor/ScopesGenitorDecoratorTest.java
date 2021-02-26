@@ -137,7 +137,7 @@ public class ScopesGenitorDecoratorTest extends DecoratorTestCase {
     assertEquals("enclosingScope", cdConstructor.getCDParameter(0).getName());
 
 
-    assertTrue(cdConstructor.getCDThrowsDeclaration().isEmptyException());
+    assertFalse(cdConstructor.isPresentCDThrowsDeclaration());
   }
 
 
@@ -152,7 +152,7 @@ public class ScopesGenitorDecoratorTest extends DecoratorTestCase {
     assertDeepEquals("Deque<? extends " + I_AUTOMATON_SCOPE + ">", cdConstructor.getCDParameter(0).getMCType());
     assertEquals("scopeStack", cdConstructor.getCDParameter(0).getName());
 
-    assertTrue(cdConstructor.getCDThrowsDeclaration().isEmptyException());
+    assertFalse(cdConstructor.isPresentCDThrowsDeclaration());
   }
 
   @Test
@@ -161,7 +161,7 @@ public class ScopesGenitorDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, constructor.getModifier());
     assertEquals("AutomatonScopesGenitor", constructor.getName());
     assertTrue(constructor.isEmptyCDParameters());
-    assertTrue(constructor.getCDThrowsDeclaration().isEmptyException());
+    assertFalse(constructor.isPresentCDThrowsDeclaration());
   }
 
 

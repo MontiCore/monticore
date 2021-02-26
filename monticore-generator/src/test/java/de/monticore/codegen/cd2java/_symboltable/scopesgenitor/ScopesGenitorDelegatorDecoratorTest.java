@@ -107,7 +107,7 @@ public class ScopesGenitorDelegatorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testNoSuperInterfaces() {
-    assertTrue(scopesGenitorClass.getCDInterfaceUsage().isEmptyInterface());
+    assertFalse(scopesGenitorClass.isPresentCDInterfaceUsage());
   }
 
   @Test
@@ -131,7 +131,7 @@ public class ScopesGenitorDelegatorDecoratorTest extends DecoratorTestCase {
     assertEquals("globalScope", cdConstructor.getCDParameter(0).getName());
 
 
-    assertTrue(cdConstructor.getCDThrowsDeclaration().isEmptyException());
+    assertFalse(cdConstructor.isPresentCDThrowsDeclaration());
   }
 
   @Test
@@ -140,7 +140,7 @@ public class ScopesGenitorDelegatorDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, constructor.getModifier());
     assertEquals("AutomatonScopesGenitorDelegator", constructor.getName());
     assertTrue(constructor.isEmptyCDParameters());
-    assertTrue(constructor.getCDThrowsDeclaration().isEmptyException());
+    assertFalse(constructor.isPresentCDThrowsDeclaration());
   }
 
   @Test
