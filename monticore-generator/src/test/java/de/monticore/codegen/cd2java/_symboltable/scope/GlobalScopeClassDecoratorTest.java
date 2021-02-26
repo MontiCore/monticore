@@ -29,6 +29,7 @@ import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
@@ -112,7 +113,7 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
     assertDeepEquals("String", cdConstructor.getCDParameter(1).getMCType());
     assertEquals("fileExt", cdConstructor.getCDParameter(1).getName());
 
-    assertTrue(cdConstructor.getCDThrowsDeclaration().isEmptyException());
+    assertFalse(cdConstructor.isPresentCDThrowsDeclaration());
 
     ASTCDConstructor zeroArgsConstructor = scopeClass.getCDConstructorList().get(1);
     assertDeepEquals(PUBLIC, zeroArgsConstructor.getModifier());
@@ -120,7 +121,7 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
     assertEquals(0, zeroArgsConstructor.sizeCDParameters());
 
-    assertTrue(cdConstructor.getCDThrowsDeclaration().isEmptyException());
+    assertFalse(zeroArgsConstructor.isPresentCDThrowsDeclaration());
   }
 
   @Test
