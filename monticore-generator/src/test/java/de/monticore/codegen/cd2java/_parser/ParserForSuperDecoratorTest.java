@@ -109,7 +109,7 @@ public class ParserForSuperDecoratorTest extends DecoratorTestCase {
     assertEquals(1, parse.sizeCDParameters());
     assertEquals("fileName", parse.getCDParameter(0).getName());
     assertDeepEquals(String.class, parse.getCDParameter(0).getMCType());
-    assertEquals(1, parse.getCDThrowsDeclaration().getExceptionList());
+    assertEquals(1, parse.getCDThrowsDeclaration().sizeException());
     assertDeepEquals(ioException, parse.getCDThrowsDeclaration().getException(0));
 
     ASTCDMethod parseReader = methods.get(1);
@@ -119,7 +119,7 @@ public class ParserForSuperDecoratorTest extends DecoratorTestCase {
     assertEquals(1, parseReader.sizeCDParameters());
     assertEquals("reader", parseReader.getCDParameter(0).getName());
     assertDeepEquals("java.io.Reader", parseReader.getCDParameter(0).getMCType());
-    assertEquals(1, parseReader.getCDThrowsDeclaration().getExceptionList());
+    assertEquals(1, parseReader.getCDThrowsDeclaration().sizeException());
     assertDeepEquals(ioException, parseReader.getCDThrowsDeclaration().getException(0));
   }
 
@@ -139,7 +139,7 @@ public class ParserForSuperDecoratorTest extends DecoratorTestCase {
     assertEquals(1, parse.sizeCDParameters());
     assertEquals("fileName", parse.getCDParameter(0).getName());
     assertDeepEquals(String.class, parse.getCDParameter(0).getMCType());
-    assertEquals(1, parse.getCDThrowsDeclaration().getExceptionList());
+    assertEquals(1, parse.getCDThrowsDeclaration().sizeException());
     assertDeepEquals(ioException, parse.getCDThrowsDeclaration().getException(0));
 
     ASTCDMethod parseReader = methods.get(1);
@@ -149,7 +149,7 @@ public class ParserForSuperDecoratorTest extends DecoratorTestCase {
     assertEquals(1, parseReader.sizeCDParameters());
     assertEquals("reader", parseReader.getCDParameter(0).getName());
     assertDeepEquals("java.io.Reader", parseReader.getCDParameter(0).getMCType());
-    assertEquals(1, parseReader.getCDThrowsDeclaration().getExceptionList());
+    assertEquals(1, parseReader.getCDThrowsDeclaration().sizeException());
     assertDeepEquals(ioException, parseReader.getCDThrowsDeclaration().getException(0));
   }
 
