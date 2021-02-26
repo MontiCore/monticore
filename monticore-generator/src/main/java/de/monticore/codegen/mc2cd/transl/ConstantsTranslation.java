@@ -41,7 +41,7 @@ public class ConstantsTranslation implements
     ASTCDEnum constantsEnum = CD4AnalysisNodeFactory.createASTCDEnum();
     TransformationHelper.addStereoType(constantsEnum, MC2CDStereotypes.DEPRECATED.toString());
     constantsEnum.setName(rootLink.source().getName() + CONSTANTS_ENUM);
-    rootLink.target().getCDDefinition().getCDEnumsList().add(constantsEnum);
+    rootLink.target().getCDDefinition().addCDElement(constantsEnum);
     Set<String> grammarConstants = TransformationHelper
         .getAllGrammarConstants(rootLink.source()).stream().map(c -> lexNamer.getConstantName(c))
         .collect(Collectors.toSet());

@@ -48,14 +48,14 @@ public class MethodTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCD
     for (Link<ASTASTRule, ASTCDClass> link : rootLink.getLinks(ASTASTRule.class,
         ASTCDClass.class)) {
       for (ASTGrammarMethod method : link.source().getGrammarMethodList()) {
-        link.target().getCDMethodList().add(translateASTMethodToASTCDMethod(method));
+        link.target().addCDMember(translateASTMethodToASTCDMethod(method));
       }
     }
 
     for (Link<ASTASTRule, ASTCDInterface> link : rootLink.getLinks(ASTASTRule.class,
         ASTCDInterface.class)) {
       for (ASTGrammarMethod method : link.source().getGrammarMethodList()) {
-        link.target().getCDMethodList().add(translateASTMethodToASTCDMethodInterface(method));
+        link.target().addCDMember(translateASTMethodToASTCDMethodInterface(method));
       }
     }
 

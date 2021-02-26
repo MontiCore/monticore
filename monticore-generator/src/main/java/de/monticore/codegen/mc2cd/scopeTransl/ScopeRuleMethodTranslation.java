@@ -29,7 +29,7 @@ public class ScopeRuleMethodTranslation implements UnaryOperator<Link<ASTMCGramm
     for (Link<ASTScopeRule, ASTCDClass> link : rootLink.getLinks(ASTScopeRule.class,
         ASTCDClass.class)) {
       for (ASTGrammarMethod method : link.source().getGrammarMethodList()) {
-        link.target().getCDMethodList().add(translateASTMethodToASTCDMethod(method));
+        link.target().addCDMember(translateASTMethodToASTCDMethod(method));
       }
     }
 

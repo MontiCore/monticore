@@ -23,7 +23,7 @@ public class InterfaceProdsToCDInterfaces implements
       for (ASTInterfaceProd interfaceProd : link.source().getInterfaceProdList()) {
         ASTCDInterface cdInterface = CD4AnalysisNodeFactory.createASTCDInterface();
         cdInterface.setModifier(CD4AnalysisNodeFactory.createASTModifier());
-        link.target().getCDInterfacesList().add(cdInterface);
+        link.target().addCDElement(cdInterface);
         new Link<>(interfaceProd, cdInterface, link);
       }
     }

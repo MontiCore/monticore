@@ -31,8 +31,7 @@ public class ScopeRuleInheritanceTranslation implements UnaryOperator<Link<ASTMC
     for (ASTMCType superInterface : rule.getSuperInterfaceList()) {
       String qualifiedSuperInterface = TransformationHelper
           .getQualifiedTypeNameAndMarkIfExternal(superInterface, astGrammar, cdClass);
-      cdClass.getInterfaceList()
-          .add(TransformationHelper.createObjectType(qualifiedSuperInterface));
+      cdClass.addInterface(TransformationHelper.createObjectType(qualifiedSuperInterface));
     }
   }
 }
