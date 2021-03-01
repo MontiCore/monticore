@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Optional;
 
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
 
 import de.monticore.cd4code.CD4CodeMill;
@@ -22,6 +24,8 @@ public abstract class DecoratorTestCase {
 
   @BeforeClass
   public static void setUpDecoratorTestCase() {
+    Log.init();
+    Log.enableFailQuick(false);
     CD4CodeMill.reset();
     CD4CodeMill.init();
     ICD4CodeGlobalScope globalScope = CD4CodeMill.globalScope();

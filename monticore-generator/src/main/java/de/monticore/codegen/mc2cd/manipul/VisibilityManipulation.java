@@ -2,11 +2,15 @@
 
 package de.monticore.codegen.mc2cd.manipul;
 
-import de.monticore.cdbasis._ast.*;
+import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cd4analysis._ast.CD4AnalysisNodeFactory;
+import de.monticore.cd4analysis._visitor.CD4AnalysisTraverser;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._visitor.CDBasisVisitor2;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.umlmodifier._ast.ASTModifier;
-import de.monticore.cd4analysis._ast.CD4AnalysisNodeFactory;
-import de.monticore.cd4analysis._visitor.CD4AnalysisVisitor;
 
 import java.util.function.UnaryOperator;
 
@@ -15,35 +19,28 @@ import java.util.function.UnaryOperator;
  * protected.
  *
  */
-final class VisibilityManipulation implements UnaryOperator<ASTCDCompilationUnit>, CD4AnalysisVisitor {
-
-  CD4AnalysisVisitor realThis = this;
-
-  @Override
-  public CD4AnalysisVisitor getRealThis() {
-    return realThis;
-  }
-
-  @Override
-  public void setRealThis(CD4AnalysisVisitor realThis) {
-    this.realThis = realThis;
-  }
+final class VisibilityManipulation implements UnaryOperator<ASTCDCompilationUnit> {
 
   public ASTCDCompilationUnit apply(ASTCDCompilationUnit cdCompilationUnit) {
-    cdCompilationUnit.accept(getRealThis());
+    CD4AnalysisTraverser traverser = CD4AnalysisMill.traverser();
+    traverser.add4CDBasis(new VisibilityVisitor());
+    cdCompilationUnit.accept(traverser);
     return cdCompilationUnit;
   }
 
-  /**
-   * Sets the visibility of every attribute to protected.
-   */
-  public void visit(ASTCDAttribute cdAttribute) {
-    ASTModifier newModifier = cdAttribute.isPresentModifier()
-            ? cdAttribute.getModifier()
-            : CD4AnalysisNodeFactory
-            .createASTModifier();
-    newModifier.setProtected(true);
-    cdAttribute.setModifier(newModifier);
+  private class VisibilityVisitor implements CDBasisVisitor2 {
+    /**
+     * Sets the visibility of every attribute to protected.
+     */
+    @Override
+    public void visit(ASTCDAttribute cdAttribute) {
+      ASTModifier newModifier = cdAttribute.isPresentModifier()
+              ? cdAttribute.getModifier()
+              : CD4AnalysisNodeFactory
+              .createASTModifier();
+      newModifier.setProtected(true);
+      cdAttribute.setModifier(newModifier);
+    }
   }
 
   /**

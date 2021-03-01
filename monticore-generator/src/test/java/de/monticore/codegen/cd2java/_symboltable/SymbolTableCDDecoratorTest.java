@@ -60,10 +60,6 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
 
   @Before
   public void setUp() {
-    // to be issued (the warnings are not checked)
-    LogStub.init();         // replace log by a sideffect free variant
-//     LogStub.initPlusLog();  // for manual testing purpose only
-//    Log.enableFailQuick(false);
     this.glex = new GlobalExtensionManagement();
     IterablePath targetPath = Mockito.mock(IterablePath.class);
 
@@ -131,6 +127,7 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
     Mockito.doReturn(true).when(mockService).hasComponentStereotype(Mockito.any(ASTModifier.class));
     this.symTabCDComponent = mockDecorator.decorate(decoratedASTCompilationUnit, decoratedSymbolCompilationUnit, decoratedScopeCompilationUnit);
   }
+
 
   @Test
   public void testCompilationUnitNotChanged() {
