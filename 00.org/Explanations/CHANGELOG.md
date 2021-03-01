@@ -14,6 +14,12 @@ to be released
 * move grammars OCLExpressions and SetExpressions into OCL-project for further development
 * DefsTypeBasic was moved to test. There are now only methods for creating symbols.
   Use the BasicSymbolsMill to create the basic data types like int, ...
+* `deserialize(String)` method of scope DeSer classes is realized as default implementation in `IDeSer` interface
+* `deserialize(String)` method of symbol DeSer classes is realized as default implementation in `ISymbolDeSer` interface
+* `deserializeAddons()` and `serializeAddons()` methods  of scopes are realized as empty default implementation in `IDeSer` interface
+* If deserialization encounters a symbol kind for which no DeSer is contained in the symbol Deser map in global scopes, a warning is produced instead of an error
+* Boolean `isShadowing` property of scopes is only serialized if its value is "true". Deserialization assumes a default value of "false" if the property is not contained in a serialized scope
+* `deserialize(String)` method of symbol DeSers do not produce errors if the serialized kind deviates from the symbol kind that the DeSer is originally engineered for
 
 ### Fixes
 * Symbols with hierarchical symbol kinds are not serialized multiple times anymore.
