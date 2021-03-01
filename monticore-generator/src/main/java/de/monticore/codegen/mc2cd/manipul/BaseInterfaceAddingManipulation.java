@@ -19,6 +19,8 @@ public final class BaseInterfaceAddingManipulation implements UnaryOperator<ASTC
   @Override
   public ASTCDCompilationUnit apply(ASTCDCompilationUnit cdCompilationUnit) {
     ASTCDInterface baseInterface = CD4AnalysisNodeFactory.createASTCDInterface();
+    baseInterface.setModifier(CD4AnalysisNodeFactory.createASTModifier());
+
     baseInterface.setName(getBaseInterfaceName(cdCompilationUnit.getCDDefinition()));
   //  baseInterface.getInterfaces().add(TransformationHelper.createSimpleReference("ASTNode"));
     cdCompilationUnit.getCDDefinition().addCDElement(baseInterface);
