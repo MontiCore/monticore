@@ -5,24 +5,29 @@ import com.google.common.base.Preconditions;
 import de.monticore.ast.ASTNode;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.cdbasis._symboltable.CDTypeSymbolSurrogate;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
+import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.MCBasicTypesHelper;
+import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
+import de.monticore.types.prettyprint.MCBasicTypesFullPrettyPrinter;
 import de.monticore.utils.Names;
 import de.se_rwth.commons.JavaNamesHelper;
 import de.se_rwth.commons.StringTransformations;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
@@ -196,16 +201,9 @@ public class DecorationHelper extends MCBasicTypesHelper {
     if (!attr.isPresentSymbol()) {
       return false;
     }
-    CDTypeSymbolSurrogate attrType = attr.getSymbol().getType();
-
-    List<CDTypeSymbolSurrogate> typeArgs = attrType.getActualTypeArguments();
-    if (typeArgs.size() > 1) {
-      return false;
-    }
-
-    String typeName = typeArgs.isEmpty()
-        ? attrType.getName()
-        : typeArgs.get(0).getName();
+    
+    String typeName = attr.getMCType().printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter()));
+    
     if (!typeName.contains(".") && !typeName.startsWith(AST_PREFIX)) {
       return false;
     }
@@ -215,13 +213,11 @@ public class DecorationHelper extends MCBasicTypesHelper {
       return false;
     }
 
-    if (typeArgs.isEmpty()) {
-      return attrType.isIsEnum();
+    List<CDTypeSymbol> types = attr.getEnclosingScope().resolveCDTypeMany(typeName);
+    if (types.size() != 1) {
+      return false;
     }
-
-    CDTypeSymbolSurrogate typeArgument = typeArgs
-        .get(0);
-    return typeArgument.isIsEnum();
+    return types.get(0).isIsEnum();
   }
 
   /**

@@ -226,9 +226,8 @@ public class VisitorService extends AbstractService<VisitorService> {
     ASTCDCompilationUnit compilationUnit = input.deepClone();
     //set classname to correct Name with path
     String astPath = getASTPackage();
-    compilationUnit.getCDDefinition().getCDClassesList().forEach(c -> c.setName(astPath + "." + c.getName()));
-    compilationUnit.getCDDefinition().getCDInterfacesList().forEach(i -> i.setName(astPath + "." + i.getName()));
-    compilationUnit.getCDDefinition().getCDEnumsList().forEach(e -> e.setName(astPath + "." + e.getName()));
+    // in this version, all CD elements should only be classes, interfaces, and enums
+    compilationUnit.getCDDefinition().getCDElementList().forEach(e -> e.setName(astPath + "." + e.getName()));
     return compilationUnit;
   }
 

@@ -9,9 +9,11 @@ import de.monticore.cdbasis._symboltable.CDTypeSymbolSurrogate;
 import de.monticore.cdbasis._symboltable.ICDBasisScope;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
+import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.prettyprint.MCBasicTypesFullPrettyPrinter;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import de.se_rwth.commons.Names;
 
@@ -626,30 +628,23 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     if (!type.isPresentSymbol()) {
       return Optional.empty();
     }
-    for (CDTypeSymbolSurrogate superType : type.getSymbol().getCdInterfacesList()) {
-      Optional<ASTCDType> result = getTypeWithSymbolInfo(superType.lazyLoadDelegate().getAstNode());
-      if (result.isPresent()) {
-        return result;
+    
+    List<String> superInterfaces = type.getInterfaceList().stream()
+        .map(t -> t.printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())))
+        .collect(Collectors.toList());
+    
+    for (String superType : superInterfaces) {
+      Optional<CDTypeSymbol> sym = type.getEnclosingScope().resolveCDType(superType);
+      if (sym.isPresent()) {
+        Optional<ASTCDType> result = getTypeWithSymbolInfo(sym.get().getAstNode());
+        if (result.isPresent()) {
+          return result;
+        }
       }
     }
     return Optional.empty();
   }
 
-  public Optional<ASTCDType> getTypeWithScopeInfo(ASTCDType type) {
-    if (type.isPresentModifier() && hasScopeStereotype(type.getModifier())) {
-      return Optional.of(type);
-    }
-    if (!type.isPresentSymbol()) {
-      return Optional.empty();
-    }
-    for (CDTypeSymbolSurrogate superType : type.getSymbol().getCdInterfacesList()) {
-      Optional<ASTCDType> result = getTypeWithScopeInfo(superType.getAstNode());
-      if (result.isPresent()) {
-        return result;
-      }
-    }
-    return Optional.empty();
-  }
 
   /**
    * get classes and interfaces with scope or symbol stereotype
@@ -862,7 +857,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     if (ast.isPresentModifier() && ast.getModifier().isPresentStereotype()) {
       ast.getModifier().getStereotype().getValuesList().stream()
           .filter(value -> value.getName().equals(stereotypeName))
-          .filter(value -> value.isPresentText())
+          .filter(value -> !value.getValue().isEmpty())
           .forEach(value -> values.add(value.getValue()));
     }
     return values;
