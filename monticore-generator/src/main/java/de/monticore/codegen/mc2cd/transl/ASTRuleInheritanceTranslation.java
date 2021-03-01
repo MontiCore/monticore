@@ -49,8 +49,7 @@ public class ASTRuleInheritanceTranslation implements
       String qualifiedSuperInterface = TransformationHelper
           .getQualifiedTypeNameAndMarkIfExternal(superInterface, astGrammar, cdInterface);
 
-      cdInterface.getInterfaceList().add(
-          TransformationHelper.createObjectType(qualifiedSuperInterface));
+      cdInterface.addInterface(TransformationHelper.createObjectType(qualifiedSuperInterface));
     }
   }
 
@@ -66,8 +65,7 @@ public class ASTRuleInheritanceTranslation implements
     for (ASTMCType superInterface : rule.getASTSuperInterfaceList()) {
       String qualifiedSuperInterface = TransformationHelper
           .getQualifiedTypeNameAndMarkIfExternal(superInterface, astGrammar, cdClass);
-      cdClass.getInterfaceList()
-          .add(TransformationHelper.createObjectType(qualifiedSuperInterface));
+      cdClass.addInterface(TransformationHelper.createObjectType(qualifiedSuperInterface));
     }
   }
 }

@@ -34,8 +34,7 @@ public class SymbolRuleInheritanceTranslation implements UnaryOperator<Link<ASTM
     for (ASTMCType superInterface : rule.getSuperInterfaceList()) {
       String qualifiedSuperInterface = TransformationHelper
           .getQualifiedTypeNameAndMarkIfExternal(superInterface, astGrammar, cdClass);
-      cdClass.getInterfaceList()
-          .add(TransformationHelper.createObjectType(qualifiedSuperInterface));
+      cdClass.addInterface(TransformationHelper.createObjectType(qualifiedSuperInterface));
     }
   }
 }

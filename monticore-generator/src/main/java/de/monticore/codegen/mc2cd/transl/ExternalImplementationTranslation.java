@@ -27,7 +27,7 @@ public class ExternalImplementationTranslation implements
       Optional<ProdSymbol> ruleSymbol = MCGrammarSymbolTableHelper.resolveRuleInSupersOnly(
           link.source(), name);
       if (ruleSymbol.isPresent() && ruleSymbol.get().isIsExternal()) {
-        link.target().getInterfaceList().add(
+        link.target().addInterface(
             TransformationHelper.createObjectType(TransformationHelper.getGrammarNameAsPackage(
                 ruleSymbol.get()) + "AST" + name + "Ext"));
       }

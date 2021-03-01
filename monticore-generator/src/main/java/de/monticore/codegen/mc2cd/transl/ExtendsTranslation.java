@@ -89,7 +89,7 @@ public class ExtendsTranslation implements
     for (ASTRuleReference ruleReference : interfaceProd.getSuperInterfaceRuleList()) {
       ProdSymbol ruleSymbol = MCGrammarSymbolTableHelper.resolveRule(astGrammar, ruleReference.getName()).get();
       String packageName = getPackageName(ruleSymbol);
-      cdInterface.getInterfaceList().add(TransformationHelper.createObjectType(
+      cdInterface.addInterface(TransformationHelper.createObjectType(
           packageName + "AST" + ruleReference.getName()));
     }
 
@@ -98,8 +98,7 @@ public class ExtendsTranslation implements
     for (ASTMCType typeReference : interfaceProd.getASTSuperInterfaceList()) {
       qualifiedRuleName = TransformationHelper.getQualifiedTypeNameAndMarkIfExternal(
           typeReference, astGrammar, cdInterface);
-      cdInterface.getInterfaceList().add(
-          TransformationHelper.createObjectType(qualifiedRuleName));
+      cdInterface.addInterface(TransformationHelper.createObjectType(qualifiedRuleName));
     }
   }
 }
