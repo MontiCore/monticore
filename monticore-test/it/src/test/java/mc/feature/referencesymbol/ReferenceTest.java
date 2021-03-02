@@ -56,7 +56,7 @@ public class ReferenceTest {
     globalScope.getModelPath().addEntry(Paths.get("src/test/resources/mc/feature/referencesymbol"));
 
     IReferenceArtifactScope artifactScope = ReferenceMill
-        .referenceSymbolTableCreatorDelegator().createFromAST(astRand.get());
+        .scopesGenitorDelegator().createFromAST(astRand.get());
     artifactScope.setName("ReferenceTest");
 
     Optional<? extends IReferenceScope> scopeOpt = artifactScope.getSubScopes().stream().findAny();

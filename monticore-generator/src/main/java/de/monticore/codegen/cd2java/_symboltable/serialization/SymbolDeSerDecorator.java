@@ -33,9 +33,7 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
 
   protected static final String SER_TEMPL = "_symboltable.serialization.symbolDeSer.Serialize4SymbolDeSer";
 
-  protected static final String DESER_STR_TEMPL = "_symboltable.serialization.symbolDeSer.DeserializeString4SymbolDeSer";
-
-  protected static final String DESER_SYM_TEMPL = "_symboltable.serialization.symbolDeSer.DeserializeSymbol4SymbolDeSer";
+  protected static final String DESER_TEMPL = "_symboltable.serialization.symbolDeSer.Deserialize4SymbolDeSer";
 
   protected ASTMCType string = getMCTypeFacade().createStringType();
 
@@ -67,7 +65,7 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
     String deSerName = symbolTableService.getScopeDeSerFullName();
 
     ASTMCQualifiedType iDeSerType = getMCTypeFacade().
-        createQualifiedType(I_DE_SER + "<" + symName + ", " + s2jName + ">");
+        createQualifiedType(I_SYMBOL_DE_SER + "<" + symName + ", " + s2jName + ">");
     ASTMCQualifiedType symType = getMCTypeFacade().createQualifiedType(symName);
 
     ASTCDParameter symParam = getCDParameterFacade().createParameter(symType, "toSerialize");
@@ -92,9 +90,8 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
         .addCDMethod(createSerializeAddonsMethod(symParam, s2jParam))
 
         //deserialization
-        .addCDMethod(createDeserializeStringMethod(symType))
-        .addCDMethod(
-            createDeserializeJsonMethod(symType, millName, symName, jsonParam, attr, spansScope, iScopeName, deSerName))
+        .addCDMethod(createDeserializeMethod(symType, millName, symName, jsonParam, attr,
+            spansScope, iScopeName, deSerName))
         .addAllCDMethods(createDeserializeAttrMethods(attr, jsonParam))
         .addCDMethod(createDeserializeAddons(sym2Param, jsonParam))
 
@@ -157,22 +154,14 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
 
   ////////////////////////////// DESERIALIZATON ////////////////////////////////////////////////////
 
-  protected ASTCDMethod createDeserializeStringMethod(ASTMCQualifiedType symType) {
-    ASTCDParameter stringParam = getCDParameterFacade().createParameter(string, "serialized");
-    ASTCDMethod deserializeMethod = getCDMethodFacade()
-        .createMethod(PUBLIC, symType, DESERIALIZE, stringParam);
-    this.replaceTemplate(EMPTY_BODY, deserializeMethod, new TemplateHookPoint(DESER_STR_TEMPL));
-    return deserializeMethod;
-  }
-
-  protected ASTCDMethod createDeserializeJsonMethod(ASTMCQualifiedType type, String symTabMill,
+  protected ASTCDMethod createDeserializeMethod(ASTMCQualifiedType type, String symTabMill,
       String symbolFullName, ASTCDParameter jsonParam,
       List<ASTCDAttribute> symbolRuleAttributes, boolean spansScope, String scopeName,
       String deSerFullName) {
     ASTCDMethod deserializeMethod = getCDMethodFacade()
         .createMethod(PUBLIC, type, DESERIALIZE, jsonParam);
     this.replaceTemplate(EMPTY_BODY, deserializeMethod,
-        new TemplateHookPoint(DESER_SYM_TEMPL, symTabMill, symbolFullName,
+        new TemplateHookPoint(DESER_TEMPL, symTabMill, symbolFullName,
             Names.getSimpleName(symbolFullName), symbolRuleAttributes, spansScope, scopeName, deSerFullName));
     return deserializeMethod;
   }

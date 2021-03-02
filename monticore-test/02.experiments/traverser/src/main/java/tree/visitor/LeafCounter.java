@@ -1,4 +1,4 @@
-// (c) https://github.com/MontiCore/monticore
+/* (c) https://github.com/MontiCore/monticore */
 package tree.visitor;
 
 import trees._visitor.TreesVisitor2;

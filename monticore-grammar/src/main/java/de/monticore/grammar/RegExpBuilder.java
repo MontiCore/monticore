@@ -2,21 +2,14 @@
 
 package de.monticore.grammar;
 
-import java.util.Optional;
-
-import de.monticore.grammar.grammar._ast.ASTLexAlt;
-import de.monticore.grammar.grammar._ast.ASTLexBlock;
-import de.monticore.grammar.grammar._ast.ASTLexChar;
-import de.monticore.grammar.grammar._ast.ASTLexCharRange;
-import de.monticore.grammar.grammar._ast.ASTLexNonTerminal;
-import de.monticore.grammar.grammar._ast.ASTLexProd;
-import de.monticore.grammar.grammar._ast.ASTLexString;
+import de.monticore.grammar.grammar._ast.*;
+import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
+import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.grammar.grammar._visitor.GrammarHandler;
 import de.monticore.grammar.grammar._visitor.GrammarTraverser;
 import de.monticore.grammar.grammar._visitor.GrammarVisitor2;
-import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVisitor;
-import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar._symboltable.ProdSymbol;
+
+import java.util.Optional;
 
 public class RegExpBuilder implements GrammarVisitor2, GrammarHandler {
 

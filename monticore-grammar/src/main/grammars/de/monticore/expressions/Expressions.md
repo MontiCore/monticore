@@ -20,8 +20,11 @@ Currently, there are five expression languages. These are
 
 Two further expression languages are defined in the OCL project:
 
-* [OCL-SetExpressions](SetExpressions.mc4) (extends ExpressionsBasis, ideal for working with sets)
-* [OCL-OCLExpressions](OCLExpressions.mc4) (extends ExpressionsBasis, introduces OCL to MontiCore)
+* [OCL-SetExpressions] (extends ExpressionsBasis, ideal for working with sets)
+* [OCL-OCLExpressions] (extends ExpressionsBasis, introduces OCL to MontiCore)
+
+Furthermore, composite SI unit expressions are defined in the SI Units project:
+* [SI Units](https://github.com/MontiCore/siunits/blob/master/src/main/grammars/de/monticore/SIUnits.mc4) (can be used to parse primitive units as well as their products, quotients, and powers)
 
 ### Using Expressions
 

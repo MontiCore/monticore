@@ -4,7 +4,6 @@ package de.monticore.codegen.cd2java._ast.ast_interface;
 import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
 import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
-import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
 import de.monticore.codegen.cd2java.AbstractTransformer;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTScopeDecorator;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
@@ -13,13 +12,10 @@ import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
-import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.ACCEPT_METHOD;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_INTERFACE;
 
 /**
@@ -53,7 +49,6 @@ public class ASTInterfaceDecorator extends AbstractTransformer<ASTCDInterface> {
 
   @Override
   public ASTCDInterface decorate(final ASTCDInterface originalInput, ASTCDInterface changedInput) {
-    changedInput.addCDMethod(getAcceptMethod());
     changedInput.addInterface(getMCTypeFacade().createQualifiedType(AST_INTERFACE));
     changedInput.addInterface(astService.getASTBaseInterface());
     changedInput.clearCDAttributes();
@@ -102,9 +97,4 @@ public class ASTInterfaceDecorator extends AbstractTransformer<ASTCDInterface> {
 
   }
 
-  protected ASTCDMethod getAcceptMethod() {
-    ASTMCType visitorType = visitorService.getVisitorType();
-    ASTCDParameter parameter = getCDParameterFacade().createParameter(visitorType, "visitor");
-    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, ACCEPT_METHOD, parameter);
-  }
 }

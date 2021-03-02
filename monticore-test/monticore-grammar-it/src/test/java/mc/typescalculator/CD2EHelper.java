@@ -48,6 +48,7 @@ public class CD2EHelper {
       OOTypeSymbol typeSymbol = OOSymbolsMill.oOTypeSymbolBuilder()
           .setName(cdTypeSymbol.getName())
           .setSpannedScope(OOSymbolsMill.scope())
+          .setEnclosingScope(cdTypeSymbol.getEnclosingScope())
           .build();
       typeSymbolMap.put(cdTypeSymbol.getName(), typeSymbol);
 
@@ -73,16 +74,8 @@ public class CD2EHelper {
 
       typeSymbol.setName(cdTypeSymbol.getName());
       typeSymbol.addAllSuperTypes(superInterfaces);
-      for (FieldSymbol field : fieldSymbols) {
-        typeSymbol.getSpannedScope().add(field);
-        typeSymbol.getSpannedScope().add((VariableSymbol) field);
-      }
       fieldSymbols.forEach(f -> typeSymbol.getSpannedScope().add(f));
       fieldSymbols.forEach(f -> typeSymbol.getSpannedScope().add((VariableSymbol) f));
-      for (MethodSymbol method : methodSymbols) {
-        typeSymbol.getSpannedScope().add(method);
-        typeSymbol.getSpannedScope().add((FunctionSymbol) method);
-      }
       methodSymbols.forEach(f -> typeSymbol.getSpannedScope().add(f));
       methodSymbols.forEach(f -> typeSymbol.getSpannedScope().add((FunctionSymbol) f));
       superClass.ifPresent(typeSymbol::addSuperTypes);

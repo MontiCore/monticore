@@ -25,7 +25,7 @@ public class AutomatonWithSTInfo6Test extends GeneratorIntegrationsTest {
     AutomatonSymbol automatonSymbol = new AutomatonSymbol("A");
     assertTrue(automatonSymbol instanceof IScopeSpanningSymbol);
     AutomatonSymbolSurrogate automatonSymbolSurrogate;
-    AutomatonWithSTInfo6SymbolTableCreator automatonwithstinfo6SymbolTableCreator;
+    AutomatonWithSTInfo6ScopesGenitor automatonwithstinfo6SymbolTableCreator;
     StateSymbol stateSymbol = new StateSymbol("A");
     assertFalse(stateSymbol instanceof IScopeSpanningSymbol);
     StateSymbolSurrogate stateSymbolSurrogate;
@@ -39,7 +39,7 @@ public class AutomatonWithSTInfo6Test extends GeneratorIntegrationsTest {
 //    StateSymbol from = transitionSymbol.getFrom();
 //    StateSymbol to = transitionSymbol.getTo();
     
-    class STCreator extends AutomatonWithSTInfo6SymbolTableCreator {
+    class STCreator extends AutomatonWithSTInfo6ScopesGenitor {
   
       public STCreator(
           IAutomatonWithSTInfo6Scope enclosingScope) {
