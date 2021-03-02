@@ -133,16 +133,35 @@ public class AbstractService<T extends AbstractService> {
   }
 
   public List<String> getAllSuperInterfacesTransitive(ASTCDClass astcdClass) {
-    return getAllSuperInterfacesTransitive(astcdClass.getSymbol());
-  }
-
-  private List<String> getAllSuperInterfacesTransitive(CDTypeSymbol cdTypeSymbol) {
     List<String> superSymbolList = new ArrayList<>();
-    for (ASTMCObjectType cdInterface : ((ASTCDClass) cdTypeSymbol.getAstNode()).getInterfaceList()) {
-      String fullName = cdInterface.printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter()));
+    List<ASTMCObjectType> superInterfaces = astcdClass.getInterfaceList();
+    for (ASTMCObjectType superInterface : superInterfaces) {
+      String fullName = superInterface.printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter()));
       superSymbolList.add(createASTFullName(fullName));
       CDTypeSymbol superSymbol = resolveCDType(fullName);
       superSymbolList.addAll(getAllSuperInterfacesTransitive(superSymbol));
+    }
+    return superSymbolList;
+  }
+  
+  public List<String> getAllSuperInterfacesTransitive(ASTCDInterface cdInterface) {
+    List<String> superSymbolList = new ArrayList<>();
+    List<ASTMCObjectType> superInterfaces = cdInterface.getInterfaceList();
+    for (ASTMCObjectType superInterface : superInterfaces) {
+      String fullName = superInterface.printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter()));
+      superSymbolList.add(createASTFullName(fullName));
+      CDTypeSymbol superSymbol = resolveCDType(fullName);
+      superSymbolList.addAll(getAllSuperInterfacesTransitive(superSymbol));
+    }
+    return superSymbolList;
+  }
+  
+  private List<String> getAllSuperInterfacesTransitive(CDTypeSymbol cdTypeSymbol) {
+    List<String> superSymbolList = new ArrayList<>();
+    if (cdTypeSymbol.isIsClass()) {
+      superSymbolList.addAll(getAllSuperInterfacesTransitive((ASTCDClass) cdTypeSymbol.getAstNode()));
+    } else if (cdTypeSymbol.isIsInterface()) {
+      superSymbolList.addAll(getAllSuperInterfacesTransitive((ASTCDInterface) cdTypeSymbol.getAstNode()));
     }
     return superSymbolList;
   }
