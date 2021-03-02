@@ -18,6 +18,7 @@ public class CDScopeTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTC
 
     return new GrammarToCDDefinition()
         .andThen(new ScopeCDDefinitionNameTranslation())
+        .andThen(new ScopeCDDefinitionModifierTranslation())
         .andThen(new CreateScopeProd())
         .andThen(new ScopeRuleToCDScopeClass())
         .andThen(new AttributeInScopeRuleToCDAttribute())
