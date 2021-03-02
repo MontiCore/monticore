@@ -132,8 +132,8 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
   @Test
   public void testCompilationUnitNotChanged() {
     assertDeepEquals(originalASTCompilationUnit, decoratedASTCompilationUnit);
-    assertDeepEquals(originalSymbolCompilationUnit, originalSymbolCompilationUnit);
-    assertDeepEquals(originalScopeCompilationUnit, originalScopeCompilationUnit);
+    assertDeepEquals(originalSymbolCompilationUnit, decoratedSymbolCompilationUnit);
+    assertDeepEquals(originalScopeCompilationUnit, decoratedScopeCompilationUnit);
   }
 
   @Test

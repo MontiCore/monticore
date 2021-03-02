@@ -1,8 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.mc2cd.scopeTransl;
 
-import de.monticore.cd4analysis._ast.CD4AnalysisNodeFactory;
-import de.monticore.cdbasis._ast.*;
+import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.grammar.grammar._ast.ASTAdditionalAttribute;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
@@ -38,9 +41,9 @@ public class AttributeInScopeRuleToCDAttribute implements
   }
 
   protected void createAttributeLink(ASTAdditionalAttribute attributeInAST, Link<ASTScopeRule, ? extends ASTCDType> link) {
-    ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
-    cdAttribute.setName(attributeInAST.getName());
-    cdAttribute.setModifier(PROTECTED.build());
+    ASTCDAttribute cdAttribute = CD4AnalysisMill.cDAttributeBuilder().
+            setName(attributeInAST.getName()).
+            setModifier(PROTECTED.build()).uncheckedBuild();
     link.target().addCDMember(cdAttribute);
     new Link<>(attributeInAST, cdAttribute, link);
   }

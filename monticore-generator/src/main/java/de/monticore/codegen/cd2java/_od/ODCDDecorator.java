@@ -35,6 +35,7 @@ public class ODCDDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCo
     this.replaceTemplate(CoreTemplates.PACKAGE, odClass, createPackageHookPoint(cocoPackage));
 
     ASTCDDefinition odCDDefinition = CD4AnalysisMill.cDDefinitionBuilder()
+        .setModifier(CD4AnalysisMill.modifierBuilder().build())
         .setName(input.getCDDefinition().getName())
         .addCDElement(odClass)
         .build();

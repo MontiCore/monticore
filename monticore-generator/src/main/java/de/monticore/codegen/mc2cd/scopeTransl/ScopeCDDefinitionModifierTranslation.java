@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.mc2cd.scopeTransl;
 
-import de.monticore.cd4analysis._ast.CD4AnalysisNodeFactory;
+import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
@@ -14,7 +14,7 @@ public class ScopeCDDefinitionModifierTranslation implements UnaryOperator<Link<
   public Link<ASTMCGrammar, ASTCDCompilationUnit> apply(Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink) {
     for (Link<ASTMCGrammar, ASTCDDefinition> link : rootLink.getLinks(ASTMCGrammar.class,
         ASTCDDefinition.class)) {
-      link.target().setModifier(CD4AnalysisNodeFactory.createASTModifier());
+      link.target().setModifier(CD4AnalysisMill.modifierBuilder().build());
     }
     return rootLink;
 

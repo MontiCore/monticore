@@ -1,8 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.mc2cd.transl.creation;
 
-import de.monticore.cdbasis._ast.*;
-import de.monticore.cd4analysis._ast.*;
+import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.*;
@@ -52,7 +55,7 @@ public class ConstantGroupsToCDAttributes implements UnaryOperator<Link<ASTMCGra
     for (RuleComponentSymbol prodComponent : prodSymbol.getProdComponents()) {
       if (prodComponent.isIsConstantGroup() && prodComponent.isPresentAstNode()
           && prodComponent.getAstNode() instanceof ASTConstantGroup) {
-        ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
+        ASTCDAttribute cdAttribute = CD4AnalysisMill.cDAttributeBuilder().uncheckedBuild();
         link.target().addCDMember(cdAttribute);
         ASTConstantGroup astConstantGroup = (ASTConstantGroup) prodComponent.getAstNode();
         new Link<>(astConstantGroup, cdAttribute, link);

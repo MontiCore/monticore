@@ -48,6 +48,7 @@ public class CoCoDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCo
     cocoPackage.addAll(Arrays.asList(input.getCDDefinition().getName().toLowerCase(), CoCoConstants.COCO_PACKAGE));
 
     ASTCDDefinition cocoCD = CD4AnalysisMill.cDDefinitionBuilder()
+        .setModifier(CD4AnalysisMill.modifierBuilder().build())
         .setName(input.getCDDefinition().getName())
         .addCDElement(cocoCheckerDecorator.decorate(input))
         .addAllCDElements(cocoInterfaceDecorator.decorate(input.getCDDefinition()))

@@ -2,8 +2,8 @@
 
 package de.monticore.codegen.mc2cd;
 
+import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.cd4analysis._ast.CD4AnalysisNodeFactory;
 import de.monticore.codegen.mc2cd.manipul.CDManipulation;
 import de.monticore.codegen.mc2cd.transl.MC2CDTranslation;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -28,7 +28,7 @@ public class MC2CDTransformation implements Function<ASTMCGrammar, ASTCDCompilat
   @Override
   public ASTCDCompilationUnit apply(ASTMCGrammar grammar) {
     Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink = new Link<>(grammar,
-        CD4AnalysisNodeFactory.createASTCDCompilationUnit(), null);
+            CD4AnalysisMill.cDCompilationUnitBuilder().uncheckedBuild(), null);
     
     return new MC2CDTranslation(glex)
         .andThen(Link::target)

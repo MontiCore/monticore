@@ -42,7 +42,8 @@ public class ComponetTranslationTest {
 
   @Test
   public void testIsNotComponent() {
-    assertFalse(nonComponentCD.getCDDefinition().isPresentModifier());
+    assertTrue(nonComponentCD.getCDDefinition().isPresentModifier());
+    assertFalse(nonComponentCD.getCDDefinition().getModifier().isPresentStereotype());
   }
 
 }

@@ -9,6 +9,7 @@ import de.monticore.codegen.cd2java.CDModifier;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
+import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -25,6 +26,8 @@ public class CDSymbolTranslationTest {
 
   @BeforeClass
   public static void setup(){
+    Log.init();
+    Log.enableFailQuick(false);
     GrammarFamilyMill.init();
   }
 
