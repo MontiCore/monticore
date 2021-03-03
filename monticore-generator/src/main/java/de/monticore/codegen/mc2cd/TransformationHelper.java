@@ -449,7 +449,7 @@ public final class TransformationHelper {
         .getValuesList();
     ASTStereoValue stereoValue = CD4AnalysisMill.stereoValueBuilder().
             setName(stereotypeName).
-            setContent(stereotypeValue).uncheckedBuild();
+            setText(CD4AnalysisMill.stringLiteralBuilder().setSource(stereotypeValue).build()).uncheckedBuild();
     stereoValueList.add(stereoValue);
   }
 
