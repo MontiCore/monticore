@@ -71,8 +71,6 @@ public class MontiCoreScriptTest {
     Log.init();         // replace log by a sideffect free variant
     // LogStub.initPlusLog();  // for manual testing purpose only
     Log.enableFailQuick(false);
-    GrammarFamilyMill.reset();
-    GrammarFamilyMill.init();
     additionalMethods.add("deepEquals");
     additionalMethods.add("deepEqualsWithComments");
     additionalMethods.add("equalAttributes");
@@ -83,6 +81,8 @@ public class MontiCoreScriptTest {
 
   @Before
   public void init() {
+    GrammarFamilyMill.reset();
+    GrammarFamilyMill.init();
     glex = new GlobalExtensionManagement();
     Optional<ASTMCGrammar> ast = new MontiCoreScript()
         .parseGrammar(Paths.get(new File(
@@ -193,6 +193,12 @@ public class MontiCoreScriptTest {
   public void testDefaultScriptSubsubgrammarArgs() {
     Log.getFindings().clear();
     testDefaultScript(subsubgrammarArgs);
+    assertEquals(0, Log.getErrorCount());
+  }
+
+  @Test
+  public void testDefaultScriptSubsubgrammarArgs_EMF() {
+    Log.getFindings().clear();
     testDefaultScriptWithEmf(subsubgrammarArgs);
     assertEquals(0, Log.getErrorCount());
   }
@@ -208,6 +214,12 @@ public class MontiCoreScriptTest {
   public void testDefaultScriptSupergrammarArgs() {
     Log.getFindings().clear();
     testDefaultScript(inheritedgrammarArgs);
+    assertEquals(0, Log.getErrorCount());
+  }
+
+  @Test
+  public void testDefaultScriptSupergrammarArgs_EMF() {
+    Log.getFindings().clear();
     testDefaultScriptWithEmf(inheritedgrammarArgs);
     assertEquals(0, Log.getErrorCount());
   }
@@ -222,6 +234,12 @@ public class MontiCoreScriptTest {
   public void testDefaultScriptSupersubgrammarArgs() {
     Log.getFindings().clear();
     testDefaultScript(supersubgrammarArgs);
+    assertEquals(0, Log.getErrorCount());
+  }
+
+  @Test
+  public void testDefaultScriptSupersubgrammarArgs_EMF() {
+    Log.getFindings().clear();
     testDefaultScriptWithEmf(supersubgrammarArgs);
     assertEquals(0, Log.getErrorCount());
   }
