@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class GrammarFamilyScopesGenitor extends GrammarFamilyScopesGenitorTOP {
 
@@ -53,6 +54,7 @@ public class GrammarFamilyScopesGenitor extends GrammarFamilyScopesGenitorTOP {
     GrammarFamilyArtifactScope artifactScope = new GrammarFamilyArtifactScope(Optional.empty(),
         Names.getQualifiedName(rootNode.getPackageList()), new ArrayList<>());
     artifactScope.setAstNode(rootNode);
+    artifactScope.setImportsList(rootNode.getMCImportStatementList().stream().map(i -> new ImportStatement(i.getQName(), i.isStar())).collect(Collectors.toList()));
     putOnStack(artifactScope);
     rootNode.accept(getTraverser());
     return artifactScope;
