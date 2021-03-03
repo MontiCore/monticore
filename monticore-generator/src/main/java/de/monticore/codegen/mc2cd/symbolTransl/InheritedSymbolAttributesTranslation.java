@@ -50,6 +50,7 @@ public class InheritedSymbolAttributesTranslation extends InheritedAttributesTra
       for (AdditionalAttributeSymbol attributeInAST : entry.getValue()) {
         ASTCDAttribute cdAttribute = CD4AnalysisMill.cDAttributeBuilder()
                 .setName(attributeInAST.getName())
+                .setModifier(CD4AnalysisMill.modifierBuilder().build())
                 .setMCType(MCTypeFacade.getInstance().createQualifiedType(attributeInAST.getType()))
                 .build();
         Optional<String> superGrammarName = MCGrammarSymbolTableHelper.getMCGrammarSymbol(entry.getKey().getEnclosingScope())
