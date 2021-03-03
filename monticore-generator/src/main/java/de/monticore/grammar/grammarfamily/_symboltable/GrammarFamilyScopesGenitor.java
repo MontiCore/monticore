@@ -52,6 +52,7 @@ public class GrammarFamilyScopesGenitor extends GrammarFamilyScopesGenitorTOP {
   public GrammarFamilyArtifactScope createFromAST(de.monticore.cdbasis._ast.ASTCDCompilationUnit rootNode) {
     GrammarFamilyArtifactScope artifactScope = new GrammarFamilyArtifactScope(Optional.empty(),
         Names.getQualifiedName(rootNode.getPackageList()), new ArrayList<>());
+    artifactScope.setAstNode(rootNode);
     putOnStack(artifactScope);
     rootNode.accept(getTraverser());
     return artifactScope;
