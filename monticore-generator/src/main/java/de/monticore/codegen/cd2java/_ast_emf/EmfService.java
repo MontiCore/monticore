@@ -13,6 +13,7 @@ import de.monticore.cdbasis._symboltable.ICDBasisScope;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
@@ -184,16 +185,12 @@ public class EmfService extends AbstractService<EmfService> {
   
   //for InitializePackageContents template
   public List<CDTypeSymbol> retrieveSuperTypes(ASTCDClass c) {
-    List<CDTypeSymbol> res = new ArrayList<CDTypeSymbol>();
-    // superclass
-    if (c.isPresentSuperclass()) {
-      res.add(resolveCDType(c.printSuperClass()));
-    }
-    // interfaces
-    for (ASTMCObjectType i : c.getInterfaceList()) {
-      res.add(resolveCDType(i.printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter()))));
-    }
-    return res;
+    List<CDTypeSymbol> superTypes = c.getSymbol().getSuperTypesList().stream()
+        .map(ste -> ste.getTypeInfo())
+        .map(ts -> ts.getName())
+        .map(n -> resolveCDType(n))
+        .collect(Collectors.toList());
+    return superTypes;
   }
 
   /**
