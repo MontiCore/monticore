@@ -131,6 +131,9 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testCompilationUnitNotChanged() {
+    // TODO NJ: Remove the following loc as soon as stereotype deep equals is fixed
+    String cachedValue = ((ASTCDClass) originalASTCompilationUnit.getCDDefinition().getCDElement(6)).getModifier().getStereotype().getValues(0).getValue();
+
     assertDeepEquals(originalASTCompilationUnit, decoratedASTCompilationUnit);
     assertDeepEquals(originalSymbolCompilationUnit, decoratedSymbolCompilationUnit);
     assertDeepEquals(originalScopeCompilationUnit, decoratedScopeCompilationUnit);
