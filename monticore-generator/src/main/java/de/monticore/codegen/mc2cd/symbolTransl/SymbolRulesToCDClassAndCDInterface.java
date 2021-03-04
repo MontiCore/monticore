@@ -51,7 +51,8 @@ public class SymbolRulesToCDClassAndCDInterface implements UnaryOperator<Link<AS
     for (ASTSymbolRule symbolRule : rootLink.source().getSymbolRuleList()) {
       if (!matchedASTRules.contains(symbolRule)) {
         ASTCDClass cdClass = CD4AnalysisMill.cDClassBuilder().
-                setModifier(CD4AnalysisMill.modifierBuilder().build()).uncheckedBuild();
+                setModifier(CD4AnalysisMill.modifierBuilder().setPublic(true).build()).
+                uncheckedBuild();
 
         Link<ASTMCGrammar, ASTCDDefinition> parentLink = Iterables.getOnlyElement(rootLink
             .getLinks(ASTMCGrammar.class, ASTCDDefinition.class));

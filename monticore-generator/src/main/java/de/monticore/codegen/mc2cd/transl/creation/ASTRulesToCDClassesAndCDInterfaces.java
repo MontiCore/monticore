@@ -92,7 +92,8 @@ public class ASTRulesToCDClassesAndCDInterfaces implements
     for (ASTASTRule astRule : rootLink.source().getASTRuleList()) {
       if (!matchedASTRules.contains(astRule)) {
         ASTCDClass cdClass = CD4AnalysisMill.cDClassBuilder().
-                setModifier(CD4AnalysisMill.modifierBuilder().build()).uncheckedBuild();
+                setModifier(CD4AnalysisMill.modifierBuilder().setPublic(true).build()).
+                uncheckedBuild();
 
         Link<ASTMCGrammar, ASTCDDefinition> parentLink = Iterables.getOnlyElement(rootLink
                 .getLinks(ASTMCGrammar.class, ASTCDDefinition.class));

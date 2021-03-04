@@ -22,7 +22,7 @@ public class ExternalProdsToCDInterfaces implements
         ASTCDDefinition.class)) {
       for (ASTExternalProd externalProd : link.source().getExternalProdList()) {
         ASTCDInterface cdInterface = CD4AnalysisMill.cDInterfaceBuilder().
-                setModifier(CD4AnalysisMill.modifierBuilder().build()).uncheckedBuild();
+                setModifier(CD4AnalysisMill.modifierBuilder().setPublic(true).build()).uncheckedBuild();
         link.target().addCDElement(cdInterface);
         new Link<>(externalProd, cdInterface, link);
       }

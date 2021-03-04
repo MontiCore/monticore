@@ -22,7 +22,7 @@ public class AbstractProdsToCDClasses implements
         ASTCDDefinition.class)) {
       for (ASTAbstractProd abstractProd : link.source().getAbstractProdList()) {
         ASTCDClass cdClass = CD4AnalysisMill.cDClassBuilder().
-                setModifier(CD4AnalysisMill.modifierBuilder().build()).uncheckedBuild();
+                setModifier(CD4AnalysisMill.modifierBuilder().setPublic(true).build()).uncheckedBuild();
         link.target().addCDElement(cdClass);
         new Link<>(abstractProd, cdClass, link);
       }

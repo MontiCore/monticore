@@ -28,7 +28,7 @@ public class CreateSymbolProds implements UnaryOperator<Link<ASTMCGrammar, ASTCD
   private void createCDClass(ASTProd astProd, Link<ASTMCGrammar, ASTCDDefinition> link) {
     if (isSymbolDefinition(astProd)) {
       ASTCDClass cdClass = CD4AnalysisMill.cDClassBuilder().
-              setModifier(CD4AnalysisMill.modifierBuilder().build()).
+              setModifier(CD4AnalysisMill.modifierBuilder().setPublic(true).build()).
               setName(astProd.getName()).uncheckedBuild();
       link.target().addCDElement(cdClass);
       new Link<>(astProd, cdClass, link);
