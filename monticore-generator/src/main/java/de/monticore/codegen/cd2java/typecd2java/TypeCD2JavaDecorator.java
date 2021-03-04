@@ -1,8 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java.typecd2java;
 
-import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cd4analysis._symboltable.ICD4AnalysisScope;
+import de.monticore.cd4code.CD4CodeMill;
+import de.monticore.cd4code._visitor.CD4CodeTraverser;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.cd2java.AbstractCreator;
 
 public class TypeCD2JavaDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCompilationUnit> {
@@ -15,8 +17,10 @@ public class TypeCD2JavaDecorator extends AbstractCreator<ASTCDCompilationUnit, 
 
   @Override
   public ASTCDCompilationUnit decorate(final ASTCDCompilationUnit compilationUnit) {
-    TypeCD2JavaVisitor visitor = new TypeCD2JavaVisitor(scope);
-    visitor.handle(compilationUnit);
-    return compilationUnit;
+    CD4CodeTraverser traverser = CD4CodeMill.traverser();
+    traverser.add4MCBasicTypes(new TypeCD2JavaVisitor(scope));
+    ASTCDCompilationUnit copy = compilationUnit.deepClone();
+    copy.accept(traverser);
+    return copy;
   }
 }

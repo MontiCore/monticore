@@ -21,7 +21,9 @@ import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.monticore.types.prettyprint.MCBasicTypesFullPrettyPrinter;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import de.monticore.umlstereotype._ast.ASTStereoValue;
+import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
+import de.se_rwth.commons.StringTransformations;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -137,8 +139,16 @@ public class AbstractService<T extends AbstractService> {
     List<ASTMCObjectType> superInterfaces = astcdClass.getInterfaceList();
     for (ASTMCObjectType superInterface : superInterfaces) {
       String fullName = superInterface.printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter()));
+      // FullName ist:package.grammarName._ast.ASTNode
+      // Resolven kann man: package.GrammarName.ASTNode
+      String[] nameWithoutAST = fullName.replace("._ast.", ".").split("\\.");
+      if (nameWithoutAST.length>1) {
+        nameWithoutAST[nameWithoutAST.length-2] =
+                StringTransformations.capitalize(nameWithoutAST[nameWithoutAST.length-2]);
+      }
       superSymbolList.add(createASTFullName(fullName));
-      CDTypeSymbol superSymbol = resolveCDType(fullName);
+      String resolvingName = Joiners.DOT.join(nameWithoutAST);
+      CDTypeSymbol superSymbol = resolveCDType(resolvingName);
       superSymbolList.addAll(getAllSuperInterfacesTransitive(superSymbol));
     }
     return superSymbolList;
@@ -149,9 +159,16 @@ public class AbstractService<T extends AbstractService> {
     List<ASTMCObjectType> superInterfaces = cdInterface.getInterfaceList();
     for (ASTMCObjectType superInterface : superInterfaces) {
       String fullName = superInterface.printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter()));
+      // FullName ist:package.grammarName._ast.ASTNode
+      // Resolven kann man: package.GrammarName.ASTNode
+      String[] nameWithoutAST = fullName.replace("._ast.", ".").split("\\.");
+      if (nameWithoutAST.length>1) {
+        nameWithoutAST[nameWithoutAST.length-2] =
+                StringTransformations.capitalize(nameWithoutAST[nameWithoutAST.length-2]);
+      }
       superSymbolList.add(createASTFullName(fullName));
-      CDTypeSymbol superSymbol = resolveCDType(fullName);
-      superSymbolList.addAll(getAllSuperInterfacesTransitive(superSymbol));
+      String resolvingName = Joiners.DOT.join(nameWithoutAST);
+      CDTypeSymbol superSymbol = resolveCDType(resolvingName);
     }
     return superSymbolList;
   }

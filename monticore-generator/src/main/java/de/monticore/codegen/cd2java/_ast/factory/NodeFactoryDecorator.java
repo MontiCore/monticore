@@ -3,14 +3,19 @@ package de.monticore.codegen.cd2java._ast.factory;
 
 import com.google.common.collect.Lists;
 import de.monticore.cd4analysis.CD4AnalysisMill;
-import de.monticore.cd4codebasis._ast.*;
-import de.monticore.cdbasis._ast.*;
+import de.monticore.cd4analysis._visitor.CD4AnalysisTraverser;
+import de.monticore.cd4codebasis._ast.ASTCDConstructor;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.cdbasis._symboltable.ICDBasisScope;
-import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.typecd2java.TypeCD2JavaVisitor;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.umlmodifier._ast.ASTModifier;
 
@@ -133,8 +138,10 @@ public class NodeFactoryDecorator extends AbstractCreator<ASTCDCompilationUnit, 
         ASTCDDefinition superDefinition = (ASTCDDefinition) superSymbol.getAstNode();
 
         TypeCD2JavaVisitor visitor = new TypeCD2JavaVisitor((ICDBasisScope) superSymbol.getEnclosingScope());
+        CD4AnalysisTraverser traverser = CD4AnalysisMill.traverser();
+        traverser.add4MCBasicTypes(visitor);
         ASTCDCompilationUnit a = CD4AnalysisMill.cDCompilationUnitBuilder().setCDDefinition(superDefinition).build();
-        a.accept(visitor);
+        a.accept(traverser);
 
         for (ASTCDClass superClass : superDefinition.getCDClassesList()) {
           if (canAddDelegateMethod(superClass, classList, delegateMethodList)) {
