@@ -134,55 +134,20 @@ public class AbstractService<T extends AbstractService> {
     return superSymbolList;
   }
 
-  public List<String> getAllSuperInterfacesTransitive(ASTCDClass astcdClass) {
+  public List<String> getAllSuperInterfacesTransitive(CDTypeSymbol cdTypeSymbol) {
     List<String> superSymbolList = new ArrayList<>();
-    List<ASTMCObjectType> superInterfaces = astcdClass.getInterfaceList();
-    for (ASTMCObjectType superInterface : superInterfaces) {
-      String fullName = superInterface.printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter()));
-      // FullName ist:package.grammarName._ast.ASTNode
-      // Resolven kann man: package.GrammarName.ASTNode
-      String[] nameWithoutAST = fullName.replace("._ast.", ".").split("\\.");
-      if (nameWithoutAST.length>1) {
-        nameWithoutAST[nameWithoutAST.length-2] =
-                StringTransformations.capitalize(nameWithoutAST[nameWithoutAST.length-2]);
-      }
-      superSymbolList.add(createASTFullName(fullName));
-      String resolvingName = Joiners.DOT.join(nameWithoutAST);
-      CDTypeSymbol superSymbol = resolveCDType(resolvingName);
-      superSymbolList.addAll(getAllSuperInterfacesTransitive(superSymbol));
+        List<CDTypeSymbol> localSuperInterfaces = cdTypeSymbol.getSuperTypesList().stream()
+            .map(s -> s.getTypeInfo().getName())
+            .map(s -> resolveCDType(s))
+            .filter(s -> s.isIsInterface())
+            .collect(Collectors.toList());
+    for (CDTypeSymbol superInterface : localSuperInterfaces) {
+      superSymbolList.add(createASTFullName(superInterface.getFullName()));
+      superSymbolList.addAll(getAllSuperInterfacesTransitive(superInterface));
     }
     return superSymbolList;
   }
   
-  public List<String> getAllSuperInterfacesTransitive(ASTCDInterface cdInterface) {
-    List<String> superSymbolList = new ArrayList<>();
-    List<ASTMCObjectType> superInterfaces = cdInterface.getInterfaceList();
-    for (ASTMCObjectType superInterface : superInterfaces) {
-      String fullName = superInterface.printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter()));
-      // FullName ist:package.grammarName._ast.ASTNode
-      // Resolven kann man: package.GrammarName.ASTNode
-      String[] nameWithoutAST = fullName.replace("._ast.", ".").split("\\.");
-      if (nameWithoutAST.length>1) {
-        nameWithoutAST[nameWithoutAST.length-2] =
-                StringTransformations.capitalize(nameWithoutAST[nameWithoutAST.length-2]);
-      }
-      superSymbolList.add(createASTFullName(fullName));
-      String resolvingName = Joiners.DOT.join(nameWithoutAST);
-      CDTypeSymbol superSymbol = resolveCDType(resolvingName);
-    }
-    return superSymbolList;
-  }
-  
-  private List<String> getAllSuperInterfacesTransitive(CDTypeSymbol cdTypeSymbol) {
-    List<String> superSymbolList = new ArrayList<>();
-    if (cdTypeSymbol.isIsClass()) {
-      superSymbolList.addAll(getAllSuperInterfacesTransitive((ASTCDClass) cdTypeSymbol.getAstNode()));
-    } else if (cdTypeSymbol.isIsInterface()) {
-      superSymbolList.addAll(getAllSuperInterfacesTransitive((ASTCDInterface) cdTypeSymbol.getAstNode()));
-    }
-    return superSymbolList;
-  }
-
   /**
    * use symboltabe to resolve for ClassDiagrams or CDTypes
    */

@@ -95,7 +95,7 @@ public class InheritanceHandlerDecorator extends AbstractCreator<ASTCDCompilatio
       superTypeList= visitorService.getAllSuperClassesTransitive(astcdClass);
     }
     // super interfaces
-    superTypeList.addAll(visitorService.getAllSuperInterfacesTransitive(astcdClass));
+    superTypeList.addAll(visitorService.getAllSuperInterfacesTransitive(astcdClass.getSymbol()));
     replaceTemplate(EMPTY_BODY, handleMethod,
         new TemplateHookPoint(HANDLE_AST_INHERITANCE_TEMPLATE,
             languageInterfaceName, handlerSimpleTypeName, superTypeList));
