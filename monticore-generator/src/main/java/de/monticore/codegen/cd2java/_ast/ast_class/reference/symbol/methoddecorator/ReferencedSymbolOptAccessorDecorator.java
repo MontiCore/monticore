@@ -33,12 +33,13 @@ public class ReferencedSymbolOptAccessorDecorator extends OptionalAccessorDecora
    */
   @Override
   protected ASTCDMethod createGetMethod(final ASTCDAttribute ast) {
-    String name = String.format(GET, StringUtils.capitalize(ast.getName()));
+    String attributeName = getDecorationHelper().getNativeAttributeName(ast.getName());
+    String name = String.format(GET, StringUtils.capitalize(attributeName));
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, ast.getMCType(), name);
     //create correct Name A for resolveA method
     String simpleSymbolName = symbolTableService.getSimpleNameFromSymbolName(symbolTableService.getReferencedSymbolTypeName(ast));
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.ast_class.refSymbolMethods.GetSymbol",
-        ast.getName(), simpleSymbolName));
+        attributeName, simpleSymbolName));
     return method;
   }
   
@@ -50,7 +51,8 @@ public class ReferencedSymbolOptAccessorDecorator extends OptionalAccessorDecora
   protected ASTCDMethod createIsPresentMethod(final ASTCDAttribute ast) {
     String name = String.format(IS_PRESENT, StringUtils.capitalize(naiveAttributeName));
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createBooleanType(), name);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.ast_class.refSymbolMethods.IsPresentSymbol", ast.getName()));
+    String attributeName = getDecorationHelper().getNativeAttributeName(ast.getName());
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.ast_class.refSymbolMethods.IsPresentSymbol", attributeName));
     return method;
   }
 

@@ -46,7 +46,8 @@ public class ReferencedDefinitionOptAccessorDecorator extends OptionalAccessorDe
     ASTMCType type = getDecorationHelper().getReferenceTypeFromOptional(ast.getMCType().deepClone()).getMCTypeOpt().get();
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, type, name);
     String referencedSymbolType = symbolTableService.getReferencedSymbolTypeName(ast);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.ast_class.refSymbolMethods.GetDefinition", ast.getName(), referencedSymbolType));
+    String attributeName = this.getDecorationHelper().getNativeAttributeName(ast.getName());
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.ast_class.refSymbolMethods.GetDefinition", attributeName, referencedSymbolType));
     return method;
   }
   
@@ -58,7 +59,8 @@ public class ReferencedDefinitionOptAccessorDecorator extends OptionalAccessorDe
   protected ASTCDMethod createIsPresentMethod(final ASTCDAttribute ast) {
     String name = String.format(IS_PRESENT, StringUtils.capitalize(naiveAttributeName));
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createBooleanType(), name);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.ast_class.refSymbolMethods.IsPresentDefinition", ast.getName()));
+    String attributeName = this.getDecorationHelper().getNativeAttributeName(ast.getName());
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.ast_class.refSymbolMethods.IsPresentDefinition", attributeName));
     return method;
   }
 }
