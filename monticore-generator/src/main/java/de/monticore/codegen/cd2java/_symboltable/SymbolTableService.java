@@ -631,7 +631,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
 
     List<CDTypeSymbol> superInterfaces = type.getSymbol().getSuperTypesList().stream()
             .map(ste -> ste.getTypeInfo())
-            .map(ti -> ti.getFullName())
+            .map(ti -> ti.getName())
             .map(n -> resolveCDType(n))
             .filter(st -> st.isIsInterface())
             .collect(Collectors.toList());
