@@ -628,18 +628,18 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     if (!type.isPresentSymbol()) {
       return Optional.empty();
     }
-    
-    List<String> superInterfaces = type.getInterfaceList().stream()
-        .map(t -> t.printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())))
-        .collect(Collectors.toList());
-    
-    for (String superType : superInterfaces) {
-      Optional<CDTypeSymbol> sym = type.getEnclosingScope().resolveCDType(superType);
-      if (sym.isPresent()) {
-        Optional<ASTCDType> result = getTypeWithSymbolInfo(sym.get().getAstNode());
-        if (result.isPresent()) {
-          return result;
-        }
+
+    List<CDTypeSymbol> superInterfaces = type.getSymbol().getSuperTypesList().stream()
+            .map(ste -> ste.getTypeInfo())
+            .map(ti -> ti.getFullName())
+            .map(n -> resolveCDType(n))
+            .filter(st -> st.isIsInterface())
+            .collect(Collectors.toList());
+
+    for (CDTypeSymbol superType : superInterfaces) {
+      Optional<ASTCDType> result = getTypeWithSymbolInfo(superType.getAstNode());
+      if (result.isPresent()) {
+        return result;
       }
     }
     return Optional.empty();
