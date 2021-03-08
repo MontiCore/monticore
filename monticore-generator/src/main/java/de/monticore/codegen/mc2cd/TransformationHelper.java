@@ -5,12 +5,10 @@ package de.monticore.codegen.mc2cd;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import de.monticore.ast.ASTNode;
-import de.monticore.cd4analysis.CD4AnalysisMill;
-import de.monticore.cd4analysis._parser.CD4AnalysisParser;
 import de.monticore.cd4analysis._symboltable.ICD4AnalysisGlobalScope;
-import de.monticore.cd4analysis.prettyprint.CD4AnalysisFullPrettyPrinter;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4code._parser.CD4CodeParser;
+import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
@@ -103,7 +101,7 @@ public final class TransformationHelper {
   // TODO: should be placed somewhere in the UML/P CD project
   public static String prettyPrint(ASTCDBasisNode astNode) {
     // set up objects
-    CD4AnalysisFullPrettyPrinter prettyPrinter = new CD4AnalysisFullPrettyPrinter(
+    CD4CodeFullPrettyPrinter prettyPrinter = new CD4CodeFullPrettyPrinter(
         new IndentPrinter());
 
     // run, check result and return
@@ -180,7 +178,7 @@ public final class TransformationHelper {
   }
 
   public static ASTMCType createType(String typeName) {
-    CD4AnalysisParser parser = new CD4AnalysisParser();
+    CD4CodeParser parser = CD4CodeMill.parser();
     Optional<ASTMCType> optType = null;
     try {
       optType = parser.parse_StringMCType(typeName);
@@ -191,7 +189,7 @@ public final class TransformationHelper {
   }
 
   public static ASTMCReturnType createReturnType(String typeName) {
-    CD4AnalysisParser parser = new CD4AnalysisParser();
+    CD4CodeParser parser = CD4CodeMill.parser();
     Optional<ASTMCReturnType> optType = null;
     try {
       optType = parser.parse_StringMCReturnType(typeName);
@@ -202,7 +200,7 @@ public final class TransformationHelper {
   }
 
   public static ASTMCObjectType createObjectType(String typeName) {
-    CD4AnalysisParser parser = new CD4AnalysisParser();
+    CD4CodeParser parser = CD4CodeMill.parser();
     Optional<ASTMCObjectType> optType = null;
     try {
       optType = parser.parse_StringMCObjectType(typeName);
@@ -287,7 +285,7 @@ public final class TransformationHelper {
    * @param ast The input grammar, providing the qualified name
    * @return The CD if resolved from global scope, Optional.empty() otherwise
    */
-  public static Optional<ASTCDCompilationUnit> getCDforGrammar(ICD4AnalysisGlobalScope globalScope, 
+  public static Optional<ASTCDCompilationUnit> getCDforGrammar(ICD4AnalysisGlobalScope globalScope,
                                                                ASTMCGrammar ast) {
     return getCDforGrammar(globalScope, ast, "");
   }
@@ -389,7 +387,7 @@ public final class TransformationHelper {
   public static void addStereoType(ASTCDType type, String stereotypeName,
                                    String stereotypeValue) {
     if (!type.isPresentModifier()) {
-      type.setModifier(CD4AnalysisMill.modifierBuilder().build());
+      type.setModifier(CD4CodeMill.modifierBuilder().build());
     }
     addStereotypeValue(type.getModifier(),
         stereotypeName, stereotypeValue);
@@ -409,7 +407,7 @@ public final class TransformationHelper {
 
   public static void addStereoType(ASTCDType type, String stereotypeName) {
     if (!type.isPresentModifier()) {
-      type.setModifier(CD4AnalysisMill.modifierBuilder().build());
+      type.setModifier(CD4CodeMill.modifierBuilder().build());
     }
     addStereotypeValue(type.getModifier(),
         stereotypeName);
@@ -417,7 +415,7 @@ public final class TransformationHelper {
 
   public static void addStereoType(ASTCDDefinition type, String stereotypeName) {
     if (!type.isPresentModifier()) {
-      type.setModifier(CD4AnalysisMill.modifierBuilder().build());
+      type.setModifier(CD4CodeMill.modifierBuilder().build());
     }
     addStereotypeValue(type.getModifier(),
         stereotypeName);
@@ -427,7 +425,7 @@ public final class TransformationHelper {
                                    String stereotypeName,
                                    String stereotypeValue) {
     if (!attribute.isPresentModifier()) {
-      attribute.setModifier(CD4AnalysisMill.modifierBuilder().build());
+      attribute.setModifier(CD4CodeMill.modifierBuilder().build());
     }
     addStereotypeValue(attribute.getModifier(),
         stereotypeName, stereotypeValue);
@@ -443,24 +441,24 @@ public final class TransformationHelper {
                                         String stereotypeName,
                                         String stereotypeValue) {
     if (!astModifier.isPresentStereotype()) {
-      astModifier.setStereotype(CD4AnalysisMill.stereotypeBuilder().uncheckedBuild());
+      astModifier.setStereotype(CD4CodeMill.stereotypeBuilder().uncheckedBuild());
     }
     List<ASTStereoValue> stereoValueList = astModifier.getStereotype()
         .getValuesList();
-    ASTStereoValue stereoValue = CD4AnalysisMill.stereoValueBuilder().
+    ASTStereoValue stereoValue = CD4CodeMill.stereoValueBuilder().
             setName(stereotypeName).
-            setText(CD4AnalysisMill.stringLiteralBuilder().setSource(stereotypeValue).build()).uncheckedBuild();
+            setText(CD4CodeMill.stringLiteralBuilder().setSource(stereotypeValue).build()).uncheckedBuild();
     stereoValueList.add(stereoValue);
   }
 
   public static void addStereotypeValue(ASTModifier astModifier,
                                         String stereotypeName) {
     if (!astModifier.isPresentStereotype()) {
-      astModifier.setStereotype(CD4AnalysisMill.stereotypeBuilder().uncheckedBuild());
+      astModifier.setStereotype(CD4CodeMill.stereotypeBuilder().uncheckedBuild());
     }
     List<ASTStereoValue> stereoValueList = astModifier.getStereotype()
             .getValuesList();
-    ASTStereoValue stereoValue = CD4AnalysisMill.stereoValueBuilder().
+    ASTStereoValue stereoValue = CD4CodeMill.stereoValueBuilder().
             setName(stereotypeName).uncheckedBuild();
     stereoValueList.add(stereoValue);
   }

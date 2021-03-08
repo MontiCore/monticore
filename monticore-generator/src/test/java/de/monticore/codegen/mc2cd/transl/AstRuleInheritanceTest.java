@@ -42,13 +42,15 @@ public class AstRuleInheritanceTest {
 
   @BeforeClass
   public static void init() {
-    GrammarFamilyMill.init();
     LogStub.init();
     LogStub.enableFailQuick(false);
   }
 
   @Before
   public void setUp() {
+    GrammarFamilyMill.reset();
+    GrammarFamilyMill.init();
+
     ASTCDCompilationUnit cdCompilationUnit = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/AstRuleInheritance.mc4")).get();
 
@@ -89,7 +91,7 @@ public class AstRuleInheritanceTest {
 
     assertTrue(astD.isPresentSuperclass());
     name = typeToString(astD.getSuperclass());
-    assertEquals("mc2cdtransformation.super.Supergrammar.ASTSuperProd", name);
+    assertEquals("mc2cdtransformation.Supergrammar.ASTSuperProd", name);
 
     assertTrue(astF.isPresentSuperclass());
     name = typeToString(astF.getSuperclass());
@@ -158,7 +160,7 @@ public class AstRuleInheritanceTest {
     String name = typeToString(superInterfaces.get(0));
     assertEquals("mc2cdtransformation.AstRuleInheritance.ASTB", name);
     name = typeToString(superInterfaces.get(1));
-    assertEquals("mc2cdtransformation.super.Supergrammar.ASTSuperInterface", name);
+    assertEquals("mc2cdtransformation.Supergrammar.ASTSuperInterface", name);
     name = typeToString(superInterfaces.get(2));
     assertEquals("java.io.Serializable", name);
   }
@@ -174,7 +176,7 @@ public class AstRuleInheritanceTest {
     String name = typeToString(superInterfaces.get(0));
     assertEquals("mc2cdtransformation.AstRuleInheritance.ASTB", name);
     name = typeToString(superInterfaces.get(1));
-    assertEquals("mc2cdtransformation.super.Supergrammar.ASTSuperInterface", name);
+    assertEquals("mc2cdtransformation.Supergrammar.ASTSuperInterface", name);
     name = typeToString(superInterfaces.get(2));
     assertEquals("ASTExternalInterface", name);
     name = typeToString(superInterfaces.get(3));
