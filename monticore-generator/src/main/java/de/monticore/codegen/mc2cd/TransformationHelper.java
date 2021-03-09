@@ -253,12 +253,15 @@ public final class TransformationHelper {
 
 
   /**
+   *  @deprecated  use de.monticore.generating.GeneratorEngine#existsHandwrittenClass
+   *  
    * Checks if a handwritten class with the given qualifiedName (dot-separated)
    * exists on the target path
    *
    * @param qualifiedName name of the class to search for
    * @return true if a handwritten class with the qualifiedName exists
    */
+  @Deprecated
   public static boolean existsHandwrittenClass(IterablePath targetPath,
                                                String qualifiedName) {
     Path handwrittenFile = Paths.get(Names

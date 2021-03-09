@@ -40,7 +40,7 @@ public class FileFinder {
     List<File> result = new ArrayList<>();
     // calculate the folderPath (e.g., "foo/bar") and fileNameRegEx (e.g., "Car.*sym")
     String folderPath = Names.getPathFromQualifiedName(qualifiedModelName);
-    String fileNameRegEx = Names.getSimpleName(qualifiedModelName) + "." + fileExtRegEx;
+    String fileNameRegEx = Names.getSimpleName(qualifiedModelName) + "\\." + fileExtRegEx;
 
     // initialize a file filter filtering for the regular expression
     FileFilter filter = new RegexFileFilter(fileNameRegEx);

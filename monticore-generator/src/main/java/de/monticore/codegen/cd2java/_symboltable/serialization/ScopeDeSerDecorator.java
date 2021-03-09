@@ -40,8 +40,6 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
 
   public static final String DESERIALIZE_S_TEMPL = "_symboltable.serialization.scopeDeSer.DeserializeScope";
 
-  public static final String DESERIALIZE_TEMPL = "_symboltable.serialization.scopeDeSer.DeserializeString4ScopeDeSer";
-
   public static final String DESERIALIZE_SYMBOLS_TEMPL = "_symboltable.serialization.scopeDeSer.DeserializeSymbols";
 
   public static final String SERIALIZE_TEMPL = "_symboltable.serialization.scopeDeSer.Serialize4ScopeDeSer";
@@ -127,7 +125,6 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
         .addCDMember(createSerializeAddonsMethod(asParam, s2jParam))
 
         // add deserialization methods
-        .addCDMember(createDeserializeStringMethod(asInterfaceName))
         .addCDMember(createDeserializeScopeMethod(scopeClassName, millName, scopeJsonParam,
             scopeRuleAttrList))
         .addCDMember(createDeserializeArtifactScopeMethod(asInterfaceName, millName, scopeJsonParam,
@@ -199,17 +196,6 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
   }
 
   ////////////////////////////// DESERIALIZATON ////////////////////////////////////////////////////
-
-  protected ASTCDMethod createDeserializeStringMethod(String artifactScopeInterfaceName) {
-    ASTCDParameter stringParam = getCDParameterFacade()
-        .createParameter(getMCTypeFacade().createStringType(), "serialized");
-    ASTCDMethod method = getCDMethodFacade()
-        .createMethod(PUBLIC.build(), getMCTypeFacade().createQualifiedType(artifactScopeInterfaceName),
-            DESERIALIZE,
-            stringParam);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(DESERIALIZE_TEMPL));
-    return method;
-  }
 
   protected ASTCDMethod createDeserializeScopeMethod(String scopeClassName,
       String symTabMill, ASTCDParameter jsonParam, List<ASTCDAttribute> scopeRuleAttributes) {

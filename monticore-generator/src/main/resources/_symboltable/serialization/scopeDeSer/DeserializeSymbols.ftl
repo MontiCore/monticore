@@ -17,7 +17,8 @@ ${tc.signature("symbolMap", "mill", "errorCode")}
 <#assign count++>
 </#list>
       default:
-        Log.error("0xA1234x${errorCode} Unable to deserialize symbol of kind `" + kind + "`");
+        Log.warn("0xA1234x${errorCode} No DeSer found to deserialize symbol of kind `" + kind
+            + "`. The following will be ignored: " + symbol);
     }
   }
 
