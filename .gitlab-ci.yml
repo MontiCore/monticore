@@ -130,15 +130,6 @@ sonar:
   except:
     - master
 
-build_maven:
-  stage: build
-  script:
-    - "mvn $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS install"
-  only:
-    - schedules
-  except:
-    - master
-
 trigger-automata:
   stage: trigger_languages
   allow_failure: true
