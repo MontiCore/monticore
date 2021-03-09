@@ -1,13 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._symboltable;
 
-import de.monticore.cd.cd4analysis.CD4AnalysisMill;
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDDefinition;
-import de.monticore.cd.cd4analysis._ast.ASTModifier;
-import de.monticore.cd.cd4analysis._parser.CD4AnalysisParser;
-import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
+import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDDefinition;
+import de.monticore.umlmodifier._ast.ASTModifier;
+import de.monticore.cd4analysis._parser.CD4AnalysisParser;
+import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
@@ -36,7 +37,7 @@ public class SymbolTableServiceTest extends DecoratorTestCase {
     this.mcTypeFacade = MCTypeFacade.getInstance();
 
     astcdCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "Automaton");
-    astAutomaton = astcdCompilationUnit.getCDDefinition().getCDClass(0);
+    astAutomaton = astcdCompilationUnit.getCDDefinition().getCDClassesList().get(0);
 
     symTabService = new SymbolTableService(astcdCompilationUnit);
   }
@@ -271,7 +272,7 @@ public class SymbolTableServiceTest extends DecoratorTestCase {
 
   @Test
   public void testGetSymbolFullName() throws IOException {
-    CDDefinitionSymbol bar = CD4AnalysisMill.cDDefinitionSymbolBuilder().setName("Bar").build();
+    DiagramSymbol bar = BasicSymbolsMill.diagramSymbolBuilder().setName("Bar").build();
     CD4AnalysisParser cd4AnalysisParser = new CD4AnalysisParser();
 
     Optional<ASTCDClass> astcdClass = cd4AnalysisParser.parse_StringCDClass(

@@ -36,7 +36,7 @@ public class GrammarFamilyScopesGenitorDelegator extends GrammarFamilyScopesGeni
    * @param rootNode the root node
    * @return the first scope that was created
    */
-  public IGrammarFamilyArtifactScope createFromAST(de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit rootNode) {
+  public IGrammarFamilyArtifactScope createFromAST(de.monticore.cdbasis._ast.ASTCDCompilationUnit rootNode) {
     IGrammarFamilyArtifactScope as =  symbolTable.createFromAST(rootNode);
     if (!as.getPackageName().isEmpty()){
       globalScope.addLoadedFile(as.getPackageName() + "." + as.getName());

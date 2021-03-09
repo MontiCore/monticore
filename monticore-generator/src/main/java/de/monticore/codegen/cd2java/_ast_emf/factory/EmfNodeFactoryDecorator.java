@@ -1,8 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast_emf.factory;
 
-import de.monticore.cd.cd4analysis.CD4AnalysisMill;
-import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cd4codebasis._ast.*;
+import de.monticore.cdbasis._ast.*;
 import de.monticore.codegen.cd2java._ast.factory.NodeFactoryDecorator;
 import de.monticore.codegen.cd2java._ast.factory.NodeFactoryService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static de.monticore.cd.facade.CDModifier.*;
+import static de.monticore.codegen.cd2java.CDModifier.*;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast.factory.NodeFactoryConstants.*;
 import static de.monticore.codegen.cd2java._ast_emf.EmfConstants.*;
@@ -30,15 +31,15 @@ public class EmfNodeFactoryDecorator extends NodeFactoryDecorator {
     ASTMCType factoryType = this.getMCTypeFacade().createQualifiedType(factoryClassName);
 
     //remove abstract classes
-    List<ASTCDClass> astcdClassList = astcdDefinition.deepClone().getCDClassList()
+    List<ASTCDClass> astcdClassList = astcdDefinition.deepClone().getCDClassesList()
         .stream()
         .filter(ASTCDClass::isPresentModifier)
         .filter(x -> !x.getModifier().isAbstract())
         .collect(Collectors.toList());
 
-    ASTCDConstructor constructor = this.getCDConstructorFacade().createConstructor(PROTECTED, factoryClassName);
+    ASTCDConstructor constructor = this.getCDConstructorFacade().createConstructor(PROTECTED.build(), factoryClassName);
 
-    ASTCDAttribute factoryAttribute = this.getCDAttributeFacade().createAttribute(PROTECTED_STATIC, factoryType, FACTORY);
+    ASTCDAttribute factoryAttribute = this.getCDAttributeFacade().createAttribute(PROTECTED_STATIC.build(), factoryType, FACTORY);
 
     ASTCDMethod getFactoryMethod = addGetFactoryMethod(factoryType, astcdDefinition.getName(), factoryClassName);
 
@@ -69,19 +70,19 @@ public class EmfNodeFactoryDecorator extends NodeFactoryDecorator {
         .setModifier(PUBLIC.build())
         .setName(factoryClassName)
         .setSuperclass(getMCTypeFacade().createQualifiedType(E_FACTORY_IMPL))
-        .addCDAttribute(factoryAttribute)
-        .addAllCDAttributes(factoryAttributeList)
-        .addCDConstructor(constructor)
-        .addCDMethod(getFactoryMethod)
-        .addCDMethod(emfCreateMethod)
-        .addCDMethod(getPackageMethod)
-        .addAllCDMethods(createMethodList)
-        .addAllCDMethods(delegateMethodList)
+        .addCDMember(factoryAttribute)
+        .addAllCDMembers(factoryAttributeList)
+        .addCDMember(constructor)
+        .addCDMember(getFactoryMethod)
+        .addCDMember(emfCreateMethod)
+        .addCDMember(getPackageMethod)
+        .addAllCDMembers(createMethodList)
+        .addAllCDMembers(delegateMethodList)
         .build();
   }
 
   protected ASTCDMethod addGetFactoryMethod(ASTMCType factoryType, String grammarName, String factoryClassName) {
-    ASTCDMethod getFactoryMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC, factoryType, GET_FACTORY_METHOD);
+    ASTCDMethod getFactoryMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC.build(), factoryType, GET_FACTORY_METHOD);
     this.replaceTemplate(EMPTY_BODY, getFactoryMethod,
         new TemplateHookPoint("_ast_emf.factory.GetEmfFactory", factoryClassName, grammarName));
     return getFactoryMethod;
@@ -89,7 +90,7 @@ public class EmfNodeFactoryDecorator extends NodeFactoryDecorator {
 
   protected ASTCDMethod addEmfCreateMethod(List<ASTCDClass> astcdClassList, String grammarName, String factoryClassName) {
     ASTCDParameter eClassParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(E_CLASS_TYPE), "eClass");
-    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC,
+    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(),
         getMCTypeFacade().createQualifiedType(E_OBJECT_TYPE), CREATE_METHOD, eClassParameter);
     this.replaceTemplate(EMPTY_BODY, method,
         new TemplateHookPoint("_ast_emf.factory.EmfCreate",
@@ -99,7 +100,7 @@ public class EmfNodeFactoryDecorator extends NodeFactoryDecorator {
 
   protected ASTCDMethod addGetPackageMethod(String grammarName) {
     String packageName = grammarName + PACKAGE_SUFFIX;
-    ASTCDMethod method = this.getCDMethodFacade().createMethod(PACKAGE_PRIVATE,
+    ASTCDMethod method = this.getCDMethodFacade().createMethod(PACKAGE_PRIVATE.build(),
         getMCTypeFacade().createQualifiedType(packageName), "get" + packageName);
     this.replaceTemplate(EMPTY_BODY, method,
         new StringHookPoint("return (" + packageName + ")getEPackage();"));

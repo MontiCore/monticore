@@ -1,7 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java.top;
 
-import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cdbasis._ast.*;
+import de.monticore.cdinterfaceandenum._ast.*;
+import de.monticore.cd4codebasis._ast.*;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.io.paths.IterablePath;
 import de.se_rwth.commons.logging.LogStub;
@@ -14,7 +16,7 @@ import java.nio.file.Path;
 import java.util.Optional;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
-import static de.monticore.cd.facade.CDModifier.*;
+import static de.monticore.codegen.cd2java.CDModifier.*;
 import static org.junit.Assert.assertEquals;
 
 public class TopDecoratorTest extends DecoratorTestCase {
@@ -39,8 +41,8 @@ public class TopDecoratorTest extends DecoratorTestCase {
     Mockito.when(targetPath.getResolvedPath(Mockito.any(Path.class))).thenReturn(Optional.of(Mockito.mock(Path.class)));
     ASTCDDefinition ast = this.topDecorator.decorate(this.topCD).getCDDefinition();
 
-    assertEquals(1, ast.getCDClassList().size());
-    ASTCDClass cdClass = ast.getCDClassList().get(0);
+    assertEquals(1, ast.getCDClassesList().size());
+    ASTCDClass cdClass = ast.getCDClassesList().get(0);
     assertEquals("CTOP", cdClass.getName());
     assertDeepEquals(PUBLIC_ABSTRACT, cdClass.getModifier());
 
@@ -49,13 +51,13 @@ public class TopDecoratorTest extends DecoratorTestCase {
     assertEquals("CTOP", constructor.getName());
     assertDeepEquals(PROTECTED, constructor.getModifier());
 
-    assertEquals(1, ast.getCDInterfaceList().size());
-    ASTCDInterface cdInterface = ast.getCDInterfaceList().get(0);
+    assertEquals(1, ast.getCDInterfacesList().size());
+    ASTCDInterface cdInterface = ast.getCDInterfacesList().get(0);
     assertEquals("ITOP", cdInterface.getName());
     assertDeepEquals(PUBLIC, cdInterface.getModifier());
 
-    assertEquals(1, ast.getCDEnumList().size());
-    ASTCDEnum cdEnum = ast.getCDEnumList().get(0);
+    assertEquals(1, ast.getCDEnumsList().size());
+    ASTCDEnum cdEnum = ast.getCDEnumsList().get(0);
     assertEquals("ETOP", cdEnum.getName());
     assertDeepEquals(PUBLIC, cdEnum.getModifier());
   }
@@ -65,8 +67,8 @@ public class TopDecoratorTest extends DecoratorTestCase {
     Mockito.when(targetPath.exists(Mockito.any(Path.class))).thenReturn(false);
     ASTCDDefinition ast = this.topDecorator.decorate(this.topCD).getCDDefinition();
 
-    assertEquals(1, ast.getCDClassList().size());
-    ASTCDClass cdClass = ast.getCDClassList().get(0);
+    assertEquals(1, ast.getCDClassesList().size());
+    ASTCDClass cdClass = ast.getCDClassesList().get(0);
     assertEquals("C", cdClass.getName());
     assertDeepEquals(PUBLIC, cdClass.getModifier());
 
@@ -75,13 +77,13 @@ public class TopDecoratorTest extends DecoratorTestCase {
     assertEquals("C", constructor.getName());
     assertDeepEquals(PROTECTED, constructor.getModifier());
 
-    assertEquals(1, ast.getCDInterfaceList().size());
-    ASTCDInterface cdInterface = ast.getCDInterfaceList().get(0);
+    assertEquals(1, ast.getCDInterfacesList().size());
+    ASTCDInterface cdInterface = ast.getCDInterfacesList().get(0);
     assertEquals("I", cdInterface.getName());
     assertDeepEquals(PUBLIC, cdInterface.getModifier());
 
-    assertEquals(1, ast.getCDEnumList().size());
-    ASTCDEnum cdEnum = ast.getCDEnumList().get(0);
+    assertEquals(1, ast.getCDEnumsList().size());
+    ASTCDEnum cdEnum = ast.getCDEnumsList().get(0);
     assertEquals("E", cdEnum.getName());
     assertDeepEquals(PUBLIC, cdEnum.getModifier());
   }

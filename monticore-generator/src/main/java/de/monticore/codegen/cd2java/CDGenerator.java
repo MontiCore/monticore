@@ -1,7 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java;
 
-import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cdbasis._ast.*;
+import de.monticore.cdinterfaceandenum ._ast.*;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 
@@ -22,11 +23,12 @@ public class CDGenerator {
 
   public void generate(ASTCDCompilationUnit compilationUnit) {
     ASTCDDefinition definition = compilationUnit.getCDDefinition();
-    String packageAsPath = String.join(File.separator, compilationUnit.getPackageList()).toLowerCase();
+    String packageAsPath = String.join(File.separator, 
+        compilationUnit.getMCPackageDeclaration().getMCQualifiedName().getPartsList()).toLowerCase();
 
-    this.generateCDClasses(packageAsPath, definition.getCDClassList());
-    this.generateCDInterfaces(packageAsPath, definition.getCDInterfaceList());
-    this.generateCDEnums(packageAsPath, definition.getCDEnumList());
+    this.generateCDClasses(packageAsPath, definition.getCDClassesList());
+    this.generateCDInterfaces(packageAsPath, definition.getCDInterfacesList());
+    this.generateCDEnums(packageAsPath, definition.getCDEnumsList());
   }
 
   protected Path getAsPath(String packageAsPath, String name) {

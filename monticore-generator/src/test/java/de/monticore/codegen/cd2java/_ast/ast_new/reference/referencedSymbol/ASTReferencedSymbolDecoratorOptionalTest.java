@@ -4,10 +4,11 @@ package de.monticore.codegen.cd2java._ast.ast_new.reference.referencedSymbol;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
-import de.monticore.cd.cd4analysis.CD4AnalysisMill;
-import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.cd.prettyprint.CD4CodePrinter;
+import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cdbasis._ast.*;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.codegen.cd2java.AbstractService;
+import de.monticore.codegen.cd2java.CdUtilsPrinter;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
@@ -16,12 +17,13 @@ import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.umlstereotype._ast.ASTStereotype;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
-import static de.monticore.cd.facade.CDModifier.PROTECTED;
-import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java.CDModifier.PROTECTED;
+import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.DecoratorAssert.*;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
 import static org.junit.Assert.*;
@@ -45,7 +47,7 @@ public class ASTReferencedSymbolDecoratorOptionalTest extends DecoratorTestCase 
     LogStub.init();
     LogStub.enableFailQuick(false);
     this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
-    this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
+    this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
     ASTCDCompilationUnit ast = this.parse("de", "monticore", "codegen", "ast", "ReferencedSymbol");
     this.glex.setGlobalValue("service", new AbstractService(ast));
 
@@ -74,8 +76,8 @@ public class ASTReferencedSymbolDecoratorOptionalTest extends DecoratorTestCase 
 
   @Test
   public void testAttributes() {
-    assertFalse(astClass.isEmptyCDAttributes());
-    assertEquals(1, astClass.sizeCDAttributes());
+    assertFalse(astClass.getCDAttributeList().isEmpty());
+    assertEquals(1, astClass.getCDAttributeList().size());
   }
 
   @Test
@@ -83,11 +85,11 @@ public class ASTReferencedSymbolDecoratorOptionalTest extends DecoratorTestCase 
     ASTCDAttribute nameAttribute = getAttributeBy("name", originalClass);
     assertTrue(nameAttribute.getModifier().isProtected());
     assertTrue(nameAttribute.getModifier().isPresentStereotype());
-    ASTCDStereotype stereotype = nameAttribute.getModifier().getStereotype();
-    assertEquals(1, stereotype.sizeValue());
-    assertEquals("referencedSymbol", stereotype.getValue(0).getName());
-    assertTrue(stereotype.getValue(0).isPresentValue());
-    assertEquals("de.monticore.codegen.ast.referencedsymbol._symboltable.FooSymbol", stereotype.getValue(0).getValue());
+    ASTStereotype stereotype = nameAttribute.getModifier().getStereotype();
+    assertEquals(1, stereotype.sizeValues());
+    assertEquals("referencedSymbol", stereotype.getValues(0).getName());
+    assertTrue(stereotype.getValues(0).isPresentText());
+    assertEquals("de.monticore.codegen.ast.referencedsymbol._symboltable.FooSymbol", stereotype.getValues(0).getValue());
     assertDeepEquals("Optional<String>", nameAttribute.getMCType());
   }
 
@@ -144,8 +146,8 @@ public class ASTReferencedSymbolDecoratorOptionalTest extends DecoratorTestCase 
 
   @Test
   public void testAttributesMand() {
-    assertFalse(mandAttrClass.isEmptyCDAttributes());
-    assertEquals(1, mandAttrClass.sizeCDAttributes());
+    assertFalse(mandAttrClass.getCDAttributeList().isEmpty());
+    assertEquals(1, mandAttrClass.getCDAttributeList().size());
   }
 
   @Test

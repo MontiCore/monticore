@@ -1,16 +1,20 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._symboltable.scope;
 
-import de.monticore.cd.cd4analysis.CD4AnalysisMill;
-import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
-import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
+import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cd4codebasis._ast.*;
+import de.monticore.cdbasis._ast.*;
+import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
+import de.monticore.cdbasis._symboltable.CDTypeSymbol;
+import de.monticore.cdbasis._symboltable.ICDBasisScope;
+import de.monticore.cdinterfaceandenum._ast.*;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCSetType;
@@ -21,7 +25,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static de.monticore.cd.facade.CDModifier.*;
+import static de.monticore.codegen.cd2java.CDModifier.*;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.codegen.cd2java._symboltable.scope.GlobalScopeClassDecorator.LOAD;
@@ -82,20 +86,20 @@ public class GlobalScopeInterfaceDecorator
     return CD4AnalysisMill.cDInterfaceBuilder()
         .setName(globalScopeInterfaceName)
         .setModifier(PUBLIC.build())
-        .addAllInterface(getSuperGlobalScopeInterfaces())
+        .addAllInterfaces(getSuperGlobalScopeInterfaces())
         .addInterface(symbolTableService.getScopeInterfaceType())
-        .addAllCDMethods(createCalculateModelNameMethods(symbolClasses))
-        .addAllCDMethods(resolverMethods)
-        .addAllCDMethods(createResolveAdaptedMethods(symbolClasses))
-        .addAllCDMethods(createResolveAdaptedSuperMethods())
-        .addAllCDMethods(createResolveMethods(symbolClasses, definitionName))
-        .addAllCDMethods(createSuperProdResolveMethods(definitionName))
-        .addAllCDMethods(createEnclosingScopeMethods(globalScopeName))
-        .addAllCDMethods(createDeSerMethods())
-        .addCDMethod(createGetNameMethod(globalScopeName))
-        .addCDMethod(createIsPresentNameMethod())
-        .addCDMethod(creatCheckIfContinueAsSubScopeMethod())
-        .addCDMethod(createGetRealThisMethod(globalScopeInterfaceName))
+        .addAllCDMembers(createCalculateModelNameMethods(symbolClasses))
+        .addAllCDMembers(resolverMethods)
+        .addAllCDMembers(createResolveAdaptedMethods(symbolClasses))
+        .addAllCDMembers(createResolveAdaptedSuperMethods())
+        .addAllCDMembers(createResolveMethods(symbolClasses, definitionName))
+        .addAllCDMembers(createSuperProdResolveMethods(definitionName))
+        .addAllCDMembers(createEnclosingScopeMethods(globalScopeName))
+        .addAllCDMembers(createDeSerMethods())
+        .addCDMember(createGetNameMethod(globalScopeName))
+        .addCDMember(createIsPresentNameMethod())
+        .addCDMember(creatCheckIfContinueAsSubScopeMethod())
+        .addCDMember(createGetRealThisMethod(globalScopeInterfaceName))
         .build();
   }
 
@@ -111,19 +115,19 @@ public class GlobalScopeInterfaceDecorator
     }
   }
 
-  private List<ASTMCQualifiedType> getSuperGlobalScopeInterfaces() {
+  private List<ASTMCObjectType> getSuperGlobalScopeInterfaces() {
     return getSuperGlobalScopeInterfaces(symbolTableService.getCDSymbol());
   }
 
-  protected List<ASTMCQualifiedType> getSuperGlobalScopeInterfaces(CDDefinitionSymbol symbol){
-    List<ASTMCQualifiedType> result = new ArrayList<>();
-    for (CDDefinitionSymbol superGrammar : symbolTableService.getSuperCDsDirect(symbol)) {
+  protected List<ASTMCObjectType> getSuperGlobalScopeInterfaces(DiagramSymbol symbol){
+    List<ASTMCObjectType> result = new ArrayList<>();
+    for (DiagramSymbol superGrammar : symbolTableService.getSuperCDsDirect(symbol)) {
       if (!superGrammar.isPresentAstNode()) {
         Log.error("0xA4323 Unable to load AST of '" + superGrammar.getFullName()
             + "' that is supergrammar of '" + symbolTableService.getCDName() + "'.");
         continue;
       }
-      if (symbolTableService.hasStartProd(superGrammar.getAstNode())
+      if (symbolTableService.hasStartProd((ASTCDDefinition) superGrammar.getAstNode())
           ||!symbolTableService.getSymbolDefiningSuperProds(superGrammar).isEmpty() ) {
         result.add(symbolTableService.getGlobalScopeInterfaceType(superGrammar));
       }else{
@@ -145,7 +149,7 @@ public class GlobalScopeInterfaceDecorator
         String symbolResolverInterfaceTypeName = symbolTableService.
             getSymbolResolverInterfaceFullName(symbolProd, symbolTableService.getCDSymbol());
         ASTMCType listType = getMCTypeFacade().createListTypeOf(symbolResolverInterfaceTypeName);
-        ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PROTECTED, listType, attrName);
+        ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PROTECTED.build(), listType, attrName);
         attributeList.add(attribute);
       }
     }
@@ -158,7 +162,7 @@ public class GlobalScopeInterfaceDecorator
       String simpleName = symbolTableService.removeASTPrefix(symbolProd);
       ASTMCSetType setTypeOfString = getMCTypeFacade().createSetTypeOf(String.class);
       ASTCDParameter nameParam = getCDParameterFacade().createParameter(String.class, NAME_VAR);
-      ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, setTypeOfString,
+      ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), setTypeOfString,
           String.format("calculateModelNamesFor%s", simpleName), nameParam);
       this.replaceTemplate(EMPTY_BODY, method,
           new TemplateHookPoint(TEMPLATE_PATH + "CalculateModelNamesFor"));
@@ -184,7 +188,7 @@ public class GlobalScopeInterfaceDecorator
     return methodList;
   }
 
-  protected ASTCDMethod createResolveAdaptedMethod(ASTCDType symbolProd, CDDefinitionSymbol cdDefinitionSymbol,
+  protected ASTCDMethod createResolveAdaptedMethod(ASTCDType symbolProd, DiagramSymbol cdDefinitionSymbol,
                                                    ASTCDParameter foundSymbolsParameter, ASTCDParameter nameParameter,
                                                    ASTCDParameter accessModifierParameter) {
     String symbolFullName = symbolTableService.getSymbolFullName(symbolProd, cdDefinitionSymbol);
@@ -194,7 +198,7 @@ public class GlobalScopeInterfaceDecorator
         getMCTypeFacade().createBasicGenericTypeOf(PREDICATE, symbolFullName), PREDICATE_VAR);
     String methodName = String.format(RESOLVE_ADAPTED, symbolTableService.removeASTPrefix(symbolProd.getName()));
 
-    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createListTypeOf(symbolFullName), methodName,
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), getMCTypeFacade().createListTypeOf(symbolFullName), methodName,
         foundSymbolsParameter, nameParameter, accessModifierParameter, predicateParameter);
 
     this.replaceTemplate(EMPTY_BODY, method,
@@ -208,8 +212,8 @@ public class GlobalScopeInterfaceDecorator
     ASTCDParameter foundSymbolsParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createBooleanType(), FOUND_SYMBOLS_VAR);
 
     List<ASTCDMethod> methodList = new ArrayList<>();
-    for (CDDefinitionSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
-      for (CDTypeSymbol type : cdDefinitionSymbol.getTypes()) {
+    for (DiagramSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
+      for (CDTypeSymbol type : ((ICDBasisScope) cdDefinitionSymbol.getEnclosingScope()).getLocalCDTypeSymbols()) {
         if (type.isPresentAstNode() && type.getAstNode().isPresentModifier()
             && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifier())) {
           methodList.add(createResolveAdaptedMethod(type.getAstNode(), cdDefinitionSymbol, foundSymbolsParameter, nameParameter,
@@ -240,7 +244,7 @@ public class GlobalScopeInterfaceDecorator
   }
 
   protected List<ASTCDMethod> createResolveMethods(ASTCDType symbolProd, ASTCDParameter nameParameter, ASTCDParameter foundSymbolsParameter,
-                                                   ASTCDParameter accessModifierParameter, CDDefinitionSymbol cdDefinitionSymbol, String definitionName) {
+                                                   ASTCDParameter accessModifierParameter, DiagramSymbol cdDefinitionSymbol, String definitionName) {
     List<ASTCDMethod> resolveMethods = new ArrayList<>();
     String className = symbolTableService.removeASTPrefix(symbolProd);
     String symbolFullTypeName = symbolTableService.getSymbolFullName(symbolProd, cdDefinitionSymbol);
@@ -262,8 +266,8 @@ public class GlobalScopeInterfaceDecorator
     ASTCDParameter accessModifierParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(ACCESS_MODIFIER), MODIFIER_VAR);
     ASTCDParameter foundSymbolsParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createBooleanType(), FOUND_SYMBOLS_VAR);
 
-    for (CDDefinitionSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
-      for (CDTypeSymbol type : cdDefinitionSymbol.getTypes()) {
+    for (DiagramSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
+      for (CDTypeSymbol type : ((ICDBasisScope) cdDefinitionSymbol.getEnclosingScope()).getLocalCDTypeSymbols()) {
         if (type.isPresentAstNode() && type.getAstNode().isPresentModifier()
             && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifier())) {
           resolveMethods.addAll(createResolveMethods(type.getAstNode(), nameParameter, foundSymbolsParameter,
@@ -278,7 +282,7 @@ public class GlobalScopeInterfaceDecorator
                                                 ASTCDParameter foundSymbolsParameter, ASTCDParameter nameParameter,
                                                 ASTCDParameter accessModifierParameter, ASTCDParameter predicateParameter) {
     String methodName = String.format(RESOLVE_MANY, className);
-    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, returnType, methodName,
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), returnType, methodName,
         foundSymbolsParameter, nameParameter, accessModifierParameter, predicateParameter);
     this.replaceTemplate(EMPTY_BODY, method,
         new TemplateHookPoint(TEMPLATE_PATH + "ResolveMany4GlobalScope", className, fullSymbolName));
@@ -288,22 +292,22 @@ public class GlobalScopeInterfaceDecorator
   protected ASTCDMethod createLoadModelsForMethod(String className,
                                                   ASTCDParameter nameParameter, String definitionName) {
     String methodName = String.format(LOAD, className);
-    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, methodName, nameParameter);
+    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT.build(), methodName, nameParameter);
   }
 
   protected ASTCDMethod createGetRealThisMethod(String realThis){
-    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, getMCTypeFacade().createQualifiedType(realThis), "getRealThis");
+    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT.build(), getMCTypeFacade().createQualifiedType(realThis), "getRealThis");
   }
 
   protected List<ASTCDMethod> createDeSerMethods(){
     // attribute and methods for scope deser
-    ASTCDAttribute deSerAttr = getCDAttributeFacade().createAttribute(PROTECTED,
+    ASTCDAttribute deSerAttr = getCDAttributeFacade().createAttribute(PROTECTED.build(),
         getMCTypeFacade().createQualifiedType(I_DE_SER), DESER_VAR);
     List<ASTCDMethod> deSerMethods = accessorDecorator.decorate(deSerAttr);
     deSerMethods.addAll(mutatorDecorator.decorate(deSerAttr));
 
     // Map of symbol desers
-    ASTCDAttribute deSerMapAttribute = getCDAttributeFacade().createAttribute(PROTECTED,
+    ASTCDAttribute deSerMapAttribute = getCDAttributeFacade().createAttribute(PROTECTED.build(),
             getMCTypeFacade().createQualifiedType("Map<String," + I_SYMBOL_DE_SER + ">"),
         SYM_DESERS_VAR);
     List<ASTCDMethod> deSerMapMethods = accessorDecorator.decorate(deSerMapAttribute);
@@ -312,13 +316,13 @@ public class GlobalScopeInterfaceDecorator
     // Create simple putDeSer(String key, IDeSer value)
     ASTCDParameter key = getCDParameterFacade().createParameter(String.class, "key");
     ASTCDParameter value = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(I_SYMBOL_DE_SER), "value");
-    ASTCDMethod putMethod = getCDMethodFacade().createMethod(PUBLIC, "putSymbolDeSer", key, value);
+    ASTCDMethod putMethod = getCDMethodFacade().createMethod(PUBLIC.build(), "putSymbolDeSer", key, value);
     deSerMapMethods.add(putMethod);
 
     // Create simple value getDeSer(String key)
     key = getCDParameterFacade().createParameter(String.class, "key");
     ASTMCQualifiedType returnType = getMCTypeFacade().createQualifiedType(I_SYMBOL_DE_SER);
-    ASTCDMethod getMethod = getCDMethodFacade().createMethod(PUBLIC, returnType, "getSymbolDeSer", key);
+    ASTCDMethod getMethod = getCDMethodFacade().createMethod(PUBLIC.build(), returnType, "getSymbolDeSer", key);
     deSerMapMethods.add(getMethod);
 
     deSerMapMethods.addAll(deSerMethods);
@@ -329,7 +333,7 @@ public class GlobalScopeInterfaceDecorator
 
   protected ASTCDMethod createSetModelPathMethod(){
     ASTCDParameter modelPathParam = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(MODEL_PATH_TYPE), "modelPath");
-    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT,"setModelPath", modelPathParam);
+    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT.build(),"setModelPath", modelPathParam);
   }
 
 
@@ -342,7 +346,7 @@ public class GlobalScopeInterfaceDecorator
   protected List<ASTCDMethod> createEnclosingScopeMethods(String globalScopeName) {
     // create attribute just for method generation purposes
     ASTCDAttribute enclosingScopeAttribute = this.getCDAttributeFacade()
-        .createAttribute(PROTECTED,
+        .createAttribute(PROTECTED.build(),
             symbolTableService.getScopeInterfaceType(), ENCLOSING_SCOPE_VAR);
     getDecorationHelper().addAttributeDefaultValues(enclosingScopeAttribute, glex);
 
@@ -372,7 +376,7 @@ public class GlobalScopeInterfaceDecorator
    */
 
   protected ASTCDMethod createGetNameMethod(String globalScopeName) {
-    ASTCDMethod getNameMethod = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createStringType(), "getName");
+    ASTCDMethod getNameMethod = getCDMethodFacade().createMethod(PUBLIC.build(), getMCTypeFacade().createStringType(), "getName");
     String generatedErrorCode = symbolTableService.getGeneratedErrorCode(globalScopeName);
     this.replaceTemplate(EMPTY_BODY, getNameMethod, new StringHookPoint(
         "Log.error(\"0xA6101" + generatedErrorCode
@@ -388,7 +392,7 @@ public class GlobalScopeInterfaceDecorator
    * @return false
    */
   protected ASTCDMethod createIsPresentNameMethod() {
-    ASTCDMethod isPresentNameMethod = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createBooleanType(), "isPresentName");
+    ASTCDMethod isPresentNameMethod = getCDMethodFacade().createMethod(PUBLIC.build(), getMCTypeFacade().createBooleanType(), "isPresentName");
     this.replaceTemplate(EMPTY_BODY, isPresentNameMethod, new StringHookPoint("return false;"));
     return isPresentNameMethod;
   }
@@ -396,7 +400,7 @@ public class GlobalScopeInterfaceDecorator
 
   protected ASTCDMethod creatCheckIfContinueAsSubScopeMethod() {
     ASTCDParameter modelNameParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createStringType(), "symbolName");
-    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createBooleanType(), "checkIfContinueAsSubScope", modelNameParameter);
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), getMCTypeFacade().createBooleanType(), "checkIfContinueAsSubScope", modelNameParameter);
     this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return false;"));
     return method;
   }

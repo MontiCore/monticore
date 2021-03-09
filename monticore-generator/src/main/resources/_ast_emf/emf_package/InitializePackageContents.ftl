@@ -31,12 +31,12 @@ de.monticore.emf._ast.ASTENodePackage theASTENodePackage = (de.monticore.emf._as
 </#list>
 
 <#--add super types if existend, if not standard ENode-->
-<#list definition.getCDClassList() as astClass>
+<#list definition.getCDClassesList() as astClass>
     <#assign interfaceName = astClass.getName()>
-    <#if !astClass.getSymbol().getSuperTypes()?has_content>
+    <#if !astClass.isPresentSuperclass() && astClass.isEmptyInterfaceList()>
         ${interfaceName?uncap_first}.getESuperTypes().add(theASTENodePackage.getENode());
     <#else>
-        <#list astClass.getSymbol().getSuperTypes() as superType>
+        <#list service.retrieveSuperTypes(astClass) as superType>
             <#assign package = service.getClassPackage(superType)>
             ${interfaceName?uncap_first}.getESuperTypes().add(${package}.get${superType.getName()}());
         </#list>
@@ -53,20 +53,20 @@ initEEnum(constants${grammarName}, ${grammarName}Literals.class, "${grammarName}
 </#list>
 
 <#--initialisation for all classes-->
-<#list definition.getCDClassList() as cdClass>
+<#list definition.getCDClassesList() as cdClass>
     <#assign className = cdClass.getName()>
     <#assign abstract = service.determineAbstractString(cdClass)>
     initEClass(${className?uncap_first}, ${className}.class, "${className}", ${abstract}, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 </#list>
 
-<#list definition.getCDInterfaceList() as cdInterface>
+<#list definition.getCDInterfacesList() as cdInterface>
  <#if cdInterface.getName() != "AST"+ definition.getName() + "Node">
     <#assign interfaceName = cdInterface.getName()>
     initEClass(${interfaceName?uncap_first}, ${interfaceName}.class, "${interfaceName}", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
  </#if>
 </#list>
 
-<#list definition.getCDClassList() as cdClass>
+<#list definition.getCDClassesList() as cdClass>
     <#list cdClass.getCDAttributeList() as attribute>
         <#if !service.isInheritedAttribute(attribute)>
             <#assign get = service.determineGetEmfMethod(attribute, definition)>
@@ -82,7 +82,7 @@ initEEnum(constants${grammarName}, ${grammarName}Literals.class, "${grammarName}
     </#list>
 </#list>
 
-<#list definition.getCDInterfaceList() as cdInterface>
+<#list definition.getCDInterfacesList() as cdInterface>
     <#list cdInterface.getCDAttributeList() as attribute>
         <#if !service.isInheritedAttribute(attribute) >
             <#assign get = service.determineGetEmfMethod(attribute, definition)>

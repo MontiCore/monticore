@@ -1,11 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java.top;
 
-import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cdbasis._ast.*;
+import de.monticore.cdinterfaceandenum._ast.*;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.io.paths.IterablePath;
+import de.monticore.umlmodifier._ast.ASTModifier;
 
-import static de.monticore.cd.facade.CDModifier.*;
+import static de.monticore.codegen.cd2java.CDModifier.*;
 
 import static de.monticore.codegen.mc2cd.TransformationHelper.existsHandwrittenClass;
 import static de.monticore.utils.Names.constructQualifiedName;
@@ -28,15 +30,15 @@ public class TopDecorator extends AbstractCreator<ASTCDCompilationUnit,ASTCDComp
   @Override
   public ASTCDCompilationUnit decorate(final ASTCDCompilationUnit originalCD) {
     ASTCDCompilationUnit topCD = originalCD;
-    topCD.getCDDefinition().getCDClassList().stream()
+    topCD.getCDDefinition().getCDClassesList().stream()
         .filter(cdClass -> existsHandwrittenClass(hwPath, constructQualifiedName(topCD.getPackageList(), cdClass.getName())))
         .forEach(this::applyTopMechanism);
 
-    topCD.getCDDefinition().getCDInterfaceList().stream()
+    topCD.getCDDefinition().getCDInterfacesList().stream()
         .filter(cdInterface -> existsHandwrittenClass(hwPath, constructQualifiedName(topCD.getPackageList(), cdInterface.getName())))
         .forEach(this::applyTopMechanism);
 
-    topCD.getCDDefinition().getCDEnumList().stream()
+    topCD.getCDDefinition().getCDEnumsList().stream()
         .filter(cdEnum -> existsHandwrittenClass(hwPath, constructQualifiedName(topCD.getPackageList(), cdEnum.getName())))
         .forEach(this::applyTopMechanism);
 
@@ -61,8 +63,7 @@ public class TopDecorator extends AbstractCreator<ASTCDCompilationUnit,ASTCDComp
 
   private void makeAbstract(ASTCDType type) {
     if (type.isPresentModifier()) {
-      makeAbstract(type.getModifier
-              ());
+      makeAbstract(type.getModifier());
     } else {
       type.setModifier(PACKAGE_PRIVATE_ABSTRACT.build());
     }

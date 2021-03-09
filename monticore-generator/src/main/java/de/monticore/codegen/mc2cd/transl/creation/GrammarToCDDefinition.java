@@ -2,9 +2,9 @@
 
 package de.monticore.codegen.mc2cd.transl.creation;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDDefinition;
-import de.monticore.cd.cd4analysis._ast.CD4AnalysisNodeFactory;
+import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.utils.Link;
 
@@ -22,7 +22,8 @@ public class GrammarToCDDefinition implements
     
     for (Link<ASTMCGrammar, ASTCDCompilationUnit> link : rootLink.getLinks(ASTMCGrammar.class,
         ASTCDCompilationUnit.class)) {
-      ASTCDDefinition cdDefinition = CD4AnalysisNodeFactory.createASTCDDefinition();
+      ASTCDDefinition cdDefinition = CD4AnalysisMill.cDDefinitionBuilder().
+              setModifier(CD4AnalysisMill.modifierBuilder().build()).uncheckedBuild();
       link.target().setCDDefinition(cdDefinition);
       new Link<>(link.source(), cdDefinition, link);
     }
