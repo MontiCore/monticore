@@ -1,9 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._od;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDDefinition;
-import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDDefinition;
+import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.codegen.cd2java.AbstractService;
 
 import static de.monticore.codegen.cd2java._od.ODConstants.OD_SUFFIX;
@@ -15,7 +15,7 @@ public class ODService extends AbstractService<ODService> {
     super(compilationUnit);
   }
 
-  public ODService(CDDefinitionSymbol cdSymbol) {
+  public ODService(DiagramSymbol cdSymbol) {
     super(cdSymbol);
   }
 
@@ -25,11 +25,11 @@ public class ODService extends AbstractService<ODService> {
   }
 
   @Override
-  protected ODService createService(CDDefinitionSymbol cdSymbol) {
+  protected ODService createService(DiagramSymbol cdSymbol) {
     return createODService(cdSymbol);
   }
 
-  public static ODService createODService(CDDefinitionSymbol cdSymbol) {
+  public static ODService createODService(DiagramSymbol cdSymbol) {
     return new ODService(cdSymbol);
   }
 

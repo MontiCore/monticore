@@ -1,7 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java.data;
 
-import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cdbasis._ast.*;
+import de.monticore.cd4codebasis._ast.*;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.AbstractTransformer;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
@@ -14,8 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static de.monticore.cd.facade.CDModifier.PROTECTED;
-import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java.CDModifier.PROTECTED;
+import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 
@@ -42,12 +43,12 @@ public class DataDecorator extends AbstractTransformer<ASTCDClass> {
   @Override
   public ASTCDClass decorate(final ASTCDClass originalClass, ASTCDClass changedClass) {
     this.clazzName = originalClass.deepClone().getName();
-    changedClass.addCDConstructor(createDefaultConstructor(originalClass));
+    changedClass.addCDMember(createDefaultConstructor(originalClass));
     if (originalClass.isPresentSuperclass()) {
       changedClass.setSuperclass(originalClass.getSuperclass());
     }
     changedClass.addAllInterface(originalClass.getInterfaceList());
-    changedClass.addAllCDMethods(originalClass.getCDMethodList());
+    changedClass.addAllCDMembers(originalClass.getCDMethodList());
 
     //remove inherited attributes, because these are already defined in superclass
     List<ASTCDAttribute> ownAttributes = originalClass.deepClone().getCDAttributeList()
@@ -55,16 +56,16 @@ public class DataDecorator extends AbstractTransformer<ASTCDClass> {
         .filter(a -> !service.isInheritedAttribute(a))
         .collect(Collectors.toList());
 
-    changedClass.addAllCDMethods(getAllDataMethods(originalClass, originalClass.getCDAttributeList()));
+    changedClass.addAllCDMembers(getAllDataMethods(originalClass, originalClass.getCDAttributeList()));
     // no Inherited attributes only, because inherited once are cloned through super.deepClone()
-    changedClass.addCDMethod(createDeepCloneWithParam(originalClass, ownAttributes));
+    changedClass.addCDMember(createDeepCloneWithParam(originalClass, ownAttributes));
 
     changedClass.setCDAttributeList(ownAttributes);
     changedClass.getCDAttributeList().forEach(this::addAttributeDefaultValues);
 
     //remove methods that are already defined by ast rules
-    changedClass.addAllCDMethods(service.getMethodListWithoutDuplicates(originalClass.getCDMethodList(), createGetter(ownAttributes)));
-    changedClass.addAllCDMethods(service.getMethodListWithoutDuplicates(originalClass.getCDMethodList(), createSetter(ownAttributes)));
+    changedClass.addAllCDMembers(service.getMethodListWithoutDuplicates(originalClass.getCDMethodList(), createGetter(ownAttributes)));
+    changedClass.addAllCDMembers(service.getMethodListWithoutDuplicates(originalClass.getCDMethodList(), createSetter(ownAttributes)));
 
     return changedClass;
   }
@@ -79,7 +80,7 @@ public class DataDecorator extends AbstractTransformer<ASTCDClass> {
   }
 
   protected ASTCDConstructor createDefaultConstructor(ASTCDClass clazz) {
-    return this.getCDConstructorFacade().createDefaultConstructor(PROTECTED, clazz);
+    return this.getCDConstructorFacade().createDefaultConstructor(PROTECTED.build(), clazz);
   }
 
   protected List<ASTCDMethod> getAllDataMethods(ASTCDClass astcdClass, List<ASTCDAttribute> attributeList) {
@@ -133,7 +134,7 @@ public class DataDecorator extends AbstractTransformer<ASTCDClass> {
     // deep clone with result parameter
     ASTMCType classType = this.getMCTypeFacade().createQualifiedType(simpleName);
     ASTCDParameter parameter = getCDParameterFacade().createParameter(classType, "result");
-    ASTCDMethod deepCloneWithParam = this.getCDMethodFacade().createMethod(PUBLIC, classType, DEEP_CLONE_METHOD, parameter);
+    ASTCDMethod deepCloneWithParam = this.getCDMethodFacade().createMethod(PUBLIC.build(), classType, DEEP_CLONE_METHOD, parameter);
     this.replaceTemplate(EMPTY_BODY, deepCloneWithParam, new TemplateHookPoint("data.DeepCloneWithParameters", noInheritedAttributes));
     return deepCloneWithParam;
   }

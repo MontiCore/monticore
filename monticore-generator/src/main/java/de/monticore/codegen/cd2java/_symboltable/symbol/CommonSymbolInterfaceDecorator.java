@@ -1,8 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._symboltable.symbol;
 
-import de.monticore.cd.cd4analysis.CD4AnalysisMill;
-import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cdbasis._ast.*;
+import de.monticore.cdinterfaceandenum._ast.*;
+import de.monticore.cd4codebasis._ast.*;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
@@ -16,7 +18,7 @@ import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.ACCEPT_ME
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.ENCLOSING_SCOPE_VAR;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SYMBOL;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISITOR_PREFIX;
-import static de.monticore.cd.facade.CDModifier.*;
+import static de.monticore.codegen.cd2java.CDModifier.*;
 
 /**
  * creates a CommonSymbolInterface interface from a grammar
@@ -47,8 +49,8 @@ public class CommonSymbolInterfaceDecorator extends AbstractCreator<ASTCDCompila
         .setName(commonSymbolInterfaceName)
         .setModifier(PUBLIC.build())
         .addInterface(getMCTypeFacade().createQualifiedType(I_SYMBOL))
-        .addCDMethod(createAcceptTraverserMethod())
-        .addAllCDMethods(createEnclosingScopeMethods(scopeInterfaceName))
+        .addCDMember(createAcceptTraverserMethod())
+        .addAllCDMembers(createEnclosingScopeMethods(scopeInterfaceName))
         .build();
   }
 
@@ -56,11 +58,11 @@ public class CommonSymbolInterfaceDecorator extends AbstractCreator<ASTCDCompila
   protected ASTCDMethod createAcceptTraverserMethod() {
     ASTMCQualifiedType visitorType = getMCTypeFacade().createQualifiedType(visitorService.getTraverserInterfaceFullName());
     ASTCDParameter parameter = getCDParameterFacade().createParameter(visitorType, VISITOR_PREFIX);
-    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, ACCEPT_METHOD, parameter);
+    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT.build(), ACCEPT_METHOD, parameter);
   }
 
   protected ASTCDAttribute createEnclosingScopeAttribute(String scopeInterface) {
-    return this.getCDAttributeFacade().createAttribute(PROTECTED, scopeInterface, ENCLOSING_SCOPE_VAR);
+    return this.getCDAttributeFacade().createAttribute(PROTECTED.build(), scopeInterface, ENCLOSING_SCOPE_VAR);
   }
 
   protected List<ASTCDMethod> createEnclosingScopeMethods(String scopeInterface) {

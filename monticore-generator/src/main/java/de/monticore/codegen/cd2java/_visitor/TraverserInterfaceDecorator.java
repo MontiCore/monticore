@@ -2,15 +2,20 @@
 package de.monticore.codegen.cd2java._visitor;
 
 import com.google.common.collect.Lists;
-import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
-import de.monticore.cd.cd4code.CD4CodeMill;
+import de.monticore.cdbasis._ast.*;
+import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
+import de.monticore.cd4code.CD4CodeMill;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
+import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
@@ -21,7 +26,7 @@ import de.se_rwth.commons.StringTransformations;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_INTERFACE;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SCOPE;
@@ -54,7 +59,7 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
     String traverserSimpleName = visitorService.getTraverserInterfaceSimpleName();
     
     // get visitor types and names of super cds and own cd
-    List<CDDefinitionSymbol> superCDsTransitive = visitorService.getSuperCDsTransitive();
+    List<DiagramSymbol> superCDsTransitive = visitorService.getSuperCDsTransitive();
     List<String> visitorFullNameList = superCDsTransitive.stream()
         .map(visitorService::getVisitor2FullName)
         .collect(Collectors.toList());
@@ -73,18 +78,18 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
         .map(visitorService::getVisitorSimpleName)
         .collect(Collectors.toList()));
 
-    List<ASTMCQualifiedType> superInterfaces = this.visitorService.getSuperTraverserInterfaces();
+    List<ASTMCObjectType> superInterfaces = this.visitorService.getSuperTraverserInterfaces();
     if (superInterfaces.isEmpty()) {
       superInterfaces.add(getMCTypeFacade().createQualifiedType(ITRAVERSER_FULL_NAME));
     }
 
     ASTCDInterface visitorInterface = CD4CodeMill.cDInterfaceBuilder()
         .setName(traverserSimpleName)
-        .addAllInterface(superInterfaces)
+        .addAllInterfaces(superInterfaces)
         .setModifier(PUBLIC.build())
-        .addAllCDMethods(addVisitor2Methods(definitionList))
-        .addAllCDMethods(addHanlderMethods(definitionList))
-        .addAllCDMethods(createTraverserDelegatingMethods(compilationUnit.getCDDefinition()))
+        .addAllCDMembers(addVisitor2Methods(definitionList))
+        .addAllCDMembers(addHanlderMethods(definitionList))
+        .addAllCDMembers(createTraverserDelegatingMethods(compilationUnit.getCDDefinition()))
         .build();
     
     return visitorInterface;
@@ -135,13 +140,13 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
       // e.g. public void setAutomataVisitor(automata._visitor.AutomataVisitor2 automataVisitor)
       ASTMCQualifiedType visitorType = visitorService.getVisitor2Type(cd.getSymbol());
       ASTCDParameter visitorParameter = getCDParameterFacade().createParameter(visitorType, StringTransformations.uncapitalize(simpleName));
-      ASTCDMethod addVisitorMethod = getCDMethodFacade().createMethod(PUBLIC, "add4" + cd.getName(), visitorParameter);
+      ASTCDMethod addVisitorMethod = getCDMethodFacade().createMethod(PUBLIC.build(), "add4" + cd.getName(), visitorParameter);
       methodList.add(addVisitorMethod);
 
       // add getter for visitor attribute
       // e.g. public Optional<automata._visitor.AutomataVisitor2> getAutomataVisitor()
       ASTMCListType listVisitorType = getMCTypeFacade().createListTypeOf(visitorType);
-      ASTCDMethod getVisitorsMethod = getCDMethodFacade().createMethod(PUBLIC, listVisitorType, "get" + simpleName + "List");
+      ASTCDMethod getVisitorsMethod = getCDMethodFacade().createMethod(PUBLIC.build(), listVisitorType, "get" + simpleName + "List");
       this.replaceTemplate(EMPTY_BODY, getVisitorsMethod, new StringHookPoint("return new ArrayList<>();"));
       methodList.add(getVisitorsMethod);
     }
@@ -163,13 +168,13 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
       // e.g. public void setAutomataHandler(automata._visitor.AutomataHandler automataHandler)
       ASTMCQualifiedType handlerType = visitorService.getHandlerType(cd.getSymbol());
       ASTCDParameter handlerParameter = getCDParameterFacade().createParameter(handlerType, StringTransformations.uncapitalize(simpleName));
-      ASTCDMethod setVisitorMethod = getCDMethodFacade().createMethod(PUBLIC, "set" + simpleName, handlerParameter);
+      ASTCDMethod setVisitorMethod = getCDMethodFacade().createMethod(PUBLIC.build(), "set" + simpleName, handlerParameter);
       methodList.add(setVisitorMethod);
 
       // add getter for visitor attribute
       // e.g. public Optional<automata._visitor.AutomataHandler> getAutomataHandler()
       ASTMCOptionalType optionalHandlerType = getMCTypeFacade().createOptionalTypeOf(handlerType);
-      ASTCDMethod getVisitorMethod = getCDMethodFacade().createMethod(PUBLIC, optionalHandlerType, "get" + simpleName);
+      ASTCDMethod getVisitorMethod = getCDMethodFacade().createMethod(PUBLIC.build(), optionalHandlerType, "get" + simpleName);
       this.replaceTemplate(EMPTY_BODY, getVisitorMethod, new StringHookPoint("return Optional.empty();"));
       methodList.add(getVisitorMethod);
     }
@@ -189,9 +194,9 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
     String simpleVisitorName = visitorService.getVisitorSimpleName(cdDefinition.getSymbol());
     
     // add methods for classes, interfaces, enumerations, symbols, and scopes
-    visitorMethods.addAll(createVisitorDelegatorClassMethods(cdDefinition.getCDClassList(), simpleVisitorName));
-    visitorMethods.addAll(createVisitorDelegatorInterfaceMethods(cdDefinition.getCDInterfaceList(), simpleVisitorName));
-    visitorMethods.addAll(createVisitorDelegatorEnumMethods(cdDefinition.getCDEnumList(), simpleVisitorName, cdDefinition.getName()));
+    visitorMethods.addAll(createVisitorDelegatorClassMethods(cdDefinition.getCDClassesList(), simpleVisitorName));
+    visitorMethods.addAll(createVisitorDelegatorInterfaceMethods(cdDefinition.getCDInterfacesList(), simpleVisitorName));
+    visitorMethods.addAll(createVisitorDelegatorEnumMethods(cdDefinition.getCDEnumsList(), simpleVisitorName, cdDefinition.getName()));
     visitorMethods.addAll(createVisitorDelegatorSymbolMethods(cdDefinition, simpleVisitorName));
     visitorMethods.addAll(createVisitorDelegatorScopeMethods(cdDefinition, simpleVisitorName));
     
@@ -371,7 +376,7 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
    */
   protected List<ASTCDMethod> createVisitorDelegatorScopeMethods(ASTCDDefinition astcdDefinition, String simpleVisitorName) {
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
-    CDDefinitionSymbol cdSymbol = astcdDefinition.getSymbol();
+    DiagramSymbol cdSymbol = astcdDefinition.getSymbol();
     ASTMCQualifiedType scopeType = getMCTypeFacade().createQualifiedType(symbolTableService.getScopeInterfaceFullName(cdSymbol));
     ASTMCQualifiedType artifactScopeType = getMCTypeFacade().createQualifiedType(symbolTableService.getArtifactScopeInterfaceFullName(cdSymbol));
     String handlerName = visitorService.getHandlerSimpleName();
@@ -460,8 +465,8 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
     superSymbolNames.addAll(symbolTableService.retrieveSymbolNamesFromCD(visitorService.getCDSymbol()));
     
     // add symbols of super CDs
-    List<CDDefinitionSymbol> superCDsTransitive = visitorService.getSuperCDsTransitive();
-    for (CDDefinitionSymbol cdSymbol : superCDsTransitive) {
+    List<DiagramSymbol> superCDsTransitive = visitorService.getSuperCDsTransitive();
+    for (DiagramSymbol cdSymbol : superCDsTransitive) {
       superSymbolNames.addAll(symbolTableService.retrieveSymbolNamesFromCD(cdSymbol));
     }
     return superSymbolNames;
