@@ -38,4 +38,6 @@ public interface ISymbolDeSer<S extends ISymbol, J> {
    */
   S deserialize (JsonObject serialized);
 
+  String getSerializedKind();
+
 }

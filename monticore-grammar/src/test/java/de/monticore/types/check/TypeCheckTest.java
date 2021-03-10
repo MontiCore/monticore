@@ -8,6 +8,7 @@ import de.monticore.expressions.combineexpressionswithliterals._parser.CombineEx
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsScope;
 import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -44,18 +45,13 @@ public class TypeCheckTest {
     // Setting up a Scope Infrastructure (without a global Scope)
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
+    BasicSymbolsMill.initializePrimitives();
     DefsTypeBasic.setup();
     scope = CombineExpressionsWithLiteralsMill.scope();
     scope.setEnclosingScope(null);       // No enclosing Scope: Search ending here
     scope.setExportingSymbols(true);
     scope.setAstNode(null);     // hopefully unused
     // we add a variety of TypeSymbols to the same scope (which in reality doesn't happen)
-    add2scope(scope, DefsTypeBasic._int);
-    add2scope(scope, DefsTypeBasic._char);
-    add2scope(scope, DefsTypeBasic._boolean);
-    add2scope(scope, DefsTypeBasic._double);
-    add2scope(scope, DefsTypeBasic._float);
-    add2scope(scope, DefsTypeBasic._long);
 
     add2scope(scope, DefsTypeBasic._array);
     add2scope(scope, DefsTypeBasic._Object);

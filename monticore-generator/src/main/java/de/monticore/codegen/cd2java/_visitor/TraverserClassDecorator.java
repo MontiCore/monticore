@@ -2,10 +2,12 @@
 package de.monticore.codegen.cd2java._visitor;
 
 import com.google.common.collect.Lists;
-import de.monticore.cdbasis._ast.*;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -91,11 +93,11 @@ public class TraverserClassDecorator extends AbstractCreator<ASTCDCompilationUni
    * @return The decorated attribute
    */
   protected ASTCDAttribute ivisitorAttribute() {
-    String simpleName = Names.getSimpleName(IVISTOR_FULL_NAME) + "List";
-    ASTMCQualifiedType type = getMCTypeFacade().createQualifiedType(IVISTOR_FULL_NAME);
+    String simpleName = Names.getSimpleName(IVISITOR_FULL_NAME) + "List";
+    ASTMCQualifiedType type = getMCTypeFacade().createQualifiedType(IVISITOR_FULL_NAME);
     ASTCDAttribute visitorAttribute = getCDAttributeFacade().createAttribute(PRIVATE.build(), getMCTypeFacade().createListTypeOf(type),
             StringTransformations.uncapitalize(simpleName));
-    this.replaceTemplate(VALUE, visitorAttribute, new StringHookPoint("= new ArrayList<>();"));
+    this.replaceTemplate(VALUE, visitorAttribute, new StringHookPoint("= new ArrayList<>()"));
     return visitorAttribute;
   }
 
@@ -107,9 +109,9 @@ public class TraverserClassDecorator extends AbstractCreator<ASTCDCompilationUni
   protected List<ASTCDMethod> addDefaultMethods() {
     List<ASTCDMethod> methodList = Lists.newArrayList();
 
-    String simpleName = Names.getSimpleName(IVISTOR_FULL_NAME);
+    String simpleName = Names.getSimpleName(IVISITOR_FULL_NAME);
     // add setter: public  void add4IVisitor (IVisitor iVisitor)
-    ASTMCQualifiedType visitorType = getMCTypeFacade().createQualifiedType(IVISTOR_FULL_NAME);
+    ASTMCQualifiedType visitorType = getMCTypeFacade().createQualifiedType(IVISITOR_FULL_NAME);
     ASTCDParameter visitorParameter = getCDParameterFacade().createParameter(visitorType, StringTransformations.uncapitalize(simpleName));
     ASTCDMethod addVisitorMethod = getCDMethodFacade().createMethod(PUBLIC.build(), "add4" + simpleName, visitorParameter);
     this.replaceTemplate(EMPTY_BODY, addVisitorMethod, new TemplateHookPoint(
@@ -202,7 +204,7 @@ public class TraverserClassDecorator extends AbstractCreator<ASTCDCompilationUni
       ASTMCQualifiedType type = visitorService.getHandlerType(cd);
       ASTCDAttribute handlerAttribute = getCDAttributeFacade().createAttribute(PRIVATE.build(), getMCTypeFacade().createOptionalTypeOf(type),
           StringTransformations.uncapitalize(simpleName));
-      this.replaceTemplate(VALUE, handlerAttribute, new StringHookPoint("= Optional.empty();"));
+      this.replaceTemplate(VALUE, handlerAttribute, new StringHookPoint("= Optional.empty()"));
       attributeList.add(handlerAttribute);
     }
     return attributeList;

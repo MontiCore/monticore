@@ -25,6 +25,7 @@ sourceSets.test.java.srcDirs += ["$projectDir/src/test_emf/java"]
 def equinox_version ='3.10.400'
 dependencies {
   implementation project(':monticore-runtime-emf')
+  implementation project(':monticore-grammar-emf')
   implementation 'org.eclipse.emf:org.eclipse.emf.ecore.xmi:' + ecore_version
   implementation 'org.eclipse.emf:org.eclipse.emf.compare.match:' + emf_compare_version
   implementation 'org.eclipse.emf:org.eclipse.emf.compare.diff:' + emf_compare_version

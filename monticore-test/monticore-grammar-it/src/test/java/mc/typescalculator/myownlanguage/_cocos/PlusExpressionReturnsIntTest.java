@@ -3,8 +3,10 @@ package mc.typescalculator.myownlanguage._cocos;
 
 import de.monticore.expressions.commonexpressions._ast.ASTCommonExpressionsNode;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
+import mc.typescalculator.myownlanguage.MyOwnLanguageMill;
 import mc.typescalculator.myownlanguage._parser.MyOwnLanguageParser;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,12 +16,15 @@ import java.util.Optional;
 
 import static org.junit.Assert.*;
 
-public class TestPlusExpressionReturnsInt {
+public class PlusExpressionReturnsIntTest {
 
   @Before
   public void setup(){
     LogStub.init();
     Log.enableFailQuick(false);
+    MyOwnLanguageMill.reset();
+    MyOwnLanguageMill.init();
+    BasicSymbolsMill.initializePrimitives();
   }
 
   protected MyOwnLanguageParser parser = new MyOwnLanguageParser();
