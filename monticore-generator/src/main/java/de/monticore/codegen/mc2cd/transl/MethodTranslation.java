@@ -73,7 +73,7 @@ public class MethodTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCD
       String typeName = MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(param.getType());
       cdMethod.getCDParameterList().add(TransformationHelper.createParameter(typeName, param.getName()));
     }
-    return cdMethod.build();
+    return cdMethod;
   }
 
   private void addMethodBodyStereotype(ASTModifier modifier, StringBuilder code) {
