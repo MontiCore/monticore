@@ -1,11 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._visitor;
 
-import de.monticore.cdbasis._ast.*;
-import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
-import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDDefinition;
+import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -50,7 +52,7 @@ public class Visitor2Decorator extends AbstractCreator<ASTCDCompilationUnit, AST
     ASTCDInterface visitorInterface = CD4CodeMill.cDInterfaceBuilder()
         .setName(this.visitorService.getVisitor2SimpleName())
         .setModifier(PUBLIC.build())
-        .addInterface(getMCTypeFacade().createQualifiedType(IVISTOR_FULL_NAME))
+        .addInterface(getMCTypeFacade().createQualifiedType(IVISITOR_FULL_NAME))
         .addAllCDMembers(addASTNodeVisitorMethods(compilationUnit.getCDDefinition()))
         .addAllCDMembers(addSymbolVisitorMethods(symbolNames))
         .addAllCDMembers(addScopeVisitorMethods(getSymbolsTransitive(), ast.getCDDefinition()))
