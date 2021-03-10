@@ -43,7 +43,7 @@ public class SymTypeExpressionFactory {
    * TypeInfo is not needed (as the Objects are predefined singletons)
    */
   public static SymTypeConstant createTypeConstant(String name) {
-    Optional<TypeSymbol> type = BasicSymbolsMill.globalScope().resolveType(name);
+    Optional<TypeSymbol> type = BasicSymbolsMill.globalScope().resolveTypeLocally(name);
     if (!type.isPresent()) {
       Log.error("0x893F62 Internal Error: Non primitive type " + name + " stored as constant.");
     }
