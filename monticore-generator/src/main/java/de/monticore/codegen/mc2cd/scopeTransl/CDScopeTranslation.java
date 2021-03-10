@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.mc2cd.scopeTransl;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.symbolTransl.ScopeCDDefinitionNameTranslation;
 import de.monticore.codegen.mc2cd.transl.*;
 import de.monticore.codegen.mc2cd.transl.creation.GrammarToCDDefinition;
@@ -18,6 +18,7 @@ public class CDScopeTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTC
 
     return new GrammarToCDDefinition()
         .andThen(new ScopeCDDefinitionNameTranslation())
+        .andThen(new ScopeCDDefinitionModifierTranslation())
         .andThen(new CreateScopeProd())
         .andThen(new ScopeRuleToCDScopeClass())
         .andThen(new AttributeInScopeRuleToCDAttribute())

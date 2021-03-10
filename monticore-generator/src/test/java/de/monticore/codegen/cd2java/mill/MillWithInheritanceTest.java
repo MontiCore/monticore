@@ -5,9 +5,11 @@ import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
 import com.google.common.collect.Lists;
-import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.cd.prettyprint.CD4CodePrinter;
+import de.monticore.cdbasis._ast.*;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
+import de.monticore.cd4codebasis._ast.*;
 import de.monticore.codegen.cd2java.AbstractService;
+import de.monticore.codegen.cd2java.CdUtilsPrinter;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
@@ -38,7 +40,7 @@ import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
-import static de.monticore.cd.facade.CDModifier.*;
+import static de.monticore.codegen.cd2java.CDModifier.*;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static org.junit.Assert.assertEquals;
@@ -61,7 +63,7 @@ public class MillWithInheritanceTest extends DecoratorTestCase {
     this.glex = new GlobalExtensionManagement();
 
     this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
-    this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
+    this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "factory", "CGrammar");
     glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
 
@@ -110,9 +112,9 @@ public class MillWithInheritanceTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeName() {
-    assertEquals("mill", millClass.getCDAttribute(0).getName());
-    assertEquals("millASTBlubBuilder", millClass.getCDAttribute(1).getName());
-    assertEquals("millASTBliBuilder", millClass.getCDAttribute(2).getName());
+    assertEquals("mill", millClass.getCDAttributeList().get(0).getName());
+    assertEquals("millASTBlubBuilder", millClass.getCDAttributeList().get(1).getName());
+    assertEquals("millASTBliBuilder", millClass.getCDAttributeList().get(2).getName());
   }
 
   @Test
@@ -125,9 +127,9 @@ public class MillWithInheritanceTest extends DecoratorTestCase {
 
   @Test
   public void testConstructor() {
-    assertEquals(1, millClass.sizeCDConstructors());
-    assertTrue(PROTECTED.build().deepEquals(millClass.getCDConstructor(0).getModifier()));
-    assertEquals("CGrammarMill", millClass.getCDConstructor(0).getName());
+    assertEquals(1, millClass.getCDConstructorList().size());
+    assertTrue(PROTECTED.build().deepEquals(millClass.getCDConstructorList().get(0).getModifier()));
+    assertEquals("CGrammarMill", millClass.getCDConstructorList().get(0).getName());
   }
 
   @Test

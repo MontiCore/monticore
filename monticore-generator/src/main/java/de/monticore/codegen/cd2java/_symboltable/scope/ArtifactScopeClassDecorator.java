@@ -1,8 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._symboltable.scope;
 
-import de.monticore.cd.cd4analysis.CD4AnalysisMill;
-import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cd4codebasis._ast.*;
+import de.monticore.cdbasis._ast.*;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
@@ -17,8 +18,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static de.monticore.cd.facade.CDModifier.PRIVATE;
-import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java.CDModifier.PRIVATE;
+import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.ACCEPT_METHOD;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
@@ -69,15 +70,15 @@ public class ArtifactScopeClassDecorator extends AbstractCreator<ASTCDCompilatio
         .setModifier(PUBLIC.build())
         .setSuperclass(getMCTypeFacade().createQualifiedType(scopeClassFullName))
         .addInterface(symbolTableService.getArtifactScopeInterfaceType())
-        .addAllCDConstructors(createConstructors(artifactScopeSimpleName))
-        .addCDAttribute(packageNameAttribute)
-        .addAllCDMethods(createPackageNameAttributeMethods(packageNameAttribute))
-        .addCDAttribute(importsAttribute)
-        .addAllCDMethods(createImportsAttributeMethods(importsAttribute))
-        .addCDMethod(createIsPresentNameMethod())
-        .addCDMethod(createGetNameMethod())
-        .addCDMethod(createSetEnclosingScopeMethod(scopeInterfaceFullName, artifactScopeSimpleName, globalScopeClassSimpleName))
-        .addCDMethod(createAcceptTraverserMethod(artifactScopeSimpleName))
+        .addAllCDMembers(createConstructors(artifactScopeSimpleName))
+        .addCDMember(packageNameAttribute)
+        .addAllCDMembers(createPackageNameAttributeMethods(packageNameAttribute))
+        .addCDMember(importsAttribute)
+        .addAllCDMembers(createImportsAttributeMethods(importsAttribute))
+        .addCDMember(createIsPresentNameMethod())
+        .addCDMember(createGetNameMethod())
+        .addCDMember(createSetEnclosingScopeMethod(scopeInterfaceFullName, artifactScopeSimpleName, globalScopeClassSimpleName))
+        .addCDMember(createAcceptTraverserMethod(artifactScopeSimpleName))
         .build();
   }
 
@@ -95,17 +96,17 @@ public class ArtifactScopeClassDecorator extends AbstractCreator<ASTCDCompilatio
     this.replaceTemplate(EMPTY_BODY, constructorWithEnclosingScope, new TemplateHookPoint(TEMPLATE_PATH + "ConstructorArtifactScope"));
 
 
-    ASTCDConstructor zeroArgsConstructor = getCDConstructorFacade().createConstructor(PUBLIC, artifactScopeName);
+    ASTCDConstructor zeroArgsConstructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), artifactScopeName);
     this.replaceTemplate(EMPTY_BODY, zeroArgsConstructor, new StringHookPoint("this(\"\", new java.util.ArrayList<>());"));
     return new ArrayList<>(Arrays.asList(constructor, constructorWithEnclosingScope, zeroArgsConstructor));
   }
 
   protected ASTCDAttribute createPackageNameAttribute() {
-    return getCDAttributeFacade().createAttribute(PRIVATE, String.class, PACKAGE_NAME_VAR);
+    return getCDAttributeFacade().createAttribute(PRIVATE.build(), String.class, PACKAGE_NAME_VAR);
   }
 
   protected ASTCDAttribute createImportsAttribute() {
-    return getCDAttributeFacade().createAttribute(PRIVATE, getMCTypeFacade().createListTypeOf(IMPORT_STATEMENT), "imports");
+    return getCDAttributeFacade().createAttribute(PRIVATE.build(), getMCTypeFacade().createListTypeOf(IMPORT_STATEMENT), "imports");
   }
 
   protected List<ASTCDMethod> createPackageNameAttributeMethods(ASTCDAttribute attr) {
@@ -120,7 +121,7 @@ public class ArtifactScopeClassDecorator extends AbstractCreator<ASTCDCompilatio
 
 
   protected ASTCDMethod createGetNameMethod() {
-    ASTCDMethod getNameMethod = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createStringType(), "getName");
+    ASTCDMethod getNameMethod = getCDMethodFacade().createMethod(PUBLIC.build(), getMCTypeFacade().createStringType(), "getName");
     this.replaceTemplate(EMPTY_BODY, getNameMethod, new TemplateHookPoint(TEMPLATE_PATH + "GetName"));
     return getNameMethod;
   }
@@ -131,7 +132,7 @@ public class ArtifactScopeClassDecorator extends AbstractCreator<ASTCDCompilatio
    * @return The isPresentName method.
    */
   protected ASTCDMethod createIsPresentNameMethod() {
-    ASTCDMethod getNameMethod = getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createBooleanType(), "isPresentName");
+    ASTCDMethod getNameMethod = getCDMethodFacade().createMethod(PUBLIC.build(), getMCTypeFacade().createBooleanType(), "isPresentName");
     this.replaceTemplate(EMPTY_BODY, getNameMethod, new TemplateHookPoint(TEMPLATE_PATH + "IsPresentName"));
     return getNameMethod;
   }
@@ -139,7 +140,7 @@ public class ArtifactScopeClassDecorator extends AbstractCreator<ASTCDCompilatio
   protected ASTCDMethod createAcceptTraverserMethod(String artifactScopeName) {
     String visitor = visitorService.getTraverserInterfaceFullName();
     ASTCDParameter parameter = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(visitor), VISITOR_PREFIX);
-    ASTCDMethod acceptMethod = getCDMethodFacade().createMethod(PUBLIC, ACCEPT_METHOD, parameter);
+    ASTCDMethod acceptMethod = getCDMethodFacade().createMethod(PUBLIC.build(), ACCEPT_METHOD, parameter);
     if (!isArtifactScopeTop()) {
       this.replaceTemplate(EMPTY_BODY, acceptMethod, new StringHookPoint("visitor.handle(this);"));
     } else {
@@ -153,7 +154,7 @@ public class ArtifactScopeClassDecorator extends AbstractCreator<ASTCDCompilatio
   protected ASTCDMethod createSetEnclosingScopeMethod(String scopeInterfaceFullName, String artifactScopeClassName, String globalScopeClassName){
     ASTMCType scopeInterfaceType = getMCTypeFacade().createQualifiedType(scopeInterfaceFullName);
     ASTCDParameter enclosingScopeParameter = getCDParameterFacade().createParameter(scopeInterfaceType, "enclosingScope");
-    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC, "setEnclosingScope", enclosingScopeParameter);
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), "setEnclosingScope", enclosingScopeParameter);
     String generatedErrorCode = symbolTableService.getGeneratedErrorCode(artifactScopeClassName);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH+"SetEnclosingScope", generatedErrorCode, globalScopeClassName));
     return method;

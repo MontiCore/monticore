@@ -1,11 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.mc2cd.scopeTransl;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
-import de.monticore.cd.facade.CDModifier;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.codegen.cd2java.CDModifier;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
@@ -43,41 +43,41 @@ public class CDScopeTranslationTest {
   @Test
   public void testPackage() {
     assertEquals(2, compilationUnit.getPackageList().size());
-    assertEquals("mc2cdtransformation", compilationUnit.getPackage(0));
-    assertEquals("scopeTransl", compilationUnit.getPackage(1));
+    assertEquals("mc2cdtransformation", compilationUnit.getMCPackageDeclaration().getMCQualifiedName().getParts(0));
+    assertEquals("scopeTransl", compilationUnit.getMCPackageDeclaration().getMCQualifiedName().getParts(1));
   }
 
   @Test
   public void testClassCount() {
-    assertEquals(1, compilationUnit.getCDDefinition().sizeCDClasss());
+    assertEquals(1, compilationUnit.getCDDefinition().getCDClassesList().size());
   }
 
   @Test
   public void testClassSymbol() {
     ASTCDClass scopeClass = getClassBy("ScopeRule", compilationUnit);
-    assertEquals(1, scopeClass.sizeCDAttributes());
-    assertEquals(1, scopeClass.sizeCDMethods());
-    assertEquals(1, scopeClass.sizeInterface());
+    assertEquals(1, scopeClass.getCDAttributeList().size());
+    assertEquals(1, scopeClass.getCDMethodList().size());
+    assertEquals(1, scopeClass.getInterfaceList().size());
 
-    assertTrue(scopeClass.isEmptyCDConstructors());
+    assertTrue(scopeClass.getCDConstructorList().isEmpty());
     assertTrue(scopeClass.isPresentSuperclass());
 
-    ASTCDAttribute cdAttribute = scopeClass.getCDAttribute(0);
+    ASTCDAttribute cdAttribute = scopeClass.getCDAttributeList().get(0);
     assertEquals("extraAttr", cdAttribute.getName());
     assertDeepEquals(String.class, cdAttribute.getMCType());
     assertTrue(cdAttribute.isPresentModifier());
     assertDeepEquals(CDModifier.PROTECTED, cdAttribute.getModifier());
 
-    ASTCDMethod cdMethod = scopeClass.getCDMethod(0);
+    ASTCDMethod cdMethod = scopeClass.getCDMethodList().get(0);
     assertEquals("toString", cdMethod.getName());
     assertTrue(cdMethod.getMCReturnType().isPresentMCType());
     assertDeepEquals(String.class, cdMethod.getMCReturnType().getMCType());
     assertTrue(cdMethod.getModifier().isPublic());
     assertTrue(cdMethod.getModifier().isPresentStereotype());
-    assertEquals(1, cdMethod.getModifier().getStereotype().sizeValue());
-    assertEquals("methodBody", cdMethod.getModifier().getStereotype().getValue(0).getName());
+    assertEquals(1, cdMethod.getModifier().getStereotype().sizeValues());
+    assertEquals("methodBody", cdMethod.getModifier().getStereotype().getValues(0).getName());
 
-    ASTMCObjectType cdInterface = scopeClass.getInterface(0);
+    ASTMCObjectType cdInterface = scopeClass.getCDInterfaceUsage().getInterface(0);
     assertDeepEquals("de.monticore.symboltable.IScope", cdInterface);
 
     ASTMCObjectType superclass = scopeClass.getSuperclass();

@@ -1,23 +1,26 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._parser;
 
-import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.cd.prettyprint.CD4CodePrinter;
-import de.monticore.codegen.cd2java.AbstractService;
-import de.monticore.codegen.cd2java.DecorationHelper;
-import de.monticore.codegen.cd2java.DecoratorTestCase;
-import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.io.paths.IterablePath;
-import de.se_rwth.commons.logging.LogStub;
+import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
-import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
-import static de.monticore.codegen.cd2java.DecoratorTestUtil.getInterfaceBy;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDDefinition;
+import de.monticore.codegen.cd2java.AbstractService;
+import de.monticore.codegen.cd2java.CdUtilsPrinter;
+import de.monticore.codegen.cd2java.DecorationHelper;
+import de.monticore.codegen.cd2java.DecoratorTestCase;
+import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.io.paths.IterablePath;
+import de.monticore.umlmodifier._ast.ASTModifier;
+import de.se_rwth.commons.logging.LogStub;
 
 public class ParserCDDecoratorTest extends DecoratorTestCase {
 
@@ -41,7 +44,7 @@ public class ParserCDDecoratorTest extends DecoratorTestCase {
     IterablePath targetPath = Mockito.mock(IterablePath.class);
 
     this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
-    this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
+    this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
     decoratedASTCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "Automaton");
     originalASTCompilationUnit = decoratedASTCompilationUnit.deepClone();
 
@@ -76,7 +79,7 @@ public class ParserCDDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testClassCount() {
-    assertEquals(1, parserCD.getCDDefinition().sizeCDClasss());
+    assertEquals(1, parserCD.getCDDefinition().getCDClassesList().size());
   }
 
   @Test
@@ -86,12 +89,12 @@ public class ParserCDDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testNoEnum() {
-    assertTrue(parserCD.getCDDefinition().isEmptyCDEnums());
+    assertTrue(parserCD.getCDDefinition().getCDEnumsList().isEmpty());
   }
 
   @Test
   public void testNoInterface(){
-    assertTrue(parserCD.getCDDefinition().isEmptyCDInterfaces());
+    assertTrue(parserCD.getCDDefinition().getCDInterfacesList().isEmpty());
   }
 
   @Test
@@ -117,16 +120,16 @@ public class ParserCDDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testNoClassesComponent() {
-    assertTrue(parserCDComponent.getCDDefinition().isEmptyCDClasss());
+    assertTrue(parserCDComponent.getCDDefinition().getCDClassesList().isEmpty());
   }
 
   @Test
   public void testNoEnumComponent(){
-    assertTrue(parserCDComponent.getCDDefinition().isEmptyCDEnums());
+    assertTrue(parserCDComponent.getCDDefinition().getCDEnumsList().isEmpty());
   }
 
   @Test
   public void testNoInterfaceComponent(){
-    assertTrue(parserCDComponent.getCDDefinition().isEmptyCDInterfaces());
+    assertTrue(parserCDComponent.getCDDefinition().getCDInterfacesList().isEmpty());
   }
 }

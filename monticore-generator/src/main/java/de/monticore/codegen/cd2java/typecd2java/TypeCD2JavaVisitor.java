@@ -2,13 +2,13 @@
 package de.monticore.codegen.cd2java.typecd2java;
 
 import com.google.common.collect.Lists;
-import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
-import de.monticore.cd.cd4analysis._symboltable.ICD4AnalysisScope;
+import de.monticore.cdbasis._symboltable.CDTypeSymbol;
+import de.monticore.cdbasis._symboltable.ICDBasisScope;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
-import de.monticore.grammar.grammarfamily._visitor.GrammarFamilyVisitor;
 import de.monticore.symboltable.IScope;
 import de.monticore.symboltable.ISymbol;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
+import de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,17 +16,14 @@ import java.util.Optional;
 
 import static de.monticore.codegen.mc2cd.TransformationHelper.simpleName;
 
-public class TypeCD2JavaVisitor implements GrammarFamilyVisitor {
+public class TypeCD2JavaVisitor implements MCBasicTypesVisitor2 {
 
   private static final String PACKAGE_SEPARATOR = "\\.";
 
-  protected ICD4AnalysisScope scope;
+  protected ICDBasisScope scope;
 
-  public TypeCD2JavaVisitor(ICD4AnalysisScope scope) {
+  public TypeCD2JavaVisitor(ICDBasisScope scope) {
     this.scope = scope;
-  }
-
-  private TypeCD2JavaVisitor() {
   }
 
   @Override

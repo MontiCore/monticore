@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.mc2cd.transl;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
 import org.junit.Before;
@@ -34,8 +34,8 @@ public class ExternalInterfaceTranslationTest {
     ASTCDInterface a = getInterfaceBy("ASTAExt", externalInterface);
     assertTrue(a.isPresentModifier());
     assertTrue(a.getModifier().isPresentStereotype());
-    assertEquals(1, a.getModifier().getStereotype().sizeValue());
-    assertEquals("externalInterface", a.getModifier().getStereotype().getValue(0).getName());
-    assertFalse(a.getModifier().getStereotype().getValue(0).isPresentValue());
+    assertEquals(1, a.getModifier().getStereotype().sizeValues());
+    assertEquals("externalInterface", a.getModifier().getStereotype().getValues(0).getName());
+    assertFalse(a.getModifier().getStereotype().getValues(0).isPresentText());
   }
 }
