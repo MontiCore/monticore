@@ -5,13 +5,15 @@ package de.monticore.codegen.mc2cd;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import de.monticore.ast.ASTNode;
-import de.monticore.cd.cd4analysis.CD4AnalysisMill;
-import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.cd.cd4analysis._parser.CD4AnalysisParser;
-import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
-import de.monticore.cd.cd4analysis._symboltable.ICD4AnalysisGlobalScope;
-import de.monticore.cd.prettyprint.CD4AnalysisFullPrettyPrinter;
+import de.monticore.cd4analysis._symboltable.ICD4AnalysisGlobalScope;
+import de.monticore.cd4code.CD4CodeMill;
+import de.monticore.cd4code._parser.CD4CodeParser;
+import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
+import de.monticore.cd4codebasis._ast.ASTCDParameter;
+import de.monticore.cdbasis._ast.*;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.generating.templateengine.reporting.Reporting;
+import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
@@ -21,14 +23,15 @@ import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
 import de.monticore.grammar.grammarfamily._visitor.GrammarFamilyTraverser;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.types.mcarraytypes._ast.ASTMCArrayType;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
-import de.monticore.grammar.MCGrammarSymbolTableHelper;
-
+import de.monticore.umlmodifier._ast.ASTModifier;
+import de.monticore.umlstereotype._ast.ASTStereoValue;
 import de.se_rwth.commons.JavaNamesHelper;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
@@ -90,6 +93,23 @@ public final class TransformationHelper {
     return Names.getSimpleName(name);
   }
 
+  /**
+   * Pretty prints a CD AST to a String object.
+   *
+   * @param astNode the top node of the CD AST to be pretty printed
+   */
+  // TODO: should be placed somewhere in the UML/P CD project
+  public static String prettyPrint(ASTCDBasisNode astNode) {
+    // set up objects
+    CD4CodeFullPrettyPrinter prettyPrinter = new CD4CodeFullPrettyPrinter(
+        new IndentPrinter());
+
+    // run, check result and return
+    String prettyPrintedAst = prettyPrinter.prettyprint(astNode);
+    checkArgument(!isNullOrEmpty(prettyPrintedAst));
+    return prettyPrintedAst;
+  }
+
   public static Optional<String> getUsageName(ASTNode root,
                                               ASTNode ancestor) {
       if (ancestor instanceof ASTConstantGroup && ((ASTConstantGroup) ancestor).isPresentUsageName()) {
@@ -135,19 +155,19 @@ public final class TransformationHelper {
 
   public static ASTCDParameter createParameter(String typeName,
                                                String parameterName) {
-    ASTCDParameter parameter = CD4AnalysisMill.cDParameterBuilder()
-      .setMCType(TransformationHelper.createType(typeName))
-      .setName(parameterName).build();
-    return parameter;
+    return CD4CodeMill.cDParameterBuilder().
+            setName(parameterName).
+            setMCType(TransformationHelper.createType(typeName)).
+            build();
   }
 
   public static ASTModifier createPublicModifier() {
-    return CD4AnalysisMill.modifierBuilder().setPublic(true).build();
+    return CD4CodeMill.modifierBuilder().setPublic(true).build();
   }
 
   public static ASTMCGenericType createType(
       String typeName, String generics) {
-    CD4AnalysisParser parser = new CD4AnalysisParser();
+    CD4CodeParser parser = new CD4CodeParser();
     Optional<ASTMCGenericType> optType = null;
     try {
       optType = parser.parse_StringMCGenericType(typeName + "<" + generics + ">");
@@ -158,7 +178,7 @@ public final class TransformationHelper {
   }
 
   public static ASTMCType createType(String typeName) {
-    CD4AnalysisParser parser = new CD4AnalysisParser();
+    CD4CodeParser parser = CD4CodeMill.parser();
     Optional<ASTMCType> optType = null;
     try {
       optType = parser.parse_StringMCType(typeName);
@@ -169,7 +189,7 @@ public final class TransformationHelper {
   }
 
   public static ASTMCReturnType createReturnType(String typeName) {
-    CD4AnalysisParser parser = new CD4AnalysisParser();
+    CD4CodeParser parser = CD4CodeMill.parser();
     Optional<ASTMCReturnType> optType = null;
     try {
       optType = parser.parse_StringMCReturnType(typeName);
@@ -180,7 +200,7 @@ public final class TransformationHelper {
   }
 
   public static ASTMCObjectType createObjectType(String typeName) {
-    CD4AnalysisParser parser = new CD4AnalysisParser();
+    CD4CodeParser parser = CD4CodeMill.parser();
     Optional<ASTMCObjectType> optType = null;
     try {
       optType = parser.parse_StringMCObjectType(typeName);
@@ -261,12 +281,15 @@ public final class TransformationHelper {
 
 
   /**
+   *  @deprecated  use de.monticore.generating.GeneratorEngine#existsHandwrittenClass
+   *
    * Checks if a handwritten class with the given qualifiedName (dot-separated)
    * exists on the target path
    *
    * @param qualifiedName name of the class to search for
    * @return true if a handwritten class with the qualifiedName exists
    */
+  @Deprecated
   public static boolean existsHandwrittenClass(IterablePath targetPath,
                                                String qualifiedName) {
     Path handwrittenFile = Paths.get(Names
@@ -293,7 +316,7 @@ public final class TransformationHelper {
    * @param ast The input grammar, providing the qualified name
    * @return The CD if resolved from global scope, Optional.empty() otherwise
    */
-  public static Optional<ASTCDCompilationUnit> getCDforGrammar(ICD4AnalysisGlobalScope globalScope, 
+  public static Optional<ASTCDCompilationUnit> getCDforGrammar(ICD4AnalysisGlobalScope globalScope,
                                                                ASTMCGrammar ast) {
     return getCDforGrammar(globalScope, ast, "");
   }
@@ -310,7 +333,7 @@ public final class TransformationHelper {
                                                                ASTMCGrammar ast, String nameSuffix) {
     final String qualifiedCDName = Names.getQualifiedName(ast.getPackageList(), ast.getName() + nameSuffix);
 
-    Optional<CDDefinitionSymbol> cdSymbol = globalScope.resolveCDDefinitionDown(
+    Optional<DiagramSymbol> cdSymbol = globalScope.resolveDiagramDown(
         qualifiedCDName);
 
     if (cdSymbol.isPresent() && cdSymbol.get().getEnclosingScope().isPresentAstNode()) {
@@ -373,7 +396,7 @@ public final class TransformationHelper {
   public static void addStereoType(ASTCDType type, String stereotypeName,
                                    String stereotypeValue) {
     if (!type.isPresentModifier()) {
-      type.setModifier(CD4AnalysisMill.modifierBuilder().build());
+      type.setModifier(CD4CodeMill.modifierBuilder().build());
     }
     addStereotypeValue(type.getModifier(),
         stereotypeName, stereotypeValue);
@@ -381,11 +404,9 @@ public final class TransformationHelper {
 
   public static void addStereoType(ASTCDType type, String stereotypeName,
                                    String stereotypeValue, boolean multiple) {
-    if (!type.isPresentModifier()) {
-      type.setModifier(CD4AnalysisMill.modifierBuilder().build());
-    } else if (!multiple) {
+    if (!multiple) {
       if (type.getModifier().isPresentStereotype()
-              && type.getModifier().getStereotype().getValueList().stream().anyMatch(v -> v.getName().equals(stereotypeName))) {
+              && type.getModifier().getStereotype().getValuesList().stream().anyMatch(v -> v.getName().equals(stereotypeName))) {
         return;
       }
     }
@@ -395,7 +416,7 @@ public final class TransformationHelper {
 
   public static void addStereoType(ASTCDType type, String stereotypeName) {
     if (!type.isPresentModifier()) {
-      type.setModifier(CD4AnalysisMill.modifierBuilder().build());
+      type.setModifier(CD4CodeMill.modifierBuilder().build());
     }
     addStereotypeValue(type.getModifier(),
         stereotypeName);
@@ -403,7 +424,7 @@ public final class TransformationHelper {
 
   public static void addStereoType(ASTCDDefinition type, String stereotypeName) {
     if (!type.isPresentModifier()) {
-      type.setModifier(CD4AnalysisMill.modifierBuilder().build());
+      type.setModifier(CD4CodeMill.modifierBuilder().build());
     }
     addStereotypeValue(type.getModifier(),
         stereotypeName);
@@ -413,7 +434,7 @@ public final class TransformationHelper {
                                    String stereotypeName,
                                    String stereotypeValue) {
     if (!attribute.isPresentModifier()) {
-      attribute.setModifier(CD4AnalysisMill.modifierBuilder().build());
+      attribute.setModifier(CD4CodeMill.modifierBuilder().build());
     }
     addStereotypeValue(attribute.getModifier(),
         stereotypeName, stereotypeValue);
@@ -421,9 +442,6 @@ public final class TransformationHelper {
 
   public static void addStereoType(ASTCDDefinition type, String stereotypeName,
                                    String stereotypeValue) {
-    if (!type.isPresentModifier()) {
-      type.setModifier(CD4AnalysisMill.modifierBuilder().build());
-    }
     addStereotypeValue(type.getModifier(),
         stereotypeName, stereotypeValue);
   }
@@ -432,25 +450,25 @@ public final class TransformationHelper {
                                         String stereotypeName,
                                         String stereotypeValue) {
     if (!astModifier.isPresentStereotype()) {
-      astModifier.setStereotype(CD4AnalysisMill.cDStereotypeBuilder().build());
+      astModifier.setStereotype(CD4CodeMill.stereotypeBuilder().uncheckedBuild());
     }
-    List<ASTCDStereoValue> stereoValueList = astModifier.getStereotype()
-        .getValueList();
-    ASTCDStereoValue stereoValue = CD4AnalysisMill.cDStereoValueBuilder()
-            .setName(stereotypeName)
-            .setValue(stereotypeValue).build();
+    List<ASTStereoValue> stereoValueList = astModifier.getStereotype()
+        .getValuesList();
+    ASTStereoValue stereoValue = CD4CodeMill.stereoValueBuilder().
+            setName(stereotypeName).
+            setText(CD4CodeMill.stringLiteralBuilder().setSource(stereotypeValue).build()).uncheckedBuild();
     stereoValueList.add(stereoValue);
   }
 
   public static void addStereotypeValue(ASTModifier astModifier,
                                         String stereotypeName) {
     if (!astModifier.isPresentStereotype()) {
-      astModifier.setStereotype(CD4AnalysisMill.cDStereotypeBuilder().build());
+      astModifier.setStereotype(CD4CodeMill.stereotypeBuilder().uncheckedBuild());
     }
-    List<ASTCDStereoValue> stereoValueList = astModifier.getStereotype()
-        .getValueList();
-    ASTCDStereoValue stereoValue = CD4AnalysisMill.cDStereoValueBuilder()
-            .setName(stereotypeName).build();
+    List<ASTStereoValue> stereoValueList = astModifier.getStereotype()
+            .getValuesList();
+    ASTStereoValue stereoValue = CD4CodeMill.stereoValueBuilder().
+            setName(stereotypeName).uncheckedBuild();
     stereoValueList.add(stereoValue);
   }
 

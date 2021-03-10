@@ -2,10 +2,10 @@
 
 package de.monticore.codegen.mc2cd.symbolTransl;
 
-import de.monticore.cd.cd4analysis.CD4AnalysisMill;
-import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.mc2cd.transl.InheritedAttributesTranslation;
@@ -50,6 +50,7 @@ public class InheritedSymbolAttributesTranslation extends InheritedAttributesTra
       for (AdditionalAttributeSymbol attributeInAST : entry.getValue()) {
         ASTCDAttribute cdAttribute = CD4AnalysisMill.cDAttributeBuilder()
                 .setName(attributeInAST.getName())
+                .setModifier(CD4AnalysisMill.modifierBuilder().build())
                 .setMCType(MCTypeFacade.getInstance().createQualifiedType(attributeInAST.getType()))
                 .build();
         Optional<String> superGrammarName = MCGrammarSymbolTableHelper.getMCGrammarSymbol(entry.getKey().getEnclosingScope())
@@ -57,7 +58,7 @@ public class InheritedSymbolAttributesTranslation extends InheritedAttributesTra
         if (superGrammarName.isPresent()) {
           TransformationHelper.addStereoType(cdAttribute, MC2CDStereotypes.INHERITED.toString(), superGrammarName.get());
         }
-        link.target().getCDAttributeList().add(cdAttribute);
+        link.target().addCDMember(cdAttribute);
         if (attributeInAST.isPresentAstNode()) {
           new Link<>(attributeInAST.getAstNode(), cdAttribute, link);
         }

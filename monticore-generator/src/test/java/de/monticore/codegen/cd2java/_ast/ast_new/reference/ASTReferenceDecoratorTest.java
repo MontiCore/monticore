@@ -1,10 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast.ast_new.reference;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis.CD4AnalysisMill;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.ast_class.reference.ASTReferenceDecorator;
@@ -57,8 +57,8 @@ public class ASTReferenceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMandatoryAttributeSize() {
-    assertFalse(astMandClass.isEmptyCDAttributes());
-    assertEquals(1, astMandClass.sizeCDAttributes());
+    assertFalse(astMandClass.getCDAttributeList().isEmpty());
+    assertEquals(1, astMandClass.getCDAttributeList().size());
   }
 
   @Test
@@ -70,8 +70,8 @@ public class ASTReferenceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testOptionalAttributeSize() {
-    assertFalse(astOptClass.isEmptyCDAttributes());
-    assertEquals(1, astOptClass.sizeCDAttributes());
+    assertFalse(astOptClass.getCDAttributeList().isEmpty());
+    assertEquals(1, astOptClass.getCDAttributeList().size());
   }
 
   @Test
@@ -83,8 +83,8 @@ public class ASTReferenceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testListAttributeSize() {
-    assertFalse(astListClass.isEmptyCDAttributes());
-    assertEquals(1, astListClass.sizeCDAttributes());
+    assertFalse(astListClass.getCDAttributeList().isEmpty());
+    assertEquals(1, astListClass.getCDAttributeList().size());
   }
 
   @Test

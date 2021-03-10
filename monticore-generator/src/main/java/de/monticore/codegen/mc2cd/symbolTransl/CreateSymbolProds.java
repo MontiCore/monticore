@@ -1,10 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.mc2cd.symbolTransl;
 
-import de.monticore.cd.cd4analysis.CD4AnalysisMill;
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDDefinition;
+import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTProd;
 import de.monticore.grammar.grammar._ast.ASTSymbolDefinition;
@@ -27,10 +27,10 @@ public class CreateSymbolProds implements UnaryOperator<Link<ASTMCGrammar, ASTCD
 
   private void createCDClass(ASTProd astProd, Link<ASTMCGrammar, ASTCDDefinition> link) {
     if (isSymbolDefinition(astProd)) {
-      ASTCDClass cdClass = CD4AnalysisMill.cDClassBuilder()
-              .setModifier(CD4AnalysisMill.modifierBuilder().build())
-              .setName(astProd.getName()).build();
-      link.target().getCDClassList().add(cdClass);
+      ASTCDClass cdClass = CD4AnalysisMill.cDClassBuilder().
+              setModifier(CD4AnalysisMill.modifierBuilder().setPublic(true).build()).
+              setName(astProd.getName()).uncheckedBuild();
+      link.target().addCDElement(cdClass);
       new Link<>(astProd, cdClass, link);
     }
   }

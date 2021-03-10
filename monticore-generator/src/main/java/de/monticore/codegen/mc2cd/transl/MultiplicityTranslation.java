@@ -4,8 +4,8 @@ package de.monticore.codegen.mc2cd.transl;
 
 import com.google.common.collect.Maps;
 import de.monticore.ast.ASTNode;
-import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.grammar.Multiplicity;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes;

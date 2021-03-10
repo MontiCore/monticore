@@ -1,9 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast.ast_class;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.cd.cd4analysis._ast.ASTCDType;
-import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDType;
+import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
@@ -16,7 +16,7 @@ import java.util.List;
 
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.ENCLOSING_SCOPE_VAR;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SPANNED_SCOPE_VAR;
-import static de.monticore.cd.facade.CDModifier.*;
+import static de.monticore.codegen.cd2java.CDModifier.*;
 
 /**
  * creates a list of scope attributes that are used for the AST class
@@ -48,7 +48,7 @@ public class ASTScopeDecorator extends AbstractCreator<ASTCDType, List<ASTCDAttr
 
     //add methods for super interfaces because otherwise the class will not compile
     //mechanism: search interfaces, get grammar from interface, add scope from grammar
-    for (CDDefinitionSymbol superCD : symbolTableService.getSuperCDsTransitive()) {
+    for (DiagramSymbol superCD : symbolTableService.getSuperCDsTransitive()) {
       ASTMCType superScopeInterfaceType = symbolTableService.getScopeInterfaceType(superCD);
       ASTCDAttribute enclosingScopeAttribute = createEnclosingScopeAttribute(superScopeInterfaceType);
       TransformationHelper.addStereotypeValue(enclosingScopeAttribute.getModifier(), MC2CDStereotypes.INHERITED.toString());
@@ -64,10 +64,10 @@ public class ASTScopeDecorator extends AbstractCreator<ASTCDType, List<ASTCDAttr
 
   protected ASTCDAttribute createSpannedScopeAttribute(ASTMCType scopeType) {
     String attributeName = String.format(SPANNED_SCOPE_VAR, "");
-    return this.getCDAttributeFacade().createAttribute(PROTECTED, scopeType, attributeName);
+    return this.getCDAttributeFacade().createAttribute(PROTECTED.build(), scopeType, attributeName);
   }
 
   protected ASTCDAttribute createEnclosingScopeAttribute(ASTMCType scopeType) {
-    return this.getCDAttributeFacade().createAttribute(PROTECTED, scopeType, ENCLOSING_SCOPE_VAR);
+    return this.getCDAttributeFacade().createAttribute(PROTECTED.build(), scopeType, ENCLOSING_SCOPE_VAR);
   }
 }

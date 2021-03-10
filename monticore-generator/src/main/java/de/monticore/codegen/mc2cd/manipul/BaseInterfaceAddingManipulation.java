@@ -2,10 +2,10 @@
 
 package de.monticore.codegen.mc2cd.manipul;
 
-import de.monticore.cd.cd4analysis.CD4AnalysisMill;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDDefinition;
-import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
+import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDDefinition;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 
 import java.util.function.UnaryOperator;
@@ -18,9 +18,10 @@ public final class BaseInterfaceAddingManipulation implements UnaryOperator<ASTC
   
   @Override
   public ASTCDCompilationUnit apply(ASTCDCompilationUnit cdCompilationUnit) {
-    ASTCDInterface baseInterface = CD4AnalysisMill.cDInterfaceBuilder()
-      .setName(getBaseInterfaceName(cdCompilationUnit.getCDDefinition())).build();
-    cdCompilationUnit.getCDDefinition().getCDInterfaceList().add(baseInterface);
+    ASTCDInterface baseInterface = CD4AnalysisMill.cDInterfaceBuilder().
+        setModifier(CD4AnalysisMill.modifierBuilder().setPublic(true).build()).
+        setName(getBaseInterfaceName(cdCompilationUnit.getCDDefinition())).uncheckedBuild();
+    cdCompilationUnit.getCDDefinition().addCDElement(baseInterface);
     return cdCompilationUnit;
   }
   

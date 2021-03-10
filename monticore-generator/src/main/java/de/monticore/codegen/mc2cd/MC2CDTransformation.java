@@ -2,8 +2,8 @@
 
 package de.monticore.codegen.mc2cd;
 
-import de.monticore.cd.cd4analysis.CD4AnalysisMill;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.manipul.CDManipulation;
 import de.monticore.codegen.mc2cd.transl.MC2CDTranslation;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;

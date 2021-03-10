@@ -2,8 +2,11 @@
 
 package de.monticore.codegen.mc2cd.transl.creation;
 
-import de.monticore.cd.cd4analysis.CD4AnalysisMill;
-import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.grammar.grammar._ast.ASTASTRule;
 import de.monticore.grammar.grammar._ast.ASTAdditionalAttribute;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
@@ -22,7 +25,7 @@ public class AttributeInASTsToCDAttributes implements
             ASTCDClass.class)) {
       for (ASTAdditionalAttribute attributeInAST : link.source().getAdditionalAttributeList()) {
         ASTCDAttribute cdAttribute = CD4AnalysisMill.cDAttributeBuilder().uncheckedBuild();
-        link.target().getCDAttributeList().add(cdAttribute);
+        link.target().addCDMember(cdAttribute);
         new Link<>(attributeInAST, cdAttribute, link);
       }
     }
@@ -31,7 +34,7 @@ public class AttributeInASTsToCDAttributes implements
             ASTCDInterface.class)) {
       for (ASTAdditionalAttribute attributeInAST :link.source().getAdditionalAttributeList()) {
         ASTCDAttribute cdAttribute = CD4AnalysisMill.cDAttributeBuilder().uncheckedBuild();
-        link.target().getCDAttributeList().add(cdAttribute);
+        link.target().addCDMember(cdAttribute);
         new Link<>(attributeInAST, cdAttribute, link);
       }
     }

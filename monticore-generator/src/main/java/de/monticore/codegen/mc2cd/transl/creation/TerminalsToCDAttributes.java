@@ -2,11 +2,10 @@
 
 package de.monticore.codegen.mc2cd.transl.creation;
 
-import de.monticore.cd.cd4analysis.CD4AnalysisMill;
-import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.CD4AnalysisNodeFactory;
+import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._visitor.GrammarTraverser;
 import de.monticore.grammar.grammar._visitor.GrammarVisitor2;
@@ -48,8 +47,8 @@ public class TerminalsToCDAttributes implements
     @Override
     public void visit(ASTTerminal terminal) {
       if (terminal.isPresentUsageName()) {
-        ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
-        link.target().getCDAttributeList().add(cdAttribute);
+        ASTCDAttribute cdAttribute = CD4AnalysisMill.cDAttributeBuilder().uncheckedBuild();
+        link.target().addCDMember(cdAttribute);
         new Link<>(terminal, cdAttribute, link);
       }
     }
@@ -57,8 +56,8 @@ public class TerminalsToCDAttributes implements
     @Override
     public void visit(ASTKeyTerminal terminal) {
       if (terminal.isPresentUsageName()) {
-        ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
-        link.target().getCDAttributeList().add(cdAttribute);
+        ASTCDAttribute cdAttribute = CD4AnalysisMill.cDAttributeBuilder().uncheckedBuild();
+        link.target().addCDMember(cdAttribute);
         new Link<>(terminal, cdAttribute, link);
       }
     }
@@ -66,8 +65,8 @@ public class TerminalsToCDAttributes implements
     @Override
     public void visit(ASTTokenTerminal terminal) {
       if (terminal.isPresentUsageName()) {
-        ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
-        link.target().getCDAttributeList().add(cdAttribute);
+        ASTCDAttribute cdAttribute = CD4AnalysisMill.cDAttributeBuilder().uncheckedBuild();
+        link.target().addCDMember(cdAttribute);
         new Link<>(terminal, cdAttribute, link);
       }
     }

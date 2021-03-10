@@ -2,6 +2,10 @@
 
 package de.monticore.grammar;
 
+import com.google.common.base.Preconditions;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import de.monticore.grammar.grammar._ast.*;
@@ -157,22 +161,29 @@ public class MCGrammarSymbolTableHelper {
     return getAllSuperProds(prod).stream().filter(p -> p.isIsInterface()).collect(Collectors.toSet());
   }
 
+  private final static LoadingCache<ProdSymbol, List<ProdSymbol>> superProdCache = CacheBuilder.newBuilder().maximumSize(10000)
+    .build(new CacheLoader<ProdSymbol, List<ProdSymbol>>() {
+      @Override
+      public List<ProdSymbol> load(ProdSymbol prod) {
+        List<ProdSymbol> superTypes = prod.getSuperProds().stream().filter(s -> s.isSymbolPresent())
+            .map(s -> s.lazyLoadDelegate()).collect(Collectors.toList());
+        superTypes.addAll(prod.getSuperInterfaceProds().stream().filter(s -> s.isSymbolPresent())
+            .map(s -> s.lazyLoadDelegate()).collect(Collectors.toList()));
+
+        superTypes.addAll(prod.getAstSuperClasses().stream().filter(s -> s.isSymbolPresent())
+            .map(s -> s.lazyLoadDelegate()).collect(Collectors.toList()));
+        superTypes.addAll(prod.getAstSuperInterfaces().stream().filter(s -> s.isSymbolPresent())
+            .map(s -> s.lazyLoadDelegate()).collect(Collectors.toList()));
+        return ImmutableList.copyOf(superTypes);
+      }
+    });
+
   /**
    * @param prod
    * @return
    */
   public static List<ProdSymbol> getSuperProds(ProdSymbol prod) {
-    List<ProdSymbol> superTypes = prod.getSuperProds().stream().filter(s -> s.isSymbolPresent())
-        .map(s -> s.lazyLoadDelegate()).collect(Collectors.toList());
-    superTypes.addAll(prod.getSuperInterfaceProds().stream().filter(s -> s.isSymbolPresent())
-        .map(s -> s.lazyLoadDelegate()).collect(Collectors.toList()));
-
-    superTypes.addAll(prod.getAstSuperClasses().stream().filter(s -> s.isSymbolPresent())
-        .map(s -> s.lazyLoadDelegate()).collect(Collectors.toList()));
-    superTypes.addAll(prod.getAstSuperInterfaces().stream().filter(s -> s.isSymbolPresent())
-        .map(s -> s.lazyLoadDelegate()).collect(Collectors.toList()));
-
-    return ImmutableList.copyOf(superTypes);
+    return superProdCache.getUnchecked(prod);
   }
 
   public static boolean isSubtype(ProdSymbol subType, ProdSymbol superType) {

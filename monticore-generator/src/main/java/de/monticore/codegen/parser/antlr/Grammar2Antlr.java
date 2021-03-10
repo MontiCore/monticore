@@ -474,6 +474,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
   public void handle(ASTBlock a) {
     // Start of Block
     startCodeSection();
+    addActionToCodeSection();
 
     addToCodeSection("(");
     // Print options
