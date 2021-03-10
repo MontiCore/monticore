@@ -1,17 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
-import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
-import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
-import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
-import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.monticore.symbols.basicsymbols._symboltable.*;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.*;
 import de.monticore.symboltable.modifiers.AccessModifier;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * DefsTypeBasic offers one Symbol-Infrastructure
@@ -138,6 +134,7 @@ public class DefsTypeBasic {
     return OOSymbolsMill.typeVarSymbolBuilder()
         .setName(name)
         .setFullName(name)
+            .setSpannedScope(OOSymbolsMill.scope())
         .build();
   }
   
@@ -285,17 +282,6 @@ public class DefsTypeBasic {
     add(_array, method("toString", _StringSymType))
             .setFullName("java.lang.Object.toString");
 
-    // equals(Object)
-    m = method("equals", _booleanSymType);
-    m.setFullName("java.lang.Object.equals");
-    add(m, field("o", _ObjectSymType));
-    add(_array, m);
-
-    // length field
-    add(_array, field("length", _intSymType));
-
-    // TODO RE: this function is very incomplete; ersetzen oder komplettieren
-
     completeFullnames(_array);
 
   }
@@ -328,37 +314,7 @@ public class DefsTypeBasic {
   public static void link_String() {
     MethodSymbol m; FieldSymbol f;
     IOOSymbolsScope scope = OOSymbolsMill.scope();
-    
-    // hashCode()
-    add(_String, method("hashCode", _intSymType));
-    add2scope(scope, method("hashCode", _intSymType));
 
-    // equals(Object)
-    m = method("equals", _booleanSymType);
-    m.setFullName("java.lang.Object.equals");
-    add(m, field("o", _ObjectSymType));
-    add(_String, m);
-    add2scope(scope, m);
-  
-    // indexOf(String str, int fromIndex)
-    m = method("indexOf", _intSymType);
-    add(m, field("str", _StringSymType));
-    add(m, field("fromIndex", _intSymType));
-    add(_String, m);
-    add2scope(scope,m);
-
-    // toString()
-    m = method("toString",_StringSymType);
-    add(_String, m);
-    add2scope(scope,m);
-
-    // charAt(int index)
-    m = method("charAt",_charSymType);
-    add(m,field("index",_intSymType));
-    add(_String, m);
-    add2scope(scope,m);
-    
-    // TODO RE: this function is very incomplete (wegen der fehlenden Signatur); ersetzen oder komplettieren
     _String.setSpannedScope(scope);
     completeFullnames(_String);
   }
@@ -382,14 +338,6 @@ public class DefsTypeBasic {
   public static void link_Object() {
     MethodSymbol m; FieldSymbol f;
     
-    // equals(Object)
-    m = method("equals", _booleanSymType);
-    m.setFullName("equals");
-    add(m, field("o", _ObjectSymType));
-    add(_Object, m);
-    
-    // TODO RE: this function is very incomplete; ersetzen oder komplettieren
-    
     completeFullnames(_Object);
     OOTypeSymbolSurrogate loader = new OOTypeSymbolSurrogate("Object");
     loader.setEnclosingScope(createScopeWithObject());
@@ -410,85 +358,52 @@ public class DefsTypeBasic {
    * This is the predefined Symbol for all Primitives, such as "int"
    * which has empty Fields and Methods
    */
-  public static OOTypeSymbol _int;
   public static SymTypeConstant _intSymType;
-  public static OOTypeSymbol _char;
   public static SymTypeConstant _charSymType;
-  public static OOTypeSymbol _boolean;
   public static SymTypeConstant _booleanSymType;
-  public static OOTypeSymbol _double;
   public static SymTypeConstant _doubleSymType;
-  public static OOTypeSymbol _float;
   public static SymTypeConstant _floatSymType;
-  public static OOTypeSymbol _long;
   public static SymTypeConstant _longSymType;
-  public static OOTypeSymbol _byte;
   public static SymTypeConstant _byteSymType;
-  public static OOTypeSymbol _short;
   public static SymTypeConstant _shortSymType;
-  
-  
-  public static Map<String,SymTypeConstant> typeConstants;
 
   public static void set_thePrimitives() {
-    typeConstants = new HashMap<>();
-    OOSymbolsScope typeSymbolsScope = new OOSymbolsScope();
-    _int = type("int");
-    typeSymbolsScope.add(_int);
+    IBasicSymbolsGlobalScope typeSymbolsScope = BasicSymbolsMill.globalScope();
     OOTypeSymbol loader = new OOTypeSymbolSurrogate("int");
     loader.setEnclosingScope(typeSymbolsScope);
     _intSymType = new SymTypeConstant(loader);
-    typeConstants.put("int", _intSymType);
 
-    _boolean = type("boolean");
-    typeSymbolsScope.add(_boolean);
     loader = new OOTypeSymbolSurrogate("boolean");
     loader.setEnclosingScope(typeSymbolsScope);
     _booleanSymType = new SymTypeConstant(loader);
-    typeConstants.put("boolean", _booleanSymType);
 
-    _char = type("char");
-    typeSymbolsScope.add(_char);
     loader = new OOTypeSymbolSurrogate("char");
     loader.setEnclosingScope(typeSymbolsScope);
     _charSymType = new SymTypeConstant(loader);
-    typeConstants.put("char", _charSymType);
 
-    _double = type("double");
-    typeSymbolsScope.add(_double);
     loader = new OOTypeSymbolSurrogate("double");
     loader.setEnclosingScope(typeSymbolsScope);
     _doubleSymType = new SymTypeConstant(loader);
-    typeConstants.put("double", _doubleSymType);
 
-    _float = type("float");
-    typeSymbolsScope.add(_float);
     loader = new OOTypeSymbolSurrogate("float");
     loader.setEnclosingScope(typeSymbolsScope);
     _floatSymType = new SymTypeConstant(loader);
-    typeConstants.put("float", _floatSymType);
 
-    _long = type("long");
-    typeSymbolsScope.add(_long);
     loader = new OOTypeSymbolSurrogate("long");
     loader.setEnclosingScope(typeSymbolsScope);
     _longSymType = new SymTypeConstant(loader);
-    typeConstants.put("long", _longSymType);
 
-    _byte = type("byte");
-    typeSymbolsScope.add(_byte);
-    loader = new OOTypeSymbolSurrogate("byte");
-    loader.setEnclosingScope(typeSymbolsScope);
-    _byteSymType = new SymTypeConstant(loader);
-    typeConstants.put("byte", _byteSymType);
-
-    _short = type("short");
-    typeSymbolsScope.add(_short);
     loader = new OOTypeSymbolSurrogate("short");
     loader.setEnclosingScope(typeSymbolsScope);
     _shortSymType = new SymTypeConstant(loader);
-    typeConstants.put("short", _shortSymType);
+
+    loader = new OOTypeSymbolSurrogate("byte");
+    loader.setEnclosingScope(typeSymbolsScope);
+    _byteSymType = new SymTypeConstant(loader);
+
+
   }
+
   
   /*********************************************************************/
 
@@ -527,9 +442,6 @@ public class DefsTypeBasic {
   }
   
   /*********************************************************************/
-  
-  // TODO: diese Klasse etwas testen
 
-  // TODO: diese Objekte realisieren
   
 }

@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.JsonPrinter;
@@ -136,9 +137,9 @@ public class SymTypeExpressionDeSer {
     // void and null are stored as strings
     if (serialized.isJsonString()) {
       switch(serialized.getAsJsonString().getValue()){
-        case DefsTypeBasic._nullTypeString:
+        case BasicSymbolsMill.NULL:
           return SymTypeExpressionFactory.createTypeOfNull();
-        case DefsTypeBasic._voidTypeString:
+        case BasicSymbolsMill.VOID:
           return SymTypeExpressionFactory.createTypeVoid();
       }
     }
