@@ -71,6 +71,7 @@ if(!hasProperty('bootstrap')) {
   include ':monticore-test:01experiments:textoutput'
   include ':monticore-test:01experiments:hwDeSers'
   include ':monticore-test:01experiments:skeleton'
+  include ':monticore-test:01experiments:demonstrator'
   
   include ':monticore-test:02experiments'
   project(':monticore-test:02experiments').projectDir = file("monticore-test/02.experiments")

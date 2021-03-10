@@ -14,7 +14,7 @@ import mc.feature.symbolrules.symbolruletest.SymbolruleTestMill;
 import mc.feature.symbolrules.symbolruletest._ast.ASTFoo;
 import mc.feature.symbolrules.symbolruletest._parser.SymbolruleTestParser;
 import mc.feature.symbolrules.symbolruletest._symboltable.*;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -25,8 +25,10 @@ import static org.junit.Assert.assertTrue;
 
 public class SymbolruleTest {
 
-  @BeforeClass
-  public static void setup(){
+  @Before
+  public void setup(){
+    SymbolruleTestMill.reset();
+    SymbolruleTestMill.init();
     BasicSymbolsMill.initializePrimitives();
   }
 

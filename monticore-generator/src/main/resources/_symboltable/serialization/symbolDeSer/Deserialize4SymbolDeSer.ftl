@@ -14,7 +14,6 @@ ${tc.signature("symTabMill", "symbolFullName", "symbolSimpleName","symbolRuleAtt
   builder.${genHelper.getPlainSetter(attr)}(deserialize${attr.getName()?cap_first}(symbolJson));
   </#if>
 </#list>
-  ${symbolFullName} symbol = builder.build();
 
 <#if spansScope>
   if(symbolJson.hasObjectMember(de.monticore.symboltable.serialization.JsonDeSers.SPANNED_SCOPE)){
@@ -22,13 +21,15 @@ ${tc.signature("symTabMill", "symbolFullName", "symbolSimpleName","symbolRuleAtt
         ${symTabMill}.globalScope().getDeSer()
         .deserializeScope(symbolJson.getObjectMember(
             de.monticore.symboltable.serialization.JsonDeSers.SPANNED_SCOPE));
-    symbol.setSpannedScope(spannedScope);
+    builder.setSpannedScope(spannedScope);
   }
   else{
   ${scopeName} spannedScope = ${symTabMill}.scope();
-  symbol.setSpannedScope(spannedScope);
+  builder.setSpannedScope(spannedScope);
   }
 </#if>
+
+  ${symbolFullName} symbol = builder.build();
 
   deserializeAddons(symbol, symbolJson);
   return symbol;

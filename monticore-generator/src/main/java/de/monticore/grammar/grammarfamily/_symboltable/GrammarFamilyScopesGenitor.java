@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class GrammarFamilyScopesGenitor extends GrammarFamilyScopesGenitorTOP {
 
@@ -49,9 +50,11 @@ public class GrammarFamilyScopesGenitor extends GrammarFamilyScopesGenitorTOP {
    * @param rootNode the root node
    * @return the first scope that was created
    */
-  public GrammarFamilyArtifactScope createFromAST(de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit rootNode) {
+  public GrammarFamilyArtifactScope createFromAST(de.monticore.cdbasis._ast.ASTCDCompilationUnit rootNode) {
     GrammarFamilyArtifactScope artifactScope = new GrammarFamilyArtifactScope(Optional.empty(),
         Names.getQualifiedName(rootNode.getPackageList()), new ArrayList<>());
+    artifactScope.setAstNode(rootNode);
+    artifactScope.setImportsList(rootNode.getMCImportStatementList().stream().map(i -> new ImportStatement(i.getQName(), i.isStar())).collect(Collectors.toList()));
     putOnStack(artifactScope);
     rootNode.accept(getTraverser());
     return artifactScope;

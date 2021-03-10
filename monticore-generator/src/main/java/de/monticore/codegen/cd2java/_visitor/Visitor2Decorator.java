@@ -1,12 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._visitor;
 
-import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
-import de.monticore.cd.cd4code.CD4CodeMill;
+import de.monticore.cdbasis._ast.*;
+import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
+import de.monticore.cd4code.CD4CodeMill;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
@@ -15,7 +18,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SCOPE;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SYMBOL;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
@@ -48,9 +51,9 @@ public class Visitor2Decorator extends AbstractCreator<ASTCDCompilationUnit, AST
         .setName(this.visitorService.getVisitor2SimpleName())
         .setModifier(PUBLIC.build())
         .addInterface(getMCTypeFacade().createQualifiedType(IVISTOR_FULL_NAME))
-        .addAllCDMethods(addASTNodeVisitorMethods(compilationUnit.getCDDefinition()))
-        .addAllCDMethods(addSymbolVisitorMethods(symbolNames))
-        .addAllCDMethods(addScopeVisitorMethods(getSymbolsTransitive(), ast.getCDDefinition()))
+        .addAllCDMembers(addASTNodeVisitorMethods(compilationUnit.getCDDefinition()))
+        .addAllCDMembers(addSymbolVisitorMethods(symbolNames))
+        .addAllCDMembers(addScopeVisitorMethods(getSymbolsTransitive(), ast.getCDDefinition()))
         .build();
 
     return visitorInterface;
@@ -84,9 +87,9 @@ public class Visitor2Decorator extends AbstractCreator<ASTCDCompilationUnit, AST
    */
   protected List<ASTCDMethod> addASTNodeVisitorMethods(ASTCDDefinition cdDefinition) {
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
-    visitorMethods.addAll(addClassVisitorMethods(cdDefinition.getCDClassList()));
-    visitorMethods.addAll(addInterfaceVisitorMethods(cdDefinition.getCDInterfaceList()));
-    visitorMethods.addAll(addEnumVisitorMethods(cdDefinition.getCDEnumList(), cdDefinition.getName()));
+    visitorMethods.addAll(addClassVisitorMethods(cdDefinition.getCDClassesList()));
+    visitorMethods.addAll(addInterfaceVisitorMethods(cdDefinition.getCDInterfacesList()));
+    visitorMethods.addAll(addEnumVisitorMethods(cdDefinition.getCDEnumsList(), cdDefinition.getName()));
     return visitorMethods;
   }
 
@@ -252,8 +255,8 @@ public class Visitor2Decorator extends AbstractCreator<ASTCDCompilationUnit, AST
     superSymbolNames.addAll(symbolTableService.retrieveSymbolNamesFromCD(visitorService.getCDSymbol()));
 
     // add symbols of super CDs
-    List<CDDefinitionSymbol> superCDsTransitive = visitorService.getSuperCDsTransitive();
-    for (CDDefinitionSymbol cdSymbol : superCDsTransitive) {
+    List<DiagramSymbol> superCDsTransitive = visitorService.getSuperCDsTransitive();
+    for (DiagramSymbol cdSymbol : superCDsTransitive) {
       superSymbolNames.addAll(symbolTableService.retrieveSymbolNamesFromCD(cdSymbol));
     }
     return superSymbolNames;

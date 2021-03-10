@@ -3,7 +3,11 @@
 package de.monticore.codegen.mc2cd.transl.creation;
 
 import com.google.common.collect.Iterables;
-import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDDefinition;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.utils.Link;
 
@@ -87,12 +91,13 @@ public class ASTRulesToCDClassesAndCDInterfaces implements
 
     for (ASTASTRule astRule : rootLink.source().getASTRuleList()) {
       if (!matchedASTRules.contains(astRule)) {
-        ASTCDClass cdClass = CD4AnalysisNodeFactory.createASTCDClass();
-        cdClass.setModifier(CD4AnalysisNodeFactory.createASTModifier());
+        ASTCDClass cdClass = CD4AnalysisMill.cDClassBuilder().
+                setModifier(CD4AnalysisMill.modifierBuilder().setPublic(true).build()).
+                uncheckedBuild();
 
         Link<ASTMCGrammar, ASTCDDefinition> parentLink = Iterables.getOnlyElement(rootLink
                 .getLinks(ASTMCGrammar.class, ASTCDDefinition.class));
-        parentLink.target().getCDClassList().add(cdClass);
+        parentLink.target().addCDElement(cdClass);
         new Link<>(astRule, cdClass, parentLink);
       }
     }

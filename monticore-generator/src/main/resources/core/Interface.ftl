@@ -7,7 +7,7 @@ ${tc.include("core.Imports")}
 
 ${tc.include("core.Annotations")}
 ${cdInterface.printModifier()} interface ${cdInterface.getName()} <#rt><#lt>
-<#if !cdInterface.isEmptyInterface()>extends ${cdInterface.printInterfaces()} </#if>{
+<#if !cdInterface.isEmptyInterfaceList()>extends ${cdInterface.printInterfaces()} </#if>{
 
 
 <#list cdInterface.getCDAttributeList() as attribute>

@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.helper;
 
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.*;
 import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
@@ -33,6 +34,9 @@ public class MCType2SymTypeExpressionTest {
   public static void setup() {
     LogStub.init();
     Log.enableFailQuick(false);
+    BasicSymbolsMill.reset();
+    BasicSymbolsMill.init();
+    BasicSymbolsMill.initializePrimitives();
   }
 
   List<String> primitiveTypes = Arrays

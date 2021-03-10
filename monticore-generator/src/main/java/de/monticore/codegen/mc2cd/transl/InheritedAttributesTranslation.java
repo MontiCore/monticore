@@ -2,13 +2,13 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.CD4AnalysisNodeFactory;
+import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
-import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
+import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.AdditionalAttributeSymbol;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
@@ -56,7 +56,7 @@ public class InheritedAttributesTranslation implements
        ||(ruleComponent instanceof ASTConstantGroup)
        || ((ruleComponent instanceof ASTITerminal) && ((ASTITerminal) ruleComponent).isPresentUsageName())) {
         ASTCDAttribute cdAttribute = createCDAttribute(link.source(), astProd);
-        link.target().getCDAttributeList().add(cdAttribute);
+        link.target().addCDMember(cdAttribute);
         new Link<>(ruleComponent, cdAttribute, link);
       }
     }
@@ -70,7 +70,7 @@ public class InheritedAttributesTranslation implements
             link.source()).entrySet()) {
       for (AdditionalAttributeSymbol attributeInAST : entry.getValue()) {
         ASTCDAttribute cdAttribute = createCDAttribute(link.source(), entry.getKey());
-        link.target().getCDAttributeList().add(cdAttribute);
+        link.target().addCDMember(cdAttribute);
         if (attributeInAST.isPresentAstNode()) {
           new Link<>(attributeInAST.getAstNode(), cdAttribute, link);
         }
@@ -111,7 +111,8 @@ public class InheritedAttributesTranslation implements
             .map(MCGrammarSymbol::getFullName)
             .orElse("");
 
-    ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
+    ASTCDAttribute cdAttribute = CD4AnalysisMill.cDAttributeBuilder().
+            setModifier(CD4AnalysisMill.modifierBuilder().build()).uncheckedBuild();
     if (!interfacesWithoutImplementation.contains(definingNode)) {
       TransformationHelper.addStereoType(
               cdAttribute, MC2CDStereotypes.INHERITED.toString(), superGrammarName);

@@ -4,10 +4,14 @@ package de.monticore.codegen.cd2java._parser;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import de.monticore.cd.cd4analysis.CD4AnalysisMill;
-import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
-import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
+import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cd4codebasis._ast.*;
+import de.monticore.cdbasis._ast.*;
+import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
+import de.monticore.cdbasis._symboltable.CDTypeSymbol;
+import de.monticore.cdbasis._symboltable.ICDBasisArtifactScope;
+import de.monticore.cdbasis._symboltable.ICDBasisScope;
+import de.monticore.cdinterfaceandenum._ast.*;
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -15,12 +19,13 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.NODE_SUFFIX;
@@ -44,18 +49,18 @@ public class ParserForSuperDecorator extends AbstractDecorator {
     List<ASTCDClass> classList = Lists.newArrayList();
     if(!astCD.getCDDefinition().isPresentModifier() || !service.hasComponentStereotype(astCD.getCDDefinition().getModifier())){
       String grammarName = service.getCDName();
-      for(CDDefinitionSymbol symbol: service.getSuperCDsTransitive()){
-        if(!symbol.getAstNode().isPresentModifier() || !service.hasComponentStereotype(symbol.getAstNode().getModifier())){
+      for(DiagramSymbol symbol: service.getSuperCDsTransitive()){
+        if(!((ASTCDDefinition) symbol.getAstNode()).isPresentModifier() || !service.hasComponentStereotype(((ASTCDDefinition) symbol.getAstNode()).getModifier())){
           String superGrammarName = symbol.getName();
-          List<ASTCDClass> astcdClasses = astCD.getCDDefinition().deepClone().getCDClassList();
-          ASTMCObjectType superClass = getMCTypeFacade().createQualifiedType(service.getParserClassFullName(symbol));
+          List<ASTCDClass> astcdClasses = astCD.getCDDefinition().deepClone().getCDClassesList();
+          ASTMCQualifiedType superClass = getMCTypeFacade().createQualifiedType(service.getParserClassFullName(symbol));
           String className = superGrammarName + PARSER_SUFFIX + FOR_SUFFIX + grammarName;
 
           ASTCDClass clazz = CD4AnalysisMill.cDClassBuilder()
               .setName(className)
               .setModifier(PUBLIC.build())
               .setSuperclass(superClass)
-              .addAllCDMethods(createParseMethods(astcdClasses, symbol))
+              .addAllCDMembers(createParseMethods(astcdClasses, symbol))
               .build();
           classList.add(clazz);
         }
@@ -64,21 +69,21 @@ public class ParserForSuperDecorator extends AbstractDecorator {
     return classList;
   }
 
-  protected List<ASTCDMethod> createParseMethods(List<ASTCDClass> astcdClassList, CDDefinitionSymbol symbol){
+  protected List<ASTCDMethod> createParseMethods(List<ASTCDClass> astcdClassList, DiagramSymbol symbol){
     List<ASTCDMethod> methods = Lists.newArrayList();
 
-    HashMap<CDDefinitionSymbol, Collection<CDTypeSymbol>> overridden = getOverridden(astcdClassList, symbol);
+    HashMap<DiagramSymbol, Collection<CDTypeSymbol>> overridden = getOverridden(astcdClassList, symbol);
     Collection<CDTypeSymbol> firstClasses = getFirstClasses(astcdClassList);
 
     //get the other (not overridden) super prods whose parse methods needs to be overridden
-    Map<CDDefinitionSymbol, Collection<CDTypeSymbol>> superProds = calculateNonOverriddenCds(Maps.newHashMap(), symbol, overridden, Lists.newArrayList());
-    Map<CDDefinitionSymbol, Collection<CDTypeSymbol>> superProdsFromThis = calculateNonOverriddenCds(Maps.newHashMap(), service.getCDSymbol(), overridden, Lists.newArrayList());
+    Map<DiagramSymbol, Collection<CDTypeSymbol>> superProds = calculateNonOverriddenCds(Maps.newHashMap(), symbol, overridden, Lists.newArrayList());
+    Map<DiagramSymbol, Collection<CDTypeSymbol>> superProdsFromThis = calculateNonOverriddenCds(Maps.newHashMap(), service.getCDSymbol(), overridden, Lists.newArrayList());
 
     //necessary if a nt is overridden in a grammar between the super grammar and this grammar
     List<CDTypeSymbol> allSuperProdsFromThis = superProdsFromThis.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
     List<String> superProdsFullNames = allSuperProdsFromThis.stream().map(CDTypeSymbol::getFullName).collect(Collectors.toList());
 
-    for(CDDefinitionSymbol grammar: superProds.keySet()){
+    for(DiagramSymbol grammar: superProds.keySet()){
       Collection<CDTypeSymbol> typesInGrammar = superProds.get(grammar);
       //remove the prods that have no parse method
       typesInGrammar.removeIf(type -> type.getAstNode() instanceof ASTCDEnum);
@@ -91,7 +96,7 @@ public class ParserForSuperDecorator extends AbstractDecorator {
 
 
     //iterate over every overridden prod, generate parse methods for them
-    for(Map.Entry<CDDefinitionSymbol, Collection<CDTypeSymbol>> entry: overridden.entrySet()){
+    for(Map.Entry<DiagramSymbol, Collection<CDTypeSymbol>> entry: overridden.entrySet()){
       for(CDTypeSymbol type: entry.getValue()) {
         if (type.getAstNode().isPresentModifier() &&
             (service.hasExternalInterfaceStereotype(type.getAstNode().getModifier()) || service.hasLeftRecursiveStereotype(type.getAstNode().getModifier()))) {
@@ -106,7 +111,7 @@ public class ParserForSuperDecorator extends AbstractDecorator {
     }
 
     //iterate over every non-overridden prod, generate parse methods for them
-    for(Map.Entry<CDDefinitionSymbol, Collection<CDTypeSymbol>> entry: superProds.entrySet()){
+    for(Map.Entry<DiagramSymbol, Collection<CDTypeSymbol>> entry: superProds.entrySet()){
       for(CDTypeSymbol type: entry.getValue()){
         //necessary if a nt of a grammar between this grammar and the super grammar is overridden
         if(!superProdsFullNames.contains(type.getFullName())){
@@ -125,14 +130,14 @@ public class ParserForSuperDecorator extends AbstractDecorator {
   }
 
   public List<CDTypeSymbol> getFirstClasses(List<ASTCDClass> astcdClassList){
-    HashMap<CDDefinitionSymbol, Collection<CDTypeSymbol>> overridden = Maps.newHashMap();
+    HashMap<DiagramSymbol, Collection<CDTypeSymbol>> overridden = Maps.newHashMap();
     List<CDTypeSymbol> firstClasses = Lists.newArrayList();
     calculateOverriddenCds(service.getCDSymbol(), astcdClassList.stream().map(ASTCDClass::getName).collect(Collectors.toList()), overridden, firstClasses);
     return firstClasses;
   }
 
-  public HashMap<CDDefinitionSymbol, Collection<CDTypeSymbol>> getOverridden(List<ASTCDClass> astcdClassList, CDDefinitionSymbol symbol){
-    HashMap<CDDefinitionSymbol, Collection<CDTypeSymbol>> overridden = Maps.newHashMap();
+  public HashMap<DiagramSymbol, Collection<CDTypeSymbol>> getOverridden(List<ASTCDClass> astcdClassList, DiagramSymbol symbol){
+    HashMap<DiagramSymbol, Collection<CDTypeSymbol>> overridden = Maps.newHashMap();
     List<CDTypeSymbol> firstClasses = Lists.newArrayList();
     calculateOverriddenCds(symbol, astcdClassList.stream().map(ASTCDClass::getName).collect(Collectors.toList()), overridden, firstClasses);
     return overridden;
@@ -146,12 +151,12 @@ public class ParserForSuperDecorator extends AbstractDecorator {
    * @param prodNames stores the prods names so that no prod name is added twice -> only one parse method for every NT with the same name
    * @return the otherSuperProds container containing all super prods that are not overridden
    */
-  protected Map<CDDefinitionSymbol, Collection<CDTypeSymbol>> calculateNonOverriddenCds(Map<CDDefinitionSymbol, Collection<CDTypeSymbol>> otherSuperProds,
-                                                                                        CDDefinitionSymbol symbol,
-                                                                                        Map<CDDefinitionSymbol, Collection<CDTypeSymbol>> overridden,
+  protected Map<DiagramSymbol, Collection<CDTypeSymbol>> calculateNonOverriddenCds(Map<DiagramSymbol, Collection<CDTypeSymbol>> otherSuperProds,
+                                                                                        DiagramSymbol symbol,
+                                                                                        Map<DiagramSymbol, Collection<CDTypeSymbol>> overridden,
                                                                                         List<String> prodNames){
     Collection<CDTypeSymbol> types = overridden.get(symbol);
-    Collection<CDTypeSymbol> typesInSymbol = symbol.getTypes();
+    Collection<CDTypeSymbol> typesInSymbol = ((ICDBasisScope) symbol.getEnclosingScope()).getLocalCDTypeSymbols();
     Collection<CDTypeSymbol> otherProds = Lists.newArrayList();
 
     for(CDTypeSymbol type: typesInSymbol){
@@ -165,7 +170,7 @@ public class ParserForSuperDecorator extends AbstractDecorator {
     otherSuperProds.put(symbol, otherProds);
 
     //make method recursive so that all transitive super prods are taken into account
-    for(CDDefinitionSymbol superSymbol: service.getSuperCDsDirect(symbol)){
+    for(DiagramSymbol superSymbol: service.getSuperCDsDirect(symbol)){
       calculateNonOverriddenCds(otherSuperProds, superSymbol, overridden, prodNames);
     }
 
@@ -180,16 +185,19 @@ public class ParserForSuperDecorator extends AbstractDecorator {
    * @param overridden a container in which the overridden prods are stored in
    * @param firstClasses a container to check whether a parse method can be generated normally or an error code must be logged upon its execution
    */
-  protected void calculateOverriddenCds(CDDefinitionSymbol cd, Collection<String> nativeClasses, HashMap<CDDefinitionSymbol,
+  protected void calculateOverriddenCds(DiagramSymbol cd, Collection<String> nativeClasses, HashMap<DiagramSymbol,
       Collection<CDTypeSymbol>> overridden, Collection<CDTypeSymbol> firstClasses) {
     HashMap<String, CDTypeSymbol> l = Maps.newHashMap();
     //get all super cds / imports of the original cd
-    Collection<CDDefinitionSymbol> importedClasses = cd.getImports().stream().map(service::resolveCD).collect(Collectors.toList());
+    Collection<DiagramSymbol> importedClasses = ((ICDBasisArtifactScope) cd.getEnclosingScope()).getImportsList().stream()
+        .map(i -> i.getStatement())
+        .map(service::resolveCD)
+        .collect(Collectors.toList());
     Collection<CDTypeSymbol> overriddenSet = Lists.newArrayList();
     //determine for every native prod of the original grammar if the super grammar has a prod with the same name
     //if yes then the prod is overridden
     for (String className : nativeClasses) {
-      Optional<CDTypeSymbol> cdType = cd.getType(className);
+      Optional<CDTypeSymbol> cdType = ((ICDBasisArtifactScope) cd.getEnclosingScope()).resolveCDTypeLocally(className);
       if (cdType.isPresent()) {
         overriddenSet.add(cdType.get());
         //if the type is already in the first classes container, then ignore it so that no correct parse method for it can be generated
@@ -203,7 +211,7 @@ public class ParserForSuperDecorator extends AbstractDecorator {
       overridden.put(cd, overriddenSet);
     }
     //repeat this for every super grammar -> recursion
-    for(CDDefinitionSymbol superCd: importedClasses){
+    for(DiagramSymbol superCd: importedClasses){
       calculateOverriddenCds(superCd, nativeClasses, overridden, firstClasses);
     }
 
@@ -214,7 +222,7 @@ public class ParserForSuperDecorator extends AbstractDecorator {
     return first.getSuperTypesTransitive().stream().map(CDTypeSymbol::getFullName).collect(Collectors.toList()).contains(second.getFullName());
   }
 
-  protected List<ASTCDMethod> getOverriddenMethods(CDTypeSymbol type, CDDefinitionSymbol grammar, Collection<CDTypeSymbol> firstClasses){
+  protected List<ASTCDMethod> getOverriddenMethods(CDTypeSymbol type, DiagramSymbol grammar, Collection<CDTypeSymbol> firstClasses){
     List<ASTCDMethod> methods = Lists.newArrayList();
     ASTMCQualifiedName ioException = MCBasicTypesMill.mCQualifiedNameBuilder()
         .setPartsList(Lists.newArrayList("java", "io", "IOException"))
@@ -229,13 +237,13 @@ public class ParserForSuperDecorator extends AbstractDecorator {
 
     ASTMCType returnType = getMCTypeFacade().createOptionalTypeOf(getMCTypeFacade().createQualifiedType(superProdFullName));
     ASTCDParameter fileNameParameter = getCDParameterFacade().createParameter(String.class, "fileName");
-    ASTCDMethod parse = getCDMethodFacade().createMethod(PUBLIC, returnType, "parse" + prodName, fileNameParameter);
+    ASTCDMethod parse = getCDMethodFacade().createMethod(PUBLIC.build(), returnType, "parse" + prodName, fileNameParameter);
     parse.addException(ioException);
 
 
     ASTMCType readerType = getMCTypeFacade().createQualifiedType("java.io.Reader");
     ASTCDParameter readerParameter = getCDParameterFacade().createParameter(readerType, "reader");
-    ASTCDMethod parseReader = getCDMethodFacade().createMethod(PUBLIC, returnType, "parse" + prodName, readerParameter);
+    ASTCDMethod parseReader = getCDMethodFacade().createMethod(PUBLIC.build(), returnType, "parse" + prodName, readerParameter);
     parseReader.addException(ioException);
 
     //if a nonterminal overrides two or more other nonterminals that do not extend each other then the nonterminal can only extend one of them due to single inheritance
@@ -260,7 +268,7 @@ public class ParserForSuperDecorator extends AbstractDecorator {
     return methods;
   }
 
-  protected List<ASTCDMethod> getParseMethodsForOtherProds(CDTypeSymbol type, CDDefinitionSymbol grammar){
+  protected List<ASTCDMethod> getParseMethodsForOtherProds(CDTypeSymbol type, DiagramSymbol grammar){
     List<ASTCDMethod> methods = Lists.newArrayList();
     ASTMCQualifiedName ioException = MCBasicTypesMill.mCQualifiedNameBuilder()
         .setPartsList(Lists.newArrayList("java", "io", "IOException"))
@@ -274,14 +282,14 @@ public class ParserForSuperDecorator extends AbstractDecorator {
 
     ASTMCType returnType = getMCTypeFacade().createOptionalTypeOf(getMCTypeFacade().createQualifiedType(superProdFullName));
     ASTCDParameter fileNameParameter = getCDParameterFacade().createParameter(String.class, "fileName");
-    ASTCDMethod parse = getCDMethodFacade().createMethod(PUBLIC, returnType, "parse" + prodName, fileNameParameter);
+    ASTCDMethod parse = getCDMethodFacade().createMethod(PUBLIC.build(), returnType, "parse" + prodName, fileNameParameter);
     parse.addException(ioException);
     this.replaceTemplate(EMPTY_BODY, parse, new TemplateHookPoint(TEMPLATE_PATH + "ParseSup", millFullName, prodName));
     methods.add(parse);
 
     ASTMCType readerType = getMCTypeFacade().createQualifiedType("java.io.Reader");
     ASTCDParameter readerParameter = getCDParameterFacade().createParameter(readerType, "reader");
-    ASTCDMethod parseReader = getCDMethodFacade().createMethod(PUBLIC, returnType, "parse" + prodName, readerParameter);
+    ASTCDMethod parseReader = getCDMethodFacade().createMethod(PUBLIC.build(), returnType, "parse" + prodName, readerParameter);
     parseReader.addException(ioException);
     this.replaceTemplate(EMPTY_BODY, parseReader, new TemplateHookPoint(TEMPLATE_PATH + "ParseSupReader", millFullName, prodName));
     methods.add(parseReader);

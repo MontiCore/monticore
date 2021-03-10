@@ -4,7 +4,10 @@ package de.monticore.codegen.cd2java._ast_emf.emf_package;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
-import de.monticore.cd.cd4analysis._ast.*;
+
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cdbasis._ast.*;
+import de.monticore.cdinterfaceandenum._ast.*;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
@@ -15,8 +18,8 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import org.junit.Before;
 import org.junit.Test;
 
-import static de.monticore.cd.facade.CDModifier.PACKAGE_PRIVATE;
-import static de.monticore.cd.facade.CDModifier.PACKAGE_PRIVATE_ABSTRACT;
+import static de.monticore.codegen.cd2java.CDModifier.PACKAGE_PRIVATE;
+import static de.monticore.codegen.cd2java.CDModifier.PACKAGE_PRIVATE_ABSTRACT;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertInt;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
@@ -50,8 +53,8 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterface() {
-    assertEquals(1, packageInterface.sizeInterface());
-    assertDeepEquals("de.monticore.emf._ast.ASTEPackage", packageInterface.getInterface(0));
+    assertEquals(1, packageInterface.getInterfaceList().size());
+    assertDeepEquals("de.monticore.emf._ast.ASTEPackage", packageInterface.getCDExtendUsage().getSuperclass(0));
   }
 
 
