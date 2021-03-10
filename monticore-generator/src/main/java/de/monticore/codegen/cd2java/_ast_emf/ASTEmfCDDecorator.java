@@ -1,9 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast_emf;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java._ast.ASTCDDecorator;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
@@ -62,8 +62,8 @@ public class ASTEmfCDDecorator extends ASTCDDecorator {
     List<String> astPackage = new ArrayList<>(ast.getPackageList());
     astPackage.addAll(Arrays.asList(ast.getCDDefinition().getName().toLowerCase(), ASTConstants.AST_PACKAGE));
 
-    compilationUnit.getCDDefinition().addCDInterface(createPackageInterface(ast, astPackage));
-    compilationUnit.getCDDefinition().addCDClass(createPackageImpl(ast, astPackage));
+    compilationUnit.getCDDefinition().addCDElement(createPackageInterface(ast, astPackage));
+    compilationUnit.getCDDefinition().addCDElement(createPackageImpl(ast, astPackage));
     return compilationUnit;
   }
 

@@ -2,11 +2,11 @@
 package de.monticore.codegen.cd2java._ast.ast_class;
 
 import de.monticore.ast.ASTCNode;
-import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
-import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
-import de.monticore.cd.cd4code.CD4CodeFullPrettyPrinter;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cd4codebasis._ast.ASTCDParameter;
+import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
 import de.monticore.codegen.cd2java.AbstractTransformer;
 import de.monticore.codegen.cd2java._ast.factory.NodeFactoryConstants;
 import de.monticore.codegen.cd2java._ast.factory.NodeFactoryService;
@@ -22,11 +22,12 @@ import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
+import de.monticore.types.prettyprint.MCBasicTypesFullPrettyPrinter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static de.monticore.cd.facade.CDModifier.*;
+import static de.monticore.codegen.cd2java.CDModifier.*;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISITOR_PREFIX;
 
@@ -71,9 +72,9 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
   public ASTCDClass decorate(final ASTCDClass originalClass, ASTCDClass changedClass) {
     changedClass.addInterface(this.astService.getASTBaseInterface());
     // have to use the changed one here because this one will get the TOP prefix
-    changedClass.addCDMethod(createAcceptTraverserMethod(changedClass));
-    changedClass.addAllCDMethods(createAcceptTraverserSuperMethods(originalClass));
-    changedClass.addCDMethod(getConstructMethod(originalClass));
+    changedClass.addCDMember(createAcceptTraverserMethod(changedClass));
+    changedClass.addAllCDMembers(createAcceptTraverserSuperMethods(originalClass));
+    changedClass.addCDMember(getConstructMethod(originalClass));
     if (!originalClass.isPresentSuperclass()) {
       changedClass.setSuperclass(this.getMCTypeFacade().createQualifiedType(ASTCNode.class));
     }
@@ -88,7 +89,7 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
     // class and getName method are getting abstract
     if (astService.isSymbolWithoutName(originalClass)) {
       changedClass.getModifier().setAbstract(true);
-      changedClass.addCDMethod(astService.createGetNameMethod());
+      changedClass.addCDMember(astService.createGetNameMethod());
     }
     return changedClass;
   }
@@ -99,8 +100,8 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
   protected void addSymbolTableMethods(List<ASTCDAttribute> astcdAttributes, ASTCDClass clazz) {
     for (ASTCDAttribute attribute : astcdAttributes) {
       if (!astService.hasStereotype(attribute.getModifier(), MC2CDStereotypes.INHERITED)) {
-        clazz.addCDAttribute(attribute);
-        clazz.addAllCDMethods(methodDecorator.decorate(attribute));
+        clazz.addCDMember(attribute);
+        clazz.addAllCDMembers(methodDecorator.decorate(attribute));
       } else {
         String scopeInterfaceType = symbolTableService.getScopeInterfaceFullName();
 
@@ -114,14 +115,14 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
                 this.replaceTemplate(EMPTY_BODY, m, new TemplateHookPoint("_ast.ast_class.symboltable.InheritedSetSpannedScope", errorCode,
                         MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(m.getCDParameter(0).getMCType()), scopeInterfaceType)));
         methodDecorator.enableTemplates();
-        clazz.addAllCDMethods(methods);
+        clazz.addAllCDMembers(methods);
       }
     }
   }
 
   protected ASTCDMethod createAcceptTraverserMethod(ASTCDClass astClass) {
     ASTCDParameter visitorParameter = this.getCDParameterFacade().createParameter(this.visitorService.getTraverserInterfaceType(), VISITOR_PREFIX);
-    ASTCDMethod acceptMethod = this.getCDMethodFacade().createMethod(PUBLIC, ASTConstants.ACCEPT_METHOD, visitorParameter);
+    ASTCDMethod acceptMethod = this.getCDMethodFacade().createMethod(PUBLIC.build(), ASTConstants.ACCEPT_METHOD, visitorParameter);
     this.replaceTemplate(EMPTY_BODY, acceptMethod, new TemplateHookPoint("_ast.ast_class.Accept", astClass));
     return acceptMethod;
   }
@@ -134,9 +135,9 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
     for (ASTMCType superVisitorType : l) {
       ASTCDParameter superVisitorParameter = this.getCDParameterFacade().createParameter(superVisitorType, VISITOR_PREFIX);
 
-      ASTCDMethod superAccept = this.getCDMethodFacade().createMethod(PUBLIC, ASTConstants.ACCEPT_METHOD, superVisitorParameter);
+      ASTCDMethod superAccept = this.getCDMethodFacade().createMethod(PUBLIC.build(), ASTConstants.ACCEPT_METHOD, superVisitorParameter);
       String errorCode = astService.getGeneratedErrorCode(astClass.getName()+
-              superVisitorType.printType(new CD4CodeFullPrettyPrinter(new IndentPrinter())));
+              superVisitorType.printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())));
       this.replaceTemplate(EMPTY_BODY, superAccept, new TemplateHookPoint("_ast.ast_class.AcceptSuper",
           this.visitorService.getTraverserInterfaceFullName(), errorCode, astClass.getName(),
               MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(superVisitorType)));
@@ -149,9 +150,9 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
     ASTCDMethod constructMethod;
     ASTMCType classType = this.getMCTypeFacade().createQualifiedType(astClass.getName());
     if (astClass.isPresentModifier() && astClass.getModifier().isAbstract()) {
-      constructMethod = this.getCDMethodFacade().createMethod(PROTECTED_ABSTRACT, classType, ASTConstants.CONSTRUCT_METHOD);
+      constructMethod = this.getCDMethodFacade().createMethod(PROTECTED_ABSTRACT.build(), classType, ASTConstants.CONSTRUCT_METHOD);
     } else {
-      constructMethod = this.getCDMethodFacade().createMethod(PROTECTED, classType, ASTConstants.CONSTRUCT_METHOD);
+      constructMethod = this.getCDMethodFacade().createMethod(PROTECTED.build(), classType, ASTConstants.CONSTRUCT_METHOD);
       this.replaceTemplate(EMPTY_BODY, constructMethod,
           new StringHookPoint("return " + nodeFactoryService.getNodeFactoryFullTypeName() + "." + NodeFactoryConstants.CREATE_METHOD + astClass.getName() + "();"));
     }
