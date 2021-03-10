@@ -2,9 +2,12 @@
 package de.monticore.codegen.cd2java._ast_emf.emf_package;
 
 import de.monticore.cd4analysis.CD4AnalysisMill;
-import de.monticore.cd4codebasis._ast.*;
-import de.monticore.cdbasis._ast.*;
-import de.monticore.cdinterfaceandenum._ast.*;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDDefinition;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._ast_emf.EmfService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -19,9 +22,8 @@ import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.CDModifier.*;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
-import static de.monticore.codegen.cd2java._ast.factory.NodeFactoryConstants.FACTORY_SUFFIX;
-import static de.monticore.codegen.cd2java._ast.factory.NodeFactoryConstants.NODE_FACTORY_SUFFIX;
 import static de.monticore.codegen.cd2java._ast_emf.EmfConstants.*;
+import static de.monticore.codegen.cd2java.mill.MillConstants.MILL_SUFFIX;
 
 public class PackageInterfaceDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDInterface> {
 
@@ -61,7 +63,7 @@ public class PackageInterfaceDecorator extends AbstractCreator<ASTCDCompilationU
         .addAllCDMembers(prodAttributes)
         .addAllCDMembers(eDataTypeAttributes)
         .addAllCDMembers(createNonTerminalAttributes(astcdDefinition))
-        .addCDMember(createNodeFactoryMethod(definitionName))
+        .addCDMember(createMillMethod(definitionName))
         .addCDMember(createEEnumMethod(definitionName))
         .addAllCDMembers(eDataTypeMethods)
         .addAllCDMembers(createEClassMethods(astcdDefinition))
@@ -171,11 +173,11 @@ public class PackageInterfaceDecorator extends AbstractCreator<ASTCDCompilationU
     return astcdAttributes;
   }
 
-  protected ASTCDMethod createNodeFactoryMethod(String definitionName) {
+  protected ASTCDMethod createMillMethod(String definitionName) {
     // e.g. AutomataNodeFactory getAutomataFactory();
-    ASTMCQualifiedType nodeFactoryType = getMCTypeFacade().createQualifiedType(definitionName + NODE_FACTORY_SUFFIX);
-    String methodName = String.format(GET, definitionName + FACTORY_SUFFIX);
-    return getCDMethodFacade().createMethod(PACKAGE_PRIVATE_ABSTRACT.build(), nodeFactoryType, methodName);
+    ASTMCQualifiedType millType = getMCTypeFacade().createQualifiedType(emfService.getMillFullName());
+    String methodName = String.format(GET, definitionName + MILL_SUFFIX);
+    return getCDMethodFacade().createMethod(PACKAGE_PRIVATE_ABSTRACT.build(), millType, methodName);
   }
 
   protected ASTCDMethod createEEnumMethod(String definitionName) {

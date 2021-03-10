@@ -1,12 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast.ast_class;
 
-import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.cd4codebasis._ast.ASTCDMethod;
-import de.monticore.cdbasis._ast.ASTCDType;
-import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.cd.facade.CDMethodFacade;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.codegen.cd2java.AbstractService;
+import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
@@ -119,4 +119,19 @@ public class ASTService extends AbstractService<ASTService> {
   public ASTCDMethod createGetNameMethod() {
     return CDMethodFacade.getInstance().createMethod(PUBLIC_ABSTRACT.build(), getMCTypeFacade().createStringType(), "getName");
   }
+
+  public String removeASTPrefix(ASTCDType clazz) {
+    // normal symbol name calculation from
+    return removeASTPrefix(clazz.getName());
+  }
+
+  public String removeASTPrefix(String clazzName) {
+    // normal symbol name calculation from
+    if (clazzName.startsWith(AST_PREFIX)) {
+      return clazzName.substring(AST_PREFIX.length());
+    } else {
+      return clazzName;
+    }
+  }
+
 }

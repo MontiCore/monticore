@@ -175,14 +175,6 @@ public class PackageImplDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testGetAutomataFactoryMethod() {
-    ASTCDMethod method = getMethodBy("getAutomataFactory", packageClass);
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals("AutomataNodeFactory", method.getMCReturnType().getMCType());
-    assertTrue(method.isEmptyCDParameters());
-  }
-
-  @Test
   public void testGetConstantsAutomataMethod() {
     ASTCDMethod method = getMethodBy("getConstantsAutomata", packageClass);
     assertDeepEquals(PUBLIC, method.getModifier());
