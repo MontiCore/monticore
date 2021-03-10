@@ -2,9 +2,9 @@
 package de.monticore.codegen.cd2java._symboltable.symbol;
 
 import com.google.common.collect.Lists;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
-import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._ast.builder.BuilderConstants;
 import de.monticore.codegen.cd2java._ast.builder.BuilderDecorator;
@@ -58,9 +58,9 @@ public class SymbolBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDCla
     }
     if (hasScope || hasInheritedScope) {
       ASTCDAttribute spannedScopeAttr = getCDAttributeFacade()
-              .createAttribute(PROTECTED, symbolTableService.getScopeInterfaceType(), SPANNED_SCOPE_VAR);
+              .createAttribute(PROTECTED.build(), symbolTableService.getScopeInterfaceType(), SPANNED_SCOPE_VAR);
       if (!hasInheritedScope) {
-        decoratedSymbolClass.addCDAttribute(spannedScopeAttr);
+        decoratedSymbolClass.addCDMember(spannedScopeAttr);
       }
       defaultAttrs.add(spannedScopeAttr);
     }
