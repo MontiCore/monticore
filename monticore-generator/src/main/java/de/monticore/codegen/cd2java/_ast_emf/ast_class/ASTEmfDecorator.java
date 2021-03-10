@@ -10,7 +10,6 @@ import de.monticore.codegen.cd2java._ast.ast_class.ASTDecorator;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTScopeDecorator;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTSymbolDecorator;
-import de.monticore.codegen.cd2java._ast.factory.NodeFactoryService;
 import de.monticore.codegen.cd2java._ast_emf.EmfService;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
@@ -35,13 +34,12 @@ public class ASTEmfDecorator extends ASTDecorator {
   public ASTEmfDecorator(final GlobalExtensionManagement glex,
                          final ASTService astService,
                          final VisitorService visitorService,
-                         final NodeFactoryService nodeFactoryService,
                          final ASTSymbolDecorator symbolDecorator,
                          final ASTScopeDecorator scopeDecorator,
                          final MethodDecorator methodDecorator,
                          final SymbolTableService symbolTableService,
                          final EmfService emfService) {
-    super(glex, astService, visitorService, nodeFactoryService, symbolDecorator,
+    super(glex, astService, visitorService,  symbolDecorator,
         scopeDecorator, methodDecorator, symbolTableService);
     this.emfService = emfService;
   }

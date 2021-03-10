@@ -14,7 +14,6 @@ import de.monticore.codegen.cd2java._ast.ast_interface.FullASTInterfaceDecorator
 import de.monticore.codegen.cd2java._ast.builder.ASTBuilderDecorator;
 import de.monticore.codegen.cd2java._ast.constants.ASTConstantsDecorator;
 import de.monticore.codegen.cd2java._ast.enums.EnumDecorator;
-import de.monticore.codegen.cd2java._ast.factory.NodeFactoryDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 
 import java.util.ArrayList;
@@ -38,8 +37,6 @@ public class ASTCDDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDC
 
   protected final ASTBuilderDecorator astBuilderDecorator;
 
-  protected final NodeFactoryDecorator nodeFactoryDecorator;
-
   protected final ASTConstantsDecorator astConstantsDecorator;
 
   protected final EnumDecorator enumDecorator;
@@ -50,7 +47,6 @@ public class ASTCDDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDC
                         final ASTFullDecorator astFullDecorator,
                         final ASTLanguageInterfaceDecorator astLanguageInterfaceDecorator,
                         final ASTBuilderDecorator astBuilderDecorator,
-                        final NodeFactoryDecorator nodeFactoryDecorator,
                         final ASTConstantsDecorator astConstantsDecorator,
                         final EnumDecorator enumDecorator,
                         final FullASTInterfaceDecorator astInterfaceDecorator) {
@@ -58,7 +54,6 @@ public class ASTCDDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDC
     this.astFullDecorator = astFullDecorator;
     this.astLanguageInterfaceDecorator = astLanguageInterfaceDecorator;
     this.astBuilderDecorator = astBuilderDecorator;
-    this.nodeFactoryDecorator = nodeFactoryDecorator;
     this.astConstantsDecorator = astConstantsDecorator;
     this.enumDecorator = enumDecorator;
     this.astInterfaceDecorator = astInterfaceDecorator;
@@ -74,7 +69,6 @@ public class ASTCDDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDC
         .setName(ast.getCDDefinition().getName())
         .addAllCDElements(createASTClasses(ast))
         .addAllCDElements(createASTBuilderClasses(ast))
-        .addCDElement(createNodeFactoryClass(ast))
         .addCDElement(createASTConstantsClass(ast))
         .addAllCDElements(createASTInterfaces(ast))
         .addCDElement(createLanguageInterface(ast))
@@ -131,10 +125,6 @@ public class ASTCDDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDC
     return ast.getCDDefinition().getCDClassesList().stream()
         .map(astBuilderDecorator::decorate)
         .collect(Collectors.toList());
-  }
-
-  protected ASTCDClass createNodeFactoryClass(final ASTCDCompilationUnit ast) {
-    return nodeFactoryDecorator.decorate(ast);
   }
 
   protected ASTCDClass createASTConstantsClass(final ASTCDCompilationUnit ast) {

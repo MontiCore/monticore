@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast.ast_class;
 
+import com.ibm.icu.text.StringTransform;
 import de.monticore.ast.ASTCNode;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
@@ -8,8 +9,6 @@ import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
 import de.monticore.codegen.cd2java.AbstractTransformer;
-import de.monticore.codegen.cd2java._ast.factory.NodeFactoryConstants;
-import de.monticore.codegen.cd2java._ast.factory.NodeFactoryService;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorConstants;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
@@ -22,6 +21,7 @@ import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
+import de.se_rwth.commons.StringTransformations;
 import de.monticore.types.prettyprint.MCBasicTypesFullPrettyPrinter;
 
 import java.util.ArrayList;
@@ -29,6 +29,7 @@ import java.util.List;
 
 import static de.monticore.codegen.cd2java.CDModifier.*;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
+import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISITOR_PREFIX;
 
 /**
@@ -39,8 +40,6 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
   protected final ASTService astService;
 
   protected final VisitorService visitorService;
-
-  protected final NodeFactoryService nodeFactoryService;
 
   protected final ASTSymbolDecorator symbolDecorator;
 
@@ -53,7 +52,6 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
   public ASTDecorator(final GlobalExtensionManagement glex,
                       final ASTService astService,
                       final VisitorService visitorService,
-                      final NodeFactoryService nodeFactoryService,
                       final ASTSymbolDecorator symbolDecorator,
                       final ASTScopeDecorator scopeDecorator,
                       final MethodDecorator methodDecorator,
@@ -61,7 +59,6 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
     super(glex);
     this.astService = astService;
     this.visitorService = visitorService;
-    this.nodeFactoryService = nodeFactoryService;
     this.symbolDecorator = symbolDecorator;
     this.scopeDecorator = scopeDecorator;
     this.methodDecorator = methodDecorator;
@@ -154,7 +151,7 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
     } else {
       constructMethod = this.getCDMethodFacade().createMethod(PROTECTED.build(), classType, ASTConstants.CONSTRUCT_METHOD);
       this.replaceTemplate(EMPTY_BODY, constructMethod,
-          new StringHookPoint("return " + nodeFactoryService.getNodeFactoryFullTypeName() + "." + NodeFactoryConstants.CREATE_METHOD + astClass.getName() + "();"));
+          new StringHookPoint("return " + astService.getMillFullName() + "."+ StringTransformations.uncapitalize(astService.removeASTPrefix(astClass.getName())) +  BUILDER_SUFFIX + "().uncheckedBuild();"));
     }
     return constructMethod;
   }

@@ -18,7 +18,7 @@ import mc.GeneratorIntegrationsTest;
 import mc.feature.fautomaton.automaton.flatautomaton._ast.ASTAutomaton;
 import mc.feature.fautomaton.automaton.flatautomaton._ast.ASTState;
 import mc.feature.fautomaton.automaton.flatautomaton._ast.ASTTransition;
-import mc.feature.fautomaton.automaton.flatautomaton._ast.FlatAutomatonNodeFactory;
+import mc.feature.fautomaton.automaton.flatautomaton.FlatAutomatonMill;
 import mc.feature.fautomaton.automaton.flatautomaton._ast.FlatAutomatonPackage;
 import mc.feature.fautomaton.automaton.flatautomaton._parser.FlatAutomatonParser;
 
@@ -118,10 +118,10 @@ public class EcoreUtilTest extends GeneratorIntegrationsTest {
   
   @Test
   public void testSerializeAndDeserializeCreatedInstance() {
-    ASTAutomaton aut = FlatAutomatonNodeFactory.createASTAutomaton();
-    ASTTransition trans = FlatAutomatonNodeFactory.createASTTransition();
-    ASTState state1 = FlatAutomatonNodeFactory.createASTState();
-    ASTState state2 = FlatAutomatonNodeFactory.createASTState();
+    ASTAutomaton aut = FlatAutomatonMill.automatonBuilder().uncheckedBuild();
+    ASTTransition trans = FlatAutomatonMill.transitionBuilder().uncheckedBuild();
+    ASTState state1 = FlatAutomatonMill.stateBuilder().uncheckedBuild();
+    ASTState state2 = FlatAutomatonMill.stateBuilder().uncheckedBuild();
     aut.setName("aut1");
     aut.getTransitionList().add(trans);
     aut.getStateList().add(state1);
@@ -136,10 +136,10 @@ public class EcoreUtilTest extends GeneratorIntegrationsTest {
     state1.setInitial(true);
     state2.setFinal(true);
     
-    ASTAutomaton aut2 = FlatAutomatonNodeFactory.createASTAutomaton();
-    ASTTransition trans2 = FlatAutomatonNodeFactory.createASTTransition();
-    ASTState state1a = FlatAutomatonNodeFactory.createASTState();
-    ASTState state2a = FlatAutomatonNodeFactory.createASTState();
+    ASTAutomaton aut2 = FlatAutomatonMill.automatonBuilder().uncheckedBuild();
+    ASTTransition trans2 = FlatAutomatonMill.transitionBuilder().uncheckedBuild();
+    ASTState state1a = FlatAutomatonMill.stateBuilder().uncheckedBuild();
+    ASTState state2a = FlatAutomatonMill.stateBuilder().uncheckedBuild();
     aut2.setName("aut1");
     aut2.getTransitionList().add(trans2);
     aut2.getStateList().add(state1a);
