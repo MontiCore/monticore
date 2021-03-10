@@ -2,9 +2,12 @@
 package de.monticore.codegen.cd2java._ast_emf.emf_package;
 
 import de.monticore.cd4analysis.CD4AnalysisMill;
-import de.monticore.cd4codebasis._ast.*;
-import de.monticore.cdbasis._ast.*;
-import de.monticore.cdinterfaceandenum._ast.*;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDDefinition;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._ast_emf.EmfService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -174,7 +177,7 @@ public class PackageInterfaceDecorator extends AbstractCreator<ASTCDCompilationU
     // e.g. AutomataNodeFactory getAutomataFactory();
     ASTMCQualifiedType millType = getMCTypeFacade().createQualifiedType(emfService.getMillFullName());
     String methodName = String.format(GET, definitionName + MILL_SUFFIX);
-    return getCDMethodFacade().createMethod(PACKAGE_PRIVATE_ABSTRACT, millType, methodName);
+    return getCDMethodFacade().createMethod(PACKAGE_PRIVATE_ABSTRACT.build(), millType, methodName);
   }
 
   protected ASTCDMethod createEEnumMethod(String definitionName) {

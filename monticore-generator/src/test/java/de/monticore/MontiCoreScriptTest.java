@@ -467,7 +467,7 @@ public class MontiCoreScriptTest {
     assertEquals("ASTArgumentBuilder", astPackageCD.getCDDefinition().getCDClassesList().get(13).getName());
     assertEquals("ASTCodeBuilder", astPackageCD.getCDDefinition().getCDClassesList().get(14).getName());
     assertEquals("ASTAbstractAnythingBuilder", astPackageCD.getCDDefinition().getCDClassesList().get(15).getName());
-    assertEquals("ASTConstantsStatechart", astPackageCD.getCDDefinition().getCDClassesList().get(17).getName());
+    assertEquals("ASTConstantsStatechart", astPackageCD.getCDDefinition().getCDClassesList().get(16).getName());
 
     assertEquals(5, astPackageCD.getCDDefinition().getCDInterfacesList().size());
     assertEquals("ASTSCStructure", astPackageCD.getCDDefinition().getCDInterfacesList().get(0).getName());
@@ -511,8 +511,8 @@ public class MontiCoreScriptTest {
     assertEquals("ASTArgumentBuilder", astEmfPackageCD.getCDDefinition().getCDClassesList().get(13).getName());
     assertEquals("ASTCodeBuilder", astEmfPackageCD.getCDDefinition().getCDClassesList().get(14).getName());
     assertEquals("ASTAbstractAnythingBuilder", astEmfPackageCD.getCDDefinition().getCDClassesList().get(15).getName());
-    assertEquals("ASTConstantsStatechart", astEmfPackageCD.getCDDefinition().getCDClassesList().get(17).getName());
-    assertEquals("StatechartPackageImpl", astEmfPackageCD.getCDDefinition().getCDClassesList().get(18).getName());
+    assertEquals("ASTConstantsStatechart", astEmfPackageCD.getCDDefinition().getCDClassesList().get(16).getName());
+    assertEquals("StatechartPackageImpl", astEmfPackageCD.getCDDefinition().getCDClassesList().get(17).getName());
 
     assertEquals(6, astEmfPackageCD.getCDDefinition().getCDInterfacesList().size());
     assertEquals("ASTSCStructure", astEmfPackageCD.getCDDefinition().getCDInterfacesList().get(0).getName());
