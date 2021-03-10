@@ -2,20 +2,23 @@
 package de.monticore.codegen.cd2java._symboltable.scope;
 
 import de.monticore.cd4analysis.CD4AnalysisMill;
-import de.monticore.cd4codebasis._ast.*;
-import de.monticore.cdbasis._ast.*;
-import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cd4codebasis._ast.ASTCDParameter;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDDefinition;
+import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.cdbasis._symboltable.ICDBasisScope;
-import de.monticore.cdinterfaceandenum._ast.*;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCSetType;
 import de.se_rwth.commons.logging.Log;
@@ -95,7 +98,6 @@ public class GlobalScopeInterfaceDecorator
         .addAllCDMembers(createResolveMethods(symbolClasses, definitionName))
         .addAllCDMembers(createSuperProdResolveMethods(definitionName))
         .addAllCDMembers(createEnclosingScopeMethods(globalScopeName))
-        .addAllCDMembers(createDeSerMethods())
         .addCDMember(createGetNameMethod(globalScopeName))
         .addCDMember(createIsPresentNameMethod())
         .addCDMember(creatCheckIfContinueAsSubScopeMethod())
@@ -297,43 +299,6 @@ public class GlobalScopeInterfaceDecorator
 
   protected ASTCDMethod createGetRealThisMethod(String realThis){
     return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT.build(), getMCTypeFacade().createQualifiedType(realThis), "getRealThis");
-  }
-
-  protected List<ASTCDMethod> createDeSerMethods(){
-    // attribute and methods for scope deser
-    ASTCDAttribute deSerAttr = getCDAttributeFacade().createAttribute(PROTECTED.build(),
-        getMCTypeFacade().createQualifiedType(I_DE_SER), DESER_VAR);
-    List<ASTCDMethod> deSerMethods = accessorDecorator.decorate(deSerAttr);
-    deSerMethods.addAll(mutatorDecorator.decorate(deSerAttr));
-
-    // Map of symbol desers
-    ASTCDAttribute deSerMapAttribute = getCDAttributeFacade().createAttribute(PROTECTED.build(),
-            getMCTypeFacade().createQualifiedType("Map<String," + I_SYMBOL_DE_SER + ">"),
-        SYM_DESERS_VAR);
-    List<ASTCDMethod> deSerMapMethods = accessorDecorator.decorate(deSerMapAttribute);
-    deSerMapMethods.addAll(mutatorDecorator.decorate(deSerMapAttribute));
-
-    // Create simple putDeSer(String key, IDeSer value)
-    ASTCDParameter key = getCDParameterFacade().createParameter(String.class, "key");
-    ASTCDParameter value = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(I_SYMBOL_DE_SER), "value");
-    ASTCDMethod putMethod = getCDMethodFacade().createMethod(PUBLIC.build(), "putSymbolDeSer", key, value);
-    deSerMapMethods.add(putMethod);
-
-    // Create simple value getDeSer(String key)
-    key = getCDParameterFacade().createParameter(String.class, "key");
-    ASTMCQualifiedType returnType = getMCTypeFacade().createQualifiedType(I_SYMBOL_DE_SER);
-    ASTCDMethod getMethod = getCDMethodFacade().createMethod(PUBLIC.build(), returnType, "getSymbolDeSer", key);
-    deSerMapMethods.add(getMethod);
-
-    deSerMapMethods.addAll(deSerMethods);
-    deSerMapMethods.forEach(x -> x.getModifier().setAbstract(true));
-
-    return deSerMapMethods;
-  }
-
-  protected ASTCDMethod createSetModelPathMethod(){
-    ASTCDParameter modelPathParam = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(MODEL_PATH_TYPE), "modelPath");
-    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT.build(),"setModelPath", modelPathParam);
   }
 
 
