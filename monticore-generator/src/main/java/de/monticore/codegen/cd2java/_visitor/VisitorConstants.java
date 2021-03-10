@@ -37,7 +37,7 @@ public final class VisitorConstants {
 
   public static final String TRAVERSE = "traverse";
 
-  public static final String IVISTOR_FULL_NAME = "de.monticore.visitor.IVisitor";
+  public static final String IVISITOR_FULL_NAME = "de.monticore.visitor.IVisitor";
 
   public static final String ITRAVERSER_FULL_NAME = "de.monticore.visitor.ITraverser";
 
