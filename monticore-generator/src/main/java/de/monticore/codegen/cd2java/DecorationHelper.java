@@ -179,7 +179,6 @@ public class DecorationHelper extends MCBasicTypesHelper {
     return attributeName.substring(JavaNamesHelper.PREFIX_WHEN_WORD_IS_RESERVED.length());
   }
 
-  // TODO Alternative für folgende Methoden finden
   public ASTMCTypeArgument getReferenceTypeFromOptional(ASTMCType type) {
     Preconditions.checkArgument(isOptional(type));
     return ((ASTMCGenericType) type).getMCTypeArgumentList().get(0);

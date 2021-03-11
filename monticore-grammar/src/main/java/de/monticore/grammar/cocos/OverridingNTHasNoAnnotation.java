@@ -10,7 +10,6 @@ import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Checks if nonterminals with an override annotation really overrides a class

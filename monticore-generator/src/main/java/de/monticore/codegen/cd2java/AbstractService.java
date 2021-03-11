@@ -2,28 +2,23 @@
 package de.monticore.codegen.cd2java;
 
 import com.google.common.collect.Lists;
-import de.monticore.cd4analysis._ast.*;
+import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd4code._symboltable.ICD4CodeScope;
-import de.monticore.cd4codebasis._ast.*;
-import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
-import de.monticore.cdbasis._symboltable.CDTypeSymbolSurrogate;
 import de.monticore.cdbasis._symboltable.ICDBasisArtifactScope;
-import de.monticore.cdinterfaceandenum._ast.*;
+import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.exception.DecorateException;
 import de.monticore.codegen.cd2java.exception.DecoratorErrorCode;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
-import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.types.MCTypeFacade;
-import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
-import de.monticore.types.prettyprint.MCBasicTypesFullPrettyPrinter;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import de.monticore.umlstereotype._ast.ASTStereoValue;
-import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
-import de.se_rwth.commons.StringTransformations;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -147,7 +142,7 @@ public class AbstractService<T extends AbstractService> {
     }
     return superSymbolList;
   }
-  
+
   /**
    * use symboltabe to resolve for ClassDiagrams or CDTypes
    */
@@ -370,16 +365,15 @@ public class AbstractService<T extends AbstractService> {
 
   public void addDeprecatedStereotype(ASTModifier modifier, Optional<String> deprecatedValue) {
     if (!modifier.isPresentStereotype()) {
-      modifier.setStereotype(CD4AnalysisNodeFactory
-          .createASTStereotype());
+      modifier.setStereotype(CD4AnalysisMill.stereotypeBuilder().build());
     }
     List<ASTStereoValue> stereoValueList = modifier.getStereotype()
         .getValuesList();
-    ASTStereoValue stereoValue = CD4AnalysisNodeFactory
-        .createASTStereoValue();
-    stereoValue.setName(MC2CDStereotypes.DEPRECATED.toString());
+    ASTStereoValue stereoValue = CD4AnalysisMill.stereoValueBuilder()
+            .setName(MC2CDStereotypes.DEPRECATED.toString()).uncheckedBuild();
     if (deprecatedValue.isPresent()) {
-      stereoValue.setContent(deprecatedValue.get());
+      stereoValue.setText(
+              CD4AnalysisMill.stringLiteralBuilder().setSource(deprecatedValue.get()).build());
     }
     stereoValueList.add(stereoValue);
   }

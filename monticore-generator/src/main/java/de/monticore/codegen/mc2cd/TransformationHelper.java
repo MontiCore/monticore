@@ -210,6 +210,34 @@ public final class TransformationHelper {
     return optType.get();
   }
 
+  public static String createConvertType(ASTLexProd a) {
+    if (!a.isPresentVariable()) {
+      return "String";
+    }
+    String variable = a.getVariable();
+    String name = a.getName();
+
+    // default functions
+    if (a.getTypeList() == null || a.getTypeList().isEmpty()) {
+
+      if ("int".equals(variable) || "boolean".equals(variable) || "char".equals(variable)
+              || "float".equals(variable) || "double".equals(variable)
+              || "long".equals(variable) || "byte".equals(variable) || "short".equals(variable)) {
+        return variable;
+      } else if ("card".equals(variable)) {
+        return "int";
+      } else {
+        Log.warn(
+                "0xA1032 No function for " + a.getVariable() + " registered, will treat it as string!");
+        return "String";
+      }
+    }
+    // specific function
+    else {
+      return Names.getQualifiedName(a.getTypeList());
+    }
+  }
+
   public static String getPackageName(ProdSymbol symbol) {
     // return grammar.getName().toLowerCase() + AST_DOT_PACKAGE_SUFFIX_DOT;
     return getGrammarName(symbol) + ".";
@@ -254,7 +282,7 @@ public final class TransformationHelper {
 
   /**
    *  @deprecated  use de.monticore.generating.GeneratorEngine#existsHandwrittenClass
-   *  
+   *
    * Checks if a handwritten class with the given qualifiedName (dot-separated)
    * exists on the target path
    *
@@ -319,7 +347,7 @@ public final class TransformationHelper {
   }
 
   public static String getQualifiedTypeNameAndMarkIfExternal(ASTMCType ruleReference,
-                                                             ASTMCGrammar grammar, ASTCDClass cdClass) {
+                                                             ASTMCGrammar grammar, ASTCDType cdType) {
 
     Optional<ProdSymbol> typeSymbol = resolveAstRuleType(grammar, ruleReference);
 
@@ -327,24 +355,7 @@ public final class TransformationHelper {
         typeSymbol, ruleReference);
 
     if (!typeSymbol.isPresent()) {
-      addStereoType(cdClass,
-          MC2CDStereotypes.EXTERNAL_TYPE.toString(), qualifiedRuleName);
-    }
-
-    return qualifiedRuleName;
-  }
-
-  // TODO GV: remove this if CDInterface and CDClass have a common type CDType
-  public static String getQualifiedTypeNameAndMarkIfExternal(ASTMCType ruleReference,
-                                                             ASTMCGrammar grammar, ASTCDInterface interf) {
-
-    Optional<ProdSymbol> typeSymbol = resolveAstRuleType(grammar, ruleReference);
-
-    String qualifiedRuleName = getQualifiedAstName(
-        typeSymbol, ruleReference);
-
-    if (!typeSymbol.isPresent()) {
-      addStereoType(interf,
+      addStereoType(cdType,
           MC2CDStereotypes.EXTERNAL_TYPE.toString(), qualifiedRuleName);
     }
 
@@ -359,17 +370,12 @@ public final class TransformationHelper {
     Optional<ProdSymbol> ruleSymbol = MCGrammarSymbolTableHelper.resolveRule(node,
         simpleName
             .substring(AST_PREFIX.length()));
-    if (ruleSymbol.isPresent() && istPartOfGrammar(ruleSymbol.get())) {
+    if (ruleSymbol.isPresent()) {
       return ruleSymbol;
     }
     return Optional.empty();
   }
 
-  // TODO GV, PN: change it
-  public static boolean istPartOfGrammar(ProdSymbol rule) {
-    return rule.getEnclosingScope().isPresentSpanningSymbol()
-        && rule.getEnclosingScope().getSpanningSymbol() instanceof MCGrammarSymbol;
-  }
 
   public static String getGrammarName(ProdSymbol rule) {
     return Names.getQualifier(rule.getFullName());

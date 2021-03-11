@@ -2,7 +2,6 @@
 
 package de.monticore.grammar.cocos;
 
-import de.monticore.grammar.HelperGrammar;
 import de.monticore.grammar.grammar._ast.ASTConstant;
 import de.monticore.grammar.grammar._ast.ASTConstantGroup;
 import de.monticore.grammar.grammar._cocos.GrammarASTConstantGroupCoCo;
@@ -23,7 +22,7 @@ public class KeywordInvalidName implements GrammarASTConstantGroupCoCo {
   public void check(ASTConstantGroup a) {
     if (!a.isPresentUsageName()) {
       for (ASTConstant c : a.getConstantList()) {
-        if (!HelperGrammar.hasValidName(c)) {
+        if (c.getHumanName().isEmpty()) {
           Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT,
               a.getEnclosingScope().getSpanningSymbol()
                   .getName(),
@@ -33,6 +32,5 @@ public class KeywordInvalidName implements GrammarASTConstantGroupCoCo {
       }
     }
   }
-
 
 }

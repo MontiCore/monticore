@@ -47,31 +47,26 @@ public final class DecoratorAssert {
     assertEquals(expectedMod.isFinal(), actualMod.isFinal());
     assertEquals(expectedMod.isStatic(), actualMod.isStatic());
     assertEquals(expectedMod.isPresentStereotype(), actualMod.isPresentStereotype());
-    // TODO Alte Fassung assertDeepEquals(expected.build(), actual);
   }
 
   public static void assertDeepEquals(Class<?> expected, ASTNode actual) {
     assertTrue(actual instanceof ASTMCType);
     assertEquals(expected.getSimpleName(), (new CD4CodeFullPrettyPrinter()).prettyprint((ASTMCType) actual));
-    // TODO Alte Fassung assertDeepEquals(CD_TYPE_FACADE.createQualifiedType(expected), actual);
   }
 
   public static void assertDeepEquals(String name, ASTNode actual) {
     assertTrue(actual instanceof ASTMCType);
     assertEquals(name, (new CD4CodeFullPrettyPrinter()).prettyprint((ASTMCType) actual));
-    // TODO Alte Fassung: assertDeepEquals(CD_TYPE_FACADE.createQualifiedType(name), actual);
   }
 
   public static void assertBoolean(ASTNode actual) {
     assertTrue(actual instanceof ASTMCPrimitiveType);
     assertTrue(((ASTMCPrimitiveType) actual).isBoolean());
-    // TODO Alte Fassung: assertDeepEquals(CD_TYPE_FACADE.createBooleanType(), actual);
   }
 
   public static void assertInt(ASTNode actual) {
     assertTrue(actual instanceof ASTMCPrimitiveType);
     assertTrue(((ASTMCPrimitiveType) actual).isInt());
-    // TODO Alte Fassung: assertDeepEquals(CD_TYPE_FACADE.createIntType(), actual);
   }
 
   public static void assertFloat(ASTNode actual){
@@ -87,21 +82,18 @@ public final class DecoratorAssert {
     String type = "Optional<" + clazz.getSimpleName() + ">";
     assertTrue(actual instanceof ASTMCType);
     assertEquals(type,(new CD4CodeFullPrettyPrinter()).prettyprint((ASTMCType) actual));
-    // TODO Alte Fassung assertDeepEquals(CD_TYPE_FACADE.createOptionalTypeOf(clazz), actual);
   }
 
   public static void assertOptionalOf(String name, ASTNode actual) {
     String type = "Optional<" + name + ">";
     assertTrue(actual instanceof ASTMCType);
     assertEquals(type,(new CD4CodeFullPrettyPrinter()).prettyprint((ASTMCType) actual));
-    // TODO Alte Fassung assertDeepEquals(CD_TYPE_FACADE.createOptionalTypeOf(name), actual);
   }
 
   public static void assertListOf(Class<?> clazz, ASTNode actual) {
     String type = "List<" + clazz.getSimpleName() + ">";
     assertTrue(actual instanceof ASTMCType);
     assertEquals(type,(new CD4CodeFullPrettyPrinter()).prettyprint((ASTMCType) actual));
-    // TODO Alte Fassung assertDeepEquals(CD_TYPE_FACADE.createListTypeOf(clazz), actual);
   }
 
   public static void assertListOf(String name, ASTNode actual) {

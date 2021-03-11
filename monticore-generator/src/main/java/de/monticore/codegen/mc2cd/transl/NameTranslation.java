@@ -93,8 +93,7 @@ public class NameTranslation implements
         for (Link<ASTConstant, ASTCDAttribute> link : rootLink.getLinks(ASTConstant.class,
                 ASTCDAttribute.class)) {
             Optional<String> usageName = getUsageName(rootLink.source(), link.source());
-            // TODO: This is a workaround because the semicolons surrounding string productions are
-            // currently being kept by the parser
+            // The semicolons surrounding string productions are being kept by the parser
             String nameToUse = usageName.isPresent() ? usageName.get() : link.source().getName()
                     .replaceAll("\"", "");
             link.target().setName(nameToUse);

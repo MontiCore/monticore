@@ -8,9 +8,7 @@ import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.grammar.Multiplicity;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.grammar._ast.ASTRuleComponent;
 import de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes;
-import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.utils.Link;
@@ -73,28 +71,16 @@ public class MultiplicityTranslation implements
   private static ASTMCType createNewType(ASTMCType oldType, Multiplicity multiplicity) {
     if (oldType instanceof ASTMCPrimitiveType) {
       if (multiplicity == Multiplicity.LIST) {
-        return createNewListType(changePrimitiveType(((ASTMCPrimitiveType) oldType).getPrimitive()));
+        return createType("java.util.List", changePrimitiveType(((ASTMCPrimitiveType) oldType).getPrimitive()));
       }
     } else {
       if (multiplicity == Multiplicity.LIST) {
-        return createNewListType(typeToString(oldType));
+        return createType("java.util.List", typeToString(oldType));
       } else if (multiplicity == Multiplicity.OPTIONAL) {
         return createType("Optional", typeToString(oldType));
       }
     }
     return oldType;
-  }
-
-  private static ASTMCObjectType createNewListType(String oldTypeName) {
-    return createType("java.util.List", oldTypeName);
-    // TODO GV, MB
-    /*
-    if (Names.getSimpleName(oldTypeName).startsWith(TransformationHelper.AST_PREFIX)) {
-      return createSimpleReference(oldTypeName + "List");
-    }
-    else {
-      return createSimpleReference("java.util.List", oldTypeName);
-    }*/
   }
 
   private static String changePrimitiveType(int primType) {

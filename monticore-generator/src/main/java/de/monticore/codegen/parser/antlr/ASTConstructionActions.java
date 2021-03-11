@@ -4,9 +4,9 @@ package de.monticore.codegen.parser.antlr;
 
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
+import de.monticore.grammar.HelperGrammar;
 import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.parser.ParserGeneratorHelper;
-import de.monticore.grammar.HelperGrammar;
 import de.monticore.grammar.MCGrammarInfo;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
@@ -81,6 +81,7 @@ public class ASTConstructionActions {
       if (constgroup.getConstantList().size() == 1) {
         // both == null and #constants == 1 -> use constant string as name
         tmp = "_builder.set%cname%(true);";
+        // Next version: Replace HelperGrammar by (constgroup.getConstantList().get(0).getHumanName()
         tmp = tmp.replaceAll("%cname%", StringTransformations.capitalize(HelperGrammar
                 .getAttributeNameForConstant(constgroup.getConstantList().get(0))));
       } else {
@@ -133,7 +134,7 @@ public class ASTConstructionActions {
 
     // Replace templates
     tmp = tmp.replaceAll("%u_usage%",
-            StringTransformations.capitalize(HelperGrammar.getUsageName(a)));
+            StringTransformations.capitalize(parserGenHelper.getUsageName(a)));
     tmp = tmp.replaceAll("%tmp%", parserGenHelper.getTmpVarNameForAntlrCode(a));
 
     return tmp;
@@ -157,7 +158,6 @@ public class ASTConstructionActions {
   public String getActionForInternalRuleIteratedAttribute(ASTNonTerminal a) {
 
     String tmp = "addToIteratedAttributeIfNotNull(_builder.get%u_usage%(), _localctx.%tmp%.ret);";
-    // TODO GV: || isConst()
     if (symbolTable.getProdWithInherited(a.getName()).get().isIsEnum()) {
       tmp = "addToIteratedAttributeIfNotNull(_builder.get%u_usage%(), _localctx.%tmp%.ret);";
     }
@@ -176,7 +176,7 @@ public class ASTConstructionActions {
 
     // Replace templates
     tmp = tmp.replaceAll("%u_usage%",
-            StringTransformations.capitalize(HelperGrammar.getUsageName(a)));
+            StringTransformations.capitalize(parserGenHelper.getUsageName(a)));
     tmp = tmp.replaceAll("%tmp%", parserGenHelper.getTmpVarNameForAntlrCode(a));
 
     return tmp;

@@ -46,21 +46,4 @@ public class TypeCD2JavaVisitor implements MCBasicTypesVisitor2 {
     }
   }
 
-  // TODO Lösche diese Methoden, wenn ein neues CD4A benutzt wird.
-  @Override
-  public void endVisit(ISymbol node) {
-  }
-
-  @Override
-  public void endVisit(IScope node) {
-  }
-
-  @Override
-  public void visit(ISymbol node) {
-  }
-
-  @Override
-  public void visit(IScope node) {
-  }
-
 }

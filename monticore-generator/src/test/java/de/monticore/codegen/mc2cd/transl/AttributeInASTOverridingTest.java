@@ -30,7 +30,7 @@ public class AttributeInASTOverridingTest {
   public static void setup(){
     GrammarFamilyMill.init();
   }
-  
+
   public AttributeInASTOverridingTest() {
     ASTCDCompilationUnit cdCompilationUnit = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/AttributeInASTOverridingGrammar.mc4")).get();
