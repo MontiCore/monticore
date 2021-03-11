@@ -88,8 +88,8 @@ public class SymbolBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDCla
       symbolBuilder.addAllCDMembers(createScopeMethods(hasInheritedScope));
     }
 
-    List<ASTCDAttribute> buildAttributes = Lists.newArrayList(symbolClass.getCDAttributeList());
-    // builder has all attributes but not the spannedScope attribute from the symbol Class
+    List<ASTCDAttribute> buildAttributes = Lists.newArrayList(decoratedSymbolClass.getCDAttributeList());
+    // builder has all attributes
     defaultAttrs.forEach(a -> buildAttributes.add(a));
     // new build method template
     Optional<ASTCDMethod> buildMethod = symbolBuilder.getCDMethodList()
