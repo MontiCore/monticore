@@ -20,25 +20,25 @@ import de.se_rwth.commons.Names;
  */
 public class TemplateTreeReporter extends AReporter {
   
-  final static String TEMPLATE_CALL_START = "+--";
+  static final String TEMPLATE_CALL_START = "+--";
   
-  final static String STRING_HOOKPOINT = "+--SHP";
+  static final String STRING_HOOKPOINT = "+--SHP";
   
-  final static String CODE_HOOKPOINT = "+--CHP";
+  static final String CODE_HOOKPOINT = "+--CHP";
   
-  final static String TEMPLATE_HOOKPOINT = "+--THP";
+  static final String TEMPLATE_HOOKPOINT = "+--THP";
   
-  final static String SPECIFIC_TEMPLATE_HOOKPOINT = "+--ATHP";
+  static final String SPECIFIC_TEMPLATE_HOOKPOINT = "+--ATHP";
   
-  final static String SPECIFIC_STRING_HOOKPOINT = "+--ASHP";
+  static final String SPECIFIC_STRING_HOOKPOINT = "+--ASHP";
   
-  final static String SPECIFIC_CODE_HOOKPOINT = "+--ACHP";
+  static final String SPECIFIC_CODE_HOOKPOINT = "+--ACHP";
   
-  final static String INSTANTIATE_JAVA_CLASS = "+--inst";
+  static final String INSTANTIATE_JAVA_CLASS = "+--inst";
   
-  final static String INDENTATION = "|  ";
+  static final String INDENTATION = "|  ";
   
-  final static String SIMPLE_FILE_NAME = "09_TemplateTree";
+  static final String SIMPLE_FILE_NAME = "09_TemplateTree";
   
   private int currentIndentLevel = 0;
   
@@ -85,7 +85,7 @@ public class TemplateTreeReporter extends AReporter {
   }
   
   /**
-   * @see mc.codegen.reporting.commons.IReportEventHandler#reportTemplateEnd(java.lang.String,
+   * @see de.monticore.generating.templateengine.reporting.commons.IReportEventHandler#reportTemplateEnd(java.lang.String,
    * de.monticore.ast.ASTNode)
    */
   @Override
@@ -94,7 +94,7 @@ public class TemplateTreeReporter extends AReporter {
   }
   
   /**
-   * @see mc.codegen.reporting.commons.IReportEventHandler#reportInstantiate(java.lang.String,
+   * @see de.monticore.generating.templateengine.reporting.commons.IReportEventHandler#reportInstantiate(java.lang.String,
    * java.util.List)
    */
   @Override
@@ -106,7 +106,7 @@ public class TemplateTreeReporter extends AReporter {
   }
   
   /**
-   * @see mc.codegen.reporting.commons.IReportEventHandler#reportSetValue(java.lang.String,
+   * @see de.monticore.generating.templateengine.reporting.commons.IReportEventHandler#reportSetValue(java.lang.String,
    * java.lang.Object)
    */
   @Override

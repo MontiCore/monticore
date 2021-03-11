@@ -12,6 +12,8 @@ to be released
 
 ### Changes
 * move grammars OCLExpressions and SetExpressions into OCL-project for further development
+* DefsTypeBasic was moved to test. There are now only methods for creating symbols.
+  Use the BasicSymbolsMill to create the basic data types like int, ...
 * `deserialize(String)` method of scope DeSer classes is realized as default implementation in `IDeSer` interface
 * `deserialize(String)` method of symbol DeSer classes is realized as default implementation in `ISymbolDeSer` interface
 * `deserializeAddons()` and `serializeAddons()` methods  of scopes are realized as empty default implementation in `IDeSer` interface

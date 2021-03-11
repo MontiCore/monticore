@@ -2,15 +2,14 @@
 
 package mc.feature.astlist;
 
-import static org.junit.Assert.assertEquals;
+import mc.GeneratorIntegrationsTest;
+import mc.feature.featuredsl.FeatureDSLMill;
+import mc.feature.featuredsl._ast.ASTB;
+import org.junit.Test;
 
 import java.util.ArrayList;
 
-import org.junit.Test;
-
-import mc.GeneratorIntegrationsTest;
-import mc.feature.featuredsl._ast.ASTB;
-import mc.feature.featuredsl._ast.FeatureDSLNodeFactory;
+import static org.junit.Assert.assertEquals;
 
 public class TestLists extends GeneratorIntegrationsTest {
   
@@ -18,13 +17,13 @@ public class TestLists extends GeneratorIntegrationsTest {
   @Test
   public void testLists() {
     
-    ASTB a = FeatureDSLNodeFactory.createASTB();
-    ASTB b = FeatureDSLNodeFactory.createASTB();
-    ASTB c = FeatureDSLNodeFactory.createASTB();
-    ASTB d = FeatureDSLNodeFactory.createASTB();
-    ASTB e = FeatureDSLNodeFactory.createASTB();
-    ASTB f = FeatureDSLNodeFactory.createASTB();
-    ASTB g = FeatureDSLNodeFactory.createASTB();
+    ASTB a = FeatureDSLMill.bBuilder().uncheckedBuild();
+    ASTB b = FeatureDSLMill.bBuilder().uncheckedBuild();
+    ASTB c = FeatureDSLMill.bBuilder().uncheckedBuild();
+    ASTB d = FeatureDSLMill.bBuilder().uncheckedBuild();
+    ASTB e = FeatureDSLMill.bBuilder().uncheckedBuild();
+    ASTB f = FeatureDSLMill.bBuilder().uncheckedBuild();
+    ASTB g = FeatureDSLMill.bBuilder().uncheckedBuild();
     
     ArrayList<ASTB> list = new ArrayList<>();
     list.add(a);

@@ -7,16 +7,10 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import de.monticore.emf._ast.ASTENode;
 import mc.GeneratorIntegrationsTest;
-import mc.feature.fautomaton.automaton.flatautomaton._ast.ASTAutomaton;
-import mc.feature.fautomaton.automaton.flatautomaton._ast.ASTState;
-import mc.feature.fautomaton.automaton.flatautomaton._ast.ASTTransition;
-import mc.feature.fautomaton.automaton.flatautomaton._ast.FlatAutomatonNodeFactory;
-import mc.feature.fautomaton.automaton.flatautomaton._ast.FlatAutomatonPackage;
 
 public class CreateEObjectsTest extends GeneratorIntegrationsTest {
-  
+ /* TODO Brauchen wir den Test noch?
   @Test
   public void factoryTest() {
     ASTENode ast = (ASTENode) FlatAutomatonNodeFactory.getFactory()
@@ -41,5 +35,5 @@ public class CreateEObjectsTest extends GeneratorIntegrationsTest {
     assertNotNull(state);
     // TODO GV
   }
-  
+  */
 }

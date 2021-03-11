@@ -20,7 +20,7 @@ public class MethodSymbol extends MethodSymbolTOP {
    */
   public MethodSymbol deepClone(){
     MethodSymbol clone = new MethodSymbol(name);
-    clone.setReturnType(this.getReturnType().deepClone());
+    clone.setReturnType(this.returnType.deepClone());
     clone.setEnclosingScope(this.enclosingScope);
     clone.setFullName(this.fullName);
     clone.setIsStatic(this.isStatic);
@@ -30,10 +30,6 @@ public class MethodSymbol extends MethodSymbolTOP {
     clone.setAccessModifier(this.accessModifier);
     if(spannedScope!=null){
       clone.setSpannedScope(this.spannedScope);
-    }
-    List<VariableSymbol> parameterClone = Lists.newArrayList();
-    for(VariableSymbol parameter: this.getParameterList()){
-      parameterClone.add(parameter.deepClone());
     }
     return clone;
   }

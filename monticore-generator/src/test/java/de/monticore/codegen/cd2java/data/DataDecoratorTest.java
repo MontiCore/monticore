@@ -4,10 +4,12 @@ package de.monticore.codegen.cd2java.data;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
-import de.monticore.cd.cd4analysis.CD4AnalysisMill;
-import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.cd.prettyprint.CD4CodePrinter;
+import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cdbasis._ast.*;
+import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
+import de.monticore.cd4codebasis._ast.*;
 import de.monticore.codegen.cd2java.AbstractService;
+import de.monticore.codegen.cd2java.CdUtilsPrinter;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
@@ -20,8 +22,8 @@ import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
-import static de.monticore.cd.facade.CDModifier.PROTECTED;
-import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java.CDModifier.PROTECTED;
+import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.DecoratorAssert.*;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
 import static org.junit.Assert.*;
@@ -39,7 +41,7 @@ public class DataDecoratorTest extends DecoratorTestCase {
     ASTCDCompilationUnit cd = this.parse("de", "monticore", "codegen", "data", "Data");
     ASTCDClass clazz = getClassBy("A", cd);
     this.glex.setGlobalValue("service", new AbstractService(cd));
-    this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
+    this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
 
     MethodDecorator methodDecorator = new MethodDecorator(glex,new ASTService(cd));
     DataDecorator dataDecorator = new DataDecorator(this.glex, methodDecorator, new ASTService(cd), new DataDecoratorUtil());
@@ -58,7 +60,7 @@ public class DataDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributes() {
-    assertEquals(5, dataClass.sizeCDAttributes());
+    assertEquals(5, dataClass.getCDAttributeList().size());
   }
 
   @Test
@@ -98,21 +100,21 @@ public class DataDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testConstructors() {
-    assertFalse(dataClass.isEmptyCDConstructors());
-    assertEquals(1, dataClass.sizeCDConstructors());
+    assertFalse(dataClass.getCDConstructorList().isEmpty());
+    assertEquals(1, dataClass.getCDConstructorList().size());
   }
 
   @Test
   public void testDefaultConstructor() {
-    ASTCDConstructor defaultConstructor = dataClass.getCDConstructor(0);
+    ASTCDConstructor defaultConstructor = dataClass.getCDConstructorList().get(0);
     assertDeepEquals(PROTECTED, defaultConstructor.getModifier());
     assertTrue(defaultConstructor.isEmptyCDParameters());
   }
 
   @Test
   public void testMethods() {
-    assertFalse(dataClass.isEmptyCDMethods());
-    assertEquals(52, dataClass.sizeCDMethods());
+    assertFalse(dataClass.getCDMethodList().isEmpty());
+    assertEquals(52, dataClass.getCDMethodList().size());
   }
 
   @Test

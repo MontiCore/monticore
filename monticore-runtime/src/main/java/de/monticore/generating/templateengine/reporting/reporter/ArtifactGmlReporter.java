@@ -12,8 +12,8 @@ import java.io.File;
  */
 public class ArtifactGmlReporter extends ArtifactReporter {
   
-  final static String SIMPLE_FILE_NAME = "15_ArtifactGml";  
-  
+  static final String SIMPLE_FILE_NAME = "15_ArtifactGml";
+
   public ArtifactGmlReporter(String outputDir, String modelName) {
     super(outputDir + File.separator + modelName,
         SIMPLE_FILE_NAME, "gml", new GMLFormatter());

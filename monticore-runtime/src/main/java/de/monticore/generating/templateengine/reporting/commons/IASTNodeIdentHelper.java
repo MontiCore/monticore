@@ -22,11 +22,11 @@ public interface IASTNodeIdentHelper {
   
   public String getIdent(ASTNode ast);
   
-  default public String getIdent(ISymbol symbol) {
+  default String getIdent(ISymbol symbol) {
     return format(maskSpecialChars(symbol.getName()), "Symbol");
   }
   
-  default public String maskSpecialChars(String name) {
+  default String maskSpecialChars(String name) {
     // Replace all special characters by _
     name = name.replaceAll("[^a-zA-Z0-9_$]", "_");
     if (name.matches("[0-9].*")) {
@@ -36,7 +36,7 @@ public interface IASTNodeIdentHelper {
     return name;
   }
   
-  default public String getIdent(IScope scope) {
+  default String getIdent(IScope scope) {
     String type;
     if (scope.getClass().getName().endsWith("ArtifactScope")) {
       type = "ArtifactScope";

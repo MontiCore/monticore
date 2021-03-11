@@ -6,6 +6,10 @@
 package de.monticore.symboltable;
 
 import de.monticore.io.paths.ModelPath;
+import de.monticore.symboltable.serialization.IDeSer;
+import de.monticore.symboltable.serialization.ISymbolDeSer;
+
+import java.util.Map;
 
 /**
  * Common interface for all global scopes.
@@ -18,6 +22,7 @@ public interface IGlobalScope {
    * are located.
    */
   ModelPath getModelPath();
+
   void setModelPath(ModelPath modelPath);
 
   /**
@@ -25,6 +30,7 @@ public interface IGlobalScope {
    * for the (symbol) files that the global scope considers for symbol resolution
    */
   String getFileExt();
+
   void setFileExt(String fileExt);
 
   /**
@@ -33,7 +39,9 @@ public interface IGlobalScope {
    * more than once.
    */
   void addLoadedFile(String name);
+
   void clearLoadedFiles();
+
   boolean isFileLoaded(String name);
 
   /**
@@ -47,5 +55,17 @@ public interface IGlobalScope {
    * This is useful, e.g., for unit testing the symbol table.
    */
   void clear();
+
+  Map<String, ISymbolDeSer> getSymbolDeSers();
+
+  void setSymbolDeSers(Map<String, ISymbolDeSer> symbolDeSers);
+
+  void putSymbolDeSer(String key, ISymbolDeSer value);
+
+  ISymbolDeSer getSymbolDeSer(String key);
+
+  IDeSer getDeSer();
+
+  void setDeSer(IDeSer deSer);
 
 }

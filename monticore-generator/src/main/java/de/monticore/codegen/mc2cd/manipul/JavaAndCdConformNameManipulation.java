@@ -2,9 +2,12 @@
 
 package de.monticore.codegen.mc2cd.manipul;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._visitor.CD4AnalysisVisitor;
+import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cd4analysis._visitor.CD4AnalysisTraverser;
+import de.monticore.cd4analysis._visitor.CD4AnalysisVisitor;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._visitor.CDBasisVisitor2;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 
 import java.util.function.UnaryOperator;
@@ -14,28 +17,31 @@ import java.util.function.UnaryOperator;
  * convention.
  *
  */
-public class JavaAndCdConformNameManipulation implements UnaryOperator<ASTCDCompilationUnit>, CD4AnalysisVisitor {
-
-  CD4AnalysisVisitor realThis = this;
-
-  @Override
-  public CD4AnalysisVisitor getRealThis() {
-    return realThis;
-  }
-
-  @Override
-  public void setRealThis(CD4AnalysisVisitor realThis) {
-    this.realThis = realThis;
-  }
+public class JavaAndCdConformNameManipulation implements UnaryOperator<ASTCDCompilationUnit> {
 
   @Override
   public ASTCDCompilationUnit apply(ASTCDCompilationUnit cdCompilationUnit) {
-    cdCompilationUnit.accept(getRealThis());
+    CD4AnalysisTraverser traverser = CD4AnalysisMill.traverser();
+    traverser.add4CDBasis(new ManipulateVisitor());
+    cdCompilationUnit.accept(traverser);
     return cdCompilationUnit;
   }
 
-  @Override
-  public void visit(ASTCDAttribute node) {
-    node.setName(TransformationHelper.getJavaAndCdConformName(node.getName()));
+  private class ManipulateVisitor implements CDBasisVisitor2 {
+
+    public CD4AnalysisTraverser getTraverser() {
+      return traverser;
+    }
+
+    public void setTraverser(CD4AnalysisTraverser traverser) {
+      this.traverser = traverser;
+    }
+
+    CD4AnalysisTraverser traverser;
+
+    @Override
+    public void visit(ASTCDAttribute node) {
+      node.setName(TransformationHelper.getJavaAndCdConformName(node.getName()));
+    }
   }
 }

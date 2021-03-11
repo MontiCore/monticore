@@ -3,10 +3,9 @@
 package de.monticore.codegen.parser.antlr;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.parser.ParserGeneratorHelper;
-import de.monticore.grammar.HelperGrammar;
+import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTNonTerminal;
 import de.monticore.grammar.grammar._symboltable.AdditionalAttributeSymbol;
@@ -103,7 +102,7 @@ public class AttributeCardinalityConstraint {
   public String addActionForNonTerminal(ASTNonTerminal ast) {
     StringBuilder ret = new StringBuilder();
     
-    String usageName = HelperGrammar.getUsageName(ast);
+    String usageName = parserGenHelper.getUsageName(ast);
     
     Optional<ProdSymbol> rule = MCGrammarSymbolTableHelper.getEnclosingRule(ast);
     if (!rule.isPresent()) {

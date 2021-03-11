@@ -2,7 +2,7 @@
 
 package mc2cdtransformation;
 
-grammar AstRuleInheritance extends mc2cdtransformation.super.Supergrammar {
+grammar AstRuleInheritance extends mc2cdtransformation.Supergrammar {
 
    A;
   

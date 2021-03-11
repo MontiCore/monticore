@@ -2,25 +2,23 @@
 
 package de.monticore.generating.templateengine.reporting.reporter;
 
-import java.io.File;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import de.monticore.ast.ASTNode;
-
 import com.google.common.collect.Maps;
-
+import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.reporting.commons.AReporter;
 import de.monticore.generating.templateengine.reporting.commons.Layouter;
 import de.monticore.generating.templateengine.reporting.commons.ReportingConstants;
 import de.se_rwth.commons.Names;
 
+import java.io.File;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
 /**
  */
 public class InstantiationsReporter extends AReporter {
   
-  final static String SIMPLE_FILE_NAME = "06_Instantiations";
+  static final String SIMPLE_FILE_NAME = "06_Instantiations";
   
   private Map<String, Integer> instantiateCount = Maps.newTreeMap();
   
@@ -52,7 +50,7 @@ public class InstantiationsReporter extends AReporter {
   }
   
   /**
-   * @see mc.codegen.reporting.commons.IReportEventHandler#reportInstantiate(java.lang.String,
+   * @see de.monticore.generating.templateengine.reporting.commons.IReportEventHandler#reportInstantiate(java.lang.String,
    * java.util.List)
    */
   @Override

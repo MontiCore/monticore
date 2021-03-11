@@ -20,7 +20,7 @@ import java.util.Map.Entry;
  */
 public class NodeTreeReporter extends AReporter {
   
-  final static String SIMPLE_FILE_NAME = "10_NodeTree";
+  static final String SIMPLE_FILE_NAME = "10_NodeTree";
   
   private ReportingRepository repository;
   

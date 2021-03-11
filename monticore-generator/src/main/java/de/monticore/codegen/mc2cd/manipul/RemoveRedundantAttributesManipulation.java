@@ -2,16 +2,17 @@
 
 package de.monticore.codegen.mc2cd.manipul;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
-import de.monticore.cd.cd4code.CD4CodeFullPrettyPrinter;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
+import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
 import de.monticore.codegen.mc2cd.AttributeCategory;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
+import de.monticore.types.prettyprint.MCBasicTypesFullPrettyPrinter;
 
 import java.util.Iterator;
 import java.util.List;
@@ -30,11 +31,11 @@ final class RemoveRedundantAttributesManipulation implements UnaryOperator<ASTCD
 
   @Override
   public ASTCDCompilationUnit apply(ASTCDCompilationUnit cdCompilationUnit) {
-    for (ASTCDClass cdClass : cdCompilationUnit.getCDDefinition().getCDClassList()) {
-      removeRedundantAttributes(cdClass.getCDAttributeList());
+    for (ASTCDClass cdClass : cdCompilationUnit.getCDDefinition().getCDClassesList()) {
+      cdClass.setCDAttributeList(removeRedundantAttributes(cdClass.getCDAttributeList()));
     }
-    for (ASTCDInterface cdClass : cdCompilationUnit.getCDDefinition().getCDInterfaceList()) {
-      removeRedundantAttributes(cdClass.getCDAttributeList());
+    for (ASTCDInterface cdClass : cdCompilationUnit.getCDDefinition().getCDInterfacesList()) {
+      cdClass.setCDAttributeList(removeRedundantAttributes(cdClass.getCDAttributeList()));
     }
     return cdCompilationUnit;
   }
@@ -42,7 +43,7 @@ final class RemoveRedundantAttributesManipulation implements UnaryOperator<ASTCD
   /**
    * @param cdAttributes the list of all the attributes in the class
    */
-  void removeRedundantAttributes(List<ASTCDAttribute> cdAttributes) {
+  List<ASTCDAttribute> removeRedundantAttributes(List<ASTCDAttribute> cdAttributes) {
     Iterator<ASTCDAttribute> iterator = cdAttributes.iterator();
     while (iterator.hasNext()) {
       ASTCDAttribute inspectedAttribute = iterator.next();
@@ -57,6 +58,7 @@ final class RemoveRedundantAttributesManipulation implements UnaryOperator<ASTCD
         iterator.remove();
       }
     }
+    return cdAttributes;
   }
 
   /**
@@ -98,7 +100,7 @@ final class RemoveRedundantAttributesManipulation implements UnaryOperator<ASTCD
     if (cdAttribute.getMCType() instanceof ASTMCGenericType) {
       List<ASTMCTypeArgument> argList = ((ASTMCGenericType) cdAttribute.getMCType()).getMCTypeArgumentList();
       if (!argList.isEmpty()) {
-        String simpleTypeName = argList.get(0).getMCTypeOpt().get().printType(new CD4CodeFullPrettyPrinter(new IndentPrinter()));
+        String simpleTypeName = argList.get(0).getMCTypeOpt().get().printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter()));
         return Optional.of(simpleTypeName);
       }
     }

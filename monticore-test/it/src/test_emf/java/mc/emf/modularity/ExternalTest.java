@@ -7,7 +7,7 @@ import mc.GeneratorIntegrationsTest;
 import mc.feature.fautomaton.automaton.flatautomaton._ast.FlatAutomatonPackage;
 import mc.feature.fautomaton.automatonwithaction.actionautomaton._ast.ASTAutomaton;
 import mc.feature.fautomaton.automatonwithaction.actionautomaton._ast.ASTCounter;
-import mc.feature.fautomaton.automatonwithaction.actionautomaton._ast.ActionAutomatonNodeFactory;
+import mc.feature.fautomaton.automatonwithaction.actionautomaton.ActionAutomatonMill;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EReference;
 import org.junit.Before;
@@ -22,7 +22,7 @@ public class ExternalTest extends GeneratorIntegrationsTest {
   
   @Before
   public void setUp() throws Exception {
-    aut = ActionAutomatonNodeFactory.createASTAutomaton();
+    aut = ActionAutomatonMill.automatonBuilder().uncheckedBuild();
   }
   
   @Test
@@ -39,7 +39,7 @@ public class ExternalTest extends GeneratorIntegrationsTest {
   
   @Test
   public void testMethods() {
-    ASTCounter counter = ActionAutomatonNodeFactory.createASTCounter();
+    ASTCounter counter = ActionAutomatonMill.counterBuilder().uncheckedBuild();
     aut.setCounterList(Lists.newArrayList(counter));
     
     assertTrue(aut.getCounterList().contains(counter));

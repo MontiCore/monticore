@@ -8,9 +8,6 @@ import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.List;
-import java.util.Optional;
-
 /**
  * checks if a prod defining a symbol has a list of names.
  */

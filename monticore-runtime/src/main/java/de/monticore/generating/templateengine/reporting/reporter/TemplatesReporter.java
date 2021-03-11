@@ -2,29 +2,20 @@
 
 package de.monticore.generating.templateengine.reporting.reporter;
 
-import java.io.File;
-import java.util.LinkedHashSet;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.SortedSet;
-import java.util.TreeMap;
-import java.util.TreeSet;
-
 import de.monticore.ast.ASTNode;
-import de.monticore.generating.templateengine.reporting.commons.AReporter;
-import de.monticore.generating.templateengine.reporting.commons.Layouter;
-import de.monticore.generating.templateengine.reporting.commons.ReportingConstants;
-import de.monticore.generating.templateengine.reporting.commons.ReportingHelper;
-import de.monticore.generating.templateengine.reporting.commons.ReportingRepository;
+import de.monticore.generating.templateengine.reporting.commons.*;
+
+import java.io.File;
+import java.util.*;
+import java.util.Map.Entry;
 
 /**
  */
 public class TemplatesReporter extends AReporter {
   
-  final static String SIMPLE_FILE_NAME = "04_Templates";
+  static final String SIMPLE_FILE_NAME = "04_Templates";
   
-  final static String INDENT = Layouter.getSpaceString(10);
+  static final String INDENT = Layouter.getSpaceString(10);
   
   private SortedMap<String, Integer> templateCount = new TreeMap<String, Integer>();
   
