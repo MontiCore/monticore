@@ -52,7 +52,8 @@ public class ReferencedDefinitionListAccessorDecorator extends ListAccessorDecor
     String referencedSymbolType = symbolTableService.getReferencedSymbolTypeName(ast);
     String referencedNodeTypeAsList = ast.printType();
     String referencedNodeType = referencedNodeTypeAsList.substring(5, referencedNodeTypeAsList.length() - 1);
-    this.replaceTemplate(EMPTY_BODY, getList, new TemplateHookPoint("_ast.ast_class.refSymbolMethods.GetDefinitionList", ast.getName(),
+    String attributeName = this.getDecorationHelper().getNativeAttributeName(ast.getName());
+    this.replaceTemplate(EMPTY_BODY, getList, new TemplateHookPoint("_ast.ast_class.refSymbolMethods.GetDefinitionList", attributeName,
         referencedSymbolType, referencedNodeType));
     return getList;
   }
