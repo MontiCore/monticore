@@ -59,10 +59,12 @@ public class SymbolBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDCla
     if (hasScope || hasInheritedScope) {
       ASTCDAttribute spannedScopeAttr = getCDAttributeFacade()
               .createAttribute(PROTECTED.build(), symbolTableService.getScopeInterfaceType(), SPANNED_SCOPE_VAR);
-      if (!hasInheritedScope) {
+      if (!hasInheritedSymbol ||
+              (!hasInheritedScope && hasScope)) {
         decoratedSymbolClass.addCDMember(spannedScopeAttr);
+      } else {
+        defaultAttrs.add(spannedScopeAttr);
       }
-      defaultAttrs.add(spannedScopeAttr);
     }
 
     builderDecorator.setPrintBuildMethodTemplate(false);
