@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast.ast_class.reference.definition.methoddecorator;
 
-import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.codegen.cd2java._ast.ast_class.reference.definition.ASTReferencedDefinitionDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java.methods.accessor.OptionalAccessorDecorator;
@@ -58,7 +58,7 @@ public class ReferencedDefinitionOptAccessorDecorator extends OptionalAccessorDe
   @Override
   protected ASTCDMethod createIsPresentMethod(final ASTCDAttribute ast) {
     String name = String.format(IS_PRESENT, StringUtils.capitalize(naiveAttributeName));
-    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createBooleanType(), name);
+    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), getMCTypeFacade().createBooleanType(), name);
     String attributeName = this.getDecorationHelper().getNativeAttributeName(ast.getName());
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.ast_class.refSymbolMethods.IsPresentDefinition", attributeName));
     return method;

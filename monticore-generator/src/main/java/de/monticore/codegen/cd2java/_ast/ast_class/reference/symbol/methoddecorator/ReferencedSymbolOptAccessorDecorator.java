@@ -1,14 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast.ast_class.reference.symbol.methoddecorator;
 
-import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
-import de.monticore.codegen.cd2java._ast.ast_class.reference.symbol.ASTReferencedSymbolDecorator;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java.methods.accessor.OptionalAccessorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import org.apache.commons.lang3.StringUtils;
 
 import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
@@ -35,7 +33,7 @@ public class ReferencedSymbolOptAccessorDecorator extends OptionalAccessorDecora
   protected ASTCDMethod createGetMethod(final ASTCDAttribute ast) {
     String attributeName = getDecorationHelper().getNativeAttributeName(ast.getName());
     String name = String.format(GET, StringUtils.capitalize(attributeName));
-    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, ast.getMCType(), name);
+    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), ast.getMCType(), name);
     //create correct Name A for resolveA method
     String simpleSymbolName = symbolTableService.getSimpleNameFromSymbolName(symbolTableService.getReferencedSymbolTypeName(ast));
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.ast_class.refSymbolMethods.GetSymbol",
@@ -50,7 +48,7 @@ public class ReferencedSymbolOptAccessorDecorator extends OptionalAccessorDecora
   @Override
   protected ASTCDMethod createIsPresentMethod(final ASTCDAttribute ast) {
     String name = String.format(IS_PRESENT, StringUtils.capitalize(naiveAttributeName));
-    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, getMCTypeFacade().createBooleanType(), name);
+    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), getMCTypeFacade().createBooleanType(), name);
     String attributeName = getDecorationHelper().getNativeAttributeName(ast.getName());
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.ast_class.refSymbolMethods.IsPresentSymbol", attributeName));
     return method;

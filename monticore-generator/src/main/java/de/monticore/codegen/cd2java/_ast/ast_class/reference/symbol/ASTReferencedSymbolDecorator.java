@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast.ast_class.reference.symbol;
 
-import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.codegen.cd2java.AbstractTransformer;
 import de.monticore.codegen.cd2java._ast.ast_class.reference.symbol.methoddecorator.ReferencedSymbolAccessorDecorator;
@@ -124,7 +124,7 @@ public class ASTReferencedSymbolDecorator<T extends ASTCDType> extends AbstractT
 
   protected ASTCDMethod getUpdateLoaderAttribute(ASTCDAttribute loaderAttribute, String nameAttributeName, String simpleName, boolean wasOptional) {
     String attributeName = getDecorationHelper().getNativeAttributeName(loaderAttribute.getName());
-    ASTCDMethod updateLoaderMethod = getCDMethodFacade().createMethod(PROTECTED, "update" +
+    ASTCDMethod updateLoaderMethod = getCDMethodFacade().createMethod(PROTECTED.build(), "update" +
         StringTransformations.capitalize(attributeName));
     replaceTemplate(EMPTY_BODY, updateLoaderMethod, new TemplateHookPoint("_ast.ast_class.refSymbolMethods.UpdateLoader",
         attributeName, getDecorationHelper().getNativeAttributeName(nameAttributeName), simpleName, wasOptional));
@@ -133,7 +133,7 @@ public class ASTReferencedSymbolDecorator<T extends ASTCDType> extends AbstractT
 
   protected ASTCDMethod getUpdateLoaderListAttribute(String referencedAttributeName, String nameAttributeName, String simpleName) {
     String attributeName = getDecorationHelper().getNativeAttributeName(referencedAttributeName);
-    ASTCDMethod updateLoaderMethod = getCDMethodFacade().createMethod(PROTECTED, "update" +
+    ASTCDMethod updateLoaderMethod = getCDMethodFacade().createMethod(PROTECTED.build(), "update" +
         StringTransformations.capitalize(attributeName));
     replaceTemplate(EMPTY_BODY, updateLoaderMethod, new TemplateHookPoint("_ast.ast_class.refSymbolMethods.UpdateLoaderList",
         attributeName, nameAttributeName, simpleName));
