@@ -44,7 +44,7 @@ public class DeriveSymTypeOfMCCommonLiteralsTest {
   @Test
   public void deriveTFromLiteral1Null() throws IOException {
     ASTLiteral lit = MCCommonLiteralsMill.nullLiteralBuilder().build();
-    assertEquals("nullType", tc.typeOf(lit).print());
+    assertEquals("null", tc.typeOf(lit).print());
   }
 
   @Test
