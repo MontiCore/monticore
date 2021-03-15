@@ -4,6 +4,7 @@ package de.monticore.types.check;
 import de.monticore.literals.mccommonliterals._ast.*;
 import de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor2;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolSurrogate;
 
@@ -57,8 +58,8 @@ public class DeriveSymTypeOfMCCommonLiterals implements MCCommonLiteralsVisitor2
 
   @Override
   public void visit(ASTStringLiteral lit){
-    OOTypeSymbolSurrogate oo = new OOTypeSymbolSurrogate("String");
-    oo.setEnclosingScope(OOSymbolsMill.globalScope());
+    TypeSymbolSurrogate oo = new TypeSymbolSurrogate("String");
+    oo.setEnclosingScope(BasicSymbolsMill.globalScope());
     typeCheckResult.setCurrentResult(new SymTypeOfObject(oo));
   }
 

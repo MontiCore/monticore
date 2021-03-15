@@ -33,6 +33,7 @@ public class SynthesizeSymTypeFromMCCollectionTypesTest {
     Log.enableFailQuick(false);
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
+    BasicSymbolsMill.initializePrimitives();
   }
   
   // Parer used for convenience:

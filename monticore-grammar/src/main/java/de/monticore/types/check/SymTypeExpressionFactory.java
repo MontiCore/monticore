@@ -131,7 +131,7 @@ public class SymTypeExpressionFactory {
    */
   public static SymTypeExpression createTypeExpression(String name, IBasicSymbolsScope scope) {
     SymTypeExpression o;
-    if (PRIMITIVE_LIST.containsKey(name)) {
+    if (PRIMITIVE_LIST.contains(name)) {
       o = createTypeConstant(name);
     }
     else if ("void".equals(name)) {

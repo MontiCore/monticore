@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 import de.monticore.expressions.prettyprint.CombineExpressionsWithLiteralsPrettyPrinter;
 import de.monticore.literals.mccommonliterals.MCCommonLiteralsMill;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
@@ -23,8 +24,8 @@ public class DeriveSymTypeOfLiteralsTest {
   public static void setup() {
     LogStub.init();
     LogStub.enableFailQuick(false);
-    BasicSymbolsMill.reset();
-    BasicSymbolsMill.init();
+    CombineExpressionsWithLiteralsMill.reset();
+    CombineExpressionsWithLiteralsMill.init();
     BasicSymbolsMill.initializePrimitives();
   }
 

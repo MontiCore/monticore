@@ -58,6 +58,8 @@ public class AbstractDeriveTest {
     scope.setEnclosingScope(null);
     scope.setExportingSymbols(true);
     scope.setAstNode(null);
+    scope.setEnclosingScope(AbstractTypeCheckTestMill.globalScope());
+    AbstractTypeCheckTestMill.globalScope().clear();
     BasicSymbolsMill.initializePrimitives();
 
     TypeSymbol person = AbstractTypeCheckTestMill.typeSymbolBuilder()
@@ -89,8 +91,8 @@ public class AbstractDeriveTest {
         .setEnclosingScope(person.getSpannedScope())
         .build();
     add2scope(person.getSpannedScope(), address);
-    add2scope(person.getSpannedScope(), method("foo", _voidSymType));
-    add2scope(person.getSpannedScope(), field("bar", _intSymType));
+    add2scope(person.getSpannedScope(), method("foo", SymTypeExpressionFactory.createTypeVoid()));
+    add2scope(person.getSpannedScope(), field("bar", SymTypeExpressionFactory.createTypeConstant("int")));
     add2scope(scope, firstsemesterstudent);
     add2scope(scope, field("person1", SymTypeExpressionFactory.createTypeObject("Person", scope)));
     add2scope(scope, field("firstsemester", SymTypeExpressionFactory.
