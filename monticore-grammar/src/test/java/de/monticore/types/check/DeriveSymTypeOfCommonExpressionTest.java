@@ -1403,15 +1403,4 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     assertTrue(sType.isPresent());
     //TODO ND: complete when inner types are added
   }
-
-  public CombineExpressionsWithLiteralsTraverser getTraverser(FlatExpressionScopeSetter flatExpressionScopeSetter){
-    CombineExpressionsWithLiteralsTraverser traverser = CombineExpressionsWithLiteralsMill.traverser();
-    traverser.add4AssignmentExpressions(flatExpressionScopeSetter);
-    traverser.add4BitExpressions(flatExpressionScopeSetter);
-    traverser.add4CommonExpressions(flatExpressionScopeSetter);
-    traverser.add4ExpressionsBasis(flatExpressionScopeSetter);
-    traverser.add4JavaClassExpressions(flatExpressionScopeSetter);
-    traverser.add4MCBasicTypes(flatExpressionScopeSetter);
-    return traverser;
-  }
 }
