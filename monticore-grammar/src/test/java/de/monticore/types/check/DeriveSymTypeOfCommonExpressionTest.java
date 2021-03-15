@@ -20,6 +20,7 @@ import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -74,21 +75,6 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     CombineExpressionsWithLiteralsMill.globalScope().setModelPath(new ModelPath());
     CombineExpressionsWithLiteralsMill.globalScope().setFileExt("ce");
   }
-
-  // Parser used for convenience:
-  // (may be any other Parser that understands CommonExpressions)
-  CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
-
-  // This is the core Visitor under Test (but rather empty)
-  DeriveSymTypeOfExpression derEx = new DeriveSymTypeOfExpression();
-
-  // This is an auxiliary
-  DeriveSymTypeOfCombineExpressionsDelegator derLit = new DeriveSymTypeOfCombineExpressionsDelegator();
-
-  // other arguments not used (and therefore deliberately null)
-
-  // This is the TypeChecker under Test:
-  TypeCheck tc = new TypeCheck(null, derLit);
 
   /*--------------------------------------------------- TESTS ---------------------------------------------------------*/
 
@@ -652,12 +638,6 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
 
     //test for method with qualified name with parameters
     check("types.Test.pay(4)", "void");
-
-    //test for String method
-    check("\"test\".hashCode()", "int");
-
-    //test for multiple CallExpressions in a row
-    check("\"test\".toString().charAt(1)", "char");
   }
 
   @Test
