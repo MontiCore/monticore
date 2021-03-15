@@ -42,6 +42,7 @@ public class CoCoTests {
   public static void init(){
     LogStub.init();
     LogStub.enableFailQuick(false);
+    TypeCheckTestMill.init();
   }
 
   @Before
