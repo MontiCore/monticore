@@ -7,10 +7,6 @@ plugins {
   id "jacoco"
 }
 
-sonarqube {
-  skipProject = true
-}
-
 subprojects {
   apply plugin: 'monticore'
   apply plugin: 'jacoco'
