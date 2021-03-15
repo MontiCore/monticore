@@ -1,9 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java.methods;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
-import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -52,8 +53,8 @@ public abstract class ListMethodDecorator extends AbstractCreator<ASTCDAttribute
 
   protected boolean hasDerivedAttributeName(ASTCDAttribute astcdAttribute) {
     return astcdAttribute.isPresentModifier() && astcdAttribute.getModifier().isPresentStereotype()
-        && astcdAttribute.getModifier().getStereotype().sizeValue() > 0 &&
-        astcdAttribute.getModifier().getStereotype().getValueList()
+        && astcdAttribute.getModifier().getStereotype().sizeValues() > 0 &&
+        astcdAttribute.getModifier().getStereotype().getValuesList()
             .stream()
             .anyMatch(v -> v.getName().equals(MC2CDStereotypes.DERIVED_ATTRIBUTE_NAME.toString()));
   }
@@ -73,7 +74,7 @@ public abstract class ListMethodDecorator extends AbstractCreator<ASTCDAttribute
     String parameterCall = method.getCDParameterList().stream()
         .map(ASTCDParameter::getName)
         .collect(Collectors.joining(", "));
-    String returnType = method.printReturnType();
+    String returnType = (new CD4CodeFullPrettyPrinter()).prettyprint(method.getMCReturnType());
 
     return new TemplateHookPoint("methods.MethodDelegate", attributeName, methodName, parameterCall, returnType);
   }

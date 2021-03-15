@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.feature.referencesymbol;
+
+grammar ReferenceWithUsageName extends mc.common.Basics {
+
+  symbol A = "@" Name ("extends" super:(Name@A || ",")+)?;
+
+  symbol B = "Foo" Name super:Name@A?;
+
+  symbol C = "Bar" Name super:Name@A;
+
+}

@@ -89,7 +89,7 @@ public class Layouter {
 	 * Provides the Name of the Java File (no qualifier, last 2 compartments
 	 * including file + extension)
 	 * 
-	 * @param ast
+	 * @param s
 	 * @return Nonterminalname
 	 */
 	public static String unqual2Name(String s) {
@@ -128,9 +128,9 @@ public class Layouter {
 		} else {
 			String clazzn = className(value);
 			// Sonderbehandlung mancher Typen
-			if (clazzn.equals("String")) {
+			if ("String".equals(clazzn)) {
 				out = "\"" + value.toString() + "\"";
-			} else if (clazzn.equals("Integer") || clazzn.equals("Boolean")) {
+			} else if ("Integer".equals(clazzn) || "Boolean".equals(clazzn)) {
 				out = value.toString();
 			} else {
 				out = "(" + clazzn + ")" + value.toString();

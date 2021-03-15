@@ -1,15 +1,18 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._symboltable.symbol;
 
-import de.monticore.cd.cd4analysis.CD4AnalysisMill;
-import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cdbasis._ast.*;
+import de.monticore.cd4codebasis._ast.*;
+import de.monticore.cdinterfaceandenum._ast.*;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.umlmodifier._ast.ASTModifier;
 
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
-import static de.monticore.cd.facade.CDModifier.*;
+import static de.monticore.codegen.cd2java.CDModifier.*;
 
 /**
  * creates a SymbolResolver interface from a grammar
@@ -36,7 +39,7 @@ public class SymbolResolverInterfaceDecorator extends AbstractCreator<ASTCDType,
     return CD4AnalysisMill.cDInterfaceBuilder()
         .setName(symbolResolverInterface)
         .setModifier(modifier)
-        .addCDMethod(createResolveAdaptedStateSymbol(symbolFullName, symbolSimpleName))
+        .addCDMember(createResolveAdaptedStateSymbol(symbolFullName, symbolSimpleName))
         .build();
   }
 
@@ -48,7 +51,7 @@ public class SymbolResolverInterfaceDecorator extends AbstractCreator<ASTCDType,
     ASTCDParameter foundSymbolsParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createBooleanType(), FOUND_SYMBOLS_VAR);
     ASTCDParameter predicateParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createBasicGenericTypeOf(PREDICATE, fullSymbolName), PREDICATE_VAR);
 
-    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, listTypeOfSymbol, String.format(RESOLVE_ADAPTED, simpleSymbolName),
+    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT.build(), listTypeOfSymbol, String.format(RESOLVE_ADAPTED, simpleSymbolName),
         foundSymbolsParameter, nameParameter, accessModifierParameter, predicateParameter);
   }
 }

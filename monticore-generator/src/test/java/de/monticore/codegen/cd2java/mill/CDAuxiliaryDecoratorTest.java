@@ -1,10 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java.mill;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
-import de.monticore.cd.prettyprint.CD4CodePrinter;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
+import de.monticore.codegen.cd2java.CdUtilsPrinter;
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.ASTCDDecorator;
@@ -17,8 +17,6 @@ import de.monticore.codegen.cd2java._ast.builder.ASTBuilderDecorator;
 import de.monticore.codegen.cd2java._ast.builder.BuilderDecorator;
 import de.monticore.codegen.cd2java._ast.constants.ASTConstantsDecorator;
 import de.monticore.codegen.cd2java._ast.enums.EnumDecorator;
-import de.monticore.codegen.cd2java._ast.factory.NodeFactoryDecorator;
-import de.monticore.codegen.cd2java._ast.factory.NodeFactoryService;
 import de.monticore.codegen.cd2java._parser.ParserService;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
@@ -56,7 +54,7 @@ public class CDAuxiliaryDecoratorTest extends DecoratorTestCase {
     this.glex = new GlobalExtensionManagement();
 
     this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
-    this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
+    this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "Automaton");
     decoratedScopeCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "AutomatonScopeCD");
     decoratedSymbolCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "AutomatonSymbolCD");
@@ -77,12 +75,11 @@ public class CDAuxiliaryDecoratorTest extends DecoratorTestCase {
     ASTService astService = new ASTService(decoratedCompilationUnit);
     SymbolTableService symbolTableService = new SymbolTableService(decoratedCompilationUnit);
     VisitorService visitorService = new VisitorService(decoratedCompilationUnit);
-    NodeFactoryService nodeFactoryService = new NodeFactoryService(decoratedCompilationUnit);
     MethodDecorator methodDecorator = new MethodDecorator(glex, astService);
     DataDecorator dataDecorator = new DataDecorator(glex, methodDecorator, astService, new DataDecoratorUtil());
     ASTSymbolDecorator astSymbolDecorator = new ASTSymbolDecorator(glex, symbolTableService);
     ASTScopeDecorator astScopeDecorator = new ASTScopeDecorator(glex, symbolTableService);
-    ASTDecorator astDecorator = new ASTDecorator(glex, astService, visitorService, nodeFactoryService,
+    ASTDecorator astDecorator = new ASTDecorator(glex, astService, visitorService,
         astSymbolDecorator, astScopeDecorator, methodDecorator, symbolTableService);
     ASTReferenceDecorator<ASTCDClass> astClassReferencedSymbolDecorator = new ASTReferenceDecorator<ASTCDClass>(glex, symbolTableService);
     ASTReferenceDecorator<ASTCDInterface> astInterfaceReferencedSymbolDecorator = new ASTReferenceDecorator<ASTCDInterface>(glex, symbolTableService);
@@ -90,14 +87,13 @@ public class CDAuxiliaryDecoratorTest extends DecoratorTestCase {
     ASTLanguageInterfaceDecorator astLanguageInterfaceDecorator = new ASTLanguageInterfaceDecorator(astService, visitorService);
     BuilderDecorator builderDecorator = new BuilderDecorator(glex, new AccessorDecorator(glex, astService), new ASTService(decoratedCompilationUnit));
     ASTBuilderDecorator astBuilderDecorator = new ASTBuilderDecorator(glex, builderDecorator, astService);
-    NodeFactoryDecorator nodeFactoryDecorator = new NodeFactoryDecorator(glex, nodeFactoryService);
     ASTConstantsDecorator astConstantsDecorator = new ASTConstantsDecorator(glex, astService);
     EnumDecorator enumDecorator = new EnumDecorator(glex, new AccessorDecorator(glex, astService), astService);
     ASTInterfaceDecorator astInterfaceDecorator = new ASTInterfaceDecorator(glex, astService, visitorService,
         astSymbolDecorator, astScopeDecorator, methodDecorator);
     InterfaceDecorator dataInterfaceDecorator = new InterfaceDecorator(glex, new DataDecoratorUtil(), methodDecorator, astService);
     FullASTInterfaceDecorator fullASTInterfaceDecorator = new FullASTInterfaceDecorator(dataInterfaceDecorator, astInterfaceDecorator, astInterfaceReferencedSymbolDecorator);
-    ASTCDDecorator astcdDecorator = new ASTCDDecorator(glex, fullDecorator, astLanguageInterfaceDecorator, astBuilderDecorator, nodeFactoryDecorator,
+    ASTCDDecorator astcdDecorator = new ASTCDDecorator(glex, fullDecorator, astLanguageInterfaceDecorator, astBuilderDecorator,
         astConstantsDecorator, enumDecorator, fullASTInterfaceDecorator);
     return astcdDecorator.decorate(decoratedCompilationUnit);
   }
@@ -105,12 +101,12 @@ public class CDAuxiliaryDecoratorTest extends DecoratorTestCase {
   @Test
   public void testPackageName() {
     assertEquals(6, auxiliaryCD.sizePackage());
-    assertEquals("de", auxiliaryCD.getPackage(0));
-    assertEquals("monticore", auxiliaryCD.getPackage(1));
-    assertEquals("codegen", auxiliaryCD.getPackage(2));
-    assertEquals("symboltable", auxiliaryCD.getPackage(3));
-    assertEquals("automaton", auxiliaryCD.getPackage(4));
-    assertEquals("_auxiliary", auxiliaryCD.getPackage(5));
+    assertEquals("de", auxiliaryCD.getPackageList().get(0));
+    assertEquals("monticore", auxiliaryCD.getPackageList().get(1));
+    assertEquals("codegen", auxiliaryCD.getPackageList().get(2));
+    assertEquals("symboltable", auxiliaryCD.getPackageList().get(3));
+    assertEquals("automaton", auxiliaryCD.getPackageList().get(4));
+    assertEquals("_auxiliary", auxiliaryCD.getPackageList().get(5));
   }
 
   @Test
@@ -120,7 +116,7 @@ public class CDAuxiliaryDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testClassSize() {
-    assertEquals(1, auxiliaryCD.getCDDefinition().sizeCDClasss());
+    assertEquals(1, auxiliaryCD.getCDDefinition().getCDClassesList().size());
   }
 
   @Test

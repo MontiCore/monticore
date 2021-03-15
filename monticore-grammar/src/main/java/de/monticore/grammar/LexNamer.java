@@ -24,8 +24,6 @@ public class LexNamer {
   
   private static Map<String, String> goodNames = null;
   
-  public LexNamer() {}
-  
   public static Map<String, String> getGoodNames() {
     if (goodNames == null) {
       goodNames = new HashMap<String, String>();

@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.mc2cd.transl;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
 import org.junit.Before;
@@ -35,14 +35,15 @@ public class ComponetTranslationTest {
   public void testIsComponent() {
     assertTrue(componentCD.getCDDefinition().isPresentModifier());
     assertTrue(componentCD.getCDDefinition().getModifier().isPresentStereotype());
-    assertEquals(1, componentCD.getCDDefinition().getModifier().getStereotype().sizeValue());
-    assertEquals("component",componentCD.getCDDefinition().getModifier().getStereotype().getValue(0).getName());
-    assertFalse(componentCD.getCDDefinition().getModifier().getStereotype().getValue(0).isPresentValue());
+    assertEquals(1, componentCD.getCDDefinition().getModifier().getStereotype().sizeValues());
+    assertEquals("component",componentCD.getCDDefinition().getModifier().getStereotype().getValues(0).getName());
+    assertFalse(componentCD.getCDDefinition().getModifier().getStereotype().getValues(0).isPresentText());
   }
 
   @Test
   public void testIsNotComponent() {
-    assertFalse(nonComponentCD.getCDDefinition().isPresentModifier());
+    assertTrue(nonComponentCD.getCDDefinition().isPresentModifier());
+    assertFalse(nonComponentCD.getCDDefinition().getModifier().isPresentStereotype());
   }
 
 }

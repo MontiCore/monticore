@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java;
 
-import de.monticore.cd.cd4analysis._parser.CD4AnalysisParser;
-import de.monticore.cd.cd4code._parser.CD4CodeParser;
+import de.monticore.cd4analysis._parser.CD4AnalysisParser;
+import de.monticore.cd4code._parser.CD4CodeParser;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 import java.io.IOException;

@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
-
-
+plugins {
+  id "jacoco"
+}
 
 dependencies {
   implementation 'de.se_rwth.commons:se-commons-utilities:' + se_commons_version

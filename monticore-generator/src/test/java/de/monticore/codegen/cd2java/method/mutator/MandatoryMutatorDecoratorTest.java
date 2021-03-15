@@ -1,9 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java.method.mutator;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
-import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cd4codebasis._ast.*;
 import de.monticore.cd.facade.CDAttributeFacade;
 import de.monticore.codegen.cd2java.methods.mutator.MandatoryMutatorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -15,8 +14,8 @@ import java.util.List;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
-import static de.monticore.cd.facade.CDModifier.PROTECTED;
-import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java.CDModifier.PROTECTED;
+import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -29,7 +28,7 @@ public class MandatoryMutatorDecoratorTest {
   @Before
   public void setup() {
     LogStub.init();
-    ASTCDAttribute attribute = CDAttributeFacade.getInstance().createAttribute(PROTECTED, String.class, "a");
+    ASTCDAttribute attribute = CDAttributeFacade.getInstance().createAttribute(PROTECTED.build(), String.class, "a");
     MandatoryMutatorDecorator mandatoryMutatorDecorator = new MandatoryMutatorDecorator(glex);
     this.methods = mandatoryMutatorDecorator.decorate(attribute);
   }

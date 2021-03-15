@@ -10,7 +10,6 @@ ${tc.signature("allAttributes", "simpleClassName")}
     if (!equalAttributes(comp)) {
       return false;
     }
-    <#-- TODO: attributes of super class - use symbol table -->
     <#list allAttributes  as attribute>
        <#assign attrName = attribute.getName()>
        <#if genHelper.isOptionalAstNode(attribute)>

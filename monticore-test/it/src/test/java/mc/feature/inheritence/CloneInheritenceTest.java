@@ -13,20 +13,20 @@ public class CloneInheritenceTest extends GeneratorIntegrationsTest {
   @Test
   public void test() {
 
-    ASTSuper s = InheritenceMill.superBuilder().setXQ(InheritenceMill.xQBuilder().build()).build();
+    ASTSuper s = InheritenceMill.superBuilder().setXQ(InheritenceMill.xQBuilder().uncheckedBuild()).uncheckedBuild();
 
     s.deepClone();
 
     ASTSub t = InheritenceMill.subBuilder()
         .setXQ(
             InheritenceMill.xQBuilder()
-            .build()
+            .uncheckedBuild()
         )
         .setXP(
             InheritenceMill.xPBuilder()
-            .build()
+            .uncheckedBuild()
         )
-        .build();
+        .uncheckedBuild();
 
     t.deepClone();
   }

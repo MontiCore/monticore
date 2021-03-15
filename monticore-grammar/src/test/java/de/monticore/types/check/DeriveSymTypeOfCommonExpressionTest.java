@@ -12,6 +12,7 @@ import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineE
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisTraverser;
 import de.monticore.io.paths.ModelPath;
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
@@ -61,11 +62,33 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
 
   @BeforeClass
   public static void setup() {
-    LogStub.init();
     LogStub.enableFailQuick(false);
+  }
+
+  @Before
+  public void doBefore() {
+    LogStub.init();
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
+    BasicSymbolsMill.initializePrimitives();
+    CombineExpressionsWithLiteralsMill.globalScope().setModelPath(new ModelPath());
+    CombineExpressionsWithLiteralsMill.globalScope().setFileExt("ce");
   }
+
+  // Parser used for convenience:
+  // (may be any other Parser that understands CommonExpressions)
+  CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
+
+  // This is the core Visitor under Test (but rather empty)
+  DeriveSymTypeOfExpression derEx = new DeriveSymTypeOfExpression();
+
+  // This is an auxiliary
+  DeriveSymTypeOfCombineExpressionsDelegator derLit = new DeriveSymTypeOfCombineExpressionsDelegator();
+
+  // other arguments not used (and therefore deliberately null)
+
+  // This is the TypeChecker under Test:
+  TypeCheck tc = new TypeCheck(null, derLit);
 
   /*--------------------------------------------------- TESTS ---------------------------------------------------------*/
 
@@ -466,9 +489,6 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
    */
   public void init_advanced() {
     ICombineExpressionsWithLiteralsGlobalScope globalScope = CombineExpressionsWithLiteralsMill.globalScope();
-    globalScope.clear();
-    globalScope.setModelPath(new ModelPath());
-    globalScope.setFileExt("ce");
 
     ICombineExpressionsWithLiteralsArtifactScope artifactScope2 = CombineExpressionsWithLiteralsMill.artifactScope();
     artifactScope2.setEnclosingScope(globalScope);
@@ -731,6 +751,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     scope.setEnclosingScope(null);       // No enclosing Scope: Search ending here
     scope.setExportingSymbols(true);
     scope.setAstNode(null);
+    CombineExpressionsWithLiteralsMill.globalScope().addSubScope(scope);
     return scope;
   }
 
@@ -1217,8 +1238,8 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     MethodSymbol add = OOSymbolsMill.methodSymbolBuilder()
         .setReturnType(_voidSymType)
         .setName("add")
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
         .build();
-    add.setSpannedScope(CombineExpressionsWithLiteralsMill.scope());
     add2scope(add.getSpannedScope(), elementField);
     FieldSymbol field = field("field", _booleanSymType);
     OOTypeSymbol superclass = OOSymbolsMill.oOTypeSymbolBuilder()
@@ -1249,8 +1270,8 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     MethodSymbol myAdd = OOSymbolsMill.methodSymbolBuilder()
         .setName("myAdd")
         .setReturnType(_voidSymType)
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
         .build();
-    myAdd.setSpannedScope(CombineExpressionsWithLiteralsMill.scope());
     OOTypeSymbol subsubclass = OOSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
         .setName("MySubList")

@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java.mill;
 
-import de.monticore.cd.cd4analysis.CD4AnalysisMill;
-import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cdbasis._ast.*;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 
@@ -36,10 +36,10 @@ public class CDMillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>,
 
     ASTCDDefinition astCD = CD4AnalysisMill.cDDefinitionBuilder()
         .setName(mainCD.getCDDefinition().getName())
-        .addCDClass(millClass)
+        .addCDElement(millClass)
         .build();
 
-    for (ASTCDClass cdClass : astCD.getCDClassList()) {
+    for (ASTCDClass cdClass : astCD.getCDClassesList()) {
       this.replaceTemplate(PACKAGE, cdClass, createPackageHookPoint(topLevelPackage));
       if (cdClass.isPresentModifier()) {
         this.replaceTemplate(ANNOTATIONS, cdClass, createAnnotationsHookPoint(cdClass.getModifier()));

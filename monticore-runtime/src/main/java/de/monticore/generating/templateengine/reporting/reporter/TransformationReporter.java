@@ -21,9 +21,9 @@ public class TransformationReporter extends AReporter {
     writeLine("Start Trafo: " + transformationName);
   }
 
-  final static String SIMPLE_FILE_NAME = "14_Transformations";
+  static final String SIMPLE_FILE_NAME = "14_Transformations";
 
-  final static String INDENT = "                                        ";
+  static final String INDENT = "                                        ";
 
   private ReportingRepository repository;
 

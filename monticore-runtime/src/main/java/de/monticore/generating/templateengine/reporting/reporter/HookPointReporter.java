@@ -2,44 +2,40 @@
 
 package de.monticore.generating.templateengine.reporting.reporter;
 
-import java.io.File;
-import java.util.Collection;
-import java.util.List;
-
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.CodeHookPoint;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.generating.templateengine.reporting.Reporting;
-import de.monticore.generating.templateengine.reporting.commons.AReporter;
-import de.monticore.generating.templateengine.reporting.commons.Layouter;
-import de.monticore.generating.templateengine.reporting.commons.ReportingConstants;
-import de.monticore.generating.templateengine.reporting.commons.ReportingHelper;
-import de.monticore.generating.templateengine.reporting.commons.ReportingRepository;
+import de.monticore.generating.templateengine.reporting.commons.*;
 import de.se_rwth.commons.Names;
+
+import java.io.File;
+import java.util.Collection;
+import java.util.List;
 
 /**
  */
 public class HookPointReporter extends AReporter {
   
-  final static String SET_HOOK_POINT = "set";
-  
-  final static String SET_REPLACE_TEMPLATE = "setr";
-  
-  final static String SET_BEFORE_TEMPLATE = "setb";
-  
-  final static String SET_AFTER_TEMPLATE = "seta";
-  
-  final static String CALL_HOOK_POINT = "call";
-  
-  final static String CALL_REPLACE_TEMPLATE = "callr";
-  
-  final static String CALL_BEFORE_TEMPLATE = "callb";
-  
-  final static String CALL_AFTER_TEMPLATE = "calla";
-  
-  final static String SIMPLE_FILE_NAME = "05_HookPoint";
+  static final String SET_HOOK_POINT = "set";
+
+  static final String SET_REPLACE_TEMPLATE = "setr";
+
+  static final String SET_BEFORE_TEMPLATE = "setb";
+
+  static final String SET_AFTER_TEMPLATE = "seta";
+
+  static final String CALL_HOOK_POINT = "call";
+
+  static final String CALL_REPLACE_TEMPLATE = "callr";
+
+  static final String CALL_BEFORE_TEMPLATE = "callb";
+
+  static final String CALL_AFTER_TEMPLATE = "calla";
+
+  static final String SIMPLE_FILE_NAME = "05_HookPoint";
   
   private ReportingRepository repository;
   
@@ -52,11 +48,7 @@ public class HookPointReporter extends AReporter {
         ReportingConstants.REPORT_FILE_EXTENSION);
     this.repository = repository;
   }
-  
-  /**
-   * @see mc.codegen.reporting.commons.DefaultReportEventHandler#reportASTSpecificTemplateReplacement(java.lang.String,
-   * de.monticore.ast.ASTNode, mc.codegen.HookPoint)
-   */
+
   @Override
   public void reportASTSpecificTemplateReplacement(String oldTemplate,
       ASTNode ast, HookPoint hp) {
@@ -86,20 +78,12 @@ public class HookPointReporter extends AReporter {
     writeLine(secondLine);
     
   }
-  
-  /**
-   * @see mc.codegen.reporting.commons.DefaultReportEventHandler#reportSetHookPoint(java.lang.String,
-   * mc.codegen.HookPoint)
-   */
+
   @Override
   public void reportSetHookPoint(String hookName, HookPoint hp) {
     reportSetHookPointHelper(hookName, hp, SET_HOOK_POINT);
   }
-  
-  /**
-   * @see mc.codegen.reporting.commons.DefaultReportEventHandler#reportCallHookPointStart(java.lang.String,
-   * mc.codegen.HookPoint, de.monticore.ast.ASTNode)
-   */
+
   @Override
   public void reportCallHookPointStart(String hookName, HookPoint hp,
       ASTNode ast) {
@@ -205,7 +189,7 @@ public class HookPointReporter extends AReporter {
       reportCallSpecificHookPointHelper(oldTemplate, hp, ast);
     }
   }
-  
+
   /**
    * @see mc.codegen.reporting.commons.DefaultReportEventHandler#reportCallHookPointEnd(java.lang.String)
    */
@@ -214,7 +198,7 @@ public class HookPointReporter extends AReporter {
     /* Uncomment this code line for increasing the log level */
     // writeLine(CALL_HOOK_POINT_END + ": " + hookName);
   }
-  
+
   /**
    * @see mc.codegen.reporting.commons.DefaultReportEventHandler#reportTemplateReplacement(java.lang.String,
    * java.util.List)
@@ -227,7 +211,7 @@ public class HookPointReporter extends AReporter {
       reportSetTemplateHookpoint(simpleTemplate, hp, SET_REPLACE_TEMPLATE);
     }
   }
-  
+
   /**
    * @see mc.codegen.reporting.commons.DefaultReportEventHandler#reportSetBeforeTemplate(java.lang.String,
    * java.util.List)
@@ -240,7 +224,7 @@ public class HookPointReporter extends AReporter {
       reportSetTemplateHookpoint(simpleTemplate, hp, SET_BEFORE_TEMPLATE);
     }
   }
-  
+
   /**
    * @see mc.codegen.reporting.commons.DefaultReportEventHandler#reportSetAfterTemplate(java.lang.String,
    * java.util.List)

@@ -4,11 +4,11 @@ package de.monticore.codegen.cd2java._symboltable.scope;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
-import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
-import de.monticore.cd.prettyprint.CD4CodePrinter;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.codegen.cd2java.AbstractService;
+import de.monticore.codegen.cd2java.CdUtilsPrinter;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
@@ -22,8 +22,8 @@ import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
 
-import static de.monticore.cd.facade.CDModifier.PUBLIC;
-import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
+import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java.CDModifier.PUBLIC_ABSTRACT;
 import static de.monticore.codegen.cd2java.DecoratorAssert.*;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static org.junit.Assert.*;
@@ -59,7 +59,7 @@ public class ArtifactScopeInterfaceDecoratorTest extends DecoratorTestCase {
     this.MCTypeFacade = MCTypeFacade.getInstance();
 
     this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
-    this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
+    this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
@@ -84,12 +84,12 @@ public class ArtifactScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterfacesCount() {
-    assertEquals(2, scopeInterface.sizeInterface());
+    assertEquals(2, scopeInterface.getInterfaceList().size());
   }
 
   @Test
   public void testAttributeSize() {
-    assertEquals(0, scopeInterface.sizeCDAttributes());
+    assertEquals(0, scopeInterface.getCDAttributeList().size());
   }
 
   @Test

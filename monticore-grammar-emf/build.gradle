@@ -7,6 +7,10 @@ plugins {
 
 description = 'MontiCore: EMF Grammar'
 
+sonarqube {
+  skipProject = true
+}
+
 dependencies {
     api project(':monticore-runtime')
     api project(':monticore-runtime-emf')

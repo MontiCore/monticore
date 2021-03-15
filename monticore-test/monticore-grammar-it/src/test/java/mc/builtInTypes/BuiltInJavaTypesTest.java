@@ -20,6 +20,7 @@ public class BuiltInJavaTypesTest {
   @BeforeClass
   public static void setup(){
     LogStub.init();
+    OOSymbolsMill.reset();
     OOSymbolsMill.init();
     BasicSymbolsMill.initializePrimitives();
     //use OOSymbolsGlobalScope to test if it also works for grammars that extend the BasicSymbols grammar
