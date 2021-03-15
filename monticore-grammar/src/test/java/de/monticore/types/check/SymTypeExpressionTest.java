@@ -28,56 +28,55 @@ public class SymTypeExpressionTest {
   private static IOOSymbolsScope scope = OOSymbolsMill.scope();
 
   // setup of objects (unchanged during tests)
-  SymTypeExpression teDouble = createTypeConstant("double");
+  static SymTypeExpression teDouble;
 
-  SymTypeExpression teInt = createTypeConstant("int");
+  static SymTypeExpression teInt;
 
-  SymTypeExpression teVarA = createTypeVariable("A", scope);
+  static SymTypeExpression teVarA;
 
-  SymTypeExpression teIntA = createTypeObject("java.lang.Integer",scope);
+  static SymTypeExpression teIntA;
 
-  SymTypeExpression teVarB = createTypeVariable("B", scope);
+  static SymTypeExpression teVarB;
 
-  SymTypeExpression teP = createTypeObject("de.x.Person", scope);
+  static SymTypeExpression teP;
 
-  SymTypeExpression teH = createTypeObject("Human",
-      scope);  // on purpose: package missing
+  static SymTypeExpression teH;  // on purpose: package missing
 
-  SymTypeExpression teVoid = createTypeVoid();
+  static SymTypeExpression teVoid;
 
-  SymTypeExpression teNull = createTypeOfNull();
+  static SymTypeExpression teNull;
 
-  SymTypeExpression teArr1 = createTypeArray(teH.print(), scope, 1, teH);
+  static SymTypeExpression teArr1;
 
-  SymTypeExpression teArr3 = createTypeArray(teInt.print(), scope, 3, teInt);
+  static SymTypeExpression teArr3;
 
-  SymTypeExpression teSet = createGenerics("java.util.Set", scope, Lists.newArrayList(teP));
+  static SymTypeExpression teSet;
 
-  SymTypeExpression teSetA = createGenerics("java.util.Set", scope, Lists.newArrayList(teVarA));
+  static SymTypeExpression teSetA;
 
-  SymTypeExpression teSetC = createGenerics("Set",scope,Lists.newArrayList(teInt));
+  static SymTypeExpression teSetC;
 
-  SymTypeExpression teMap = createGenerics("Map", scope, Lists.newArrayList(teInt, teP)); // no package!
+  static SymTypeExpression teMap; // no package!
 
-  SymTypeExpression teFoo = createGenerics("x.Foo", scope,  Lists.newArrayList(teP, teDouble, teInt, teH));
+  static SymTypeExpression teFoo;
 
-  SymTypeExpression teMap2 = createGenerics("Map",scope,Lists.newArrayList(teSetC,teFoo));
+  static SymTypeExpression teMap2;
 
-  SymTypeExpression teMapA = createGenerics("java.util.Map",scope,Lists.newArrayList(teIntA,teP));
+  static SymTypeExpression teMapA;
 
-  SymTypeExpression teSetB = createGenerics("java.util.Set",scope,Lists.newArrayList(teMapA));
+  static SymTypeExpression teSetB;
 
-  SymTypeExpression teDeep1 = createGenerics("java.util.Set", scope, Lists.newArrayList(teMap));
+  static SymTypeExpression teDeep1;
 
-  SymTypeExpression teDeep2 = createGenerics("java.util.Map2", scope, Lists.newArrayList(teInt, teDeep1));
+  static SymTypeExpression teDeep2;
 
-  SymTypeExpression teUpperBound = createWildcard(true, teInt);
+  static SymTypeExpression teUpperBound;
 
-  SymTypeExpression teLowerBound = createWildcard(false, teH);
+  static SymTypeExpression teLowerBound;
 
-  SymTypeExpression teWildcard = createWildcard();
+  static SymTypeExpression teWildcard;
 
-  SymTypeExpression teMap3 = createGenerics("java.util.Map", scope, Lists.newArrayList(teUpperBound, teWildcard));
+  static SymTypeExpression teMap3;
 
   @BeforeClass
   public static void setUpScope(){
@@ -87,6 +86,61 @@ public class SymTypeExpressionTest {
     BasicSymbolsMill.initializePrimitives();
     scope.add(new OOTypeSymbol("long"));
     scope.add(new OOTypeSymbol("Human"));
+
+    scope = OOSymbolsMill.scope();
+
+    // setup of objects (unchanged during tests)
+    teDouble = createTypeConstant("double");
+
+    teInt = createTypeConstant("int");
+
+    teVarA = createTypeVariable("A", scope);
+
+    teIntA = createTypeObject("java.lang.Integer",scope);
+
+    teVarB = createTypeVariable("B", scope);
+
+    teP = createTypeObject("de.x.Person", scope);
+
+    teH = createTypeObject("Human",
+            scope);  // on purpose: package missing
+
+    teVoid = createTypeVoid();
+
+    teNull = createTypeOfNull();
+
+    teArr1 = createTypeArray(teH.print(), scope, 1, teH);
+
+    teArr3 = createTypeArray(teInt.print(), scope, 3, teInt);
+
+    teSet = createGenerics("java.util.Set", scope, Lists.newArrayList(teP));
+
+    teSetA = createGenerics("java.util.Set", scope, Lists.newArrayList(teVarA));
+
+    teSetC = createGenerics("Set",scope,Lists.newArrayList(teInt));
+
+    teMap = createGenerics("Map", scope, Lists.newArrayList(teInt, teP)); // no package!
+
+    teFoo = createGenerics("x.Foo", scope,  Lists.newArrayList(teP, teDouble, teInt, teH));
+
+    teMap2 = createGenerics("Map",scope,Lists.newArrayList(teSetC,teFoo));
+
+    teMapA = createGenerics("java.util.Map",scope,Lists.newArrayList(teIntA,teP));
+
+    teSetB = createGenerics("java.util.Set",scope,Lists.newArrayList(teMapA));
+
+    teDeep1 = createGenerics("java.util.Set", scope, Lists.newArrayList(teMap));
+
+    teDeep2 = createGenerics("java.util.Map2", scope, Lists.newArrayList(teInt, teDeep1));
+
+    teUpperBound = createWildcard(true, teInt);
+
+    teLowerBound = createWildcard(false, teH);
+
+    teWildcard = createWildcard();
+
+    teMap3 = createGenerics("java.util.Map", scope, Lists.newArrayList(teUpperBound, teWildcard));
+
   }
 
   @Test
@@ -96,7 +150,7 @@ public class SymTypeExpressionTest {
     assertEquals("A", teVarA.print());
     assertEquals("de.x.Person", teP.print());
     assertEquals("void", teVoid.print());
-    assertEquals("nullType", teNull.print());
+    assertEquals("null", teNull.print());
     assertEquals("Human[]", teArr1.print());
     assertEquals("int[][][]", teArr3.print());
     assertEquals("java.util.Set<de.x.Person>", teSet.print());
@@ -139,11 +193,11 @@ public class SymTypeExpressionTest {
 
     result = JsonParser.parse(teVoid.printAsJson());
     assertTrue(result.isJsonString());
-    assertEquals("voidType", result.getAsJsonString().getValue());
+    assertEquals("void", result.getAsJsonString().getValue());
 
     result = JsonParser.parse(teNull.printAsJson());
     assertTrue(result.isJsonString());
-    assertEquals("nullType", result.getAsJsonString().getValue());
+    assertEquals("null", result.getAsJsonString().getValue());
 
     result = JsonParser.parse(teArr1.printAsJson());
     assertTrue(result.isJsonObject());
@@ -347,7 +401,7 @@ public class SymTypeExpressionTest {
     assertEquals("void",tVoid.print());
 
     SymTypeOfNull tNull = SymTypeExpressionFactory.createTypeOfNull();
-    assertEquals("nullType",tNull.print());
+    assertEquals("null",tNull.print());
 
     SymTypeConstant tInt = SymTypeExpressionFactory.createTypeConstant("int");
     assertEquals("int",tInt.print());

@@ -2,7 +2,6 @@
 package de.monticore.expressions.prettyprint;
 
 import de.monticore.expressions.commonexpressions.CommonExpressionsMill;
-import de.monticore.expressions.commonexpressions._ast.ASTCommonExpressionsNode;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsTraverser;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.prettyprint.MCBasicsPrettyPrinter;

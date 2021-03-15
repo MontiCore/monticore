@@ -4,7 +4,6 @@ package de.monticore.grammar.cocos;
 
 import de.monticore.grammar.grammar._ast.ASTProd;
 import de.monticore.grammar.grammar._cocos.GrammarASTProdCoCo;
-import de.se_rwth.commons.logging.Log;
 
 import static de.se_rwth.commons.logging.Log.error;
 import static java.lang.Character.isLowerCase;

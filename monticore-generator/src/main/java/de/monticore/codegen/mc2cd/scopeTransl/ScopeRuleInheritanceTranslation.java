@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.mc2cd.scopeTransl;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTScopeRule;
@@ -31,8 +31,7 @@ public class ScopeRuleInheritanceTranslation implements UnaryOperator<Link<ASTMC
     for (ASTMCType superInterface : rule.getSuperInterfaceList()) {
       String qualifiedSuperInterface = TransformationHelper
           .getQualifiedTypeNameAndMarkIfExternal(superInterface, astGrammar, cdClass);
-      cdClass.getInterfaceList()
-          .add(TransformationHelper.createObjectType(qualifiedSuperInterface));
+      cdClass.addInterface(TransformationHelper.createObjectType(qualifiedSuperInterface));
     }
   }
 }

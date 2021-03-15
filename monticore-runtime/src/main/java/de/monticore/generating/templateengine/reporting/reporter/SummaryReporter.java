@@ -21,61 +21,61 @@ import java.util.Set;
  */
 public class SummaryReporter extends AReporter {
   
-  final static String NUM_TEMPLATE_INCLUDE = "template includes";
+  static final String NUM_TEMPLATE_INCLUDE = "template includes";
   
-  final static String NUM_TEMPLATE_WRITE = "template writes";
+  static final String NUM_TEMPLATE_WRITE = "template writes";
   
-  final static String NUM_GENERATED_FILES = "generated files";
+  static final String NUM_GENERATED_FILES = "generated files";
   
-  final static String NUM_INSTANTIATIONS = "instantiations";
+  static final String NUM_INSTANTIATIONS = "instantiations";
   
-  final static String NUM_VARIABLES = "variables";
+  static final String NUM_VARIABLES = "variables";
   
-  final static String NUM_VARIABLE_ASSIGNMENTS = "variable assignments";
+  static final String NUM_VARIABLE_ASSIGNMENTS = "variable assignments";
   
-  final static String NUM_WARNINGS = "warnings";
+  static final String NUM_WARNINGS = "warnings";
   
-  final static String NUM_ERRORS = "errors";
+  static final String NUM_ERRORS = "errors";
   
-  final static String MAX_TEMPLATE_DEPTH = "max template depth";
+  static final String MAX_TEMPLATE_DEPTH = "max template depth";
   
-  final static String MAX_AST_DEPTH = "max AST depth";
+  static final String MAX_AST_DEPTH = "max AST depth";
   
-  final static String NUM_USED_TEMPLATES = "used standard templates";
+  static final String NUM_USED_TEMPLATES = "used standard templates";
   
-  final static String NUM_UNUSED_TEMPLATES = "unused standard templates";
+  static final String NUM_UNUSED_TEMPLATES = "unused standard templates";
   
-  final static String NUM_USED_HWTEMPLATES = "used handwritten templates";
+  static final String NUM_USED_HWTEMPLATES = "used handwritten templates";
   
-  final static String NUM_UNUSED_HWTEMPLATES = "unused handwritten templates";
+  static final String NUM_UNUSED_HWTEMPLATES = "unused handwritten templates";
   
-  final static String NUM_ASTNODE_VISITS = "AST node visits";
+  static final String NUM_ASTNODE_VISITS = "AST node visits";
   
-  final static String NUM_ASTNODE_TYPES = "AST node types";
+  static final String NUM_ASTNODE_TYPES = "AST node types";
   
-  final static String NUM_ASTNODE_INSTANCES = "AST node instances";
+  static final String NUM_ASTNODE_INSTANCES = "AST node instances";
   
-  final static String NUM_AST_SPECIFIC_REPLACEMENTS = "AST hook point sets";
+  static final String NUM_AST_SPECIFIC_REPLACEMENTS = "AST hook point sets";
   
-  final static String NUM_AST_SPECIFIC_CALLS = "AST hook point calls";
+  static final String NUM_AST_SPECIFIC_CALLS = "AST hook point calls";
   
-  final static String NUM_SET_CODE_HOOKPOINTS = "code hook point sets";
+  static final String NUM_SET_CODE_HOOKPOINTS = "code hook point sets";
   
-  final static String NUM_CALL_CODE_HOOKPOINTS = "code hook point calls";
+  static final String NUM_CALL_CODE_HOOKPOINTS = "code hook point calls";
   
-  final static String NUM_SET_TEMPLATE_HOOKPOINTS = "template hook point sets";
+  static final String NUM_SET_TEMPLATE_HOOKPOINTS = "template hook point sets";
   
-  final static String NUM_CALL_TEMPLATE_HOOKPOINTS = "template hook point calls";
+  static final String NUM_CALL_TEMPLATE_HOOKPOINTS = "template hook point calls";
   
-  final static String NUM_SET_STRING_HOOKPOINTS = "string hook point sets";
+  static final String NUM_SET_STRING_HOOKPOINTS = "string hook point sets";
   
-  final static String NUM_CALL_STRING_HOOKPOINTS = "string hook point calls";
+  static final String NUM_CALL_STRING_HOOKPOINTS = "string hook point calls";
   
-  final static String NUM_CALLS_EMPTY_HOOKPOINTS = "empty hook point calls";
+  static final String NUM_CALLS_EMPTY_HOOKPOINTS = "empty hook point calls";
   
-  final static String NUM_CALLED_EMPTY_HOOKPOINTS = "empty hook point called";
+  static final String NUM_CALLED_EMPTY_HOOKPOINTS = "empty hook point called";
   
-  final static String SIMPLE_FILE_NAME = "01_Summary";
+  static final String SIMPLE_FILE_NAME = "01_Summary";
   
   private int numTemplateIncludes;
   
@@ -114,9 +114,7 @@ public class SummaryReporter extends AReporter {
   private int numCallStringHookpoints;
   
   private int numCallsUnsetHookpoints;
-  
-  private int numCalledUnsetHookpoints;
-  
+
   private Set<String> variableNames = new LinkedHashSet<String>();
   
   private Set<String> usedTemplates = Sets.newLinkedHashSet();
@@ -319,7 +317,6 @@ public class SummaryReporter extends AReporter {
     
     ocv.clear();
     ast.accept(traverser);
-    //traverser.handle(ast);
     int numASTNodeInstances = ocv.getTotalCount();
     int numASTNodeTypes = ocv.getObjectCountMap().size();
     int maxASTDepth = ocv.getMaxDepth();

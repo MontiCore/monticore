@@ -2,18 +2,14 @@
 package automata;
 
 import automata._ast.ASTAutomaton;
-import automata._cocos.*;
 import automata._parser.AutomataParser;
-import automata._symboltable.*;
 import automata._visitor.AutomataTraverser;
 import automata.prettyprint.PrettyPrinter;
 import automata.visitors.CountStates;
-import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.RecognitionException;
 
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.Optional;
 
 /**

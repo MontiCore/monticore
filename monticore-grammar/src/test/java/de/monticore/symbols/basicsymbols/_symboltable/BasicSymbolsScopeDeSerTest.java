@@ -29,6 +29,8 @@ public class BasicSymbolsScopeDeSerTest {
     //initialize scope, add some TypeSymbols, TypeVarSymbols, VariableSymbols and FunctionSymbols
     BasicSymbolsMill.reset();
     BasicSymbolsMill.init();
+    BasicSymbolsMill.initializePrimitives();
+
     scope = BasicSymbolsMill.artifactScope();
     scope.setPackageName("");
     scope.setImportsList(Lists.newArrayList());
@@ -62,9 +64,8 @@ public class BasicSymbolsScopeDeSerTest {
     TypeVarSymbol t = BasicSymbolsMill.typeVarSymbolBuilder()
         .setName("T")
         .setEnclosingScope(type.getSpannedScope())
+        .setSpannedScope(BasicSymbolsMill.scope())
         .build();
-
-    t.setSpannedScope(BasicSymbolsMill.scope());
 
     typeSpannedScope.add(t);
 

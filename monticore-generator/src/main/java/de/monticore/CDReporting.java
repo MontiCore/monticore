@@ -1,9 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore;
 
-import de.monticore.cd.cd4analysis._ast.ASTCD4AnalysisNode;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4code.CD4CodeFullPrettyPrinter;
+import de.monticore.cdbasis._ast.ASTCDBasisNode;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
 import de.monticore.io.FileReaderWriter;
 import de.se_rwth.commons.Names;
 
@@ -45,7 +45,7 @@ public class CDReporting {
    * @param outputPath
    * @param subDirectory
    */
-  public void storeInFile(ASTCD4AnalysisNode ast, String fileName, String fileExtension,
+  public void storeInFile(ASTCDBasisNode ast, String fileName, String fileExtension,
                           File outputPath,
                           String subDirectory) {
     Path path = createDestinationFile(fileName, fileExtension, outputPath, subDirectory);

@@ -2,22 +2,20 @@
 
 package de.monticore.generating.templateengine;
 
-import static de.monticore.generating.templateengine.TestConstants.TEMPLATE_PACKAGE;
-import static org.junit.Assert.assertEquals;
+import de.monticore.ast.ASTNodeMock;
+import de.monticore.generating.GeneratorEngine;
+import de.monticore.generating.GeneratorSetup;
+import de.monticore.io.FileReaderWriter;
+import de.monticore.io.FileReaderWriterMock;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.File;
 import java.util.ArrayList;
 
-import de.monticore.io.FileReaderWriter;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-
-import de.monticore.ast.ASTNodeMock;
-import de.monticore.generating.GeneratorEngine;
-import de.monticore.generating.GeneratorSetup;
-import de.monticore.io.FileReaderWriterMock;
+import static de.monticore.generating.templateengine.TestConstants.TEMPLATE_PACKAGE;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests for {@link GlobalExtensionManagement}.

@@ -2,30 +2,25 @@
 
 package de.monticore.generating.templateengine.reporting.reporter;
 
+import com.google.common.collect.Maps;
+import de.monticore.ast.ASTNode;
+import de.monticore.generating.templateengine.reporting.commons.*;
+
 import java.io.File;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import com.google.common.collect.Maps;
-
-import de.monticore.ast.ASTNode;
-import de.monticore.generating.templateengine.reporting.commons.AReporter;
-import de.monticore.generating.templateengine.reporting.commons.Layouter;
-import de.monticore.generating.templateengine.reporting.commons.MapUtil;
-import de.monticore.generating.templateengine.reporting.commons.ReportingConstants;
-import de.monticore.generating.templateengine.reporting.commons.ReportingRepository;
-
 /**
  */
 public class HandWrittenCodeReporter extends AReporter {
   
-  final static String USED_HWC_FILES = "Used Handwritten Code Files";
+  static final String USED_HWC_FILES = "Used Handwritten Code Files";
   
-  final static String UNUSED_HWC_FILES = "Unused Handwritten Code Files";
+  static final String UNUSED_HWC_FILES = "Unused Handwritten Code Files";
   
-  final static String SIMPLE_FILE_NAME = "03_HandwrittenCodeFiles";
+  static final String SIMPLE_FILE_NAME = "03_HandwrittenCodeFiles";
   
   private ReportingRepository repo;
   
@@ -37,7 +32,7 @@ public class HandWrittenCodeReporter extends AReporter {
         ReportingConstants.REPORT_FILE_EXTENSION);
     this.repo = repo;
   }
-  
+
   /**
    * @see mc.codegen.reporting.commons.DefaultReportEventHandler#reportUseHandwrittenCodeFile(java.lang.String)
    */

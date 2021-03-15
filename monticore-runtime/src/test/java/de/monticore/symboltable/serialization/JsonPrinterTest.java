@@ -203,11 +203,11 @@ public class JsonPrinterTest {
   }
 
   @Test
-  public void testIsSerializingEmptyLists() {
+  public void testIsSerializingDefaults() {
     JsonPrinter serializeEmpty = new JsonPrinter(true);
     JsonPrinter serializeEmptyNot = new JsonPrinter();
-    assertTrue(serializeEmpty.isSerializingEmptyLists());
-    assertFalse(serializeEmptyNot.isSerializingEmptyLists());
+    assertTrue(serializeEmpty.isSerializingDefaults());
+    assertFalse(serializeEmptyNot.isSerializingDefaults());
   }
   
 }

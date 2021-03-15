@@ -1,20 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.symboltable.serialization;
 
-import com.google.common.collect.Lists;
-import de.monticore.symboltable.serialization.json.JsonArray;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.se_rwth.commons.logging.Log;
-import org.checkerframework.checker.units.qual.K;
 
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * Collection of (static) methods and constants that support using DeSers in combination with Json.

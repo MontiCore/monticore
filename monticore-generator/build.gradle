@@ -7,6 +7,7 @@ buildscript {
 plugins {
   id "java-library"
   id "monticore-bs" version "$previous_mc_version" // MontiCore Plugin
+  id "jacoco"
 }
 
 description = 'MontiCore: Generator'

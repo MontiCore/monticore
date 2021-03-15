@@ -4,8 +4,9 @@ package de.monticore.codegen.cd2java._ast_emf.emf_package;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
-import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.cd.prettyprint.CD4CodePrinter;
+import de.monticore.cdbasis._ast.*;
+import de.monticore.cd4codebasis._ast.*;
+import de.monticore.codegen.cd2java.CdUtilsPrinter;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
@@ -19,7 +20,7 @@ import de.se_rwth.commons.logging.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import static de.monticore.cd.facade.CDModifier.*;
+import static de.monticore.codegen.cd2java.CDModifier.*;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertBoolean;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
@@ -41,7 +42,7 @@ public class PackageImplDecoratorTest extends DecoratorTestCase {
 
     this.glex.setGlobalValue("service", new EmfService(ast));
     this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
-    this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
+    this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
 
     PackageImplDecorator decorator = new PackageImplDecorator(this.glex, new MandatoryAccessorDecorator(glex), new EmfService(ast));
     packageClass = decorator.decorate(ast);
@@ -54,8 +55,8 @@ public class PackageImplDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterface() {
-    assertEquals(1, packageClass.sizeInterface());
-    assertDeepEquals("AutomataPackage", packageClass.getInterface(0));
+    assertEquals(1, packageClass.getInterfaceList().size());
+    assertDeepEquals("AutomataPackage", packageClass.getCDInterfaceUsage().getInterface(0));
   }
 
   @Test
@@ -78,8 +79,8 @@ public class PackageImplDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testConstructor() {
-    assertEquals(1, packageClass.sizeCDConstructors());
-    ASTCDConstructor cdConstructor = packageClass.getCDConstructor(0);
+    assertEquals(1, packageClass.getCDConstructorList().size());
+    ASTCDConstructor cdConstructor = packageClass.getCDConstructorList().get(0);
     assertEquals("AutomataPackageImpl", cdConstructor.getName());
     assertDeepEquals(PRIVATE, cdConstructor.getModifier());
     assertTrue(cdConstructor.isEmptyCDParameters());
@@ -170,14 +171,6 @@ public class PackageImplDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = getMethodBy("init", packageClass);
     assertDeepEquals(PUBLIC_STATIC, method.getModifier());
     assertDeepEquals("AutomataPackage", method.getMCReturnType().getMCType());
-    assertTrue(method.isEmptyCDParameters());
-  }
-
-  @Test
-  public void testGetAutomataFactoryMethod() {
-    ASTCDMethod method = getMethodBy("getAutomataFactory", packageClass);
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals("AutomataNodeFactory", method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
   }
 

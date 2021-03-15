@@ -6,11 +6,8 @@ import com.google.common.collect.Lists;
 import mc.GeneratorIntegrationsTest;
 import mc.feature.featuredsl.FeatureDSLMill;
 import mc.feature.featuredsl._ast.ASTTransition;
-import mc.feature.featuredsl._ast.FeatureDSLNodeFactory;
 import mc.feature.javasql.javasql.javasql.JavaSQLMill;
-import mc.feature.javasql.javasql.javasql._ast.JavaSQLNodeFactory;
 import mc.feature.javasql.sql.sql.SQLMill;
-import mc.feature.javasql.sql.sql._ast.SQLNodeFactory;
 import org.junit.Test;
 
 import java.util.List;
@@ -35,8 +32,8 @@ public class ASTBuilderTest extends GeneratorIntegrationsTest {
     assertEquals(activate, transition.getActivate());
     assertEquals(to, transition.getTo());
     
-    // Create ASTTransition by NodeFactory
-    ASTTransition transition1 = FeatureDSLNodeFactory.createASTTransition();
+    // Create ASTTransition by Builder (unchecked)
+    ASTTransition transition1 = FeatureDSLMill.transitionBuilder().uncheckedBuild();
     transition1.setFrom(from);
     transition1.setActivate(activate);
     transition1.setTo(to);
@@ -60,7 +57,7 @@ public class ASTBuilderTest extends GeneratorIntegrationsTest {
     assertEquals(selection, javasqlStatement.getSelectionList());
     assertEquals(table, javasqlStatement.getTable());
 
-    mc.feature.javasql.javasql.javasql._ast.ASTSelectStatement javasqlStatement1 = JavaSQLNodeFactory.createASTSelectStatement();
+    mc.feature.javasql.javasql.javasql._ast.ASTSelectStatement javasqlStatement1 = JavaSQLMill.selectStatementBuilder().build();
     javasqlStatement1.setDistinct(distinct);
     javasqlStatement1.setSelectionList(selection);
     javasqlStatement1.setTable(table);
@@ -73,7 +70,7 @@ public class ASTBuilderTest extends GeneratorIntegrationsTest {
         setTable(table).
         build();
 
-    mc.feature.javasql.sql.sql._ast.ASTSelectStatement sqlStatement1 = SQLNodeFactory.createASTSelectStatement();
+    mc.feature.javasql.sql.sql._ast.ASTSelectStatement sqlStatement1 = SQLMill.selectStatementBuilder().uncheckedBuild();
     sqlStatement1.setDistinct(distinct);
     sqlStatement1.setSelectionList(selection);
     sqlStatement1.setTable(table);

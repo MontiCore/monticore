@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.mc2cd.transl;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
 import org.junit.Before;
@@ -34,9 +34,9 @@ public class LeftRecursiveTranslationTest {
     ASTCDClass a = getClassBy("ASTA", leftRecursive);
     assertTrue(a.isPresentModifier());
     assertTrue(a.getModifier().isPresentStereotype());
-    assertEquals(1, a.getModifier().getStereotype().sizeValue());
-    assertEquals("left_recursive", a.getModifier().getStereotype().getValue(0).getName());
-    assertFalse(a.getModifier().getStereotype().getValue(0).isPresentValue());
+    assertEquals(1, a.getModifier().getStereotype().sizeValues());
+    assertEquals("left_recursive", a.getModifier().getStereotype().getValues(0).getName());
+    assertFalse(a.getModifier().getStereotype().getValues(0).isPresentText());
   }
 
 }

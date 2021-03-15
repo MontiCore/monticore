@@ -1,9 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._visitor;
 
-import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
-import de.monticore.cd.cd4code.CD4CodeMill;
+import de.monticore.cdbasis._ast.*;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
+import de.monticore.cd4codebasis._ast.*;
+import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
@@ -15,8 +17,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static de.monticore.cd.facade.CDModifier.PRIVATE;
-import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java.CDModifier.PRIVATE;
+import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.CoreTemplates.*;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_INTERFACE;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SCOPE;
@@ -49,18 +51,18 @@ public class InheritanceHandlerDecorator extends AbstractCreator<ASTCDCompilatio
     String languageInterfaceName = visitorService.getLanguageInterfaceName();
     String handlerSimpleName = visitorService.getHandlerSimpleName();
 
-    ASTCDAttribute traverserAttribute = getCDAttributeFacade().createAttribute(PRIVATE, visitorService.getTraverserInterfaceType(), TRAVERSER);
+    ASTCDAttribute traverserAttribute = getCDAttributeFacade().createAttribute(PRIVATE.build(), visitorService.getTraverserInterfaceType(), TRAVERSER);
     List<ASTCDMethod> traverserMethods = methodDecorator.decorate(traverserAttribute);
 
     ASTCDClass cdClass = CD4CodeMill.cDClassBuilder()
         .setName(visitorService.getInheritanceHandlerSimpleName())
         .setModifier(PUBLIC.build())
         .addInterface(visitorService.getHandlerType())
-        .addCDAttribute(traverserAttribute)
-        .addAllCDMethods(traverserMethods)
-        .addAllCDMethods(getASTHandleMethods(compilationUnit.getCDDefinition(), handlerSimpleName, languageInterfaceName))
-        .addAllCDMethods(getScopeHandleMethods(cdDefinition, handlerSimpleName))
-        .addAllCDMethods(getSymbolHandleMethods(cdDefinition, handlerSimpleName))
+        .addCDMember(traverserAttribute)
+        .addAllCDMembers(traverserMethods)
+        .addAllCDMembers(getASTHandleMethods(compilationUnit.getCDDefinition(), handlerSimpleName, languageInterfaceName))
+        .addAllCDMembers(getScopeHandleMethods(cdDefinition, handlerSimpleName))
+        .addAllCDMembers(getSymbolHandleMethods(cdDefinition, handlerSimpleName))
         .build();
     
     this.replaceTemplate(ANNOTATIONS, cdClass, createAnnotationsHookPoint(cdClass.getModifier()));
@@ -71,13 +73,13 @@ public class InheritanceHandlerDecorator extends AbstractCreator<ASTCDCompilatio
     List<ASTCDMethod> handleMethods = new ArrayList<>();
 
     // generate handle(ASTX node) for all classes X
-    handleMethods.addAll(astcdDefinition.getCDClassList()
+    handleMethods.addAll(astcdDefinition.getCDClassesList()
         .stream()
         .map(c -> getASTHandleMethod(c, languageInterfaceName, handlerSimpleTypeName))
         .collect(Collectors.toList()));
 
     // generate handle(ASTX node) for all interfaces X
-    handleMethods.addAll(astcdDefinition.getCDInterfaceList()
+    handleMethods.addAll(astcdDefinition.getCDInterfacesList()
         .stream()
         .map(c -> getHandleASTMethod(c, languageInterfaceName, handlerSimpleTypeName))
         .collect(Collectors.toList()));
@@ -93,7 +95,7 @@ public class InheritanceHandlerDecorator extends AbstractCreator<ASTCDCompilatio
       superTypeList= visitorService.getAllSuperClassesTransitive(astcdClass);
     }
     // super interfaces
-    superTypeList.addAll(visitorService.getAllSuperInterfacesTransitive(astcdClass));
+    superTypeList.addAll(visitorService.getAllSuperInterfacesTransitive(astcdClass.getSymbol()));
     replaceTemplate(EMPTY_BODY, handleMethod,
         new TemplateHookPoint(HANDLE_AST_INHERITANCE_TEMPLATE,
             languageInterfaceName, handlerSimpleTypeName, superTypeList));
@@ -119,7 +121,7 @@ public class InheritanceHandlerDecorator extends AbstractCreator<ASTCDCompilatio
   protected List<ASTCDMethod> getScopeHandleMethods(ASTCDDefinition astcdDefinition, String handlerSimpleTypeName) {
     List<ASTCDMethod> handleMethods = new ArrayList<ASTCDMethod>();
     List<String> superScopesTransitive = new ArrayList<String>();
-    for (CDDefinitionSymbol cd : visitorService.getSuperCDsTransitive()) {
+    for (DiagramSymbol cd : visitorService.getSuperCDsTransitive()) {
       superScopesTransitive.add(symbolTableService.getScopeInterfaceFullName(cd));
     }
     superScopesTransitive.add(I_SCOPE);
