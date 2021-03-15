@@ -102,10 +102,13 @@ java {
   registerFeature('grammars') {
     usingSourceSet(sourceSets.grammars)
   }
+  registerFeature('tests') {
+    usingSourceSet(sourceSets.test)
+  }
 }
 
 jar.dependsOn(grammarsJar)
 
 if(findProperty('ci') == null){
-  jar.dependsOn(shadowJar)
+  jar.dependsOn(shadowJar, testJar)
 }
