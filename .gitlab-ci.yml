@@ -130,6 +130,26 @@ sonar:
   except:
     - master
 
+coverage-jdk:
+  # Must be in a stage later than test-jdk11's stage.
+  stage: .post
+  image: registry.gitlab.com/haynes/jacoco2cobertura:1.0.7
+  script:
+    # convert report from jacoco to cobertura
+    - 'python /opt/cover2cover.py build/jacoco/jacoco.xml src/main/java > build/cobertura.xml'
+    # read the <source></source> tag and prepend the path to every filename attribute
+    - 'python /opt/source2filename.py build/cobertura.xml'
+  needs: ["sonar"]
+  dependencies:
+    - sonar
+  artifacts:
+    reports:
+      cobertura: build/cobertura.xml
+  only:
+    - dev
+  except:
+    - master
+
 trigger-automata:
   stage: trigger_languages
   allow_failure: true
