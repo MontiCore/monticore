@@ -17,25 +17,25 @@ import de.se_rwth.commons.Names;
  */
 public class DetailedReporter extends AReporter {
   
-  final static String GENERATED_FILE_OPENED = "+file";
+  static final String GENERATED_FILE_OPENED = "+file";
   
-  final static String GENERATED_FILE_CLOSED = "-file";
+  static final String GENERATED_FILE_CLOSED = "-file";
   
-  final static String TEMPLATE_CALLED = "+tpl";
+  static final String TEMPLATE_CALLED = "+tpl";
   
-  final static String TEMPLATE_ENDED = "-tpl";
+  static final String TEMPLATE_ENDED = "-tpl";
   
-  final static String INSTANTIATE_JAVA_CLASS = "inst";
+  static final String INSTANTIATE_JAVA_CLASS = "inst";
   
-  final static String SET_GLOBAL_VARIABLE = "setv";
+  static final String SET_GLOBAL_VARIABLE = "setv";
   
-  final static String ADD_GLOBAL_VARIABLE = "addv";
+  static final String ADD_GLOBAL_VARIABLE = "addv";
   
-  final static String SIMPLE_FILE_NAME = "08_Detailed";
+  static final String SIMPLE_FILE_NAME = "08_Detailed";
   
-  final static String ERROR = "err";
+  static final String ERROR = "err";
   
-  final static String WARNING = "warn";
+  static final String WARNING = "warn";
   
   private ReportingRepository repository;
   
@@ -90,7 +90,6 @@ public class DetailedReporter extends AReporter {
     writeLine("for tpl events each line comes with");
     writeLine("* the shortname of the template");
     writeLine("* the AST it operates on");
-    // writeLine("* the current depth of the template hierarchy (xT)");
     writeLine("* the current depth of the template hierarchy (xT)");
     writeLine("(EOF)");
   }
@@ -114,7 +113,7 @@ public class DetailedReporter extends AReporter {
   /**
    * Uses ast2idents to print a compact version for any form of object
    * 
-   * @param o
+   * @param ast
    * @return usable representation (one liner)
    */
   public String valueStr(ASTNode ast) {
@@ -122,7 +121,7 @@ public class DetailedReporter extends AReporter {
   }
   
   /**
-   * @see mc.codegen.reporting.commons.IReportEventHandler#reportTemplateEnd(java.lang.String,
+   * @see de.monticore.generating.templateengine.reporting.commons.IReportEventHandler#reportTemplateEnd(java.lang.String,
    * de.monticore.ast.ASTNode)
    */
   @Override
@@ -140,9 +139,9 @@ public class DetailedReporter extends AReporter {
     writeLine(line);
     templateDepth--;
   }
-  
+
   /**
-   * @see mc.codegen.reporting.commons.IReportEventHandler#reportInstantiate(java.lang.String,
+   * @see de.monticore.generating.templateengine.reporting.commons.IReportEventHandler#reportInstantiate(java.lang.String,
    * java.util.List)
    */
   @Override
@@ -155,9 +154,9 @@ public class DetailedReporter extends AReporter {
     line += params;
     writeLine(line);
   }
-  
+
   /**
-   * @see mc.codegen.reporting.commons.IReportEventHandler#reportSetValue(java.lang.String,
+   * @see de.monticore.generating.templateengine.reporting.commons.IReportEventHandler#reportSetValue(java.lang.String,
    * java.lang.Object)
    */
   @Override
@@ -181,7 +180,7 @@ public class DetailedReporter extends AReporter {
     line += name;
     writeLine(line);
   }
-  
+
   /**
    * @see mc.codegen.reporting.commons.DefaultReportEventHandler#reportWarning(java.lang.String)
    */
@@ -207,7 +206,7 @@ public class DetailedReporter extends AReporter {
   }
   
   /**
-   * @see mc.codegen.reporting.commons.IReportEventHandler#reportFileCreation(java.lang.String,
+   * @see de.monticore.generating.templateengine.reporting.commons.IReportEventHandler#reportFileCreation(java.lang.String,
    * java.lang.String, java.lang.String, de.monticore.ast.ASTNode)
    */
   @Override
@@ -228,7 +227,7 @@ public class DetailedReporter extends AReporter {
   }
   
   /**
-   * @see mc.codegen.reporting.commons.IReportEventHandler#reportFileFinalization(java.lang.String,
+   * @see de.monticore.generating.templateengine.reporting.commons.IReportEventHandler#reportFileFinalization(java.lang.String,
    * java.lang.String, java.lang.String, de.monticore.ast.ASTNode)
    */
   @Override

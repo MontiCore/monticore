@@ -495,10 +495,10 @@ component grammar TestGrammar extends mc.grammars.literals.TestLiterals {
   astrule GenericType =
     Dimension:int
     method public String toString() {
-      return  de.monticore._grammar.HelperGrammar.printGenericType(this);
+      return getName();
     }
     method public String getTypeName() {
-      return de.monticore._grammar.HelperGrammar.printGenericType(this);
+      return getName();
     }
     method public boolean isExternal() {
         return true;

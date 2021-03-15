@@ -2,9 +2,9 @@
 
 package de.monticore.codegen.mc2cd.manipul;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.CD4AnalysisNodeFactory;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cd4analysis._ast.CD4AnalysisNodeFactory;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import org.junit.Test;
@@ -21,8 +21,8 @@ public class RemoveRedundantReferencesManipulationTest {
     
     assertEquals(2, cdClass.getCDAttributeList().size());
     
-    new RemoveRedundantAttributesManipulation()
-        .removeRedundantAttributes(cdClass.getCDAttributeList());
+    cdClass.setCDAttributeList(new RemoveRedundantAttributesManipulation()
+        .removeRedundantAttributes(cdClass.getCDAttributeList()));
     
     assertEquals(1, cdClass.getCDAttributeList().size());
   }
@@ -39,8 +39,8 @@ public class RemoveRedundantReferencesManipulationTest {
     listAttribute.setName(secondReferenceName);
     listAttribute.setMCType(secondReferenceType);
     
-    cdClass.getCDAttributeList().add(singleAttribute);
-    cdClass.getCDAttributeList().add(listAttribute);
+    cdClass.addCDMember(singleAttribute);
+    cdClass.addCDMember(listAttribute);
     
     return cdClass;
   }

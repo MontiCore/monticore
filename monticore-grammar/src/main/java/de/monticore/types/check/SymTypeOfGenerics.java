@@ -24,13 +24,13 @@ public class SymTypeOfGenerics extends SymTypeExpression {
   /**
    * Map for unboxing generic types (e.g. "java.util.Collection" -> "Collection")
    */
-  public static Map<String, String> unboxMap;
+  public static final Map<String, String> unboxMap;
 
   /**
    * Map for boxing generic types (e.g. "Collection" -> "java.util.Collection")
    * Results are fully qualified.
    */
-  public static Map<String, String> boxMap;
+  public static final Map<String, String> boxMap;
 
   /**
    * initializing the maps

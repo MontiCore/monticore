@@ -11,6 +11,7 @@ import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICom
 import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.io.paths.ModelPath;
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
@@ -43,15 +44,18 @@ public class DeriveSymTypeOfCommonExpressionTest {
 
   @BeforeClass
   public static void setup() {
-    LogStub.init();
     LogStub.enableFailQuick(false);
-    CombineExpressionsWithLiteralsMill.reset();
-    CombineExpressionsWithLiteralsMill.init();
   }
 
   @Before
   public void doBefore() {
     LogStub.init();
+    CombineExpressionsWithLiteralsMill.reset();
+    CombineExpressionsWithLiteralsMill.init();
+    BasicSymbolsMill.initializePrimitives();
+    CombineExpressionsWithLiteralsMill.globalScope().setModelPath(new ModelPath());
+    CombineExpressionsWithLiteralsMill.globalScope().setFileExt("ce");
+
   }
 
   // Parser used for convenience:
@@ -679,9 +683,6 @@ public class DeriveSymTypeOfCommonExpressionTest {
    */
   public void init_advanced() {
     ICombineExpressionsWithLiteralsGlobalScope globalScope = CombineExpressionsWithLiteralsMill.globalScope();
-    globalScope.clear();
-    globalScope.setModelPath(new ModelPath());
-    globalScope.setFileExt("ce");
 
     ICombineExpressionsWithLiteralsArtifactScope artifactScope2 = CombineExpressionsWithLiteralsMill.artifactScope();
     artifactScope2.setEnclosingScope(globalScope);
@@ -878,17 +879,6 @@ public class DeriveSymTypeOfCommonExpressionTest {
     astex.accept(traverser);
     assertEquals("void", tc.typeOf(astex).print());
 
-    //test for String method
-    s = "\"test\".hashCode()";
-    astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    assertEquals("int", tc.typeOf(astex).print());
-
-    //test for multiple CallExpressions in a row
-    s = "\"test\".toString().charAt(1)";
-    astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    assertEquals("char", tc.typeOf(astex).print());
   }
 
   @Test
@@ -1002,6 +992,7 @@ public class DeriveSymTypeOfCommonExpressionTest {
     scope.setEnclosingScope(null);       // No enclosing Scope: Search ending here
     scope.setExportingSymbols(true);
     scope.setAstNode(null);
+    CombineExpressionsWithLiteralsMill.globalScope().addSubScope(scope);
   }
 
   /**
@@ -1588,8 +1579,8 @@ public class DeriveSymTypeOfCommonExpressionTest {
     MethodSymbol add = OOSymbolsMill.methodSymbolBuilder()
         .setReturnType(_voidSymType)
         .setName("add")
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
         .build();
-    add.setSpannedScope(CombineExpressionsWithLiteralsMill.scope());
     add2scope(add.getSpannedScope(), elementField);
     FieldSymbol field = field("field", _booleanSymType);
     OOTypeSymbol superclass = OOSymbolsMill.oOTypeSymbolBuilder()
@@ -1620,8 +1611,8 @@ public class DeriveSymTypeOfCommonExpressionTest {
     MethodSymbol myAdd = OOSymbolsMill.methodSymbolBuilder()
         .setName("myAdd")
         .setReturnType(_voidSymType)
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
         .build();
-    myAdd.setSpannedScope(CombineExpressionsWithLiteralsMill.scope());
     OOTypeSymbol subsubclass = OOSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
         .setName("MySubList")

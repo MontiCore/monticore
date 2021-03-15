@@ -8,6 +8,7 @@ import mc.feature.scoperules.scoperuletest.ScoperuleTestMill;
 import mc.feature.scoperules.scoperuletest._parser.ScoperuleTestParser;
 import mc.feature.scoperules.scoperuletest._symboltable.*;
 import mc.feature.scoperules.scoperuletest._ast.ASTFoo;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -19,8 +20,10 @@ import static org.junit.Assert.assertTrue;
 
 public class ScoperuleTest {
 
-  @BeforeClass
-  public static void setup(){
+  @Before
+  public void setup(){
+    ScoperuleTestMill.reset();
+    ScoperuleTestMill.init();
     BasicSymbolsMill.initializePrimitives();
   }
 

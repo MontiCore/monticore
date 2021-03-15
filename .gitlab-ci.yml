@@ -7,7 +7,8 @@ image: registry.git.rwth-aachen.de/monticore/container-registry/maven:3-jdk-8
 variables:
   MC_MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2"
   GRADLE_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2"
-  MC_MAVEN_CLI_OPTS: "--settings ./settings.xml --batch-mode -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn"
+  MC_MAVEN_CLI_OPTS: "--settings settings.xml --batch-mode -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn"
+  SONAR_OPTS: "-Dsonar.login=$sonarUser -Dsonar.password=$sonarPassword"
 
 
 before_script:
@@ -25,6 +26,7 @@ stages:
   - build
   - test
   - deploy
+  - sonar
   - trigger_languages
   - report
   - check
@@ -106,7 +108,7 @@ test_grammar_it:
     - branches
   except:
     - master
-    
+
 deploy:
   stage: deploy
   dependencies:
@@ -118,7 +120,36 @@ deploy:
     - dev
   except:
     - master
-      
+
+sonar:
+  stage: sonar
+  script:
+    - "./gradlew sonarMC $GRADLE_OPTS $SONAR_OPTS"
+  only:
+    - dev
+  except:
+    - master
+
+coverage-jdk:
+  # Must be in a stage later than test-jdk11's stage.
+  stage: .post
+  image: registry.gitlab.com/haynes/jacoco2cobertura:1.0.7
+  script:
+    # convert report from jacoco to cobertura
+    - 'python /opt/cover2cover.py build/jacoco/jacoco.xml src/main/java > build/cobertura.xml'
+    # read the <source></source> tag and prepend the path to every filename attribute
+    - 'python /opt/source2filename.py build/cobertura.xml'
+  needs: ["sonar"]
+  dependencies:
+    - sonar
+  artifacts:
+    reports:
+      cobertura: build/cobertura.xml
+  only:
+    - dev
+  except:
+    - master
+
 trigger-automata:
   stage: trigger_languages
   allow_failure: true

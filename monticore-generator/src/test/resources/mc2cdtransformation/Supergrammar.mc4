@@ -9,4 +9,8 @@ grammar Supergrammar {
   Y;
   
   external Z;
+
+  SuperProd;
+
+  interface SuperInterface;
 }

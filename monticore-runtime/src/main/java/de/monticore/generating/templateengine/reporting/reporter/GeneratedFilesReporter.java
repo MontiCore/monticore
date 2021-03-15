@@ -2,8 +2,6 @@
 
 package de.monticore.generating.templateengine.reporting.reporter;
 
-import java.io.File;
-
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.reporting.commons.AReporter;
 import de.monticore.generating.templateengine.reporting.commons.Layouter;
@@ -11,13 +9,15 @@ import de.monticore.generating.templateengine.reporting.commons.ReportingConstan
 import de.monticore.generating.templateengine.reporting.commons.ReportingRepository;
 import de.se_rwth.commons.Names;
 
+import java.io.File;
+
 /**
  */
 public class GeneratedFilesReporter extends AReporter {
   
-  final static String SIMPLE_FILE_NAME = "02_GeneratedFiles";
+  static final String SIMPLE_FILE_NAME = "02_GeneratedFiles";
   
-  final static String INDENT = Layouter.getSpaceString(40);
+  static final String INDENT = Layouter.getSpaceString(40);
   
   private ReportingRepository repository;
   
@@ -49,7 +49,7 @@ public class GeneratedFilesReporter extends AReporter {
   }
   
   /**
-   * @see mc.codegen.reporting.commons.IReportEventHandler#reportFileCreation(java.lang.String,
+   * @see de.monticore.generating.templateengine.reporting.commons.IReportEventHandler#reportFileCreation(java.lang.String,
    * java.lang.String, java.lang.String, de.monticore.ast.ASTNode)
    */
   @Override

@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast.ast_class.reference.definition.methoddecorator;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.codegen.cd2java._ast.ast_class.reference.definition.ASTReferencedDefinitionDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java.methods.accessor.ListAccessorDecorator;
@@ -52,7 +52,8 @@ public class ReferencedDefinitionListAccessorDecorator extends ListAccessorDecor
     String referencedSymbolType = symbolTableService.getReferencedSymbolTypeName(ast);
     String referencedNodeTypeAsList = ast.printType();
     String referencedNodeType = referencedNodeTypeAsList.substring(5, referencedNodeTypeAsList.length() - 1);
-    this.replaceTemplate(EMPTY_BODY, getList, new TemplateHookPoint("_ast.ast_class.refSymbolMethods.GetDefinitionList", ast.getName(),
+    String attributeName = this.getDecorationHelper().getNativeAttributeName(ast.getName());
+    this.replaceTemplate(EMPTY_BODY, getList, new TemplateHookPoint("_ast.ast_class.refSymbolMethods.GetDefinitionList", attributeName,
         referencedSymbolType, referencedNodeType));
     return getList;
   }

@@ -1,8 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.grammar.grammarfamily._symboltable;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisSTCompleteTypes;
+import de.monticore.cd4code._symboltable.CD4AnalysisSTCompleteTypes;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._symboltable.CDBasisSymbolTableCompleter;
+import de.monticore.cdassociation._symboltable.CDAssociationSymbolTableCompleter;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._symboltable.GrammarSTCompleteTypes;
 import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
@@ -10,6 +12,7 @@ import de.monticore.grammar.grammarfamily._visitor.GrammarFamilyTraverser;
 import de.monticore.javalight._symboltable.JavaLightSTCompleteTypes;
 import de.monticore.statements.mccommonstatements._symboltable.MCCommonStatementsSTCompleteTypes;
 import de.monticore.statements.mcvardeclarationstatements._symboltable.MCVarDeclarationStatementsSTCompleteTypes;
+import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +38,12 @@ public class GrammarFamilyPhasedSTC {
     traverser.add4JavaLight(new JavaLightSTCompleteTypes());
     traverser.add4MCCommonStatements(new MCCommonStatementsSTCompleteTypes());
     traverser.add4MCVarDeclarationStatements(new MCVarDeclarationStatementsSTCompleteTypes());
-    traverser.add4CD4Analysis(new CD4AnalysisSTCompleteTypes());
+
+    // TODO: activate transformation and real symbol table completer, when cd4a is ready
+    CD4AnalysisSTCompleteTypes stc = new CD4AnalysisSTCompleteTypes();
+    traverser.add4CDBasis(stc);
+    traverser.add4CDInterfaceAndEnum(stc);
+
     priorityList.add(traverser);
   }
 

@@ -1,6 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
+
 public class SymTypeOfNull extends SymTypeExpression {
 
   /**
@@ -14,7 +17,8 @@ public class SymTypeOfNull extends SymTypeExpression {
    *       int i = null;          illegal
    */
   public SymTypeOfNull() {
-    typeSymbol = new PseudoTypeSymbolSurrogate(DefsTypeBasic._null);
+    typeSymbol = new TypeSymbolSurrogate(BasicSymbolsMill.NULL);
+    typeSymbol.setEnclosingScope(BasicSymbolsMill.scope());
   }
 
   /**
@@ -22,7 +26,7 @@ public class SymTypeOfNull extends SymTypeExpression {
    */
   @Override
   public String print() {
-      return DefsTypeBasic._nullTypeString;
+      return BasicSymbolsMill.NULL;
   }
 
   @Override
@@ -34,7 +38,7 @@ public class SymTypeOfNull extends SymTypeExpression {
    * printAsJson: Umwandlung in einen kompakten Json String
    */
   protected String printAsJson() {
-    return "\""+DefsTypeBasic._nullTypeString+"\"";
+    return "\""+BasicSymbolsMill.NULL +"\"";
   }
 
   @Override

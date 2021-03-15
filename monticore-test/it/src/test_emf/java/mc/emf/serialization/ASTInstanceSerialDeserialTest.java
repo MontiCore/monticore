@@ -25,7 +25,7 @@ import mc.GeneratorIntegrationsTest;
 import mc.feature.fautomaton.automaton.flatautomaton._ast.ASTAutomaton;
 import mc.feature.fautomaton.automaton.flatautomaton._ast.ASTState;
 import mc.feature.fautomaton.automaton.flatautomaton._ast.ASTTransition;
-import mc.feature.fautomaton.automaton.flatautomaton._ast.FlatAutomatonNodeFactory;
+import mc.feature.fautomaton.automaton.flatautomaton.FlatAutomatonMill;
 import mc.feature.fautomaton.automaton.flatautomaton._ast.FlatAutomatonPackage;
 import mc.feature.fautomaton.automaton.flatautomaton._parser.FlatAutomatonParser;
 
@@ -74,10 +74,10 @@ public class ASTInstanceSerialDeserialTest extends GeneratorIntegrationsTest {
   @Test
   public void testSerializeAndDeserializeCreatedInstance() {
     try {
-      ASTAutomaton aut = FlatAutomatonNodeFactory.createASTAutomaton();
-      ASTTransition trans = FlatAutomatonNodeFactory.createASTTransition();
-      ASTState state1 = FlatAutomatonNodeFactory.createASTState();
-      ASTState state2 = FlatAutomatonNodeFactory.createASTState();
+      ASTAutomaton aut = FlatAutomatonMill.automatonBuilder().uncheckedBuild();
+      ASTTransition trans = FlatAutomatonMill.transitionBuilder().uncheckedBuild();
+      ASTState state1 = FlatAutomatonMill.stateBuilder().uncheckedBuild();
+      ASTState state2 = FlatAutomatonMill.stateBuilder().uncheckedBuild();
       aut.setName("aut1");
       aut.getTransitionList().add(trans);
       aut.getStateList().add(state1);

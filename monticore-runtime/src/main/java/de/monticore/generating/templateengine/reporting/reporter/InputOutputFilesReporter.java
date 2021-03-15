@@ -44,7 +44,7 @@ public class InputOutputFilesReporter extends AReporter {
   
   public static final String SIMPLE_FILE_NAME = "IncGenCheckMaven";
   
-  final static String INDENT = Layouter.getSpaceString(40);
+  static final String INDENT = Layouter.getSpaceString(40);
   
   private List<String> inputFiles = Lists.newArrayList();
   
@@ -108,7 +108,7 @@ public class InputOutputFilesReporter extends AReporter {
   }
   
   /**
-   * @see mc.codegen.reporting.commons.IReportEventHandler#reportFileCreation(java.lang.String,
+   * @see de.monticore.generating.templateengine.reporting.commons.IReportEventHandler#reportFileCreation(java.lang.String,
    * java.lang.String, java.lang.String, de.monticore.ast.ASTNode)
    */
   @Override
@@ -119,7 +119,7 @@ public class InputOutputFilesReporter extends AReporter {
   }
   
   /**
-   * @see mc.codegen.reporting.commons.IReportEventHandler#reportFileCreation(java.lang.String,
+   * @see de.monticore.generating.templateengine.reporting.commons.IReportEventHandler#reportFileCreation(java.lang.String,
    * java.lang.String, java.lang.String, de.monticore.ast.ASTNode)
    */
   @Override

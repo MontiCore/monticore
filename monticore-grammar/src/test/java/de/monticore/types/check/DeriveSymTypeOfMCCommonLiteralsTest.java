@@ -1,13 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
-import de.monticore.expressions.prettyprint.CombineExpressionsWithLiteralsPrettyPrinter;
 import de.monticore.literals.mccommonliterals.MCCommonLiteralsMill;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.se_rwth.commons.logging.*;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -26,6 +25,9 @@ public class DeriveSymTypeOfMCCommonLiteralsTest {
     LogStub.init();         // replace log by a sideffect free variant
     // LogStub.initPlusLog();  // for manual testing purpose only
     Log.enableFailQuick(false);
+    BasicSymbolsMill.reset();
+    BasicSymbolsMill.init();
+    BasicSymbolsMill.initializePrimitives();
   }
   
   // This is the core Visitor under Test (but rather empty)
@@ -40,7 +42,6 @@ public class DeriveSymTypeOfMCCommonLiteralsTest {
 
   // Mill used ... alternative would be a Parser for Literals
   @Test
-  @Ignore
   public void deriveTFromLiteral1Null() throws IOException {
     ASTLiteral lit = MCCommonLiteralsMill.nullLiteralBuilder().build();
     assertEquals("null", tc.typeOf(lit).print());

@@ -1,16 +1,28 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast_emf;
 
-import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
-import de.monticore.cd.cd4analysis._symboltable.CDTypeSymbol;
+import de.monticore.cdbasis._ast.*;
+import de.monticore.cdinterfaceandenum._ast.*;
+import de.monticore.ast.ASTNode;
+import de.monticore.cd4analysis._ast.*;
+import de.monticore.cd4code._symboltable.ICD4CodeArtifactScope;
+import de.monticore.cd4code._symboltable.ICD4CodeScope;
+import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
+import de.monticore.cdbasis._symboltable.CDTypeSymbol;
+import de.monticore.cdbasis._symboltable.ICDBasisScope;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
+import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
+import de.monticore.types.prettyprint.MCBasicTypesFullPrettyPrinter;
+import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -26,7 +38,7 @@ public class EmfService extends AbstractService<EmfService> {
     super(compilationUnit);
   }
 
-  public EmfService(CDDefinitionSymbol cdSymbol) {
+  public EmfService(DiagramSymbol cdSymbol) {
     super(cdSymbol);
   }
 
@@ -39,11 +51,11 @@ public class EmfService extends AbstractService<EmfService> {
   }
 
   @Override
-  protected EmfService createService(CDDefinitionSymbol cdSymbol) {
+  protected EmfService createService(DiagramSymbol cdSymbol) {
     return createEmfService(cdSymbol);
   }
 
-  public static EmfService createEmfService(CDDefinitionSymbol cdSymbol) {
+  public static EmfService createEmfService(DiagramSymbol cdSymbol) {
     return new EmfService(cdSymbol);
   }
 
@@ -55,7 +67,7 @@ public class EmfService extends AbstractService<EmfService> {
     return getQualifiedPackageImplName(getCDSymbol());
   }
 
-  public String getQualifiedPackageImplName(CDDefinitionSymbol cdSymbol) {
+  public String getQualifiedPackageImplName(DiagramSymbol cdSymbol) {
     return String.join(".", getPackage(cdSymbol), getSimplePackageImplName(cdSymbol));
   }
 
@@ -63,7 +75,7 @@ public class EmfService extends AbstractService<EmfService> {
     return getSimplePackageImplName(getCDSymbol());
   }
 
-  public String getSimplePackageImplName(CDDefinitionSymbol cdSymbol) {
+  public String getSimplePackageImplName(DiagramSymbol cdSymbol) {
     return cdSymbol.getName() + PACKAGE_IMPL_SUFFIX;
   }
 
@@ -97,10 +109,10 @@ public class EmfService extends AbstractService<EmfService> {
    */
   public Set<String> getEDataTypes(ASTCDDefinition astcdDefinition) {
     Set<String> eDataTypeMap = new HashSet<>();
-    for (ASTCDClass astcdClass : astcdDefinition.getCDClassList()) {
+    for (ASTCDClass astcdClass : astcdDefinition.getCDClassesList()) {
       eDataTypeMap.addAll(getEDataTypes(astcdClass));
     }
-    for (ASTCDInterface astcdInterface : astcdDefinition.getCDInterfaceList()) {
+    for (ASTCDInterface astcdInterface : astcdDefinition.getCDInterfacesList()) {
       eDataTypeMap.addAll(getEDataTypes(astcdInterface));
     }
     return eDataTypeMap;
@@ -158,17 +170,27 @@ public class EmfService extends AbstractService<EmfService> {
 
   public String getGrammarFromClass(ASTCDDefinition astcdDefinition, ASTCDAttribute astcdAttribute) {
     String simpleNativeAttributeType = getDecorationHelper().getSimpleNativeType(astcdAttribute.getMCType());
-    if (astcdDefinition.getCDClassList().stream().anyMatch(x -> x.getName().equals(simpleNativeAttributeType))) {
+    if (astcdDefinition.getCDClassesList().stream().anyMatch(x -> x.getName().equals(simpleNativeAttributeType))) {
       return "this";
     } else {
-      List<CDDefinitionSymbol> superCDs = getSuperCDsTransitive(resolveCD(astcdDefinition.getName()));
-      for (CDDefinitionSymbol superCD : superCDs) {
-        if (superCD.getTypes().stream().anyMatch(x -> x.getName().equals(simpleNativeAttributeType))) {
+      List<DiagramSymbol> superCDs = getSuperCDsTransitive(resolveCD(astcdDefinition.getName()));
+      for (DiagramSymbol superCD : superCDs) {
+        if (((ICDBasisScope) superCD.getEnclosingScope()).getLocalCDTypeSymbols().stream().anyMatch(x -> x.getName().equals(simpleNativeAttributeType))) {
           return superCD.getName() + "PackageImpl";
         }
       }
     }
     return "this";
+  }
+  
+  //for InitializePackageContents template
+  public List<CDTypeSymbol> retrieveSuperTypes(ASTCDClass c) {
+    List<CDTypeSymbol> superTypes = c.getSymbol().getSuperTypesList().stream()
+        .map(ste -> ste.getTypeInfo())
+        .map(ts -> ts.getName())
+        .map(n -> resolveCDType(n))
+        .collect(Collectors.toList());
+    return superTypes;
   }
 
   /**
@@ -176,10 +198,14 @@ public class EmfService extends AbstractService<EmfService> {
    */
   //for InitializePackageContents template
   public String getClassPackage(CDTypeSymbol cdTypeSymbol) {
-    if (cdTypeSymbol.getModelName().equalsIgnoreCase(getQualifiedCDName())) {
+    // in this version the scope carries all relevant naming information and we
+    // know that it is an artifact scope
+    ICD4CodeArtifactScope scope = ((ICD4CodeArtifactScope) cdTypeSymbol.getEnclosingScope());
+    String modelName = scope.getFullName();
+    if (modelName.equalsIgnoreCase(getQualifiedCDName())) {
       return "this";
     } else {
-      return StringTransformations.uncapitalize(getSimplePackageImplName(cdTypeSymbol.getModelName()));
+      return StringTransformations.uncapitalize(getSimplePackageImplName(modelName));
     }
   }
 
@@ -194,7 +220,7 @@ public class EmfService extends AbstractService<EmfService> {
 
   //for InitializePackageContents template
   public String determineAbstractString(ASTCDClass cdClass) {
-    if (cdClass.isPresentModifier() && cdClass.getModifier().isAbstract()) {
+    if (cdClass.getModifier().isAbstract()) {
       return ABSTRACT;
     } else {
       return "!" + ABSTRACT;

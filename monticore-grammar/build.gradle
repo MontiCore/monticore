@@ -5,6 +5,7 @@ plugins {
   id "java-library"
   id "com.github.johnrengelman.shadow" version "6.0.0"
   id "monticore" version "$version" // MontiCore Plugin
+  id "jacoco"
 }
 
 description = 'MontiCore: Grammar'
@@ -101,10 +102,13 @@ java {
   registerFeature('grammars') {
     usingSourceSet(sourceSets.grammars)
   }
+  registerFeature('tests') {
+    usingSourceSet(sourceSets.test)
+  }
 }
 
 jar.dependsOn(grammarsJar)
 
 if(findProperty('ci') == null){
-  jar.dependsOn(shadowJar)
+  jar.dependsOn(shadowJar, testJar)
 }

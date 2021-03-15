@@ -1,10 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast.ast_class.reference.symbol;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
-import de.monticore.cd.cd4analysis._ast.ASTCDType;
-import de.monticore.cd.cd4analysis._ast.ASTModifier;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.codegen.cd2java.AbstractTransformer;
 import de.monticore.codegen.cd2java._ast.ast_class.reference.symbol.methoddecorator.ReferencedSymbolAccessorDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
@@ -15,14 +14,15 @@ import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.umlmodifier._ast.ASTModifier;
 import de.monticore.utils.Names;
 import de.se_rwth.commons.StringTransformations;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static de.monticore.cd.facade.CDModifier.PROTECTED;
-import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java.CDModifier.PROTECTED;
+import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 
@@ -73,8 +73,8 @@ public class ASTReferencedSymbolDecorator<T extends ASTCDType> extends AbstractT
         }
       }
     }
-    changedClass.getCDMethodList().addAll(methodList);
-    changedClass.getCDAttributeList().addAll(attributeList);
+    changedClass.addAllCDMembers(methodList);
+    changedClass.addAllCDMembers(attributeList);
     return changedClass;
   }
 
@@ -84,6 +84,7 @@ public class ASTReferencedSymbolDecorator<T extends ASTCDType> extends AbstractT
    */
   protected ASTCDAttribute getRefSymbolAttribute(ASTCDAttribute attribute, String referencedSymbol) {
     ASTModifier modifier = PROTECTED.build();
+    String attributeName = getDecorationHelper().getNativeAttributeName(attribute.getName());
     //add referenced Symbol modifier that it can later be distinguished
     TransformationHelper.addStereotypeValue(modifier, MC2CDStereotypes.REFERENCED_SYMBOL_ATTRIBUTE.toString());
 
@@ -91,12 +92,12 @@ public class ASTReferencedSymbolDecorator<T extends ASTCDType> extends AbstractT
     if (getDecorationHelper().isListType(attribute.printType())) {
       //if the attribute is a list
       ASTMCType attributeType = getMCTypeFacade().createMapTypeOf(getMCTypeFacade().createStringType(), symbolLoaderType);
-      ASTCDAttribute symbolAttribute = this.getCDAttributeFacade().createAttribute(modifier, attributeType, attribute.getName() + SYMBOL);
+      ASTCDAttribute symbolAttribute = this.getCDAttributeFacade().createAttribute(modifier, attributeType, attributeName + SYMBOL);
       replaceTemplate(VALUE, symbolAttribute, new StringHookPoint("= new HashMap<>()"));
       return symbolAttribute;
     } else {
       //if the attribute is mandatory or optional
-      return this.getCDAttributeFacade().createAttribute(modifier, symbolLoaderType, attribute.getName() + SYMBOL);
+      return this.getCDAttributeFacade().createAttribute(modifier, symbolLoaderType, attributeName + SYMBOL);
     }
   }
 
@@ -104,7 +105,7 @@ public class ASTReferencedSymbolDecorator<T extends ASTCDType> extends AbstractT
    * generated the correct getters for the reference symbol attributes
    */
   protected List<ASTCDMethod> getRefSymbolMethods(ASTCDAttribute astcdAttribute, String referencedSymbol) {
-    ASTCDAttribute symbolAttribute = getCDAttributeFacade().createAttribute(PUBLIC, referencedSymbol, astcdAttribute.getName() + SYMBOL);
+    ASTCDAttribute symbolAttribute = getCDAttributeFacade().createAttribute(PUBLIC.build(), referencedSymbol, astcdAttribute.getName() + SYMBOL);
     if (getDecorationHelper().isListType(astcdAttribute.printType())) {
       //have to change type of attribute list instead of map
       //because the inner representation is a map but for users the List methods are only shown
@@ -122,18 +123,20 @@ public class ASTReferencedSymbolDecorator<T extends ASTCDType> extends AbstractT
 
 
   protected ASTCDMethod getUpdateLoaderAttribute(ASTCDAttribute loaderAttribute, String nameAttributeName, String simpleName, boolean wasOptional) {
-    ASTCDMethod updateLoaderMethod = getCDMethodFacade().createMethod(PROTECTED, "update" +
-        StringTransformations.capitalize(loaderAttribute.getName()));
+    String attributeName = getDecorationHelper().getNativeAttributeName(loaderAttribute.getName());
+    ASTCDMethod updateLoaderMethod = getCDMethodFacade().createMethod(PROTECTED.build(), "update" +
+        StringTransformations.capitalize(attributeName));
     replaceTemplate(EMPTY_BODY, updateLoaderMethod, new TemplateHookPoint("_ast.ast_class.refSymbolMethods.UpdateLoader",
-        loaderAttribute.getName(), getDecorationHelper().getNativeAttributeName(nameAttributeName), simpleName, wasOptional));
+        attributeName, getDecorationHelper().getNativeAttributeName(nameAttributeName), simpleName, wasOptional));
     return updateLoaderMethod;
   }
 
   protected ASTCDMethod getUpdateLoaderListAttribute(String referencedAttributeName, String nameAttributeName, String simpleName) {
-    ASTCDMethod updateLoaderMethod = getCDMethodFacade().createMethod(PROTECTED, "update" +
-        StringTransformations.capitalize(referencedAttributeName));
+    String attributeName = getDecorationHelper().getNativeAttributeName(referencedAttributeName);
+    ASTCDMethod updateLoaderMethod = getCDMethodFacade().createMethod(PROTECTED.build(), "update" +
+        StringTransformations.capitalize(attributeName));
     replaceTemplate(EMPTY_BODY, updateLoaderMethod, new TemplateHookPoint("_ast.ast_class.refSymbolMethods.UpdateLoaderList",
-        referencedAttributeName, nameAttributeName, simpleName));
+        attributeName, nameAttributeName, simpleName));
     return updateLoaderMethod;
   }
 

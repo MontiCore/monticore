@@ -2,10 +2,13 @@
 package de.monticore.types.check;
 
 
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
+
 public class SymTypeVoid extends SymTypeExpression {
   
   public SymTypeVoid() {
-    typeSymbol = new PseudoTypeSymbolSurrogate(DefsTypeBasic._void);
+    typeSymbol = new TypeSymbolSurrogate(BasicSymbolsMill.VOID);
   }
   
   /**
@@ -25,7 +28,7 @@ public class SymTypeVoid extends SymTypeExpression {
    * printAsJson: Umwandlung in einen kompakten Json String
    */
   protected String printAsJson() {
-    return "\""+DefsTypeBasic._voidTypeString+"\"";
+    return "\""+BasicSymbolsMill.VOID + "\"";
   }
 
   @Override

@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.grammar.grammar._symboltable;
 
+import com.google.common.collect.Lists;
 import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsFullPrettyPrinter;
@@ -11,9 +12,9 @@ import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Deque;
+import java.util.List;
 import java.util.Optional;
 
-import static de.monticore.grammar.HelperGrammar.findImplicitTypes;
 import static de.se_rwth.commons.Names.getQualifiedName;
 import static de.se_rwth.commons.logging.Log.error;
 import static java.util.Optional.empty;
@@ -37,13 +38,10 @@ public class GrammarScopesGenitor extends GrammarScopesGenitorTOP {
 
   private MCGrammarSymbol grammarSymbol;
 
-  private ASTMCGrammar astGrammar;
-
   @Override
   public void visit(ASTMCGrammar ast){
     super.visit(ast);
     grammarSymbol = ast.getSymbol();
-    astGrammar = ast;
   }
 
   @Override
@@ -263,6 +261,43 @@ public class GrammarScopesGenitor extends GrammarScopesGenitorTOP {
       }
     }
     return empty();
+  }
+
+  private List<String> findImplicitTypes(ASTLexActionOrPredicate action,
+                                               Grammar_WithConceptsFullPrettyPrinter prettyPrinter) {
+    List<String> ret = Lists.newArrayList();
+    StringBuilder buffer = new StringBuilder();
+    buffer.append(prettyPrinter.prettyprint(action.getExpressionPredicate()));
+    String actionText = buffer.toString();
+    if (actionText.contains("_ttype")) {
+      String[] split = actionText.split("_ttype");
+
+      for (int i = 1; i < split.length; i++) {
+        String rest = split[i].trim();
+        if (rest.length() > 1 && rest.startsWith("=")) {
+          rest = rest.substring(1).trim();
+          if (!rest.startsWith("Token")) {
+            String string = rest.split("[ ;]")[0];
+            ret.add(string);
+          }
+        }
+      }
+    }
+    if (actionText.contains("$setType(")) {
+      String[] split = actionText.split("[$]setType[(]");
+
+      for (int i = 1; i < split.length; i++) {
+        String rest = split[i].trim();
+        if (rest.length() > 0) {
+
+          if (!rest.startsWith("Token")) {
+            String string = rest.split("[ )]")[0];
+            ret.add(string);
+          }
+        }
+      }
+    }
+    return ret;
   }
 
 }

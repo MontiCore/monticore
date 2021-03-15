@@ -3,7 +3,9 @@ package mc.typescalculator;
 
 import com.google.common.collect.Lists;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
+import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolSurrogate;
@@ -11,15 +13,13 @@ import de.monticore.symboltable.ImportStatement;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import mc.testcd4analysis.TestCD4AnalysisMill;
-import mc.testcd4analysis._symboltable.CDTypeSymbol;
 import mc.testcd4analysis._symboltable.ITestCD4AnalysisGlobalScope;
 import mc.typescalculator.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 import mc.typescalculator.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
+import mc.typescalculator.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsScopesGenitorDelegator;
 import mc.typescalculator.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsArtifactScope;
 import mc.typescalculator.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsGlobalScope;
-import mc.typescalculator.combineexpressionswithliterals._symboltable.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Optional;
 
-import static de.monticore.types.check.DefsTypeBasic.field;
 import static de.monticore.types.check.SymTypeConstant.unbox;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -40,12 +39,15 @@ public class CombineExpressionsWithLiteralsTest {
   @Before
   public void setup() {
     Log.init();
+    Log.enableFailQuick(false);
 
     TestCD4AnalysisMill.reset();
-    TestCD4AnalysisMill.init();
-
     CombineExpressionsWithLiteralsMill.reset();
+
+    TestCD4AnalysisMill.init();
     CombineExpressionsWithLiteralsMill.init();
+
+    BasicSymbolsMill.initializePrimitives();
   }
 
   @Test
@@ -76,11 +78,16 @@ public class CombineExpressionsWithLiteralsTest {
     OOTypeSymbol bSurrogate = new OOTypeSymbolSurrogate("B");
     bSurrogate.setEnclosingScope(classB.get().getEnclosingScope());
 
-    FieldSymbol d = field("d", SymTypeExpressionFactory.createTypeObject(dSurrogate));
+    FieldSymbol d = OOSymbolsMill.fieldSymbolBuilder().
+            setName("d").setType(SymTypeExpressionFactory.
+            createTypeObject(dSurrogate)).build();
+
     globalScope1.add(d);
     globalScope1.add((VariableSymbol) d);
 
-    FieldSymbol b = field("b", SymTypeExpressionFactory.createTypeObject(bSurrogate));
+    FieldSymbol b = OOSymbolsMill.fieldSymbolBuilder().
+            setName("b").setType(SymTypeExpressionFactory.
+            createTypeObject(bSurrogate)).build();
     globalScope1.add(b);
     globalScope1.add((VariableSymbol) b);
 

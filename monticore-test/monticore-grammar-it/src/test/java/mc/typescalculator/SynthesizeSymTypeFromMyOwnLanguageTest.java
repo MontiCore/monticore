@@ -1,12 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.typescalculator;
 
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.TypeCheck;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.se_rwth.commons.logging.LogStub;
+import de.se_rwth.commons.logging.Log;
+import mc.typescalculator.myownlanguage.MyOwnLanguageMill;
 import mc.typescalculator.myownlanguage._parser.MyOwnLanguageParser;
 import mc.typescalculator.unittypes._ast.ASTMinuteType;
-import org.junit.*;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -21,7 +24,11 @@ public class SynthesizeSymTypeFromMyOwnLanguageTest {
 
   @Before
   public void setup() {
-    LogStub.init();
+    Log.init();
+    Log.enableFailQuick(false);
+    MyOwnLanguageMill.reset();
+    MyOwnLanguageMill.init();
+    BasicSymbolsMill.initializePrimitives();
   }
 
   @Test

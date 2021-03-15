@@ -39,6 +39,7 @@ public class MCType2SymTypeExpressionTest {
     Log.enableFailQuick(false);
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
+    BasicSymbolsMill.initializePrimitives();
   }
 
   FlatExpressionScopeSetter scopeSetter = new FlatExpressionScopeSetter(BasicSymbolsMill.scope());
