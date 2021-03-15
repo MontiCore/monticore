@@ -37,7 +37,7 @@ build:
     - "cd monticore-tool && ./gradlew build $GRADLE_OPTS -Pci"
     - "cd .. &&./gradlew buildMC $GRADLE_OPTS -Pci"
     - "cd monticore-maven-plugin && mvn $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS install"
-  artifacts: 
+  artifacts:
     paths:
       - ".gradle"
       - "*/target"
@@ -48,7 +48,7 @@ build:
     - branches
   except:
     - master
-    
+
 test_01experiments:
   stage: test
   dependencies:
@@ -60,7 +60,7 @@ test_01experiments:
     - branches
   except:
     - master
-    
+
 test_02experiments:
   stage: test
   dependencies:
@@ -72,7 +72,7 @@ test_02experiments:
     - branches
   except:
     - master
-    
+
 test_it:
   stage: test
   dependencies:
@@ -84,7 +84,7 @@ test_it:
     - branches
   except:
     - master
-    
+
 test_it_emf:
   stage: test
   dependencies:
@@ -96,7 +96,7 @@ test_it_emf:
     - branches
   except:
     - master
-    
+
 test_grammar_it:
   stage: test
   dependencies:
@@ -125,26 +125,6 @@ sonar:
   stage: sonar
   script:
     - "./gradlew sonarMC $GRADLE_OPTS $SONAR_OPTS"
-  only:
-    - dev
-  except:
-    - master
-
-coverage-jdk:
-  # Must be in a stage later than test-jdk11's stage.
-  stage: .post
-  image: registry.gitlab.com/haynes/jacoco2cobertura:1.0.7
-  script:
-    # convert report from jacoco to cobertura
-    - 'python /opt/cover2cover.py build/jacoco/jacoco.xml src/main/java > build/cobertura.xml'
-    # read the <source></source> tag and prepend the path to every filename attribute
-    - 'python /opt/source2filename.py build/cobertura.xml'
-  needs: ["sonar"]
-  dependencies:
-    - sonar
-  artifacts:
-    reports:
-      cobertura: build/cobertura.xml
   only:
     - dev
   except:
