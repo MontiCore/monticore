@@ -129,12 +129,7 @@ public class GlobalScopeInterfaceDecorator
             + "' that is supergrammar of '" + symbolTableService.getCDName() + "'.");
         continue;
       }
-      if (symbolTableService.hasStartProd((ASTCDDefinition) superGrammar.getAstNode())
-          ||!symbolTableService.getSymbolDefiningSuperProds(superGrammar).isEmpty() ) {
-        result.add(symbolTableService.getGlobalScopeInterfaceType(superGrammar));
-      }else{
-        result.addAll(getSuperGlobalScopeInterfaces(superGrammar));
-      }
+      result.add(symbolTableService.getGlobalScopeInterfaceType(superGrammar));
     }
     if (result.isEmpty()) {
       result.add(getMCTypeFacade().createQualifiedType(I_GLOBAL_SCOPE_TYPE));
