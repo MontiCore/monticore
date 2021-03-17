@@ -86,7 +86,7 @@ public class GlobalScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterfaces() {
-    assertDeepEquals("de.monticore.symboltable.IGlobalScope",
+    assertDeepEquals("de.monticore.codegen.ast.lexicals._symboltable.ILexicalsGlobalScope",
         scopeInterface.getCDExtendUsage().getSuperclass(0));
     assertDeepEquals("de.monticore.codegen.ast.automaton._symboltable.IAutomatonScope",
         scopeInterface.getCDExtendUsage().getSuperclass(1));
