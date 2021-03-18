@@ -260,6 +260,7 @@ abstract public class MCTask extends DefaultTask {
       // execute Monticore with the given parameters
       MontiCoreCLI.main(p)
     } catch(MCTaskError e){
+      // in case of failure print the error and fail
       String error = Log.getFindings().stream().
               filter({f -> f.getType().equals(Finding.Type.ERROR)})
               .map({f -> f.getMsg()})
@@ -336,6 +337,9 @@ abstract public class MCTask extends DefaultTask {
   
 }
 
+/**
+ * This is only needed to prevent elongated stacktraces
+ */
 class MCTaskError extends Throwable {
   @Override
   public synchronized Throwable fillInStackTrace() {
