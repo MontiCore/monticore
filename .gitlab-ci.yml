@@ -158,7 +158,6 @@ trigger-automata:
   trigger:
     project: monticore/languages/automaton
     branch: master
-    strategy: depend
   only:
     - dev
 
