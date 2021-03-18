@@ -6,7 +6,7 @@ image: registry.git.rwth-aachen.de/monticore/container-registry/gradle:6.8.2-jdk
 #
 variables:
   MC_MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2"
-  GRADLE_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2  -Pci"
+  GRADLE_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2 -Pci"
   MC_MAVEN_CLI_OPTS: "--settings settings.xml --batch-mode -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn"
   SONAR_OPTS: "-Dsonar.login=$sonarUser -Dsonar.password=$sonarPassword"
 
