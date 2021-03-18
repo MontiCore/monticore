@@ -6,7 +6,7 @@ image: registry.git.rwth-aachen.de/monticore/container-registry/gradle:6.8.2-jdk
 #
 variables:
   MC_MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2"
-  GRADLE_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2 -Pci"
+  GRADLE_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2"
   MC_MAVEN_CLI_OPTS: "--settings settings.xml --batch-mode -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn"
   SONAR_OPTS: "-Dsonar.login=$sonarUser -Dsonar.password=$sonarPassword"
 
@@ -32,8 +32,8 @@ stages:
 build:
   stage: build
   script:
-    - "cd monticore-tool && gradle build $GRADLE_OPTS"
-    - "cd .. && gradle buildMC $GRADLE_OPTS"
+    - "cd monticore-tool && gradle build $GRADLE_OPTS -Pci"
+    - "cd .. && gradle buildMC $GRADLE_OPTS -Pci"
   artifacts:
     paths:
       - ".gradle"
@@ -62,7 +62,7 @@ test_01experiments:
   dependencies:
     - build
   script:
-    - "gradle -p monticore-test/01.experiments build $GRADLE_OPTS"
+    - "gradle -p monticore-test/01.experiments build $GRADLE_OPTS -Pci"
   only:
     - merge_requests
     - branches
@@ -74,7 +74,7 @@ test_02experiments:
   dependencies:
     - build
   script:
-    - "gradle -p monticore-test/02.experiments build $GRADLE_OPTS"
+    - "gradle -p monticore-test/02.experiments build $GRADLE_OPTS -Pci"
   only:
     - merge_requests
     - branches
@@ -86,7 +86,7 @@ test_it:
   dependencies:
     - build
   script:
-    - "gradle -p monticore-test/it build $GRADLE_OPTS"
+    - "gradle -p monticore-test/it build $GRADLE_OPTS -Pci"
   only:
     - merge_requests
     - branches
@@ -98,7 +98,7 @@ test_it_emf:
   dependencies:
     - build
   script:
-    - "gradle -p monticore-test/it build -PbuildProfile=emf $GRADLE_OPTS"
+    - "gradle -p monticore-test/it build -PbuildProfile=emf $GRADLE_OPTS -Pci"
   only:
     - merge_requests
     - branches
@@ -110,7 +110,7 @@ test_grammar_it:
   dependencies:
     - build
   script:
-    - "gradle -p monticore-test/monticore-grammar-it build $GRADLE_OPTS"
+    - "gradle -p monticore-test/monticore-grammar-it build $GRADLE_OPTS -Pci"
   only:
     - merge_requests
     - branches
@@ -122,7 +122,7 @@ deploy:
   dependencies:
     - build
   script:
-    - "gradle deployMC -PmavenPassword=$password -PmavenUser=$username $GRADLE_OPTS"
+    - "gradle deployMC -PmavenPassword=$password -PmavenUser=$username $GRADLE_OPTS -Pci"
   only:
     - dev
   except:
@@ -146,7 +146,7 @@ sonar:
   dependencies:
     - build
   script:
-    - "gradle sonarMC $GRADLE_OPTS $SONAR_OPTS"
+    - "gradle sonarMC $GRADLE_OPTS $SONAR_OPTS -Pci"
   only:
     - dev
   except:
