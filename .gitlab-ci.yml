@@ -123,6 +123,7 @@ deploy:
 
 sonar:
   stage: sonar
+  needs: ["build:build"]
   script:
     - "./gradlew sonarMC $GRADLE_OPTS $SONAR_OPTS"
   only:
@@ -337,6 +338,7 @@ pages:
 
 checkMDLinks:
   stage: check
+  needs: []
   allow_failure: true
   script:
     - "curl --location --header \"PRIVATE-TOKEN: $secibuildtoken\" \"https://git.rwth-aachen.de/api/v4/projects/monticore%2Fmdlinkchecker/jobs/artifacts/master/raw/target/libs/MDLinkCheckerCLI.jar?job=build\" --output MDLinkCheckerCLI.jar"
