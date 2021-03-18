@@ -6,7 +6,7 @@ image: registry.git.rwth-aachen.de/monticore/container-registry/gradle:6.8.2-jdk
 #
 variables:
   MC_MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2"
-  GRADLE_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2"
+  GRADLE_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2  -Pci"
   MC_MAVEN_CLI_OPTS: "--settings settings.xml --batch-mode -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn"
   SONAR_OPTS: "-Dsonar.login=$sonarUser -Dsonar.password=$sonarPassword"
 
@@ -32,8 +32,8 @@ stages:
 build:
   stage: build
   script:
-    - "cd monticore-tool && gradle build $GRADLE_OPTS -Pci"
-    - "cd .. && gradle buildMC $GRADLE_OPTS -Pci"
+    - "cd monticore-tool && gradle build $GRADLE_OPTS"
+    - "cd .. && gradle buildMC $GRADLE_OPTS"
   artifacts:
     paths:
       - ".gradle"
@@ -62,7 +62,7 @@ test_01experiments:
   dependencies:
     - build
   script:
-    - "gradle -p monticore-test/01.experiments build $GRADLE_OPTS -d"
+    - "gradle -p monticore-test/01.experiments build $GRADLE_OPTS"
   only:
     - merge_requests
     - branches
