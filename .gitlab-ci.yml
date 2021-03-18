@@ -123,7 +123,7 @@ deploy:
 
 sonar:
   stage: sonar
-  needs: ["build:build"]
+  needs: ["build"]
   script:
     - "./gradlew sonarMC $GRADLE_OPTS $SONAR_OPTS"
   only:
