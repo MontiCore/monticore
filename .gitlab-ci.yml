@@ -62,7 +62,7 @@ test_01experiments:
   dependencies:
     - build
   script:
-    - "gradle -p monticore-test/01.experiments build $GRADLE_OPTS"
+    - "gradle -p monticore-test/01.experiments build $GRADLE_OPTS -d"
   only:
     - merge_requests
     - branches
@@ -143,6 +143,8 @@ deploy_mvn_plugin:
 sonar:
   stage: sonar
   needs: ["build"]
+  dependencies:
+    - build
   script:
     - "gradle sonarMC $GRADLE_OPTS $SONAR_OPTS"
   only:
