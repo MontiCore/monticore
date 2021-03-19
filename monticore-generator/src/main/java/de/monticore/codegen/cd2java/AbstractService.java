@@ -20,6 +20,7 @@ import java.util.stream.Stream;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.*;
 import static de.monticore.codegen.cd2java._ast.constants.ASTConstantsDecorator.LITERALS_SUFFIX;
+import static de.monticore.codegen.cd2java.cli.CLIConstants.CLI_SUFFIX;
 import static de.monticore.codegen.cd2java.mill.MillConstants.MILL_SUFFIX;
 import static de.se_rwth.commons.Names.getQualifier;
 
@@ -526,5 +527,30 @@ public class AbstractService<T extends AbstractService> {
   public String getMillFullName() {
     return getMillFullName(getCDSymbol());
   }
+
+  /**
+   * Cli class names e.g. AutomataCli
+   */
+
+  public String getCliSimpleName(CDDefinitionSymbol cdSymbol) {
+    return cdSymbol.getName() + CLI_SUFFIX;
+  }
+
+  public String getCliSimpleName() {
+    return getCliSimpleName(getCDSymbol());
+  }
+
+  public String getCliFullName(CDDefinitionSymbol cdSymbol) {
+    if (cdSymbol.getPackageName().isEmpty()) {
+      return cdSymbol.getName().toLowerCase() + "." + getCliSimpleName(cdSymbol);
+    }else {
+      return String.join(".", cdSymbol.getPackageName(), cdSymbol.getName()).toLowerCase() + "." + getCliSimpleName(cdSymbol);
+    }
+  }
+
+  public String getCliFullName() {
+    return getMillFullName(getCDSymbol());
+  }
+
 
 }
