@@ -5,6 +5,7 @@ package mc.feature.keyrule;
 import mc.GeneratorIntegrationsTest;
 import mc.feature.keyrule.nokeywordrule._ast.ASTB;
 import mc.feature.keyrule.nokeywordrule._ast.ASTJ;
+import mc.feature.keyrule.nokeywordrule._ast.ASTK;
 import mc.feature.keyrule.nokeywordrule._parser.NoKeywordRuleParser;
 import org.junit.Test;
 
@@ -33,6 +34,10 @@ public class NoKeywordRuleTest extends GeneratorIntegrationsTest {
     assertTrue(astj.isPresent());
     astj = parser.parse_StringJ("blax");
     assertTrue(parser.hasErrors());
+    Optional<ASTK> astk = parser.parse_StringK("bla1");
+    assertFalse(parser.hasErrors());
+    assertTrue(astk.isPresent());
+
   }
   
 }

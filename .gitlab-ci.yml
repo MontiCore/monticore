@@ -1,5 +1,5 @@
 # (c) https://github.com/MontiCore/monticore
-image: registry.git.rwth-aachen.de/monticore/container-registry/maven:3-jdk-8
+image: registry.git.rwth-aachen.de/monticore/container-registry/gradle:6.8.2-jdk8
 
 #include:
 #  - template: Code-Quality.gitlab-ci.yml
@@ -12,8 +12,6 @@ variables:
 
 
 before_script:
-  - chmod +x ./gradlew
-  - chmod +x monticore-tool/gradlew
   - export GRADLE_USER_HOME=`pwd`/.gradle
 
 #cache:
@@ -34,9 +32,8 @@ stages:
 build:
   stage: build
   script:
-    - "cd monticore-tool && ./gradlew build $GRADLE_OPTS -Pci"
-    - "cd .. &&./gradlew buildMC $GRADLE_OPTS -Pci"
-    - "cd monticore-maven-plugin && mvn $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS install"
+    - "cd monticore-tool && gradle build $GRADLE_OPTS -Pci"
+    - "cd .. && gradle buildMC $GRADLE_OPTS -Pci"
   artifacts:
     paths:
       - ".gradle"
@@ -48,13 +45,24 @@ build:
     - branches
   except:
     - master
+      
+build_mvn_plugin:
+  stage: build
+  image: registry.git.rwth-aachen.de/monticore/container-registry/maven:3-jdk-8
+  script:
+    - "cd monticore-maven-plugin && mvn $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS install"
+  only:
+    - merge_requests
+    - branches
+  except:
+    - master
 
 test_01experiments:
   stage: test
   dependencies:
     - build
   script:
-    - "./gradlew -p monticore-test/01.experiments build $GRADLE_OPTS"
+    - "gradle -p monticore-test/01.experiments build $GRADLE_OPTS -Pci"
   only:
     - merge_requests
     - branches
@@ -66,7 +74,7 @@ test_02experiments:
   dependencies:
     - build
   script:
-    - "./gradlew -p monticore-test/02.experiments build $GRADLE_OPTS"
+    - "gradle -p monticore-test/02.experiments build $GRADLE_OPTS -Pci"
   only:
     - merge_requests
     - branches
@@ -78,7 +86,7 @@ test_it:
   dependencies:
     - build
   script:
-    - "./gradlew -p monticore-test/it build $GRADLE_OPTS"
+    - "gradle -p monticore-test/it build $GRADLE_OPTS -Pci"
   only:
     - merge_requests
     - branches
@@ -90,7 +98,7 @@ test_it_emf:
   dependencies:
     - build
   script:
-    - "./gradlew -p monticore-test/it build -PbuildProfile=emf $GRADLE_OPTS"
+    - "gradle -p monticore-test/it build -PbuildProfile=emf $GRADLE_OPTS -Pci"
   only:
     - merge_requests
     - branches
@@ -102,7 +110,7 @@ test_grammar_it:
   dependencies:
     - build
   script:
-    - "./gradlew -p monticore-test/monticore-grammar-it build $GRADLE_OPTS"
+    - "gradle -p monticore-test/monticore-grammar-it build $GRADLE_OPTS -Pci"
   only:
     - merge_requests
     - branches
@@ -114,7 +122,18 @@ deploy:
   dependencies:
     - build
   script:
-    - "./gradlew deployMC -PmavenPassword=$password -PmavenUser=$username $GRADLE_OPTS"
+    - "gradle deployMC -PmavenPassword=$password -PmavenUser=$username $GRADLE_OPTS -Pci"
+  only:
+    - dev
+  except:
+    - master
+      
+deploy_mvn_plugin:
+  stage: deploy
+  image: registry.git.rwth-aachen.de/monticore/container-registry/maven:3-jdk-8
+  dependencies:
+    - build
+  script:
     - "cd monticore-maven-plugin && mvn $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS deploy -Dpass=$password -Duser=$username"
   only:
     - dev
@@ -123,8 +142,11 @@ deploy:
 
 sonar:
   stage: sonar
+  needs: ["build"]
+  dependencies:
+    - build
   script:
-    - "./gradlew sonarMC $GRADLE_OPTS $SONAR_OPTS"
+    - "gradle sonarMC $GRADLE_OPTS $SONAR_OPTS -Pci"
   only:
     - dev
   except:
@@ -136,7 +158,6 @@ trigger-automata:
   trigger:
     project: monticore/languages/automaton
     branch: master
-    strategy: depend
   only:
     - dev
 
@@ -337,6 +358,7 @@ pages:
 
 checkMDLinks:
   stage: check
+  needs: []
   allow_failure: true
   script:
     - "curl --location --header \"PRIVATE-TOKEN: $secibuildtoken\" \"https://git.rwth-aachen.de/api/v4/projects/monticore%2Fmdlinkchecker/jobs/artifacts/master/raw/target/libs/MDLinkCheckerCLI.jar?job=build\" --output MDLinkCheckerCLI.jar"
