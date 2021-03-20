@@ -144,7 +144,7 @@ public class JsonObject implements JsonElement {
     return printer.getContent();
   }
 
-  //////////////////// Convenienve Methods ////////////////////
+  //////////////////// Convenience Methods ////////////////////
 
   /**
    * Checks whether there exists a member with the corresponding name and checks
