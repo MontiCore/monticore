@@ -26,8 +26,8 @@ public class AtLeastOneInitialAndFinalState
 
     if (!initialState || !finalState) {
       // Issue error...
-      Log.error("0xA0116 An automaton must have at least one initial
-                 and one final state.",
+      Log.error("0xA0116 An automaton must have at least one "
+                + "initial and one final state.",
           automaton.get_SourcePositionStart());
     }
   }
