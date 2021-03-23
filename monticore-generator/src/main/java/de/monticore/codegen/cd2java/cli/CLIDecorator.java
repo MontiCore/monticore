@@ -11,6 +11,8 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 import java.util.List;
+import java.util.Optional;
+
 import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._cocos.CoCoConstants.ADD_CHECKER;
@@ -37,25 +39,50 @@ public class CLIDecorator extends AbstractCreator<List<ASTCDCompilationUnit> , A
     ASTCDClass cliClass = CD4AnalysisMill.cDClassBuilder()
         .setModifier(PUBLIC.build())
         .setName(cliClassName)
-        .addCDMethod(creatMethod(abstractService.getCDSymbol()))
-        .addCDAttribute(createAttribute())
+        .addCDMethod(creatMainMethod(abstractService.getCDSymbol()))
+        .addCDMethod(creatCreateSymbolTableMethod())
+        .addCDMethod(creatParseMethod())
         .build();
 
     return cliClass;
   }
 
-  protected ASTCDMethod creatMethod(CDDefinitionSymbol cdSymbol) {
-    ASTMCType checkerType = getMCTypeFacade().createIntType();
-    ASTCDParameter parameter = getCDParameterFacade().createParameter(checkerType, "maker");
-    ASTCDMethod addCheckerMethod = getCDMethodFacade().createMethod(PUBLIC, "addmaker" , parameter);
+  protected ASTCDMethod creatMainMethod(CDDefinitionSymbol cdSymbol) {
+    String grammarname = cdSymbol.getName();
+    String startprod = abstractService.getStartProdASTFullName().get();
+    ASTMCType checkerType = getMCTypeFacade().createArrayType("String",1);
+    ASTCDParameter parameter = getCDParameterFacade().createParameter(checkerType, "args");
+    ASTCDMethod addCheckerMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC, "main" , parameter);
+    this.replaceTemplate(EMPTY_BODY, addCheckerMethod, new TemplateHookPoint(TEMPLATE_PATH + "Main" , grammarname, startprod));
+    return addCheckerMethod;
+  }
+
+  protected ASTCDMethod creatParseMethod() {
+    ASTMCType checkerType = getMCTypeFacade().createStringType();
+    ASTCDParameter parameter = getCDParameterFacade().createParameter(checkerType, "model");
+    ASTCDMethod addCheckerMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC, "parse", parameter);
     this.replaceTemplate(EMPTY_BODY, addCheckerMethod, new TemplateHookPoint(TEMPLATE_PATH + "Addmaker"));
     return addCheckerMethod;
   }
 
+  protected ASTCDMethod creatCreateSymbolTableMethod() {
+    Optional<String> str =  abstractService.getStartProdASTFullName();
+    ASTMCType checkerType = getMCTypeFacade().createQualifiedType(str.get());
+    ASTCDParameter parameter = getCDParameterFacade().createParameter(checkerType, "ast");
+    ASTCDMethod addCheckerMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC, "createSymbolTable", parameter);
+    this.replaceTemplate(EMPTY_BODY, addCheckerMethod, new TemplateHookPoint(TEMPLATE_PATH + "Addmaker"));
+    return addCheckerMethod;
+  }
 
   protected ASTCDAttribute createAttribute(){
     ASTMCType type = getMCTypeFacade().createStringType();
-    ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PRIVATE , type, "cli");
+    ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PRIVATE , type, "mill");
+    return attribute;
+  }
+
+  protected ASTCDAttribute createMillASTCliAttributeII(){
+    ASTMCType type = getMCTypeFacade().createIntType();
+    ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PRIVATE , type, "in");
     return attribute;
   }
 

@@ -588,7 +588,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     decoratedCDs.add(decoratedASTClassDiagramm);
     decoratedCDs.add(decorateMill(glex, cdScope, cds.get(0), decoratedASTClassDiagramm,
         decoratedSymbolTableCd, decoratedTraverserCD, handCodedPath));
-    decoratedCDs.add(decorateCli(glex, cdScope, cds.get(0), decoratedASTClassDiagramm,
+    decoratedCDs.add(decorateCLI(glex, cdScope, cds.get(0), decoratedASTClassDiagramm,
         decoratedSymbolTableCd, decoratedTraverserCD, handCodedPath));
     decoratedCDs.add(decorateAuxiliary(glex, cdScope, cds.get(0), decoratedASTClassDiagramm, handCodedPath));
     return decoratedCDs;
@@ -757,20 +757,20 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     return topDecorator.decorate(millCD);
   }
 
-  public ASTCDCompilationUnit decorateCli(GlobalExtensionManagement glex, ICD4AnalysisScope cdScope,
+  public ASTCDCompilationUnit decorateCLI(GlobalExtensionManagement glex, ICD4AnalysisScope cdScope,
                                            ASTCDCompilationUnit cd, ASTCDCompilationUnit astClassDiagram,
                                            ASTCDCompilationUnit symbolCD,
                                            ASTCDCompilationUnit traverserCD, IterablePath handCodedPath) {
     ASTCDCompilationUnit preparedCD = prepareCD(cdScope, cd);
-    return generateCli(preparedCD, astClassDiagram, symbolCD, traverserCD, glex, handCodedPath);
+    return generateCLI(preparedCD, astClassDiagram, symbolCD, traverserCD, glex, handCodedPath);
   }
 
-  private ASTCDCompilationUnit generateCli(ASTCDCompilationUnit cd, ASTCDCompilationUnit astCD,
+  private ASTCDCompilationUnit generateCLI(ASTCDCompilationUnit cd, ASTCDCompilationUnit astCD,
                                             ASTCDCompilationUnit symbolCD, ASTCDCompilationUnit traverserCD,
                                             GlobalExtensionManagement glex, IterablePath handCodedPath) {
     AbstractService abstractService = new AbstractService(cd);
     CLIDecorator cliDecorator = new CLIDecorator(glex, abstractService);
-    CDCLIDecorator cdcliDecorator = new CDCLIDecorator(glex, cliDecorator);
+    CDCLIDecorator cdcliDecorator = new CDCLIDecorator(glex, cliDecorator, abstractService);
 
     ASTCDCompilationUnit cliCD = cdcliDecorator.decorate(Lists.newArrayList(astCD, traverserCD, symbolCD));
 
