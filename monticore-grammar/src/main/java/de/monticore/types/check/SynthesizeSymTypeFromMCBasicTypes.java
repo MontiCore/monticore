@@ -11,8 +11,10 @@ import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesHandler;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2;
+import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.se_rwth.commons.logging.Log;
 
+import java.util.List;
 import java.util.Optional;
 
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeObject;
@@ -70,12 +72,22 @@ public class SynthesizeSymTypeFromMCBasicTypes extends AbstractSynthesizeFromTyp
       if(type.isPresent()){
         symType = SymTypeExpressionFactory.createTypeObject(type.get());
       }else{
-        TypeSymbol surrogate = new TypeSymbolSurrogate(qName.getQName());
-        surrogate.setEnclosingScope(getScope(qName.getEnclosingScope()));
-        symType = SymTypeExpressionFactory.createTypeObject(surrogate);
+        Optional<SymTypeExpression> optSym = handleIfNotFound(qName);
+        if(optSym.isPresent()){
+          symType = optSym.get();
+        }
       }
     }
     typeCheckResult.setCurrentResult(symType);
+  }
+
+  /**
+   * extension method for error handling
+   */
+  protected Optional<SymTypeExpression> handleIfNotFound(ASTMCQualifiedName qName){
+    Log.error("0xA0324 The qualified type " + qName.getQName() +
+        "cannot be found");
+    return Optional.empty();
   }
 
 

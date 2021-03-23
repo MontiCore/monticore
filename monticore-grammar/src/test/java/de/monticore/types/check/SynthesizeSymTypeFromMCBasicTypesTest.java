@@ -2,8 +2,12 @@
 package de.monticore.types.check;
 
 import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
+import de.monticore.expressions.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsGlobalScope;
+import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsArtifactScope;
+import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsGlobalScope;
 import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._ast.ASTMCVoidType;
@@ -37,6 +41,18 @@ public class SynthesizeSymTypeFromMCBasicTypesTest {
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
     BasicSymbolsMill.initializePrimitives();
+    init();
+  }
+
+  public static void init(){
+    ICombineExpressionsWithLiteralsGlobalScope gs = CombineExpressionsWithLiteralsMill.globalScope();
+    gs.add(DefsTypeBasic.type("A"));
+    gs.add(DefsTypeBasic.type("Person"));
+
+    ICombineExpressionsWithLiteralsArtifactScope dex = CombineExpressionsWithLiteralsMill.artifactScope();
+    dex.setPackageName("de.x");
+    dex.setEnclosingScope(gs);
+    dex.add(DefsTypeBasic.type("Person"));
   }
   
   // Parer used for convenience:
@@ -49,7 +65,7 @@ public class SynthesizeSymTypeFromMCBasicTypesTest {
 
   @Before
   public void initScope(){
-    scopeSetter = new FlatExpressionScopeSetter(BasicSymbolsMill.scope());
+    scopeSetter = new FlatExpressionScopeSetter(CombineExpressionsWithLiteralsMill.globalScope());
     traverser = CombineExpressionsWithLiteralsMill.traverser();
     traverser.add4MCSimpleGenericTypes(scopeSetter);
     traverser.add4MCCollectionTypes(scopeSetter);
@@ -63,7 +79,7 @@ public class SynthesizeSymTypeFromMCBasicTypesTest {
     String s = "double";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
     asttype.accept(traverser);
-    assertEquals(s, tc.symTypeFromAST(asttype).print());
+    assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
   }
   
   @Test
@@ -71,7 +87,7 @@ public class SynthesizeSymTypeFromMCBasicTypesTest {
     String s = "int";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
     asttype.accept(traverser);
-    assertEquals(s, tc.symTypeFromAST(asttype).print());
+    assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
   }
   
   @Test
@@ -79,7 +95,7 @@ public class SynthesizeSymTypeFromMCBasicTypesTest {
     String s = "A";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
     asttype.accept(traverser);
-    assertEquals(s, tc.symTypeFromAST(asttype).print());
+    assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
   }
   
   @Test
@@ -87,7 +103,7 @@ public class SynthesizeSymTypeFromMCBasicTypesTest {
     String s = "Person";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
     asttype.accept(traverser);
-    assertEquals(s, tc.symTypeFromAST(asttype).print());
+    assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
   }
   
   @Test
@@ -95,20 +111,20 @@ public class SynthesizeSymTypeFromMCBasicTypesTest {
     String s = "de.x.Person";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
     asttype.accept(traverser);
-    assertEquals(s, tc.symTypeFromAST(asttype).print());
+    assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
   }
   
   @Test
   public void symTypeFromAST_VoidTest() throws IOException {
     ASTMCVoidType v = MCBasicTypesMill.mCVoidTypeBuilder().build();
-    assertEquals("void", tc.symTypeFromAST(v).print());
+    assertEquals("void", tc.symTypeFromAST(v).printFullName());
   }
   
   @Test
   public void symTypeFromAST_ReturnTest() throws IOException {
     ASTMCVoidType v = MCBasicTypesMill.mCVoidTypeBuilder().build();
     ASTMCReturnType r = MCBasicTypesMill.mCReturnTypeBuilder().setMCVoidType(v).build();
-    assertEquals("void", tc.symTypeFromAST(r).print());
+    assertEquals("void", tc.symTypeFromAST(r).printFullName());
   }
 
   @Test
@@ -116,7 +132,7 @@ public class SynthesizeSymTypeFromMCBasicTypesTest {
     ASTMCVoidType v = MCBasicTypesMill.mCVoidTypeBuilder().build();
     // im Prinzip dassselbe via Parser:
     ASTMCReturnType r = parser.parse_StringMCReturnType("void").get();
-    assertEquals("void", tc.symTypeFromAST(r).print());
+    assertEquals("void", tc.symTypeFromAST(r).printFullName());
   }
   
   @Test
@@ -125,7 +141,7 @@ public class SynthesizeSymTypeFromMCBasicTypesTest {
     String s = "Person";
     ASTMCReturnType r = parser.parse_StringMCReturnType(s).get();
     r.accept(traverser);
-    assertEquals(s, tc.symTypeFromAST(r).print());
+    assertEquals(s, tc.symTypeFromAST(r).printFullName());
   }
   
   // ------------------------------------------------------  Tests for Function 2

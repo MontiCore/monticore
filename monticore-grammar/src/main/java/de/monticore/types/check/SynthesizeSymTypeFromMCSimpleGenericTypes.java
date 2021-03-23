@@ -7,6 +7,7 @@ import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolSurrogate;
+import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
 import de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMill;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
@@ -75,13 +76,23 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypes extends AbstractSynthesiz
       if(type.isPresent()){
         symType = SymTypeExpressionFactory.createGenerics(type.get(), arguments);
       }else{
-        TypeSymbol surrogate = new TypeSymbolSurrogate(String.join(".", genericType.getNameList()));
-        surrogate.setEnclosingScope(getScope(genericType.getEnclosingScope()));
-        symType = SymTypeExpressionFactory.createGenerics(surrogate, arguments);
+        Optional<SymTypeExpression> optSym = handleIfNotFound(genericType, arguments);
+        if(optSym.isPresent()){
+          symType = optSym.get();
+        }
       }
     }
 
     typeCheckResult.setCurrentResult(symType);
+  }
+
+  /**
+   * extension method for error handling
+   */
+  protected Optional<SymTypeExpression> handleIfNotFound(ASTMCGenericType type, List<SymTypeExpression> arguments){
+    Log.error("0xA0323 The generic type " + type.printWithoutTypeArguments() +
+        "cannot be found");
+    return Optional.empty();
   }
 
 }
