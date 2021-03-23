@@ -55,8 +55,8 @@ public class AutomataTool {
 
     // Retrieve the model name
     if (args.length != 2) {
-      Log.error("0xEE7400 Arguments are: (1) input
-        model and (2) symbol store.");
+      Log.error("0xEE7400 Arguments are: (1) input "
+               +"model and (2) symbol store.");
       return;
     }
     Log.info("Automata DSL Tool", "AutomataTool");
@@ -79,8 +79,8 @@ public class AutomataTool {
                + aSymbol.get().toString(),
                "AutomataTool");
     } else {
-      Log.info("This automaton does not contain a state
-        called \"Ping\";", "AutomataTool");
+      Log.info("This automaton does not contain a state "
+        +"called \"Ping\";", "AutomataTool");
     }
 
     // setup context condition infrastructure
