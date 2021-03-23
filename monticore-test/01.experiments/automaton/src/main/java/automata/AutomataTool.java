@@ -50,13 +50,13 @@ public class AutomataTool {
    * @param args
    */
   public void run(String[] args) {
-
     // use normal logging (no DEBUG, TRACE)
     Log.ensureInitalization();
-    
+
     // Retrieve the model name
     if (args.length != 2) {
-      Log.error("0xEE7400 Arguments are: (1) input model and (2) symbol store.");
+      Log.error("0xEE7400 Arguments are: (1) input "
+               +"model and (2) symbol store.");
       return;
     }
     Log.info("Automata DSL Tool", "AutomataTool");
@@ -67,18 +67,20 @@ public class AutomataTool {
     Log.info(model + " parsed successfully!", "AutomataTool");
 
     // setup the symbol table
-    IAutomataArtifactScope modelTopScope = createSymbolTable(ast);
-    
+    IAutomataArtifactScope modelTopScope = 
+      createSymbolTable(ast);
+
     // can be used for resolving names in the model
-    Optional<StateSymbol> aSymbol =
-            modelTopScope.resolveState("Ping");
+    Optional<StateSymbol> aSymbol = 
+      modelTopScope.resolveState("Ping");
+    
     if (aSymbol.isPresent()) {
       Log.info("Resolved state symbol \"Ping\"; FQN = "
                + aSymbol.get().toString(),
-          "AutomataTool");
+               "AutomataTool");
     } else {
-      Log.info("This automaton does not contain a state called \"Ping\";",
-          "AutomataTool");
+      Log.info("This automaton does not contain a state "
+        +"called \"Ping\";", "AutomataTool");
     }
 
     // setup context condition infrastructure
@@ -103,17 +105,19 @@ public class AutomataTool {
     AutomataTraverser traverser = AutomataMill.traverser();
     traverser.add4Automata(cs);
     ast.accept(traverser);
-    Log.info("Automaton has " + cs.getCount() + " states.", "AutomataTool");
+    Log.info("Automaton has " + cs.getCount() + " states.",
+      "AutomataTool");
 
     // execute a pretty printer
     PrettyPrinter pp = new PrettyPrinter();
     AutomataTraverser traverser2 = AutomataMill.traverser();
     traverser2.setAutomataHandler(pp);
     ast.accept(traverser2);
-    Log.info("Pretty printing automaton into console:", "AutomataTool");
+    Log.info("Pretty printing automaton into console:",
+             "AutomataTool");
     // print the result
-    Log.println(pp.getResult());
-  }
+    Log.println(pp.getResult()); 
+}
 
   /**
    * Parse the model contained in the specified file.

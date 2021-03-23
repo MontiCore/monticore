@@ -17,7 +17,7 @@ with the MontiCore-framework to build domain specific tools.
 Some MontiCore advantages are the reusability of predefined language 
 components, conservative extension and composition mechanisms, and an 
 optimal integration of hand-written code into the generated tools. Its 
-grammar languages are rather comfortable to use. 
+grammar languages are comfortable to use. 
 
 [**Start here for developing with MontiCore.**](docs/GettingStarted.md)
 
