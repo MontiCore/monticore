@@ -4,12 +4,15 @@ package de.monticore.types.check;
 import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsArtifactScope;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsGlobalScope;
+import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsScope;
 import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._ast.ASTMCVoidType;
 import de.monticore.types.mcbasictypes.MCBasicTypesMill;
+import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
+import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.monticore.types.mcsimplegenerictypestest._parser.MCSimpleGenericTypesTestParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -19,6 +22,7 @@ import org.junit.Test;
 import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
   
@@ -121,7 +125,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
   public void symTypeFromAST_Test5() throws IOException {
     String s = "de.x.Person";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
-    asttype.accept(traverser);
+    asttype.setEnclosingScope(CombineExpressionsWithLiteralsMill.globalScope().getSubScopes().get(0));
     assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
   }
   
@@ -146,9 +150,12 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
   
   @Test
   public void symTypeFromAST_TestListQual() throws IOException {
+    ICombineExpressionsWithLiteralsScope az =
+        CombineExpressionsWithLiteralsMill.globalScope().getSubScopes().get(1);
     String s = "List<a.z.Person>";
-    ASTMCType asttype = parser.parse_StringMCType(s).get();
-    asttype.accept(traverser);
+    ASTMCListType asttype = parser.parse_StringMCListType(s).get();
+    asttype.getMCTypeArgument().setEnclosingScope(az);
+    asttype.getMCTypeArgument().getMCTypeOpt().get().setEnclosingScope(az);
     assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
   }
   
@@ -188,9 +195,13 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
 
   @Test
   public void symTypeFromAST_TestGeneric2() throws IOException {
+    ICombineExpressionsWithLiteralsScope javautil = CombineExpressionsWithLiteralsMill.globalScope().getSubScopes().get(2);
+    ICombineExpressionsWithLiteralsScope javalang = CombineExpressionsWithLiteralsMill.globalScope().getSubScopes().get(3);
     String s = "java.util.Iterator<java.lang.String>";
-    ASTMCType asttype = parser.parse_StringMCType(s).get();
-    asttype.accept(traverser);
+    ASTMCBasicGenericType asttype = parser.parse_StringMCBasicGenericType(s).get();
+    asttype.setEnclosingScope(javautil);
+    asttype.getMCTypeArgument(0).setEnclosingScope(javalang);
+    asttype.getMCTypeArgument(0).getMCTypeOpt().get().setEnclosingScope(javalang);
     assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
   }
 
@@ -204,33 +215,72 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
 
   @Test
   public void symTypeFromAST_TestGeneric4() throws IOException {
+    ICombineExpressionsWithLiteralsScope gs = CombineExpressionsWithLiteralsMill.globalScope();
+    ICombineExpressionsWithLiteralsScope javautil = gs.getSubScopes().get(2);
     String s = "java.util.Iterator<Void>";
-    ASTMCType asttype = parser.parse_StringMCType(s).get();
-    asttype.accept(traverser);
+    ASTMCBasicGenericType asttype = parser.parse_StringMCBasicGenericType(s).get();
+    asttype.setEnclosingScope(javautil);
+    asttype.getMCTypeArgument(0).setEnclosingScope(gs);
+    asttype.getMCTypeArgument(0).getMCTypeOpt().get().setEnclosingScope(gs);
     assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
   }
 
   @Test
   public void symTypeFromAST_TestGeneric5() throws IOException {
+    ICombineExpressionsWithLiteralsScope gs = CombineExpressionsWithLiteralsMill.globalScope();
+    ICombineExpressionsWithLiteralsScope javautil = gs.getSubScopes().get(2);
+    ICombineExpressionsWithLiteralsScope javalang = gs.getSubScopes().get(3);
     String s = "java.util.Iterator<java.lang.String,java.lang.Person,java.lang.String,int>";
-    ASTMCType asttype = parser.parse_StringMCType(s).get();
-    asttype.accept(traverser);
+    ASTMCBasicGenericType asttype = parser.parse_StringMCBasicGenericType(s).get();
+    asttype.setEnclosingScope(javautil);
+    asttype.getMCTypeArgument(0).setEnclosingScope(javalang);
+    asttype.getMCTypeArgument(0).getMCTypeOpt().get().setEnclosingScope(javalang);
+    asttype.getMCTypeArgument(1).setEnclosingScope(javalang);
+    asttype.getMCTypeArgument(1).getMCTypeOpt().get().setEnclosingScope(javalang);
+    asttype.getMCTypeArgument(2).setEnclosingScope(javalang);
+    asttype.getMCTypeArgument(2).getMCTypeOpt().get().setEnclosingScope(javalang);
+    asttype.getMCTypeArgument(3).setEnclosingScope(gs);
+    asttype.getMCTypeArgument(3).getMCTypeOpt().get().setEnclosingScope(gs);
     assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
   }
 
   @Test
   public void symTypeFromAST_TestGeneric6() throws IOException {
+    ICombineExpressionsWithLiteralsScope gs = CombineExpressionsWithLiteralsMill.globalScope();
+    ICombineExpressionsWithLiteralsScope javautil = gs.getSubScopes().get(2);
     String s = "java.util.Iterator<java.util.Iterator<java.util.Iterator<int>>>";
-    ASTMCType asttype = parser.parse_StringMCType(s).get();
-    asttype.accept(traverser);
+    ASTMCBasicGenericType asttype = parser.parse_StringMCBasicGenericType(s).get();
+    asttype.setEnclosingScope(javautil);
+    asttype.getMCTypeArgument(0).setEnclosingScope(javautil);
+    asttype.getMCTypeArgument(0).getMCTypeOpt().get().setEnclosingScope(javautil);
+    assertTrue(asttype.getMCTypeArgument(0).getMCTypeOpt().get() instanceof ASTMCBasicGenericType);
+    ASTMCBasicGenericType first = (ASTMCBasicGenericType) asttype.getMCTypeArgument(0).getMCTypeOpt().get();
+    first.getMCTypeArgument(0).setEnclosingScope(javautil);
+    first.getMCTypeArgument(0).getMCTypeOpt().get().setEnclosingScope(javautil);
+    assertTrue(first.getMCTypeArgument(0).getMCTypeOpt().get() instanceof ASTMCBasicGenericType);
+    ASTMCBasicGenericType second = (ASTMCBasicGenericType) first.getMCTypeArgument(0).getMCTypeOpt().get();
+    second.getMCTypeArgument(0).setEnclosingScope(gs);
+    second.getMCTypeArgument(0).getMCTypeOpt().get().setEnclosingScope(gs);
     assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
   }
 
   @Test
   public void symTypeFromAST_TestGeneric7() throws IOException {
+    ICombineExpressionsWithLiteralsScope gs = CombineExpressionsWithLiteralsMill.globalScope();
+    ICombineExpressionsWithLiteralsScope javautil = gs.getSubScopes().get(2);
     String s = "java.util.Iterator<List<java.util.Iterator<int>>>";
-    ASTMCType asttype = parser.parse_StringMCType(s).get();
-    asttype.accept(traverser);
+    ASTMCBasicGenericType asttype = parser.parse_StringMCBasicGenericType(s).get();
+    asttype.setEnclosingScope(javautil);
+    asttype.getMCTypeArgument(0).setEnclosingScope(gs);
+    asttype.getMCTypeArgument(0).getMCTypeOpt().get().setEnclosingScope(gs);
+    assertTrue(asttype.getMCTypeArgument(0).getMCTypeOpt().get() instanceof ASTMCBasicGenericType);
+    ASTMCBasicGenericType first = (ASTMCBasicGenericType) asttype.getMCTypeArgument(0).getMCTypeOpt().get();
+    first.getMCTypeArgument(0).setEnclosingScope(javautil);
+    first.getMCTypeArgument(0).getMCTypeOpt().get().setEnclosingScope(javautil);
+    assertTrue(first.getMCTypeArgument(0).getMCTypeOpt().get() instanceof ASTMCBasicGenericType);
+    ASTMCBasicGenericType second = (ASTMCBasicGenericType) first.getMCTypeArgument(0).getMCTypeOpt().get();
+    second.getMCTypeArgument(0).setEnclosingScope(gs);
+    second.getMCTypeArgument(0).getMCTypeOpt().get().setEnclosingScope(gs);
     assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
   }
 

@@ -2,7 +2,6 @@
 package mc.typechecktest;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisTraverser;
 import de.monticore.literals.mccommonliterals._ast.ASTSignedLiteral;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.types.check.*;
@@ -10,7 +9,7 @@ import mc.typechecktest._visitor.TypeCheckTestTraverser;
 
 import java.util.Optional;
 
-public class DeriveSymTypeFromTypeCheckTest implements ITypesCalculator {
+public class DeriveSymTypeFromTypeCheckTest implements IDerive {
 
   protected TypeCheckTestTraverser traverser;
 
@@ -21,21 +20,11 @@ public class DeriveSymTypeFromTypeCheckTest implements ITypesCalculator {
   }
 
   @Override
-  public Optional<SymTypeExpression> calculateType(ASTExpression ex) {
-    ex.accept(getTraverser());
-    return Optional.ofNullable(typeCheckResult.getCurrentResult());
-  }
-
-  @Override
-  public Optional<SymTypeExpression> calculateType(ASTLiteral lit) {
-    lit.accept(getTraverser());
-    return Optional.ofNullable(typeCheckResult.getCurrentResult());
-  }
-
-  @Override
-  public Optional<SymTypeExpression> calculateType(ASTSignedLiteral lit) {
-    lit.accept(getTraverser());
-    return Optional.ofNullable(typeCheckResult.getCurrentResult());
+  public Optional<SymTypeExpression> getResult() {
+    if(typeCheckResult.isPresentCurrentResult()){
+      return Optional.ofNullable(typeCheckResult.getCurrentResult());
+    }
+    return Optional.empty();
   }
 
   @Override

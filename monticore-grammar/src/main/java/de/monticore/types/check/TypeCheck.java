@@ -4,13 +4,10 @@ package de.monticore.types.check;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.literals.mccommonliterals._ast.ASTSignedLiteral;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
-import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
-import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
 import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.List;
 import java.util.Optional;
 
 import static de.monticore.types.check.SymTypeConstant.unbox;
@@ -43,18 +40,18 @@ public class TypeCheck {
    * Deriving the SymTypeExpression from an AST Value - Literal.
    * May also be of a subclass;
    */
-  protected ITypesCalculator iTypesCalculator;
+  protected IDerive iDerive;
   
   /**
    * Configuration as state:
    * @param synthesizeSymType defines, which AST Types are mapped (and how)
-   * @param  iTypesCalculator defines, which AST Literals are handled
+   * @param  iDerive defines, which AST Literals are handled
    *                               through the Expression type recognition
    */
   public TypeCheck(ISynthesize synthesizeSymType,
-                   ITypesCalculator iTypesCalculator) {
+                   IDerive iDerive) {
     this.iSynthesize = synthesizeSymType;
-    this.iTypesCalculator = iTypesCalculator;
+    this.iDerive = iDerive;
   }
   
   /*************************************************************************/
@@ -132,9 +129,9 @@ public class TypeCheck {
    * needs to be in place; same for method calls etc.
    */
   public SymTypeExpression typeOf(ASTExpression expr) {
-    iTypesCalculator.init();
-    Optional<SymTypeExpression> result =
-            iTypesCalculator.calculateType(expr);
+    iDerive.init();
+    expr.accept(iDerive.getTraverser());
+    Optional<SymTypeExpression> result = iDerive.getResult();
     if(!result.isPresent()) {
       Log.error("0xED680 Internal Error: No Type for Expression " + expr
               + " Probably TypeCheck mis-configured.");
@@ -151,8 +148,9 @@ public class TypeCheck {
    * (DeriveSymType.*Literals.*Test)
    */
   public SymTypeExpression typeOf(ASTLiteral lit) {
-    iTypesCalculator.init();
-    Optional<SymTypeExpression> result = iTypesCalculator.calculateType(lit);
+    iDerive.init();
+    lit.accept(iDerive.getTraverser());
+    Optional<SymTypeExpression> result = iDerive.getResult();
     if(!result.isPresent()) {
       Log.error("0xED670 Internal Error: No Type for Literal " + lit
               + " Probably TypeCheck mis-configured.");
@@ -160,23 +158,6 @@ public class TypeCheck {
     return result.get();
   }
 
-  /**
-   * Function 2b: Derive the SymTypeExpression of a Literal
-   * This defines the Type that a Literal has and will be used to
-   * determine the Type of Expressions.
-   *
-   * Tests for this Function are combined in the Visitor tests
-   * (DeriveSymType.*Literals.*Test)
-   */
-  public SymTypeExpression typeOf(ASTSignedLiteral lit) {
-    iTypesCalculator.init();
-    Optional<SymTypeExpression> result = iTypesCalculator.calculateType(lit);
-    if(!result.isPresent()) {
-      Log.error("0xED672 Internal Error: No Type for Literal " + lit
-          + " Probably TypeCheck mis-configured.");
-    }
-    return result.get();
-  }
 
 
   /*************************************************************************/

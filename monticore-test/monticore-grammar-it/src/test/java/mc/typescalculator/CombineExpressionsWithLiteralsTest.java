@@ -102,7 +102,8 @@ public class CombineExpressionsWithLiteralsTest {
     ICombineExpressionsWithLiteralsArtifactScope art = del.createFromAST(expr.get());
     art.setName("");
     art.setImportsList(Lists.newArrayList(new ImportStatement("mc.typescalculator.TestCD.D", true)));
-    Optional<SymTypeExpression> j = calc.calculateType(expr.get());
+    expr.get().accept(calc.getTraverser());
+    Optional<SymTypeExpression> j = calc.getResult();
     assertTrue(j.isPresent());
     assertEquals("int", unbox(j.get().print()));
 
@@ -110,7 +111,8 @@ public class CombineExpressionsWithLiteralsTest {
     assertTrue(exprC.isPresent());
     ICombineExpressionsWithLiteralsArtifactScope artifactScope = del.createFromAST(exprC.get());
     artifactScope.setName("");
-    j = calc.calculateType(exprC.get());
+    exprC.get().accept(calc.getTraverser());
+    j = calc.getResult();
     assertTrue(j.isPresent());
     assertEquals("G",j.get().print());
 
@@ -118,7 +120,8 @@ public class CombineExpressionsWithLiteralsTest {
     assertTrue(exprD.isPresent());
     artifactScope = del.createFromAST(exprD.get());
     artifactScope.setName("");
-    Optional<SymTypeExpression> j3 = calc.calculateType(exprD.get());
+    exprD.get().accept(calc.getTraverser());
+    Optional<SymTypeExpression> j3 = calc.getResult();
     assertTrue(j3.isPresent());
     assertEquals("double",j3.get().print());
 
@@ -128,7 +131,8 @@ public class CombineExpressionsWithLiteralsTest {
     artifactScope.setName("");
     ASTExpression eb = exprB.get();
 
-    Optional<SymTypeExpression> k = calc.calculateType(eb);
+    eb.accept(calc.getTraverser());
+    Optional<SymTypeExpression> k = calc.getResult();
     assertTrue(k.isPresent());
     assertEquals("C",k.get().print());
 
@@ -136,7 +140,8 @@ public class CombineExpressionsWithLiteralsTest {
     assertTrue(complicated.isPresent());
     artifactScope = del.createFromAST(complicated.get());
     artifactScope.setName("");
-    Optional<SymTypeExpression> sym = calc.calculateType(complicated.get());
+    complicated.get().accept(calc.getTraverser());
+    Optional<SymTypeExpression> sym = calc.getResult();
     assertTrue(sym.isPresent());
     assertEquals("String", sym.get().print());
   }

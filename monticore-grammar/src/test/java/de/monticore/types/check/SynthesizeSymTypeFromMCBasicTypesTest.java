@@ -5,6 +5,7 @@ import de.monticore.expressions.combineexpressionswithliterals.CombineExpression
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsGlobalScope;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsArtifactScope;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsGlobalScope;
+import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsScope;
 import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
@@ -33,7 +34,7 @@ public class SynthesizeSymTypeFromMCBasicTypesTest {
    *    literals/MCLiteralsBasis.mc4
    *    types/MCBasicTypes.mc4
    */
-  
+
   @BeforeClass
   public static void setup() {
     LogStub.init();
@@ -110,7 +111,7 @@ public class SynthesizeSymTypeFromMCBasicTypesTest {
   public void symTypeFromAST_Test5() throws IOException {
     String s = "de.x.Person";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
-    asttype.accept(traverser);
+    asttype.setEnclosingScope(CombineExpressionsWithLiteralsMill.globalScope().getSubScopes().get(0));
     assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
   }
   
@@ -129,7 +130,6 @@ public class SynthesizeSymTypeFromMCBasicTypesTest {
 
   @Test
   public void symTypeFromAST_ReturnTest2() throws IOException {
-    ASTMCVoidType v = MCBasicTypesMill.mCVoidTypeBuilder().build();
     // im Prinzip dassselbe via Parser:
     ASTMCReturnType r = parser.parse_StringMCReturnType("void").get();
     assertEquals("void", tc.symTypeFromAST(r).printFullName());
@@ -143,9 +143,5 @@ public class SynthesizeSymTypeFromMCBasicTypesTest {
     r.accept(traverser);
     assertEquals(s, tc.symTypeFromAST(r).printFullName());
   }
-  
-  // ------------------------------------------------------  Tests for Function 2
-  
-  
   
 }

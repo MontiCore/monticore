@@ -106,7 +106,7 @@ given expressions/literals/types.
 <br/><br/>
 Create a DelegatorVisitor which combines all expression grammars and literal grammars
 used by your language. The DelegatorVisitor needs to implement the Interface
-ITypesCalculator. Use this Delegator as Derive-Class in the TypeCheck facade. The
+IDerive. Use this Delegator as Derive-Class in the TypeCheck facade. The
 Synthesize-Class depends on the types grammar you use (see above-mentioned classes).
 For an example of the Delegator-Visitor see 
 [here](../../../../../../test/java/de/monticore/types/check/DeriveSymTypeOfCombineExpressionsDelegator.java).

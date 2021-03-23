@@ -9,7 +9,7 @@ import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 
 import java.util.Optional;
 
-public class DeriveSymTypeOfAbstractTypeCheckDelegator implements ITypesCalculator {
+public class DeriveSymTypeOfAbstractTypeCheckDelegator implements IDerive {
 
   private AbstractTypeCheckTestTraverser traverser;
 
@@ -28,18 +28,13 @@ public class DeriveSymTypeOfAbstractTypeCheckDelegator implements ITypesCalculat
     init();
   }
 
-  /**
-   * main method to calculate the type of an expression
-   */
-  public Optional<SymTypeExpression> calculateType(ASTExpression e){
-    init();
-    e.accept(traverser);
-    Optional<SymTypeExpression> result = Optional.empty();
-    if (typeCheckResult.isPresentCurrentResult()) {
-      result = Optional.ofNullable(typeCheckResult.getCurrentResult());
+  @Override
+  public Optional<SymTypeExpression> getResult() {
+    if(typeCheckResult.isPresentCurrentResult()){
+      return Optional.ofNullable(typeCheckResult.getCurrentResult());
+    }else{
+      return Optional.empty();
     }
-    typeCheckResult.reset();
-    return result;
   }
 
   @Override
@@ -76,33 +71,6 @@ public class DeriveSymTypeOfAbstractTypeCheckDelegator implements ITypesCalculat
     traverser.add4ExpressionsBasis(deriveSymTypeOfExpression);
     traverser.setExpressionsBasisHandler(deriveSymTypeOfExpression);
     traverser.add4MCLiteralsBasis(deriveSymTypeOfLiterals);
-  }
-
-  /**
-   * main method to calculate the type of a literal
-   */
-  @Override
-  public Optional<SymTypeExpression> calculateType(ASTLiteral lit) {
-    init();
-    lit.accept(traverser);
-    Optional<SymTypeExpression> result = Optional.empty();
-    if (typeCheckResult.isPresentCurrentResult()) {
-      result = Optional.ofNullable(typeCheckResult.getCurrentResult());
-    }
-    typeCheckResult.reset();
-    return result;
-  }
-
-  @Override
-  public Optional<SymTypeExpression> calculateType(ASTSignedLiteral lit) {
-    init();
-    lit.accept(traverser);
-    Optional<SymTypeExpression> result = Optional.empty();
-    if (typeCheckResult.isPresentCurrentResult()) {
-      result = Optional.ofNullable(typeCheckResult.getCurrentResult());
-    }
-    typeCheckResult.reset();
-    return result;
   }
 
 
