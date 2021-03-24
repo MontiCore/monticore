@@ -3,31 +3,38 @@ package de.monticore.types.check;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.expressions.assignmentexpressions._ast.*;
+import de.monticore.expressions.assignmentexpressions._visitor.AssignmentExpressionsTraverser;
 import de.monticore.expressions.assignmentexpressions._visitor.AssignmentExpressionsVisitor2;
 import de.monticore.expressions.bitexpressions._ast.*;
+import de.monticore.expressions.bitexpressions._visitor.BitExpressionsTraverser;
 import de.monticore.expressions.bitexpressions._visitor.BitExpressionsVisitor2;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsScope;
 import de.monticore.expressions.commonexpressions._ast.*;
+import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsTraverser;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisitor2;
 import de.monticore.expressions.expressionsbasis._ast.ASTArguments;
 import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
+import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
+import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisTraverser;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisitor2;
 import de.monticore.expressions.javaclassexpressions._ast.*;
+import de.monticore.expressions.javaclassexpressions._visitor.JavaClassExpressionsTraverser;
 import de.monticore.expressions.javaclassexpressions._visitor.JavaClassExpressionsVisitor2;
 import de.monticore.symboltable.IScope;
 import de.monticore.symboltable.ISymbol;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
+import de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2;
 
 public class FlatExpressionScopeSetter implements AssignmentExpressionsVisitor2, CommonExpressionsVisitor2,
     JavaClassExpressionsVisitor2, BitExpressionsVisitor2, ExpressionsBasisVisitor2, MCBasicTypesVisitor2 {
 
-  private ICombineExpressionsWithLiteralsScope scope;
+  private IExpressionsBasisScope scope;
 
-  public FlatExpressionScopeSetter(ICombineExpressionsWithLiteralsScope scope){
+  public FlatExpressionScopeSetter(IExpressionsBasisScope scope){
     this.scope = scope;
   }
 
@@ -225,7 +232,10 @@ public class FlatExpressionScopeSetter implements AssignmentExpressionsVisitor2,
   @Override
   public void visit(ASTLiteralExpression expr){
     expr.setEnclosingScope(scope);
+    expr.getLiteral().setEnclosingScope(scope);
   }
+
+
 
   @Override
   public void visit(ASTNameExpression expr){
