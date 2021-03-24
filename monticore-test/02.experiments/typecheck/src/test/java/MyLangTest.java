@@ -40,10 +40,11 @@ public class MyLangTest {
     ASTMyVar var = varOpt.get();
     ASTMCType type = var.getType();
     ASTExpression exp = var.getExp();
-    
-    // synthesize SymTypeExpression
+  
+    // synthesize SymTypeExpression from type
     SymTypeExpression symType1 = tc.symTypeFromAST(type);
   
+    // calculate SymTypeExpression for exp
     SymTypeExpression symType2 = tc.typeOf(exp);
     
     // check whether the type is boolean
