@@ -30,7 +30,7 @@ import static de.monticore.generating.GeneratorEngine.existsHandwrittenClass;
  */
 public class TemplatesTool {
 
-  /** Configurational values:
+  /** Configurable values:
    */
   public static final Path SYMBOL_LOCATION = Paths.get("target");
   public static final String TOP_NAME_EXTENSION = "TOP";
@@ -220,7 +220,7 @@ public class TemplatesTool {
   protected void initGlex() {
     glex = new GlobalExtensionManagement();
     
-    // The modelName is used veryeher and does not change during generation
+    // The modelName is used everywhere and does not change during generation
     glex.setGlobalValue("modelName", ast.getName());
   }
   
@@ -306,8 +306,8 @@ public class TemplatesTool {
   }
   
   /**
-   * Calculates a list of transitions that act as representatives for all occuring stimuli
-   * (each stumulis is represented exactly once in that list)
+   * Calculates a list of transitions that act as representatives for all occurring stimuli
+   * (each stimulus is represented exactly once in that list)
    *
    */
   protected void deriveStateMap_DeltaMap() {
@@ -327,7 +327,7 @@ public class TemplatesTool {
       stimuli.add(input);
       ASTState from = stateMap.get(t.getFrom());
       // we assume that the automaton is deterministic --> CoCo
-      // if it isn't one transition will arbitrarily choosen (may be the last one)
+      // if it isn't one transition will arbitrarily chosen (may be the last one)
       // However, it may be incomplete!
       deltaMap.get(from).put(input, t);
     }
