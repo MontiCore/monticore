@@ -47,30 +47,30 @@ public class CLIDecorator extends AbstractCreator<List<ASTCDCompilationUnit> , A
     return cliClass;
   }
 
-  protected ASTCDMethod creatMainMethod(CDDefinitionSymbol cdSymbol) {
+  protected ASTCDMethod createMainMethod(CDDefinitionSymbol cdSymbol) {
     String grammarname = cdSymbol.getName();
-    String startprod = abstractService.getStartProdASTFullName().get();
+    Optional<String> startprod = abstractService.getStartProdASTFullName();
     ASTMCType checkerType = getMCTypeFacade().createArrayType("String",1);
     ASTCDParameter parameter = getCDParameterFacade().createParameter(checkerType, "args");
     ASTCDMethod addCheckerMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC, "main" , parameter);
-    this.replaceTemplate(EMPTY_BODY, addCheckerMethod, new TemplateHookPoint(TEMPLATE_PATH + "Main" , grammarname, startprod));
+    this.replaceTemplate(EMPTY_BODY, addCheckerMethod, new TemplateHookPoint(TEMPLATE_PATH + "Main" , grammarname, startprod.get()));
     return addCheckerMethod;
   }
 
-  protected ASTCDMethod creatParseMethod() {
+  protected ASTCDMethod createParseMethod() {
     ASTMCType checkerType = getMCTypeFacade().createStringType();
     ASTCDParameter parameter = getCDParameterFacade().createParameter(checkerType, "model");
     ASTCDMethod addCheckerMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC, "parse", parameter);
-    this.replaceTemplate(EMPTY_BODY, addCheckerMethod, new TemplateHookPoint(TEMPLATE_PATH + "Addmaker"));
+    this.replaceTemplate(EMPTY_BODY, addCheckerMethod, new TemplateHookPoint(TEMPLATE_PATH + "Parser"));
     return addCheckerMethod;
   }
 
-  protected ASTCDMethod creatCreateSymbolTableMethod() {
+  protected ASTCDMethod createCreateSymbolTableMethod() {
     Optional<String> str =  abstractService.getStartProdASTFullName();
     ASTMCType checkerType = getMCTypeFacade().createQualifiedType(str.get());
     ASTCDParameter parameter = getCDParameterFacade().createParameter(checkerType, "ast");
     ASTCDMethod addCheckerMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC, "createSymbolTable", parameter);
-    this.replaceTemplate(EMPTY_BODY, addCheckerMethod, new TemplateHookPoint(TEMPLATE_PATH + "Addmaker"));
+    this.replaceTemplate(EMPTY_BODY, addCheckerMethod, new TemplateHookPoint(TEMPLATE_PATH + "SymbolTable"));
     return addCheckerMethod;
   }
 

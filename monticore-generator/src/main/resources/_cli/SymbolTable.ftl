@@ -1,3 +1,3 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
+${tc.signature("grammarname", "startprod")}
 
-maker = 3;
