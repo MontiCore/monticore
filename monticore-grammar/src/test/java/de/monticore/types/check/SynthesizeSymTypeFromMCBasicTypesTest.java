@@ -2,13 +2,11 @@
 package de.monticore.types.check;
 
 import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
-import de.monticore.expressions.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsGlobalScope;
-import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsArtifactScope;
-import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsGlobalScope;
-import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsScope;
+import de.monticore.expressions.combineexpressionswithliterals._symboltable.*;
 import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
+import de.monticore.symbols.oosymbols._symboltable.OOSymbolsDeSer;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._ast.ASTMCVoidType;
@@ -50,10 +48,9 @@ public class SynthesizeSymTypeFromMCBasicTypesTest {
     gs.add(DefsTypeBasic.type("A"));
     gs.add(DefsTypeBasic.type("Person"));
 
-    ICombineExpressionsWithLiteralsArtifactScope dex = CombineExpressionsWithLiteralsMill.artifactScope();
-    dex.setPackageName("de.x");
-    dex.setEnclosingScope(gs);
-    dex.add(DefsTypeBasic.type("Person"));
+    CombineExpressionsWithLiteralsSymbols2Json symbols2Json = new CombineExpressionsWithLiteralsSymbols2Json();
+    ICombineExpressionsWithLiteralsArtifactScope as = symbols2Json.load("src/test/resources/de/monticore/types/check/Persondex.cesym");
+    as.setEnclosingScope(gs);
   }
   
   // Parer used for convenience:
@@ -111,7 +108,7 @@ public class SynthesizeSymTypeFromMCBasicTypesTest {
   public void symTypeFromAST_Test5() throws IOException {
     String s = "de.x.Person";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
-    asttype.setEnclosingScope(CombineExpressionsWithLiteralsMill.globalScope().getSubScopes().get(0));
+    asttype.accept(traverser);
     assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
   }
   

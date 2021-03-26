@@ -2,6 +2,7 @@
 package de.monticore.types.check;
 
 import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
+import de.monticore.expressions.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsSymbols2Json;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsArtifactScope;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsGlobalScope;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsScope;
@@ -73,15 +74,12 @@ public class SynthesizeSymTypeFromMCCollectionTypesTest {
     gs.add(DefsTypeBasic.type("List"));
     gs.add(DefsTypeBasic.type("Set"));
 
-    ICombineExpressionsWithLiteralsArtifactScope dex = CombineExpressionsWithLiteralsMill.artifactScope();
-    dex.setPackageName("de.x");
-    dex.setEnclosingScope(gs);
-    dex.add(DefsTypeBasic.type("Person"));
+    CombineExpressionsWithLiteralsSymbols2Json symbols2Json = new CombineExpressionsWithLiteralsSymbols2Json();
+    ICombineExpressionsWithLiteralsArtifactScope as = symbols2Json.load("src/test/resources/de/monticore/types/check/Persondex.cesym");
+    as.setEnclosingScope(gs);
 
-    ICombineExpressionsWithLiteralsArtifactScope az = CombineExpressionsWithLiteralsMill.artifactScope();
-    az.setPackageName("a.z");
-    az.setEnclosingScope(gs);
-    az.add(DefsTypeBasic.type("Person"));
+    ICombineExpressionsWithLiteralsArtifactScope as2 = symbols2Json.load("src/test/resources/de/monticore/types/check/Personaz.cesym");
+    as2.setEnclosingScope(gs);
   }
   
   // ------------------------------------------------------  Tests for Function 1, 1b, 1c
@@ -91,7 +89,6 @@ public class SynthesizeSymTypeFromMCCollectionTypesTest {
   @Test
   public void symTypeFromAST_Test1() throws IOException {
     String s = "double";
-    parser = new MCCollectionTypesTestParser();
     ASTMCType asttype = parser.parse_StringMCType(s).get();
     asttype.accept(traverser);
     assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
@@ -109,7 +106,7 @@ public class SynthesizeSymTypeFromMCCollectionTypesTest {
   public void symTypeFromAST_Test5() throws IOException {
     String s = "de.x.Person";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
-    asttype.setEnclosingScope(CombineExpressionsWithLiteralsMill.globalScope().getSubScopes().get(0));
+    asttype.accept(traverser);
     assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
   }
   
@@ -134,12 +131,9 @@ public class SynthesizeSymTypeFromMCCollectionTypesTest {
   
   @Test
   public void symTypeFromAST_TestListQual() throws IOException {
-    ICombineExpressionsWithLiteralsScope az =
-        CombineExpressionsWithLiteralsMill.globalScope().getSubScopes().get(1);
     String s = "List<a.z.Person>";
     ASTMCListType asttype = parser.parse_StringMCListType(s).get();
-    asttype.getMCTypeArgument().setEnclosingScope(az);
-    asttype.getMCTypeArgument().getMCTypeOpt().get().setEnclosingScope(az);
+    asttype.accept(traverser);
     assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
   }
   
