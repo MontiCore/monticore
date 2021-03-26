@@ -70,7 +70,8 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypes extends AbstractSynthesiz
     Optional<TypeVarSymbol> typeVar = getScope(genericType.getEnclosingScope()).resolveTypeVar(genericType.printWithoutTypeArguments());
     if(typeVar.isPresent()){
       Log.error("0xA0320 The generic type " + genericType.printType(MCSimpleGenericTypesMill.mcSimpleGenericTypesPrettyPrinter()) +
-          " cannot have a generic parameter because " + genericType.getName(genericType.getNameList().size()-1) + " is a type variable");
+          " cannot have a generic parameter because " + genericType.getName(genericType.getNameList().size()-1) + " is a type variable",
+          genericType.get_SourcePositionStart());
     }else{
       Optional<TypeSymbol> type = getScope(genericType.getEnclosingScope()).resolveType(genericType.printWithoutTypeArguments());
       if(type.isPresent()){
@@ -91,7 +92,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypes extends AbstractSynthesiz
    */
   protected Optional<SymTypeExpression> handleIfNotFound(ASTMCGenericType type, List<SymTypeExpression> arguments){
     Log.error("0xA0323 The generic type " + type.printWithoutTypeArguments() +
-        "cannot be found");
+        "cannot be found", type.get_SourcePositionStart());
     return Optional.empty();
   }
 

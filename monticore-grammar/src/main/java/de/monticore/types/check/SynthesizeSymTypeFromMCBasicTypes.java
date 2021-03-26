@@ -86,7 +86,7 @@ public class SynthesizeSymTypeFromMCBasicTypes extends AbstractSynthesizeFromTyp
    */
   protected Optional<SymTypeExpression> handleIfNotFound(ASTMCQualifiedName qName){
     Log.error("0xA0324 The qualified type " + qName.getQName() +
-        "cannot be found");
+        " cannot be found", qName.get_SourcePositionStart());
     return Optional.empty();
   }
 
