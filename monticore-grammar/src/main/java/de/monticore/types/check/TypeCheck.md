@@ -137,7 +137,7 @@ public void check(ASTExpression expr){
 ```
 
 An example for the case that a plus expression needs to return 'int' can be found
-[here](../../../../../../../../monticore-test/monticore-grammar-it/src/main/java/mc/typescalculator/myownlanguage/_cocos/PlusExpressionReturnsInt.java).
+[here](https://github.com/MontiCore/monticore/blob/dev/monticore-test/monticore-grammar-it/src/main/java/mc/typescalculator/myownlanguage/_cocos/PlusExpressionReturnsInt.java).
 
 ## Further Information
 
