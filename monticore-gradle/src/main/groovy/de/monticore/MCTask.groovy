@@ -99,7 +99,7 @@ abstract public class MCTask extends DefaultTask {
     return superGrammars
   }
   
-  @InputFiles
+  @Input
   @Optional
   List<String> getHandcodedPath() {
     return handcodedPath
