@@ -10,6 +10,8 @@ import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisS
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisTraverser;
 import de.monticore.expressions.javaclassexpressions._visitor.JavaClassExpressionsTraverser;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser;
+import de.monticore.types.mccollectiontypes._visitor.MCCollectionTypesTraverser;
+import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesTraverser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
@@ -64,8 +66,9 @@ public abstract class DeriveSymTypeAbstractTest {
     protected final void check(String expression, String expectedType) throws IOException {
         setupTypeCheck();
         ASTExpression astex = parseExpression(expression);
-        if (flatExpressionScopeSetterTraverser != null)
+        if (flatExpressionScopeSetterTraverser != null) {
             astex.accept(flatExpressionScopeSetterTraverser);
+        }
 
         assertEquals(expectedType, tc.typeOf(astex).print());
     }
@@ -98,16 +101,27 @@ public abstract class DeriveSymTypeAbstractTest {
     private void addToTraverser(ExpressionsBasisTraverser traverser, IExpressionsBasisScope enclosingScope) {
         FlatExpressionScopeSetter flatExpressionScopeSetter = new FlatExpressionScopeSetter(enclosingScope);
         traverser.add4ExpressionsBasis(flatExpressionScopeSetter);
-        if (traverser instanceof AssignmentExpressionsTraverser)
+        if (traverser instanceof AssignmentExpressionsTraverser) {
             ((AssignmentExpressionsTraverser) traverser).add4AssignmentExpressions(flatExpressionScopeSetter);
-        if (traverser instanceof CommonExpressionsTraverser)
+        }
+        if (traverser instanceof CommonExpressionsTraverser) {
             ((CommonExpressionsTraverser) traverser).add4CommonExpressions(flatExpressionScopeSetter);
-        if (traverser instanceof JavaClassExpressionsTraverser)
+        }
+        if (traverser instanceof JavaClassExpressionsTraverser) {
             ((JavaClassExpressionsTraverser) traverser).add4JavaClassExpressions(flatExpressionScopeSetter);
-        if (traverser instanceof BitExpressionsTraverser)
+        }
+        if (traverser instanceof BitExpressionsTraverser) {
             ((BitExpressionsTraverser) traverser).add4BitExpressions(flatExpressionScopeSetter);
-        if (traverser instanceof MCBasicTypesTraverser)
+        }
+        if (traverser instanceof MCBasicTypesTraverser) {
             ((MCBasicTypesTraverser) traverser).add4MCBasicTypes(flatExpressionScopeSetter);
+        }
+        if(traverser instanceof MCCollectionTypesTraverser) {
+            ((MCCollectionTypesTraverser) traverser).add4MCCollectionTypes(flatExpressionScopeSetter);
+        }
+        if(traverser instanceof MCSimpleGenericTypesTraverser) {
+            ((MCSimpleGenericTypesTraverser) traverser).add4MCSimpleGenericTypes(flatExpressionScopeSetter);
+        }
     }
 
 }
