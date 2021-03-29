@@ -39,7 +39,7 @@ public class DeriveFromMyLang implements IDerive {
     return traverser;
   }
   
-  @Override public SymTypeExpression getResult(){
+  @Override public Optional<SymTypeExpression> getResult(){
     return typeCheckResult.isPresentCurrentResult() ? Optional.ofNullable(typeCheckResult.getCurrentResult()) : Optional.empty();
   }
 }
