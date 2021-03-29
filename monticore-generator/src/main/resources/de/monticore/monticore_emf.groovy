@@ -71,7 +71,7 @@ while (grammarIterator.hasNext()) {
     generateParser(glex, cd, astGrammar, mcScope, handcodedPath, out)
 
     // M7: Decorate class diagrams
-    decoratedCD = decorateCD(glex, mcScope, cd, handcodedPath)
+    decoratedCD = decorateEmfCD(glex, mcScope, cd, handcodedPath)
 
     // M8 Generate ast classes, symbol table, visitor, and context conditions
     generateEmfFromCD(glex, cd, decoratedCD, out, handcodedPath)
