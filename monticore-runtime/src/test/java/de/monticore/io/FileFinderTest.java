@@ -13,6 +13,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
 
@@ -39,14 +40,11 @@ public class FileFinderTest {
     ModelPath mp = new ModelPath(entries);
     List<File> files = FileFinder.getFiles(mp, qualifiedModelName, fileExt);
     assertEquals(4, files.size());
-    File f1 = files.get(0);
-    assertTrue(f1.getAbsolutePath().endsWith(Paths.get("de","monticore","io","Model1.cdsym").toString()));
-    File f2 = files.get(1);
-    assertTrue(f2.getAbsolutePath().endsWith(Paths.get("de","monticore","io","Model1.cdsym").toString()));
-    File f3 = files.get(2);
-    assertTrue(f3.getAbsolutePath().endsWith(Paths.get("de","monticore","io","Model1.dsym").toString()));
-    File f4 = files.get(3);
-    assertTrue(f4.getAbsolutePath().endsWith(Paths.get("de","monticore","io","Model1.sdsym").toString()));
+    List<String> absolutePath = files.stream().map(File::getAbsolutePath).collect(Collectors.toList());
+    assertTrue(absolutePath.contains(Paths.get("de", "monticore", "io", "Model1.cdsym").toFile().getAbsolutePath()));
+    assertTrue(absolutePath.contains(Paths.get("de","monticore","io","Model1.cdsym").toFile().getAbsolutePath()));
+    assertTrue(absolutePath.contains(Paths.get("de","monticore","io","Model1.dsym").toFile().getAbsolutePath()));
+    assertTrue(absolutePath.contains(Paths.get("de","monticore","io","Model1.sdsym").toFile().getAbsolutePath()));
 
   }
 
@@ -119,14 +117,11 @@ public class FileFinderTest {
     ModelPath mp = new ModelPath(entries);
     List<File> files = FileFinder.getFiles(mp, qualifiedModelName, fileExt);
     assertEquals(4, files.size());
-    File f1 = files.get(0);
-    assertTrue(f1.getAbsolutePath().endsWith(Paths.get("de","monticore","io","Model1.cdsym").toString()));
-    File f2 = files.get(1);
-    assertTrue(f2.getAbsolutePath().endsWith(Paths.get("de","monticore","io","Model1.cdsym").toString()));
-    File f3 = files.get(2);
-    assertTrue(f3.getAbsolutePath().endsWith(Paths.get("de","monticore","io","Model1.dsym").toString()));
-    File f4 = files.get(3);
-    assertTrue(f4.getAbsolutePath().endsWith(Paths.get("de","monticore","io","Model1.sdsym").toString()));
+    List<String> absolutePath = files.stream().map(File::getAbsolutePath).collect(Collectors.toList());
+    assertTrue(absolutePath.contains(Paths.get("de", "monticore", "io", "Model1.cdsym").toFile().getAbsolutePath()));
+    assertTrue(absolutePath.contains(Paths.get("de","monticore","io","Model1.cdsym").toFile().getAbsolutePath()));
+    assertTrue(absolutePath.contains(Paths.get("de","monticore","io","Model1.dsym").toFile().getAbsolutePath()));
+    assertTrue(absolutePath.contains(Paths.get("de","monticore","io","Model1.sdsym").toFile().getAbsolutePath()));
   }
 
   @Test
