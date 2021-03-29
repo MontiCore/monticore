@@ -12,11 +12,11 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDDefinition;
-import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
-import de.monticore.cd.cd4code.CD4CodeMill;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDDefinition;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -69,18 +69,18 @@ public class CDTraverserDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     // build cd
     ASTCDDefinition astCD = CD4CodeMill.cDDefinitionBuilder()
         .setName(input.getCDDefinition().getName())
-        .addCDInterface(traverserInterface)
-        .addCDClass(traverserClass)
-        .addCDInterface(visitor2Interface)
-        .addCDInterface(handlerInterface)
-        .addCDClass(inheritanceClass)
+        .addCDElement(traverserInterface)
+        .addCDElement(traverserClass)
+        .addCDElement(visitor2Interface)
+        .addCDElement(handlerInterface)
+        .addCDElement(inheritanceClass)
         .build();
 
-    for (ASTCDClass cdClass : astCD.getCDClassList()) {
+    for (ASTCDClass cdClass : astCD.getCDClassesList()) {
       this.replaceTemplate(PACKAGE, cdClass, createPackageHookPoint(visitorPackage));
     }
 
-    for (ASTCDInterface cdInterface : astCD.getCDInterfaceList()) {
+    for (ASTCDInterface cdInterface : astCD.getCDInterfacesList()) {
       this.replaceTemplate(CoreTemplates.PACKAGE, cdInterface, createPackageHookPoint(visitorPackage));
     }
 

@@ -2,8 +2,6 @@
 
 # MontiCore Best Practices - Symbols, Scopes, Symboltables
 
-[[_TOC_]]
-
 [MontiCore](http://www.monticore.de) provides a number of options to design 
 languages, access and modify the abstract syntax tree, and produce output files.
 

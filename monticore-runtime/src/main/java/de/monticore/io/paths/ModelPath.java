@@ -2,22 +2,17 @@
 
 package de.monticore.io.paths;
 
+import com.google.common.collect.Iterables;
+import de.monticore.AmbiguityException;
+import de.monticore.io.FileReaderWriter;
+import de.se_rwth.commons.logging.Log;
+
 import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLClassLoader;
+import java.net.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import com.google.common.collect.Iterables;
-
-import de.monticore.AmbiguityException;
-import de.monticore.io.FileReaderWriter;
-import de.se_rwth.commons.logging.Log;
 
 /**
  * A ModelPath encapsulates the domain of accessible models inside the running

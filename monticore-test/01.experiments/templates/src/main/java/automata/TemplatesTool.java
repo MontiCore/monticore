@@ -23,12 +23,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
+import static de.monticore.generating.GeneratorEngine.existsHandwrittenClass;
+
 /**
  * Main class for the Automaton DSL tool.
  */
 public class TemplatesTool {
 
-  /** Configurational values:
+  /** Configurable values:
    */
   public static final Path SYMBOL_LOCATION = Paths.get("target");
   public static final String TOP_NAME_EXTENSION = "TOP";
@@ -160,7 +162,7 @@ public class TemplatesTool {
         .globalScope();
     globalScope.setModelPath(new ModelPath());
     globalScope.setFileExt("aut");
-    modelTopScope = createSymbolTable(ast);
+    modelTopScope = AutomataMill.scopesGenitorDelegator().createFromAST(ast);
   
     // Part 2: CoCos
     // deliberately omitted
@@ -218,7 +220,7 @@ public class TemplatesTool {
   protected void initGlex() {
     glex = new GlobalExtensionManagement();
     
-    // The modelName is used veryeher and does not change during generation
+    // The modelName is used everywhere and does not change during generation
     glex.setGlobalValue("modelName", ast.getName());
   }
   
@@ -304,12 +306,9 @@ public class TemplatesTool {
   }
   
   /**
-   * Calculates a list of transitions that act as representatives for all occuring stimuli
-   * (each stumulis is represented exactly once in that list)
+   * Calculates a list of transitions that act as representatives for all occurring stimuli
+   * (each stimulus is represented exactly once in that list)
    *
-   * @param allTransitions list o all transitions in the automaton
-   * @param inputsToBeExcluded inputs that should be excluded
-   * @return a list of transitions that act as representatives for not accepted inputs
    */
   protected void deriveStateMap_DeltaMap() {
     
@@ -328,7 +327,7 @@ public class TemplatesTool {
       stimuli.add(input);
       ASTState from = stateMap.get(t.getFrom());
       // we assume that the automaton is deterministic --> CoCo
-      // if it isn't one transition will arbitrarily choosen (may be the last one)
+      // if it isn't one transition will arbitrarily chosen (may be the last one)
       // However, it may be incomplete!
       deltaMap.get(from).put(input, t);
     }
@@ -354,31 +353,5 @@ public class TemplatesTool {
       Log.error("0x238F2 Failed to parse " + file, e);
     }
     return null;
-  }
-  
-  /**
-   * Create the symbol table from the parsed AST.
-   *
-   * @param ast the model
-   * @return
-   */
-  public IAutomataArtifactScope createSymbolTable(ASTAutomaton ast) {
-    AutomataScopesGenitorDelegator stc = AutomataMill.scopesGenitorDelegator();
-        return stc.createFromAST(ast);
-  }
-  
-  /**
-   * Check whewther an handwritten version of that class already exits and shall be integrated
-   * (e.g. to apply TOP mechanism)
-   */
-  public static boolean existsHandwrittenClass(IterablePath targetPath, String qualifiedName) {
-    Path hwFile = Paths.get(Names.getPathFromPackage(qualifiedName)+ ".java");
-    Optional<Path> hwFilePath = targetPath.getResolvedPath(hwFile);
-    boolean result = hwFilePath.isPresent();
-    if (result) {
-      Reporting.reportUseHandwrittenCodeFile(hwFilePath.get(),hwFile);
-    }
-    Reporting.reportHWCExistenceCheck(targetPath, hwFile, hwFilePath);
-    return result;
   }
 }

@@ -10,7 +10,8 @@ grammar Grammar_WithConcepts extends
            de.monticore.JavaLight,
            de.monticore.grammar.concepts.antlr.Antlr,
            de.monticore.expressions.CommonExpressions,
-           de.monticore.expressions.BitExpressions {
+           de.monticore.expressions.BitExpressions 
+           {
 
   //CD4A keywords are no keywords here
   nokeyword "association", "composition", "ordered", "targetimport", "classdiagram";

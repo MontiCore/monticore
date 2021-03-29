@@ -1,9 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast.ast_class.reference.definition;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
-import de.monticore.cd.cd4analysis._ast.ASTCDType;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.codegen.cd2java.AbstractTransformer;
 import de.monticore.codegen.cd2java._ast.ast_class.reference.definition.methoddecorator.ReferencedDefinitionAccessorDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
@@ -15,7 +15,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import java.util.ArrayList;
 import java.util.List;
 
-import static de.monticore.cd.facade.CDModifier.PROTECTED;
+import static de.monticore.codegen.cd2java.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PACKAGE;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
 
@@ -50,7 +50,7 @@ public class ASTReferencedDefinitionDecorator<T extends ASTCDType> extends Abstr
         methodList.addAll(getRefDefinitionMethods(astcdAttribute, referencedSymbolType));
       }
     }
-    changedInput.getCDMethodList().addAll(methodList);
+    changedInput.addAllCDMembers(methodList);
     return changedInput;
   }
 
@@ -68,7 +68,7 @@ public class ASTReferencedDefinitionDecorator<T extends ASTCDType> extends Abstr
       //if the attribute is mandatory or optional
       symbolType = getMCTypeFacade().createOptionalTypeOf(referencedNode);
     }
-    ASTCDAttribute refSymbolAttribute = getCDAttributeFacade().createAttribute(PROTECTED, symbolType, astcdAttribute.getName());
+    ASTCDAttribute refSymbolAttribute = getCDAttributeFacade().createAttribute(PROTECTED.build(), symbolType, astcdAttribute.getName());
     TransformationHelper.addStereotypeValue(refSymbolAttribute.getModifier(), MC2CDStereotypes.REFERENCED_SYMBOL.toString(), referencedSymbol);
     return accessorDecorator.decorate(refSymbolAttribute);
   }

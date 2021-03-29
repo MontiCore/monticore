@@ -425,12 +425,12 @@ public class GlobalExtensionManagement {
    */
   protected List<HookPoint> getTemplateForwardings(String templateName, ASTNode ast) {
     List<HookPoint> replacements = Lists.newArrayList();
-    Collection<HookPoint> before = this.before.get(templateName);
-    Collection<HookPoint> after = this.after.get(templateName);
+    Collection<HookPoint> beforeHooks = this.before.get(templateName);
+    Collection<HookPoint> afterHooks = this.after.get(templateName);
 
-    if (before != null) {
-      replacements.addAll(before);
-      Reporting.reportCallBeforeHookPoint(templateName, before, ast);
+    if (beforeHooks != null) {
+      replacements.addAll(beforeHooks);
+      Reporting.reportCallBeforeHookPoint(templateName, beforeHooks, ast);
     }
 
     List<HookPoint> hps = getSpecificReplacement(templateName, ast);
@@ -442,9 +442,9 @@ public class GlobalExtensionManagement {
     }
     replacements.addAll(hps);
 
-    if (after != null) {
-      replacements.addAll(after);
-      Reporting.reportCallAfterHookPoint(templateName, after, ast);
+    if (afterHooks != null) {
+      replacements.addAll(afterHooks);
+      Reporting.reportCallAfterHookPoint(templateName, afterHooks, ast);
     }
     return replacements;
   }

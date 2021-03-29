@@ -4,9 +4,10 @@ package mc.emf.emethods;
 
 import mc.GeneratorIntegrationsTest;
 import mc.feature.fautomaton.action.expression._ast.ASTAssignment;
-import mc.feature.fautomaton.action.expression._ast.ExpressionNodeFactory;
+import mc.feature.fautomaton.action.expression.ExpressionMill;
 import mc.feature.fautomaton.action.expression._ast.ExpressionPackage;
 import mc.feature.fautomaton.automaton.flatautomaton._ast.*;
+import mc.feature.fautomaton.automaton.flatautomaton.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -22,12 +23,12 @@ public class EGeterSeterTest extends GeneratorIntegrationsTest {
   
   @Before
   public void setUp() {
-    aut = FlatAutomatonNodeFactory.createASTAutomaton();
+    aut = FlatAutomatonMill.automatonBuilder().uncheckedBuild();
     aut.setName("aut1");
-    ASTState state1 = FlatAutomatonNodeFactory.createASTState();
-    ASTState state2 = FlatAutomatonNodeFactory.createASTState();
+    ASTState state1 = FlatAutomatonMill.stateBuilder().uncheckedBuild();
+    ASTState state2 = FlatAutomatonMill.stateBuilder().uncheckedBuild();
     
-    transition = FlatAutomatonNodeFactory.createASTTransition();
+    transition = FlatAutomatonMill.transitionBuilder().uncheckedBuild();
     
     aut.getStateList().add(state1);
     aut.getStateList().add(state2);
@@ -36,7 +37,7 @@ public class EGeterSeterTest extends GeneratorIntegrationsTest {
     state1.setName("state1");
     state2.setName("state2");
     
-    assign = ExpressionNodeFactory.createASTAssignment();
+    assign = ExpressionMill.assignmentBuilder().uncheckedBuild();
     assign.setValue("value");
   }
   

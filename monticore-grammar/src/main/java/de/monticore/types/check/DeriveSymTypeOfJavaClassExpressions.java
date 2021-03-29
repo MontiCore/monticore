@@ -286,6 +286,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
       if(typeCheckResult.isType()){
         typeCheckResult.reset();
         Log.error("0xA0262 the expression at source position "+node.getExpression().get_SourcePositionStart()+" cannot be a type");
+        return;
       }
     }else{
       logError("0xA0263",node.getExpression().get_SourcePositionStart());
@@ -313,7 +314,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
 
   @Override
   public void traverse(ASTInstanceofExpression node) {
-    SymTypeExpression wholeResult = null;
+    SymTypeExpression wholeResult;
 
     //calculate left type: expression that is to be checked for a specific type
     node.getExpression().accept(getTraverser());
@@ -321,6 +322,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
       if(typeCheckResult.isType()){
         typeCheckResult.reset();
         Log.error("0xA0267 the expression at source position "+node.getExpression().get_SourcePositionStart()+" cannot be a type");
+        return;
       }
     }else{
       typeCheckResult.reset();
@@ -693,6 +695,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
               if(result.isTypeConstant()){
                 if(!((SymTypeConstant) result).isIntegralType()){
                   logError("0xA0315", expr.get_SourcePositionStart());
+                  return;
                 }
               }else{
                 logError("0xA0316", expr.get_SourcePositionStart());

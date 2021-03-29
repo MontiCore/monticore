@@ -10,7 +10,7 @@ public class AutomataSymbols2Json
     extends AutomataSymbols2JsonTOP
     implements AutomataHandler {
 
-  public AutomataSymbols2Json(){
+  public AutomataSymbols2Json() {
     super();
     getTraverser().setAutomataHandler(this);
   }

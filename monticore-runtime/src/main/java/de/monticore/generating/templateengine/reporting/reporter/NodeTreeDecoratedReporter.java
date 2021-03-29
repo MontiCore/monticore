@@ -2,48 +2,42 @@
 
 package de.monticore.generating.templateengine.reporting.reporter;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import de.monticore.ast.ASTNode;
+import de.monticore.generating.templateengine.CodeHookPoint;
+import de.monticore.generating.templateengine.HookPoint;
+import de.monticore.generating.templateengine.StringHookPoint;
+import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.generating.templateengine.reporting.commons.*;
+import de.monticore.visitor.ITraverser;
+import de.se_rwth.commons.Names;
+
 import java.io.File;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-
-import de.monticore.ast.ASTNode;
-import de.monticore.generating.templateengine.CodeHookPoint;
-import de.monticore.generating.templateengine.HookPoint;
-import de.monticore.generating.templateengine.StringHookPoint;
-import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.generating.templateengine.reporting.commons.AReporter;
-import de.monticore.generating.templateengine.reporting.commons.MapUtil;
-import de.monticore.generating.templateengine.reporting.commons.ReportingConstants;
-import de.monticore.generating.templateengine.reporting.commons.ReportingHelper;
-import de.monticore.generating.templateengine.reporting.commons.ReportingRepository;
-import de.monticore.generating.templateengine.reporting.commons.TreePrintVisitor;
-import de.monticore.visitor.ITraverser;
-import de.se_rwth.commons.Names;
-
 /**
  */
 public class NodeTreeDecoratedReporter extends AReporter {
   
-  final static String INSTANTIATE_JAVA_CLASS = "inst";
+  static final String INSTANTIATE_JAVA_CLASS = "inst";
   
-  final static String GENERATES_FILE = "generates";
+  static final String GENERATES_FILE = "generates";
   
-  final static String USED_TEMPLATE = "template";
+  static final String USED_TEMPLATE = "template";
   
-  final static String TEMPLATE_HOOKPOINT = "THP";
+  static final String TEMPLATE_HOOKPOINT = "THP";
   
-  final static String SPECIFIC_TEMPLATE_HOOKPOINT = "ATHP";
+  static final String SPECIFIC_TEMPLATE_HOOKPOINT = "ATHP";
   
-  final static String SPECIFIC_STRING_HOOKPOINT = "ASHP";
+  static final String SPECIFIC_STRING_HOOKPOINT = "ASHP";
   
-  final static String SPECIFIC_CODE_HOOKPOINT = "ACHP";
+  static final String SPECIFIC_CODE_HOOKPOINT = "ACHP";
   
-  final static String SIMPLE_FILE_NAME = "11_NodeTreeDecorated";
+  static final String SIMPLE_FILE_NAME = "11_NodeTreeDecorated";
   
   private ReportingRepository repository;
   
@@ -100,17 +94,7 @@ public class NodeTreeDecoratedReporter extends AReporter {
     writeLine("after parsing. --> this is not yet reflected in the protocol");
     writeLine("(EOF)");
   }
-  
-  // @Override
-  // public void reportExecuteStandardTemplate(String templatename, ASTNode ast)
-  // {
-  // String aident = compactStr(ast);
-  // MapUtil.incMapValue(nodeVisits, aident);
-  // MapUtil.addToListMap(astNodeExtraInfos, aident, USED_TEMPLATE + " "
-  // + ReportingHelper.getTemplateName(templatename));
-  //
-  // }
-  
+
   /**
    * @see de.monticore.generating.templateengine.reporting.commons.DefaultReportEventHandler#reportCallHookPointStart(java.lang.String,
    * de.monticore.generating.templateengine.HookPoint, de.monticore.ast.ASTNode)
@@ -232,27 +216,14 @@ public class NodeTreeDecoratedReporter extends AReporter {
     }
     
   }
-  
+
   private void callSpecificHP(HookPoint hp, ASTNode ast) {
     if (hp != null) {
-//      if (hp instanceof StringHookPoint) {
-//        String aident = compactStr(ast);
-//        MapUtil.incMapValue(nodeVisits, aident);
-//        MapUtil.addToListMap(astNodeExtraInfos, aident, SPECIFIC_STRING_HOOKPOINT + " "
-//            + getHookPointValue(hp));
-//      }
-//      else if (hp instanceof CodeHookPoint) {
-//        String aident = compactStr(ast);
-//        MapUtil.incMapValue(nodeVisits, aident);
-//        MapUtil.addToListMap(astNodeExtraInfos, aident, SPECIFIC_CODE_HOOKPOINT + " "
-//            + getHookPointValue(hp));
-//      }
-//      else 
-        if (hp instanceof TemplateHookPoint) {
+      if (hp instanceof TemplateHookPoint) {
         String aident = compactStr(ast);
         MapUtil.incMapValue(nodeVisits, aident);
         MapUtil.addToListMap(astNodeExtraInfos, aident, SPECIFIC_TEMPLATE_HOOKPOINT + " "
-            + getHookPointValue(hp));
+                + getHookPointValue(hp));
       }
     }
   }

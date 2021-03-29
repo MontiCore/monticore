@@ -11,8 +11,6 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
  */
 public class BITSerStrategy {
 
-  protected static final String PRINT_PLAIN_TEMPLATE = "_symboltable.serialization.PrintPlainAttribute";
-
   protected static final String PRINT_LIST_TEMPLATE = "_symboltable.serialization.PrintListAttribute";
 
   protected static final String PRINT_OPT_TEMPLATE = "_symboltable.serialization.PrintOptionalAttribute";
@@ -21,26 +19,18 @@ public class BITSerStrategy {
 
   protected static final String READ_OPT_TEMPLATE = "_symboltable.serialization.ReadOptionalAttribute";
 
+  protected String defaultValue;  //for deserialization, if serialized String does not contain value.
+
   protected String type;
-
-  protected String defaultValue;
-
-  protected boolean useEquals;
 
   public BITSerStrategy(String type, String defaultValue) {
     this.type = type;
     this.defaultValue = defaultValue;
-    this.useEquals = false;
-  }
-
-  public BITSerStrategy(String type, String defaultValue, boolean useEquals) {
-    this.type = type;
-    this.defaultValue = defaultValue;
-    this.useEquals = useEquals;
   }
 
   public HookPoint getSerialHook(String attrParam) {
-    return new TemplateHookPoint(PRINT_PLAIN_TEMPLATE, attrParam, defaultValue, useEquals);
+    String hp = String.format("s2j.getJsonPrinter().member(\"%s\", %s);", attrParam, attrParam);
+    return new StringHookPoint(hp);
   }
 
   public HookPoint getOptSerialHook(String attrParam) {

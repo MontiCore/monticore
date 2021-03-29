@@ -2,9 +2,9 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.*;
@@ -89,7 +89,7 @@ public class ExtendsTranslation implements
     for (ASTRuleReference ruleReference : interfaceProd.getSuperInterfaceRuleList()) {
       ProdSymbol ruleSymbol = MCGrammarSymbolTableHelper.resolveRule(astGrammar, ruleReference.getName()).get();
       String packageName = getPackageName(ruleSymbol);
-      cdInterface.getInterfaceList().add(TransformationHelper.createObjectType(
+      cdInterface.addInterface(TransformationHelper.createObjectType(
           packageName + "AST" + ruleReference.getName()));
     }
 
@@ -98,8 +98,7 @@ public class ExtendsTranslation implements
     for (ASTMCType typeReference : interfaceProd.getASTSuperInterfaceList()) {
       qualifiedRuleName = TransformationHelper.getQualifiedTypeNameAndMarkIfExternal(
           typeReference, astGrammar, cdInterface);
-      cdInterface.getInterfaceList().add(
-          TransformationHelper.createObjectType(qualifiedRuleName));
+      cdInterface.addInterface(TransformationHelper.createObjectType(qualifiedRuleName));
     }
   }
 }

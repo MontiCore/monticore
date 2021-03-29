@@ -10,7 +10,7 @@ import org.junit.Test;
 import mc.GeneratorIntegrationsTest;
 import mc.feature.fautomaton.action.expression._ast.ASTComplexAssigment;
 import mc.feature.fautomaton.action.expression._ast.ASTValue;
-import mc.feature.fautomaton.action.expression._ast.ExpressionNodeFactory;
+import mc.feature.fautomaton.action.expression.ExpressionMill;
 import mc.feature.fautomaton.action.expression._ast.ExpressionPackage;
 
 
@@ -20,7 +20,7 @@ public class FeatureIDConversionTest extends GeneratorIntegrationsTest {
   
   @Before
   public void setUp() throws Exception {
-    ast = ExpressionNodeFactory.createASTComplexAssigment();
+    ast = ExpressionMill.complexAssigmentBuilder().uncheckedBuild();
   }
   
   // TODO GV

@@ -1,9 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._symboltable;
 
-import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.cd.prettyprint.CD4CodePrinter;
+import de.monticore.cdbasis._ast.*;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.AbstractService;
+import de.monticore.codegen.cd2java.CdUtilsPrinter;
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.builder.BuilderDecorator;
@@ -20,6 +21,7 @@ import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.IterablePath;
+import de.monticore.umlmodifier._ast.ASTModifier;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
@@ -58,15 +60,11 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
 
   @Before
   public void setUp() {
-    // to be issued (the warnings are not checked)
-    LogStub.init();         // replace log by a sideffect free variant
-//     LogStub.initPlusLog();  // for manual testing purpose only
-//    Log.enableFailQuick(false);
     this.glex = new GlobalExtensionManagement();
     IterablePath targetPath = Mockito.mock(IterablePath.class);
 
     this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
-    this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
+    this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
     decoratedASTCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "Automaton");
     decoratedScopeCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "AutomatonScopeCD");
     decoratedSymbolCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "AutomatonSymbolCD");
@@ -130,11 +128,15 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
     this.symTabCDComponent = mockDecorator.decorate(decoratedASTCompilationUnit, decoratedSymbolCompilationUnit, decoratedScopeCompilationUnit);
   }
 
+
   @Test
   public void testCompilationUnitNotChanged() {
+    // TODO NJ: Remove the following loc as soon as stereotype deep equals is fixed
+    String cachedValue = ((ASTCDClass) originalASTCompilationUnit.getCDDefinition().getCDElement(6)).getModifier().getStereotype().getValues(0).getValue();
+
     assertDeepEquals(originalASTCompilationUnit, decoratedASTCompilationUnit);
-    assertDeepEquals(originalSymbolCompilationUnit, originalSymbolCompilationUnit);
-    assertDeepEquals(originalScopeCompilationUnit, originalScopeCompilationUnit);
+    assertDeepEquals(originalSymbolCompilationUnit, decoratedSymbolCompilationUnit);
+    assertDeepEquals(originalScopeCompilationUnit, decoratedScopeCompilationUnit);
   }
 
   @Test
@@ -144,7 +146,7 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testClassCount() {
-    assertEquals(27, symTabCD.getCDDefinition().getCDClassList().size());
+    assertEquals(27, symTabCD.getCDDefinition().getCDClassesList().size());
   }
 
   @Test
@@ -175,7 +177,7 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testInterfaceCount() {
-    assertEquals(7, symTabCD.getCDDefinition().getCDInterfaceList().size());
+    assertEquals(7, symTabCD.getCDDefinition().getCDInterfacesList().size());
   }
 
   @Test
@@ -191,7 +193,7 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testNoEnum() {
-    assertTrue(symTabCD.getCDDefinition().isEmptyCDEnums());
+    assertTrue(symTabCD.getCDDefinition().getCDEnumsList().isEmpty());
   }
 
   @Test
@@ -219,7 +221,7 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testClassCountWithHC() {
-    assertEquals(27, symTabCDWithHC.getCDDefinition().getCDClassList().size());
+    assertEquals(27, symTabCDWithHC.getCDDefinition().getCDClassesList().size());
   }
 
   @Test
@@ -245,7 +247,7 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testInterfaceCountWithHC() {
-    assertEquals(7, symTabCDWithHC.getCDDefinition().getCDInterfaceList().size());
+    assertEquals(7, symTabCDWithHC.getCDDefinition().getCDInterfacesList().size());
   }
 
   @Test
@@ -261,7 +263,7 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testNoEnumWithHC() {
-    assertTrue(symTabCDWithHC.getCDDefinition().isEmptyCDEnums());
+    assertTrue(symTabCDWithHC.getCDDefinition().getCDEnumsList().isEmpty());
   }
 
   @Test
@@ -271,7 +273,7 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testClassCountComponent() {
-    assertEquals(27, symTabCDComponent.getCDDefinition().getCDClassList().size());
+    assertEquals(27, symTabCDComponent.getCDDefinition().getCDClassesList().size());
   }
 
   @Test
@@ -293,7 +295,7 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testInterfaceCountComponent() {
-    assertEquals(7, symTabCDComponent.getCDDefinition().getCDInterfaceList().size());
+    assertEquals(7, symTabCDComponent.getCDDefinition().getCDInterfacesList().size());
   }
 
   @Test
@@ -309,6 +311,6 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testNoEnumComponent() {
-    assertTrue(symTabCDComponent.getCDDefinition().isEmptyCDEnums());
+    assertTrue(symTabCDComponent.getCDDefinition().getCDEnumsList().isEmpty());
   }
 }

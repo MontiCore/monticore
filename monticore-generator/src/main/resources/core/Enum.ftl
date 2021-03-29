@@ -4,7 +4,7 @@ ${tc.signature("cdEnum")}
 ${tc.include("core.Package")}
 
 ${tc.include("core.Annotations")}
-public enum ${cdEnum.getName()}<#if !cdEnum.isEmptyInterface()> implements ${cdEnum.printInterfaces()}</#if> {
+public enum ${cdEnum.getName()}<#if !cdEnum.isEmptyInterfaceList()> implements ${cdEnum.printInterfaces()}</#if> {
 
 <#list cdEnum.getCDEnumConstantList() as constants>
   ${tc.include("core.EmptyConstants", constants)}<#if !constants?is_last>,</#if>

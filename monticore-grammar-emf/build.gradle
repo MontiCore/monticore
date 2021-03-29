@@ -7,6 +7,10 @@ plugins {
 
 description = 'MontiCore: EMF Grammar'
 
+sonarqube {
+  skipProject = true
+}
+
 dependencies {
     api project(':monticore-runtime')
     api project(':monticore-runtime-emf')
@@ -60,10 +64,6 @@ fileTree(grammarDir).matching { include '**/*.mc4'}.each {
     outputDir = file grammarOutDir
     modelPath "${project(':monticore-grammar').projectDir}/src/main/grammars"
     handcodedPath srcDir
-  
-    if(findProperty("ci")!= null) {
-      script = "de/monticore/monticore_noreports.groovy"
-    }
     def uptoDate = incCheck(getGrammarInclPackage(grammarDir, g))
     outputs.upToDateWhen { uptoDate }
   }
@@ -84,9 +84,6 @@ fileTree(testGrammars).matching { include '**/*.mc4'}.each {
     handcodedPath srcDir, testDir
     script = "de/monticore/monticore_emf.groovy"
     modelPath "$grammarDir", "${project(':monticore-grammar').projectDir}/src/main/examples"
-    if(findProperty("ci")!= null) {
-      script = "de/monticore/monticore_noreports.groovy"
-    }
     def grammarIncludingPackage = file(testGrammars).toURI().relativize(g.toURI()).toString()
     def uptoDate = incCheck(grammarIncludingPackage)
     outputs.upToDateWhen { uptoDate }
@@ -105,9 +102,6 @@ fileTree(exampleGrammars).matching { include '**/*.mc4'}.each {
     script = "de/monticore/monticore_emf.groovy"
     handcodedPath srcDir
     modelPath "$grammarDir", "${project(':monticore-grammar').projectDir}/src/main/examples"
-    if(findProperty("ci")!= null) {
-      script = "de/monticore/monticore_noreports.groovy"
-    }
     def grammarIncludingPackage = file(exampleGrammars).toURI().relativize(g.toURI()).toString()
     def uptoDate = incCheck(grammarIncludingPackage)
     outputs.upToDateWhen { uptoDate }

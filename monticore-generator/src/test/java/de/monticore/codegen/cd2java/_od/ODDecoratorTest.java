@@ -4,11 +4,11 @@ package de.monticore.codegen.cd2java._od;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
-import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
-import de.monticore.cd.prettyprint.CD4CodePrinter;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.codegen.cd2java.CdUtilsPrinter;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
@@ -25,7 +25,7 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static de.monticore.cd.facade.CDModifier.*;
+import static de.monticore.codegen.cd2java.CDModifier.*;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertBoolean;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
@@ -79,7 +79,7 @@ public class ODDecoratorTest extends DecoratorTestCase {
     this.odClass = decorator.decorate(decoratedCompilationUnit);
     this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
     this.glex.setGlobalValue("service", new ODService(decoratedCompilationUnit));
-    this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
+    this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
   }
 
   @Test
@@ -107,12 +107,12 @@ public class ODDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeSize() {
-    assertEquals(5, odClass.sizeCDAttributes());
+    assertEquals(5, odClass.getCDAttributeList().size());
   }
 
   @Test
   public void testMethodCount() {
-    assertEquals(14, odClass.sizeCDMethods());
+    assertEquals(14, odClass.getCDMethodList().size());
   }
 
   @Test
@@ -122,12 +122,12 @@ public class ODDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testInterfaceCount() {
-    assertEquals(2, odClass.sizeInterface());
+    assertEquals(2, odClass.getInterfaceList().size());
   }
 
   @Test
   public void testImplementsVisitorInterface() {
-    assertDeepEquals(VISITOR_FULL_NAME, odClass.getInterface(0));
+    assertDeepEquals(VISITOR_FULL_NAME, odClass.getCDInterfaceUsage().getInterface(0));
   }
 
   /**

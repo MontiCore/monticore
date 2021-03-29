@@ -1,9 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._cocos;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDType;
-import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDType;
+import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
@@ -13,7 +13,7 @@ public class CoCoService extends AbstractService<CoCoService> {
     super(compilationUnit);
   }
 
-  public CoCoService(CDDefinitionSymbol cdSymbol) {
+  public CoCoService(DiagramSymbol cdSymbol) {
     super(cdSymbol);
   }
 
@@ -27,11 +27,11 @@ public class CoCoService extends AbstractService<CoCoService> {
   }
 
   @Override
-  protected CoCoService createService(CDDefinitionSymbol cdSymbol) {
+  protected CoCoService createService(DiagramSymbol cdSymbol) {
     return createCoCoService(cdSymbol);
   }
 
-  public static CoCoService createCoCoService(CDDefinitionSymbol cdSymbol) {
+  public static CoCoService createCoCoService(DiagramSymbol cdSymbol) {
     return new CoCoService(cdSymbol);
   }
 
@@ -64,7 +64,7 @@ public class CoCoService extends AbstractService<CoCoService> {
     return getCDName() + CoCoConstants.COCO_CHECKER_SUFFIX;
   }
 
-  public String getCheckerSimpleTypeName(CDDefinitionSymbol cdSymbol) {
+  public String getCheckerSimpleTypeName(DiagramSymbol cdSymbol) {
     return cdSymbol.getName() + CoCoConstants.COCO_CHECKER_SUFFIX;
   }
 
@@ -72,7 +72,7 @@ public class CoCoService extends AbstractService<CoCoService> {
     return String.join(".", getPackage(), getCheckerSimpleTypeName());
   }
 
-  public String getCheckerFullTypeName(CDDefinitionSymbol cdSymbol) {
+  public String getCheckerFullTypeName(DiagramSymbol cdSymbol) {
     return String.join(".", getPackage(cdSymbol), getCheckerSimpleTypeName(cdSymbol));
   }
 

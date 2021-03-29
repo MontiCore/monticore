@@ -5,7 +5,7 @@ ${tc.include("core.Package")}
 ${tc.include("core.Imports")}
 
 ${packageInterface.printModifier()} interface ${packageInterface.getName()} <#rt><#lt>
-<#if !packageInterface.isEmptyInterface()>extends ${packageInterface.printInterfaces()} </#if>{
+<#if !packageInterface.isEmptyInterfaceList()>extends ${packageInterface.printInterfaces()} </#if>{
 
 
 <#list packageInterface.getCDAttributeList() as attribute>
@@ -18,10 +18,10 @@ ${packageInterface.printModifier()} interface ${packageInterface.getName()} <#rt
 
   interface Literals {
     org.eclipse.emf.ecore.EEnum Constants${astCDDefinition.getName()} = eINSTANCE.getConstants${astCDDefinition.getName()}();
-    <#list astCDDefinition.getCDClassList() as cdClass>
+    <#list astCDDefinition.getCDClassesList() as cdClass>
       org.eclipse.emf.ecore.EClass ${cdClass.getName()} = eINSTANCE.get${cdClass.getName()}();
     </#list>
-    <#list astCDDefinition.getCDInterfaceList() as cdInterface>
+    <#list astCDDefinition.getCDInterfacesList() as cdInterface>
         <#if cdInterface.getName() != "AST"+ astCDDefinition.getName() + "Node">
       org.eclipse.emf.ecore.EClass ${cdInterface.getName()} = eINSTANCE.get${cdInterface.getName()}();
         </#if>

@@ -2,8 +2,6 @@
 
 package de.monticore.grammar;
 
-import java.util.Optional;
-
 import de.monticore.grammar.grammar._ast.ASTRuleReference;
 
 public class PredicatePair {

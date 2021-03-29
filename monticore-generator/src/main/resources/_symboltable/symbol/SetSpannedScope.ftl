@@ -1,3 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-  this.spannedScope = scope;
-  this.spannedScope.setSpanningSymbol(this);
+  if (scope != null) {
+    this.spannedScope = scope;
+    this.spannedScope.setSpanningSymbol(this);
+  }

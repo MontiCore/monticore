@@ -10,7 +10,6 @@ import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Checks if nonterminals with an override annotation really overrides a class
@@ -19,7 +18,7 @@ public class OverridingNTHasNoAnnotation implements GrammarASTMCGrammarCoCo {
 
   public static final String ERROR_CODE = "0xA4098";
 
-  public static final String ERROR_MSG_FORMAT = " The production %s overrides production %s without annotation.";
+  public static final String ERROR_MSG_FORMAT = "Warning: The production %s overrides production %s without annotation.";
 
   @Override
   public void check(ASTMCGrammar a) {

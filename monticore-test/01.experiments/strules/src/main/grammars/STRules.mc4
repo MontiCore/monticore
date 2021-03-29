@@ -10,7 +10,7 @@ grammar STRules extends de.monticore.MCBasics {
 
   symbol S3 extends S1 = "archive" Name "{" (S1 | S2)* "}";
 
-  symbolrule S1 = a:AType b:java.lang.String? ;
+  symbolrule S1 = a:AType ao:AType? al:AType* b:java.lang.String? ;
 
   symbolrule S2 =  c:int*
                    method public int sumCs() {

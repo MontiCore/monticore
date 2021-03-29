@@ -4,7 +4,10 @@ package de.monticore
 import com.google.common.hash.Hashing
 import com.google.common.io.Files
 import de.monticore.cli.MontiCoreCLI
+import de.se_rwth.commons.logging.Finding
+import de.se_rwth.commons.logging.Log
 import org.gradle.api.DefaultTask
+import org.gradle.api.GradleException
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
@@ -13,6 +16,9 @@ import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.*
 import org.gradle.work.Incremental
 import org.gradle.work.InputChanges
+
+import java.security.Permission
+import java.util.stream.Collectors
 
 /**
  * A Gradle task that executes the MontiCore generator.
@@ -93,7 +99,7 @@ abstract public class MCTask extends DefaultTask {
     return superGrammars
   }
   
-  @InputFiles
+  @Input
   @Optional
   List<String> getHandcodedPath() {
     return handcodedPath
@@ -239,8 +245,28 @@ abstract public class MCTask extends DefaultTask {
     }
     def p = params.toArray() as String[]
     
-    // execute Monticore with the given parameters
-    MontiCoreCLI.main(p)
+    
+    System.setSecurityManager(new SecurityManager()
+      {
+        @Override public void checkExit(int status) {
+          throw new MCTaskError()
+        }
+    
+        @Override public void checkPermission(Permission perm) {
+          // Allow other activities by default
+        }
+    })
+    try {
+      // execute Monticore with the given parameters
+      MontiCoreCLI.main(p)
+    } catch(MCTaskError e){
+      // in case of failure print the error and fail
+      String error = Log.getFindings().stream().
+              filter({f -> f.getType().equals(Finding.Type.ERROR)})
+              .map({f -> f.getMsg()})
+              .collect(Collectors.joining("\n"))
+      ant.fail(error)
+    }
   }
   
   /**
@@ -309,4 +335,14 @@ abstract public class MCTask extends DefaultTask {
             : file;
   }
   
+}
+
+/**
+ * This is only needed to prevent elongated stacktraces
+ */
+class MCTaskError extends Throwable {
+  @Override
+  public synchronized Throwable fillInStackTrace() {
+    return this;
+  }
 }
