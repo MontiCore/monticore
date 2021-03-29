@@ -114,6 +114,10 @@ test {
   exclude '**/GrammarNameEqualsFileNameTest.class'
   exclude '**/MCGrammarParserTest.class'
   exclude '**/MCGrammarPrettyPrinterTest.class'
+  exclude '**/SynthesizeSymTypeFromMCBasicTypesTest.class'
+  exclude '**/SynthesizeSymTypeFromMCCollectionTypesTest.class'
+  exclude '**/SynthesizeSymTypeFromMCSimpleGenericTypesTest.class'
+  exclude '**/MCType2SymTypeExpressionTest.class'
 }
 
 compileTestJava.dependsOn (generateTest)
