@@ -250,7 +250,7 @@ public class MontiCoreStandardCLI {
       } else {
         // otherwise, we load the default script
         ClassLoader l = MontiCoreScript.class.getClassLoader();
-        script = Resources.asCharSource(l.getResource("de/monticore/monticore_noemf.groovy"),
+        script = Resources.asCharSource(l.getResource("de/monticore/monticore_standard.groovy"),
             Charset.forName("UTF-8")).read();
       }
     }
