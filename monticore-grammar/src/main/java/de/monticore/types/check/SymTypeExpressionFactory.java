@@ -7,8 +7,10 @@ import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
 import de.se_rwth.commons.logging.Log;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.Optional;
 
 import static de.monticore.symbols.basicsymbols.BasicSymbolsMill.PRIMITIVE_LIST;
@@ -86,37 +88,33 @@ public class SymTypeExpressionFactory {
    * creates an array-Type Expression
    *
    * @param typeSymbol
-   * @param dim              the dimension of the array
-   * @param argument         the argument type (of the elements)
+   * @param dim        the dimension of the array
+   * @param argument   the argument type (of the elements)
    * @return
    */
   public static SymTypeArray createTypeArray(TypeSymbol typeSymbol, int dim,
-      SymTypeExpression argument) {
+                                             SymTypeExpression argument) {
     return new SymTypeArray(typeSymbol, dim, argument);
   }
 
   public static SymTypeArray createTypeArray(String name, IBasicSymbolsScope typeSymbolsScope,
-      int dim, SymTypeExpression argument) {
+                                             int dim, SymTypeExpression argument) {
     TypeSymbol typeSymbol = new TypeSymbolSurrogate(name);
     typeSymbol.setEnclosingScope(typeSymbolsScope);
     return new SymTypeArray(typeSymbol, dim, argument);
   }
 
-  public static SymTypeExpression createTypeExpression(TypeSymbol typeSymbol){
+  public static SymTypeExpression createTypeExpression(TypeSymbol typeSymbol) {
     SymTypeExpression o;
     if(PRIMITIVE_LIST.contains(typeSymbol.getName())){
       o = createTypeConstant(typeSymbol.getName());
-    }
-    else if ("void".equals(typeSymbol.getName())) {
+    } else if ("void".equals(typeSymbol.getName())) {
       o = createTypeVoid();
-    }
-    else if ("null".equals(typeSymbol.getName())) {
+    } else if ("null".equals(typeSymbol.getName())) {
       o = createTypeOfNull();
-    }
-    else if (typeSymbol.getTypeParameterList().isEmpty()) {
+    } else if (typeSymbol.getTypeParameterList().isEmpty()) {
       o = createTypeObject(typeSymbol);
-    }
-    else {
+    } else {
       o = createGenerics(typeSymbol);
     }
     return o;
@@ -133,17 +131,70 @@ public class SymTypeExpressionFactory {
    */
   public static SymTypeExpression createTypeExpression(String name, IBasicSymbolsScope scope) {
     SymTypeExpression o;
-    if ("void".equals(name)) {
+    if (PRIMITIVE_LIST.contains(name)) {
+      o = createTypeConstant(name);
+    }
+    else if ("void".equals(name)) {
       o = createTypeVoid();
-    }
-    else if ("null".equals(name)) {
+    } else if ("null".equals(name)) {
       o = createTypeOfNull();
-    }
-    else {
+    } else if (name.contains("<")) {
+      o = createGenericsFromString(name, scope);
+    } else {
       o = createTypeObject(name, scope);
     }
     return o;
   }
+
+  private static SymTypeExpression createGenericsFromString(String type, IBasicSymbolsScope scope) {
+    int start = type.indexOf("<");
+    if (start == -1) {
+      return SymTypeExpressionFactory.createTypeExpression(type, scope);
+    }
+    assert type.length() - start > 1;
+    List<String> betweenBrackets = iterateBrackets(type, start);
+    String beforeBrackets = type.substring(0, start);
+    return SymTypeExpressionFactory.createGenerics(beforeBrackets, scope, getSubGenerics(betweenBrackets, scope));
+  }
+
+  /**
+   * recursively calls {@link #createGenericsFromString(String, IBasicSymbolsScope)} (String, IBasicSymbolsScope)}.
+   * If that method for example received {@code Map<String, List<String>>} this Method should get {@code [String, List<String>]} as parameter
+   * @param inBrackets list of generics nested one level
+   */
+  private static List<SymTypeExpression> getSubGenerics(List<String> inBrackets, IBasicSymbolsScope scope){
+    return inBrackets.stream()
+        .map(String::trim)
+        .map(name -> createGenericsFromString(name, scope))
+        .collect(Collectors.toList());
+  }
+
+  /**
+   * splits the type-string along commas, but only on such that are on the first depth of generics
+   * @param type type-string, like {@code Map<Double, HashMap<String, Integer>>}
+   * @param start first occurrence of an opening generic
+   * @return all first sub-generics as a list, like {@code [Double; HashMap<String, Integer>]}
+   */
+  private static List<String> iterateBrackets(String type, int start){
+    List<String> list = new ArrayList<>();
+    int depth = 0;
+    for(int i = 0; i < type.toCharArray().length; i++) {
+      char c = type.toCharArray()[i];
+      if(c == '<'){
+        depth++;
+      }
+      if(depth == 1 && (c == ',' || c == '>')){
+        list.add(type.substring(start+1, i));
+        start = i;
+      }
+      if(c == '>'){
+        depth--;
+      }
+    }
+    return list;
+  }
+
+
 
   /**
    * createGenerics: for a generic Type
@@ -155,12 +206,12 @@ public class SymTypeExpressionFactory {
   }
 
   public static SymTypeOfGenerics createGenerics(TypeSymbol typeSymbol,
-      List<SymTypeExpression> arguments) {
+                                                 List<SymTypeExpression> arguments) {
     return new SymTypeOfGenerics(typeSymbol, arguments);
   }
 
   public static SymTypeOfGenerics createGenerics(TypeSymbol typeSymbol,
-      SymTypeExpression... arguments) {
+                                                 SymTypeExpression... arguments) {
     return new SymTypeOfGenerics(typeSymbol, Arrays.asList(arguments));
   }
 
@@ -174,25 +225,25 @@ public class SymTypeExpressionFactory {
   }
 
   public static SymTypeOfGenerics createGenerics(String name, IBasicSymbolsScope enclosingScope,
-      List<SymTypeExpression> arguments) {
+                                                 List<SymTypeExpression> arguments) {
     TypeSymbol typeSymbol = new TypeSymbolSurrogate(name);
     typeSymbol.setEnclosingScope(enclosingScope);
     return new SymTypeOfGenerics(typeSymbol, arguments);
   }
 
   public static SymTypeOfGenerics createGenerics(String name, IBasicSymbolsScope enclosingScope,
-      SymTypeExpression... arguments) {
+                                                 SymTypeExpression... arguments) {
     TypeSymbol typeSymbol = new TypeSymbolSurrogate(name);
     typeSymbol.setEnclosingScope(enclosingScope);
     return new SymTypeOfGenerics(typeSymbol,
         Arrays.asList(arguments));
   }
 
-  public static SymTypeOfWildcard createWildcard(boolean isUpper, SymTypeExpression bound){
-    return new SymTypeOfWildcard(isUpper,bound);
+  public static SymTypeOfWildcard createWildcard(boolean isUpper, SymTypeExpression bound) {
+    return new SymTypeOfWildcard(isUpper, bound);
   }
 
-  public static SymTypeOfWildcard createWildcard(){
+  public static SymTypeOfWildcard createWildcard() {
     return new SymTypeOfWildcard();
   }
 }

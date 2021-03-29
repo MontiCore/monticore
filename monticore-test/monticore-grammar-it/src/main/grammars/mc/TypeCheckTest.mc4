@@ -1,0 +1,36 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc;
+
+grammar TypeCheckTest extends de.monticore.types.MCSimpleGenericTypes,
+                                        de.monticore.expressions.CommonExpressions,
+                                        de.monticore.expressions.AssignmentExpressions,
+                                        de.monticore.expressions.BitExpressions,
+                                        de.monticore.literals.MCCommonLiterals,
+                                        de.monticore.symbols.OOSymbols {
+
+  TCCompilationUnit = MCPackageDeclaration?
+                      MCImportStatement*
+                      TCArtifact;
+
+  interface TCElement;
+
+  scope symbol TCArtifact implements Type = "tc" Name ("extends" superType:MCType)?    "{" TCElement* "}";
+
+  FormalParameters = "(" FormalParameter* ")";
+
+  FormalParameter = MCType Name;
+
+  TCBlock = (TCVarDecl | Expression)*;
+
+  scope symbol TCMethod implements TCElement,Function = ["static"]? MCReturnType
+                                                         Name
+                                                         FormalParameters
+                                                         "{" TCBlock "}";
+
+  symbol TCVarDecl implements TCElement,Variable = ["static"]? MCType Name ("=" Expression)?;
+
+  symbolrule TCMethod = isStatic:boolean;
+
+  symbolrule TCVarDecl = isStatic:boolean;
+
+}

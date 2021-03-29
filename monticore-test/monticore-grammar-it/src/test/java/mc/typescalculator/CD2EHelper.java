@@ -17,6 +17,7 @@ import mc.testcd4analysis._symboltable.CDFieldSymbol;
 import mc.testcd4analysis._symboltable.CDMethOrConstrSymbol;
 import mc.testcd4analysis._symboltable.CDTypeSymbol;
 import mc.testcd4analysis._symboltable.CDTypeSymbolSurrogate;
+import mc.typescalculator.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 
 import java.util.HashMap;
 import java.util.List;
@@ -110,6 +111,7 @@ public class CD2EHelper {
       MethodSymbol methodSymbol = OOSymbolsMill.methodSymbolBuilder()
           .setName(cdMethOrConstrSymbol.getName())
           .build();
+      methodSymbol.setSpannedScope(CombineExpressionsWithLiteralsMill.scope());
       methodSymbolMap.put(cdMethOrConstrSymbol.getName(), methodSymbol);
       // add return type
       SymTypeExpression returnType = createSymTypeExpressionFormCDTypeSymbolReference(cdMethOrConstrSymbol.getReturnType());

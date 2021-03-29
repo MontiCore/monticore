@@ -10,7 +10,7 @@ import mc.typescalculator.combineexpressionswithliterals._visitor.CombineExpress
 
 import java.util.Optional;
 
-public class CombineExpressionsWithLiteralsTypesCalculator implements ITypesCalculator {
+public class CombineExpressionsWithLiteralsTypesCalculator implements IDerive {
 
   private CombineExpressionsWithLiteralsTraverser traverser;
 
@@ -33,36 +33,12 @@ public class CombineExpressionsWithLiteralsTypesCalculator implements ITypesCalc
     init();
   }
 
-  public Optional<SymTypeExpression> calculateType(ASTExpression e){
-    e.accept(traverser);
-    Optional<SymTypeExpression> last = Optional.empty();
-    if (typeCheckResult.isPresentCurrentResult()) {
-      last = Optional.ofNullable(typeCheckResult.getCurrentResult());
-    }
-    typeCheckResult.reset();
-    return last;
-  }
-
   @Override
-  public Optional<SymTypeExpression> calculateType(ASTLiteral lit) {
-    lit.accept(traverser);
-    Optional<SymTypeExpression> last = Optional.empty();
-    if (typeCheckResult.isPresentCurrentResult()) {
-      last = Optional.ofNullable(typeCheckResult.getCurrentResult());
+  public Optional<SymTypeExpression> getResult() {
+    if(typeCheckResult.isPresentCurrentResult()){
+      return Optional.ofNullable(typeCheckResult.getCurrentResult());
     }
-    typeCheckResult.reset();
-    return last;
-  }
-
-  @Override
-  public Optional<SymTypeExpression> calculateType(ASTSignedLiteral lit) {
-    lit.accept(traverser);
-    Optional<SymTypeExpression> last = Optional.empty();
-    if (typeCheckResult.isPresentCurrentResult()) {
-      last = Optional.ofNullable(typeCheckResult.getCurrentResult());
-    }
-    typeCheckResult.reset();
-    return last;
+    return Optional.empty();
   }
 
   @Override

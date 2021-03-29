@@ -10,7 +10,7 @@ import mylang._visitor.MyLangTraverser;
 
 import java.util.Optional;
 
-public class DeriveFromMyLang implements ITypesCalculator {
+public class DeriveFromMyLang implements IDerive {
   
   protected MyLangTraverser traverser;
   protected TypeCheckResult typeCheckResult;
@@ -35,42 +35,11 @@ public class DeriveFromMyLang implements ITypesCalculator {
     traverser.add4MCCommonLiterals(commonliterals);
   }
   
-  @Override public ExpressionsBasisTraverser getTraverser() {
+  @Override public MyLangTraverser getTraverser() {
     return traverser;
   }
   
-  @Override
-  public Optional<SymTypeExpression> calculateType(ASTLiteral lit) {
-    init();
-    lit.accept(traverser);
-    Optional<SymTypeExpression> result = Optional.empty();
-    if (typeCheckResult.isPresentCurrentResult()) {
-      result = Optional.ofNullable(typeCheckResult.getCurrentResult());
-    }
-    typeCheckResult.reset();
-    return result;
-  }
-  
-  @Override
-  public Optional<SymTypeExpression> calculateType(ASTSignedLiteral lit) {
-    init();
-    lit.accept(traverser);
-    Optional<SymTypeExpression> result = Optional.empty();
-    if (typeCheckResult.isPresentCurrentResult()) {
-      result = Optional.ofNullable(typeCheckResult.getCurrentResult());
-    }
-    typeCheckResult.reset();
-    return result;
-  }
-  
-  public Optional<SymTypeExpression> calculateType(ASTExpression e){
-    init();
-    e.accept(traverser);
-    Optional<SymTypeExpression> result = Optional.empty();
-    if (typeCheckResult.isPresentCurrentResult()) {
-      result = Optional.ofNullable(typeCheckResult.getCurrentResult());
-    }
-    typeCheckResult.reset();
-    return result;
+  @Override public Optional<SymTypeExpression> getResult(){
+    return typeCheckResult.isPresentCurrentResult() ? Optional.ofNullable(typeCheckResult.getCurrentResult()) : Optional.empty();
   }
 }

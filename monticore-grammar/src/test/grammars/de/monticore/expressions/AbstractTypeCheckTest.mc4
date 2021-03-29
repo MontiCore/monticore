@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.expressions;
+
+grammar AbstractTypeCheckTest extends
+          de.monticore.expressions.CommonExpressions,
+          de.monticore.literals.MCCommonLiterals,
+          de.monticore.symbols.BasicSymbols {
+
+  start Expression;
+
+}
