@@ -249,7 +249,7 @@ public class MontiCoreScriptTest {
         .fromSplitMap(CLIArguments.forArguments(args).asMap());
     MontiCoreConfiguration cfg = MontiCoreConfiguration.withConfiguration(configuration);
     new MontiCoreScript().run(cfg);
-    // Reporting is enabled in the monticore_noemf.groovy script but needs to be disabled for other tests
+    // Reporting is enabled in the monticore_standard.groovy script but needs to be disabled for other tests
     // because Reporting is static directly disable it again here
     Reporting.off();
     assertTrue(!false);
@@ -260,7 +260,7 @@ public class MontiCoreScriptTest {
         .fromSplitMap(CLIArguments.forArguments(args).asMap());
     MontiCoreConfiguration cfg = MontiCoreConfiguration.withConfiguration(configuration);
     new MontiCoreScript().run_emf(cfg);
-    // Reporting is enabled in the monticore_noemf.groovy script but needs to be disabled for other tests
+    // Reporting is enabled in the monticore_standard.groovy script but needs to be disabled for other tests
     // because Reporting is static directly disable it again here
     Reporting.off();
     assertTrue(!false);

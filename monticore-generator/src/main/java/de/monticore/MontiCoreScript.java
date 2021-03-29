@@ -135,7 +135,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   public void run(Configuration configuration) {
     try {
       ClassLoader l = MontiCoreScript.class.getClassLoader();
-      String script = Resources.asCharSource(l.getResource("de/monticore/monticore_noemf.groovy"),
+      String script = Resources.asCharSource(l.getResource("de/monticore/monticore_standard.groovy"),
               Charset.forName("UTF-8")).read();
       run(script, configuration);
     } catch (IOException e) {
@@ -938,19 +938,19 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
   /**
    * Generates the Java artifacts for the given class diagrams.
-   * 
+   *
    * @param glex The global extension management
    * @param oldCDs The basic class diagrams for AST, symbols and scope
    * @param cds A list of input class diagrams to generate code for
    * @param outputDirectory The corresponding output directory
    * @param handcodedPath The path to hand-coded java artifacts
    */
-  public void generateFromCD(GlobalExtensionManagement glex, List<ASTCDCompilationUnit> oldCDs, 
+  public void generateFromCD(GlobalExtensionManagement glex, List<ASTCDCompilationUnit> oldCDs,
       List<ASTCDCompilationUnit> cds, File outputDirectory, IterablePath handcodedPath) {
     // we precisely know the list of old CDs, which will be merged to a single
     // CD in the future
     ASTCDCompilationUnit oldCD = oldCDs.get(0);
-    
+
     // generate from CDs
     for (ASTCDCompilationUnit cd : cds) {
       generateFromCD(glex, oldCD, cd, outputDirectory, handcodedPath);
@@ -975,25 +975,25 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
   /**
    * Generates the Java artifacts for the given class diagrams.
-   * 
+   *
    * @param glex The global extension management
    * @param oldCDs The basic class diagrams for AST, symbols and scope
    * @param cds A list of input class diagrams to generate code for
    * @param outputDirectory The corresponding output directory
    * @param handcodedPath The path to hand-coded java artifacts
    */
-  public void generateEmfFromCD(GlobalExtensionManagement glex, List<ASTCDCompilationUnit> oldCDs, 
+  public void generateEmfFromCD(GlobalExtensionManagement glex, List<ASTCDCompilationUnit> oldCDs,
       List<ASTCDCompilationUnit> cds, File outputDirectory, IterablePath handcodedPath) {
     // we precisely know the list of old CDs, which will be merged to a single
     // CD in the future
     ASTCDCompilationUnit oldCD = oldCDs.get(0);
-    
+
     // generate from CDs
     for (ASTCDCompilationUnit cd : cds) {
       generateEmfFromCD(glex, oldCD, cd, outputDirectory, handcodedPath);
     }
   }
-  
+
   public void generateEmfFromCD(GlobalExtensionManagement glex, ASTCDCompilationUnit oldCD, ASTCDCompilationUnit decoratedCD,
                                 File outputDirectory, IterablePath handcodedPath) {
     // need symboltable of the old cd
