@@ -544,7 +544,7 @@ package 'Coffee' {                      // a SysML activity diagram
   See also [*detailed description*](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging/-/blob/master/src/main/grammars/de/monticore/lang/Tagging.md)
 
 
-### [XML](https://git.rwth-aachen.de/monticore/languages/xml) (Alpha: Intention to become stable)
+### [XML](https://git.rwth-aachen.de/monticore/languages/xml) (MontiCore Stable)
 * The MontiCore language for parsing XML artifacts. An example:
 ```
 <Calendar>
