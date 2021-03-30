@@ -16,7 +16,7 @@ import static org.junit.Assert.assertTrue;
  * combinations and hence designed to not fail.
  *
  */
-public class MontiCoreCLITest {
+public class MontiCoreStandardCLITest {
   
   /**
    * Pretty default arguments.
