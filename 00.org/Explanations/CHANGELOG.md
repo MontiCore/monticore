@@ -20,6 +20,12 @@ to be released
 * If deserialization encounters a symbol kind for which no DeSer is contained in the symbol Deser map in global scopes, a warning is produced instead of an error
 * Boolean `isShadowing` property of scopes is only serialized if its value is "true". Deserialization assumes a default value of "false" if the property is not contained in a serialized scope
 * `deserialize(String)` method of symbol DeSers do not produce errors if the serialized kind deviates from the symbol kind that the DeSer is originally engineered for
+* The TypeCheck was reworked
+  * The interface `ITypesCalculator` was renamed to `IDerive` and can now be used similar to the `ISynthesize` interface
+  * no SymbolSurrogates are created anymore by the TypeCheck. The Synthesize-Classes will now log an error if a type cannot be resolved
+  * SymTypeExpressions now have the method printFullName to print their full name
+  * The class `TypeCheck` now needs one `IDerive` and one `ISynthesize` for its constructor instead of only one of them
+  * The class `DeriveSymTypeOfBSCommonExpressions`, which does not pay attention to modifiers like `static` or `private`, can now be used as an alternative for the class `DeriveSymTypeOfCommonExpressions`
 
 ### Fixes
 * Symbols with hierarchical symbol kinds are not serialized multiple times anymore.
