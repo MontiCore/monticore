@@ -229,7 +229,7 @@ abstract public class MCTask extends DefaultTask {
     params.add("-fp")
     params.addAll(templatePath)
     if (script != null) {
-      params.add("-s")
+      params.add("-sc")
       params.add(script)
     }
     if (dev) {
