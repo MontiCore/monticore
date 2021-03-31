@@ -148,12 +148,12 @@ $(GenSrc).incGenStamp.f: $(InitTarget) force
 	@[ -e $(GenSrc)/IncGenCheck.sh ] \
 	  && sh $(GenSrc)/IncGenCheck.sh $@ || true
 
-# Activity 1 (M2): run MontiCore generator
+# Activity 1 (M2): run MontiCore generator for $(GRAMMAR)
 $(GenSrc).f: $(GRAMMAR) $(MCJAR) $(MCGRAMMARS) \
                         $(GenSrc).incGenStamp.f
 	@echo "[MINFO]. 1: Generation of tool code from" $(GRAMMAR)
 	java -jar $(MCJAR) \
-		$(GRAMMAR) \
+		-g $(GRAMMAR) \
 		-mp $(MCGRAMMARS) \
 		-hcp src/main/java \
 		-out target
