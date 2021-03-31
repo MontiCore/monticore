@@ -221,13 +221,19 @@ abstract public class MCTask extends DefaultTask {
     mp.addAll(modelPath)
     // construct string array from configuration to pass it to MontiCore
     List<String> params = ["-g", grammar.get().asFile.toString(),
-                           "-o", outputDir.get().asFile.toString(),
-                           "-mp"]
-    params.addAll(mp)
-    params.add("-hcp")
-    params.addAll(handcodedPath)
-    params.add("-fp")
-    params.addAll(templatePath)
+                           "-o", outputDir.get().asFile.toString()]
+    if (!mp.isEmpty()) {
+      params.add("-mp")
+      params.addAll(mp)
+    }
+    if (!handcodedPath.isEmpty()) {
+      params.add("-hcp")
+      params.addAll(handcodedPath)
+    }
+    if (!templatePath.isEmpty()) {
+      params.add("-fp")
+      params.addAll(templatePath)
+    }
     if (script != null) {
       params.add("-sc")
       params.add(script)

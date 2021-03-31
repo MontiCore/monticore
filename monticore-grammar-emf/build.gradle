@@ -64,7 +64,6 @@ fileTree(grammarDir).matching { include '**/*.mc4'}.each {
     outputDir = file grammarOutDir
     modelPath "${project(':monticore-grammar').projectDir}/src/main/grammars"
     handcodedPath srcDir
-    templatePath "src/main/resources"
     def uptoDate = incCheck(getGrammarInclPackage(grammarDir, g))
     outputs.upToDateWhen { uptoDate }
   }
@@ -83,7 +82,6 @@ fileTree(testGrammars).matching { include '**/*.mc4'}.each {
     grammar = file g
     outputDir = file testGrammarOutDir
     handcodedPath srcDir, testDir
-    templatePath "src/test/resources"
     script = "de/monticore/monticore_emf.groovy"
     modelPath "$grammarDir", "${project(':monticore-grammar').projectDir}/src/main/examples"
     def grammarIncludingPackage = file(testGrammars).toURI().relativize(g.toURI()).toString()
@@ -103,7 +101,6 @@ fileTree(exampleGrammars).matching { include '**/*.mc4'}.each {
     outputDir = file testGrammarOutDir
     script = "de/monticore/monticore_emf.groovy"
     handcodedPath srcDir
-    templatePath "src/test/resources"
     modelPath "$grammarDir", "${project(':monticore-grammar').projectDir}/src/main/examples"
     def grammarIncludingPackage = file(exampleGrammars).toURI().relativize(g.toURI()).toString()
     def uptoDate = incCheck(grammarIncludingPackage)
