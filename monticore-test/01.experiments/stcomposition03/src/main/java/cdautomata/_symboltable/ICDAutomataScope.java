@@ -19,6 +19,7 @@ public interface ICDAutomataScope extends ICDAutomataScopeTOP {
     return resolveCDClassLocallyMany(foundSymbols, name,
         m, x -> true).stream()
         .map(s -> new CDClass2StimulusAdapter(s))
+        .filter(p)
         .collect(Collectors.toList());
   }
 }
