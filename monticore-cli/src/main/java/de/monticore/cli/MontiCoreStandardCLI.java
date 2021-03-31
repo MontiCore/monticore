@@ -1,31 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.cli;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.Charset;
-
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.ILoggerFactory;
-import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.Lists;
-import com.google.common.io.Files;
-import com.google.common.io.Resources;
-
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.joran.spi.JoranException;
+import com.google.common.collect.Lists;
+import com.google.common.io.Files;
+import com.google.common.io.Resources;
 import de.monticore.MontiCoreConfiguration;
 import de.monticore.MontiCoreScript;
 import de.monticore.generating.templateengine.reporting.Reporting;
@@ -34,6 +15,13 @@ import de.se_rwth.commons.cli.CLIArguments;
 import de.se_rwth.commons.configuration.ConfigurationPropertiesMapContributor;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.Slf4jLog;
+import org.apache.commons.cli.*;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.ILoggerFactory;
+import org.slf4j.LoggerFactory;
+
+import java.io.*;
+import java.nio.charset.Charset;
 
 /**
  * Command line interface for the MontiCore generator engine. Defines, handles,
@@ -241,11 +229,17 @@ public class MontiCoreStandardCLI {
         File f = new File(cmd.getOptionValue("sc", StringUtils.EMPTY));
         Reporting.reportFileExistenceChecking(Lists.newArrayList(),
             f.toPath().toAbsolutePath());
-        
+
         if (f.exists() && f.isFile()) {
           script = Files.asCharSource(f, Charset.forName("UTF-8")).read();
         } else {
-          Log.error("0xA1056 Custom script \"" + f.getAbsolutePath() + "\" not found!");
+          ClassLoader l = MontiCoreScript.class.getClassLoader();
+          if (l.getResource(cmd.getOptionValue("sc", StringUtils.EMPTY)) != null) {
+            script = Resources.asCharSource(l.getResource(cmd.getOptionValue("sc", StringUtils.EMPTY)),
+                    Charset.forName("UTF-8")).read();
+          } else {
+            Log.error("0xA1056 Custom script \"" + f.getAbsolutePath() + "\" not found!");
+          }
         }
       } else {
         // otherwise, we load the default script
