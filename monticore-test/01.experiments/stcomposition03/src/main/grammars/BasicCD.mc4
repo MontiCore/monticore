@@ -7,7 +7,7 @@
 
 grammar BasicCD extends de.monticore.MCBasics {
 
-ClassDiagram = "classdiagram" Name "{" CDElement "}" ;
+symbol scope ClassDiagram = "classdiagram" Name "{" CDElement "}" ;
 
 // Type declarations
 interface CDElement;
@@ -22,7 +22,7 @@ interface ReturnType;
 DummyType implements Type  =  b:"boolean" | s:"String" ;
 DummyReturnType implements ReturnType  = b:"boolean" | v:"void" ;
 
-symbol CDClass implements CDElement
+symbol scope CDClass implements CDElement
      =   "class" Name "{" CDMethod* "}"
      ;
 
