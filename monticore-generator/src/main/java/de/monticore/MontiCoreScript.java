@@ -477,24 +477,39 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   public void reportCD(List<ASTCDCompilationUnit> cds, File outputDirectory) {
     // We precisely know the structure of the given list.
     // In future versions, this will be one combined CD only.
-    reportCD(cds.get(0), cds.get(0), cds.get(1), cds.get(2), outputDirectory);
+    reportCD(cds.get(0), outputDirectory);
   }
-  
+
+  /**
+   * Prints Cd4Analysis AST to the CD-file (*.cd) in the reporting directory.
+   *
+   * @param cds The predefined list of cds for AST, symbols, and scopes.
+   * @param outputDirectory The output directory to print to
+   */
+  public void reportDecoratedCD(List<ASTCDCompilationUnit> cds, File outputDirectory) {
+    // We precisely know the structure of the given list.
+    // In future versions, this will be one combined CD only.
+    reportCD(cds.get(0), cds.get(1), outputDirectory);
+  }
+
+
   /**
    * Prints Cd4Analysis AST to the CD-file (*.cd) in the reporting directory
    *
    * @param astCd           - the top node of the Cd4Analysis AST
    * @param outputDirectory - output directory
    */
-  public void reportCD(ASTCDCompilationUnit origCd, ASTCDCompilationUnit astCd,
-                       ASTCDCompilationUnit symbolCd, ASTCDCompilationUnit scopeCd,
+  public void reportCD(ASTCDCompilationUnit astCd,
+                       ASTCDCompilationUnit symbolCd,
                        File outputDirectory) {
     // we also store the class diagram fully qualified such that we can later on
     // resolve it properly for the generation of sub languages
-    String reportSubDir = Joiners.DOT.join(origCd.getPackageList());
-    reportSubDir = reportSubDir.isEmpty()
-            ? origCd.getCDDefinition().getName()
-            : reportSubDir.concat(".").concat(origCd.getCDDefinition().getName());
+    String reportSubDir = Joiners.DOT.join(astCd.getPackageList());
+    if (reportSubDir.isEmpty()) {
+      reportSubDir = astCd.getCDDefinition().getName();
+    }else if (reportSubDir.endsWith("._ast")){
+      reportSubDir = reportSubDir.substring(0, reportSubDir.length() - 5);
+    }
     reportSubDir = reportSubDir.toLowerCase();
 
     // Clone CD for reporting
@@ -513,14 +528,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
     // Add symbol classes
     for (ASTCDClass cl :symbolCd.getCDDefinition().getCDClassesList()) {
-      if (!cl.getName().endsWith("Builder")) {
-        ASTCDClass newCl = cl.deepClone();
-        astCdForReporting.getCDDefinition().addCDElement(newCl);
-      }
-    }
-
-    // Add scope classes
-    for (ASTCDClass cl :scopeCd.getCDDefinition().getCDClassesList()) {
       if (!cl.getName().endsWith("Builder")) {
         ASTCDClass newCl = cl.deepClone();
         astCdForReporting.getCDDefinition().addCDElement(newCl);
@@ -574,15 +581,15 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     List<ASTCDCompilationUnit> decoratedCDs = new ArrayList<ASTCDCompilationUnit>();
     // we precisely know the strucutre of the given cd list
     // in a future version, we will only handle one single cd
-    ASTCDCompilationUnit decoratedSymbolTableCd = decorateForSymbolTablePackage(glex, cdScope, cds.get(0), 
+    ASTCDCompilationUnit decoratedASTClassDiagramm = decorateForASTPackage(glex, cdScope, cds.get(0), handCodedPath);
+    decoratedCDs.add(decoratedASTClassDiagramm);
+    ASTCDCompilationUnit decoratedSymbolTableCd = decorateForSymbolTablePackage(glex, cdScope, cds.get(0),
         cds.get(1), cds.get(2), handCodedPath);
     decoratedCDs.add(decoratedSymbolTableCd);
     ASTCDCompilationUnit decoratedTraverserCD = decorateTraverserForVisitorPackage(glex, cdScope, cds.get(0), handCodedPath);
     decoratedCDs.add(decoratedTraverserCD);
     decoratedCDs.add(decorateForCoCoPackage(glex, cdScope, cds.get(0), handCodedPath));
     decoratedCDs.add(decorateForODPackage(glex, cdScope, cds.get(0), handCodedPath));
-    ASTCDCompilationUnit decoratedASTClassDiagramm = decorateForASTPackage(glex, cdScope, cds.get(0), handCodedPath);
-    decoratedCDs.add(decoratedASTClassDiagramm);
     decoratedCDs.add(decorateMill(glex, cdScope, cds.get(0), decoratedASTClassDiagramm,
         decoratedSymbolTableCd, decoratedTraverserCD, handCodedPath));
     decoratedCDs.add(decorateAuxiliary(glex, cdScope, cds.get(0), decoratedASTClassDiagramm, handCodedPath));
