@@ -134,8 +134,6 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
         .addCDMember(createInitMethod(scopeInterfaceFullName, scopeDeSerFullName, symbolProds))
         .addAllCDMembers(resolverAttributes.values())
         .addAllCDMembers(resolverMethods)
-        .addAllCDMembers(createAlreadyResolvedMethods(symbolProds))
-        .addAllCDMembers(createAlreadyResolvedSuperMethods())
         .addAllCDMembers(createLoadMethods(symbolClasses))
         .addCDMember(createLoadFileForModelNameMethod(definitionName))
         //
@@ -282,35 +280,6 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
       resolverMethods.add(setter);
     }
     return resolverMethods;
-  }
-
-  protected List<ASTCDMethod> createAlreadyResolvedMethods(List<? extends ASTCDType> cdTypeList) {
-    List<ASTCDAttribute> symbolAlreadyResolvedAttributes = createSymbolAlreadyResolvedAttributes(cdTypeList);
-    return symbolAlreadyResolvedAttributes
-        .stream()
-        .map(methodDecorator::decorate)
-        .flatMap(List::stream)
-        .collect(Collectors.toList());
-  }
-
-
-  protected List<ASTCDMethod> createAlreadyResolvedSuperMethods() {
-    List<ASTCDAttribute> symbolAlreadyResolvedAttributes = new ArrayList<>();
-    for (DiagramSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
-      // only types that define a symbol
-      List<ASTCDType> symbolProds = ((ICDBasisScope) cdDefinitionSymbol.getEnclosingScope()).getLocalCDTypeSymbols().stream().filter(t -> t.isPresentAstNode())
-          .filter(t -> t.getAstNode().isPresentModifier())
-          .filter(t -> symbolTableService.hasSymbolStereotype(t.getAstNode().getModifier()))
-          .filter(CDTypeSymbol::isPresentAstNode)
-          .map(CDTypeSymbol::getAstNode)
-          .collect(Collectors.toList());
-      symbolAlreadyResolvedAttributes.addAll(createSymbolAlreadyResolvedAttributes(symbolProds));
-    }
-    return symbolAlreadyResolvedAttributes
-        .stream()
-        .map(methodDecorator::decorate)
-        .flatMap(List::stream)
-        .collect(Collectors.toList());
   }
 
   protected List<ASTCDAttribute> createSymbolAlreadyResolvedAttributes(List<? extends ASTCDType> astcdTypeList) {

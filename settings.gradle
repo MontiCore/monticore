@@ -83,7 +83,7 @@ if(!hasProperty('bootstrap')) {
   include(':monticore-test:02experiments:parser')
   include(':monticore-test:02experiments:traverser')
   include(':monticore-test:02experiments:typecheck')
-  
+  include(':monticore-test:02experiments:forGradle')
   
  // include 'example'
  // project(':example').projectDir = file("monticore-test/example")

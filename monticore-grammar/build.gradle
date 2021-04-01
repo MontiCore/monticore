@@ -28,6 +28,10 @@ def testGrammarOutDir = "$buildDir/generated-test-sources/monticore/sourcecode"
 
 sourceSets {
   main.java.srcDirs += [ grammarOutDir]
+  main.resources{
+    srcDirs += [grammarDir]
+    include "**/*.mc4"
+  }
   test.java.srcDirs += [testGrammarOutDir]
 
   grammars {
