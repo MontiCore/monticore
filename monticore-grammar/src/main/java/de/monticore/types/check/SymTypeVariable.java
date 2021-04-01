@@ -29,12 +29,12 @@ public class SymTypeVariable extends SymTypeExpression {
    */
   @Override
   public String print() {
-    return getVarName();
+    return typeSymbol.getName();
   }
 
   @Override
   public String printFullName() {
-    return typeSymbol.getName();
+    return getVarName();
   }
 
   /**
@@ -70,9 +70,7 @@ public class SymTypeVariable extends SymTypeExpression {
 
   @Override
   public SymTypeVariable deepClone() {
-    TypeSymbol typeSymbol = new TypeSymbolSurrogate(this.typeSymbol.getName());
-    typeSymbol.setEnclosingScope(this.typeSymbol.getEnclosingScope());
-    return new SymTypeVariable(typeSymbol);
+    return new SymTypeVariable(this.typeSymbol);
   }
 
   @Override
