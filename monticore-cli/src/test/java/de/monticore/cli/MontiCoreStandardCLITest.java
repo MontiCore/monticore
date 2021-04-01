@@ -37,7 +37,7 @@ public class MontiCoreStandardCLITest {
       "-" + MontiCoreConfiguration.Options.GRAMMARS,
       "src/test/resources/de/monticore/Automaton.mc4",
       "-" + MontiCoreConfiguration.Options.HANDCODEDPATH, "src/test/java",
-      "-" + MontiCoreCLIConfiguration.Options.DEV };
+      "-" + MontiCoreConfiguration.Options.DEV };
   
   /**
    * Arguments specifying a custom log configuration file to use.
@@ -48,7 +48,7 @@ public class MontiCoreStandardCLITest {
       "-" + MontiCoreConfiguration.Options.MODELPATH, "src/test/resources",
       "-" + MontiCoreConfiguration.Options.OUT, "target/test-run",
       "-" + MontiCoreConfiguration.Options.HANDCODEDPATH, "src/test/java",
-      "-" + MontiCoreCLIConfiguration.Options.CUSTOMLOG, "src/test/resources/test.logging.xml" };
+      "-" + MontiCoreConfiguration.Options.CUSTOMLOG, "src/test/resources/test.logging.xml" };
   
   /**
    * Arguments for using a custom Groovy script.
@@ -59,7 +59,7 @@ public class MontiCoreStandardCLITest {
       "-" + MontiCoreConfiguration.Options.MODELPATH, "src/test/resources",
       "-" + MontiCoreConfiguration.Options.OUT, "target/test-run",
       "-" + MontiCoreConfiguration.Options.HANDCODEDPATH, "src/test/java",
-      "-" + MontiCoreCLIConfiguration.Options.SCRIPT, "src/test/resources/my_noemf.groovy",
+      "-" + MontiCoreConfiguration.Options.SCRIPT, "src/test/resources/my_noemf.groovy",
       };
   
   /**
@@ -71,7 +71,7 @@ public class MontiCoreStandardCLITest {
       "-" + MontiCoreConfiguration.Options.MODELPATH, "src/test/resources",
       "-" + MontiCoreConfiguration.Options.OUT, "target/test-run",
       "-" + MontiCoreConfiguration.Options.HANDCODEDPATH, "src/test/java",
-      "-" + MontiCoreCLIConfiguration.Options.SCRIPT, "src/test/resources/my_emf.groovy",
+      "-" + MontiCoreConfiguration.Options.SCRIPT, "src/test/resources/my_emf.groovy",
       };
   
   /**
@@ -86,7 +86,7 @@ public class MontiCoreStandardCLITest {
       "-" + MontiCoreConfiguration.Options.HANDCODEDPATH, "src/test/java" };
   
   static String[] help = {
-      "-" + MontiCoreCLIConfiguration.Options.HELP
+      "-" + MontiCoreConfiguration.Options.HELP
   };
   
   @BeforeClass
