@@ -23,13 +23,13 @@ Log.info("--------------------------------", LOG_ID)
 Log.info("MontiCore", LOG_ID)
 Log.info(" - eating your models since 2005", LOG_ID)
 Log.info("--------------------------------", LOG_ID)
-Log.debug("Grammar argument    : " 
+Log.debug("Grammar argument    : "
         + _configuration.getGrammarsAsStrings(), LOG_ID)
 Log.debug("Grammar files       : " + grammars, LOG_ID)
 Log.debug("Modelpath           : " + modelPath, LOG_ID)
 Log.debug("Output dir          : " + out, LOG_ID)
 Log.debug("Report dir          : " + report, LOG_ID)
-Log.debug("Handcoded argument  : " 
+Log.debug("Handcoded argument  : "
         + _configuration.getHandcodedPathAsStrings(), LOG_ID)
 Log.debug("Handcoded files     : " + handcodedPath, LOG_ID)
 
@@ -37,7 +37,7 @@ Log.debug("Handcoded files     : " + handcodedPath, LOG_ID)
 mcScope = createMCGlobalScope(modelPath)
 
 // M1.3: Initialize reporting (output)
-Reporting.init(out.getAbsolutePath(), 
+Reporting.init(out.getAbsolutePath(),
                report.getAbsolutePath(), reportManagerFactory)
 
 // ############################################################
@@ -72,19 +72,20 @@ while (grammarIterator.hasNext()) {
     reportCD(cd, report)
 
     // M6: Generate parser and wrapper
-    generateParser(glex, cd, astGrammar, mcScope, 
-                   handcodedPath, out)
+    generateParser(glex, cd, astGrammar, mcScope,
+                   handcodedPath, templatePath, out)
 
-    // M7: Decorate class diagrams
+    // M7: Decorate class diagrams and report it
     decoratedCD = decorateCD(glex, mcScope, cd, handcodedPath)
-  
+    reportDecoratedCD(decoratedCD, report)
+
     // M8 Generate ast classes, symbol table, visitor,
     // and context conditions
-    generateFromCD(glex, cd, decoratedCD, out, handcodedPath)
-  
+    generateFromCD(glex, cd, decoratedCD, out, handcodedPath, templatePath)
+
     // M9: Write reports to files
     // M9.1: Inform about successful completion for grammar
-    Log.info("Grammar " + astGrammar.getName() + 
+    Log.info("Grammar " + astGrammar.getName() +
             " processed successfully!", LOG_ID)
 
     // M9.2: Flush reporting

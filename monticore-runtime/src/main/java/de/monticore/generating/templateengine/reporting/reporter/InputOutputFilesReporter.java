@@ -2,6 +2,15 @@
 
 package de.monticore.generating.templateengine.reporting.reporter;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import com.google.common.hash.Hashing;
+import com.google.common.io.CharStreams;
+import com.google.common.io.Files;
+import de.monticore.ast.ASTNode;
+import de.monticore.generating.templateengine.reporting.commons.*;
+import de.se_rwth.commons.logging.Log;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -11,29 +20,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
-
-import de.monticore.ast.ASTNode;
-
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-import com.google.common.hash.Hashing;
-import com.google.common.io.CharStreams;
-import com.google.common.io.Files;
-
-import de.monticore.generating.templateengine.reporting.commons.AReporter;
-import de.monticore.generating.templateengine.reporting.commons.Layouter;
-import de.monticore.generating.templateengine.reporting.commons.ReportCreator;
-import de.monticore.generating.templateengine.reporting.commons.ReportingConstants;
-import de.monticore.incremental.IncrementalChecker;
-import de.se_rwth.commons.logging.Log;
 
 /**
  * This report is used to enable incremental generation. It reports the name of all input and output
@@ -259,7 +247,7 @@ public class InputOutputFilesReporter extends AReporter {
     if (inputFile != null && !inputFile.isEmpty()) {
       String checkSum;
       if (ast != null) {
-        checkSum = IncrementalChecker.getChecksum(inputFile);
+        checkSum = ReportingHelper.getChecksum(inputFile);
         writeLine(inputFile + INPUT_STATE_SEPARATOR + checkSum);
       }
       else {
@@ -292,7 +280,7 @@ public class InputOutputFilesReporter extends AReporter {
           else {
             File inputFile = new File(elements[0].concat(File.separator).concat(elements[1]));
             if (inputFile.exists()) {
-              checkSum = IncrementalChecker.getChecksum(inputFile.toString());
+              checkSum = ReportingHelper.getChecksum(inputFile.toString());
               writeLine(s + INPUT_STATE_SEPARATOR + checkSum);
             }
             else {
@@ -301,7 +289,7 @@ public class InputOutputFilesReporter extends AReporter {
           }
         }
         else {
-          checkSum = IncrementalChecker.getChecksum(s);
+          checkSum = ReportingHelper.getChecksum(s);
           writeLine(s + INPUT_STATE_SEPARATOR + checkSum);
         }
       }
@@ -312,7 +300,7 @@ public class InputOutputFilesReporter extends AReporter {
           String[] elements = s.split(PARENT_FILE_SEPARATOR);
           File inputFile = new File(elements[0].concat(File.separator).concat(elements[1]));
           if (inputFile.exists()) {
-            checkSum = IncrementalChecker.getChecksum(inputFile.toString());
+            checkSum = ReportingHelper.getChecksum(inputFile.toString());
             writeLine(s + INPUT_STATE_SEPARATOR + checkSum);
           }
           else {
