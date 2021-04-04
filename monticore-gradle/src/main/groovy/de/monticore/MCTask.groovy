@@ -3,7 +3,7 @@ package de.monticore
 
 import com.google.common.hash.Hashing
 import com.google.common.io.Files
-import de.monticore.cli.MontiCoreCLI
+import de.monticore.cli.MontiCoreStandardCLI
 import de.se_rwth.commons.logging.Finding
 import de.se_rwth.commons.logging.Log
 import org.gradle.api.DefaultTask
@@ -220,17 +220,22 @@ abstract public class MCTask extends DefaultTask {
     
     mp.addAll(modelPath)
     // construct string array from configuration to pass it to MontiCore
-    List<String> params = [grammar.get().asFile.toString(),
-                           "-o", outputDir.get().asFile.toString(),
-                           "-f",
-                           "-mp"]
-    params.addAll(mp)
-    params.add("-hcp")
-    params.addAll(handcodedPath)
-    params.add("-fp")
-    params.addAll(templatePath)
+    List<String> params = ["-g", grammar.get().asFile.toString(),
+                           "-o", outputDir.get().asFile.toString()]
+    if (!mp.isEmpty()) {
+      params.add("-mp")
+      params.addAll(mp)
+    }
+    if (!handcodedPath.isEmpty()) {
+      params.add("-hcp")
+      params.addAll(handcodedPath)
+    }
+    if (!templatePath.isEmpty()) {
+      params.add("-fp")
+      params.addAll(templatePath)
+    }
     if (script != null) {
-      params.add("-s")
+      params.add("-sc")
       params.add(script)
     }
     if (dev) {
@@ -258,7 +263,7 @@ abstract public class MCTask extends DefaultTask {
     })
     try {
       // execute Monticore with the given parameters
-      MontiCoreCLI.main(p)
+      MontiCoreStandardCLI.main(p)
     } catch(MCTaskError e){
       // in case of failure print the error and fail
       String error = Log.getFindings().stream().

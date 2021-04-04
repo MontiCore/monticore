@@ -59,7 +59,11 @@ public final class MontiCoreConfiguration implements Configuration {
     OUT("out"), OUT_SHORT("o"), HANDCODEDPATH("handcodedPath"), HANDCODEDPATH_SHORT("hcp"),
     TEMPLATEPATH("templatePath"), TEMPLATEPATH_SHORT("fp"),
     FORCE("force"), FORCE_SHORT("f"),
-    REPORT("report"), REPORT_SHORT("r");
+    REPORT("report"), REPORT_SHORT("r"),
+    DEV("dev"), DEV_SHORT("d"),
+    CUSTOMLOG("customLog"), CUSTOMLOG_SHORT("cl"),
+    SCRIPT("script"), SCRIPT_SHORT("sc"),
+    HELP("help"), HELP_SHORT("h");
 
     String name;
 

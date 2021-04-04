@@ -1,6 +1,8 @@
+// (c) https://github.com/MontiCore/monticore
+
 /* (c) https://github.com/MontiCore/monticore */
 
-package de.monticore.incremental;
+package de.monticore;
 
 import java.io.File;
 import java.io.IOException;
@@ -515,14 +517,14 @@ public class IncrementalChecker {
     private final String state;
 
     /**
-     * Constructor for de.monticore.incremental.IncrementalChecker.InputStory
+     * Constructor for de.monticore.IncrementalChecker.InputStory
      */
     protected InputStory(String inputPath, String state) {
       this("", inputPath, state);
     }
 
     /**
-     * Constructor for de.monticore.incremental.IncrementalChecker.InputStory
+     * Constructor for de.monticore.IncrementalChecker.InputStory
      */
     protected InputStory(String parentPath, String inputPath, String state) {
       this.parentPath = parentPath;

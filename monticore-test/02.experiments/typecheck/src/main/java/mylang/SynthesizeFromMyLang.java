@@ -25,18 +25,20 @@ public class SynthesizeFromMyLang implements ISynthesize {
     // use new result wrapper and traverser
     traverser = MyLangMill.traverser();
     typeCheckResult = new TypeCheckResult();
+    
     // add Synthesize for MCBasicTypes
-    SynthesizeSymTypeFromMCBasicTypes basictypes =
-                             new SynthesizeSymTypeFromMCBasicTypes();
-    basictypes.setTypeCheckResult(typeCheckResult);
-    traverser.add4MCBasicTypes(basictypes);
-    traverser.setMCBasicTypesHandler(basictypes);
+    SynthesizeSymTypeFromMCBasicTypes bt =
+                           new SynthesizeSymTypeFromMCBasicTypes();
+    bt.setTypeCheckResult(typeCheckResult);
+    traverser.add4MCBasicTypes(bt);
+    traverser.setMCBasicTypesHandler(bt);
+    
     // add Synthesize for MCArrayTypes
-    SynthesizeSymTypeFromMCArrayTypes arraytypes = 
-                             new SynthesizeSymTypeFromMCArrayTypes();
-    arraytypes.setTypeCheckResult(typeCheckResult);
-    traverser.add4MCArrayTypes(arraytypes);
-    traverser.setMCArrayTypesHandler(arraytypes);
+    SynthesizeSymTypeFromMCArrayTypes at = 
+                           new SynthesizeSymTypeFromMCArrayTypes();
+    at.setTypeCheckResult(typeCheckResult);
+    traverser.add4MCArrayTypes(at);
+    traverser.setMCArrayTypesHandler(at);
   }
   
   @Override 

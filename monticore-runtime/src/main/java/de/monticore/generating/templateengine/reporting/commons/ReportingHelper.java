@@ -2,7 +2,12 @@
 
 package de.monticore.generating.templateengine.reporting.commons;
 
+import com.google.common.hash.Hashing;
 import de.se_rwth.commons.Names;
+import de.se_rwth.commons.logging.Log;
+
+import java.io.File;
+import java.io.IOException;
 
 /**
  * Helper to write files
@@ -65,4 +70,18 @@ public class ReportingHelper {
         + ReportingConstants.TEMPLATE_FILE_EXTENSION;
   }
 
+  /**
+   * Calculate the MD5 checksum for the given file.
+   *
+   * @param file
+   * @return
+   */
+  public static String getChecksum(String file) {
+    try {
+      return com.google.common.io.Files.hash(new File(file), Hashing.md5()).toString();
+    } catch (IOException e) {
+      Log.error("0xA1021 Failed to calculate current checksum for file " + file, e);
+      return "";
+    }
+  }
 }
