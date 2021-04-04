@@ -11,10 +11,10 @@ import automata2.Automata2Mill;
 import automata2._parser.Automata2Parser;
 import automata2._symboltable.Automata2Symbols2Json;
 import automata2._symboltable.IAutomata2ArtifactScope;
-import automata2._symboltable.IAutomata2GlobalScope;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.resolving.ResolvedSeveralEntriesForSymbolException;
 import de.se_rwth.commons.logging.LogStub;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -26,14 +26,17 @@ import static org.junit.Assert.*;
 
 public class ResolveDeepTest {
 
-  AutomataParser parser = new AutomataParser();
+  protected static AutomataParser parser = new AutomataParser();
 
-  Automata2Parser parser2 = new Automata2Parser();
+  protected static Automata2Parser parser2 = new Automata2Parser();
 
   @Test
   public void testDeepResolve() throws IOException {
     LogStub.init();         // replace log by a sideffect free variant
     // LogStub.initPlusLog();  // for manual testing purpose only
+
+    AutomataMill.globalScope().clear();
+
     Path model = Paths.get("src/test/resources/example/HierarchyPingPong.aut");
 
     // parse model
@@ -83,24 +86,17 @@ public class ResolveDeepTest {
     assertTrue(deep_scope.resolveStateDown("substate").isPresent());
   }
 
-  private void reInitGlobalScopes(ModelPath mp1, ModelPath mp2){
+  private void reInitGlobalScopes(ModelPath mp1, ModelPath mp2) {
     AutomataMill.globalScope().clear();
     Automata2Mill.globalScope().clear();
     AutomataMill.globalScope().setModelPath(mp1);
     Automata2Mill.globalScope().setModelPath(mp2);
   }
 
-
-  @Test
-  public void testResolveFromGlobalScope() throws IOException {
-    // this test shows that deeply nested symbols cannot be found by the default
-    // calculateModelNamesForState method (case: Automata language), but with a
-    // handritten adjustment (case Automata2 language)
-
+  @BeforeClass
+  public static void storeSymbols() throws IOException {
     //init global scopes with the model path and store symtab of test model
     String testmodel = "src/test/resources/example/HierarchyPingPong.aut";
-    ModelPath mp1 = new ModelPath(Paths.get("target/symbols"));
-    ModelPath mp2 = new ModelPath(Paths.get("target/symbols2"));
 
     ASTAutomaton ast1 = parser.parse(testmodel).get();
     IAutomataArtifactScope as1 = AutomataMill.scopesGenitorDelegator().createFromAST(ast1);
@@ -111,6 +107,19 @@ public class ResolveDeepTest {
     IAutomata2ArtifactScope as2 = Automata2Mill.scopesGenitorDelegator().createFromAST(ast2);
     Automata2Symbols2Json s2j2 = new Automata2Symbols2Json();
     s2j2.store(as2, "target/symbols2/PingPong.autsym");
+
+  }
+
+  @Test
+  public void testResolveFromGlobalScope() {
+    // this test shows that deeply nested symbols cannot be found by the default
+    // calculateModelNamesForState method (case: Automata language), but with a
+    // handritten adjustment (case Automata2 language)
+
+
+
+    ModelPath mp1 = new ModelPath(Paths.get("target/symbols"));
+    ModelPath mp2 = new ModelPath(Paths.get("target/symbols2"));
 
     reInitGlobalScopes(mp1, mp2);
 

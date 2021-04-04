@@ -30,7 +30,7 @@ public class CDAndAutTest {
 
   @BeforeClass
   public static void setUpLogger() {
-//    LogStub.init();         // replace log by a sideffect free variant
+    LogStub.init();         // replace log by a sideffect free variant
     // LogStub.initPlusLog();  // for manual testing purpose only
     BasicCDMill.init();
     Automata7Mill.init();
