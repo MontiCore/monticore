@@ -46,7 +46,8 @@ public class CDAndAutTest {
     // read symtab of automata model into aut global scope
     String autModel = "src/test/resources/example/PingPong.aut";
     ASTAutomaton autAST = autParser.parse(autModel).get();
-    Automata7Mill.scopesGenitorDelegator().createFromAST(autAST);
+    IAutomata7ArtifactScope autAS = Automata7Mill.scopesGenitorDelegator().createFromAST(autAST);
+    autAS.setName(autAST.getName());
 
     // configure aut global scope with resolver
     Automata7Mill.globalScope()
