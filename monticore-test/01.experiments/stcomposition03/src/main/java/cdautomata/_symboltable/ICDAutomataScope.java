@@ -16,8 +16,9 @@ public interface ICDAutomataScope extends ICDAutomataScopeTOP {
   default List<StimulusSymbol> resolveAdaptedStimulusLocallyMany(
       boolean foundSymbols, String name, AccessModifier m,
       Predicate<StimulusSymbol> p) {
-    return resolveCDClassLocallyMany(foundSymbols, name,
-        m, x -> true).stream()
+    return resolveCDClassLocallyMany(foundSymbols,
+                                     name, m, x -> true)
+        .stream()
         .map(s -> new CDClass2StimulusAdapter(s))
         .filter(p)
         .collect(Collectors.toList());

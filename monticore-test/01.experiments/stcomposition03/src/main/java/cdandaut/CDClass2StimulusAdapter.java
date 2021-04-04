@@ -7,15 +7,15 @@ import basiccd._symboltable.CDClassSymbol;
 
 public class CDClass2StimulusAdapter extends StimulusSymbol {
 
-  protected CDClassSymbol delegate;
+  protected CDClassSymbol original;
 
-  public CDClass2StimulusAdapter(CDClassSymbol delegate){
-    super(delegate.getName());
-    this.delegate = delegate;
+  public CDClass2StimulusAdapter(CDClassSymbol o){
+    super(o.getName());
+    this.original = o;
   }
 
   @Override public String getName() {
-    return delegate.getName();
+    return original.getName();
   }
 
 }
