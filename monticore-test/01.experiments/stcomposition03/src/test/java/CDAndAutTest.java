@@ -8,11 +8,9 @@ import automata7._symboltable.StimulusSymbol;
 import basiccd.BasicCDMill;
 import basiccd._ast.ASTClassDiagram;
 import basiccd._parser.BasicCDParser;
-import basiccd._symboltable.IBasicCDArtifactScope;
 import cdandaut.CDClass2StimulusAdapter;
 import cdandaut.CDClass2StimulusResolver;
 import de.se_rwth.commons.logging.LogStub;
-import javaandaut.JavaAndAutTool;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -32,6 +30,9 @@ public class CDAndAutTest {
   public static void setUpLogger() {
     LogStub.init();         // replace log by a sideffect free variant
     // LogStub.initPlusLog();  // for manual testing purpose only
+
+    BasicCDMill.reset();
+    Automata7Mill.reset();
     BasicCDMill.init();
     Automata7Mill.init();
   }

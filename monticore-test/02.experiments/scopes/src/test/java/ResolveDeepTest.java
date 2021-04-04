@@ -30,6 +30,25 @@ public class ResolveDeepTest {
 
   protected static Automata2Parser parser2 = new Automata2Parser();
 
+  @BeforeClass
+  public static void storeSymbols() throws IOException {
+    LogStub.init();
+
+    //init global scopes with the model path and store symtab of test model
+    String testmodel = "src/test/resources/example/HierarchyPingPong.aut";
+
+    ASTAutomaton ast1 = parser.parse(testmodel).get();
+    IAutomataArtifactScope as1 = AutomataMill.scopesGenitorDelegator().createFromAST(ast1);
+    AutomataSymbols2Json s2j = new AutomataSymbols2Json();
+    s2j.store(as1, "target/symbols/PingPong.autsym");
+
+    automata2._ast.ASTAutomaton ast2 = parser2.parse(testmodel).get();
+    IAutomata2ArtifactScope as2 = Automata2Mill.scopesGenitorDelegator().createFromAST(ast2);
+    Automata2Symbols2Json s2j2 = new Automata2Symbols2Json();
+    s2j2.store(as2, "target/symbols2/PingPong.autsym");
+
+  }
+
   @Test
   public void testDeepResolve() throws IOException {
     LogStub.init();         // replace log by a sideffect free variant
@@ -91,23 +110,6 @@ public class ResolveDeepTest {
     Automata2Mill.globalScope().clear();
     AutomataMill.globalScope().setModelPath(mp1);
     Automata2Mill.globalScope().setModelPath(mp2);
-  }
-
-  @BeforeClass
-  public static void storeSymbols() throws IOException {
-    //init global scopes with the model path and store symtab of test model
-    String testmodel = "src/test/resources/example/HierarchyPingPong.aut";
-
-    ASTAutomaton ast1 = parser.parse(testmodel).get();
-    IAutomataArtifactScope as1 = AutomataMill.scopesGenitorDelegator().createFromAST(ast1);
-    AutomataSymbols2Json s2j = new AutomataSymbols2Json();
-    s2j.store(as1, "target/symbols/PingPong.autsym");
-
-    automata2._ast.ASTAutomaton ast2 = parser2.parse(testmodel).get();
-    IAutomata2ArtifactScope as2 = Automata2Mill.scopesGenitorDelegator().createFromAST(ast2);
-    Automata2Symbols2Json s2j2 = new Automata2Symbols2Json();
-    s2j2.store(as2, "target/symbols2/PingPong.autsym");
-
   }
 
   @Test
