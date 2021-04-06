@@ -16,7 +16,8 @@ public interface ICDAutomataScope extends ICDAutomataScopeTOP {
   @Override
   default List<StimulusSymbol> resolveAdaptedStimulusLocallyMany(
       boolean foundSymbols, String name, AccessModifier m,
-      Predicate<StimulusSymbol> p) {
+      Predicate<StimulusSymbol> p)
+  {
     // resolve source kind
     List<CDClassSymbol> cdClasses = resolveCDClassLocallyMany(
         foundSymbols, name, m, x -> true);
