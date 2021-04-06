@@ -62,7 +62,8 @@ public class AggregationTest {
   
   // create symbol table for "blah"
   BlahTraverser traverser = BlahMill.traverser();
-  BlahScopesGenitor blahSymbolTableCreator = new BlahScopesGenitor(globalScope.getIBlahGS());
+  BlahScopesGenitor blahSymbolTableCreator = new BlahScopesGenitor();
+  blahSymbolTableCreator.addToScopeStack(globalScope.getIBlahGS());
   traverser.add4Blah(blahSymbolTableCreator);
   traverser.setBlahHandler(blahSymbolTableCreator);
 

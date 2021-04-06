@@ -21,12 +21,8 @@ public class Grammar_WithConceptsPhasedSTC {
   protected List<Grammar_WithConceptsTraverser> priorityList;
 
   public Grammar_WithConceptsPhasedSTC(){
-    this(Grammar_WithConceptsMill.globalScope());
-  }
-
-  public Grammar_WithConceptsPhasedSTC(IGrammar_WithConceptsGlobalScope globalScope){
-    this.globalScope = globalScope;
-    this.scopesGenitorDelegator = new Grammar_WithConceptsScopesGenitorDelegator(globalScope);
+    this.globalScope = Grammar_WithConceptsMill.globalScope();
+    this.scopesGenitorDelegator = Grammar_WithConceptsMill.scopesGenitorDelegator();
     this.priorityList = new ArrayList<>();
     Grammar_WithConceptsTraverser traverser = Grammar_WithConceptsMill.traverser();
     traverser.add4Grammar(new GrammarSTCompleteTypes());

@@ -117,26 +117,12 @@ public class ScopesGenitorDelegatorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testConstructorCount() {
-    assertEquals(2, scopesGenitorClass.getCDConstructorList().size());
-  }
-
-  @Test
-  public void testConstructor() {
-    ASTCDConstructor cdConstructor = scopesGenitorClass.getCDConstructorList().get(0);
-    assertDeepEquals(PUBLIC, cdConstructor.getModifier());
-    assertEquals("AutomatonScopesGenitorDelegator", cdConstructor.getName());
-
-    assertEquals(1, cdConstructor.sizeCDParameters());
-    assertDeepEquals(AUTOMATON_GLOBAL_SCOPE, cdConstructor.getCDParameter(0).getMCType());
-    assertEquals("globalScope", cdConstructor.getCDParameter(0).getName());
-
-
-    assertFalse(cdConstructor.isPresentCDThrowsDeclaration());
+    assertEquals(1, scopesGenitorClass.getCDConstructorList().size());
   }
 
   @Test
   public void testZeroArgsConstructor(){
-    ASTCDConstructor constructor = scopesGenitorClass.getCDConstructorList().get(1);
+    ASTCDConstructor constructor = scopesGenitorClass.getCDConstructorList().get(0);
     assertDeepEquals(PUBLIC, constructor.getModifier());
     assertEquals("AutomatonScopesGenitorDelegator", constructor.getName());
     assertTrue(constructor.isEmptyCDParameters());
