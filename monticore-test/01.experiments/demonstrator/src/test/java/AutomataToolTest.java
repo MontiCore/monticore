@@ -52,11 +52,12 @@ public class AutomataToolTest {
     AutomataTool.main(new String[] {  });
     assertEquals(1, Log.getErrorCount());
     assertEquals("0xDE631 Please specify at least 4 arguments: \n"
-        + "1. automata modelfile,\n"
-        + "2. symbol file"
-        + "3. handcodedPath,\n"
-        + "4. output directory.\n"
-        + "5. (optional) templatePath", Log.getFindings().get(0).buildMsg());
+          + "1. automata modelfile,\n"
+          + "2. symbol file,\n"
+          + "3. handcodedPath,\n"
+          + "4. output directory,\n"
+          + "5. (optional) templatePath\n"
+          , Log.getFindings().get(0).buildMsg());
   }
   
 }

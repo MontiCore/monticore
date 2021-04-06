@@ -32,7 +32,6 @@ public class TemplatesTool {
 
   /** Configurable values:
    */
-  public static final Path SYMBOL_LOCATION = Paths.get("target");
   public static final String TOP_NAME_EXTENSION = "TOP";
 
   /**
@@ -152,25 +151,19 @@ public class TemplatesTool {
    */
   public void executeWorkflow() {
 
-    // Part 1: Frontend
+    // Part 1a: Frontend
     // parse the model and create the AST representation
     ast = parse(modelfilename);
     Log.info(modelfilename + " parsed successfully", this.getClass().getName());
 
-    // setup the symbol table
-    globalScope =  AutomataMill
-        .globalScope();
-    globalScope.setModelPath(new ModelPath());
-    globalScope.setFileExt("aut");
-    modelTopScope = AutomataMill.scopesGenitorDelegator().createFromAST(ast);
+    // Part 1b: setup the symbol table
+    setupSymbolTable();
   
     // Part 2: CoCos
     // deliberately omitted
   
     // Part 3: Store Symboltable
-    // store artifact scope and its symbols
-    AutomataSymbols2Json deser = new AutomataSymbols2Json();
-    deser.store(modelTopScope, SYMBOL_LOCATION+"/"+ Paths.get(modelfilename).getFileName() + "sym");
+    storeSymbolTable();
     Log.info(modelfilename + " symboltable stored successfully", this.getClass().getName());
     
     // Part 4: Transformation and Data Calculation
@@ -231,7 +224,8 @@ public class TemplatesTool {
     String className = ast.getName();
 
     // we assume there is at least one state (--> CoCo)
-    // if there are more: one will arbitrarily be choosen (may be the last one)  (---> CoCo?)
+    // if there are more: one will arbitrarily be choosen
+    //                        (may be the last one)  (---> CoCo?)
     ASTState initialState = ast.getStateList().stream().filter(ASTState::isInitial).findAny().get();
     
     // handle TOP extension
@@ -354,4 +348,45 @@ public class TemplatesTool {
     }
     return null;
   }
+
+  /**
+   * Setup the Symbol Table
+   *
+   */
+  void setupSymbolTable() {
+
+    // Setup the (one and only) global scope
+    globalScope =  AutomataMill
+        .globalScope();
+
+    // the global scope here is initialized with an empty path to look for 
+    // models
+    globalScope.setModelPath(new ModelPath());
+
+    // and only looks for automata "aut"
+    globalScope.setFileExt("aut");
+
+    // this method creates all other scopes and symbols
+    modelTopScope = AutomataMill.scopesGenitorDelegator().createFromAST(ast);
+
+    // in complex languages, we may add a second pass here
+    // to fill symbol attributes with values 
+    // (but in this case it is not needed)
+  }
+
+  /**
+   * Store the Symbol Table in the Symbol Artifact
+   *
+   */
+  void storeSymbolTable() {
+
+    // store artifact scope and its symbols
+    // // subirectory "target" + modelpath + suffix "sym"
+    String symbolartifact = "target/" +
+                          Paths.get(modelfilename).getFileName() + "sym";
+
+    // run the storage
+    new AutomataSymbols2Json().store(modelTopScope, symbolartifact);
+  }
+
 }

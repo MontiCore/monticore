@@ -30,13 +30,16 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
-import static de.monticore.generating.GeneratorEngine.TOP_NAME_EXTENSION;
 import static de.monticore.generating.GeneratorEngine.existsHandwrittenClass;
 
 /**
  * Main class for the Automaton DSL tool.
  */
 public class AutomataTool {
+
+  /** Configurable values:
+   */
+  public static final String TOP_NAME_EXTENSION = "TOP";
 
   /**
    * The tool calculates and uses the following
@@ -60,13 +63,13 @@ public class AutomataTool {
   // Filename of the stored symbols: args[1]
   static protected String symbolfilename = "";
 
-  //  handcodedPath: args[1]
+  //  handcodedPath: args[2]
   static protected IterablePath handcodedPath;
 
-  // output directory: args[2]
+  // output directory: args[3]
   static protected File outputDir;
   
-  // output directory: args[2]
+  // output directory: args[4]
   static protected Optional<File> templatePath = Optional.empty();
   
   
@@ -118,10 +121,10 @@ public class AutomataTool {
     if (args.length < 4) {
       Log.error("0xDE631 Please specify at least 4 arguments: \n"
           + "1. automata modelfile,\n"
-          + "2. symbol file"
+          + "2. symbol file,\n"
           + "3. handcodedPath,\n"
-          + "4. output directory.\n"
-          + "5. (optional) templatePath"
+          + "4. output directory,\n"
+          + "5. (optional) templatePath\n"
           );
       return;
     }
@@ -130,10 +133,10 @@ public class AutomataTool {
     modelfilename = args[0];
     symbolfilename = args[1]; 
 
-    // get handcodedPath from arg[1]
+    // get handcodedPath from args[2]
     handcodedPath = IterablePath.from(new File(args[2]), "java");
 
-    // get output directory from arg[2]
+    // get output directory from args[3]
     outputDir = new File(args[3]);
     
     // if present get templatePath
