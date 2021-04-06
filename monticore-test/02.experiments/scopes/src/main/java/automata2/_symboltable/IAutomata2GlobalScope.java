@@ -16,6 +16,7 @@ public interface IAutomata2GlobalScope extends IAutomata2GlobalScopeTOP {
   @Override
   default Set<String> calculateModelNamesForState(String name) {
     Set<String> names = new HashSet<>();
+    // calculate all prefixes
     while (name.contains(".")) {
       name = Names.getQualifier(name);
       names.add(name);
