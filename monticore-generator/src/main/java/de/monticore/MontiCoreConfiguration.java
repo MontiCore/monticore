@@ -58,6 +58,7 @@ public final class MontiCoreConfiguration implements Configuration {
     GRAMMARS("grammars"), GRAMMARS_SHORT("g"), MODELPATH("modelPath"), MODELPATH_SHORT("mp"),
     OUT("out"), OUT_SHORT("o"), HANDCODEDPATH("handcodedPath"), HANDCODEDPATH_SHORT("hcp"),
     TEMPLATEPATH("templatePath"), TEMPLATEPATH_SHORT("fp"),
+    CONFIGTEMPLATE("configTemplate"), CONFIGTEMPLATE_SHORT("ct"),
     FORCE("force"), FORCE_SHORT("f"),
     REPORT("report"), REPORT_SHORT("r"),
     DEV("dev"), DEV_SHORT("d"),
@@ -456,6 +457,23 @@ public final class MontiCoreConfiguration implements Configuration {
       return IterablePath.empty();
     }
     return IterablePath.from(new File(DEFAULT_HANDCODED_TEMPLATE_PATH), FTL_EXTENSIONS);
+  }
+
+  /**
+   * Getter for the optional config template.
+   *
+   * @return Optional of the config tmplate
+   */
+  public Optional<String> getConfigTemplate() {
+    Optional<String> configTemplate = getAsString(Options.CONFIGTEMPLATE);
+    if (configTemplate.isPresent()) {
+      return configTemplate;
+    }
+    configTemplate = getAsString(Options.CONFIGTEMPLATE_SHORT);
+    if (configTemplate.isPresent()) {
+      return configTemplate;
+    }
+    return Optional.empty();
   }
 
   /**

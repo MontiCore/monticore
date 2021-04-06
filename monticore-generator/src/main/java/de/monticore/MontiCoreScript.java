@@ -955,19 +955,19 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param handcodedPath The path to hand-coded java artifacts
    */
   public void generateFromCD(GlobalExtensionManagement glex, List<ASTCDCompilationUnit> oldCDs,
-      List<ASTCDCompilationUnit> cds, File outputDirectory, IterablePath handcodedPath, IterablePath templatePath) {
+      List<ASTCDCompilationUnit> cds, File outputDirectory, IterablePath handcodedPath, IterablePath templatePath, Optional<String> configTemplate) {
     // we precisely know the list of old CDs, which will be merged to a single
     // CD in the future
     ASTCDCompilationUnit oldCD = oldCDs.get(0);
 
     // generate from CDs
     for (ASTCDCompilationUnit cd : cds) {
-      generateFromCD(glex, oldCD, cd, outputDirectory, handcodedPath, templatePath);
+      generateFromCD(glex, oldCD, cd, outputDirectory, handcodedPath, templatePath, configTemplate);
     }
   }
 
   public void generateFromCD(GlobalExtensionManagement glex, ASTCDCompilationUnit oldCD, ASTCDCompilationUnit decoratedCD,
-                             File outputDirectory, IterablePath handcodedPath, IterablePath templatePath) {
+                             File outputDirectory, IterablePath handcodedPath, IterablePath templatePath, Optional<String> configTemplate) {
     // need symboltable of the old cd
     glex.setGlobalValue("service", new AbstractService(oldCD));
     glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
@@ -1180,6 +1180,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
                 mcConfig.getHandcodedPath());
         builder.addVariable(MontiCoreConfiguration.Options.TEMPLATEPATH.toString(),
                 mcConfig.getTemplatePath());
+        builder.addVariable(MontiCoreConfiguration.Options.CONFIGTEMPLATE.toString(),
+                mcConfig.getConfigTemplate());
         builder.addVariable("LOG_ID", LOG_ID);
         builder.addVariable("glex", new GlobalExtensionManagement());
         builder.addVariable("grammarIterator", mcConfig.getGrammars().getResolvedPaths());
