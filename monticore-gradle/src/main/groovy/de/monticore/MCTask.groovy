@@ -32,6 +32,8 @@ import java.util.stream.Collectors
  *                        defaults to $projectDir/src/main/grammars
  *   - templatePath     - list of paths to be considered for handcrafted templates
  *                        defaults to $projectDir/src/main/resources
+ *   - configTemplate   - template to configure the integration of handwritten templates
+ *                        defaults to empty resulting in MontiCore's standard generation
  *   - script           - the script to be used for the generation
  *                        defaults to monticore_noemf.groovy
  *   - addGrammarConfig - boolean that specifies whether the configuration called grammar should
@@ -69,7 +71,9 @@ abstract public class MCTask extends DefaultTask {
   List<String> templatePath = []
   
   List<String> includeConfigs = []
-  
+
+  String configTemplate;
+
   String script
   
   boolean help = false
@@ -128,7 +132,13 @@ abstract public class MCTask extends DefaultTask {
   ConfigurableFileCollection getGrammarConfigFiles() {
     return grammarConfigFiles
   }
-  
+
+  @Input
+  @Optional
+  String getConfigTemplate() {
+    return configTemplate
+  }
+
   @Input
   @Optional
   String getScript() {
@@ -233,6 +243,10 @@ abstract public class MCTask extends DefaultTask {
     if (!templatePath.isEmpty()) {
       params.add("-fp")
       params.addAll(templatePath)
+    }
+    if (configTemplate != null) {
+      params.add("-ct")
+      params.add(configTemplate)
     }
     if (script != null) {
       params.add("-sc")
