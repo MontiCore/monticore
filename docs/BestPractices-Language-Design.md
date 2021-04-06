@@ -64,12 +64,12 @@ Some general questions on how to design a complete languages are adressed here.
 * Modularity in general is an important design principle.
   In the case of model-based code generation, modularity involves the following 
   dimensions:
-  1. Modelling languages
-  2. Models
-  3. Generator
-  4. Generated code
-  5. Runtime-Environment (RTE) including imported standard libraries
-  6. Software architecture (of the overal system), software stack
+    1. Modelling languages
+    2. Models
+    3. Generator
+    4. Generated code
+    5. Runtime-Environment (RTE) including imported standard libraries
+    6. Software architecture (of the overal system), software stack
 * These dimensions are not orthogonal, but also not completely interelated.
   The actual organisation will depend on the form of project.
 * A weak form of modularity would be to organize things in
