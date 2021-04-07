@@ -22,6 +22,6 @@ for (astGrammar in astGrammars) {
         astGrammar = createSymbolsFromAST(globalScope, astGrammar)
 
         // Generate parser
-        generateParser(glex, astGrammar, globalScope, handcodedPath, templatePath, out, false, Languages.PYTHON_3)
+        generateParser(glex, astGrammar, globalScope, handcodedPath, templatePath, configTemplate, out, false, Languages.PYTHON_3)
     }
 }

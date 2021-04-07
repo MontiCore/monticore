@@ -3,32 +3,50 @@ package de.monticore.codegen.cd2java;
 
 import de.monticore.cdbasis._ast.*;
 import de.monticore.cdinterfaceandenum ._ast.*;
+import de.monticore.codegen.cd2java.typecd2java.TemplateHPService;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
+import de.monticore.generating.templateengine.TemplateController;
+import de.monticore.generating.templateengine.TemplateHookPoint;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 public class CDGenerator {
 
   protected static final String JAVA_EXTENSION = ".java";
 
   protected final GeneratorEngine generatorEngine;
+  protected GeneratorSetup setup;
 
   public CDGenerator(GeneratorSetup generatorSetup) {
     this.generatorEngine = new GeneratorEngine(generatorSetup);
+    this.setup = generatorSetup;
   }
 
-  public void generate(ASTCDCompilationUnit compilationUnit) {
+  public void generate(ASTCDCompilationUnit compilationUnit, Optional<String> configTemplate) {
     ASTCDDefinition definition = compilationUnit.getCDDefinition();
     String packageAsPath = String.join(File.separator, 
         compilationUnit.getMCPackageDeclaration().getMCQualifiedName().getPartsList()).toLowerCase();
 
+    if (configTemplate.isPresent()) {
+      this.configureTemplates(configTemplate.get(), definition);
+    }
+
     this.generateCDClasses(packageAsPath, definition.getCDClassesList());
     this.generateCDInterfaces(packageAsPath, definition.getCDInterfacesList());
     this.generateCDEnums(packageAsPath, definition.getCDEnumsList());
+  }
+
+  protected void configureTemplates(String configTemplate, ASTCDDefinition definition) {
+    TemplateController tc = setup.getNewTemplateController(configTemplate);
+    TemplateHookPoint hp = new TemplateHookPoint(configTemplate);
+    List<Object> args = Arrays.asList(setup.getGlex(), new TemplateHPService());
+    hp.processValue(tc, definition, args);
   }
 
   protected Path getAsPath(String packageAsPath, String name) {

@@ -282,12 +282,12 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param handcodedPath The path to hand-coded java artifacts
    * @param outputDirectory The output directory for generated Java code
    */
-  public void generateParser(GlobalExtensionManagement glex, List<ASTCDCompilationUnit> cds, 
-                             ASTMCGrammar grammar, GrammarFamilyGlobalScope symbolTable,
-                             IterablePath handcodedPath, IterablePath templatePath, File outputDirectory) {
+  public void generateParser(GlobalExtensionManagement glex, List<ASTCDCompilationUnit> cds, ASTMCGrammar grammar,
+                             GrammarFamilyGlobalScope symbolTable, IterablePath handcodedPath, IterablePath templatePath,
+                             Optional<String> configTemplate, File outputDirectory) {
     // first cd (representing AST package) ist relevant 
     // -> will be only one cd in the future
-    ParserGenerator.generateFullParser(glex, cds.get(0), grammar, symbolTable, handcodedPath, templatePath, outputDirectory);
+    ParserGenerator.generateFullParser(glex, cds.get(0), grammar, symbolTable, handcodedPath, templatePath, configTemplate, outputDirectory);
   }
   
   /**
@@ -298,12 +298,12 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param outputDirectory output directory for generated Java code
    */
   public void generateParser(GlobalExtensionManagement glex, ASTCDCompilationUnit astClassDiagram, ASTMCGrammar grammar,
-                             GrammarFamilyGlobalScope symbolTable,
-                             IterablePath handcodedPath, IterablePath templatePath, File outputDirectory) {
+                             GrammarFamilyGlobalScope symbolTable, IterablePath handcodedPath, IterablePath templatePath,
+                             Optional<String> configTemplate, File outputDirectory) {
     Log.errorIfNull(
         grammar,
         "0xA4107 Parser generation can't be processed: the reference to the grammar ast is null");
-    ParserGenerator.generateFullParser(glex, astClassDiagram, grammar, symbolTable, handcodedPath, templatePath, outputDirectory);
+    ParserGenerator.generateFullParser(glex, astClassDiagram, grammar, symbolTable, handcodedPath, templatePath, configTemplate, outputDirectory);
   }
 
   /**
@@ -313,14 +313,13 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param symbolTable
    * @param outputDirectory output directory for generated Java code
    */
-  public void generateParser(GlobalExtensionManagement glex, ASTMCGrammar grammar,
-                             GrammarFamilyGlobalScope symbolTable,
-                             IterablePath handcodedPath, IterablePath templatePath, File outputDirectory,
-                             boolean embeddedJavaCode, Languages lang) {
+  public void generateParser(GlobalExtensionManagement glex, ASTMCGrammar grammar, GrammarFamilyGlobalScope symbolTable,
+                             IterablePath handcodedPath, IterablePath templatePath, Optional<String> configTemplate,
+                             File outputDirectory, boolean embeddedJavaCode, Languages lang) {
     Log.errorIfNull(
             grammar,
             "0xA4108 Parser generation can't be processed: the reference to the grammar ast is null");
-    ParserGenerator.generateParser(glex, grammar, symbolTable, handcodedPath, templatePath, outputDirectory, embeddedJavaCode, lang);
+    ParserGenerator.generateParser(glex, grammar, symbolTable, handcodedPath, templatePath, configTemplate, outputDirectory, embeddedJavaCode, lang);
   }
 
   /**
@@ -955,19 +954,19 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param handcodedPath The path to hand-coded java artifacts
    */
   public void generateFromCD(GlobalExtensionManagement glex, List<ASTCDCompilationUnit> oldCDs,
-      List<ASTCDCompilationUnit> cds, File outputDirectory, IterablePath handcodedPath, IterablePath templatePath) {
+      List<ASTCDCompilationUnit> cds, File outputDirectory, IterablePath handcodedPath, IterablePath templatePath, Optional<String> configTemplate) {
     // we precisely know the list of old CDs, which will be merged to a single
     // CD in the future
     ASTCDCompilationUnit oldCD = oldCDs.get(0);
 
     // generate from CDs
     for (ASTCDCompilationUnit cd : cds) {
-      generateFromCD(glex, oldCD, cd, outputDirectory, handcodedPath, templatePath);
+      generateFromCD(glex, oldCD, cd, outputDirectory, handcodedPath, templatePath, configTemplate);
     }
   }
 
   public void generateFromCD(GlobalExtensionManagement glex, ASTCDCompilationUnit oldCD, ASTCDCompilationUnit decoratedCD,
-                             File outputDirectory, IterablePath handcodedPath, IterablePath templatePath) {
+                             File outputDirectory, IterablePath handcodedPath, IterablePath templatePath, Optional<String> configTemplate) {
     // need symboltable of the old cd
     glex.setGlobalValue("service", new AbstractService(oldCD));
     glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
@@ -980,7 +979,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     setup.setModelName(diagramName);
     setup.setGlex(glex);
     CDGenerator generator = new CDGenerator(setup);
-    generator.generate(decoratedCD);
+    generator.generate(decoratedCD, configTemplate);
   }
 
   /**
@@ -993,19 +992,19 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param handcodedPath The path to hand-coded java artifacts
    */
   public void generateEmfFromCD(GlobalExtensionManagement glex, List<ASTCDCompilationUnit> oldCDs,
-      List<ASTCDCompilationUnit> cds, File outputDirectory, IterablePath handcodedPath, IterablePath templatePath) {
+      List<ASTCDCompilationUnit> cds, File outputDirectory, IterablePath handcodedPath, IterablePath templatePath, Optional<String> configTemplate) {
     // we precisely know the list of old CDs, which will be merged to a single
     // CD in the future
     ASTCDCompilationUnit oldCD = oldCDs.get(0);
 
     // generate from CDs
     for (ASTCDCompilationUnit cd : cds) {
-      generateEmfFromCD(glex, oldCD, cd, outputDirectory, handcodedPath, templatePath);
+      generateEmfFromCD(glex, oldCD, cd, outputDirectory, handcodedPath, templatePath, configTemplate);
     }
   }
 
   public void generateEmfFromCD(GlobalExtensionManagement glex, ASTCDCompilationUnit oldCD, ASTCDCompilationUnit decoratedCD,
-                                File outputDirectory, IterablePath handcodedPath, IterablePath templatePath) {
+                                File outputDirectory, IterablePath handcodedPath, IterablePath templatePath, Optional<String> configTemplate) {
     // need symboltable of the old cd
     glex.setGlobalValue("service", new EmfService(oldCD));
     glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
@@ -1020,7 +1019,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     CDEmfGenerator generator = new CDEmfGenerator(setup);
     //set originalDefinition, because information is needed in template
     generator.setOriginalDefinition(oldCD.getCDDefinition().deepClone());
-    generator.generate(decoratedCD);
+    generator.generate(decoratedCD, configTemplate);
   }
 
   private void createCDSymbolsForSuperGrammars(GlobalExtensionManagement glex, ASTMCGrammar astGrammar,
@@ -1180,6 +1179,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
                 mcConfig.getHandcodedPath());
         builder.addVariable(MontiCoreConfiguration.Options.TEMPLATEPATH.toString(),
                 mcConfig.getTemplatePath());
+        builder.addVariable(MontiCoreConfiguration.Options.CONFIGTEMPLATE.toString(),
+                mcConfig.getConfigTemplate());
         builder.addVariable("LOG_ID", LOG_ID);
         builder.addVariable("glex", new GlobalExtensionManagement());
         builder.addVariable("grammarIterator", mcConfig.getGrammars().getResolvedPaths());

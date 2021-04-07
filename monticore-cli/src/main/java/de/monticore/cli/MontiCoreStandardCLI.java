@@ -313,6 +313,14 @@ public class MontiCoreStandardCLI {
         .hasArgs()
         .desc("Optional list of directories to look for handwritten templates to integrate.")
         .build());
+
+    // specify template config
+    options.addOption(Option.builder("ct")
+        .longOpt("configTemplate")
+        .argName("config.ftl")
+        .hasArg()
+        .desc("Optional template to configure the integration of handwritten templates.")
+        .build());
     
     // developer level logging
     options.addOption(Option.builder("d")
