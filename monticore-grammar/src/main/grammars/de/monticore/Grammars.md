@@ -4,8 +4,6 @@
 
 # MontiCore Core Grammars - an Overview
 
-[[_TOC_]]
-
 [MontiCore](http://www.monticore.de) is a language workbench. It uses 
 grammars as primary mechanism to describe DSLs. The extended 
 grammar format allows to **compose language components** by
