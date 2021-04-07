@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-grammar Automata extends de.monticore.literals.MCCommonLiterals {
+grammar Automata
+  extends de.monticore.literals.MCCommonLiterals {
 
   symbol scope Automaton =
     "automaton" Name "{" (State | Transition)* "}" ;
