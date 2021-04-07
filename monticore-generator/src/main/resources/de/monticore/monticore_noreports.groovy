@@ -71,7 +71,7 @@ while (grammarIterator.hasNext()) {
     reportCD(cd, report)
 
     // M6: Generate parser and wrapper
-    generateParser(glex, cd, astGrammar, mcScope, handcodedPath, templatePath, out)
+    generateParser(glex, cd, astGrammar, mcScope, handcodedPath, templatePath, configTemplate, out)
 
     // M7: Decorate class diagrams
     decoratedCD = decorateCD(glex, mcScope, cd, handcodedPath)

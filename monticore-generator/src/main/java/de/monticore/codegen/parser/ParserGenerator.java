@@ -31,6 +31,7 @@ import de.se_rwth.commons.logging.Log;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ParserGenerator {
@@ -55,10 +56,11 @@ public class ParserGenerator {
       IGrammar_WithConceptsGlobalScope symbolTable,
       IterablePath handcodedPath,
       IterablePath templatePath,
+      Optional<String> configTemplate,
       File targetDir)
   {
     generateParser(glex, astGrammar, symbolTable, handcodedPath, templatePath, targetDir);
-    generateParserWrapper(glex, astClassDiagram, handcodedPath, templatePath, targetDir);
+    generateParserWrapper(glex, astClassDiagram, handcodedPath, templatePath, configTemplate, targetDir);
   }
 
 
@@ -156,6 +158,7 @@ public class ParserGenerator {
       ASTCDCompilationUnit astClassDiagram,
       IterablePath handcodedPath,
       IterablePath templatePath,
+      Optional<String> configTemplate,
       File targetDir) {
     final ParserService parserService = new ParserService(astClassDiagram);
     final ParserClassDecorator parserClassDecorator = new ParserClassDecorator(glex, parserService);
@@ -178,7 +181,7 @@ public class ParserGenerator {
     setup.setModelName(diagramName);
     setup.setGlex(glex);
     CDGenerator generator = new CDGenerator(setup);
-    generator.generate(decoratedCD);
+    generator.generate(decoratedCD, configTemplate);
   }
   private ParserGenerator() {
     // noninstantiable
