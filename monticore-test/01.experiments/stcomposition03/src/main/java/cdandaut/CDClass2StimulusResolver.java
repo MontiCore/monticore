@@ -19,7 +19,8 @@ public class CDClass2StimulusResolver
   @Override
   public List<StimulusSymbol> resolveAdaptedStimulusSymbol(
       boolean foundSymbols, String name, AccessModifier m,
-      Predicate<StimulusSymbol> p) {
+            Predicate<StimulusSymbol> p)
+  {
     List<StimulusSymbol> r = new ArrayList<>();
     Optional<CDClassSymbol> s = BasicCDMill.globalScope()
         .resolveCDClass(name, m);

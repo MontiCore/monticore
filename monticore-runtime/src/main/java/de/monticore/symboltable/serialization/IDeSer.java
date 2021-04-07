@@ -14,7 +14,8 @@ import de.monticore.symboltable.serialization.json.JsonObject;
  * @param <J> The language-specific Symbols2Json Class for traversing the symbol table
  */
 public interface IDeSer<S extends IScope,
-                        A extends IArtifactScope, J> {
+                        A extends IArtifactScope, 
+                        J> {
 
   /**
    * serialize a passed artifact scope object to a String that is returned.
@@ -24,7 +25,6 @@ public interface IDeSer<S extends IScope,
    * @return
    */
   String serialize(A toSerialize, J symbol2json);
-
   /**
    * serialize a passed scope object to a String that is returned.
    *
@@ -73,7 +73,6 @@ public interface IDeSer<S extends IScope,
    * @return
    */
   A deserializeArtifactScope(JsonObject scopeJson);
-
   /**
    * deserialize a passed scope object.
    *
