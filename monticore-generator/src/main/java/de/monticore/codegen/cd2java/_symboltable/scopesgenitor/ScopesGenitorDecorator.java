@@ -98,6 +98,7 @@ public class ScopesGenitorDecorator extends AbstractCreator<ASTCDCompilationUnit
           .addCDMember(createCreateScopeMethod(scopeInterface))
           .addAllCDMembers(createSymbolClassMethods(symbolDefiningClasses))
           .addAllCDMembers(createSymbolClassMethods(inheritedSymbolPropertyClasses))
+          .addAllCDMembers(createInitSymbolMethods(symbolDefiningClasses, inheritedSymbolPropertyClasses))
           .addAllCDMembers(createVisitForNoSymbolMethods(noSymbolDefiningClasses))
           .addAllCDMembers(createScopeClassMethods(onlyScopeProds, scopeInterface))
           .addCDMember(createAddToScopeStackMethod())
@@ -186,12 +187,6 @@ public class ScopesGenitorDecorator extends AbstractCreator<ASTCDCompilationUnit
     for (ASTCDType symbolClass : symbolClasses) {
       methodList.addAll(createSymbolClassMethods(symbolClass, symbolTableService.getSymbolFullName(symbolClass)));
     }
-    List<String> uniqueSymbols = symbolClasses.stream()
-      .map(symbolTableService::getSymbolFullName)
-      .distinct()
-      .collect(Collectors.toList());
-    methodList.addAll(createInitSymbolMethods(uniqueSymbols));
-
     return methodList;
   }
 
@@ -202,12 +197,6 @@ public class ScopesGenitorDecorator extends AbstractCreator<ASTCDCompilationUnit
         methodList.addAll(createSymbolClassMethods(symbolClass, symbolClassMap.get(symbolClass)));
       }
     }
-    List<String> uniqueSymbols = symbolClassMap.entrySet().stream()
-      .filter(e -> !symbolTableService.hasSymbolStereotype(e.getKey()))
-      .map(Map.Entry::getValue)
-      .distinct()
-      .collect(Collectors.toList());
-    methodList.addAll(createInitSymbolMethods(uniqueSymbols));
     return methodList;
   }
 
@@ -315,9 +304,18 @@ public class ScopesGenitorDecorator extends AbstractCreator<ASTCDCompilationUnit
     return Lists.newArrayList(initArtifactScopeMethod, initArtifactScopeHP2Method);
   }
 
-  protected List<ASTCDMethod> createInitSymbolMethods(List<String> symbols) {
+  protected List<ASTCDMethod> createInitSymbolMethods(List<ASTCDType> symbolClasses, Map<ASTCDClass, String> inheritedMap) {
     List<ASTCDMethod> methods = Lists.newArrayList();
-    for(String symbol: symbols) {
+    List<String> uniqueSymbols = symbolClasses.stream()
+            .map(symbolTableService::getSymbolFullName)
+            .distinct()
+            .collect(Collectors.toList());
+    inheritedMap.entrySet().stream()
+            .filter(e -> !symbolTableService.hasSymbolStereotype(e.getKey()))
+            .map(Map.Entry::getValue)
+            .filter(e -> !uniqueSymbols.contains(e))
+            .forEach(e -> uniqueSymbols.add(e));
+    for(String symbol: uniqueSymbols) {
       String symbolName = symbolTableService.removeSymbolSuffix(Names.getSimpleName(symbol));
       ASTCDParameter symbolParam = getCDParameterFacade().createParameter(symbol, "symbol");
       ASTCDMethod initSymbolMethod = getCDMethodFacade().createMethod(PROTECTED.build(), "init" + symbolName + "HP1", symbolParam);
