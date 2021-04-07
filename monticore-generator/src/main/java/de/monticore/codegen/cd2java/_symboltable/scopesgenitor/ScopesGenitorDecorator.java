@@ -3,12 +3,14 @@
 package de.monticore.codegen.cd2java._symboltable.scopesgenitor;
 
 import com.google.common.collect.Lists;
-import de.monticore.cdbasis._ast.*;
-import de.monticore.cd4codebasis._ast.*;
-import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
-import de.monticore.cdbasis._symboltable.CDTypeSymbol;
-import de.monticore.cdbasis._symboltable.ICDBasisScope;
 import de.monticore.cd4code.CD4CodeMill;
+import de.monticore.cd4codebasis._ast.ASTCDConstructor;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cd4codebasis._ast.ASTCDParameter;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
@@ -22,8 +24,6 @@ import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardTypeArgument;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import de.se_rwth.commons.Names;
-import de.se_rwth.commons.StringTransformations;
-import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -31,11 +31,8 @@ import java.util.stream.Collectors;
 import static de.monticore.codegen.cd2java.CDModifier.*;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
-import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
-import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SYMBOL_VAR;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISIT;
 
 public class ScopesGenitorDecorator extends AbstractCreator<ASTCDCompilationUnit, Optional<ASTCDClass>> {
 
@@ -229,16 +226,10 @@ public class ScopesGenitorDecorator extends AbstractCreator<ASTCDCompilationUnit
 
 
   protected ASTCDMethod createSymbolVisitMethod(String astFullName, String symbolFullName, String simpleName, ASTModifier symbolModifier) {
-    boolean isSpanningSymbol = false;
-    boolean isOrdered = false;
-    boolean isShadowing = false;
-    boolean isNonExporting = false;
-    if(symbolModifier !=null) {
-      isSpanningSymbol = symbolTableService.hasScopeStereotype(symbolModifier);
-      isOrdered = symbolTableService.hasOrderedStereotype(symbolModifier);
-      isShadowing = symbolTableService.hasShadowingStereotype(symbolModifier);
-      isNonExporting = symbolTableService.hasNonExportingStereotype(symbolModifier);
-    }
+    boolean isSpanningSymbol = symbolTableService.hasScopeStereotype(symbolModifier) || symbolTableService.hasInheritedScopeStereotype(symbolModifier);
+    boolean isOrdered = symbolTableService.hasOrderedStereotype(symbolModifier);
+    boolean isShadowing = symbolTableService.hasShadowingStereotype(symbolModifier);
+    boolean isNonExporting = symbolTableService.hasNonExportingStereotype(symbolModifier);
     String scopeInterface = symbolTableService.getScopeInterfaceFullName();
     String errorCode = symbolTableService.getGeneratedErrorCode(symbolFullName + VISIT);
     String millFullName = symbolTableService.getMillFullName();
