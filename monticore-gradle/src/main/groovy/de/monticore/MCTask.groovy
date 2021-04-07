@@ -36,6 +36,10 @@ import java.util.stream.Collectors
  *                        defaults to empty resulting in MontiCore's standard generation
  *   - script           - the script to be used for the generation
  *                        defaults to monticore_noemf.groovy
+ *   - groovyHook1      - groovy script that is hooked into the workflow of the standard script at hook point one
+ *                        defaults to empty
+ *   - groovyHook2      - groovy script that is hooked into the workflow of the standard script at hook point two
+ *                        defaults to empty
  *   - addGrammarConfig - boolean that specifies whether the configuration called grammar should
  *                        be added to the model path
  *                        defaults to true
@@ -75,6 +79,10 @@ abstract public class MCTask extends DefaultTask {
   String configTemplate;
 
   String script
+
+  String groovyHook1;
+
+  String groovyHook2;
   
   boolean help = false
   
@@ -144,7 +152,19 @@ abstract public class MCTask extends DefaultTask {
   String getScript() {
     return script
   }
-  
+
+  @Input
+  @Optional
+  String getGroovyHook1() {
+    return groovyHook1
+  }
+
+  @Input
+  @Optional
+  String getGroovyHook2() {
+    return groovyHook2
+  }
+
   @Input
   boolean getDev() {
     return dev
@@ -251,6 +271,14 @@ abstract public class MCTask extends DefaultTask {
     if (script != null) {
       params.add("-sc")
       params.add(script)
+    }
+    if (groovyHook1 != null) {
+      params.add("-gh1")
+      params.add(groovyHook1)
+    }
+    if (groovyHook2 != null) {
+      params.add("-gh2")
+      params.add(groovyHook2)
     }
     if (dev) {
       params.add("-d")
