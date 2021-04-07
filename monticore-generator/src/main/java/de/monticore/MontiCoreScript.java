@@ -319,7 +319,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     Log.errorIfNull(
             grammar,
             "0xA4108 Parser generation can't be processed: the reference to the grammar ast is null");
-    ParserGenerator.generateParser(glex, grammar, symbolTable, handcodedPath, templatePath, outputDirectory, embeddedJavaCode, lang);
+    ParserGenerator.generateParser(glex, grammar, symbolTable, handcodedPath, templatePath, configTemplate, outputDirectory, embeddedJavaCode, lang);
   }
 
   /**

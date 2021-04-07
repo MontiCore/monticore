@@ -4,6 +4,7 @@ package de.monticore.codegen.parser;
 
 import com.google.common.base.Joiner;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CDGenerator;
 import de.monticore.codegen.cd2java.CdUtilsPrinter;
@@ -13,11 +14,14 @@ import de.monticore.codegen.cd2java._parser.ParserClassDecorator;
 import de.monticore.codegen.cd2java._parser.ParserForSuperDecorator;
 import de.monticore.codegen.cd2java._parser.ParserService;
 import de.monticore.codegen.cd2java.top.TopDecorator;
+import de.monticore.codegen.cd2java.typecd2java.TemplateHPService;
 import de.monticore.codegen.parser.antlr.AntlrTool;
 import de.monticore.codegen.parser.antlr.Grammar2Antlr;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.TemplateController;
+import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.grammar.MCGrammarInfo;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
@@ -31,6 +35,8 @@ import de.se_rwth.commons.logging.Log;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -59,7 +65,7 @@ public class ParserGenerator {
       Optional<String> configTemplate,
       File targetDir)
   {
-    generateParser(glex, astGrammar, symbolTable, handcodedPath, templatePath, targetDir);
+    generateParser(glex, astGrammar, symbolTable, handcodedPath, templatePath, configTemplate, targetDir);
     generateParserWrapper(glex, astClassDiagram, handcodedPath, templatePath, configTemplate, targetDir);
   }
 
@@ -78,9 +84,10 @@ public class ParserGenerator {
       IGrammar_WithConceptsGlobalScope symbolTable,
       IterablePath handcodedPath,
       IterablePath templatePath,
+      Optional<String> configTemplate,
       File targetDir)
   {
-    generateParser(glex, astGrammar, symbolTable, handcodedPath, templatePath, targetDir, true, Languages.JAVA);
+    generateParser(glex, astGrammar, symbolTable, handcodedPath, templatePath, configTemplate, targetDir, true, Languages.JAVA);
   }
 
 
@@ -99,6 +106,7 @@ public class ParserGenerator {
       IGrammar_WithConceptsGlobalScope symbolTable,
       IterablePath handcodedPath,
       IterablePath templatePath,
+      Optional<String> configTemplate,
       File targetDir,
       boolean embeddedJavaCode,
       Languages lang) {
@@ -128,6 +136,10 @@ public class ParserGenerator {
     glex.setGlobalValue("nameHelper", new Names());
     setup.setGlex(glex);
 
+    if (configTemplate.isPresent()) {
+      configureTemplates(setup, configTemplate.get(), astGrammar);
+    }
+
     final Path filePath = Paths.get(Names.getPathFromPackage(genHelper.getParserPackage()),
         astGrammar.getName() + "Antlr.g4");
     Grammar2Antlr grammar2Antlr = new Grammar2Antlr(genHelper, grammarInfo, true);
@@ -145,6 +157,13 @@ public class ParserGenerator {
             Names.getPathFromPackage(genHelper.getParserPackage())));
     antlrTool.createParser(gFile);
     Log.debug("End parser generation for the grammar " + astGrammar.getName(), LOG);
+  }
+
+  protected static void configureTemplates(GeneratorSetup setup, String configTemplate, ASTMCGrammar grammar) {
+    TemplateController tc = setup.getNewTemplateController(configTemplate);
+    TemplateHookPoint hp = new TemplateHookPoint(configTemplate);
+    List<Object> args = Arrays.asList(setup.getGlex(), new TemplateHPService());
+    hp.processValue(tc, grammar, args);
   }
 
   /**
