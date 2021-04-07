@@ -46,7 +46,6 @@ public class ResolveDeepTest {
     IAutomata2ArtifactScope as2 = Automata2Mill.scopesGenitorDelegator().createFromAST(ast2);
     Automata2Symbols2Json s2j2 = new Automata2Symbols2Json();
     s2j2.store(as2, "target/symbols2/PingPong.autsym");
-
   }
 
   @Test
