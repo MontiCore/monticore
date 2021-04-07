@@ -77,7 +77,7 @@ while (grammarIterator.hasNext()) {
     decoratedCD = decorateCD(glex, mcScope, cd, handcodedPath)
 
     // M8 Generate ast classes, symbol table, visitor, and context conditions
-    generateFromCD(glex, cd, decoratedCD, out, handcodedPath, templatePath)
+    generateFromCD(glex, cd, decoratedCD, out, handcodedPath, templatePath, configTemplate)
 
     // M9: Write reports to files
     // M9.1: Inform about successful completion for grammar
