@@ -48,6 +48,8 @@ public class ScopesGenitorDecoratorTest extends DecoratorTestCase {
 
   private static final String I_AUTOMATON_SCOPE = "de.monticore.codegen.symboltable.automaton._symboltable.IAutomatonScope";
 
+  private static final String I_AUTOMATON_ARTIFACT_SCOPE = "de.monticore.codegen.symboltable.automaton._symboltable.IAutomatonArtifactScope";
+
   private static final String AUTOMATON_SYMBOL = "de.monticore.codegen.symboltable.automaton._symboltable.AutomatonSymbol";
 
   private static final String STATE_SYMBOL = "de.monticore.codegen.symboltable.automaton._symboltable.StateSymbol";
@@ -127,41 +129,12 @@ public class ScopesGenitorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testConstructorCount() {
-    assertEquals(3, scopesGenitorClass.getCDConstructorList().size());
-  }
-
-  @Test
-  public void testConstructor() {
-    ASTCDConstructor cdConstructor = scopesGenitorClass.getCDConstructorList().get(0);
-    assertDeepEquals(PUBLIC, cdConstructor.getModifier());
-    assertEquals("AutomatonScopesGenitor", cdConstructor.getName());
-
-    assertEquals(1, cdConstructor.sizeCDParameters());
-    assertDeepEquals(I_AUTOMATON_SCOPE, cdConstructor.getCDParameter(0).getMCType());
-    assertEquals("enclosingScope", cdConstructor.getCDParameter(0).getName());
-
-
-    assertFalse(cdConstructor.isPresentCDThrowsDeclaration());
-  }
-
-
-  @Test
-  public void testConstructorWithEnclosingScope() {
-    ASTCDConstructor cdConstructor = scopesGenitorClass.getCDConstructorList().get(1);
-    assertDeepEquals(PUBLIC, cdConstructor.getModifier());
-    assertEquals("AutomatonScopesGenitor", cdConstructor.getName());
-
-    assertEquals(1, cdConstructor.sizeCDParameters());
-
-    assertDeepEquals("Deque<? extends " + I_AUTOMATON_SCOPE + ">", cdConstructor.getCDParameter(0).getMCType());
-    assertEquals("scopeStack", cdConstructor.getCDParameter(0).getName());
-
-    assertFalse(cdConstructor.isPresentCDThrowsDeclaration());
+    assertEquals(1, scopesGenitorClass.getCDConstructorList().size());
   }
 
   @Test
   public void testZeroArgsConstructor(){
-    ASTCDConstructor constructor = scopesGenitorClass.getCDConstructorList().get(2);
+    ASTCDConstructor constructor = scopesGenitorClass.getCDConstructorList().get(0);
     assertDeepEquals(PUBLIC, constructor.getModifier());
     assertEquals("AutomatonScopesGenitor", constructor.getName());
     assertTrue(constructor.isEmptyCDParameters());
@@ -197,7 +170,7 @@ public class ScopesGenitorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethods() {
-    assertEquals(35, scopesGenitorClass.getCDMethodList().size());
+    assertEquals(29, scopesGenitorClass.getCDMethodList().size());
   }
 
   @Test
@@ -253,13 +226,13 @@ public class ScopesGenitorDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testSetAutomatonScopeStack() {
-    ASTCDMethod method = getMethodBy("setAutomatonScopeStack", scopesGenitorClass);
+  public void testSetScopeStack() {
+    ASTCDMethod method = getMethodBy("setScopeStack", scopesGenitorClass);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
 
     assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals("Deque<" + I_AUTOMATON_SCOPE + ">", method.getCDParameter(0).getMCType());
+    assertDeepEquals("Deque<? extends " + I_AUTOMATON_SCOPE + ">", method.getCDParameter(0).getMCType());
     assertEquals("scopeStack", method.getCDParameter(0).getName());
   }
 
@@ -346,48 +319,6 @@ public class ScopesGenitorDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testCreate_ASTAutomatonNode() {
-    ASTCDMethod method = getMethodBy("create_Automaton", scopesGenitorClass);
-    assertDeepEquals(PROTECTED, method.getModifier());
-
-    assertTrue(method.getMCReturnType().isPresentMCType());
-    assertDeepEquals(AUTOMATON_SYMBOL + BUILDER_SUFFIX, method.getMCReturnType().getMCType());
-
-    assertEquals(1, method.sizeCDParameters());
-
-    assertDeepEquals(AST_AUTOMATON, method.getCDParameter(0).getMCType());
-    assertEquals("ast", method.getCDParameter(0).getName());
-  }
-
-  @Test
-  public void testCreate_ASTStateNode() {
-    ASTCDMethod method = getMethodBy("create_State", scopesGenitorClass);
-    assertDeepEquals(PROTECTED, method.getModifier());
-
-    assertTrue(method.getMCReturnType().isPresentMCType());
-    assertDeepEquals(STATE_SYMBOL + BUILDER_SUFFIX, method.getMCReturnType().getMCType());
-
-    assertEquals(1, method.sizeCDParameters());
-
-    assertDeepEquals(AST_STATE, method.getCDParameter(0).getMCType());
-    assertEquals("ast", method.getCDParameter(0).getName());
-  }
-
-  @Test
-  public void testCreate_ASTInheritedSymbolClass() {
-    ASTCDMethod method = getMethodBy("create_InheritedSymbolClass", scopesGenitorClass);
-    assertDeepEquals(PROTECTED, method.getModifier());
-
-    assertTrue(method.getMCReturnType().isPresentMCType());
-    assertDeepEquals(INHERITED_SYMBOL + BUILDER_SUFFIX, method.getMCReturnType().getMCType());
-
-    assertEquals(1, method.sizeCDParameters());
-
-    assertDeepEquals(AST_INHERITED_SYMBOL, method.getCDParameter(0).getMCType());
-    assertEquals("ast", method.getCDParameter(0).getName());
-  }
-
-  @Test
   public void testEndVisitASTInheritedSymbolClassNode() {
     List<ASTCDMethod> methodList = getMethodsBy("endVisit", 1, scopesGenitorClass);
     ASTMCType astType = this.mcTypeFacade.createQualifiedType(AST_INHERITED_SYMBOL);
@@ -409,121 +340,6 @@ public class ScopesGenitorDecoratorTest extends DecoratorTestCase {
 
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
-  }
-
-
-  @Test
-  public void testAddToScopeAndLinkWithNodeAutomatonNode() {
-    List<ASTCDMethod> methodList = getMethodsBy("addToScopeAndLinkWithNode", 2, scopesGenitorClass);
-    ASTMCType astType = this.mcTypeFacade.createQualifiedType(AUTOMATON_SYMBOL);
-    assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
-    assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
-    ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-
-    assertEquals(2, method.sizeCDParameters());
-    assertDeepEquals(AUTOMATON_SYMBOL, method.getCDParameter(0).getMCType());
-    assertEquals("symbol", method.getCDParameter(0).getName());
-
-    assertDeepEquals(AST_AUTOMATON, method.getCDParameter(1).getMCType());
-    assertEquals("ast", method.getCDParameter(1).getName());
-  }
-
-  @Test
-  public void testAddToScopeAndLinkWithNodeStateNode() {
-    List<ASTCDMethod> methodList = getMethodsBy("addToScopeAndLinkWithNode", 2, scopesGenitorClass);
-    ASTMCType astType = this.mcTypeFacade.createQualifiedType(STATE_SYMBOL);
-    assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
-    assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
-    ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-
-    assertEquals(2, method.sizeCDParameters());
-    assertDeepEquals(STATE_SYMBOL, method.getCDParameter(0).getMCType());
-    assertEquals("symbol", method.getCDParameter(0).getName());
-
-    assertDeepEquals(AST_STATE, method.getCDParameter(1).getMCType());
-    assertEquals("ast", method.getCDParameter(1).getName());
-  }
-
-  @Test
-  public void testSetLinkBetweenSymbolAndNodeAutomatonNode() {
-    List<ASTCDMethod> methodList = getMethodsBy("setLinkBetweenSymbolAndNode", 2, scopesGenitorClass);
-    ASTMCType astType = this.mcTypeFacade.createQualifiedType(AUTOMATON_SYMBOL);
-    assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
-    assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
-    ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-
-    assertEquals(2, method.sizeCDParameters());
-    assertDeepEquals(AUTOMATON_SYMBOL, method.getCDParameter(0).getMCType());
-    assertEquals("symbol", method.getCDParameter(0).getName());
-
-    assertDeepEquals(AST_AUTOMATON, method.getCDParameter(1).getMCType());
-    assertEquals("ast", method.getCDParameter(1).getName());
-  }
-
-  @Test
-  public void testSetLinkBetweenSymbolAndNodeStateNode() {
-    List<ASTCDMethod> methodList = getMethodsBy("setLinkBetweenSymbolAndNode", 2, scopesGenitorClass);
-    ASTMCType astType = this.mcTypeFacade.createQualifiedType(STATE_SYMBOL);
-    assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
-    assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
-    ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-
-    assertEquals(2, method.sizeCDParameters());
-    assertDeepEquals(STATE_SYMBOL, method.getCDParameter(0).getMCType());
-    assertEquals("symbol", method.getCDParameter(0).getName());
-
-    assertDeepEquals(AST_STATE, method.getCDParameter(1).getMCType());
-    assertEquals("ast", method.getCDParameter(1).getName());
-  }
-
-  @Test
-  public void testSetLinkBetweenSymbolAndNodeInheritedSymbolClassNode() {
-    List<ASTCDMethod> methodList = getMethodsBy("setLinkBetweenSymbolAndNode", 2, scopesGenitorClass);
-    ASTMCType astType = this.mcTypeFacade.createQualifiedType(INHERITED_SYMBOL);
-    assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
-    assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
-    ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-
-    assertEquals(2, method.sizeCDParameters());
-    assertDeepEquals(INHERITED_SYMBOL, method.getCDParameter(0).getMCType());
-    assertEquals("symbol", method.getCDParameter(0).getName());
-
-    assertDeepEquals(AST_INHERITED_SYMBOL, method.getCDParameter(1).getMCType());
-    assertEquals("ast", method.getCDParameter(1).getName());
-  }
-
-  @Test
-  public void testSetLinkBetweenSpannedScopeAndNodeAutomatonNode() {
-    List<ASTCDMethod> methodList = getMethodsBy("setLinkBetweenSpannedScopeAndNode", 2, scopesGenitorClass);
-    ASTMCType astType = this.mcTypeFacade.createQualifiedType(AST_AUTOMATON);
-    assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(1).getMCType())));
-    assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(1).getMCType())).count());
-    ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(1).getMCType())).findFirst().get();
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-
-    assertEquals(2, method.sizeCDParameters());
-    assertDeepEquals(I_AUTOMATON_SCOPE, method.getCDParameter(0).getMCType());
-    assertEquals("scope", method.getCDParameter(0).getName());
-
-    assertDeepEquals(AST_AUTOMATON, method.getCDParameter(1).getMCType());
-    assertEquals("ast", method.getCDParameter(1).getName());
   }
 
 
@@ -552,76 +368,6 @@ public class ScopesGenitorDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testSetLinkBetweenSpannedScopeAndNodeScopeNode() {
-    List<ASTCDMethod> methodList = getMethodsBy("setLinkBetweenSpannedScopeAndNode", 2, scopesGenitorClass);
-    ASTMCType astType = this.mcTypeFacade.createQualifiedType(AST_SCOPE);
-    assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(1).getMCType())));
-    assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(1).getMCType())).count());
-    ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(1).getMCType())).findFirst().get();
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-
-    assertEquals(2, method.sizeCDParameters());
-    assertDeepEquals(I_AUTOMATON_SCOPE, method.getCDParameter(0).getMCType());
-    assertEquals("scope", method.getCDParameter(0).getName());
-
-    assertDeepEquals(AST_SCOPE, method.getCDParameter(1).getMCType());
-    assertEquals("ast", method.getCDParameter(1).getName());
-  }
-
-
-  @Test
-  public void testCreate_ASTScopeNode() {
-    ASTCDMethod method = getMethodBy("create_Scope", scopesGenitorClass);
-    assertDeepEquals(PROTECTED, method.getModifier());
-
-    assertTrue(method.getMCReturnType().isPresentMCType());
-    assertDeepEquals(I_AUTOMATON_SCOPE, method.getMCReturnType().getMCType());
-
-    assertEquals(1, method.sizeCDParameters());
-
-    assertDeepEquals(AST_SCOPE, method.getCDParameter(0).getMCType());
-    assertEquals("ast", method.getCDParameter(0).getName());
-  }
-
-  @Test
-  public void testAddToScopeAutomatonNode() {
-    List<ASTCDMethod> methodList = getMethodsBy("addToScope", 1, scopesGenitorClass);
-    ASTMCType astType = this.mcTypeFacade.createQualifiedType(AUTOMATON_SYMBOL);
-    assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
-    assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
-    ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-  }
-
-  @Test
-  public void testAddToScopeStateNode() {
-    List<ASTCDMethod> methodList = getMethodsBy("addToScope", 1, scopesGenitorClass);
-    ASTMCType astType = this.mcTypeFacade.createQualifiedType(STATE_SYMBOL);
-    assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
-    assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
-    ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-  }
-
-  @Test
-  public void testAddToScopeQualifiedNameNode() {
-    List<ASTCDMethod> methodList = getMethodsBy("addToScope", 1, scopesGenitorClass);
-    ASTMCType astType = this.mcTypeFacade.createQualifiedType(QUALIFIED_NAME_SYMBOL);
-    assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
-    assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).count());
-    ASTCDMethod method = methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getMCType())).findFirst().get();
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-  }
-
-  @Test
   public void testAddToScopeStackMethod(){
     ASTCDMethod method = getMethodBy("addToScopeStack", scopesGenitorClass);
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
@@ -629,6 +375,78 @@ public class ScopesGenitorDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.sizeCDParameters());
     assertEquals("scope", method.getCDParameter(0).getName());
     assertDeepEquals(I_AUTOMATON_SCOPE, method.getCDParameter(0).getMCType());
+  }
+
+  @Test
+  public void testInitScopeHP1Method(){
+    ASTCDMethod method = getMethodBy("initScopeHP1", scopesGenitorClass);
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    assertEquals(1, method.sizeCDParameters());
+    assertEquals("scope", method.getCDParameter(0).getName());
+    assertDeepEquals(I_AUTOMATON_SCOPE, method.getCDParameter(0).getMCType());
+  }
+
+  @Test
+  public void testInitScopeHP2Method(){
+    ASTCDMethod method = getMethodBy("initScopeHP2", scopesGenitorClass);
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    assertEquals(1, method.sizeCDParameters());
+    assertEquals("scope", method.getCDParameter(0).getName());
+    assertDeepEquals(I_AUTOMATON_SCOPE, method.getCDParameter(0).getMCType());
+  }
+
+  @Test
+  public void testInitArtifactScopeHP1Method(){
+    ASTCDMethod method = getMethodBy("initArtifactScopeHP1", scopesGenitorClass);
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    assertEquals(1, method.sizeCDParameters());
+    assertEquals("scope", method.getCDParameter(0).getName());
+    assertDeepEquals(I_AUTOMATON_ARTIFACT_SCOPE, method.getCDParameter(0).getMCType());
+  }
+
+  @Test
+  public void testInitArtifactScopeHP2Method(){
+    ASTCDMethod method = getMethodBy("initArtifactScopeHP2", scopesGenitorClass);
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    assertEquals(1, method.sizeCDParameters());
+    assertEquals("scope", method.getCDParameter(0).getName());
+    assertDeepEquals(I_AUTOMATON_ARTIFACT_SCOPE, method.getCDParameter(0).getMCType());
+  }
+
+  @Test
+  public void testInitStateHP1Method(){
+    ASTCDMethod method = getMethodBy("initStateHP1", scopesGenitorClass);
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    assertEquals(1, method.sizeCDParameters());
+    assertEquals("symbol", method.getCDParameter(0).getName());
+    assertDeepEquals(STATE_SYMBOL, method.getCDParameter(0).getMCType());
+  }
+
+  @Test
+  public void testInitStateHP2Method(){
+    ASTCDMethod method = getMethodBy("initStateHP2", scopesGenitorClass);
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    assertEquals(1, method.sizeCDParameters());
+    assertEquals("symbol", method.getCDParameter(0).getName());
+    assertDeepEquals(STATE_SYMBOL, method.getCDParameter(0).getMCType());
+  }
+
+  @Test
+  public void testInitAutomatonHP1Method(){
+    ASTCDMethod method = getMethodBy("initAutomatonHP1", scopesGenitorClass);
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    assertEquals(1, method.sizeCDParameters());
+    assertEquals("symbol", method.getCDParameter(0).getName());
+    assertDeepEquals(AUTOMATON_SYMBOL, method.getCDParameter(0).getMCType());
+  }
+
+  @Test
+  public void testInitAutomatonHP2Method(){
+    ASTCDMethod method = getMethodBy("initAutomatonHP2", scopesGenitorClass);
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    assertEquals(1, method.sizeCDParameters());
+    assertEquals("symbol", method.getCDParameter(0).getName());
+    assertDeepEquals(AUTOMATON_SYMBOL, method.getCDParameter(0).getMCType());
   }
 
   @Test

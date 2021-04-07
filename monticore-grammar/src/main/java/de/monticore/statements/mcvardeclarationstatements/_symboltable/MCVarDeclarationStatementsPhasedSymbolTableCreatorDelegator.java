@@ -18,18 +18,13 @@ public class MCVarDeclarationStatementsPhasedSymbolTableCreatorDelegator {
 
   protected List<MCVarDeclarationStatementsTraverser> priorityList;
 
-  public MCVarDeclarationStatementsPhasedSymbolTableCreatorDelegator(IMCVarDeclarationStatementsGlobalScope globalScope) {
-    this.globalScope = globalScope;
-    this.scopesGenitorDelegator = new MCVarDeclarationStatementsScopesGenitorDelegator(globalScope);
+  public MCVarDeclarationStatementsPhasedSymbolTableCreatorDelegator(){
+    this.globalScope = MCVarDeclarationStatementsMill.globalScope();
+    this.scopesGenitorDelegator = MCVarDeclarationStatementsMill.scopesGenitorDelegator();
     this.priorityList = new ArrayList<>();
     MCVarDeclarationStatementsTraverser traverser = MCVarDeclarationStatementsMill.traverser();
     traverser.add4MCVarDeclarationStatements(new MCVarDeclarationStatementsSTCompleteTypes());
-    this.priorityList.add(traverser);
-  }
-
-  public MCVarDeclarationStatementsPhasedSymbolTableCreatorDelegator(){
-    this(MCVarDeclarationStatementsMill.globalScope());
-  }
+    this.priorityList.add(traverser);  }
 
   public IMCVarDeclarationStatementsArtifactScope createFromAST(ASTLocalVariableDeclarationStatement rootNode){
     IMCVarDeclarationStatementsArtifactScope as = scopesGenitorDelegator.createFromAST(rootNode);

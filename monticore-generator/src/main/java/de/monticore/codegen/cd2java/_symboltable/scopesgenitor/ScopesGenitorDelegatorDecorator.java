@@ -55,7 +55,6 @@ public class ScopesGenitorDelegatorDecorator extends AbstractCreator<ASTCDCompil
       String scopesGenitorName = symbolTableService.getScopesGenitorSimpleName();
       String scopeInterface = symbolTableService.getScopeInterfaceFullName();
       String globalScopeInterfaceName = symbolTableService.getGlobalScopeInterfaceFullName();
-      String simpleName = symbolTableService.removeASTPrefix(Names.getSimpleName(astFullName));
       String artifactScopeName = symbolTableService.getArtifactScopeInterfaceFullName();
       ASTMCBasicGenericType dequeType = getMCTypeFacade().createBasicGenericTypeOf(DEQUE_TYPE, scopeInterface);
       String cdName = symbolTableService.getCDName();
@@ -63,7 +62,7 @@ public class ScopesGenitorDelegatorDecorator extends AbstractCreator<ASTCDCompil
       ASTCDClass scopesGenitorDelegator = CD4CodeMill.cDClassBuilder()
           .setName(scopesGenitorDelegatorName)
           .setModifier(PUBLIC.build())
-          .addAllCDMembers(createConstructors(scopesGenitorDelegatorName, globalScopeInterfaceName, simpleName, cdName))
+          .addCDMember(createConstructor(scopesGenitorDelegatorName, cdName))
           .addCDMember(createScopeStackAttribute(dequeType))
           .addCDMember(createScopeSkeletonCreatorAttributes(scopesGenitorName))
           .addCDMember(createGlobalScopeAttribute(globalScopeInterfaceName))
@@ -75,27 +74,22 @@ public class ScopesGenitorDelegatorDecorator extends AbstractCreator<ASTCDCompil
     return Optional.empty();
   }
 
-  protected List<ASTCDConstructor> createConstructors(String scopesGenitorDecoratorName, String globalScopeInterface,
-                                               String simpleName, String cdName) {
-    List<ASTCDConstructor> constructors = Lists.newArrayList();
+  protected ASTCDConstructor createConstructor(String scopesGenitorDecoratorName,
+                                               String cdName) {
     String symTabMillFullName = symbolTableService.getMillFullName();
     List<DiagramSymbol> superCDsTransitive = symbolTableService.getSuperCDsTransitive();
     Map<String, String> superSymTabCreator = new HashMap<>();
+    Map<String, String> millNames = new HashMap<>();
     for (DiagramSymbol cdDefinitionSymbol : superCDsTransitive) {
       if (cdDefinitionSymbol.isPresentAstNode() && symbolTableService.hasStartProd((ASTCDDefinition) cdDefinitionSymbol.getAstNode())) {
         superSymTabCreator.put(cdDefinitionSymbol.getName(), symbolTableService.getScopesGenitorFullName(cdDefinitionSymbol));
+        millNames.put(cdDefinitionSymbol.getName(), symbolTableService.getMillFullName(cdDefinitionSymbol));
       }
     }
-    ASTCDParameter globalScopeParam = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(globalScopeInterface), "globalScope");
-    ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), scopesGenitorDecoratorName, globalScopeParam);
+    ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), scopesGenitorDecoratorName);
     this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint(TEMPLATE_PATH + "ConstructorScopesGenitorDelegator",
-        symTabMillFullName, simpleName, cdName, superSymTabCreator));
-    constructors.add(constructor);
-
-    ASTCDConstructor zeroArgsConstructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), scopesGenitorDecoratorName);
-    this.replaceTemplate(EMPTY_BODY, zeroArgsConstructor, new StringHookPoint("this("+symTabMillFullName + ".globalScope());"));
-    constructors.add(zeroArgsConstructor);
-    return constructors;
+        symTabMillFullName, cdName, superSymTabCreator, millNames));
+    return constructor;
   }
 
   protected ASTCDAttribute createScopeStackAttribute(ASTMCType dequeType) {
