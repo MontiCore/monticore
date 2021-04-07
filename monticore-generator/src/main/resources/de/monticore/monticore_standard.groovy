@@ -33,6 +33,9 @@ Log.debug("Handcoded argument  : "
         + _configuration.getHandcodedPathAsStrings(), LOG_ID)
 Log.debug("Handcoded files     : " + handcodedPath, LOG_ID)
 
+// groovy script hook point
+hook(gh1, glex, grammars)
+
 // M1.2: Build Global Scope
 mcScope = createMCGlobalScope(modelPath)
 
@@ -78,6 +81,9 @@ while (grammarIterator.hasNext()) {
     // M7: Decorate class diagrams and report it
     decoratedCD = decorateCD(glex, mcScope, cd, handcodedPath)
     reportDecoratedCD(decoratedCD, report)
+
+    // groovy script hook point
+    hook(gh2, glex, astGrammar, decoratedCD, cd)
 
     // M8 Generate ast classes, symbol table, visitor,
     // and context conditions

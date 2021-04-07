@@ -3,6 +3,7 @@
 package de.monticore;
 
  import com.google.common.collect.Lists;
+ import com.google.common.io.Files;
  import com.google.common.io.Resources;
  import de.monticore.cdbasis._ast.ASTCDClass;
  import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
@@ -93,6 +94,7 @@ package de.monticore;
  import de.se_rwth.commons.groovy.GroovyRunnerBase;
  import de.se_rwth.commons.logging.Log;
  import groovy.lang.Script;
+ import org.apache.commons.lang3.StringUtils;
  import org.codehaus.groovy.control.customizers.ImportCustomizer;
  import parser.MCGrammarParser;
 
@@ -562,6 +564,53 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     astCdForReporting.getMCImportStatementList().forEach(s -> s.setStar(false));
 
     new CDReporting().prettyPrintAstCd(astCdForReporting, outputDirectory, reportSubDir);
+  }
+
+  /**
+   * Executes the groovy script for the specified hook point if present.
+   *
+   * @param file The path to the groovy script file as String
+   */
+  public void hook(Optional<String> file, Object... args) {
+    if (file.isPresent()) {
+      String script = loadScript(file.get());
+
+      GroovyInterpreter.Builder builder = GroovyInterpreter.newInterpreter()
+              .withImportCustomizer(new ImportCustomizer().addStarImports(Runner.DEFAULT_IMPORTS)
+                      .addStaticStars(Runner.DEFAULT_STATIC_IMPORTS));
+
+      builder.addVariable("args", args);
+
+      GroovyInterpreter g = builder.build();
+      g.evaluate(script);
+    }
+  }
+
+  /**
+   * Loads the groovy script if present.
+   *
+   * @param file The path to the groovy script file as String
+   * @return The groovy configuration script as String
+   */
+  protected String loadScript(String file) {
+    String script = StringUtils.EMPTY;
+    try {
+      File f = new File(file);
+      if (f.exists() && f.isFile()) {
+        script = Files.asCharSource(f, Charset.forName("UTF-8")).read();
+      } else {
+        ClassLoader l = MontiCoreScript.class.getClassLoader();
+        if (l.getResource(file) != null) {
+          script = Resources.asCharSource(l.getResource(file), Charset.forName("UTF-8")).read();
+        } else {
+          Log.error("0xA1059 Custom script \"" + f.getAbsolutePath() + "\" not found!");
+        }
+      }
+    }
+    catch (IOException e) {
+      Log.error("0xA1060 Failed to load Groovy script.", e);
+    }
+    return script;
   }
   
   /**
@@ -1181,6 +1230,10 @@ public class MontiCoreScript extends Script implements GroovyRunner {
                 mcConfig.getTemplatePath());
         builder.addVariable(MontiCoreConfiguration.Options.CONFIGTEMPLATE.toString(),
                 mcConfig.getConfigTemplate());
+        builder.addVariable(MontiCoreConfiguration.Options.GROOVYHOOK1_SHORT.toString(),
+                mcConfig.getGroovyHook1());
+        builder.addVariable(MontiCoreConfiguration.Options.GROOVYHOOK2_SHORT.toString(),
+                mcConfig.getGroovyHook2());
         builder.addVariable("LOG_ID", LOG_ID);
         builder.addVariable("glex", new GlobalExtensionManagement());
         builder.addVariable("grammarIterator", mcConfig.getGrammars().getResolvedPaths());
