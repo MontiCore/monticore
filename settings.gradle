@@ -85,6 +85,7 @@ if(!hasProperty('bootstrap')) {
   include(':monticore-test:02experiments:typecheck')
   include(':monticore-test:02experiments:forGradle')
   include(':monticore-test:02experiments:configTemplate')
+  include(':monticore-test:02experiments:groovyHooks')
   
  // include 'example'
  // project(':example').projectDir = file("monticore-test/example")
