@@ -52,16 +52,13 @@ public class GenerateAutomataParser {
       // Hand coded path
       IterablePath templatePath = IterablePath.empty();
 
-      // Config template
-      Optional<String> configTemplate = Optional.empty();
-
       // Target directory
       File outputDir = new File(args[1]);
 
       // Generate the parser
       GlobalExtensionManagement glex = new GlobalExtensionManagement();
       ParserGenerator.generateParser(
-          glex, ast, gs, handcodedPath, templatePath, configTemplate, outputDir);
+          glex, ast, gs, handcodedPath, templatePath, outputDir);
     }
     catch (IOException e) {
       // If something happens ... handling necessary

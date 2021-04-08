@@ -62,11 +62,10 @@ public class ParserGenerator {
       IGrammar_WithConceptsGlobalScope symbolTable,
       IterablePath handcodedPath,
       IterablePath templatePath,
-      Optional<String> configTemplate,
       File targetDir)
   {
-    generateParser(glex, astGrammar, symbolTable, handcodedPath, templatePath, configTemplate, targetDir);
-    generateParserWrapper(glex, astClassDiagram, handcodedPath, templatePath, configTemplate, targetDir);
+    generateParser(glex, astGrammar, symbolTable, handcodedPath, templatePath, targetDir);
+    generateParserWrapper(glex, astClassDiagram, handcodedPath, templatePath, targetDir);
   }
 
 
@@ -84,10 +83,9 @@ public class ParserGenerator {
       IGrammar_WithConceptsGlobalScope symbolTable,
       IterablePath handcodedPath,
       IterablePath templatePath,
-      Optional<String> configTemplate,
       File targetDir)
   {
-    generateParser(glex, astGrammar, symbolTable, handcodedPath, templatePath, configTemplate, targetDir, true, Languages.JAVA);
+    generateParser(glex, astGrammar, symbolTable, handcodedPath, templatePath, targetDir, true, Languages.JAVA);
   }
 
 
@@ -106,7 +104,6 @@ public class ParserGenerator {
       IGrammar_WithConceptsGlobalScope symbolTable,
       IterablePath handcodedPath,
       IterablePath templatePath,
-      Optional<String> configTemplate,
       File targetDir,
       boolean embeddedJavaCode,
       Languages lang) {
@@ -136,10 +133,6 @@ public class ParserGenerator {
     glex.setGlobalValue("nameHelper", new Names());
     setup.setGlex(glex);
 
-    if (configTemplate.isPresent()) {
-      configureTemplates(setup, configTemplate.get(), astGrammar);
-    }
-
     final Path filePath = Paths.get(Names.getPathFromPackage(genHelper.getParserPackage()),
         astGrammar.getName() + "Antlr.g4");
     Grammar2Antlr grammar2Antlr = new Grammar2Antlr(genHelper, grammarInfo, true);
@@ -159,13 +152,6 @@ public class ParserGenerator {
     Log.debug("End parser generation for the grammar " + astGrammar.getName(), LOG);
   }
 
-  protected static void configureTemplates(GeneratorSetup setup, String configTemplate, ASTMCGrammar grammar) {
-    TemplateController tc = setup.getNewTemplateController(configTemplate);
-    TemplateHookPoint hp = new TemplateHookPoint(configTemplate);
-    List<Object> args = Arrays.asList(setup.getGlex(), new TemplateHPService());
-    hp.processValue(tc, grammar, args);
-  }
-
   /**
    * Code generation from grammar ast to an antlr compatible file format
    * @param glex
@@ -177,7 +163,6 @@ public class ParserGenerator {
       ASTCDCompilationUnit astClassDiagram,
       IterablePath handcodedPath,
       IterablePath templatePath,
-      Optional<String> configTemplate,
       File targetDir) {
     final ParserService parserService = new ParserService(astClassDiagram);
     final ParserClassDecorator parserClassDecorator = new ParserClassDecorator(glex, parserService);
@@ -200,7 +185,7 @@ public class ParserGenerator {
     setup.setModelName(diagramName);
     setup.setGlex(glex);
     CDGenerator generator = new CDGenerator(setup);
-    generator.generate(decoratedCD, configTemplate);
+    generator.generate(decoratedCD);
   }
   private ParserGenerator() {
     // noninstantiable

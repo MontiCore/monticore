@@ -76,18 +76,19 @@ while (grammarIterator.hasNext()) {
 
     // M6: Generate parser and wrapper
     generateParser(glex, cd, astGrammar, mcScope, handcodedPath,
-                   templatePath, configTemplate, out)
+                   templatePath, out)
 
     // M7: Decorate class diagrams and report it
     decoratedCD = decorateCD(glex, mcScope, cd, handcodedPath)
     reportDecoratedCD(decoratedCD, report)
 
-    // groovy script hook point
+    // groovy script hook point and genrator template configuration
     hook(gh2, glex, astGrammar, decoratedCD, cd)
+    configureGenerator(glex, decoratedCD, templatePath)
 
     // M8 Generate ast classes, symbol table, visitor,
     // and context conditions
-    generateFromCD(glex, cd, decoratedCD, out, handcodedPath, templatePath, configTemplate)
+    generateFromCD(glex, cd, decoratedCD, out, handcodedPath, templatePath)
 
     // M9: Write reports to files
     // M9.1: Inform about successful completion for grammar

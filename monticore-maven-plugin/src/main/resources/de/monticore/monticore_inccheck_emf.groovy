@@ -60,7 +60,7 @@ while (grammarIterator.hasNext()) {
       deriveScopeCD(astGrammar, scopeCdScope)
 
       // M6: generate parser and wrapper
-      generateParser(glex, astClassDiagramWithST, astGrammar, mcScope, handcodedPath, templatePath, configTemplate, out)
+      generateParser(glex, astClassDiagramWithST, astGrammar, mcScope, handcodedPath, templatePath, out)
     }
   }
 }
@@ -89,32 +89,32 @@ for (astGrammar in getParsedGrammars()) {
   // decorate and generate CD for the '_symboltable' package
   decoratedSymbolTableCd = decorateForSymbolTablePackage(glex, cdScope, astClassDiagram,
           symbolClassDiagramm, scopeClassDiagramm, handcodedPath)
-  generateFromCD(glex, astClassDiagram, decoratedSymbolTableCd, out, handcodedPath, templatePath, configTemplate)
+  generateFromCD(glex, astClassDiagram, decoratedSymbolTableCd, out, handcodedPath, templatePath)
 
   // decorate and generate Traverser CD for the '_visitor' package
   decoratedTraverserCD = decorateTraverserForVisitorPackage(glex, cdScope, astClassDiagram, handcodedPath)
-  generateFromCD(glex, astClassDiagram, decoratedTraverserCD, out, handcodedPath, templatePath, configTemplate)
+  generateFromCD(glex, astClassDiagram, decoratedTraverserCD, out, handcodedPath, templatePath)
 
   // decorate and generate CD for the '_coco' package
   decoratedCoCoCD = decorateForCoCoPackage(glex, cdScope, astClassDiagram, handcodedPath)
-  generateFromCD(glex, astClassDiagram, decoratedCoCoCD, out, handcodedPath, templatePath, configTemplate)
+  generateFromCD(glex, astClassDiagram, decoratedCoCoCD, out, handcodedPath, templatePath)
 
   // decorate and generate CD for the '_od' package
   decoratedODCD = decorateForODPackage(glex, cdScope, astClassDiagram, handcodedPath)
-  generateFromCD(glex, astClassDiagram, decoratedODCD, out, handcodedPath, templatePath, configTemplate)
+  generateFromCD(glex, astClassDiagram, decoratedODCD, out, handcodedPath, templatePath)
 
   // decorate and generate CD for the '_ast' package
   decoratedASTClassDiagramm = decorateEmfForASTPackage(glex, cdScope, astClassDiagram, handcodedPath)
-  generateEmfFromCD(glex, astClassDiagram, decoratedASTClassDiagramm, out, handcodedPath, templatePath, configTemplate)
+  generateEmfFromCD(glex, astClassDiagram, decoratedASTClassDiagramm, out, handcodedPath, templatePath)
 
   // decorate and generate CD for the mills
   decoratedMillCD = decorateMill(glex, cdScope, astClassDiagram, decoratedASTClassDiagramm,
           decoratedSymbolTableCd, decoratedTraverserCD, handcodedPath)
-  generateFromCD(glex, astClassDiagram, decoratedMillCD, out, handcodedPath, templatePath, configTemplate)
+  generateFromCD(glex, astClassDiagram, decoratedMillCD, out, handcodedPath, templatePath)
 
   // decorate and generate CD for the '_auxiliary' package
   decoratedAuxiliaryCD = decorateAuxiliary(glex, cdScope, astClassDiagram, decoratedASTClassDiagramm, handcodedPath)
-  generateFromCD(glex, astClassDiagram, decoratedAuxiliaryCD, out, handcodedPath, templatePath, configTemplate)
+  generateFromCD(glex, astClassDiagram, decoratedAuxiliaryCD, out, handcodedPath, templatePath)
 
   // report the full AST incl. Symbols diagrams
   reportCD(astClassDiagram, decoratedASTClassDiagramm, decoratedSymbolTableCd, scopeClassDiagramm, report)
