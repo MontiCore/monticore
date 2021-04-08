@@ -94,7 +94,7 @@ public class ArtifactScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(40, scopeInterface.getCDMethodList().size());
+    assertEquals(41, scopeInterface.getCDMethodList().size());
   }
 
   @Test
@@ -177,6 +177,23 @@ public class ArtifactScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(ACCESS_MODIFIER, method.getCDParameter(2).getMCType());
     assertEquals("modifier", method.getCDParameter(2).getName());
     assertDeepEquals(PREDICATE, method.getCDParameter(3).getMCType());
+    assertEquals("predicate", method.getCDParameter(3).getName());
+  }
+
+  @Test
+  public void testContinueWithEnclosingScopeSuperSymbolMethod() {
+    ASTCDMethod method = getMethodBy("continueQualifiedNameWithEnclosingScope", scopeInterface);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertDeepEquals(MCTypeFacade.createListTypeOf(QUALIFIED_NAME_SYMBOL), method.getMCReturnType().getMCType());
+    assertEquals(4, method.sizeCDParameters());
+    assertBoolean(method.getCDParameter(0).getMCType());
+    assertEquals("foundSymbols", method.getCDParameter(0).getName());
+    assertDeepEquals(String.class, method.getCDParameter(1).getMCType());
+    assertEquals("name", method.getCDParameter(1).getName());
+    assertDeepEquals(ACCESS_MODIFIER, method.getCDParameter(2).getMCType());
+    assertEquals("modifier", method.getCDParameter(2).getName());
+    assertDeepEquals(PREDICATE_QUALIFIED_NAME, method.getCDParameter(3).getMCType());
     assertEquals("predicate", method.getCDParameter(3).getName());
   }
 
