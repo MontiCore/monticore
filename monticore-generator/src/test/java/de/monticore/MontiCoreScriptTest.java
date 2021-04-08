@@ -103,7 +103,7 @@ public class MontiCoreScriptTest {
   }
 
   /**
-   * {@link MontiCoreScript#generateParser(GlobalExtensionManagement, ASTCDCompilationUnit, ASTMCGrammar, GrammarFamilyGlobalScope, IterablePath, IterablePath, Optional, File)}
+   * {@link MontiCoreScript#generateParser(GlobalExtensionManagement, ASTCDCompilationUnit, ASTMCGrammar, GrammarFamilyGlobalScope, IterablePath, IterablePath, File)}
    */
   @Test
   public void testGenerateParser() {
@@ -115,7 +115,7 @@ public class MontiCoreScriptTest {
     cdCompilationUnit = mc.deriveASTCD(grammar, glex, cd4AGlobalScope);
     File f = new File("target/generated-sources/monticore/testcode");
     mc.generateParser(glex, cdCompilationUnit, grammar, (GrammarFamilyGlobalScope) symbolTable, IterablePath.empty(),
-            IterablePath.empty(), Optional.empty(), f);
+            IterablePath.empty(), f);
     f.delete();
   }
 

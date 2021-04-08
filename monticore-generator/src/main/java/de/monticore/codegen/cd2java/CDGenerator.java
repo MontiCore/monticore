@@ -28,25 +28,14 @@ public class CDGenerator {
     this.setup = generatorSetup;
   }
 
-  public void generate(ASTCDCompilationUnit compilationUnit, Optional<String> configTemplate) {
+  public void generate(ASTCDCompilationUnit compilationUnit) {
     ASTCDDefinition definition = compilationUnit.getCDDefinition();
     String packageAsPath = String.join(File.separator, 
         compilationUnit.getMCPackageDeclaration().getMCQualifiedName().getPartsList()).toLowerCase();
 
-    if (configTemplate.isPresent()) {
-      this.configureTemplates(configTemplate.get(), definition);
-    }
-
     this.generateCDClasses(packageAsPath, definition.getCDClassesList());
     this.generateCDInterfaces(packageAsPath, definition.getCDInterfacesList());
     this.generateCDEnums(packageAsPath, definition.getCDEnumsList());
-  }
-
-  protected void configureTemplates(String configTemplate, ASTCDDefinition definition) {
-    TemplateController tc = setup.getNewTemplateController(configTemplate);
-    TemplateHookPoint hp = new TemplateHookPoint(configTemplate);
-    List<Object> args = Arrays.asList(setup.getGlex(), new TemplateHPService());
-    hp.processValue(tc, definition, args);
   }
 
   protected Path getAsPath(String packageAsPath, String name) {
