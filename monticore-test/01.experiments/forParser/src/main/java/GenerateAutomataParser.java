@@ -49,7 +49,7 @@ public class GenerateAutomataParser {
       // Hand coded path
       IterablePath handcodedPath = IterablePath.empty();
 
-      // Hand coded path
+      // Template path
       IterablePath templatePath = IterablePath.empty();
 
       // Target directory
