@@ -12,6 +12,7 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.codegen.cd2java.AbstractCreator;
+import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
@@ -204,8 +205,10 @@ public class ScopesGenitorDecorator extends AbstractCreator<ASTCDCompilationUnit
     List<ASTCDMethod> methodList = new ArrayList<>();
     String astFullName = symbolTableService.getASTPackage() + "." + symbolClass.getName();
     String simpleName = symbolTableService.removeASTPrefix(symbolClass);
+    Optional<ASTCDAttribute> attr = symbolClass.getCDAttributeList().stream().filter(a -> NAME_VAR.equals(a.getName())).findFirst();
+    boolean hasOptionalName = attr.isPresent()? DecorationHelper.getInstance().isOptional(attr.get().getMCType()):false;
     // visit method
-    methodList.add(createSymbolVisitMethod(astFullName, symbolFullName, simpleName, symbolClass.getModifier()));
+    methodList.add(createSymbolVisitMethod(astFullName, symbolFullName, simpleName, hasOptionalName, symbolClass.getModifier()));
 
     // endVisit method
     methodList.add(createSymbolEndVisitMethod(astFullName, symbolClass, simpleName, symbolFullName));
@@ -214,7 +217,8 @@ public class ScopesGenitorDecorator extends AbstractCreator<ASTCDCompilationUnit
   }
 
 
-  protected ASTCDMethod createSymbolVisitMethod(String astFullName, String symbolFullName, String simpleName, ASTModifier symbolModifier) {
+  protected ASTCDMethod createSymbolVisitMethod(String astFullName, String symbolFullName, String simpleName,
+                                                boolean hasOptionalName, ASTModifier symbolModifier) {
     boolean isSpanningSymbol = symbolTableService.hasScopeStereotype(symbolModifier) || symbolTableService.hasInheritedScopeStereotype(symbolModifier);
     boolean isOrdered = symbolTableService.hasOrderedStereotype(symbolModifier);
     boolean isShadowing = symbolTableService.hasShadowingStereotype(symbolModifier);
@@ -225,8 +229,8 @@ public class ScopesGenitorDecorator extends AbstractCreator<ASTCDCompilationUnit
     String simpleSymbolName = symbolTableService.removeSymbolSuffix(Names.getSimpleName(symbolFullName));
     ASTCDMethod visitMethod = visitorService.getVisitorMethod(VISIT, getMCTypeFacade().createQualifiedType(astFullName));
     this.replaceTemplate(EMPTY_BODY, visitMethod, new TemplateHookPoint(
-        TEMPLATE_PATH + "Visit4SSC", symbolFullName, simpleSymbolName, simpleName, scopeInterface, isSpanningSymbol,
-      isShadowing, isNonExporting, isOrdered, errorCode, millFullName));
+        TEMPLATE_PATH + "Visit4SSC", symbolFullName, simpleSymbolName, simpleName, scopeInterface, hasOptionalName,
+            isSpanningSymbol, isShadowing, isNonExporting, isOrdered, errorCode, millFullName));
     return visitMethod;
   }
 

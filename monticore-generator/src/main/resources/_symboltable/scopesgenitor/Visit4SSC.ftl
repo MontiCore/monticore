@@ -1,5 +1,8 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("symbolName", "simpleSymbolName", "simpleName", "scopeInterface", "isScopeSpanning", "isShadowing", "isNonExporting", "isOrdered", "errorCode", "millFullName")}
+${tc.signature("symbolName", "simpleSymbolName", "simpleName", "scopeInterface", "hasOptionalName", "isScopeSpanning", "isShadowing", "isNonExporting", "isOrdered", "errorCode", "millFullName")}
+<#if hasOptionalName>
+  if (node.isPresentName()) {
+</#if>
   ${symbolName} symbol = ${millFullName}.${simpleSymbolName?uncap_first}SymbolBuilder().setName(node.getName()).build();
   if (getCurrentScope().isPresent()) {
     getCurrentScope().get().add(symbol);
@@ -32,3 +35,8 @@ ${tc.signature("symbolName", "simpleSymbolName", "simpleName", "scopeInterface",
   node.setSpannedScope(scope);
 </#if>
   init${simpleSymbolName}HP1(node.getSymbol());
+<#if hasOptionalName>
+  } else {
+    ${tc.include("_symboltable.scopesgenitor.VisitNoSymbol")}
+  }
+</#if>
