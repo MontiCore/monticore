@@ -1,9 +1,9 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("symbolName", "simpleName", "globalScope")}
+${tc.signature("symbolName", "simpleName")}
   final List<${symbolName}> result = new ArrayList<>();
 
 if (checkIfContinueWithEnclosingScope(foundSymbols) && getEnclosingScope() != null) {
-if (!(getEnclosingScope() instanceof ${globalScope})) {
+if (!(getEnclosingScope() instanceof IGlobalScope)) {
       Log.warn("0xA1039 The artifact scope " + (isPresentName() ? getName() : "") + " should have a global scope as enclosing scope or no "
               + "enclosing scope at all.");
       }

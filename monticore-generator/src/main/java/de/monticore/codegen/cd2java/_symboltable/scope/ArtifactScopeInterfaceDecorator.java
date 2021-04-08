@@ -143,7 +143,6 @@ public class ArtifactScopeInterfaceDecorator extends AbstractCreator<ASTCDCompil
     ASTCDParameter parameterFoundSymbols = getCDParameterFacade().createParameter(getMCTypeFacade().createBooleanType(), FOUND_SYMBOLS_VAR);
     ASTCDParameter parameterName = getCDParameterFacade().createParameter(getMCTypeFacade().createStringType(), NAME_VAR);
     ASTCDParameter parameterModifier = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(ACCESS_MODIFIER), MODIFIER_VAR);
-    String globalScope = symbolTableService.getGlobalScopeInterfaceFullName();
 
     for (ASTCDType type : symbolProds) {
       Optional<String> definingSymbolFullName = symbolTableService.getDefiningSymbolFullName(type, definitionSymbol);
@@ -157,7 +156,7 @@ public class ArtifactScopeInterfaceDecorator extends AbstractCreator<ASTCDCompil
         ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), getMCTypeFacade().createListTypeOf(definingSymbolFullName.get()),
             methodName, parameterFoundSymbols, parameterName, parameterModifier, parameterPredicate);
         this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(
-            TEMPLATE_PATH + "ContinueWithEnclosingScope4ArtifactScope", definingSymbolFullName.get(), className, globalScope));
+            TEMPLATE_PATH + "ContinueWithEnclosingScope4ArtifactScope", definingSymbolFullName.get(), className));
         methodList.add(method);
       }
     }
