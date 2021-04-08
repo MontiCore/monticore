@@ -305,7 +305,23 @@ public class MontiCoreStandardCLI {
         .hasArg()
         .desc("Optional Groovy script to control the generation workflow.")
         .build());
-    
+
+    // specify custom script for hook point one
+    options.addOption(Option.builder("gh1")
+        .longOpt("groovyHook1")
+        .argName("file.groovy")
+        .hasArg()
+        .desc("Optional Groovy script that is hooked into the workflow of the standard script at hook point one.")
+        .build());
+
+    // specify custom script for hook point two
+    options.addOption(Option.builder("gh2")
+        .longOpt("groovyHook2")
+        .argName("file.groovy")
+        .hasArg()
+        .desc("Optional Groovy script that is hooked into the workflow of the standard script at hook point two.")
+        .build());
+
     // specify template path
     options.addOption(Option.builder("fp")
         .longOpt("templatePath")
