@@ -1202,7 +1202,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     public static final String[] DEFAULT_STATIC_IMPORTS = {
             "de.se_rwth.commons.logging.Log",
             "de.monticore.generating.templateengine.reporting.Reporting",
-            "de.monticore.incremental.IncrementalChecker",
             "de.monticore.generating.templateengine.reporting.reporter.InputOutputFilesReporter",
             "de.se_rwth.commons.Names"};
 
