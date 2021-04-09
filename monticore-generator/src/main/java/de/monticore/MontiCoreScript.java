@@ -11,6 +11,7 @@ package de.monticore;
  import de.monticore.codegen.cd2java.typecd2java.TemplateHPService;
  import de.monticore.generating.templateengine.TemplateController;
  import de.monticore.generating.templateengine.TemplateHookPoint;
+ import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
  import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
  import de.monticore.cd4analysis._symboltable.ICD4AnalysisGlobalScope;
  import de.monticore.cd4analysis._symboltable.ICD4AnalysisScope;
@@ -1162,6 +1163,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     IGrammarFamilyGlobalScope scope = GrammarFamilyMill.globalScope();
     // reset global scope
     scope.clear();
+    BasicSymbolsMill.initializePrimitives();
 
     // Set Fileextension and ModelPath
     scope.setFileExt("mc4");
@@ -1213,6 +1215,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     @Override
     protected void doRun(String script, Configuration configuration) {
       GrammarFamilyMill.init();
+      BasicSymbolsMill.initializePrimitives();
       GroovyInterpreter.Builder builder = GroovyInterpreter.newInterpreter()
               .withScriptBaseClass(MontiCoreScript.class)
               .withImportCustomizer(new ImportCustomizer().addStarImports(DEFAULT_IMPORTS)
