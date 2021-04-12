@@ -19,6 +19,9 @@ released: 08.04.2021
   by the implementation of the resolveXLocally(..) method. It enables proper handling of symbol kind hierarchies
   during symbol resolution beyond the borders of a language.
 * new annotation @NonConservative for productions
+* add configTemplate (-cf) mechanism to add a freemarker template for customizing the generation processed
+* add two predefined groovy hook points (-gh1 and -gh2) in the monticore_standard.groovy for injecting 
+  custom groovy scripts into the workflow
 
 ### Changes
 * move grammars OCLExpressions and SetExpressions into OCL-project for further development
