@@ -1,5 +1,4 @@
-The following Command Line Interface (CLI) tools for MontiCore and its  
-languages and related tooling are currently available for download:
+The following Command Line Interface (CLI) tools for MontiCore and its languages and related tooling are currently available for download:
 
 * The [MontiCore CLI tool](www.monticore.de/download/monticore-cli.jar) for processing grammars
 * The [MontiCore runtime](www.monticore.de/download/monticore-rt.jar) library
