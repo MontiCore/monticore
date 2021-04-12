@@ -2,6 +2,15 @@
 
 # Release Notes
 
+##  MontiCore 7.1.0-SNAPSHOT
+to be released
+
+### Additions
+
+### Changes
+ 
+### Fixes
+
 ##  MontiCore 7.0.0
 released: 08.04.2021 
 
