@@ -2,8 +2,9 @@
 
 # Release Notes
 
-##  MontiCore 6.8.0-SNAPSHOT
-to be released
+##  MontiCore 7.0.0
+released: 08.04.2021 
+
 ### Additions
 * resolveXSubKinds(..) resolves for local symbols of all subkinds of a symbol kind X. This method is used
   by the implementation of the resolveXLocally(..) method. It enables proper handling of symbol kind hierarchies

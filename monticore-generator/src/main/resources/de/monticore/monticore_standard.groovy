@@ -82,8 +82,10 @@ while (grammarIterator.hasNext()) {
     decoratedCD = decorateCD(glex, mcScope, cd, handcodedPath)
     reportDecoratedCD(decoratedCD, report)
 
-    // groovy script hook point and genrator template configuration
+    // groovy script hook point 
     hook(gh2, glex, astGrammar, decoratedCD, cd)
+
+    // generator template configuration with -ct hook point
     configureGenerator(glex, decoratedCD, templatePath)
 
     // M8 Generate ast classes, symbol table, visitor,
