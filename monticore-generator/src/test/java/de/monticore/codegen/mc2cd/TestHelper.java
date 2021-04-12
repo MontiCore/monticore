@@ -3,22 +3,20 @@
 package de.monticore.codegen.mc2cd;
 
 import de.monticore.MontiCoreScript;
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.mc2cd.scopeTransl.MC2CDScopeTranslation;
 import de.monticore.codegen.mc2cd.symbolTransl.MC2CDSymbolTranslation;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
-import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
-import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsPhasedSTC;
-import de.monticore.grammar.grammar_withconcepts._symboltable.IGrammar_WithConceptsGlobalScope;
+import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
+import de.monticore.grammar.grammarfamily._symboltable.GrammarFamilyPhasedSTC;
+import de.monticore.grammar.grammarfamily._symboltable.IGrammarFamilyGlobalScope;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
-import org.junit.BeforeClass;
 import parser.MCGrammarParser;
 
 import java.nio.file.Path;
@@ -39,8 +37,8 @@ public class TestHelper {
     if (!grammar.isPresent()) {
       return Optional.empty();
     }
-    Grammar_WithConceptsGlobalScope symbolTable = createGlobalScope(new ModelPath(Paths.get("src/test/resources")));
-    Grammar_WithConceptsPhasedSTC stc = new Grammar_WithConceptsPhasedSTC();
+    IGrammarFamilyGlobalScope symbolTable = createGlobalScope(new ModelPath(Paths.get("src/test/resources")));
+    GrammarFamilyPhasedSTC stc = new GrammarFamilyPhasedSTC();
     stc.createFromAST(grammar.get());
     ASTCDCompilationUnit cdCompilationUnit = new MC2CDSymbolTranslation().apply(grammar.get());
     return Optional.of(cdCompilationUnit);
@@ -52,7 +50,7 @@ public class TestHelper {
       return Optional.empty();
     }
     MontiCoreScript mc = new MontiCoreScript();
-    Grammar_WithConceptsGlobalScope symbolTable = createGlobalScope(new ModelPath(Paths.get("src/test/resources")));
+    IGrammarFamilyGlobalScope symbolTable = createGlobalScope(new ModelPath(Paths.get("src/test/resources")));
     mc.createSymbolsFromAST(symbolTable, grammar.get());
     ASTCDCompilationUnit cdCompilationUnit = new MC2CDScopeTranslation().apply(grammar.get());
     return Optional.of(cdCompilationUnit);
@@ -64,32 +62,32 @@ public class TestHelper {
       return Optional.empty();
     }
     MontiCoreScript mc = new MontiCoreScript();
-    Grammar_WithConceptsGlobalScope symbolTable = createGlobalScope(new ModelPath(Paths.get("src/test/resources")));
+    IGrammarFamilyGlobalScope symbolTable = createGlobalScope(new ModelPath(Paths.get("src/test/resources")));
     mc.createSymbolsFromAST(symbolTable, grammar.get());
     ASTCDCompilationUnit cdCompilationUnit = new MC2CDTransformation(
         new GlobalExtensionManagement()).apply(grammar.get());
     return Optional.of(cdCompilationUnit);
   }
   
-  public static Grammar_WithConceptsGlobalScope createGlobalScope(ModelPath modelPath) {
-    IGrammar_WithConceptsGlobalScope scope = Grammar_WithConceptsMill.globalScope();
+  public static IGrammarFamilyGlobalScope createGlobalScope(ModelPath modelPath) {
+    IGrammarFamilyGlobalScope scope = GrammarFamilyMill.globalScope();
     // reset global scope
     scope.clear();
 
     // Set Fileextension and ModelPath
     scope.setFileExt("mc4");
     scope.setModelPath(modelPath);
-    return (Grammar_WithConceptsGlobalScope) scope;
+    return scope;
   }
 
   public static Optional<ASTCDClass> getCDClass(ASTCDCompilationUnit cdCompilationUnit, String cdClassName) {
-    return cdCompilationUnit.getCDDefinition().getCDClassList().stream()
+    return cdCompilationUnit.getCDDefinition().getCDClassesList().stream()
         .filter(cdClass -> cdClass.getName().equals(cdClassName))
         .findAny();
   }
 
   public static Optional<ASTCDInterface> getCDInterface(ASTCDCompilationUnit cdCompilationUnit, String cdInterfaceName) {
-    return cdCompilationUnit.getCDDefinition().getCDInterfaceList().stream()
+    return cdCompilationUnit.getCDDefinition().getCDInterfacesList().stream()
         .filter(cdClass -> cdClass.getName().equals(cdInterfaceName))
         .findAny();
   }

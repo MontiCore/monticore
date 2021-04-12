@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+import de.monticore.*;
+import de.monticore.types.*;
+import de.monticore.literals.*;
+import de.monticore.expressions.*;
+
+grammar MyLang extends MCBasicTypes, MCArrayTypes, 
+                       MCCommonLiterals, 
+                       CommonExpressions {
+                       
+  MyVar = type:MCType var:Name "=" exp:Expression;
+}

@@ -2,10 +2,10 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
-import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
+import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
@@ -39,7 +39,7 @@ public class AbstractProdTest {
 
   @BeforeClass
   public static void disableFailQuick() {
-    Grammar_WithConceptsMill.init();
+    GrammarFamilyMill.init();
     LogStub.enableFailQuick(false);
   }
 

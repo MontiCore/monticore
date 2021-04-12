@@ -1,16 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast_emf.ast_class;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis.CD4AnalysisMill;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTScopeDecorator;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTSymbolDecorator;
 import de.monticore.codegen.cd2java._ast.ast_class.reference.ASTReferenceDecorator;
-import de.monticore.codegen.cd2java._ast.factory.NodeFactoryService;
 import de.monticore.codegen.cd2java._ast_emf.EmfService;
 import de.monticore.codegen.cd2java._ast_emf.ast_class.mutatordecorator.EmfMutatorDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
@@ -45,13 +44,12 @@ public class ASTFullEmfDecoratorTest extends DecoratorTestCase {
     ASTService astService = new ASTService(decoratedCompilationUnit);
     SymbolTableService symbolTableService = new SymbolTableService(decoratedCompilationUnit);
     VisitorService visitorService = new VisitorService(decoratedCompilationUnit);
-    NodeFactoryService nodeFactoryService = new NodeFactoryService(decoratedCompilationUnit);
     ASTSymbolDecorator astSymbolDecorator = new ASTSymbolDecorator(glex, symbolTableService);
     ASTScopeDecorator astScopeDecorator = new ASTScopeDecorator(glex,  symbolTableService);
     EmfMutatorDecorator emfMutatorDecorator= new EmfMutatorDecorator(glex, astService);
     DataEmfDecorator dataEmfDecorator = new DataEmfDecorator(glex, new MethodDecorator(glex, astService),
         new ASTService(decoratedCompilationUnit), new DataDecoratorUtil(), emfMutatorDecorator);
-    ASTEmfDecorator astEmfDecorator = new ASTEmfDecorator(glex, astService, visitorService, nodeFactoryService,
+    ASTEmfDecorator astEmfDecorator = new ASTEmfDecorator(glex, astService, visitorService,
         astSymbolDecorator, astScopeDecorator, new MethodDecorator(glex, astService), symbolTableService, new EmfService(decoratedCompilationUnit));
     ASTReferenceDecorator astReferencedSymbolDecorator = new ASTReferenceDecorator(glex, symbolTableService);
     ASTFullEmfDecorator fullDecorator = new ASTFullEmfDecorator(dataEmfDecorator, astEmfDecorator, astReferencedSymbolDecorator);
@@ -85,7 +83,7 @@ public class ASTFullEmfDecoratorTest extends DecoratorTestCase {
   @Test
   public void testMethodSize() {
     assertFalse(astClass.getCDMethodList().isEmpty());
-    assertEquals(101, astClass.getCDMethodList().size());
+    assertEquals(99, astClass.getCDMethodList().size());
   }
 
 }

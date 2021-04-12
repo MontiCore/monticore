@@ -1,26 +1,20 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.generating.templateengine.reporting.reporter;
 
-import com.google.common.collect.Lists;
-import com.google.common.io.Files;
 import de.monticore.ast.ASTNode;
-import de.monticore.generating.templateengine.reporting.commons.AReporter;
-import de.monticore.generating.templateengine.reporting.commons.ReportCreator;
-import de.monticore.incremental.IncrementalChecker;
-import de.monticore.io.paths.IterablePath;
-import org.antlr.v4.runtime.misc.OrderedHashSet;
+import de.monticore.generating.templateengine.reporting.commons.ReportingHelper;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.Collections;
 
 import static de.monticore.generating.templateengine.reporting.reporter.InputOutputFilesReporter.GEN_ERROR;
 import static de.monticore.generating.templateengine.reporting.reporter.InputOutputFilesReporter.MISSING;
 
 public class IncGenGradleReporter extends IncGenReporter {
 
-  final static String SIMPLE_FILE_NAME = "IncGenGradleCheck";
+  static final String SIMPLE_FILE_NAME = "IncGenGradleCheck";
 
   public IncGenGradleReporter(String outputDir, String modelName) {
     super(outputDir + File.separator + modelName.replaceAll("\\.", "/"), SIMPLE_FILE_NAME, "txt");
@@ -45,7 +39,7 @@ public class IncGenGradleReporter extends IncGenReporter {
     if (inputFile != null && !inputFile.isEmpty()) {
       String checkSum;
       if (node != null) {
-        checkSum = IncrementalChecker.getChecksum(inputFile);
+        checkSum = ReportingHelper.getChecksum(inputFile);
       } else {
         checkSum = GEN_ERROR;
       }
@@ -55,7 +49,7 @@ public class IncGenGradleReporter extends IncGenReporter {
         if (!s.contains(".jar")) {
           File inputFile = new File(s);
           if (inputFile.exists()) {
-            checkSum = IncrementalChecker.getChecksum(inputFile.toString());
+            checkSum = ReportingHelper.getChecksum(inputFile.toString());
           } else {
             checkSum = MISSING;
           }
@@ -70,7 +64,7 @@ public class IncGenGradleReporter extends IncGenReporter {
         File inputFile = new File(s);
         String checkSum;
         if (inputFile.exists()) {
-          checkSum = IncrementalChecker.getChecksum(inputFile.toString());
+          checkSum = ReportingHelper.getChecksum(inputFile.toString());
         }else{
           checkSum = MISSING;
         }

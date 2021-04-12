@@ -7,6 +7,8 @@ import de.monticore.expressions.combineexpressionswithliterals._parser.CombineEx
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsScope;
 import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisTraverser;
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
@@ -17,19 +19,17 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import static de.monticore.types.check.DefsTypeBasic.*;
 import static org.junit.Assert.assertEquals;
 
-public class DeriveSymTypeOfExpressionTest {
+public class DeriveSymTypeOfExpressionTest extends DeriveSymTypeAbstractTest {
   
   /**
    * Focus: Deriving Type of Literals, here:
    *    literals/MCLiteralsBasis.mc4
    */
-  private ICombineExpressionsWithLiteralsScope scope;
-  private FlatExpressionScopeSetter flatExpressionScopeSetter;
-  private CombineExpressionsWithLiteralsTraverser traverser;
   
   @BeforeClass
   public static void setup() {
@@ -41,19 +41,14 @@ public class DeriveSymTypeOfExpressionTest {
   public void setupForEach() {
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
+    BasicSymbolsMill.initializePrimitives();
     // Setting up a Scope Infrastructure (without a global Scope)
-    scope = CombineExpressionsWithLiteralsMill.scope();
+    ICombineExpressionsWithLiteralsScope scope = CombineExpressionsWithLiteralsMill.scope();
     scope.setEnclosingScope(null);       // No enclosing Scope: Search ending here
     scope.setExportingSymbols(true);
     scope.setAstNode(null);
     // we add a variety of TypeSymbols to the same scope (which in reality doesn't happen)
-    add2scope(scope, DefsTypeBasic._int);
-    add2scope(scope, DefsTypeBasic._char);
-    add2scope(scope, DefsTypeBasic._boolean);
-    add2scope(scope, DefsTypeBasic._double);
-    add2scope(scope, DefsTypeBasic._float);
-    add2scope(scope, DefsTypeBasic._long);
-    
+
     add2scope(scope, DefsTypeBasic._array);
     add2scope(scope, DefsTypeBasic._Object);
     add2scope(scope, DefsTypeBasic._String);
@@ -100,98 +95,74 @@ public class DeriveSymTypeOfExpressionTest {
     add2scope(scope,genSubField);
     add2scope(scope,genSuperField);
 
-    flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
-    traverser = getTraverser(flatExpressionScopeSetter);
+    setFlatExpressionScopeSetter(scope);
+    super.setupForEach();
   }
-  
-  // Parer used for convenience:
+
+  @Override
+  protected void setupTypeCheck() {
+    // This is an auxiliary
+    DeriveSymTypeOfCombineExpressionsDelegator derLit = new DeriveSymTypeOfCombineExpressionsDelegator();
+
+    // other arguments not used (and therefore deliberately null)
+    // This is the TypeChecker under Test:
+    setTypeCheck(new TypeCheck(null, derLit));
+  }
+
+  // Parser used for convenience:
   // (may be any other Parser that understands CommonExpressions)
   CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
-  
-  // This is the core Visitor under Test (but rather empty)
-  DeriveSymTypeOfExpression derEx = new DeriveSymTypeOfExpression();
+  @Override
+  protected Optional<ASTExpression> parseStringExpression(String expression) throws IOException {
+    return p.parse_StringExpression(expression);
+  }
 
-  // This is an auxiliary
-  DeriveSymTypeOfCombineExpressionsDelegator derLit = new DeriveSymTypeOfCombineExpressionsDelegator();
-  
-  // other arguments not used (and therefore deliberately null)
-  
-  // This is the TypeChecker under Test:
-  TypeCheck tc = new TypeCheck(null,derLit);
+  @Override
+  protected ExpressionsBasisTraverser getUsedLanguageTraverser() {
+    return CombineExpressionsWithLiteralsMill.traverser();
+  }
   
   // ------------------------------------------------------  Tests for Function 2
 
 
   @Test
   public void deriveTFromASTNameExpression() throws IOException {
-    ASTExpression astex = p.parse_StringExpression("foo").get();
-    astex.accept(traverser);
-    assertEquals("int", tc.typeOf(astex).print());
+    check("foo", "int");
   }
 
   @Test
   public void deriveTFromASTNameExpression2() throws IOException {
-    String s = "bar2";
-    ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    assertEquals("boolean", tc.typeOf(astex).print());
+    check("bar2", "boolean");
   }
 
   @Test
   public void deriveTFromASTNameExpression3() throws IOException{
-    String s = "person1";
-    ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    assertEquals("Person", tc.typeOf(astex).print());
+    check("person1", "Person");
   }
 
   @Test
   public void deriveTFromASTNameExpression4() throws IOException{
-    String s = "student1";
-    ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    assertEquals("Student",tc.typeOf(astex).print());
+    check("student1", "Student");
   }
 
   @Test
   public void deriveTFromASTNameExpression5() throws IOException{
-    String s = "firstsemester";
-    ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    assertEquals("FirstSemesterStudent",tc.typeOf(astex).print());
+    check("firstsemester", "FirstSemesterStudent");
   }
 
    @Test
   public void deriveTFromLiteral() throws IOException {
-    ASTExpression astex = p.parse_StringExpression("42").get();
-    astex.accept(traverser);
-    assertEquals("int", tc.typeOf(astex).print());
+    check("42", "int");
   }
 
   @Test
   public void deriveTFromLiteralString() throws IOException {
-    ASTExpression astex = p.parse_StringExpression("\"aStringi\"").get();
-    astex.accept(traverser);
-    assertEquals("String", tc.typeOf(astex).print());
+    check("\"aStringi\"", "String");
   }
 
   @Test
   public void genericsTest() throws IOException {
-    ASTExpression astex = p.parse_StringExpression("genericSuper = genericSub").get();
-    astex.accept(traverser);
-    assertEquals("GenSuper<GenArg>",tc.typeOf(astex).print());
-  }
-
-  public CombineExpressionsWithLiteralsTraverser getTraverser(FlatExpressionScopeSetter flatExpressionScopeSetter){
-    CombineExpressionsWithLiteralsTraverser traverser = CombineExpressionsWithLiteralsMill.traverser();
-    traverser.add4AssignmentExpressions(flatExpressionScopeSetter);
-    traverser.add4BitExpressions(flatExpressionScopeSetter);
-    traverser.add4CommonExpressions(flatExpressionScopeSetter);
-    traverser.add4ExpressionsBasis(flatExpressionScopeSetter);
-    traverser.add4SetExpressions(flatExpressionScopeSetter);
-    traverser.add4JavaClassExpressions(flatExpressionScopeSetter);
-    traverser.add4MCBasicTypes(flatExpressionScopeSetter);
-    return traverser;
+    check("genericSuper = genericSub", "GenSuper<GenArg>");
   }
 
 }

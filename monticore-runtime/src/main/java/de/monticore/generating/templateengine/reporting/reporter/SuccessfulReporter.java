@@ -2,15 +2,15 @@
 
 package de.monticore.generating.templateengine.reporting.reporter;
 
-import java.io.File;
-
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.reporting.commons.AReporter;
 import de.monticore.generating.templateengine.reporting.commons.ReportingConstants;
 
+import java.io.File;
+
 public class SuccessfulReporter extends AReporter {
   
-  final static String SIMPLE_FILE_NAME = "19_Successful";
+  static final String SIMPLE_FILE_NAME = "19_Successful";
   
   public SuccessfulReporter(String outputDir, String modelName) {
     super(outputDir

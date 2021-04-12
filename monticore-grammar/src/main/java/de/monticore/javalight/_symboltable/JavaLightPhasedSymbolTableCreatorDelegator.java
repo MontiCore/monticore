@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.javalight._symboltable;
 
 import de.monticore.javalight.JavaLightMill;
@@ -15,16 +16,11 @@ public class JavaLightPhasedSymbolTableCreatorDelegator {
 
   protected List<JavaLightTraverser> priorityList ;
 
-
-  public  JavaLightPhasedSymbolTableCreatorDelegator(IJavaLightGlobalScope globalScope)  {
-    this.globalScope = globalScope;
-    this.scopesGenitorDelegator = new JavaLightScopesGenitorDelegator(globalScope);
+  public  JavaLightPhasedSymbolTableCreatorDelegator()  {
+    this.globalScope = JavaLightMill.globalScope();
+    this.scopesGenitorDelegator = JavaLightMill.scopesGenitorDelegator();
     this.priorityList = new ArrayList<>();
     priorityList.add(new JavaLightSTCompleteTypesDelegator().getTraverser());
-  }
-
-  public  JavaLightPhasedSymbolTableCreatorDelegator()  {
-    this(JavaLightMill.globalScope());
   }
 
   public  IJavaLightArtifactScope createFromAST (ASTClassBodyDeclaration rootNode)  {

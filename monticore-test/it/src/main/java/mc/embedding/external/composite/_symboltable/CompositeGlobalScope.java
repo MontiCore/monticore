@@ -51,7 +51,7 @@ public class CompositeGlobalScope extends CompositeGlobalScopeTOP {
       getModelPath().resolveModel(modelCoordinate);
       if (modelCoordinate.hasLocation()) {
         ASTHost parse = parse(modelCoordinate);
-        CompositeMill.compositeSymbolTableCreatorDelegator().createFromAST(parse);
+        CompositeMill.scopesGenitorDelegator().createFromAST(parse);
       }
     }
     else {

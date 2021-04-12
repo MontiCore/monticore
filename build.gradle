@@ -5,6 +5,19 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 plugins {
   id "de.set.ecj" version "1.4.1" // Eclipse compiler as it's much faster than javac
+  id "org.sonarqube" version "3.0"
+  id "jacoco"
+  id 'org.barfuin.gradle.jacocolog' version '1.2.3'
+}
+
+sonarqube {
+  properties {
+    property 'sonar.host.url', 'https://metric.se.rwth-aachen.de'
+    property 'sonar.sourceEncoding', 'UTF-8'
+    property 'sonar.projectKey', 'de.monticore:monticore'
+    property 'sonar.exclusions', '**/target/generated-sources/**'
+    property 'sonar.jacoco.reportPath', 'target/jacoco/jacocoMergeSubprojects.exec'
+  }
 }
 
 if(!hasProperty('bootstrap')){
@@ -36,7 +49,7 @@ allprojects {
 }
 
 subprojects {
-  apply plugin: 'java'
+  apply plugin: 'java-library'
   apply plugin : 'de.set.ecj'
   
   tasks.withType(Test) {
@@ -107,10 +120,7 @@ task buildMC {
 }
 
 if(!hasProperty('bootstrap')) {
-  buildMC.dependsOn(
-          gradle.includedBuild('monticore-tool').task(':monticore-generator:build'),
-          gradle.includedBuild('monticore-tool').task(':monticore-cli:build'),
-          gradle.includedBuild('monticore-tool').task(':monticore-gradle:build'))
+  buildMC.dependsOn(gradle.includedBuilds*.task(':buildAll'))
 }
 
 /**
@@ -130,10 +140,7 @@ task assembleMC {
   )
 }
 if(!hasProperty('bootstrap')) {
-  assembleMC.dependsOn(
-          gradle.includedBuild('monticore-tool').task(':monticore-generator:assemble'),
-          gradle.includedBuild('monticore-tool').task(':monticore-cli:assemble'),
-          gradle.includedBuild('monticore-tool').task(':monticore-gradle:assemble'))
+  assembleMC.dependsOn(gradle.includedBuilds*.task(':assembleAll'))
 }
 
 /**
@@ -153,10 +160,7 @@ task testMC {
 }
 
 if(!hasProperty('bootstrap')) {
-  testMC.dependsOn(
-          gradle.includedBuild('monticore-tool').task(':monticore-generator:test'),
-          gradle.includedBuild('monticore-tool').task(':monticore-cli:test'),
-          gradle.includedBuild('monticore-tool').task(':monticore-gradle:test'))
+  testMC.dependsOn(gradle.includedBuilds*.task(':testAll'))
 }
 
 /**
@@ -178,10 +182,7 @@ task deployMC {
 }
 
 if(!hasProperty('bootstrap')) {
-  deployMC.dependsOn(
-          gradle.includedBuild('monticore-tool').task(':monticore-generator:publish'),
-          gradle.includedBuild('monticore-tool').task(':monticore-cli:publish'),
-          gradle.includedBuild('monticore-tool').task(':monticore-gradle:publish'))
+  deployMC.dependsOn(gradle.includedBuilds*.task(':publishAll'))
 }
 
 /**
@@ -193,8 +194,8 @@ task publishMCToMavenLocal {
   group("build")
   description('Publishes the core projects, i.e. the generator, runtime and grammar library' +
           'to the local maven repository.')
-  
-  dependsOn(":monticore-grammar:publishToMavenLocal",
+  dependsOn(
+          ":monticore-grammar:publishToMavenLocal",
           ":monticore-runtime:publishToMavenLocal",
           ":monticore-runtime-emf:publishToMavenLocal",
           ":monticore-grammar-emf:publishToMavenLocal"
@@ -202,11 +203,7 @@ task publishMCToMavenLocal {
 }
 
 if(!hasProperty('bootstrap')) {
-  publishMCToMavenLocal.dependsOn(
-          gradle.includedBuild('monticore-tool').task(':monticore-generator:publishToMavenLocal'),
-          gradle.includedBuild('monticore-tool').task(':monticore-cli:publishToMavenLocal'),
-          gradle.includedBuild('monticore-tool').task(':monticore-gradle:publishToMavenLocal')
-  )
+  publishMCToMavenLocal.dependsOn(gradle.includedBuilds*.task(':publishToMavenLocalAll'))
 }
 
 /**
@@ -229,6 +226,29 @@ if(!hasProperty('bootstrap')) {
   
 task buildAll(type: GradleBuild) {
   dependsOn(subprojects.collect { getTasksByName("build", false) })
+}
+
+task cleanMC {
+  dependsOn(
+          ":monticore-grammar:clean",
+          ":monticore-runtime:clean",
+          ":monticore-runtime-emf:clean",
+          ":monticore-grammar-emf:clean"
+  
+  )
+  dependsOn(
+          project(":monticore-test").subprojects.collect {
+            it.tasks.getByName "clean"
+          }
+  )
+}
+
+task sonarMC (type: GradleBuild) {
+  description('Generates code coverage')
+  dependsOn(
+          ":testMC"
+  )
+  tasks = [ 'jacocoMergeSubprojects', 'sonarqube' ]
 }
 
 
@@ -256,3 +276,4 @@ configure([project(':monticore-grammar'),
 }
 
 defaultTasks 'build'
+

@@ -2,22 +2,17 @@
 package de.monticore.types.check;
 
 import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
-import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsDelegatorVisitor;
 import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.literals.mccommonliterals._ast.ASTSignedLiteral;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
-import de.monticore.types.mcbasictypes.MCBasicTypesMill;
-import de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser;
-import de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMill;
-import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesTraverser;
 
 import java.util.Optional;
 
 /**
  * Delegator Visitor to test the combination of the grammars
  */
-public class DeriveSymTypeOfCombineExpressionsDelegator implements ITypesCalculator {
+public class DeriveSymTypeOfCombineExpressionsDelegator implements IDerive {
 
   private CombineExpressionsWithLiteralsTraverser traverser;
 
@@ -30,8 +25,6 @@ public class DeriveSymTypeOfCombineExpressionsDelegator implements ITypesCalcula
   private DeriveSymTypeOfExpression deriveSymTypeOfExpression;
 
   private DeriveSymTypeOfJavaClassExpressions deriveSymTypeOfJavaClassExpressions;
-
-  private DeriveSymTypeOfSetExpressions deriveSymTypeOfSetExpressions;
 
   private DeriveSymTypeOfLiterals deriveSymTypeOfLiterals;
 
@@ -49,18 +42,13 @@ public class DeriveSymTypeOfCombineExpressionsDelegator implements ITypesCalcula
     init();
   }
 
-  /**
-   * main method to calculate the type of an expression
-   */
-  public Optional<SymTypeExpression> calculateType(ASTExpression e){
-    init();
-    e.accept(traverser);
-    Optional<SymTypeExpression> result = Optional.empty();
-    if (typeCheckResult.isPresentCurrentResult()) {
-      result = Optional.ofNullable(typeCheckResult.getCurrentResult());
+
+  @Override
+  public Optional<SymTypeExpression> getResult() {
+    if(typeCheckResult.isPresentCurrentResult()){
+      return Optional.ofNullable(typeCheckResult.getCurrentResult());
     }
-    typeCheckResult.reset();
-    return result;
+    return Optional.empty();
   }
 
   @Override
@@ -79,7 +67,6 @@ public class DeriveSymTypeOfCombineExpressionsDelegator implements ITypesCalcula
     deriveSymTypeOfLiterals.setTypeCheckResult(typeCheckResult);
     deriveSymTypeOfBitExpressions.setTypeCheckResult(typeCheckResult);
     deriveSymTypeOfJavaClassExpressions.setTypeCheckResult(typeCheckResult);
-    deriveSymTypeOfSetExpressions.setTypeCheckResult(typeCheckResult);
     deriveSymTypeOfCombineExpressions.setTypeCheckResult(typeCheckResult);
   }
 
@@ -97,7 +84,6 @@ public class DeriveSymTypeOfCombineExpressionsDelegator implements ITypesCalcula
     deriveSymTypeOfLiterals = new DeriveSymTypeOfLiterals();
     deriveSymTypeOfBitExpressions = new DeriveSymTypeOfBitExpressions();
     deriveSymTypeOfJavaClassExpressions = new DeriveSymTypeOfJavaClassExpressions();
-    deriveSymTypeOfSetExpressions = new DeriveSymTypeOfSetExpressions();
     synthesizer = new SynthesizeSymTypeFromCombineExpressionsWithLiteralsDelegator();
     deriveSymTypeOfCombineExpressions = new DeriveSymTypeOfCombineExpressions(synthesizer);
     setTypeCheckResult(typeCheckResult);
@@ -114,36 +100,8 @@ public class DeriveSymTypeOfCombineExpressionsDelegator implements ITypesCalcula
     traverser.setBitExpressionsHandler(deriveSymTypeOfBitExpressions);
     traverser.add4JavaClassExpressions(deriveSymTypeOfJavaClassExpressions);
     traverser.setJavaClassExpressionsHandler(deriveSymTypeOfJavaClassExpressions);
-    traverser.add4SetExpressions(deriveSymTypeOfSetExpressions);
-    traverser.setSetExpressionsHandler(deriveSymTypeOfSetExpressions);
     traverser.add4CombineExpressionsWithLiterals(deriveSymTypeOfCombineExpressions);
     traverser.setCombineExpressionsWithLiteralsHandler(deriveSymTypeOfCombineExpressions);
   }
 
-  /**
-   * main method to calculate the type of a literal
-   */
-  @Override
-  public Optional<SymTypeExpression> calculateType(ASTLiteral lit) {
-    init();
-    lit.accept(traverser);
-    Optional<SymTypeExpression> result = Optional.empty();
-    if (typeCheckResult.isPresentCurrentResult()) {
-      result = Optional.ofNullable(typeCheckResult.getCurrentResult());
-    }
-    typeCheckResult.reset();
-    return result;
-  }
-
-  @Override
-  public Optional<SymTypeExpression> calculateType(ASTSignedLiteral lit) {
-    init();
-    lit.accept(traverser);
-    Optional<SymTypeExpression> result = Optional.empty();
-    if (typeCheckResult.isPresentCurrentResult()) {
-      result = Optional.ofNullable(typeCheckResult.getCurrentResult());
-    }
-    typeCheckResult.reset();
-    return result;
-  }
 }

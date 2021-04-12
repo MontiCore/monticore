@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package mc.testcd4analysis._symboltable;
 
 import mc.testcd4analysis.TestCD4AnalysisMill;
@@ -17,19 +18,15 @@ public class TestCD4AnalysisPhasedSymbolTableCreatorDelegator {
 
   protected List<TestCD4AnalysisTraverser> priorityList;
 
-  public TestCD4AnalysisPhasedSymbolTableCreatorDelegator(ITestCD4AnalysisGlobalScope globalScope){
-    this.globalScope = globalScope;
-    this.scopesGenitorDelegator = new TestCD4AnalysisScopesGenitorDelegator(globalScope);
+  public TestCD4AnalysisPhasedSymbolTableCreatorDelegator(){
+    this.globalScope = TestCD4AnalysisMill.globalScope();
+    this.scopesGenitorDelegator = new TestCD4AnalysisScopesGenitorDelegator();
     this.priorityList = new ArrayList<>();
     Deque<ITestCD4AnalysisScope> scopeStack = new ArrayDeque<>();
     scopeStack.push(globalScope);
     TestCD4AnalysisTraverser traverser = TestCD4AnalysisMill.traverser();
     traverser.add4TestCD4Analysis(new TestCD4AnalysisSTCompleteTypes(scopeStack));
     this.priorityList.add(traverser);
-  }
-
-  public TestCD4AnalysisPhasedSymbolTableCreatorDelegator(){
-    this(TestCD4AnalysisMill.globalScope());
   }
 
   public ITestCD4AnalysisArtifactScope createFromAST(ASTCDCompilationUnit rootNode){

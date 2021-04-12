@@ -1,0 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
+description = 'Experiments: groovyHooks'
+
+task generate (type: MCTask) {
+  grammar = file "$projectDir/$grammarDir/Automata.mc4"
+  outputDir = file outDir
+  groovyHook1 = file "$projectDir/gs1.groovy"
+  groovyHook2 = file "$projectDir/gs2.groovy"
+  def uptoDate = incCheck("Automata.mc4")
+  outputs.upToDateWhen { uptoDate }
+}
+
+

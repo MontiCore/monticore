@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.basegrammars;
+
+import mc.basegrammars.*;
+import de.monticore.expressions.*;
+import de.monticore.types.*;
+import de.monticore.statements.*;
+import de.monticore.literals.*;
+
+grammar SimpleLanguage extends MyBasicLanguage,
+                               CommonExpressions,
+                               MCCollectionTypes,
+                               MCCommonStatements,
+                               MCCommonLiterals {
+}

@@ -10,15 +10,21 @@ pluggable grammar parts are developed.
 
 ### Given Expression languages in MontiCore
 
-Currently, there are seven expression languages. These are
+Currently, there are five expression languages. These are
 
 * [ExpressionsBasis](ExpressionsBasis.mc4) (basis for all of the expression languages, supports names and literals)
 * [AssignmentExpressions](AssignmentExpressions.mc4) (extends ExpressionsBasis, basic assignments)
 * [CommonExpressions](CommonExpressions.mc4) (extends ExpressionsBasis, common expressions like + and -)
 * [BitExpressions](BitExpressions.mc4) (extends ExpressionsBasis, bit expressions like & or <<)
-* [SetExpressions](SetExpressions.mc4) (extends ExpressionsBasis, ideal for working with sets)
-* [OCLExpressions](OCLExpressions.mc4) (extends ExpressionsBasis, introduces OCL to MontiCore)
 * [JavaClassExpressions](JavaClassExpressions.mc4) (extends CommonExpressions, adds Java expressions like new)
+
+Two further expression languages are defined in the OCL project:
+
+* [OCL-SetExpressions] (extends ExpressionsBasis, ideal for working with sets)
+* [OCL-OCLExpressions] (extends ExpressionsBasis, introduces OCL to MontiCore)
+
+Furthermore, composite SI unit expressions are defined in the SI Units project:
+* [SI Units](https://github.com/MontiCore/siunits/blob/master/src/main/grammars/de/monticore/SIUnits.mc4) (can be used to parse primitive units as well as their products, quotients, and powers)
 
 ### Using Expressions
 
@@ -47,3 +53,6 @@ for an example.
 * [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
 * [Licence definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
 
+<!-- Links to other sites-->
+[OCL-OCLExpressions]: https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/develop/src/main/grammars/de/monticore/ocl/OCLExpressions.mc4
+[OCL-SetExpressions]: https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/develop/src/main/grammars/de/monticore/ocl/SetExpressions.mc4

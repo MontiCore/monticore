@@ -25,7 +25,7 @@ public class AutomatonWithSTInfo2Test extends GeneratorIntegrationsTest {
     assertTrue(automatonSymbol instanceof IScopeSpanningSymbol);
 //    Collection<AutomatonElementSymbol> automatonElementSymbols = automatonSymbol.getAutomatonElements();
     AutomatonSymbolSurrogate automatonSymbolSurrogate;
-    AutomatonWithSTInfo2SymbolTableCreator automatonWithSTInfo2SymbolTableCreator;
+    AutomatonWithSTInfo2ScopesGenitorDelegator automatonWithSTInfo2SymbolTableCreator;
   }
 
 }

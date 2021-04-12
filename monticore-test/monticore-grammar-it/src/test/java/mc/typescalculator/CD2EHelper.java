@@ -17,6 +17,7 @@ import mc.testcd4analysis._symboltable.CDFieldSymbol;
 import mc.testcd4analysis._symboltable.CDMethOrConstrSymbol;
 import mc.testcd4analysis._symboltable.CDTypeSymbol;
 import mc.testcd4analysis._symboltable.CDTypeSymbolSurrogate;
+import mc.typescalculator.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 
 import java.util.HashMap;
 import java.util.List;
@@ -48,6 +49,7 @@ public class CD2EHelper {
       OOTypeSymbol typeSymbol = OOSymbolsMill.oOTypeSymbolBuilder()
           .setName(cdTypeSymbol.getName())
           .setSpannedScope(OOSymbolsMill.scope())
+          .setEnclosingScope(cdTypeSymbol.getEnclosingScope())
           .build();
       typeSymbolMap.put(cdTypeSymbol.getName(), typeSymbol);
 
@@ -73,16 +75,8 @@ public class CD2EHelper {
 
       typeSymbol.setName(cdTypeSymbol.getName());
       typeSymbol.addAllSuperTypes(superInterfaces);
-      for (FieldSymbol field : fieldSymbols) {
-        typeSymbol.getSpannedScope().add(field);
-        typeSymbol.getSpannedScope().add((VariableSymbol) field);
-      }
       fieldSymbols.forEach(f -> typeSymbol.getSpannedScope().add(f));
       fieldSymbols.forEach(f -> typeSymbol.getSpannedScope().add((VariableSymbol) f));
-      for (MethodSymbol method : methodSymbols) {
-        typeSymbol.getSpannedScope().add(method);
-        typeSymbol.getSpannedScope().add((FunctionSymbol) method);
-      }
       methodSymbols.forEach(f -> typeSymbol.getSpannedScope().add(f));
       methodSymbols.forEach(f -> typeSymbol.getSpannedScope().add((FunctionSymbol) f));
       superClass.ifPresent(typeSymbol::addSuperTypes);
@@ -117,6 +111,7 @@ public class CD2EHelper {
       MethodSymbol methodSymbol = OOSymbolsMill.methodSymbolBuilder()
           .setName(cdMethOrConstrSymbol.getName())
           .build();
+      methodSymbol.setSpannedScope(CombineExpressionsWithLiteralsMill.scope());
       methodSymbolMap.put(cdMethOrConstrSymbol.getName(), methodSymbol);
       // add return type
       SymTypeExpression returnType = createSymTypeExpressionFormCDTypeSymbolReference(cdMethOrConstrSymbol.getReturnType());

@@ -1,12 +1,11 @@
-// (c) https://github.com/MontiCore/monticore
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java.mill;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDConstructor;
-import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
-import de.monticore.cd.facade.CDModifier;
-import de.monticore.cd.prettyprint.CD4CodePrinter;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cd4codebasis._ast.*;
+import de.monticore.codegen.cd2java.CDModifier;
+import de.monticore.codegen.cd2java.CdUtilsPrinter;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
@@ -42,7 +41,7 @@ public class MillForSuperDecoratorTest extends DecoratorTestCase {
     this.glex = new GlobalExtensionManagement();
 
     this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
-    this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
+    this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
@@ -74,17 +73,17 @@ public class MillForSuperDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testNoInterfaces() {
-    assertEquals(0, millClass.sizeInterface());
+    assertEquals(0, millClass.getInterfaceList().size());
   }
 
   @Test
   public void testNoAttributes() {
-    assertEquals(0, millClass.sizeCDAttributes());
+    assertEquals(0, millClass.getCDAttributeList().size());
   }
 
   @Test
   public void testMethodSize() {
-    assertEquals(3, millClass.sizeCDMethods());
+    assertEquals(5, millClass.getCDMethodList().size());
   }
 
   @Test

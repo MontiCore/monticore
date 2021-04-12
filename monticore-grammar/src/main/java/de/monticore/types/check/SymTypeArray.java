@@ -71,6 +71,15 @@ public class SymTypeArray extends SymTypeExpression {
     return r.toString();
   }
 
+  @Override
+  public String printFullName(){
+    StringBuffer r = new StringBuffer(getArgument().printFullName());
+    for (int i = 1; i <= dim; i++) {
+      r.append("[]");
+    }
+    return r.toString();
+  }
+
   /**
    * printToJson: Umwandlung in einen kompakten Json String
    */

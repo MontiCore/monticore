@@ -1,5 +1,3 @@
-// (c) https://github.com/MontiCore/monticore
-
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.symbols.oosymbols._symboltable;
 
@@ -48,7 +46,7 @@ public class OOSymbolsScope extends OOSymbolsScopeTOP {
       if(spanningSymbol instanceof TypeSymbol){
         TypeSymbol typeSymbol = ((TypeSymbol) spanningSymbol);
         for(SymTypeExpression t : typeSymbol.getSuperTypesList()){
-          set.addAll(t.getMethodList(name));
+          set.addAll(t.getMethodList(name, false));
         }
       }
     }
@@ -71,7 +69,7 @@ public class OOSymbolsScope extends OOSymbolsScopeTOP {
       if(spanningSymbol instanceof TypeSymbol){
         TypeSymbol typeSymbol = (TypeSymbol) spanningSymbol;
         for(SymTypeExpression superType : typeSymbol.getSuperTypesList()){
-          result.addAll(superType.getFieldList(name));
+          result.addAll(superType.getFieldList(name, false));
         }
       }
     }

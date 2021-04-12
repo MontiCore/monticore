@@ -1,18 +1,19 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.javalight._symboltable;
 
+import de.monticore.grammar.grammar_withconcepts.FullSynthesizeFromMCFGT4Grammar;
 import de.monticore.javalight._ast.*;
-import de.monticore.javalight._visitor.JavaLightVisitor;
 import de.monticore.javalight._visitor.JavaLightVisitor2;
 import de.monticore.statements.mccommonstatements._ast.ASTJavaModifier;
 import de.monticore.statements.mcstatementsbasis._ast.ASTMCModifier;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
-import de.monticore.types.check.*;
+import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.check.SymTypeExpressionFactory;
+import de.monticore.types.check.SymTypeOfNull;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
-import de.monticore.types.mcfullgenerictypes._visitor.MCFullGenericTypesTraverser;
 
 import static de.monticore.statements.mccommonstatements._ast.ASTConstantsMCCommonStatements.*;
 
@@ -116,14 +117,14 @@ public class JavaLightSTCompleteTypes implements JavaLightVisitor2 {
   }
 
   private SymTypeExpression createTypeLoader(ASTMCQualifiedName ast) {
-    FullSynthesizeFromMCFullGenericTypes synFromFull = new FullSynthesizeFromMCFullGenericTypes();
+    FullSynthesizeFromMCFGT4Grammar synFromFull = new FullSynthesizeFromMCFGT4Grammar();
     // Start visitor
     ast.accept(synFromFull.getTraverser());
     return synFromFull.getResult().orElse(new SymTypeOfNull());
   }
 
   private SymTypeExpression createTypeLoader(ASTMCType ast) {
-    FullSynthesizeFromMCFullGenericTypes synFromFull = new FullSynthesizeFromMCFullGenericTypes();
+    FullSynthesizeFromMCFGT4Grammar synFromFull = new FullSynthesizeFromMCFGT4Grammar();
     // Start visitor
     ast.accept(synFromFull.getTraverser());
     return synFromFull.getResult().orElse(new SymTypeOfNull());

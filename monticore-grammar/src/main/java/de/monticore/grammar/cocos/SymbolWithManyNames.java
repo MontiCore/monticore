@@ -1,6 +1,4 @@
-// (c) https://github.com/MontiCore/monticore
-
-// (c) https://github.com/MontiCore/monticore
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.grammar.cocos;
 
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
@@ -9,9 +7,6 @@ import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
 import de.se_rwth.commons.logging.Log;
-
-import java.util.List;
-import java.util.Optional;
 
 /**
  * checks if a prod defining a symbol has a list of names.

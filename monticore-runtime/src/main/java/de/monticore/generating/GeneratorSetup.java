@@ -98,9 +98,9 @@ public class GeneratorSetup {
    * Additional Suffix for a generated Class, if the
    * class itself already exists.
    */
-  public final static String GENERATED_CLASS_SUFFIX = "TOP";
+  public static final String GENERATED_CLASS_SUFFIX = "TOP";
   
-  public final static Version FREEMARKER_VERSION = Configuration.VERSION_2_3_28;
+  public static final Version FREEMARKER_VERSION = Configuration.VERSION_2_3_28;
   /**
    * A list of all freemarker functions that serve as aliases for Java methods,
    * e.g. 'include' as alias for 'tc.include'
@@ -218,8 +218,9 @@ public class GeneratorSetup {
   }
 
   public GlobalExtensionManagement getGlex() {
-    if (this.glex == null)
-    	this.glex = new GlobalExtensionManagement();  //default
+    if (this.glex == null) {
+      this.glex = new GlobalExtensionManagement();  //default
+    }
     return this.glex;
   }
 
@@ -235,8 +236,9 @@ public class GeneratorSetup {
    * @return targetPath
    */
   public IterablePath getHandcodedPath() {
-    if (this.handcodedPath == null)
-    	this.handcodedPath = IterablePath.empty();  //default
+    if (this.handcodedPath == null) {
+      this.handcodedPath = IterablePath.empty();  //default
+    }
     return this.handcodedPath;
   }
 

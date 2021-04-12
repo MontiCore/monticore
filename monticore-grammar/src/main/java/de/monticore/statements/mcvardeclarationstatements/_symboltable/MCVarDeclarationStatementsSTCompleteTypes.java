@@ -1,18 +1,17 @@
+/*(c) https://github.com/MontiCore/monticore*/
 package de.monticore.statements.mcvardeclarationstatements._symboltable;
 
 import com.google.common.collect.Lists;
+import de.monticore.grammar.grammar_withconcepts.FullSynthesizeFromMCFGT4Grammar;
 import de.monticore.statements.mccommonstatements._ast.ASTJavaModifier;
 import de.monticore.statements.mcstatementsbasis._ast.ASTMCModifier;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTLocalVariableDeclaration;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTVariableDeclarator;
-import de.monticore.statements.mcvardeclarationstatements._visitor.MCVarDeclarationStatementsVisitor;
 import de.monticore.statements.mcvardeclarationstatements._visitor.MCVarDeclarationStatementsVisitor2;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
-import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolSurrogate;
-import de.monticore.types.check.*;
+import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.check.SymTypeOfNull;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
-import de.monticore.types.mcfullgenerictypes._visitor.MCFullGenericTypesTraverser;
 
 import java.util.List;
 
@@ -61,7 +60,7 @@ public class MCVarDeclarationStatementsSTCompleteTypes implements MCVarDeclarati
   }
 
   private SymTypeExpression createTypeLoader(ASTMCType ast) {
-    FullSynthesizeFromMCFullGenericTypes synFromFull = new FullSynthesizeFromMCFullGenericTypes();
+    FullSynthesizeFromMCFGT4Grammar synFromFull = new FullSynthesizeFromMCFGT4Grammar();
     // Start visitor
     ast.accept(synFromFull.getTraverser());
     return synFromFull.getResult().orElse(new SymTypeOfNull());

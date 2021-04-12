@@ -1,8 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.prettyprint;
 
 import de.monticore.expressions.javaclassexpressions.JavaClassExpressionsMill;
 import de.monticore.expressions.javaclassexpressions._ast.ASTGenericInvocationSuffix;
-import de.monticore.expressions.javaclassexpressions._ast.ASTJavaClassExpressionsNode;
 import de.monticore.expressions.javaclassexpressions._visitor.JavaClassExpressionsTraverser;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.prettyprint.MCBasicsPrettyPrinter;

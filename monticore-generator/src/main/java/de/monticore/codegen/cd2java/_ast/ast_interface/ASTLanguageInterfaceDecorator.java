@@ -2,15 +2,17 @@
 package de.monticore.codegen.cd2java._ast.ast_interface;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.cd.cd4analysis.CD4AnalysisMill;
-import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cd4codebasis._ast.*;
+import de.monticore.cdbasis._ast.*;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.ACCEPT_METHOD;
-import static de.monticore.cd.facade.CDModifier.*;
+import static de.monticore.codegen.cd2java.CDModifier.*;
 
 /**
  * creates for a grammar the corresponding ASTXNode interface
@@ -33,20 +35,13 @@ public class ASTLanguageInterfaceDecorator extends AbstractCreator<ASTCDCompilat
         .setModifier(PUBLIC.build())
         .setName(astService.getASTBaseInterfaceSimpleName())
         .addInterface(getMCTypeFacade().createQualifiedType(ASTNode.class))
-        .addCDMethod(getAcceptMethod())
-        .addCDMethod(getAcceptTraverserMethod())
+        .addCDMember(getAcceptTraverserMethod())
         .build();
   }
 
-  protected ASTCDMethod getAcceptMethod() {
-    ASTMCType visitorType = visitorService.getVisitorType();
-    ASTCDParameter visitorParameter = this.getCDParameterFacade().createParameter(visitorType, "visitor");
-    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, ACCEPT_METHOD, visitorParameter);
-  }
-  
   protected ASTCDMethod getAcceptTraverserMethod() {
     ASTMCType visitorType = visitorService.getTraverserInterfaceType();
     ASTCDParameter visitorParameter = this.getCDParameterFacade().createParameter(visitorType, "visitor");
-    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, ACCEPT_METHOD, visitorParameter);
+    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT.build(), ACCEPT_METHOD, visitorParameter);
   }
 }

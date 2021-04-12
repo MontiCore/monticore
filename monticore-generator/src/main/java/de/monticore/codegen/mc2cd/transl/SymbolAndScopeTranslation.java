@@ -1,14 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.mc2cd.transl;
 
-import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cdbasis._ast.*;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
-import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
+import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.utils.Link;
+import de.monticore.umlmodifier._ast.ASTModifier;
 
 import java.util.List;
 import java.util.Optional;
@@ -124,7 +126,7 @@ public class SymbolAndScopeTranslation implements
   }
 
   protected boolean hasStereotype(MC2CDStereotypes stereotype, ASTModifier modifier) {
-    return modifier.isPresentStereotype() && modifier.getStereotype().getValueList()
+    return modifier.isPresentStereotype() && modifier.getStereotype().getValuesList()
         .stream()
         .anyMatch(v -> v.getName().equals(stereotype.toString()));
   }

@@ -1,10 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._parser;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import de.monticore.cd.cd4analysis.CD4AnalysisMill;
-import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
+import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cd4codebasis._ast.*;
+import de.monticore.cdbasis._ast.*;
+import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
@@ -18,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static de.monticore.cd.facade.CDModifier.*;
+import static de.monticore.codegen.cd2java.CDModifier.*;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 
 public class ParserClassDecorator extends AbstractDecorator {
@@ -47,9 +49,9 @@ public class ParserClassDecorator extends AbstractDecorator {
             .setName(service.getParserClassSimpleName())
             .setModifier(PUBLIC.build())
             .setSuperclass(superClass)
-            .addAllCDMethods(createCreateMethods(grammarName))
-            .addAllCDMethods(createParseMethods(startRuleName, qualifiedStartRuleName))
-            .addAllCDMethods(createParseMethodsForProds(grammarName, prods))
+            .addAllCDMembers(createCreateMethods(grammarName))
+            .addAllCDMembers(createParseMethods(startRuleName, qualifiedStartRuleName))
+            .addAllCDMembers(createParseMethodsForProds(grammarName, prods))
             .build());
       }
     }
@@ -63,14 +65,14 @@ public class ParserClassDecorator extends AbstractDecorator {
 
     ASTMCType returnType = getMCTypeFacade().createQualifiedType(service.getAntlrParserSimpleName());
     ASTCDParameter fileNameParameter = getCDParameterFacade().createParameter(String.class, "fileName");
-    ASTCDMethod create = getCDMethodFacade().createMethod(PROTECTED, returnType, "create", fileNameParameter);
+    ASTCDMethod create = getCDMethodFacade().createMethod(PROTECTED.build(), returnType, "create", fileNameParameter);
     create.addException(ioException);
     this.replaceTemplate(EMPTY_BODY, create, new TemplateHookPoint(TEMPLATE_PATH + "Create", grammarName));
     methods.add(create);
 
     ASTMCType readerType = getMCTypeFacade().createQualifiedType("java.io.Reader");
     ASTCDParameter readerParameter = getCDParameterFacade().createParameter(readerType, "reader");
-    ASTCDMethod createReader = getCDMethodFacade().createMethod(PROTECTED, returnType, "create", readerParameter);
+    ASTCDMethod createReader = getCDMethodFacade().createMethod(PROTECTED.build(), returnType, "create", readerParameter);
     createReader.addException(ioException);
     this.replaceTemplate(EMPTY_BODY, createReader, new TemplateHookPoint(TEMPLATE_PATH + "CreateReader", grammarName));
     methods.add(createReader);
@@ -89,20 +91,20 @@ public class ParserClassDecorator extends AbstractDecorator {
 
     ASTMCType returnType = getMCTypeFacade().createOptionalTypeOf(getMCTypeFacade().createQualifiedType(startRuleFullName));
     ASTCDParameter fileNameParameter = getCDParameterFacade().createParameter(String.class, "fileName");
-    ASTCDMethod parse = getCDMethodFacade().createMethod(PUBLIC, returnType, "parse", fileNameParameter);
+    ASTCDMethod parse = getCDMethodFacade().createMethod(PUBLIC.build(), returnType, "parse", fileNameParameter);
     parse.addException(ioException);
     this.replaceTemplate(EMPTY_BODY, parse, new TemplateHookPoint(TEMPLATE_PATH + "Parse", prodName));
     methods.add(parse);
 
     ASTMCType readerType = getMCTypeFacade().createQualifiedType("java.io.Reader");
     ASTCDParameter readerParameter = getCDParameterFacade().createParameter(readerType, "reader");
-    ASTCDMethod parseReader = getCDMethodFacade().createMethod(PUBLIC, returnType, "parse", readerParameter);
+    ASTCDMethod parseReader = getCDMethodFacade().createMethod(PUBLIC.build(), returnType, "parse", readerParameter);
     parseReader.addException(ioException);
     this.replaceTemplate(EMPTY_BODY, parseReader, new TemplateHookPoint(TEMPLATE_PATH + "ParseReader", prodName));
     methods.add(parseReader);
 
     ASTCDParameter strParameter = getCDParameterFacade().createParameter(String.class, "str");
-    ASTCDMethod parseString = getCDMethodFacade().createMethod(PUBLIC, returnType, "parse_String", strParameter);
+    ASTCDMethod parseString = getCDMethodFacade().createMethod(PUBLIC.build(), returnType, "parse_String", strParameter);
     parseString.addException(ioException);
     this.replaceTemplate(EMPTY_BODY, parseString, new TemplateHookPoint(TEMPLATE_PATH + "ParseString", prodName));
     methods.add(parseString);
@@ -122,18 +124,18 @@ public class ParserClassDecorator extends AbstractDecorator {
       String parseMethodSuffix = service.removeASTPrefix(simpleRuleName);
       ASTMCType returnType = getMCTypeFacade().createOptionalTypeOf(getMCTypeFacade().createQualifiedType(qualifiedRuleName));
       ASTCDParameter fileNameParameter = getCDParameterFacade().createParameter(String.class, "fileName");
-      ASTCDMethod parse = getCDMethodFacade().createMethod(PUBLIC, returnType, "parse" + parseMethodSuffix, fileNameParameter);
+      ASTCDMethod parse = getCDMethodFacade().createMethod(PUBLIC.build(), returnType, "parse" + parseMethodSuffix, fileNameParameter);
       parse.addException(ioException);
       this.replaceTemplate(EMPTY_BODY, parse, new TemplateHookPoint(TEMPLATE_PATH + "ParseRule", grammarName, qualifiedRuleName, service.getParseRuleNameJavaCompatible(prod)));
       methods.add(parse);
       ASTMCType readerType = getMCTypeFacade().createQualifiedType("java.io.Reader");
       ASTCDParameter readerParameter = getCDParameterFacade().createParameter(readerType, "reader");
-      ASTCDMethod parseReader = getCDMethodFacade().createMethod(PUBLIC, returnType, "parse" + parseMethodSuffix, readerParameter);
+      ASTCDMethod parseReader = getCDMethodFacade().createMethod(PUBLIC.build(), returnType, "parse" + parseMethodSuffix, readerParameter);
       parseReader.addException(ioException);
       this.replaceTemplate(EMPTY_BODY, parseReader, new TemplateHookPoint(TEMPLATE_PATH + "ParseRuleReader", grammarName, qualifiedRuleName, service.getParseRuleNameJavaCompatible(prod)));
       methods.add(parseReader);
       ASTCDParameter strParameter = getCDParameterFacade().createParameter(String.class, "str");
-      ASTCDMethod parseString = getCDMethodFacade().createMethod(PUBLIC, returnType, "parse_String" + parseMethodSuffix, strParameter);
+      ASTCDMethod parseString = getCDMethodFacade().createMethod(PUBLIC.build(), returnType, "parse_String" + parseMethodSuffix, strParameter);
       parseString.addException(ioException);
       this.replaceTemplate(EMPTY_BODY, parseString, new TemplateHookPoint(TEMPLATE_PATH + "ParseRuleString", parseMethodSuffix));
       methods.add(parseString);
@@ -144,9 +146,9 @@ public class ParserClassDecorator extends AbstractDecorator {
   protected Map<ASTCDType, ASTCDDefinition> getSuperProds(ASTCDDefinition definition, List<String> nameList){
     Map<ASTCDType, ASTCDDefinition> superProds = Maps.newHashMap();
     List<ASTCDType> prods = Lists.newArrayList();
-    prods.addAll(definition.getCDClassList());
+    prods.addAll(definition.getCDClassesList());
     prods.removeIf(prod -> prod.isPresentModifier() && service.hasLeftRecursiveStereotype(prod.getModifier()));
-    prods.addAll(definition.getCDInterfaceList());
+    prods.addAll(definition.getCDInterfacesList());
     //no parser method for e.g. ASTAutomataNode
     prods.removeIf(prod -> prod.getName().equals("AST" + definition.getSymbol().getName() + "Node"));
     prods.removeIf(prod -> prod.isPresentModifier() &&
@@ -159,8 +161,8 @@ public class ParserClassDecorator extends AbstractDecorator {
       }
     }
     //recursive call of the method for all direct super CDs
-    for(CDDefinitionSymbol superDefinition: service.getSuperCDsDirect(definition.getSymbol())){
-      superProds.putAll(getSuperProds(superDefinition.getAstNode(), nameList));
+    for(DiagramSymbol superDefinition: service.getSuperCDsDirect(definition.getSymbol())){
+      superProds.putAll(getSuperProds((ASTCDDefinition) superDefinition.getAstNode(), nameList));
     }
     return superProds;
   }

@@ -3,36 +3,41 @@ package de.monticore.types.check;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.expressions.assignmentexpressions._ast.*;
+import de.monticore.expressions.assignmentexpressions._visitor.AssignmentExpressionsTraverser;
 import de.monticore.expressions.assignmentexpressions._visitor.AssignmentExpressionsVisitor2;
 import de.monticore.expressions.bitexpressions._ast.*;
+import de.monticore.expressions.bitexpressions._visitor.BitExpressionsTraverser;
 import de.monticore.expressions.bitexpressions._visitor.BitExpressionsVisitor2;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsScope;
 import de.monticore.expressions.commonexpressions._ast.*;
+import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsTraverser;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisitor2;
 import de.monticore.expressions.expressionsbasis._ast.ASTArguments;
 import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
+import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
+import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisTraverser;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisitor2;
 import de.monticore.expressions.javaclassexpressions._ast.*;
+import de.monticore.expressions.javaclassexpressions._visitor.JavaClassExpressionsTraverser;
 import de.monticore.expressions.javaclassexpressions._visitor.JavaClassExpressionsVisitor2;
-import de.monticore.expressions.setexpressions._ast.ASTIntersectionExpressionInfix;
-import de.monticore.expressions.setexpressions._ast.ASTIsInExpression;
-import de.monticore.expressions.setexpressions._ast.ASTSetInExpression;
-import de.monticore.expressions.setexpressions._ast.ASTUnionExpressionInfix;
-import de.monticore.expressions.setexpressions._visitor.SetExpressionsVisitor2;
+import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symboltable.IScope;
 import de.monticore.symboltable.ISymbol;
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
-import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
+import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2;
+import de.monticore.types.mccollectiontypes._ast.*;
+import de.monticore.types.mccollectiontypes._visitor.MCCollectionTypesVisitor2;
+import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
+import de.monticore.types.mcsimplegenerictypes._ast.ASTMCCustomTypeArgument;
+import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesVisitor2;
 
-public class FlatExpressionScopeSetter implements AssignmentExpressionsVisitor2, CommonExpressionsVisitor2,
-    JavaClassExpressionsVisitor2, SetExpressionsVisitor2, BitExpressionsVisitor2, ExpressionsBasisVisitor2, MCBasicTypesVisitor2 {
+public class FlatExpressionScopeSetter implements AssignmentExpressionsVisitor2, CommonExpressionsVisitor2, JavaClassExpressionsVisitor2, BitExpressionsVisitor2,
+    ExpressionsBasisVisitor2, MCBasicTypesVisitor2, MCCollectionTypesVisitor2, MCSimpleGenericTypesVisitor2 {
 
-  private ICombineExpressionsWithLiteralsScope scope;
+  private IExpressionsBasisScope scope;
 
-  public FlatExpressionScopeSetter(ICombineExpressionsWithLiteralsScope scope){
+  public FlatExpressionScopeSetter(IExpressionsBasisScope scope){
     this.scope = scope;
   }
 
@@ -225,34 +230,15 @@ public class FlatExpressionScopeSetter implements AssignmentExpressionsVisitor2,
     expr.setEnclosingScope(scope);
   }
 
-  /*************************************************SET EXPRESSIONS****************************************************/
-
-  @Override
-  public void visit(ASTIsInExpression expr){
-    expr.setEnclosingScope(scope);
-  }
-
-  @Override
-  public void visit(ASTSetInExpression expr){
-    expr.setEnclosingScope(scope);
-  }
-
-  @Override
-  public void visit(ASTUnionExpressionInfix expr){
-    expr.setEnclosingScope(scope);
-  }
-
-  @Override
-  public void visit(ASTIntersectionExpressionInfix expr){
-    expr.setEnclosingScope(scope);
-  }
-
   /*************************************************EXPRESSIONS BASIS****************************************************/
 
   @Override
   public void visit(ASTLiteralExpression expr){
     expr.setEnclosingScope(scope);
+    expr.getLiteral().setEnclosingScope(scope);
   }
+
+
 
   @Override
   public void visit(ASTNameExpression expr){
@@ -311,6 +297,9 @@ public class FlatExpressionScopeSetter implements AssignmentExpressionsVisitor2,
     expr.setEnclosingScope(scope);
   }
 
+
+  /*************************************************MCBASICTYPES****************************************************/
+
   @Override
   public void visit(ASTMCQualifiedType type){
     type.setEnclosingScope(scope);
@@ -326,4 +315,52 @@ public class FlatExpressionScopeSetter implements AssignmentExpressionsVisitor2,
     type.setEnclosingScope(scope);
   }
 
+  @Override
+  public void visit(ASTMCPrimitiveType type) {
+    type.setEnclosingScope(scope);
+  }
+
+  /*************************************************MCCOLLECTIONTYPES****************************************************/
+
+  @Override
+  public void visit(ASTMCMapType node) {
+    node.setEnclosingScope(scope);
+  }
+
+  @Override
+  public void visit(ASTMCSetType node) {
+    node.setEnclosingScope(scope);
+  }
+
+  @Override
+  public void visit(ASTMCListType node) {
+    node.setEnclosingScope(scope);
+  }
+
+  @Override
+  public void visit(ASTMCOptionalType node) {
+    node.setEnclosingScope(scope);
+  }
+
+  @Override
+  public void visit(ASTMCPrimitiveTypeArgument node){
+    node.setEnclosingScope(scope);
+  }
+
+  @Override
+  public void visit(ASTMCBasicTypeArgument node) {
+    node.setEnclosingScope(scope);
+  }
+
+  /*************************************************MCSIMPLEGENERICTYPES****************************************************/
+
+  @Override
+  public void visit(ASTMCBasicGenericType type) {
+    type.setEnclosingScope(scope);
+  }
+
+  @Override
+  public void visit(ASTMCCustomTypeArgument node) {
+    node.setEnclosingScope(scope);
+  }
 }

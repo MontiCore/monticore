@@ -4,8 +4,10 @@ package de.monticore.codegen.cd2java._ast.ast_interface;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
-import de.monticore.cd.cd4analysis.CD4AnalysisMill;
-import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cd4codebasis._ast.*;
+import de.monticore.cdbasis._ast.*;
+import de.monticore.cdinterfaceandenum._ast.*;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecorationHelper;
@@ -24,7 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
+import static de.monticore.codegen.cd2java.CDModifier.PUBLIC_ABSTRACT;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertBoolean;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getInterfaceBy;
@@ -62,26 +64,12 @@ public class ASTInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributesCount() {
-    assertTrue(dataInterface.isEmptyCDAttributes());
+    assertTrue(dataInterface.getCDAttributeList().isEmpty());
   }
 
   @Test
   public void testMethodCount() {
-    assertEquals(6, dataInterface.sizeCDMethods());
-  }
-
-  @Test
-  public void testAcceptMethod() {
-    ASTCDMethod method = getMethodBy("accept", dataInterface);
-    assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-
-    assertFalse(method.isEmptyCDParameters());
-    assertEquals(1, method.sizeCDParameters());
-
-    ASTCDParameter parameter = method.getCDParameter(0);
-    assertDeepEquals("de.monticore.codegen.data.datainterface._visitor.DataInterfaceVisitor", parameter.getMCType());
-    assertEquals("visitor", parameter.getName());
+    assertEquals(5, dataInterface.getCDMethodList().size());
   }
 
   @Test
@@ -143,18 +131,18 @@ public class ASTInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterfacesCount() {
-    assertEquals(2, dataInterface.sizeInterface());
+    assertEquals(2, dataInterface.getInterfaceList().size());
   }
 
   @Test
   public void testASTNodeSuperInterface() {
-    ASTMCObjectType superInteface = dataInterface.getInterface(0);
+    ASTMCObjectType superInteface = dataInterface.getCDExtendUsage().getSuperclass(0);
     assertDeepEquals("de.monticore.ast.ASTNode", superInteface);
   }
 
   @Test
   public void testASTDataInterfaceNodeSuperInterface() {
-    ASTMCObjectType superInteface = dataInterface.getInterface(1);
+    ASTMCObjectType superInteface = dataInterface.getCDExtendUsage().getSuperclass(1);
     assertDeepEquals("de.monticore.codegen.data.datainterface._ast.ASTDataInterfaceNode", superInteface);
   }
 
@@ -192,7 +180,7 @@ public class ASTInterfaceDecoratorTest extends DecoratorTestCase {
 
     ASTCDInterface noNameSymbol = decorator.decorate(interfaceBy, changeInterface);
 
-    assertEquals(6, noNameSymbol.sizeCDMethods());
+    assertEquals(5, noNameSymbol.getCDMethodList().size());
 
     ASTCDMethod method = getMethodBy("getName", noNameSymbol);
     assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());

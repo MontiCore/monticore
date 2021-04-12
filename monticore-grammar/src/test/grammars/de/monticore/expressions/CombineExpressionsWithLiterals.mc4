@@ -8,15 +8,17 @@ grammar CombineExpressionsWithLiterals extends
           de.monticore.expressions.BitExpressions,
           de.monticore.literals.MCCommonLiterals,
           de.monticore.expressions.JavaClassExpressions,
-          de.monticore.expressions.SetExpressions,
           de.monticore.types.MCSimpleGenericTypes,
           de.monticore.symbols.OOSymbols {
 
     Foo="bar" Expression;
 
+    @Override
     ExtType = MCType;
 
+    @Override
     ExtReturnType = MCReturnType;
 
+    @Override
     ExtTypeArgument = MCTypeArgument;
 }

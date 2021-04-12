@@ -4,10 +4,10 @@ package de.monticore.codegen.cd2java._visitor;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
-import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
@@ -23,8 +23,8 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static de.monticore.cd.facade.CDModifier.PRIVATE;
-import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java.CDModifier.PRIVATE;
+import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodsBy;
@@ -85,22 +85,22 @@ public class InheritanceHandlerDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeCount() {
-    assertEquals(1, handlerClass.sizeCDAttributes());
+    assertEquals(1, handlerClass.getCDAttributeList().size());
   }
 
   @Test
   public void testMethodCount() {
-    assertEquals(11, handlerClass.sizeCDMethods());
+    assertEquals(11, handlerClass.getCDMethodList().size());
   }
 
   @Test
   public void testInterfaceCount() {
-    assertEquals(1, handlerClass.sizeInterface());
+    assertEquals(1, handlerClass.getInterfaceList().size());
   }
 
   @Test
   public void testInterface() {
-    assertDeepEquals("de.monticore.codegen.ast.automaton._visitor.AutomatonHandler", handlerClass.getInterface(0));
+    assertDeepEquals("de.monticore.codegen.ast.automaton._visitor.AutomatonHandler", handlerClass.getCDInterfaceUsage().getInterface(0));
   }
 
   @Test
@@ -192,7 +192,7 @@ public class InheritanceHandlerDecoratorTest extends DecoratorTestCase {
         visitorService, symbolTableService);
     ASTCDClass handlerClass = decorator.decorate(decoratedCompilationUnit);
 
-    assertEquals(13, handlerClass.sizeCDMethods());
+    assertEquals(13, handlerClass.getCDMethodList().size());
     List<ASTCDMethod> handleMethods = getMethodsBy("handle", 1, handlerClass);
 
     ASTMCType astType = this.mcTypeFacade.createQualifiedType("de.monticore.codegen._ast_emf.automata._ast.ASTTransitionWithAction");

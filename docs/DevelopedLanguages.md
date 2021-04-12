@@ -7,14 +7,15 @@ many languages. Not all of those languages are publicly
 available and some of these languages are equipped with tools based 
 on MontiCore 5. 
 
-Some of these languages are monolithic, others are composed of each 
-other. The available languages can also be used for adaptation, 
-extension, and composition. 
+Many of these languages are composed from sublanguages and 
+thus potentially build on each
+other. The available languages can be used as is, but 
+also be adaptated, extended and further composed. 
 
 Please also have a look at our literature references for further 
 information on many of the languages. 
 
-## Publicly Available Languages
+## Github Available Languages
 * [Class Diagrams](https://github.com/MontiCore/cd4analysis)
 * [Sequence Diagrams](https://github.com/MontiCore/sequence-diagram)
 * [JSON](https://github.com/MontiCore/json)
@@ -22,8 +23,9 @@ information on many of the languages.
 * [SI Units](https://github.com/MontiCore/siunits)
 * [automaton](https://github.com/MontiCore/automaton)
 * [EmbeddedMontiArc](https://github.com/MontiCore/EmbeddedMontiArc)
+* [Object Diagrams](https://github.com/MontiCore/object-diagram)
 
-## Languages Without Publicly Available Sources
+## Further Languages (e.g. used in scientific and industrial projects)
 
 * **MontiArc ADL** is an architectural definition language for 
     component and connector models with enhanced connection facilities, 
@@ -126,30 +128,33 @@ development. See language definition and usage method in
 * **MontiCore** itself uses a family of DSLs for the definition of 
     DSLs, i.e., their grammars. [[HR17]](https://www.se-rwth.de/publications/)
 
-## More Languages 
+## More Information about Languages and Language Components 
 
 * [**MontiCore Reference Manual**](http://monticore.de/MontiCore_Reference-Manual.2017.pdf).
    The reference Manual describes how to use MontiCore as a out-of-the-box 
    *language workbench*), but also as grey box *tooling framework*.
    It thus also gives an overview over a number of core mechanisms of MontiCore.
 
-* [**List of core grammars**](../monticore-grammar/src/main/grammars/de/monticore/Grammars.md).
+* [**List of MontiCore core Language Components**](../monticore-grammar/src/main/grammars/de/monticore/Grammars.md).
    MontiCore concentrates on reuse. It therefore offers a set of
-   predefined *language components*, usually identified through an appropriate 
-   *component grammar* allowing to define your own language as a
-   composition of reusable assets efficiently. reusable assets are among others: 
+   predefined *language components*, where the main artifact is usually a
+   *component grammar*. Reusing these language components allows 
+   language developers to define their own language as a
+   composition of reusable assets efficiently. Reusable assets describe among others 
    several sets of *literals*, *expressions* and *types*, which are relatively 
    freely composable.
 
 * [**List of languages**](Languages.md).
-   This is a list of newer MontiCore 6
-   languages that can be used out of the box. Some of them
-   are in development, others rather stable. 
+   This is a another list of newer MontiCore 6
+   languages that can be used out of the box or also composed. 
+   Many of them already rather stable, but some of them also undergo a
+   lively development and enhancement. 
    These complete languages are usually composed of a number of language
    components.
 
 * [**MontiCore topic list**](https://www.se-rwth.de/topics/) 
-
+   Describes various research topics which MontiCore builds on or
+   where MontiCore has been used as foundation.
 
 ## Further Information
 

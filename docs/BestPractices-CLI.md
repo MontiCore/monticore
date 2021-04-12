@@ -21,6 +21,7 @@ However, we suggest some default arguments for standardized access.
 -i,--input <file>            Reads the (mandatory) source file resp. the
                              contents of the model
 -path <dirlist>              Sets the artifact path for imported symbols, space separated
+-modelpath <dirlist>         Sets the artifact path for imported models, space separated
 -pp,--prettyprint <file>     Prints the AST to stdout or the specified output 
                              file (optional)
 -s, --symboltable <file>      Serializes and prints the symbol table to stdout 
@@ -40,7 +41,7 @@ However, we suggest some default arguments for standardized access.
 ```
 
 An example of a complete yet relatively small CLI example can be found in the 
-[JSON project](https://git.rwth-aachen.de/monticore/languages/json).
+[JSON project](https://github.com/MontiCore/json).
 
 Some explanation to the arguments:
 * The CLI is meant for handling one individual model (`-i`) and store the
@@ -63,6 +64,9 @@ Some explanation to the arguments:
   That means with `-path a/b x/y`
   the actual symboltable for a Statechart `de.mine.Door` is found in 
   `a/b/de/mine/Door.scsym` or `x/y/de/mine/Door.scsym` (in that order)
+* Languages typically only load other symbols rather than other models. Therefore, the argument 
+  `-path` that identifies only paths containing symbols should be implemented by most languages, whereas 
+  the argument `-modelpath` for identifying paths containing models is typically not required.
 * Groovy-scripting (`-sc`, `--script`): A Groovy Script is meant to describe the tool internal 
   workflow. It controls parsing, symbol construction, reporting, code generation etc.
   This kind of scripting should only become necessary, when various alternative
@@ -102,6 +106,7 @@ shadowJar {
     }
     archiveFileName = "${archiveBaseName.get()}-cli.${archiveExtension.get()}"
     minimize()
+    archiveClassifier = "cli"
 }
 
 jar.dependsOn shadowJar
@@ -137,6 +142,7 @@ functions as attributes.
 Instead, it makes more sense to pass these arguments as parameters when calling 
 the respective methods.
 This yields several advantages:
+
 * Values that have not yet been set do not have to be displayed with Optionals 
 * As a result. tedious unwrapping of Optionals with corresponding error messages 
   is no longer necessary

@@ -1,3 +1,4 @@
+/*(c) https://github.com/MontiCore/monticore*/
 package de.monticore.statements.mccommonstatements._symboltable;
 
 import de.monticore.statements.mccommonstatements.MCCommonStatementsMill;
@@ -15,17 +16,13 @@ public class MCCommonStatementsPhasedSymbolTableCreatorDelegator {
 
   protected List<MCCommonStatementsTraverser> priorityList;
 
-  public MCCommonStatementsPhasedSymbolTableCreatorDelegator(IMCCommonStatementsGlobalScope globalScope) {
-    this.globalScope = globalScope;
-    this.scopesGenitorDelegator = new MCCommonStatementsScopesGenitorDelegator(globalScope);
+  public MCCommonStatementsPhasedSymbolTableCreatorDelegator(){
+    this.globalScope = MCCommonStatementsMill.globalScope();
+    this.scopesGenitorDelegator = MCCommonStatementsMill.scopesGenitorDelegator();
     this.priorityList = new ArrayList<>();
     MCCommonStatementsTraverser traverser = MCCommonStatementsMill.traverser();
     traverser.add4MCCommonStatements(new MCCommonStatementsSTCompleteTypes());
     this.priorityList.add(traverser);
-  }
-
-  public MCCommonStatementsPhasedSymbolTableCreatorDelegator(){
-    this(MCCommonStatementsMill.globalScope());
   }
 
   public IMCCommonStatementsArtifactScope createFromAST(ASTMCJavaBlock rootNode){

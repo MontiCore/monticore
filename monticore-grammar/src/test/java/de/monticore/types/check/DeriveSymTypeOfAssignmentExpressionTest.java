@@ -7,24 +7,46 @@ import de.monticore.expressions.combineexpressionswithliterals._parser.CombineEx
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsScope;
 import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisTraverser;
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
-import de.se_rwth.commons.logging.*;
+import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import static de.monticore.types.check.DefsTypeBasic.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class DeriveSymTypeOfAssignmentExpressionTest {
+public class DeriveSymTypeOfAssignmentExpressionTest extends DeriveSymTypeAbstractTest {
 
-  private ICombineExpressionsWithLiteralsScope scope;
-  private FlatExpressionScopeSetter flatExpressionScopeSetter;
-  private CombineExpressionsWithLiteralsTraverser traverser;
+  @Override
+  protected void setupTypeCheck() {
+    // This is an auxiliary
+    DeriveSymTypeOfCombineExpressionsDelegator derLit = new DeriveSymTypeOfCombineExpressionsDelegator();
+
+    // other arguments not used (and therefore deliberately null)
+    // This is the TypeChecker under Test:
+    setTypeCheck(new TypeCheck(null, derLit));
+  }
+
+  // Parser used for convenience:
+  // (may be any other Parser that understands CommonExpressions)
+  CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
+  @Override
+  protected Optional<ASTExpression> parseStringExpression(String expression) throws IOException {
+    return p.parse_StringExpression(expression);
+  }
+
+  @Override
+  protected ExpressionsBasisTraverser getUsedLanguageTraverser() {
+    return CombineExpressionsWithLiteralsMill.traverser();
+  }
 
   /**
    * Focus: Deriving Type of Literals, here:
@@ -42,19 +64,14 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
   public void setupForEach() {
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
+    BasicSymbolsMill.initializePrimitives();
     // Setting up a Scope Infrastructure (without a global Scope)
     DefsTypeBasic.setup();
-    scope = CombineExpressionsWithLiteralsMill.scope();
+    ICombineExpressionsWithLiteralsScope scope = CombineExpressionsWithLiteralsMill.scope();
     scope.setEnclosingScope(null);       // No enclosing Scope: Search ending here
     scope.setExportingSymbols(true);
     scope.setAstNode(null);
     // we add a variety of TypeSymbols to the same scope (which in reality doesn't happen)
-    add2scope(scope, DefsTypeBasic._int);
-    add2scope(scope, DefsTypeBasic._char);
-    add2scope(scope, DefsTypeBasic._boolean);
-    add2scope(scope, DefsTypeBasic._double);
-    add2scope(scope, DefsTypeBasic._float);
-    add2scope(scope, DefsTypeBasic._long);
 
     add2scope(scope, DefsTypeBasic._array);
     add2scope(scope, DefsTypeBasic._Object);
@@ -82,22 +99,9 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
     add2scope(scope, field("student1", SymTypeExpressionFactory.createTypeObject("Student", scope)));
     add2scope(scope, field("student2", SymTypeExpressionFactory.createTypeObject("Student", scope)));
     add2scope(scope, field("firstsemester", SymTypeExpressionFactory.createTypeObject("FirstSemesterStudent", scope)));
-    flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
-    traverser = getTraverser(flatExpressionScopeSetter);
-    LogStub.init();
+    setFlatExpressionScopeSetter(scope);
+    super.setupForEach();
   }
-
-  // Parer used for convenience:
-  // (may be any other Parser that understands CommonExpressions)
-  CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
-
-  // This is an auxiliary
-  DeriveSymTypeOfCombineExpressionsDelegator derLit = new DeriveSymTypeOfCombineExpressionsDelegator();
-
-  // other arguments not used (and therefore deliberately null)
-
-  // This is the TypeChecker under Test:
-  TypeCheck tc = new TypeCheck(null, derLit);
 
   /*--------------------------------------------------- TESTS ---------------------------------------------------------*/
 
@@ -107,35 +111,19 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
   @Test
   public void deriveFromIncSuffixExpression() throws IOException {
     //example with int
-    String s = "3++";
-    ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    assertEquals("int", tc.typeOf(astex).print());
+    check("3++", "int");
 
     //example with float
-    s = "4.5f++";
-    astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    assertEquals("float", tc.typeOf(astex).print());
+    check("4.5f++", "float");
 
     //example with char
-    s = "\'e\'++";
-    astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    assertEquals("int", tc.typeOf(astex).print());
+    check("\'e\'++", "int");
   }
 
   @Test
   public void testInvalidIncSuffixExpression() throws IOException {
     //only possible with numeric types
-    String s = "\"Hello\"++";
-    ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    try{
-      tc.typeOf(astex);
-    }catch(RuntimeException e){
-      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0170"));
-    }
+    checkError("\"Hello\"++", "0xA0170");
   }
 
   /**
@@ -144,29 +132,16 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
   @Test
   public void deriveFromDecSuffixExpression() throws IOException {
     //example with int
-    String s = "12--";
-    ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    assertEquals("int", tc.typeOf(astex).print());
+    check("12--", "int");
 
     //example with double
-    s = "4.2--";
-    astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    assertEquals("double", tc.typeOf(astex).print());
+    check("4.2--", "double");
   }
 
   @Test
   public void testInvalidDecSuffixExpression() throws IOException {
     //only possible with numeric types
-    String s = "\"Hello\"--";
-    ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    try{
-      tc.typeOf(astex);
-    }catch(RuntimeException e){
-      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0171"));
-    }
+    checkError("\"Hello\"--", "0xA0171");
   }
 
   /**
@@ -175,29 +150,16 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
   @Test
   public void deriveFromIncPrefixExpression() throws IOException {
     //example with int
-    String s = "++3";
-    ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    assertEquals("int", tc.typeOf(astex).print());
+    check("++3", "int");
 
     //example with long
-    s = "++6L";
-    astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    assertEquals("long", tc.typeOf(astex).print());
+    check("++6L", "long");
   }
 
   @Test
   public void testInvalidIncPrefixExpression() throws IOException {
     //only possible with numeric types
-    String s = "++\"Hello\"";
-    ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    try{
-      tc.typeOf(astex);
-    }catch(RuntimeException e){
-      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0172"));
-    }
+    checkError("++\"Hello\"", "0xA0172");
   }
 
   /**
@@ -206,29 +168,16 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
   @Test
   public void deriveFromDecPrefixExpression() throws IOException {
     //example with int
-    String s = "--1";
-    ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    assertEquals("int", tc.typeOf(astex).print());
+    check("--1", "int");
 
     //example with float
-    s = "--6.7f";
-    astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    assertEquals("float", tc.typeOf(astex).print());
+    check("--6.7f", "float");
   }
 
   @Test
   public void testInvalidDecPrefixExpression() throws IOException {
     //only possible with numeric types
-    String s = "--\"Hello\"";
-    ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    try{
-      tc.typeOf(astex);
-    }catch(RuntimeException e){
-      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0173"));
-    }
+    checkError("--\"Hello\"", "0xA0173");
   }
 
   /**
@@ -237,29 +186,16 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
   @Test
   public void deriveFromMinusPrefixExpression() throws IOException {
     //example with int
-    String s = "-5";
-    ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    assertEquals("int", tc.typeOf(astex).print());
+    check("-5", "int");
 
     //example with double
-    s = "-15.7";
-    astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    assertEquals("double", tc.typeOf(astex).print());
+    check("-15.7", "double");
   }
 
   @Test
   public void testInvalidMinusPrefixExpression() throws IOException {
     //only possible with numeric types
-    String s = "-\"Hello\"";
-    ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    try{
-      tc.typeOf(astex);
-    }catch(RuntimeException e){
-      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0175"));
-    }
+    checkError("-\"Hello\"", "0xA0175");
   }
 
   /**
@@ -268,30 +204,17 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
   @Test
   public void deriveFromPlusPrefixExpression() throws IOException {
     //example with int
-    String s = "+34";
-    ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    assertEquals("int", tc.typeOf(astex).print());
+    check("+34", "int");
 
     //example with long
-    s = "+4L";
-    astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    assertEquals("long", tc.typeOf(astex).print());
+    check("+4L", "long");
   }
 
 
   @Test
   public void testInvalidPlusPrefixExpression() throws IOException {
     //only possible with numeric types
-    String s = "+\"Hello\"";
-    ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    try{
-      tc.typeOf(astex);
-    }catch(RuntimeException e){
-      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0174"));
-    }
+    checkError("+\"Hello\"", "0xA0174");
   }
 
   /**
@@ -300,33 +223,17 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
   @Test
   public void deriveFromPlusAssignmentExpression() throws IOException {
     //example with int - int
-    String s = "foo+=7";
-    ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    assertEquals("int", tc.typeOf(astex).print());
+    check("foo+=7", "int");
     //example with long - double
-    s = "varlong+=5.6";
-    astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    assertEquals("long", tc.typeOf(astex).print());
+    check("varlong+=5.6", "long");
     //example with String - Person
-    s = "varString+=person1";
-    astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    assertEquals("String", tc.typeOf(astex).print());
+    check("varString+=person1", "String");
   }
 
   @Test
   public void testInvalidPlusAssignmentExpression() throws IOException {
     //not possible because int = int + (int) String returns a casting error
-    String s = "varint+=\"Hello\"";
-    ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    try{
-      tc.typeOf(astex);
-    }catch(RuntimeException e){
-      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0176"));
-    }
+    checkError("varint+=\"Hello\"", "0xA0176");
   }
 
   /**
@@ -335,28 +242,15 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
   @Test
   public void deriveFromMinusAssignmentExpression() throws IOException {
     //example with int - int
-    String s = "varint-=9";
-    ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    assertEquals("int", tc.typeOf(astex).print());
+    check("varint-=9", "int");
     //example with char - float
-    s = "varchar-=4.5f";
-    astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    assertEquals("char", tc.typeOf(astex).print());
+    check("varchar-=4.5f", "char");
   }
 
   @Test
   public void testInvalidMinusAssignmentExpression() throws IOException {
     //not possible because int = int - (int) String returns a casting error
-    String s = "varint-=\"Hello\"";
-    ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    try{
-      tc.typeOf(astex);
-    }catch(RuntimeException e){
-      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0177"));
-    }
+    checkError("varint-=\"Hello\"", "0xA0177");
   }
 
   /**
@@ -365,28 +259,15 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
   @Test
   public void deriveFromMultAssignmentExpression() throws IOException {
     //example with int - int
-    String s = "varint*=9";
-    ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    assertEquals("int", tc.typeOf(astex).print());
+    check("varint*=9", "int");
     //example with double - int
-    s = "vardouble*=5";
-    astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    assertEquals("double", tc.typeOf(astex).print());
+    check("vardouble*=5", "double");
   }
 
   @Test
   public void testInvalidMultAssignmentExpression() throws IOException {
     //not possible because int = int * (int) String returns a casting error
-    String s = "varint*=\"Hello\"";
-    ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    try{
-      tc.typeOf(astex);
-    }catch(RuntimeException e){
-      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0178"));
-    }
+    checkError("varint*=\"Hello\"", "0xA0178");
   }
 
   /**
@@ -395,28 +276,15 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
   @Test
   public void deriveFromDivideAssignmentExpression() throws IOException {
     //example with int - int
-    String s = "varint/=9";
-    ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    assertEquals("int", tc.typeOf(astex).print());
+    check("varint/=9", "int");
     //example with float - long
-    s = "varfloat/=4L";
-    astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    assertEquals("float", tc.typeOf(astex).print());
+    check("varfloat/=4L", "float");
   }
 
   @Test
   public void testInvalidDivideAssignmentExpression() throws IOException {
     //not possible because int = int / (int) String returns a casting error
-    String s = "varint/=\"Hello\"";
-    ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    try{
-      tc.typeOf(astex);
-    }catch(RuntimeException e){
-      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0179"));
-    }
+    checkError("varint/=\"Hello\"", "0xA0179");
   }
 
   /**
@@ -425,28 +293,15 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
   @Test
   public void deriveFromModuloAssignmentExpression() throws IOException {
     //example with int - int
-    String s = "varint%=9";
-    ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    assertEquals("int", tc.typeOf(astex).print());
+    check("varint%=9", "int");
     //example with int - float
-    s = "foo%=9.8f";
-    astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    assertEquals("int", tc.typeOf(astex).print());
+    check("foo%=9.8f", "int");
   }
 
   @Test
   public void testInvalidModuloAssignmentExpression() throws IOException {
     //not possible because int = int % (int) String returns a casting error
-    String s = "varint%=\"Hello\"";
-    ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    try{
-      tc.typeOf(astex);
-    }catch(RuntimeException e){
-      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0189"));
-    }
+    checkError("varint%=\"Hello\"", "0xA0189");
   }
 
   /**
@@ -455,33 +310,17 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
   @Test
   public void deriveFromAndAssignmentExpression() throws IOException {
     //example with int - int
-    String s = "varint&=9";
-    ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    assertEquals("int", tc.typeOf(astex).print());
+    check("varint&=9", "int");
     //example with boolean - boolean
-    s = "bar2&=false";
-    astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    assertEquals("boolean", tc.typeOf(astex).print());
+    check("bar2&=false", "boolean");
     //example with char - int
-    s = "varchar&=4";
-    astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    assertEquals("char", tc.typeOf(astex).print());
+    check("varchar&=4", "char");
   }
 
   @Test
   public void testInvalidAndAssignmentExpression() throws IOException {
     //not possible because int = int & (int) String returns a casting error
-    String s = "varint&=\"Hello\"";
-    ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    try{
-      tc.typeOf(astex);
-    }catch(RuntimeException e){
-      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0183"));
-    }
+    checkError("varint&=\"Hello\"", "0xA0183");
   }
 
   /**
@@ -490,28 +329,15 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
   @Test
   public void deriveFromOrAssignmentExpression() throws IOException {
     //example with int - int
-    String s = "varint|=9";
-    ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    assertEquals("int", tc.typeOf(astex).print());
+    check("varint|=9", "int");
     //example with boolean - boolean
-    s = "bar2|=true";
-    astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    assertEquals("boolean", tc.typeOf(astex).print());
+    check("bar2|=true", "boolean");
   }
 
   @Test
   public void testInvalidOrAssignmentExpression() throws IOException {
     //not possible because int = int | (int) String returns a casting error
-    String s = "varint|=\"Hello\"";
-    ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    try{
-      tc.typeOf(astex);
-    }catch(RuntimeException e){
-      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0184"));
-    }
+    checkError("varint|=\"Hello\"", "0xA0184");
   }
 
   /**
@@ -520,28 +346,15 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
   @Test
   public void deriveFromBinaryXorAssignmentExpression() throws IOException {
     //example with int - int
-    String s = "varint^=9";
-    ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    assertEquals("int", tc.typeOf(astex).print());
+    check("varint^=9", "int");
     //example with boolean - boolean
-    s = "bar2^=false";
-    astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    assertEquals("boolean", tc.typeOf(astex).print());
+    check("bar2^=false", "boolean");
   }
 
   @Test
   public void testInvalidBinaryXorAssignmentExpression() throws IOException {
     //not possible because int = int ^ (int) String returns a casting error
-    String s = "varint^=\"Hello\"";
-    ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    try{
-      tc.typeOf(astex);
-    }catch(RuntimeException e){
-      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0185"));
-    }
+    checkError("varint^=\"Hello\"", "0xA0185");
   }
 
   /**
@@ -550,28 +363,15 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
   @Test
   public void deriveFromDoubleLeftAssignmentExpression() throws IOException {
     //example with int - int
-    String s = "varint<<=9";
-    ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    assertEquals("int", tc.typeOf(astex).print());
+    check("varint<<=9", "int");
     //example with int - char
-    s = "foo<<=\'c\'";
-    astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    assertEquals("int", tc.typeOf(astex).print());
+    check("foo<<=\'c\'", "int");
   }
 
   @Test
   public void testInvalidDoubleLeftAssignmentExpression() throws IOException {
     //not possible because int = int << (int) String returns a casting error
-    String s = "varint<<=\"Hello\"";
-    ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    try{
-      tc.typeOf(astex);
-    }catch(RuntimeException e){
-      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0187"));
-    }
+    checkError("varint<<=\"Hello\"", "0xA0187");
   }
 
   /**
@@ -580,28 +380,15 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
   @Test
   public void deriveFromDoubleRightAssignmentExpression() throws IOException {
     //example with int - int
-    String s = "varint>>=9";
-    ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    assertEquals("int", tc.typeOf(astex).print());
+    check("varint>>=9", "int");
     //example with char - int
-    s = "varchar>>=12";
-    astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    assertEquals("char", tc.typeOf(astex).print());
+    check("varchar>>=12", "char");
   }
 
   @Test
   public void testInvalidDoubleRightAssignmentExpression() throws IOException {
     //not possible because int = int >> (int) String returns a casting error
-    String s = "varint>>=\"Hello\"";
-    ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    try{
-      tc.typeOf(astex);
-    }catch(RuntimeException e){
-      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0186"));
-    }
+    checkError("varint>>=\"Hello\"", "0xA0186");
   }
 
   /**
@@ -610,28 +397,15 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
   @Test
   public void deriveFromLogicalRightAssignmentExpression() throws IOException {
     //example with int - int
-    String s = "varint>>>=9";
-    ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    assertEquals("int", tc.typeOf(astex).print());
+    check("varint>>>=9", "int");
     //example with char - char
-    s = "varchar>>>=\'3\'";
-    astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    assertEquals("char", tc.typeOf(astex).print());
+    check("varchar>>>=\'3\'", "char");
   }
 
   @Test
   public void testInvalidLogicalRightAssignmentExpression() throws IOException {
     //not possible because int = int >>> (int) String returns a casting error
-    String s = "varint>>>=\"Hello\"";
-    ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    try{
-      tc.typeOf(astex);
-    }catch(RuntimeException e){
-      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0188"));
-    }
+    checkError("varint>>>=\"Hello\"", "0xA0188");
   }
 
   /**
@@ -640,62 +414,24 @@ public class DeriveSymTypeOfAssignmentExpressionTest {
   @Test
   public void deriveFromRegularAssignmentExpression() throws IOException {
     //example with int - int
-    String s = "varint=9";
-    ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    assertEquals("int", tc.typeOf(astex).print());
+    check("varint=9", "int");
     //example with double - int
-    s = "vardouble=12";
-    astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    assertEquals("double", tc.typeOf(astex).print());
+    check("vardouble=12", "double");
     //example with person - student
-    s = "person1 = student2";
-    astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    assertEquals("Person", tc.typeOf(astex).print());
+    check("person1 = student2", "Person");
     //example with person - firstsemesterstudent
-    s = "person2 = firstsemester";
-    astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    assertEquals("Person", tc.typeOf(astex).print());
+    check("person2 = firstsemester", "Person");
   }
 
   @Test
   public void testInvalidRegularAssignmentExpression() throws IOException {
     //not possible because int = (int) String returns a casting error
-    String s = "varint=\"Hello\"";
-    ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    try{
-      tc.typeOf(astex);
-    }catch(RuntimeException e){
-      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0182"));
-    }
+    checkError("varint=\"Hello\"", "0xA0182");
   }
 
   @Test
   public void testInvalidRegularAssignmentExpression2() throws IOException{
     //test with no field on the left side of the assignment
-    String s = "3=4";
-    ASTExpression astex = p.parse_StringExpression(s).get();
-    astex.accept(traverser);
-    try{
-      tc.typeOf(astex);
-    }catch(RuntimeException e){
-      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA0180"));
-    }
-  }
-
-  private CombineExpressionsWithLiteralsTraverser getTraverser(FlatExpressionScopeSetter flatExpressionScopeSetter){
-    CombineExpressionsWithLiteralsTraverser traverser = CombineExpressionsWithLiteralsMill.traverser();
-    traverser.add4AssignmentExpressions(flatExpressionScopeSetter);
-    traverser.add4BitExpressions(flatExpressionScopeSetter);
-    traverser.add4CommonExpressions(flatExpressionScopeSetter);
-    traverser.add4ExpressionsBasis(flatExpressionScopeSetter);
-    traverser.add4SetExpressions(flatExpressionScopeSetter);
-    traverser.add4JavaClassExpressions(flatExpressionScopeSetter);
-    traverser.add4MCBasicTypes(flatExpressionScopeSetter);
-    return traverser;
+    checkError("3=4", "0xA0180");
   }
 }

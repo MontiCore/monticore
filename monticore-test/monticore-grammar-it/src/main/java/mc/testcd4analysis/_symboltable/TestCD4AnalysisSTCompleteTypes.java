@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package mc.testcd4analysis._symboltable;
 
 import de.monticore.prettyprint.IndentPrinter;
@@ -5,13 +6,12 @@ import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.prettyprint.MCCollectionTypesFullPrettyPrinter;
-import de.monticore.types.prettyprint.MCCollectionTypesPrettyPrinter;
 import mc.testcd4analysis._ast.*;
-import mc.testcd4analysis._visitor.TestCD4AnalysisVisitor;
 import mc.testcd4analysis._visitor.TestCD4AnalysisVisitor2;
 
 import java.util.Deque;
 import java.util.List;
+import java.util.Optional;
 
 public class TestCD4AnalysisSTCompleteTypes implements TestCD4AnalysisVisitor2 {
 
@@ -32,7 +32,13 @@ public class TestCD4AnalysisSTCompleteTypes implements TestCD4AnalysisVisitor2 {
       typeName = astAttribute.getMCType().printType(new MCCollectionTypesFullPrettyPrinter(new IndentPrinter()));
     }
 
-    final CDTypeSymbolSurrogate typeReference = new CDTypeSymbolSurrogate(typeName);
+    final CDTypeSymbolSurrogate typeReference;
+    Optional<CDTypeSymbol> typeSymbol = astAttribute.getEnclosingScope().resolveCDType(typeName);
+    if (typeSymbol.isPresent()) {
+      typeReference = new CDTypeSymbolSurrogate(typeSymbol.get().getFullName());
+    } else {
+      typeReference = new CDTypeSymbolSurrogate(typeName);
+    }
     typeReference.setEnclosingScope(scopeStack.peekLast());
     fieldSymbol.setType(typeReference);
 
@@ -57,6 +63,7 @@ public class TestCD4AnalysisSTCompleteTypes implements TestCD4AnalysisVisitor2 {
   @Override
   public void endVisit(ASTCDMethod astMethod){
     CDMethOrConstrSymbol methodSymbol = astMethod.getSymbol();
+    methodSymbol.setIsStatic(astMethod.getModifier().isStatic());
     setReturnTypeOfMethod(methodSymbol, astMethod);
     if (!astMethod.getCDParameterList().isEmpty()) {
       if (astMethod.getCDParameter(astMethod.getCDParameterList().size() - 1).isEllipsis()) {
@@ -66,10 +73,16 @@ public class TestCD4AnalysisSTCompleteTypes implements TestCD4AnalysisVisitor2 {
   }
 
   public void setReturnTypeOfMethod(final CDMethOrConstrSymbol methodSymbol, ASTCDMethod astMethod) {
-    final CDTypeSymbolSurrogate returnSymbol = new CDTypeSymbolSurrogate(
-        ( astMethod.getMCReturnType().printType(new MCCollectionTypesFullPrettyPrinter(new IndentPrinter()))));
-    returnSymbol.setEnclosingScope(scopeStack.peekLast());
-    methodSymbol.setReturnType(returnSymbol);
+    String typeName = astMethod.getMCReturnType().printType(new MCCollectionTypesFullPrettyPrinter(new IndentPrinter()));
+    final CDTypeSymbolSurrogate typeReference;
+    Optional<CDTypeSymbol> typeSymbol = astMethod.getEnclosingScope().resolveCDType(typeName);
+    if (typeSymbol.isPresent()) {
+      typeReference = new CDTypeSymbolSurrogate(typeSymbol.get().getFullName());
+    } else {
+      typeReference = new CDTypeSymbolSurrogate(typeName);
+    }
+    typeReference.setEnclosingScope(scopeStack.peekLast());
+    methodSymbol.setReturnType(typeReference);
   }
 
   @Override
@@ -96,10 +109,16 @@ public class TestCD4AnalysisSTCompleteTypes implements TestCD4AnalysisVisitor2 {
   }
 
   CDTypeSymbolSurrogate createCDTypeSymbolFromReference(final ASTMCObjectType astmcObjectType) {
-    CDTypeSymbolSurrogate surrogate =  new CDTypeSymbolSurrogate(
-        astmcObjectType.printType(new MCCollectionTypesFullPrettyPrinter(new IndentPrinter())));
-    surrogate.setEnclosingScope(scopeStack.peekLast());
-    return surrogate;
+    String typeName = astmcObjectType.printType(new MCCollectionTypesFullPrettyPrinter(new IndentPrinter()));
+    final CDTypeSymbolSurrogate typeReference;
+    Optional<CDTypeSymbol> typeSymbol =((ITestCD4AnalysisScope) astmcObjectType.getEnclosingScope()).resolveCDType(typeName);
+    if (typeSymbol.isPresent()) {
+      typeReference = new CDTypeSymbolSurrogate(typeSymbol.get().getFullName());
+    } else {
+      typeReference = new CDTypeSymbolSurrogate(typeName);
+    }
+    typeReference.setEnclosingScope(scopeStack.peekLast());
+    return typeReference;
   }
 
   @Override

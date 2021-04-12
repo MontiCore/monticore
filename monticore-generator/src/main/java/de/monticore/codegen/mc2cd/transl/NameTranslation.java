@@ -2,8 +2,10 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
-import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
+import de.monticore.cdbasis._ast.*;
+import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
+import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.monticore.utils.Link;
@@ -91,8 +93,7 @@ public class NameTranslation implements
         for (Link<ASTConstant, ASTCDAttribute> link : rootLink.getLinks(ASTConstant.class,
                 ASTCDAttribute.class)) {
             Optional<String> usageName = getUsageName(rootLink.source(), link.source());
-            // TODO: This is a workaround because the semicolons surrounding string productions are
-            // currently being kept by the parser
+            // The semicolons surrounding string productions are being kept by the parser
             String nameToUse = usageName.isPresent() ? usageName.get() : link.source().getName()
                     .replaceAll("\"", "");
             link.target().setName(nameToUse);

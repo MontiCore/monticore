@@ -4,9 +4,10 @@ package de.monticore.codegen.cd2java._symboltable.scope;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
-import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.cd.prettyprint.CD4CodePrinter;
+import de.monticore.cdbasis._ast.*;
+import de.monticore.cd4codebasis._ast.*;
 import de.monticore.codegen.cd2java.AbstractService;
+import de.monticore.codegen.cd2java.CdUtilsPrinter;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
@@ -23,11 +24,12 @@ import org.junit.Test;
 import java.util.List;
 import java.util.Optional;
 
-import static de.monticore.cd.facade.CDModifier.PROTECTED;
-import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java.CDModifier.PROTECTED;
+import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.DecoratorAssert.*;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class ScopeClassDecoratorTest extends DecoratorTestCase {
@@ -78,7 +80,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     this.glex = new GlobalExtensionManagement();
 
     this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
-    this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
+    this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
     ASTCDCompilationUnit astcdCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "Automaton");
     decoratedSymbolCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "AutomatonSymbolCD");
     decoratedScopeCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "AutomatonScopeCD");
@@ -105,12 +107,12 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterfacesCount() {
-    assertEquals(1, scopeClass.sizeInterface());
+    assertEquals(1, scopeClass.getInterfaceList().size());
   }
 
   @Test
   public void testSuperInterfaces() {
-    assertDeepEquals(I_AUTOMATON_SCOPE, scopeClass.getInterface(0));
+    assertDeepEquals(I_AUTOMATON_SCOPE, scopeClass.getCDInterfaceUsage().getInterface(0));
   }
 
   @Test
@@ -121,23 +123,23 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testConstructorCount() {
-    assertEquals(4, scopeClass.sizeCDConstructors());
+    assertEquals(4, scopeClass.getCDConstructorList().size());
   }
 
   @Test
   public void testDefaultConstructor() {
-    ASTCDConstructor cdConstructor = scopeClass.getCDConstructor(0);
+    ASTCDConstructor cdConstructor = scopeClass.getCDConstructorList().get(0);
     assertDeepEquals(PUBLIC, cdConstructor.getModifier());
     assertEquals("AutomatonScope", cdConstructor.getName());
 
     assertTrue(cdConstructor.isEmptyCDParameters());
 
-    assertTrue(cdConstructor.isEmptyException());
+    assertFalse(cdConstructor.isPresentCDThrowsDeclaration());
   }
 
   @Test
   public void testShadowingConstructor() {
-    ASTCDConstructor cdConstructor = scopeClass.getCDConstructor(1);
+    ASTCDConstructor cdConstructor = scopeClass.getCDConstructorList().get(1);
     assertDeepEquals(PUBLIC, cdConstructor.getModifier());
     assertEquals("AutomatonScope", cdConstructor.getName());
 
@@ -145,12 +147,12 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertBoolean(cdConstructor.getCDParameter(0).getMCType());
     assertEquals("shadowing", cdConstructor.getCDParameter(0).getName());
 
-    assertTrue(cdConstructor.isEmptyException());
+    assertFalse(cdConstructor.isPresentCDThrowsDeclaration());
   }
 
   @Test
   public void testEnclosingScopeConstructor() {
-    ASTCDConstructor cdConstructor = scopeClass.getCDConstructor(2);
+    ASTCDConstructor cdConstructor = scopeClass.getCDConstructorList().get(2);
     assertDeepEquals(PUBLIC, cdConstructor.getModifier());
     assertEquals("AutomatonScope", cdConstructor.getName());
 
@@ -158,12 +160,12 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(I_AUTOMATON_SCOPE, cdConstructor.getCDParameter(0).getMCType());
     assertEquals("enclosingScope", cdConstructor.getCDParameter(0).getName());
 
-    assertTrue(cdConstructor.isEmptyException());
+    assertFalse(cdConstructor.isPresentCDThrowsDeclaration());
   }
 
   @Test
   public void testShadowingAndEnclosingScopeConstructor() {
-    ASTCDConstructor cdConstructor = scopeClass.getCDConstructor(3);
+    ASTCDConstructor cdConstructor = scopeClass.getCDConstructorList().get(3);
     assertDeepEquals(PUBLIC, cdConstructor.getModifier());
     assertEquals("AutomatonScope", cdConstructor.getName());
 
@@ -174,12 +176,12 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertBoolean(cdConstructor.getCDParameter(1).getMCType());
     assertEquals("shadowing", cdConstructor.getCDParameter(1).getName());
 
-    assertTrue(cdConstructor.isEmptyException());
+    assertFalse(cdConstructor.isPresentCDThrowsDeclaration());
   }
 
   @Test
   public void testAttributeCount() {
-    assertEquals(19, scopeClass.sizeCDAttributes());
+    assertEquals(19, scopeClass.getCDAttributeList().size());
   }
 
   @Test
@@ -312,7 +314,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(92, scopeClass.getCDMethodList().size());
+    assertEquals(94, scopeClass.getCDMethodList().size());
   }
 
   @Test

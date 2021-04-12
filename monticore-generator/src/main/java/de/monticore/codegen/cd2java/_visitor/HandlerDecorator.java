@@ -1,10 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._visitor;
 
-import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
-import de.monticore.cd.cd4code.CD4CodeFullPrettyPrinter;
-import de.monticore.cd.cd4code.CD4CodeMill;
+import de.monticore.cdbasis._ast.*;
+import de.monticore.cd4codebasis._ast.*;
+import de.monticore.cdinterfaceandenum._ast.*;
+import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
+import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -14,6 +16,7 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.prettyprint.MCBasicTypesFullPrettyPrinter;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -21,7 +24,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
 
@@ -51,34 +54,14 @@ public class HandlerDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
     
     String handlerSimpleName = visitorService.getHandlerSimpleName();
     ASTMCQualifiedType traverserType = visitorService.getTraverserInterfaceType();
-    
-    // get visitor types and names of super cds and own cd
-    List<CDDefinitionSymbol> superCDsTransitive = visitorService.getSuperCDsTransitive();
-    List<String> visitorFullNameList = superCDsTransitive.stream()
-        .map(visitorService::getVisitor2FullName)
-        .collect(Collectors.toList());
-    visitorFullNameList.add(visitorService.getVisitor2FullName());
-    
-    // create list of cdDefinitions from superclass and own class
-    List<ASTCDDefinition> definitionList = new ArrayList<>();
-    definitionList.add(compilationUnit.getCDDefinition());
-    definitionList.addAll(superCDsTransitive
-        .stream()
-        .map(visitorService::calculateCDTypeNamesWithASTPackage)
-        .collect(Collectors.toList()));
-    
-    List<String> visitorSimpleNameList =new ArrayList<>();
-    visitorSimpleNameList.addAll(superCDsTransitive.stream()
-        .map(visitorService::getVisitorSimpleName)
-        .collect(Collectors.toList()));
-    
+
     ASTCDInterface visitorInterface = CD4CodeMill.cDInterfaceBuilder()
         .setName(handlerSimpleName)
         .setModifier(PUBLIC.build())
         .addInterface(getMCTypeFacade().createQualifiedType(IHANDLER_FULL_NAME))
-        .addCDMethod(addGetTraverserMethod(traverserType))
-        .addCDMethod(addSetTraverserMethod(traverserType))
-        .addAllCDMethods(createHandlerMethods(compilationUnit.getCDDefinition()))
+        .addCDMember(addGetTraverserMethod(traverserType))
+        .addCDMember(addSetTraverserMethod(traverserType))
+        .addAllCDMembers(createHandlerMethods(compilationUnit.getCDDefinition()))
         .build();
     
     return visitorInterface;
@@ -91,9 +74,9 @@ public class HandlerDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
    * @return The decorated getRealThis method
    */
   protected ASTCDMethod addGetTraverserMethod(ASTMCType visitorType) {
-    ASTCDMethod getRealThisMethod = this.getCDMethodFacade().createMethod(PUBLIC, visitorType, GET_TRAVERSER);
+    ASTCDMethod getRealThisMethod = this.getCDMethodFacade().createMethod(PUBLIC.build(), visitorType, GET_TRAVERSER);
     String generatedErrorCode = visitorService.getGeneratedErrorCode(visitorType.printType(
-        new CD4CodeFullPrettyPrinter(new IndentPrinter())) + GET_TRAVERSER);
+        new MCBasicTypesFullPrettyPrinter(new IndentPrinter())) + GET_TRAVERSER);
     this.replaceTemplate(EMPTY_BODY, getRealThisMethod, new StringHookPoint(
         "    throw new UnsupportedOperationException(\"0xA7015" + generatedErrorCode + " The getter for the traverser is " +
             "not implemented. You might want to implement a wrapper class to allow setting/getting the traverser.\");\n"));
@@ -108,9 +91,9 @@ public class HandlerDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
    */
   protected ASTCDMethod addSetTraverserMethod(ASTMCType visitorType) {
     ASTCDParameter visitorParameter = getCDParameterFacade().createParameter(visitorType, TRAVERSER);
-    ASTCDMethod setRealThis = this.getCDMethodFacade().createMethod(PUBLIC, SET_TRAVERSER, visitorParameter);
+    ASTCDMethod setRealThis = this.getCDMethodFacade().createMethod(PUBLIC.build(), SET_TRAVERSER, visitorParameter);
     String generatedErrorCode = visitorService.getGeneratedErrorCode(visitorType.printType(
-        new CD4CodeFullPrettyPrinter(new IndentPrinter())) + SET_TRAVERSER);
+        new MCBasicTypesFullPrettyPrinter(new IndentPrinter())) + SET_TRAVERSER);
     this.replaceTemplate(EMPTY_BODY, setRealThis, new StringHookPoint(
         "    throw new UnsupportedOperationException(\"0xA7016" + generatedErrorCode + " The setter for the traverser is " +
             "not implemented. You might want to implement a wrapper class to allow setting/getting the traverser.\");\n"));
@@ -158,9 +141,9 @@ public class HandlerDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
     String simpleVisitorName = visitorService.getVisitorSimpleName(cdDefinition.getSymbol());
     
     // add methods for classes, interfaces, enumerations, symbols, and scopes
-    visitorMethods.addAll(createHandlerClassMethods(cdDefinition.getCDClassList(), simpleVisitorName));
-    visitorMethods.addAll(createHandlerInterfaceMethods(cdDefinition.getCDInterfaceList(), simpleVisitorName));
-    visitorMethods.addAll(createHandlerEnumMethods(cdDefinition.getCDEnumList(), simpleVisitorName, cdDefinition.getName()));
+    visitorMethods.addAll(createHandlerClassMethods(cdDefinition.getCDClassesList(), simpleVisitorName));
+    visitorMethods.addAll(createHandlerInterfaceMethods(cdDefinition.getCDInterfacesList(), simpleVisitorName));
+    visitorMethods.addAll(createHandlerEnumMethods(cdDefinition.getCDEnumsList(), simpleVisitorName, cdDefinition.getName()));
     visitorMethods.addAll(createHandlerSymbolMethods(cdDefinition, simpleVisitorName));
     visitorMethods.addAll(createHandlerScopeMethods(cdDefinition, simpleVisitorName));
     
@@ -316,7 +299,7 @@ public class HandlerDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
    */
   protected List<ASTCDMethod> createHandlerScopeMethods(ASTCDDefinition astcdDefinition, String simpleVisitorName) {
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
-    CDDefinitionSymbol cdSymbol = astcdDefinition.getSymbol();
+    DiagramSymbol cdSymbol = astcdDefinition.getSymbol();
     ASTMCQualifiedType scopeType = getMCTypeFacade().createQualifiedType(symbolTableService.getScopeInterfaceFullName(cdSymbol));
     ASTMCQualifiedType artifactScopeType = getMCTypeFacade().createQualifiedType(symbolTableService.getArtifactScopeInterfaceFullName(cdSymbol));
     
@@ -366,8 +349,8 @@ public class HandlerDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
     superSymbolNames.addAll(symbolTableService.retrieveSymbolNamesFromCD(visitorService.getCDSymbol()));
     
     // add symbols of super CDs
-    List<CDDefinitionSymbol> superCDsTransitive = visitorService.getSuperCDsTransitive();
-    for (CDDefinitionSymbol cdSymbol : superCDsTransitive) {
+    List<DiagramSymbol> superCDsTransitive = visitorService.getSuperCDsTransitive();
+    for (DiagramSymbol cdSymbol : superCDsTransitive) {
       superSymbolNames.addAll(symbolTableService.retrieveSymbolNamesFromCD(cdSymbol));
     }
     return superSymbolNames;

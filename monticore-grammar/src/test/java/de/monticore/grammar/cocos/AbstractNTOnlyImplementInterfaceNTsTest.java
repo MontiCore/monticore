@@ -17,7 +17,7 @@ public class AbstractNTOnlyImplementInterfaceNTsTest extends CocoTest {
 
   @BeforeClass
   public static void disableFailQuick() {
-    LogStub.enableFailQuick(false);
+    LogStub.init();
     checker.addCoCo(new AbstractNTOnlyImplementInterfaceNTs());
   }
 

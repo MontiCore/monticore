@@ -5,5 +5,7 @@ ${tc.signature("symtabMill", "artifactScope", "symboltableCreator", "generatedEr
   artifactScope.setPackageName("");
   artifactScope.setImportsList(new ArrayList<>());
   putOnStack(artifactScope);
+  initArtifactScopeHP1(artifactScope);
   rootNode.accept(getTraverser());
+  initArtifactScopeHP2(artifactScope);
   return artifactScope;

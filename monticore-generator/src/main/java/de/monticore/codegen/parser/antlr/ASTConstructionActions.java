@@ -2,18 +2,18 @@
 
 package de.monticore.codegen.parser.antlr;
 
-import java.util.Optional;
-
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
-import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.parser.ParserGeneratorHelper;
 import de.monticore.grammar.HelperGrammar;
+import de.monticore.grammar.MCGrammarInfo;
+import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.se_rwth.commons.Joiners;
-import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
+
+import java.util.Optional;
 
 public class ASTConstructionActions {
 
@@ -81,6 +81,7 @@ public class ASTConstructionActions {
       if (constgroup.getConstantList().size() == 1) {
         // both == null and #constants == 1 -> use constant string as name
         tmp = "_builder.set%cname%(true);";
+        // Next version: Replace HelperGrammar by (constgroup.getConstantList().get(0).getHumanName()
         tmp = tmp.replaceAll("%cname%", StringTransformations.capitalize(HelperGrammar
                 .getAttributeNameForConstant(constgroup.getConstantList().get(0))));
       } else {
@@ -133,7 +134,7 @@ public class ASTConstructionActions {
 
     // Replace templates
     tmp = tmp.replaceAll("%u_usage%",
-            StringTransformations.capitalize(HelperGrammar.getUsageName(a)));
+            StringTransformations.capitalize(parserGenHelper.getUsageName(a)));
     tmp = tmp.replaceAll("%tmp%", parserGenHelper.getTmpVarNameForAntlrCode(a));
 
     return tmp;
@@ -148,7 +149,7 @@ public class ASTConstructionActions {
 
     // Replace templates
     tmp = tmp.replaceAll("%u_usage%",
-            StringTransformations.capitalize(HelperGrammar.getListName(a)));
+            StringTransformations.capitalize(MCGrammarInfo.getListName(a)));
     tmp = tmp.replaceAll("%tmp%", tmpname);
 
     return tmp;
@@ -157,14 +158,13 @@ public class ASTConstructionActions {
   public String getActionForInternalRuleIteratedAttribute(ASTNonTerminal a) {
 
     String tmp = "addToIteratedAttributeIfNotNull(_builder.get%u_usage%(), _localctx.%tmp%.ret);";
-    // TODO GV: || isConst()
     if (symbolTable.getProdWithInherited(a.getName()).get().isIsEnum()) {
       tmp = "addToIteratedAttributeIfNotNull(_builder.get%u_usage%(), _localctx.%tmp%.ret);";
     }
 
     // Replace templates
     tmp = tmp.replaceAll("%u_usage%",
-            StringTransformations.capitalize(HelperGrammar.getListName(a)));
+            StringTransformations.capitalize(MCGrammarInfo.getListName(a)));
     tmp = tmp.replaceAll("%tmp%", parserGenHelper.getTmpVarNameForAntlrCode(a));
 
     return tmp;
@@ -176,7 +176,7 @@ public class ASTConstructionActions {
 
     // Replace templates
     tmp = tmp.replaceAll("%u_usage%",
-            StringTransformations.capitalize(HelperGrammar.getUsageName(a)));
+            StringTransformations.capitalize(parserGenHelper.getUsageName(a)));
     tmp = tmp.replaceAll("%tmp%", parserGenHelper.getTmpVarNameForAntlrCode(a));
 
     return tmp;
@@ -209,58 +209,37 @@ public class ASTConstructionActions {
   }
 
   public String getActionForTerminalNotIteratedAttribute(ASTITerminal a) {
-
-    String tmp = "_builder.set%u_usage%(\"%text%\");";
-
     if (!a.isPresentUsageName()) {
       return "";
     }
-    // Replace templates
-    tmp = tmp.replaceAll("%u_usage%", StringTransformations.capitalize(a.getUsageName()));
-    tmp = tmp.replaceAll("%text%", a.getName());
-
-    return tmp;
-
+    String usageName = StringTransformations.capitalize(a.getUsageName());
+    String value = a.getName();
+    return "_builder.set" + usageName + "(\"" + value + "\");";
   }
 
   public String getActionForTerminalIteratedAttribute(ASTITerminal a) {
-
     if (!a.isPresentUsageName()) {
       return "";
     }
-
-    String tmp = "_builder.get%u_usage%().add(\"%text%\");";
-
-    // Replace templates
-    String usageName = StringTransformations.capitalize(a.getUsageName());
-    tmp = tmp.replaceAll("%u_usage%", StringTransformations.capitalize(usageName + DecorationHelper.GET_SUFFIX_LIST));
-    tmp = tmp.replaceAll("%text%", a.getName());
-
-    return tmp;
+    String usageName = StringTransformations.capitalize(a.getUsageName()) + DecorationHelper.GET_SUFFIX_LIST;
+    String value = a.getName();
+    return "_builder.get" + usageName + "().add(\"" + value + "\");";
   }
 
   public String getActionForKeyTerminalNotIteratedAttribute(ASTKeyTerminal a) {
-
-    String tmp = "_builder.set%u_usage%(_input.LT(-1).getText());";
-
     if (!a.isPresentUsageName()) {
       return "";
     }
-    // Replace templates
-    return tmp.replaceAll("%u_usage%", StringTransformations.capitalize(a.getUsageName()));
+    String usageName = StringTransformations.capitalize(a.getUsageName());
+    return  "_builder.set" + usageName + "(_input.LT(-1).getText());";
   }
 
   public String getActionForKeyTerminalIteratedAttribute(ASTKeyTerminal a) {
-
     if (!a.isPresentUsageName()) {
       return "";
     }
-
-    String tmp = "_builder.get%u_usage%().add(_input.LT(-1).getText());";
-
-    // Replace templates
-    String usageName = StringTransformations.capitalize(a.getUsageName());
-    return tmp.replaceAll("%u_usage%", StringTransformations.capitalize(usageName + DecorationHelper.GET_SUFFIX_LIST));
+    String usageName = StringTransformations.capitalize(a.getUsageName()) + DecorationHelper.GET_SUFFIX_LIST;
+    return "_builder.get" + usageName + "().add(_input.LT(-1).getText());";
   }
 
   public String getBuildAction() {

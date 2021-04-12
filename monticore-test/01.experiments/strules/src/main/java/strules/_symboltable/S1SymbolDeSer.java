@@ -7,6 +7,7 @@ package strules._symboltable;
 
 import de.monticore.symboltable.serialization.json.JsonObject;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -21,4 +22,5 @@ public class S1SymbolDeSer extends S1SymbolDeSerTOP {
   protected AType deserializeA(JsonObject symbolJson) {
     return null;
   }
+
 }

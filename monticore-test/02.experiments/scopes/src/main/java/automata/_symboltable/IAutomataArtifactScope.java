@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package automata._symboltable;
 
 import de.se_rwth.commons.logging.Log;
@@ -14,7 +15,7 @@ public interface IAutomataArtifactScope extends IAutomataArtifactScopeTOP {
 
     setStateSymbolsAlreadyResolved(true);
     final List<automata._symboltable.StateSymbol> resolvedSymbols = this.resolveStateLocallyMany(foundSymbols, name, modifier, predicate);
-    foundSymbols = foundSymbols || resolvedSymbols.size() > 0;
+    foundSymbols = foundSymbols || !resolvedSymbols.isEmpty();
     setStateSymbolsAlreadyResolved(false);
 
     final String resolveCall = "resolveDownMany(\"" + name + "\", \"" + "StateSymbol"
@@ -24,7 +25,7 @@ public interface IAutomataArtifactScope extends IAutomataArtifactScopeTOP {
       for (automata._symboltable.IAutomataScope subScope : getSubScopes()) {
         final List<automata._symboltable.StateSymbol> resolvedFromSub = subScope
             .continueAsStateSubScope(foundSymbols, name, modifier, predicate);
-        foundSymbols = foundSymbols || resolvedFromSub.size() > 0;
+        foundSymbols = foundSymbols || !resolvedFromSub.isEmpty();
         resolvedSymbols.addAll(resolvedFromSub);
       }
     }

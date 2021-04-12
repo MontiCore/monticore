@@ -3,10 +3,9 @@ package de.monticore.codegen.cd2java._ast.builder;
 
 import com.google.common.collect.Lists;
 import de.monticore.ast.ASTCNode;
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
-import de.monticore.cd.cd4analysis._ast.ASTCDParameter;
-import de.monticore.cd.cd4analysis._ast.ASTModifier;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -16,13 +15,14 @@ import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.umlmodifier._ast.ASTModifier;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.*;
 
@@ -52,7 +52,7 @@ public class ASTBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass>
 
     if (!hasSuperClassOtherThanASTCNode(domainClass)) {
       ASTMCType builderType = this.getMCTypeFacade().createQualifiedType(builderClassName);
-      builderClass.addAllCDMethods(createBuilderMethodForASTCNodeMethods(builderType));
+      builderClass.addAllCDMembers(createBuilderMethodForASTCNodeMethods(builderType));
     }
 
     Optional<ASTCDMethod> buildMethod = builderClass.getCDMethodList().stream().filter(m -> BUILD_METHOD.equals(m.getName())).findFirst();
@@ -71,7 +71,7 @@ public class ASTBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass>
       this.replaceTemplate(EMPTY_BODY, uncheckedBuildMethod, new TemplateHookPoint("_ast.builder.BuildMethod", domainClass, Lists.newArrayList(), false));
       this.replaceTemplate(BUILD_INIT_TEMPLATE, uncheckedBuildMethod, new TemplateHookPoint(AST_BUILDER_INIT_TEMPLATE, domainClass));
     }
-    builderClass.addCDMethod(uncheckedBuildMethod);
+    builderClass.addCDMember(uncheckedBuildMethod);
 
     return builderClass;
   }

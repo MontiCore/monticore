@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 plugins {
   id "com.github.johnrengelman.shadow" version "6.0.0"
-  id 'java'
+  id 'java-library'
 }
 
 dependencies {
@@ -22,7 +22,7 @@ description = 'MontiCore: CLI'
 
 shadowJar { // all in one jar
   manifest {
-    attributes "Main-Class": "de.monticore.cli.MontiCoreCLI"
+    attributes "Main-Class": "de.monticore.cli.MontiCoreStandardCLI"
   }
   archiveClassifier = "cli"
   zip64 true

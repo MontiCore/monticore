@@ -1,5 +1,5 @@
 # (c) https://github.com/MontiCore/monticore
-image: registry.git.rwth-aachen.de/monticore/container-registry/maven:3-jdk-8
+image: registry.git.rwth-aachen.de/monticore/container-registry/gradle:6.8.2-jdk8
 
 #include:
 #  - template: Code-Quality.gitlab-ci.yml
@@ -8,11 +8,10 @@ variables:
   MC_MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2"
   GRADLE_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2"
   MC_MAVEN_CLI_OPTS: "--settings settings.xml --batch-mode -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn"
+  SONAR_OPTS: "-Dsonar.login=$sonarUser -Dsonar.password=$sonarPassword"
 
 
 before_script:
-  - chmod +x ./gradlew
-  - chmod +x monticore-tool/gradlew
   - export GRADLE_USER_HOME=`pwd`/.gradle
 
 #cache:
@@ -25,15 +24,17 @@ stages:
   - build
   - test
   - deploy
+  - sonar
   - trigger_languages
   - report
+  - check
 
 build:
   stage: build
   script:
-    - "cd monticore-tool && ./gradlew build $GRADLE_OPTS -Pci"
-    - "cd .. &&./gradlew buildMC $GRADLE_OPTS -Pci"
-  artifacts: 
+    - "cd monticore-tool && gradle build $GRADLE_OPTS -Pci"
+    - "cd .. && gradle buildMC $GRADLE_OPTS -Pci"
+  artifacts:
     paths:
       - ".gradle"
       - "*/target"
@@ -44,84 +45,110 @@ build:
     - branches
   except:
     - master
-    
+      
+build_mvn_plugin:
+  stage: build
+  image: registry.git.rwth-aachen.de/monticore/container-registry/maven:3-jdk-8
+  script:
+    - "cd monticore-maven-plugin && mvn $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS install"
+  only:
+    - merge_requests
+    - branches
+  except:
+    - master
+
 test_01experiments:
   stage: test
   dependencies:
     - build
   script:
-    - "./gradlew -p monticore-test/01.experiments build $GRADLE_OPTS"
+    - "gradle -p monticore-test/01.experiments build $GRADLE_OPTS -Pci"
   only:
     - merge_requests
     - branches
   except:
     - master
-    
+
 test_02experiments:
   stage: test
   dependencies:
     - build
   script:
-    - "./gradlew -p monticore-test/02.experiments build $GRADLE_OPTS"
+    - "gradle -p monticore-test/02.experiments build $GRADLE_OPTS -Pci"
   only:
     - merge_requests
     - branches
   except:
     - master
-    
+
 test_it:
   stage: test
   dependencies:
     - build
   script:
-    - "./gradlew -p monticore-test/it build $GRADLE_OPTS"
+    - "gradle -p monticore-test/it build $GRADLE_OPTS -Pci"
   only:
     - merge_requests
     - branches
   except:
     - master
-    
+
 test_it_emf:
   stage: test
   dependencies:
     - build
   script:
-    - "./gradlew -p monticore-test/it build -PbuildProfile=emf $GRADLE_OPTS"
+    - "gradle -p monticore-test/it build -PbuildProfile=emf $GRADLE_OPTS -Pci"
   only:
     - merge_requests
     - branches
   except:
     - master
-    
+
 test_grammar_it:
   stage: test
   dependencies:
     - build
   script:
-    - "./gradlew -p monticore-test/monticore-grammar-it build $GRADLE_OPTS"
+    - "gradle -p monticore-test/monticore-grammar-it build $GRADLE_OPTS -Pci"
   only:
     - merge_requests
     - branches
   except:
     - master
-    
+
 deploy:
   stage: deploy
   dependencies:
     - build
   script:
-    - "./gradlew deployMC -PmavenPassword=$password -PmavenUser=$username $GRADLE_OPTS"
+    - "gradle deployMC -PmavenPassword=$password -PmavenUser=$username $GRADLE_OPTS -Pci"
   only:
     - dev
   except:
     - master
       
-build_maven:
-  stage: build
+deploy_mvn_plugin:
+  stage: deploy
+  image: registry.git.rwth-aachen.de/monticore/container-registry/maven:3-jdk-8
+  dependencies:
+    - build
   script:
-    - "mvn $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS install"
+    - "cd monticore-maven-plugin && mvn $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS deploy -Dpass=$password -Duser=$username"
   only:
-    - schedules
+    - dev
+  except:
+    - master
+
+sonar:
+  stage: sonar
+  needs: ["build"]
+  dependencies:
+    - build
+  script:
+    - "gradle sonarMC $GRADLE_OPTS $SONAR_OPTS -Pci"
+  only:
+    - dev
   except:
     - master
 
@@ -131,7 +158,6 @@ trigger-automata:
   trigger:
     project: monticore/languages/automaton
     branch: master
-    strategy: depend
   only:
     - dev
 
@@ -329,3 +355,17 @@ pages:
       - public
   only:
     - schedules
+
+checkMDLinks:
+  stage: check
+  needs: []
+  allow_failure: true
+  script:
+    - "curl --location --header \"PRIVATE-TOKEN: $secibuildtoken\" \"https://git.rwth-aachen.de/api/v4/projects/monticore%2Fmdlinkchecker/jobs/artifacts/master/raw/target/libs/MDLinkCheckerCLI.jar?job=build\" --output MDLinkCheckerCLI.jar"
+    - "url=https://git.rwth-aachen.de/monticore/monticore/-/tree/dev"
+    - "linkCheckRes=$(java -jar MDLinkCheckerCLI.jar -url $url -t $secibuildtoken)"
+    - "echo \"$linkCheckRes\""
+    - "if [[ $linkCheckRes == *\"ERROR\"* ]]; then exit 1; fi"
+  only:
+    - dev
+

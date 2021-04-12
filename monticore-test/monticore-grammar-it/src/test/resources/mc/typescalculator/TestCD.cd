@@ -1,8 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.typescalculator;
 
-import mc.common.Basics;
-
 classdiagram TestCD{
 
   class B{
@@ -34,4 +32,7 @@ classdiagram TestCD{
 
   }
 
+  class String {
+
+  }
 }

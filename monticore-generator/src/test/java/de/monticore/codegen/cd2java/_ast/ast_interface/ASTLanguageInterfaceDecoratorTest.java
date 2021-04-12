@@ -4,9 +4,9 @@ package de.monticore.codegen.cd2java._ast.ast_interface;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
-import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
@@ -62,12 +62,12 @@ public class ASTLanguageInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributesEmpty() {
-    assertTrue(languageInterface.isEmptyCDAttributes());
+    assertTrue(languageInterface.getCDAttributeList().isEmpty());
   }
 
   @Test
   public void testMethodCount() {
-    assertEquals(2, languageInterface.sizeCDMethods());
+    assertEquals(1, languageInterface.getCDMethodList().size());
   }
 
   @Test
@@ -80,7 +80,7 @@ public class ASTLanguageInterfaceDecoratorTest extends DecoratorTestCase {
 
     assertEquals(1, method.sizeCDParameters());
     assertEquals("visitor", method.getCDParameter(0).getName());
-    ASTMCType visitorType = this.MCTypeFacade.createQualifiedType("de.monticore.codegen.ast.automaton._visitor.AutomatonVisitor");
+    ASTMCType visitorType = this.MCTypeFacade.createQualifiedType("de.monticore.codegen.ast.automaton._visitor.AutomatonTraverser");
     assertDeepEquals(visitorType, method.getCDParameter(0).getMCType());
   }
 
