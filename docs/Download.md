@@ -1,6 +1,6 @@
 The following Command Line Interface (CLI) tools for MontiCore and its languages and related tooling are currently available for download:
 
-* The [MontiCore CLI tool](www.monticore.de/download/monticore-cli.jar) for processing grammars
+* The [MontiCore CLI tool](http://www.monticore.de/download/monticore-cli.jar) for processing grammars
 * The [MontiCore runtime](www.monticore.de/download/monticore-rt.jar) library
 * The [Automaton example project](www.monticore.de/download/aut.tar.gz) that can be used with the MontiCore CLI tool
 * The [Automaton example project in Gradle](www.monticore.de/download/Automaton.zip) that can be used with Gradle
