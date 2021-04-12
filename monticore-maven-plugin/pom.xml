@@ -31,7 +31,7 @@
     <doxia-sink-api.version>1.6</doxia-sink-api.version>
     <doxia-site-renderer.version>1.6</doxia-site-renderer.version>
     <xml-apis.version>1.0.b2</xml-apis.version>
-    <guava.version>25.1-jre</guava.version>
+    <guava.version>29.0-jre</guava.version>
     <logback.version>1.1.2</logback.version>
 
     <plugin.plugin>3.5.2</plugin.plugin>
