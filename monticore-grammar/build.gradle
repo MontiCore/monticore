@@ -1,6 +1,13 @@
 ///* (c) https://github.com/MontiCore/monticore */
 import de.monticore.MCTask
 
+buildscript {
+  if(findProperty('bootstrap')){
+    // fake a different group for Gradle to prevent it from including the build in it self
+    group = "de.mc"
+  }
+}
+
 plugins {
   id "java-library"
   id "com.github.johnrengelman.shadow" version "6.0.0"
