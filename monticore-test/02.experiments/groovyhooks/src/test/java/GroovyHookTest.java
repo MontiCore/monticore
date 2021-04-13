@@ -23,7 +23,7 @@ public class GroovyHookTest {
     ASTAutomaton ast = tool.parse("src/test/resources/example/PingPong.aut");
     assertNotNull(ast);
     assertEquals("PingPong", ast.getName());
-    assertTrue(ast.newMethod());
+    assertEquals(3, ast.countStates());
   }
 
 

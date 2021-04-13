@@ -16,6 +16,6 @@ Log.info("Class diagram name: " + cdName, "GS2")
 
 // manipulate AST CD
 facade = CDMethodFacade.getInstance()
-m = facade.createMethodByDefinition("public boolean newMethod();")
-glex.replaceTemplate(CoreTemplates.EMPTY_BODY, m, new StringHookPoint("return true;"))
+m = facade.createMethodByDefinition("public int countStates();")
+glex.replaceTemplate(CoreTemplates.EMPTY_BODY, m, new StringHookPoint("return states.size();"))
 decoratedCD.get(0).getCDDefinition().getCDElementList().get(0).addCDMember(m)
