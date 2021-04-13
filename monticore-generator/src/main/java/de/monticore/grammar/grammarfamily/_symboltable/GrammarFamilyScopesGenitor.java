@@ -13,17 +13,6 @@ import java.util.stream.Collectors;
 
 public class GrammarFamilyScopesGenitor extends GrammarFamilyScopesGenitorTOP {
 
-  public GrammarFamilyScopesGenitor(IGrammarFamilyScope enclosingScope) {
-    super(enclosingScope);
-  }
-
-  public GrammarFamilyScopesGenitor(Deque<? extends IGrammarFamilyScope> scopeStack) {
-    super(scopeStack);
-  }
-
-  public GrammarFamilyScopesGenitor() {
-    super();
-  }
 
   /**
    * Creates the symbol table starting from the <code>rootNode</code> and

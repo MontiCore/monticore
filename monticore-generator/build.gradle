@@ -21,7 +21,6 @@ if(!hasProperty('bootstrap')){
 dependencies {
   implementation "de.monticore.bs:monticore-runtime:$previous_mc_version"
   implementation "de.monticore.bs:monticore-grammar:$previous_mc_version"
-  grammar "de.monticore.bs:monticore-grammar:$previous_mc_version:grammars"
   implementation "de.monticore.bs:monticore-grammar:$previous_mc_version:grammars"
   implementation "de.se_rwth.commons:se-commons-groovy:$se_commons_version"
   implementation "de.se_rwth.commons:se-commons-logging:$se_commons_version"

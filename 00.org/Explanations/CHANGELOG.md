@@ -2,13 +2,26 @@
 
 # Release Notes
 
-##  MontiCore 6.8.0-SNAPSHOT
+##  MontiCore 7.1.0-SNAPSHOT
 to be released
+
+### Additions
+
+### Changes
+ 
+### Fixes
+
+##  MontiCore 7.0.0
+released: 08.04.2021 
+
 ### Additions
 * resolveXSubKinds(..) resolves for local symbols of all subkinds of a symbol kind X. This method is used
   by the implementation of the resolveXLocally(..) method. It enables proper handling of symbol kind hierarchies
   during symbol resolution beyond the borders of a language.
 * new annotation @NonConservative for productions
+* add configTemplate (-cf) mechanism to add a freemarker template for customizing the generation processed
+* add two predefined groovy hook points (-gh1 and -gh2) in the monticore_standard.groovy for injecting 
+  custom groovy scripts into the workflow
 
 ### Changes
 * move grammars OCLExpressions and SetExpressions into OCL-project for further development

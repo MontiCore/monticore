@@ -2,9 +2,9 @@
 
 package de.monticore.codegen.mc2cd.manipul;
 
+import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
-import de.monticore.cd4analysis._ast.CD4AnalysisNodeFactory;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import org.junit.Test;
@@ -29,13 +29,13 @@ public class RemoveRedundantReferencesManipulationTest {
   
   private ASTCDClass setupCDClass(String firstReferenceName, ASTMCType firstReferenceType,
       String secondReferenceName, ASTMCType secondReferenceType) {
-    ASTCDClass cdClass = CD4AnalysisNodeFactory.createASTCDClass();
+    ASTCDClass cdClass = CD4AnalysisMill.cDClassBuilder().uncheckedBuild();
     
-    ASTCDAttribute singleAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
+    ASTCDAttribute singleAttribute = CD4AnalysisMill.cDAttributeBuilder().uncheckedBuild();
     singleAttribute.setName(firstReferenceName);
     singleAttribute.setMCType(firstReferenceType);
     
-    ASTCDAttribute listAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
+    ASTCDAttribute listAttribute = CD4AnalysisMill.cDAttributeBuilder().uncheckedBuild();
     listAttribute.setName(secondReferenceName);
     listAttribute.setMCType(secondReferenceType);
     

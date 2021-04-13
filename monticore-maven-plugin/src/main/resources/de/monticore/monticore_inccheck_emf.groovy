@@ -2,6 +2,8 @@
 
 package de.monticore
 
+import de.monticore.IncrementalChecker
+
 // M1: configuration object "_configuration" prepared externally
 Log.debug("--------------------------------", LOG_ID)
 Log.debug("MontiCore", LOG_ID)

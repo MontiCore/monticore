@@ -4,7 +4,6 @@ package de.monticore.codegen.mc2cd.manipul;
 
 import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd4analysis._visitor.CD4AnalysisTraverser;
-import de.monticore.cd4analysis._visitor.CD4AnalysisVisitor;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._visitor.CDBasisVisitor2;

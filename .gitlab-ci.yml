@@ -147,6 +147,7 @@ sonar:
     - build
   script:
     - "gradle sonarMC $GRADLE_OPTS $SONAR_OPTS -Pci"
+  allow_failure: true
   only:
     - dev
   except:

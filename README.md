@@ -152,15 +152,15 @@ For details see [Licenses](00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md).
 ## Further Information
 
 * see also [**MontiCore Reference Manual**](http://www.monticore.de/)
-* [MontiCore Reference Languages](docs/DevelopedLanguages.md) - Languages Built Using MontiCore
-* [Build MontiCore](docs/BuildMontiCore.md) - How to Build MontiCore
-* [Getting Started](docs/GettingStarted.md) - How to start using MontiCore
+* [MontiCore Reference Languages](https://monticore.github.io/monticore/docs/DevelopedLanguages/) - Languages Built Using MontiCore
+* [Build MontiCore](https://monticore.github.io/monticore/docs/BuildMontiCore/) - How to Build MontiCore
+* [Getting Started](https://monticore.github.io/monticore/docs/GettingStarted/) - How to start using MontiCore
 * [Changelog](00.org/Explanations/CHANGELOG.md) - Release Notes
 * [FAQ](00.org/Explanations/FAQ.md) - FAQ 
 * [Licenses](00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md) - MontiCore 3-Level License
 * [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
-* [**List of languages**](https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/docs/Languages.md)
-* [**MontiCore Core Grammar Library**](https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
-* [Best Practices](docs/BestPractices.md)
+* [**List of languages**](https://monticore.github.io/monticore/docs/Languages/)
+* [**MontiCore Core Grammar Library**](https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
+* [Best Practices](https://monticore.github.io/monticore/docs/BestPractices/)
 * [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
 
