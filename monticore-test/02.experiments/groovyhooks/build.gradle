@@ -1,6 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 description = 'Experiments: groovyHooks'
 
+sonarqube {
+  // There are no tests
+  skipProject = true
+}
+
 task generate (type: MCTask) {
   grammar = file "$projectDir/$grammarDir/Automata.mc4"
   outputDir = file outDir
