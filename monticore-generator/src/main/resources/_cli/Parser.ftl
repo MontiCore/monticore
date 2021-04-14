@@ -4,9 +4,9 @@ ${tc.signature("grammarname", "startprod")}
 
 try {
       ${grammarname}Parser parser = new ${grammarname}Parser() ;
-      Optional<ASTAutomaton> optAutomaton = parser.parse(model); //change
+      Optional<ASTCli> optCli = parser.parse(model);
 
-      if (!parser.hasErrors() && optAutomaton.isPresent()) { //change
+      if (!parser.hasErrors() && optCli.isPresent()) { //change
         return optAutomaton.get();
       }
       Log.error("Model could not be parsed.");

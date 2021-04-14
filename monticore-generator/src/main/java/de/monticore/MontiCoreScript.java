@@ -57,7 +57,7 @@ package de.monticore;
  import de.monticore.codegen.cd2java._symboltable.symbol.symbolsurrogatemutator.MandatoryMutatorSymbolSurrogateDecorator;
  import de.monticore.codegen.cd2java._visitor.*;
  import de.monticore.codegen.cd2java.cli.CDCLIDecorator;
- import de.monticore.codegen.cd2java.cli.CLIDecorator;
+ import de.monticore.codegen.cd2java.cli.RunnerDecorator;
  import de.monticore.codegen.cd2java.data.DataDecorator;
  import de.monticore.codegen.cd2java.data.DataDecoratorUtil;
  import de.monticore.codegen.cd2java.data.InterfaceDecorator;
@@ -769,8 +769,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
                                             ASTCDCompilationUnit symbolCD, ASTCDCompilationUnit traverserCD,
                                             GlobalExtensionManagement glex, IterablePath handCodedPath) {
     AbstractService abstractService = new AbstractService(cd);
-    CLIDecorator cliDecorator = new CLIDecorator(glex, abstractService);
-    CDCLIDecorator cdcliDecorator = new CDCLIDecorator(glex, cliDecorator, abstractService);
+    RunnerDecorator runnerDecorator = new RunnerDecorator(glex, abstractService);
+    CDCLIDecorator cdcliDecorator = new CDCLIDecorator(glex, runnerDecorator, abstractService);
 
     ASTCDCompilationUnit cliCD = cdcliDecorator.decorate(Lists.newArrayList(astCD, traverserCD, symbolCD));
 

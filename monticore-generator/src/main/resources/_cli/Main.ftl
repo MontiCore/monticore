@@ -13,25 +13,20 @@ if (args.length != 1) {
 
 // parse the model and create the AST representation
        final ${startprod} ast = parse(model);
-        Log.info(model + " parsed successfully!", AutomataTool.class.getName());
+        Log.info(model + " parsed successfully!", StatechartRunner.class.getName());
 
  // setup the symbol table
-     IAutomataArtifactScope modelTopScope = createSymbolTable(ast);
+     I${grammarname}ArtifactScope modelTopScope = createSymbolTable(ast);
 
      // can be used for resolving things in the model
      Optional<StateSymbol> aSymbol = modelTopScope.resolveState("Ping");
      if (aSymbol.isPresent()) {
        Log.info("Resolved state symbol \"Ping\"; FQN = " + aSymbol.get().toString(),
-           AutomataTool.class.getName());
+           StatechartRunner.class.getName()); <---
      }
 
      // execute default context conditions
      runDefaultCoCos(ast);
-
-     // execute a custom set of context conditions
-     AutomataCoCoChecker customCoCos = new AutomataCoCoChecker();
-     customCoCos.addCoCo(new StateNameStartsWithCapitalLetter());
-     customCoCos.checkAll(ast);
 
      // store artifact scope
      String qualifiedModelName = model.replace("src/main/resources", "");
@@ -45,11 +40,11 @@ if (args.length != 1) {
      // analyze the model with a visitor
      CountStates cs = new CountStates();
      cs.handle(ast);
-     Log.info("The model contains " + cs.getCount() + " states.", AutomataTool.class.getName());
+     Log.info("The model contains " + cs.getCount() + " states.", StatechartRunner.class.getName()); <---
 
      // execute a pretty printer
      PrettyPrinter pp = new PrettyPrinter();
      pp.handle(ast);
-     Log.info("Pretty printing the parsed automata into console:", AutomataTool.class.getName());
+     Log.info("Pretty printing the parsed Cli into console:", RunnerDecorator.class.getName());
      System.out.println(pp.getResult());
    }

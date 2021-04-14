@@ -7,10 +7,6 @@ import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.prettyprint.CD4CodePrinter;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
-import de.monticore.codegen.cd2java._cocos.CoCoCheckerDecorator;
-import de.monticore.codegen.cd2java._cocos.CoCoService;
-import de.monticore.codegen.cd2java._visitor.VisitorService;
-import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
@@ -18,7 +14,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class CLIDecoratorTest extends DecoratorTestCase {
+public class RunnerDecoratorTest extends DecoratorTestCase {
 
   private ASTCDClass cliClass;
 
@@ -32,8 +28,8 @@ public class CLIDecoratorTest extends DecoratorTestCase {
     this.glex.setGlobalValue("service", new AbstractService(ast));
     this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
 
-    CLIDecorator cliDecorator = new CLIDecorator(glex, new AbstractService(ast));
-    this.cliClass = cliDecorator.decorate(Lists.newArrayList(ast));
+    RunnerDecorator runnerDecorator = new RunnerDecorator(glex, new AbstractService(ast));
+    this.cliClass = runnerDecorator.decorate(Lists.newArrayList(ast)).get();
   }
 
   @Test
