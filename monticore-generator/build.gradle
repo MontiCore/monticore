@@ -27,7 +27,7 @@ dependencies {
   implementation "de.monticore.lang.bs:cd4analysis:$cd4a_version"
   grammar "de.monticore.lang.bs:cd4analysis:$cd4a_version:grammars"
   implementation "org.antlr:antlr4:$antlr_version"
-  implementation ('com.google.guava:guava:25.1-jre'){
+  implementation ("com.google.guava:guava:$guava_version"){
     force(true)
   }
   implementation 'org.codehaus.groovy:groovy:3.0.7'

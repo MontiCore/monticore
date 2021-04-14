@@ -24,7 +24,7 @@ if(!hasProperty('bootstrap')){
 
 dependencies {
     api project(':monticore-runtime')
-    implementation 'com.google.guava:guava:25.1-jre'
+    implementation "com.google.guava:guava:$guava_version"
     implementation "org.apache.commons:commons-lang3:$commons_lang3_version"
     testImplementation "junit:junit:$junit_version"
     testImplementation 'ch.qos.logback:logback-classic:1.1.2'
@@ -35,10 +35,6 @@ def testGrammarOutDir = "$buildDir/generated-test-sources/monticore/sourcecode"
 
 sourceSets {
   main.java.srcDirs += [ grammarOutDir]
-  main.resources{
-    srcDirs += [grammarDir]
-    include "**/*.mc4"
-  }
   test.java.srcDirs += [testGrammarOutDir]
 
   grammars {
@@ -116,6 +112,10 @@ java {
   registerFeature('tests') {
     usingSourceSet(sourceSets.test)
   }
+}
+
+shadowJar{
+  from sourceSets.grammars.resources 
 }
 
 jar.dependsOn(grammarsJar)
