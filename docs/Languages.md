@@ -317,10 +317,6 @@ ocl Bookshop {
 ```
 
 
-* OCL/P comes with an 
-  [OCL to Java generator](https://git.rwth-aachen.de/monticore/languages/OCL2Java)
-  and is used in combination with 
-  [*Embedded MontiArc*](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/OCL_EMA2Java) and the MontiCore artefact tooling.
 * Main grammar 
   [`ocl.monticore.ocl.OCL`](https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/develop/src/main/grammars/de/monticore/ocl/OCL.mc4), 
   [Expressions](https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/develop/src/main/grammars/de/monticore/ocl/OCLExpressions.mc4),
