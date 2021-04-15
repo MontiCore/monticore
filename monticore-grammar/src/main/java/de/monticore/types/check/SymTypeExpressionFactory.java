@@ -1,10 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import com.google.common.collect.Lists;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
+import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -31,6 +33,10 @@ public class SymTypeExpressionFactory {
    * createTypeVariable vor Variables
    */
   public static SymTypeVariable createTypeVariable(String name, IBasicSymbolsScope scope) {
+    Optional<TypeSymbol> type = scope.resolveType(name);
+    if(type.isPresent()){
+      return new SymTypeVariable(type.get());
+    }
     TypeSymbol typeSymbol = new TypeSymbolSurrogate(name);
     typeSymbol.setEnclosingScope(scope);
     return new SymTypeVariable(typeSymbol);
@@ -63,6 +69,10 @@ public class SymTypeExpressionFactory {
    * for ObjectTypes, as e.g. "Person"
    */
   public static SymTypeOfObject createTypeObject(String name, IBasicSymbolsScope enclosingScope) {
+    Optional<TypeSymbol> type = enclosingScope.resolveType(name);
+    if(type.isPresent()){
+      return new SymTypeOfObject(type.get());
+    }
     TypeSymbol typeSymbol = new TypeSymbolSurrogate(name);
     typeSymbol.setEnclosingScope(enclosingScope);
     return new SymTypeOfObject(typeSymbol);
@@ -99,6 +109,10 @@ public class SymTypeExpressionFactory {
 
   public static SymTypeArray createTypeArray(String name, IBasicSymbolsScope typeSymbolsScope,
                                              int dim, SymTypeExpression argument) {
+    Optional<TypeSymbol> type = typeSymbolsScope.resolveType(name);
+    if(type.isPresent()){
+      return new SymTypeArray(type.get(), dim, argument);
+    }
     TypeSymbol typeSymbol = new TypeSymbolSurrogate(name);
     typeSymbol.setEnclosingScope(typeSymbolsScope);
     return new SymTypeArray(typeSymbol, dim, argument);
@@ -138,12 +152,35 @@ public class SymTypeExpressionFactory {
       o = createTypeVoid();
     } else if ("null".equals(name)) {
       o = createTypeOfNull();
+    }else if(name.endsWith("[]")) {
+      o = createArrayFromString(name, scope);
     } else if (name.contains("<")) {
       o = createGenericsFromString(name, scope);
-    } else {
+    } else if (scope.resolveTypeVar(name).isPresent()){
+      o = createTypeVariable(name, scope);
+    }else {
       o = createTypeObject(name, scope);
     }
     return o;
+  }
+
+  private static SymTypeExpression createArrayFromString(String type, IBasicSymbolsScope scope){
+    //berechne Typen vom Array per createTypeExpression, berechne Dimension von Array durch Anzahl der Klammerpaare am Ende
+    int countDim = 0;
+    int start = type.indexOf("[");
+    String typeWithoutBraces = type;
+    while(start!=-1){
+      countDim++;
+      typeWithoutBraces = typeWithoutBraces.substring(0, start);
+      int lastGeneric = type.lastIndexOf(">");
+      start = typeWithoutBraces.indexOf("[");
+      if(lastGeneric!=-1 && lastGeneric > start){
+        break;
+      }
+    }
+    int generic = typeWithoutBraces.indexOf("<");
+    String typeWithoutGenericsAndBraces = generic==-1? typeWithoutBraces:typeWithoutBraces.substring(0, generic);
+    return createTypeArray(typeWithoutGenericsAndBraces, scope, countDim, createTypeExpression(typeWithoutBraces, scope));
   }
 
   private static SymTypeExpression createGenericsFromString(String type, IBasicSymbolsScope scope) {
@@ -202,7 +239,7 @@ public class SymTypeExpressionFactory {
    * @return
    */
   public static SymTypeOfGenerics createGenerics(TypeSymbol typeSymbol) {
-    return new SymTypeOfGenerics(typeSymbol);
+    return createGenerics(typeSymbol, Lists.newArrayList());
   }
 
   public static SymTypeOfGenerics createGenerics(TypeSymbol typeSymbol,
@@ -212,20 +249,22 @@ public class SymTypeExpressionFactory {
 
   public static SymTypeOfGenerics createGenerics(TypeSymbol typeSymbol,
                                                  SymTypeExpression... arguments) {
-    return new SymTypeOfGenerics(typeSymbol, Arrays.asList(arguments));
+    return createGenerics(typeSymbol, Arrays.asList(arguments));
   }
 
   /**
    * createGenerics: is created using the enclosing Scope to ask for the appropriate symbol.
    */
   public static SymTypeOfGenerics createGenerics(String name, IBasicSymbolsScope enclosingScope) {
-    TypeSymbol typeSymbol = new TypeSymbolSurrogate(name);
-    typeSymbol.setEnclosingScope(enclosingScope);
-    return new SymTypeOfGenerics(typeSymbol);
+    return createGenerics(name, enclosingScope, Lists.newArrayList());
   }
 
   public static SymTypeOfGenerics createGenerics(String name, IBasicSymbolsScope enclosingScope,
                                                  List<SymTypeExpression> arguments) {
+    Optional<TypeSymbol> type = enclosingScope.resolveType(name);
+    if(type.isPresent()){
+      return new SymTypeOfGenerics(type.get(), arguments);
+    }
     TypeSymbol typeSymbol = new TypeSymbolSurrogate(name);
     typeSymbol.setEnclosingScope(enclosingScope);
     return new SymTypeOfGenerics(typeSymbol, arguments);
@@ -233,10 +272,7 @@ public class SymTypeExpressionFactory {
 
   public static SymTypeOfGenerics createGenerics(String name, IBasicSymbolsScope enclosingScope,
                                                  SymTypeExpression... arguments) {
-    TypeSymbol typeSymbol = new TypeSymbolSurrogate(name);
-    typeSymbol.setEnclosingScope(enclosingScope);
-    return new SymTypeOfGenerics(typeSymbol,
-        Arrays.asList(arguments));
+    return createGenerics(name, enclosingScope, Arrays.asList(arguments));
   }
 
   public static SymTypeOfWildcard createWildcard(boolean isUpper, SymTypeExpression bound) {
