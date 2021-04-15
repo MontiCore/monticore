@@ -2,10 +2,10 @@
 package de.monticore.codegen.cd2java.cli;
 
 import com.google.common.collect.Lists;
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.prettyprint.CD4CodePrinter;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.cd2java.AbstractService;
+import de.monticore.codegen.cd2java.CdUtilsPrinter;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.se_rwth.commons.logging.LogStub;
@@ -26,10 +26,10 @@ public class RunnerDecoratorTest extends DecoratorTestCase {
     LogStub.enableFailQuick(false);
     ASTCDCompilationUnit ast = parse("de", "monticore", "codegen", "ast", "Automaton");
     this.glex.setGlobalValue("service", new AbstractService(ast));
-    this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
+    this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
 
     RunnerDecorator runnerDecorator = new RunnerDecorator(glex, new AbstractService(ast));
-    this.cliClass = runnerDecorator.decorate(Lists.newArrayList(ast)).get();
+    this.cliClass = runnerDecorator.decorate(ast).get();
   }
 
   @Test
