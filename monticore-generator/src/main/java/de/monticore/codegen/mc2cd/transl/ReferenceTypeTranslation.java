@@ -2,12 +2,11 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
-import de.monticore.grammar.HelperGrammar;
 import de.monticore.grammar.grammar.GrammarMill;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
@@ -49,7 +48,7 @@ public class ReferenceTypeTranslation implements
     }
 
     for (Link<ASTConstantGroup, ASTCDAttribute> link : rootLink.getLinks(ASTConstantGroup.class, ASTCDAttribute.class)) {
-      boolean iterated = MCGrammarSymbolTableHelper.isConstGroupIterated(link.source().getSymbol());
+      boolean iterated = TransformationHelper.isConstGroupIterated(link.source().getSymbol());
       int constantType = iterated ? ASTConstantsMCBasicTypes.INT : ASTConstantsMCBasicTypes.BOOLEAN;
       link.target().setMCType(GrammarMill.mCPrimitiveTypeBuilder().setPrimitive(constantType).build());
     }
@@ -68,7 +67,7 @@ public class ReferenceTypeTranslation implements
       if (!ruleSymbol.isPresentAstNode() || !(ruleSymbol.getAstNode() instanceof ASTLexProd)) {
         return createType("String");
       }
-      return determineConstantsType(HelperGrammar.createConvertType((ASTLexProd) ruleSymbol.getAstNode()))
+      return determineConstantsType(TransformationHelper.createConvertType((ASTLexProd) ruleSymbol.getAstNode()))
           .map(lexType -> (ASTMCType) GrammarMill.mCPrimitiveTypeBuilder().setPrimitive(lexType).build())
           .orElse(createType("String"));
     } else if (ruleSymbol.isIsExternal()) {

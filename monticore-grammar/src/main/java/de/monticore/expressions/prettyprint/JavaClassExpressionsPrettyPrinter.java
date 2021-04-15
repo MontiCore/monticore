@@ -162,7 +162,6 @@ public class JavaClassExpressionsPrettyPrinter implements JavaClassExpressionsVi
     node.getExpression().accept(getTraverser());
     getPrinter().print("[");
     node.getIndexExpression().accept(getTraverser());
-    ;
     getPrinter().print("]");
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }

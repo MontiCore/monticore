@@ -12,14 +12,6 @@ import java.util.Optional;
 
 public class Grammar_WithConceptsScopesGenitor extends Grammar_WithConceptsScopesGenitorTOP {
 
-  public Grammar_WithConceptsScopesGenitor(IGrammar_WithConceptsScope enclosingScope) {
-    super(enclosingScope);
-  }
-
-  public Grammar_WithConceptsScopesGenitor(Deque<? extends IGrammar_WithConceptsScope> scopeStack) {
-    super(scopeStack);
-  }
-
   public Grammar_WithConceptsScopesGenitor() {
     super();
   }

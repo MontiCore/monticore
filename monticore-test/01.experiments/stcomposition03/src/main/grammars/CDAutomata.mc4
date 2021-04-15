@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+/** This is a very much simplified CD excerpt that
+    exhibits some of typical CD symbols and scopes.
+    It is used for demonstration only.
+*/
+
+grammar CDAutomata extends BasicCD, Automata7 {
+
+CDAutomaton = (ClassDiagram | Automaton)* ;
+
+}

@@ -26,7 +26,10 @@ public interface ISymbolDeSer<S extends ISymbol, J> {
    * @param serialized
    * @return
    */
-  S deserialize (String serialized);
+  default S deserialize (String serialized){
+    JsonObject symbol = JsonParser.parseJsonObject(serialized);
+    return deserialize(symbol);
+  }
 
   /**
    * Deserialize a passed Json Object to an instance of the type T
@@ -34,5 +37,7 @@ public interface ISymbolDeSer<S extends ISymbol, J> {
    * @return
    */
   S deserialize (JsonObject serialized);
+
+  String getSerializedKind();
 
 }

@@ -21,6 +21,7 @@ However, we suggest some default arguments for standardized access.
 -i,--input <file>            Reads the (mandatory) source file resp. the
                              contents of the model
 -path <dirlist>              Sets the artifact path for imported symbols, space separated
+-modelpath <dirlist>         Sets the artifact path for imported models, space separated
 -pp,--prettyprint <file>     Prints the AST to stdout or the specified output 
                              file (optional)
 -s, --symboltable <file>      Serializes and prints the symbol table to stdout 
@@ -63,6 +64,9 @@ Some explanation to the arguments:
   That means with `-path a/b x/y`
   the actual symboltable for a Statechart `de.mine.Door` is found in 
   `a/b/de/mine/Door.scsym` or `x/y/de/mine/Door.scsym` (in that order)
+* Languages typically only load other symbols rather than other models. Therefore, the argument 
+  `-path` that identifies only paths containing symbols should be implemented by most languages, whereas 
+  the argument `-modelpath` for identifying paths containing models is typically not required.
 * Groovy-scripting (`-sc`, `--script`): A Groovy Script is meant to describe the tool internal 
   workflow. It controls parsing, symbol construction, reporting, code generation etc.
   This kind of scripting should only become necessary, when various alternative

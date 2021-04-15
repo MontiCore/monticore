@@ -2,11 +2,27 @@
 
 package de.monticore
 
-// M1: configuration object "_configuration" prepared externally
-Log.debug("--------------------------------", LOG_ID)
-Log.debug("MontiCore", LOG_ID)
-Log.debug(" - eating your models since 2005", LOG_ID)
-Log.debug("--------------------------------", LOG_ID)
+/*
+ * This configuration file contains the standard workflow of MontiCore:
+ * It mainly processes a grammar (and imported sub-grammars) and produces
+ * a variety of outputs, such as
+ * * a parser
+ * * AST classes
+ * * visitors
+ * * symbol and scope management, etc.
+ *
+ * The workflow is organized in ten steps (M1 - M10).
+ * For a detailed description see the MontiCore reference manual
+ * at https:/www.monticore.de/
+ */
+
+// ############################################################
+// M1: Basic setup and initialization
+// M1.1: Logging
+Log.info("--------------------------------", LOG_ID)
+Log.info("MontiCore", LOG_ID)
+Log.info(" - eating your models since 2005", LOG_ID)
+Log.info("--------------------------------", LOG_ID)
 Log.debug("Grammar argument    : " + _configuration.getGrammarsAsStrings(), LOG_ID)
 Log.debug("Grammar files       : " + grammars, LOG_ID)
 Log.debug("Modelpath           : " + modelPath, LOG_ID)
@@ -18,113 +34,57 @@ Log.debug("Handcoded files     : " + handcodedPath, LOG_ID)
 // Output only those reports that are required for incremental generation
 reportManagerFactory = new MontiCoreReportsLight(out.getAbsolutePath(), report.getAbsolutePath(), handcodedPath, templatePath)
 
-// ############################################################
-// M1  basic setup and initialization:
-// initialize incremental generation; enabling of reporting; create global scope
-IncrementalChecker.initialize(out, report)
-InputOutputFilesReporter.resetModelToArtifactMap()
+// M1.2: Build Global Scope
 mcScope = createMCGlobalScope(modelPath)
-cdScope = createCD4AGlobalScope(modelPath)
-symbolCdScope = createCD4AGlobalScope(modelPath)
-scopeCdScope = createCD4AGlobalScope(modelPath)
+
+// M1.3: Initialize reporting (output)
 Reporting.init(out.getAbsolutePath(), report.getAbsolutePath(), reportManagerFactory)
-// ############################################################
 
 // ############################################################
-// the first pass processes all input grammars
-// transforms them to a CD and stores the resulting CD to disk
+// Loop over the list of grammars provided as arguments (these grammars are
+// usually independent or build on each other in the correct order).
+// Dependency management is not in the scope of MontiCore itself.
+// ############################################################
 while (grammarIterator.hasNext()) {
   input = grammarIterator.next()
-  if (force || !IncrementalChecker.isUpToDate(input, modelPath, templatePath, handcodedPath )) {
-    IncrementalChecker.cleanUp(input)
 
-    // M2: parse grammar
-    astGrammar = parseGrammar(input)
+  // M2: Parse grammar
+  astGrammar = parseGrammar(input)
 
-    if (astGrammar.isPresent()) {
-      astGrammar = astGrammar.get()
+  if (astGrammar.isPresent()) {
+    astGrammar = astGrammar.get()
 
-      // start reporting
-      grammarName = Names.getQualifiedName(astGrammar.getPackageList(), astGrammar.getName())
-      Reporting.on(grammarName)
-      Reporting.reportModelStart(astGrammar, grammarName, "")
-      Reporting.reportParseInputFile(input, grammarName)
+    // start reporting on that grammar
+    grammarName = Names.getQualifiedName(astGrammar.getPackageList(), astGrammar.getName())
+    Reporting.on(grammarName)
+    Reporting.reportModelStart(astGrammar, grammarName, "")
+    Reporting.reportParseInputFile(input, grammarName)
 
-      // M3: populate symbol table
-      astGrammar = createSymbolsFromAST(mcScope, astGrammar)
+    // M3: Populate symbol table
+    astGrammar = createSymbolsFromAST(mcScope, astGrammar)
 
-      // M4: execute context conditions
-      runGrammarCoCos(astGrammar, mcScope)
+    // M4: Execute context conditions
+    runGrammarCoCos(astGrammar, mcScope)
 
-      // M5: transform grammar AST into Class Diagram AST
-      //     and create symbol and scope class diagramm
-      astClassDiagramWithST = deriveASTCD(astGrammar, glex, cdScope)
-      deriveSymbolCD(astGrammar, symbolCdScope)
-      deriveScopeCD(astGrammar, scopeCdScope)
+    // M5: Transform grammar AST into a class diagram and report it
+    cd = deriveCD(astGrammar, glex, mcScope)
+    reportCD(cd, report)
 
-      // M6: generate parser and wrapper
-      generateParser(glex, astClassDiagramWithST, astGrammar, mcScope, handcodedPath, out)
-    }
+    // M6: Generate parser and wrapper
+    generateParser(glex, cd, astGrammar, mcScope, handcodedPath, templatePath, out)
+
+    // M7: Decorate class diagrams
+    decoratedCD = decorateCD(glex, mcScope, cd, handcodedPath)
+
+    // M8 Generate ast classes, symbol table, visitor, and context conditions
+    generateFromCD(glex, cd, decoratedCD, out, handcodedPath, templatePath)
+
+    // M9: Write reports to files
+    // M9.1: Inform about successful completion for grammar
+    Log.info("Grammar " + astGrammar.getName() + " processed successfully!", LOG_ID)
+
+    // M9.2: Flush reporting
+    Reporting.reportModelEnd(astGrammar.getName(), "")
+    Reporting.flush(astGrammar)
   }
-}
-// end of first pass
-// ############################################################
-
-// ############################################################
-// the second pass
-// do the rest which requires already created CDs of possibly
-// local super grammars etc.
-for (astGrammar in getParsedGrammars()) {
-  // make sure to use the right report manager again
-  Reporting.on(Names.getQualifiedName(astGrammar.getPackageList(), astGrammar.getName()))
-
-  // get already created base class diagramms
-  astClassDiagram = getCDOfParsedGrammar(astGrammar)
-  symbolClassDiagramm = getSymbolCDOfParsedGrammar(astGrammar)
-  scopeClassDiagramm = getScopeCDOfParsedGrammar(astGrammar)
-
-  astClassDiagram = addListSuffixToAttributeName(astClassDiagram)
-
-  // report the basic AST diagram
-  reportCD(astClassDiagram, report)
-
-  // M9 Generate ast classes, visitor and context condition
-  // decorate and generate CD for the '_symboltable' package
-  decoratedSymbolTableCd = decorateForSymbolTablePackage(glex, cdScope, astClassDiagram,
-           symbolClassDiagramm, scopeClassDiagramm, handcodedPath)
-  generateFromCD(glex, astClassDiagram, decoratedSymbolTableCd, out, handcodedPath)
-
-  // decorate and generate Traverser CD for the '_visitor' package
-  decoratedTraverserCD = decorateTraverserForVisitorPackage(glex, cdScope, astClassDiagram, handcodedPath)
-  generateFromCD(glex, astClassDiagram, decoratedTraverserCD, out, handcodedPath)
-
-  // decorate and generate CD for the '_coco' package
-  decoratedCoCoCD = decorateForCoCoPackage(glex, cdScope, astClassDiagram, handcodedPath)
-  generateFromCD(glex, astClassDiagram, decoratedCoCoCD, out, handcodedPath)
-
-  // decorate and generate CD for the '_od' package
-  decoratedODCD = decorateForODPackage(glex, cdScope, astClassDiagram, handcodedPath)
-  generateFromCD(glex, astClassDiagram, decoratedODCD, out, handcodedPath)
-
-  // decorate and generate CD for the '_ast' package
-  decoratedASTClassDiagramm = decorateForASTPackage(glex, cdScope, astClassDiagram, handcodedPath)
-  generateFromCD(glex, astClassDiagram, decoratedASTClassDiagramm, out, handcodedPath)
-
-  // decorate and generate CD for the mills
-  decoratedMillCD = decorateMill(glex, cdScope, astClassDiagram, decoratedASTClassDiagramm,
-                                 decoratedSymbolTableCd, decoratedTraverserCD, handcodedPath)
-  generateFromCD(glex, astClassDiagram, decoratedMillCD, out, handcodedPath)
-
-  //decorate and generate CD for the '_auxiliary' package
-  decoratedAuxiliaryCD = decorateAuxiliary(glex, cdScope, astClassDiagram, decoratedASTClassDiagramm, handcodedPath)
-  generateFromCD(glex, astClassDiagram, decoratedAuxiliaryCD, out, handcodedPath)
-
-  // report the full AST incl. Symbols diagrams
-  reportCD(astClassDiagram, decoratedASTClassDiagramm, decoratedSymbolTableCd, scopeClassDiagramm, report)
-
-  Log.info("Grammar " + astGrammar.getName() + " processed successfully!", LOG_ID)
-
-  // M10: flush reporting
-  Reporting.reportModelEnd(astGrammar.getName(), "")
-  Reporting.flush(astGrammar)
 }

@@ -4,10 +4,7 @@ package de.monticore.types.check;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.literals.mccommonliterals._ast.ASTSignedLiteral;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
-import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcbasictypes._ast.ASTMCVoidType;
+import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.se_rwth.commons.logging.Log;
 
@@ -43,39 +40,24 @@ public class TypeCheck {
    * Deriving the SymTypeExpression from an AST Value - Literal.
    * May also be of a subclass;
    */
-  protected ITypesCalculator iTypesCalculator;
+  protected IDerive iDerive;
   
+
   /**
    * Configuration as state:
    * @param synthesizeSymType defines, which AST Types are mapped (and how)
-   * @param  iTypesCalculator defines, which AST Literals are handled
+   * @param  iDerive defines, which AST Literals are handled
    *                               through the Expression type recognition
    */
   public TypeCheck(ISynthesize synthesizeSymType,
-                   ITypesCalculator iTypesCalculator) {
+                   IDerive iDerive) {
     this.iSynthesize = synthesizeSymType;
-    this.iTypesCalculator = iTypesCalculator;
-  }
-
-  /**
-   *
-   * @param synthesizeSymType defines, which AST Types are mapped (and how)
-   */
-  public TypeCheck(ISynthesize synthesizeSymType){
-    this.iSynthesize = synthesizeSymType;
-  }
-
-  /**
-   *
-   * @param iTypesCalculator defines, which AST Literals are handled
-   *                               through the Expression type recognition
-   */
-  public TypeCheck(ITypesCalculator iTypesCalculator){
-    this.iTypesCalculator = iTypesCalculator;
+    this.iDerive = iDerive;
   }
   
   /*************************************************************************/
   
+
   /**
    * Function 1: extracting the SymTypeExpression from an AST Type
    * The SymTypeExpression is independent of the AST and can be stored in the SymTab etc.
@@ -83,25 +65,29 @@ public class TypeCheck {
    * Tests for this Function are combined in the Visitor tests
    * (SynthesizeSymType.*Types.*Test)
    */
-  public SymTypeExpression symTypeFromAST(ASTMCType astMCType) {
+  public SymTypeExpression symTypeFromAST(ASTMCType ast)
+  {
     iSynthesize.init();
-    astMCType.accept(iSynthesize.getTraverser());
+    ast.accept(iSynthesize.getTraverser());
     Optional<SymTypeExpression> result = iSynthesize.getResult();
     if(!result.isPresent()) {
       Log.error("0xE9FD4 Internal Error: No SymType for: "
-              + astMCType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()) + ". Probably TypeCheck mis-configured.");
+              + ast.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()) + ". Probably TypeCheck mis-configured.");
     }
     return result.get();
   }
   
+
   /**
    * Function 1b: extracting the SymTypeExpression from the AST Type "void"
    * ("void" is not in the ASTMCType hierarchy, while it is included in the SymTypeExpressions)
    */
-  public SymTypeExpression symTypeFromAST(ASTMCVoidType astMCVoidType)  {
+  public SymTypeExpression symTypeFromAST(ASTMCVoidType ast) 
+  {
     return SymTypeExpressionFactory.createTypeVoid();
   }
   
+
   /**
    * Function 1c: extracting the SymTypeExpression from the AST MCReturnType
    * (MCReturnType is not in the ASTMCType hierarchy, while it is included in the SymTypeExpressions)
@@ -109,38 +95,43 @@ public class TypeCheck {
    * Tests for this Function are combined in the Visitor tests
    * (SynthesizeSymType.*Types.*Test)
    */
-  public SymTypeExpression symTypeFromAST(ASTMCReturnType astMCReturnType) {
+  public SymTypeExpression symTypeFromAST(ASTMCReturnType ast)
+  {
     iSynthesize.init();
-    astMCReturnType.accept(iSynthesize.getTraverser());
+    ast.accept(iSynthesize.getTraverser());
     Optional<SymTypeExpression> result = iSynthesize.getResult();
     if(!result.isPresent()) {
       Log.error("0xE9FD5 Internal Error: No SymType for return type: "
-              + astMCReturnType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter())
+              + ast.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter())
               + ". Probably TypeCheck mis-configured.");
     }
     return result.get();
   }
 
+
   /**
-   * Function 15: extracting the SymTypeExpression from the AST MCQualifiedName
+   * Function 1d: extracting the SymTypeExpression from the AST MCQualifiedName
    *
    * Tests for this Function are combined in the Visitor tests
    * (SynthesizeSymType.*Types.*Test)
    */
-  public SymTypeExpression symTypeFromAST(ASTMCQualifiedName astMCQualifiedName) {
+  public SymTypeExpression symTypeFromAST(ASTMCQualifiedName ast)
+  {
     iSynthesize.init();
-    astMCQualifiedName.accept(iSynthesize.getTraverser());
+    ast.accept(iSynthesize.getTraverser());
     Optional<SymTypeExpression> result = iSynthesize.getResult();
     if(!result.isPresent()) {
       Log.error("0xE9FD5 Internal Error: No SymType for MCQualifiedName: "
-              + astMCQualifiedName.getBaseName()
+              + ast.getBaseName()
               + ". Probably TypeCheck mis-configured.");
     }
     return result.get();
   }
 
+
   /*************************************************************************/
   
+
   /**
    * Function 2: Derive the SymTypeExpression from an Expression AST
    * This defines the Type that an Expression has.
@@ -148,10 +139,11 @@ public class TypeCheck {
    * Free Variables in the AST are being looked u through the Symbol Table that
    * needs to be in place; same for method calls etc.
    */
-  public SymTypeExpression typeOf(ASTExpression expr) {
-    iTypesCalculator.init();
-    Optional<SymTypeExpression> result =
-            iTypesCalculator.calculateType(expr);
+  public SymTypeExpression typeOf(ASTExpression expr)
+  {
+    iDerive.init();
+    expr.accept(iDerive.getTraverser());
+    Optional<SymTypeExpression> result = iDerive.getResult();
     if(!result.isPresent()) {
       Log.error("0xED680 Internal Error: No Type for Expression " + expr
               + " Probably TypeCheck mis-configured.");
@@ -159,23 +151,6 @@ public class TypeCheck {
     return result.get();
   }
   
-  /**
-   * Function 2b: Derive the SymTypeExpression of a Literal
-   * This defines the Type that a Literal has and will be used to
-   * determine the Type of Expressions.
-   *
-   * Tests for this Function are combined in the Visitor tests
-   * (DeriveSymType.*Literals.*Test)
-   */
-  public SymTypeExpression typeOf(ASTLiteral lit) {
-    iTypesCalculator.init();
-    Optional<SymTypeExpression> result = iTypesCalculator.calculateType(lit);
-    if(!result.isPresent()) {
-      Log.error("0xED670 Internal Error: No Type for Literal " + lit
-              + " Probably TypeCheck mis-configured.");
-    }
-    return result.get();
-  }
 
   /**
    * Function 2b: Derive the SymTypeExpression of a Literal
@@ -185,15 +160,18 @@ public class TypeCheck {
    * Tests for this Function are combined in the Visitor tests
    * (DeriveSymType.*Literals.*Test)
    */
-  public SymTypeExpression typeOf(ASTSignedLiteral lit) {
-    iTypesCalculator.init();
-    Optional<SymTypeExpression> result = iTypesCalculator.calculateType(lit);
+  public SymTypeExpression typeOf(ASTLiteral lit)
+  {
+    iDerive.init();
+    lit.accept(iDerive.getTraverser());
+    Optional<SymTypeExpression> result = iDerive.getResult();
     if(!result.isPresent()) {
-      Log.error("0xED672 Internal Error: No Type for Literal " + lit
-          + " Probably TypeCheck mis-configured.");
+      Log.error("0xED670 Internal Error: No Type for Literal " + lit
+              + " Probably TypeCheck mis-configured.");
     }
     return result.get();
   }
+
 
 
   /*************************************************************************/
@@ -205,7 +183,7 @@ public class TypeCheck {
    * (This allows to store/use values of type "sub" at all positions of type "super".
    * Compatibility examples:
    *      compatible("int", "long")       (in all directions)
-   *      compatible("long", "in")        (in all directions)
+   *      compatible("long", "int")       (in all directions)
    *      compatible("double", "float")   (in all directions)
    *      compatible("Person", "Student") (uni-directional)
    *
@@ -213,7 +191,8 @@ public class TypeCheck {
    *     !compatible("double", "int")   (in all directions)
    *
    * The concrete Typechecker has to decide on further issues, like
-   *     !compatible("List<double>", "List<int>")  where e.g. Java and OCL/P differ
+   *     !compatible("List<double>", "List<int>") 
+   *     where e.g. Java and OCL/P differ in their answers
    *
    * @param left  Super-Type
    * @param right  Sub-Type (assignment-compatible to supertype?)
@@ -221,8 +200,12 @@ public class TypeCheck {
    * TODO: Probably needs to be extended for free type-variable assignments
    * (because it may be that they get unified over time: e.g. Map<a,List<c>> and Map<long,b>
    * are compatible, by refining the assignments a-> long, b->List<c>
+   *
+   * TODO: remove "static" keyword
    */
-  public static boolean compatible(SymTypeExpression left, SymTypeExpression right) {
+  public static boolean compatible(SymTypeExpression left,
+                                   SymTypeExpression right)
+  {
     if(left.isTypeConstant()&&right.isTypeConstant()){
       SymTypeConstant leftType = (SymTypeConstant) left;
       SymTypeConstant rightType = (SymTypeConstant) right;
@@ -251,13 +234,17 @@ public class TypeCheck {
         return true;
       }
       return false;
+    } else if (!left.isTypeConstant() && right.isNullType()){
+      return true;
     } else if(unbox(left.print()).equals(unbox(right.print()))) {
       return true;
-    } else if(isSubtypeOf(right,left)){
+    } else if(isSubtypeOf(right,left)) {
       return true;
     } else if (right.print().equals(left.print())) {
       return true;
     } else if (left.deepEquals(right) || right.deepEquals(left)) {
+      return true;
+    }else if (left.getTypeInfo().getName().equals(right.getTypeInfo().getName())){
       return true;
     }
     return false;
@@ -265,6 +252,7 @@ public class TypeCheck {
   
   /*************************************************************************/
   
+
   /**
    * Function 4:
    * Checks whether the ASTExpression exp will result in a value that is of type, and
@@ -275,10 +263,13 @@ public class TypeCheck {
    * @param type the Type it needs to have (e.g. the Type of a variable used for assignment, or the
    *             type of a channel where to send a value)
    */
-  public boolean isOfTypeForAssign(SymTypeExpression type, ASTExpression exp) {
+  public boolean isOfTypeForAssign(SymTypeExpression type,
+                                   ASTExpression exp)
+  {
     return compatible(  type, typeOf(exp));
-    // DONE: that is all what is needed
+    // that is all what is needed
   }
+
 
 
   /**
@@ -310,6 +301,7 @@ public class TypeCheck {
     return isSubtypeOfRec(subType,superType);
   }
 
+
   /**
    * private recursive helper method for the method isSubTypeOf
    * @param subType the SymTypeExpression that could be a subtype of the other SymTypeExpression
@@ -333,45 +325,56 @@ public class TypeCheck {
     return subtype;
   }
 
-  public static boolean isBoolean(SymTypeExpression type){
+  public static boolean isBoolean(SymTypeExpression type)
+  {
     return "boolean".equals(unbox(type.print()));
   }
 
-  public static boolean isInt(SymTypeExpression type){
+  public static boolean isInt(SymTypeExpression type)
+  {
     return "int".equals(unbox(type.print()));
   }
 
-  public static boolean isDouble(SymTypeExpression type){
+  public static boolean isDouble(SymTypeExpression type)
+  {
     return "double".equals(unbox(type.print()));
   }
 
-  public static boolean isFloat(SymTypeExpression type){
+  public static boolean isFloat(SymTypeExpression type)
+  {
     return "float".equals(unbox(type.print()));
   }
 
-  public static boolean isLong(SymTypeExpression type){
+  public static boolean isLong(SymTypeExpression type)
+  {
     return "long".equals(unbox(type.print()));
   }
 
-  public static boolean isChar(SymTypeExpression type){
+  public static boolean isChar(SymTypeExpression type)
+  {
     return "char".equals(unbox(type.print()));
   }
 
-  public static boolean isShort(SymTypeExpression type){
+  public static boolean isShort(SymTypeExpression type)
+  {
     return "short".equals(unbox(type.print()));
   }
 
-  public static boolean isByte(SymTypeExpression type){
+  public static boolean isByte(SymTypeExpression type)
+  {
     return "byte".equals(unbox(type.print()));
   }
 
-  public static boolean isVoid(SymTypeExpression type){
+  public static boolean isVoid(SymTypeExpression type)
+  {
     return "void".equals(unbox(type.print()));
   }
 
-  public static boolean isString(SymTypeExpression type){
+  public static boolean isString(SymTypeExpression type)
+  {
     return "String".equals(type.print());
   }
   
   
 }
+

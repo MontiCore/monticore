@@ -17,7 +17,7 @@ import java.util.TreeSet;
  */
 public class NodeTypesReporter extends AReporter {
   
-  final static String SIMPLE_FILE_NAME = "12_TypesOfNodes";
+  static final String SIMPLE_FILE_NAME = "12_TypesOfNodes";
   
   private Map<String, Integer> nodeTypeCount = Maps.newTreeMap();
   
@@ -126,7 +126,7 @@ public class NodeTypesReporter extends AReporter {
         s = nodeTypeCount2.get(key) + "x";
       }
       // evading 0x objects 0x visits line
-      if (!(s.equals("0x") && objectCount.equals("0x"))) {
+      if (!("0x".equals(s) && "0x".equals(objectCount))) {
         writeLine(objectCount
             + Layouter.getSpaceString(10 - objectCount.length()) + s
             + Layouter.getSpaceString(9 - s.length()) + key);

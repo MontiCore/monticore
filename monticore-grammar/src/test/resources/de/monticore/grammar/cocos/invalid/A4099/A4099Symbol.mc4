@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.grammar.cocos.invalid.A4099;
+
+grammar A4099Symbol {
+
+  symbol A4099 = Name;
+
+}

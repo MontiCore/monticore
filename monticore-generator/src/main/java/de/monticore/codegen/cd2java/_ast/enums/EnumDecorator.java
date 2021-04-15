@@ -1,8 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast.enums;
 
-import de.monticore.cd.cd4analysis.CD4AnalysisMill;
-import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cdbasis._ast.*;
+import de.monticore.cd4codebasis._ast.*;
+import de.monticore.cdinterfaceandenum._ast.*;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
@@ -10,6 +12,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.umlmodifier._ast.ASTModifier;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,7 +20,7 @@ import java.util.stream.Collectors;
 import static de.monticore.codegen.cd2java.CoreTemplates.CONSTANT;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.INT_VALUE;
-import static de.monticore.cd.facade.CDModifier.*;
+import static de.monticore.codegen.cd2java.CDModifier.*;
 
 /**
  * creates corresponding AST enums for enum definitions in grammars
@@ -55,15 +58,15 @@ public class EnumDecorator extends AbstractCreator<ASTCDEnum, ASTCDEnum> {
         .setName(enumName)
         .setModifier(modifier)
         .addAllCDEnumConstants(constants)
-        .addCDConstructor(getLiteralsConstructor(enumName))
-        .addCDAttribute(intValueAttribute)
-        .addAllCDMethods(intValueMethod)
+        .addCDMember(getLiteralsConstructor(enumName))
+        .addCDMember(intValueAttribute)
+        .addAllCDMembers(intValueMethod)
         .build();
   }
 
   protected ASTCDAttribute getIntValueAttribute() {
     ASTMCType intType = getMCTypeFacade().createIntType();
-    return getCDAttributeFacade().createAttribute(PROTECTED, intType, INT_VALUE);
+    return getCDAttributeFacade().createAttribute(PROTECTED.build(), intType, INT_VALUE);
   }
 
   protected ASTCDConstructor getLiteralsConstructor(String enumName) {

@@ -5,29 +5,37 @@ package de.monticore.codegen.mc2cd;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import de.monticore.ast.ASTNode;
-import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.cd.cd4analysis._parser.CD4AnalysisParser;
-import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
-import de.monticore.cd.cd4analysis._symboltable.ICD4AnalysisGlobalScope;
-import de.monticore.cd.prettyprint.CD4AnalysisFullPrettyPrinter;
+import de.monticore.cd4analysis._symboltable.ICD4AnalysisGlobalScope;
+import de.monticore.cd4code.CD4CodeMill;
+import de.monticore.cd4code._parser.CD4CodeParser;
+import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
+import de.monticore.cd4codebasis._ast.ASTCDParameter;
+import de.monticore.cdbasis._ast.*;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.generating.templateengine.reporting.Reporting;
+import de.monticore.grammar.MCGrammarSymbolTableHelper;
+import de.monticore.grammar.RegExpBuilder;
 import de.monticore.grammar.grammar._ast.*;
+import de.monticore.grammar.grammar._symboltable.AdditionalAttributeSymbol;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
 import de.monticore.grammar.grammar._visitor.GrammarVisitor2;
+import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
+import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsTraverser;
 import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
 import de.monticore.grammar.grammarfamily._visitor.GrammarFamilyTraverser;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.types.mcarraytypes._ast.ASTMCArrayType;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
-import de.monticore.grammar.MCGrammarSymbolTableHelper;
-
+import de.monticore.umlmodifier._ast.ASTModifier;
+import de.monticore.umlstereotype._ast.ASTStereoValue;
 import de.se_rwth.commons.JavaNamesHelper;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
@@ -36,10 +44,13 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static de.monticore.codegen.parser.ParserGeneratorHelper.createStringConvertFunction;
 
 public final class TransformationHelper {
 
@@ -95,9 +106,9 @@ public final class TransformationHelper {
    * @param astNode the top node of the CD AST to be pretty printed
    */
   // TODO: should be placed somewhere in the UML/P CD project
-  public static String prettyPrint(ASTCD4AnalysisNode astNode) {
+  public static String prettyPrint(ASTCDBasisNode astNode) {
     // set up objects
-    CD4AnalysisFullPrettyPrinter prettyPrinter = new CD4AnalysisFullPrettyPrinter(
+    CD4CodeFullPrettyPrinter prettyPrinter = new CD4CodeFullPrettyPrinter(
         new IndentPrinter());
 
     // run, check result and return
@@ -151,22 +162,19 @@ public final class TransformationHelper {
 
   public static ASTCDParameter createParameter(String typeName,
                                                String parameterName) {
-    ASTCDParameter parameter = CD4AnalysisNodeFactory
-        .createASTCDParameter();
-    parameter.setMCType(TransformationHelper.createType(typeName));
-    parameter.setName(parameterName);
-    return parameter;
+    return CD4CodeMill.cDParameterBuilder().
+            setName(parameterName).
+            setMCType(TransformationHelper.createType(typeName)).
+            build();
   }
 
   public static ASTModifier createPublicModifier() {
-    ASTModifier modifier = CD4AnalysisNodeFactory.createASTModifier();
-    modifier.setPublic(true);
-    return modifier;
+    return CD4CodeMill.modifierBuilder().setPublic(true).build();
   }
 
   public static ASTMCGenericType createType(
       String typeName, String generics) {
-    CD4AnalysisParser parser = new CD4AnalysisParser();
+    CD4CodeParser parser = new CD4CodeParser();
     Optional<ASTMCGenericType> optType = null;
     try {
       optType = parser.parse_StringMCGenericType(typeName + "<" + generics + ">");
@@ -177,7 +185,7 @@ public final class TransformationHelper {
   }
 
   public static ASTMCType createType(String typeName) {
-    CD4AnalysisParser parser = new CD4AnalysisParser();
+    CD4CodeParser parser = CD4CodeMill.parser();
     Optional<ASTMCType> optType = null;
     try {
       optType = parser.parse_StringMCType(typeName);
@@ -188,7 +196,7 @@ public final class TransformationHelper {
   }
 
   public static ASTMCReturnType createReturnType(String typeName) {
-    CD4AnalysisParser parser = new CD4AnalysisParser();
+    CD4CodeParser parser = CD4CodeMill.parser();
     Optional<ASTMCReturnType> optType = null;
     try {
       optType = parser.parse_StringMCReturnType(typeName);
@@ -199,7 +207,7 @@ public final class TransformationHelper {
   }
 
   public static ASTMCObjectType createObjectType(String typeName) {
-    CD4AnalysisParser parser = new CD4AnalysisParser();
+    CD4CodeParser parser = CD4CodeMill.parser();
     Optional<ASTMCObjectType> optType = null;
     try {
       optType = parser.parse_StringMCObjectType(typeName);
@@ -207,6 +215,34 @@ public final class TransformationHelper {
       Log.error("0xA4106 Cannot create ASTType " + typeName + " during transformation from MC4 to CD4Analysis");
     }
     return optType.get();
+  }
+
+  public static String createConvertType(ASTLexProd a) {
+    if (!a.isPresentVariable()) {
+      return "String";
+    }
+    String variable = a.getVariable();
+    String name = a.getName();
+
+    // default functions
+    if (a.getTypeList() == null || a.getTypeList().isEmpty()) {
+
+      if ("int".equals(variable) || "boolean".equals(variable) || "char".equals(variable)
+              || "float".equals(variable) || "double".equals(variable)
+              || "long".equals(variable) || "byte".equals(variable) || "short".equals(variable)) {
+        return variable;
+      } else if ("card".equals(variable)) {
+        return "int";
+      } else {
+        Log.warn(
+                "0xA1032 No function for " + a.getVariable() + " registered, will treat it as string!");
+        return "String";
+      }
+    }
+    // specific function
+    else {
+      return Names.getQualifiedName(a.getTypeList());
+    }
   }
 
   public static String getPackageName(ProdSymbol symbol) {
@@ -252,12 +288,15 @@ public final class TransformationHelper {
 
 
   /**
+   *  @deprecated  use de.monticore.generating.GeneratorEngine#existsHandwrittenClass
+   *
    * Checks if a handwritten class with the given qualifiedName (dot-separated)
    * exists on the target path
    *
    * @param qualifiedName name of the class to search for
    * @return true if a handwritten class with the qualifiedName exists
    */
+  @Deprecated
   public static boolean existsHandwrittenClass(IterablePath targetPath,
                                                String qualifiedName) {
     Path handwrittenFile = Paths.get(Names
@@ -284,7 +323,7 @@ public final class TransformationHelper {
    * @param ast The input grammar, providing the qualified name
    * @return The CD if resolved from global scope, Optional.empty() otherwise
    */
-  public static Optional<ASTCDCompilationUnit> getCDforGrammar(ICD4AnalysisGlobalScope globalScope, 
+  public static Optional<ASTCDCompilationUnit> getCDforGrammar(ICD4AnalysisGlobalScope globalScope,
                                                                ASTMCGrammar ast) {
     return getCDforGrammar(globalScope, ast, "");
   }
@@ -301,7 +340,7 @@ public final class TransformationHelper {
                                                                ASTMCGrammar ast, String nameSuffix) {
     final String qualifiedCDName = Names.getQualifiedName(ast.getPackageList(), ast.getName() + nameSuffix);
 
-    Optional<CDDefinitionSymbol> cdSymbol = globalScope.resolveCDDefinitionDown(
+    Optional<DiagramSymbol> cdSymbol = globalScope.resolveDiagramDown(
         qualifiedCDName);
 
     if (cdSymbol.isPresent() && cdSymbol.get().getEnclosingScope().isPresentAstNode()) {
@@ -315,7 +354,7 @@ public final class TransformationHelper {
   }
 
   public static String getQualifiedTypeNameAndMarkIfExternal(ASTMCType ruleReference,
-                                                             ASTMCGrammar grammar, ASTCDClass cdClass) {
+                                                             ASTMCGrammar grammar, ASTCDType cdType) {
 
     Optional<ProdSymbol> typeSymbol = resolveAstRuleType(grammar, ruleReference);
 
@@ -323,24 +362,7 @@ public final class TransformationHelper {
         typeSymbol, ruleReference);
 
     if (!typeSymbol.isPresent()) {
-      addStereoType(cdClass,
-          MC2CDStereotypes.EXTERNAL_TYPE.toString(), qualifiedRuleName);
-    }
-
-    return qualifiedRuleName;
-  }
-
-  // TODO GV: remove this if CDInterface and CDClass have a common type CDType
-  public static String getQualifiedTypeNameAndMarkIfExternal(ASTMCType ruleReference,
-                                                             ASTMCGrammar grammar, ASTCDInterface interf) {
-
-    Optional<ProdSymbol> typeSymbol = resolveAstRuleType(grammar, ruleReference);
-
-    String qualifiedRuleName = getQualifiedAstName(
-        typeSymbol, ruleReference);
-
-    if (!typeSymbol.isPresent()) {
-      addStereoType(interf,
+      addStereoType(cdType,
           MC2CDStereotypes.EXTERNAL_TYPE.toString(), qualifiedRuleName);
     }
 
@@ -355,17 +377,12 @@ public final class TransformationHelper {
     Optional<ProdSymbol> ruleSymbol = MCGrammarSymbolTableHelper.resolveRule(node,
         simpleName
             .substring(AST_PREFIX.length()));
-    if (ruleSymbol.isPresent() && istPartOfGrammar(ruleSymbol.get())) {
+    if (ruleSymbol.isPresent()) {
       return ruleSymbol;
     }
     return Optional.empty();
   }
 
-  // TODO GV, PN: change it
-  public static boolean istPartOfGrammar(ProdSymbol rule) {
-    return rule.getEnclosingScope().isPresentSpanningSymbol()
-        && rule.getEnclosingScope().getSpanningSymbol() instanceof MCGrammarSymbol;
-  }
 
   public static String getGrammarName(ProdSymbol rule) {
     return Names.getQualifier(rule.getFullName());
@@ -386,7 +403,7 @@ public final class TransformationHelper {
   public static void addStereoType(ASTCDType type, String stereotypeName,
                                    String stereotypeValue) {
     if (!type.isPresentModifier()) {
-      type.setModifier(CD4AnalysisNodeFactory.createASTModifier());
+      type.setModifier(CD4CodeMill.modifierBuilder().build());
     }
     addStereotypeValue(type.getModifier(),
         stereotypeName, stereotypeValue);
@@ -394,11 +411,9 @@ public final class TransformationHelper {
 
   public static void addStereoType(ASTCDType type, String stereotypeName,
                                    String stereotypeValue, boolean multiple) {
-    if (!type.isPresentModifier()) {
-      type.setModifier(CD4AnalysisNodeFactory.createASTModifier());
-    } else if (!multiple) {
+    if (!multiple) {
       if (type.getModifier().isPresentStereotype()
-              && type.getModifier().getStereotype().getValueList().stream().anyMatch(v -> v.getName().equals(stereotypeName))) {
+              && type.getModifier().getStereotype().getValuesList().stream().anyMatch(v -> v.getName().equals(stereotypeName))) {
         return;
       }
     }
@@ -408,7 +423,7 @@ public final class TransformationHelper {
 
   public static void addStereoType(ASTCDType type, String stereotypeName) {
     if (!type.isPresentModifier()) {
-      type.setModifier(CD4AnalysisNodeFactory.createASTModifier());
+      type.setModifier(CD4CodeMill.modifierBuilder().build());
     }
     addStereotypeValue(type.getModifier(),
         stereotypeName);
@@ -416,7 +431,7 @@ public final class TransformationHelper {
 
   public static void addStereoType(ASTCDDefinition type, String stereotypeName) {
     if (!type.isPresentModifier()) {
-      type.setModifier(CD4AnalysisNodeFactory.createASTModifier());
+      type.setModifier(CD4CodeMill.modifierBuilder().build());
     }
     addStereotypeValue(type.getModifier(),
         stereotypeName);
@@ -426,7 +441,7 @@ public final class TransformationHelper {
                                    String stereotypeName,
                                    String stereotypeValue) {
     if (!attribute.isPresentModifier()) {
-      attribute.setModifier(CD4AnalysisNodeFactory.createASTModifier());
+      attribute.setModifier(CD4CodeMill.modifierBuilder().build());
     }
     addStereotypeValue(attribute.getModifier(),
         stereotypeName, stereotypeValue);
@@ -434,9 +449,6 @@ public final class TransformationHelper {
 
   public static void addStereoType(ASTCDDefinition type, String stereotypeName,
                                    String stereotypeValue) {
-    if (!type.isPresentModifier()) {
-      type.setModifier(CD4AnalysisNodeFactory.createASTModifier());
-    }
     addStereotypeValue(type.getModifier(),
         stereotypeName, stereotypeValue);
   }
@@ -445,29 +457,25 @@ public final class TransformationHelper {
                                         String stereotypeName,
                                         String stereotypeValue) {
     if (!astModifier.isPresentStereotype()) {
-      astModifier.setStereotype(CD4AnalysisNodeFactory
-          .createASTCDStereotype());
+      astModifier.setStereotype(CD4CodeMill.stereotypeBuilder().uncheckedBuild());
     }
-    List<ASTCDStereoValue> stereoValueList = astModifier.getStereotype()
-        .getValueList();
-    ASTCDStereoValue stereoValue = CD4AnalysisNodeFactory
-        .createASTCDStereoValue();
-    stereoValue.setName(stereotypeName);
-    stereoValue.setValue(stereotypeValue);
+    List<ASTStereoValue> stereoValueList = astModifier.getStereotype()
+        .getValuesList();
+    ASTStereoValue stereoValue = CD4CodeMill.stereoValueBuilder().
+            setName(stereotypeName).
+            setText(CD4CodeMill.stringLiteralBuilder().setSource(stereotypeValue).build()).uncheckedBuild();
     stereoValueList.add(stereoValue);
   }
 
   public static void addStereotypeValue(ASTModifier astModifier,
                                         String stereotypeName) {
     if (!astModifier.isPresentStereotype()) {
-      astModifier.setStereotype(CD4AnalysisNodeFactory
-          .createASTCDStereotype());
+      astModifier.setStereotype(CD4CodeMill.stereotypeBuilder().uncheckedBuild());
     }
-    List<ASTCDStereoValue> stereoValueList = astModifier.getStereotype()
-        .getValueList();
-    ASTCDStereoValue stereoValue = CD4AnalysisNodeFactory
-        .createASTCDStereoValue();
-    stereoValue.setName(stereotypeName);
+    List<ASTStereoValue> stereoValueList = astModifier.getStereotype()
+            .getValuesList();
+    ASTStereoValue stereoValue = CD4CodeMill.stereoValueBuilder().
+            setName(stereotypeName).uncheckedBuild();
     stereoValueList.add(stereoValue);
   }
 
@@ -619,5 +627,97 @@ public final class TransformationHelper {
       ruleComponentList.add(node);
     }
   }
-
+  
+  public static boolean isConstGroupIterated(RuleComponentSymbol prodComponent) {
+    Preconditions.checkArgument(prodComponent.isIsConstantGroup());
+    Collection<String> set = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+    for (RuleComponentSymbol comp: prodComponent.getEnclosingScope().resolveRuleComponentDownMany(prodComponent.getName())) {
+      comp.getSubProdsList().stream().forEach((p -> set.add(p)));
+    }
+    return set.size() > 1;
+  }
+  
+  public static String getQualifiedName(ProdSymbol symbol) {
+    if (!symbol.isPresentAstNode()) {
+      return "UNKNOWN_TYPE";
+    }
+    if (symbol.isIsLexerProd()) {
+      return getLexType(symbol.getAstNode());
+    }
+    if (symbol.isIsEnum()) {
+      return MCGrammarSymbolTableHelper.getQualifiedName(symbol.getAstNode(), symbol, "AST", "");
+    }
+    return MCGrammarSymbolTableHelper.getQualifiedName(symbol.getAstNode(), symbol, "AST", "");
+  }
+  
+  private static String getLexType(ASTNode node) {
+    if (node instanceof ASTLexProd) {
+      return createConvertType((ASTLexProd) node);
+    }
+    if (node instanceof ASTLexActionOrPredicate) {
+      return "String";
+    }
+    return "UNKNOWN_TYPE";
+  }
+  
+  public static Optional<Integer> getMax(AdditionalAttributeSymbol attrSymbol) {
+    if (!attrSymbol.isPresentAstNode()) {
+      return Optional.empty();
+    }
+    return getMax(attrSymbol.getAstNode());
+  }
+  
+  public static Optional<Integer> getMax(ASTAdditionalAttribute ast) {
+    if (ast.isPresentCard()
+        && ast.getCard().isPresentMax()) {
+      String max = ast.getCard().getMax();
+      if ("*".equals(max)) {
+        return Optional.of(STAR);
+      }
+      else {
+        try {
+          int x = Integer.parseInt(max);
+          return Optional.of(x);
+        } catch (NumberFormatException ignored) {
+          Log.warn("0xA0140 Failed to parse an integer value of max of ASTAdditionalAttribute "
+              + ast.getName() + " from string " + max);
+        }
+      }
+    }
+    return Optional.empty();
+  }
+  
+  public static boolean isFragment(ASTProd astNode) {
+    return !(astNode instanceof ASTLexProd)
+        || ((ASTLexProd) astNode).isFragment();
+  }
+  
+  public static Optional<Pattern> calculateLexPattern(MCGrammarSymbol grammar,
+      ASTLexProd lexNode) {
+    Optional<Pattern> ret = Optional.empty();
+    
+    final String lexString = getLexString(grammar, lexNode);
+    try {
+      if ("[[]".equals(lexString)) {
+        return Optional.ofNullable(Pattern.compile("[\\[]"));
+      } else {
+        return Optional.ofNullable(Pattern.compile(lexString));
+      }
+    } catch (PatternSyntaxException e) {
+      Log.error("0xA0913 Internal error with pattern handling for lex rules. Pattern: " + lexString
+          + "\n", e);
+    }
+    return ret;
+  }
+  
+  private static String getLexString(MCGrammarSymbol grammar, ASTLexProd lexNode) {
+    StringBuilder builder = new StringBuilder();
+    RegExpBuilder regExp = new RegExpBuilder(builder, grammar);
+    Grammar_WithConceptsTraverser traverser = Grammar_WithConceptsMill.traverser();
+    traverser.add4Grammar(regExp);
+    traverser.setGrammarHandler(regExp);
+    lexNode.accept(traverser);
+    return builder.toString();
+  }
+  
 }

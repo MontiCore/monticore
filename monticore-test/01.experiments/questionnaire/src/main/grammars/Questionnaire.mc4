@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-grammar Questionnaire extends de.monticore.literals.MCCommonLiterals {
+grammar Questionnaire 
+        extends de.monticore.literals.MCCommonLiterals {
 
   symbol scope QDefinition = "questionnaire" Name "{"
     ( Item | Scale )*

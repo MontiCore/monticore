@@ -2,16 +2,43 @@
 
 # Release Notes
 
-##  MontiCore 6.8.0-SNAPSHOT
+##  MontiCore 7.1.0-SNAPSHOT
 to be released
+
+### Additions
+
+### Changes
+ 
+### Fixes
+
+##  MontiCore 7.0.0
+released: 08.04.2021 
+
 ### Additions
 * resolveXSubKinds(..) resolves for local symbols of all subkinds of a symbol kind X. This method is used
   by the implementation of the resolveXLocally(..) method. It enables proper handling of symbol kind hierarchies
   during symbol resolution beyond the borders of a language.
 * new annotation @NonConservative for productions
+* add configTemplate (-cf) mechanism to add a freemarker template for customizing the generation processed
+* add two predefined groovy hook points (-gh1 and -gh2) in the monticore_standard.groovy for injecting 
+  custom groovy scripts into the workflow
 
 ### Changes
 * move grammars OCLExpressions and SetExpressions into OCL-project for further development
+* DefsTypeBasic was moved to test. There are now only methods for creating symbols.
+  Use the BasicSymbolsMill to create the basic data types like int, ...
+* `deserialize(String)` method of scope DeSer classes is realized as default implementation in `IDeSer` interface
+* `deserialize(String)` method of symbol DeSer classes is realized as default implementation in `ISymbolDeSer` interface
+* `deserializeAddons()` and `serializeAddons()` methods  of scopes are realized as empty default implementation in `IDeSer` interface
+* If deserialization encounters a symbol kind for which no DeSer is contained in the symbol Deser map in global scopes, a warning is produced instead of an error
+* Boolean `isShadowing` property of scopes is only serialized if its value is "true". Deserialization assumes a default value of "false" if the property is not contained in a serialized scope
+* `deserialize(String)` method of symbol DeSers do not produce errors if the serialized kind deviates from the symbol kind that the DeSer is originally engineered for
+* The TypeCheck was reworked
+  * The interface `ITypesCalculator` was renamed to `IDerive` and can now be used similar to the `ISynthesize` interface
+  * no SymbolSurrogates are created anymore by the TypeCheck. The Synthesize-Classes will now log an error if a type cannot be resolved
+  * SymTypeExpressions now have the method printFullName to print their full name
+  * The class `TypeCheck` now needs one `IDerive` and one `ISynthesize` for its constructor instead of only one of them
+  * The class `DeriveSymTypeOfBSCommonExpressions`, which does not pay attention to modifiers like `static` or `private`, can now be used as an alternative for the class `DeriveSymTypeOfCommonExpressions`
 
 ### Fixes
 * Symbols with hierarchical symbol kinds are not serialized multiple times anymore.

@@ -24,13 +24,13 @@ public class SymTypeOfGenerics extends SymTypeExpression {
   /**
    * Map for unboxing generic types (e.g. "java.util.Collection" -> "Collection")
    */
-  public static Map<String, String> unboxMap;
+  public static final Map<String, String> unboxMap;
 
   /**
    * Map for boxing generic types (e.g. "Collection" -> "java.util.Collection")
    * Results are fully qualified.
    */
-  public static Map<String, String> boxMap;
+  public static final Map<String, String> boxMap;
 
   /**
    * initializing the maps
@@ -133,9 +133,19 @@ public class SymTypeOfGenerics extends SymTypeExpression {
    */
   @Override
   public String print() {
-    StringBuffer r = new StringBuffer(getTypeConstructorFullName()).append('<');
+    StringBuffer r = new StringBuffer(typeSymbol.getName()).append('<');
     for(int i = 0; i<arguments.size();i++){
       r.append(arguments.get(i).print());
+      if(i<arguments.size()-1) { r.append(','); }
+    }
+    return r.append('>').toString();
+  }
+
+  @Override
+  public String printFullName() {
+    StringBuffer r = new StringBuffer(getTypeConstructorFullName()).append('<');
+    for(int i = 0; i<arguments.size();i++){
+      r.append(arguments.get(i).printFullName());
       if(i<arguments.size()-1) { r.append(','); }
     }
     return r.append('>').toString();
@@ -191,9 +201,7 @@ public class SymTypeOfGenerics extends SymTypeExpression {
    */
   @Override
   public SymTypeOfGenerics deepClone() {
-    TypeSymbol typeSymbol = new TypeSymbolSurrogate(this.typeSymbol.getName());
-    typeSymbol.setEnclosingScope(this.typeSymbol.getEnclosingScope());
-    return new SymTypeOfGenerics(typeSymbol, getArgumentList());
+    return new SymTypeOfGenerics(this.typeSymbol, getArgumentList());
   }
 
   @Override

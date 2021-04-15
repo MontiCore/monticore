@@ -1,32 +1,41 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java;
 
-import de.monticore.cd.cd4analysis._ast.*;
+import de.monticore.cdbasis._ast.*;
+import de.monticore.cdinterfaceandenum ._ast.*;
+import de.monticore.codegen.cd2java.typecd2java.TemplateHPService;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
+import de.monticore.generating.templateengine.TemplateController;
+import de.monticore.generating.templateengine.TemplateHookPoint;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 public class CDGenerator {
 
   protected static final String JAVA_EXTENSION = ".java";
 
   protected final GeneratorEngine generatorEngine;
+  protected GeneratorSetup setup;
 
   public CDGenerator(GeneratorSetup generatorSetup) {
     this.generatorEngine = new GeneratorEngine(generatorSetup);
+    this.setup = generatorSetup;
   }
 
   public void generate(ASTCDCompilationUnit compilationUnit) {
     ASTCDDefinition definition = compilationUnit.getCDDefinition();
-    String packageAsPath = String.join(File.separator, compilationUnit.getPackageList()).toLowerCase();
+    String packageAsPath = String.join(File.separator, 
+        compilationUnit.getMCPackageDeclaration().getMCQualifiedName().getPartsList()).toLowerCase();
 
-    this.generateCDClasses(packageAsPath, definition.getCDClassList());
-    this.generateCDInterfaces(packageAsPath, definition.getCDInterfaceList());
-    this.generateCDEnums(packageAsPath, definition.getCDEnumList());
+    this.generateCDClasses(packageAsPath, definition.getCDClassesList());
+    this.generateCDInterfaces(packageAsPath, definition.getCDInterfacesList());
+    this.generateCDEnums(packageAsPath, definition.getCDEnumsList());
   }
 
   protected Path getAsPath(String packageAsPath, String name) {

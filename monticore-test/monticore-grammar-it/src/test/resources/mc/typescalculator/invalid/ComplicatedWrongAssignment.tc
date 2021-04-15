@@ -1,0 +1,7 @@
+package mc.typescalculator.invalid;
+
+tc ComplicatedWrongAssignment {
+
+  int a = 3/7*(4+"Foo")
+
+}

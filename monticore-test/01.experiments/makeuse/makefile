@@ -63,9 +63,9 @@ JUNIT=target/junit-4.12.jar
 HAMCREST=target/hamcrest-core-1.3.jar
 
 # jars for the MontiCore call (M2), runtime (M1+M2), and grammars (M2)
-MCJAR=target/monticore-all.jar
+MCJAR=target/monticore-cli.jar
 MCRTE=target/monticore-rt.jar
-MCGRAMMARS=target/monticore-g.jar
+
 
 # initialization flag
 InitTarget=target/init.f
@@ -148,13 +148,13 @@ $(GenSrc).incGenStamp.f: $(InitTarget) force
 	@[ -e $(GenSrc)/IncGenCheck.sh ] \
 	  && sh $(GenSrc)/IncGenCheck.sh $@ || true
 
-# Activity 1 (M2): run MontiCore generator
-$(GenSrc).f: $(GRAMMAR) $(MCJAR) $(MCGRAMMARS) \
+# Activity 1 (M2): run MontiCore generator for $(GRAMMAR)
+$(GenSrc).f: $(GRAMMAR) $(MCJAR) $(MCRTE) \
                         $(GenSrc).incGenStamp.f
 	@echo "[MINFO]. 1: Generation of tool code from" $(GRAMMAR)
 	java -jar $(MCJAR) \
-		$(GRAMMAR) \
-		-mp $(MCGRAMMARS) \
+		-g $(GRAMMAR) \
+		-mp $(MCRTE) \
 		-hcp src/main/java \
 		-out target
 	@touch $@
@@ -231,13 +231,12 @@ $(InitTarget):
 # (alternatively it is possible to use wget for a download
 #  of the jars from nexus, see e.g. reference manual)
 $(MCJAR): $(InitTarget)
-	cp ../../../monticore-cli/target/libs/monticore-cli-*-cli.jar $(MCJAR)
-
-$(MCGRAMMARS): $(InitTarget)
-	cp ../../../monticore-grammar/target/libs/monticore-grammar-*-grammars.jar $(MCGRAMMARS)
+	wget http://monticore.de/download/monticore-cli.jar
+	mv monticore-cli.jar target
 
 $(MCRTE): $(InitTarget)
-	cp ../../../monticore-grammar/target/libs/monticore-grammar-*-all.jar $(MCRTE)
+	wget http://monticore.de/download/monticore-rt.jar
+	mv monticore-rt.jar target
 
 # get the testing libraries
 $(JUNIT): $(InitTarget)

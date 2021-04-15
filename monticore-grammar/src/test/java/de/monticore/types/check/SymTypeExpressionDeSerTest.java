@@ -73,6 +73,7 @@ public class SymTypeExpressionDeSerTest {
     //    LogStub.init();
     OOSymbolsMill.reset();
     OOSymbolsMill.init();
+    BasicSymbolsMill.initializePrimitives();
 
     IOOSymbolsScope scope = OOSymbolsMill.scope();
 
@@ -126,8 +127,6 @@ public class SymTypeExpressionDeSerTest {
     scope.add(new OOTypeSymbol("B"));
     scope.add(new OOTypeSymbol("Human"));
     scope.add(new OOTypeSymbol("Map"));
-
-    BasicSymbolsMill.initializePrimitives();
 
     IOOSymbolsArtifactScope javaUtilAS = OOSymbolsMill.artifactScope();
     javaUtilAS.add(new OOTypeSymbol("Map2"));
@@ -396,9 +395,6 @@ public class SymTypeExpressionDeSerTest {
     symTypeConstantDeser.deserialize(invalidJsonForSerializing2);
     assertTrue(Log.getFindings().get(Log.getFindings().size() - 1).getMsg().startsWith("0x823F1"));
 
-    SymTypeOfWildcardDeSer symTypeOfWildcardDeSer = new SymTypeOfWildcardDeSer();
-    symTypeOfWildcardDeSer.deserialize(invalidJsonForSerializing2);
-    assertTrue(Log.getFindings().get(Log.getFindings().size() - 1).getMsg().startsWith("0x823F7"));
   }
 
 }

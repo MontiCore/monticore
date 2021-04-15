@@ -14,5 +14,5 @@ automaton PingPong {
 
   NoGame - startGame > Ping;
 
-  InGame - stopGame | ?noOfPings > NoGame;
+  InGame - stopGame | !noOfPings > NoGame;
 }

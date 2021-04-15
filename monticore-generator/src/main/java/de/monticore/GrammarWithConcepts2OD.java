@@ -33,22 +33,22 @@ public class GrammarWithConcepts2OD  {
 
   public GrammarWithConcepts2OD(IndentPrinter printer, ReportingRepository reporting) {
     traverser = Grammar_WithConceptsMill.traverser();
-    traverser.add4Grammar_WithConcepts(new Grammar_WithConcepts2OD(printer, reporting));
-    traverser.add4Antlr(new Antlr2OD(printer, reporting));
-    traverser.add4Grammar(new Grammar2OD(printer, reporting));
-    traverser.add4BitExpressions(new BitExpressions2OD(printer, reporting));
-    traverser.add4JavaClassExpressions(new JavaClassExpressions2OD(printer, reporting));
-    traverser.add4MCBasics(new MCBasics2OD(printer, reporting));
-    traverser.add4CommonExpressions(new CommonExpressions2OD(printer, reporting));
-    traverser.add4AssignmentExpressions(new AssignmentExpressions2OD(printer, reporting));
-    traverser.add4ExpressionsBasis(new ExpressionsBasis2OD(printer, reporting));
-    traverser.add4MCSimpleGenericTypes(new MCSimpleGenericTypes2OD(printer, reporting));
-    traverser.add4MCCollectionTypes(new MCCollectionTypes2OD(printer, reporting));
-    traverser.add4MCBasicTypes(new MCBasicTypes2OD(printer, reporting));
-    traverser.add4MCCommonLiterals(new MCCommonLiterals2OD(printer, reporting));
-    traverser.add4MCLiteralsBasis(new MCLiteralsBasis2OD(printer, reporting));
-    traverser.add4MCExceptionStatements(new MCExceptionStatements2OD(printer, reporting));
-    traverser.add4MCReturnStatements(new MCReturnStatements2OD(printer, reporting));
+    traverser.setGrammar_WithConceptsHandler(new Grammar_WithConcepts2OD(printer, reporting));
+    traverser.setAntlrHandler(new Antlr2OD(printer, reporting));
+    traverser.setGrammarHandler(new Grammar2OD(printer, reporting));
+    traverser.setBitExpressionsHandler(new BitExpressions2OD(printer, reporting));
+    traverser.setJavaClassExpressionsHandler(new JavaClassExpressions2OD(printer, reporting));
+    traverser.setMCBasicsHandler(new MCBasics2OD(printer, reporting));
+    traverser.setCommonExpressionsHandler(new CommonExpressions2OD(printer, reporting));
+    traverser.setAssignmentExpressionsHandler(new AssignmentExpressions2OD(printer, reporting));
+    traverser.setExpressionsBasisHandler(new ExpressionsBasis2OD(printer, reporting));
+    traverser.setMCSimpleGenericTypesHandler(new MCSimpleGenericTypes2OD(printer, reporting));
+    traverser.setMCCollectionTypesHandler(new MCCollectionTypes2OD(printer, reporting));
+    traverser.setMCBasicTypesHandler(new MCBasicTypes2OD(printer, reporting));
+    traverser.setMCCommonLiteralsHandler(new MCCommonLiterals2OD(printer, reporting));
+    traverser.setMCLiteralsBasisHandler(new MCLiteralsBasis2OD(printer, reporting));
+    traverser.setMCExceptionStatementsHandler(new MCExceptionStatements2OD(printer, reporting));
+    traverser.setMCReturnStatementsHandler(new MCReturnStatements2OD(printer, reporting));
     this.printer = printer;
   }
 

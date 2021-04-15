@@ -18,7 +18,7 @@ public class ConservativeExtensionCheck implements GrammarASTMCGrammarCoCo {
 
   public static final String ERROR_CODE = "0xA2007";
 
-  public static final String ERROR_MSG_FORMAT = " Production %s does not extend %s in a conservative manner in component %s. This can lead to problems in the AST.";
+  public static final String ERROR_MSG_FORMAT = " Warning: Production %s does not extend %s in a conservative manner in component %s. This can lead to problems in the AST.";
 
   @Override
   public void check(ASTMCGrammar node) {

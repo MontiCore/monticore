@@ -1,10 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._visitor;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
-import de.monticore.cd.prettyprint.CD4CodePrinter;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
+import de.monticore.codegen.cd2java.CdUtilsPrinter;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
@@ -50,7 +50,7 @@ public class CDTraverserDecoratorTest extends DecoratorTestCase {
     VisitorService visitorService = new VisitorService(decoratedCompilationUnit);
     SymbolTableService symbolTableService = new SymbolTableService(decoratedCompilationUnit);
     this.glex.setGlobalValue("service", visitorService);
-    this.glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
+    this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
     TraverserInterfaceDecorator traverserInterfaceDecorator = new TraverserInterfaceDecorator(this.glex, visitorService, symbolTableService);
     MethodDecorator methodDecorator = new MethodDecorator(this.glex, visitorService);
     TraverserClassDecorator traverserClassDecorator = new TraverserClassDecorator(this.glex, visitorService, symbolTableService);
@@ -69,17 +69,17 @@ public class CDTraverserDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testClassCount() {
-    assertEquals(2, visitorCompilationUnit.getCDDefinition().getCDClassList().size());
+    assertEquals(2, visitorCompilationUnit.getCDDefinition().getCDClassesList().size());
   }
 
   @Test
   public void testInterfaceCount() {
-    assertEquals(3, visitorCompilationUnit.getCDDefinition().getCDInterfaceList().size());
+    assertEquals(3, visitorCompilationUnit.getCDDefinition().getCDInterfacesList().size());
   }
 
   @Test
   public void testEnumEmpty() {
-    assertTrue(visitorCompilationUnit.getCDDefinition().isEmptyCDEnums());
+    assertTrue(visitorCompilationUnit.getCDDefinition().getCDEnumsList().isEmpty());
   }
 
   @Test
@@ -100,10 +100,10 @@ public class CDTraverserDecoratorTest extends DecoratorTestCase {
     GeneratorSetup generatorSetup = new GeneratorSetup();
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
-    for (ASTCDClass clazz : decoratedCompilationUnit.getCDDefinition().getCDClassList()) {
+    for (ASTCDClass clazz : decoratedCompilationUnit.getCDDefinition().getCDClassesList()) {
       StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, clazz, clazz);
     }
-    for (ASTCDInterface astcdInterface : decoratedCompilationUnit.getCDDefinition().getCDInterfaceList()) {
+    for (ASTCDInterface astcdInterface : decoratedCompilationUnit.getCDDefinition().getCDInterfacesList()) {
       StringBuilder sb = generatorEngine.generate(CoreTemplates.INTERFACE, astcdInterface, astcdInterface);
     }
 

@@ -2,7 +2,6 @@
 
 package de.monticore.grammar.cocos;
 
-import de.monticore.grammar.grammar._ast.ASTGrammarReference;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
 import de.se_rwth.commons.Names;

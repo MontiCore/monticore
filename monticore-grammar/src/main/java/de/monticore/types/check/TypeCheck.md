@@ -106,9 +106,10 @@ given expressions/literals/types.
 <br/><br/>
 Create a DelegatorVisitor which combines all expression grammars and literal grammars
 used by your language. The DelegatorVisitor needs to implement the Interface
-ITypesCalculator. Use this Delegator as Derive-Class in the TypeCheck facade. The
+IDerive. Use this Delegator as Derive-Class in the TypeCheck facade. The
 Synthesize-Class depends on the types grammar you use (see above-mentioned classes).
-For an example of the Delegator-Visitor see [here](../../../../../../test/java/de/monticore/types/check/DeriveSymTypeOfCombineExpressions.java).
+For an example of the Delegator-Visitor see 
+[here](../../../../../../test/java/de/monticore/types/check/DeriveSymTypeOfCombineExpressionsDelegator.java).
 <br/><br/>
 If you want to create a Derive-Class for your expression/literal grammar, you have to
 extend the Derive-Class of the supergrammar and implement the standard visitor of 
@@ -135,7 +136,8 @@ public void check(ASTExpression expr){
 }
 ```
 
-An example for the case that a plus expression needs to return 'int' can be found [here](https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/monticore-grammar/monticore-grammar-it/src/main/java/mc/typescalculator/myownlanguage/_cocos/PlusExpressionReturnsInt.java).
+An example for the case that a plus expression needs to return 'int' can be found
+[here](https://github.com/MontiCore/monticore/blob/dev/monticore-test/monticore-grammar-it/src/main/java/mc/typescalculator/myownlanguage/_cocos/PlusExpressionReturnsInt.java).
 
 ## Further Information
 

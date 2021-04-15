@@ -12,20 +12,32 @@ public class BasicSymbolsMill extends BasicSymbolsMillTOP {
   protected static BasicSymbolsMill primitiveTypesInitializer;
 
   public static void initMe (BasicSymbolsMill a)  {
-    mill = a;
-    millDiagramSymbolBuilder = a;
-    millTypeSymbolBuilder = a;
-    millTypeVarSymbolBuilder = a;
-    millVariableSymbolBuilder = a;
-    millFunctionSymbolBuilder = a;
-    millDiagramSymbolSurrogateBuilder = a;
-    millTypeSymbolSurrogateBuilder = a;
-    millTypeVarSymbolSurrogateBuilder = a;
-    millVariableSymbolSurrogateBuilder = a;
-    millFunctionSymbolSurrogateBuilder = a;
-    millBasicSymbolsTraverserImplementation = a;
+    BasicSymbolsMillTOP.initMe(a);
     primitiveTypesInitializer = a;
   }
+
+  public static final String INT = "int";
+
+  public static final String DOUBLE = "double";
+
+  public static final String FLOAT = "float";
+
+  public static final String SHORT = "short";
+
+  public static final String LONG = "long";
+
+  public static final String BOOLEAN = "boolean";
+
+  public static final String BYTE = "byte";
+
+  public static final String CHAR = "char";
+
+  public static final String NULL = "null";
+
+  public static final String VOID = "void";
+
+  public static final List<String> PRIMITIVE_LIST = Lists.newArrayList(INT, DOUBLE, FLOAT, SHORT, LONG, BOOLEAN, BYTE, CHAR);
+
 
   public static void initializePrimitives(){
     if(primitiveTypesInitializer == null){
@@ -37,9 +49,7 @@ public class BasicSymbolsMill extends BasicSymbolsMillTOP {
   public void _initializePrimitives(){
     IBasicSymbolsGlobalScope gs = globalScope();
 
-    List<String> primitives = Lists.newArrayList("int", "double", "float", "short", "long", "boolean", "byte", "char");
-
-    for(String primitive: primitives){
+    for(String primitive: PRIMITIVE_LIST){
       gs.add(createPrimitive(primitive));
     }
   }
@@ -53,5 +63,9 @@ public class BasicSymbolsMill extends BasicSymbolsMillTOP {
             .build();
   }
 
+  public static  void reset ()  {
+    BasicSymbolsMillTOP.reset();
+    primitiveTypesInitializer = null;
+  }
 
 }

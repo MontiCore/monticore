@@ -10,14 +10,6 @@ import java.util.Optional;
 
 public class TestCD4AnalysisScopesGenitor extends TestCD4AnalysisScopesGenitorTOP {
 
-  public TestCD4AnalysisScopesGenitor(ITestCD4AnalysisScope enclosingScope){
-    super(enclosingScope);
-  }
-
-  public TestCD4AnalysisScopesGenitor(Deque<? extends ITestCD4AnalysisScope> scopeStack){
-    super(scopeStack);
-  }
-
   public TestCD4AnalysisScopesGenitor(){
     super();
   }

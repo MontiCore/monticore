@@ -16,7 +16,6 @@ import java.util.Set;
 
 import static com.google.common.collect.Sets.newLinkedHashSet;
 import static de.monticore.grammar.Multiplicity.*;
-import static de.monticore.grammar.Multiplicity.determineMultiplicity;
 import static de.se_rwth.commons.logging.Log.error;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.max;
@@ -268,13 +267,13 @@ public class GrammarSTCompleteTypes implements GrammarVisitor2 {
       final Set<ASTProd> firstProductions = newLinkedHashSet();
       // The start rule for parsing is the first occurring Interface-, Abstract-
       // or Class-Production in this grammar
-      if (astGrammar.getClassProdList().size() != 0) {
+      if (!astGrammar.getClassProdList().isEmpty()) {
         firstProductions.add(astGrammar.getClassProdList().get(0));
       }
-      if (astGrammar.getInterfaceProdList().size() != 0) {
+      if (!astGrammar.getInterfaceProdList().isEmpty()) {
         firstProductions.add(astGrammar.getInterfaceProdList().get(0));
       }
-      if (astGrammar.getAbstractProdList().size() != 0) {
+      if (!astGrammar.getAbstractProdList().isEmpty()) {
         firstProductions.add(astGrammar.getAbstractProdList().get(0));
       }
       setStartProd(astGrammar, firstProductions);

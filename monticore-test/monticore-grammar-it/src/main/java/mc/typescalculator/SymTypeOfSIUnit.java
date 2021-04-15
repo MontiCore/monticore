@@ -19,6 +19,11 @@ public class SymTypeOfSIUnit extends SymTypeExpression {
   }
 
   @Override
+  public String printFullName() {
+    return typeSymbol.getFullName();
+  }
+
+  @Override
   public String printAsJson() {
     JsonPrinter jp = new JsonPrinter();
     jp.beginObject();

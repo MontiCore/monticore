@@ -33,9 +33,15 @@ public class SymTypeOfObject extends SymTypeExpression {
    * print: Umwandlung in einen kompakten String
    */
   @Override
-  public String print() {
+  public String printFullName() {
     return getObjName();
   }
+
+  @Override
+  public String print(){
+    return typeSymbol.getName();
+  }
+
   
   /**
    * printAsJson: Umwandlung in einen kompakten Json String
@@ -52,9 +58,7 @@ public class SymTypeOfObject extends SymTypeExpression {
 
   @Override
   public SymTypeOfObject deepClone() {
-    TypeSymbol typeSymbol = new TypeSymbolSurrogate(this.typeSymbol.getName());
-    typeSymbol.setEnclosingScope(this.typeSymbol.getEnclosingScope());
-    return  new SymTypeOfObject(typeSymbol);
+    return  new SymTypeOfObject(this.typeSymbol);
   }
   
   /**

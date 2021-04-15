@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.mc2cd.symbolTransl;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.transl.*;
 import de.monticore.codegen.mc2cd.transl.creation.GrammarToCDDefinition;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;

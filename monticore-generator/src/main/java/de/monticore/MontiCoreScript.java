@@ -3,16 +3,21 @@
 package de.monticore;
 
  import com.google.common.collect.Lists;
+ import com.google.common.io.Files;
  import com.google.common.io.Resources;
- import de.monticore.cd.cd4analysis._ast.ASTCDClass;
- import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
- import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
- import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
- import de.monticore.cd.cd4analysis._symboltable.ICD4AnalysisGlobalScope;
- import de.monticore.cd.cd4analysis._symboltable.ICD4AnalysisScope;
- import de.monticore.cd.prettyprint.CD4CodePrinter;
+ import de.monticore.cdbasis._ast.ASTCDClass;
+ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+ import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
+ import de.monticore.codegen.cd2java.typecd2java.TemplateHPService;
+ import de.monticore.generating.templateengine.TemplateController;
+ import de.monticore.generating.templateengine.TemplateHookPoint;
+ import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+ import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
+ import de.monticore.cd4analysis._symboltable.ICD4AnalysisGlobalScope;
+ import de.monticore.cd4analysis._symboltable.ICD4AnalysisScope;
  import de.monticore.codegen.cd2java.AbstractService;
  import de.monticore.codegen.cd2java.CDGenerator;
+ import de.monticore.codegen.cd2java.CdUtilsPrinter;
  import de.monticore.codegen.cd2java.DecorationHelper;
  import de.monticore.codegen.cd2java._ast.ASTCDDecorator;
  import de.monticore.codegen.cd2java._ast.ast_class.*;
@@ -24,8 +29,6 @@ package de.monticore;
  import de.monticore.codegen.cd2java._ast.builder.BuilderDecorator;
  import de.monticore.codegen.cd2java._ast.constants.ASTConstantsDecorator;
  import de.monticore.codegen.cd2java._ast.enums.EnumDecorator;
- import de.monticore.codegen.cd2java._ast.factory.NodeFactoryDecorator;
- import de.monticore.codegen.cd2java._ast.factory.NodeFactoryService;
  import de.monticore.codegen.cd2java._ast_emf.ASTEmfCDDecorator;
  import de.monticore.codegen.cd2java._ast_emf.CDEmfGenerator;
  import de.monticore.codegen.cd2java._ast_emf.EmfService;
@@ -36,7 +39,6 @@ package de.monticore;
  import de.monticore.codegen.cd2java._ast_emf.emf_package.PackageImplDecorator;
  import de.monticore.codegen.cd2java._ast_emf.emf_package.PackageInterfaceDecorator;
  import de.monticore.codegen.cd2java._ast_emf.enums.EmfEnumDecorator;
- import de.monticore.codegen.cd2java._ast_emf.factory.EmfNodeFactoryDecorator;
  import de.monticore.codegen.cd2java._cocos.CoCoCheckerDecorator;
  import de.monticore.codegen.cd2java._cocos.CoCoDecorator;
  import de.monticore.codegen.cd2java._cocos.CoCoInterfaceDecorator;
@@ -98,6 +100,7 @@ package de.monticore;
  import de.se_rwth.commons.groovy.GroovyRunnerBase;
  import de.se_rwth.commons.logging.Log;
  import groovy.lang.Script;
+ import org.apache.commons.lang3.StringUtils;
  import org.codehaus.groovy.control.customizers.ImportCustomizer;
  import parser.MCGrammarParser;
 
@@ -107,6 +110,7 @@ package de.monticore;
  import java.nio.file.Path;
  import java.nio.file.Paths;
  import java.util.*;
+ import java.util.stream.Collectors;
 
 /**
  * The actual top level functional implementation of MontiCore. This is the
@@ -139,7 +143,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   public void run(Configuration configuration) {
     try {
       ClassLoader l = MontiCoreScript.class.getClassLoader();
-      String script = Resources.asCharSource(l.getResource("de/monticore/monticore_noemf.groovy"),
+      String script = Resources.asCharSource(l.getResource("de/monticore/monticore_standard.groovy"),
               Charset.forName("UTF-8")).read();
       run(script, configuration);
     } catch (IOException e) {
@@ -286,12 +290,12 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param handcodedPath The path to hand-coded java artifacts
    * @param outputDirectory The output directory for generated Java code
    */
-  public void generateParser(GlobalExtensionManagement glex, List<ASTCDCompilationUnit> cds, 
-                             ASTMCGrammar grammar, GrammarFamilyGlobalScope symbolTable,
-                             IterablePath handcodedPath, File outputDirectory) {
+  public void generateParser(GlobalExtensionManagement glex, List<ASTCDCompilationUnit> cds, ASTMCGrammar grammar,
+                             GrammarFamilyGlobalScope symbolTable, IterablePath handcodedPath, IterablePath templatePath,
+                             File outputDirectory) {
     // first cd (representing AST package) ist relevant 
     // -> will be only one cd in the future
-    ParserGenerator.generateFullParser(glex, cds.get(0), grammar, symbolTable, handcodedPath, outputDirectory);
+    ParserGenerator.generateFullParser(glex, cds.get(0), grammar, symbolTable, handcodedPath, templatePath, outputDirectory);
   }
   
   /**
@@ -302,12 +306,12 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param outputDirectory output directory for generated Java code
    */
   public void generateParser(GlobalExtensionManagement glex, ASTCDCompilationUnit astClassDiagram, ASTMCGrammar grammar,
-                             GrammarFamilyGlobalScope symbolTable,
-                             IterablePath handcodedPath, File outputDirectory) {
+                             GrammarFamilyGlobalScope symbolTable, IterablePath handcodedPath, IterablePath templatePath,
+                             File outputDirectory) {
     Log.errorIfNull(
         grammar,
         "0xA4107 Parser generation can't be processed: the reference to the grammar ast is null");
-    ParserGenerator.generateFullParser(glex, astClassDiagram, grammar, symbolTable, handcodedPath, outputDirectory);
+    ParserGenerator.generateFullParser(glex, astClassDiagram, grammar, symbolTable, handcodedPath, templatePath, outputDirectory);
   }
 
   /**
@@ -317,13 +321,13 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param symbolTable
    * @param outputDirectory output directory for generated Java code
    */
-  public void generateParser(GlobalExtensionManagement glex, ASTMCGrammar grammar,
-                             GrammarFamilyGlobalScope symbolTable,
-                             IterablePath handcodedPath, File outputDirectory, boolean embeddedJavaCode, Languages lang) {
+  public void generateParser(GlobalExtensionManagement glex, ASTMCGrammar grammar, GrammarFamilyGlobalScope symbolTable,
+                             IterablePath handcodedPath, IterablePath templatePath, File outputDirectory,
+                             boolean embeddedJavaCode, Languages lang) {
     Log.errorIfNull(
             grammar,
             "0xA4108 Parser generation can't be processed: the reference to the grammar ast is null");
-    ParserGenerator.generateParser(glex, grammar, symbolTable, handcodedPath, outputDirectory, embeddedJavaCode, lang);
+    ParserGenerator.generateParser(glex, grammar, symbolTable, handcodedPath, templatePath, outputDirectory, embeddedJavaCode, lang);
   }
 
   /**
@@ -370,7 +374,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
     final String qualifiedCDName = Names.getQualifiedName(ast.getPackageList(), ast.getCDDefinition()
             .getName());
-    Optional<CDDefinitionSymbol> cdSymbol = globalScope.resolveCDDefinitionDown(
+    Optional<DiagramSymbol> cdSymbol = globalScope.resolveDiagramDown(
             qualifiedCDName);
 
     ASTCDCompilationUnit result = ast;
@@ -480,24 +484,39 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   public void reportCD(List<ASTCDCompilationUnit> cds, File outputDirectory) {
     // We precisely know the structure of the given list.
     // In future versions, this will be one combined CD only.
-    reportCD(cds.get(0), cds.get(0), cds.get(1), cds.get(2), outputDirectory);
+    reportCD(cds.get(0), outputDirectory);
   }
-  
+
+  /**
+   * Prints Cd4Analysis AST to the CD-file (*.cd) in the reporting directory.
+   *
+   * @param cds The predefined list of cds for AST, symbols, and scopes.
+   * @param outputDirectory The output directory to print to
+   */
+  public void reportDecoratedCD(List<ASTCDCompilationUnit> cds, File outputDirectory) {
+    // We precisely know the structure of the given list.
+    // In future versions, this will be one combined CD only.
+    reportCD(cds.get(0), cds.get(1), outputDirectory);
+  }
+
+
   /**
    * Prints Cd4Analysis AST to the CD-file (*.cd) in the reporting directory
    *
    * @param astCd           - the top node of the Cd4Analysis AST
    * @param outputDirectory - output directory
    */
-  public void reportCD(ASTCDCompilationUnit origCd, ASTCDCompilationUnit astCd,
-                       ASTCDCompilationUnit symbolCd, ASTCDCompilationUnit scopeCd,
+  public void reportCD(ASTCDCompilationUnit astCd,
+                       ASTCDCompilationUnit symbolCd,
                        File outputDirectory) {
     // we also store the class diagram fully qualified such that we can later on
     // resolve it properly for the generation of sub languages
-    String reportSubDir = Joiners.DOT.join(origCd.getPackageList());
-    reportSubDir = reportSubDir.isEmpty()
-            ? origCd.getCDDefinition().getName()
-            : reportSubDir.concat(".").concat(origCd.getCDDefinition().getName());
+    String reportSubDir = Joiners.DOT.join(astCd.getPackageList());
+    if (reportSubDir.isEmpty()) {
+      reportSubDir = astCd.getCDDefinition().getName();
+    }else if (reportSubDir.endsWith("._ast")){
+      reportSubDir = reportSubDir.substring(0, reportSubDir.length() - 5);
+    }
     reportSubDir = reportSubDir.toLowerCase();
 
     // Clone CD for reporting
@@ -511,29 +530,21 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
     // Remove Builder
     List<ASTCDClass> builderClasses = Lists.newArrayList();
-    astCdForReporting.getCDDefinition().forEachCDClasss(c -> {if (c.getName().endsWith("Builder")) builderClasses.add(c);});
-    builderClasses.forEach(c -> astCdForReporting.getCDDefinition().removeCDClass(c));
+    astCdForReporting.getCDDefinition().getCDClassesList().forEach(c -> {if (c.getName().endsWith("Builder")) builderClasses.add(c);});
+    builderClasses.forEach(c -> astCdForReporting.getCDDefinition().removeCDElement(c));
 
     // Add symbol classes
-    for (ASTCDClass cl :symbolCd.getCDDefinition().getCDClassList()) {
+    for (ASTCDClass cl :symbolCd.getCDDefinition().getCDClassesList()) {
       if (!cl.getName().endsWith("Builder")) {
         ASTCDClass newCl = cl.deepClone();
-        astCdForReporting.getCDDefinition().addCDClass(newCl);
-      }
-    }
-
-    // Add scope classes
-    for (ASTCDClass cl :scopeCd.getCDDefinition().getCDClassList()) {
-      if (!cl.getName().endsWith("Builder")) {
-        ASTCDClass newCl = cl.deepClone();
-        astCdForReporting.getCDDefinition().addCDClass(newCl);
+        astCdForReporting.getCDDefinition().addCDElement(newCl);
       }
     }
 
     // Remove methods and constructors
-    astCdForReporting.getCDDefinition().forEachCDClasss(c -> {c.clearCDMethods(); c.clearCDConstructors();});
-    astCdForReporting.getCDDefinition().forEachCDInterfaces(c -> c.clearCDMethods());
-    astCdForReporting.getCDDefinition().forEachCDEnums(c -> {c.clearCDMethods(); c.clearCDConstructors();});
+    astCdForReporting.getCDDefinition().getCDClassesList().forEach(c -> {c.clearCDMethodList(); c.clearCDConstructorList();});
+    astCdForReporting.getCDDefinition().getCDInterfacesList().forEach(c -> c.clearCDMethodList());
+    astCdForReporting.getCDDefinition().getCDEnumsList().forEach(c -> {c.clearCDMethodList(); c.clearCDConstructorList();});
 
     new CDReporting().prettyPrintAstCd(astCdForReporting, outputDirectory, reportSubDir);
   }
@@ -560,6 +571,67 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
     new CDReporting().prettyPrintAstCd(astCdForReporting, outputDirectory, reportSubDir);
   }
+
+  /**
+   * Executes the groovy script for the specified hook point if present.
+   *
+   * @param file The path to the groovy script file as String
+   */
+  public void hook(Optional<String> file, Object... args) {
+    if (file.isPresent()) {
+      String script = loadScript(file.get());
+
+      GroovyInterpreter.Builder builder = GroovyInterpreter.newInterpreter()
+              .withImportCustomizer(new ImportCustomizer().addStarImports(Runner.DEFAULT_IMPORTS)
+                      .addStaticStars(Runner.DEFAULT_STATIC_IMPORTS));
+
+      builder.addVariable("args", args);
+
+      GroovyInterpreter g = builder.build();
+      g.evaluate(script);
+    }
+  }
+
+  public void configureGenerator(GlobalExtensionManagement glex, List<ASTCDCompilationUnit> cds, IterablePath templatePath) {
+    String configTemplate = glex.getGlobalVar(MontiCoreConfiguration.Options.CONFIGTEMPLATE.toString(), StringUtils.EMPTY).toString();
+    if (!configTemplate.isEmpty()) {
+      GeneratorSetup setup = new GeneratorSetup();
+      setup.setAdditionalTemplatePaths(templatePath.getPaths().stream().map(p -> new File(p.toUri())).collect(Collectors.toList()));
+      setup.setGlex(glex);
+
+      TemplateController tc = setup.getNewTemplateController(configTemplate);
+      TemplateHookPoint hp = new TemplateHookPoint(configTemplate);
+      List<Object> args = Arrays.asList(setup.getGlex(), new TemplateHPService());
+      hp.processValue(tc, cds.get(0).getCDDefinition(), args);
+    }
+  }
+
+  /**
+   * Loads the groovy script if present.
+   *
+   * @param file The path to the groovy script file as String
+   * @return The groovy configuration script as String
+   */
+  protected String loadScript(String file) {
+    String script = StringUtils.EMPTY;
+    try {
+      File f = new File(file);
+      if (f.exists() && f.isFile()) {
+        script = Files.asCharSource(f, Charset.forName("UTF-8")).read();
+      } else {
+        ClassLoader l = MontiCoreScript.class.getClassLoader();
+        if (l.getResource(file) != null) {
+          script = Resources.asCharSource(l.getResource(file), Charset.forName("UTF-8")).read();
+        } else {
+          Log.error("0xA1059 Custom script \"" + f.getAbsolutePath() + "\" not found!");
+        }
+      }
+    }
+    catch (IOException e) {
+      Log.error("0xA1060 Failed to load Groovy script.", e);
+    }
+    return script;
+  }
   
   /**
    * Decorates the class diagrams of a given language (specified via three input
@@ -577,15 +649,15 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     List<ASTCDCompilationUnit> decoratedCDs = new ArrayList<ASTCDCompilationUnit>();
     // we precisely know the strucutre of the given cd list
     // in a future version, we will only handle one single cd
-    ASTCDCompilationUnit decoratedSymbolTableCd = decorateForSymbolTablePackage(glex, cdScope, cds.get(0), 
+    ASTCDCompilationUnit decoratedASTClassDiagramm = decorateForASTPackage(glex, cdScope, cds.get(0), handCodedPath);
+    decoratedCDs.add(decoratedASTClassDiagramm);
+    ASTCDCompilationUnit decoratedSymbolTableCd = decorateForSymbolTablePackage(glex, cdScope, cds.get(0),
         cds.get(1), cds.get(2), handCodedPath);
     decoratedCDs.add(decoratedSymbolTableCd);
     ASTCDCompilationUnit decoratedTraverserCD = decorateTraverserForVisitorPackage(glex, cdScope, cds.get(0), handCodedPath);
     decoratedCDs.add(decoratedTraverserCD);
     decoratedCDs.add(decorateForCoCoPackage(glex, cdScope, cds.get(0), handCodedPath));
     decoratedCDs.add(decorateForODPackage(glex, cdScope, cds.get(0), handCodedPath));
-    ASTCDCompilationUnit decoratedASTClassDiagramm = decorateForASTPackage(glex, cdScope, cds.get(0), handCodedPath);
-    decoratedCDs.add(decoratedASTClassDiagramm);
     decoratedCDs.add(decorateMill(glex, cdScope, cds.get(0), decoratedASTClassDiagramm,
         decoratedSymbolTableCd, decoratedTraverserCD, handCodedPath));
     decoratedCDs.add(decorateCLI(glex, cdScope, cds.get(0), decoratedASTClassDiagramm,
@@ -854,7 +926,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     ASTService astService = new ASTService(cd);
     SymbolTableService symbolTableService = new SymbolTableService(cd);
     VisitorService visitorService = new VisitorService(cd);
-    NodeFactoryService nodeFactoryService = new NodeFactoryService(cd);
 
     MethodDecorator methodDecorator = new MethodDecorator(glex, astService);
 
@@ -863,7 +934,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     DataDecorator dataDecorator = new DataDecorator(glex, methodDecorator, astService, decoratorUtil);
     ASTSymbolDecorator astSymbolDecorator = new ASTSymbolDecorator(glex, symbolTableService);
     ASTScopeDecorator astScopeDecorator = new ASTScopeDecorator(glex, symbolTableService);
-    ASTDecorator astDecorator = new ASTDecorator(glex, astService, visitorService, nodeFactoryService, astSymbolDecorator,
+    ASTDecorator astDecorator = new ASTDecorator(glex, astService, visitorService, astSymbolDecorator,
             astScopeDecorator, methodDecorator, symbolTableService);
 
     ASTReferenceDecorator<ASTCDClass> astClassReferencedSymbolDecorator = new ASTReferenceDecorator<ASTCDClass>(glex, symbolTableService);
@@ -875,8 +946,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     BuilderDecorator builderDecorator = new BuilderDecorator(glex, new AccessorDecorator(glex, astService), astService);
     ASTBuilderDecorator astBuilderDecorator = new ASTBuilderDecorator(glex, builderDecorator, astService);
 
-    NodeFactoryDecorator nodeFactoryDecorator = new NodeFactoryDecorator(glex, nodeFactoryService);
-
     ASTConstantsDecorator astConstantsDecorator = new ASTConstantsDecorator(glex, astService);
 
     EnumDecorator enumDecorator = new EnumDecorator(glex, new AccessorDecorator(glex, astService), astService);
@@ -886,7 +955,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     FullASTInterfaceDecorator fullASTInterfaceDecorator = new FullASTInterfaceDecorator(dataInterfaceDecorator, astInterfaceDecorator, astInterfaceReferencedSymbolDecorator);
 
     ASTCDDecorator astcdDecorator = new ASTCDDecorator(glex, fullDecorator, astLanguageInterfaceDecorator,
-            astBuilderDecorator, nodeFactoryDecorator, astConstantsDecorator, enumDecorator, fullASTInterfaceDecorator);
+            astBuilderDecorator, astConstantsDecorator, enumDecorator, fullASTInterfaceDecorator);
     ASTCDCompilationUnit compilationUnit = astcdDecorator.decorate(cd);
 
     TopDecorator topDecorator = new TopDecorator(handCodedPath);
@@ -906,6 +975,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    */
   public List<ASTCDCompilationUnit> decorateEmfCD(GlobalExtensionManagement glex, ICD4AnalysisScope cdScope,
       List<ASTCDCompilationUnit> cds, IterablePath handCodedPath) {
+    cds = addListSuffixToAttributeName(cds);
     List<ASTCDCompilationUnit> decoratedCDs = new ArrayList<ASTCDCompilationUnit>();
     // we precisely know the strucutre of the given cd list
     // in a future version, we will only handle one single cd
@@ -928,14 +998,13 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     ASTService astService = new ASTService(cd);
     SymbolTableService symbolTableService = new SymbolTableService(cd);
     VisitorService visitorService = new VisitorService(cd);
-    NodeFactoryService nodeFactoryService = new NodeFactoryService(cd);
     EmfService emfService = new EmfService(cd);
     MethodDecorator methodDecorator = new MethodDecorator(glex, emfService);
     EmfMutatorDecorator emfMutatorDecorator = new EmfMutatorDecorator(glex, astService);
     DataEmfDecorator dataEmfDecorator = new DataEmfDecorator(glex, methodDecorator, astService, new DataDecoratorUtil(), emfMutatorDecorator);
     ASTSymbolDecorator astSymbolDecorator = new ASTSymbolDecorator(glex, symbolTableService);
     ASTScopeDecorator astScopeDecorator = new ASTScopeDecorator(glex, symbolTableService);
-    ASTEmfDecorator astEmfDecorator = new ASTEmfDecorator(glex, astService, visitorService, nodeFactoryService,
+    ASTEmfDecorator astEmfDecorator = new ASTEmfDecorator(glex, astService, visitorService,
             astSymbolDecorator, astScopeDecorator, methodDecorator, symbolTableService, emfService);
     ASTReferenceDecorator<ASTCDClass> astClassReferencedSymbolDecorator = new ASTReferenceDecorator<ASTCDClass>(glex, symbolTableService);
     ASTReferenceDecorator<ASTCDInterface> astInterfaceReferencedSymbolDecorator = new ASTReferenceDecorator<ASTCDInterface>(glex, symbolTableService);
@@ -947,7 +1016,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     BuilderDecorator builderDecorator = new BuilderDecorator(glex, new AccessorDecorator(glex, emfService), astService);
     ASTBuilderDecorator astBuilderDecorator = new ASTBuilderDecorator(glex, builderDecorator, astService);
 
-    EmfNodeFactoryDecorator nodeFactoryDecorator = new EmfNodeFactoryDecorator(glex, nodeFactoryService);
 
     ASTConstantsDecorator astConstantsDecorator = new ASTConstantsDecorator(glex, astService);
 
@@ -961,7 +1029,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     PackageImplDecorator packageImplDecorator = new PackageImplDecorator(glex, new MandatoryAccessorDecorator(glex), emfService);
     PackageInterfaceDecorator packageInterfaceDecorator = new PackageInterfaceDecorator(glex, emfService);
 
-    ASTEmfCDDecorator astcdDecorator = new ASTEmfCDDecorator(glex, fullEmfDecorator, astLanguageInterfaceDecorator, astBuilderDecorator, nodeFactoryDecorator,
+    ASTEmfCDDecorator astcdDecorator = new ASTEmfCDDecorator(glex, fullEmfDecorator, astLanguageInterfaceDecorator, astBuilderDecorator,
             astConstantsDecorator, emfEnumDecorator, fullASTInterfaceDecorator, packageImplDecorator, packageInterfaceDecorator);
     ASTCDCompilationUnit compilationUnit = astcdDecorator.decorate(cd);
 
@@ -971,35 +1039,36 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
   /**
    * Generates the Java artifacts for the given class diagrams.
-   * 
+   *
    * @param glex The global extension management
    * @param oldCDs The basic class diagrams for AST, symbols and scope
    * @param cds A list of input class diagrams to generate code for
    * @param outputDirectory The corresponding output directory
    * @param handcodedPath The path to hand-coded java artifacts
    */
-  public void generateFromCD(GlobalExtensionManagement glex, List<ASTCDCompilationUnit> oldCDs, 
-      List<ASTCDCompilationUnit> cds, File outputDirectory, IterablePath handcodedPath) {
+  public void generateFromCD(GlobalExtensionManagement glex, List<ASTCDCompilationUnit> oldCDs,
+      List<ASTCDCompilationUnit> cds, File outputDirectory, IterablePath handcodedPath, IterablePath templatePath) {
     // we precisely know the list of old CDs, which will be merged to a single
     // CD in the future
     ASTCDCompilationUnit oldCD = oldCDs.get(0);
-    
+
     // generate from CDs
     for (ASTCDCompilationUnit cd : cds) {
-      generateFromCD(glex, oldCD, cd, outputDirectory, handcodedPath);
+      generateFromCD(glex, oldCD, cd, outputDirectory, handcodedPath, templatePath);
     }
   }
 
   public void generateFromCD(GlobalExtensionManagement glex, ASTCDCompilationUnit oldCD, ASTCDCompilationUnit decoratedCD,
-                             File outputDirectory, IterablePath handcodedPath) {
+                             File outputDirectory, IterablePath handcodedPath, IterablePath templatePath) {
     // need symboltable of the old cd
     glex.setGlobalValue("service", new AbstractService(oldCD));
     glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
-    glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
+    glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
     final String diagramName = decoratedCD.getCDDefinition().getName();
     GeneratorSetup setup = new GeneratorSetup();
     setup.setOutputDirectory(outputDirectory);
     setup.setHandcodedPath(handcodedPath);
+    setup.setAdditionalTemplatePaths(templatePath.getPaths().stream().map(p -> new File(p.toUri())).collect(Collectors.toList()));
     setup.setModelName(diagramName);
     setup.setGlex(glex);
     CDGenerator generator = new CDGenerator(setup);
@@ -1008,35 +1077,36 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
   /**
    * Generates the Java artifacts for the given class diagrams.
-   * 
+   *
    * @param glex The global extension management
    * @param oldCDs The basic class diagrams for AST, symbols and scope
    * @param cds A list of input class diagrams to generate code for
    * @param outputDirectory The corresponding output directory
    * @param handcodedPath The path to hand-coded java artifacts
    */
-  public void generateEmfFromCD(GlobalExtensionManagement glex, List<ASTCDCompilationUnit> oldCDs, 
-      List<ASTCDCompilationUnit> cds, File outputDirectory, IterablePath handcodedPath) {
+  public void generateEmfFromCD(GlobalExtensionManagement glex, List<ASTCDCompilationUnit> oldCDs,
+      List<ASTCDCompilationUnit> cds, File outputDirectory, IterablePath handcodedPath, IterablePath templatePath) {
     // we precisely know the list of old CDs, which will be merged to a single
     // CD in the future
     ASTCDCompilationUnit oldCD = oldCDs.get(0);
-    
+
     // generate from CDs
     for (ASTCDCompilationUnit cd : cds) {
-      generateEmfFromCD(glex, oldCD, cd, outputDirectory, handcodedPath);
+      generateEmfFromCD(glex, oldCD, cd, outputDirectory, handcodedPath, templatePath);
     }
   }
-  
+
   public void generateEmfFromCD(GlobalExtensionManagement glex, ASTCDCompilationUnit oldCD, ASTCDCompilationUnit decoratedCD,
-                                File outputDirectory, IterablePath handcodedPath) {
+                                File outputDirectory, IterablePath handcodedPath, IterablePath templatePath) {
     // need symboltable of the old cd
     glex.setGlobalValue("service", new EmfService(oldCD));
     glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
-    glex.setGlobalValue("cdPrinter", new CD4CodePrinter());
+    glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
     final String diagramName = decoratedCD.getCDDefinition().getName();
     GeneratorSetup setup = new GeneratorSetup();
     setup.setOutputDirectory(outputDirectory);
     setup.setHandcodedPath(handcodedPath);
+    setup.setAdditionalTemplatePaths(templatePath.getPaths().stream().map(p -> new File(p.toUri())).collect(Collectors.toList()));
     setup.setModelName(diagramName);
     setup.setGlex(glex);
     CDEmfGenerator generator = new CDEmfGenerator(setup);
@@ -1050,7 +1120,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     if (astGrammar.isPresentSymbol()) {
       MCGrammarSymbol sym = astGrammar.getSymbol();
       for (MCGrammarSymbol mcgsym : MCGrammarSymbolTableHelper.getAllSuperGrammars(sym)) {
-        Optional<CDDefinitionSymbol> importedCd = cdScope.resolveCDDefinitionDown(mcgsym.getFullName());
+        Optional<DiagramSymbol> importedCd = cdScope.resolveDiagramDown(mcgsym.getFullName());
         if (!importedCd.isPresent() && mcgsym.isPresentAstNode()) {
           transformAndCreateSymbolTable(mcgsym.getAstNode(), glex, cdScope);
         }
@@ -1063,7 +1133,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     if (astGrammar.isPresentSymbol()) {
       MCGrammarSymbol sym = astGrammar.getSymbol();
       for (MCGrammarSymbol mcgsym : MCGrammarSymbolTableHelper.getAllSuperGrammars(sym)) {
-        Optional<CDDefinitionSymbol> importedCd = cdScope.resolveCDDefinitionDown(mcgsym.getFullName());
+        Optional<DiagramSymbol> importedCd = cdScope.resolveDiagramDown(mcgsym.getFullName());
         if (!importedCd.isPresent() && mcgsym.isPresentAstNode()) {
           transformAndCreateSymbolTableForSymbolCD(mcgsym.getAstNode(), cdScope);
         }
@@ -1076,7 +1146,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     if (astGrammar.isPresentSymbol()) {
       MCGrammarSymbol sym = astGrammar.getSymbol();
       for (MCGrammarSymbol mcgsym : MCGrammarSymbolTableHelper.getAllSuperGrammars(sym)) {
-        Optional<CDDefinitionSymbol> importedCd = cdScope.resolveCDDefinitionDown(mcgsym.getFullName());
+        Optional<DiagramSymbol> importedCd = cdScope.resolveDiagramDown(mcgsym.getFullName());
         if (!importedCd.isPresent() && mcgsym.isPresentAstNode()) {
           transformAndCreateSymbolTableForScopeCD(mcgsym.getAstNode(), cdScope);
         }
@@ -1119,6 +1189,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     IGrammarFamilyGlobalScope scope = GrammarFamilyMill.globalScope();
     // reset global scope
     scope.clear();
+    BasicSymbolsMill.initializePrimitives();
 
     // Set Fileextension and ModelPath
     scope.setFileExt("mc4");
@@ -1159,7 +1230,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     public static final String[] DEFAULT_STATIC_IMPORTS = {
             "de.se_rwth.commons.logging.Log",
             "de.monticore.generating.templateengine.reporting.Reporting",
-            "de.monticore.incremental.IncrementalChecker",
             "de.monticore.generating.templateengine.reporting.reporter.InputOutputFilesReporter",
             "de.se_rwth.commons.Names"};
 
@@ -1171,6 +1241,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     @Override
     protected void doRun(String script, Configuration configuration) {
       GrammarFamilyMill.init();
+      BasicSymbolsMill.initializePrimitives();
       GroovyInterpreter.Builder builder = GroovyInterpreter.newInterpreter()
               .withScriptBaseClass(MontiCoreScript.class)
               .withImportCustomizer(new ImportCustomizer().addStarImports(DEFAULT_IMPORTS)
@@ -1202,8 +1273,17 @@ public class MontiCoreScript extends Script implements GroovyRunner {
                 mcConfig.getHandcodedPath());
         builder.addVariable(MontiCoreConfiguration.Options.TEMPLATEPATH.toString(),
                 mcConfig.getTemplatePath());
+        builder.addVariable(MontiCoreConfiguration.Options.GROOVYHOOK1_SHORT.toString(),
+                mcConfig.getGroovyHook1());
+        builder.addVariable(MontiCoreConfiguration.Options.GROOVYHOOK2_SHORT.toString(),
+                mcConfig.getGroovyHook2());
         builder.addVariable("LOG_ID", LOG_ID);
-        builder.addVariable("glex", new GlobalExtensionManagement());
+        GlobalExtensionManagement glex = new GlobalExtensionManagement();
+        if (mcConfig.getConfigTemplate().isPresent()) {
+          glex.setGlobalValue(MontiCoreConfiguration.Options.CONFIGTEMPLATE.toString(),
+                  mcConfig.getConfigTemplate().get());
+        }
+        builder.addVariable("glex", glex);
         builder.addVariable("grammarIterator", mcConfig.getGrammars().getResolvedPaths());
         builder.addVariable("reportManagerFactory", new MontiCoreReports(mcConfig.getOut().getAbsolutePath(),
                 mcConfig.getReport().getAbsolutePath(),

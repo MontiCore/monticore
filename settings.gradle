@@ -71,6 +71,7 @@ if(!hasProperty('bootstrap')) {
   include ':monticore-test:01experiments:textoutput'
   include ':monticore-test:01experiments:hwDeSers'
   include ':monticore-test:01experiments:skeleton'
+  include ':monticore-test:01experiments:demonstrator'
   
   include ':monticore-test:02experiments'
   project(':monticore-test:02experiments').projectDir = file("monticore-test/02.experiments")
@@ -81,7 +82,10 @@ if(!hasProperty('bootstrap')) {
   include(':monticore-test:02experiments:forGrammarOps')
   include(':monticore-test:02experiments:parser')
   include(':monticore-test:02experiments:traverser')
-  
+  include(':monticore-test:02experiments:typecheck')
+  include(':monticore-test:02experiments:forGradle')
+  include(':monticore-test:02experiments:configTemplate')
+  include(':monticore-test:02experiments:groovyHooks')
   
  // include 'example'
  // project(':example').projectDir = file("monticore-test/example")

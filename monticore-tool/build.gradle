@@ -122,3 +122,7 @@ task publishAll {
 task testAll(type: GradleBuild) {
   tasks = [ 'test' ]
 }
+
+task cleanAll {
+  dependsOn(this.subprojects.collect {it.tasks.withType(Delete)})
+}

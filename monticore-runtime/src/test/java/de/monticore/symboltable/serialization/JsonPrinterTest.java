@@ -58,6 +58,39 @@ public class JsonPrinterTest {
     printer.endObject();
     assertEquals("{}", printer.toString());
   }
+
+  @Test
+  public void testDefaultString() {
+    JsonPrinter printer = new JsonPrinter();
+    printer.member("s","");
+    assertEquals("", printer.toString());
+
+    printer = new JsonPrinter(true);
+    printer.member("s","");
+    assertEquals("\"s\":\"\"", printer.toString());
+  }
+
+  @Test
+  public void testDefaultInt() {
+    JsonPrinter printer = new JsonPrinter();
+    printer.member("i",0);
+    assertEquals("", printer.toString());
+
+    printer = new JsonPrinter(true);
+    printer.member("i",0);
+    assertEquals("\"i\":0", printer.toString());
+  }
+
+  @Test
+  public void testDefaultBoolean() {
+    JsonPrinter printer = new JsonPrinter();
+    printer.member("b",false);
+    assertEquals("", printer.toString());
+
+    printer = new JsonPrinter(true);
+    printer.member("b",false);
+    assertEquals("\"b\":false", printer.toString());
+  }
   
   @Test
   public void testEmptyList() {
@@ -203,11 +236,11 @@ public class JsonPrinterTest {
   }
 
   @Test
-  public void testIsSerializingEmptyLists() {
+  public void testIsSerializingDefaults() {
     JsonPrinter serializeEmpty = new JsonPrinter(true);
     JsonPrinter serializeEmptyNot = new JsonPrinter();
-    assertTrue(serializeEmpty.isSerializingEmptyLists());
-    assertFalse(serializeEmptyNot.isSerializingEmptyLists());
+    assertTrue(serializeEmpty.isSerializingDefaults());
+    assertFalse(serializeEmptyNot.isSerializingDefaults());
   }
   
 }

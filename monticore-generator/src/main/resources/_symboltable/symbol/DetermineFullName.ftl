@@ -10,10 +10,10 @@ ${tc.signature("scopeInterface")}
   final Deque<String> nameParts = new ArrayDeque<>();
     nameParts.addFirst(name);
 
-    IScope optCurrentScope = enclosingScope;
+    de.monticore.symboltable.IScope optCurrentScope = enclosingScope;
 
   while (optCurrentScope != null) {
-  final IScope currentScope = optCurrentScope;
+  final de.monticore.symboltable.IScope currentScope = optCurrentScope;
       if (currentScope.isPresentSpanningSymbol()) {
         // If one of the enclosing scope(s) is spanned by a symbol, the full name
         // of that symbol is the missing prefix, and hence, the calculation
@@ -23,8 +23,8 @@ ${tc.signature("scopeInterface")}
         break;
       }
 
-      if (!(currentScope instanceof IGlobalScope)) {
-        if (currentScope instanceof IArtifactScope) {
+      if (!(currentScope instanceof de.monticore.symboltable.IGlobalScope)) {
+        if (currentScope instanceof de.monticore.symboltable.IArtifactScope) {
           // We have reached the artifact scope. Get the package name from the
           // symbol itself, since it might be set manually.
           if (!getPackageName().isEmpty()) {
