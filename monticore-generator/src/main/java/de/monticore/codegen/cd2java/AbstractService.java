@@ -545,7 +545,7 @@ public class AbstractService<T extends AbstractService> {
    * Cli class names e.g. AutomataCli
    */
 
-  public String getCliSimpleName(CDDefinitionSymbol cdSymbol) {
+  public String getCliSimpleName(DiagramSymbol cdSymbol) {
     return cdSymbol.getName() + CLI_SUFFIX;
   }
 
@@ -553,7 +553,7 @@ public class AbstractService<T extends AbstractService> {
     return getCliSimpleName(getCDSymbol());
   }
 
-  public String getCliFullName(CDDefinitionSymbol cdSymbol) {
+  public String getCliFullName(DiagramSymbol cdSymbol) {
     if (cdSymbol.getPackageName().isEmpty()) {
       return cdSymbol.getName().toLowerCase() + "." + getCliSimpleName(cdSymbol);
     }else {

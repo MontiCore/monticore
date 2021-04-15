@@ -1,24 +1,28 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java.cli;
 
-import de.monticore.cd.cd4analysis.CD4AnalysisMill;
-import de.monticore.cd.cd4analysis._ast.*;
-import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
+import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cd4codebasis._ast.ASTCDParameter;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static de.monticore.cd.facade.CDModifier.PUBLIC_STATIC;
+import static de.monticore.codegen.cd2java.CDModifier.PUBLIC_STATIC;
 import static de.monticore.codegen.cd2java.CoreTemplates.*;
 import static de.monticore.codegen.cd2java.CoreTemplates.createAnnotationsHookPoint;
 
-public class CDCLIDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, ASTCDCompilationUnit> {
+public class CDCLIDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCompilationUnit> {
 
   public static final String TEMPLATE_PATH = "_cli.";
 
@@ -33,12 +37,12 @@ public class CDCLIDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, 
     this.runnerDecorator = runnerDecorator;
   }
 
-  protected ASTCDMethod createMainMethod(CDDefinitionSymbol cdSymbol) {
+  protected ASTCDMethod createMainMethod(DiagramSymbol cdSymbol) {
     String grammarname = cdSymbol.getName();
     Optional<String> startprod = abstractService.getStartProdASTFullName();
     ASTMCType checkerType = getMCTypeFacade().createArrayType("String",1);
     ASTCDParameter parameter = getCDParameterFacade().createParameter(checkerType, "args");
-    ASTCDMethod addCheckerMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC, "main" , parameter);
+    ASTCDMethod addCheckerMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC.build(), "main" , parameter);
     this.replaceTemplate(EMPTY_BODY, addCheckerMethod, new TemplateHookPoint(TEMPLATE_PATH + "Main" , grammarname, startprod.get()));
     return addCheckerMethod;
   }
@@ -46,12 +50,7 @@ public class CDCLIDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, 
 
 
   @Override
-  public ASTCDCompilationUnit decorate(final List<ASTCDCompilationUnit> cdList) {
-    ASTCDCompilationUnit mainCD = cdList.get(0);
-
-    // decorate for Cli classes
-
-
+  public ASTCDCompilationUnit decorate(final ASTCDCompilationUnit mainCD) {
     // create package at the top level of the grammar package -> remove _ast package
     List<String> topLevelPackage = new ArrayList<>(mainCD.getPackageList());
     topLevelPackage.remove(topLevelPackage.size() - 1);
@@ -61,11 +60,11 @@ public class CDCLIDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, 
         .build();
     ASTCDDefinition cdDefinition = mainCD.getCDDefinition();
     if(!cdDefinition.isPresentModifier() || !abstractService.hasComponentStereotype(cdDefinition.getModifier())) {
-      Optional<ASTCDClass> cliClass = runnerDecorator.decorate(cdList);
-      cliClass.ifPresent(astCD::addCDClass);
+      Optional<ASTCDClass> cliClass = runnerDecorator.decorate(mainCD);
+      cliClass.ifPresent(astCD::addCDElement);
     }
 
-    for (ASTCDClass cdClass : astCD.getCDClassList()) {
+    for (ASTCDClass cdClass : astCD.getCDClassesList()) {
       this.replaceTemplate(PACKAGE, cdClass, createPackageHookPoint(topLevelPackage));
       if (cdClass.isPresentModifier()) {
         this.replaceTemplate(ANNOTATIONS, cdClass, createAnnotationsHookPoint(cdClass.getModifier()));

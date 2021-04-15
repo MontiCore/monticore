@@ -646,7 +646,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   public List<ASTCDCompilationUnit> decorateCD(GlobalExtensionManagement glex, ICD4AnalysisScope cdScope,
       List<ASTCDCompilationUnit> cds, IterablePath handCodedPath) {
     cds = addListSuffixToAttributeName(cds);
-    List<ASTCDCompilationUnit> decoratedCDs = new ArrayList<ASTCDCompilationUnit>();
+    List<ASTCDCompilationUnit> decoratedCDs = new ArrayList<>();
     // we precisely know the strucutre of the given cd list
     // in a future version, we will only handle one single cd
     ASTCDCompilationUnit decoratedASTClassDiagramm = decorateForASTPackage(glex, cdScope, cds.get(0), handCodedPath);
@@ -660,8 +660,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     decoratedCDs.add(decorateForODPackage(glex, cdScope, cds.get(0), handCodedPath));
     decoratedCDs.add(decorateMill(glex, cdScope, cds.get(0), decoratedASTClassDiagramm,
         decoratedSymbolTableCd, decoratedTraverserCD, handCodedPath));
-    decoratedCDs.add(decorateCLI(glex, cdScope, cds.get(0), decoratedASTClassDiagramm,
-        decoratedSymbolTableCd, decoratedTraverserCD, handCodedPath));
+    decoratedCDs.add(decorateCLI(glex, cdScope, cds.get(0), handCodedPath));
     decoratedCDs.add(decorateAuxiliary(glex, cdScope, cds.get(0), decoratedASTClassDiagramm, handCodedPath));
     return decoratedCDs;
   }
@@ -830,21 +829,18 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   }
 
   public ASTCDCompilationUnit decorateCLI(GlobalExtensionManagement glex, ICD4AnalysisScope cdScope,
-                                           ASTCDCompilationUnit cd, ASTCDCompilationUnit astClassDiagram,
-                                           ASTCDCompilationUnit symbolCD,
-                                           ASTCDCompilationUnit traverserCD, IterablePath handCodedPath) {
+                                           ASTCDCompilationUnit cd, IterablePath handCodedPath) {
     ASTCDCompilationUnit preparedCD = prepareCD(cdScope, cd);
-    return generateCLI(preparedCD, astClassDiagram, symbolCD, traverserCD, glex, handCodedPath);
+    return generateCLI(preparedCD, glex, handCodedPath);
   }
 
-  private ASTCDCompilationUnit generateCLI(ASTCDCompilationUnit cd, ASTCDCompilationUnit astCD,
-                                            ASTCDCompilationUnit symbolCD, ASTCDCompilationUnit traverserCD,
+  private ASTCDCompilationUnit generateCLI(ASTCDCompilationUnit cd,
                                             GlobalExtensionManagement glex, IterablePath handCodedPath) {
     AbstractService abstractService = new AbstractService(cd);
     RunnerDecorator runnerDecorator = new RunnerDecorator(glex, abstractService);
     CDCLIDecorator cdcliDecorator = new CDCLIDecorator(glex, runnerDecorator, abstractService);
 
-    ASTCDCompilationUnit cliCD = cdcliDecorator.decorate(Lists.newArrayList(astCD, traverserCD, symbolCD));
+    ASTCDCompilationUnit cliCD = cdcliDecorator.decorate(cd);
 
 
     TopDecorator topDecorator = new TopDecorator(handCodedPath);
