@@ -1,7 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.grammar.grammar._symboltable;
 
+import com.google.common.collect.Lists;
 import de.monticore.grammar.MCGrammarSymbolTableHelper;
+import de.monticore.grammar.grammar.GrammarMill;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsFullPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
@@ -10,10 +12,9 @@ import de.monticore.utils.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.Deque;
+import java.util.List;
 import java.util.Optional;
 
-import static de.monticore.grammar.HelperGrammar.findImplicitTypes;
 import static de.se_rwth.commons.Names.getQualifiedName;
 import static de.se_rwth.commons.logging.Log.error;
 import static java.util.Optional.empty;
@@ -25,33 +26,38 @@ public class GrammarScopesGenitor extends GrammarScopesGenitorTOP {
     super();
   }
 
-  public GrammarScopesGenitor(IGrammarScope scope){
-    super(scope);
-  }
-
-  public GrammarScopesGenitor(Deque<? extends IGrammarScope> scopeStack){
-    super(scopeStack);
-  }
-
   private static final String SET_SCOPE_ERROR = "Could not set enclosing scope of ASTNode \"%s\", because no scope is set yet!";
 
   private MCGrammarSymbol grammarSymbol;
 
-  private ASTMCGrammar astGrammar;
-
   @Override
   public void visit(ASTMCGrammar ast){
-    super.visit(ast);
-    grammarSymbol = ast.getSymbol();
-    astGrammar = ast;
-  }
+    MCGrammarSymbolBuilder symbolBuilder = de.monticore.grammar.grammar.GrammarMill.mCGrammarSymbolBuilder().setName(ast.getName());
+    symbolBuilder.setIsComponent(ast.isComponent());
+    addSuperGrammars(ast, symbolBuilder);
+    MCGrammarSymbol symbol = symbolBuilder.build();
+    if (getCurrentScope().isPresent()) {
+      getCurrentScope().get().add(symbol);
+    } else {
+      Log.warn("0xA5021x45404 Symbol cannot be added to current scope, since no scope exists.");
+    }
+    IGrammarScope scope = createScope(false);
+    putOnStack(scope);
+    symbol.setSpannedScope(scope);
+    // symbol -> ast
+    symbol.setAstNode(ast);
 
-  @Override
-  protected MCGrammarSymbolBuilder create_MCGrammar(ASTMCGrammar ast) {
-    MCGrammarSymbolBuilder symbol = super.create_MCGrammar(ast);
-    symbol.setIsComponent(ast.isComponent());
-    addSuperGrammars(ast, symbol);
-    return symbol;
+    // ast -> symbol
+    ast.setSymbol(symbol);
+    ast.setEnclosingScope(symbol.getEnclosingScope());
+
+    // scope -> ast
+    scope.setAstNode(ast);
+
+    // ast -> scope
+    ast.setSpannedScope(scope);
+    initMCGrammarHP1(ast.getSymbol());
+    grammarSymbol = ast.getSymbol();
   }
 
   @Override
@@ -64,17 +70,26 @@ public class GrammarScopesGenitor extends GrammarScopesGenitorTOP {
   }
 
   @Override
-  protected RuleComponentSymbolBuilder create_Terminal(ASTTerminal ast) {
-    final String symbolName = ast.isPresentUsageName()?ast.getUsageName():"";
-    return new RuleComponentSymbolBuilder().setName(symbolName);
-  }
-
-  @Override
   public  void visit (ASTTerminal node)  {
     // only create a symbol for ASTKeyTerminals that have a usage name
     // only with usage name is shown in AST
     if(node.isPresentUsageName()){
-      super.visit(node);
+      RuleComponentSymbolBuilder symbolBuilder = GrammarMill.ruleComponentSymbolBuilder().setName(node.getName());
+      symbolBuilder.setName(node.isPresentUsageName()?node.getUsageName():"");
+      RuleComponentSymbol symbol = symbolBuilder.build();
+      if (getCurrentScope().isPresent()) {
+        getCurrentScope().get().add(symbol);
+      } else {
+        Log.warn("0xA5021x12230 Symbol cannot be added to current scope, since no scope exists.");
+      }
+      // symbol -> ast
+      symbol.setAstNode(node);
+
+      // ast -> symbol
+      node.setSymbol(symbol);
+      node.setEnclosingScope(symbol.getEnclosingScope());
+
+      initRuleComponentHP1(node.getSymbol());
     } else {
       // must still add the scope to the ASTKeyTerminal, even if it defines no symbol
       if (getCurrentScope().isPresent()) {
@@ -88,18 +103,27 @@ public class GrammarScopesGenitor extends GrammarScopesGenitorTOP {
   }
 
   @Override
-  protected RuleComponentSymbolBuilder create_KeyTerminal(ASTKeyTerminal ast) {
-    final String symbolName = ast.isPresentUsageName()?ast.getUsageName():"";
-    return new RuleComponentSymbolBuilder().setName(symbolName);
-  }
-
-  @Override
   public void visit(ASTKeyTerminal node) {
     // only create a symbol for ASTKeyTerminals that have a usage name
     // only with usage name is shown in AST
     grammarSymbol.noKeywords.addAll(node.getKeyConstant().getStringList());
     if(node.isPresentUsageName()){
-      super.visit(node);
+      RuleComponentSymbolBuilder symbolBuilder = GrammarMill.ruleComponentSymbolBuilder().setName(node.getName());
+      symbolBuilder.setName(node.isPresentUsageName()?node.getUsageName():"");
+      RuleComponentSymbol symbol = symbolBuilder.build();
+      if (getCurrentScope().isPresent()) {
+        getCurrentScope().get().add(symbol);
+      } else {
+        Log.warn("0xA5021x12235 Symbol cannot be added to current scope, since no scope exists.");
+      }
+      // symbol -> ast
+      symbol.setAstNode(node);
+
+      // ast -> symbol
+      node.setSymbol(symbol);
+      node.setEnclosingScope(symbol.getEnclosingScope());
+
+      initRuleComponentHP1(node.getSymbol());
     } else {
       // must still add the scope to the ASTKeyTerminal, even if it defines no symbol
       if (getCurrentScope().isPresent()) {
@@ -108,12 +132,6 @@ public class GrammarScopesGenitor extends GrammarScopesGenitorTOP {
         Log.error(String.format(SET_SCOPE_ERROR, node));
       }
     }
-  }
-
-  @Override
-  protected RuleComponentSymbolBuilder create_TokenTerminal(ASTTokenTerminal ast) {
-    final String symbolName = ast.isPresentUsageName()?ast.getUsageName():"";
-    return new RuleComponentSymbolBuilder().setName(symbolName);
   }
 
   @Override
@@ -121,7 +139,22 @@ public class GrammarScopesGenitor extends GrammarScopesGenitorTOP {
     // only create a symbol for ASTKeyTerminals that have a usage name
     // only with usage name is shown in AST
     if(node.isPresentUsageName()){
-      super.visit(node);
+      RuleComponentSymbolBuilder symbolBuilder = GrammarMill.ruleComponentSymbolBuilder().setName(node.getName());
+      symbolBuilder.setName(node.isPresentUsageName()?node.getUsageName():"");
+      RuleComponentSymbol symbol = symbolBuilder.build();
+      if (getCurrentScope().isPresent()) {
+        getCurrentScope().get().add(symbol);
+      } else {
+        Log.warn("0xA5021x12261 Symbol cannot be added to current scope, since no scope exists.");
+      }
+      // symbol -> ast
+      symbol.setAstNode(node);
+
+      // ast -> symbol
+      node.setSymbol(symbol);
+      node.setEnclosingScope(symbol.getEnclosingScope());
+
+      initRuleComponentHP1(node.getSymbol());
     } else {
       // must still add the scope to the ASTKeyTerminal, even if it defines no symbol
       if (getCurrentScope().isPresent()) {
@@ -133,9 +166,23 @@ public class GrammarScopesGenitor extends GrammarScopesGenitorTOP {
   }
 
   @Override
-  protected RuleComponentSymbolBuilder create_NonTerminal(ASTNonTerminal ast) {
-    final String symbolName = ast.isPresentUsageName() ? ast.getUsageName() : StringTransformations.uncapitalize(ast.getName());
-    return new RuleComponentSymbolBuilder().setName(symbolName);
+  public void visit(ASTNonTerminal node) {
+    RuleComponentSymbolBuilder symbolBuilder = GrammarMill.ruleComponentSymbolBuilder().setName(node.getName());
+    symbolBuilder.setName(node.isPresentUsageName()?node.getUsageName(): StringTransformations.uncapitalize(node.getName()));
+    RuleComponentSymbol symbol = symbolBuilder.build();
+    if (getCurrentScope().isPresent()) {
+      getCurrentScope().get().add(symbol);
+    } else {
+      Log.warn("0xA5021x12263 Symbol cannot be added to current scope, since no scope exists.");
+    }
+    // symbol -> ast
+    symbol.setAstNode(node);
+
+    // ast -> symbol
+    node.setSymbol(symbol);
+    node.setEnclosingScope(symbol.getEnclosingScope());
+
+    initRuleComponentHP1(node.getSymbol());
   }
 
   @Override
@@ -166,8 +213,7 @@ public class GrammarScopesGenitor extends GrammarScopesGenitorTOP {
     ast.setEnclosingScope(getCurrentScope().get());
   }
 
-  @Override
-  protected AdditionalAttributeSymbolBuilder create_AdditionalAttribute(ASTAdditionalAttribute ast) {
+  protected AdditionalAttributeSymbolBuilder createAdditionalAttribute(ASTAdditionalAttribute ast) {
     String symbolName;
     if (ast.isPresentName()) {
       symbolName = ast.getName();
@@ -228,8 +274,23 @@ public class GrammarScopesGenitor extends GrammarScopesGenitorTOP {
   }
 
   @Override
-  protected RuleComponentSymbolBuilder create_ConstantGroup(ASTConstantGroup ast) {
-    return new de.monticore.grammar.grammar._symboltable.RuleComponentSymbolBuilder().setName(MCGrammarSymbolTableHelper.getConstantGroupName(ast));
+  public void visit(ASTConstantGroup node) {
+    RuleComponentSymbolBuilder symbolBuilder = de.monticore.grammar.grammar.GrammarMill.ruleComponentSymbolBuilder().setName(node.getName());
+    symbolBuilder.setName(MCGrammarSymbolTableHelper.getConstantGroupName(node));
+    RuleComponentSymbol symbol = symbolBuilder.build();
+    if (getCurrentScope().isPresent()) {
+      getCurrentScope().get().add(symbol);
+    } else {
+      Log.warn("0xA5021x12264 Symbol cannot be added to current scope, since no scope exists.");
+    }
+    // symbol -> ast
+    symbol.setAstNode(node);
+
+    // ast -> symbol
+    node.setSymbol(symbol);
+    node.setEnclosingScope(symbol.getEnclosingScope());
+
+    initRuleComponentHP1(node.getSymbol());
   }
 
   private void addSuperGrammars(ASTMCGrammar astGrammar, MCGrammarSymbolBuilder grammarSymbol) {
@@ -249,10 +310,15 @@ public class GrammarScopesGenitor extends GrammarScopesGenitorTOP {
    * @param astAttribute
    */
   private void addAttributeInAST(ProdSymbol mcProdSymbol, ASTAdditionalAttribute astAttribute, boolean isAstAttr) {
-    AdditionalAttributeSymbol symbol = create_AdditionalAttribute(astAttribute).setIsAstAttr(isAstAttr).build();
+    AdditionalAttributeSymbol symbol = createAdditionalAttribute(astAttribute).setIsAstAttr(isAstAttr).build();
     symbol.setType(astAttribute.getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()));
     mcProdSymbol.getSpannedScope().add(symbol);
-    setLinkBetweenSymbolAndNode(symbol, astAttribute);
+    // symbol -> ast
+    symbol.setAstNode(astAttribute);
+
+    // ast -> symbol
+    astAttribute.setSymbol(symbol);
+    astAttribute.setEnclosingScope(symbol.getEnclosingScope());
   }
 
   public final Optional<ProdSymbol> getProdSymbol() {
@@ -263,6 +329,43 @@ public class GrammarScopesGenitor extends GrammarScopesGenitorTOP {
       }
     }
     return empty();
+  }
+
+  private List<String> findImplicitTypes(ASTLexActionOrPredicate action,
+                                               Grammar_WithConceptsFullPrettyPrinter prettyPrinter) {
+    List<String> ret = Lists.newArrayList();
+    StringBuilder buffer = new StringBuilder();
+    buffer.append(prettyPrinter.prettyprint(action.getExpressionPredicate()));
+    String actionText = buffer.toString();
+    if (actionText.contains("_ttype")) {
+      String[] split = actionText.split("_ttype");
+
+      for (int i = 1; i < split.length; i++) {
+        String rest = split[i].trim();
+        if (rest.length() > 1 && rest.startsWith("=")) {
+          rest = rest.substring(1).trim();
+          if (!rest.startsWith("Token")) {
+            String string = rest.split("[ ;]")[0];
+            ret.add(string);
+          }
+        }
+      }
+    }
+    if (actionText.contains("$setType(")) {
+      String[] split = actionText.split("[$]setType[(]");
+
+      for (int i = 1; i < split.length; i++) {
+        String rest = split[i].trim();
+        if (rest.length() > 0) {
+
+          if (!rest.startsWith("Token")) {
+            String string = rest.split("[ )]")[0];
+            ret.add(string);
+          }
+        }
+      }
+    }
+    return ret;
   }
 
 }

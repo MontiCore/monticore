@@ -12,7 +12,7 @@ import java.io.File;
 import java.util.List;
 import java.util.regex.Matcher;
 
-import static com.google.common.base.CharMatcher.WHITESPACE;
+import static com.google.common.base.CharMatcher.whitespace;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.isNullOrEmpty;
@@ -115,8 +115,8 @@ public final class Names {
     checkNotNull(simpleName);
     checkArgument(!simpleName.isEmpty(), "The simple name must not be empty.");
     
-    String trimedQualifier = DOT.trimFrom(WHITESPACE.trimFrom(qualifier));
-    String trimedSimpleName = DOT.trimFrom(WHITESPACE.trimFrom(simpleName));
+    String trimedQualifier = DOT.trimFrom(whitespace().trimFrom(qualifier));
+    String trimedSimpleName = DOT.trimFrom(whitespace().trimFrom(simpleName));
     
     return trimedQualifier.isEmpty()
         ? trimedSimpleName
@@ -214,7 +214,7 @@ public final class Names {
   public static String getFileName(String fileName, String fileExtension) {
     checkArgument(!isNullOrEmpty(fileName));
     checkArgument(!isNullOrEmpty(fileExtension));
-    return fileName + "." + DOT.trimFrom(WHITESPACE.trimFrom(fileExtension));
+    return fileName + "." + DOT.trimFrom(whitespace().trimFrom(fileExtension));
   }
   
   /**

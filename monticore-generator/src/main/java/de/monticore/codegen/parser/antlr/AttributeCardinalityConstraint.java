@@ -3,10 +3,9 @@
 package de.monticore.codegen.parser.antlr;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.parser.ParserGeneratorHelper;
-import de.monticore.grammar.HelperGrammar;
+import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTNonTerminal;
 import de.monticore.grammar.grammar._symboltable.AdditionalAttributeSymbol;
@@ -35,7 +34,7 @@ public class AttributeCardinalityConstraint {
 
     for (AdditionalAttributeSymbol att : prodSymbol.getSpannedScope().getLocalAdditionalAttributeSymbols()) {
       String usageName = att.getName();
-      if (MCGrammarSymbolTableHelper.getMax(att).isPresent()
+      if (TransformationHelper.getMax(att).isPresent()
               || MCGrammarSymbolTableHelper.getMin(att).isPresent()) {
         ret.append("\n" + "int " + getCounterName(usageName) + "=0;");
       }
@@ -50,7 +49,7 @@ public class AttributeCardinalityConstraint {
       
       String usageName = att.getName();
       Optional<Integer> min = MCGrammarSymbolTableHelper.getMin(att);
-      Optional<Integer> max = MCGrammarSymbolTableHelper.getMax(att);
+      Optional<Integer> max = TransformationHelper.getMax(att);
       if (min.isPresent() || max.isPresent()) {
         if (min.isPresent()) {
 
@@ -103,7 +102,7 @@ public class AttributeCardinalityConstraint {
   public String addActionForNonTerminal(ASTNonTerminal ast) {
     StringBuilder ret = new StringBuilder();
     
-    String usageName = HelperGrammar.getUsageName(ast);
+    String usageName = parserGenHelper.getUsageName(ast);
     
     Optional<ProdSymbol> rule = MCGrammarSymbolTableHelper.getEnclosingRule(ast);
     if (!rule.isPresent()) {
@@ -111,7 +110,7 @@ public class AttributeCardinalityConstraint {
     }
     
     Optional<AdditionalAttributeSymbol> att = rule.get().getSpannedScope().resolveAdditionalAttributeLocally(usageName);
-    if (att.isPresent() && (MCGrammarSymbolTableHelper.getMax(att.get()).isPresent()
+    if (att.isPresent() && (TransformationHelper.getMax(att.get()).isPresent()
         || MCGrammarSymbolTableHelper.getMin(att.get()).isPresent())) {
       ret.append(getCounterName(usageName) + "++;\n");
     }

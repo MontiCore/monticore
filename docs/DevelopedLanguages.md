@@ -23,6 +23,7 @@ information on many of the languages.
 * [SI Units](https://github.com/MontiCore/siunits)
 * [automaton](https://github.com/MontiCore/automaton)
 * [EmbeddedMontiArc](https://github.com/MontiCore/EmbeddedMontiArc)
+* [Object Diagrams](https://github.com/MontiCore/object-diagram)
 
 ## Further Languages (e.g. used in scientific and industrial projects)
 

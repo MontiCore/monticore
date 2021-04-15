@@ -38,32 +38,31 @@ by executing the following configuration:
     
 ## Build MontiCore
 
-MontiCore is currently built using Gradle. It is recommended to use the MontiCore internal gradle
-wrapper (`gradlew`).
+MontiCore is currently built using Gradle. 
 
 Please note that from the top level build script, not everything is built and 
 all tests executed. It is a deliberate decision, to exclude some of the longer 
 lasting tasks.
 
 * build the productive code (including the unit tests, ~8 min)
-  * `gradlew buildMC`
-  * skipping the unit tests: `gradlew assembleMC`
+  * `gradle buildMC`
+  * skipping the unit tests: `gradle assembleMC`
 * run integration tests (which are not included in the unit tests, ~30 min)   
   * all integration tests
-    * `gradlew testIT`
+    * `gradle testIT`
   * Integration tests of the generator: 
-    *  `gradlew -p monticore-test/it build`
+    *  `gradle -p monticore-test/it build`
   * EMF Integration tests of the generator (only test collection not included in `testIt`): 
-    * `gradlew -p monticore-test/it build -PbuildProfile=emf`
+    * `gradle -p monticore-test/it build -PbuildProfile=emf`
   * Experiments (from the Reference Manual) as integration tests:
-    * `gradlew -p monticore-test/01.experiments build` and 
-    * `gradlew -p monticore-test/02.experiments build`
+    * `gradle -p monticore-test/01.experiments build` and 
+    * `gradle -p monticore-test/02.experiments build`
   * Grammar integration tests:
-     * `gradlew -p monticore-test/monticore-grammar-it build`
+     * `gradle -p monticore-test/monticore-grammar-it build`
 * clean:
-  * call `gradlew clean`
+  * call `gradle clean`
   * cleaning integration tests:
-    * using gradle `gradlew clean` within the corresponding subproject (see above)
+    * using gradle `gradle clean` within the corresponding subproject (see above)
 
   
 ## Further Information

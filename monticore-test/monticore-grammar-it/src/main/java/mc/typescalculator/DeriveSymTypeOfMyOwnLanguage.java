@@ -11,7 +11,7 @@ import mc.typescalculator.myownlanguage._visitor.MyOwnLanguageTraverser;
 import java.util.Optional;
 
 public class DeriveSymTypeOfMyOwnLanguage
-    implements ITypesCalculator {
+    implements IDerive {
 
   private MyOwnLanguageTraverser traverser;
 
@@ -31,21 +31,11 @@ public class DeriveSymTypeOfMyOwnLanguage
   }
 
   @Override
-  public Optional<SymTypeExpression> calculateType(ASTExpression ex) {
-    ex.accept(traverser);
-    return Optional.of(typeCheckResult.getCurrentResult());
-  }
-
-  @Override
-  public Optional<SymTypeExpression> calculateType(ASTLiteral lit) {
-    lit.accept(traverser);
-    return Optional.of(typeCheckResult.getCurrentResult());
-  }
-
-  @Override
-  public Optional<SymTypeExpression> calculateType(ASTSignedLiteral lit) {
-    lit.accept(traverser);
-    return Optional.of(typeCheckResult.getCurrentResult());
+  public Optional<SymTypeExpression> getResult() {
+    if(typeCheckResult.isPresentCurrentResult()){
+      return Optional.ofNullable(typeCheckResult.getCurrentResult());
+    }
+    return Optional.empty();
   }
 
   @Override

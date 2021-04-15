@@ -32,32 +32,6 @@ public class AutomatonWithSTInfo6Test extends GeneratorIntegrationsTest {
     TransitionSymbol transitionSymbol = new TransitionSymbol("T");
     assertFalse(transitionSymbol instanceof IScopeSpanningSymbol);
     TransitionSymbolSurrogate transitionSymbolSurrogate;
-
-//    Collection<StateSymbol> stateSymbols = automatonSymbol.getStates();
-//    Collection<TransitionSymbol> transitionSymbols = automatonSymbol.getTransitions();
-//
-//    StateSymbol from = transitionSymbol.getFrom();
-//    StateSymbol to = transitionSymbol.getTo();
-    
-    class STCreator extends AutomatonWithSTInfo6ScopesGenitor {
-  
-      public STCreator(
-          IAutomatonWithSTInfo6Scope enclosingScope) {
-        super(enclosingScope);
-      }
-  
-      public STCreator(
-          Deque<? extends IAutomatonWithSTInfo6Scope> scopeStack) {
-        super(scopeStack);
-      }
-  
-      @Override
-      // Compiler fails if no method for scope 'Block' is generated
-      protected IAutomatonWithSTInfo6Scope create_Block(ASTBlock ast) {
-        return super.create_Block(ast);
-      }
-    }
-
   }
 
 }

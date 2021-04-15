@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+pluginManagement {
+  repositories {
+    maven {
+      url "https://nexus.se.rwth-aachen.de/content/groups/public"
+    }
+  }
+}
+

@@ -23,14 +23,15 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
+import static de.monticore.generating.GeneratorEngine.existsHandwrittenClass;
+
 /**
  * Main class for the Automaton DSL tool.
  */
 public class TemplatesTool {
 
-  /** Configurational values:
+  /** Configurable values:
    */
-  public static final Path SYMBOL_LOCATION = Paths.get("target");
   public static final String TOP_NAME_EXTENSION = "TOP";
 
   /**
@@ -150,25 +151,19 @@ public class TemplatesTool {
    */
   public void executeWorkflow() {
 
-    // Part 1: Frontend
+    // Part 1a: Frontend
     // parse the model and create the AST representation
     ast = parse(modelfilename);
     Log.info(modelfilename + " parsed successfully", this.getClass().getName());
 
-    // setup the symbol table
-    globalScope =  AutomataMill
-        .globalScope();
-    globalScope.setModelPath(new ModelPath());
-    globalScope.setFileExt("aut");
-    modelTopScope = createSymbolTable(ast);
+    // Part 1b: setup the symbol table
+    setupSymbolTable();
   
     // Part 2: CoCos
     // deliberately omitted
   
     // Part 3: Store Symboltable
-    // store artifact scope and its symbols
-    AutomataSymbols2Json deser = new AutomataSymbols2Json();
-    deser.store(modelTopScope, SYMBOL_LOCATION+"/"+ Paths.get(modelfilename).getFileName() + "sym");
+    storeSymbolTable();
     Log.info(modelfilename + " symboltable stored successfully", this.getClass().getName());
     
     // Part 4: Transformation and Data Calculation
@@ -218,7 +213,7 @@ public class TemplatesTool {
   protected void initGlex() {
     glex = new GlobalExtensionManagement();
     
-    // The modelName is used veryeher and does not change during generation
+    // The modelName is used everywhere and does not change during generation
     glex.setGlobalValue("modelName", ast.getName());
   }
   
@@ -229,7 +224,8 @@ public class TemplatesTool {
     String className = ast.getName();
 
     // we assume there is at least one state (--> CoCo)
-    // if there are more: one will arbitrarily be choosen (may be the last one)  (---> CoCo?)
+    // if there are more: one will arbitrarily be choosen
+    //                        (may be the last one)  (---> CoCo?)
     ASTState initialState = ast.getStateList().stream().filter(ASTState::isInitial).findAny().get();
     
     // handle TOP extension
@@ -304,12 +300,9 @@ public class TemplatesTool {
   }
   
   /**
-   * Calculates a list of transitions that act as representatives for all occuring stimuli
-   * (each stumulis is represented exactly once in that list)
+   * Calculates a list of transitions that act as representatives for all occurring stimuli
+   * (each stimulus is represented exactly once in that list)
    *
-   * @param allTransitions list o all transitions in the automaton
-   * @param inputsToBeExcluded inputs that should be excluded
-   * @return a list of transitions that act as representatives for not accepted inputs
    */
   protected void deriveStateMap_DeltaMap() {
     
@@ -328,7 +321,7 @@ public class TemplatesTool {
       stimuli.add(input);
       ASTState from = stateMap.get(t.getFrom());
       // we assume that the automaton is deterministic --> CoCo
-      // if it isn't one transition will arbitrarily choosen (may be the last one)
+      // if it isn't one transition will arbitrarily chosen (may be the last one)
       // However, it may be incomplete!
       deltaMap.get(from).put(input, t);
     }
@@ -355,30 +348,45 @@ public class TemplatesTool {
     }
     return null;
   }
-  
+
   /**
-   * Create the symbol table from the parsed AST.
+   * Setup the Symbol Table
    *
-   * @param ast the model
-   * @return
    */
-  public IAutomataArtifactScope createSymbolTable(ASTAutomaton ast) {
-    AutomataScopesGenitorDelegator stc = AutomataMill.scopesGenitorDelegator();
-        return stc.createFromAST(ast);
+  void setupSymbolTable() {
+
+    // Setup the (one and only) global scope
+    globalScope =  AutomataMill
+        .globalScope();
+
+    // the global scope here is initialized with an empty path to look for 
+    // models
+    globalScope.setModelPath(new ModelPath());
+
+    // and only looks for automata "aut"
+    globalScope.setFileExt("aut");
+
+    // this method creates all other scopes and symbols
+    modelTopScope = AutomataMill.scopesGenitorDelegator().createFromAST(ast);
+
+    // in complex languages, we may add a second pass here
+    // to fill symbol attributes with values 
+    // (but in this case it is not needed)
   }
-  
+
   /**
-   * Check whewther an handwritten version of that class already exits and shall be integrated
-   * (e.g. to apply TOP mechanism)
+   * Store the Symbol Table in the Symbol Artifact
+   *
    */
-  public static boolean existsHandwrittenClass(IterablePath targetPath, String qualifiedName) {
-    Path hwFile = Paths.get(Names.getPathFromPackage(qualifiedName)+ ".java");
-    Optional<Path> hwFilePath = targetPath.getResolvedPath(hwFile);
-    boolean result = hwFilePath.isPresent();
-    if (result) {
-      Reporting.reportUseHandwrittenCodeFile(hwFilePath.get(),hwFile);
-    }
-    Reporting.reportHWCExistenceCheck(targetPath, hwFile, hwFilePath);
-    return result;
+  void storeSymbolTable() {
+
+    // store artifact scope and its symbols
+    // // subirectory "target" + modelpath + suffix "sym"
+    String symbolartifact = "target/" +
+                          Paths.get(modelfilename).getFileName() + "sym";
+
+    // run the storage
+    new AutomataSymbols2Json().store(modelTopScope, symbolartifact);
   }
+
 }

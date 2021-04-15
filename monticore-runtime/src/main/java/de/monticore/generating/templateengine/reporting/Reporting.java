@@ -46,18 +46,7 @@ public class Reporting extends Slf4jLog {
    * For creating report managers on-demand for newly processed models.
    */
   private ReportManagerFactory factory;
-
-  /**
-   * Constructor for de.monticore.generating.templateengine.reporting.Reporting
-   *
-   * @param reportDirectory for storing the reports
-   * @param factory for creating specific report manager configurations
-   */
-  private Reporting(String reportDirectory, ReportManagerFactory factory) {
-    this.reportDirectory = reportDirectory;
-    this.factory = factory;
-  }
-
+  
   /**
    * Constructor for de.monticore.generating.templateengine.reporting.Reporting
    *

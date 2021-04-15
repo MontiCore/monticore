@@ -49,7 +49,7 @@ public class CombineExpressionsWithLiteralsScope extends CombineExpressionsWithL
       if(spanningSymbol instanceof TypeSymbol){
         TypeSymbol typeSymbol = ((TypeSymbol) spanningSymbol);
         for(SymTypeExpression t : typeSymbol.getSuperTypesList()){
-          set.addAll(t.getMethodList(name));
+          set.addAll(t.getMethodList(name, false));
         }
       }
     }
@@ -72,7 +72,7 @@ public class CombineExpressionsWithLiteralsScope extends CombineExpressionsWithL
       if(spanningSymbol instanceof TypeSymbol){
         TypeSymbol typeSymbol = (TypeSymbol) spanningSymbol;
         for(SymTypeExpression superType : typeSymbol.getSuperTypesList()){
-          result.addAll(superType.getFieldList(name));
+          result.addAll(superType.getFieldList(name, false));
         }
       }
     }

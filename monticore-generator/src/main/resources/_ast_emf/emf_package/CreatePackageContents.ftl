@@ -13,15 +13,15 @@ isCreated = true;
 // Create classes and their features
 constants${grammarName} = createEEnum(Constants${grammarName});
 
-<#list definition.getCDClassList() as astClass>
+<#list definition.getCDClassesList() as astClass>
     ${astClass.getName()?uncap_first} = createEClass(${astClass.getName()});
 </#list>
 
-<#list definition.getCDInterfaceList() as astInterface>
+<#list definition.getCDInterfacesList() as astInterface>
     ${astInterface.getName()?uncap_first} = createEClass(${astInterface.getName()});
 </#list>
 
-<#list definition.getCDClassList()  as astClass>
+<#list definition.getCDClassesList()  as astClass>
     <#list astClass.getCDAttributeList() as attribute>
         <#if genHelper.isAstNode(attribute) || genHelper.isOptionalAstNode(attribute)
             || genHelper.isListAstNode(attribute)>
@@ -32,7 +32,7 @@ constants${grammarName} = createEEnum(Constants${grammarName});
     </#list>
 </#list>
 
-<#list definition.getCDInterfaceList()  as astInterface>
+<#list definition.getCDInterfacesList()  as astInterface>
     <#list astInterface.getCDAttributeList() as attribute>
       <#if genHelper.isAstNode(attribute) || genHelper.isOptionalAstNode(attribute)
       || genHelper.isListAstNode(attribute)>

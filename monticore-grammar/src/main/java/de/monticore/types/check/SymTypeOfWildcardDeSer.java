@@ -21,17 +21,14 @@ public class SymTypeOfWildcardDeSer {
   }
 
   public SymTypeOfWildcard deserialize(JsonObject serialized) {
-    if (serialized.hasBooleanMember("isUpper")) {
-      boolean isUpper = serialized.getBooleanMember("isUpper");
+      // isUpper == false iff. value is not serialized
+      boolean isUpper = serialized.hasBooleanMember("isUpper");
       JsonElement boundString = serialized.getMember("bound");
       if (boundString != null) {
         SymTypeExpression bound = SymTypeExpressionDeSer.getInstance().deserialize(boundString);
         return SymTypeExpressionFactory.createWildcard(isUpper, bound);
       }
       return SymTypeExpressionFactory.createWildcard();
-    }
-    Log.error("0x823F7 Internal error: Cannot load \"" + serialized + "\" as  SymTypeOfWildcard!");
-    return null;
   }
 
 }

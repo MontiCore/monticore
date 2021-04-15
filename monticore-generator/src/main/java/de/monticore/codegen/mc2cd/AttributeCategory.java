@@ -3,7 +3,7 @@
 package de.monticore.codegen.mc2cd;
 
 
-import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;

@@ -42,6 +42,11 @@ public class SymTypeConstant extends SymTypeExpression {
     return getConstName();
   }
 
+  @Override
+  public String printFullName(){
+    return print();
+  }
+
   /**
    * printAsJson: Umwandlung in einen kompakten Json String
    */
@@ -60,19 +65,19 @@ public class SymTypeConstant extends SymTypeExpression {
    * List of potential constants
    * (on purpose not implemented as enum)
    */
-  public static List<String> primitiveTypes = Arrays
+  public static final List<String> primitiveTypes = Arrays
       .asList("boolean", "byte", "char", "short", "int", "long", "float", "double", "void");
 
   /**
    * Map for unboxing const types (e.g. "java.lang.Boolean" -> "boolean")
    */
-  public static Map<String, String> unboxMap;
+  public static final Map<String, String> unboxMap;
 
   /**
    * Map for boxing const types (e.g. "boolean" -> "java.lang.Boolean")
    * Results are fully qualified.
    */
-  public static Map<String, String> boxMap;
+  public static final Map<String, String> boxMap;
 
 
   /**
@@ -174,10 +179,7 @@ public class SymTypeConstant extends SymTypeExpression {
 
   @Override
   public SymTypeConstant deepClone() {
-    TypeSymbol typeSymbol = new TypeSymbolSurrogate(this.typeSymbol.getName());
-    typeSymbol.setEnclosingScope(this.typeSymbol.getEnclosingScope());
-    SymTypeConstant clone = new SymTypeConstant(typeSymbol);
-    return clone;
+    return new SymTypeConstant(this.typeSymbol);
   }
 
 

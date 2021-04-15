@@ -1,0 +1,7 @@
+package mc.typescalculator.valid;
+
+tc ComplicatedCorrectAssignment {
+
+  String a = (3/7*4)+"Foo"
+
+}

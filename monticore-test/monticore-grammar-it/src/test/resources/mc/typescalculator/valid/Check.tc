@@ -1,0 +1,25 @@
+package mc.typescalculator.valid;
+
+tc Check {
+
+  int foo = 3
+
+  mc.typescalculator.valid.Bar getBar(){
+    mc.typescalculator.valid.Bar bar
+    foo = bar.getAge()
+  }
+
+  void doSomething(){
+    mc.typescalculator.valid.Bar bar = getBar()
+    print(mc.typescalculator.valid.Bar.getMax())
+  }
+
+  void print(int max){
+    mc.typescalculator.valid.InheritanceBar inBar
+    //test inheritance
+    mc.typescalculator.valid.Bar bar = inBar
+    //test that InheritanceBar can use the methods of Bar
+    int foo = inBar.getAge()
+  }
+
+}

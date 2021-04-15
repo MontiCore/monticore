@@ -102,7 +102,7 @@ public interface IScope {
   default boolean checkIfContinueAsSubScope(String symbolName) {
     if (this.isExportingSymbols()) {
       final List<String> nameParts = getNameParts(symbolName).toList();
-      
+
       if (nameParts.size() > 1) {
         final String firstNamePart = nameParts.get(0);
         // A scope that exports symbols usually has a name.
@@ -114,7 +114,7 @@ public interface IScope {
         }
       }
     }
-    
+
     return false;
   }
 
@@ -135,3 +135,4 @@ public interface IScope {
   }
 
 }
+

@@ -1,16 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast.ast_class;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
-import de.monticore.cd.cd4analysis._ast.ASTCDType;
-import de.monticore.cd.cd4analysis._symboltable.CDDefinitionSymbol;
 import de.monticore.cd.facade.CDMethodFacade;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.codegen.cd2java.AbstractService;
+import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
-import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
+import static de.monticore.codegen.cd2java.CDModifier.PUBLIC_ABSTRACT;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
 
 /**
@@ -22,7 +22,7 @@ public class ASTService extends AbstractService<ASTService> {
     super(compilationUnit);
   }
 
-  public ASTService(CDDefinitionSymbol cdSymbol) {
+  public ASTService(DiagramSymbol cdSymbol) {
     super(cdSymbol);
   }
 
@@ -35,11 +35,11 @@ public class ASTService extends AbstractService<ASTService> {
   }
 
   @Override
-  protected ASTService createService(CDDefinitionSymbol cdSymbol) {
+  protected ASTService createService(DiagramSymbol cdSymbol) {
     return createASTService(cdSymbol);
   }
 
-  public static ASTService createASTService(CDDefinitionSymbol cdSymbol) {
+  public static ASTService createASTService(DiagramSymbol cdSymbol) {
     return new ASTService(cdSymbol);
   }
 
@@ -50,11 +50,11 @@ public class ASTService extends AbstractService<ASTService> {
     return AST_PREFIX + getCDName() + ASTConstants.NODE_SUFFIX;
   }
 
-  public String getASTBaseInterfaceSimpleName(CDDefinitionSymbol cdSymbol) {
+  public String getASTBaseInterfaceSimpleName(DiagramSymbol cdSymbol) {
     return AST_PREFIX + cdSymbol.getName() + ASTConstants.NODE_SUFFIX;
   }
 
-  public String getASTBaseInterfaceFullName(CDDefinitionSymbol cdDefinitionSymbol) {
+  public String getASTBaseInterfaceFullName(DiagramSymbol cdDefinitionSymbol) {
     return String.join(".", getPackage(), getASTBaseInterfaceSimpleName());
   }
 
@@ -73,7 +73,7 @@ public class ASTService extends AbstractService<ASTService> {
     return getASTConstantClassSimpleName(getCDSymbol());
   }
 
-  public String getASTConstantClassSimpleName(CDDefinitionSymbol cdSymbol) {
+  public String getASTConstantClassSimpleName(DiagramSymbol cdSymbol) {
     return ASTConstants.AST_CONSTANTS + cdSymbol.getName();
   }
 
@@ -81,7 +81,7 @@ public class ASTService extends AbstractService<ASTService> {
     return getASTConstantClassFullName(getCDSymbol());
   }
 
-  public String getASTConstantClassFullName(CDDefinitionSymbol cdSymbol) {
+  public String getASTConstantClassFullName(DiagramSymbol cdSymbol) {
     return getPackage(cdSymbol) + "." + getASTConstantClassSimpleName(cdSymbol);
   }
 
@@ -96,7 +96,7 @@ public class ASTService extends AbstractService<ASTService> {
     return String.join(".", getPackage(), getASTSimpleName(type));
   }
 
-  public String getASTFullName(ASTCDType type, CDDefinitionSymbol cdSymbol) {
+  public String getASTFullName(ASTCDType type, DiagramSymbol cdSymbol) {
     return String.join(".", getPackage(cdSymbol), getASTSimpleName(type));
   }
 
@@ -117,6 +117,21 @@ public class ASTService extends AbstractService<ASTService> {
    * abstract getName method only generated when isSymbolWithoutName evaluates true for the ast class
    */
   public ASTCDMethod createGetNameMethod() {
-    return CDMethodFacade.getInstance().createMethod(PUBLIC_ABSTRACT, getMCTypeFacade().createStringType(), "getName");
+    return CDMethodFacade.getInstance().createMethod(PUBLIC_ABSTRACT.build(), getMCTypeFacade().createStringType(), "getName");
   }
+
+  public String removeASTPrefix(ASTCDType clazz) {
+    // normal symbol name calculation from
+    return removeASTPrefix(clazz.getName());
+  }
+
+  public String removeASTPrefix(String clazzName) {
+    // normal symbol name calculation from
+    if (clazzName.startsWith(AST_PREFIX)) {
+      return clazzName.substring(AST_PREFIX.length());
+    } else {
+      return clazzName;
+    }
+  }
+
 }

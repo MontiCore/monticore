@@ -2,8 +2,8 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.grammar._ast.ASTAbstractProd;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
@@ -54,7 +54,7 @@ public class ImplementsTranslation implements
       if (!ruleSymbol.isPresent()) {
         Log.error("0xA0137 The rule '" + ruleReference.getName() + "' does not exist!", ruleReference.get_SourcePositionStart());
       }
-      cdClass.getInterfaceList().add(
+      cdClass.addInterface(
           TransformationHelper.createObjectType(TransformationHelper
               .getPackageName(ruleSymbol.get())
               + "AST"
@@ -67,7 +67,7 @@ public class ImplementsTranslation implements
       qualifiedRuleName = TransformationHelper
           .getQualifiedTypeNameAndMarkIfExternal(
               typeReference, astGrammar, cdClass);
-      cdClass.getInterfaceList().add(
+      cdClass.addInterface(
           TransformationHelper.createObjectType(qualifiedRuleName));
     }
   }
@@ -82,7 +82,7 @@ public class ImplementsTranslation implements
       if (!ruleSymbol.isPresent()) {
         Log.error("0xA0138 The rule '" + ruleReference.getName() + "' does not exist!");
       }
-      cdClass.getInterfaceList().add(
+      cdClass.addInterface(
           TransformationHelper.createObjectType(TransformationHelper
               .getPackageName(ruleSymbol.get())
               + "AST"
@@ -95,7 +95,7 @@ public class ImplementsTranslation implements
       qualifiedRuleName = TransformationHelper
           .getQualifiedTypeNameAndMarkIfExternal(
               typeReference, astGrammar, cdClass);
-      cdClass.getInterfaceList().add(
+      cdClass.addInterface(
           TransformationHelper.createObjectType(qualifiedRuleName));
     }
   }

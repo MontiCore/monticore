@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast.ast_class;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.cd.cd4analysis._ast.ASTCDType;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
-import static de.monticore.cd.facade.CDModifier.*;
+import static de.monticore.codegen.cd2java.CDModifier.*;
 
 /**
  * creates a list of symbol attributes that are used for the AST class
@@ -32,9 +32,17 @@ public class ASTSymbolDecorator extends AbstractCreator<ASTCDType, List<ASTCDAtt
   @Override
   public List<ASTCDAttribute> decorate(final ASTCDType clazz) {
     List<ASTCDAttribute> attributeList = new ArrayList<>();
-    Optional<ASTCDType> symbolClass = symbolTableService.getTypeWithSymbolInfo(clazz);
-    if (symbolClass.isPresent()) {
-      ASTMCType symbolType = this.getMCTypeFacade().createOptionalTypeOf(symbolTableService.getSymbolFullName(clazz));
+
+    String symbolName = "";
+    if (symbolTableService.hasSymbolStereotype(clazz.getModifier())) {
+      symbolName = symbolTableService.getSymbolFullName(clazz);
+      //symbolTableService.get
+    } else if (symbolTableService.hasInheritedSymbolStereotype(clazz.getModifier())) {
+      symbolName = symbolTableService.getInheritedSymbol(clazz);
+    }
+
+    if (!symbolName.isEmpty()) {
+      ASTMCType symbolType = this.getMCTypeFacade().createOptionalTypeOf(symbolName);
       attributeList.add(createSymbolAttribute(symbolType));
     }
     return attributeList;
@@ -42,7 +50,7 @@ public class ASTSymbolDecorator extends AbstractCreator<ASTCDType, List<ASTCDAtt
 
   protected ASTCDAttribute createSymbolAttribute(ASTMCType symbolType) {
     String attributeName = "symbol";
-    ASTCDAttribute attribute = this.getCDAttributeFacade().createAttribute(PROTECTED, symbolType, attributeName);
+    ASTCDAttribute attribute = this.getCDAttributeFacade().createAttribute(PROTECTED.build(), symbolType, attributeName);
     this.replaceTemplate(VALUE, attribute, new StringHookPoint("= Optional.empty()"));
     return attribute;
   }

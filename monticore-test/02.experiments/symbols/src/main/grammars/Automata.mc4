@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-grammar Automata extends de.monticore.literals.MCCommonLiterals {
+grammar Automata
+  extends de.monticore.literals.MCCommonLiterals {
 
   symbol scope Automaton =
     "automaton" Name "{" (State | Transition)* "}" ;
@@ -20,7 +21,7 @@ grammar Automata extends de.monticore.literals.MCCommonLiterals {
 
   interface Statement ;
 
-  Print implements Statement = "?" Name ;
+  Print implements Statement = "!" Name ;
 
   Increment implements Statement = "++" Name ;
 }

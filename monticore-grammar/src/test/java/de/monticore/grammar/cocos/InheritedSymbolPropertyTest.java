@@ -5,7 +5,6 @@ package de.monticore.grammar.cocos;
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class InheritedSymbolPropertyTest extends CocoTest {
@@ -36,7 +35,6 @@ public class InheritedSymbolPropertyTest extends CocoTest {
     testInvalidGrammar(grammar2, InheritedSymbolProperty.ERROR_CODE,
             String.format(InheritedSymbolProperty.ERROR_MSG_FORMAT, "A"), checker);
   }
-
 
   @Test
   public void testCorrect() {

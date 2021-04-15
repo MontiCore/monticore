@@ -3,9 +3,9 @@
 package de.monticore.codegen.mc2cd;
 
 import de.monticore.MontiCoreScript;
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.mc2cd.scopeTransl.MC2CDScopeTranslation;
 import de.monticore.codegen.mc2cd.symbolTransl.MC2CDSymbolTranslation;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -14,6 +14,7 @@ import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
 import de.monticore.grammar.grammarfamily._symboltable.GrammarFamilyPhasedSTC;
 import de.monticore.grammar.grammarfamily._symboltable.IGrammarFamilyGlobalScope;
 import de.monticore.io.paths.ModelPath;
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
@@ -73,6 +74,7 @@ public class TestHelper {
     IGrammarFamilyGlobalScope scope = GrammarFamilyMill.globalScope();
     // reset global scope
     scope.clear();
+    BasicSymbolsMill.initializePrimitives();
 
     // Set Fileextension and ModelPath
     scope.setFileExt("mc4");
@@ -81,13 +83,13 @@ public class TestHelper {
   }
 
   public static Optional<ASTCDClass> getCDClass(ASTCDCompilationUnit cdCompilationUnit, String cdClassName) {
-    return cdCompilationUnit.getCDDefinition().getCDClassList().stream()
+    return cdCompilationUnit.getCDDefinition().getCDClassesList().stream()
         .filter(cdClass -> cdClass.getName().equals(cdClassName))
         .findAny();
   }
 
   public static Optional<ASTCDInterface> getCDInterface(ASTCDCompilationUnit cdCompilationUnit, String cdInterfaceName) {
-    return cdCompilationUnit.getCDDefinition().getCDInterfaceList().stream()
+    return cdCompilationUnit.getCDDefinition().getCDInterfacesList().stream()
         .filter(cdClass -> cdClass.getName().equals(cdInterfaceName))
         .findAny();
   }

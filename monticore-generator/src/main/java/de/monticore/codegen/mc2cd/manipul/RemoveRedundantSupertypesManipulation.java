@@ -3,9 +3,9 @@
 package de.monticore.codegen.mc2cd.manipul;
 
 import com.google.common.collect.Iterables;
-import de.monticore.cd.cd4analysis._ast.ASTCDClass;
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 
@@ -17,12 +17,12 @@ public class RemoveRedundantSupertypesManipulation implements UnaryOperator<ASTC
   
   @Override
   public ASTCDCompilationUnit apply(ASTCDCompilationUnit cdCompilationUnit) {
-    for (ASTCDClass cdClass : cdCompilationUnit.getCDDefinition().getCDClassList()) {
+    for (ASTCDClass cdClass : cdCompilationUnit.getCDDefinition().getCDClassesList()) {
       // TODO SO <- GV: don't need it any more?
       // removeRedundantSuperTypes(cdClass.getSuperclass());
       removeRedundantSuperTypes(cdClass.getInterfaceList());
     }
-    for (ASTCDInterface cdInterface : cdCompilationUnit.getCDDefinition().getCDInterfaceList()){
+    for (ASTCDInterface cdInterface : cdCompilationUnit.getCDDefinition().getCDInterfacesList()){
       removeRedundantSuperTypes(cdInterface.getInterfaceList());
     }
     return cdCompilationUnit;

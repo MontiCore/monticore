@@ -23,5 +23,7 @@ grammar NoKeywordRule extends mc.common.Basics {
 
    J = b:["blaj"];
 
+   K = b:["bla1" |  "bla2"];
+
    nokeyword "bla1", "bla2", "b", "c", "blaj";
 }

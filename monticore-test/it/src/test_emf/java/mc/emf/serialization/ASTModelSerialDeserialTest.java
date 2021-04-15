@@ -5,7 +5,7 @@ package mc.emf.serialization;
 import de.monticore.emf.util.AST2ModelFiles;
 import mc.GeneratorIntegrationsTest;
 import mc.feature.fautomaton.automaton.flatautomaton._ast.ASTAutomaton;
-import mc.feature.fautomaton.automaton.flatautomaton._ast.FlatAutomatonNodeFactory;
+import mc.feature.fautomaton.automaton.flatautomaton.FlatAutomatonMill;
 import mc.feature.fautomaton.automaton.flatautomaton._ast.FlatAutomatonPackage;
 import mc.feature.fautomaton.automatonwithaction.actionautomaton._ast.ActionAutomatonPackage;
 import org.eclipse.emf.common.util.URI;
@@ -25,7 +25,7 @@ public class ASTModelSerialDeserialTest extends GeneratorIntegrationsTest {
   
   public void testECoreFileOFSuperGrammar() {
     
-    ASTAutomaton aut = FlatAutomatonNodeFactory.createASTAutomaton();
+    ASTAutomaton aut = FlatAutomatonMill.automatonBuilder().uncheckedBuild();
     try {
       AST2ModelFiles.get().serializeASTInstance(aut, "Aut1");
     

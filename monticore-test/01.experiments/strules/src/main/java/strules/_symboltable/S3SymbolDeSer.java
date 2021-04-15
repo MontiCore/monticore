@@ -4,9 +4,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package strules._symboltable;
 
-
 import de.monticore.symboltable.serialization.json.JsonObject;
 
+import java.util.List;
+import java.util.Optional;
 
 public class S3SymbolDeSer extends S3SymbolDeSerTOP {
 
@@ -19,4 +20,5 @@ public class S3SymbolDeSer extends S3SymbolDeSerTOP {
   protected AType deserializeA(JsonObject symbolJson) {
     return null;
   }
+
 }

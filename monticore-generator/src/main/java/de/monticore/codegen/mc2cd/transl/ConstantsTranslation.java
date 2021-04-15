@@ -2,10 +2,10 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.cd.cd4analysis._ast.ASTCDEnum;
-import de.monticore.cd.cd4analysis._ast.ASTCDEnumConstant;
-import de.monticore.cd.cd4analysis._ast.CD4AnalysisNodeFactory;
+import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
+import de.monticore.cdinterfaceandenum._ast.ASTCDEnumConstant;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.LexNamer;
@@ -38,18 +38,19 @@ public class ConstantsTranslation implements
   public Link<ASTMCGrammar, ASTCDCompilationUnit> apply(
       Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink) {
 
-    ASTCDEnum constantsEnum = CD4AnalysisNodeFactory.createASTCDEnum();
+    ASTCDEnum constantsEnum = CD4AnalysisMill.cDEnumBuilder().
+            setModifier(CD4AnalysisMill.modifierBuilder().build()).uncheckedBuild();
     TransformationHelper.addStereoType(constantsEnum, MC2CDStereotypes.DEPRECATED.toString());
     constantsEnum.setName(rootLink.source().getName() + CONSTANTS_ENUM);
-    rootLink.target().getCDDefinition().getCDEnumList().add(constantsEnum);
+    rootLink.target().getCDDefinition().addCDElement(constantsEnum);
     Set<String> grammarConstants = TransformationHelper
         .getAllGrammarConstants(rootLink.source()).stream().map(c -> lexNamer.getConstantName(c))
         .collect(Collectors.toSet());
     Collection<String> sortedConstants = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
     sortedConstants.addAll(grammarConstants);
     for (String grammarConstant : sortedConstants) {
-      ASTCDEnumConstant constant = CD4AnalysisNodeFactory.createASTCDEnumConstant();
-      constant.setName(grammarConstant);
+      ASTCDEnumConstant constant = CD4AnalysisMill.cDEnumConstantBuilder().
+              setName(grammarConstant).uncheckedBuild();
       constantsEnum.getCDEnumConstantList().add(constant);
     }
     

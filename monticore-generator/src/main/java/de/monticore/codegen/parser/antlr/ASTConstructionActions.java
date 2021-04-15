@@ -4,10 +4,10 @@ package de.monticore.codegen.parser.antlr;
 
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
-import de.monticore.grammar.MCGrammarSymbolTableHelper;
+import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.parser.ParserGeneratorHelper;
-import de.monticore.grammar.HelperGrammar;
 import de.monticore.grammar.MCGrammarInfo;
+import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.se_rwth.commons.Joiners;
@@ -81,8 +81,7 @@ public class ASTConstructionActions {
       if (constgroup.getConstantList().size() == 1) {
         // both == null and #constants == 1 -> use constant string as name
         tmp = "_builder.set%cname%(true);";
-        tmp = tmp.replaceAll("%cname%", StringTransformations.capitalize(HelperGrammar
-                .getAttributeNameForConstant(constgroup.getConstantList().get(0))));
+        tmp = tmp.replaceAll("%cname%", StringTransformations.capitalize(constgroup.getConstantList().get(0).getHumanName()));
       } else {
         // both == null and #constants > 1 -> user wants to ignore token in AST
       }
@@ -93,7 +92,7 @@ public class ASTConstructionActions {
 
   public String getActionForRuleBeforeRuleBody(ASTClassProd a) {
     StringBuilder b = new StringBuilder();
-    String type = MCGrammarSymbolTableHelper
+    String type = TransformationHelper
             .getQualifiedName(a.getSymbol());
     Optional<MCGrammarSymbol> grammar = MCGrammarSymbolTableHelper
             .getMCGrammarSymbol(a.getEnclosingScope());
@@ -109,7 +108,7 @@ public class ASTConstructionActions {
 
   public String getActionForAltBeforeRuleBody(String className, ASTAlt a) {
     StringBuilder b = new StringBuilder();
-    String type = MCGrammarSymbolTableHelper
+    String type = TransformationHelper
             .getQualifiedName(symbolTable.getProdWithInherited(className).get());
     Optional<MCGrammarSymbol> grammar = MCGrammarSymbolTableHelper
             .getMCGrammarSymbol(a.getEnclosingScope());
@@ -133,7 +132,7 @@ public class ASTConstructionActions {
 
     // Replace templates
     tmp = tmp.replaceAll("%u_usage%",
-            StringTransformations.capitalize(HelperGrammar.getUsageName(a)));
+            StringTransformations.capitalize(parserGenHelper.getUsageName(a)));
     tmp = tmp.replaceAll("%tmp%", parserGenHelper.getTmpVarNameForAntlrCode(a));
 
     return tmp;
@@ -157,7 +156,6 @@ public class ASTConstructionActions {
   public String getActionForInternalRuleIteratedAttribute(ASTNonTerminal a) {
 
     String tmp = "addToIteratedAttributeIfNotNull(_builder.get%u_usage%(), _localctx.%tmp%.ret);";
-    // TODO GV: || isConst()
     if (symbolTable.getProdWithInherited(a.getName()).get().isIsEnum()) {
       tmp = "addToIteratedAttributeIfNotNull(_builder.get%u_usage%(), _localctx.%tmp%.ret);";
     }
@@ -176,7 +174,7 @@ public class ASTConstructionActions {
 
     // Replace templates
     tmp = tmp.replaceAll("%u_usage%",
-            StringTransformations.capitalize(HelperGrammar.getUsageName(a)));
+            StringTransformations.capitalize(parserGenHelper.getUsageName(a)));
     tmp = tmp.replaceAll("%tmp%", parserGenHelper.getTmpVarNameForAntlrCode(a));
 
     return tmp;
@@ -209,58 +207,37 @@ public class ASTConstructionActions {
   }
 
   public String getActionForTerminalNotIteratedAttribute(ASTITerminal a) {
-
-    String tmp = "_builder.set%u_usage%(\"%text%\");";
-
     if (!a.isPresentUsageName()) {
       return "";
     }
-    // Replace templates
-    tmp = tmp.replaceAll("%u_usage%", StringTransformations.capitalize(a.getUsageName()));
-    tmp = tmp.replaceAll("%text%", a.getName());
-
-    return tmp;
-
+    String usageName = StringTransformations.capitalize(a.getUsageName());
+    String value = a.getName();
+    return "_builder.set" + usageName + "(\"" + value + "\");";
   }
 
   public String getActionForTerminalIteratedAttribute(ASTITerminal a) {
-
     if (!a.isPresentUsageName()) {
       return "";
     }
-
-    String tmp = "_builder.get%u_usage%().add(\"%text%\");";
-
-    // Replace templates
-    String usageName = StringTransformations.capitalize(a.getUsageName());
-    tmp = tmp.replaceAll("%u_usage%", StringTransformations.capitalize(usageName + DecorationHelper.GET_SUFFIX_LIST));
-    tmp = tmp.replaceAll("%text%", a.getName());
-
-    return tmp;
+    String usageName = StringTransformations.capitalize(a.getUsageName()) + DecorationHelper.GET_SUFFIX_LIST;
+    String value = a.getName();
+    return "_builder.get" + usageName + "().add(\"" + value + "\");";
   }
 
   public String getActionForKeyTerminalNotIteratedAttribute(ASTKeyTerminal a) {
-
-    String tmp = "_builder.set%u_usage%(_input.LT(-1).getText());";
-
     if (!a.isPresentUsageName()) {
       return "";
     }
-    // Replace templates
-    return tmp.replaceAll("%u_usage%", StringTransformations.capitalize(a.getUsageName()));
+    String usageName = StringTransformations.capitalize(a.getUsageName());
+    return  "_builder.set" + usageName + "(_input.LT(-1).getText());";
   }
 
   public String getActionForKeyTerminalIteratedAttribute(ASTKeyTerminal a) {
-
     if (!a.isPresentUsageName()) {
       return "";
     }
-
-    String tmp = "_builder.get%u_usage%().add(_input.LT(-1).getText());";
-
-    // Replace templates
-    String usageName = StringTransformations.capitalize(a.getUsageName());
-    return tmp.replaceAll("%u_usage%", StringTransformations.capitalize(usageName + DecorationHelper.GET_SUFFIX_LIST));
+    String usageName = StringTransformations.capitalize(a.getUsageName()) + DecorationHelper.GET_SUFFIX_LIST;
+    return "_builder.get" + usageName + "().add(_input.LT(-1).getText());";
   }
 
   public String getBuildAction() {

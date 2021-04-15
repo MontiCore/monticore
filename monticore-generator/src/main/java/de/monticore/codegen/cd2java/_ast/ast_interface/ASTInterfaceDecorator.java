@@ -1,9 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast.ast_interface;
 
-import de.monticore.cd.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.cd.cd4analysis._ast.ASTCDInterface;
-import de.monticore.cd.cd4analysis._ast.ASTCDMethod;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.codegen.cd2java.AbstractTransformer;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTScopeDecorator;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
@@ -51,20 +51,20 @@ public class ASTInterfaceDecorator extends AbstractTransformer<ASTCDInterface> {
   public ASTCDInterface decorate(final ASTCDInterface originalInput, ASTCDInterface changedInput) {
     changedInput.addInterface(getMCTypeFacade().createQualifiedType(AST_INTERFACE));
     changedInput.addInterface(astService.getASTBaseInterface());
-    changedInput.clearCDAttributes();
+    changedInput.clearCDAttributeList();
 
     methodDecorator.disableTemplates();
 
     List<ASTCDAttribute> symbolAttributes = symbolDecorator.decorate(originalInput);
-    changedInput.addAllCDMethods(addSymbolMethods(symbolAttributes));
+    changedInput.addAllCDMembers(addSymbolMethods(symbolAttributes));
 
     List<ASTCDAttribute> scopeAttributes = scopeDecorator.decorate(originalInput);
-    changedInput.addAllCDMethods(addScopeMethods(scopeAttributes));
+    changedInput.addAllCDMembers(addScopeMethods(scopeAttributes));
 
     // if a ast has a symbol definition without a name, the getName has to be implemented manually
     // add getName method that is abstract
     if (astService.isSymbolWithoutName(originalInput)) {
-      changedInput.addCDMethod(astService.createGetNameMethod());
+      changedInput.addCDMember(astService.createGetNameMethod());
     }
     return changedInput;
   }
