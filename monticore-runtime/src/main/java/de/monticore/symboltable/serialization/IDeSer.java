@@ -55,18 +55,6 @@ public interface IDeSer<S extends IScope,
   default void serializeAddons(S toSerialize, J symbol2json) {}
 
   /**
-   * Deserialize a passed String to an instance of the
-   * language-specific artifact scope interface
-   *
-   * @param serialized
-   * @return
-   */
-  default A deserialize(String serialized) {
-    JsonObject scope = JsonParser.parseJsonObject(serialized);
-    return deserializeArtifactScope(scope);
-  }
-
-  /**
    * deserialize a passed artifact scope object.
    *
    * @param scopeJson
