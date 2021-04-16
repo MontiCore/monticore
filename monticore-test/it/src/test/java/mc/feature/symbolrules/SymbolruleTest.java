@@ -99,8 +99,7 @@ public class SymbolruleTest {
     as.accept(symbols2Json.getTraverser());
     String serialized = symbols2Json.getSerializedString();
 
-    SymbolruleTestDeSer deSer = new SymbolruleTestDeSer();
-    ISymbolruleTestArtifactScope as2 = deSer.deserialize(serialized);
+    ISymbolruleTestArtifactScope as2 = symbols2Json.deserialize(serialized);
     assertEquals(as.getName(), as2.getName());
     assertEquals(as.getSymbolsSize(), as2.getSymbolsSize());
     assertTrue(as2.isBar());
@@ -158,8 +157,7 @@ public class SymbolruleTest {
     as.accept(symbols2Json.getTraverser());
     String serialized = symbols2Json.getSerializedString();
 
-    SymbolruleListTestDeSer deSer = new SymbolruleListTestDeSer();
-    ISymbolruleListTestArtifactScope as2 = deSer.deserialize(serialized);
+    ISymbolruleListTestArtifactScope as2 = symbols2Json.deserialize(serialized);
     assertEquals(as.getName(), as2.getName());
     assertEquals(as.sizeNumbers(), as2.sizeNumbers());
     assertEquals(as.getNumbers(0), as2.getNumbers(0));
