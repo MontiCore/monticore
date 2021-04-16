@@ -108,13 +108,13 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(17, scopeClass.getCDMethodList().size());
+    assertEquals(15, scopeClass.getCDMethodList().size());
   }
 
   @Test
   public void testSerializeMethods() {
     List<ASTCDMethod> methodList = getMethodsBy("serialize", scopeClass);
-    assertEquals(4, methodList.size());
+    assertEquals(2, methodList.size());
     for (ASTCDMethod method : methodList) {
       assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
       assertFalse(method.isPresentCDThrowsDeclaration());

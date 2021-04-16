@@ -18,7 +18,10 @@ import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.types.prettyprint.MCBasicTypesFullPrettyPrinter;
 import de.se_rwth.commons.logging.Log;
+import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -128,7 +131,7 @@ public class Symbols2JsonDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount(){
-    assertEquals(17, symbolTablePrinterClass.getCDMethodList().size());
+    assertEquals(20, symbolTablePrinterClass.getCDMethodList().size());
   }
 
   @Test
@@ -258,6 +261,48 @@ public class Symbols2JsonDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(String.class, method.getCDParameter(1).getMCType());
     assertFalse(method.getMCReturnType().isPresentMCVoidType());
     assertDeepEquals(String.class, method.getMCReturnType().getMCType());
+  }
+
+  @Test
+  public void testSerializeMethods() {
+    List<ASTCDMethod> methodList = getMethodsBy("serialize", symbolTablePrinterClass);
+    assertEquals(2, methodList.size());
+    for (ASTCDMethod method : methodList) {
+      assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
+      assertFalse(method.isPresentCDThrowsDeclaration());
+      assertEquals(1, method.sizeCDParameters());
+      ASTCDParameter parameter = method.getCDParameter(0);
+      assertEquals("toSerialize", parameter.getName());
+      assertOneOf(parameter.getMCType(), I_AUTOMATON_SCOPE, I_AUTOMATON_ARTIFACT_SCOPE);
+      assertFalse(method.getMCReturnType().isPresentMCVoidType());
+      assertDeepEquals(String.class, method.getMCReturnType().getMCType());
+    }
+  }
+
+  @Test
+  public void testDeserializeMethod(){
+    ASTCDMethod method = getMethodBy("deserialize", symbolTablePrinterClass);
+    assertDeepEquals(CDModifier.PUBLIC, method.getModifier());
+    assertFalse(method.isPresentCDThrowsDeclaration());
+    assertEquals(1, method.sizeCDParameters());
+    ASTCDParameter parameter = method.getCDParameter(0);
+    assertEquals("serialized", parameter.getName());
+    assertDeepEquals("String", parameter.getMCType());
+    assertFalse(method.getMCReturnType().isPresentMCVoidType());
+    assertDeepEquals(I_AUTOMATON_ARTIFACT_SCOPE, method.getMCReturnType().getMCType());
+  }
+
+  public static void assertOneOf(ASTMCType actualType, String... expected) {
+    boolean result = false;
+    String actual = actualType.printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter()));
+    for (String exp : expected) {
+      if (actual.equals(exp)) {
+        result = true;
+      }
+    }
+    if (!result) {
+      fail();
+    }
   }
 
   @Test

@@ -109,7 +109,8 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
     ASTMCType asType = symbolTableService.getArtifactScopeInterfaceType();
     ASTCDParameter param = getCDParameterFacade().createParameter("String", "serialized");
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), asType, DESERIALIZE, param);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "symbols2Json.Deserialize"));
+    String as = symbolTableService.getArtifactScopeInterfaceFullName();
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "symbols2Json.Deserialize", as));
     return method;
   }
 
@@ -243,7 +244,7 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
     ASTCDMethod loadMethod = getCDMethodFacade()
             .createMethod(PUBLIC.build(), returnType, "load", parameter);
     this.replaceTemplate(EMPTY_BODY, loadMethod,
-            new TemplateHookPoint(TEMPLATE_PATH + "symbols2Json.Load",
+            new TemplateHookPoint(TEMPLATE_PATH + "symbols2Json.Load2",
                     parameterInvocation));
     return loadMethod;
   }

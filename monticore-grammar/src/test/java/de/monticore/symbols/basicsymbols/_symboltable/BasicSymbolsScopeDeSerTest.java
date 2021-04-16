@@ -106,7 +106,8 @@ public class BasicSymbolsScopeDeSerTest {
     //first serialize the scope using the deser
     String serialized = deser.serialize(scope, new BasicSymbolsSymbols2Json());
     // then deserialize it
-    IBasicSymbolsArtifactScope deserialized = deser.deserialize(serialized);
+    BasicSymbolsSymbols2Json symbols2Json = new BasicSymbolsSymbols2Json();
+    IBasicSymbolsArtifactScope deserialized = symbols2Json.deserialize(serialized);
     assertNotNull(deserialized);
     // and assert that the deserialized scope equals the one before
     //check that both can resolve the type "Type"
@@ -156,14 +157,14 @@ public class BasicSymbolsScopeDeSerTest {
     String invalidJsonForSerializing2 = "{\"symbols\": [\"SymbolIsNotAnObject\"]}";
     String invalidJsonForSerializing3 = "{\"symbols\": [{\"kind\":\"unknown\"}]}";
 
-    BasicSymbolsDeSer deser = new BasicSymbolsDeSer();
-    deser.deserialize(invalidJsonForSerializing);
+    BasicSymbolsSymbols2Json symbols2Json = new BasicSymbolsSymbols2Json();
+    symbols2Json.deserialize(invalidJsonForSerializing);
     assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA1235"));
 
-    deser.deserialize(invalidJsonForSerializing2);
+    symbols2Json.deserialize(invalidJsonForSerializing2);
     assertTrue(Log.getFindings().get(2).getMsg().startsWith("0xA1233"));
 
-    deser.deserialize(invalidJsonForSerializing3);
+    symbols2Json.deserialize(invalidJsonForSerializing3);
     assertTrue(Log.getFindings().get(3).getMsg().startsWith("0xA1234"));
   }
 
