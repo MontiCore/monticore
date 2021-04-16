@@ -88,8 +88,8 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
             .addCDMember(createGetJsonPrinterMethod())
             .addCDMember(createSetJsonPrinterMethod())
             .addCDMember(traverserAttribute)
-            .addCDMember(createSerialize2Method(scopeParam))
-            .addCDMember(createSerialize2Method(asParam))
+            .addCDMember(createSerializeMethod(scopeParam))
+            .addCDMember(createSerializeMethod(asParam))
             .addCDMember(createDeserializeMethod())
             .addAllCDMembers(accessorDecorator.decorate(traverserAttribute))
             .addAllCDMembers(mutatorDecorator.decorate(traverserAttribute))
@@ -278,7 +278,7 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
     return Lists.newArrayList(loadURLMethod, loadReaderMethod, loadStringMethod);
   }
 
-  protected ASTCDMethod createSerialize2Method(ASTCDParameter toSerialize) {
+  protected ASTCDMethod createSerializeMethod(ASTCDParameter toSerialize) {
     ASTCDMethod method = getCDMethodFacade()
       .createMethod(PUBLIC.build(), getMCTypeFacade().createStringType(), "serialize", toSerialize);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(SERIALIZE_TEMPL));

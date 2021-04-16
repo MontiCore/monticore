@@ -1,3 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
+this.getJsonPrinter().clearBuffer();
 toSerialize.accept(this.getTraverser());
-return this.getJsonPrinter().getContent();
+String serialized = this.getJsonPrinter().getContent();
+return serialized;

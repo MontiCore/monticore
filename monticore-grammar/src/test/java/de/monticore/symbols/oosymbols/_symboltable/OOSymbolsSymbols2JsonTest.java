@@ -1,6 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.symbols.basicsymbols._symboltable;
-
+package de.monticore.symbols.oosymbols._symboltable;
 
 import com.google.common.collect.Lists;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
@@ -10,16 +9,15 @@ import de.monticore.types.check.SymTypeExpressionFactory;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Optional;
 
 import static org.junit.Assert.*;
 
-public class BasicSymbolsScopeDeSerTest {
+public class OOSymbolsSymbols2JsonTest {
 
-  private IBasicSymbolsArtifactScope scope;
+  private IOOSymbolsArtifactScope scope;
 
   @Before
   public void setUp(){
@@ -27,19 +25,18 @@ public class BasicSymbolsScopeDeSerTest {
     Log.enableFailQuick(false);
 
     //initialize scope, add some TypeSymbols, TypeVarSymbols, VariableSymbols and FunctionSymbols
-    BasicSymbolsMill.reset();
-    BasicSymbolsMill.init();
+    OOSymbolsMill.reset();
+    OOSymbolsMill.init();
     BasicSymbolsMill.initializePrimitives();
-
-    scope = BasicSymbolsMill.artifactScope();
+    scope = OOSymbolsMill.artifactScope();
     scope.setPackageName("");
     scope.setImportsList(Lists.newArrayList());
     scope.setName("Test");
 
-    IBasicSymbolsScope typeSpannedScope = BasicSymbolsMill.scope();
+    IOOSymbolsScope typeSpannedScope = OOSymbolsMill.scope();
 
     //put type into main scope
-    TypeSymbol type = BasicSymbolsMill.typeSymbolBuilder()
+    OOTypeSymbol type = OOSymbolsMill.oOTypeSymbolBuilder()
         .setName("Type")
         .setSpannedScope(typeSpannedScope)
         .setEnclosingScope(scope)
@@ -47,30 +44,20 @@ public class BasicSymbolsScopeDeSerTest {
 
     type.setSpannedScope(typeSpannedScope);
 
-    //TODO ND: replace null with scope when abstract TypeCheck is implemented
-    SymTypeExpression symType1 = SymTypeExpressionFactory.createTypeObject("Type", null);
+    SymTypeExpression symType1 = SymTypeExpressionFactory.createTypeObject("Type", scope);
 
     //put subtype into main scope, test if supertypes are serialized correctly
-    TypeSymbol subtype = BasicSymbolsMill.typeSymbolBuilder()
+    OOTypeSymbol subtype = OOSymbolsMill.oOTypeSymbolBuilder()
         .setName("SubType")
-        .setSpannedScope(BasicSymbolsMill.scope())
+        .setSpannedScope(OOSymbolsMill.scope())
         .setEnclosingScope(scope)
         .setSuperTypesList(Lists.newArrayList(symType1))
         .build();
 
-    subtype.setSpannedScope(BasicSymbolsMill.scope());
-
-    //put TypeVariable T into spanned scope of type
-    TypeVarSymbol t = BasicSymbolsMill.typeVarSymbolBuilder()
-        .setName("T")
-        .setEnclosingScope(type.getSpannedScope())
-        .setSpannedScope(BasicSymbolsMill.scope())
-        .build();
-
-    typeSpannedScope.add(t);
+    subtype.setSpannedScope(OOSymbolsMill.scope());
 
     //put Variable variable into spanned scope of type
-    VariableSymbol variable = BasicSymbolsMill.variableSymbolBuilder()
+    FieldSymbol variable = OOSymbolsMill.fieldSymbolBuilder()
         .setName("variable")
         .setEnclosingScope(type.getSpannedScope())
         .setType(SymTypeExpressionFactory.createTypeConstant("double"))
@@ -79,14 +66,14 @@ public class BasicSymbolsScopeDeSerTest {
     typeSpannedScope.add(variable);
 
     //put Function function into spanned scope of type
-    FunctionSymbol function = BasicSymbolsMill.functionSymbolBuilder()
+    MethodSymbol function = OOSymbolsMill.methodSymbolBuilder()
         .setName("function")
         .setEnclosingScope(type.getSpannedScope())
-        .setSpannedScope(BasicSymbolsMill.scope())
+        .setSpannedScope(OOSymbolsMill.scope())
         .setReturnType(SymTypeExpressionFactory.createTypeConstant("int"))
         .build();
 
-    function.setSpannedScope(BasicSymbolsMill.scope());
+    function.setSpannedScope(OOSymbolsMill.scope());
 
     typeSpannedScope.add(function);
 
@@ -94,32 +81,32 @@ public class BasicSymbolsScopeDeSerTest {
     scope.add(subtype);
   }
 
-  @Ignore
   @Test
   public void testDeSer(){
-    //TODO ND: unignore when SymTypeExpressions use correct TypeSymbols
     performRoundTripSerialization(scope);
   }
 
-  public void performRoundTripSerialization(IBasicSymbolsScope scope){
-    BasicSymbolsDeSer deser = new BasicSymbolsDeSer();
+
+  public void performRoundTripSerialization(IOOSymbolsScope scope){
+    OOSymbolsDeSer deser = new OOSymbolsDeSer();
     //first serialize the scope using the deser
-    String serialized = deser.serialize(scope, new BasicSymbolsSymbols2Json());
+    OOSymbolsSymbols2Json s2j = ((OOSymbolsGlobalScope) OOSymbolsMill.globalScope()).getSymbols2Json();
+    scope.accept(s2j.getTraverser());
+    String serialized = s2j.getJsonPrinter().getContent();
     // then deserialize it
-    BasicSymbolsSymbols2Json symbols2Json = new BasicSymbolsSymbols2Json();
-    IBasicSymbolsArtifactScope deserialized = symbols2Json.deserialize(serialized);
+    OOSymbolsSymbols2Json symbols2Json = new OOSymbolsSymbols2Json();
+    IOOSymbolsArtifactScope deserialized = symbols2Json.deserialize(serialized);
     assertNotNull(deserialized);
     // and assert that the deserialized scope equals the one before
-    //check that both can resolve the type "Type"
 
-    Optional<TypeSymbol> type = scope.resolveType("Type");
-    Optional<TypeSymbol> deserializedType = deserialized.resolveType("Type");
+    Optional<OOTypeSymbol> type = scope.resolveOOType("Type");
+    Optional<OOTypeSymbol> deserializedType = deserialized.resolveOOType("Type");
     assertTrue(type.isPresent());
     assertTrue(deserializedType.isPresent());
 
     //check that both can resolve the type "SubType" with the supertype "Type"
-    Optional<TypeSymbol> subtype = scope.resolveType("SubType");
-    Optional<TypeSymbol> deserializedSubType = deserialized.resolveType("SubType");
+    Optional<OOTypeSymbol> subtype = scope.resolveOOType("SubType");
+    Optional<OOTypeSymbol> deserializedSubType = deserialized.resolveOOType("SubType");
     assertTrue(subtype.isPresent());
     assertTrue(deserializedSubType.isPresent());
     assertEquals(1, subtype.get().getSuperTypesList().size());
@@ -127,29 +114,26 @@ public class BasicSymbolsScopeDeSerTest {
     assertEquals("Type", subtype.get().getSuperTypesList().get(0).print());
     assertEquals("Type", deserializedSubType.get().getSuperTypesList().get(0).print());
 
-    IBasicSymbolsScope typeSpanned = type.get().getSpannedScope();
-    IBasicSymbolsScope deserTypeSpanned = deserializedType.get().getSpannedScope();
-
-    //check that both can resolve the TypeVariable "T" in their "Type"
-    assertTrue(typeSpanned.resolveTypeVar("T").isPresent());
-    assertTrue(deserTypeSpanned.resolveTypeVar("T").isPresent());
+    IOOSymbolsScope typeSpanned = type.get().getSpannedScope();
+    IOOSymbolsScope deserializedTypeSpanned = deserializedType.get().getSpannedScope();
 
     //check for Variable variable in Type
-    Optional<VariableSymbol> variable = typeSpanned.resolveVariable("variable");
-    Optional<VariableSymbol> deserializedVariable = deserTypeSpanned.resolveVariable("variable");
+    Optional<FieldSymbol> variable = typeSpanned.resolveField("variable");
+    Optional<FieldSymbol> deserializedVariable = deserializedTypeSpanned.resolveField("variable");
     assertTrue(variable.isPresent());
     assertTrue(deserializedVariable.isPresent());
     assertEquals("double", variable.get().getType().print());
     assertEquals("double", deserializedVariable.get().getType().print());
 
     //check for Function function in Type
-    Optional<FunctionSymbol> function = typeSpanned.resolveFunction("function");
-    Optional<FunctionSymbol> deserializedFunction = deserTypeSpanned.resolveFunction("function");
+    Optional<MethodSymbol> function = typeSpanned.resolveMethod("function");
+    Optional<MethodSymbol> deserializedFunction = deserializedTypeSpanned.resolveMethod("function");
     assertTrue(function.isPresent());
     assertTrue(deserializedFunction.isPresent());
     assertEquals("int", function.get().getReturnType().print());
     assertEquals("int", deserializedFunction.get().getReturnType().print());
   }
+
 
   @Test
   public void testInvalidJsonForSerializingReturnsError(){
@@ -157,7 +141,7 @@ public class BasicSymbolsScopeDeSerTest {
     String invalidJsonForSerializing2 = "{\"symbols\": [\"SymbolIsNotAnObject\"]}";
     String invalidJsonForSerializing3 = "{\"symbols\": [{\"kind\":\"unknown\"}]}";
 
-    BasicSymbolsSymbols2Json symbols2Json = new BasicSymbolsSymbols2Json();
+    OOSymbolsSymbols2Json symbols2Json = new OOSymbolsSymbols2Json();
     symbols2Json.deserialize(invalidJsonForSerializing);
     assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA1235"));
 
@@ -167,6 +151,5 @@ public class BasicSymbolsScopeDeSerTest {
     symbols2Json.deserialize(invalidJsonForSerializing3);
     assertTrue(Log.getFindings().get(3).getMsg().startsWith("0xA1234"));
   }
-
 
 }
