@@ -151,7 +151,7 @@ For details see [Licenses](00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md).
     
 ## Further Information
 
-* see also [**MontiCore Reference Manual**](http://www.monticore.de/handbook.pdf)
+* see also [**MontiCore handbook**](http://www.monticore.de/handbook.pdf)
 * [MontiCore Reference Languages](https://monticore.github.io/monticore/docs/DevelopedLanguages/) - Languages Built Using MontiCore
 * [Build MontiCore](https://monticore.github.io/monticore/docs/BuildMontiCore/) - How to Build MontiCore
 * [Getting Started](https://monticore.github.io/monticore/docs/GettingStarted/) - How to start using MontiCore
