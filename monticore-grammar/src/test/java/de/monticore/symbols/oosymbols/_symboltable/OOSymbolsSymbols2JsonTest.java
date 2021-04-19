@@ -15,7 +15,7 @@ import java.util.Optional;
 
 import static org.junit.Assert.*;
 
-public class OOSymbolsScopeDeSerTest {
+public class OOSymbolsSymbols2JsonTest {
 
   private IOOSymbolsArtifactScope scope;
 
@@ -94,7 +94,8 @@ public class OOSymbolsScopeDeSerTest {
     scope.accept(s2j.getTraverser());
     String serialized = s2j.getJsonPrinter().getContent();
     // then deserialize it
-    IOOSymbolsArtifactScope deserialized = deser.deserialize(serialized);
+    OOSymbolsSymbols2Json symbols2Json = new OOSymbolsSymbols2Json();
+    IOOSymbolsArtifactScope deserialized = symbols2Json.deserialize(serialized);
     assertNotNull(deserialized);
     // and assert that the deserialized scope equals the one before
 
@@ -131,8 +132,6 @@ public class OOSymbolsScopeDeSerTest {
     assertTrue(deserializedFunction.isPresent());
     assertEquals("int", function.get().getReturnType().print());
     assertEquals("int", deserializedFunction.get().getReturnType().print());
-
-    //TODO: check for equality
   }
 
 
@@ -142,14 +141,14 @@ public class OOSymbolsScopeDeSerTest {
     String invalidJsonForSerializing2 = "{\"symbols\": [\"SymbolIsNotAnObject\"]}";
     String invalidJsonForSerializing3 = "{\"symbols\": [{\"kind\":\"unknown\"}]}";
 
-    OOSymbolsDeSer deser = new OOSymbolsDeSer();
-    deser.deserialize(invalidJsonForSerializing);
+    OOSymbolsSymbols2Json symbols2Json = new OOSymbolsSymbols2Json();
+    symbols2Json.deserialize(invalidJsonForSerializing);
     assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA1235"));
 
-    deser.deserialize(invalidJsonForSerializing2);
+    symbols2Json.deserialize(invalidJsonForSerializing2);
     assertTrue(Log.getFindings().get(2).getMsg().startsWith("0xA1233"));
 
-    deser.deserialize(invalidJsonForSerializing3);
+    symbols2Json.deserialize(invalidJsonForSerializing3);
     assertTrue(Log.getFindings().get(3).getMsg().startsWith("0xA1234"));
   }
 
