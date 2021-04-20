@@ -43,8 +43,7 @@ public class ScoperuleTest {
     ScoperuleTestSymbols2Json symbols2Json = new ScoperuleTestSymbols2Json();
     scope.accept(symbols2Json.getTraverser());
     String serialized = symbols2Json.getSerializedString();
-    ScoperuleTestDeSer deSer = new ScoperuleTestDeSer();
-    IScoperuleTestScope as = deSer.deserialize(serialized);
+    IScoperuleTestScope as = symbols2Json.deserialize(serialized);
     assertTrue(as.isBar());
     assertEquals(17, as.getNumber());
     assertEquals(3, as.getModifiedNameList().size());

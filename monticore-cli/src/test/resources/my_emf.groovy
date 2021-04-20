@@ -2,6 +2,8 @@
 
 package de.monticore
 
+import de.se_rwth.commons.logging.LogStub
+
 /*
  * This configuration file contains the standard workflow of MontiCore:
  * It mainly processes a grammar (and imported sub-grammars) and produces

@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Optional;
 
+import de.monticore.cd4code._symboltable.CD4AnalysisSTCompleteTypes;
+import de.monticore.cd4code._visitor.CD4CodeTraverser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;

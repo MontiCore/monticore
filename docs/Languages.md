@@ -2,6 +2,8 @@
 
 # MontiCore Languages of Level II - an Overview
 
+[[_TOC_]]
+
 [MontiCore](http://www.monticore.de) is a language workbench
 with an explicit notion of language components. It uses 
 grammars to describe textual DSLs. 
@@ -314,16 +316,12 @@ ocl Bookshop {
 }
 ```
 
-
-* OCL/P comes with an 
-  [OCL to Java generator](https://git.rwth-aachen.de/monticore/languages/OCL2Java)
-  and is used in combination with 
-  [*Embedded MontiArc*](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/OCL_EMA2Java) and the MontiCore artefact tooling.
-* Main grammar 
-  [`ocl.monticore.ocl.OCL`](https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/develop/src/main/grammars/de/monticore/ocl/OCL.mc4), 
-  [Expressions](https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/develop/src/main/grammars/de/monticore/ocl/OCLExpressions.mc4),
-  and 
-  [*detailed description*](https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/master/src/main/grammars/ocl/monticoreocl/OCL.md)
+* The OCL language component contains four grammars:
+  * [OCL](https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/develop/src/main/grammars/de/monticore/ocl/OCL.mc4),
+  * [OCLExpressions](https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/develop/src/main/grammars/de/monticore/ocl/OCLExpressions.mc4), 
+  * [OptionalOperators](https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/develop/src/main/grammars/de/monticore/ocl/OptionalOperators.mc4), and
+  * [SetExpressions](https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/develop/src/main/grammars/de/monticore/ocl/SetExpressions.mc4). 
+* The [*detailed description*](https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/master/src/main/grammars/ocl/monticoreocl/OCL.md) provides an in-depth guide for language engineers.
 
 
 ### [Object Diagrams](https://git.rwth-aachen.de/monticore/languages/od) (MontiCore Stable)

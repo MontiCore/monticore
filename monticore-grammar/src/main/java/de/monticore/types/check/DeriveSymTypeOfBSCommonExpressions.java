@@ -401,7 +401,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
       } else {
         //the inner type has no result and there is no type found
         typeCheckResult.reset();
-        Log.info("package suspected", "DeriveSymTypeOfCommonExpressions");
+        Log.info("package expected", "DeriveSymTypeOfCommonExpressions");
       }
     }
   }

@@ -31,7 +31,7 @@ public class GrammarFamilyPhasedSTC {
 
   public GrammarFamilyPhasedSTC(IGrammarFamilyGlobalScope globalScope){
     this.globalScope = globalScope;
-    this.scopesGenitorDelegator = new GrammarFamilyScopesGenitorDelegator(globalScope);
+    this.scopesGenitorDelegator = new GrammarFamilyScopesGenitorDelegator();
     this.priorityList = new ArrayList<>();
     GrammarFamilyTraverser traverser = GrammarFamilyMill.traverser();
     traverser.add4Grammar(new GrammarSTCompleteTypes());

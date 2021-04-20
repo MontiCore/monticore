@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkState;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
+import static de.monticore.codegen.mc2cd.TransformationHelper.getQualifiedName;
 
 /**
  * This is a helper class for the parser generation
@@ -126,13 +127,11 @@ public class ParserGeneratorHelper {
    */
   public String getQualifiedStartRuleName() {
     if (grammarSymbol.getStartProd().isPresent()) {
-      return MCGrammarSymbolTableHelper
-              .getQualifiedName(grammarSymbol.getStartProd().get());
+      return getQualifiedName(grammarSymbol.getStartProd().get());
     }
     for (MCGrammarSymbol g: grammarSymbol.getSuperGrammarSymbols()) {
       if (g.getStartProd().isPresent()) {
-        return MCGrammarSymbolTableHelper
-                .getQualifiedName(g.getStartProd().get());
+        return getQualifiedName(g.getStartProd().get());
       }
     }
     return "";
@@ -501,7 +500,7 @@ public class ParserGeneratorHelper {
   }
 
   public static String getASTClassName(ProdSymbol rule) {
-    return MCGrammarSymbolTableHelper.getQualifiedName(rule);
+    return getQualifiedName(rule);
   }
 
   public static Grammar_WithConceptsFullPrettyPrinter getPrettyPrinter() {
