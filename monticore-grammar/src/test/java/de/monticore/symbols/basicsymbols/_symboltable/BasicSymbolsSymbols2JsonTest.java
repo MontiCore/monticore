@@ -99,13 +99,10 @@ public class BasicSymbolsSymbols2JsonTest {
   }
 
   public void performRoundTripSerialization(IBasicSymbolsArtifactScope scope){
-    BasicSymbolsDeSer deser = new BasicSymbolsDeSer();
-    //first serialize the scope using the deser
+    //first serialize the scope using the symbols2json
     BasicSymbolsSymbols2Json symbols2Json = new BasicSymbolsSymbols2Json();
-    scope.accept(symbols2Json.getTraverser());
-    String serialized = symbols2Json.getSerializedString();
+    String serialized = symbols2Json.serialize(scope);
     // then deserialize it
-    BasicSymbolsSymbols2Json symbols2Json = new BasicSymbolsSymbols2Json();
     IBasicSymbolsArtifactScope deserialized = symbols2Json.deserialize(serialized);
     assertNotNull(deserialized);
     // and assert that the deserialized scope equals the one before
