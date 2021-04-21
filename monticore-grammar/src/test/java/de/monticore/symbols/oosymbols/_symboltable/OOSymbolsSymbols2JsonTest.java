@@ -88,11 +88,9 @@ public class OOSymbolsSymbols2JsonTest {
 
 
   public void performRoundTripSerialization(IOOSymbolsScope scope){
-    OOSymbolsDeSer deser = new OOSymbolsDeSer();
     //first serialize the scope using the deser
     OOSymbolsSymbols2Json s2j = ((OOSymbolsGlobalScope) OOSymbolsMill.globalScope()).getSymbols2Json();
-    scope.accept(s2j.getTraverser());
-    String serialized = s2j.getJsonPrinter().getContent();
+    String serialized = s2j.serialize(scope);
     // then deserialize it
     OOSymbolsSymbols2Json symbols2Json = new OOSymbolsSymbols2Json();
     IOOSymbolsArtifactScope deserialized = symbols2Json.deserialize(serialized);

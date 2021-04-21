@@ -47,8 +47,7 @@ public class BasicSymbolsSymbols2JsonTest {
 
     type.setSpannedScope(typeSpannedScope);
 
-    //TODO ND: replace null with scope when abstract TypeCheck is implemented
-    SymTypeExpression symType1 = SymTypeExpressionFactory.createTypeObject("Type", null);
+    SymTypeExpression symType1 = SymTypeExpressionFactory.createTypeObject("Type", scope);
 
     //put subtype into main scope, test if supertypes are serialized correctly
     TypeSymbol subtype = BasicSymbolsMill.typeSymbolBuilder()
@@ -94,19 +93,16 @@ public class BasicSymbolsSymbols2JsonTest {
     scope.add(subtype);
   }
 
-  @Ignore
   @Test
   public void testDeSer(){
-    //TODO ND: unignore when SymTypeExpressions use correct TypeSymbols
     performRoundTripSerialization(scope);
   }
 
-  public void performRoundTripSerialization(IBasicSymbolsScope scope){
-    BasicSymbolsDeSer deser = new BasicSymbolsDeSer();
-    //first serialize the scope using the deser
-    String serialized = deser.serialize(scope, new BasicSymbolsSymbols2Json());
-    // then deserialize it
+  public void performRoundTripSerialization(IBasicSymbolsArtifactScope scope){
+    //first serialize the scope using the symbols2json
     BasicSymbolsSymbols2Json symbols2Json = new BasicSymbolsSymbols2Json();
+    String serialized = symbols2Json.serialize(scope);
+    // then deserialize it
     IBasicSymbolsArtifactScope deserialized = symbols2Json.deserialize(serialized);
     assertNotNull(deserialized);
     // and assert that the deserialized scope equals the one before

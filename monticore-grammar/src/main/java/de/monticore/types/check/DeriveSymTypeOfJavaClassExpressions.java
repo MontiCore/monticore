@@ -375,15 +375,15 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
         wholeResult = SymTypeExpressionFactory.createTypeConstant(typeSymbol.getName());
       }else {
         //the return type is an object
-        wholeResult = SymTypeExpressionFactory.createTypeObject(typeSymbol.getName(), typeSymbol.getEnclosingScope());
+        wholeResult = SymTypeExpressionFactory.createTypeObject(typeSymbol);
       }
     }else {
       //the return type must be a generic
       List<SymTypeExpression> typeArgs = Lists.newArrayList();
       for(TypeVarSymbol s : typeSymbol.getTypeParameterList()){
-        typeArgs.add(SymTypeExpressionFactory.createTypeVariable(s.getName(),typeSymbol.getEnclosingScope()));
+        typeArgs.add(SymTypeExpressionFactory.createTypeVariable(s));
       }
-      wholeResult = SymTypeExpressionFactory.createGenerics(typeSymbol.getName(), typeSymbol.getEnclosingScope(), typeArgs);
+      wholeResult = SymTypeExpressionFactory.createGenerics(typeSymbol, typeArgs);
     }
     return wholeResult;
   }
@@ -704,7 +704,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
               logError("0xA0317", expr.get_SourcePositionStart());
             }
           }
-          wholeResult = SymTypeExpressionFactory.createTypeArray(extTypeResult.getTypeInfo().getName(), extTypeResult.getTypeInfo().getEnclosingScope(),dim, extTypeResult.deepClone());
+          wholeResult = SymTypeExpressionFactory.createTypeArray(extTypeResult.getTypeInfo(),dim, extTypeResult.deepClone());
         }
       }
 
