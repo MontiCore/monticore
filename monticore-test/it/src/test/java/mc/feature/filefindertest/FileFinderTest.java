@@ -32,13 +32,12 @@ public class FileFinderTest {
     scope.setPackageName("mc.feature.filefindertest");
     IFileFinderTestArtifactScope scopeII = delegatorII.createFromAST(artifactII.get());
     scopeII.setPackageName("mc.feature.filefindertest");
-    FileFinderTestDeSer deSer = new FileFinderTestDeSer();
-    String serialized = deSer.serialize(scope);
-    String serializedII = deSer.serialize(scopeII);
+    FileFinderTestSymbols2Json symbols2Json = new FileFinderTestSymbols2Json();
+    String serialized = symbols2Json.serialize(scope);
+    String serializedII = symbols2Json.serialize(scopeII);
     FileReaderWriter.storeInFile(Paths.get("src/test/resources/mc/feature/filefindertest/Model2.scsym"), serializedII);
     FileReaderWriter.storeInFile(Paths.get("src/test/resources/mc/feature/filefindertest/Model1.scsym"), serialized);
     FileReaderWriter.storeInFile(Paths.get("src/test/resources/mc/feature/filefindertest/Model1.json"), serialized);
-
   }
 
   @Test
