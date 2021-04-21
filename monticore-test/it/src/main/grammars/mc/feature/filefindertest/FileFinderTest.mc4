@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package mc.feature.filefindertest;
+
+grammar FileFinderTest extends mc.common.Basics, mc.grammar.types.ItTestTypes {
+
+  SCArtifact = PackageDeclaration? Statechart;
+
+  PackageDeclaration = "package" QualifiedName ";";
+
+  symbol scope Statechart = "statechart" Name "{" State* "}";
+
+  symbol scope State = "state" Name (";" | "{" State* "}");
+
+}
