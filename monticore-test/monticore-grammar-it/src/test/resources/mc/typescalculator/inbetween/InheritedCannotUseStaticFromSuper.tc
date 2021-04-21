@@ -1,0 +1,8 @@
+package mc.typescalculator.inbetween;
+
+tc InheritedCannotUseStaticFromSuper {
+
+  //should not work in oo type check
+  int a = mc.typescalculator.valid.InheritanceBar.getMax()
+
+}

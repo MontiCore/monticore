@@ -5,8 +5,10 @@ package de.monticore.codegen.mc2cd.transl;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
+import de.monticore.grammar.LexNamer;
 import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.*;
+import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.monticore.utils.Link;
 import de.se_rwth.commons.StringTransformations;
@@ -16,6 +18,7 @@ import java.util.function.UnaryOperator;
 
 import static de.monticore.codegen.mc2cd.TransformationHelper.getClassProdName;
 import static de.monticore.codegen.mc2cd.TransformationHelper.getUsageName;
+import static de.monticore.grammar.MCGrammarSymbolTableHelper.getConstantGroupName;
 
 /**
  * This function copies over names from source to target nodes.
@@ -78,7 +81,7 @@ public class NameTranslation implements
             ASTCDAttribute.class)) {
             Optional<String> usageName = getUsageName(rootLink.source(), link.source());
             String nameToUse = usageName.isPresent() ? usageName.get() :
-                MCGrammarSymbolTableHelper.getConstantName(link.source().getSymbol());
+                getConstantName(link.source().getSymbol());
             link.target().setName(nameToUse);
         }
 
@@ -101,5 +104,53 @@ public class NameTranslation implements
 
         return rootLink;
     }
+  
+  protected String getConstantName(RuleComponentSymbol compSymbol) {
+    if (compSymbol.isIsConstantGroup() && compSymbol.isPresentAstNode()
+        && compSymbol.getAstNode() instanceof ASTConstantGroup) {
+      return getConstantGroupName((ASTConstantGroup) compSymbol.getAstNode());
+    }
+    if (compSymbol.isIsConstant() && compSymbol.isPresentAstNode()
+        && compSymbol.getAstNode() instanceof ASTConstant) {
+      return
+          getAttributeNameForConstant((ASTConstant) compSymbol.getAstNode());
+    }
+    return "";
+  }
+  
+  protected String getAttributeNameForConstant(ASTConstant astConstant) {
+    String name;
+    
+    if (astConstant.isPresentUsageName()) {
+      name = astConstant.getUsageName();
+    } else {
+      String constName = astConstant.getName();
+      if (matchesJavaIdentifier(constName)) {
+        name = constName;
+      } else {
+        name = LexNamer.createGoodName(constName);
+        if (name.isEmpty()) {
+          name = constName;
+        }
+      }
+    }
+    return name;
+  }
+  
+  protected boolean matchesJavaIdentifier(String checkedString) {
+    if (checkedString == null || checkedString.length() == 0) {
+      return false;
+    }
+    char[] stringAsChars = checkedString.toCharArray();
+    if (!Character.isJavaIdentifierStart(stringAsChars[0])) {
+      return false;
+    }
+    for (int i = 1; i < stringAsChars.length; i++) {
+      if (!Character.isJavaIdentifierPart(stringAsChars[i])) {
+        return false;
+      }
+    }
+    return true;
+  }
 
 }

@@ -39,6 +39,8 @@ public class JsonPrinter {
 
   protected String arrayBeginBuffer;
 
+  protected String objectBeginBuffer;
+
   /**
    * Constructor for de.monticore.symboltable.serialization.JsonPrinter
    *
@@ -309,7 +311,7 @@ public class JsonPrinter {
    * @param value The double value of the Json attribute
    */
   public void member(String kind, double value) {
-    if (DEFAULT_NUMBER != value || !serializeDefaults) {
+    if (DEFAULT_NUMBER != value || serializeDefaults) {
       internalMember(kind, value);
     }
   }
@@ -326,7 +328,7 @@ public class JsonPrinter {
    * @param value The long value of the Json attribute
    */
   public void member(String kind, long value) {
-    if (DEFAULT_NUMBER != value || !serializeDefaults) {
+    if (DEFAULT_NUMBER != value || serializeDefaults) {
       internalMember(kind, value);
     }
   }
@@ -343,7 +345,7 @@ public class JsonPrinter {
    * @param value The float value of the Json attribute
    */
   public void member(String kind, float value) {
-    if (DEFAULT_NUMBER != value || !serializeDefaults) {
+    if (DEFAULT_NUMBER != value || serializeDefaults) {
       internalMember(kind, value);
     }
   }
@@ -360,7 +362,7 @@ public class JsonPrinter {
    * @param value The int value of the Json attribute
    */
   public void member(String kind, int value) {
-    if (DEFAULT_NUMBER != value || !serializeDefaults) {
+    if (DEFAULT_NUMBER != value || serializeDefaults) {
       internalMember(kind, value);
     }
   }
@@ -377,7 +379,7 @@ public class JsonPrinter {
    * @param value The boolean value of the Json attribute
    */
   public void member(String kind, boolean value) {
-    if (DEFAULT_BOOLEAN != value || !serializeDefaults) {
+    if (DEFAULT_BOOLEAN != value || serializeDefaults) {
       internalMember(kind, value);
     }
   }
@@ -396,7 +398,7 @@ public class JsonPrinter {
    * @param value The boolean value of the Json attribute
    */
   public void member(String kind, String value) {
-    if (DEFAULT_STRING != value || !serializeDefaults) {
+    if (DEFAULT_STRING != value || serializeDefaults) {
       internalMember(kind, "\"" + escapeSpecialChars(value) + "\"");
     }
   }
@@ -415,7 +417,7 @@ public class JsonPrinter {
    * @param value
    */
   public void memberJson(String kind, String value) {
-    if (DEFAULT_STRING != value || !serializeDefaults) {
+    if (DEFAULT_STRING != value || serializeDefaults) {
       internalMember(kind, value);
     }
   }

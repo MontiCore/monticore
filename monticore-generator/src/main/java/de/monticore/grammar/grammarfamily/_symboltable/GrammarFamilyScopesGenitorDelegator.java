@@ -3,10 +3,6 @@ package de.monticore.grammar.grammarfamily._symboltable;
 
 public class GrammarFamilyScopesGenitorDelegator extends GrammarFamilyScopesGenitorDelegatorTOP {
 
-  public GrammarFamilyScopesGenitorDelegator(
-      IGrammarFamilyGlobalScope globalScope) {
-    super(globalScope);
-  }
 
   public GrammarFamilyScopesGenitorDelegator() {
     super();

@@ -2,9 +2,14 @@
 
 package de.monticore.types.check;
 
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
+import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolSurrogate;
+import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
+import de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMill;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesHandler;
 import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesTraverser;
@@ -13,6 +18,7 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Visitor for Derivation of SymType from MCSimpleGenericTypes
@@ -48,6 +54,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypes extends AbstractSynthesiz
 
   public void traverse(ASTMCBasicGenericType genericType) {
 
+    SymTypeExpression symType = null;
     List<SymTypeExpression> arguments = new LinkedList<SymTypeExpression>();
     for (ASTMCTypeArgument arg : genericType.getMCTypeArgumentList()) {
       if (null != arg) {
@@ -60,11 +67,33 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypes extends AbstractSynthesiz
       }
       arguments.add(typeCheckResult.getCurrentResult());
     }
-    TypeSymbol loader = new OOTypeSymbolSurrogate(genericType.printWithoutTypeArguments());
-    loader.setEnclosingScope(getScope(genericType.getEnclosingScope()));
-    SymTypeExpression tex = SymTypeExpressionFactory.createGenerics(
-        loader, arguments);
-    typeCheckResult.setCurrentResult(tex);
+    Optional<TypeVarSymbol> typeVar = getScope(genericType.getEnclosingScope()).resolveTypeVar(genericType.printWithoutTypeArguments());
+    if(typeVar.isPresent()){
+      Log.error("0xA0320 The generic type " + genericType.printType(MCSimpleGenericTypesMill.mcSimpleGenericTypesPrettyPrinter()) +
+          " cannot have a generic parameter because " + genericType.getName(genericType.getNameList().size()-1) + " is a type variable",
+          genericType.get_SourcePositionStart());
+    }else{
+      Optional<TypeSymbol> type = getScope(genericType.getEnclosingScope()).resolveType(genericType.printWithoutTypeArguments());
+      if(type.isPresent()){
+        symType = SymTypeExpressionFactory.createGenerics(type.get(), arguments);
+      }else{
+        Optional<SymTypeExpression> optSym = handleIfNotFound(genericType, arguments);
+        if(optSym.isPresent()){
+          symType = optSym.get();
+        }
+      }
+    }
+
+    typeCheckResult.setCurrentResult(symType);
+  }
+
+  /**
+   * extension method for error handling
+   */
+  protected Optional<SymTypeExpression> handleIfNotFound(ASTMCGenericType type, List<SymTypeExpression> arguments){
+    Log.error("0xA0323 The generic type " + type.printWithoutTypeArguments() +
+        "cannot be found", type.get_SourcePositionStart());
+    return Optional.empty();
   }
 
 }

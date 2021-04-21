@@ -35,6 +35,7 @@ public class SynthesizeSymTypeFromMyOwnLanguageTest {
   public void testMCCollectionTypes() throws IOException {
     Optional<ASTMCType> type = parser.parse_StringMCType("List<int>");
     assertTrue(type.isPresent());
+    type.get().setEnclosingScope(MyOwnLanguageMill.globalScope());
     assertEquals("List<int>",tc.symTypeFromAST(type.get()).print());
   }
 

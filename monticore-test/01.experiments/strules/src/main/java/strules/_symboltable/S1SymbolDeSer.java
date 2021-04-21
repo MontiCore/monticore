@@ -18,24 +18,9 @@ public class S1SymbolDeSer extends S1SymbolDeSerTOP {
 
   }
 
-  @Override protected void serializeAo(Optional<AType> ao, STRulesSymbols2Json s2j) {
-
-  }
-
-  @Override protected void serializeAl(List<AType> al, STRulesSymbols2Json s2j) {
-
-  }
-
   @Override
   protected AType deserializeA(JsonObject symbolJson) {
     return null;
   }
 
-  @Override protected Optional<AType> deserializeAo(JsonObject symbolJson) {
-    return Optional.empty();
-  }
-
-  @Override protected List<AType> deserializeAl(JsonObject symbolJson) {
-    return null;
-  }
 }

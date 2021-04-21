@@ -30,6 +30,17 @@ public class SymTypeOfWildcard extends SymTypeExpression {
   }
 
   @Override
+  public String printFullName() {
+    if(bound==null){
+      return "?";
+    }else if(isUpper){
+      return "? super "+bound.printFullName();
+    }else{
+      return "? extends "+bound.printFullName();
+    }
+  }
+
+  @Override
   protected String printAsJson() {
     JsonPrinter jp = new JsonPrinter();
     jp.beginObject();

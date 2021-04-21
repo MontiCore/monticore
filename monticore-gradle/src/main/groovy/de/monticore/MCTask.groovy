@@ -3,7 +3,7 @@ package de.monticore
 
 import com.google.common.hash.Hashing
 import com.google.common.io.Files
-import de.monticore.cli.MontiCoreCLI
+import de.monticore.cli.MontiCoreStandardCLI
 import de.se_rwth.commons.logging.Finding
 import de.se_rwth.commons.logging.Log
 import org.gradle.api.DefaultTask
@@ -32,8 +32,14 @@ import java.util.stream.Collectors
  *                        defaults to $projectDir/src/main/grammars
  *   - templatePath     - list of paths to be considered for handcrafted templates
  *                        defaults to $projectDir/src/main/resources
+ *   - configTemplate   - template to configure the integration of handwritten templates
+ *                        defaults to empty resulting in MontiCore's standard generation
  *   - script           - the script to be used for the generation
  *                        defaults to monticore_noemf.groovy
+ *   - groovyHook1      - groovy script that is hooked into the workflow of the standard script at hook point one
+ *                        defaults to empty
+ *   - groovyHook2      - groovy script that is hooked into the workflow of the standard script at hook point two
+ *                        defaults to empty
  *   - addGrammarConfig - boolean that specifies whether the configuration called grammar should
  *                        be added to the model path
  *                        defaults to true
@@ -69,8 +75,14 @@ abstract public class MCTask extends DefaultTask {
   List<String> templatePath = []
   
   List<String> includeConfigs = []
-  
+
+  String configTemplate;
+
   String script
+
+  String groovyHook1;
+
+  String groovyHook2;
   
   boolean help = false
   
@@ -128,13 +140,31 @@ abstract public class MCTask extends DefaultTask {
   ConfigurableFileCollection getGrammarConfigFiles() {
     return grammarConfigFiles
   }
-  
+
+  @Input
+  @Optional
+  String getConfigTemplate() {
+    return configTemplate
+  }
+
   @Input
   @Optional
   String getScript() {
     return script
   }
-  
+
+  @Input
+  @Optional
+  String getGroovyHook1() {
+    return groovyHook1
+  }
+
+  @Input
+  @Optional
+  String getGroovyHook2() {
+    return groovyHook2
+  }
+
   @Input
   boolean getDev() {
     return dev
@@ -220,18 +250,35 @@ abstract public class MCTask extends DefaultTask {
     
     mp.addAll(modelPath)
     // construct string array from configuration to pass it to MontiCore
-    List<String> params = [grammar.get().asFile.toString(),
-                           "-o", outputDir.get().asFile.toString(),
-                           "-f",
-                           "-mp"]
-    params.addAll(mp)
-    params.add("-hcp")
-    params.addAll(handcodedPath)
-    params.add("-fp")
-    params.addAll(templatePath)
+    List<String> params = ["-g", grammar.get().asFile.toString(),
+                           "-o", outputDir.get().asFile.toString()]
+    if (!mp.isEmpty()) {
+      params.add("-mp")
+      params.addAll(mp)
+    }
+    if (!handcodedPath.isEmpty()) {
+      params.add("-hcp")
+      params.addAll(handcodedPath)
+    }
+    if (!templatePath.isEmpty()) {
+      params.add("-fp")
+      params.addAll(templatePath)
+    }
+    if (configTemplate != null) {
+      params.add("-ct")
+      params.add(configTemplate)
+    }
     if (script != null) {
-      params.add("-s")
+      params.add("-sc")
       params.add(script)
+    }
+    if (groovyHook1 != null) {
+      params.add("-gh1")
+      params.add(groovyHook1)
+    }
+    if (groovyHook2 != null) {
+      params.add("-gh2")
+      params.add(groovyHook2)
     }
     if (dev) {
       params.add("-d")
@@ -258,7 +305,7 @@ abstract public class MCTask extends DefaultTask {
     })
     try {
       // execute Monticore with the given parameters
-      MontiCoreCLI.main(p)
+      MontiCoreStandardCLI.main(p)
     } catch(MCTaskError e){
       // in case of failure print the error and fail
       String error = Log.getFindings().stream().

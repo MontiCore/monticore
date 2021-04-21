@@ -863,5 +863,14 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     return values;
   }
 
+  public String removeSymbolSuffix(String clazzName) {
+    // normal symbol name calculation from
+    if (clazzName.endsWith(SYMBOL_SUFFIX)) {
+      return clazzName.substring(0, clazzName.length()-SYMBOL_SUFFIX.length());
+    } else {
+      return clazzName;
+    }
+  }
+
 
 }

@@ -206,7 +206,7 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(34, scopeClass.getCDMethodList().size());
+    assertEquals(28, scopeClass.getCDMethodList().size());
   }
 
   @Test
@@ -254,48 +254,6 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
         "List<de.monticore.codegen.ast.automaton._symboltable.IAutomatonSymbolResolver>",
         method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
-  }
-
-  @Test
-  public void testIsStateSymbolsAlreadyResolvedMethod() {
-    ASTCDMethod method = getMethodBy("isStateSymbolsAlreadyResolved", scopeClass);
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertBoolean(method.getMCReturnType().getMCType());
-
-    assertTrue(method.isEmptyCDParameters());
-  }
-
-  @Test
-  public void testIsAutomatonSymbolsAlreadyResolvedMethod() {
-    ASTCDMethod method = getMethodBy("isAutomatonSymbolsAlreadyResolved", scopeClass);
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertBoolean(method.getMCReturnType().getMCType());
-
-    assertTrue(method.isEmptyCDParameters());
-  }
-
-  @Test
-  public void testSetAutomatonSymbolsAlreadyResolvedMethod() {
-    ASTCDMethod method = getMethodBy("setAutomatonSymbolsAlreadyResolved", scopeClass);
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-    assertEquals(1, method.sizeCDParameters());
-    assertBoolean(method.getCDParameter(0).getMCType());
-    assertEquals("automatonSymbolsAlreadyResolved", method.getCDParameter(0).getName());
-  }
-
-  @Test
-  public void testSetStateSymbolsAlreadyResolvedMethod() {
-    ASTCDMethod method = getMethodBy("setStateSymbolsAlreadyResolved", scopeClass);
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-    assertEquals(1, method.sizeCDParameters());
-    assertBoolean(method.getCDParameter(0).getMCType());
-    assertEquals("stateSymbolsAlreadyResolved", method.getCDParameter(0).getName());
   }
 
   @Test

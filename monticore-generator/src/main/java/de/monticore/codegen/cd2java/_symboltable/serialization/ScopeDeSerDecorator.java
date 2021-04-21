@@ -42,8 +42,6 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
 
   public static final String DESERIALIZE_SYMBOLS_TEMPL = "_symboltable.serialization.scopeDeSer.DeserializeSymbols";
 
-  public static final String SERIALIZE_TEMPL = "_symboltable.serialization.scopeDeSer.Serialize4ScopeDeSer";
-
   public static final String SERIALIZES2J_TEMPL = "_symboltable.serialization.scopeDeSer.SerializeS2J4ScopeDeSer";
 
   public static final String SERIALIZE_AS_TEMPL = "_symboltable.serialization.scopeDeSer.SerializeAS4ScopeDeSer";
@@ -117,9 +115,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
 
         // add serialization methods
         .addCDMember(createSerializeMethod(scopeParam, s2jParam, scopeRuleAttrList))
-        .addCDMember(createSerialize2Method(scopeParam, symbols2JsonName))
         .addCDMember(createSerializeASMethod(asParam, s2jParam, scopeRuleAttrList))
-        .addCDMember(createSerialize2Method(asParam, symbols2JsonName))
         .addAllCDMembers(createSerializeAttrMethods(scopeRuleAttrList, s2jParam))
         .addCDMember(createSerializeAddonsMethod(scopeParam, s2jParam))
         .addCDMember(createSerializeAddonsMethod(asParam, s2jParam))
@@ -150,13 +146,6 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
     ASTCDMethod method = getCDMethodFacade()
         .createMethod(PUBLIC.build(), getMCTypeFacade().createStringType(), "serialize", toSerialize, s2j);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(SERIALIZES2J_TEMPL, scopeRuleAttrList));
-    return method;
-  }
-
-  protected ASTCDMethod createSerialize2Method(ASTCDParameter toSerialize, String s2jFullName) {
-    ASTCDMethod method = getCDMethodFacade()
-        .createMethod(PUBLIC.build(), getMCTypeFacade().createStringType(), "serialize", toSerialize);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(SERIALIZE_TEMPL, s2jFullName));
     return method;
   }
 

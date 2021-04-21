@@ -12,6 +12,7 @@ import de.se_rwth.commons.logging.Log;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.Optional;
 
 public class GenerateAutomataParser {
 
@@ -48,13 +49,16 @@ public class GenerateAutomataParser {
       // Hand coded path
       IterablePath handcodedPath = IterablePath.empty();
 
+      // Template path
+      IterablePath templatePath = IterablePath.empty();
+
       // Target directory
       File outputDir = new File(args[1]);
 
       // Generate the parser
       GlobalExtensionManagement glex = new GlobalExtensionManagement();
       ParserGenerator.generateParser(
-          glex, ast, gs, handcodedPath, outputDir);
+          glex, ast, gs, handcodedPath, templatePath, outputDir);
     }
     catch (IOException e) {
       // If something happens ... handling necessary

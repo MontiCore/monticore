@@ -1,19 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.generating.templateengine.reporting.reporter;
 
-import com.google.common.collect.Lists;
-import com.google.common.io.Files;
 import de.monticore.ast.ASTNode;
-import de.monticore.generating.templateengine.reporting.commons.AReporter;
-import de.monticore.generating.templateengine.reporting.commons.ReportCreator;
-import de.monticore.incremental.IncrementalChecker;
-import de.monticore.io.paths.IterablePath;
-import org.antlr.v4.runtime.misc.OrderedHashSet;
+import de.monticore.generating.templateengine.reporting.commons.ReportingHelper;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.Collections;
 
 import static de.monticore.generating.templateengine.reporting.reporter.InputOutputFilesReporter.MISSING;
 
@@ -44,7 +38,7 @@ public class IncGenCheckReporter extends IncGenReporter {
     if (inputFile != null && !inputFile.isEmpty()) {
       String checkSum;
       if (node != null) {
-        checkSum = IncrementalChecker.getChecksum(inputFile);
+        checkSum = ReportingHelper.getChecksum(inputFile);
         //test if file was removed
         String file = inputFile.replaceAll("\\\\", "/");
         writeLine("[ -e " + file + " ] || (touch $1; echo " + file + " removed!; exit 0;)");
@@ -56,7 +50,7 @@ public class IncGenCheckReporter extends IncGenReporter {
         if (!s.contains(".jar")) {
           File inputFile = new File(s);
           if (inputFile.exists()) {
-            digest = IncrementalChecker.getChecksum(inputFile.toString());
+            digest = ReportingHelper.getChecksum(inputFile.toString());
           } else {
             digest = MISSING;
           }
@@ -77,7 +71,7 @@ public class IncGenCheckReporter extends IncGenReporter {
       if (!s.contains(".jar")) {
         File inputFile = new File(s);
         if (inputFile.exists()) {
-          digest = IncrementalChecker.getChecksum(inputFile.toString());
+          digest = ReportingHelper.getChecksum(inputFile.toString());
         }else {
           digest = MISSING;
         }
@@ -102,4 +96,5 @@ public class IncGenCheckReporter extends IncGenReporter {
 
     super.flush(node);
   }
+
 }

@@ -67,11 +67,12 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
     
     // create list of cdDefinitions from superclass and own class
     List<ASTCDDefinition> definitionList = new ArrayList<>();
-    definitionList.add(compilationUnit.getCDDefinition());
-    definitionList.addAll(superCDsTransitive
-        .stream()
+    definitionList.add(ast.getCDDefinition());
+    definitionList.addAll(superCDsTransitive.stream().map(x -> (ASTCDDefinition)x.getAstNode()).collect(
+        Collectors.toList()));
+    superCDsTransitive.stream()
         .map(visitorService::calculateCDTypeNamesWithASTPackage)
-        .collect(Collectors.toList()));
+        .collect(Collectors.toList());
     
     List<String> visitorSimpleNameList = Lists.newArrayList(visitorService.getVisitorSimpleName());
     visitorSimpleNameList.addAll(superCDsTransitive.stream()

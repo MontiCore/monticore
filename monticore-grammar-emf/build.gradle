@@ -14,7 +14,7 @@ sonarqube {
 dependencies {
     api project(':monticore-runtime')
     api project(':monticore-runtime-emf')
-    implementation 'com.google.guava:guava:25.1-jre'
+    implementation "com.google.guava:guava:$guava_version"
     implementation "org.apache.commons:commons-lang3:$commons_lang3_version"
     implementation 'org.eclipse.emf:org.eclipse.emf.ecore:2.15.0'
     implementation 'org.eclipse.emf:org.eclipse.emf.ecore.xmi:2.15.0'
@@ -114,6 +114,10 @@ test {
   exclude '**/GrammarNameEqualsFileNameTest.class'
   exclude '**/MCGrammarParserTest.class'
   exclude '**/MCGrammarPrettyPrinterTest.class'
+  exclude '**/SynthesizeSymTypeFromMCBasicTypesTest.class'
+  exclude '**/SynthesizeSymTypeFromMCCollectionTypesTest.class'
+  exclude '**/SynthesizeSymTypeFromMCSimpleGenericTypesTest.class'
+  exclude '**/MCType2SymTypeExpressionTest.class'
 }
 
 compileTestJava.dependsOn (generateTest)

@@ -608,7 +608,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     check("types.Test.variable", "int");
 
     //test for type with more than one package
-    check("types3.types2.Test", "types3.types2.Test");
+    check("types3.types2.Test", "Test");
 
     //test for variable of type with more than one package
     check("types3.types2.Test.variable", "int");
@@ -1344,7 +1344,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
   public void testStaticType() throws IOException {
     init_static_example();
 
-    check("A.D", "A.D");
+    check("A.D", "D");
   }
 
   @Test

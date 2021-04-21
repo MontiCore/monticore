@@ -6,7 +6,7 @@ buildscript {
 
 plugins {
   id "java-library"
-  id "monticore-bs" version "$previous_mc_version" // MontiCore Plugin
+  id "monticore-bs" version "7.0.0" // MontiCore Plugin
   id "jacoco"
 }
 
@@ -21,14 +21,13 @@ if(!hasProperty('bootstrap')){
 dependencies {
   implementation "de.monticore.bs:monticore-runtime:$previous_mc_version"
   implementation "de.monticore.bs:monticore-grammar:$previous_mc_version"
-  grammar "de.monticore.bs:monticore-grammar:$previous_mc_version:grammars"
   implementation "de.monticore.bs:monticore-grammar:$previous_mc_version:grammars"
   implementation "de.se_rwth.commons:se-commons-groovy:$se_commons_version"
   implementation "de.se_rwth.commons:se-commons-logging:$se_commons_version"
   implementation "de.monticore.lang.bs:cd4analysis:$cd4a_version"
   grammar "de.monticore.lang.bs:cd4analysis:$cd4a_version:grammars"
   implementation "org.antlr:antlr4:$antlr_version"
-  implementation ('com.google.guava:guava:25.1-jre'){
+  implementation ("com.google.guava:guava:$guava_version"){
     force(true)
   }
   implementation 'org.codehaus.groovy:groovy:3.0.7'

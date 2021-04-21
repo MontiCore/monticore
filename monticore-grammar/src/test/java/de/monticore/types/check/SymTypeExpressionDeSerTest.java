@@ -395,9 +395,6 @@ public class SymTypeExpressionDeSerTest {
     symTypeConstantDeser.deserialize(invalidJsonForSerializing2);
     assertTrue(Log.getFindings().get(Log.getFindings().size() - 1).getMsg().startsWith("0x823F1"));
 
-    SymTypeOfWildcardDeSer symTypeOfWildcardDeSer = new SymTypeOfWildcardDeSer();
-    symTypeOfWildcardDeSer.deserialize(invalidJsonForSerializing2);
-    assertTrue(Log.getFindings().get(Log.getFindings().size() - 1).getMsg().startsWith("0x823F7"));
   }
 
 }

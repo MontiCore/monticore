@@ -216,7 +216,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends AbstractDeriveFromExpr
   protected Optional<SymTypeExpression> calculateTypeArithmeticWithString(ASTAssignmentExpression expr, SymTypeExpression leftResult, SymTypeExpression rightResult) {
     //if the type of the left expression is a String then so is the type of the whole expression
     if (isString(leftResult)) {
-      return Optional.of(SymTypeExpressionFactory.createTypeObject("String", getScope(expr.getEnclosingScope())));
+      return Optional.of(SymTypeExpressionFactory.createTypeObject(leftResult.getTypeInfo()));
     }
     //else continue with the normal calculation of +=,-=,*=,/= and %=
     return calculateTypeArithmetic(expr, leftResult, rightResult);

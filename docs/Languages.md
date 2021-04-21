@@ -316,16 +316,12 @@ ocl Bookshop {
 }
 ```
 
-
-* OCL/P comes with an 
-  [OCL to Java generator](https://git.rwth-aachen.de/monticore/languages/OCL2Java)
-  and is used in combination with 
-  [*Embedded MontiArc*](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/OCL_EMA2Java) and the MontiCore artefact tooling.
-* Main grammar 
-  [`ocl.monticore.ocl.OCL`](https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/develop/src/main/grammars/de/monticore/ocl/OCL.mc4), 
-  [Expressions](https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/develop/src/main/grammars/de/monticore/ocl/OCLExpressions.mc4),
-  and 
-  [*detailed description*](https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/master/src/main/grammars/ocl/monticoreocl/OCL.md)
+* The OCL language component contains four grammars:
+  * [OCL](https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/develop/src/main/grammars/de/monticore/ocl/OCL.mc4),
+  * [OCLExpressions](https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/develop/src/main/grammars/de/monticore/ocl/OCLExpressions.mc4), 
+  * [OptionalOperators](https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/develop/src/main/grammars/de/monticore/ocl/OptionalOperators.mc4), and
+  * [SetExpressions](https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/develop/src/main/grammars/de/monticore/ocl/SetExpressions.mc4). 
+* The [*detailed description*](https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/master/src/main/grammars/ocl/monticoreocl/OCL.md) provides an in-depth guide for language engineers.
 
 
 ### [Object Diagrams](https://git.rwth-aachen.de/monticore/languages/od) (MontiCore Stable)
@@ -544,7 +540,7 @@ package 'Coffee' {                      // a SysML activity diagram
   See also [*detailed description*](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging/-/blob/master/src/main/grammars/de/monticore/lang/Tagging.md)
 
 
-### [XML](https://git.rwth-aachen.de/monticore/languages/xml) (Alpha: Intention to become stable)
+### [XML](https://git.rwth-aachen.de/monticore/languages/xml) (MontiCore Stable)
 * The MontiCore language for parsing XML artifacts. An example:
 ```
 <Calendar>
@@ -592,7 +588,7 @@ public void print(String name) {
 
 
 
-### [Java](https://git.rwth-aachen.de/monticore/javaDSL) (Beta: In Stabilization) (30% to MC6)
+### [Java](https://git.rwth-aachen.de/monticore/javaDSL) (Beta: In Stabilization) 
 * This is the full Java' Language (as Opposed to JavaLight).
 * Main Grammar [`JavaDSL`](https://git.rwth-aachen.de/monticore/javaDSL/-/blob/dev/javaDSL/src/main/grammars/de/monticore/java/JavaDSL.mc4)
   and

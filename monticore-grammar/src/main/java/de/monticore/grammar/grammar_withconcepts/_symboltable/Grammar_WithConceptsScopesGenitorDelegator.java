@@ -3,11 +3,6 @@ package de.monticore.grammar.grammar_withconcepts._symboltable;
 
 public class Grammar_WithConceptsScopesGenitorDelegator extends Grammar_WithConceptsScopesGenitorDelegatorTOP {
 
-  public Grammar_WithConceptsScopesGenitorDelegator(
-      IGrammar_WithConceptsGlobalScope globalScope) {
-    super(globalScope);
-  }
-
   public Grammar_WithConceptsScopesGenitorDelegator() {
     super();
   }

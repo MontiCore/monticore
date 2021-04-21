@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsScope;
+import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsGlobalScope;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsScope;
 import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
@@ -12,10 +13,8 @@ import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisTraver
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
-import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
-import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
-import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
-import de.se_rwth.commons.logging.Log;
+import de.monticore.symbols.oosymbols._symboltable.*;
+import de.se_rwth.commons.logging.*;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -49,18 +48,26 @@ public class DeriveSymTypeOfJavaClassExpressionsTest extends DeriveSymTypeAbstra
     BasicSymbolsMill.initializePrimitives();
     // Setting up a Scope Infrastructure (without a global Scope)
     DefsTypeBasic.setup();
+    ICombineExpressionsWithLiteralsGlobalScope gs = CombineExpressionsWithLiteralsMill.globalScope();
     scope = CombineExpressionsWithLiteralsMill.scope();
     scope.setExportingSymbols(true);
     scope.setAstNode(null);
-    CombineExpressionsWithLiteralsMill.globalScope().addSubScope(scope);
-
+    scope.setEnclosingScope(gs);
     // we add a variety of TypeSymbols to the same scope (which in reality doesn't happen)
 
     add2scope(scope, DefsTypeBasic._array);
     add2scope(scope, DefsTypeBasic._Object);
     add2scope(scope, DefsTypeBasic._String);
 
+    IOOSymbolsArtifactScope scope2 = CombineExpressionsWithLiteralsMill.artifactScope();
+    scope2.setPackageName("java.util");
+    scope2.setName("Set");
+    scope2.setEnclosingScope(gs);
+    OOTypeSymbol set = new OOTypeSymbol("Set");
+    add2scope(scope2, set);
     // some FieldSymbols (ie. Variables, Attributes)
+    OOTypeSymbol integer = new OOTypeSymbol("Integer");
+    add2scope(scope, integer);
     OOTypeSymbol p = new OOTypeSymbol("Person");
     add2scope(scope,p);
     OOTypeSymbol s = new OOTypeSymbol("Student");
@@ -359,7 +366,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest extends DeriveSymTypeAbstra
     //falls man einschränken möchte, kann man die CoCo NoClassExpressionForGenerics
     check("String.class", "Class<String>");
     check("Integer.class", "Class<Integer>");
-    check("java.util.Set<double>.class", "Class<java.util.Set<double>>");
+    check("java.util.Set<double>.class", "Class<Set<double>>");
   }
 
   @Test
