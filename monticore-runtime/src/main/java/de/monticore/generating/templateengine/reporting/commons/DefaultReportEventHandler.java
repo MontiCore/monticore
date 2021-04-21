@@ -5,8 +5,10 @@ package de.monticore.generating.templateengine.reporting.commons;
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.io.paths.IterablePath;
+import de.monticore.io.paths.MCPath;
 import de.monticore.symboltable.IScope;
 
+import java.net.URL;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
@@ -170,6 +172,11 @@ public class DefaultReportEventHandler implements IReportEventHandler {
 
   @Override
   public void reportHWCExistenceCheck(IterablePath parentDir, Path fileName, Optional<Path> exists){
+    // default
+  }
+
+  @Override
+  public void reportHWCExistenceCheck(MCPath mcp, Path fileName, Optional<URL> exists){
     // default
   }
 

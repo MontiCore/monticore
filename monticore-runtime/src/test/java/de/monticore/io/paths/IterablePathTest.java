@@ -59,7 +59,7 @@ public class IterablePathTest {
   
   @Test
   public void simpleBinaryPath() {
-    IterablePath testee = IterablePath.from(Arrays.asList(BINARY_PATH), TXT_EXT);
+    MCPath testee = MCPath(Arrays.asList(BINARY_PATH), TXT_EXT);
     
     Iterator<Path> sizeTest = testee.get();
     assertEquals(2, Iterators.size(sizeTest));

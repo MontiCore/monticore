@@ -5,23 +5,22 @@ import automata._ast.ASTAutomaton;
 import automata._ast.ASTState;
 import automata._ast.ASTTransition;
 import automata._parser.AutomataParser;
-import automata._symboltable.*;
-import com.google.common.collect.Lists;
+import automata._symboltable.AutomataSymbols2Json;
+import automata._symboltable.IAutomataArtifactScope;
+import automata._symboltable.IAutomataGlobalScope;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.generating.templateengine.reporting.Reporting;
-import de.monticore.io.paths.IterablePath;
+import de.monticore.io.paths.MCPath;
 import de.monticore.io.paths.ModelPath;
-import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.RecognitionException;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static de.monticore.generating.GeneratorEngine.existsHandwrittenClass;
 
@@ -54,13 +53,13 @@ public class TemplatesTool {
   static protected String modelfilename = "";
 
   //  handcodedPath: args[1]
-  static protected IterablePath handcodedPath;
+  static protected MCPath handcodedPath;
 
   // output directory: args[2]
   static protected File outputDir;
   
   // output directory: args[2]
-  static protected Optional<File> templatePath = Optional.empty();
+  static protected MCPath templatePath = new MCPath();
   
   // The AST of the model to be handled (will result from parsing)
   protected ASTAutomaton ast;
@@ -119,14 +118,14 @@ public class TemplatesTool {
     modelfilename = args[0];
 
     // get handcodedPath from arg[1]
-    handcodedPath = IterablePath.from(new File(args[1]), "java");
+    handcodedPath = new MCPath(args[1]);
 
     // get output directory from arg[2]
     outputDir = new File(args[2]);
     
     // if present get templatePath
     if(args.length == 4) {
-      templatePath = Optional.of(new File(args[3]));
+      templatePath.addEntry(Paths.get(args[3]));
     }
     
     executeWorkflow();
@@ -136,7 +135,7 @@ public class TemplatesTool {
    * Second entry method of the AutomataTool:
    * it stores the input parameters and calls the execution workflow
    */
-  public TemplatesTool(String modelfilename, IterablePath handcodedPath, File outputDir) {
+  public TemplatesTool(String modelfilename, MCPath handcodedPath, File outputDir) {
     this.modelfilename = modelfilename;
     this.handcodedPath = handcodedPath;
     this.outputDir = outputDir;
@@ -203,7 +202,12 @@ public class TemplatesTool {
   
     s.setGlex(glex);
     s.setOutputDirectory(outputDir);
-    templatePath.ifPresent(e -> s.setAdditionalTemplatePaths(Lists.newArrayList(e)));
+    if(!templatePath.isEmpty()){
+      s.setAdditionalTemplatePaths(
+          templatePath.getEntries().stream()
+              .map(t->t.toFile())
+              .collect(Collectors.toList()));
+    }
     generatorEngine = new GeneratorEngine(s);
   }
   

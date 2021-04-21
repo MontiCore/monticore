@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
  * language tool.
  *
  */
+@Deprecated
 public final class ModelPath {
 
   private final Map<URLClassLoader, URL> classloaderMap = new LinkedHashMap<>();
