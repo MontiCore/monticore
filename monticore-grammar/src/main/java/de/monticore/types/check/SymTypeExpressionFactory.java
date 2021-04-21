@@ -33,10 +33,6 @@ public class SymTypeExpressionFactory {
    * createTypeVariable vor Variables
    */
   public static SymTypeVariable createTypeVariable(String name, IBasicSymbolsScope scope) {
-    Optional<TypeSymbol> type = scope.resolveType(name);
-    if(type.isPresent()){
-      return new SymTypeVariable(type.get());
-    }
     TypeSymbol typeSymbol = new TypeSymbolSurrogate(name);
     typeSymbol.setEnclosingScope(scope);
     return new SymTypeVariable(typeSymbol);
@@ -69,10 +65,6 @@ public class SymTypeExpressionFactory {
    * for ObjectTypes, as e.g. "Person"
    */
   public static SymTypeOfObject createTypeObject(String name, IBasicSymbolsScope enclosingScope) {
-    Optional<TypeSymbol> type = enclosingScope.resolveType(name);
-    if(type.isPresent()){
-      return new SymTypeOfObject(type.get());
-    }
     TypeSymbol typeSymbol = new TypeSymbolSurrogate(name);
     typeSymbol.setEnclosingScope(enclosingScope);
     return new SymTypeOfObject(typeSymbol);
@@ -109,10 +101,6 @@ public class SymTypeExpressionFactory {
 
   public static SymTypeArray createTypeArray(String name, IBasicSymbolsScope typeSymbolsScope,
                                              int dim, SymTypeExpression argument) {
-    Optional<TypeSymbol> type = typeSymbolsScope.resolveType(name);
-    if(type.isPresent()){
-      return new SymTypeArray(type.get(), dim, argument);
-    }
     TypeSymbol typeSymbol = new TypeSymbolSurrogate(name);
     typeSymbol.setEnclosingScope(typeSymbolsScope);
     return new SymTypeArray(typeSymbol, dim, argument);
@@ -156,7 +144,7 @@ public class SymTypeExpressionFactory {
       o = createArrayFromString(name, scope);
     } else if (name.contains("<")) {
       o = createGenericsFromString(name, scope);
-    } else if (scope.resolveTypeVar(name).isPresent()){
+    } else if (scope!=null && scope.resolveTypeVar(name).isPresent()){
       o = createTypeVariable(name, scope);
     }else {
       o = createTypeObject(name, scope);
@@ -261,10 +249,6 @@ public class SymTypeExpressionFactory {
 
   public static SymTypeOfGenerics createGenerics(String name, IBasicSymbolsScope enclosingScope,
                                                  List<SymTypeExpression> arguments) {
-    Optional<TypeSymbol> type = enclosingScope.resolveType(name);
-    if(type.isPresent()){
-      return new SymTypeOfGenerics(type.get(), arguments);
-    }
     TypeSymbol typeSymbol = new TypeSymbolSurrogate(name);
     typeSymbol.setEnclosingScope(enclosingScope);
     return new SymTypeOfGenerics(typeSymbol, arguments);
