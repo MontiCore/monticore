@@ -8,6 +8,7 @@ package de.monticore;
  import de.monticore.cdbasis._ast.ASTCDClass;
  import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
  import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
+ import de.monticore.codegen.cd2java.cli.CliDecorator;
  import de.monticore.codegen.cd2java.typecd2java.TemplateHPService;
  import de.monticore.generating.templateengine.TemplateController;
  import de.monticore.generating.templateengine.TemplateHookPoint;
@@ -836,9 +837,11 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
   private ASTCDCompilationUnit generateCLI(ASTCDCompilationUnit cd,
                                             GlobalExtensionManagement glex, IterablePath handCodedPath) {
-    AbstractService abstractService = new AbstractService(cd);
-    RunnerDecorator runnerDecorator = new RunnerDecorator(glex, abstractService);
-    CDCLIDecorator cdcliDecorator = new CDCLIDecorator(glex, runnerDecorator, abstractService);
+    ParserService parserService = new ParserService(cd);
+    SymbolTableService symbolTableService = new SymbolTableService(cd);
+    RunnerDecorator runnerDecorator = new RunnerDecorator(glex, parserService,symbolTableService );
+    CliDecorator cliDecorator = new CliDecorator(glex, symbolTableService );
+    CDCLIDecorator cdcliDecorator = new CDCLIDecorator(glex, runnerDecorator, cliDecorator,parserService);
 
     ASTCDCompilationUnit cliCD = cdcliDecorator.decorate(cd);
 

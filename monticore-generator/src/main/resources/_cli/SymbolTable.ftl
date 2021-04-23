@@ -1,8 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("grammarname")}
+${tc.signature("grammarname", "millFullName", "scopesGenitorDelegator", "artifactScope")}
 
-return ${grammarname}Mill
-        .${grammarname}SymbolTableCreatorBuilder()
-        .addToScopeStack(new ${grammarname}GlobalScope(new ModelPath(), "aut"))
-        .build()
-        .createFromAST(ast);
+${scopesGenitorDelegator} genitor = ${millFullName}.scopesGenitorDelegator();
+${artifactScope} symTab = genitor.createFromAST(ast);
+return symTab;

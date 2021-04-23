@@ -1,23 +1,48 @@
 org.apache.commons.cli.Options options = new org.apache.commons.cli.Options();
 
 //help
-options.addOption(org.apache.commons.cli.Options.builder("h")
+options.addOption(org.apache.commons.cli.Option.builder("h")
     .longOpt("help")
     .desc("Prints this help dialog")
     .build());
 
 //parse input file
-options.addOption(org.apache.commons.cli.Options.builder("i")
+options.addOption(org.apache.commons.cli.Option.builder("i")
     .longOpt("input")
     .argName("file")
-    .desc("Prints this help dialog")
+    .hasArg()
+    .desc("Reads the source file (mandatory) and parses the contents")
     .build());
 
 //pretty print runner
-options.addOption(org.apache.commons.cli.Options.builder("pp")
-    .longOpt("input")
+options.addOption(org.apache.commons.cli.Option.builder("pp")
+    .longOpt("prettyprint")
     .argName("file")
-    .desc("Prints this help dialog")
+    .optionalArg(true)
+    .numberOfArgs(1)
+    .desc("Prints the Statechart-AST to stdout or the specified file (optional)")
+    .build());
+
+// pretty print SC
+options.addOption(org.apache.commons.cli.Option.builder("s")
+    .longOpt("symboltable")
+    .argName("file")
+    .hasArg()
+    .desc("Serialized the Symbol table of the given artifact.")
+    .build());
+
+//reports about the runner
+options.addOption(org.apache.commons.cli.Option.builder("r")
+    .longOpt("report")
+    .argName("dir")
+    .hasArg(true)
+    .desc("Prints reports of the artifact to the specified directory.")
+    .build());
+
+// model paths
+options.addOption(org.apache.commons.cli.Option.builder("path")
+    .hasArgs()
+    .desc("Sets the artifact path for imported symbols, space separated.")
     .build());
 
 return options;

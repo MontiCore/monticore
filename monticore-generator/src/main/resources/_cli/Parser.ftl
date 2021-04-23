@@ -1,18 +1,17 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("grammarname", "startprod")}
+${tc.signature("grammarname", "startprod", "millFullName", "parserFullName")}
 
 
 try {
-      ${grammarname}Parser parser = new ${grammarname}Parser() ;
-      Optional<ASTCli> optCli = parser.parse(model);
+      ${parserFullName} parser = ${millFullName}.parser() ;
+      Optional<${startprod}> optAst = parser.parse(model);
 
-      if (!parser.hasErrors() && optCli.isPresent()) { //change
-        return optAutomaton.get();
+      if (!parser.hasErrors() && optAst.isPresent()) {
+        return optAst.get();
       }
       Log.error("Model could not be parsed.");
     }
-    catch (RecognitionException | IOException e) {
+    catch (NullPointerException | java.io.IOException e) {
       Log.error("Failed to parse " + model, e);
     }
     return null;
-  }
