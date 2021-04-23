@@ -291,7 +291,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   public void generateParser(GlobalExtensionManagement glex, List<ASTCDCompilationUnit> cds, ASTMCGrammar grammar,
                              GrammarFamilyGlobalScope symbolTable, IterablePath handcodedPath, IterablePath templatePath,
                              File outputDirectory) {
-    // first cd (representing AST package) ist relevant 
+    // first cd (representing AST package) is relevant
     // -> will be only one cd in the future
     ParserGenerator.generateFullParser(glex, cds.get(0), grammar, symbolTable, handcodedPath, templatePath, outputDirectory);
   }
