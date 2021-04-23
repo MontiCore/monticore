@@ -98,7 +98,7 @@ $ wget www.monticore.de/download/aut.tar.gz
 $ tar -xf aut.tar.gz
 $ cd mc-workspace
 $ wget www.monticore.de/download/monticore-cli.jar
-$ java -jar monticore-cli.jar Automata.mc4 -hcp hwc/
+$ java -jar monticore-cli.jar -g Automata.mc4 -hcp hwc/ -mp monticore-cli.jar
 $ javac -cp monticore-cli.jar -sourcepath "src/;out/;hwc/" src/automata/AutomataTool.java
 $ java -cp "src/;out/;hwc/;monticore-cli.jar" automata.AutomataTool example/PingPong.aut PingPong.autsym
 ```
