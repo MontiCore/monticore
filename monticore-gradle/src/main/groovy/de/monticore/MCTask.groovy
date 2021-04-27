@@ -344,8 +344,9 @@ abstract public class MCTask extends DefaultTask {
         return false
       }
       // check for considered but deleted files
-      def removedFiles = inout.withReader {
-        it.filterLine() {
+      def removedFiles = new StringWriter()
+      inout.withReader {
+        it.filterLine(removedFiles) {
           line -> line.startsWith('hwc:') && !new File(line.toString().substring(4)).exists()
         }
       }
@@ -358,20 +359,21 @@ abstract public class MCTask extends DefaultTask {
       def grammarsUpToDate = true
       inout.withReader {
         it.eachLine {
-          line -> if(line.startsWith('mc4:')){
-            def (grammarString,checksum) = line.toString().substring(4).tokenize( ' ' )
-            def grammarFile = new File(grammarString)
-            if(!grammarFile.exists()) { // deleted grammar -> generate
-              logger.info("Regenerating Code for "+ grammar + " : Grammar " + grammarString +  " does so longer exist.")
-              grammarsUpToDate = false
-              return
-            } else if(!Files.asByteSource(grammarFile).hash(Hashing.md5()).toString().equals(checksum.trim())){
-              // changed grammar -> generate
-              logger.info("Regenerating Code for "+ grammar + " : Grammar " + grammarString + " has changed")
-              grammarsUpToDate =  false
-              return
+          line ->
+            if (line.startsWith('mc4:')) {
+              def (grammarString, checksum) = line.toString().substring(4).tokenize(' ')
+              def grammarFile = new File(grammarString)
+              if (!grammarFile.exists()) { // deleted grammar -> generate
+                logger.info("Regenerating Code for " + grammar + " : Grammar " + grammarString + " does so longer exist.")
+                grammarsUpToDate = false
+                return
+              } else if (!Files.asByteSource(grammarFile).hash(Hashing.md5()).toString().equals(checksum.trim())) {
+                // changed grammar -> generate
+                logger.info("Regenerating Code for " + grammar + " : Grammar " + grammarString + " has changed")
+                grammarsUpToDate = false
+                return
+              }
             }
-          }
         }
       }
       if(!grammarsUpToDate) {return false}
