@@ -183,9 +183,10 @@ public class GeneratorEngine {
     boolean result = hwFilePath.isPresent();
     if (result) {
 
-      Reporting.reportUseHandwrittenCodeFile(new File(hwFilePath.get().getPath()), hwFile);
+      Reporting.reportUseHandwrittenCodeFile(Paths.get(hwFilePath.get().getPath()),
+          Paths.get(hwFile));
     }
-    Reporting.reportHWCExistenceCheck(targetPath, hwFile, hwFilePath);
+    Reporting.reportHWCExistenceCheck(targetPath, Paths.get(hwFile), hwFilePath);
     return result;
   }
 

@@ -19,6 +19,7 @@ import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 import org.apache.commons.io.FilenameUtils;
 
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -629,13 +630,12 @@ public class TemplateController {
         + " by searching for "
         + path.toString(), TemplateController.class.getName());
     
-    boolean result = config.getHandcodedPath().exists(path);
-    if (result) {
-      Reporting.reportUseHandwrittenCodeFile(config.getHandcodedPath().getResolvedPath(path).get(),
-          path);
+    Optional<URL> result = config.getHandcodedPath().find(path.toString());
+    if (result.isPresent()) {
+      Reporting.reportUseHandwrittenCodeFile(Paths.get(result.get().getPath()), path);
     }
     
-    return result;
+    return result.isPresent();
   }
   
   /**
@@ -660,15 +660,13 @@ public class TemplateController {
     Log.debug("Checking existence of handwritten class " + qualifiedName
         + " by searching for "
         + handwrittenFile.toString(), TemplateController.class.getName());
-    
-    boolean result = config.getHandcodedPath().exists(handwrittenFile);
-    if (result) {
-      Reporting.reportUseHandwrittenCodeFile(
-          config.getHandcodedPath().getResolvedPath(handwrittenFile).get(),
-          handwrittenFile);
+
+    Optional<URL> result = config.getHandcodedPath().find(handwrittenFile.toString());
+    if (result.isPresent()) {
+      Reporting.reportUseHandwrittenCodeFile(Paths.get(result.get().getPath()), handwrittenFile);
     }
-    
-    return result;
+
+    return result.isPresent();
   }
   
   /**
