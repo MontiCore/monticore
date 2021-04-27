@@ -52,7 +52,7 @@ MontiCore supports different environments. For a quick peek, the command line ve
 1.  Open a command line interface and change to the unzipped directory ‹mc-workspace›).
 2.  The distribution contains the sources of an automata DSL consisting of the automata grammar and handwritten Java files in the directory ‹src›. Execute the following command in order to generate the language infrastructure of the specified automata DSL:
 
-**java -jar monticore-cli.jar Automata.mc4 -hcp hwc/**
+**java -jar monticore-cli.jar -g Automata.mc4 -hcp hwc/ -mp monticore-cli.jar**
 
 The only required argument ‹Automata.mc4› denotes the input grammar 
 for MontiCore to process and generate the language infrastructure for. 
