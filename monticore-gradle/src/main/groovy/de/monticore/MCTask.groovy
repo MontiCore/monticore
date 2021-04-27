@@ -75,13 +75,13 @@ abstract public class MCTask extends DefaultTask {
   List<String> templatePath = []
   
   List<String> includeConfigs = []
-
+  
   String configTemplate;
-
+  
   String script
-
+  
   String groovyHook1;
-
+  
   String groovyHook2;
   
   boolean help = false
@@ -140,31 +140,31 @@ abstract public class MCTask extends DefaultTask {
   ConfigurableFileCollection getGrammarConfigFiles() {
     return grammarConfigFiles
   }
-
+  
   @Input
   @Optional
   String getConfigTemplate() {
     return configTemplate
   }
-
+  
   @Input
   @Optional
   String getScript() {
     return script
   }
-
+  
   @Input
   @Optional
   String getGroovyHook1() {
     return groovyHook1
   }
-
+  
   @Input
   @Optional
   String getGroovyHook2() {
     return groovyHook2
   }
-
+  
   @Input
   boolean getDev() {
     return dev
@@ -294,14 +294,14 @@ abstract public class MCTask extends DefaultTask {
     
     
     System.setSecurityManager(new SecurityManager()
-      {
-        @Override public void checkExit(int status) {
-          throw new MCTaskError()
-        }
-    
-        @Override public void checkPermission(Permission perm) {
-          // Allow other activities by default
-        }
+    {
+      @Override public void checkExit(int status) {
+        throw new MCTaskError()
+      }
+      
+      @Override public void checkPermission(Permission perm) {
+        // Allow other activities by default
+      }
     })
     try {
       // execute Monticore with the given parameters
@@ -332,8 +332,11 @@ abstract public class MCTask extends DefaultTask {
     def inout = new File(outAsString + "/" + grammarWithoutExt + "/IncGenGradleCheck.txt")
     if (inout.exists()) { // check whether report exists
       // check for new files to consider
-      def newfiles = inout.filterLine {
-        line -> line.startsWith('gen:') && new File(line.toString().substring(4)).exists()
+      def newfiles = new StringWriter()
+      inout.withReader {
+        it.filterLine(newfiles) {
+          line -> line.startsWith('gen:') && new File(line.toString().substring(4)).exists()
+        }
       }
       def added = newfiles.toString()
       if (!added.isEmpty()) { // added files -> generate
@@ -341,8 +344,11 @@ abstract public class MCTask extends DefaultTask {
         return false
       }
       // check for considered but deleted files
-      def removedFiles = inout.filterLine {
-        line -> line.startsWith('hwc:') && !new File(line.toString().substring(4)).exists()
+      def removedFiles = new StringWriter()
+      inout.withReader {
+        it.filterLine(removedFiles) {
+          line -> line.startsWith('hwc:') && !new File(line.toString().substring(4)).exists()
+        }
       }
       def removed = removedFiles.toString()
       if (!removed.isEmpty()) { // deleted files -> generate
@@ -351,20 +357,23 @@ abstract public class MCTask extends DefaultTask {
       }
       // check whether local super grammars have changed
       def grammarsUpToDate = true
-      inout.eachLine {
-        line -> if(line.startsWith('mc4:')){
-          def (grammarString,checksum) = line.toString().substring(4).tokenize( ' ' )
-          def grammarFile = new File(grammarString)
-          if(!grammarFile.exists()) { // deleted grammar -> generate
-            logger.info("Regenerating Code for "+ grammar + " : Grammar " + grammarString +  " does so longer exist.")
-            grammarsUpToDate = false
-            return
-          } else if(!Files.asByteSource(grammarFile).hash(Hashing.md5()).toString().equals(checksum.trim())){
-            // changed grammar -> generate
-            logger.info("Regenerating Code for "+ grammar + " : Grammar " + grammarString + " has changed")
-            grammarsUpToDate =  false
-            return
-          }
+      inout.withReader {
+        it.eachLine {
+          line ->
+            if (line.startsWith('mc4:')) {
+              def (grammarString, checksum) = line.toString().substring(4).tokenize(' ')
+              def grammarFile = new File(grammarString)
+              if (!grammarFile.exists()) { // deleted grammar -> generate
+                logger.info("Regenerating Code for " + grammar + " : Grammar " + grammarString + " does so longer exist.")
+                grammarsUpToDate = false
+                return
+              } else if (!Files.asByteSource(grammarFile).hash(Hashing.md5()).toString().equals(checksum.trim())) {
+                // changed grammar -> generate
+                logger.info("Regenerating Code for " + grammar + " : Grammar " + grammarString + " has changed")
+                grammarsUpToDate = false
+                return
+              }
+            }
         }
       }
       if(!grammarsUpToDate) {return false}
