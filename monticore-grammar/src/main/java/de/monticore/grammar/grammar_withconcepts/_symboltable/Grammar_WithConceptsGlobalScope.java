@@ -6,6 +6,7 @@ package de.monticore.grammar.grammar_withconcepts._symboltable;
 
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
+import de.monticore.io.paths.MCPath;
 import de.monticore.io.paths.ModelCoordinate;
 import de.monticore.io.paths.ModelCoordinates;
 import de.monticore.io.paths.ModelPath;
@@ -17,8 +18,8 @@ import java.util.Optional;
 
 
 public class Grammar_WithConceptsGlobalScope extends Grammar_WithConceptsGlobalScopeTOP {
-  public Grammar_WithConceptsGlobalScope(ModelPath modelPath, String modelFileExtension) {
-    super(modelPath, modelFileExtension);
+  public Grammar_WithConceptsGlobalScope(MCPath symbolPath, String modelFileExtension) {
+    super(symbolPath, modelFileExtension);
   }
 
   public Grammar_WithConceptsGlobalScope() {
