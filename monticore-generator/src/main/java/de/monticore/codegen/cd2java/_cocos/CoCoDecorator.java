@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.*;
-import static de.monticore.codegen.mc2cd.TransformationHelper.existsHandwrittenClass;
+import static de.monticore.generating.GeneratorEngine.existsHandwrittenClass;
 import static de.monticore.utils.Names.constructQualifiedName;
 
 /**
