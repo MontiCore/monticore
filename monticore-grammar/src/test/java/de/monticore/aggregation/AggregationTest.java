@@ -12,7 +12,6 @@ import de.monticore.aggregation.foo.FooMill;
 import de.monticore.aggregation.foo._ast.ASTBar;
 import de.monticore.aggregation.foo._parser.FooParser;
 import de.monticore.aggregation.foo._symboltable.*;
-import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
 import org.junit.BeforeClass;
 import org.junit.Test;

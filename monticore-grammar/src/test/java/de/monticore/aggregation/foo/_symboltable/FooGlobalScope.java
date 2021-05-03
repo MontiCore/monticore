@@ -8,7 +8,6 @@ import de.monticore.aggregation.blah.BlahMill;
 import de.monticore.aggregation.blah._symboltable.DummySymbol;
 import de.monticore.aggregation.blah._symboltable.IBlahGlobalScope;
 import de.monticore.io.paths.MCPath;
-import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.modifiers.AccessModifier;
 
 import java.util.ArrayList;

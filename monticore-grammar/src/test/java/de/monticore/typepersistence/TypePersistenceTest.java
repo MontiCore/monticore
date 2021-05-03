@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.typepersistence;
 
-import de.monticore.io.paths.ModelPath;
+import de.monticore.io.paths.MCPath;
 import de.monticore.typepersistence.variable.VariableMill;
 import de.monticore.typepersistence.variable._ast.ASTVar;
 import de.monticore.typepersistence.variable._parser.VariableParser;
@@ -32,7 +32,7 @@ public class TypePersistenceTest {
     //Create global scope for our language combination
     IVariableGlobalScope globalScope = VariableMill
         .globalScope();
-    globalScope.setModelPath(new ModelPath());
+    globalScope.setSymbolPath(new MCPath());
     globalScope.setFileExt("tp");
 
     //Parse blah model
