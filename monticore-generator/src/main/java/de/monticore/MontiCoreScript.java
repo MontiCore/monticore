@@ -438,6 +438,12 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     return cds;
   }
 
+  /**
+   * Collects all compilation units and calls the cd type completer for
+   * completing the symbol table of each cd.
+   *
+   * @param gs The given global scope to extract all compilation units
+   */
   protected void completeCDTypes(ICD4AnalysisGlobalScope gs) {
     for (ICD4AnalysisScope scope : gs.getSubScopes()) {
       if (!scope.getDiagramSymbols().isEmpty()) {
@@ -479,7 +485,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     Optional<ASTCDCompilationUnit> ast = TransformationHelper.getCDforGrammar(cdScope, astGrammar, "Symbols");
     ASTCDCompilationUnit astCD = ast.orElse(transformAndCreateSymbolTableForSymbolCD(astGrammar, cdScope));
     createCDSymbolsForSuperGrammarsForSymbolCD(astGrammar, cdScope);
-    //completeCDTypes(cdScope);
     storeSymbolCDForGrammar(astGrammar, astCD);
     return astCD;
   }
@@ -489,7 +494,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     Optional<ASTCDCompilationUnit> ast = TransformationHelper.getCDforGrammar(cdScope, astGrammar, "Scope");
     ASTCDCompilationUnit astCD = ast.orElse(transformAndCreateSymbolTableForScopeCD(astGrammar, cdScope));
     createCDSymbolsForSuperGrammarsForScopeCD(astGrammar, cdScope);
-    //completeCDTypes(cdScope);
     storeScopeCDForGrammar(astGrammar, astCD);
     return astCD;
   }
