@@ -2,8 +2,11 @@
 
 package de.monticore.cli;
 
+import de.monticore.cli.MontiCoreStandardCLI;
 import de.monticore.MontiCoreConfiguration;
+import de.monticore.generating.templateengine.reporting.Reporting;
 import de.se_rwth.commons.logging.Log;
+import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -143,4 +146,8 @@ public class MontiCoreStandardCLITest {
     assertTrue(!false);
   }
   
+  @After
+  public void tearDown() throws Exception {
+    Reporting.off();
+  }
 }

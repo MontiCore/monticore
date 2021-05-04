@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-package de.monticore
+
 
 import de.se_rwth.commons.logging.LogStub
 
