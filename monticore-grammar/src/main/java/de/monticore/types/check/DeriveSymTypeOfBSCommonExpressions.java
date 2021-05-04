@@ -372,7 +372,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
         //no variable found, test type
         TypeSymbol typeSymbol = typeSymbolOpt.get();
         if (checkModifierType(typeSymbol)) {
-          SymTypeExpression wholeResult = SymTypeExpressionFactory.createTypeExpression(typeSymbol.getName(), typeSymbol.getEnclosingScope());
+          SymTypeExpression wholeResult = SymTypeExpressionFactory.createTypeExpression(typeSymbol);
           typeCheckResult.setType();
           typeCheckResult.setCurrentResult(wholeResult);
         } else {
@@ -401,7 +401,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
       } else {
         //the inner type has no result and there is no type found
         typeCheckResult.reset();
-        Log.info("package suspected", "DeriveSymTypeOfCommonExpressions");
+        Log.info("package expected", "DeriveSymTypeOfCommonExpressions");
       }
     }
   }
@@ -624,8 +624,11 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
   protected Optional<SymTypeExpression> getBinaryNumericPromotionWithString(ASTExpression expr, SymTypeExpression rightResult, SymTypeExpression leftResult) {
 
     //if one part of the expression is a String then the whole expression is a String
-    if (isString(leftResult) || isString(rightResult)) {
-      return Optional.of(SymTypeExpressionFactory.createTypeObject("String", getScope(expr.getEnclosingScope())));
+    if(isString(leftResult)) {
+      return Optional.of(SymTypeExpressionFactory.createTypeObject(leftResult.getTypeInfo()));
+    }
+    if (isString(rightResult)) {
+      return Optional.of(SymTypeExpressionFactory.createTypeObject(rightResult.getTypeInfo()));
     }
     //no String in the expression -> use the normal calculation for the basic arithmetic operators
     return getBinaryNumericPromotion(leftResult, rightResult);

@@ -98,7 +98,7 @@ $ wget www.monticore.de/download/aut.tar.gz
 $ tar -xf aut.tar.gz
 $ cd mc-workspace
 $ wget www.monticore.de/download/monticore-cli.jar
-$ java -jar monticore-cli.jar Automata.mc4 -hcp hwc/
+$ java -jar monticore-cli.jar -g Automata.mc4 -hcp hwc/ -mp monticore-cli.jar
 $ javac -cp monticore-cli.jar -sourcepath "src/;out/;hwc/" src/automata/AutomataTool.java
 $ java -cp "src/;out/;hwc/;monticore-cli.jar" automata.AutomataTool example/PingPong.aut PingPong.autsym
 ```
@@ -122,8 +122,8 @@ For details see [Licenses](00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md).
 
 ## More Information about MontiCore
 
-* [**MontiCore Reference Manual**](http://monticore.de/MontiCore_Reference-Manual.2017.pdf).
-   The reference Manual describes how to use MontiCore as a out-of-the-box 
+* [**MontiCore handbook**](http://www.monticore.de/handbook.pdf).
+   The handbook describes how to use MontiCore as a out-of-the-box 
    *language workbench*), but also as grey box *tooling framework*.
    It thus also gives an overview over a number of core mechanisms of MontiCore.
 
@@ -151,7 +151,7 @@ For details see [Licenses](00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md).
     
 ## Further Information
 
-* see also [**MontiCore Reference Manual**](http://www.monticore.de/)
+* see also [**MontiCore handbook**](http://www.monticore.de/handbook.pdf)
 * [MontiCore Reference Languages](https://monticore.github.io/monticore/docs/DevelopedLanguages/) - Languages Built Using MontiCore
 * [Build MontiCore](https://monticore.github.io/monticore/docs/BuildMontiCore/) - How to Build MontiCore
 * [Getting Started](https://monticore.github.io/monticore/docs/GettingStarted/) - How to start using MontiCore
