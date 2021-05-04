@@ -7,7 +7,7 @@ import automata7._ast.ASTAutomaton;
 import automata7._parser.Automata7Parser;
 import automata7._symboltable.IAutomata7ArtifactScope;
 import automata7._symboltable.IAutomata7GlobalScope;
-import de.monticore.io.paths.ModelPath;
+import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.RecognitionException;
 
@@ -17,13 +17,13 @@ import java.util.Optional;
 
 public class JavaAndAutTool {
 
-  public static IAutomata7ArtifactScope createJavaAndAutSymTab(String model, ModelPath modelPath) {
+  public static IAutomata7ArtifactScope createJavaAndAutSymTab(String model, MCPath symbolPath) {
     ASTAutomaton ast = parseAut(model);
     IAutomata7GlobalScope gs = Automata7Mill.globalScope();
-    for (Path p : modelPath.getFullPathOfEntries()) {
-      gs.getModelPath().addEntry(p);
+    for (Path p : symbolPath.getFullPathOfEntries()) {
+      gs.getSymbolPath().addEntry(p);
     }
-    gs.addAdaptedStimulusSymbolResolver(new AutomataResolver(modelPath));
+    gs.addAdaptedStimulusSymbolResolver(new AutomataResolver(symbolPath));
 
     return Automata7Mill.scopesGenitorDelegator().createFromAST(ast);
   }

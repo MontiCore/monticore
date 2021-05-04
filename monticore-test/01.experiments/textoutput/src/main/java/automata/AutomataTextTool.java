@@ -5,7 +5,6 @@ import automata._ast.ASTAutomaton;
 import automata._parser.AutomataParser;
 import automata._symboltable.*;
 import automata._visitor.AutomataTraverser;
-import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.RecognitionException;
 

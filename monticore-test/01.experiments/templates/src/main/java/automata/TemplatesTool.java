@@ -12,7 +12,6 @@ import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.MCPath;
-import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.RecognitionException;
 
@@ -365,7 +364,7 @@ public class TemplatesTool {
 
     // the global scope here is initialized with an empty path to look for 
     // models
-    globalScope.setModelPath(new ModelPath());
+    globalScope.setSymbolPath(new MCPath());
 
     // and only looks for automata "aut"
     globalScope.setFileExt("aut");

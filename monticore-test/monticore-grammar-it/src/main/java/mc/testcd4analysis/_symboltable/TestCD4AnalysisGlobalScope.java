@@ -2,9 +2,9 @@
 package mc.testcd4analysis._symboltable;
 
 import com.google.common.collect.ImmutableSet;
+import de.monticore.io.paths.MCPath;
 import de.monticore.io.paths.ModelCoordinate;
 import de.monticore.io.paths.ModelCoordinates;
-import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.Splitters;
@@ -13,8 +13,11 @@ import mc.testcd4analysis.TestCD4AnalysisMill;
 import mc.testcd4analysis._ast.ASTCDCompilationUnit;
 import mc.testcd4analysis._parser.TestCD4AnalysisParser;
 
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.net.URL;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -22,12 +25,12 @@ import java.util.Set;
 
 public class TestCD4AnalysisGlobalScope extends TestCD4AnalysisGlobalScopeTOP{
 
-  public TestCD4AnalysisGlobalScope(ModelPath mp) {
-    super(mp, "cd");
+  public TestCD4AnalysisGlobalScope(MCPath symbolPath) {
+    super(symbolPath, "cd");
   }
 
-  public TestCD4AnalysisGlobalScope(ModelPath modelPath, String modelFileExtension) {
-    super(modelPath, modelFileExtension);
+  public TestCD4AnalysisGlobalScope(MCPath symbolPath, String modelFileExtension) {
+    super(symbolPath, modelFileExtension);
   }
 
   public TestCD4AnalysisGlobalScope(){
@@ -76,27 +79,23 @@ public class TestCD4AnalysisGlobalScope extends TestCD4AnalysisGlobalScopeTOP{
 
   public  void loadFileForModelName (String modelName)  {
     String symbolFileExtension = getFileExt() + "sym";
-    de.monticore.io.paths.ModelCoordinate symbolFileCoordinate =
-        de.monticore.io.paths.ModelCoordinates.createQualifiedCoordinate(modelName, symbolFileExtension);
-    String filePath = symbolFileCoordinate.getQualifiedPath().toString();
+    Optional<URL> location = getSymbolPath().find(modelName, symbolFileExtension);
+    String filePath = Paths.get(Names.getPathFromPackage(modelName) + "." + symbolFileExtension).toString();
     if(!isFileLoaded(filePath)) {
       addLoadedFile(filePath);
 
       //Load symbol table into enclosing global scope if a file has been found
-      getModelPath().resolveModel(symbolFileCoordinate);
-      if (symbolFileCoordinate.hasLocation()) {
-        java.net.URL url = symbolFileCoordinate.getLocation();
+      if (location.isPresent()) {
+        URL url = location.get();
         this.addSubScope(symbols2Json.load(url));
       }
 
       // else, use try to load model (instead of symbol table)
-      ModelCoordinate model = ModelCoordinates
-          .createQualifiedCoordinate(modelName, getFileExt());
-      model = getModelPath().resolveModel(model);
+      Optional<URL> modelLocation = getSymbolPath().find(modelName, getFileExt());
 
       // 3. if the file was found, parse the model and create its symtab
-      if(model.hasLocation()){
-        ASTCDCompilationUnit ast = parse(model);
+      if(location.isPresent()){
+        ASTCDCompilationUnit ast = parse(location.get().getPath());
         ITestCD4AnalysisArtifactScope artScope = new TestCD4AnalysisPhasedSymbolTableCreatorDelegator().createFromAST(ast);
         addSubScope(artScope);
         addLoadedFile(filePath);
@@ -107,10 +106,9 @@ public class TestCD4AnalysisGlobalScope extends TestCD4AnalysisGlobalScopeTOP{
     }
   }
 
-  private ASTCDCompilationUnit parse(ModelCoordinate model){
+  private ASTCDCompilationUnit parse(String model){
     try {
-      Reader reader = ModelCoordinates.getReader(model);
-      Optional<ASTCDCompilationUnit> optAST = new TestCD4AnalysisParser().parse(reader);
+      Optional<ASTCDCompilationUnit> optAST = new TestCD4AnalysisParser().parse(new FileReader(model));
       if(optAST.isPresent()){
         return optAST.get();
       }

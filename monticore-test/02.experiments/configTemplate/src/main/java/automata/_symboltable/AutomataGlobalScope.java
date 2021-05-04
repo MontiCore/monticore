@@ -3,7 +3,7 @@
 package automata._symboltable;
 
 import com.google.common.collect.ImmutableSet;
-import de.monticore.io.paths.ModelPath;
+import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.Names;
 
 import java.util.Collections;
@@ -11,8 +11,8 @@ import java.util.Set;
 
 public class AutomataGlobalScope extends AutomataGlobalScopeTOP {
 
-  public AutomataGlobalScope(ModelPath modelPath, String modelFileExtension) {
-    super(modelPath, modelFileExtension);
+  public AutomataGlobalScope(MCPath symbolPath, String modelFileExtension) {
+    super(symbolPath, modelFileExtension);
   }
 
   public AutomataGlobalScope(){
