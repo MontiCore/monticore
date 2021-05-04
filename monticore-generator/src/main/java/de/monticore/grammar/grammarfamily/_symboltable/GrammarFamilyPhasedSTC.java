@@ -40,9 +40,9 @@ public class GrammarFamilyPhasedSTC {
     traverser.add4MCVarDeclarationStatements(new MCVarDeclarationStatementsSTCompleteTypes());
 
     // TODO: activate transformation and real symbol table completer, when cd4a is ready
-    CD4AnalysisSTCompleteTypes stc = new CD4AnalysisSTCompleteTypes();
-    traverser.add4CDBasis(stc);
-    traverser.add4CDInterfaceAndEnum(stc);
+//    CD4AnalysisSTCompleteTypes stc = new CD4AnalysisSTCompleteTypes();
+//    traverser.add4CDBasis(stc);
+//    traverser.add4CDInterfaceAndEnum(stc);
 
     priorityList.add(traverser);
   }

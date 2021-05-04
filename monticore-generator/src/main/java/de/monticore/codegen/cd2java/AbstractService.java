@@ -133,7 +133,7 @@ public class AbstractService<T extends AbstractService> {
   public List<String> getAllSuperInterfacesTransitive(CDTypeSymbol cdTypeSymbol) {
     List<String> superSymbolList = new ArrayList<>();
         List<CDTypeSymbol> localSuperInterfaces = cdTypeSymbol.getSuperTypesList().stream()
-            .map(s -> s.getTypeInfo().getName())
+            .map(s -> s.getTypeInfo().getFullName())
             .map(s -> resolveCDType(s))
             .filter(s -> s.isIsInterface())
             .collect(Collectors.toList());
