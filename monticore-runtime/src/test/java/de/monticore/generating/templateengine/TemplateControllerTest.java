@@ -95,22 +95,7 @@ public class TemplateControllerTest {
         fileHandler.getContentForFile(writtenFilePath.toString()).get());
   }
 
-  @Test
-  public void testExistHWC() {
-    String filename = Paths.get("test", "A.java").toString();
-    String fileNameNoExtension = Paths.get("test", "A")
-        .toString();
 
-    assertTrue(tc.existsHandwrittenFile(filename));
-    assertTrue(tc.existsHandwrittenFile(fileNameNoExtension));
-    assertTrue(!tc.existsHandwrittenFile(fileNameNoExtension + ".txt"));
-
-    String classname = "test.A";
-    String notExistName = "test.B";
-
-    assertTrue(tc.existsHandwrittenClass(classname));
-    assertTrue(!tc.existsHandwrittenClass(notExistName));
-  }
 
   @Test
   public void testDefaultMethods() {
