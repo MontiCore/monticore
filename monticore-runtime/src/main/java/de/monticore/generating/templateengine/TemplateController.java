@@ -9,6 +9,7 @@ import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.freemarker.SimpleHashFactory;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.io.FileReaderWriter;
+import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import freemarker.core.Macro;
@@ -632,7 +633,7 @@ public class TemplateController {
     
     Optional<URL> result = config.getHandcodedPath().find(path.toString());
     if (result.isPresent()) {
-      Reporting.reportUseHandwrittenCodeFile(Paths.get(result.get().getPath()), path);
+      Reporting.reportUseHandwrittenCodeFile(MCPath.toPath(result.get()).get(), path);
     }
     
     return result.isPresent();
@@ -663,7 +664,7 @@ public class TemplateController {
 
     Optional<URL> result = config.getHandcodedPath().find(handwrittenFile.toString());
     if (result.isPresent()) {
-      Reporting.reportUseHandwrittenCodeFile(Paths.get(result.get().getPath()), handwrittenFile);
+      Reporting.reportUseHandwrittenCodeFile(MCPath.toPath(result.get()).get(), handwrittenFile);
     }
 
     return result.isPresent();

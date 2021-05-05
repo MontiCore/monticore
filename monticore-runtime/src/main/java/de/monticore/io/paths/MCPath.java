@@ -107,7 +107,7 @@ public final class MCPath {
       if (folder.exists() && folder.isDirectory()) {
         // perform the actual file filter on the folder and collect result
         Arrays.stream(folder.listFiles(filter))
-            .map(f -> toURL(Paths.get(folderPath, f.getName())))
+            .map(f -> toURL(folder.toPath().resolve(f.getName())))
             .filter(Optional::isPresent)
             .forEach(f -> resolvedURLs.add(f.get()));
       }

@@ -33,20 +33,12 @@ public class Grammar_WithConceptsGlobalScope extends Grammar_WithConceptsGlobalS
 
   @Override
   public  void loadFileForModelName (String modelName)  {
-    // 1. call super implementation to start with employing the DeSer
-
-    Optional<URL> location = getSymbolPath().find(modelName, getFileExt());
-    String filePath = Paths.get(Names.getPathFromPackage(modelName) + "." + fileExt).toString();
-    if (!isFileLoaded(filePath)) {
-
-
-      // 3. if the file was found, parse the model and create its symtab
-      if (location.isPresent()) {
-        ASTMCGrammar ast = parse(location.get().getPath());
-        IGrammar_WithConceptsArtifactScope artScope = new Grammar_WithConceptsPhasedSTC().createFromAST(ast);
-        addSubScope(artScope);
-        addLoadedFile(filePath);
-      }
+    Optional<URL> location = getSymbolPath().find(modelName, "mc4");
+    if(location.isPresent() && !isFileLoaded(location.get().toString())){
+      addLoadedFile(location.get().toString());
+      ASTMCGrammar ast = parse(location.get().getFile());
+      IGrammar_WithConceptsArtifactScope as = new Grammar_WithConceptsPhasedSTC().createFromAST(ast);
+      addSubScope(as);
     }
   }
 
