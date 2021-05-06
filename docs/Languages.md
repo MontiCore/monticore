@@ -539,6 +539,39 @@ package 'Coffee' {                      // a SysML activity diagram
   where the tagging language is derived from.
   See also [*detailed description*](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging/-/blob/master/src/main/grammars/de/monticore/lang/Tagging.md)
 
+### [Use Case Diagrams](https://github.com/MontiCore/ucd)  (MontiCore stable) 
+* A textual use case diagram (UCD) language.
+* [Detailed description](https://github.com/MontiCore/ucd/blob/master/src/main/grammars/UCD.md)
+* The project includes a grammar, a symbol table infrastructure, and a semantic differencing operator.
+* The language is defined by the grammar [UCD](https://github.com/MontiCore/ucd/blob/master/src/main/grammars/UCD.mc4).
+* It supports modeling *actors*, *use cases*, *preconditions*, *associations* between actors and use cases,
+  *extend relations* between use cases with *guards*, *include relations* between use cases, and
+  *specialization relations* between actors and use cases.
+* The grammars can easily be extended.
+* The following depicts a simple UCD in its textual syntax. 
+``` 
+usecasediagram Example {
+  @Player --
+    Play,
+    Pay,
+    ChangeProfilePicture;
+
+  @AndroidPlayer specializes Player;
+  @IOSPlayer specializes Player;
+
+  @Server --
+    ShowAd,
+    RegisterScore;
+
+  ShowAd extend Play [!isPremium];
+  RegisterScore extend Play;
+
+  abstract Pay include CheckPremium;
+  CreditCard specializes Pay;
+  Bank specializes Pay;
+  ChangeProfilePicture [isPremium];
+}
+```
 
 ### [XML](https://git.rwth-aachen.de/monticore/languages/xml) (MontiCore Stable)
 * The MontiCore language for parsing XML artifacts. An example:
