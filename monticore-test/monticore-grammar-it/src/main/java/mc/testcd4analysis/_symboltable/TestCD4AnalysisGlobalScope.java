@@ -3,8 +3,6 @@ package mc.testcd4analysis._symboltable;
 
 import com.google.common.collect.ImmutableSet;
 import de.monticore.io.paths.MCPath;
-import de.monticore.io.paths.ModelCoordinate;
-import de.monticore.io.paths.ModelCoordinates;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.Splitters;
@@ -15,9 +13,7 @@ import mc.testcd4analysis._parser.TestCD4AnalysisParser;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.Reader;
 import java.net.URL;
-import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -77,32 +73,25 @@ public class TestCD4AnalysisGlobalScope extends TestCD4AnalysisGlobalScopeTOP{
     return this;
   }
 
+
+  @Override
   public  void loadFileForModelName (String modelName)  {
-    String symbolFileExtension = getFileExt() + "sym";
-    Optional<URL> location = getSymbolPath().find(modelName, symbolFileExtension);
-    String filePath = Paths.get(Names.getPathFromPackage(modelName) + "." + symbolFileExtension).toString();
-    if(!isFileLoaded(filePath)) {
-      addLoadedFile(filePath);
-
-      //Load symbol table into enclosing global scope if a file has been found
-      if (location.isPresent()) {
-        URL url = location.get();
-        this.addSubScope(symbols2Json.load(url));
+    Optional<URL> location = getSymbolPath().find(modelName, getFileExt());
+    if(location.isPresent() && !isFileLoaded(location.get().toString())){
+      addLoadedFile(location.get().toString());
+      ITestCD4AnalysisArtifactScope as = getSymbols2Json().load(location.get());
+      addSubScope(as);
+    }
+    else if(!location.isPresent()){
+      // load models instead of symbols
+      location = getSymbolPath().find(modelName, "cd");
+      if(location.isPresent() && !isFileLoaded(location.get().toString())){
+        addLoadedFile(location.get().toString());
+        ASTCDCompilationUnit ast = parse(location.get().getFile());
+        ITestCD4AnalysisArtifactScope as = TestCD4AnalysisMill.scopesGenitorDelegator()
+            .createFromAST(ast);
+        addSubScope(as);
       }
-
-      // else, use try to load model (instead of symbol table)
-      Optional<URL> modelLocation = getSymbolPath().find(modelName, getFileExt());
-
-      // 3. if the file was found, parse the model and create its symtab
-      if(location.isPresent()){
-        ASTCDCompilationUnit ast = parse(location.get().getPath());
-        ITestCD4AnalysisArtifactScope artScope = new TestCD4AnalysisPhasedSymbolTableCreatorDelegator().createFromAST(ast);
-        addSubScope(artScope);
-        addLoadedFile(filePath);
-      }
-    } else {
-      Log.debug("Already tried to load model for '" + modelName + "'. If model exists, continue with cached version.",
-          "TestCD4AnalysisGlobalScope");
     }
   }
 

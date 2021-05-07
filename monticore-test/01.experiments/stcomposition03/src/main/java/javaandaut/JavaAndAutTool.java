@@ -20,7 +20,7 @@ public class JavaAndAutTool {
   public static IAutomata7ArtifactScope createJavaAndAutSymTab(String model, MCPath symbolPath) {
     ASTAutomaton ast = parseAut(model);
     IAutomata7GlobalScope gs = Automata7Mill.globalScope();
-    for (Path p : symbolPath.getFullPathOfEntries()) {
+    for (Path p : symbolPath.getEntries()) {
       gs.getSymbolPath().addEntry(p);
     }
     gs.addAdaptedStimulusSymbolResolver(new AutomataResolver(symbolPath));

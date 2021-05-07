@@ -54,7 +54,6 @@ public class CombineExpressionsWithLiteralsTest {
   public void testCD() throws IOException {
     ITestCD4AnalysisGlobalScope globalScope = TestCD4AnalysisMill.globalScope();
     globalScope.getSymbolPath().addEntry(Paths.get(SYMBOL_PATH));
-    globalScope.setFileExt("cd");
 
     CD2EAdapter adapter = new CD2EAdapter(globalScope);
     ICombineExpressionsWithLiteralsGlobalScope globalScope1 = CombineExpressionsWithLiteralsMill
