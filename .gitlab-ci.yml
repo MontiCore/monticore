@@ -389,7 +389,7 @@ githubmirror:
     - "curl --location --header \"PRIVATE-TOKEN: $secibuildtoken\" \"https://git.rwth-aachen.de/api/v4/projects/monticore%2Fmdlinkchecker/jobs/artifacts/master/raw/target/libs/MDLinkChangerCLI.jar?job=build\" --output MDLinkChangerCLI.jar"
     - sh pre/mirror.sh
     - cd ..
-    - "if [ -d \"tmp\" ]; then rm -r tmp; fi"
+    - "if [ -d \"tmp\" ]; then rm -rf tmp; fi"
     - mkdir "tmp"
     - cd tmp
     - git clone git@github.com:MontiCore/monticore.git
@@ -402,7 +402,7 @@ githubmirror:
     - git push --force
     - cd ..
     - cd ..
-    - rm -r tmp
+    - rm -rf tmp
     - exit 0
   only:
     - dev
