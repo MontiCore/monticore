@@ -2,7 +2,7 @@
 
 # Documentation of the Symbol Table Infrastructure
 
-[[_TOC_]]
+
 
 ## Conceptual Model of Symbol Tables
 * What is a symbol? 
@@ -256,4 +256,5 @@ adapts the foreign symbol (e.g., CDClassSymbol) to the expected symbol (e.g., St
 * [Best Practices](https://github.com/MontiCore/monticore/blob/dev/docs/BestPractices.md)
 * [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
 * [Licence definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
+
 

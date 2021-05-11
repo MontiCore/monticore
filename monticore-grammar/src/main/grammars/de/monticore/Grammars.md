@@ -4,7 +4,7 @@
 
 # MontiCore Core Grammars - an Overview
 
-[[_TOC_]]
+
 
 [MontiCore](http://www.monticore.de) is a language workbench. It uses 
 grammars as primary mechanism to describe DSLs. The extended 
@@ -187,33 +187,33 @@ expressions.
 like <<, >>, >>>, &, ^ and |
 
 
-### [OCLExpressions.mc4][OCL-OCLExpressions] (stable)
+### [OCLExpressions.mc4 (not yet publicly available)][OCL-OCLExpressions] (stable)
 * This grammar defines expressions typical to UMLs OCL .
   OCL expressions can savely be composed if with other forms of expressions  
   given in the MontiCore core project (i.e. as conservative extension).
 * It contains various logical operations, such as quantifiers, 
   the `let` and the `@pre` construct, and a transitive closure for 
   associations, as discussed in [Rum17,Rum17].
-* This grammar resides in the [MontiCore/OCL][OCL] project.
+* This grammar resides in the [MontiCore/OCL (not yet publicly available)][OCL] project.
 
-### [SetExpressions.mc4][OCL-SetExpressions] (stable)
+### [SetExpressions.mc4 (not yet publicly available)][OCL-SetExpressions] (stable)
 * This grammar defines set expressions like set union, intersection etc.
 these operations are typical for a logic with set operations, like 
 UML's OCL. These operators are usually infix and are thus more intuitive
 as they allow math oriented style of specification.
 * Most of these operators are in principle executable, so it might be interesting to include them in a high level programming language (see e.g. Haskell)
-* This grammar resides in the [MontiCore/OCL][OCL] project.
+* This grammar resides in the [MontiCore/OCL (not yet publicly available)][OCL] project.
 
 
-### [OptionalOperators.mc4][OCL-OptionalOperators] (stable)
+### [OptionalOperators.mc4 (not yet publicly available)][OCL-OptionalOperators] (stable)
 * This grammar defines nine operators dealing with optional values, e.g. defined by 
   `java.lang.Optional`. The operators are also called *Elvis operators*.
 * E.g.: `val ?: 0W`     equals to   `val.isPresent ? val.get : 0W`
 * `x ?>= y` equals `x.isPresent && x.get >= y` 
-* This grammar resides in the [MontiCore/OCL][OCL] project.
+* This grammar resides in the [MontiCore/OCL (not yet publicly available)][OCL] project.
 
 
-### [SI Units](https://git.rwth-aachen.de/monticore/languages/siunits) (stable)
+### [SI Units (not yet publicly available)](https://git.rwth-aachen.de/monticore/languages/siunits) (stable)
 * This grammar the international system of units (SI units), based on 
   the basis units `s, m, kg, A, K, mol, cd`, 
   provides a variety of derived units, and can be refined using prefixes such 
@@ -402,3 +402,4 @@ These can also be used if someone is interested:
 [OCL-OCLExpressions]: https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/develop/src/main/grammars/de/monticore/ocl/OCLExpressions.mc4
 [OCL-OptionalOperators]: https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/develop/src/main/grammars/de/monticore/ocl/OptionalOperators.mc4
 [OCL-SetExpressions]: https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/develop/src/main/grammars/de/monticore/ocl/SetExpressions.mc4
+

@@ -2,7 +2,7 @@
 
 # MontiCore Best Practices - Designing Command Line Interfaces
 
-[[_TOC_]]
+
 
 Some DSL tools require a command line interface (CLI) to enable general accessibility. 
 When designing a CLI, we recommend some standard guide lines.
@@ -165,4 +165,5 @@ might a good argument to do it differently.
 * [Best Practices](https://github.com/MontiCore/monticore/blob/dev/docs/BestPractices.md)
 * [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
 * [Licence definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
+
 

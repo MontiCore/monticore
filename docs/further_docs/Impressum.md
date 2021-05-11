@@ -59,3 +59,4 @@ Die Webseiten der Zentralen Hochschulverwaltung, der Zentralen Einrichtungen,
 der Gruppenvertretungen, der Institute, Lehrstühle sowie Lehr- und Forschungsgebiete werden von den 
 von diesen beauftragten Webkoordinatorinnen und Webkoordinatoren beziehungsweise deren Webmastern eigenständig betreut. 
 Details zu Fragen der Haftung sind in der [Datenschutzerklärung](https://www.itc.rwth-aachen.de/go/id/myfc/) nachzulesen.
+

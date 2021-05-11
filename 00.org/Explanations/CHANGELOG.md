@@ -420,7 +420,7 @@ released: 07.05.2020
 - Changed api for GlobalExtensionMangament and TemplateController (see reference manual)
 - New api for AST nodes (constructor, getter and setter for lists and optional attributes, ...)
 - Builder classes for AST nodes are external now. Signatures are similar to those in the corresponding AST node, except those methods which set or add something, these return the Builder itself (which allows method chaining)
-- Changed default script to noemf for the generation of MontiCore. If you want to use emf you can generate monticore-grammar and Java-DSL with the profile "emf". This profile also creates the emf jars. You are also able to test the integration-tests with the profile “emf-it-tests”, which contains extra tests for the generation with emf.
+- Changed default script to noemf for the generation of MontiCore. If you want to use emf you can generate monticore-grammar and Java-DSL with the profile "emf". This profile also creates the emf jars. You are also able to test the integration-tests with the profile “emf-it-tests�?, which contains extra tests for the generation with emf.
 - Parsed grammars are not stored as class diagram anymore. CD is only stored as report.
 - Removed deprecated method **filter(ResolvingInfo resolvingInfo, List<Symbol> symbols)** use **filter(ResolvingInfo, Collection)** instead
 - Removed deprecated method **filter(ResolvingInfo resolvingInfo, String name, List<Symbol> symbols)** use **filter(ResolvingInfo, String, Map)** instead
@@ -458,4 +458,5 @@ released: 07.05.2020
 * [Best Practices](https://github.com/MontiCore/monticore/blob/dev/docs/BestPractices.md)
 * [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
 * [Licence definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
+
 

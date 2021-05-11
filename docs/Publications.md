@@ -5,3 +5,4 @@
 <title>Redirecting to https://www.se-rwth.de/topics/MontiCore.php</title>
 <meta http-equiv="refresh" content="0; URL=https://www.se-rwth.de/topics/MontiCore.php">
 <link rel="canonical" href="https://www.se-rwth.de/topics/MontiCore.php">
+
