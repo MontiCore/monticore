@@ -38,7 +38,7 @@ Publicly available MontiCore projects are hosted at
 ## List of Languages 
 
 
-### [Class Diagram For Analysis (CD4A)](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis) (MontiCore stable)
+### [Class Diagram For Analysis (CD4A)](https://github.com/MontiCore/cd4analysis) (MontiCore stable)
 * CD4A is the textual representation to describe **UML class diagrams** 
   (it uses the [UML/P](http://mbse.se-rwth.de/) variant).
 * CD4A covers **classes, interfaces, inheritance, attributes with types,
@@ -72,12 +72,12 @@ classdiagram MyLife {
   CD4A language opens various possibilities for the development of data
   structures, database tables as well as data transport infrastructures in
   cloud and distributed systems.
-* [Main grammar `de.monticore.cd.CD4Analysis`](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/blob/develop/src/main/grammars/de/monticore/CD4Analysis.mc4)
+* [Main grammar `de.monticore.cd.CD4Analysis`](https://github.com/MontiCore/cd4analysis/tree/master/src/main/grammars/de/monticore/CD4Analysis.mc4)
   and 
-  [*detailed description*](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/-/blob/develop/src/main/grammars/de/monticore/cd4analysis.md)
+  [*detailed description*](https://github.com/MontiCore/cd4analysis/tree/master/src/main/grammars/de/monticore/cd4analysis.md)
 
 
-### [Class Diagram for Code (CD4Code)](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis) (MontiCore stable)
+### [Class Diagram for Code (CD4Code)](https://github.com/MontiCore/cd4analysis) (MontiCore stable)
 * CD4Code describes **UML class diagrams**.
 * CD4Code is a conservative extension of **CD4A**, 
   which includes method signatures. An example:
@@ -97,14 +97,14 @@ classdiagram MyLife2 {
   For example a transformation sequence could be: 
   * [MontiCoreCLI](https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/monticore-generator/src/main/java/de/monticore/codegen/cd2java/_symboltable/SymbolTableCDDecorator.java): 
     Grammar -> 
-    [Grammar AST encoded in CD4Code](https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/monticore-generator/src/main/java/de/monticore/MontiCoreScript.java#L411) ->
-    [Decoration for custom behavior](https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/monticore-generator/src/main/java/de/monticore/codegen/cd2java/_symboltable/SymbolTableCDDecorator.java) -> 
-    [Java code](https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/monticore-generator/src/main/java/de/monticore/codegen/cd2java/_symboltable/SymbolTableCDDecorator.java)
+    [Grammar AST encoded in CD4Code](https://github.com/MontiCore/monticore/tree/dev/monticore-generator/src/main/java/de/monticore/MontiCoreScript.java#L411) ->
+    [Decoration for custom behavior](https://github.com/MontiCore/monticore/tree/dev/monticore-generator/src/main/java/de/monticore/codegen/cd2java/_symboltable/SymbolTableCDDecorator.java) -> 
+    [Java code](https://github.com/MontiCore/monticore/tree/dev/monticore-generator/src/main/java/de/monticore/codegen/cd2java/_symboltable/SymbolTableCDDecorator.java)
   * Statechart -> State pattern encoded in CD4Code 
   -> Decoration by monitoring methods -> Java code.
-* Main grammar [`de.monticore.cd.CD4Code`](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/blob/develop/src/main/grammars/de/monticore/CD4Code.mc4)
+* Main grammar [`de.monticore.cd.CD4Code`](https://github.com/MontiCore/cd4analysis/tree/master/src/main/grammars/de/monticore/CD4Code.mc4)
   and 
-  [*detailed description*](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/-/blob/develop/src/main/grammars/de/monticore/cd4analysis.md) 
+  [*detailed description*](https://github.com/MontiCore/cd4analysis/tree/master/src/main/grammars/de/monticore/cd4analysis.md) 
   (see Section *CD4Code*)
 
 
