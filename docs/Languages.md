@@ -32,11 +32,8 @@ The following list contains the language grammars found in the
 `MontiCore` projects, such as `cd4analysis/cd4analysis`.
 They are usually contained in project folders like `src/main/grammars/` 
 and organized in packages like `de.monticore.cd`.
-MontiCore projects are hosted at
-
-* [`https://git.rwth-aachen.de/monticore`](https://git.rwth-aachen.de/monticore), 
-    and partially also at
-* [`https://github.com/MontiCore/`](https://github.com/MontiCore/monticore)
+Publicly available MontiCore projects are hosted at
+[`https://github.com/MontiCore`](https://github.com/MontiCore).
 
 ## List of Languages 
 
