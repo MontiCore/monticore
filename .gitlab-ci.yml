@@ -399,7 +399,7 @@ githubmirror:
     - cd tmp/monticore
     - git add --all
     - "(git commit -m 'Updated branch with most recent version.') || true"
-    - git push --force origin master
+    - git push --force
     - cd ..
     - cd ..
     - rm -r tmp
