@@ -16,4 +16,3 @@ The following Command Line Interface (CLI) tools for MontiCore and its languages
 * The [SD4DevelopmentCLI tool](http://www.monticore.de/download/SD4DevelopmentCLI.jar) for a [Sequence Diagram language (not yet publicly available)](https://git.rwth-aachen.de/monticore/statechart/sd-language)
 * The [StatechartsCLI tool](http://www.monticore.de/download/StatechartsCLI.jar) for a [Statechart language (not yet publicly available)](https://git.rwth-aachen.de/monticore/statechart/sc-language)
 
-

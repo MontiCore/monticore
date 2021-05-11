@@ -24,7 +24,7 @@ NOT the JRE (e.g. ‹/usr/lib/jvm/java-8-openjdk› on UNIX or
 compiler for compiling the generated Java source files; see [here](https://stackoverflow.com/questions/tagged/java-home) for more information.
 3.  Also make sure that the PATH variable is set such that the Java compiler is available.
  JDK installations on UNIX systems do this automatically. On Windows systems the ‹bin› directory of 
- the JDK installation needs to be appended to the PATH variable, e.g. ‹%PATH%;%JAVA_HOME%\bin› 
+ the JDK installation needs to be appended to the PATH variable, e.g. ‹%PATH%;%JAVA_HOME%in› 
  (see also [here](https://stackoverflow.com/questions/2079635/how-can-i-set-the-path-variable-for-javac-so-i-can-manually-compile-my-java-wor)).
 
 ## Command Line
@@ -122,5 +122,4 @@ Please include the processed grammar, model, and the log file.
 * [Best Practices](https://github.com/MontiCore/monticore/blob/dev/docs/BestPractices.md)
 * [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
 * [Licence definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
-
 

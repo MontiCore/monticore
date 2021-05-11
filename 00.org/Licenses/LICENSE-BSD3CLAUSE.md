@@ -28,4 +28,3 @@ IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY O
 SUCH DAMAGE.
 
 \* belongs to [RWTH](http://se-rwth.de) and [RIDT](http://www.rumpe.eu/)
-

@@ -239,9 +239,10 @@ Literals are the basic elements of expressions, such as numbers, strings,
 truth values. Some snipets:
 
     grammar           examples of this grammar
-    MCCommonLit       3  -3  2.17  -4  true  false  'c'  '\03AE' 
-                      3L  2.17d  2.17f  0xAF  "string" "str\b\n\\"  
-                      "str\uAF01\u0001\377"  null
+    MCCommonLit       3  -3  2.17  -4  true  false  'c'  'AE' 
+                      3L  2.17d  2.17f  0xAF  "string" "str
+\"  
+                      "str\uAF01\u0001ÿ"  null
     MCJavaLiterals    999_999  0x3F2A  0b0001_0101  0567  1.2e-7F
 
 ### [MCLiteralsBasis.mc4](literals/MCLiteralsBasis.mc4) (stable)
@@ -253,7 +254,8 @@ various forms of literals.
 * This grammar defines the typical literals for an expression language, such as 
   characters: 'c', Strings "text", booleans: "true", "null", or numbers 10, 
   -23, 48l, 23.1f.
-* Strings and characters use the Java-like escapes like "\n".
+* Strings and characters use the Java-like escapes like "
+".
 * Each defined nonterminal is extended by a conversion function `getValue()`
   of appropriate type and a retrieve function `getSource()` for a text representation
   of the literal.
@@ -402,4 +404,3 @@ These can also be used if someone is interested:
 [OCL-OCLExpressions]: https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/develop/src/main/grammars/de/monticore/ocl/OCLExpressions.mc4
 [OCL-OptionalOperators]: https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/develop/src/main/grammars/de/monticore/ocl/OptionalOperators.mc4
 [OCL-SetExpressions]: https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/develop/src/main/grammars/de/monticore/ocl/SetExpressions.mc4
-
