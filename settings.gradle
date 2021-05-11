@@ -22,7 +22,7 @@ rootProject.name = 'monticore'
 boolean inComposite = gradle.parent != null
 if(!hasProperty('bootstrap')) {
   if (!inComposite) {
-    includeBuild('monticore-tool')
+    includeBuild('monticore-generator')
   }
 }
 

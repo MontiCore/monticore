@@ -32,16 +32,13 @@ The following list contains the language grammars found in the
 `MontiCore` projects, such as `cd4analysis/cd4analysis`.
 They are usually contained in project folders like `src/main/grammars/` 
 and organized in packages like `de.monticore.cd`.
-MontiCore projects are hosted at
-
-* [`https://git.rwth-aachen.de/monticore`](https://git.rwth-aachen.de/monticore), 
-    and partially also at
-* [`https://github.com/MontiCore/`](https://github.com/MontiCore/monticore)
+Publicly available MontiCore projects are hosted at
+[`https://github.com/MontiCore`](https://github.com/MontiCore).
 
 ## List of Languages 
 
 
-### [Class Diagram For Analysis (CD4A)](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis) (MontiCore stable)
+### [Class Diagram For Analysis (CD4A)](https://github.com/MontiCore/cd4analysis) (MontiCore stable)
 * CD4A is the textual representation to describe **UML class diagrams** 
   (it uses the [UML/P](http://mbse.se-rwth.de/) variant).
 * CD4A covers **classes, interfaces, inheritance, attributes with types,
@@ -75,12 +72,12 @@ classdiagram MyLife {
   CD4A language opens various possibilities for the development of data
   structures, database tables as well as data transport infrastructures in
   cloud and distributed systems.
-* [Main grammar `de.monticore.cd.CD4Analysis`](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/blob/develop/src/main/grammars/de/monticore/CD4Analysis.mc4)
+* [Main grammar `de.monticore.cd.CD4Analysis`](https://github.com/MontiCore/cd4analysis/tree/master/src/main/grammars/de/monticore/CD4Analysis.mc4)
   and 
-  [*detailed description*](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/-/blob/develop/src/main/grammars/de/monticore/cd4analysis.md)
+  [*detailed description*](https://github.com/MontiCore/cd4analysis/tree/master/src/main/grammars/de/monticore/cd4analysis.md)
 
 
-### [Class Diagram for Code (CD4Code)](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis) (MontiCore stable)
+### [Class Diagram for Code (CD4Code)](https://github.com/MontiCore/cd4analysis) (MontiCore stable)
 * CD4Code describes **UML class diagrams**.
 * CD4Code is a conservative extension of **CD4A**, 
   which includes method signatures. An example:
@@ -100,14 +97,14 @@ classdiagram MyLife2 {
   For example a transformation sequence could be: 
   * [MontiCoreCLI](https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/monticore-generator/src/main/java/de/monticore/codegen/cd2java/_symboltable/SymbolTableCDDecorator.java): 
     Grammar -> 
-    [Grammar AST encoded in CD4Code](https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/monticore-generator/src/main/java/de/monticore/MontiCoreScript.java#L411) ->
-    [Decoration for custom behavior](https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/monticore-generator/src/main/java/de/monticore/codegen/cd2java/_symboltable/SymbolTableCDDecorator.java) -> 
-    [Java code](https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/monticore-generator/src/main/java/de/monticore/codegen/cd2java/_symboltable/SymbolTableCDDecorator.java)
+    [Grammar AST encoded in CD4Code](https://github.com/MontiCore/monticore/tree/dev/monticore-generator/src/main/java/de/monticore/MontiCoreScript.java#L411) ->
+    [Decoration for custom behavior](https://github.com/MontiCore/monticore/tree/dev/monticore-generator/src/main/java/de/monticore/codegen/cd2java/_symboltable/SymbolTableCDDecorator.java) -> 
+    [Java code](https://github.com/MontiCore/monticore/tree/dev/monticore-generator/src/main/java/de/monticore/codegen/cd2java/_symboltable/SymbolTableCDDecorator.java)
   * Statechart -> State pattern encoded in CD4Code 
   -> Decoration by monitoring methods -> Java code.
-* Main grammar [`de.monticore.cd.CD4Code`](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/blob/develop/src/main/grammars/de/monticore/CD4Code.mc4)
+* Main grammar [`de.monticore.cd.CD4Code`](https://github.com/MontiCore/cd4analysis/tree/master/src/main/grammars/de/monticore/CD4Code.mc4)
   and 
-  [*detailed description*](https://git.rwth-aachen.de/monticore/cd4analysis/cd4analysis/-/blob/develop/src/main/grammars/de/monticore/cd4analysis.md) 
+  [*detailed description*](https://github.com/MontiCore/cd4analysis/tree/master/src/main/grammars/de/monticore/cd4analysis.md) 
   (see Section *CD4Code*)
 
 
@@ -539,6 +536,39 @@ package 'Coffee' {                      // a SysML activity diagram
   where the tagging language is derived from.
   See also [*detailed description*](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging/-/blob/master/src/main/grammars/de/monticore/lang/Tagging.md)
 
+### [Use Case Diagrams](https://github.com/MontiCore/ucd)  (MontiCore stable) 
+* A textual use case diagram (UCD) language.
+* [Detailed description](https://github.com/MontiCore/ucd/blob/master/src/main/grammars/UCD.md)
+* The project includes a grammar, a symbol table infrastructure, and a semantic differencing operator.
+* The language is defined by the grammar [UCD](https://github.com/MontiCore/ucd/blob/master/src/main/grammars/UCD.mc4).
+* It supports modeling *actors*, *use cases*, *preconditions*, *associations* between actors and use cases,
+  *extend relations* between use cases with *guards*, *include relations* between use cases, and
+  *specialization relations* between actors and use cases.
+* The grammars can easily be extended.
+* The following depicts a simple UCD in its textual syntax. 
+``` 
+usecasediagram Example {
+  @Player --
+    Play,
+    Pay,
+    ChangeProfilePicture;
+
+  @AndroidPlayer specializes Player;
+  @IOSPlayer specializes Player;
+
+  @Server --
+    ShowAd,
+    RegisterScore;
+
+  ShowAd extend Play [!isPremium];
+  RegisterScore extend Play;
+
+  abstract Pay include CheckPremium;
+  CreditCard specializes Pay;
+  Bank specializes Pay;
+  ChangeProfilePicture [isPremium];
+}
+```
 
 ### [XML](https://git.rwth-aachen.de/monticore/languages/xml) (MontiCore Stable)
 * The MontiCore language for parsing XML artifacts. An example:

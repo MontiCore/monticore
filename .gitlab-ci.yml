@@ -32,7 +32,7 @@ stages:
 build:
   stage: build
   script:
-    - "cd monticore-tool && gradle build $GRADLE_OPTS -Pci"
+    - "cd monticore-generator && gradle build $GRADLE_OPTS -Pci"
     - "cd .. && gradle buildMC $GRADLE_OPTS -Pci"
   artifacts:
     paths:

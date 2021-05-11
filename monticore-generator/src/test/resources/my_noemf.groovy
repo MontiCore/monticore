@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-package de.monticore
+
 
 /*
  * This configuration file contains the standard workflow of MontiCore:

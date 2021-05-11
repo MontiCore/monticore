@@ -9,7 +9,7 @@ import de.monticore.umlmodifier._ast.ASTModifier;
 
 import static de.monticore.codegen.cd2java.CDModifier.*;
 
-import static de.monticore.codegen.mc2cd.TransformationHelper.existsHandwrittenClass;
+import static de.monticore.generating.GeneratorEngine.existsHandwrittenClass;
 import static de.monticore.utils.Names.constructQualifiedName;
 
 public class TopDecorator extends AbstractCreator<ASTCDCompilationUnit,ASTCDCompilationUnit> {

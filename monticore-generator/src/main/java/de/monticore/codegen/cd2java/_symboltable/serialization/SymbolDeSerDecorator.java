@@ -2,12 +2,14 @@
 package de.monticore.codegen.cd2java._symboltable.serialization;
 
 import de.monticore.ast.Comment;
-import de.monticore.cdbasis._ast.*;
-import de.monticore.cd4codebasis._ast.*;
 import de.monticore.cd4code.CD4CodeMill;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cd4codebasis._ast.ASTCDParameter;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
-import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -26,6 +28,7 @@ import static de.monticore.codegen.cd2java.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
+import static de.monticore.generating.GeneratorEngine.existsHandwrittenClass;
 
 /**
  * creates a SymbolDeSer class from a grammar
@@ -100,7 +103,7 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
 
     if (generateAbstractClass) {
       clazz.getModifier().setAbstract(true);
-      if (!TransformationHelper.existsHandwrittenClass(hw, symbolTableService.getSymbolDeSerFullName(symbolClass))) {
+      if (!existsHandwrittenClass(hw, symbolTableService.getSymbolDeSerFullName(symbolClass))) {
         AbstractDeSers.add(symbolTableService.getSymbolDeSerFullName(symbolClass));
       }
     }

@@ -11,8 +11,6 @@ import de.monticore.cd4code._parser.CD4CodeParser;
 import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.*;
-import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
-import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.RegExpBuilder;
 import de.monticore.grammar.grammar._ast.*;
@@ -25,7 +23,6 @@ import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsTraverser;
 import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
 import de.monticore.grammar.grammarfamily._visitor.GrammarFamilyTraverser;
-import de.monticore.io.paths.IterablePath;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.types.mcarraytypes._ast.ASTMCArrayType;
@@ -41,8 +38,6 @@ import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -50,7 +45,6 @@ import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static de.monticore.codegen.parser.ParserGeneratorHelper.createStringConvertFunction;
 
 public final class TransformationHelper {
 
@@ -284,36 +278,6 @@ public final class TransformationHelper {
       }
     }
     return constants;
-  }
-
-
-  /**
-   *  @deprecated  use de.monticore.generating.GeneratorEngine#existsHandwrittenClass
-   *
-   * Checks if a handwritten class with the given qualifiedName (dot-separated)
-   * exists on the target path
-   *
-   * @param qualifiedName name of the class to search for
-   * @return true if a handwritten class with the qualifiedName exists
-   */
-  @Deprecated
-  public static boolean existsHandwrittenClass(IterablePath targetPath,
-                                               String qualifiedName) {
-    Path handwrittenFile = Paths.get(Names
-        .getPathFromPackage(qualifiedName)
-        + DEFAULT_FILE_EXTENSION);
-    Log.debug("Checking existence of handwritten class " + qualifiedName
-        + " by searching for "
-        + handwrittenFile.toString(), TransformationHelper.class.getName());
-    Optional<Path> handwrittenFilePath = targetPath.getResolvedPath(handwrittenFile);
-    boolean result = handwrittenFilePath.isPresent();
-    if (result) {
-      Reporting.reportUseHandwrittenCodeFile(handwrittenFilePath.get(),
-          handwrittenFile);
-    }
-    Reporting.reportHWCExistenceCheck(targetPath,
-        handwrittenFile, handwrittenFilePath);
-    return result;
   }
 
   /**
