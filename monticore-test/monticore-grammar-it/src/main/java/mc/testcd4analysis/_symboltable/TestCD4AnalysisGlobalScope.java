@@ -88,8 +88,7 @@ public class TestCD4AnalysisGlobalScope extends TestCD4AnalysisGlobalScopeTOP{
       if(location.isPresent() && !isFileLoaded(location.get().toString())){
         addLoadedFile(location.get().toString());
         ASTCDCompilationUnit ast = parse(location.get().getFile());
-        ITestCD4AnalysisArtifactScope as = TestCD4AnalysisMill.scopesGenitorDelegator()
-            .createFromAST(ast);
+        ITestCD4AnalysisArtifactScope as = new TestCD4AnalysisPhasedSymbolTableCreatorDelegator().createFromAST(ast);
         addSubScope(as);
       }
     }
