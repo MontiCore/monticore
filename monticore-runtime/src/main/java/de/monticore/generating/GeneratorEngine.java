@@ -8,6 +8,8 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -182,9 +184,9 @@ public class GeneratorEngine {
     Optional<URL> hwFilePath = targetPath.find(hwFile);
     boolean result = hwFilePath.isPresent();
     if (result) {
-
-      Reporting.reportUseHandwrittenCodeFile(Paths.get(hwFilePath.get().getPath()),
-          Paths.get(hwFile));
+      Optional<Path> hwPath = MCPath.toPath(hwFilePath.get());
+      hwPath.ifPresent(path -> Reporting.reportUseHandwrittenCodeFile(path,
+        Paths.get(hwFile)));
     }
     Reporting.reportHWCExistenceCheck(targetPath, Paths.get(hwFile), hwFilePath);
     return result;
