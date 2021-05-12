@@ -10,7 +10,7 @@ buildscript {
 plugins {
   id "java-library"
   id "de.set.ecj" version "1.4.1" // Eclipse compiler as it's much faster than javac
-  id "monticore-bs" version "7.0.0" // MontiCore Plugin
+  id "monticore-bs" version "7.1.0-SNAPSHOT" // MontiCore Plugin
   id "com.github.johnrengelman.shadow" version "6.0.0"
   id 'groovy'
   id 'java-gradle-plugin'
@@ -45,7 +45,7 @@ dependencies {
   implementation localGroovy()
   implementation "de.monticore.bs:monticore-runtime:$previous_mc_version"
   implementation "de.monticore.bs:monticore-grammar:$previous_mc_version"
-  implementation "de.monticore.bs:monticore-grammar:$previous_mc_version:grammars"
+  grammar "de.monticore.bs:monticore-grammar:$previous_mc_version:grammars"
   implementation "de.se_rwth.commons:se-commons-groovy:$se_commons_version"
   implementation "de.se_rwth.commons:se-commons-logging:$se_commons_version"
   
