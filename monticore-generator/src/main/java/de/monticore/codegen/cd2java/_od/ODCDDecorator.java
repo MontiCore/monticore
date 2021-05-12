@@ -28,7 +28,7 @@ public class ODCDDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCo
 
   @Override
   public ASTCDCompilationUnit decorate(ASTCDCompilationUnit input) {
-    List<String> cocoPackage = new ArrayList<>(input.getPackageList());
+    List<String> cocoPackage = new ArrayList<>(input.getCDPackageList());
     cocoPackage.addAll(Arrays.asList(input.getCDDefinition().getName().toLowerCase(), OD_PACKAGE));
 
     ASTCDClass odClass = odDecorator.decorate(input);

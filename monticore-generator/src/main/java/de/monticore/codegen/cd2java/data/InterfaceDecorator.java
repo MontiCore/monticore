@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java.data;
 
+import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.codegen.cd2java.AbstractService;
@@ -54,7 +55,10 @@ public class InterfaceDecorator extends AbstractTransformer<ASTCDInterface> {
             .filter(m -> !m.getModifier().isProtected() && !m.getModifier().isPrivate()).collect(Collectors.toList());
     changedInput.setCDMethodList(l);
 
-    changedInput.addAllInterface(originalInput.getInterfaceList());
+    if (!changedInput.isPresentCDExtendUsage()) {
+      changedInput.setCDExtendUsage(CD4AnalysisMill.cDExtendUsageBuilder().build());
+    }
+    changedInput.getCDExtendUsage().setSuperclassList(originalInput.getInterfaceList());
     return changedInput;
   }
 }

@@ -42,7 +42,7 @@ public class CDScopeTranslationTest {
 
   @Test
   public void testPackage() {
-    assertEquals(2, compilationUnit.getPackageList().size());
+    assertEquals(2, compilationUnit.getCDPackageList().size());
     assertEquals("mc2cdtransformation", compilationUnit.getMCPackageDeclaration().getMCQualifiedName().getParts(0));
     assertEquals("scopeTransl", compilationUnit.getMCPackageDeclaration().getMCQualifiedName().getParts(1));
   }

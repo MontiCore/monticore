@@ -52,7 +52,7 @@ public class CDTraverserDecorator extends AbstractCreator<ASTCDCompilationUnit, 
   @Override
   public ASTCDCompilationUnit decorate(ASTCDCompilationUnit input) {
     List<String> visitorPackage = Lists.newArrayList();
-    input.getPackageList().forEach(p -> visitorPackage.add(p.toLowerCase()));
+    input.getCDPackageList().forEach(p -> visitorPackage.add(p.toLowerCase()));
     visitorPackage.addAll(Arrays.asList(input.getCDDefinition().getName().toLowerCase(), VISITOR_PACKAGE));
 
     // check for TOP classes

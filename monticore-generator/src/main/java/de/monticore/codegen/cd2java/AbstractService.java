@@ -237,10 +237,7 @@ public class AbstractService<T extends AbstractService> {
   }
 
   public boolean hasSymbolStereotype(ASTCDType type) {
-    if(type.isPresentModifier()){
-      return hasStereotype(type.getModifier(), MC2CDStereotypes.SYMBOL);
-    }
-    return false;
+    return hasStereotype(type.getModifier(), MC2CDStereotypes.SYMBOL);
   }
 
   public boolean isMethodBodyPresent(ASTCDMethod method) {
@@ -248,7 +245,7 @@ public class AbstractService<T extends AbstractService> {
   }
 
   public boolean isReferencedSymbolAttribute(ASTCDAttribute attribute) {
-    return attribute.isPresentModifier() && hasStereotype(attribute.getModifier(), MC2CDStereotypes.REFERENCED_SYMBOL_ATTRIBUTE);
+    return hasStereotype(attribute.getModifier(), MC2CDStereotypes.REFERENCED_SYMBOL_ATTRIBUTE);
   }
 
   public String getMethodBody(ASTCDMethod method) {
@@ -292,7 +289,7 @@ public class AbstractService<T extends AbstractService> {
   }
 
   public boolean hasStartProd(ASTCDDefinition astcdDefinition) {
-    if (astcdDefinition.isPresentModifier() && hasStartProdStereotype(astcdDefinition.getModifier())) {
+    if (hasStartProdStereotype(astcdDefinition.getModifier())) {
       return true;
     }
     for (ASTCDClass prod : astcdDefinition.getCDClassesList()) {
@@ -316,7 +313,7 @@ public class AbstractService<T extends AbstractService> {
   }
 
   public Optional<String> getStartProd(ASTCDDefinition astcdDefinition) {
-    if (astcdDefinition.isPresentModifier() && hasStartProdStereotype(astcdDefinition.getModifier())) {
+    if (hasStartProdStereotype(astcdDefinition.getModifier())) {
       return getStartProdValue(astcdDefinition.getModifier());
     }
     for (ASTCDClass prod : astcdDefinition.getCDClassesList()) {

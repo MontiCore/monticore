@@ -229,7 +229,7 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
    */
   protected List<ASTCDMethod> createVisitorDelegatorClassMethod(ASTCDClass astcdClass, String simpleVisitorName) {
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
-    boolean doTraverse = !(astcdClass.isPresentModifier() && astcdClass.getModifier().isAbstract());
+    boolean doTraverse = !astcdClass.getModifier().isAbstract();
     ASTMCType classType = getMCTypeFacade().createQualifiedType(astcdClass.getName());
     
     // delegating visitor methods

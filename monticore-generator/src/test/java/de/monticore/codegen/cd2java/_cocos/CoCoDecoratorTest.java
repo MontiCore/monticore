@@ -62,7 +62,7 @@ public class CoCoDecoratorTest extends DecoratorTestCase {
   @Test
   public void testPackage() {
     List<String> expectedPackage = Arrays.asList("de", "monticore", "codegen", "cocos", "cocos", "_cocos");
-    assertEquals(expectedPackage, ast.getPackageList());
+    assertEquals(expectedPackage, ast.getCDPackageList());
   }
 
   @Test

@@ -55,9 +55,7 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
     String scopeInterfaceType = symbolTableService.getScopeInterfaceFullName();
     String symbolFullName = symbolTableService.getSymbolFullName(symbolInput);
     String simpleName = symbolInput.getName();
-    ASTModifier modifier = symbolInput.isPresentModifier() ?
-            symbolTableService.createModifierPublicModifier(symbolInput.getModifier()) :
-            PUBLIC.build();
+    ASTModifier modifier = symbolTableService.createModifierPublicModifier(symbolInput.getModifier());
 
     // symbol rule methods and attributes
     List<ASTCDMethod> symbolRuleAttributeMethods = symbolInput.deepClone().getCDAttributeList()

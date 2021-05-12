@@ -198,13 +198,13 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testPackage() {
-    assertEquals(6, symTabCD.getPackageList().size());
-    assertEquals("de", symTabCD.getPackageList().get(0));
-    assertEquals("monticore", symTabCD.getPackageList().get(1));
-    assertEquals("codegen", symTabCD.getPackageList().get(2));
-    assertEquals("symboltable", symTabCD.getPackageList().get(3));
-    assertEquals("automaton", symTabCD.getPackageList().get(4));
-    assertEquals("_symboltable", symTabCD.getPackageList().get(5));
+    assertEquals(6, symTabCD.getCDPackageList().size());
+    assertEquals("de", symTabCD.getCDPackageList().get(0));
+    assertEquals("monticore", symTabCD.getCDPackageList().get(1));
+    assertEquals("codegen", symTabCD.getCDPackageList().get(2));
+    assertEquals("symboltable", symTabCD.getCDPackageList().get(3));
+    assertEquals("automaton", symTabCD.getCDPackageList().get(4));
+    assertEquals("_symboltable", symTabCD.getCDPackageList().get(5));
 
   }
 

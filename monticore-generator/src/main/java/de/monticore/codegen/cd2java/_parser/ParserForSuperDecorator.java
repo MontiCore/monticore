@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cd4codebasis.CD4CodeBasisMill;
 import de.monticore.cd4codebasis._ast.*;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
@@ -47,10 +48,10 @@ public class ParserForSuperDecorator extends AbstractDecorator {
   public List<ASTCDClass> decorate(ASTCDCompilationUnit astCD){
     //create a SuperForSubParser for every super grammar that is not component
     List<ASTCDClass> classList = Lists.newArrayList();
-    if(!astCD.getCDDefinition().isPresentModifier() || !service.hasComponentStereotype(astCD.getCDDefinition().getModifier())){
+    if(!service.hasComponentStereotype(astCD.getCDDefinition().getModifier())){
       String grammarName = service.getCDName();
       for(DiagramSymbol symbol: service.getSuperCDsTransitive()){
-        if(!((ASTCDDefinition) symbol.getAstNode()).isPresentModifier() || !service.hasComponentStereotype(((ASTCDDefinition) symbol.getAstNode()).getModifier())){
+        if(!service.hasComponentStereotype(((ASTCDDefinition) symbol.getAstNode()).getModifier())){
           String superGrammarName = symbol.getName();
           List<ASTCDClass> astcdClasses = astCD.getCDDefinition().deepClone().getCDClassesList();
           ASTMCQualifiedType superClass = getMCTypeFacade().createQualifiedType(service.getParserClassFullName(symbol));
@@ -89,7 +90,7 @@ public class ParserForSuperDecorator extends AbstractDecorator {
       typesInGrammar.removeIf(type -> type.getAstNode() instanceof ASTCDEnum);
       typesInGrammar.removeIf(type -> type.getName().equals(grammar.getName() + LITERALS_SUFFIX));
       typesInGrammar.removeIf(type -> type.getName().equals(AST_PREFIX + grammar.getName() + NODE_SUFFIX));
-      typesInGrammar.removeIf(type -> type.getAstNode().isPresentModifier() &&
+      typesInGrammar.removeIf(type ->
           (service.hasLeftRecursiveStereotype(type.getAstNode().getModifier())|| service.hasExternalInterfaceStereotype(type.getAstNode().getModifier())));
     }
     List<CDTypeSymbol> allOverriddenTypes = overridden.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
@@ -98,8 +99,7 @@ public class ParserForSuperDecorator extends AbstractDecorator {
     //iterate over every overridden prod, generate parse methods for them
     for(Map.Entry<DiagramSymbol, Collection<CDTypeSymbol>> entry: overridden.entrySet()){
       for(CDTypeSymbol type: entry.getValue()) {
-        if (type.getAstNode().isPresentModifier() &&
-            (service.hasExternalInterfaceStereotype(type.getAstNode().getModifier()) || service.hasLeftRecursiveStereotype(type.getAstNode().getModifier()))) {
+        if (service.hasExternalInterfaceStereotype(type.getAstNode().getModifier()) || service.hasLeftRecursiveStereotype(type.getAstNode().getModifier())) {
           continue;
         }
         //if any of the other overriddenTypes has the same name and overrides the type, then the type is not the most specified type -> generate no parser method for this type
@@ -238,13 +238,13 @@ public class ParserForSuperDecorator extends AbstractDecorator {
     ASTMCType returnType = getMCTypeFacade().createOptionalTypeOf(getMCTypeFacade().createQualifiedType(superProdFullName));
     ASTCDParameter fileNameParameter = getCDParameterFacade().createParameter(String.class, "fileName");
     ASTCDMethod parse = getCDMethodFacade().createMethod(PUBLIC.build(), returnType, "parse" + prodName, fileNameParameter);
-    parse.addException(ioException);
+    parse.setCDThrowsDeclaration(CD4CodeBasisMill.cDThrowsDeclarationBuilder().addException(ioException).build());
 
 
     ASTMCType readerType = getMCTypeFacade().createQualifiedType("java.io.Reader");
     ASTCDParameter readerParameter = getCDParameterFacade().createParameter(readerType, "reader");
     ASTCDMethod parseReader = getCDMethodFacade().createMethod(PUBLIC.build(), returnType, "parse" + prodName, readerParameter);
-    parseReader.addException(ioException);
+    parseReader.setCDThrowsDeclaration(CD4CodeBasisMill.cDThrowsDeclarationBuilder().addException(ioException).build());
 
     //if a nonterminal overrides two or more other nonterminals that do not extend each other then the nonterminal can only extend one of them due to single inheritance
     //the parse-method generated for the second or third/fourth... overridden nonterminal logs an error upon invocation because the overridding nonterminal does not extend it and
@@ -283,14 +283,14 @@ public class ParserForSuperDecorator extends AbstractDecorator {
     ASTMCType returnType = getMCTypeFacade().createOptionalTypeOf(getMCTypeFacade().createQualifiedType(superProdFullName));
     ASTCDParameter fileNameParameter = getCDParameterFacade().createParameter(String.class, "fileName");
     ASTCDMethod parse = getCDMethodFacade().createMethod(PUBLIC.build(), returnType, "parse" + prodName, fileNameParameter);
-    parse.addException(ioException);
+    parse.setCDThrowsDeclaration(CD4CodeBasisMill.cDThrowsDeclarationBuilder().addException(ioException).build());
     this.replaceTemplate(EMPTY_BODY, parse, new TemplateHookPoint(TEMPLATE_PATH + "ParseSup", millFullName, prodName));
     methods.add(parse);
 
     ASTMCType readerType = getMCTypeFacade().createQualifiedType("java.io.Reader");
     ASTCDParameter readerParameter = getCDParameterFacade().createParameter(readerType, "reader");
     ASTCDMethod parseReader = getCDMethodFacade().createMethod(PUBLIC.build(), returnType, "parse" + prodName, readerParameter);
-    parseReader.addException(ioException);
+    parseReader.setCDThrowsDeclaration(CD4CodeBasisMill.cDThrowsDeclarationBuilder().addException(ioException).build());
     this.replaceTemplate(EMPTY_BODY, parseReader, new TemplateHookPoint(TEMPLATE_PATH + "ParseSupReader", millFullName, prodName));
     methods.add(parseReader);
     return methods;

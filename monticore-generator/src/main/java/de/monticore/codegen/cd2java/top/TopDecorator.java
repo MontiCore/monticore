@@ -31,15 +31,15 @@ public class TopDecorator extends AbstractCreator<ASTCDCompilationUnit,ASTCDComp
   public ASTCDCompilationUnit decorate(final ASTCDCompilationUnit originalCD) {
     ASTCDCompilationUnit topCD = originalCD;
     topCD.getCDDefinition().getCDClassesList().stream()
-        .filter(cdClass -> existsHandwrittenClass(hwPath, constructQualifiedName(topCD.getPackageList(), cdClass.getName())))
+        .filter(cdClass -> existsHandwrittenClass(hwPath, constructQualifiedName(topCD.getCDPackageList(), cdClass.getName())))
         .forEach(this::applyTopMechanism);
 
     topCD.getCDDefinition().getCDInterfacesList().stream()
-        .filter(cdInterface -> existsHandwrittenClass(hwPath, constructQualifiedName(topCD.getPackageList(), cdInterface.getName())))
+        .filter(cdInterface -> existsHandwrittenClass(hwPath, constructQualifiedName(topCD.getCDPackageList(), cdInterface.getName())))
         .forEach(this::applyTopMechanism);
 
     topCD.getCDDefinition().getCDEnumsList().stream()
-        .filter(cdEnum -> existsHandwrittenClass(hwPath, constructQualifiedName(topCD.getPackageList(), cdEnum.getName())))
+        .filter(cdEnum -> existsHandwrittenClass(hwPath, constructQualifiedName(topCD.getCDPackageList(), cdEnum.getName())))
         .forEach(this::applyTopMechanism);
 
     return topCD;
@@ -62,11 +62,7 @@ public class TopDecorator extends AbstractCreator<ASTCDCompilationUnit,ASTCDComp
   }
 
   private void makeAbstract(ASTCDType type) {
-    if (type.isPresentModifier()) {
-      makeAbstract(type.getModifier());
-    } else {
-      type.setModifier(PACKAGE_PRIVATE_ABSTRACT.build());
-    }
+    makeAbstract(type.getModifier());
   }
 
   private void makeAbstract(ASTModifier modifier) {

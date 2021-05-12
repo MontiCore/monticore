@@ -78,9 +78,7 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
     boolean hasInheritedSymbol = symbolTableService.hasInheritedSymbolStereotype(symbolInput.getModifier());
     boolean hasInheritedScope = symbolTableService.hasInheritedScopeStereotype(symbolInput.getModifier());
     boolean hasScope = symbolTableService.hasScopeStereotype(symbolInput.getModifier());
-    ASTModifier modifier = symbolInput.isPresentModifier() ?
-            symbolTableService.createModifierPublicModifier(symbolInput.getModifier()) :
-            PUBLIC.build();
+    ASTModifier modifier = symbolTableService.createModifierPublicModifier(symbolInput.getModifier());
 
     // uses symbol rule methods and attributes
     List<ASTCDAttribute> symbolRuleAttributes = symbolInput.deepClone().getCDAttributeList()

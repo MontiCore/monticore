@@ -30,7 +30,7 @@ public class CDAuxiliaryDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     List<ASTCDClass> millForSuperClasses = millForSuperDecorator.decorate(input);
 
     //remove _ast package and add _auxiliary package
-    List<String> packageName = new ArrayList<>(input.getPackageList());
+    List<String> packageName = new ArrayList<>(input.getCDPackageList());
     packageName.remove(packageName.size() - 1);
     packageName.add(AUXILIARY_PACKAGE);
 
@@ -41,9 +41,7 @@ public class CDAuxiliaryDecorator extends AbstractCreator<ASTCDCompilationUnit, 
 
     for (ASTCDClass cdClass : astCD.getCDClassesList()) {
       this.replaceTemplate(PACKAGE, cdClass, createPackageHookPoint(packageName));
-      if (cdClass.isPresentModifier()) {
-        this.replaceTemplate(ANNOTATIONS, cdClass, createAnnotationsHookPoint(cdClass.getModifier()));
-      }
+      this.replaceTemplate(ANNOTATIONS, cdClass, createAnnotationsHookPoint(cdClass.getModifier()));
     }
 
     return CD4AnalysisMill.cDCompilationUnitBuilder()

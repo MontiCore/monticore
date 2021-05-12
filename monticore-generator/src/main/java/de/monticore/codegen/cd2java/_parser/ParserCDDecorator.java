@@ -37,7 +37,7 @@ public class ParserCDDecorator extends AbstractDecorator {
 
   public ASTCDCompilationUnit decorate(ASTCDCompilationUnit astCD){
     List<String> parserPackage = Lists.newArrayList();
-    astCD.getPackageList().forEach(p -> parserPackage.add(p.toLowerCase()));
+    astCD.getCDPackageList().forEach(p -> parserPackage.add(p.toLowerCase()));
     parserPackage.addAll(Arrays.asList(astCD.getCDDefinition().getName().toLowerCase(), PARSER_PACKAGE));
 
     ASTCDDefinition parserCD = CD4AnalysisMill.cDDefinitionBuilder()
@@ -67,23 +67,17 @@ public class ParserCDDecorator extends AbstractDecorator {
   protected void addPackageAndAnnotation(ASTCDDefinition parserCD, List<String> parserPackage) {
     for (ASTCDClass cdClass : parserCD.getCDClassesList()) {
       this.replaceTemplate(PACKAGE, cdClass, createPackageHookPoint(parserPackage));
-      if (cdClass.isPresentModifier()) {
-        this.replaceTemplate(ANNOTATIONS, cdClass, createAnnotationsHookPoint(cdClass.getModifier()));
-      }
+      this.replaceTemplate(ANNOTATIONS, cdClass, createAnnotationsHookPoint(cdClass.getModifier()));
     }
 
     for (ASTCDInterface cdInterface : parserCD.getCDInterfacesList()) {
       this.replaceTemplate(CoreTemplates.PACKAGE, cdInterface, createPackageHookPoint(parserPackage));
-      if (cdInterface.isPresentModifier()) {
-        this.replaceTemplate(ANNOTATIONS, cdInterface, createAnnotationsHookPoint(cdInterface.getModifier()));
-      }
+      this.replaceTemplate(ANNOTATIONS, cdInterface, createAnnotationsHookPoint(cdInterface.getModifier()));
     }
 
     for (ASTCDEnum cdEnum : parserCD.getCDEnumsList()) {
       this.replaceTemplate(CoreTemplates.PACKAGE, cdEnum, createPackageHookPoint(parserPackage));
-      if (cdEnum.isPresentModifier()) {
-        this.replaceTemplate(ANNOTATIONS, cdEnum, createAnnotationsHookPoint(cdEnum.getModifier()));
-      }
+      this.replaceTemplate(ANNOTATIONS, cdEnum, createAnnotationsHookPoint(cdEnum.getModifier()));
     }
   }
 

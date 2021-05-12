@@ -174,7 +174,7 @@ public class HandlerDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
    */
   protected List<ASTCDMethod> createHandlerClassMethod(ASTCDClass astcdClass, String simpleVisitorName) {
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
-    boolean doTraverse = !(astcdClass.isPresentModifier() && astcdClass.getModifier().isAbstract());
+    boolean doTraverse = !astcdClass.getModifier().isAbstract();
     ASTMCType classType = getMCTypeFacade().createQualifiedType(astcdClass.getName());
     
     // handle and traverser methods

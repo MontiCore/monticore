@@ -151,7 +151,7 @@ public class MontiCoreScriptTest {
     ICD4AnalysisGlobalScope cd4AGlobalScope = mc.createCD4AGlobalScope(modelPath);
     cdCompilationUnit = mc.deriveASTCD(grammar, new GlobalExtensionManagement(), cd4AGlobalScope);
     assertNotNull(cdCompilationUnit);
-    assertEquals("de.monticore.statechart", String.join(".", cdCompilationUnit.getPackageList()));
+    assertEquals("de.monticore.statechart", String.join(".", cdCompilationUnit.getCDPackageList()));
     assertNotNull(cdCompilationUnit.getCDDefinition());
     ASTCDDefinition cdDefinition = cdCompilationUnit.getCDDefinition();
     assertEquals(8, cdDefinition.getCDClassesList().size());

@@ -42,7 +42,7 @@ public class SpanningScopeTest {
 
   @Test
   public void testPackage() {
-    assertEquals(2, compilationUnit.getPackageList().size());
+    assertEquals(2, compilationUnit.getCDPackageList().size());
     assertEquals("mc2cdtransformation", compilationUnit.getMCPackageDeclaration().getMCQualifiedName().getParts(0));
     assertEquals("symbolTransl", compilationUnit.getMCPackageDeclaration().getMCQualifiedName().getParts(1));
   }

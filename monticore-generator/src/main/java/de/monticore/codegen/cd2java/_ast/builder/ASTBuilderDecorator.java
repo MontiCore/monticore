@@ -63,11 +63,11 @@ public class ASTBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass>
     ASTModifier modifier = domainClass.isPresentModifier() ?
             service.createModifierPublicModifier(domainClass.getModifier()) :
             PUBLIC.build();
-    if (domainClass.isPresentModifier() && domainClass.getModifier().isAbstract()) {
+    if (domainClass.getModifier().isAbstract()) {
       modifier.setAbstract(true);
     }
     ASTCDMethod uncheckedBuildMethod = this.getCDMethodFacade().createMethod(modifier, domainType, UNCHECKEDBUILD_METHOD);
-    if (!domainClass.isPresentModifier() || !domainClass.getModifier().isAbstract()) {
+    if (!domainClass.getModifier().isAbstract()) {
       this.replaceTemplate(EMPTY_BODY, uncheckedBuildMethod, new TemplateHookPoint("_ast.builder.BuildMethod", domainClass, Lists.newArrayList(), false));
       this.replaceTemplate(BUILD_INIT_TEMPLATE, uncheckedBuildMethod, new TemplateHookPoint(AST_BUILDER_INIT_TEMPLATE, domainClass));
     }

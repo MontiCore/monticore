@@ -84,7 +84,7 @@ public class CDTraverserDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testPackageChanged() {
-    String packageName = visitorCompilationUnit.getPackageList().stream().reduce((a, b) -> a + "." + b).get();
+    String packageName = visitorCompilationUnit.getCDPackageList().stream().reduce((a, b) -> a + "." + b).get();
     assertEquals("de.monticore.codegen.ast.automaton._visitor", packageName);
   }
 
@@ -92,7 +92,7 @@ public class CDTraverserDecoratorTest extends DecoratorTestCase {
   @Test
   public void testPackage() {
     List<String> expectedPackage = Arrays.asList("de", "monticore", "codegen", "ast", "automaton", "_visitor");
-    assertEquals(expectedPackage, visitorCompilationUnit.getPackageList());
+    assertEquals(expectedPackage, visitorCompilationUnit.getCDPackageList());
   }
 
   @Test

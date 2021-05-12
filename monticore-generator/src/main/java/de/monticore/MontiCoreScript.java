@@ -581,7 +581,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   public void reportCD(ASTCDCompilationUnit astCd, File outputDirectory) {
     // we also store the class diagram fully qualified such that we can later on
     // resolve it properly for the generation of sub languages
-    String reportSubDir = Joiners.DOT.join(astCd.getPackageList());
+    String reportSubDir = Joiners.DOT.join(astCd.getCDPackageList());
     reportSubDir = reportSubDir.isEmpty()
             ? astCd.getCDDefinition().getName()
             : reportSubDir.concat(".").concat(astCd.getCDDefinition().getName());

@@ -89,7 +89,6 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
       // filter out all classes that are abstract and only builder classes
       List<ASTCDClass> classList = cd.getCDDefinition().deepClone().getCDClassesList()
           .stream()
-          .filter(ASTCDClass::isPresentModifier)
           .filter(x -> !x.getModifier().isAbstract())
           .filter(this::checkIncludeInMill)
           .collect(Collectors.toList());
@@ -98,7 +97,6 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
       // filter out all classes that are abstract and end with the TOP suffix
       List<ASTCDClass> topClassList = cd.getCDDefinition().deepClone().getCDClassesList()
           .stream()
-          .filter(ASTCDClass::isPresentModifier)
           .filter(x -> x.getModifier().isAbstract())
           .filter(x -> x.getName().endsWith(TOP_SUFFIX))
           .collect(Collectors.toList());
@@ -258,7 +256,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
 
     for (ASTCDClass astcdClass : astcdClassList) {
       String astName = astcdClass.getName();
-      String packageDef = String.join(".", cd.getPackageList());
+      String packageDef = String.join(".", cd.getCDPackageList());
       ASTMCQualifiedType builderType = this.getMCTypeFacade().createQualifiedType(packageDef + "." + astName);
       String methodName = astName.startsWith(AST_PREFIX) ?
           StringTransformations.uncapitalize(astName.replaceFirst(AST_PREFIX, ""))
@@ -289,8 +287,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
     for (DiagramSymbol superSymbol : superSymbolList) {
       if (superSymbol.isPresentAstNode()) {
         for (CDTypeSymbol type : ((ICDBasisScope) superSymbol.getEnclosingScope()).getLocalCDTypeSymbols()) {
-          if (type.isPresentAstNode() && type.getAstNode().isPresentModifier()
-              && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifier())) {
+          if (type.isPresentAstNode() && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifier())) {
             superMethods.addAll(getSuperSymbolMethods(superSymbol, type));
           }
           if (type.isIsClass() && !type.isIsAbstract() && type.isPresentAstNode() &&

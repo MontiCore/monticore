@@ -146,7 +146,7 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
   protected ASTCDMethod getConstructMethod(ASTCDClass astClass) {
     ASTCDMethod constructMethod;
     ASTMCType classType = this.getMCTypeFacade().createQualifiedType(astClass.getName());
-    if (astClass.isPresentModifier() && astClass.getModifier().isAbstract()) {
+    if (astClass.getModifier().isAbstract()) {
       constructMethod = this.getCDMethodFacade().createMethod(PROTECTED_ABSTRACT.build(), classType, ASTConstants.CONSTRUCT_METHOD);
     } else {
       constructMethod = this.getCDMethodFacade().createMethod(PROTECTED.build(), classType, ASTConstants.CONSTRUCT_METHOD);
