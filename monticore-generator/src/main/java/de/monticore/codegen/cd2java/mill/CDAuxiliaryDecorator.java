@@ -2,11 +2,14 @@
 package de.monticore.codegen.cd2java.mill;
 
 import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cd4code.CD4CodeMill;
+import de.monticore.cd4codebasis.CD4CodeBasisMill;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +36,8 @@ public class CDAuxiliaryDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     List<String> packageName = new ArrayList<>(input.getCDPackageList());
     packageName.remove(packageName.size() - 1);
     packageName.add(AUXILIARY_PACKAGE);
+    ASTMCPackageDeclaration packageDecl = CD4CodeMill.mCPackageDeclarationBuilder().setMCQualifiedName(
+            CD4CodeMill.mCQualifiedNameBuilder().setPartsList(packageName).build()).build();
 
     ASTCDDefinition astCD = CD4AnalysisMill.cDDefinitionBuilder()
         .setName(input.getCDDefinition().getName())
@@ -45,7 +50,7 @@ public class CDAuxiliaryDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     }
 
     return CD4AnalysisMill.cDCompilationUnitBuilder()
-        .setPackageList(packageName)
+        .setMCPackageDeclaration(packageDecl)
         .setCDDefinition(astCD)
         .build();
   }

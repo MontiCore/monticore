@@ -41,7 +41,7 @@ public class GrammarFamilyScopesGenitor extends GrammarFamilyScopesGenitorTOP {
    */
   public GrammarFamilyArtifactScope createFromAST(de.monticore.cdbasis._ast.ASTCDCompilationUnit rootNode) {
     GrammarFamilyArtifactScope artifactScope = new GrammarFamilyArtifactScope(Optional.empty(),
-        Names.getQualifiedName(rootNode.getPackageList()), new ArrayList<>());
+        Names.getQualifiedName(rootNode.getCDPackageList()), new ArrayList<>());
     artifactScope.setAstNode(rootNode);
     artifactScope.setImportsList(rootNode.getMCImportStatementList().stream().map(i -> new ImportStatement(i.getQName(), i.isStar())).collect(Collectors.toList()));
     putOnStack(artifactScope);

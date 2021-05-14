@@ -3,11 +3,13 @@ package de.monticore.codegen.cd2java._parser;
 
 import com.google.common.collect.Lists;
 import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.cdinterfaceandenum._ast.*;
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration;
 
 import java.util.Arrays;
 import java.util.List;
@@ -39,6 +41,8 @@ public class ParserCDDecorator extends AbstractDecorator {
     List<String> parserPackage = Lists.newArrayList();
     astCD.getCDPackageList().forEach(p -> parserPackage.add(p.toLowerCase()));
     parserPackage.addAll(Arrays.asList(astCD.getCDDefinition().getName().toLowerCase(), PARSER_PACKAGE));
+    ASTMCPackageDeclaration packageDecl = CD4CodeMill.mCPackageDeclarationBuilder().setMCQualifiedName(
+            CD4CodeMill.mCQualifiedNameBuilder().setPartsList(parserPackage).build()).build();
 
     ASTCDDefinition parserCD = CD4AnalysisMill.cDDefinitionBuilder()
         .setName(astCD.getCDDefinition().getName())
@@ -51,7 +55,7 @@ public class ParserCDDecorator extends AbstractDecorator {
     addPackageAndAnnotation(parserCD, parserPackage);
 
     return CD4AnalysisMill.cDCompilationUnitBuilder()
-        .setPackageList(parserPackage)
+        .setMCPackageDeclaration(packageDecl)
         .setCDDefinition(parserCD)
         .build();
   }

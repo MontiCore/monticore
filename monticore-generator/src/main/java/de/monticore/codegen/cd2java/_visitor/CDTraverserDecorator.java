@@ -11,6 +11,7 @@ import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.IterablePath;
+import de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration;
 
 import java.util.Arrays;
 import java.util.List;
@@ -54,6 +55,8 @@ public class CDTraverserDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     List<String> visitorPackage = Lists.newArrayList();
     input.getCDPackageList().forEach(p -> visitorPackage.add(p.toLowerCase()));
     visitorPackage.addAll(Arrays.asList(input.getCDDefinition().getName().toLowerCase(), VISITOR_PACKAGE));
+    ASTMCPackageDeclaration packageDecl = CD4CodeMill.mCPackageDeclarationBuilder().setMCQualifiedName(
+            CD4CodeMill.mCQualifiedNameBuilder().setPartsList(visitorPackage).build()).build();
 
     // check for TOP classes
     setIfExistsHandwrittenFile(visitorPackage);
@@ -84,7 +87,7 @@ public class CDTraverserDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     }
 
     return CD4CodeMill.cDCompilationUnitBuilder()
-        .setPackageList(visitorPackage)
+        .setMCPackageDeclaration(packageDecl)
         .setCDDefinition(astCD)
         .build();
   }

@@ -4,6 +4,7 @@ package de.monticore.codegen.cd2java.mill;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDDefinition;
@@ -78,7 +79,7 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
       ASTCDClass superMill = CD4AnalysisMill.cDClassBuilder()
           .setModifier(PUBLIC.build())
           .setName(millClassName)
-          .setSuperclass(superclass)
+          .setCDExtendUsage(CD4CodeMill.cDExtendUsageBuilder().addSuperclass(superclass).build())
           .addAllCDMembers(builderMethodsList)
           .addAllCDMembers(correctScopeMethods)
           .addCDMember(getSuperTraverserMethod(superSymbol))

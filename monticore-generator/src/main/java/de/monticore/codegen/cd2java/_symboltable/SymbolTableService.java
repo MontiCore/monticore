@@ -530,12 +530,11 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
 
   public Optional<String> getDefiningSymbolSimpleName(ASTCDType clazz) {
     // does only return symbol defining parts, not parts with e.g. symbol (MCType)
-    if (clazz.isPresentModifier()) {
-      if (hasSymbolStereotype(clazz.getModifier())) {
-        // is a defining symbol
-        return Optional.ofNullable(getNameWithSymbolSuffix(clazz));
-      }
+    if (hasSymbolStereotype(clazz.getModifier())) {
+      // is a defining symbol
+      return Optional.ofNullable(getNameWithSymbolSuffix(clazz));
     }
+
     // no symbol at all
     return Optional.empty();
   }

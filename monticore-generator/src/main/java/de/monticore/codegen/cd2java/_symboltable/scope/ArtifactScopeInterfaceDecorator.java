@@ -189,8 +189,7 @@ public class ArtifactScopeInterfaceDecorator extends AbstractCreator<ASTCDCompil
     List<ASTCDType> symbolAttributes = new ArrayList<>();
     for (DiagramSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
       for (CDTypeSymbol type : ((ICDBasisScope) cdDefinitionSymbol.getEnclosingScope()).getLocalCDTypeSymbols()) {
-        if (type.getAstNode().isPresentModifier()
-            && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifier())) {
+        if (symbolTableService.hasSymbolStereotype(type.getAstNode().getModifier())) {
           symbolAttributes.add(type.getAstNode());
         }
       }

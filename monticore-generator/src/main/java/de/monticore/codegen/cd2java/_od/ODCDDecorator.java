@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._od;
 
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDDefinition;
@@ -8,6 +9,7 @@ import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,6 +32,8 @@ public class ODCDDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCo
   public ASTCDCompilationUnit decorate(ASTCDCompilationUnit input) {
     List<String> cocoPackage = new ArrayList<>(input.getCDPackageList());
     cocoPackage.addAll(Arrays.asList(input.getCDDefinition().getName().toLowerCase(), OD_PACKAGE));
+    ASTMCPackageDeclaration packageDecl = CD4CodeMill.mCPackageDeclarationBuilder().setMCQualifiedName(
+            CD4CodeMill.mCQualifiedNameBuilder().setPartsList(cocoPackage).build()).build();
 
     ASTCDClass odClass = odDecorator.decorate(input);
     this.replaceTemplate(CoreTemplates.PACKAGE, odClass, createPackageHookPoint(cocoPackage));
@@ -41,7 +45,7 @@ public class ODCDDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCo
         .build();
 
     return CD4AnalysisMill.cDCompilationUnitBuilder()
-        .setPackageList(cocoPackage)
+        .setMCPackageDeclaration(packageDecl)
         .setCDDefinition(odCDDefinition)
         .build();
   }

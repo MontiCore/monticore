@@ -154,8 +154,8 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
       if (!value.isEmpty()) {
         symbolClass.setSuperclass(getMCTypeFacade().createQualifiedType(value));
       }
-    } else if (symbolInput.isPresentSuperclass()) {
-      symbolClass.setSuperclass(symbolInput.getSuperclass());
+    } else if (symbolInput.isPresentCDExtendUsage()) {
+      symbolClass.setCDExtendUsage(symbolInput.getCDExtendUsage());
     }
     return symbolClass;
   }

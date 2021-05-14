@@ -3,6 +3,7 @@ package de.monticore.codegen.cd2java._ast;
 
 import com.google.common.collect.Lists;
 import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.cdinterfaceandenum._ast.*;
 import de.monticore.codegen.cd2java.AbstractCreator;
@@ -15,6 +16,7 @@ import de.monticore.codegen.cd2java._ast.builder.ASTBuilderDecorator;
 import de.monticore.codegen.cd2java._ast.constants.ASTConstantsDecorator;
 import de.monticore.codegen.cd2java._ast.enums.EnumDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -64,6 +66,8 @@ public class ASTCDDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDC
     List<String> astPackage = Lists.newArrayList();
     ast.getMCPackageDeclaration().getMCQualifiedName().getPartsList().forEach(p -> astPackage.add(p.toLowerCase()));
     astPackage.addAll(Arrays.asList(ast.getCDDefinition().getName().toLowerCase(), ASTConstants.AST_PACKAGE));
+    ASTMCPackageDeclaration packageDecl = CD4CodeMill.mCPackageDeclarationBuilder().setMCQualifiedName(
+            CD4CodeMill.mCQualifiedNameBuilder().setPartsList(astPackage).build()).build();
 
     ASTCDDefinition astCD = CD4AnalysisMill.cDDefinitionBuilder()
         .setName(ast.getCDDefinition().getName())
@@ -92,7 +96,7 @@ public class ASTCDDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDC
     }
 
     return CD4AnalysisMill.cDCompilationUnitBuilder()
-        .setPackageList(astPackage)
+        .setMCPackageDeclaration(packageDecl)
         .setCDDefinition(astCD)
         .build();
   }

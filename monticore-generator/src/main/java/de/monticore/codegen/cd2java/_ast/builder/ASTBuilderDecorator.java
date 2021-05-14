@@ -3,16 +3,17 @@ package de.monticore.codegen.cd2java._ast.builder;
 
 import com.google.common.collect.Lists;
 import de.monticore.ast.ASTCNode;
-import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDExtendUsage;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes.MCBasicTypesMill;
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.umlmodifier._ast.ASTModifier;
@@ -48,7 +49,7 @@ public class ASTBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass>
 
     String builderClassName = builderClass.getName();
 
-    builderClass.setSuperclass(createBuilderSuperClass(domainClass, builderClassName));
+    builderClass.setCDExtendUsage(createBuilderSuperClass(domainClass, builderClassName));
 
     if (!hasSuperClassOtherThanASTCNode(domainClass)) {
       ASTMCType builderType = this.getMCTypeFacade().createQualifiedType(builderClassName);
@@ -60,9 +61,7 @@ public class ASTBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass>
         this.replaceTemplate(BUILD_INIT_TEMPLATE, b, new TemplateHookPoint(AST_BUILDER_INIT_TEMPLATE, domainClass)));
 
     // make the builder abstract for a abstract AST class
-    ASTModifier modifier = domainClass.isPresentModifier() ?
-            service.createModifierPublicModifier(domainClass.getModifier()) :
-            PUBLIC.build();
+    ASTModifier modifier = service.createModifierPublicModifier(domainClass.getModifier());
     if (domainClass.getModifier().isAbstract()) {
       modifier.setAbstract(true);
     }
@@ -77,12 +76,12 @@ public class ASTBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass>
   }
 
 
-  protected ASTMCQualifiedType createBuilderSuperClass(final ASTCDClass domainClass, final String builderClassName) {
+  protected ASTCDExtendUsage createBuilderSuperClass(final ASTCDClass domainClass, final String builderClassName) {
     String superClass = String.format(DEFAULT_SUPER_CLASS, builderClassName);
     if (hasSuperClassOtherThanASTCNode(domainClass)) {
       superClass = domainClass.printSuperClass()+ BUILDER_SUFFIX;
     }
-    return this.getMCTypeFacade().createQualifiedType(superClass);
+    return CD4CodeMill.cDExtendUsageBuilder().addSuperclass(this.getMCTypeFacade().createQualifiedType(superClass)).build();
   }
 
   /**
