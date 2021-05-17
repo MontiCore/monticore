@@ -82,7 +82,7 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
     ASTCDClass symbols2JsonClass = CD4CodeMill.cDClassBuilder()
             .setName(symbols2JsonName)
             .setModifier(PUBLIC.build())
-            .addInterface(getMCTypeFacade().createQualifiedType(visitorFullName))
+            .setCDInterfaceUsage(CD4CodeMill.cDInterfaceUsageBuilder().addInterface(getMCTypeFacade().createQualifiedType(visitorFullName)).build())
             .addAllCDMembers(createDeSerAttrs(symbolDefiningProds))
             .addCDMember(getCDAttributeFacade().createAttribute(PROTECTED.build(), JSON_PRINTER, "printer"))
             .addCDMember(createGetJsonPrinterMethod())

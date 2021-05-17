@@ -79,7 +79,7 @@ public class ASTBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass>
   protected ASTCDExtendUsage createBuilderSuperClass(final ASTCDClass domainClass, final String builderClassName) {
     String superClass = String.format(DEFAULT_SUPER_CLASS, builderClassName);
     if (hasSuperClassOtherThanASTCNode(domainClass)) {
-      superClass = domainClass.printSuperClass()+ BUILDER_SUFFIX;
+      superClass = domainClass.printSuperclasses()+ BUILDER_SUFFIX;
     }
     return CD4CodeMill.cDExtendUsageBuilder().addSuperclass(this.getMCTypeFacade().createQualifiedType(superClass)).build();
   }
@@ -90,7 +90,7 @@ public class ASTBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass>
    * corresponding AST has just ASTCNode as superclass -> use ASTCNodeBuilder as superclass
    */
   protected boolean hasSuperClassOtherThanASTCNode(final ASTCDClass domainClass) {
-    return domainClass.isPresentSuperclass() && !ASTCNode.class.getSimpleName().equals(domainClass.printSuperClass());
+    return domainClass.isPresentCDExtendUsage() && !ASTCNode.class.getSimpleName().equals(domainClass.printSuperclasses());
   }
 
   protected List<ASTCDMethod> createBuilderMethodForASTCNodeMethods(final ASTMCType builderType) {

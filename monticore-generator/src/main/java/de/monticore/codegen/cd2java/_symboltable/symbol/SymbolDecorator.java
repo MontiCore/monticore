@@ -3,6 +3,7 @@ package de.monticore.codegen.cd2java._symboltable.symbol;
 
 import com.google.common.collect.Lists;
 import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.cd4codebasis._ast.*;
 import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
@@ -123,8 +124,9 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
     ASTCDClass symbolClass = CD4AnalysisMill.cDClassBuilder()
             .setName(symbolName)
             .setModifier(modifier)
-            .addInterface(getMCTypeFacade().createQualifiedType(symbolTableService.getCommonSymbolInterfaceFullName()))
-            .addAllInterfaces(symbolInput.getInterfaceList())
+            .setCDInterfaceUsage(CD4CodeMill.cDInterfaceUsageBuilder()
+                    .addInterface(getMCTypeFacade().createQualifiedType(symbolTableService.getCommonSymbolInterfaceFullName()))
+                    .addAllInterface(symbolInput.getInterfaceList()).build())
             .addCDMember(constructor)
             .addAllCDMembers(symbolAttributes)
             .addAllCDMembers(symbolNameAttributes)
@@ -146,13 +148,16 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
         symbolClass.addCDMember(spannedScopeAttribute);
       }
       symbolClass.addAllCDMembers(createSpannedScopeMethods(scopeInterface));
-      symbolClass.addInterface(getMCTypeFacade().createQualifiedType(I_SCOPE_SPANNING_SYMBOL));
+      symbolClass.getCDInterfaceUsage().addInterface(getMCTypeFacade().createQualifiedType(I_SCOPE_SPANNING_SYMBOL));
     }
     if (hasInheritedSymbol) {
       Map<ASTCDClass, String> values = symbolTableService.getInheritedSymbolPropertyClasses(Lists.newArrayList(symbolInput));
       String value = values.getOrDefault(symbolInput, "");
       if (!value.isEmpty()) {
-        symbolClass.setSuperclass(getMCTypeFacade().createQualifiedType(value));
+        if (!symbolClass.isPresentCDExtendUsage()) {
+          symbolClass.setCDExtendUsage(CD4CodeMill.cDExtendUsageBuilder().build());
+        }
+        symbolClass.getCDExtendUsage().addSuperclass(getMCTypeFacade().createQualifiedType(value));
       }
     } else if (symbolInput.isPresentCDExtendUsage()) {
       symbolClass.setCDExtendUsage(symbolInput.getCDExtendUsage());

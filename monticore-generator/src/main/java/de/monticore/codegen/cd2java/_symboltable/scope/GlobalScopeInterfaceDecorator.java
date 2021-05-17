@@ -2,6 +2,7 @@
 package de.monticore.codegen.cd2java._symboltable.scope;
 
 import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
@@ -89,8 +90,9 @@ public class GlobalScopeInterfaceDecorator
     return CD4AnalysisMill.cDInterfaceBuilder()
         .setName(globalScopeInterfaceName)
         .setModifier(PUBLIC.build())
-        .addAllInterfaces(getSuperGlobalScopeInterfaces())
-        .addInterface(symbolTableService.getScopeInterfaceType())
+        .setCDExtendUsage(CD4CodeMill.cDExtendUsageBuilder()
+                .addAllSuperclass(getSuperGlobalScopeInterfaces())
+                .addSuperclass(symbolTableService.getScopeInterfaceType()).build())
         .addAllCDMembers(createCalculateModelNameMethods(symbolClasses))
         .addAllCDMembers(resolverMethods)
         .addAllCDMembers(createResolveAdaptedMethods(symbolClasses))

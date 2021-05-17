@@ -5,6 +5,7 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
+import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.cd.facade.CDMethodFacade;
 import de.monticore.cd.facade.CDParameterFacade;
@@ -228,7 +229,7 @@ public class VisitorService extends AbstractService<VisitorService> {
     //set classname to correct Name with path
     String astPath = getASTPackage();
     // in this version, all CD elements should only be classes, interfaces, and enums
-    compilationUnit.getCDDefinition().getCDElementList().forEach(e -> e.setName(astPath + "." + e.getName()));
+    compilationUnit.getCDDefinition().getCDElementList().stream().filter(e -> e instanceof ASTCDType).forEach(e -> ((ASTCDType)e).setName(astPath + "." + ((ASTCDType) e).getName()));
     return compilationUnit;
   }
 

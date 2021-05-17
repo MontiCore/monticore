@@ -85,7 +85,7 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
     ASTCDClass clazz = CD4CodeMill.cDClassBuilder()
         .setName(className)
         .setModifier(PUBLIC.build())
-        .addInterface(iDeSerType)
+        .setCDInterfaceUsage(CD4CodeMill.cDInterfaceUsageBuilder().addInterface(iDeSerType).build())
         .addCDMember(createGetSerializedKindMethod(symName))
 
         //serialization

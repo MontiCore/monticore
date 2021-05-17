@@ -86,7 +86,7 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
 
     ASTCDInterface visitorInterface = CD4CodeMill.cDInterfaceBuilder()
         .setName(traverserSimpleName)
-        .addAllInterfaces(superInterfaces)
+        .setCDExtendUsage(CD4CodeMill.cDExtendUsageBuilder().addAllSuperclass(superInterfaces).build())
         .setModifier(PUBLIC.build())
         .addAllCDMembers(addVisitor2Methods(definitionList))
         .addAllCDMembers(addHanlderMethods(definitionList))

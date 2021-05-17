@@ -1,10 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.grammar.grammarfamily._symboltable;
 
-import de.monticore.cd4code._symboltable.CD4AnalysisSTCompleteTypes;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.cdbasis._symboltable.CDBasisSymbolTableCompleter;
-import de.monticore.cdassociation._symboltable.CDAssociationSymbolTableCompleter;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._symboltable.GrammarSTCompleteTypes;
 import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
@@ -12,7 +9,6 @@ import de.monticore.grammar.grammarfamily._visitor.GrammarFamilyTraverser;
 import de.monticore.javalight._symboltable.JavaLightSTCompleteTypes;
 import de.monticore.statements.mccommonstatements._symboltable.MCCommonStatementsSTCompleteTypes;
 import de.monticore.statements.mcvardeclarationstatements._symboltable.MCVarDeclarationStatementsSTCompleteTypes;
-import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 
 import java.util.ArrayList;
 import java.util.List;

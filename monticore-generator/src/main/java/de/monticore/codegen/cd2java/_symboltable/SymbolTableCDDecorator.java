@@ -3,6 +3,7 @@ package de.monticore.codegen.cd2java._symboltable;
 
 import com.google.common.collect.Lists;
 import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDDefinition;
@@ -20,6 +21,7 @@ import de.monticore.codegen.cd2java._symboltable.serialization.Symbols2JsonDecor
 import de.monticore.codegen.cd2java._symboltable.symbol.*;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.IterablePath;
+import de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -180,8 +182,13 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
 
     addPackageAndAnnotation(symTabCD, symbolTablePackage);
 
+    ASTMCPackageDeclaration mCPackageDeclaration = CD4AnalysisMill.mCPackageDeclarationBuilder().setMCQualifiedName(
+            CD4AnalysisMill.mCQualifiedNameBuilder()
+                    .setPartsList(symbolTablePackage)
+                    .build())
+            .build();
     return CD4AnalysisMill.cDCompilationUnitBuilder()
-        .setPackageList(symbolTablePackage)
+        .setMCPackageDeclaration(mCPackageDeclaration)
         .setCDDefinition(symTabCD)
         .build();
   }

@@ -5,11 +5,10 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd4code.CD4CodeMill;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDDefinition;
-import de.monticore.cd4codebasis._ast.ASTCDMethod;
-import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.cdbasis._symboltable.ICDBasisArtifactScope;
 import de.monticore.cdbasis._symboltable.ICDBasisScope;
@@ -20,6 +19,7 @@ import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.StringTransformations;
@@ -29,17 +29,17 @@ import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
-import static de.monticore.codegen.cd2java.CDModifier.PUBLIC_STATIC;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
-import static de.monticore.codegen.cd2java._parser.ParserConstants.*;
+import static de.monticore.codegen.cd2java._parser.ParserConstants.FOR_SUFFIX;
+import static de.monticore.codegen.cd2java._parser.ParserConstants.PARSER_SUFFIX;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.INHERITANCE_TRAVERSER;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.TRAVERSER;
 
 public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit, Collection<ASTCDClass>> {
 
-  protected ASTCDDefinition astcdDefinition;
 
   protected final AbstractService<?> service;
   protected final VisitorService visitorService;
@@ -56,19 +56,17 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
   }
 
   public List<ASTCDClass> decorate(final ASTCDCompilationUnit compilationUnit) {
-    astcdDefinition = compilationUnit.getCDDefinition().deepClone();
     //filter out all classes that are abstract and remove AST prefix
-    astcdDefinition.setCDClassesList(astcdDefinition.getCDClassesList()
+    List<ASTCDClass> astcdClassList = compilationUnit.getCDDefinition().getCDClassesList()
         .stream()
         .filter(x -> !x.getModifier().isAbstract())
-        .collect(Collectors.toList()));
+        .collect(Collectors.toList());
 
     Collection<DiagramSymbol> superSymbolList = service.getSuperCDsTransitive();
     List<ASTCDClass> superMills = new ArrayList<>();
-    List<ASTCDClass> astcdClassList = Lists.newArrayList(astcdDefinition.getCDClassesList());
 
     for (DiagramSymbol superSymbol : superSymbolList) {
-      String millClassName = superSymbol.getName() + MillConstants.MILL_FOR + astcdDefinition.getName();
+      String millClassName = superSymbol.getName() + MillConstants.MILL_FOR + compilationUnit.getCDDefinition().getName();
       List<ASTCDMethod> builderMethodsList = addBuilderMethodsForSuper(astcdClassList, superSymbol);
       String basePackage = superSymbol.getPackageName().isEmpty() ? "" : superSymbol.getPackageName().toLowerCase() + ".";
 

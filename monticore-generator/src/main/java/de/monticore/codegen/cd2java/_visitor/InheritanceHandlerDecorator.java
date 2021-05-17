@@ -57,7 +57,7 @@ public class InheritanceHandlerDecorator extends AbstractCreator<ASTCDCompilatio
     ASTCDClass cdClass = CD4CodeMill.cDClassBuilder()
         .setName(visitorService.getInheritanceHandlerSimpleName())
         .setModifier(PUBLIC.build())
-        .addInterface(visitorService.getHandlerType())
+        .setCDInterfaceUsage(CD4CodeMill.cDInterfaceUsageBuilder().addInterface(visitorService.getHandlerType()).build())
         .addCDMember(traverserAttribute)
         .addAllCDMembers(traverserMethods)
         .addAllCDMembers(getASTHandleMethods(compilationUnit.getCDDefinition(), handlerSimpleName, languageInterfaceName))
@@ -91,7 +91,7 @@ public class InheritanceHandlerDecorator extends AbstractCreator<ASTCDCompilatio
     ASTCDMethod handleMethod = visitorService.getVisitorMethod(HANDLE, getMCTypeFacade().createQualifiedType(astcdClass.getName()));
     List<String> superTypeList = new ArrayList<>();
     // super classes
-    if (astcdClass.isPresentSuperclass() && !astcdClass.printSuperClass().isEmpty()) {
+    if (astcdClass.isPresentCDExtendUsage() && !astcdClass.printSuperclasses().isEmpty()) {
       superTypeList= visitorService.getAllSuperClassesTransitive(astcdClass);
     }
     // super interfaces

@@ -4,6 +4,7 @@ package de.monticore.codegen.cd2java._parser;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis.CD4CodeBasisMill;
 import de.monticore.cd4codebasis._ast.*;
 import de.monticore.cdbasis._ast.*;
@@ -49,7 +50,7 @@ public class ParserClassDecorator extends AbstractDecorator {
         return Optional.of(CD4AnalysisMill.cDClassBuilder()
             .setName(service.getParserClassSimpleName())
             .setModifier(PUBLIC.build())
-            .setSuperclass(superClass)
+            .setCDExtendUsage(CD4CodeMill.cDExtendUsageBuilder().addSuperclass(superClass).build())
             .addAllCDMembers(createCreateMethods(grammarName))
             .addAllCDMembers(createParseMethods(startRuleName, qualifiedStartRuleName))
             .addAllCDMembers(createParseMethodsForProds(grammarName, prods))

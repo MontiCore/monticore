@@ -112,7 +112,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
     ASTCDClass clazz = CD4CodeMill.cDClassBuilder()
         .setName(scopeDeSerName)
         .setModifier(PUBLIC.build())
-        .addInterface(interfaceName)
+        .setCDInterfaceUsage(CD4CodeMill.cDInterfaceUsageBuilder().addInterface(interfaceName).build())
 
         // add serialization methods
         .addCDMember(createSerializeMethod(scopeParam, s2jParam, scopeRuleAttrList))

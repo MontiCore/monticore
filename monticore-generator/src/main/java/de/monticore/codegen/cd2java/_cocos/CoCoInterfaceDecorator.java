@@ -2,6 +2,7 @@
 package de.monticore.codegen.cd2java._cocos;
 
 import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.*;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.cdinterfaceandenum._ast.*;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.CDModifier.PUBLIC_ABSTRACT;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
+import static de.monticore.codegen.cd2java._ast_emf.EmfConstants.ASTE_PACKAGE;
 
 /**
  * creates CoCo interfaces with a abstract check method for AST classes and interfaces
@@ -58,7 +60,7 @@ public class CoCoInterfaceDecorator extends AbstractCreator<ASTCDDefinition, Lis
     return CD4AnalysisMill.cDInterfaceBuilder()
         .setModifier(modifier)
         .setName(this.cocoService.getCoCoSimpleTypeName(type))
-        .addInterface(interfaceType)
+        .setCDExtendUsage(CD4CodeMill.cDExtendUsageBuilder().addSuperclass(interfaceType).build())
         .addCDMember(createCheckMethod(type))
         .addCDMember(createVisitMethod(type))
         .build();
