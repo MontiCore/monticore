@@ -82,6 +82,7 @@ sourceSets {
 
 task  generateGrammarFamily (type: MCTask) {
   grammar = file "$grammarDir/de/monticore/grammar/GrammarFamily.mc4"
+  templatePath = [ "$buildDir"] // Reset path: Don't use actual templates
   outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
   def uptoDate = incCheck("de/monticore/grammar/GrammarFamily.mc4")
   outputs.upToDateWhen { uptoDate }
