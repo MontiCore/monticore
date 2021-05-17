@@ -77,7 +77,7 @@ public class ASTCDDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDC
         .addAllCDElements(createASTInterfaces(ast))
         .addCDElement(createLanguageInterface(ast))
         .addAllCDElements(createEnums(ast))
-        .build();
+        .uncheckedBuild();
 
     // change the package and add deprecated annotations to all classes, interfaces, enums
     for (ASTCDClass cdClass : astCD.getCDClassesList()) {
