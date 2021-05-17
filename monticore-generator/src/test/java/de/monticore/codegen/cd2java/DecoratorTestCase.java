@@ -1,25 +1,23 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java;
 
-import static org.junit.Assert.fail;
-
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.Optional;
-
+import de.monticore.cd4analysis._symboltable.CD4AnalysisSymbolTableCompleter;
 import de.monticore.cd4analysis._symboltable.ICD4AnalysisGlobalScope;
 import de.monticore.cd4analysis._symboltable.ICD4AnalysisScope;
-import de.monticore.cd4code._symboltable.CD4AnalysisSTCompleteTypes;
-import de.monticore.cd4code._visitor.CD4CodeTraverser;
-import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
-import de.se_rwth.commons.logging.Log;
-import org.junit.Before;
-
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4code._parser.CD4CodeParser;
 import de.monticore.cd4code._symboltable.ICD4CodeGlobalScope;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.io.paths.ModelPath;
+import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
+import de.se_rwth.commons.logging.Log;
+import org.junit.Before;
+
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.Optional;
+
+import static org.junit.Assert.fail;
 
 public abstract class DecoratorTestCase {
 
@@ -74,11 +72,8 @@ public abstract class DecoratorTestCase {
         ASTCDCompilationUnit comp = (ASTCDCompilationUnit) scope.getAstNode();
 
         // complete types for CD
-        CD4CodeTraverser t = CD4CodeMill.traverser();
-        CD4AnalysisSTCompleteTypes v = new CD4AnalysisSTCompleteTypes();
-        t.add4CDBasis(v);
-        t.add4CDInterfaceAndEnum(v);
-        comp.accept(t);
+        CD4AnalysisSymbolTableCompleter v = new CD4AnalysisSymbolTableCompleter(comp);
+        comp.accept(v.getTraverser());
       }
     }
   }

@@ -81,20 +81,20 @@ public class AstRuleInheritanceTest {
    */
   @Test
   public void testAstSuperClass() {
-    assertTrue(astA.isPresentSuperclass());
-    String name = typeToString(astA.getSuperclass());
+    assertTrue(astA.isPresentCDExtendUsage());
+    String name = typeToString(astA.getCDExtendUsage().getSuperclass(0));
     assertEquals("ASTExternalProd", name);
 
-    assertTrue(astC.isPresentSuperclass());
-    name = typeToString(astC.getSuperclass());
+    assertTrue(astC.isPresentCDExtendUsage());
+    name = typeToString(astC.getCDExtendUsage().getSuperclass(0));
     assertEquals("mc2cdtransformation.AstRuleInheritance.ASTA", name);
 
-    assertTrue(astD.isPresentSuperclass());
-    name = typeToString(astD.getSuperclass());
+    assertTrue(astD.isPresentCDExtendUsage());
+    name = typeToString(astD.getCDExtendUsage().getSuperclass(0));
     assertEquals("mc2cdtransformation.Supergrammar.ASTSuperProd", name);
 
-    assertTrue(astF.isPresentSuperclass());
-    name = typeToString(astF.getSuperclass());
+    assertTrue(astF.isPresentCDExtendUsage());
+    name = typeToString(astF.getCDExtendUsage().getSuperclass(0));
     assertEquals("java.util.Observable", name);
   }
 
@@ -104,7 +104,6 @@ public class AstRuleInheritanceTest {
    */
   @Test
   public void testStereotypesForAstSuperclass() {
-    assertTrue(astA.isPresentModifier());
     assertTrue(astA.getModifier().isPresentStereotype());
     // one stereotype for the startProd flag and one for the checked external type
     assertEquals(2, astA.getModifier().getStereotype().getValuesList().size());
@@ -113,7 +112,6 @@ public class AstRuleInheritanceTest {
     assertFalse(astA.getModifier().getStereotype().getValuesList().get(0).getValue().isEmpty());
     assertEquals(astA.getModifier().getStereotype().getValuesList().get(0).getValue(), "ASTExternalProd");
 
-    assertTrue(astF.isPresentModifier());
     assertTrue(astF.getModifier().isPresentStereotype());
     assertEquals(1, astF.getModifier().getStereotype().getValuesList().size());
     assertEquals(astF.getModifier().getStereotype().getValuesList().get(0).getName(),
@@ -121,7 +119,6 @@ public class AstRuleInheritanceTest {
     assertFalse(astF.getModifier().getStereotype().getValuesList().get(0).getValue().isEmpty());
     assertEquals(astF.getModifier().getStereotype().getValuesList().get(0).getValue(), "java.util.Observable");
 
-    assertTrue(astD.isPresentModifier());
     assertTrue(astD.getModifier().isPresentStereotype());
     assertEquals(1, astD.getModifier().getStereotype().getValuesList().size());
     assertEquals(astD.getModifier().getStereotype().getValuesList().get(0).getName(),
@@ -136,7 +133,6 @@ public class AstRuleInheritanceTest {
    */
   @Test
   public void testStereotypesForAstInterfaces() {
-    assertTrue(astE.isPresentModifier());
     assertTrue(astE.getModifier().isPresentStereotype());
     assertEquals(2, astE.getModifier().getStereotype().getValuesList().size());
     assertEquals(astE.getModifier().getStereotype().getValuesList().get(0).getName(),

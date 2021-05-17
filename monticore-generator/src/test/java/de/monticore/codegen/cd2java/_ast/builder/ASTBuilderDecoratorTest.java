@@ -65,7 +65,7 @@ public class ASTBuilderDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperClassName() {
-    assertEquals("de.monticore.ast.ASTNodeBuilder<ABuilder>", builderClass.printSuperClass());
+    assertEquals("de.monticore.ast.ASTNodeBuilder<ABuilder>", builderClass.printSuperclasses());
   }
 
   @Test

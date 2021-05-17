@@ -36,8 +36,8 @@ public class OverridingClassProdTest {
    */
   @Test
   public void testOverride() {
-    assertTrue(astX.isPresentSuperclass());
-    String name = typeToString(astX.getSuperclass());
+    assertTrue(astX.isPresentCDExtendUsage());
+    String name = typeToString(astX.getCDExtendUsage().getSuperclass(0));
     assertEquals("mc2cdtransformation.Supergrammar.ASTX", name);
   }
 }

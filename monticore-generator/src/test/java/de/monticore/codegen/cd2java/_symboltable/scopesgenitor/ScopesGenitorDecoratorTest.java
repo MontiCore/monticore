@@ -124,7 +124,7 @@ public class ScopesGenitorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testNoSuperClass() {
-    assertFalse(scopesGenitorClass.isPresentSuperclass());
+    assertFalse(scopesGenitorClass.isPresentCDExtendUsage());
   }
 
   @Test

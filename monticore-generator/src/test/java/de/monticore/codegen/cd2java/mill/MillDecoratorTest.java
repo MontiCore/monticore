@@ -228,7 +228,6 @@ public class MillDecoratorTest extends DecoratorTestCase {
   public void testAttributeModifier() {
     for (ASTCDAttribute astcdAttribute : millClass.getCDAttributeList()) {
       if(!astcdAttribute.getName().equals("automatonGlobalScope")) {
-        assertTrue(astcdAttribute.isPresentModifier());
         assertTrue(PROTECTED_STATIC.build().deepEquals(astcdAttribute.getModifier()));
       }
     }

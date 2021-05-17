@@ -117,9 +117,6 @@ public class ASTCDDecoratorTest extends DecoratorTestCase {
     ASTCDClass originalClass = getClassBy("A", originalCompilationUnit);
     ASTCDClass decoratedClass = getClassBy("A", decoratedCompilationUnit);
 
-    assertTrue(originalClass.isPresentModifier());
-    assertTrue(decoratedClass.isPresentModifier());
-
     assertNotEquals(originalClass.getModifier().toString(), decoratedClass.getModifier().toString());
     assertNotEquals(originalClass.getModifier(), decoratedClass.getModifier());
   }

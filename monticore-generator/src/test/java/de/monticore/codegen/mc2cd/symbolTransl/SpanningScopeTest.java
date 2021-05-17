@@ -58,10 +58,8 @@ public class SpanningScopeTest {
     assertTrue(symbolClassSymbol.getInterfaceList().isEmpty());
     assertTrue(symbolClassSymbol.getCDMethodList().isEmpty());
     assertTrue(symbolClassSymbol.getCDConstructorList().isEmpty());
-    assertFalse(symbolClassSymbol.isPresentSuperclass());
+    assertFalse(symbolClassSymbol.isPresentCDExtendUsage());
     assertTrue(symbolClassSymbol.getCDAttributeList().isEmpty());
-
-    assertTrue(symbolClassSymbol.isPresentModifier());
 
     assertTrue(symbolClassSymbol.getModifier().isPresentStereotype());
     assertFalse(symbolClassSymbol.getModifier().getStereotype().isEmptyValues());
@@ -78,10 +76,8 @@ public class SpanningScopeTest {
     assertTrue(symbolClassSymbol.getInterfaceList().isEmpty());
     assertTrue(symbolClassSymbol.getCDMethodList().isEmpty());
     assertTrue(symbolClassSymbol.getCDConstructorList().isEmpty());
-    assertFalse(symbolClassSymbol.isPresentSuperclass());
+    assertFalse(symbolClassSymbol.isPresentCDExtendUsage());
     assertTrue(symbolClassSymbol.getCDAttributeList().isEmpty());
-
-    assertTrue(symbolClassSymbol.isPresentModifier());
 
     assertTrue(symbolClassSymbol.getModifier().isPresentStereotype());
     assertFalse(symbolClassSymbol.getModifier().getStereotype().isEmptyValues());

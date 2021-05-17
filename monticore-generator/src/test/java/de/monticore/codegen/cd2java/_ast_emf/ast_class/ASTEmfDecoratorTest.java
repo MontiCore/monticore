@@ -79,8 +79,8 @@ public class ASTEmfDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperClass() {
-    assertTrue(emfClass.isPresentSuperclass());
-    assertEquals("de.monticore.emf._ast.ASTECNode", emfClass.printSuperClass());
+    assertTrue(emfClass.isPresentCDExtendUsage());
+    assertEquals("de.monticore.emf._ast.ASTECNode", emfClass.printSuperclasses());
   }
 
   @Test
@@ -201,7 +201,7 @@ public class ASTEmfDecoratorTest extends DecoratorTestCase {
    */
   @Test
   public void testSuperClassASTTransitionWithAction() {
-    assertFalse(emfTransitionClass.isPresentSuperclass());
+    assertFalse(emfTransitionClass.isPresentCDExtendUsage());
   }
 
   @Test

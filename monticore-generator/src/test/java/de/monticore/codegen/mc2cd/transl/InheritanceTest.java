@@ -60,8 +60,8 @@ public class InheritanceTest {
    */
   @Test
   public void testExtends() {
-    assertTrue(astA.isPresentSuperclass());
-    String name = typeToString(astA.getSuperclass());
+    assertTrue(astA.isPresentCDExtendUsage());
+    String name = typeToString(astA.getCDExtendUsage().getSuperclass(0));
     assertEquals("mc2cdtransformation.InheritanceGrammar.ASTextendedProd", name);
   }
   
@@ -83,8 +83,8 @@ public class InheritanceTest {
    */
   @Test
   public void testAstextends() {
-    assertTrue(astC.isPresentSuperclass());
-    String name = typeToString(astC.getSuperclass());
+    assertTrue(astC.isPresentCDExtendUsage());
+    String name = typeToString(astC.getCDExtendUsage().getSuperclass(0));
     assertEquals("AstExtendedType", name);
   }
   
@@ -106,8 +106,8 @@ public class InheritanceTest {
    */
   @Test
   public void testAstextendsQualified() {
-    assertTrue(astE.isPresentSuperclass());
-    String name = typeToString(astE.getSuperclass());
+    assertTrue(astE.isPresentCDExtendUsage());
+    String name = typeToString(astE.getCDExtendUsage().getSuperclass(0));
     assertEquals("java.util.Observable", name);
   }
   
