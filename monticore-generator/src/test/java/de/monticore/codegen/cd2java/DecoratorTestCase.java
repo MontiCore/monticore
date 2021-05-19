@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java;
 
+import de.monticore.cd._symboltable.BuiltInTypes;
 import de.monticore.cd4analysis._symboltable.CD4AnalysisSymbolTableCompleter;
 import de.monticore.cd4analysis._symboltable.ICD4AnalysisGlobalScope;
 import de.monticore.cd4analysis._symboltable.ICD4AnalysisScope;
@@ -32,10 +33,8 @@ public abstract class DecoratorTestCase {
     Log.enableFailQuick(false);
     CD4CodeMill.reset();
     CD4CodeMill.init();
-    BasicSymbolsMill.initializePrimitives();
     ICD4CodeGlobalScope globalScope = CD4CodeMill.globalScope();
-    BasicSymbolsMill.initializePrimitives();
-    globalScope.setFileExt("cd");
+    BuiltInTypes.addBuiltInTypes(globalScope);
     globalScope.setModelPath(new ModelPath(Paths.get(MODEL_PATH)));
   }
 
@@ -68,6 +67,9 @@ public abstract class DecoratorTestCase {
    *
    * @param gs The given global scope to extract all compilation units
    */
+  // TODO (MB): Macht diese Methode für unsere Klassendiagramme sind?
+  // So etwas kann nicht aufgelöst werden:
+  // <<astType>> protected java.util.List<de.monticore.codegen.ast.automaton._ast.ASTState> states;
   public void completeCDTypes(ICD4AnalysisGlobalScope gs) {
     for (ICD4AnalysisScope scope : gs.getSubScopes()) {
       if (!scope.getDiagramSymbols().isEmpty()) {
