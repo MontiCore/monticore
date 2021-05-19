@@ -1,11 +1,12 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("packageInterface", "astCDDefinition")}
 ${tc.include("core.Package")}
+<#assign cdPrinter = glex.getGlobalVar("cdPrinter")>
 
 ${tc.include("core.Imports")}
 
-${packageInterface.printModifier()} interface ${packageInterface.getName()} <#rt><#lt>
-<#if !packageInterface.isEmptyInterfaceList()>extends ${packageInterface.printInterfaces()} </#if>{
+${cdPrinter.printSimpleModifier(packageInterface.getModifier())} interface ${packageInterface.getName()} <#rt><#lt>
+<#if cdInterface.isPresentCDExtendUsage()>extends ${cdPrinter.printObjectTypeList(cdInterface.getCDExtendUsage().getSuperclassList())} </#if>{
 
 
 <#list packageInterface.getCDAttributeList() as attribute>
