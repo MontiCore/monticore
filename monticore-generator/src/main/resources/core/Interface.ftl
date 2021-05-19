@@ -8,7 +8,7 @@ ${tc.include("core.Imports")}
 
 ${tc.include("core.Annotations")}
 ${cdPrinter.printSimpleModifier(cdInterface.getModifier())} interface ${cdInterface.getName()} <#rt><#lt>
-<#if cdInterface.isPresentCDExtendUsage()>extends ${cdPrinter.printObjectTypeList(cdInterface.getCDExtendUsage().getSuperclassList())} </#if> <#rt><#lt>
+<#if cdInterface.isPresentCDExtendUsage()>extends ${cdPrinter.printObjectTypeList(cdInterface.getCDExtendUsage().getSuperclassList())} </#if> { <#rt><#lt>
 
 
 <#list cdInterface.getCDAttributeList() as attribute>
