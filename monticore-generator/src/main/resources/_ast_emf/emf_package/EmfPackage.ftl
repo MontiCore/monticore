@@ -6,7 +6,7 @@ ${tc.include("core.Package")}
 ${tc.include("core.Imports")}
 
 ${cdPrinter.printSimpleModifier(packageInterface.getModifier())} interface ${packageInterface.getName()} <#rt><#lt>
-<#if packageInterface.isPresentCDExtendUsage()>extends ${cdPrinter.printObjectTypeList(packageInterface.getCDExtendUsage().getSuperclassList())} </#if>{
+<#if cdInterface.isPresentCDExtendUsage()>extends ${cdPrinter.printObjectTypeList(cdInterface.getCDExtendUsage().getSuperclassList())} </#if>{
 
 
 <#list packageInterface.getCDAttributeList() as attribute>
