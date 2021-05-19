@@ -8,10 +8,7 @@ import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd4codebasis._ast.*;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.cdinterfaceandenum._ast.*;
-import de.monticore.codegen.cd2java.AbstractService;
-import de.monticore.codegen.cd2java.CoreTemplates;
-import de.monticore.codegen.cd2java.DecorationHelper;
-import de.monticore.codegen.cd2java.DecoratorTestCase;
+import de.monticore.codegen.cd2java.*;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTScopeDecorator;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTSymbolDecorator;
@@ -52,6 +49,7 @@ public class FullASTInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDCompilationUnit astcdCompilationUnit = this.parse("de", "monticore", "codegen", "data", "DataInterface");
     this.glex.setGlobalValue("service", new AbstractService(astcdCompilationUnit));
     this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
+    this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
 
     SymbolTableService symbolTableService = new SymbolTableService(astcdCompilationUnit);
     ASTCDInterface interfaceBy = getInterfaceBy("ASTA", astcdCompilationUnit);

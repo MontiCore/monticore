@@ -8,10 +8,7 @@ import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd4codebasis._ast.*;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
-import de.monticore.codegen.cd2java.AbstractService;
-import de.monticore.codegen.cd2java.CoreTemplates;
-import de.monticore.codegen.cd2java.DecorationHelper;
-import de.monticore.codegen.cd2java.DecoratorTestCase;
+import de.monticore.codegen.cd2java.*;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
@@ -37,6 +34,7 @@ public class DataInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDCompilationUnit cd = this.parse("de", "monticore", "codegen", "data", "DataInterface");
     ASTCDInterface clazz = getInterfaceBy("ASTA", cd);
     this.glex.setGlobalValue("service", new AbstractService(cd));
+    this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
 
     MethodDecorator methodDecorator = new MethodDecorator(glex, new ASTService(cd));
     InterfaceDecorator dataDecorator = new InterfaceDecorator(this.glex, new DataDecoratorUtil(), methodDecorator, new ASTService(cd));
