@@ -10,7 +10,7 @@ import de.monticore.ast.ASTCNode;
 
 ${tc.include("core.Annotations")}
 ${cdPrinter.printSimpleModifier(cdClass.getModifier())} class ${cdClass.getName()} <#rt><#lt>
-<#if cdClass.isPresentCDExtendUsage()>extends ${cdPrinter.printType(cdClass.getCDExtendUsage.getSuperclass(0))} </#if> <#rt><#lt>
+<#if cdClass.isPresentCDExtendUsage()>extends ${cdPrinter.printType(cdClass.getCDExtendUsage().getSuperclass(0))} </#if> <#rt><#lt>
 <#if cdClass.isPresentCDInterfaceUsage()>implements ${cdClass.printInterfaces()} </#if>{
 
 <#list cdClass.getCDAttributeList() as attribute>

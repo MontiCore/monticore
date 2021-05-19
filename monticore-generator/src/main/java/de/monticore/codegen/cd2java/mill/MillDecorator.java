@@ -3,6 +3,7 @@ package de.monticore.codegen.cd2java.mill;
 
 import com.google.common.collect.Lists;
 import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.cd4codebasis._ast.*;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
@@ -154,7 +155,9 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
       List<ASTCDMethod> parserMethods = getParserMethods();
       millClass.addCDMember(parserAttribute);
       millClass.addAllCDMembers(parserMethods);
-      allClasses.add(CD4AnalysisMill.cDClassBuilder().setName(parserService.getParserClassSimpleName()).build());
+      allClasses.add(CD4AnalysisMill.cDClassBuilder()
+              .setName(parserService.getParserClassSimpleName())
+              .setModifier(CD4CodeMill.modifierBuilder().build()).build());
     }
     //scope
     millClass.addAllCDMembers(getScopeMethods());

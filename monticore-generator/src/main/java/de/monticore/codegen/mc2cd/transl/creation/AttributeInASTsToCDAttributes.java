@@ -3,6 +3,7 @@
 package de.monticore.codegen.mc2cd.transl.creation;
 
 import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
@@ -24,7 +25,7 @@ public class AttributeInASTsToCDAttributes implements
     for (Link<ASTASTRule, ASTCDClass> link : rootLink.getLinks(ASTASTRule.class,
             ASTCDClass.class)) {
       for (ASTAdditionalAttribute attributeInAST : link.source().getAdditionalAttributeList()) {
-        ASTCDAttribute cdAttribute = CD4AnalysisMill.cDAttributeBuilder().uncheckedBuild();
+        ASTCDAttribute cdAttribute = CD4AnalysisMill.cDAttributeBuilder().setModifier(CD4CodeMill.modifierBuilder().build()).uncheckedBuild();
         link.target().addCDMember(cdAttribute);
         new Link<>(attributeInAST, cdAttribute, link);
       }
@@ -33,7 +34,7 @@ public class AttributeInASTsToCDAttributes implements
     for (Link<ASTASTRule, ASTCDInterface> link : rootLink.getLinks(ASTASTRule.class,
             ASTCDInterface.class)) {
       for (ASTAdditionalAttribute attributeInAST :link.source().getAdditionalAttributeList()) {
-        ASTCDAttribute cdAttribute = CD4AnalysisMill.cDAttributeBuilder().uncheckedBuild();
+        ASTCDAttribute cdAttribute = CD4AnalysisMill.cDAttributeBuilder().setModifier(CD4CodeMill.modifierBuilder().build()).uncheckedBuild();
         link.target().addCDMember(cdAttribute);
         new Link<>(attributeInAST, cdAttribute, link);
       }

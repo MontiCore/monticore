@@ -3,6 +3,7 @@
 package de.monticore.codegen.mc2cd.transl.creation;
 
 import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
@@ -47,7 +48,7 @@ public class TerminalsToCDAttributes implements
     @Override
     public void visit(ASTTerminal terminal) {
       if (terminal.isPresentUsageName()) {
-        ASTCDAttribute cdAttribute = CD4AnalysisMill.cDAttributeBuilder().uncheckedBuild();
+        ASTCDAttribute cdAttribute = CD4AnalysisMill.cDAttributeBuilder().setModifier(CD4CodeMill.modifierBuilder().build()).uncheckedBuild();
         link.target().addCDMember(cdAttribute);
         new Link<>(terminal, cdAttribute, link);
       }
@@ -56,7 +57,7 @@ public class TerminalsToCDAttributes implements
     @Override
     public void visit(ASTKeyTerminal terminal) {
       if (terminal.isPresentUsageName()) {
-        ASTCDAttribute cdAttribute = CD4AnalysisMill.cDAttributeBuilder().uncheckedBuild();
+        ASTCDAttribute cdAttribute = CD4AnalysisMill.cDAttributeBuilder().setModifier(CD4CodeMill.modifierBuilder().build()).uncheckedBuild();
         link.target().addCDMember(cdAttribute);
         new Link<>(terminal, cdAttribute, link);
       }
@@ -65,7 +66,7 @@ public class TerminalsToCDAttributes implements
     @Override
     public void visit(ASTTokenTerminal terminal) {
       if (terminal.isPresentUsageName()) {
-        ASTCDAttribute cdAttribute = CD4AnalysisMill.cDAttributeBuilder().uncheckedBuild();
+        ASTCDAttribute cdAttribute = CD4AnalysisMill.cDAttributeBuilder().setModifier(CD4CodeMill.modifierBuilder().build()).uncheckedBuild();
         link.target().addCDMember(cdAttribute);
         new Link<>(terminal, cdAttribute, link);
       }

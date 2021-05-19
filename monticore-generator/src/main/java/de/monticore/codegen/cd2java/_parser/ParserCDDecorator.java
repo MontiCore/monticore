@@ -46,6 +46,7 @@ public class ParserCDDecorator extends AbstractDecorator {
 
     ASTCDDefinition parserCD = CD4AnalysisMill.cDDefinitionBuilder()
         .setName(astCD.getCDDefinition().getName())
+        .setModifier(CD4CodeMill.modifierBuilder().build())
         .build();
 
     createParserClass(astCD).ifPresent(parserCD::addCDElement);

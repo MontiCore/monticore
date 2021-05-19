@@ -6,9 +6,12 @@ import de.monticore.cd4analysis._symboltable.ICD4AnalysisGlobalScope;
 import de.monticore.cd4analysis._symboltable.ICD4AnalysisScope;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4code._parser.CD4CodeParser;
+import de.monticore.cd4code._symboltable.CD4CodeSymbolTableCompleter;
 import de.monticore.cd4code._symboltable.ICD4CodeGlobalScope;
+import de.monticore.cd4code.trafo.CD4CodeAfterParseTrafo;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.io.paths.ModelPath;
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
@@ -29,8 +32,9 @@ public abstract class DecoratorTestCase {
     Log.enableFailQuick(false);
     CD4CodeMill.reset();
     CD4CodeMill.init();
+    BasicSymbolsMill.initializePrimitives();
     ICD4CodeGlobalScope globalScope = CD4CodeMill.globalScope();
-    globalScope.clear();
+    BasicSymbolsMill.initializePrimitives();
     globalScope.setFileExt("cd");
     globalScope.setModelPath(new ModelPath(Paths.get(MODEL_PATH)));
   }
@@ -50,8 +54,7 @@ public abstract class DecoratorTestCase {
     }
 
     ASTCDCompilationUnit comp = ast.get();
-//    TODO: activate transformation and symbol table completer, when cd4a is ready
-//    new CD4CodeAfterParseTrafo().transform(ast.get());
+    new CD4CodeAfterParseTrafo().transform(ast.get());
 
     CD4CodeMill.scopesGenitorDelegator().createFromAST(comp);
     comp.getEnclosingScope().setAstNode(comp);
@@ -72,7 +75,7 @@ public abstract class DecoratorTestCase {
         ASTCDCompilationUnit comp = (ASTCDCompilationUnit) scope.getAstNode();
 
         // complete types for CD
-        CD4AnalysisSymbolTableCompleter v = new CD4AnalysisSymbolTableCompleter(comp);
+        CD4CodeSymbolTableCompleter v = new CD4CodeSymbolTableCompleter(comp);
         comp.accept(v.getTraverser());
       }
     }

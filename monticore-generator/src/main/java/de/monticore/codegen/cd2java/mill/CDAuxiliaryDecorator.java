@@ -41,6 +41,7 @@ public class CDAuxiliaryDecorator extends AbstractCreator<ASTCDCompilationUnit, 
 
     ASTCDDefinition astCD = CD4AnalysisMill.cDDefinitionBuilder()
         .setName(input.getCDDefinition().getName())
+        .setModifier(CD4CodeMill.modifierBuilder().build())
         .addAllCDElements(millForSuperClasses)
         .build();
 

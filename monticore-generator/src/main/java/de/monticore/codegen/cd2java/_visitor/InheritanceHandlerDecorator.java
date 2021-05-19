@@ -46,8 +46,6 @@ public class InheritanceHandlerDecorator extends AbstractCreator<ASTCDCompilatio
 
   @Override
   public ASTCDClass decorate(ASTCDCompilationUnit input) {
-    ASTCDDefinition cdDefinition = input.deepClone().getCDDefinition();
-    ASTCDCompilationUnit compilationUnit = visitorService.calculateCDTypeNamesWithASTPackage(input);
     String languageInterfaceName = visitorService.getLanguageInterfaceName();
     String handlerSimpleName = visitorService.getHandlerSimpleName();
 
@@ -60,9 +58,9 @@ public class InheritanceHandlerDecorator extends AbstractCreator<ASTCDCompilatio
         .setCDInterfaceUsage(CD4CodeMill.cDInterfaceUsageBuilder().addInterface(visitorService.getHandlerType()).build())
         .addCDMember(traverserAttribute)
         .addAllCDMembers(traverserMethods)
-        .addAllCDMembers(getASTHandleMethods(compilationUnit.getCDDefinition(), handlerSimpleName, languageInterfaceName))
-        .addAllCDMembers(getScopeHandleMethods(cdDefinition, handlerSimpleName))
-        .addAllCDMembers(getSymbolHandleMethods(cdDefinition, handlerSimpleName))
+        .addAllCDMembers(getASTHandleMethods(input.getCDDefinition(), handlerSimpleName, languageInterfaceName))
+        .addAllCDMembers(getScopeHandleMethods(input.getCDDefinition(), handlerSimpleName))
+        .addAllCDMembers(getSymbolHandleMethods(input.getCDDefinition(), handlerSimpleName))
         .build();
     
     this.replaceTemplate(ANNOTATIONS, cdClass, createAnnotationsHookPoint(cdClass.getModifier()));

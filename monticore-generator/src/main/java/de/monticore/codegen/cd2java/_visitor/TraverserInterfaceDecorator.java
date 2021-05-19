@@ -90,7 +90,7 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
         .setModifier(PUBLIC.build())
         .addAllCDMembers(addVisitor2Methods(definitionList))
         .addAllCDMembers(addHanlderMethods(definitionList))
-        .addAllCDMembers(createTraverserDelegatingMethods(compilationUnit.getCDDefinition()))
+        .addAllCDMembers(createTraverserDelegatingMethods(ast.getCDDefinition()))
         .build();
     
     return visitorInterface;

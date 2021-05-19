@@ -62,7 +62,7 @@ public class HandlerDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
                 .addSuperclass(getMCTypeFacade().createQualifiedType(IHANDLER_FULL_NAME)).build())
         .addCDMember(addGetTraverserMethod(traverserType))
         .addCDMember(addSetTraverserMethod(traverserType))
-        .addAllCDMembers(createHandlerMethods(compilationUnit.getCDDefinition()))
+        .addAllCDMembers(createHandlerMethods(ast.getCDDefinition()))
         .build();
     
     return visitorInterface;

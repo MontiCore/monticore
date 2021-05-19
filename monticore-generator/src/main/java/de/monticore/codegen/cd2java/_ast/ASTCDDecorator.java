@@ -71,13 +71,14 @@ public class ASTCDDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDC
 
     ASTCDDefinition astCD = CD4AnalysisMill.cDDefinitionBuilder()
         .setName(ast.getCDDefinition().getName())
+        .setModifier(CD4CodeMill.modifierBuilder().build())
         .addAllCDElements(createASTClasses(ast))
         .addAllCDElements(createASTBuilderClasses(ast))
         .addCDElement(createASTConstantsClass(ast))
         .addAllCDElements(createASTInterfaces(ast))
         .addCDElement(createLanguageInterface(ast))
         .addAllCDElements(createEnums(ast))
-        .uncheckedBuild();
+        .build();
 
     // change the package and add deprecated annotations to all classes, interfaces, enums
     for (ASTCDClass cdClass : astCD.getCDClassesList()) {
