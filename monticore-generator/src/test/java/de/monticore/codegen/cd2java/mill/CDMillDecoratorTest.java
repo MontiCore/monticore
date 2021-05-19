@@ -4,6 +4,8 @@ package de.monticore.codegen.cd2java.mill;
 import com.google.common.collect.Lists;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDElement;
+import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.CdUtilsPrinter;
 import de.monticore.codegen.cd2java.DecorationHelper;
@@ -155,7 +157,8 @@ public class CDMillDecoratorTest extends DecoratorTestCase {
   @Test
   public void testCompilationUnitNotChanged() {
     // TODO NJ: Remove the following loc as soon as stereotype deep equals is fixed
-    String cachedValue = ((ASTCDClass) originalCompilationUnit.getCDDefinition().getCDElement(6)).getModifier().getStereotype().getValues(0).getValue();
+    ASTCDElement clazz = ((ASTCDPackage) originalCompilationUnit.getCDDefinition().getCDElement(0)).getCDElement(6);
+    String cachedValue = ((ASTCDClass) clazz).getModifier().getStereotype().getValues(0).getValue();
     assertEquals("de.monticore.codegen.symboltable.automaton._symboltable.SymbolInterfaceSymbol", cachedValue);
     
     assertDeepEquals(originalCompilationUnit, decoratedCompilationUnit);
