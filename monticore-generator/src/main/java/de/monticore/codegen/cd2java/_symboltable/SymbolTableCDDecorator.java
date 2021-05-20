@@ -3,8 +3,12 @@ package de.monticore.codegen.cd2java._symboltable;
 
 import com.google.common.collect.Lists;
 import de.monticore.cd4analysis.CD4AnalysisMill;
-import de.monticore.cdbasis._ast.*;
-import de.monticore.cdinterfaceandenum._ast.*;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDDefinition;
+import de.monticore.cdbasis._ast.ASTCDType;
+import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java._symboltable.scope.*;
@@ -25,7 +29,7 @@ import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.*;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SYMBOL_TABLE_PACKAGE;
-import static de.monticore.codegen.mc2cd.TransformationHelper.existsHandwrittenClass;
+import static de.monticore.generating.GeneratorEngine.existsHandwrittenClass;
 import static de.monticore.utils.Names.constructQualifiedName;
 
 /**

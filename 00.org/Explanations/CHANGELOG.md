@@ -8,6 +8,8 @@ to be released
 ### Additions
 
 ### Changes
+* the methods `serialize` and `deserialize` of the class `XDeSer` were moved to the class `XSymbols2Json`
+
  
 ### Fixes
 

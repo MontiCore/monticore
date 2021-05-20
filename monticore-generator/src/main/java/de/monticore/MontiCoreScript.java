@@ -5,6 +5,7 @@ package de.monticore;
  import com.google.common.collect.Lists;
  import com.google.common.io.Files;
  import com.google.common.io.Resources;
+ import de.monticore.cd4code._symboltable.CD4AnalysisSTCompleteTypes;
  import de.monticore.cdbasis._ast.ASTCDClass;
  import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
  import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
@@ -12,6 +13,7 @@ package de.monticore;
  import de.monticore.codegen.cd2java.typecd2java.TemplateHPService;
  import de.monticore.generating.templateengine.TemplateController;
  import de.monticore.generating.templateengine.TemplateHookPoint;
+ import de.monticore.grammar.grammarfamily._visitor.GrammarFamilyTraverser;
  import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
  import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
  import de.monticore.cd4analysis._symboltable.ICD4AnalysisGlobalScope;
@@ -294,7 +296,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   public void generateParser(GlobalExtensionManagement glex, List<ASTCDCompilationUnit> cds, ASTMCGrammar grammar,
                              GrammarFamilyGlobalScope symbolTable, IterablePath handcodedPath, IterablePath templatePath,
                              File outputDirectory) {
-    // first cd (representing AST package) ist relevant 
+    // first cd (representing AST package) is relevant
     // -> will be only one cd in the future
     ParserGenerator.generateFullParser(glex, cds.get(0), grammar, symbolTable, handcodedPath, templatePath, outputDirectory);
   }
@@ -438,6 +440,28 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     cds.add(deriveScopeCD(astGrammar, cdScope));
     return cds;
   }
+
+  /**
+   * Collects all compilation units and calls the cd type completer for
+   * completing the symbol table of each cd.
+   *
+   * @param gs The given global scope to extract all compilation units
+   */
+  protected void completeCDTypes(ICD4AnalysisGlobalScope gs) {
+    for (ICD4AnalysisScope scope : gs.getSubScopes()) {
+      if (!scope.getDiagramSymbols().isEmpty()) {
+        // artifact scopes with a diagram symbol always yield to the AST node of a compilation unit
+        ASTCDCompilationUnit comp = (ASTCDCompilationUnit) scope.getAstNode();
+
+        // complete types for CD
+        GrammarFamilyTraverser t = GrammarFamilyMill.traverser();
+        CD4AnalysisSTCompleteTypes v = new CD4AnalysisSTCompleteTypes();
+        t.add4CDBasis(v);
+        t.add4CDInterfaceAndEnum(v);
+        comp.accept(t);
+      }
+    }
+  }
   
   /**
    * Transforms grammar AST to class diagram AST.
@@ -454,6 +478,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     Optional<ASTCDCompilationUnit> ast = TransformationHelper.getCDforGrammar(cdScope, astGrammar);
     ASTCDCompilationUnit astCD = ast.orElse(transformAndCreateSymbolTable(astGrammar, glex, cdScope));
     createCDSymbolsForSuperGrammars(glex, astGrammar, cdScope);
+    completeCDTypes(cdScope);
     storeCDForGrammar(astGrammar, astCD);
     return astCD;
   }

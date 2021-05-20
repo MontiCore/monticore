@@ -4,21 +4,21 @@ package de.monticore.codegen.cd2java._symboltable.serialization;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import de.monticore.ast.Comment;
+import de.monticore.cd4code.CD4CodeMill;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.*;
-import de.monticore.cd4codebasis._ast.*;
-import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.cdbasis._symboltable.ICDBasisScope;
-import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
-import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.io.paths.IterablePath;
+import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.se_rwth.commons.StringTransformations;
 
@@ -29,6 +29,7 @@ import static de.monticore.codegen.cd2java.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
+import static de.monticore.generating.GeneratorEngine.existsHandwrittenClass;
 
 /**
  * creates a ScopeDeSer class from a grammar
@@ -41,8 +42,6 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
   public static final String DESERIALIZE_S_TEMPL = "_symboltable.serialization.scopeDeSer.DeserializeScope";
 
   public static final String DESERIALIZE_SYMBOLS_TEMPL = "_symboltable.serialization.scopeDeSer.DeserializeSymbols";
-
-  public static final String SERIALIZE_TEMPL = "_symboltable.serialization.scopeDeSer.Serialize4ScopeDeSer";
 
   public static final String SERIALIZES2J_TEMPL = "_symboltable.serialization.scopeDeSer.SerializeS2J4ScopeDeSer";
 
@@ -117,9 +116,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
 
         // add serialization methods
         .addCDMember(createSerializeMethod(scopeParam, s2jParam, scopeRuleAttrList))
-        .addCDMember(createSerialize2Method(scopeParam, symbols2JsonName))
         .addCDMember(createSerializeASMethod(asParam, s2jParam, scopeRuleAttrList))
-        .addCDMember(createSerialize2Method(asParam, symbols2JsonName))
         .addAllCDMembers(createSerializeAttrMethods(scopeRuleAttrList, s2jParam))
         .addCDMember(createSerializeAddonsMethod(scopeParam, s2jParam))
         .addCDMember(createSerializeAddonsMethod(asParam, s2jParam))
@@ -136,7 +133,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
         .build();
     if(generateAbstractClass){
       clazz.getModifier().setAbstract(true);
-      if (!TransformationHelper.existsHandwrittenClass(hw, symbolTableService.getScopeDeSerFullName())) {
+      if (!existsHandwrittenClass(hw, symbolTableService.getScopeDeSerFullName())) {
         AbstractDeSers.add(symbolTableService.getScopeDeSerFullName());
       }
     }
@@ -150,13 +147,6 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
     ASTCDMethod method = getCDMethodFacade()
         .createMethod(PUBLIC.build(), getMCTypeFacade().createStringType(), "serialize", toSerialize, s2j);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(SERIALIZES2J_TEMPL, scopeRuleAttrList));
-    return method;
-  }
-
-  protected ASTCDMethod createSerialize2Method(ASTCDParameter toSerialize, String s2jFullName) {
-    ASTCDMethod method = getCDMethodFacade()
-        .createMethod(PUBLIC.build(), getMCTypeFacade().createStringType(), "serialize", toSerialize);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(SERIALIZE_TEMPL, s2jFullName));
     return method;
   }
 
