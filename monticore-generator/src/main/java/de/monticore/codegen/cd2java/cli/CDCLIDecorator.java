@@ -1,15 +1,18 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java.cli;
 
+import com.google.common.collect.Lists;
 import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.codegen.cd2java.AbstractCreator;
+import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
 import de.monticore.codegen.cd2java._parser.ParserService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,8 +39,11 @@ public class CDCLIDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDC
 
   @Override
   public ASTCDCompilationUnit decorate(final ASTCDCompilationUnit mainCD) {
+    List<String> astPackage = Lists.newArrayList();
+    mainCD.getMCPackageDeclaration().getMCQualifiedName().getPartsList().forEach(p -> astPackage.add(p.toLowerCase()));
+    astPackage.add(mainCD.getCDDefinition().getName().toLowerCase());
 
-    List<String> topLevelPackage = new ArrayList<>(mainCD.getPackageList());
+
 
     ASTCDDefinition astCD = CD4AnalysisMill.cDDefinitionBuilder()
         .setName(mainCD.getCDDefinition().getName())
@@ -51,14 +57,14 @@ public class CDCLIDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDC
     }
 
     for (ASTCDClass cdClass : astCD.getCDClassesList()) {
-      this.replaceTemplate(PACKAGE, cdClass, createPackageHookPoint(topLevelPackage));
+      this.replaceTemplate(PACKAGE, cdClass, createPackageHookPoint(astPackage));
       if (cdClass.isPresentModifier()) {
         this.replaceTemplate(ANNOTATIONS, cdClass, createAnnotationsHookPoint(cdClass.getModifier()));
       }
     }
 
     return CD4AnalysisMill.cDCompilationUnitBuilder()
-        .setPackageList(topLevelPackage)
+        .setPackageList(astPackage)
         .setCDDefinition(astCD)
         .build();
   }

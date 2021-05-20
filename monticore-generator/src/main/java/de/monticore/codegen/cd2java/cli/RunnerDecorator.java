@@ -58,6 +58,10 @@ public class RunnerDecorator extends AbstractCreator<ASTCDCompilationUnit, Optio
           .addCDMember(createPrettyPrintMethod(parserService.getCDSymbol()))
           .addCDMember(createPrintMethod(parserService.getCDSymbol()))
           .addCDMember(createPrintHelpMethod(parserService.getCDSymbol()))
+          .addCDMember(createReportMethod(parserService.getCDSymbol()))
+          .addCDMember(createRunDefaultCoCosMethod(parserService.getCDSymbol()))
+          .addCDMember(createStoreSymbolsMethod(parserService.getCDSymbol()))
+          .addCDMember(createInitOptionsMethod(parserService.getCDSymbol()))
           .build());
     }
 
@@ -72,7 +76,7 @@ public class RunnerDecorator extends AbstractCreator<ASTCDCompilationUnit, Optio
     Optional<String> startprod = parserService.getStartProdASTFullName();
     ASTMCType checkerType = getMCTypeFacade().createArrayType("String", 1);
     ASTCDParameter parameter = getCDParameterFacade().createParameter(checkerType, "args");
-    ASTCDMethod addCheckerMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC.build(), "run", parameter);
+    ASTCDMethod addCheckerMethod = getCDMethodFacade().createMethod(PUBLIC.build(), "run", parameter);
     this.replaceTemplate(EMPTY_BODY, addCheckerMethod, new TemplateHookPoint(TEMPLATE_PATH + "Run"));
     return addCheckerMethod;
   }
@@ -85,7 +89,7 @@ public class RunnerDecorator extends AbstractCreator<ASTCDCompilationUnit, Optio
     String parserFullname = parserService.getParserClassFullName();
     ASTMCType checkerType = getMCTypeFacade().createStringType();
     ASTCDParameter parameter = getCDParameterFacade().createParameter(checkerType, "model");
-    ASTCDMethod addCheckerMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC.build(), returnType , "parse", parameter);
+    ASTCDMethod addCheckerMethod = getCDMethodFacade().createMethod(PUBLIC.build(), returnType , "parse", parameter);
     this.replaceTemplate(EMPTY_BODY, addCheckerMethod, new TemplateHookPoint(TEMPLATE_PATH + "Parser", grammarname, startprod.get(),millFullName , parserFullname));
     return addCheckerMethod;
   }
@@ -99,8 +103,38 @@ public class RunnerDecorator extends AbstractCreator<ASTCDCompilationUnit, Optio
     String scopesgenitordelegator = symbolTableService.getScopesGenitorDelegatorFullName();
     ASTMCType checkerType = getMCTypeFacade().createQualifiedType(str.get());
     ASTCDParameter parameter = getCDParameterFacade().createParameter(checkerType, "ast");
-    ASTCDMethod addCheckerMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC.build(),returnType, "createSymbolTable", parameter);
+    ASTCDMethod addCheckerMethod = getCDMethodFacade().createMethod(PUBLIC.build(),returnType, "createSymbolTable", parameter);
     this.replaceTemplate(EMPTY_BODY, addCheckerMethod, new TemplateHookPoint(TEMPLATE_PATH + "SymbolTable", grammarname, millFullName, scopesgenitordelegator, artifactScope));
+    return addCheckerMethod;
+  }
+
+  protected ASTCDMethod createReportMethod(DiagramSymbol cdDefinitionSymbol) {
+    Optional<String> startProd = parserService.getStartProdASTFullName();
+    ASTMCType checkerType = getMCTypeFacade().createQualifiedType(startProd.get());
+    ASTMCType checkerType2 = getMCTypeFacade().createStringType();
+    ASTCDParameter parameter2 = getCDParameterFacade().createParameter(checkerType2, "path");
+    ASTCDParameter parameter = getCDParameterFacade().createParameter(checkerType, "ast");
+    ASTCDMethod addCheckerMethod = getCDMethodFacade().createMethod(PUBLIC.build(), "report", parameter,parameter2);
+    return addCheckerMethod;
+  }
+
+  protected ASTCDMethod createRunDefaultCoCosMethod(DiagramSymbol cdDefinitionSymbol) {
+    Optional<String> startProd = parserService.getStartProdASTFullName();
+    ASTMCType checkerType = getMCTypeFacade().createQualifiedType(startProd.get());
+    ASTCDParameter parameter = getCDParameterFacade().createParameter(checkerType, "ast");
+    ASTCDMethod addCheckerMethod = getCDMethodFacade().createMethod(PUBLIC.build(), "runDefaultCoCos", parameter);
+    return addCheckerMethod;
+  }
+
+  protected ASTCDMethod createStoreSymbolsMethod(DiagramSymbol cdDefinitionSymbol) {
+    String symbols2Json = symbolTableService.getSymbols2JsonFullName();
+    String artifactScope = symbolTableService.getArtifactScopeInterfaceFullName();
+    ASTMCType checkerType = getMCTypeFacade().createQualifiedType(artifactScope);
+    ASTMCType checkerType2 = getMCTypeFacade().createStringType();
+    ASTCDParameter parameter = getCDParameterFacade().createParameter(checkerType, "scope");
+    ASTCDParameter parameter2 = getCDParameterFacade().createParameter(checkerType2, "path");
+    ASTCDMethod addCheckerMethod = getCDMethodFacade().createMethod(PUBLIC.build(), "storeSymbols", parameter,parameter2);
+    this.replaceTemplate(EMPTY_BODY, addCheckerMethod, new TemplateHookPoint(TEMPLATE_PATH + "StoreSymbols", symbols2Json));
     return addCheckerMethod;
   }
 
@@ -123,6 +157,12 @@ public class RunnerDecorator extends AbstractCreator<ASTCDCompilationUnit, Optio
     this.replaceTemplate(EMPTY_BODY, addCheckerMethod, new TemplateHookPoint(TEMPLATE_PATH + "PrintHelp", runnername));
     return addCheckerMethod;
   }
+  protected ASTCDMethod createInitOptionsMethod(DiagramSymbol cdDefinitionSymbol) {
+    ASTMCType returnType = getMCTypeFacade().createQualifiedType("org.apache.commons.cli.Options");
+    ASTCDMethod addCheckerMethod = getCDMethodFacade().createMethod(PUBLIC.build(),returnType ,"initOptions");
+    this.replaceTemplate(EMPTY_BODY, addCheckerMethod, new TemplateHookPoint(TEMPLATE_PATH + "InitOptions"));
+    return addCheckerMethod;
+  }
 
   protected ASTCDMethod createPrintMethod(DiagramSymbol cdDefinitionSymbol) {
     String grammarname = cdDefinitionSymbol.getName();
@@ -133,18 +173,6 @@ public class RunnerDecorator extends AbstractCreator<ASTCDCompilationUnit, Optio
     ASTCDMethod addCheckerMethod = getCDMethodFacade().createMethod(PUBLIC.build(), "print", parameter,parameter2);
     this.replaceTemplate(EMPTY_BODY, addCheckerMethod, new TemplateHookPoint(TEMPLATE_PATH + "Print"));
     return addCheckerMethod;
-  }
-
-  protected ASTCDAttribute createAttribute() {
-    ASTMCType type = getMCTypeFacade().createStringType();
-    ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PRIVATE.build(), type, "mill");
-    return attribute;
-  }
-
-  protected ASTCDAttribute createMillASTCliAttributeII() {
-    ASTMCType type = getMCTypeFacade().createIntType();
-    ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PRIVATE.build(), type, "in");
-    return attribute;
   }
 
 }

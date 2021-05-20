@@ -20,7 +20,7 @@ options.addOption(org.apache.commons.cli.Option.builder("pp")
     .argName("file")
     .optionalArg(true)
     .numberOfArgs(1)
-    .desc("Prints the Statechart-AST to stdout or the specified file (optional)")
+    .desc("Prints the AST to stdout or the specified file (optional)")
     .build());
 
 // pretty print SC
