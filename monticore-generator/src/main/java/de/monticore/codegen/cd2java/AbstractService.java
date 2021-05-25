@@ -173,10 +173,11 @@ public class AbstractService<T extends AbstractService> {
   }
 
   public String getPackage(DiagramSymbol cdSymbol) {
-    if (cdSymbol.getPackageName().isEmpty()) {
+    String packageName = !cdSymbol.getPackageName().isEmpty()?cdSymbol.getPackageName():((ASTCDDefinition) cdSymbol.getAstNode()).getDefaultPackageName();
+    if (packageName.isEmpty()) {
       return String.join(".", cdSymbol.getName(), getSubPackage()).toLowerCase();
     }
-    return String.join(".", cdSymbol.getPackageName(), cdSymbol.getName(), getSubPackage()).toLowerCase();
+    return String.join(".", packageName, cdSymbol.getName(), getSubPackage()).toLowerCase();
   }
 
   public String getSubPackage() {
