@@ -44,6 +44,8 @@ public class RunnerDecoratorTest extends DecoratorTestCase {
 
   private static final String AUTOMATON_ARTIFACT_SCOPE = "de.monticore.codegen.ast.automaton._symboltable.IAutomatonArtifactScope";
 
+  private static final String CLI_OPTIONS = "org.apache.commons.cli.Options";
+
   @Before
   public void setup() {
     LogStub.init();
@@ -71,8 +73,8 @@ public class RunnerDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testCliName() {
-    assertEquals("AutomatonCli", cliClass.getName());
+  public void testRunnerName() {
+    assertEquals("AutomatonRunner", cliClass.getName());
   }
 
   @Test
@@ -116,18 +118,17 @@ public class RunnerDecoratorTest extends DecoratorTestCase {
   public void testcreateRunMethod() {
     ASTCDMethod method = getMethodBy("run", cliClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertFalse(method.getMCReturnType().isPresentMCVoidType());
-    assertFalse(method.isEmptyCDParameters());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, method.getCDParameterList().size());
     assertDeepEquals("String[]", method.getCDParameter(0).getMCType());
+
     assertEquals("args", method.getCDParameter(0).getName());
   }
   @Test
   public void testcreatePrettyPrintMethod() {
     ASTCDMethod method = getMethodBy("prettyPrint", cliClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertFalse(method.getMCReturnType().isPresentMCVoidType());
-    assertFalse(method.isEmptyCDParameters());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals(2, method.getCDParameterList().size());
     assertDeepEquals(AST_AUTOMATON , method.getCDParameter(0).getMCType());
     assertDeepEquals("String" , method.getCDParameter(1).getMCType());
@@ -139,8 +140,7 @@ public class RunnerDecoratorTest extends DecoratorTestCase {
   public void testcreatePrintMethod() {
     ASTCDMethod method = getMethodBy("print", cliClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertFalse(method.getMCReturnType().isPresentMCVoidType());
-    assertFalse(method.isEmptyCDParameters());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals(2, method.getCDParameterList().size());
     assertDeepEquals("String" , method.getCDParameter(0).getMCType());
     assertDeepEquals("String" , method.getCDParameter(1).getMCType());
@@ -152,19 +152,17 @@ public class RunnerDecoratorTest extends DecoratorTestCase {
   public void testcreatePrintHelpMethod() {
     ASTCDMethod method = getMethodBy("printHelp", cliClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertFalse(method.getMCReturnType().isPresentMCVoidType());
-    assertFalse(method.isEmptyCDParameters());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, method.getCDParameterList().size());
-    assertDeepEquals("String", method.getCDParameter(0).getMCType());
-    assertEquals("args", method.getCDParameter(0).getName());
+    assertDeepEquals(CLI_OPTIONS, method.getCDParameter(0).getMCType());
+    assertEquals("options", method.getCDParameter(0).getName());
   }
 
   @Test
   public void testcreateReportMethod() {
     ASTCDMethod method = getMethodBy("report", cliClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertFalse(method.getMCReturnType().isPresentMCVoidType());
-    assertFalse(method.isEmptyCDParameters());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals(2, method.getCDParameterList().size());
     assertDeepEquals(AST_AUTOMATON , method.getCDParameter(0).getMCType());
     assertDeepEquals("String" , method.getCDParameter(1).getMCType());
@@ -176,8 +174,7 @@ public class RunnerDecoratorTest extends DecoratorTestCase {
   public void testRunDefaultCoCosMethod() {
     ASTCDMethod method = getMethodBy("runDefaultCoCos", cliClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertFalse(method.getMCReturnType().isPresentMCVoidType());
-    assertFalse(method.isEmptyCDParameters());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, method.getCDParameterList().size());
     assertDeepEquals(AST_AUTOMATON, method.getCDParameter(0).getMCType());
     assertEquals("ast", method.getCDParameter(0).getName());
@@ -187,8 +184,7 @@ public class RunnerDecoratorTest extends DecoratorTestCase {
   public void testStoreSymbolsMethod() {
     ASTCDMethod method = getMethodBy("storeSymbols", cliClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertFalse(method.getMCReturnType().isPresentMCVoidType());
-    assertFalse(method.isEmptyCDParameters());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals(2, method.getCDParameterList().size());
     assertDeepEquals(AUTOMATON_ARTIFACT_SCOPE , method.getCDParameter(0).getMCType());
     assertDeepEquals("String" , method.getCDParameter(1).getMCType());
@@ -197,11 +193,11 @@ public class RunnerDecoratorTest extends DecoratorTestCase {
   }
   // return type
   @Test
-  public void testcreateInitOptionsMethod() {
+  public void testCreateInitOptionsMethod() {
     ASTCDMethod method = getMethodBy("initOptions", cliClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertFalse(method.getMCReturnType().isPresentMCVoidType());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals(CLI_OPTIONS, method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
-    assertEquals(0, method.getCDParameterList().size());
   }
 }
