@@ -175,7 +175,7 @@ public class ArtifactScopeInterfaceDecorator extends AbstractCreator<ASTCDCompil
     List<ASTCDMethod> methodList = new ArrayList<>();
     for (DiagramSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
       // only filter for types which define a symbol
-      List<ASTCDType> symbolProds = ((ICDBasisScope) cdDefinitionSymbol.getEnclosingScope()).getLocalCDTypeSymbols()
+      List<ASTCDType> symbolProds = symbolTableService.getAllCDTypes(cdDefinitionSymbol)
           .stream()
           .filter(t -> t.isPresentAstNode())
           .filter(t -> symbolTableService.hasSymbolStereotype(t.getAstNode().getModifier()))
@@ -190,7 +190,7 @@ public class ArtifactScopeInterfaceDecorator extends AbstractCreator<ASTCDCompil
   public List<ASTCDType> getSuperSymbols() {
     List<ASTCDType> symbolAttributes = new ArrayList<>();
     for (DiagramSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
-      for (CDTypeSymbol type : ((ICDBasisScope) cdDefinitionSymbol.getEnclosingScope()).getLocalCDTypeSymbols()) {
+      for (CDTypeSymbol type : symbolTableService.getAllCDTypes(cdDefinitionSymbol)) {
         if (symbolTableService.hasSymbolStereotype(type.getAstNode().getModifier())) {
           symbolAttributes.add(type.getAstNode());
         }

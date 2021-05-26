@@ -82,7 +82,7 @@ public class CoCoCheckerDecorator extends AbstractCreator<ASTCDCompilationUnit, 
 
       cocoChecker.addCDMember(checkAll);
 
-      for (CDTypeSymbol cdTypeSymbol : ((ICDBasisScope) currentCDSymbol.getEnclosingScope()).getLocalCDTypeSymbols()) {
+      for (CDTypeSymbol cdTypeSymbol :cocoService.getAllCDTypes(currentCDSymbol)) {
         // do not generate for enums (only classes and interfaces)
         if (cdTypeSymbol.isIsEnum()) {
           continue;

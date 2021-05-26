@@ -283,7 +283,7 @@ public class ScopeClassDecorator extends AbstractDecorator {
   protected Map<String, ASTCDAttribute> getSuperSymbolAttributes() {
     Map<String, ASTCDAttribute> symbolAttributes = new HashMap<>();
     for (DiagramSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
-      for (CDTypeSymbol type : ((ICDBasisScope) cdDefinitionSymbol.getEnclosingScope()).getLocalCDTypeSymbols()) {
+      for (CDTypeSymbol type : symbolTableService.getAllCDTypes(cdDefinitionSymbol)) {
         if (type.isPresentAstNode() && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifier())) {
           Optional<ASTCDAttribute> symbolAttribute = createSymbolAttribute(type.getAstNode(),
               cdDefinitionSymbol);
@@ -574,7 +574,7 @@ public class ScopeClassDecorator extends AbstractDecorator {
 
     //add symbols from super grammars
     for (DiagramSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
-      for (CDTypeSymbol type : ((ICDBasisScope) cdDefinitionSymbol.getEnclosingScope()).getLocalCDTypeSymbols()) {
+      for (CDTypeSymbol type : symbolTableService.getAllCDTypes(cdDefinitionSymbol)) {
         if (type.isPresentAstNode() && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifier())) {
           String name = symbolTableService.getSymbolFullName(type.getAstNode(), cdDefinitionSymbol);
           String ntName = type.getAstNode().getName().substring(3);

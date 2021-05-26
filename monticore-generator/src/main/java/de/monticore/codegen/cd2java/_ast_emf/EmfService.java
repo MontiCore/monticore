@@ -175,7 +175,8 @@ public class EmfService extends AbstractService<EmfService> {
     } else {
       List<DiagramSymbol> superCDs = getSuperCDsTransitive(resolveCD(astcdDefinition.getName()));
       for (DiagramSymbol superCD : superCDs) {
-        if (((ICDBasisScope) superCD.getEnclosingScope()).getLocalCDTypeSymbols().stream().anyMatch(x -> x.getName().equals(simpleNativeAttributeType))) {
+        if (getAllCDTypes(superCD
+        ).stream().anyMatch(x -> x.getName().equals(simpleNativeAttributeType))) {
           return superCD.getName() + "PackageImpl";
         }
       }

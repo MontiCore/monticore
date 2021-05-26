@@ -289,7 +289,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
     // get super symbols
     for (DiagramSymbol superSymbol : superSymbolList) {
       if (superSymbol.isPresentAstNode()) {
-        for (CDTypeSymbol type : ((ICDBasisScope) superSymbol.getEnclosingScope()).getLocalCDTypeSymbols()) {
+        for (CDTypeSymbol type : symbolTableService.getAllCDTypes(superSymbol)) {
           if (type.isPresentAstNode() && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifier())) {
             superMethods.addAll(getSuperSymbolMethods(superSymbol, type));
           }

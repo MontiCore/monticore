@@ -568,7 +568,7 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
   protected Set<String> getSuperSymbolAttributesNames() {
     Set<String> symbolAttributes = new HashSet<>();
     for (DiagramSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
-      for (CDTypeSymbol type : ((ICDBasisScope) cdDefinitionSymbol.getEnclosingScope()).getLocalCDTypeSymbols()) {
+      for (CDTypeSymbol type : symbolTableService.getAllCDTypes(cdDefinitionSymbol)) {
         if (type.isPresentAstNode() && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifier())) {
           Optional<String> symbolAttribute = createSymbolAttributeName(type.getAstNode());
           symbolAttribute.ifPresent(attrName -> symbolAttributes.add(attrName));

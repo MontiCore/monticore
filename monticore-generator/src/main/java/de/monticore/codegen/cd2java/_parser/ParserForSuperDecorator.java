@@ -160,7 +160,7 @@ public class ParserForSuperDecorator extends AbstractDecorator {
                                                                                         Map<DiagramSymbol, Collection<CDTypeSymbol>> overridden,
                                                                                         List<String> prodNames){
     Collection<CDTypeSymbol> types = overridden.get(symbol);
-    Collection<CDTypeSymbol> typesInSymbol = ((ICDBasisScope) symbol.getEnclosingScope()).getLocalCDTypeSymbols();
+    Collection<CDTypeSymbol> typesInSymbol = service.getAllCDTypes(symbol);
     Collection<CDTypeSymbol> otherProds = Lists.newArrayList();
 
     for(CDTypeSymbol type: typesInSymbol){

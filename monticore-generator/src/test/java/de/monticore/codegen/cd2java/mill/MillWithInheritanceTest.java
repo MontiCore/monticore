@@ -65,9 +65,7 @@ public class MillWithInheritanceTest extends DecoratorTestCase {
     this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
     this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "factory", "CGrammar");
-    importCDs(decoratedCompilationUnit);
     ICD4CodeGlobalScope gs = CD4CodeMill.globalScope();
-    //this.completeCDTypes(gs);
     glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
 
     SymbolTableService symbolTableService = new SymbolTableService(decoratedCompilationUnit);

@@ -7,6 +7,7 @@ import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd4code._symboltable.ICD4CodeScope;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.*;
+import de.monticore.cdbasis._symboltable.CDPackageSymbol;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.cdbasis._symboltable.ICDBasisArtifactScope;
 import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
@@ -107,6 +108,13 @@ public class AbstractService<T extends AbstractService> {
       }
     }
     return resolvedCds;
+  }
+  
+  public List<CDTypeSymbol> getAllCDTypes(DiagramSymbol cdSymbol) {
+    List<CDPackageSymbol> directPackages = ((ICDBasisArtifactScope) cdSymbol.getEnclosingScope()).getLocalCDPackageSymbols().stream().collect(Collectors.toList());
+    List<CDTypeSymbol> types = Lists.newArrayList();
+    directPackages.forEach(p -> types.addAll(p.getSpannedScope().getLocalCDTypeSymbols()));
+    return types;
   }
 
   /**
