@@ -187,7 +187,7 @@ public class EmfService extends AbstractService<EmfService> {
   public List<CDTypeSymbol> retrieveSuperTypes(ASTCDClass c) {
     List<CDTypeSymbol> superTypes = c.getSymbol().getSuperTypesList().stream()
         .map(ste -> ste.getTypeInfo())
-        .map(ts -> ts.getName())
+        .map(ts -> ts.getFullName())
         .map(n -> resolveCDType(n))
         .collect(Collectors.toList());
     return superTypes;

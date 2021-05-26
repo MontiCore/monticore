@@ -75,7 +75,7 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
       ASTMCQualifiedType superclass = this.getMCTypeFacade().createQualifiedType(
           basePackage + superSymbol.getName().toLowerCase() + "." + superSymbol.getName() + MillConstants.MILL_SUFFIX);
 
-      List<ASTCDMethod> correctScopeMethods = createScopeMethods(basePackage + superSymbol.getName(), service.hasStartProd((ASTCDDefinition) superSymbol.getAstNode()), service.getCDSymbol().getPackageName()+ ".", service.getCDName());
+      List<ASTCDMethod> correctScopeMethods = createScopeMethods(basePackage + superSymbol.getName(),service.getCDSymbol().getPackageName()+ ".", service.getCDName());
       ASTCDClass superMill = CD4AnalysisMill.cDClassBuilder()
           .setModifier(PUBLIC.build())
           .setName(millClassName)
@@ -180,15 +180,14 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
     return method;
   }
 
-  public List<ASTCDMethod> createScopeMethods(String fullSuperSymbolName, boolean superSymbolHasStartProd, String packageName, String grammarName){
+  public List<ASTCDMethod> createScopeMethods(String fullSuperSymbolName, String packageName, String grammarName){
     List<ASTCDMethod> methods = Lists.newArrayList();
     //if the super symbol does not have a start prod the mill of the super grammar (the superclass of this class) does not have methods for the artifactscope and globalscope
     String[] nameParts = fullSuperSymbolName.split("\\.");
-    if(superSymbolHasStartProd && service.hasStartProd()){
       //additionally create scope builder for artifact and global scope
-      methods.add(getScopeMethods(packageName, grammarName, ARTIFACT_PREFIX));
-      methods.add(getScopeMethods(packageName, grammarName, GLOBAL_SUFFIX));
-    }
+    methods.add(getScopeMethods(packageName, grammarName, ARTIFACT_PREFIX));
+    methods.add(getScopeMethods(packageName, grammarName, GLOBAL_SUFFIX));
+
     //create scope builder for normal scope
     methods.add(getScopeMethods(packageName, grammarName, ""));
     return methods;

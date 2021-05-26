@@ -11,17 +11,18 @@ import de.monticore.cd4code._parser.CD4CodeParser;
 import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.*;
-import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
-import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.grammar.MCGrammarSymbolTableHelper;
+import de.monticore.grammar.RegExpBuilder;
 import de.monticore.grammar.grammar._ast.*;
+import de.monticore.grammar.grammar._symboltable.AdditionalAttributeSymbol;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
 import de.monticore.grammar.grammar._visitor.GrammarVisitor2;
+import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
+import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsTraverser;
 import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
 import de.monticore.grammar.grammarfamily._visitor.GrammarFamilyTraverser;
-import de.monticore.io.paths.IterablePath;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.types.mcarraytypes._ast.ASTMCArrayType;
@@ -37,9 +38,9 @@ import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -277,36 +278,6 @@ public final class TransformationHelper {
       }
     }
     return constants;
-  }
-
-
-  /**
-   *  @deprecated  use de.monticore.generating.GeneratorEngine#existsHandwrittenClass
-   *
-   * Checks if a handwritten class with the given qualifiedName (dot-separated)
-   * exists on the target path
-   *
-   * @param qualifiedName name of the class to search for
-   * @return true if a handwritten class with the qualifiedName exists
-   */
-  @Deprecated
-  public static boolean existsHandwrittenClass(IterablePath targetPath,
-                                               String qualifiedName) {
-    Path handwrittenFile = Paths.get(Names
-        .getPathFromPackage(qualifiedName)
-        + DEFAULT_FILE_EXTENSION);
-    Log.debug("Checking existence of handwritten class " + qualifiedName
-        + " by searching for "
-        + handwrittenFile.toString(), TransformationHelper.class.getName());
-    Optional<Path> handwrittenFilePath = targetPath.getResolvedPath(handwrittenFile);
-    boolean result = handwrittenFilePath.isPresent();
-    if (result) {
-      Reporting.reportUseHandwrittenCodeFile(handwrittenFilePath.get(),
-          handwrittenFile);
-    }
-    Reporting.reportHWCExistenceCheck(targetPath,
-        handwrittenFile, handwrittenFilePath);
-    return result;
   }
 
   /**
@@ -620,5 +591,97 @@ public final class TransformationHelper {
       ruleComponentList.add(node);
     }
   }
-
+  
+  public static boolean isConstGroupIterated(RuleComponentSymbol prodComponent) {
+    Preconditions.checkArgument(prodComponent.isIsConstantGroup());
+    Collection<String> set = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+    for (RuleComponentSymbol comp: prodComponent.getEnclosingScope().resolveRuleComponentDownMany(prodComponent.getName())) {
+      comp.getSubProdsList().stream().forEach((p -> set.add(p)));
+    }
+    return set.size() > 1;
+  }
+  
+  public static String getQualifiedName(ProdSymbol symbol) {
+    if (!symbol.isPresentAstNode()) {
+      return "UNKNOWN_TYPE";
+    }
+    if (symbol.isIsLexerProd()) {
+      return getLexType(symbol.getAstNode());
+    }
+    if (symbol.isIsEnum()) {
+      return MCGrammarSymbolTableHelper.getQualifiedName(symbol.getAstNode(), symbol, "AST", "");
+    }
+    return MCGrammarSymbolTableHelper.getQualifiedName(symbol.getAstNode(), symbol, "AST", "");
+  }
+  
+  private static String getLexType(ASTNode node) {
+    if (node instanceof ASTLexProd) {
+      return createConvertType((ASTLexProd) node);
+    }
+    if (node instanceof ASTLexActionOrPredicate) {
+      return "String";
+    }
+    return "UNKNOWN_TYPE";
+  }
+  
+  public static Optional<Integer> getMax(AdditionalAttributeSymbol attrSymbol) {
+    if (!attrSymbol.isPresentAstNode()) {
+      return Optional.empty();
+    }
+    return getMax(attrSymbol.getAstNode());
+  }
+  
+  public static Optional<Integer> getMax(ASTAdditionalAttribute ast) {
+    if (ast.isPresentCard()
+        && ast.getCard().isPresentMax()) {
+      String max = ast.getCard().getMax();
+      if ("*".equals(max)) {
+        return Optional.of(STAR);
+      }
+      else {
+        try {
+          int x = Integer.parseInt(max);
+          return Optional.of(x);
+        } catch (NumberFormatException ignored) {
+          Log.warn("0xA0140 Failed to parse an integer value of max of ASTAdditionalAttribute "
+              + ast.getName() + " from string " + max);
+        }
+      }
+    }
+    return Optional.empty();
+  }
+  
+  public static boolean isFragment(ASTProd astNode) {
+    return !(astNode instanceof ASTLexProd)
+        || ((ASTLexProd) astNode).isFragment();
+  }
+  
+  public static Optional<Pattern> calculateLexPattern(MCGrammarSymbol grammar,
+      ASTLexProd lexNode) {
+    Optional<Pattern> ret = Optional.empty();
+    
+    final String lexString = getLexString(grammar, lexNode);
+    try {
+      if ("[[]".equals(lexString)) {
+        return Optional.ofNullable(Pattern.compile("[\\[]"));
+      } else {
+        return Optional.ofNullable(Pattern.compile(lexString));
+      }
+    } catch (PatternSyntaxException e) {
+      Log.error("0xA0913 Internal error with pattern handling for lex rules. Pattern: " + lexString
+          + "\n", e);
+    }
+    return ret;
+  }
+  
+  private static String getLexString(MCGrammarSymbol grammar, ASTLexProd lexNode) {
+    StringBuilder builder = new StringBuilder();
+    RegExpBuilder regExp = new RegExpBuilder(builder, grammar);
+    Grammar_WithConceptsTraverser traverser = Grammar_WithConceptsMill.traverser();
+    traverser.add4Grammar(regExp);
+    traverser.setGrammarHandler(regExp);
+    lexNode.accept(traverser);
+    return builder.toString();
+  }
+  
 }

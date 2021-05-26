@@ -42,7 +42,8 @@ public class VertexSymbolDeSer extends VertexSymbolDeSerTOP {
    * @param s2j
    */
     @Override
-    public void serializeColor(Color color, ColoredGraphSymbols2Json s2j) {
+    public void serializeColor(Color color, 
+                               ColoredGraphSymbols2Json s2j) {
       JsonPrinter p = s2j.getJsonPrinter();
       p.beginArray("color");  // Serialize color as arrays,
       p.value(color.getRed());      // add red value first

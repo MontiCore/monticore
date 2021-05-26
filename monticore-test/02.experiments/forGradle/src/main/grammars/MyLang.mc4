@@ -1,0 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
+import de.monticore.*;
+
+grammar MyLang extends MCBasics,  Super1, Super2 {
+                       
+   C = A  B;
+}

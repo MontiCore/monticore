@@ -1,8 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 
+import automata7.Automata7Mill;
 import automata7._symboltable.Automata7ArtifactScope;
 import automata7._symboltable.IAutomata7ArtifactScope;
 import automata7._symboltable.StimulusSymbol;
+import basiccd.BasicCDMill;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -24,6 +26,8 @@ public class BasicJavaToolTest {
     LogStub.init();         // replace log by a sideffect free variant
     // LogStub.initPlusLog();  // for manual testing purpose only
     Log.enableFailQuick(false);
+    Automata7Mill.reset();
+    Automata7Mill.init();
   }
 
   @Test

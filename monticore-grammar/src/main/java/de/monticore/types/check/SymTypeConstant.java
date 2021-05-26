@@ -42,6 +42,11 @@ public class SymTypeConstant extends SymTypeExpression {
     return getConstName();
   }
 
+  @Override
+  public String printFullName(){
+    return print();
+  }
+
   /**
    * printAsJson: Umwandlung in einen kompakten Json String
    */
@@ -174,10 +179,7 @@ public class SymTypeConstant extends SymTypeExpression {
 
   @Override
   public SymTypeConstant deepClone() {
-    TypeSymbol typeSymbol = new TypeSymbolSurrogate(this.typeSymbol.getName());
-    typeSymbol.setEnclosingScope(this.typeSymbol.getEnclosingScope());
-    SymTypeConstant clone = new SymTypeConstant(typeSymbol);
-    return clone;
+    return new SymTypeConstant(this.typeSymbol);
   }
 
 

@@ -6,6 +6,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import de.monticore.ast.ASTNode;
+import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.parser.ParserGeneratorHelper;
 import de.monticore.grammar.DirectLeftRecursionDetector;
 import de.monticore.grammar.MCGrammarInfo;
@@ -26,6 +27,8 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
 
+import static de.monticore.codegen.mc2cd.TransformationHelper.getQualifiedName;
+import static de.monticore.codegen.parser.ParserGeneratorHelper.getDefaultValue;
 import static de.monticore.codegen.parser.ParserGeneratorHelper.printIteration;
 
 public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
@@ -152,8 +155,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
     // Create eof and dummy rules
     String ruleName = getRuleNameForAntlr(ast.getName());
     ProdSymbol ruleByName = ast.getSymbol();
-    String classnameFromRulenameorInterfacename = MCGrammarSymbolTableHelper
-            .getQualifiedName(ruleByName);
+    String classnameFromRulenameorInterfacename = getQualifiedName(ruleByName);
 
     // Head of Rule
     // Pattern:
@@ -184,7 +186,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
 
     if (embeddedJavaCode) {
       addToCodeSection(" returns [", classnameFromRulenameorInterfacename, " ret = ",
-              MCGrammarSymbolTableHelper.getDefaultValue(ruleByName), "]\n", options);
+              getDefaultValue(ruleByName), "]\n", options);
 
       // Add actions
       if (ast.isPresentAction() && ast.getAction() instanceof ASTAction) {
@@ -276,8 +278,8 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
 
     // Head of Rule
     addToCodeSection(ruleName + " returns ["
-            + MCGrammarSymbolTableHelper.getQualifiedName(ruleByName) + " ret = "
-            + MCGrammarSymbolTableHelper.getDefaultValue(ruleByName) + "] ");
+            + getQualifiedName(ruleByName) + " ret = "
+            + getDefaultValue(ruleByName) + "] ");
 
     addToCodeSection("\n: ");
 
@@ -292,7 +294,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
 
       if (embeddedJavaCode) {
         String temp1 = "";
-        temp1 += "$ret = " + MCGrammarSymbolTableHelper.getQualifiedName(ruleByName)
+        temp1 += "$ret = " + getQualifiedName(ruleByName)
                 + "."
                 + parserHelper.getConstantNameForConstant(c) + ";";
 
@@ -318,7 +320,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
 
     boolean iterated = false;
     if (ast.isPresentSymbol()) {
-      iterated = MCGrammarSymbolTableHelper
+      iterated = TransformationHelper
               .isConstGroupIterated(ast.getSymbol());
     }
 
@@ -359,6 +361,8 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
           addToCodeSection(createKeyPredicate(x.getKeyConstant().getStringList()));
         } else if (!grammarInfo.isKeyword(x.getName(), grammarEntry)) {
           addToCodeSection(parserHelper.getLexSymbolName(x.getName()));
+        } else if (grammarInfo.getKeywordRules().contains(x.getName())) {
+          addToCodeSection(parserHelper.getKeyRuleName(x.getName()));
         } else {
           addToCodeSection("'" + x.getName() + "'");
         }
@@ -846,7 +850,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
     String interfacename = interfaceRule.getName();
     // Dummy rules
     String ruleName = getRuleNameForAntlr(interfacename);
-    String usageName = MCGrammarSymbolTableHelper.getQualifiedName(interfaceRule);
+    String usageName = getQualifiedName(interfaceRule);
 
     startCodeSection(interfaceRule.getName());
 

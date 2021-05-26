@@ -6,6 +6,6 @@ import de.monticore.types.*;
 grammar KotlinCommonGenericTypes extends MCCollectionTypes {
 
   MCArrayGenericType implements MCGenericType <200> =
-        {next("Array")}? Name "<" MCTypeArgument ">";
+        key("Array") "<" MCTypeArgument ">";
 
 }

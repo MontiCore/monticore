@@ -32,7 +32,7 @@ public class TypeCheckResult {
   }
 
   public void setCurrentResult(SymTypeExpression currentResult){
-    this.currentResult = Optional.of(currentResult);
+    this.currentResult = Optional.ofNullable(currentResult);
   }
   
   public void setCurrentResultAbsent() {

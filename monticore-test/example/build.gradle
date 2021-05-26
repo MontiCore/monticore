@@ -1,26 +1,23 @@
 /* (c) https://github.com/MontiCore/monticore */
 import de.monticore.MCTask
-
 plugins {
   id 'java-library'
-  id 'monticore'  version '6.8.0-SNAPSHOT' // MontiCore Plugin
+  id 'monticore'  version '7.1.0-SNAPSHOT' // MontiCore Plugin
 }
 
+group = "my.project"
+version = '1.0.0-SNAPSHOT'
+
 buildDir = file("$projectDir/target")
-def mc_version  = '6.8.0-SNAPSHOT'
-def se_commons_version = '1.7.11'
-def antlr_version = '4.7.1'
-def grammarDir = 'src/main/grammars'
+def mcversion  = '7.1.0-SNAPSHOT'
+def se_commons_version = '7.1.0-SNAPSHOT'
+def grammarName = 'Automata'
 def outDir = "$buildDir/generated-sources/"
 
-group = "de.monticore"
-version = '1.0.0-SNAPSHOT'
-sourceCompatibility = "1.8"
-
 dependencies {
-  implementation "de.monticore:monticore-runtime:$mc_version"
-  implementation "de.monticore:monticore-grammar:$mc_version"
-  grammar "de.monticore:monticore-grammar:$mc_version:grammars"
+  implementation "de.monticore:monticore-runtime:$mcversion"
+  implementation "de.monticore:monticore-grammar:$mcversion"
+  grammar "de.monticore:monticore-grammar:$mcversion:grammars"
   implementation "de.se_rwth.commons:se-commons-utilities:$se_commons_version"
   testImplementation "junit:junit:4.13.1"
   testImplementation group:'ch.qos.logback', name: 'logback-classic', version: '1.1.2'
@@ -38,10 +35,9 @@ sourceSets {
 }
 
 task generate (type: MCTask) {
-  grammar = file "$grammarDir/Automata.mc4"
+  grammar = file "src/main/grammars/${grammarName}.mc4"
   outputDir = file outDir
-  def uptoDate = incCheck("Automata.mc4")
-  outputs.upToDateWhen { uptoDate }
+  outputs.upToDateWhen { incCheck("${grammarName}.mc4") }
 }
 
 compileJava {

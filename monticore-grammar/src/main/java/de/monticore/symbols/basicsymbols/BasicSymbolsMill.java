@@ -12,18 +12,7 @@ public class BasicSymbolsMill extends BasicSymbolsMillTOP {
   protected static BasicSymbolsMill primitiveTypesInitializer;
 
   public static void initMe (BasicSymbolsMill a)  {
-    mill = a;
-    millDiagramSymbolBuilder = a;
-    millTypeSymbolBuilder = a;
-    millTypeVarSymbolBuilder = a;
-    millVariableSymbolBuilder = a;
-    millFunctionSymbolBuilder = a;
-    millDiagramSymbolSurrogateBuilder = a;
-    millTypeSymbolSurrogateBuilder = a;
-    millTypeVarSymbolSurrogateBuilder = a;
-    millVariableSymbolSurrogateBuilder = a;
-    millFunctionSymbolSurrogateBuilder = a;
-    millBasicSymbolsTraverserImplementation = a;
+    BasicSymbolsMillTOP.initMe(a);
     primitiveTypesInitializer = a;
   }
 
@@ -74,5 +63,9 @@ public class BasicSymbolsMill extends BasicSymbolsMillTOP {
             .build();
   }
 
+  public static  void reset ()  {
+    BasicSymbolsMillTOP.reset();
+    primitiveTypesInitializer = null;
+  }
 
 }

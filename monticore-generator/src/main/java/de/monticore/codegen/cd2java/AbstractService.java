@@ -2,6 +2,7 @@
 package de.monticore.codegen.cd2java;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd4code._symboltable.ICD4CodeScope;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
@@ -132,7 +133,7 @@ public class AbstractService<T extends AbstractService> {
   public List<String> getAllSuperInterfacesTransitive(CDTypeSymbol cdTypeSymbol) {
     List<String> superSymbolList = new ArrayList<>();
         List<CDTypeSymbol> localSuperInterfaces = cdTypeSymbol.getSuperTypesList().stream()
-            .map(s -> s.getTypeInfo().getName())
+            .map(s -> s.getTypeInfo().getFullName())
             .map(s -> resolveCDType(s))
             .filter(s -> s.isIsInterface())
             .collect(Collectors.toList());
@@ -147,8 +148,12 @@ public class AbstractService<T extends AbstractService> {
    * use symboltabe to resolve for ClassDiagrams or CDTypes
    */
   public DiagramSymbol resolveCD(String qualifiedName) {
-    return getCDSymbol().getEnclosingScope().resolveDiagram(qualifiedName)
-        .orElseThrow(() -> new DecorateException(DecoratorErrorCode.CD_SYMBOL_NOT_FOUND, qualifiedName));
+    Set<DiagramSymbol> symbols = Sets.newHashSet(getCDSymbol().getEnclosingScope().resolveDiagramMany(qualifiedName));
+    if (symbols.size() == 1) {
+      return symbols.iterator().next();
+    } else {
+      throw new DecorateException(DecoratorErrorCode.CD_SYMBOL_NOT_FOUND, qualifiedName);
+    }
   }
 
   public CDTypeSymbol resolveCDType(String qualifiedName) {

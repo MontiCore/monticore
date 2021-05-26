@@ -58,8 +58,15 @@ public final class MontiCoreConfiguration implements Configuration {
     GRAMMARS("grammars"), GRAMMARS_SHORT("g"), MODELPATH("modelPath"), MODELPATH_SHORT("mp"),
     OUT("out"), OUT_SHORT("o"), HANDCODEDPATH("handcodedPath"), HANDCODEDPATH_SHORT("hcp"),
     TEMPLATEPATH("templatePath"), TEMPLATEPATH_SHORT("fp"),
+    CONFIGTEMPLATE("configTemplate"), CONFIGTEMPLATE_SHORT("ct"),
     FORCE("force"), FORCE_SHORT("f"),
-    REPORT("report"), REPORT_SHORT("r");
+    REPORT("report"), REPORT_SHORT("r"),
+    DEV("dev"), DEV_SHORT("d"),
+    CUSTOMLOG("customLog"), CUSTOMLOG_SHORT("cl"),
+    SCRIPT("script"), SCRIPT_SHORT("sc"),
+    GROOVYHOOK1("groovyHook1"), GROOVYHOOK1_SHORT("gh1"),
+    GROOVYHOOK2("groovyHook2"), GROOVYHOOK2_SHORT("gh2"),
+    HELP("help"), HELP_SHORT("h");
 
     String name;
 
@@ -452,6 +459,57 @@ public final class MontiCoreConfiguration implements Configuration {
       return IterablePath.empty();
     }
     return IterablePath.from(new File(DEFAULT_HANDCODED_TEMPLATE_PATH), FTL_EXTENSIONS);
+  }
+
+  /**
+   * Getter for the optional config template.
+   *
+   * @return Optional of the config template
+   */
+  public Optional<String> getConfigTemplate() {
+    Optional<String> configTemplate = getAsString(Options.CONFIGTEMPLATE);
+    if (configTemplate.isPresent()) {
+      return configTemplate;
+    }
+    configTemplate = getAsString(Options.CONFIGTEMPLATE_SHORT);
+    if (configTemplate.isPresent()) {
+      return configTemplate;
+    }
+    return Optional.empty();
+  }
+
+  /**
+   * Getter for the optional groovy script for hook point one.
+   *
+   * @return Optional path to the script
+   */
+  public Optional<String> getGroovyHook1() {
+    Optional<String> script = getAsString(Options.GROOVYHOOK1);
+    if (script.isPresent()) {
+      return script;
+    }
+    script = getAsString(Options.GROOVYHOOK1_SHORT);
+    if (script.isPresent()) {
+      return script;
+    }
+    return Optional.empty();
+  }
+
+  /**
+   * Getter for the optional groovy script for hook point two.
+   *
+   * @return Optional path to the script
+   */
+  public Optional<String> getGroovyHook2() {
+    Optional<String> script = getAsString(Options.GROOVYHOOK2);
+    if (script.isPresent()) {
+      return script;
+    }
+    script = getAsString(Options.GROOVYHOOK2_SHORT);
+    if (script.isPresent()) {
+      return script;
+    }
+    return Optional.empty();
   }
 
   /**

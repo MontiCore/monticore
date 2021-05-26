@@ -26,9 +26,12 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.FileReader;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 
@@ -54,8 +57,7 @@ public class MontiCoreScriptTest {
 
   private static ModelPath modelPath = new ModelPath(modelPathPath, outputPath.toPath());
 
-  private static IterablePath targetPath = IterablePath
-      .from(new File("src/test/resources"), "java");
+  private static IterablePath hwPath = IterablePath.empty();
 
   private static IterablePath templatePath = IterablePath
       .from(new File("src/test/resources"), "ftl");
@@ -101,7 +103,7 @@ public class MontiCoreScriptTest {
   }
 
   /**
-   * {@link MontiCoreScript#generateParser(GlobalExtensionManagement, ASTCDCompilationUnit, ASTMCGrammar, GrammarFamilyGlobalScope, IterablePath, File)}
+   * {@link MontiCoreScript#generateParser(GlobalExtensionManagement, ASTCDCompilationUnit, ASTMCGrammar, GrammarFamilyGlobalScope, IterablePath, IterablePath, File)}
    */
   @Test
   public void testGenerateParser() {
@@ -112,7 +114,8 @@ public class MontiCoreScriptTest {
     ICD4AnalysisGlobalScope cd4AGlobalScope = mc.createCD4AGlobalScope(modelPath);
     cdCompilationUnit = mc.deriveASTCD(grammar, glex, cd4AGlobalScope);
     File f = new File("target/generated-sources/monticore/testcode");
-    mc.generateParser(glex, cdCompilationUnit, grammar, (GrammarFamilyGlobalScope) symbolTable, IterablePath.empty(), f);
+    mc.generateParser(glex, cdCompilationUnit, grammar, (GrammarFamilyGlobalScope) symbolTable, IterablePath.empty(),
+            IterablePath.empty(), f);
     f.delete();
   }
 
@@ -154,7 +157,7 @@ public class MontiCoreScriptTest {
     assertEquals(8, cdDefinition.getCDClassesList().size());
     assertEquals(5, cdDefinition.getCDInterfacesList().size());
 
-    ASTCDCompilationUnit astcdCompilationUnit = mc.decorateForASTPackage(glex, cd4AGlobalScope, cdCompilationUnit, targetPath);
+    ASTCDCompilationUnit astcdCompilationUnit = mc.decorateForASTPackage(glex, cd4AGlobalScope, cdCompilationUnit, hwPath);
     // Added Builder classes to the each not list class
     assertEquals(17, astcdCompilationUnit.getCDDefinition().getCDClassesList().size());
 
@@ -182,12 +185,40 @@ public class MontiCoreScriptTest {
     Log.getFindings().clear();
     testDefaultScript(simpleArgs);
     assertEquals(0, Log.getErrorCount());
+    // test whether the original template is used
+    try {
+      List<String> lines = Files.readAllLines(Paths.get(outputPath.getAbsolutePath() + "/de/monticore/statechart/statechart/_ast/ASTState.java"));
+      assertFalse(lines.stream().filter(l -> "// Test:Replace Template".equals(l)).findAny().isPresent());
+    } catch (Exception e) {
+      fail();
+    }
+  }
+
+  static String[] templateArgs = {"-grammars",
+          "src/test/resources/de/monticore/statechart/Statechart.mc4",
+          "src/test/resources/mc/grammars/lexicals/TestLexicals.mc4",
+          "-modelPath", modelPathPath.toAbsolutePath().toString(),
+          "-templatePath", "src/test/resources/ftltest",
+          "-out", outputPath.getAbsolutePath(), "-force"};
+
+  @Test
+  public void testDefaultScriptTemplateArgs() {
+    Log.getFindings().clear();
+    testDefaultScript(templateArgs);
+    assertEquals(0, Log.getErrorCount());
+    // test whether the changed template is used
+    try {
+      List<String> lines = Files.readAllLines(Paths.get(outputPath.getAbsolutePath() + "/de/monticore/statechart/statechart/_ast/ASTState.java"));
+      assertTrue(lines.stream().filter(l -> "// Test:Replace Template".equals(l)).findAny().isPresent());
+    } catch (Exception e) {
+      fail();
+    }
   }
 
   static String[] subsubgrammarArgs = {"-grammars",
-      "src/test/resources/de/monticore/inherited/subsub/Subsubgrammar.mc4",
-      "-modelPath", modelPathPath.toAbsolutePath().toString(),
-      "-out", outputPath.getAbsolutePath(), "-targetPath", "src/test/resources", "-force"};
+          "src/test/resources/de/monticore/inherited/subsub/Subsubgrammar.mc4",
+          "-modelPath", modelPathPath.toAbsolutePath().toString(),
+          "-out", outputPath.getAbsolutePath(), "-force"};
 
   @Test
   public void testDefaultScriptSubsubgrammarArgs() {
@@ -208,7 +239,7 @@ public class MontiCoreScriptTest {
       "src/test/resources/de/monticore/inherited/sub/Subgrammar.mc4",
       "src/test/resources/de/monticore/inherited/subsub/Subsubgrammar.mc4",
       "-modelPath", modelPathPath.toAbsolutePath().toString(),
-      "-out", outputPath.getAbsolutePath(), "-targetPath", "src/test/resources", "-force"};
+      "-out", outputPath.getAbsolutePath(), "-force"};
 
   @Test
   public void testDefaultScriptSupergrammarArgs() {
@@ -228,7 +259,7 @@ public class MontiCoreScriptTest {
       "src/test/resources/de/monticore/inherited/subsub/Subsubgrammar.mc4",
       "src/test/resources/de/monticore/inherited/Supergrammar.mc4",
       "-modelPath", modelPathPath.toAbsolutePath().toString(),
-      "-out", outputPath.getAbsolutePath(), "-targetPath", "src/test/resources", "-force"};
+      "-out", outputPath.getAbsolutePath(), "-force"};
 
   @Test
   public void testDefaultScriptSupersubgrammarArgs() {
@@ -249,7 +280,7 @@ public class MontiCoreScriptTest {
         .fromSplitMap(CLIArguments.forArguments(args).asMap());
     MontiCoreConfiguration cfg = MontiCoreConfiguration.withConfiguration(configuration);
     new MontiCoreScript().run(cfg);
-    // Reporting is enabled in the monticore_noemf.groovy script but needs to be disabled for other tests
+    // Reporting is enabled in the monticore_standard.groovy script but needs to be disabled for other tests
     // because Reporting is static directly disable it again here
     Reporting.off();
     assertTrue(!false);
@@ -260,7 +291,7 @@ public class MontiCoreScriptTest {
         .fromSplitMap(CLIArguments.forArguments(args).asMap());
     MontiCoreConfiguration cfg = MontiCoreConfiguration.withConfiguration(configuration);
     new MontiCoreScript().run_emf(cfg);
-    // Reporting is enabled in the monticore_noemf.groovy script but needs to be disabled for other tests
+    // Reporting is enabled in the monticore_standard.groovy script but needs to be disabled for other tests
     // because Reporting is static directly disable it again here
     Reporting.off();
     assertTrue(!false);

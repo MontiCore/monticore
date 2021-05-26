@@ -48,7 +48,7 @@ public class ReferenceTypeTranslation implements
     }
 
     for (Link<ASTConstantGroup, ASTCDAttribute> link : rootLink.getLinks(ASTConstantGroup.class, ASTCDAttribute.class)) {
-      boolean iterated = MCGrammarSymbolTableHelper.isConstGroupIterated(link.source().getSymbol());
+      boolean iterated = TransformationHelper.isConstGroupIterated(link.source().getSymbol());
       int constantType = iterated ? ASTConstantsMCBasicTypes.INT : ASTConstantsMCBasicTypes.BOOLEAN;
       link.target().setMCType(GrammarMill.mCPrimitiveTypeBuilder().setPrimitive(constantType).build());
     }

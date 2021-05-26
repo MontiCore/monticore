@@ -164,7 +164,6 @@ public class DefsTypeBasic {
   
   public static MethodSymbol add(MethodSymbol m, FieldSymbol f) {
     m.getSpannedScope().add(f);
-    m.getSpannedScope().add((VariableSymbol) f);
     return m;
   }
 
@@ -192,7 +191,6 @@ public class DefsTypeBasic {
   public static void add2scope(IOOSymbolsScope p, FieldSymbol s) {
     s.setEnclosingScope(p);
     p.add(s);
-    p.add((VariableSymbol) s);
   }
 
   /** add a Method to a Scope (bidirectional)
@@ -201,7 +199,6 @@ public class DefsTypeBasic {
     s.setEnclosingScope(p);
     p.add(s);
     p.add((FunctionSymbol) s);
-
   }
 
   /**

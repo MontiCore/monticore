@@ -58,6 +58,39 @@ public class JsonPrinterTest {
     printer.endObject();
     assertEquals("{}", printer.toString());
   }
+
+  @Test
+  public void testDefaultString() {
+    JsonPrinter printer = new JsonPrinter();
+    printer.member("s","");
+    assertEquals("", printer.toString());
+
+    printer = new JsonPrinter(true);
+    printer.member("s","");
+    assertEquals("\"s\":\"\"", printer.toString());
+  }
+
+  @Test
+  public void testDefaultInt() {
+    JsonPrinter printer = new JsonPrinter();
+    printer.member("i",0);
+    assertEquals("", printer.toString());
+
+    printer = new JsonPrinter(true);
+    printer.member("i",0);
+    assertEquals("\"i\":0", printer.toString());
+  }
+
+  @Test
+  public void testDefaultBoolean() {
+    JsonPrinter printer = new JsonPrinter();
+    printer.member("b",false);
+    assertEquals("", printer.toString());
+
+    printer = new JsonPrinter(true);
+    printer.member("b",false);
+    assertEquals("\"b\":false", printer.toString());
+  }
   
   @Test
   public void testEmptyList() {

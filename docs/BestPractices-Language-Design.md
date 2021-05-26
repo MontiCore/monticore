@@ -2,8 +2,6 @@
 
 # MontiCore Best Practices - Designing Languages
 
-[[_TOC_]]
-
 [MontiCore](http://www.monticore.de) provides a number of options to design 
 languages, access and modify the abstract syntax tree, and produce output files.
 
@@ -64,12 +62,12 @@ Some general questions on how to design a complete languages are adressed here.
 * Modularity in general is an important design principle.
   In the case of model-based code generation, modularity involves the following 
   dimensions:
-  1. Modelling languages
-  2. Models
-  3. Generator
-  4. Generated code
-  5. Runtime-Environment (RTE) including imported standard libraries
-  6. Software architecture (of the overal system), software stack
+    1. Modelling languages
+    2. Models
+    3. Generator
+    4. Generated code
+    5. Runtime-Environment (RTE) including imported standard libraries
+    6. Software architecture (of the overal system), software stack
 * These dimensions are not orthogonal, but also not completely interelated.
   The actual organisation will depend on the form of project.
 * A weak form of modularity would be to organize things in
@@ -89,27 +87,27 @@ Some general questions on how to design a complete languages are adressed here.
   independent library functions (or larger: components) that can be used if needed.
 * We recommend to modularize whenever complexity overwhelms or extensibility and
   adaptability are important:
-  1. MontiCore has powerful techniques for adaptation, extension and 
-    composition of *modelling languages* (through their grammars). See the
-    [reference manual](http://monticore.de/MontiCore_Reference-Manual.2017.pdf).
-  2. MontiCore has powerful techniques for the *aggregation of models* --
-    using the same principles as programming languages, namely allowing to keep 
-    the models independent (and thus storable, versionable, reusable) artifacts,
-    while they are semantically and through the generator technology well integrated. 
-    The appropriate approach is based on *using* foreign models, e.g. through 
-    `import` statements and sharing *symbol* infrastructures as described in the
-    [reference manual](http://monticore.de/MontiCore_Reference-Manual.2017.pdf).
-  3. The generator provides (a) many Java classes and methods that can be overridden
-    (b) Freemarker templates hook points to extend and replace templates, and (c)
-    can be customized using a groovy script.
-    The generator iteself is often structured along the software architecture / stack,
-    e.g. in frontend, application backend, data base, transport layer, etc.
-  4. The generated code must be designed appropriately by the generator designer, 
-    by generating builders, mills, etc. for each form of product - quite similar 
-    to MontiCore itself.
-    The generated code is usually structured along the components or sub-systems
-    that the software architecture defines.
-  5. The RTE is probably well designed if it is usable a normal framework.
+    1. MontiCore has powerful techniques for adaptation, extension and 
+       composition of *modelling languages* (through their grammars). See the
+       [reference manual](http://monticore.de/MontiCore_Reference-Manual.2017.pdf).
+    2. MontiCore has powerful techniques for the *aggregation of models* --
+       using the same principles as programming languages, namely allowing to keep 
+       the models independent (and thus storable, versionable, reusable) artifacts,
+       while they are semantically and through the generator technology well integrated. 
+       The appropriate approach is based on *using* foreign models, e.g. through 
+       `import` statements and sharing *symbol* infrastructures as described in the
+       [reference manual](http://monticore.de/MontiCore_Reference-Manual.2017.pdf).
+    3. The generator provides (a) many Java classes and methods that can be overridden
+       (b) Freemarker templates hook points to extend and replace templates, and (c)
+       can be customized using a groovy script.
+       The generator iteself is often structured along the software architecture / stack,
+       e.g. in frontend, application backend, data base, transport layer, etc.
+    4. The generated code must be designed appropriately by the generator designer, 
+       by generating builders, mills, etc. for each form of product - quite similar 
+       to MontiCore itself.
+       The generated code is usually structured along the components or sub-systems
+       that the software architecture defines.
+    5. The RTE is probably well designed if it is usable a normal framework.
 * Please note: it is not easy to design modularity and extensibility from beginning.
   Framework design has shown that this is an iterative optimizing process.
   It must be avoided to design too many extension elements into the system
@@ -146,20 +144,20 @@ grammar rule in the grammar `G`. This can be realized in one of the following wa
 of which has its own advantages and disadvantages:
 
 1. Embedding through overriding of extension rule and implementing extension point rule:
-  * `E implements I;`
-  * Advantage: simple embedding rule
-  * Disadvantage: does not work in combination with inheritance of extension rule
-  * Should therefore only be used, it `E` is not used anywhere else (= in not other language that is potentially used in combination with this language) 
+    * `E implements I;`
+    * Advantage: simple embedding rule
+    * Disadvantage: does not work in combination with inheritance of extension rule
+    * Should therefore only be used, it `E` is not used anywhere else (= in not other language that is potentially used in combination with this language) 
 2. Embedding through extending extension rule and implementing extension point rule:
-  * `IE extends E implements I = "something";`
-  * Advantage: does work in combination with inheritance of extension rule
-  * Disadvantage: cloning of RHS of the extension rule can produce inconsistencies if `E` is changed
-  * Can be used if it is assured that this rule is adjusted whenever `E` is changed, e.g., by assuming that `E` is not modified at all
+    * `IE extends E implements I = "something";`
+    * Advantage: does work in combination with inheritance of extension rule
+    * Disadvantage: cloning of RHS of the extension rule can produce inconsistencies if `E` is changed
+    * Can be used if it is assured that this rule is adjusted whenever `E` is changed, e.g., by assuming that `E` is not modified at all
 3. Embedding through implementing extension point rule and providing extension on right-hand side:
-  * `IE implements I = E;`
-  * Advantage: does work in combination with inheritance of extension rule
-  * Disadvantage: introduces new level of indirection in AST that invalidates check whether required abstract syntax (RHS of interface nonterminal) is present
-  * Should therefore not be used, if the interface has a right-hand side
+    * `IE implements I = E;`
+    * Advantage: does work in combination with inheritance of extension rule
+    * Disadvantage: introduces new level of indirection in AST that invalidates check whether required abstract syntax (RHS of interface nonterminal) is present
+    * Should therefore not be used, if the interface has a right-hand side
 * Defined by: AB
 
 
@@ -177,37 +175,37 @@ of which has its own advantages and disadvantages:
   `aName.java` and the needed symbol table is part of `aName.class`. So an import 
   stament actually locates an artifact.
 * As a consequence, we suggest:
-  * `import aModelName` refers to an artifact with name `aModelName` -- regardless
-    which kind of model is defined there.
-  * All the symbols exported by the artifact `aModelName` are imported when using 
-    the import statement `import aModelName`. 
-  * The imported artifact provides the desired symbols, typically stored through 
-    an earlier tool execution in a symbol file `aModelName.sym`.
-  * The symbol file may have specific extensions, such as `autsym`or `cdsym`.
-  * Selective import (known from Java), such as `import aName.innerClass` 
-    should be possible, but currently no such show case has been made yet (beyond Java).
-  * The import statement is only used to make symbols available in their simple form.
-    It is usually 
-    not intended to explicate a single dependency, e.g. a configuraton model
-    that depends on exactly one base model. Like in Java, where you import an 
-    artifact and then still explicitely extend the contained class.
+    * `import aModelName` refers to an artifact with name `aModelName` -- regardless
+      which kind of model is defined there.
+    * All the symbols exported by the artifact `aModelName` are imported when using 
+      the import statement `import aModelName`. 
+    * The imported artifact provides the desired symbols, typically stored through 
+      an earlier tool execution in a symbol file `aModelName.sym`.
+    * The symbol file may have specific extensions, such as `autsym`or `cdsym`.
+    * Selective import (known from Java), such as `import aName.innerClass` 
+      should be possible, but currently no such show case has been made yet (beyond Java).
+    * The import statement is only used to make symbols available in their simple form.
+      It is usually 
+      not intended to explicate a single dependency, e.g. a configuraton model
+      that depends on exactly one base model. Like in Java, where you import an 
+      artifact and then still explicitely extend the contained class.
 * It is methodically of interest to store at most one artifact with the same
   qualified name (although it is not per se forbidden to have more). 
   Java then also uses the first occurring class in its classpath only.
 * In a heterogeneous language setting, it may be necessary to map symbols
   from a soure to a target form (e.g. state symbols to Java enum constants or state 
   pattern classes). There are three main options for this task:
-  1. Store in the desired target symbol form upon creating the symbol file.
-     Has some problems: (1) increases dependencies between tools, 
-     (2) potentially several files need to be stored.
-  2. Adapt the imported symbols upon loading (recommended).
-  3. Use an explicit trasnformation tool between the two model processing tools
-     to map the initially stored symbol file to the desired format.
+    1. Store in the desired target symbol form upon creating the symbol file.
+       Has some problems: (1) increases dependencies between tools, 
+       (2) potentially several files need to be stored.
+    2. Adapt the imported symbols upon loading (recommended).
+    3. Use an explicit trasnformation tool between the two model processing tools
+       to map the initially stored symbol file to the desired format.
 
 ### Version number in language variants
 
 * As an important rule:
-  * Do not include version numbers in the DSL explicitly.
+    * Do not include version numbers in the DSL explicitly.
 * The reason is that whenever you do a tooling update, all the models that have 
   been defined before are suddenly not valid anymore and have to be adapted.
   Java has very carefully ensured that updates in the language are extensions only 
