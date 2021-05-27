@@ -108,7 +108,7 @@ public class RunnerDecorator extends AbstractCreator<ASTCDCompilationUnit, Optio
     String millFullName = parserService.getMillFullName();
     String scopesgenitordelegator = symbolTableService.getScopesGenitorDelegatorFullName();
     ASTMCType checkerType = getMCTypeFacade().createQualifiedType(str.get());
-    ASTCDParameter parameter = getCDParameterFacade().createParameter(checkerType, "ast");
+    ASTCDParameter parameter = getCDParameterFacade().createParameter(checkerType, "node");
     ASTCDMethod addCheckerMethod = getCDMethodFacade().createMethod(PUBLIC.build(),returnType, "createSymbolTable", parameter);
     this.replaceTemplate(EMPTY_BODY, addCheckerMethod, new TemplateHookPoint(TEMPLATE_PATH + "SymbolTable", grammarname, millFullName, scopesgenitordelegator, artifactScope));
     return addCheckerMethod;

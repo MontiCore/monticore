@@ -100,7 +100,7 @@ public class RunnerDecoratorTest extends DecoratorTestCase {
     assertFalse(method.isEmptyCDParameters());
     assertEquals(1, method.getCDParameterList().size());
     assertDeepEquals(AST_AUTOMATON, method.getCDParameter(0).getMCType());
-    assertEquals("ast", method.getCDParameter(0).getName());
+    assertEquals("node", method.getCDParameter(0).getName());
   }
   @Test
   public void testCreateParseMethod() {
