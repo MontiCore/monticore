@@ -97,18 +97,20 @@ public class PackageImplDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     //remove inherited attributes
     copiedDefinition.getCDClassesList()
         .stream()
-        .map(emfService::removeInheritedAttributes);
+        .map(emfService::removeInheritedAttributes)
+        .collect(Collectors.toList());
 
     //remove ast node Interface e.g. ASTAutomataNode
-    List<ASTCDInterface> removedList = copiedDefinition.getCDInterfacesList()
-            .stream()
-            .filter(x -> emfService.isASTNodeInterface(x, copiedDefinition)).collect(Collectors.toList());
-    copiedDefinition.removeAllCDElements(removedList);
+    List<ASTCDInterface> astcdInterfaces = copiedDefinition.getCDInterfacesList()
+        .stream()
+        .filter(x -> !emfService.isASTNodeInterface(x, copiedDefinition))
+        .collect(Collectors.toList());
 
     //remove inherited attributes
-    copiedDefinition.getCDInterfacesList()
+    astcdInterfaces
         .stream()
-        .map(emfService::removeInheritedAttributes);
+        .map(emfService::removeInheritedAttributes)
+        .collect(Collectors.toList());
 
     return copiedDefinition;
   }

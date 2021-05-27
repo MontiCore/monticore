@@ -48,9 +48,6 @@ public class TraverserClassDecorator extends AbstractCreator<ASTCDCompilationUni
 
   @Override
   public ASTCDClass decorate(ASTCDCompilationUnit input) {
-    // change class names to qualified name
-    visitorService.calculateCDTypeNamesWithASTPackage(input);
-    
     // get visitor names of current node
     String delegatorVisitorSimpleName = visitorService.getTraverserSimpleName();
     ASTMCQualifiedType visitorType = visitorService.getTraverserType();

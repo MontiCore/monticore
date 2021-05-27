@@ -55,10 +55,10 @@ public class InterfaceDecorator extends AbstractTransformer<ASTCDInterface> {
             .filter(m -> !m.getModifier().isProtected() && !m.getModifier().isPrivate()).collect(Collectors.toList());
     changedInput.setCDMethodList(l);
 
-    if (!changedInput.isPresentCDExtendUsage()) {
+    if (!changedInput.isPresentCDExtendUsage() && !originalInput.getInterfaceList().isEmpty()) {
       changedInput.setCDExtendUsage(CD4AnalysisMill.cDExtendUsageBuilder().build());
+      changedInput.getCDExtendUsage().addAllSuperclass(originalInput.getInterfaceList());
     }
-    changedInput.getCDExtendUsage().setSuperclassList(originalInput.getInterfaceList());
     return changedInput;
   }
 }

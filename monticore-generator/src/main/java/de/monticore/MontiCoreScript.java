@@ -475,7 +475,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     Optional<ASTCDCompilationUnit> ast = TransformationHelper.getCDforGrammar(cdScope, astGrammar);
     ASTCDCompilationUnit astCD = ast.orElse(transformAndCreateSymbolTable(astGrammar, glex, cdScope));
     createCDSymbolsForSuperGrammars(glex, astGrammar, cdScope);
-    completeCDTypes(cdScope);
+    // TODO MB, NJ: completeCDTypes(cdScope);
     storeCDForGrammar(astGrammar, astCD);
     return astCD;
   }

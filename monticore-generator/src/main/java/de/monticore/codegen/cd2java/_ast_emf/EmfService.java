@@ -146,19 +146,17 @@ public class EmfService extends AbstractService<EmfService> {
    * methods for removing inherited attributes
    */
   public ASTCDClass removeInheritedAttributes(ASTCDClass astCDClass) {
-    ASTCDClass copiedAstClass = astCDClass.deepClone();
     //remove inherited attributes
-    List<ASTCDAttribute> astcdAttributes = removeInheritedAttributes(copiedAstClass.getCDAttributeList());
-    copiedAstClass.setCDAttributeList(astcdAttributes);
-    return copiedAstClass;
+    List<ASTCDAttribute> astcdAttributes = removeInheritedAttributes(astCDClass.getCDAttributeList());
+    astCDClass.setCDAttributeList(astcdAttributes);
+    return astCDClass;
   }
 
   public ASTCDInterface removeInheritedAttributes(ASTCDInterface astCDInterface) {
-    ASTCDInterface copiedInterface = astCDInterface.deepClone();
     //remove inherited attributes
-    List<ASTCDAttribute> astcdAttributes = removeInheritedAttributes(copiedInterface.getCDAttributeList());
-    copiedInterface.setCDAttributeList(astcdAttributes);
-    return copiedInterface;
+    List<ASTCDAttribute> astcdAttributes = removeInheritedAttributes(astCDInterface.getCDAttributeList());
+    astCDInterface.setCDAttributeList(astcdAttributes);
+    return astCDInterface;
   }
 
   private List<ASTCDAttribute> removeInheritedAttributes(List<ASTCDAttribute> astcdAttributeList) {

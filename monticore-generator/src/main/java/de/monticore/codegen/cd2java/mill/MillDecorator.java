@@ -290,10 +290,13 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
     for (DiagramSymbol superSymbol : superSymbolList) {
       if (superSymbol.isPresentAstNode()) {
         for (CDTypeSymbol type : symbolTableService.getAllCDTypes(superSymbol)) {
-          if (type.isPresentAstNode() && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifier())) {
+          if (!type.isPresentAstNode()) {
+            continue;
+          }
+          if (symbolTableService.hasSymbolStereotype(type.getAstNode().getModifier())) {
             superMethods.addAll(getSuperSymbolMethods(superSymbol, type));
           }
-          if (type.isIsClass() && !type.isIsAbstract() && type.isPresentAstNode() &&
+          if (type.getAstNode() instanceof ASTCDClass && !type.getAstNode().getModifier().isAbstract() &&
               !symbolTableService.isClassOverwritten(type.getName() + BUILDER_SUFFIX, classList)) {
             superMethods.addAll(getSuperASTMethods(superSymbol, type, superMethods));
           }

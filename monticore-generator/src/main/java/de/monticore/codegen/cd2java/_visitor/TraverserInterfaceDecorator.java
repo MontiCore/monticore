@@ -2,12 +2,14 @@
 package de.monticore.codegen.cd2java._visitor;
 
 import com.google.common.collect.Lists;
-import de.monticore.cdbasis._ast.*;
-import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
-import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDDefinition;
+import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -20,6 +22,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
+import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 
@@ -28,9 +31,6 @@ import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
-import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_INTERFACE;
-import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SCOPE;
-import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SYMBOL;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
 
 /**
@@ -54,8 +54,7 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
 
   @Override
   public ASTCDInterface decorate(ASTCDCompilationUnit ast) {
-    ASTCDCompilationUnit compilationUnit = visitorService.calculateCDTypeNamesWithASTPackage(ast);
-    
+
     String traverserSimpleName = visitorService.getTraverserInterfaceSimpleName();
     
     // get visitor types and names of super cds and own cd
@@ -70,10 +69,7 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
     definitionList.add(ast.getCDDefinition());
     definitionList.addAll(superCDsTransitive.stream().map(x -> (ASTCDDefinition)x.getAstNode()).collect(
         Collectors.toList()));
-    superCDsTransitive.stream()
-        .map(visitorService::calculateCDTypeNamesWithASTPackage)
-        .collect(Collectors.toList());
-    
+
     List<String> visitorSimpleNameList = Lists.newArrayList(visitorService.getVisitorSimpleName());
     visitorSimpleNameList.addAll(superCDsTransitive.stream()
         .map(visitorService::getVisitorSimpleName)
@@ -193,11 +189,11 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
   protected List<ASTCDMethod> createTraverserDelegatingMethods(ASTCDDefinition cdDefinition) {
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
     String simpleVisitorName = visitorService.getVisitorSimpleName(cdDefinition.getSymbol());
-    
+    String packageName = visitorService.getASTPackage(cdDefinition.getSymbol());
     // add methods for classes, interfaces, enumerations, symbols, and scopes
-    visitorMethods.addAll(createVisitorDelegatorClassMethods(cdDefinition.getCDClassesList(), simpleVisitorName));
-    visitorMethods.addAll(createVisitorDelegatorInterfaceMethods(cdDefinition.getCDInterfacesList(), simpleVisitorName));
-    visitorMethods.addAll(createVisitorDelegatorEnumMethods(cdDefinition.getCDEnumsList(), simpleVisitorName, cdDefinition.getName()));
+    visitorMethods.addAll(createVisitorDelegatorClassMethods(cdDefinition.getCDClassesList(), packageName, simpleVisitorName));
+    visitorMethods.addAll(createVisitorDelegatorInterfaceMethods(cdDefinition.getCDInterfacesList(), packageName, simpleVisitorName));
+    visitorMethods.addAll(createVisitorDelegatorEnumMethods(cdDefinition.getCDEnumsList(), packageName, simpleVisitorName, cdDefinition.getName()));
     visitorMethods.addAll(createVisitorDelegatorSymbolMethods(cdDefinition, simpleVisitorName));
     visitorMethods.addAll(createVisitorDelegatorScopeMethods(cdDefinition, simpleVisitorName));
     
@@ -212,10 +208,11 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
    * @param simpleVisitorName The name of the visited entity
    * @return The decorated visitor methods
    */
-  protected List<ASTCDMethod> createVisitorDelegatorClassMethods(List<ASTCDClass> astcdClassList, String simpleVisitorName) {
+  protected List<ASTCDMethod> createVisitorDelegatorClassMethods(List<ASTCDClass> astcdClassList,
+                                                                 String packageName, String simpleVisitorName) {
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
     for (ASTCDClass astcdClass : astcdClassList) {
-      visitorMethods.addAll(createVisitorDelegatorClassMethod(astcdClass, simpleVisitorName));
+      visitorMethods.addAll(createVisitorDelegatorClassMethod(astcdClass, packageName, simpleVisitorName));
     }
     return visitorMethods;
   }
@@ -227,10 +224,10 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
    * @param simpleVisitorName The name of the visited entity
    * @return The decorated visitor methods
    */
-  protected List<ASTCDMethod> createVisitorDelegatorClassMethod(ASTCDClass astcdClass, String simpleVisitorName) {
+  protected List<ASTCDMethod> createVisitorDelegatorClassMethod(ASTCDClass astcdClass, String packageName, String simpleVisitorName) {
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
     boolean doTraverse = !astcdClass.getModifier().isAbstract();
-    ASTMCType classType = getMCTypeFacade().createQualifiedType(astcdClass.getName());
+    ASTMCType classType = getMCTypeFacade().createQualifiedType(Joiners.DOT.join(packageName, astcdClass.getName()));
     
     // delegating visitor methods
     visitorMethods.add(addDelegatingMethod(classType, simpleVisitorName, VISIT));
@@ -253,10 +250,12 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
    * @param simpleVisitorName The name of the visited entity
    * @return The decorated visitor methods
    */
-  protected List<ASTCDMethod> createVisitorDelegatorInterfaceMethods(List<ASTCDInterface> astcdInterfaceList, String simpleVisitorName) {
+  protected List<ASTCDMethod> createVisitorDelegatorInterfaceMethods(List<ASTCDInterface> astcdInterfaceList,
+                                                                     String packageName,
+                                                                     String simpleVisitorName) {
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
     for (ASTCDInterface astcdInterface : astcdInterfaceList) {
-      visitorMethods.addAll(createVisitorDelegatorInterfaceMethod(astcdInterface, simpleVisitorName));
+      visitorMethods.addAll(createVisitorDelegatorInterfaceMethod(astcdInterface, packageName, simpleVisitorName));
     }
     return visitorMethods;
   }
@@ -269,9 +268,11 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
    * @param simpleVisitorName The name of the visited entity
    * @return The decorated visitor methods
    */
-  protected List<ASTCDMethod> createVisitorDelegatorInterfaceMethod(ASTCDInterface astcdInterface, String simpleVisitorName) {
+  protected List<ASTCDMethod> createVisitorDelegatorInterfaceMethod(ASTCDInterface astcdInterface,
+                                                                    String packageName,
+                                                                    String simpleVisitorName) {
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
-    ASTMCType interfaceType = getMCTypeFacade().createQualifiedType(astcdInterface.getName());
+    ASTMCType interfaceType = getMCTypeFacade().createQualifiedType(Joiners.DOT.join(packageName, astcdInterface.getName()));
     
     // delegating visitor methods
     visitorMethods.add(addDelegatingMethod(interfaceType, simpleVisitorName, VISIT));
@@ -291,11 +292,12 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
    * @param simpleVisitorName The name of the visited entity
    * @return The decorated visitor methods
    */
-  protected List<ASTCDMethod> createVisitorDelegatorEnumMethods(List<ASTCDEnum> astcdEnumList, String simpleVisitorName,  String definitionName) {
+  protected List<ASTCDMethod> createVisitorDelegatorEnumMethods(List<ASTCDEnum> astcdEnumList, String packageName,
+                                                                String simpleVisitorName,  String definitionName) {
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
     for (ASTCDEnum astcdEnum : astcdEnumList) {
       if (!visitorService.isLiteralsEnum(astcdEnum, definitionName)) {
-        visitorMethods.addAll(createVisitorDelegatorEnumMethod(astcdEnum, simpleVisitorName));
+        visitorMethods.addAll(createVisitorDelegatorEnumMethod(astcdEnum, packageName, simpleVisitorName));
       }
     }
     return visitorMethods;
@@ -309,9 +311,10 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
    * @param simpleVisitorName The name of the visited entity
    * @return The decorated visitor methods
    */
-  protected List<ASTCDMethod> createVisitorDelegatorEnumMethod(ASTCDEnum astcdEnum, String simpleVisitorName) {
+  protected List<ASTCDMethod> createVisitorDelegatorEnumMethod(ASTCDEnum astcdEnum, String packageName,
+                                                               String simpleVisitorName) {
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
-    ASTMCType enumType = getMCTypeFacade().createQualifiedType(astcdEnum.getName());
+    ASTMCType enumType = getMCTypeFacade().createQualifiedType(Joiners.DOT.join(packageName, astcdEnum.getName()));
     
     // delegating visitor methods
     visitorMethods.add(addDelegatingMethod(enumType, simpleVisitorName, VISIT));
