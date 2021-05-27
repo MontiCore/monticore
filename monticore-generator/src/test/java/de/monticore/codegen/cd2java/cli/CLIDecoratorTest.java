@@ -38,7 +38,7 @@ public class CLIDecoratorTest extends DecoratorTestCase {
     this.glex.setGlobalValue("service", new AbstractService(ast));
     this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
 
-    CliDecorator cliDecorator = new CliDecorator(glex,  new SymbolTableService(ast));
+    CliDecorator cliDecorator = new CliDecorator(glex,  new ParserService(ast));
     this.cliClass = cliDecorator.decorate(ast).get();
   }
 
@@ -49,7 +49,6 @@ public class CLIDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, method.getCDParameterList().size());
     assertDeepEquals("String[]", method.getCDParameter(0).getMCType());
-
     assertEquals("args", method.getCDParameter(0).getName());
   }
 }

@@ -865,7 +865,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     ParserService parserService = new ParserService(cd);
     SymbolTableService symbolTableService = new SymbolTableService(cd);
     RunnerDecorator runnerDecorator = new RunnerDecorator(glex, parserService,symbolTableService );
-    CliDecorator cliDecorator = new CliDecorator(glex, symbolTableService );
+    CliDecorator cliDecorator = new CliDecorator(glex, parserService );
     CDCLIDecorator cdcliDecorator = new CDCLIDecorator(glex, runnerDecorator, cliDecorator,parserService);
 
     ASTCDCompilationUnit cliCD = cdcliDecorator.decorate(cd);

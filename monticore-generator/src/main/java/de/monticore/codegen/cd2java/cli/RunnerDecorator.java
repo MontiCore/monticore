@@ -47,7 +47,7 @@ public class RunnerDecorator extends AbstractCreator<ASTCDCompilationUnit, Optio
 
   public Optional<ASTCDClass> decorate(final ASTCDCompilationUnit cd) {
     Optional<ASTCDClass>  cliClass = Optional.empty();
-
+    boolean startProdPresent = symbolTableService.getStartProdASTFullName().isPresent();
     ASTCDDefinition cdDefinition = cd.getCDDefinition();
     if (!cdDefinition.isPresentModifier() || !parserService.hasComponentStereotype(cdDefinition.getModifier())) {
       String runnerClassName = parserService.getRunnerSimpleName();
@@ -55,9 +55,8 @@ public class RunnerDecorator extends AbstractCreator<ASTCDCompilationUnit, Optio
       cliClass = Optional.of(CD4AnalysisMill.cDClassBuilder()
           .setModifier(PUBLIC.build())
           .setName(runnerClassName)
-          .addCDMember(createCreateSymbolTableMethod(parserService.getCDSymbol()))
           .addCDMember(createParseMethod(parserService.getCDSymbol()))
-          .addCDMember(createRunMethod(parserService.getCDSymbol()))
+          .addCDMember(createRunMethod(parserService.getCDSymbol(),startProdPresent))
           .addCDMember(createPrettyPrintMethod(parserService.getCDSymbol()))
           .addCDMember(createPrintMethod(parserService.getCDSymbol()))
           .addCDMember(createPrintHelpMethod(parserService.getCDSymbol()))
@@ -66,6 +65,10 @@ public class RunnerDecorator extends AbstractCreator<ASTCDCompilationUnit, Optio
           .addCDMember(createStoreSymbolsMethod(parserService.getCDSymbol()))
           .addCDMember(createInitOptionsMethod(parserService.getCDSymbol()))
           .build());
+      if (startProdPresent){
+        cliClass.get().addCDMember(createCreateSymbolTableMethod(parserService.getCDSymbol()));
+
+      }
     }
 
     return cliClass;
@@ -73,14 +76,14 @@ public class RunnerDecorator extends AbstractCreator<ASTCDCompilationUnit, Optio
   }
 
 
-  protected ASTCDMethod createRunMethod(DiagramSymbol cdSymbol) {
+  protected ASTCDMethod createRunMethod(DiagramSymbol cdSymbol, boolean startProdPresesnt) {
     String grammarname = cdSymbol.getName();
     String millFullName = parserService.getMillFullName();
     Optional<String> startprod = parserService.getStartProdASTFullName();
     ASTMCType checkerType = getMCTypeFacade().createArrayType("String", 1);
     ASTCDParameter parameter = getCDParameterFacade().createParameter(checkerType, "args");
     ASTCDMethod addCheckerMethod = getCDMethodFacade().createMethod(PUBLIC.build(), "run", parameter);
-    this.replaceTemplate(EMPTY_BODY, addCheckerMethod, new TemplateHookPoint(TEMPLATE_PATH + "Run"));
+    this.replaceTemplate(EMPTY_BODY, addCheckerMethod, new TemplateHookPoint(TEMPLATE_PATH + "Run", startProdPresesnt));
     return addCheckerMethod;
   }
 

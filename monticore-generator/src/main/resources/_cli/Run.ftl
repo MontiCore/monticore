@@ -1,4 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
+${tc.signature("startProdPresent")}
 org.apache.commons.cli.Options options = initOptions();
 
 try{

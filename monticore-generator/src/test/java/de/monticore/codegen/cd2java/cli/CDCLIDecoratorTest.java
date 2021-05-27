@@ -47,7 +47,7 @@ public class CDCLIDecoratorTest extends DecoratorTestCase {
     SymbolTableService symbolTableService = new SymbolTableService(decoratedCD);
     ParserService parserService = new ParserService(decoratedCD);
     RunnerDecorator runnerDecorator = new RunnerDecorator(glex,parserService,symbolTableService);
-    CliDecorator cliDecorator = new CliDecorator(glex, symbolTableService);
+    CliDecorator cliDecorator = new CliDecorator(glex, parserService);
     CDCLIDecorator cdcliDecorator = new CDCLIDecorator(glex, runnerDecorator ,cliDecorator,parserService);
     this.cliCD = cdcliDecorator.decorate(decoratedCD);
   }
