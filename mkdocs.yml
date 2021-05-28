@@ -15,10 +15,7 @@ copyright: '(c) https://github.com/MontiCore/monticore'
 
 nav:
   - Home: 'README.md'
-  - 'Getting Started':
-      - 'General': 'docs/GettingStarted.md'
-      - 'Eclipse': 'docs/GettingStartedEclipse.md'
-      - 'IntelliJ': 'docs/GettingStartedIntelliJ.md'
+  - 'Getting Started': 'docs/GettingStarted.md'
   - Grammars:
       - 'General': 'monticore-grammar/src/main/grammars/de/monticore/Grammars.md'
       - 'Expressions': 'monticore-grammar/src/main/grammars/de/monticore/expressions/Expressions.md'
