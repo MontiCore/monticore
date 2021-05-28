@@ -318,7 +318,7 @@ ocl Bookshop {
   * [OCLExpressions (not yet publicly available)](https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/develop/src/main/grammars/de/monticore/ocl/OCLExpressions.mc4), 
   * [OptionalOperators (not yet publicly available)](https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/develop/src/main/grammars/de/monticore/ocl/OptionalOperators.mc4), and
   * [SetExpressions (not yet publicly available)](https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/develop/src/main/grammars/de/monticore/ocl/SetExpressions.mc4). 
-* The [*detailed description* (not yet publicly available)](https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/master/src/main/grammars/ocl/monticoreocl/OCL.md) provides an in-depth guide for language engineers.
+* The [*detailed description* (not yet publicly available)](https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/develop/src/main/grammars/de/monticore/ocl/OCL.md) provides an in-depth guide for language engineers.
 
 
 ### [Object Diagrams (not yet publicly available)](https://git.rwth-aachen.de/monticore/languages/od) (MontiCore Stable)
