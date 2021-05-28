@@ -197,7 +197,7 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testAddCoCoStateMethod() {
+  public void testAddCoCoStateMethod() { //first 2 weeks are the hardest
     List<ASTCDMethod> list = getMethodsBy("addCoCo", 1, cocoChecker);
     ASTMCType astType = this.mcTypeFacade.createQualifiedType(STATE_COCO);
     assertTrue(list.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
