@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.parser;
 
 import de.monticore.codegen.parser.Automaton.*;
