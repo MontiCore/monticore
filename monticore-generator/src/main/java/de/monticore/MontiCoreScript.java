@@ -115,6 +115,8 @@ package de.monticore;
  import java.util.*;
  import java.util.stream.Collectors;
 
+ import static de.monticore.MontiCoreConfiguration.*;
+
 /**
  * The actual top level functional implementation of MontiCore. This is the
  * top-most interface of MontiCore. The static members of this class constitute
@@ -619,7 +621,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   }
 
   public void configureGenerator(GlobalExtensionManagement glex, List<ASTCDCompilationUnit> cds, IterablePath templatePath) {
-    String configTemplate = glex.getGlobalVar(MontiCoreConfiguration.Options.CONFIGTEMPLATE.toString(), StringUtils.EMPTY).toString();
+    String configTemplate = glex.getGlobalVar(CONFIGTEMPLATE_LONG, StringUtils.EMPTY).toString();
     if (!configTemplate.isEmpty()) {
       GeneratorSetup setup = new GeneratorSetup();
       setup.setAdditionalTemplatePaths(templatePath.getPaths().stream().map(p -> new File(p.toUri())).collect(Collectors.toList()));
@@ -1278,33 +1280,23 @@ public class MontiCoreScript extends Script implements GroovyRunner {
         // name
         builder.addVariable(MontiCoreConfiguration.CONFIGURATION_PROPERTY, mcConfig);
 
-        mcConfig.getAllValues().forEach((key, value) -> builder.addVariable(key, value));
+        // add everything properly typed for usage in the script
 
-        // after adding everything we override a couple of known variable
-        // bindings
-        // to have them properly typed in the script
-        builder.addVariable(MontiCoreConfiguration.Options.GRAMMARS.toString(),
-                mcConfig.getGrammars());
-        builder.addVariable(MontiCoreConfiguration.Options.MODELPATH.toString(),
-                mcConfig.getModelPath());
-        builder.addVariable(MontiCoreConfiguration.Options.OUT.toString(),
-                mcConfig.getOut());
-        builder.addVariable(MontiCoreConfiguration.Options.REPORT.toString(),
-                mcConfig.getReport());
-        builder.addVariable(MontiCoreConfiguration.Options.FORCE.toString(),
-                mcConfig.getForce());
-        builder.addVariable(MontiCoreConfiguration.Options.HANDCODEDPATH.toString(),
-                mcConfig.getHandcodedPath());
-        builder.addVariable(MontiCoreConfiguration.Options.TEMPLATEPATH.toString(),
-                mcConfig.getTemplatePath());
-        builder.addVariable(MontiCoreConfiguration.Options.GROOVYHOOK1_SHORT.toString(),
-                mcConfig.getGroovyHook1());
-        builder.addVariable(MontiCoreConfiguration.Options.GROOVYHOOK2_SHORT.toString(),
-                mcConfig.getGroovyHook2());
+        // as currently MontiCore still can process multiple grammars,
+        // we add a trailing "s" for the proper plural
+        builder.addVariable(GRAMMAR_LONG + "s", mcConfig.getGrammars());
+        builder.addVariable(MODELPATH_LONG, mcConfig.getModelPath());
+        builder.addVariable(OUT_LONG, mcConfig.getOut());
+        builder.addVariable(REPORT_LONG, mcConfig.getReport());
+
+        builder.addVariable(HANDCODEDPATH_LONG, mcConfig.getHandcodedPath());
+        builder.addVariable(TEMPLATEPATH_LONG, mcConfig.getTemplatePath());
+        builder.addVariable(GROOVYHOOK1, mcConfig.getGroovyHook1());
+        builder.addVariable(GROOVYHOOK2, mcConfig.getGroovyHook2());
         builder.addVariable("LOG_ID", LOG_ID);
         GlobalExtensionManagement glex = new GlobalExtensionManagement();
         if (mcConfig.getConfigTemplate().isPresent()) {
-          glex.setGlobalValue(MontiCoreConfiguration.Options.CONFIGTEMPLATE.toString(),
+          glex.setGlobalValue(CONFIGTEMPLATE_LONG,
                   mcConfig.getConfigTemplate().get());
         }
         builder.addVariable("glex", glex);
@@ -1312,6 +1304,10 @@ public class MontiCoreScript extends Script implements GroovyRunner {
         builder.addVariable("reportManagerFactory", new MontiCoreReports(mcConfig.getOut().getAbsolutePath(),
                 mcConfig.getReport().getAbsolutePath(),
                 mcConfig.getHandcodedPath(), mcConfig.getTemplatePath()));
+
+        // for backward-compatibilty with outdated Maven scripts, we also add
+        // the "force" parameter, which is always true
+        builder.addVariable("force", true);
       }
 
       GroovyInterpreter g = builder.build();
