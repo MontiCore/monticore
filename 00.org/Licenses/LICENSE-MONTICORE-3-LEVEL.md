@@ -91,5 +91,3 @@ liability, etc.
 * see also [**MontiCore Reference Manual**](http://www.monticore.de/)
 
 * [MontiCore project](../../README.md) - MontiCore
-
-
