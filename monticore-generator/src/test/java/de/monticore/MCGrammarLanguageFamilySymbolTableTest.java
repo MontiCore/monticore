@@ -31,7 +31,6 @@ public class MCGrammarLanguageFamilySymbolTableTest {
     final IGrammar_WithConceptsGlobalScope globalScope = Grammar_WithConceptsMill.globalScope();
     globalScope.clear();
     globalScope.setModelPath(new ModelPath(Paths.get("src/test/resources")));
-    globalScope.setFileExt("mc4");
 
     final Optional<MCGrammarSymbol> oldGrammar =
             globalScope.resolveMCGrammar("de.monticore.statechart.Statechart");

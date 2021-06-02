@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.grammar.grammarfamily._symboltable;
 
+import com.google.common.collect.Lists;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._symboltable.GrammarSTCompleteTypes;
@@ -9,6 +10,8 @@ import de.monticore.grammar.grammarfamily._visitor.GrammarFamilyTraverser;
 import de.monticore.javalight._symboltable.JavaLightSTCompleteTypes;
 import de.monticore.statements.mccommonstatements._symboltable.MCCommonStatementsSTCompleteTypes;
 import de.monticore.statements.mcvardeclarationstatements._symboltable.MCVarDeclarationStatementsSTCompleteTypes;
+import de.monticore.symboltable.ImportStatement;
+import de.se_rwth.commons.Joiners;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +53,13 @@ public class GrammarFamilyPhasedSTC {
   public IGrammarFamilyArtifactScope createFromAST(ASTCDCompilationUnit node){
     IGrammarFamilyArtifactScope as = scopesGenitorDelegator.createFromAST(node);
     priorityList.forEach(node::accept);
+    String packageName = Joiners.DOT.join(node.getCDPackageList());
+    as.getLocalDiagramSymbols().forEach(s -> s.setPackageName(packageName));
+    List<ImportStatement> imports = Lists.newArrayList();
+    node.getMCImportStatementList().forEach(i -> imports.add(new ImportStatement(i.getQName(), i.isStar())));
+    as.setImportsList(imports);
+    as.setPackageName(packageName);
+
     return as;
   }
 

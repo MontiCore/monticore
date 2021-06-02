@@ -76,8 +76,7 @@ public class TestHelper {
     scope.clear();
     BasicSymbolsMill.initializePrimitives();
 
-    // Set Fileextension and ModelPath
-    scope.setFileExt("mc4");
+    // Set ModelPath
     scope.setModelPath(modelPath);
     return scope;
   }
