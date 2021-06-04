@@ -239,10 +239,9 @@ Literals are the basic elements of expressions, such as numbers, strings,
 truth values. Some snipets:
 
     grammar           examples of this grammar
-    MCCommonLit       3  -3  2.17  -4  true  false  'c'  'AE' 
-                      3L  2.17d  2.17f  0xAF  "string" "str
-\"  
-                      "str\uAF01\u0001ÿ"  null
+    MCCommonLit       3  -3  2.17  -4  true  false  'c' 
+                      3L  2.17d  2.17f  0xAF  "string"  
+                      "str\uAF01\u0001"  null
     MCJavaLiterals    999_999  0x3F2A  0b0001_0101  0567  1.2e-7F
 
 ### [MCLiteralsBasis.mc4](literals/MCLiteralsBasis.mc4) (stable)
