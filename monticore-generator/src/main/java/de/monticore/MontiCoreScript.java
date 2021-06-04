@@ -1276,8 +1276,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
       Optional<Configuration> config = Optional.ofNullable(configuration);
       if (config.isPresent()) {
         MontiCoreConfiguration mcConfig = MontiCoreConfiguration.withConfiguration(config.get());
-        // we add the configuration object as property with a special property
-        // name
+        // we add the configuration object as property with a special property name
         builder.addVariable(MontiCoreConfiguration.CONFIGURATION_PROPERTY, mcConfig);
 
         // add everything properly typed for usage in the script
@@ -1288,7 +1287,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
         builder.addVariable(MODELPATH_LONG, mcConfig.getModelPath());
         builder.addVariable(OUT_LONG, mcConfig.getOut());
         builder.addVariable(REPORT_LONG, mcConfig.getReport());
-
         builder.addVariable(HANDCODEDPATH_LONG, mcConfig.getHandcodedPath());
         builder.addVariable(TEMPLATEPATH_LONG, mcConfig.getTemplatePath());
         builder.addVariable(GROOVYHOOK1, mcConfig.getGroovyHook1());

@@ -285,7 +285,7 @@ public class MontiCoreScriptTest {
       Log.error("0xA7152 Could not process test CLI parameters: " + e.getMessage());
     }
 
-    MontiCoreConfiguration cfg = MontiCoreConfiguration.withOptions(cmd.get());
+    MontiCoreConfiguration cfg = MontiCoreConfiguration.withCLI(cmd.get());
     new MontiCoreScript().run(cfg);
     // Reporting is enabled in the monticore_standard.groovy script but needs to be disabled for other tests
     // because Reporting is static directly disable it again here
@@ -303,7 +303,7 @@ public class MontiCoreScriptTest {
       Log.error("0xA7152 Could not process test CLI parameters: " + e.getMessage());
     }
 
-    MontiCoreConfiguration cfg = MontiCoreConfiguration.withOptions(cmd.get());
+    MontiCoreConfiguration cfg = MontiCoreConfiguration.withCLI(cmd.get());
     new MontiCoreScript().run_emf(cfg);
     // Reporting is enabled in the monticore_standard.groovy script but needs to be disabled for other tests
     // because Reporting is static directly disable it again here

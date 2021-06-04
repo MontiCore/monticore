@@ -2,20 +2,12 @@
 
 package de.monticore;
 
-import com.google.common.base.Function;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
-import com.google.common.primitives.Doubles;
-import com.google.common.primitives.Ints;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.configuration.Configuration;
-import de.se_rwth.commons.configuration.ConfigurationContributorChainBuilder;
-import de.se_rwth.commons.configuration.DelegatingConfigurationContributor;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.Options;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -23,8 +15,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static com.google.common.collect.Iterables.transform;
 
 /**
  * Provides access to the aggregated configuration of a MontiCore instance
@@ -56,7 +46,6 @@ public final class MontiCoreConfiguration implements Configuration {
   public static final String DEFAULT_HANDCODED_TEMPLATE_PATH = "resource";
 
   public static final String DEFAULT_GRAMMAR_PATH = "grammars";
-
 
   /**
    * Constants for the allowed CLI options in their long and short froms.
@@ -90,261 +79,34 @@ public final class MontiCoreConfiguration implements Configuration {
   public static final String REPORT_LONG = "report";
   public static final String HELP_LONG = "help";
 
+  private final CommandLine cmdConfig;
+
   /**
    * Factory method for {@link MontiCoreConfiguration}.
    */
   public static MontiCoreConfiguration withConfiguration(Configuration configuration) {
-    return new MontiCoreConfiguration(((MontiCoreConfiguration) configuration).getOptions());
+    return new MontiCoreConfiguration(configuration);
   }
 
   /**
    * Factory method for {@link MontiCoreConfiguration}.
    */
-  public static MontiCoreConfiguration withOptions(CommandLine options) {
+  public static MontiCoreConfiguration withCLI(CommandLine options) {
     return new MontiCoreConfiguration(options);
   }
-
-  private final Configuration configuration;
-  private final CommandLine options;
 
   /**
    * Constructor for {@link MontiCoreConfiguration}
    */
   private MontiCoreConfiguration(Configuration internal) {
-
-    // ConfigurationSystemPropertiesContributor systemPropertiesContributor =
-    // ConfigurationSystemPropertiesContributor.withPrefix("monticore");
-
-    this.configuration = ConfigurationContributorChainBuilder.newChain()
-        // .add(systemPropertiesContributor)
-        .add(DelegatingConfigurationContributor.with(internal))
-        .build();
-    this.options = null;
-
-  }
-
-  public MontiCoreConfiguration(CommandLine options) {
-    this.options = options;
-    this.configuration = null;
+    this.cmdConfig = internal.getConfig();
   }
 
   /**
-   * @see de.se_rwth.commons.configuration.Configuration#getAllValues()
+   * Constructor for {@link MontiCoreConfiguration}
    */
-  @Override
-  public Map<String, Object> getAllValues() {
-    // ToDo
-    return this.configuration.getAllValues();
-  }
-
-  /**
-   * @see de.se_rwth.commons.configuration.Configuration#getAllValuesAsStrings()
-   */
-  @Override
-  public Map<String, String> getAllValuesAsStrings() {
-    // ToDo
-    return this.configuration.getAllValuesAsStrings();
-  }
-
-  /**
-   * @see de.se_rwth.commons.configuration.Configuration#getAsBoolean(java.lang.String)
-   */
-  @Override
-  public Optional<Boolean> getAsBoolean(String key) {
-
-    String property = null;
-    if (options.hasOption(key)) {
-      property = options.getOptionValue(key);
-    }
-    return property != null
-            ? Optional.ofNullable(Boolean.valueOf(property))
-            : Optional.empty();
-
-    //return this.configuration.getAsBoolean(key);
-  }
-
-  public Optional<Boolean> getAsBoolean(Enum<?> key) {
-    return getAsBoolean(key.toString());
-  }
-
-  /**
-   * @see de.se_rwth.commons.configuration.Configuration#getAsBooleans(java.lang.String)
-   */
-  @Override
-  public Optional<List<Boolean>> getAsBooleans(String key) {
-
-    List<String> properties = new ArrayList<>();
-    if (options.hasOption(key)) {
-      properties = Arrays.asList(options.getOptionValues(key));
-    }
-
-    return Optional.ofNullable(properties.stream()
-            .map(p -> Boolean.valueOf(p))
-            .collect(Collectors.toList()));
-
-//    return this.configuration.getAsBooleans(key);
-  }
-
-  public Optional<List<Boolean>> getAsBooleans(Enum<?> key) {
-    return getAsBooleans(key.toString());
-  }
-
-  /**
-   * @see de.se_rwth.commons.configuration.Configuration#getAsDouble(java.lang.String)
-   */
-  @Override
-  public Optional<Double> getAsDouble(String key) {
-    String property = null;
-    if (options.hasOption(key)) {
-      property = options.getOptionValue(key);
-    }
-    return property != null
-            ? Optional.ofNullable(Doubles.tryParse(property))
-            : Optional.empty();
-
-    //return this.configuration.getAsDouble(key);
-  }
-
-  public Optional<Double> getAsDouble(Enum<?> key) {
-    return getAsDouble(key.toString());
-  }
-
-  /**
-   * @see de.se_rwth.commons.configuration.Configuration#getAsDoubles(java.lang.String)
-   */
-  @Override
-  public Optional<List<Double>> getAsDoubles(String key) {
-    List<String> properties = new ArrayList<>();
-    if (options.hasOption(key)) {
-      properties = Arrays.asList(options.getOptionValues(key));
-    }
-
-    return Optional.ofNullable(properties.stream()
-            .map(p -> Doubles.tryParse(p))
-            .collect(Collectors.toList()));
-
-    //return this.configuration.getAsDoubles(key);
-  }
-
-  public Optional<List<Double>> getAsDoubles(Enum<?> key) {
-    return getAsDoubles(key.toString());
-  }
-
-  /**
-   * @see de.se_rwth.commons.configuration.Configuration#getAsInteger(java.lang.String)
-   */
-  @Override
-  public Optional<Integer> getAsInteger(String key) {
-    String property = null;
-    if (options.hasOption(key)) {
-      property = options.getOptionValue(key);
-    }
-
-    return property != null
-            ? Optional.of(Ints.tryParse(property))
-            : Optional.empty();
-    //return this.configuration.getAsInteger(key);
-  }
-
-  public Optional<Integer> getAsInteger(Enum<?> key) {
-    return getAsInteger(key.toString());
-  }
-
-  /**
-   * @see de.se_rwth.commons.configuration.Configuration#getAsIntegers(java.lang.String)
-   */
-  @Override
-  public Optional<List<Integer>> getAsIntegers(String key) {
-    List<String> properties = new ArrayList<>();
-    if (options.hasOption(key)) {
-      properties = Arrays.asList(options.getOptionValues(key));
-    }
-
-    return Optional.ofNullable(properties.stream()
-            .map(p -> Ints.tryParse(p))
-            .collect(Collectors.toList()));
-    //return this.configuration.getAsIntegers(key);
-  }
-
-  public Optional<List<Integer>> getAsIntegers(Enum<?> key) {
-    return getAsIntegers(key.toString());
-  }
-
-  /**
-   * @see de.se_rwth.commons.configuration.Configuration#getAsString(java.lang.String)
-   */
-  @Override
-  public Optional<String> getAsString(String key) {
-    if (options.hasOption(key)) {
-      return Optional.ofNullable(options.getOptionValue(key));
-    }
-    return Optional.empty();
-    // return this.configuration.getAsString(key);
-  }
-
-  public Optional<String> getAsString(Enum<?> key) {
-    return getAsString(key.toString());
-  }
-
-  /**
-   * @see de.se_rwth.commons.configuration.Configuration#getAsStrings(java.lang.String)
-   */
-  @Override
-  public Optional<List<String>> getAsStrings(String key) {
-    if (options.hasOption(key)) {
-      return Optional.ofNullable(Arrays.asList(options.getOptionValues(key)));
-    }
-    return Optional.empty();
-    // return this.configuration.getAsStrings(key);
-  }
-
-  public Optional<List<String>> getAsStrings(Enum<?> key) {
-    return getAsStrings(key.toString());
-  }
-
-  /**
-   * @see de.se_rwth.commons.configuration.Configuration#getValue(java.lang.String)
-   */
-  @Override
-  public Optional<Object> getValue(String key) {
-    if (options.hasOption(key)) {
-      return Optional.ofNullable(options.getOptionValue(key));
-    }
-    return Optional.empty();
-    // return this.configuration.getValue(key);
-  }
-
-  public Optional<Object> getValue(Enum<?> key) {
-    return getValue(key.toString());
-  }
-
-  /**
-   * @see de.se_rwth.commons.configuration.Configuration#getValues(java.lang.String)
-   */
-  @Override
-  public Optional<List<Object>> getValues(String key) {
-    if (options.hasOption(key)) {
-      return Optional.ofNullable(Arrays.asList(options.getOptionValues(key)));
-    }
-    return Optional.empty();
-    // return this.configuration.getValues(key);
-  }
-
-  public Optional<List<Object>> getValues(Enum<?> key) {
-    return getValues(key.toString());
-  }
-
-  /**
-   * @see de.se_rwth.commons.configuration.Configuration#hasProperty(java.lang.String)
-   */
-  @Override
-  public boolean hasProperty(String key) {
-    return options.hasOption(key);
-    // return this.configuration.hasProperty(key);
-  }
-
-  public boolean hasProperty(Enum<?> key) {
-    return hasProperty(key.toString());
+  private MontiCoreConfiguration(CommandLine cmdConfig) {
+    this.cmdConfig = cmdConfig;
   }
 
   private boolean checkPath(List<String> grammars) {
@@ -516,45 +278,6 @@ public final class MontiCoreConfiguration implements Configuration {
   }
 
   /**
-   * Getter for the optional config template.
-   *
-   * @return Optional of the config template
-   */
-  public Optional<String> getConfigTemplate() {
-    Optional<String> configTemplate = getAsString(CONFIGTEMPLATE);
-    if (configTemplate.isPresent()) {
-      return configTemplate;
-    }
-    return Optional.empty();
-  }
-
-  /**
-   * Getter for the optional groovy script for hook point one.
-   *
-   * @return Optional path to the script
-   */
-  public Optional<String> getGroovyHook1() {
-    Optional<String> script = getAsString(GROOVYHOOK1);
-    if (script.isPresent()) {
-      return script;
-    }
-    return Optional.empty();
-  }
-
-  /**
-   * Getter for the optional groovy script for hook point two.
-   *
-   * @return Optional path to the script
-   */
-  public Optional<String> getGroovyHook2() {
-    Optional<String> script = getAsString(GROOVYHOOK2);
-    if (script.isPresent()) {
-      return script;
-    }
-    return Optional.empty();
-  }
-
-  /**
    * Getter for the actual value of the template path argument. This is not the
    * prepared {@link IterablePath} as in
    * {@link MontiCoreConfiguration#getTemplatePath()} but the raw input
@@ -572,6 +295,33 @@ public final class MontiCoreConfiguration implements Configuration {
   }
 
   /**
+   * Getter for the optional config template.
+   *
+   * @return Optional of the config template
+   */
+  public Optional<String> getConfigTemplate() {
+    return getAsString(CONFIGTEMPLATE);
+  }
+
+  /**
+   * Getter for the optional groovy script for hook point one.
+   *
+   * @return Optional path to the script
+   */
+  public Optional<String> getGroovyHook1() {
+    return getAsString(GROOVYHOOK1);
+  }
+
+  /**
+   * Getter for the optional groovy script for hook point two.
+   *
+   * @return Optional path to the script
+   */
+  public Optional<String> getGroovyHook2() {
+    return getAsString(GROOVYHOOK2);
+  }
+
+  /**
    * @param files as String names to convert
    * @return list of files by creating file objects from the Strings
    */
@@ -580,7 +330,10 @@ public final class MontiCoreConfiguration implements Configuration {
         Collectors.mapping(file -> new File(file).getAbsoluteFile(), Collectors.toList()));
   }
 
-  public CommandLine getOptions() {
-    return options;
+  /**
+   * @see de.se_rwth.commons.configuration.Configuration#getConfig()
+   */
+  public CommandLine getConfig() {
+    return cmdConfig;
   }
 }
