@@ -1,0 +1,93 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore;
+
+/* This is a MontiCore stable grammar.
+ * Adaptations -- if any -- are conservative. */
+
+import de.monticore.literals.*;
+
+/**
+ * Grammar for common elements of the UML/P-Language-Family
+ * 
+ * This grammars defines Stereotypes like 
+ *   <<val1,val2="text",...>>
+ * Values may only be of type String.
+ * The real value unfortunately in UML is only encoded as String.
+ * 
+ * We therefore suggest not to use this form of stereotypes, but use a
+ * tagging infrastructure that even allows to type the possible forms
+ * of tags.
+ * 
+ * Methods contains(name), getValue(name) assist Stereotype retrieval.
+ *
+ */
+component grammar UMLStereotype extends MCCommonLiterals {
+
+    /*========================================================================*/
+    /*============================== GRAMMAR =================================*/
+    /*========================================================================*/
+
+    /** ASTStereotype represents Stereotypes in the UML/P
+        @attribute values List of Values of this Stereotype
+    */
+    Stereotype =
+         "<<"  values:(StereoValue || ",")+ ">>" ;
+
+    // Due to possible scanner clashes with "List<List<String>>"
+    // we split the token:
+    splittoken ">>";
+    
+    /** ASTStereoValue represents a Value of a Stereotype in the UML/P
+        @attribute name  Name of the Stereotype-Value
+        @attribute text Content of the Stereotype (String including '"';
+                          use getValue() for decoded String)
+    */
+    StereoValue =
+        Name& ("=" text:StringLiteral)?;
+
+    /*========================================================================*/
+    /*======================= AST extension ================================*/
+    /*========================================================================*/
+
+    astrule Stereotype =
+        method public boolean contains(String name) {
+          for (ASTStereoValue sv : values) {
+            if (sv.getName().equals(name)) {
+              return true;
+            }
+          }
+          return false;
+        }
+        method public boolean contains(String name, String value) {
+          for (ASTStereoValue sv : values) {
+            if (sv.getName().equals(name)) {
+              return sv.getValue().equals(value);
+            }
+          }
+          return false;
+        }
+        method public String getValue(String name) {
+          for (ASTStereoValue sv : values) {
+            if (sv.getName().equals(name)) {
+              return sv.getValue();
+            }
+          }
+          throw new java.util.NoSuchElementException();
+        };
+
+    astrule StereoValue =
+        // Caution: decoded value is in cache: so change of value leads
+        // to outdated result in getValue()
+        content:String
+        method public String getValue() {
+          if(content == null) {
+            if (text.isPresent()) {
+              content = de.monticore.literals.MCLiteralsDecoder.decodeString(
+                    text.get().getValue());
+            } else {
+              content = "";   // absent value
+            }
+          }
+          return content;
+        };
+}

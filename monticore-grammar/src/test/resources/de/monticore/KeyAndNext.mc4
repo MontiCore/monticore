@@ -1,0 +1,25 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore;
+
+grammar KeyAndNext  extends mc.grammars.lexicals.TestLexicals {
+
+  A =  key("b") {next("c")}? b:Name;
+
+  B =  b:key("b") {next("c")}? b:Name;
+
+  C = key("b") b:["c"];
+
+  D =  key("b") b:Name;
+
+  E =  b:key("b") b:Name;
+
+  F =  key("b");
+
+  G =  b:key("b");
+
+  H = {next("b")}? Name b:["c"];
+
+  I = {next("b")}? b:Name "foo" b:Name?;
+
+ }

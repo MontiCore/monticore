@@ -1,0 +1,35 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package  de.monticore.grammar.cocos.valid;
+
+grammar ASTRules {
+
+ A;
+
+ astrule A;
+
+ interface B;
+
+ astrule B;
+
+ abstract C;
+
+ astrule C;
+
+ D implements B;
+
+ E = d:D;
+
+ astrule E = d:B;
+   
+ F astextends ASTD;
+ 
+ G;
+ 
+ astrule G astextends ASTD;
+ 
+ interface H;
+ 
+ astrule H astextends java.util.Observer;
+
+}

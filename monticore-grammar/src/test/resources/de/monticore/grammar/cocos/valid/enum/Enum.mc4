@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package  de.monticore.grammar.cocos.valid.enum;
+
+grammar Enum extends cocos.valid.Enum {
+
+ A = "a";
+
+}

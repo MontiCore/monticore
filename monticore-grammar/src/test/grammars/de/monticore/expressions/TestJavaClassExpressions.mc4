@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.expressions;
+
+grammar TestJavaClassExpressions
+          extends de.monticore.expressions.JavaClassExpressions, de.monticore.literals.MCCommonLiterals, de.monticore.types.MCCollectionTypes{
+
+   start Expression;
+
+   ExtType = MCType;
+
+   ExtReturnType = MCReturnType;
+
+   ExtTypeArgument = MCTypeArgument;
+}

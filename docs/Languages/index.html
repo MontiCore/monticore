@@ -1,0 +1,1268 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="canonical" href="https://monticore.github.io/monticore/docs/Languages/">
+      
+      <link rel="icon" href="../../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.2, mkdocs-material-7.1.7">
+    
+    
+      
+        <title>Languages - MontiCore</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ca7ac06f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.f1a3b89f.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+  
+    
+    <script>function __prefix(e){return new URL("../..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#monticore-languages-of-level-ii-an-overview" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="MontiCore" class="md-header__button md-logo" aria-label="MontiCore" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M528 0H48C21.5 0 0 21.5 0 48v320c0 26.5 21.5 48 48 48h192l-16 48h-72c-13.3 0-24 10.7-24 24s10.7 24 24 24h272c13.3 0 24-10.7 24-24s-10.7-24-24-24h-72l-16-48h192c26.5 0 48-21.5 48-48V48c0-26.5-21.5-48-48-48zm-16 352H64V64h448v288z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            MontiCore
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Languages
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        
+<a href="https://github.com/MontiCore/monticore/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="MontiCore" class="md-nav__button md-logo" aria-label="MontiCore" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M528 0H48C21.5 0 0 21.5 0 48v320c0 26.5 21.5 48 48 48h192l-16 48h-72c-13.3 0-24 10.7-24 24s10.7 24 24 24h272c13.3 0 24-10.7 24-24s-10.7-24-24-24h-72l-16-48h192c26.5 0 48-21.5 48-48V48c0-26.5-21.5-48-48-48zm-16 352H64V64h448v288z"/></svg>
+
+    </a>
+    MontiCore
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/MontiCore/monticore/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GettingStarted/" class="md-nav__link">
+        Getting Started
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      <label class="md-nav__link" for="__nav_3">
+        Grammars
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Grammars" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          Grammars
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../monticore-grammar/src/main/grammars/de/monticore/Grammars/" class="md-nav__link">
+        General
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../monticore-grammar/src/main/grammars/de/monticore/expressions/Expressions/" class="md-nav__link">
+        Expressions
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../monticore-grammar/src/main/grammars/de/monticore/literals/Literals/" class="md-nav__link">
+        Literals
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../monticore-grammar/src/main/grammars/de/monticore/types/Types/" class="md-nav__link">
+        Types
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DevelopedLanguages/" class="md-nav__link">
+        Languages
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../BestPractices/" class="md-nav__link">
+        Best Practices
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../00.org/Explanations/CHANGELOG/" class="md-nav__link">
+        Changelog
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Publications/" class="md-nav__link">
+        Publications
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../00.org/Licenses/LICENSE-MONTICORE-3-LEVEL/" class="md-nav__link">
+        License
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../further_docs/Impressum/" class="md-nav__link">
+        Impressum
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#list-of-languages" class="md-nav__link">
+    List of Languages
+  </a>
+  
+    <nav class="md-nav" aria-label="List of Languages">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#class-diagram-for-analysis-cd4a-monticore-stable" class="md-nav__link">
+    Class Diagram For Analysis (CD4A) (MontiCore stable)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#class-diagram-for-code-cd4code-monticore-stable" class="md-nav__link">
+    Class Diagram for Code (CD4Code) (MontiCore stable)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#feature-diagrams-not-yet-publicly-available-monticore-stable" class="md-nav__link">
+    Feature Diagrams (not yet publicly available) (MontiCore stable)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gui-dsl-not-yet-publicly-available-alpha-intention-to-become-stable" class="md-nav__link">
+    GUI DSL (not yet publicly available) (Alpha: Intention to become stable)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#monticore-grammar-not-yet-publicly-available-monticore-stable" class="md-nav__link">
+    MontiCore Grammar (not yet publicly available) (MontiCore Stable)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#json-not-yet-publicly-available-monticore-stable" class="md-nav__link">
+    JSON (not yet publicly available) (MontiCore Stable)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#montiarc-not-yet-publicly-available-monticore-stable" class="md-nav__link">
+    MontiArc (not yet publicly available) (MontiCore Stable)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oclp-not-yet-publicly-available-monticore-stable" class="md-nav__link">
+    OCL/P (not yet publicly available) (MontiCore Stable)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#object-diagrams-not-yet-publicly-available-monticore-stable" class="md-nav__link">
+    Object Diagrams (not yet publicly available) (MontiCore Stable)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sequence-diagrams-not-yet-publicly-available-monticore-stable" class="md-nav__link">
+    Sequence Diagrams (not yet publicly available)  (MontiCore stable)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#si-units-not-yet-publicly-available-monticore-stable" class="md-nav__link">
+    SI Units (not yet publicly available) (MontiCore Stable)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#statecharts-not-yet-publicly-available-monticore-stable" class="md-nav__link">
+    Statecharts (not yet publicly available) (MontiCore stable)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sysml_2-not-yet-publicly-available-alpha-intention-to-become-stable" class="md-nav__link">
+    SysML_2 (not yet publicly available) (Alpha: Intention to become stable)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tagging-not-yet-publicly-available-alpha-intention-to-become-stable" class="md-nav__link">
+    Tagging (not yet publicly available) (Alpha: Intention to become stable)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use-case-diagrams-monticore-stable" class="md-nav__link">
+    Use Case Diagrams  (MontiCore stable)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#xml-not-yet-publicly-available-monticore-stable" class="md-nav__link">
+    XML (not yet publicly available) (MontiCore Stable)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#javalight-not-yet-publicly-available-monticore-stable" class="md-nav__link">
+    JavaLight (not yet publicly available) (MontiCore Stable)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#java-not-yet-publicly-available-beta-in-stabilization" class="md-nav__link">
+    Java (not yet publicly available) (Beta: In Stabilization)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#further-information" class="md-nav__link">
+    Further Information
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <!-- (c) https://github.com/MontiCore/monticore -->
+
+<h1 id="monticore-languages-of-level-ii-an-overview">MontiCore Languages of Level II - an Overview</h1>
+<p><a href="http://www.monticore.de">MontiCore</a> is a language workbench
+with an explicit notion of language components. It uses 
+grammars to describe textual DSLs. 
+MontiCore uses an extended grammar format that allows to compose 
+language components via inheritance, embedding and aggregation (see the 
+<a href="http://monticore.de/MontiCore_Reference-Manual.2017.pdf"><strong>reference manual</strong></a>
+for details).</p>
+<p>A <strong>language component</strong> is mainly represented through 
+(1) the grammar describing concrete and abstract syntax of the language, 
+(2) Java-classes implementing specific functionalities, and 
+(3) Freemarker-Templates helping to print a model to text.
+However, language components are often identified with their main 
+component grammar.</p>
+<p>Language components are currently organized in two levels:
+In this list you mainly find grammars for 
+<strong>complete (but also reusable and adaptable) languages</strong> (Level II).
+A list of
+<a href="../../monticore-grammar/src/main/grammars/de/monticore/Grammars/"><strong>grammar components</strong></a>
+with individual reusable nonterminals is also available in
+the MontiCore core project 
+(<a href="../../00.org/Explanations/StatusOfGrammars/">development status</a>) (Level I).</p>
+<p>The following list contains the language grammars found in the
+<code>MontiCore</code> projects, such as <code>cd4analysis/cd4analysis</code>.
+They are usually contained in project folders like <code>src/main/grammars/</code> 
+and organized in packages like <code>de.monticore.cd</code>.
+Publicly available MontiCore projects are hosted at
+<a href="https://github.com/MontiCore"><code>https://github.com/MontiCore</code></a>.</p>
+<h2 id="list-of-languages">List of Languages</h2>
+<h3 id="class-diagram-for-analysis-cd4a-monticore-stable"><a href="https://github.com/MontiCore/cd4analysis">Class Diagram For Analysis (CD4A)</a> (MontiCore stable)</h3>
+<ul>
+<li>CD4A is the textual representation to describe <strong>UML class diagrams</strong> 
+  (it uses the <a href="http://mbse.se-rwth.de/">UML/P</a> variant).</li>
+<li>CD4A covers <strong>classes, interfaces, inheritance, attributes with types,
+  visibilities</strong>,
+  and all kinds of <strong>associations</strong> and <strong>composition</strong>, including <strong>qualified</strong>
+  and <strong>ordered associations</strong>. Classes can be placed in different <strong>packages</strong>.
+  An example:</li>
+</ul>
+<pre><code>classdiagram MyLife { 
+  abstract class Person {
+    int age;
+    Date birthday;
+    List&lt;String&gt; nickNames;
+  }
+  package com.universityLib {
+    &lt;&lt;myStereotype&gt;&gt; class Student extends Person {
+      StudentStatus status;
+    }
+    enum StudentStatus { ENROLLED, FINISHED; }
+  }
+
+  composition Person -&gt; Address [*]  {ordered};
+  association [0..2] Person (parent) &lt;-&gt; (child) Person [*];
+  association phonebook Person [String] -&gt; PhoneNumber ;
+}
+</code></pre>
+<ul>
+<li>CD4A focusses on the analysis phase in typical data-driven development 
+  projects and is therefore mainly for data modelling.
+  Consequently, it omits method signatures and complex generics.
+  The primary use of the CD4A language is therefore <strong>data modelling</strong>. The
+  CD4A language opens various possibilities for the development of data
+  structures, database tables as well as data transport infrastructures in
+  cloud and distributed systems.</li>
+<li><a href="https://github.com/MontiCore/cd4analysis/tree/master/src/main/grammars/de/monticore/CD4Analysis.mc4">Main grammar <code>de.monticore.cd.CD4Analysis</code></a>
+  and 
+  <a href="https://github.com/MontiCore/cd4analysis/tree/master/src/main/grammars/de/monticore/cd4analysis.md"><em>detailed description</em></a></li>
+</ul>
+<h3 id="class-diagram-for-code-cd4code-monticore-stable"><a href="https://github.com/MontiCore/cd4analysis">Class Diagram for Code (CD4Code)</a> (MontiCore stable)</h3>
+<ul>
+<li>CD4Code describes <strong>UML class diagrams</strong>.</li>
+<li>CD4Code is a conservative extension of <strong>CD4A</strong>, 
+  which includes method signatures. An example:</li>
+</ul>
+<pre><code>classdiagram MyLife2 {
+  // like CD4A but also allows:
+  class Person {
+    protected List&lt;Person&gt; closestFriends(int n);
+    void addFriend(Person friends...);
+    &lt;&lt;myStereotype&gt;&gt; void relocate();
+  }
+}
+</code></pre>
+<ul>
+<li>CD4Code is often used as tool-internal AST that allows to
+  map any kind of source models to a class/attribute/method/association based
+  intermediate structure, before it is printed e.g. as Java code. 
+  For example a transformation sequence could be: </li>
+<li><a href="https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/monticore-generator/src/main/java/de/monticore/codegen/cd2java/_symboltable/SymbolTableCDDecorator.java">MontiCoreCLI (not yet publicly available)</a>: 
+    Grammar -&gt; 
+    <a href="https://github.com/MontiCore/monticore/tree/dev/monticore-generator/src/main/java/de/monticore/MontiCoreScript.java#L411">Grammar AST encoded in CD4Code</a> -&gt;
+    <a href="https://github.com/MontiCore/monticore/tree/dev/monticore-generator/src/main/java/de/monticore/codegen/cd2java/_symboltable/SymbolTableCDDecorator.java">Decoration for custom behavior</a> -&gt; 
+    <a href="https://github.com/MontiCore/monticore/tree/dev/monticore-generator/src/main/java/de/monticore/codegen/cd2java/_symboltable/SymbolTableCDDecorator.java">Java code</a></li>
+<li>Statechart -&gt; State pattern encoded in CD4Code 
+  -&gt; Decoration by monitoring methods -&gt; Java code.</li>
+<li>Main grammar <a href="https://github.com/MontiCore/cd4analysis/tree/master/src/main/grammars/de/monticore/CD4Code.mc4"><code>de.monticore.cd.CD4Code</code></a>
+  and 
+  <a href="https://github.com/MontiCore/cd4analysis/tree/master/src/main/grammars/de/monticore/cd4analysis.md"><em>detailed description</em></a> 
+  (see Section <em>CD4Code</em>)</li>
+</ul>
+<h3 id="feature-diagrams-not-yet-publicly-available-monticore-stable"><a href="https://git.rwth-aachen.de/monticore/languages/feature-diagram">Feature Diagrams (not yet publicly available)</a> (MontiCore stable)</h3>
+<ul>
+<li>Language for feature models and feature configurations.</li>
+<li><strong>Feature diagrams</strong> are used to model (software) <strong>product lines</strong> and their <strong>variants</strong>.</li>
+<li><strong>Feature configurations</strong> select a subset of features of a feature model 
+  to describe a product of the product line. An example:</li>
+</ul>
+<pre><code>featurediagram MyPhones {
+  Phone -&gt; Memory &amp; OS &amp; Camera? &amp; Screen;
+  Memory -&gt; Internal &amp; External?;
+  Internal -&gt; [1..2] of {Small, Medium, Large};
+  OS -&gt; iOS ^ Android;
+  Screen -&gt; Flexible | FullHD;
+
+  Camera requires (iOS &amp;&amp; External) || Android ;
+}
+</code></pre>
+<p>Rules <code>F -&gt; ...</code> have a parent feature (left-hand side) 
+  and its child features (right-hand side). 
+  Operators are: <strong>optional</strong> feature <code>?</code>, <strong>and</strong> <code>&amp;</code>, <strong>or</strong> <code>|</code>, <strong>xor</strong> <code>^</code>,
+  and <strong>subset cardinality</strong> constraints, like <code>[1..2] of ...</code>.
+  Further, a feature model may define cross-tree constraints using logic 
+  operators <strong>and</strong> <code>&amp;&amp;</code>, <strong>or</strong> <code>||</code>, <strong>implication</strong> <code>requires</code>, etc.
+* Main grammar <a href="https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/develop/fd-lang/src/main/grammars/de/monticore/FeatureDiagram.mc4"><code>FeatureDiagram</code> (not yet publicly available)</a>
+  and 
+  <a href="https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/develop/fd-lang/src/main/grammars/de/monticore/FeatureDiagram.md"><em>detailed description</em> (not yet publicly available)</a></p>
+<h3 id="gui-dsl-not-yet-publicly-available-alpha-intention-to-become-stable"><a href="https://git.rwth-aachen.de/monticore/languages/gui-dsl">GUI DSL (not yet publicly available)</a> (Alpha: Intention to become stable)</h3>
+<ul>
+<li>Language for textual definition of Graphical User Interfaces of Web
+Applications</li>
+<li>GUI DSL covers GUI elements and relevant configuration, which include
+<strong>layout elements, widgets</strong>, their <strong>style definition</strong> and <strong>references to
+data sources</strong>.</li>
+<li>Language is mainly used to describe <strong>GUI of Web Applications</strong>. The models of
+the language represent graphical views or their parts, omitting smaller details
+of style definition and simplifying connection between graphical elements and
+data sources.</li>
+<li>Currently new version of the <code>GUIDSL</code> is being developed:</li>
+<li><a href="https://git.rwth-aachen.de/monticore/languages/gui-dsl/-/blob/dev/src/main/grammars/de/monticore/GUIBasis.mc4">Basis grammar <code>GUIBasis</code> (not yet publicly available)</a>
+includes constructs for general visualization component definitions, control
+statements and components for layout description.</li>
+<li><a href="https://git.rwth-aachen.de/monticore/languages/gui-dsl/-/tree/dev/src/test/resources/pages/room">Example models (not yet publicly available)</a>
+can be found in the same repository.</li>
+<li><a href="https://git.rwth-aachen.de/monticore/languages/gui-dsl/-/blob/dev/src/main/grammars/de/monticore/GUIDSL.mc4">Main grammar <code>GUIDSL</code> (not yet publicly available)</a>
+includes basic concepts and more specific implementation of component
+configuration .</li>
+<li>In projects legacy version is currently used:</li>
+<li>Examples: <a href="https://git.rwth-aachen.de/macoco/implementation"><strong>MaCoCo</strong> (not yet publicly available)</a>,
+              Ford</li>
+<li><a href="https://git.rwth-aachen.de/monticore/languages/gui-dsl/-/blob/master/src/main/grammars/GUIDSL.mc4">Main grammar <code>GUIDSL</code> (not yet publicly available)</a>
+includes definitions of MontiGem visualisation components, which are based on
+abstract concepts, described in
+<a href="https://git.rwth-aachen.de/monticore/languages/gui-dsl/-/blob/master/src/main/grammars/GUIDSLCore.mc4">core grammar <code>GUIDSLCore</code> (not yet publicly available)</a>.
+<a href="https://git.rwth-aachen.de/monticore/languages/gui-dsl/-/blob/master/src/main/grammars/GUIDSL.md"><em>Detailed description</em> (not yet publicly available)</a>
+and
+<a href="https://git.rwth-aachen.de/monticore/languages/gui-dsl/wikis/home"><em>documentation</em> (not yet publicly available)</a>.</li>
+</ul>
+<h3 id="monticore-grammar-not-yet-publicly-available-monticore-stable"><a href="https://git.rwth-aachen.de/monticore/monticore/-/tree/dev/monticore-grammar/src/main/grammars/de/monticore/grammar">MontiCore Grammar (not yet publicly available)</a> (MontiCore Stable)</h3>
+<ul>
+<li>Language for MontiCore Grammars itself. It can be understood as 
+  <em>meta language</em>, but also used as ordinary language.</li>
+<li>Its main use currently: A MontiCore grammar defines the 
+  <strong>concrete syntax</strong> and the <strong>abstract syntax</strong> of a textual language.
+  Examples: All languages on this page are defined using MontiCore grammars
+  and thus conform to this Grammar.</li>
+<li>Main features: Define <strong>nonterminals</strong> and their <strong>productions</strong> in EBNF, 
+  <strong>lexical token</strong> as regular expressions. </li>
+<li>Most important extensions to standard grammars:</li>
+<li><strong>Abstract</strong>, <strong>interface</strong> and <strong>external productions</strong> allow to
+    define extensible component grammars (object-oriented grammar style).</li>
+<li>Inherited productions can be redefined (overwritten) as well
+    as conservatively extended.</li>
+<li>Symbol and scope infrastructure is defined by simple keywords.</li>
+<li><strong>Symbols definition</strong> places can be introduced and 
+    <strong>symbol referencing places</strong> defined, such that for standard cases
+    automatically symbol tables can be added.</li>
+<li>Additional attributes and methods can be added to the abstract syntax only.</li>
+<li>Various elements, such as <strong>semantic predicates</strong> and <strong>actions</strong>
+    can be defined in the same style as the underlying ANTLR.</li>
+<li>MontiCore grammars can be <strong>left recursive</strong> and even allow mutual recursion. 
+    This is e.g. useful for expression hierarchies.</li>
+<li>Additional elements, such as <strong>enum productions</strong> and comfortable 
+    operations for grammar definitions exist.</li>
+<li>Main grammars 
+  <a href="https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/monticore-grammar/src/main/grammars/de/monticore/grammar/Grammar.mc4"><code>de.monticore.grammar.Grammar</code> (not yet publicly available)</a>
+  defines the language with some open parameters and
+  <a href="https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/monticore-grammar/src/main/grammars/de/monticore/grammar/Grammar_WithConcepts.mc4"><code>de.monticore.grammar.Grammar_WithConcepts</code> (not yet publicly available)</a>
+  binds the external, imported expressions, method bodies, etc.</li>
+<li><a href="http://monticore.de/MontiCore_Reference-Manual.2017.pdf"><em>Detailed description</em></a>
+  in the MontiCore Reference Manual.</li>
+</ul>
+<h3 id="json-not-yet-publicly-available-monticore-stable"><a href="https://git.rwth-aachen.de/monticore/languages/json">JSON (not yet publicly available)</a> (MontiCore Stable)</h3>
+<ul>
+<li>The MontiCore language for parsing JSON artifacts. An example:</li>
+</ul>
+<pre><code>{ &quot;Alice&quot;: {
+    &quot;fullname&quot;: &quot;Alice Anderson&quot;,
+    &quot;address&quot;: {
+      &quot;postal_code&quot;: 10459, 
+      &quot;street&quot;: &quot;Beck Street&quot;,
+      &quot;number&quot;: 56              }  },
+  &quot;Bob&quot;: { ... },
+  &quot;Caroll&quot;: { ... }, ...
+}
+</code></pre>
+<ul>
+<li>The JSON grammar adheres to the common <strong>JSON standard</strong> and allows parsing 
+  arbitrary JSON artifacts for further processing.</li>
+<li>Actually the grammar represents a slight superset to the official JSON standard. 
+  It is intended for parsing JSON-compliant artifacts. Further well-formedness
+  checks are not included, because we assume to parse correctly produced JSON 
+  documents only.</li>
+<li>Please note that JSON (like XML or ASCII) is primarily a carrier language.
+  The concrete JSON dialect and the question, how to recreate the
+  real objects / data structures, etc. behind the JSON tree structure
+  is beyond this grammar, but can be applied to the AST defined here.</li>
+<li>Main grammar 
+  <a href="https://git.rwth-aachen.de/monticore/languages/json/-/blob/master/src/main/grammars/de/monticore/lang/JSON.mc4"><code>de.monticore.lang.JSON</code> (not yet publicly available)</a>
+  and 
+  <a href="https://git.rwth-aachen.de/monticore/languages/json/-/blob/master/src/main/grammars/de/monticore/lang/json.md"><em>detailed description</em> (not yet publicly available)</a></li>
+</ul>
+<h3 id="montiarc-not-yet-publicly-available-monticore-stable"><a href="https://git.rwth-aachen.de/monticore/montiarc/core">MontiArc (not yet publicly available)</a> (MontiCore Stable)</h3>
+<ul>
+<li>MontiArc is an architecture and behavior modeling language and framework 
+    that provides an platform independent structure and behavior 
+    modeling language with an extensible code generation framework.</li>
+<li>MontiArc covers <strong>components</strong> their <strong>ports</strong>, <strong>connectors</strong> between 
+  components and<br />
+  embedded <strong>statecharts</strong> for component behavior description. </li>
+<li>Statecharts define states and transitions with conditions on 
+  the incoming messages as well as transition actions. 
+  An example:</li>
+</ul>
+<pre><code>component InteriorLight {                           // MontiArc language
+  port in Boolean lightSignal,          // ports
+       in Boolean doorSignal
+       out OnOff status;
+  ORGate or;                            // used subcomponents
+  lightSignal -&gt; or.a;                  // connectors
+  doorSignal -&gt; or.b;
+  or.c -&gt; cntr.signal;
+  component LightController cntr {      // freshly defined subcomponent 
+    port in OnOff signal,
+         out OnOff status;
+    statechart {                        // with behavior by a Statechart
+      initial state Off / {status = OFF};
+      state On;
+      Off -&gt; On [ signal == true ] / {status = ON}
+      On -&gt; Off [ signal == false ] / {status = OFF}
+    }
+  }
+  cntr.status -&gt; status;
+}
+</code></pre>
+<ul>
+<li>MontiArc's main goal is to provide a textual notation for Component&amp;Connector 
+  diagrams, which is used quite often in various variants in industry.
+  E.g. SysML's BDD, UML's component composition diagrams use the same 
+  paradigm. </li>
+<li>MontiArc does not define data types for their signals, but assumes 
+  that these types can be imported (e.g. from a class diagram).</li>
+<li>MontiArc itself also has no timing predefined, but for a complete 
+  language a concrete timing, such as formally grounded by Focus, 
+  should be added.</li>
+<li>Main grammar 
+  <a href="https://git.rwth-aachen.de/monticore/montiarc/core/-/blob/develop/languages/montiarc-fe/src/main/grammars/MontiArc.mc4"><code>MontiArc.mc4</code> (not yet publicly available)</a>
+  and 
+  <a href="https://git.rwth-aachen.de/monticore/montiarc/core/-/blob/develop/languages/montiarc-fe/src/main/grammars/MontiArc.md"><em>detailed description</em> (not yet publicly available)</a></li>
+</ul>
+<h3 id="oclp-not-yet-publicly-available-monticore-stable"><a href="https://git.rwth-aachen.de/monticore/languages/OCL">OCL/P (not yet publicly available)</a> (MontiCore Stable)</h3>
+<ul>
+<li>OCL/P is the textual representation of the UML OCL standard, adapted 
+  with Java-like syntax.
+  It's main goal is the usage in combination with other languages like 
+  CD4A or Object Diagrams as an integrated part of that languages.</li>
+<li>OCL/P allows to define <strong>invariants</strong> and <strong>pre/post conditions</strong> in 
+  the known OCL style plus some extensions, such as 
+  a generalized <code>let</code> construction. 
+  Furthermore, it offers a large set <strong>expressions</strong>
+  to model constraints. These expressions include <strong>Java expressions</strong>,
+  <strong>set operations</strong>, <strong>list operations</strong> etc., completely covering the 
+  OCL standard concepts, but extend it e.g. by <strong>set comprehensions</strong> 
+  known from Haskell, a <strong>typesafe cast</strong> or a 
+  <strong>transitive closure operator</strong>.
+  An example shows several of the above mentioned syntactic features:</li>
+</ul>
+<pre><code>ocl Bookshop {
+  context Shop s inv CustomerPaysBeforeNewOrder:      // invariant
+    forall Customer c in s.customers:                 // quantifiers available
+      c.allowedToOrder implies !exists Invoice i in s.invoices:
+        i.customer == c &amp;&amp; i.moneyPayed &lt; i.invoiceAmount ;
+
+  // Method specification for selling a book
+  context Invoice Stock.sellBook(String iban, int discountPercent, Customer c) 
+    let availableBooks =                              // set comprehension
+          { book | Book book in booksInStock, book.iban == iban }
+    pre:  !availableBooks.isEmpty &amp;&amp;                  // precondition
+          c.allowedToOrder;
+    post: let discount = (100 - discountPercent)/100; // postcondition, let
+              b = result.soldBook                     // result variable 
+          in                                        
+              !(b isin booksInStock) &amp;&amp;
+              booksInStock.size@pre == booksInStock.size + 1 &amp;&amp;  // @pre
+              result.invoiceAmount == b.price * discount;  // result variable 
+}
+</code></pre>
+<ul>
+<li>The OCL language component contains four grammars:</li>
+<li><a href="https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/develop/src/main/grammars/de/monticore/ocl/OCL.mc4">OCL (not yet publicly available)</a>,</li>
+<li><a href="https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/develop/src/main/grammars/de/monticore/ocl/OCLExpressions.mc4">OCLExpressions (not yet publicly available)</a>, </li>
+<li><a href="https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/develop/src/main/grammars/de/monticore/ocl/OptionalOperators.mc4">OptionalOperators (not yet publicly available)</a>, and</li>
+<li><a href="https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/develop/src/main/grammars/de/monticore/ocl/SetExpressions.mc4">SetExpressions (not yet publicly available)</a>. </li>
+<li>The <a href="https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/develop/src/main/grammars/de/monticore/ocl/OCL.md"><em>detailed description</em> (not yet publicly available)</a> provides an in-depth guide for language engineers.</li>
+</ul>
+<h3 id="object-diagrams-not-yet-publicly-available-monticore-stable"><a href="https://git.rwth-aachen.de/monticore/languages/od">Object Diagrams (not yet publicly available)</a> (MontiCore Stable)</h3>
+<ul>
+<li>OD is a language for textual denotation of object diagrams. The OD language
+  has several purposes (when combined with appropriate language extensions):</li>
+<li>specification language for object structures (as part of the <a href="http://mbse.se-rwth.de/">UML/P</a>)</li>
+<li>store and transport of data sets (e.g. the artifact analysis toolchain), and</li>
+<li>report format for the MontiCore tool infrastructure. </li>
+<li>OD covers <strong>named and anonymous objects, object types, links, attributes, attribute values, 
+  lists, maps</strong>, and
+  <strong>visibilities</strong>. Special data types, such as <strong>Date</strong> allow comfortable
+  definition and reading of ODs. For a comfortable definition, objects may be <strong>nested</strong>
+  into trees while easily retaining their full graph structure. An example:</li>
+</ul>
+<pre><code>objectdiagram MyFamily {
+  alice:Person {
+    age = 29;
+    cars = [
+      :BMW {
+        color = BLUE;
+      },
+      tiger:Jaguar {
+        color = RED;
+        length = 5.3; 
+      }
+    ];
+  };
+  bob:Person {
+    nicknames = [&quot;Bob&quot;, &quot;Bobby&quot;, &quot;Robert&quot;];
+    cars = [tiger];
+  };
+  link married alice &lt;-&gt; bob;
+}
+</code></pre>
+<ul>
+<li>If ODs are used as specification techniqe, e.g. for tests or forbidden 
+  situations,
+  a more expressive version of expressions can be used for values 
+  (e.g. by composing ODs with JavaExpressions). Furthermore, only 
+  interesting attributes need to be defined (underspecification) and conformity
+  to a CD4A model can be checked.</li>
+<li>The ODs differ from JSON structures, e.g., in 
+  the possibility to give the object a name as it is the case for <code>tiger</code>, or <code>alice</code> 
+  enabaling the definition real graph structures.</li>
+<li>Main grammars (directly usable):<ul>
+<li><a href="https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/OD4Data.mc4">OD4Data (not yet publicly available)</a></li>
+<li><a href="https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/OD4Development.mc4">OD4Development (not yet publicly available)</a></li>
+<li><a href="https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/OD4Report.mc4">OD4Report (not yet publicly available)</a></li>
+</ul>
+</li>
+<li>Main grammar components:<ul>
+<li><a href="https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/DateLiterals.mc4">DateLiterals (not yet publicly available)</a></li>
+<li><a href="https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/ODBasis.mc4">ODBasis (not yet publicly available)</a></li>
+<li><a href="https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/ODAttribute.mc4">ODAttribute (not yet publicly available)</a></li>
+<li><a href="https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/ODLink.mc4">ODLink (not yet publicly available)</a></li>
+</ul>
+</li>
+<li><a href="https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/OD4Report.md"><em>Detailed description</em> (not yet publicly available)</a> </li>
+</ul>
+<h3 id="sequence-diagrams-not-yet-publicly-available-monticore-stable"><a href="https://git.rwth-aachen.de/monticore/statechart/sd-language">Sequence Diagrams (not yet publicly available)</a>  (MontiCore stable)</h3>
+<ul>
+<li>A textual sequence diagram (SD) language.</li>
+<li><a href="https://github.com/MontiCore/sequence-diagram/blob/master/src/main/grammars/de/monticore/lang/sd4development.md">Detailed description</a></li>
+<li>The project includes grammars, a symbol table infrastructure, a PrettyPrinter, 
+  and various CoCos for typechecking.</li>
+<li>The language is divided into the two grammars SDBasis and SD4Development.</li>
+<li>The grammar <a href="https://git.rwth-aachen.de/monticore/statechart/sd-language/-/blob/dev/src/main/grammars/de/monticore/lang/SDBasis.mc4">SDBasis (not yet publicly available)</a> is a component grammar providing basic SD language features.</li>
+<li>The grammar <a href="https://git.rwth-aachen.de/monticore/statechart/sd-language/-/blob/dev/src/main/grammars/de/monticore/lang/SD4Development.mc4">SD4Development (not yet publicly available)</a> extends the grammar SDBasis with concepts used in 
+  UML/P SDs.</li>
+<li>SD4Development supports modeling <em>objects</em>, <em>method calls</em>, <em>returns</em>, exception 
+  throws, <em>dynamic object instantiation</em>, various <em>match modifiers</em> for objects 
+  (free, initial, visible, complete), <em>life lines</em> with <em>activation regions</em>,
+  static method calls, intermediate 
+  variable declarations by using OCL, and conditions by using OCL.</li>
+<li>The grammars can easily be extended by further interactions and object modifiers.</li>
+<li>The following depicts a simple SD in its textual syntax. </li>
+</ul>
+<pre><code>sequencediagram AuctionTest {
+  kupfer912: Auction;         // Interacting objects
+  bidPol: BiddingPolicy;
+  timePol: TimingPolicy;
+                              // Interaction sequence
+  kupfer912 -&gt; bidPol  : validateBid(bid)
+  bidPol -&gt; kupfer912  : return BiddingPolicy.OK;
+  kupfer912 -&gt; timePol : newCurrentClosingTime(kupfer912, bid) 
+  timePol -&gt; kupfer912 : return t;
+  assert t.timeSec == bid.time.timeSec + extensionTime;
+}
+</code></pre>
+<h3 id="si-units-not-yet-publicly-available-monticore-stable"><a href="https://git.rwth-aachen.de/monticore/languages/siunits">SI Units (not yet publicly available)</a> (MontiCore Stable)</h3>
+<ul>
+<li>The international system of units (SI units) is a physical unit system widely used in the entire world. 
+  It is based on the basis units <code>s, m, kg, A, K, mol, cd</code>, 
+  provides a variety of derived units, and can be refined using prefixes such 
+  as <code>m</code>(milli), <code>k</code>(kilo), etc.</li>
+<li>The SI Unit project aims to deliver SI units to MontiCore-based languages with expressions. 
+  It provides a grammar for all types of SI units and prefixes usable for type 
+  definition.</li>
+<li>Second, it provides the SI Unit literals, such as <code>5 km</code> as expression values
+  and a language for SI unit types, such as <code>km/h</code> or <code>km/h&lt;long&gt;</code>. Some examples:</li>
+</ul>
+<pre><code>  km/h speed = 5 m / 27 s                         // variable definition using type km/h
+  speed = (3 * 4m  +  17km/h * 10h) / 3.5h        // values with SI unit types
+  °C/s&lt;float&gt; coolingSpeed;                       // types (°C/s) with precision (float)
+  g/mm^2&lt;int&gt; pressure; 
+  Map&lt;Location,°C&gt; temperatures;                  // nesting of types 
+</code></pre>
+<ul>
+<li>The SI unit literals integrate with MontiCore's expressions and the
+  SI Unit types integrate with MontiCore's type system. 
+  The SI unit language remains <em>fully type safe</em>.</li>
+<li>The math version uses <code>km/h</code> as idealistic full precision real number, while the
+  computing version allows to contrain  the precision with <code>km/h&lt;long&gt;</code>. </li>
+<li>Main grammar components:<ul>
+<li><a href="https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/SIUnits.mc4">SI units (not yet publicly available)</a></li>
+<li><a href="https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/SIUnitLiterals.mc4">SI unit literals (not yet publicly available)</a></li>
+<li><a href="https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/SIUnitTypes4Math.mc4">SI unit types for math (not yet publicly available)</a></li>
+<li><a href="https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/SIUnitTypes4Computing.mc4">SI unit types for computations (not yet publicly available)</a></li>
+<li>(other alternatives are possible; SI has not standardized anything here)</li>
+</ul>
+</li>
+<li>Example projects:<ul>
+<li><a href="https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/test/grammars/de/monticore/lang/testsijava/TestSIJava.mc4">SI Java (not yet publicly available)</a> </li>
+</ul>
+</li>
+<li><a href="https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/SIUnits.md"><em>detailed description</em> (not yet publicly available)</a>  </li>
+</ul>
+<h3 id="statecharts-not-yet-publicly-available-monticore-stable"><a href="https://git.rwth-aachen.de/monticore/statechart/sc-language">Statecharts (not yet publicly available)</a> (MontiCore stable)</h3>
+<ul>
+<li>A set of language variants for Statecharts (UML-like or also embedded SysML-like).</li>
+<li>It is possible to define syntactically simpler or more complex and comfortable
+  forms of statecharts using a subset of the eleven provided language components.
+  Two complete Statechart language variants are composed for direct usability.</li>
+<li>A compact teaser for one variant of the Statechart languages:</li>
+</ul>
+<pre><code>statechart Door {
+  state Opened
+  initial state Closed
+  state Locked
+
+  Opened -&gt; Closed close() /
+  Closed -&gt; Opened open(1) / {ringTheDoorBell();}
+  Closed -&gt; Locked timeOut(n) / { lockDoor(); } [doorIsLocked]
+  Locked -&gt; Closed [isAuthorized() &amp;&amp; doorIsLocked] unlock() /
+}
+</code></pre>
+<ul>
+<li>This example models the different states of a door: <code>Opened</code>, <code>Closed</code>, and <code>Locked</code>.
+  A transition is triggered e.g. by function/method call <code>close()</code> that changes a from a state <code>Opened</code> to state <code>Closed</code>. </li>
+<li>Transitions can have actions, such as <code>{ringDoorBell();}</code> containing in this case 
+  Java statements, or preconditions, such  as <code>[ ... ]</code> containg a Boolean expression.</li>
+<li><em>State invariants</em> and <em>transition preconditions</em> are defined using <code>Expressions</code>
+  and <em>entry/exit/transition actions</em> are defined using <code>Statements</code>.</li>
+<li>A Statechart may also have hierarchically decomposed states and other forms of 
+  events (not shown here).</li>
+<li><a href="https://git.rwth-aachen.de/monticore/statechart/sc-language/-/blob/dev/src/main/grammars/de/monticore/Statecharts.md"><em>Detailed description</em> (not yet publicly available)</a> </li>
+</ul>
+<h3 id="sysml_2-not-yet-publicly-available-alpha-intention-to-become-stable"><a href="https://git.rwth-aachen.de/monticore/languages/sysml2/sysml2official">SysML_2 (not yet publicly available)</a> (Alpha: Intention to become stable)</h3>
+<ul>
+<li>MontiCore languages for parsing artifacts of the SysML 2 language famlily. 
+  Examples:</li>
+</ul>
+<pre><code>package 'Vehicles' {                      // a SysML block diagram
+  private import ScalarValues::*; 
+  block Vehicle; 
+  block Truck is Vehicle; 
+  value type Torque is ISQ::TorqueValue; 
+}
+</code></pre>
+<pre><code>package 'Coffee' {                      // a SysML activity diagram
+  activity BrewCoffee (in beans : CoffeeBeans, in, water : Water, out coffee : Coffee) { 
+    bind grind::beans = beans;
+    action grind : Grind (in beans, out powder);
+    flow grind::powder to brew::powder;
+    bind brew::water = water;
+    action brew : Brew (in powder, in water, out coffee); 
+    bind brew::coffee = coffee;
+  }
+}
+</code></pre>
+<ul>
+<li>The SysML 2 grammars adhere to the general upcoming SysML 2 specification 
+  (which is still under improvement currently).</li>
+<li>Actually these grammars represents a slight superset to the official SysML 2
+  standard. It is intended for parsing SysML 2-compliant models. 
+  Well-formedness checks are kept to a minimum, because we assume to parse
+  correctly produced SysML 2 models only.</li>
+<li>MontiCore's SysML 2 is a language familiy that comes with a textual 
+  representation to describe SysML 2 diagrams with respect to the standard. </li>
+<li>SysML 2 covers <strong>ADs</strong>, <strong>BDDs</strong>, <strong>IBDs</strong>, <strong>PackageDiagrams</strong>, 
+  <strong>ParametricDiagrams</strong>, <strong>RequirementDiagrams</strong>, <strong>SDs</strong>, <strong>SMDs</strong>, 
+  <strong>UseCaseDiagrams</strong>, and general <strong>SysMLBasics</strong></li>
+<li><a href="https://git.rwth-aachen.de/monticore/languages/sysml2/sysml2official/-/tree/master/src%2Fmain%2Fgrammars%2Fde%2Fmonticore%2Flang%2Fsysml">Main grammars (not yet publicly available)</a>
+  and 
+  <a href="https://git.rwth-aachen.de/monticore/languages/sysml2/sysml2official/-/blob/master/src/main/grammars/de/monticore/lang/sysml/sysml2.md"><em>detailed description</em> (not yet publicly available)</a></li>
+</ul>
+<h3 id="tagging-not-yet-publicly-available-alpha-intention-to-become-stable"><a href="https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging">Tagging (not yet publicly available)</a> (Alpha: Intention to become stable)</h3>
+<ul>
+<li><strong>Tags</strong> are known e.g. from the UML and SysML and mainly used to add
+  extra information to a model element. 
+  Normally tags (and <strong>stereotypes</strong>) are inserted within the models,
+  which over time polutes the models, especially when different sets of
+  tags are needed for different technical platforms.</li>
+<li>MontiCore offers a solution that <strong>separates a model and its tags into
+  distinct artifacts</strong>. Several independent tagging artifacts
+  can be added without any need to adapt the core model.
+  This allows fo reuse even of fixed library models.</li>
+<li>The tagging artifacts are dependent on two factors:</li>
+<li>First, <strong>tags</strong> can be added to named elements of the base model.
+    It is of great help that we have an elegant symbol mechanism included 
+    in the MontiCore generator.</li>
+<li>Second, the set of allowed tags can be constrained, by an explicit
+    definition of allowed <strong>tag types</strong> and <strong>tag values</strong> and an explicit 
+    declaration on which <strong>kinds of symbols</strong> a tag may be attached to.</li>
+<li>Consequently tagging is not a single language, but a method to 
+  <strong>automatically and schematically derive</strong> languages:<ul>
+<li>A tagging schema language TSL (dependent on the available symbol types
+  of the base grammar)</li>
+<li>a tagging language TL (dependent on the tag schema models written in TSL)</li>
+</ul>
+</li>
+<li>Because tagging models can e.g. be used as configuration techniques 
+  in a code generator, appropriate infrastructure is generated as well.</li>
+<li>Some <a href="https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging-Examples"><strong>tagging language examples</strong> (not yet publicly available)</a></li>
+<li>Although concrete languages (and their grammars) are themselves generated,
+  there is a 
+  <a href="https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging/-/blob/master/src/main/grammars/de/monticore/lang/Tagging.mc4">main grammar <code>ocl.monticore.lang.Tagging</code> (not yet publicly available)</a>,
+  where the tagging language is derived from.
+  See also <a href="https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging/-/blob/master/src/main/grammars/de/monticore/lang/Tagging.md"><em>detailed description</em> (not yet publicly available)</a></li>
+</ul>
+<h3 id="use-case-diagrams-monticore-stable"><a href="https://github.com/MontiCore/ucd">Use Case Diagrams</a>  (MontiCore stable)</h3>
+<ul>
+<li>A textual use case diagram (UCD) language.</li>
+<li><a href="https://github.com/MontiCore/ucd/blob/master/src/main/grammars/UCD.md">Detailed description</a></li>
+<li>The project includes a grammar, a symbol table infrastructure, and a semantic differencing operator.</li>
+<li>The language is defined by the grammar <a href="https://github.com/MontiCore/ucd/blob/master/src/main/grammars/UCD.mc4">UCD</a>.</li>
+<li>It supports modeling <em>actors</em>, <em>use cases</em>, <em>preconditions</em>, <em>associations</em> between actors and use cases,
+  <em>extend relations</em> between use cases with <em>guards</em>, <em>include relations</em> between use cases, and
+  <em>specialization relations</em> between actors and use cases.</li>
+<li>The grammars can easily be extended.</li>
+<li>The following depicts a simple UCD in its textual syntax. </li>
+</ul>
+<pre><code>usecasediagram Example {
+  @Player --
+    Play,
+    Pay,
+    ChangeProfilePicture;
+
+  @AndroidPlayer specializes Player;
+  @IOSPlayer specializes Player;
+
+  @Server --
+    ShowAd,
+    RegisterScore;
+
+  ShowAd extend Play [!isPremium];
+  RegisterScore extend Play;
+
+  abstract Pay include CheckPremium;
+  CreditCard specializes Pay;
+  Bank specializes Pay;
+  ChangeProfilePicture [isPremium];
+}
+</code></pre>
+<h3 id="xml-not-yet-publicly-available-monticore-stable"><a href="https://git.rwth-aachen.de/monticore/languages/xml">XML (not yet publicly available)</a> (MontiCore Stable)</h3>
+<ul>
+<li>The MontiCore language for parsing XML artifacts. An example:</li>
+</ul>
+<pre><code>&lt;Calendar&gt;
+  &lt;Appointment name=&quot;lunch&quot;&gt;
+    &lt;Date&gt;24.04.2020&lt;/Date&gt;
+    &lt;Time&gt;11:30&lt;/Time&gt;
+    &lt;Location&gt;cafeteria&lt;/Location&gt;
+  &lt;/Appointment&gt;
+&lt;/Calendar&gt;
+</code></pre>
+<ul>
+<li>The XML grammar adheres to the common <strong>XML standard</strong> and allows parsing 
+  arbitrary XML artifacts for further processing.</li>
+<li>Actually the grammar represents a slight superset to the official XML standard. 
+  It is intended for parsing XML-compliant artifacts. Further well-formedness
+  checks are not included, because we assume to parse correctly produced XML 
+  documents only.</li>
+<li>Please note that XML (like JSON or ASCII) is mainly a carrier language.
+  The concrete XML dialect and the question, how to recreate the
+  real objects / data structures, etc. behind the XML structure
+  is beyond this grammar, but can be applied to the AST defined here.</li>
+<li>Main grammar 
+  <a href="https://git.rwth-aachen.de/monticore/languages/xml/-/blob/develop/src/main/grammars/de/monticore/lang/XMLLight.mc4"><code>de.monticore.lang.XML</code> (not yet publicly available)</a>
+  and 
+  <a href="https://git.rwth-aachen.de/monticore/languages/xml/-/blob/master/src/main/grammars/de/monticore/lang/xml.md"><em>detailed description</em> (not yet publicly available)</a></li>
+</ul>
+<h3 id="javalight-not-yet-publicly-available-monticore-stable"><a href="https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/JavaLight.mc4">JavaLight (not yet publicly available)</a> (MontiCore Stable)</h3>
+<ul>
+<li>This is a reduced version of the <strong>Java language</strong>.
+  JavaLight is meant to be used to integrate simplified Java-like parts 
+  in modeling languages but not to parse complete Java implementations.</li>
+<li>It provides Java's <strong>attribute</strong> and <strong>method definitions</strong>, 
+  <strong>statements</strong> and <strong>expressions</strong>, but 
+  does not provide class or interface definitions and
+  also no wildcards in the type system.</li>
+<li>One main usage of JavaLight is in the Grammar-language to model e.g. 
+  Java methods. An example:</li>
+</ul>
+<pre><code>public void print(String name) {
+  System.out.println(&quot;Hello &quot; + name);
+}
+</code></pre>
+<ul>
+<li><a href="https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/JavaLight.mc4">Main grammar <code>de.monticore.JavaLight</code> (not yet publicly available)</a>
+  and 
+  <a href="https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/monticore-grammar/src/main/grammars/de/monticore/JavaLight.md"><em>detailed description</em> (not yet publicly available)</a>.</li>
+</ul>
+<h3 id="java-not-yet-publicly-available-beta-in-stabilization"><a href="https://git.rwth-aachen.de/monticore/javaDSL">Java (not yet publicly available)</a> (Beta: In Stabilization)</h3>
+<ul>
+<li>This is the full Java' Language (as Opposed to JavaLight).</li>
+<li>Main Grammar <a href="https://git.rwth-aachen.de/monticore/javaDSL/-/blob/dev/javaDSL/src/main/grammars/de/monticore/java/JavaDSL.mc4"><code>JavaDSL</code> (not yet publicly available)</a>
+  and
+  <a href="https://git.rwth-aachen.de/monticore/javaDSL/-/blob/dev/javaDSL/src/main/grammars/de/monticore/java/JavaDSL.md"><em>detailed description</em> (not yet publicly available)</a>.</li>
+</ul>
+<h2 id="further-information">Further Information</h2>
+<ul>
+<li><a href="https://github.com/MontiCore/monticore">Project root: MontiCore @github</a></li>
+<li><a href="http://www.monticore.de/">MontiCore documentation</a></li>
+<li><a href="https://github.com/MontiCore/monticore/blob/dev/docs/Languages.md"><strong>List of languages</strong></a></li>
+<li><a href="https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md"><strong>MontiCore Core Grammar Library</strong></a></li>
+<li><a href="https://github.com/MontiCore/monticore/blob/dev/docs/BestPractices.md">Best Practices</a></li>
+<li><a href="https://www.se-rwth.de/publications/">Publications about MBSE and MontiCore</a></li>
+<li><a href="https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md">Licence definition</a></li>
+</ul>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        
+<footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+          <div class="md-footer-copyright__highlight">
+            (c) https://github.com/MontiCore/monticore
+          </div>
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+        
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.b0710199.min.js", "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.76f349be.min.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore.typepersistence;
+
+grammar Variable extends de.monticore.types.MCBasicTypes {
+
+
+  symbol Var = "var" MCType Name;
+
+}

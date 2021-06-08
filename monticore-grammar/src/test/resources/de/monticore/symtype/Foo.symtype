@@ -1,0 +1,32 @@
+{
+    "kind": "de.monticore.types2.SymTypeOfGenerics",
+    "typeConstructorFullName": "java.util.Map2",
+    "arguments": [
+        {
+      "kind": "de.monticore.types2.SymTypeConstant",
+      "constName": "int"
+    },
+    {
+      "kind": "de.monticore.types2.SymTypeOfGenerics",
+      "typeConstructorFullName": "java.util.Set",
+      "arguments": [
+        {
+          "kind": "de.monticore.types2.SymTypeOfGenerics",
+          "typeConstructorFullName": "Map",
+          "arguments": [
+            {
+              "kind": "de.monticore.types2.SymTypeConstant",
+              "constName": "int"
+            },
+            {
+              "kind": "de.monticore.types2.SymTypeOfObject",
+              "objName": "de.x.Person"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+
+java.util.Map2<int,java.util.Set<Map<int,de.x.Person>>>

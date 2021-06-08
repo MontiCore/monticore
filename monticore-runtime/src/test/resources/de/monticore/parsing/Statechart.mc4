@@ -1,0 +1,42 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore.parsing;
+
+grammar StatechartDSL { 
+
+options { 
+	parser "k=3;"
+	lexer "k=2; " 
+		
+}
+      
+  Statechart implements SCStructure= "statechart" Name "{" (States:State | Transitions:Transition | UserCode:Code)* "}" EOF;
+  
+  
+  EntryAction= "entry" ":" Block:BlockStatement;
+  
+  ExitAction= "exit" ":" Block:BlockStatement;
+  
+ 
+  State implements SCStructure = "state" Name ("<<" (Initial:["initial"] | Final:["final"])* ">>")?
+    ( ("{ options{}" (EntryAction:EntryAction)? (ExitAction:ExitAction)? (States:State | Transitions:Transition)* "}") | ";") ;
+ 
+  Transition = From:Name "->" To:Name 
+    				(":" (Event:Name ( "(" (Arguments:Argument ( "," Arguments:Argument)*) ")" )? )?
+  					 ("[" Guard: Expression "]")?
+  					 ("/" Action: BlockStatement)? ";" 
+  				| ";");
+    
+  Argument= ParamType:Name ParamName:Name;
+ 
+  Code= "code" Code: Classbody ;
+  
+  interface SCStructure; 
+  
+  external BlockStatement;
+  
+  external Expression;
+  
+  external Classbody;
+  
+ }
