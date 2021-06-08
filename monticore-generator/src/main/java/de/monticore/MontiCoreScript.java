@@ -231,10 +231,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     return result;
   }
 
-  // TODO: würde hier nicht eine einfach Liste der Argument
-  // oder auch eine etwas aufbereitete Map<String,String> reichen:  "-out" -> "..."
-  protected MontiCoreConfiguration __configuration;
-
   protected Map<ASTMCGrammar, ASTCDCompilationUnit> firstPassGrammars = new LinkedHashMap<>();
 
   protected void storeCDForGrammar(ASTMCGrammar grammar, ASTCDCompilationUnit cdAst) {
@@ -267,22 +263,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
   protected Iterable<ASTMCGrammar> getParsedGrammars() {
     return this.firstPassGrammars.keySet();
-  }
-
-  /**
-   * Stores the symbol of the passed grammar AST at the passed location.
-   * Note that this method should be invoked in the script after the symbol
-   * table has been created and the cocos have been checked.
-   * TODO: "activate" this method by uncommenting the store instruction
-   *
-   * @param grammar
-   * @param location for stored symbols relative to out location of MontiCore
-   */
-  public void storeGrammarSymbol(ASTMCGrammar grammar, String location) {
-    // as there are no nested grammars, all grammar symbols have an artifact scope as enclosing scope.
-    GrammarFamilyArtifactScope enclosingScope = (GrammarFamilyArtifactScope) grammar.getEnclosingScope();
-    Path locPath = Paths.get(__configuration.getOut().getAbsolutePath(), location);
-//  new GrammarFamilyScopeDeSer().store(enclosingScope, locPath);
   }
 
   /**
