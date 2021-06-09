@@ -6,7 +6,6 @@ import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CdUtilsPrinter;
 import de.monticore.codegen.cd2java.CoreTemplates;
@@ -22,7 +21,6 @@ import org.junit.Test;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
-import static de.monticore.codegen.cd2java.DecoratorTestUtil.getInterfaceBy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -79,12 +77,12 @@ public class CDCLIDecoratorTest extends DecoratorTestCase {
   }
   @Test
   public void testPackage() {
-    assertEquals(5, cliCD.getPackageList().size());
-    assertEquals("de", cliCD.getPackageList().get(0));
-    assertEquals("monticore", cliCD.getPackageList().get(1));
-    assertEquals("codegen", cliCD.getPackageList().get(2));
-    assertEquals("ast", cliCD.getPackageList().get(3));
-    assertEquals("automaton", cliCD.getPackageList().get(4));
+    assertEquals(5, cliCD.getCDPackageList().size());
+    assertEquals("de", cliCD.getCDPackageList().get(0));
+    assertEquals("monticore", cliCD.getCDPackageList().get(1));
+    assertEquals("codegen", cliCD.getCDPackageList().get(2));
+    assertEquals("ast", cliCD.getCDPackageList().get(3));
+    assertEquals("automaton", cliCD.getCDPackageList().get(4));
   }
   @Test
   public void testImports() {
