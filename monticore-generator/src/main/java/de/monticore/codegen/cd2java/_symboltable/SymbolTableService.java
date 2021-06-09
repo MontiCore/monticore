@@ -726,7 +726,6 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   public List<ASTCDType> getOnlyScopeClasses(ASTCDDefinition astcdDefinition) {
     // returns only the implemented classes (no abstract classes and no interfaces)
     List<ASTCDType> symbolProds = astcdDefinition.getCDClassesList().stream()
-        .filter(ASTCDClass::isPresentModifier)
         .filter(c -> !c.getModifier().isAbstract())
         .filter(c -> (hasScopeStereotype(c.getModifier()) || hasInheritedScopeStereotype(c.getModifier())))
         .filter(c -> !hasSymbolStereotype(c.getModifier()))

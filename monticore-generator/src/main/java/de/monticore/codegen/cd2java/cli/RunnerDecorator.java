@@ -2,27 +2,22 @@
 package de.monticore.codegen.cd2java.cli;
 
 import de.monticore.cd4analysis.CD4AnalysisMill;
-import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
-import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.codegen.cd2java.AbstractCreator;
-import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java._parser.ParserService;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
-import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcbasictypes._ast.ASTMCVoidType;
 
 import java.util.Optional;
 
-import static de.monticore.codegen.cd2java.CDModifier.*;
+import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 
 /**
@@ -49,7 +44,7 @@ public class RunnerDecorator extends AbstractCreator<ASTCDCompilationUnit, Optio
     Optional<ASTCDClass>  cliClass = Optional.empty();
     boolean startProdPresent = symbolTableService.getStartProdASTFullName().isPresent();
     ASTCDDefinition cdDefinition = cd.getCDDefinition();
-    if (!cdDefinition.isPresentModifier() || !parserService.hasComponentStereotype(cdDefinition.getModifier())) {
+    if (!parserService.hasComponentStereotype(cdDefinition.getModifier())) {
       String runnerClassName = parserService.getRunnerSimpleName();
       String millFullName = parserService.getMillFullName();
       cliClass = Optional.of(CD4AnalysisMill.cDClassBuilder()

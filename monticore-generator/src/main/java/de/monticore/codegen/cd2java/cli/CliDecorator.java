@@ -9,7 +9,6 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._parser.ParserService;
-import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
@@ -36,7 +35,7 @@ public class CliDecorator extends AbstractCreator<ASTCDCompilationUnit, Optional
     Optional<ASTCDClass>  cliClass = Optional.empty();
 
     ASTCDDefinition cdDefinition = input.getCDDefinition();
-    if (!cdDefinition.isPresentModifier() || !parserService.hasComponentStereotype(cdDefinition.getModifier())) {
+    if (!parserService.hasComponentStereotype(cdDefinition.getModifier())) {
       String cliClassName = parserService.getCliSimpleName();
       String millFullName = parserService.getMillFullName();
       cliClass = Optional.of(CD4AnalysisMill.cDClassBuilder()
