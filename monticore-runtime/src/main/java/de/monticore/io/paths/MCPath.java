@@ -53,8 +53,10 @@ public final class MCPath {
   }
 
   public void addEntry(Path entry) {
-    toURL(entry).ifPresent(url ->
-        classloaderMap.put(new URLClassLoader(new URL[] { url }, null), url));
+    Optional<URL> url = toURL(entry);
+    if(url.isPresent() && !classloaderMap.containsValue(url.get())){
+      classloaderMap.put(new URLClassLoader(new URL[] { url.get() }, null), url.get());
+    }
   }
 
   public void removeEntry(Path entry) {

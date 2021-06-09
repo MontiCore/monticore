@@ -8,7 +8,6 @@ import de.monticore.generating.templateengine.FreeMarkerTemplateEngineMock;
 import de.monticore.generating.templateengine.FreeMarkerTemplateMock;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.FileReaderWriterMock;
-import de.monticore.io.paths.IterablePath;
 import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
