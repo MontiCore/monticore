@@ -1,3 +1,4 @@
+# (c) https://github.com/MontiCore/monticore 
 # Delete "[[_TOC_]]" in all MD files before mirroring  
 for file in $(find . -type f -name "*.md")
 do 

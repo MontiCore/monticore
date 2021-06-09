@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.grammar.grammarfamily._symboltable;
 
 public interface IGrammarFamilyArtifactScope extends IGrammarFamilyArtifactScopeTOP {
