@@ -199,7 +199,7 @@ public class EmfService extends AbstractService<EmfService> {
   public String getClassPackage(CDTypeSymbol cdTypeSymbol) {
     // in this version the scope carries all relevant naming information and we
     // know that it is an artifact scope
-    ICD4CodeArtifactScope scope = ((ICD4CodeArtifactScope) cdTypeSymbol.getEnclosingScope());
+    ICD4CodeArtifactScope scope = ((ICD4CodeArtifactScope) cdTypeSymbol.getEnclosingScope().getEnclosingScope());
     String modelName = scope.getFullName();
     if (modelName.equalsIgnoreCase(getQualifiedCDName())) {
       return "this";
