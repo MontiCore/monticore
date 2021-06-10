@@ -33,8 +33,6 @@ public class IncGenCheckReporter extends IncGenReporter {
       }
     }
 
-    Collections.sort(grammarFiles);
-
     if (inputFile != null && !inputFile.isEmpty()) {
       String checkSum;
       if (node != null) {

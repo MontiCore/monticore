@@ -15,7 +15,7 @@ import java.util.*;
 
 public abstract class IncGenReporter extends AReporter {
 
-  protected List<String> grammarFiles = Lists.newArrayList();
+  protected Set<String> grammarFiles = new OrderedHashSet<>();
 
   protected Set<String> usedHWCFiles = new OrderedHashSet<>();
 
@@ -23,7 +23,7 @@ public abstract class IncGenReporter extends AReporter {
 
   protected Set<Path> filesThatMatterButAreNotThereInTime = new LinkedHashSet<>();
 
-  protected List<String> userTemplates = Lists.newArrayList();
+  protected Set<String> userTemplates = new OrderedHashSet<>();
 
   protected static Map<Path, Path> modelToArtifactMap = new HashMap<>();
 
@@ -101,7 +101,7 @@ public abstract class IncGenReporter extends AReporter {
         filesThatMatterButAreNotThereInTime.add(file);
       }
     }
-    if (!toAdd.isEmpty() && !grammarFiles.contains(toAdd)) {
+    if (!toAdd.isEmpty() && toAdd.endsWith(".mc4")) {
       grammarFiles.add(toAdd);
     }
   }
@@ -113,7 +113,10 @@ public abstract class IncGenReporter extends AReporter {
   @Override
   public void reportUserSpecificTemplate(Path parentDir, Path fileName) {
     if (parentDir != null) {
-      userTemplates.add(Paths.get(parentDir.toString(), fileName.toString()).toString());
+      String toAdd = Paths.get(parentDir.toString(), fileName.toString()).toString();
+      if(!toAdd.isEmpty() && toAdd.endsWith(".ftl")) {
+        userTemplates.add(toAdd);
+      }
     }
   }
 
