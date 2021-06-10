@@ -33,7 +33,7 @@ public class EmbeddedTest extends GeneratorIntegrationsTest {
   public void test() {
 
     final IEmbeddedGlobalScope scope = EmbeddedMill.globalScope();
-    scope.getModelPath().addEntry(Paths.get("src/test/resources/mc/embedding"));
+    scope.getSymbolPath().addEntry(Paths.get("src/test/resources/mc/embedding"));
 
     final TextSymbol textSymbol = scope.resolveText("E").orElse(null);
     assertNotNull(textSymbol);

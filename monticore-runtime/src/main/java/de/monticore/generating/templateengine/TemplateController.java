@@ -9,6 +9,7 @@ import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.freemarker.SimpleHashFactory;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.io.FileReaderWriter;
+import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import freemarker.core.Macro;
@@ -19,6 +20,7 @@ import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 import org.apache.commons.io.FilenameUtils;
 
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;

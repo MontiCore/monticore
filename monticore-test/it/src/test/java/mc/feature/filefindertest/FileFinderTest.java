@@ -2,7 +2,7 @@
 package mc.feature.filefindertest;
 
 import de.monticore.io.FileReaderWriter;
-import de.monticore.io.paths.ModelPath;
+import de.monticore.io.paths.MCPath;
 import mc.feature.filefindertest.filefindertest.FileFinderTestMill;
 import mc.feature.filefindertest.filefindertest._ast.ASTSCArtifact;
 import mc.feature.filefindertest.filefindertest._parser.FileFinderTestParser;
@@ -45,7 +45,7 @@ public class FileFinderTest {
     //fileFinder detects the correct Modles with the standard Regex.
     IFileFinderTestGlobalScope gs = FileFinderTestMill.globalScope();
     gs.clear();
-    gs.setModelPath(new ModelPath(Paths.get("src/test/resources")));
+    gs.setSymbolPath(new MCPath(Paths.get("src/test/resources")));
     Optional<StatechartSymbol> statechartSymbol = gs.resolveStatechart("mc.feature.filefindertest.Model1");
     assertTrue(statechartSymbol.isPresent());
   }
@@ -56,7 +56,7 @@ public class FileFinderTest {
     IFileFinderTestGlobalScope gs = FileFinderTestMill.globalScope();
     gs.clear();
     gs.setFileExt("scsym");
-    gs.setModelPath(new ModelPath(Paths.get("src/test/resources")));
+    gs.setSymbolPath(new MCPath(Paths.get("src/test/resources")));
     Optional<StatechartSymbol> statechartSymbol = gs.resolveStatechart("mc.feature.filefindertest.Model1");
     assertTrue(statechartSymbol.isPresent());
   }
@@ -67,7 +67,7 @@ public class FileFinderTest {
     IFileFinderTestGlobalScope gs = FileFinderTestMill.globalScope();
     gs.clear();
     gs.setFileExt("ym");
-    gs.setModelPath(new ModelPath(Paths.get("src/test/resources")));
+    gs.setSymbolPath(new MCPath(Paths.get("src/test/resources")));
     Optional<StatechartSymbol> statechartSymbol = gs.resolveStatechart("mc.feature.filefindertest.Model1");
     assertFalse(statechartSymbol.isPresent());
   }
@@ -77,7 +77,7 @@ public class FileFinderTest {
     //fileFinder finds no Models, wrong Model Path.
     IFileFinderTestGlobalScope gs = FileFinderTestMill.globalScope();
     gs.clear();
-    gs.setModelPath(new ModelPath(Paths.get("src/test")));
+    gs.setSymbolPath(new MCPath(Paths.get("src/test")));
     Optional<StatechartSymbol> statechartSymbol = gs.resolveStatechart("mc.feature.filefindertest.Model1");
     assertFalse(statechartSymbol.isPresent());
   }
@@ -87,7 +87,7 @@ public class FileFinderTest {
     //fileFinder finds no Models, empty Model Path.
     IFileFinderTestGlobalScope gs = FileFinderTestMill.globalScope();
     gs.clear();
-    gs.setModelPath(new ModelPath());
+    gs.setSymbolPath(new MCPath());
     Optional<StatechartSymbol> statechartSymbol = gs.resolveStatechart("mc.feature.filefindertest.Model1");
     assertFalse(statechartSymbol.isPresent());
   }
@@ -98,7 +98,7 @@ public class FileFinderTest {
     IFileFinderTestGlobalScope gs = FileFinderTestMill.globalScope();
     gs.clear();
     gs.setFileExt("json");
-    gs.setModelPath(new ModelPath(Paths.get("src/test/resources")));
+    gs.setSymbolPath(new MCPath(Paths.get("src/test/resources")));
     Optional<StatechartSymbol> statechartSymbol = gs.resolveStatechart("mc.feature.filefindertest.Model1");
     assertTrue(statechartSymbol.isPresent());
   }

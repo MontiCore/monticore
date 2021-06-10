@@ -80,7 +80,7 @@ public class SymbolTableConstants {
 
   public static final String DEQUE_TYPE = "Deque";
 
-  public static final String MODEL_PATH_TYPE = "de.monticore.io.paths.ModelPath";
+  public static final String SYMBOL_PATH_TYPE = "de.monticore.io.paths.MCPath";
 
   public static final String I_DE_SER = "de.monticore.symboltable.serialization.IDeSer";
 
@@ -104,7 +104,7 @@ public class SymbolTableConstants {
 
   public static final String ORDERED_VAR = "ordered";
 
-  public static final String MODEL_PATH_VAR = "modelPath";
+  public static final String SYMBOL_PATH_VAR = "symbolPath";
 
   public static final String FILE_EXTENSION_VAR = "fileExt";
 

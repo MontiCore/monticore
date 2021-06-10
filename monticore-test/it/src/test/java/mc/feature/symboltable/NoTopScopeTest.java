@@ -40,7 +40,7 @@ public class NoTopScopeTest {
     // create symboltable
     INoTopScopeGlobalScope globalScope = NoTopScopeMill.globalScope();
     globalScope.setFileExt("st");
-    globalScope.getModelPath().addEntry(Paths.get("src/test/resources/mc/feature/symboltable"));
+    globalScope.getSymbolPath().addEntry(Paths.get("src/test/resources/mc/feature/symboltable"));
 
     INoTopScopeArtifactScope scope = NoTopScopeMill
         .scopesGenitorDelegator().createFromAST(astSup.get());
@@ -68,7 +68,7 @@ public class NoTopScopeTest {
     // create symboltable
     ISubNoTopScopeGlobalScope globalScope = SubNoTopScopeMill.globalScope();
     globalScope.setFileExt("st");
-    globalScope.getModelPath().addEntry(Paths.get("src/test/resources/mc/feature/symboltable"));
+    globalScope.getSymbolPath().addEntry(Paths.get("src/test/resources/mc/feature/symboltable"));
 
     INoTopScopeArtifactScope scope = SubNoTopScopeMill
         .scopesGenitorDelegator().createFromAST(astSup.get());

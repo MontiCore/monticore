@@ -38,6 +38,7 @@ public abstract class IncGenReporter extends AReporter {
   }
 
   @Override
+  @Deprecated
   public void reportHWCExistenceCheck(IterablePath parentDirs, Path fileName,
                                       Optional<Path> result) {
     if (result.isPresent()) {

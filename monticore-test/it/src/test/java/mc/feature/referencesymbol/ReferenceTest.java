@@ -42,8 +42,8 @@ public class ReferenceTest {
     for (IReferenceScope s : globalScope.getSubScopes()) {
       globalScope.removeSubScope(s);
     }
-    for (Path p : globalScope.getModelPath().getFullPathOfEntries()) {
-      globalScope.getModelPath().removeEntry(p);
+    for (Path p : globalScope.getSymbolPath().getEntries()) {
+      globalScope.getSymbolPath().removeEntry(p);
     }
 
     // populate symtab
@@ -53,7 +53,7 @@ public class ReferenceTest {
     assertTrue(astRand.isPresent());
     //create symboltable
     globalScope.setFileExt("ref");
-    globalScope.getModelPath().addEntry(Paths.get("src/test/resources/mc/feature/referencesymbol"));
+    globalScope.getSymbolPath().addEntry(Paths.get("src/test/resources/mc/feature/referencesymbol"));
 
     IReferenceArtifactScope artifactScope = ReferenceMill
         .scopesGenitorDelegator().createFromAST(astRand.get());

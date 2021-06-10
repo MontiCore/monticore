@@ -7,7 +7,7 @@ import de.monticore.aggregation.blah.Bar2DummySymbol;
 import de.monticore.aggregation.blah.BlahMill;
 import de.monticore.aggregation.blah._symboltable.DummySymbol;
 import de.monticore.aggregation.blah._symboltable.IBlahGlobalScope;
-import de.monticore.io.paths.ModelPath;
+import de.monticore.io.paths.MCPath;
 import de.monticore.symboltable.modifiers.AccessModifier;
 
 import java.util.ArrayList;
@@ -20,15 +20,15 @@ public class FooGlobalScope extends de.monticore.aggregation.foo._symboltable.Fo
     super();
     iBlahGS = BlahMill
             .globalScope();
-    iBlahGS.setModelPath(modelPath);
+    iBlahGS.setSymbolPath(symbolPath);
     iBlahGS.setFileExt("blah");
   }
 
-  public FooGlobalScope(ModelPath modelPath, String ext){
-    super(modelPath, "blah");
+  public FooGlobalScope(MCPath symbolPath, String ext){
+    super(symbolPath, "blah");
     iBlahGS = BlahMill
         .globalScope();
-    iBlahGS.setModelPath(modelPath);
+    iBlahGS.setSymbolPath(symbolPath);
     iBlahGS.setFileExt("blah");
   }
 
