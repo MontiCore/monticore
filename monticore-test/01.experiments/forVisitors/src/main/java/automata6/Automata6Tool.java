@@ -13,7 +13,6 @@ import automata5._ast.*;
 import automata6._ast.*;
 import automata6._parser.*;
 import automata6._visitor.*;
-import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.*;
 import de.se_rwth.commons.logging.*;
 

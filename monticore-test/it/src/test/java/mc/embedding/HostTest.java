@@ -33,7 +33,7 @@ public class HostTest extends GeneratorIntegrationsTest {
   @Test
   public void test() {
     final IHostGlobalScope scope = HostMill.globalScope();
-    scope.getModelPath().addEntry(Paths.get("src/test/resources/mc/embedding"));
+    scope.getSymbolPath().addEntry(Paths.get("src/test/resources/mc/embedding"));
     HostSymbol hostSymbol = scope.resolveHost("H").orElse(null);
     assertNotNull(hostSymbol);
     assertEquals("H", hostSymbol.getName());

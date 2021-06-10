@@ -1,16 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.testsymtabmill.testsymtabmill._symboltable;
 
-import de.monticore.io.paths.ModelPath;
+import de.monticore.io.paths.MCPath;
 
 public class TestSymTabMillGlobalScope extends TestSymTabMillGlobalScopeTOP {
 
-  public TestSymTabMillGlobalScope(ModelPath modelPath){
-    super(modelPath, "tsm");
+  public TestSymTabMillGlobalScope(MCPath symbolPath){
+    super(symbolPath, "tsm");
   }
 
-  public TestSymTabMillGlobalScope(ModelPath modelPath, String modelFileExtension){
-    super(modelPath, modelFileExtension);
+  public TestSymTabMillGlobalScope(MCPath symbolPath, String modelFileExtension){
+    super(symbolPath, modelFileExtension);
   }
 
   public TestSymTabMillGlobalScope(){

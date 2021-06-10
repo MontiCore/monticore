@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package sm2;
 
-import de.monticore.io.paths.ModelPath;
+import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.RecognitionException;
 import sm2._ast.ASTAutomaton;
@@ -111,7 +111,7 @@ public class SM2Tool {
   public static ISM2ArtifactScope createSymbolTable(ASTAutomaton ast) {
     ISM2GlobalScope globalScope = SM2Mill.globalScope();
     globalScope.setFileExt("aut");
-    globalScope.setModelPath(new ModelPath());
+    globalScope.setSymbolPath(new MCPath());
 
     SM2ScopesGenitorDelegator symbolTable = SM2Mill
         .scopesGenitorDelegator();

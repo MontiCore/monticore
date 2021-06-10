@@ -10,7 +10,7 @@ import de.monticore.generating.templateengine.freemarker.MontiCoreFileTemplateLo
 import de.monticore.generating.templateengine.freemarker.MontiCoreTemplateExceptionHandler;
 import de.monticore.generating.templateengine.freemarker.MontiCoreTemplateLoader;
 import de.monticore.io.FileReaderWriter;
-import de.monticore.io.paths.IterablePath;
+import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.Log;
 import freemarker.cache.MultiTemplateLoader;
 import freemarker.cache.TemplateLoader;
@@ -45,12 +45,7 @@ public class GeneratorSetup {
    * The path for the handwritten code
    * Default is only created with first get-access.
    */
-// TODO, XXX MB: (von BR 12/2017)
-// Diese Klasse handcodedPath klann doch durch eine List<String> ersetzt werden?
-// Oder auch was anderes, aber wir haben zuviele Lösungen für dasselbe ...
-// siehe auch TemplateAutoImport und additionalTemplatePaths
-// Vereinheitlichung!
-  private IterablePath handcodedPath;
+  private MCPath handcodedPath;
 
   /**
    * Additional path as the source of templates
@@ -235,9 +230,9 @@ public class GeneratorSetup {
   /**
    * @return targetPath
    */
-  public IterablePath getHandcodedPath() {
+  public MCPath getHandcodedPath() {
     if (this.handcodedPath == null) {
-      this.handcodedPath = IterablePath.empty();  //default
+      this.handcodedPath = new MCPath();  //default
     }
     return this.handcodedPath;
   }
@@ -245,7 +240,7 @@ public class GeneratorSetup {
   /**
    * @param hwcPath the handcoded path to set
    */
-  public void setHandcodedPath(IterablePath hwcPath) {
+  public void setHandcodedPath(MCPath hwcPath) {
     this.handcodedPath = hwcPath;
   }
 
