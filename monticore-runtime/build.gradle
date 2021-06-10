@@ -10,6 +10,7 @@ configurations {
 dependencies {
   api 'de.se_rwth.commons:se-commons-logging:' + se_commons_version
   api "org.antlr:antlr4-runtime:$antlr_version"
+  api "commons-cli:commons-cli:$commons_cli_version"
   implementation 'de.se_rwth.commons:se-commons-utilities:' + se_commons_version
   implementation "com.google.guava:guava:$guava_version"
   implementation 'org.reflections:reflections:0.9.9'

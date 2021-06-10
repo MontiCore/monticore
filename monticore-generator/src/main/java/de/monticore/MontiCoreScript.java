@@ -9,6 +9,7 @@ package de.monticore;
  import de.monticore.cdbasis._ast.ASTCDClass;
  import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
  import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
+ import de.monticore.codegen.cd2java.cli.CliDecorator;
  import de.monticore.codegen.cd2java.typecd2java.TemplateHPService;
  import de.monticore.generating.templateengine.TemplateController;
  import de.monticore.generating.templateengine.TemplateHookPoint;
@@ -60,6 +61,8 @@ package de.monticore;
  import de.monticore.codegen.cd2java._symboltable.symbol.*;
  import de.monticore.codegen.cd2java._symboltable.symbol.symbolsurrogatemutator.MandatoryMutatorSymbolSurrogateDecorator;
  import de.monticore.codegen.cd2java._visitor.*;
+ import de.monticore.codegen.cd2java.cli.CDCLIDecorator;
+ import de.monticore.codegen.cd2java.cli.RunnerDecorator;
  import de.monticore.codegen.cd2java.data.DataDecorator;
  import de.monticore.codegen.cd2java.data.DataDecoratorUtil;
  import de.monticore.codegen.cd2java.data.InterfaceDecorator;
@@ -669,7 +672,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   public List<ASTCDCompilationUnit> decorateCD(GlobalExtensionManagement glex, ICD4AnalysisScope cdScope,
       List<ASTCDCompilationUnit> cds, IterablePath handCodedPath) {
     cds = addListSuffixToAttributeName(cds);
-    List<ASTCDCompilationUnit> decoratedCDs = new ArrayList<ASTCDCompilationUnit>();
+    List<ASTCDCompilationUnit> decoratedCDs = new ArrayList<>();
     // we precisely know the strucutre of the given cd list
     // in a future version, we will only handle one single cd
     ASTCDCompilationUnit decoratedASTClassDiagramm = decorateForASTPackage(glex, cdScope, cds.get(0), handCodedPath);
@@ -683,6 +686,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     decoratedCDs.add(decorateForODPackage(glex, cdScope, cds.get(0), handCodedPath));
     decoratedCDs.add(decorateMill(glex, cdScope, cds.get(0), decoratedASTClassDiagramm,
         decoratedSymbolTableCd, decoratedTraverserCD, handCodedPath));
+    decoratedCDs.add(decorateCLI(glex, cdScope, cds.get(0), handCodedPath));
     decoratedCDs.add(decorateAuxiliary(glex, cdScope, cds.get(0), decoratedASTClassDiagramm, handCodedPath));
     return decoratedCDs;
   }
@@ -848,6 +852,27 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
     TopDecorator topDecorator = new TopDecorator(handCodedPath);
     return topDecorator.decorate(millCD);
+  }
+
+  public ASTCDCompilationUnit decorateCLI(GlobalExtensionManagement glex, ICD4AnalysisScope cdScope,
+                                           ASTCDCompilationUnit cd, IterablePath handCodedPath) {
+    ASTCDCompilationUnit preparedCD = prepareCD(cdScope, cd);
+    return generateCLI(preparedCD, glex, handCodedPath);
+  }
+
+  private ASTCDCompilationUnit generateCLI(ASTCDCompilationUnit cd,
+                                            GlobalExtensionManagement glex, IterablePath handCodedPath) {
+    ParserService parserService = new ParserService(cd);
+    SymbolTableService symbolTableService = new SymbolTableService(cd);
+    RunnerDecorator runnerDecorator = new RunnerDecorator(glex, parserService,symbolTableService );
+    CliDecorator cliDecorator = new CliDecorator(glex, parserService );
+    CDCLIDecorator cdcliDecorator = new CDCLIDecorator(glex, runnerDecorator, cliDecorator,parserService);
+
+    ASTCDCompilationUnit cliCD = cdcliDecorator.decorate(cd);
+
+
+    TopDecorator topDecorator = new TopDecorator(handCodedPath);
+    return topDecorator.decorate(cliCD);
   }
 
   public ASTCDCompilationUnit decorateAuxiliary(GlobalExtensionManagement glex, ICD4AnalysisScope cdScope,
