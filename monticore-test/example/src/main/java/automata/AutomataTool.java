@@ -14,7 +14,6 @@ import org.antlr.v4.runtime.RecognitionException;
 import automata._ast.ASTAutomaton;
 import automata._cocos.AutomataCoCoChecker;
 import automata._parser.AutomataParser;
-import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
 
 import static de.se_rwth.commons.Names.getPathFromPackage;

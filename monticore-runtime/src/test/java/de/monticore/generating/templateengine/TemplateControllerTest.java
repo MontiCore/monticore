@@ -7,7 +7,7 @@ import de.monticore.ast.ASTNodeMock;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.FileReaderWriterMock;
-import de.monticore.io.paths.IterablePath;
+import de.monticore.io.paths.MCPath;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -46,8 +46,7 @@ public class TemplateControllerTest {
     FileReaderWriter.init(fileHandler);
     setup.setOutputDirectory(TARGET_DIR);
     setup.setFreeMarkerTemplateEngine(freeMarkerTemplateEngine);
-    setup.setHandcodedPath(
-        IterablePath.from(HWC_DIR.toFile(), setup.getDefaultFileExtension()));
+    setup.setHandcodedPath(new MCPath(HWC_DIR));
     setup.setFileHandler(fileHandler);
     setup.setTracing(false);
 

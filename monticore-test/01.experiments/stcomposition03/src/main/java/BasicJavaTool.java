@@ -4,7 +4,7 @@ import basicjava.BasicJavaMill;
 import basicjava._ast.ASTCompilationUnit;
 import basicjava._parser.BasicJavaParser;
 import basicjava._symboltable.*;
-import de.monticore.io.paths.ModelPath;
+import de.monticore.io.paths.MCPath;
 import de.monticore.umlstereotype.UMLStereotypeMill;
 import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.RecognitionException;
@@ -14,7 +14,7 @@ import java.util.Optional;
 
 public class BasicJavaTool {
 
-  public static IBasicJavaArtifactScope createJavaSymTab(String model, ModelPath modelPath) {
+  public static IBasicJavaArtifactScope createJavaSymTab(String model, MCPath symbolPath) {
     ASTCompilationUnit ast = parse(model);
     return BasicJavaMill.scopesGenitorDelegator().createFromAST(ast);
   }

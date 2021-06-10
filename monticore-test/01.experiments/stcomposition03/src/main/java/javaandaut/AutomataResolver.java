@@ -5,7 +5,7 @@ package javaandaut;
 import automata7._symboltable.*;
 import basicjava.BasicJavaMill;
 import basicjava._symboltable.*;
-import de.monticore.io.paths.ModelPath;
+import de.monticore.io.paths.MCPath;
 import de.monticore.symboltable.modifiers.AccessModifier;
 
 import java.nio.file.Path;
@@ -17,9 +17,9 @@ import java.util.function.Predicate;
 
 public class AutomataResolver implements IStimulusSymbolResolver {
 
-  public AutomataResolver(ModelPath mp){
-    for(Path p : mp.getFullPathOfEntries()){
-      BasicJavaMill.globalScope().getModelPath().addEntry(p);
+  public AutomataResolver(MCPath symbolPath){
+    for(Path p : symbolPath.getEntries()){
+      BasicJavaMill.globalScope().getSymbolPath().addEntry(p);
     }
   }
 

@@ -2,6 +2,7 @@
 
 package de.monticore.generating.templateengine.reporting;
 
+import java.net.URL;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashMap;
@@ -14,7 +15,7 @@ import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.TemplateController;
 import de.monticore.generating.templateengine.reporting.commons.ReportManager;
 import de.monticore.generating.templateengine.reporting.commons.ReportManager.ReportManagerFactory;
-import de.monticore.io.paths.IterablePath;
+import de.monticore.io.paths.MCPath;
 import de.monticore.symboltable.IScope;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.Slf4jLog;
@@ -751,13 +752,13 @@ public class Reporting extends Slf4jLog {
   /**
    * Reports the check for existence of an artifact
    *
-   * @param parentDir
+   * @param mcp
    * @param fileName
    * @param resolvedPath contains the result if artifact exists
    */
-  public static void reportHWCExistenceCheck(IterablePath parentDir, Path fileName, Optional<Path> resolvedPath) {
+  public static void reportHWCExistenceCheck(MCPath mcp, Path fileName, Optional<URL> resolvedPath) {
     if (isEnabled()) {
-      getReportManager().reportHWCExistenceCheck(parentDir, fileName, resolvedPath);
+      getReportManager().reportHWCExistenceCheck(mcp, fileName, resolvedPath);
     }
   }
 
