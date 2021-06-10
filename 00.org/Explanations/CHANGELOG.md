@@ -6,6 +6,7 @@
 to be released
 
 ### Additions
+* introduced language-specific CLI generation
 
 ### Changes
 * the methods `serialize` and `deserialize` of the class `XDeSer` were moved to the class `XSymbols2Json`
