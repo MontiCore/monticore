@@ -85,7 +85,7 @@ task  generateGrammarFamily (type: MCTask) {
   outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
   def uptoDate = incCheck("de/monticore/grammar/GrammarFamily.mc4")
   outputs.upToDateWhen { uptoDate }
-  templatePath = ["."] // do not use src/main/resources
+  templatePath = ["$projectDir/src/main/assemblies"] // do not use src/main/resources
 }
 
 compileJava {
