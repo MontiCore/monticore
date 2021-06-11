@@ -236,11 +236,11 @@ public class TypeCheck {
       return false;
     } else if (!left.isTypeConstant() && right.isNullType()){
       return true;
-    } else if(unbox(left.print()).equals(unbox(right.print()))) {
+    } else if(unbox(left.printFullName()).equals(unbox(right.printFullName()))) {
       return true;
     } else if(isSubtypeOf(right,left)) {
       return true;
-    } else if (right.print().equals(left.print())) {
+    } else if (right.printFullName().equals(left.printFullName())) {
       return true;
     } else if (left.deepEquals(right) || right.deepEquals(left)) {
       return true;
