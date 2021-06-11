@@ -7,16 +7,17 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.codegen.cd2java.AbstractCreator;
-import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
 import de.monticore.codegen.cd2java._parser.ParserService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.*;
+
+/**
+ * Creates the Class diagram for all CLI-Specific classes
+ */
 
 public class CDCLIDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCompilationUnit> {
 
@@ -24,16 +25,13 @@ public class CDCLIDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDC
 
   protected final ParserService parserService;
 
-  protected final RunnerDecorator runnerDecorator;
-  protected final CliDecorator cliDecorator;
+  protected final CLIDecorator cliDecorator;
 
   public CDCLIDecorator(final GlobalExtensionManagement glex,
-                        final RunnerDecorator runnerDecorator,
-                        final CliDecorator cliDecorator,
+                        final CLIDecorator cliDecorator,
                         final ParserService parserService) {
     super(glex);
     this.parserService = parserService;
-    this.runnerDecorator = runnerDecorator;
     this.cliDecorator = cliDecorator;
   }
 
@@ -50,8 +48,6 @@ public class CDCLIDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDC
         .build();
     ASTCDDefinition cdDefinition = mainCD.getCDDefinition();
     if (!cdDefinition.isPresentModifier() || !parserService.hasComponentStereotype(cdDefinition.getModifier())) {
-      Optional<ASTCDClass> runnerClass = runnerDecorator.decorate(mainCD);
-      runnerClass.ifPresent(astCD::addCDElement);
       Optional<ASTCDClass> cliClass = cliDecorator.decorate(mainCD);
       cliClass.ifPresent(astCD::addCDElement);
     }

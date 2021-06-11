@@ -9,7 +9,7 @@ package de.monticore;
  import de.monticore.cdbasis._ast.ASTCDClass;
  import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
  import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
- import de.monticore.codegen.cd2java.cli.CliDecorator;
+ import de.monticore.codegen.cd2java.cli.CLIDecorator;
  import de.monticore.codegen.cd2java.typecd2java.TemplateHPService;
  import de.monticore.generating.templateengine.TemplateController;
  import de.monticore.generating.templateengine.TemplateHookPoint;
@@ -62,7 +62,6 @@ package de.monticore;
  import de.monticore.codegen.cd2java._symboltable.symbol.symbolsurrogatemutator.MandatoryMutatorSymbolSurrogateDecorator;
  import de.monticore.codegen.cd2java._visitor.*;
  import de.monticore.codegen.cd2java.cli.CDCLIDecorator;
- import de.monticore.codegen.cd2java.cli.RunnerDecorator;
  import de.monticore.codegen.cd2java.data.DataDecorator;
  import de.monticore.codegen.cd2java.data.DataDecoratorUtil;
  import de.monticore.codegen.cd2java.data.InterfaceDecorator;
@@ -864,9 +863,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
                                             GlobalExtensionManagement glex, IterablePath handCodedPath) {
     ParserService parserService = new ParserService(cd);
     SymbolTableService symbolTableService = new SymbolTableService(cd);
-    RunnerDecorator runnerDecorator = new RunnerDecorator(glex, parserService,symbolTableService );
-    CliDecorator cliDecorator = new CliDecorator(glex, parserService );
-    CDCLIDecorator cdcliDecorator = new CDCLIDecorator(glex, runnerDecorator, cliDecorator,parserService);
+    CLIDecorator cliDecorator = new CLIDecorator(glex, parserService, symbolTableService );
+    CDCLIDecorator cdcliDecorator = new CDCLIDecorator(glex,  cliDecorator,parserService);
 
     ASTCDCompilationUnit cliCD = cdcliDecorator.decorate(cd);
 
