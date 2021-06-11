@@ -5,7 +5,7 @@ import automata7._symboltable.Automata7ArtifactScope;
 import automata7._symboltable.IAutomata7ArtifactScope;
 import automata7._symboltable.StimulusSymbol;
 import basiccd.BasicCDMill;
-import de.monticore.io.paths.ModelPath;
+import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import javaandaut.Class2StimulusAdapter;
@@ -32,9 +32,9 @@ public class BasicJavaToolTest {
 
   @Test
   public void testPingPong(){
-    ModelPath mp = new ModelPath(Paths.get("src/test/resources/example"));
+    MCPath symbolPath = new MCPath(Paths.get("src/test/resources/example"));
     IAutomata7ArtifactScope symTab = JavaAndAutTool
-        .createJavaAndAutSymTab("src/test/resources/example/PingPong.aut", mp);
+        .createJavaAndAutSymTab("src/test/resources/example/PingPong.aut", symbolPath);
     symTab.setName("PingPong");
     Optional<StimulusSymbol> hit = symTab.resolveStimulus("Hit");
     assertTrue(hit.isPresent());

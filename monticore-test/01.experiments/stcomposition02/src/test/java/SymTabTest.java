@@ -2,7 +2,6 @@
 
 import basicjava._ast.ASTCompilationUnit;
 import basicjava._symboltable.MethodSymbol;
-import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import javaaut.JavaAutMill;

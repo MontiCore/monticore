@@ -11,7 +11,6 @@ import automata5._cocos.*;
 import automata5._parser.*;
 import automata5._symboltable.*;
 import automata5._visitor.*;
-import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.*;
 import de.se_rwth.commons.logging.*;
 

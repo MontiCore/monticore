@@ -8,7 +8,7 @@ import de.monticore.generating.templateengine.FreeMarkerTemplateEngineMock;
 import de.monticore.generating.templateengine.FreeMarkerTemplateMock;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.FileReaderWriterMock;
-import de.monticore.io.paths.IterablePath;
+import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.AfterClass;
@@ -19,8 +19,7 @@ import java.io.File;
 import java.nio.file.Paths;
 
 import static de.monticore.generating.GeneratorEngine.existsHandwrittenClass;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * Tests for {@link de.monticore.generating.GeneratorEngine}.
@@ -102,7 +101,7 @@ public class GeneratorEngineTest {
     String classname = "test.A";
     String notExistName = "test.B";
 
-    assertTrue(existsHandwrittenClass(IterablePath.from(new File("src/test/resources/hwc"), "java"), classname));
-    assertTrue(!existsHandwrittenClass(IterablePath.from(new File("src/test/resources/hwc"), "java"),notExistName));
+    assertTrue(existsHandwrittenClass(new MCPath("src/test/resources/hwc"), classname));
+    assertFalse(existsHandwrittenClass(new MCPath("src/test/resources/hwc"), notExistName));
   }
 }
