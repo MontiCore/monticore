@@ -123,7 +123,7 @@ abstract public class MCTask extends DefaultTask {
     return modelPath
   }
   
-  @InputFiles
+  @Input
   @Optional
   List<String> getTemplatePath() {
     return templatePath
