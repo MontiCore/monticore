@@ -7,4 +7,6 @@ public class CLIConstants {
 
   public static final String RUNNER_SUFFIX = "Runner";
 
+  public static final String METADATA_SUFFIX = "Metadata";
+
 }

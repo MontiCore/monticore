@@ -64,6 +64,7 @@ public class RunnerDecorator extends AbstractCreator<ASTCDCompilationUnit, Optio
           .addCDMember(createRunDefaultCoCosMethod(parserService.getCDSymbol()))
           .addCDMember(createStoreSymbolsMethod(parserService.getCDSymbol()))
           .addCDMember(createInitOptionsMethod(parserService.getCDSymbol()))
+          .addCDMember(createPrintVersionMethod(parserService.getCDSymbol()))
           .build());
       if (startProdPresent){
         cliClass.get().addCDMember(createCreateSymbolTableMethod(parserService.getCDSymbol()));
@@ -178,6 +179,13 @@ public class RunnerDecorator extends AbstractCreator<ASTCDCompilationUnit, Optio
     ASTCDParameter parameter = getCDParameterFacade().createParameter(checkerType, "content");
     ASTCDMethod addCheckerMethod = getCDMethodFacade().createMethod(PUBLIC.build(), "print", parameter,parameter2);
     this.replaceTemplate(EMPTY_BODY, addCheckerMethod, new TemplateHookPoint(TEMPLATE_PATH + "Print"));
+    return addCheckerMethod;
+  }
+
+  protected ASTCDMethod createPrintVersionMethod(DiagramSymbol cdDefinitionSymbol) {
+    String metadataFullName = parserService.getMetadataFullName();
+    ASTCDMethod addCheckerMethod = getCDMethodFacade().createMethod(PUBLIC.build(), "printVersion");
+    this.replaceTemplate(EMPTY_BODY, addCheckerMethod, new TemplateHookPoint(TEMPLATE_PATH + "PrintVersion", metadataFullName));
     return addCheckerMethod;
   }
 

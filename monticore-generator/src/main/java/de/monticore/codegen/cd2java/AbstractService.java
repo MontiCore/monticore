@@ -28,8 +28,7 @@ import java.util.stream.Stream;
 import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.*;
 import static de.monticore.codegen.cd2java._ast.constants.ASTConstantsDecorator.LITERALS_SUFFIX;
-import static de.monticore.codegen.cd2java.cli.CLIConstants.CLI_SUFFIX;
-import static de.monticore.codegen.cd2java.cli.CLIConstants.RUNNER_SUFFIX;
+import static de.monticore.codegen.cd2java.cli.CLIConstants.*;
 import static de.monticore.codegen.cd2java.mill.MillConstants.MILL_SUFFIX;
 import static de.se_rwth.commons.Names.getQualifier;
 
@@ -582,12 +581,32 @@ public class AbstractService<T extends AbstractService> {
     if (cdSymbol.getPackageName().isEmpty()) {
       return cdSymbol.getName().toLowerCase() + "." + getRunnerSimpleName(cdSymbol);
     }else {
-      return String.join(".", cdSymbol.getPackageName(), cdSymbol.getName()).toLowerCase() + "." + getCliSimpleName(cdSymbol);
+      return String.join(".", cdSymbol.getPackageName(), cdSymbol.getName()).toLowerCase() + "." + getRunnerSimpleName(cdSymbol);
     }
   }
 
   public String getRunnerFullName() {
     return getRunnerFullName(getCDSymbol());
+  }
+
+  public String getMetadataSimpleName(DiagramSymbol cdSymbol) {
+    return cdSymbol.getName() + METADATA_SUFFIX;
+  }
+
+  public String getMetadataSimpleName() {
+    return getMetadataSimpleName(getCDSymbol());
+  }
+
+  public String getMetadataFullName(DiagramSymbol cdSymbol) {
+    if (cdSymbol.getPackageName().isEmpty()) {
+      return cdSymbol.getName().toLowerCase() + "." + getMetadataSimpleName(cdSymbol);
+    } else {
+      return String.join(".", cdSymbol.getPackageName(), cdSymbol.getName().toLowerCase() + "." + getMetadataSimpleName(cdSymbol));
+    }
+  }
+
+  public String getMetadataFullName() {
+    return getMetadataFullName(getCDSymbol());
   }
 
 }
