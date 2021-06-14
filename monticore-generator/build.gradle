@@ -48,13 +48,13 @@ dependencies {
   grammar "de.monticore.bs:monticore-grammar:$previous_mc_version:grammars"
   implementation "de.se_rwth.commons:se-commons-groovy:$se_commons_version"
   implementation "de.se_rwth.commons:se-commons-logging:$se_commons_version"
-  
+
   implementation "org.apache.commons:commons-lang3:$commons_lang3_version"
   implementation "commons-cli:commons-cli:$commons_cli_version"
 //  implementation 'org.slf4j:slf4j-api:1.7.10'
   implementation 'ch.qos.logback:logback-classic:1.1.2'
   implementation 'ch.qos.logback:logback-core:1.1.2'
-  
+
   implementation "de.monticore.lang.bs:cd4analysis:$cd4a_version"
   grammar "de.monticore.lang.bs:cd4analysis:$cd4a_version:grammars"
   implementation "org.antlr:antlr4:$antlr_version"
@@ -86,6 +86,7 @@ task  generateGrammarFamily (type: MCTask) {
   outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
   def uptoDate = incCheck("de/monticore/grammar/GrammarFamily.mc4")
   outputs.upToDateWhen { uptoDate }
+  templatePath = ["$projectDir/src/main/assemblies"] // do not use src/main/resources
 }
 
 compileJava {
@@ -185,4 +186,3 @@ publishing {
     url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
   }
 }
-

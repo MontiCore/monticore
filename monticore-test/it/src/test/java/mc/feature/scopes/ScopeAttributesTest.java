@@ -43,7 +43,7 @@ public class ScopeAttributesTest {
 
     IScopeAttributesGlobalScope globalScope = ScopeAttributesMill.globalScope();
     globalScope.setFileExt("sc");
-    globalScope.getModelPath().addEntry(Paths.get("src/test/resources/mc/feature/scopes"));
+    globalScope.getSymbolPath().addEntry(Paths.get("src/test/resources/mc/feature/scopes"));
     scope = ScopeAttributesMill.scopesGenitorDelegator().createFromAST(astSup.get());
   }
 

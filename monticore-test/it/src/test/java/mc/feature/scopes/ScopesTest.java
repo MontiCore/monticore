@@ -42,7 +42,7 @@ public class ScopesTest {
 
     ISupAutomatonGlobalScope globalScope = SupAutomatonMill.globalScope();
     globalScope.setFileExt("aut");
-    globalScope.getModelPath().addEntry(Paths.get("src/test/resources/mc/feature/scopes"));
+    globalScope.getSymbolPath().addEntry(Paths.get("src/test/resources/mc/feature/scopes"));
     this.symbolTableCreator = SupAutomatonMill.scopesGenitorDelegator();
 
     this.astSup = astSup.get();

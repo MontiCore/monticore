@@ -39,7 +39,7 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
   private MCTypeFacade mcTypeFacade;
 
-  private static final String MODEL_PATH = "de.monticore.io.paths.ModelPath";
+  private static final String MC_PATH = "de.monticore.io.paths.MCPath";
 
   private static final String AUTOMATON_SCOPE = "de.monticore.codegen.ast.automaton._symboltable.AutomatonScope";
 
@@ -96,14 +96,14 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testConstructors() {
-    // this(modelPath, modelFileExtension)
+    // this(symbolPath, modelFileExtension)
     ASTCDConstructor cdConstructor = scopeClass.getCDConstructorList().get(0);
     assertDeepEquals(PUBLIC, cdConstructor.getModifier());
     assertEquals("AutomatonGlobalScope", cdConstructor.getName());
 
     assertEquals(2, cdConstructor.sizeCDParameters());
-    assertDeepEquals(MODEL_PATH, cdConstructor.getCDParameter(0).getMCType());
-    assertEquals("modelPath", cdConstructor.getCDParameter(0).getName());
+    assertDeepEquals(MC_PATH, cdConstructor.getCDParameter(0).getMCType());
+    assertEquals("symbolPath", cdConstructor.getCDParameter(0).getName());
 
     assertDeepEquals("String", cdConstructor.getCDParameter(1).getMCType());
     assertEquals("fileExt", cdConstructor.getCDParameter(1).getName());
@@ -125,10 +125,10 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testModelPathAttribute() {
-    ASTCDAttribute astcdAttribute = getAttributeBy("modelPath", scopeClass);
+  public void testSymbolPathAttribute() {
+    ASTCDAttribute astcdAttribute = getAttributeBy("symbolPath", scopeClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
-    assertDeepEquals(MODEL_PATH, astcdAttribute.getMCType());
+    assertDeepEquals(MC_PATH, astcdAttribute.getMCType());
   }
 
   @Test
@@ -205,11 +205,11 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testGetModelPathMethod() {
-    ASTCDMethod method = getMethodBy("getModelPath", scopeClass);
+  public void testGetSymbolPathMethod() {
+    ASTCDMethod method = getMethodBy("getSymbolPath", scopeClass);
 
     assertDeepEquals(PUBLIC, method.getModifier());
-    assertDeepEquals(MODEL_PATH, method.getMCReturnType().getMCType());
+    assertDeepEquals(MC_PATH, method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
   }
@@ -272,14 +272,14 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testSetModelPathMethod(){
-    ASTCDMethod method = getMethodBy("setModelPath", scopeClass);
+  public void testSetSymbolPathMethod(){
+    ASTCDMethod method = getMethodBy("setSymbolPath", scopeClass);
 
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, method.sizeCDParameters());
-    assertEquals("modelPath", method.getCDParameter(0).getName());
-    assertDeepEquals(MODEL_PATH, method.getCDParameter(0).getMCType());
+    assertEquals("symbolPath", method.getCDParameter(0).getName());
+    assertDeepEquals(MC_PATH, method.getCDParameter(0).getMCType());
   }
 
   @Test

@@ -6,19 +6,20 @@ package de.monticore.grammar.grammar_withconcepts._symboltable;
 
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
-import de.monticore.io.paths.ModelCoordinate;
-import de.monticore.io.paths.ModelCoordinates;
-import de.monticore.io.paths.ModelPath;
+import de.monticore.io.paths.MCPath;
+import de.monticore.utils.Names;
 import de.se_rwth.commons.logging.Log;
 
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.Reader;
+import java.net.URL;
+import java.nio.file.Paths;
 import java.util.Optional;
 
 
 public class Grammar_WithConceptsGlobalScope extends Grammar_WithConceptsGlobalScopeTOP {
-  public Grammar_WithConceptsGlobalScope(ModelPath modelPath, String modelFileExtension) {
-    super(modelPath, modelFileExtension);
+  public Grammar_WithConceptsGlobalScope(MCPath symbolPath, String modelFileExtension) {
+    super(symbolPath, modelFileExtension);
   }
 
   public Grammar_WithConceptsGlobalScope() {
@@ -32,29 +33,18 @@ public class Grammar_WithConceptsGlobalScope extends Grammar_WithConceptsGlobalS
 
   @Override
   public  void loadFileForModelName (String modelName)  {
-    // 1. call super implementation to start with employing the DeSer
-
-    ModelCoordinate model = ModelCoordinates.createQualifiedCoordinate(modelName, getFileExt());
-    String filePath = model.getQualifiedPath().toString();
-    if (!isFileLoaded(filePath)) {
-
-      // 2. calculate potential location of model file and try to find it in model path
-      model = getModelPath().resolveModel(model);
-
-      // 3. if the file was found, parse the model and create its symtab
-      if (model.hasLocation()) {
-        ASTMCGrammar ast = parse(model);
-        IGrammar_WithConceptsArtifactScope artScope = new Grammar_WithConceptsPhasedSTC().createFromAST(ast);
-        addSubScope(artScope);
-        addLoadedFile(filePath);
-      }
+    Optional<URL> location = getSymbolPath().find(modelName, "mc4");
+    if(location.isPresent() && !isFileLoaded(location.get().toString())){
+      addLoadedFile(location.get().toString());
+      ASTMCGrammar ast = parse(location.get().getFile());
+      IGrammar_WithConceptsArtifactScope as = new Grammar_WithConceptsPhasedSTC().createFromAST(ast);
+      addSubScope(as);
     }
   }
 
-  private ASTMCGrammar parse(ModelCoordinate model){
+  private ASTMCGrammar parse(String model){
     try {
-      Reader reader = ModelCoordinates.getReader(model);
-      Optional<ASTMCGrammar> optAST = new Grammar_WithConceptsParser().parse(reader);
+      Optional<ASTMCGrammar> optAST = new Grammar_WithConceptsParser().parse(new FileReader(model));
       if(optAST.isPresent()){
         return optAST.get();
       }

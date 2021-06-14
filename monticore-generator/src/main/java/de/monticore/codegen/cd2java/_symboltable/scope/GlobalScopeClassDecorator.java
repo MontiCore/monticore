@@ -92,9 +92,9 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
 
     List<ASTCDType> symbolProds = symbolTableService.getSymbolDefiningProds(input.getCDDefinition());
 
-    ASTCDAttribute modelPathAttribute = createModelPathAttribute();
-    List<ASTCDMethod> modelPathMethods = accessorDecorator.decorate(modelPathAttribute);
-    modelPathMethods.addAll(mutatorDecorator.decorate(modelPathAttribute));
+    ASTCDAttribute symbolPathAttribute = createSymbolPathAttribute();
+    List<ASTCDMethod> symbolPathMethods = accessorDecorator.decorate(symbolPathAttribute);
+    symbolPathMethods.addAll(mutatorDecorator.decorate(symbolPathAttribute));
 
     ASTCDAttribute fileExtensionAttribute = getCDAttributeFacade().createAttribute(PROTECTED.build(),
         getMCTypeFacade().createStringType(), FILE_EXTENSION_VAR);
@@ -118,8 +118,8 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
         .setCDInterfaceUsage(CD4CodeMill.cDInterfaceUsageBuilder().addInterface(globalScopeInterface).build())
         .addCDMember(createConstructor(globalScopeName))
         .addCDMember(createZeroArgsConstructor(globalScopeName))
-        .addCDMember(modelPathAttribute)
-        .addAllCDMembers(modelPathMethods)
+        .addCDMember(symbolPathAttribute)
+        .addAllCDMembers(symbolPathMethods)
         .addCDMember(fileExtensionAttribute)
         .addAllCDMembers(fileExtensionMethods)
         .addCDMember(deserAttribute)
@@ -144,11 +144,12 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
   }
 
   protected ASTCDConstructor createConstructor(String globalScopeClassName) {
-    ASTMCType modelPathType = getMCTypeFacade().createQualifiedType(MODEL_PATH_TYPE);
-    ASTCDParameter modelPathParameter = getCDParameterFacade().createParameter(modelPathType, MODEL_PATH_VAR);
+    ASTMCType symbolPathType = getMCTypeFacade().createQualifiedType(SYMBOL_PATH_TYPE);
+    ASTCDParameter symbolPathParameter = getCDParameterFacade().createParameter(symbolPathType,
+        SYMBOL_PATH_VAR);
 
     ASTCDParameter fileExtensionParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createStringType(), FILE_EXTENSION_VAR);
-    ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), globalScopeClassName, modelPathParameter, fileExtensionParameter);
+    ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), globalScopeClassName, symbolPathParameter, fileExtensionParameter);
     this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint(TEMPLATE_PATH + "ConstructorGlobalScope"));
     return constructor;
   }
@@ -159,8 +160,9 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     return constructor;
   }
 
-  protected ASTCDAttribute createModelPathAttribute() {
-    return getCDAttributeFacade().createAttribute(PROTECTED.build(), MODEL_PATH_TYPE, MODEL_PATH_VAR);
+  protected ASTCDAttribute createSymbolPathAttribute() {
+    return getCDAttributeFacade().createAttribute(PROTECTED.build(), SYMBOL_PATH_TYPE,
+        SYMBOL_PATH_VAR);
   }
 
   protected ASTCDAttribute createDeSerMapAttribute(){

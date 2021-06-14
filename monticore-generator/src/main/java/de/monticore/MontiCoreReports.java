@@ -85,7 +85,8 @@ public class MontiCoreReports implements ReportManagerFactory {
     ODReporter objDiagram = new ODReporter(this.reportDirectory, lowerCaseName, repository);
     SuccessfulReporter finishReporter = new SuccessfulReporter(this.reportDirectory, lowerCaseName);
     IncGenCheckReporter incGenCheck = new IncGenCheckReporter(this.outputDirectory, lowerCaseName);
-    IncGenGradleReporter gradleReporter = new IncGenGradleReporter(this.outputDirectory, lowerCaseName);
+    //TODO replace with IncGenGradleReporter after release 7.1.0
+    IncGenGradleReporterExtension gradleReporter = new IncGenGradleReporterExtension(this.outputDirectory, lowerCaseName);
 
     reports.addReportEventHandler(summary); // 01_Summary
     reports.addReportEventHandler(generated); // 02_GeneratedFiles

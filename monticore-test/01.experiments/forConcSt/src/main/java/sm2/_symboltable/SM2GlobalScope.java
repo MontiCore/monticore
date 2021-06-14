@@ -2,7 +2,7 @@
 package sm2._symboltable;
 
 import com.google.common.collect.ImmutableSet;
-import de.monticore.io.paths.ModelPath;
+import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.Names;
 
 import java.util.Collections;
@@ -10,12 +10,12 @@ import java.util.Set;
 
 public class SM2GlobalScope extends SM2GlobalScopeTOP {
 
-  public SM2GlobalScope(ModelPath mp) {
-    super(mp, "aut");
+  public SM2GlobalScope(MCPath symbolPath) {
+    super(symbolPath, "aut");
   }
 
-  public SM2GlobalScope(ModelPath modelPath, String modelFileExtension) {
-    super(modelPath, modelFileExtension);
+  public SM2GlobalScope(MCPath symbolPath, String modelFileExtension) {
+    super(symbolPath, modelFileExtension);
   }
 
   public SM2GlobalScope(){
