@@ -7,10 +7,13 @@ to be released
 
 ### Additions
 * introduced language-specific CLI generation
+* New class `MCPath` that manages a set of path entries. The class is used, e.g., for realizing symbol paths, model paths, handcoded paths, and template paths. `MCPath` replaces the classes `IterablePath` and `ModelPath`.
+
 
 ### Changes
 * the methods `serialize` and `deserialize` of the class `XDeSer` were moved to the class `XSymbols2Json`
-
+* The following classes are marked as deprecated and will be removed in the near future: 
+`ModelPath`, `IterablePath`, `ModelCoordinate`, `ModelCoordinateImpl`, `ModelCoordinates`, and `FileFinder`
  
 ### Fixes
 
