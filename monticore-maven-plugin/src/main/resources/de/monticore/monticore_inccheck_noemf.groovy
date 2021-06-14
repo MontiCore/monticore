@@ -114,6 +114,11 @@ for (astGrammar in getParsedGrammars()) {
                                  decoratedSymbolTableCd, decoratedTraverserCD, handcodedPath)
   generateFromCD(glex, astClassDiagram, decoratedMillCD, out, handcodedPath, templatePath)
 
+  // decorate and generate CD for the CLIs
+  decoratedCLICD = decorateCLI(glex, cdScope, astClassDiagram, decoratedASTClassDiagramm,
+          decoratedSymbolTableCd, decoratedTraverserCD, handcodedPath)
+  generateFromCD(glex, astClassDiagram, decoratedCLICD, out, handcodedPath)
+
   //decorate and generate CD for the '_auxiliary' package
   decoratedAuxiliaryCD = decorateAuxiliary(glex, cdScope, astClassDiagram, decoratedASTClassDiagramm, handcodedPath)
   generateFromCD(glex, astClassDiagram, decoratedAuxiliaryCD, out, handcodedPath, templatePath)

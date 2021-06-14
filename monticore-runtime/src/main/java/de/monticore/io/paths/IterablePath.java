@@ -43,6 +43,7 @@ import de.se_rwth.commons.logging.Log;
  * are logged with level DEBUG).
  *
  */
+@Deprecated
 public final class IterablePath {
   
   /* Singleton empty iterable path. */

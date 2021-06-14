@@ -33,7 +33,7 @@ import static org.junit.Assert.assertTrue;
 
 public class CombineExpressionsWithLiteralsTest {
 
-  private static final String MODEL_PATH = "src/test/resources";
+  private static final String SYMBOL_PATH = "src/test/resources";
 
 
   @Before
@@ -53,8 +53,7 @@ public class CombineExpressionsWithLiteralsTest {
   @Test
   public void testCD() throws IOException {
     ITestCD4AnalysisGlobalScope globalScope = TestCD4AnalysisMill.globalScope();
-    globalScope.getModelPath().addEntry(Paths.get(MODEL_PATH));
-    globalScope.setFileExt("cd");
+    globalScope.getSymbolPath().addEntry(Paths.get(SYMBOL_PATH));
 
     CD2EAdapter adapter = new CD2EAdapter(globalScope);
     ICombineExpressionsWithLiteralsGlobalScope globalScope1 = CombineExpressionsWithLiteralsMill

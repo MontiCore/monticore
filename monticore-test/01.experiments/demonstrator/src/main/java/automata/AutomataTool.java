@@ -13,22 +13,18 @@ import automata.cocos.StateNameStartsWithCapitalLetter;
 import automata.cocos.TransitionSourceExists;
 import automata.prettyprint.PrettyPrinter;
 import automata.visitors.CountStates;
-import com.google.common.collect.Lists;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.generating.templateengine.reporting.Reporting;
-import de.monticore.io.paths.IterablePath;
-import de.monticore.io.paths.ModelPath;
-import de.se_rwth.commons.Names;
+import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.RecognitionException;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static de.monticore.generating.GeneratorEngine.existsHandwrittenClass;
 
@@ -64,13 +60,13 @@ public class AutomataTool {
   static protected String symbolfilename = "";
 
   //  handcodedPath: args[2]
-  static protected IterablePath handcodedPath;
+  static protected MCPath handcodedPath;
 
   // output directory: args[3]
   static protected File outputDir;
   
   // output directory: args[4]
-  static protected Optional<File> templatePath = Optional.empty();
+  static protected MCPath templatePath = new MCPath();
   
   
   
@@ -134,14 +130,14 @@ public class AutomataTool {
     symbolfilename = args[1]; 
 
     // get handcodedPath from args[2]
-    handcodedPath = IterablePath.from(new File(args[2]), "java");
+    handcodedPath = new MCPath(args[2]); //, "java");
 
     // get output directory from args[3]
     outputDir = new File(args[3]);
     
     // if present get templatePath
     if(args.length == 5) {
-      templatePath = Optional.of(new File(args[4]));
+      templatePath.addEntry(Paths.get(args[4]));
     }
     executeWorkflow();
   }
@@ -150,7 +146,7 @@ public class AutomataTool {
    * Second entry method of the AutomataTool:
    * it stores the input parameters and calls the execution workflow
    */
-  public AutomataTool(String modelfilename, IterablePath handcodedPath, File outputDir) {
+  public AutomataTool(String modelfilename, MCPath handcodedPath, File outputDir) {
     this.modelfilename = modelfilename;
     this.handcodedPath = handcodedPath;
     this.outputDir = outputDir;
@@ -256,7 +252,12 @@ public class AutomataTool {
   
     s.setGlex(glex);
     s.setOutputDirectory(outputDir);
-    templatePath.ifPresent(e -> s.setAdditionalTemplatePaths(Lists.newArrayList(e)));
+    if(!templatePath.isEmpty()){
+      s.setAdditionalTemplatePaths(
+          templatePath.getEntries().stream()
+              .map(t->t.toFile())
+              .collect(Collectors.toList()));
+    }
     generatorEngine = new GeneratorEngine(s);
   }
   
@@ -414,7 +415,7 @@ public class AutomataTool {
   public IAutomataArtifactScope createSymbolTable(ASTAutomaton ast) {
   
     IAutomataGlobalScope globalScope = AutomataMill.globalScope();
-    globalScope.setModelPath(new ModelPath());
+    globalScope.setSymbolPath(new MCPath());
   
     AutomataScopesGenitorDelegator symbolTable = AutomataMill
         .scopesGenitorDelegator();

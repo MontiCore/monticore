@@ -11,7 +11,7 @@ import automata2.Automata2Mill;
 import automata2._parser.Automata2Parser;
 import automata2._symboltable.Automata2Symbols2Json;
 import automata2._symboltable.IAutomata2ArtifactScope;
-import de.monticore.io.paths.ModelPath;
+import de.monticore.io.paths.MCPath;
 import de.monticore.symboltable.resolving.ResolvedSeveralEntriesForSymbolException;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
@@ -104,11 +104,11 @@ public class ResolveDeepTest {
     assertTrue(deep_scope.resolveStateDown("substate").isPresent());
   }
 
-  private void reInitGlobalScopes(ModelPath mp1, ModelPath mp2) {
+  private void reInitGlobalScopes(MCPath mp1, MCPath mp2) {
     AutomataMill.globalScope().clear();
     Automata2Mill.globalScope().clear();
-    AutomataMill.globalScope().setModelPath(mp1);
-    Automata2Mill.globalScope().setModelPath(mp2);
+    AutomataMill.globalScope().setSymbolPath(mp1);
+    Automata2Mill.globalScope().setSymbolPath(mp2);
   }
 
   @Test
@@ -119,8 +119,8 @@ public class ResolveDeepTest {
 
 
 
-    ModelPath mp1 = new ModelPath(Paths.get("target/symbols"));
-    ModelPath mp2 = new ModelPath(Paths.get("target/symbols2"));
+    MCPath mp1 = new MCPath(Paths.get("target/symbols"));
+    MCPath mp2 = new MCPath(Paths.get("target/symbols2"));
 
     reInitGlobalScopes(mp1, mp2);
 

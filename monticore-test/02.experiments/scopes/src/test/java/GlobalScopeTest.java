@@ -3,7 +3,7 @@ import automata.AutomataMill;
 import automata._symboltable.IAutomataGlobalScope;
 import automata._symboltable.MyStateDeSer;
 import automata._symboltable.MyStateResolver;
-import de.monticore.io.paths.ModelPath;
+import de.monticore.io.paths.MCPath;
 import org.junit.Test;
 import java.nio.file.Paths;
 
@@ -14,7 +14,7 @@ public class GlobalScopeTest {
 
     // tests availability of the configuration methods
     IAutomataGlobalScope gs = AutomataMill.globalScope();
-    gs.setModelPath(new ModelPath(Paths.get("src/models")));
+    gs.setSymbolPath(new MCPath(Paths.get("src/models")));
     gs.setFileExt("autsym");
     gs.addAdaptedStateSymbolResolver(new MyStateResolver());
     gs.putSymbolDeSer("automata._symboltable.StateSymbol", 
