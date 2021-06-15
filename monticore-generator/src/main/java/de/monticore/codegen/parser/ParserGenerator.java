@@ -28,7 +28,7 @@ import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._symboltable.IGrammar_WithConceptsGlobalScope;
 import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsTraverser;
-import de.monticore.io.paths.IterablePath;
+import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 
@@ -60,8 +60,8 @@ public class ParserGenerator {
       ASTCDCompilationUnit astClassDiagram,
       ASTMCGrammar astGrammar,
       IGrammar_WithConceptsGlobalScope symbolTable,
-      IterablePath handcodedPath,
-      IterablePath templatePath,
+      MCPath handcodedPath,
+      MCPath templatePath,
       File targetDir)
   {
     generateParser(glex, astGrammar, symbolTable, handcodedPath, templatePath, targetDir);
@@ -81,8 +81,8 @@ public class ParserGenerator {
       GlobalExtensionManagement glex,
       ASTMCGrammar astGrammar,
       IGrammar_WithConceptsGlobalScope symbolTable,
-      IterablePath handcodedPath,
-      IterablePath templatePath,
+      MCPath handcodedPath,
+      MCPath templatePath,
       File targetDir)
   {
     generateParser(glex, astGrammar, symbolTable, handcodedPath, templatePath, targetDir, true, Languages.JAVA);
@@ -102,8 +102,8 @@ public class ParserGenerator {
       GlobalExtensionManagement glex,
       ASTMCGrammar astGrammar,
       IGrammar_WithConceptsGlobalScope symbolTable,
-      IterablePath handcodedPath,
-      IterablePath templatePath,
+      MCPath handcodedPath,
+      MCPath templatePath,
       File targetDir,
       boolean embeddedJavaCode,
       Languages lang) {
@@ -114,7 +114,7 @@ public class ParserGenerator {
     Log.debug("Start parser generation for the grammar " + astGrammar.getName(), LOG);
     final GeneratorSetup setup = new GeneratorSetup();
     setup.setHandcodedPath(handcodedPath);
-    setup.setAdditionalTemplatePaths(templatePath.getPaths().stream().map(p -> new File(p.toUri())).collect(Collectors.toList()));
+    setup.setAdditionalTemplatePaths(templatePath.getEntries().stream().map(p -> new File(p.toUri())).collect(Collectors.toList()));
     setup.setOutputDirectory(targetDir);
 
     String qualifiedGrammarName = astGrammar.getPackageList().isEmpty()
@@ -161,8 +161,8 @@ public class ParserGenerator {
   public static void generateParserWrapper(
       GlobalExtensionManagement glex,
       ASTCDCompilationUnit astClassDiagram,
-      IterablePath handcodedPath,
-      IterablePath templatePath,
+      MCPath handcodedPath,
+      MCPath templatePath,
       File targetDir) {
     final ParserService parserService = new ParserService(astClassDiagram);
     final ParserClassDecorator parserClassDecorator = new ParserClassDecorator(glex, parserService);
@@ -181,7 +181,7 @@ public class ParserGenerator {
     GeneratorSetup setup = new GeneratorSetup();
     setup.setOutputDirectory(targetDir);
     setup.setHandcodedPath(handcodedPath);
-    setup.setAdditionalTemplatePaths(templatePath.getPaths().stream().map(p -> new File(p.toUri())).collect(Collectors.toList()));
+    setup.setAdditionalTemplatePaths(templatePath.getEntries().stream().map(p -> new File(p.toUri())).collect(Collectors.toList()));
     setup.setModelName(diagramName);
     setup.setGlex(glex);
     CDGenerator generator = new CDGenerator(setup);

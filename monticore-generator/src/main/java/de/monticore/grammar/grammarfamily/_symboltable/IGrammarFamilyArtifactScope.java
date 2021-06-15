@@ -1,7 +1,30 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.grammar.grammarfamily._symboltable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public interface IGrammarFamilyArtifactScope extends IGrammarFamilyArtifactScopeTOP {
+
+  // TODO: delete the method if it is generated correctly
+  @Override
+  default List<String> getRemainingNameForResolveDown(String symbolName) {
+    List<String> remainingSymbolNames = new ArrayList<>();
+    String packageAS = this.getPackageName();
+    if(symbolName.startsWith(packageAS)){
+      if(!packageAS.equals("")){
+        symbolName = symbolName.substring(packageAS.length()+1);
+      }
+      String asName = this.getName() + ".";
+      remainingSymbolNames.add(symbolName);
+      if(symbolName.startsWith(asName)){
+        symbolName = symbolName.substring(asName.length());
+        remainingSymbolNames.add(symbolName);
+      }
+    }
+
+    return remainingSymbolNames;
+  }
 
   @Override
   default public boolean checkIfContinueAsSubScope(String symbolName) {

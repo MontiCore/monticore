@@ -21,6 +21,7 @@ import de.monticore.codegen.cd2java._symboltable.serialization.Symbols2JsonDecor
 import de.monticore.codegen.cd2java._symboltable.symbol.*;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.IterablePath;
+import de.monticore.io.paths.MCPath;
 import de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration;
 
 import java.util.ArrayList;
@@ -63,7 +64,7 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
 
   protected final CommonSymbolInterfaceDecorator commonSymbolInterfaceDecorator;
 
-  protected final IterablePath handCodedPath;
+  protected final MCPath handCodedPath;
 
   protected final SymbolResolverInterfaceDecorator symbolResolverInterfaceDecorator;
 
@@ -78,7 +79,7 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
   protected final ScopesGenitorDelegatorDecorator scopesGenitorDelegatorDecorator;
 
   public SymbolTableCDDecorator(final GlobalExtensionManagement glex,
-                                final IterablePath handCodedPath,
+                                final MCPath handCodedPath,
                                 final SymbolTableService symbolTableService,
                                 final SymbolDecorator symbolDecorator,
                                 final SymbolBuilderDecorator symbolBuilderDecorator,

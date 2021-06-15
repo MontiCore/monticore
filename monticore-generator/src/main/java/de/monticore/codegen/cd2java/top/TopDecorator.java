@@ -4,13 +4,13 @@ package de.monticore.codegen.cd2java.top;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.cdinterfaceandenum._ast.*;
 import de.monticore.codegen.cd2java.AbstractCreator;
-import de.monticore.io.paths.IterablePath;
+import de.monticore.io.paths.MCPath;
 import de.monticore.umlmodifier._ast.ASTModifier;
 
 import static de.monticore.codegen.cd2java.CDModifier.*;
+import static de.se_rwth.commons.Names.constructQualifiedName;
 
 import static de.monticore.generating.GeneratorEngine.existsHandwrittenClass;
-import static de.monticore.utils.Names.constructQualifiedName;
 
 public class TopDecorator extends AbstractCreator<ASTCDCompilationUnit,ASTCDCompilationUnit> {
 
@@ -21,9 +21,9 @@ public class TopDecorator extends AbstractCreator<ASTCDCompilationUnit,ASTCDComp
 
   public static final String TOP_SUFFIX = "TOP";
 
-  private final IterablePath hwPath;
+  private final MCPath hwPath;
 
-  public TopDecorator(IterablePath hwPath) {
+  public TopDecorator(MCPath hwPath) {
     this.hwPath = hwPath;
   }
 

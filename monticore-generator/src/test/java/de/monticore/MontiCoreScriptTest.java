@@ -17,6 +17,7 @@ import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
 import de.monticore.grammar.grammarfamily._symboltable.GrammarFamilyGlobalScope;
 import de.monticore.grammar.grammarfamily._symboltable.IGrammarFamilyGlobalScope;
 import de.monticore.io.paths.IterablePath;
+import de.monticore.io.paths.MCPath;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.cli.CLIArguments;
 import de.se_rwth.commons.configuration.ConfigurationPropertiesMapContributor;
@@ -55,9 +56,9 @@ public class MontiCoreScriptTest {
 
   private static File outputPath = new File("target/generated-test-sources");
 
-  private static ModelPath modelPath = new ModelPath(modelPathPath, outputPath.toPath());
+  private static MCPath modelPath = new MCPath(modelPathPath, outputPath.toPath());
 
-  private static IterablePath hwPath = IterablePath.empty();
+  private static MCPath hwPath = new MCPath();
 
   private static IterablePath templatePath = IterablePath
       .from(new File("src/test/resources"), "ftl");
@@ -103,7 +104,7 @@ public class MontiCoreScriptTest {
   }
 
   /**
-   * {@link MontiCoreScript#generateParser(GlobalExtensionManagement, ASTCDCompilationUnit, ASTMCGrammar, GrammarFamilyGlobalScope, IterablePath, IterablePath, File)}
+   * {@link MontiCoreScript#generateParser(GlobalExtensionManagement, ASTCDCompilationUnit, ASTMCGrammar, GrammarFamilyGlobalScope, MCPath, MCPath, File)}
    */
   @Test
   public void testGenerateParser() {
@@ -114,8 +115,8 @@ public class MontiCoreScriptTest {
     ICD4AnalysisGlobalScope cd4AGlobalScope = mc.createCD4AGlobalScope(modelPath);
     cdCompilationUnit = mc.deriveASTCD(grammar, glex, cd4AGlobalScope);
     File f = new File("target/generated-sources/monticore/testcode");
-    mc.generateParser(glex, cdCompilationUnit, grammar, (GrammarFamilyGlobalScope) symbolTable, IterablePath.empty(),
-            IterablePath.empty(), f);
+    mc.generateParser(glex, cdCompilationUnit, grammar, (GrammarFamilyGlobalScope) symbolTable, new MCPath(),
+            new MCPath(), f);
     f.delete();
   }
 
@@ -385,7 +386,7 @@ public class MontiCoreScriptTest {
     ASTCDCompilationUnit scopeCD = mc.deriveScopeCD(grammar, cd4AGlobalScopeScopeCD);
     ASTCDCompilationUnit cd = mc.deriveASTCD(grammar, glex, cd4AGlobalScope);
 
-    IterablePath handcodedPath = IterablePath.from(new File("src/test/resources"), "java");
+    MCPath handcodedPath = new MCPath(new File("src/test/resources"), "java");
     ASTCDCompilationUnit symbolPackageCD = mc.decorateForSymbolTablePackage(glex, cd4AGlobalScope, cd, symbolCD, scopeCD, handcodedPath);
     assertNotNull(symbolPackageCD);
     assertNotNull(symbolPackageCD.getCDDefinition());
@@ -566,7 +567,7 @@ public class MontiCoreScriptTest {
     ICD4AnalysisGlobalScope cd4AGlobalScope = mc.createCD4AGlobalScope(modelPath);
 
     ASTCDCompilationUnit cd = mc.deriveASTCD(grammar, glex, cd4AGlobalScope);
-    IterablePath handcodedPath = IterablePath.from(new File("src/test/resources"), "java");
+    MCPath handcodedPath = MCPath.from(new File("src/test/resources"), "java");
 
     ASTCDCompilationUnit odPackage = mc.decorateForODPackage(glex, cd4AGlobalScope, cd, handcodedPath);
 

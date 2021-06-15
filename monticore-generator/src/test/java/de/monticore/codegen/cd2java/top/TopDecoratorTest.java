@@ -6,6 +6,7 @@ import de.monticore.cdinterfaceandenum._ast.*;
 import de.monticore.cd4codebasis._ast.*;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.io.paths.IterablePath;
+import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,7 +23,7 @@ import static org.junit.Assert.assertEquals;
 public class TopDecoratorTest extends DecoratorTestCase {
 
   @Mock
-  private IterablePath targetPath;
+  private MCPath targetPath;
 
   private TopDecorator topDecorator;
 
@@ -31,14 +32,14 @@ public class TopDecoratorTest extends DecoratorTestCase {
   @Before
   public void setup() {
     LogStub.init();
-    this.targetPath = Mockito.mock(IterablePath.class);
+    this.targetPath = Mockito.mock(MCPath.class);
     this.topDecorator = new TopDecorator(this.targetPath);
     this.topCD = this.parse("de", "monticore", "codegen", "top", "Top");
   }
 
   @Test
   public void testHandWrittenClassFound() {
-    Mockito.when(targetPath.getResolvedPath(Mockito.any(Path.class))).thenReturn(Optional.of(Mockito.mock(Path.class)));
+    Mockito.when(targetPath.getResolvedPath(Mockito.any(MCPath.class))).thenReturn(Optional.of(Mockito.mock(MCPath.class)));
     ASTCDDefinition ast = this.topDecorator.decorate(this.topCD).getCDDefinition();
 
     assertEquals(1, ast.getCDClassesList().size());
@@ -64,7 +65,7 @@ public class TopDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testHandWrittenClassNotFound() {
-    Mockito.when(targetPath.exists(Mockito.any(Path.class))).thenReturn(false);
+    Mockito.when(targetPath.exists(Mockito.any(MCPath.class))).thenReturn(false);
     ASTCDDefinition ast = this.topDecorator.decorate(this.topCD).getCDDefinition();
 
     assertEquals(1, ast.getCDClassesList().size());

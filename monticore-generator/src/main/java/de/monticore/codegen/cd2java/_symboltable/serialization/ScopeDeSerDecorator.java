@@ -18,6 +18,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.io.paths.IterablePath;
+import de.monticore.io.paths.MCPath;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.se_rwth.commons.StringTransformations;
@@ -57,11 +58,11 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
 
   protected boolean generateAbstractClass;
 
-  protected IterablePath hw;
+  protected MCPath hw;
 
   public ScopeDeSerDecorator(final GlobalExtensionManagement glex,
       final SymbolTableService symbolTableService, final MethodDecorator methodDecorator,
-      VisitorService visitorService, final IterablePath hw) {
+      VisitorService visitorService, final MCPath hw) {
     super(glex);
     this.visitorService = visitorService;
     this.symbolTableService = symbolTableService;

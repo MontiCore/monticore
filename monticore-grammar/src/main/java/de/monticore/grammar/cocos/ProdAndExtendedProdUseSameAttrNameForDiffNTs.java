@@ -41,7 +41,7 @@ public class ProdAndExtendedProdUseSameAttrNameForDiffNTs implements GrammarASTN
               .resolveProd(typename);
           if (ruleSymbol.isPresent()) {
             List<RuleComponentSymbol> componentSymbolList = ruleSymbol.get().getSpannedScope()
-                .resolveRuleComponentMany(attributename);
+                .resolveRuleComponentDownMany(attributename);
             if (!componentSymbolList.isEmpty()) {
               for (RuleComponentSymbol symbol : componentSymbolList) {
                 if (symbol.isIsLexerNonterminal()) {

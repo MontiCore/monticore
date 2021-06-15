@@ -1,6 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast_emf;
 
+import com.google.common.collect.Lists;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.cdinterfaceandenum._ast.*;
 import de.monticore.ast.ASTNode;
@@ -184,11 +186,11 @@ public class EmfService extends AbstractService<EmfService> {
   
   //for InitializePackageContents template
   public List<CDTypeSymbol> retrieveSuperTypes(ASTCDClass c) {
-    List<CDTypeSymbol> superTypes = c.getSymbol().getSuperTypesList().stream()
+    List<CDTypeSymbol> superTypes = Lists.newArrayList();
+    c.getSymbol().getSuperTypesList().stream()
         .map(ste -> ste.getTypeInfo())
         .map(ts -> ts.getFullName())
-        .map(n -> resolveCDType(n))
-        .collect(Collectors.toList());
+        .forEach(s -> CD4CodeMill.globalScope().resolveCDType(s).ifPresent(t -> {if(t.isIsInterface()) superTypes.add(t);}));
     return superTypes;
   }
 

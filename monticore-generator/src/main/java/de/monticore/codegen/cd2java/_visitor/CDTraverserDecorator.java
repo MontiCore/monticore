@@ -11,6 +11,7 @@ import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.IterablePath;
+import de.monticore.io.paths.MCPath;
 import de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration;
 
 import java.util.Arrays;
@@ -29,11 +30,11 @@ public class CDTraverserDecorator extends AbstractCreator<ASTCDCompilationUnit, 
   protected final Visitor2Decorator visitor2Decorator;
   protected final HandlerDecorator handlerDecorator;
   protected final InheritanceHandlerDecorator inheritanceHandlerDecorator;
-  protected final IterablePath handCodedPath;
+  protected final MCPath handCodedPath;
   protected final VisitorService visitorService;
 
   public CDTraverserDecorator(final GlobalExtensionManagement glex,
-                            final IterablePath handCodedPath,
+                            final MCPath handCodedPath,
                             final VisitorService visitorService,
                             final TraverserInterfaceDecorator iTraverserDecorator,
                             final TraverserClassDecorator traverserDecorator,

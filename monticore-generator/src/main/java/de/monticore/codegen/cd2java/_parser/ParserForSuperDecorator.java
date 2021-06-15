@@ -201,7 +201,7 @@ public class ParserForSuperDecorator extends AbstractDecorator {
     //determine for every native prod of the original grammar if the super grammar has a prod with the same name
     //if yes then the prod is overridden
     for (String className : nativeClasses) {
-      Optional<CDTypeSymbol> cdType = ((ICDBasisArtifactScope) cd.getEnclosingScope()).resolveCDTypeLocally(className);
+      Optional<CDTypeSymbol> cdType = ((ICDBasisArtifactScope) cd.getEnclosingScope()).resolveCDTypeDown(className);
       if (cdType.isPresent()) {
         overriddenSet.add(cdType.get());
         //if the type is already in the first classes container, then ignore it so that no correct parse method for it can be generated
