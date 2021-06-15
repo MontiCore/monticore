@@ -4,11 +4,11 @@ package de.monticore;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import de.monticore.cd4analysis._symboltable.ICD4AnalysisGlobalScope;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDDefinition;
-import de.monticore.cd4codebasis._ast.ASTCDMethod;
-import de.monticore.cd4analysis._symboltable.ICD4AnalysisGlobalScope;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.reporting.Reporting;
@@ -16,9 +16,7 @@ import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
 import de.monticore.grammar.grammarfamily._symboltable.GrammarFamilyGlobalScope;
 import de.monticore.grammar.grammarfamily._symboltable.IGrammarFamilyGlobalScope;
-import de.monticore.io.paths.IterablePath;
 import de.monticore.io.paths.MCPath;
-import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.cli.CLIArguments;
 import de.se_rwth.commons.configuration.ConfigurationPropertiesMapContributor;
 import de.se_rwth.commons.logging.Log;
@@ -27,12 +25,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.File;
-import java.io.FileReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 
@@ -60,8 +56,7 @@ public class MontiCoreScriptTest {
 
   private static MCPath hwPath = new MCPath();
 
-  private static IterablePath templatePath = IterablePath
-      .from(new File("src/test/resources"), "ftl");
+  private static MCPath templatePath = new MCPath("src/test/resources");
 
   static String[] simpleArgs = {"-grammars",
       "src/test/resources/de/monticore/statechart/Statechart.mc4",
@@ -386,7 +381,7 @@ public class MontiCoreScriptTest {
     ASTCDCompilationUnit scopeCD = mc.deriveScopeCD(grammar, cd4AGlobalScopeScopeCD);
     ASTCDCompilationUnit cd = mc.deriveASTCD(grammar, glex, cd4AGlobalScope);
 
-    MCPath handcodedPath = new MCPath(new File("src/test/resources"), "java");
+    MCPath handcodedPath = new MCPath("src/test/resources");
     ASTCDCompilationUnit symbolPackageCD = mc.decorateForSymbolTablePackage(glex, cd4AGlobalScope, cd, symbolCD, scopeCD, handcodedPath);
     assertNotNull(symbolPackageCD);
     assertNotNull(symbolPackageCD.getCDDefinition());
@@ -418,7 +413,7 @@ public class MontiCoreScriptTest {
     mc.createSymbolsFromAST(symbolTable, grammar);
     ICD4AnalysisGlobalScope cd4AGlobalScope = mc.createCD4AGlobalScope(modelPath);
     ASTCDCompilationUnit cd = mc.deriveASTCD(grammar, glex, cd4AGlobalScope);
-    IterablePath handcodedPath = IterablePath.from(new File("src/test/resources"), "java");
+    MCPath handcodedPath = new MCPath("src/test/resources");
 
     ASTCDCompilationUnit visitorPackageCD = mc.decorateTraverserForVisitorPackage(glex, cd4AGlobalScope, cd, handcodedPath);
 
@@ -442,7 +437,7 @@ public class MontiCoreScriptTest {
     mc.createSymbolsFromAST(symbolTable, grammar);
     ICD4AnalysisGlobalScope cd4AGlobalScope = mc.createCD4AGlobalScope(modelPath);
     ASTCDCompilationUnit cd = mc.deriveASTCD(grammar, glex, cd4AGlobalScope);
-    IterablePath handcodedPath = IterablePath.from(new File("src/test/resources"), "java");
+    MCPath handcodedPath = new MCPath("src/test/resources");
 
     ASTCDCompilationUnit cocoPackageCD = mc.decorateForCoCoPackage(glex, cd4AGlobalScope, cd, handcodedPath);
 
@@ -475,7 +470,7 @@ public class MontiCoreScriptTest {
     mc.createSymbolsFromAST(symbolTable, grammar);
     ICD4AnalysisGlobalScope cd4AGlobalScope = mc.createCD4AGlobalScope(modelPath);
     ASTCDCompilationUnit cd = mc.deriveASTCD(grammar, glex, cd4AGlobalScope);
-    IterablePath handcodedPath = IterablePath.from(new File("src/test/resources"), "java");
+    MCPath handcodedPath = new MCPath("src/test/resources");
 
     ASTCDCompilationUnit astPackageCD = mc.decorateForASTPackage(glex, cd4AGlobalScope, cd, handcodedPath);
 
@@ -519,7 +514,7 @@ public class MontiCoreScriptTest {
     mc.createSymbolsFromAST(symbolTable, grammar);
     ICD4AnalysisGlobalScope cd4AGlobalScope = mc.createCD4AGlobalScope(modelPath);
     ASTCDCompilationUnit cd = mc.deriveASTCD(grammar, glex, cd4AGlobalScope);
-    IterablePath handcodedPath = IterablePath.from(new File("src/test/resources"), "java");
+    MCPath handcodedPath = new MCPath("src/test/resources");
 
     ASTCDCompilationUnit astEmfPackageCD = mc.decorateEmfForASTPackage(glex, cd4AGlobalScope, cd, handcodedPath);
 
@@ -567,7 +562,7 @@ public class MontiCoreScriptTest {
     ICD4AnalysisGlobalScope cd4AGlobalScope = mc.createCD4AGlobalScope(modelPath);
 
     ASTCDCompilationUnit cd = mc.deriveASTCD(grammar, glex, cd4AGlobalScope);
-    MCPath handcodedPath = MCPath.from(new File("src/test/resources"), "java");
+    MCPath handcodedPath = new MCPath("src/test/resources");
 
     ASTCDCompilationUnit odPackage = mc.decorateForODPackage(glex, cd4AGlobalScope, cd, handcodedPath);
 
@@ -589,7 +584,7 @@ public class MontiCoreScriptTest {
     ICD4AnalysisGlobalScope cd4AGlobalScope = mc.createCD4AGlobalScope(modelPath);
 
     ASTCDCompilationUnit cd = mc.deriveASTCD(grammar, glex, cd4AGlobalScope);
-    IterablePath handcodedPath = IterablePath.from(new File("src/test/resources"), "java");
+    MCPath handcodedPath = new MCPath("src/test/resources");
 
     ASTCDCompilationUnit millCd = mc.decorateMill(glex, cd4AGlobalScope, cd, getASTCD(cd), getSymbolCD(cd), getTraverserCD(cd), handcodedPath);
 
@@ -616,7 +611,7 @@ public class MontiCoreScriptTest {
     ICD4AnalysisGlobalScope cd4AGlobalScope = mc.createCD4AGlobalScope(modelPath);
 
     ASTCDCompilationUnit cd = mc.deriveASTCD(grammar, glex, cd4AGlobalScope);
-    IterablePath handcodedPath = IterablePath.from(new File("src/test/resources"), "java");
+    MCPath handcodedPath = new MCPath("src/test/resources");
 
     ASTCDCompilationUnit auxiliaryCD = mc.decorateAuxiliary(glex, cd4AGlobalScope, cd, getASTCD(cd), handcodedPath);
 
@@ -647,7 +642,7 @@ public class MontiCoreScriptTest {
     ASTCDCompilationUnit scopeCD = mc.deriveScopeCD(grammar, cd4AGlobalScopeScopeCD);
     ASTCDCompilationUnit cd = mc.deriveASTCD(grammar, glex, cd4AGlobalScope);
 
-    IterablePath handcodedPath = IterablePath.from(new File("src/test/resources"), "java");
+    MCPath handcodedPath = new MCPath("src/test/resources");
     return mc.decorateForSymbolTablePackage(glex, cd4AGlobalScope, cd, symbolCD, scopeCD, handcodedPath);
   }
 
@@ -658,7 +653,7 @@ public class MontiCoreScriptTest {
     mc.createSymbolsFromAST(symbolTable, grammar);
     ICD4AnalysisGlobalScope cd4AGlobalScope = mc.createCD4AGlobalScope(modelPath);
     ASTCDCompilationUnit cd = mc.deriveASTCD(grammar, glex, cd4AGlobalScope);
-    IterablePath handcodedPath = IterablePath.from(new File("src/test/resources"), "java");
+    MCPath handcodedPath = new MCPath("src/test/resources");
 
     return mc.decorateForASTPackage(glex, cd4AGlobalScope, cd, handcodedPath);
   }
@@ -670,7 +665,7 @@ public class MontiCoreScriptTest {
     mc.createSymbolsFromAST(symbolTable, grammar);
     ICD4AnalysisGlobalScope cd4AGlobalScope = mc.createCD4AGlobalScope(modelPath);
     ASTCDCompilationUnit cd = mc.deriveASTCD(grammar, glex, cd4AGlobalScope);
-    IterablePath handcodedPath = IterablePath.from(new File("src/test/resources"), "java");
+    MCPath handcodedPath = new MCPath("src/test/resources");
 
     return mc.decorateTraverserForVisitorPackage(glex, cd4AGlobalScope, cd, handcodedPath);
   }

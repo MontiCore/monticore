@@ -1,11 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java.top;
 
-import de.monticore.cdbasis._ast.*;
-import de.monticore.cdinterfaceandenum._ast.*;
-import de.monticore.cd4codebasis._ast.*;
+import de.monticore.cd4codebasis._ast.ASTCDConstructor;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDDefinition;
+import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
-import de.monticore.io.paths.IterablePath;
+import de.monticore.generating.GeneratorEngine;
 import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
@@ -13,11 +16,11 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
-import java.nio.file.Path;
+import java.net.URL;
 import java.util.Optional;
 
-import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.CDModifier.*;
+import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static org.junit.Assert.assertEquals;
 
 public class TopDecoratorTest extends DecoratorTestCase {
@@ -39,7 +42,7 @@ public class TopDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testHandWrittenClassFound() {
-    Mockito.when(targetPath.getResolvedPath(Mockito.any(MCPath.class))).thenReturn(Optional.of(Mockito.mock(MCPath.class)));
+    Mockito.when(targetPath.find(Mockito.any(String.class))).thenReturn(Optional.of(Mockito.mock(URL.class)));
     ASTCDDefinition ast = this.topDecorator.decorate(this.topCD).getCDDefinition();
 
     assertEquals(1, ast.getCDClassesList().size());
@@ -65,7 +68,7 @@ public class TopDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testHandWrittenClassNotFound() {
-    Mockito.when(targetPath.exists(Mockito.any(MCPath.class))).thenReturn(false);
+    Mockito.when(targetPath.find(Mockito.any(String.class))).thenReturn(Optional.of(Mockito.mock(URL.class)));
     ASTCDDefinition ast = this.topDecorator.decorate(this.topCD).getCDDefinition();
 
     assertEquals(1, ast.getCDClassesList().size());
