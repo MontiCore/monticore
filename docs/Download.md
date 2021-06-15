@@ -16,4 +16,4 @@ The following Command Line Interface (CLI) tools for MontiCore and its languages
 * The [OD4ReportCLI tool](http://www.monticore.de/download/OD4ReportCLI.jar) for an [Object Diagram language (not yet publicly available)](https://git.rwth-aachen.de/monticore/languages/od)
 * The [SD4DevelopmentCLI tool](http://www.monticore.de/download/SD4DevelopmentCLI.jar) for a [Sequence Diagram language (not yet publicly available)](https://git.rwth-aachen.de/monticore/statechart/sd-language)
 * The [StatechartsCLI tool](http://www.monticore.de/download/StatechartsCLI.jar) for a [Statechart language (not yet publicly available)](https://git.rwth-aachen.de/monticore/statechart/sc-language)
-* The [XMLCLI tool](http://www.monticore.de/download/xml-cli.jar) for a [XML language (not yet publicly available)](https://git.rwth-aachen.de/monticore/languages/xml)
+* The [XMLCLI tool](http://www.monticore.de/download/xml-cli.jar) for an [XML language (not yet publicly available)](https://git.rwth-aachen.de/monticore/languages/xml)
