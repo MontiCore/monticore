@@ -16,6 +16,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
 import java.net.URL;
@@ -43,11 +44,11 @@ public class TopDecoratorTest extends DecoratorTestCase {
     this.topCD = this.parse("de", "monticore", "codegen", "top", "Top");
   }
 
-  @Ignore
   @Test
   public void testHandWrittenClassFound() {
-    //Mockito.when(new GeneratorEngine(Mockito.any(GeneratorSetup.class)).existsHandwrittenClass(Mockito.any(MCPath.class), Mockito.any(String.class))).thenReturn(true);
-   // Mockito.when(targetPath.find(Mockito.any(String.class))).thenReturn(Optional.of(Mockito.mock(URL.class)));
+    MockedStatic<GeneratorEngine> engineMock = Mockito.mockStatic(GeneratorEngine.class);
+    engineMock.when(() -> GeneratorEngine.existsHandwrittenClass(Mockito.any(MCPath.class), Mockito.any(String.class))).thenReturn(true);
+    Mockito.when(targetPath.find(Mockito.any(String.class))).thenReturn(Optional.of(Mockito.mock(URL.class)));
     ASTCDDefinition ast = this.topDecorator.decorate(this.topCD).getCDDefinition();
 
     assertEquals(1, ast.getCDClassesList().size());
