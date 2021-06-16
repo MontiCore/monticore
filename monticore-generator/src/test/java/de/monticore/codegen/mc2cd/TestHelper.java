@@ -70,14 +70,14 @@ public class TestHelper {
     return Optional.of(cdCompilationUnit);
   }
   
-  public static IGrammarFamilyGlobalScope createGlobalScope(MCPath modelPath) {
+  public static IGrammarFamilyGlobalScope createGlobalScope(MCPath symbolPath) {
     IGrammarFamilyGlobalScope scope = GrammarFamilyMill.globalScope();
     // reset global scope
     scope.clear();
     BasicSymbolsMill.initializePrimitives();
 
     // Set ModelPath
-    scope.setSymbolPath(modelPath);
+    scope.setSymbolPath(symbolPath);
     return scope;
   }
 

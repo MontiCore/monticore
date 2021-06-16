@@ -112,7 +112,6 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
     this.symTabCD = symbolTableCDDecorator.decorate(decoratedASTCompilationUnit, decoratedSymbolCompilationUnit, decoratedScopeCompilationUnit);
 
     // cd with handcoded classes and component and no start prod
-    Mockito.when(targetPath.getResolvedPath(Mockito.any(MCPath.class))).thenReturn(Optional.of(Mockito.mock(MCPath.class)));
     this.symTabCDWithHC = symbolTableCDDecorator.decorate(decoratedASTCompilationUnit, decoratedSymbolCompilationUnit, decoratedScopeCompilationUnit);
 
     SymbolTableService mockService = Mockito.spy(new SymbolTableService(decoratedASTCompilationUnit));

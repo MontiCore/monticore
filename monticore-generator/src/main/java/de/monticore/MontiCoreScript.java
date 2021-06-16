@@ -1315,7 +1315,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
                   mcConfig.getConfigTemplate().get());
         }
         builder.addVariable("glex", glex);
-        builder.addVariable("grammarIterator", mcConfig.getGrammars().getResolvedPaths());
+        builder.addVariable("grammarIterator", mcConfig.getGrammars().getEntries().iterator());
         builder.addVariable("reportManagerFactory", new MontiCoreReports(mcConfig.getOut().getAbsolutePath(),
                 mcConfig.getReport().getAbsolutePath(),
                 mcConfig.getHandcodedPath(), mcConfig.getTemplatePath()));

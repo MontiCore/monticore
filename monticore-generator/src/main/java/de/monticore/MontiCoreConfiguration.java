@@ -3,8 +3,7 @@
 package de.monticore;
 
 import com.google.common.collect.Sets;
-import de.monticore.io.paths.IterablePath;
-import de.monticore.io.paths.ModelPath;
+import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.configuration.Configuration;
 import de.se_rwth.commons.configuration.ConfigurationContributorChainBuilder;
 import de.se_rwth.commons.configuration.DelegatingConfigurationContributor;
@@ -267,28 +266,28 @@ public final class MontiCoreConfiguration implements Configuration {
     return true;
   }
   /**
-   * Getter for the {@link IterablePath} consisting of grammar files stored in
+   * Getter for the {@link MCPath} consisting of grammar files stored in
    * this configuration.
    *
    * @return iterable grammar files
    */
-  public IterablePath getGrammars() {
+  public MCPath getGrammars() {
     Optional<List<String>> grammars = getAsStrings(Options.GRAMMARS);
     if (grammars.isPresent() && checkPath(grammars.get())) {
-      return IterablePath.from(toFileList(grammars.get()), MC4_EXTENSIONS);
+      return new MCPath(toFileList(grammars.get()));
     }
     grammars = getAsStrings(Options.GRAMMARS_SHORT);
     if (grammars.isPresent() && checkPath(grammars.get())) {
-      return IterablePath.from(toFileList(grammars.get()), MC4_EXTENSIONS);
+      return new MCPath(toFileList(grammars.get()));
     }
     // no default; must specify grammar files/directories to process
     Log.error("0xA1013 Please specify the grammar file(s).");
-    return IterablePath.empty();
+    return new MCPath();
   }
 
   /**
    * Getter for the actual value of the grammar argument. This is not the
-   * prepared {@link IterablePath} as in
+   * prepared {@link MCPath} as in
    * {@link MontiCoreConfiguration#getGrammars()} but the raw input arguments.
    *
    * @return
@@ -313,32 +312,31 @@ public final class MontiCoreConfiguration implements Configuration {
    *
    * @return list of model path files
    */
-  public ModelPath getModelPath() {
-    Optional<ModelPath> modelPath = getAsStrings(Options.MODELPATH)
-        .map(this::convertEntryNamesToModelPath);
+  public MCPath getModelPath() {
+    Optional<MCPath> modelPath = getAsStrings(Options.MODELPATH)
+        .map(this::convertEntryNamesToMCPath);
     if (modelPath.isPresent()) {
       return modelPath.get();
     }
-    modelPath = getAsStrings(Options.MODELPATH_SHORT).map(this::convertEntryNamesToModelPath);
+    modelPath = getAsStrings(Options.MODELPATH_SHORT).map(this::convertEntryNamesToMCPath);
     if (modelPath.isPresent()) {
       return modelPath.get();
     }
     // default model path is empty 
-    return new ModelPath();
+    return new MCPath();
   }
 
-  private ModelPath convertEntryNamesToModelPath(List<String> modelPathEntryNames) {
-    List<File> modelPathFiles = toFileList(modelPathEntryNames);
+  private MCPath convertEntryNamesToMCPath(List<String> modelPathEntryNames) {
+    List<Path> modelPathFiles = toFileList(modelPathEntryNames);
     List<Path> modelPathEntries = modelPathFiles.stream()
-        .map(File::toPath)
         .map(Path::toAbsolutePath)
         .collect(Collectors.toList());
-    return new ModelPath(modelPathEntries);
+    return new MCPath(modelPathEntries);
   }
 
   /**
    * Getter for the actual value of the model path argument. This is not the
-   * prepared {@link ModelPath} as in
+   * prepared {@link MCPath} as in
    * {@link MontiCoreConfiguration#getModelPath()} but the raw input arguments.
    *
    * @return
@@ -401,26 +399,26 @@ public final class MontiCoreConfiguration implements Configuration {
    *
    * @return iterable handcoded files
    */
-  public IterablePath getHandcodedPath() {
+  public MCPath getHandcodedPath() {
     Optional<List<String>> handcodedPath = getAsStrings(Options.HANDCODEDPATH);
     if (handcodedPath.isPresent()) {
-      return IterablePath.from(toFileList(handcodedPath.get()), HWC_EXTENSIONS);
+      return new MCPath(toFileList(handcodedPath.get()));
     }
     handcodedPath = getAsStrings(Options.HANDCODEDPATH_SHORT);
     if (handcodedPath.isPresent()) {
-      return IterablePath.from(toFileList(handcodedPath.get()), HWC_EXTENSIONS);
+      return new MCPath(toFileList(handcodedPath.get()));
     }
     // default handcoded path is "java"
     File defaultFile = new File(DEFAULT_HANDCODED_JAVA_PATH);
     if (!defaultFile.exists()) {
-      return IterablePath.empty();
+      return new MCPath();
     }
-    return IterablePath.from(new File(DEFAULT_HANDCODED_JAVA_PATH), HWC_EXTENSIONS);
+    return new MCPath(new File(DEFAULT_HANDCODED_JAVA_PATH).toPath());
   }
 
   /**
    * Getter for the actual value of the handcoded path argument. This is not the
-   * prepared {@link IterablePath} as in
+   * prepared {@link MCPath} as in
    * {@link MontiCoreConfiguration#getHandcodedPath()} but the raw input
    * arguments.
    *
@@ -444,21 +442,21 @@ public final class MontiCoreConfiguration implements Configuration {
    *
    * @return iterable template files
    */
-  public IterablePath getTemplatePath() {
+  public MCPath getTemplatePath() {
     Optional<List<String>> templatePath = getAsStrings(Options.TEMPLATEPATH);
     if (templatePath.isPresent()) {
-      return IterablePath.from(toFileList(templatePath.get()), FTL_EXTENSIONS);
+      return new MCPath(toFileList(templatePath.get()));
     }
     templatePath = getAsStrings(Options.TEMPLATEPATH_SHORT);
     if (templatePath.isPresent()) {
-      return IterablePath.from(toFileList(templatePath.get()), FTL_EXTENSIONS);
+      return new MCPath(toFileList(templatePath.get()));
     }
     // default handcoded template path is "resource"
     File defaultFile = new File(DEFAULT_HANDCODED_TEMPLATE_PATH);
     if (!defaultFile.exists()) {
-      return IterablePath.empty();
+      return new MCPath();
     }
-    return IterablePath.from(new File(DEFAULT_HANDCODED_TEMPLATE_PATH), FTL_EXTENSIONS);
+    return new MCPath(new File(DEFAULT_HANDCODED_TEMPLATE_PATH).toPath());
   }
 
   /**
@@ -514,7 +512,7 @@ public final class MontiCoreConfiguration implements Configuration {
 
   /**
    * Getter for the actual value of the template path argument. This is not the
-   * prepared {@link IterablePath} as in
+   * prepared {@link MCPath} as in
    * {@link MontiCoreConfiguration#getTemplatePath()} but the raw input
    * arguments.
    *
@@ -550,9 +548,9 @@ public final class MontiCoreConfiguration implements Configuration {
    * @param files as String names to convert
    * @return list of files by creating file objects from the Strings
    */
-  protected static List<File> toFileList(List<String> files) {
+  protected static List<Path> toFileList(List<String> files) {
     return files.stream().collect(
-        Collectors.mapping(file -> new File(file).getAbsoluteFile(), Collectors.toList()));
+        Collectors.mapping(file -> new File(file).getAbsoluteFile().toPath(), Collectors.toList()));
   }
 
 }
