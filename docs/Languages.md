@@ -276,7 +276,7 @@ component InteriorLight {                           // MontiArc language
   [*detailed description*](https://git.rwth-aachen.de/monticore/montiarc/core/-/blob/develop/languages/montiarc-fe/src/main/grammars/MontiArc.md)
 
 
-### [OCL/P](https://git.rwth-aachen.de/monticore/languages/OCL) (MontiCore Stable)
+### [OCL/P](https://github.com/monticore/OCL) (MontiCore Stable)
 * OCL/P is the textual representation of the UML OCL standard, adapted 
   with Java-like syntax.
   It's main goal is the usage in combination with other languages like 
@@ -314,11 +314,11 @@ ocl Bookshop {
 ```
 
 * The OCL language component contains four grammars:
-  * [OCL](https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/develop/src/main/grammars/de/monticore/ocl/OCL.mc4),
-  * [OCLExpressions](https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/develop/src/main/grammars/de/monticore/ocl/OCLExpressions.mc4), 
-  * [OptionalOperators](https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/develop/src/main/grammars/de/monticore/ocl/OptionalOperators.mc4), and
-  * [SetExpressions](https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/develop/src/main/grammars/de/monticore/ocl/SetExpressions.mc4). 
-* The [*detailed description*](https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/develop/src/main/grammars/de/monticore/ocl/OCL.md) provides an in-depth guide for language engineers.
+  * [OCL](https://github.com/MontiCore/ocl/blob/develop/src/main/grammars/de/monticore/ocl/OCL.mc4),
+  * [OCLExpressions](https://github.com/MontiCore/ocl/blob/develop/src/main/grammars/de/monticore/ocl/OCLExpressions.mc4), 
+  * [OptionalOperators](https://github.com/MontiCore/ocl/blob/develop/src/main/grammars/de/monticore/ocl/OptionalOperators.mc4), and
+  * [SetExpressions](https://github.com/MontiCore/ocl/blob/develop/src/main/grammars/de/monticore/ocl/SetExpressions.mc4). 
+* The [*detailed description*](https://github.com/MontiCore/ocl/blob/develop/src/main/grammars/de/monticore/ocl/OCL.md) provides an in-depth guide for language engineers.
 
 
 ### [Object Diagrams](https://git.rwth-aachen.de/monticore/languages/od) (MontiCore Stable)
