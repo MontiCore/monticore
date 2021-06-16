@@ -404,7 +404,7 @@ sequencediagram AuctionTest {
 }
 ```
 
-### [SI Units](https://git.rwth-aachen.de/monticore/languages/siunits) (MontiCore Stable)
+### [SI Units](https://github.com/MontiCore/siunits) (MontiCore Stable)
 * The international system of units (SI units) is a physical unit system widely used in the entire world. 
   It is based on the basis units `s, m, kg, A, K, mol, cd`, 
   provides a variety of derived units, and can be refined using prefixes such 
@@ -427,14 +427,14 @@ sequencediagram AuctionTest {
 * The math version uses `km/h` as idealistic full precision real number, while the
   computing version allows to contrain  the precision with `km/h<long>`. 
 * Main grammar components:
-    * [SI units](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/SIUnits.mc4)
-    * [SI unit literals](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/SIUnitLiterals.mc4)
-    * [SI unit types for math](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/SIUnitTypes4Math.mc4)
-    * [SI unit types for computations](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/SIUnitTypes4Computing.mc4)
+    * [SI units](https://github.com/MontiCore/siunits/blob/master/src/main/grammars/de/monticore/SIUnits.mc4)
+    * [SI unit literals](https://github.com/MontiCore/siunits/blob/master/src/main/grammars/de/monticore/SIUnitLiterals.mc4)
+    * [SI unit types for math](https://github.com/MontiCore/siunits/blob/master/src/main/grammars/de/monticore/SIUnitTypes4Math.mc4)
+    * [SI unit types for computations](https://github.com/MontiCore/siunits/blob/master/src/main/grammars/de/monticore/SIUnitTypes4Computing.mc4)
     *           (other alternatives are possible; SI has not standardized anything here)
 * Example projects:
-    * [SI Java](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/test/grammars/de/monticore/lang/testsijava/TestSIJava.mc4) 
-* [*detailed description*](https://git.rwth-aachen.de/monticore/languages/siunits/-/blob/master/src/main/grammars/de/monticore/SIUnits.md)  
+    * [SI Java](https://github.com/MontiCore/siunits/blob/master/src/test/grammars/de/monticore/lang/testsijava/TestSIJava.mc4) 
+* [*detailed description*](https://github.com/MontiCore/siunits/blob/master/src/main/grammars/de/monticore/SIUnits.md)  
 
 
 ### [Statecharts](https://git.rwth-aachen.de/monticore/statechart/sc-language) (MontiCore stable)
