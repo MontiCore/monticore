@@ -321,7 +321,7 @@ ocl Bookshop {
 * The [*detailed description*](https://github.com/MontiCore/ocl/blob/develop/src/main/grammars/de/monticore/ocl/OCL.md) provides an in-depth guide for language engineers.
 
 
-### [Object Diagrams (not yet publicly available)](https://git.rwth-aachen.de/monticore/languages/od) (MontiCore Stable)
+### [Object Diagrams](https://github.com/MontiCore/object-diagram) (MontiCore Stable)
 * OD is a language for textual denotation of object diagrams. The OD language
   has several purposes (when combined with appropriate language extensions):
   1. specification language for object structures (as part of the [UML/P](http://mbse.se-rwth.de/))
@@ -363,15 +363,15 @@ objectdiagram MyFamily {
   the possibility to give the object a name as it is the case for `tiger`, or `alice` 
   enabaling the definition real graph structures.
 * Main grammars (directly usable):
-    * [OD4Data (not yet publicly available)](https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/OD4Data.mc4)
-    * [OD4Development (not yet publicly available)](https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/OD4Development.mc4)
-    * [OD4Report (not yet publicly available)](https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/OD4Report.mc4)
+    * [OD4Data](https://github.com/MontiCore/object-diagram/blob/master/src/main/grammars/de/monticore/OD4Data.mc4)
+    * [OD4Development](https://github.com/MontiCore/object-diagram/blob/master/src/main/grammars/de/monticore/OD4Development.mc4)
+    * [OD4Report](https://github.com/MontiCore/object-diagram/blob/master/src/main/grammars/de/monticore/OD4Report.mc4)
 * Main grammar components:
-    * [DateLiterals (not yet publicly available)](https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/DateLiterals.mc4)
-    * [ODBasis (not yet publicly available)](https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/ODBasis.mc4)
-    * [ODAttribute (not yet publicly available)](https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/ODAttribute.mc4)
-    * [ODLink (not yet publicly available)](https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/ODLink.mc4)
-* [*Detailed description* (not yet publicly available)](https://git.rwth-aachen.de/monticore/languages/od/-/blob/master/src/main/grammars/de/monticore/OD4Report.md) 
+    * [DateLiterals](https://github.com/MontiCore/object-diagram/blob/master/src/main/grammars/de/monticore/DateLiterals.mc4)
+    * [ODBasis](https://github.com/MontiCore/object-diagram/blob/master/src/main/grammars/de/monticore/ODBasis.mc4)
+    * [ODAttribute](https://github.com/MontiCore/object-diagram/blob/master/src/main/grammars/de/monticore/ODAttribute.mc4)
+    * [ODLink](https://github.com/MontiCore/object-diagram/blob/master/src/main/grammars/de/monticore/ODLink.mc4)
+* [*Detailed description*](https://github.com/MontiCore/object-diagram/blob/master/src/main/grammars/de/monticore/OD4Report.md) 
 
 
 ### [Sequence Diagrams (not yet publicly available)](https://git.rwth-aachen.de/monticore/statechart/sd-language)  (MontiCore stable) 
