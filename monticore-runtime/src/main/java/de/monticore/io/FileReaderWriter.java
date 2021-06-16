@@ -225,7 +225,7 @@ public class FileReaderWriter {
   public static Reader getReader(URL location) {
     try {
       Path p = Paths.get(location.toURI());
-      Reporting.reportOpenInputFile(Optional.of(p.getParent()),
+      Reporting.reportOpenInputFile(Optional.empty(),
         p);
 
       if (!"jar".equals(location.getProtocol())) {
