@@ -72,6 +72,8 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
            SplitRule
          |
            KeywordRule
+         |
+           TokenMode
          )*
       "}" ;
 
@@ -202,7 +204,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
       )?
       "=" alt:(LexAlt || "|")+
 
-      (":"  ("->" lexerCommand:Name ( "(" mode:(Name || ",")+ ")" )?)? ("{" endAction:Action  "}")? (variable:Name&
+      (":"  ("->" lexerCommand:Name ( "(" parameter:(Name || ",")+ ")" )?)? ("{" endAction:Action  "}")? (variable:Name&
         ("->" type:( Name& || ".")+ (":" "{" block:Action "}" )? )? )? // Statements
       )?
     )
@@ -529,7 +531,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
     Defines token for the given mode
   */
   TokenMode =
-    "tokenmode" Name ":" lexName:(Name || ",")+ ";";
+    "tokenmode" Name ":" tokenName:(Name || ",")+ ";";
 
 
   // ----------------------------------------------------------------------

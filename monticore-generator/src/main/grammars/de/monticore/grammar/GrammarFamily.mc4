@@ -8,27 +8,4 @@ grammar GrammarFamily extends
   // keep the old axiom
   start MCGrammar;
 
-// TODO: Delete the following rules after release of MC 7.1.0
-
-  MyLexProd extends LexProd =
-    GrammarAnnotation* (["fragment"] | ["comment"])*
-    "token" Name ("(" mode:( Name || ",")+ ")")?
-    (
-      (
-        LexOption ("{" initAction:Action "}")? // Statements
-      |
-        "{" initAction:Action "}"
-      )?
-      "=" alt:(LexAlt || "|")+
-
-      (":"  ("->" lexerCommand:Name ( "(" mode:(Name || ",")+ ")" )?)? ("{" endAction:Action  "}")? (variable:Name&
-        ("->" type:( Name& || ".")+ (":" "{" block:Action "}" )? )? )? // Statements
-      )?
-    )
-    ";";
-
-
-  TokenMode =
-    "tokenmode" Name ":" lexName:(Name || ",")+ ";";
-
 }
