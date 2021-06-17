@@ -108,7 +108,7 @@ classdiagram MyLife2 {
   (see Section *CD4Code*)
 
 
-### [Feature Diagrams (not yet publicly available)](https://git.rwth-aachen.de/monticore/languages/feature-diagram) (MontiCore stable)
+### [Feature Diagrams](https://github.com/MontiCore/feature-diagram) (MontiCore stable)
 * Language for feature models and feature configurations.
 * **Feature diagrams** are used to model (software) **product lines** and their **variants**.
 * **Feature configurations** select a subset of features of a feature model 
@@ -130,9 +130,10 @@ featurediagram MyPhones {
   and **subset cardinality** constraints, like `[1..2] of ...`.
   Further, a feature model may define cross-tree constraints using logic 
   operators **and** `&&`, **or** `||`, **implication** `requires`, etc.
-* Main grammar [`FeatureDiagram` (not yet publicly available)](https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/develop/fd-lang/src/main/grammars/de/monticore/FeatureDiagram.mc4)
+* Main grammar [`FeatureDiagram`](https://github.com/MontiCore/feature-diagram/blob/master/fd-lang/src/main/grammars/de/monticore/FeatureDiagram.mc4)
   and 
-  [*detailed description* (not yet publicly available)](https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/develop/fd-lang/src/main/grammars/de/monticore/FeatureDiagram.md)
+  [*detailed description*](https://github.com/MontiCore/feature-diagram/blob/master/fd-lang/src/main/grammars/de/monticore/FeatureDiagram.md)
+
 
 
 ### [GUI DSL (not yet publicly available)](https://git.rwth-aachen.de/monticore/languages/gui-dsl) (Alpha: Intention to become stable)
