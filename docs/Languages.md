@@ -200,7 +200,7 @@ and
   in the MontiCore Reference Manual.
   
 
-### [JSON](https://git.rwth-aachen.de/monticore/languages/json) (MontiCore Stable)
+### [JSON](https://github.com/MontiCore/json) (MontiCore Stable)
 * The MontiCore language for parsing JSON artifacts. An example:
 ```
 { "Alice": {
@@ -570,7 +570,7 @@ usecasediagram Example {
 }
 ```
 
-### [XML](https://git.rwth-aachen.de/monticore/languages/xml) (MontiCore Stable)
+### [XML](https://github.com/MontiCore/xml) (MontiCore Stable)
 * The MontiCore language for parsing XML artifacts. An example:
 ```
 <Calendar>
