@@ -593,9 +593,9 @@ usecasediagram Example {
   real objects / data structures, etc. behind the XML structure
   is beyond this grammar, but can be applied to the AST defined here.
 * Main grammar 
-  [`de.monticore.lang.XML`](https://git.rwth-aachen.de/monticore/languages/xml/-/blob/develop/src/main/grammars/de/monticore/lang/XMLLight.mc4)
+  [`de.monticore.lang.XML`](https://github.com/MontiCore/xml/blob/master/src/main/grammars/de/monticore/lang/XMLLight.mc4)
   and 
-  [*detailed description*](https://git.rwth-aachen.de/monticore/languages/xml/-/blob/master/src/main/grammars/de/monticore/lang/xml.md)
+  [*detailed description*](https://github.com/MontiCore/xml/blob/master/src/main/grammars/de/monticore/lang/xml.md)
 
 
 ### [JavaLight](https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/JavaLight.md) (MontiCore Stable)
