@@ -46,8 +46,8 @@ public class SupReferenceTest {
     for (ISupGrammarRefScope s : globalScope.getSubScopes()) {
       globalScope.removeSubScope(s);
     }
-    for (Path p : globalScope.getModelPath().getFullPathOfEntries()) {
-      globalScope.getModelPath().removeEntry(p);
+    for (Path p : globalScope.getSymbolPath().getEntries()) {
+      globalScope.getSymbolPath().removeEntry(p);
     }
 
     // populate symtab
@@ -59,7 +59,7 @@ public class SupReferenceTest {
     this.astsupRand = astRand.get();
 
     globalScope.setFileExt("ref");
-    globalScope.getModelPath().addEntry(Paths.get("src/test/resources/mc/feature/referencesymbol"));
+    globalScope.getSymbolPath().addEntry(Paths.get("src/test/resources/mc/feature/referencesymbol"));
 
     SupGrammarRefScopesGenitorDelegator symbolTableCreator = SupGrammarRefMill
             .scopesGenitorDelegator();

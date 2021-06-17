@@ -123,7 +123,7 @@ abstract public class MCTask extends DefaultTask {
     return modelPath
   }
   
-  @InputFiles
+  @Input
   @Optional
   List<String> getTemplatePath() {
     return templatePath
@@ -266,6 +266,9 @@ abstract public class MCTask extends DefaultTask {
     }
     if (configTemplate != null) {
       params.add("-ct")
+      if (configTemplate.endsWith(".ftl")){
+        configTemplate = configTemplate.substring(0, configTemplate.length()-4)
+      }
       params.add(configTemplate)
     }
     if (script != null) {

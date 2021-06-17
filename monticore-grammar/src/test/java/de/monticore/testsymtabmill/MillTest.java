@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.testsymtabmill;
 
-import de.monticore.io.paths.ModelPath;
+import de.monticore.io.paths.MCPath;
 import de.monticore.testsymtabmill.testsymtabmill.TestSymTabMillMill;
 import de.monticore.testsymtabmill.testsymtabmill._symboltable.*;
 import org.junit.Test;
@@ -17,7 +17,7 @@ public class MillTest {
     ITestSymTabMillArtifactScope artifactScope = TestSymTabMillMill.artifactScope();
     artifactScope.setPackageName("sym");
     ITestSymTabMillGlobalScope globalScope = TestSymTabMillMill.globalScope();
-    globalScope.setModelPath(new ModelPath());
+    globalScope.setSymbolPath(new MCPath());
     globalScope.setFileExt("mill");
     TestSymTabMillScopesGenitor symbolTableCreator = TestSymTabMillMill.scopesGenitor();
     symbolTableCreator.putOnStack(scope);

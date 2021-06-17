@@ -5,20 +5,20 @@ package basicjava._symboltable;
 import basicjava.BasicJavaMill;
 import basicjava._ast.ASTCompilationUnit;
 import basicjava._parser.BasicJavaParser;
-import de.monticore.io.paths.ModelCoordinate;
-import de.monticore.io.paths.ModelCoordinates;
-import de.monticore.io.paths.ModelPath;
+import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.Log;
 
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.net.URL;
 import java.util.Optional;
 
 public class BasicJavaGlobalScope extends BasicJavaGlobalScopeTOP {
 
-  public BasicJavaGlobalScope(ModelPath modelPath,
-      String modelFileExtension) {
-    super(modelPath, modelFileExtension);
+  public BasicJavaGlobalScope(MCPath symbolPath,
+                              String modelFileExtension) {
+    super(symbolPath, modelFileExtension);
   }
 
   public BasicJavaGlobalScope() {
@@ -32,20 +32,20 @@ public class BasicJavaGlobalScope extends BasicJavaGlobalScopeTOP {
     // 1. call super implementation to start with employing the DeSer
     super.loadFileForModelName(modelName);
 
+
     // 2. calculate potential location of model file and try to find it in model path
-    ModelCoordinate model = ModelCoordinates.createQualifiedCoordinate(modelName, "javamodel");
-    model = getModelPath().resolveModel(model);
+    Optional<URL> location = getSymbolPath().find(modelName, "javamodel");
 
     // 3. if the file was found, parse the model and create its symtab
-    if(model.hasLocation()){
-      ASTCompilationUnit ast = parse(model);
+    if(location.isPresent()){
+      ASTCompilationUnit ast = parse(location.get().getPath());
       BasicJavaMill.scopesGenitorDelegator().createFromAST(ast);
     }
   }
 
-  private ASTCompilationUnit parse(ModelCoordinate model){
+  private ASTCompilationUnit parse(String model){
     try {
-      Reader reader = ModelCoordinates.getReader(model);
+      Reader reader = new FileReader(model);
       Optional<ASTCompilationUnit> optAST = new BasicJavaParser().parse(reader);
       if(optAST.isPresent()){
         return optAST.get();

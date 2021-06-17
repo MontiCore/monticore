@@ -9,11 +9,10 @@ import de.monticore.generating.templateengine.reporting.Reporting;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.FileUtils;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.*;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -215,6 +214,33 @@ public class FileReaderWriter {
   protected boolean _existsFile(Path sourcePath) {
     Reporting.reportFileExistenceChecking(Lists.newArrayList(), sourcePath);
     return sourcePath.toFile().exists();
+  }
+
+  /**
+   * Obtains the reader for a passed model coordinate. The resulting reader
+   * can be used as argument for a parse method of a language's parser.
+   * @param location
+   * @return
+   */
+  public static Reader getReader(URL location) {
+    try {
+      Path p = Paths.get(location.toURI());
+      Reporting.reportOpenInputFile(Optional.empty(),
+        p);
+
+      if (!"jar".equals(location.getProtocol())) {
+        if (location.getFile().charAt(2) == ':') {
+          String filename = URLDecoder.decode(location.getFile(), "UTF-8");
+          return new FileReader(filename.substring(1));
+        }
+        return new FileReader(location.getFile());
+      }
+      return new InputStreamReader(location.openStream(), Charsets.UTF_8.name());
+    }
+    catch (IOException | URISyntaxException e) {
+      Log.error("0xA6104 Exception occurred while reading the file at '" + location + "':", e);
+    }
+    return null;
   }
 
 }

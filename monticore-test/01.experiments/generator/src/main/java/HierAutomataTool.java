@@ -6,7 +6,6 @@ import org.antlr.v4.runtime.RecognitionException;
 
 import hierautomata._ast.ASTStateMachine;
 import hierautomata._parser.HierAutomataParser;
-import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
 
 import de.monticore.generating.GeneratorSetup;
