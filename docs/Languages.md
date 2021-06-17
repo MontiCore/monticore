@@ -225,9 +225,9 @@ and
   real objects / data structures, etc. behind the JSON tree structure
   is beyond this grammar, but can be applied to the AST defined here.
 * Main grammar 
-  [`de.monticore.lang.JSON` (not yet publicly available)](https://git.rwth-aachen.de/monticore/languages/json/-/blob/master/src/main/grammars/de/monticore/lang/JSON.mc4)
+  [`de.monticore.lang.JSON`](https://github.com/MontiCore/json/blob/develop/src/main/grammars/de/monticore/lang/JSON.mc4)
   and 
-  [*detailed description* (not yet publicly available)](https://git.rwth-aachen.de/monticore/languages/json/-/blob/master/src/main/grammars/de/monticore/lang/json.md)
+  [*detailed description*](https://github.com/MontiCore/json/blob/develop/src/main/grammars/de/monticore/lang/json.md)
 
 
 ### [MontiArc (not yet publicly available)](https://git.rwth-aachen.de/monticore/montiarc/core) (MontiCore Stable) 
@@ -593,12 +593,12 @@ usecasediagram Example {
   real objects / data structures, etc. behind the XML structure
   is beyond this grammar, but can be applied to the AST defined here.
 * Main grammar 
-  [`de.monticore.lang.XML` (not yet publicly available)](https://git.rwth-aachen.de/monticore/languages/xml/-/blob/develop/src/main/grammars/de/monticore/lang/XMLLight.mc4)
+  [`de.monticore.lang.XML`](https://github.com/MontiCore/xml/blob/master/src/main/grammars/de/monticore/lang/XMLLight.mc4)
   and 
-  [*detailed description* (not yet publicly available)](https://git.rwth-aachen.de/monticore/languages/xml/-/blob/master/src/main/grammars/de/monticore/lang/xml.md)
+  [*detailed description*](https://github.com/MontiCore/xml/blob/master/src/main/grammars/de/monticore/lang/xml.md)
 
 
-### [JavaLight (not yet publicly available)](https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/JavaLight.mc4) (MontiCore Stable)
+### [JavaLight](https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/JavaLight.md) (MontiCore Stable)
 * This is a reduced version of the **Java language**.
   JavaLight is meant to be used to integrate simplified Java-like parts 
   in modeling languages but not to parse complete Java implementations.
@@ -613,9 +613,9 @@ public void print(String name) {
   System.out.println("Hello " + name);
 }
 ```
-* [Main grammar `de.monticore.JavaLight` (not yet publicly available)](https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/JavaLight.mc4)
+* [Main grammar `de.monticore.JavaLight`](https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/JavaLight.mc4)
   and 
-  [*detailed description* (not yet publicly available)](https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/monticore-grammar/src/main/grammars/de/monticore/JavaLight.md).
+  [*detailed description*](https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/JavaLight.md).
 
 
 
