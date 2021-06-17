@@ -225,9 +225,9 @@ and
   real objects / data structures, etc. behind the JSON tree structure
   is beyond this grammar, but can be applied to the AST defined here.
 * Main grammar 
-  [`de.monticore.lang.JSON` (not yet publicly available)](https://git.rwth-aachen.de/monticore/languages/json/-/blob/master/src/main/grammars/de/monticore/lang/JSON.mc4)
+  [`de.monticore.lang.JSON`](https://github.com/MontiCore/json/blob/develop/src/main/grammars/de/monticore/lang/JSON.mc4)
   and 
-  [*detailed description* (not yet publicly available)](https://git.rwth-aachen.de/monticore/languages/json/-/blob/master/src/main/grammars/de/monticore/lang/json.md)
+  [*detailed description*](https://github.com/MontiCore/json/blob/develop/src/main/grammars/de/monticore/lang/json.md)
 
 
 ### [MontiArc (not yet publicly available)](https://git.rwth-aachen.de/monticore/montiarc/core) (MontiCore Stable) 
