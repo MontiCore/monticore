@@ -48,7 +48,6 @@ public class TopDecoratorTest extends DecoratorTestCase {
   public void testHandWrittenClassFound() {
     MockedStatic<GeneratorEngine> engineMock = Mockito.mockStatic(GeneratorEngine.class);
     engineMock.when(() -> GeneratorEngine.existsHandwrittenClass(Mockito.any(MCPath.class), Mockito.any(String.class))).thenReturn(true);
-    Mockito.when(targetPath.find(Mockito.any(String.class))).thenReturn(Optional.of(Mockito.mock(URL.class)));
     ASTCDDefinition ast = this.topDecorator.decorate(this.topCD).getCDDefinition();
 
     assertEquals(1, ast.getCDClassesList().size());
@@ -70,10 +69,13 @@ public class TopDecoratorTest extends DecoratorTestCase {
     ASTCDEnum cdEnum = ast.getCDEnumsList().get(0);
     assertEquals("ETOP", cdEnum.getName());
     assertDeepEquals(PUBLIC, cdEnum.getModifier());
+    engineMock.close();
   }
 
   @Test
   public void testHandWrittenClassNotFound() {
+    MockedStatic<GeneratorEngine> engineMock = Mockito.mockStatic(GeneratorEngine.class);
+    engineMock.when(() -> GeneratorEngine.existsHandwrittenClass(Mockito.any(MCPath.class), Mockito.any(String.class))).thenReturn(false);
     ASTCDDefinition ast = this.topDecorator.decorate(this.topCD).getCDDefinition();
 
     assertEquals(1, ast.getCDClassesList().size());
@@ -95,5 +97,6 @@ public class TopDecoratorTest extends DecoratorTestCase {
     ASTCDEnum cdEnum = ast.getCDEnumsList().get(0);
     assertEquals("E", cdEnum.getName());
     assertDeepEquals(PUBLIC, cdEnum.getModifier());
+    engineMock.close();
   }
 }
