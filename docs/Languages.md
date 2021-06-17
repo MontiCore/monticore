@@ -95,7 +95,7 @@ classdiagram MyLife2 {
   map any kind of source models to a class/attribute/method/association based
   intermediate structure, before it is printed e.g. as Java code. 
   For example a transformation sequence could be: 
-  * [MontiCoreCLI (not yet publicly available)](https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/monticore-generator/src/main/java/de/monticore/codegen/cd2java/_symboltable/SymbolTableCDDecorator.java): 
+  * [MontiCoreCLI](https://github.com/MontiCore/monticore/blob/dev/monticore-generator/src/main/java/de/monticore/codegen/cd2java/_symboltable/SymbolTableCDDecorator.java): 
     Grammar -> 
     [Grammar AST encoded in CD4Code](https://github.com/MontiCore/monticore/tree/dev/monticore-generator/src/main/java/de/monticore/MontiCoreScript.java#L411) ->
     [Decoration for custom behavior](https://github.com/MontiCore/monticore/tree/dev/monticore-generator/src/main/java/de/monticore/codegen/cd2java/_symboltable/SymbolTableCDDecorator.java) -> 
