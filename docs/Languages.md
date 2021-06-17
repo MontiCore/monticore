@@ -375,14 +375,14 @@ objectdiagram MyFamily {
 * [*Detailed description*](https://github.com/MontiCore/object-diagram/blob/master/src/main/grammars/de/monticore/OD4Report.md) 
 
 
-### [Sequence Diagrams (not yet publicly available)](https://git.rwth-aachen.de/monticore/statechart/sd-language)  (MontiCore stable) 
+### [Sequence Diagrams](https://github.com/MontiCore/sequence-diagram)  (MontiCore stable) 
 * A textual sequence diagram (SD) language.
 * [Detailed description](https://github.com/MontiCore/sequence-diagram/blob/master/src/main/grammars/de/monticore/lang/sd4development.md)
 * The project includes grammars, a symbol table infrastructure, a PrettyPrinter, 
   and various CoCos for typechecking.
 * The language is divided into the two grammars SDBasis and SD4Development.
-* The grammar [SDBasis (not yet publicly available)](https://git.rwth-aachen.de/monticore/statechart/sd-language/-/blob/dev/src/main/grammars/de/monticore/lang/SDBasis.mc4) is a component grammar providing basic SD language features.
-* The grammar [SD4Development (not yet publicly available)](https://git.rwth-aachen.de/monticore/statechart/sd-language/-/blob/dev/src/main/grammars/de/monticore/lang/SD4Development.mc4) extends the grammar SDBasis with concepts used in 
+* The grammar [SDBasis](https://github.com/MontiCore/sequence-diagram/blob/master/src/main/grammars/de/monticore/lang/SDBasis.mc4) is a component grammar providing basic SD language features.
+* The grammar [SD4Development](https://github.com/MontiCore/sequence-diagram/blob/master/src/main/grammars/de/monticore/lang/SD4Development.mc4) extends the grammar SDBasis with concepts used in 
   UML/P SDs.
 * SD4Development supports modeling *objects*, *method calls*, *returns*, exception 
   throws, *dynamic object instantiation*, various *match modifiers* for objects 
@@ -598,7 +598,7 @@ usecasediagram Example {
   [*detailed description* (not yet publicly available)](https://git.rwth-aachen.de/monticore/languages/xml/-/blob/master/src/main/grammars/de/monticore/lang/xml.md)
 
 
-### [JavaLight (not yet publicly available)](https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/JavaLight.mc4) (MontiCore Stable)
+### [JavaLight](https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/JavaLight.md) (MontiCore Stable)
 * This is a reduced version of the **Java language**.
   JavaLight is meant to be used to integrate simplified Java-like parts 
   in modeling languages but not to parse complete Java implementations.
@@ -613,9 +613,9 @@ public void print(String name) {
   System.out.println("Hello " + name);
 }
 ```
-* [Main grammar `de.monticore.JavaLight` (not yet publicly available)](https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/JavaLight.mc4)
+* [Main grammar `de.monticore.JavaLight`](https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/JavaLight.mc4)
   and 
-  [*detailed description* (not yet publicly available)](https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/monticore-grammar/src/main/grammars/de/monticore/JavaLight.md).
+  [*detailed description*](https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/JavaLight.md).
 
 
 
