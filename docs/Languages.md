@@ -375,14 +375,14 @@ objectdiagram MyFamily {
 * [*Detailed description*](https://github.com/MontiCore/object-diagram/blob/master/src/main/grammars/de/monticore/OD4Report.md) 
 
 
-### [Sequence Diagrams](https://git.rwth-aachen.de/monticore/statechart/sd-language)  (MontiCore stable) 
+### [Sequence Diagrams](https://github.com/MontiCore/sequence-diagram)  (MontiCore stable) 
 * A textual sequence diagram (SD) language.
 * [Detailed description](https://github.com/MontiCore/sequence-diagram/blob/master/src/main/grammars/de/monticore/lang/sd4development.md)
 * The project includes grammars, a symbol table infrastructure, a PrettyPrinter, 
   and various CoCos for typechecking.
 * The language is divided into the two grammars SDBasis and SD4Development.
-* The grammar [SDBasis](https://git.rwth-aachen.de/monticore/statechart/sd-language/-/blob/dev/src/main/grammars/de/monticore/lang/SDBasis.mc4) is a component grammar providing basic SD language features.
-* The grammar [SD4Development](https://git.rwth-aachen.de/monticore/statechart/sd-language/-/blob/dev/src/main/grammars/de/monticore/lang/SD4Development.mc4) extends the grammar SDBasis with concepts used in 
+* The grammar [SDBasis](https://github.com/MontiCore/sequence-diagram/blob/master/src/main/grammars/de/monticore/lang/SDBasis.mc4) is a component grammar providing basic SD language features.
+* The grammar [SD4Development](https://github.com/MontiCore/sequence-diagram/blob/master/src/main/grammars/de/monticore/lang/SD4Development.mc4) extends the grammar SDBasis with concepts used in 
   UML/P SDs.
 * SD4Development supports modeling *objects*, *method calls*, *returns*, exception 
   throws, *dynamic object instantiation*, various *match modifiers* for objects 
