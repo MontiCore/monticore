@@ -192,7 +192,7 @@ and
   * Additional elements, such as **enum productions** and comfortable 
     operations for grammar definitions exist.
 * Main grammars 
-  [`de.monticore.grammar.Grammar`](https://github.com/MontiCore/monticore/tree/dev/monticore-grammar/src/main/grammars/de/monticore/grammarGrammar.mc4)
+  [`de.monticore.grammar.Grammar`](https://github.com/MontiCore/monticore/tree/dev/monticore-grammar/src/main/grammars/de/monticore/grammar/Grammar.mc4)
   defines the language with some open parameters and
   [`de.monticore.grammar.Grammar_WithConcepts`](https://github.com/MontiCore/monticore/tree/dev/monticore-grammar/src/main/grammars/de/monticore/grammar/Grammar_WithConcepts.mc4)
   binds the external, imported expressions, method bodies, etc.
