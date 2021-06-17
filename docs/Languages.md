@@ -166,7 +166,7 @@ and
 [*documentation*](https://git.rwth-aachen.de/monticore/languages/gui-dsl/wikis/home).
 
 
-### [MontiCore Grammar](https://git.rwth-aachen.de/monticore/monticore/-/tree/dev/monticore-grammar/src/main/grammars/de/monticore/grammar) (MontiCore Stable)
+### [MontiCore Grammar](https://github.com/MontiCore/monticore/tree/dev/monticore-grammar/src/main/grammars/de/monticore/grammar) (MontiCore Stable)
 * Language for MontiCore Grammars itself. It can be understood as 
   *meta language*, but also used as ordinary language.
 * Its main use currently: A MontiCore grammar defines the 
@@ -192,9 +192,9 @@ and
   * Additional elements, such as **enum productions** and comfortable 
     operations for grammar definitions exist.
 * Main grammars 
-  [`de.monticore.grammar.Grammar`](https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/monticore-grammar/src/main/grammars/de/monticore/grammar/Grammar.mc4)
+  [`de.monticore.grammar.Grammar`](https://github.com/MontiCore/monticore/tree/dev/monticore-grammar/src/main/grammars/de/monticore/grammarGrammar.mc4)
   defines the language with some open parameters and
-  [`de.monticore.grammar.Grammar_WithConcepts`](https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/monticore-grammar/src/main/grammars/de/monticore/grammar/Grammar_WithConcepts.mc4)
+  [`de.monticore.grammar.Grammar_WithConcepts`](https://github.com/MontiCore/monticore/tree/dev/monticore-grammar/src/main/grammars/de/monticore/grammar/Grammar_WithConcepts.mc4)
   binds the external, imported expressions, method bodies, etc.
 * [*Detailed description*](http://monticore.de/MontiCore_Reference-Manual.2017.pdf)
   in the MontiCore Reference Manual.
@@ -437,7 +437,7 @@ sequencediagram AuctionTest {
 * [*detailed description*](https://github.com/MontiCore/siunits/blob/master/src/main/grammars/de/monticore/SIUnits.md)  
 
 
-### [Statecharts](https://git.rwth-aachen.de/monticore/statechart/sc-language) (MontiCore stable)
+### [Statecharts](https://github.com/MontiCore/statecharts) (MontiCore stable)
 * A set of language variants for Statecharts (UML-like or also embedded SysML-like).
 * It is possible to define syntactically simpler or more complex and comfortable
   forms of statecharts using a subset of the eleven provided language components.
@@ -463,7 +463,7 @@ statechart Door {
   and *entry/exit/transition actions* are defined using `Statements`.
 * A Statechart may also have hierarchically decomposed states and other forms of 
   events (not shown here).
-* [*Detailed description*](https://git.rwth-aachen.de/monticore/statechart/sc-language/-/blob/dev/src/main/grammars/de/monticore/Statecharts.md) 
+* [*Detailed description*](https://github.com/MontiCore/statecharts/blob/dev/src/main/grammars/de/monticore/Statecharts.md) 
 
 
 ### [SysML_2](https://git.rwth-aachen.de/monticore/languages/sysml2/sysml2official) (Alpha: Intention to become stable)
