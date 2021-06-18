@@ -32,7 +32,7 @@
     <doxia-site-renderer.version>1.6</doxia-site-renderer.version>
     <xml-apis.version>1.0.b2</xml-apis.version>
     <guava.version>30.0-jre</guava.version>
-    <logback.version>1.1.2</logback.version>
+    <logback.version>1.2.0</logback.version>
     <groovy.version>3.0.7</groovy.version>
 
     <plugin.plugin>3.5.2</plugin.plugin>
