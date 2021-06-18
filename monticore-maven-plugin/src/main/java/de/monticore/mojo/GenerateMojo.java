@@ -7,6 +7,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import de.monticore.MontiCoreConfiguration;
 import de.monticore.MontiCoreScript;
+import de.monticore.cli.MontiCoreStandardCLI;
 import de.se_rwth.commons.configuration.Configuration;
 import de.se_rwth.commons.configuration.ConfigurationPropertiesMapContributor;
 import org.apache.maven.artifact.Artifact;
@@ -27,7 +28,7 @@ import java.nio.file.Path;
 import java.util.*;
 
 import static com.google.common.base.MoreObjects.firstNonNull;
-import static de.monticore.MontiCoreConfiguration.Options.*;
+import static de.monticore.MontiCoreConfiguration.*;
 
 /**
  * Invokes {@link MontiCore} using the given configuration parameters.
@@ -416,71 +417,27 @@ public final class GenerateMojo extends AbstractMojo {
     getOutputDirectory().mkdirs();
     
     // setup configuration
-    Map<String, Iterable<String>> parameters = new HashMap<>();
-    parameters.put(GRAMMARS.toString(), toStringSet(getGrammars()));
-    parameters.put(MODELPATH.toString(), toStringSet(getModelPaths()));
-    parameters.put(HANDCODEDPATH.toString(), toStringSet(getHandcodedPaths()));
-    parameters.put(TEMPLATEPATH.toString(), toStringSet(getTemplatePaths()));
-    parameters.put(OUT.toString(), Arrays.asList(getOutputDirectory().getAbsolutePath()));
-    parameters.put(REPORT.toString(), Arrays.asList(getReportDirectory().getAbsolutePath()));
+    List<String> argList = new ArrayList<>();
+    argList.add("-" + GRAMMAR);
+    argList.addAll(toStringSet(getGrammars()));
+    argList.add("-" + MODELPATH);
+    argList.addAll(toStringSet(getModelPaths()));
+    argList.add("-" + HANDCODEDPATH);
+    argList.addAll(toStringSet(getHandcodedPaths()));
+    argList.add("-" + TEMPLATEPATH);
+    argList.addAll(toStringSet(getTemplatePaths()));
+    argList.add("-" + OUT);
+    argList.addAll(Arrays.asList(getOutputDirectory().getAbsolutePath()));
+    argList.add("-" + REPORT);
+    argList.addAll(Arrays.asList(getReportDirectory().getAbsolutePath()));
+    if (getScript() != null) {
+      argList.add("-" + SCRIPT);
+      argList.add(getScript());
+    }
 
-    if (getForce()) {
-      parameters.put(FORCE.toString(), new ArrayList<>());
-    }
-    
-    Configuration configuration =
-        ConfigurationPropertiesMapContributor.fromSplitMap(parameters);
-    
-    // this temporary wrap in a MontiCoreConfiguration is only here to make the
-    // check for .mc4 files easier
-    MontiCoreConfiguration mcConf = MontiCoreConfiguration.withConfiguration(configuration);
-    // we check if there are any ".mc4" files in the input parameter
-    Iterator<Path> grammarPaths = mcConf.getGrammars().getResolvedPaths();
-    if (!grammarPaths.hasNext()) {
-      getLog()
-          .warn(
-              "0xA1035 Skipping MontiCore as there are no \".mc4\" files in the input parameter. Check your \"grammars\" parameter configuration.");
-      return;
-    }
-    
-    // run the default script
-    if (getScript() == null) {
-      // run script
-      new MontiCoreScript().run(configuration);
-    }
-    // or a provided custom script
-    else {
-      
-      try {
-        String script = null;
-        ClassLoader l = getClass().getClassLoader();
-        URL r = l.getResource(getScript());
-        if (r == null) {
-          r = fromBasePath(getScript()).toURI().toURL();
-        }
-        Scanner scr = new Scanner(r.openStream());
-        script = scr.useDelimiter("\\A").next();
-        scr.close();
-        
-        // adds any custom arguments additionally to the default ones
-        getArguments()
-            .forEach((key, value) -> parameters.put(key, Arrays.asList(value.split(" "))));
-        // this is a Configuration which has the generic arguments in addition
-        configuration = ConfigurationPropertiesMapContributor.fromSplitMap(parameters);
-        
-        // if (getLog().isDebugEnabled()) {
-        getLog().debug("Configuration content:");
-        configuration.getAllValues().forEach(
-            (key, value) -> getLog().debug("Key: " + key + " -> " + value.toString()));
-        // }
-        
-        new MontiCoreScript().run(script, configuration);
-      }
-      catch (IOException e) {
-        throw new MojoFailureException("0xA4117 Failed to load the specified script.", e);
-      }
-    }
-    
+    // run MontiCore via CLI
+    MontiCoreStandardCLI.main(argList.toArray(new String[0]));
+
     // if everything went well we also need to add the generated output to the
     // Maven project compile roots
     getMavenProject().addCompileSourceRoot(getOutputDirectory().getPath());
