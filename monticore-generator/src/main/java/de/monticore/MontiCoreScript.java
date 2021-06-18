@@ -1302,16 +1302,24 @@ public class MontiCoreScript extends Script implements GroovyRunner {
         builder.addVariable(MontiCoreConfiguration.Options.GROOVYHOOK2_SHORT.toString(),
                 mcConfig.getGroovyHook2());
         builder.addVariable("LOG_ID", LOG_ID);
+        builder.addVariable("grammarIterator", mcConfig.getGrammars().getResolvedPaths());
+
+        MontiCoreReports rmf = new MontiCoreReports(mcConfig.getOut().getAbsolutePath(),
+                mcConfig.getReport().getAbsolutePath(),
+                mcConfig.getHandcodedPath(), mcConfig.getTemplatePath());
+        builder.addVariable("reportManagerFactory", rmf);
+
+        // initialize reporting (output)
+        Reporting.init(mcConfig.getOut().getAbsolutePath(),
+                mcConfig.getReport().getAbsolutePath(), rmf);
+
+        // initialize glex
         GlobalExtensionManagement glex = new GlobalExtensionManagement();
         if (mcConfig.getConfigTemplate().isPresent()) {
           glex.setGlobalValue(MontiCoreConfiguration.Options.CONFIGTEMPLATE.toString(),
                   mcConfig.getConfigTemplate().get());
         }
         builder.addVariable("glex", glex);
-        builder.addVariable("grammarIterator", mcConfig.getGrammars().getResolvedPaths());
-        builder.addVariable("reportManagerFactory", new MontiCoreReports(mcConfig.getOut().getAbsolutePath(),
-                mcConfig.getReport().getAbsolutePath(),
-                mcConfig.getHandcodedPath(), mcConfig.getTemplatePath()));
       }
 
       GroovyInterpreter g = builder.build();
