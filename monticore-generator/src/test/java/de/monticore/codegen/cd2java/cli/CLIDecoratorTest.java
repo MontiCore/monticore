@@ -29,16 +29,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 public class CLIDecoratorTest extends DecoratorTestCase {
-  private ASTCDClass cliClass;
-
   private static final String AST_AUTOMATON = "de.monticore.codegen.ast.automaton._ast.ASTAutomaton";
-
   private static final String AUTOMATON_ARTIFACT_SCOPE = "de.monticore.codegen.ast.automaton._symboltable.IAutomatonArtifactScope";
-
   private static final String CLI_OPTIONS = "org.apache.commons.cli.Options";
-
   private final GlobalExtensionManagement glex = new GlobalExtensionManagement();
-
+  private ASTCDClass cliClass;
 
   @Before
   public void setup() {
@@ -48,27 +43,27 @@ public class CLIDecoratorTest extends DecoratorTestCase {
     this.glex.setGlobalValue("service", new AbstractService(ast));
     this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
 
-    CLIDecorator cliDecorator = new CLIDecorator(glex,  new ParserService(ast), new SymbolTableService(ast));
+    CLIDecorator cliDecorator = new CLIDecorator(glex, new ParserService(ast), new SymbolTableService(ast));
     this.cliClass = cliDecorator.decorate(ast).get();
   }
 
   @Test
-  public void testMethodCount(){
-    assertEquals(11, cliClass.getCDMethodList().size());
+  public void testMethodCount() {
+    assertEquals(14, cliClass.getCDMethodList().size());
   }
 
   @Test
-  public void testNoAttribute(){
+  public void testNoAttribute() {
     assertTrue(cliClass.getCDAttributeList().isEmpty());
   }
 
   @Test
-  public void testNoConstructor(){
+  public void testNoConstructor() {
     assertTrue(cliClass.getCDConstructorList().isEmpty());
   }
 
   @Test
-  public void testClassName(){
+  public void testClassName() {
     assertEquals("AutomatonCLI", cliClass.getName());
   }
 
@@ -83,16 +78,17 @@ public class CLIDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testCreateSymbolTablerMethod() {
+  public void testCreateSymbolTableMethod() {
     ASTCDMethod method = getMethodBy("createSymbolTable", cliClass);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertFalse(method.getMCReturnType().isPresentMCVoidType());
-    assertDeepEquals(AUTOMATON_ARTIFACT_SCOPE,method.getMCReturnType().getMCType());
+    assertDeepEquals(AUTOMATON_ARTIFACT_SCOPE, method.getMCReturnType().getMCType());
     assertFalse(method.isEmptyCDParameters());
     assertEquals(1, method.getCDParameterList().size());
     assertDeepEquals(AST_AUTOMATON, method.getCDParameter(0).getMCType());
     assertEquals("node", method.getCDParameter(0).getName());
   }
+
   @Test
   public void testCreateParseMethod() {
     ASTCDMethod method = getMethodBy("parse", cliClass);
@@ -104,7 +100,7 @@ public class CLIDecoratorTest extends DecoratorTestCase {
     assertDeepEquals("String", method.getCDParameter(0).getMCType());
     assertEquals("model", method.getCDParameter(0).getName());
   }
-  //String[] als parameter=>
+
   @Test
   public void testcreateRunMethod() {
     ASTCDMethod method = getMethodBy("run", cliClass);
@@ -112,33 +108,43 @@ public class CLIDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, method.getCDParameterList().size());
     assertDeepEquals("String[]", method.getCDParameter(0).getMCType());
-
     assertEquals("args", method.getCDParameter(0).getName());
   }
+
+  @Test
+  public void testcreateInitMethod() {
+    ASTCDMethod method = getMethodBy("init", cliClass);
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    assertTrue(method.isEmptyCDParameters());
+
+  }
+
   @Test
   public void testcreatePrettyPrintMethod() {
     ASTCDMethod method = getMethodBy("prettyPrint", cliClass);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals(2, method.getCDParameterList().size());
-    assertDeepEquals(AST_AUTOMATON , method.getCDParameter(0).getMCType());
-    assertDeepEquals("String" , method.getCDParameter(1).getMCType());
+    assertDeepEquals(AST_AUTOMATON, method.getCDParameter(0).getMCType());
+    assertDeepEquals("String", method.getCDParameter(1).getMCType());
     assertEquals("ast", method.getCDParameter(0).getName());
     assertEquals("file", method.getCDParameter(1).getName());
 
   }
+
   @Test
   public void testcreatePrintMethod() {
     ASTCDMethod method = getMethodBy("print", cliClass);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals(2, method.getCDParameterList().size());
-    assertDeepEquals("String" , method.getCDParameter(0).getMCType());
-    assertDeepEquals("String" , method.getCDParameter(1).getMCType());
+    assertDeepEquals("String", method.getCDParameter(0).getMCType());
+    assertDeepEquals("String", method.getCDParameter(1).getMCType());
     assertEquals("content", method.getCDParameter(0).getName());
     assertEquals("path", method.getCDParameter(1).getName());
   }
-  //Options parameter
+
   @Test
   public void testcreatePrintHelpMethod() {
     ASTCDMethod method = getMethodBy("printHelp", cliClass);
@@ -155,8 +161,8 @@ public class CLIDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals(2, method.getCDParameterList().size());
-    assertDeepEquals(AST_AUTOMATON , method.getCDParameter(0).getMCType());
-    assertDeepEquals("String" , method.getCDParameter(1).getMCType());
+    assertDeepEquals(AST_AUTOMATON, method.getCDParameter(0).getMCType());
+    assertDeepEquals("String", method.getCDParameter(1).getMCType());
     assertEquals("ast", method.getCDParameter(0).getName());
     assertEquals("path", method.getCDParameter(1).getName());
   }
@@ -177,12 +183,12 @@ public class CLIDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals(2, method.getCDParameterList().size());
-    assertDeepEquals(AUTOMATON_ARTIFACT_SCOPE , method.getCDParameter(0).getMCType());
-    assertDeepEquals("String" , method.getCDParameter(1).getMCType());
+    assertDeepEquals(AUTOMATON_ARTIFACT_SCOPE, method.getCDParameter(0).getMCType());
+    assertDeepEquals("String", method.getCDParameter(1).getMCType());
     assertEquals("scope", method.getCDParameter(0).getName());
     assertEquals("path", method.getCDParameter(1).getName());
   }
-  // return type
+
   @Test
   public void testCreateInitOptionsMethod() {
     ASTCDMethod method = getMethodBy("initOptions", cliClass);
@@ -191,6 +197,29 @@ public class CLIDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(CLI_OPTIONS, method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
   }
+
+  @Test
+  public void testAddAdditionalOptionsMethod() {
+    ASTCDMethod method = getMethodBy("addAdditionalOptions", cliClass);
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals(CLI_OPTIONS, method.getMCReturnType().getMCType());
+    assertEquals(1, method.sizeCDParameters());
+    assertEquals("options", method.getCDParameter(0).getName());
+    assertDeepEquals(CLI_OPTIONS, method.getCDParameter(0).getMCType());
+  }
+
+  @Test
+  public void testAddStandardOptionsMethod() {
+    ASTCDMethod method = getMethodBy("addStandardOptions", cliClass);
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals(CLI_OPTIONS, method.getMCReturnType().getMCType());
+    assertEquals(1, method.sizeCDParameters());
+    assertEquals("options", method.getCDParameter(0).getName());
+    assertDeepEquals(CLI_OPTIONS, method.getCDParameter(0).getMCType());
+  }
+
   @Test
   public void testGeneratedCode() {
     GeneratorSetup generatorSetup = new GeneratorSetup();
