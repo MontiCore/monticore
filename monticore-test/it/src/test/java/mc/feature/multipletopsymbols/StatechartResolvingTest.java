@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.feature.multipletopsymbols;
 
-import de.monticore.io.paths.ModelPath;
+import de.monticore.io.paths.MCPath;
 import mc.feature.multipletopsymbols.statechart.StatechartMill;
 import mc.feature.multipletopsymbols.statechart._ast.ASTSCArtifact;
 import mc.feature.multipletopsymbols.statechart._parser.StatechartParser;
@@ -27,7 +27,7 @@ public class StatechartResolvingTest {
   @BeforeClass
   public static void setup() {
     gs = StatechartMill.globalScope();
-    gs.setModelPath(new ModelPath(Paths.get("src/test/resources")));
+    gs.setSymbolPath(new MCPath(Paths.get("src/test/resources")));
     gs.setFileExt("sc");
   }
 

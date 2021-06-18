@@ -34,7 +34,6 @@ public class IncGenGradleReporter extends IncGenReporter {
       }
     }
 
-    Collections.sort(grammarFiles);
 
     if (inputFile != null && !inputFile.isEmpty()) {
       String checkSum;

@@ -8,7 +8,7 @@ import automata._parser.AutomataParser;
 import automata._symboltable.*;
 import automata.cocos.TransitionSourceExists;
 import de.monticore.ast.ASTNode;
-import de.monticore.io.paths.ModelPath;
+import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.antlr.v4.runtime.RecognitionException;
@@ -126,7 +126,7 @@ public class TransitionSourceExistsTest {
   public static IAutomataArtifactScope createSymbolTable(ASTAutomaton ast) {
     IAutomataGlobalScope globalScope = AutomataMill.globalScope();
     globalScope.clear();
-    globalScope.setModelPath(new ModelPath());
+    globalScope.setSymbolPath(new MCPath());
     globalScope.setFileExt("aut");
 
     AutomataScopesGenitorDelegator symbolTable = AutomataMill

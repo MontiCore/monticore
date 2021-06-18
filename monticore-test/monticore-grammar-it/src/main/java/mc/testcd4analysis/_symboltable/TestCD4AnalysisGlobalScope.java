@@ -2,9 +2,7 @@
 package mc.testcd4analysis._symboltable;
 
 import com.google.common.collect.ImmutableSet;
-import de.monticore.io.paths.ModelCoordinate;
-import de.monticore.io.paths.ModelCoordinates;
-import de.monticore.io.paths.ModelPath;
+import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.Splitters;
@@ -13,8 +11,9 @@ import mc.testcd4analysis.TestCD4AnalysisMill;
 import mc.testcd4analysis._ast.ASTCDCompilationUnit;
 import mc.testcd4analysis._parser.TestCD4AnalysisParser;
 
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.Reader;
+import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -22,12 +21,12 @@ import java.util.Set;
 
 public class TestCD4AnalysisGlobalScope extends TestCD4AnalysisGlobalScopeTOP{
 
-  public TestCD4AnalysisGlobalScope(ModelPath mp) {
-    super(mp, "cd");
+  public TestCD4AnalysisGlobalScope(MCPath symbolPath) {
+    super(symbolPath, "cd");
   }
 
-  public TestCD4AnalysisGlobalScope(ModelPath modelPath, String modelFileExtension) {
-    super(modelPath, modelFileExtension);
+  public TestCD4AnalysisGlobalScope(MCPath symbolPath, String modelFileExtension) {
+    super(symbolPath, modelFileExtension);
   }
 
   public TestCD4AnalysisGlobalScope(){
@@ -74,43 +73,30 @@ public class TestCD4AnalysisGlobalScope extends TestCD4AnalysisGlobalScopeTOP{
     return this;
   }
 
+
+  @Override
   public  void loadFileForModelName (String modelName)  {
-    String symbolFileExtension = getFileExt() + "sym";
-    de.monticore.io.paths.ModelCoordinate symbolFileCoordinate =
-        de.monticore.io.paths.ModelCoordinates.createQualifiedCoordinate(modelName, symbolFileExtension);
-    String filePath = symbolFileCoordinate.getQualifiedPath().toString();
-    if(!isFileLoaded(filePath)) {
-      addLoadedFile(filePath);
-
-      //Load symbol table into enclosing global scope if a file has been found
-      getModelPath().resolveModel(symbolFileCoordinate);
-      if (symbolFileCoordinate.hasLocation()) {
-        java.net.URL url = symbolFileCoordinate.getLocation();
-        this.addSubScope(symbols2Json.load(url));
+    Optional<URL> location = getSymbolPath().find(modelName, getFileExt());
+    if(location.isPresent() && !isFileLoaded(location.get().toString())){
+      addLoadedFile(location.get().toString());
+      ITestCD4AnalysisArtifactScope as = getSymbols2Json().load(location.get());
+      addSubScope(as);
+    }
+    else if(!location.isPresent()){
+      // load models instead of symbols
+      location = getSymbolPath().find(modelName, "cd");
+      if(location.isPresent() && !isFileLoaded(location.get().toString())){
+        addLoadedFile(location.get().toString());
+        ASTCDCompilationUnit ast = parse(location.get().getFile());
+        ITestCD4AnalysisArtifactScope as = new TestCD4AnalysisPhasedSymbolTableCreatorDelegator().createFromAST(ast);
+        addSubScope(as);
       }
-
-      // else, use try to load model (instead of symbol table)
-      ModelCoordinate model = ModelCoordinates
-          .createQualifiedCoordinate(modelName, getFileExt());
-      model = getModelPath().resolveModel(model);
-
-      // 3. if the file was found, parse the model and create its symtab
-      if(model.hasLocation()){
-        ASTCDCompilationUnit ast = parse(model);
-        ITestCD4AnalysisArtifactScope artScope = new TestCD4AnalysisPhasedSymbolTableCreatorDelegator().createFromAST(ast);
-        addSubScope(artScope);
-        addLoadedFile(filePath);
-      }
-    } else {
-      Log.debug("Already tried to load model for '" + modelName + "'. If model exists, continue with cached version.",
-          "TestCD4AnalysisGlobalScope");
     }
   }
 
-  private ASTCDCompilationUnit parse(ModelCoordinate model){
+  private ASTCDCompilationUnit parse(String model){
     try {
-      Reader reader = ModelCoordinates.getReader(model);
-      Optional<ASTCDCompilationUnit> optAST = new TestCD4AnalysisParser().parse(reader);
+      Optional<ASTCDCompilationUnit> optAST = new TestCD4AnalysisParser().parse(new FileReader(model));
       if(optAST.isPresent()){
         return optAST.get();
       }

@@ -2,22 +2,24 @@
 
 package mc.embedding.host._symboltable;
 
-import de.monticore.io.paths.ModelCoordinate;
-import de.monticore.io.paths.ModelCoordinates;
-import de.monticore.io.paths.ModelPath;
+import de.monticore.io.paths.MCPath;
+import de.monticore.utils.Names;
 import de.se_rwth.commons.logging.Log;
 import mc.embedding.host.HostMill;
 import mc.embedding.host._parser.HostParser;
 import mc.embedding.host._ast.ASTHost;
 
+import java.io.FileReader;
 import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Paths;
 import java.util.Optional;
 
 public class HostGlobalScope extends HostGlobalScopeTOP {
 
-  public HostGlobalScope(ModelPath modelPath,
-      String modelFileExtension) {
-    super(modelPath, modelFileExtension);
+  public HostGlobalScope(MCPath symbolPath,
+                         String modelFileExtension) {
+    super(symbolPath, modelFileExtension);
   }
 
   public HostGlobalScope() {
@@ -29,27 +31,26 @@ public class HostGlobalScope extends HostGlobalScopeTOP {
 
   @Override public void loadFileForModelName(String modelName) {
     super.loadFileForModelName(modelName);
-    ModelCoordinate modelCoordinate = ModelCoordinates
-        .createQualifiedCoordinate(modelName, "host");
-    String filePath = modelCoordinate.getQualifiedPath().toString();
+    String fileExt = "host";
+    Optional<URL> location = getSymbolPath().find(modelName, fileExt);
+    String filePath = Paths.get(Names.getPathFromPackage(modelName) + "." + fileExt).toString();
     if (!isFileLoaded(filePath)) {
       addLoadedFile(filePath);
-      getModelPath().resolveModel(modelCoordinate);
-      if (modelCoordinate.hasLocation()) {
-        ASTHost parse = parse(modelCoordinate);
+      if (location.isPresent()) {
+        ASTHost parse = parse(location.get().getPath());
         HostMill.scopesGenitorDelegator().createFromAST(parse);
       }
     }
     else {
       Log.debug("Already tried to load model for '" + modelName
-              + "'. If model exists, continue with cached version.",
-          "CompositeGlobalScope");
+          + "'. If model exists, continue with cached version.",
+        "HostGlobalScope");
     }
   }
 
-  private ASTHost parse(ModelCoordinate model) {
+  private ASTHost parse(String model) {
     try {
-      Optional<ASTHost> ast = new HostParser().parse(ModelCoordinates.getReader(model));
+      Optional<ASTHost> ast = new HostParser().parse(new FileReader(model));
       if (ast.isPresent()) {
         return ast.get();
       }

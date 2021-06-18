@@ -38,6 +38,7 @@ sourceSets {
     test.java.srcDirs += [testGrammarOutDir]
 
     grammars {
+      java.srcDirs = []
         resources {
             srcDirs(grammarDir)
             include "**/*.mc4"

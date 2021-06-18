@@ -12,6 +12,7 @@ import java.nio.file.Path;
  * The actual presence of a file denoted by a ModelCoordinate object is <i>not</i> guaranteed.
  * 
  */
+@Deprecated
 public interface ModelCoordinate {
   
   /**

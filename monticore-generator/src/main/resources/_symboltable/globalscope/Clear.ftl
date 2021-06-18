@@ -7,7 +7,7 @@ ${tc.signature("resolverMethodList", "symbolList")}
 <#list symbolList as symbol>
   get${symbol}s().clear();
 </#list>
-  this.modelPath = new de.monticore.io.paths.ModelPath();
+  this.symbolPath = new de.monticore.io.paths.MCPath();
   this.subScopes.clear();
   this.symbolDeSers.clear();
   init();

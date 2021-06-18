@@ -1272,16 +1272,24 @@ public class MontiCoreScript extends Script implements GroovyRunner {
         builder.addVariable(GROOVYHOOK1, mcConfig.getGroovyHook1());
         builder.addVariable(GROOVYHOOK2, mcConfig.getGroovyHook2());
         builder.addVariable("LOG_ID", LOG_ID);
+        builder.addVariable("grammarIterator", mcConfig.getGrammars().getResolvedPaths());
+
+        MontiCoreReports rmf = new MontiCoreReports(mcConfig.getOut().getAbsolutePath(),
+                mcConfig.getReport().getAbsolutePath(),
+                mcConfig.getHandcodedPath(), mcConfig.getTemplatePath());
+        builder.addVariable("reportManagerFactory", rmf);
+
+        // initialize reporting (output)
+        Reporting.init(mcConfig.getOut().getAbsolutePath(),
+                mcConfig.getReport().getAbsolutePath(), rmf);
+
+        // initialize glex
         GlobalExtensionManagement glex = new GlobalExtensionManagement();
         if (mcConfig.getConfigTemplate().isPresent()) {
           glex.setGlobalValue(CONFIGTEMPLATE_LONG,
                   mcConfig.getConfigTemplate().get());
         }
         builder.addVariable("glex", glex);
-        builder.addVariable("grammarIterator", mcConfig.getGrammars().getResolvedPaths());
-        builder.addVariable("reportManagerFactory", new MontiCoreReports(mcConfig.getOut().getAbsolutePath(),
-                mcConfig.getReport().getAbsolutePath(),
-                mcConfig.getHandcodedPath(), mcConfig.getTemplatePath()));
 
         // for backward-compatibilty with outdated Maven scripts, we also add
         // the "force" parameter, which is always true

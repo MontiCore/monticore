@@ -5,6 +5,7 @@ theme:
   icon:
     logo: 'fontawesome/solid/desktop'
 
+site_url: https://monticore.github.io/monticore/
 repo_url: https://github.com/MontiCore/monticore/
 edit_uri: ""
 

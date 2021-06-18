@@ -5,6 +5,7 @@
  */
 package de.monticore.symboltable;
 
+import de.monticore.io.paths.MCPath;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.serialization.IDeSer;
 import de.monticore.symboltable.serialization.ISymbolDeSer;
@@ -17,13 +18,31 @@ import java.util.Map;
 public interface IGlobalScope {
 
   /**
-   * Getter- and setter methods for the model path of this global scope.
+   * @deprecated  will be removed soon. Use setSymbolPath instead
+   * @return
+   */
+  @Deprecated
+  default ModelPath getModelPath() {
+    return new ModelPath(getSymbolPath().getEntries());
+  }
+
+  /**
+   * @deprecated  will be removed soon. Use setSymbolPath instead
+   * @param modelPath
+   */
+  @Deprecated
+  default void setModelPath(ModelPath modelPath){
+    setSymbolPath(new MCPath(modelPath));
+  }
+  
+  /**
+   * Getter- and setter methods for the symbol path of this global scope.
    * The model path contains paths in which files with stored symbol tables
    * are located.
    */
-  ModelPath getModelPath();
+  MCPath getSymbolPath();
 
-  void setModelPath(ModelPath modelPath);
+  void setSymbolPath(MCPath symbolPath);
 
   /**
    * Getter- and setter methods for the regular expression of file extensions

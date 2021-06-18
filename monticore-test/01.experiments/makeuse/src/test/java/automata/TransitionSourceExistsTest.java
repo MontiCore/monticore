@@ -9,7 +9,6 @@ import automata._parser.AutomataParser;
 import automata._symboltable.*;
 import automata.cocos.TransitionSourceExists;
 import de.monticore.ast.ASTNode;
-import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.antlr.v4.runtime.RecognitionException;

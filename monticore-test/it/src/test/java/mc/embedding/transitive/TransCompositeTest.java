@@ -37,7 +37,7 @@ public class TransCompositeTest extends GeneratorIntegrationsTest {
   @Test
   public void test() {
     final ITransCompositeGlobalScope scope = TransCompositeMill.globalScope();
-    scope.getModelPath().addEntry(Paths.get("src/test/resources/mc/embedding/transitive/"));
+    scope.getSymbolPath().addEntry(Paths.get("src/test/resources/mc/embedding/transitive/"));
 
     // Symbol of the host language
     final TransStartSymbol transHostSymbol = scope.resolveTransStart("TransComposite").orElse(null);
