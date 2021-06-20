@@ -63,6 +63,7 @@ public class ReportingRepository {
    * @see IterablePath#getResolvedPaths()
    * @see IterablePath#from(List, String)
    */
+  @Deprecated
   public void initAllHWJava(IterablePath hwcPath) {
     Iterator<Path> hwcFiles = hwcPath.getResolvedPaths();
     while (hwcFiles.hasNext()) {
@@ -77,6 +78,7 @@ public class ReportingRepository {
    * @see IterablePath#getResolvedPaths()
    * @see IterablePath#from(List, String)
    */
+  @Deprecated
   public void initAllHWTemplates(IterablePath hwtPath) {
     Iterator<Path> hwtFiles = hwtPath.get();
     while (hwtFiles.hasNext()) {

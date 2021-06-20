@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.typechecktest;
 
-import de.monticore.io.paths.ModelPath;
+import de.monticore.io.paths.MCPath;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.types.check.ISynthesize;
@@ -56,7 +56,7 @@ public class CoCoTests {
         .build();
     string.setSpannedScope(TypeCheckTestMill.scope());
     TypeCheckTestMill.globalScope().add(string);
-    TypeCheckTestMill.globalScope().setModelPath(new ModelPath(Paths.get("src/test/resources")));
+    TypeCheckTestMill.globalScope().setSymbolPath(new MCPath(Paths.get("src/test/resources")));
 
     TypeCheckTestParser parser = TypeCheckTestMill.parser();
     Optional<ASTTCCompilationUnit> bar = parser

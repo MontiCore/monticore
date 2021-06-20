@@ -8,7 +8,6 @@ import org.antlr.v4.runtime.RecognitionException;
 
 import grammarforast15._ast.ASTS;
 import grammarforast15._parser.GrammarForAST15Parser;
-import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
 
 /**

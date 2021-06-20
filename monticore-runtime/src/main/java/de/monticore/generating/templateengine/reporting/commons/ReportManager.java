@@ -2,6 +2,7 @@
 
 package de.monticore.generating.templateengine.reporting.commons;
 
+import java.net.URL;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -13,6 +14,7 @@ import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.reporting.artifacts.ReportingNameHelper;
 import de.monticore.io.paths.IterablePath;
+import de.monticore.io.paths.MCPath;
 import de.monticore.symboltable.IScope;
 import de.se_rwth.commons.logging.Log;
 
@@ -262,9 +264,16 @@ public class ReportManager implements IReportEventHandler {
     }
   }
 
+  @Deprecated
   public void reportHWCExistenceCheck(IterablePath parentDir, Path fileName, Optional<Path> resolvedPath) {
     for (IReportEventHandler handler : this.reportEventHandlers) {
       handler.reportHWCExistenceCheck(parentDir, fileName, resolvedPath);
+    }
+  }
+
+  public void reportHWCExistenceCheck(MCPath mcp, Path fileName, Optional<URL> resolvedPath) {
+    for (IReportEventHandler handler : this.reportEventHandlers) {
+      handler.reportHWCExistenceCheck(mcp, fileName, resolvedPath);
     }
   }
 

@@ -1,9 +1,8 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("definitionName")}
-  java.util.Optional<de.monticore.io.paths.ModelCoordinate> mc =
-  de.monticore.io.FileFinder.findFile(getModelPath(), modelName, getFileExt(), cache);
-  if(mc.isPresent()){
-    addLoadedFile(mc.get().getQualifiedPath().toString());
-    I${definitionName}ArtifactScope as = getSymbols2Json().load(mc.get().getLocation());
+  java.util.Optional<java.net.URL> location = getSymbolPath().find(modelName, getFileExt());
+  if(location.isPresent() && !isFileLoaded(location.get().toString())){
+    addLoadedFile(location.get().toString());
+    I${definitionName}ArtifactScope as = getSymbols2Json().load(location.get());
     addSubScope(as);
   }
