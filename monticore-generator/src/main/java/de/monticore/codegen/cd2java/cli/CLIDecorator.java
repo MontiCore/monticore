@@ -59,6 +59,7 @@ public class CLIDecorator extends AbstractCreator<ASTCDCompilationUnit, Optional
           .addCDMember(createPrettyPrintMethod())
           .addCDMember(createPrintMethod(parserService.getCDSymbol()))
           .addCDMember(createPrintHelpMethod())
+          .addCDMember(createPrintVersionMethod())
           .addCDMember(createReportMethod())
           .addCDMember(createRunDefaultCoCosMethod())
           .addCDMember(createStoreSymbolsMethod())
@@ -223,6 +224,18 @@ public class CLIDecorator extends AbstractCreator<ASTCDCompilationUnit, Optional
     ASTCDParameter parameter = getCDParameterFacade().createParameter(optionsType, "options");
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), "printHelp", parameter);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "PrintHelp", cliName));
+    return method;
+  }
+
+  /**
+   * creates a method to print the version information to the CLI
+   *
+   * @return the decorated printVersion method
+   */
+  protected ASTCDMethod createPrintVersionMethod() {
+    String metadataFile = symbolTableService.getCDSymbol().getName() + "Metadata.properties";
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), "printVersion");
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "PrintVersion", metadataFile));
     return method;
   }
 
