@@ -5,6 +5,4 @@ public class CLIConstants {
 
   public static final String CLI_SUFFIX = "CLI";
 
-  public static final String METADATA_SUFFIX = "Metadata";
-
 }
