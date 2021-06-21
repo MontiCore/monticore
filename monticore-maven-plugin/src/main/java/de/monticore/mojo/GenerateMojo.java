@@ -424,8 +424,10 @@ public final class GenerateMojo extends AbstractMojo {
     argList.addAll(toStringSet(getModelPaths()));
     argList.add("-" + HANDCODEDPATH);
     argList.addAll(toStringSet(getHandcodedPaths()));
-    argList.add("-" + TEMPLATEPATH);
-    argList.addAll(toStringSet(getTemplatePaths()));
+   if (!getTemplatePaths().isEmpty()) {
+     argList.add("-" + TEMPLATEPATH);
+     argList.addAll(toStringSet(getTemplatePaths()));
+   }
     argList.add("-" + OUT);
     argList.addAll(Arrays.asList(getOutputDirectory().getAbsolutePath()));
     argList.add("-" + REPORT);
