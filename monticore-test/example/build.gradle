@@ -10,7 +10,7 @@ version = '1.0.0-SNAPSHOT'
 
 buildDir = file("$projectDir/target")
 def mcversion  = '7.1.0-SNAPSHOT'
-def se_commons_version = '7.1.0-SNAPSHOT'
+def se_commons_version = '7.1.1-SNAPSHOT'
 def grammarName = 'Automata'
 def outDir = "$buildDir/generated-sources/"
 
