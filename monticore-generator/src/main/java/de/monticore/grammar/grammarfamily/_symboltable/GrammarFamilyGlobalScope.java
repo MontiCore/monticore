@@ -50,7 +50,7 @@ public class GrammarFamilyGlobalScope extends GrammarFamilyGlobalScopeTOP {
     if (!isFileLoaded(filePath)) {
 
       // 2. calculate potential location of model file and try to find it in model path
-      Optional<URL> url = getSymbolPath().find(modelName, "mc4");
+      Optional<URL> url = getSymbolPath().find(Names.getPathFromPackage(modelName)+".mc4");
 
       // 3. if the file was found, parse the model and create its symtab
       if (url.isPresent()) {
