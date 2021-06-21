@@ -11,6 +11,7 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import static de.monticore.MontiCoreConfiguration.*;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -25,56 +26,56 @@ public class MontiCoreStandardCLITest {
    * Pretty default arguments.
    */
   static String[] simpleArgs = {
-      "-" + MontiCoreConfiguration.Options.GRAMMARS,
+      "-" + GRAMMAR,
       "src/test/resources/de/monticore/Automaton.mc4",
-      "-" + MontiCoreConfiguration.Options.MODELPATH, "src/test/resources",
-      "-" + MontiCoreConfiguration.Options.OUT, "target/test-run",
-      "-" + MontiCoreConfiguration.Options.HANDCODEDPATH, "src/test/java" };
+      "-" + MODELPATH, "src/test/resources",
+      "-" + OUT, "target/test-run",
+      "-" + HANDCODEDPATH, "src/test/java" };
   
   /**
    * Arguments activating the detailed developer logging.
    */
   static String[] devLogArgs = {
-      "-" + MontiCoreConfiguration.Options.MODELPATH, "src/test/resources",
-      "-" + MontiCoreConfiguration.Options.OUT, "target/test-run",
-      "-" + MontiCoreConfiguration.Options.GRAMMARS,
+      "-" + MODELPATH, "src/test/resources",
+      "-" + OUT, "target/test-run",
+      "-" + GRAMMAR,
       "src/test/resources/de/monticore/Automaton.mc4",
-      "-" + MontiCoreConfiguration.Options.HANDCODEDPATH, "src/test/java",
-      "-" + MontiCoreConfiguration.Options.DEV };
+      "-" + HANDCODEDPATH, "src/test/java",
+      "-" + DEV };
   
   /**
    * Arguments specifying a custom log configuration file to use.
    */
   static String[] customLogArgs = {
-      "-" + MontiCoreConfiguration.Options.GRAMMARS,
+      "-" + GRAMMAR,
       "src/test/resources/de/monticore/Automaton.mc4",
-      "-" + MontiCoreConfiguration.Options.MODELPATH, "src/test/resources",
-      "-" + MontiCoreConfiguration.Options.OUT, "target/test-run",
-      "-" + MontiCoreConfiguration.Options.HANDCODEDPATH, "src/test/java",
-      "-" + MontiCoreConfiguration.Options.CUSTOMLOG, "src/test/resources/test.logging.xml" };
+      "-" + MODELPATH, "src/test/resources",
+      "-" + OUT, "target/test-run",
+      "-" + HANDCODEDPATH, "src/test/java",
+      "-" + CUSTOMLOG, "src/test/resources/test.logging.xml" };
   
   /**
    * Arguments for using a custom Groovy script.
    */
   static String[] customScriptArgs = {
-      "-" + MontiCoreConfiguration.Options.GRAMMARS,
+      "-" + GRAMMAR,
       "src/test/resources/de/monticore/Automaton.mc4",
-      "-" + MontiCoreConfiguration.Options.MODELPATH, "src/test/resources",
-      "-" + MontiCoreConfiguration.Options.OUT, "target/test-run",
-      "-" + MontiCoreConfiguration.Options.HANDCODEDPATH, "src/test/java",
-      "-" + MontiCoreConfiguration.Options.SCRIPT, "src/test/resources/my_noemf.groovy",
+      "-" + MODELPATH, "src/test/resources",
+      "-" + OUT, "target/test-run",
+      "-" + HANDCODEDPATH, "src/test/java",
+      "-" + SCRIPT, "src/test/resources/my_noemf.groovy",
       };
   
   /**
    * Arguments for using a custom Groovy script.
    */
   static String[] customEmfScriptArgs = {
-      "-" + MontiCoreConfiguration.Options.GRAMMARS,
+      "-" + GRAMMAR,
       "src/test/resources/de/monticore/AutomatonEmf.mc4",
-      "-" + MontiCoreConfiguration.Options.MODELPATH, "src/test/resources",
-      "-" + MontiCoreConfiguration.Options.OUT, "target/test-run",
-      "-" + MontiCoreConfiguration.Options.HANDCODEDPATH, "src/test/java",
-      "-" + MontiCoreConfiguration.Options.SCRIPT, "src/test/resources/my_emf.groovy",
+      "-" + MODELPATH, "src/test/resources",
+      "-" + OUT, "target/test-run",
+      "-" + HANDCODEDPATH, "src/test/java",
+      "-" + SCRIPT, "src/test/resources/my_emf.groovy",
       };
   
   /**
@@ -82,14 +83,14 @@ public class MontiCoreStandardCLITest {
    * be reported to the user instead of silently doing nothing.
    */
   static String[] argsWithNoGrammars = {
-      "-" + MontiCoreConfiguration.Options.GRAMMARS,
+      "-" + GRAMMAR,
       "src/test/resources/monticore",
-      "-" + MontiCoreConfiguration.Options.MODELPATH, "src/test/resources",
-      "-" + MontiCoreConfiguration.Options.OUT, "target/test-run",
-      "-" + MontiCoreConfiguration.Options.HANDCODEDPATH, "src/test/java" };
+      "-" + MODELPATH, "src/test/resources",
+      "-" + OUT, "target/test-run",
+      "-" + HANDCODEDPATH, "src/test/java" };
   
   static String[] help = {
-      "-" + MontiCoreConfiguration.Options.HELP
+      "-" + HELP
   };
   
   @BeforeClass
