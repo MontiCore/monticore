@@ -5,11 +5,7 @@ import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
-import de.monticore.MontiCoreConfiguration;
-import de.monticore.MontiCoreScript;
 import de.monticore.cli.MontiCoreStandardCLI;
-import de.se_rwth.commons.configuration.Configuration;
-import de.se_rwth.commons.configuration.ConfigurationPropertiesMapContributor;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
@@ -22,9 +18,6 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.nio.file.Path;
 import java.util.*;
 
 import static com.google.common.base.MoreObjects.firstNonNull;
