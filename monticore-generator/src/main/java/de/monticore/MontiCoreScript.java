@@ -11,6 +11,7 @@ package de.monticore;
  import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
  import de.monticore.codegen.cd2java.cli.CLIDecorator;
  import de.monticore.codegen.cd2java.typecd2java.TemplateHPService;
+ import de.monticore.codegen.metadata.MetadataGenerator;
  import de.monticore.generating.templateengine.TemplateController;
  import de.monticore.generating.templateengine.TemplateHookPoint;
  import de.monticore.grammar.grammarfamily._visitor.GrammarFamilyTraverser;
@@ -330,6 +331,21 @@ public class MontiCoreScript extends Script implements GroovyRunner {
             grammar,
             "0xA4108 Parser generation can't be processed: the reference to the grammar ast is null");
     ParserGenerator.generateParser(glex, grammar, symbolTable, handcodedPath, templatePath, outputDirectory, embeddedJavaCode, lang);
+  }
+
+  /**
+   * Generates the metadata for the given grammar.
+   *
+   * @param grammar         To generate the metadata for
+   * @param handcodedPath
+   * @param templatePath
+   * @param outputDirectory output directory for the generated metadata file
+   */
+  public void generateMetadata(ASTMCGrammar grammar,
+                               IterablePath handcodedPath,
+                               IterablePath templatePath,
+                               File outputDirectory) {
+    MetadataGenerator.generateMetadata(grammar, handcodedPath, templatePath, outputDirectory);
   }
 
   /**

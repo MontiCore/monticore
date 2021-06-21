@@ -6,8 +6,8 @@ options.addOption(org.apache.commons.cli.Option.builder("h")
     .build());
 
 //version
-options.addOption(org.apache.commons.cli.Option.builder("v)
-    .longOpt("version)
+options.addOption(org.apache.commons.cli.Option.builder("v")
+    .longOpt("version")
     .desc("Prints version information")
     .build());
 
