@@ -173,7 +173,7 @@ public class CLIDecorator extends AbstractCreator<ASTCDCompilationUnit, Optional
     ASTMCType startProdType = getMCTypeFacade().createQualifiedType(startProd.get());
     ASTCDParameter parameter = getCDParameterFacade().createParameter(startProdType, "ast");
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), "runDefaultCoCos", parameter);
-    this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint("Log.warn(\"0xA1053" + generatedError + " CoCo's are not implemented yet.\");"));
+    this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint("Log.warn(\"0xA1053" + generatedError + " CoCos are not implemented yet.\");"));
     return method;
   }
 
