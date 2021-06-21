@@ -39,10 +39,6 @@ hook(gh1, glex, grammars)
 // M1.2: Build Global Scope
 mcScope = createMCGlobalScope(modelPath)
 
-// M1.3: Initialize reporting (output)
-Reporting.init(out.getAbsolutePath(),
-               report.getAbsolutePath(), reportManagerFactory)
-
 // ############################################################
 // Loop over the list of grammars provided as arguments (these grammars are
 // usually independent or build on each other in the correct order).

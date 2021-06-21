@@ -5,7 +5,7 @@
 
   <!-- this is a technically detailed file appender -->
   <appender name="DETAIL" class="ch.qos.logback.core.FileAppender">
-    <file>${MC_OUT}/monticore.detailed.${bySecond}.log</file>
+    <file>out/monticore.detailed.${bySecond}.log</file>
     <encoder>
       <pattern>
         %date{yyyy-MM-dd HH:mm:ss} %-7([%level]) %logger{26} %message%n

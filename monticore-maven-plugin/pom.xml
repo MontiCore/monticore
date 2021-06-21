@@ -21,7 +21,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-    <se-commons.version>1.7.11</se-commons.version>
+    <se-commons.version>7.1.1-SNAPSHOT</se-commons.version>
     <maven-artifact.version>3.2.3</maven-artifact.version>
     <maven-core.version>3.2.3</maven-core.version>
     <maven-plugin-api.version>3.3.3</maven-plugin-api.version>
@@ -33,6 +33,7 @@
     <xml-apis.version>1.0.b2</xml-apis.version>
     <guava.version>30.0-jre</guava.version>
     <logback.version>1.1.2</logback.version>
+    <groovy.version>3.0.7</groovy.version>
 
     <plugin.plugin>3.5.2</plugin.plugin>
 
@@ -79,6 +80,12 @@
       <groupId>de.se_rwth.commons</groupId>
       <artifactId>se-commons-groovy</artifactId>
       <version>${se-commons.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.codehaus.groovy</groupId>
+      <artifactId>groovy</artifactId>
+      <version>${groovy.version}</version>
     </dependency>
 
     <dependency>

@@ -9,6 +9,9 @@ import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDDefinition;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cd4analysis._symboltable.ICD4AnalysisGlobalScope;
+import de.monticore.cli.MontiCoreStandardCLI;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.reporting.Reporting;
@@ -16,10 +19,10 @@ import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
 import de.monticore.grammar.grammarfamily._symboltable.GrammarFamilyGlobalScope;
 import de.monticore.grammar.grammarfamily._symboltable.IGrammarFamilyGlobalScope;
-import de.monticore.io.paths.MCPath;
-import de.se_rwth.commons.cli.CLIArguments;
-import de.se_rwth.commons.configuration.ConfigurationPropertiesMapContributor;
+import de.monticore.io.paths.IterablePath;
+import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
+import org.apache.commons.cli.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -33,6 +36,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
+import static de.monticore.MontiCoreConfiguration.*;
 import static org.junit.Assert.*;
 
 /**
@@ -58,11 +62,12 @@ public class MontiCoreScriptTest {
 
   private static MCPath templatePath = new MCPath("src/test/resources");
 
-  static String[] simpleArgs = {"-grammars",
+  static String[] simpleArgs = {"-" + GRAMMAR,
       "src/test/resources/de/monticore/statechart/Statechart.mc4",
       "src/test/resources/mc/grammars/lexicals/TestLexicals.mc4",
-      "-modelPath", modelPathPath.toAbsolutePath().toString(),
-      "-out", outputPath.getAbsolutePath(), "-targetPath", "src/test/resources", "-force"};
+      "-" + MODELPATH, modelPathPath.toAbsolutePath().toString(),
+      "-" + OUT, outputPath.getAbsolutePath(),
+      "-" + HANDCODEDPATH, "src/test/resources"};
 
   @BeforeClass
   public static void setup() {
@@ -190,12 +195,12 @@ public class MontiCoreScriptTest {
     }
   }
 
-  static String[] templateArgs = {"-grammars",
+  static String[] templateArgs = {"-" + GRAMMAR,
           "src/test/resources/de/monticore/statechart/Statechart.mc4",
           "src/test/resources/mc/grammars/lexicals/TestLexicals.mc4",
-          "-modelPath", modelPathPath.toAbsolutePath().toString(),
-          "-templatePath", "src/test/resources/ftltest",
-          "-out", outputPath.getAbsolutePath(), "-force"};
+          "-" + MODELPATH, modelPathPath.toAbsolutePath().toString(),
+          "-" + TEMPLATEPATH, "src/test/resources/ftltest",
+          "-" + OUT, outputPath.getAbsolutePath()};
 
   @Test
   public void testDefaultScriptTemplateArgs() {
@@ -211,10 +216,10 @@ public class MontiCoreScriptTest {
     }
   }
 
-  static String[] subsubgrammarArgs = {"-grammars",
+  static String[] subsubgrammarArgs = {"-" + GRAMMAR,
           "src/test/resources/de/monticore/inherited/subsub/Subsubgrammar.mc4",
-          "-modelPath", modelPathPath.toAbsolutePath().toString(),
-          "-out", outputPath.getAbsolutePath(), "-force"};
+          "-" + MODELPATH, modelPathPath.toAbsolutePath().toString(),
+          "-" + OUT, outputPath.getAbsolutePath()};
 
   @Test
   public void testDefaultScriptSubsubgrammarArgs() {
@@ -230,12 +235,12 @@ public class MontiCoreScriptTest {
     assertEquals(0, Log.getErrorCount());
   }
 
-  static String[] inheritedgrammarArgs = {"-grammars",
+  static String[] inheritedgrammarArgs = {"-" + GRAMMAR,
       "src/test/resources/de/monticore/inherited/Supergrammar.mc4",
       "src/test/resources/de/monticore/inherited/sub/Subgrammar.mc4",
       "src/test/resources/de/monticore/inherited/subsub/Subsubgrammar.mc4",
-      "-modelPath", modelPathPath.toAbsolutePath().toString(),
-      "-out", outputPath.getAbsolutePath(), "-force"};
+      "-" + MODELPATH, modelPathPath.toAbsolutePath().toString(),
+      "-" + OUT, outputPath.getAbsolutePath()};
 
   @Test
   public void testDefaultScriptSupergrammarArgs() {
@@ -251,11 +256,11 @@ public class MontiCoreScriptTest {
     assertEquals(0, Log.getErrorCount());
   }
 
-  static String[] supersubgrammarArgs = {"-grammars",
+  static String[] supersubgrammarArgs = {"-" + GRAMMAR,
       "src/test/resources/de/monticore/inherited/subsub/Subsubgrammar.mc4",
       "src/test/resources/de/monticore/inherited/Supergrammar.mc4",
-      "-modelPath", modelPathPath.toAbsolutePath().toString(),
-      "-out", outputPath.getAbsolutePath(), "-force"};
+      "-" + MODELPATH, modelPathPath.toAbsolutePath().toString(),
+      "-" + OUT, outputPath.getAbsolutePath()};
 
   @Test
   public void testDefaultScriptSupersubgrammarArgs() {
@@ -272,9 +277,16 @@ public class MontiCoreScriptTest {
   }
 
   private void testDefaultScript(String[] args) {
-    ConfigurationPropertiesMapContributor configuration = ConfigurationPropertiesMapContributor
-        .fromSplitMap(CLIArguments.forArguments(args).asMap());
-    MontiCoreConfiguration cfg = MontiCoreConfiguration.withConfiguration(configuration);
+    Optional<CommandLine> cmd = Optional.empty();
+    try {
+      org.apache.commons.cli.Options options = initOptions();
+      CommandLineParser cliParser = new DefaultParser();
+      cmd = Optional.ofNullable(cliParser.parse(options, args));
+    } catch (ParseException e) {
+      Log.error("0xA7152 Could not process test CLI parameters: " + e.getMessage());
+    }
+
+    MontiCoreConfiguration cfg = MontiCoreConfiguration.withCLI(cmd.get());
     new MontiCoreScript().run(cfg);
     // Reporting is enabled in the monticore_standard.groovy script but needs to be disabled for other tests
     // because Reporting is static directly disable it again here
@@ -283,9 +295,16 @@ public class MontiCoreScriptTest {
   }
 
   private void testDefaultScriptWithEmf(String[] args) {
-    ConfigurationPropertiesMapContributor configuration = ConfigurationPropertiesMapContributor
-        .fromSplitMap(CLIArguments.forArguments(args).asMap());
-    MontiCoreConfiguration cfg = MontiCoreConfiguration.withConfiguration(configuration);
+    Optional<CommandLine> cmd = Optional.empty();
+    try {
+      org.apache.commons.cli.Options options = initOptions();
+      CommandLineParser cliParser = new DefaultParser();
+      cmd = Optional.ofNullable(cliParser.parse(options, args));
+    } catch (ParseException e) {
+      Log.error("0xA7152 Could not process test CLI parameters: " + e.getMessage());
+    }
+
+    MontiCoreConfiguration cfg = MontiCoreConfiguration.withCLI(cmd.get());
     new MontiCoreScript().run_emf(cfg);
     // Reporting is enabled in the monticore_standard.groovy script but needs to be disabled for other tests
     // because Reporting is static directly disable it again here
@@ -668,5 +687,119 @@ public class MontiCoreScriptTest {
     MCPath handcodedPath = new MCPath("src/test/resources");
 
     return mc.decorateTraverserForVisitorPackage(glex, cd4AGlobalScope, cd, handcodedPath);
+  }
+
+  /**
+   * Initializes the available CLI options for the MontiCore tool.
+   *
+   * This method must always remain a copy of the initOptions
+   * method of {@link MontiCoreStandardCLI}
+   *
+   * @return The CLI options with arguments.
+   */
+  protected Options initOptions() {
+    Options options = new Options();
+
+    // parse input grammars
+    options.addOption(Option.builder(GRAMMAR)
+            .longOpt(GRAMMAR_LONG)
+            .argName("filelist")
+            .hasArgs()
+            .desc("Processes the source grammars (mandatory) and triggers the MontiCore generation.")
+            .build());
+
+    // specify custom output directory
+    options.addOption(Option.builder(OUT)
+            .longOpt(OUT_LONG)
+            .argName("path")
+            .hasArg()
+            .desc("Optional output directory for all generated artifacts.")
+            .build());
+
+    // specify model path
+    options.addOption(Option.builder(MODELPATH)
+            .longOpt(MODELPATH_LONG)
+            .argName("pathlist")
+            .hasArgs()
+            .desc("Optional list of directories or files to be included for importing other grammars.")
+            .build());
+
+    // specify hand-written artifacts
+    options.addOption(Option.builder(HANDCODEDPATH)
+            .longOpt(HANDCODEDPATH_LONG)
+            .argName("pathlist")
+            .hasArgs()
+            .desc("Optional list of directories to look for handwritten code to integrate.")
+            .build());
+
+    // specify custom output
+    options.addOption(Option.builder(SCRIPT)
+            .longOpt(SCRIPT_LONG)
+            .argName("file.groovy")
+            .hasArg()
+            .desc("Optional Groovy script to control the generation workflow.")
+            .build());
+
+    // specify custom script for hook point one
+    options.addOption(Option.builder(GROOVYHOOK1)
+            .longOpt(GROOVYHOOK1_LONG)
+            .argName("file.groovy")
+            .hasArg()
+            .desc("Optional Groovy script that is hooked into the workflow of the standard script at hook point one.")
+            .build());
+
+    // specify custom script for hook point two
+    options.addOption(Option.builder(GROOVYHOOK2)
+            .longOpt(GROOVYHOOK2_LONG)
+            .argName("file.groovy")
+            .hasArg()
+            .desc("Optional Groovy script that is hooked into the workflow of the standard script at hook point two.")
+            .build());
+
+    // specify template path
+    options.addOption(Option.builder(TEMPLATEPATH)
+            .longOpt(TEMPLATEPATH_LONG)
+            .argName("pathlist")
+            .hasArgs()
+            .desc("Optional list of directories to look for handwritten templates to integrate.")
+            .build());
+
+    // specify template config
+    options.addOption(Option.builder(CONFIGTEMPLATE)
+            .longOpt(CONFIGTEMPLATE_LONG)
+            .argName("config.ftl")
+            .hasArg()
+            .desc("Optional template to configure the integration of handwritten templates.")
+            .build());
+
+    // developer level logging
+    options.addOption(Option.builder(DEV)
+            .longOpt(DEV_LONG)
+            .desc("Specifies whether developer level logging should be used (default is false)")
+            .build());
+
+    // change logback conf
+    options.addOption(Option.builder(CUSTOMLOG)
+            .longOpt(CUSTOMLOG_LONG)
+            .argName("file.xml")
+            .hasArg()
+            .desc("Changes the logback configuration to a customized file.")
+            .build());
+
+    // specify report path
+    options.addOption(Option.builder(REPORT)
+            .longOpt(REPORT_LONG)
+            .argName("path")
+            .hasArg(true)
+            .desc("Specifies the directory for printing reports based on the given MontiCore grammars.")
+            .build());
+
+    // help dialog
+    options.addOption(Option.builder(HELP)
+            .longOpt(HELP_LONG)
+            .desc("Prints this help dialog")
+            .build());
+
+    return options;
   }
 }
