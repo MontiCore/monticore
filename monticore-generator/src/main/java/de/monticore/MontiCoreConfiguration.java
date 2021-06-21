@@ -125,11 +125,7 @@ public final class MontiCoreConfiguration implements Configuration {
    * @return iterable grammar files
    */
   public MCPath getGrammars() {
-    Optional<List<String>> grammars = getAsStrings(Options.GRAMMARS);
-    if (grammars.isPresent() && checkPath(grammars.get())) {
-      return new MCPath(toFileList(grammars.get()));
-    }
-    grammars = getAsStrings(Options.GRAMMARS_SHORT);
+    Optional<List<String>> grammars = getAsStrings(GRAMMAR);
     if (grammars.isPresent() && checkPath(grammars.get())) {
       return new MCPath(toFileList(grammars.get()));
     }
@@ -162,7 +158,7 @@ public final class MontiCoreConfiguration implements Configuration {
    * @return list of model path files
    */
   public MCPath getModelPath() {
-    Optional<MCPath> modelPath = getAsStrings(Options.MODELPATH)
+    Optional<MCPath> modelPath = getAsStrings(MODELPATH)
         .map(this::convertEntryNamesToMCPath);
     if (modelPath.isPresent()) {
       return modelPath.get();
@@ -231,7 +227,7 @@ public final class MontiCoreConfiguration implements Configuration {
    *
    * @return iterable handcoded files
    */
-  public IterablePath getHandcodedPath() {
+  public MCPath getHandcodedPath() {
     Optional<List<String>> handcodedPath = getAsStrings(HANDCODEDPATH);
     if (handcodedPath.isPresent()) {
       return new MCPath(toFileList(handcodedPath.get()));
@@ -266,7 +262,7 @@ public final class MontiCoreConfiguration implements Configuration {
    *
    * @return iterable template files
    */
-  public IterablePath getTemplatePath() {
+  public MCPath getTemplatePath() {
     Optional<List<String>> templatePath = getAsStrings(TEMPLATEPATH);
     if (templatePath.isPresent()) {
       return new MCPath(toFileList(templatePath.get()));

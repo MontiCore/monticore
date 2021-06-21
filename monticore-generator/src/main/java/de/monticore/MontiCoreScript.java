@@ -608,7 +608,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     }
   }
 
-  public void configureGenerator(GlobalExtensionManagement glex, List<ASTCDCompilationUnit> cds, IterablePath templatePath) {
+  public void configureGenerator(GlobalExtensionManagement glex, List<ASTCDCompilationUnit> cds, MCPath templatePath) {
     String configTemplate = glex.getGlobalVar(CONFIGTEMPLATE_LONG, StringUtils.EMPTY).toString();
     if (!configTemplate.isEmpty()) {
       GeneratorSetup setup = new GeneratorSetup();
@@ -1279,7 +1279,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
         builder.addVariable(GROOVYHOOK1, mcConfig.getGroovyHook1());
         builder.addVariable(GROOVYHOOK2, mcConfig.getGroovyHook2());
         builder.addVariable("LOG_ID", LOG_ID);
-        builder.addVariable("grammarIterator", mcConfig.getGrammars().getResolvedPaths());
+        builder.addVariable("grammarIterator", mcConfig.getGrammars().getEntries().iterator());
 
         MontiCoreReports rmf = new MontiCoreReports(mcConfig.getOut().getAbsolutePath(),
                 mcConfig.getReport().getAbsolutePath(),
