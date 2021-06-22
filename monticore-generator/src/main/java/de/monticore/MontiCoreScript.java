@@ -1204,6 +1204,23 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   }
 
   /**
+   * Instantiates the glex and initializes it with all available default
+   * options based on the current configuration.
+   *
+   * @param mcConfig The used input configuration
+   * @return The instantiated glex with config options
+   */
+  public GlobalExtensionManagement initGlex(MontiCoreConfiguration mcConfig) {
+    // initialize glex
+    GlobalExtensionManagement glex = new GlobalExtensionManagement();
+    if (mcConfig.getConfigTemplate().isPresent()) {
+      glex.setGlobalValue(CONFIGTEMPLATE_LONG,
+              mcConfig.getConfigTemplate().get());
+    }
+    return glex;
+  }
+
+  /**
    * @see groovy.lang.Script#run()
    */
   @Override
@@ -1273,23 +1290,10 @@ public class MontiCoreScript extends Script implements GroovyRunner {
         builder.addVariable(GROOVYHOOK2, mcConfig.getGroovyHook2());
         builder.addVariable("LOG_ID", LOG_ID);
         builder.addVariable("grammarIterator", mcConfig.getGrammars().getResolvedPaths());
-
-        MontiCoreReports rmf = new MontiCoreReports(mcConfig.getOut().getAbsolutePath(),
+        builder.addVariable("reportManagerFactory",
+                new MontiCoreReports(mcConfig.getOut().getAbsolutePath(),
                 mcConfig.getReport().getAbsolutePath(),
-                mcConfig.getHandcodedPath(), mcConfig.getTemplatePath());
-        builder.addVariable("reportManagerFactory", rmf);
-
-        // initialize reporting (output)
-        Reporting.init(mcConfig.getOut().getAbsolutePath(),
-                mcConfig.getReport().getAbsolutePath(), rmf);
-
-        // initialize glex
-        GlobalExtensionManagement glex = new GlobalExtensionManagement();
-        if (mcConfig.getConfigTemplate().isPresent()) {
-          glex.setGlobalValue(CONFIGTEMPLATE_LONG,
-                  mcConfig.getConfigTemplate().get());
-        }
-        builder.addVariable("glex", glex);
+                mcConfig.getHandcodedPath(), mcConfig.getTemplatePath()));
 
         // for backward-compatibilty with outdated Maven scripts, we also add
         // the "force" parameter, which is always true
