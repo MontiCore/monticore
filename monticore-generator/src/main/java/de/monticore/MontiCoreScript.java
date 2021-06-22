@@ -1213,9 +1213,14 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   public GlobalExtensionManagement initGlex(MontiCoreConfiguration mcConfig) {
     // initialize glex
     GlobalExtensionManagement glex = new GlobalExtensionManagement();
-    if (mcConfig.getConfigTemplate().isPresent()) {
-      glex.setGlobalValue(CONFIGTEMPLATE_LONG,
-              mcConfig.getConfigTemplate().get());
+    if (Reporting.isEnabled()) {
+      if (mcConfig.getConfigTemplate().isPresent()) {
+        glex.setGlobalValue(CONFIGTEMPLATE_LONG,
+                mcConfig.getConfigTemplate().get());
+      }
+    } else {
+      Log.debug("Reporting not initialised or disabled. " +
+              "No values are added to the glex.", LOG_ID);
     }
     return glex;
   }
