@@ -33,10 +33,17 @@ Log.debug("Handcoded argument  : "
         + _configuration.getHandcodedPathAsStrings(), LOG_ID)
 Log.debug("Handcoded files     : " + handcodedPath, LOG_ID)
 
+// M1.2: Initialize reporting (output)
+Reporting.init(out.getAbsolutePath(),
+        report.getAbsolutePath(), reportManagerFactory)
+
+// M 1.3: Initialize glex
+glex = initGlex(_configuration)
+
 // groovy script hook point
 hook(gh1, glex, grammars)
 
-// M1.2: Build Global Scope
+// M1.4: Build Global Scope
 mcScope = createMCGlobalScope(modelPath)
 
 // ############################################################

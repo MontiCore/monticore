@@ -13,6 +13,7 @@ globalScope = createMCGlobalScope(modelPath)
 astGrammars = parseGrammars(grammars)
 
 Reporting.off()
+glex = initGlex(_configuration)
 
 for (astGrammar in astGrammars) {
     input = grammarIterator.next()
