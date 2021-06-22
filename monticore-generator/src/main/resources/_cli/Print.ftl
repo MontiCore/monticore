@@ -1,4 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
+${tc.signature("generatedError")}
 // print to stdout or file
   if (path.isEmpty()) {
     System.out.println(content);
@@ -12,6 +13,6 @@
       writer.write(content);
       writer.close();
     } catch (java.io.IOException e) {
-      Log.error("0xA7105 Could not write to file " + f.getAbsolutePath());
+      Log.error("0xA7105${generatedError} Could not write to file " + f.getAbsolutePath());
     }
   }
