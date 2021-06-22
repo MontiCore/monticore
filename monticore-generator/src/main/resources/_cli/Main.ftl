@@ -1,8 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("grammarname","millFullName")}
+${tc.signature("grammarname")}
 
- ${grammarname}Runner runner = new  ${grammarname}Runner();
-    // initialize logging with standard logging
-    Log.init();
-    ${millFullName}.init();
-    runner.run(args);
+ ${grammarname}CLI cli = new  ${grammarname}CLI();
+   cli.run(args);

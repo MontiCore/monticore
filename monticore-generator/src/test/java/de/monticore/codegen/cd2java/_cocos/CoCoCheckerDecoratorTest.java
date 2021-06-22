@@ -184,7 +184,7 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testAddCoCoAutomatonNodeMethod() { // schlaegt fehl, da das Attribut vom Typ ASTAutomatonNode noch fehlt
+  public void testAddCoCoAutomatonNodeMethod() {
     List<ASTCDMethod> list = getMethodsBy("addCoCo", 1, cocoChecker);
     ASTMCType astType = this.mcTypeFacade.createQualifiedType(AUTOMATON_NODE_COCO);
     assertTrue(list.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));
@@ -197,7 +197,7 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testAddCoCoStateMethod() { //first 2 weeks are the hardest
+  public void testAddCoCoStateMethod() {
     List<ASTCDMethod> list = getMethodsBy("addCoCo", 1, cocoChecker);
     ASTMCType astType = this.mcTypeFacade.createQualifiedType(STATE_COCO);
     assertTrue(list.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getMCType())));

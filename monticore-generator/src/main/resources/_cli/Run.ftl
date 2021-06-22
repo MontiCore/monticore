@@ -1,7 +1,7 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("startProdPresent")}
+${tc.signature("startProdPresent", "cliName", "generatedError")}
+init();
 org.apache.commons.cli.Options options = initOptions();
-
 try{
     //create CLI Parser and parse input options from commandline
     org.apache.commons.cli.CommandLineParser cliparser = new org.apache.commons.cli.DefaultParser();
@@ -15,6 +15,6 @@ try{
     }
 
 }catch (org.apache.commons.cli.ParseException e) {
-   // ann unexpected error from the apache CLI parser:
-   Log.error("0xA5C01 Could not process CLI parameters: " + e.getMessage());
+   // e.getMessage displays the incorrect input-parameters
+   Log.error("0xA5C01${generatedError} Could not process ${cliName} parameters: " + e.getMessage());
  }
