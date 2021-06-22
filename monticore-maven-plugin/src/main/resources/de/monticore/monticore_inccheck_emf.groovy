@@ -27,6 +27,7 @@ cdScope = createCD4AGlobalScope(modelPath)
 symbolCdScope = createCD4AGlobalScope(modelPath)
 scopeCdScope = createCD4AGlobalScope(modelPath)
 Reporting.init(out.getAbsolutePath(), report.getAbsolutePath(), reportManagerFactory)
+glex = initGlex(_configuration)
 // ############################################################
 
 // ############################################################

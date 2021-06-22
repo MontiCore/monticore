@@ -33,11 +33,15 @@ Log.debug("Report dir          : " + report, LOG_ID)
 Log.debug("Handcoded argument  : " + _configuration.getHandcodedPathAsStrings(), LOG_ID)
 Log.debug("Handcoded files     : " + handcodedPath, LOG_ID)
 
-// M1.2: Build Global Scope
-mcScope = createMCGlobalScope(modelPath)
+// M1.2: Initialize reporting (output)
+Reporting.init(out.getAbsolutePath(),
+        report.getAbsolutePath(), reportManagerFactory)
 
-// M1.3: Initialize reporting (output)
-Reporting.init(out.getAbsolutePath(), report.getAbsolutePath(), reportManagerFactory)
+// M 1.3: Initialize glex
+glex = initGlex(_configuration)
+
+// M1.4: Build Global Scope
+mcScope = createMCGlobalScope(modelPath)
 
 // ############################################################
 // Loop over the list of grammars provided as arguments (these grammars are
