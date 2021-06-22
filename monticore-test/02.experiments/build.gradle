@@ -34,8 +34,13 @@ subprojects {
   compileJava {
     dependsOn project.collect { it.tasks.withType(MCTask) }
   }
+  
+ 
 
 }
 
 jar.enabled = false
 sourcesJar.enabled = false
+clean.dependsOn(subprojects.collect{it.getTasksByName("clean", false)})
+
+build.dependsOn(subprojects.collect{it.getTasksByName("build", false)})

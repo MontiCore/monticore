@@ -48,5 +48,9 @@ configure(subprojects.findAll {it.name != 'forParser'})  {
   }
 }
 
+clean.dependsOn(subprojects.collect{it.getTasksByName("clean", false)})
+
+build.dependsOn(subprojects.collect{it.getTasksByName("build", false)})
+
 jar.enabled = false
 sourcesJar.enabled = false
