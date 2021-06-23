@@ -152,7 +152,7 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
     for (DiagramSymbol superCd : importedClasses) {
       Collection<CDTypeSymbol> overriddenSet = Lists.newArrayList();
       for (String className : nativeClasses) {
-        Optional<CDTypeSymbol> cdType = ((ICDBasisScope) superCd.getEnclosingScope()).resolveCDTypeLocally(className);
+        Optional<CDTypeSymbol> cdType = ((ICDBasisScope) superCd.getEnclosingScope()).resolveCDTypeDown(className);
         if (cdType.isPresent()) {
           overriddenSet.add(cdType.get());
           boolean ignore = firstClasses.stream().filter(s -> s.getName().equals(className)).count() > 0;
