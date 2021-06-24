@@ -189,8 +189,7 @@ public class EmfService extends AbstractService<EmfService> {
     List<CDTypeSymbol> superTypes = Lists.newArrayList();
     c.getSymbol().getSuperTypesList().stream()
         .map(ste -> ste.getTypeInfo())
-        .map(ts -> ts.getFullName())
-        .forEach(s -> CD4CodeMill.globalScope().resolveCDType(s).ifPresent(t -> {if(t.isIsInterface()) superTypes.add(t);}));
+        .map(ts -> ts.getFullName()).forEach(s -> CD4CodeMill.globalScope().resolveCDType(s).ifPresent(t -> superTypes.add(t)));
     return superTypes;
   }
 
