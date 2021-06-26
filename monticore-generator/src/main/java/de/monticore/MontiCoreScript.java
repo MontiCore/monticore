@@ -334,21 +334,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   }
 
   /**
-   * Generates the metadata for the given grammar.
-   *
-   * @param grammar         To generate the metadata for
-   * @param handcodedPath
-   * @param templatePath
-   * @param outputDirectory output directory for the generated metadata file
-   */
-  public void generateMetadata(ASTMCGrammar grammar,
-                               IterablePath handcodedPath,
-                               IterablePath templatePath,
-                               File outputDirectory) {
-    MetadataGenerator.generateMetadata(grammar, handcodedPath, templatePath, outputDirectory);
-  }
-
-  /**
    * @param ast
    * @return
    */
@@ -1111,6 +1096,12 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     setup.setGlex(glex);
     CDGenerator generator = new CDGenerator(setup);
     generator.generate(decoratedCD);
+
+    generateMetadata(decoratedCD, templatePath, outputDirectory);
+  }
+
+  protected void generateMetadata(ASTCDCompilationUnit cd, IterablePath templatePath, File targetDir) {
+    MetadataGenerator.generateMetadata(cd, templatePath, targetDir);
   }
 
   /**

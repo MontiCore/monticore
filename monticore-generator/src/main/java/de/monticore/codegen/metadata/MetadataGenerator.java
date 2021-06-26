@@ -1,5 +1,6 @@
 package de.monticore.codegen.metadata;
 
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
@@ -22,33 +23,26 @@ public class MetadataGenerator {
 
 
   public static void generateMetadata(
-      ASTMCGrammar astGrammar,
-      IterablePath handcodedPath,
+      ASTCDCompilationUnit cd,
       IterablePath templatePath,
       File targetDir
   ) {
+
     final GeneratorSetup setup = new GeneratorSetup();
-    setup.setHandcodedPath(handcodedPath);
-    setup.setAdditionalTemplatePaths(templatePath.getPaths().stream().map(p -> new File(p.toUri())).collect(Collectors.toList()));
     setup.setOutputDirectory(targetDir);
-
-    String qualifiedGrammarName = astGrammar.getPackageList().isEmpty()
-        ? astGrammar.getName()
-        : Names.constructQualifiedName(astGrammar.getPackageList(), astGrammar.getName());
-
-    final Path filePath = Paths.get(Names.getPathFromPackage(
-        qualifiedGrammarName.toLowerCase() + METADATA_PACKAGE),
-        astGrammar.getName() + "Metadata" + METADATA_EXTENSION);
+    setup.setAdditionalTemplatePaths(templatePath.getPaths().stream().map(p -> new File(p.toUri())).collect(Collectors.toList()));
 
     Map<String, String> properties = new HashMap<>();
-    properties.put("toolName", getToolName(astGrammar));
     properties.put("buildDate", getBuildDate());
 
-    new GeneratorEngine(setup).generate("metadata.Properties", filePath, astGrammar, properties);
-  }
+    String packageAsPath = String.join(File.separator,
+        cd.getMCPackageDeclaration().getMCQualifiedName().getPartsList()).toLowerCase();
 
-  private static String getToolName(ASTMCGrammar astGrammar) {
-    return astGrammar.getName() + "Tool";
+    String name = cd.getCDDefinition().getName() + "Metadata";
+
+    Path filePath =  Paths.get(packageAsPath, name + METADATA_EXTENSION);
+
+    new GeneratorEngine(setup).generate("metadata.Properties", filePath, cd, properties);
   }
 
   private static String getBuildDate() {

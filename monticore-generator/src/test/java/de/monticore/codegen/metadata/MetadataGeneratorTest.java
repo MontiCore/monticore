@@ -25,4 +25,9 @@ public class MetadataGeneratorTest {
 
     System.out.println("Version: " + properties.getProperty("version"));
   }
+
+  @Test
+  public void testGenerateMetadata() {
+
+  }
 }
