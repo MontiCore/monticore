@@ -8,7 +8,7 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.Properties;
 
-public class UpdateCheckerRunner implements Runnable {
+public class UpdateCheckerRunnable implements Runnable {
 
   final protected static String REMOTE_PROPERTIES_PATH = "https://raw.githubusercontent.com/MontiCore/monticore/dev/gradle.properties";
   final protected static String LOCAL_PROPERTIES_PATH = "gradle.properties";
@@ -33,12 +33,18 @@ public class UpdateCheckerRunner implements Runnable {
     }
 
     public boolean isOlderThan(Version other) {
-      if (this.versionNumbers[0] > other.versionNumbers[0]) return false;
-      if (this.versionNumbers[1] > other.versionNumbers[1]) return false;
-      if (this.versionNumbers[2] > other.versionNumbers[2]) return false;
-      if (this.snapshot && !other.snapshot) return false;
+      if (this.versionNumbers[0] < other.versionNumbers[0]) return true;
+      else if (this.versionNumbers[0] > other.versionNumbers[0]) return false;
 
-      return true;
+      if (this.versionNumbers[1] < other.versionNumbers[1]) return true;
+      else if (this.versionNumbers[1] > other.versionNumbers[1]) return false;
+
+      if (this.versionNumbers[2] < other.versionNumbers[2]) return true;
+      else if (this.versionNumbers[2] > other.versionNumbers[2]) return false;
+
+      if (!this.snapshot && other.snapshot) return true;
+
+      return false;
     }
 
     public String getString() {
@@ -61,14 +67,14 @@ public class UpdateCheckerRunner implements Runnable {
       String inputLine;
       StringBuilder content = new StringBuilder();
       while ((inputLine = in.readLine()) != null) {
-        content.append(inputLine);
+        content.append(inputLine + "\n");
       }
       in.close();
 
       ret = content.toString();
 
     } catch(Exception e) {
-
+      Log.warn("Could not get remote properties file");
     }
 
     return ret;
@@ -79,7 +85,7 @@ public class UpdateCheckerRunner implements Runnable {
     try {
       properties.load(new StringReader(raw));
     } catch(Exception e) {
-
+      Log.warn("Remote properties file is not a well defined properties file");
     }
 
     return properties;
@@ -94,7 +100,7 @@ public class UpdateCheckerRunner implements Runnable {
     try {
       properties.load(new FileInputStream(LOCAL_PROPERTIES_PATH));
     } catch (Exception e) {
-      e.printStackTrace();
+      Log.warn("Could not find local properties file");
     }
 
     return properties;
@@ -105,14 +111,20 @@ public class UpdateCheckerRunner implements Runnable {
     Properties local = getLocalProperties();
     Properties remote = getRemoteProperties();
 
-    Version localVersion = new Version(local.getProperty("version"));
-    Version remoteVersion = new Version(remote.getProperty("version"));
+    String localVersionString = local.getProperty("version");
+    String remoteVersionString = remote.getProperty("version");
+
+    if (localVersionString == null || remoteVersionString == null) return;
+
+    Version localVersion = new Version(localVersionString);
+    Version remoteVersion = new Version(remoteVersionString);
 
     if (localVersion.isOlderThan(remoteVersion)) {
       // log that
-      Log.warn("[INFO] There is a newer Version "
+      Log.info("There is a newer Version "
           + remoteVersion.getString()
-          + " of this tool available at monticore.de/download");
+          + " of this tool available at monticore.de/download", "");
+    } else {
     }
 
   }

@@ -63,6 +63,16 @@ public class MontiCoreStandardCLI {
     Grammar_WithConceptsMill.init();
     new MontiCoreStandardCLI().run(args);
   }
+
+  /**
+   * Starts a thread to check whether a newer version of monticore
+   * was released.
+   */
+  protected void runUpdateCheck() {
+    Runnable updateCheckerRunnable = new UpdateCheckerRunnable();
+    Thread updateCheckerThread = new Thread(updateCheckerRunnable);
+    updateCheckerThread.start();
+  }
   
   /**
    * Processes user input from command line and delegates to the corresponding
@@ -71,6 +81,8 @@ public class MontiCoreStandardCLI {
    * @param args The input parameters for configuring the MontiCore tool.
    */
   public void run(String[] args) {
+
+    runUpdateCheck();
   
     Options options = initOptions();
   
