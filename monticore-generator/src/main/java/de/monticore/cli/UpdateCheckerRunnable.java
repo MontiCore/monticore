@@ -1,5 +1,6 @@
 package de.monticore.cli;
 
+import de.monticore.cli.updateChecker.HttpGetter;
 import de.se_rwth.commons.logging.Log;
 
 import java.io.*;
@@ -13,7 +14,11 @@ public class UpdateCheckerRunnable implements Runnable {
   final protected static String REMOTE_PROPERTIES_PATH = "https://raw.githubusercontent.com/MontiCore/monticore/dev/gradle.properties";
   final protected static String LOCAL_PROPERTIES_PATH = "gradle.properties";
 
-  protected class Version {
+  protected String newVersion;
+
+  protected HttpGetter httpGetter;
+
+  protected static class Version {
     private final boolean snapshot;
     private final int[] versionNumbers;
     private final String versionString;
@@ -54,34 +59,52 @@ public class UpdateCheckerRunnable implements Runnable {
 
   }
 
-  protected String getRemotePropertiesString() {
-    String ret = "";
-
-    try {
-      URL remotePropertiesUrl = new URL(REMOTE_PROPERTIES_PATH);
-      HttpURLConnection connection = (HttpURLConnection) remotePropertiesUrl.openConnection();
-      connection.setRequestMethod("GET");
-
-      BufferedReader in = new BufferedReader(
-          new InputStreamReader(connection.getInputStream()));
-      String inputLine;
-      StringBuilder content = new StringBuilder();
-      while ((inputLine = in.readLine()) != null) {
-        content.append(inputLine + "\n");
-      }
-      in.close();
-
-      ret = content.toString();
-
-    } catch(Exception e) {
-      Log.warn("Could not get remote properties file");
-    }
-
-    return ret;
+  public UpdateCheckerRunnable() {
+    httpGetter = new HttpGetter(REMOTE_PROPERTIES_PATH);
+    newVersion = "";
   }
 
-  protected Properties getProperties(String raw) {
+  public void setHttpGetter(HttpGetter httpGetter) {
+    this.httpGetter = httpGetter;
+  }
+
+  public String getNewVersion() {
+    return newVersion;
+  }
+
+  public boolean newVersionAvailable() {
+    Properties local = getLocalProperties();
+    Properties remote = getRemoteProperties();
+
+    String localVersionString = local.getProperty("version");
+    String remoteVersionString = remote.getProperty("version");
+
+    if (localVersionString == null || remoteVersionString == null) return false;
+
+    Version localVersion = new Version(localVersionString);
+    Version remoteVersion = new Version(remoteVersionString);
+
+    if (localVersion.isOlderThan(remoteVersion)) {
+      newVersion = remoteVersion.getString();
+      return true;
+    }
+    return false;
+  }
+
+  @Override
+  public void run() {
+    if(newVersionAvailable()) {
+      Log.info("There is a newer Version "
+          + newVersion
+          + " of this tool available at monticore.de/download", "");
+    }
+  }
+
+  protected Properties getRemoteProperties() {
     Properties properties = new Properties();
+
+    String raw = httpGetter.getResponse();
+
     try {
       properties.load(new StringReader(raw));
     } catch(Exception e) {
@@ -91,12 +114,9 @@ public class UpdateCheckerRunnable implements Runnable {
     return properties;
   }
 
-  protected Properties getRemoteProperties() {
-    return getProperties(getRemotePropertiesString());
-  }
-
   protected Properties getLocalProperties() {
     Properties properties = new Properties();
+
     try {
       properties.load(new FileInputStream(LOCAL_PROPERTIES_PATH));
     } catch (Exception e) {
@@ -104,28 +124,5 @@ public class UpdateCheckerRunnable implements Runnable {
     }
 
     return properties;
-  }
-
-  @Override
-  public void run() {
-    Properties local = getLocalProperties();
-    Properties remote = getRemoteProperties();
-
-    String localVersionString = local.getProperty("version");
-    String remoteVersionString = remote.getProperty("version");
-
-    if (localVersionString == null || remoteVersionString == null) return;
-
-    Version localVersion = new Version(localVersionString);
-    Version remoteVersion = new Version(remoteVersionString);
-
-    if (localVersion.isOlderThan(remoteVersion)) {
-      // log that
-      Log.info("There is a newer Version "
-          + remoteVersion.getString()
-          + " of this tool available at monticore.de/download", "");
-    } else {
-    }
-
   }
 }
