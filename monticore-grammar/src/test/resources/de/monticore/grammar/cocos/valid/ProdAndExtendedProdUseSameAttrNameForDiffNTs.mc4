@@ -27,4 +27,10 @@ grammar ProdAndExtendedProdUseSameAttrNameForDiffNTs{
   "state" Name
   ("entry:" entry:Name)?
   ( ("{" (State)* "}") | ";") ;
+
+  Super4 = "Bla";
+
+  Sub4_1 extends Super4 = c:A;
+
+  Sub4_2 extends Super4 = c:A;
 }

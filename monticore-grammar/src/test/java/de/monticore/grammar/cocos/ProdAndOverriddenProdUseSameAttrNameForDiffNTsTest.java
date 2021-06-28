@@ -121,7 +121,8 @@ public class ProdAndOverriddenProdUseSameAttrNameForDiffNTsTest extends CocoTest
 
   @Test
   public void testCorrect3() {
-    testValidGrammar("de.monticore.grammar.cocos.valid.ProdAndExtendedProdUseSameAttrNameForDiffNTs", checker);
+    testValidGrammar("de.monticore.grammar.cocos.valid.ProdAndOverriddenProdUseSameAttrNameForDiffNTs_sub", checker);
   }
+
 
 }
