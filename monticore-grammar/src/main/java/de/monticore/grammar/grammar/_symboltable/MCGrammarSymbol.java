@@ -3,11 +3,10 @@
 package de.monticore.grammar.grammar._symboltable;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsArtifactScope;
-import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
 import de.monticore.grammar.grammar_withconcepts._symboltable.IGrammar_WithConceptsArtifactScope;
 import de.monticore.grammar.grammar_withconcepts._symboltable.IGrammar_WithConceptsGlobalScope;
 import de.se_rwth.commons.Names;
@@ -21,10 +20,14 @@ import static java.util.stream.Collectors.toList;
 
 public class MCGrammarSymbol extends MCGrammarSymbolTOP {
 
-  private final List<MCGrammarSymbolSurrogate> superGrammars = new ArrayList<>();
+  public static final String DEFAULT_MODE = "";
+
+  protected final List<MCGrammarSymbolSurrogate> superGrammars = new ArrayList<>();
+
+  protected Map<String, Collection<String>> tokenModes = Maps.newHashMap();
 
   // the start production of the grammar
-  private ProdSymbol startProd;
+  protected ProdSymbol startProd;
 
   public MCGrammarSymbol(String name) {
     super(name);
@@ -170,6 +173,16 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
     return ret;
   }
 
+  public Map<String, Collection<String>> getTokenModesWithInherited() {
+    final Map<String, Collection<String>> ret = Maps.newHashMap(tokenModes);
+
+    for (int i = superGrammars.size() - 1; i >= 0; i--) {
+      final MCGrammarSymbolSurrogate superGrammarRef = superGrammars.get(i);
+      superGrammarRef.lazyLoadDelegate().getTokenModesWithInherited().forEach((k,v) -> ret.merge(k, v, (v1, v2) -> {v1.addAll(v2); return v1;}));
+    }
+    return ret;
+  }
+
   public Optional<ASTMCGrammar> getAstGrammar() {
     return this.astNode;
   }
@@ -245,4 +258,14 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
 
     return "";
   }
+
+  public void addMode(String modeName, String tokenName) {
+    if (tokenModes.containsKey(modeName)) {
+      tokenModes.get(modeName).add(tokenName);
+    } else {
+      Collection<String> tokenList = Sets.newHashSet(tokenName);
+      tokenModes.put(modeName, tokenList);
+    }
+  }
+
 }
