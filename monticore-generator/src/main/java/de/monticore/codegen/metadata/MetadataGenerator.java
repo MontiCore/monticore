@@ -24,13 +24,12 @@ public class MetadataGenerator {
 
   public static void generateMetadata(
       ASTCDCompilationUnit cd,
-      IterablePath templatePath,
       File targetDir
   ) {
 
     final GeneratorSetup setup = new GeneratorSetup();
     setup.setOutputDirectory(targetDir);
-    setup.setAdditionalTemplatePaths(templatePath.getPaths().stream().map(p -> new File(p.toUri())).collect(Collectors.toList()));
+    //setup.setAdditionalTemplatePaths(templatePath.getPaths().stream().map(p -> new File(p.toUri())).collect(Collectors.toList()));
 
     Map<String, String> properties = new HashMap<>();
     properties.put("buildDate", getBuildDate());

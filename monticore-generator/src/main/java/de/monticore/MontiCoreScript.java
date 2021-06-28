@@ -1097,11 +1097,11 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     CDGenerator generator = new CDGenerator(setup);
     generator.generate(decoratedCD);
 
-    generateMetadata(decoratedCD, templatePath, outputDirectory);
+    generateMetadata(decoratedCD, outputDirectory);
   }
 
-  protected void generateMetadata(ASTCDCompilationUnit cd, IterablePath templatePath, File targetDir) {
-    MetadataGenerator.generateMetadata(cd, templatePath, targetDir);
+  protected void generateMetadata(ASTCDCompilationUnit cd, File targetDir) {
+    MetadataGenerator.generateMetadata(cd, targetDir);
   }
 
   /**
