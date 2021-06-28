@@ -8,7 +8,8 @@ to be released
 ### Additions
 * introduced language-specific CLI generation
 * New class `MCPath` that manages a set of path entries. The class is used, e.g., for realizing symbol paths, model paths, handcoded paths, and template paths. `MCPath` replaces the classes `IterablePath` and `ModelPath`.
-
+* Different modes can now be defined for lexical tokens in grammar.
+  The corresponding generator will only be available in the next version.
 
 ### Changes
 * the methods `serialize` and `deserialize` of the class `XDeSer` were moved to the class `XSymbols2Json`
