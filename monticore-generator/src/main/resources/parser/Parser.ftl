@@ -45,3 +45,9 @@ ${tc.includeArgs("parser.LexerMember", [antlrGenerator, parserHelper.getGrammarS
   </#list>
 </#list>
 
+<#list genHelper.getLexerRulesToGenerate() as lexProd>
+    <#list antlrGenerator.createAntlrCode(lexProd) as lexerRule>
+        ${lexerRule}
+    </#list>
+</#list>
+

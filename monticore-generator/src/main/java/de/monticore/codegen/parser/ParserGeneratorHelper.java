@@ -418,6 +418,40 @@ public class ParserGeneratorHelper {
     return prods;
   }
 
+  public Map<String, List<ASTLexProd>> getLexerRulesForMode() {
+    // Iterate over all LexRules
+    List<ASTLexProd> prods = Lists.newArrayList();
+    ProdSymbol mcanything = null;
+    final Map<String, ProdSymbol> rules = new LinkedHashMap<>();
+
+    grammarSymbol.g
+
+    // Don't use grammarSymbol.getRulesWithInherited because of changed order
+    for (final ProdSymbol ruleSymbol : grammarSymbol.getProds()) {
+      rules.put(ruleSymbol.getName(), ruleSymbol);
+    }
+    for (int i = grammarSymbol.getSuperGrammars().size() - 1; i >= 0; i--) {
+      rules.putAll(grammarSymbol.getSuperGrammarSymbols().get(i).getProdsWithInherited());
+    }
+
+    for (Entry<String, ProdSymbol> ruleSymbol : rules.entrySet()) {
+      if (ruleSymbol.getValue().isIsLexerProd()) {
+        ProdSymbol lexProd = ruleSymbol.getValue();
+        // MONTICOREANYTHING must be last rule
+        if (lexProd.getName().equals(MONTICOREANYTHING)) {
+          mcanything = lexProd;
+        }
+        else {
+          prods.add((ASTLexProd) lexProd.getAstNode());
+        }
+      }
+    }
+    if (mcanything != null) {
+      prods.add((ASTLexProd) mcanything.getAstNode());
+    }
+    return prods;
+  }
+
   public String getConstantNameForConstant(ASTConstant x) {
     String name;
     if (x.isPresentUsageName()) {
