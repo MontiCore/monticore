@@ -507,7 +507,7 @@ public class AbstractService<T extends AbstractService> {
     // Use the string representation
     // also use a count to make sure no double codes can appear
     // because sometimes there is not enough information for a unique string
-    String codeString = getPackage() + getCDSymbol() + name + count;
+    String codeString = getPackage() + getCDSymbol().getName() + name + count;
     count++;
     //calculate hashCode, but limit the values to have at most 5 digits
     int hashCode = Math.abs(codeString.hashCode() % 100000);
