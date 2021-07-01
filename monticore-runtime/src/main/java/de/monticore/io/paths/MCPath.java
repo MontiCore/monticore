@@ -197,4 +197,15 @@ public final class MCPath {
             + "\n" + ambiguityArray.toString());
   }
 
+  public void close(){
+    classloaderMap.keySet().stream().forEach(c -> {
+      try {
+        c.close();
+      }
+      catch (IOException e) {
+        Log.error("0xA1035 An exception occured while trying to close a class loader!", e);
+      }
+    });
+  }
+
 }
