@@ -8,6 +8,7 @@ import de.monticore.utils.Names;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.filefilter.RegexFileFilter;
 
+import java.io.IOException;
 import java.io.File;
 import java.io.FileFilter;
 import java.net.MalformedURLException;
