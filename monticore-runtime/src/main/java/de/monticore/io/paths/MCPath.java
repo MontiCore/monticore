@@ -8,6 +8,7 @@ import de.monticore.utils.Names;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.filefilter.RegexFileFilter;
 
+import java.io.IOException;
 import java.io.File;
 import java.io.FileFilter;
 import java.net.MalformedURLException;
@@ -195,6 +196,17 @@ public final class MCPath {
     Log.error(
         "0xA1294 The following entries for the file `" + path + "` are ambiguous:"
             + "\n" + ambiguityArray.toString());
+  }
+
+  public void close(){
+    classloaderMap.keySet().stream().forEach(c -> {
+      try {
+        c.close();
+      }
+      catch (IOException e) {
+        Log.error("0xA1035 An exception occured while trying to close a class loader!", e);
+      }
+    });
   }
 
 }
