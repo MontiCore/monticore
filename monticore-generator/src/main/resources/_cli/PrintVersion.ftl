@@ -7,15 +7,21 @@ java.util.Properties metaproperties = new java.util.Properties();
 java.util.Properties gradleproperties = new java.util.Properties();
 
 try {
-  java.io.BufferedInputStream metastream = new java.io.BufferedInputStream(new java.io.FileInputStream("${metadataFile}"));
+  java.io.BufferedInputStream metastream = new java.io.BufferedInputStream(getClass().getResourceAsStream("${metadataFile}"));
   metaproperties.load(metastream);
   metastream.close();
+} catch(java.io.IOException e) {
+  e.printStackTrace();
+  // Metadata property file not present
+}
 
+try {
   java.io.BufferedInputStream gradlestream = new java.io.BufferedInputStream(new java.io.FileInputStream("gradle.properties"));
   gradleproperties.load(gradlestream);
   gradlestream.close();
 } catch(java.io.IOException e) {
-  // Property files not present
+  e.printStackTrace();
+  // Gradle property file not present
 }
 
 

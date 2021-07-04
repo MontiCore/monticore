@@ -233,7 +233,9 @@ public class CLIDecorator extends AbstractCreator<ASTCDCompilationUnit, Optional
    * @return the decorated printVersion method
    */
   protected ASTCDMethod createPrintVersionMethod() {
-    String metadataFile = symbolTableService.getCDSymbol().getName() + "Metadata.properties";
+    String name = symbolTableService.getCDSymbol().getName();
+
+    String metadataFile = name + "Metadata.properties";
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), "printVersion");
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "PrintVersion", metadataFile));
     return method;
