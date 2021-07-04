@@ -1,14 +1,25 @@
 package de.monticore.codegen.metadata;
 
+import de.monticore.cd4code.CD4CodeMill;
+import de.monticore.cd4code._parser.CD4CodeParser;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.se_rwth.commons.logging.Log;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.Properties;
 
+import static org.junit.Assert.fail;
+
 public class MetadataGeneratorTest {
+
+  private static final String MODEL_PATH = "src/test/resources/";
 
 
   @Test
@@ -27,7 +38,10 @@ public class MetadataGeneratorTest {
   }
 
   @Test
-  public void testGenerateMetadata() {
+  public void testGenerateMetadataWithNull() {
+    ASTCDCompilationUnit cd = new ASTCDCompilationUnit();
+    File targetDir = new File("");
 
+    MetadataGenerator.generateMetadata(cd, targetDir);
   }
 }

@@ -1079,6 +1079,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     for (ASTCDCompilationUnit cd : cds) {
       generateFromCD(glex, oldCD, cd, outputDirectory, handcodedPath, templatePath);
     }
+
+    generateMetadata(cds.get(6), outputDirectory);
   }
 
   public void generateFromCD(GlobalExtensionManagement glex, ASTCDCompilationUnit oldCD, ASTCDCompilationUnit decoratedCD,
@@ -1096,8 +1098,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     setup.setGlex(glex);
     CDGenerator generator = new CDGenerator(setup);
     generator.generate(decoratedCD);
-
-    generateMetadata(decoratedCD, outputDirectory);
   }
 
   protected void generateMetadata(ASTCDCompilationUnit cd, File targetDir) {

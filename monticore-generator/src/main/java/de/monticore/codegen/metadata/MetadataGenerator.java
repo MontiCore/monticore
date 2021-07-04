@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
 public class MetadataGenerator {
 
   public static final String METADATA_EXTENSION = ".properties";
-  public static final String METADATA_PACKAGE = "_metadata";
 
 
   public static void generateMetadata(
@@ -29,10 +28,10 @@ public class MetadataGenerator {
 
     final GeneratorSetup setup = new GeneratorSetup();
     setup.setOutputDirectory(targetDir);
-    //setup.setAdditionalTemplatePaths(templatePath.getPaths().stream().map(p -> new File(p.toUri())).collect(Collectors.toList()));
 
     Map<String, String> properties = new HashMap<>();
     properties.put("buildDate", getBuildDate());
+    properties.put("toolName", getToolName(cd));
 
     String packageAsPath = String.join(File.separator,
         cd.getMCPackageDeclaration().getMCQualifiedName().getPartsList()).toLowerCase();
@@ -46,5 +45,9 @@ public class MetadataGenerator {
 
   private static String getBuildDate() {
     return LocalDate.now().toString();
+  }
+
+  private static String getToolName(ASTCDCompilationUnit cd) {
+    return cd.getCDDefinition().getName() + "Tool";
   }
 }
