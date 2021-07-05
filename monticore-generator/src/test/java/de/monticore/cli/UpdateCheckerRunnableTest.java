@@ -1,6 +1,7 @@
 package de.monticore.cli;
 
 import de.monticore.cli.updateChecker.HttpGetter;
+import de.monticore.cli.updateChecker.UpdateCheckerRunnable;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Assert;
 import org.junit.Before;

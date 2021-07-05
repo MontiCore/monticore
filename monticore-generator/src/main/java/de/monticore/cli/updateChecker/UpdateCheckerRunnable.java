@@ -1,4 +1,4 @@
-package de.monticore.cli;
+package de.monticore.cli.updateChecker;
 
 import de.monticore.cli.updateChecker.HttpGetter;
 import de.se_rwth.commons.logging.Log;
@@ -94,7 +94,7 @@ public class UpdateCheckerRunnable implements Runnable {
   @Override
   public void run() {
     if(newVersionAvailable()) {
-      Log.info("There is a newer Version "
+      Log.info("0xA9001 There is a newer Version "
           + newVersion
           + " of this tool available at monticore.de/download", "");
     }
@@ -108,7 +108,7 @@ public class UpdateCheckerRunnable implements Runnable {
     try {
       properties.load(new StringReader(raw));
     } catch(Exception e) {
-      Log.warn("Remote properties file is not a well defined properties file");
+      Log.warn("0xA9002 Remote properties file is not a well defined properties file");
     }
 
     return properties;
@@ -120,7 +120,7 @@ public class UpdateCheckerRunnable implements Runnable {
     try {
       properties.load(new FileInputStream(LOCAL_PROPERTIES_PATH));
     } catch (Exception e) {
-      Log.warn("Could not find local properties file");
+      Log.warn("0xA9004 Could not find local properties file");
     }
 
     return properties;

@@ -35,7 +35,7 @@ public class HttpGetter {
       ret = content.toString();
 
     } catch(Exception e) {
-      Log.warn("Could not get remote properties file");
+      Log.warn("0xA9000 Could not get remote properties file");
     }
 
     return ret;
