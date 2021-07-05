@@ -31,7 +31,17 @@ Log.debug("Report dir          : " + report, LOG_ID)
 Log.debug("Handcoded argument  : " + _configuration.getHandcodedPathAsStrings(), LOG_ID)
 Log.debug("Handcoded files     : " + handcodedPath, LOG_ID)
 
-// M1.2: Build Global Scope
+// M1.2: Initialize reporting (output)
+Reporting.init(out.getAbsolutePath(),
+        report.getAbsolutePath(), reportManagerFactory)
+
+// M 1.3: Initialize glex
+glex = initGlex(_configuration)
+
+// groovy script hook point
+hook(gh1, glex, grammars)
+
+// M1.4: Build Global Scope
 mcScope = createMCGlobalScope(modelPath)
 
 // ############################################################
@@ -69,6 +79,12 @@ while (grammarIterator.hasNext()) {
 
     // M7: Decorate class diagrams
     decoratedCD = decorateEmfCD(glex, mcScope, cd, handcodedPath)
+
+    // groovy script hook point
+    hook(gh2, glex, astGrammar, decoratedCD, cd)
+
+    // generator template configuration with -ct hook point
+    configureGenerator(glex, decoratedCD, templatePath)
 
     // M8 Generate ast classes, symbol table, visitor, and context conditions
     generateEmfFromCD(glex, cd, decoratedCD, out, handcodedPath, templatePath)

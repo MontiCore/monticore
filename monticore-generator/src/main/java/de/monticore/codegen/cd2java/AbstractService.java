@@ -32,7 +32,6 @@ import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.*;
 import static de.monticore.codegen.cd2java._ast.constants.ASTConstantsDecorator.LITERALS_SUFFIX;
 import static de.monticore.codegen.cd2java.cli.CLIConstants.CLI_SUFFIX;
-import static de.monticore.codegen.cd2java.cli.CLIConstants.RUNNER_SUFFIX;
 import static de.monticore.codegen.cd2java.mill.MillConstants.MILL_SUFFIX;
 import static de.se_rwth.commons.Names.getQualifier;
 
@@ -519,7 +518,7 @@ public class AbstractService<T extends AbstractService> {
     // Use the string representation
     // also use a count to make sure no double codes can appear
     // because sometimes there is not enough information for a unique string
-    String codeString = getPackage() + getCDSymbol() + name + count;
+    String codeString = getPackage() + getCDSymbol().getName() + name + count;
     count++;
     //calculate hashCode, but limit the values to have at most 5 digits
     int hashCode = Math.abs(codeString.hashCode() % 100000);
@@ -575,30 +574,6 @@ public class AbstractService<T extends AbstractService> {
 
   public String getCliFullName() {
     return getCliFullName(getCDSymbol());
-  }
-
-  /**
-   * Runner class names e.g. AutomataRunner
-   */
-
-  public String getRunnerSimpleName(DiagramSymbol cdSymbol) {
-    return cdSymbol.getName() + RUNNER_SUFFIX;
-  }
-
-  public String getRunnerSimpleName() {
-    return getRunnerSimpleName(getCDSymbol());
-  }
-
-  public String getRunnerFullName(DiagramSymbol cdSymbol) {
-    if (cdSymbol.getPackageName().isEmpty()) {
-      return cdSymbol.getName().toLowerCase() + "." + getRunnerSimpleName(cdSymbol);
-    }else {
-      return String.join(".", cdSymbol.getPackageName(), cdSymbol.getName()).toLowerCase() + "." + getCliSimpleName(cdSymbol);
-    }
-  }
-
-  public String getRunnerFullName() {
-    return getRunnerFullName(getCDSymbol());
   }
 
 }

@@ -44,9 +44,8 @@ public class CDCLIDecoratorTest extends DecoratorTestCase {
     this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
     SymbolTableService symbolTableService = new SymbolTableService(decoratedCD);
     ParserService parserService = new ParserService(decoratedCD);
-    RunnerDecorator runnerDecorator = new RunnerDecorator(glex,parserService,symbolTableService);
-    CliDecorator cliDecorator = new CliDecorator(glex, parserService);
-    CDCLIDecorator cdcliDecorator = new CDCLIDecorator(glex, runnerDecorator ,cliDecorator,parserService);
+    CLIDecorator cliDecorator = new CLIDecorator(glex, parserService,symbolTableService);
+    CDCLIDecorator cdcliDecorator = new CDCLIDecorator(glex ,cliDecorator,parserService);
     this.cliCD = cdcliDecorator.decorate(decoratedCD);
   }
   @Test
@@ -59,12 +58,11 @@ public class CDCLIDecoratorTest extends DecoratorTestCase {
   }
   @Test
   public void testClassCount() {
-    assertEquals(2, cliCD.getCDDefinition().getCDClassesList().size());
+    assertEquals(1, cliCD.getCDDefinition().getCDClassesList().size());
   }
   @Test
   public void testClassNames() {
-    ASTCDClass automatonRunner = getClassBy("AutomatonRunner", cliCD);
-    ASTCDClass automatonCli = getClassBy("AutomatonCli", cliCD);
+    ASTCDClass automatonCli = getClassBy("AutomatonCLI", cliCD);
   }
   @Test
   public void testNoInterface() {
