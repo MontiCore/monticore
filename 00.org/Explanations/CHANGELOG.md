@@ -2,7 +2,7 @@
 
 # Release Notes
 
-##  MontiCore 7.1.0-SNAPSHOT
+##  MontiCore 7.1.0
 to be released
 
 ### Additions
