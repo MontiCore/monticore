@@ -57,10 +57,8 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
     ASTMCType builderType = this.getMCTypeFacade().createQualifiedType(builderClassName);
 
     // make the builder abstract for a abstract AST class
-    ASTModifier modifier = domainClass.isPresentModifier() ?
-        service.createModifierPublicModifier(domainClass.getModifier()) :
-        PUBLIC.build();
-    if (domainClass.isPresentModifier() && domainClass.getModifier().isAbstract()) {
+    ASTModifier modifier = service.createModifierPublicModifier(domainClass.getModifier()) ;
+    if (domainClass.getModifier().isAbstract()) {
       modifier.setAbstract(true);
     }
 

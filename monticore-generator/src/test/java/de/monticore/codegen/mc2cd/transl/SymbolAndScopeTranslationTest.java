@@ -42,7 +42,6 @@ public class SymbolAndScopeTranslationTest {
   @Test
   public void testSimpleSymbolInterface() {
     ASTCDInterface astType = getInterfaceBy("ASTType", symbolCD);
-    assertTrue(astType.isPresentModifier());
     assertTrue(astType.getModifier().isPresentStereotype());
     // only 2 because other one is the start prod stereotype
     assertEquals(2, astType.getModifier().getStereotype().getValuesList().size());
@@ -55,7 +54,6 @@ public class SymbolAndScopeTranslationTest {
   @Test
   public void testInheritedSymbolInterface_OneLevel() {
     ASTCDInterface astType = getInterfaceBy("ASTCDType", symbolCD);
-    assertTrue(astType.isPresentModifier());
     assertTrue(astType.getModifier().isPresentStereotype());
 
     assertEquals(1, astType.getModifier().getStereotype().getValuesList().size());
@@ -68,7 +66,6 @@ public class SymbolAndScopeTranslationTest {
   @Test
   public void testInheritedSymbolInterface_TwoLevels() {
     ASTCDClass astType = getClassBy("ASTCDClass", symbolCD);
-    assertTrue(astType.isPresentModifier());
     assertTrue(astType.getModifier().isPresentStereotype());
 
     assertEquals(1, astType.getModifier().getStereotype().getValuesList().size());
@@ -81,7 +78,6 @@ public class SymbolAndScopeTranslationTest {
   @Test
   public void testSimpleSymbolClass() {
     ASTCDClass astType = getClassBy("ASTSimpleSymbolClass", symbolCD);
-    assertTrue(astType.isPresentModifier());
     assertTrue(astType.getModifier().isPresentStereotype());
     assertEquals(1, astType.getModifier().getStereotype().getValuesList().size());
     assertEquals("symbol", astType.getModifier().getStereotype().getValues(0).getName());
@@ -91,7 +87,6 @@ public class SymbolAndScopeTranslationTest {
   @Test
   public void testSymbolClassOverwritten() {
     ASTCDClass astType = getClassBy("ASTSymbolClass", symbolCD);
-    assertTrue(astType.isPresentModifier());
     assertTrue(astType.getModifier().isPresentStereotype());
     assertEquals(2, astType.getModifier().getStereotype().getValuesList().size());
     assertEquals("inheritedSymbol", astType.getModifier().getStereotype().getValues(0).getName());
@@ -106,7 +101,6 @@ public class SymbolAndScopeTranslationTest {
   @Test
   public void testSymbolClassExtents() {
     ASTCDClass astType = getClassBy("ASTExtentsSymbolClass", symbolCD);
-    assertTrue(astType.isPresentModifier());
     assertTrue(astType.getModifier().isPresentStereotype());
     assertEquals(2, astType.getModifier().getStereotype().getValuesList().size());
     assertEquals("inheritedSymbol", astType.getModifier().getStereotype().getValues(0).getName());
@@ -121,7 +115,6 @@ public class SymbolAndScopeTranslationTest {
   @Test
   public void testSymbolInterfaceOverwritten() {
     ASTCDClass astType = getClassBy("ASTSymbolInterface", symbolCD);
-    assertTrue(astType.isPresentModifier());
     assertTrue(astType.getModifier().isPresentStereotype());
     assertEquals(1, astType.getModifier().getStereotype().getValuesList().size());
     assertEquals("inheritedSymbol", astType.getModifier().getStereotype().getValues(0).getName());
@@ -133,7 +126,6 @@ public class SymbolAndScopeTranslationTest {
   @Test
   public void testSymbolInterfaceImplements() {
     ASTCDClass astType = getClassBy("ASTImplementsSymbolInterface", symbolCD);
-    assertTrue(astType.isPresentModifier());
     assertTrue(astType.getModifier().isPresentStereotype());
     assertEquals(2, astType.getModifier().getStereotype().getValuesList().size());
     assertEquals("inheritedSymbol", astType.getModifier().getStereotype().getValues(0).getName());
@@ -149,7 +141,6 @@ public class SymbolAndScopeTranslationTest {
   @Test
   public void testSymbolAbstractClassOverwritten() {
     ASTCDClass astType = getClassBy("ASTSymbolAbstractClass", symbolCD);
-    assertTrue(astType.isPresentModifier());
     assertTrue(astType.getModifier().isPresentStereotype());
     assertEquals(1, astType.getModifier().getStereotype().getValuesList().size());
     assertEquals("inheritedSymbol", astType.getModifier().getStereotype().getValues(0).getName());
@@ -161,7 +152,6 @@ public class SymbolAndScopeTranslationTest {
   @Test
   public void testSymbolAbstractClassExtents() {
     ASTCDClass astType = getClassBy("ASTExtentsSymbolAbstractClass", symbolCD);
-    assertTrue(astType.isPresentModifier());
     assertTrue(astType.getModifier().isPresentStereotype());
     assertEquals(2, astType.getModifier().getStereotype().getValuesList().size());
     assertEquals("inheritedSymbol", astType.getModifier().getStereotype().getValues(0).getName());
@@ -179,7 +169,6 @@ public class SymbolAndScopeTranslationTest {
   @Test
   public void testSimpleScopeInterface() {
     ASTCDInterface astType = getInterfaceBy("ASTTypeScope", symbolCD);
-    assertTrue(astType.isPresentModifier());
     assertTrue(astType.getModifier().isPresentStereotype());
     assertEquals(1, astType.getModifier().getStereotype().getValuesList().size());
     assertEquals("scope", astType.getModifier().getStereotype().getValues(0).getName());
@@ -189,7 +178,6 @@ public class SymbolAndScopeTranslationTest {
   @Test
   public void testInheritedScopeInterface_OneLevel() {
     ASTCDInterface astType = getInterfaceBy("ASTCDTypeScope", symbolCD);
-    assertTrue(astType.isPresentModifier());
     assertTrue(astType.getModifier().isPresentStereotype());
 
     assertEquals(1, astType.getModifier().getStereotype().getValuesList().size());
@@ -200,7 +188,6 @@ public class SymbolAndScopeTranslationTest {
   @Test
   public void testInheritedScopeInterface_TwoLevels() {
     ASTCDClass astType = getClassBy("ASTCDClassScope", symbolCD);
-    assertTrue(astType.isPresentModifier());
     assertTrue(astType.getModifier().isPresentStereotype());
 
     assertEquals(1, astType.getModifier().getStereotype().getValuesList().size());
@@ -211,7 +198,6 @@ public class SymbolAndScopeTranslationTest {
   @Test
   public void testSimpleScopeClass() {
     ASTCDClass astType = getClassBy("ASTSimpleScopeClass", symbolCD);
-    assertTrue(astType.isPresentModifier());
     assertTrue(astType.getModifier().isPresentStereotype());
     assertEquals(1, astType.getModifier().getStereotype().getValuesList().size());
     assertEquals("scope", astType.getModifier().getStereotype().getValues(0).getName());
@@ -221,7 +207,6 @@ public class SymbolAndScopeTranslationTest {
   @Test
   public void testNoShadowingScopeClass() {
     ASTCDClass astType = getClassBy("ASTScopeShadowing", symbolCD);
-    assertTrue(astType.isPresentModifier());
     assertTrue(astType.getModifier().isPresentStereotype());
     assertEquals(2, astType.getModifier().getStereotype().getValuesList().size());
     assertEquals("scope", astType.getModifier().getStereotype().getValues(0).getName());
@@ -233,7 +218,6 @@ public class SymbolAndScopeTranslationTest {
   @Test
   public void testNoExportingScopeClass() {
     ASTCDClass astType = getClassBy("ASTScopeNonExporting", symbolCD);
-    assertTrue(astType.isPresentModifier());
     assertTrue(astType.getModifier().isPresentStereotype());
     assertEquals(2, astType.getModifier().getStereotype().getValuesList().size());
     assertEquals("scope", astType.getModifier().getStereotype().getValues(0).getName());
@@ -245,7 +229,6 @@ public class SymbolAndScopeTranslationTest {
   @Test
   public void testOrderedScopeClass() {
     ASTCDClass astType = getClassBy("ASTScopeOrdered", symbolCD);
-    assertTrue(astType.isPresentModifier());
     assertTrue(astType.getModifier().isPresentStereotype());
     assertEquals(2, astType.getModifier().getStereotype().getValuesList().size());
     assertEquals("scope", astType.getModifier().getStereotype().getValues(0).getName());

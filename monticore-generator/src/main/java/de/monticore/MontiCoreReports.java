@@ -8,7 +8,7 @@ import de.monticore.generating.templateengine.reporting.commons.ReportingReposit
 import de.monticore.generating.templateengine.reporting.reporter.*;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsTraverser;
-import de.monticore.io.paths.IterablePath;
+import de.monticore.io.paths.MCPath;
 
 /**
  * Initializes and provides the set of reports desired for MontiCore to the
@@ -21,9 +21,9 @@ public class MontiCoreReports implements ReportManagerFactory {
 
   private String reportDirectory;
 
-  private IterablePath handwrittenPath;
+  private MCPath handwrittenPath;
   
-  private IterablePath templatePath;
+  private MCPath templatePath;
   
 
   /**
@@ -32,8 +32,8 @@ public class MontiCoreReports implements ReportManagerFactory {
   protected MontiCoreReports(
           String outputDirectory,
           String reportDiretory,
-          IterablePath handwrittenPath,
-          IterablePath templatePath) {
+          MCPath handwrittenPath,
+          MCPath templatePath) {
     this.outputDirectory = outputDirectory;
     this.reportDirectory = reportDiretory;
     this.handwrittenPath = handwrittenPath;
@@ -49,8 +49,6 @@ public class MontiCoreReports implements ReportManagerFactory {
     MontiCoreNodeIdentifierHelper identifierHelper = new MontiCoreNodeIdentifierHelper();
     ReportingRepository repository = new ReportingRepository(identifierHelper);
     repository.initAllTemplates();
-    repository.initAllHWJava(this.handwrittenPath);
-    repository.initAllHWTemplates(this.templatePath);
     
     ReportManager reports = new ReportManager(this.outputDirectory);
 

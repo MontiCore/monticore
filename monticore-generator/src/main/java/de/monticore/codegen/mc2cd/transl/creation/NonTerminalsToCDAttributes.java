@@ -3,6 +3,7 @@
 package de.monticore.codegen.mc2cd.transl.creation;
 
 import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
@@ -68,7 +69,7 @@ public class NonTerminalsToCDAttributes implements
 
     @Override
     public void visit (ASTNonTerminal node){
-      ASTCDAttribute cdAttribute = CD4AnalysisMill.cDAttributeBuilder().uncheckedBuild();
+      ASTCDAttribute cdAttribute = CD4AnalysisMill.cDAttributeBuilder().setModifier(CD4CodeMill.modifierBuilder().build()).uncheckedBuild();
       link.target().addCDMember(cdAttribute);
       new Link<>(node, cdAttribute, link);
 

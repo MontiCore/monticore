@@ -8,6 +8,7 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.cd4codebasis._ast.*;
 import de.monticore.codegen.cd2java.AbstractService;
+import de.monticore.codegen.cd2java.CdUtilsPrinter;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
@@ -37,6 +38,7 @@ public class CoCoInterfaceDecoratorTest extends DecoratorTestCase {
     LogStub.init();
     ASTCDCompilationUnit ast = parse("de", "monticore", "codegen", "cocos", "CoCos");
     this.glex.setGlobalValue("service", new AbstractService(ast));
+    this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
 
     CoCoInterfaceDecorator coCoInterfaceDecorator = new CoCoInterfaceDecorator(glex, new CoCoService(ast), new ASTService(ast));
     this.interfaces = coCoInterfaceDecorator.decorate(ast.getCDDefinition());

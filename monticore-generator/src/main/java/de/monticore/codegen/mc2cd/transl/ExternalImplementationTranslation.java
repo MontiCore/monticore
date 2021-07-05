@@ -2,6 +2,7 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.grammar.MCGrammarSymbolTableHelper;
@@ -27,7 +28,10 @@ public class ExternalImplementationTranslation implements
       Optional<ProdSymbol> ruleSymbol = MCGrammarSymbolTableHelper.resolveRuleInSupersOnly(
           link.source(), name);
       if (ruleSymbol.isPresent() && ruleSymbol.get().isIsExternal()) {
-        link.target().addInterface(
+        if (!link.target().isPresentCDInterfaceUsage()) {
+          link.target().setCDInterfaceUsage(CD4CodeMill.cDInterfaceUsageBuilder().build());
+        }
+        link.target().getCDInterfaceUsage().addInterface(
             TransformationHelper.createObjectType(TransformationHelper.getGrammarNameAsPackage(
                 ruleSymbol.get()) + "AST" + name + "Ext"));
       }

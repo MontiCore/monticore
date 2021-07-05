@@ -259,7 +259,7 @@ public class DecorationHelper extends MCBasicTypesHelper {
   }
 
   protected boolean hasDerivedAttributeName(ASTCDAttribute astcdAttribute) {
-    return astcdAttribute.isPresentModifier() && astcdAttribute.getModifier().isPresentStereotype()
+    return astcdAttribute.getModifier().isPresentStereotype()
         && astcdAttribute.getModifier().getStereotype().sizeValues() > 0 &&
         astcdAttribute.getModifier().getStereotype().getValuesList()
             .stream()

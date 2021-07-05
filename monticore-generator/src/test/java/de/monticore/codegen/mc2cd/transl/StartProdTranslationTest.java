@@ -42,7 +42,6 @@ public class StartProdTranslationTest {
 
   @Test
   public void testGlobalStartProd() {
-    assertTrue(globalStartProd.getCDDefinition().isPresentModifier());
     assertTrue(globalStartProd.getCDDefinition().getModifier().isPresentStereotype());
     assertEquals(1, globalStartProd.getCDDefinition().getModifier().getStereotype().sizeValues());
     assertEquals("startProd", globalStartProd.getCDDefinition().getModifier().getStereotype().getValues(0).getName());
@@ -53,7 +52,6 @@ public class StartProdTranslationTest {
   @Test
   public void testClassStartProd() {
     ASTCDClass xClass = getClassBy("ASTX", classStartProd);
-    assertTrue(xClass.isPresentModifier());
     assertTrue(xClass.getModifier().isPresentStereotype());
     assertEquals(1, xClass.getModifier().getStereotype().sizeValues());
     assertEquals("startProd", xClass.getModifier().getStereotype().getValues(0).getName());
@@ -63,7 +61,6 @@ public class StartProdTranslationTest {
   @Test
   public void testInterfaceStartProd() {
     ASTCDInterface aInterface = getInterfaceBy("ASTA", interfaceStartProd);
-    assertTrue(aInterface.isPresentModifier());
     assertTrue(aInterface.getModifier().isPresentStereotype());
     assertEquals(1, aInterface.getModifier().getStereotype().sizeValues());
     assertEquals("startProd", aInterface.getModifier().getStereotype().getValues(0).getName());

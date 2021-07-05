@@ -22,6 +22,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
+import static de.monticore.codegen.cd2java.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertBoolean;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
@@ -42,7 +43,8 @@ public class OptionalAccessorDecoratorTest extends DecoratorTestCase {
     // dummy cd needed for a good generated error Code
     ASTCDCompilationUnit cd = this.parse("de", "monticore", "codegen", "symboltable", "Automaton");
 
-    ASTCDAttribute attribute = CDAttributeFacade.getInstance().createAttributeByDefinition("protected Optional<String> a;");
+    ASTMCType optType = MCTypeFacade.getInstance().createOptionalTypeOf(String.class);
+    ASTCDAttribute attribute = CDAttributeFacade.getInstance().createAttribute(PROTECTED.build(), optType, "a");
     OptionalAccessorDecorator optionalAccessorDecorator = new OptionalAccessorDecorator(glex, new ASTService(cd));
     this.methods = optionalAccessorDecorator.decorate(attribute);
   }

@@ -2,12 +2,11 @@
 ${tc.signature("cdClass", "classFullName")}
 <#assign service = glex.getGlobalVar("service")>
 <#assign genHelper = glex.getGlobalVar("astHelper")>
-<#assign isPresentModifier = cdClass.isPresentModifier()>
 
   String name = de.se_rwth.commons.StringTransformations.uncapitalize(reporting.getASTNodeNameFormatted(node));
   printObject(name, "${classFullName}");
   pp.indent();
-<#if isPresentModifier && service.hasSymbolStereotype(cdClass.getModifier())>
+<#if service.hasSymbolStereotype(cdClass.getModifier())>
   if (node.isPresentSymbol()) {
     String symName = de.se_rwth.commons.StringTransformations.uncapitalize(reporting.getSymbolNameFormatted(node.getSymbol()));
     pp.println("symbol = " + symName + ";");
@@ -17,7 +16,7 @@ ${tc.signature("cdClass", "classFullName")}
 </#if>
   String scopeName = de.se_rwth.commons.StringTransformations.uncapitalize(reporting.getScopeNameFormatted(node.getEnclosingScope()));
   pp.println("enclosingScope = " + scopeName + ";");
-<#if isPresentModifier && service.hasScopeStereotype(cdClass.getModifier())>
+<#if service.hasScopeStereotype(cdClass.getModifier())>
   String spannedScopeName = de.se_rwth.commons.StringTransformations.uncapitalize(reporting.getScopeNameFormatted(node.getSpannedScope()));
   pp.println("spanningScope = " + spannedScopeName + ";");
 </#if>

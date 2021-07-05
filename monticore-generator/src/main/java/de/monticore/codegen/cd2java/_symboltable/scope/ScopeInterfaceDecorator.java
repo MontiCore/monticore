@@ -3,6 +3,7 @@ package de.monticore.codegen.cd2java._symboltable.scope;
 
 import com.google.common.collect.Lists;
 import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.*;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
@@ -126,8 +127,9 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
     return CD4AnalysisMill.cDInterfaceBuilder()
         .setName(scopeInterfaceName)
         .setModifier(PUBLIC.build())
-        .addAllInterfaces(superScopeInterfaces)
-        .addAllInterfaces(scopeRuleInterfaces)
+        .setCDExtendUsage(CD4CodeMill.cDExtendUsageBuilder()
+                .addAllSuperclass(superScopeInterfaces)
+                .addAllSuperclass(scopeRuleInterfaces).build())
         .addAllCDMembers(createAlreadyResolvedMethods(symbolInput.getCDDefinition().getCDClassesList()))
         .addAllCDMembers(createScopeInterfaceMethodsForSymbols(symbolInput.getCDDefinition().getCDClassesList()))
         .addAllCDMembers(createSubScopesMethods(scopeInterfaceName))
@@ -566,9 +568,8 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
   protected Set<String> getSuperSymbolAttributesNames() {
     Set<String> symbolAttributes = new HashSet<>();
     for (DiagramSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
-      for (CDTypeSymbol type : ((ICDBasisScope) cdDefinitionSymbol.getEnclosingScope()).getLocalCDTypeSymbols()) {
-        if (type.isPresentAstNode() && type.getAstNode().isPresentModifier()
-            && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifier())) {
+      for (CDTypeSymbol type : symbolTableService.getAllCDTypes(cdDefinitionSymbol)) {
+        if (type.isPresentAstNode() && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifier())) {
           Optional<String> symbolAttribute = createSymbolAttributeName(type.getAstNode());
           symbolAttribute.ifPresent(attrName -> symbolAttributes.add(attrName));
         }

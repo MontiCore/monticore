@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast_emf.ast_class;
 
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
@@ -46,15 +47,19 @@ public class ASTEmfDecorator extends ASTDecorator {
 
   @Override
   public ASTCDClass decorate(final ASTCDClass originalClass, ASTCDClass changedClass) {
-    changedClass.addInterface(this.astService.getASTBaseInterface());
+    if (!changedClass.isPresentCDInterfaceUsage()) {
+      changedClass.setCDInterfaceUsage(CD4CodeMill.cDInterfaceUsageBuilder().build());
+    }
+    changedClass.getCDInterfaceUsage().addInterface(this.astService.getASTBaseInterface());
     // have to use the changed one here because this one will get the TOP prefix
     changedClass.addCDMember(createAcceptTraverserMethod(changedClass));
     changedClass.addAllCDMembers(createAcceptTraverserSuperMethods(changedClass));
     changedClass.addCDMember(getConstructMethod(originalClass));
     changedClass.addAllCDMembers(createEMethods(originalClass));
 
-    if (!originalClass.isPresentSuperclass()) {
-      changedClass.setSuperclass(this.getMCTypeFacade().createQualifiedType(AST_EC_NODE));
+    if (!originalClass.isPresentCDExtendUsage()) {
+      changedClass.setCDExtendUsage(
+              CD4CodeMill.cDExtendUsageBuilder().addSuperclass(this.getMCTypeFacade().createQualifiedType(AST_EC_NODE)).build());
     }
 
     List<ASTCDAttribute> symbolAttributes = symbolDecorator.decorate(originalClass);

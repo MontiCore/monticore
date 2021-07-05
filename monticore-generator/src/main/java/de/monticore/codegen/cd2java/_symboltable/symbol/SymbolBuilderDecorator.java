@@ -2,6 +2,7 @@
 package de.monticore.codegen.cd2java._symboltable.symbol;
 
 import com.google.common.collect.Lists;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
@@ -76,7 +77,7 @@ public class SymbolBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDCla
       Map<ASTCDClass, String> values = symbolTableService.getInheritedSymbolPropertyClasses(Lists.newArrayList(symbolClass));
       String value = values.getOrDefault(symbolClass, "");
       if (!value.isEmpty()) {
-        symbolBuilder.setSuperclass(getMCTypeFacade().createQualifiedType(value + BuilderConstants.BUILDER_SUFFIX));
+        symbolBuilder.setCDExtendUsage(CD4CodeMill.cDExtendUsageBuilder().addSuperclass(getMCTypeFacade().createQualifiedType(value + BuilderConstants.BUILDER_SUFFIX)).build());
       }
       // add delegate-Method
       // overwrite setters since they need to return the correct Builder type

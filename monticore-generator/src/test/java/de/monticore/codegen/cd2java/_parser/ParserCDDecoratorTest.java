@@ -99,13 +99,13 @@ public class ParserCDDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testPackage() {
-    assertEquals(6, parserCD.getPackageList().size());
-    assertEquals("de", parserCD.getPackageList().get(0));
-    assertEquals("monticore", parserCD.getPackageList().get(1));
-    assertEquals("codegen", parserCD.getPackageList().get(2));
-    assertEquals("symboltable", parserCD.getPackageList().get(3));
-    assertEquals("automaton", parserCD.getPackageList().get(4));
-    assertEquals("_parser", parserCD.getPackageList().get(5));
+    assertEquals(6, parserCD.getCDPackageList().size());
+    assertEquals("de", parserCD.getCDPackageList().get(0));
+    assertEquals("monticore", parserCD.getCDPackageList().get(1));
+    assertEquals("codegen", parserCD.getCDPackageList().get(2));
+    assertEquals("symboltable", parserCD.getCDPackageList().get(3));
+    assertEquals("automaton", parserCD.getCDPackageList().get(4));
+    assertEquals("_parser", parserCD.getCDPackageList().get(5));
   }
 
   @Test

@@ -2,6 +2,7 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.grammar.MCGrammarSymbolTableHelper;
@@ -36,7 +37,10 @@ public class OverridingClassProdTranslation implements
       if (ruleSymbol.isPresent() && !ruleSymbol.get().isIsExternal()) {
         String qualifiedASTNodeName = TransformationHelper.getPackageName(ruleSymbol.get()) + "AST"
             + ruleSymbol.get().getName();
-        link.target().setSuperclass(
+        if (!link.target().isPresentCDExtendUsage()) {
+          link.target().setCDExtendUsage(CD4CodeMill.cDExtendUsageBuilder().build());
+        }
+        link.target().getCDExtendUsage().addSuperclass(
             TransformationHelper.createObjectType(qualifiedASTNodeName));
       }
       

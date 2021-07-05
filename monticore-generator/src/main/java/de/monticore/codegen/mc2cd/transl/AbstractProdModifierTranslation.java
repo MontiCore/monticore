@@ -23,7 +23,6 @@ public class AbstractProdModifierTranslation implements
 
     rootLink.getLinks(ASTAbstractProd.class, ASTCDClass.class).stream()
         .map(Link::target)
-            .filter(ASTCDClass::isPresentModifier)
         .map(ASTCDClass::getModifier)
         .forEach(modifier -> modifier.setAbstract(true));
     return rootLink;

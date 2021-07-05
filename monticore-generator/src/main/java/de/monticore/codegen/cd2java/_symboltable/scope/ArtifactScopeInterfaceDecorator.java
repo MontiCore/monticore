@@ -3,6 +3,7 @@ package de.monticore.codegen.cd2java._symboltable.scope;
 
 import com.google.common.collect.Lists;
 import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.*;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
@@ -61,8 +62,9 @@ public class ArtifactScopeInterfaceDecorator extends AbstractCreator<ASTCDCompil
     return CD4AnalysisMill.cDInterfaceBuilder()
         .setName(artifactScopeInterfaceSimpleName)
         .setModifier(PUBLIC.build())
-        .addAllInterfaces(getSuperArtifactScopeInterfaces())
-        .addInterface(symbolTableService.getScopeInterfaceType())
+        .setCDExtendUsage(CD4CodeMill.cDExtendUsageBuilder()
+                .addAllSuperclass(getSuperArtifactScopeInterfaces())
+                .addSuperclass(symbolTableService.getScopeInterfaceType()).build())
         .addAllCDMembers(createImportsAttributeMethods())
         .addCDMember(createGetTopLevelSymbolMethod(symbolProds))
         .addCDMember(createCheckIfContinueAsSubScopeMethod())
@@ -173,10 +175,9 @@ public class ArtifactScopeInterfaceDecorator extends AbstractCreator<ASTCDCompil
     List<ASTCDMethod> methodList = new ArrayList<>();
     for (DiagramSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
       // only filter for types which define a symbol
-      List<ASTCDType> symbolProds = ((ICDBasisScope) cdDefinitionSymbol.getEnclosingScope()).getLocalCDTypeSymbols()
+      List<ASTCDType> symbolProds = symbolTableService.getAllCDTypes(cdDefinitionSymbol)
           .stream()
           .filter(t -> t.isPresentAstNode())
-          .filter(t -> t.getAstNode().isPresentModifier())
           .filter(t -> symbolTableService.hasSymbolStereotype(t.getAstNode().getModifier()))
           .filter(CDTypeSymbol::isPresentAstNode)
           .map(CDTypeSymbol::getAstNode)
@@ -189,9 +190,8 @@ public class ArtifactScopeInterfaceDecorator extends AbstractCreator<ASTCDCompil
   public List<ASTCDType> getSuperSymbols() {
     List<ASTCDType> symbolAttributes = new ArrayList<>();
     for (DiagramSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
-      for (CDTypeSymbol type : ((ICDBasisScope) cdDefinitionSymbol.getEnclosingScope()).getLocalCDTypeSymbols()) {
-        if (type.isPresentAstNode() && type.getAstNode().isPresentModifier()
-            && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifier())) {
+      for (CDTypeSymbol type : symbolTableService.getAllCDTypes(cdDefinitionSymbol)) {
+        if (symbolTableService.hasSymbolStereotype(type.getAstNode().getModifier())) {
           symbolAttributes.add(type.getAstNode());
         }
       }

@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java.data;
 
+import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.cd4codebasis._ast.*;
 import de.monticore.codegen.cd2java.AbstractService;
@@ -44,10 +45,14 @@ public class DataDecorator extends AbstractTransformer<ASTCDClass> {
   public ASTCDClass decorate(final ASTCDClass originalClass, ASTCDClass changedClass) {
     this.clazzName = originalClass.deepClone().getName();
     changedClass.addCDMember(createDefaultConstructor(originalClass));
-    if (originalClass.isPresentSuperclass()) {
-      changedClass.setSuperclass(originalClass.getSuperclass());
+    if (originalClass.isPresentCDExtendUsage()) {
+      changedClass.setCDExtendUsage(CD4AnalysisMill.cDExtendUsageBuilder().build());
+      changedClass.getCDExtendUsage().setSuperclassList(originalClass.getSuperclassList());
     }
-    changedClass.addAllInterface(originalClass.getInterfaceList());
+    if (originalClass.isPresentCDInterfaceUsage()) {
+      changedClass.setCDInterfaceUsage(CD4AnalysisMill.cDInterfaceUsageBuilder().build());
+      changedClass.getCDInterfaceUsage().setInterfaceList(originalClass.getInterfaceList());
+    }
     changedClass.addAllCDMembers(originalClass.getCDMethodList());
 
     //remove inherited attributes, because these are already defined in superclass

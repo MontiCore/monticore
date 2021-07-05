@@ -22,8 +22,7 @@ import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
 import de.monticore.grammar.grammarfamily._symboltable.GrammarFamilyPhasedSTC;
 import de.monticore.grammar.grammarfamily._symboltable.IGrammarFamilyArtifactScope;
 import de.monticore.grammar.grammarfamily._symboltable.IGrammarFamilyGlobalScope;
-import de.monticore.io.paths.ModelPath;
-import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.Names;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -47,7 +46,7 @@ public class ParserGeneratorTest {
 
   private GlobalExtensionManagement glex;
 
-  private ModelPath modelPath;
+  private MCPath modelPath;
 
   private File outputPath;
 
@@ -61,7 +60,7 @@ public class ParserGeneratorTest {
     this.glex = new GlobalExtensionManagement();
     Path modelPathPath = Paths.get("src/test/resources");
     outputPath = new File("target/generated-test-sources");
-    this.modelPath = new ModelPath(modelPathPath, outputPath.toPath());
+    this.modelPath = new MCPath(modelPathPath, outputPath.toPath());
   }
 
   @Test

@@ -84,8 +84,9 @@ public class ScopesGenitorDecorator extends AbstractCreator<ASTCDCompilationUnit
       ASTCDClass scopesGenitor = CD4CodeMill.cDClassBuilder()
           .setName(scopesGenitorName)
           .setModifier(PUBLIC.build())
-          .addInterface(getMCTypeFacade().createQualifiedType(visitorName))
-          .addInterface(getMCTypeFacade().createQualifiedType(handlerName))
+          .setCDInterfaceUsage(CD4CodeMill.cDInterfaceUsageBuilder()
+                  .addInterface(getMCTypeFacade().createQualifiedType(visitorName))
+                  .addInterface(getMCTypeFacade().createQualifiedType(handlerName)).build())
           .addCDMember(createDequeConstructor(scopesGenitorName))
           .addCDMember(createScopeStackAttribute(dequeType))
           .addCDMember(traverserAttribute)
@@ -236,8 +237,8 @@ public class ScopesGenitorDecorator extends AbstractCreator<ASTCDCompilationUnit
 
   protected ASTCDMethod createSymbolEndVisitMethod(String astFullName, ASTCDType symbolClass, String simpleName, String symbolFullName) {
     ASTCDMethod endVisitMethod = visitorService.getVisitorMethod(END_VISIT, getMCTypeFacade().createQualifiedType(astFullName));
-    boolean removeScope = (symbolClass.isPresentModifier() && (symbolTableService.hasScopeStereotype(symbolClass.getModifier())
-        || symbolTableService.hasInheritedScopeStereotype(symbolClass.getModifier())));
+    boolean removeScope = (symbolTableService.hasScopeStereotype(symbolClass.getModifier())
+        || symbolTableService.hasInheritedScopeStereotype(symbolClass.getModifier()));
     String symbolName = symbolTableService.removeSymbolSuffix(Names.getSimpleName(symbolFullName));
     this.replaceTemplate(EMPTY_BODY, endVisitMethod, new TemplateHookPoint(TEMPLATE_PATH + "EndVisitSymbol",  simpleName, symbolName, removeScope));
     return endVisitMethod;

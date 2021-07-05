@@ -87,7 +87,7 @@ public class SymbolSurrogateDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterfacesAutomatonSymbol() {
-    assertDeepEquals(AUTOMATON_SYMBOL, symbolClassAutomaton.getSuperclass());
+    assertDeepEquals(AUTOMATON_SYMBOL, symbolClassAutomaton.getCDExtendUsage().getSuperclass(0));
   }
 
   @Test

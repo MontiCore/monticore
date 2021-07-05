@@ -3,6 +3,7 @@ package de.monticore.codegen.cd2java._symboltable.symbol;
 
 import com.google.common.collect.Lists;
 import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.cd4codebasis._ast.*;
 import de.monticore.codegen.cd2java.AbstractCreator;
@@ -55,9 +56,7 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
     String scopeInterfaceType = symbolTableService.getScopeInterfaceFullName();
     String symbolFullName = symbolTableService.getSymbolFullName(symbolInput);
     String simpleName = symbolInput.getName();
-    ASTModifier modifier = symbolInput.isPresentModifier() ?
-            symbolTableService.createModifierPublicModifier(symbolInput.getModifier()) :
-            PUBLIC.build();
+    ASTModifier modifier = symbolTableService.createModifierPublicModifier(symbolInput.getModifier());
 
     // symbol rule methods and attributes
     List<ASTCDMethod> symbolRuleAttributeMethods = symbolInput.deepClone().getCDAttributeList()
@@ -94,8 +93,7 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
     ASTCDClassBuilder builder = CD4AnalysisMill.cDClassBuilder()
             .setName(symbolSurrogateSimpleName)
             .setModifier(modifier)
-            .setSuperclass(getMCTypeFacade()
-            .createQualifiedType(symbolTableService.getSymbolFullName(symbolInput)))
+            .setCDExtendUsage(CD4CodeMill.cDExtendUsageBuilder().addSuperclass(getMCTypeFacade().createQualifiedType(symbolTableService.getSymbolFullName(symbolInput))).build())
             .addCDMember(createConstructor(symbolSurrogateSimpleName))
             .addAllCDMembers(nameMethods)
             .addAllCDMembers(delegateSymbolRuleAttributeMethods)

@@ -43,6 +43,7 @@ import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.IterablePath;
+import de.monticore.io.paths.MCPath;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
@@ -119,7 +120,7 @@ public class MillDecoratorTest extends DecoratorTestCase {
   }
 
   protected ASTCDCompilationUnit getTraverserCD() {
-    IterablePath targetPath = Mockito.mock(IterablePath.class);
+    MCPath targetPath = Mockito.mock(MCPath.class);
     VisitorService visitorService = new VisitorService(decoratedCompilationUnit);
     SymbolTableService symbolTableService = new SymbolTableService(decoratedCompilationUnit);
     MethodDecorator methodDecorator = new MethodDecorator(glex, visitorService);
@@ -154,13 +155,13 @@ public class MillDecoratorTest extends DecoratorTestCase {
     SymbolSurrogateBuilderDecorator symbolReferenceBuilderDecorator = new SymbolSurrogateBuilderDecorator(glex, symbolTableService, accessorDecorator);
     CommonSymbolInterfaceDecorator commonSymbolInterfaceDecorator = new CommonSymbolInterfaceDecorator(glex, symbolTableService, visitorService, methodDecorator);
     SymbolResolverInterfaceDecorator symbolResolverInterfaceDecorator = new SymbolResolverInterfaceDecorator(glex, symbolTableService);
-    SymbolDeSerDecorator symbolDeSerDecorator = new SymbolDeSerDecorator(glex, symbolTableService, IterablePath.empty());
-    ScopeDeSerDecorator scopeDeSerDecorator = new ScopeDeSerDecorator(glex, symbolTableService, methodDecorator, visitorService, IterablePath.empty());
+    SymbolDeSerDecorator symbolDeSerDecorator = new SymbolDeSerDecorator(glex, symbolTableService, new MCPath());
+    ScopeDeSerDecorator scopeDeSerDecorator = new ScopeDeSerDecorator(glex, symbolTableService, methodDecorator, visitorService, new MCPath());
     ScopesGenitorDecorator scopesGenitorDecorator = new ScopesGenitorDecorator(glex, symbolTableService, visitorService, methodDecorator);
     ScopesGenitorDelegatorDecorator scopesGenitorDelegatorDecorator = new ScopesGenitorDelegatorDecorator(glex, symbolTableService, visitorService);
     Symbols2JsonDecorator symbolTablePrinterDecorator = new Symbols2JsonDecorator(glex, symbolTableService, visitorService, methodDecorator);
 
-    IterablePath targetPath = Mockito.mock(IterablePath.class);
+    MCPath targetPath = Mockito.mock(MCPath.class);
 
     SymbolTableCDDecorator symbolTableCDDecorator = new SymbolTableCDDecorator(glex, targetPath, symbolTableService, symbolDecorator,
         symbolBuilderDecorator, symbolReferenceDecorator, symbolReferenceBuilderDecorator,
@@ -179,7 +180,8 @@ public class MillDecoratorTest extends DecoratorTestCase {
   @Test
   public void testCompilationUnitNotChanged() {
     // TODO NJ: Remove the following loc as soon as stereotype deep equals is fixed
-    String cachedValue = ((ASTCDClass) originalCompilationUnit.getCDDefinition().getCDElement(6)).getModifier().getStereotype().getValues(0).getValue();
+    ASTCDElement clazz = ((ASTCDPackage) originalCompilationUnit.getCDDefinition().getCDElement(0)).getCDElement(6);
+    String cachedValue = ((ASTCDClass) clazz).getModifier().getStereotype().getValues(0).getValue();
     assertEquals("de.monticore.codegen.symboltable.automaton._symboltable.SymbolInterfaceSymbol", cachedValue);
     
     assertDeepEquals(originalCompilationUnit, decoratedCompilationUnit);
@@ -228,7 +230,6 @@ public class MillDecoratorTest extends DecoratorTestCase {
   public void testAttributeModifier() {
     for (ASTCDAttribute astcdAttribute : millClass.getCDAttributeList()) {
       if(!astcdAttribute.getName().equals("automatonGlobalScope")) {
-        assertTrue(astcdAttribute.isPresentModifier());
         assertTrue(PROTECTED_STATIC.build().deepEquals(astcdAttribute.getModifier()));
       }
     }

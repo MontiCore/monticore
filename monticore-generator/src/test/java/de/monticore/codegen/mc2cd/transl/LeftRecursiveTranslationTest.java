@@ -32,7 +32,6 @@ public class LeftRecursiveTranslationTest {
   @Test
   public void testLeftRecursiveProd(){
     ASTCDClass a = getClassBy("ASTA", leftRecursive);
-    assertTrue(a.isPresentModifier());
     assertTrue(a.getModifier().isPresentStereotype());
     assertEquals(1, a.getModifier().getStereotype().sizeValues());
     assertEquals("left_recursive", a.getModifier().getStereotype().getValues(0).getName());

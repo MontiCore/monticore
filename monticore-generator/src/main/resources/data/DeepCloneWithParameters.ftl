@@ -5,7 +5,7 @@ ${tc.signature("attributeList")}
     super.deepClone(result);
 
 <#list attributeList as attribute>
-<#if attribute.isPresentModifier() && !service.isReferencedSymbolAttribute(attribute) && !service.isInheritedAttribute(attribute)>
+<#if !service.isReferencedSymbolAttribute(attribute) && !service.isInheritedAttribute(attribute)>
     <#assign attributeName = attribute.getName()>
     <#assign methName = genHelper.getNativeAttributeName(attribute.getName())?cap_first>
     <#assign attrType = attribute.getMCType()>

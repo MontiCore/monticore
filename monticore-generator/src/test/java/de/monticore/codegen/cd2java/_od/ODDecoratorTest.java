@@ -117,7 +117,7 @@ public class ODDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testNoSuperClass() {
-    assertFalse(odClass.isPresentSuperclass());
+    assertFalse(odClass.isPresentCDExtendUsage());
   }
 
   @Test
@@ -137,7 +137,6 @@ public class ODDecoratorTest extends DecoratorTestCase {
   @Test
   public void testTraverserAttribute() {
     ASTCDAttribute automatonVisitor = getAttributeBy("traverser", odClass);
-    assertTrue(automatonVisitor.isPresentModifier());
     assertDeepEquals(PRIVATE, automatonVisitor.getModifier());
     assertDeepEquals(TRAVERSER_FULL_NAME, automatonVisitor.getMCType());
   }
@@ -145,7 +144,6 @@ public class ODDecoratorTest extends DecoratorTestCase {
   @Test
   public void testIndentPrinterAttribute() {
     ASTCDAttribute pp = getAttributeBy("pp", odClass);
-    assertTrue(pp.isPresentModifier());
     assertDeepEquals(PROTECTED, pp.getModifier());
     assertDeepEquals(INDENT_PRINTER, pp.getMCType());
   }
@@ -153,7 +151,6 @@ public class ODDecoratorTest extends DecoratorTestCase {
   @Test
   public void testReportingRepositoryAttribute() {
     ASTCDAttribute reporting = getAttributeBy("reporting", odClass);
-    assertTrue(reporting.isPresentModifier());
     assertDeepEquals(PROTECTED, reporting.getModifier());
     assertDeepEquals(REPORTING_REPOSITORY, reporting.getMCType());
   }
@@ -161,7 +158,6 @@ public class ODDecoratorTest extends DecoratorTestCase {
   @Test
   public void testPrintEmptyOptionalAttribute() {
     ASTCDAttribute printEmptyOptional = getAttributeBy("printEmptyOptional", odClass);
-    assertTrue(printEmptyOptional.isPresentModifier());
     assertDeepEquals(PROTECTED, printEmptyOptional.getModifier());
     assertBoolean(printEmptyOptional.getMCType());
   }
@@ -169,7 +165,6 @@ public class ODDecoratorTest extends DecoratorTestCase {
   @Test
   public void testPrintEmptyListAttribute() {
     ASTCDAttribute printEmptyList = getAttributeBy("printEmptyList", odClass);
-    assertTrue(printEmptyList.isPresentModifier());
     assertDeepEquals(PROTECTED, printEmptyList.getModifier());
     assertBoolean(printEmptyList.getMCType());
   }

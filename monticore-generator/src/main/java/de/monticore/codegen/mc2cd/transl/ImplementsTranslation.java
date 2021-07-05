@@ -2,6 +2,7 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TransformationHelper;
@@ -54,7 +55,10 @@ public class ImplementsTranslation implements
       if (!ruleSymbol.isPresent()) {
         Log.error("0xA0137 The rule '" + ruleReference.getName() + "' does not exist!", ruleReference.get_SourcePositionStart());
       }
-      cdClass.addInterface(
+      if (!cdClass.isPresentCDInterfaceUsage()) {
+        cdClass.setCDInterfaceUsage(CD4CodeMill.cDInterfaceUsageBuilder().build());
+      }
+      cdClass.getCDInterfaceUsage().addInterface(
           TransformationHelper.createObjectType(TransformationHelper
               .getPackageName(ruleSymbol.get())
               + "AST"
@@ -67,7 +71,10 @@ public class ImplementsTranslation implements
       qualifiedRuleName = TransformationHelper
           .getQualifiedTypeNameAndMarkIfExternal(
               typeReference, astGrammar, cdClass);
-      cdClass.addInterface(
+      if (!cdClass.isPresentCDInterfaceUsage()) {
+        cdClass.setCDInterfaceUsage(CD4CodeMill.cDInterfaceUsageBuilder().build());
+      }
+      cdClass.getCDInterfaceUsage().addInterface(
           TransformationHelper.createObjectType(qualifiedRuleName));
     }
   }
@@ -82,7 +89,10 @@ public class ImplementsTranslation implements
       if (!ruleSymbol.isPresent()) {
         Log.error("0xA0138 The rule '" + ruleReference.getName() + "' does not exist!");
       }
-      cdClass.addInterface(
+      if (!cdClass.isPresentCDInterfaceUsage()) {
+        cdClass.setCDInterfaceUsage(CD4CodeMill.cDInterfaceUsageBuilder().build());
+      }
+      cdClass.getCDInterfaceUsage().addInterface(
           TransformationHelper.createObjectType(TransformationHelper
               .getPackageName(ruleSymbol.get())
               + "AST"
@@ -95,7 +105,10 @@ public class ImplementsTranslation implements
       qualifiedRuleName = TransformationHelper
           .getQualifiedTypeNameAndMarkIfExternal(
               typeReference, astGrammar, cdClass);
-      cdClass.addInterface(
+      if (!cdClass.isPresentCDInterfaceUsage()) {
+        cdClass.setCDInterfaceUsage(CD4CodeMill.cDInterfaceUsageBuilder().build());
+      }
+      cdClass.getCDInterfaceUsage().addInterface(
           TransformationHelper.createObjectType(qualifiedRuleName));
     }
   }

@@ -111,7 +111,6 @@ DeprecatedTest extends DecoratorTestCase {
         .setModifier(clazzA.getModifier())
         .build();
     ASTCDClass astA = astDecorator.decorate(clazzA, changedClass);
-    assertTrue(astA.isPresentModifier());
     assertTrue(astA.getModifier().isPresentStereotype());
 
     assertEquals(2, astA.getModifier().getStereotype().sizeValues());
@@ -124,7 +123,6 @@ DeprecatedTest extends DecoratorTestCase {
   public void testASTABuilderDeprecated() {
     ASTCDClass astABuilder = astBuilderDecorator.decorate(clazzA);
 
-    assertTrue(astABuilder.isPresentModifier());
     assertTrue(astABuilder.getModifier().isPresentStereotype());
 
     assertEquals(1, astABuilder.getModifier().getStereotype().sizeValues());
@@ -138,7 +136,6 @@ DeprecatedTest extends DecoratorTestCase {
     List<ASTCDInterface> cocoInterfaceList = coCoInterfaceDecorator.decorate(compilationUnit.getCDDefinition());
     Optional<ASTCDInterface> astaCoCo = cocoInterfaceList.stream().filter(c -> c.getName().equals("DeprecatedProdsACoCo")).findFirst();
     assertTrue(astaCoCo.isPresent());
-    assertTrue(astaCoCo.get().isPresentModifier());
     assertTrue(astaCoCo.get().getModifier().isPresentStereotype());
 
     assertEquals(1, astaCoCo.get().getModifier().getStereotype().sizeValues());
@@ -151,7 +148,6 @@ DeprecatedTest extends DecoratorTestCase {
   @Test
   public void testASymbolDeprecated() {
     ASTCDClass symbolA = symbolDecorator.decorate(clazzA);
-    assertTrue(symbolA.isPresentModifier());
     assertTrue(symbolA.getModifier().isPresentStereotype());
 
     assertEquals(1, symbolA.getModifier().getStereotype().sizeValues());
@@ -164,7 +160,6 @@ DeprecatedTest extends DecoratorTestCase {
   @Test
   public void testASymbolBuilderDeprecated() {
     ASTCDClass symbolBuilderA = symbolBuilderDecorator.decorate(clazzA);
-    assertTrue(symbolBuilderA.isPresentModifier());
     assertTrue(symbolBuilderA.getModifier().isPresentStereotype());
 
     assertEquals(1, symbolBuilderA.getModifier().getStereotype().sizeValues());
@@ -176,7 +171,6 @@ DeprecatedTest extends DecoratorTestCase {
   @Test
   public void testASymbolLoaderDeprecated() {
     ASTCDClass symbolLoaderA = symbolSurrogateDecorator.decorate(clazzA);
-    assertTrue(symbolLoaderA.isPresentModifier());
     assertTrue(symbolLoaderA.getModifier().isPresentStereotype());
 
     assertEquals(1, symbolLoaderA.getModifier().getStereotype().sizeValues());
@@ -188,7 +182,6 @@ DeprecatedTest extends DecoratorTestCase {
   @Test
   public void testASymbolLoaderBuilderDeprecated() {
     ASTCDClass symbolLoaderBuilderA = symbolSurrogateBuilderDecorator.decorate(clazzA);
-    assertTrue(symbolLoaderBuilderA.isPresentModifier());
     assertTrue(symbolLoaderBuilderA.getModifier().isPresentStereotype());
 
     assertEquals(1, symbolLoaderBuilderA.getModifier().getStereotype().sizeValues());
@@ -201,7 +194,6 @@ DeprecatedTest extends DecoratorTestCase {
   @Test
   public void testASymbolResolverInterfaceDeprecated() {
     ASTCDInterface resolverA = symbolResolverInterfaceDecorator.decorate(clazzA);
-    assertTrue(resolverA.isPresentModifier());
     assertTrue(resolverA.getModifier().isPresentStereotype());
 
     assertEquals(1, resolverA.getModifier().getStereotype().sizeValues());
@@ -216,7 +208,6 @@ DeprecatedTest extends DecoratorTestCase {
         .setModifier(interfaceI.getModifier())
         .build();
     ASTCDInterface astA = astInterfaceDecorator.decorate(interfaceI, changedClass);
-    assertTrue(astA.isPresentModifier());
     assertTrue(astA.getModifier().isPresentStereotype());
 
     assertEquals(2, astA.getModifier().getStereotype().sizeValues());
@@ -230,7 +221,6 @@ DeprecatedTest extends DecoratorTestCase {
     List<ASTCDInterface> cocoInterfaceList = coCoInterfaceDecorator.decorate(compilationUnit.getCDDefinition());
     Optional<ASTCDInterface> astaCoCo = cocoInterfaceList.stream().filter(c -> c.getName().equals("DeprecatedProdsICoCo")).findFirst();
     assertTrue(astaCoCo.isPresent());
-    assertTrue(astaCoCo.get().isPresentModifier());
     assertTrue(astaCoCo.get().getModifier().isPresentStereotype());
 
     assertEquals(1, astaCoCo.get().getModifier().getStereotype().sizeValues());
@@ -242,7 +232,6 @@ DeprecatedTest extends DecoratorTestCase {
   @Test
   public void testISymbolLoaderBuilderDeprecated() {
     ASTCDClass symbolLoaderBuilderA = symbolSurrogateBuilderDecorator.decorate(interfaceI);
-    assertTrue(symbolLoaderBuilderA.isPresentModifier());
     assertTrue(symbolLoaderBuilderA.getModifier().isPresentStereotype());
 
     assertEquals(1, symbolLoaderBuilderA.getModifier().getStereotype().sizeValues());
@@ -255,7 +244,6 @@ DeprecatedTest extends DecoratorTestCase {
   @Test
   public void testISymbolResolverInterfaceDeprecated() {
     ASTCDInterface resolverA = symbolResolverInterfaceDecorator.decorate(interfaceI);
-    assertTrue(resolverA.isPresentModifier());
     assertTrue(resolverA.getModifier().isPresentStereotype());
 
     assertEquals(1, resolverA.getModifier().getStereotype().sizeValues());
@@ -267,7 +255,6 @@ DeprecatedTest extends DecoratorTestCase {
   @Test
   public void testASTEDeprecated() {
     ASTCDEnum astcdEnum = enumDecorator.decorate(enumE);
-    assertTrue(astcdEnum.isPresentModifier());
     assertTrue(astcdEnum.getModifier().isPresentStereotype());
 
     assertEquals(1, astcdEnum.getModifier().getStereotype().sizeValues());

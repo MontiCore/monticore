@@ -74,8 +74,8 @@ public class ParserForSuperDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperClass() {
-    assertTrue(parserClass.isPresentSuperclass());
-    assertDeepEquals("de.monticore.codegen.parser.automaton._parser.AutomatonParser", parserClass.getSuperclass());
+    assertTrue(parserClass.isPresentCDExtendUsage());
+    assertDeepEquals("de.monticore.codegen.parser.automaton._parser.AutomatonParser", parserClass.getCDExtendUsage().getSuperclass(0));
   }
 
   @Test

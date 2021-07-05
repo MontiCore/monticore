@@ -128,7 +128,7 @@ grammar ItTestTypes extends mc.grammar.literals.ItTestLiterals {
         @attribute parts A List of ASTStringList concludes all name parts
     */
     QualifiedName =
-        part:Name& ("." part:Name&)*;
+        part:Name&  ("." part:Name&)*;
         
     /** The ASTAbstractArrayType represents array of Type
     */

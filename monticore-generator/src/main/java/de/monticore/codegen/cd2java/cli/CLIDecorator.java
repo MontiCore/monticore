@@ -47,7 +47,7 @@ public class CLIDecorator extends AbstractCreator<ASTCDCompilationUnit, Optional
 
 
     ASTCDDefinition cdDefinition = input.getCDDefinition();
-    if (!cdDefinition.isPresentModifier() || !parserService.hasComponentStereotype(cdDefinition.getModifier())) {
+    if (!parserService.hasComponentStereotype(cdDefinition.getModifier())) {
       String cliClassName = parserService.getCliSimpleName();
       cliClass = Optional.of(CD4AnalysisMill.cDClassBuilder()
           .setModifier(PUBLIC.build())

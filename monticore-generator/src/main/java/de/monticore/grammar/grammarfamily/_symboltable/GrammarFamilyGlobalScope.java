@@ -7,19 +7,21 @@ package de.monticore.grammar.grammarfamily._symboltable;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
 import de.monticore.grammar.grammar_withconcepts._symboltable.IGrammar_WithConceptsArtifactScope;
-import de.monticore.io.paths.ModelCoordinate;
-import de.monticore.io.paths.ModelCoordinates;
-import de.monticore.io.paths.ModelPath;
+import de.monticore.io.FileReaderWriter;
+import de.monticore.io.paths.MCPath;
+import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.net.URL;
+import java.nio.file.Paths;
 import java.util.Optional;
 
 
 public class GrammarFamilyGlobalScope extends GrammarFamilyGlobalScopeTOP {
-  public GrammarFamilyGlobalScope(ModelPath modelPath, String modelFileExtension) {
-    super(modelPath, modelFileExtension);
+  public GrammarFamilyGlobalScope(MCPath symbolPath, String modelFileExtension) {
+    super(symbolPath, modelFileExtension);
   }
 
   public GrammarFamilyGlobalScope() {
@@ -32,20 +34,27 @@ public class GrammarFamilyGlobalScope extends GrammarFamilyGlobalScopeTOP {
   }
 
   @Override
-  public  void loadFileForModelName (String modelName)  {
+  public  void loadMCGrammar (String name) {
+    for (String modelName : calculateModelNamesForMCGrammar(name)) {
+      loadGrammarFileForModelName(modelName);
+    }
+  }
+
+  public  void loadGrammarFileForModelName (String modelName)  {
     // 1. call super implementation to start with employing the DeSer
     // super.loadFileForModelName(modelName);
 
-    ModelCoordinate model = ModelCoordinates.createQualifiedCoordinate(modelName, getFileExt());
-    String filePath = model.getQualifiedPath().toString();
+    String filePath = Paths
+            .get(Names.getPathFromPackage(modelName) + ".mc4").toString();
+
     if (!isFileLoaded(filePath)) {
 
       // 2. calculate potential location of model file and try to find it in model path
-      model = getModelPath().resolveModel(model);
+      Optional<URL> url = getSymbolPath().find(Names.getPathFromPackage(modelName)+".mc4");
 
       // 3. if the file was found, parse the model and create its symtab
-      if (model.hasLocation()) {
-        ASTMCGrammar ast = parse(model);
+      if (url.isPresent()) {
+        ASTMCGrammar ast = parse(url.get());
         IGrammar_WithConceptsArtifactScope artScope = new GrammarFamilyPhasedSTC().createFromAST(ast);
         addSubScope(artScope);
         addLoadedFile(filePath);
@@ -53,9 +62,9 @@ public class GrammarFamilyGlobalScope extends GrammarFamilyGlobalScopeTOP {
     }
   }
 
-  private ASTMCGrammar parse(ModelCoordinate model){
+  private ASTMCGrammar parse(URL url){
     try {
-      Reader reader = ModelCoordinates.getReader(model);
+      Reader reader = FileReaderWriter.getReader(url);
       Optional<ASTMCGrammar> optAST = new Grammar_WithConceptsParser().parse(reader);
       if(optAST.isPresent()){
         return optAST.get();
@@ -66,6 +75,5 @@ public class GrammarFamilyGlobalScope extends GrammarFamilyGlobalScopeTOP {
     }
     return null;
   }
-
 
 }

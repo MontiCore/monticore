@@ -247,7 +247,7 @@ public final class TransformationHelper {
   public static String getPackageName(
       ASTCDCompilationUnit cdCompilationUnit) {
     String packageName = Names
-        .getQualifiedName(cdCompilationUnit.getPackageList());
+        .getQualifiedName(cdCompilationUnit.getCDPackageList());
     if (!packageName.isEmpty()) {
       packageName = packageName + ".";
     }
@@ -366,9 +366,6 @@ public final class TransformationHelper {
 
   public static void addStereoType(ASTCDType type, String stereotypeName,
                                    String stereotypeValue) {
-    if (!type.isPresentModifier()) {
-      type.setModifier(CD4CodeMill.modifierBuilder().build());
-    }
     addStereotypeValue(type.getModifier(),
         stereotypeName, stereotypeValue);
   }
@@ -381,40 +378,26 @@ public final class TransformationHelper {
         return;
       }
     }
-    addStereotypeValue(type.getModifier(),
-            stereotypeName, stereotypeValue);
+    addStereotypeValue(type.getModifier(), stereotypeName, stereotypeValue);
   }
 
   public static void addStereoType(ASTCDType type, String stereotypeName) {
-    if (!type.isPresentModifier()) {
-      type.setModifier(CD4CodeMill.modifierBuilder().build());
-    }
-    addStereotypeValue(type.getModifier(),
-        stereotypeName);
+    addStereotypeValue(type.getModifier(), stereotypeName);
   }
 
   public static void addStereoType(ASTCDDefinition type, String stereotypeName) {
-    if (!type.isPresentModifier()) {
-      type.setModifier(CD4CodeMill.modifierBuilder().build());
-    }
-    addStereotypeValue(type.getModifier(),
-        stereotypeName);
+     addStereotypeValue(type.getModifier(), stereotypeName);
   }
 
   public static void addStereoType(ASTCDAttribute attribute,
                                    String stereotypeName,
                                    String stereotypeValue) {
-    if (!attribute.isPresentModifier()) {
-      attribute.setModifier(CD4CodeMill.modifierBuilder().build());
-    }
-    addStereotypeValue(attribute.getModifier(),
-        stereotypeName, stereotypeValue);
+    addStereotypeValue(attribute.getModifier(), stereotypeName, stereotypeValue);
   }
 
   public static void addStereoType(ASTCDDefinition type, String stereotypeName,
                                    String stereotypeValue) {
-    addStereotypeValue(type.getModifier(),
-        stereotypeName, stereotypeValue);
+    addStereotypeValue(type.getModifier(), stereotypeName, stereotypeValue);
   }
 
   public static void addStereotypeValue(ASTModifier astModifier,

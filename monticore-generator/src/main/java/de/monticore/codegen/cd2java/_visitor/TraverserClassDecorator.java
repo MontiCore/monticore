@@ -48,9 +48,6 @@ public class TraverserClassDecorator extends AbstractCreator<ASTCDCompilationUni
 
   @Override
   public ASTCDClass decorate(ASTCDCompilationUnit input) {
-    // change class names to qualified name
-    visitorService.calculateCDTypeNamesWithASTPackage(input);
-    
     // get visitor names of current node
     String delegatorVisitorSimpleName = visitorService.getTraverserSimpleName();
     ASTMCQualifiedType visitorType = visitorService.getTraverserType();
@@ -63,7 +60,8 @@ public class TraverserClassDecorator extends AbstractCreator<ASTCDCompilationUni
     return CD4CodeMill.cDClassBuilder()
         .setName(delegatorVisitorSimpleName)
         .setModifier(PUBLIC.build())
-        .addInterface(getMCTypeFacade().createQualifiedType(visitorService.getTraverserInterfaceFullName()))
+        .setCDInterfaceUsage(CD4CodeMill.cDInterfaceUsageBuilder()
+                .addInterface(getMCTypeFacade().createQualifiedType(visitorService.getTraverserInterfaceFullName())).build())
         .addCDMember(getRealThisAttribute(delegatorVisitorSimpleName))
         .addCDMember(ivisitorAttribute())
         .addAllCDMembers(getVisitorAttributes(cDsTransitive))

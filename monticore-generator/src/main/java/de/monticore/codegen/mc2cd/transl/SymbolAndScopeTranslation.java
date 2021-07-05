@@ -88,8 +88,7 @@ public class SymbolAndScopeTranslation implements
   protected void addSymbolInheritedProperty(ASTInterfaceProd astInterfaceProd, ASTCDType astcdClass) {
     final Optional<MCGrammarSymbol> grammarSymbol = MCGrammarSymbolTableHelper
         .getMCGrammarSymbol(astInterfaceProd.getEnclosingScope());
-    if (grammarSymbol.isPresent() &&
-        astcdClass.isPresentModifier()) {
+    if (grammarSymbol.isPresent()) {
       addInheritedScopeAndSymbolPropertyFromSuperProd(astInterfaceProd.getSuperInterfaceRuleList(), grammarSymbol.get(), astcdClass);
       addInheritedScopeAndSymbolPropertyThroughOverwriting(grammarSymbol.get(), astcdClass);
     }
@@ -101,8 +100,7 @@ public class SymbolAndScopeTranslation implements
   protected void addSymbolInheritedProperty(ASTClassProd astClassProd, ASTCDType astcdClass) {
     final Optional<MCGrammarSymbol> grammarSymbol = MCGrammarSymbolTableHelper
         .getMCGrammarSymbol(astClassProd.getEnclosingScope());
-    if (grammarSymbol.isPresent() &&
-        astcdClass.isPresentModifier()) {
+    if (grammarSymbol.isPresent()) {
       addInheritedScopeAndSymbolPropertyFromSuperProd(astClassProd.getSuperRuleList(), grammarSymbol.get(), astcdClass);
       addInheritedScopeAndSymbolPropertyFromSuperProd(astClassProd.getSuperInterfaceRuleList(), grammarSymbol.get(), astcdClass);
       addInheritedScopeAndSymbolPropertyThroughOverwriting(grammarSymbol.get(), astcdClass);
@@ -112,8 +110,7 @@ public class SymbolAndScopeTranslation implements
   protected void addSymbolInheritedProperty(ASTAbstractProd astClassProd, ASTCDType astcdClass) {
     final Optional<MCGrammarSymbol> grammarSymbol = MCGrammarSymbolTableHelper
         .getMCGrammarSymbol(astClassProd.getEnclosingScope());
-    if (grammarSymbol.isPresent() &&
-        astcdClass.isPresentModifier()) {
+    if (grammarSymbol.isPresent()) {
       addInheritedScopeAndSymbolPropertyFromSuperProd(astClassProd.getSuperRuleList(), grammarSymbol.get(), astcdClass);
       addInheritedScopeAndSymbolPropertyFromSuperProd(astClassProd.getSuperInterfaceRuleList(), grammarSymbol.get(), astcdClass);
       addInheritedScopeAndSymbolPropertyThroughOverwriting(grammarSymbol.get(), astcdClass);

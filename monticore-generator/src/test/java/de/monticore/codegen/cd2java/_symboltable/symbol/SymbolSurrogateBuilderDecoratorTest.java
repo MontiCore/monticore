@@ -85,7 +85,7 @@ public class SymbolSurrogateBuilderDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperClassNotPresent() {
-    assertFalse(builderClass.isPresentSuperclass());
+    assertFalse(builderClass.isPresentCDExtendUsage());
   }
 
 

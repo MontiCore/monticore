@@ -1,10 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.mc2cd.scopeTransl;
 
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.codegen.cd2java.CDModifier;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
@@ -42,7 +42,7 @@ public class CDScopeTranslationTest {
 
   @Test
   public void testPackage() {
-    assertEquals(2, compilationUnit.getPackageList().size());
+    assertEquals(2, compilationUnit.getCDPackageList().size());
     assertEquals("mc2cdtransformation", compilationUnit.getMCPackageDeclaration().getMCQualifiedName().getParts(0));
     assertEquals("scopeTransl", compilationUnit.getMCPackageDeclaration().getMCQualifiedName().getParts(1));
   }
@@ -60,12 +60,11 @@ public class CDScopeTranslationTest {
     assertEquals(1, scopeClass.getInterfaceList().size());
 
     assertTrue(scopeClass.getCDConstructorList().isEmpty());
-    assertTrue(scopeClass.isPresentSuperclass());
+    assertTrue(scopeClass.isPresentCDExtendUsage());
 
     ASTCDAttribute cdAttribute = scopeClass.getCDAttributeList().get(0);
     assertEquals("extraAttr", cdAttribute.getName());
     assertDeepEquals(String.class, cdAttribute.getMCType());
-    assertTrue(cdAttribute.isPresentModifier());
     assertDeepEquals(CDModifier.PROTECTED, cdAttribute.getModifier());
 
     ASTCDMethod cdMethod = scopeClass.getCDMethodList().get(0);
@@ -80,7 +79,7 @@ public class CDScopeTranslationTest {
     ASTMCObjectType cdInterface = scopeClass.getCDInterfaceUsage().getInterface(0);
     assertDeepEquals("de.monticore.symboltable.IScope", cdInterface);
 
-    ASTMCObjectType superclass = scopeClass.getSuperclass();
+    ASTMCObjectType superclass = scopeClass.getCDExtendUsage().getSuperclass(0);
     assertDeepEquals("de.monticore.mcbasics._symboltable.IMCBasicsScope", superclass);
   }
 

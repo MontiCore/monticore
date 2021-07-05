@@ -49,7 +49,7 @@ public class SymbolKindHierarchies {
   }
 
   protected static boolean hasInheritedSymbolStereotype(CDTypeSymbol symbol, SymbolTableService service) {
-    if (null == symbol || !symbol.isPresentAstNode() || !symbol.getAstNode().isPresentModifier() 
+    if (null == symbol || !symbol.isPresentAstNode()
         || !symbol.getAstNode().getModifier().isPresentStereotype()) {
       return false;
     }

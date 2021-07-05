@@ -4,6 +4,8 @@ package de.monticore.codegen.cd2java.mill;
 import com.google.common.collect.Lists;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDElement;
+import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.CdUtilsPrinter;
 import de.monticore.codegen.cd2java.DecorationHelper;
@@ -37,6 +39,7 @@ import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.IterablePath;
+import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
@@ -132,13 +135,13 @@ public class CDMillDecoratorTest extends DecoratorTestCase {
     SymbolSurrogateBuilderDecorator symbolReferenceBuilderDecorator = new SymbolSurrogateBuilderDecorator(glex, symbolTableService, accessorDecorator);
     CommonSymbolInterfaceDecorator commonSymbolInterfaceDecorator = new CommonSymbolInterfaceDecorator(glex, symbolTableService, visitorService, methodDecorator);
     SymbolResolverInterfaceDecorator symbolResolverInterfaceDecorator = new SymbolResolverInterfaceDecorator(glex, symbolTableService);
-    SymbolDeSerDecorator symbolDeSerDecorator = new SymbolDeSerDecorator(glex, symbolTableService, IterablePath.empty());
-    ScopeDeSerDecorator scopeDeSerDecorator = new ScopeDeSerDecorator(glex, symbolTableService, methodDecorator, visitorService, IterablePath.empty());
+    SymbolDeSerDecorator symbolDeSerDecorator = new SymbolDeSerDecorator(glex, symbolTableService, new MCPath());
+    ScopeDeSerDecorator scopeDeSerDecorator = new ScopeDeSerDecorator(glex, symbolTableService, methodDecorator, visitorService, new MCPath());
     Symbols2JsonDecorator symbolTablePrinterDecorator = new Symbols2JsonDecorator(glex, symbolTableService, visitorService, methodDecorator);
     ScopesGenitorDecorator scopesGenitorDecorator = new ScopesGenitorDecorator(glex, symbolTableService, visitorService, methodDecorator);
     ScopesGenitorDelegatorDecorator scopesGenitorDelegatorDecorator = new ScopesGenitorDelegatorDecorator(glex, symbolTableService, visitorService);
 
-    IterablePath targetPath = Mockito.mock(IterablePath.class);
+    MCPath targetPath = Mockito.mock(MCPath.class);
 
     SymbolTableCDDecorator symbolTableCDDecorator = new SymbolTableCDDecorator(glex, targetPath, symbolTableService, symbolDecorator,
         symbolBuilderDecorator, symbolReferenceDecorator, symbolReferenceBuilderDecorator,
@@ -155,7 +158,8 @@ public class CDMillDecoratorTest extends DecoratorTestCase {
   @Test
   public void testCompilationUnitNotChanged() {
     // TODO NJ: Remove the following loc as soon as stereotype deep equals is fixed
-    String cachedValue = ((ASTCDClass) originalCompilationUnit.getCDDefinition().getCDElement(6)).getModifier().getStereotype().getValues(0).getValue();
+    ASTCDElement clazz = ((ASTCDPackage) originalCompilationUnit.getCDDefinition().getCDElement(0)).getCDElement(6);
+    String cachedValue = ((ASTCDClass) clazz).getModifier().getStereotype().getValues(0).getValue();
     assertEquals("de.monticore.codegen.symboltable.automaton._symboltable.SymbolInterfaceSymbol", cachedValue);
     
     assertDeepEquals(originalCompilationUnit, decoratedCompilationUnit);
@@ -164,11 +168,11 @@ public class CDMillDecoratorTest extends DecoratorTestCase {
   @Test
   public void testPackageName() {
     assertEquals(5, millCD.sizePackage());
-    assertEquals("de", millCD.getPackageList().get(0));
-    assertEquals("monticore", millCD.getPackageList().get(1));
-    assertEquals("codegen", millCD.getPackageList().get(2));
-    assertEquals("symboltable", millCD.getPackageList().get(3));
-    assertEquals("automaton", millCD.getPackageList().get(4));
+    assertEquals("de", millCD.getCDPackageList().get(0));
+    assertEquals("monticore", millCD.getCDPackageList().get(1));
+    assertEquals("codegen", millCD.getCDPackageList().get(2));
+    assertEquals("symboltable", millCD.getCDPackageList().get(3));
+    assertEquals("automaton", millCD.getCDPackageList().get(4));
   }
 
   @Test

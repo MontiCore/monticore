@@ -6,6 +6,8 @@ import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd.facade.CDAttributeFacade;
 import de.monticore.codegen.cd2java.methods.accessor.MandatoryAccessorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.types.MCTypeFacade;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,7 +33,8 @@ public class MandatoryAccessorDecoratorTest {
 
   @Test
   public void testGetMethodString() {
-    ASTCDAttribute attribute = CDAttributeFacade.getInstance().createAttributeByDefinition("protected String a;");
+    ASTCDAttribute attribute = CDAttributeFacade.getInstance().createAttribute(PROTECTED.build(), String.class, "a");
+
     MandatoryAccessorDecorator mandatoryAccessorDecorator = new MandatoryAccessorDecorator(glex);
     List<ASTCDMethod> methods = mandatoryAccessorDecorator.decorate(attribute);
 

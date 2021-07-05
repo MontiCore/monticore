@@ -34,7 +34,7 @@ public class ASTLanguageInterfaceDecorator extends AbstractCreator<ASTCDCompilat
     return CD4AnalysisMill.cDInterfaceBuilder()
         .setModifier(PUBLIC.build())
         .setName(astService.getASTBaseInterfaceSimpleName())
-        .addInterface(getMCTypeFacade().createQualifiedType(ASTNode.class))
+        .setCDExtendUsage(CD4AnalysisMill.cDExtendUsageBuilder().addSuperclass(getMCTypeFacade().createQualifiedType(ASTNode.class)).build())
         .addCDMember(getAcceptTraverserMethod())
         .build();
   }

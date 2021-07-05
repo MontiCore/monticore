@@ -88,8 +88,7 @@ public class RemoveOverriddenAttributesTranslation implements
     }
 
     // add derived stereotype if needed
-    if (link.target().isPresentModifier() &&
-        hasDerivedStereotype(link.target().getModifier()) &&
+    if (hasDerivedStereotype(link.target().getModifier()) &&
         DecorationHelper.getInstance().isListType(link.target().printType())) {
       for (Link<ASTAdditionalAttribute, ASTCDAttribute> attributeLink :
           classLink.rootLink().getLinks(ASTAdditionalAttribute.class, ASTCDAttribute.class)) {
@@ -125,9 +124,6 @@ public class RemoveOverriddenAttributesTranslation implements
   }
 
   private boolean isNotInherited(ASTCDAttribute cdAttribute) {
-    if (!cdAttribute.isPresentModifier()) {
-      return true;
-    }
     if (!cdAttribute.getModifier().isPresentStereotype()) {
       return true;
     }

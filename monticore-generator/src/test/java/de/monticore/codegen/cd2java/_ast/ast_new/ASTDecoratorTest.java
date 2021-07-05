@@ -82,7 +82,7 @@ public class ASTDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperClass() {
-    assertEquals("ASTCNode", astClass.printSuperClass());
+    assertEquals("ASTCNode", astClass.printSuperclasses());
   }
 
   @Test

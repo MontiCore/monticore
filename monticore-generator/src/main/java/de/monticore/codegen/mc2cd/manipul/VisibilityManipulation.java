@@ -9,7 +9,6 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._visitor.CDBasisVisitor2;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
-import de.monticore.umlmodifier._ast.ASTModifier;
 
 import java.util.function.UnaryOperator;
 
@@ -33,11 +32,7 @@ final class VisibilityManipulation implements UnaryOperator<ASTCDCompilationUnit
      */
     @Override
     public void visit(ASTCDAttribute cdAttribute) {
-      ASTModifier newModifier = cdAttribute.isPresentModifier()
-              ? cdAttribute.getModifier()
-              : CD4AnalysisMill.modifierBuilder().setProtected(true).build();
-      newModifier.setProtected(true);
-      cdAttribute.setModifier(newModifier);
+      cdAttribute.getModifier().setProtected(true);
     }
   }
 
@@ -45,20 +40,14 @@ final class VisibilityManipulation implements UnaryOperator<ASTCDCompilationUnit
    * Sets the visibility of every class to public.
    */
   public void visit(ASTCDClass cdClass) {
-    ASTModifier newModifier = cdClass.isPresentModifier()
-            ? cdClass.getModifier()
-            : CD4AnalysisMill.modifierBuilder().setPublic(true).build();
-    cdClass.setModifier(newModifier);
+    cdClass.getModifier().setPublic(true);
   }
 
   /**
    * Sets the visibility of every interface to public.
    */
   public void visit(ASTCDInterface cdInterface) {
-    ASTModifier newModifier = cdInterface.isPresentModifier()
-            ? cdInterface.getModifier()
-            : CD4AnalysisMill.modifierBuilder().setPublic(true).build();
-    cdInterface.setModifier(newModifier);
+    cdInterface.getModifier().setPublic(true);
   }
 
 }

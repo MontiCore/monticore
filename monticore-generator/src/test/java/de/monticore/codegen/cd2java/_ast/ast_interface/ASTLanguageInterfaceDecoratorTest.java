@@ -8,6 +8,7 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.codegen.cd2java.AbstractService;
+import de.monticore.codegen.cd2java.CdUtilsPrinter;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
@@ -42,6 +43,7 @@ public class ASTLanguageInterfaceDecoratorTest extends DecoratorTestCase {
     this.MCTypeFacade = MCTypeFacade.getInstance();
     originalCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
     this.glex.setGlobalValue("service", new AbstractService(originalCompilationUnit));
+    this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
 
     ASTService astService = new ASTService(originalCompilationUnit);
     VisitorService visitorService = new VisitorService(originalCompilationUnit);
