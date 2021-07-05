@@ -1,4 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+
 buildscript {
   // fake a different group for Gradle to prevent it from including the build in it self
   group = "de.mc"
@@ -6,7 +9,12 @@ buildscript {
 
 plugins {
   id "java-library"
-  id "monticore-bs" version "$previous_mc_version" // MontiCore Plugin
+  id "de.set.ecj" version "1.4.1" // Eclipse compiler as it's much faster than javac
+  id "monticore-bs" version "7.0.0" // MontiCore Plugin
+  id "com.github.johnrengelman.shadow" version "6.0.0"
+  id 'groovy'
+  id 'java-gradle-plugin'
+  id 'maven-publish'
   id "jacoco"
 }
 
@@ -17,18 +25,40 @@ if(!hasProperty('bootstrap')){
   group = "de.monticore.bs"
 }
 
+ext.grammarDir = 'src/main/grammars'
+buildDir = file("$projectDir/target")
+
+repositories {
+  if(("true").equals(getProperty('useLocalRepo'))){
+    mavenLocal()
+  }
+  maven {
+    credentials.username mavenUser
+    credentials.password mavenPassword
+    url repo
+  }
+  mavenCentral()
+}
 
 dependencies {
+  implementation gradleApi()
+  implementation localGroovy()
   implementation "de.monticore.bs:monticore-runtime:$previous_mc_version"
   implementation "de.monticore.bs:monticore-grammar:$previous_mc_version"
-  grammar "de.monticore.bs:monticore-grammar:$previous_mc_version:grammars"
   implementation "de.monticore.bs:monticore-grammar:$previous_mc_version:grammars"
   implementation "de.se_rwth.commons:se-commons-groovy:$se_commons_version"
   implementation "de.se_rwth.commons:se-commons-logging:$se_commons_version"
+
+  implementation "org.apache.commons:commons-lang3:$commons_lang3_version"
+  implementation "commons-cli:commons-cli:$commons_cli_version"
+//  implementation 'org.slf4j:slf4j-api:1.7.10'
+  implementation 'ch.qos.logback:logback-classic:1.1.2'
+  implementation 'ch.qos.logback:logback-core:1.1.2'
+
   implementation "de.monticore.lang.bs:cd4analysis:$cd4a_version"
   grammar "de.monticore.lang.bs:cd4analysis:$cd4a_version:grammars"
   implementation "org.antlr:antlr4:$antlr_version"
-  implementation ('com.google.guava:guava:25.1-jre'){
+  implementation ("com.google.guava:guava:$guava_version"){
     force(true)
   }
   implementation 'org.codehaus.groovy:groovy:3.0.7'
@@ -36,7 +66,6 @@ dependencies {
   implementation "commons-cli:commons-cli:$commons_cli_version"
   testImplementation 'com.github.javaparser:javaparser-symbol-solver-core:3.14.11'
   testImplementation "junit:junit:$junit_version"
-  testImplementation 'ch.qos.logback:logback-classic:1.1.2'
   testImplementation 'org.mockito:mockito-core:3.3.3'
 }
 
@@ -56,10 +85,58 @@ task  generateGrammarFamily (type: MCTask) {
   outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
   def uptoDate = incCheck("de/monticore/grammar/GrammarFamily.mc4")
   outputs.upToDateWhen { uptoDate }
+  templatePath = ["$projectDir/src/main/assemblies"] // do not use src/main/resources
 }
 
 compileJava {
   dependsOn project.collect { it.tasks.withType(MCTask) }
+}
+
+sourceCompatibility = '1.8'
+
+tasks.withType(JavaCompile) {
+  options.encoding = "UTF-8"
+  options.deprecation false
+  options.warnings = false
+  options.fork = true
+  options.headerOutputDirectory.convention(null)
+}
+java {
+  withSourcesJar()
+}
+
+
+
+tasks.withType(Test) {
+  useJUnit()
+  testLogging {
+    // controls whether test output is shown
+    showStandardStreams= ("false").equals(getProperty('showTestOutput'))? false : true
+    showExceptions true
+    showCauses true
+    showStackTraces true
+    exceptionFormat TestExceptionFormat.FULL
+    info {
+      events TestLogEvent.FAILED,
+              TestLogEvent.PASSED,
+              TestLogEvent.SKIPPED,
+              TestLogEvent.STANDARD_OUT
+    }
+  }
+  afterTest { desc, result ->
+    logger.lifecycle "${desc.className} > ${desc.name} ${result.resultType}"
+  }
+  afterSuite { desc, result ->
+    if (!desc.parent) { // will match the outermost suite
+      def output = "Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} passed, ${result.failedTestCount} failed, ${result.skippedTestCount} skipped)"
+      def startItem = '|  ', endItem = '  |'
+      logger.lifecycle startItem + output + endItem
+    }
+  }
+  reports {
+    junitXml.enabled = false
+    html.enabled = false
+  }
 }
 
 java {
@@ -70,10 +147,41 @@ java {
 
 jar.dependsOn grammarsJar
 
+shadowJar { // all in one jar
+  manifest {
+    attributes "Main-Class": "de.monticore.cli.MontiCoreStandardCLI"
+  }
+  archiveClassifier = "cli"
+  zip64 true
+}
+
+if(findProperty('ci') == null){
+  jar.dependsOn(shadowJar)
+}
+
+
+def pluginName = 'monticore'
+if(hasProperty('bootstrap')) {
+  pluginName = 'monticore-bs'
+}
+gradlePlugin.plugins {
+  monticore {
+    id = pluginName
+    implementationClass = 'de.monticore.MCPlugin'
+  }
+}
+
 publishing {
   publications {
     maven(org.gradle.api.publish.maven.MavenPublication) {
       from(components.java)
     }
+  }
+  repositories.maven {
+    credentials.username mavenUser
+    credentials.password mavenPassword
+    def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-releases/"
+    def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-snapshots/"
+    url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
   }
 }

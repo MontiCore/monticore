@@ -2,6 +2,8 @@
 
 package de.monticore
 
+import de.monticore.IncrementalChecker
+
 // M1: configuration object "_configuration" prepared externally
 Log.debug("--------------------------------", LOG_ID)
 Log.debug("MontiCore", LOG_ID)
@@ -25,6 +27,7 @@ cdScope = createCD4AGlobalScope(modelPath)
 symbolCdScope = createCD4AGlobalScope(modelPath)
 scopeCdScope = createCD4AGlobalScope(modelPath)
 Reporting.init(out.getAbsolutePath(), report.getAbsolutePath(), reportManagerFactory)
+glex = initGlex(_configuration)
 // ############################################################
 
 // ############################################################
@@ -111,6 +114,11 @@ for (astGrammar in getParsedGrammars()) {
   decoratedMillCD = decorateMill(glex, cdScope, astClassDiagram, decoratedASTClassDiagramm,
                                  decoratedSymbolTableCd, decoratedTraverserCD, handcodedPath)
   generateFromCD(glex, astClassDiagram, decoratedMillCD, out, handcodedPath, templatePath)
+
+  // decorate and generate CD for the CLIs
+  decoratedCLICD = decorateCLI(glex, cdScope, astClassDiagram, decoratedASTClassDiagramm,
+          decoratedSymbolTableCd, decoratedTraverserCD, handcodedPath)
+  generateFromCD(glex, astClassDiagram, decoratedCLICD, out, handcodedPath)
 
   //decorate and generate CD for the '_auxiliary' package
   decoratedAuxiliaryCD = decorateAuxiliary(glex, cdScope, astClassDiagram, decoratedASTClassDiagramm, handcodedPath)

@@ -98,7 +98,7 @@ $ wget www.monticore.de/download/aut.tar.gz
 $ tar -xf aut.tar.gz
 $ cd mc-workspace
 $ wget www.monticore.de/download/monticore-cli.jar
-$ java -jar monticore-cli.jar Automata.mc4 -hcp hwc/
+$ java -jar monticore-cli.jar -g Automata.mc4 -hcp hwc/ -mp monticore-cli.jar
 $ javac -cp monticore-cli.jar -sourcepath "src/;out/;hwc/" src/automata/AutomataTool.java
 $ java -cp "src/;out/;hwc/;monticore-cli.jar" automata.AutomataTool example/PingPong.aut PingPong.autsym
 ```
@@ -122,8 +122,8 @@ For details see [Licenses](00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md).
 
 ## More Information about MontiCore
 
-* [**MontiCore Reference Manual**](http://monticore.de/MontiCore_Reference-Manual.2017.pdf).
-   The reference Manual describes how to use MontiCore as a out-of-the-box 
+* [**MontiCore handbook**](http://www.monticore.de/handbook.pdf).
+   The handbook describes how to use MontiCore as a out-of-the-box 
    *language workbench*), but also as grey box *tooling framework*.
    It thus also gives an overview over a number of core mechanisms of MontiCore.
 
@@ -151,16 +151,16 @@ For details see [Licenses](00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md).
     
 ## Further Information
 
-* see also [**MontiCore Reference Manual**](http://www.monticore.de/)
-* [MontiCore Reference Languages](docs/DevelopedLanguages.md) - Languages Built Using MontiCore
-* [Build MontiCore](docs/BuildMontiCore.md) - How to Build MontiCore
-* [Getting Started](docs/GettingStarted.md) - How to start using MontiCore
+* see also [**MontiCore handbook**](http://www.monticore.de/handbook.pdf)
+* [MontiCore Reference Languages](https://monticore.github.io/monticore/docs/DevelopedLanguages/) - Languages Built Using MontiCore
+* [Build MontiCore](https://monticore.github.io/monticore/docs/BuildMontiCore/) - How to Build MontiCore
+* [Getting Started](https://monticore.github.io/monticore/docs/GettingStarted/) - How to start using MontiCore
 * [Changelog](00.org/Explanations/CHANGELOG.md) - Release Notes
 * [FAQ](00.org/Explanations/FAQ.md) - FAQ 
 * [Licenses](00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md) - MontiCore 3-Level License
 * [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
-* [**List of languages**](https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/docs/Languages.md)
-* [**MontiCore Core Grammar Library**](https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
-* [Best Practices](docs/BestPractices.md)
+* [**List of languages**](https://monticore.github.io/monticore/docs/Languages/)
+* [**MontiCore Core Grammar Library**](https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
+* [Best Practices](https://monticore.github.io/monticore/docs/BestPractices/)
 * [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
 

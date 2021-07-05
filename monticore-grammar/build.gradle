@@ -2,29 +2,29 @@
 import de.monticore.MCTask
 
 buildscript {
-  if(findProperty('bootstrap')){
-    // fake a different group for Gradle to prevent it from including the build in it self
-    group = "de.mc"
-  }
+    if (findProperty('bootstrap')) {
+        // fake a different group for Gradle to prevent it from including the build in it self
+        group = "de.mc"
+    }
 }
 
 plugins {
-  id "java-library"
-  id "com.github.johnrengelman.shadow" version "6.0.0"
-  id "monticore" version "$version" // MontiCore Plugin
-  id "jacoco"
+    id "java-library"
+    id "com.github.johnrengelman.shadow" version "6.0.0"
+    id "monticore" version "$version" // MontiCore Plugin
+    id "jacoco"
 }
 
 description = 'MontiCore: Grammar'
-if(!hasProperty('bootstrap')){
-  group = "de.monticore"
+if (!hasProperty('bootstrap')) {
+    group = "de.monticore"
 } else {
-  group = "de.monticore.bs"
+    group = "de.monticore.bs"
 }
 
 dependencies {
     api project(':monticore-runtime')
-    implementation 'com.google.guava:guava:25.1-jre'
+    implementation "com.google.guava:guava:$guava_version"
     implementation "org.apache.commons:commons-lang3:$commons_lang3_version"
     testImplementation "junit:junit:$junit_version"
     testImplementation 'ch.qos.logback:logback-classic:1.1.2'
@@ -34,38 +34,35 @@ def grammarOutDir = "$buildDir/generated-sources/monticore/sourcecode"
 def testGrammarOutDir = "$buildDir/generated-test-sources/monticore/sourcecode"
 
 sourceSets {
-  main.java.srcDirs += [ grammarOutDir]
-  main.resources{
-    srcDirs += [grammarDir]
-    include "**/*.mc4"
-  }
-  test.java.srcDirs += [testGrammarOutDir]
+    main.java.srcDirs += [grammarOutDir]
+    test.java.srcDirs += [testGrammarOutDir]
 
-  grammars {
-    resources {
-      srcDirs(grammarDir)
-      include "**/*.mc4"
+    grammars {
+      java.srcDirs = []
+        resources {
+            srcDirs(grammarDir)
+            include "**/*.mc4"
+        }
     }
-  }
 }
 
 task generate {}
 
 // one task per file
-fileTree("src/main/grammars").matching { include '**/*.mc4'}.each {
-  def g = it
-  def taskname = "generateGrammar${it.getName().substring(0,it.getName().lastIndexOf('.'))}"
-  task  "$taskname" (type: MCTask) {
-    grammar = file g
-    outputDir = file grammarOutDir
-    if(findProperty("ci")!= null) {
-      script = "de/monticore/monticore_noreports.groovy"
+fileTree("src/main/grammars").matching { include '**/*.mc4' }.each {
+    def g = it
+    def taskname = "generateGrammar${it.getName().substring(0, it.getName().lastIndexOf('.'))}"
+    task "$taskname"(type: MCTask) {
+        grammar = file g
+        outputDir = file grammarOutDir
+        if (findProperty("ci") != null) {
+            script = "de/monticore/monticore_noreports.groovy"
+        }
+        def grammarIncludingPackage = file("src/main/grammars").toURI().relativize(g.toURI()).toString()
+        def uptoDate = incCheck(grammarIncludingPackage)
+        outputs.upToDateWhen { uptoDate }
     }
-    def grammarIncludingPackage = file("src/main/grammars").toURI().relativize(g.toURI()).toString()
-    def uptoDate = incCheck(grammarIncludingPackage)
-    outputs.upToDateWhen { uptoDate }
-  }
-  generate.dependsOn ("$taskname")
+    generate.dependsOn("$taskname")
 }
 
 compileJava.dependsOn generate
@@ -73,53 +70,57 @@ compileJava.dependsOn generate
 task generateTest {}
 
 // one task per file
-fileTree("src/test/grammars").matching { include '**/*.mc4'}.each {
-  def g = it
-  task  "generateTest${it.getName().substring(0,it.getName().lastIndexOf('.'))}" (type: MCTask) {
-    grammar = file g
-    outputDir = file testGrammarOutDir
-    handcodedPath "$projectDir/src/main/java", "$projectDir/src/test/java"
-    modelPath "$projectDir/$grammarDir", "$projectDir/src/main/examples"
-    if(findProperty("ci")!= null) {
-      script = "de/monticore/monticore_noreports.groovy"
+fileTree("src/test/grammars").matching { include '**/*.mc4' }.each {
+    def g = it
+    task "generateTest${it.getName().substring(0, it.getName().lastIndexOf('.'))}"(type: MCTask) {
+        grammar = file g
+        outputDir = file testGrammarOutDir
+        handcodedPath "$projectDir/src/main/java", "$projectDir/src/test/java"
+        modelPath "$projectDir/$grammarDir", "$projectDir/src/main/examples"
+        if (findProperty("ci") != null) {
+            script = "de/monticore/monticore_noreports.groovy"
+        }
+        def grammarIncludingPackage = file("src/test/grammars").toURI().relativize(g.toURI()).toString()
+        def uptoDate = incCheck(grammarIncludingPackage)
+        outputs.upToDateWhen { uptoDate }
     }
-    def grammarIncludingPackage = file("src/test/grammars").toURI().relativize(g.toURI()).toString()
-    def uptoDate = incCheck(grammarIncludingPackage)
-    outputs.upToDateWhen { uptoDate }
-  }
-  generateTest.dependsOn ("generateTest${it.getName().substring(0,it.getName().lastIndexOf('.'))}")
+    generateTest.dependsOn("generateTest${it.getName().substring(0, it.getName().lastIndexOf('.'))}")
 }
 
-fileTree("src/main/examples").matching { include '**/*.mc4'}.each {
-  def g = it
-  task  "generateTest${it.getName().substring(0,it.getName().lastIndexOf('.'))}" (type: MCTask) {
-    grammar = file g
-    outputDir = file testGrammarOutDir
-    handcodedPath "$projectDir/src/main/java"
-    modelPath "$projectDir/$grammarDir", "$projectDir/src/main/examples"
-    if(findProperty("ci")!= null) {
-      script = "de/monticore/monticore_noreports.groovy"
+fileTree("src/main/examples").matching { include '**/*.mc4' }.each {
+    def g = it
+    task "generateTest${it.getName().substring(0, it.getName().lastIndexOf('.'))}"(type: MCTask) {
+        grammar = file g
+        outputDir = file testGrammarOutDir
+        handcodedPath "$projectDir/src/main/java"
+        modelPath "$projectDir/$grammarDir", "$projectDir/src/main/examples"
+        if (findProperty("ci") != null) {
+            script = "de/monticore/monticore_noreports.groovy"
+        }
+        def grammarIncludingPackage = file("src/main/examples").toURI().relativize(g.toURI()).toString()
+        def uptoDate = incCheck(grammarIncludingPackage)
+        outputs.upToDateWhen { uptoDate }
     }
-    def grammarIncludingPackage = file("src/main/examples").toURI().relativize(g.toURI()).toString()
-    def uptoDate = incCheck(grammarIncludingPackage)
-    outputs.upToDateWhen { uptoDate }
-  }
-  generateTest.dependsOn ("generateTest${it.getName().substring(0,it.getName().lastIndexOf('.'))}")
+    generateTest.dependsOn("generateTest${it.getName().substring(0, it.getName().lastIndexOf('.'))}")
 }
 
-compileTestJava.dependsOn (generateTest)
+compileTestJava.dependsOn(generateTest)
 
 java {
-  registerFeature('grammars') {
-    usingSourceSet(sourceSets.grammars)
-  }
-  registerFeature('tests') {
-    usingSourceSet(sourceSets.test)
-  }
+    registerFeature('grammars') {
+        usingSourceSet(sourceSets.grammars)
+    }
+    registerFeature('tests') {
+        usingSourceSet(sourceSets.test)
+    }
+}
+
+shadowJar {
+    from sourceSets.grammars.resources
 }
 
 jar.dependsOn(grammarsJar)
 
-if(findProperty('ci') == null){
-  jar.dependsOn(shadowJar, testJar)
+if (findProperty('ci') == null) {
+    jar.dependsOn(shadowJar, testJar)
 }

@@ -17,6 +17,7 @@ import org.apache.commons.io.FilenameUtils;
 
 import de.se_rwth.commons.logging.Log;
 
+@Deprecated
 final class ModelCoordinateImpl implements ModelCoordinate {
   
   /**

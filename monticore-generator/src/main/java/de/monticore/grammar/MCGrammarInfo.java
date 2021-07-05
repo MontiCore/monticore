@@ -26,6 +26,9 @@ import java.util.*;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
+import static de.monticore.codegen.mc2cd.TransformationHelper.calculateLexPattern;
+import static de.monticore.codegen.mc2cd.TransformationHelper.isFragment;
+
 /**
  * Contains information about a grammar which is required for the parser
  * generation
@@ -354,8 +357,8 @@ public class MCGrammarInfo {
     
     for (ProdSymbol rule : grammar.getProdsWithInherited().values()) {
       if (rule.isPresentAstNode() && rule.isIsLexerProd()) {
-        if (!MCGrammarSymbolTableHelper.isFragment(rule.getAstNode())) {
-          Optional<Pattern> lexPattern = MCGrammarSymbolTableHelper.calculateLexPattern(
+        if (!isFragment(rule.getAstNode())) {
+          Optional<Pattern> lexPattern = calculateLexPattern(
               grammar,
                   (ASTLexProd) rule.getAstNode());
           

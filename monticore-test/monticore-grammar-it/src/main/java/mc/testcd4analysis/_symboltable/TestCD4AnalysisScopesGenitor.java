@@ -2,10 +2,9 @@
 package mc.testcd4analysis._symboltable;
 
 import de.se_rwth.commons.Names;
-import mc.testcd4analysis._ast.ASTCDCompilationUnit;
+import mc.testcd4analysis._ast.*;
 
 import java.util.ArrayList;
-import java.util.Deque;
 import java.util.Optional;
 
 public class TestCD4AnalysisScopesGenitor extends TestCD4AnalysisScopesGenitorTOP {

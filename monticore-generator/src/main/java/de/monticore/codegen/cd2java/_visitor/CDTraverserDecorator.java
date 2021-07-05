@@ -1,26 +1,25 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._visitor;
 
-import static de.monticore.codegen.cd2java.CoreTemplates.PACKAGE;
-import static de.monticore.codegen.cd2java.CoreTemplates.createPackageHookPoint;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISITOR_PACKAGE;
-import static de.monticore.codegen.mc2cd.TransformationHelper.existsHandwrittenClass;
-import static de.monticore.utils.Names.constructQualifiedName;
-
-import java.util.Arrays;
-import java.util.List;
-
 import com.google.common.collect.Lists;
-
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
-import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.IterablePath;
+
+import java.util.Arrays;
+import java.util.List;
+
+import static de.monticore.codegen.cd2java.CoreTemplates.PACKAGE;
+import static de.monticore.codegen.cd2java.CoreTemplates.createPackageHookPoint;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISITOR_PACKAGE;
+import static de.monticore.generating.GeneratorEngine.existsHandwrittenClass;
+import static de.monticore.utils.Names.constructQualifiedName;
 
 public class CDTraverserDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCompilationUnit> {
 

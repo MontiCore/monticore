@@ -58,6 +58,7 @@ public class VisitorService extends AbstractService<VisitorService> {
   public String getVisitorSimpleName(DiagramSymbol cdSymbol) {
     return cdSymbol.getName() + VisitorConstants.VISITOR_SUFFIX;
   }
+  
 
   public String getVisitorFullName() {
     return getVisitorFullName(getCDSymbol());

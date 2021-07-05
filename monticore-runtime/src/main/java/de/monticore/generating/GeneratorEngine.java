@@ -5,8 +5,12 @@ package de.monticore.generating;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -16,7 +20,7 @@ import de.monticore.ast.ASTCNode;
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.TemplateController;
 import de.monticore.generating.templateengine.reporting.Reporting;
-import de.monticore.io.paths.IterablePath;
+import de.monticore.io.paths.MCPath;
 import de.monticore.symboltable.IScope;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
@@ -175,14 +179,16 @@ public class GeneratorEngine {
    * Check whewther an handwritten version of that class already exits and shall be integrated
    * (e.g. to apply TOP mechanism)
    */
-  public static boolean existsHandwrittenClass(IterablePath targetPath, String qualifiedName) {
-    Path hwFile = Paths.get(Names.getPathFromPackage(qualifiedName)+ DEFAULT_FILE_EXTENSION);
-    Optional<Path> hwFilePath = targetPath.getResolvedPath(hwFile);
+  public static boolean existsHandwrittenClass(MCPath targetPath, String qualifiedName) {
+    String hwFile = Names.getPathFromPackage(qualifiedName)+ DEFAULT_FILE_EXTENSION;
+    Optional<URL> hwFilePath = targetPath.find(hwFile);
     boolean result = hwFilePath.isPresent();
     if (result) {
-      Reporting.reportUseHandwrittenCodeFile(hwFilePath.get(),hwFile);
+      Optional<Path> hwPath = MCPath.toPath(hwFilePath.get());
+      hwPath.ifPresent(path -> Reporting.reportUseHandwrittenCodeFile(path,
+        Paths.get(hwFile)));
     }
-    Reporting.reportHWCExistenceCheck(targetPath, hwFile, hwFilePath);
+    Reporting.reportHWCExistenceCheck(targetPath, Paths.get(hwFile), hwFilePath);
     return result;
   }
 

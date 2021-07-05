@@ -4,8 +4,8 @@ package de.monticore.codegen.parser.antlr;
 
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
+import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.parser.ParserGeneratorHelper;
-import de.monticore.grammar.HelperGrammar;
 import de.monticore.grammar.MCGrammarInfo;
 import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.*;
@@ -81,9 +81,7 @@ public class ASTConstructionActions {
       if (constgroup.getConstantList().size() == 1) {
         // both == null and #constants == 1 -> use constant string as name
         tmp = "_builder.set%cname%(true);";
-        // Next version: Replace HelperGrammar by (constgroup.getConstantList().get(0).getHumanName()
-        tmp = tmp.replaceAll("%cname%", StringTransformations.capitalize(HelperGrammar
-                .getAttributeNameForConstant(constgroup.getConstantList().get(0))));
+        tmp = tmp.replaceAll("%cname%", StringTransformations.capitalize(constgroup.getConstantList().get(0).getHumanName()));
       } else {
         // both == null and #constants > 1 -> user wants to ignore token in AST
       }
@@ -94,7 +92,7 @@ public class ASTConstructionActions {
 
   public String getActionForRuleBeforeRuleBody(ASTClassProd a) {
     StringBuilder b = new StringBuilder();
-    String type = MCGrammarSymbolTableHelper
+    String type = TransformationHelper
             .getQualifiedName(a.getSymbol());
     Optional<MCGrammarSymbol> grammar = MCGrammarSymbolTableHelper
             .getMCGrammarSymbol(a.getEnclosingScope());
@@ -110,7 +108,7 @@ public class ASTConstructionActions {
 
   public String getActionForAltBeforeRuleBody(String className, ASTAlt a) {
     StringBuilder b = new StringBuilder();
-    String type = MCGrammarSymbolTableHelper
+    String type = TransformationHelper
             .getQualifiedName(symbolTable.getProdWithInherited(className).get());
     Optional<MCGrammarSymbol> grammar = MCGrammarSymbolTableHelper
             .getMCGrammarSymbol(a.getEnclosingScope());

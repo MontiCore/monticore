@@ -7,7 +7,7 @@ import de.monticore.ast.ASTNodeMock;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.FileReaderWriterMock;
-import de.monticore.io.paths.IterablePath;
+import de.monticore.io.paths.MCPath;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -46,8 +46,7 @@ public class TemplateControllerTest {
     FileReaderWriter.init(fileHandler);
     setup.setOutputDirectory(TARGET_DIR);
     setup.setFreeMarkerTemplateEngine(freeMarkerTemplateEngine);
-    setup.setHandcodedPath(
-        IterablePath.from(HWC_DIR.toFile(), setup.getDefaultFileExtension()));
+    setup.setHandcodedPath(new MCPath(HWC_DIR));
     setup.setFileHandler(fileHandler);
     setup.setTracing(false);
 
@@ -95,22 +94,7 @@ public class TemplateControllerTest {
         fileHandler.getContentForFile(writtenFilePath.toString()).get());
   }
 
-  @Test
-  public void testExistHWC() {
-    String filename = Paths.get("test", "A.java").toString();
-    String fileNameNoExtension = Paths.get("test", "A")
-        .toString();
 
-    assertTrue(tc.existsHandwrittenFile(filename));
-    assertTrue(tc.existsHandwrittenFile(fileNameNoExtension));
-    assertTrue(!tc.existsHandwrittenFile(fileNameNoExtension + ".txt"));
-
-    String classname = "test.A";
-    String notExistName = "test.B";
-
-    assertTrue(tc.existsHandwrittenClass(classname));
-    assertTrue(!tc.existsHandwrittenClass(notExistName));
-  }
 
   @Test
   public void testDefaultMethods() {

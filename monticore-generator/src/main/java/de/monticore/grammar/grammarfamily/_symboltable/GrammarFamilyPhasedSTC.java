@@ -31,7 +31,7 @@ public class GrammarFamilyPhasedSTC {
 
   public GrammarFamilyPhasedSTC(IGrammarFamilyGlobalScope globalScope){
     this.globalScope = globalScope;
-    this.scopesGenitorDelegator = new GrammarFamilyScopesGenitorDelegator(globalScope);
+    this.scopesGenitorDelegator = new GrammarFamilyScopesGenitorDelegator();
     this.priorityList = new ArrayList<>();
     GrammarFamilyTraverser traverser = GrammarFamilyMill.traverser();
     traverser.add4Grammar(new GrammarSTCompleteTypes());
@@ -39,10 +39,8 @@ public class GrammarFamilyPhasedSTC {
     traverser.add4MCCommonStatements(new MCCommonStatementsSTCompleteTypes());
     traverser.add4MCVarDeclarationStatements(new MCVarDeclarationStatementsSTCompleteTypes());
 
-    // TODO: activate transformation and real symbol table completer, when cd4a is ready
-    CD4AnalysisSTCompleteTypes stc = new CD4AnalysisSTCompleteTypes();
-    traverser.add4CDBasis(stc);
-    traverser.add4CDInterfaceAndEnum(stc);
+    // TODO NJ: CD type completion is currently handled in the MontiCoreScript. Check for new
+    // cd4a version, if it can be completed here again, or should remain externally.
 
     priorityList.add(traverser);
   }

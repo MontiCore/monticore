@@ -6,9 +6,8 @@ import com.google.common.collect.Sets;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.configuration.Configuration;
-import de.se_rwth.commons.configuration.ConfigurationContributorChainBuilder;
-import de.se_rwth.commons.configuration.DelegatingConfigurationContributor;
 import de.se_rwth.commons.logging.Log;
+import org.apache.commons.cli.CommandLine;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -21,7 +20,6 @@ import java.util.stream.Collectors;
  * Provides access to the aggregated configuration of a MontiCore instance
  * derived from (1) its command line arguments, and (2) system properties (not
  * implemented yet).
- *
  */
 public final class MontiCoreConfiguration implements Configuration {
 
@@ -49,40 +47,39 @@ public final class MontiCoreConfiguration implements Configuration {
 
   public static final String DEFAULT_GRAMMAR_PATH = "grammars";
 
-  
   /**
-   * The names of the specific MontiCore options used in this configuration.
+   * Constants for the allowed CLI options in their long and short froms.
+   * Stored in constants as they are used multiple times in MontiCore.
    */
-  public enum Options {
+  public static final String GRAMMAR = "g";
+  public static final String OUT = "o";
+  public static final String MODELPATH = "mp";
+  public static final String HANDCODEDPATH = "hcp";
+  public static final String SCRIPT = "sc";
+  public static final String GROOVYHOOK1 = "gh1";
+  public static final String GROOVYHOOK2 = "gh2";
+  public static final String TEMPLATEPATH = "fp";
+  public static final String CONFIGTEMPLATE = "ct";
+  public static final String DEV = "d";
+  public static final String CUSTOMLOG = "cl";
+  public static final String REPORT = "r";
+  public static final String HELP = "h";
 
-    GRAMMARS("grammars"), GRAMMARS_SHORT("g"), MODELPATH("modelPath"), MODELPATH_SHORT("mp"),
-    OUT("out"), OUT_SHORT("o"), HANDCODEDPATH("handcodedPath"), HANDCODEDPATH_SHORT("hcp"),
-    TEMPLATEPATH("templatePath"), TEMPLATEPATH_SHORT("fp"),
-    CONFIGTEMPLATE("configTemplate"), CONFIGTEMPLATE_SHORT("ct"),
-    FORCE("force"), FORCE_SHORT("f"),
-    REPORT("report"), REPORT_SHORT("r"),
-    DEV("dev"), DEV_SHORT("d"),
-    CUSTOMLOG("customLog"), CUSTOMLOG_SHORT("cl"),
-    SCRIPT("script"), SCRIPT_SHORT("sc"),
-    GROOVYHOOK1("groovyHook1"), GROOVYHOOK1_SHORT("gh1"),
-    GROOVYHOOK2("groovyHook2"), GROOVYHOOK2_SHORT("gh2"),
-    HELP("help"), HELP_SHORT("h");
+  public static final String GRAMMAR_LONG = "grammar";
+  public static final String OUT_LONG = "out";
+  public static final String MODELPATH_LONG = "modelPath";
+  public static final String HANDCODEDPATH_LONG = "handcodedPath";
+  public static final String SCRIPT_LONG = "script";
+  public static final String GROOVYHOOK1_LONG = "groovyHook1";
+  public static final String GROOVYHOOK2_LONG = "groovyHook2";
+  public static final String TEMPLATEPATH_LONG = "templatePath";
+  public static final String CONFIGTEMPLATE_LONG = "configTemplate";
+  public static final String DEV_LONG = "dev";
+  public static final String CUSTOMLOG_LONG = "customLog";
+  public static final String REPORT_LONG = "report";
+  public static final String HELP_LONG = "help";
 
-    String name;
-
-    Options(String name) {
-      this.name = name;
-    }
-
-    /**
-     * @see java.lang.Enum#toString()
-     */
-    @Override
-    public String toString() {
-      return this.name;
-    }
-
-  }
+  private final CommandLine cmdConfig;
 
   /**
    * Factory method for {@link MontiCoreConfiguration}.
@@ -91,169 +88,25 @@ public final class MontiCoreConfiguration implements Configuration {
     return new MontiCoreConfiguration(configuration);
   }
 
-  private final Configuration configuration;
+  /**
+   * Factory method for {@link MontiCoreConfiguration}.
+   */
+  public static MontiCoreConfiguration withCLI(CommandLine options) {
+    return new MontiCoreConfiguration(options);
+  }
 
   /**
    * Constructor for {@link MontiCoreConfiguration}
    */
   private MontiCoreConfiguration(Configuration internal) {
-
-    // ConfigurationSystemPropertiesContributor systemPropertiesContributor =
-    // ConfigurationSystemPropertiesContributor.withPrefix("monticore");
-
-    this.configuration = ConfigurationContributorChainBuilder.newChain()
-        // .add(systemPropertiesContributor)
-        .add(DelegatingConfigurationContributor.with(internal))
-        .build();
-
+    this.cmdConfig = internal.getConfig();
   }
 
   /**
-   * @see de.se_rwth.commons.configuration.Configuration#getAllValues()
+   * Constructor for {@link MontiCoreConfiguration}
    */
-  @Override
-  public Map<String, Object> getAllValues() {
-    return this.configuration.getAllValues();
-  }
-
-  /**
-   * @see de.se_rwth.commons.configuration.Configuration#getAllValuesAsStrings()
-   */
-  @Override
-  public Map<String, String> getAllValuesAsStrings() {
-    return this.configuration.getAllValuesAsStrings();
-  }
-
-  /**
-   * @see de.se_rwth.commons.configuration.Configuration#getAsBoolean(java.lang.String)
-   */
-  @Override
-  public Optional<Boolean> getAsBoolean(String key) {
-    return this.configuration.getAsBoolean(key);
-  }
-
-  public Optional<Boolean> getAsBoolean(Enum<?> key) {
-    return getAsBoolean(key.toString());
-  }
-
-  /**
-   * @see de.se_rwth.commons.configuration.Configuration#getAsBooleans(java.lang.String)
-   */
-  @Override
-  public Optional<List<Boolean>> getAsBooleans(String key) {
-    return this.configuration.getAsBooleans(key);
-  }
-
-  public Optional<List<Boolean>> getAsBooleans(Enum<?> key) {
-    return getAsBooleans(key.toString());
-  }
-
-  /**
-   * @see de.se_rwth.commons.configuration.Configuration#getAsDouble(java.lang.String)
-   */
-  @Override
-  public Optional<Double> getAsDouble(String key) {
-    return this.configuration.getAsDouble(key);
-  }
-
-  public Optional<Double> getAsDouble(Enum<?> key) {
-    return getAsDouble(key.toString());
-  }
-
-  /**
-   * @see de.se_rwth.commons.configuration.Configuration#getAsDoubles(java.lang.String)
-   */
-  @Override
-  public Optional<List<Double>> getAsDoubles(String key) {
-    return this.configuration.getAsDoubles(key);
-  }
-
-  public Optional<List<Double>> getAsDoubles(Enum<?> key) {
-    return getAsDoubles(key.toString());
-  }
-
-  /**
-   * @see de.se_rwth.commons.configuration.Configuration#getAsInteger(java.lang.String)
-   */
-  @Override
-  public Optional<Integer> getAsInteger(String key) {
-    return this.configuration.getAsInteger(key);
-  }
-
-  public Optional<Integer> getAsInteger(Enum<?> key) {
-    return getAsInteger(key.toString());
-  }
-
-  /**
-   * @see de.se_rwth.commons.configuration.Configuration#getAsIntegers(java.lang.String)
-   */
-  @Override
-  public Optional<List<Integer>> getAsIntegers(String key) {
-    return this.configuration.getAsIntegers(key);
-  }
-
-  public Optional<List<Integer>> getAsIntegers(Enum<?> key) {
-    return getAsIntegers(key.toString());
-  }
-
-  /**
-   * @see de.se_rwth.commons.configuration.Configuration#getAsString(java.lang.String)
-   */
-  @Override
-  public Optional<String> getAsString(String key) {
-    return this.configuration.getAsString(key);
-  }
-
-  public Optional<String> getAsString(Enum<?> key) {
-    return getAsString(key.toString());
-  }
-
-  /**
-   * @see de.se_rwth.commons.configuration.Configuration#getAsStrings(java.lang.String)
-   */
-  @Override
-  public Optional<List<String>> getAsStrings(String key) {
-    return this.configuration.getAsStrings(key);
-  }
-
-  public Optional<List<String>> getAsStrings(Enum<?> key) {
-    return getAsStrings(key.toString());
-  }
-
-  /**
-   * @see de.se_rwth.commons.configuration.Configuration#getValue(java.lang.String)
-   */
-  @Override
-  public Optional<Object> getValue(String key) {
-    return this.configuration.getValue(key);
-  }
-
-  public Optional<Object> getValue(Enum<?> key) {
-    return getValue(key.toString());
-  }
-
-  /**
-   * @see de.se_rwth.commons.configuration.Configuration#getValues(java.lang.String)
-   */
-  @Override
-  public Optional<List<Object>> getValues(String key) {
-    return this.configuration.getValues(key);
-  }
-
-  public Optional<List<Object>> getValues(Enum<?> key) {
-    return getValues(key.toString());
-  }
-
-  /**
-   * @see de.se_rwth.commons.configuration.Configuration#hasProperty(java.lang.String)
-   */
-  @Override
-  public boolean hasProperty(String key) {
-    return this.configuration.hasProperty(key);
-  }
-
-  public boolean hasProperty(Enum<?> key) {
-    return hasProperty(key.toString());
+  private MontiCoreConfiguration(CommandLine cmdConfig) {
+    this.cmdConfig = cmdConfig;
   }
 
   private boolean checkPath(List<String> grammars) {
@@ -273,11 +126,7 @@ public final class MontiCoreConfiguration implements Configuration {
    * @return iterable grammar files
    */
   public IterablePath getGrammars() {
-    Optional<List<String>> grammars = getAsStrings(Options.GRAMMARS);
-    if (grammars.isPresent() && checkPath(grammars.get())) {
-      return IterablePath.from(toFileList(grammars.get()), MC4_EXTENSIONS);
-    }
-    grammars = getAsStrings(Options.GRAMMARS_SHORT);
+    Optional<List<String>> grammars = getAsStrings(GRAMMAR);
     if (grammars.isPresent() && checkPath(grammars.get())) {
       return IterablePath.from(toFileList(grammars.get()), MC4_EXTENSIONS);
     }
@@ -294,11 +143,7 @@ public final class MontiCoreConfiguration implements Configuration {
    * @return
    */
   public List<String> getGrammarsAsStrings() {
-    Optional<List<String>> grammars = getAsStrings(Options.GRAMMARS);
-    if (grammars.isPresent()) {
-      return grammars.get();
-    }
-    grammars = getAsStrings(Options.GRAMMARS_SHORT);
+    Optional<List<String>> grammars = getAsStrings(GRAMMAR);
     if (grammars.isPresent()) {
       return grammars.get();
     }
@@ -314,16 +159,12 @@ public final class MontiCoreConfiguration implements Configuration {
    * @return list of model path files
    */
   public ModelPath getModelPath() {
-    Optional<ModelPath> modelPath = getAsStrings(Options.MODELPATH)
+    Optional<ModelPath> modelPath = getAsStrings(MODELPATH)
         .map(this::convertEntryNamesToModelPath);
     if (modelPath.isPresent()) {
       return modelPath.get();
     }
-    modelPath = getAsStrings(Options.MODELPATH_SHORT).map(this::convertEntryNamesToModelPath);
-    if (modelPath.isPresent()) {
-      return modelPath.get();
-    }
-    // default model path is empty 
+    // default model path is empty
     return new ModelPath();
   }
 
@@ -344,12 +185,7 @@ public final class MontiCoreConfiguration implements Configuration {
    * @return
    */
   public List<String> getModelPathAsStrings() {
-    Optional<List<String>> modelPath = getAsStrings(Options.MODELPATH);
-    if (modelPath.isPresent()) {
-      List<String> result = new ArrayList<>(modelPath.get());
-      return result;
-    }
-    modelPath = getAsStrings(Options.MODELPATH_SHORT);
+    Optional<List<String>> modelPath = getAsStrings(MODELPATH);
     if (modelPath.isPresent()) {
       List<String> result = new ArrayList<>(modelPath.get());
       return result;
@@ -365,11 +201,7 @@ public final class MontiCoreConfiguration implements Configuration {
    * @return output directory file
    */
   public File getOut() {
-    Optional<String> out = getAsString(Options.OUT);
-    if (out.isPresent()) {
-      return new File(out.get());
-    }
-    out = getAsString(Options.OUT_SHORT);
+    Optional<String> out = getAsString(OUT);
     if (out.isPresent()) {
       return new File(out.get());
     }
@@ -384,11 +216,7 @@ public final class MontiCoreConfiguration implements Configuration {
    * @return output directory file
    */
   public File getReport() {
-    Optional<String> report = getAsString(Options.REPORT);
-    if (report.isPresent()) {
-      return new File(report.get());
-    }
-    report = getAsString(Options.REPORT_SHORT);
+    Optional<String> report = getAsString(REPORT);
     if (report.isPresent()) {
       return new File(report.get());
     }
@@ -402,11 +230,7 @@ public final class MontiCoreConfiguration implements Configuration {
    * @return iterable handcoded files
    */
   public IterablePath getHandcodedPath() {
-    Optional<List<String>> handcodedPath = getAsStrings(Options.HANDCODEDPATH);
-    if (handcodedPath.isPresent()) {
-      return IterablePath.from(toFileList(handcodedPath.get()), HWC_EXTENSIONS);
-    }
-    handcodedPath = getAsStrings(Options.HANDCODEDPATH_SHORT);
+    Optional<List<String>> handcodedPath = getAsStrings(HANDCODEDPATH);
     if (handcodedPath.isPresent()) {
       return IterablePath.from(toFileList(handcodedPath.get()), HWC_EXTENSIONS);
     }
@@ -427,11 +251,7 @@ public final class MontiCoreConfiguration implements Configuration {
    * @return
    */
   public List<String> getHandcodedPathAsStrings() {
-    Optional<List<String>> handcodedPath = getAsStrings(Options.HANDCODEDPATH);
-    if (handcodedPath.isPresent()) {
-      return handcodedPath.get();
-    }
-    handcodedPath = getAsStrings(Options.HANDCODEDPATH_SHORT);
+    Optional<List<String>> handcodedPath = getAsStrings(HANDCODEDPATH);
     if (handcodedPath.isPresent()) {
       return handcodedPath.get();
     }
@@ -445,11 +265,7 @@ public final class MontiCoreConfiguration implements Configuration {
    * @return iterable template files
    */
   public IterablePath getTemplatePath() {
-    Optional<List<String>> templatePath = getAsStrings(Options.TEMPLATEPATH);
-    if (templatePath.isPresent()) {
-      return IterablePath.from(toFileList(templatePath.get()), FTL_EXTENSIONS);
-    }
-    templatePath = getAsStrings(Options.TEMPLATEPATH_SHORT);
+    Optional<List<String>> templatePath = getAsStrings(TEMPLATEPATH);
     if (templatePath.isPresent()) {
       return IterablePath.from(toFileList(templatePath.get()), FTL_EXTENSIONS);
     }
@@ -462,57 +278,6 @@ public final class MontiCoreConfiguration implements Configuration {
   }
 
   /**
-   * Getter for the optional config template.
-   *
-   * @return Optional of the config template
-   */
-  public Optional<String> getConfigTemplate() {
-    Optional<String> configTemplate = getAsString(Options.CONFIGTEMPLATE);
-    if (configTemplate.isPresent()) {
-      return configTemplate;
-    }
-    configTemplate = getAsString(Options.CONFIGTEMPLATE_SHORT);
-    if (configTemplate.isPresent()) {
-      return configTemplate;
-    }
-    return Optional.empty();
-  }
-
-  /**
-   * Getter for the optional groovy script for hook point one.
-   *
-   * @return Optional path to the script
-   */
-  public Optional<String> getGroovyHook1() {
-    Optional<String> script = getAsString(Options.GROOVYHOOK1);
-    if (script.isPresent()) {
-      return script;
-    }
-    script = getAsString(Options.GROOVYHOOK1_SHORT);
-    if (script.isPresent()) {
-      return script;
-    }
-    return Optional.empty();
-  }
-
-  /**
-   * Getter for the optional groovy script for hook point two.
-   *
-   * @return Optional path to the script
-   */
-  public Optional<String> getGroovyHook2() {
-    Optional<String> script = getAsString(Options.GROOVYHOOK2);
-    if (script.isPresent()) {
-      return script;
-    }
-    script = getAsString(Options.GROOVYHOOK2_SHORT);
-    if (script.isPresent()) {
-      return script;
-    }
-    return Optional.empty();
-  }
-
-  /**
    * Getter for the actual value of the template path argument. This is not the
    * prepared {@link IterablePath} as in
    * {@link MontiCoreConfiguration#getTemplatePath()} but the raw input
@@ -521,11 +286,7 @@ public final class MontiCoreConfiguration implements Configuration {
    * @return
    */
   public List<String> getTemplatePathAsStrings() {
-    Optional<List<String>> templatePath = getAsStrings(Options.TEMPLATEPATH);
-    if (templatePath.isPresent()) {
-      return templatePath.get();
-    }
-    templatePath = getAsStrings(Options.TEMPLATEPATH_SHORT);
+    Optional<List<String>> templatePath = getAsStrings(TEMPLATEPATH);
     if (templatePath.isPresent()) {
       return templatePath.get();
     }
@@ -534,16 +295,30 @@ public final class MontiCoreConfiguration implements Configuration {
   }
 
   /**
-   * Getter for the incremental generation switch in this configuration. By
-   * default incremental generation is enabled, i.e., unless this property is
-   * present incremental checks are performed and processing is skipped if
-   * necessary.
+   * Getter for the optional config template.
    *
-   * @return whether generation should be forced, i.e., whether incremental
-   * checks should be skipped
+   * @return Optional of the config template
    */
-  public boolean getForce() {
-    return hasProperty(Options.FORCE) || hasProperty(Options.FORCE_SHORT);
+  public Optional<String> getConfigTemplate() {
+    return getAsString(CONFIGTEMPLATE);
+  }
+
+  /**
+   * Getter for the optional groovy script for hook point one.
+   *
+   * @return Optional path to the script
+   */
+  public Optional<String> getGroovyHook1() {
+    return getAsString(GROOVYHOOK1);
+  }
+
+  /**
+   * Getter for the optional groovy script for hook point two.
+   *
+   * @return Optional path to the script
+   */
+  public Optional<String> getGroovyHook2() {
+    return getAsString(GROOVYHOOK2);
   }
 
   /**
@@ -555,4 +330,10 @@ public final class MontiCoreConfiguration implements Configuration {
         Collectors.mapping(file -> new File(file).getAbsoluteFile(), Collectors.toList()));
   }
 
+  /**
+   * @see de.se_rwth.commons.configuration.Configuration#getConfig()
+   */
+  public CommandLine getConfig() {
+    return cmdConfig;
+  }
 }

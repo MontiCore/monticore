@@ -2,6 +2,8 @@
 
 package de.monticore
 
+import de.monticore.IncrementalChecker
+
 // M1: configuration object "_configuration" prepared externally
 Log.debug("--------------------------------", LOG_ID)
 Log.debug("MontiCore", LOG_ID)
@@ -25,6 +27,7 @@ cdScope = createCD4AGlobalScope(modelPath)
 symbolCdScope = createCD4AGlobalScope(modelPath)
 scopeCdScope = createCD4AGlobalScope(modelPath)
 Reporting.init(out.getAbsolutePath(), report.getAbsolutePath(), reportManagerFactory)
+glex = initGlex(_configuration)
 // ############################################################
 
 // ############################################################

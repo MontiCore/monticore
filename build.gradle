@@ -1,7 +1,6 @@
+/* (c) https://github.com/MontiCore/monticore */
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
-
-/* (c) https://github.com/MontiCore/monticore */
 
 plugins {
   id "de.set.ecj" version "1.4.1" // Eclipse compiler as it's much faster than javac
@@ -84,8 +83,6 @@ subprojects {
     }
   }
   
-  // Fixes issue with java plugin in projects without resources
-  compileTestJava.doFirst { mkdir sourceSets.main.output.resourcesDir }
   
   sourceCompatibility = '1.8'
   
@@ -120,7 +117,7 @@ task buildMC {
 }
 
 if(!hasProperty('bootstrap')) {
-  buildMC.dependsOn(gradle.includedBuilds*.task(':buildAll'))
+  buildMC.dependsOn(gradle.includedBuilds*.task(':build'))
 }
 
 /**
@@ -140,7 +137,7 @@ task assembleMC {
   )
 }
 if(!hasProperty('bootstrap')) {
-  assembleMC.dependsOn(gradle.includedBuilds*.task(':assembleAll'))
+  assembleMC.dependsOn(gradle.includedBuilds*.task(':assemble'))
 }
 
 /**
@@ -160,7 +157,7 @@ task testMC {
 }
 
 if(!hasProperty('bootstrap')) {
-  testMC.dependsOn(gradle.includedBuilds*.task(':testAll'))
+  testMC.dependsOn(gradle.includedBuilds*.task(':test'))
 }
 
 /**
@@ -182,7 +179,7 @@ task deployMC {
 }
 
 if(!hasProperty('bootstrap')) {
-  deployMC.dependsOn(gradle.includedBuilds*.task(':publishAll'))
+  deployMC.dependsOn(gradle.includedBuilds*.task(':publish'))
 }
 
 /**
@@ -203,7 +200,7 @@ task publishMCToMavenLocal {
 }
 
 if(!hasProperty('bootstrap')) {
-  publishMCToMavenLocal.dependsOn(gradle.includedBuilds*.task(':publishToMavenLocalAll'))
+  publishMCToMavenLocal.dependsOn(gradle.includedBuilds*.task(':publishToMavenLocal'))
 }
 
 /**

@@ -8,7 +8,6 @@ import de.monticore.ast.ASTNode;
 
 import java.io.IOException;
 import org.antlr.v4.runtime.RecognitionException;
-import de.monticore.io.paths.ModelPath;
 
 import de.se_rwth.commons.logging.Log;
 

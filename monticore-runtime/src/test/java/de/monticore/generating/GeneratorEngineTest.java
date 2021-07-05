@@ -8,6 +8,7 @@ import de.monticore.generating.templateengine.FreeMarkerTemplateEngineMock;
 import de.monticore.generating.templateengine.FreeMarkerTemplateMock;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.FileReaderWriterMock;
+import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.AfterClass;
@@ -17,8 +18,8 @@ import org.junit.Test;
 import java.io.File;
 import java.nio.file.Paths;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static de.monticore.generating.GeneratorEngine.existsHandwrittenClass;
+import static org.junit.Assert.*;
 
 /**
  * Tests for {@link de.monticore.generating.GeneratorEngine}.
@@ -95,4 +96,12 @@ public class GeneratorEngineTest {
     assertEquals("0xA1020 Unable to load templates from path doesnotexist", Log.getFindings().get(0).getMsg());
   }
 
+  @Test
+  public void testExistHWC() {
+    String classname = "test.A";
+    String notExistName = "test.B";
+
+    assertTrue(existsHandwrittenClass(new MCPath("src/test/resources/hwc"), classname));
+    assertFalse(existsHandwrittenClass(new MCPath("src/test/resources/hwc"), notExistName));
+  }
 }

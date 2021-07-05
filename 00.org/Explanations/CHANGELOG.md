@@ -2,6 +2,22 @@
 
 # Release Notes
 
+##  MontiCore 7.1.0
+to be released
+
+### Additions
+* introduced language-specific CLI generation
+* New class `MCPath` that manages a set of path entries. The class is used, e.g., for realizing symbol paths, model paths, handcoded paths, and template paths. `MCPath` replaces the classes `IterablePath` and `ModelPath`.
+* Different modes can now be defined for lexical tokens in grammar.
+  The corresponding generator will only be available in the next version.
+
+### Changes
+* the methods `serialize` and `deserialize` of the class `XDeSer` were moved to the class `XSymbols2Json`
+* The following classes are marked as deprecated and will be removed in the near future: 
+`ModelPath`, `IterablePath`, `ModelCoordinate`, `ModelCoordinateImpl`, `ModelCoordinates`, and `FileFinder`
+ 
+### Fixes
+
 ##  MontiCore 7.0.0
 released: 08.04.2021 
 
@@ -10,6 +26,9 @@ released: 08.04.2021
   by the implementation of the resolveXLocally(..) method. It enables proper handling of symbol kind hierarchies
   during symbol resolution beyond the borders of a language.
 * new annotation @NonConservative for productions
+* add configTemplate (-cf) mechanism to add a freemarker template for customizing the generation processed
+* add two predefined groovy hook points (-gh1 and -gh2) in the monticore_standard.groovy for injecting 
+  custom groovy scripts into the workflow
 
 ### Changes
 * move grammars OCLExpressions and SetExpressions into OCL-project for further development

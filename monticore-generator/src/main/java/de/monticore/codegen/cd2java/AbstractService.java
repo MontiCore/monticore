@@ -2,6 +2,7 @@
 package de.monticore.codegen.cd2java;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd4code._symboltable.ICD4CodeScope;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
@@ -27,6 +28,7 @@ import java.util.stream.Stream;
 import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.*;
 import static de.monticore.codegen.cd2java._ast.constants.ASTConstantsDecorator.LITERALS_SUFFIX;
+import static de.monticore.codegen.cd2java.cli.CLIConstants.CLI_SUFFIX;
 import static de.monticore.codegen.cd2java.mill.MillConstants.MILL_SUFFIX;
 import static de.se_rwth.commons.Names.getQualifier;
 
@@ -132,7 +134,7 @@ public class AbstractService<T extends AbstractService> {
   public List<String> getAllSuperInterfacesTransitive(CDTypeSymbol cdTypeSymbol) {
     List<String> superSymbolList = new ArrayList<>();
         List<CDTypeSymbol> localSuperInterfaces = cdTypeSymbol.getSuperTypesList().stream()
-            .map(s -> s.getTypeInfo().getName())
+            .map(s -> s.getTypeInfo().getFullName())
             .map(s -> resolveCDType(s))
             .filter(s -> s.isIsInterface())
             .collect(Collectors.toList());
@@ -147,8 +149,12 @@ public class AbstractService<T extends AbstractService> {
    * use symboltabe to resolve for ClassDiagrams or CDTypes
    */
   public DiagramSymbol resolveCD(String qualifiedName) {
-    return getCDSymbol().getEnclosingScope().resolveDiagram(qualifiedName)
-        .orElseThrow(() -> new DecorateException(DecoratorErrorCode.CD_SYMBOL_NOT_FOUND, qualifiedName));
+    Set<DiagramSymbol> symbols = Sets.newHashSet(getCDSymbol().getEnclosingScope().resolveDiagramMany(qualifiedName));
+    if (symbols.size() == 1) {
+      return symbols.iterator().next();
+    } else {
+      throw new DecorateException(DecoratorErrorCode.CD_SYMBOL_NOT_FOUND, qualifiedName);
+    }
   }
 
   public CDTypeSymbol resolveCDType(String qualifiedName) {
@@ -501,7 +507,7 @@ public class AbstractService<T extends AbstractService> {
     // Use the string representation
     // also use a count to make sure no double codes can appear
     // because sometimes there is not enough information for a unique string
-    String codeString = getPackage() + getCDSymbol() + name + count;
+    String codeString = getPackage() + getCDSymbol().getName() + name + count;
     count++;
     //calculate hashCode, but limit the values to have at most 5 digits
     int hashCode = Math.abs(codeString.hashCode() % 100000);
@@ -533,6 +539,30 @@ public class AbstractService<T extends AbstractService> {
 
   public String getMillFullName() {
     return getMillFullName(getCDSymbol());
+  }
+
+  /**
+   * Cli class names e.g. AutomataCli
+   */
+
+  public String getCliSimpleName(DiagramSymbol cdSymbol) {
+    return cdSymbol.getName() + CLI_SUFFIX;
+  }
+
+  public String getCliSimpleName() {
+    return getCliSimpleName(getCDSymbol());
+  }
+
+  public String getCliFullName(DiagramSymbol cdSymbol) {
+    if (cdSymbol.getPackageName().isEmpty()) {
+      return cdSymbol.getName().toLowerCase() + "." + getCliSimpleName(cdSymbol);
+    }else {
+      return String.join(".", cdSymbol.getPackageName(), cdSymbol.getName()).toLowerCase() + "." + getCliSimpleName(cdSymbol);
+    }
+  }
+
+  public String getCliFullName() {
+    return getCliFullName(getCDSymbol());
   }
 
 }
