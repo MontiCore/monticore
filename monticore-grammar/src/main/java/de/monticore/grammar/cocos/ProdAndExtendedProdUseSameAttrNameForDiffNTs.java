@@ -32,53 +32,6 @@ public class ProdAndExtendedProdUseSameAttrNameForDiffNTs implements GrammarASTN
     if (a.isPresentUsageName() && a.isPresentSymbol()) {
       String attributename = a.getUsageName();
       RuleComponentSymbol componentSymbol = a.getSymbol();
-      Optional<ProdSymbol> rule = MCGrammarSymbolTableHelper.getEnclosingRule(a);
-      if (rule.isPresent() && rule.get().getAstNode() instanceof ASTClassProd) {
-        ASTClassProd prod = (ASTClassProd) rule.get().getAstNode();
-        if (!prod.getSuperRuleList().isEmpty()) {
-          ASTRuleReference type = prod.getSuperRuleList().get(0);
-          String typename = type.getTypeName();
-          Optional<ProdSymbol> ruleSymbol = type.getEnclosingScope().getEnclosingScope()
-              .resolveProd(typename);
-          if (ruleSymbol.isPresent()) {
-            List<RuleComponentSymbol> componentSymbolList = ruleSymbol.get().getSpannedScope()
-                .resolveRuleComponentDownMany(attributename);
-            if (!componentSymbolList.isEmpty()) {
-              for (RuleComponentSymbol symbol : componentSymbolList) {
-                if (symbol.isIsLexerNonterminal()) {
-                  logError(prod, ruleSymbol.get(), attributename, componentSymbol,
-                      "production that is a lexical nonTerminal", a);
-                } else if (symbol.isIsConstant()) {
-                  logError(prod, ruleSymbol.get(), attributename, componentSymbol,
-                      "production that is not a constant", a);
-                } else if (symbol.isIsConstantGroup()) {
-                  logError(prod, ruleSymbol.get(), attributename, componentSymbol,
-                      "production that is not a constant group", a);
-                } else if (symbol.isIsTerminal()) {
-                  logError(prod, ruleSymbol.get(), attributename, componentSymbol,
-                      "production that is a terminal named " + symbol.getName(), a);
-                } else if (symbol.isIsNonterminal() && symbol.getReferencedProd().isPresent()
-                    && !symbol.getReferencedProd().get().getName().equals(componentSymbol.getReferencedProd().get().getName())) {
-                  logError(prod, ruleSymbol.get(), attributename,
-                      componentSymbol, "nonterminal " + symbol.getReferencedProd().get().getName(), a);
-                }
-              }
-            } else {
-              //try to find NonTerminal with same Name, but with capitalised start -> will both become the same attribute
-              componentSymbolList = ruleSymbol.get().getSpannedScope().resolveRuleComponentMany(StringTransformations.capitalize(attributename));
-              for (RuleComponentSymbol ruleComponentSymbol : componentSymbolList) {
-                if (ruleComponentSymbol.isIsNonterminal() && ruleComponentSymbol.getReferencedProd().isPresent()
-                    && !ruleComponentSymbol.getReferencedProd().get().getName().equals(componentSymbol.getReferencedProd().get().getName())) {
-                  // logs error when e.g. State = F; A extends State = f:R;
-                  // because F form State will evaluate to attributeName with small f
-                  logError(prod, ruleSymbol.get(), attributename,
-                      componentSymbol, "nonterminal " + ruleComponentSymbol.getReferencedProd().get().getName(), a);
-                }
-              }
-            }
-          }
-        }
-      }
       Optional<ProdSymbol> optProd = MCGrammarSymbolTableHelper.getEnclosingRule(a);
       if (optProd.isPresent() && optProd.get().isClass()) {
         ProdSymbol prod = optProd.get();
