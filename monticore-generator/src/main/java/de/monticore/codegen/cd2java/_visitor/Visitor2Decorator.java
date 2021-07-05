@@ -14,6 +14,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.se_rwth.commons.Joiners;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -46,14 +47,14 @@ public class Visitor2Decorator extends AbstractCreator<ASTCDCompilationUnit, AST
 
   @Override
   public ASTCDInterface decorate(ASTCDCompilationUnit ast) {
-    ASTCDCompilationUnit compilationUnit = visitorService.calculateCDTypeNamesWithASTPackage(ast);
     Set<String> symbolNames = symbolTableService.retrieveSymbolNamesFromCD(visitorService.getCDSymbol());
 
     ASTCDInterface visitorInterface = CD4CodeMill.cDInterfaceBuilder()
         .setName(this.visitorService.getVisitor2SimpleName())
         .setModifier(PUBLIC.build())
-        .addInterface(getMCTypeFacade().createQualifiedType(IVISITOR_FULL_NAME))
-        .addAllCDMembers(addASTNodeVisitorMethods(compilationUnit.getCDDefinition()))
+        .setCDExtendUsage(CD4CodeMill.cDExtendUsageBuilder()
+                .addSuperclass(getMCTypeFacade().createQualifiedType(IVISITOR_FULL_NAME)).build())
+        .addAllCDMembers(addASTNodeVisitorMethods(ast.getCDDefinition()))
         .addAllCDMembers(addSymbolVisitorMethods(symbolNames))
         .addAllCDMembers(addScopeVisitorMethods(getSymbolsTransitive(), ast.getCDDefinition()))
         .build();
@@ -89,9 +90,10 @@ public class Visitor2Decorator extends AbstractCreator<ASTCDCompilationUnit, AST
    */
   protected List<ASTCDMethod> addASTNodeVisitorMethods(ASTCDDefinition cdDefinition) {
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
-    visitorMethods.addAll(addClassVisitorMethods(cdDefinition.getCDClassesList()));
-    visitorMethods.addAll(addInterfaceVisitorMethods(cdDefinition.getCDInterfacesList()));
-    visitorMethods.addAll(addEnumVisitorMethods(cdDefinition.getCDEnumsList(), cdDefinition.getName()));
+    String packageName = visitorService.getASTPackage();
+    visitorMethods.addAll(addClassVisitorMethods(cdDefinition.getCDClassesList(), packageName));
+    visitorMethods.addAll(addInterfaceVisitorMethods(cdDefinition.getCDInterfacesList(), packageName));
+    visitorMethods.addAll(addEnumVisitorMethods(cdDefinition.getCDEnumsList(), packageName, cdDefinition.getName()));
     return visitorMethods;
   }
 
@@ -101,10 +103,10 @@ public class Visitor2Decorator extends AbstractCreator<ASTCDCompilationUnit, AST
    * @param astcdClassList The input list of classes
    * @return The decorated visitor methods
    */
-  protected List<ASTCDMethod> addClassVisitorMethods(List<ASTCDClass> astcdClassList) {
+  protected List<ASTCDMethod> addClassVisitorMethods(List<ASTCDClass> astcdClassList, String packageName) {
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
     for (ASTCDClass astcdClass : astcdClassList) {
-      ASTMCType classType = getMCTypeFacade().createQualifiedType(astcdClass.getName());
+      ASTMCType classType = getMCTypeFacade().createQualifiedType(Joiners.DOT.join(packageName, astcdClass.getName()));
       visitorMethods.add(addVisitMethod(classType));
       visitorMethods.add(addEndVisitMethod(classType));
     }
@@ -117,10 +119,10 @@ public class Visitor2Decorator extends AbstractCreator<ASTCDCompilationUnit, AST
    * @param astcdInterfaceList The input list of interfaces
    * @return The decorated visitor methods
    */
-  protected List<ASTCDMethod> addInterfaceVisitorMethods(List<ASTCDInterface> astcdInterfaceList) {
+  protected List<ASTCDMethod> addInterfaceVisitorMethods(List<ASTCDInterface> astcdInterfaceList, String packageName) {
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
     for (ASTCDInterface astcdInterface : astcdInterfaceList) {
-      ASTMCType interfaceType = getMCTypeFacade().createQualifiedType(astcdInterface.getName());
+      ASTMCType interfaceType = getMCTypeFacade().createQualifiedType(Joiners.DOT.join(packageName, astcdInterface.getName()));
       visitorMethods.add(addVisitMethod(interfaceType));
       visitorMethods.add(addEndVisitMethod(interfaceType));
     }
@@ -134,12 +136,12 @@ public class Visitor2Decorator extends AbstractCreator<ASTCDCompilationUnit, AST
    * @param definitionName Name of the base enumeration of each language
    * @return The decorated visitor methods
    */
-  protected List<ASTCDMethod> addEnumVisitorMethods(List<ASTCDEnum> astcdEnumList, String definitionName) {
+  protected List<ASTCDMethod> addEnumVisitorMethods(List<ASTCDEnum> astcdEnumList, String packageName, String definitionName) {
     // not for literals Enum
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
     for (ASTCDEnum astcdEnum : astcdEnumList) {
       if (!visitorService.isLiteralsEnum(astcdEnum, definitionName)) {
-        ASTMCType enumType = getMCTypeFacade().createQualifiedType(astcdEnum.getName());
+        ASTMCType enumType = getMCTypeFacade().createQualifiedType(Joiners.DOT.join(packageName, astcdEnum.getName()));
         visitorMethods.add(addVisitMethod(enumType));
         visitorMethods.add(addEndVisitMethod(enumType));
       }

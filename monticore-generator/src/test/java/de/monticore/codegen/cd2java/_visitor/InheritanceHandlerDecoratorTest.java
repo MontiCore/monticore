@@ -8,6 +8,7 @@ import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.codegen.cd2java.CdUtilsPrinter;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
@@ -64,6 +65,8 @@ public class InheritanceHandlerDecoratorTest extends DecoratorTestCase {
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
 
     this.glex.setGlobalValue("service", new VisitorService(decoratedCompilationUnit));
+    this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
+
     VisitorService visitorService = new VisitorService(decoratedCompilationUnit);
     SymbolTableService symbolTableService = new SymbolTableService(decoratedCompilationUnit);
     MethodDecorator methodDecorator = new MethodDecorator(glex, visitorService);

@@ -2,6 +2,7 @@
 package de.monticore.codegen.cd2java._ast_emf.emf_package;
 
 import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDConstructor;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
@@ -71,8 +72,8 @@ public class PackageImplDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     return CD4AnalysisMill.cDClassBuilder()
         .setName(packageImplName)
         .setModifier(PUBLIC.build())
-        .setSuperclass(getMCTypeFacade().createQualifiedType(E_PACKAGE_IMPL))
-        .addInterface(getMCTypeFacade().createQualifiedType(packageName))
+        .setCDExtendUsage(CD4CodeMill.cDExtendUsageBuilder().addSuperclass(getMCTypeFacade().createQualifiedType(E_PACKAGE_IMPL)).build())
+        .setCDInterfaceUsage(CD4CodeMill.cDInterfaceUsageBuilder().addInterface(getMCTypeFacade().createQualifiedType(packageName)).build())
         .addCDMember(constantsEEnumAttribute)
         .addAllCDMembers(eAttributes)
         .addCDMember(createISCreatedAttribute())
@@ -94,25 +95,22 @@ public class PackageImplDecorator extends AbstractCreator<ASTCDCompilationUnit, 
   protected ASTCDDefinition prepareCDForEmfPackageDecoration(ASTCDDefinition astcdDefinition) {
     ASTCDDefinition copiedDefinition = astcdDefinition.deepClone();
     //remove inherited attributes
-    List<ASTCDClass> preparedClasses = copiedDefinition.getCDClassesList()
+    copiedDefinition.getCDClassesList()
         .stream()
         .map(emfService::removeInheritedAttributes)
         .collect(Collectors.toList());
-    copiedDefinition.setCDClassesList(preparedClasses);
 
     //remove ast node Interface e.g. ASTAutomataNode
     List<ASTCDInterface> astcdInterfaces = copiedDefinition.getCDInterfacesList()
         .stream()
         .filter(x -> !emfService.isASTNodeInterface(x, copiedDefinition))
         .collect(Collectors.toList());
-    copiedDefinition.setCDInterfacesList(astcdInterfaces);
 
     //remove inherited attributes
-    astcdInterfaces = astcdInterfaces
+    astcdInterfaces
         .stream()
         .map(emfService::removeInheritedAttributes)
         .collect(Collectors.toList());
-    copiedDefinition.setCDInterfacesList(astcdInterfaces);
 
     return copiedDefinition;
   }

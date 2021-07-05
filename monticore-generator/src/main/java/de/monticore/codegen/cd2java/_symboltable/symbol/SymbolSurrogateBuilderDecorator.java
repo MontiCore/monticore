@@ -49,9 +49,7 @@ public class SymbolSurrogateBuilderDecorator extends AbstractCreator<ASTCDType, 
     String symbolSurrogateName = symbolTableService.getSymbolSurrogateSimpleName(input);
     String symbolSurrogateBuilderName = symbolSurrogateName + BUILDER_SUFFIX;
     String scopeInterfaceFullName = symbolTableService.getScopeInterfaceFullName();
-    ASTModifier modifier = input.isPresentModifier() ?
-        symbolTableService.createModifierPublicModifier(input.getModifier()):
-        PUBLIC.build();
+    ASTModifier modifier = symbolTableService.createModifierPublicModifier(input.getModifier());
 
     List<ASTCDAttribute> builderAttributes = input.getCDAttributeList().stream()
         .map(ASTCDAttribute::deepClone)

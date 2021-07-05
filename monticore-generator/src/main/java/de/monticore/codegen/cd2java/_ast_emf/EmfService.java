@@ -1,6 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast_emf;
 
+import com.google.common.collect.Lists;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.cdinterfaceandenum._ast.*;
 import de.monticore.ast.ASTNode;
@@ -146,19 +148,17 @@ public class EmfService extends AbstractService<EmfService> {
    * methods for removing inherited attributes
    */
   public ASTCDClass removeInheritedAttributes(ASTCDClass astCDClass) {
-    ASTCDClass copiedAstClass = astCDClass.deepClone();
     //remove inherited attributes
-    List<ASTCDAttribute> astcdAttributes = removeInheritedAttributes(copiedAstClass.getCDAttributeList());
-    copiedAstClass.setCDAttributeList(astcdAttributes);
-    return copiedAstClass;
+    List<ASTCDAttribute> astcdAttributes = removeInheritedAttributes(astCDClass.getCDAttributeList());
+    astCDClass.setCDAttributeList(astcdAttributes);
+    return astCDClass;
   }
 
   public ASTCDInterface removeInheritedAttributes(ASTCDInterface astCDInterface) {
-    ASTCDInterface copiedInterface = astCDInterface.deepClone();
     //remove inherited attributes
-    List<ASTCDAttribute> astcdAttributes = removeInheritedAttributes(copiedInterface.getCDAttributeList());
-    copiedInterface.setCDAttributeList(astcdAttributes);
-    return copiedInterface;
+    List<ASTCDAttribute> astcdAttributes = removeInheritedAttributes(astCDInterface.getCDAttributeList());
+    astCDInterface.setCDAttributeList(astcdAttributes);
+    return astCDInterface;
   }
 
   private List<ASTCDAttribute> removeInheritedAttributes(List<ASTCDAttribute> astcdAttributeList) {
@@ -175,7 +175,8 @@ public class EmfService extends AbstractService<EmfService> {
     } else {
       List<DiagramSymbol> superCDs = getSuperCDsTransitive(resolveCD(astcdDefinition.getName()));
       for (DiagramSymbol superCD : superCDs) {
-        if (((ICDBasisScope) superCD.getEnclosingScope()).getLocalCDTypeSymbols().stream().anyMatch(x -> x.getName().equals(simpleNativeAttributeType))) {
+        if (getAllCDTypes(superCD
+        ).stream().anyMatch(x -> x.getName().equals(simpleNativeAttributeType))) {
           return superCD.getName() + "PackageImpl";
         }
       }
@@ -185,11 +186,10 @@ public class EmfService extends AbstractService<EmfService> {
   
   //for InitializePackageContents template
   public List<CDTypeSymbol> retrieveSuperTypes(ASTCDClass c) {
-    List<CDTypeSymbol> superTypes = c.getSymbol().getSuperTypesList().stream()
+    List<CDTypeSymbol> superTypes = Lists.newArrayList();
+    c.getSymbol().getSuperTypesList().stream()
         .map(ste -> ste.getTypeInfo())
-        .map(ts -> ts.getFullName())
-        .map(n -> resolveCDType(n))
-        .collect(Collectors.toList());
+        .map(ts -> ts.getFullName()).forEach(s -> CD4CodeMill.globalScope().resolveCDType(s).ifPresent(t -> superTypes.add(t)));
     return superTypes;
   }
 
@@ -200,7 +200,7 @@ public class EmfService extends AbstractService<EmfService> {
   public String getClassPackage(CDTypeSymbol cdTypeSymbol) {
     // in this version the scope carries all relevant naming information and we
     // know that it is an artifact scope
-    ICD4CodeArtifactScope scope = ((ICD4CodeArtifactScope) cdTypeSymbol.getEnclosingScope());
+    ICD4CodeArtifactScope scope = ((ICD4CodeArtifactScope) cdTypeSymbol.getEnclosingScope().getEnclosingScope());
     String modelName = scope.getFullName();
     if (modelName.equalsIgnoreCase(getQualifiedCDName())) {
       return "this";

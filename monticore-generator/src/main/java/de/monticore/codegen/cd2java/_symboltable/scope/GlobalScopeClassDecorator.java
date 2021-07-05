@@ -3,6 +3,7 @@ package de.monticore.codegen.cd2java._symboltable.scope;
 
 import com.google.common.collect.Maps;
 import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.*;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
@@ -113,8 +114,8 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     return CD4AnalysisMill.cDClassBuilder()
         .setName(globalScopeName)
         .setModifier(PUBLIC.build())
-        .setSuperclass(scopeType)
-        .addInterface(globalScopeInterface)
+        .setCDExtendUsage(CD4CodeMill.cDExtendUsageBuilder().addSuperclass(scopeType).build())
+        .setCDInterfaceUsage(CD4CodeMill.cDInterfaceUsageBuilder().addInterface(globalScopeInterface).build())
         .addCDMember(createConstructor(globalScopeName))
         .addCDMember(createZeroArgsConstructor(globalScopeName))
         .addCDMember(symbolPathAttribute)
@@ -217,7 +218,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
   protected Map<String, ASTCDAttribute> createResolverSuperAttributes() {
     Map<String, ASTCDAttribute> symbolAttributes = new HashMap<>();
     for (DiagramSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
-      for (CDTypeSymbol type : ((ICDBasisScope) cdDefinitionSymbol.getEnclosingScope()).getLocalCDTypeSymbols()) {
+      for (CDTypeSymbol type : symbolTableService.getAllCDTypes(cdDefinitionSymbol)) {
         if (type.isPresentAstNode() && symbolTableService.hasSymbolStereotype(type.getAstNode())) {
           Optional<ASTCDAttribute> symbolAttribute = createResolverAttribute(type.getAstNode(), cdDefinitionSymbol);
           symbolAttribute.ifPresent(attr -> symbolAttributes.put(attr.getName(), attr));

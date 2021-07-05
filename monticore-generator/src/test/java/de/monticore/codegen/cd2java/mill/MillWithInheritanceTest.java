@@ -5,6 +5,7 @@ import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
 import com.google.common.collect.Lists;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4code._symboltable.ICD4CodeGlobalScope;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
@@ -64,9 +65,7 @@ public class MillWithInheritanceTest extends DecoratorTestCase {
     this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
     this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "factory", "CGrammar");
-    importCDs(decoratedCompilationUnit);
-    ICD4CodeGlobalScope gs = (ICD4CodeGlobalScope) decoratedCompilationUnit.getEnclosingScope().getEnclosingScope();
-    this.completeCDTypes(gs);
+    ICD4CodeGlobalScope gs = CD4CodeMill.globalScope();
     glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
 
     SymbolTableService symbolTableService = new SymbolTableService(decoratedCompilationUnit);
@@ -120,7 +119,6 @@ public class MillWithInheritanceTest extends DecoratorTestCase {
   @Test
   public void testAttributeModifier() {
     for (ASTCDAttribute astcdAttribute : millClass.getCDAttributeList()) {
-        assertTrue(astcdAttribute.isPresentModifier());
         assertTrue(astcdAttribute.getModifier().isProtected());
     }
   }

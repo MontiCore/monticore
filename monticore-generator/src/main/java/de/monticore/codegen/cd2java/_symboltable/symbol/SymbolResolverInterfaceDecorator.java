@@ -32,9 +32,7 @@ public class SymbolResolverInterfaceDecorator extends AbstractCreator<ASTCDType,
     String symbolResolverInterface = symbolTableService.getSymbolResolverInterfaceSimpleName(input);
     String symbolFullName = symbolTableService.getSymbolFullName(input);
     String symbolSimpleName = symbolTableService.getSymbolSimpleName(input);
-    ASTModifier modifier = input.isPresentModifier() ?
-        symbolTableService.createModifierPublicModifier(input.getModifier()):
-        PUBLIC.build();
+    ASTModifier modifier = symbolTableService.createModifierPublicModifier(input.getModifier());
 
     return CD4AnalysisMill.cDInterfaceBuilder()
         .setName(symbolResolverInterface)

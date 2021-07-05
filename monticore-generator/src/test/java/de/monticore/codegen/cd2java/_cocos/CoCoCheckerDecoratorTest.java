@@ -4,6 +4,7 @@ package de.monticore.codegen.cd2java._cocos;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4code._symboltable.ICD4CodeGlobalScope;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.cd4codebasis._ast.*;
@@ -66,9 +67,7 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
     LogStub.init();
     LogStub.enableFailQuick(false);
     ASTCDCompilationUnit ast = parse("de", "monticore", "codegen", "ast", "Automaton");
-    importCDs(ast);
-    ICD4CodeGlobalScope gs = (ICD4CodeGlobalScope) ast.getEnclosingScope().getEnclosingScope();
-    this.completeCDTypes(gs);
+    ICD4CodeGlobalScope gs = CD4CodeMill.globalScope();
     this.glex.setGlobalValue("service", new AbstractService(ast));
     this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
 

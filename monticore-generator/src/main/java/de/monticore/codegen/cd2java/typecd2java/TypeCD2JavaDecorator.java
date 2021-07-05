@@ -19,8 +19,7 @@ public class TypeCD2JavaDecorator extends AbstractCreator<ASTCDCompilationUnit, 
   public ASTCDCompilationUnit decorate(final ASTCDCompilationUnit compilationUnit) {
     CD4CodeTraverser traverser = CD4CodeMill.traverser();
     traverser.add4MCBasicTypes(new TypeCD2JavaVisitor(scope));
-    ASTCDCompilationUnit copy = compilationUnit.deepClone();
-    copy.accept(traverser);
-    return copy;
+    compilationUnit.accept(traverser);
+    return compilationUnit;
   }
 }

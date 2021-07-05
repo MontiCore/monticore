@@ -2,6 +2,7 @@
 package de.monticore.codegen.cd2java._symboltable.scope;
 
 import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.*;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.codegen.cd2java.AbstractCreator;
@@ -68,8 +69,8 @@ public class ArtifactScopeClassDecorator extends AbstractCreator<ASTCDCompilatio
     return CD4AnalysisMill.cDClassBuilder()
         .setName(artifactScopeSimpleName)
         .setModifier(PUBLIC.build())
-        .setSuperclass(getMCTypeFacade().createQualifiedType(scopeClassFullName))
-        .addInterface(symbolTableService.getArtifactScopeInterfaceType())
+        .setCDExtendUsage(CD4CodeMill.cDExtendUsageBuilder().addSuperclass(getMCTypeFacade().createQualifiedType(scopeClassFullName)).build())
+        .setCDInterfaceUsage(CD4CodeMill.cDInterfaceUsageBuilder().addInterface(symbolTableService.getArtifactScopeInterfaceType()).build())
         .addAllCDMembers(createConstructors(artifactScopeSimpleName))
         .addCDMember(packageNameAttribute)
         .addAllCDMembers(createPackageNameAttributeMethods(packageNameAttribute))
