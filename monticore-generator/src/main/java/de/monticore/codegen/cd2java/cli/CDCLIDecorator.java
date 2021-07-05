@@ -50,7 +50,7 @@ public class CDCLIDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDC
         .setModifier(CD4AnalysisMill.modifierBuilder().build())
         .build();
     ASTCDDefinition cdDefinition = mainCD.getCDDefinition();
-    if (!cdDefinition.isPresentModifier() || !parserService.hasComponentStereotype(cdDefinition.getModifier())) {
+    if (!parserService.hasComponentStereotype(cdDefinition.getModifier())) {
       Optional<ASTCDClass> cliClass = cliDecorator.decorate(mainCD);
       cliClass.ifPresent(astCD::addCDElement);
     }
