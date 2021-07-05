@@ -24,6 +24,7 @@ import de.monticore.grammar.grammarfamily._symboltable.IGrammarFamilyArtifactSco
 import de.monticore.grammar.grammarfamily._symboltable.IGrammarFamilyGlobalScope;
 import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.Names;
+import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -52,6 +53,8 @@ public class ParserGeneratorTest {
 
   @BeforeClass
   public static void setup(){
+    Log.init();
+    Log.enableFailQuick(false);
     GrammarFamilyMill.init();
   }
 

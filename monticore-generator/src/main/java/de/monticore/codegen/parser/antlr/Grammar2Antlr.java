@@ -135,10 +135,19 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
     }
 
     if (ast.isPresentLexerCommand()) {
-      addToCodeSection("->", ast.getLexerCommand(), "\n");
+      addToCodeSection("->", ast.getLexerCommand());
+      if (!ast.isEmptyParameter()) {
+        addToCodeSection("(");
+        String sep = "";
+        for (String s: ast.getParameterList()) {
+          addToCodeSection(sep, s);
+          sep = ", ";
+        }
+        addToCodeSection(")");
+      }
     }
 
-    addToCodeSection(";");
+    addToCodeSection(";\n");
 
     endCodeSection(ast);
   }

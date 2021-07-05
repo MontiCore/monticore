@@ -4,7 +4,6 @@ package de.monticore.codegen.parser;
 
 import com.google.common.base.Joiner;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CDGenerator;
 import de.monticore.codegen.cd2java.CdUtilsPrinter;
@@ -14,14 +13,11 @@ import de.monticore.codegen.cd2java._parser.ParserClassDecorator;
 import de.monticore.codegen.cd2java._parser.ParserForSuperDecorator;
 import de.monticore.codegen.cd2java._parser.ParserService;
 import de.monticore.codegen.cd2java.top.TopDecorator;
-import de.monticore.codegen.cd2java.typecd2java.TemplateHPService;
 import de.monticore.codegen.parser.antlr.AntlrTool;
 import de.monticore.codegen.parser.antlr.Grammar2Antlr;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.generating.templateengine.TemplateController;
-import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.grammar.MCGrammarInfo;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
@@ -35,9 +31,6 @@ import de.se_rwth.commons.logging.Log;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ParserGenerator {
@@ -133,22 +126,29 @@ public class ParserGenerator {
     glex.setGlobalValue("nameHelper", new Names());
     setup.setGlex(glex);
 
-    final Path filePath = Paths.get(Names.getPathFromPackage(genHelper.getParserPackage()),
-        astGrammar.getName() + "Antlr.g4");
+    //Lexer
+    final Path lexerPath = Paths.get(Names.getPathFromPackage(genHelper.getParserPackage()),
+            astGrammar.getName() + "LexerAntlr.g4");
     Grammar2Antlr grammar2Antlr = new Grammar2Antlr(genHelper, grammarInfo, true);
     Grammar_WithConceptsTraverser traverser = Grammar_WithConceptsMill.traverser();
     traverser.add4Grammar(grammar2Antlr);
     traverser.setGrammarHandler(grammar2Antlr);
-    new GeneratorEngine(setup).generate("parser.Parser", filePath, astGrammar, grammar2Antlr);
+    new GeneratorEngine(setup).generate("parser.Lexer", lexerPath, astGrammar, grammar2Antlr);
+
+    final Path parserPath = Paths.get(Names.getPathFromPackage(genHelper.getParserPackage()),
+        astGrammar.getName() + "ParserAntlr.g4");
+    new GeneratorEngine(setup).generate("parser.Parser", parserPath, astGrammar, grammar2Antlr);
 
     // construct parser, lexer, ... (antlr),
-    String gFile = Paths.get(targetDir.getAbsolutePath(), filePath.toString()).toString();
     String outputLang = "-Dlanguage=" + lang.getLanguage();
-    Log.debug("Start Antlr generation for the antlr file " + gFile, LOG);
+    Log.debug("Start Antlr generation for the antlr file " + astGrammar.getName(), LOG);
     AntlrTool antlrTool = new AntlrTool(new String[] { outputLang }, grammarSymbol,
         Paths.get(targetDir.getAbsolutePath(),
             Names.getPathFromPackage(genHelper.getParserPackage())));
-    antlrTool.createParser(gFile);
+    String gLexer = Paths.get(targetDir.getAbsolutePath(), lexerPath.toString()).toString();
+    antlrTool.createParser(gLexer);
+    String gParser = Paths.get(targetDir.getAbsolutePath(), parserPath.toString()).toString();
+    antlrTool.createParser(gParser);
     Log.debug("End parser generation for the grammar " + astGrammar.getName(), LOG);
   }
 
