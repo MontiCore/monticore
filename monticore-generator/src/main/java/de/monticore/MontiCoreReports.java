@@ -83,8 +83,7 @@ public class MontiCoreReports implements ReportManagerFactory {
     ODReporter objDiagram = new ODReporter(this.reportDirectory, lowerCaseName, repository);
     SuccessfulReporter finishReporter = new SuccessfulReporter(this.reportDirectory, lowerCaseName);
     IncGenCheckReporter incGenCheck = new IncGenCheckReporter(this.outputDirectory, lowerCaseName);
-    //TODO replace with IncGenGradleReporter after release 7.1.0
-    IncGenGradleReporterExtension gradleReporter = new IncGenGradleReporterExtension(this.outputDirectory, lowerCaseName);
+    IncGenGradleReporter gradleReporter = new IncGenGradleReporter(this.outputDirectory, lowerCaseName);
 
     reports.addReportEventHandler(summary); // 01_Summary
     reports.addReportEventHandler(generated); // 02_GeneratedFiles
@@ -98,7 +97,6 @@ public class MontiCoreReports implements ReportManagerFactory {
     reports.addReportEventHandler(nodeTree); // 10_NodeTree
     reports.addReportEventHandler(nodeTreeDecorated); // 11_NodeTreeDecorated
     reports.addReportEventHandler(nodeTypes); // 12_TypesOfNodes
-//    reports.addReportEventHandler(symbolTable); // 13_SymbolTable  //TODO: update this report to new symbol table infrastructure
     reports.addReportEventHandler(transformations); // 14_Transformations
     reports.addReportEventHandler(artifactGml); // 15_ArtifactGml
     reports.addReportEventHandler(artifactGV); // 16_ArtifactGv

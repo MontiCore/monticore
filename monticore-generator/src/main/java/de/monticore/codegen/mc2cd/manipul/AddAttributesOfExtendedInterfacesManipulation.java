@@ -44,7 +44,6 @@ public class AddAttributesOfExtendedInterfacesManipulation implements
 
   private void addAttributesOfExtendedInterfaces(ASTCDClass cdClass) {
     List<ASTCDAttribute> attributes = new ArrayList<>();
-    // TODO GV:use Cd4Analysis symboltable to get all interfaces recursively
     for (ASTMCObjectType interf : cdClass.getInterfaceList()) {
       String interfaceName = typeToString(interf);
       if (cDInterfaces.containsKey(interfaceName)) {
