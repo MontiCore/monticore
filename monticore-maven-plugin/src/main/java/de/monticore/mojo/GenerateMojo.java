@@ -6,6 +6,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import de.monticore.cli.MontiCoreStandardCLI;
+import org.apache.commons.io.filefilter.RegexFileFilter;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
@@ -18,7 +19,9 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.google.common.base.MoreObjects.firstNonNull;
 import static de.monticore.MontiCoreConfiguration.*;
@@ -412,7 +415,8 @@ public final class GenerateMojo extends AbstractMojo {
     // setup configuration
     List<String> argList = new ArrayList<>();
     argList.add("-" + GRAMMAR);
-    argList.addAll(toStringSet(getGrammars()));
+    Set<File> grammars = getGrammars();
+    argList.addAll(findGrammars(grammars));
     argList.add("-" + MODELPATH);
     argList.addAll(toStringSet(getModelPaths()));
     argList.add("-" + HANDCODEDPATH);
@@ -474,5 +478,27 @@ public final class GenerateMojo extends AbstractMojo {
   protected Set<String> toStringSet(Collection<File> files) {
     return ImmutableSet.<String> builder()
         .addAll(Iterables.transform(files, file -> file.getPath())).build();
+  }
+
+  /**
+   * @param directories the directories potentially containing grammars
+   * @return a set of all the absolute paths that lead to grammars
+   */
+  protected Set<String> findGrammars(Set<File> directories){
+    Set<String> grammarFiles = new HashSet<>();
+    for(File directory: directories){
+      if(directory.exists() && directory.isDirectory()){
+        String[] files = directory.list();
+        if(files!=null) {
+          grammarFiles.addAll(Arrays.stream(files)
+            .filter(file -> file.endsWith(".mc4"))
+            .map(file -> directory.getAbsolutePath() + "/" + file)
+            .filter(file -> new File(file).exists())
+            .collect(Collectors.toSet())
+          );
+        }
+      }
+    }
+    return grammarFiles;
   }
 }
