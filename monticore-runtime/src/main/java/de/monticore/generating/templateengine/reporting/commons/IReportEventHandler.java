@@ -2,18 +2,16 @@
 
 package de.monticore.generating.templateengine.reporting.commons;
 
-import java.net.URI;
+import de.monticore.ast.ASTNode;
+import de.monticore.generating.templateengine.HookPoint;
+import de.monticore.io.paths.MCPath;
+import de.monticore.symboltable.IScope;
+
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-
-import de.monticore.ast.ASTNode;
-import de.monticore.generating.templateengine.HookPoint;
-import de.monticore.io.paths.IterablePath;
-import de.monticore.io.paths.MCPath;
-import de.monticore.symboltable.IScope;
 
 public interface IReportEventHandler {
 
@@ -166,9 +164,6 @@ public interface IReportEventHandler {
    * @param fileName
    */
   public void reportUseHandwrittenCodeFile(Path parentDir, Path fileName);
-
-  @Deprecated
-  public void reportHWCExistenceCheck(IterablePath parentDir, Path fileName, Optional<Path> exists);
 
   public void reportHWCExistenceCheck(MCPath mcp, Path fileName, Optional<URL> exists);
 
