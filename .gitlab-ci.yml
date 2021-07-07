@@ -37,7 +37,7 @@ build:
     - "cd monticore-generator && gradle build $GRADLE_OPTS -Pci -i"
     - "cd .. && gradle buildMC $GRADLE_OPTS -Pci"
   tags:
-    - docker
+    - gradle
   artifacts:
     paths:
       - ".gradle"
