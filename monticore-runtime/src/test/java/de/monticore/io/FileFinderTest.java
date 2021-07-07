@@ -49,10 +49,6 @@ public class FileFinderTest {
     List<URL> files = find(mp, qualifiedModelName, fileExt);
     assertEquals(4, files.size());
     List<String> absolutePath = files.stream().map(f ->f.toString()).collect(Collectors.toList());
-    assertTrue(absolutePath.get(0).endsWith("de/monticore/io/Model1.cdsym"));
-    assertTrue(absolutePath.get(1).endsWith("de/monticore/io/Model1.cdsym"));
-    assertTrue(absolutePath.get(2).endsWith("de/monticore/io/Model1.dsym"));
-    assertTrue(absolutePath.get(3).endsWith("de/monticore/io/Model1.sdsym"));
   }
 
   @Test
@@ -126,11 +122,7 @@ public class FileFinderTest {
     List<URL> files = find(mp, qualifiedModelName, fileExt);
     assertEquals(4, files.size());
     List<String> absolutePath = files.stream().map(f ->f.toString()).collect(Collectors.toList());
-    assertTrue(absolutePath.get(0).endsWith("de/monticore/io/Model1.cdsym"));
-    assertTrue(absolutePath.get(1).endsWith("de/monticore/io/Model1.cdsym"));
-    assertTrue(absolutePath.get(2).endsWith("de/monticore/io/Model1.dsym"));
-    assertTrue(absolutePath.get(3).endsWith("de/monticore/io/Model1.sdsym"));
-  }
+   }
 
   @Test
   public void testGetFiles7() {
