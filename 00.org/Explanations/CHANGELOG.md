@@ -1,9 +1,11 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 
 # Release Notes
+## MontiCore 7.2.0
+to be released
 
 ##  MontiCore 7.1.0
-to be released
+released: 05.07.2021
 
 ### Additions
 * introduced language-specific CLI generation
