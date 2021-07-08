@@ -5,11 +5,9 @@ package de.monticore.cli;
 import de.monticore.cli.MontiCoreStandardCLI;
 import de.monticore.MontiCoreConfiguration;
 import de.monticore.generating.templateengine.reporting.Reporting;
+import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
 import de.se_rwth.commons.logging.Log;
-import org.junit.After;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.*;
 
 import static de.monticore.MontiCoreConfiguration.*;
 import static org.junit.Assert.assertTrue;
@@ -95,54 +93,61 @@ public class MontiCoreStandardCLITest {
   
   @BeforeClass
   public static void deactivateFailQuick() {
+    Log.init();
     Log.enableFailQuick(false);
+  }
+
+  @Before
+  public void setup() {
+    GrammarFamilyMill.reset();
+    GrammarFamilyMill.init();
   }
   
   @Test
   public void testMontiCoreCLI() {
-    MontiCoreStandardCLI.main(simpleArgs);
+    new MontiCoreStandardCLI().run(simpleArgs);
     
     assertTrue(!false);
   }
   
   @Test
   public void testMontiCoreDevLogCLI() {
-    MontiCoreStandardCLI.main(devLogArgs);
+    new MontiCoreStandardCLI().run(devLogArgs);
     
     assertTrue(!false);
   }
   
   @Test
   public void testMontiCoreCustomLogCLI() {
-    MontiCoreStandardCLI.main(customLogArgs);
+    new MontiCoreStandardCLI().run(customLogArgs);
     
     assertTrue(!false);
   }
 
   @Test
   public void testMontiCoreCustomScriptCLI() {
-    MontiCoreStandardCLI.main(customScriptArgs);
+    new MontiCoreStandardCLI().run(customScriptArgs);
     
     assertTrue(!false);
   }
 
   @Test
   public void testMontiCoreCustomEmfScriptCLI() {
-    MontiCoreStandardCLI.main(customEmfScriptArgs);
+    new MontiCoreStandardCLI().run(customEmfScriptArgs);
     
     assertTrue(!false);
   }
   
   @Test
   public void testHelp() {
-    MontiCoreStandardCLI.main(help);
+    new MontiCoreStandardCLI().run(help);
 
     assertTrue(!false);
 }
   @Ignore // It's not possible to switch off fail quick (Logger in CLI)
   @Test
   public void testArgsWithNoGrammars() {
-    MontiCoreStandardCLI.main(argsWithNoGrammars);
+    new MontiCoreStandardCLI().run(argsWithNoGrammars);
     
     assertTrue(!false);
   }
