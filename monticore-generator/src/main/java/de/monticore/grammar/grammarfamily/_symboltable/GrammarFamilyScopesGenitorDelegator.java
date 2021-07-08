@@ -18,9 +18,9 @@ public class GrammarFamilyScopesGenitorDelegator extends GrammarFamilyScopesGeni
   public IGrammarFamilyArtifactScope createFromAST(de.monticore.grammar.grammar._ast.ASTMCGrammar rootNode) {
     IGrammarFamilyArtifactScope as =  symbolTable.createFromAST(rootNode);
     if (!as.getPackageName().isEmpty()){
-      globalScope.addLoadedFile(as.getPackageName() + "." + as.getName());
+      globalScope.addLoadedFile(as.getPackageName() + "." + as.getName() + ".mc4");
     } else {
-      globalScope.addLoadedFile(as.getName());
+      globalScope.addLoadedFile(as.getName() + ".mc4");
     }
     return as;
   }
