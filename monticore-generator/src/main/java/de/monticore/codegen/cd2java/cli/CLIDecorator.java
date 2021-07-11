@@ -17,6 +17,7 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
@@ -233,9 +234,11 @@ public class CLIDecorator extends AbstractCreator<ASTCDCompilationUnit, Optional
    * @return the decorated printVersion method
    */
   protected ASTCDMethod createPrintVersionMethod() {
-    String metadataFile = symbolTableService.getCDSymbol().getName() + "Metadata.properties";
+    String buildDate = LocalDate.now().toString();
+    String toolName = symbolTableService.getCDName() + "Tool";
+
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), "printVersion");
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "PrintVersion", metadataFile));
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "PrintVersion", buildDate, toolName));
     return method;
   }
 

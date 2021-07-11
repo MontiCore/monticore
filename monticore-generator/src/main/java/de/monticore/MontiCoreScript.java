@@ -11,7 +11,6 @@ package de.monticore;
  import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
  import de.monticore.codegen.cd2java.cli.CLIDecorator;
  import de.monticore.codegen.cd2java.typecd2java.TemplateHPService;
- import de.monticore.codegen.metadata.MetadataGenerator;
  import de.monticore.generating.templateengine.TemplateController;
  import de.monticore.generating.templateengine.TemplateHookPoint;
  import de.monticore.grammar.grammarfamily._visitor.GrammarFamilyTraverser;
@@ -869,7 +868,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
     ASTCDCompilationUnit cliCD = cdcliDecorator.decorate(cd);
 
-
     TopDecorator topDecorator = new TopDecorator(handCodedPath);
     return topDecorator.decorate(cliCD);
   }
@@ -1096,12 +1094,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     setup.setGlex(glex);
     CDGenerator generator = new CDGenerator(setup);
     generator.generate(decoratedCD);
-
-    generateMetadata(decoratedCD, templatePath, outputDirectory);
-  }
-
-  protected void generateMetadata(ASTCDCompilationUnit cd, IterablePath templatePath, File targetDir) {
-    MetadataGenerator.generateMetadata(cd, templatePath, targetDir);
   }
 
   /**

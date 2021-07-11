@@ -1,28 +1,27 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("metadataFile")}
+${tc.signature("buildDate", "toolName")}
 
 // Get version string from Metadata and print
 
-java.util.Properties metaproperties = new java.util.Properties();
-java.util.Properties gradleproperties = new java.util.Properties();
+// final String buildDate = "${buildDate}";
+final String toolName = "${toolName}";
+
+java.util.Properties properties = new java.util.Properties();
 
 try {
-  java.io.BufferedInputStream metastream = new java.io.BufferedInputStream(new java.io.FileInputStream("${metadataFile}"));
-  metaproperties.load(metastream);
-  metastream.close();
-
-  java.io.BufferedInputStream gradlestream = new java.io.BufferedInputStream(new java.io.FileInputStream("gradle.properties"));
-  gradleproperties.load(gradlestream);
-  gradlestream.close();
+  java.io.BufferedInputStream stream = new java.io.BufferedInputStream(getClass().getResourceAsStream("/buildInfo.properties"));
+  properties.load(stream);
+  stream.close();
 } catch(java.io.IOException e) {
   // Property files not present
 }
 
 
-String toolName = metaproperties.getProperty("toolName");
-String buildDate = metaproperties.getProperty("buildDate");
-String toolVersion = gradleproperties.getProperty("version");
-String monticoreVersion = gradleproperties.getProperty("mc_version");
+<#-- String toolName = metaproperties.getProperty("toolName");
+String buildDate = metaproperties.getProperty("buildDate"); -->
+String buildDate = properties.getProperty("buildDate");
+String toolVersion = properties.getProperty("version");
+String monticoreVersion = properties.getProperty("mc_version");
 
 System.out.println(toolName +
     ", version " + toolVersion +
