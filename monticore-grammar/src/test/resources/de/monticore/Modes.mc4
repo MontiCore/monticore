@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore;
+
+grammar Modes extends de.monticore.LexicalsWithMode {
+
+  tokenmode Bla: Name2;
+
+  token Open = "[" : -> pushmode (Bla);
+
+  token Close = "]" : ->popmode;
+
+  token SLASH(Foo) = "/";
+ }

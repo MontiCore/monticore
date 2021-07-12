@@ -59,8 +59,7 @@ import de.monticore.codegen.cd2java._symboltable.symbol.*;
 import de.monticore.codegen.cd2java._symboltable.symbol.symbolsurrogatemutator.MandatoryMutatorSymbolSurrogateDecorator;
 import de.monticore.codegen.cd2java._visitor.*;
 import de.monticore.codegen.cd2java.cli.CDCLIDecorator;
-import de.monticore.codegen.cd2java.cli.CliDecorator;
-import de.monticore.codegen.cd2java.cli.RunnerDecorator;
+import de.monticore.codegen.cd2java.cli.CLIDecorator;
 import de.monticore.codegen.cd2java.data.DataDecorator;
 import de.monticore.codegen.cd2java.data.DataDecoratorUtil;
 import de.monticore.codegen.cd2java.data.InterfaceDecorator;
@@ -93,7 +92,10 @@ import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar_withconcepts._symboltable.IGrammar_WithConceptsGlobalScope;
 import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
 import de.monticore.grammar.grammarfamily._cocos.GrammarFamilyCoCoChecker;
-import de.monticore.grammar.grammarfamily._symboltable.*;
+import de.monticore.grammar.grammarfamily._symboltable.GrammarFamilyGlobalScope;
+import de.monticore.grammar.grammarfamily._symboltable.GrammarFamilyPhasedSTC;
+import de.monticore.grammar.grammarfamily._symboltable.IGrammarFamilyArtifactScope;
+import de.monticore.grammar.grammarfamily._symboltable.IGrammarFamilyGlobalScope;
 import de.monticore.io.paths.MCPath;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
@@ -117,7 +119,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
- import static de.monticore.MontiCoreConfiguration.*;
+import static de.monticore.MontiCoreConfiguration.*;
 
 /**
  * The actual top level functional implementation of MontiCore. This is the
@@ -854,9 +856,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
                                             GlobalExtensionManagement glex, MCPath handCodedPath) {
     ParserService parserService = new ParserService(cd);
     SymbolTableService symbolTableService = new SymbolTableService(cd);
-    RunnerDecorator runnerDecorator = new RunnerDecorator(glex, parserService,symbolTableService );
-    CliDecorator cliDecorator = new CliDecorator(glex, parserService );
-    CDCLIDecorator cdcliDecorator = new CDCLIDecorator(glex, runnerDecorator, cliDecorator,parserService);
+    CLIDecorator cliDecorator = new CLIDecorator(glex, parserService, symbolTableService );
+    CDCLIDecorator cdcliDecorator = new CDCLIDecorator(glex,  cliDecorator,parserService);
 
     ASTCDCompilationUnit cliCD = cdcliDecorator.decorate(cd);
 
@@ -1211,6 +1212,28 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   }
 
   /**
+   * Instantiates the glex and initializes it with all available default
+   * options based on the current configuration.
+   *
+   * @param mcConfig The used input configuration
+   * @return The instantiated glex with config options
+   */
+  public GlobalExtensionManagement initGlex(MontiCoreConfiguration mcConfig) {
+    // initialize glex
+    GlobalExtensionManagement glex = new GlobalExtensionManagement();
+    if (Reporting.isInitialized()) {
+      if (mcConfig.getConfigTemplate().isPresent()) {
+        glex.setGlobalValue(CONFIGTEMPLATE_LONG,
+                mcConfig.getConfigTemplate().get());
+      }
+    } else {
+      Log.debug("Reporting not initialised or disabled. " +
+              "No values are added to the glex.", LOG_ID);
+    }
+    return glex;
+  }
+
+  /**
    * @see groovy.lang.Script#run()
    */
   @Override
@@ -1280,23 +1303,10 @@ public class MontiCoreScript extends Script implements GroovyRunner {
         builder.addVariable(GROOVYHOOK2, mcConfig.getGroovyHook2());
         builder.addVariable("LOG_ID", LOG_ID);
         builder.addVariable("grammarIterator", mcConfig.getGrammars().getEntries().iterator());
-
-        MontiCoreReports rmf = new MontiCoreReports(mcConfig.getOut().getAbsolutePath(),
+        builder.addVariable("reportManagerFactory",
+                new MontiCoreReports(mcConfig.getOut().getAbsolutePath(),
                 mcConfig.getReport().getAbsolutePath(),
-                mcConfig.getHandcodedPath(), mcConfig.getTemplatePath());
-        builder.addVariable("reportManagerFactory", rmf);
-
-        // initialize reporting (output)
-        Reporting.init(mcConfig.getOut().getAbsolutePath(),
-                mcConfig.getReport().getAbsolutePath(), rmf);
-
-        // initialize glex
-        GlobalExtensionManagement glex = new GlobalExtensionManagement();
-        if (mcConfig.getConfigTemplate().isPresent()) {
-          glex.setGlobalValue(CONFIGTEMPLATE_LONG,
-                  mcConfig.getConfigTemplate().get());
-        }
-        builder.addVariable("glex", glex);
+                mcConfig.getHandcodedPath(), mcConfig.getTemplatePath()));
 
         // for backward-compatibilty with outdated Maven scripts, we also add
         // the "force" parameter, which is always true

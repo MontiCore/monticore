@@ -17,22 +17,23 @@ import java.util.Optional;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.*;
 
+/**
+ * Creates the Class diagram for all CLI-Specific classes
+ */
+
 public class CDCLIDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCompilationUnit> {
 
   public static final String TEMPLATE_PATH = "_cli.";
 
   protected final ParserService parserService;
 
-  protected final RunnerDecorator runnerDecorator;
-  protected final CliDecorator cliDecorator;
+  protected final CLIDecorator cliDecorator;
 
   public CDCLIDecorator(final GlobalExtensionManagement glex,
-                        final RunnerDecorator runnerDecorator,
-                        final CliDecorator cliDecorator,
+                        final CLIDecorator cliDecorator,
                         final ParserService parserService) {
     super(glex);
     this.parserService = parserService;
-    this.runnerDecorator = runnerDecorator;
     this.cliDecorator = cliDecorator;
   }
 
@@ -50,8 +51,6 @@ public class CDCLIDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDC
         .build();
     ASTCDDefinition cdDefinition = mainCD.getCDDefinition();
     if (!parserService.hasComponentStereotype(cdDefinition.getModifier())) {
-      Optional<ASTCDClass> runnerClass = runnerDecorator.decorate(mainCD);
-      runnerClass.ifPresent(astCD::addCDElement);
       Optional<ASTCDClass> cliClass = cliDecorator.decorate(mainCD);
       cliClass.ifPresent(astCD::addCDElement);
     }
