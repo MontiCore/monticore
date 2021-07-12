@@ -172,7 +172,7 @@ public class ParserGeneratorHelper {
    */
   public Set<String> getLexSymbolsWithInherited() {
     Set<String> retSet = Sets.newHashSet(grammarInfo.getLexNamer().getLexnames());
-    retSet.addAll(grammarInfo.getKeywords());
+    grammarInfo.getKeywords().stream().filter(f -> !grammarSymbol.getKeywordRulesWithInherited().contains(f)).forEach(f -> retSet.add(f));
     return retSet;
  }
 
@@ -423,18 +423,20 @@ public class ParserGeneratorHelper {
 
   public HashMap<String, List<ASTProd>> getLexerRulesForMode() {
     HashMap<String, List<ASTProd>> retMap = Maps.newHashMap();
-    Map<String, List<String>> modeMap = grammarSymbol.getTokenModesWithInherited();
-    for (Entry<String, List<String>> e: modeMap.entrySet()) {
+    Map<String, Collection<String>> modeMap = grammarSymbol.getTokenModesWithInherited();
+    for (Entry<String, Collection<String>> e: modeMap.entrySet()) {
       ArrayList<ASTProd> prodList = Lists.newArrayList();
-      for (String tokenName: e.getValue()) {
-        Optional<ProdSymbol> localToken = grammarSymbol.getSpannedScope().resolveProdDown(tokenName);
-        if (localToken.isPresent() && localToken.get().isIsLexerProd()) {
-          prodList.add(localToken.get().getAstNode());
-        } else {
-          grammarSymbol.getSpannedScope().resolveProdMany(tokenName).stream().filter(p -> p.isIsLexerProd()).forEach(p -> prodList.add(p.getAstNode()));
+      if (!e.getKey().isEmpty()) {
+        for (String tokenName : e.getValue()) {
+          Optional<ProdSymbol> localToken = grammarSymbol.getSpannedScope().resolveProdDown(tokenName);
+          if (localToken.isPresent() && localToken.get().isIsLexerProd()) {
+            prodList.add(localToken.get().getAstNode());
+          } else {
+            grammarSymbol.getSpannedScope().resolveProdMany(tokenName).stream().filter(p -> p.isIsLexerProd()).forEach(p -> prodList.add(p.getAstNode()));
+          }
         }
+        retMap.put(e.getKey(), prodList);
       }
-      retMap.put(e.getKey(), prodList);
     }
     return retMap;
   }

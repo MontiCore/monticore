@@ -1,7 +1,7 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 <#-- Write parser header -->
 <#assign genHelper = glex.getGlobalVar("parserHelper")>
-parser grammar ${ast.getName()}ParserAntlr;
+parser grammar ${ast.getName()}AntlrParser;
 @parser::header {
 <#if genHelper.isJava()>
 package ${genHelper.getParserPackage()};
@@ -16,7 +16,7 @@ import ${genHelper.getQualifiedGrammarName()?lower_case}.*;
 <#if genHelper.isEmbeddedJavaCode()>
 options {
   superClass=MCParser;
-  tokenVocab=${ast.getName()}LexerAntlr;
+  tokenVocab=${ast.getName()}AntlrLexer;
 }
 </#if>
 

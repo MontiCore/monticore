@@ -16,7 +16,9 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class LexNamer {
   
-  private int j = 0;
+  private int constantCounter = 0;
+
+  private int lexCounter = 0;
   
   private Map<String, String> usedLex = new HashMap<String, String>();
   
@@ -105,12 +107,11 @@ public class LexNamer {
     
     String goodName = createGoodName(sym);
     if (!goodName.isEmpty() && !grammarSymbol.getProd(goodName).isPresent()) {
-      usedLex.put(sym, goodName);
-      Log.debug("Using lexer symbol " + goodName + " for symbol '" + sym + "'", "LexNamer");
-      return goodName;
+      goodName = "_LEXNAME" + lexCounter++;
     }
-    
-    return "'" + convertKeyword(sym) + "'";
+    usedLex.put(sym, goodName);
+    Log.debug("Using lexer symbol " + goodName + " for symbol '" + sym + "'", "LexNamer");
+    return goodName;
   }
   
   public String getConstantName(String sym) {
@@ -122,7 +123,7 @@ public class LexNamer {
         usedConstants.put(s, goodName);
       }
       else {
-        usedConstants.put(s, ("CONSTANT" + j++).intern());
+        usedConstants.put(s, ("CONSTANT" + constantCounter++).intern());
       }
     }
     

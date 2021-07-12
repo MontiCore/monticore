@@ -67,7 +67,7 @@ public class MCGrammarInfo {
   /**
    * Internal: LexNamer for naming lexer symbols in the antlr source code
    */
-  private LexNamer lexNamer = new LexNamer();
+  private LexNamer lexNamer = new LexNamerFix();
 
   private Map<String, String> splitRules = Maps.newHashMap();
 

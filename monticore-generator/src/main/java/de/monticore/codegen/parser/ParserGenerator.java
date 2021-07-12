@@ -126,18 +126,19 @@ public class ParserGenerator {
     glex.setGlobalValue("nameHelper", new Names());
     setup.setGlex(glex);
 
-    //Lexer
-    final Path lexerPath = Paths.get(Names.getPathFromPackage(genHelper.getParserPackage()),
-            astGrammar.getName() + "LexerAntlr.g4");
     Grammar2Antlr grammar2Antlr = new Grammar2Antlr(genHelper, grammarInfo, true);
     Grammar_WithConceptsTraverser traverser = Grammar_WithConceptsMill.traverser();
     traverser.add4Grammar(grammar2Antlr);
     traverser.setGrammarHandler(grammar2Antlr);
-    new GeneratorEngine(setup).generate("parser.Lexer", lexerPath, astGrammar, grammar2Antlr);
-
+    // Parser
     final Path parserPath = Paths.get(Names.getPathFromPackage(genHelper.getParserPackage()),
-        astGrammar.getName() + "ParserAntlr.g4");
+        astGrammar.getName() + "AntlrParser.g4");
     new GeneratorEngine(setup).generate("parser.Parser", parserPath, astGrammar, grammar2Antlr);
+
+    // Lexer
+    final Path lexerPath = Paths.get(Names.getPathFromPackage(genHelper.getParserPackage()),
+            astGrammar.getName() + "AntlrLexer.g4");
+    new GeneratorEngine(setup).generate("parser.Lexer", lexerPath, astGrammar, grammar2Antlr);
 
     // construct parser, lexer, ... (antlr),
     String outputLang = "-Dlanguage=" + lang.getLanguage();
