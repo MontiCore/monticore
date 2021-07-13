@@ -146,8 +146,12 @@ public class ParserGenerator {
     AntlrTool antlrTool = new AntlrTool(new String[] { outputLang }, grammarSymbol,
         Paths.get(targetDir.getAbsolutePath(),
             Names.getPathFromPackage(genHelper.getParserPackage())));
+
+    // 1. Lexer
     String gLexer = Paths.get(targetDir.getAbsolutePath(), lexerPath.toString()).toString();
     antlrTool.createParser(gLexer);
+
+    // 2. Parser
     String gParser = Paths.get(targetDir.getAbsolutePath(), parserPath.toString()).toString();
     antlrTool.createParser(gParser);
     Log.debug("End parser generation for the grammar " + astGrammar.getName(), LOG);

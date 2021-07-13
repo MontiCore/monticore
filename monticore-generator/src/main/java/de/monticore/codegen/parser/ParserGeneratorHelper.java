@@ -390,35 +390,20 @@ public class ParserGeneratorHelper {
   }
 
   public List<ASTLexProd> getLexerRulesToGenerate() {
-    // Iterate over all LexRules
-    List<ASTLexProd> prods = Lists.newArrayList();
-    ProdSymbol mcanything = null;
-    final Map<String, ProdSymbol> rules = new LinkedHashMap<>();
-
-    // Don't use grammarSymbol.getRulesWithInherited because of changed order
-    for (final ProdSymbol ruleSymbol : grammarSymbol.getProds()) {
-      rules.put(ruleSymbol.getName(), ruleSymbol);
-    }
-    for (int i = grammarSymbol.getSuperGrammars().size() - 1; i >= 0; i--) {
-      rules.putAll(grammarSymbol.getSuperGrammarSymbols().get(i).getProdsWithInherited());
-    }
-
-    for (Entry<String, ProdSymbol> ruleSymbol : rules.entrySet()) {
-      if (ruleSymbol.getValue().isIsLexerProd()) {
-        ProdSymbol lexProd = ruleSymbol.getValue();
-        // MONTICOREANYTHING must be last rule
-        if (lexProd.getName().equals(MONTICOREANYTHING)) {
-          mcanything = lexProd;
-        }
-        else {
-          prods.add((ASTLexProd) lexProd.getAstNode());
+    ArrayList<ASTLexProd> prodList = Lists.newArrayList();
+    Map<String, Collection<String>> modeMap = grammarSymbol.getTokenModesWithInherited();
+    // Default mode
+    if (modeMap.containsKey("")) {
+      for (String tokenName : modeMap.get("")) {
+        Optional<ProdSymbol> localToken = grammarSymbol.getSpannedScope().resolveProdDown(tokenName);
+        if (localToken.isPresent() && localToken.get().isIsLexerProd()) {
+          prodList.add((ASTLexProd) localToken.get().getAstNode());
+        } else {
+          grammarSymbol.getSpannedScope().resolveProdMany(tokenName).stream().filter(p -> p.isIsLexerProd()).forEach(p -> prodList.add((ASTLexProd) p.getAstNode()));
         }
       }
     }
-    if (mcanything != null) {
-      prods.add((ASTLexProd) mcanything.getAstNode());
-    }
-    return prods;
+    return prodList;
   }
 
   public HashMap<String, List<ASTProd>> getLexerRulesForMode() {

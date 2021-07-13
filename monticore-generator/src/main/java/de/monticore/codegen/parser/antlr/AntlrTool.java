@@ -31,7 +31,7 @@ public class AntlrTool extends Tool {
     super(args);
     this.grammarSymbol = grammarSymbol;
     Preconditions.checkArgument(outputDir.toFile().exists(),
-        "The potput directory for AntlrTool " +
+        "The output directory for AntlrTool " +
             outputDir + " doesn't exist.");
     this.outputDirectory = outputDir.toString();
     this.haveOutputDir = true;
@@ -57,7 +57,7 @@ public class AntlrTool extends Tool {
     Grammar grammar = parseAntlrFile(inputFile);
     generateParser(grammar);
   }
-  
+
   /**
    * Creates a grammar object associated with the ANTLR grammar AST.
    * 
