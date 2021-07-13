@@ -1,6 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.symboltable.serialization.json;
 
+import de.monticore.prettyprint.IndentPrinter;
+
 /**
  * Represents a number in JSON. JSON does not distinguish different data types for numbers,
  * therefore this class internally uses number parsers to return the number in a Java number data
@@ -95,6 +97,11 @@ public class JsonNumber implements JsonElement {
   @Override
   public String toString() {
     return value;
+  }
+
+  @Override public String print(IndentPrinter p) {
+    p.print(value);
+    return p.getContent();
   }
   
 }

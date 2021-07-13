@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 
+import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.serialization.JsonPrinter;
 
 /**
@@ -135,6 +136,25 @@ public class JsonArray implements JsonElement {
     }
     printer.endArray();
     return printer.getContent();
+  }
+
+  @Override public String print(IndentPrinter p) {
+    if(values.isEmpty() && !JsonPrinter.isSerializingDefaults()){
+      return p.getContent();
+    }
+    if(JsonPrinter.isIndentationEnabled()){
+      p.println("[");
+      p.indent();
+      values.forEach(v -> v.print(p));
+      p.unindent();
+      p.println("]");
+    }
+    else{
+      p.print("[");
+      values.forEach(v -> v.print(p));
+      p.print("]");
+    }
+    return p.getContent();
   }
 
 }

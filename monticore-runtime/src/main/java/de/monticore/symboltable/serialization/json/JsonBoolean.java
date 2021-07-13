@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.symboltable.serialization.json;
 
+import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.serialization.JsonPrinter;
 
 /**
@@ -58,5 +59,15 @@ public class JsonBoolean implements JsonElement {
     p.value(value);
     return p.getContent();
   }
-  
+
+  @Override public String print(IndentPrinter p) {
+    if(getValue()){
+      p.println("true");
+    }
+    else{
+      p.println("false");
+    }
+    return p.getContent();
+  }
+
 }

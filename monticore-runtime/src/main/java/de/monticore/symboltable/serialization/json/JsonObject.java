@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.symboltable.serialization.json;
 
+import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.se_rwth.commons.logging.Log;
 
@@ -457,4 +458,38 @@ public class JsonObject implements JsonElement {
     }
     return Optional.empty();
   }
+
+  @Override public String print(IndentPrinter p) {
+    if(members.isEmpty() && !JsonPrinter.isSerializingDefaults()){
+      return p.getContent();
+    }
+    if(JsonPrinter.isIndentationEnabled()){
+      p.println("{");
+      p.indent();
+      String sep = "";
+      for(String k : members.keySet()){
+        if(!members.get(k).print(new IndentPrinter()).isEmpty()){
+          p.print(sep + "\"" + k + "\": ");
+          members.get(k).print(p);
+          sep = ",\n";
+        }
+      }
+      p.unindent();
+      p.println("}");
+    }
+    else{
+      p.print("{");
+      String sep = "";
+      for(String k : members.keySet()){
+        if(!members.get(k).print(new IndentPrinter()).isEmpty()) {
+          p.print(sep + "\"" + k + "\":");
+          members.get(k).print(p);
+          sep = ",";
+        }
+      }
+      p.print("}");
+    }
+    return p.getContent();
+  }
+
 }

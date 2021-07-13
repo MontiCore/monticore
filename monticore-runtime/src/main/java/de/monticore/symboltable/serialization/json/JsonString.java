@@ -1,6 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.symboltable.serialization.json;
 
+import de.monticore.prettyprint.IndentPrinter;
+
 /**
  * This realizes a Json String.
  */
@@ -54,6 +56,11 @@ public class JsonString implements JsonElement {
   @Override
   public String toString() {
     return value;
+  }
+
+  @Override public String print(IndentPrinter p) {
+    p.print("\"" + value + "\"");
+    return p.getContent();
   }
   
 }
