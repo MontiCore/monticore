@@ -460,35 +460,43 @@ public class JsonObject implements JsonElement {
   }
 
   @Override public String print(IndentPrinter p) {
-    if(members.isEmpty() && !JsonPrinter.isSerializingDefaults()){
+    boolean indent = JsonPrinter.isIndentationEnabled();
+    if (members.isEmpty() && !JsonPrinter.isSerializingDefaults()) {
       return p.getContent();
     }
-    if(JsonPrinter.isIndentationEnabled()){
-      p.println("{");
-      p.indent();
-      String sep = "";
-      for(String k : members.keySet()){
-        if(!members.get(k).print(new IndentPrinter()).isEmpty()){
-          p.print(sep + "\"" + k + "\": ");
-          members.get(k).print(p);
-          sep = ",\n";
-        }
+
+    // print members of object with a buffer to check whether it is empty
+    IndentPrinter buffer = new IndentPrinter();
+    buffer.setIndentLength(p.getIndentLength() + 1);
+
+    // print the value of each member with another buffer to check emptyness
+    IndentPrinter tmp = new IndentPrinter();
+    tmp.setIndentLength(p.getIndentLength() + 1);
+
+    String sep = "";
+    for (String k : members.keySet()) {
+      members.get(k).print(tmp);
+      if (!tmp.getContent().isEmpty()) {
+        buffer.print(sep + "\"" + k + (indent ? "\": " : "\":") + tmp.getContent());
+        tmp.clearBuffer();
+        sep = indent ? ",\n" : ",";
       }
-      p.unindent();
-      p.println("}");
     }
-    else{
-      p.print("{");
-      String sep = "";
-      for(String k : members.keySet()){
-        if(!members.get(k).print(new IndentPrinter()).isEmpty()) {
-          p.print(sep + "\"" + k + "\":");
-          members.get(k).print(p);
-          sep = ",";
-        }
+
+    if (!buffer.getContent().isEmpty() || JsonPrinter.isSerializingDefaults()) {
+      if (indent) {
+        p.println("{");
+        p.print(buffer.getContent());
+        p.unindent();
+        p.println("}");
       }
-      p.print("}");
+      else {
+        p.print("{");
+        p.print(buffer.getContent());
+        p.print("}");
+      }
     }
+
     return p.getContent();
   }
 

@@ -1,13 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.symboltable.serialization.json;
 
+import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.symboltable.serialization.JsonPrinter;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
-
-import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.symboltable.serialization.JsonPrinter;
 
 /**
  * Represents a Json Array, i.e., a list of any Json elements. These can be of different types.
@@ -36,7 +36,7 @@ public class JsonArray implements JsonElement {
     return this;
   }
 
-  public void forEach(Consumer<? super JsonElement> action){
+  public void forEach(Consumer<? super JsonElement> action) {
     values.forEach(action);
   }
 
@@ -129,31 +129,47 @@ public class JsonArray implements JsonElement {
    */
   @Override
   public String toString() {
-    JsonPrinter printer = new JsonPrinter();
-    printer.beginArray();
-    for (JsonElement e : values) {
-      printer.valueJson(e.toString());
-    }
-    printer.endArray();
-    return printer.getContent();
+    return print(new IndentPrinter());
   }
 
   @Override public String print(IndentPrinter p) {
-    if(values.isEmpty() && !JsonPrinter.isSerializingDefaults()){
+    boolean indent = JsonPrinter.isIndentationEnabled();
+    if (values.isEmpty() && !JsonPrinter.isSerializingDefaults()) {
       return p.getContent();
     }
-    if(JsonPrinter.isIndentationEnabled()){
-      p.println("[");
-      p.indent();
-      values.forEach(v -> v.print(p));
-      p.unindent();
-      p.println("]");
+
+    // print values of array with a buffer to check whether it is empty
+    IndentPrinter buffer = new IndentPrinter();
+    buffer.setIndentLength(p.getIndentLength() + 1);
+
+    // print each value with another buffer to check emptyness
+    IndentPrinter tmp = new IndentPrinter();
+    tmp.setIndentLength(p.getIndentLength() + 1);
+
+    String sep = "";
+    for (JsonElement e : values) {
+      e.print(tmp);
+      if (!tmp.getContent().isEmpty()) {
+        buffer.print(sep + tmp.getContent());
+        tmp.clearBuffer();
+        sep = indent ? ",\n" : ",";
+      }
     }
-    else{
-      p.print("[");
-      values.forEach(v -> v.print(p));
-      p.print("]");
+
+    if (!buffer.getContent().isEmpty() || JsonPrinter.isSerializingDefaults()) {
+      if (indent) {
+        p.println("[");
+        p.print(buffer.getContent());
+        p.unindent();
+        p.println("]");
+      }
+      else {
+        p.print("[");
+        p.print(buffer.getContent());
+        p.print("]");
+      }
     }
+
     return p.getContent();
   }
 

@@ -55,9 +55,7 @@ public class JsonBoolean implements JsonElement {
    */
   @Override
   public String toString() {
-    JsonPrinter p = new JsonPrinter();
-    p.value(value);
-    return p.getContent();
+    return print(new IndentPrinter());
   }
 
   @Override public String print(IndentPrinter p) {

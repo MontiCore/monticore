@@ -3,13 +3,9 @@ package de.monticore.symboltable.serialization;
 
 import com.google.common.collect.Lists;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -264,7 +260,7 @@ public class JsonPrinterTest {
     printer.endArray();
     printer.endObject();
     printer.getContent();
-    assertEquals(1, Log.getFindings().size());
+    assertEquals(3, Log.getFindings().size());
   }
 
 }

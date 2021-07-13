@@ -55,7 +55,7 @@ public class JsonString implements JsonElement {
   
   @Override
   public String toString() {
-    return value;
+    return "\"" + value + "\"";
   }
 
   @Override public String print(IndentPrinter p) {

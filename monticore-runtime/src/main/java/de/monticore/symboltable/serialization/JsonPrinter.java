@@ -35,6 +35,9 @@ public class JsonPrinter {
 
   protected Deque<JsonElement> currElements;
 
+  //denotes the root object or array, otherwise it is empty
+  protected Optional<JsonElement> root;
+
   /**
    * Constructor for de.monticore.symboltable.serialization.JsonPrinter
    *
@@ -42,6 +45,7 @@ public class JsonPrinter {
    */
   public JsonPrinter(boolean serializeDefaults) {
     this.currElements = new ArrayDeque<>();
+    this.root = Optional.empty();
     JsonPrinter.serializeDefaults = serializeDefaults;
     JsonElementFactory.setInstance(new JsonElementFactory());
   }
@@ -99,6 +103,9 @@ public class JsonPrinter {
     }
     else {
       currElements.push(createJsonObject());
+      if(!root.isPresent()){
+        root = Optional.of(currElements.peek());
+      }
     }
   }
 
@@ -114,10 +121,7 @@ public class JsonPrinter {
    */
   public void endObject() {
     if(!currElements.isEmpty() && currElements.peek().isJsonObject()){
-      if(currElements.size()>1){
-        // avoid removing the "last" object from the stack to be able to print it
         currElements.remove();
-      }
     }
     else{
       Log.error("0xA0611 JsonPrinter detected an invalid nesting of Json. "
@@ -135,6 +139,9 @@ public class JsonPrinter {
     }
     else {
       currElements.push(createJsonArray());
+      if(!root.isPresent()){
+        root = Optional.of(currElements.peek());
+      }
     }
   }
 
@@ -142,7 +149,9 @@ public class JsonPrinter {
    * Prints the beginning of a collection in Json notation as member or the current object.
    */
   public void beginArray(String kind) {
-    getParentObject().putMember(kind, createJsonArray());
+    JsonArray a = createJsonArray();
+    getParentObject().putMember(kind, a);
+    currElements.push(a);
   }
 
   /**
@@ -150,10 +159,7 @@ public class JsonPrinter {
    */
   public void endArray() {
     if(!currElements.isEmpty() && currElements.peek().isJsonArray()){
-      // avoid removing the "last" array from the stack to be able to print it
-      if(currElements.size()>1) {
         currElements.remove();
-      }
     }
     else{
       Log.error("0xA0612 JsonPrinter detected an invalid nesting of Json. "
@@ -529,12 +535,17 @@ public class JsonPrinter {
    */
   public void clearBuffer() {
     this.currElements = new ArrayDeque<>();
+    this.root = Optional.empty();
   }
 
   /**
-   * Returns the current value of the Json code produced so far
+   * Returns the current value of the Json code produced so far and performs basic
+   * checking for correct nestings
    */
   public String getContent() {
+    if(currElements.size()>1 || (currElements.size()==1 && root.isPresent())) {
+      Log.error("0xA0615 JsonPrinter detected an invalid nesting of Json.");
+    }
     return toString();
   }
 
@@ -546,11 +557,18 @@ public class JsonPrinter {
   @Override
   public String toString() {
     if(currElements.isEmpty()) {
-      return "";
+      if(!root.isPresent()) {
+        return "";
+      }
+      IndentPrinter p = new IndentPrinter();
+      root.get().print(p);
+      return p.getContent();
     }
-    IndentPrinter p = new IndentPrinter();
-    currElements.getFirst().print(p);
-    return p.getContent();
+    else{
+      IndentPrinter p = new IndentPrinter();
+      currElements.peek().print(p);
+      return p.getContent();
+    }
   }
 
 }
