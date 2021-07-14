@@ -1108,7 +1108,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
     addToCodeSection("(");
     String rulename = "";
     if (grammarInfo.isKeyword(keyword.getName(), grammarEntry)) {
-      rulename = "'" + keyword.getName() + "'";
+      rulename = parserHelper.getLexSymbolName(keyword.getName());
     }
 
     // No actions in predicates

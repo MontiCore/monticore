@@ -50,7 +50,7 @@ public class LexNamer {
       goodNames.put("*", "STAR");
       goodNames.put("%", "PERCENT");
       goodNames.put("/", "SLASH");
-      goodNames.put("&", "AND");
+      goodNames.put("&", "AND_");
       goodNames.put("|", "PIPE");
       goodNames.put(":", "COLON");
       goodNames.put("!", "EXCLAMATIONMARK");
@@ -106,7 +106,7 @@ public class LexNamer {
     }
     
     String goodName = createGoodName(sym);
-    if (!goodName.isEmpty() && !grammarSymbol.getProd(goodName).isPresent()) {
+    if (goodName.isEmpty() && grammarSymbol.getProd(goodName).isPresent()) {
       goodName = "_LEXNAME" + lexCounter++;
     }
     usedLex.put(sym, goodName);
