@@ -1,23 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 package de.monticore.codegen.parser.antlr;
-
-import java.nio.file.Path;
-import java.util.Optional;
-
-import org.antlr.v4.Tool;
-import org.antlr.v4.tool.ANTLRMessage;
-import org.antlr.v4.tool.Grammar;
-import org.antlr.v4.tool.ast.GrammarRootAST;
-import org.stringtemplate.v4.ST;
-
-import com.google.common.base.Preconditions;
-
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
+import org.antlr.v4.Tool;
+import org.antlr.v4.tool.ANTLRMessage;
+import org.stringtemplate.v4.ST;
+
+import java.util.Optional;
 
 /**
  * ANTLR parser generator
@@ -27,15 +20,9 @@ public class AntlrTool extends Tool {
   
   private MCGrammarSymbol grammarSymbol;
   
-  public AntlrTool(String[] args, MCGrammarSymbol grammarSymbol, Path outputDir) {
+  public AntlrTool(String[] args, MCGrammarSymbol grammarSymbol) {
     super(args);
     this.grammarSymbol = grammarSymbol;
-    Preconditions.checkArgument(outputDir.toFile().exists(),
-        "The output directory for AntlrTool " +
-            outputDir + " doesn't exist.");
-    this.outputDirectory = outputDir.toString();
-    this.haveOutputDir = true;
-    handleArgs();
   }
   
   @Override
@@ -47,39 +34,7 @@ public class AntlrTool extends Tool {
   public void warning(ANTLRMessage message) {
     createMessage(message, false);
   }
-  
-  /**
-   * Parses the given ANTLR grammar and generates parser
-   * 
-   * @param inputFile - ANTLR grammar
-   */
-  public void createParser(String inputFile) {
-    Grammar grammar = parseAntlrFile(inputFile);
-    generateParser(grammar);
-  }
 
-  /**
-   * Creates a grammar object associated with the ANTLR grammar AST.
-   * 
-   * @param inputFile - ANTLR grammar
-   * @return a grammar object associated with the ANTLR grammar AST
-   */
-  public Grammar parseAntlrFile(String inputFile) {
-    GrammarRootAST ast = parseGrammar(inputFile);
-    Grammar grammar = createGrammar(ast);
-    grammar.fileName = inputFile;
-    return grammar;
-  }
-  
-  /**
-   * Generates ANTLR Parser
-   * 
-   * @param antlrGrammar
-   */
-  public void generateParser(Grammar antlrGrammar) {
-    process(antlrGrammar, true);
-  }
-  
   /**
    * Prints a message in MC style
    * 
@@ -99,7 +54,7 @@ public class AntlrTool extends Tool {
     for (int i = 0; i < args.length; i++) {
       if (args[i] instanceof String) {
         String name = StringTransformations.capitalize((String) args[i]);
-        Optional<ProdSymbol> rule = grammarSymbol.getProd(name);
+        Optional<ProdSymbol> rule = grammarSymbol==null?grammarSymbol.getProd(name):Optional.empty();
         if (rule.isPresent()) {
           args[i] = name;
           if (i == 0) {

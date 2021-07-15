@@ -110,6 +110,7 @@ public class ParserGenerator {
     setup.setAdditionalTemplatePaths(templatePath.getEntries().stream().map(p -> new File(p.toUri())).collect(Collectors.toList()));
     setup.setOutputDirectory(targetDir);
 
+
     String qualifiedGrammarName = astGrammar.getPackageList().isEmpty()
         ? astGrammar.getName()
         : Joiner.on('.').join(Names.getQualifiedName(astGrammar.getPackageList()),
@@ -126,34 +127,30 @@ public class ParserGenerator {
     glex.setGlobalValue("nameHelper", new Names());
     setup.setGlex(glex);
 
+    Path antlrPath = Paths.get(targetDir.getAbsolutePath(),
+            Names.getPathFromPackage(genHelper.getParserPackage()));
     Grammar2Antlr grammar2Antlr = new Grammar2Antlr(genHelper, grammarInfo, true);
     Grammar_WithConceptsTraverser traverser = Grammar_WithConceptsMill.traverser();
     traverser.add4Grammar(grammar2Antlr);
     traverser.setGrammarHandler(grammar2Antlr);
-    // Parser
+    // 1. Parser: Don't change order
     final Path parserPath = Paths.get(Names.getPathFromPackage(genHelper.getParserPackage()),
         astGrammar.getName() + "AntlrParser.g4");
     new GeneratorEngine(setup).generate("parser.Parser", parserPath, astGrammar, grammar2Antlr);
 
-    // Lexer
+    // 2. Lexer
     final Path lexerPath = Paths.get(Names.getPathFromPackage(genHelper.getParserPackage()),
             astGrammar.getName() + "AntlrLexer.g4");
     new GeneratorEngine(setup).generate("parser.Lexer", lexerPath, astGrammar, grammar2Antlr);
 
+    Log.debug("Start Antlr generation for the antlr file " + astGrammar.getName(), LOG);
     // construct parser, lexer, ... (antlr),
     String outputLang = "-Dlanguage=" + lang.getLanguage();
-    Log.debug("Start Antlr generation for the antlr file " + astGrammar.getName(), LOG);
-    AntlrTool antlrTool = new AntlrTool(new String[] { outputLang }, grammarSymbol,
-        Paths.get(targetDir.getAbsolutePath(),
-            Names.getPathFromPackage(genHelper.getParserPackage())));
-
-    // 1. Lexer
-    String gLexer = Paths.get(targetDir.getAbsolutePath(), lexerPath.toString()).toString();
-    antlrTool.createParser(gLexer);
-
-    // 2. Parser
     String gParser = Paths.get(targetDir.getAbsolutePath(), parserPath.toString()).toString();
-    antlrTool.createParser(gParser);
+    String gLexer = Paths.get(targetDir.getAbsolutePath(), lexerPath.toString()).toString();
+
+    AntlrTool antlrTool = new AntlrTool(new String[] { outputLang, "-o", antlrPath.toString(), "-Xexact-output-dir", "-no-listener", gLexer, gParser }, grammarSymbol);
+    antlrTool.processGrammarsOnCommandLine();
     Log.debug("End parser generation for the grammar " + astGrammar.getName(), LOG);
   }
 
