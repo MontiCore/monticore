@@ -5,7 +5,7 @@ task generate (type: MCTask) {
   grammar = file "$projectDir/$grammarDir/Automata.mc4"
   outputDir = file outDir
   templatePath "$projectDir/src/main/tpl"
-  configTemplate = "foo/ct.ftl"
+  configTemplate = "ct.ftl"
   def uptoDate = incCheck("Automata.mc4")
   outputs.upToDateWhen { uptoDate }
 }
