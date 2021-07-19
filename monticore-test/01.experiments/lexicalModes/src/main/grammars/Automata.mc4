@@ -37,8 +37,8 @@ Tag = StartTag Text2 EndTag;
 
 token StartTag = "<": -> pushMode(text);
 
-token EndTag = ">": ->popMode;
+token EndTag (text) = ">": ->popMode;
 
-token Text2(text) = .*?;
+token Text2(text) = (~('>'))* ;
   
 }

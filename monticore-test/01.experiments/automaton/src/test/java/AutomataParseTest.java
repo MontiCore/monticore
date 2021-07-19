@@ -1,18 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
-import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.Optional;
-
-import automata._ast.ASTAutomaton;
-import automata._ast.ASTState;
-import automata._parser.AutomataParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.Optional;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * Main class for the some Demonstration to Parse
