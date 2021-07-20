@@ -50,25 +50,26 @@ public class CLIDecorator extends AbstractCreator<ASTCDCompilationUnit, Optional
     if (!parserService.hasComponentStereotype(cdDefinition.getModifier())) {
       String cliClassName = parserService.getCliSimpleName();
       cliClass = Optional.of(CD4AnalysisMill.cDClassBuilder()
-          .setModifier(PUBLIC.build())
-          .setName(cliClassName)
-          .addCDMember(createMainMethod(parserService.getCDSymbol()))
-          .addCDMember(createParseMethod(parserService.getCDSymbol()))
-          .addCDMember(createRunMethod(startProdPresent, parserService.getCDSymbol()))
-          .addCDMember(createInitMethod())
-          .addCDMember(createPrettyPrintMethod())
-          .addCDMember(createPrintMethod(parserService.getCDSymbol()))
-          .addCDMember(createPrintHelpMethod())
-          .addCDMember(createReportMethod())
-          .addCDMember(createRunDefaultCoCosMethod())
-          .addCDMember(createStoreSymbolsMethod())
-          .addCDMember(createInitOptionsMethod())
-          .addCDMember(createAddStandardOptionsMethod())
-          .addCDMember(createAddAdditionalOptionsMethod())
-          .build());
-
+        .setModifier(PUBLIC.build())
+        .setName(cliClassName)
+        .addCDMember(createMainMethod(parserService.getCDSymbol()))
+        .addCDMember(createRunMethod(startProdPresent, parserService.getCDSymbol()))
+        .addCDMember(createParseMethod(parserService.getCDSymbol()))
+        .addCDMember(createInitMethod())
+        .addCDMember(createPrettyPrintMethod())
+        .addCDMember(createPrintMethod(parserService.getCDSymbol()))
+        .addCDMember(createPrintHelpMethod())
+        .addCDMember(createReportMethod())
+        .addCDMember(createRunDefaultCoCosMethod())
+        .addCDMember(createRunAdditionalCoCosMethod())
+        .addCDMember(createStoreSymbolsMethod())
+        .addCDMember(createInitOptionsMethod())
+        .addCDMember(createAddStandardOptionsMethod())
+        .addCDMember(createAddAdditionalOptionsMethod())
+        .build());
       if (startProdPresent) {
         cliClass.get().addCDMember(createCreateSymbolTableMethod());
+        cliClass.get().addCDMember(createCompleteSymbolTableMethod());
       }
     }
     return cliClass;
@@ -144,6 +145,21 @@ public class CLIDecorator extends AbstractCreator<ASTCDCompilationUnit, Optional
   }
 
   /**
+   * creates a second hookpoint for completing the symboltable for a given AST
+   *
+   * @return the decorated CompleteSymbolTable method
+   */
+  protected ASTCDMethod createCompleteSymbolTableMethod() {
+    String generatedError = symbolTableService.getGeneratedErrorCode(symbolTableService.getCDName() + "CompleteSymbolTable");
+    Optional<String> startProd = parserService.getStartProdASTFullName();
+    ASTMCType startProdType = getMCTypeFacade().createQualifiedType(startProd.get());
+    ASTCDParameter parameter = getCDParameterFacade().createParameter(startProdType, "node");
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), "completeSymbolTable", parameter);
+    this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint("Log.warn(\"0xA1058" + generatedError + " This symbol table phase is not implemented yet.\");"));
+    return method;
+  }
+
+  /**
    * creates a method where reports can be stored
    *
    * @return the decorated report method
@@ -173,7 +189,23 @@ public class CLIDecorator extends AbstractCreator<ASTCDCompilationUnit, Optional
     ASTMCType startProdType = getMCTypeFacade().createQualifiedType(startProd.get());
     ASTCDParameter parameter = getCDParameterFacade().createParameter(startProdType, "ast");
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), "runDefaultCoCos", parameter);
-    this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint("Log.warn(\"0xA1053" + generatedError + " CoCos are not implemented yet.\");"));
+    this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint("Log.warn(\"0xA1053" + generatedError + " default CoCos are not implemented yet.\");"));
+    return method;
+  }
+
+  /**
+   * creates a hook point to execute additional context conditions
+   *
+   * @return the decorated RunAdditionalCoCos method
+   */
+  protected ASTCDMethod createRunAdditionalCoCosMethod() {
+    DiagramSymbol cdsymbol = symbolTableService.getCDSymbol();
+    String generatedError = symbolTableService.getGeneratedErrorCode(cdsymbol.getName() + "runAdditionalCoCos");
+    Optional<String> startProd = parserService.getStartProdASTFullName();
+    ASTMCType startProdType = getMCTypeFacade().createQualifiedType(startProd.get());
+    ASTCDParameter parameter = getCDParameterFacade().createParameter(startProdType, "ast");
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), "runAdditionalCoCos", parameter);
+    this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint("Log.warn(\"0xA1062" + generatedError + " additional CoCos are not implemented yet.\");"));
     return method;
   }
 
