@@ -4,6 +4,8 @@ package de.monticore.codegen.parser;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.MCGrammarInfo;
@@ -30,7 +32,6 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkState;
-import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
 import static de.monticore.codegen.mc2cd.TransformationHelper.getQualifiedName;
 
 /**
@@ -170,8 +171,10 @@ public class ParserGeneratorHelper {
    * @return Keys of all lex symbols
    */
   public Set<String> getLexSymbolsWithInherited() {
-    return grammarInfo.getLexNamer().getLexnames();
-  }
+    Set<String> retSet = Sets.newHashSet(grammarInfo.getLexNamer().getLexnames());
+    grammarInfo.getKeywords().stream().filter(f -> !grammarSymbol.getKeywordRulesWithInherited().contains(f)).forEach(f -> retSet.add(f));
+    return retSet;
+ }
 
   /**
    * Get all splitted LexSymbols
@@ -387,35 +390,40 @@ public class ParserGeneratorHelper {
   }
 
   public List<ASTLexProd> getLexerRulesToGenerate() {
-    // Iterate over all LexRules
-    List<ASTLexProd> prods = Lists.newArrayList();
-    ProdSymbol mcanything = null;
-    final Map<String, ProdSymbol> rules = new LinkedHashMap<>();
-
-    // Don't use grammarSymbol.getRulesWithInherited because of changed order
-    for (final ProdSymbol ruleSymbol : grammarSymbol.getProds()) {
-      rules.put(ruleSymbol.getName(), ruleSymbol);
-    }
-    for (int i = grammarSymbol.getSuperGrammars().size() - 1; i >= 0; i--) {
-      rules.putAll(grammarSymbol.getSuperGrammarSymbols().get(i).getProdsWithInherited());
-    }
-
-    for (Entry<String, ProdSymbol> ruleSymbol : rules.entrySet()) {
-      if (ruleSymbol.getValue().isIsLexerProd()) {
-        ProdSymbol lexProd = ruleSymbol.getValue();
-        // MONTICOREANYTHING must be last rule
-        if (lexProd.getName().equals(MONTICOREANYTHING)) {
-          mcanything = lexProd;
-        }
-        else {
-          prods.add((ASTLexProd) lexProd.getAstNode());
+    ArrayList<ASTLexProd> prodList = Lists.newArrayList();
+    Map<String, Collection<String>> modeMap = grammarSymbol.getTokenModesWithInherited();
+    // Default mode
+    if (modeMap.containsKey("")) {
+      for (String tokenName : modeMap.get("")) {
+        Optional<ProdSymbol> localToken = grammarSymbol.getSpannedScope().resolveProdDown(tokenName);
+        if (localToken.isPresent() && localToken.get().isIsLexerProd()) {
+          prodList.add((ASTLexProd) localToken.get().getAstNode());
+        } else {
+          grammarSymbol.getSpannedScope().resolveProdMany(tokenName).stream().filter(p -> p.isIsLexerProd()).forEach(p -> prodList.add((ASTLexProd) p.getAstNode()));
         }
       }
     }
-    if (mcanything != null) {
-      prods.add((ASTLexProd) mcanything.getAstNode());
+    return prodList;
+  }
+
+  public HashMap<String, List<ASTProd>> getLexerRulesForMode() {
+    HashMap<String, List<ASTProd>> retMap = Maps.newHashMap();
+    Map<String, Collection<String>> modeMap = grammarSymbol.getTokenModesWithInherited();
+    for (Entry<String, Collection<String>> e: modeMap.entrySet()) {
+      ArrayList<ASTProd> prodList = Lists.newArrayList();
+      if (!e.getKey().isEmpty()) {
+        for (String tokenName : e.getValue()) {
+          Optional<ProdSymbol> localToken = grammarSymbol.getSpannedScope().resolveProdDown(tokenName);
+          if (localToken.isPresent() && localToken.get().isIsLexerProd()) {
+            prodList.add(localToken.get().getAstNode());
+          } else {
+            grammarSymbol.getSpannedScope().resolveProdMany(tokenName).stream().filter(p -> p.isIsLexerProd()).forEach(p -> prodList.add(p.getAstNode()));
+          }
+        }
+        retMap.put(e.getKey(), prodList);
+      }
     }
-    return prods;
+    return retMap;
   }
 
   public String getConstantNameForConstant(ASTConstant x) {

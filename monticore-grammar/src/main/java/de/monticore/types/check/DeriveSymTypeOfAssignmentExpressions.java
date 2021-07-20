@@ -119,7 +119,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends AbstractDeriveFromExpr
       calculateMultAssignment(expr);
     } else if (expr.getOperator() == ASTConstantsAssignmentExpressions.SLASHEQUALS) {
       calculateDivideAssignment(expr);
-    } else if (expr.getOperator() == ASTConstantsAssignmentExpressions.ANDEQUALS) {
+    } else if (expr.getOperator() == ASTConstantsAssignmentExpressions.AND_EQUALS) {
       calculateAndAssigment(expr);
     } else if (expr.getOperator() == ASTConstantsAssignmentExpressions.PIPEEQUALS) {
       calculateOrAssignment(expr);

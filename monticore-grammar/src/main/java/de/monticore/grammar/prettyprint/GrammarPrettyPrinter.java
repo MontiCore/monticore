@@ -28,15 +28,6 @@ public class GrammarPrettyPrinter implements GrammarVisitor2, GrammarHandler {
   }
 
   @Override
-  public void handle(ASTEof a) {
-    CommentPrettyPrinter.printPreComments(a, getPrinter());
-
-    print("EOF");
-
-    CommentPrettyPrinter.printPostComments(a, getPrinter());
-  }
-
-  @Override
   public void handle(ASTSemanticpredicateOrAction a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
 

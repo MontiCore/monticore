@@ -7,13 +7,13 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import de.monticore.codegen.cd2java.DecorationHelper;
-import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.parser.ParserGeneratorHelper;
 import de.monticore.grammar.concepts.antlr.antlr._ast.ASTConceptAntlr;
 import de.monticore.grammar.concepts.antlr.antlr._ast.ASTJavaCodeExt;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
+import de.monticore.grammar.grammar._symboltable.MCGrammarSymbolSurrogate;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.grammar.grammar._visitor.GrammarTraverser;
 import de.monticore.grammar.grammar._visitor.GrammarVisitor2;
@@ -67,7 +67,7 @@ public class MCGrammarInfo {
   /**
    * Internal: LexNamer for naming lexer symbols in the antlr source code
    */
-  private LexNamer lexNamer = new LexNamer();
+  private LexNamer lexNamer = new LexNamerFix();
 
   private Map<String, String> splitRules = Maps.newHashMap();
 
@@ -330,7 +330,18 @@ public class MCGrammarInfo {
     for (ProdSymbol ruleSymbol : grammarSymbol.getProdsWithInherited().values()) {
       if (ruleSymbol.isParserProd()) {
         if (ruleSymbol.isPresentAstNode() && ruleSymbol.getAstNode() instanceof ASTClassProd) {
-          ASTProd astProd = ruleSymbol.getAstNode();
+          ASTClassProd astProd = (ASTClassProd) ruleSymbol.getAstNode();
+          if (astProd.getAltList().isEmpty()) {
+            // if a rule has been overwritten and is empty, consider the superclass
+            for (MCGrammarSymbolSurrogate g : grammarSymbol.getSuperGrammars()) {
+              final Optional<ProdSymbol> ruleByName = g.lazyLoadDelegate().getProdWithInherited(astProd.getName());
+              if (ruleByName.isPresent() && ruleByName.get().isClass()) {
+                if (ruleByName.get().isPresentAstNode() && ruleByName.get().getAstNode() instanceof ASTClassProd) {
+                  astProd = (ASTClassProd) ruleByName.get().getAstNode();
+                }
+              }
+            }
+          }
           Optional<MCGrammarSymbol> refGrammarSymbol = MCGrammarSymbolTableHelper
               .getMCGrammarSymbol(astProd.getEnclosingScope());
           TerminalVisitor tv = new TerminalVisitor(refGrammarSymbol);

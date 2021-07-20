@@ -120,7 +120,7 @@ public class UpdateCheckerRunnable implements Runnable {
     try {
       properties.load(new FileInputStream(LOCAL_PROPERTIES_PATH));
     } catch (Exception e) {
-      Log.warn("0xA9004 Could not find local properties file");
+      Log.debug("0xA9004 Could not find local properties file", UpdateCheckerRunnable.class.getName());
     }
 
     return properties;
