@@ -11,7 +11,7 @@ import de.monticore.types.prettyprint.MCBasicTypesPrettyPrinter;
 
 public class MCExceptionStatementsFullPrettyPrinter extends MCCommonStatementsFullPrettyPrinter {
 
-  private MCExceptionStatementsTraverser traverser;
+  protected MCExceptionStatementsTraverser traverser;
 
   public MCExceptionStatementsFullPrettyPrinter(IndentPrinter printer) {
     super(printer);

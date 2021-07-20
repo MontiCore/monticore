@@ -137,7 +137,7 @@ public class ODDecoratorTest extends DecoratorTestCase {
   @Test
   public void testTraverserAttribute() {
     ASTCDAttribute automatonVisitor = getAttributeBy("traverser", odClass);
-    assertDeepEquals(PRIVATE, automatonVisitor.getModifier());
+    assertDeepEquals(PROTECTED, automatonVisitor.getModifier());
     assertDeepEquals(TRAVERSER_FULL_NAME, automatonVisitor.getMCType());
   }
 
@@ -244,7 +244,7 @@ public class ODDecoratorTest extends DecoratorTestCase {
   @Test
   public void testPrintAttributeMethodMethod() {
     ASTCDMethod method = getMethodBy("printAttribute", odClass);
-    assertDeepEquals(PRIVATE, method.getModifier());
+    assertDeepEquals(PROTECTED, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
 
     assertEquals(2, method.sizeCDParameters());
@@ -257,7 +257,7 @@ public class ODDecoratorTest extends DecoratorTestCase {
   @Test
   public void testPrintObjectMethodMethod() {
     ASTCDMethod method = getMethodBy("printObject", odClass);
-    assertDeepEquals(PRIVATE, method.getModifier());
+    assertDeepEquals(PROTECTED, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
 
     assertEquals(2, method.sizeCDParameters());

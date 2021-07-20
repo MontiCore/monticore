@@ -12,7 +12,7 @@ import de.monticore.types.prettyprint.MCBasicTypesPrettyPrinter;
 
 public class MCCommonStatementsFullPrettyPrinter {
 
-  private MCCommonStatementsTraverser traverser;
+  protected MCCommonStatementsTraverser traverser;
 
   protected IndentPrinter printer;
 

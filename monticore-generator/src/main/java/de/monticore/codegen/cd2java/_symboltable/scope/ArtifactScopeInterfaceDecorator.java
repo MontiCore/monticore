@@ -97,7 +97,7 @@ public class ArtifactScopeInterfaceDecorator extends AbstractCreator<ASTCDCompil
 
   protected List<ASTCDMethod> createImportsAttributeMethods() {
     ASTMCListType type = getMCTypeFacade().createListTypeOf(IMPORT_STATEMENT);
-    ASTCDAttribute attr = getCDAttributeFacade().createAttribute(PRIVATE.build(), type, "imports");
+    ASTCDAttribute attr = getCDAttributeFacade().createAttribute(PROTECTED.build(), type, "imports");
     List<ASTCDMethod> methods = methodDecorator.decorate(attr).stream()
         .filter(m -> !(m.getName().equals("getImportsList") || m.getName().equals("setImportsList")))
         .collect(Collectors.toList());

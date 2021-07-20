@@ -20,7 +20,7 @@ public class InstantiationsReporter extends AReporter {
   
   static final String SIMPLE_FILE_NAME = "06_Instantiations";
   
-  private Map<String, Integer> instantiateCount = Maps.newTreeMap();
+  protected Map<String, Integer> instantiateCount = Maps.newTreeMap();
   
   public InstantiationsReporter(String outputDir, String modelName) {
     super(outputDir
@@ -34,14 +34,14 @@ public class InstantiationsReporter extends AReporter {
     writeLine("#Instantiations  JavaType");
   }
   
-  private void writeContent() {
+  protected void writeContent() {
     for (Entry<String, Integer> entry : instantiateCount.entrySet()) {
       String s = entry.getValue() + "x";
       writeLine(s + Layouter.getSpaceString(17 - s.length()) + entry.getKey());
     }
   }
   
-  private void writeFooter() {
+  protected void writeFooter() {
     writeLine("========================================================== Explanation");
     writeLine("This is the list of instantiated java type (triggered by the TC).");
     writeLine("- #Instantiations: how often an object of the corresponding type has");

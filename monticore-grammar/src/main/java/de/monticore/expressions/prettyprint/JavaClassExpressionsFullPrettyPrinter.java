@@ -9,7 +9,7 @@ import de.monticore.prettyprint.MCBasicsPrettyPrinter;
 
 public class JavaClassExpressionsFullPrettyPrinter extends CommonExpressionsFullPrettyPrinter {
 
-  private JavaClassExpressionsTraverser traverser;
+  protected JavaClassExpressionsTraverser traverser;
 
   @Override
   public JavaClassExpressionsTraverser getTraverser() {

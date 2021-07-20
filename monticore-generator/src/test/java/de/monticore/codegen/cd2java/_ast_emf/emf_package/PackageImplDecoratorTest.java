@@ -93,70 +93,70 @@ public class PackageImplDecoratorTest extends DecoratorTestCase {
   @Test
   public void testConstantAutomataAttribute() {
     ASTCDAttribute constantsAutomata = getAttributeBy("constantsAutomata", packageClass);
-    assertDeepEquals(PRIVATE, constantsAutomata.getModifier());
+    assertDeepEquals(PROTECTED, constantsAutomata.getModifier());
     assertDeepEquals("org.eclipse.emf.ecore.EEnum", constantsAutomata.getMCType());
   }
 
   @Test
   public void testASTAutomatonAttribute() {
     ASTCDAttribute attribute = getAttributeBy("aSTAutomaton", packageClass);
-    assertDeepEquals(PRIVATE, attribute.getModifier());
+    assertDeepEquals(PROTECTED, attribute.getModifier());
     assertDeepEquals("org.eclipse.emf.ecore.EClass", attribute.getMCType());
   }
 
   @Test
   public void testASTStateAttribute() {
     ASTCDAttribute attribute = getAttributeBy("aSTState", packageClass);
-    assertDeepEquals(PRIVATE, attribute.getModifier());
+    assertDeepEquals(PROTECTED, attribute.getModifier());
     assertDeepEquals("org.eclipse.emf.ecore.EClass", attribute.getMCType());
   }
 
   @Test
   public void testASTTransitionAttribute() {
     ASTCDAttribute attribute = getAttributeBy("aSTTransition", packageClass);
-    assertDeepEquals(PRIVATE, attribute.getModifier());
+    assertDeepEquals(PROTECTED, attribute.getModifier());
     assertDeepEquals("org.eclipse.emf.ecore.EClass", attribute.getMCType());
   }
 
   @Test
   public void testASTTransitionWithActionAttribute() {
     ASTCDAttribute attribute = getAttributeBy("aSTTransitionWithAction", packageClass);
-    assertDeepEquals(PRIVATE, attribute.getModifier());
+    assertDeepEquals(PROTECTED, attribute.getModifier());
     assertDeepEquals("org.eclipse.emf.ecore.EClass", attribute.getMCType());
   }
 
   @Test
   public void testASTAutNameAttribute() {
     ASTCDAttribute attribute = getAttributeBy("aSTAutName", packageClass);
-    assertDeepEquals(PRIVATE, attribute.getModifier());
+    assertDeepEquals(PROTECTED, attribute.getModifier());
     assertDeepEquals("org.eclipse.emf.ecore.EClass", attribute.getMCType());
   }
 
   @Test
   public void testASTBodyExtAttribute() {
     ASTCDAttribute attribute = getAttributeBy("aSTBodyExt", packageClass);
-    assertDeepEquals(PRIVATE, attribute.getModifier());
+    assertDeepEquals(PROTECTED, attribute.getModifier());
     assertDeepEquals("org.eclipse.emf.ecore.EClass", attribute.getMCType());
   }
 
   @Test
   public void testIsCreatedAttribute() {
     ASTCDAttribute attribute = getAttributeBy("isCreated", packageClass);
-    assertDeepEquals(PRIVATE, attribute.getModifier());
+    assertDeepEquals(PROTECTED, attribute.getModifier());
     assertBoolean(attribute.getMCType());
   }
 
   @Test
   public void testIsInitializedAttribute() {
     ASTCDAttribute attribute = getAttributeBy("isInitialized", packageClass);
-    assertDeepEquals(PRIVATE, attribute.getModifier());
+    assertDeepEquals(PROTECTED, attribute.getModifier());
     assertBoolean(attribute.getMCType());
   }
 
   @Test
   public void testIsInitedAttribute() {
     ASTCDAttribute attribute = getAttributeBy("isInited", packageClass);
-    assertDeepEquals(PRIVATE_STATIC, attribute.getModifier());
+    assertDeepEquals(PROTECTED_STATIC, attribute.getModifier());
     assertBoolean(attribute.getMCType());
   }
 

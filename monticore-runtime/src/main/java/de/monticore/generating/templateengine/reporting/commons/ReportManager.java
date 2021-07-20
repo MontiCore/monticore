@@ -20,9 +20,9 @@ import de.se_rwth.commons.logging.Log;
 
 public class ReportManager implements IReportEventHandler {
 
-  private Set<IReportEventHandler> reportEventHandlers = new LinkedHashSet<IReportEventHandler>();
+  protected Set<IReportEventHandler> reportEventHandlers = new LinkedHashSet<IReportEventHandler>();
 
-  private String outputDir;
+  protected String outputDir;
 
   public ReportManager(String outputDir) {
     this.outputDir = outputDir;

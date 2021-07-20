@@ -39,7 +39,7 @@ public class GeneratorEngine {
   /**
    * Contains all configuration data
    */
-  private GeneratorSetup setup;
+  protected GeneratorSetup setup;
 
   public GeneratorEngine(GeneratorSetup gs) {
     Log.errorIfNull(gs);

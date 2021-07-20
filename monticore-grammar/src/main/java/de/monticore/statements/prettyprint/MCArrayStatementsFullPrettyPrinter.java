@@ -10,7 +10,7 @@ import de.monticore.types.prettyprint.MCBasicTypesPrettyPrinter;
 
 public class MCArrayStatementsFullPrettyPrinter extends MCVarDeclarationStatementsFullPrettyPrinter {
 
-  private MCArrayStatementsTraverser traverser;
+  protected MCArrayStatementsTraverser traverser;
 
   public MCArrayStatementsFullPrettyPrinter(IndentPrinter printer) {
     super(printer);

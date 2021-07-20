@@ -33,34 +33,34 @@ import static de.monticore.codegen.parser.ParserGeneratorHelper.printIteration;
 
 public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
 
-  private MCGrammarSymbol grammarEntry;
+  protected MCGrammarSymbol grammarEntry;
 
   GrammarTraverser traverser;
 
   /**
    * This list is used for the detection of the left recursion
    */
-  private ArrayList<ASTAlt> altList = new ArrayList<>();
+  protected ArrayList<ASTAlt> altList = new ArrayList<>();
 
-  private DirectLeftRecursionDetector leftRecursionDetector = new DirectLeftRecursionDetector();
+  protected DirectLeftRecursionDetector leftRecursionDetector = new DirectLeftRecursionDetector();
 
-  private SourcePositionActions positionActions;
+  protected SourcePositionActions positionActions;
 
-  private AttributeCardinalityConstraint attributeConstraints;
+  protected AttributeCardinalityConstraint attributeConstraints;
 
-  private ASTConstructionActions astActions;
+  protected ASTConstructionActions astActions;
 
-  private List<String> productionAntlrCode = Lists.newArrayList();
+  protected List<String> productionAntlrCode = Lists.newArrayList();
 
-  private StringBuilder codeSection;
+  protected StringBuilder codeSection;
 
-  private StringBuilder action = new StringBuilder();
+  protected StringBuilder action = new StringBuilder();
 
-  private MCGrammarInfo grammarInfo;
+  protected MCGrammarInfo grammarInfo;
 
-  private ParserGeneratorHelper parserHelper;
+  protected ParserGeneratorHelper parserHelper;
 
-  private boolean embeddedJavaCode;
+  protected boolean embeddedJavaCode;
 
   public Grammar2Antlr(
           ParserGeneratorHelper parserGeneratorHelper,
@@ -557,7 +557,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
 
   }
 
-  private String createKeyPredicate(List<String> stringList) {
+  protected String createKeyPredicate(List<String> stringList) {
     String rulename = "(";
     String sep = "";
     for (String key : stringList) {
@@ -948,7 +948,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
    * @param prodSymbol
    * @param alts
    */
-  private boolean addAlternatives(ProdSymbol prodSymbol, List<NodePair> alts) {
+  protected boolean addAlternatives(ProdSymbol prodSymbol, List<NodePair> alts) {
     boolean isLeft = false;
     List<PredicatePair> interfaces = grammarInfo.getSubRulesForParsing(prodSymbol.getName());
     for (PredicatePair interf : interfaces) {
@@ -988,7 +988,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
 
   // ----------------------------------------------------------------------------------------------
 
-  private void addCodeForLexerRule(ASTNonTerminal ast) {
+  protected void addCodeForLexerRule(ASTNonTerminal ast) {
     startCodeSection();
 
     addToCodeSection("(");
@@ -1051,7 +1051,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
   /**
    * print code for references to embedded rules
    */
-  private String embedded(ASTNonTerminal ast) {
+  protected String embedded(ASTNonTerminal ast) {
     return "";
   }
 
@@ -1061,7 +1061,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
    * @param ast
    * @return
    */
-  private void addCodeForRuleReference(ASTNonTerminal ast) {
+  protected void addCodeForRuleReference(ASTNonTerminal ast) {
     Optional<ProdSymbol> scope = MCGrammarSymbolTableHelper.getEnclosingRule(ast);
     if (!scope.isPresent()) {
       return;
@@ -1110,7 +1110,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
 
   }
 
-  private void addActionForKeyword(ASTTerminal keyword, ProdSymbol rule, boolean isList) {
+  protected void addActionForKeyword(ASTTerminal keyword, ProdSymbol rule, boolean isList) {
 
     startCodeSection();
 
@@ -1147,7 +1147,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
 
   }
 
-  private void addDummyRules(String rulenameInternal, String ruleName,
+  protected void addDummyRules(String rulenameInternal, String ruleName,
                              String usageName) {
 
     addToCodeSection("\n\n", ruleName, "_eof");
@@ -1197,7 +1197,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
    *
    * @return
    */
-  private List<String> getAntlrCode() {
+  protected List<String> getAntlrCode() {
     return ImmutableList.copyOf(productionAntlrCode);
   }
 
@@ -1206,14 +1206,14 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
    *
    * @param code
    */
-  private void addToAntlrCode(String code) {
+  protected void addToAntlrCode(String code) {
     productionAntlrCode.add(code);
   }
 
   /**
    * Clears antlr code
    */
-  private void clearAntlrCode() {
+  protected void clearAntlrCode() {
     productionAntlrCode.clear();
   }
 
@@ -1222,21 +1222,21 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
    *
    * @param code
    */
-  private void addToAntlrCode(StringBuilder code) {
+  protected void addToAntlrCode(StringBuilder code) {
     addToAntlrCode(code.toString());
   }
 
   /**
    * Starts codeSection of the parser code
    */
-  private void startCodeSection() {
+  protected void startCodeSection() {
     codeSection = new StringBuilder();
   }
 
   /**
    * Adds the current code codeSection to antlr
    */
-  private void endCodeSection() {
+  protected void endCodeSection() {
     addToAntlrCode(codeSection);
     codeSection = new StringBuilder();
   }
@@ -1246,14 +1246,14 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
    *
    * @param ast
    */
-  private void startCodeSection(ASTNode ast) {
+  protected void startCodeSection(ASTNode ast) {
     startCodeSection(ast.getClass().getSimpleName());
   }
 
   /**
    * Starts antlr code for the production with the given name
    */
-  private void startCodeSection(String text) {
+  protected void startCodeSection(String text) {
     codeSection = new StringBuilder("\n // Start of '" + text + "'\n");
   }
 
@@ -1262,7 +1262,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
    *
    * @param ast
    */
-  private void endCodeSection(ASTNode ast) {
+  protected void endCodeSection(ASTNode ast) {
     codeSection.append("// End of '" + ast.getClass().getSimpleName() + "'\n");
     endCodeSection();
   }
@@ -1270,7 +1270,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
   /**
    * Adds the given code to the current codeSection
    */
-  private void addToCodeSection(String... code) {
+  protected void addToCodeSection(String... code) {
     Arrays.asList(code).forEach(s -> codeSection.append(s));
   }
 
@@ -1284,7 +1284,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
   /**
    * Adds code for parser action to the current code codeSection
    */
-  private void addActionToCodeSection() {
+  protected void addActionToCodeSection() {
     if (action.length() != 0) {
       if (embeddedJavaCode) {
         addToCodeSection("{", action.toString(), "}");
@@ -1297,7 +1297,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
    * Adds code for parser action to the current code codeSection starting and
    * ending with a new line
    */
-  private void addActionToCodeSectionWithNewLine() {
+  protected void addActionToCodeSectionWithNewLine() {
     if (action.length() != 0) {
       if (embeddedJavaCode) {
         addToCodeSection("{\n", action.toString(), "\n}");
@@ -1309,11 +1309,11 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
   /**
    * Clears code for parser action
    */
-  private void clearAction() {
+  protected void clearAction() {
     action.setLength(0);
   }
 
-  private boolean isActionEmpty() {
+  protected boolean isActionEmpty() {
     return action.length() == 0;
   }
 
@@ -1327,7 +1327,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
   /**
    * Adds code to the parser action
    */
-  private void addToAction(String... code) {
+  protected void addToAction(String... code) {
     Arrays.asList(code).forEach(s -> action.append(s));
   }
 

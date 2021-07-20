@@ -33,7 +33,7 @@ public class ASTRulesToCDClassesAndCDInterfaces implements
     return rootLink;
   }
 
-  private Set<ASTASTRule> createLinksForMatchedASTRules(
+  protected Set<ASTASTRule> createLinksForMatchedASTRules(
           Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink) {
 
     Set<ASTASTRule> matchedASTRules = new LinkedHashSet<>();
@@ -86,7 +86,7 @@ public class ASTRulesToCDClassesAndCDInterfaces implements
     return matchedASTRules;
   }
 
-  private void createLinksForUnmatchedASTRules(Set<ASTASTRule> matchedASTRules,
+  protected void createLinksForUnmatchedASTRules(Set<ASTASTRule> matchedASTRules,
                                                Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink) {
 
     for (ASTASTRule astRule : rootLink.source().getASTRuleList()) {

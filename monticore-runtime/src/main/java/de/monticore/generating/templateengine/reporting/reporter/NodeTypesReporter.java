@@ -19,13 +19,13 @@ public class NodeTypesReporter extends AReporter {
   
   static final String SIMPLE_FILE_NAME = "12_TypesOfNodes";
   
-  private Map<String, Integer> nodeTypeCount = Maps.newTreeMap();
+  protected Map<String, Integer> nodeTypeCount = Maps.newTreeMap();
   
-  private Map<String, Integer> nodeTypeCountPos = Maps.newTreeMap();
+  protected Map<String, Integer> nodeTypeCountPos = Maps.newTreeMap();
 
-  private ITraverser traverser;
+  protected ITraverser traverser;
 
-  private ObjectCountVisitor ocv;
+  protected ObjectCountVisitor ocv;
   
   public NodeTypesReporter(String outputDir, String modelName, ITraverser traverser) {
     super(outputDir
@@ -73,7 +73,7 @@ public class NodeTypesReporter extends AReporter {
    * @param nodetypeCountPos2: Map contains ASTNodes with a source position
    * @return Map containing ASTNodes without source position
    */
-  private Map<String, Integer> getMapDiff(Map<String, Integer> nodeTypeCount2,
+  protected Map<String, Integer> getMapDiff(Map<String, Integer> nodeTypeCount2,
       Map<String, Integer> nodetypeCountPos2) {
     Map<String, Integer> dif = Maps.newTreeMap();
     // merging keys of objects and visits
@@ -105,7 +105,7 @@ public class NodeTypesReporter extends AReporter {
    * @param nodeTypeCount2
    * @param type2count
    */
-  private void writeMaps(Map<String, Integer> nodeTypeCount2, Map<String, Integer> type2count) {
+  protected void writeMaps(Map<String, Integer> nodeTypeCount2, Map<String, Integer> type2count) {
     // merging keys of objects and visits
     Set<String> allKeys = new TreeSet<String>();
     allKeys.addAll(type2count.keySet());
@@ -135,7 +135,7 @@ public class NodeTypesReporter extends AReporter {
     
   }
   
-  private void writeFooter() {
+  protected void writeFooter() {
     writeLine("========================================================== Explanation");
     writeLine("Types of Nodes: Shows a List of all AST-Node-Types that occur in the final AST.");
     writeLine("Types of Nodes (with Source Position): Shows the subset of all AST Node Types");

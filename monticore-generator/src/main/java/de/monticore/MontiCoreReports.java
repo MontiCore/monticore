@@ -16,13 +16,13 @@ import de.monticore.io.paths.MCPath;
  */
 public class MontiCoreReports implements ReportManagerFactory {
 
-  private String outputDirectory;
+  protected String outputDirectory;
 
-  private String reportDirectory;
+  protected String reportDirectory;
 
-  private MCPath handwrittenPath;
+  protected MCPath handwrittenPath;
   
-  private MCPath templatePath;
+  protected MCPath templatePath;
   
 
   /**

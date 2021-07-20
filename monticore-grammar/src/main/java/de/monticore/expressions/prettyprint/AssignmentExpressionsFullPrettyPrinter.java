@@ -9,7 +9,7 @@ import de.monticore.prettyprint.MCBasicsPrettyPrinter;
 
 public class AssignmentExpressionsFullPrettyPrinter extends ExpressionsBasisFullPrettyPrinter {
 
-  private AssignmentExpressionsTraverser traverser;
+  protected AssignmentExpressionsTraverser traverser;
 
   public AssignmentExpressionsFullPrettyPrinter(IndentPrinter printer) {
     super(printer);

@@ -21,9 +21,9 @@ import java.util.function.UnaryOperator;
  */
 public class MC2CDTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {
 
-  private GlobalExtensionManagement glex;
+  protected GlobalExtensionManagement glex;
 
-  private LexNamer lexNamer;
+  protected LexNamer lexNamer;
 
   public MC2CDTranslation(GlobalExtensionManagement glex) {
     this.glex = glex;

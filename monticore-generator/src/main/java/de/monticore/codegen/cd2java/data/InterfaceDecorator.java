@@ -14,11 +14,11 @@ import java.util.stream.Collectors;
 
 public class InterfaceDecorator extends AbstractTransformer<ASTCDInterface> {
 
-  private final DataDecoratorUtil dataDecoratorUtil;
+  protected final DataDecoratorUtil dataDecoratorUtil;
 
-  private final MethodDecorator methodDecorator;
+  protected final MethodDecorator methodDecorator;
 
-  private final AbstractService<?> service;
+  protected final AbstractService<?> service;
 
   public InterfaceDecorator(final GlobalExtensionManagement glex, final DataDecoratorUtil dataDecoratorUtil,
                             final MethodDecorator methodDecorator, final AbstractService abstractService) {

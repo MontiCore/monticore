@@ -119,10 +119,10 @@ public class PackageImplDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     //e.g.  private EClass automaton;
     List<ASTCDAttribute> attributeList = new ArrayList<>();
     for (ASTCDClass astcdClass : astcdDefinition.getCDClassesList()) {
-      attributeList.add(getCDAttributeFacade().createAttribute(PRIVATE.build(), E_CLASS_TYPE, StringTransformations.uncapitalize(astcdClass.getName())));
+      attributeList.add(getCDAttributeFacade().createAttribute(PROTECTED.build(), E_CLASS_TYPE, StringTransformations.uncapitalize(astcdClass.getName())));
     }
     for (ASTCDInterface astcdInterface : astcdDefinition.getCDInterfacesList()) {
-      attributeList.add(getCDAttributeFacade().createAttribute(PRIVATE.build(), E_CLASS_TYPE, StringTransformations.uncapitalize(astcdInterface.getName())));
+      attributeList.add(getCDAttributeFacade().createAttribute(PROTECTED.build(), E_CLASS_TYPE, StringTransformations.uncapitalize(astcdInterface.getName())));
     }
     return attributeList;
   }
@@ -138,21 +138,21 @@ public class PackageImplDecorator extends AbstractCreator<ASTCDCompilationUnit, 
 
   protected ASTCDAttribute createConstantsEEnumAttribute(String definitionName) {
     // private EEnum constantsAutomataEEnum
-    return getCDAttributeFacade().createAttribute(PRIVATE.build(), E_ENUM_TYPE,
+    return getCDAttributeFacade().createAttribute(PROTECTED.build(), E_ENUM_TYPE,
         StringTransformations.uncapitalize(CONSTANTS_PREFIX) + definitionName);
   }
 
   protected ASTCDAttribute createISCreatedAttribute() {
-    return getCDAttributeFacade().createAttribute(PRIVATE.build(), getMCTypeFacade().createBooleanType(), IS_CREATED);
+    return getCDAttributeFacade().createAttribute(PROTECTED.build(), getMCTypeFacade().createBooleanType(), IS_CREATED);
   }
 
   protected ASTCDAttribute createIsInitializedAttribute() {
-    return getCDAttributeFacade().createAttribute(PRIVATE.build(), getMCTypeFacade().createBooleanType(), IS_INITIALIZED);
+    return getCDAttributeFacade().createAttribute(PROTECTED.build(), getMCTypeFacade().createBooleanType(), IS_INITIALIZED);
   }
 
 
   protected ASTCDAttribute createIsInitedAttribute() {
-    return getCDAttributeFacade().createAttribute(PRIVATE_STATIC.build(), getMCTypeFacade().createBooleanType(), IS_INITED);
+    return getCDAttributeFacade().createAttribute(PROTECTED_STATIC.build(), getMCTypeFacade().createBooleanType(), IS_INITED);
   }
 
   protected ASTCDConstructor createConstructor(String packageImplName, String definitionName) {

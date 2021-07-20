@@ -11,7 +11,7 @@ public class CardinalityPrettyPrinter implements CardinalityVisitor2, Cardinalit
 
   protected CardinalityTraverser traverser;
 
-  private IndentPrinter printer;
+  protected IndentPrinter printer;
 
   public CardinalityPrettyPrinter(IndentPrinter printer) {
     this.printer = printer;

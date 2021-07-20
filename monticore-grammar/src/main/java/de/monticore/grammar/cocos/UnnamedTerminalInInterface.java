@@ -22,7 +22,7 @@ public class UnnamedTerminalInInterface implements GrammarASTInterfaceProdCoCo {
     checkUnnamedTerminal(node.getName(), node.getAltList());
   }
 
-  private void checkUnnamedTerminal(String interfaceName, List<ASTAlt> astAltList) {
+  protected void checkUnnamedTerminal(String interfaceName, List<ASTAlt> astAltList) {
     for (ASTAlt astAlt : astAltList) {
       for (ASTRuleComponent astRuleComponent : astAlt.getComponentList()) {
         if (astRuleComponent instanceof ASTTerminal && !((ASTTerminal) astRuleComponent).isPresentUsageName()) {

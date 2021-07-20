@@ -42,25 +42,25 @@ public class ParserGeneratorHelper {
 
   public static final String RIGHTASSOC = "<assoc=right>";
 
-  private static final String NOKEYWORD = "nokeyword_";
+  protected static final String NOKEYWORD = "nokeyword_";
 
-  private static Grammar_WithConceptsFullPrettyPrinter prettyPrinter;
+  protected static Grammar_WithConceptsFullPrettyPrinter prettyPrinter;
 
-  private ASTMCGrammar astGrammar;
+  protected ASTMCGrammar astGrammar;
 
-  private String qualifiedGrammarName;
+  protected String qualifiedGrammarName;
 
-  private MCGrammarSymbol grammarSymbol;
+  protected MCGrammarSymbol grammarSymbol;
 
-  private MCGrammarInfo grammarInfo;
+  protected MCGrammarInfo grammarInfo;
 
-  private Map<ASTNode, String> tmpVariables = new HashMap<>();
+  protected Map<ASTNode, String> tmpVariables = new HashMap<>();
 
-  private int tmp_counter = 0;
+  protected int tmp_counter = 0;
 
-  private boolean embeddedJavaCode;
+  protected boolean embeddedJavaCode;
 
-  private boolean isJava;
+  protected boolean isJava;
 
   /**
    * Constructor for de.monticore.codegen.parser.ParserGeneratorHelper
@@ -359,7 +359,7 @@ public class ParserGeneratorHelper {
 
   }
 
-  private static String createConvertFunction(String name, String function) {
+  protected static String createConvertFunction(String name, String function) {
     String f = function.replaceAll("%name%", name);
     return "// convert function for " + name + "\n" + f;
   }
@@ -437,7 +437,7 @@ public class ParserGeneratorHelper {
     return tmpVariables.get(a);
   }
 
-  private String getNewTmpVar() {
+  protected String getNewTmpVar() {
     return "tmp" + (Integer.valueOf(tmp_counter++)).toString();
   }
 
@@ -564,7 +564,7 @@ public class ParserGeneratorHelper {
     return "null";
   }
 
-  private static String getLexType(ASTNode node) {
+  protected static String getLexType(ASTNode node) {
       if (node instanceof ASTLexProd) {
         return TransformationHelper.createConvertType((ASTLexProd) node);
       }

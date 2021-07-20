@@ -24,14 +24,14 @@ final class ModelCoordinateImpl implements ModelCoordinate {
    * The relative location of the model.<br>
    * Example: {@code src/main/grammars/de/mc/statechart.mc}
    */
-  private URL location;
+  protected URL location;
   
   /**
    * The qualified path of the model. It is implied that any directories
    * preceding the file name are part of the model package.<br>
    * Example: {@code de/mc/statechart.mc}
    */
-  private Path qualifiedPath;
+  protected Path qualifiedPath;
   
   @Override
   public boolean hasLocation() {

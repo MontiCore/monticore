@@ -37,7 +37,7 @@ public class ScopeRuleMethodTranslation implements UnaryOperator<Link<ASTMCGramm
     return rootLink;
   }
 
-  private ASTCDMethod createSimpleCDMethod(ASTGrammarMethod method) {
+  protected ASTCDMethod createSimpleCDMethod(ASTGrammarMethod method) {
     String dotSeparatedName = MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(method.getMCReturnType());
     ASTCDMethod cdMethod = CD4CodeBasisMill.cDMethodBuilder().
             setModifier(TransformationHelper.createPublicModifier()).
@@ -50,7 +50,7 @@ public class ScopeRuleMethodTranslation implements UnaryOperator<Link<ASTMCGramm
     return cdMethod;
   }
 
-  private void addMethodBodyStereotype(ASTModifier modifier, StringBuilder code){
+  protected void addMethodBodyStereotype(ASTModifier modifier, StringBuilder code){
     // to save the body in the cd
     // todo think of better version
     TransformationHelper.addStereotypeValue(modifier,
@@ -58,7 +58,7 @@ public class ScopeRuleMethodTranslation implements UnaryOperator<Link<ASTMCGramm
         code.toString());
   }
 
-  private ASTCDMethod translateASTMethodToASTCDMethod(ASTGrammarMethod method) {
+  protected ASTCDMethod translateASTMethodToASTCDMethod(ASTGrammarMethod method) {
     ASTCDMethod cdMethod = createSimpleCDMethod(method);
     if (method.getBody() instanceof ASTAction) {
       StringBuilder code = new StringBuilder();

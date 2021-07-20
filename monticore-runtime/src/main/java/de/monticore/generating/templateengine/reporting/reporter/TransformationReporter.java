@@ -25,7 +25,7 @@ public class TransformationReporter extends AReporter {
 
   static final String INDENT = "                                        ";
 
-  private ReportingRepository repository;
+  protected ReportingRepository repository;
 
   public TransformationReporter(
       String outputDir,
@@ -103,13 +103,13 @@ public class TransformationReporter extends AReporter {
     super.flush(ast);
   }
 
-  private void writeFooter() {
+  protected void writeFooter() {
     writeLine("========================================================== Explanation");
     writeLine("Applied Transformations: the list of transformations in the order they are applied.");
     writeLine("(EOF)");
   }
 
-  private String getIndentAfterFile(String file) {
+  protected String getIndentAfterFile(String file) {
     if (file.length() < INDENT.length() + 1) {
       return INDENT.substring(file.length());
     }

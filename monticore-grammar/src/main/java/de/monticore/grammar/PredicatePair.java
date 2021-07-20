@@ -5,9 +5,9 @@ package de.monticore.grammar;
 import de.monticore.grammar.grammar._ast.ASTRuleReference;
 
 public class PredicatePair {
-  private String classname;
+  protected String classname;
   
-  private ASTRuleReference ruleReference;
+  protected ASTRuleReference ruleReference;
   
   public ASTRuleReference getRuleReference() {
     return ruleReference;

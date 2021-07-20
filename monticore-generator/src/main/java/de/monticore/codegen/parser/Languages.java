@@ -12,7 +12,7 @@ public enum Languages {
   SWIFT("Swift")
   ;
 
-  private String language;
+  protected String language;
 
   Languages(String language) {
     this.language = language;

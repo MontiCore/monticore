@@ -55,7 +55,7 @@ public class NonTerminalsToCDAttributes implements
     return rootLink;
   }
 
-  private class NonTerminalVisitor implements GrammarVisitor2 {
+  protected class NonTerminalVisitor implements GrammarVisitor2 {
 
     public GrammarTraverser getTraverser() {
       return traverser;

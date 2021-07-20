@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @Deprecated
 public final class ModelPath {
 
-  private final Map<URLClassLoader, URL> classloaderMap = new LinkedHashMap<>();
+  protected final Map<URLClassLoader, URL> classloaderMap = new LinkedHashMap<>();
 
   public ModelPath(Collection<Path> modelPathEntries) {
     modelPathEntries.stream()
@@ -40,7 +40,7 @@ public final class ModelPath {
     this(Arrays.asList(modelPathEntries));
   }
 
-  private static Optional<URL> tryURItoURL(URI uri) {
+  protected static Optional<URL> tryURItoURL(URI uri) {
     try {
       return Optional.of(uri.toURL());
     }

@@ -11,7 +11,7 @@ import de.monticore.grammar.grammar._ast.ASTNonTerminal;
  */
 public class SourcePositionActions {
 
-  private ParserGeneratorHelper parserGenHelper;
+  protected ParserGeneratorHelper parserGenHelper;
 
   /**
    * Constructor for de.monticore.codegen.parser.antlr.SourcePositionActions

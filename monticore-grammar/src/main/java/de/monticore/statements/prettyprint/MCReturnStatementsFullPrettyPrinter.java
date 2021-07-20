@@ -11,7 +11,7 @@ import de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsTra
 
 public class MCReturnStatementsFullPrettyPrinter {
 
-  private MCReturnStatementsTraverser traverser;
+  protected MCReturnStatementsTraverser traverser;
 
   protected IndentPrinter printer;
 

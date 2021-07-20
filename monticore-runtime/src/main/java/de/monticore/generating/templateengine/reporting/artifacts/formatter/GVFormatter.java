@@ -16,7 +16,7 @@ import de.monticore.generating.templateengine.reporting.artifacts.model.RootPkg;
 
 public class GVFormatter extends AFormatter {
   
-  private Map<ElementType, String> shapes = new HashMap<ElementType, String>();
+  protected Map<ElementType, String> shapes = new HashMap<ElementType, String>();
   
   public GVFormatter() {
     this.shapes.put(ElementType.HELPER, "cds");
@@ -25,7 +25,7 @@ public class GVFormatter extends AFormatter {
     this.shapes.put(ElementType.FILE, "note");
   }
   
-  private List<String> getAllLinkContent(APkg pkg) {
+  protected List<String> getAllLinkContent(APkg pkg) {
     List<String> lines = Lists.newArrayList();
     
     for (Element e : pkg.getElements()) {
@@ -39,7 +39,7 @@ public class GVFormatter extends AFormatter {
     return lines;
   }
   
-  private List<String> getContent(Element element) {
+  protected List<String> getContent(Element element) {
     List<String> lines = Lists.newArrayList();
     addLine(lines, "node[shape=" + getShape(element.getType()) + "];");
     addLine(lines, getUniqueName(element) + " [label=\"" + element.getFullQualifiedName() + " ("
@@ -47,7 +47,7 @@ public class GVFormatter extends AFormatter {
     return lines;
   }
   
-  private List<String> getLinkContent(Element element) {
+  protected List<String> getLinkContent(Element element) {
     List<String> lines = Lists.newArrayList();
     
     for (Element link : element.getLinks()) {
@@ -56,7 +56,7 @@ public class GVFormatter extends AFormatter {
     return lines;
   }
   
-  private String getUniqueName(Element e) {
+  protected String getUniqueName(Element e) {
     return e.getType().getName() + "_"
         + e.getQualifiedName().replaceAll("[.]", "_").replaceAll("-", "_");
   }

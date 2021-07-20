@@ -12,7 +12,7 @@ public class AmbiguityException extends RuntimeException {
   
   private static final long serialVersionUID = 2754767948180345585L;
   
-  private String[] ambiguities = new String[] {};
+  protected String[] ambiguities = new String[] {};
   
   public AmbiguityException() {
   }

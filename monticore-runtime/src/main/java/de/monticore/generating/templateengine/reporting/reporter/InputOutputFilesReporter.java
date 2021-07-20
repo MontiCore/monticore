@@ -34,13 +34,13 @@ public class InputOutputFilesReporter extends AReporter {
   
   static final String INDENT = Layouter.getSpaceString(40);
   
-  private List<String> inputFiles = Lists.newArrayList();
+  protected List<String> inputFiles = Lists.newArrayList();
   
-  private LinkedHashSet<String> hwcFiles = Sets.newLinkedHashSet();
+  protected LinkedHashSet<String> hwcFiles = Sets.newLinkedHashSet();
   
-  private List<String> outputFiles = Lists.newArrayList();
+  protected List<String> outputFiles = Lists.newArrayList();
   
-  private List<String> userTemplates = Lists.newArrayList();
+  protected List<String> userTemplates = Lists.newArrayList();
   
   /**
    * Constructor for de.monticore.generating.templateengine.reporting.reporter.
@@ -82,7 +82,7 @@ public class InputOutputFilesReporter extends AReporter {
   
   public static final String FOOTER_HEADING = "========================================================== Explanation";
   
-  private void writeFooter() {
+  protected void writeFooter() {
     writeLine(FOOTER_HEADING);
     writeLine("This report is used to enable incremental generation");
     writeLine("Input files: the list of input files ordered by their paths.");
@@ -152,19 +152,19 @@ public class InputOutputFilesReporter extends AReporter {
     }
   }
   
-  private Set<Path> filesThatMatterButAreNotThereInTime = new LinkedHashSet<>();
+  protected Set<Path> filesThatMatterButAreNotThereInTime = new LinkedHashSet<>();
   
   // TODO: think about when to clean this up
-  private static Map<Path, Path> modelToArtifactMap = new HashMap<>();
+  protected static Map<Path, Path> modelToArtifactMap = new HashMap<>();
   
   // TODO: see todo above :-)
   public static void resetModelToArtifactMap() {
     modelToArtifactMap = new HashMap<>();
   }
   
-  private String inputFile;
+  protected String inputFile;
   
-  private Path qualifiedInputFile;
+  protected Path qualifiedInputFile;
   
   /**
    * @see de.monticore.generating.templateengine.reporting.commons.DefaultReportEventHandler#reportParseInputFile(java.nio.file.Path,
@@ -228,7 +228,7 @@ public class InputOutputFilesReporter extends AReporter {
   
   public static final String GEN_ERROR = "error during generation";
   
-  private void writeContent(ASTNode ast) {
+  protected void writeContent(ASTNode ast) {
     
     // the magic TODO AHo: document
     for (Path lateOne : filesThatMatterButAreNotThereInTime) {

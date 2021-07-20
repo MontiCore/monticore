@@ -46,8 +46,8 @@ public class NameToCallExpressionVisitor implements CommonExpressionsVisitor2, C
     this.traverser = (CommonExpressionsTraverser) traverser;
   }
 
-  private String lastName = null;
-  private ASTExpression lastExpression = null;
+  protected String lastName = null;
+  protected ASTExpression lastExpression = null;
 
   @Override
   public void traverse(ASTCallExpression expr){

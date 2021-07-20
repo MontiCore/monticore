@@ -22,9 +22,9 @@ public class HandWrittenCodeReporter extends AReporter {
   
   static final String SIMPLE_FILE_NAME = "03_HandwrittenCodeFiles";
   
-  private ReportingRepository repo;
+  protected ReportingRepository repo;
   
-  private Map<String, Integer> usedFileNames = Maps.newHashMap();
+  protected Map<String, Integer> usedFileNames = Maps.newHashMap();
   
   public HandWrittenCodeReporter(String outputDir, String modelName, ReportingRepository repo) {
     super(outputDir + File.separator
@@ -43,11 +43,11 @@ public class HandWrittenCodeReporter extends AReporter {
     }
   }
   
-  private void resetVariables() {
+  protected void resetVariables() {
     usedFileNames.clear();
   }
   
-  private void writeContent() {
+  protected void writeContent() {
     Set<String> unusedFiles = repo.getAllHWJavaNames();
     unusedFiles.removeAll(usedFileNames.keySet());
     
@@ -71,7 +71,7 @@ public class HandWrittenCodeReporter extends AReporter {
     writeLine("#Counts" + Layouter.getSpaceString(3) + "File Name");
   }
   
-  private void writeFooter() {
+  protected void writeFooter() {
     writeLine("========================================================== Explanation");
     writeLine("   - Shows used and unused HWC files");
     writeLine("(EOF)");

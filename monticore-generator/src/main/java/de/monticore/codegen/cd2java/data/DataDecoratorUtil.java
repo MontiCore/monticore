@@ -15,15 +15,15 @@ import static de.monticore.codegen.cd2java.CDModifier.*;
 
 public class DataDecoratorUtil extends AbstractCreator<ASTCDType, List<ASTCDMethod>> {
 
-  private static final String DEEP_EQUALS_METHOD = "deepEquals";
+  protected static final String DEEP_EQUALS_METHOD = "deepEquals";
 
-  private static final String EQUALS_METHOD = "equals";
+  protected static final String EQUALS_METHOD = "equals";
 
-  private static final String WITH_COMMENTS_SUFFIX = "WithComments";
+  protected static final String WITH_COMMENTS_SUFFIX = "WithComments";
 
-  private static final String EQUAL_ATTRIBUTES_METHOD = "equalAttributes";
+  protected static final String EQUAL_ATTRIBUTES_METHOD = "equalAttributes";
 
-  private static final String DEEP_CLONE_METHOD = "deepClone";
+  protected static final String DEEP_CLONE_METHOD = "deepClone";
 
   @Override
   public List<ASTCDMethod> decorate(ASTCDType cdType) {
