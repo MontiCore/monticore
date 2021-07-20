@@ -5,7 +5,6 @@ package de.monticore.generating.templateengine.reporting.commons;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import de.monticore.ast.ASTNode;
-import de.monticore.io.paths.IterablePath;
 import de.monticore.symboltable.IScope;
 import de.monticore.symboltable.ISymbol;
 import de.se_rwth.commons.SourcePosition;
@@ -16,9 +15,6 @@ import org.reflections.util.ConfigurationBuilder;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 
-import java.nio.file.Path;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -54,36 +50,6 @@ public class ReportingRepository {
   
   public ReportingRepository(IASTNodeIdentHelper astNodeIdentHelper) {
     this.astNodeIdentHelper = astNodeIdentHelper;
-  }
-  
-  /**
-   * Populates this repository with all resolved paths from the given iterable path.
-   * 
-   * @param hwcPath
-   * @see IterablePath#getResolvedPaths()
-   * @see IterablePath#from(List, String)
-   */
-  @Deprecated
-  public void initAllHWJava(IterablePath hwcPath) {
-    Iterator<Path> hwcFiles = hwcPath.getResolvedPaths();
-    while (hwcFiles.hasNext()) {
-      allHWJavaNames.add(hwcFiles.next().toAbsolutePath().toString());
-    }
-  }
-  
-  /**
-   * Populates this repository with all resolved paths from the given iterable path.
-   * 
-   * @param hwtPath
-   * @see IterablePath#getResolvedPaths()
-   * @see IterablePath#from(List, String)
-   */
-  @Deprecated
-  public void initAllHWTemplates(IterablePath hwtPath) {
-    Iterator<Path> hwtFiles = hwtPath.get();
-    while (hwtFiles.hasNext()) {
-      allHWTemplateNames.add(hwtFiles.next().toFile().toString().replaceAll("\\\\", "/"));
-    }
   }
   
   /**

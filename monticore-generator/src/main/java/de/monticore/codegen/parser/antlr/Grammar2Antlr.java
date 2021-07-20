@@ -135,10 +135,19 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
     }
 
     if (ast.isPresentLexerCommand()) {
-      addToCodeSection("->", ast.getLexerCommand(), "\n");
+      addToCodeSection("->", ast.getLexerCommand());
+      if (!ast.isEmptyParameter()) {
+        addToCodeSection("(");
+        String sep = "";
+        for (String s: ast.getParameterList()) {
+          addToCodeSection(sep, s);
+          sep = ", ";
+        }
+        addToCodeSection(")");
+      }
     }
 
-    addToCodeSection(";");
+    addToCodeSection(";\n");
 
     endCodeSection(ast);
   }
@@ -286,11 +295,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
     String sep = "";
     for (ASTConstant c : ast.getConstantList()) {
       addToCodeSection(sep);
-      if (grammarInfo.isKeyword(c.getName(), grammarEntry)) {
-        addToCodeSection("\n'" + c.getName() + "'");
-      } else {
-        addToCodeSection("\n", parserHelper.getLexSymbolName(c.getName()));
-      }
+      addToCodeSection("\n", parserHelper.getLexSymbolName(c.getName()));
 
       if (embeddedJavaCode) {
         String temp1 = "";
@@ -337,7 +342,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
       } else if (grammarInfo.getKeywordRules().contains(x.getName())) {
         addToCodeSection(parserHelper.getKeyRuleName(x.getName()));
       } else {
-        addToCodeSection("'" + x.getName() + "'");
+        addToCodeSection(parserHelper.getLexSymbolName(x.getName()));
       }
 
       if (embeddedJavaCode) {
@@ -514,12 +519,8 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
     String rulename;
     if (ast.getName().isEmpty()) {
       rulename = "";
-    } else if (grammarInfo.isKeyword(ast.getName(), grammarEntry)) {
-      if (grammarInfo.getKeywordRules().contains(ast.getName())) {
+    } else if (grammarInfo.isKeyword(ast.getName(), grammarEntry) && grammarInfo.getKeywordRules().contains(ast.getName())) {
         rulename = parserHelper.getKeyRuleName(ast.getName());
-      } else {
-        rulename = "'" + ast.getName() + "'";
-      }
     } else {
       rulename = parserHelper.getLexSymbolName(ast.getName().intern());
     }
@@ -763,16 +764,6 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
     }
 
     endCodeSection();
-  }
-
-  /**
-   * Print end-of-file token, which is simply an EOF
-   *
-   * @param a
-   */
-  @Override
-  public void visit(ASTRuleComponent a) {
-    addToAntlrCode("EOF");
   }
 
   @Override
@@ -1117,7 +1108,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
     addToCodeSection("(");
     String rulename = "";
     if (grammarInfo.isKeyword(keyword.getName(), grammarEntry)) {
-      rulename = "'" + keyword.getName() + "'";
+      rulename = parserHelper.getLexSymbolName(keyword.getName());
     }
 
     // No actions in predicates

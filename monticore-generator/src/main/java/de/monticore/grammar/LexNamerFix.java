@@ -1,31 +1,30 @@
+// (c) https://github.com/MontiCore/monticore
+
 /* (c) https://github.com/MontiCore/monticore */
-
 package de.monticore.grammar;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.lang3.StringUtils;
 
-/**
- * Class generates human readable names for Lexersymbols
- * 
- */
-public class LexNamer {
-  
-  protected int constantCounter = 0;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
-  protected int lexCounter = 0;
-  
-  protected Map<String, String> usedLex = new HashMap<String, String>();
-  
-  protected Map<String, String> usedConstants = new HashMap<String, String>();
-  
-  protected static Map<String, String> goodNames = null;
-  
+// TODO Delete after release 7.2.0
+@Deprecated
+public class LexNamerFix extends LexNamer {
+
+  private int constantCounter = 0;
+
+  private int lexCounter = 0;
+
+  private Map<String, String> usedLex = new HashMap<String, String>();
+
+  private Map<String, String> usedConstants = new HashMap<String, String>();
+
+  private static Map<String, String> goodNames = null;
+
   public static Map<String, String> getGoodNames() {
     if (goodNames == null) {
       goodNames = new HashMap<String, String>();
@@ -55,7 +54,7 @@ public class LexNamer {
       goodNames.put(":", "COLON");
       goodNames.put("!", "EXCLAMATIONMARK");
       goodNames.put("^", "ROOF");
-      
+
       // Don't change the following, unless you change Grammar2Antlr too
       goodNames.put("(", "LPAREN");
       goodNames.put(")", "RPAREN");
@@ -66,7 +65,7 @@ public class LexNamer {
     }
     return goodNames;
   }
-  
+
   /**
    * Returns a good name for the lex symbol or ""
    */
@@ -92,11 +91,11 @@ public class LexNamer {
     return "";
 
   }
-  
+
   /**
    * Returns Human-Readable, antlr conformed name for a lexsymbols nice names for common tokens
    * (change constructor to add tokenes) LEXi where i is number for unknown ones
-   * 
+   *
    * @param sym lexer symbol
    * @return Human-Readable, antlr conformed name for a lexsymbols
    */
@@ -104,19 +103,19 @@ public class LexNamer {
     if (usedLex.containsKey(sym)) {
       return usedLex.get(sym);
     }
-    
+
     String goodName = createGoodName(sym);
-    if (goodName.isEmpty() && grammarSymbol.getProd(goodName).isPresent()) {
-      goodName = "_LEXNAME" + lexCounter++;
+    if (goodName.isEmpty() || grammarSymbol.getProd(goodName).isPresent()) {
+      goodName = "LEXNAME" + lexCounter++;
     }
     usedLex.put(sym, goodName);
     Log.debug("Using lexer symbol " + goodName + " for symbol '" + sym + "'", "LexNamer");
     return goodName;
   }
-  
+
   public String getConstantName(String sym) {
     String s = sym.intern();
-    
+
     if (!usedConstants.containsKey(s)) {
       String goodName = createGoodName(s);
       if (!goodName.isEmpty()) {
@@ -126,14 +125,14 @@ public class LexNamer {
         usedConstants.put(s, ("CONSTANT" + constantCounter++).intern());
       }
     }
-    
+
     String name = usedConstants.get(sym.intern());
     Log.debug("Using lexer constant " + name + " for symbol '" + s + "'", "LexNamer");
-    
+
     return name;
   }
 
-  protected String convertKeyword(String key)  {
+  private String convertKeyword(String key)  {
     key = StringUtils.replace(key, "\\\"", "\"");
     key = StringUtils.replace(key, "'", "\\'");
     return key;

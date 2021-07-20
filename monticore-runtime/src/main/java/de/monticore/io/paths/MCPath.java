@@ -8,9 +8,9 @@ import de.monticore.utils.Names;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.filefilter.RegexFileFilter;
 
-import java.io.IOException;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -27,10 +27,6 @@ import java.util.stream.Collectors;
 public final class MCPath {
 
   protected final Map<URLClassLoader, URL> classloaderMap = new LinkedHashMap<>();
-
-  public MCPath(ModelPath mp) {
-    this(mp.getFullPathOfEntries());
-  }
 
   public MCPath() { }
 
