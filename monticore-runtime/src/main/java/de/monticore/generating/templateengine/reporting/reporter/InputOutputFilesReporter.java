@@ -28,6 +28,7 @@ import java.util.regex.Matcher;
  * files.
  *
  */
+@Deprecated
 public class InputOutputFilesReporter extends AReporter {
   
   public static final String SIMPLE_FILE_NAME = "IncGenCheckMaven";
