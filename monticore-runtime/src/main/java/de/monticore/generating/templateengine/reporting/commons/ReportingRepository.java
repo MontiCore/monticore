@@ -60,11 +60,10 @@ public class ReportingRepository {
     Reflections.log = new Helper();
     Reflections helper = new Reflections(new ConfigurationBuilder()
             .addClassLoader(ClasspathHelper.contextClassLoader())
-            .setUrls(ClasspathHelper.forPackage(
-                    "", ClasspathHelper.contextClassLoader(),
-                    ClasspathHelper.staticClassLoader()))
+            .addUrls(ClasspathHelper.forClassLoader())
+            .addUrls(ClasspathHelper.forPackage(""))
             .setScanners(new ResourcesScanner()));
-    
+
     this.allTemplateNames = helper.getResources(Pattern.compile(".*\\.ftl"));
   }
   
