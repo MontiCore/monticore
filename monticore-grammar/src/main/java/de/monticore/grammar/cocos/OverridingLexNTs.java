@@ -36,7 +36,7 @@ public class OverridingLexNTs implements GrammarASTMCGrammarCoCo {
     }
   }
   
-  private void doCheck(Optional<ProdSymbol> prodSymbol, ASTLexProd lexProd) {
+  protected void doCheck(Optional<ProdSymbol> prodSymbol, ASTLexProd lexProd) {
     if (prodSymbol.isPresent() && prodSymbol.get().isIsLexerProd()
         && !((ASTLexProd) prodSymbol.get().getAstNode()).getTypeList()
             .equals(lexProd.getTypeList())) {

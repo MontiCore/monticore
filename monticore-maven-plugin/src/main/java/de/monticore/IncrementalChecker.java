@@ -467,19 +467,19 @@ public class IncrementalChecker {
   protected static class InputOutputStory {
 
     /* The actual input model of this story. */
-    private final InputStory mainInputStory;
+    protected final InputStory mainInputStory;
 
     /* All other input dependencies of the main model. */
-    private final Map<String, InputStory> inputStories;
+    protected final Map<String, InputStory> inputStories;
 
     /* All user template stories of the main model. */
-    private final Set<String> templateStories;
+    protected final Set<String> templateStories;
 
     /* All handwritten file stories of the main model. */
-    private final Set<String> hwcStories;
+    protected final Set<String> hwcStories;
 
     /* All output stories of the main model. */
-    private final Set<String> outputStories;
+    protected final Set<String> outputStories;
 
     /**
      * Constructor for de.monticore.incremental.InputOutputStory
@@ -507,14 +507,14 @@ public class IncrementalChecker {
 
     /* The (optional) parent path for secondary inputs (e.g., dependencies and
      * handwritten files). */
-    private final String parentPath;
+    protected final String parentPath;
 
     /* The (qualified) input path for secondary inputs and the full path for
      * main inputs. */
-    private final String inputPath;
+    protected final String inputPath;
 
     /* Denotes the state of the input story (e.g., missing, md5 hash, ...). */
-    private final String state;
+    protected final String state;
 
     /**
      * Constructor for de.monticore.IncrementalChecker.InputStory

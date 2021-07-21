@@ -34,9 +34,9 @@ import java.util.stream.Collectors;
  */
 public class FileReaderWriter {
 
-  private static FileReaderWriter INSTANCE = null;
+  protected static FileReaderWriter INSTANCE = null;
 
-  private Charset charset;
+  protected Charset charset;
 
   /**
    * Sets the encoding for all subsequent operations until another encoding is assigned.
@@ -74,7 +74,7 @@ public class FileReaderWriter {
     INSTANCE = instance;
   }
 
-  private static FileReaderWriter getFileReaderWriter(){
+  protected static FileReaderWriter getFileReaderWriter(){
     if(null == INSTANCE){
       init();
     }

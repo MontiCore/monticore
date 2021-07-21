@@ -15,14 +15,14 @@ public abstract class APkg {
   /**
    * Maps name of subpackage to subpackage
    */
-  private Map<String, Pkg> subPkgs = new HashMap<String, Pkg>();
+  protected Map<String, Pkg> subPkgs = new HashMap<String, Pkg>();
   
   /**
    * Maps fullName of Element ({@link Element#getFullName()}) to Element
    */
-  private Map<String, Element> elements = new HashMap<String, Element>();
+  protected Map<String, Element> elements = new HashMap<String, Element>();
   
-  private boolean containsNonFileElement = false;
+  protected boolean containsNonFileElement = false;
   
   /**
   * Add the provided element to this package. It can only exist one element per fullName ({@link Element#getFullName()})

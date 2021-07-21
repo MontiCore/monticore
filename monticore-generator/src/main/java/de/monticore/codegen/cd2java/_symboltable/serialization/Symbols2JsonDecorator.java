@@ -116,7 +116,7 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
 
   protected ASTCDAttribute createTraverserAttribute(String traverserFullName) {
     return getCDAttributeFacade()
-            .createAttribute(PRIVATE.build(), traverserFullName, "traverser");
+            .createAttribute(PROTECTED.build(), traverserFullName, "traverser");
   }
 
   protected List<ASTCDConstructor> createConstructors(String millName, String traverserFullName, String symbolTablePrinterName, List<DiagramSymbol> superGrammars) {

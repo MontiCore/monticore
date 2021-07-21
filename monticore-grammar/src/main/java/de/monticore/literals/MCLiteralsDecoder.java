@@ -180,7 +180,7 @@ public class MCLiteralsDecoder {
     return Double.parseDouble(s);
   }
   
-  private static String removeUnderscores(String s) {
+  protected static String removeUnderscores(String s) {
     if (s.contains("_")) {
       
       if (s.indexOf("_") == 0) {

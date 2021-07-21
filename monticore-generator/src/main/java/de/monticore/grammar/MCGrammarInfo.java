@@ -38,45 +38,45 @@ public class MCGrammarInfo {
   /**
    * Keywords of the processed grammar and its super grammars
    */
-  private Set<String> keywords = Sets.newLinkedHashSet();
+  protected Set<String> keywords = Sets.newLinkedHashSet();
   
   /**
    * Lexer patterns
    */
-  private Map<MCGrammarSymbol, List<Pattern>> lexerPatterns = new HashMap<>();
+  protected Map<MCGrammarSymbol, List<Pattern>> lexerPatterns = new HashMap<>();
   
-  private Collection<String> leftRecursiveRules = new HashSet<>();
+  protected Collection<String> leftRecursiveRules = new HashSet<>();
   
   /**
    * Additional java code for parser defined in antlr concepts of the processed
    * grammar and its super grammars
    */
-  private List<String> additionalParserJavaCode = new ArrayList<String>();
+  protected List<String> additionalParserJavaCode = new ArrayList<String>();
   
   /**
    * Additional java code for lexer defined in antlr concepts of the processed
    * grammar and its super grammars
    */
-  private List<String> additionalLexerJavaCode = new ArrayList<String>();
+  protected List<String> additionalLexerJavaCode = new ArrayList<String>();
   
   /**
    * Predicates
    */
-  private ArrayListMultimap<String, PredicatePair> predicats = ArrayListMultimap.create();
+  protected ArrayListMultimap<String, PredicatePair> predicats = ArrayListMultimap.create();
   
   /**
    * Internal: LexNamer for naming lexer symbols in the antlr source code
    */
-  private LexNamer lexNamer = new LexNamerFix();
+  protected LexNamer lexNamer = new LexNamerFix();
 
-  private Map<String, String> splitRules = Maps.newHashMap();
+  protected Map<String, String> splitRules = Maps.newHashMap();
 
-  private List<String> keywordRules = Lists.newArrayList();
+  protected List<String> keywordRules = Lists.newArrayList();
 
   /**
    * The symbol of the processed grammar
    */
-  private MCGrammarSymbol grammarSymbol;
+  protected MCGrammarSymbol grammarSymbol;
   
   public MCGrammarInfo(MCGrammarSymbol grammarSymbol) {
     this.grammarSymbol = grammarSymbol;
@@ -90,7 +90,7 @@ public class MCGrammarInfo {
     addLeftRecursiveRules();
   }
 
-  private void addSplitRule(String s) {
+  protected void addSplitRule(String s) {
     String name = "";
     for (char c:s.toCharArray()) {
       name += getLexNamer().getConstantName(String.valueOf(c));
@@ -113,7 +113,7 @@ public class MCGrammarInfo {
    * the super rule by using addSubrule
    *
    */
-  private void addSubRules() {
+  protected void addSubRules() {
     Set<MCGrammarSymbol> grammarsToHandle = Sets
         .newLinkedHashSet(Arrays.asList(grammarSymbol));
     grammarsToHandle.addAll(MCGrammarSymbolTableHelper.getAllSuperGrammars(grammarSymbol));
@@ -163,13 +163,13 @@ public class MCGrammarInfo {
   }
   
   
-  private void addSubrule(String superrule, String subrule, ASTRuleReference ruleReference) {
+  protected void addSubrule(String superrule, String subrule, ASTRuleReference ruleReference) {
     PredicatePair subclassPredicatePair = new PredicatePair(subrule, ruleReference);
     predicats.put(superrule, subclassPredicatePair);
   }
   
 
-  private Collection<String> addLeftRecursiveRuleForProd(ASTClassProd ast) {
+  protected Collection<String> addLeftRecursiveRuleForProd(ASTClassProd ast) {
     List<ASTProd> superProds = TransformationHelper.getAllSuperProds(ast);
     Collection<String> names = new ArrayList<>();
     superProds.forEach(s -> names.add(s.getName()));
@@ -183,7 +183,7 @@ public class MCGrammarInfo {
     return Lists.newArrayList();
   }
   
-  private void addLeftRecursiveRules() {
+  protected void addLeftRecursiveRules() {
     Set<MCGrammarSymbol> grammarsToHandle = Sets
         .newLinkedHashSet(Arrays.asList(grammarSymbol));
     grammarsToHandle.addAll(MCGrammarSymbolTableHelper.getAllSuperGrammars(grammarSymbol));
@@ -222,7 +222,7 @@ public class MCGrammarInfo {
     return this.additionalLexerJavaCode;
   }
   
-  private void addHWAntlrCode() {
+  protected void addHWAntlrCode() {
     // Get Antlr hwc
     Set<MCGrammarSymbol> grammarsToHandle = Sets
         .newLinkedHashSet(Arrays.asList(grammarSymbol));
@@ -244,14 +244,14 @@ public class MCGrammarInfo {
   /**
    * @param action the java code to add
    */
-  private void addAdditionalParserJavaCode(ASTJavaCodeExt action) {
+  protected void addAdditionalParserJavaCode(ASTJavaCodeExt action) {
     additionalParserJavaCode.add(ParserGeneratorHelper.getText(action));
   }
   
   /**
    * @param action the java code to add
    */
-  private void addAdditionalLexerJavaCode(ASTJavaCodeExt action) {
+  protected void addAdditionalLexerJavaCode(ASTJavaCodeExt action) {
     additionalLexerJavaCode.add(ParserGeneratorHelper.getText(action));
   }
   
@@ -326,7 +326,7 @@ public class MCGrammarInfo {
   /**
    * Iterates over all Rules to find all keywords
    */
-  private void findAllKeywords() {
+  protected void findAllKeywords() {
     for (ProdSymbol ruleSymbol : grammarSymbol.getProdsWithInherited().values()) {
       if (ruleSymbol.isParserProd()) {
         if (ruleSymbol.isPresentAstNode() && ruleSymbol.getAstNode() instanceof ASTClassProd) {
@@ -354,12 +354,12 @@ public class MCGrammarInfo {
     
   }
   
-  private void buildLexPatterns() {
+  protected void buildLexPatterns() {
     buildLexPatterns(grammarSymbol);
     grammarSymbol.getSuperGrammarSymbols().forEach(g -> buildLexPatterns(g));
   }
   
-  private void buildLexPatterns(MCGrammarSymbol grammar) {
+  protected void buildLexPatterns(MCGrammarSymbol grammar) {
     List<Pattern> patterns = lexerPatterns.get(grammar);
     if (patterns == null) {
       patterns = new ArrayList<>();
@@ -394,11 +394,11 @@ public class MCGrammarInfo {
   }
 
 
-  private boolean mustBeKeyword(String rule) {
+  protected boolean mustBeKeyword(String rule) {
     return keywords.contains(rule);
   }
 
-  private class TerminalVisitor implements GrammarVisitor2 {
+  protected class TerminalVisitor implements GrammarVisitor2 {
 
     TerminalVisitor(Optional<MCGrammarSymbol> refGrammarSymbol) {
       this.refGrammarSymbol = refGrammarSymbol;

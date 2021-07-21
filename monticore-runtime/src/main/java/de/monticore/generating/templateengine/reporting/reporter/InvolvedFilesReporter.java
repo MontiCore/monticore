@@ -29,19 +29,19 @@ public class InvolvedFilesReporter extends AReporter {
   
   public static final String PARENT_FILE_SEPARATOR = "!/";
   
-  private List<String> inputFiles = Lists.newArrayList();
+  protected List<String> inputFiles = Lists.newArrayList();
   
-  private List<String> outputFiles = Lists.newArrayList();
+  protected List<String> outputFiles = Lists.newArrayList();
   
-  private Set<String> checkedFiles = Sets.newHashSet();
+  protected Set<String> checkedFiles = Sets.newHashSet();
   
-  private Map<Path, Path> modelToArtifactMap = new HashMap<>();
+  protected Map<Path, Path> modelToArtifactMap = new HashMap<>();
   
-  private String outputDirectory = "";
+  protected String outputDirectory = "";
   
-  private Optional<String> inputFile = Optional.empty();
+  protected Optional<String> inputFile = Optional.empty();
   
-  private Optional<Path> qualifiedInputFile = Optional.empty();
+  protected Optional<Path> qualifiedInputFile = Optional.empty();
   
   /**
    * Constructor for de.monticore.generating.templateengine.reporting.reporter.
@@ -81,7 +81,7 @@ public class InvolvedFilesReporter extends AReporter {
   
   public static final String EOF = "\n================================= EOF =================================";
   
-  private void writeFooter() {
+  protected void writeFooter() {
     writeLine(EOF);
   }
 
@@ -162,12 +162,12 @@ public class InvolvedFilesReporter extends AReporter {
     }
   }
   
-  private String format(String fileName) {
+  protected String format(String fileName) {
     fileName = fileName.replace('\\', '/');
     return fileName.startsWith("file:/") ? fileName.substring(6) : fileName;
   }
   
-  private void writeContent() {
+  protected void writeContent() {
     writeInputFilesHeading();
     inputFiles.forEach(f -> writeLine(f));
     

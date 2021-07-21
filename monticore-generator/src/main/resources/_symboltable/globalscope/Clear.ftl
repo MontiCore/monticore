@@ -10,4 +10,5 @@ ${tc.signature("resolverMethodList", "symbolList")}
   this.symbolPath = new de.monticore.io.paths.MCPath();
   this.subScopes.clear();
   this.symbolDeSers.clear();
+  this.fileExt = ".*sym";
   init();

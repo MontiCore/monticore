@@ -17,7 +17,7 @@ public class MCCommonStatementsSTCompleteTypes implements MCCommonStatementsVisi
     symbol.setType(createTypeLoader(ast.getMCType()));
   }
 
-  private SymTypeExpression createTypeLoader(ASTMCType ast) {
+  protected SymTypeExpression createTypeLoader(ASTMCType ast) {
     FullSynthesizeFromMCFGT4Grammar synFromFull = new FullSynthesizeFromMCFGT4Grammar();
     // Start visitor
     ast.accept(synFromFull.getTraverser());

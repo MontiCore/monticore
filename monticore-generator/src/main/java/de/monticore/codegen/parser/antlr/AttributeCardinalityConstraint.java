@@ -117,7 +117,7 @@ public class AttributeCardinalityConstraint {
     return ret.toString();
   }
 
-  private static String getCounterName(String name) {
+  protected static String getCounterName(String name) {
     return "_mccounter" + name;
   }
 
@@ -128,7 +128,7 @@ public class AttributeCardinalityConstraint {
    * @param ast
    * @return generated error code suffix in format "xddd" where d is a decimal.
    */
-  private String getGeneratedErrorCode(ASTNode ast) {
+  protected String getGeneratedErrorCode(ASTNode ast) {
     int hashCode = 0;
     // If there is an ast-name then always generate the same error code.
 

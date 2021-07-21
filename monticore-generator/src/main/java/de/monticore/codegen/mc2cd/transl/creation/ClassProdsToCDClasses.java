@@ -26,7 +26,7 @@ public class ClassProdsToCDClasses implements
     return rootLink;
   }
   
-  private void createClassProdToCDClassLinks(Link<ASTMCGrammar, ASTCDDefinition> link) {
+  protected void createClassProdToCDClassLinks(Link<ASTMCGrammar, ASTCDDefinition> link) {
     for (ASTClassProd classProd : link.source().getClassProdList()) {
       ASTCDClass cdClass = CD4AnalysisMill.cDClassBuilder().
               setModifier(CD4AnalysisMill.modifierBuilder().setPublic(true).build())

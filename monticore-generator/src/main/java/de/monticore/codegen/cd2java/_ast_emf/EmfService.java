@@ -161,7 +161,7 @@ public class EmfService extends AbstractService<EmfService> {
     return astCDInterface;
   }
 
-  private List<ASTCDAttribute> removeInheritedAttributes(List<ASTCDAttribute> astcdAttributeList) {
+  protected List<ASTCDAttribute> removeInheritedAttributes(List<ASTCDAttribute> astcdAttributeList) {
     return astcdAttributeList
         .stream()
         .filter(x -> !isInheritedAttribute(x))
@@ -252,7 +252,7 @@ public class EmfService extends AbstractService<EmfService> {
    * @param type The input type
    * @return true if the input type is a java object type, false otherwise.
    */
-  private boolean isObjectType(ASTMCType type) {
+  protected boolean isObjectType(ASTMCType type) {
     switch (getDecorationHelper().getSimpleNativeType(type)) {
       case "Boolean":
       case "Short":

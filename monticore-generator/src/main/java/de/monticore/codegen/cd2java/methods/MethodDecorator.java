@@ -12,9 +12,9 @@ import java.util.List;
 
 public class MethodDecorator extends AbstractCreator<ASTCDAttribute, List<ASTCDMethod>> {
 
-  private final AbstractCreator<ASTCDAttribute, List<ASTCDMethod>> accessorDecorator;
+  protected final AbstractCreator<ASTCDAttribute, List<ASTCDMethod>> accessorDecorator;
 
-  private final AbstractCreator<ASTCDAttribute, List<ASTCDMethod>> mutatorDecorator;
+  protected final AbstractCreator<ASTCDAttribute, List<ASTCDMethod>> mutatorDecorator;
 
   public MethodDecorator(final GlobalExtensionManagement glex, final AbstractService service) {
     this(glex, new AccessorDecorator(glex, service), new MutatorDecorator(glex));

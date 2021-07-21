@@ -15,24 +15,24 @@ import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 public class ListAccessorDecorator extends ListMethodDecorator {
 
   protected static final String GET_LIST = "public List<%s> get%sList();";
-  private static final String CONTAINS = "public boolean contains%s(Object element);";
-  private static final String CONTAINS_ALL = "public boolean containsAll%s(Collection<?> collection);";
-  private static final String IS_EMPTY = "public boolean isEmpty%s();";
-  private static final String ITERATOR = "public Iterator<%s> iterator%s();";
-  private static final String SIZE = "public int size%s();";
-  private static final String TO_ARRAY = "public %s[] toArray%s(%s[] array);";
-  private static final String TO_ARRAY_ = "public Object[] toArray%s();";
-  private static final String SPLITERATOR = "public Spliterator<%s> spliterator%s();";
-  private static final String STREAM = "public Stream<%s> stream%s();";
-  private static final String PARALLEL_STREAM = "public Stream<%s> parallelStream%s();";
-  private static final String GET = "public %s get%s(int index);";
-  private static final String INDEX_OF = "public int indexOf%s(Object element);";
-  private static final String LAST_INDEX_OF = "public int lastIndexOf%s(Object element);";
-  private static final String EQUALS = "public boolean equals%s(Object o);";
-  private static final String HASHCODE = "public int hashCode%s();";
-  private static final String LIST_ITERATOR = "public ListIterator<%s> listIterator%s();";
-  private static final String LIST_ITERATOR_ = "public ListIterator<%s> listIterator%s(int index);";
-  private static final String SUBLIST = "public List<%s> subList%s(int start, int end);";
+  protected static final String CONTAINS = "public boolean contains%s(Object element);";
+  protected static final String CONTAINS_ALL = "public boolean containsAll%s(Collection<?> collection);";
+  protected static final String IS_EMPTY = "public boolean isEmpty%s();";
+  protected static final String ITERATOR = "public Iterator<%s> iterator%s();";
+  protected static final String SIZE = "public int size%s();";
+  protected static final String TO_ARRAY = "public %s[] toArray%s(%s[] array);";
+  protected static final String TO_ARRAY_ = "public Object[] toArray%s();";
+  protected static final String SPLITERATOR = "public Spliterator<%s> spliterator%s();";
+  protected static final String STREAM = "public Stream<%s> stream%s();";
+  protected static final String PARALLEL_STREAM = "public Stream<%s> parallelStream%s();";
+  protected static final String GET = "public %s get%s(int index);";
+  protected static final String INDEX_OF = "public int indexOf%s(Object element);";
+  protected static final String LAST_INDEX_OF = "public int lastIndexOf%s(Object element);";
+  protected static final String EQUALS = "public boolean equals%s(Object o);";
+  protected static final String HASHCODE = "public int hashCode%s();";
+  protected static final String LIST_ITERATOR = "public ListIterator<%s> listIterator%s();";
+  protected static final String LIST_ITERATOR_ = "public ListIterator<%s> listIterator%s(int index);";
+  protected static final String SUBLIST = "public List<%s> subList%s(int start, int end);";
 
   public ListAccessorDecorator(final GlobalExtensionManagement glex) {
     super(glex);

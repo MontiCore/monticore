@@ -8,13 +8,13 @@ import java.util.Optional;
  */
 public class TypeCheckResult {
 
-  private Optional<SymTypeExpression> currentResult;
+  protected Optional<SymTypeExpression> currentResult;
 
-  private boolean type;
+  protected boolean type;
 
-  private boolean method;
+  protected boolean method;
 
-  private boolean field;
+  protected boolean field;
 
   public TypeCheckResult(){
     this.currentResult = Optional.empty();

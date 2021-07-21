@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
  */
 public final class MCPath {
 
-  private final Map<URLClassLoader, URL> classloaderMap = new LinkedHashMap<>();
+  protected final Map<URLClassLoader, URL> classloaderMap = new LinkedHashMap<>();
 
   public MCPath() { }
 
@@ -180,7 +180,7 @@ public final class MCPath {
     }
   }
 
-  private static void reportAmbiguity(List<URL> resolvedURLs, String path) {
+  protected static void reportAmbiguity(List<URL> resolvedURLs, String path) {
     StringBuilder ambiguityArray = new StringBuilder("{");
     String sep = "";
     for (URL url : resolvedURLs) {

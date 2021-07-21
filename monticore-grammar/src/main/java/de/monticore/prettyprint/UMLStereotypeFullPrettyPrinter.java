@@ -8,7 +8,7 @@ import de.monticore.umlstereotype._visitor.UMLStereotypeTraverser;
 
 public class UMLStereotypeFullPrettyPrinter {
 
-  private UMLStereotypeTraverser traverser;
+  protected UMLStereotypeTraverser traverser;
 
   protected IndentPrinter printer;
 

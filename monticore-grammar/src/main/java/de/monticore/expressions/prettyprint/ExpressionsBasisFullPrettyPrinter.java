@@ -8,7 +8,7 @@ import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.prettyprint.MCBasicsPrettyPrinter;
 
 public class ExpressionsBasisFullPrettyPrinter {
-  private ExpressionsBasisTraverser traverser;
+  protected ExpressionsBasisTraverser traverser;
 
   protected IndentPrinter printer;
 

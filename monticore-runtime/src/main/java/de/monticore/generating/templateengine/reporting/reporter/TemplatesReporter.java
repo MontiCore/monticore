@@ -17,15 +17,15 @@ public class TemplatesReporter extends AReporter {
   
   static final String INDENT = Layouter.getSpaceString(10);
   
-  private SortedMap<String, Integer> templateCount = new TreeMap<String, Integer>();
+  protected SortedMap<String, Integer> templateCount = new TreeMap<String, Integer>();
   
-  private SortedMap<String, Integer> hwTemplateCount = new TreeMap<String, Integer>();
+  protected SortedMap<String, Integer> hwTemplateCount = new TreeMap<String, Integer>();
   
-  private Set<String> realTemplateNames = new LinkedHashSet<>();
+  protected Set<String> realTemplateNames = new LinkedHashSet<>();
   
-  private Set<String> realHWTemplateNames = new LinkedHashSet<>();
+  protected Set<String> realHWTemplateNames = new LinkedHashSet<>();
   
-  private ReportingRepository repository;
+  protected ReportingRepository repository;
   
   public TemplatesReporter(String outputDir, String modelName, ReportingRepository repository) {
     super(outputDir
@@ -39,7 +39,7 @@ public class TemplatesReporter extends AReporter {
     // Write empty header
   }
   
-  private void writeContent() {
+  protected void writeContent() {
     writeUsedTemplates();
     writeUnusedTemplates();
     // TODO: see #1738 properly deal with handwritten template inclusion
@@ -47,7 +47,7 @@ public class TemplatesReporter extends AReporter {
     writeUnusedUSTemplates();
   }
   
-  private void writeUsedTemplates() {
+  protected void writeUsedTemplates() {
     writeLine("========================================================== Used Templates");
     writeLine("#Calls:   Template Name");
     for (Entry<String, Integer> entry : templateCount.entrySet()) {
@@ -56,7 +56,7 @@ public class TemplatesReporter extends AReporter {
     }
   }
   
-  private void writeUnusedTemplates() {
+  protected void writeUnusedTemplates() {
     writeLine("========================================================== Unused Templates");
     SortedSet<String> unusedTemplateNames = new TreeSet<String>(repository.getAllTemplateNames());
     unusedTemplateNames.removeAll(realTemplateNames);
@@ -65,7 +65,7 @@ public class TemplatesReporter extends AReporter {
     }
   }
   
-  private void writeUsedUSTemplates() {
+  protected void writeUsedUSTemplates() {
     writeLine("========================================================== Used USTemplates");
     writeLine("#Calls:   Template Name");
     for (Entry<String, Integer> entry : hwTemplateCount.entrySet()) {
@@ -74,7 +74,7 @@ public class TemplatesReporter extends AReporter {
     }
   }
   
-  private void writeUnusedUSTemplates() {
+  protected void writeUnusedUSTemplates() {
     writeLine("========================================================== Unused USTemplates");
     SortedSet<String> unusedHWTemplateNames = new TreeSet<String>(
         repository.getAllHWTemplateNames());
@@ -84,7 +84,7 @@ public class TemplatesReporter extends AReporter {
     }
   }
   
-  private void writeFooter() {
+  protected void writeFooter() {
     writeLine("========================================================== Explanation");
     writeLine("Used Templates: the list of standard template being used.");
     writeLine("Used USTemplates: the list of user specifc templates being used.");
@@ -96,7 +96,7 @@ public class TemplatesReporter extends AReporter {
     writeLine("(EOF)");
   }
   
-  private String getIndentAfterCount(String countString) {
+  protected String getIndentAfterCount(String countString) {
     String indentString = Layouter.getSpaceString(2);
     if (countString.length() < INDENT.length() + 1) {
       indentString = INDENT.substring(countString.length());

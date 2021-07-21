@@ -9,7 +9,7 @@ import de.monticore.types.mccollectiontypes._visitor.MCCollectionTypesTraverser;
 
 public class MCCollectionTypesFullPrettyPrinter extends MCBasicTypesFullPrettyPrinter {
 
-  private MCCollectionTypesTraverser traverser;
+  protected MCCollectionTypesTraverser traverser;
 
   public MCCollectionTypesFullPrettyPrinter(IndentPrinter printer){
     super(printer);

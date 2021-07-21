@@ -15,15 +15,15 @@ import java.util.Set;
 @Deprecated
 public class LexNamerFix extends LexNamer {
 
-  private int constantCounter = 0;
+  protected int constantCounter = 0;
 
-  private int lexCounter = 0;
+  protected int lexCounter = 0;
 
-  private Map<String, String> usedLex = new HashMap<String, String>();
+  protected Map<String, String> usedLex = new HashMap<String, String>();
 
-  private Map<String, String> usedConstants = new HashMap<String, String>();
+  protected Map<String, String> usedConstants = new HashMap<String, String>();
 
-  private static Map<String, String> goodNames = null;
+  protected static Map<String, String> goodNames = null;
 
   public static Map<String, String> getGoodNames() {
     if (goodNames == null) {
@@ -132,7 +132,7 @@ public class LexNamerFix extends LexNamer {
     return name;
   }
 
-  private String convertKeyword(String key)  {
+  protected String convertKeyword(String key)  {
     key = StringUtils.replace(key, "\\\"", "\"");
     key = StringUtils.replace(key, "'", "\\'");
     return key;

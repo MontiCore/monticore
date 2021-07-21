@@ -40,7 +40,7 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
    * additional flag that can be disabled to not insert a template for the build method
    * was inserted, because special implementations often only want to change the build method implementation
    */
-  private boolean printBuildMethodTemplate = true;
+  protected boolean printBuildMethodTemplate = true;
 
   public BuilderDecorator(final GlobalExtensionManagement glex,
                           final AccessorDecorator accessorDecorator,

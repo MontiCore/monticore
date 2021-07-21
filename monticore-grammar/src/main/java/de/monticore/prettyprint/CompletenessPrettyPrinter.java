@@ -11,7 +11,7 @@ public class CompletenessPrettyPrinter implements CompletenessVisitor2, Complete
 
   protected CompletenessTraverser traverser;
 
-  private IndentPrinter printer;
+  protected IndentPrinter printer;
 
   public CompletenessPrettyPrinter(IndentPrinter printer) {
     this.printer = printer;

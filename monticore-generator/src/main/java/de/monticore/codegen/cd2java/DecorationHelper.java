@@ -34,7 +34,7 @@ import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFI
 
 public class DecorationHelper extends MCBasicTypesHelper {
 
-  private static DecorationHelper decorationHelper;
+  protected static DecorationHelper decorationHelper;
 
   private DecorationHelper() {
   }

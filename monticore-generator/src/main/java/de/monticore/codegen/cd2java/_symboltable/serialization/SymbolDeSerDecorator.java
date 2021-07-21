@@ -199,7 +199,7 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
 
   //////////////////////////////// internal calculations //////////////////////////////////
 
-  private void makeMethodAbstract(ASTCDMethod method, ASTCDAttribute attr) {
+  protected void makeMethodAbstract(ASTCDMethod method, ASTCDAttribute attr) {
     generateAbstractClass = true;
     method.getModifier().setAbstract(true);
     method.add_PreComment(new Comment("  /**\n"

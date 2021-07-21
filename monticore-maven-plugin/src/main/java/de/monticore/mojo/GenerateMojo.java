@@ -39,7 +39,7 @@ public final class GenerateMojo extends AbstractMojo {
    * The current Maven project.
    */
   @Parameter(defaultValue = "${project}", readonly = true, required = true)
-  private MavenProject mavenProject;
+  protected MavenProject mavenProject;
   
   /**
    * @return mavenProject
@@ -53,7 +53,7 @@ public final class GenerateMojo extends AbstractMojo {
    * "grammar" option of MontiCore and defaults to "src/main/grammars".
    */
   @Parameter
-  private List<File> grammars;
+  protected List<File> grammars;
   
   /**
    * @return the value of the "grammars" configuration parameter.
@@ -83,7 +83,7 @@ public final class GenerateMojo extends AbstractMojo {
    * "outputDirectory" option of MontiCore.
    */
   @Parameter(defaultValue = "${project.build.directory}/generated-sources/${plugin.goalPrefix}/sourcecode")
-  private File outputDirectory;
+  protected File outputDirectory;
   
   /**
    * @return the value of the "outputDirectory" configuration parameter.
@@ -97,7 +97,7 @@ public final class GenerateMojo extends AbstractMojo {
    * "reportDirectory" option of MontiCore.
    */
   @Parameter(defaultValue = "${project.build.directory}/generated-sources/${plugin.goalPrefix}/sourcecode/reports")
-  private File reportDirectory;
+  protected File reportDirectory;
 
   /**
    * @return the value of the "outputDirectory" configuration parameter.
@@ -112,7 +112,7 @@ public final class GenerateMojo extends AbstractMojo {
    * defaults to "src/main/java".
    */
   @Parameter
-  private List<File> handcodedPaths;
+  protected List<File> handcodedPaths;
   
   /**
    * @return the value of the "targetPaths" configuration parameter.
@@ -143,7 +143,7 @@ public final class GenerateMojo extends AbstractMojo {
    * defaults to "src/main/resources".
    */
   @Parameter
-  private List<File> templatePaths;
+  protected List<File> templatePaths;
   
   /**
    * @return the value of the "templatePaths" configuration parameter.
@@ -177,7 +177,7 @@ public final class GenerateMojo extends AbstractMojo {
    * MontiCore.
    */
   @Parameter
-  private List<File> modelPaths;
+  protected List<File> modelPaths;
   
   /**
    * @return the value of the "modelPaths" configuration parameter.
@@ -242,7 +242,7 @@ public final class GenerateMojo extends AbstractMojo {
    * dependencies.
    */
   @Parameter
-  private List<String> modelPathDependencies;
+  protected List<String> modelPathDependencies;
   
   /**
    * @return modelDependencies
@@ -256,7 +256,7 @@ public final class GenerateMojo extends AbstractMojo {
    * (true by default).
    */
   @Parameter(defaultValue = "true")
-  private boolean addGrammarDirectoriesToModelPath = true;
+  protected boolean addGrammarDirectoriesToModelPath = true;
   
   /**
    * @return the value of the "addGrammarDirectoriesToModelPath" configuration
@@ -271,7 +271,7 @@ public final class GenerateMojo extends AbstractMojo {
    * modelpath (false by default).
    */
   @Parameter(defaultValue = "false")
-  private boolean addSourceDirectoriesToModelPath = false;
+  protected boolean addSourceDirectoriesToModelPath = false;
   
   /**
    * @return the value of the "addSourceDirectoriesToModelPath" configuration
@@ -286,7 +286,7 @@ public final class GenerateMojo extends AbstractMojo {
    * should be added to the modelpath (false by default).
    */
   @Parameter(defaultValue = "false")
-  private boolean addClassPathToModelPath = false;
+  protected boolean addClassPathToModelPath = false;
   
   /**
    * @return the value of the "addClassPathToModelPath" configuration parameter.
@@ -300,7 +300,7 @@ public final class GenerateMojo extends AbstractMojo {
    * (true by default).
    */
   @Parameter(defaultValue = "true")
-  private boolean addOutputDirectoryToModelPath = false;
+  protected boolean addOutputDirectoryToModelPath = false;
   
   /**
    * @return the value of the "addOutputDirectoryToModelPath" configuration
@@ -315,7 +315,7 @@ public final class GenerateMojo extends AbstractMojo {
    * scope by default).
    */
   @Parameter
-  private List<String> scopes = ImmutableList.of();
+  protected List<String> scopes = ImmutableList.of();
   
   /**
    * @return the value of the "scopes" configuration parameter.
@@ -329,7 +329,7 @@ public final class GenerateMojo extends AbstractMojo {
    * (defaults to "grammars", "grammar", "symbols").
    */
   @Parameter(defaultValue = "grammars, grammar, symbols")
-  private List<String> classifiers = ImmutableList.of();
+  protected List<String> classifiers = ImmutableList.of();
   
   /**
    * @return the value of the "classifiers" configuration parameter.
@@ -347,7 +347,7 @@ public final class GenerateMojo extends AbstractMojo {
    * absolute or relative path in the current project classpath.
    */
   @Parameter
-  private String script = null;
+  protected String script = null;
   
   /**
    * @return the value of the "script" configuration parameter.
@@ -363,7 +363,7 @@ public final class GenerateMojo extends AbstractMojo {
    * provided by the "script" parameter.
    */
   @Parameter
-  private Map<String, String> arguments = Collections.emptyMap();
+  protected Map<String, String> arguments = Collections.emptyMap();
   
   /**
    * @return the value of the "arguments" configuration parameter.
@@ -377,7 +377,7 @@ public final class GenerateMojo extends AbstractMojo {
    * bypassing the incremental check (defaults to false).
    */
   @Parameter(defaultValue = "false")
-  private boolean force = false;
+  protected boolean force = false;
   
   /**
    * @return the value of the "force" configuration parameter.
@@ -390,7 +390,7 @@ public final class GenerateMojo extends AbstractMojo {
    * Switch to skip the plugin execution. Defaults to false.
    */
   @Parameter(defaultValue = "false")
-  private boolean skip = false;
+  protected boolean skip = false;
   
   /**
    * @return whether this plugin should be skipped.

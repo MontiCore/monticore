@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
 @Deprecated
 public class ReportingRepositoryFix extends ReportingRepository {
 
-  private Set<String> allTemplateNames = Sets.newLinkedHashSet();
+  protected Set<String> allTemplateNames = Sets.newLinkedHashSet();
 
 
   @Override
@@ -45,7 +45,7 @@ public class ReportingRepositoryFix extends ReportingRepository {
   }
 
   /* This is the magic. Don't touch it ;-) */
-  private class Helper implements Logger {
+  protected class Helper implements Logger {
 
     @Override
     public boolean isTraceEnabled() {
