@@ -8,7 +8,7 @@ import de.monticore.generating.templateengine.reporting.artifacts.model.RootPkg;
 
 public abstract class AFormatter {
   
-  private String indentString = "";
+  protected String indentString = "";
   
   protected void indent() {
     indentString += "  ";

@@ -261,7 +261,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
    * @param symbolInput
    * @return
    */
-  private Map<String, Boolean> createSymbolMap(ASTCDDefinition symbolInput) {
+  protected Map<String, Boolean> createSymbolMap(ASTCDDefinition symbolInput) {
     Map<String, Boolean> symbolMap = new HashMap<>();
 
     //add local symbols
@@ -289,7 +289,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
             .toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2, LinkedHashMap::new));
   }
 
-  private void makeMethodAbstract(ASTCDMethod method, ASTCDAttribute attr) {
+  protected void makeMethodAbstract(ASTCDMethod method, ASTCDAttribute attr) {
     generateAbstractClass = true;
     method.getModifier().setAbstract(true);
     method.add_PreComment(new Comment("  /**\n"

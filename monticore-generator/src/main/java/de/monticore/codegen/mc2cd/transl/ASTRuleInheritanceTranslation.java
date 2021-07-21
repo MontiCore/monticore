@@ -43,7 +43,7 @@ public class ASTRuleInheritanceTranslation implements
     return rootLink;
   }
 
-  private void translateInterfaceProd(ASTASTRule rule, ASTCDInterface cdInterface,
+  protected void translateInterfaceProd(ASTASTRule rule, ASTCDInterface cdInterface,
       ASTMCGrammar astGrammar) {
     // translates "astextends"
     if (!rule.getASTSuperClassList().isEmpty() && !cdInterface.isPresentCDExtendUsage()) {
@@ -57,7 +57,7 @@ public class ASTRuleInheritanceTranslation implements
     }
   }
 
-  private void translateClassProd(ASTASTRule rule, ASTCDClass cdClass, ASTMCGrammar astGrammar) {
+  protected void translateClassProd(ASTASTRule rule, ASTCDClass cdClass, ASTMCGrammar astGrammar) {
     // translates "astextends"
     if (!rule.getASTSuperClassList().isEmpty() && !cdClass.isPresentCDExtendUsage()) {
       cdClass.setCDExtendUsage(CD4CodeMill.cDExtendUsageBuilder().build());

@@ -17,7 +17,7 @@ import java.util.Stack;
  * 
  */
 public class TreePrintVisitor implements IVisitor {
-  private ReportingRepository repo;
+  protected ReportingRepository repo;
   
   // output to be stored here:
   protected List<String> treeResult;

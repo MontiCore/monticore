@@ -92,7 +92,7 @@ public class DeriveSymTypeOfBitExpressions extends AbstractDeriveFromExpression 
   /**
    * helper method for the calculation of the type of the ShiftExpressions
    */
-  private Optional<SymTypeExpression> calculateTypeShift(ASTShiftExpression expr, ASTExpression right, ASTExpression left) {
+  protected Optional<SymTypeExpression> calculateTypeShift(ASTShiftExpression expr, ASTExpression right, ASTExpression left) {
     SymTypeExpression leftResult = acceptThisAndReturnSymTypeExpressionOrLogError(left, "0xA0206");
     SymTypeExpression rightResult = acceptThisAndReturnSymTypeExpressionOrLogError(right, "0xA0207");
     return calculateTypeShift(expr, leftResult, rightResult);
@@ -115,7 +115,7 @@ public class DeriveSymTypeOfBitExpressions extends AbstractDeriveFromExpression 
   /**
    * helper method for the calculation of the type of the BinaryExpressions
    */
-  private Optional<SymTypeExpression> calculateTypeBinary(ASTExpression left, ASTExpression right) {
+  protected Optional<SymTypeExpression> calculateTypeBinary(ASTExpression left, ASTExpression right) {
     SymTypeExpression leftResult = acceptThisAndReturnSymTypeExpressionOrLogError(left, "0xA0208");
     SymTypeExpression rightResult = acceptThisAndReturnSymTypeExpressionOrLogError(right, "0xA0209");
     return calculateTypeBinary(leftResult, rightResult);
@@ -166,7 +166,7 @@ public class DeriveSymTypeOfBitExpressions extends AbstractDeriveFromExpression 
   /**
    * helper method to calculate the type of the BinaryExpressions
    */
-  private Optional<SymTypeExpression> getBinaryNumericPromotion(SymTypeExpression left, SymTypeExpression right){
+  protected Optional<SymTypeExpression> getBinaryNumericPromotion(SymTypeExpression left, SymTypeExpression right){
     //only integral type - integral type
     if(left.isTypeConstant() && right.isTypeConstant()) {
       SymTypeConstant leftResult = (SymTypeConstant) left;

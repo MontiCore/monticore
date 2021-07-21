@@ -20,8 +20,7 @@ import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
-import static de.monticore.codegen.cd2java.CDModifier.PRIVATE;
-import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java.CDModifier.*;
 import static de.monticore.codegen.cd2java.DecoratorAssert.*;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
@@ -101,35 +100,35 @@ public class TraverserClassDecoratorTest extends DecoratorTestCase {
   @Test
   public void testRealThisAttribute() {
     ASTCDAttribute astcdAttribute = getAttributeBy("realThis", traverserClass);
-    assertDeepEquals(PRIVATE, astcdAttribute.getModifier());
+    assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertDeepEquals("AutomatonTraverserImplementation", astcdAttribute.getMCType());
   }
 
   @Test
   public void testAutomatonVisitorListAttribute() {
     ASTCDAttribute astcdAttribute = getAttributeBy("automatonVisitorList", traverserClass);
-    assertDeepEquals(PRIVATE, astcdAttribute.getModifier());
+    assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertListOf(AUTOMATON_VISITOR2, astcdAttribute.getMCType());
   }
 
   @Test
   public void testLexicalsVisitorListAttribute() {
     ASTCDAttribute astcdAttribute = getAttributeBy("lexicalsVisitorList", traverserClass);
-    assertDeepEquals(PRIVATE, astcdAttribute.getModifier());
+    assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertListOf(LEXICALS_VISITOR2, astcdAttribute.getMCType());
   }
 
   @Test
   public void testAutomatonHandlerAttribute() {
     ASTCDAttribute astcdAttribute = getAttributeBy("automatonHandler", traverserClass);
-    assertDeepEquals(PRIVATE, astcdAttribute.getModifier());
+    assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertOptionalOf(AUTOMATON_HANDLER, astcdAttribute.getMCType());
   }
 
   @Test
   public void testLexicalsHandlerAttribute() {
     ASTCDAttribute astcdAttribute = getAttributeBy("lexicalsHandler", traverserClass);
-    assertDeepEquals(PRIVATE, astcdAttribute.getModifier());
+    assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertOptionalOf(LEXICALS_HANDLER, astcdAttribute.getMCType());
   }
 

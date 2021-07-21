@@ -32,7 +32,7 @@ public class OverridingNTHasNoAnnotation implements GrammarASTMCGrammarCoCo {
     }
   }
 
-  private boolean hasOverrideAnno(List<ASTGrammarAnnotation> grammarAnnotationsList) {
+  protected boolean hasOverrideAnno(List<ASTGrammarAnnotation> grammarAnnotationsList) {
     for (ASTGrammarAnnotation anno : grammarAnnotationsList) {
       if (anno.isOverride()) {
         return true;

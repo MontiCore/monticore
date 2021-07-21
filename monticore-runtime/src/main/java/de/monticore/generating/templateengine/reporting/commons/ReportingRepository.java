@@ -25,28 +25,28 @@ import java.util.regex.Pattern;
  */
 public class ReportingRepository {
   
-  private IASTNodeIdentHelper astNodeIdentHelper;
+  protected IASTNodeIdentHelper astNodeIdentHelper;
   
   // save objects that have no position
-  private Map<Object, Integer> node2Ident = Maps.newHashMap();
+  protected Map<Object, Integer> node2Ident = Maps.newHashMap();
   
-  private Map<Object, String> node2Name = Maps.newHashMap();
+  protected Map<Object, String> node2Name = Maps.newHashMap();
   
   // save nodes that have a position
-  private Map<String, Integer> name2maxidSourcePos = Maps.newHashMap();
+  protected Map<String, Integer> name2maxidSourcePos = Maps.newHashMap();
   
-  private Map<Object, Integer> nodeWithSource2Ident = Maps.newHashMap();
+  protected Map<Object, Integer> nodeWithSource2Ident = Maps.newHashMap();
   
-  private Map<Object, String> nodeWithSource2Name = Maps.newHashMap();
+  protected Map<Object, String> nodeWithSource2Name = Maps.newHashMap();
   
   // save current maxID for aSTNode string
-  private Map<String, Integer> name2maxid = Maps.newHashMap();
+  protected Map<String, Integer> name2maxid = Maps.newHashMap();
   
-  private Set<String> allTemplateNames = Sets.newLinkedHashSet();
+  protected Set<String> allTemplateNames = Sets.newLinkedHashSet();
   
-  private Set<String> allHWJavaNames = Sets.newLinkedHashSet();
+  protected Set<String> allHWJavaNames = Sets.newLinkedHashSet();
   
-  private Set<String> allHWTemplateNames = Sets.newLinkedHashSet();
+  protected Set<String> allHWTemplateNames = Sets.newLinkedHashSet();
   
   public ReportingRepository(IASTNodeIdentHelper astNodeIdentHelper) {
     this.astNodeIdentHelper = astNodeIdentHelper;
@@ -68,7 +68,7 @@ public class ReportingRepository {
     this.allTemplateNames = helper.getResources(Pattern.compile(".*\\.ftl"));
   }
   
-  private String getNameFormatted(Object obj, String out, SourcePosition sourcePos) {
+  protected String getNameFormatted(Object obj, String out, SourcePosition sourcePos) {
     String pos = Layouter.sourcePos(sourcePos);
     // node has a source position
     if (!sourcePos.equals(
@@ -173,7 +173,7 @@ public class ReportingRepository {
   }
   
   /* This is the magic. Don't touch it ;-) */
-  private class Helper implements Logger {
+  protected class Helper implements Logger {
     
     @Override
     public boolean isTraceEnabled() {

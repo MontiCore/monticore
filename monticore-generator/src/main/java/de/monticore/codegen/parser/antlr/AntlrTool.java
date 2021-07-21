@@ -18,7 +18,7 @@ import java.util.Optional;
  */
 public class AntlrTool extends Tool {
   
-  private MCGrammarSymbol grammarSymbol;
+  protected MCGrammarSymbol grammarSymbol;
   
   public AntlrTool(String[] args, MCGrammarSymbol grammarSymbol) {
     super(args);
@@ -41,7 +41,7 @@ public class AntlrTool extends Tool {
    * @param message
    * @param isError
    */
-  private void createMessage(ANTLRMessage message, boolean isError) {
+  protected void createMessage(ANTLRMessage message, boolean isError) {
     // Set default position
     SourcePosition position = SourcePosition.getDefaultSourcePosition();
     

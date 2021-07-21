@@ -762,7 +762,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
    * @return True if the single interface matches the language interface name,
    *         false otherwise
    */
-  private boolean checkInterfaceNameForProd(ASTCDDefinition astcdDefinition) {
+  protected boolean checkInterfaceNameForProd(ASTCDDefinition astcdDefinition) {
     if (astcdDefinition.getCDInterfacesList().size() != 1) {
       return true;
     }

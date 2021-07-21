@@ -33,7 +33,7 @@ public class ASTConstant extends ASTConstantTOP {
     return name;
   }
 
-  private boolean matchesJavaIdentifier(String checkedString) {
+  protected boolean matchesJavaIdentifier(String checkedString) {
     if (checkedString == null || checkedString.length() == 0) {
       return false;
     }

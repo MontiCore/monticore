@@ -16,7 +16,7 @@ import java.util.Iterator;
 
 public class GrammarPrettyPrinter implements GrammarVisitor2, GrammarHandler {
 
-  private final String QUOTE = "\"";
+  protected final String QUOTE = "\"";
 
   protected GrammarTraverser traverser;
   
@@ -860,7 +860,7 @@ public class GrammarPrettyPrinter implements GrammarVisitor2, GrammarHandler {
    *
    * @param i .getIteration() value
    */
-  private void outputIteration(int i) {
+  protected void outputIteration(int i) {
     if (i == ASTConstantsGrammar.QUESTION) {
       print("?");
     }
@@ -875,15 +875,15 @@ public class GrammarPrettyPrinter implements GrammarVisitor2, GrammarHandler {
     }
   }
 
-  private void print(String o) {
+  protected void print(String o) {
     getPrinter().print(o);
   }
 
-  private void println(String o) {
+  protected void println(String o) {
     getPrinter().println(o);
   }
 
-  private void println() {
+  protected void println() {
     getPrinter().println();
   }
 

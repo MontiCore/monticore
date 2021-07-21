@@ -5,4 +5,8 @@ public class CLIConstants {
 
   public static final String CLI_SUFFIX = "CLI";
 
+  private CLIConstants(){
+
+  }
+
 }

@@ -20,19 +20,19 @@ public abstract class AbstractDecorator {
 
   protected final GlobalExtensionManagement glex;
 
-  private boolean templatesEnabled;
+  protected boolean templatesEnabled;
 
-  private final MCTypeFacade mcTypeFacade;
+  protected final MCTypeFacade mcTypeFacade;
 
-  private final CDAttributeFacade cdAttributeFacade;
+  protected final CDAttributeFacade cdAttributeFacade;
 
-  private final CDConstructorFacade cdConstructorFacade;
+  protected final CDConstructorFacade cdConstructorFacade;
 
-  private final CDMethodFacade cdMethodFacade;
+  protected final CDMethodFacade cdMethodFacade;
 
-  private final CDParameterFacade cdParameterFacade;
+  protected final CDParameterFacade cdParameterFacade;
 
-  private final DecorationHelper decorationHelper;
+  protected final DecorationHelper decorationHelper;
 
   public AbstractDecorator() {
     this(null);
@@ -74,7 +74,7 @@ public abstract class AbstractDecorator {
     this.templatesEnabled = false;
   }
 
-  private boolean templatesEnabled() {
+  protected boolean templatesEnabled() {
     return this.templatesEnabled;
   }
 

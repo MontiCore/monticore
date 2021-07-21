@@ -22,7 +22,7 @@ public class ElementFactory {
     return createElement(rootPkg, qualifiedName, extension, ElementType.HELPER);
   }
   
-  private Element createElement(RootPkg rootPkg, String qualifiedName, String extension, ElementType elementType) {
+  protected Element createElement(RootPkg rootPkg, String qualifiedName, String extension, ElementType elementType) {
     Element e = new Element();
     e.setSimpleName(ReportingNameHelper.getSimpleName(qualifiedName));
     e.setExtension(extension);

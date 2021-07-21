@@ -24,8 +24,7 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static de.monticore.codegen.cd2java.CDModifier.PRIVATE;
-import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java.CDModifier.*;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodsBy;
@@ -121,7 +120,7 @@ public class InheritanceHandlerDecoratorTest extends DecoratorTestCase {
   @Test
   public void testTraverserAttribute() {
     ASTCDAttribute astcdAttribute = getAttributeBy("traverser", handlerClass);
-    assertDeepEquals(PRIVATE, astcdAttribute.getModifier());
+    assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertDeepEquals(AUTOMATON_TRAVERSER, astcdAttribute.getMCType());
   }
 

@@ -22,7 +22,7 @@ public class ScopeRuleInheritanceTranslation implements UnaryOperator<Link<ASTMC
     return rootLink;
   }
 
-  private void translateClassProd(ASTScopeRule rule, ASTCDClass cdClass, ASTMCGrammar astGrammar) {
+  protected void translateClassProd(ASTScopeRule rule, ASTCDClass cdClass, ASTMCGrammar astGrammar) {
     if (!rule.getSuperClassList().isEmpty() && !cdClass.isPresentCDExtendUsage()) {
       cdClass.setCDExtendUsage(CD4CodeMill.cDExtendUsageBuilder().build());
     }

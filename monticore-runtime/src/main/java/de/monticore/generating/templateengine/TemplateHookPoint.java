@@ -15,9 +15,9 @@ import de.monticore.ast.ASTNode;
  */
 public class TemplateHookPoint extends HookPoint {
   
-  private final String templateName;
+  protected final String templateName;
   
-  private List<Object> templateArguments = Lists.newArrayList();
+  protected List<Object> templateArguments = Lists.newArrayList();
   
   public TemplateHookPoint(String templateName) {
     super();

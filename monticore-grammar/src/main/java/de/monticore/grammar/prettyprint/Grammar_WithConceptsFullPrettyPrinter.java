@@ -30,7 +30,7 @@ public class Grammar_WithConceptsFullPrettyPrinter {
 
   protected IndentPrinter printer;
 
-  private Grammar_WithConceptsTraverser traverser;
+  protected Grammar_WithConceptsTraverser traverser;
 
   public Grammar_WithConceptsFullPrettyPrinter(IndentPrinter printer) {
     this.printer = printer;

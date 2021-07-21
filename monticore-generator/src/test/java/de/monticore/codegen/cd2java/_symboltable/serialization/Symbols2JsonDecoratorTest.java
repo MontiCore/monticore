@@ -125,7 +125,7 @@ public class Symbols2JsonDecoratorTest extends DecoratorTestCase {
   @Test
   public void testTravererAttribute(){
     ASTCDAttribute attribute = getAttributeBy("traverser", symbolTablePrinterClass);
-    assertDeepEquals(CDModifier.PRIVATE, attribute.getModifier());
+    assertDeepEquals(CDModifier.PROTECTED, attribute.getModifier());
     assertDeepEquals(AUTOMATON_TRAVERSER, attribute.getMCType());
   }
 

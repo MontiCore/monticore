@@ -31,8 +31,8 @@ public class KeyRuleWithoutName implements GrammarASTMCGrammarCoCo {
     }
   }
 
-  private class FindKeyConstant implements GrammarVisitor2 {
-    private boolean hasKeyConstant = false;
+  protected class FindKeyConstant implements GrammarVisitor2 {
+    protected boolean hasKeyConstant = false;
 
     public boolean getResult(ASTGrammarNode ast) {
       GrammarTraverser traverser = GrammarMill.traverser();

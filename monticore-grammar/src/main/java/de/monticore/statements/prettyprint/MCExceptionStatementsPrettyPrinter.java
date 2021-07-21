@@ -139,7 +139,7 @@ public class MCExceptionStatementsPrettyPrinter implements
   }
 
 
-  private void printExceptionStatementsList(Iterator<? extends ASTMCExceptionStatementsNode> iter, String separator) {
+  protected void printExceptionStatementsList(Iterator<? extends ASTMCExceptionStatementsNode> iter, String separator) {
     // print by iterate through all items
     String sep = "";
     while (iter.hasNext()) {

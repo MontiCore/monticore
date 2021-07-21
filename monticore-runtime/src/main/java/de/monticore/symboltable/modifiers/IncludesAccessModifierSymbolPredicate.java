@@ -9,7 +9,7 @@ import de.monticore.symboltable.ISymbolPredicate;
 
 public class IncludesAccessModifierSymbolPredicate implements ISymbolPredicate {
 
-  private final AccessModifier modifier;
+  protected final AccessModifier modifier;
 
   public IncludesAccessModifierSymbolPredicate(AccessModifier modifier) {
     this.modifier = modifier;

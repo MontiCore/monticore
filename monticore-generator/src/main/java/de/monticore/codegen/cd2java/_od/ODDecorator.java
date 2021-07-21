@@ -88,7 +88,7 @@ public class ODDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClas
   }
 
   protected ASTCDAttribute createTraverserAttribute(String visitorName) {
-    ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PRIVATE.build(), visitorName, TRAVERSER);
+    ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PROTECTED.build(), visitorName, TRAVERSER);
     return attribute;
   }
 
@@ -130,7 +130,7 @@ public class ODDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClas
   protected ASTCDMethod createPrintAttributeMethod() {
     ASTCDParameter nameParam = getCDParameterFacade().createParameter(getMCTypeFacade().createStringType(), "name");
     ASTCDParameter valueParam = getCDParameterFacade().createParameter(getMCTypeFacade().createStringType(), "value");
-    ASTCDMethod printAttributeMethod = getCDMethodFacade().createMethod(PRIVATE.build(), "printAttribute", nameParam, valueParam);
+    ASTCDMethod printAttributeMethod = getCDMethodFacade().createMethod(PROTECTED.build(), "printAttribute", nameParam, valueParam);
     replaceTemplate(EMPTY_BODY, printAttributeMethod, new TemplateHookPoint("_od.PrintAttribute"));
     return printAttributeMethod;
   }
@@ -138,7 +138,7 @@ public class ODDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClas
   protected ASTCDMethod createPrintObjectMethod() {
     ASTCDParameter nameParam = getCDParameterFacade().createParameter(getMCTypeFacade().createStringType(), "objName");
     ASTCDParameter valueParam = getCDParameterFacade().createParameter(getMCTypeFacade().createStringType(), "objType");
-    ASTCDMethod printAttributeMethod = getCDMethodFacade().createMethod(PRIVATE.build(), "printObject", nameParam, valueParam);
+    ASTCDMethod printAttributeMethod = getCDMethodFacade().createMethod(PROTECTED.build(), "printObject", nameParam, valueParam);
     replaceTemplate(EMPTY_BODY, printAttributeMethod, new TemplateHookPoint("_od.PrintObject"));
     return printAttributeMethod;
   }

@@ -19,7 +19,7 @@ public class GeneratedFilesReporter extends AReporter {
   
   static final String INDENT = Layouter.getSpaceString(40);
   
-  private ReportingRepository repository;
+  protected ReportingRepository repository;
   
   public GeneratedFilesReporter(
       String outputDir,
@@ -37,7 +37,7 @@ public class GeneratedFilesReporter extends AReporter {
     writeLine("Filename                                AST-Node");
   }
   
-  private void writeFooter() {
+  protected void writeFooter() {
     writeLine("========================================================== Explanation");
     writeLine("Generated Files: the list of generated files in the order they are generated.");
     writeLine("Each file knows:");
@@ -62,7 +62,7 @@ public class GeneratedFilesReporter extends AReporter {
     writeLine(INDENT + simpleTemplateName + ".ftl");
   }
   
-  private String getIndentAfterFile(String file) {
+  protected String getIndentAfterFile(String file) {
     if (file.length() < INDENT.length() + 1) {
       return INDENT.substring(file.length());
     }

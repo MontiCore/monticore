@@ -26,7 +26,7 @@ public class JavaAndCdConformNameManipulation implements UnaryOperator<ASTCDComp
     return cdCompilationUnit;
   }
 
-  private class ManipulateVisitor implements CDBasisVisitor2 {
+  protected class ManipulateVisitor implements CDBasisVisitor2 {
 
     public CD4AnalysisTraverser getTraverser() {
       return traverser;

@@ -26,52 +26,52 @@ import com.google.common.collect.Lists;
 @Mojo(name = "script-report", defaultPhase = LifecyclePhase.SITE)
 public class ScriptResultReport extends AbstractMavenReport {
   
-  private static final String OUTPUT_NAME = "script-report";
+  protected static final String OUTPUT_NAME = "script-report";
   
   /**
    * Directory where reports will go.
    */
   @Parameter(property = "project.reporting.outputDirectory", required = true, readonly = true)
-  private String outputDirectory;
+  protected String outputDirectory;
   
   @Parameter(required = false, defaultValue = "${project.build.directory}/scripts")
-  private File scriptOutputDirectory;
+  protected File scriptOutputDirectory;
   
   /**
    * Can be used to provide paths to additional files to include as part of the script report.
    */
   @Parameter(required = false)
-  private List<File> additionalOutputs;
+  protected List<File> additionalOutputs;
   
   /**
    * Contains a list of additional executables to execute.
    */
   @Parameter(required = false)
-  private List<Executable> additionalExecutables;
+  protected List<Executable> additionalExecutables;
   
   /**
    * Controls whether the contained scripts are to be skipped.
    */
   @Parameter(defaultValue = "false", required = false)
-  private boolean skipDefaultScripts;
+  protected boolean skipDefaultScripts;
   
   @Parameter(required = false)
-  private Executable detailedErrorList;
+  protected Executable detailedErrorList;
   
   @Parameter(required = false)
-  private Executable errorList;
+  protected Executable errorList;
   
   @Parameter(required = false)
-  private Executable findDoubleFileNames;
+  protected Executable findDoubleFileNames;
   
   @Parameter(required = false)
-  private Executable ftlAnalysis;
+  protected Executable ftlAnalysis;
   
   @Parameter(defaultValue = "${project}", readonly = true)
-  private MavenProject mavenProject;
+  protected MavenProject mavenProject;
   
   @Component
-  private Renderer renderer;
+  protected Renderer renderer;
   
   @Override
   public String getOutputName() {
@@ -261,7 +261,7 @@ public class ScriptResultReport extends AbstractMavenReport {
         getSinkFactory(), getLog()).render();
   }
   
-  private void writeStreamToFile(InputStream stream, File file) {
+  protected void writeStreamToFile(InputStream stream, File file) {
     if (stream == null) {
       throw new IllegalArgumentException("0xA4087 Argument stream must not be null!");
     }

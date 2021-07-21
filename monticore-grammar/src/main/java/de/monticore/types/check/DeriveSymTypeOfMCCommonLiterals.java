@@ -22,7 +22,7 @@ public class DeriveSymTypeOfMCCommonLiterals implements MCCommonLiteralsVisitor2
     this.typeCheckResult = result;
   }
 
-  private SymTypeConstant getSymType(String type) {
+  protected SymTypeConstant getSymType(String type) {
     return new SymTypeConstant(BasicSymbolsMill.globalScope().resolveType(type).get());
   }
 

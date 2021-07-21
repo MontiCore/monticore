@@ -6,7 +6,7 @@ public enum ElementType {
   FILE("File"), HELPER("Helper"), MODEL("Model"),
   TEMPLATE("Template");
   
-  private String name;
+  protected String name;
   
   ElementType(String name) {
     this.name = name;

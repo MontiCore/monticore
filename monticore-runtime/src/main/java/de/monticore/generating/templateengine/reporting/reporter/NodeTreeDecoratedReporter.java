@@ -39,17 +39,17 @@ public class NodeTreeDecoratedReporter extends AReporter {
   
   static final String SIMPLE_FILE_NAME = "11_NodeTreeDecorated";
   
-  private ReportingRepository repository;
+  protected ReportingRepository repository;
   
-  private Map<String, Integer> nodeVisits;
+  protected Map<String, Integer> nodeVisits;
   
-  private Map<String, List<String>> astNodeExtraInfos;
+  protected Map<String, List<String>> astNodeExtraInfos;
   
-  private List<String> serializedTreeResult;
+  protected List<String> serializedTreeResult;
 
-  private ITraverser traverser;
+  protected ITraverser traverser;
 
-  private TreePrintVisitor tpv;
+  protected TreePrintVisitor tpv;
   
   public NodeTreeDecoratedReporter(String outputDir, String modelName,
       ReportingRepository repository, ITraverser traverser) {
@@ -70,7 +70,7 @@ public class NodeTreeDecoratedReporter extends AReporter {
     writeLine("========================================================== Node Tree + Extra Infos");
   }
   
-  private void writeContent(ASTNode ast) {
+  protected void writeContent(ASTNode ast) {
     if (ast == null) {
       return;
     }
@@ -81,7 +81,7 @@ public class NodeTreeDecoratedReporter extends AReporter {
     }
   }
   
-  private void writeFooter() {
+  protected void writeFooter() {
     writeLine("========================================================== Explanation");
     writeLine("Node Tree: this is the extended form: one with extra infos");
     writeLine("as sublines. The tree itself lists all AST nodes using their identifiers.");
@@ -185,7 +185,7 @@ public class NodeTreeDecoratedReporter extends AReporter {
    * @param ast
    * @return
    */
-  private void deriveTreeStructureAST(ASTNode ast) {
+  protected void deriveTreeStructureAST(ASTNode ast) {
     
     // this is a decoration of the tree at the lineend
     Map<String, String> endLineDecoration = Maps.newHashMap();
@@ -204,20 +204,20 @@ public class NodeTreeDecoratedReporter extends AReporter {
     
   }
   
-  private void resetVariables() {
+  protected void resetVariables() {
     nodeVisits.clear();
     astNodeExtraInfos.clear();
     serializedTreeResult.clear();
   }
   
-  private void callSpecificHPS(String oldTemplate, List<HookPoint> hps, ASTNode ast) {
+  protected void callSpecificHPS(String oldTemplate, List<HookPoint> hps, ASTNode ast) {
     for (HookPoint hp : hps) {
       callSpecificHP(hp, ast);
     }
     
   }
 
-  private void callSpecificHP(HookPoint hp, ASTNode ast) {
+  protected void callSpecificHP(HookPoint hp, ASTNode ast) {
     if (hp != null) {
       if (hp instanceof TemplateHookPoint) {
         String aident = compactStr(ast);
@@ -228,13 +228,13 @@ public class NodeTreeDecoratedReporter extends AReporter {
     }
   }
   
-  private void callHPS(String oldTemplate, Collection<HookPoint> hps, ASTNode ast) {
+  protected void callHPS(String oldTemplate, Collection<HookPoint> hps, ASTNode ast) {
     for (HookPoint hp : hps) {
       callHP(hp, ast);
     }
   }
   
-  private void callHP(HookPoint hp, ASTNode ast) {
+  protected void callHP(HookPoint hp, ASTNode ast) {
       if (hp != null) {
         if (hp instanceof TemplateHookPoint) {
           String aident = compactStr(ast);
@@ -246,7 +246,7 @@ public class NodeTreeDecoratedReporter extends AReporter {
     
   }
   
-  private String getHookPointValue(HookPoint hp) {
+  protected String getHookPointValue(HookPoint hp) {
     String value = null;
     if (hp != null && hp instanceof TemplateHookPoint) {
       value = ((TemplateHookPoint) hp).getTemplateName();

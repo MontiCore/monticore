@@ -12,7 +12,7 @@ public class UMLStereotypePrettyPrinter implements UMLStereotypeVisitor2, UMLSte
 
   protected UMLStereotypeTraverser traverser;
   
-  private IndentPrinter printer;
+  protected IndentPrinter printer;
   
   public UMLStereotypePrettyPrinter(IndentPrinter printer) {
     this.printer = printer;

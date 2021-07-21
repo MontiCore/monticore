@@ -6,7 +6,7 @@ public class MontiCoreFreeMarkerException extends RuntimeException {
   
   private static final long serialVersionUID = -1596687416377465351L;
   
-  private String messageForProtocol;
+  protected String messageForProtocol;
   
   /**
    * Constructor for FreeMarkerException

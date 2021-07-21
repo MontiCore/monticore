@@ -45,9 +45,9 @@ public class MontiCoreTemplateExceptionHandler implements TemplateExceptionHandl
    */
   public static final int THROW_ERROR = 4;
   
-  private static final String COMMENT_START = "/* TODO: ";
+  protected static final String COMMENT_START = "/* TODO: ";
   
-  private static final String COMMENT_END = " */";
+  protected static final String COMMENT_END = " */";
   
   /** The behavior from the handler. */
   protected final int behavior;

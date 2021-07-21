@@ -58,12 +58,12 @@ public class TemplateController {
   /**
    * General config variables that hold for all template executions
    */
-  private final GeneratorSetup config;
+  protected final GeneratorSetup config;
 
   /**
    * Name of the current template (usually fully qualified)
    */
-  private String templatename;
+  protected String templatename;
 
    /**
    * According to FreeMarker, templates don't have a "signature"
@@ -72,9 +72,9 @@ public class TemplateController {
    * And the include call allows a list of arguments that are bound to
    * these variables, when the template is executed.
    */
-  private List<Object> arguments = newArrayList();
+  protected List<Object> arguments = newArrayList();
 
-  private SimpleHash data = SimpleHashFactory.getInstance().createSimpleHash();
+  protected SimpleHash data = SimpleHashFactory.getInstance().createSimpleHash();
 
   public TemplateController(GeneratorSetup setup, String templatename) {
     this.config = setup;
@@ -564,7 +564,7 @@ public class TemplateController {
    * checks if the name seems to be already qualified: if not, adds the current
    * package (of the template it operates on)
    */
-  private String completeQualifiedName(String name) {
+  protected String completeQualifiedName(String name) {
     Log.errorIfNull(!isNullOrEmpty(name));
 
     if (name.contains(".")) {
@@ -585,7 +585,7 @@ public class TemplateController {
     return ast;
   }
 
-  private Object getValueFromData(String name) {
+  protected Object getValueFromData(String name) {
     try {
       return BeansWrapper.getDefaultInstance().unwrap(data.get(name));
     }
