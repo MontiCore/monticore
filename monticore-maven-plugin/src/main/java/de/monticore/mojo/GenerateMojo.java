@@ -6,7 +6,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import de.monticore.cli.MontiCoreStandardCLI;
-import org.apache.commons.io.filefilter.RegexFileFilter;
+
+import org.apache.commons.io.FileUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
@@ -19,7 +20,6 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -488,15 +488,10 @@ public final class GenerateMojo extends AbstractMojo {
     Set<String> grammarFiles = new HashSet<>();
     for(File directory: directories){
       if(directory.exists() && directory.isDirectory()){
-        String[] files = directory.list();
-        if(files!=null) {
-          grammarFiles.addAll(Arrays.stream(files)
-            .filter(file -> file.endsWith(".mc4"))
-            .map(file -> directory.getAbsolutePath() + "/" + file)
-            .filter(file -> new File(file).exists())
-            .collect(Collectors.toSet())
-          );
-        }
+        grammarFiles.addAll(FileUtils.listFiles(directory, new String[] { "mc4" }, true).stream()
+          .map(f -> f.getAbsolutePath())
+          .collect(Collectors.toSet())
+        );
       }
     }
     return grammarFiles;
