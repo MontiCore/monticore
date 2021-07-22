@@ -92,7 +92,33 @@ public class LexNamer {
     return "";
 
   }
-  
+
+  /**
+   * Returns a good name for the lex symbol or ""
+   */
+  public static String createSimpleGoodName(String x) {
+
+    if (x.matches("[a-zA-Z][a-zA-Z_0-9]*")) {
+      return x.toUpperCase();
+    }
+
+    if (x.matches("[^a-zA-Z0-9]+")) {
+      StringBuilder ret = new StringBuilder();
+      for (int i = 0; i < x.length(); i++) {
+
+        String substring = x.substring(i, i + 1);
+        if (getGoodNames().containsKey(substring)) {
+          ret.append(getGoodNames().get(substring));
+        } else {
+          return "";
+        }
+      }
+      return ret.toString();
+    }
+    return "";
+
+  }
+
   /**
    * Returns Human-Readable, antlr conformed name for a lexsymbols nice names for common tokens
    * (change constructor to add tokenes) LEXi where i is number for unknown ones
@@ -118,7 +144,7 @@ public class LexNamer {
     String s = sym.intern();
     
     if (!usedConstants.containsKey(s)) {
-      String goodName = createGoodName(s);
+      String goodName = createSimpleGoodName(s);
       if (!goodName.isEmpty()) {
         usedConstants.put(s, goodName);
       }
