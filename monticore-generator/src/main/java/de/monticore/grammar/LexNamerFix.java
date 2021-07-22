@@ -72,6 +72,32 @@ public class LexNamerFix extends LexNamer {
   public static String createGoodName(String x) {
 
     if (x.matches("[a-zA-Z][a-zA-Z_0-9]*")) {
+      return x.toUpperCase()+Integer.toUnsignedString(x.hashCode());
+    }
+
+    if (x.matches("[^a-zA-Z0-9]+")) {
+      StringBuilder ret = new StringBuilder();
+      for (int i = 0; i < x.length(); i++) {
+
+        String substring = x.substring(i, i + 1);
+        if (getGoodNames().containsKey(substring)) {
+          ret.append(getGoodNames().get(substring));
+        } else {
+          return "";
+        }
+      }
+      return ret.toString();
+    }
+    return "";
+
+  }
+
+  /**
+   * Returns a good name for the lex symbol or ""
+   */
+  public static String createSimpleGoodName(String x) {
+
+    if (x.matches("[a-zA-Z][a-zA-Z_0-9]*")) {
       return x.toUpperCase();
     }
 
@@ -117,7 +143,7 @@ public class LexNamerFix extends LexNamer {
     String s = sym.intern();
 
     if (!usedConstants.containsKey(s)) {
-      String goodName = createGoodName(s);
+      String goodName = createSimpleGoodName(s);
       if (!goodName.isEmpty()) {
         usedConstants.put(s, goodName);
       }
