@@ -72,7 +72,7 @@ public class LexNamerFix extends LexNamer {
   public static String createGoodName(String x) {
 
     if (x.matches("[a-zA-Z][a-zA-Z_0-9]*")) {
-      return x.toUpperCase();
+      return x.toUpperCase()+Integer.toUnsignedString(x.hashCode());
     }
 
     if (x.matches("[^a-zA-Z0-9]+")) {
