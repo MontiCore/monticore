@@ -2,6 +2,7 @@
 package de.monticore.codegen.cd2java._symboltable.symbol;
 
 import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.cdinterfaceandenum._ast.*;
 import de.monticore.cd4codebasis._ast.*;
@@ -48,7 +49,7 @@ public class CommonSymbolInterfaceDecorator extends AbstractCreator<ASTCDCompila
     return CD4AnalysisMill.cDInterfaceBuilder()
         .setName(commonSymbolInterfaceName)
         .setModifier(PUBLIC.build())
-        .addInterface(getMCTypeFacade().createQualifiedType(I_SYMBOL))
+        .setCDExtendUsage(CD4CodeMill.cDExtendUsageBuilder().addSuperclass(getMCTypeFacade().createQualifiedType(I_SYMBOL)).build())
         .addCDMember(createAcceptTraverserMethod())
         .addAllCDMembers(createEnclosingScopeMethods(scopeInterfaceName))
         .build();

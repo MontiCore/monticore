@@ -8,7 +8,7 @@ import de.monticore.generating.templateengine.reporting.commons.ReportingReposit
 import de.monticore.generating.templateengine.reporting.reporter.IncGenCheckReporter;
 import de.monticore.generating.templateengine.reporting.reporter.IncGenGradleReporter;
 import de.monticore.generating.templateengine.reporting.reporter.InputOutputFilesReporter;
-import de.monticore.io.paths.IterablePath;
+import de.monticore.io.paths.MCPath;
 
 /**
  * Initializes and provides the set of reports desired for MontiCore to the
@@ -17,11 +17,11 @@ import de.monticore.io.paths.IterablePath;
  */
 public class MontiCoreReportsLight implements ReportManagerFactory {
 
-  private String outputDirectory;
+  protected String outputDirectory;
 
-  private IterablePath handwrittenPath;
+  protected MCPath handwrittenPath;
 
-  private IterablePath templatePath;
+  protected MCPath templatePath;
 
   /**
    * Constructor for de.monticore.MontiCoreReports
@@ -29,8 +29,8 @@ public class MontiCoreReportsLight implements ReportManagerFactory {
   protected MontiCoreReportsLight(
           String outputDirectory,
           String reportDiretory,
-          IterablePath handwrittenPath,
-          IterablePath templatePath) {
+          MCPath handwrittenPath,
+          MCPath templatePath) {
     this.outputDirectory = outputDirectory;
     this.handwrittenPath = handwrittenPath;
     this.templatePath = templatePath;
@@ -44,9 +44,7 @@ public class MontiCoreReportsLight implements ReportManagerFactory {
     MontiCoreNodeIdentifierHelper identifierHelper = new MontiCoreNodeIdentifierHelper();
     ReportingRepository repository = new ReportingRepository(identifierHelper);
     repository.initAllTemplates();
-    repository.initAllHWJava(this.handwrittenPath);
-    repository.initAllHWTemplates(this.templatePath);
-    
+
     ReportManager reports = new ReportManager(this.outputDirectory);
     
     InputOutputFilesReporter inputOutput = new InputOutputFilesReporter(this.outputDirectory);

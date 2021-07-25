@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  */
 public class MCTypeFacade {
 
-  private static final String PACKAGE_SEPARATOR = "\\.";
+  protected static final String PACKAGE_SEPARATOR = "\\.";
 
   private static MCTypeFacade MCTypeFacade;
 
@@ -261,7 +261,7 @@ public class MCTypeFacade {
     return createPrimitiveType(ASTConstantsMCBasicTypes.INT);
   }
 
-  private ASTMCPrimitiveType createPrimitiveType(int constantsType) {
+  protected ASTMCPrimitiveType createPrimitiveType(int constantsType) {
     return MCBasicTypesMill.mCPrimitiveTypeBuilder()
         .setPrimitive(constantsType)
         .build();

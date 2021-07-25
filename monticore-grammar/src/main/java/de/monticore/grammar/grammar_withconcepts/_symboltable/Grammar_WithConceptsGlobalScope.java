@@ -42,7 +42,7 @@ public class Grammar_WithConceptsGlobalScope extends Grammar_WithConceptsGlobalS
     }
   }
 
-  private ASTMCGrammar parse(String model){
+  protected ASTMCGrammar parse(String model){
     try {
       Optional<ASTMCGrammar> optAST = new Grammar_WithConceptsParser().parse(new FileReader(model));
       if(optAST.isPresent()){

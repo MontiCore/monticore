@@ -1,4 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${ast.printModifier()} ${ast.getName()}(${ast.printParametersDecl()}) ${ast.printThrowsDecl()} {
-    ${tc.include("core.EmptyBody")}
+${cdPrinter.printSimpleModifier(ast.getModifier())} ${ast.getName()}(${cdPrinter.printCDParametersDecl(ast.getCDParameterList())})
+<#if ast.isPresentCDThrowsDeclaration()> ${cdPrinter.printThrowsDecl(ast.getCDThrowsDeclaration())}</#if> {
+  ${tc.include("core.EmptyBody")}
 }

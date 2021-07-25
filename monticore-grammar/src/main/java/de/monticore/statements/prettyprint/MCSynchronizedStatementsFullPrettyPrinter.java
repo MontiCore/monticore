@@ -11,7 +11,7 @@ import de.monticore.types.prettyprint.MCBasicTypesPrettyPrinter;
 
 public class MCSynchronizedStatementsFullPrettyPrinter extends MCCommonStatementsFullPrettyPrinter {
 
-  private MCSynchronizedStatementsTraverser traverser;
+  protected MCSynchronizedStatementsTraverser traverser;
 
   public MCSynchronizedStatementsFullPrettyPrinter(IndentPrinter printer) {
     super(printer);

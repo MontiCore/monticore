@@ -12,10 +12,10 @@ import java.util.Stack;
 public class MultiplicityVisitor implements GrammarVisitor2 {
 
 
-  private Stack<ASTGrammarNode> components = new Stack<>();
-  private List<ASTGrammarNode> result = Lists.newArrayList();
+  protected Stack<ASTGrammarNode> components = new Stack<>();
+  protected List<ASTGrammarNode> result = Lists.newArrayList();
 
-  private ASTNode last;
+  protected ASTNode last;
 
   public MultiplicityVisitor(ASTGrammarNode last) {
     this.last = last;

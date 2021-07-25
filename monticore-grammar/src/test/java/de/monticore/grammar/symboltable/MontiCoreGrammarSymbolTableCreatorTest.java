@@ -13,6 +13,7 @@ import org.junit.Test;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
@@ -170,14 +171,7 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
       assertTrue(prodSymbol.getAstNode() instanceof ASTExternalProd);
     }
   }
-  
-  private void testLinkBetweenSymbolAndAst(RuleComponentSymbol prodCompSymbol) {
-    assertTrue(prodCompSymbol.isPresentAstNode());
-    assertSame(prodCompSymbol, prodCompSymbol.getAstNode().getSymbol());
-    assertSame(prodCompSymbol.getEnclosingScope(),
-        prodCompSymbol.getAstNode().getEnclosingScope());
-  }
-  
+
   @Test
   public void testGrammarTypeReferences() {
     final Grammar_WithConceptsGlobalScope globalScope = GrammarGlobalScopeTestFactory.create();
@@ -285,7 +279,22 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
     assertEquals(2, r.size());
     assertTrue(r.get(0).isIsList());
   }
-  
+
+  @Test
+  public void testTokenModes() {
+    final Grammar_WithConceptsGlobalScope globalScope = GrammarGlobalScopeTestFactory.create();
+
+    MCGrammarSymbol grammar = globalScope.resolveMCGrammar("de.monticore.Modes").orElse(null);
+    assertNotNull(grammar);
+    assertEquals("de.monticore.Modes", grammar.getFullName());
+
+    Map<String, Collection<String>> tokenModes = grammar.getTokenModesWithInherited();
+    assertEquals(3, tokenModes.size());
+    assertEquals(3, tokenModes.get(MCGrammarSymbol.DEFAULT_MODE).size());
+    assertEquals(1, tokenModes.get("Bla").size());
+    assertEquals(2, tokenModes.get("Foo").size());
+  }
+
   private int countExternalProd(MCGrammarSymbol grammar) {
     int num = 0;
     for (ProdSymbol rule : grammar.getProds()) {

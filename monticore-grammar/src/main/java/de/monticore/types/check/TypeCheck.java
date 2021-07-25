@@ -236,11 +236,11 @@ public class TypeCheck {
       return false;
     } else if (!left.isTypeConstant() && right.isNullType()){
       return true;
-    } else if(unbox(left.print()).equals(unbox(right.print()))) {
+    } else if(unbox(left.printFullName()).equals(unbox(right.printFullName()))) {
       return true;
     } else if(isSubtypeOf(right,left)) {
       return true;
-    } else if (right.print().equals(left.print())) {
+    } else if (right.printFullName().equals(left.printFullName())) {
       return true;
     } else if (left.deepEquals(right) || right.deepEquals(left)) {
       return true;
@@ -307,7 +307,7 @@ public class TypeCheck {
    * @param subType the SymTypeExpression that could be a subtype of the other SymTypeExpression
    * @param superType the SymTypeExpression that could be a supertype of the other SymTypeExpression
    */
-  private static boolean isSubtypeOfRec(SymTypeExpression subType, SymTypeExpression superType){
+  protected static boolean isSubtypeOfRec(SymTypeExpression subType, SymTypeExpression superType){
     if (!subType.getTypeInfo().getSuperTypesList().isEmpty()) {
       for (SymTypeExpression type : subType.getTypeInfo().getSuperTypesList()) {
         if(type.print().equals(superType.print())){

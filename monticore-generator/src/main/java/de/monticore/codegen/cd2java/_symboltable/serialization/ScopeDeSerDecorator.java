@@ -18,6 +18,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.io.paths.IterablePath;
+import de.monticore.io.paths.MCPath;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.se_rwth.commons.StringTransformations;
@@ -57,11 +58,11 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
 
   protected boolean generateAbstractClass;
 
-  protected IterablePath hw;
+  protected MCPath hw;
 
   public ScopeDeSerDecorator(final GlobalExtensionManagement glex,
       final SymbolTableService symbolTableService, final MethodDecorator methodDecorator,
-      VisitorService visitorService, final IterablePath hw) {
+      VisitorService visitorService, final MCPath hw) {
     super(glex);
     this.visitorService = visitorService;
     this.symbolTableService = symbolTableService;
@@ -112,7 +113,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
     ASTCDClass clazz = CD4CodeMill.cDClassBuilder()
         .setName(scopeDeSerName)
         .setModifier(PUBLIC.build())
-        .addInterface(interfaceName)
+        .setCDInterfaceUsage(CD4CodeMill.cDInterfaceUsageBuilder().addInterface(interfaceName).build())
 
         // add serialization methods
         .addCDMember(createSerializeMethod(scopeParam, s2jParam, scopeRuleAttrList))
@@ -260,7 +261,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
    * @param symbolInput
    * @return
    */
-  private Map<String, Boolean> createSymbolMap(ASTCDDefinition symbolInput) {
+  protected Map<String, Boolean> createSymbolMap(ASTCDDefinition symbolInput) {
     Map<String, Boolean> symbolMap = new HashMap<>();
 
     //add local symbols
@@ -272,9 +273,8 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
 
     //add symbols from super grammars
     for (DiagramSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
-      for (CDTypeSymbol type : ((ICDBasisScope) cdDefinitionSymbol.getEnclosingScope()).getLocalCDTypeSymbols()) {
-        if (type.isPresentAstNode() && type.getAstNode().isPresentModifier()
-            && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifier())) {
+      for (CDTypeSymbol type : symbolTableService.getAllCDTypes(cdDefinitionSymbol)) {
+        if (type.isPresentAstNode() && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifier())) {
           String name = symbolTableService
               .getSymbolFullName(type.getAstNode(), cdDefinitionSymbol);
           boolean spansScope = symbolTableService
@@ -289,7 +289,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
             .toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2, LinkedHashMap::new));
   }
 
-  private void makeMethodAbstract(ASTCDMethod method, ASTCDAttribute attr) {
+  protected void makeMethodAbstract(ASTCDMethod method, ASTCDAttribute attr) {
     generateAbstractClass = true;
     method.getModifier().setAbstract(true);
     method.add_PreComment(new Comment("  /**\n"

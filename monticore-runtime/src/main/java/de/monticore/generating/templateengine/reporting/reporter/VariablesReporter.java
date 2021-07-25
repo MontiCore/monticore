@@ -24,11 +24,11 @@ public class VariablesReporter extends AReporter {
   
   static final String SIMPLE_FILE_NAME = "07_Variables";
   
-  private Map<String, Integer> var2asmt;
+  protected Map<String, Integer> var2asmt;
   
-  private Map<String, Integer> var2adds;
+  protected Map<String, Integer> var2adds;
   
-  private List<String> templateCount;
+  protected List<String> templateCount;
   
   public VariablesReporter(String outputDir, String modelName) {
     super(outputDir + File.separator
@@ -45,7 +45,7 @@ public class VariablesReporter extends AReporter {
     writeLine("#Asmt  #Adds  Variable name");
   }
   
-  private void writeContent() {
+  protected void writeContent() {
     Set<String> allKeys = Sets.newLinkedHashSet();
     allKeys.addAll(var2adds.keySet());
     allKeys.addAll(var2asmt.keySet());
@@ -58,7 +58,7 @@ public class VariablesReporter extends AReporter {
     }
   }
   
-  private String getNumber(Map<String, Integer> map, String key) {
+  protected String getNumber(Map<String, Integer> map, String key) {
     if (map.get(key) != null) {
       return map.get(key) + "x";
     }
@@ -67,7 +67,7 @@ public class VariablesReporter extends AReporter {
     }
   }
   
-  private void writeFooter() {
+  protected void writeFooter() {
     writeLine("========================================================== Explanation");
     writeLine("Variables assigned: list all variable names that got a value during the");
     writeLine("process.");
@@ -94,7 +94,7 @@ public class VariablesReporter extends AReporter {
     }
   }
   
-  private void resetVariables() {
+  protected void resetVariables() {
     templateCount.clear();
     var2adds.clear();
     var2asmt.clear();

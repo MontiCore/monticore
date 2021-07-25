@@ -24,8 +24,9 @@ stages:
   - build
   - test
   - deploy
-  - sonar
+  - deploy_mvn
   - trigger_languages
+  - sonar
   - report
   - check
   - mirror
@@ -33,8 +34,10 @@ stages:
 build:
   stage: build
   script:
-    - "cd monticore-generator && gradle build $GRADLE_OPTS -Pci"
+    - "cd monticore-generator && gradle build $GRADLE_OPTS -Pci -i"
     - "cd .. && gradle buildMC $GRADLE_OPTS -Pci"
+  tags:
+    - gradle
   artifacts:
     paths:
       - ".gradle"
@@ -47,16 +50,6 @@ build:
   except:
     - master
       
-build_mvn_plugin:
-  stage: build
-  image: registry.git.rwth-aachen.de/monticore/container-registry/maven:3-jdk-8
-  script:
-    - "cd monticore-maven-plugin && mvn $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS install"
-  only:
-    - merge_requests
-    - branches
-  except:
-    - master
 
 test_01experiments:
   stage: test
@@ -130,10 +123,10 @@ deploy:
     - master
       
 deploy_mvn_plugin:
-  stage: deploy
+  stage: deploy_mvn
   image: registry.git.rwth-aachen.de/monticore/container-registry/maven:3-jdk-8
   dependencies:
-    - build
+    - deploy
   script:
     - "cd monticore-maven-plugin && mvn $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS deploy -Dpass=$password -Duser=$username"
   only:
@@ -142,7 +135,7 @@ deploy_mvn_plugin:
     - master
 
 sonar:
-  stage: sonar
+  stage: check
   needs: ["build"]
   dependencies:
     - build

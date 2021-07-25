@@ -13,7 +13,7 @@ import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
 import de.monticore.grammar.grammarfamily._symboltable.GrammarFamilyPhasedSTC;
 import de.monticore.grammar.grammarfamily._symboltable.IGrammarFamilyGlobalScope;
-import de.monticore.io.paths.ModelPath;
+import de.monticore.io.paths.MCPath;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
@@ -38,7 +38,7 @@ public class TestHelper {
     if (!grammar.isPresent()) {
       return Optional.empty();
     }
-    IGrammarFamilyGlobalScope symbolTable = createGlobalScope(new ModelPath(Paths.get("src/test/resources")));
+    IGrammarFamilyGlobalScope symbolTable = createGlobalScope(new MCPath(Paths.get("src/test/resources")));
     GrammarFamilyPhasedSTC stc = new GrammarFamilyPhasedSTC();
     stc.createFromAST(grammar.get());
     ASTCDCompilationUnit cdCompilationUnit = new MC2CDSymbolTranslation().apply(grammar.get());
@@ -51,7 +51,7 @@ public class TestHelper {
       return Optional.empty();
     }
     MontiCoreScript mc = new MontiCoreScript();
-    IGrammarFamilyGlobalScope symbolTable = createGlobalScope(new ModelPath(Paths.get("src/test/resources")));
+    IGrammarFamilyGlobalScope symbolTable = createGlobalScope(new MCPath(Paths.get("src/test/resources")));
     mc.createSymbolsFromAST(symbolTable, grammar.get());
     ASTCDCompilationUnit cdCompilationUnit = new MC2CDScopeTranslation().apply(grammar.get());
     return Optional.of(cdCompilationUnit);
@@ -63,22 +63,21 @@ public class TestHelper {
       return Optional.empty();
     }
     MontiCoreScript mc = new MontiCoreScript();
-    IGrammarFamilyGlobalScope symbolTable = createGlobalScope(new ModelPath(Paths.get("src/test/resources")));
+    IGrammarFamilyGlobalScope symbolTable = createGlobalScope(new MCPath(Paths.get("src/test/resources")));
     mc.createSymbolsFromAST(symbolTable, grammar.get());
     ASTCDCompilationUnit cdCompilationUnit = new MC2CDTransformation(
         new GlobalExtensionManagement()).apply(grammar.get());
     return Optional.of(cdCompilationUnit);
   }
   
-  public static IGrammarFamilyGlobalScope createGlobalScope(ModelPath modelPath) {
+  public static IGrammarFamilyGlobalScope createGlobalScope(MCPath symbolPath) {
     IGrammarFamilyGlobalScope scope = GrammarFamilyMill.globalScope();
     // reset global scope
     scope.clear();
     BasicSymbolsMill.initializePrimitives();
 
-    // Set Fileextension and ModelPath
-    scope.setFileExt("mc4");
-    scope.setModelPath(modelPath);
+    // Set ModelPath
+    scope.setSymbolPath(symbolPath);
     return scope;
   }
 

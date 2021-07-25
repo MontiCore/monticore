@@ -53,7 +53,7 @@ public class SymbolTableReporter2 extends AReporter {
     writeLine("//========================================================== Symbol Table");
   }
   
-  private void writeFooter() {
+  protected void writeFooter() {
     writeLine("//========================================================== Explanation");
     writeLine("//Shows symbol table after finishing the generation process.");
   }

@@ -116,21 +116,21 @@ public class JavaLightSTCompleteTypes implements JavaLightVisitor2 {
     }
   }
 
-  private SymTypeExpression createTypeLoader(ASTMCQualifiedName ast) {
+  protected SymTypeExpression createTypeLoader(ASTMCQualifiedName ast) {
     FullSynthesizeFromMCFGT4Grammar synFromFull = new FullSynthesizeFromMCFGT4Grammar();
     // Start visitor
     ast.accept(synFromFull.getTraverser());
     return synFromFull.getResult().orElse(new SymTypeOfNull());
   }
 
-  private SymTypeExpression createTypeLoader(ASTMCType ast) {
+  protected SymTypeExpression createTypeLoader(ASTMCType ast) {
     FullSynthesizeFromMCFGT4Grammar synFromFull = new FullSynthesizeFromMCFGT4Grammar();
     // Start visitor
     ast.accept(synFromFull.getTraverser());
     return synFromFull.getResult().orElse(new SymTypeOfNull());
   }
 
-  private SymTypeExpression createTypeLoader(ASTMCReturnType ast) {
+  protected SymTypeExpression createTypeLoader(ASTMCReturnType ast) {
     if (ast.isPresentMCType()) {
       return createTypeLoader(ast.getMCType());
     } else {

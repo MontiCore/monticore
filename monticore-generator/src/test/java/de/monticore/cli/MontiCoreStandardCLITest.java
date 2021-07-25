@@ -5,12 +5,11 @@ package de.monticore.cli;
 import de.monticore.cli.MontiCoreStandardCLI;
 import de.monticore.MontiCoreConfiguration;
 import de.monticore.generating.templateengine.reporting.Reporting;
+import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
 import de.se_rwth.commons.logging.Log;
-import org.junit.After;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.*;
 
+import static de.monticore.MontiCoreConfiguration.*;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -25,56 +24,56 @@ public class MontiCoreStandardCLITest {
    * Pretty default arguments.
    */
   static String[] simpleArgs = {
-      "-" + MontiCoreConfiguration.Options.GRAMMARS,
+      "-" + GRAMMAR,
       "src/test/resources/de/monticore/Automaton.mc4",
-      "-" + MontiCoreConfiguration.Options.MODELPATH, "src/test/resources",
-      "-" + MontiCoreConfiguration.Options.OUT, "target/test-run",
-      "-" + MontiCoreConfiguration.Options.HANDCODEDPATH, "src/test/java" };
+      "-" + MODELPATH, "src/test/resources",
+      "-" + OUT, "target/test-run",
+      "-" + HANDCODEDPATH, "src/test/java" };
   
   /**
    * Arguments activating the detailed developer logging.
    */
   static String[] devLogArgs = {
-      "-" + MontiCoreConfiguration.Options.MODELPATH, "src/test/resources",
-      "-" + MontiCoreConfiguration.Options.OUT, "target/test-run",
-      "-" + MontiCoreConfiguration.Options.GRAMMARS,
+      "-" + MODELPATH, "src/test/resources",
+      "-" + OUT, "target/test-run",
+      "-" + GRAMMAR,
       "src/test/resources/de/monticore/Automaton.mc4",
-      "-" + MontiCoreConfiguration.Options.HANDCODEDPATH, "src/test/java",
-      "-" + MontiCoreConfiguration.Options.DEV };
+      "-" + HANDCODEDPATH, "src/test/java",
+      "-" + DEV };
   
   /**
    * Arguments specifying a custom log configuration file to use.
    */
   static String[] customLogArgs = {
-      "-" + MontiCoreConfiguration.Options.GRAMMARS,
+      "-" + GRAMMAR,
       "src/test/resources/de/monticore/Automaton.mc4",
-      "-" + MontiCoreConfiguration.Options.MODELPATH, "src/test/resources",
-      "-" + MontiCoreConfiguration.Options.OUT, "target/test-run",
-      "-" + MontiCoreConfiguration.Options.HANDCODEDPATH, "src/test/java",
-      "-" + MontiCoreConfiguration.Options.CUSTOMLOG, "src/test/resources/test.logging.xml" };
+      "-" + MODELPATH, "src/test/resources",
+      "-" + OUT, "target/test-run",
+      "-" + HANDCODEDPATH, "src/test/java",
+      "-" + CUSTOMLOG, "src/test/resources/test.logging.xml" };
   
   /**
    * Arguments for using a custom Groovy script.
    */
   static String[] customScriptArgs = {
-      "-" + MontiCoreConfiguration.Options.GRAMMARS,
+      "-" + GRAMMAR,
       "src/test/resources/de/monticore/Automaton.mc4",
-      "-" + MontiCoreConfiguration.Options.MODELPATH, "src/test/resources",
-      "-" + MontiCoreConfiguration.Options.OUT, "target/test-run",
-      "-" + MontiCoreConfiguration.Options.HANDCODEDPATH, "src/test/java",
-      "-" + MontiCoreConfiguration.Options.SCRIPT, "src/test/resources/my_noemf.groovy",
+      "-" + MODELPATH, "src/test/resources",
+      "-" + OUT, "target/test-run",
+      "-" + HANDCODEDPATH, "src/test/java",
+      "-" + SCRIPT, "src/test/resources/my_noemf.groovy",
       };
   
   /**
    * Arguments for using a custom Groovy script.
    */
   static String[] customEmfScriptArgs = {
-      "-" + MontiCoreConfiguration.Options.GRAMMARS,
+      "-" + GRAMMAR,
       "src/test/resources/de/monticore/AutomatonEmf.mc4",
-      "-" + MontiCoreConfiguration.Options.MODELPATH, "src/test/resources",
-      "-" + MontiCoreConfiguration.Options.OUT, "target/test-run",
-      "-" + MontiCoreConfiguration.Options.HANDCODEDPATH, "src/test/java",
-      "-" + MontiCoreConfiguration.Options.SCRIPT, "src/test/resources/my_emf.groovy",
+      "-" + MODELPATH, "src/test/resources",
+      "-" + OUT, "target/test-run",
+      "-" + HANDCODEDPATH, "src/test/java",
+      "-" + SCRIPT, "src/test/resources/my_emf.groovy",
       };
   
   /**
@@ -82,66 +81,73 @@ public class MontiCoreStandardCLITest {
    * be reported to the user instead of silently doing nothing.
    */
   static String[] argsWithNoGrammars = {
-      "-" + MontiCoreConfiguration.Options.GRAMMARS,
+      "-" + GRAMMAR,
       "src/test/resources/monticore",
-      "-" + MontiCoreConfiguration.Options.MODELPATH, "src/test/resources",
-      "-" + MontiCoreConfiguration.Options.OUT, "target/test-run",
-      "-" + MontiCoreConfiguration.Options.HANDCODEDPATH, "src/test/java" };
+      "-" + MODELPATH, "src/test/resources",
+      "-" + OUT, "target/test-run",
+      "-" + HANDCODEDPATH, "src/test/java" };
   
   static String[] help = {
-      "-" + MontiCoreConfiguration.Options.HELP
+      "-" + HELP
   };
   
   @BeforeClass
   public static void deactivateFailQuick() {
+    Log.init();
     Log.enableFailQuick(false);
+  }
+
+  @Before
+  public void setup() {
+    GrammarFamilyMill.reset();
+    GrammarFamilyMill.init();
   }
   
   @Test
   public void testMontiCoreCLI() {
-    MontiCoreStandardCLI.main(simpleArgs);
+    new MontiCoreStandardCLI().run(simpleArgs);
     
     assertTrue(!false);
   }
   
   @Test
   public void testMontiCoreDevLogCLI() {
-    MontiCoreStandardCLI.main(devLogArgs);
+    new MontiCoreStandardCLI().run(devLogArgs);
     
     assertTrue(!false);
   }
   
   @Test
   public void testMontiCoreCustomLogCLI() {
-    MontiCoreStandardCLI.main(customLogArgs);
+    new MontiCoreStandardCLI().run(customLogArgs);
     
     assertTrue(!false);
   }
 
   @Test
   public void testMontiCoreCustomScriptCLI() {
-    MontiCoreStandardCLI.main(customScriptArgs);
+    new MontiCoreStandardCLI().run(customScriptArgs);
     
     assertTrue(!false);
   }
 
   @Test
   public void testMontiCoreCustomEmfScriptCLI() {
-    MontiCoreStandardCLI.main(customEmfScriptArgs);
+    new MontiCoreStandardCLI().run(customEmfScriptArgs);
     
     assertTrue(!false);
   }
   
   @Test
   public void testHelp() {
-    MontiCoreStandardCLI.main(help);
+    new MontiCoreStandardCLI().run(help);
 
     assertTrue(!false);
 }
   @Ignore // It's not possible to switch off fail quick (Logger in CLI)
   @Test
   public void testArgsWithNoGrammars() {
-    MontiCoreStandardCLI.main(argsWithNoGrammars);
+    new MontiCoreStandardCLI().run(argsWithNoGrammars);
     
     assertTrue(!false);
   }

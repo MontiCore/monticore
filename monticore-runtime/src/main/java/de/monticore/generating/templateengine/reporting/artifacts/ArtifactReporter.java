@@ -31,10 +31,10 @@ public class ArtifactReporter extends AReporter {
   protected RootPkg rootPkg = new RootPkg();
   
   // Nam of the dotgraph file
-  private AFormatter formatter;
+  protected AFormatter formatter;
   
   // Filters to use
-  private List<ElementType> filters = new ArrayList<ElementType>();
+  protected List<ElementType> filters = new ArrayList<ElementType>();
   
   final static String SIMPLE_FILE_NAME = "Artifacts";  
   
@@ -136,7 +136,7 @@ public class ArtifactReporter extends AReporter {
    * @param templatename
    * @return 
    */
-  private Element handleTemplate(String templatename) {
+  protected Element handleTemplate(String templatename) {
     String extension = "ftl";
     Element e = rootPkg.resolve(ReportingNameHelper.getPath(templatename),
         ReportingNameHelper.getSimpleName(templatename), extension);
@@ -176,12 +176,12 @@ public class ArtifactReporter extends AReporter {
     super.flush(node);
   }
   
-  private void resetVariables() {
+  protected void resetVariables() {
     rootPkg = new RootPkg();
     elementStack.clear();
   }
 
-  private void writeContent() {
+  protected void writeContent() {
     List<String> lines = formatter.getContent(rootPkg);
     for (String l : lines) {
       writeLine(l);
@@ -194,7 +194,7 @@ public class ArtifactReporter extends AReporter {
    * 
    * @param element
    */
-  private void createElementLink(Element element) {
+  protected void createElementLink(Element element) {
     if (!elementStack.isEmpty()) {
       elementStack.peek().addlink(element);
     }

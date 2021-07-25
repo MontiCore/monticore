@@ -52,7 +52,7 @@ public abstract class ListMethodDecorator extends AbstractCreator<ASTCDAttribute
   }
 
   protected boolean hasDerivedAttributeName(ASTCDAttribute astcdAttribute) {
-    return astcdAttribute.isPresentModifier() && astcdAttribute.getModifier().isPresentStereotype()
+    return astcdAttribute.getModifier().isPresentStereotype()
         && astcdAttribute.getModifier().getStereotype().sizeValues() > 0 &&
         astcdAttribute.getModifier().getStereotype().getValuesList()
             .stream()
@@ -67,7 +67,7 @@ public abstract class ListMethodDecorator extends AbstractCreator<ASTCDAttribute
     return typeString.substring(lastListIndex, typeString.length() - 1);
   }
 
-  private HookPoint createListImplementation(final ASTCDMethod method) {
+  protected HookPoint createListImplementation(final ASTCDMethod method) {
     String attributeName = StringUtils.uncapitalize(capitalizedAttributeNameWithOutS);
     int attributeIndex = method.getName().lastIndexOf(capitalizedAttributeNameWithOutS);
     String methodName = method.getName().substring(0, attributeIndex);

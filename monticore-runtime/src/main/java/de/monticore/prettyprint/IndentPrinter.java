@@ -29,7 +29,7 @@ public class IndentPrinter {
   // optionalBreak()-invocation
   protected boolean optionalBreak = false;
   
-  private int optionalBreakPosition = -1;
+  protected int optionalBreakPosition = -1;
   
   // StringBuilder for for content that can still be moved by indent/unindent
   protected StringBuilder linebuffer = new StringBuilder();
@@ -145,7 +145,7 @@ public class IndentPrinter {
     linebuffer.append(s);
   }
   
-  private void handleOptionalBreak() {
+  protected void handleOptionalBreak() {
     if (optionalBreak) {
       
       if (optionalBreakPosition > 0) {

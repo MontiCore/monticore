@@ -2,6 +2,7 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
@@ -42,30 +43,39 @@ public class ASTRuleInheritanceTranslation implements
     return rootLink;
   }
 
-  private void translateInterfaceProd(ASTASTRule rule, ASTCDInterface cdInterface,
+  protected void translateInterfaceProd(ASTASTRule rule, ASTCDInterface cdInterface,
       ASTMCGrammar astGrammar) {
     // translates "astextends"
+    if (!rule.getASTSuperClassList().isEmpty() && !cdInterface.isPresentCDExtendUsage()) {
+      cdInterface.setCDExtendUsage(CD4CodeMill.cDExtendUsageBuilder().build());
+    }
     for (ASTMCType superInterface : rule.getASTSuperClassList()) {
       String qualifiedSuperInterface = TransformationHelper
           .getQualifiedTypeNameAndMarkIfExternal(superInterface, astGrammar, cdInterface);
 
-      cdInterface.addInterface(TransformationHelper.createObjectType(qualifiedSuperInterface));
+      cdInterface.getCDExtendUsage().addSuperclass(TransformationHelper.createObjectType(qualifiedSuperInterface));
     }
   }
 
-  private void translateClassProd(ASTASTRule rule, ASTCDClass cdClass, ASTMCGrammar astGrammar) {
+  protected void translateClassProd(ASTASTRule rule, ASTCDClass cdClass, ASTMCGrammar astGrammar) {
     // translates "astextends"
+    if (!rule.getASTSuperClassList().isEmpty() && !cdClass.isPresentCDExtendUsage()) {
+      cdClass.setCDExtendUsage(CD4CodeMill.cDExtendUsageBuilder().build());
+    }
     for (ASTMCType superClass : rule.getASTSuperClassList()) {
       String qualifiedSuperClass = TransformationHelper
           .getQualifiedTypeNameAndMarkIfExternal(superClass, astGrammar, cdClass);
-      cdClass.setSuperclass(TransformationHelper.createObjectType(qualifiedSuperClass));
+      cdClass.getCDExtendUsage().addSuperclass(TransformationHelper.createObjectType(qualifiedSuperClass));
     }
 
     // translates "astimplements"
+    if (!rule.getASTSuperInterfaceList().isEmpty() && ! cdClass.isPresentCDInterfaceUsage()) {
+      cdClass.setCDInterfaceUsage(CD4CodeMill.cDInterfaceUsageBuilder().build());
+    }
     for (ASTMCType superInterface : rule.getASTSuperInterfaceList()) {
       String qualifiedSuperInterface = TransformationHelper
           .getQualifiedTypeNameAndMarkIfExternal(superInterface, astGrammar, cdClass);
-      cdClass.addInterface(TransformationHelper.createObjectType(qualifiedSuperInterface));
+      cdClass.getCDInterfaceUsage().addInterface(TransformationHelper.createObjectType(qualifiedSuperInterface));
     }
   }
 }

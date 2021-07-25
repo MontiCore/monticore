@@ -9,10 +9,10 @@ import com.google.common.io.Files;
 import com.google.common.io.Resources;
 import de.monticore.MontiCoreConfiguration;
 import de.monticore.MontiCoreScript;
+import de.monticore.cli.updateChecker.UpdateCheckerRunnable;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.se_rwth.commons.cli.CLIArguments;
-import de.se_rwth.commons.configuration.ConfigurationPropertiesMapContributor;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.Slf4jLog;
 import org.apache.commons.cli.*;
@@ -23,13 +23,15 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.nio.charset.Charset;
 
+import static de.monticore.MontiCoreConfiguration.*;
+
 /**
  * Command line interface for the MontiCore generator engine. Defines, handles,
  * and executes the corresponding command line options and arguments, such as
  * --help
  */
 public class MontiCoreStandardCLI {
-  
+
   /**
    * Dedicated XML file that configures the logging for users (i.e. users of 
    * the MontiCore tool) --> standard
@@ -62,6 +64,16 @@ public class MontiCoreStandardCLI {
     Grammar_WithConceptsMill.init();
     new MontiCoreStandardCLI().run(args);
   }
+
+  /**
+   * Starts a thread to check whether a newer version of monticore
+   * was released.
+   */
+  protected void runUpdateCheck() {
+    Runnable updateCheckerRunnable = new UpdateCheckerRunnable();
+    Thread updateCheckerThread = new Thread(updateCheckerRunnable);
+    updateCheckerThread.start();
+  }
   
   /**
    * Processes user input from command line and delegates to the corresponding
@@ -70,13 +82,15 @@ public class MontiCoreStandardCLI {
    * @param args The input parameters for configuring the MontiCore tool.
    */
   public void run(String[] args) {
+
+    runUpdateCheck();
   
     Options options = initOptions();
   
     try {
       // create CLI parser and parse input options from command line
-      CommandLineParser cliparser = new DefaultParser();
-      CommandLine cmd = cliparser.parse(options, args);
+      CommandLineParser cliParser = new DefaultParser();
+      CommandLine cmd = cliParser.parse(options, args);
       
       // help: when --help
       if (cmd.hasOption("h")) {
@@ -97,8 +111,7 @@ public class MontiCoreStandardCLI {
       
       // put arguments into configuration
       CLIArguments arguments = CLIArguments.forArguments(args);
-      MontiCoreConfiguration configuration = MontiCoreConfiguration.withConfiguration(
-          ConfigurationPropertiesMapContributor.fromSplitMap(arguments.asMap()));
+      MontiCoreConfiguration configuration = MontiCoreConfiguration.withCLI(cmd);
       
       // load custom or default script
       String script = loadScript(cmd);
@@ -220,7 +233,7 @@ public class MontiCoreStandardCLI {
    * @param cmd The command line instance containing the input options
    * @return The groovy configuration script as String
    */
-  private String loadScript(CommandLine cmd) {
+  protected String loadScript(CommandLine cmd) {
     String script = StringUtils.EMPTY;
     try {
       // if the user specifies a custom script to use, we check if it is
@@ -267,102 +280,102 @@ public class MontiCoreStandardCLI {
     Options options = new Options();
     
     // parse input grammars
-    options.addOption(Option.builder("g")
-        .longOpt("grammar")
+    options.addOption(Option.builder(GRAMMAR)
+        .longOpt(GRAMMAR_LONG)
         .argName("filelist")
         .hasArgs()
         .desc("Processes the source grammars (mandatory) and triggers the MontiCore generation.")
         .build());
     
     // specify custom output directory
-    options.addOption(Option.builder("o")
-        .longOpt("out")
+    options.addOption(Option.builder(OUT)
+        .longOpt(OUT_LONG)
         .argName("path")
         .hasArg()
         .desc("Optional output directory for all generated artifacts.")
         .build());
     
     // specify model path
-    options.addOption(Option.builder("mp")
-        .longOpt("modelPath")
+    options.addOption(Option.builder(MODELPATH)
+        .longOpt(MODELPATH_LONG)
         .argName("pathlist")
         .hasArgs()
         .desc("Optional list of directories or files to be included for importing other grammars.")
         .build());
     
     // specify hand-written artifacts
-    options.addOption(Option.builder("hcp")
-        .longOpt("handcodedPath")
+    options.addOption(Option.builder(HANDCODEDPATH)
+        .longOpt(HANDCODEDPATH_LONG)
         .argName("pathlist")
         .hasArgs()
         .desc("Optional list of directories to look for handwritten code to integrate.")
         .build());
     
     // specify custom output
-    options.addOption(Option.builder("sc")
-        .longOpt("script")
+    options.addOption(Option.builder(SCRIPT)
+        .longOpt(SCRIPT_LONG)
         .argName("file.groovy")
         .hasArg()
         .desc("Optional Groovy script to control the generation workflow.")
         .build());
 
     // specify custom script for hook point one
-    options.addOption(Option.builder("gh1")
-        .longOpt("groovyHook1")
+    options.addOption(Option.builder(GROOVYHOOK1)
+        .longOpt(GROOVYHOOK1_LONG)
         .argName("file.groovy")
         .hasArg()
         .desc("Optional Groovy script that is hooked into the workflow of the standard script at hook point one.")
         .build());
 
     // specify custom script for hook point two
-    options.addOption(Option.builder("gh2")
-        .longOpt("groovyHook2")
+    options.addOption(Option.builder(GROOVYHOOK2)
+        .longOpt(GROOVYHOOK2_LONG)
         .argName("file.groovy")
         .hasArg()
         .desc("Optional Groovy script that is hooked into the workflow of the standard script at hook point two.")
         .build());
 
     // specify template path
-    options.addOption(Option.builder("fp")
-        .longOpt("templatePath")
+    options.addOption(Option.builder(TEMPLATEPATH)
+        .longOpt(TEMPLATEPATH_LONG)
         .argName("pathlist")
         .hasArgs()
         .desc("Optional list of directories to look for handwritten templates to integrate.")
         .build());
 
     // specify template config
-    options.addOption(Option.builder("ct")
-        .longOpt("configTemplate")
+    options.addOption(Option.builder(CONFIGTEMPLATE)
+        .longOpt(CONFIGTEMPLATE_LONG)
         .argName("config.ftl")
         .hasArg()
         .desc("Optional template to configure the integration of handwritten templates.")
         .build());
     
     // developer level logging
-    options.addOption(Option.builder("d")
-        .longOpt("dev")
+    options.addOption(Option.builder(DEV)
+        .longOpt(DEV_LONG)
         .desc("Specifies whether developer level logging should be used (default is false)")
         .build());
     
     // change logback conf
-    options.addOption(Option.builder("cl")
-        .longOpt("customLog")
+    options.addOption(Option.builder(CUSTOMLOG)
+        .longOpt(CUSTOMLOG_LONG)
         .argName("file.xml")
         .hasArg()
         .desc("Changes the logback configuration to a customized file.")
         .build());
     
     // specify report path
-    options.addOption(Option.builder("r")
-        .longOpt("report")
+    options.addOption(Option.builder(REPORT)
+        .longOpt(REPORT_LONG)
         .argName("path")
         .hasArg(true)
         .desc("Specifies the directory for printing reports based on the given MontiCore grammars.")
         .build());
     
     // help dialog
-    options.addOption(Option.builder("h")
-        .longOpt("help")
+    options.addOption(Option.builder(HELP)
+        .longOpt(HELP_LONG)
         .desc("Prints this help dialog")
         .build());
     

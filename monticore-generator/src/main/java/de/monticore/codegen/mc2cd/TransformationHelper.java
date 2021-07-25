@@ -56,7 +56,7 @@ public final class TransformationHelper {
 
   public static final int STAR = -1;
 
-  private static List<String> reservedCdNames = Arrays.asList(
+  protected static List<String> reservedCdNames = Arrays.asList(
       // CD4A
       "derived",
       "association",
@@ -247,7 +247,7 @@ public final class TransformationHelper {
   public static String getPackageName(
       ASTCDCompilationUnit cdCompilationUnit) {
     String packageName = Names
-        .getQualifiedName(cdCompilationUnit.getPackageList());
+        .getQualifiedName(cdCompilationUnit.getCDPackageList());
     if (!packageName.isEmpty()) {
       packageName = packageName + ".";
     }
@@ -366,9 +366,6 @@ public final class TransformationHelper {
 
   public static void addStereoType(ASTCDType type, String stereotypeName,
                                    String stereotypeValue) {
-    if (!type.isPresentModifier()) {
-      type.setModifier(CD4CodeMill.modifierBuilder().build());
-    }
     addStereotypeValue(type.getModifier(),
         stereotypeName, stereotypeValue);
   }
@@ -381,40 +378,26 @@ public final class TransformationHelper {
         return;
       }
     }
-    addStereotypeValue(type.getModifier(),
-            stereotypeName, stereotypeValue);
+    addStereotypeValue(type.getModifier(), stereotypeName, stereotypeValue);
   }
 
   public static void addStereoType(ASTCDType type, String stereotypeName) {
-    if (!type.isPresentModifier()) {
-      type.setModifier(CD4CodeMill.modifierBuilder().build());
-    }
-    addStereotypeValue(type.getModifier(),
-        stereotypeName);
+    addStereotypeValue(type.getModifier(), stereotypeName);
   }
 
   public static void addStereoType(ASTCDDefinition type, String stereotypeName) {
-    if (!type.isPresentModifier()) {
-      type.setModifier(CD4CodeMill.modifierBuilder().build());
-    }
-    addStereotypeValue(type.getModifier(),
-        stereotypeName);
+     addStereotypeValue(type.getModifier(), stereotypeName);
   }
 
   public static void addStereoType(ASTCDAttribute attribute,
                                    String stereotypeName,
                                    String stereotypeValue) {
-    if (!attribute.isPresentModifier()) {
-      attribute.setModifier(CD4CodeMill.modifierBuilder().build());
-    }
-    addStereotypeValue(attribute.getModifier(),
-        stereotypeName, stereotypeValue);
+    addStereotypeValue(attribute.getModifier(), stereotypeName, stereotypeValue);
   }
 
   public static void addStereoType(ASTCDDefinition type, String stereotypeName,
                                    String stereotypeValue) {
-    addStereotypeValue(type.getModifier(),
-        stereotypeName, stereotypeValue);
+    addStereotypeValue(type.getModifier(), stereotypeName, stereotypeValue);
   }
 
   public static void addStereotypeValue(ASTModifier astModifier,
@@ -558,7 +541,7 @@ public final class TransformationHelper {
     return cv.getRuleComponents();
   }
 
-  private static class CollectRuleComponents implements GrammarVisitor2 {
+  protected static class CollectRuleComponents implements GrammarVisitor2 {
 
     public List<ASTRuleComponent> ruleComponentList = Lists.newArrayList();
 
@@ -614,7 +597,7 @@ public final class TransformationHelper {
     return MCGrammarSymbolTableHelper.getQualifiedName(symbol.getAstNode(), symbol, "AST", "");
   }
   
-  private static String getLexType(ASTNode node) {
+  protected static String getLexType(ASTNode node) {
     if (node instanceof ASTLexProd) {
       return createConvertType((ASTLexProd) node);
     }
@@ -674,7 +657,7 @@ public final class TransformationHelper {
     return ret;
   }
   
-  private static String getLexString(MCGrammarSymbol grammar, ASTLexProd lexNode) {
+  protected static String getLexString(MCGrammarSymbol grammar, ASTLexProd lexNode) {
     StringBuilder builder = new StringBuilder();
     RegExpBuilder regExp = new RegExpBuilder(builder, grammar);
     Grammar_WithConceptsTraverser traverser = Grammar_WithConceptsMill.traverser();

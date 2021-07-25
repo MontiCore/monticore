@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public class FullSynthesizeFromMCFGT4Grammar implements ISynthesize {
 
-  private MCFullGenericTypesTraverser traverser;
+  protected MCFullGenericTypesTraverser traverser;
 
   protected TypeCheckResult typeCheckResult;
 

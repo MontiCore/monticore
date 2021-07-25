@@ -20,9 +20,9 @@ public class RuleComponentsCompatible implements GrammarASTProdCoCo {
   public static final String ERROR_MSG_FORMAT = " The prod: '%s' contains different rule components with the same name: " +
       "'%s' with incompatible types: '%s' and '%s'.";
 
-  private static final String TERMINAL = "Terminal";
+  protected static final String TERMINAL = "Terminal";
 
-  private static final String NON_TERMINAL = "NonTerminal";
+  protected static final String NON_TERMINAL = "NonTerminal";
 
   @Override
   public void check(ASTProd node) {
@@ -40,7 +40,7 @@ public class RuleComponentsCompatible implements GrammarASTProdCoCo {
     }
   }
 
-  private String getRuleComponentType(RuleComponentSymbol symbol) {
+  protected String getRuleComponentType(RuleComponentSymbol symbol) {
     if (symbol.isIsTerminal()) {
       return TERMINAL;
     } else if (symbol.isIsNonterminal()) {
@@ -49,7 +49,7 @@ public class RuleComponentsCompatible implements GrammarASTProdCoCo {
     return "";
   }
 
-  private boolean areTypesCompatible(RuleComponentSymbol firstSymbol, RuleComponentSymbol secondSymbol,
+  protected boolean areTypesCompatible(RuleComponentSymbol firstSymbol, RuleComponentSymbol secondSymbol,
                                      String prodName) {
     String firstType = getRuleComponentType(firstSymbol);
     String secondType = getRuleComponentType(secondSymbol);
@@ -65,7 +65,7 @@ public class RuleComponentsCompatible implements GrammarASTProdCoCo {
     return true;
   }
 
-  private void LogError(String prodName, String ruleCompName, String firstType, String secondType) {
+  protected void LogError(String prodName, String ruleCompName, String firstType, String secondType) {
     Log.error(ERROR_CODE + String.format(ERROR_MSG_FORMAT, prodName, ruleCompName, firstType, secondType));
   }
 }

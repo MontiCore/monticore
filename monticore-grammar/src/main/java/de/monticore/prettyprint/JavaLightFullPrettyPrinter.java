@@ -16,7 +16,7 @@ import de.monticore.types.prettyprint.MCBasicTypesPrettyPrinter;
 
 public class JavaLightFullPrettyPrinter {
 
-  private JavaLightTraverser traverser;
+  protected JavaLightTraverser traverser;
 
   protected IndentPrinter printer;
 

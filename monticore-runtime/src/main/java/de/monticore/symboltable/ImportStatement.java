@@ -7,8 +7,8 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 
 public class ImportStatement {
 
-  private final String statement;
-  private final boolean isStar;
+  protected final String statement;
+  protected final boolean isStar;
 
   public ImportStatement(String statement, boolean isStar) {
     checkArgument(!isNullOrEmpty(statement), "An import statement must not be null or empty");

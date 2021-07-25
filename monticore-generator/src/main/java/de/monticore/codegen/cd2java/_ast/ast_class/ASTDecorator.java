@@ -3,6 +3,7 @@ package de.monticore.codegen.cd2java._ast.ast_class;
 
 import com.ibm.icu.text.StringTransform;
 import de.monticore.ast.ASTCNode;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
@@ -67,13 +68,17 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
 
   @Override
   public ASTCDClass decorate(final ASTCDClass originalClass, ASTCDClass changedClass) {
-    changedClass.addInterface(this.astService.getASTBaseInterface());
+    if (!changedClass.isPresentCDInterfaceUsage()) {
+      changedClass.setCDInterfaceUsage(CD4CodeMill.cDInterfaceUsageBuilder().build());
+    }
+    changedClass.getCDInterfaceUsage().addInterface(this.astService.getASTBaseInterface());
     // have to use the changed one here because this one will get the TOP prefix
     changedClass.addCDMember(createAcceptTraverserMethod(changedClass));
     changedClass.addAllCDMembers(createAcceptTraverserSuperMethods(originalClass));
     changedClass.addCDMember(getConstructMethod(originalClass));
-    if (!originalClass.isPresentSuperclass()) {
-      changedClass.setSuperclass(this.getMCTypeFacade().createQualifiedType(ASTCNode.class));
+    if (!originalClass.isPresentCDExtendUsage()) {
+      changedClass.setCDExtendUsage(
+              CD4CodeMill.cDExtendUsageBuilder().addSuperclass(this.getMCTypeFacade().createQualifiedType(ASTCNode.class)).build());
     }
 
     List<ASTCDAttribute> symbolAttributes = symbolDecorator.decorate(originalClass);
@@ -146,7 +151,7 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
   protected ASTCDMethod getConstructMethod(ASTCDClass astClass) {
     ASTCDMethod constructMethod;
     ASTMCType classType = this.getMCTypeFacade().createQualifiedType(astClass.getName());
-    if (astClass.isPresentModifier() && astClass.getModifier().isAbstract()) {
+    if (astClass.getModifier().isAbstract()) {
       constructMethod = this.getCDMethodFacade().createMethod(PROTECTED_ABSTRACT.build(), classType, ASTConstants.CONSTRUCT_METHOD);
     } else {
       constructMethod = this.getCDMethodFacade().createMethod(PROTECTED.build(), classType, ASTConstants.CONSTRUCT_METHOD);

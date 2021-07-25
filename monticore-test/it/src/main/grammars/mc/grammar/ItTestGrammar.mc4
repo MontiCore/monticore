@@ -377,12 +377,7 @@ component grammar ItTestGrammar extends mc.grammar.literals.ItTestLiterals {
      "[" Constant ("|" Constant )* "]"
      (iteration:["?"|"*"|"+"])? ;
         
-          
-  /** End of file as EOF keyword */
-  Eof implements RuleComponent =
-    "EOF";
- 
-  /** MCAnything is a special lexer production which represents 
+  /** MCAnything is a special lexer production which represents
   */
   MCAnything implements RuleComponent =
     "MCA"; 

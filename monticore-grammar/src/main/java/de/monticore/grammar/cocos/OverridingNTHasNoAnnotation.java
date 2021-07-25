@@ -18,7 +18,7 @@ public class OverridingNTHasNoAnnotation implements GrammarASTMCGrammarCoCo {
 
   public static final String ERROR_CODE = "0xA4098";
 
-  public static final String ERROR_MSG_FORMAT = "Warning: The production %s overrides production %s without annotation.";
+  public static final String ERROR_MSG_FORMAT = " Warning: The production %s overrides production %s without annotation.";
 
   @Override
   public void check(ASTMCGrammar a) {
@@ -32,7 +32,7 @@ public class OverridingNTHasNoAnnotation implements GrammarASTMCGrammarCoCo {
     }
   }
 
-  private boolean hasOverrideAnno(List<ASTGrammarAnnotation> grammarAnnotationsList) {
+  protected boolean hasOverrideAnno(List<ASTGrammarAnnotation> grammarAnnotationsList) {
     for (ASTGrammarAnnotation anno : grammarAnnotationsList) {
       if (anno.isOverride()) {
         return true;

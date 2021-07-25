@@ -5,10 +5,9 @@ import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
-import de.monticore.MontiCoreConfiguration;
-import de.monticore.MontiCoreScript;
-import de.se_rwth.commons.configuration.Configuration;
-import de.se_rwth.commons.configuration.ConfigurationPropertiesMapContributor;
+import de.monticore.cli.MontiCoreStandardCLI;
+
+import org.apache.commons.io.FileUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
@@ -21,13 +20,11 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.nio.file.Path;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.google.common.base.MoreObjects.firstNonNull;
-import static de.monticore.MontiCoreConfiguration.Options.*;
+import static de.monticore.MontiCoreConfiguration.*;
 
 /**
  * Invokes {@link MontiCore} using the given configuration parameters.
@@ -42,7 +39,7 @@ public final class GenerateMojo extends AbstractMojo {
    * The current Maven project.
    */
   @Parameter(defaultValue = "${project}", readonly = true, required = true)
-  private MavenProject mavenProject;
+  protected MavenProject mavenProject;
   
   /**
    * @return mavenProject
@@ -56,7 +53,7 @@ public final class GenerateMojo extends AbstractMojo {
    * "grammar" option of MontiCore and defaults to "src/main/grammars".
    */
   @Parameter
-  private List<File> grammars;
+  protected List<File> grammars;
   
   /**
    * @return the value of the "grammars" configuration parameter.
@@ -86,7 +83,7 @@ public final class GenerateMojo extends AbstractMojo {
    * "outputDirectory" option of MontiCore.
    */
   @Parameter(defaultValue = "${project.build.directory}/generated-sources/${plugin.goalPrefix}/sourcecode")
-  private File outputDirectory;
+  protected File outputDirectory;
   
   /**
    * @return the value of the "outputDirectory" configuration parameter.
@@ -100,7 +97,7 @@ public final class GenerateMojo extends AbstractMojo {
    * "reportDirectory" option of MontiCore.
    */
   @Parameter(defaultValue = "${project.build.directory}/generated-sources/${plugin.goalPrefix}/sourcecode/reports")
-  private File reportDirectory;
+  protected File reportDirectory;
 
   /**
    * @return the value of the "outputDirectory" configuration parameter.
@@ -115,7 +112,7 @@ public final class GenerateMojo extends AbstractMojo {
    * defaults to "src/main/java".
    */
   @Parameter
-  private List<File> handcodedPaths;
+  protected List<File> handcodedPaths;
   
   /**
    * @return the value of the "targetPaths" configuration parameter.
@@ -146,7 +143,7 @@ public final class GenerateMojo extends AbstractMojo {
    * defaults to "src/main/resources".
    */
   @Parameter
-  private List<File> templatePaths;
+  protected List<File> templatePaths;
   
   /**
    * @return the value of the "templatePaths" configuration parameter.
@@ -180,7 +177,7 @@ public final class GenerateMojo extends AbstractMojo {
    * MontiCore.
    */
   @Parameter
-  private List<File> modelPaths;
+  protected List<File> modelPaths;
   
   /**
    * @return the value of the "modelPaths" configuration parameter.
@@ -245,7 +242,7 @@ public final class GenerateMojo extends AbstractMojo {
    * dependencies.
    */
   @Parameter
-  private List<String> modelPathDependencies;
+  protected List<String> modelPathDependencies;
   
   /**
    * @return modelDependencies
@@ -259,7 +256,7 @@ public final class GenerateMojo extends AbstractMojo {
    * (true by default).
    */
   @Parameter(defaultValue = "true")
-  private boolean addGrammarDirectoriesToModelPath = true;
+  protected boolean addGrammarDirectoriesToModelPath = true;
   
   /**
    * @return the value of the "addGrammarDirectoriesToModelPath" configuration
@@ -274,7 +271,7 @@ public final class GenerateMojo extends AbstractMojo {
    * modelpath (false by default).
    */
   @Parameter(defaultValue = "false")
-  private boolean addSourceDirectoriesToModelPath = false;
+  protected boolean addSourceDirectoriesToModelPath = false;
   
   /**
    * @return the value of the "addSourceDirectoriesToModelPath" configuration
@@ -289,7 +286,7 @@ public final class GenerateMojo extends AbstractMojo {
    * should be added to the modelpath (false by default).
    */
   @Parameter(defaultValue = "false")
-  private boolean addClassPathToModelPath = false;
+  protected boolean addClassPathToModelPath = false;
   
   /**
    * @return the value of the "addClassPathToModelPath" configuration parameter.
@@ -303,7 +300,7 @@ public final class GenerateMojo extends AbstractMojo {
    * (true by default).
    */
   @Parameter(defaultValue = "true")
-  private boolean addOutputDirectoryToModelPath = false;
+  protected boolean addOutputDirectoryToModelPath = false;
   
   /**
    * @return the value of the "addOutputDirectoryToModelPath" configuration
@@ -318,7 +315,7 @@ public final class GenerateMojo extends AbstractMojo {
    * scope by default).
    */
   @Parameter
-  private List<String> scopes = ImmutableList.of();
+  protected List<String> scopes = ImmutableList.of();
   
   /**
    * @return the value of the "scopes" configuration parameter.
@@ -332,7 +329,7 @@ public final class GenerateMojo extends AbstractMojo {
    * (defaults to "grammars", "grammar", "symbols").
    */
   @Parameter(defaultValue = "grammars, grammar, symbols")
-  private List<String> classifiers = ImmutableList.of();
+  protected List<String> classifiers = ImmutableList.of();
   
   /**
    * @return the value of the "classifiers" configuration parameter.
@@ -350,7 +347,7 @@ public final class GenerateMojo extends AbstractMojo {
    * absolute or relative path in the current project classpath.
    */
   @Parameter
-  private String script = null;
+  protected String script = null;
   
   /**
    * @return the value of the "script" configuration parameter.
@@ -366,7 +363,7 @@ public final class GenerateMojo extends AbstractMojo {
    * provided by the "script" parameter.
    */
   @Parameter
-  private Map<String, String> arguments = Collections.emptyMap();
+  protected Map<String, String> arguments = Collections.emptyMap();
   
   /**
    * @return the value of the "arguments" configuration parameter.
@@ -380,7 +377,7 @@ public final class GenerateMojo extends AbstractMojo {
    * bypassing the incremental check (defaults to false).
    */
   @Parameter(defaultValue = "false")
-  private boolean force = false;
+  protected boolean force = false;
   
   /**
    * @return the value of the "force" configuration parameter.
@@ -393,7 +390,7 @@ public final class GenerateMojo extends AbstractMojo {
    * Switch to skip the plugin execution. Defaults to false.
    */
   @Parameter(defaultValue = "false")
-  private boolean skip = false;
+  protected boolean skip = false;
   
   /**
    * @return whether this plugin should be skipped.
@@ -416,71 +413,30 @@ public final class GenerateMojo extends AbstractMojo {
     getOutputDirectory().mkdirs();
     
     // setup configuration
-    Map<String, Iterable<String>> parameters = new HashMap<>();
-    parameters.put(GRAMMARS.toString(), toStringSet(getGrammars()));
-    parameters.put(MODELPATH.toString(), toStringSet(getModelPaths()));
-    parameters.put(HANDCODEDPATH.toString(), toStringSet(getHandcodedPaths()));
-    parameters.put(TEMPLATEPATH.toString(), toStringSet(getTemplatePaths()));
-    parameters.put(OUT.toString(), Arrays.asList(getOutputDirectory().getAbsolutePath()));
-    parameters.put(REPORT.toString(), Arrays.asList(getReportDirectory().getAbsolutePath()));
+    List<String> argList = new ArrayList<>();
+    argList.add("-" + GRAMMAR);
+    Set<File> grammars = getGrammars();
+    argList.addAll(findGrammars(grammars));
+    argList.add("-" + MODELPATH);
+    argList.addAll(toStringSet(getModelPaths()));
+    argList.add("-" + HANDCODEDPATH);
+    argList.addAll(toStringSet(getHandcodedPaths()));
+    if (!getTemplatePaths().isEmpty()) {
+      argList.add("-" + TEMPLATEPATH);
+      argList.addAll(toStringSet(getTemplatePaths()));
+    }
+    argList.add("-" + OUT);
+    argList.addAll(Arrays.asList(getOutputDirectory().getAbsolutePath()));
+    argList.add("-" + REPORT);
+    argList.addAll(Arrays.asList(getReportDirectory().getAbsolutePath()));
+    if (getScript() != null) {
+      argList.add("-" + SCRIPT);
+      argList.add(getScript());
+    }
 
-    if (getForce()) {
-      parameters.put(FORCE.toString(), new ArrayList<>());
-    }
-    
-    Configuration configuration =
-        ConfigurationPropertiesMapContributor.fromSplitMap(parameters);
-    
-    // this temporary wrap in a MontiCoreConfiguration is only here to make the
-    // check for .mc4 files easier
-    MontiCoreConfiguration mcConf = MontiCoreConfiguration.withConfiguration(configuration);
-    // we check if there are any ".mc4" files in the input parameter
-    Iterator<Path> grammarPaths = mcConf.getGrammars().getResolvedPaths();
-    if (!grammarPaths.hasNext()) {
-      getLog()
-          .warn(
-              "0xA1035 Skipping MontiCore as there are no \".mc4\" files in the input parameter. Check your \"grammars\" parameter configuration.");
-      return;
-    }
-    
-    // run the default script
-    if (getScript() == null) {
-      // run script
-      new MontiCoreScript().run(configuration);
-    }
-    // or a provided custom script
-    else {
-      
-      try {
-        String script = null;
-        ClassLoader l = getClass().getClassLoader();
-        URL r = l.getResource(getScript());
-        if (r == null) {
-          r = fromBasePath(getScript()).toURI().toURL();
-        }
-        Scanner scr = new Scanner(r.openStream());
-        script = scr.useDelimiter("\\A").next();
-        scr.close();
-        
-        // adds any custom arguments additionally to the default ones
-        getArguments()
-            .forEach((key, value) -> parameters.put(key, Arrays.asList(value.split(" "))));
-        // this is a Configuration which has the generic arguments in addition
-        configuration = ConfigurationPropertiesMapContributor.fromSplitMap(parameters);
-        
-        // if (getLog().isDebugEnabled()) {
-        getLog().debug("Configuration content:");
-        configuration.getAllValues().forEach(
-            (key, value) -> getLog().debug("Key: " + key + " -> " + value.toString()));
-        // }
-        
-        new MontiCoreScript().run(script, configuration);
-      }
-      catch (IOException e) {
-        throw new MojoFailureException("0xA4117 Failed to load the specified script.", e);
-      }
-    }
-    
+    // run MontiCore via CLI
+    MontiCoreStandardCLI.main(argList.toArray(new String[0]));
+
     // if everything went well we also need to add the generated output to the
     // Maven project compile roots
     getMavenProject().addCompileSourceRoot(getOutputDirectory().getPath());
@@ -522,5 +478,22 @@ public final class GenerateMojo extends AbstractMojo {
   protected Set<String> toStringSet(Collection<File> files) {
     return ImmutableSet.<String> builder()
         .addAll(Iterables.transform(files, file -> file.getPath())).build();
+  }
+
+  /**
+   * @param directories the directories potentially containing grammars
+   * @return a set of all the absolute paths that lead to grammars
+   */
+  protected Set<String> findGrammars(Set<File> directories){
+    Set<String> grammarFiles = new HashSet<>();
+    for(File directory: directories){
+      if(directory.exists() && directory.isDirectory()){
+        grammarFiles.addAll(FileUtils.listFiles(directory, new String[] { "mc4" }, true).stream()
+          .map(f -> f.getAbsolutePath())
+          .collect(Collectors.toSet())
+        );
+      }
+    }
+    return grammarFiles;
   }
 }

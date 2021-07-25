@@ -119,7 +119,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends AbstractDeriveFromExpr
       calculateMultAssignment(expr);
     } else if (expr.getOperator() == ASTConstantsAssignmentExpressions.SLASHEQUALS) {
       calculateDivideAssignment(expr);
-    } else if (expr.getOperator() == ASTConstantsAssignmentExpressions.ANDEQUALS) {
+    } else if (expr.getOperator() == ASTConstantsAssignmentExpressions.AND_EQUALS) {
       calculateAndAssigment(expr);
     } else if (expr.getOperator() == ASTConstantsAssignmentExpressions.PIPEEQUALS) {
       calculateOrAssignment(expr);
@@ -182,7 +182,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends AbstractDeriveFromExpr
   /**
    * helper method for the five basic arithmetic assignment operations (+=,-=,*=,/=,%=)
    */
-  private Optional<SymTypeExpression> calculateTypeArithmetic(ASTAssignmentExpression expr, ASTExpression left, ASTExpression right) {
+  protected Optional<SymTypeExpression> calculateTypeArithmetic(ASTAssignmentExpression expr, ASTExpression left, ASTExpression right) {
     SymTypeExpression leftResult = acceptThisAndReturnSymTypeExpressionOrLogError(left, "0xA0190");
     SymTypeExpression rightResult = acceptThisAndReturnSymTypeExpressionOrLogError(right, "0xA0191");
     return calculateTypeArithmetic(expr, leftResult, rightResult);
@@ -203,7 +203,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends AbstractDeriveFromExpr
   /**
    * helper method for += because in this case you can use Strings too
    */
-  private Optional<SymTypeExpression> calculateTypeArithmeticWithString(ASTAssignmentExpression expr, ASTExpression left, ASTExpression right) {
+  protected Optional<SymTypeExpression> calculateTypeArithmeticWithString(ASTAssignmentExpression expr, ASTExpression left, ASTExpression right) {
     SymTypeExpression leftResult = acceptThisAndReturnSymTypeExpressionOrLogError(left, "0xA0192");
     //make sure that there is a right result
     SymTypeExpression rightResult = acceptThisAndReturnSymTypeExpressionOrLogError(right, "0xA0193");
@@ -225,7 +225,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends AbstractDeriveFromExpr
   /**
    * helper method for the calculation of the type of the bitshift operations (<<=, >>=, >>>=)
    */
-  private Optional<SymTypeExpression> calculateTypeBitOperation(ASTAssignmentExpression expr, ASTExpression left, ASTExpression right) {
+  protected Optional<SymTypeExpression> calculateTypeBitOperation(ASTAssignmentExpression expr, ASTExpression left, ASTExpression right) {
     SymTypeExpression leftResult = acceptThisAndReturnSymTypeExpressionOrLogError(left, "0xA0194");
     SymTypeExpression rightResult = acceptThisAndReturnSymTypeExpressionOrLogError(right, "0xA0195");
     return calculateTypeBitOperation(expr, leftResult, rightResult);
@@ -246,7 +246,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends AbstractDeriveFromExpr
   /**
    * helper method for the calculation of the type of the binary operations (&=,|=,^=)
    */
-  private Optional<SymTypeExpression> calculateTypeBinaryOperations(ASTAssignmentExpression expr, ASTExpression left, ASTExpression right) {
+  protected Optional<SymTypeExpression> calculateTypeBinaryOperations(ASTAssignmentExpression expr, ASTExpression left, ASTExpression right) {
     SymTypeExpression leftResult = acceptThisAndReturnSymTypeExpressionOrLogError(left, "0xA0196");
     SymTypeExpression rightResult = acceptThisAndReturnSymTypeExpressionOrLogError(right, "0xA0197");
     return calculateTypeBinaryOperations(expr, leftResult, rightResult);
@@ -270,7 +270,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends AbstractDeriveFromExpr
   /**
    * helper method for the calculation of a regular assignment (=)
    */
-  private void calculateRegularAssignment(ASTAssignmentExpression expr) {
+  protected void calculateRegularAssignment(ASTAssignmentExpression expr) {
     SymTypeExpression leftResult = acceptThisAndReturnSymTypeExpressionOrLogError(expr.getLeft(), "0xA0198");
     SymTypeExpression rightResult = acceptThisAndReturnSymTypeExpressionOrLogError(expr.getRight(), "0xA0199");
     Optional<SymTypeExpression> wholeResult = calculateRegularAssignment(expr, leftResult, rightResult);

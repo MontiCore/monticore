@@ -50,7 +50,7 @@ public class RemoveOverriddenAttributesTranslation implements
     return rootLink;
   }
 
-  private boolean isOverridden(Link<ASTNode, ASTCDAttribute> link, Link<?, ASTCDClass> classLink) {
+  protected boolean isOverridden(Link<ASTNode, ASTCDAttribute> link, Link<?, ASTCDClass> classLink) {
     ASTNode source = link.source();
     Optional<String> usageName = getUsageName(classLink.source(), source);
     if (!usageName.isPresent()) {
@@ -88,8 +88,7 @@ public class RemoveOverriddenAttributesTranslation implements
     }
 
     // add derived stereotype if needed
-    if (link.target().isPresentModifier() &&
-        hasDerivedStereotype(link.target().getModifier()) &&
+    if (hasDerivedStereotype(link.target().getModifier()) &&
         DecorationHelper.getInstance().isListType(link.target().printType())) {
       for (Link<ASTAdditionalAttribute, ASTCDAttribute> attributeLink :
           classLink.rootLink().getLinks(ASTAdditionalAttribute.class, ASTCDAttribute.class)) {
@@ -102,7 +101,7 @@ public class RemoveOverriddenAttributesTranslation implements
     return matchByUsageName || matchByTypeName;
   }
 
-  private boolean hasDerivedStereotype(ASTModifier modifier) {
+  protected boolean hasDerivedStereotype(ASTModifier modifier) {
     if (modifier.isPresentStereotype()) {
       return modifier.getStereotype().getValuesList()
           .stream()
@@ -111,12 +110,12 @@ public class RemoveOverriddenAttributesTranslation implements
     return false;
   }
 
-  private void addDerivedStereotypeToAttributes(ASTCDAttribute attribute) {
+  protected void addDerivedStereotypeToAttributes(ASTCDAttribute attribute) {
     TransformationHelper.addStereoType(attribute,
         MC2CDStereotypes.DERIVED_ATTRIBUTE_NAME.toString(), "");
   }
 
-  private Set<ASTAdditionalAttribute> attributesInASTLinkingToSameClass(Link<?, ASTCDClass> link) {
+  protected Set<ASTAdditionalAttribute> attributesInASTLinkingToSameClass(Link<?, ASTCDClass> link) {
     return link.rootLink().getLinks(ASTNode.class, ASTCDClass.class).stream()
         .filter(attributeLink -> attributeLink.target() == link.target())
         .flatMap(astRuleLink ->
@@ -124,10 +123,7 @@ public class RemoveOverriddenAttributesTranslation implements
         .map(Link::source).collect(Collectors.toSet());
   }
 
-  private boolean isNotInherited(ASTCDAttribute cdAttribute) {
-    if (!cdAttribute.isPresentModifier()) {
-      return true;
-    }
+  protected boolean isNotInherited(ASTCDAttribute cdAttribute) {
     if (!cdAttribute.getModifier().isPresentStereotype()) {
       return true;
     }

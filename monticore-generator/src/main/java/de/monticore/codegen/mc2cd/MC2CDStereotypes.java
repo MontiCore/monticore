@@ -85,7 +85,7 @@ public enum MC2CDStereotypes {
    */
   EXTERNAL_INTERFACE("externalInterface");
 
-  private final String stereotype;
+  protected final String stereotype;
 
   private MC2CDStereotypes(String stereotype) {
     this.stereotype = stereotype;

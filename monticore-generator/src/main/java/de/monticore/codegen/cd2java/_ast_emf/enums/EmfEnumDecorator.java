@@ -1,6 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast_emf.enums;
 
+import de.monticore.cd4code.CD4CodeMill;
+import de.monticore.cd4codebasis.CD4CodeBasisMill;
 import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.codegen.cd2java.CDModifier;
@@ -24,7 +26,7 @@ public class EmfEnumDecorator extends EnumDecorator {
   public ASTCDEnum decorate(final ASTCDEnum input) {
     ASTCDEnum astcdEnum = super.decorate(input);
     //add emf interface
-    astcdEnum.addInterface(getMCTypeFacade().createQualifiedType(ENUMERATOR));
+    astcdEnum.setCDInterfaceUsage(CD4CodeMill.cDInterfaceUsageBuilder().addInterface(getMCTypeFacade().createQualifiedType(ENUMERATOR)).build());
     astcdEnum.addCDMember(createGetNameMethod());
     astcdEnum.addCDMember(createGetLiteralMethod());
     astcdEnum.addCDMember(createGetValueMethod());

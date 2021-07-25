@@ -15,6 +15,7 @@ import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.io.paths.IterablePath;
+import de.monticore.io.paths.MCPath;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.utils.Names;
@@ -47,10 +48,10 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
 
   protected boolean generateAbstractClass;
 
-  protected IterablePath hw;
+  protected MCPath hw;
 
   public SymbolDeSerDecorator(final GlobalExtensionManagement glex,
-      final SymbolTableService symbolTableService, final IterablePath hw) {
+      final SymbolTableService symbolTableService, final MCPath hw) {
     super(glex);
     this.symbolTableService = symbolTableService;
     this.hw = hw;
@@ -85,7 +86,7 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
     ASTCDClass clazz = CD4CodeMill.cDClassBuilder()
         .setName(className)
         .setModifier(PUBLIC.build())
-        .addInterface(iDeSerType)
+        .setCDInterfaceUsage(CD4CodeMill.cDInterfaceUsageBuilder().addInterface(iDeSerType).build())
         .addCDMember(createGetSerializedKindMethod(symName))
 
         //serialization
@@ -198,7 +199,7 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
 
   //////////////////////////////// internal calculations //////////////////////////////////
 
-  private void makeMethodAbstract(ASTCDMethod method, ASTCDAttribute attr) {
+  protected void makeMethodAbstract(ASTCDMethod method, ASTCDAttribute attr) {
     generateAbstractClass = true;
     method.getModifier().setAbstract(true);
     method.add_PreComment(new Comment("  /**\n"

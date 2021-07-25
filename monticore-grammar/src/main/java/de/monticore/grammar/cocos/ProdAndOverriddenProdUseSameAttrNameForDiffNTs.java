@@ -77,7 +77,7 @@ public class ProdAndOverriddenProdUseSameAttrNameForDiffNTs implements GrammarAS
     }
   }
 
-  private void logError(ProdSymbol ruleSymbol, String attributename,
+  protected void logError(ProdSymbol ruleSymbol, String attributename,
                         RuleComponentSymbol componentSymbol, String actualType, ASTNonTerminal a) {
     Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT,
         ruleSymbol.getName(),

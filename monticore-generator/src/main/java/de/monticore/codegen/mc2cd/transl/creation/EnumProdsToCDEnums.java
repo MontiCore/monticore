@@ -24,7 +24,7 @@ public class EnumProdsToCDEnums implements UnaryOperator<Link<ASTMCGrammar, ASTC
     return rootLink;
   }
 
-  private void createEnumProdToCDEnumLinks(Link<ASTMCGrammar, ASTCDDefinition> link) {
+  protected void createEnumProdToCDEnumLinks(Link<ASTMCGrammar, ASTCDDefinition> link) {
     for (ASTEnumProd enumProd : link.source().getEnumProdList()) {
       ASTCDEnum cdEnum = CD4AnalysisMill.cDEnumBuilder().
               setModifier(CD4AnalysisMill.modifierBuilder().build()).uncheckedBuild();

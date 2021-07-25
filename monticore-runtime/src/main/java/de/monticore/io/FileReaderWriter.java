@@ -10,9 +10,7 @@ import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.FileUtils;
 
 import java.io.*;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLDecoder;
+import java.net.*;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -36,9 +34,9 @@ import java.util.stream.Collectors;
  */
 public class FileReaderWriter {
 
-  private static FileReaderWriter INSTANCE = null;
+  protected static FileReaderWriter INSTANCE = null;
 
-  private Charset charset;
+  protected Charset charset;
 
   /**
    * Sets the encoding for all subsequent operations until another encoding is assigned.
@@ -76,7 +74,7 @@ public class FileReaderWriter {
     INSTANCE = instance;
   }
 
-  private static FileReaderWriter getFileReaderWriter(){
+  protected static FileReaderWriter getFileReaderWriter(){
     if(null == INSTANCE){
       init();
     }
@@ -102,7 +100,7 @@ public class FileReaderWriter {
     catch (IOException e) {
       Log.error("0xA1023 IOException occured.", e);
       Log.debug("IOException occured while trying to write to the File " + targetPath + ".", e,
-          this.getClass().getName());
+        this.getClass().getName());
     }
   }
 
@@ -126,7 +124,7 @@ public class FileReaderWriter {
     catch (IOException e) {
       Log.error("0xA1027 IOException occured.", e);
       Log.debug("IOException while trying to read the content of " + sourcePath
-          + ".", e, this.getClass().getName());
+        + ".", e, this.getClass().getName());
     }
     Log.errorIfNull(content);
     return content;
@@ -154,7 +152,7 @@ public class FileReaderWriter {
     catch (IOException e) {
       Log.error("0xA0577 IOException occured.", e);
       Log.debug("IOException while trying to read the content of " + sourcePath
-          + ".", e, this.getClass().getName());
+        + ".", e, this.getClass().getName());
     }
     Log.errorIfNull(content);
     return content;
@@ -189,7 +187,7 @@ public class FileReaderWriter {
       ArrayList<URL> results = Collections.list(classLoader.getResources(name));
       if (results.size() > 1) {
         throw new AmbiguityException("0xA4092 Multiple models were found with name '"
-            + name + "':" + results.toString());
+          + name + "':" + results.toString());
       }
       else if (results.size() < 1) {
         Reporting.reportFileExistenceChecking(Lists.newArrayList(), Paths.get(name));
@@ -202,7 +200,7 @@ public class FileReaderWriter {
     catch (IOException e) {
       Log.error("0xA1024 IOException occured.", e);
       Log.debug("IOException while trying to find the URL of " + name, e,
-          this.getClass().getName());
+        this.getClass().getName());
     }
     return Optional.empty();
   }
@@ -224,17 +222,20 @@ public class FileReaderWriter {
    */
   public static Reader getReader(URL location) {
     try {
-      Path p = Paths.get(location.toURI());
-      Reporting.reportOpenInputFile(Optional.of(p.getParent()),
-        p);
-
       if (!"jar".equals(location.getProtocol())) {
+        Path p = Paths.get(location.toURI());
+        Reporting.reportOpenInputFile(Optional.of(p.getParent()),
+          p.getParent().relativize(p));
         if (location.getFile().charAt(2) == ':') {
           String filename = URLDecoder.decode(location.getFile(), "UTF-8");
           return new FileReader(filename.substring(1));
         }
         return new FileReader(location.getFile());
       }
+      String[] parts = location.toURI().toString().split("!");
+      Path p = Paths.get(parts[1].substring(1));
+      Reporting.reportOpenInputFile(Optional.of(Paths.get(parts[0].substring(10))),
+        p);
       return new InputStreamReader(location.openStream(), Charsets.UTF_8.name());
     }
     catch (IOException | URISyntaxException e) {
