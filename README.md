@@ -21,6 +21,19 @@ grammar languages are comfortable to use.
 
 [**Start here for developing with MontiCore.**](docs/GettingStarted.md)
 
+<div align="center">
+  <a href="http://monticore.de/handbook.pdf" target="_blank">
+  <img src="docs/docs/MontiCoreHandbook2021.gif" width="150">
+  </a>
+  <br>MontiCore handbook.
+</div><br>
+
+<div align="center">
+<img width="350" src="uim.png">
+<br><b>Figure:</b> 
+A system element and its syntactic interface.
+</div><br>
+
 ## A Teaser for MontiCore
 
 To show a little of MontiCore's capabilities, the following (incomplete) 
