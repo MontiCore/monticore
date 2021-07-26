@@ -21,10 +21,12 @@ grammar languages are comfortable to use.
 
 [**Start here for developing with MontiCore.**](docs/GettingStarted.md)
 
+<div align="center">
 <a href="http://monticore.de/handbook.pdf"
    target="_blank">
    <img src="docs/docs/MontiCoreHandbook2021.gif"
         align="left" width="150"></a>
+<br>
 
 ## A Teaser for MontiCore
 
