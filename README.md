@@ -23,10 +23,10 @@ grammar languages are comfortable to use.
 
 <div align="center">
   <a href="http://monticore.de/handbook.pdf" target="_blank">
-  <img src="docs/docs/MontiCoreHandbook2021.gif" width="150">
+  <img src="docs/docs/MontiCoreHandbook2021.gif" width="250">
   </a>
-  <br>[HKR21] Katrin Hölldobler, Oliver Kautz, Bernhard Rumpe: 
-      MontiCore Language Workbench and Library Handbook: Edition 2021.
+  <br>[HKR21] Katrin Hölldobler, Oliver Kautz, Bernhard Rumpe: <br>
+      MontiCore Language Workbench and Library Handbook: Edition 2021. <br>
       Shaker, 2021.
 </div><br>
 
