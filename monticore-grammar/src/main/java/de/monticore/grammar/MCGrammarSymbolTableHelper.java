@@ -25,7 +25,7 @@ import static com.google.common.collect.Sets.newLinkedHashSet;
 public class MCGrammarSymbolTableHelper {
 
   public static final String AST_DOT_PACKAGE_SUFFIX_DOT = "._ast.";
-  private static final Integer STAR = -1;
+  protected static final Integer STAR = -1;
 
   public static Optional<ProdSymbol> resolveRule(ASTMCGrammar astNode, String name) {
     if (astNode.isPresentSymbol()) {
@@ -161,7 +161,7 @@ public class MCGrammarSymbolTableHelper {
     return getAllSuperProds(prod).stream().filter(p -> p.isIsInterface()).collect(Collectors.toSet());
   }
 
-  private final static LoadingCache<ProdSymbol, List<ProdSymbol>> superProdCache = CacheBuilder.newBuilder().maximumSize(10000)
+  protected final static LoadingCache<ProdSymbol, List<ProdSymbol>> superProdCache = CacheBuilder.newBuilder().maximumSize(10000)
     .build(new CacheLoader<ProdSymbol, List<ProdSymbol>>() {
       @Override
       public List<ProdSymbol> load(ProdSymbol prod) {
@@ -190,7 +190,7 @@ public class MCGrammarSymbolTableHelper {
     return isSubtype(subType, superType, newLinkedHashSet(Arrays.asList(subType)));
   }
 
-  private static boolean isSubtype(ProdSymbol subType, ProdSymbol superType,
+  protected static boolean isSubtype(ProdSymbol subType, ProdSymbol superType,
                                    Set<ProdSymbol> handledTypes) {
     if (areSameTypes(subType, superType)) {
       return true;

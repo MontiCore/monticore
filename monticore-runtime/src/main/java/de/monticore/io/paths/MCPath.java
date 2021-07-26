@@ -10,6 +10,7 @@ import org.apache.commons.io.filefilter.RegexFileFilter;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -25,11 +26,7 @@ import java.util.stream.Collectors;
  */
 public final class MCPath {
 
-  private final Map<URLClassLoader, URL> classloaderMap = new LinkedHashMap<>();
-
-  public MCPath(ModelPath mp) {
-    this(mp.getFullPathOfEntries());
-  }
+  protected final Map<URLClassLoader, URL> classloaderMap = new LinkedHashMap<>();
 
   public MCPath() { }
 
@@ -183,7 +180,7 @@ public final class MCPath {
     }
   }
 
-  private static void reportAmbiguity(List<URL> resolvedURLs, String path) {
+  protected static void reportAmbiguity(List<URL> resolvedURLs, String path) {
     StringBuilder ambiguityArray = new StringBuilder("{");
     String sep = "";
     for (URL url : resolvedURLs) {
@@ -195,6 +192,17 @@ public final class MCPath {
     Log.error(
         "0xA1294 The following entries for the file `" + path + "` are ambiguous:"
             + "\n" + ambiguityArray.toString());
+  }
+
+  public void close(){
+    classloaderMap.keySet().stream().forEach(c -> {
+      try {
+        c.close();
+      }
+      catch (IOException e) {
+        Log.error("0xA1035 An exception occured while trying to close a class loader!", e);
+      }
+    });
   }
 
 }

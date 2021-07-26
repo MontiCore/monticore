@@ -12,7 +12,7 @@ import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 public class TemplateHPService {
 
   public HookPoint templateHP(String template) {
-    return new TemplateHookPoint(template);
+    return new TemplateHookPoint(template.contains(".") ? template : template + ".ftl");
   }
 
   public HookPoint stringHP(String value) {

@@ -12,9 +12,9 @@ import de.monticore.types.prettyprint.MCSimpleGenericTypesFullPrettyPrinter;
  */
 public  class MCSimpleGenericTypesMill extends MCSimpleGenericTypesMillTOP {
   
-  private static MCSimpleGenericTypesMill mcSimpleGenericTypesPrettyPrinter;
+  protected static MCSimpleGenericTypesMill mcSimpleGenericTypesPrettyPrinter;
   
-  private static MCSimpleGenericTypesFullPrettyPrinter prettyPrinter;
+  protected static MCSimpleGenericTypesFullPrettyPrinter prettyPrinter;
   
   /**
    * Static getter for the pretty printer that delegates to the non static implementation.
@@ -47,7 +47,7 @@ public  class MCSimpleGenericTypesMill extends MCSimpleGenericTypesMillTOP {
     return prettyPrinter;
   }
   
-  private static MCSimpleGenericTypesFullPrettyPrinter getPrettyPrinter() {
+  protected static MCSimpleGenericTypesFullPrettyPrinter getPrettyPrinter() {
     return new MCSimpleGenericTypesFullPrettyPrinter(new IndentPrinter());
   }
 }

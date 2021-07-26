@@ -9,7 +9,7 @@ import de.monticore.grammar.grammar._visitor.GrammarVisitor2;
 
 public class NoTokenDefinedVisitor implements GrammarVisitor2, GrammarHandler {
 
-  private boolean terminalFound = false;
+  protected boolean terminalFound = false;
 
   GrammarTraverser traverser;
 

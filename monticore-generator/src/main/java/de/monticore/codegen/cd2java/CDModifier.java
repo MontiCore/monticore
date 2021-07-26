@@ -50,17 +50,17 @@ public enum CDModifier {
 
   ;
 
-  private final boolean isPublic;
+  protected final boolean isPublic;
 
-  private final boolean isProtected;
+  protected final boolean isProtected;
 
-  private final boolean isPrivate;
+  protected final boolean isPrivate;
 
-  private final boolean isStatic;
+  protected final boolean isStatic;
 
-  private final boolean isFinal;
+  protected final boolean isFinal;
 
-  private final boolean isAbstract;
+  protected final boolean isAbstract;
 
   CDModifier(boolean isPublic, boolean isProtected, boolean isPrivate, boolean isStatic, boolean isFinal, boolean isAbstract) {
     this.isPublic = isPublic;

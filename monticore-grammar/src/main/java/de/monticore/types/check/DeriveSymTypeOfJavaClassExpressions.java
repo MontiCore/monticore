@@ -127,7 +127,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
     }
   }
 
-  private SymTypeExpression getCorrectResultArrayExpression(IExpressionsBasisScope scope, SymTypeExpression indexResult, SymTypeExpression arrayTypeResult, SymTypeArray arrayResult) {
+  protected SymTypeExpression getCorrectResultArrayExpression(IExpressionsBasisScope scope, SymTypeExpression indexResult, SymTypeExpression arrayTypeResult, SymTypeArray arrayResult) {
     SymTypeExpression wholeResult;
     if(arrayResult.getDim()>1){
       //case 1: A[][] bar -> bar[3] returns the type A[] -> decrease the dimension of the array by 1
@@ -156,7 +156,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
     return wholeResult;
   }
 
-  private SymTypeExpression replaceTypeVariables(SymTypeExpression wholeResult, List<SymTypeExpression> typeArgs, List<SymTypeExpression> argumentList) {
+  protected SymTypeExpression replaceTypeVariables(SymTypeExpression wholeResult, List<SymTypeExpression> typeArgs, List<SymTypeExpression> argumentList) {
     Map<SymTypeExpression,SymTypeExpression> map = Maps.newHashMap();
     if(typeArgs.size()!=argumentList.size()){
       Log.error("0xA0297 different amount of type variables and type arguments");
@@ -367,7 +367,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
     }
   }
 
-  private SymTypeExpression getResultOfPrimaryThisExpression(IBasicSymbolsScope scope, TypeSymbol typeSymbol) {
+  protected SymTypeExpression getResultOfPrimaryThisExpression(IBasicSymbolsScope scope, TypeSymbol typeSymbol) {
     SymTypeExpression wholeResult;
     if(typeSymbol.getTypeParameterList().isEmpty()){
       //if the return type is a primitive
@@ -459,7 +459,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
     return fittingMethods.stream().filter(m -> m instanceof MethodSymbol).filter(m -> ((MethodSymbol) m).isIsStatic()).collect(Collectors.toList());
   }
 
-  private List<SymTypeExpression> calculateTypeArguments(List<ASTExtTypeArgumentExt> extTypeArgumentList) {
+  protected List<SymTypeExpression> calculateTypeArguments(List<ASTExtTypeArgumentExt> extTypeArgumentList) {
     //calculate each TypeArgument and return the results in a list
     List<SymTypeExpression> typeArgsList = Lists.newArrayList();
     for(int i = 0;i<extTypeArgumentList.size();i++){
@@ -473,7 +473,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
     return typeArgsList;
   }
 
-  private SymTypeExpression checkMethodsAndReplaceTypeVariables(List<FunctionSymbol> methods, ASTArguments args, List<SymTypeExpression> typeArgsList) {
+  protected SymTypeExpression checkMethodsAndReplaceTypeVariables(List<FunctionSymbol> methods, ASTArguments args, List<SymTypeExpression> typeArgsList) {
     outer:for(int i = 0;i<methods.size();i++){
       FunctionSymbol method = methods.get(i);
       if(method.getParameterList().size()!=args.getExpressionList().size()){
@@ -525,7 +525,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
     return null;
   }
 
-  private List<SymTypeExpression> calculateArguments(ASTArguments args) {
+  protected List<SymTypeExpression> calculateArguments(ASTArguments args) {
     List<SymTypeExpression> argList = Lists.newArrayList();
     for(int i = 0;i<args.getExpressionList().size();i++){
       args.getExpression(i).accept(getTraverser());
@@ -611,7 +611,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
     }
   }
 
-  private TypeSymbol searchForTypeSymbolSpanningEnclosingScope(IBasicSymbolsScope scope) {
+  protected TypeSymbol searchForTypeSymbolSpanningEnclosingScope(IBasicSymbolsScope scope) {
     //search for the nearest type symbol in the enclosing scopes -> for this and super to get the
     //current object
     while(scope!=null){
@@ -717,7 +717,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
       }
     }
 
-  private List<SymTypeExpression> calculateCorrectArguments(ASTArguments args) {
+  protected List<SymTypeExpression> calculateCorrectArguments(ASTArguments args) {
       List<SymTypeExpression> argList = Lists.newArrayList();
       for(int i = 0;i<args.getExpressionList().size();i++){
         args.getExpression(i).accept(getTraverser());
@@ -730,7 +730,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
       return argList;
     }
 
-    private boolean testForCorrectArguments(List<FunctionSymbol> constructors, ASTArguments arguments) {
+    protected boolean testForCorrectArguments(List<FunctionSymbol> constructors, ASTArguments arguments) {
       List<SymTypeExpression> symTypeOfArguments = calculateCorrectArguments(arguments);
       outer: for(FunctionSymbol constructor: constructors){
         if(constructor.getParameterList().size() == symTypeOfArguments.size()){

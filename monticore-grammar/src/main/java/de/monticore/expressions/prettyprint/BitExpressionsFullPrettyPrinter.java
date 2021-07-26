@@ -8,7 +8,7 @@ import de.monticore.prettyprint.MCBasicsPrettyPrinter;
 
 public class BitExpressionsFullPrettyPrinter extends ExpressionsBasisFullPrettyPrinter {
 
-  private BitExpressionsTraverser traverser;
+  protected BitExpressionsTraverser traverser;
 
   public BitExpressionsFullPrettyPrinter(IndentPrinter printer) {
     super(printer);

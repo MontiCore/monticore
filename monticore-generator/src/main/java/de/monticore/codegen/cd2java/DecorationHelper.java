@@ -34,7 +34,7 @@ import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFI
 
 public class DecorationHelper extends MCBasicTypesHelper {
 
-  private static DecorationHelper decorationHelper;
+  protected static DecorationHelper decorationHelper;
 
   private DecorationHelper() {
   }
@@ -259,7 +259,7 @@ public class DecorationHelper extends MCBasicTypesHelper {
   }
 
   protected boolean hasDerivedAttributeName(ASTCDAttribute astcdAttribute) {
-    return astcdAttribute.isPresentModifier() && astcdAttribute.getModifier().isPresentStereotype()
+    return astcdAttribute.getModifier().isPresentStereotype()
         && astcdAttribute.getModifier().getStereotype().sizeValues() > 0 &&
         astcdAttribute.getModifier().getStereotype().getValuesList()
             .stream()

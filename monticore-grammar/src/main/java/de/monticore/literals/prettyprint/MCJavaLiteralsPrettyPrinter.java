@@ -10,7 +10,7 @@ import de.monticore.prettyprint.IndentPrinter;
 
 public class MCJavaLiteralsPrettyPrinter implements MCJavaLiteralsVisitor2, MCJavaLiteralsHandler {
 
-  private MCJavaLiteralsTraverser traverser;
+  protected MCJavaLiteralsTraverser traverser;
 
   // printer to use
   protected IndentPrinter printer;

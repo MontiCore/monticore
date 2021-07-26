@@ -54,7 +54,7 @@ public class BasicSymbolsMill extends BasicSymbolsMillTOP {
     }
   }
 
-  private TypeSymbol createPrimitive(String name){
+  protected TypeSymbol createPrimitive(String name){
     return typeSymbolBuilder()
             .setName(name)
             .setEnclosingScope(globalScope())

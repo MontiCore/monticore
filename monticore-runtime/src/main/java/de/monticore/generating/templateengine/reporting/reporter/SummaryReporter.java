@@ -77,57 +77,57 @@ public class SummaryReporter extends AReporter {
   
   static final String SIMPLE_FILE_NAME = "01_Summary";
   
-  private int numTemplateIncludes;
+  protected int numTemplateIncludes;
   
-  private int numTemplateWrites;
+  protected int numTemplateWrites;
   
-  private int numGeneratedFiles;
+  protected int numGeneratedFiles;
   
-  private int numInstantiations;
+  protected int numInstantiations;
   
-  private int numVariableAssignments;
+  protected int numVariableAssignments;
   
-  private int numWarnings;
+  protected int numWarnings;
   
-  private int numErrors;
+  protected int numErrors;
   
-  private int templateDepth;
+  protected int templateDepth;
   
-  private int maxTemplateDepth;
+  protected int maxTemplateDepth;
   
-  private int numASTNodeVisits;
+  protected int numASTNodeVisits;
 
-  private int numASTSpecificReplacements;
+  protected int numASTSpecificReplacements;
   
-  private int numASTSpecificCalls;
+  protected int numASTSpecificCalls;
   
-  private int numSetCodeHookpoints;
+  protected int numSetCodeHookpoints;
   
-  private int numCallCodeHookpoints;
+  protected int numCallCodeHookpoints;
   
-  private int numSetTemplateHookpoints;
+  protected int numSetTemplateHookpoints;
   
-  private int numCallTemplateHookpoints;
+  protected int numCallTemplateHookpoints;
   
-  private int numSetStringHookpoints;
+  protected int numSetStringHookpoints;
   
-  private int numCallStringHookpoints;
+  protected int numCallStringHookpoints;
   
-  private int numCallsUnsetHookpoints;
+  protected int numCallsUnsetHookpoints;
 
-  private Set<String> variableNames = new LinkedHashSet<String>();
+  protected Set<String> variableNames = new LinkedHashSet<String>();
   
-  private Set<String> usedTemplates = Sets.newLinkedHashSet();
+  protected Set<String> usedTemplates = Sets.newLinkedHashSet();
   
-  private Set<String> usedHWTemplates = Sets.newLinkedHashSet();
+  protected Set<String> usedHWTemplates = Sets.newLinkedHashSet();
   
-  private Set<String> calledUnsetHookpoints = Sets.newLinkedHashSet();
+  protected Set<String> calledUnsetHookpoints = Sets.newLinkedHashSet();
   
-  private ReportingRepository repository;
+  protected ReportingRepository repository;
 
-  private ITraverser traverser;
+  protected ITraverser traverser;
 
-  private ObjectCountVisitor ocv;
+  protected ObjectCountVisitor ocv;
   
   public SummaryReporter(
       String outputDir,
@@ -357,7 +357,7 @@ public class SummaryReporter extends AReporter {
     writeSummaryLine(NUM_CALLS_EMPTY_HOOKPOINTS, numCallsUnsetHookpoints);
   }
   
-  private void writeSummaryLine(String string, int number) {
+  protected void writeSummaryLine(String string, int number) {
     writeLine(string + ":" + Layouter.getSpaceString(40 - string.length())
         + number);
   }
@@ -393,7 +393,7 @@ public class SummaryReporter extends AReporter {
     super.flush(ast);
   }
   
-  private void writeFooter() {
+  protected void writeFooter() {
     writeLine("========================================================== Explanation");
     writeLine("Summary of all reports:");
     writeLine(" -" + NUM_ERRORS + ": " + "Number of errors during the process");

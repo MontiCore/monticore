@@ -26,9 +26,9 @@ public class GrammarScopesGenitor extends GrammarScopesGenitorTOP {
     super();
   }
 
-  private static final String SET_SCOPE_ERROR = "Could not set enclosing scope of ASTNode \"%s\", because no scope is set yet!";
+  protected static final String SET_SCOPE_ERROR = "Could not set enclosing scope of ASTNode \"%s\", because no scope is set yet!";
 
-  private MCGrammarSymbol grammarSymbol;
+  protected MCGrammarSymbol grammarSymbol;
 
   @Override
   public void visit(ASTMCGrammar ast){
@@ -293,7 +293,7 @@ public class GrammarScopesGenitor extends GrammarScopesGenitorTOP {
     initRuleComponentHP1(node.getSymbol());
   }
 
-  private void addSuperGrammars(ASTMCGrammar astGrammar, MCGrammarSymbolBuilder grammarSymbol) {
+  protected void addSuperGrammars(ASTMCGrammar astGrammar, MCGrammarSymbolBuilder grammarSymbol) {
     for (ASTGrammarReference ref : astGrammar.getSupergrammarList()) {
       final String superGrammarName = getQualifiedName(ref.getNameList());
 
@@ -309,7 +309,7 @@ public class GrammarScopesGenitor extends GrammarScopesGenitorTOP {
    * @param mcProdSymbol
    * @param astAttribute
    */
-  private void addAttributeInAST(ProdSymbol mcProdSymbol, ASTAdditionalAttribute astAttribute, boolean isAstAttr) {
+  protected void addAttributeInAST(ProdSymbol mcProdSymbol, ASTAdditionalAttribute astAttribute, boolean isAstAttr) {
     AdditionalAttributeSymbol symbol = createAdditionalAttribute(astAttribute).setIsAstAttr(isAstAttr).build();
     symbol.setType(astAttribute.getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()));
     mcProdSymbol.getSpannedScope().add(symbol);
@@ -331,7 +331,7 @@ public class GrammarScopesGenitor extends GrammarScopesGenitorTOP {
     return empty();
   }
 
-  private List<String> findImplicitTypes(ASTLexActionOrPredicate action,
+  protected List<String> findImplicitTypes(ASTLexActionOrPredicate action,
                                                Grammar_WithConceptsFullPrettyPrinter prettyPrinter) {
     List<String> ret = Lists.newArrayList();
     StringBuilder buffer = new StringBuilder();

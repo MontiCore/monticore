@@ -23,8 +23,8 @@ import static java.util.Collections.max;
 
 public class GrammarSTCompleteTypes implements GrammarVisitor2 {
 
-  private MCGrammarSymbol grammarSymbol;
-  private ASTMCGrammar astGrammar;
+  protected MCGrammarSymbol grammarSymbol;
+  protected ASTMCGrammar astGrammar;
 
   @Override
   public void visit(ASTSplitRule ast) {
@@ -57,6 +57,21 @@ public class GrammarSTCompleteTypes implements GrammarVisitor2 {
   @Override
   public void visit(ASTKeyConstant node) {
     grammarSymbol.noKeywords.addAll(node.getStringList());
+  }
+
+  @Override
+  public void visit(ASTTokenMode node) {
+    node.streamTokenName().forEach(t -> grammarSymbol.addMode(node.getName(), t));
+  }
+
+  @Override
+  public void visit(ASTLexProd node) {
+    GrammarVisitor2.super.visit(node);
+    if (node.isEmptyMode()) {
+      grammarSymbol.addMode(MCGrammarSymbol.DEFAULT_MODE, node.getName());
+    } else {
+      node.streamMode().forEach(m -> grammarSymbol.addMode(m, node.getName()));
+    }
   }
 
   @Override
@@ -167,7 +182,7 @@ public class GrammarSTCompleteTypes implements GrammarVisitor2 {
     }
   }
 
-  private void setComponentMultiplicity(RuleComponentSymbol prod, ASTRuleComponent ast) {
+  protected void setComponentMultiplicity(RuleComponentSymbol prod, ASTRuleComponent ast) {
     Multiplicity multiplicity = determineMultiplicity(astGrammar, ast);
     if (multiplicity == LIST) {
       prod.setIsList(true);
@@ -176,7 +191,7 @@ public class GrammarSTCompleteTypes implements GrammarVisitor2 {
     }
   }
 
-  private void setSymbolDefinition(ProdSymbol prodSymbol,
+  protected void setSymbolDefinition(ProdSymbol prodSymbol,
                                    List<ASTSymbolDefinition> listOfDefs) {
     for (ASTSymbolDefinition symbolDefinition : listOfDefs) {
       if (symbolDefinition.isGenSymbol()) {
@@ -188,7 +203,7 @@ public class GrammarSTCompleteTypes implements GrammarVisitor2 {
     }
   }
 
-  private void setSuperProdsAndTypes(ProdSymbol prodSymbol, List<ASTRuleReference> superProds,
+  protected void setSuperProdsAndTypes(ProdSymbol prodSymbol, List<ASTRuleReference> superProds,
                                      List<ASTMCType> astSuperClasses, List<ASTRuleReference> superInterfaceProds,
                                      List<ASTMCType> astSuperInterfaces) {
     final IGrammarScope enclosingScope = grammarSymbol.getSpannedScope();
@@ -225,7 +240,7 @@ public class GrammarSTCompleteTypes implements GrammarVisitor2 {
   /**
    * Set cardinality of all grammar's nonterminals
    */
-  private void setComponentsCardinality(ASTMCGrammar astGrammar) {
+  protected void setComponentsCardinality(ASTMCGrammar astGrammar) {
     for (ProdSymbol prodSymbol : astGrammar.getSymbol().getProds()) {
       Collection<AdditionalAttributeSymbol> astAttributes = prodSymbol.getSpannedScope().getLocalAdditionalAttributeSymbols();
       LinkedListMultimap<String, RuleComponentSymbol> map = prodSymbol.getSpannedScope().getRuleComponentSymbols();
@@ -253,7 +268,7 @@ public class GrammarSTCompleteTypes implements GrammarVisitor2 {
     }
   }
 
-  private void computeStartParserProd(ASTMCGrammar astGrammar) {
+  protected void computeStartParserProd(ASTMCGrammar astGrammar) {
     if (astGrammar.isPresentStartRule()) {
       String name = astGrammar.getStartRule().getName();
       Optional<ProdSymbol> prod = astGrammar.getSymbol().getProdWithInherited(name);
@@ -283,7 +298,7 @@ public class GrammarSTCompleteTypes implements GrammarVisitor2 {
   /**
    * Set start parser production
    */
-  private void setStartProd(ASTMCGrammar astGrammar, Set<ASTProd> firstProductions) {
+  protected void setStartProd(ASTMCGrammar astGrammar, Set<ASTProd> firstProductions) {
     // Set start parser rule
     ASTProd firstProduction = null;
     for (ASTProd prod : firstProductions) {

@@ -59,7 +59,7 @@ public class MCVarDeclarationStatementsSTCompleteTypes implements MCVarDeclarati
     }
   }
 
-  private SymTypeExpression createTypeLoader(ASTMCType ast) {
+  protected SymTypeExpression createTypeLoader(ASTMCType ast) {
     FullSynthesizeFromMCFGT4Grammar synFromFull = new FullSynthesizeFromMCFGT4Grammar();
     // Start visitor
     ast.accept(synFromFull.getTraverser());

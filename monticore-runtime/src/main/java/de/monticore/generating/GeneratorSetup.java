@@ -33,42 +33,42 @@ public class GeneratorSetup {
   /**
    * Where to store all files (e.g. "gen" or "out")
    */
-  private File outputDirectory = new File("out");
+  protected File outputDirectory = new File("out");
 
   /**
    * Used for handling variables and hook points;
    * Default is only created with first get-access.
    */
-  private GlobalExtensionManagement glex = null;
+  protected GlobalExtensionManagement glex = null;
 
   /**
    * The path for the handwritten code
    * Default is only created with first get-access.
    */
-  private MCPath handcodedPath;
+  protected MCPath handcodedPath;
 
   /**
    * Additional path as the source of templates
    */
-  private List<File> additionalTemplatePaths = new ArrayList<>();
+  protected List<File> additionalTemplatePaths = new ArrayList<>();
 
 
   /**
    * Defines if tracing infos are added to the result as comments
    */
-  private boolean tracing = true;
+  protected boolean tracing = true;
 
   /**
    * The characters for the start of a comment.
    * Usually these are the comments of the target language.
    */
-  private String commentStart = "/*";
+  protected String commentStart = "/*";
 
   /**
    * The characters for the end of a comment.
    * Usually these are the comments of the target language.
    */
-  private String commentEnd = "*/";
+  protected String commentEnd = "*/";
   
   /**
    * The model name
@@ -77,17 +77,17 @@ public class GeneratorSetup {
    * By default the model name is absent --
    * and then the according tracing info is not printed at all.
    */
-  private Optional<String> modelName = Optional.empty();
+  protected Optional<String> modelName = Optional.empty();
 
   /**
    * The real engine provided by FreeMarker
    */
-  private FreeMarkerTemplateEngine freeMarkerTemplateEngine;
+  protected FreeMarkerTemplateEngine freeMarkerTemplateEngine;
 
   /**
    * Desired default file extension, e.g. "java"
    */
-  private String defaultFileExtension = "java";
+  protected String defaultFileExtension = "java";
 
   /**
    * Additional Suffix for a generated Class, if the
@@ -100,7 +100,7 @@ public class GeneratorSetup {
    * A list of all freemarker functions that serve as aliases for Java methods,
    * e.g. 'include' as alias for 'tc.include'
    */
-  private List<Macro> aliases = Lists.newArrayList();
+  protected List<Macro> aliases = Lists.newArrayList();
 
   public static final String ALIASES_TEMPLATE = "de.monticore.generating.templateengine.freemarker.Aliases";
   

@@ -100,7 +100,7 @@ public class ASTCDDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testPackageChanged() {
-    String packageName = decoratedCompilationUnit.getPackageList().stream().reduce((a, b) -> a + "." + b).get();
+    String packageName = decoratedCompilationUnit.getCDPackageList().stream().reduce((a, b) -> a + "." + b).get();
     assertEquals("de.monticore.codegen.ast.ast._ast", packageName);
   }
 
@@ -108,7 +108,7 @@ public class ASTCDDecoratorTest extends DecoratorTestCase {
   @Test
   public void testPackage() {
     List<String> expectedPackage = Arrays.asList("de", "monticore", "codegen", "ast", "ast", "_ast");
-    assertEquals(expectedPackage, decoratedCompilationUnit.getPackageList());
+    assertEquals(expectedPackage, decoratedCompilationUnit.getCDPackageList());
   }
 
   @Test
@@ -116,9 +116,6 @@ public class ASTCDDecoratorTest extends DecoratorTestCase {
     // test that the modifier of AST classes have a different object ID
     ASTCDClass originalClass = getClassBy("A", originalCompilationUnit);
     ASTCDClass decoratedClass = getClassBy("A", decoratedCompilationUnit);
-
-    assertTrue(originalClass.isPresentModifier());
-    assertTrue(decoratedClass.isPresentModifier());
 
     assertNotEquals(originalClass.getModifier().toString(), decoratedClass.getModifier().toString());
     assertNotEquals(originalClass.getModifier(), decoratedClass.getModifier());

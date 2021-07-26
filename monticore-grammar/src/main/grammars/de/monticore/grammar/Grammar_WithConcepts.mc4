@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.grammar;
 
-grammar Grammar_WithConcepts extends
+grammar Grammar_WithConcepts  extends
            de.monticore.grammar.Grammar,
            de.monticore.statements.MCCommonStatements,
            de.monticore.statements.MCReturnStatements,

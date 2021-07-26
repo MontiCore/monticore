@@ -4,6 +4,7 @@ package de.monticore
 import com.google.common.hash.Hashing
 import com.google.common.io.Files
 import de.monticore.cli.MontiCoreStandardCLI
+import de.monticore.mcbasics.MCBasicsMill
 import de.se_rwth.commons.logging.Finding
 import de.se_rwth.commons.logging.Log
 import org.gradle.api.DefaultTask
@@ -309,12 +310,14 @@ abstract public class MCTask extends DefaultTask {
     try {
       // execute Monticore with the given parameters
       MontiCoreStandardCLI.main(p)
+      MCBasicsMill.globalScope().getSymbolPath().close();
     } catch(MCTaskError e){
       // in case of failure print the error and fail
       String error = Log.getFindings().stream().
               filter({f -> f.getType().equals(Finding.Type.ERROR)})
               .map({f -> f.getMsg()})
               .collect(Collectors.joining("\n"))
+      MCBasicsMill.globalScope().getSymbolPath().close();
       ant.fail(error)
     }
   }

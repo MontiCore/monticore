@@ -65,7 +65,7 @@ public class BuilderDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperClassName() {
-    assertFalse(builderClass.isPresentSuperclass());
+    assertFalse(builderClass.isPresentCDExtendUsage());
   }
 
   @Test

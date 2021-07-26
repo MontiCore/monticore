@@ -3,7 +3,7 @@
 package de.monticore;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.cd.reporting.CD4ANodeIdentHelper;
+import de.monticore.cd4code.reporting.CD4ANodeIdentHelper;
 import de.monticore.cdbasis._ast.ASTCDBasisNode;
 import de.monticore.generating.templateengine.reporting.commons.Layouter;
 import de.monticore.grammar.LexNamer;
@@ -19,17 +19,11 @@ import static de.monticore.generating.templateengine.reporting.commons.Layouter.
 
 public class MontiCoreNodeIdentifierHelper extends MCSimpleGenericTypesNodeIdentHelper {
   
-  // ##############
-  // Identifier helper for Literals (could be moved into the grammars module?)
-  // TODO: discuss this (with BR?): what do we want identifiers for in the end?
-  // until then they remain unused
-  // ##############
-  
-  
+
     
   // ##############
   // Identifier helper for Grammar
-  // TODO: incomplete by now; only those added here which "seem" to have a name
+  // only those added here which "seem" to have a name
   // ##############
   
   public String getIdent(ASTAntlrOption ast) {

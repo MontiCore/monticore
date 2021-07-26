@@ -13,8 +13,6 @@ ${tc.include("parser.ParserHeader")}
 </#list>  
 }
 
-${tc.includeArgs("parser.LexerMember", [antlrGenerator, parserHelper.getGrammarSymbol().getName()])}
-
 <#list genHelper.getParserRulesToGenerate() as parserProd>
   <#list antlrGenerator.createAntlrCode(parserProd) as parserRule>
   ${parserRule}
@@ -33,15 +31,5 @@ ${tc.includeArgs("parser.LexerMember", [antlrGenerator, parserHelper.getGrammarS
 
 <#list genHelper.getSplitLexSymbolsWithInherited() as splitSymbol>
  ${splitSymbol}
-</#list>
- 
-<#list genHelper.getLexSymbolsWithInherited() as lexSymbol>
-  ${genHelper.getLexSymbolName(lexSymbol)} : '${lexSymbol}';
-</#list>
- 
-<#list genHelper.getLexerRulesToGenerate() as lexProd>
-  <#list antlrGenerator.createAntlrCode(lexProd) as lexerRule>
-  ${lexerRule}
-  </#list>
 </#list>
 

@@ -1,10 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.mc2cd.symbolTransl;
 
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.codegen.cd2java.CDModifier;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
@@ -44,7 +44,7 @@ public class CDSymbolTranslationTest {
 
   @Test
   public void testPackage() {
-    assertEquals(2, compilationUnit.getPackageList().size());
+    assertEquals(2, compilationUnit.getCDPackageList().size());
     assertEquals("mc2cdtransformation", compilationUnit.getMCPackageDeclaration().getMCQualifiedName().getParts(0));
     assertEquals("symbolTransl", compilationUnit.getMCPackageDeclaration().getMCQualifiedName().getParts(1));
   }
@@ -61,12 +61,11 @@ public class CDSymbolTranslationTest {
     assertEquals(1, symbolClassSymbol.getInterfaceList().size());
     assertEquals(1, symbolClassSymbol.getCDMethodList().size());
     assertTrue(symbolClassSymbol.getCDConstructorList().isEmpty());
-    assertTrue(symbolClassSymbol.isPresentSuperclass());
+    assertTrue(symbolClassSymbol.isPresentCDExtendUsage());
 
     ASTCDAttribute cdAttribute = symbolClassSymbol.getCDAttributeList().get(0);
     assertEquals("extraString", cdAttribute.getName());
     assertDeepEquals(String.class, cdAttribute.getMCType());
-    assertTrue(cdAttribute.isPresentModifier());
     assertDeepEquals(CDModifier.PROTECTED, cdAttribute.getModifier());
 
     ASTCDMethod cdMethod = symbolClassSymbol.getCDMethodList().get(0);
@@ -81,7 +80,7 @@ public class CDSymbolTranslationTest {
     ASTMCObjectType cdInterface = symbolClassSymbol.getInterfaceList().get(0);
     assertDeepEquals("de.monticore.symboltable.ISymbol", cdInterface);
 
-    ASTMCObjectType superclass = symbolClassSymbol.getSuperclass();
+    ASTMCObjectType superclass = symbolClassSymbol.getCDExtendUsage().getSuperclass(0);
     assertDeepEquals("de.monticore.symboltable.Symbol", superclass);
   }
 
@@ -92,12 +91,11 @@ public class CDSymbolTranslationTest {
     assertTrue(symbolClassSymbol.getInterfaceList().isEmpty());
     assertTrue(symbolClassSymbol.getCDMethodList().isEmpty());
     assertTrue(symbolClassSymbol.getCDConstructorList().isEmpty());
-    assertFalse(symbolClassSymbol.isPresentSuperclass());
+    assertFalse(symbolClassSymbol.isPresentCDExtendUsage());
 
     ASTCDAttribute cdAttribute = symbolClassSymbol.getCDAttributeList().get(0);
     assertEquals("extraString", cdAttribute.getName());
     assertDeepEquals(String.class, cdAttribute.getMCType());
-    assertTrue(cdAttribute.isPresentModifier());
     assertDeepEquals(CDModifier.PROTECTED, cdAttribute.getModifier());
   }
 
@@ -117,7 +115,6 @@ public class CDSymbolTranslationTest {
     ASTCDAttribute cdAttribute = symbolClassSymbol.getCDAttributeList().get(0);
     assertEquals("extraString", cdAttribute.getName());
     assertDeepEquals(String.class, cdAttribute.getMCType());
-    assertTrue(cdAttribute.isPresentModifier());
     assertDeepEquals(CDModifier.PROTECTED, cdAttribute.getModifier());
   }
 
@@ -131,7 +128,6 @@ public class CDSymbolTranslationTest {
     ASTCDAttribute cdAttribute = symbolClassSymbol.getCDAttributeList().get(0);
     assertEquals("extraString", cdAttribute.getName());
     assertDeepEquals(String.class, cdAttribute.getMCType());
-    assertTrue(cdAttribute.isPresentModifier());
     assertDeepEquals(CDModifier.PROTECTED, cdAttribute.getModifier());
   }
 }

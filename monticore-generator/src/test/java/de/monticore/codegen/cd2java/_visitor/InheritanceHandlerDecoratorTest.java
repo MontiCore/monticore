@@ -8,6 +8,7 @@ import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.codegen.cd2java.CdUtilsPrinter;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
@@ -23,8 +24,7 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static de.monticore.codegen.cd2java.CDModifier.PRIVATE;
-import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java.CDModifier.*;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodsBy;
@@ -64,6 +64,8 @@ public class InheritanceHandlerDecoratorTest extends DecoratorTestCase {
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
 
     this.glex.setGlobalValue("service", new VisitorService(decoratedCompilationUnit));
+    this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
+
     VisitorService visitorService = new VisitorService(decoratedCompilationUnit);
     SymbolTableService symbolTableService = new SymbolTableService(decoratedCompilationUnit);
     MethodDecorator methodDecorator = new MethodDecorator(glex, visitorService);
@@ -118,7 +120,7 @@ public class InheritanceHandlerDecoratorTest extends DecoratorTestCase {
   @Test
   public void testTraverserAttribute() {
     ASTCDAttribute astcdAttribute = getAttributeBy("traverser", handlerClass);
-    assertDeepEquals(PRIVATE, astcdAttribute.getModifier());
+    assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertDeepEquals(AUTOMATON_TRAVERSER, astcdAttribute.getMCType());
   }
 

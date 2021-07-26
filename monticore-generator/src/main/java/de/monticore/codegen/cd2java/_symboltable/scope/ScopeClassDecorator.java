@@ -3,6 +3,7 @@ package de.monticore.codegen.cd2java._symboltable.scope;
 
 import com.google.common.collect.ListMultimap;
 import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDConstructor;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
@@ -19,7 +20,6 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
-import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
@@ -146,19 +146,18 @@ public class ScopeClassDecorator extends AbstractDecorator {
     ASTCDAttribute astNodeAttribute = createASTNodeAttribute();
     List<ASTCDMethod> astNodeMethods = methodDecorator.decorate(astNodeAttribute);
 
-    Optional<ASTMCObjectType> scopeRuleSuperClass = scopeInput.deepClone().getCDDefinition()
-        .getCDClassesList()
-        .stream()
-        .filter(ASTCDClass::isPresentSuperclass)
-        .map(ASTCDClass::getSuperclass)
-        .findFirst();
+    Optional<ASTCDClass> scopeRuleSuperClass = scopeInput.deepClone().getCDDefinition()
+            .getCDClassesList()
+            .stream()
+            .filter(ASTCDClass::isPresentCDExtendUsage)
+            .findFirst();
 
     List<ASTCDMethod> resolveSubKindsMethods = createResolveSubKindsNameMethods(symbolInput.getCDDefinition());
 
     ASTCDClassBuilder builder = CD4AnalysisMill.cDClassBuilder()
         .setName(scopeClassName)
         .setModifier(PUBLIC.build())
-        .addInterface(scopeInterfaceType)
+        .setCDInterfaceUsage(CD4CodeMill.cDInterfaceUsageBuilder().addInterface(scopeInterfaceType).build())
         .addAllCDMembers(createConstructors(scopeClassName))
         .addAllCDMembers(scopeRuleAttributeList)
         .addAllCDMembers(scopeRuleMethodList)
@@ -187,7 +186,7 @@ public class ScopeClassDecorator extends AbstractDecorator {
         .addAllCDMembers(createSuperScopeMethods(symbolTableService.getScopeInterfaceFullName()))
         .addAllCDMembers(resolveSubKindsMethods);
     if (scopeRuleSuperClass.isPresent()) {
-      builder.setSuperclass((ASTMCQualifiedType) scopeRuleSuperClass.get());
+      builder.setCDExtendUsage(scopeRuleSuperClass.get().getCDExtendUsage().deepClone());
     }
     return builder.build();
   }
@@ -284,9 +283,8 @@ public class ScopeClassDecorator extends AbstractDecorator {
   protected Map<String, ASTCDAttribute> getSuperSymbolAttributes() {
     Map<String, ASTCDAttribute> symbolAttributes = new HashMap<>();
     for (DiagramSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
-      for (CDTypeSymbol type : ((ICDBasisScope) cdDefinitionSymbol.getEnclosingScope()).getLocalCDTypeSymbols()) {
-        if (type.isPresentAstNode() && type.getAstNode().isPresentModifier()
-            && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifier())) {
+      for (CDTypeSymbol type : symbolTableService.getAllCDTypes(cdDefinitionSymbol)) {
+        if (type.isPresentAstNode() && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifier())) {
           Optional<ASTCDAttribute> symbolAttribute = createSymbolAttribute(type.getAstNode(),
               cdDefinitionSymbol);
           symbolAttribute.ifPresent(attr -> symbolAttributes.put(attr.getName(), attr));
@@ -576,9 +574,8 @@ public class ScopeClassDecorator extends AbstractDecorator {
 
     //add symbols from super grammars
     for (DiagramSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
-      for (CDTypeSymbol type : ((ICDBasisScope) cdDefinitionSymbol.getEnclosingScope()).getLocalCDTypeSymbols()) {
-        if (type.isPresentAstNode() && type.getAstNode().isPresentModifier()
-            && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifier())) {
+      for (CDTypeSymbol type : symbolTableService.getAllCDTypes(cdDefinitionSymbol)) {
+        if (type.isPresentAstNode() && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifier())) {
           String name = symbolTableService.getSymbolFullName(type.getAstNode(), cdDefinitionSymbol);
           String ntName = type.getAstNode().getName().substring(3);
           result.add(createResolveSubKindsMethod(name, ntName, subKinds.get(ntName),

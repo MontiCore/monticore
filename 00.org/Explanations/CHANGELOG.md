@@ -1,14 +1,17 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 
 # Release Notes
-
-##  MontiCore 7.1.0-SNAPSHOT
+## MontiCore 7.2.0
 to be released
+
+##  MontiCore 7.1.0
+released: 05.07.2021
 
 ### Additions
 * introduced language-specific CLI generation
 * New class `MCPath` that manages a set of path entries. The class is used, e.g., for realizing symbol paths, model paths, handcoded paths, and template paths. `MCPath` replaces the classes `IterablePath` and `ModelPath`.
-
+* Different modes can now be defined for lexical tokens in grammar.
+  The corresponding generator will only be available in the next version.
 
 ### Changes
 * the methods `serialize` and `deserialize` of the class `XDeSer` were moved to the class `XSymbols2Json`

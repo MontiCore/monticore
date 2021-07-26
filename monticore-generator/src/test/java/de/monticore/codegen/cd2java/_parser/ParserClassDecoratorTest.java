@@ -5,15 +5,10 @@ import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
 import com.google.common.collect.Lists;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.cd4codebasis._ast.ASTCDMethod;
-import de.monticore.codegen.cd2java.CDModifier;
-import de.monticore.codegen.cd2java.CdUtilsPrinter;
-import de.monticore.codegen.cd2java.AbstractService;
-import de.monticore.codegen.cd2java.CoreTemplates;
-import de.monticore.codegen.cd2java.DecorationHelper;
-import de.monticore.codegen.cd2java.DecoratorTestCase;
+import de.monticore.codegen.cd2java.*;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -93,8 +88,8 @@ public class ParserClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperclass(){
-    assertTrue(parserClass.isPresentSuperclass());
-    assertDeepEquals("de.monticore.antlr4.MCConcreteParser", parserClass.getSuperclass());
+    assertTrue(parserClass.isPresentCDExtendUsage());
+    assertDeepEquals("de.monticore.antlr4.MCConcreteParser", parserClass.getCDExtendUsage().getSuperclass(0));
   }
 
   @Test

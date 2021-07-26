@@ -72,6 +72,8 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
            SplitRule
          |
            KeywordRule
+         |
+           TokenMode
          )*
       "}" ;
 
@@ -193,7 +195,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
   */
   LexProd implements Prod =
     GrammarAnnotation* (["fragment"] | ["comment"])*
-    "token" Name
+    "token" Name ("(" mode:( Name || ",")+ ")")?
     (
       (
         LexOption ("{" initAction:Action "}")? // Statements
@@ -202,7 +204,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
       )?
       "=" alt:(LexAlt || "|")+
 
-      (":"  ("->" lexerCommand:Name)? ("{" endAction:Action  "}")? (variable:Name&
+      (":"  ("->" lexerCommand:Name ( "(" parameter:(Name || ",")+ ")" )?)? ("{" endAction:Action  "}")? (variable:Name&
         ("->" type:( Name& || ".")+ (":" "{" block:Action "}" )? )? )? // Statements
       )?
     )
@@ -483,12 +485,6 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
 
 
   /**
-    End of file as EOF keyword
-  */
-  Eof implements RuleComponent =
-    "EOF";
-
-  /**
     Handed on as antlr action or predicate, realised by external JavaDSLParser
   */
   SemanticpredicateOrAction implements RuleComponent=
@@ -524,6 +520,12 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
   */
   KeywordRule =
     "nokeyword" (String || ",")+ ";";
+
+  /**
+    Defines token for the given mode
+  */
+  TokenMode =
+    "tokenmode" Name ":" tokenName:(Name || ",")+ ";";
 
 
   // ----------------------------------------------------------------------

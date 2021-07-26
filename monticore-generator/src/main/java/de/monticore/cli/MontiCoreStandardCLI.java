@@ -9,6 +9,7 @@ import com.google.common.io.Files;
 import com.google.common.io.Resources;
 import de.monticore.MontiCoreConfiguration;
 import de.monticore.MontiCoreScript;
+import de.monticore.cli.updateChecker.UpdateCheckerRunnable;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.se_rwth.commons.cli.CLIArguments;
@@ -63,6 +64,16 @@ public class MontiCoreStandardCLI {
     Grammar_WithConceptsMill.init();
     new MontiCoreStandardCLI().run(args);
   }
+
+  /**
+   * Starts a thread to check whether a newer version of monticore
+   * was released.
+   */
+  protected void runUpdateCheck() {
+    Runnable updateCheckerRunnable = new UpdateCheckerRunnable();
+    Thread updateCheckerThread = new Thread(updateCheckerRunnable);
+    updateCheckerThread.start();
+  }
   
   /**
    * Processes user input from command line and delegates to the corresponding
@@ -71,6 +82,8 @@ public class MontiCoreStandardCLI {
    * @param args The input parameters for configuring the MontiCore tool.
    */
   public void run(String[] args) {
+
+    runUpdateCheck();
   
     Options options = initOptions();
   
@@ -220,7 +233,7 @@ public class MontiCoreStandardCLI {
    * @param cmd The command line instance containing the input options
    * @return The groovy configuration script as String
    */
-  private String loadScript(CommandLine cmd) {
+  protected String loadScript(CommandLine cmd) {
     String script = StringUtils.EMPTY;
     try {
       // if the user specifies a custom script to use, we check if it is

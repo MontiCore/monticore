@@ -88,7 +88,7 @@ public class AssignmentExpressionsPrettyPrinter implements AssignmentExpressions
       case ASTConstantsAssignmentExpressions.SLASHEQUALS:
         getPrinter().print(("/="));
         break;
-      case ASTConstantsAssignmentExpressions.ANDEQUALS:
+      case ASTConstantsAssignmentExpressions.AND_EQUALS:
         getPrinter().print(("&="));
         break;
       case ASTConstantsAssignmentExpressions.PIPEEQUALS:

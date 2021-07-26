@@ -40,7 +40,7 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
    * additional flag that can be disabled to not insert a template for the build method
    * was inserted, because special implementations often only want to change the build method implementation
    */
-  private boolean printBuildMethodTemplate = true;
+  protected boolean printBuildMethodTemplate = true;
 
   public BuilderDecorator(final GlobalExtensionManagement glex,
                           final AccessorDecorator accessorDecorator,
@@ -57,10 +57,8 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
     ASTMCType builderType = this.getMCTypeFacade().createQualifiedType(builderClassName);
 
     // make the builder abstract for a abstract AST class
-    ASTModifier modifier = domainClass.isPresentModifier() ?
-        service.createModifierPublicModifier(domainClass.getModifier()) :
-        PUBLIC.build();
-    if (domainClass.isPresentModifier() && domainClass.getModifier().isAbstract()) {
+    ASTModifier modifier = service.createModifierPublicModifier(domainClass.getModifier()) ;
+    if (domainClass.getModifier().isAbstract()) {
       modifier.setAbstract(true);
     }
 
