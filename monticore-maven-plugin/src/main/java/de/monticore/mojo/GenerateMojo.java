@@ -412,30 +412,33 @@ public final class GenerateMojo extends AbstractMojo {
     // create all necessary directories
     getOutputDirectory().mkdirs();
     
-    // setup configuration
-    List<String> argList = new ArrayList<>();
-    argList.add("-" + GRAMMAR);
-    Set<File> grammars = getGrammars();
-    argList.addAll(findGrammars(grammars));
-    argList.add("-" + MODELPATH);
-    argList.addAll(toStringSet(getModelPaths()));
-    argList.add("-" + HANDCODEDPATH);
-    argList.addAll(toStringSet(getHandcodedPaths()));
-    if (!getTemplatePaths().isEmpty()) {
-      argList.add("-" + TEMPLATEPATH);
-      argList.addAll(toStringSet(getTemplatePaths()));
-    }
-    argList.add("-" + OUT);
-    argList.addAll(Arrays.asList(getOutputDirectory().getAbsolutePath()));
-    argList.add("-" + REPORT);
-    argList.addAll(Arrays.asList(getReportDirectory().getAbsolutePath()));
-    if (getScript() != null) {
-      argList.add("-" + SCRIPT);
-      argList.add(getScript());
-    }
+    // one MC call for each grammar
+    Set<File> grammarPath = getGrammars();
+    for (String grammar : findGrammars(grammarPath)) {
+      // setup configuration
+      List<String> argList = new ArrayList<>();
+      argList.add("-" + GRAMMAR);
+      argList.add(grammar);
+      argList.add("-" + MODELPATH);
+      argList.addAll(toStringSet(getModelPaths()));
+      argList.add("-" + HANDCODEDPATH);
+      argList.addAll(toStringSet(getHandcodedPaths()));
+      if (!getTemplatePaths().isEmpty()) {
+        argList.add("-" + TEMPLATEPATH);
+        argList.addAll(toStringSet(getTemplatePaths()));
+      }
+      argList.add("-" + OUT);
+      argList.addAll(Arrays.asList(getOutputDirectory().getAbsolutePath()));
+      argList.add("-" + REPORT);
+      argList.addAll(Arrays.asList(getReportDirectory().getAbsolutePath()));
+      if (getScript() != null) {
+        argList.add("-" + SCRIPT);
+        argList.add(getScript());
+      }
 
-    // run MontiCore via CLI
-    MontiCoreStandardCLI.main(argList.toArray(new String[0]));
+      // run MontiCore via CLI
+      MontiCoreStandardCLI.main(argList.toArray(new String[0]));
+    }
 
     // if everything went well we also need to add the generated output to the
     // Maven project compile roots
