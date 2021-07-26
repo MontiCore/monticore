@@ -8,4 +8,21 @@ task generate (type: MCTask) {
   outputs.upToDateWhen { uptoDate }
 }
 
+ext.genResOutputDir = file("$buildDir/resources")
 
+task generateBuildData {
+  ext.outputFile = file("$genResOutputDir/buildInfo.properties")
+
+  final def buildDate = new Date().format("dd.MM.yyyy")
+
+  outputs.file(outputFile)
+  doLast {
+    outputFile.text = """\
+        buildDate=$buildDate
+        version=$version
+        mc_version=$mc_version
+        """
+  }
+}
+
+sourceSets.main.output.dir genResOutputDir, builtBy: generateBuildData
