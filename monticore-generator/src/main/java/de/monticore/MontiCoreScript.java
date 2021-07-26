@@ -78,7 +78,6 @@ import de.monticore.codegen.mc2cd.MC2CDTransformation;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.mc2cd.scopeTransl.MC2CDScopeTranslation;
 import de.monticore.codegen.mc2cd.symbolTransl.MC2CDSymbolTranslation;
-import de.monticore.codegen.metadata.MetadataGenerator;
 import de.monticore.codegen.parser.Languages;
 import de.monticore.codegen.parser.ParserGenerator;
 import de.monticore.generating.GeneratorSetup;
@@ -1071,8 +1070,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     for (ASTCDCompilationUnit cd : cds) {
       generateFromCD(glex, oldCD, cd, outputDirectory, handcodedPath, templatePath);
     }
-
-    generateMetadata(cds.get(6), outputDirectory);
   }
 
   public void generateFromCD(GlobalExtensionManagement glex, ASTCDCompilationUnit oldCD, ASTCDCompilationUnit decoratedCD,
@@ -1090,10 +1087,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     setup.setGlex(glex);
     CDGenerator generator = new CDGenerator(setup);
     generator.generate(decoratedCD);
-  }
-
-  protected void generateMetadata(ASTCDCompilationUnit cd, File targetDir) {
-    MetadataGenerator.generateMetadata(cd, targetDir);
   }
 
   /**

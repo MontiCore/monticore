@@ -8,6 +8,7 @@ import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDDefinition;
+import de.monticore.cli.updateChecker.UpdateCheckerRunnable;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._parser.ParserService;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
@@ -268,9 +269,10 @@ public class CLIDecorator extends AbstractCreator<ASTCDCompilationUnit, Optional
   protected ASTCDMethod createPrintVersionMethod() {
     String buildDate = LocalDate.now().toString();
     String toolName = symbolTableService.getCDName() + "Tool";
+    String mcVersion =  new UpdateCheckerRunnable().getLocalVersion();
 
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), "printVersion");
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "PrintVersion", buildDate, toolName));
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "PrintVersion", toolName, mcVersion, buildDate));
     return method;
   }
 
