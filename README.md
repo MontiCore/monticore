@@ -25,7 +25,9 @@ grammar languages are comfortable to use.
   <a href="http://monticore.de/handbook.pdf" target="_blank">
   <img src="docs/docs/MontiCoreHandbook2021.gif" width="150">
   </a>
-  <br>MontiCore handbook.
+  <br>[HKR21] Katrin Hölldobler, Oliver Kautz, Bernhard Rumpe: 
+      MontiCore Language Workbench and Library Handbook: Edition 2021.
+      Shaker, 2021.
 </div><br>
 
 ## A Teaser for MontiCore
