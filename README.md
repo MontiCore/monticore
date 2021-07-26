@@ -26,7 +26,7 @@ grammar languages are comfortable to use.
    target="_blank">
    <img src="docs/docs/MontiCoreHandbook2021.gif"
         align="left" width="150"></a>
-<br>
+</div>
 
 ## A Teaser for MontiCore
 
