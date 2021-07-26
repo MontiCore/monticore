@@ -48,6 +48,7 @@ public class MetadataGenerator {
   }
 
   private static String getToolName(ASTCDCompilationUnit cd) {
+    if (cd == null) return "unknown";
     return cd.getCDDefinition().getName() + "Tool";
   }
 }

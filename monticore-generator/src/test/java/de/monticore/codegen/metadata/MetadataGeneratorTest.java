@@ -6,6 +6,7 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.BufferedInputStream;
@@ -38,6 +39,7 @@ public class MetadataGeneratorTest {
   }
 
   @Test
+  @Ignore
   public void testGenerateMetadataWithNull() {
     ASTCDCompilationUnit cd = new ASTCDCompilationUnit();
     File targetDir = new File("");
