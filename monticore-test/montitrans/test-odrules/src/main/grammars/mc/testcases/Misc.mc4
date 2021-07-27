@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.testcases;
+
+grammar Misc extends de.monticore.MCBasics {
+
+Def =
+  "misc" Name? Sub? Def*;
+
+Sub = "sub";
+
+}

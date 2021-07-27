@@ -1,0 +1,36 @@
+/* (c) https://github.com/MontiCore/monticore */
+grammar mc.testcases.Automaton;
+pattern objectdiagram lhs {
+    automaton_1 : mc.testcases.automaton._ast.ASTAutomaton {
+    }
+
+    $State : mc.testcases.automaton._ast.ASTState {
+    }
+
+    <<optional>> opt1 : de.monticore.tf.ast.IOptional {
+        state_2 : mc.testcases.automaton._ast.ASTState {
+        }
+    }
+
+    composition automaton_1 -- (states) [*] $State;
+    composition automaton_1 -- (states) [*] state_2;
+}
+
+replacement objectdiagram rhs {
+    automaton_1 : mc.testcases.automaton._ast.ASTAutomaton {
+    }
+
+    $State : mc.testcases.automaton._ast.ASTState {
+    }
+
+    <<optional>> opt1 : de.monticore.tf.ast.IOptional {
+        state_2 : mc.testcases.automaton._ast.ASTState {
+        }
+    }
+
+    composition automaton_1 -- (states) [*] $State;
+    composition automaton_1 -- (states) [*] state_2;
+}
+where {
+    $State.getName().equals("b")
+}

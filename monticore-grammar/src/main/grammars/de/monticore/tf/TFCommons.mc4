@@ -1,0 +1,81 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.tf;
+
+component grammar TFCommons extends de.monticore.tf.TFBasisExts {
+
+
+    TfIdentifier =
+        (identifier:String | identifier:Name)
+             |
+            ("[[" (identifier:String |identifier:Name)? ":-" (newIdentifier:String | newIdentifier:Name)? "]]")
+             |
+            "Name" identifier:Name ";";
+
+    TFFolding = "folding" "{" FoldingSet* "}";
+
+    /**
+    * A folding tuple is a list of at least two foldable objects in parentheses
+    */
+    FoldingSet =
+      "(" objectNames:Name ("," objectNames:Name)+ ")";
+
+    TFAssignments = "assign" "{" Assign* "}";
+
+    Assign = variable:Name "=" value:Expression ";" ;
+
+    TFWhere = "where" "{" constraint:Expression "}";
+
+    TFDo = "do" MCJavaBlock ;
+
+    TFUndo = "undo" MCJavaBlock ;
+
+
+    ReplacementOp astimplements de.monticore.tf.ast.IReplacementOperator =
+      ":-" |
+      (":" (first:"first" | last:"last" | relative:"relative" | inplace:"inplace") "-");
+
+    astrule ReplacementOp =
+        method public boolean isFirst() {
+          return isPresentFirst();
+        }
+        method public boolean isLast() {
+          return isPresentLast();
+        }
+        method public boolean isInplace() {
+          return isPresentInplace();
+        }
+        method public boolean isRelative() {
+          return isPresentRelative();
+        }
+        method public boolean isDefault() {
+          return !isFirst() && !isLast() && !isRelative();
+        }
+    ;
+
+    astrule TfIdentifier =
+        method public boolean isNewIdentifierFix() {
+          return isPresentNewIdentifier() && !getNewIdentifier().startsWith("$");
+        }
+        method public boolean isIdentifierFix() {
+          return isPresentIdentifier() && !getIdentifier().startsWith("$");
+        }
+        method public boolean isIdentifierSchemaVar() {
+          return isPresentIdentifier() && getIdentifier().startsWith("$")&&!isIdentifierDontCare();
+        }
+        method public boolean isIdentifierDontCare() {
+           return isPresentIdentifier() && getIdentifier().equals("$_");
+        }
+        method public boolean isNewIdentifierSchemaVar() {
+          return isPresentNewIdentifier() && getNewIdentifier().startsWith("$") && !isNewIdentifierDontCare();
+        }
+        method public boolean isNewIdentifierDontCare() {
+          return isPresentNewIdentifier() && getNewIdentifier().equals("$_");
+        }
+        ;
+
+    TFRule =
+      ((ITFPart)* TFFolding? TFAssignments? TFWhere? TFDo? TFUndo?) |
+      (("package" package:(Name& || ".")+ ";")? MCImportStatement* ("transformation" Name)? "{" (ITFPart)* TFFolding? TFAssignments? TFWhere? TFDo? TFUndo? "}");
+
+    interface ITFPart;
+}

@@ -1,0 +1,18 @@
+/* (c) https://github.com/MontiCore/monticore */
+pattern objectdiagram lhs {
+    state_1 : mc.testcases.automaton._ast.ASTState {
+    }
+
+}
+
+replacement objectdiagram rhs {
+    state_1 : mc.testcases.automaton._ast.ASTState {
+    }
+
+    state_2 : mc.testcases.automaton._ast.ASTState {
+      String name = "sub";
+    }
+    
+    composition state_1 -- (state) state_2;
+    
+}

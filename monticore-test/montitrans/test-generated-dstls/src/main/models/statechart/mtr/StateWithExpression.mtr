@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+{
+State $S [[
+  state $s_name {
+    [  Expression $E ]
+  }
+]]
+where { $S.getStateList().size() % 2 == 0 }
+}

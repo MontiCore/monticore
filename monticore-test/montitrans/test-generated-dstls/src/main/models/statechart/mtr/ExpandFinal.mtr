@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+{/* TODO (MB): renaming of keyword "final" because the generated output ("boolean final = true;") can not be parsed 
+    state $outer {
+      not <State> [[ state $inner <<final>>; ]]
+      list <State>$L [[ state $_ << [[ :- final ]] >> ; ]]
+    }
+    where {
+      !$L.isEmpty()
+    }
+    */
+}

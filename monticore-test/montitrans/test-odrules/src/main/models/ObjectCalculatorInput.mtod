@@ -1,0 +1,41 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+pattern objectdiagram lhs {
+    state_1 : mc.testcases.automaton._ast.ASTState {
+        String name = fooString;
+        boolean initial = fooBoolean_1;
+        double money = 13.22;
+    }
+    
+    state_2 : mc.testcases.automaton._ast.ASTState {
+    	String name = "blub";
+    	double money = fooDouble;
+    }
+
+    transition_1 : mc.testcases.automaton._ast.ASTTransition {
+        String from = state_1.name;
+        String to = state_2.name;
+        int duration = fooInt;
+    }
+    <<list>> states : mc.testcases.automaton._ast.ASTState;
+}
+
+replacement objectdiagram rhs {
+    state_1 : mc.testcases.automaton._ast.ASTState {
+        String name = fooString;
+    }
+       
+    state_3 : mc.testcases.automaton._ast.ASTState {
+        mc.testcases.automaton._ast.ASTState parent = state_1;
+        boolean initial = true;
+        boolean fin = fooBoolean_2;
+        float time = fooFloat;
+    }
+
+    transition_1 : mc.testcases.automaton._ast.ASTTransition {
+        String from = state_1.name;
+        String to = state_3.name;
+        int duration = 3;
+    }
+    <<list>> states : mc.testcases.automaton._ast.ASTState;
+}

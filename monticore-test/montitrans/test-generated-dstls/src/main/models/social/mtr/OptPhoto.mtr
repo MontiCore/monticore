@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+// example of an optional element that contains a replacement
+// this means that only if the optional is present the replacement is executed
+// is different to OptVegan
+
+    social network $_ {
+        opt[[
+           user $_ $_  [[$prename.$name.png :- foo.$name.png]] {}
+        ]]
+    }
+
