@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+{
+[[
+  state Red;
+:-
+  state Green;
+]]
+}

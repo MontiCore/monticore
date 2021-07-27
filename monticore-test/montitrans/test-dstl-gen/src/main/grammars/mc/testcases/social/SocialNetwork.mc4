@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.testcases.social;
+
+grammar SocialNetwork extends de.monticore.MCBasics {
+
+    Network = "social" "network" Name "{" User* "}";
+
+    User = "user" firstName:Name lastName:Name Gender? Photo? "{" ( PhotoEntry | TextEntry)* "}";
+    Gender = wmd:["w" | "m" | "d"];
+
+//    interface Entry;
+    TextEntry  = "entry" Name ";";
+    PhotoEntry  = "entry" Photo ";";
+    Photo = photoPath:(Name || ".")* fileEnding:[".png" | ".jpg"];
+}

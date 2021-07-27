@@ -1,0 +1,11 @@
+social network SimpleNetwork2 {
+    user Jane Doe w {
+        entry married;
+        entry photo.test.png;
+    }
+
+    user Jon Doe m {
+        entry married;
+        entry photo.test2.png;
+    }
+}

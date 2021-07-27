@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+pattern objectdiagram lhs {
+    o : mc.testcases._ast.ASTQualifiedName {
+        java.util.List<String> Name = {"foo", "bar"};
+    }
+}
+
+replacement objectdiagram rhs {
+    o : mc.testcases._ast.ASTQualifiedName {
+        java.util.List<String> Name = {"foo", "bar"};
+    }
+}

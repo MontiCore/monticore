@@ -1,0 +1,20 @@
+/* (c) https://github.com/MontiCore/monticore */
+grammar mc.testcases.Automaton;
+pattern objectdiagram lhs {
+    automaton_1 : mc.testcases.automaton._ast.ASTAutomaton {
+    }
+
+}
+
+replacement objectdiagram rhs {
+    automaton_1 : mc.testcases.automaton._ast.ASTAutomaton {
+    }
+
+    state_1 : mc.testcases.automaton._ast.ASTState {
+        String name [1] = "TheNewState";
+        boolean initial [1] = false;
+    }
+    
+    << insertType = "first" >> composition automaton_1 -- (states) [*] state_1;
+    
+}

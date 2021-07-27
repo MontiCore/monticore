@@ -1,0 +1,46 @@
+/* (c) https://github.com/MontiCore/monticore */
+description = 'MontiTrans Test: Generated DSTL Test'
+
+def _outputDir = "$buildDir/generated-sources"
+
+dependencies {
+  compile project(':monticore-test:montitrans:test-dstl-gen')
+}
+
+task generateStatechartTRRules {
+  group = "montitrans"
+}
+fileTree(dir: "$projectDir/src/main/models/statechart/mtr", include: '**/**.mtr').each {
+  def g = it
+  def taskname = "generateStatechartTRRules${it.getName().substring(0, it.getName().lastIndexOf('.'))}"
+  task "$taskname"(type: JavaExec) {
+    group = "montitrans"
+    classpath += project(':monticore-test:montitrans:test-dstl-gen').sourceSets.main.runtimeClasspath
+    main = 'mc.testcases.statechart.tr.StatechartCLI'
+    args += ["-models", "$g"]
+  }
+  generateStatechartTRRules.dependsOn("$taskname")
+}
+
+task generateSocialNetworkTRRules {
+  group = "montitrans"
+}
+fileTree(dir: "$projectDir/src/main/models/social/mtr", include: '**/**.mtr').each {
+  def g = it
+  def taskname = "generateSocialNetworkTRRules${it.getName().substring(0, it.getName().lastIndexOf('.'))}"
+  task "$taskname"(type: JavaExec) {
+    group = "montitrans"
+    classpath += project(':monticore-test:montitrans:test-dstl-gen').sourceSets.main.runtimeClasspath
+    main = 'mc.testcases.social.tr.SocialNetworkCLI'
+    args += ["-models", "$g"]
+  }
+  generateSocialNetworkTRRules.dependsOn("$taskname")
+}
+
+compileJava {
+  dependsOn "generateStatechartTRRules", "generateSocialNetworkTRRules"
+}
+
+sourceSets {
+  main.java.srcDirs += [ _outputDir ]
+}

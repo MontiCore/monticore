@@ -1,0 +1,22 @@
+/* (c) https://github.com/MontiCore/monticore */
+grammar mc.testcases.Automaton;
+pattern objectdiagram lhs {
+    <<optional>> optional_1 : de.monticore.tf.ast.IOptional {
+        state_1 : mc.testcases.automaton._ast.ASTState {
+        }
+    }
+}
+
+replacement objectdiagram rhs {
+    <<optional>> optional_1 : de.monticore.tf.ast.IOptional {
+        state_1 : mc.testcases.automaton._ast.ASTState {
+        }
+
+        state_2 : mc.testcases.automaton._ast.ASTState {
+            String name [1] = "TheNewState";
+            boolean initial [1] = false;
+        }
+    }
+
+    composition state_1 -- (states) [*] state_2;
+}

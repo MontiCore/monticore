@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+{
+  automaton $_ {
+    State $FOO;
+    State $BAR;
+  } folding {
+    ($FOO, $BAR)
+  }
+}

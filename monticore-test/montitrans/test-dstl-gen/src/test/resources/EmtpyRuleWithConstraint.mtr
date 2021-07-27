@@ -1,0 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
+{
+  where {
+    1 + 1 == 2
+    && (true || false)
+  }
+}

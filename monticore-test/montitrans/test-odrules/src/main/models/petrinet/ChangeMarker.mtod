@@ -1,0 +1,76 @@
+/* (c) https://github.com/MontiCore/monticore */
+grammar mc.testcases.Petrinet;
+pattern objectdiagram lhs {
+    place_1 : mc.testcases.petrinet._ast.ASTPlacedeclaration {
+    }
+    
+    place_2 : mc.testcases.petrinet._ast.ASTPlacedeclaration {
+    }
+            
+        
+    marker_1 : mc.testcases.petrinet._ast.ASTNumberMarker{
+      
+    }
+    
+    marker_2 : mc.testcases.petrinet._ast.ASTNumberMarker{
+      String amount [1] = "0";
+    }
+    
+    transition_1 : mc.testcases.petrinet._ast.ASTTransition{
+      
+      
+    }
+    
+    connection_1 : mc.testcases.petrinet._ast.ASTConnection{
+      String name [1] = place_2.name;
+    }
+    
+    connection_2 : mc.testcases.petrinet._ast.ASTConnection{
+      String name [1] = place_1.name;
+    }
+    
+    composition place_1 -- (marker) [1] marker_1;
+    
+    composition place_2 -- (marker) [1] marker_2;
+    
+    composition transition_1 -- (from) [1..*] connection_1;
+    
+    composition transition_1 -- (to) [*] connection_2;
+
+    
+}
+replacement objectdiagram rhs {
+    place_1 : mc.testcases.petrinet._ast.ASTPlacedeclaration {
+    }
+    
+    place_2 : mc.testcases.petrinet._ast.ASTPlacedeclaration {
+    }
+            
+        
+    marker_1 : mc.testcases.petrinet._ast.ASTMarker{
+      
+    }
+    
+    marker_2 : mc.testcases.petrinet._ast.ASTMarker{
+      String amount [1] = "0";
+    }
+    
+    transition_1 : mc.testcases.petrinet._ast.ASTTransition{
+    }
+    
+    connection_1 : mc.testcases.petrinet._ast.ASTConnection{
+      String name [1] = place_2.name;
+    }
+    
+    connection_2 : mc.testcases.petrinet._ast.ASTConnection{
+      String name [1] = place_1.name;
+    }
+    
+    composition place_1 -- (marker) [1] marker_2;
+    
+    composition place_2 -- (marker) [1] marker_1;
+    
+    composition transition_1 -- (from) [1..*] connection_1;
+    
+    composition transition_1 -- (to) [*] connection_2;
+}
