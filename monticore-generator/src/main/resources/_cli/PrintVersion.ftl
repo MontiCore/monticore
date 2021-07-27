@@ -14,12 +14,8 @@ try {
   properties.load(stream);
   stream.close();
 } catch(java.io.IOException e) {
-  e.printStackTrace();
   // BuildInfo not present
 }
-
-// String buildDate = properties.getProperty("buildDate");
-// if (buildDate == null) buildDate = "unknown";
 
 String toolVersion = properties.getProperty("version");
 if (toolVersion == null) toolVersion = "unknown";
