@@ -18,8 +18,9 @@ import de.monticore.codegen.cd2java.CdUtilsPrinter;
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.io.paths.IterablePath;
 import de.monticore.umlmodifier._ast.ASTModifier;
+import de.monticore.io.paths.MCPath;
+
 import de.se_rwth.commons.logging.LogStub;
 
 public class ParserCDDecoratorTest extends DecoratorTestCase {
@@ -41,7 +42,7 @@ public class ParserCDDecoratorTest extends DecoratorTestCase {
 //     LogStub.initPlusLog();  // for manual testing purpose only
 //    Log.enableFailQuick(false);
     this.glex = new GlobalExtensionManagement();
-    IterablePath targetPath = Mockito.mock(IterablePath.class);
+    MCPath targetPath = Mockito.mock(MCPath.class);
 
     this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
     this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
