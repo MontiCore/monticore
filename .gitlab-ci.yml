@@ -351,7 +351,7 @@ pages:
   only:
     - schedules
 
-# Checks whether all links in the markdown files of this repo are reachable.
+# Checks whether all links in the markdown files of this repo are reachable
 checkMDLinks:
   stage: check
   needs: []
