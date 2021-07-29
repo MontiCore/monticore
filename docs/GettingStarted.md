@@ -297,7 +297,7 @@ the following steps:
 2.  Execute the following command in order to generate the language
     infrastructure of the `Automata` DSL:
 ```
-java -jar monticore-cli.jar -g Automata.mc4 -hcp hwc/ -mp monticore-cli.jar
+java -jar monticore-cli.jar -g Automata.mc4 -hcp hwc/ -mp monticore-rt.jar
 ```
 The only required argument `Automata.mc4` denotes the input grammar
 that shall be processed by MontiCore. The processing includes the
