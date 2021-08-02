@@ -4,6 +4,7 @@ package de.monticore.grammar.grammar._symboltable;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Lists;
 import de.monticore.grammar.DirectLeftRecursionDetector;
+import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.Multiplicity;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._visitor.GrammarVisitor2;
@@ -44,7 +45,7 @@ public class GrammarSTCompleteTypes implements GrammarVisitor2 {
 
     computeStartParserProd(ast);
 
-    computeLeftRecursiveProds(ast);
+    ast.getClassProdList().forEach(p -> setIfProdIsLeftRecursive(p));
   }
 
   @Override
@@ -319,23 +320,19 @@ public class GrammarSTCompleteTypes implements GrammarVisitor2 {
     }
   }
 
-  protected boolean checkIfProdIsLeftRecursive(ASTClassProd ast) {
+  protected void setIfProdIsLeftRecursive(ASTClassProd ast) {
     ProdSymbol prodSymbol = ast.getSymbol();
-    List<ProdSymbolSurrogate> superProds = prodSymbol.getSuperProds();
-    Collection<String> names = Lists.newArrayList(ast.getName());
+    Set<ProdSymbol> superProds = MCGrammarSymbolTableHelper.getAllSuperProds(prodSymbol);
+    Collection<String> names = Lists.newArrayList();
     superProds.forEach(s -> names.add(s.getName()));
     DirectLeftRecursionDetector detector = new DirectLeftRecursionDetector();
     for (ASTAlt alt : ast.getAltList()) {
       if (detector.isAlternativeLeftRecursive(alt, names)) {
-        return true;
+        prodSymbol.setIsIndirectLeftRecursive(true);
+      } else if (detector.isAlternativeLeftRecursive(alt, ast.getName())) {
+        prodSymbol.setIsDirectLeftRecursive(true);
       }
     }
-    return false;
-  }
-
-  protected void computeLeftRecursiveProds(ASTMCGrammar grammar) {
-    grammar.getClassProdList().stream().filter(p -> checkIfProdIsLeftRecursive(p))
-            .forEach(p -> p.getSymbol().setIsLeftRecursive(true));
   }
 
 }

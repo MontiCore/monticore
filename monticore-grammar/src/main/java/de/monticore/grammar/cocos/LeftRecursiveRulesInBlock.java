@@ -2,6 +2,9 @@
 
 package de.monticore.grammar.cocos;
 
+import de.monticore.grammar.DirectLeftRecursionDetector;
+import de.monticore.grammar.grammar._ast.ASTAlt;
+import de.monticore.grammar.grammar._ast.ASTBlock;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._cocos.GrammarASTClassProdCoCo;
 import de.se_rwth.commons.logging.Log;
@@ -10,6 +13,7 @@ import de.se_rwth.commons.logging.Log;
  * Checks that blocks do not contain left recursive rules
  * If Antlr (Antlr 4.5 throws an exception) can take care of it,  the check is
  * no longer necessary.
+ *
  */
 public class LeftRecursiveRulesInBlock implements GrammarASTClassProdCoCo {
 
@@ -19,9 +23,20 @@ public class LeftRecursiveRulesInBlock implements GrammarASTClassProdCoCo {
 
   @Override
   public void check(ASTClassProd a) {
-    if (a.getSymbol().isIsLeftRecursive()) {
-      Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, a.getName()),
+    if (!a.getSymbol().isIsDirectLeftRecursive()) {
+      return;
+    }
+    DirectLeftRecursionDetector detector = new DirectLeftRecursionDetector();
+    String ruleName = a.getName();
+    for (ASTAlt alt : a.getAltList()) {
+      if (!alt.getComponentList().isEmpty() && alt.getComponentList().get(0) instanceof ASTBlock) {
+        if (detector.isAlternativeLeftRecursive(alt, ruleName)) {
+          Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, ruleName),
               a.get_SourcePositionStart());
+          return;
+        }
+      }
     }
   }
+
 }

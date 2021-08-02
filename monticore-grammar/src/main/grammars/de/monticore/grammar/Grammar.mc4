@@ -167,7 +167,8 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
     isLexerProd:boolean 
     isScopeSpanning:boolean
     isSymbolDefinition:boolean
-    isLeftRecursive:boolean
+    isDirectLeftRecursive:boolean
+    isIndirectLeftRecursive:boolean
     ;
 
   /**
