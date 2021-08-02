@@ -2,7 +2,6 @@
 package mc.testcases.transformation.rule.translation;
 
 import com.google.common.collect.Maps;
-import de.monticore.io.paths.ModelPath;
 import de.monticore.statements.mcarraystatements._ast.ASTArrayInit;
 import de.se_rwth.commons.logging.Log;
 import mc.testcases.tr.dslwithotherpropertiesthanautomatontr.DSLWithOtherPropertiesThanAutomatonTRMill;
