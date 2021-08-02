@@ -151,7 +151,7 @@ public class ${className} {
     Log.info("Model path    : " + config.getModelPath(), LOG_ID);
     Log.info("Output dir    : " + config.getOut(), LOG_ID);
 
-    Iterator<Path> modelIterator = config.getModels("mtr").getResolvedPaths();
+    Iterator<Path> modelIterator = config.getModels("mtr").getEntries().iterator();
       while (modelIterator.hasNext()) {
       Path input = FileSystems.getDefault().getPath(modelIterator.next().toString()).normalize().toAbsolutePath();
 
