@@ -140,6 +140,7 @@ public class DefaultReportEventHandler implements IReportEventHandler {
   @Override
   public void reportTemplateReplacement(String oldTemplate,
       List<? extends HookPoint> newHps) {
+    // default
   }
 
   @Override
