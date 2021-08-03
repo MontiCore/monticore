@@ -1,0 +1,90 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.testcases.statechart;
+
+grammar Statechart extends de.monticore.MCBasics{
+
+
+  Statechart implements SCStructure =
+    "statechart"
+    Name
+    "{"
+    State*
+    Transition*
+    "}";
+
+
+  EntryAction= "entry" ":" block:BlockStatement;
+
+  ExitAction= "exit" ":" block:BlockStatement;
+
+  DoAction= "do" ":" block:BlockStatement;
+
+  InternTransition = "-intern>"
+    ( ":"
+      (event:Name (
+        "(" (argument:Argument ( "," argument:Argument)*) ")" )?
+      )?
+      ("[" preCondition: Expression "]")?
+      ("/" action: BlockStatement ("[" postCondition: Expression "]")?)? ";"
+    | ";");
+
+  State implements SCStructure =
+    "state" Name ("<<" (initial:["initial"] | final:["final"]) ">>")*
+    ( ("{" ("[" invariant:Expression ( "&&" invariant:Expression)* "]")?
+      (EntryAction)?
+      (DoAction)?
+      (ExitAction)?
+      State*
+      Transition*
+      InternTransition*
+       "}") | ";")
+  ;
+
+  Transition = from:Name "->" to:Name
+    (":" (event:Name (
+      "(" ((argument:Argument ( "," argument:Argument)*)?) ")" )? )?
+    ("[" preCondition: Expression "]")?
+    ("/" action: BlockStatement ("[" postCondition: Expression "]")?)? ";"
+  | ";");
+
+  Argument= paramType:Name paramName:Name;
+
+  interface SCStructure;
+
+  astrule SCStructure =
+  	Name
+  	State*
+  	Transition*
+   // method public String toString() {return getName();}
+  ;
+
+
+  interface Statement;
+
+  BlockStatement implements Statement =
+    "{" (statement:Statement)* "}"
+  ;
+
+  interface Expression;
+
+  ExpStatement implements Statement =
+    expression:Expression ";"
+  ;
+
+  EqualityExpression implements Expression =
+        leftOperand:Name
+          operator:["!=" | "=="] rightOperand:Name
+    ;
+
+  MethodInvocationWithQualifiedName implements Expression =
+      Name ( "." Name)*
+      "("
+        (argument: Expression ("," argument: Expression)*)?
+      ")"
+  ;
+
+  FieldAccess implements Expression =
+    Name
+  ;
+
+}

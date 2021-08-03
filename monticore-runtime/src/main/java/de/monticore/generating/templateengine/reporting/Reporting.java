@@ -30,23 +30,23 @@ public class Reporting extends Slf4jLog {
   /**
    * Map of model names to actual report managers.
    */
-  private Map<String, ReportManager> reportManagers = new HashMap<>();
+  protected Map<String, ReportManager> reportManagers = new HashMap<>();
 
   /**
    * Where output will be written to.
    */
-  private String outputDirectory;
+  protected String outputDirectory;
 
   /**
    * Where reports will be written to.
    */
-  private String reportDirectory;
+  protected String reportDirectory;
 
 
   /**
    * For creating report managers on-demand for newly processed models.
    */
-  private ReportManagerFactory factory;
+  protected ReportManagerFactory factory;
   
   /**
    * Constructor for de.monticore.generating.templateengine.reporting.Reporting
@@ -60,19 +60,19 @@ public class Reporting extends Slf4jLog {
     this.factory = factory;
   }
 
-  private Map<String, ReportManager> getReportManagers() {
+  protected Map<String, ReportManager> getReportManagers() {
     return this.reportManagers;
   }
 
-  private String getOutputDirectory() {
+  protected String getOutputDirectory() {
     return this.outputDirectory;
   }
 
-  private String getReportDirectory() {
+  protected String getReportDirectory() {
     return this.reportDirectory;
   }
 
-  private ReportManagerFactory getFactory() {
+  protected ReportManagerFactory getFactory() {
     return this.factory;
   }
 
@@ -123,7 +123,7 @@ public class Reporting extends Slf4jLog {
     this.doError(msg, Optional.ofNullable(t));
   }
 
-  private void doError(String msg, Optional<Throwable> t) {
+  protected void doError(String msg, Optional<Throwable> t) {
     // we need to know whether we wanted to fail immediately
     boolean wantsToFailQuick = Log.isFailQuickEnabled();
     if (wantsToFailQuick) {
@@ -166,10 +166,10 @@ public class Reporting extends Slf4jLog {
   private static Reporting singleton;
 
   /* whether reporting is enabled at the moment */
-  private static boolean enabled = false;
+  protected static boolean enabled = false;
 
   /* the currently active model for which reporting takes place */
-  private static String currentModel;
+  protected static String currentModel;
 
   /**
    * @return the single reporting instance

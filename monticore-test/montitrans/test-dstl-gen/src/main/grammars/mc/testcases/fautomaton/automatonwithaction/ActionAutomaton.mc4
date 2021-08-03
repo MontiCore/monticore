@@ -1,0 +1,37 @@
+/* (c) https://github.com/MontiCore/monticore */
+package  mc.testcases.fautomaton.automatonwithaction;
+
+
+component grammar ActionAutomaton extends  mc.testcases.fautomaton.FlatAutomaton {
+
+	external Action;
+
+    /** A finite automaton
+	@attribute Name Name of the automaton
+    @attribute Counters List of all counters
+    @attribute States List of all states
+    @attribute Transitions List of all transitions
+	*/
+	AutomatonWithAction =
+	   "automaton" Name "{"
+	     (counter:Counter | state:State | transition:Transition)*
+	   "}";
+
+    /** A Counter represents a variable in the automaton
+   	@attribute Name of the counter
+    */
+	Counter =
+	  "counter" Name ("," Name)* ";" ;
+
+    /** A transition in a finite automaton with embedded action
+    @attribute From The from in the transition
+    @attribute Activate Character taht activates the transition
+    @attribute To The to in the transition
+    @attribute Action Embedded action
+    */
+	TransitionWithAction extends Transition =
+			from:Name "-" "[" action:Action "]" activate:Name ">" to:Name ";" ;
+
+
+
+}

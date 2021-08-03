@@ -152,7 +152,7 @@ public class ASTBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass>
     set_PostCommentList("public void set_PostCommentList(List<Comment> postComments);"),
     set_PostComment("public Comment set_PostComment(int index, Comment postcomment);");
 
-    private final String signature;
+    protected final String signature;
 
     ASTCNodeMethod(String signature) {
       this.signature = signature;

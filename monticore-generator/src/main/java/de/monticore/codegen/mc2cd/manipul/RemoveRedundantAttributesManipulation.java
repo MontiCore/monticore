@@ -68,7 +68,7 @@ final class RemoveRedundantAttributesManipulation implements UnaryOperator<ASTCD
    * @return true if another attribute with the same variable name, the same original type and an
    * equal or higher category exists
    */
-  private static boolean isRedundant(ASTCDAttribute inspectedAttribute,
+  protected static boolean isRedundant(ASTCDAttribute inspectedAttribute,
                                      ASTCDAttribute remainingAttribute) {
     String inspectedName = inspectedAttribute.getName();
     String inspectedType = getOriginalTypeName(inspectedAttribute);
@@ -84,7 +84,7 @@ final class RemoveRedundantAttributesManipulation implements UnaryOperator<ASTCD
     return sameName && sameType && sameOrHigherCategory;
   }
 
-  private static String getOriginalTypeName(ASTCDAttribute cdAttribute) {
+  protected static String getOriginalTypeName(ASTCDAttribute cdAttribute) {
     AttributeCategory category = AttributeCategory.determineCategory(cdAttribute);
     if (category == AttributeCategory.GENERICLIST || category == AttributeCategory.OPTIONAL) {
       Optional<String> firstArgument = getFirstTypeArgument(cdAttribute);
@@ -95,7 +95,7 @@ final class RemoveRedundantAttributesManipulation implements UnaryOperator<ASTCD
     return TransformationHelper.typeToString(cdAttribute.getMCType());
   }
 
-  private static Optional<String> getFirstTypeArgument(ASTCDAttribute cdAttribute) {
+  protected static Optional<String> getFirstTypeArgument(ASTCDAttribute cdAttribute) {
     // the 'List' in 'List<String>'
     if (cdAttribute.getMCType() instanceof ASTMCGenericType) {
       List<ASTMCTypeArgument> argList = ((ASTMCGenericType) cdAttribute.getMCType()).getMCTypeArgumentList();

@@ -1,0 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
+{
+    automaton Testautomat {
+        not [[
+          state a {
+            state b {
+              opt [[ a - act > b; ]]
+            }
+            opt [[ state $_  <<initial>>; ]]
+          }
+        ]]
+    }
+}

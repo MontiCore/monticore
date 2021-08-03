@@ -16,13 +16,13 @@ import de.monticore.io.paths.MCPath;
  */
 public class MontiCoreReports implements ReportManagerFactory {
 
-  private String outputDirectory;
+  protected String outputDirectory;
 
-  private String reportDirectory;
+  protected String reportDirectory;
 
-  private MCPath handwrittenPath;
+  protected MCPath handwrittenPath;
   
-  private MCPath templatePath;
+  protected MCPath templatePath;
   
 
   /**
@@ -73,17 +73,14 @@ public class MontiCoreReports implements ReportManagerFactory {
         this.reportDirectory, lowerCaseName, repository, traverserNodeTree2);
     Grammar_WithConceptsTraverser traverserNodeType = Grammar_WithConceptsMill.inheritanceTraverser();
     NodeTypesReporter nodeTypes = new NodeTypesReporter(this.reportDirectory, lowerCaseName, traverserNodeType);
-//    SymbolTableReporter2 symbolTable = new SymbolTableReporter2(this.reportDirectory, lowerCaseName, repository);
     TransformationReporter transformations = new TransformationReporter(this.reportDirectory,
         lowerCaseName, repository);
     ArtifactGmlReporter artifactGml = new ArtifactGmlReporter(this.reportDirectory, lowerCaseName);
     ArtifactGVReporter artifactGV = new ArtifactGVReporter(this.reportDirectory, lowerCaseName);
-    InputOutputFilesReporter inputOutput = new InputOutputFilesReporter(this.outputDirectory);
     ODReporter objDiagram = new ODReporter(this.reportDirectory, lowerCaseName, repository);
     SuccessfulReporter finishReporter = new SuccessfulReporter(this.reportDirectory, lowerCaseName);
     IncGenCheckReporter incGenCheck = new IncGenCheckReporter(this.outputDirectory, lowerCaseName);
-    //TODO replace with IncGenGradleReporter after release 7.1.0
-    IncGenGradleReporterExtension gradleReporter = new IncGenGradleReporterExtension(this.outputDirectory, lowerCaseName);
+    IncGenGradleReporter gradleReporter = new IncGenGradleReporter(this.outputDirectory, lowerCaseName);
 
     reports.addReportEventHandler(summary); // 01_Summary
     reports.addReportEventHandler(generated); // 02_GeneratedFiles
@@ -97,11 +94,9 @@ public class MontiCoreReports implements ReportManagerFactory {
     reports.addReportEventHandler(nodeTree); // 10_NodeTree
     reports.addReportEventHandler(nodeTreeDecorated); // 11_NodeTreeDecorated
     reports.addReportEventHandler(nodeTypes); // 12_TypesOfNodes
-//    reports.addReportEventHandler(symbolTable); // 13_SymbolTable  //TODO: update this report to new symbol table infrastructure
     reports.addReportEventHandler(transformations); // 14_Transformations
     reports.addReportEventHandler(artifactGml); // 15_ArtifactGml
     reports.addReportEventHandler(artifactGV); // 16_ArtifactGv
-    reports.addReportEventHandler(inputOutput); // 17_InputOutputFiles
     reports.addReportEventHandler(ioReporter); // 18_InvolvedFiles
     reports.addReportEventHandler(finishReporter); // 19_Successful
     reports.addReportEventHandler(objDiagram); // ObjectDiagram

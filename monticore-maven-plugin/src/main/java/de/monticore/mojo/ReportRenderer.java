@@ -18,16 +18,16 @@ import com.google.common.io.Files;
 public class ReportRenderer extends AbstractMavenReportRenderer {
   
   /* Contains what to put into the report. */
-  private File inputFile;
+  protected File inputFile;
   
   /* A nice title for the report. */
-  private String title;
+  protected String title;
   
   /* For creating "back" links. */
-  private String parent;
+  protected String parent;
   
   /* Piece of wood. */
-  private Log log;
+  protected Log log;
   
   /**
    * Constructor for de.monticore.mojo.extra.ScriptResultRenderer

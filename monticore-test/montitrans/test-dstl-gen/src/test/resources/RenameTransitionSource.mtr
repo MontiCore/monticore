@@ -1,0 +1,5 @@
+/* (c) https://github.com/MontiCore/monticore */
+// test whether the following is parseable
+{
+  [[ $foo :- $bar ]] -$X> $Y;
+}

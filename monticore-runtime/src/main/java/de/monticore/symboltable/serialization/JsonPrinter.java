@@ -493,7 +493,7 @@ public class JsonPrinter {
         .replace("\"", "\\\""); // Insert a double quote character in the text at this point.
   }
 
-  private void intenalNumberValue(String value) {
+  protected void intenalNumberValue(String value) {
     if (!currElements.isEmpty() && currElements.peek().isJsonArray()) {
       JsonArray parent = currElements.peek().getAsJsonArray();
       parent.add(createJsonNumber(String.valueOf(value)));
@@ -508,7 +508,7 @@ public class JsonPrinter {
     }
   }
 
-  private void intenalStringValue(String value) {
+  protected void intenalStringValue(String value) {
     if (!currElements.isEmpty() && currElements.peek().isJsonArray()) {
       JsonArray parent = currElements.peek().getAsJsonArray();
       parent.add(createJsonString(value));

@@ -90,7 +90,7 @@ public class ASTRuleAndNTUseSameAttrNameForDiffNTs implements GrammarASTASTRuleC
     }
   }
 
-  private boolean isCorrespondingJavaTypeFromToken(ProdSymbol astRuleType, ProdSymbol compType) {
+  protected boolean isCorrespondingJavaTypeFromToken(ProdSymbol astRuleType, ProdSymbol compType) {
     if ("Name".equals(compType.getName())) {
       return "String".equals(astRuleType.getName());
     }

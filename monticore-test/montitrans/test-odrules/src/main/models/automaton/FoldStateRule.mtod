@@ -1,0 +1,23 @@
+/* (c) https://github.com/MontiCore/monticore */
+grammar mc.testcases.Automaton;
+pattern objectdiagram lhs {
+   
+    state_1 : mc.testcases.automaton._ast.ASTState {
+    }
+     
+    state_2 : mc.testcases.automaton._ast.ASTState {
+    }
+     
+}
+
+replacement objectdiagram rhs {
+    state_1 : mc.testcases.automaton._ast.ASTState {
+    }
+     
+    state_2 : mc.testcases.automaton._ast.ASTState {
+    }
+     
+} 
+folding {
+    (state_1, state_2)
+}

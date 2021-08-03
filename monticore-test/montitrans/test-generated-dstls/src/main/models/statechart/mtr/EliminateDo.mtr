@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+{
+    state $s {
+      [[ :- entry : { timer.set(self, delay); } ]]
+      [[ do : { } :- ]]
+      [[ :- exit : { timer.stop(self); } ]]
+      [[ :first- -intern>: timeout / { something(); timer.set(self, delay); } ; ]]
+    }
+}

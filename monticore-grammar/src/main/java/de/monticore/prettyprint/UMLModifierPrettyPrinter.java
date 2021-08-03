@@ -11,7 +11,7 @@ public class UMLModifierPrettyPrinter implements UMLModifierVisitor2, UMLModifie
 
   protected UMLModifierTraverser traverser;
 
-  private IndentPrinter printer;
+  protected IndentPrinter printer;
 
   public UMLModifierPrettyPrinter(IndentPrinter printer) {
     this.printer = printer;

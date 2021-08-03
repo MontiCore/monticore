@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
 @Deprecated
 public class ReportingRepositoryFix extends ReportingRepository {
 
-  private Set<String> allTemplateNames = Sets.newLinkedHashSet();
+  protected Set<String> allTemplateNames = Sets.newLinkedHashSet();
 
 
   @Override
@@ -28,9 +28,8 @@ public class ReportingRepositoryFix extends ReportingRepository {
     Reflections.log = new Helper();
     Reflections helper = new Reflections(new ConfigurationBuilder()
             .addClassLoader(ClasspathHelper.contextClassLoader())
-            .setUrls(ClasspathHelper.forPackage(
-                    "", ClasspathHelper.contextClassLoader(),
-                    ClasspathHelper.staticClassLoader()))
+            .addUrls(ClasspathHelper.forClassLoader())
+            .addUrls(ClasspathHelper.forPackage(""))
             .setScanners(new ResourcesScanner()));
 
     this.allTemplateNames = helper.getResources(Pattern.compile(".*\\.ftl"));
@@ -45,7 +44,7 @@ public class ReportingRepositoryFix extends ReportingRepository {
   }
 
   /* This is the magic. Don't touch it ;-) */
-  private class Helper implements Logger {
+  protected class Helper implements Logger {
 
     @Override
     public boolean isTraceEnabled() {

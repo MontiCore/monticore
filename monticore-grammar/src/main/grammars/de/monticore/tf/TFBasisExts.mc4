@@ -1,0 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.tf;
+
+component grammar TFBasisExts extends de.monticore.JavaLight,
+                                    de.monticore.types.MCSimpleGenericTypes,
+                                    de.monticore.literals.MCCommonLiterals {
+
+    ExtType = MCType;
+    ExtReturnType = MCReturnType;
+    ExtTypeArgument = MCTypeArgument;
+    ExtTypeParameters = MCType;
+
+}

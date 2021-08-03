@@ -16,13 +16,13 @@ import de.monticore.mojo.ReportRenderer;
 
 public class ScriptReportRenderer extends AbstractMavenReportRenderer {
   
-  private List<File> inputFiles = Lists.newArrayList();
+  protected List<File> inputFiles = Lists.newArrayList();
   
-  private String outputDirectory;
+  protected String outputDirectory;
   
-  private SinkFactory sinkFactory;
+  protected SinkFactory sinkFactory;
   
-  private Log log;
+  protected Log log;
   
   public ScriptReportRenderer(
       Sink sink,

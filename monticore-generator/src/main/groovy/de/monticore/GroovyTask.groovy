@@ -13,7 +13,10 @@ import org.gradle.work.InputChanges
 
 import java.lang.reflect.InvocationTargetException
 import java.util.stream.Collectors
-
+/*
+* @Deprecated use se-commons-groovy
+ */
+@Deprecated
 public class GroovyTask extends DefaultTask {
 
   GroovyTask() {

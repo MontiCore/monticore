@@ -78,7 +78,7 @@ public class GrammarTransformer {
     grammar.getASTRuleList().forEach(c -> transformAttributesInAST(c));
   }
 
-  private static String simpleName(ASTMCType type) {
+  protected static String simpleName(ASTMCType type) {
     String name;
     if (type instanceof ASTMCGenericType) {
       name = ((ASTMCGenericType) type).printWithoutTypeArguments();
@@ -90,7 +90,7 @@ public class GrammarTransformer {
     return Names.getSimpleName(name);
   }
 
-  private static void transformAttributesInAST(ASTASTRule astRule) {
+  protected static void transformAttributesInAST(ASTASTRule astRule) {
     astRule.getAdditionalAttributeList().forEach(
             attributeInAST -> {
               if (!attributeInAST.isPresentName()) {
@@ -109,7 +109,7 @@ public class GrammarTransformer {
    * @param nonTerminalSep
    * @return
    */
-  private static Optional<ASTBlock> transform(ASTNonTerminalSeparator nonTerminalSep) {
+  protected static Optional<ASTBlock> transform(ASTNonTerminalSeparator nonTerminalSep) {
     String name = "";
     if (nonTerminalSep.isPresentUsageName()) {
       name = nonTerminalSep.getUsageName() + ":";

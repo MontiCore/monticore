@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+automaton AutomatonStateWithThreeSubstates {
+    state a {
+        state b;
+        state c;
+        state d;
+    }
+}

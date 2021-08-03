@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+grammar mc.testcases.Automaton;
+pattern objectdiagram lhs {
+    state_1 : mc.testcases.automaton._ast.ASTState {
+        boolean initial [1] = true;
+    }
+}
+
+
+do {
+  m.state_1.setInitial(false);
+}

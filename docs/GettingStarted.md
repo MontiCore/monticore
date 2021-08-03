@@ -78,6 +78,7 @@ http://www.monticore.de/download/monticore.tar.gz
 // MontiCore zip distribution content in directory mc-workspace
 Automata.mc4
 monticore-cli.jar
+monticore-rt.jar
 src/automata/AutomataTool.java
 src/automata/visitors/CountStates.java
 src/automata/prettyprint/PrettyPrinter.java
@@ -297,7 +298,7 @@ the following steps:
 2.  Execute the following command in order to generate the language
     infrastructure of the `Automata` DSL:
 ```
-java -jar monticore-cli.jar -g Automata.mc4 -hcp hwc/ -mp monticore-cli.jar
+java -jar monticore-cli.jar -g Automata.mc4 -hcp hwc/ -mp monticore-rt.jar
 ```
 The only required argument `Automata.mc4` denotes the input grammar
 that shall be processed by MontiCore. The processing includes the
@@ -313,8 +314,11 @@ syntax classes as detailedly described in
 (cf. [Section 5.10 of the MontiCore handbook](http://www.monticore.de/handbook.pdf)).
 Passing the argument `-mp` enables specifying the paths to directories 
 containing paths to grammars and Java classes that are imported by the 
-processed grammar and the related tooling.
-
+processed grammar and the related tooling. In this case, the archive 
+`monticore-rt.jar` contains the grammars and handwritten extensions
+of the [monticore standard library](https://git.rwth-aachen.de/monticore/monticore/-/tree/dev/monticore-grammar/src/main).
+More information about the standard library can be found in 
+[Chapters 17- 20 of the handbook](http://www.monticore.de/handbook.pdf).
 
 Executing the command launches MontiCore, which results in the
 executing of the following steps:

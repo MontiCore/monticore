@@ -46,7 +46,7 @@ public class ConservativeExtensionCheck implements GrammarASTMCGrammarCoCo {
     }
   }
 
-  private void compareComponents(ProdSymbol p, ProdSymbol superp) {
+  protected void compareComponents(ProdSymbol p, ProdSymbol superp) {
     for (RuleComponentSymbol comp : superp.getProdComponents()) {
       List<RuleComponentSymbol> prodComponents = p.getSpannedScope().resolveRuleComponentDownMany(comp.getName());
       if (prodComponents.isEmpty()) {
@@ -63,7 +63,7 @@ public class ConservativeExtensionCheck implements GrammarASTMCGrammarCoCo {
     }
   }
 
-  private boolean hasNonConservativeAnno(List<ASTGrammarAnnotation> grammarAnnotationsList) {
+  protected boolean hasNonConservativeAnno(List<ASTGrammarAnnotation> grammarAnnotationsList) {
     for (ASTGrammarAnnotation anno : grammarAnnotationsList) {
       if (anno.isNonConservative()) {
         return true;

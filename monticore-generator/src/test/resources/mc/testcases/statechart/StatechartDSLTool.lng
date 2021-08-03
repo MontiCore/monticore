@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.testcases.statechart;
+
+// Create classes for the DSLTool infrastrcuture
+dsltool StatechartDSLTool {
+
+    // Root class
+    root StatechartRoot<MCCompilationUnit>;
+
+    // Parsing Workflow 
+    parsingworkflow StatechartParsingWorkflow for StatechartRoot<MCCompilationUnit> ;
+
+    // RootFactory
+    rootfactory StatechartRootFactory for StatechartRoot<MCCompilationUnit> {
+        Statechart.MCCompilationUnit automaton <<start>> ;
+    }
+}

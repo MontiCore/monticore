@@ -60,7 +60,7 @@ public class SubrulesUseInterfaceNTs implements GrammarASTMCGrammarCoCo {
    * grammar C { interface I = Name;
    * B implements I;}
    */
-  private void compareWithSuperProd(MCGrammarSymbol grammarSymbol, ProdSymbol prodSymbol, ProdSymbol interfaceSymbol) {
+  protected void compareWithSuperProd(MCGrammarSymbol grammarSymbol, ProdSymbol prodSymbol, ProdSymbol interfaceSymbol) {
     List<ProdSymbol> overwrittenProds = grammarSymbol.getAllSuperGrammars()
         .stream()
         .map(MCGrammarSymbol::getProds)
@@ -75,7 +75,7 @@ public class SubrulesUseInterfaceNTs implements GrammarASTMCGrammarCoCo {
     }
   }
 
-  private void compareComponents(ProdSymbol prodSymbol, ProdSymbol interfaceSymbol) {
+  protected void compareComponents(ProdSymbol prodSymbol, ProdSymbol interfaceSymbol) {
     for (RuleComponentSymbol interfaceComponent : interfaceSymbol.getProdComponents()) {
       List<RuleComponentSymbol> prodComponents = prodSymbol.getSpannedScope().resolveRuleComponentDownMany(interfaceComponent.getName());
       if (prodComponents.isEmpty()) {
@@ -107,7 +107,7 @@ public class SubrulesUseInterfaceNTs implements GrammarASTMCGrammarCoCo {
     }
   }
 
-  private void logError(ProdSymbol prodSymbol, ProdSymbol interfaceSymbol, RuleComponentSymbol interfaceComponent) {
+  protected void logError(ProdSymbol prodSymbol, ProdSymbol interfaceSymbol, RuleComponentSymbol interfaceComponent) {
     String suffix = interfaceComponent.isIsList() ? "*" : interfaceComponent.isIsOptional() ? "?" : "";
     Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, prodSymbol.getName(),
         interfaceComponent.getName() + suffix, interfaceSymbol.getName()),

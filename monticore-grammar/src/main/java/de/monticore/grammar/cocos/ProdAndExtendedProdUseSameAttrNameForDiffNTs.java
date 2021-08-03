@@ -76,7 +76,7 @@ public class ProdAndExtendedProdUseSameAttrNameForDiffNTs implements GrammarASTN
     }
   }
 
-  private List<ProdSymbolSurrogate> getAllSuperProds(ProdSymbol prod) {
+  protected List<ProdSymbolSurrogate> getAllSuperProds(ProdSymbol prod) {
     List<ProdSymbolSurrogate> ret = Lists.newArrayList(prod.getSuperProds());
     for (ProdSymbolSurrogate surrogate: prod.getSuperProds()) {
       ProdSymbol superProd = surrogate.lazyLoadDelegate();
@@ -85,7 +85,7 @@ public class ProdAndExtendedProdUseSameAttrNameForDiffNTs implements GrammarASTN
     return ret;
   }
 
-  private void logError(ASTProd prod, ProdSymbol ruleSymbol, String attributename,
+  protected void logError(ASTProd prod, ProdSymbol ruleSymbol, String attributename,
                         RuleComponentSymbol componentSymbol, String actualType, ASTNonTerminal a) {
     Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT,
             prod.getName(),

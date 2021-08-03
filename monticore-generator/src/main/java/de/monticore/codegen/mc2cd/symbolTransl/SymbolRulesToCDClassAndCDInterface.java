@@ -22,7 +22,7 @@ public class SymbolRulesToCDClassAndCDInterface implements UnaryOperator<Link<AS
     return rootLink;
   }
 
-  private Set<ASTSymbolRule> createLinksForMatchedASTRules(
+  protected Set<ASTSymbolRule> createLinksForMatchedASTRules(
       Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink) {
 
     Set<ASTSymbolRule> matchedASTRules = new LinkedHashSet<>();
@@ -35,7 +35,7 @@ public class SymbolRulesToCDClassAndCDInterface implements UnaryOperator<Link<AS
   }
 
 
-  private void addASTRuleLink(Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink, Link<? extends ASTProd, ASTCDClass> link,
+  protected void addASTRuleLink(Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink, Link<? extends ASTProd, ASTCDClass> link,
                               Set<ASTSymbolRule> matchedASTRules) {
     rootLink.source().getSymbolRuleList().stream()
         .filter(astRule -> astRule.getType().equals(link.source().getName()))
@@ -45,7 +45,7 @@ public class SymbolRulesToCDClassAndCDInterface implements UnaryOperator<Link<AS
         });
   }
 
-  private void createLinksForUnmatchedASTRules(Set<ASTSymbolRule> matchedASTRules,
+  protected void createLinksForUnmatchedASTRules(Set<ASTSymbolRule> matchedASTRules,
                                                Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink) {
 
     for (ASTSymbolRule symbolRule : rootLink.source().getSymbolRuleList()) {

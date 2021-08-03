@@ -46,7 +46,7 @@ public class ImplementsTranslation implements
     return rootLink;
   }
   
-  private void translateClassProd(ASTClassProd classProd,
+  protected void translateClassProd(ASTClassProd classProd,
       ASTCDClass cdClass, ASTMCGrammar astGrammar) {
     MCGrammarSymbol grammarSymbol = astGrammar.getSymbol();
     // translates "implements"
@@ -79,7 +79,7 @@ public class ImplementsTranslation implements
     }
   }
   
-  private void translateAbstractProd(ASTAbstractProd abstractProd,
+  protected void translateAbstractProd(ASTAbstractProd abstractProd,
       ASTCDClass cdClass, ASTMCGrammar astGrammar) {
     // translates "implements"
     for (ASTRuleReference ruleReference : abstractProd

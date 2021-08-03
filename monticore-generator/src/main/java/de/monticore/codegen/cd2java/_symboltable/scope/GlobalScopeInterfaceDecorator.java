@@ -107,7 +107,7 @@ public class GlobalScopeInterfaceDecorator
         .build();
   }
 
-  private void adjustResolverMethodsForInterface(List<ASTCDMethod> resolverMethods) {
+  protected void adjustResolverMethodsForInterface(List<ASTCDMethod> resolverMethods) {
     for (ASTCDMethod method : resolverMethods) {
       if (method.getName().startsWith("set") && method.sizeCDParameters() == 1) {
         // simple list setter e.g. setXList(list: List<X>)
@@ -119,7 +119,7 @@ public class GlobalScopeInterfaceDecorator
     }
   }
 
-  private List<ASTMCObjectType> getSuperGlobalScopeInterfaces() {
+  protected List<ASTMCObjectType> getSuperGlobalScopeInterfaces() {
     return getSuperGlobalScopeInterfaces(symbolTableService.getCDSymbol());
   }
 

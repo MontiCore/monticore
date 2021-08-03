@@ -47,7 +47,7 @@ public class ExtendsTranslation implements
     return rootLink;
   }
 
-  private void translateClassProd(ASTClassProd classProd, ASTCDClass cdClass,
+  protected void translateClassProd(ASTClassProd classProd, ASTCDClass cdClass,
       ASTMCGrammar astGrammar) {
     // translates "extends"
     if (!(classProd.getSuperRuleList().isEmpty() && classProd.getASTSuperClassList().isEmpty()) && !cdClass.isPresentCDExtendUsage()) {
@@ -68,7 +68,7 @@ public class ExtendsTranslation implements
     }
   }
 
-  private void translateAbstractProd(ASTAbstractProd abstractProd,
+  protected void translateAbstractProd(ASTAbstractProd abstractProd,
       ASTCDClass cdClass, ASTMCGrammar astGrammar) {
     // translates "extends"
     if (!(abstractProd.getSuperRuleList().isEmpty() && abstractProd.getASTSuperClassList().isEmpty()) && !cdClass.isPresentCDExtendUsage()) {
@@ -90,7 +90,7 @@ public class ExtendsTranslation implements
     }
   }
 
-  private void translateInterfaceProd(ASTInterfaceProd interfaceProd,
+  protected void translateInterfaceProd(ASTInterfaceProd interfaceProd,
       ASTCDInterface cdInterface, ASTMCGrammar astGrammar) {
     // translates "extends"
     if (!(interfaceProd.getSuperInterfaceRuleList().isEmpty() && interfaceProd.getASTSuperInterfaceList().isEmpty()) && !cdInterface.isPresentCDExtendUsage()) {

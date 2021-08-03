@@ -18,7 +18,7 @@ import static de.monticore.codegen.mc2cd.TransformationHelper.simpleName;
 
 public class TypeCD2JavaVisitor implements MCBasicTypesVisitor2 {
 
-  private static final String PACKAGE_SEPARATOR = "\\.";
+  protected static final String PACKAGE_SEPARATOR = "\\.";
 
   protected ICDBasisScope scope;
 

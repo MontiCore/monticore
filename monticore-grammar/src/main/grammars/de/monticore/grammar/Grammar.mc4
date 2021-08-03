@@ -485,12 +485,6 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
 
 
   /**
-    End of file as EOF keyword
-  */
-  Eof implements RuleComponent =
-    "EOF";
-
-  /**
     Handed on as antlr action or predicate, realised by external JavaDSLParser
   */
   SemanticpredicateOrAction implements RuleComponent=

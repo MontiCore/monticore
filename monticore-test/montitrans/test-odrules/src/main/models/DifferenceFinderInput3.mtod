@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+/* input for a test for the DifferenceFinder that uses an interface*/
+pattern objectdiagram lhs {
+    foo_1 : mc.testcases._ast.ASTFoo;
+}
+
+replacement objectdiagram rhs {
+    foo_1 : mc.testcases._ast.ASTFoo;
+    ifoo_1 : mc.testcases._ast.ASTIFoo;
+    composition foo_1 -- (iFoo) ifoo_1;
+
+}

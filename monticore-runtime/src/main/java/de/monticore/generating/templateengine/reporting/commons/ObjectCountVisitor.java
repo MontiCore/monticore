@@ -17,15 +17,15 @@ import java.util.Map;
  */
 public class ObjectCountVisitor implements IVisitor {
   
-  private Map<String, Integer> type2count;
+  protected Map<String, Integer> type2count;
   
-  private Map<String, Integer> type2countPos;
+  protected Map<String, Integer> type2countPos;
   
-  private int totalCount;
+  protected int totalCount;
 
-  private int maxDepth;
+  protected int maxDepth;
 
-  private int depth;
+  protected int depth;
   
   @Override
   public void visit(ASTNode a) {

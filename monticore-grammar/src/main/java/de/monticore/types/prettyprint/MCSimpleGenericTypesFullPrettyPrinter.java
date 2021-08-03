@@ -8,7 +8,7 @@ import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesTrav
 
 public class MCSimpleGenericTypesFullPrettyPrinter extends MCCollectionTypesFullPrettyPrinter {
 
-  private MCSimpleGenericTypesTraverser traverser;
+  protected MCSimpleGenericTypesTraverser traverser;
 
   public MCSimpleGenericTypesFullPrettyPrinter(IndentPrinter printer) {
     super(printer);

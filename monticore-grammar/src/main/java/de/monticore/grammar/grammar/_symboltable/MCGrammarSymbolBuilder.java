@@ -8,7 +8,7 @@ import static de.se_rwth.commons.logging.Log.errorIfNull;
 
 public class MCGrammarSymbolBuilder extends MCGrammarSymbolBuilderTOP {
 
-  private final List<MCGrammarSymbolSurrogate> superGrammars = new ArrayList<>();
+  protected final List<MCGrammarSymbolSurrogate> superGrammars = new ArrayList<>();
 
   public void addSuperGrammar(MCGrammarSymbolSurrogate superGrammarRef) {
     this.superGrammars.add(errorIfNull(superGrammarRef));
