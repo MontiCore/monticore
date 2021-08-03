@@ -3,6 +3,7 @@ package de.monticore.symboltable.serialization;
 
 import com.google.common.collect.Lists;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -20,7 +21,7 @@ public class JsonPrinterTest {
   @Before
   public void disableIndentation() {
     JsonPrinter.disableIndentation();
-//    LogStub.init();
+    LogStub.init();
     Log.enableFailQuick(false);
   }
 

@@ -104,6 +104,22 @@ public class IndentPrinter {
   public int getIndentLength() {
     return sp.length();
   }
+
+  /**
+   * Set the current indentation of the printer
+   * @return
+   */
+  public void setIndentation(int indent) {
+    this.indent = indent;
+  }
+
+  /**
+   * Returns the current indentation of the printer
+   * @return
+   */
+  public int getIndentation() {
+    return indent;
+  }
   
   /**
    * This method actually does the print. It deals with "\r""\n","\r","\n" in

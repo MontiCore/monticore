@@ -7,6 +7,8 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,6 +26,8 @@ public class JsonPrinterSecurityTest {
   @Before
   public void disableIndentation() {
     JsonPrinter.enableIndentation();
+//    LogStub.init();
+    Log.enableFailQuick(false);
   }
   
   @Test

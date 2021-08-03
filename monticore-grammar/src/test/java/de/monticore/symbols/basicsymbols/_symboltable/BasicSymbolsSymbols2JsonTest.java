@@ -45,8 +45,6 @@ public class BasicSymbolsSymbols2JsonTest {
         .setEnclosingScope(scope)
         .build();
 
-    type.setSpannedScope(typeSpannedScope);
-
     SymTypeExpression symType1 = SymTypeExpressionFactory.createTypeObject("Type", scope);
 
     //put subtype into main scope, test if supertypes are serialized correctly
@@ -56,8 +54,6 @@ public class BasicSymbolsSymbols2JsonTest {
         .setEnclosingScope(scope)
         .setSuperTypesList(Lists.newArrayList(symType1))
         .build();
-
-    subtype.setSpannedScope(BasicSymbolsMill.scope());
 
     //put TypeVariable T into spanned scope of type
     TypeVarSymbol t = BasicSymbolsMill.typeVarSymbolBuilder()

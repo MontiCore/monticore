@@ -55,11 +55,11 @@ public class JsonString implements JsonElement {
   
   @Override
   public String toString() {
-    return "\"" + value + "\"";
+    return value ;
   }
 
   @Override public String print(IndentPrinter p) {
-    p.print("\"" + value + "\"");
+    p.print(value);
     return p.getContent();
   }
   

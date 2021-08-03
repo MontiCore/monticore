@@ -16,7 +16,7 @@ public class JsonObject implements JsonElement {
   protected Map<String, JsonElement> members;
 
   public JsonObject() {
-    this.members = new HashMap<>();
+    this.members = new LinkedHashMap<>();
   }
 
   /**
@@ -131,18 +131,7 @@ public class JsonObject implements JsonElement {
    */
   @Override
   public String toString() {
-    JsonPrinter printer = new JsonPrinter();
-    printer.beginObject();
-    for (String s : members.keySet()) {
-      if (members.get(s).isJsonString()) {
-        printer.member(s, members.get(s).toString());
-      }
-      else {
-        printer.memberJson(s, members.get(s).toString());
-      }
-    }
-    printer.endObject();
-    return printer.getContent();
+    return print(new IndentPrinter());
   }
 
   //////////////////// Convenience Methods ////////////////////
@@ -467,11 +456,11 @@ public class JsonObject implements JsonElement {
 
     // print members of object with a buffer to check whether it is empty
     IndentPrinter buffer = new IndentPrinter();
-    buffer.setIndentLength(p.getIndentLength() + 1);
+    buffer.setIndentation(p.getIndentation() + 1);
 
-    // print the value of each member with another buffer to check emptyness
+    // print the value of each member with another buffer to check emptiness
     IndentPrinter tmp = new IndentPrinter();
-    tmp.setIndentLength(p.getIndentLength() + 1);
+    tmp.setIndentation(p.getIndentation() + 1);
 
     String sep = "";
     for (String k : members.keySet()) {
@@ -486,9 +475,11 @@ public class JsonObject implements JsonElement {
     if (!buffer.getContent().isEmpty() || JsonPrinter.isSerializingDefaults()) {
       if (indent) {
         p.println("{");
+        p.indent();
         p.print(buffer.getContent());
+        p.println();
         p.unindent();
-        p.println("}");
+        p.print("}");
       }
       else {
         p.print("{");

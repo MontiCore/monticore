@@ -97,13 +97,13 @@ public class JsonPrinter {
    * Prints the begin of an object in Json notation.
    */
   public void beginObject() {
-    if(!currElements.isEmpty() && currElements.peek().isJsonObject()){
+    if (!currElements.isEmpty() && currElements.peek().isJsonObject()) {
       Log.error("0xA0600 JsonPrinter detected an invalid nesting of Json. "
           + "A JSON object within a JSON object must be a member!");
     }
     else {
       currElements.push(createJsonObject());
-      if(!root.isPresent()){
+      if (!root.isPresent()) {
         root = Optional.of(currElements.peek());
       }
     }
@@ -113,17 +113,20 @@ public class JsonPrinter {
    * Prints the begin of an object in Json notation as member or the current object.
    */
   public void beginObject(String kind) {
-    getParentObject().putMember(kind, createJsonObject());
+    JsonObject o = createJsonObject();
+    getParentObject().putMember(kind, o);
+    currElements.push(o);
   }
 
   /**
    * Prints the end of an object in Json notation.
    */
   public void endObject() {
-    if(!currElements.isEmpty() && currElements.peek().isJsonObject()){
-        currElements.remove();
+    if (!currElements.isEmpty() && currElements.peek().isJsonObject()) {
+      JsonObject o = currElements.poll().getAsJsonObject();
+      addToArray(o);
     }
-    else{
+    else {
       Log.error("0xA0611 JsonPrinter detected an invalid nesting of Json. "
           + "Detected an unexpected end of an object!");
     }
@@ -133,13 +136,13 @@ public class JsonPrinter {
    * Prints the beginning of a collection in Json notation.
    */
   public void beginArray() {
-    if(!currElements.isEmpty() && currElements.peek().isJsonObject()){
+    if (!currElements.isEmpty() && currElements.peek().isJsonObject()) {
       Log.error("0xA0601 JsonPrinter detected an invalid nesting of Json. "
           + "A JSON array within a JSON object must be a member!");
     }
     else {
       currElements.push(createJsonArray());
-      if(!root.isPresent()){
+      if (!root.isPresent()) {
         root = Optional.of(currElements.peek());
       }
     }
@@ -158,10 +161,11 @@ public class JsonPrinter {
    * Prints the end of a collection in Json notation.
    */
   public void endArray() {
-    if(!currElements.isEmpty() && currElements.peek().isJsonArray()){
-        currElements.remove();
+    if (!currElements.isEmpty() && currElements.peek().isJsonArray()) {
+      JsonArray o = currElements.poll().getAsJsonArray();
+      addToArray(o);
     }
-    else{
+    else {
       Log.error("0xA0612 JsonPrinter detected an invalid nesting of Json. "
           + "Detected an unexpected end of an array!");
     }
@@ -212,9 +216,9 @@ public class JsonPrinter {
    * @param values The values of the Json attribute
    */
   public void member(String kind, Collection<String> values) {
-      beginArray(kind);
-      values.stream().forEach(o -> value(o));
-      endArray();
+    beginArray(kind);
+    values.stream().forEach(o -> value(o));
+    endArray();
   }
 
   /**
@@ -268,6 +272,7 @@ public class JsonPrinter {
       memberNoDef(kind, value);
     }
   }
+
   public void memberNoDef(String kind, long value) {
     JsonElement member = createJsonNumber(String.valueOf(value));
     getParentObject().putMember(kind, member);
@@ -286,6 +291,7 @@ public class JsonPrinter {
       memberNoDef(kind, value);
     }
   }
+
   public void memberNoDef(String kind, float value) {
     JsonElement member = createJsonNumber(String.valueOf(value));
     getParentObject().putMember(kind, member);
@@ -304,6 +310,7 @@ public class JsonPrinter {
       memberNoDef(kind, value);
     }
   }
+
   public void memberNoDef(String kind, int value) {
     JsonElement member = createJsonNumber(String.valueOf(value));
     getParentObject().putMember(kind, member);
@@ -345,7 +352,8 @@ public class JsonPrinter {
   }
 
   public void memberNoDef(String kind, String value) {
-    JsonElement member = createJsonString(escapeSpecialChars(value));
+    String escValue = escapeSpecialChars(value);
+    JsonElement member = createJsonString("\"" + escValue + "\"");
     getParentObject().putMember(kind, member);
   }
 
@@ -361,9 +369,10 @@ public class JsonPrinter {
    */
   public void memberJson(String kind, String value) {
     if (DEFAULT_STRING != value || serializeDefaults) {
-      memberNoDef(kind, value);
+      memberJsonNoDef(kind, value);
     }
   }
+
   public void memberJsonNoDef(String kind, String value) {
     JsonElement member = createJsonString(value);
     getParentObject().putMember(kind, member);
@@ -398,7 +407,6 @@ public class JsonPrinter {
     intenalNumberValue(String.valueOf(value));
   }
 
-
   /**
    * Prints a float as Json value.
    *
@@ -424,14 +432,14 @@ public class JsonPrinter {
    * @param value The boolean value of the Json attribute
    */
   public void value(boolean value) {
-    if(!currElements.isEmpty() && currElements.peek().isJsonArray()){
+    if (!currElements.isEmpty() && currElements.peek().isJsonArray()) {
       JsonArray parent = currElements.peek().getAsJsonArray();
       parent.add(createJsonBoolean(value));
     }
-    else if(!currElements.isEmpty() && currElements.peek().isJsonObject()){
+    else if (!currElements.isEmpty() && currElements.peek().isJsonObject()) {
       Log.error("0xA0606 JsonPrinter detected an invalid nesting of Json. "
-          + "Cannot add a numeric value `"+value+"` to the JSON object: `"
-          + toString()+"`");
+          + "Cannot add a numeric value `" + value + "` to the JSON object: `"
+          + toString() + "`");
     }
     else {
       currElements.push(createJsonBoolean(value));
@@ -445,7 +453,7 @@ public class JsonPrinter {
    * @param value The String value of the Json attribute
    */
   public void value(String value) {
-    intenalStringValue(escapeSpecialChars(value));
+    intenalStringValue("\"" +escapeSpecialChars(value) +"\"");
   }
 
   /**
@@ -485,15 +493,15 @@ public class JsonPrinter {
         .replace("\"", "\\\""); // Insert a double quote character in the text at this point.
   }
 
-  private void intenalNumberValue(String value){
-    if(!currElements.isEmpty() && currElements.peek().isJsonArray()){
+  private void intenalNumberValue(String value) {
+    if (!currElements.isEmpty() && currElements.peek().isJsonArray()) {
       JsonArray parent = currElements.peek().getAsJsonArray();
       parent.add(createJsonNumber(String.valueOf(value)));
     }
-    else if(!currElements.isEmpty() && currElements.peek().isJsonObject()){
+    else if (!currElements.isEmpty() && currElements.peek().isJsonObject()) {
       Log.error("0xA0604 JsonPrinter detected an invalid nesting of Json. "
-          + "Cannot add a numeric value `"+value+"` to the JSON object: `"
-          + toString()+"`");
+          + "Cannot add a numeric value `" + value + "` to the JSON object: `"
+          + toString() + "`");
     }
     else {
       currElements.push(createJsonNumber(String.valueOf(value)));
@@ -501,33 +509,50 @@ public class JsonPrinter {
   }
 
   private void intenalStringValue(String value) {
-    if(!currElements.isEmpty() && currElements.peek().isJsonArray()){
+    if (!currElements.isEmpty() && currElements.peek().isJsonArray()) {
       JsonArray parent = currElements.peek().getAsJsonArray();
       parent.add(createJsonString(value));
     }
-    else if(! currElements.isEmpty() && currElements.peek().isJsonObject()){
+    else if (!currElements.isEmpty() && currElements.peek().isJsonObject()) {
       Log.error("0xA0603 JsonPrinter detected an invalid nesting of Json. "
-          + "Cannot add a String value `"+value+"` to the JSON object: `"
-          + toString()+"`");
+          + "Cannot add a String value `" + value + "` to the JSON object: `"
+          + toString() + "`");
     }
     else {
       currElements.push(createJsonString(value));
     }
   }
 
-  private JsonObject getParentObject(){
-    if(currElements.isEmpty()){
+  private JsonObject getParentObject() {
+    if (currElements.isEmpty()) {
       Log.error("0xA0613 JsonPrinter detected an invalid nesting of Json. "
           + "Cannot add a member as the first element of a Json String!");
     }
-    if(currElements.peek().isJsonObject()){
+    if (currElements.peek().isJsonObject()) {
       return currElements.peek().getAsJsonObject();
     }
-      IndentPrinter p = new IndentPrinter();
-      currElements.peek().print(p);
-      Log.error("0xA0602 JsonPrinter detected an invalid nesting of Json. "
-          + "Cannot add a child member to: `" + p.toString()+"`");
-      return createJsonObject();
+    IndentPrinter p = new IndentPrinter();
+    currElements.peek().print(p);
+    Log.error("0xA0602 JsonPrinter detected an invalid nesting of Json. "
+        + "Cannot add a child member to: `" + p.toString() + "`");
+    return createJsonObject();
+  }
+
+  public void addToArray(JsonElement e){
+    if (!currElements.isEmpty() && currElements.peek().isJsonArray()) {
+      JsonArray parent = currElements.peek().getAsJsonArray();
+      parent.add(e);
+    }
+    else if (currElements.isEmpty() || currElements.peek().isJsonObject()) {
+      // no op here, because nested objects are handled elsewhere and
+      // it is not an error if a JsonObject or JsonArray is the "outermost"
+      // JSON element
+    }
+    else {
+      Log.error("0xA0653 JsonPrinter detected an invalid nesting of Json arrays. "
+          + "Cannot add `" + e + "` to the JSON : `"
+          + toString() + "`");
+    }
   }
 
   /**
@@ -543,7 +568,7 @@ public class JsonPrinter {
    * checking for correct nestings
    */
   public String getContent() {
-    if(currElements.size()>1 || (currElements.size()==1 && root.isPresent())) {
+    if (currElements.size() > 1 || (currElements.size() == 1 && root.isPresent())) {
       Log.error("0xA0615 JsonPrinter detected an invalid nesting of Json.");
     }
     return toString();
@@ -556,15 +581,15 @@ public class JsonPrinter {
    */
   @Override
   public String toString() {
-    if(currElements.isEmpty()) {
-      if(!root.isPresent()) {
+    if (currElements.isEmpty()) {
+      if (!root.isPresent()) {
         return "";
       }
       IndentPrinter p = new IndentPrinter();
       root.get().print(p);
       return p.getContent();
     }
-    else{
+    else {
       IndentPrinter p = new IndentPrinter();
       currElements.peek().print(p);
       return p.getContent();

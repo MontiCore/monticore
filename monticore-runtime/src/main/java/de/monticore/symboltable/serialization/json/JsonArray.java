@@ -140,11 +140,11 @@ public class JsonArray implements JsonElement {
 
     // print values of array with a buffer to check whether it is empty
     IndentPrinter buffer = new IndentPrinter();
-    buffer.setIndentLength(p.getIndentLength() + 1);
+    buffer.setIndentation(p.getIndentation() + 1);
 
     // print each value with another buffer to check emptyness
     IndentPrinter tmp = new IndentPrinter();
-    tmp.setIndentLength(p.getIndentLength() + 1);
+    tmp.setIndentation(p.getIndentation() + 1);
 
     String sep = "";
     for (JsonElement e : values) {
@@ -159,9 +159,11 @@ public class JsonArray implements JsonElement {
     if (!buffer.getContent().isEmpty() || JsonPrinter.isSerializingDefaults()) {
       if (indent) {
         p.println("[");
+        p.indent();
         p.print(buffer.getContent());
+        p.println();
         p.unindent();
-        p.println("]");
+        p.print("]");
       }
       else {
         p.print("[");
