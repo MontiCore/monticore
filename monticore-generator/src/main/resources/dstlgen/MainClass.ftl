@@ -50,7 +50,7 @@ public class ${className} {
 
     // before we launch MontiCore we check if there are any ".${fileExtension}" files in the input argument (source path)
     Iterator<Path> inputPaths = configuration.getInternal().getModels("${fileExtension}").getEntries().iterator();
-    if (!inputPaths.hasNext()) {
+    if (inputPaths.hasNext()) {
       Log.error("0xA1000 There are no \".${fileExtension}\" files to parse. Please check the \"grammars\" option.");
       return;
     }
