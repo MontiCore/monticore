@@ -19,9 +19,9 @@ public class UpdateCheckerRunnable implements Runnable {
   protected HttpGetter httpGetter;
 
   protected static class Version {
-    private final boolean snapshot;
-    private final int[] versionNumbers;
-    private final String versionString;
+    protected final boolean snapshot;
+    protected final int[] versionNumbers;
+    protected final String versionString;
 
     public Version(String version) {
       versionString = version;
@@ -120,7 +120,7 @@ public class UpdateCheckerRunnable implements Runnable {
     try {
       properties.load(new FileInputStream(LOCAL_PROPERTIES_PATH));
     } catch (Exception e) {
-      Log.warn("0xA9004 Could not find local properties file");
+      Log.debug("0xA9004 Could not find local properties file", UpdateCheckerRunnable.class.getName());
     }
 
     return properties;

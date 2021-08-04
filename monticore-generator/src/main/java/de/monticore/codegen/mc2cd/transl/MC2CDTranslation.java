@@ -6,6 +6,7 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.transl.creation.CDASTCreator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.grammar.LexNamer;
+import de.monticore.grammar.LexNamerFix;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.utils.Link;
 
@@ -21,16 +22,16 @@ import java.util.function.UnaryOperator;
  */
 public class MC2CDTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {
 
-  private GlobalExtensionManagement glex;
+  protected GlobalExtensionManagement glex;
 
-  private LexNamer lexNamer;
+  protected LexNamer lexNamer;
 
   public MC2CDTranslation(GlobalExtensionManagement glex) {
     this.glex = glex;
     this.lexNamer = (glex.hasGlobalVar("lexNamer")
         && glex.getGlobalVar("lexNamer") instanceof LexNamer)
         ? (LexNamer) glex.getGlobalVar("lexNamer")
-        : new LexNamer();
+        : new LexNamerFix();
   }
 
   @Override

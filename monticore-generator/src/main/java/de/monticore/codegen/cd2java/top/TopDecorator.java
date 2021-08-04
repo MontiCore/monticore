@@ -21,7 +21,7 @@ public class TopDecorator extends AbstractCreator<ASTCDCompilationUnit,ASTCDComp
 
   public static final String TOP_SUFFIX = "TOP";
 
-  private final MCPath hwPath;
+  protected final MCPath hwPath;
 
   public TopDecorator(MCPath hwPath) {
     this.hwPath = hwPath;
@@ -45,7 +45,7 @@ public class TopDecorator extends AbstractCreator<ASTCDCompilationUnit,ASTCDComp
     return topCD;
   }
 
-  private void applyTopMechanism(ASTCDClass cdClass) {
+  protected void applyTopMechanism(ASTCDClass cdClass) {
     makeAbstract(cdClass);
     cdClass.setName(cdClass.getName() + TOP_SUFFIX);
 
@@ -53,19 +53,19 @@ public class TopDecorator extends AbstractCreator<ASTCDCompilationUnit,ASTCDComp
         constructor.setName(constructor.getName() + TOP_SUFFIX));
   }
 
-  private void applyTopMechanism(ASTCDInterface cdInterface) {
+  protected void applyTopMechanism(ASTCDInterface cdInterface) {
     cdInterface.setName(cdInterface.getName() + TOP_SUFFIX);
   }
 
-  private void applyTopMechanism(ASTCDEnum cdEnum) {
+  protected void applyTopMechanism(ASTCDEnum cdEnum) {
     cdEnum.setName(cdEnum.getName() + TOP_SUFFIX);
   }
 
-  private void makeAbstract(ASTCDType type) {
+  protected void makeAbstract(ASTCDType type) {
     makeAbstract(type.getModifier());
   }
 
-  private void makeAbstract(ASTModifier modifier) {
+  protected void makeAbstract(ASTModifier modifier) {
     modifier.setAbstract(true);
   }
 }

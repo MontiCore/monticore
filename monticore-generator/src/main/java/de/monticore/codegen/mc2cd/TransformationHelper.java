@@ -56,7 +56,7 @@ public final class TransformationHelper {
 
   public static final int STAR = -1;
 
-  private static List<String> reservedCdNames = Arrays.asList(
+  protected static List<String> reservedCdNames = Arrays.asList(
       // CD4A
       "derived",
       "association",
@@ -541,7 +541,7 @@ public final class TransformationHelper {
     return cv.getRuleComponents();
   }
 
-  private static class CollectRuleComponents implements GrammarVisitor2 {
+  protected static class CollectRuleComponents implements GrammarVisitor2 {
 
     public List<ASTRuleComponent> ruleComponentList = Lists.newArrayList();
 
@@ -597,7 +597,7 @@ public final class TransformationHelper {
     return MCGrammarSymbolTableHelper.getQualifiedName(symbol.getAstNode(), symbol, "AST", "");
   }
   
-  private static String getLexType(ASTNode node) {
+  protected static String getLexType(ASTNode node) {
     if (node instanceof ASTLexProd) {
       return createConvertType((ASTLexProd) node);
     }
@@ -657,7 +657,7 @@ public final class TransformationHelper {
     return ret;
   }
   
-  private static String getLexString(MCGrammarSymbol grammar, ASTLexProd lexNode) {
+  protected static String getLexString(MCGrammarSymbol grammar, ASTLexProd lexNode) {
     StringBuilder builder = new StringBuilder();
     RegExpBuilder regExp = new RegExpBuilder(builder, grammar);
     Grammar_WithConceptsTraverser traverser = Grammar_WithConceptsMill.traverser();

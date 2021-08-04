@@ -1,0 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
+pattern objectdiagram lhs {
+    <<list>> list_foo_1 : mc.testcases._ast.ASTFoo;
+}
+
+replacement objectdiagram rhs {
+}

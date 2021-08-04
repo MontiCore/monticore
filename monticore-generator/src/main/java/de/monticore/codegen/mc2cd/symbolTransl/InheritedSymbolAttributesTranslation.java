@@ -43,7 +43,7 @@ public class InheritedSymbolAttributesTranslation extends InheritedAttributesTra
   /**
    * handleInherited method for symbolrules
    */
-  private void handleInheritedAttributeInSymbolRules(Link<ASTProd, ASTCDClass> link) {
+  protected void handleInheritedAttributeInSymbolRules(Link<ASTProd, ASTCDClass> link) {
     ProdSymbol symbol = link.source().getSymbol();
 
     for (Entry<ASTProd, Collection<AdditionalAttributeSymbol>> entry : getInheritedAttributeInSymbols(link.source()).entrySet()) {

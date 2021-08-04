@@ -1,0 +1,119 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package mc.testcases.statechart;
+
+/**
+ * Grammar Statechart, Version March 8th, 2017
+ *
+ */
+grammar StatechartWithJava extends de.monticore.MCBasics{
+
+  /** ASTSCArtifact represents the complete Diagram
+    @attribute package          The package declaration of this Statechart
+    @attribute importStatements List of imported elements
+    @attribute scDefinition
+  */
+  scope SCArtifact =
+    ("package" package:(Name& || ".")+ ";")?
+    Statechart;
+
+
+    /*========================================================================*/
+    /*================== INTERFACES AND EXTERNAL SYMBOLS =====================*/
+    /*========================================================================*/
+
+    /** ASTSCElement represents all Elements of a UML Statechart diagram
+    */
+    abstract SCElement;
+
+    /** ASTSCEvent represents Events of Transitions in a UML Statechart diagram
+    */
+    abstract SCEvent;
+
+     SCStatements = "statement";
+     SCExpression = "Expression";
+     SCInvariantContent = "Expression";
+
+
+    /*========================================================================*/
+    /*============================== GRAMMAR =================================*/
+    /*========================================================================*/
+
+    /** ASTStatechart represents a UML Statechart diagram
+        @attribute completeness  Optional Comleteness of this Statechart diagram
+        @attribute stereotype    Optional SCStereotype
+        @attribute name          Optional name of this Statechart diagram
+        @attribute className     Name of the class modeled with this
+                                 Statechart diagram
+        @attribute superSC       Name of the Statechart which is refined by this
+                                 Statechart
+        @attribute sCStates      List of States of this Statechart diagram
+        @attribute sCTransitions List of Transitions of this Statechart diagram
+    */
+    symbol scope Statechart =
+        stereotype:SCStereotype?
+        "statechart" Name?
+        "{"
+          (SCTransition )*
+        "}";
+
+    /** ASTSCTransition represents a Transition between two States in a
+        UML Statechart diagram
+        @attribute SCStereotype     Optional SCStereotype
+        @attribute sourceName       Name of the source of this Transition
+        @attribute targetName       Name of the target of this Transition
+        @attribute sCTransitionBody Body of this Transition
+    */
+    SCTransition =
+        stereotype:SCStereotype?
+        sourceName:Name "->" targetName:Name
+        SCTransitionBody?
+        ;
+
+    /** ASTSCTransitionBody represents the Body of a Transition in a
+        UML Statechart diagram
+        @attribute preCondition  Pre-Condition of this Transition Body
+        @attribute sCEvent       Event for this Transition Body to take place
+        @attribute SCStatements    Actions of this Transition Body
+        @attribute postCondition Post-Condition of this Transition Body
+    */
+    SCTransitionBody =
+        (preCondition:Invariant)?
+        SCEvent? "/"
+          ( SCStatements
+              (postCondition:Invariant)?
+          )?
+     ;
+
+
+
+    /** ASTSCReturnStatement represents a return statement of a Transition
+        in a UML Statechart diagram
+        @attribute SCExpression Expression of this return statement
+    */
+    SCReturnStatement extends SCEvent =
+        "return"
+        ( "(" SCExpression ")" ) ?;
+
+
+    /** ASTSCCode represents user added code to the Statechart diagram or to
+        States
+        @attribute SCStatements The code added by the user
+    */
+    SCCode extends SCElement =
+        "code" SCStatements;
+
+    /** ASTSCStereotype represents SCStereotypes in a Statechart
+   	    @attribute values List of Values of this SCStereotype
+  	*/
+  	SCStereotype = "<<" value:(SCStereoValue || ",")+ ">>";
+
+
+    /** ASTSCStereoValue represents a Value of a SCStereotype in a Classdiagram
+        @attribute name  Name of the SCStereotype-Value
+    */
+    SCStereoValue = Name ("=" value:Name)?;
+
+    Invariant =
+        "[" content:SCInvariantContent "]";
+}

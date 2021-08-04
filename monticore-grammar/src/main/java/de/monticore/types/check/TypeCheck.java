@@ -307,7 +307,7 @@ public class TypeCheck {
    * @param subType the SymTypeExpression that could be a subtype of the other SymTypeExpression
    * @param superType the SymTypeExpression that could be a supertype of the other SymTypeExpression
    */
-  private static boolean isSubtypeOfRec(SymTypeExpression subType, SymTypeExpression superType){
+  protected static boolean isSubtypeOfRec(SymTypeExpression subType, SymTypeExpression superType){
     if (!subType.getTypeInfo().getSuperTypesList().isEmpty()) {
       for (SymTypeExpression type : subType.getTypeInfo().getSuperTypesList()) {
         if(type.print().equals(superType.print())){

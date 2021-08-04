@@ -167,7 +167,7 @@ public class MCGrammarParserTest {
     assertTrue(result.isPresent());
 
     ASTMCGrammar grammar = result.get();
-    assertEquals(3, grammar.getClassProdList().size());
+    assertEquals(4, grammar.getClassProdList().size());
 
     ASTClassProd transition = grammar.getClassProdList().get(2);
     ASTNonTerminal fromState = (ASTNonTerminal) transition.getAltList().get(0).getComponentList().get(0);

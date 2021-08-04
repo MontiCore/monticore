@@ -1,0 +1,20 @@
+/* (c) https://github.com/MontiCore/monticore */
+pattern objectdiagram lhs {
+    foo_1 : mc.testcases._ast.ASTFoo {
+    }
+
+    foo_2 : mc.testcases._ast.ASTFoo {
+    }
+    
+    composition foo_1 -- (foo) foo_2;
+    
+} replacement objectdiagram rhs {
+    foo_1 : mc.testcases._ast.ASTFoo {
+    }
+
+    foo_2 : mc.testcases._ast.ASTFoo {
+    }
+    
+    composition foo_1 -- (foo) foo_2;
+    
+}

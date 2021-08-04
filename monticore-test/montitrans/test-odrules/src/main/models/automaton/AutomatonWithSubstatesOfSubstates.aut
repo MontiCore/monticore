@@ -1,0 +1,20 @@
+/* (c) https://github.com/MontiCore/monticore */
+automaton AutomatonSubstateList {
+	state f {
+		state e;
+	}
+	
+	state m {
+		state a {
+        	state c;
+    	}
+        
+    	state b {
+			state d;
+    	}
+	}
+    
+    state s {
+    	state t;
+    }
+}

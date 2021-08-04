@@ -11,7 +11,7 @@ import de.monticore.types.prettyprint.MCBasicTypesPrettyPrinter;
 
 public class MCVarDeclarationStatementsFullPrettyPrinter {
 
-  private MCVarDeclarationStatementsTraverser traverser;
+  protected MCVarDeclarationStatementsTraverser traverser;
 
   protected IndentPrinter printer;
 

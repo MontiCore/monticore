@@ -14,6 +14,8 @@ grammar AutomatonST {
  // @State means that the name refers to a state symbol.
  Transition =
      from:Name@State "-" Name ">" to:Name@State ";";
+
+  DummyRule = "AUTOMATON";
      
   token Name =
         ( 'a'..'z' | 'A'..'Z' | '_' | '$' )( 'a'..'z' | 'A'..'Z' | '_' | '0'..'9' | '$' )*;

@@ -46,7 +46,7 @@ abstract class SpecificMethodDecorator extends AbstractCreator<ASTCDAttribute, L
     return specificMethodDecorator.decorate(ast);
   }
 
-  private AbstractCreator<ASTCDAttribute, List<ASTCDMethod>> determineMethodDecoratorStrategy(final ASTCDAttribute ast) {
+  protected AbstractCreator<ASTCDAttribute, List<ASTCDMethod>> determineMethodDecoratorStrategy(final ASTCDAttribute ast) {
     if (getMCTypeFacade().isBooleanType(ast.getMCType())) {
       return mandatoryMethodDecorator;
     } else if (getDecorationHelper().isListType(ast.printType())) {

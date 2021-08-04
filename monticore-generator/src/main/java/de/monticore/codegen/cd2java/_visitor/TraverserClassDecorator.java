@@ -23,8 +23,7 @@ import de.se_rwth.commons.StringTransformations;
 import java.util.ArrayList;
 import java.util.List;
 
-import static de.monticore.codegen.cd2java.CDModifier.PRIVATE;
-import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java.CDModifier.*;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
@@ -80,7 +79,7 @@ public class TraverserClassDecorator extends AbstractCreator<ASTCDCompilationUni
    * @return The decorated attribute
    */
   protected ASTCDAttribute getRealThisAttribute(String delegatorVisitorSimpleName) {
-    ASTCDAttribute realThisAttribute = getCDAttributeFacade().createAttribute(PRIVATE.build(), delegatorVisitorSimpleName, REAL_THIS);
+    ASTCDAttribute realThisAttribute = getCDAttributeFacade().createAttribute(PROTECTED.build(), delegatorVisitorSimpleName, REAL_THIS);
     this.replaceTemplate(VALUE, realThisAttribute, new StringHookPoint("= (" + delegatorVisitorSimpleName + ") this"));
     return realThisAttribute;
   }
@@ -93,7 +92,7 @@ public class TraverserClassDecorator extends AbstractCreator<ASTCDCompilationUni
   protected ASTCDAttribute ivisitorAttribute() {
     String simpleName = Names.getSimpleName(IVISITOR_FULL_NAME) + "List";
     ASTMCQualifiedType type = getMCTypeFacade().createQualifiedType(IVISITOR_FULL_NAME);
-    ASTCDAttribute visitorAttribute = getCDAttributeFacade().createAttribute(PRIVATE.build(), getMCTypeFacade().createListTypeOf(type),
+    ASTCDAttribute visitorAttribute = getCDAttributeFacade().createAttribute(PROTECTED.build(), getMCTypeFacade().createListTypeOf(type),
             StringTransformations.uncapitalize(simpleName));
     this.replaceTemplate(VALUE, visitorAttribute, new StringHookPoint("= new ArrayList<>()"));
     return visitorAttribute;
@@ -142,7 +141,7 @@ public class TraverserClassDecorator extends AbstractCreator<ASTCDCompilationUni
     for (DiagramSymbol cd : cdSymbols) {
       String simpleName = visitorService.getVisitorSimpleName(cd) + "List";
       ASTMCQualifiedType type = visitorService.getVisitor2Type(cd);
-      ASTCDAttribute visitorAttribute = getCDAttributeFacade().createAttribute(PRIVATE.build(), getMCTypeFacade().createListTypeOf(type),
+      ASTCDAttribute visitorAttribute = getCDAttributeFacade().createAttribute(PROTECTED.build(), getMCTypeFacade().createListTypeOf(type),
           StringTransformations.uncapitalize(simpleName));
       this.replaceTemplate(VALUE, visitorAttribute, new StringHookPoint("= new ArrayList<>();"));
       attributeList.add(visitorAttribute);
@@ -200,7 +199,7 @@ public class TraverserClassDecorator extends AbstractCreator<ASTCDCompilationUni
     for (DiagramSymbol cd : cdSymbols) {
       String simpleName = visitorService.getHandlerSimpleName(cd);
       ASTMCQualifiedType type = visitorService.getHandlerType(cd);
-      ASTCDAttribute handlerAttribute = getCDAttributeFacade().createAttribute(PRIVATE.build(), getMCTypeFacade().createOptionalTypeOf(type),
+      ASTCDAttribute handlerAttribute = getCDAttributeFacade().createAttribute(PROTECTED.build(), getMCTypeFacade().createOptionalTypeOf(type),
           StringTransformations.uncapitalize(simpleName));
       this.replaceTemplate(VALUE, handlerAttribute, new StringHookPoint("= Optional.empty()"));
       attributeList.add(handlerAttribute);

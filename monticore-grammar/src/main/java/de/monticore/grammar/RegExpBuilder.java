@@ -13,11 +13,11 @@ import java.util.Optional;
 
 public class RegExpBuilder implements GrammarVisitor2, GrammarHandler {
 
-  private StringBuilder b;
+  protected StringBuilder b;
 
-  private MCGrammarSymbol st;
+  protected MCGrammarSymbol st;
 
-  private GrammarTraverser traverser;
+  protected GrammarTraverser traverser;
 
   @Override
   public GrammarTraverser getTraverser() {
@@ -137,7 +137,7 @@ public class RegExpBuilder implements GrammarVisitor2, GrammarHandler {
 
   }
 
-  private boolean needsEscapeChar(String x) {
+  protected boolean needsEscapeChar(String x) {
     return "^".equals(x);
   }
 
@@ -148,7 +148,7 @@ public class RegExpBuilder implements GrammarVisitor2, GrammarHandler {
 
   }
 
-  private String printIteration(int i) {
+  protected String printIteration(int i) {
     switch (i) {
       case ASTConstantsGrammar.PLUS:
         return "+";

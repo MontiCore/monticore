@@ -11,7 +11,7 @@ import de.monticore.statements.mcassertstatements._visitor.MCAssertStatementsTra
 
 public class MCAssertStatementsFullPrettyPrinter extends ExpressionsBasisFullPrettyPrinter {
 
-  private MCAssertStatementsTraverser traverser;
+  protected MCAssertStatementsTraverser traverser;
 
   public MCAssertStatementsFullPrettyPrinter(IndentPrinter printer){
     super(printer);

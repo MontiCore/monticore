@@ -26,7 +26,7 @@ final class VisibilityManipulation implements UnaryOperator<ASTCDCompilationUnit
     return cdCompilationUnit;
   }
 
-  private class VisibilityVisitor implements CDBasisVisitor2 {
+  protected class VisibilityVisitor implements CDBasisVisitor2 {
     /**
      * Sets the visibility of every attribute to protected.
      */

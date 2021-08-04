@@ -15,9 +15,9 @@ import java.util.Map;
  */
 public class ReportCreator {
 
-	private Map<File, BufferedWriter> writers;
+	protected Map<File, BufferedWriter> writers;
 
-	private String outputDir;
+	protected String outputDir;
 
 	/**
 	 * Constructor for mc.codegen.reporting.commons.Reporting
@@ -127,7 +127,7 @@ public class ReportCreator {
 	 * @param fileextension
 	 * @return
 	 */
-	private File getFile(String fileName, String fileextension) {
+	protected File getFile(String fileName, String fileextension) {
 		return new File(outputDir + File.separator + fileName + "."
 				+ fileextension);
 	}

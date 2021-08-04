@@ -16,9 +16,9 @@ public class ODReporter extends AReporter {
   
   static final String SIMPLE_FILE_NAME = "18_ObjectDiagram";
   
-  private String modelName;
+  protected String modelName;
   
-  private ReportingRepository reporting;
+  protected ReportingRepository reporting;
   
   public ODReporter(String outputDir, String modelName, ReportingRepository reporting) {
     super(outputDir + File.separator
@@ -35,7 +35,7 @@ public class ODReporter extends AReporter {
     writeLine(" */");
   }
   
-  private void writeFooter() {
+  protected void writeFooter() {
     writeLine("/*");
     writeLine(" * ========================================================== Explanation");
     writeLine(" * Shows the AST with all attributes as object diagram");
@@ -52,7 +52,7 @@ public class ODReporter extends AReporter {
   /**
    * @param ast
    */
-  private void writeContent(ASTNode ast) {
+  protected void writeContent(ASTNode ast) {
     if (ast instanceof ASTGrammarNode) {
       ASTGrammarNode mcNode = (ASTGrammarNode) ast;
       IndentPrinter pp = new IndentPrinter();

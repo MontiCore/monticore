@@ -177,7 +177,7 @@ public class AssignmentExpressionsPrettyPrinterTest {
     ASTAssignmentExpression result = AssignmentExpressionsMill.assignmentExpressionBuilder()
         .setLeft(a.get())
         .setRight(b.get())
-        .setOperator(ANDEQUALS)
+        .setOperator(AND_EQUALS)
         .build();
 
     String output = prettyPrinter.prettyprint(result);

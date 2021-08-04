@@ -78,7 +78,7 @@ public final class MontiCoreConfiguration implements Configuration {
   public static final String REPORT_LONG = "report";
   public static final String HELP_LONG = "help";
 
-  private final CommandLine cmdConfig;
+  protected final CommandLine cmdConfig;
 
   /**
    * Factory method for {@link MontiCoreConfiguration}.
@@ -97,18 +97,18 @@ public final class MontiCoreConfiguration implements Configuration {
   /**
    * Constructor for {@link MontiCoreConfiguration}
    */
-  private MontiCoreConfiguration(Configuration internal) {
+  protected MontiCoreConfiguration(Configuration internal) {
     this.cmdConfig = internal.getConfig();
   }
 
   /**
    * Constructor for {@link MontiCoreConfiguration}
    */
-  private MontiCoreConfiguration(CommandLine cmdConfig) {
+  protected MontiCoreConfiguration(CommandLine cmdConfig) {
     this.cmdConfig = cmdConfig;
   }
 
-  private boolean checkPath(List<String> grammars) {
+  protected boolean checkPath(List<String> grammars) {
     for (String g: grammars) {
       Path p = Paths.get(g);
       if (!Files.exists(p)) {
@@ -167,7 +167,7 @@ public final class MontiCoreConfiguration implements Configuration {
     return new MCPath();
   }
 
-  private MCPath convertEntryNamesToMCPath(List<String> modelPathEntryNames) {
+  protected MCPath convertEntryNamesToMCPath(List<String> modelPathEntryNames) {
     List<Path> modelPathFiles = toFileList(modelPathEntryNames);
     List<Path> modelPathEntries = modelPathFiles.stream()
         .map(Path::toAbsolutePath)

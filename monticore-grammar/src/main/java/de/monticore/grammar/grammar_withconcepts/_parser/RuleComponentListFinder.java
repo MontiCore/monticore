@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class RuleComponentListFinder implements GrammarVisitor2 {
   
-  private Map<ASTNonTerminalSeparator, ASTAlt> map;
+  protected Map<ASTNonTerminalSeparator, ASTAlt> map;
   
   /**
    * Constructor for de.monticore.grammar.grammar_withconcepts._parser.RuleComponentListFinder.

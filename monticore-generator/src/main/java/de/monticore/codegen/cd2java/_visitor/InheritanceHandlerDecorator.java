@@ -19,7 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static de.monticore.codegen.cd2java.CDModifier.PRIVATE;
+import static de.monticore.codegen.cd2java.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.CoreTemplates.*;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_INTERFACE;
@@ -51,7 +51,7 @@ public class InheritanceHandlerDecorator extends AbstractCreator<ASTCDCompilatio
     String languageInterfaceName = visitorService.getLanguageInterfaceName();
     String handlerSimpleName = visitorService.getHandlerSimpleName();
 
-    ASTCDAttribute traverserAttribute = getCDAttributeFacade().createAttribute(PRIVATE.build(), visitorService.getTraverserInterfaceType(), TRAVERSER);
+    ASTCDAttribute traverserAttribute = getCDAttributeFacade().createAttribute(PROTECTED.build(), visitorService.getTraverserInterfaceType(), TRAVERSER);
     List<ASTCDMethod> traverserMethods = methodDecorator.decorate(traverserAttribute);
 
     ASTCDClass cdClass = CD4CodeMill.cDClassBuilder()

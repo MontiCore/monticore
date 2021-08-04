@@ -23,7 +23,7 @@ import freemarker.template.TemplateException;
 public class FreeMarkerTemplateEngine {
   
   public static final String FM_FILE_EXTENSION = ".ftl";
-  private final Configuration configuration;
+  protected final Configuration configuration;
   
   public FreeMarkerTemplateEngine(Configuration configuration) {
     this.configuration = Log

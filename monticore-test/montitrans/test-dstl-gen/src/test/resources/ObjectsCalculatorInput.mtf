@@ -1,0 +1,16 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.tf;
+
+module ObjectsCalculatorTest {
+
+    transformation something(State $S1) {
+        State $S1 [[ state sourceState; ]]
+    
+        state nestingState { 
+            State $S2 [[ state nestedState <<initial>>; ]]
+        }
+
+        Transition $T1 [[ sourceState -event> [[nestedState :- nestingState]]; ]]
+    }
+
+}

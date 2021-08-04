@@ -19,8 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static de.monticore.codegen.cd2java.CDModifier.PRIVATE;
-import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java.CDModifier.*;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.ACCEPT_METHOD;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
@@ -103,11 +102,11 @@ public class ArtifactScopeClassDecorator extends AbstractCreator<ASTCDCompilatio
   }
 
   protected ASTCDAttribute createPackageNameAttribute() {
-    return getCDAttributeFacade().createAttribute(PRIVATE.build(), String.class, PACKAGE_NAME_VAR);
+    return getCDAttributeFacade().createAttribute(PROTECTED.build(), String.class, PACKAGE_NAME_VAR);
   }
 
   protected ASTCDAttribute createImportsAttribute() {
-    return getCDAttributeFacade().createAttribute(PRIVATE.build(), getMCTypeFacade().createListTypeOf(IMPORT_STATEMENT), "imports");
+    return getCDAttributeFacade().createAttribute(PROTECTED.build(), getMCTypeFacade().createListTypeOf(IMPORT_STATEMENT), "imports");
   }
 
   protected List<ASTCDMethod> createPackageNameAttributeMethods(ASTCDAttribute attr) {

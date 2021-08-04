@@ -1,0 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
+{
+	state $superstate {
+
+	  state $substate {
+	    [[ :- Transition $transition ]]
+	  }
+
+    Transition $transition
+
+	}
+
+}

@@ -25,7 +25,7 @@ public class SymbolRuleInheritanceTranslation implements UnaryOperator<Link<ASTM
     return rootLink;
   }
 
-  private void translateClassProd(ASTSymbolRule rule, ASTCDClass cdClass, ASTMCGrammar astGrammar) {
+  protected void translateClassProd(ASTSymbolRule rule, ASTCDClass cdClass, ASTMCGrammar astGrammar) {
     if (!rule.getSuperClassList().isEmpty() && !cdClass.isPresentCDExtendUsage()) {
       cdClass.setCDExtendUsage(CD4CodeMill.cDExtendUsageBuilder().build());
     }

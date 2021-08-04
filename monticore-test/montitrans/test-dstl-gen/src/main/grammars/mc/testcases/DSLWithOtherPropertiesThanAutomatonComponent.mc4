@@ -1,0 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.testcases;
+
+component grammar DSLWithOtherPropertiesThanAutomatonComponent extends de.monticore.MCBasics {
+
+
+
+    external ExtFoo;
+
+    OtherFoo = "foo" | ExtFoo;
+
+
+}

@@ -548,7 +548,7 @@ public class JsonPrinter {
 
   }
 
-  private void internalMember(String kind, Object value) {
+  protected void internalMember(String kind, Object value) {
     printCommaIfNecessary();
     print("\"");
     print(kind);
@@ -561,13 +561,13 @@ public class JsonPrinter {
     print(value);
   }
 
-  private void internalValue(Object value) {
+  protected void internalValue(Object value) {
     printBufferedBeginArray();
     printCommaIfNecessary();
     print(value);
   }
 
-  private void printBufferedBeginArray() {
+  protected void printBufferedBeginArray() {
     if (isInEmptyArray) {
       isInEmptyArray = false;
       print(arrayBeginBuffer);

@@ -237,7 +237,7 @@ public class MCCommonStatementsPrettyPrinter implements
     }
   }
 
-  private String printModifier(int constant) {
+  protected String printModifier(int constant) {
 
     switch (constant) {
       case ASTConstantsMCCommonStatements.PRIVATE:

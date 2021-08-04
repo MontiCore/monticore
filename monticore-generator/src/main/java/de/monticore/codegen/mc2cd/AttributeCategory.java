@@ -47,14 +47,14 @@ public enum AttributeCategory {
     return STANDARD;
   }
   
-  private static boolean isGenericList(ASTCDAttribute cdAttribute) {
+  protected static boolean isGenericList(ASTCDAttribute cdAttribute) {
     if (cdAttribute.getMCType() instanceof ASTMCGenericType) {
       return "List".equals(simpleName(cdAttribute.getMCType()));
     }
     return false;
   }
 
-  private static boolean isOptional(ASTCDAttribute cdAttribute) {
+  protected static boolean isOptional(ASTCDAttribute cdAttribute) {
     if (cdAttribute.getMCType() instanceof ASTMCGenericType) {
       return "Optional".equals(simpleName(cdAttribute.getMCType()));
     }

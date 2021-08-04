@@ -49,7 +49,7 @@ public class OverridingAbstractNTs implements GrammarASTMCGrammarCoCo {
     }
   }
   
-  private void doCheck(Optional<ProdSymbol> typeSymbol, String type) {
+  protected void doCheck(Optional<ProdSymbol> typeSymbol, String type) {
     if (typeSymbol.isPresent() && typeSymbol.get().isIsAbstract()) {
       Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, typeSymbol.get().getName(), type));
     }

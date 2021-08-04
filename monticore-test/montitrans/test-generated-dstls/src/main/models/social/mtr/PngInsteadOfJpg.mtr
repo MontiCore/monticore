@@ -1,0 +1,5 @@
+/* (c) https://github.com/MontiCore/monticore */
+// replace all photos with a jpg ending with a png ending
+
+ //Todo Fix
+ // list[[ entry [[ $name.$sname.jpg :- $name.$sname.png ]] ;]]

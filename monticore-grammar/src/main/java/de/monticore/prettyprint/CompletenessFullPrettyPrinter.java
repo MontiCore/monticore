@@ -8,7 +8,7 @@ import de.monticore.literals.prettyprint.MCCommonLiteralsPrettyPrinter;
 
 public class CompletenessFullPrettyPrinter {
 
-  private CompletenessTraverser traverser;
+  protected CompletenessTraverser traverser;
 
   protected IndentPrinter printer;
 

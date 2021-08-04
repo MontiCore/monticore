@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+// example for a optional in a list
+// for a list of users with any name and gender
+// a entry couplePicture.jpg must be uploaded
+// if then an entry saing "InRelationship" is present this is changed to "InSeriousRelationship"
+// is "InRelationship" is not present yet, "InSeriousRelationship" is added
+
+    list[[
+        user A B {
+            entry couplePicture.jpg;
+            [[ opt[[ entry InRelationship; ]] :- entry InSeriousRelationship;  ]]
+        }
+    ]]
+
+

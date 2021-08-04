@@ -1,0 +1,21 @@
+/* (c) https://github.com/MontiCore/monticore */
+{
+    automaton Testautomat {
+        [[ opt [[ state foo; ]] :- opt [[ state bar; ]]]]
+
+        state foo {
+            [[ :- opt[[ foo - act > bar; ]] ]]
+        }
+
+        opt [[ state $_ {
+            [[ state a; :- state b; ]]
+        } ]]
+
+        [[ state $a; :- state $a {
+            state subA {
+                opt [[ state invalidA; ]]
+                opt [[ subA - act > invalidA; ]]
+            }
+        } ]]
+    }
+}
