@@ -27,7 +27,6 @@ dependencies {
     implementation "com.google.guava:guava:$guava_version"
     implementation "org.apache.commons:commons-lang3:$commons_lang3_version"
     testImplementation "junit:junit:$junit_version"
-    testImplementation 'ch.qos.logback:logback-classic:1.1.2'
 }
 
 def grammarOutDir = "$buildDir/generated-sources/monticore/sourcecode"
