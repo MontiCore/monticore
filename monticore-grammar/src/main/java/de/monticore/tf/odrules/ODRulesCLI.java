@@ -38,7 +38,7 @@ public class ODRulesCLI {
     Slf4jLog.init();
 
     // before we launch MontiCore we check if there are any ".mtr" files in the input argument (source path)
-    if (!configuration.getInternal().getModels("mtod").getEntries().isEmpty()) {
+    if (configuration.getInternal().getModels("mtod").getEntries().isEmpty()) {
       Log.error("0xA1000 There are no \".mtod\" files to parse. Please check the \"grammars\" option.");
       return;
     }
