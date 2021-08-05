@@ -13,7 +13,7 @@ import java.io.StringReader;
 import java.util.List;
 
 public class TemplateStringHookPoint extends HookPoint {
-  private Template template;
+  protected Template template;
 
   public TemplateStringHookPoint(String statement) throws IOException {
     super();

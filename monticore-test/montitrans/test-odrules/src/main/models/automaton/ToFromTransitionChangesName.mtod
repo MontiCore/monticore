@@ -1,0 +1,29 @@
+/* (c) https://github.com/MontiCore/monticore */
+grammar mc.testcases.Automaton;
+pattern objectdiagram lhs {
+    state_1 : mc.testcases.automaton._ast.ASTState {
+    }
+    
+    state_2 : mc.testcases.automaton._ast.ASTState {
+    	String name [1] = "b";
+    }
+
+    transition_1 : mc.testcases.automaton._ast.ASTTransition {
+        String from [1] = state_1.name;
+        String to [1] = state_2.name;
+    }
+}
+
+replacement objectdiagram rhs {
+    state_1 : mc.testcases.automaton._ast.ASTState {
+    }
+       
+    state_2 : mc.testcases.automaton._ast.ASTState {
+        String name [1] = "c";
+    }
+
+    transition_1 : mc.testcases.automaton._ast.ASTTransition {
+        String from [1] = state_1.name;
+        String to [1] = state_2.name;
+    }
+}

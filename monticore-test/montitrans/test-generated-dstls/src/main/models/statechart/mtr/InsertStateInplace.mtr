@@ -1,0 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
+statechart Substates {
+
+    state Top {
+      [[state Two; :inplace- state New; ]]
+    }
+}

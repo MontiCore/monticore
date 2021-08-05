@@ -1,0 +1,39 @@
+/* (c) https://github.com/MontiCore/monticore */
+grammar mc.testcases.Automaton;
+/* input for a test for the DifferenceFinder. It contains
+* the following commonalities and differences between 
+* the LHS and the RHS:
+* - state_1 is unmodified
+* - state_2 is changed
+* - transition_1 is deleted
+* - transition_4 is created
+* - transition_1 is modified: the attribute "to" is set from state_2.name to state_1.name;
+*/
+pattern objectdiagram lhs {
+    state_1 : mc.testcases.automaton._ast.ASTState {
+        String name [1] = "S 1";
+    }
+    
+    state_2 : mc.testcases.automaton._ast.ASTState {
+    }
+
+    transition_1 : mc.testcases.automaton._ast.ASTTransition {
+        String from [1] = state_1.name;
+        String to [1] = state_2.name;
+    }
+}
+
+replacement objectdiagram rhs {
+    state_1 : mc.testcases.automaton._ast.ASTState {
+        String name [1] = "S 1";
+    }
+       
+    state_2 : mc.testcases.automaton._ast.ASTState {
+        boolean initial [1] = true;
+    }
+
+    transition_4 : mc.testcases.automaton._ast.ASTTransition {
+        String from [1] = state_1.name;
+        String to [1] = state_1.name;
+    }
+}

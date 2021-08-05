@@ -37,12 +37,12 @@ import static de.se_rwth.commons.Names.getQualifier;
 
 public class AbstractService<T extends AbstractService> {
 
-  private final DiagramSymbol cdSymbol;
+  protected final DiagramSymbol cdSymbol;
 
 
-  private final MCTypeFacade mcTypeFacade;
+  protected final MCTypeFacade mcTypeFacade;
 
-  private final DecorationHelper decorationHelper;
+  protected final DecorationHelper decorationHelper;
 
   public AbstractService(final ASTCDCompilationUnit compilationUnit) {
     this(compilationUnit.getCDDefinition().getSymbol());
@@ -130,7 +130,7 @@ public class AbstractService<T extends AbstractService> {
         .collect(Collectors.toList());
   }
 
-  private List<CDTypeSymbol> getAllSuperClassesTransitive(CDTypeSymbol cdTypeSymbol) {
+  protected List<CDTypeSymbol> getAllSuperClassesTransitive(CDTypeSymbol cdTypeSymbol) {
     List<CDTypeSymbol> superSymbolList = new ArrayList<>();
     if (cdTypeSymbol.isPresentSuperClass()) {
       String superName = cdTypeSymbol.getSuperClass().getTypeInfo().getFullName();
@@ -512,7 +512,7 @@ public class AbstractService<T extends AbstractService> {
     return Joiners.DOT.join(getASTPackage(diagramSymbols.get(0)), typeSymbol.getName());
   }
 
-  private int count = 0;
+  protected int count = 0;
 
   public String getGeneratedErrorCode(String name) {
     // Use the string representation

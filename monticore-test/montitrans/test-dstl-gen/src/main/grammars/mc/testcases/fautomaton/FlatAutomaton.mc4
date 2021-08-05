@@ -1,0 +1,54 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.testcases.fautomaton;
+
+grammar FlatAutomaton extends de.monticore.MCBasics {
+
+	/** An finite automaton
+	@attribute name Name of the automaton
+    @attribute State List of all states
+    @attribute Transition List of all transitions
+	*/
+	Automaton =
+	   "automaton" Name "{"
+	     (State | Transition )*
+	   "}";
+
+    /** A state in a finite automaton
+    @attribute name Name of the state
+    @attribute final True if state is final
+    @attribute initial True if state is initial
+    */
+	State =
+	  "state" Name
+	  (("<<" initial:["initial"] ">>" ) | ("<<" final:["final"] ">>" ))* ";"  ;
+
+    /** A transition in a finite automaton
+    @attribute from The source of the transition
+    @attribute activate Character that triggers the transition
+    @attribute to The target of the transition
+    */
+	Transition =
+	  from:Name "-" activate:Name ">" to:Name ";"  ;
+
+
+
+/*    concept editorattributes {
+
+	  	keywords: automaton, state, initial, final;
+	  	foldable: Automaton;
+
+	  	segment: Automaton ("pict/a.gif") show: "Automaton " name;
+	  	segment: Transition ("pict/arrow.gif") show: "Transition " from " -> " to;
+	  	segment: State ("pict/s.gif") show: name;
+
+	  	categories{
+	  		Transitions(4): Transition;
+		  	States(1): State;
+	  	}
+
+	  	filters{
+	  		First: State ("pict/s.gif") "Hide State";
+	  		Second: State, Transition ("pict/o.gif") "Hide State and Transition";
+	  	}
+	}*/
+}

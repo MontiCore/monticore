@@ -34,7 +34,7 @@ public class TerminalsToCDAttributes implements
     return rootLink;
   }
 
-  private class TerminalVisitor implements GrammarVisitor2 {
+  protected class TerminalVisitor implements GrammarVisitor2 {
     public GrammarTraverser getTraverser() {
       return traverser;
     }

@@ -8,7 +8,7 @@ import de.monticore.prettyprint.MCBasicsPrettyPrinter;
 
 public class MCJavaLiteralsFullPrettyPrinter extends MCCommonLiteralsFullPrettyPrinter {
 
-  private MCJavaLiteralsTraverser traverser;
+  protected MCJavaLiteralsTraverser traverser;
 
   public MCJavaLiteralsFullPrettyPrinter(IndentPrinter printer) {
     super(printer);

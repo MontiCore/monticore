@@ -150,7 +150,7 @@ public class ArtifactScopeClassDecoratorTest extends DecoratorTestCase {
   @Test
   public void testPackageNameAttribute() {
     ASTCDAttribute astcdAttribute = getAttributeBy("packageName", scopeClass);
-    assertDeepEquals(CDModifier.PRIVATE, astcdAttribute.getModifier());
+    assertDeepEquals(CDModifier.PROTECTED, astcdAttribute.getModifier());
     assertDeepEquals(String.class, astcdAttribute.getMCType());
   }
 

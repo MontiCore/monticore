@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public class FullSynthesizeFromMCFullGenericTypes implements ISynthesize {
 
-  private MCFullGenericTypesTraverser traverser;
+  protected MCFullGenericTypesTraverser traverser;
 
   protected TypeCheckResult typeCheckResult;
 

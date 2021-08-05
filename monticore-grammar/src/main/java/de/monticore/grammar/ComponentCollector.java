@@ -19,7 +19,7 @@ public class ComponentCollector {
     return cv.getRuleComponents();
   }
 
-  private static class CollectRuleComponents implements GrammarVisitor2 {
+  protected static class CollectRuleComponents implements GrammarVisitor2 {
 
     public List<ASTRuleComponent> ruleComponentList = Lists.newArrayList();
 

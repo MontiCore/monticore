@@ -10,26 +10,26 @@ import de.monticore.generating.templateengine.reporting.artifacts.ReportingNameH
 
 public class Element {
   
-  private long numberOfCalls = 0;
+  protected long numberOfCalls = 0;
   
-  private ElementType type;
+  protected ElementType type;
   
   // SimpleName
-  private String simpleName;
+  protected String simpleName;
   
   // File extension
-  private String extension;
+  protected String extension;
   
   // The package that contains this element
-  private APkg pkg;
+  protected APkg pkg;
   
   // List of links going from this element
-  private Map<String, Element> links = new HashMap<String, Element>();
+  protected Map<String, Element> links = new HashMap<String, Element>();
   
   // Number of Link calls per Link
-  private Map<String, Long> numberOfLinkCalls = new HashMap<String, Long>();
+  protected Map<String, Long> numberOfLinkCalls = new HashMap<String, Long>();
   
-  private boolean hasLinkToFile = false;
+  protected boolean hasLinkToFile = false;
   
   /**
    * Get full qualified name of represented element ($package.$class) without fileExtension

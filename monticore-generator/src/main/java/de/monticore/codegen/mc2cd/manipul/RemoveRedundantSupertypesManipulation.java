@@ -27,7 +27,7 @@ public class RemoveRedundantSupertypesManipulation implements UnaryOperator<ASTC
     return cdCompilationUnit;
   }
   
-  private void removeRedundantSuperTypes(List<ASTMCObjectType> superClasses) {
+  protected void removeRedundantSuperTypes(List<ASTMCObjectType> superClasses) {
     for (int i = 0; i < superClasses.size();) {
       ASTMCObjectType inspectedAttribute = superClasses.get(i);
       Iterable<ASTMCObjectType> remainingAttributes = Iterables.filter(superClasses,
@@ -41,7 +41,7 @@ public class RemoveRedundantSupertypesManipulation implements UnaryOperator<ASTC
     }
   }
   
-  private boolean isRedundant(ASTMCObjectType inspectedReference,
+  protected boolean isRedundant(ASTMCObjectType inspectedReference,
       Iterable<ASTMCObjectType> remainingReferences) {
     return StreamSupport.stream(remainingReferences.spliterator(), false)
         .anyMatch(

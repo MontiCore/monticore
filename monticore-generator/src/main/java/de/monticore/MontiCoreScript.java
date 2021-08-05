@@ -672,7 +672,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     return decorateWithSymbolTable(preparedCD, preparedSymbolCD, preparedScopeCD, glex, handCodedPath);
   }
 
-  private ASTCDCompilationUnit decorateWithSymbolTable(ASTCDCompilationUnit cd, ASTCDCompilationUnit symbolCD, ASTCDCompilationUnit scopeCD, GlobalExtensionManagement glex,
+  protected ASTCDCompilationUnit decorateWithSymbolTable(ASTCDCompilationUnit cd, ASTCDCompilationUnit symbolCD, ASTCDCompilationUnit scopeCD, GlobalExtensionManagement glex,
                                                        MCPath handCodedPath) {
     SymbolTableService symbolTableService = new SymbolTableService(cd);
     VisitorService visitorService = new VisitorService(cd);
@@ -737,7 +737,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param handCodedPath The path for entities of the TOP mechanism
    * @return A compilation unit with the decorated class diagram
    */
-  private ASTCDCompilationUnit decorateWithTraverser(ASTCDCompilationUnit cd, GlobalExtensionManagement glex,
+  protected ASTCDCompilationUnit decorateWithTraverser(ASTCDCompilationUnit cd, GlobalExtensionManagement glex,
       MCPath handCodedPath) {
     SymbolTableService symbolTableService = new SymbolTableService(cd);
     VisitorService visitorService = new VisitorService(cd);
@@ -763,7 +763,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     return decorateWithCoCo(preparedCD, glex, handCodedPath);
   }
 
-  private ASTCDCompilationUnit decorateWithCoCo(ASTCDCompilationUnit cd, GlobalExtensionManagement glex,
+  protected ASTCDCompilationUnit decorateWithCoCo(ASTCDCompilationUnit cd, GlobalExtensionManagement glex,
                                                 MCPath handCodedPath) {
     ASTService astService = new ASTService(cd);
     VisitorService visitorService = new VisitorService(cd);
@@ -786,7 +786,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     return decorateWithOD(preparedCD, glex, handCodedPath);
   }
 
-  private ASTCDCompilationUnit decorateWithOD(ASTCDCompilationUnit cd, GlobalExtensionManagement glex,
+  protected ASTCDCompilationUnit decorateWithOD(ASTCDCompilationUnit cd, GlobalExtensionManagement glex,
                                               MCPath handCodedPath) {
     ODService odService = new ODService(cd);
     VisitorService visitorService = new VisitorService(cd);
@@ -810,7 +810,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     return generateMill(preparedCD, astClassDiagram, symbolCD, traverserCD, glex, handCodedPath);
   }
 
-  private ASTCDCompilationUnit generateMill(ASTCDCompilationUnit cd, ASTCDCompilationUnit astCD,
+  protected ASTCDCompilationUnit generateMill(ASTCDCompilationUnit cd, ASTCDCompilationUnit astCD,
                                             ASTCDCompilationUnit symbolCD, ASTCDCompilationUnit traverserCD,
                                             GlobalExtensionManagement glex, MCPath handCodedPath) {
     SymbolTableService symbolTableService = new SymbolTableService(cd);
@@ -832,7 +832,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     return generateCLI(preparedCD, glex, handCodedPath);
   }
 
-  private ASTCDCompilationUnit generateCLI(ASTCDCompilationUnit cd,
+  protected ASTCDCompilationUnit generateCLI(ASTCDCompilationUnit cd,
                                             GlobalExtensionManagement glex, MCPath handCodedPath) {
     ParserService parserService = new ParserService(cd);
     SymbolTableService symbolTableService = new SymbolTableService(cd);
@@ -908,7 +908,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     return decorateEmfWithAST(preparedCD, glex, handCodedPath);
   }
 
-  private ASTCDCompilationUnit prepareCD(ICD4AnalysisScope scope, ASTCDCompilationUnit cd) {
+  protected ASTCDCompilationUnit prepareCD(ICD4AnalysisScope scope, ASTCDCompilationUnit cd) {
     ASTCDCompilationUnit preparedCD = cd;
 
     TypeCD2JavaDecorator typeCD2JavaDecorator = new TypeCD2JavaDecorator(scope);
@@ -917,7 +917,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     return preparedCD;
   }
 
-  private ASTCDCompilationUnit decorateWithAST(ASTCDCompilationUnit cd, GlobalExtensionManagement glex, MCPath handCodedPath) {
+  protected ASTCDCompilationUnit decorateWithAST(ASTCDCompilationUnit cd, GlobalExtensionManagement glex, MCPath handCodedPath) {
     ASTService astService = new ASTService(cd);
     SymbolTableService symbolTableService = new SymbolTableService(cd);
     VisitorService visitorService = new VisitorService(cd);
@@ -989,7 +989,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     return decoratedCDs;
   }
 
-  private ASTCDCompilationUnit decorateEmfWithAST(ASTCDCompilationUnit cd, GlobalExtensionManagement glex, MCPath handCodedPath) {
+  protected ASTCDCompilationUnit decorateEmfWithAST(ASTCDCompilationUnit cd, GlobalExtensionManagement glex, MCPath handCodedPath) {
     ASTService astService = new ASTService(cd);
     SymbolTableService symbolTableService = new SymbolTableService(cd);
     VisitorService visitorService = new VisitorService(cd);
@@ -1110,7 +1110,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     generator.generate(decoratedCD);
   }
 
-  private void createCDSymbolsForSuperGrammars(GlobalExtensionManagement glex, ASTMCGrammar astGrammar,
+  protected void createCDSymbolsForSuperGrammars(GlobalExtensionManagement glex, ASTMCGrammar astGrammar,
                                                ICD4AnalysisGlobalScope cdScope) {
     if (astGrammar.isPresentSymbol()) {
       MCGrammarSymbol sym = astGrammar.getSymbol();
@@ -1123,7 +1123,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     }
   }
 
-  private void createCDSymbolsForSuperGrammarsForSymbolCD(ASTMCGrammar astGrammar,
+  protected void createCDSymbolsForSuperGrammarsForSymbolCD(ASTMCGrammar astGrammar,
                                                           ICD4AnalysisGlobalScope cdScope) {
     if (astGrammar.isPresentSymbol()) {
       MCGrammarSymbol sym = astGrammar.getSymbol();
@@ -1136,7 +1136,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     }
   }
 
-  private void createCDSymbolsForSuperGrammarsForScopeCD(ASTMCGrammar astGrammar,
+  protected void createCDSymbolsForSuperGrammarsForScopeCD(ASTMCGrammar astGrammar,
                                                          ICD4AnalysisGlobalScope cdScope) {
     if (astGrammar.isPresentSymbol()) {
       MCGrammarSymbol sym = astGrammar.getSymbol();
@@ -1157,20 +1157,20 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    *                    variables
    * @param symbolTable grammar symbol table
    */
-  private ASTCDCompilationUnit transformAndCreateSymbolTable(ASTMCGrammar astGrammar,
+  protected ASTCDCompilationUnit transformAndCreateSymbolTable(ASTMCGrammar astGrammar,
                                                              GlobalExtensionManagement glex, ICD4AnalysisGlobalScope symbolTable) {
     // transformation
     ASTCDCompilationUnit compUnit = new MC2CDTransformation(glex).apply(astGrammar);
     return createSymbolsFromAST(symbolTable, compUnit);
   }
 
-  private ASTCDCompilationUnit transformAndCreateSymbolTableForSymbolCD(ASTMCGrammar astGrammar, ICD4AnalysisGlobalScope symbolTable) {
+  protected ASTCDCompilationUnit transformAndCreateSymbolTableForSymbolCD(ASTMCGrammar astGrammar, ICD4AnalysisGlobalScope symbolTable) {
     // transformation
     ASTCDCompilationUnit compUnit = new MC2CDSymbolTranslation().apply(astGrammar);
     return createSymbolsFromAST(symbolTable, compUnit);
   }
 
-  private ASTCDCompilationUnit transformAndCreateSymbolTableForScopeCD(ASTMCGrammar astGrammar, ICD4AnalysisGlobalScope symbolTable) {
+  protected ASTCDCompilationUnit transformAndCreateSymbolTableForScopeCD(ASTMCGrammar astGrammar, ICD4AnalysisGlobalScope symbolTable) {
     // transformation
     ASTCDCompilationUnit compUnit = new MC2CDScopeTranslation().apply(astGrammar);
     return createSymbolsFromAST(symbolTable, compUnit);

@@ -40,7 +40,7 @@ public class NoTokenDefined implements GrammarASTMCGrammarCoCo {
     }
   }
 
-  private boolean hasTokenDefinition(ASTMCGrammar node) {
+  protected boolean hasTokenDefinition(ASTMCGrammar node) {
     //if there is a body check if the body contains tokens
     GrammarTraverser traverser = GrammarMill.traverser();
     NoTokenDefinedVisitor visitor = new NoTokenDefinedVisitor();

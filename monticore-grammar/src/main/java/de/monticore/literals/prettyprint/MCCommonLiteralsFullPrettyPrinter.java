@@ -9,7 +9,7 @@ import de.monticore.prettyprint.MCBasicsPrettyPrinter;
 
 public class MCCommonLiteralsFullPrettyPrinter {
 
-  private MCCommonLiteralsTraverser traverser;
+  protected MCCommonLiteralsTraverser traverser;
 
   protected IndentPrinter printer;
 

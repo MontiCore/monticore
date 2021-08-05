@@ -20,16 +20,16 @@ import org.apache.maven.reporting.AbstractMavenReportRenderer;
 public class ReportsRenderer extends AbstractMavenReportRenderer {
   
   /* The map of processed grammars and created MontiCore reports */
-  private Map<String, List<Path>> inputFiles;
+  protected Map<String, List<Path>> inputFiles;
   
   /* The output directory where to write reports to (used for the "sub" reports). */
-  private String outputDirectory;
+  protected String outputDirectory;
   
   /* Maven stuff. */
-  private SinkFactory sinkFactory;
+  protected SinkFactory sinkFactory;
   
   /* A piece of wood. */
-  private Log log;
+  protected Log log;
   
   /**
    * Constructor for de.monticore.mojo.ReportingRenderer

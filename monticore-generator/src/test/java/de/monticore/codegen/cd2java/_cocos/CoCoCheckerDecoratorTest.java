@@ -26,8 +26,7 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static de.monticore.codegen.cd2java.CDModifier.PRIVATE;
-import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java.CDModifier.*;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
 import static junit.framework.TestCase.assertTrue;
@@ -102,7 +101,7 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
   @Test
   public void testTraverserAttribute() {
     ASTCDAttribute attribute = getAttributeBy("traverser", cocoChecker);
-    assertDeepEquals(PRIVATE, attribute.getModifier());
+    assertDeepEquals(PROTECTED, attribute.getModifier());
   }
 
   @Test

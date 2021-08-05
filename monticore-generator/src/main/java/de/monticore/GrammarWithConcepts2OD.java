@@ -26,9 +26,9 @@ import de.monticore.types.mcsimplegenerictypes._od.MCSimpleGenericTypes2OD;
 
 public class GrammarWithConcepts2OD  {
 
-  private IndentPrinter printer;
+  protected IndentPrinter printer;
 
-  private Grammar_WithConceptsTraverser traverser;
+  protected Grammar_WithConceptsTraverser traverser;
 
 
   public GrammarWithConcepts2OD(IndentPrinter printer, ReportingRepository reporting) {

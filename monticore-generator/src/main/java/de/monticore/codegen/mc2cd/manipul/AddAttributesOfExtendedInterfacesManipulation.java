@@ -20,9 +20,9 @@ import static de.monticore.codegen.mc2cd.TransformationHelper.typeToString;
 public class AddAttributesOfExtendedInterfacesManipulation implements
     UnaryOperator<ASTCDCompilationUnit> {
   
-  private Map<String, ASTCDInterface> cDInterfaces = Maps.newHashMap();
+  protected Map<String, ASTCDInterface> cDInterfaces = Maps.newHashMap();
   
-  private void initInterfaceMap(ASTCDCompilationUnit cdCompilationUnit) {
+  protected void initInterfaceMap(ASTCDCompilationUnit cdCompilationUnit) {
     for (ASTCDInterface cdInterface : cdCompilationUnit.getCDDefinition().getCDInterfacesList()) {
       cDInterfaces.put(
           TransformationHelper.getPackageName(cdCompilationUnit) + cdInterface.getName(),
@@ -42,7 +42,7 @@ public class AddAttributesOfExtendedInterfacesManipulation implements
     return cdCompilationUnit;
   }
 
-  private void addAttributesOfExtendedInterfaces(ASTCDClass cdClass) {
+  protected void addAttributesOfExtendedInterfaces(ASTCDClass cdClass) {
     List<ASTCDAttribute> attributes = new ArrayList<>();
     for (ASTMCObjectType interf : cdClass.getInterfaceList()) {
       String interfaceName = typeToString(interf);

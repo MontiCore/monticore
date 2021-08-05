@@ -13,7 +13,7 @@ public class ResolvedSeveralEntriesForSymbolException extends RuntimeException {
 
   private static final long serialVersionUID = 931330102959575779L;
 
-  private Collection<? extends ISymbol> symbols = new ArrayList<>();
+  protected Collection<? extends ISymbol> symbols = new ArrayList<>();
 
   public ResolvedSeveralEntriesForSymbolException(String message, Collection<? extends ISymbol> symbols) {
     super(message);

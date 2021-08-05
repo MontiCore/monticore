@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+{
+   state $sourceState;
+    
+   state $nestingState { 
+       state $nestedState << [[ initial :- ]] >>;
+   }
+
+   $sourceState -$event> [[$nestingState :- $nestedState]];
+}

@@ -16,13 +16,13 @@ public abstract class AReporter extends DefaultReportEventHandler {
 
 	protected ReportCreator reportingHelper;
 
-	private File file;
+	protected File file;
 
-	private boolean fileOpen = false;
+	protected boolean fileOpen = false;
 
-	private String fileextension;
+	protected String fileextension;
 
-	private String qualifiedFileName;
+	protected String qualifiedFileName;
 
 	protected AReporter(String path, String qualifiedFileName,
 			String fileextension) {

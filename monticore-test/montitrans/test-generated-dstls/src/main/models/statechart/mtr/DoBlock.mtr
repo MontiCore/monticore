@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+{
+  State $State_1 [[  state $_ <<initial>>;]]
+
+  do {
+    $State_1.setInitial(false);
+  }
+}

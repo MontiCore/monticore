@@ -38,7 +38,7 @@ public class ConstantGroupsToCDAttributes implements UnaryOperator<Link<ASTMCGra
     return rootLink;
   }
 
-  private void createAttributeFromConstantGroup(Link<? extends ASTProd, ? extends ASTCDType> link) {
+  protected void createAttributeFromConstantGroup(Link<? extends ASTProd, ? extends ASTCDType> link) {
     Optional<ProdSymbol> typeProd = MCGrammarSymbolTableHelper
         .getMCGrammarSymbol(link.source().getEnclosingScope()).get()
         .getSpannedScope()

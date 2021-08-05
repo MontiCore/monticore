@@ -233,7 +233,7 @@ public class MontiCoreStandardCLI {
    * @param cmd The command line instance containing the input options
    * @return The groovy configuration script as String
    */
-  private String loadScript(CommandLine cmd) {
+  protected String loadScript(CommandLine cmd) {
     String script = StringUtils.EMPTY;
     try {
       // if the user specifies a custom script to use, we check if it is

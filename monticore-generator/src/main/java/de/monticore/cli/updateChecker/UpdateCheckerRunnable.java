@@ -19,9 +19,9 @@ public class UpdateCheckerRunnable implements Runnable {
   protected HttpGetter httpGetter;
 
   protected static class Version {
-    private final boolean snapshot;
-    private final int[] versionNumbers;
-    private final String versionString;
+    protected final boolean snapshot;
+    protected final int[] versionNumbers;
+    protected final String versionString;
 
     public Version(String version) {
       versionString = version;

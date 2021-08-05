@@ -19,7 +19,7 @@ import java.util.function.Function;
  */
 public class MC2CDTransformation implements Function<ASTMCGrammar, ASTCDCompilationUnit> {
   
-  private GlobalExtensionManagement glex;
+  protected GlobalExtensionManagement glex;
   
   public MC2CDTransformation(GlobalExtensionManagement glex) {
     this.glex = glex;

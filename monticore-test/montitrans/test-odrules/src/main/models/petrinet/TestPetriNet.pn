@@ -1,0 +1,8 @@
+petrinet Net num {
+  place a: 44, 50;
+  place b: 0;
+  place c: 44, 50;
+  
+  a,b --x-> c;
+
+}

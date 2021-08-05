@@ -56,7 +56,7 @@ public class MultiplicityTranslation implements
   /**
    * Groups all the links with identical targets and maps them to their maximum Multiplicities
    */
-  private Map<ASTCDAttribute, Multiplicity> mapCDAttributesToMaxMultiplicities(
+  protected Map<ASTCDAttribute, Multiplicity> mapCDAttributesToMaxMultiplicities(
           Set<Link<ASTNode, ASTCDAttribute>> cdAttributeLinks) {
     Map<ASTCDAttribute, List<Link<ASTNode, ASTCDAttribute>>> cdAttributesToLinks =
         cdAttributeLinks.stream().collect(Collectors.groupingBy(Link::target));
@@ -68,7 +68,7 @@ public class MultiplicityTranslation implements
             .get());
   }
 
-  private static ASTMCType createNewType(ASTMCType oldType, Multiplicity multiplicity) {
+  protected static ASTMCType createNewType(ASTMCType oldType, Multiplicity multiplicity) {
     if (oldType instanceof ASTMCPrimitiveType) {
       if (multiplicity == Multiplicity.LIST) {
         return createType("java.util.List", changePrimitiveType(((ASTMCPrimitiveType) oldType).getPrimitive()));
@@ -83,7 +83,7 @@ public class MultiplicityTranslation implements
     return oldType;
   }
 
-  private static String changePrimitiveType(int primType) {
+  protected static String changePrimitiveType(int primType) {
     switch (primType) {
       case ASTConstantsMCBasicTypes.INT:
         return "Integer";

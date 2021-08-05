@@ -1,0 +1,23 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.testcases;
+
+grammar DSLWithOtherPropertiesThanAutomaton extends  mc.testcases.DSLWithOtherPropertiesThanAutomatonComponent, mc.testcases.automaton.Automaton  {
+
+
+    token OwnName = ('a'..'z'|'A'..'Z');
+
+    interface IFoo;
+
+    Foo implements IFoo = "foo" | "bar" Foo | attr:["!=" | "=="] | "ifoo" IFoo| "a" parts:Name ("." parts:Name)*;
+
+    astrule Foo =
+        method public String toString() {return "";};
+
+    QualifiedName =
+      Name ( "." Name)*;
+
+    ExtFoo = Foo;
+     
+    OtherFoo =  IFoo;
+
+}

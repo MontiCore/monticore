@@ -37,7 +37,7 @@ public class HookPointReporter extends AReporter {
 
   static final String SIMPLE_FILE_NAME = "05_HookPoint";
   
-  private ReportingRepository repository;
+  protected ReportingRepository repository;
   
   public HookPointReporter(
       String outputDir,
@@ -238,7 +238,7 @@ public class HookPointReporter extends AReporter {
     }
   }
   
-  private void reportSetHookPointHelper(String hookName, HookPoint hp, String shortcut) {
+  protected void reportSetHookPointHelper(String hookName, HookPoint hp, String shortcut) {
     String hpValue = getHookPointValue(hp);
     
     // calculate first line
@@ -272,7 +272,7 @@ public class HookPointReporter extends AReporter {
     }
   }
   
-  private void reportSetTemplateHookpoint(String simpleTemplate, HookPoint hp, String shortcut) {
+  protected void reportSetTemplateHookpoint(String simpleTemplate, HookPoint hp, String shortcut) {
     // calculate first line
     String firstline = shortcut
         + Layouter.getSpaceString(ReportingConstants.FORMAT_LENGTH_1 - shortcut.length());
@@ -307,7 +307,7 @@ public class HookPointReporter extends AReporter {
     }
   }
   
-  private void reportCallHookPointHelper(String oldTemplate, HookPoint hp, ASTNode ast,
+  protected void reportCallHookPointHelper(String oldTemplate, HookPoint hp, ASTNode ast,
       String shortcut) {
     String astName = repository.getASTNodeNameFormatted(ast);
     String hpValue = getHookPointValue(hp);
@@ -356,7 +356,7 @@ public class HookPointReporter extends AReporter {
     
   }
   
-  private void reportCallSpecificHookPointHelper(String oldTemplate, HookPoint hp, ASTNode ast) {
+  protected void reportCallSpecificHookPointHelper(String oldTemplate, HookPoint hp, ASTNode ast) {
     String astName = repository.getASTNodeNameFormatted(ast);
     String hpValue = getHookPointValue(hp);
     String simpleTemplate = ReportingHelper.getTemplateName(oldTemplate);
@@ -383,7 +383,7 @@ public class HookPointReporter extends AReporter {
     writeLine(secondLine);
   }
   
-  private String getHookPointValue(HookPoint hp) {
+  protected String getHookPointValue(HookPoint hp) {
     String value = null;
     if (hp != null && hp instanceof TemplateHookPoint) {
       value = ((TemplateHookPoint) hp).getTemplateName();
@@ -407,7 +407,7 @@ public class HookPointReporter extends AReporter {
     super.flush(ast);
   }
   
-  private void writeFooter() {
+  protected void writeFooter() {
     writeLine("========================================================== Explanation");
     writeLine("The events are the following:");
     writeLine("  - set         hook point assignment");

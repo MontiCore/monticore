@@ -1,0 +1,5 @@
+/* (c) https://github.com/MontiCore/monticore */
+{
+  [[ :- Transition $T_CREATE [[ $src-$event>$tgt; ]] ]]
+  Transition $T_EXIST [[ $src-$event>$tgt; ]]
+}

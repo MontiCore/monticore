@@ -30,7 +30,7 @@ import java.util.function.UnaryOperator;
  */
 public class MethodTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {
 
-  private GlobalExtensionManagement glex;
+  protected GlobalExtensionManagement glex;
 
   /**
    * Constructor for
@@ -63,7 +63,7 @@ public class MethodTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCD
     return rootLink;
   }
 
-  private ASTCDMethod createSimpleCDMethod(ASTGrammarMethod method) {
+  protected ASTCDMethod createSimpleCDMethod(ASTGrammarMethod method) {
     String dotSeparatedName = MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(method.getMCReturnType());
     ASTCDMethod cdMethod = CD4CodeBasisMill.cDMethodBuilder().
             setModifier(TransformationHelper.createPublicModifier()).
@@ -76,7 +76,7 @@ public class MethodTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCD
     return cdMethod;
   }
 
-  private void addMethodBodyStereotype(ASTModifier modifier, StringBuilder code) {
+  protected void addMethodBodyStereotype(ASTModifier modifier, StringBuilder code) {
     // to save the body in the cd
     // todo think of better version
     TransformationHelper.addStereotypeValue(modifier,
@@ -84,7 +84,7 @@ public class MethodTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCD
         code.toString());
   }
 
-  private ASTCDMethod translateASTMethodToASTCDMethodInterface(ASTGrammarMethod method) {
+  protected ASTCDMethod translateASTMethodToASTCDMethodInterface(ASTGrammarMethod method) {
     ASTCDMethod cdMethod = createSimpleCDMethod(method);
     if (method.getBody() instanceof ASTAction) {
       StringBuilder code = new StringBuilder();
@@ -100,7 +100,7 @@ public class MethodTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCD
     return cdMethod;
   }
 
-  private ASTCDMethod translateASTMethodToASTCDMethod(ASTGrammarMethod method) {
+  protected ASTCDMethod translateASTMethodToASTCDMethod(ASTGrammarMethod method) {
     ASTCDMethod cdMethod = createSimpleCDMethod(method);
     if (method.getBody() instanceof ASTAction) {
       StringBuilder code = new StringBuilder();

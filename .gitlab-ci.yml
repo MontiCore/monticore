@@ -24,8 +24,9 @@ stages:
   - build
   - test
   - deploy
-  - sonar
+  - deploy_mvn
   - trigger_languages
+  - sonar
   - report
   - check
   - mirror
@@ -35,6 +36,8 @@ build:
   script:
     - "cd monticore-generator && gradle build $GRADLE_OPTS -Pci -i"
     - "cd .. && gradle buildMC $GRADLE_OPTS -Pci"
+  tags:
+    - gradle
   artifacts:
     paths:
       - ".gradle"
@@ -47,16 +50,6 @@ build:
   except:
     - master
       
-build_mvn_plugin:
-  stage: build
-  image: registry.git.rwth-aachen.de/monticore/container-registry/maven:3-jdk-8
-  script:
-    - "cd monticore-maven-plugin && mvn $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS install"
-  only:
-    - merge_requests
-    - branches
-  except:
-    - master
 
 test_01experiments:
   stage: test
@@ -130,10 +123,10 @@ deploy:
     - master
       
 deploy_mvn_plugin:
-  stage: deploy
+  stage: deploy_mvn
   image: registry.git.rwth-aachen.de/monticore/container-registry/maven:3-jdk-8
   dependencies:
-    - build
+    - deploy
   script:
     - "cd monticore-maven-plugin && mvn $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS deploy -Dpass=$password -Duser=$username"
   only:
@@ -142,7 +135,7 @@ deploy_mvn_plugin:
     - master
 
 sonar:
-  stage: sonar
+  stage: check
   needs: ["build"]
   dependencies:
     - build
@@ -358,15 +351,19 @@ pages:
   only:
     - schedules
 
+# Checks whether all links in the markdown files of this repo are reachable
 checkMDLinks:
   stage: check
   needs: []
   allow_failure: true
   script:
-    - "curl --location --header \"PRIVATE-TOKEN: $secibuildtoken\" \"https://git.rwth-aachen.de/api/v4/projects/monticore%2Fmdlinkchecker/jobs/artifacts/master/raw/target/libs/MDLinkCheckerCLI.jar?job=build\" --output MDLinkCheckerCLI.jar"
+# Download the current version of the MDLinkCheckerCLI tool
+    - "curl --location --header \"PRIVATE-TOKEN: $secibuildtoken\" \"https://git.rwth-aachen.de/api/v4/projects/monticore%2Fauxiliary-development-tools%2Fmdlinkchecker/jobs/artifacts/master/raw/target/libs/MDLinkCheckerCLI.jar?job=build\" --output MDLinkCheckerCLI.jar"
     - "url=https://git.rwth-aachen.de/monticore/monticore/-/tree/dev"
+# Call the tool with the url of the repo containing the files to check
     - "linkCheckRes=$(java -jar MDLinkCheckerCLI.jar -url $url -t $secibuildtoken)"
     - "echo \"$linkCheckRes\""
+# If the cehck detected an error, exit to make this job produce an error
     - "if [[ $linkCheckRes == *\"ERROR\"* ]]; then exit 1; fi"
   only:
     - dev
@@ -377,25 +374,34 @@ githubmirror:
   dependencies:
     - checkMDLinks
   before_script:
+# install ssh and update
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
     - eval $(ssh-agent -s)
+# add key for github repository
     - ssh-add <(echo "$SE_CIBUILD_SSH_PRIV_KEY")
     - echo "$SE_CIBUILD_SSH_PRIV_KEY" | tr -d '\r' | ssh-add -
+# configure user for github repository
     - git config --global user.email "noreply-ci@se-rwth.de"
     - git config --global user.name "MontiCore Mirroring Bot"
     - mkdir -p ~/.ssh
     - echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
   script:
-    - "curl --location --header \"PRIVATE-TOKEN: $secibuildtoken\" \"https://git.rwth-aachen.de/api/v4/projects/monticore%2Fmdlinkchecker/jobs/artifacts/master/raw/target/libs/MDLinkChangerCLI.jar?job=build\" --output MDLinkChangerCLI.jar"
+# download newest version of MDLinkChangerCLI tool
+    - "curl --location --header \"PRIVATE-TOKEN: $secibuildtoken\" \"https://git.rwth-aachen.de/api/v4/projects/monticore%2Fauxiliary-development-tools%2Fmdlinkchecker/jobs/artifacts/master/raw/target/libs/MDLinkChangerCLI.jar?job=build\" --output MDLinkChangerCLI.jar"
+# preprocess repository (e.g. change markdown files)
     - sh pre/mirror.sh
+# clone github repo
     - cd ..
     - "if [ -d \"tmp\" ]; then rm -rf tmp; fi"
     - mkdir "tmp"
     - cd tmp
     - git clone git@github.com:MontiCore/monticore.git
     - cd ..
+# remove all contents of github repo
     - rm -r tmp/monticore/*
+# move contents of gitlab repo to github repo
     - mv monticore/* tmp/monticore/
+# force push all changes
     - cd tmp/monticore
     - git add --all
     - "(git commit -m 'Updated branch with most recent version.') || true"

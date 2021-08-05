@@ -22,15 +22,15 @@ public class NodeTreeReporter extends AReporter {
   
   static final String SIMPLE_FILE_NAME = "10_NodeTree";
   
-  private ReportingRepository repository;
+  protected ReportingRepository repository;
   
-  private Map<String, Integer> nodeVisits;
+  protected Map<String, Integer> nodeVisits;
   
-  private List<String> serializedTreeResult;
+  protected List<String> serializedTreeResult;
 
-  private ITraverser traverser;
+  protected ITraverser traverser;
 
-  private TreePrintVisitor tpv;
+  protected TreePrintVisitor tpv;
   
   public NodeTreeReporter(String outputDir,
       String modelName, ReportingRepository repository, ITraverser traverser) {
@@ -51,7 +51,7 @@ public class NodeTreeReporter extends AReporter {
     writeLine("========================================================== Node Tree + Extra Infos");
   }
   
-  private void writeContent(ASTNode ast) {
+  protected void writeContent(ASTNode ast) {
     if (ast == null) {
       return;
     }
@@ -61,7 +61,7 @@ public class NodeTreeReporter extends AReporter {
     }
   }
   
-  private void writeFooter() {
+  protected void writeFooter() {
     writeLine("========================================================== Explanation");
     writeLine("Node Tree: this is the extended form: one with extra infos");
     writeLine("as sublines. The tree itself lists all AST nodes using their identifiers.");
@@ -180,7 +180,7 @@ public class NodeTreeReporter extends AReporter {
    * @param ast
    * @return
    */
-  private void deriveTreeStructureAST(ASTNode ast) {
+  protected void deriveTreeStructureAST(ASTNode ast) {
     
     // this is a decoration of the tree at the lineend
     Map<String, String> endLineDecoration = Maps.newHashMap();
@@ -197,7 +197,7 @@ public class NodeTreeReporter extends AReporter {
     
   }
   
-  private void resetVariables() {
+  protected void resetVariables() {
     nodeVisits.clear();
     serializedTreeResult.clear();
   }

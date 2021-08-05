@@ -62,7 +62,7 @@ public class ReferenceTypeTranslation implements
     return rootLink;
   }
 
-  private ASTMCType ruleSymbolToType(ProdSymbol ruleSymbol, String typeName) {
+  protected ASTMCType ruleSymbolToType(ProdSymbol ruleSymbol, String typeName) {
     if (ruleSymbol.isIsLexerProd()) {
       if (!ruleSymbol.isPresentAstNode() || !(ruleSymbol.getAstNode() instanceof ASTLexProd)) {
         return createType("String");
@@ -79,7 +79,7 @@ public class ReferenceTypeTranslation implements
     }
   }
 
-  private ASTMCType determineTypeToSetForAttributeInAST(ASTMCType astGenericType,
+  protected ASTMCType determineTypeToSetForAttributeInAST(ASTMCType astGenericType,
                                                         ASTMCGrammar astMCGrammar) {
     Optional<ProdSymbol> ruleSymbol = TransformationHelper
         .resolveAstRuleType(astMCGrammar, astGenericType);
@@ -94,7 +94,7 @@ public class ReferenceTypeTranslation implements
     }
   }
 
-  private ASTMCType determineTypeToSet(ASTMCType astGenericType, ASTMCGrammar astMCGrammar) {
+  protected ASTMCType determineTypeToSet(ASTMCType astGenericType, ASTMCGrammar astMCGrammar) {
     String typeName = typeToString(astGenericType);
     Optional<ASTMCType> byReference = MCGrammarSymbolTableHelper
         .resolveRule(astMCGrammar, typeName)
@@ -110,7 +110,7 @@ public class ReferenceTypeTranslation implements
     return byReference.orElse(byPrimitive.orElse(createType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(astGenericType))));
   }
 
-  private ASTMCType determineTypeToSet(String typeName, ASTMCGrammar astMCGrammar) {
+  protected ASTMCType determineTypeToSet(String typeName, ASTMCGrammar astMCGrammar) {
     Optional<ASTMCType> byReference = MCGrammarSymbolTableHelper
         .resolveRule(astMCGrammar, typeName)
         .map(ruleSymbol -> ruleSymbolToType(ruleSymbol, typeName));
@@ -119,7 +119,7 @@ public class ReferenceTypeTranslation implements
     return byReference.orElse(byPrimitive.orElse(createType(typeName)));
   }
 
-  private Optional<Integer> determineConstantsType(String typeName) {
+  protected Optional<Integer> determineConstantsType(String typeName) {
     switch (typeName) {
       case "int":
         return Optional.of(ASTConstantsMCBasicTypes.INT);
@@ -142,14 +142,14 @@ public class ReferenceTypeTranslation implements
     }
   }
 
-  private void addStereotypeForASTTypes(ASTNonTerminal nonTerminal, ASTCDAttribute attribute, ASTMCGrammar astmcGrammar) {
+  protected void addStereotypeForASTTypes(ASTNonTerminal nonTerminal, ASTCDAttribute attribute, ASTMCGrammar astmcGrammar) {
     Optional<ProdSymbol> mcProdSymbol = MCGrammarSymbolTableHelper.resolveRule(astmcGrammar, nonTerminal.getName());
     if (mcProdSymbol.isPresent() && isASTType(mcProdSymbol.get())) {
       TransformationHelper.addStereoType(attribute, MC2CDStereotypes.AST_TYPE.toString(), "");
     }
   }
 
-  private void addStereotypeForASTTypes(ASTMCType type, ASTCDAttribute attribute, ASTMCGrammar astmcGrammar) {
+  protected void addStereotypeForASTTypes(ASTMCType type, ASTCDAttribute attribute, ASTMCGrammar astmcGrammar) {
     //if in astrule is Prod given without AST prefix e.g. foo:Foo
     String simpleName = simpleName(type);
     Optional<ProdSymbol> mcProdSymbol = MCGrammarSymbolTableHelper.resolveRule(astmcGrammar, simpleName);
@@ -174,7 +174,7 @@ public class ReferenceTypeTranslation implements
     }
   }
 
-  private boolean isASTType(ProdSymbol mcProdSymbol) {
+  protected boolean isASTType(ProdSymbol mcProdSymbol) {
     return !mcProdSymbol.isIsLexerProd() && !mcProdSymbol.isIsEnum();
   }
 }

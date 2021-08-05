@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+// user wants to post entry that they are vegan
+// not sure if already posted that they are vegetarian
+// is vegetarian posted replace with vegan else insert vegan
+// is different to OptPhoto
+    user $_ $_ {
+     [[ opt[[ entry vegetarian; ]] :- entry vegan; ]]
+    }

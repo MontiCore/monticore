@@ -152,7 +152,7 @@ public class SymTypeExpressionFactory {
     return o;
   }
 
-  private static SymTypeExpression createArrayFromString(String type, IBasicSymbolsScope scope){
+  protected static SymTypeExpression createArrayFromString(String type, IBasicSymbolsScope scope){
     //berechne Typen vom Array per createTypeExpression, berechne Dimension von Array durch Anzahl der Klammerpaare am Ende
     int countDim = 0;
     int start = type.indexOf("[");
@@ -171,7 +171,7 @@ public class SymTypeExpressionFactory {
     return createTypeArray(typeWithoutGenericsAndBraces, scope, countDim, createTypeExpression(typeWithoutBraces, scope));
   }
 
-  private static SymTypeExpression createGenericsFromString(String type, IBasicSymbolsScope scope) {
+  protected static SymTypeExpression createGenericsFromString(String type, IBasicSymbolsScope scope) {
     int start = type.indexOf("<");
     if (start == -1) {
       return SymTypeExpressionFactory.createTypeExpression(type, scope);
@@ -187,7 +187,7 @@ public class SymTypeExpressionFactory {
    * If that method for example received {@code Map<String, List<String>>} this Method should get {@code [String, List<String>]} as parameter
    * @param inBrackets list of generics nested one level
    */
-  private static List<SymTypeExpression> getSubGenerics(List<String> inBrackets, IBasicSymbolsScope scope){
+  protected static List<SymTypeExpression> getSubGenerics(List<String> inBrackets, IBasicSymbolsScope scope){
     return inBrackets.stream()
         .map(String::trim)
         .map(name -> createGenericsFromString(name, scope))
@@ -200,7 +200,7 @@ public class SymTypeExpressionFactory {
    * @param start first occurrence of an opening generic
    * @return all first sub-generics as a list, like {@code [Double; HashMap<String, Integer>]}
    */
-  private static List<String> iterateBrackets(String type, int start){
+  protected static List<String> iterateBrackets(String type, int start){
     List<String> list = new ArrayList<>();
     int depth = 0;
     for(int i = 0; i < type.toCharArray().length; i++) {
