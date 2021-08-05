@@ -13,9 +13,7 @@ import java.util.List;
  * DefsTypeBasic offers one Symbol-Infrastructure
  * including Scopes etc. that is used to provide relevant Symbols.
  *
- * This infrastructure cn also be used for testing, but is basically meant for
- * shipping along with the appropriate Types grammar:
- *    types/ MCBasicTypes.mc4
+ * This infrastructure can be used for testing
  */
 
 public class DefsTypeBasic {
@@ -43,10 +41,7 @@ public class DefsTypeBasic {
     link_array();
     link_String();
     link_Object();
-
-    // TODO: A SymbolTable Structure that correctly reflects
-    // the above objects could be helpful?
-  }
+   }
   
   
   /*********************************************************************/
